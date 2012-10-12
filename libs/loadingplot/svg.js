@@ -38,10 +38,10 @@ LoadingPlot.SVG.prototype.create = function() {
 	this._setEvents();
 }
 
-LoadingPlot.SVG.prototype.setViewBoxWidth = function(w, h) {
+LoadingPlot.SVG.prototype.setViewBoxWidth = function(x, y, w, h) {
 	this._viewWidth = w;
 	this._viewHeight = h;
-	this._viewBox = [0, 0, this._viewWidth, this._viewHeight];
+	this._viewBox = [x, y, this._viewWidth, this._viewHeight];
 	this.zones = [];
 
 	this.initZoom();
@@ -150,17 +150,25 @@ LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta) {
 		return;
 	
 
+
+
 	var parent = this._svgEl.parentNode;
 	this._currentDelta += delta;
 	var boxWidthX = this._viewWidth * Math.pow(2, this._currentDelta);
 	var boxWidthY = this._viewHeight * Math.pow(2, this._currentDelta);
+	
+	var _zoom = (this._zoomMode == 'y') ? this._height / boxWidthX : this._width / boxWidthY;
+	if(_zoom / this._izoom < 0.5)
+		return;
+		
+	this._zoom = _zoom;
+
 	this._viewBox[0] -= viewRatioX * (boxWidthX - this._viewBox[2]);
 	this._viewBox[1] -= viewRatioY * (boxWidthY - this._viewBox[3]);
 	this._viewBox[2] = boxWidthX;
 	this._viewBox[3] = boxWidthY;
 	this.setViewBox();
 
-	this._zoom = (this._zoomMode == 'y') ? this._height / this._viewBox[3] : this._width / this._viewBox[2];
 	this.changeZoomElements(this._zoom);
 
 	window.clearTimeout(this._timeoutZoom);

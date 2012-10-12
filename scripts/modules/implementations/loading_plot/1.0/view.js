@@ -75,7 +75,13 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 			if(this._w && this._h)
 				svg.setSize(this._w, this._h);
 
-			svg.setViewBoxWidth(100, 100);
+			var minX = moduleValue.value.minX || 0;
+			var minY = moduleValue.value.minY || 0;
+
+			var widthX = (moduleValue.value.maxX || 100) - minX;
+			var widthY = (moduleValue.value.maxY || 100) - minY;
+
+			svg.setViewBoxWidth(minX, minY, widthX, widthY);
 			svg.bindTo(this.dom);
 
 			var Springs = new LoadingPlot.SpringLabels(svg);
