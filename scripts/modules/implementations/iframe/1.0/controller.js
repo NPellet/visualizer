@@ -65,7 +65,7 @@ CI.Module.prototype._types.iframe.Controller.prototype = {
 		
 	},
 
-	export: function() {
+	"export": function() {
 		
 	}
 }

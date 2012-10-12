@@ -202,7 +202,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		this.module.getConfiguration().layers = layers;	
 	},
 
-	export: function() {
+	"export": function() {
 		
 	}
 

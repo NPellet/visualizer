@@ -69,7 +69,7 @@ CI.Module = function(definition) {
 		this.controller.init(this);
 		this.model.init(this);
 		
-		if(this.controller.export)
+		if(this.controller["export"])
 			this.dom.find('.ci-export').bind('click', function(event) {
 				module.exportData();
 			});
@@ -365,7 +365,7 @@ CI.Module.prototype = {
 			'title': 'Export data from module ' + module.getTitle(),
 			'width': '70%',
 			height: 500
-		}).children('textarea').text(module.controller.export());
+		}).children('textarea').text(module.controller["export"]());
 	}
 };
 
