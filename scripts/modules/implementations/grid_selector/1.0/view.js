@@ -125,16 +125,19 @@ CI.Module.prototype._types.grid_selector.View.prototype = {
 		el.prev().html(Math.round(value[0] * 100) + " %");
 		el.next().html(Math.round(value[1] * 100) + " %");
 
-		if(lineId !== undefined) {
+		if(lineId !== undefined) 
 			self.module.controller.selectorChanged(self.cols[colId].name, self.lines[lineId].name, value);
-		}
+		
 	},
 
 	changeSelectors: function(colId, values) {
+		var self = this;
 		var dom = this.dom.children('table').find('td[data-colid="' + colId + '"][data-lineid]');
 		if(values instanceof Array) {
 			var el = dom.find('.ci-rangebar').slider('values', values);
-			this.sliderUpdateValue(el, values, colId, dom.data('lineid'))
+			el.each(function() {
+				self.sliderUpdateValue($(this), values, colId, $(this).data('lineid'))
+			});
 		} else if(values)
 			dom.find('input[type="checkbox"]').not(':checked').trigger('click', true);
 		else
