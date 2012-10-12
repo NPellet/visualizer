@@ -1,0 +1,22 @@
+
+.ci-module-datamatrix_intersect .ci-module-content > div > div {
+	padding: 5px;
+}
+
+.ci-module-datamatrix_intersect table {
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+.ci-module-datamatrix_intersect th {
+	text-align: left;
+	font-size: 12px;
+	padding-bottom: 5px;
+}
+
+
+.ci-module-datamatrix_intersect td.ci-label {
+	width: 30%;
+	text-align: right;
+	padding-right: 5px;
+}

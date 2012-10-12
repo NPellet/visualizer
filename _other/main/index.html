@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js" language="javascript" type="text/javascript"></script>
+           
+	<script src="http://script.epfl.ch/servletScript/javascript/codemirror/lib/codemirror.js"></script>
+	<script src="http://script.epfl.ch/servletScript/javascript/codemirror/mode/javascript/javascript.js"></script>
+	<script src="http://script.epfl.ch/servletScript/javascript/codemirror/lib/util/simple-hint.js"></script>
+	<script src="http://script.epfl.ch/servletScript/javascript/codemirror/lib/util/javascript-hint.js"></script>
+	
+	<link rel="stylesheet" href="http://script.epfl.ch/servletScript/javascript/codemirror/lib/codemirror.css">
+	<link rel="stylesheet" href="http://script.epfl.ch/servletScript/javascript/codemirror/lib/util/simple-hint.css">
+	<link rel="stylesheet" href="./javascript/help/docs.css">
+	<link rel="stylesheet" href="http://script.epfl.ch/servletScript/javascript/help/help.css">
+
+	<script src="http://script.epfl.ch/servletScript/javascript/help/help.js"></script>
+
+	<script src="./javascript/run.js" type="text/javascript"></script>
+
+
+	<script src="./javascript/jqueryui/js/jquery-ui-1.8.19.custom.min.js" language="javascript" type="text/javascript"></script>
+	<link href="./javascript/jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" media="screen" />
+	
+	<script src="./javascript/dynatree/src/jquery.dynatree.min.js" language="javascript" type="text/javascript"></script>
+	<link href="./javascript/dynatree/src/skin-vista/ui.dynatree.css" rel="stylesheet" media="screen" />
+	
+	<link rel="stylesheet" href="./main.css" media="screen" />
+</head>
+<body>	
+	<div id="title">
+		<div class="center">
+			<h1>Scripting Language</h1>
+			<h2>Powerful calculations form Chemistry</h2>
+		</div>
+	</div>
+	
+
+	<div id="main">
+	
+		<ul id="navigation">
+	<!--		<div class="center">
+				<li class="step"><div class="circle active"><div>1</div></div> <div class="label">Write your script</div></li>
+				<li class="step"><div class="circle inactive"><div>2</div></div> <div class="label">Chose a visualizer</div></li>
+				<li class="step"><div class="circle inactive"><div>3</div></div> <div class="label">Visualize the result</div></li>
+				<li class="spacer"></li>
+			
+			</div>
+		-->
+		</ul>
+		
+		<div id="content-wrapper">
+			
+			<div id="content">		
+				
+				<div class="title">
+					Step<br />1
+				</div>
+				<h1 class="content">Start by writing your script<span>Write some javascript that will be executed on the server</span></h1>
+					
+				<div id="step1">
+					
+					<div class="browse">
+						<h2>Browse codes :</h2>
+						<div class="browser" data-mode="scripts"></div>
+					</div>
+				
+					<div class="code">
+						<h2>Input :</h2>
+						<textarea id="script" forBrowser="FileBrowser_1" class="FileContents"></textarea>
+					</div>
+				
+					<div id="help">
+						<h2>Help :</h2>
+						<div id="hints" class="help"></div>
+					</div>
+				
+					<div class="spacer"></div>
+					
+				</div>
+				
+				<div id="step2">
+					<div class="title">
+						Step<br />2
+					</div>
+					<h1 class="content">Execute your script<span>Your script will be executed in the cloud. Wait for it to finish.</span></h1>
+				
+				
+					<div class="buttons" id="buttons2">
+						<div rel="launch">
+							My script is ready, execute !
+						</div>
+						<div rel="mail" class="disabled">
+							Send a copy of this result by e-mail
+						</div>
+						<div rel="save" class="disabled">
+							Save this result in the cloud
+						</div>
+					</div>
+					
+					<div class="output">
+						<h2>Output :</h2>
+						<textarea id="output"></textarea>
+					</div>
+					<div class="spacer"></div>
+				</div>
+				
+				
+				<div id="step3">
+				
+					<div class="title">
+						Step<br />3
+					</div>
+					<h1 class="content">Choose how to visualize your result<span>You may either chose a preconfigured visualizer, or create your own !</span></h1>
+				
+					<div class="visualizer">
+						
+						<h1>You may browse for an existing visualizer</h1>
+						<div class="selectedvisualizer none">
+							No visualizer selected
+						</div>
+						
+						<h1>Or start a new one</h1>
+						<div class="buttons">
+							<div id="visualizernew">Start a new visualizer</div>
+						</div>
+					</div>
+					<div class="browse">
+						<h2>Browse visualizers :</h2>
+						<div class="browser" data-mode="visualizers"></div>
+					</div>
+					
+					<div class="spacer"></div>
+				</div>
+				
+				
+				<div id="step4">
+					<div class="title">
+						Step<br />4
+					</div>
+					<h1 class="content">Visualize your result<span>Chose the way you want to access your visualizer</span></h1>
+				
+					<ul class="buttons" id="buttons4">
+						<li rel="open">
+							Open the visualizer in this window
+						</li>
+						<li rel="new">
+							Open the visualizer in a new window
+						</li>
+						<li>
+							Send me the link by e-mail
+						</li>
+					</ul>
+					<div class="spacer"></div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

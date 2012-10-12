@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+	<head>
+		<script type="text/javascript" src="table/libs/jquery/1.7/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="table/bi.table.init.js"></script>
+		<script type="text/javascript" src="table/column.js"></script>
+		<script type="text/javascript" src="table/table.js"></script>
+		<script type="text/javascript" src="table/content.js"></script>
+		<script type="text/javascript" src="table/bi.table.anytitle.js"></script>
+		
+		
+	</head>
+	<body>
+		<div id="TableImpl"></div>
+		<script language="javascript" type="text/javascript">
+		
+			$(document).ready(function() {
+				
+				var table = new BI.Tables.Table();
+				
+				var col = new BI.Tables.Column('test1', {});
+				col.setTitle(new BI.Tables.AnyTitle('salut'));
+				table.addColumn(col);
+				var col = new BI.Tables.Column('test2', {});
+				col.setTitle(new BI.Tables.AnyTitle('salut'));
+				table.addColumn(col);
+				var col = new BI.Tables.Column('test3', {});
+				col.setTitle(new BI.Tables.AnyTitle('salut'));
+				table.addColumn(col);
+				var col = new BI.Tables.Column('test4', {});
+				col.setTitle(new BI.Tables.AnyTitle('salut'));
+				table.addColumn(col);
+
+				var content = new BI.Tables.Content();
+				
+				content.addElement({ test2: 'yo', test3: 'hop'});
+				content.addElement({ test2: 'yo', test4: 'hop'});
+				content.addElement({ test1: 'yo', test3: 'hop'});
+				content.addElement({ test2: 'yo', test3: 'hop'});
+				content.addElement({ test2: 'yo', test3: 'hop'});
+				content.addElement({ test4: 'yo', test3: 'hop'});
+				
+				table.setContent(content);
+				
+				table.init($("#TableImpl"));
+
+			});
+		
+		
+		</script>
+	</body>
+</html>
+			
