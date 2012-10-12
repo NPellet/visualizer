@@ -70,6 +70,11 @@ CI.EntryPoint = function(structure, data, options, onLoad) {
 		});
 	}
 	
+	this.getStructure = getStructure;
+	function getStructure() {
+		return this.structure;
+	}
+	
 	function doData(page) {
 		entryPoint.loaded(page);
 	}
@@ -144,6 +149,8 @@ CI.EntryPoint.prototype = {
 		console.info('Method will soon be removed. Please call Saver.doSave(); directly');
 		Saver.doSave();	
 	},
+
+
 	
 	getDataFromSource: function(child) {
 		

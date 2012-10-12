@@ -61,10 +61,19 @@ CI.ConfigVisualizer = function() {
 	});
 	btnzone.addButton(btn);
 	
+
+
+	var btn = new CI.Buttons.Button('Export view', function() {
+		exportView();
+	});
+	btnzone.addButton(btn);
+	
 	
 	var btn = new CI.Buttons.Button('Save', function() {
 		Entry.save();
 	});
+
+
 	btn.setColor('blue');
 	btnzone.addButton(btn);
 	
@@ -451,6 +460,8 @@ CI.ConfigVisualizer = function() {
 		});
 
 	}
+
+	function exportView() {
+		$('<div />').css('text-align', 'center').dialog({'modal': true, title: 'Export view', width: '80%', height: '300'}).html($('<textarea />').css({width: '95%', height: '200'}).val(JSON.stringify(Entry.getStructure())));
+	}
 }
-
-
