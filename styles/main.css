@@ -391,9 +391,29 @@ div.ci-module-display_value div.ci-module-content img {
 	padding-top: 5px;
 	padding-bottom: 5px;
 	text-align: center;
+
 }
 
 
+.ci-rangebar-wrapper {
+	display: table;
+	width: 100%;
+}
+
+.ci-display-grid-selector td  .ci-rangebar-max {
+	display: table-cell;
+	width: 55px;
+	text-align: right;
+}
+
+.ci-display-grid-selector td .ci-rangebar-min {
+	display: table-cell;
+	width: 55px;
+
+}
+
+.ci-rangebar {
+}
 
 .ci-display-grid-selector th {
 	padding-top: 5px;
