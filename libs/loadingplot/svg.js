@@ -76,11 +76,11 @@ LoadingPlot.SVG.prototype.ready = function() {
 	this.setViewBox();
 	var pos = $(this._svgEl).offset();
 	var self = this;
-	$(this._svgEl).on('mousemove', '.highlightgroup', function() {
+	$(this._svgEl).on('mousemove', '[class=highlightgroup]', function() {
 
 		var id = $(this).data('id');
 		self._els[id].mouseover();
-	}).on('mouseout', '.highlightgroup', function() {
+	}).on('mouseout', '[class=highlightgroup]', function() {
 		var id = $(this).data('id');
 		self._els[id].mouseout();
 	});
