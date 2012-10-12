@@ -1,6 +1,0 @@
-latest = 1.2
-
-
-[dependencies]
-libs[] = "jquery"
-libs[] = "jqueryui"
