@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Visualizer</title>
+	<link rel="stylesheet" href="styles/main.css" media="screen, print" />
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" language="javascript" type="text/javascript"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" language="javascript" type="text/javascript"></script>
+	
+	<link rel="stylesheet" href="libs/jqueryui/css/ui-lightness/jquery-ui-1.8.18.custom.css" media="screen, print" />
+	
+	<!-- Load the visualizer scripts -->
+	<script src="./scripts/init.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/visualizer.js" type="text/javascript" language="javascript"></script>
+	
+	<script src="./scripts/api/ci.api.js" type="text/javascript" language="javascript"></script>
+	
+	<script src="./scripts/libs/table/column.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/libs/table/content.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/libs/table/table.js" type="text/javascript" language="javascript"></script>
+	<link href="./scripts/libs/table/style/patiny/lpatiny.css" rel="stylesheet" media="screen, print" />
+	
+	<script src="./scripts/libs/title/title.js" type="text/javascript" language="javascript"></script>
+	
+	
+	<script src="./scripts/libs/util/ajaxmanager.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/libs/util/util.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/libs/util/ajaxquery.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/libs/util/jsonloader.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/libs/icons/icons.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/libs/lang/lang.js" type="text/javascript" language="javascript"></script>
+	
+	
+	<script src="./scripts/data/datasource.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/data/repo.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/module.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/types/datatype.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/types/maintypes.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/configuration/sendConfig.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/configuration/receiveConfig.js" type="text/javascript" language="javascript"></script>
+
+	
+	
+	<script src="./scripts/modules/implementations/canvas_matrix/1.0/controller.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/canvas_matrix/1.0/model.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/canvas_matrix/1.0/view.js" type="text/javascript" language="javascript"></script>
+	<link href="./scripts/modules/implementations/canvas_matrix/1.0/style.css" rel="stylesheet" media="screen, print" />
+	
+	
+	
+	<script src="./scripts/modules/implementations/display_list/1.0/controller.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/display_list/1.0/model.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/display_list/1.0/view.js" type="text/javascript" language="javascript"></script>
+	
+	
+	<script src="./scripts/modules/implementations/grid/1.0/controller.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/grid/1.0/model.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/grid/1.0/view.js" type="text/javascript" language="javascript"></script>
+	
+	
+	
+	<script src="./scripts/modules/implementations/display_chemical/1.0/controller.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/display_chemical/1.0/model.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/display_chemical/1.0/view.js" type="text/javascript" language="javascript"></script>
+	
+	<!--
+	<script src="./scripts/modules/implementations/hashmap_displayer/1.0/controller.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/hashmap_displayer/1.0/model.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/hashmap_displayer/1.0/view.js" type="text/javascript" language="javascript"></script>
+	
+	-->
+	
+	
+	
+	<script src="./scripts/modules/implementations/spectra_displayer/1.0/controller.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/spectra_displayer/1.0/model.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/spectra_displayer/1.0/view.js" type="text/javascript" language="javascript"></script>
+	
+	<script src="./scripts/modules/implementations/datamatrix_intersect/1.0/controller.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/datamatrix_intersect/1.0/model.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/modules/implementations/datamatrix_intersect/1.0/view.js" type="text/javascript" language="javascript"></script>
+	<link href="./scripts/modules/implementations/datamatrix_intersect/1.0/style.css" rel="stylesheet" media="screen, print" />
+	
+	
+	<script src="./scripts/page/entrypoint.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/page/modulegrid.js" type="text/javascript" language="javascript"></script>
+	
+	
+	<!-- Loading mask.js -->
+	<script src="./scripts/jquery/mask/mask.js" type="text/javascript" language="javascript"></script>
+	<link href="./scripts/jquery/mask/mask.css" rel="stylesheet" media="screen, print" />
+	
+		
+	<!-- Loading fancybox -->
+	<script src="./scripts/jquery/fancybox/jquery.fancybox.pack.js" type="text/javascript" language="javascript"></script>
+	<link href="./scripts/jquery/fancybox/jquery.fancybox.css" rel="stylesheet" media="screen, print" />
+	
+	
+	<script src="./scripts/libs/chemdoodle/ChemDoodleWeb-libs.js" type="text/javascript" language="javascript"></script>
+	<script src="./scripts/libs/chemdoodle/ChemDoodleWeb-unpacked.js" type="text/javascript" language="javascript"></script>
+	<link href="./scripts/libs/chemdoodle/ChemDoodleWeb.css" rel="stylesheet" media="screen, print" />
+	
+	<script language="javascript" type="text/javascript">
+		<!--
+		
+		_structure = 'testcase/structure3.json';
+	//	_data = './data/json/chemical/chemicalTable.json';
+		
+		_data = window.opener.getData();
+		
+		-->
+	</script>
+	<!-- Done loading visualizer scripts -->
+</head>
+
+<body>
+	
+	<table id="ci-viewport" cellpadding="0" cellspacing="0">
+		
+		<tr>
+			<td colspan="3" id="ci-header">
+				
+				
+			</td>
+		</tr>
+		<tr>
+			<td id="ci-left" class="ci-cfg">
+				
+			</td>
+			<td class="ci-expand" id="ci-expand-left">.<br />.<br />.</td>
+			<td id="ci-center">
+				<div id="ci-modules-grid"></div>
+			</td>
+			<td class="ci-expand" id="ci-expand-right">.<br />.<br />.</td>
+			<td id="ci-right" class="ci-cfg">
+				<div class="ci-message-grey">Click on a module to configure it</div>
+			</td>
+		</tr>
+		
+	</table>
+		
+</body>
+</html>
