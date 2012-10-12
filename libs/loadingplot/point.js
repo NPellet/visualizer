@@ -68,7 +68,7 @@ LoadingPlot.SVGElement.prototype.setLabelScale = function(bln) {
 
 LoadingPlot.SVGElement.prototype.labelVisibility = function() {
 
-	if((this._visibility.filter && this._visibility.zoom) || this._visibility.force) {
+	if((this._visibility.filter && this._visibility.zoom) || this._visibility.force) {
 		
 		if(!this._labelVisible) {
 
