@@ -190,7 +190,7 @@ CI.Module.prototype._types.grid.Controller.prototype = {
 		this.module.getConfiguration().displaySearch = !!confSection[0].gencfg[0].displaySearch[0][0];
 	},
 
-	export: function() {
+	"export": function() {
 		return this.module.view.table.exportToTabDelimited();
 	}
 }

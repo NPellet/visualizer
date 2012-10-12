@@ -186,7 +186,7 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 		*/
 	},
 
-	export: function() {
+	"export": function() {
 		//return this.module.view.table.exportToTabDelimited();
 	}
 }
