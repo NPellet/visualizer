@@ -1,0 +1,61 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="WHIT"> </span><span class="COMM">/*
+<span class='line'>  2</span>  * model.js
+<span class='line'>  3</span>  * version: dev
+<span class='line'>  4</span>  *
+<span class='line'>  5</span>  * Copyright 2012 Norman Pellet - norman.pellet@epfl.ch
+<span class='line'>  6</span>  * Dual licensed under the MIT or GPL Version 2 licenses.
+<span class='line'>  7</span>  */</span><span class="WHIT">
+<span class='line'>  8</span> 
+<span class='line'>  9</span> 
+<span class='line'> 10</span> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">CI.Module.prototype._types.datamatrix_intersect</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 11</span> </span><span class="WHIT">	</span><span class="NAME">CI.Module.prototype._types.datamatrix_intersect</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 12</span> 
+<span class='line'> 13</span> </span><span class="NAME">CI.Module.prototype._types.datamatrix_intersect.Model</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">module</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 14</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'> 15</span> </span><span class="WHIT">	</span><span class="NAME">CI.Module.prototype._impl.model.init</span><span class="PUNC">(</span><span class="NAME">module</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 16</span> </span><span class="WHIT">	</span><span class="NAME">this.treatedDataValue</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 17</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 18</span> 
+<span class='line'> 19</span> </span><span class="NAME">CI.Module.prototype._types.datamatrix_intersect.Model.prototype</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 20</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'> 21</span> </span><span class="WHIT">	</span><span class="COMM">// Usually you don't really to init a model. But who knows. Please leave it.</span><span class="WHIT">
+<span class='line'> 22</span> </span><span class="WHIT">	</span><span class="NAME">init</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'> 23</span> </span><span class="WHIT">		</span><span class="NAME">CI.Module.prototype._impl.model.afterInit</span><span class="PUNC">(</span><span class="NAME">this.module</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 24</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 25</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'> 26</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'> 27</span> </span><span class="WHIT">	</span><span class="NAME">onDataChange</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">dataName</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 28</span> </span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'> 29</span> </span><span class="WHIT">		</span><span class="COMM">// This part of the code could be simplified, but this is to show the proof of concept</span><span class="WHIT">
+<span class='line'> 30</span> </span><span class="WHIT">		</span><span class="COMM">// of data manipulation from the model</span><span class="WHIT">
+<span class='line'> 31</span> </span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'> 32</span> </span><span class="WHIT">		</span><span class="KEYW">switch</span><span class="PUNC">(</span><span class="NAME">this.data</span><span class="PUNC">[</span><span class="NAME">dataName</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">getSourceData</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">rel</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 33</span> </span><span class="WHIT">			</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="WHIT">			</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'row'</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="WHIT">				</span><span class="NAME">this.treatedDataValue</span><span class="PUNC">[</span><span class="STRN">'row'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.data</span><span class="PUNC">[</span><span class="NAME">dataName</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">getData</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 36</span> </span><span class="WHIT">			</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 37</span> </span><span class="WHIT">			</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="WHIT">			</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'col'</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'> 39</span> </span><span class="WHIT">				</span><span class="NAME">this.treatedDataValue</span><span class="PUNC">[</span><span class="STRN">'col'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.data</span><span class="PUNC">[</span><span class="NAME">dataName</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">getData</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 40</span> </span><span class="WHIT">			</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 41</span> </span><span class="WHIT">			</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">			</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'intersect'</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="WHIT">				</span><span class="NAME">this.treatedDataValue</span><span class="PUNC">[</span><span class="STRN">'intersect'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.data</span><span class="PUNC">[</span><span class="NAME">dataName</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">getData</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 44</span> </span><span class="WHIT">			</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 45</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 46</span> </span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="WHIT">		</span><span class="COMM">/* Triggers a module update */</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">		</span><span class="NAME">this.module.updateView</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">	</span><span class="NAME">getValue</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 52</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.treatedDataValue</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 54</span> </span><span class="PUNC">}</span></pre></body></html>

@@ -1,0 +1,134 @@
+/* 
+    Document   : FileBrowser
+    Created on : Apr 17, 2012, 4:52:14 AM
+    Author     : James Earlywine -- james@esilogix.com
+    Description:
+        Styling for Elements of the FileBrowser Class
+        (can easily be customized by #elementId)
+*/
+
+
+.FileDisplayArea {
+    float:      left;
+}
+
+.FileBrowser {
+    /* These determine how the FileBrowser actually looks */
+    width:          280px;
+    height:         100%;
+    float:          left;
+    cursor:         default;
+}
+
+.FileBrowser ul.folderSelected > div.foldername_label {
+    text-decoration:underline; 
+    
+}
+
+.FileBrowser li.fileSelected {
+    background-color:   #3399FF;
+    color:              #FFFFFF;
+    text-decoration:    none;
+}
+
+.FileBrowser ul {
+    
+    color:            #000000;
+    font-family:	Helvetica Neue, Helvetica, Arial;
+    font-size:      13.3333px;
+    font-style:     normal;
+    text-align:     left;
+    margin-left:    10px;
+    padding-left:   5px;
+    margin-bottom:  0px;
+    margin-top:     0px;
+    
+    text-decoration: none;
+    list-style-type: none;
+
+}
+
+.FileBrowser li {
+    
+    color:            #000000;
+    font-family:	Helvetica Neue, Helvetica, Arial;
+    
+    font-size:      13.3333px;
+    font-weight:    400;
+    font-style:     normal;
+    text-align:     left;
+    margin-left:    0px;
+    padding-left:   3px;
+    text-decoration: none;
+    list-style-type: none;
+
+}
+
+.FileContents {
+    width:          720px;
+    height:         500px;
+    border-width:   0.833333px;
+    border-color:   #F0F0F0;
+    border-style:   inset;
+    border-style:   solid;
+    overflow:       scroll;
+    float:          left;
+    cursor:         default;
+}
+
+.FileControlPanel {
+    display:            inline-block;
+    width:              100px;
+    text-align:         right;
+    font-family:        MS Shell Dlg;
+    font-size:          13.3333px;
+}
+
+.FileControlPanel > .fileName {
+    width:              100px;
+    text-align:         right;
+}
+
+
+.FolderControlPanel > .folderName {
+    width:              70px;
+    text-align:         right;
+}
+
+#FileBrowser-ContextMenu {
+    width:          100px;
+    height:         55px;
+    display:        none;
+    position:       absolute;
+    z-index:        9999;
+    background-color: #D3D3D3;
+    vertical-align: text-top;
+    list-style:     none;
+    border-color:   #5D5BB9;
+    text-align:     left;
+    text-indent:    0px;
+    padding-top:    2px;
+    padding-bottom: 2px;
+    padding-left:   4px;
+    padding-right:  2px;
+    cursor:         default;
+    font-family:    MS Shell Dlg;
+    font-size:      13.3333px;
+    font-weight:    bold;
+    font-style:     normal;
+    vertical-align: text-top;
+    border:         2px;
+    border-color:   #000000;
+        
+}
+
+#FileBrowser-ContextMenu li:hover {
+background-color:   #EEEEEE;
+
+}
+#FileBrowser-ContextMenu li {
+    border-bottom:  1px solid #000000;
+}
+#FileBrowser-ContextMenu li#FileBrowser-ContextMenu-Delete {
+    border-bottom:  none;
+}
