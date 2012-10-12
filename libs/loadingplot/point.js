@@ -183,10 +183,10 @@ LoadingPlot.SVGElement.prototype.setColor = function(color) {
 LoadingPlot.SVGElement.prototype.highlight = function(bln) {
 	//this._currentEl.setAttributeNS(null, 'class', 'nothighlight');
 	if(bln) {
-		this._highlightgroup.setAttributeNS(null, 'transform', 'translate(' + this._x + ', ' + this._y + ') scale(5) translate(' + (-this._x) + ', ' + (-this._y) + ')');
+		this._highlightgroup.setAttributeNS(null, 'transform', 'translate(' + this._x + ', ' + this._y + ') scale(2) translate(' + (-this._x) + ', ' + (-this._y) + ')');
 		this._visibility.force = true;
 		this.labelVisibility();
-		this._label.setAttributeNS(null, 'font-size', this._fontsize * 2 / this.svg._zoom);
+		this._label.setAttributeNS(null, 'font-size', this._fontsize * 1.5 / this.svg._zoom);
 	} else {
 		this._highlightgroup.removeAttributeNS(null, 'transform');
 		this._visibility.force = false;
