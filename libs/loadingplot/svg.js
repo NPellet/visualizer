@@ -158,8 +158,10 @@ LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta) {
 	var boxWidthY = this._viewHeight * Math.pow(2, this._currentDelta);
 	
 	var _zoom = (this._zoomMode == 'y') ? this._height / boxWidthX : this._width / boxWidthY;
-	if(_zoom / this._izoom < 0.5)
+	if(_zoom / this._izoom < 0.5) {
+		this._currentDelta -= delta;
 		return;
+	}
 		
 	this._zoom = _zoom;
 
