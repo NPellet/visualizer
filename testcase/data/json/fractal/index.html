@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <style type="text/css">
+    h1 { font-size: 3.8em; color: #e140c5; margin-bottom: 3px; }
+    h2 { font-size: 1.5em; color: #e140c5; }
+    h3 { text-align: center; color: #e140c5; }
+    pre { background: #000; color: #fff; padding: 15px;}
+  </style>
+</head>
+
+<body>
+ <h1>Large matrix JSON Example</h1>
+
+We should be able to deal with any size of distance matrix. The matrix could be composed of images or from the values.
+
+
+
+Based on this information we should be able to:
+<ul>
+<li>To zoom in / out
+<li>To generate an event based on the position of the mouse
+<li>To move the image
+</ul>
+
+In this example we have setup different folder corresponding to different zoom factor. For example in the example complex we have 5 different zoom level.
+
+In each folder there is a json folder and a png folder. We have here 2 possibilities:
+<ul>
+<li>We use the toc.json and all the cited json to create from scratch the image
+<li>We use the tocimg.json and all the png to generate the image
+</ul>
+
+In the toc.json document we have some important fields:
+<ul>
+<li>type: matrix
+<li>zoomIn: which matrix should we consider when we zoom in. Will point in reality in this case to another toc.json from another folder.
+<li>zoomOut: which matrix should we consider whe we zoom out.
+<li>value: either an array of array of value or an array or array of matrix object (a "tile" which is here an array of array of integer).
+</ul>
+
+In the document tocimg.json is used the following fields are defined:
+<ul>
+<li>type: matrix
+<li>zoomIn: which matrix should we consider when we zoom in. Will point in reality in this case to another toc.json from another folder.
+<li>zoomOut: which matrix should we consider whe we zoom out.
+<li>value: an array of array of object of type image that contains the "tiles".
+</ul>
+
+What could be improved or add as field that would allow to have an infinite size map:
+<ul>
+<li>xFullSize: the X size of the full map
+<li>yFullSize: the Y size of the full map
+<li>x: the topLeft x coordinate in the full map
+<li>y: the topLeft y coordinate in the full map
+<li>n, ne, e, se, s, sw, w, nw: the neighbour tiles
+<li>zoomIn, zoomOut: have the zoomIn and zoomOut for each tile that would allow to zoom in/out to the center of any tile
+</ul>
+</body>
+</html>
