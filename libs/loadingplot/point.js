@@ -15,6 +15,7 @@ LoadingPlot.SVGElement.prototype.construct = function(svg, x, y, data) {
 	this._labelVisible = true;
 	this._zoomThreshLabel = 1500;
 	this.allowLabelScale = false;
+
 	CI.RepoHighlight.listen(data._highlight, function(value, keys) {	
 		self.highlight(value);
 	});
@@ -182,6 +183,8 @@ LoadingPlot.SVGElement.prototype.setColor = function(color) {
 
 LoadingPlot.SVGElement.prototype.highlight = function(bln) {
 	//this._currentEl.setAttributeNS(null, 'class', 'nothighlight');
+	
+	console.log(bln);
 	if(bln) {
 		this._highlightgroup.setAttributeNS(null, 'transform', 'translate(' + this._x + ', ' + this._y + ') scale(2) translate(' + (-this._x) + ', ' + (-this._y) + ')');
 		this._visibility.force = true;

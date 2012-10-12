@@ -26,13 +26,6 @@ LoadingPlot.SVG.prototype.create = function() {
 	this._svgEl.appendChild(this._groupLabels);
 
 
-	$(this._svgEl).on('mouseover', '.highlightgroup', function() {
-		var id = $(this).data('id');
-		self._els[id].mouseover();
-	}).on('mouseout', '.highlightgroup', function() {
-		var id = $(this).data('id');
-		self._els[id].mouseout();
-	});
 
 	this.deltaZoom(0, 0, 0);
 	this._setEvents();
@@ -82,7 +75,16 @@ LoadingPlot.SVG.prototype.ready = function() {
 	$(this._wrapper).append(this._svgEl);
 	this.setViewBox();
 	var pos = $(this._svgEl).offset();
-	
+	var self = this;
+	$(this._svgEl).on('mousemove', '.highlightgroup', function() {
+
+		var id = $(this).data('id');
+		self._els[id].mouseover();
+	}).on('mouseout', '.highlightgroup', function() {
+		var id = $(this).data('id');
+		self._els[id].mouseout();
+	});
+
 	
 	this._svgPosX = pos.left;
 	this._svgPosY = pos.top;
