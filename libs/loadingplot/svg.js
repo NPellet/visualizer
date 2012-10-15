@@ -144,15 +144,16 @@ LoadingPlot.SVG.prototype._dragStop = function() {
 
 LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta) {
 	var self = this;
+
+	if(Math.abs(delta) >= 1)
+		delta = delta < 0 ? -0.5 : 0.25;
+
 	if(!this._currentDelta) {
 		this._currentDelta = 0;
 		this._accumulatedDelta = 0;
 	}
 	if(delta == 0)
 		return;
-	
-
-
 
 	var parent = this._svgEl.parentNode;
 	this._currentDelta += delta;

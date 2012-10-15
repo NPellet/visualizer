@@ -18,9 +18,9 @@ LoadingPlot.SpringLabels.prototype.resolve = function() {
 	/*if(!this.allowed)
 		return;
 */
-	var distance = 5 / this.svg._zoom;
+	var distance = 1500 / this.svg._zoom;
 	var distanceY = 25 / this.svg._zoom;
-	var krep = 1.9 / this.svg._zoom;
+	var krep = -200 / this.svg._zoom;;//1.9 / this.svg._zoom;
 	var kattr = 600 / this.svg._zoom;
 
 	/*
@@ -28,7 +28,7 @@ LoadingPlot.SpringLabels.prototype.resolve = function() {
 	var kattr = 0.00001;
 	*/
 	var damping = 0.7;
-	var timestep = 0.05;
+	var timestep = 0.0005;
 	var nodeMass = 5000000;
 	var l = 0;
 	var log = 0;
@@ -37,17 +37,18 @@ LoadingPlot.SpringLabels.prototype.resolve = function() {
 	while(true) {
 
 		l++;
-		if(l > 20)
+		if(l > 200)
 			break;
 		allowBreak = true;
 		var totalEnergy = 0;
+
 		for(var i = coords.length - 1; i >= 0; i--) {
 /*
 			if(i == 0)
 				console.log(coords[i][6]);
 */
 			var force = [0, 0];
-
+var k = 0;
 			var distX = (coords[i][0] - coords[i][2]);
 			var distY = (coords[i][1] - coords[i][3]);
 
@@ -73,14 +74,39 @@ LoadingPlot.SpringLabels.prototype.resolve = function() {
 				
 				if(j == i)
 					continue;
+
 				distX = Math.pow((coords[j][0] - coords[i][0]), 2);
 				distY = Math.pow((coords[j][1] - coords[i][1]), 2);
 				var dist = Math.pow((distX + distY), 1/2);
+
+				if(dist < distance) {
+					k++
+					force[0] += krep / (Math.pow(dist, 3)) * (coords[j][0] - coords[i][0]) / dist * 0.2;
+					force[1] += krep / (Math.pow(dist, 3)) * (coords[j][1] - coords[i][1]) / dist * 5;
+				}
+
+				distX = Math.pow((coords[j][0] + (coords[j][0] < coords[j][2] ? -coords[j][9] : coords[j][9]) - coords[i][0]), 2);
+				distY = Math.pow((coords[j][1] - coords[j][10]- coords[i][1]), 2);
+				var dist = Math.pow((distX + distY), 1/2);
+				
+				if(distX < coords[i][9] && dist < distance) {
+					k++;
+					force[0] += krep / (Math.pow(dist, 3)) * ((coords[j][0] < coords[j][2] ? -coords[j][9] : coords[j][9]) - coords[i][0]) / dist * 0.2;
+					force[1] += coords[j][10] * krep / (Math.pow(dist, 3)) * (coords[j][1]  - coords[j][10] - coords[i][1]) / dist * 5;
+				}
+/*
+				distX = Math.pow((coords[j][0] + coords[j][10] - coords[i][0] - coords[i][10] ), 2);
+				distY = Math.pow((coords[j][1] - coords[j][11]- coords[i][1] + coords[i][11] ), 2);
+				var dist = Math.pow((distX + distY), 1/2);
+
 				if(dist > distance)
 					continue
-				force[0] -= krep / (Math.pow(dist, 3)) * (coords[j][0] - coords[i][0]) / dist * 0.2;
-				force[1] -= krep / (Math.pow(dist, 3)) * (coords[j][1] - coords[i][1]) / dist * 5;
+
+				force[0] -= krep / (Math.pow(dist, 3)) * (coords[j][0] - coords[i][0] - coords[i][10]) / dist * 0.2;
+				force[1] -= krep / (Math.pow(dist, 3)) * (coords[j][1] - coords[i][1] + coords[i][11]) / dist * 5;
+*/
 			}
+			console.log(k);
 
 			coords[i][4] = (coords[i][4] + timestep * force[0]) * damping;
 			coords[i][5] = (coords[i][5] + timestep * force[1]) * damping;
@@ -94,7 +120,6 @@ LoadingPlot.SpringLabels.prototype.resolve = function() {
 		if(isNaN(totalEnergy))
 			break;
 
-		console.log(totalEnergy / this.svg._zoom * coords.length);
 		if(allowBreak && totalEnergy < 0.000000000001)
 			break;
 	}
