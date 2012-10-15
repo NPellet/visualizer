@@ -94,7 +94,6 @@ LoadingPlot.SVG.prototype.ready = function() {
 LoadingPlot.SVG.prototype._setEvents = function() {
 	var self = this;
 	$(this._svgEl).mousewheel(function(event, delta) {
-		console.log(delta);
 		self.deltaZoom(event.pageX - self._svgPosX, event.pageY - self._svgPosY, delta);
 		return false;
 	});
@@ -165,7 +164,12 @@ LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta) {
 		this._currentDelta -= delta;
 		return;
 	}
-		
+	
+	if(_zoom / this._izoom > 20) {
+		this._currentDelta -= delta;
+		return;
+	}
+	
 	this._zoom = _zoom;
 
 	this._viewBox[0] -= viewRatioX * (boxWidthX - this._viewBox[2]);
