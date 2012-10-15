@@ -93,7 +93,7 @@ LoadingPlot.SVG.prototype.ready = function() {
 
 LoadingPlot.SVG.prototype._setEvents = function() {
 	var self = this;
-	$(this._svgEl).mousewheel(function(event, delta) {		
+	$(this._svgEl).mousewheel(function(event, delta) {
 		self.deltaZoom(event.pageX - self._svgPosX, event.pageY - self._svgPosY, delta);
 		return false;
 	});
@@ -144,15 +144,16 @@ LoadingPlot.SVG.prototype._dragStop = function() {
 
 LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta) {
 	var self = this;
+
+	if(Math.abs(delta) >= 1)
+		delta = delta < 0 ? -0.5 : 0.25;
+
 	if(!this._currentDelta) {
 		this._currentDelta = 0;
 		this._accumulatedDelta = 0;
 	}
 	if(delta == 0)
 		return;
-	
-
-
 
 	var parent = this._svgEl.parentNode;
 	this._currentDelta += delta;
@@ -164,7 +165,12 @@ LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta) {
 		this._currentDelta -= delta;
 		return;
 	}
-		
+	
+	if(_zoom / this._izoom > 20) {
+		this._currentDelta -= delta;
+		return;
+	}
+	
 	this._zoom = _zoom;
 
 	this._viewBox[0] -= viewRatioX * (boxWidthX - this._viewBox[2]);
