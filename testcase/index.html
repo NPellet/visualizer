@@ -3,16 +3,15 @@
 <head>
 	<title>Visualizer Demo</title>
 	<link rel="stylesheet" href="../styles/main.css" media="screen, print" />
-	<script src="../libs/forms/libs/jquery/1.7/jquery-1.7.1.min.js" language="javascript" type="text/javascript"></script>
+	<script src="../libs/jquery/jquery-1.8.2.min.js" language="javascript" type="text/javascript"></script>
 	
 	<script>
 		var examples=[];
-		examples.push({description:"Research - Fibers", folder:"research/fiber"});
-		examples.push({description:"Research - Fibers 2", folder:"research/fiber2"});
-		examples.push({description:"Demo - ChemCalc", folder:"demo/chemcalc"});
-		examples.push({description:"Demo - Chart", folder:"demo/chart"});
-		examples.push({description:"Demo - Molecule", folder:"demo/molecule"});
-		
+		examples.push({description:"Fibers", folder:"fiber"});
+		examples.push({description:"ChemCalc", folder:"chemcalc"});
+		examples.push({description:"Chart", folder:"chart"});
+		examples.push({description:"Molecule", folder:"molecule"});
+		examples.push({description:"Loading plot", folder:"loadingPlot"});
 	</script>
 	
 </head>
@@ -29,6 +28,9 @@
 	Please note that some of the examples will required an internet connection.
 	
 	Also the examples DO NOT WORK with CHROME. Ajax query on local harddisk are not allowed in the current version of Chrome.
+	
+	Or starts chrome using command line (on MacOsX): open /Applications/Google\ Chrome.app --args -allow-file-access-from-files
+
 	
 	<div id="examples"></div>
 	
