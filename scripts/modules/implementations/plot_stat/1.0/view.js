@@ -96,11 +96,13 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 						val = null;
 					else
 						val = value;
+
 					(function(m, n) {
 						CI.RepoHighlight.listen(value._highlight, function(val, commonKeys) {
-							view.chart.setSelection([{row:n, column: m + 1}]);
+							view.chart.setSelection([{row: n, column: m + 1}]);
 						});
 					}) (i, j);
+
 					this._indexedValues[j + "_" + i] = {col: j, row: i, val: value};
 					data[j + 1].push(val);	
 				}
