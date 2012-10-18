@@ -546,14 +546,16 @@ CI.DataType.getValueFromJPath = function(element, jpath, wholeObject) {
 CI.DataType._getValueFromJPath = function(element, jpath) {
 	var el = CI.DataType.getValueIfNeeded(element);
 	var type;
-	var jpathElement = jpath.shift();
+	var jpath2 = jpath;
+	var jpathElement = jpath2.shift();
 
 	if(jpathElement) {
 		el = el[jpathElement];
 		return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
-			return CI.DataType._getValueFromJPath(elChildren, jpath);
+			return CI.DataType._getValueFromJPath(elChildren, jpath2);
 		});
-	} else
+	
+	} else 
 		return $.Deferred().resolve(element);
 }
 

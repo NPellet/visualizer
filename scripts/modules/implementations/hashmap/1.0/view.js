@@ -37,12 +37,13 @@ CI.Module.prototype._types.hashmap.View.prototype = {
 
 			var cfg = this.module.getConfiguration().keys;
 			var html = '';
+
 			for(var i in cfg) {
+				
 				CI.DataType.asyncToScreenHtml(moduleValue, view.module, cfg[i]).done(function(html2) {
 					html += '<tr><td>' + i + '</td><td>' + html2 + '</td></tr>';	
 				})
 			}
-
 			this.dom.html(html);
 			CI.Util.ResolveDOMDeferred(this.dom);
 			/*
