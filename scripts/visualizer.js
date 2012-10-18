@@ -227,6 +227,7 @@ CI.ConfigVisualizer = function() {
 				var field = this.group.getField('jpath')
 				
 				this.group.getField('jpath').implementation.setOptions(jpath, index);
+				
 			});
 			
 			var field = groupfield.addField({
