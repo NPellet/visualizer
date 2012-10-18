@@ -211,55 +211,71 @@ CI.DataType.Structures = {
 	'chemical': {
 		"type": "object",
 		"elements": {
-			"_entryID": "int",
-			"supplierName": "string",
-			"iupac": {
+
+			"entry": {
 				"type": "array",
 				"elements": {
-					"type": "object",
-					"elements": {
-						"value": "string",
-						"language": "string"	
+					
+							"type": "object",
+							"elements": {
+
+										"_entryID": "int",
+										"supplierName": "string",
+										"iupac": {
+											"type": "array",
+											"elements": {
+												"type": "object",
+												"elements": {
+													"value": "string",
+													"language": "string"	
+												}
+											}
+										},
+										
+										"mf": {
+											"type": "array",
+											"elements": {
+												"type": "object",
+												"elements": {
+													"value": "mf",
+													"mw": "int",
+													"exactMass": "int" 
+												}
+											}
+										},
+										
+										"mol": {
+											"type": "array",
+											"elements": {
+												"type": "object",
+												"elements": {
+													"value": "molfile2D",
+													"gif": "gif"
+												}
+											}
+										},
+										
+										"rn": {
+											"type": "array",
+											"elements": {
+												"type": "object",
+												"elements": {
+													"value": "int"
+												}
+											}
+										},
+										
+										"bachID": "string",
+										"catalogID": "string",
+										"entryDetails": "chemicalDetails"
+
+
+							
+						
+
 					}
 				}
-			},
-			
-			"mf": {
-				"type": "array",
-				"elements": {
-					"type": "object",
-					"elements": {
-						"value": "mf",
-						"mw": "int",
-						"exactMass": "int" 
-					}
-				}
-			},
-			
-			"mol": {
-				"type": "array",
-				"elements": {
-					"type": "object",
-					"elements": {
-						"value": "molfile2D",
-						"gif": "gif"
-					}
-				}
-			},
-			
-			"rn": {
-				"type": "array",
-				"elements": {
-					"type": "object",
-					"elements": {
-						"value": "int"
-					}
-				}
-			},
-			
-			"bachID": "string",
-			"catalogID": "string",
-			"entryDetails": "chemicalDetails"
+			}
 		}
 	},
 	
@@ -552,6 +568,7 @@ CI.DataType._getValueFromJPath = function(element, jpath) {
 	if(jpathElement) {
 		el = el[jpathElement];
 		return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
+			
 			return CI.DataType._getValueFromJPath(elChildren, jpath2);
 		});
 	
@@ -599,15 +616,6 @@ CI.DataType.getJPathsFromStructure = function(structure, title, jpathspool, keys
 
 				for(var i = 0; i < len; i++)
 					CI.DataType.getJPathsFromStructure(structure.elements[i] || structure.elements[0], i + "", children, keystr);
-				
-	
-				/*
-				var jpathpoolchild = [];
-				var keystr2 = keystr + ".0";
-				jpathspool.title =  "n-th element";
-				jpathspool.children = jpathpoolchild;
-				jpathspool.key = keystr2;
-				CI.DataType.getJPathsFromStructure(structure.elements, jpathpoolchild, keystr2);*/
 			break;
 		}		
 	} else {
@@ -960,7 +968,7 @@ CI.Type["jcamp"] = {
 			dom.data('spectra', spectra);
 			spectra.specs.plots_showYAxis = true;
 			//spectra.specs.plots_flipXAxis = false;
-		
+			if(!opts) opts = {};
 			var ctns = opts.continuous || false;
 			spectra.specs.plots_flipXAxis =  opts.flipX || false;
 			spectra.specs.plots_flipYAxis =  opts.flipY || false;

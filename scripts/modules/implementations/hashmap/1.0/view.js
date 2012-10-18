@@ -37,15 +37,24 @@ CI.Module.prototype._types.hashmap.View.prototype = {
 
 			var cfg = this.module.getConfiguration().keys;
 			var html = '';
-
+			var def = [];
 			for(var i in cfg) {
-				
-				CI.DataType.asyncToScreenHtml(moduleValue, view.module, cfg[i]).done(function(html2) {
-					html += '<tr><td>' + i + '</td><td>' + html2 + '</td></tr>';	
-				})
+				def.push(CI.DataType.asyncToScreenHtml(moduleValue, view.module, cfg[i]).pipe(function(html2) {
+					return '<tr><td>' + i + '</td><td>' + html2 + '</td></tr>';
+				}));
 			}
-			this.dom.html(html);
-			CI.Util.ResolveDOMDeferred(this.dom);
+
+			$.when.apply($, def).done(function() {
+				var html = '';
+				for(var i in arguments) {
+					html += arguments[i];
+				}
+				view.dom.html(html);
+				CI.Util.ResolveDOMDeferred(view.dom);
+			});
+
+			
+			
 			/*
 			var type = CI.DataType.getType(moduleValue);
 			CI.DataType.toScreen(moduleValue, this.module).done(function(html) {
