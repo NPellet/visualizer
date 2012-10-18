@@ -1,4 +1,4 @@
- /*
+/*
  * view.js
  * version: dev
  *
@@ -68,6 +68,8 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 		'chart': function(deferred, moduleValue) {
 
 			var view = this;
+			this._indexedValues = [];
+
 			var cfg = this.module.getConfiguration();
 
 			moduleValue = CI.DataType.getValueIfNeeded(moduleValue);	
@@ -84,14 +86,21 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 			}
 			
 			for(var i = 0, k = moduleValue.series.length; i < k; i++) {
-				
 				for(var j = 0, l = moduleValue.series[i].length; j < l; j++) {
-					var val = moduleValue.series[i][j];		
-					if(val.value)
-						val = val.value;
+					var value = moduleValue.series[i][j];		
+
+					if(value.value)
+						val = value.value;
 					else if(typeof val == "object")
 						val = null;
+					else
+						val = value;
 
+					CI.RepoHighlight.listen(data._highlight, function(value, commonKeys) {
+						view.chart.setSelection([{row:j, col: i}]);
+					});
+
+					this._indexedValues[j + "_" + i] = {col: j, row: i, val: value};
 					data[j + 1].push(val);	
 				}
 			}
@@ -140,19 +149,17 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 					
 				}
 				
-				google.visualization.events.addListener(view.chart, 'onmouseover', function(e) {
 
+				google.visualization.events.addListener(view.chart, 'onmouseover', function(e) {
+					
 					var row = e.row;
 					var col = e.column;
-					var rowData = moduleValue.series[col - 1][row];
-
+					
+					var rowData = view._indexedValues[row + "_" + (col - 1)].val;
 					view.module.controller.hoverEvent(rowData);
 				});
-
 				view.drawChart();
-
 			});
-
 			deferred.resolve('<div id="' + chartId + '"></div>');	
 		}
 	}

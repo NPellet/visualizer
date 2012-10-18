@@ -60,6 +60,7 @@ $.extend(CI.Module.prototype._types.plot_stat.Model.prototype, {
 		switch(rel) {
 			case 'element':
 				var data = data.series[0][0];
+				console.log(data);
 				return getjPath(data, accepts);
 			break;
 		}	

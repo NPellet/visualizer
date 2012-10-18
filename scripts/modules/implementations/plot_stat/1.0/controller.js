@@ -45,19 +45,18 @@ CI.Module.prototype._types.plot_stat.Controller.prototype = {
 	},
 	
 	hoverEvent: function(data) {
-		
-			
+		//google.visualization.events.trigger(source_visualization, event_name, event_args)
 		var actions;
 		if(!(actions = this.module.definition.dataSend))	
 			return;
-				
+
 		for(var i = 0; i < actions.length; i++) {
 			if(actions[i].event == "onHover") {
 				CI.API.blankSharedVar(actions[i].name);
-
 				CI.API.setSharedVarFromJPath(actions[i].name, data, actions[i].jpath);
 			}
 		}
+
 	},
 	
 	configurationReceive: {
