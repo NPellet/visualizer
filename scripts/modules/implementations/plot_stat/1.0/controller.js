@@ -56,10 +56,14 @@ CI.Module.prototype._types.plot_stat.Controller.prototype = {
 				CI.API.setSharedVarFromJPath(actions[i].name, data, actions[i].jpath);
 			}
 		}
-		console.log(data._highlight);
+
 		CI.RepoHighlight.set(data._highlight, 1);
 	},
 	
+	hoverOutEvent: function(data) {
+		CI.RepoHighlight.set(data._highlight, 0);
+	},
+
 	configurationReceive: {
 		"chart": {
 			type: ['chart'],
