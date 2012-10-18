@@ -89,17 +89,18 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 				for(var j = 0, l = moduleValue.series[i].length; j < l; j++) {
 					var value = moduleValue.series[i][j];		
 
+					var m = i, n = j;
 					if(value.value)
 						val = value.value;
 					else if(typeof val == "object")
 						val = null;
 					else
 						val = value;
-
-					CI.RepoHighlight.listen(data._highlight, function(value, commonKeys) {
-						view.chart.setSelection([{row:j, col: i}]);
-					});
-
+					(function(m, n) {
+						CI.RepoHighlight.listen(value._highlight, function(val, commonKeys) {
+							view.chart.setSelection([{row:n, column: m + 1}]);
+						});
+					}) (i, j);
 					this._indexedValues[j + "_" + i] = {col: j, row: i, val: value};
 					data[j + 1].push(val);	
 				}
