@@ -39,9 +39,11 @@ CI.Module.prototype._types.hashmap.View.prototype = {
 			var html = '';
 			var def = [];
 			for(var i in cfg) {
-				def.push(CI.DataType.asyncToScreenHtml(moduleValue, view.module, cfg[i]).pipe(function(html2) {
-					return '<tr><td>' + i + '</td><td>' + html2 + '</td></tr>';
-				}));
+				(function(j) {
+					def.push(CI.DataType.asyncToScreenHtml(moduleValue, view.module, cfg[i]).pipe(function(html2) {
+						return '<tr><td>' + j + '</td><td>' + html2 + '</td></tr>';
+					}));
+				}) (i);
 			}
 
 			$.when.apply($, def).done(function() {
