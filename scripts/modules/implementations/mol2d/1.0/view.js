@@ -87,18 +87,17 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 	typeToScreen: {
 
 		'mol2d': function(deferred, moduleValue) {
+			var self = this;
 			var molLoaded = ChemDoodle.readMOL(moduleValue.value);
 			molLoaded.scaleToAverageBondLength(30);
 			deferred.resolve(molLoaded);
 
 			CI.RepoHighlight.listen(moduleValue._highlight, function(dummyvalue, commonKeys) {
-
-				if($("#" + id, dom).length == 0)
-					return;
+				var canvas = self._canvas;
 				var commonKeys2 = {};
 				var atoms = {};
 				for(var i = commonKeys.length; i >= 0; i--)
-					atoms[molfile._atomID.indexOf(commonKeys[i])] = true;
+					atoms[moduleValue._atomID.indexOf(commonKeys[i])] = true;
 				for(var i = 0; i < molLoaded.atoms.length; i++) {
 					molLoaded.atoms[i].isHover = !!atoms[i] && dummyvalue;
 					canvas._domcanvas.width = canvas._domcanvas.width;

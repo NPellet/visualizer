@@ -82,10 +82,12 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 		}
 
 		return {
-			keys: [{
-				title: titles,
-				key: jpaths
-			}]
+			groups: {
+				keys: [{
+					title: titles,
+					key: jpaths
+				}]
+			}
 		}
 	},
 	

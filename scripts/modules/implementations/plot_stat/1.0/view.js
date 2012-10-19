@@ -1,4 +1,4 @@
- /*
+/*
  * view.js
  * version: dev
  *
@@ -24,7 +24,8 @@ CI.Module.prototype._types.plot_stat.View = function(module) {
 CI.Module.prototype._types.plot_stat.View.prototype = {
 	
 	init: function() {	
-		this.dom = $('<div class="ci-plot"></div>');
+		this._chartId = CI.Util.getNextUniqueId();
+		this.dom = $('<div class="ci-plot" id="' + this._chartId + '"></div>');
 		this.module.getDomContent().html(this.dom);
 	},
 	
@@ -39,14 +40,16 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 	update2: {
 		'chart': function(moduleValue) {
 			
+
 			if(moduleValue === undefined)
 				return;
 			var view = this;
 			var type = CI.DataType.getType(moduleValue);
-			CI.DataType.toScreen(moduleValue, this.module).done(function(html) {
-				view.dom.html(html);
+
+			CI.DataType.toScreen(moduleValue, this.module).done(function() {
 				CI.Util.ResolveDOMDeferred();
 			});
+
 		}
 	},
 	
@@ -68,6 +71,8 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 		'chart': function(deferred, moduleValue) {
 
 			var view = this;
+			this._indexedValues = [];
+
 			var cfg = this.module.getConfiguration();
 
 			moduleValue = CI.DataType.getValueIfNeeded(moduleValue);	
@@ -84,14 +89,24 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 			}
 			
 			for(var i = 0, k = moduleValue.series.length; i < k; i++) {
-				
 				for(var j = 0, l = moduleValue.series[i].length; j < l; j++) {
-					var val = moduleValue.series[i][j];		
-					if(val.value)
-						val = val.value;
+					var value = moduleValue.series[i][j];		
+
+					var m = i, n = j;
+					if(value.value)
+						val = value.value;
 					else if(typeof val == "object")
 						val = null;
+					else
+						val = value;
 
+					(function(m, n) {
+						CI.RepoHighlight.listen(value._highlight, function(val, commonKeys) {
+							view.chart.setSelection([{row: n, column: m + 1}]);
+						});
+					}) (i, j);
+
+					this._indexedValues[j + "_" + i] = {col: j, row: i, val: value};
 					data[j + 1].push(val);	
 				}
 			}
@@ -109,51 +124,56 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 			       };
 		       
 
-			CI.Util.DOMDeferred.progress(function(dom) {
+	
+			if($("#" + this._chartId).length == 0)
+					return;
+
+			var dom = $("#" + this._chartId).get(0);
+			switch(cfg.charttype) {
+
+				case 'barchart':
+				case 'vbarchart':
+					view.chart = new google
+						.visualization
+						.ColumnChart(dom);
 
 
-				if($("#" + chartId, dom).length == 0)
-						return;
-				var dom = $("#" + chartId).get(0);
-				switch(cfg.charttype) {
+				break;
+				case 'hbarchart':
+					view.chart = new google
+						.visualization
+						.BarChart(dom);
 
-					case 'barchart':
-					case 'vbarchart':
-						view.chart = new google
-							.visualization
-							.ColumnChart(dom);
-
-
-					break;
-					case 'hbarchart':
-						view.chart = new google
-							.visualization
-							.BarChart(dom);
-
-					break;
-					default:
-					case 'linechart': 
-						view.chart = new google
-							.visualization
-							.ScatterChart(dom);
-					break;
-					
-				}
+				break;
+				default:
+				case 'linechart': 
+					view.chart = new google
+						.visualization
+						.ScatterChart(dom);
+				break;
 				
-				google.visualization.events.addListener(view.chart, 'onmouseover', function(e) {
+			}
+			
 
-					var row = e.row;
-					var col = e.column;
-					var rowData = moduleValue.series[col - 1][row];
-
-					view.module.controller.hoverEvent(rowData);
-				});
-
-				view.drawChart();
-
+			google.visualization.events.addListener(view.chart, 'onmouseover', function(e) {
+				
+				var row = e.row;
+				var col = e.column;
+				var rowData = view._indexedValues[row + "_" + (col - 1)].val;
+				view.module.controller.hoverEvent(rowData);
 			});
 
-			deferred.resolve('<div id="' + chartId + '"></div>');	
+
+			google.visualization.events.addListener(view.chart, 'onmouseout', function(e) {
+				
+				var row = e.row;
+				var col = e.column;					
+				var rowData = view._indexedValues[row + "_" + (col - 1)].val;
+
+				view.module.controller.hoverOutEvent(rowData);
+			});
+
+			view.drawChart();
 		}
 	}
 }

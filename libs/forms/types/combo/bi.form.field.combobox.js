@@ -27,7 +27,7 @@ BI.Forms.Fields.Combo.prototype = {
 		else
 			this.options = options;
 		
-
+		this.checkFillState(index);
 		//this.setText(index, title);	
 		//this.loadTree(index);
 	},
@@ -104,12 +104,7 @@ BI.Forms.Fields.Combo.prototype = {
 			onClick: function() {
 				field._loadedCallback = [];
 			},
-			
-			onPostInit: function() {
-				
-				field.doValCallback();
-			},
-			
+
 			debugLevel: 0
 		});
 	},
@@ -125,16 +120,7 @@ BI.Forms.Fields.Combo.prototype = {
 		root.addChild(options);
 	},
 	
-	
-	doValCallback: function() {
-		
-		if(this._loadedCallback) {
-			for(var i = 0; i < this._loadedCallback.length; i++) {
-				this._loadedCallback[i].call(this);
-			}
-		}
-	},
-	
+
 	
 	setValue: function(index, value) {
 		
@@ -157,6 +143,7 @@ BI.Forms.Fields.Combo.prototype = {
 
 	lookRecursively: function(key, pool) {
 		var found = false;
+
 
 		if(!pool) return;
 
