@@ -11,29 +11,38 @@ LoadingPlot.SpringLabels.prototype.addElement = function(el, label, line) {
 	
 }
 
+
 LoadingPlot.SpringLabels.prototype.resolve = function() {
 	
 	var coords = this.svg.getElementsForSprings();
+	/*
+		coords: Array
+			0: x 	=> Current x
+			1: y 	=> Current y
+			2: w 	=> Width
+			3: h 	=> Height
+			4: x0	=> Initial x
+			5: y0	=> Initial y
+			6: vx	=> Speed x
+			7: vy	=> Speed y
+	*/
 
-	/*if(!this.allowed)
-		return;
-*/
+
 	var distance = 1500 / this.svg._zoom;
 	var distanceY = 25 / this.svg._zoom;
-	var krep = -200 / this.svg._zoom;;//1.9 / this.svg._zoom;
-	var kattr = 600 / this.svg._zoom;
+	var krep = 0.2 / this.svg._zoom;;//1.9 / this.svg._zoom;
+	var kattr = 6 / this.svg._zoom;
 
 	/*
 	var krep = 0.10;
 	var kattr = 0.00001;
 	*/
-	var damping = 0.7;
-	var timestep = 0.0005;
+	var damping = 0.5;
+	var timestep = 2;
 	var nodeMass = 5000000;
 	var l = 0;
 	var log = 0;
 	var allowBreak;
-
 	while(true) {
 
 		l++;
@@ -41,109 +50,139 @@ LoadingPlot.SpringLabels.prototype.resolve = function() {
 			break;
 		allowBreak = true;
 		var totalEnergy = 0;
-
+		var k = 0;
 		for(var i = coords.length - 1; i >= 0; i--) {
+
+			var coordsI = coords[i];
+
 /*
 			if(i == 0)
 				console.log(coords[i][6]);
 */
 			var force = [0, 0];
-var k = 0;
-			var distX = (coords[i][0] - coords[i][2]);
-			var distY = (coords[i][1] - coords[i][3]);
+
+			var distX = (coords[i][0] - coords[i][4]);
+			var distY = (coords[i][1] - coords[i][5]);
 
 			var dist = Math.pow(Math.pow(distX, 2) + Math.pow(distY, 2), 1/2);
 
-			if(dist < coords[i][6]) {
+			if(dist < coords[i][10]) {
 				if(dist == 0) {
 					
 					coords[i][0] = coords[i][0] + coords[i][6] * (Math.random() - 0.5);
 					coords[i][1] = coords[i][1] + coords[i][6] * (Math.random() - 0.5);
 				} else {
-					coords[i][0] = (coords[i][0] - coords[i][2]) * (coords[i][6] / dist) + coords[i][2];
-					coords[i][1] = (coords[i][1] - coords[i][3]) * (coords[i][6] / dist) + coords[i][3];
+					coords[i][0] = (coords[i][0] - coords[i][4]) * (coords[i][10] / dist) + coords[i][4];
+					coords[i][1] = (coords[i][1] - coords[i][5]) * (coords[i][10] / dist) + coords[i][5];
 				}
 				allowBreak = false;
 			} else {
+				force[0] -= kattr * Math.pow((dist - coords[i][10]), 2) * distX / dist;
+				force[1] -= kattr * Math.pow((dist - coords[i][10]), 2) * distY / dist;
+			}
 
-				force[0] -= kattr * Math.pow((dist - coords[i][6]), 3) * distX / dist * 2;
-				force[1] -= kattr * Math.pow((dist - coords[i][6]), 3) * distY / dist * 10;
+			var maxYI = coordsI[1] + coordsI[3] * 1.4;
+			var minYI = coordsI[1] - coordsI[3] * 1.4;
+
+			if(coords[i][0] > coords[i][4]) {
+				var maxXI = coordsI[0] + coordsI[2] * 1.1;
+				var minXI = coordsI[0] - coordsI[2] * 0.1;
+				var ix = coordsI[0] + coordsI[2] / 2;
+			} else {
+				var minXI = coordsI[0] - coordsI[2] * 1.1;
+				var maxXI = coordsI[0] + coordsI[2] * 0.1;
+				var ix = coordsI[0] - coordsI[2] / 2;
 			}
 
 			for(var j = coords.length - 1; j >= 0; j--) {
 				
+
+
 				if(j == i)
 					continue;
+				var coordsJ = coords[j];
 
-				distX = Math.pow((coords[j][0] - coords[i][0]), 2);
-				distY = Math.pow((coords[j][1] - coords[i][1]), 2);
-				var dist = Math.pow((distX + distY), 1/2);
 
-				if(dist < distance) {
-					k++
-					force[0] += krep / (Math.pow(dist, 3)) * (coords[j][0] - coords[i][0]) / dist * 0.2;
-					force[1] += krep / (Math.pow(dist, 3)) * (coords[j][1] - coords[i][1]) / dist * 5;
+				var maxYJ = coordsJ[1] + coordsJ[3] * 1.4;
+				var minYJ = coordsJ[1] - coordsJ[3] * 1.4;
+
+				if(coordsJ[0] > coordsJ[4]) {
+					var maxXJ = coordsJ[0] + coordsJ[2] * 1.1;
+					var minXJ = coordsJ[0] - coordsJ[2] * 0.1;
+					var jx = coordsJ[0] + coordsJ[2] / 2;
+				} else {
+					var minXJ = coordsJ[0] - coordsJ[2] * 1.1;
+					var maxXJ = coordsJ[0] + coordsJ[2] * 0.1;
+					var jx = coordsJ[0] - coordsJ[2] / 2;
 				}
-
-				distX = Math.pow((coords[j][0] + (coords[j][0] < coords[j][2] ? -coords[j][9] : coords[j][9]) - coords[i][0]), 2);
-				distY = Math.pow((coords[j][1] - coords[j][10]- coords[i][1]), 2);
-				var dist = Math.pow((distX + distY), 1/2);
 				
-				if(distX < coords[i][9] && dist < distance) {
-					k++;
-					force[0] += krep / (Math.pow(dist, 3)) * ((coords[j][0] < coords[j][2] ? -coords[j][9] : coords[j][9]) - coords[i][0]) / dist * 0.2;
-					force[1] += coords[j][10] * krep / (Math.pow(dist, 3)) * (coords[j][1]  - coords[j][10] - coords[i][1]) / dist * 5;
-				}
-/*
-				distX = Math.pow((coords[j][0] + coords[j][10] - coords[i][0] - coords[i][10] ), 2);
-				distY = Math.pow((coords[j][1] - coords[j][11]- coords[i][1] + coords[i][11] ), 2);
-				var dist = Math.pow((distX + distY), 1/2);
+				var dx = Math.min(maxXI, maxXJ) - Math.max(minXI, minXJ);
+				var dy = Math.min(maxYI, maxYJ) - Math.max(minYI, minYJ);
+				var s = Math.max(dx, 0) * Math.max(dy, 0);
 
-				if(dist > distance)
-					continue
+				if(coordsI[8].textContent == 'Bearss Lime' && coordsJ[8].textContent == 'Annick Goutal Eau d\'Hadrien')
+					console.log(dx, dy, s);
 
-				force[0] -= krep / (Math.pow(dist, 3)) * (coords[j][0] - coords[i][0] - coords[i][10]) / dist * 0.2;
-				force[1] -= krep / (Math.pow(dist, 3)) * (coords[j][1] - coords[i][1] + coords[i][11]) / dist * 5;
-*/
+
+				if(s == 0)
+					continue;
+
+				
+			
+
+				k++;
+				var f = s * krep;
+
+				var ijx = jx - ix;
+				var ijy = coordsJ[1] + coordsJ[3] / 2 - coordsI[1] - coordsI[3] / 2;
+				var ij = ijx * ijx + ijy * ijy;
+				
+				force[0] -= f * ijx / Math.pow(ij, 0.5) / (coordsI[2] * coordsI[3]);
+				force[1] -= f * ijy / Math.pow(ij, 0.5) / (coordsI[2] * coordsI[3]);
 			}
-			console.log(k);
 
-			coords[i][4] = (coords[i][4] + timestep * force[0]) * damping;
-			coords[i][5] = (coords[i][5] + timestep * force[1]) * damping;
+			coords[i][6] = (coords[i][6] + timestep * force[0]) * damping;
+			coords[i][7] = (coords[i][7] + timestep * force[1]) * damping;
 		//	coords[i][7] = dist;
-			coords[i][0] += timestep * coords[i][4];
-			coords[i][1] += timestep * coords[i][5]; 
-
-			totalEnergy += nodeMass * (Math.pow(coords[i][4], 2) + Math.pow(coords[i][5], 2))
+			coords[i][0] += timestep * coords[i][6];
+			coords[i][1] += timestep * coords[i][7]; 
+/*			if(i == 0)
+console.log(coords[i]);*/
+			totalEnergy += nodeMass * (Math.pow(coords[i][6], 2) + Math.pow(coords[i][7], 2))
 		}
 
 		if(isNaN(totalEnergy))
 			break;
 
-		if(allowBreak && totalEnergy < 0.000000000001)
+		if(allowBreak && totalEnergy < 0)
 			break;
+
 	}
 
-	console.log(totalEnergy);
-
 	for(var i = 0; i < coords.length; i++) {
-		
-		if(!isNaN(coords[i][0]) && coords[i][7]) {
+
+		coords[i][6] = 0;
+		coords[i][7] = 0;
+
+		if(!isNaN(coords[i][0])) {
 			
-			coords[i][7].setAttributeNS(null, 'x', coords[i][0]);
-			coords[i][7].setAttributeNS(null, 'y', coords[i][1]);
+			coords[i][8].setAttributeNS(null, 'x', coords[i][0]);
+			coords[i][8].setAttributeNS(null, 'y', coords[i][1]);
 
 			
-			coords[i][7].setAttributeNS(null, 'text-anchor', (coords[i][0] < coords[i][2]) ? 'end' : 'start');
-			coords[i][8].setAttributeNS(null, 'display', 'none');
+			coords[i][8].setAttributeNS(null, 'text-anchor', (coords[i][0] < coords[i][4]) ? 'end' : 'start');
+			coords[i][9].setAttributeNS(null, 'display', 'none');
 
-			coords[i][8].setAttribute('display', 'block');
-			coords[i][8].setAttribute('stroke', 'black');
-			coords[i][8].setAttribute('vector-effect', 'non-scaling-stroke');
-			coords[i][8].setAttribute('x1', coords[i][0]);
-			coords[i][8].setAttribute('x2', coords[i][2]);
-			coords[i][8].setAttribute('y1', coords[i][1]);
-			coords[i][8].setAttribute('y2', coords[i][3]);
+			coords[i][9].setAttribute('display', 'block');
+			coords[i][9].setAttribute('stroke', 'black');
+			coords[i][9].setAttribute('vector-effect', 'non-scaling-stroke');
+			coords[i][9].setAttribute('x1', coords[i][0]);
+			coords[i][9].setAttribute('x2', coords[i][4]);
+			coords[i][9].setAttribute('y1', coords[i][1]);
+			coords[i][9].setAttribute('y2', coords[i][5]);
+
+		} else {
+			console.log('Error');
 		}
 /*	
 		if(this.coords[i][7] < 0.004)
