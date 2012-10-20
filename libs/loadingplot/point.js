@@ -37,12 +37,19 @@ LoadingPlot.SVGElement.prototype.createElement = function(nodeName, properties, 
 	return node;
 }
 
-LoadingPlot.SVGElement.prototype.getCoordsSprings = function(coords) {
-	if(!this._forceField)
-		return;
-	if(this.isLabelVisible())
-		coords.push(this._labelSpringEl || (this._labelSpringEl = [ this._x, this._y, this._x, this._y, 0, 0, this.getOptimalSpringParameter(), this._label, this._line, this._label.getComputedTextLength(), this._fontsize / this.svg._zoom ]));
-}
+
+/*
+		coords: Array
+			0: x 	=> Current x
+			1: y 	=> Current y
+			2: w 	=> Width
+			3: h 	=> Height
+			4: x0	=> Initial x
+			6: y0	=> Initial y
+			7: vx	=> Speed x
+			8: vy	=> Speed y
+	*/
+
 
 LoadingPlot.SVGElement.prototype.setLabelDisplayThreshold = function(val) {
 	this._zoomThreshLabel = parseFloat(val);
@@ -198,6 +205,8 @@ LoadingPlot.SVGElement.prototype.highlight = function(bln) {
 
 	if(this.implHighlight)
 		this.implHighlight();
+
+	this.svg.timeSpringUpdate(20);
 }
 
 
@@ -242,6 +251,23 @@ LoadingPlot.Ellipse.prototype.changeZoom = function() {
 	
 	this.doDisplayLabel(this.svg._zoom >= this._zoomThreshLabel);
 }
+
+
+
+LoadingPlot.Ellipse.prototype.getCoordsSprings = function(coords) {
+	if(!this._forceField)
+		return;
+	this._labelSpringEl = this._labelSpringEl || [ this._x + Math.max(this._data.w, this._data.h) * 1.2, this._y, this._label.getComputedTextLength(), this._fontsize /  this.svg._zoom, this._x, this._y, 0, 0, this._label, this._line ];
+	console.log(this.isLabelVisible());
+	if(this.isLabelVisible()) {
+		this._labelSpringEl[2] = this._label.getComputedTextLength();
+		this._labelSpringEl[3] = this._fontsize /  this.svg._zoom;
+		this._labelSpringEl[10] = this.getOptimalSpringParameter();
+		
+		coords.push(this._labelSpringEl);
+	}
+}
+
 
 LoadingPlot.Pie = function(svg,x, y, data) {
 	this.construct(svg,x,y,data);
@@ -348,6 +374,20 @@ LoadingPlot.Pie.prototype.changeZoom = function() {
 
 LoadingPlot.Pie.prototype.getOptimalSpringParameter = function() {
 	return this._lastRadius * 1.5;
+}
+	
+LoadingPlot.Pie.prototype.getCoordsSprings = function(coords) {
+	if(!this._forceField)
+		return;
+	this._labelSpringEl = this._labelSpringEl || [ this._x + this._lastRadius * 1.3, this._y, 0, 0, this._x, this._y, 0, 0, this._label, this._line ];
+	
+	if(this.isLabelVisible()) {
+		this._labelSpringEl[2] = this._label.getComputedTextLength();
+		this._labelSpringEl[3] = this._fontsize /  this.svg._zoom;
+		this._labelSpringEl[10] = this.getOptimalSpringParameter();
+		coords.push(this._labelSpringEl);
+
+	}
 }
 
 

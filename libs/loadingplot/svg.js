@@ -88,7 +88,7 @@ LoadingPlot.SVG.prototype.ready = function() {
 	
 	this._svgPosX = pos.left;
 	this._svgPosY = pos.top;
-
+	this.doZones();
 }
 
 LoadingPlot.SVG.prototype._setEvents = function() {
@@ -180,12 +180,17 @@ LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta) {
 	this.setViewBox();
 
 	this.changeZoomElements(this._zoom);
-
-	window.clearTimeout(this._timeoutZoom);
-	this._timeoutZoom = window.setTimeout(function() {
-		LoadingPlot.SVGElement.prototype.Springs.resolve();
-	}, 200);
+	this.timeSpringUpdate(200);
 	//parent.appendChild(this._svgEl);
+}
+
+LoadingPlot.SVG.prototype.timeSpringUpdate = function(timing) {
+	window.clearTimeout(this._timeoutZoom);
+
+	this._timeoutZoom = window.setTimeout(function() {
+
+		LoadingPlot.SVGElement.prototype.Springs.resolve();
+	}, timing);
 }
 
 LoadingPlot.SVG.prototype.setViewBox = function(x1, y1, x2, y2) {
