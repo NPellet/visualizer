@@ -6,7 +6,7 @@ onmessage = function(event) {
 	
 	var distance = 1500 / zoom;
 	var distanceY = 25 / zoom;
-	var krep = 2 / zoom;//1.9 / this.svg._zoom;
+	var krep = 8 / zoom;//1.9 / this.svg._zoom;
 	var kattr = 6 / zoom;
 
 	/*
@@ -26,7 +26,7 @@ onmessage = function(event) {
 	while(true) {
 
 		l++;
-		if(l > 200)
+		if(l > 2000)
 			break;
 		allowBreak = true;
 		totalEnergy = 0;
