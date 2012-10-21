@@ -206,7 +206,7 @@ LoadingPlot.SVGElement.prototype.highlight = function(bln) {
 	if(this.implHighlight)
 		this.implHighlight();
 
-	this.svg.timeSpringUpdate(20);
+	this.svg.timeSpringUpdate(200);
 }
 
 
@@ -257,14 +257,32 @@ LoadingPlot.Ellipse.prototype.changeZoom = function() {
 LoadingPlot.Ellipse.prototype.getCoordsSprings = function(coords) {
 	if(!this._forceField)
 		return;
-	this._labelSpringEl = this._labelSpringEl || [ this._x + Math.max(this._data.w, this._data.h) * 1.2, this._y, this._label.getComputedTextLength(), this._fontsize /  this.svg._zoom, this._x, this._y, 0, 0, this._label, this._line ];
-	console.log(this.isLabelVisible());
-	if(this.isLabelVisible()) {
+
+	if(!this._labelSpringEl) {
+		var buff = new ArrayBuffer(36);
+		this._labelSpringEl = new Float32Array(buff);
+		this._labelSpringEl[0] = this._x + Math.max(this._data.w, this._data.h) * 1.2;
+		this._labelSpringEl[1] = this._y;
+		this._labelSpringEl[2] = 0;
+		this._labelSpringEl[3] = this._fontsize / this.svg._zoom;
+		this._labelSpringEl[4] = this._x;
+		this._labelSpringEl[5] = this._y;
+		this._labelSpringEl[6] = 0;
+		this._labelSpringEl[7] = 0;
+	}
+	
+	if(this.isLabelVisible() && this._label) {
+
+		if(isNaN(this._labelSpringEl[0]) || isNaN(this._labelSpringEl[1])) {
+			this._labelSpringEl[0] = this._x + Math.max(this._data.w, this._data.h) * 1.2;
+			this._labelSpringEl[1] = this._y;
+		}
+
 		this._labelSpringEl[2] = this._label.getComputedTextLength();
 		this._labelSpringEl[3] = this._fontsize /  this.svg._zoom;
-		this._labelSpringEl[10] = this.getOptimalSpringParameter();
-		
+		this._labelSpringEl[8] = this.getOptimalSpringParameter();
 		coords.push(this._labelSpringEl);
+		return [this._label, this._line];
 	}
 }
 
@@ -377,16 +395,28 @@ LoadingPlot.Pie.prototype.getOptimalSpringParameter = function() {
 }
 	
 LoadingPlot.Pie.prototype.getCoordsSprings = function(coords) {
-	if(!this._forceField)
+if(!this._forceField)
 		return;
-	this._labelSpringEl = this._labelSpringEl || [ this._x + this._lastRadius * 1.3, this._y, 0, 0, this._x, this._y, 0, 0, this._label, this._line ];
+
+	if(!this._labelSpringEl) {
+		var buff = new ArrayBuffer(36);
+		this._labelSpringEl = new Float32Array(buff);
+		this._labelSpringEl[0] = this._x + Math.max(this._data.w, this._data.h) * 1.2;
+		this._labelSpringEl[1] = this._y;
+		this._labelSpringEl[2] = 0;
+		this._labelSpringEl[3] = 0;
+		this._labelSpringEl[4] = this._x;
+		this._labelSpringEl[5] = this._y;
+		this._labelSpringEl[6] = 0;
+		this._labelSpringEl[7] = 0;
+	}
 	
-	if(this.isLabelVisible()) {
+	if(this.isLabelVisible() && this._label) {
 		this._labelSpringEl[2] = this._label.getComputedTextLength();
 		this._labelSpringEl[3] = this._fontsize /  this.svg._zoom;
-		this._labelSpringEl[10] = this.getOptimalSpringParameter();
+		this._labelSpringEl[8] = this.getOptimalSpringParameter();
 		coords.push(this._labelSpringEl);
-
+		return [this._label, this._line];
 	}
 }
 
