@@ -19,7 +19,6 @@ CI.WebWorker = {
 			for(var i = 0; i < cbks.length; i++) {
 				
 				if(cbks[i].time == response.time) {
-					console.log(response);
 					cbks[i].callback(response.message);
 					cbks.splice(i, 1);
 					return;

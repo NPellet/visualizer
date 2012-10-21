@@ -40,7 +40,7 @@ LoadingPlot.SpringLabels.prototype.resolve = function(coords) {
 					labels[i][1].setAttribute('vector-effect', 'non-scaling-stroke');
 					labels[i][1].setAttribute('x1', coords[i][0]);
 					labels[i][1].setAttribute('x2', coords[i][4]);
-					labels[i][1].setAttribute('y1', coords[i][1]);
+					labels[i][1].setAttribute('y1', coords[i][1] - coords[i][3] / 2);
 					labels[i][1].setAttribute('y2', coords[i][5]);
 
 				} else {
