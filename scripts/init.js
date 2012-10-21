@@ -19,6 +19,7 @@ CI = new Object();
 		
 		CI.WebWorker.create('jsonparser', './scripts/webworker/scripts/jsonparser.js');
 		CI.WebWorker.create('getminmaxmatrix', './scripts/webworker/scripts/getminmaxmatrix.js');
+		CI.WebWorker.create('computesprings', './scripts/webworker/scripts/computesprings.js');
 		CI.WebWorker.create('googleVisualizationArrayToDataTable', './scripts/webworker/scripts/googleVisualizationArrayToDataTable.js');
 
 		Saver = new CI.Saver();

@@ -186,9 +186,7 @@ LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta) {
 
 LoadingPlot.SVG.prototype.timeSpringUpdate = function(timing) {
 	window.clearTimeout(this._timeoutZoom);
-
 	this._timeoutZoom = window.setTimeout(function() {
-
 		LoadingPlot.SVGElement.prototype.Springs.resolve();
 	}, timing);
 }
@@ -270,14 +268,15 @@ LoadingPlot.SVG.prototype.add = function(el) {
 LoadingPlot.SVG.prototype.getElementsForSprings = function() {
 
 	//console.log(this._zoneMinX, this._zoneMinY, this._zoneNbX, this._zoneNbY)
-	var coords = [];
+	var coords = [], labels = [], el;
 	for(var i = 0; i <= this._zoneNbX; i++) {
 		for(var j = 0; j <= this._zoneNbY; j++) {
 			if(this.zones[i + this._zoneMinX] && this.zones[i + this._zoneMinX][j + this._zoneMinY])
 				for(var k = 0; k < this.zones[i + this._zoneMinX][j + this._zoneMinY].length; k++)		
-					this.zones[i + this._zoneMinX][j + this._zoneMinY][k].getCoordsSprings(coords);
+					if(el = this.zones[i + this._zoneMinX][j + this._zoneMinY][k].getCoordsSprings(coords))
+						labels.push(el);
 		}
 	}
 
-	return coords;
+	return [coords, labels];
 }
