@@ -40,7 +40,6 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 	update2: {
 		'chart': function(moduleValue) {
 			
-
 			if(moduleValue === undefined)
 				return;
 			var view = this;
@@ -49,7 +48,6 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 			CI.DataType.toScreen(moduleValue, this.module).done(function() {
 				CI.Util.ResolveDOMDeferred();
 			});
-
 		}
 	},
 	

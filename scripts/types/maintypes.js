@@ -762,14 +762,19 @@ CI.DataType.asyncToScreenAttribute = function(source, attribute, jpath, element)
 	_class += ++CI.DataType.asyncId;
 	
 	var def = CI.DataType.getValueFromJPath(source, jpath).done(function(value) {
-			if(element)
-				element.attr(attribute, value);
-			else
-				$("." + _class).attr(attribute, value);
+
+			if(attribute == 'style.backgroundColor') {
+				$("." + _class).css('background-color', value);
+			} else {
+				if(element)
+					element.attr(attribute, value);
+				else
+					$("." + _class).attr(attribute, value);
+			}
 		});
 
+	def._class = _class;
 	if(source.type && !source.value && source.url) {
-		def._class = _class;
 		return def;
 	} else
 		return def;
@@ -791,8 +796,8 @@ CI.DataType.asyncToScreenHtml = function(element, box, jpath) {
 	} else*/
 		// returns element.value if fetched
 
-	var def = CI.DataType.getValueFromJPath(element, jpath).pipe(function(data) {  var val = CI.DataType._toScreen(data, box); $("#callback-load-" + asyncId).html(val); return val; });
-	def.html = html;
+
+	return CI.DataType.getValueFromJPath(element, jpath).pipe(function(data) { return CI.DataType._toScreen(data, box); });
 	return def; 	
 }
 

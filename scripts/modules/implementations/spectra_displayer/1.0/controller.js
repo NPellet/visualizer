@@ -104,10 +104,12 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 			flipArray.push('flipY');
 	
 		return {
-			gencfg: [{
-				mode: [mode],
-				flip: [flipArray],
-			}]
+			groups: {
+				gencfg: [{
+					mode: [mode],
+					flip: [flipArray],
+				}]
+			}
 		}	
 	},
 	

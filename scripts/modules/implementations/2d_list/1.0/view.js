@@ -43,49 +43,42 @@ CI.Module.prototype._types['2d_list'].View.prototype = {
 			var cols = cfg.colnumber || 4;
 			var sizeStyle = "";
 			if(cfg.width || cfg.height) {
-				sizeStyle += 'style="';
 				if(cfg.width)
 					sizeStyle += "width: " + Math.round(100 / cols) + "%; ";
 				if(cfg.height)
 					sizeStyle += "height: " + cfg.height + "px; ";
-				sizeStyle += '"';
 			}
+
+			current = undefined;
 			CI.DataType.fetchElementIfNeeded(moduleValue).done(function(val) {
 				this.list = val;
-				var html = '<table cellpadding="3" cellspacing="0">';
+				var table = $('<table cellpadding="3" cellspacing="0">');
 				for(var i = 0; i < this.list.length; i++) {
 					colId = i % cols;
-					if(colId == 0)
-						html += '<tr>';
-					html += '<td ';
-					html += sizeStyle;
-					html += '>';
-					var thehtml;
-					async = CI.DataType.asyncToScreenHtml(this.list[i], view.module, valJpath);
-					async.done(function(val) {
-						thehtml = val;
-					});
-					if(!thehtml)
-						thehtml = async.html;
-					html += thehtml;
-					//html +=  CI.DataType.toScreen(CI.DataType.getValueFromJPath(this.list[i], valJpath), this.module);
-					html += '</td>';
-					if(colId == cols)
-						html += '</tr>';
-				}
-				
-				if(i % cols != 0) {
-					while(i % cols != 0) {
-						html += '<td></td>';
-						i++;
+					if(colId == 0) {
+						if(current)
+							current.appendTo(table);
+						current = $("<tr />");
 					}
-					html += '</tr>';
+
+					var td = $("<td>").css({width: Math.round(100 / cols) + "%", height: cfg.height});
+					CI.DataType.getValueFromJPath(this.list[i], view.module, colorJpath).done(function(val) {
+
+						td.css('background-color', val.color);
+					});
+
+					
+					async = CI.DataType.asyncToScreenHtml(this.list[i], view.module, valJpath);
+					async.pipe(function(val) {
+						td.html(val);
+					});
+					
+					td.appendTo(current);
 				}
-				html += '</table>';
-				view.dom.html(html);
+				view.dom.html(table);
+				CI.Util.ResolveDOMDeferred(view.dom);
 			});
 			
-			CI.Util.ResolveDOMDeferred(view.dom);
 		}
 	},
 
