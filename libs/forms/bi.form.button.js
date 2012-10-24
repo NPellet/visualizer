@@ -50,10 +50,10 @@ window[window._namespaces['buttons']].Buttons.Button.prototype = {
 		return html;
 	},
 	
-	doClick: function() {
+	doClick: function(event) {
 		
 		if(typeof this.onClick == "function")
-			this.onClick();
+			this.onClick(event);
 	},
 	
 	getButtonById: function(id) {
@@ -65,9 +65,9 @@ window[window._namespaces['buttons']].Buttons.Button.prototype = {
 
 (function($) {
 	
-	$(document).on('click', '.bi-form-button', function() {
+	$(document).on('click', '.bi-form-button', function(event) {
 		var btnId = $(this).data('id');
-		window[window._namespaces['buttons']].Buttons.Button.prototype.getButtonById(btnId).doClick();
+		window[window._namespaces['buttons']].Buttons.Button.prototype.getButtonById(btnId).doClick(event);
 	});
 	
 }) (jQuery);

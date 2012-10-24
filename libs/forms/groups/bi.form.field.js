@@ -206,7 +206,7 @@ BI.Forms.Field.prototype = {
 	 */
 	changeValue: function(index, value, commitToView) {
 		
-		if(!value)
+		if(value == undefined)
 			return;
 			
 		if(!this.isInit)

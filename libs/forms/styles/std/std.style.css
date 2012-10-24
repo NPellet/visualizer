@@ -502,6 +502,11 @@ div.bi-formfield-styled {
 
 .bi-formfield-colorpicker {
 	margin: 20px;
+	float: left;
+}
+
+.bi-formfield-colorcontainer .bi-form-button {
+	margin-top: 30px;
 }
 
 .bi-formfield-checkboxcontainer label {
