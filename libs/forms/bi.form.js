@@ -54,7 +54,7 @@ BI.Forms.Form.prototype = {
 			this.sections[i].afterInit();
 	
 		BI.Forms.Section.prototype.showControls(this);
-		this.getTemplater().afterInit();
+
 	},
 
 	getDom: function() {
@@ -222,6 +222,8 @@ BI.Forms.Form.prototype = {
 				
 				if(typeof afterInit == "function")
 					afterInit.call(this);
+
+				this.getTemplater().afterInit();
 			});
 		});
 	}

@@ -129,7 +129,6 @@ BI.Forms.Templaters.std.prototype = {
 	},
 	
 	afterInit: function() {
-		
-		$(".bi-form-sections-tab").children(':first').trigger('click');
+		$(".bi-form-sections-tab").each(function() { $(this).children(':first').trigger('click'); });
 	}
 }

@@ -67,7 +67,7 @@ BI.Buttons.Button.prototype = {
 	
 	$(document).on('click', '.bi-form-button', function(event) {
 		var btnId = $(this).data('id');
-		window[window._namespaces['buttons']].Buttons.Button.prototype.getButtonById(btnId).doClick(event);
+		BI.Buttons.Button.prototype.getButtonById(btnId).doClick(event);
 	});
 	
 }) (jQuery);

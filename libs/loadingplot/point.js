@@ -10,11 +10,13 @@ LoadingPlot.SVGElement.prototype.construct = function(svg, x, y, data) {
 	this._label, this._line;
 	this._visibility = {filter: true, zoom: false, force: false};
 	this._fontsize = 12;
+	this.highlightMag = 1;
 	var self = this;
 	this._highlightgroup = this.createElement('g', {'class': 'highlightgroup'}, false, true);
 	this._labelVisible = true;
 	this._zoomThreshLabel = 1500;
 	this.allowLabelScale = false;
+	this.highlightEffect = {};
 
 	CI.RepoHighlight.listen(data._highlight, function(value, keys) {	
 		self.highlight(value);
@@ -73,6 +75,17 @@ LoadingPlot.SVGElement.prototype.allowLabelDisplay = function(bln) {
 LoadingPlot.SVGElement.prototype.setLabelScale = function(bln) {
 	this.allowLabelScale = bln;
 }
+
+LoadingPlot.SVGElement.prototype.setHighlightMag = function(mag) {
+	this.highlightMag = mag;
+}
+
+
+LoadingPlot.SVGElement.prototype.setHighlightEffect = function(effect) {
+	this.highlightEffect = effect;
+}
+
+
 
 LoadingPlot.SVGElement.prototype.labelVisibility = function() {
 
@@ -192,10 +205,10 @@ LoadingPlot.SVGElement.prototype.highlight = function(bln) {
 	//this._currentEl.setAttributeNS(null, 'class', 'nothighlight');
 	
 	if(bln) {
-		this._highlightgroup.setAttributeNS(null, 'transform', 'translate(' + this._x + ', ' + this._y + ') scale(2) translate(' + (-this._x) + ', ' + (-this._y) + ')');
+		this._highlightgroup.setAttributeNS(null, 'transform', 'translate(' + this._x + ', ' + this._y + ') scale(' + this.highlightMag + ') translate(' + (-this._x) + ', ' + (-this._y) + ')');
 		this._visibility.force = true;
 		this.labelVisibility();
-		this._label.setAttributeNS(null, 'font-size', this._fontsize * 1.5 / this.svg._zoom);
+		this._label.setAttributeNS(null, 'font-size', this._fontsize * this.highlightMag / this.svg._zoom);
 	} else {
 		this._highlightgroup.removeAttributeNS(null, 'transform');
 		this._visibility.force = false;
@@ -204,7 +217,7 @@ LoadingPlot.SVGElement.prototype.highlight = function(bln) {
 	}
 
 	if(this.implHighlight)
-		this.implHighlight();
+		this.implHighlight(bln);
 
 	this.svg.timeSpringUpdate(200);
 }
@@ -252,7 +265,18 @@ LoadingPlot.Ellipse.prototype.changeZoom = function() {
 	this.doDisplayLabel(this.svg._zoom >= this._zoomThreshLabel);
 }
 
+LoadingPlot.Ellipse.prototype.implHighlight = function(bln) {
 
+	if(this.highlightEffect.yStroke) {
+		if(bln) {
+			this._b.setAttributeNS(null, 'stroke', 'yellow');
+			this._b.setAttributeNS(null, 'stroke-width', '5px');
+		} else {
+			this._b.setAttributeNS(null, 'stroke', this._data.c);
+			this._b.setAttributeNS(null, 'stroke-width', '1px');
+		}
+	}
+}
 
 LoadingPlot.Ellipse.prototype.getCoordsSprings = function(coords) {
 	if(!this._forceField)

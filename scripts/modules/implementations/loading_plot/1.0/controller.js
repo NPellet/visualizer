@@ -164,7 +164,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 
 
 		groupfieldHighlight.addField({type: 'Text', name: 'highlightmag', title: new BI.Title('Magnification')});
-		
+
 
 		var field = groupfieldHighlight.addField({
 			type: 'Checkbox',
@@ -186,7 +186,42 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		var titles = [];
 		var layers = [];
 		for(var i = 0; i < cfgLayers.length; i++) {
-			var cfgLocalLayer = { groups: {config: [{ el: [cfgLayers[i].layer], type: [cfgLayers[i].display], labelzoomthreshold: [cfgLayers[i].labelzoomthreshold], labelsize: [cfgLayers[i].labelsize], /*colorjpath: [cfgLayers[i].colorjpath], */color: [cfgLayers[i].color], labels: [[(cfgLayers[i].displayLabels ? 'display_labels' : null), (cfgLayers[i].forceField ? 'forcefield' : null), (cfgLayers[i].blackstroke ? 'blackstroke' : null), (cfgLayers[i].scalelabel ? 'scalelabel' : null)]] }] } };
+
+			cfgLayers[i].highlightEffect = cfgLayers[i].highlightEffect || {};
+
+			var cfgLocalLayer = { 
+
+				groups: 
+				{
+					config: [
+					{ 
+						el: [cfgLayers[i].layer], 
+						type: [cfgLayers[i].display], 
+						color: [cfgLayers[i].color]
+					}]
+				},
+
+				sections: {
+					_loading_labels: [{
+						groups: {
+							_loading_labels_grp: [{
+								labelzoomthreshold: [cfgLayers[i].labelzoomthreshold], 
+								labelsize: [cfgLayers[i].labelsize], 
+								labels: [[(cfgLayers[i].displayLabels ? 'display_labels' : null), (cfgLayers[i].forceField ? 'forcefield' : null), (cfgLayers[i].blackstroke ? 'blackstroke' : null), (cfgLayers[i].scalelabel ? 'scalelabel' : null)]] 
+							}]
+						}
+					}],
+
+					_loading_highlight: [{
+						groups: {
+							_loading_highlight_grp: [{
+								highlightmag: [cfgLayers[i].highlightEffect.mag || 1],
+								highlighteffect: [[(cfgLayers[i].highlightEffect.yStroke ? 'stroke' : null), (cfgLayers[i].highlightEffect.glow ? 'glow' : null)]]
+							}]
+						}
+					}]
+				}
+			};
 			layers.push(cfgLocalLayer)
 		}
 
@@ -204,7 +239,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		
 		var layers = [];
 		for(var i = 0; i < group.length; i++) {
-			var labels = group[i].config[0].labels[0];
+			var labels = group[i]._loading_labels[0]._loading_labels_grp[0].labels[0];
 			displayLabels = false, forcefield = false, blackstroke = false, scalelabel = false;
 			for(var j = 0; j < labels.length; j++) {
 				if(labels[j] == 'display_labels')
@@ -216,7 +251,36 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 				if(labels[j] == 'scalelabel')
 					scalelabel = true;
 			}
-			layers.push({ layer: group[i].config[0].el[0], labelsize: group[i].config[0].labelsize[0], display: group[i].config[0].type[0], color: group[i].config[0].color[0], /*colorjpath: group[i].config[0].colorjpath[0],*/ displayLabels: displayLabels, forceField: forcefield, labelzoomthreshold: group[i].config[0].labelzoomthreshold[0], scalelabel: scalelabel, blackstroke: blackstroke });
+
+			var h = group[i]._loading_highlight[0]._loading_highlight_grp[0].highlighteffect[0];
+			var glow = false, yStroke = false;
+			for(var j = 0; j < h.length; j++) {
+				if(h[j] == 'stroke')
+					yStroke = true;
+				if(h[j] == 'glow')
+					glow = true;
+				
+			}
+
+
+			layers.push({ 
+				layer: group[i].config[0].el[0], 
+				labelsize: group[i]._loading_labels[0]._loading_labels_grp[0].labelsize[0], 
+				display: group[i].config[0].type[0], 
+				color: group[i].config[0].color[0],
+				displayLabels: displayLabels, 
+				forceField: forcefield, 
+				labelzoomthreshold: group[i]._loading_labels[0]._loading_labels_grp[0].labelzoomthreshold[0], 
+				scalelabel: scalelabel, 
+				blackstroke: blackstroke,
+				highlightEffect: {
+					mag: group[i]._loading_highlight[0]._loading_highlight_grp[0].highlightmag[0],
+					yStroke: yStroke,
+					glow: glow
+				}
+			});
+
+
 		}
 	
 		this.module.getConfiguration().layers = layers;	

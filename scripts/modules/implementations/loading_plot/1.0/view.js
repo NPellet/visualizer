@@ -59,11 +59,10 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 
 		},
 
-
 		loading: function(moduleValue) {
 		
 			var self = this;
-			if(!moduleValue)
+			if(!moduleValue || !moduleValue.value)
 				return;
 
 			LoadingPlot.initZoom = 8000;
@@ -116,6 +115,11 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 							el.forceField(layers[i].forceField);
 							if(layers[i].labelzoomthreshold !== '')
 								el.setLabelDisplayThreshold(layers[i].labelzoomthreshold);
+
+							el.setHighlightMag(layers[i].highlightEffect ? (layers[i].highlightEffect.mag) : 1);
+							el.setHighlightEffect(layers[i].highlightEffect);
+							
+							
 							el.setLabelStroke(layers[i].blackstroke);
 							el.setLabelScale(layers[i].scalelabel);
 
