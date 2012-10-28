@@ -162,13 +162,17 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		section2.addSection(sectionHighlights);
 		var groupfieldHighlight = sectionHighlights.addFieldGroup(new BI.Forms.GroupFields.List('_loading_highlight_grp'));
 
+
+		groupfieldHighlight.addField({type: 'Text', name: 'highlightmag', title: new BI.Title('Magnification')});
+		
+
 		var field = groupfieldHighlight.addField({
 			type: 'Checkbox',
 			name: 'highlighteffect'
 		});
 
 		field.setTitle(new BI.Title('Highlight effects'));
-		field.implementation.setOptions({ 'grow1.5': 'Magnify 1.5x', 'grow3': 'Magnify 3x', 'stroke': 'Thick yellow stroke', 'glow': 'Glow' });
+		field.implementation.setOptions({ 'stroke': 'Thick yellow stroke', 'glow': 'Glow' });
 
 
 
