@@ -54,6 +54,7 @@ BI.Forms.Form.prototype = {
 			this.sections[i].afterInit();
 	
 		BI.Forms.Section.prototype.showControls(this);
+		this.getTemplater().afterInit();
 	},
 
 	getDom: function() {

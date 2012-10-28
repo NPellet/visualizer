@@ -131,7 +131,10 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		/* */
 
 
-		var field = groupfield.addField({
+		var sectionLabels = new BI.Forms.Section('_loading_labels', {}, new BI.Title('Labels'));
+		section2.addSection(sectionLabels);
+		var groupfieldlabels = sectionLabels.addFieldGroup(new BI.Forms.GroupFields.List('_loading_labels_grp'));
+		var field = groupfieldlabels.addField({
 			type: 'Checkbox',
 			name: 'labels'
 		});
@@ -140,14 +143,26 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		field.implementation.setOptions({'display_labels': 'Display', 'forcefield': 'Activate force field', 'blackstroke': 'Add a black stroke around label', 'scalelabel': 'Scale label with zoom'});
 
 
-		var field = groupfield.addField({
+		var field = groupfieldlabels.addField({
 			type: 'Text',
 			name: 'labelsize'
 		});
 		field.setTitle(new BI.Title('Label size'));
 
 
-		var field = groupfield.addField({
+
+		var field = groupfieldlabels.addField({
+			type: 'Text',
+			name: 'labelzoomthreshold'
+		});
+		field.setTitle(new BI.Title('Zoom above which labels are displayed'));
+
+
+		var sectionHighlights = new BI.Forms.Section('_loading_highlight', {}, new BI.Title('Highlight'));
+		section2.addSection(sectionHighlights);
+		var groupfieldHighlight = sectionHighlights.addFieldGroup(new BI.Forms.GroupFields.List('_loading_highlight_grp'));
+
+		var field = groupfieldHighlight.addField({
 			type: 'Checkbox',
 			name: 'highlighteffect'
 		});
@@ -155,12 +170,6 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		field.setTitle(new BI.Title('Highlight effects'));
 		field.implementation.setOptions({ 'grow1.5': 'Magnify 1.5x', 'grow3': 'Magnify 3x', 'stroke': 'Thick yellow stroke', 'glow': 'Glow' });
 
-
-		var field = groupfield.addField({
-			type: 'Text',
-			name: 'labelzoomthreshold'
-		});
-		field.setTitle(new BI.Title('Zoom above which labels are displayed'));
 
 
 		return true;

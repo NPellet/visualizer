@@ -128,9 +128,8 @@ BI.Forms.Templaters.std.prototype = {
 		}
 	},
 	
-	doBuild: function() {
+	afterInit: function() {
 		
-		return [this.sections_lvl1, this.mainDom].join('');
-		
+		$(".bi-form-sections-tab").children(':first').trigger('click');
 	}
 }
