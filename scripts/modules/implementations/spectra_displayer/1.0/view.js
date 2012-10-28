@@ -19,7 +19,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 	init: function() {
 		
 		
-		this.dom = $('<canvas id="' + CI.Util.getNextUniqueId() + '"></canvas>');
+		this.dom = $('<canvas id="' + BI.Util.getNextUniqueId() + '"></canvas>');
 		this.module.getDomContent().html(this.dom);
 	},
 	

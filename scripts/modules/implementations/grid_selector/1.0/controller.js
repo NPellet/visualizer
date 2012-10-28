@@ -100,7 +100,7 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 			type: 'Text',
 			name: 'nblines'
 		});
-		field.setTitle(new CI.Title('Lines per page'));
+		field.setTitle(new BI.Title('Lines per page'));
 		
 		var data = this.module.getDataFromRel('list');
 		var jpaths = [];
@@ -116,14 +116,14 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 		});
 		
 		field.implementation.setOptions(jpaths);
-		field.setTitle(new CI.Title('Color jPath'));
+		field.setTitle(new BI.Title('Color jPath'));
 
 		var field = groupfield.addField({
 			type: 'Checkbox',
 			name: 'displaySearch'
 		});
 		field.implementation.setOptions({ 'allow': 'Allow searching'});
-		field.setTitle(new CI.Title('Searching'));
+		field.setTitle(new BI.Title('Searching'));
 		
 		var groupfield = new BI.Forms.GroupFields.Table('cols');
 		section.addFieldGroup(groupfield);
@@ -132,14 +132,14 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 			type: 'Text',
 			name: 'coltitle'
 		});
-		field.setTitle(new CI.Title('Columns title'));
+		field.setTitle(new BI.Title('Columns title'));
 		
 		var field = groupfield.addField({
 			type: 'Combo',
 			name: 'coljpath'
 		});
 		field.implementation.setOptions(jpaths);
-		field.setTitle(new CI.Title('Value jPath'));
+		field.setTitle(new BI.Title('Value jPath'));
 		*/
 		return true;
 	},

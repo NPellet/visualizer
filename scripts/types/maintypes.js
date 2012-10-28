@@ -865,7 +865,7 @@ CI.Type["mol2d"] = {
 	toScreen: function(def, molfile) {
 
 
-		var id = CI.Util.getNextUniqueId();
+		var id = BI.Util.getNextUniqueId();
 		CI.Util.DOMDeferred.progress(function(dom) {
 
 			if($("#" + id, dom).length == 0)
@@ -921,7 +921,7 @@ CI.Type["mol3d"] = {
 	toScreen: function(def, molfile) {
 
 
-		var id = CI.Util.getNextUniqueId();
+		var id = BI.Util.getNextUniqueId();
 		CI.Util.DOMDeferred.progress(function(dom) {
 
 			if($("#" + id, dom).length == 0)
@@ -1002,7 +1002,7 @@ CI.Type["jcamp"] = {
 		if(args[0])
 			return def.resolve(CI.Type.jcamp.doFromDom(args[0], value, args[1]));
 
-		var id = CI.Util.getNextUniqueId();
+		var id = BI.Util.getNextUniqueId();
 		CI.Util.DOMDeferred.progress(function(dom) { CI.Type.jcamp.doFromDom($("#" + id, dom), value); });
 		def.resolve('<canvas id="' + id + '"></canvas>');
 	}

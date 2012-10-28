@@ -1,9 +1,7 @@
+var BI = BI || {};
+BI.Buttons = BI.Buttons || {};
 
-if(!window[window._namespaces['buttons']].Buttons)
-	window[window._namespaces['buttons']].Buttons = {};
-
-
-window[window._namespaces['buttons']].Buttons.Zone = function(options) {
+BI.Buttons.Zone = function(options) {
 	this.buttons = {};	
 	
 	this.options = options;
@@ -14,7 +12,7 @@ window[window._namespaces['buttons']].Buttons.Zone = function(options) {
 	this.vAlign = this.options.vAlign || 'vertical'
 }
 
-window[window._namespaces['buttons']].Buttons.Zone.prototype = {
+BI.Buttons.Zone.prototype = {
 	
 	addButton: function(button) {
 		this.buttons[button.getId()] = button;

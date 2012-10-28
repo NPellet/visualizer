@@ -1,6 +1,7 @@
 
-BI.Forms.Fields.Table = {};
-BI.Forms.Table = {};
+
+BI.Forms.GroupFields = BI.Forms.GroupFields || {};
+BI.Forms.GroupFields.Table = {};
 
 BI.Forms.GroupFields.Table = function(name) {
 	
@@ -62,7 +63,7 @@ BI.Forms.GroupFields.Table.prototype = {
 		html.push('<div class="bi-form-groupfields" data-group-id="');
 		html.push(this.getId());
 		html.push('">');
-		html.push(this.getSection().getForm().getTemplater().buildGroup.Table.call(this));
+		html.push(this.getSection().getForm().getTemplater().buildGroup.Table(this));
 		html.push('</div>');
 		return html.join('');
 	},

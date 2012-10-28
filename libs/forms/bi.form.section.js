@@ -1,6 +1,6 @@
 var z;
 
-BI.Forms.Section = function(name, options) {
+BI.Forms.Section = function(name, options, title) {
 	this.name = name;
 	this.form;
 	this.sectionId, 
@@ -9,10 +9,11 @@ BI.Forms.Section = function(name, options) {
 	this.isVisible = true,
 	this.fieldGroups = [];
 	this.sections = [];
-	
 	this.options = $.extend(true, {}, BI.Forms.Section.prototype.defaults, options);
-
 	this.fieldNames = [];
+
+	if(title)
+		this.setTitle(title);
 }
 
 
@@ -66,7 +67,7 @@ BI.Forms.Section.prototype = {
 	},
 	
 	buildHtml: function() {
-		return this.getForm().getTemplater().buildSection.call(this, this.getLevel());
+		return this.getForm().getTemplater().buildSection(this, this.getLevel());
 	},
 	
 	afterInit: function() {
@@ -88,11 +89,17 @@ BI.Forms.Section.prototype = {
 			if(section.isVisible) {
 				section.isVisible = false;
 				section.domContent.hide();
+
+				header.removeClass('expanded');
+
 				$(this).children().removeClass('triangle-down').addClass('triangle-right');
 				section.showControls(section.getParent());
 			} else {
 				section.isVisible = true;
 				section.domContent.show();
+
+				header.addClass('expanded');
+
 				$(this).children().removeClass('triangle-right').addClass('triangle-down');
 				section.showControls(section.getParent());
 			}
@@ -166,16 +173,13 @@ BI.Forms.Section.prototype = {
 			this.sections.push(section);
 		else
 			this.sections.splice(index + 1, 0, section);
-		
 		section.setParentSection(this);
-		
 		section.setId(this.sections.length - 1);
 		section.setLevel(this.getLevel() + 1);
-		
 		section.getForm().addAbsSection(section);
-		
 		this.renumberSections();
-	//	this.showControls(this.getParent());
+
+		return section;
 	},
 	
 	renumberSections: function() {
@@ -207,6 +211,8 @@ BI.Forms.Section.prototype = {
 		this.fieldGroups.push(fieldGroup);
 		fieldGroup.setSection(this);
 		this.renumberFieldGroups();
+
+		return fieldGroup;
 	},
 	
 	getFieldGroups: function() {
@@ -234,7 +240,8 @@ BI.Forms.Section.prototype = {
 	duplicate: function(parent) {
 		
 		var section = this.duplicateStructure(parent);
-		var html = this.getForm().options.templater.buildSection.call(section);
+		var html = this.getForm().options.templater.buildSection(section, this.getLevel());
+
 		this.dom.after(html);
 		section.afterInit();
 		this.showControls(this.getParent());

@@ -1,11 +1,11 @@
+var BI = BI || {};
+BI.Util = {};
 
-if(!window[_namespaces['util']].Util) window[_namespaces['util']].Util = {};
-
-window[_namespaces['util']].Util.getCurrentLang = function() {
+BI.Util.getCurrentLang = function() {
 	return 'fr';
 }
 
-window[_namespaces['util']].Util.maskIframes = function() {
+BI.Util.maskIframes = function() {
 	$("iframe").each(function() {
 		var iframe = $(this);
 		var pos = iframe.position();
@@ -22,13 +22,21 @@ window[_namespaces['util']].Util.maskIframes = function() {
 		}).addClass('iframemask'));
 	});
 }
-window[_namespaces['util']].Util.unmaskIframes = function() {
+BI.Util.unmaskIframes = function() {
 	$(".iframemask").remove();
 }
-window[_namespaces['util']].Util.uniqueid = 0;
-window[_namespaces['util']].Util.getNextUniqueId = function() {
-	return 'uniqid_' + (++window[_namespaces['util']].Util.uniqueid);
+BI.Util.uniqueid = 0;
+BI.Util.getNextUniqueId = function() {
+	return 'uniqid_' + (++BI.Util.uniqueid);
 }
+
+
+
+
+
+
+
+var CI = CI || {};
 
 CI.Event = function() {}
 slice = Array.prototype.slice;

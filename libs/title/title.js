@@ -1,5 +1,5 @@
 
-window[_namespaces['title']].Title = function(text, icon) {
+BI.Title = function(text, icon) {
 	this.labels = {};
 	this.icon;
 	
@@ -11,21 +11,25 @@ window[_namespaces['title']].Title = function(text, icon) {
 
 }
 
-window[_namespaces['title']].Title.prototype = {
+BI.Title.prototype = {
 	
 	setIcon: function(icon) {
 		this.icon = icon;
 	},
 	
 	setLabel: function(label, lang) {
+
+
 		if(lang == undefined)
-			lang = window[_namespaces['util']].Util.getCurrentLang();
+			lang = BI.Util.getCurrentLang();
 			
 		this.labels[lang] = label;
 	},
 	
 	getIconUrl: function() {
-		return window[_namespaces['util']].Icons.iconToUrl(this.icon);
+		if(!BI.Icons)
+			return false;
+		return BI.Icons.iconToUrl(this.icon);
 	},
 	
 	getImgIcon: function() {
@@ -33,9 +37,9 @@ window[_namespaces['title']].Title.prototype = {
 	},
 	
 	getLabel: function(lang) {
-		
+			
 		if(!lang)
-			lang = window[_namespaces['util']].Util.getCurrentLang();
+			lang = BI.Util.getCurrentLang();
 		
 		if(typeof this.labels[lang] !== "undefined")
 			return this.labels[lang];
@@ -44,7 +48,7 @@ window[_namespaces['title']].Title.prototype = {
 	},
 	
 	duplicate: function() {
-		var title = new window[_namespaces['util']].Title();
+		var title = new BI.Title();
 		for(var i in this.labels)
 			title.setLabel(this.labels[i], i);
 		title.setIcon(this.icon);

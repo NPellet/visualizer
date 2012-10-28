@@ -77,7 +77,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 	doConfiguration: function(section) {
 		
 		var section2 = new BI.Forms.Section('_module_layers', {multiple: true});
-		section2.setTitle(new CI.Title('Layer'));
+		section2.setTitle(new BI.Title('Layer'));
 		section.addSection(section2, 1);
 
 		var groupfield = new BI.Forms.GroupFields.List('config');
@@ -96,7 +96,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			name: 'el'
 		});
 		field.implementation.setOptions(opts);
-		field.setTitle(new CI.Title('Layer'));
+		field.setTitle(new BI.Title('Layer'));
 		/* */
 
 
@@ -105,7 +105,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			name: 'type'
 		});
 		field.implementation.setOptions([{key: 'ellipse', title: 'Ellipse / Circle'}, {key: 'pie', title: 'Pie Chart'}]);
-		field.setTitle(new CI.Title('Display as'));
+		field.setTitle(new BI.Title('Display as'));
 
 
 		/* */
@@ -116,7 +116,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			type: 'Combo',
 			name: 'colorjpath'
 		});
-		field.setTitle(new CI.Title('Color (jPath)'));
+		field.setTitle(new BI.Title('Color (jPath)'));
 		field.implementation.setOptions(jpaths);*/
 		/* */
 
@@ -127,7 +127,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			type: 'Color',
 			name: 'color'
 		});
-		field.setTitle(new CI.Title('Color (default)'));
+		field.setTitle(new BI.Title('Color (default)'));
 		/* */
 
 
@@ -135,7 +135,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			type: 'Checkbox',
 			name: 'labels'
 		});
-		field.setTitle(new CI.Title('Labels'))
+		field.setTitle(new BI.Title('Labels'))
 		
 		field.implementation.setOptions({'display_labels': 'Display', 'forcefield': 'Activate force field', 'blackstroke': 'Add a black stroke around label', 'scalelabel': 'Scale label with zoom'});
 
@@ -144,16 +144,23 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			type: 'Text',
 			name: 'labelsize'
 		});
-		field.setTitle(new CI.Title('Label size'));
+		field.setTitle(new BI.Title('Label size'));
 
+
+		var field = groupfield.addField({
+			type: 'Checkbox',
+			name: 'highlighteffect'
+		});
+
+		field.setTitle(new BI.Title('Highlight effects'));
+		field.implementation.setOptions({ 'grow1.5': 'Magnify 1.5x', 'grow3': 'Magnify 3x', 'stroke': 'Thick yellow stroke', 'glow': 'Glow' });
 
 
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'labelzoomthreshold'
 		});
-		field.setTitle(new CI.Title('Zoom for label display'));
-
+		field.setTitle(new BI.Title('Zoom above which labels are displayed'));
 
 
 		return true;

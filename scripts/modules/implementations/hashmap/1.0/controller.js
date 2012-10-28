@@ -57,14 +57,14 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 			type: 'Text',
 			name: 'title'
 		});
-		field.setTitle(new CI.Title('Columns title'));
+		field.setTitle(new BI.Title('Columns title'));
 	
 		var field = groupfield.addField({
 			type: 'Combo',
 			name: 'key'
 		});
 		field.implementation.setOptions(jpaths);
-		field.setTitle(new CI.Title('Key'));
+		field.setTitle(new BI.Title('Key'));
 
 		return true;
 	},

@@ -147,7 +147,7 @@ CI.Module.prototype._types.grid_selector.View.prototype = {
 	getSelector: function(col, line, colId, lineId, value) {
 		this._selectors[col.name] = this._selectors[col.name] || {};
 		if(col.selectorType == 'checkbox') {
-			var id = CI.Util.getNextUniqueId();
+			var id = BI.Util.getNextUniqueId();
 			var defaultVal = value !== undefined ? value : col.defaultValue;
 
 			if(line)

@@ -65,7 +65,7 @@ BI.Forms.Fields.Color.prototype = {
 	
 	fillExpander: function() {
 		var field = this;
-		var btn = new CI.Buttons.Button('Blank', function(e) {
+		var btn = new BI.Buttons.Button('Blank', function(e) {
 			e.stopPropagation();
 			field._hasChanged('');
 		});
