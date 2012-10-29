@@ -26,15 +26,13 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 	},
 	
 	hover: function(data) {
-
 		var actions;
 		if(!(actions = this.module.definition.dataSend))	
 			return;	
 		for(var i = 0; i < actions.length; i++)
-			if(actions[i].event == "onHover")
+			if(actions[i].event == "onHover") {
 				CI.API.setSharedVarFromJPath(actions[i].name, data, actions[i].jpath);
-	
-
+			}
 	},
 
 	configurationSend: {
@@ -77,7 +75,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 	doConfiguration: function(section) {
 		
 		var section2 = new BI.Forms.Section('_module_layers', {multiple: true});
-		section2.setTitle(new CI.Title('Layer'));
+		section2.setTitle(new BI.Title('Layer'));
 		section.addSection(section2, 1);
 
 		var groupfield = new BI.Forms.GroupFields.List('config');
@@ -96,7 +94,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			name: 'el'
 		});
 		field.implementation.setOptions(opts);
-		field.setTitle(new CI.Title('Layer'));
+		field.setTitle(new BI.Title('Layer'));
 		/* */
 
 
@@ -105,7 +103,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			name: 'type'
 		});
 		field.implementation.setOptions([{key: 'ellipse', title: 'Ellipse / Circle'}, {key: 'pie', title: 'Pie Chart'}]);
-		field.setTitle(new CI.Title('Display as'));
+		field.setTitle(new BI.Title('Display as'));
 
 
 		/* */
@@ -116,7 +114,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			type: 'Combo',
 			name: 'colorjpath'
 		});
-		field.setTitle(new CI.Title('Color (jPath)'));
+		field.setTitle(new BI.Title('Color (jPath)'));
 		field.implementation.setOptions(jpaths);*/
 		/* */
 
@@ -127,32 +125,52 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			type: 'Color',
 			name: 'color'
 		});
-		field.setTitle(new CI.Title('Color (default)'));
+		field.setTitle(new BI.Title('Color (default)'));
 		/* */
 
 
-		var field = groupfield.addField({
+		var sectionLabels = new BI.Forms.Section('_loading_labels', {}, new BI.Title('Labels'));
+		section2.addSection(sectionLabels);
+		var groupfieldlabels = sectionLabels.addFieldGroup(new BI.Forms.GroupFields.List('_loading_labels_grp'));
+		var field = groupfieldlabels.addField({
 			type: 'Checkbox',
 			name: 'labels'
 		});
-		field.setTitle(new CI.Title('Labels'))
+		field.setTitle(new BI.Title('Labels'))
 		
 		field.implementation.setOptions({'display_labels': 'Display', 'forcefield': 'Activate force field', 'blackstroke': 'Add a black stroke around label', 'scalelabel': 'Scale label with zoom'});
 
 
-		var field = groupfield.addField({
+		var field = groupfieldlabels.addField({
 			type: 'Text',
 			name: 'labelsize'
 		});
-		field.setTitle(new CI.Title('Label size'));
+		field.setTitle(new BI.Title('Label size'));
 
 
 
-		var field = groupfield.addField({
+		var field = groupfieldlabels.addField({
 			type: 'Text',
 			name: 'labelzoomthreshold'
 		});
-		field.setTitle(new CI.Title('Zoom for label display'));
+		field.setTitle(new BI.Title('Zoom above which labels are displayed'));
+
+
+		var sectionHighlights = new BI.Forms.Section('_loading_highlight', {}, new BI.Title('Highlight'));
+		section2.addSection(sectionHighlights);
+		var groupfieldHighlight = sectionHighlights.addFieldGroup(new BI.Forms.GroupFields.List('_loading_highlight_grp'));
+
+
+		groupfieldHighlight.addField({type: 'Text', name: 'highlightmag', title: new BI.Title('Magnification')});
+
+
+		var field = groupfieldHighlight.addField({
+			type: 'Checkbox',
+			name: 'highlighteffect'
+		});
+
+		field.setTitle(new BI.Title('Highlight effects'));
+		field.implementation.setOptions({ 'stroke': 'Thick yellow stroke'});
 
 
 
@@ -166,7 +184,42 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		var titles = [];
 		var layers = [];
 		for(var i = 0; i < cfgLayers.length; i++) {
-			var cfgLocalLayer = { groups: {config: [{ el: [cfgLayers[i].layer], type: [cfgLayers[i].display], labelzoomthreshold: [cfgLayers[i].labelzoomthreshold], labelsize: [cfgLayers[i].labelsize], /*colorjpath: [cfgLayers[i].colorjpath], */color: [cfgLayers[i].color], labels: [[(cfgLayers[i].displayLabels ? 'display_labels' : null), (cfgLayers[i].forceField ? 'forcefield' : null), (cfgLayers[i].blackstroke ? 'blackstroke' : null), (cfgLayers[i].scalelabel ? 'scalelabel' : null)]] }] } };
+
+			cfgLayers[i].highlightEffect = cfgLayers[i].highlightEffect || {};
+
+			var cfgLocalLayer = { 
+
+				groups: 
+				{
+					config: [
+					{ 
+						el: [cfgLayers[i].layer], 
+						type: [cfgLayers[i].display], 
+						color: [cfgLayers[i].color]
+					}]
+				},
+
+				sections: {
+					_loading_labels: [{
+						groups: {
+							_loading_labels_grp: [{
+								labelzoomthreshold: [cfgLayers[i].labelzoomthreshold], 
+								labelsize: [cfgLayers[i].labelsize], 
+								labels: [[(cfgLayers[i].displayLabels ? 'display_labels' : null), (cfgLayers[i].forceField ? 'forcefield' : null), (cfgLayers[i].blackstroke ? 'blackstroke' : null), (cfgLayers[i].scalelabel ? 'scalelabel' : null)]] 
+							}]
+						}
+					}],
+
+					_loading_highlight: [{
+						groups: {
+							_loading_highlight_grp: [{
+								highlightmag: [cfgLayers[i].highlightEffect.mag || 1],
+								highlighteffect: [[(cfgLayers[i].highlightEffect.yStroke ? 'stroke' : null)]]
+							}]
+						}
+					}]
+				}
+			};
 			layers.push(cfgLocalLayer)
 		}
 
@@ -184,7 +237,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		
 		var layers = [];
 		for(var i = 0; i < group.length; i++) {
-			var labels = group[i].config[0].labels[0];
+			var labels = group[i]._loading_labels[0]._loading_labels_grp[0].labels[0];
 			displayLabels = false, forcefield = false, blackstroke = false, scalelabel = false;
 			for(var j = 0; j < labels.length; j++) {
 				if(labels[j] == 'display_labels')
@@ -196,7 +249,33 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 				if(labels[j] == 'scalelabel')
 					scalelabel = true;
 			}
-			layers.push({ layer: group[i].config[0].el[0], labelsize: group[i].config[0].labelsize[0], display: group[i].config[0].type[0], color: group[i].config[0].color[0], /*colorjpath: group[i].config[0].colorjpath[0],*/ displayLabels: displayLabels, forceField: forcefield, labelzoomthreshold: group[i].config[0].labelzoomthreshold[0], scalelabel: scalelabel, blackstroke: blackstroke });
+
+			var h = group[i]._loading_highlight[0]._loading_highlight_grp[0].highlighteffect[0];
+			var glow = false, yStroke = false;
+			for(var j = 0; j < h.length; j++) {
+				if(h[j] == 'stroke')
+					yStroke = true;
+				
+			}
+
+
+			layers.push({ 
+				layer: group[i].config[0].el[0], 
+				labelsize: group[i]._loading_labels[0]._loading_labels_grp[0].labelsize[0], 
+				display: group[i].config[0].type[0], 
+				color: group[i].config[0].color[0],
+				displayLabels: displayLabels, 
+				forceField: forcefield, 
+				labelzoomthreshold: group[i]._loading_labels[0]._loading_labels_grp[0].labelzoomthreshold[0], 
+				scalelabel: scalelabel, 
+				blackstroke: blackstroke,
+				highlightEffect: {
+					mag: group[i]._loading_highlight[0]._loading_highlight_grp[0].highlightmag[0],
+					yStroke: yStroke
+				}
+			});
+
+
 		}
 	
 		this.module.getConfiguration().layers = layers;	

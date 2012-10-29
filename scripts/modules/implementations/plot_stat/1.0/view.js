@@ -24,7 +24,7 @@ CI.Module.prototype._types.plot_stat.View = function(module) {
 CI.Module.prototype._types.plot_stat.View.prototype = {
 	
 	init: function() {	
-		this._chartId = CI.Util.getNextUniqueId();
+		this._chartId = BI.Util.getNextUniqueId();
 		this.dom = $('<div class="ci-plot" id="' + this._chartId + '"></div>');
 		this.module.getDomContent().html(this.dom);
 	},
@@ -40,7 +40,6 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 	update2: {
 		'chart': function(moduleValue) {
 			
-
 			if(moduleValue === undefined)
 				return;
 			var view = this;
@@ -49,7 +48,6 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 			CI.DataType.toScreen(moduleValue, this.module).done(function() {
 				CI.Util.ResolveDOMDeferred();
 			});
-
 		}
 	},
 	
@@ -113,7 +111,7 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 			
 			this.data = data;
 			this.chartData = google.visualization.arrayToDataTable(data);
-			var chartId = CI.Util.getNextUniqueId();
+			var chartId = BI.Util.getNextUniqueId();
 			view.chartOptions = {
 			          title: moduleValue.title,
 			          hAxis: {title: moduleValue.xAxis.label, minValue: moduleValue.xAxis.minValue, maxValue: moduleValue.xAxis.maxValue},

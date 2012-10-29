@@ -1,64 +1,100 @@
 
+BI.Forms.Templaters = BI.Forms.Templaters || {};
+
 BI.Forms.Templaters.std = function () {
 	
-	this.mainDom = '';
-	this.sections_lvl1 = '';
+	this.sectionsTabLvl = 3;
 }
 	
 BI.Forms.Templaters.std.prototype = {
 
+	setSectionsTabLvl: function(lvl) {
+		this.sectionsTabLvl = parseInt(lvl);
+	},
 
 	buildForm: function(form) {
 		
 		var sections = form.getSections();
-		var html = [];
-		html.push(form.getTitle());
-		html.push('<div class="bi-form-sections">');
-		for(var i = 0; i < sections.length; i++) {
-			html.push(sections[i].buildHtml());
-		}
-		html.push('</div>');
-		return html.join('');
+		var html = $('<div class="form"></div>');
+		html.append(form.getTitle());
+		var sectionsDom = $('<div class="bi-form-sections"></div>').appendTo(html);
+		for(var i = 0; i < sections.length; i++)
+			sectionsDom.append(sections[i].buildHtml());
+		return html;
 	},
 	
+
+
+	buildSectionHeader: function(section, lvl) {
+
+		if(lvl != this.sectionsTabLvl) {
+			var html = '';
+			html += '<div class="bi-form-section-header expanded"><div class="bi-form-section-displayer"><span class="bi-form-section-show"><span class="triangle-down"></span></span></div><div class="bi-form-section-sorter"><span class="bi-form-section-up"><span class="triangle-up"></span></span><span class="bi-form-section-down"><span class="triangle-down"></span></span></div><div class="bi-form-section-duplicater"><span class="bi-form-section-add">+</span><span class="bi-form-section-remove">-</span></div>';
+			html += '<label>';
+			html += section.getTitle().getLabel();
+			html += '</label></div>';
+			return html;
+		}
+
+		if(lvl == this.sectionsTabLvl) {
+			var html = '';
+			html += '<li class="bi-form-section-header" data-section-absid="' + section.getAbsId() + '"><div class="bi-form-section-displayer"><span class="bi-form-section-show"><span class="triangle-down"></span></span></div><div class="bi-form-section-sorter"><span class="bi-form-section-up"><span class="triangle-up"></span></span><span class="bi-form-section-down"><span class="triangle-down"></span></span></div><div class="bi-form-section-duplicater"><span class="bi-form-section-add">+</span><span class="bi-form-section-remove">-</span></div>';
+			html += '<label>';
+			html += section.getTitle().getLabel();
+			html += '</label></li>';
+			return html;
+
+		}
+	},
+
 	
-	buildSection: function(lvl) {
+	buildSection: function(section, lvl) {
 		
-		var html = [];
-		var groups = this.getFieldGroups();
-		var sections = this.getSections();
+		var groups = section.getFieldGroups();
+		var sections = section.getSections();
 		
-		html.push('<div class="bi-form-section" data-section-id="');
-		html.push(this.getId());
-		html.push('" data-section-absid="');
-		html.push(this.getAbsId());
-		html.push('">');
+		var html = $('<div class="bi-form-section bi-form-section-lvl-' + lvl + '" data-section-id="' + section.getId() + '" data-section-absid="' + section.getAbsId() + '" ></div>');
 		
-			
-		html.push('<div class="bi-form-section-header"><div class="bi-form-section-displayer"><span class="bi-form-section-show"><span class="triangle-down"></span></span></div><div class="bi-form-section-sorter"><span class="bi-form-section-up"><span class="triangle-up"></span></span><span class="bi-form-section-down"><span class="triangle-down"></span></span></div><div class="bi-form-section-duplicater"><span class="bi-form-section-add">+</span><span class="bi-form-section-remove">-</span></div>')
-		html.push('<label>');
-		html.push(this.getTitle().getLabel());
-		html.push('</label></div>');
-	
+		if(lvl != this.sectionsTabLvl)
+			html.prepend(section.getForm().getTemplater().buildSectionHeader(section, section.getLevel()));
 		
-		html.push('<div class="bi-form-section-content"><div class="bi-form-section-content-groups">');
+		var sectionContent = $('<div class="bi-form-section-content"></div>').appendTo(html);
+		var sectionContentGroups = $('<div class="bi-form-section-content-groups"></div>').appendTo(sectionContent);
 		for(var i = 0; i < groups.length; i++)
-			html.push(groups[i].buildHtml());
-		html.push('</div>');
-		html.push('<div class="bi-form-section-content-sections">');
-		for(var i = 0; i < sections.length; i++)
-			html.push(sections[i].buildHtml());
-		html.push('</div></div></div>');
-			
-		return html.join('');
+			sectionContentGroups.append(groups[i].buildHtml());
+		
+		var sectionContentSections = $('<div class="bi-form-section-content-sections"></div>').appendTo(sectionContent);
+		
+		if(lvl == this.sectionsTabLvl - 1) {
+			var ul = $('<ul class="bi-form-sections-tab"></ul>');
+			for(var i = 0; i < sections.length; i++)
+				ul.append(section.getForm().getTemplater().buildSectionHeader(sections[i], section.getLevel() + 1));
+
+			ul.on('click', 'li', function() {
+				$(this).addClass('selected').siblings().removeClass('selected');
+				var sectionId = $(this).data('section-absid');
+				$('.bi-form-section[data-section-absid="' + sectionId + '"]').show().siblings('.bi-form-section').hide();
+			});
+			sectionContentSections.append(ul);
+			var sectionsContainer = $('<div class="bi-form-tab-sections-container" />').appendTo(sectionContentSections);
+			for(var i = 0; i < sections.length; i++)
+				sectionsContainer.append(sections[i].buildHtml().hide());
+
+
+		} else {
+			for(var i = 0; i < sections.length; i++)
+				sectionContentSections.append(sections[i].buildHtml());
+		}
+
+		return html;
 	},
 	
 	buildGroup: {
 		
-		List: function() {
+		List: function(group) {
 			
 			var html = [];
-			var fields = this.getFields();
+			var fields = group.getFields();
 			for(var i = 0; i < fields.length; i++) {
 				html.push('<div class="bi-formfield-wrapper">');
 				html.push('<label class="bi-formfield-label">');
@@ -73,13 +109,11 @@ BI.Forms.Templaters.std.prototype = {
 			return html.join('');
 		},
 		
-		Table: function() {
-			
+		Table: function(group) {
+
 			var html = '<div class="bi-table-groupfield"><table cellpadding="0" cellspacing="0" class="bi-table-groupfield-table"><thead><tr>';
-			var fields = this.getFields();
-			
+			var fields = group.getFields();
 			html += '<th></th>';
-			
 			for(var i = 0, length = fields.length; i < length; i++) {
 				html += '<th data-field-id="';
 				html += fields[i].getFieldId();
@@ -87,20 +121,14 @@ BI.Forms.Templaters.std.prototype = {
 				html += fields[i].getTitle().getLabel();
 				html += '</th>';
 			}
-			
 			html += '<th></th>';
-			
 			html += '</tr></thead><tbody>';
-			
-			
 			html += '</tbody></table></div>';
 			return html;
 		}
 	},
 	
-	doBuild: function() {
-		
-		return [this.sections_lvl1, this.mainDom].join('');
-		
+	afterInit: function() {
+		$(".bi-form-sections-tab").each(function() { $(this).children(':first').trigger('click'); });
 	}
 }

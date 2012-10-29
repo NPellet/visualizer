@@ -7,9 +7,10 @@ $(document).bind('configModule', function(event, module) {
 		
 		var inst = this;
 		// General configuration	
-		var section = new BI.Forms.Section('general', { multiple: false });
-		this.addSection(section);
-		section.setTitle(new CI.Title('General Configuration'));
+		
+		var section = this.addSection(new BI.Forms.Section('general', { multiple: false }));
+
+		section.setTitle(new BI.Title('General Configuration'));
 		
 		var groupfield = new BI.Forms.GroupFields.List('general');
 		section.addFieldGroup(groupfield);
@@ -18,17 +19,17 @@ $(document).bind('configModule', function(event, module) {
 			type: 'Text',
 			name: 'moduletitle'
 		});
-		field.setTitle(new CI.Title('Module title'));
+		field.setTitle(new BI.Title('Module title'));
 		
 		var field = groupfield.addField({
 			type: 'Color',
 			name: 'bgcolor'
 		});
-		field.setTitle(new CI.Title('Background color'));
+		field.setTitle(new BI.Title('Background color'));
 		
 		// Self configuration
 		var section = new BI.Forms.Section('module', { multiple: false });
-		section.setTitle(new CI.Title('Module Configuration'));
+		section.setTitle(new BI.Title('Module Configuration'));
 		this.addSection(section);
 		
 		if(typeof module.controller.doConfiguration == "function")
@@ -51,7 +52,7 @@ $(document).bind('configModule', function(event, module) {
 	
 		var section = new BI.Forms.Section('send', { multiple: false });
 		this.addSection(section);
-		section.setTitle(new CI.Title('Variables sent'));
+		section.setTitle(new BI.Title('Variables sent'));
 		
 		var groupfield = new BI.Forms.GroupFields.Table('sentvars');
 		section.addFieldGroup(groupfield);
@@ -61,7 +62,7 @@ $(document).bind('configModule', function(event, module) {
 			name: 'event'
 		});
 		field.implementation.setOptions(allEvents);
-		field.setTitle(new CI.Title('Event'));
+		field.setTitle(new BI.Title('Event'));
 		
 		var field = groupfield.addField({
 			type: 'Combo',
@@ -74,19 +75,19 @@ $(document).bind('configModule', function(event, module) {
 		});
 		
 		
-		field.setTitle(new CI.Title('Internal reference'));
+		field.setTitle(new BI.Title('Internal reference'));
 		
 		var field = groupfield.addField({
 			type: 'Combo',
 			name: 'jpath'
 		});
-		field.setTitle(new CI.Title('jPath'));
+		field.setTitle(new BI.Title('jPath'));
 		
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'name'
 		});
-		field.setTitle(new CI.Title('Variable to store in'));
+		field.setTitle(new BI.Title('Variable to store in'));
 		
 		// Receive configuration
 		var availCfg = module.controller.configurationReceive;
@@ -98,7 +99,7 @@ $(document).bind('configModule', function(event, module) {
 		
 		var section = new BI.Forms.Section('receive', { multiple: false });
 		this.addSection(section);
-		section.setTitle(new CI.Title('Variables received'));
+		section.setTitle(new BI.Title('Variables received'));
 		
 		var groupfield = new BI.Forms.GroupFields.Table('receivedvars');
 		section.addFieldGroup(groupfield);
@@ -109,20 +110,20 @@ $(document).bind('configModule', function(event, module) {
 			name: 'rel'
 		});
 		field.implementation.setOptions(allRels);
-		field.setTitle(new CI.Title('Internal reference'));
+		field.setTitle(new BI.Title('Internal reference'));
 		
 		
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'name'
 		});
-		field.setTitle(new CI.Title('Stored in variable'));
+		field.setTitle(new BI.Title('Stored in variable'));
 		
 
 
 
 		
-		var save = new CI.Buttons.Button('Save', function() {
+		var save = new BI.Buttons.Button('Save', function() {
 			
 			
 			inst.dom.trigger('stopEditing');

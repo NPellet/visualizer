@@ -8,6 +8,10 @@ BI.Forms.Field.prototype = {
 	init: function(options, implementationLocation) {
 		
 		this.options = $.extend(true, {}, BI.Forms.Field.prototype.defaults, options);
+
+		if(this.options.title)
+			this.setTitle(this.options.title);
+
 		this.fieldIdAbs = BI.Forms.Field.prototype.fieldIdAbs;
 		BI.Forms.Field.prototype.fieldIdAbs++;
 		this.isValid = [];
@@ -77,7 +81,7 @@ BI.Forms.Field.prototype = {
 	
 	getTitle: function() {
 		if(typeof this.title == "undefined")
-			return new window[window._namespaces['title']].Title('');
+			return new BI.Title('');
 		return this.title;
 	},
 	
@@ -117,6 +121,11 @@ BI.Forms.Field.prototype = {
 	setGroup: function(group) {
 		this.group = group;
 		this.setSection(group.getSection());
+
+		if(!this.section) {
+			console.error('The group is linked to no section');
+			return;
+		}
 		this.form = this.section.getForm();
 		this.form.addField(this);
 	},
@@ -195,10 +204,14 @@ BI.Forms.Field.prototype = {
 		else if (this.fields[index].placeholder)
 			this.fields[index].placeholder.html(this.options.placeholder);
 		
+		var urlIcon;
 		if(typeof this.implementation.setImage == "function")
 			this.implementation.setImage(index);
+
+		else if(this.fields[index].image && (urlIcon = this.title.getIconUrl()))
+			this.fields[index].image.attr('src', urlIcon);
 		else if(this.fields[index].image)
-			this.fields[index].image.attr('src', this.title.getIconUrl());		
+			this.fields[index].image.remove();
 	},
 	
 	/**
@@ -206,7 +219,7 @@ BI.Forms.Field.prototype = {
 	 */
 	changeValue: function(index, value, commitToView) {
 		
-		if(!value)
+		if(value == undefined)
 			return;
 			
 		if(!this.isInit)

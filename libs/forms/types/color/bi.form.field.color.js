@@ -64,9 +64,13 @@ BI.Forms.Fields.Color.prototype = {
 	},
 	
 	fillExpander: function() {
-		
-		var html = [];
-		html.push('<div class="bi-formfield-colorpicker"></div>');
-		this.main.domExpander.html(html.join(''));	
+		var field = this;
+		var btn = new BI.Buttons.Button('Blank', function(e) {
+			e.stopPropagation();
+			field._hasChanged('');
+		});
+		html = $('<div class="bi-formfield-colorcontainer"><div class="bi-formfield-colorpicker"></div></div>');
+		html.append(btn.render());
+		this.main.domExpander.html(html);	
 	}
 }

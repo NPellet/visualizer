@@ -67,7 +67,7 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 			type: 'Text',
 			name: 'defaultvalue'
 		});
-		field.setTitle(new CI.Title('Default value'));
+		field.setTitle(new BI.Title('Default value'));
 		
 		
 		
@@ -75,21 +75,21 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 			type: 'Color',
 			name: 'fcolor'
 		});
-		field.setTitle(new CI.Title('Foreground color'));
+		field.setTitle(new BI.Title('Foreground color'));
 		
 		/*
 		var field = groupfield.addField({
 			type: 'Color',
 			name: 'bcolor'
 		});
-		field.setTitle(new CI.Title('Default background color'));
+		field.setTitle(new BI.Title('Default background color'));
 		*/
 		
 		var field = groupfield.addField({
 			type: 'Combo',
 			name: 'font'
 		});
-		field.setTitle(new CI.Title('Font'));
+		field.setTitle(new BI.Title('Font'));
 		field.implementation.setOptions([
 			{title: 'Arial', key: 'arial'},
 			{title: 'Arial Black', key: 'arial black'},
@@ -110,7 +110,7 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 			type: 'Combo',
 			name: 'fsize'
 		});
-		field.setTitle(new CI.Title('Font size'));
+		field.setTitle(new BI.Title('Font size'));
 		field.implementation.setOptions([
 			{title: '8pt', key: '8pt'},
 			{title: '9pt', key: '9pt'},
@@ -132,7 +132,7 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 			type: 'Combo',
 			name: 'align'
 		});
-		field.setTitle(new CI.Title('Align'));
+		field.setTitle(new BI.Title('Align'));
 		field.implementation.setOptions([
 			{title: 'Left', key: 'left'},
 			{title: 'Center', key: 'center'},
@@ -143,7 +143,7 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 			type: 'Combo',
 			name: 'valign'
 		});
-		field.setTitle(new CI.Title('Vertical align'));
+		field.setTitle(new BI.Title('Vertical align'));
 		field.implementation.setOptions([
 			{title: 'Top', key: 'top'},
 			{title: 'Middle', key: 'middle'},

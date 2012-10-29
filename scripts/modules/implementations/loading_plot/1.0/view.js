@@ -19,7 +19,8 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 	init: function() {	
 		this.dom = $('<div class="ci-display-loading-plot"></div>');
 		this.module.getDomContent().html(this.dom);
-
+		
+		this._highlights = this._highlights ||  [];
 		var self = this;
 	},
 
@@ -59,15 +60,24 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 
 		},
 
-
 		loading: function(moduleValue) {
 		
 			var self = this;
-			if(!moduleValue)
+			if(!moduleValue || !moduleValue.value)
 				return;
 
 			LoadingPlot.initZoom = 8000;
 			LoadingPlot.zoom = LoadingPlot.initZoom;
+
+			for(var i = 0; i < this._highlights.length; i++) {
+				if(!this._highlights[i][0])
+					continue;
+				
+				CI.RepoHighlight.unListen(this._highlights[i][0], this._highlights[i][1]);
+			}
+
+			this._highlights = [];
+
 
 			var svg = new LoadingPlot.SVG();
 			this._svg = svg;
@@ -116,9 +126,17 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 							el.forceField(layers[i].forceField);
 							if(layers[i].labelzoomthreshold !== '')
 								el.setLabelDisplayThreshold(layers[i].labelzoomthreshold);
+
+							el.setHighlightMag(layers[i].highlightEffect ? (layers[i].highlightEffect.mag) : 1);
+							el.setHighlightEffect(layers[i].highlightEffect);
+							
+							
 							el.setLabelStroke(layers[i].blackstroke);
 							el.setLabelScale(layers[i].scalelabel);
+							var fnc = $.proxy(el.highlight, el);
 
+							var id = CI.RepoHighlight.listen(datas[k]._highlight, fnc);
+							this._highlights.push([datas[k]._highlight, id]);
 
 							el.hoverCallback = function() {
 								self.module.controller.hover(this._data);

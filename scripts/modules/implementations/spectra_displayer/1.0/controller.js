@@ -78,7 +78,7 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 			name: 'mode'
 		});
 
-		field.setTitle(new CI.Title('Mode'));
+		field.setTitle(new BI.Title('Mode'));
 		field.implementation.setOptions({ 'peaks': 'Display as peaks', 'curve': 'Display as a curve' });
 
 
@@ -86,7 +86,7 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 			type: 'Checkbox',
 			name: 'flip'
 		});
-		field.setTitle(new CI.Title('Axis flipping'));
+		field.setTitle(new BI.Title('Axis flipping'));
 		field.implementation.setOptions({ 'flipX': 'Flip X', 'flipY': 'Flip Y' });
 
 
@@ -104,10 +104,12 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 			flipArray.push('flipY');
 	
 		return {
-			gencfg: [{
-				mode: [mode],
-				flip: [flipArray],
-			}]
+			groups: {
+				gencfg: [{
+					mode: [mode],
+					flip: [flipArray],
+				}]
+			}
 		}	
 	},
 	

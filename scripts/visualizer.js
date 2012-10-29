@@ -45,31 +45,31 @@ CI.ConfigVisualizer = function() {
 	var html = $("<div />");
 	var configurationElement = new CI.ConfMenuSupElement({ title: 'Configuration' });
 
-	var btnzone = new CI.Buttons.Zone({
+	var btnzone = new BI.Buttons.Zone({
 		vAlign: 'vertical',
 		hAlign: 'center'
 	});
 	
-	var btn = new CI.Buttons.Button('Configure entry point', function() {
+	var btn = new BI.Buttons.Button('Configure entry point', function() {
 		configureEntryPoint();
 	});
 	btnzone.addButton(btn);
 	
 	
-	var btn = new CI.Buttons.Button('Configure visualizer', function() {
+	var btn = new BI.Buttons.Button('Configure visualizer', function() {
 		configureVisualizer();
 	});
 	btnzone.addButton(btn);
 	
 
 
-	var btn = new CI.Buttons.Button('Export view', function() {
+	var btn = new BI.Buttons.Button('Export view', function() {
 		exportView();
 	});
 	btnzone.addButton(btn);
 	
 	
-	var btn = new CI.Buttons.Button('Save', function() {
+	var btn = new BI.Buttons.Button('Save', function() {
 		Entry.save();
 	});
 
@@ -193,7 +193,7 @@ CI.ConfigVisualizer = function() {
 			var inst = this;			
 			var section = new BI.Forms.Section('cfg', { multiple: false });
 			this.addSection(section);
-			var title = new CI.Title();
+			var title = new BI.Title();
 			title.setLabel('Entry variables');
 			section.setTitle(title);
 			
@@ -204,7 +204,7 @@ CI.ConfigVisualizer = function() {
 				type: 'Text',
 				name: 'varname'
 			});
-			field.setTitle(new CI.Title('Variable name'));
+			field.setTitle(new BI.Title('Variable name'));
 			
 			var options = [];
 			var data = Entry.getDataFromSource();
@@ -216,7 +216,7 @@ CI.ConfigVisualizer = function() {
 				type: 'Combo',
 				name: 'sourcename'
 			});
-			field.setTitle(new CI.Title('Source name'));
+			field.setTitle(new BI.Title('Source name'));
 			field.implementation.setOptions(options);
 			field.onChange(function(index) {
 				var fieldIndex = index;
@@ -234,11 +234,11 @@ CI.ConfigVisualizer = function() {
 				type: 'Combo',
 				name: 'jpath'
 			});
-			field.setTitle(new CI.Title('JPath'));
+			field.setTitle(new BI.Title('JPath'));
 			
 			
 			var inst = this;
-			var save = new CI.Buttons.Button('Save', function() {
+			var save = new BI.Buttons.Button('Save', function() {
 				var value = inst.getValue();
 				var data = value.cfg[0].tablevars[0];
 				Entry.setEntryDataVariables(data);
@@ -295,7 +295,7 @@ CI.ConfigVisualizer = function() {
 			var inst = this;			
 			var section = new BI.Forms.Section('cfg', { multiple: false });
 			this.addSection(section);
-			var title = new CI.Title();
+			var title = new BI.Title();
 			title.setLabel('General configuration');
 			section.setTitle(title);
 			
@@ -306,14 +306,14 @@ CI.ConfigVisualizer = function() {
 				type: 'Text',
 				name: 'title'
 			});
-			field.setTitle(new CI.Title('Title'));
+			field.setTitle(new BI.Title('Title'));
 			
 			
 			var field = groupfield.addField({
 				type: 'Checkbox',
 				name: 'moduleheaders'
 			});
-			field.setTitle(new CI.Title('Module headers'));
+			field.setTitle(new BI.Title('Module headers'));
 			field.implementation.setOptions({ 'showonhover': 'Only show module headers on mouseover'})
 			
 			
@@ -321,7 +321,7 @@ CI.ConfigVisualizer = function() {
 				type: 'Checkbox',
 				name: 'menubar'
 			});
-			field.setTitle(new CI.Title('Menu bar'));
+			field.setTitle(new BI.Title('Menu bar'));
 			
 			field.implementation.setOptions({ 'display': 'Display menu bar on start'})
 			
@@ -330,11 +330,11 @@ CI.ConfigVisualizer = function() {
 				type: 'Color',
 				name: 'modulebg'
 			});
-			field.setTitle(new CI.Title('Modules background'));
+			field.setTitle(new BI.Title('Modules background'));
 			
 			
 		
-			var save = new CI.Buttons.Button('Save', function() {
+			var save = new BI.Buttons.Button('Save', function() {
 				
 				inst.dom.trigger('stopEditing');
 				var value = inst.getValue();
@@ -393,7 +393,7 @@ CI.ConfigVisualizer = function() {
 			var inst = this;			
 			var section = new BI.Forms.Section('filters', { multiple: false });
 			this.addSection(section);
-			var title = new CI.Title();
+			var title = new BI.Title();
 			title.setLabel('Variable filters');
 			section.setTitle(title);
 			
@@ -412,11 +412,11 @@ CI.ConfigVisualizer = function() {
 				name: 'filters',
 				multiple: true
 			});
-			field.setTitle(new CI.Title('Filter'));
+			field.setTitle(new BI.Title('Filter'));
 			field.implementation.setOptions(allOptions);
 
 
-			var save = new CI.Buttons.Button('Save', function() {
+			var save = new BI.Buttons.Button('Save', function() {
 				
 				inst.dom.trigger('stopEditing');
 				var value = inst.getValue();

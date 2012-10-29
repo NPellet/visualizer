@@ -19,6 +19,8 @@ LoadingPlot.SVG.prototype.create = function() {
 	this._svgEl.setAttribute('draggable', 'true');
 	this._svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
+
+
 	this._groupElements = document.createElementNS(this._nameSpace, 'g');
 	this._svgEl.appendChild(this._groupElements);
 
@@ -76,9 +78,10 @@ LoadingPlot.SVG.prototype.ready = function() {
 	this.setViewBox();
 	var pos = $(this._svgEl).offset();
 	var self = this;
-	$(this._svgEl).on('mousemove', '[class=highlightgroup]', function() {
+	$(this._svgEl).on('mouseenter', '[class=highlightgroup]', function() {
 
 		var id = $(this).data('id');
+
 		self._els[id].mouseover();
 	}).on('mouseout', '[class=highlightgroup]', function() {
 		var id = $(this).data('id');

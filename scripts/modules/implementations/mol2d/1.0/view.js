@@ -17,7 +17,7 @@ CI.Module.prototype._types.mol2d.View = function(module) {
 CI.Module.prototype._types.mol2d.View.prototype = {
 	
 	init: function() {	
-		this._id = CI.Util.getNextUniqueId();
+		this._id = BI.Util.getNextUniqueId();
 		this.dom = $('<canvas id="' + this._id + '"></div>');
 		this.module.getDomContent().html(this.dom);
 		

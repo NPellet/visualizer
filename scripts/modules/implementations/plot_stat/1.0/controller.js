@@ -86,21 +86,21 @@ CI.Module.prototype._types.plot_stat.Controller.prototype = {
 			name: 'charttype'
 		});
 		field.implementation.setOptions([{ title: "Horizontal Bar Chart", key: "hbarchart"}, { title: "Vertical Bar Chart", key: "vbarchart"}, { title: "Line chart", key: "linechart"}]);
-		field.setTitle(new CI.Title('Chart type'));
+		field.setTitle(new BI.Title('Chart type'));
 	
 
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'linewidth'
 		});
-		field.setTitle(new CI.Title('Line width'));
+		field.setTitle(new BI.Title('Line width'));
 		
 		
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'pointsize'
 		});
-		field.setTitle(new CI.Title('Point size'));
+		field.setTitle(new BI.Title('Point size'));
 		
 
 		
@@ -108,7 +108,7 @@ CI.Module.prototype._types.plot_stat.Controller.prototype = {
 			type: 'Checkbox',
 			name: 'legend'
 		});
-		field.setTitle(new CI.Title('Legend'));
+		field.setTitle(new BI.Title('Legend'));
 		field.implementation.setOptions({"display": "Display"});
 		return true;
 	},

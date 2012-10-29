@@ -762,14 +762,19 @@ CI.DataType.asyncToScreenAttribute = function(source, attribute, jpath, element)
 	_class += ++CI.DataType.asyncId;
 	
 	var def = CI.DataType.getValueFromJPath(source, jpath).done(function(value) {
-			if(element)
-				element.attr(attribute, value);
-			else
-				$("." + _class).attr(attribute, value);
+
+			if(attribute == 'style.backgroundColor') {
+				$("." + _class).css('background-color', value);
+			} else {
+				if(element)
+					element.attr(attribute, value);
+				else
+					$("." + _class).attr(attribute, value);
+			}
 		});
 
+	def._class = _class;
 	if(source.type && !source.value && source.url) {
-		def._class = _class;
 		return def;
 	} else
 		return def;
@@ -791,8 +796,8 @@ CI.DataType.asyncToScreenHtml = function(element, box, jpath) {
 	} else*/
 		// returns element.value if fetched
 
-	var def = CI.DataType.getValueFromJPath(element, jpath).pipe(function(data) {  var val = CI.DataType._toScreen(data, box); $("#callback-load-" + asyncId).html(val); return val; });
-	def.html = html;
+
+	return CI.DataType.getValueFromJPath(element, jpath).pipe(function(data) { return CI.DataType._toScreen(data, box); });
 	return def; 	
 }
 
@@ -860,7 +865,7 @@ CI.Type["mol2d"] = {
 	toScreen: function(def, molfile) {
 
 
-		var id = CI.Util.getNextUniqueId();
+		var id = BI.Util.getNextUniqueId();
 		CI.Util.DOMDeferred.progress(function(dom) {
 
 			if($("#" + id, dom).length == 0)
@@ -916,7 +921,7 @@ CI.Type["mol3d"] = {
 	toScreen: function(def, molfile) {
 
 
-		var id = CI.Util.getNextUniqueId();
+		var id = BI.Util.getNextUniqueId();
 		CI.Util.DOMDeferred.progress(function(dom) {
 
 			if($("#" + id, dom).length == 0)
@@ -997,7 +1002,7 @@ CI.Type["jcamp"] = {
 		if(args[0])
 			return def.resolve(CI.Type.jcamp.doFromDom(args[0], value, args[1]));
 
-		var id = CI.Util.getNextUniqueId();
+		var id = BI.Util.getNextUniqueId();
 		CI.Util.DOMDeferred.progress(function(dom) { CI.Type.jcamp.doFromDom($("#" + id, dom), value); });
 		def.resolve('<canvas id="' + id + '"></canvas>');
 	}

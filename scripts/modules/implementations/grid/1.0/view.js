@@ -32,6 +32,7 @@ CI.Module.prototype._types.grid.View.prototype = {
 		}
 		this.dom.append(this.domSearch).append(this.domExport).append(this.domTable);
 		this.module.getDomContent().html(this.dom);
+		this._highlights = this._highlights || [];
 
 		var self = this;
 	},
@@ -50,6 +51,14 @@ CI.Module.prototype._types.grid.View.prototype = {
 
 		list: function(moduleValue) {
 		
+
+			for(var i = 0; i < this._highlights.length; i++) {
+				if(!this._highlights[i][0])
+					continue;
+				CI.RepoHighlight.unListen(this._highlights[i][0], this._highlights[i][1]);
+			}
+			this._highlights = [];
+
 			if(!moduleValue)
 				return;
 			var view = this;
@@ -88,7 +97,7 @@ CI.Module.prototype._types.grid.View.prototype = {
 			var type = CI.DataType.getType(moduleValue);
 			for(var j in jpaths) {
 				var Column = new CI.Tables.Column(j);
-				Column.setTitle(new CI.Title(j));
+				Column.setTitle(new BI.Title(j));
 				if(jpaths[j].format)
 					Column.format(jpaths[j].format);
 				Table.addColumn(Column);
@@ -144,13 +153,20 @@ CI.Module.prototype._types.grid.View.prototype = {
 				this.buildElement(source[i].children, element.children, jpaths, colorJPath);
 			}
 
+			var execFunc, id;
 			(function(myElement) {
-				if(source[i]._highlight)
-					CI.RepoHighlight.listen(source[i]._highlight, function(value, what) {
+				if(source[i]._highlight) {
+					execFunc = function(value, what) {
 						myElement._highlight = value;
 						self.table.highlight(myElement);
-					});
+					};
+
+					id = CI.RepoHighlight.listen(source[i]._highlight, execFunc);
+
+				}
 			}) (element);
+			
+			this._highlights.push([source[i]._highlight, id]);
 			element._source = source[i];
 			arrayToPush.push(element);
 		}

@@ -1,20 +1,20 @@
 
-if(!window[window._namespaces['buttons']].Buttons)
-	window[window._namespaces['buttons']].Buttons = {};
+var BI = BI || {};
+BI.Buttons = BI.Buttons || {};
 
-window[window._namespaces['buttons']].Buttons.Button = function(label, onClick) {
+BI.Buttons.Button = function(label, onClick) {
 	if(label)
-		this.title = new window[window._namespaces['title']].Title(label);
+		this.title = new BI.Title(label);
 	if(onClick)
 		this.onClick = onClick;
 	this.color = null;
 	
-	this.id = ++window[window._namespaces['buttons']].Buttons.Button.prototype.absId;
-	window[window._namespaces['buttons']].Buttons.Button.prototype._buttons[this.id] = this;
+	this.id = ++BI.Buttons.Button.prototype.absId;
+	BI.Buttons.Button.prototype._buttons[this.id] = this;
 }
 
 
-window[window._namespaces['buttons']].Buttons.Button.prototype = {
+BI.Buttons.Button.prototype = {
 	
 	_buttons: [],
 	absId: 0,
@@ -50,14 +50,14 @@ window[window._namespaces['buttons']].Buttons.Button.prototype = {
 		return html;
 	},
 	
-	doClick: function() {
+	doClick: function(event) {
 		
 		if(typeof this.onClick == "function")
-			this.onClick();
+			this.onClick(event);
 	},
 	
 	getButtonById: function(id) {
-		return window[window._namespaces['buttons']].Buttons.Button.prototype._buttons[id];
+		return BI.Buttons.Button.prototype._buttons[id];
 	}
 };
 
@@ -65,9 +65,9 @@ window[window._namespaces['buttons']].Buttons.Button.prototype = {
 
 (function($) {
 	
-	$(document).on('click', '.bi-form-button', function() {
+	$(document).on('click', '.bi-form-button', function(event) {
 		var btnId = $(this).data('id');
-		window[window._namespaces['buttons']].Buttons.Button.prototype.getButtonById(btnId).doClick();
+		BI.Buttons.Button.prototype.getButtonById(btnId).doClick(event);
 	});
 	
 }) (jQuery);

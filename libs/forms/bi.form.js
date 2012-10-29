@@ -1,8 +1,10 @@
-
+var BI = BI || {};
+BI.Forms = {};
+BI.Forms.Fields = {};
 
 BI.Forms.Form = function(options, callback) {
 	
-	this.name = 'rootform';
+	this.name = '_rootform';
 	BI.Forms.Form.prototype.lastFormId++;
 	this.formId = BI.Forms.Form.prototype.lastFormId;
 	this.title;
@@ -20,7 +22,8 @@ BI.Forms.Form = function(options, callback) {
 			callback.call(form);
 		});
 	} else {
-		callback.call(this);
+		if(callback)
+			callback.call(this);
 	}
 	
 	
@@ -51,6 +54,7 @@ BI.Forms.Form.prototype = {
 			this.sections[i].afterInit();
 	
 		BI.Forms.Section.prototype.showControls(this);
+
 	},
 
 	getDom: function() {
@@ -58,15 +62,14 @@ BI.Forms.Form.prototype = {
 	},
 	
 	buildHtml: function() {
-		var html = [];
-		html.push('<form>');
-		html.push(this.options.templater.buildForm(this));
+		var html = $('<form />');
+		html.append(this.options.templater.buildForm(this));
 		
 		if(this.buttonZone) 
-			html.push(this.buttonZone.render());
+			html.append(this.buttonZone.render());
 			
-		html.push('</form>');
-		return html.join('');
+		html.append('</form>');
+		return html;
 	},
 	
 	afterInit: function() {
@@ -136,6 +139,8 @@ BI.Forms.Form.prototype = {
 		
 		this.renumberSections();
 		BI.Forms.Section.prototype.showControls(this);
+
+		return section;
 	},
 	
 	addAbsSection: function(section) {
@@ -195,7 +200,7 @@ BI.Forms.Form.prototype = {
 	},
 	
 	addButtonZone: function() {
-		this.buttonZone = new window[window._namespaces['buttons']].Buttons.Zone();
+		this.buttonZone = new BI.Buttons.Zone();
 		this.buttonZone.setAlignment('right');
 		return this.buttonZone;
 	}
@@ -217,6 +222,8 @@ BI.Forms.Form.prototype = {
 				
 				if(typeof afterInit == "function")
 					afterInit.call(this);
+
+				this.getTemplater().afterInit();
 			});
 		});
 	}

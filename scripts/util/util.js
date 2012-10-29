@@ -1,11 +1,11 @@
+var BI = BI || {};
+BI.Util = {};
 
-if(!window[_namespaces['util']].Util) window[_namespaces['util']].Util = {};
-
-window[_namespaces['util']].Util.getCurrentLang = function() {
+BI.Util.getCurrentLang = function() {
 	return 'fr';
 }
 
-window[_namespaces['util']].Util.maskIframes = function() {
+BI.Util.maskIframes = function() {
 	$("iframe").each(function() {
 		var iframe = $(this);
 		var pos = iframe.position();
@@ -22,13 +22,21 @@ window[_namespaces['util']].Util.maskIframes = function() {
 		}).addClass('iframemask'));
 	});
 }
-window[_namespaces['util']].Util.unmaskIframes = function() {
+BI.Util.unmaskIframes = function() {
 	$(".iframemask").remove();
 }
-window[_namespaces['util']].Util.uniqueid = 0;
-window[_namespaces['util']].Util.getNextUniqueId = function() {
-	return 'uniqid_' + (++window[_namespaces['util']].Util.uniqueid);
+BI.Util.uniqueid = 0;
+BI.Util.getNextUniqueId = function() {
+	return 'uniqid_' + (++BI.Util.uniqueid);
 }
+
+
+
+
+
+
+
+var CI = CI || {};
 
 CI.Event = function() {}
 slice = Array.prototype.slice;
@@ -130,9 +138,11 @@ CI.RepoPool = function() {
 
 		for(var i in callbacks) {
 			var currentCallback = this._callbacks[i];
+
 			if(!currentCallback)
 					return;
 			var commonKeys = this.getCommonKeys(currentCallback[0], sourcekeys);
+
 			if(commonKeys.length > 0 || ((!commonKeys || commonKeys.length == 0) && currentCallback[2])) {
 				currentCallback[1](value, commonKeys);
 			}
@@ -159,6 +169,7 @@ CI.RepoPool.prototype.set = function(keys, value) {
 
 CI.RepoPool.prototype._callbackId = -1;
 CI.RepoPool.prototype.listen = function(keys, callback, sendCallbackOnEmptyArray) {
+
 	var self = this;
 	this._keys = this._keys || {};
 	this._callbacks = this._callbacks || [];
@@ -173,6 +184,8 @@ CI.RepoPool.prototype.listen = function(keys, callback, sendCallbackOnEmptyArray
 	var callbackId = ++CI.RepoPool.prototype._callbackId;
 	this._callbacks[callbackId] = [keys, callback, sendCallbackOnEmptyArray];
 	this.bindKeysRecursively(keys, callbackId, true);
+
+	return callbackId;
 }
 
 CI.RepoPool.prototype.bindKeysRecursively = function(keys, callbackId, add) {
@@ -199,20 +212,13 @@ CI.RepoPool.prototype.reset = function() {
 
 }
 
-CI.RepoPool.prototype.unListen = function(keys, callback) {
+CI.RepoPool.prototype.unListen = function(keys, callbackId) {
 	this._keys = this._keys || {};
 	this._callbacks = this._callbacks || [];
-	this.bindKeysRecursively(keys, callback, false);
+	
+	this._callbacks[callbackId] = undefined;
+	this.bindKeysRecursively(keys, callbackId, false);
 
-	for(var i = 0; i < this._callbacks.length; i++) {
-		if(!this._callbacks[i])
-			continue;
-		
-		if(this._callbacks[i][1] == callback) {
-			this._callbacks.splice(i, 1);
-			break;
-		}
-	}
 }
 
 CI.RepoPool.prototype.getCommonKeys = function(set1, set2) {

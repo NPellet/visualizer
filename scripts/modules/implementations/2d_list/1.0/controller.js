@@ -105,7 +105,7 @@ CI.Module.prototype._types['2d_list'].Controller.prototype = {
 			type: 'Text',
 			name: 'colnumber'
 		});
-		field.setTitle(new CI.Title('Columns number'));
+		field.setTitle(new BI.Title('Columns number'));
 		
 		
 		var jpaths = [];
@@ -120,7 +120,7 @@ CI.Module.prototype._types['2d_list'].Controller.prototype = {
 			name: 'valjPath'
 		});
 		field.implementation.setOptions(jpaths);
-		field.setTitle(new CI.Title('Value jPath'));
+		field.setTitle(new BI.Title('Value jPath'));
 		
 		
 		var field = groupfield.addField({
@@ -129,19 +129,19 @@ CI.Module.prototype._types['2d_list'].Controller.prototype = {
 		});
 		//options.unshift({ title: 'None', key: 'none'});
 		field.implementation.setOptions(jpaths);
-		field.setTitle(new CI.Title('Color jPath'));
+		field.setTitle(new BI.Title('Color jPath'));
 		
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'width'
 		});
-		field.setTitle(new CI.Title('Width'));
+		field.setTitle(new BI.Title('Width'));
 		
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'height'
 		});
-		field.setTitle(new CI.Title('Height'));
+		field.setTitle(new BI.Title('Height'));
 		
 		return true;
 	},

@@ -164,7 +164,7 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 			name: 'highcontrast'
 		});
 		field.implementation.setOptions({ 'true': 'Take data min/max as boundaries'});
-		field.setTitle(new CI.Title('Contrast'));
+		field.setTitle(new BI.Title('Contrast'));
 		
 		
 		var groupfield = new BI.Forms.GroupFields.Table('colors');
@@ -174,7 +174,7 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 			type: 'Color',
 			name: 'color'
 		});
-		field.setTitle(new CI.Title('Color'));
+		field.setTitle(new BI.Title('Color'));
 		
 		return true;
 	},
