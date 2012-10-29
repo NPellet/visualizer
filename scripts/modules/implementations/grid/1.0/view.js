@@ -32,7 +32,7 @@ CI.Module.prototype._types.grid.View.prototype = {
 		}
 		this.dom.append(this.domSearch).append(this.domExport).append(this.domTable);
 		this.module.getDomContent().html(this.dom);
-		this._highlights = [];
+		this._highlights = this._highlights || [];
 
 		var self = this;
 	},
@@ -55,7 +55,6 @@ CI.Module.prototype._types.grid.View.prototype = {
 			for(var i = 0; i < this._highlights.length; i++) {
 				if(!this._highlights[i][0])
 					continue;
-
 				CI.RepoHighlight.unListen(this._highlights[i][0], this._highlights[i][1]);
 			}
 			this._highlights = [];
@@ -154,7 +153,7 @@ CI.Module.prototype._types.grid.View.prototype = {
 				this.buildElement(source[i].children, element.children, jpaths, colorJPath);
 			}
 
-			var execFunc;
+			var execFunc, id;
 			(function(myElement) {
 				if(source[i]._highlight) {
 					execFunc = function(value, what) {
@@ -162,11 +161,12 @@ CI.Module.prototype._types.grid.View.prototype = {
 						self.table.highlight(myElement);
 					};
 
-					CI.RepoHighlight.listen(source[i]._highlight, execFunc);
+					id = CI.RepoHighlight.listen(source[i]._highlight, execFunc);
+
 				}
 			}) (element);
-
-			this._highlights.push([source[i]._highlight, execFunc]);
+			
+			this._highlights.push([source[i]._highlight, id]);
 			element._source = source[i];
 			arrayToPush.push(element);
 		}

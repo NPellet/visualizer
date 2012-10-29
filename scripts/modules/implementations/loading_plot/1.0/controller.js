@@ -26,15 +26,13 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 	},
 	
 	hover: function(data) {
-
 		var actions;
 		if(!(actions = this.module.definition.dataSend))	
 			return;	
 		for(var i = 0; i < actions.length; i++)
-			if(actions[i].event == "onHover")
+			if(actions[i].event == "onHover") {
 				CI.API.setSharedVarFromJPath(actions[i].name, data, actions[i].jpath);
-	
-
+			}
 	},
 
 	configurationSend: {
@@ -172,7 +170,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		});
 
 		field.setTitle(new BI.Title('Highlight effects'));
-		field.implementation.setOptions({ 'stroke': 'Thick yellow stroke', 'glow': 'Glow' });
+		field.implementation.setOptions({ 'stroke': 'Thick yellow stroke'});
 
 
 
@@ -216,7 +214,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 						groups: {
 							_loading_highlight_grp: [{
 								highlightmag: [cfgLayers[i].highlightEffect.mag || 1],
-								highlighteffect: [[(cfgLayers[i].highlightEffect.yStroke ? 'stroke' : null), (cfgLayers[i].highlightEffect.glow ? 'glow' : null)]]
+								highlighteffect: [[(cfgLayers[i].highlightEffect.yStroke ? 'stroke' : null)]]
 							}]
 						}
 					}]
@@ -257,8 +255,6 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			for(var j = 0; j < h.length; j++) {
 				if(h[j] == 'stroke')
 					yStroke = true;
-				if(h[j] == 'glow')
-					glow = true;
 				
 			}
 
@@ -275,8 +271,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 				blackstroke: blackstroke,
 				highlightEffect: {
 					mag: group[i]._loading_highlight[0]._loading_highlight_grp[0].highlightmag[0],
-					yStroke: yStroke,
-					glow: glow
+					yStroke: yStroke
 				}
 			});
 

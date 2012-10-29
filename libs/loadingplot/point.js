@@ -17,10 +17,6 @@ LoadingPlot.SVGElement.prototype.construct = function(svg, x, y, data) {
 	this._zoomThreshLabel = 1500;
 	this.allowLabelScale = false;
 	this.highlightEffect = {};
-
-	CI.RepoHighlight.listen(data._highlight, function(value, keys) {	
-		self.highlight(value);
-	});
 }
 
 
@@ -204,6 +200,16 @@ LoadingPlot.SVGElement.prototype.setColor = function(color) {
 LoadingPlot.SVGElement.prototype.highlight = function(bln) {
 	//this._currentEl.setAttributeNS(null, 'class', 'nothighlight');
 	
+
+	var elementInDocument = function(element) {
+	    while (element = element.parentNode) {
+	        if (element == document) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
 	if(bln) {
 		this._highlightgroup.setAttributeNS(null, 'transform', 'translate(' + this._x + ', ' + this._y + ') scale(' + this.highlightMag + ') translate(' + (-this._x) + ', ' + (-this._y) + ')');
 		this._visibility.force = true;
@@ -276,6 +282,7 @@ LoadingPlot.Ellipse.prototype.implHighlight = function(bln) {
 			this._b.setAttributeNS(null, 'stroke-width', '1px');
 		}
 	}
+
 }
 
 LoadingPlot.Ellipse.prototype.getCoordsSprings = function(coords) {
@@ -328,9 +335,9 @@ LoadingPlot.Pie = function(svg,x, y, data) {
 	this._zoomThresh = (this._rthresh - this._rzoom0) / this._circleSlope;
 	this._lastAngle = 0;
 
-	this._g = this.createElement('g', {'transform': 'translate(' + this._x + ', ' + this._y + ')'})	
 	this._circle = this.createElement('circle', {fill: data.c, stroke: 'black', 'vector-effect': 'non-scaling-stroke', cx: this._x, cy: this._y, r: 10 / 1000});
-
+	this._g = this.createElement('g', {'transform': 'translate(' + this._x + ', ' + this._y + ')'})	
+	
 	this.writeLabel();
 	this.changeZoom(this.svg._izoom);
 }
@@ -397,7 +404,7 @@ LoadingPlot.Pie.prototype.changeZoom = function() {
 		this._currentEl = this._circle;
 		this._circleradius = this._rmin + (this._circleSlope * zoom);
 		this._lastRadius = this._circleradius / zoom;
-		this._circle.setAttributeNS(null, 'r', this._lastRadius);	
+		
 
 	} else {
 		if(!this._pieVisible) {
@@ -411,6 +418,7 @@ LoadingPlot.Pie.prototype.changeZoom = function() {
 		this._g.setAttributeNS(null, 'transform', 'translate(' + this._x + ' ' + this._y +') scale(' + this._lastRadius + ')');	
 		this._currentEl = this._g;
 	}
+	this._circle.setAttributeNS(null, 'r', this._lastRadius);	
 	this.doDisplayLabel(zoom >= this._zoomThreshLabel);
 }
 
@@ -478,7 +486,21 @@ LoadingPlot.Pie.prototype.filter = function(filter) {
 	}
 }
 
-LoadingPlot.Pie.prototype.implHighlight = function() {
+LoadingPlot.Pie.prototype.implHighlight = function(bln) {
 
+
+	if(this.highlightEffect.yStroke) {
+		if(bln) {
+			this._circle.setAttributeNS(null, 'stroke', 'yellow');
+			this._circle.setAttributeNS(null, 'stroke-width', '7px');
+			this._circle.setAttributeNS(null, 'display', 'block');
+		} else {
+			this._circle.setAttributeNS(null, 'stroke', 'black');
+			this._circle.setAttributeNS(null, 'stroke-width', '1px');
+
+			if(this._currentEl != this._circle)
+				this._circle.setAttributeNS(null, 'display', 'none');
+		}
+	}
 }
 

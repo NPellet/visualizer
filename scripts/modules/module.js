@@ -393,8 +393,9 @@ CI.Module.prototype._impl = {
 
 		resetListeners: function() {
 			this.sourceMap = null;
-			CI.Repo.unListen(this.getVarNameList(), this.listenCallback);
-			CI.Repo.listen(this.getVarNameList(), $.proxy(this.listenCallback, this));
+			if(this._listen)
+				CI.Repo.unListen(this.getVarNameList(), this._listen);
+			this._listen = CI.Repo.listen(this.getVarNameList(), $.proxy(this.listenCallback, this));
 		},
 
 		getVarNameList: function() {
