@@ -281,6 +281,10 @@ span.triangle-left {
 	
 }
 
+textarea.bi-formfield-styled {
+	height: 200px;
+}
+
 div.bi-formfield-styled {
 	padding-top: 5px;
 }

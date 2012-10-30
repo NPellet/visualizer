@@ -133,17 +133,17 @@ CI.Module.prototype._types.editable_grid.Controller.prototype = {
 
 
 		var field = groupfield.addField({
-			type: 'Combo',
+			type: 'JSCode',
 			name: 'filterRow',
 			title: new BI.Title('Apply filter to row')
 		});
 
-		var filters = [];
+		/*var filters = [];
 		for(var i in CI.VariableFiltersRow) {
 			filters.push({title: CI.VariableFiltersRow[i].name, key: i});
 		}
 		field.implementation.setOptions(filters);
-	
+	*/
 
 		var groupfield = new BI.Forms.GroupFields.Table('cols');
 		section.addFieldGroup(groupfield);

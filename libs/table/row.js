@@ -49,7 +49,7 @@ window[_namespaces['table']].Tables.Row.prototype = {
 	hasChanged: function(value, jpath) {
 
 		if(this.filter)
-			this.filter.process(value, '', jpath, this._source, this, this.Content.getTable().getColumns());
+			this.filter(value, '', jpath, this._source, this, this.Content.getTable().getColumns());
 	},
 
 	reloadColFromJPath: function(jpath) {

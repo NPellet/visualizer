@@ -113,8 +113,8 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 			var Content = new CI.Tables.Content();
 
 			var filter = this.module.getConfiguration().filterRow;
-			if(filter)
-				filter = CI.VariableFiltersRow[filter];
+			
+			eval("filter = function(value, oldValue, jpath, source, row, columns) { " + filter + " }");
 
 			var elements = moduleValue;
 			for(var i = 0, length = elements.length; i < length; i++)
