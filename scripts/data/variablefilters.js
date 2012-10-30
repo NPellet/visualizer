@@ -80,3 +80,27 @@ CI.VariableFilters = {
 		}
 	}
 }
+
+CI.VariableFiltersRow = {
+
+	'testFilter': {
+
+		name: 'Test filter',
+		process: function(value, oldValue, jpath, source, row, columns) {
+
+			if(jpath == 'element.x') {
+				CI.DataType.setValueFromJPath(source, 'element.q', value.toUpperCase());
+				var colors = { 'salut': 'red', 'coucou': 'green', 'test': 'grey'};
+				row.setBackgroundColor(colors[value]);	
+			}			
+		
+			row.reloadColFromJPath('element.q');
+		}
+
+
+	}
+
+
+
+
+}

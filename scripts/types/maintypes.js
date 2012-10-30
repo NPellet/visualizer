@@ -577,6 +577,36 @@ CI.DataType._getValueFromJPath = function(element, jpath) {
 }
 
 
+
+
+CI.DataType.setValueFromJPath = function(element, jpath, newValue) {
+	
+	if(!jpath.split)
+		jpath = '';
+	var jpath2 = jpath.split('.');
+	jpath2.shift();
+	return CI.DataType._setValueFromJPath(element, jpath2, newValue);
+}
+
+CI.DataType._setValueFromJPath = function(element, jpath, newValue) {
+	var el = CI.DataType.getValueIfNeeded(element);
+	var type;
+	var jpath2 = jpath;
+
+	if(jpath2.length == 1)
+		return element[jpath2[0]] = newValue;
+
+	var jpathElement = jpath2.shift();
+
+	if(jpathElement) {
+		el = el[jpathElement];
+		return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
+				return CI.DataType._setValueFromJPath(elChildren, jpath2, newValue);
+		});
+	}
+}
+
+
 CI.DataType.getJPathsFromStructure = function(structure, title, jpathspool, keystr) {
  
  	if(!structure)

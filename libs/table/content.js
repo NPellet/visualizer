@@ -11,6 +11,8 @@ window[_namespaces['table']].Tables.Content = function() {
 	this.reIndexedElements = {};
 
 	this.domDeferred = [];
+
+	this.rows = [];
 }
 
 
@@ -24,28 +26,64 @@ window[_namespaces['table']].Tables.Content.prototype = {
 		this.elements.push(elJson);
 		this.entryCount++;
 	},
+
+	addRow: function(Row) {
+		this.setMode = 'rows';
+		this.rows.push(Row);
+		Row.setContent(this);
+	},
+
+	getTable: function() {
+		return this.table;
+	},
 	
 	build: function() {
-		var j = -1;
-		var html = "";
-		
-		this.reIndexedElements = {};
-		this.index = 0;
-		this.supNav = [];
-		this.entryCount = 0;
 
-		for(var i = 0; i < this.elements.length; i++) {
-			if(!this.doSearch(this.elements[i]))
-				continue;
-			this.entryCount++;
-			j++;
-			if(j < (this.page - 1) * this.pagination || j >= this.page * this.pagination)
-				continue;
-			this.elements[i].index = j;
-			html += this.buildElement(this.elements[i], 0, 0, this.elements.length == i + 1);
+		if(this.setMode && this.setMode == 'rows') {
+
+			var j = -1;
+			var html = [];
+			
+			this.reIndexedElements = {};
+			this.index = 0;
+			this.supNav = [];
+			this.entryCount = 0;
+console.log(this.rows);
+			for(var i = 0; i < this.rows.length; i++) {
+				if(!this.doSearch(this.rows[i]))
+					continue;
+				this.entryCount++;
+				j++;
+				if(j < (this.page - 1) * this.pagination || j >= this.page * this.pagination)
+					continue;
+				this.rows[i].index = j;
+				html.push(this.rows[i].build());
+			}
+			this.table.setContentHtml(html);
+
+		} else {
+
+			var j = -1;
+			var html = "";
+			
+			this.reIndexedElements = {};
+			this.index = 0;
+			this.supNav = [];
+			this.entryCount = 0;
+
+			for(var i = 0; i < this.elements.length; i++) {
+				if(!this.doSearch(this.elements[i]))
+					continue;
+				this.entryCount++;
+				j++;
+				if(j < (this.page - 1) * this.pagination || j >= this.page * this.pagination)
+					continue;
+				this.elements[i].index = j;
+				html += this.buildElement(this.elements[i], 0, 0, this.elements.length == i + 1);
+			}
+			var jqHtml = $(html);
+			this.table.setContentHtml(jqHtml);
 		}
-		var jqHtml = $(html);
-		this.table.setContentHtml(jqHtml);
 	},
 
 	exportToTextWith: function(delimiter, showColumns) {
@@ -99,7 +137,6 @@ window[_namespaces['table']].Tables.Content.prototype = {
 			this.supNav[level] = last ? 'corner' : 'cross';
 		for(var i = 0; i < columns.length; i++) {
 			var name = columns[i].getName();
-			
 			hasChildren = false;
 			if(element.children)
 				hasChildren = true;
@@ -144,21 +181,17 @@ window[_namespaces['table']].Tables.Content.prototype = {
 	},
 	
 	setSearch: function(search) {
-		
 		this.search = null;
 		if(search == null)
 			return;
-		
 		var metachars = ["[", "\\", "^", "$", ".", "|", "?", "*", "+", "(", ")"];
 		for(var i = 0; i < metachars.length; i++)
 			search.replace(metachars[i], "\\" + metachars[i]);
 		search = search.toLowerCase();
-		
 		this.search = new RegExp(search, "gi");
 	},
 	
 	sort: function(col, asc) {
-		
 		var elName = col.getName();
 		this.elements.sort(function(a, b) {
 			if(a.data[elName] === false) return 1;
@@ -173,7 +206,6 @@ window[_namespaces['table']].Tables.Content.prototype = {
 	getElementById: function(id) {
 		return this.reIndexedElements[id];
 	},
-
 
 	exportToTabDelimited: function() {
 		return this.exportToTextWith("\t", true);

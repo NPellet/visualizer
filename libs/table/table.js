@@ -34,6 +34,7 @@ window[_namespaces['table']].Tables.Table.prototype = {
 				if(this.cols[i] == col)
 					this.cols.splice(i, 1);
 	},
+
 	
 	setContent: function(content) {
 		this.content = content;
