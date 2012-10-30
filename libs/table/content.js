@@ -87,6 +87,8 @@ console.log(this.rows);
 	},
 
 	exportToTextWith: function(delimiter, showColumns) {
+
+
 		var html = "";
 		var columns = this.table.getColumns(), element;
 		if(showColumns)
@@ -95,18 +97,37 @@ console.log(this.rows);
 				html += delimiter;
 			}
 		html += "\n";
-		for(var i = 0; i < this.elements.length; i++) {
-			if(!this.doSearch(this.elements[i]))
-				continue;
-			element = this.elements[i];
-			element.index = i;
-			for(var j = 0; j < columns.length; j++) {
-				var name = columns[j].getName();
-				var elVal = element.data[name];
-				html += elVal;
-				html += delimiter;
+
+		if(this.setMode == 'rows') {
+
+			for(var i = 0; i < this.rows.length; i++) {
+
+				for(var j = 0; j < columns.length; j++) {
+					var elVal = CI.DataType.getValueFromJPath(this.rows[i]._source, columns[j].jpath).done(function(elVal) {
+						html += elVal;
+					});
+					html += delimiter;
+
+				}
+				html += "\n";
+
+
 			}
-			html += "\n";
+			
+		} else {
+			for(var i = 0; i < this.elements.length; i++) {
+				if(!this.doSearch(this.elements[i]))
+					continue;
+				element = this.elements[i];
+				element.index = i;
+				for(var j = 0; j < columns.length; j++) {
+					var name = columns[j].getName();
+					var elVal = element.data[name];
+					html += elVal;
+					html += delimiter;
+				}
+				html += "\n";
+			}
 		}
 		return html;
 	},
