@@ -57,12 +57,12 @@ CI.Grid = {
 			},
 			
 			start: function() {
-				CI.Util.maskIframes();
+				BI.Util.maskIframes();
 				module.resizing = true;
 			},
 			
 			stop: function() {
-				CI.Util.unmaskIframes();
+				BI.Util.unmaskIframes();
 				CI.Grid.moduleResize(module);
 				module.resizing = false;
 
@@ -78,7 +78,7 @@ CI.Grid = {
 			handle: '.ci-module-header',
 			start: function() {
 				
-				CI.Util.maskIframes();
+				BI.Util.maskIframes();
 				var myZIndex  = $(this).css("zIndex");
 				var count = 0;
 				for (var i in CI.modules) {
@@ -95,7 +95,7 @@ CI.Grid = {
 			stop: function() {
 				var position = $(this).position();
 				
-				CI.Util.unmaskIframes();
+				BI.Util.unmaskIframes();
 				module.getPosition().left = position.left / CI.Grid.definition.xWidth;
 				module.getPosition().top = position.top / CI.Grid.definition.yHeight;
 				module.moving = false;

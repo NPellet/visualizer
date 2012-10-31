@@ -80,3 +80,20 @@ CI.VariableFilters = {
 		}
 	}
 }
+
+CI.VariableFiltersRow = {
+
+	'testFilter': {
+
+		name: 'Test filter',
+		process: function(value, oldValue, jpath, source, row, columns) {
+
+		}
+
+
+	}
+
+
+
+
+}

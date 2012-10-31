@@ -1,13 +1,17 @@
-html {
+/*html {
 	overflow-y: scroll;
 	
 }
+*/
+/*
 body {
 	background-color: #ffffff;
 	padding: 0px;
 	margin-left: 50px;
 	margin-right: 50px;
-}
+}*/
+
+/*
 body, th, td {
 	font-size: 13px;
 }
@@ -15,7 +19,7 @@ body, th, td {
 body, th, td, input {
 	font-family: "Helvetica Light", Helvetica, Arial, Serif;
 }
-
+*/
 #FormImpl {
 	width: 850px;
 	background-color: white;
@@ -279,6 +283,10 @@ span.triangle-left {
 	
 	border-bottom-width: 0px;
 	
+}
+
+textarea.bi-formfield-styled {
+	height: 200px;
 }
 
 div.bi-formfield-styled {
@@ -610,6 +618,23 @@ div.bi-formfield-styled {
 	border-bottom: 1px solid #c0c0c0;
 }
 
+.bi-formfield-type-jscode {
+	
+	
+}
+.bi-formfield-jseditor  {
+	width: 100%;
+	height: 300px;
+    position: relative;
+
+    padding: 0;
+    margin: 0;
+    
+      bottom: 1px;
+    right: 1px;
+    left: 0;
+    right: 0;
+}
 
 .bi-formfield-type-picture .bi-formfield-picture-details .bi-formfield-picturecurrent, .bi-formfield-type-picture .bi-formfield-picture-details .bi-formfield-picturedrop {
 	border: 1px solid #c0c0c0;

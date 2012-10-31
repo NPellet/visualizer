@@ -6,6 +6,8 @@ window[_namespaces['table']].Tables.Column = function(name, options) {
 	this.options = $.extend(true, {}, window[_namespaces['table']].Tables.Column.prototype.defaults, options);
 	this.name = name;
 	this.asc = false;
+
+	this.oldVal = [];
 }
 
 
@@ -118,5 +120,84 @@ window[_namespaces['table']].Tables.Column.prototype = {
 		this.select(true);
 		this.sort.filter('.triangle-up, .triangle-down').addClass('ci-table-hidden').filter('.triangle-' + (!this.asc ? 'up' : 'down')).removeClass('ci-table-hidden');
 		return this.asc = !this.asc;			
+	},
+
+
+
+
+
+
+	// V1.2
+
+	setJPath: function(jpath) {
+		this.jpath = jpath;
+	},
+
+	setAdditionEditable: function(add) {
+		this.additional = add;
+	},
+
+	buildRowCol: function(element, row) {
+		var self = this;
+		return CI.DataType.getValueFromJPath(element, this.jpath).pipe(function(value) {
+			return self.processRowCol(value, [element, self.jpath, row]);
+		});
+	},
+
+	processRowCol: function(value, source) {
+		
+		var html;
+		if(this.editableType)
+			html = this.edit(value, source);
+		else
+			html = $('<div>' + value + '</div>');
+
+		return html;
+	},
+
+	edit: function(value, source) {
+		
+		return this.editableTypes[this.editableType].call(this, value, function(newVal) {
+			CI.DataType.setValueFromJPath(source[0], source[1], newVal);
+
+			source[2].hasChanged.call(source[2], newVal, source[1]);
+		}, this.additional);
+	},
+
+	setEditableType: function(type) {
+		this.editableType = false;
+
+		if(this.editableTypes[type])
+			this.editableType = type;
+	},
+
+	editableTypes: {
+
+		'string': function(value, exec, additional) {
+			var el = $('<input type="text" value="' + value + '" />').bind('keyup', function() {
+				exec($(this).val());
+			});
+			return el;
+		},
+
+		'checkbox': function(value, exec, additional) {
+			var el = $('<input type="checkbox" ' + (value ? ' checked="checked"' : '') + ' />').bind('click', function() {
+				exec($(this).is(':checked'));
+			});
+			return el;
+		},
+
+		'combo': function(value, exec, additional) {
+			var el = $('<select/>');
+			additional = additional.split(',');
+			for(var i = 0; i < additional.length; i++) {
+				el.append('<option value="' + additional[i] + '" ' + (value == additional[i] ? ' selected="selected"' : '') + '>' + additional[i] + '</option>');
+			}
+			el.bind('change', function() {
+				exec($(this).val());
+			});
+			return el;
+		}
 	}
+
 }
