@@ -1,13 +1,17 @@
-html {
+/*html {
 	overflow-y: scroll;
 	
 }
+*/
+/*
 body {
 	background-color: #ffffff;
 	padding: 0px;
 	margin-left: 50px;
 	margin-right: 50px;
-}
+}*/
+
+/*
 body, th, td {
 	font-size: 13px;
 }
@@ -15,7 +19,7 @@ body, th, td {
 body, th, td, input {
 	font-family: "Helvetica Light", Helvetica, Arial, Serif;
 }
-
+*/
 #FormImpl {
 	width: 850px;
 	background-color: white;
