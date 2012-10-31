@@ -212,6 +212,9 @@ BI.Forms.Field.prototype = {
 			this.fields[index].image.attr('src', urlIcon);
 		else if(this.fields[index].image)
 			this.fields[index].image.remove();
+
+		if(this.implementation.initField)
+			this.implementation.initField();
 	},
 	
 	/**

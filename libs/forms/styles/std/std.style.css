@@ -614,6 +614,23 @@ div.bi-formfield-styled {
 	border-bottom: 1px solid #c0c0c0;
 }
 
+.bi-formfield-type-jscode {
+	
+	
+}
+.bi-formfield-jseditor  {
+	width: 100%;
+	height: 300px;
+    position: relative;
+
+    padding: 0;
+    margin: 0;
+    
+      bottom: 1px;
+    right: 1px;
+    left: 0;
+    right: 0;
+}
 
 .bi-formfield-type-picture .bi-formfield-picture-details .bi-formfield-picturecurrent, .bi-formfield-type-picture .bi-formfield-picture-details .bi-formfield-picturedrop {
 	border: 1px solid #c0c0c0;
