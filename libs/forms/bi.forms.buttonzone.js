@@ -1,4 +1,4 @@
-var BI = BI || {};
+var BI = BI || {};
 BI.Buttons = BI.Buttons || {};
 
 BI.Buttons.Zone = function(options) {

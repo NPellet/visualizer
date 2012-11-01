@@ -6,6 +6,7 @@ window[_namespaces['table']].Tables.Row = function(jsonElement, Table, filter) {
 	this.table = Table;
 	this.filter = filter;
 	this._dataCols = [];
+	this.tds = {};
 }
 
 
@@ -42,22 +43,25 @@ window[_namespaces['table']].Tables.Row.prototype = {
 	},
 
 	build: function(index) {
-		this.tr.attr('data-elementid', index).html('');
-		this.tds = {};
+		this.tr.attr('data-elementid', index);	
 		var cols = this.Content.getTable().getColumns();
 		var self = this;
-		this._mainDef.then(function() {
+
+		if(!this.built) {
+			this._mainDef.then(function() {
+				for(var i in cols) {
+					if(!self.tds[i]) {
+						self.tds[i] = $("<td />").append(self._dataCols[i].displayTerm); 
+						self.tr.append(self.tds[i]);
+					}
+				}
+			});
+			
 			for(var i in cols) {
-				var td = $("<td />").append(self._dataCols[i].displayTerm);
-				self.tds[i] = td;
-				self.tr.append(td);
+				this.hasChanged(self._dataCols[i], cols[i].jpath);
 			}
-		});
-		
-		for(var i in cols) {
-			this.hasChanged(self._dataCols[i], cols[i].jpath);
+			this.built = true;
 		}
-		
 		return this.tr;
 	},
 
@@ -73,7 +77,6 @@ window[_namespaces['table']].Tables.Row.prototype = {
 	},
 
 	hasChanged: function(obj, jpath) {
-
 		if(this.filter)
 			this.filter(obj.value, obj.oldValue, jpath, this._source, this, this.Content.getTable().getColumns());
 	},

@@ -185,7 +185,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		var layers = [];
 		for(var i = 0; i < cfgLayers.length; i++) {
 
-			cfgLayers[i].highlightEffect = cfgLayers[i].highlightEffect || {};
+			cfgLayers[i].highlightEffect = cfgLayers[i].highlightEffect || {};
 
 			var cfgLocalLayer = { 
 
@@ -213,7 +213,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 					_loading_highlight: [{
 						groups: {
 							_loading_highlight_grp: [{
-								highlightmag: [cfgLayers[i].highlightEffect.mag || 1],
+								highlightmag: [cfgLayers[i].highlightEffect.mag || 1],
 								highlighteffect: [[(cfgLayers[i].highlightEffect.yStroke ? 'stroke' : null)]]
 							}]
 						}

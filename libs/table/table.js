@@ -51,9 +51,7 @@ window[_namespaces['table']].Tables.Table.prototype = {
 	
 	setContentHtml: function(html) {
 		this.contentHtml = html;
-		this.body.empty();
-
-		this.body.append(html);
+		this.body.html(html);
 
 	},
 	
@@ -122,7 +120,8 @@ window[_namespaces['table']].Tables.Table.prototype = {
 				inst.cols[i].cancelSort(false);
 			var asc = col.doSort(asc);
 			//column.select(!column.isSelected());
-			
+		
+		
 			inst.content.sort(col, asc);
 			inst.commitContent();
 		});
@@ -163,7 +162,6 @@ window[_namespaces['table']].Tables.Table.prototype = {
 	},
 	
 	commitContent: function() {
-
 		this.content.build();
 		this.addPagination();
 	},
@@ -182,7 +180,6 @@ window[_namespaces['table']].Tables.Table.prototype = {
 	doSearch: function(term) {
 		this.content.setSearch(term);
 		this.commitContent();
-		this.addPagination();
 	},
 
 	addPagination: function() {

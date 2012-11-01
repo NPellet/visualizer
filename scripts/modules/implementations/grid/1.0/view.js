@@ -32,7 +32,7 @@ CI.Module.prototype._types.grid.View.prototype = {
 		}
 		this.dom.append(this.domSearch).append(this.domExport).append(this.domTable);
 		this.module.getDomContent().html(this.dom);
-		this._highlights = this._highlights || [];
+		this._highlights = this._highlights || [];
 
 		var self = this;
 	},

@@ -1,6 +1,6 @@
 
-var BI = BI || {};
-BI.Buttons = BI.Buttons || {};
+var BI = BI || {};
+BI.Buttons = BI.Buttons || {};
 
 BI.Buttons.Button = function(label, onClick) {
 	if(label)

@@ -41,16 +41,13 @@ window[_namespaces['table']].Tables.Content.prototype = {
 	build: function() {
 
 		if(this.setMode && this.setMode == 'rows') {
-
 			var j = -1;
-			var html = [];
-			
+			var html = $("<tbody />");			
 			this.reIndexedElements = {};
 			this.index = 0;
 			this.supNav = [];
 			this.entryCount = 0;
 
-			var k = 0;
 			for(var i = 0; i < this.rows.length; i++) {
 				if(!this.doSearch(this.rows[i]))
 					continue;
@@ -59,12 +56,11 @@ window[_namespaces['table']].Tables.Content.prototype = {
 				if(j < (this.page - 1) * this.pagination || j >= this.page * this.pagination)
 					continue;
 				this.rows[i].index = j;
-
-				html.push(this.rows[i].build(j));
+				html.append(this.rows[i].build(j));
 				this.reIndexedElements[j] = this.rows[i];
 			}
-			
-			this.table.setContentHtml(html);
+
+			this.table.setContentHtml(html.children());
 
 		} else {
 
@@ -226,15 +222,19 @@ window[_namespaces['table']].Tables.Content.prototype = {
 	},
 	
 	sort: function(col, asc) {
+
 		var colId = col.getId();
 		if(this.setMode && this.setMode == 'rows') {
 			this.rows.sort(function(a, b) {
+
 				if(a._dataCols[colId].searchTerm === false) return 1;
 				if(b._dataCols[colId].searchTerm === false) return -1;
 				return a._dataCols[colId].searchTerm > b._dataCols[colId].searchTerm ? 1 : -1;
 			});
 			if(!asc)
 				this.rows.reverse();
+			
+
 		} else {
 			var elName = col.getName();
 			this.elements.sort(function(a, b) {

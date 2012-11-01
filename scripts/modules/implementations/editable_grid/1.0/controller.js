@@ -245,9 +245,9 @@ CI.Module.prototype._types.editable_grid.Controller.prototype = {
 		var cols = {};
 		for(var i = 0; i < group.length; i++) {
 			var ed = group[i].editable;
-			cols[group[i].coltitle] = { jpath: group[i].coljpath, editable: ((ed == 'none' || ed == '_none') ? false : ed), colnewjpath: group[i].colnewjpath, coloptions: group[i].coloptions };
+			cols[group[i].coltitle] = { jpath: group[i].coljpath, editable: ((ed == 'none' || ed == '_none') ? false : ed), colnewjpath: group[i].colnewjpath, coloptions: group[i].coloptions };
 		}
-		
+
 		this.module.getConfiguration().colsjPaths = cols;
 		this.module.getConfiguration().nbLines = confSection[0].gencfg[0].nblines[0];
 		this.module.getConfiguration().colorjPath = confSection[0].gencfg[0].colorjpath[0];
