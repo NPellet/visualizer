@@ -156,7 +156,7 @@ CI.Grid = {
 				bottomMax = Math.max(bottomMax, pos.top + size.height);
 		}
 
-		CI.Grid._el.css('height', Math.max($(window).height(), (CI.Grid.defaults.yHeight * bottomMax + (extend ? 1000 : 0))));
+		CI.Grid._el.css('height', Math.max($(window).height() - $("#ci-header").outerHeight(true) - 1, (CI.Grid.defaults.yHeight * bottomMax + (extend ? 1000 : 0))));
 	},
 	
 	

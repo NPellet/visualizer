@@ -24,7 +24,7 @@ html, body {
 
 #ci-viewport {
 	width: 100%;
-	height: 100%;
+	
 }
 
 #ci-left {
@@ -151,9 +151,9 @@ td.ci-expand {
 }
 
 #ci-modules-grid {
-	width: 100%;
-	height: 100%;
-	margin: 10px;
+	/*width: 100%;
+	height: 100%;*/
+	/*margin: 10px;*/
 	min-height: 100%;
 	background: #fefefe;
 	position: relative;
