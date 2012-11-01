@@ -66,25 +66,25 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 			var Table = new CI.Tables.Table({
 				
 				onLineHover: function(element) {
-					return;
+					
 					var source = element._source;
 					view.module.controller.lineHover(source);
 				},
 
 				onLineOut: function(element) {
-					return;
-					//var source = element._source;
+					
+					var source = element._source;
 					view.module.controller.lineOut(source);
 				},
 				
 				onLineClick: function(element) {
-					return;
+					
 					var source = element._source;
 					view.module.controller.lineClick(source);
 				},
 
 				onPageChanged: function(newPage) {
-					return;
+					
 					CI.Util.ResolveDOMDeferred(Table.getDom());
 				}
 			});

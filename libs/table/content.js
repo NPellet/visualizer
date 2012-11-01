@@ -50,6 +50,7 @@ window[_namespaces['table']].Tables.Content.prototype = {
 			this.supNav = [];
 			this.entryCount = 0;
 
+			var k = 0;
 			for(var i = 0; i < this.rows.length; i++) {
 				if(!this.doSearch(this.rows[i]))
 					continue;
@@ -58,7 +59,8 @@ window[_namespaces['table']].Tables.Content.prototype = {
 				if(j < (this.page - 1) * this.pagination || j >= this.page * this.pagination)
 					continue;
 				this.rows[i].index = j;
-				html.push(this.rows[i].build());
+				html.push(this.rows[i].build(j));
+				this.reIndexedElements[j] = this.rows[i];
 			}
 			this.table.setContentHtml(html);
 
@@ -102,6 +104,7 @@ window[_namespaces['table']].Tables.Content.prototype = {
 		if(this.setMode == 'rows') {
 
 			for(var i = 0; i < this.rows.length; i++) {
+
 
 				for(var j = 0; j < columns.length; j++) {
 					var elVal = CI.DataType.getValueFromJPath(this.rows[i]._source, columns[j].jpath).done(function(elVal) {
@@ -240,12 +243,11 @@ window[_namespaces['table']].Tables.Content.prototype = {
 
 			if(!asc)
 				this.elements.reverse();
-		}
-		
-		
+		}	
 	},
 	
 	getElementById: function(id) {
+
 		return this.reIndexedElements[id];
 	},
 

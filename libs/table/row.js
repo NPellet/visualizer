@@ -41,8 +41,9 @@ window[_namespaces['table']].Tables.Row.prototype = {
 
 	},
 
-	build: function() {
+	build: function(index) {
 		
+		this.tr.data('element-id', index);
 		this.tds = {};
 		var cols = this.Content.getTable().getColumns();
 		var self = this;
