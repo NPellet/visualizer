@@ -102,7 +102,6 @@ window[_namespaces['table']].Tables.Table.prototype = {
 		this.dom.on('click', '.ci-table-expand', function() {
 			var el = $(this);
 			var tr = el.parents('tr').eq(0);
-			
 			var id = tr.data('element-id');
 			var html = el.children().html();
 			el[html == '+' ? 'addClass' : 'removeClass']('bottom').children().html(html == '+' ? '-' : '+'); 
@@ -114,14 +113,9 @@ window[_namespaces['table']].Tables.Table.prototype = {
 		
 		this.dom.on('click', 'th', function() {
 			var col = inst.getColumn($(this).data('colname'));
-			
-			//inst.selectColumn(col, true);
 			for(var i = 0, length = inst.cols.length; i < length; i++)
 				inst.cols[i].cancelSort(false);
 			var asc = col.doSort(asc);
-			//column.select(!column.isSelected());
-		
-		
 			inst.content.sort(col, asc);
 			inst.commitContent();
 		});
