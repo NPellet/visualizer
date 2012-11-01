@@ -572,7 +572,7 @@ CI.DataType._getValueFromJPath = function(element, jpath) {
 				return CI.DataType._getValueFromJPath(elChildren, jpath2);
 			});
 		} else
-			return $.Deferred.reject();
+			return $.Deferred().resolve('');
 	} else 
 		return $.Deferred().resolve(element);
 }
