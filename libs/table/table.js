@@ -51,7 +51,10 @@ window[_namespaces['table']].Tables.Table.prototype = {
 	
 	setContentHtml: function(html) {
 		this.contentHtml = html;
-		this.body.html(html);
+		this.body.empty();
+
+		this.body.append(html);
+
 	},
 	
 	setPagination: function(elPerPage) {
@@ -130,18 +133,18 @@ window[_namespaces['table']].Tables.Table.prototype = {
 				return;
 
 			if(typeof inst.options.onLineHover == "function")
-				inst.options.onLineHover(inst.content.getElementById($(this).data('element-id')));
+				inst.options.onLineHover(inst.content.getElementById($(this).attr('data-elementid')));
 		}).on('click', 'tr', function() {
 			if($(this).hasClass('ci-table-pagination'))
 				return;
 			if(typeof inst.options.onLineClick == "function")
-				inst.options.onLineClick(inst.content.getElementById($(this).data('element-id')));
+				inst.options.onLineClick(inst.content.getElementById($(this).attr('data-elementid')));
 		}).on('mouseleave', 'tr', function() {
 			if($(this).hasClass('ci-table-pagination'))
 				return;
 
 			if(typeof inst.options.onLineOut == "function")
-				inst.options.onLineOut(inst.content.getElementById($(this).data('element-id')));
+				inst.options.onLineOut(inst.content.getElementById($(this).attr('data-elementid')));
 		});
 		
 		for(var i = 0; i < this.cols.length; i++) {
@@ -178,7 +181,6 @@ window[_namespaces['table']].Tables.Table.prototype = {
 
 	doSearch: function(term) {
 		this.content.setSearch(term);
-		this.content.build();
 		this.commitContent();
 		this.addPagination();
 	},

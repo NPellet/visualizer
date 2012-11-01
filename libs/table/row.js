@@ -42,8 +42,7 @@ window[_namespaces['table']].Tables.Row.prototype = {
 	},
 
 	build: function(index) {
-		
-		this.tr.data('element-id', index).empty();
+		this.tr.attr('data-elementid', index).html('');
 		this.tds = {};
 		var cols = this.Content.getTable().getColumns();
 		var self = this;
@@ -74,6 +73,7 @@ window[_namespaces['table']].Tables.Row.prototype = {
 	},
 
 	hasChanged: function(obj, jpath) {
+
 		if(this.filter)
 			this.filter(obj.value, obj.oldValue, jpath, this._source, this, this.Content.getTable().getColumns());
 	},

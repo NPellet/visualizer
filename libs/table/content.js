@@ -59,9 +59,11 @@ window[_namespaces['table']].Tables.Content.prototype = {
 				if(j < (this.page - 1) * this.pagination || j >= this.page * this.pagination)
 					continue;
 				this.rows[i].index = j;
+
 				html.push(this.rows[i].build(j));
 				this.reIndexedElements[j] = this.rows[i];
 			}
+			
 			this.table.setContentHtml(html);
 
 		} else {
@@ -141,7 +143,7 @@ window[_namespaces['table']].Tables.Content.prototype = {
 		this.index++;
 		var html = [];
 		var columns = this.table.getColumns();
-		html.push('<tr data-element-id="');
+		html.push('<tr data-elementid="');
 		html.push(this.index);
 		var index = this.index;
 		html.push('" data-parent-id="');

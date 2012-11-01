@@ -23,7 +23,9 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 		this.domExport = $("<div />");
 		var inst = this;
 		if(this.module.getConfiguration().displaySearch) {
-			var searchInput = $("<input />").bind('keyup', function() {
+			var searchInput = $("<input />").bind('keyup', function(e) {
+				if(e.keyCode == 16)
+					return;
 				if(inst.table)
 					inst.table.doSearch($(this).val());;
 			});
