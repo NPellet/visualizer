@@ -40,6 +40,7 @@ CI.Module.prototype._types['2d_list'].View.prototype = {
 			var view = this, cfg = this.module.getConfiguration();
 			var valJpath = cfg.valjpath;
 			var colorJpath = cfg.colorjpath;
+
 			var cols = cfg.colnumber || 4;
 			var sizeStyle = "";
 			if(cfg.width || cfg.height) {
@@ -62,11 +63,11 @@ CI.Module.prototype._types['2d_list'].View.prototype = {
 					}
 
 					var td = $("<td>").css({width: Math.round(100 / cols) + "%", height: cfg.height});
-					CI.DataType.getValueFromJPath(this.list[i], view.module, colorJpath).done(function(val) {
-
-						td.css('background-color', val.color);
-					});
-
+					if(colorJpath) {
+						CI.DataType.getValueFromJPath(this.list[i], colorJpath).done(function(val) {
+							td.css('background-color', val);
+						});
+					}
 					
 					async = CI.DataType.asyncToScreenHtml(this.list[i], view.module, valJpath);
 					async.pipe(function(val) {

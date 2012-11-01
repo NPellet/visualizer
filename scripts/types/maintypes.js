@@ -566,12 +566,13 @@ CI.DataType._getValueFromJPath = function(element, jpath) {
 	var jpathElement = jpath2.shift();
 
 	if(jpathElement) {
-		el = el[jpathElement];
-		return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
-			
-			return CI.DataType._getValueFromJPath(elChildren, jpath2);
-		});
-	
+		if(el = el[jpathElement]) {
+			return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
+				
+				return CI.DataType._getValueFromJPath(elChildren, jpath2);
+			});
+		} else
+			return $.Deferred.reject();
 	} else 
 		return $.Deferred().resolve(element);
 }
