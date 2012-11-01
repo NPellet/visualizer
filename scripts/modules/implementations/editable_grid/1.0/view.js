@@ -23,7 +23,9 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 		this.domExport = $("<div />");
 		var inst = this;
 		if(this.module.getConfiguration().displaySearch) {
-			var searchInput = $("<input />").bind('keyup', function() {
+			var searchInput = $("<input />").bind('keyup', function(e) {
+				if(e.keyCode == 16)
+					return;
 				if(inst.table)
 					inst.table.doSearch($(this).val());;
 			});
@@ -32,7 +34,7 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 		}
 		this.dom.append(this.domSearch).append(this.domExport).append(this.domTable);
 		this.module.getDomContent().html(this.dom);
-		this._highlights = this._highlights || [];
+		this._highlights = this._highlights || [];
 
 		var self = this;
 	},
@@ -51,7 +53,7 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 
 		list: function(moduleValue) {
 		
-
+			var colorJPath = this.module.getConfiguration().colorjPath;
 			for(var i = 0; i < this._highlights.length; i++) {
 				if(!this._highlights[i][0])
 					continue;
@@ -66,25 +68,25 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 			var Table = new CI.Tables.Table({
 				
 				onLineHover: function(element) {
-					return;
+					
 					var source = element._source;
 					view.module.controller.lineHover(source);
 				},
 
 				onLineOut: function(element) {
-					return;
-					//var source = element._source;
+					
+					var source = element._source;
 					view.module.controller.lineOut(source);
 				},
 				
 				onLineClick: function(element) {
-					return;
+					
 					var source = element._source;
 					view.module.controller.lineClick(source);
 				},
 
 				onPageChanged: function(newPage) {
-					return;
+					
 					CI.Util.ResolveDOMDeferred(Table.getDom());
 				}
 			});
@@ -117,8 +119,16 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 			eval("filter = function(value, oldValue, jpath, source, row, columns) { " + filter + " }");
 
 			var elements = moduleValue;
-			for(var i = 0, length = elements.length; i < length; i++)
-				Content.addRow(new CI.Tables.Row(elements[i], Table, filter));
+			for(var i = 0, length = elements.length; i < length; i++) {
+				var row = new CI.Tables.Row(elements[i], Table, filter);
+				Content.addRow(row);
+				if(colorJPath) {
+					CI.DataType.getValueFromJPath(elements[i], colorJPath).done(function(color) {
+						row.setBackgroundColor(color);
+					});					
+				}
+				
+			}
 
 
 			this.elements = elements;

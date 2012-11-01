@@ -1,6 +1,6 @@
 
 
-BI.Forms.GroupFields = BI.Forms.GroupFields || {};
+BI.Forms.GroupFields = BI.Forms.GroupFields || {};
 BI.Forms.GroupFields.Table = {};
 
 BI.Forms.GroupFields.Table = function(name) {

@@ -30,6 +30,7 @@ window[_namespaces['table']].Tables.Content.prototype = {
 	addRow: function(Row) {
 		this.setMode = 'rows';
 		this.rows.push(Row);
+		Row.init();
 		Row.setContent(this);
 	},
 
@@ -40,15 +41,13 @@ window[_namespaces['table']].Tables.Content.prototype = {
 	build: function() {
 
 		if(this.setMode && this.setMode == 'rows') {
-
 			var j = -1;
-			var html = [];
-			
+			var html = $("<tbody />");			
 			this.reIndexedElements = {};
 			this.index = 0;
 			this.supNav = [];
 			this.entryCount = 0;
-console.log(this.rows);
+
 			for(var i = 0; i < this.rows.length; i++) {
 				if(!this.doSearch(this.rows[i]))
 					continue;
@@ -57,9 +56,11 @@ console.log(this.rows);
 				if(j < (this.page - 1) * this.pagination || j >= this.page * this.pagination)
 					continue;
 				this.rows[i].index = j;
-				html.push(this.rows[i].build());
+				html.append(this.rows[i].build(j));
+				this.reIndexedElements[j] = this.rows[i];
 			}
-			this.table.setContentHtml(html);
+
+			this.table.setContentHtml(html.children());
 
 		} else {
 
@@ -102,6 +103,7 @@ console.log(this.rows);
 
 			for(var i = 0; i < this.rows.length; i++) {
 
+
 				for(var j = 0; j < columns.length; j++) {
 					var elVal = CI.DataType.getValueFromJPath(this.rows[i]._source, columns[j].jpath).done(function(elVal) {
 						html += elVal;
@@ -137,7 +139,7 @@ console.log(this.rows);
 		this.index++;
 		var html = [];
 		var columns = this.table.getColumns();
-		html.push('<tr data-element-id="');
+		html.push('<tr data-elementid="');
 		html.push(this.index);
 		var index = this.index;
 		html.push('" data-parent-id="');
@@ -184,10 +186,17 @@ console.log(this.rows);
 			return true;
 		
 		var columns = this.table.getColumns();
-		for(var i = 0; i < columns.length; i++) {
-			if(typeof(val = element.data[columns[i].getName()]) !== "undefined") {
-				if(this.search.test(val))
-					return true;
+
+		if(this.setMode && this.setMode == 'rows') {
+			var row = element;
+			return row.doSearch(term);
+
+		} else {
+			for(var i = 0; i < columns.length; i++) {
+				if(typeof(val = element.data[columns[i].getName()]) !== "undefined") {
+					if(this.search.test(val))
+						return true;
+				}
 			}
 		}
 		return false;
@@ -213,18 +222,34 @@ console.log(this.rows);
 	},
 	
 	sort: function(col, asc) {
-		var elName = col.getName();
-		this.elements.sort(function(a, b) {
-			if(a.data[elName] === false) return 1;
-			if(b.data[elName] === false) return -1;
-			return a.data[elName] > b.data[elName] ? 1 : -1;
-		});
 
-		if(!asc)
-			this.elements.reverse();
+		var colId = col.getId();
+		if(this.setMode && this.setMode == 'rows') {
+			this.rows.sort(function(a, b) {
+
+				if(a._dataCols[colId].searchTerm === false) return 1;
+				if(b._dataCols[colId].searchTerm === false) return -1;
+				return a._dataCols[colId].searchTerm > b._dataCols[colId].searchTerm ? 1 : -1;
+			});
+			if(!asc)
+				this.rows.reverse();
+			
+
+		} else {
+			var elName = col.getName();
+			this.elements.sort(function(a, b) {
+				if(a.data[elName] === false) return 1;
+				if(b.data[elName] === false) return -1;
+				return a.data[elName] > b.data[elName] ? 1 : -1;
+			});
+
+			if(!asc)
+				this.elements.reverse();
+		}	
 	},
 	
 	getElementById: function(id) {
+
 		return this.reIndexedElements[id];
 	},
 

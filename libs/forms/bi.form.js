@@ -1,4 +1,4 @@
-var BI = BI || {};
+var BI = BI || {};
 BI.Forms = {};
 BI.Forms.Fields = {};
 

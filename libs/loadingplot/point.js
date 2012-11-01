@@ -142,7 +142,7 @@ LoadingPlot.SVGElement.prototype.createLabel = function(x, y, labelTxt) {
 	label.setAttributeNS(null, 'x', x);
 	label.setAttributeNS(null, 'y', y);
 //	label.setAttributeNS(null, 'font-size', this._fontsize / this.svg._izoom);
-	label.setAttributeNS(null, 'fill', this._lc || this._data.lc || 'black');
+	label.setAttributeNS(null, 'fill', this._lc || this._data.lc || 'black');
 	//label.setAttributeNS(null, 'transform', 'translate(' + this._x + ' ' + this._y + ') scale(' + (this.svg._izoom / this.svg._zoom) + ') translate(-' + this._x + ' -' + this._y + ')');
 	//this._nodes.push(label);
 

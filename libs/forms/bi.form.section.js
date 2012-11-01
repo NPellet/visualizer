@@ -1,4 +1,3 @@
-var z;
 
 BI.Forms.Section = function(name, options, title) {
 	this.name = name;

@@ -5,6 +5,8 @@ window[_namespaces['table']].Tables.Row = function(jsonElement, Table, filter) {
 	this._source = jsonElement;
 	this.table = Table;
 	this.filter = filter;
+	this._dataCols = [];
+	this.tds = {};
 }
 
 
@@ -20,36 +22,63 @@ window[_namespaces['table']].Tables.Row.prototype = {
 		this.Content = Content;
 	},
 
-	build: function() {
-		var tr = $("<tr />");
-		this.tds = {};
-		var cols = this.Content.getTable().getColumns();
-		var defs = [];
-		for(var i in cols) {
-			defs.push(cols[i].buildRowCol(this._source, this));
-		}
+	init: function() {
 		var self = this;
-		$.when.apply($, defs).then(function() {
+		var cols = this.table.getColumns();
+		var defs = [];
+		for(var i in cols)
+			defs.push(cols[i].buildRowCol(this._source, this));
+		
+		this.tr = $("<tr />");
+		var self = this;
+		this._mainDef = $.when.apply($, defs).then(function() {
 			var j = 0;
 			for(var i in cols) {
-				var td = $("<td />").append(arguments[j]);
-				self.tds[i] = td;
-				tr.append(td);
+				self._dataCols[i] = arguments[j];
 				j++;
 			}
+
 		});
-		this.tr = tr;
-		return tr;
+
 	},
 
-	setBackgroundColor: function(color) {
-		this.tr.css('backgroundColor', color);
+	build: function(index) {
+		this.tr.attr('data-elementid', index);	
+		var cols = this.Content.getTable().getColumns();
+		var self = this;
+
+		if(!this.built) {
+			this._mainDef.then(function() {
+				for(var i in cols) {
+					if(!self.tds[i]) {
+						self.tds[i] = $("<td />").append(self._dataCols[i].displayTerm); 
+						self.tr.append(self.tds[i]);
+					}
+				}
+			});
+			
+			for(var i in cols) {
+				this.hasChanged(self._dataCols[i], cols[i].jpath);
+			}
+			this.built = true;
+		}
+		return this.tr;
 	},
 
-	hasChanged: function(value, jpath) {
+	doSearch: function(term) {
+		var val;
+		var cols = this.table.getColumns();
+		for(var i in cols) {
+			val = this._dataCols[i].searchTerm;
+			if(this.table.getContent().search.test(val))
+				return true;
+		}
+		return false;
+	},
 
+	hasChanged: function(obj, jpath) {
 		if(this.filter)
-			this.filter(value, '', jpath, this._source, this, this.Content.getTable().getColumns());
+			this.filter(obj.value, obj.oldValue, jpath, this._source, this, this.Content.getTable().getColumns());
 	},
 
 	reloadColFromJPath: function(jpath) {
@@ -57,12 +86,29 @@ window[_namespaces['table']].Tables.Row.prototype = {
 		var cols = this.Content.getTable().getColumns();
 		var self = this;
 		for(var i in cols) {
-			if(cols[i].jpath == jpath)
+			if(cols[i].jpath == jpath) {
+
 				cols[i].buildRowCol(this._source, this).done(function(value) {
-					self.tds[i].html(value);
+					self.tds[i].html(value.displayTerm);
 				});
+			}
 		}
+	},
 
 
+	setBackgroundColor: function(color) {
+		this.tr.css('backgroundColor', color);
+	},
+
+	getBackgroundColor: function() {
+		return this.tr.css('backgroundColor');
+	},
+
+	setItalic: function(bln) {
+		this.tr.css('font-style', bln ? 'italic' : 'normal');
+	},
+
+	setBold: function(bln) {
+		this.tr.css('font-weight', bln ? 'bold' : 'normal');
 	}
 }

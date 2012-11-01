@@ -1,5 +1,5 @@
 
-BI.Forms.Templaters = BI.Forms.Templaters || {};
+BI.Forms.Templaters = BI.Forms.Templaters || {};
 
 BI.Forms.Templaters.std = function () {
 	

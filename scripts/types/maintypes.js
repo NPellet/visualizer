@@ -566,12 +566,13 @@ CI.DataType._getValueFromJPath = function(element, jpath) {
 	var jpathElement = jpath2.shift();
 
 	if(jpathElement) {
-		el = el[jpathElement];
-		return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
-			
-			return CI.DataType._getValueFromJPath(elChildren, jpath2);
-		});
-	
+		if(el = el[jpathElement]) {
+			return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
+				
+				return CI.DataType._getValueFromJPath(elChildren, jpath2);
+			});
+		} else
+			return $.Deferred().resolve('');
 	} else 
 		return $.Deferred().resolve(element);
 }
@@ -597,7 +598,6 @@ CI.DataType._setValueFromJPath = function(element, jpath, newValue) {
 		return element[jpath2[0]] = newValue;
 
 	var jpathElement = jpath2.shift();
-
 	if(jpathElement) {
 		el = el[jpathElement];
 		return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
@@ -724,7 +724,9 @@ CI.DataType.getJPathsFromElement = function(element, jpaths) {
 	
 	if(!jpaths)
 		var jpaths = [];
-		
+	
+	jpaths.push({title: 'Not set', key: ''});
+
 	if(element === undefined)
 		return;
 	

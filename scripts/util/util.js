@@ -1,4 +1,4 @@
-var BI = BI || {};
+var BI = BI || {};
 BI.Util = {};
 
 BI.Util.getCurrentLang = function() {
@@ -36,7 +36,7 @@ BI.Util.getNextUniqueId = function() {
 
 
 
-var CI = CI || {};
+var CI = CI || {};
 
 CI.Event = function() {}
 slice = Array.prototype.slice;

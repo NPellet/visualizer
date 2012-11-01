@@ -26,6 +26,14 @@ window[_namespaces['table']].Tables.Column.prototype = {
 	getName: function() {
 		return this.name;
 	},
+
+	getId: function() {
+		return this.id;
+	},
+
+	setId: function(id) {
+		this.id = id;
+	},
 	
 	setTable: function(table) {
 		this.table = table;
@@ -116,7 +124,6 @@ window[_namespaces['table']].Tables.Column.prototype = {
 	},
 
 	doSort: function() {
-		console.log('there');
 		this.select(true);
 		this.sort.filter('.triangle-up, .triangle-down').addClass('ci-table-hidden').filter('.triangle-' + (!this.asc ? 'up' : 'down')).removeClass('ci-table-hidden');
 		return this.asc = !this.asc;			
@@ -145,22 +152,25 @@ window[_namespaces['table']].Tables.Column.prototype = {
 	},
 
 	processRowCol: function(value, source) {
-		
-		var html;
+		var obj = {};
+		obj.searchTerm = value; // searchTerm might be different from value
+		obj.value = value;
+		obj.oldValue = value;
 		if(this.editableType)
-			html = this.edit(value, source);
+			obj.displayTerm = this.edit(value, source, obj);
 		else
-			html = $('<div>' + value + '</div>');
+			obj.displayTerm = $('<div>' + value + '</div>');
 
-		return html;
+		return obj;
 	},
 
-	edit: function(value, source) {
-		
+	edit: function(value, source, object) {
 		return this.editableTypes[this.editableType].call(this, value, function(newVal) {
 			CI.DataType.setValueFromJPath(source[0], source[1], newVal);
-
-			source[2].hasChanged.call(source[2], newVal, source[1]);
+			object.searchTerm = newVal;
+			object.oldValue = object.value;
+			object.value = newVal;
+			source[2].hasChanged.call(source[2], object, source[1]);
 		}, this.additional);
 	},
 

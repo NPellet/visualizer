@@ -1,6 +1,6 @@
 
 
-BI.Forms.GroupFields = BI.Forms.GroupFields || {};
+BI.Forms.GroupFields = BI.Forms.GroupFields || {};
 BI.Forms.GroupFields.List = {};
 
 
@@ -135,7 +135,7 @@ BI.Forms.GroupFields.List.prototype = {
 			for(var j = 0; j < json[i].length; j++) {
 				if(j > 0)
 					field.addField();
-				
+
 				field.implementation.setValue(j, json[i][j]);
 			}
 		}
