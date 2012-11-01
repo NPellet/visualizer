@@ -597,7 +597,6 @@ CI.DataType._setValueFromJPath = function(element, jpath, newValue) {
 		return element[jpath2[0]] = newValue;
 
 	var jpathElement = jpath2.shift();
-
 	if(jpathElement) {
 		el = el[jpathElement];
 		return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
@@ -724,7 +723,9 @@ CI.DataType.getJPathsFromElement = function(element, jpaths) {
 	
 	if(!jpaths)
 		var jpaths = [];
-		
+	
+	jpaths.push({title: 'Not set', key: ''});
+
 	if(element === undefined)
 		return;
 	

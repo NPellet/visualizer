@@ -28,12 +28,12 @@ window[_namespaces['table']].Tables.Row.prototype = {
 		for(var i in cols)
 			defs.push(cols[i].buildRowCol(this._source, this));
 		
+		this.tr = $("<tr />");
 		var self = this;
 		this._mainDef = $.when.apply($, defs).then(function() {
 			var j = 0;
 			for(var i in cols) {
 				self._dataCols[i] = arguments[j];
-
 				j++;
 			}
 
@@ -42,7 +42,7 @@ window[_namespaces['table']].Tables.Row.prototype = {
 	},
 
 	build: function() {
-		var tr = $("<tr />");
+		
 		this.tds = {};
 		var cols = this.Content.getTable().getColumns();
 		var self = this;
@@ -50,16 +50,15 @@ window[_namespaces['table']].Tables.Row.prototype = {
 			for(var i in cols) {
 				var td = $("<td />").append(self._dataCols[i].displayTerm);
 				self.tds[i] = td;
-				tr.append(td);
+				self.tr.append(td);
 			}
 		});
-		this.tr = tr;
-
+		
 		for(var i in cols) {
 			this.hasChanged(self._dataCols[i], cols[i].jpath);
 		}
 		
-		return tr;
+		return this.tr;
 	},
 
 	doSearch: function(term) {

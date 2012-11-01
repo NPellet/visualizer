@@ -51,7 +51,7 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 
 		list: function(moduleValue) {
 		
-
+			var colorJPath = this.module.getConfiguration().colorjPath;
 			for(var i = 0; i < this._highlights.length; i++) {
 				if(!this._highlights[i][0])
 					continue;
@@ -117,8 +117,16 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 			eval("filter = function(value, oldValue, jpath, source, row, columns) { " + filter + " }");
 
 			var elements = moduleValue;
-			for(var i = 0, length = elements.length; i < length; i++)
-				Content.addRow(new CI.Tables.Row(elements[i], Table, filter));
+			for(var i = 0, length = elements.length; i < length; i++) {
+				var row = new CI.Tables.Row(elements[i], Table, filter);
+				Content.addRow(row);
+				if(colorJPath) {
+					CI.DataType.getValueFromJPath(elements[i], colorJPath).done(function(color) {
+						row.setBackgroundColor(color);
+					});					
+				}
+				
+			}
 
 
 			this.elements = elements;

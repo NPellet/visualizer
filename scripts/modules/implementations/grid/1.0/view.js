@@ -51,7 +51,6 @@ CI.Module.prototype._types.grid.View.prototype = {
 
 		list: function(moduleValue) {
 		
-
 			for(var i = 0; i < this._highlights.length; i++) {
 				if(!this._highlights[i][0])
 					continue;
