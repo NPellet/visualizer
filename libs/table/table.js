@@ -22,6 +22,7 @@ window[_namespaces['table']].Tables.Table.prototype = {
 	
 	addColumn: function(col) {
 		this.cols.push(col);
+		col.setId(this.cols.length - 1);
 		col.setTable(this);
 	},
 	
@@ -42,6 +43,10 @@ window[_namespaces['table']].Tables.Table.prototype = {
 		this.content.setPagination(this.pagination);
 		this.content.setPage(this.page);
 		this.content.setSearch(this.search);
+	},
+
+	getContent: function() {
+		return this.content;
 	},
 	
 	setContentHtml: function(html) {

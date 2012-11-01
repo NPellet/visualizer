@@ -30,6 +30,7 @@ window[_namespaces['table']].Tables.Content.prototype = {
 	addRow: function(Row) {
 		this.setMode = 'rows';
 		this.rows.push(Row);
+		Row.init();
 		Row.setContent(this);
 	},
 
@@ -48,7 +49,7 @@ window[_namespaces['table']].Tables.Content.prototype = {
 			this.index = 0;
 			this.supNav = [];
 			this.entryCount = 0;
-console.log(this.rows);
+
 			for(var i = 0; i < this.rows.length; i++) {
 				if(!this.doSearch(this.rows[i]))
 					continue;
@@ -184,10 +185,17 @@ console.log(this.rows);
 			return true;
 		
 		var columns = this.table.getColumns();
-		for(var i = 0; i < columns.length; i++) {
-			if(typeof(val = element.data[columns[i].getName()]) !== "undefined") {
-				if(this.search.test(val))
-					return true;
+
+		if(this.setMode && this.setMode == 'rows') {
+			var row = element;
+			return row.doSearch(term);
+
+		} else {
+			for(var i = 0; i < columns.length; i++) {
+				if(typeof(val = element.data[columns[i].getName()]) !== "undefined") {
+					if(this.search.test(val))
+						return true;
+				}
 			}
 		}
 		return false;
@@ -213,15 +221,28 @@ console.log(this.rows);
 	},
 	
 	sort: function(col, asc) {
-		var elName = col.getName();
-		this.elements.sort(function(a, b) {
-			if(a.data[elName] === false) return 1;
-			if(b.data[elName] === false) return -1;
-			return a.data[elName] > b.data[elName] ? 1 : -1;
-		});
+		var colId = col.getId();
+		if(this.setMode && this.setMode == 'rows') {
+			this.rows.sort(function(a, b) {
+				if(a._dataCols[colId].searchTerm === false) return 1;
+				if(b._dataCols[colId].searchTerm === false) return -1;
+				return a._dataCols[colId].searchTerm > b._dataCols[colId].searchTerm ? 1 : -1;
+			});
+			if(!asc)
+				this.rows.reverse();
+		} else {
+			var elName = col.getName();
+			this.elements.sort(function(a, b) {
+				if(a.data[elName] === false) return 1;
+				if(b.data[elName] === false) return -1;
+				return a.data[elName] > b.data[elName] ? 1 : -1;
+			});
 
-		if(!asc)
-			this.elements.reverse();
+			if(!asc)
+				this.elements.reverse();
+		}
+		
+		
 	},
 	
 	getElementById: function(id) {

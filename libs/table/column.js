@@ -26,6 +26,14 @@ window[_namespaces['table']].Tables.Column.prototype = {
 	getName: function() {
 		return this.name;
 	},
+
+	getId: function() {
+		return this.id;
+	},
+
+	setId: function(id) {
+		this.id = id;
+	},
 	
 	setTable: function(table) {
 		this.table = table;
@@ -145,21 +153,22 @@ window[_namespaces['table']].Tables.Column.prototype = {
 	},
 
 	processRowCol: function(value, source) {
-		
-		var html;
-		if(this.editableType)
-			html = this.edit(value, source);
-		else
-			html = $('<div>' + value + '</div>');
+		var obj = {};
+		obj.searchTerm = value;
 
-		return html;
+		if(this.editableType)
+			obj.displayTerm = this.edit(value, source, obj);
+		else
+			obj.displayTerm = $('<div>' + value + '</div>');
+
+		return obj;
 	},
 
-	edit: function(value, source) {
+	edit: function(value, source, object) {
 		
 		return this.editableTypes[this.editableType].call(this, value, function(newVal) {
 			CI.DataType.setValueFromJPath(source[0], source[1], newVal);
-
+			object.searchTerm = newVal;
 			source[2].hasChanged.call(source[2], newVal, source[1]);
 		}, this.additional);
 	},
