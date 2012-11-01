@@ -54,6 +54,11 @@ window[_namespaces['table']].Tables.Row.prototype = {
 			}
 		});
 		this.tr = tr;
+
+		for(var i in cols) {
+			this.hasChanged(self._dataCols[i], cols[i].jpath);
+		}
+		
 		return tr;
 	},
 
@@ -68,14 +73,9 @@ window[_namespaces['table']].Tables.Row.prototype = {
 		return false;
 	},
 
-	setBackgroundColor: function(color) {
-		this.tr.css('backgroundColor', color);
-	},
-
-	hasChanged: function(value, jpath) {
-
+	hasChanged: function(obj, jpath) {
 		if(this.filter)
-			this.filter(value, '', jpath, this._source, this, this.Content.getTable().getColumns());
+			this.filter(obj.value, obj.oldValue, jpath, this._source, this, this.Content.getTable().getColumns());
 	},
 
 	reloadColFromJPath: function(jpath) {
@@ -83,12 +83,29 @@ window[_namespaces['table']].Tables.Row.prototype = {
 		var cols = this.Content.getTable().getColumns();
 		var self = this;
 		for(var i in cols) {
-			if(cols[i].jpath == jpath)
+			if(cols[i].jpath == jpath) {
+
 				cols[i].buildRowCol(this._source, this).done(function(value) {
-					self.tds[i].html(value);
+					self.tds[i].html(value.displayTerm);
 				});
+			}
 		}
+	},
 
 
+	setBackgroundColor: function(color) {
+		this.tr.css('backgroundColor', color);
+	},
+
+	getBackgroundColor: function() {
+		return this.tr.css('backgroundColor');
+	},
+
+	setItalic: function(bln) {
+		this.tr.css('font-style', bln ? 'italic' : 'normal');
+	},
+
+	setBold: function(bln) {
+		this.tr.css('font-weight', bln ? 'bold' : 'normal');
 	}
 }
