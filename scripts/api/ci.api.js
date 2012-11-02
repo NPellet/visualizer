@@ -51,6 +51,39 @@ CI.API.setSharedVarFromJPath = function(name, value, jpath) {
 	});
 }
 
+CI.API.getAllSharedVariables = function() {
+
+	var allSharedVars = {};
+	for(var i in CI.modules) {
+
+		var def = CI.modules[i].definition;
+		for(var j = 0; def.dataSource && j < def.dataSource.length; j++) {
+			var source = def.dataSource[j];
+			
+			if(typeof allSharedVars[source.name] == "undefined")
+				allSharedVars[source.name] = {send: [], receive: []};
+			
+			allSharedVars[source.name].receive.push({
+				rel: source.rel,
+				moduleName: def.title
+			});
+		}
+		
+		for(var j = 0; def.dataSend && j < def.dataSend.length; j++) {
+		
+			if(typeof allSharedVars[def.dataSend[j].name] == "undefined")
+				allSharedVars[def.dataSend[j].name] = {send: [], receive: []};
+				
+			allSharedVars[def.dataSend[j].name].send.push({
+				rel: def.dataSend[j].rel,
+				moduleName: def.title
+			});
+		}
+	}
+
+	return allSharedVars;
+}
+
 CI.API.getSharedFilters = function(varName) {
 	var filters = Entry.getConfiguration().variableFilters;
 	var toReturn = [];

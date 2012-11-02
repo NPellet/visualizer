@@ -942,3 +942,15 @@ table.bi-table-groupfield-table span span {
 	margin-right: 20px;
 	
 }
+
+
+.bi-form-autocomplete .ui-menu-item a {
+	border: none;
+	cursor: pointer;
+} 
+
+.bi-form-autocomplete .ui-menu-item a.ui-state-hover,
+.bi-form-autocomplete .ui-menu-item a:hover,
+.bi-form-autocomplete .ui-menu-item a.ui-state-active {
+	background: #f0f0f0;
+}

@@ -243,12 +243,13 @@ CI.RepoPool.prototype.compareKeysRecursively = function(set1, set2, or) {
 }
 
 CI.RepoPool.prototype.resendAll = function() {
-
 	for(var i in this._value)
 		this.set(this._value[i][0], this._value[i][1]);
-
 }
 
+CI.RepoPool.prototype.getKeys = function() {
+	return this._keys;
+}
 
 
 CI.Repo = new CI.RepoPool();

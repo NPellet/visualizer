@@ -43,6 +43,8 @@ BI.Forms.Fields.Table.Text.prototype.startEditing = function(position) {
 			minLength: 0,
 			source: this.autocompleteOptions
 		});
+
+		this.input.autocomplete('widget').addClass('bi-form-autocomplete');
 	}
 
 	this.input.focus();
