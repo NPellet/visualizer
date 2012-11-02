@@ -26,6 +26,8 @@ BI.Forms.Fields.Table.Text.prototype.addField = function(position) {
 	var div = $("<div />");
 	this.divs.splice(position, 0, div)
 	this.input = $("<input />");
+
+
 	return { html: div, index: position };
 };
 	
@@ -35,7 +37,16 @@ BI.Forms.Fields.Table.Text.prototype.removeField = function(position) {
 
 BI.Forms.Fields.Table.Text.prototype.startEditing = function(position) {
 	this.divs[position].hide().after(this.input.val(this.main.getValue(position)));
+	
+	if(this.autocompleteOptions) {
+		this.input.autocomplete({
+			minLength: 0,
+			source: this.autocompleteOptions
+		});
+	}
+
 	this.input.focus();
+	this.input.autocomplete("search", this.input.val());
 };
 
 BI.Forms.Fields.Table.Text.prototype.stopEditing = function(position) {

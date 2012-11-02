@@ -119,7 +119,7 @@ $(document).bind('configModule', function(event, module) {
 		});
 		field.setTitle(new BI.Title('Stored in variable'));
 		
-
+		field.implementation.setAutocompleteOptions(['test', 'test2', 'aaa', 'bb', 'bac', 'cab', 'caa', 'adc']);
 
 
 		

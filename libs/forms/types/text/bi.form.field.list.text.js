@@ -27,10 +27,18 @@ BI.Forms.Fields.List.Text.prototype.addField = function() {
 	
 BI.Forms.Fields.List.Text.prototype.removeField = BI.Forms.FieldGeneric.removeField;
 
+
 BI.Forms.Fields.List.Text.prototype.initHtml = function() {
 	
 	var field = this;
 	
+	if(this.autocompleteOptions) {
+		this.main.dom.find('input[type="text"]').autocomplete({
+			minLength: 0,
+			source: this.autocompleteOptions
+		});
+	}
+
 	// Change the input value will change the input hidden value
 	var input = this.main.dom.on('keyup', 'input', function() {
 		var input = $(this);

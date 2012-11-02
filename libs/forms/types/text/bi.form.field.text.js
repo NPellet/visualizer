@@ -12,5 +12,10 @@ BI.Forms.Fields.Text.prototype = {
 		
 		this.main.fields[index].field.val(value);
 		this.main.changeValue(index, value);
+	},
+
+	setAutocompleteOptions: function(options) {
+		this.autocompleteOptions = options;
 	}
 }
+
