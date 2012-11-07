@@ -87,7 +87,7 @@ CI.Module.prototype._types.mol2d.Controller.prototype = {
 	
 	doFillConfiguration: function() {
 	
-		return;
+	 	return {};
 
 		/*
 		var cfg = this.module.getConfiguration();
