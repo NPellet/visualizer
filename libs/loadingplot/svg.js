@@ -20,13 +20,14 @@ LoadingPlot.SVG.prototype.create = function() {
 	this._svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
 
-
 	this._groupElements = document.createElementNS(this._nameSpace, 'g');
 	this._svgEl.appendChild(this._groupElements);
 
 	this._groupLabels = document.createElementNS(this._nameSpace, 'g');
 	this._svgEl.appendChild(this._groupLabels);
 
+	this.zoomChangeCallback = $.Callbacks();
+	this.moveCallback = $.Callbacks();
 
 
 	this.deltaZoom(0, 0, 0);
@@ -42,6 +43,14 @@ LoadingPlot.SVG.prototype.setViewBoxWidth = function(x, y, w, h) {
 	this.initZoom();
 }
 
+LoadingPlot.SVG.prototype.onZoomChange = function(clbk) {
+	this.zoomChangeCallback.add(clbk);
+}
+
+
+LoadingPlot.SVG.prototype.onMove = function(clbk) {
+	this.moveCallback.add(clbk);
+}
 
 
 LoadingPlot.SVG.prototype.setSize = function(width, height) {
@@ -97,7 +106,7 @@ LoadingPlot.SVG.prototype.ready = function() {
 LoadingPlot.SVG.prototype._setEvents = function() {
 	var self = this;
 	$(this._svgEl).mousewheel(function(event, delta) {
-		self.deltaZoom(event.pageX - self._svgPosX, event.pageY - self._svgPosY, delta);
+		self.deltaZoom((event.pageX - self._svgPosX) / self._width, (event.pageY - self._svgPosY) / self._height, delta);
 		return false;
 	});
 	this._svgEl.addEventListener('mousedown', function(event) {
@@ -130,40 +139,73 @@ LoadingPlot.SVG.prototype._dragMove = function(event) {
 	var newX = event.pageX, diffX = (newX - this._dragX);
 	var newY = event.pageY, diffY = (newY - this._dragY);
 
-	var ratioX = diffX / this._width, ratioY = diffY / this._height;
-	var diffXViewbox = ratioX * this._viewBox[2];
-	var diffYViewbox = ratioY * this._viewBox[3];
+	var ratioX = diffX / this._zoom, ratioY = diffY / this._zoom;
+	var diffXViewbox = ratioX/* * this._viewBox[2]*/;
+	var diffYViewbox = ratioY/* * this._viewBox[3]*/;
 
 	this._viewBox[0] -= diffXViewbox;
 	this._viewBox[1] -= diffYViewbox;
+
+	this.moveCallback.fire(this._viewBox[0] + (this._viewBox[2] / 2), this._viewBox[1] + (this._viewBox[3] / 2));
+
 	this._dragX = newX, this._dragY = newY;
 	this.setViewBox();
 	this.doZones();
+}
+
+LoadingPlot.SVG.prototype.setCenter = function(x, y) {
+	this._viewBox[0] = x - (this._viewBox[2] / 2);
+	this._viewBox[1] = y - (this._viewBox[3] / 2);
+	this.setViewBox();
+	this.doZones();	
+}
+
+
+LoadingPlot.SVG.prototype.setZoom = function(zoom01) {
+//console.log(Math.pow(2.71, (zoom01 * 3.5788 - 0.6931)) * this._izoom, Math.pow(2.71, (zoom01 * 3.5788 - 0.6931)));
+	this.deltaZoom(0.5, 0.5, null, Math.pow(2.71828182846, (zoom01 * 3.68887945411394 -0.693147180559945)) * this._izoom);
 }
 
 LoadingPlot.SVG.prototype._dragStop = function() {
 	this._dragging = false;
 }
 
-LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta) {
+LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta, abs) {
 	var self = this;
 
-	if(Math.abs(delta) >= 1)
-		delta = delta < 0 ? -0.5 : 0.25;
 
-	if(!this._currentDelta) {
-		this._currentDelta = 0;
-		this._accumulatedDelta = 0;
-	}
-	if(delta == 0)
-		return;
+	if(delta) {
+		if(Math.abs(delta) >= 1)
+			delta = delta < 0 ? -0.5 : 0.25;
 
-	var parent = this._svgEl.parentNode;
-	this._currentDelta += delta;
+		if(!this._currentDelta) {
+			this._currentDelta = 0;
+			this._accumulatedDelta = 0;
+		}
+		if(delta == 0)
+			return;
+
+		var parent = this._svgEl.parentNode;
+		this._currentDelta += delta;
+		console.log(this._currentDelta);
+	} else {
+		delta = 0;
+	
+		this._zoom = abs;
+		if(this._zoomMode == 'y') {
+			var boxWidthY = this._height / this._zoom;
+			this._currentDelta = Math.log(boxWidthY / this._viewHeight) / Math.log(2);
+		} else {
+			var boxWidthX = this._width / this._zoom;
+			this._currentDelta = Math.log(boxWidthX / this._viewWidth) / Math.log(2);
+		}
+		console.log(this._currentDelta);
+	}	
+
 	var boxWidthX = this._viewWidth * Math.pow(2, this._currentDelta);
 	var boxWidthY = this._viewHeight * Math.pow(2, this._currentDelta);
 	
-	var _zoom = (this._zoomMode == 'y') ? this._height / boxWidthX : this._width / boxWidthY;
+	var _zoom = (this._zoomMode == 'y') ? this._height / boxWidthY : this._width / boxWidthX;
 	if(_zoom / this._izoom < 0.5) {
 		this._currentDelta -= delta;
 		return;
@@ -173,19 +215,22 @@ LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta) {
 		this._currentDelta -= delta;
 		return;
 	}
-	
 	this._zoom = _zoom;
 
-	this._viewBox[0] -= viewRatioX * (boxWidthX - this._viewBox[2]);
-	this._viewBox[1] -= viewRatioY * (boxWidthY - this._viewBox[3]);
+	this._viewBox[0] -= x * (boxWidthX - this._viewBox[2]);
+	this._viewBox[1] -= y * (boxWidthY - this._viewBox[3]);
 	this._viewBox[2] = boxWidthX;
 	this._viewBox[3] = boxWidthY;
 	this.setViewBox();
 
+	this.moveCallback.fire(this._viewBox[0] + (this._viewBox[2] / 2), this._viewBox[1] + (this._viewBox[3] / 2));
+	this.zoomChangeCallback.fire(((Math.log(this._zoom / this._izoom) + 0.693147180559945) / 3.68887945411394));
 	this.changeZoomElements(this._zoom);
+	//this.onZoomChange();
 	this.timeSpringUpdate(200);
 	//parent.appendChild(this._svgEl);
 }
+
 
 LoadingPlot.SVG.prototype.timeSpringUpdate = function(timing) {
 	window.clearTimeout(this._timeoutZoom);

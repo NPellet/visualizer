@@ -6,7 +6,6 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  */
 
-
 if(typeof CI.Module.prototype._types.loading_plot == 'undefined')
 	CI.Module.prototype._types.loading_plot = {};
 
@@ -60,15 +59,26 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 
 		},
 
+		center: function(val) {
+			if(!val)
+				return;
+			this._svg.setCenter.apply(this._svg, val);
+		},
+
+		zoom: function(val) {
+			console.log(val);
+			if(!val)
+				return;
+			this._svg.setZoom(val);
+		},
+
 		loading: function(moduleValue) {
 		
 			var self = this;
 			if(!moduleValue || !moduleValue.value)
 				return;
 
-			LoadingPlot.initZoom = 8000;
-			LoadingPlot.zoom = LoadingPlot.initZoom;
-
+			
 			for(var i = 0; i < this._highlights.length; i++) {
 				if(!this._highlights[i][0])
 					continue;
@@ -80,6 +90,16 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 
 
 			var svg = new LoadingPlot.SVG();
+
+			svg.onZoomChange(function(zoom01) {
+				self.module.controller.onZoomChange(zoom01);
+			});
+
+			svg.onMove(function(cx, cy) {
+				self.module.controller.onMove(cx, cy);
+			});
+
+
 			this._svg = svg;
 
 			if(this._w && this._h)

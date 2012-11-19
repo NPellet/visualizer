@@ -35,6 +35,26 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			}
 	},
 
+	onZoomChange: function(zoom) {
+		var actions;
+		if(!(actions = this.module.definition.dataSend))	
+			return;	
+		for(var i = 0; i < actions.length; i++)
+			if(actions[i].event == "onZoomChange") {
+				CI.API.setSharedVarFromJPath(actions[i].name, zoom, actions[i].jpath);
+			}
+	},
+
+	onMove: function(x, y) {
+		var actions;
+		if(!(actions = this.module.definition.dataSend))	
+			return;	
+		for(var i = 0; i < actions.length; i++)
+			if(actions[i].event == "onMove") {
+				CI.API.setSharedVarFromJPath(actions[i].name, [x,y], actions[i].jpath);
+			}
+	},
+
 	configurationSend: {
 
 		events: {
@@ -66,13 +86,8 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 				description: ''
 			},
 
-			'centerx': {
-				label: 'Center X',
-				description: ''
-			},
-
-			'centery': {
-				label: 'Center Y',
+			'center': {
+				label: 'Coordinates of the center',
 				description: ''
 			}
 		}
@@ -98,15 +113,9 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			description: ''	
 		},
 
-		centerx: {
-			type: ["number"],
-			label: 'Center X',
-			description: ''	
-		},
-
-		centery: {
-			type: ["number"],
-			label: 'Center Y',
+		center: {
+			type: ["array"],
+			label: 'Coordinates of the center',
 			description: ''	
 		}
 	},
