@@ -59,10 +59,10 @@ CI.API.getAllSharedVariables = function() {
 	for(var i in entryVars) {
 		if(typeof allSharedVars[entryVars[i].varname] == "undefined")
 			allSharedVars[entryVars[i].varname] = {send: [], receive: []};
-		allSharedVars[source.name].send.push({
-			rel: '',
-			moduleName: ''
-		});
+			allSharedVars[entryVars[i].varname].send.push({
+				rel: '',
+				moduleName: ''
+			});
 	}
 		
 
