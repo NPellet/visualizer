@@ -69,7 +69,7 @@ function generate(indexX, indexY, buffer, nbValX) {
 		y = startY;
 		for(;y < endY; y++) {
 			
-			if(!data[y] || !data[y][x]) {
+			if(data[y] === false || data[y][x] === false) {
 			//	throw "Errrrror !!!";
 				continue;
 			} else	{
