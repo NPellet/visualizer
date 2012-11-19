@@ -38,7 +38,7 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 			var yLabel = moduleValue.yLabel;
 			var gridData = moduleValue.data;
 			
-			if (x < 0 || y < 0 || y > gridData.length || x > gridData[0].length)
+			if (!gridData || !gridData[0] || x < 0 || y < 0 || y > gridData.length || x > gridData[0].length)
 				return;
 			
 			return [xLabel[x], yLabel[y], gridData[x][y]];
