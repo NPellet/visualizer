@@ -17,8 +17,8 @@ function getColorFromValue(value) {
 	color1Id = Math.min(Math.max(0, color1Id), colors.length - 2);
 	
 	var color;
-	if(color = getColorBetween(value, colors[color1Id], colors[color1Id + 1], color1Id * step + minValue, (color1Id + 1) * step + minValue))
-		return color;
+	color = getColorBetween(value, colors[color1Id], colors[color1Id + 1], color1Id * step + minValue, (color1Id + 1) * step + minValue);
+	return color;
 	
 	throw value;		
 }
