@@ -1,18 +1,6 @@
 CI.ConfigVisualizer = function() {
 
-	var allSharedVars = [];
-	var vars = Entry.getEntryDataVariables();
-	
-	for(var i = 0; i < vars.length; i++) {
-		
-		if(typeof allSharedVars[vars[i].varname] == "undefined")
-			allSharedVars[vars[i].varname] = {send: [], receive: []};
-			
-		allSharedVars[vars[i].varname].send.push({
-			moduleName: '<em>entry point</em>'
-		});
-	}
-
+	var vars = Entry.getEntryDataVariables();	
 	var allSharedVars = CI.API.getAllSharedVariables();
 		
 	var html = $("<div />");
@@ -185,7 +173,7 @@ CI.ConfigVisualizer = function() {
 				options.push({title: i, key: i});
 				
 					
-			var field = groupfield.addField({
+			/*var field = groupfield.addField({
 				type: 'Combo',
 				name: 'sourcename'
 			});
@@ -202,16 +190,24 @@ CI.ConfigVisualizer = function() {
 				this.group.getField('jpath').implementation.setOptions(jpath, index);
 				
 			});
-			
+			*/
 			var field = groupfield.addField({
 				type: 'Combo',
 				name: 'jpath'
 			});
 			field.setTitle(new BI.Title('JPath'));
 			
-			
+		
+			var data = Entry.getDataFromSource();
+			var jpath = [];
+			CI.DataType.getJPathsFromElement(data, jpath);
+			field.implementation.setOptions(jpath);	
+
+
+
 			var inst = this;
 			var save = new BI.Buttons.Button('Save', function() {
+				inst.dom.trigger('stopEditing');
 				var value = inst.getValue();
 				var data = value.cfg[0].tablevars[0];
 				Entry.setEntryDataVariables(data);
@@ -232,7 +228,7 @@ CI.ConfigVisualizer = function() {
 			
 			for(var i = 0; i < entryVars.length; i++) {
 				vars.varname.push(entryVars[i].varname);
-				vars.sourcename.push(entryVars[i].sourcename);
+		//		vars.sourcename.push(entryVars[i].sourcename);
 				vars.jpath.push(entryVars[i].jpath);
 				
 			}

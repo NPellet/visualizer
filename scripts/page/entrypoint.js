@@ -22,7 +22,7 @@ CI.EntryPoint = function(structure, data, options, onLoad) {
 		entryPoint.structure = structure;
 		
 		if(!structure.entryPoint) 
-			structure.entryPoint = { variables: {} };
+			structure.entryPoint = { variables: [] };
 		
 		if(!structure.modules)
 			structure.modules = [];
@@ -55,19 +55,24 @@ CI.EntryPoint = function(structure, data, options, onLoad) {
 	}
 	
 	function doGetStructure(structure) {
-		jQuery.ajax({
-			url: structure,
-			data: {},
-			type: 'get',
-			dataType: 'json',
-			success: function(structure) {
-				doStructure(structure);
-			},
-			
-			error: function() {
-				$("body").unmask().mask("Error while loading structure JSON. Check JSON integrity", { error: true });
-			}
-		});
+
+		if(structure == "")
+			doStructure({});
+		else 
+			jQuery.ajax({
+				url: structure,
+				data: {},
+				type: 'get',
+				dataType: 'json',
+				success: function(structure) {
+					doStructure(structure);
+				},
+				
+				error: function(value) {
+					doStructure({});	
+				//	$("body").unmask().mask("Error while loading structure JSON. Check JSON integrity", { error: true });
+				}
+			});
 	}
 	
 	this.getStructure = getStructure;
@@ -114,14 +119,30 @@ CI.EntryPoint.prototype = {
 			var vars = this.entryData.variables;
 			if(!vars)
 				return;
-			
+		
+			if(vars[0] && vars[0].sourcename) {
+				console.error("Soon deprecated. Please upgrade to new entry definition");
+				for(var i in this.data) {
+					for(var j = 0; j < vars.length; j++) {
+						if(vars[j].sourcename == i)
+							CI.API.setSharedVarFromJPath(vars[j].varname, this.data[i], vars[j].jpath);
+					}
+				}
+			} else {
 
+				var jpath, varname;
+				if(vars.length == 0) {
+					for(var i in this.data) {
 
-			for(var i in this.data) {
-			//	CI.dataType.instanciate(this.data[i]);
-				for(var j = 0; j < vars.length; j++) {
-					if(vars[j].sourcename == i)
-						CI.API.setSharedVarFromJPath(vars[j].varname, this.data[i], vars[j].jpath);
+						jpath = 'element.' + i;
+						varname = i;
+						vars.push({ varname: varname, jpath: jpath });
+						CI.API.setSharedVarFromJPath(varname, this.data, jpath);	
+					}
+				} else {
+					for(var i = 0; i < vars.length; i++) {
+						CI.API.setSharedVarFromJPath(vars[i].varname, this.data, vars[i].jpath);
+					}
 				}
 			}
 		}

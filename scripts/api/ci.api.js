@@ -54,12 +54,28 @@ CI.API.setSharedVarFromJPath = function(name, value, jpath) {
 CI.API.getAllSharedVariables = function() {
 
 	var allSharedVars = {};
+
+	var entryVars = Entry.entryData.vars;
+	for(var i in entryVars) {
+		if(typeof allSharedVars[entryVars[i].varname] == "undefined")
+			allSharedVars[entryVars[i].varname] = {send: [], receive: []};
+		allSharedVars[source.name].send.push({
+			rel: '',
+			moduleName: ''
+		});
+	}
+		
+
+	
 	for(var i in CI.modules) {
 
 		var def = CI.modules[i].definition;
+
 		for(var j = 0; def.dataSource && j < def.dataSource.length; j++) {
 			var source = def.dataSource[j];
-			
+			if(source.name == "")
+				continue;
+	
 			if(typeof allSharedVars[source.name] == "undefined")
 				allSharedVars[source.name] = {send: [], receive: []};
 			
@@ -70,7 +86,10 @@ CI.API.getAllSharedVariables = function() {
 		}
 		
 		for(var j = 0; def.dataSend && j < def.dataSend.length; j++) {
-		
+			
+			if(def.dataSend[j].name == "")
+				continue;
+	
 			if(typeof allSharedVars[def.dataSend[j].name] == "undefined")
 				allSharedVars[def.dataSend[j].name] = {send: [], receive: []};
 				

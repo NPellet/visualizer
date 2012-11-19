@@ -29,6 +29,30 @@ CI = new Object();
 		var dom = $("body");
 		$(dom).mask('Data is loading. Please wait...');
 		
+
+		var _structure = "", _data = "";
+		var urlStructure = window.document.location.search.substring(1).split('&');
+		for(var i = 0; i < urlStructure.length; i++) {
+			
+			var args = urlStructure[i].split('=');
+			var val = unescape(args[1]);
+			switch(args[0]) {
+				
+				case 'viewURL':
+					_structure = val;
+				break;
+				
+				case 'dataURL':
+					_data = val;
+				break;
+				
+				case 'saveViewURL':
+					_saveViewUrl = val;
+				break;
+			}
+		}
+
+
 		window.Entry = new CI.EntryPoint(_structure, _data, {}, function() {
 			$(dom).unmask();
 			

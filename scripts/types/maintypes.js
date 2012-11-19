@@ -223,6 +223,7 @@ CI.DataType.Structures = {
 										"supplierName": "string",
 										"iupac": {
 											"type": "array",
+											'nbElements': 2,
 											"elements": {
 												"type": "object",
 												"elements": {
@@ -234,6 +235,7 @@ CI.DataType.Structures = {
 										
 										"mf": {
 											"type": "array",
+											'nbElements': 2,
 											"elements": {
 												"type": "object",
 												"elements": {
@@ -246,6 +248,7 @@ CI.DataType.Structures = {
 										
 										"mol": {
 											"type": "array",
+											'nbElements': 2,
 											"elements": {
 												"type": "object",
 												"elements": {
@@ -257,6 +260,7 @@ CI.DataType.Structures = {
 										
 										"rn": {
 											"type": "array",
+											'nbElements': 2,
 											"elements": {
 												"type": "object",
 												"elements": {
@@ -688,9 +692,9 @@ CI.DataType.getStructureFromElement = function(element) {
 	if(el !== false && el.type && CI.DataType.Structures[el.type]) {
 		structure = CI.DataType.Structures[el.type];
 	} else if(element instanceof Array) {
-		var element = element[0];
+		
 		structure.type = "array";
-		structure.elements = {};
+		structure.elements = [];
 		//structure.isFolder = true;
 		/*
 		if(typeof element != "object")
@@ -698,8 +702,11 @@ CI.DataType.getStructureFromElement = function(element) {
 		else
 			CI.DataType.getStructureFromElement(element, structure.elements);
 		*/
-		//for(var i in element) 
-		structure.elements = CI.DataType.getStructureFromElement(element);
+		var length = Math.min(5, element.length);
+		for(var i = 0; i < length; i++) {
+			var elementI = element[i];	
+			structure.elements[i] = CI.DataType.getStructureFromElement(elementI);
+		}
 		
 	} else if(typeof element == "object") {
 		
@@ -709,6 +716,8 @@ CI.DataType.getStructureFromElement = function(element) {
 		structure.elements = {};
 		for(var i in element) 
 			structure.elements[i] = CI.DataType.getStructureFromElement(element[i]);
+
+		console.log(structure.elements);
 	} 
 	else if(el.type)
 		structure = el.type;

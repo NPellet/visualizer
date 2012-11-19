@@ -184,21 +184,18 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 	},
 	
 	doFillConfiguration: function() {
-		
-		var cols = this.module.getConfiguration().colors || [];
+		var cols = this.module.getConfiguration().colors || ['#ffffff', '#000000'];
 		var highcontrast = this.module.getConfiguration().highContrast || false;
-
 		return {
-			
-			opts: [{
-				highcontrast: [highcontrast ? ['true'] : []]
-			}], 
-			
-			colors: [{
-				color: cols
-			}]
+			groups: {
+				opts: [{
+					highcontrast: [highcontrast ? ['true'] : []]
+				}], 
+				colors: [{
+					color: cols
+				}]
+			}
 		}
-		
 	},
 	
 	doSaveConfiguration: function(confSection) {

@@ -135,6 +135,8 @@ $(document).bind('configModule', function(event, module) {
 
 			module.setTitle(value.general[0].general[0].moduletitle[0]);
 			module.definition.bgColor = value.general[0].general[0].bgcolor[0];
+			module.setBackgroundColor(value.general[0].general[0].bgcolor[0]);
+			
 
 			module.setSendVars(value.send[0].sentvars[0]);
 			module.setSourceVars(value.receive[0].receivedvars[0]);

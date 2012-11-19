@@ -37,7 +37,7 @@ CI.Module.prototype._types.display_value.View.prototype = {
 
 		'color': function(color) {
 			if(color === undefined)
-				color = "#ffffff";
+				return;
 			this.module.getDomContent().css('backgroundColor', color);
 		},
 

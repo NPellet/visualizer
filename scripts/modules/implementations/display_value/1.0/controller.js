@@ -164,15 +164,17 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 		var valign = this.module.getConfiguration().valign || "top";
 	
 		return {
-			module: [{
-				defaultvalue: [defaultvalue],
-				fcolor: [fcolor],
-			//	bcolor: [bcolor],
-				font: [font],
-				fsize: [fontsize],
-				align: [align],
-				valign: [valign]
-			}]
+			groups: {
+				module: [{
+					defaultvalue: [defaultvalue],
+					fcolor: [fcolor],
+				//	bcolor: [bcolor],
+					font: [font],
+					fsize: [fontsize],
+					align: [align],
+					valign: [valign]
+				}]
+			}
 		}
 	},
 	

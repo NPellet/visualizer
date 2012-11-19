@@ -125,7 +125,6 @@ CI.Module = function(definition) {
 			html += entryCfg.moduleBackground;
 		}
 		
-		
 		html += '">';
 		
 		html += '</div>';
@@ -366,6 +365,10 @@ CI.Module.prototype = {
 			'width': '70%',
 			height: 500
 		}).children('textarea').text(module.controller["export"]());
+	},
+
+	setBackgroundColor: function(color) {
+		this.domContent.get(0).style.backgroundColor = color;
 	}
 };
 
