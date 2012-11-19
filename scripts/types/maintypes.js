@@ -1,54 +1,4 @@
 
-/*
-CI.Async = {};
-CI.Async.trigger = function() {
-
-}
-CI.Async.stack = [];
-
-CI.Async.instanceId = 0;
-CI.Async.createInstance = function() {
-	CI.Async.currentInstance = ++CI.Async.instanceId;
-}
-
-CI.Async.inDom = function(instanceId) {
-	for(var i in CI.Async.instancesElements[instanceId])
-		CI.Async.instancesElements[instanceId][i].getDeferred().resolve();
-}
-
-CI.Async.createAttribute = function(instanceId) {
-	var attr = new CI.TemporaryAttr();
-	CI.Async.instancesElements[instanceId].push(attr);
-}
-
-CI.Async.createDOM = function(instanceId) {
-	var attr = new CI.TemporaryDOM();
-	CI.Async.instancesElements[instanceId].push(attr);
-}
-
-CI.TemporaryAttr = function() {
-	this._class = ".callback-load-attr-";
-	this._class += ++CI.DataType.asyncId;
-	this._deferred = $.Deferred();
-
-	this._deferred.done(function() {
-		// Do
-		$(this._class).attr();
-	});
-}
-
-CI.TemporaryAttr.prototype = {
-
-	getClass: function() {
-		return this._class;
-	},
-
-	getDeferred: function() {
-		return this._deferred;
-	}
-}
-
-*/
 CI.DataType = {};
 
 CI.DataType.asyncId = 0;
@@ -216,67 +166,61 @@ CI.DataType.Structures = {
 				"type": "array",
 				"elements": {
 					
-							"type": "object",
+					"type": "object",
+					"elements": {
+
+						"_entryID": "int",
+						"supplierName": "string",
+						"iupac": {
+							"type": "array",
+							'nbElements': 2,
 							"elements": {
-
-										"_entryID": "int",
-										"supplierName": "string",
-										"iupac": {
-											"type": "array",
-											'nbElements': 2,
-											"elements": {
-												"type": "object",
-												"elements": {
-													"value": "string",
-													"language": "string"	
-												}
-											}
-										},
-										
-										"mf": {
-											"type": "array",
-											'nbElements': 2,
-											"elements": {
-												"type": "object",
-												"elements": {
-													"value": "mf",
-													"mw": "int",
-													"exactMass": "int" 
-												}
-											}
-										},
-										
-										"mol": {
-											"type": "array",
-											'nbElements': 2,
-											"elements": {
-												"type": "object",
-												"elements": {
-													"value": "molfile2D",
-													"gif": "gif"
-												}
-											}
-										},
-										
-										"rn": {
-											"type": "array",
-											'nbElements': 2,
-											"elements": {
-												"type": "object",
-												"elements": {
-													"value": "int"
-												}
-											}
-										},
-										
-										"bachID": "string",
-										"catalogID": "string",
-										"entryDetails": "chemicalDetails"
-
-
-							
+								"type": "object",
+								"elements": {
+									"value": "string",
+									"language": "string"	
+								}
+							}
+						},
 						
-
+						"mf": {
+							"type": "array",
+							'nbElements': 2,
+							"elements": {
+								"type": "object",
+								"elements": {
+									"value": "mf",
+									"mw": "int",
+									"exactMass": "int" 
+								}
+							}
+						},
+						
+						"mol": {
+							"type": "array",
+							'nbElements': 2,
+							"elements": {
+								"type": "object",
+								"elements": {
+									"value": "molfile2D",
+									"gif": "gif"
+								}
+							}
+						},
+						
+						"rn": {
+							"type": "array",
+							'nbElements': 2,
+							"elements": {
+								"type": "object",
+								"elements": {
+									"value": "int"
+								}
+							}
+						},
+						"bachID": "string",
+						"catalogID": "string",
+						"entryDetails": "chemicalDetails"
 					}
 				}
 			}
@@ -1063,9 +1007,6 @@ CI.Type["chart"] = {
 		
 	}
 };
-
-
-
 
 CI.Type["boolean"] = {
 	toScreen: function(def, value) {

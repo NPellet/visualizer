@@ -42,6 +42,16 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			onHover: {
 				label: 'Hovers an element',
 				description: 'Pass the mouse over a line to select it'
+			},
+
+			onMove: {
+				label: 'Move the map',
+				description: 'Move the map'
+			},
+
+			onZoomChange: {
+				label: 'Change the zoom',
+				description: 'The zoom is changed'
 			}
 		},
 		
@@ -49,6 +59,21 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			'element': {
 				label: 'Element',
 				description: 'Returns the selected row in the list'
+			},
+
+			'zoom': {
+				label: 'Zoom',
+				description: ''
+			},
+
+			'centerx': {
+				label: 'Center X',
+				description: ''
+			},
+
+			'centery': {
+				label: 'Center Y',
+				description: ''
 			}
 		}
 		
@@ -65,6 +90,24 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			type: ["object"],
 			label: 'Preferences',
 			description: 'The preferences'
+		},
+
+		zoom: {
+			type: ["number"],
+			label: 'Zoom',
+			description: ''	
+		},
+
+		centerx: {
+			type: ["number"],
+			label: 'Center X',
+			description: ''	
+		},
+
+		centery: {
+			type: ["number"],
+			label: 'Center Y',
+			description: ''	
 		}
 	},
 	
