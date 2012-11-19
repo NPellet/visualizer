@@ -1,11 +1,14 @@
 
 if(typeof LoadingPlot == 'undefined') LoadingPlot = {};
 
-LoadingPlot.SVG = function(width, height, viewWidth, viewHeight) {
+LoadingPlot.SVG = function(width, height, viewWidth, viewHeight, navigation) {
 	this._nameSpace = 'http://www.w3.org/2000/svg';
 	this._px = new String('px');
+	this.navigation = navigation;
 	this.create(width, height, viewWidth, viewHeight);
 	this.zonesDone = [];
+
+	
 }
 
 LoadingPlot.SVG.prototype = {};
@@ -29,17 +32,23 @@ LoadingPlot.SVG.prototype.create = function() {
 	this.zoomChangeCallback = $.Callbacks();
 	this.moveCallback = $.Callbacks();
 
+	if(this.navigation) {
+		this.navRect = document.createElementNS(this._nameSpace, 'rect');
+		this.navRect.setAttribute('stroke', 'red');
+		this.navRect.setAttribute('fill', 'none');
+
+		this._svgEl.appendChild(this.navRect);
+	}
 
 	this.deltaZoom(0, 0, 0);
 	this._setEvents();
 }
 
-LoadingPlot.SVG.prototype.setViewBoxWidth = function(x, y, w, h) {
+LoadingPlot.SVG.prototype.setViewBoxWidth = function(x, y, w, h, force) {
 	this._viewWidth = w;
 	this._viewHeight = h;
 	this._viewBox = [x, y, this._viewWidth, this._viewHeight];
 	this.zones = [];
-
 	this.initZoom();
 }
 
@@ -51,7 +60,6 @@ LoadingPlot.SVG.prototype.onZoomChange = function(clbk) {
 LoadingPlot.SVG.prototype.onMove = function(clbk) {
 	this.moveCallback.add(clbk);
 }
-
 
 LoadingPlot.SVG.prototype.setSize = function(width, height) {
 
@@ -84,7 +92,7 @@ LoadingPlot.SVG.prototype.bindTo = function(dom) {
 
 LoadingPlot.SVG.prototype.ready = function() {
 	$(this._wrapper).append(this._svgEl);
-	this.setViewBox();
+	this.setViewBox(true);
 	var pos = $(this._svgEl).offset();
 	var self = this;
 	$(this._svgEl).on('mouseenter', '[class=highlightgroup]', function() {
@@ -104,6 +112,10 @@ LoadingPlot.SVG.prototype.ready = function() {
 }
 
 LoadingPlot.SVG.prototype._setEvents = function() {
+
+	if(this.navigation)
+		return;
+
 	var self = this;
 	$(this._svgEl).mousewheel(function(event, delta) {
 		self.deltaZoom((event.pageX - self._svgPosX) / self._width, (event.pageY - self._svgPosY) / self._height, delta);
@@ -154,9 +166,14 @@ LoadingPlot.SVG.prototype._dragMove = function(event) {
 }
 
 LoadingPlot.SVG.prototype.setCenter = function(x, y) {
+
 	this._viewBox[0] = x - (this._viewBox[2] / 2);
 	this._viewBox[1] = y - (this._viewBox[3] / 2);
 	this.setViewBox();
+
+	if(this.navigation)
+		return;
+	
 	this.doZones();	
 }
 
@@ -199,7 +216,11 @@ LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta, abs) {
 			var boxWidthX = this._width / this._zoom;
 			this._currentDelta = Math.log(boxWidthX / this._viewWidth) / Math.log(2);
 		}
-		console.log(this._currentDelta);
+
+		if(isNaN(this._currentDelta)) {
+			this._currentDelta = 0;
+			return;
+		}
 	}	
 
 	var boxWidthX = this._viewWidth * Math.pow(2, this._currentDelta);
@@ -223,12 +244,13 @@ LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta, abs) {
 	this._viewBox[3] = boxWidthY;
 	this.setViewBox();
 
+	if(this.navigation)
+		return;
+	
 	this.moveCallback.fire(this._viewBox[0] + (this._viewBox[2] / 2), this._viewBox[1] + (this._viewBox[3] / 2));
 	this.zoomChangeCallback.fire(((Math.log(this._zoom / this._izoom) + 0.693147180559945) / 3.68887945411394));
 	this.changeZoomElements(this._zoom);
-	//this.onZoomChange();
 	this.timeSpringUpdate(200);
-	//parent.appendChild(this._svgEl);
 }
 
 
@@ -239,10 +261,20 @@ LoadingPlot.SVG.prototype.timeSpringUpdate = function(timing) {
 	}, timing);
 }
 
-LoadingPlot.SVG.prototype.setViewBox = function(x1, y1, x2, y2) {
-	if(x1 && x2 && y1 && y2)
-		this._viewBox = [x1, y1, x2, y2];
-	this._svgEl.setAttributeNS(null, 'viewBox', this._viewBox.join(' '));
+LoadingPlot.SVG.prototype.setViewBox = function(force, x1, y1, x2, y2) {
+
+	if(this.navigation && !force) {
+		console.trace();
+		this.navRect.setAttribute('x', this._viewBox[0]);
+		this.navRect.setAttribute('y', this._viewBox[1]);
+		this.navRect.setAttribute('width', this._viewBox[2]);
+		this.navRect.setAttribute('height', this._viewBox[3]);
+	} else {
+	
+		if(x1 && x2 && y1 && y2)
+			this._viewBox = [x1, y1, x2, y2];
+		this._svgEl.setAttributeNS(null, 'viewBox', this._viewBox.join(' '));
+	}
 }
 
 LoadingPlot.SVG.prototype.doZones = function() {

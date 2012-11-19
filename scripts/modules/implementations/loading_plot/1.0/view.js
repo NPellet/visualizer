@@ -45,18 +45,15 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 				return;
 
 			for(var i in moduleValue) {
-
 				// i = descriptor, family, ingredient
 				for(var j = 0; j < this._lastValue.series.length; j++) {
 					if(this._lastValue.series[j].category == i) {
-						
 						for(var k = 0; k < this._lastValue.series[j].data.length; k++) {
 							this._instances[j][k].filter(moduleValue[i]);
 						}
 					}
 				}
 			}
-
 		},
 
 		center: function(val) {
@@ -89,7 +86,7 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 			this._highlights = [];
 
 
-			var svg = new LoadingPlot.SVG();
+			var svg = new LoadingPlot.SVG(null, null, null, null, this.module.getConfiguration().navigation || false);
 
 			svg.onZoomChange(function(zoom01) {
 				self.module.controller.onZoomChange(zoom01);
@@ -111,7 +108,7 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 			var widthX = (moduleValue.value.maxX || 100) - minX;
 			var widthY = (moduleValue.value.maxY || 100) - minY;
 
-			svg.setViewBoxWidth(minX, minY, widthX, widthY);
+			svg.setViewBoxWidth(minX, minY, widthX, widthY, true);
 			svg.bindTo(this.dom);
 
 			var Springs = new LoadingPlot.SpringLabels(svg);

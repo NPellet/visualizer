@@ -125,6 +125,15 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 	},
 	
 	doConfiguration: function(section) {
+
+		var groupfield = new BI.Forms.GroupFields.List('general');
+		section.addFieldGroup(groupfield);
+		var field = groupfield.addField({
+			type: 'Checkbox',
+			name: 'navigation'
+		});
+		field.setTitle(new BI.Title('Navigation'));
+		field.implementation.setOptions({'navigation': 'Navigation only'});
 		
 		var section2 = new BI.Forms.Section('_module_layers', {multiple: true});
 		section2.setTitle(new BI.Title('Layer'));
@@ -172,7 +181,9 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 
 
 		/* */
-		CI.DataType.getJPathsFromElement(data.value.series[0].data[0], jpaths);
+		if(data.value)
+			CI.DataType.getJPathsFromElement(data.value.series[0].data[0], jpaths);
+
 		var field = groupfield.addField({
 			type: 'Color',
 			name: 'color'
@@ -275,7 +286,14 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			layers.push(cfgLocalLayer)
 		}
 
-		el = { sections: {
+		el = { 
+
+			groups: {
+				general: [{
+					navigation: [[this.module.getConfiguration().navigation ? 'navigation' : '']]
+				}]
+			},
+			sections: {
 			_module_layers: layers
 			}
 		};
@@ -287,6 +305,8 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		var displayLabels;
 		var group = confSection[0]._module_layers;
 		
+		navigation = !!confSection[0].general[0].navigation[0][0];
+
 		var layers = [];
 		for(var i = 0; i < group.length; i++) {
 			var labels = group[i]._loading_labels[0]._loading_labels_grp[0].labels[0];
@@ -306,10 +326,8 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			var glow = false, yStroke = false;
 			for(var j = 0; j < h.length; j++) {
 				if(h[j] == 'stroke')
-					yStroke = true;
-				
+					yStroke = true;	
 			}
-
 
 			layers.push({ 
 				layer: group[i].config[0].el[0], 
@@ -326,11 +344,9 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 					yStroke: yStroke
 				}
 			});
-
-
 		}
-	
 		this.module.getConfiguration().layers = layers;	
+		this.module.getConfiguration().navigation = navigation;	
 	},
 
 	"export": function() {
