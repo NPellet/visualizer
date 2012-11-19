@@ -66,7 +66,7 @@ CI.Module.prototype._types.xyzoomnavigator.View.prototype = {
 		//self.moveStart(event);
 
 		var self = this;
-		var target = $(e.target || e.srcElement);
+		var target = $(e.target || e.srcElement);
 		
 		mode = target.hasClass('top') ? 'top' : (target.hasClass('bottom') ? 'bottom' : (target.hasClass('left') ? 'left' : (target.hasClass('right') ? 'right' : 'top')));
 		var self = this, timeout;
