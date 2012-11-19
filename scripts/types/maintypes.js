@@ -468,26 +468,30 @@ CI.DataType.fetchElementIfNeeded = function(element) {
 		return $.Deferred(function(dfd) {
 
 			$.ajax({
-			url: element.url,
-			dataType: ajaxType,
-			type: "get",
-			timeout: 120000,
+				url: element.url,
+				dataType: ajaxType,
+				type: "get",
+				timeout: 120000,
 
-			success: function(data, text, jqxhr) {
-				element.value = data;
-				dfd.resolve(element);
-			},
+				success: function(data, text, jqxhr) {
+					element.value = data;
+					dfd.resolve(element);
+				},
 
-			complete: function() {
+				complete: function() {
 
-			},
+				},
 
-			error: function() {
+				error: function() {
 
-			}
-		})}).promise();
+				}
+			});
+
+
+		});
 		
 	} else {
+
 		def = $.Deferred()
 		return def.resolve(element);
 	}
@@ -813,6 +817,10 @@ CI.DataType._valueToScreen = function(def, data, box, args) {
 CI.Type = {};
 
 CI.Type["string"] = {
+	toScreen: function(def, val) { def.resolve(val); }
+};
+
+CI.Type["matrix"] = {
 	toScreen: function(def, val) { def.resolve(val); }
 };
 	

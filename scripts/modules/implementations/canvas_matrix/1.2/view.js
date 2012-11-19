@@ -272,34 +272,37 @@ CI.Module.prototype._types.canvas_matrix.View.prototype = {
 
 		matrix: function(moduleValue) {
 
-			this.doCanvasErase();
-			if(!moduleValue || !moduleValue.value)
-					return;
+				this.doCanvasErase();
+				if(!moduleValue || !moduleValue.value)
+						return;
 
-				console.log(moduleValue);
-			var gridData;
-			// Get the new module value
-			var moduleValue;	
-			this.gridData = moduleValue.value.data;
-			this.canvasNbX = this.gridData[0].length;
-			this.canvasNbY = this.gridData.length;
-			timeStart = Date.now();
-			var self = this;
+				
+				var gridData;
+				// Get the new module value
+				var moduleValue;
+				this.gridData = moduleValue.value.data;
+				this.canvasNbX = this.gridData[0].length;
+				this.canvasNbY = this.gridData.length;
+				timeStart = Date.now();
+				var self = this;
 
-			CI.WebWorker.send('getminmaxmatrix', moduleValue.value.data, function(data) {
-				self.minValue = data.min;
-				self.maxValue = data.max;
-				self.doChangeWorkersData();
-				// We can keep the actual workers, not a problem. We just need to erase the buffers array	
-				self.buffers = [];
-				self.buffersDone = [];
-				if(!self.getHighContrast()) {
-					self.minValue = 0;
-					self.maxValue = 1;
-				}
-				self.redoScale(self.minValue, self.maxValue);
-				self.launchWorkers();
-			});			
+
+
+				CI.WebWorker.send('getminmaxmatrix', moduleValue.value.data, function(data) {
+					self.minValue = data.min;
+					self.maxValue = data.max;
+					self.doChangeWorkersData();
+					// We can keep the actual workers, not a problem. We just need to erase the buffers array	
+					self.buffers = [];
+					self.buffersDone = [];
+					if(!self.getHighContrast()) {
+						self.minValue = 0;
+						self.maxValue = 1;
+					}
+					self.redoScale(self.minValue, self.maxValue);
+					self.launchWorkers();
+				});			
+
 		}
 	},
 	
