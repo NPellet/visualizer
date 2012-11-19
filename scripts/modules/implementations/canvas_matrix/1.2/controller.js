@@ -41,6 +41,9 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 			if (!gridData || !gridData[0] || x < 0 || y < 0 || y > gridData.length || x > gridData[0].length)
 				return;
 			
+			if(isNaN(x) || isNaN(y))
+				return;
+
 			return [xLabel[x], yLabel[y], gridData[x][y]];
 	},
 
