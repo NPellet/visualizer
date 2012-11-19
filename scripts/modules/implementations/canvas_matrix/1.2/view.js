@@ -275,6 +275,8 @@ CI.Module.prototype._types.canvas_matrix.View.prototype = {
 			this.doCanvasErase();
 			if(!moduleValue || !moduleValue.value)
 					return;
+
+				console.log(moduleValue);
 			var gridData;
 			// Get the new module value
 			var moduleValue;	
