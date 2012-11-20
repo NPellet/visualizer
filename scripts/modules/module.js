@@ -422,7 +422,11 @@ CI.Module.prototype = {
 
 	setDisplayWrapper: function() {
 		var bln = this.definition.displayWrapper;
-		this.getDomWrapper()[bln ? 'addClass' : 'removeClass']('ci-module-displaywrapper')
+		this.getDomWrapper()[bln ? 'addClass' : 'removeClass']('ci-module-displaywrapper');
+		
+		try {
+		this.getDomWrapper().resizable(bln ? 'enable' : 'disable');
+		} catch(e) {}; 
 	}
 };
 

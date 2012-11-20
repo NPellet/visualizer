@@ -71,7 +71,9 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 		var dim = this._molecule.getDimension();
 
 		var ratio = Math.max(this._width / dim.x, this._height / dim.y);
-		this._canvas._domcanvas.width = this._width;
+		if(this._canvas._domcanvas)
+			this._canvas._domcanvas.width = this._width;
+		
 		this._molecule.scaleToAverageBondLength(30 * ratio);
 		this._canvas.specs.atoms_font_size_2D = 10 * ratio;
 		this._canvas.specs.bonds_hashSpacing_2D = 2.5 * ratio;

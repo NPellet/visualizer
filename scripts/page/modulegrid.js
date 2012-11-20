@@ -179,7 +179,7 @@ CI.Grid = {
 				grid.moduleResize(module);	
 			}
 		});
-		
+		module.setDisplayWrapper();
 
 		module.getDomWrapper().find('.ui-resizable-handle').bind('mousedown', function() {
 			CI.Grid.checkDimensions(true);
