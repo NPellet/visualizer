@@ -128,17 +128,11 @@ CI.Grid = {
 			start: function() {
 				
 				BI.Util.maskIframes();
-				var myZIndex  = $(this).css("zIndex");
-				var count = 0;
-				for (var i in CI.modules) {
-					if (CI.modules[i].dom.css("zIndex")>myZIndex) {
-						CI.modules[i].dom.css("zIndex","-=1")
-					}
-					count++;
-				}
+
+		//		CI.Grid.rebuildZIndices(module);				
 				CI.Grid.checkDimensions(true);
 				module.moving = true;
-				$(this).css("zIndex",count);
+				
 			},
 			
 			stop: function() {
@@ -316,6 +310,40 @@ CI.Grid = {
 		CI.Grid._el.css('height', Math.max($(window).height() - $("#ci-header").outerHeight(true) - 1, (CI.Grid.defaults.yHeight * bottomMax + (extend ? 1000 : 0))));
 	},
 	
+
+	moveToFront: function(module) {
+		var dom = module.dom;
+		var myZIndex  = module.definition.zindex;
+		var count = 0;
+		for (var i in CI.modules) {
+			CI.modules[i].definition.zindex = CI.modules[i].definition.zindex || 1;
+			if(CI.modules[i].definition.zindex>=myZIndex) {
+				CI.modules[i].definition.zindex--;
+			}
+			CI.modules[i].dom.css("zIndex", CI.modules[i].definition.zindex);
+			count++;
+		}
+		$(dom).css("zIndex", count);
+		module.definition.zindex = count;
+	},
+
+	moveToBack: function(module) {
+		var dom = module.dom;
+		var myZIndex  = module.definition.zindex;
+		var count = 0;
+		for (var i in CI.modules) {
+			CI.modules[i].definition.zindex = CI.modules[i].definition.zindex || 1;
+			if(CI.modules[i].definition.zindex <= myZIndex) {
+				console.log(CI.modules[i].definition.zindex, myZIndex);
+				CI.modules[i].definition.zindex++;
+			}
+			CI.modules[i].dom.css("zIndex", CI.modules[i].definition.zindex);
+			count++;
+		}
+		console.log($(dom).get(0))
+		$(dom).css("zIndex", 1);
+		module.definition.zindex = 1;
+	},
 	
 	removeModule: function(module) {
 		

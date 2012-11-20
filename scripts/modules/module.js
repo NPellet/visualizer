@@ -385,23 +385,32 @@ CI.Module.prototype = {
 		if(CI.Grid.contextMenu) {
 			var self = this;
 			CI.Grid.contextMenu
-
 				.prepend(
 					$('<li><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>').bind('click', function(e) {
-
 						var pos = self.getDomWrapper().position();
 						var shiftX = e.pageX - pos.left;
 						var shiftY = e.pageY - pos.top;
-
 						CI.Grid.moveModule(self, shiftX, shiftY);
 					})
 				)
-				
 				.prepend(
 					$('<li><a><span class="ui-icon ui-icon-suitcase"></span> Export</a></li>').bind('click', function() {
 						self.exportData();
 					})
 				)
+
+				.prepend(
+					$('<li><a><span class="ui-icon ui-icon-gear"></span> Move to front</a></li>').bind('click', function() {
+						CI.Grid.moveToFront(self);
+					})
+				)
+
+				.prepend(
+					$('<li><a><span class="ui-icon ui-icon-gear"></span> Move to back</a></li>').bind('click', function() {
+						CI.Grid.moveToBack(self);
+					})
+				)
+
 				.prepend(
 					$('<li><a><span class="ui-icon ui-icon-close"></span> Delete module</a></li>').bind('click', function() {
 						Entry.removeModule(self);
