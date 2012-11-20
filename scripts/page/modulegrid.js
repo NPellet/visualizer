@@ -30,8 +30,10 @@ CI.Grid = {
 
 			$li = $('<li><a> Add a module</a></li>');
 			$ulModules = $("<ul />").appendTo($li);
+			$ulModules.append('<li class="ci-item-arrowrefresh-1-s" name="refresh"><a>Refresh page</a></li>');
 			for(var i in CI.Module.prototype._types) {
 				$ulModules.append('<li class="ci-item-newnmodule" name="' + i + '"><a>' + CI.Module.prototype._types[i].Controller.prototype.moduleInformations.moduleName + '</a></li>');
+
 			}
 			$menu.append($li);
 			
@@ -57,6 +59,9 @@ CI.Grid = {
 					var moduleName = ui.item.attr('name');
 					if(ui.item.hasClass('ci-item-newnmodule'))
 						CI.Grid.newModule(moduleName);
+					else if(ui.item.hasClass('ci-item-refresh'))
+						document.location.href = document.location.href;
+
 				}
 			});
 			e.preventDefault();
