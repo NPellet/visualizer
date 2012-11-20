@@ -46,7 +46,16 @@ CI.Grid = {
 				CI.Grid.contextMenu = null;
 				$(document).unbind('click', clickHandler);
 			}
+
+			var rightClickHandler = function() {
+				if(CI.Grid.contextMenu)
+					CI.Grid.contextMenu.menu('destroy').remove();
+				CI.Grid.contextMenu = null;
+				$("#ci-header").unbind('contextmenu', rightClickHandler);
+			}
 			
+			$("#ci-header").bind('contextmenu', rightClickHandler);
+
 			$(document).bind('click', clickHandler);
 			
 			return false;
@@ -282,7 +291,7 @@ CI.Grid = {
 		var mouseMoveHandler = function(e) {
 			var gridPos = $("#ci-modules-grid").position();
 			CI.Grid.moduleMove.top = e.pageY/* - gridPos.left*/ - shiftY;
-			CI.Grid.moduleMove.left = e.pageX /*- gridPos.left*/ - shiftX;
+			CI.Grid.moduleMove.left = e.pageX /*- gridPos.left*/	 - shiftX;
 			CI.Grid.moduleMove.div.css({
 				top: CI.Grid.moduleMove.top,
 				left: CI.Grid.moduleMove.left
