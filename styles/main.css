@@ -171,6 +171,7 @@ td.ci-expand {
 #ci-modules-grid > div.ci-module-wrapper {
 	position: absolute; /* important */
 	z-index: 0; /* needs to be specified for the resize handle to appear in the right layer */
+	opacity: 1 !important;
 }
 
 div.ci-module-wrapper .ci-module {
