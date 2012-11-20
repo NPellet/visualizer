@@ -298,7 +298,7 @@ CI.Module.prototype = {
 			this.model.inDom();
 
 		var self = this;
-		this.getDomContent().get(0).addEventListener('contextmenu', function(e) {
+		this.getDomWrapper().get(0).addEventListener('contextmenu', function(e) {
 			e.preventDefault();
 			return self.handleContext(e);
 		});
