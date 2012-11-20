@@ -13,6 +13,7 @@ CI.DataType.Structures = {
 	'string': "string",
 	'gif': "string",
 	'jpg': "string",
+	'jpeg': "string",
 	'png': "string",
 	'number': "number",
 	'mf': 'string',
@@ -1025,4 +1026,5 @@ CI.Type["boolean"] = {
 
 CI.Type.gif = CI.Type.picture;
 CI.Type.jpeg = CI.Type.picture;
+CI.Type.jpg = CI.Type.picture;
 CI.Type.png = CI.Type.picture;
