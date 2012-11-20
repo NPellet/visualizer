@@ -69,6 +69,14 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 			this._svg.setZoom(val);
 		},
 
+		viewport: function(viewport) {
+			if(!viewport)
+				return;
+
+
+			this._svg.setViewBox.apply(this._svg, [false].concat(viewport));
+		},
+
 		loading: function(moduleValue) {
 		
 			var self = this;
@@ -90,10 +98,12 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 
 			svg.onZoomChange(function(zoom01) {
 				self.module.controller.onZoomChange(zoom01);
+				self.module.controller.onChangeViewport(svg.getViewBox());
 			});
 
 			svg.onMove(function(cx, cy) {
 				self.module.controller.onMove(cx, cy);
+				self.module.controller.onChangeViewport(svg.getViewBox());
 			});
 
 
@@ -109,6 +119,9 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 			var widthY = (moduleValue.value.maxY || 100) - minY;
 
 			svg.setViewBoxWidth(minX, minY, widthX, widthY, true);
+
+			svg.create();
+
 			svg.bindTo(this.dom);
 
 			var Springs = new LoadingPlot.SpringLabels(svg);

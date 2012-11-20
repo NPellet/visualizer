@@ -5,15 +5,11 @@ LoadingPlot.SVG = function(width, height, viewWidth, viewHeight, navigation) {
 	this._nameSpace = 'http://www.w3.org/2000/svg';
 	this._px = new String('px');
 	this.navigation = navigation;
-	this.create(width, height, viewWidth, viewHeight);
 	this.zonesDone = [];
 
-	
-}
+	this.zoomChangeCallback = $.Callbacks();
+	this.moveCallback = $.Callbacks();	
 
-LoadingPlot.SVG.prototype = {};
-LoadingPlot.SVG.prototype.create = function() {
-	var self = this;
 
 	this._els = [];
 	this._viewBox = [];
@@ -29,9 +25,6 @@ LoadingPlot.SVG.prototype.create = function() {
 	this._groupLabels = document.createElementNS(this._nameSpace, 'g');
 	this._svgEl.appendChild(this._groupLabels);
 
-	this.zoomChangeCallback = $.Callbacks();
-	this.moveCallback = $.Callbacks();
-
 	if(this.navigation) {
 		this.navRect = document.createElementNS(this._nameSpace, 'rect');
 		this.navRect.setAttribute('stroke', 'red');
@@ -39,6 +32,15 @@ LoadingPlot.SVG.prototype.create = function() {
 
 		this._svgEl.appendChild(this.navRect);
 	}
+
+
+}
+
+
+LoadingPlot.SVG.prototype = {};
+LoadingPlot.SVG.prototype.create = function() {
+	var self = this;
+
 
 	this.deltaZoom(0, 0, 0);
 	this._setEvents();
@@ -48,9 +50,12 @@ LoadingPlot.SVG.prototype.setViewBoxWidth = function(x, y, w, h, force) {
 	this._viewWidth = w;
 	this._viewHeight = h;
 	this._viewBox = [x, y, this._viewWidth, this._viewHeight];
+
 	this.zones = [];
 	this.initZoom();
 }
+
+
 
 LoadingPlot.SVG.prototype.onZoomChange = function(clbk) {
 	this.zoomChangeCallback.add(clbk);
@@ -84,6 +89,16 @@ LoadingPlot.SVG.prototype.initZoom = function() {
 	this._zoom = zoom;
 	this._izoom = zoom;
 	this._zoomMode = zoom == rY ? 'y' : 'x';
+
+	if(this._zoomMode == 'y') {
+		this._viewBox[2] = this._width / rY;
+		this._viewWidth = this._viewBox[2];
+	} else {
+		this._viewBox[3] = this._height / rX;
+		this._viewHeight = this._viewBox[3];
+	}
+
+	this.setViewBox(true);
 }
 
 LoadingPlot.SVG.prototype.bindTo = function(dom) {
@@ -174,6 +189,7 @@ LoadingPlot.SVG.prototype.setCenter = function(x, y) {
 	if(this.navigation)
 		return;
 	
+	this.moveCallback.fire(this._viewBox[0] + (this._viewBox[2] / 2), this._viewBox[1] + (this._viewBox[3] / 2));
 	this.doZones();	
 }
 
@@ -190,8 +206,7 @@ LoadingPlot.SVG.prototype._dragStop = function() {
 LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta, abs) {
 	var self = this;
 
-
-	if(delta) {
+	if(delta !== null) {
 		if(Math.abs(delta) >= 1)
 			delta = delta < 0 ? -0.5 : 0.25;
 
@@ -199,9 +214,9 @@ LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta, abs) {
 			this._currentDelta = 0;
 			this._accumulatedDelta = 0;
 		}
-		if(delta == 0)
+	/*	if(delta == 0)
 			return;
-
+*/
 		var parent = this._svgEl.parentNode;
 		this._currentDelta += delta;
 		
@@ -261,7 +276,14 @@ LoadingPlot.SVG.prototype.timeSpringUpdate = function(timing) {
 	}, timing);
 }
 
+LoadingPlot.SVG.prototype.getViewBox = function() {
+	return this._viewBox;
+}
+
 LoadingPlot.SVG.prototype.setViewBox = function(force, x1, y1, x2, y2) {
+
+	if(x1 && x2 && y1 && y2)
+		this._viewBox = [x1, y1, x2, y2];
 
 	if(this.navigation && !force) {
 		
@@ -270,9 +292,6 @@ LoadingPlot.SVG.prototype.setViewBox = function(force, x1, y1, x2, y2) {
 		this.navRect.setAttribute('width', this._viewBox[2]);
 		this.navRect.setAttribute('height', this._viewBox[3]);
 	} else {
-	
-		if(x1 && x2 && y1 && y2)
-			this._viewBox = [x1, y1, x2, y2];
 		this._svgEl.setAttributeNS(null, 'viewBox', this._viewBox.join(' '));
 	}
 }
@@ -348,6 +367,10 @@ LoadingPlot.SVG.prototype.add = function(el) {
 LoadingPlot.SVG.prototype.getElementsForSprings = function() {
 
 	//console.log(this._zoneMinX, this._zoneMinY, this._zoneNbX, this._zoneNbY)
+	this._zoneNbX = 20;
+	this._zoneNbY = 20;
+	this._zoneMinX = 0;
+	this._zoneMinY = 0;
 	var coords = [], labels = [], el;
 	for(var i = 0; i <= this._zoneNbX; i++) {
 		for(var j = 0; j <= this._zoneNbY; j++) {

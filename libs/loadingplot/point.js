@@ -59,8 +59,8 @@ LoadingPlot.SVGElement.prototype.setLabelStroke = function(bln) {
 
 	if(this._label && this._labelStroke) {
 		this._label.setAttributeNS(null, 'stroke', 'black');
-		this._label.setAttributeNS(null, 'stroke-width', 1 / this.svg._izoom);
-		this._label.setAttributeNS(null, 'vector-effect', 'non-scaling-stroke');
+		this._label.setAttributeNS(null, 'stroke-width', 1 / this.svg._zoom);
+	//	this._label.setAttributeNS(null, 'vector-effect', 'non-scaling-stroke');
 	}
 }
 
@@ -100,6 +100,7 @@ LoadingPlot.SVGElement.prototype.labelVisibility = function() {
 		}
 
 		
+		this._label.setAttributeNS(null, 'stroke-width', 1 / this.svg._zoom);
 		this._label.setAttributeNS(null, 'font-size', this._fontsize / ((!this.allowLabelScale) ? this.svg._zoom : this.svg._izoom));
 
 	} else {

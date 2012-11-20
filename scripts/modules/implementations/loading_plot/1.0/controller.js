@@ -55,6 +55,17 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			}
 	},
 
+
+	onChangeViewport: function(vp) {
+		var actions;
+		if(!(actions = this.module.definition.dataSend))	
+			return;	
+		for(var i = 0; i < actions.length; i++)
+			if(actions[i].event == "onViewPortChange") {
+				CI.API.setSharedVarFromJPath(actions[i].name, vp, actions[i].jpath);
+			}
+	},
+
 	configurationSend: {
 
 		events: {
@@ -72,6 +83,11 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			onZoomChange: {
 				label: 'Change the zoom',
 				description: 'The zoom is changed'
+			},
+
+			onViewPortChange: {
+				label: 'Viewport has changed',
+				description: ''
 			}
 		},
 		
@@ -88,6 +104,11 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 
 			'center': {
 				label: 'Coordinates of the center',
+				description: ''
+			},
+
+			'viewport': {
+				label: 'Viewport',
 				description: ''
 			}
 		}
@@ -117,6 +138,12 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			type: ["array"],
 			label: 'Coordinates of the center',
 			description: ''	
+		},
+
+		viewport: {
+			type: "array",
+			label: 'Viewport data (x,y,w,h)',
+			description: ''
 		}
 	},
 	

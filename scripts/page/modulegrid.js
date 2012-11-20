@@ -269,12 +269,9 @@ CI.Grid = {
 		CI.Grid.moduleMove = { module: module, div: module.getDomWrapper() };
 
 		var mouseMoveHandler = function(e) {
-	
 			var gridPos = $("#ci-modules-grid").position();
-
 			CI.Grid.moduleMove.top = e.pageY - gridPos.left - shiftY;
 			CI.Grid.moduleMove.left = e.pageX - gridPos.left - shiftX;
-
 			CI.Grid.moduleMove.div.css({
 				top: CI.Grid.moduleMove.top,
 				left: CI.Grid.moduleMove.left
