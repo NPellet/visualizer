@@ -285,8 +285,8 @@ CI.Grid = {
 
 			var gridPos = $("#ci-modules-grid").position();
 
-			var left = Math.max(0, Math.round((CI.Grid.moduleMove.left - gridPos.left) / CI.Grid.definition.xWidth));
-			var top = Math.max(0, Math.round((CI.Grid.moduleMove.top - gridPos.top) / CI.Grid.definition.yHeight));
+			var left = Math.max(0, Math.round((CI.Grid.moduleMove.left) / CI.Grid.definition.xWidth));
+			var top = Math.max(0, Math.round((CI.Grid.moduleMove.top) / CI.Grid.definition.yHeight));
 			CI.Grid.moduleMove.module.getPosition().top = top;
 			CI.Grid.moduleMove.module.getPosition().left = left;
 			

@@ -97,13 +97,14 @@ CI.Module.prototype._types.xyzoomnavigator.Controller.prototype = {
 	
 	doConfiguration: function(section) {
 		
-		
-		
-		return true;
+		//return true;
 	},
 	
 	doFillConfiguration: function() {
-		return {};
+		return {
+			groups: {
+			}
+		};
 	},
 	
 	doSaveConfiguration: function(confSection) {
