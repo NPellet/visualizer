@@ -230,11 +230,15 @@ CI.Grid = {
 			Entry.addModuleFromJSON(module, true);
 
 			$(document).unbind('mousedown', mouseDownHandler).unbind('mousemove', mouseMoveHandler).unbind('mouseup', mouseUpHandler);
+			CI.Grid._el.css('cursor', 'default');
 		};
 
 		var mouseDownHandler = function(e) {
 			CI.Grid.modulePos.left = e.pageX;
 			CI.Grid.modulePos.top = e.pageY;
+
+			CI.Grid.modulePos.ileft = e.pageX;
+			CI.Grid.modulePos.itop = e.pageY;
 
 			CI.Grid.modulePos.div = $("<div>").css({
 				border: '1px solid red',
@@ -252,16 +256,23 @@ CI.Grid = {
 			if(!CI.Grid.modulePos.left)
 				return;
 
-			CI.Grid.modulePos.width = e.pageX - CI.Grid.modulePos.left;
-			CI.Grid.modulePos.height = e.pageY - CI.Grid.modulePos.top;
+			CI.Grid.modulePos.width = Math.abs(e.pageX - CI.Grid.modulePos.ileft);
+			CI.Grid.modulePos.height = Math.abs(e.pageY - CI.Grid.modulePos.itop);
+
+			CI.Grid.modulePos.left = Math.min(CI.Grid.modulePos.ileft, e.pageX);
+			CI.Grid.modulePos.top = Math.min(CI.Grid.modulePos.itop, e.pageY);
+
 
 			CI.Grid.modulePos.div.css({
 				width: CI.Grid.modulePos.width,
-				height: CI.Grid.modulePos.height
+				height: CI.Grid.modulePos.height,
+				left: CI.Grid.modulePos.left,
+				top: CI.Grid.modulePos.top
 			});
 		};
 
 		$(document).bind('mousedown', mouseDownHandler).bind('mousemove', mouseMoveHandler).bind('mouseup', mouseUpHandler);
+		CI.Grid._el.css('cursor', 'crosshair');
 	},
 
 	moveModule: function(module, shiftX, shiftY) {
