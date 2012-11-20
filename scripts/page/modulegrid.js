@@ -319,7 +319,7 @@ CI.Grid = {
 
 	moveToFront: function(module) {
 		var dom = module.dom;
-		var myZIndex  = module.definition.zindex;
+		var myZIndex  = module.definition.zindex || 1;
 		var count = 0;
 		for (var i in CI.modules) {
 			CI.modules[i].definition.zindex = CI.modules[i].definition.zindex || 1;
@@ -335,7 +335,7 @@ CI.Grid = {
 
 	moveToBack: function(module) {
 		var dom = module.dom;
-		var myZIndex  = module.definition.zindex;
+		var myZIndex  = module.definition.zindex || 1;
 		var count = 0;
 		for (var i in CI.modules) {
 			CI.modules[i].definition.zindex = CI.modules[i].definition.zindex || 1;
