@@ -146,6 +146,8 @@ CI.EntryPoint.prototype = {
 				}
 			}
 		}
+
+		this.entryData.variables = vars;
 		
 		if(doNotCallback)
 			return;

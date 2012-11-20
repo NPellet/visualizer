@@ -34,7 +34,7 @@ CI.Module.prototype._types.canvas_matrix.View.prototype = {
 		
 		
 		this.squareLoading = 250;
-		this.availableZooms = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+		this.availableZooms = [1,2,3,4,5,6,7,8,9,10/*,11,12,13,14,15*//*,16,17,18,19,20*/];
 		
 		this.workers;
 		this.buffers = {};
@@ -52,8 +52,11 @@ CI.Module.prototype._types.canvas_matrix.View.prototype = {
 			self.accumulatedDelta += delta;
 			if(delta !== undefined)
 				self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top))
+		}).on('dblclick', function(e) {
+			self.accumulatedDelta = 0;
+			self.changeZoom(self.accumulatedDelta / 1000, (e.offsetX || e.pageX - $(e.target).offset().left), (e.offsetY || e.pageY - $(e.target).offset().top))
+			
 		});
-		
 		
 		
 		$(this.canvasContainer).drag(function(e1, e2) {

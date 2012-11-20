@@ -122,12 +122,14 @@ CI.Module.prototype._types.plot_stat.Controller.prototype = {
 		var displayLegend = cfg.legend ? ['display'] : ''
 
 		return {
-			module: [{
-				linewidth: [linewidth],
-				pointsize: [pointsize],
-				charttype: [charttype],
-				legend: [displayLegend]
-			}]
+			groups: {
+				module: [{
+					linewidth: [linewidth],
+					pointsize: [pointsize],
+					charttype: [charttype],
+					legend: [displayLegend]
+				}]
+			}
 		}
 	},
 	

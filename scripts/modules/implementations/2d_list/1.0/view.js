@@ -54,6 +54,7 @@ CI.Module.prototype._types['2d_list'].View.prototype = {
 			CI.DataType.fetchElementIfNeeded(moduleValue).done(function(val) {
 				this.list = val;
 				var table = $('<table cellpadding="3" cellspacing="0">');
+				
 				for(var i = 0; i < this.list.length; i++) {
 					colId = i % cols;
 					if(colId == 0) {
@@ -76,6 +77,8 @@ CI.Module.prototype._types['2d_list'].View.prototype = {
 					
 					td.appendTo(current);
 				}
+
+				current.appendTo(table);
 				view.dom.html(table);
 				CI.Util.ResolveDOMDeferred(view.dom);
 			});

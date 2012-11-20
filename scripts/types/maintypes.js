@@ -158,13 +158,13 @@ CI.DataType.Structures = {
 		}
 	},
 
-	'chemical': {
+	'chemical': {/*
 		"type": "object",
 		"elements": {
 
 			"entry": {
 				"type": "array",
-				"elements": {
+				"elements": {*/
 					
 					"type": "object",
 					"elements": {
@@ -222,9 +222,9 @@ CI.DataType.Structures = {
 						"catalogID": "string",
 						"entryDetails": "chemicalDetails"
 					}
-				}
+			/*	}
 			}
-		}
+		}*/
 	},
 	
 	"chemicalDetails": {
@@ -462,7 +462,7 @@ CI.DataType.fetchElementIfNeeded = function(element) {
 	
 	var type = element.type, ajaxType, def;
 	if(!element.value && element.url) {
-		
+			
 		ajaxType = typeof CI.DataType.Structures[type] == "object" ? 'json' : 'text';
 		
 		return $.Deferred(function(dfd) {
