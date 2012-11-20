@@ -97,8 +97,8 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 				this._svg.remove();
 				this.dom.empty();
 			}
-			
-			var svg = new LoadingPlot.SVG(null, null, null, null, this.module.getConfiguration().navigation || false);
+
+			var svg = new LoadingPlot.SVG(null, null, null, null, this.module.getConfiguration().navigation || false);
 
 			svg.onZoomChange(function(zoom01) {
 				self.module.controller.onZoomChange(zoom01);
