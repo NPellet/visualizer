@@ -178,6 +178,10 @@ div.ci-module-wrapper .ci-module {
 	height: 100%;
 }
 
+#ci-modules-grid > div.ci-module-wrapper .ci-module-content {
+	background: transparent !important;
+}
+
 #ci-modules-grid > div.ci-module-wrapper.ci-module-displaywrapper {
 	border: 1px solid #999999;
 	background: white;
@@ -185,7 +189,10 @@ div.ci-module-wrapper .ci-module {
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;	 
+	background: inherit !important;
 }
+
+
 
 #ci-modules-grid > div.ci-module-wrapper .ci-module-header {
 	display: none;
