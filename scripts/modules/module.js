@@ -400,13 +400,13 @@ CI.Module.prototype = {
 				)
 
 				.prepend(
-					$('<li><a><span class="ui-icon ui-icon-gear"></span> Move to front</a></li>').bind('click', function() {
+					$('<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>').bind('click', function() {
 						CI.Grid.moveToFront(self);
 					})
 				)
 
 				.prepend(
-					$('<li><a><span class="ui-icon ui-icon-gear"></span> Move to back</a></li>').bind('click', function() {
+					$('<li><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>').bind('click', function() {
 						CI.Grid.moveToBack(self);
 					})
 				)
