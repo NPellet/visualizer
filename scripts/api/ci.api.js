@@ -64,9 +64,7 @@ CI.API.getAllSharedVariables = function() {
 				moduleName: ''
 			});
 	}
-		
-
-	
+			
 	for(var i in CI.modules) {
 
 		var def = CI.modules[i].definition;

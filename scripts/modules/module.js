@@ -68,7 +68,7 @@ CI.Module = function(definition) {
 		this.view.init(this);
 		this.controller.init(this);
 		this.model.init(this);
-		
+		/*
 		if(this.controller["export"])
 			this.dom.find('.ci-export').bind('click', function(event) {
 				module.exportData();
@@ -82,7 +82,11 @@ CI.Module = function(definition) {
 		
 		this.dom.find('.ci-remove').bind('click', function(event) {
 			Entry.removeModule(module);
-		});
+		});*/
+
+
+
+
 	}
 	
 	/**
@@ -96,6 +100,8 @@ CI.Module = function(definition) {
 		var html = "";
 		html += '<div class="ci-module-wrapper ci-module-';
 		html += this.definition.type;
+
+	
 		html += '" data-module-id="';
 		html += this.definition.id;
 		html += '"><div class="ci-module"><div class="ci-module-header';
@@ -108,11 +114,7 @@ CI.Module = function(definition) {
 		html += '<div class="ci-module-header-toolbar">';
 		html += '<ul>';
 		
-		
-		html += '<li class="ci-export">Export</li>';
-
-		html += '<li class="ci-configure"></li>';
-		html += '<li class="ci-remove">X</li>';
+	
 		html += '</ul>';
 		html += '</div>';
 		html += '</div><div class="ci-module-content" style="';
@@ -294,6 +296,14 @@ CI.Module.prototype = {
 			this.controller.inDom();
 		if(typeof this.model.inDom == "function")
 			this.model.inDom();
+
+		var self = this;
+		this.getDomContent().get(0).addEventListener('contextmenu', function(e) {
+			e.preventDefault();
+			return self.handleContext(e);
+		});
+
+		this.setDisplayWrapper();
 	},
 	
 	/** 
@@ -369,6 +379,50 @@ CI.Module.prototype = {
 
 	setBackgroundColor: function(color) {
 		this.domContent.get(0).style.backgroundColor = color;
+	},
+
+	handleContext: function(e) {
+		if(CI.Grid.contextMenu) {
+			var self = this;
+			CI.Grid.contextMenu
+
+				.prepend(
+					$('<li><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>').bind('click', function(e) {
+
+						var pos = self.getDomWrapper().position();
+						var shiftX = e.pageX - pos.left;
+						var shiftY = e.pageY - pos.top;
+
+						CI.Grid.moveModule(self, shiftX, shiftY);
+					})
+				)
+				
+				.prepend(
+					$('<li><a><span class="ui-icon ui-icon-suitcase"></span> Export</a></li>').bind('click', function() {
+						self.exportData();
+					})
+				)
+				.prepend(
+					$('<li><a><span class="ui-icon ui-icon-close"></span> Delete module</a></li>').bind('click', function() {
+						Entry.removeModule(self);
+					})
+				)
+				.prepend(
+					$('<li><a><span class="ui-icon ui-icon-gear"></span> Parameters</a></li>').bind('click', function() {
+						$(document).trigger('configModule', self);
+					})
+				)
+				;
+
+
+
+		}
+		return false;
+	},
+
+	setDisplayWrapper: function() {
+		var bln = this.definition.displayWrapper;
+		this.getDomWrapper()[bln ? 'addClass' : 'removeClass']('ci-module-displaywrapper')
 	}
 };
 

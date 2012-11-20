@@ -204,7 +204,7 @@ LoadingPlot.SVG.prototype.deltaZoom = function(x, y, delta, abs) {
 
 		var parent = this._svgEl.parentNode;
 		this._currentDelta += delta;
-		console.log(this._currentDelta);
+		
 	} else {
 		delta = 0;
 	
@@ -264,7 +264,7 @@ LoadingPlot.SVG.prototype.timeSpringUpdate = function(timing) {
 LoadingPlot.SVG.prototype.setViewBox = function(force, x1, y1, x2, y2) {
 
 	if(this.navigation && !force) {
-		console.trace();
+		
 		this.navRect.setAttribute('x', this._viewBox[0]);
 		this.navRect.setAttribute('y', this._viewBox[1]);
 		this.navRect.setAttribute('width', this._viewBox[2]);

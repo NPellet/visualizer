@@ -24,6 +24,9 @@ CI.Saver.prototype = {
 
 		$("#visualizer-saver").html('Visualization saving...');
 		
+		if(typeof _saveViewUrl == "undefined")
+			return;
+
 		this.lastScript = script;
 		$.post(_saveViewUrl, {content: script}, function() {
 			var dateNow = new Date();

@@ -14,6 +14,55 @@ CI.Grid = {
 		CI.Grid.definition = $.extend(true, CI.Grid.defaults, definition);
 		
 		CI.Grid._el = $("#ci-modules-grid");
+		CI.Grid._el.get(0).addEventListener('contextmenu', function(e) {
+			e.preventDefault();
+
+			if(CI.Grid.contextMenu)
+				CI.Grid.contextMenu.menu('destroy').remove();
+			CI.Grid.contextMenu = null;
+
+			$menu = $('<ul class="ci-contextmenu"></ul>').css({
+				'position': 'absolute',
+				'left': e.pageX,
+				'top': e.pageY,
+				'z-index': 10000
+			}).appendTo($("body"));
+
+			$li = $('<li><a> Add a module</a></li>');
+			$ulModules = $("<ul />").appendTo($li);
+			for(var i in CI.Module.prototype._types) {
+				$ulModules.append('<li class="ci-item-newnmodule" name="' + i + '"><a>' + CI.Module.prototype._types[i].Controller.prototype.moduleInformations.moduleName + '</a></li>');
+			}
+			$menu.append($li);
+			
+			CI.Grid.contextMenu = $menu;
+
+			var clickHandler = function() {
+				if(CI.Grid.contextMenu)
+					CI.Grid.contextMenu.menu('destroy').remove();
+				CI.Grid.contextMenu = null;
+				$(document).unbind('click', clickHandler);
+			}
+			
+			$(document).bind('click', clickHandler);
+			
+			return false;
+ 
+		}, true);
+
+
+		CI.Grid._el.get(0).addEventListener('contextmenu', function(e) {			
+			CI.Grid.contextMenu.menu({
+				select: function(event, ui) {
+					var moduleName = ui.item.attr('name');
+					if(ui.item.hasClass('ci-item-newnmodule'))
+						CI.Grid.newModule(moduleName);
+				}
+			});
+			e.preventDefault();
+			return false;
+		}, false);
+
 	},
 	
 	/**
@@ -146,6 +195,117 @@ CI.Grid = {
 		CI.Grid.moduleResize(module);
 	},
 	
+
+	newModule: function(type) {
+		CI.Grid.modulePos = {};
+
+
+		var mouseUpHandler = function() {
+
+			var gridPos = $("#ci-modules-grid").position();
+
+			var left = Math.round((CI.Grid.modulePos.left - gridPos.left) / CI.Grid.definition.xWidth);
+			var top = Math.round((CI.Grid.modulePos.top - gridPos.top) / CI.Grid.definition.yHeight);
+			var width = Math.round(CI.Grid.modulePos.width / CI.Grid.definition.xWidth);
+			var height = Math.round(CI.Grid.modulePos.height / CI.Grid.definition.yHeight);
+
+			CI.Grid.modulePos.div.remove();
+			CI.Grid.modulePos = {};
+
+			var module = {
+				type: type,
+				title: "Untitled module",
+				displayWrapper: true,
+				position: {
+					left: left,
+					top: top	
+				},
+				
+				size: {
+					width: width,
+					height: height
+				}
+			};
+			
+			Entry.addModuleFromJSON(module, true);
+
+			$(document).unbind('mousedown', mouseDownHandler).unbind('mousemove', mouseMoveHandler).unbind('mouseup', mouseUpHandler);
+		};
+
+		var mouseDownHandler = function(e) {
+			CI.Grid.modulePos.left = e.pageX;
+			CI.Grid.modulePos.top = e.pageY;
+
+			CI.Grid.modulePos.div = $("<div>").css({
+				border: '1px solid red',
+				backgroundColor: 'rgba(255, 0, 0, 0.2)',
+				width: 0,
+				height: 0,
+				left: CI.Grid.modulePos.left,
+				top: CI.Grid.modulePos.top,
+				position: 'absolute'
+			}).appendTo($("body"));
+		}
+
+		var mouseMoveHandler = function(e) {
+			
+			if(!CI.Grid.modulePos.left)
+				return;
+
+			CI.Grid.modulePos.width = e.pageX - CI.Grid.modulePos.left;
+			CI.Grid.modulePos.height = e.pageY - CI.Grid.modulePos.top;
+
+			CI.Grid.modulePos.div.css({
+				width: CI.Grid.modulePos.width,
+				height: CI.Grid.modulePos.height
+			});
+		};
+
+		$(document).bind('mousedown', mouseDownHandler).bind('mousemove', mouseMoveHandler).bind('mouseup', mouseUpHandler);
+	},
+
+	moveModule: function(module, shiftX, shiftY) {
+
+		CI.Grid.moduleMove = { module: module, div: module.getDomWrapper() };
+
+		var mouseMoveHandler = function(e) {
+	
+			var gridPos = $("#ci-modules-grid").position();
+
+			CI.Grid.moduleMove.top = e.pageY - gridPos.left - shiftY;
+			CI.Grid.moduleMove.left = e.pageX - gridPos.left - shiftX;
+
+			CI.Grid.moduleMove.div.css({
+				top: CI.Grid.moduleMove.top,
+				left: CI.Grid.moduleMove.left
+			});
+		};
+
+		var clickHandler = function(e) {
+
+			if(!CI.Grid.moduleMove.left)
+				return;
+
+			var gridPos = $("#ci-modules-grid").position();
+
+			var left = Math.max(0, Math.round((CI.Grid.moduleMove.left - gridPos.left) / CI.Grid.definition.xWidth));
+			var top = Math.max(0, Math.round((CI.Grid.moduleMove.top - gridPos.top) / CI.Grid.definition.yHeight));
+			CI.Grid.moduleMove.module.getPosition().top = top;
+			CI.Grid.moduleMove.module.getPosition().left = left;
+			
+			CI.Grid.moduleMove.div.css({
+				top: top * CI.Grid.definition.yHeight,
+				left: left * CI.Grid.definition.xWidth
+			});
+
+			CI.Grid.moduleMove = null;
+			$(document).unbind('click', clickHandler).unbind('mousemove', mouseMoveHandler)
+		}
+
+		$(document).bind('click', clickHandler).bind('mousemove', mouseMoveHandler);
+	},
+
+
 	checkDimensions: function(extend) {
 		
 		var bottomMax = 0;

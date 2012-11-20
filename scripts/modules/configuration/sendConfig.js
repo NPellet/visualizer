@@ -27,6 +27,15 @@ $(document).bind('configModule', function(event, module) {
 		});
 		field.setTitle(new BI.Title('Background color'));
 		
+
+
+		var field = groupfield.addField({
+			type: 'Checkbox',
+			name: 'modulewrapper'
+		});
+		field.setTitle(new BI.Title('Display module boundaries'));
+		field.implementation.setOptions({'display': ''});
+		
 		// Self configuration
 		var section = new BI.Forms.Section('module', { multiple: false });
 		section.setTitle(new BI.Title('Module Configuration'));
@@ -135,9 +144,11 @@ $(document).bind('configModule', function(event, module) {
 
 			module.setTitle(value.general[0].general[0].moduletitle[0]);
 			module.definition.bgColor = value.general[0].general[0].bgcolor[0];
+			module.definition.displayWrapper = !!value.general[0].general[0].modulewrapper[0][0];
 			module.setBackgroundColor(value.general[0].general[0].bgcolor[0]);
 			
-
+			module.setDisplayWrapper();
+				
 			module.setSendVars(value.send[0].sentvars[0]);
 			module.setSourceVars(value.receive[0].receivedvars[0]);
 			
@@ -189,7 +200,7 @@ $(document).bind('configModule', function(event, module) {
 		
 		var fill = {
 			sections: {
-				general: [ { groups: { general: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor ] }] } } ],
+				general: [ { groups: { general: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor ],  modulewrapper: [[ module.definition.displayWrapper ? 'display' : '' ]] }] } } ],
 				module: [ /*{ groups: */module.controller.doFillConfiguration ? module.controller.doFillConfiguration() : []/* } */],
 				send: [ { groups: {sentvars: [sentVars]}} ],
 				receive: [ { groups: {receivedvars: [receivedVars]}} ]
