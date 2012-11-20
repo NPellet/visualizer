@@ -41,9 +41,14 @@ LoadingPlot.SVG.prototype = {};
 LoadingPlot.SVG.prototype.create = function() {
 	var self = this;
 
-
 	this.deltaZoom(0, 0, 0);
 	this._setEvents();
+}
+
+
+LoadingPlot.SVG.prototype.remove = function() {
+	var self = this;
+	this._svgEl.parentElement.removeChild(this._svgEl);
 }
 
 LoadingPlot.SVG.prototype.setViewBoxWidth = function(x, y, w, h, force) {

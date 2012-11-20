@@ -64,7 +64,7 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 		section.addFieldGroup(groupfield);
 		
 		var field = groupfield.addField({
-			type: 'Text',
+			type: 'Wysiwyg',
 			name: 'defaultvalue'
 		});
 		field.setTitle(new BI.Title('Default value'));
@@ -149,6 +149,14 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 			{title: 'Middle', key: 'middle'},
 			{title: 'Bottom', key: 'bottom'}
 		]);
+
+		
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'sprintf'
+		});
+		field.setTitle(new BI.Title('Sprintf'));
+		
 		
 		return true;
 	},
@@ -162,6 +170,7 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 		var fontsize = this.module.getConfiguration().fontsize || "";
 		var align = this.module.getConfiguration().align || "left";
 		var valign = this.module.getConfiguration().valign || "top";
+		var sprintf = this.module.getConfiguration().sprintf || "";
 	
 		return {
 			groups: {
@@ -172,7 +181,8 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 					font: [font],
 					fsize: [fontsize],
 					align: [align],
-					valign: [valign]
+					valign: [valign],
+					sprintf: [sprintf]
 				}]
 			}
 		}
@@ -188,9 +198,10 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 		var font = group.font[0];
 		var fsize = group.fsize[0];
 		var align = group.align[0];
+		var sprintf = group.sprintf[0];
 		var valign = group.valign[0];
 		var defaultvalue = group.defaultvalue[0];
-		
+		console.log(defaultvalue);
 		this.module.definition.configuration = {
 			frontcolor: fcolor,
 		//	backcolor: bcolor,
@@ -198,7 +209,8 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 			fontsize: fsize,
 			align: align,
 			valign: valign,
-			defaultvalue: defaultvalue
+			defaultvalue: defaultvalue,
+			sprintf: sprintf
 		};
 	}
 }

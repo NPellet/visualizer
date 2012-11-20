@@ -114,14 +114,15 @@ CI.Module.prototype._types.grid.Controller.prototype = {
 			CI.DataType.getJPathsFromElement(data[0], jpaths);
 		else if(CI.DataType.getType(data) == 'arrayXY')
 			CI.DataType.getJPathsFromElement(data, jpaths);
-		console.log(jpaths, data[0]);
+
 		var field = groupfield.addField({
 			type: 'Combo',
 			name: 'colorjpath'
 		});
 		
-		field.implementation.setOptions(jpaths);
 		field.setTitle(new BI.Title('Color jPath'));
+		field.implementation.setOptions(jpaths);
+		
 
 		var field = groupfield.addField({
 			type: 'Checkbox',

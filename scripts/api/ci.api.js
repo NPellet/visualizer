@@ -56,7 +56,7 @@ CI.API.getAllSharedVariables = function() {
 	var allSharedVars = {};
 
 	var entryVars = Entry.getEntryDataVariables();
-	console.log(entryVars);
+	
 	for(var i in entryVars) {
 		if(typeof allSharedVars[entryVars[i].varname] == "undefined")
 			allSharedVars[entryVars[i].varname] = {send: [], receive: []};

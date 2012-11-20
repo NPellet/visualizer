@@ -42,14 +42,17 @@ CI.Module.prototype._types.display_value.View.prototype = {
 		},
 
 		'value': function(moduleValue) {
+
 			var cfg = this.module.getConfiguration(), view = this;
+			console.log(cfg.defaultvalue);
 			if(moduleValue == undefined)
 				view.fillWithVal(cfg.defaultvalue || '');
 			else
 				CI.DataType.toScreen(moduleValue, this.module).done(function(val) {
+					if(cfg.sprintf && cfg.sprintf != "")
+						val = sprintf(cfg.sprintf, val);
 					view.fillWithVal(val);
 				});
-
 		}
 	},
 	

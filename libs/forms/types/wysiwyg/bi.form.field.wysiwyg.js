@@ -39,8 +39,9 @@ BI.Forms.Fields.Wysiwyg.prototype = {
 	},
 	
 	
-	setValue: function(index) {
-
+	setValue: function(index, value) {
+		var field = this.main.fields[index].field;
+		field.children().val(value);
 	},
 	
 	addField: function(position) {
@@ -48,7 +49,7 @@ BI.Forms.Fields.Wysiwyg.prototype = {
 		var fieldWrapper = $("<div />").addClass('bi-formfield-container');
 		var duplicate = $('<div class="bi-formfield-duplicate"></div>').appendTo(fieldWrapper);
 		var img = $('<img class="bi-formfield-image" />').appendTo(fieldWrapper);
-		var field = $('<div class="bi-formfield-styled"><div></div></div>').appendTo(fieldWrapper);
+		var field = $('<div class="bi-formfield-styled"><textarea></textarea></div>').appendTo(fieldWrapper);
 		
 		var pos = 0;
 		if(typeof position == "undefined")
@@ -57,9 +58,26 @@ BI.Forms.Fields.Wysiwyg.prototype = {
 			this.main.fields[position].append(fieldWrapper);
 			pos = position + 1;
 		}
-		this.ckinstance = field.children().ckeditor();
+		var self = this;
+		
 		return {index: pos, wrapper: fieldWrapper, placeholder: $(), duplicater: duplicate, field: field, image: img};
 		
+	},
+
+	initField: function(index) {
+
+		var field = this.main.fields[index].field;
+		this.ckinstance = field.children().ckeditor({
+			enterMode : CKEDITOR.ENTER_BR,
+        	shiftEnterMode: CKEDITOR.ENTER_P
+		}).ckeditorGet();
+		
+		var self = this;
+		this.ckinstance.on( 'contentDom', function() {
+            self.ckinstance.document.on( 'keyup', function( event ) {
+            	self.main.changeValue(index, self.ckinstance.getData());
+        	});
+		});
 	},
 	
 	removeField: function(position) {

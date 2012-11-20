@@ -64,7 +64,7 @@ BI.Forms.GroupFields.List.prototype = {
 		
 		this.dom = this.section.getDom().find('[data-group-id=' + this.getId() + ']');
 		for(var i = 0; i < this.fields.length; i++)
-			this.fields[i].afterInit();
+			this.fields[i].afterInit(i);
 	},
 
 	duplicate: function(section) {
