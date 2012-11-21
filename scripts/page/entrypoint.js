@@ -37,11 +37,20 @@ CI.EntryPoint = function(structure, data, options, onLoad) {
 		if(structure.configuration.showMenuBarOnStart)
 			$("#ci-expand-left").trigger('click');
 			
-		$("#ci-header .title").text(structure.configuration.title || 'No title').attr('contenteditable', 'true').bind('blur', function() {
+		$("#ci-header .title").text(structure.configuration.title || 'No title').attr('contenteditable', 'true').bind('keypress', function(e) {
 
-			structure.configuration.title = $(this).text();
-			Saver.doSave();
-		});
+			if(e.keyCode == 13) { // Enter
+				e.preventDefault();
+				$(this).trigger('blur');
+				return false;
+			}
+
+
+			}).bind('blur', function() {
+//console.log($(this).text());
+				structure.configuration.title = $(this).text().replace(/[\r\n]/g, "");
+				Saver.doSave();
+			});
 			
 		entryPoint.entryData = structure.entryPoint;
 		
