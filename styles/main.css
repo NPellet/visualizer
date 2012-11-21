@@ -191,7 +191,7 @@ div.ci-module-wrapper .ci-module {
 }
 
 #ci-modules-grid > div.ci-module-wrapper .ci-module-content {
-	background: transparent !important;
+/*	background: transparent !important;*/
 }
 
 #ci-modules-grid > div.ci-module-wrapper.ci-module-displaywrapper {
@@ -201,7 +201,7 @@ div.ci-module-wrapper .ci-module {
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;	 
-	background: inherit !important;
+	/*background: inherit !important;*/
 }
 
 

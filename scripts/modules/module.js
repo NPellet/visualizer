@@ -122,10 +122,10 @@ CI.Module = function(definition) {
 		if(this.definition.bgColor) {
 			html += "background-color: ";
 			html += this.definition.bgColor;
-		} else if(entryCfg.moduleBackground) {
+		} /*else if(entryCfg.moduleBackground) {
 			html += "background-color: ";
 			html += entryCfg.moduleBackground;
-		}
+		}*/
 		
 		html += '">';
 		
