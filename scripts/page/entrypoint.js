@@ -20,6 +20,7 @@ CI.EntryPoint = function(structure, data, options, onLoad) {
 		CI.Grid.init(structure.grid);
 		
 		entryPoint.structure = structure;
+		Saver.setLatestScript(structure);
 		
 		if(!structure.entryPoint) 
 			structure.entryPoint = { variables: [] };

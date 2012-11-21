@@ -5,7 +5,13 @@ CI.Saver = function() {
 	this.setTimeout();
 }
 
+
+
 CI.Saver.prototype = {
+
+	setLatestScript: function(script) {
+		this.lastScript = JSON.stringify(script);
+	},
 
 	doSave: function() {
 		var self = this;
