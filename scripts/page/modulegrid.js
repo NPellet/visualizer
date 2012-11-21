@@ -55,11 +55,9 @@ CI.Grid = {
 			}
 			
 			$("#ci-header").bind('contextmenu', rightClickHandler);
-
 			$(document).bind('click', clickHandler);
-			
 			return false;
- 
+
 		}, true);
 
 
