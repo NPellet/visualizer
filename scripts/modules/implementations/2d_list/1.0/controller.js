@@ -149,7 +149,7 @@ CI.Module.prototype._types['2d_list'].Controller.prototype = {
 	doFillConfiguration: function() {
 		
 		var valJpath = this.module.getConfiguration().valjpath || "";
-		var colorJpath = this.module.getConfiguration().colorjpath || "none";
+		var colorJpath = this.module.getConfiguration().colorjpath || "";
 		var cols = this.module.getConfiguration().colnumber || 4;
 		
 		var height = this.module.getConfiguration().height || "";
