@@ -55,7 +55,7 @@ CI.Module.prototype._types.display_value.Controller.prototype = {
 	
 	
 	moduleInformations: {
-		moduleName: 'Display a value'
+		moduleName: 'Single value'
 	},
 	
 	doConfiguration: function(section) {

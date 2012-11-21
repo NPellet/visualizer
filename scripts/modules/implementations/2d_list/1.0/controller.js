@@ -93,7 +93,7 @@ CI.Module.prototype._types['2d_list'].Controller.prototype = {
 	},
 	
 	moduleInformations: {
-			moduleName: '2D list'
+			moduleName: 'Grid'
 	},
 	
 	doConfiguration: function(section) {

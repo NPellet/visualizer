@@ -40,7 +40,7 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 	},
 	
 	moduleInformations: {
-		moduleName: 'JSON 1 Level'
+		moduleName: 'Object viewer'
 	},
 	
 	doConfiguration: function(section) {

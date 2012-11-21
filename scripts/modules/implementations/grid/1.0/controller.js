@@ -89,7 +89,7 @@ CI.Module.prototype._types.grid.Controller.prototype = {
 	
 	
 	moduleInformations: {
-		moduleName: 'Grid'
+		moduleName: 'Table'
 	},
 	
 	

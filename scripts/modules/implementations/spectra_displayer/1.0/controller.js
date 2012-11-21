@@ -63,7 +63,7 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 	},
 
 	moduleInformations: {
-		moduleName: 'Jcamp display (CDWC)'
+		moduleName: 'Spectrum viewer'
 	},
 
 

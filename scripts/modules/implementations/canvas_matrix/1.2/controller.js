@@ -156,7 +156,7 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 	},
 	
 	moduleInformations: {
-		moduleName: 'Distance matrix'
+		moduleName: 'Matrix'
 	},
 	
 	

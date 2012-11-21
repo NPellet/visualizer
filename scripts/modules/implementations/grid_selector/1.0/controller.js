@@ -86,7 +86,7 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 	
 	
 	moduleInformations: {
-		moduleName: 'Selector Grid'
+		moduleName: 'Selector'
 	},
 	
 	

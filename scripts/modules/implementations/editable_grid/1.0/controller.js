@@ -89,7 +89,7 @@ CI.Module.prototype._types.editable_grid.Controller.prototype = {
 	
 	
 	moduleInformations: {
-		moduleName: 'Editable Grid'
+		moduleName: 'Editable table'
 	},
 	
 	

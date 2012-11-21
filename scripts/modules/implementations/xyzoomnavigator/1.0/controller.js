@@ -91,7 +91,7 @@ CI.Module.prototype._types.xyzoomnavigator.Controller.prototype = {
 	
 	
 	moduleInformations: {
-		moduleName: 'X-Y-Zoom navigator'
+		moduleName: 'Navigator'
 	},
 	
 	
