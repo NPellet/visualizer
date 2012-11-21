@@ -56,12 +56,13 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		zoneHighlight: function(val) {
+
 			if(!val)
 				return;
 
 			this._highlightingZone = val;
 			if(this._jcampValue)
-				this.update2.jcamp(this._jcampValue);
+				this.update2.jcamp.call(this, this._jcampValue);
 		},
 
 		'jcamp': function(moduleValue) {
@@ -75,12 +76,13 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 					if(view._highlightingZone == undefined)
 						return;
 					var h = view._highlightingZone;
-					if(!h[0] instanceof Array)
+					if(!(h[0] instanceof Array))
 						h = [h];
 
 					var mem = this.spectrum.memory;
 					var context = this._domcanvas.getContext('2d');
 					for(var i = 0, l = h.length; i < l; i++) {
+
 						var x1 = this.spectrum.getTransformedX(h[i][0], {}, mem.width, mem.offsetLeft);
 						var x2 = this.spectrum.getTransformedX(h[i][1], {}, mem.width, mem.offsetLeft);
 					    context.beginPath();

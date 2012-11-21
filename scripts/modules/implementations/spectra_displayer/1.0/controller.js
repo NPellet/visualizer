@@ -62,7 +62,7 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		},
 
 		zoneHighlight: {
-			type: 'array',
+			type: ['array'],
 			label: 'Zone highlighted',
 			description: ''
 		}
