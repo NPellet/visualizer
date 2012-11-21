@@ -1,7 +1,7 @@
 
 .ci-table {
 	width: 100%;
-	border: 1px solid #7daf4d;
+	border: 1px solid #c0c0c0;
 }
 
 
@@ -67,7 +67,9 @@
 	background-color: #e5be39;
 }
 
-
+.ci-table tr:last-child td {
+	border-bottom-width: 0px;
+}
 
 .ci-table-sort {
     display: inline-block;
