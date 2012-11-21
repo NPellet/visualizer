@@ -31,10 +31,18 @@ CI.Grid = {
 			$li = $('<li><a> Add a module</a></li>');
 			$ulModules = $("<ul />").appendTo($li);
 			
+			var names = [];
 			for(var i in CI.Module.prototype._types) {
-				$ulModules.append('<li class="ci-item-newnmodule" name="' + i + '"><a>' + CI.Module.prototype._types[i].Controller.prototype.moduleInformations.moduleName + '</a></li>');
+				names.push(i);
+			}
+			names.sort();
+
+			for(var j = 0, l = names.length; j < l; j++) {
+
+				$ulModules.append('<li class="ci-item-newnmodule" name="' + names[j] + '"><a>' + CI.Module.prototype._types[names[j]].Controller.prototype.moduleInformations.moduleName + '</a></li>');
 
 			}
+
 			$menu.append('<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>');
 			$menu.append($li);
 			
