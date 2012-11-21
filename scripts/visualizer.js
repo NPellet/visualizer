@@ -1,5 +1,6 @@
 CI.ConfigVisualizer = function() {
 
+	var self = this;
 	var vars = Entry.getEntryDataVariables();	
 	var allSharedVars = CI.API.getAllSharedVariables();
 		
@@ -147,114 +148,7 @@ CI.ConfigVisualizer = function() {
 	});
 	
 	
-	function configureEntryPoint() {
-		var now = Date.now();
-		$("<div />").dialog({ modal: true, width: '80%', title: "Edit Entry Variables"}).biForm({}, function() {
-			
-			var inst = this;			
-			var section = new BI.Forms.Section('cfg', { multiple: false });
-			this.addSection(section);
-			var title = new BI.Title();
-			title.setLabel('Entry variables');
-			section.setTitle(title);
-			
-			var groupfield = new BI.Forms.GroupFields.Table('tablevars');
-			section.addFieldGroup(groupfield);
-			
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'varname'
-			});
-			field.setTitle(new BI.Title('Variable name'));
-			
-			var options = [];
-			var data = Entry.getDataFromSource();
-			for(var i in data)
-				options.push({title: i, key: i});
-				
-					
-			/*var field = groupfield.addField({
-				type: 'Combo',
-				name: 'sourcename'
-			});
-			field.setTitle(new BI.Title('Source name'));
-			field.implementation.setOptions(options);
-			field.onChange(function(index) {
-				var fieldIndex = index;
-				var value = this.getValue(fieldIndex);
-				var data = Entry.getDataFromSource(value);
-				var jpath = [];
-				CI.DataType.getJPathsFromElement(data, jpath);
-				var field = this.group.getField('jpath')
-				
-				this.group.getField('jpath').implementation.setOptions(jpath, index);
-				
-			});
-			*/
-			var field = groupfield.addField({
-				type: 'Combo',
-				name: 'jpath'
-			});
-			field.setTitle(new BI.Title('JPath'));
-			
-		
-			var data = Entry.getDataFromSource();
-			var jpath = [];
-			CI.DataType.getJPathsFromElement(data, jpath);
-			field.implementation.setOptions(jpath);	
-
-
-
-			var inst = this;
-			var save = new BI.Buttons.Button('Save', function() {
-				inst.dom.trigger('stopEditing');
-				var value = inst.getValue();
-				var data = value.cfg[0].tablevars[0];
-				Entry.setEntryDataVariables(data);
-				Entry.save();
-
-				inst.getDom().dialog('close');
-			});
-			
-			
-			save.setColor('blue');
-			this.addButtonZone().addButton(save);
-			
-		}, function() {
-			
-			
-			var vars = { varname: [], jpath: [], sourcename: [] };
-			var entryVars = Entry.getEntryDataVariables();
-			
-			for(var i = 0; i < entryVars.length; i++) {
-				vars.varname.push(entryVars[i].varname);
-		//		vars.sourcename.push(entryVars[i].sourcename);
-				vars.jpath.push(entryVars[i].jpath);
-				
-			}
-				
-			var fill = { 
-				sections: {
-					cfg: [
-						{
-							groups: {
-								tablevars: [vars]
-							}
-						}
-					]
-				}
-			};
-			
-			this.fillJson(fill);
-			
-		
-			
-		});
-	}
-
-
-
-
+	
 	
 	
 	function configureVisualizer() {
@@ -435,3 +329,113 @@ CI.ConfigVisualizer = function() {
 		$('<div />').css('text-align', 'center').dialog({'modal': true, title: 'Export view', width: '80%', height: '300'}).html($('<textarea />').css({width: '95%', height: '200'}).val(JSON.stringify(Entry.getStructure())));
 	}
 }
+
+
+configureEntryPoint = function() {
+		var now = Date.now();
+		$("<div />").dialog({ modal: true, width: '80%', title: "Edit Entry Variables"}).biForm({}, function() {
+			
+			var inst = this;			
+			var section = new BI.Forms.Section('cfg', { multiple: false });
+			this.addSection(section);
+			var title = new BI.Title();
+			title.setLabel('Entry variables');
+			section.setTitle(title);
+			
+			var groupfield = new BI.Forms.GroupFields.Table('tablevars');
+			section.addFieldGroup(groupfield);
+			
+			var field = groupfield.addField({
+				type: 'Text',
+				name: 'varname'
+			});
+			field.setTitle(new BI.Title('Variable name'));
+			
+			var options = [];
+			var data = Entry.getDataFromSource();
+			for(var i in data)
+				options.push({title: i, key: i});
+				
+					
+			/*var field = groupfield.addField({
+				type: 'Combo',
+				name: 'sourcename'
+			});
+			field.setTitle(new BI.Title('Source name'));
+			field.implementation.setOptions(options);
+			field.onChange(function(index) {
+				var fieldIndex = index;
+				var value = this.getValue(fieldIndex);
+				var data = Entry.getDataFromSource(value);
+				var jpath = [];
+				CI.DataType.getJPathsFromElement(data, jpath);
+				var field = this.group.getField('jpath')
+				
+				this.group.getField('jpath').implementation.setOptions(jpath, index);
+				
+			});
+			*/
+			var field = groupfield.addField({
+				type: 'Combo',
+				name: 'jpath'
+			});
+			field.setTitle(new BI.Title('JPath'));
+			
+		
+			var data = Entry.getDataFromSource();
+			var jpath = [];
+			CI.DataType.getJPathsFromElement(data, jpath);
+			field.implementation.setOptions(jpath);	
+
+
+
+			var inst = this;
+			var save = new BI.Buttons.Button('Save', function() {
+				inst.dom.trigger('stopEditing');
+				var value = inst.getValue();
+				var data = value.cfg[0].tablevars[0];
+				Entry.setEntryDataVariables(data);
+				Entry.save();
+
+				inst.getDom().dialog('close');
+			});
+			
+			
+			save.setColor('blue');
+			this.addButtonZone().addButton(save);
+			
+		}, function() {
+			
+			
+			var vars = { varname: [], jpath: [], sourcename: [] };
+			var entryVars = Entry.getEntryDataVariables();
+			
+			for(var i = 0; i < entryVars.length; i++) {
+				vars.varname.push(entryVars[i].varname);
+		//		vars.sourcename.push(entryVars[i].sourcename);
+				vars.jpath.push(entryVars[i].jpath);
+				
+			}
+				
+			var fill = { 
+				sections: {
+					cfg: [
+						{
+							groups: {
+								tablevars: [vars]
+							}
+						}
+					]
+				}
+			};
+			
+			this.fillJson(fill);
+			
+		
+			
+		});
+	}
+
+
+
+

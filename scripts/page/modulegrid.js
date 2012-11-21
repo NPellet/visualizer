@@ -38,12 +38,12 @@ CI.Grid = {
 			names.sort();
 
 			for(var j = 0, l = names.length; j < l; j++) {
-
 				$ulModules.append('<li class="ci-item-newnmodule" name="' + names[j] + '"><a>' + CI.Module.prototype._types[names[j]].Controller.prototype.moduleInformations.moduleName + '</a></li>');
-
 			}
 
+			$menu.append('<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Configure entry point</a></li>');
 			$menu.append('<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>');
+
 			$menu.append($li);
 			
 			CI.Grid.contextMenu = $menu;
@@ -77,6 +77,9 @@ CI.Grid = {
 						CI.Grid.newModule(moduleName);
 					else if(ui.item.hasClass('ci-item-refresh'))
 						document.location.href = document.location.href;
+					else if (ui.item.hasClass('ci-item-configureentrypoint')) {
+						configureEntryPoint();
+					}
 
 				}
 			});
