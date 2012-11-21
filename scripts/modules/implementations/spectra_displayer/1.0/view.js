@@ -56,6 +56,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		'jcamp': function(moduleValue) {
+			
 			var view = this;
 			var cfgM = this.module.getConfiguration();
 			var cfg = {continuous: (cfgM.mode == 'curve'), flipX: cfgM.flipX, flipY: cfgM.flipY };

@@ -44,7 +44,7 @@ CI.Module.prototype._types.display_value.View.prototype = {
 		'value': function(moduleValue) {
 
 			var cfg = this.module.getConfiguration(), view = this;
-			console.log(cfg.defaultvalue);
+			
 			if(moduleValue == undefined)
 				view.fillWithVal(cfg.defaultvalue || '');
 			else
@@ -72,7 +72,7 @@ CI.Module.prototype._types.display_value.View.prototype = {
 		}).html(val);
 
 		this.dom.html(div);
-		CI.Util.ResolveDOMDeferred();
+		CI.Util.ResolveDOMDeferred(div);
 
 	},
 	

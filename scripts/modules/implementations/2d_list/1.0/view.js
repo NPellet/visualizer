@@ -51,36 +51,45 @@ CI.Module.prototype._types['2d_list'].View.prototype = {
 			}
 
 			current = undefined;
+			var self = this;
 			CI.DataType.fetchElementIfNeeded(moduleValue).done(function(val) {
-				this.list = val;
+				self.list = val;
 				var table = $('<table cellpadding="3" cellspacing="0">');
 				
-				for(var i = 0; i < this.list.length; i++) {
-					colId = i % cols;
-					if(colId == 0) {
-						if(current)
-							current.appendTo(table);
-						current = $("<tr />");
-					}
-
-					var td = $("<td>").css({width: Math.round(100 / cols) + "%", height: cfg.height});
-					if(colorJpath) {
-						CI.DataType.getValueFromJPath(this.list[i], colorJpath).done(function(val) {
-							td.css('background-color', val);
-						});
-					}
+				var number = self.list.length, done = 0;
+				for(var i = 0; i < self.list.length; i++) {
 					
-					async = CI.DataType.asyncToScreenHtml(this.list[i], view.module, valJpath);
+					async = CI.DataType.asyncToScreenHtml(self.list[i], view.module, valJpath);
 					async.pipe(function(val) {
-						td.html(val);
-					});
-					
-					td.appendTo(current);
-				}
 
-				current.appendTo(table);
+						var td = $("<td>").css({width: Math.round(100 / cols) + "%", height: cfg.height});
+						if(colorJpath) {
+							CI.DataType.getValueFromJPath(self.list[i], colorJpath).done(function(val) {
+								td.css('background-color', val);
+							});
+
+						}
+
+						td.html(val);
+						
+
+						colId = done % cols;
+						if(colId == 0) {
+							if(current)
+								current.appendTo(table);
+							current = $("<tr />");
+						}
+						done++;
+						td.appendTo(current);
+
+						if(done == number) {
+							if(current)
+								current.appendTo(table);
+							CI.Util.ResolveDOMDeferred(view.dom);
+						}
+					});
+				}
 				view.dom.html(table);
-				CI.Util.ResolveDOMDeferred(view.dom);
 			});
 			
 		}
