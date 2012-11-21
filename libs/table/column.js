@@ -199,7 +199,7 @@ window[_namespaces['table']].Tables.Column.prototype = {
 
 		'combo': function(value, exec, additional) {
 			var el = $('<select/>');
-			additional = additional.split(',');
+			additional = [''].concat(additional.split(','));
 			for(var i = 0; i < additional.length; i++) {
 				el.append('<option value="' + additional[i] + '" ' + (value == additional[i] ? ' selected="selected"' : '') + '>' + additional[i] + '</option>');
 			}
