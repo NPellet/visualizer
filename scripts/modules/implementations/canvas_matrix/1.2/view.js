@@ -24,7 +24,7 @@ CI.Module.prototype._types.canvas_matrix.View.prototype = {
 		
 		this.scaleCanvas = document.createElement("canvas");
 		this.scaleCanvasContext = this.scaleCanvas.getContext('2d');
-		
+		this.scaleCanvas.width = 40;
 		
 		this.canvasContainer = $("<div />").addClass('matrix-container');
 		this.scaleContainer = $("<div />").addClass('scale-container');
