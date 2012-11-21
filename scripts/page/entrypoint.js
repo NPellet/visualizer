@@ -37,7 +37,8 @@ CI.EntryPoint = function(structure, data, options, onLoad) {
 		if(structure.configuration.showMenuBarOnStart)
 			$("#ci-expand-left").trigger('click');
 			
-		$("#ci-header .title").text(structure.configuration.title || 'No title').attr('contenteditable', 'true').bind('keyup', function() {
+		$("#ci-header .title").text(structure.configuration.title || 'No title').attr('contenteditable', 'true').bind('blur', function() {
+			
 			structure.configuration.title = $(this).text();
 			Saver.doSave();
 		});
