@@ -56,14 +56,15 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 
 			this._lastMol = moduleValue;
 
-			var view = this;
+			var view = this, self = this;
 			var type = CI.DataType.getType(moduleValue);
+
 			CI.DataType.toScreen(moduleValue, this.module, this._id).done(function(mol) {
 				view._molecule = mol;
 				var atoms = view._molecule.atoms;
-				if(canDoAtomLabels) {
-					for(var i = 0, l = this._atomLabels.length; i < l; i++) {
-						atoms[i].altLabel = this._atomLabels[i] == "" ? null : (this._atomLabels[i] || null);
+				if(canDoAtomLabels && self._atomLabels) {
+					for(var i = 0, l = self._atomLabels.length; i < l; i++) {
+						atoms[i].altLabel = self._atomLabels[i] == "" ? null : (self._atomLabels[i] || null);
 					}
 				} else {
 					this._atomLabels = false;
@@ -77,7 +78,7 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 			this._atomLabels = moduleValue;
 
 			if(this._lastMol)
-				this.update2.mol2d.call(this.update2, this._lastMol, true);
+				this.update2.mol2d.call(this, this._lastMol, true);
 		}
 	},
 	
