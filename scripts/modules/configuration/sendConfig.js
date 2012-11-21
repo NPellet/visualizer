@@ -168,6 +168,8 @@ $(document).bind('configModule', function(event, module) {
 			CI.API.resendAllVars();
 			
 			inst.getDom().dialog('close');
+
+			module.getDomWrapper().get(0).scrollIntoView(true);
 		});
 		
 		save.setColor('blue');
@@ -201,7 +203,7 @@ $(document).bind('configModule', function(event, module) {
 		
 		var fill = {
 			sections: {
-				general: [ { groups: { general: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor ],  modulewrapper: [[ module.definition.displayWrapper ? 'display' : '' ]] }] } } ],
+				general: [ { groups: { general: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor ],  modulewrapper: [[ (module.definition.displayWrapper === true || module.definition.displayWrapper == undefined) ? 'display' : '' ]] }] } } ],
 				module: [ /*{ groups: */module.controller.doFillConfiguration ? module.controller.doFillConfiguration() : []/* } */],
 				send: [ { groups: {sentvars: [sentVars]}} ],
 				receive: [ { groups: {receivedvars: [receivedVars]}} ]

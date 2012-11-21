@@ -38,7 +38,7 @@ CI.EntryPoint = function(structure, data, options, onLoad) {
 			$("#ci-expand-left").trigger('click');
 			
 		$("#ci-header .title").text(structure.configuration.title || 'No title').attr('contenteditable', 'true').bind('blur', function() {
-			
+
 			structure.configuration.title = $(this).text();
 			Saver.doSave();
 		});
@@ -137,7 +137,8 @@ CI.EntryPoint.prototype = {
 				var jpath, varname;
 				if(vars.length == 0) {
 					for(var i in this.data) {
-
+						if(i.slice(0, 1) == '_')
+							continue;
 						jpath = 'element.' + i;
 						varname = i;
 						vars.push({ varname: varname, jpath: jpath });

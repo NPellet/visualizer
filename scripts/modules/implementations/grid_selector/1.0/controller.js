@@ -171,6 +171,8 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 			}]
 		}
 		*/
+
+		return {};
 	},
 	
 	doSaveConfiguration: function(confSection) {

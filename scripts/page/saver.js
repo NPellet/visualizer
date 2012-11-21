@@ -52,3 +52,7 @@ CI.Saver.prototype = {
 	}
 }
 
+window.onbeforeunload = function() {
+	Saver.doSave();
+}
+
