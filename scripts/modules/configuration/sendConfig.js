@@ -169,7 +169,7 @@ $(document).bind('configModule', function(event, module) {
 			
 			inst.getDom().dialog('close');
 
-			module.getDomWrapper().get(0).scrollIntoView(true);
+			document.getElementById('ci-header').scrollIntoView(true);
 		});
 		
 		save.setColor('blue');
