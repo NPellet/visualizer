@@ -49,17 +49,35 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 	},
 	
 	update2: {
-		'mol2d': function(moduleValue) {
+		'mol2d': function(moduleValue, canDoAtomLabels) {
 			
 			if(moduleValue === undefined)
 				return;
+
+			this._lastMol = moduleValue;
 
 			var view = this;
 			var type = CI.DataType.getType(moduleValue);
 			CI.DataType.toScreen(moduleValue, this.module, this._id).done(function(mol) {
 				view._molecule = mol;
+				var atoms = view._molecule.atoms;
+				if(canDoAtomLabels) {
+					for(var i = 0, l = this._atomLabels.length; i < l; i++) {
+						atoms[i].altLabel = this._atomLabels[i] || null;
+					}
+				} else {
+					this._atomLabels = false;
+				}
+
 				view.drawMolecule();
 			});
+		},
+
+		'atomLabels': function(moduleValue) {
+			this._atomLabels = moduleValue;
+
+			if(this._lastMol)
+				this.update2.mol2d.call(this.update2, this._lastMol, true);
 		}
 	},
 	

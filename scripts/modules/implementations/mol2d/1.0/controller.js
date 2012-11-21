@@ -38,7 +38,13 @@ CI.Module.prototype._types.mol2d.Controller.prototype = {
 			type: ['mol2d', 'molfile2D'],
 			label: 'A mol 2D file',
 			description: ''
-		}	
+		},
+
+		atomLabels: {
+			type: ['array'],
+			label: 'An array containing the labels of the atoms',
+			description: ''	
+		}
 	},
 	
 	moduleInformations: {
