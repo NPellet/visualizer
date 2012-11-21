@@ -434,7 +434,7 @@ CI.Module.prototype = {
 		this.getDomWrapper()[(bln === true || bln == undefined) ? 'addClass' : 'removeClass']('ci-module-displaywrapper');
 		
 		try {
-			this.getDomWrapper().resizable(bln ? 'enable' : 'disable');
+			this.getDomWrapper().resizable((bln === true || bln == undefined) ? 'enable' : 'disable');
 		} catch(e) {}; 
 	}
 };
