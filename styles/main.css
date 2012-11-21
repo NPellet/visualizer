@@ -99,14 +99,24 @@ td.ci-expand {
 	text-align: center;
 	line-height: 0.4em;
 	font-size: 30px;
-	background: #f0f0f0;
+	background: #e2e2e2;
 	border-right: 1px solid #d0d0d0;
-	color: #c0c0c0;
+	color: #333333;
 	cursor: pointer;
 }
 #ci-header {
 	width: 100%;
+	background: #e2e2e2; /* Old browsers */
+background: -moz-linear-gradient(left, #e2e2e2 0%, #dbdbdb 49%, #fefefe 99%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,#e2e2e2), color-stop(49%,#dbdbdb), color-stop(99%,#fefefe)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(left, #e2e2e2 0%,#dbdbdb 49%,#fefefe 99%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(left, #e2e2e2 0%,#dbdbdb 49%,#fefefe 99%); /* Opera 11.10+ */
+background: -ms-linear-gradient(left, #e2e2e2 0%,#dbdbdb 49%,#fefefe 99%); /* IE10+ */
+background: linear-gradient(to right, #e2e2e2 0%,#dbdbdb 49%,#fefefe 99%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#fefefe',GradientType=1 ); /* IE6-9 */
 }
+
+
 
 
 #ci-left h3 > span {
@@ -183,7 +193,7 @@ div.ci-module-wrapper .ci-module {
 }
 
 #ci-modules-grid > div.ci-module-wrapper.ci-module-displaywrapper {
-	border: 1px solid #999999;
+	border: 1px solid #444444;
 	background: white;
 	box-shadow: 0px 0px 5px rgba(40, 40, 40, 0.2);
 	-webkit-border-radius: 3px;
@@ -345,7 +355,7 @@ div.ci-module-wrapper .ci-module-content {
 }
 
 #ci-header {
-	background: none repeat scroll 0 0 #F0F0F0;
+	
 	
 }
 
