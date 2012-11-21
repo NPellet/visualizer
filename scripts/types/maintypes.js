@@ -962,6 +962,11 @@ CI.Type["jcamp"] = {
 				return;
 
 			var spectra = new ChemDoodle.PerspectiveCanvas(dom.attr('id'), dom.parent().width(), dom.parent().height());
+
+			if(opts && opts.onRepaint) {
+				spectra.CIOnRepaint(opts.onRepaint);
+			} 
+
 			dom.data('spectra', spectra);
 			spectra.specs.plots_showYAxis = true;
 			//spectra.specs.plots_flipXAxis = false;

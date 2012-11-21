@@ -59,6 +59,12 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 			type: 'fromTo',
 			label: 'From - To data',
 			description: 'From - To data'
+		},
+
+		zoneHighlight: {
+			type: 'array',
+			label: 'Zone highlighted',
+			description: ''
 		}
 	},
 

@@ -7551,11 +7551,28 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 			if (this.drawChildExtras) {
 				this.drawChildExtras(ctx);
 			}
+
+
+			// NORMAN ADDITION START
+			// ALLOWS TO REGISTER CALLBACKS AFTER REPAINTING
+			this._CIrepaintCanvas = this._CIrepaintCanvas || $.Callbacks(); 
+			this._CIrepaintCanvas.fireWith(this);
+			// NORMAN ADDITION END
 		}
 
 		if(this.onRepaint)
 			this.onRepaint.call(this);
 	};
+
+	// NORMAN ADDITION START
+	// ALLOWS TO REGISTER CALLBACKS AFTER REPAINTING
+	c._Canvas.prototype.CIOnRepaint = function(clbk) {
+		this._CIrepaintCanvas = this._CIrepaintCanvas || $.Callbacks(); 
+		this._CIrepaintCanvas.add(clbk);
+	}
+	// NORMAN ADDITION END
+
+
 	c._Canvas.prototype.resize = function(w, h) {
 		var cap = q('#' + this.id);
 		cap.attr({
