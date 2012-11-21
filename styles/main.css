@@ -290,12 +290,12 @@ div.ci-module-wrapper .ci-module-content {
 }
 
 .ci-displaylist-list {
-	margin: 20px;
+	margin: 10px;
 	margin-top: 5px;
 }
 
 .ci-displaylist-list > div {
-	margin-bottom: 10px;
+	/*margin-bottom: 10px;*/
 }
 
 
@@ -395,19 +395,22 @@ div.ci-module-display_value div.ci-module-content img {
 	max-height: 100%;
 }
 
+.ci-grid-search {
+	margin-bottom: 4px;
+}
 
 .ci-grid-search input {
-	border: 1px solid #333333;
-	padding: 4px;
-	padding-left: 5px;
+	border: 1px solid #c0c0c0;
+	padding: 3px;
+	padding-left: 3px;
+	margin: 0;
 	font-size: inherit;
-	border-radius: 5px;
 }
 
 .ci-grid-search span {
 	display: inline-block;
 	margin-right: 10px;
-	padding-top: 15px;
+	padding-top: 6px;
 	font-size: 1.1em;
 }
 
