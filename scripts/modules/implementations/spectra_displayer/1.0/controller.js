@@ -96,6 +96,12 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		field.implementation.setOptions({ 'flipX': 'Flip X', 'flipY': 'Flip Y' });
 
 
+		groupField.addField({
+			'type': 'Color',
+			'name': 'plotcolor',
+			title: new BI.Title('Color')
+		});
+
 		return true;
 	},
 	
@@ -114,6 +120,7 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 				gencfg: [{
 					mode: [mode],
 					flip: [flipArray],
+					color: [this.module.getConfiguration().plotcolor || '#000000']
 				}]
 			}
 		}	
@@ -133,5 +140,6 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		this.module.getConfiguration().mode = confSection[0].gencfg[0].mode[0];
 		this.module.getConfiguration().flipX = flipX;
 		this.module.getConfiguration().flipY = flipY;
+		this.module.getConfiguration().plotcolor = confSection[0].getncfg[0].plotcolor[0];
 	}
 }
