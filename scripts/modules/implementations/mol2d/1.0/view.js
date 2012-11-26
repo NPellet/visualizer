@@ -42,6 +42,7 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 	},
 
 	onResize: function(width, height) {
+
 		this._height = height - 20;
 		this._width = width - 20;
 		this._canvas.resize(width - 20, height - 20);
@@ -93,6 +94,8 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 		if(this._canvas._domcanvas)
 			this._canvas._domcanvas.width = this._width;
 		
+		
+		var ratio = Math.min(1, ratio);
 		this._molecule.scaleToAverageBondLength(30 * ratio);
 
 		this._canvas.specs.atoms_font_size_2D = 10 * ratio;

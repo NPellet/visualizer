@@ -30,8 +30,9 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 	
 	onResize: function(width, height) {
 		var data;
-		if((data = this.dom.data('spectra')) != undefined) 
+		if((data = this.dom.data('spectra')) != undefined) {
 			data.resize(width, height - 5);
+		}
 	},
 	
 	onProgress: function() {
@@ -66,6 +67,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		'jcamp': function(moduleValue) {
+			
 			this._jcampValue = moduleValue;
 			var view = this;
 			var cfgM = this.module.getConfiguration();
