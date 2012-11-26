@@ -67,7 +67,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		'jcamp': function(moduleValue) {
-			
+
 			this._jcampValue = moduleValue;
 			var view = this;
 			var cfgM = this.module.getConfiguration();

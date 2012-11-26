@@ -186,16 +186,24 @@ CI.Module.prototype = {
 	 * Called to update the view (normally after a change of data)
 	 */
 	updateView: function(rel) {
+
+		var val = CI.Repo.get(this.getNameFromRel(rel));
+		if(val)
+			val = val[1];
 		if(this.view.update2 && this.view.update2[rel])
-			this.view.update2[rel].call(this.view, CI.Repo.get(this.getNameFromRel(rel)));
+			this.view.update2[rel].call(this.view, val);
 	},
 
 	updateAllView: function() {
 		if(!this.view.update2)
 			return;
-
-		for(var i in this.view.update2)
-			this.view.update2[i].call(this.view, CI.Repo.get(this.getNameFromRel(i)));
+		var val;
+		for(var i in this.view.update2) {
+			val = CI.Repo.get(this.getNameFromRel(i));
+			if(val)
+			val = val[1];
+			this.view.update2[i].call(this.view, val);
+		}
 	},
 	
 	/** 
