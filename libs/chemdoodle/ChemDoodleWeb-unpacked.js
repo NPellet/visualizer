@@ -3628,16 +3628,22 @@ ChemDoodle.RESIDUE = (function() {
 			var p2 = this.getInverseTransformedX(pixel2);
 			this.minX = m.min(p1, p2);
 			this.maxX = m.max(p1, p2);
+
 			if (rescaleY) {
-				var ymax = Number.MIN_VALUE;
-				for ( var i = 0, ii = this.data.length; i < ii; i++) {
-					if (math.isBetween(this.data[i].x, this.minX, this.maxX)) {
-						ymax = m.max(ymax, this.data[i].y);
-					}
-				}
-				return 1 / ymax;
+				return this.getScale(this.minX, this.maxX);
 			}
 		};
+
+		this.getScale = function(minX, maxX) {
+			var ymax = Number.MIN_VALUE;
+			for ( var i = 0, ii = this.data.length; i < ii; i++) {
+				if (math.isBetween(this.data[i].x, minX, maxX)) {
+					ymax = m.max(ymax, this.data[i].y);
+				}
+			}
+			return 1 / ymax;
+		}
+
 		this.translate = function(dif, width) {
 			var dist = dif / (width - this.memory.offsetLeft) * (this.maxX - this.minX) * (this.memory.flipXAxis ? 1 : -1);
 			this.minX += dist;
@@ -8653,20 +8659,52 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 		this.specs.scale = 1;
 		var min = this.spectrum.minX;
 		var max = this.spectrum.maxX;
+		var minY = this.spectrum.minY;
+		var maxY = this.spectrum.maxY;
 		for(var i = 0, l = this.overlaySpectra.length; i < l; i++) {
 			this.overlaySpectra[i].setup();
 			min = Math.min(min, this.overlaySpectra[i].minX);
-			max = Math.max(min, this.overlaySpectra[i].maxX);
+			max = Math.max(max, this.overlaySpectra[i].maxX);
+
+			minY = Math.min(minY, this.overlaySpectra[i].minY);
+			maxY = Math.max(maxY, this.overlaySpectra[i].maxY);
 		}
 
 		this.spectrum.minX = min;
 		this.spectrum.maxX = max;
+		this.spectrum.minY = minY;
+		this.spectrum.maxY = maxY;
 
 		if(this.onZoomChange)
 			this.onZoomChange.call(this, min, max);
 		
 		this.repaint();
 	};
+
+
+	c.OverlayCanvas.prototype.mouseup = function(e) {
+		if (this.dragRange != null && this.dragRange.x != this.dragRange.y) {
+			if(!this.dragRange.multi){
+
+				var newScale = this.spectrum.zoom(this.dragRange.x, e.p.x, this.width, this.rescaleYAxisOnZoom);
+
+				for(var i = 0, l = this.overlaySpectra.length; i < l; i++)
+					newScale = Math.min(newScale, this.overlaySpectra[i].getScale(this.spectrum.minX, this.spectrum.maxX));
+
+
+				if (this.rescaleYAxisOnZoom) {
+					this.specs.scale = newScale;
+				}
+			}
+
+			this.dragRange = null;
+			this.repaint();
+
+			if(this.onZoomChange)
+				this.onZoomChange.call(this, this.spectrum.minX, this.spectrum.maxX);
+		}
+	};
+
 
 })(ChemDoodle);
 
