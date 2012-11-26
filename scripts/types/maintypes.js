@@ -1073,16 +1073,23 @@ CI.Type["jcamp"] = {
 		}
 		
 		allspectras[spectraid].plots_color = opts.plotcolor;
+  		allspectras[spectraid].continuous = ctns;
+
 		if(allspectrasid[spectraid] == undefined) {
 	  		var id = spectra.addSpectrum(allspectras[spectraid]);
 			allspectrasid[spectraid] = id;
+			spectra.getXMaxBound();
+			spectra.repaint();
 		} else if(allspectrasid[spectraid] == -1) {
 			spectra.loadSpectrum(allspectras[spectraid]);
+			spectra.getXMaxBound();
+			spectra.repaint();
 		} else {
 			spectra.overlaySpectra[allspectrasid[spectraid]] = allspectras[spectraid];
 		}
 
-  		allspectras[spectraid].continuous = ctns;
+
+
   		//spectra.repaint();
 	},
 

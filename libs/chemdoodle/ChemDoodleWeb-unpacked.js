@@ -8653,10 +8653,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 		}
 	};
 
-	c.OverlayCanvas.prototype.dblclick = function(e) {
-
-		this.spectrum.setup();
-		this.specs.scale = 1;
+	c.OverlayCanvas.prototype.getXMaxBound = function() {
 		var min = this.spectrum.minX;
 		var max = this.spectrum.maxX;
 		var minY = this.spectrum.minY;
@@ -8665,7 +8662,6 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 			this.overlaySpectra[i].setup();
 			min = Math.min(min, this.overlaySpectra[i].minX);
 			max = Math.max(max, this.overlaySpectra[i].maxX);
-
 			minY = Math.min(minY, this.overlaySpectra[i].minY);
 			maxY = Math.max(maxY, this.overlaySpectra[i].maxY);
 		}
@@ -8674,9 +8670,15 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 		this.spectrum.maxX = max;
 		this.spectrum.minY = minY;
 		this.spectrum.maxY = maxY;
+	}
 
+	c.OverlayCanvas.prototype.dblclick = function(e) {
+
+		this.spectrum.setup();
+		this.getXMaxBound();
+		this.specs.scale = 1;
 		if(this.onZoomChange)
-			this.onZoomChange.call(this, min, max);
+			this.onZoomChange.call(this, this.spectrum.minX, this.spectrum.maxX);
 		
 		this.repaint();
 	};
@@ -8690,7 +8692,6 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 
 				for(var i = 0, l = this.overlaySpectra.length; i < l; i++)
 					newScale = Math.min(newScale, this.overlaySpectra[i].getScale(this.spectrum.minX, this.spectrum.maxX));
-
 
 				if (this.rescaleYAxisOnZoom) {
 					this.specs.scale = newScale;
