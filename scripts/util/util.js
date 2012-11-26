@@ -125,6 +125,7 @@ CI.Observable.prototype.unpush = function() {
 
 CI.RepoPool = function() {
 
+	this._killers = {};
 	this._value = [];
 	this.on('change', function(sourcekeys, value) {
 		var callbacks = {};
@@ -168,7 +169,7 @@ CI.RepoPool.prototype.set = function(keys, value) {
 }
 
 CI.RepoPool.prototype._callbackId = -1;
-CI.RepoPool.prototype.listen = function(keys, callback, sendCallbackOnEmptyArray) {
+CI.RepoPool.prototype.listen = function(keys, callback, sendCallbackOnEmptyArray, killerID) {
 
 	var self = this;
 	this._keys = this._keys || {};
@@ -183,10 +184,30 @@ CI.RepoPool.prototype.listen = function(keys, callback, sendCallbackOnEmptyArray
 
 	var callbackId = ++CI.RepoPool.prototype._callbackId;
 	this._callbacks[callbackId] = [keys, callback, sendCallbackOnEmptyArray];
+
+	if(killerID) {
+		this._killers[killerID] = this._killers[killerID] || [];
+		this._killers[killerID].push(callbackId);
+	}
+
 	this.bindKeysRecursively(keys, callbackId, true);
 
 	return callbackId;
 }
+
+CI.RepoPool.prototype.kill = function(killerId) {
+	if(!this._killers[killerId])
+		return;
+
+	var callbackIds = this._killers[killerId];
+	for(var i = 0, l = callbackIds.length; i < l; i++) {
+		this.bindKeysRecursively(this._callbacks[callbackIds[i]][0], callbackIds[i], false);
+		this._callbacks[callbackIds[i]] = undefined;
+	}
+
+	this._killers[killerId] = [];
+}
+
 
 CI.RepoPool.prototype.bindKeysRecursively = function(keys, callbackId, add) {
 	for(var i = 0, l = keys.length; i < l; i++) {

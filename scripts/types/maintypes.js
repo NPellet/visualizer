@@ -819,10 +819,10 @@ CI.DataType._valueToScreen = function(def, data, box, args) {
 	var highlights = CI.DataType.getHighlights(data);
 
 	if(typeof repoFuncs[type] == 'function')
-		return repoFuncs[type].call(box.view, def, data, args, highlights);
+		return repoFuncs[type].call(box.view, def, data, args, highlights, box);
 	
 	if(CI.Type[type] && typeof CI.Type[type].toScreen == 'function')
-		return CI.Type[type].toScreen(def, data, args, highlights);
+		return CI.Type[type].toScreen(def, data, args, highlights, box);
 }
 
 CI.Type = {};
@@ -968,99 +968,106 @@ CI.Type["jcamp"] = {
 	_id: 0,
 	cache: [],
 
-	doFromDom: function(dom, value, opts, highlights) {
+	doFromDom: function(dom, value, opts, highlights, box) {
 
-			if(dom.length == 0)
-				return;
+		if(dom.length == 0)
+			return;
 
-			var spectra = new ChemDoodle.PerspectiveCanvas(dom.attr('id'), opts.width || 300, opts.height || 150);
+		var spectra = new ChemDoodle.PerspectiveCanvas(dom.attr('id'), opts.width || 300, opts.height || 150);
 
+if(!box)
+	console.trace();
 
-			CI.RepoHighlight.listen(highlights, function(value, commonKeys) {
-				spectra._highlights = spectra._highlights || {};
-				for(var i = 0; i < commonKeys.length; i++) 
-					spectra._highlights[commonKeys[i]] = value;
-				spectra.repaint();
-			});
+		CI.RepoHighlight.listen(highlights, function(value, commonKeys) {
+			spectra._highlights = spectra._highlights || {};
+			for(var i = 0; i < commonKeys.length; i++) 
+				spectra._highlights[commonKeys[i]] = value;
+			spectra.repaint();
+		}, true, box.id || 0);
 
-			spectra.CIOnRepaint(function() {
-				var h = [];
-				if(spectra._highlights) {
+		spectra.CIOnRepaint(function() {
+			var h = [];
+			if(spectra._highlights) {
 
-					for(var i in spectra._highlights) {
-						if(spectra._highlights[i] == 1 && value._zones[i])
-							h.push(value._zones[i]);
-					}
-				}
-
-				var mem = this.spectrum.memory;
-				var context = this._domcanvas.getContext('2d');
-				for(var i = 0, l = h.length; i < l; i++) {
-					var x1 = this.spectrum.getTransformedX(h[i][0], {}, mem.width, mem.offsetLeft);
-					var x2 = this.spectrum.getTransformedX(h[i][1], {}, mem.width, mem.offsetLeft);
-				    context.beginPath();
-				    context.rect(x1, 0, x2 - x1, mem.height);
-				    context.fillStyle = "rgba(247, 232, 70, 0.5)";
-				 	context.fill();
-				}
-			});
-
-			spectra.CIOnMouseMove(function(e) {
-				spectra._highlights = spectra._highlights || {};
-				var mem = this.spectrum.memory;
-				var x = e.offsetX;
-				var x1 = this.spectrum.getInverseTransformedX(x);
-				var min, max, j = 0;
-				for(var i in value._zones) {
-					min = Math.min(value._zones[i][0], value._zones[i][1]);
-					max = Math.max(value._zones[i][0], value._zones[i][1]);
-
-					if(min < x1 && max > x1) {
-						if(!spectra._highlights[i])
-							CI.RepoHighlight.set(i, 1);
-					} else if(spectra._highlights[i] == 1) {
-						CI.RepoHighlight.set(i, 0);
-					}
-				}
-
-			});
-			 
-
-			dom.data('spectra', spectra);
-			spectra.specs.plots_showYAxis = true;
-			//spectra.specs.plots_flipXAxis = false;
-			if(!opts) opts = {};
-			var ctns = opts.continuous || false;
-			spectra.specs.plots_flipXAxis =  opts.flipX || false;
-			spectra.specs.plots_flipYAxis =  opts.flipY || false;
-			var zones = value._zones || {};
-
-			if(value._cacheId && CI.Type.jcamp.cache[value._cacheId]) {
-				var jcampLoaded = CI.Type.jcamp.cache[value._cacheId];
-			} else {
-				var jcampLoaded = ChemDoodle.readJCAMP(value.value);
-				CI.Type.jcamp.cache.push(jcampLoaded);
-				value._cacheId = CI.Type.jcamp._id;
-				CI.Type.jcamp._id++;
-
-				if(CI.Type.jcamp.cache.length == 100) {
-					CI.Type.jcamp.cache.splice(0, 1);
-					CI.Type.jcamp._id--;
+				for(var i in spectra._highlights) {
+					if(spectra._highlights[i] == 1 && value._zones[i])
+						h.push(value._zones[i]);
 				}
 			}
-			
-	  		spectra.loadSpectrum(jcampLoaded);
-	  		spectra.getSpectrum().continuous = ctns;
-	  		spectra.repaint();
+
+			var mem = this.spectrum.memory;
+			var context = this._domcanvas.getContext('2d');
+			for(var i = 0, l = h.length; i < l; i++) {
+				var x1 = this.spectrum.getTransformedX(h[i][0], {}, mem.width, mem.offsetLeft);
+				var x2 = this.spectrum.getTransformedX(h[i][1], {}, mem.width, mem.offsetLeft);
+			    context.beginPath();
+			    context.rect(x1, 0, x2 - x1, mem.height);
+			    context.fillStyle = "rgba(247, 232, 70, 0.5)";
+			 	context.fill();
+			}
+		});
+
+		spectra.CIOnMouseMove(function(e) {
+
+			spectra._highlights = spectra._highlights || {};
+			var mem = this.spectrum.memory;
+			var x = e.offsetX;
+			var x1 = this.spectrum.getInverseTransformedX(x);
+			var min, max, j = 0;
+			for(var i in value._zones) {
+				min = Math.min(value._zones[i][0], value._zones[i][1]);
+				max = Math.max(value._zones[i][0], value._zones[i][1]);
+
+				if(min < x1 && max > x1) {
+					if(!spectra._highlights[i])
+						CI.RepoHighlight.set(i, 1);
+				} else if(spectra._highlights[i] == 1) {
+					CI.RepoHighlight.set(i, 0);
+				}
+			}
+
+		});
+		 
+
+		dom.data('spectra', spectra);
+		spectra.specs.plots_showYAxis = true;
+		//spectra.specs.plots_flipXAxis = false;
+		if(!opts) opts = {};
+		var ctns = opts.continuous || false;
+		spectra.specs.plots_flipXAxis =  opts.flipX || false;
+		spectra.specs.plots_flipYAxis =  opts.flipY || false;
+		var zones = value._zones || {};
+
+		if(value._cacheId && CI.Type.jcamp.cache[value._cacheId]) {
+			var jcampLoaded = CI.Type.jcamp.cache[value._cacheId];
+		} else {
+			var jcampLoaded = ChemDoodle.readJCAMP(value.value);
+			CI.Type.jcamp.cache.push(jcampLoaded);
+			value._cacheId = CI.Type.jcamp._id;
+			CI.Type.jcamp._id++;
+
+			if(CI.Type.jcamp.cache.length == 100) {
+				CI.Type.jcamp.cache.splice(0, 1);
+				CI.Type.jcamp._id--;
+			}
+		}
+		
+  		spectra.loadSpectrum(jcampLoaded);
+  		spectra.getSpectrum().continuous = ctns;
+  		spectra.repaint();
 	},
 
-	toScreen: function(def, value, args, highlights) {
+	onKill: function() {
+
+	},
+
+	toScreen: function(def, value, args, highlights, box) {
 		
 		if(args.dom)
-			return def.resolve(CI.Type.jcamp.doFromDom(args.dom, value, args, highlights));
+			return def.resolve(CI.Type.jcamp.doFromDom(args.dom, value, args, highlights, box));
 
 		var id = BI.Util.getNextUniqueId();
-		CI.Util.DOMDeferred.progress(function(dom) { CI.Type.jcamp.doFromDom($("#" + id, dom), value, args, highlights); });
+		CI.Util.DOMDeferred.progress(function(dom) { CI.Type.jcamp.doFromDom($("#" + id, dom), value, args, highlights, box); });
 		def.resolve('<canvas id="' + id + '"></canvas>');
 	}
 };

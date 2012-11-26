@@ -68,6 +68,8 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 		'jcamp': function(moduleValue) {
 
+			CI.RepoHighlight.kill(this.module.id);
+
 			this._jcampValue = moduleValue;
 			var view = this;
 			var cfgM = this.module.getConfiguration();

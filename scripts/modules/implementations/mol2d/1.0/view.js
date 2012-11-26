@@ -121,39 +121,42 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 				var b, radius = self._canvas.specs.atoms_font_size_2D;
 				var x = e.offsetX, y = e.offsetY;
 				
-				x -= this.width / 2; x /= this.specs.scale; x += this.width / 2; 
-				y -= this.height / 2; y /= this.specs.scale; y += this.height / 2;
 
-				for(var i = 0, l = molLoaded.atoms.length; i < l; i++) {
+				if(moduleValue._atomID && moduleValue._highlight) {
+					x -= this.width / 2; x /= this.specs.scale; x += this.width / 2; 
+					y -= this.height / 2; y /= this.specs.scale; y += this.height / 2;
 
-					if(molLoaded.atoms[i].textBounds.length > 0) {
-						inside = false;
-						for(var j = 0, k = molLoaded.atoms[i].textBounds.length; j < k; j++) {
-							b = molLoaded.atoms[i].textBounds[j];
+					for(var i = 0, l = molLoaded.atoms.length; i < l; i++) {
 
-							if(b.x < x && b.x + b.w > x && b.y < y && b.y + b.h > y) {
-								inside = true;
-								if(!molLoaded._highlights[moduleValue._atomID[i]])
-									CI.RepoHighlight.set(moduleValue._atomID[i], 1);
+						if(molLoaded.atoms[i].textBounds.length > 0) {
+							inside = false;
+							for(var j = 0, k = molLoaded.atoms[i].textBounds.length; j < k; j++) {
+								b = molLoaded.atoms[i].textBounds[j];
+
+								if(b.x < x && b.x + b.w > x && b.y < y && b.y + b.h > y) {
+									inside = true;
+									if(moduleValue._atomID[i] && !molLoaded._highlights[moduleValue._atomID[i]])
+										CI.RepoHighlight.set(moduleValue._atomID[i], 1);
+								}
 							}
-						}
 
-						if(!inside && molLoaded._highlights[moduleValue._atomID[i]]) {
+							if(moduleValue._atomID[i] && !inside && molLoaded._highlights[moduleValue._atomID[i]]) {
 
-							CI.RepoHighlight.set(moduleValue._atomID[i], 0);
-						}
-					} else {
-						var difX = x - molLoaded.atoms[i].x;
-						var difY = y - molLoaded.atoms[i].y;
-						
-						if(Math.pow(Math.pow(difX, 2) + Math.pow(difY, 2), 0.5) < this.specs.atoms_font_size_2D) {
-							// Ok inside
-							if(!molLoaded._highlights[moduleValue._atomID[i]])
-									CI.RepoHighlight.set(moduleValue._atomID[i], 1);
+								CI.RepoHighlight.set(moduleValue._atomID[i], 0);
+							}
 						} else {
-							// Do not send
-							if(molLoaded._highlights[moduleValue._atomID[i]])
-									CI.RepoHighlight.set(moduleValue._atomID[i], 0);
+							var difX = x - molLoaded.atoms[i].x;
+							var difY = y - molLoaded.atoms[i].y;
+							
+							if(Math.pow(Math.pow(difX, 2) + Math.pow(difY, 2), 0.5) < this.specs.atoms_font_size_2D) {
+								// Ok inside
+								if(moduleValue._atomID[i] && !molLoaded._highlights[moduleValue._atomID[i]])
+										CI.RepoHighlight.set(moduleValue._atomID[i], 1);
+							} else {
+								// Do not send
+								if(moduleValue._atomID[i] && molLoaded._highlights[moduleValue._atomID[i]])
+										CI.RepoHighlight.set(moduleValue._atomID[i], 0);
+							}
 						}
 					}
 				}
