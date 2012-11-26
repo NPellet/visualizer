@@ -988,10 +988,11 @@ CI.Type["jcamp"] = {
 				if(spectra._highlights) {
 
 					for(var i in spectra._highlights) {
-						if(spectra._highlights[i] == 1)
+						if(spectra._highlights[i] == 1 && value._zones[i])
 							h.push(value._zones[i]);
 					}
 				}
+
 				var mem = this.spectrum.memory;
 				var context = this._domcanvas.getContext('2d');
 				for(var i = 0, l = h.length; i < l; i++) {
