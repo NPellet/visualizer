@@ -141,6 +141,6 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		this.module.getConfiguration().mode = confSection[0].gencfg[0].mode[0];
 		this.module.getConfiguration().flipX = flipX;
 		this.module.getConfiguration().flipY = flipY;
-		this.module.getConfiguration().plotcolor = confSection[0].getncfg[0].plotcolor[0];
+		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor[0];
 	}
 }
