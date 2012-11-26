@@ -21,9 +21,11 @@ LoadingPlot.SVGElement.prototype.construct = function(svg, x, y, data) {
 
 
 LoadingPlot.SVGElement.prototype.createElement = function(nodeName, properties, doNotInclude, single) {
+
 	var node = document.createElementNS('http://www.w3.org/2000/svg', nodeName);
-	for(var i in properties)
+	for(var i in properties) {
 		node.setAttributeNS(null, i, properties[i]);
+	}
 	this._nodes = this._nodes || [];
 	
 	if(!doNotInclude) {
@@ -317,6 +319,97 @@ LoadingPlot.Ellipse.prototype.getCoordsSprings = function(coords) {
 		return [this._label, this._line];
 	}
 }
+
+
+
+
+
+
+
+
+
+LoadingPlot.Image = function(svg, x, y, data) {
+	
+	this.construct(svg,x,y,data);
+	this._displayed = true;
+	this._labelVisible = true;
+
+	this.g = this.createElement('g');
+	this._i = this.createElement('image', {x: 0, y: 0, width: 1, height: 1, transform: 'translate(' + x + ' ' + y + ') rotate( ' + data.a + ') scale(' + data.w + ' ' + data.h + ')'}, false, false);
+
+	this.g.appendChild(this._i);
+
+	this.writeLabel();
+	this.changeZoom();
+	this._data = data;
+}
+
+$.extend(LoadingPlot.Image.prototype, LoadingPlot.SVGElement.prototype);
+LoadingPlot.Image.prototype.filter = function(filter) {
+	if(filter[this._data.n] !== undefined) {
+		this._i.setAttributeNS(null, 'display', (filter[this._data.n] ? 'block' : 'none'));
+		this._visibility.filter = !!filter[this._data.n];
+		this.labelVisibility();
+	}
+}
+
+LoadingPlot.Image.prototype.getOptimalSpringParameter = function() {
+	return Math.max(this._data.w, this._data.h) * 1.2;
+}
+
+LoadingPlot.Image.prototype.inDom = function() {
+	this._highlightgroup.setAttributeNS(null, 'data-id', this.id);
+
+	this._i.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', this._data.iu);
+}
+
+LoadingPlot.Image.prototype.changeZoom = function() {
+	
+	this.doDisplayLabel(this.svg._zoom >= this._zoomThreshLabel);
+}
+
+LoadingPlot.Image.prototype.implHighlight = function(bln) {
+
+
+}
+
+LoadingPlot.Image.prototype.getCoordsSprings = function(coords) {
+	if(!this._forceField)
+		return;
+
+	if(!this._labelSpringEl) {
+		var buff = new ArrayBuffer(36);
+		this._labelSpringEl = new Float32Array(buff);
+		this._labelSpringEl[0] = this._x + Math.max(this._data.w, this._data.h) * 1.2;
+		this._labelSpringEl[1] = this._y;
+		this._labelSpringEl[2] = 0;
+		this._labelSpringEl[3] = this._fontsize / this.svg._zoom;
+		this._labelSpringEl[4] = this._x;
+		this._labelSpringEl[5] = this._y;
+		this._labelSpringEl[6] = 0;
+		this._labelSpringEl[7] = 0;
+	}
+	
+	if(this.isLabelVisible() && this._label) {
+
+		if(isNaN(this._labelSpringEl[0]) || isNaN(this._labelSpringEl[1])) {
+			this._labelSpringEl[0] = this._x + Math.max(this._data.w, this._data.h) * 1.2;
+			this._labelSpringEl[1] = this._y;
+		}
+
+		this._labelSpringEl[2] = this._label.getComputedTextLength();
+		this._labelSpringEl[3] = this._fontsize /  this.svg._zoom;
+		this._labelSpringEl[8] = this.getOptimalSpringParameter();
+		coords.push(this._labelSpringEl);
+		return [this._label, this._line];
+	}
+}
+
+
+
+
+
+
 
 
 LoadingPlot.Pie = function(svg,x, y, data) {

@@ -190,7 +190,7 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 			type: 'Combo',
 			name: 'type'
 		});
-		field.implementation.setOptions([{key: 'ellipse', title: 'Ellipse / Circle'}, {key: 'pie', title: 'Pie Chart'}]);
+		field.implementation.setOptions([{key: 'ellipse', title: 'Ellipse / Circle'}, {key: 'pie', title: 'Pie Chart'}, {key: 'img', title: 'Image'}]);
 		field.setTitle(new BI.Title('Display as'));
 
 

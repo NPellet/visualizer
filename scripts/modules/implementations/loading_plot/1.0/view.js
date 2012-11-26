@@ -152,6 +152,8 @@ CI.Module.prototype._types.loading_plot.View.prototype = {
 								var el = new LoadingPlot.Pie(svg, datas[k].x, datas[k].y, datas[k]);
 							else if(type == 'ellipse')
 								var el = new LoadingPlot.Ellipse(svg, datas[k].x, datas[k].y, datas[k]);
+							else if(type == 'img')
+								var el = new LoadingPlot.Image(svg, datas[k].x, datas[k].y, datas[k]);
 							el.allowLabelDisplay(layers[i].displayLabels);
 							if(layers[i].color)
 								el.setColor(layers[i].color);
