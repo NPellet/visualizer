@@ -871,7 +871,7 @@ CI.Type["mol2d"] = {
 
 		var id = BI.Util.getNextUniqueId();
 		CI.Util.DOMDeferred.progress(function(dom) {
-
+			
 			if($("#" + id, dom).length == 0)
 				return;
 

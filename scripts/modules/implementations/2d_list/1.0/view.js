@@ -52,6 +52,7 @@ CI.Module.prototype._types['2d_list'].View.prototype = {
 
 			current = undefined;
 			var self = this;
+			this.inDom = false;
 			CI.DataType.fetchElementIfNeeded(moduleValue).done(function(val) {
 				self.list = val;
 				var table = $('<table cellpadding="3" cellspacing="0">');
@@ -69,27 +70,39 @@ CI.Module.prototype._types['2d_list'].View.prototype = {
 							});
 
 						}
-
 						td.html(val);
 						
-
 						colId = done % cols;
 						if(colId == 0) {
 							if(current)
 								current.appendTo(table);
 							current = $("<tr />");
 						}
+
 						done++;
 						td.appendTo(current);
 
 						if(done == number) {
 							if(current)
 								current.appendTo(table);
-							CI.Util.ResolveDOMDeferred(view.dom);
+
+							if(view.inDom) {
+								CI.Util.ResolveDOMDeferred(table);
+							}
+
+							view.inDom = true;
 						}
 					});
 				}
+
+			
+
 				view.dom.html(table);
+
+				if(view.inDom)
+					CI.Util.ResolveDOMDeferred(table);
+								view.inDom = true;
+
 			});
 			
 		}
