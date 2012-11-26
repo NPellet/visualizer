@@ -791,26 +791,32 @@ CI.DataType.asyncToScreenHtml = function(element, box, jpath) {
 }
 
 
-CI.DataType._toScreen = function(element, box) {
+CI.DataType._toScreen = function(element, box, opts) {
 	var slice = Array.prototype.slice;
-	var newargs = slice.call(arguments, 2);
+	
 	var dif = $.Deferred();
 
-	CI.DataType.fetchElementIfNeeded(element).done(function(data) { CI.DataType._valueToScreen(dif, data, box, newargs); });
+	CI.DataType.fetchElementIfNeeded(element).done(function(data) { CI.DataType._valueToScreen(dif, data, box, opts); });
 	return dif.promise();
 }
+CI.DataType.toScreen = CI.DataType._toScreen;
 
 CI.DataType.getOptions = function(value) {
 	return value._options || {};
 }
 
-CI.DataType.toScreen = CI.DataType._toScreen;
+CI.DataType.getHighlights = function(value) {
+	return value._highlight || [];
+}
+
+
 CI.DataType._valueToScreen = function(def, data, box, args) {
 
 	var repoFuncs = box.view.typeToScreen;
 	var type = CI.DataType.getType(data);
 
 	args = $.extend(args, CI.DataType.getOptions(data))
+	var highlights = CI.DataType.getHighlights(data);
 
 	if(typeof repoFuncs[type] == 'function')
 		return repoFuncs[type].call(box.view, def, data, args);
@@ -962,16 +968,53 @@ CI.Type["jcamp"] = {
 	_id: 0,
 	cache: [],
 
-	doFromDom: function(dom, value, opts) {
+	doFromDom: function(dom, value, opts, highlights) {
 
 			if(dom.length == 0)
 				return;
 
 			var spectra = new ChemDoodle.PerspectiveCanvas(dom.attr('id'), opts.width || 300, opts.height || 150);
 
-			if(opts && opts.onRepaint) {
-				spectra.CIOnRepaint(opts.onRepaint);
-			} 
+
+			CI.RepoHighlight.listen(highlights, function(value, commonKeys) {
+				spectra._highlights = commonKeys;
+				spectra.repaint();
+			});
+
+			spectra.CIOnRepaint(function() {
+				
+				var h = [];
+				if(spectra._highlights) {
+					for(var i = 0; i < spectra._highlights.length; i++) {
+						h.push(value._zones[spectra._highlights[i]]);
+					}
+				}
+
+				var mem = this.spectrum.memory;
+				var context = this._domcanvas.getContext('2d');
+				for(var i = 0, l = h.length; i < l; i++) {
+					var x1 = this.spectrum.getTransformedX(h[i][0], {}, mem.width, mem.offsetLeft);
+					var x2 = this.spectrum.getTransformedX(h[i][1], {}, mem.width, mem.offsetLeft);
+				    context.beginPath();
+				    context.rect(x1, 0, x2 - x1, mem.height);
+				    context.fillStyle = "rgba(247, 232, 70, 0.5)";
+				 	context.fill();
+				}
+			});
+
+			spectra.CIOnMouseMove(function(e) {
+				var mem = this.spectrum.memory;
+				var x = e.offsetX;
+				var x1 = this.spectrum.getInverseTransformedX(x);
+				
+				for(var i in spectra._zones) {
+					if(spectra._zones[i][0] < x1 && spectra._zones[i][1] > x1) {
+						CI.RepoHighlight.send(i);
+					}
+				}
+
+			});
+			 
 
 			dom.data('spectra', spectra);
 			spectra.specs.plots_showYAxis = true;
@@ -980,7 +1023,8 @@ CI.Type["jcamp"] = {
 			var ctns = opts.continuous || false;
 			spectra.specs.plots_flipXAxis =  opts.flipX || false;
 			spectra.specs.plots_flipYAxis =  opts.flipY || false;
-		
+			var zones = value._zones || {};
+
 			if(value._cacheId && CI.Type.jcamp.cache[value._cacheId]) {
 				var jcampLoaded = CI.Type.jcamp.cache[value._cacheId];
 			} else {
@@ -1000,13 +1044,13 @@ CI.Type["jcamp"] = {
 	  		spectra.repaint();
 	},
 
-	toScreen: function(def, value, args) {
+	toScreen: function(def, value, args, highlights, all) {
 		
 		if(args.dom)
-			return def.resolve(CI.Type.jcamp.doFromDom(args.dom, value, args));
+			return def.resolve(CI.Type.jcamp.doFromDom(args.dom, value, args, highlights, all));
 
 		var id = BI.Util.getNextUniqueId();
-		CI.Util.DOMDeferred.progress(function(dom) { CI.Type.jcamp.doFromDom($("#" + id, dom), value, args); });
+		CI.Util.DOMDeferred.progress(function(dom) { CI.Type.jcamp.doFromDom($("#" + id, dom), value, args, highlights, all); });
 		def.resolve('<canvas id="' + id + '"></canvas>');
 	}
 };

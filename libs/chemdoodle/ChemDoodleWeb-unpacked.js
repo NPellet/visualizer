@@ -7570,6 +7570,14 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 		this._CIrepaintCanvas = this._CIrepaintCanvas || $.Callbacks(); 
 		this._CIrepaintCanvas.add(clbk);
 	}
+
+
+	// ALLOWS TO REGISTER CALLBACKS AFTER REPAINTING
+	c._Canvas.prototype.CIOnMouseMove = function(clbk) {
+
+		this._CIOnMouseMove = this._CIOnMouseMove || $.Callbacks(); 
+		this._CIOnMouseMove.add(clbk);
+	}
 	// NORMAN ADDITION END
 
 
@@ -7653,7 +7661,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 		// setup input events
 		// make sure prehandle events are only in if statements if handled, so
 		// as not to block browser events
-		var me = this;
+		var me = this, self = me; // NORMAN ADDITION self
 		if (featureDetection.supports_touch()) {
 			// for iPhone OS and Android devices (and other mobile browsers that
 			// support mobile events)
@@ -7823,7 +7831,15 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 					me.prehandleEvent(e);
 					me.mousemove(e);
 				}
+
+				// NORMAN ADDITION START
+				// ALLOWS TO REGISTER CALLBACKS ON MOUSE MOVE
+
+				self._CIOnMouseMove = self._CIOnMouseMove || $.Callbacks(); 
+				self._CIOnMouseMove.fireWith(self, [e]);
+				// NORMAN ADDITION END
 			});
+
 			jqCapsule.mouseout(function(e) {
 				monitor.CANVAS_OVER = null;
 				if (me.mouseout) {
@@ -8544,6 +8560,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 				this.onZoomChange.call(this, this.spectrum.minX, this.spectrum.maxX);
 		}
 	};
+
 	c.PerspectiveCanvas.prototype.drag = function(e) {
 		if (this.dragRange != null) {
 			if(this.dragRange.multi){
