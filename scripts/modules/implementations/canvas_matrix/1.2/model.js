@@ -39,6 +39,9 @@ $.extend(CI.Module.prototype._types.canvas_matrix.Model.prototype, {
 		
 		function getjPath(data) {
 			
+			if(data == null)
+				return [];
+
 			var jpaths = [];
 			CI.DataType.getJPathsFromElement(data, jpaths);
 			
@@ -56,16 +59,17 @@ $.extend(CI.Module.prototype._types.canvas_matrix.Model.prototype, {
 			
 		switch(rel) {
 			case 'row':
+
 				var data = data.yLabel[0];
 				return getjPath(data, accepts);
 			break;
 			case 'col':
-				var data = data.xLabel[0];
+				var data = data.xLabel[0];console.log(data);
 				return getjPath(data, accepts);
 			break;
 			
 			case 'intersect':
-				var data = data.data[0][0];
+				var data = data.data[0][0];console.log(data);
 				return getjPath(data, accepts);
 			break;
 
