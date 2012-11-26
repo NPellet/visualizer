@@ -225,7 +225,7 @@ CI.ConfigVisualizer = function() {
 			var title = config.title || 'Visualizer title';
 			var menubar = config.showMenuBarOnStart ? ['display'] : [false];
 			var moduleheader = config.showModuleHeaderOnHover ? ['showonhover'] : [false];
-			var modulebg = config.moduleBackground || '#ffffff';
+			var modulebg = config.moduleBackground || '';
 			
 			
 			var vars = { title: [title], menubar: [menubar], modulebg: [modulebg], moduleheaders: [moduleheader] };
