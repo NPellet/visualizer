@@ -975,9 +975,6 @@ CI.Type["jcamp"] = {
 
 		var spectra = new ChemDoodle.PerspectiveCanvas(dom.attr('id'), opts.width || 300, opts.height || 150);
 
-if(!box)
-	console.trace();
-
 		CI.RepoHighlight.listen(highlights, function(value, commonKeys) {
 			spectra._highlights = spectra._highlights || {};
 			for(var i = 0; i < commonKeys.length; i++) 
@@ -1019,8 +1016,11 @@ if(!box)
 				max = Math.max(value._zones[i][0], value._zones[i][1]);
 
 				if(min < x1 && max > x1) {
-					if(!spectra._highlights[i])
+
+					if(!spectra._highlights[i]) {
 						CI.RepoHighlight.set(i, 1);
+					}
+
 				} else if(spectra._highlights[i] == 1) {
 					CI.RepoHighlight.set(i, 0);
 				}
