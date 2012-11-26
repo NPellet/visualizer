@@ -139,6 +139,7 @@ CI.Module.prototype._types.grid.View.prototype = {
 				jpath = jpaths[j];
 				if(jpath.jpath)
 					jpath = jpath.jpath;
+				
 					async = CI.DataType.asyncToScreenHtml(source[i], box, jpath);
 					async.done(function(val) {
 						element.data[j] = val;

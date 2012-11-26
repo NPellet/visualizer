@@ -784,8 +784,9 @@ CI.DataType.asyncToScreenHtml = function(element, box, jpath) {
 	} else*/
 		// returns element.value if fetched
 
-
-	return CI.DataType.getValueFromJPath(element, jpath).pipe(function(data) { return CI.DataType._toScreen(data, box); });
+	var def = CI.DataType.getValueFromJPath(element, jpath).pipe(function(data) { var el = CI.DataType._toScreen(data, box).done(function(el) { $("#" + asyncId).html(el); CI.Util.ResolveDOMDeferred($("#" + asyncId)); }); return el; });
+	def.html = html;
+	def.id = asyncId;
 	return def; 	
 }
 
@@ -799,12 +800,17 @@ CI.DataType._toScreen = function(element, box) {
 	return dif.promise();
 }
 
+CI.DataType.getOptions = function(value) {
+	return value._options || {};
+}
+
 CI.DataType.toScreen = CI.DataType._toScreen;
 CI.DataType._valueToScreen = function(def, data, box, args) {
 
 	var repoFuncs = box.view.typeToScreen;
 	var type = CI.DataType.getType(data);
-	CI.DataType.getValueIfNeeded(data);
+
+	args = $.extend(args, CI.DataType.getOptions(data))
 
 	if(typeof repoFuncs[type] == 'function')
 		return repoFuncs[type].call(box.view, def, data, args);
@@ -961,7 +967,7 @@ CI.Type["jcamp"] = {
 			if(dom.length == 0)
 				return;
 
-			var spectra = new ChemDoodle.PerspectiveCanvas(dom.attr('id'), dom.parent().width(), dom.parent().height());
+			var spectra = new ChemDoodle.PerspectiveCanvas(dom.attr('id'), opts.width || 300, opts.height || 200);
 
 			if(opts && opts.onRepaint) {
 				spectra.CIOnRepaint(opts.onRepaint);
@@ -996,11 +1002,11 @@ CI.Type["jcamp"] = {
 
 	toScreen: function(def, value, args) {
 		
-		if(args[0])
-			return def.resolve(CI.Type.jcamp.doFromDom(args[0], value, args[1]));
+		if(args.dom)
+			return def.resolve(CI.Type.jcamp.doFromDom(args.dom, value, args));
 
 		var id = BI.Util.getNextUniqueId();
-		CI.Util.DOMDeferred.progress(function(dom) { CI.Type.jcamp.doFromDom($("#" + id, dom), value); });
+		CI.Util.DOMDeferred.progress(function(dom) { CI.Type.jcamp.doFromDom($("#" + id, dom), value, args); });
 		def.resolve('<canvas id="' + id + '"></canvas>');
 	}
 };
