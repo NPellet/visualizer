@@ -7524,7 +7524,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 				ctx.scale(pixelRatio, pixelRatio);
 			}
 			if (this.image == null) {
-				if (this.specs.backgroundColor != null) {
+				if (this.specs.backgroundColor != null && 1 == 0) {
 					ctx.fillStyle = this.specs.backgroundColor;
 					ctx.fillRect(0, 0, this.width, this.height);
 				}
