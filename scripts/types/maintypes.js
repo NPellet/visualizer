@@ -967,7 +967,7 @@ CI.Type["jcamp"] = {
 			if(dom.length == 0)
 				return;
 
-			var spectra = new ChemDoodle.PerspectiveCanvas(dom.attr('id'), opts.width || 300, opts.height || 200);
+			var spectra = new ChemDoodle.PerspectiveCanvas(dom.attr('id'), opts.width || 300, opts.height || 150);
 
 			if(opts && opts.onRepaint) {
 				spectra.CIOnRepaint(opts.onRepaint);
