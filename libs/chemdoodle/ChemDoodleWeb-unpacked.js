@@ -3508,7 +3508,9 @@ ChemDoodle.RESIDUE = (function() {
 			if(this.specs){
 				specs = this.specs;
 			}
-			ctx.strokeStyle = specs.plots_color;
+
+			ctx.strokeStyle = this.plots_color || specs.plots_color;
+
 			ctx.lineWidth = specs.plots_width;
 			var integration = [];
 			ctx.beginPath();
@@ -8481,48 +8483,6 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 //
 //  Copyright 2009 iChemLabs, LLC.  All rights reserved.
 //
-//  $Revision: 3078 $
-//  $Author: kevin $
-//  $LastChangedDate: 2011-02-06 18:27:15 -0500 (Sun, 06 Feb 2011) $
-//
-
-(function(c) {
-
-	c.OverlayCanvas = function(id, width, height) {
-		if (id) {
-			this.create(id, width, height);
-		}
-		this.overlaySpectra = [];
-		return true;
-	};
-	c.OverlayCanvas.prototype = new c._SpectrumCanvas();
-	c.OverlayCanvas.prototype.superRepaint = c.OverlayCanvas.prototype.innerRepaint;
-	c.OverlayCanvas.prototype.innerRepaint = function(ctx) {
-		this.superRepaint(ctx);
-		if(this.spectrum != null && this.spectrum.data.length > 0){
-			for(var i = 0, ii = this.overlaySpectra.length; i<ii; i++){
-				var s = this.overlaySpectra[i];
-				if (s != null && s.data.length > 0) {
-					s.minX = this.spectrum.minX;
-					s.maxX = this.spectrum.maxX;
-					s.drawPlot(ctx, this.specs, this.width, this.height, this.spectrum.memory.offsetTop, this.spectrum.memory.offsetLeft, this.spectrum.memory.offsetBottom);
-				}
-			}
-		}
-	};
-	c.OverlayCanvas.prototype.addSpectrum = function(spectrum) {
-		if(this.spectrum==null){
-			this.spectrum = spectrum;
-		}else{
-			this.overlaySpectra.push(spectrum);
-		}
-	};
-
-})(ChemDoodle);
-
-//
-//  Copyright 2009 iChemLabs, LLC.  All rights reserved.
-//
 //  $Revision: 3099 $
 //  $Author: kevin $
 //  $LastChangedDate: 2011-02-15 19:47:54 -0500 (Tue, 15 Feb 2011) $
@@ -8638,6 +8598,80 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 	};
 
 })(ChemDoodle, ChemDoodle.monitor, Math);
+
+
+
+
+//
+//  Copyright 2009 iChemLabs, LLC.  All rights reserved.
+//
+//  $Revision: 3078 $
+//  $Author: kevin $
+//  $LastChangedDate: 2011-02-06 18:27:15 -0500 (Sun, 06 Feb 2011) $
+//
+
+(function(c) {
+
+	c.OverlayCanvas = function(id, width, height) {
+		if (id) {
+			this.create(id, width, height);
+		}
+		this.overlaySpectra = [];
+		return true;
+	};
+	c.OverlayCanvas.prototype = new c.PerspectiveCanvas();
+	c.OverlayCanvas.prototype.superRepaint = c.PerspectiveCanvas.prototype.innerRepaint;
+	c.OverlayCanvas.prototype.innerRepaint = function(ctx) {
+		this.superRepaint(ctx);
+
+		if(this.spectrum != null && this.spectrum.data.length > 0){
+
+			for(var i = 0, ii = this.overlaySpectra.length; i<ii; i++){
+				var s = this.overlaySpectra[i];
+				if (s != null && s.data.length > 0) {
+					s.minX = this.spectrum.minX;
+					s.maxX = this.spectrum.maxX;
+					s.drawPlot(ctx, this.specs, this.width, this.height, this.spectrum.memory.offsetTop, this.spectrum.memory.offsetLeft, this.spectrum.memory.offsetBottom);
+				}
+			}
+		}
+	};
+	c.OverlayCanvas.prototype.addSpectrum = function(spectrum) {
+		
+		if(this.spectrum == null) {
+			this.spectrum = spectrum;
+			return -1;
+		} else {
+			this.overlaySpectra.push(spectrum);
+			return this.overlaySpectra.length - 1;
+		}
+	};
+
+	c.OverlayCanvas.prototype.dblclick = function(e) {
+
+		this.spectrum.setup();
+		this.specs.scale = 1;
+		var min = this.spectrum.minX;
+		var max = this.spectrum.maxX;
+		for(var i = 0, l = this.overlaySpectra.length; i < l; i++) {
+			this.overlaySpectra[i].setup();
+			min = Math.min(min, this.overlaySpectra[i].minX);
+			max = Math.max(min, this.overlaySpectra[i].maxX);
+		}
+
+		this.spectrum.minX = min;
+		this.spectrum.maxX = max;
+
+		if(this.onZoomChange)
+			this.onZoomChange.call(this, min, max);
+		
+		this.repaint();
+	};
+
+})(ChemDoodle);
+
+
+
 
 //
 //  Copyright 2009 iChemLabs, LLC.  All rights reserved.

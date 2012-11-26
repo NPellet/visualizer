@@ -18,7 +18,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 	
 	init: function() {
 		
-		
+		this.colorvars = [];
 		this.dom = $('<canvas id="' + BI.Util.getNextUniqueId() + '"></canvas>');
 		this.module.getDomContent().html(this.dom);
 	},
@@ -66,19 +66,30 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				this.update2.jcamp.call(this, this._jcampValue);*/
 		},
 
-		'jcamp': function(moduleValue) {
+		'jcamp': function(moduleValue, varname) {
+			var cfgM = this.module.getConfiguration();
+			if(!(cfgM.plotcolor instanceof Array))
+				cfgM.plotcolor = [cfgM.plotcolor];
 
 			CI.RepoHighlight.kill(this.module.id);
+			var index;
+			if((index = this.colorvars.indexOf(varname)) <= -1) {
+				index = this.colorvars.length;
+				this.colorvars.push(varname);
+			}
 
+			var color = cfgM.plotcolor[index] || 'black';
+				
 			this._jcampValue = moduleValue;
 			var view = this;
-			var cfgM = this.module.getConfiguration();
+			
 			var cfg = {
 				continuous: (cfgM.mode == 'curve'), 
 				flipX: cfgM.flipX, 
 				flipY: cfgM.flipY, 
-				plotcolor: cfgM.plotcolor || 'black',
-				dom: this.dom
+				plotcolor: color,
+				dom: this.dom,
+				spectraid: varname
 			};
 			// Display the jcamp to the screen using the value and the module ref
 
