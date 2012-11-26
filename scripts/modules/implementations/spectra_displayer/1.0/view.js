@@ -77,6 +77,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				continuous: (cfgM.mode == 'curve'), 
 				flipX: cfgM.flipX, 
 				flipY: cfgM.flipY, 
+				plotcolor: cfgM.plotcolor || 'black',
 				dom: this.dom
 			};
 			// Display the jcamp to the screen using the value and the module ref

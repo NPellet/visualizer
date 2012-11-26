@@ -1036,6 +1036,7 @@ CI.Type["jcamp"] = {
 		var ctns = opts.continuous || false;
 		spectra.specs.plots_flipXAxis =  opts.flipX || false;
 		spectra.specs.plots_flipYAxis =  opts.flipY || false;
+		spectra.specs.plots_color = opts.plotcolor || 'black';
 		var zones = value._zones || {};
 
 		if(value._cacheId && CI.Type.jcamp.cache[value._cacheId]) {

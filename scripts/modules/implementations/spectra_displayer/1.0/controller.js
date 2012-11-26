@@ -120,7 +120,7 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 				gencfg: [{
 					mode: [mode],
 					flip: [flipArray],
-					color: [this.module.getConfiguration().plotcolor || '#000000']
+					plotcolor: [this.module.getConfiguration().plotcolor || '#000000']
 				}]
 			}
 		}	
