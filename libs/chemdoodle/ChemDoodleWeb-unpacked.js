@@ -2007,7 +2007,9 @@ ChemDoodle.RESIDUE = (function() {
 					});
 				} else {
 					ctx.fillText(this.label, this.x, this.y);
+
 					var symbolWidth = ctx.measureText(this.label).width;
+
 					this.textBounds.push({
 						x : this.x - symbolWidth / 2,
 						y : this.y - specs.atoms_font_size_2D / 2+1,

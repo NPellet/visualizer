@@ -94,6 +94,7 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 			this._canvas._domcanvas.width = this._width;
 		
 		this._molecule.scaleToAverageBondLength(30 * ratio);
+
 		this._canvas.specs.atoms_font_size_2D = 10 * ratio;
 		this._canvas.specs.bonds_hashSpacing_2D = 2.5 * ratio;
 		this._canvas.specs.bonds_width_2D = .6 * ratio;
@@ -112,30 +113,37 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 			var molLoaded = ChemDoodle.readMOL(moduleValue.value);
 			molLoaded.scaleToAverageBondLength(30);
 			deferred.resolve(molLoaded);
-
+			molLoaded._highlights = molLoaded._highlights || {};
 			self._canvas.CIOnMouseMove(function(e) {
 				var b, radius = self._canvas.specs.atoms_font_size_2D;
+				var x = e.offsetX, y = e.offsetY;
 				
+				x -= this.width / 2; x /= this.specs.scale; x += this.width / 2; 
+				y -= this.height / 2; y /= this.specs.scale; y += this.height / 2;
+
 				for(var i = 0, l = molLoaded.atoms.length; i < l; i++) {
-					if(molLoaded.atoms[i].textBounds) {
+
+					if(molLoaded.atoms[i].textBounds.length > 0) {
 						inside = false;
-						for(var j = 0, k = molLoaded.atoms[i].textBounds.length; k < j; k++) {
-							b = molLoaded.atoms[i].textBonds[j];
+						for(var j = 0, k = molLoaded.atoms[i].textBounds.length; j < k; j++) {
+							b = molLoaded.atoms[i].textBounds[j];
+
 							if(b.x < x && b.x + b.w > x && b.y < y && b.y + b.h > y) {
 								inside = true;
 								if(!molLoaded._highlights[moduleValue._atomID[i]])
 									CI.RepoHighlight.set(moduleValue._atomID[i], 1);
-								// Ok send
 							}
 						}
 
 						if(!inside && molLoaded._highlights[moduleValue._atomID[i]]) {
+
 							CI.RepoHighlight.set(moduleValue._atomID[i], 0);
 						}
 					} else {
 						var difX = x - molLoaded.atoms[i].x;
 						var difY = y - molLoaded.atoms[i].y;
-						if(Math.pow(Math.pow(difX, 2) + Math.pow(difY, 2), 0.5)) {
+						
+						if(Math.pow(Math.pow(difX, 2) + Math.pow(difY, 2), 0.5) < this.specs.atoms_font_size_2D) {
 							// Ok inside
 							if(!molLoaded._highlights[moduleValue._atomID[i]])
 									CI.RepoHighlight.set(moduleValue._atomID[i], 1);
