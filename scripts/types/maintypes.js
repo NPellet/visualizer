@@ -819,10 +819,10 @@ CI.DataType._valueToScreen = function(def, data, box, args) {
 	var highlights = CI.DataType.getHighlights(data);
 
 	if(typeof repoFuncs[type] == 'function')
-		return repoFuncs[type].call(box.view, def, data, args);
+		return repoFuncs[type].call(box.view, def, data, args, highlights);
 	
 	if(CI.Type[type] && typeof CI.Type[type].toScreen == 'function')
-		return CI.Type[type].toScreen(def, data, args);
+		return CI.Type[type].toScreen(def, data, args, highlights);
 }
 
 CI.Type = {};
@@ -977,19 +977,21 @@ CI.Type["jcamp"] = {
 
 
 			CI.RepoHighlight.listen(highlights, function(value, commonKeys) {
-				spectra._highlights = commonKeys;
+				spectra._highlights = spectra._highlights || {};
+				for(var i = 0; i < commonKeys.length; i++) 
+					spectra._highlights[commonKeys[i]] = value;
 				spectra.repaint();
 			});
 
 			spectra.CIOnRepaint(function() {
-				
 				var h = [];
 				if(spectra._highlights) {
-					for(var i = 0; i < spectra._highlights.length; i++) {
-						h.push(value._zones[spectra._highlights[i]]);
+
+					for(var i in spectra._highlights) {
+						if(spectra._highlights[i] == 1)
+							h.push(value._zones[i]);
 					}
 				}
-
 				var mem = this.spectrum.memory;
 				var context = this._domcanvas.getContext('2d');
 				for(var i = 0, l = h.length; i < l; i++) {
@@ -1003,13 +1005,20 @@ CI.Type["jcamp"] = {
 			});
 
 			spectra.CIOnMouseMove(function(e) {
+				spectra._highlights = spectra._highlights || {};
 				var mem = this.spectrum.memory;
 				var x = e.offsetX;
 				var x1 = this.spectrum.getInverseTransformedX(x);
-				
-				for(var i in spectra._zones) {
-					if(spectra._zones[i][0] < x1 && spectra._zones[i][1] > x1) {
-						CI.RepoHighlight.send(i);
+				var min, max, j = 0;
+				for(var i in value._zones) {
+					min = Math.min(value._zones[i][0], value._zones[i][1]);
+					max = Math.max(value._zones[i][0], value._zones[i][1]);
+
+					if(min < x1 && max > x1) {
+						if(!spectra._highlights[i])
+							CI.RepoHighlight.set(i, 1);
+					} else if(spectra._highlights[i] == 1) {
+						CI.RepoHighlight.set(i, 0);
 					}
 				}
 
@@ -1044,13 +1053,13 @@ CI.Type["jcamp"] = {
 	  		spectra.repaint();
 	},
 
-	toScreen: function(def, value, args, highlights, all) {
+	toScreen: function(def, value, args, highlights) {
 		
 		if(args.dom)
-			return def.resolve(CI.Type.jcamp.doFromDom(args.dom, value, args, highlights, all));
+			return def.resolve(CI.Type.jcamp.doFromDom(args.dom, value, args, highlights));
 
 		var id = BI.Util.getNextUniqueId();
-		CI.Util.DOMDeferred.progress(function(dom) { CI.Type.jcamp.doFromDom($("#" + id, dom), value, args, highlights, all); });
+		CI.Util.DOMDeferred.progress(function(dom) { CI.Type.jcamp.doFromDom($("#" + id, dom), value, args, highlights); });
 		def.resolve('<canvas id="' + id + '"></canvas>');
 	}
 };

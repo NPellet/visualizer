@@ -56,13 +56,13 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		zoneHighlight: function(val) {
-
+/*
 			if(!val)
 				return;
 
 			this._highlightingZone = val;
 			if(this._jcampValue)
-				this.update2.jcamp.call(this, this._jcampValue);
+				this.update2.jcamp.call(this, this._jcampValue);*/
 		},
 
 		'jcamp': function(moduleValue) {
@@ -76,7 +76,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				dom: this.dom
 			};
 			// Display the jcamp to the screen using the value and the module ref
-			
+
 			CI.DataType.toScreen(moduleValue, this.module, cfg).done(function(val) {
 				
 				if(view.dom.data('spectra'))
