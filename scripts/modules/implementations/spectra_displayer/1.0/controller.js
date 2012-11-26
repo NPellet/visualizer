@@ -96,11 +96,12 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		field.implementation.setOptions({ 'flipX': 'Flip X', 'flipY': 'Flip Y' });
 
 
-		groupField.addField({
+		field = groupField.addField({
 			'type': 'Color',
-			'name': 'plotcolor',
-			title: new BI.Title('Color')
+			'name': 'plotcolor'
 		});
+
+		field.setTitle(new BI.Title('Axis flipping'));
 
 		return true;
 	},
