@@ -123,26 +123,26 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 							b = molLoaded.atoms[i].textBonds[j];
 							if(b.x < x && b.x + b.w > x && b.y < y && b.y + b.h > y) {
 								inside = true;
-								if(!molLoaded._highlights[molLoaded._atomID[i]])
-									CI.RepoHighlight.set(molLoaded._atomID[i], 1);
+								if(!molLoaded._highlights[moduleValue._atomID[i]])
+									CI.RepoHighlight.set(moduleValue._atomID[i], 1);
 								// Ok send
 							}
 						}
 
-						if(!inside && molLoaded._highlights[molLoaded._atomID[i]]) {
-							CI.RepoHighlight.set(molLoaded._atomID[i], 0);
+						if(!inside && molLoaded._highlights[moduleValue._atomID[i]]) {
+							CI.RepoHighlight.set(moduleValue._atomID[i], 0);
 						}
 					} else {
 						var difX = x - molLoaded.atoms[i].x;
 						var difY = y - molLoaded.atoms[i].y;
 						if(Math.pow(Math.pow(difX, 2) + Math.pow(difY, 2), 0.5)) {
 							// Ok inside
-							if(!molLoaded._highlights[molLoaded._atomID[i]])
-									CI.RepoHighlight.set(molLoaded._atomID[i], 1);
+							if(!molLoaded._highlights[moduleValue._atomID[i]])
+									CI.RepoHighlight.set(moduleValue._atomID[i], 1);
 						} else {
 							// Do not send
-							if(molLoaded._highlights[molLoaded._atomID[i]])
-									CI.RepoHighlight.set(molLoaded._atomID[i], 0);
+							if(molLoaded._highlights[moduleValue._atomID[i]])
+									CI.RepoHighlight.set(moduleValue._atomID[i], 0);
 						}
 					}
 				}
