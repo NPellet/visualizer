@@ -110,9 +110,9 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 	},
 	
 	_doHighlight: function(id, val) {
-
+		
 		for(var i in this._currentValue._atoms) {
-			if(this._currentValue._atoms.indexOf(id) > -1) {
+			if(this._currentValue._atoms[i].indexOf(id) > -1) {
 				CI.RepoHighlight.set(i, val);
 			}
 		}
@@ -125,7 +125,7 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 			var molLoaded = ChemDoodle.readMOL(moduleValue.value);
 			molLoaded.scaleToAverageBondLength(30);
 			deferred.resolve(molLoaded);
-			self._currentValue = molLoaded;
+			self._currentValue = moduleValue;
 			molLoaded._highlights = molLoaded._highlights || {};
 			self._canvas.CIOnMouseMove(function(e) {
 				var b, radius = self._canvas.specs.atoms_font_size_2D;
@@ -149,7 +149,7 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 								}
 							}
 
-							if(moduleValue._atomID[i] && !inside)
+							if(!inside)
 								self._doHighlight(i, false);
 							
 						} else {
@@ -157,9 +157,9 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 							var difY = y - molLoaded.atoms[i].y;
 							
 							if(Math.pow(Math.pow(difX, 2) + Math.pow(difY, 2), 0.5) < this.specs.atoms_font_size_2D)
-								this._doHighlight(i, true);
+								self._doHighlight(i, true);
 							else
-								this._doHighlight(i, false);
+								self._doHighlight(i, false);
 							
 						}
 					}
