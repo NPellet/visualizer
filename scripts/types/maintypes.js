@@ -866,7 +866,7 @@ CI.Type["picture"] = {
 
 CI.Type["mol2d"] = {		
 	
-	toScreen: function(def, molfile) {
+	toScreen: function(def, molfile, options, highlights, box) {
 
 
 		var id = BI.Util.getNextUniqueId();
@@ -890,23 +890,34 @@ CI.Type["mol2d"] = {
 			canvas.loadMolecule(molLoaded);
 
 //console.log(molfile._highlight);
-			CI.RepoHighlight.listen(molfile._highlight, function(dummyvalue, commonKeys) {
+			CI.RepoHighlight.listen(molfile._highlight, function(value, commonKeys) {
 
 				if($("#" + id, dom).length == 0)
 					return;
 
-
 				var commonKeys2 = {};
-				var atoms = {};
-				for(var i = commonKeys.length; i >= 0; i--)
-					atoms[molfile._atomID.indexOf(commonKeys[i])] = true;
-				for(var i = 0; i < molLoaded.atoms.length; i++) {
-					molLoaded.atoms[i].isHover = !!atoms[i] && dummyvalue;
-					canvas._domcanvas.width = canvas._domcanvas.width;
-					molLoaded.atoms[i].drawChildExtras = !!atoms[i] && dummyvalue;
+				var atoms;
+
+				// commonkeys: ['A', 'B'];
+				for(var i = commonKeys.length - 1; i >= 0; i--) {
+					atoms = molfile._atoms[commonKeys[i]]; // [0, 1, 15, 12]
+					if(!atoms)
+						continue;
+
+					for(var j = atoms.length - 1; j >= 0; j--) {
+
+						molLoaded.atoms[atoms[j]].isHover = value;
+					}
 				}
+
+				for(var i = 0; i < molLoaded.atoms.length; i++) {
+					canvas._domcanvas.width = canvas._domcanvas.width; // Erase canvas
+					molLoaded.atoms[i].drawChildExtras = true;
+				}
+
 				canvas.repaint();
-			}, true);
+
+			}, true, box.id || 0);
 
 
 		});

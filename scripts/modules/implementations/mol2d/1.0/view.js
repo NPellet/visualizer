@@ -109,6 +109,15 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 		return this.dom;
 	},
 	
+	_doHighlight: function(id, val) {
+
+		for(var i in this._currentValue._atoms) {
+			if(this._currentValue._atoms.indexOf(id) > -1) {
+				CI.RepoHighlight.set(i, val);
+			}
+		}
+	},
+
 	typeToScreen: {
 
 		'mol2d': function(deferred, moduleValue) {
@@ -116,13 +125,14 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 			var molLoaded = ChemDoodle.readMOL(moduleValue.value);
 			molLoaded.scaleToAverageBondLength(30);
 			deferred.resolve(molLoaded);
+			self._currentValue = molLoaded;
 			molLoaded._highlights = molLoaded._highlights || {};
 			self._canvas.CIOnMouseMove(function(e) {
 				var b, radius = self._canvas.specs.atoms_font_size_2D;
 				var x = e.offsetX, y = e.offsetY;
 				
 
-				if(moduleValue._atomID && moduleValue._highlight) {
+				if(moduleValue._atoms && moduleValue._highlight) {
 					x -= this.width / 2; x /= this.specs.scale; x += this.width / 2; 
 					y -= this.height / 2; y /= this.specs.scale; y += this.height / 2;
 
@@ -135,28 +145,22 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 
 								if(b.x < x && b.x + b.w > x && b.y < y && b.y + b.h > y) {
 									inside = true;
-									if(moduleValue._atomID[i] && !molLoaded._highlights[moduleValue._atomID[i]])
-										CI.RepoHighlight.set(moduleValue._atomID[i], 1);
+									self._doHighlight(i, true);
 								}
 							}
 
-							if(moduleValue._atomID[i] && !inside && molLoaded._highlights[moduleValue._atomID[i]]) {
-
-								CI.RepoHighlight.set(moduleValue._atomID[i], 0);
-							}
+							if(moduleValue._atomID[i] && !inside)
+								self._doHighlight(i, false);
+							
 						} else {
 							var difX = x - molLoaded.atoms[i].x;
 							var difY = y - molLoaded.atoms[i].y;
 							
-							if(Math.pow(Math.pow(difX, 2) + Math.pow(difY, 2), 0.5) < this.specs.atoms_font_size_2D) {
-								// Ok inside
-								if(moduleValue._atomID[i] && !molLoaded._highlights[moduleValue._atomID[i]])
-										CI.RepoHighlight.set(moduleValue._atomID[i], 1);
-							} else {
-								// Do not send
-								if(moduleValue._atomID[i] && molLoaded._highlights[moduleValue._atomID[i]])
-										CI.RepoHighlight.set(moduleValue._atomID[i], 0);
-							}
+							if(Math.pow(Math.pow(difX, 2) + Math.pow(difY, 2), 0.5) < this.specs.atoms_font_size_2D)
+								this._doHighlight(i, true);
+							else
+								this._doHighlight(i, false);
+							
 						}
 					}
 				}
@@ -169,19 +173,23 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 
 
 				molLoaded._highlights = molLoaded._highlights || {};
-				for(var i = 0; i < commonKeys.length; i++) 
-					molLoaded._highlights[commonKeys[i]] = value;
+				
+				// commonkeys: ['A', 'B'];
 
+				for(var i = commonKeys.length - 1; i >= 0; i--) {
+					atoms = moduleValue._atoms[commonKeys[i]]; // [0, 1, 15, 12]
+					if(!atoms)
+						continue;
+					
+					for(var j = atoms.length - 1; j >= 0; j--)
+						molLoaded.atoms[atoms[j]].isHover = value;
+				}
 
-				for(var i = commonKeys.length; i >= 0; i--)
-					atoms[moduleValue._atomID.indexOf(commonKeys[i])] = true;
-
-
+				canvas._domcanvas.width = canvas._domcanvas.width; // Erase canvas
 				for(var i = 0; i < molLoaded.atoms.length; i++) {
-					molLoaded.atoms[i].isHover = molLoaded._highlights[moduleValue._atomID[i]];
-					canvas._domcanvas.width = canvas._domcanvas.width;
 					molLoaded.atoms[i].drawChildExtras = true;
 				}
+
 
 				canvas.repaint();
 			}, true);
