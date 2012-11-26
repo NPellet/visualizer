@@ -96,12 +96,12 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		field.implementation.setOptions({ 'flipX': 'Flip X', 'flipY': 'Flip Y' });
 
 
-		field = groupField.addField({
+		field = groupfield.addField({
 			'type': 'Color',
 			'name': 'plotcolor'
 		});
 
-		field.setTitle(new BI.Title('Axis flipping'));
+		field.setTitle(new BI.Title('Color'));
 
 		return true;
 	},
@@ -121,7 +121,7 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 				gencfg: [{
 					mode: [mode],
 					flip: [flipArray],
-					plotcolor: [this.module.getConfiguration().plotcolor || '#000000']
+					plotcolor: [this.module.getConfiguration().plotcolor || '#000000']
 				}]
 			}
 		}	
