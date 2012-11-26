@@ -3585,7 +3585,7 @@ ChemDoodle.RESIDUE = (function() {
 		};
 		this.getTransformedX = function(x, specs, width, offsetLeft) {
 			var returning = offsetLeft + (x - this.minX) / (this.maxX - this.minX) * (width - offsetLeft);
-			if (specs.plots_flipXAxis) {
+			if (specs.plots_flipXAxis/* NORMAN ADDITION */ || this.memory.flipXAxis /* END NORMAN ADDITION */) {
 				returning = width + offsetLeft - returning;
 			}
 			return returning;
@@ -3593,6 +3593,7 @@ ChemDoodle.RESIDUE = (function() {
 		this.getInverseTransformedX = function(x) {
 			// can only be called after a render when memory is set, this
 			// function doesn't make sense without a render first anyway
+		
 			if (this.memory.flipXAxis) {
 				x = this.memory.width + this.memory.offsetLeft - x;
 			}

@@ -1009,6 +1009,7 @@ CI.Type["jcamp"] = {
 				var mem = this.spectrum.memory;
 				var x = e.offsetX;
 				var x1 = this.spectrum.getInverseTransformedX(x);
+				console.log(x1);
 				var min, max, j = 0;
 				for(var i in value._zones) {
 					min = Math.min(value._zones[i][0], value._zones[i][1]);
