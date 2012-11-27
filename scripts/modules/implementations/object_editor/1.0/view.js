@@ -26,7 +26,7 @@ CI.Module.prototype._types.grid_selector.View.prototype = {
 	inDom: function() {
 		var cfg = this.module.getConfiguration();
 		var fields = cfg.fields;
-		fields = fields.fields;
+		//fields = fields.fields;
 
 
 		var form = $("<div />");

@@ -212,7 +212,7 @@ BI.Forms.GroupFields.Table.prototype = {
 
 	duplicate: function(section) {
 		
-		var group = new BI.Forms.GroupFields.Table();
+		var group = new BI.Forms.GroupFields.Table(this.name);
 		section.addFieldGroup(group);
 		for(var i = 0; i < this.fields.length; i++)
 			var field = this.fields[i].duplicate(group);

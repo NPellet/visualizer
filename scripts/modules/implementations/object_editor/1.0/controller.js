@@ -57,7 +57,7 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 	
 	doConfiguration: function(section) {
 
-		var sectionAllFields = section.addSection(new BI.Forms.Section('fields', {},  new BI.Title('Fields')), 1);
+		var sectionAllFields = section.addSection(new BI.Forms.Section('fields', { multiple: true },  new BI.Title('Fields')), 1);
 		var group = sectionAllFields.addFieldGroup(new BI.Forms.GroupFields.List('fielddetails'));
 
 		var type = group.addField({
@@ -109,6 +109,7 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 	doFillConfiguration: function() {
 		var cfg = this.module.getConfiguration().fields || [];
 		var allFields = [], field;
+
 		for(var i = 0, l = cfg.length; i < l; i++) {
 			field = {};
 			allFields.push(field);
@@ -133,7 +134,7 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 	
 	doSaveConfiguration: function(confSection) {
 		
-		var cfg = { fields: [] }, field, options;
+		var cfg = [], field, options;
 
 		for(var i = 0, l = confSection[0].fields.length; i < l; i++) {
 			field = {};
@@ -145,8 +146,9 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 
 			options = confSection[0].fields[i].fieldoptions[0];
 			field.options = options;
+					cfg.push(field);
 		}
-		cfg.fields.push(field);
+
 
 		this.module.getConfiguration().fields = cfg;
 	},

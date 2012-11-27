@@ -197,7 +197,7 @@ BI.Forms.Section.prototype = {
 	
 	getParent: function() {
 		
-		if(this.form == undefined)
+		if(this.parentSection)
 			return this.parentSection;
 			
 		return this.form;
@@ -484,7 +484,7 @@ BI.Forms.Section.prototype = {
 	
 	getValue: function(section, values) {
 		
-		
+		console.log(section, section.sections.length);
 		for(var i = 0; i < section.sections.length; i++) {
 		
 			if(values[section.sections[i].getName()] == undefined)
