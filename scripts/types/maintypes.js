@@ -980,23 +980,34 @@ CI.Type["jcamp"] = {
 	cache: [],
 
 	doFromDom: function(dom, value, opts, highlights, box) {
-
+		var spectra;
 		if(dom.length == 0)
 			return;
+
+		function hexToRgb(hex) {
+		    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		    return result ? {
+		        r: parseInt(result[1], 16),
+		        g: parseInt(result[2], 16),
+		        b: parseInt(result[3], 16)
+		    } : null;
+		}
 
 		if(!dom.data('spectra')) {
 
 			var spectra = new ChemDoodle.OverlayCanvas(dom.attr('id'), opts.width || 300, opts.height || 150);
 			spectra.CIOnRepaint(function() {
-				var h = [], zones = dom.data('zones');
+				var h = [], zones = dom.data('zones'), all = dom.data('allspectras');
+				
 				if(spectra._highlights) {
 
 					for(var i in spectra._highlights) {
 						if(spectra._highlights[i] == 1) {
 
- 							for(var j in zones)
+ 							for(var j in zones) {
  								if(zones[j][i])
-									h.push(zones[j][i]);
+									h.push({zone: zones[j][i], color: all[j].plots_color });
+							}
 						}
 					}
 				}
@@ -1004,11 +1015,12 @@ CI.Type["jcamp"] = {
 				var mem = this.spectrum.memory;
 				var context = this._domcanvas.getContext('2d');
 				for(var i = 0, l = h.length; i < l; i++) {
-					var x1 = this.spectrum.getTransformedX(h[i][0], {}, mem.width, mem.offsetLeft);
-					var x2 = this.spectrum.getTransformedX(h[i][1], {}, mem.width, mem.offsetLeft);
+					var x1 = this.spectrum.getTransformedX(h[i].zone[0], {}, mem.width, mem.offsetLeft);
+					var x2 = this.spectrum.getTransformedX(h[i].zone[1], {}, mem.width, mem.offsetLeft);
 				    context.beginPath();
 				    context.rect(x1, 0, x2 - x1, mem.height);
-				    context.fillStyle = "rgba(247, 232, 70, 0.5)";
+				    var color = hexToRgb(h[i].color);
+				    context.fillStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.5)";
 				 	context.fill();
 				}
 			});
@@ -1071,12 +1083,10 @@ CI.Type["jcamp"] = {
 		var allspectrasid = dom.data('allspectrasid');
 		var allzones = dom.data('zones');
 
-		if(value._cacheId && CI.Type.jcamp.cache[value._cacheId]) {
+/*		if(value._cacheId && CI.Type.jcamp.cache[value._cacheId]) {
 			allspectras[spectraid] = CI.Type.jcamp.cache[value._cacheId];
 
-
-
-		} else {
+		} else {*/
 			allspectras[spectraid] = ChemDoodle.readJCAMP(value.value);
 			CI.Type.jcamp.cache.push(allspectras[spectraid]);
 			value._cacheId = CI.Type.jcamp._id;
@@ -1086,7 +1096,7 @@ CI.Type["jcamp"] = {
 				CI.Type.jcamp.cache.splice(0, 1);
 				CI.Type.jcamp._id--;
 			}
-		}
+	//	}
 		
 		allspectras[spectraid].plots_color = opts.plotcolor;
   		allspectras[spectraid].continuous = ctns;
