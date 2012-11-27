@@ -1020,6 +1020,9 @@ CI.Type["jcamp"] = {
 				    context.beginPath();
 				    context.rect(x1, 0, x2 - x1, mem.height);
 				    var color = hexToRgb(h[i].color);
+				    
+				    if(color.r == 0 && color.g == 0 && color.b == 0)
+				    	color = {r: 245, g: 244,  b: 141};
 				    context.fillStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.5)";
 				 	context.fill();
 				}
