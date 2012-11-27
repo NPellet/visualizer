@@ -987,21 +987,17 @@ CI.Type["jcamp"] = {
 		if(!dom.data('spectra')) {
 
 			var spectra = new ChemDoodle.OverlayCanvas(dom.attr('id'), opts.width || 300, opts.height || 150);
-
-			CI.RepoHighlight.listen(highlights, function(value, commonKeys) {
-				spectra._highlights = spectra._highlights || {};
-				for(var i = 0; i < commonKeys.length; i++) 
-					spectra._highlights[commonKeys[i]] = value;
-				spectra.repaint();
-			}, true, box.id || 0);
-
 			spectra.CIOnRepaint(function() {
-				var h = [];
+				var h = [], zones = dom.data('zones');
 				if(spectra._highlights) {
 
 					for(var i in spectra._highlights) {
-						if(spectra._highlights[i] == 1 && value._zones[i])
-							h.push(value._zones[i]);
+						if(spectra._highlights[i] == 1) {
+
+ 							for(var j in zones)
+ 								if(zones[j][i])
+									h.push(zones[j][i]);
+						}
 					}
 				}
 
@@ -1018,27 +1014,29 @@ CI.Type["jcamp"] = {
 			});
 
 			spectra.CIOnMouseMove(function(e) {
-
+				var zones = dom.data('zones');
 				spectra._highlights = spectra._highlights || {};
 				var mem = this.spectrum.memory;
 				var x = e.offsetX;
 				var x1 = this.spectrum.getInverseTransformedX(x);
 				var min, max, j = 0;
-				for(var i in value._zones) {
-					min = Math.min(value._zones[i][0], value._zones[i][1]);
-					max = Math.max(value._zones[i][0], value._zones[i][1]);
 
-					if(min < x1 && max > x1) {
+				for(var k in zones) {
+					for(var i in zones[k]) {
+						min = Math.min(zones[k][i][0], zones[k][i][1]);
+						max = Math.max(zones[k][i][0], zones[k][i][1]);
 
-						if(!spectra._highlights[i]) {
-							CI.RepoHighlight.set(i, 1);
+						if(min < x1 && max > x1) {
+
+							if(!spectra._highlights[i]) {
+								CI.RepoHighlight.set(i, 1);
+							}
+
+						} else if(spectra._highlights[i] == 1) {
+							CI.RepoHighlight.set(i, 0);
 						}
-
-					} else if(spectra._highlights[i] == 1) {
-						CI.RepoHighlight.set(i, 0);
 					}
 				}
-
 			});
 			 
 
@@ -1051,8 +1049,6 @@ CI.Type["jcamp"] = {
 			spectra.specs.plots_flipYAxis =  opts.flipY || false;
 		//	spectra.specs.plots_color = opts.plotcolor || 'black';
 
-
-			var zones = value._zones || {};
 		} else {
 			spectra = dom.data('spectra');
 		}
@@ -1063,14 +1059,23 @@ CI.Type["jcamp"] = {
 		if(!dom.data('allspectras'))
 			dom.data('allspectras', {});
 
+
+
+		if(!dom.data('zones'))
+			dom.data('zones', {});
+
 		if(!dom.data('allspectrasid'))
 			dom.data('allspectrasid', {});
 
 		var allspectras = dom.data('allspectras');
 		var allspectrasid = dom.data('allspectrasid');
+		var allzones = dom.data('zones');
 
 		if(value._cacheId && CI.Type.jcamp.cache[value._cacheId]) {
 			allspectras[spectraid] = CI.Type.jcamp.cache[value._cacheId];
+
+
+
 		} else {
 			allspectras[spectraid] = ChemDoodle.readJCAMP(value.value);
 			CI.Type.jcamp.cache.push(allspectras[spectraid]);
@@ -1095,9 +1100,21 @@ CI.Type["jcamp"] = {
 			spectra.loadSpectrum(allspectras[spectraid]);
 			spectra.getXMaxBound();
 			spectra.repaint();
+			CI.RepoHighlight.kill(box.id + "_"  + spectraid)
 		} else {
 			spectra.overlaySpectra[allspectrasid[spectraid]] = allspectras[spectraid];
+			CI.RepoHighlight.kill(box.id + "_"  + spectraid)
 		}
+
+		allzones[spectraid] = value._zones;
+
+
+		CI.RepoHighlight.listen(highlights, function(value, commonKeys) {
+			spectra._highlights = spectra._highlights || {};
+			for(var i = 0; i < commonKeys.length; i++) 
+				spectra._highlights[commonKeys[i]] = value;
+			spectra.repaint();
+		}, true, box.id + "_"  + spectraid);
 
 
 
