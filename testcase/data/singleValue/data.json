@@ -1,1 +1,7 @@
-{"myValue":"My first value"}
+{
+	"myValue":"My first value",
+	"myLink":{
+		"type":"downloadLink",
+		"value":"http://www.epfl.ch"
+	},
+}

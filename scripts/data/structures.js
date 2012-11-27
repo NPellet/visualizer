@@ -16,6 +16,7 @@ define(function() {
 		'number': "number",
 		'mf': 'string',
 		'jcamp': "string",
+		"downloadLink": "string",
 
 		'boolean': "boolean",
 		'arrayXY': {
