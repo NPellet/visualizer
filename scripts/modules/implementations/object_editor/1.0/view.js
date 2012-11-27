@@ -23,7 +23,51 @@ CI.Module.prototype._types.grid_selector.View.prototype = {
 		var self = this;
 	},
 
-	inDom: function() {},
+	inDom: function() {
+		var cfg = this.module.getConfiguration();
+		var fields = cfg.fields;
+		fields = fields.fields;
+
+
+		var form = $("<div />");
+		this.domWrapper.append(form);
+		form.biForm({}, function() {
+
+			var section = this.addSection(new BI.Forms.Section('main', {}, new BI.Title('Test')));
+			var group = section.addFieldGroup(new BI.Forms.GroupFields.List('group'));
+
+			for(var i = 0, l = fields.length; i < l; i++) {
+				field = group.addField({
+					type: fields[i].fieldtype,
+					title: new BI.Title(fields[i].fieldlabel),
+					name: "field" + i
+				});
+			}
+		}, function() {
+
+			var content = {};
+			for(var i = 0, l = fields.length; i < l; i++) {
+				content["field" + i] = [ 'sdfsdf' ];
+			}
+
+			var fill = {
+				sections: {
+					main: [{
+						groups: {
+							group: [
+								content
+							]
+						}
+					}]
+				}
+			}
+
+			this.fillJson(fill);
+			
+		});
+
+
+	},
 	
 	onResize: function() {
 	},
