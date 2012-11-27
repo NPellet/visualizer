@@ -44,6 +44,7 @@ CI.Module.prototype._types.display_value.View.prototype = {
 		'value': function(moduleValue) {
 
 			var cfg = this.module.getConfiguration(), view = this;
+			CI.RepoHighlight.kill(this.module.id);
 			
 			if(moduleValue == undefined)
 				view.fillWithVal(cfg.defaultvalue || '');

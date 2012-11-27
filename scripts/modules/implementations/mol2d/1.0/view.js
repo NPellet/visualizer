@@ -55,8 +55,8 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 			if(moduleValue === undefined)
 				return;
 
+			CI.RepoHighlight.kill(this.module.id);
 			this._lastMol = moduleValue;
-
 			var view = this, self = this;
 			var type = CI.DataType.getType(moduleValue);
 
@@ -112,12 +112,9 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 	_doHighlight: function(id, val) {
 		if(this._highlighted[id] && val)
 			return;
-
 		if(!this._highlighted[id] && !val)
 			return;
-
 		this._highlighted[id] = val;
-
 		for(var i in this._currentValue._atoms) {
 			if(this._currentValue._atoms[i].indexOf(id) > -1) {
 				CI.RepoHighlight.set(i, val);

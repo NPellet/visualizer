@@ -173,6 +173,7 @@ CI.Module.prototype._types.grid.Controller.prototype = {
 					colorjpath: [colorjPath],
 					displaySearch: [[search ? 'allow' : '']]
 				}],
+				
 				cols: [{
 					coltitle: titles,
 					coljpath: jpaths

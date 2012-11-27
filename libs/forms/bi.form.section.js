@@ -173,6 +173,7 @@ BI.Forms.Section.prototype = {
 		else
 			this.sections.splice(index + 1, 0, section);
 		section.setParentSection(this);
+		section.setForm(this.getForm());
 		section.setId(this.sections.length - 1);
 		section.setLevel(this.getLevel() + 1);
 		section.getForm().addAbsSection(section);
