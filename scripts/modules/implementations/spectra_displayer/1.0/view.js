@@ -71,7 +71,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			if(!(cfgM.plotcolor instanceof Array))
 				cfgM.plotcolor = [cfgM.plotcolor];
 
-			CI.RepoHighlight.kill(this.module.id);
+			CI.RepoHighlight.kill(this.module.id + "_" + varname);
 			var index;
 			if((index = this.colorvars.indexOf(varname)) <= -1) {
 				index = this.colorvars.length;

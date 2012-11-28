@@ -1021,7 +1021,7 @@ CI.Type["jcamp"] = {
 				    context.rect(x1, 0, x2 - x1, mem.height);
 				    var color = hexToRgb(h[i].color);
 
-				    if(color.r == 0 && color.g == 0 && color.b == 0)
+				    if(color == null || color.r == 0 && color.g == 0 && color.b == 0)
 				    	color = {r: 222, g: 205,  b: 59};
 				    context.fillStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.5)";
 				 	context.fill();
