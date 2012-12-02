@@ -340,14 +340,15 @@ CI.DataViewHandler.prototype = {
 			dataType: 'json',
 			type: 'get',
 			url: url,
+			cache: false,
 			success: function(data) {
 				def.resolve(data);
 			},
 			error: function() {
-				def.pipe(function() {
+				/*def.pipe(function() {
 					return self.load(true);
 				});
-
+*/
 				def.reject();
 			}
 		});
@@ -373,6 +374,7 @@ CI.DataViewHandler.prototype = {
 		var self = this;
 
 		function makeLocalCall() {
+
 			// If no URL is defined
 			return $.when(self._getLocalHead('Master')).pipe(function(el) {
 				// Current OR empty (and saved) is sent from local DB
@@ -398,6 +400,7 @@ CI.DataViewHandler.prototype = {
 
 				return el;
 			}, function() {
+
 				return makeLocalCall();
 			});
 		else
@@ -430,6 +433,7 @@ CI.DataViewHandler.prototype = {
 
 	_getLocalHead: function(branch) {
 		branch = branch || 'Master';
+		
 		return CI.DB.getHead(this.type, this._dirUrl, branch).pipe(function(el) {
 			return el;
 		});

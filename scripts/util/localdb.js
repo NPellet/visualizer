@@ -4,13 +4,14 @@ CI.DB = {};
 CI.DB.open = function() {
 	var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 
-	var req = indexedDB.open('ci', 1);
 	var def = $.Deferred();
-
-
 	if(CI.DB.db)
 		return def.resolve();
-	
+
+	var req = indexedDB.open('ci', 21);	
+	/*if(req.error)
+		console.warn(req.error);*/
+
 	req.onsuccess = function(e) {
 		
 		CI.DB.db = e.target.result;
@@ -46,12 +47,15 @@ CI.DB.open = function() {
 		});	
 	}
 
-	req.oncomplete = function() {
+	req.onerror = function(e) {
+		console.log(e.target);
+	}
 
+	req.oncomplete = function(e) {
+		console.warn(e.error)
 		
 	}
 
-	req.onerror = CI.DB.ErrorHandler;
 	return def;
 }
 
@@ -186,6 +190,7 @@ CI.DB.store = function(type, key, branch, obj) {
 }
 
 CI.DB.getHead = function(type, key, branch) {
+
 	return CI.DB.open().pipe(function() {
 		return CI.DB.getAll(type, key, branch).pipe(function(obj) {
 			return obj.head;
