@@ -84,6 +84,10 @@ CI.DataViewHandler.prototype = {
 		});
 	},
 
+	pad: function(val) {
+		return val < 10 ? "0" + val : val;
+	},
+
 	makeFilename: function(el, head) {
 
 		if(!el._time)
@@ -91,7 +95,7 @@ CI.DataViewHandler.prototype = {
 
 		var time = new Date(el._time);
 		var str = time.getDate() + "/" + time.getMonth() + "/" + time.getFullYear() + " ";
-		str += time.getHours() + ":" + time.getMinutes();
+		str += this.pad(time.getHours()) + ":" + this.pad(time.getMinutes());
 		return str;
 	},
 

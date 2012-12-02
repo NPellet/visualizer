@@ -156,7 +156,7 @@ $(document).bind('configModule', function(event, module) {
 			if(module.controller.doSaveConfiguration) 
 				module.controller.doSaveConfiguration(value.module);
 			
-			Entry.save();
+			Saver.doSave();
 			if(module.view.erase)
 				module.view.erase();
 			module.view.init();

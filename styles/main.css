@@ -652,6 +652,10 @@ ul.ci-dataview li:hover {
 	
 }
 
+ul.ci-dataview-menu li, ul.ci-dataview-menu li a {
+	white-space: nowrap;
+}
+
 ul.ci-dataview li:active, ul.ci-dataview li.Selected {
 		font-weight: normal;
 	/*margin: -1px;*/
@@ -682,6 +686,6 @@ li.ci-spacer {
 
 
 .ci-dataview-menu.ui-menu, .ci-dataview-menu ul.ui-menu {
-	width: 130px;
+	width: auto !important;
 	border-radius: 0px;
 }
