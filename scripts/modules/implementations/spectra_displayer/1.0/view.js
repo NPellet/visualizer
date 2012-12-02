@@ -78,7 +78,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				this.colorvars.push(varname);
 			}
 
-			var color = cfgM.plotcolor[index] || 'black';
+			var color = cfgM.plotcolor[index] || 'black';
 				
 			this._jcampValue = moduleValue;
 			var view = this;

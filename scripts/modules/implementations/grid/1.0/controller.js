@@ -99,6 +99,7 @@ CI.Module.prototype._types.grid.Controller.prototype = {
 		
 		
 		var groupfield = new BI.Forms.GroupFields.List('gencfg');
+		
 		section.addFieldGroup(groupfield);
 		
 		var field = groupfield.addField({
@@ -132,6 +133,7 @@ CI.Module.prototype._types.grid.Controller.prototype = {
 		field.setTitle(new BI.Title('Searching'));
 		
 		var groupfield = new BI.Forms.GroupFields.Table('cols');
+
 		section.addFieldGroup(groupfield);
 		
 		var field = groupfield.addField({

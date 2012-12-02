@@ -13,39 +13,37 @@ CI.Saver.prototype = {
 		this.lastScript = JSON.stringify(script);
 	},
 
-	doSave: function() {
+	doSave: function(urlSave) {
+		
 		var self = this;
-		if(this.busy) {
+	/*	if(this.busy) {
 			this.redoAfterSave = true;
 			return;
-		}
+		}*/
 		this.busy = true;
 		var script = JSON.stringify(Entry.structure);
-
+/*
 		if(this.lastScript == script) {
 			self.setTimeout();
 			this.busy = false;
-			return;
+			return $.Deferred().resolve();
 		}
-
-		$("#visualizer-saver").html('Visualization saving...');
+*/
+	//	$("#visualizer-saver").html('Visualization saving...');
 		
-		if(typeof _saveViewUrl == "undefined")
-			return;
-
 		this.lastScript = script;
-		$.post(_saveViewUrl, {content: script}, function() {
-			var dateNow = new Date();
-			self.busy = false;
+		return $.post(urlSave, {content: script}, function() {
+//			var dateNow = new Date();
+//			self.busy = false;
 
-			$("#visualizer-saver").html('Visualization saved (' + self.num(dateNow.getHours()) + ":" + self.num(dateNow.getMinutes()) + ":" + self.num(dateNow.getSeconds()) + ")");
-			if(self.redoAfterSave) {
+//			$("#visualizer-saver").html('Visualization saved (' + self.num(dateNow.getHours()) + ":" + self.num(dateNow.getMinutes()) + ":" + self.num(dateNow.getSeconds()) + ")");
+/*			if(self.redoAfterSave) {
 				self.redoAfterSave = false;
 				self.doSave();
 			}
 			self.redoAfterSave = false;
-
-			self.setTimeout();
+*/
+//			self.setTimeout();
 		});
 	},
 

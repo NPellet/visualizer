@@ -271,7 +271,3 @@ CI.RepoPool.prototype.resendAll = function() {
 CI.RepoPool.prototype.getKeys = function() {
 	return this._keys;
 }
-
-
-CI.Repo = new CI.RepoPool();
-CI.RepoHighlight = new CI.RepoPool();

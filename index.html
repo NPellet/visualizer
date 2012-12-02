@@ -5,7 +5,7 @@
 	<title>Visualizer</title>
 	<link rel="stylesheet" href="styles/main.css" media="screen, print" />
 
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<!--	<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
 	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" language="javascript" type="text/javascript"></script>-->
 	<script src="./libs/jquery/jquery-1.8.2.min.js" language="javascript" type="text/javascript" data-pack="jquery"></script>
 	<script src="./libs/jqueryui/jquery-ui-1.9.0.custom.min.js" language="javascript" type="text/javascript"  data-pack="jquery"></script>
@@ -43,6 +43,10 @@
 	<script src="./scripts/api/ci.api.js" type="text/javascript" language="javascript" data-pack="visualizer"></script>
 
 	<script src="./scripts/util/ajaxmanager.js" type="text/javascript" language="javascript" data-pack="visualizer"></script>
+
+	<script src="./scripts/util/dataviewhandler.js" type="text/javascript" language="javascript" data-pack="visualizer"></script>
+
+	<script src="./scripts/util/localdb.js" type="text/javascript" language="javascript" data-pack="visualizer"></script>
 	<script src="./scripts/util/util.js" type="text/javascript" language="javascript" data-pack="visualizer"></script>
 	<script src="./scripts/util/ajaxquery.js" type="text/javascript" language="javascript" data-pack="visualizer"></script>
 	<script src="./scripts/util/jsonloader.js" type="text/javascript" language="javascript" data-pack="visualizer"></script>
@@ -96,13 +100,13 @@
 	<script src="./scripts/modules/implementations/xyzoomnavigator/1.0/view.js" type="text/javascript" language="javascript" data-pack="modules"></script>
 	
 
-
+<!--
 
 
 	<script src="./scripts/modules/implementations/object_editor/1.0/controller.js" type="text/javascript" language="javascript" data-pack="modules"></script>
 	<script src="./scripts/modules/implementations/object_editor/1.0/model.js" type="text/javascript" language="javascript" data-pack="modules"></script>
 	<script src="./scripts/modules/implementations/object_editor/1.0/view.js" type="text/javascript" language="javascript" data-pack="modules"></script>
-	
+	-->
 
 	<script src="./scripts/modules/implementations/iframe/1.0/controller.js" type="text/javascript" language="javascript" data-pack="modules"></script>
 	<script src="./scripts/modules/implementations/iframe/1.0/model.js" type="text/javascript" language="javascript" data-pack="modules"></script>
@@ -248,10 +252,12 @@
 			Visualizer title
 		</div>
 		
-		<div id="visualizer-infos">
+		<!--<div id="visualizer-infos">
 			Visualizer v1.1<br />
 			&copy; 2012 Luc Patiny & Norman Pellet
-		</div>
+		</div>-->
+
+		<div id="visualizer-dataviews-button" class="bi-form-button"><span class="ui-icon ui-icon-gear"></span></div>
 		<div id="visualizer-saver"></div>
 		<div class="ci-spacer"></div>
 	</div>

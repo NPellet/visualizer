@@ -7523,7 +7523,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 	c._Canvas.prototype.repaint = function() {
 		var canvas = document.getElementById(this.id);
 		this._domcanvas = canvas;
-		if (canvas.getContext) {
+		if (canvas && canvas.getContext) {
 			var ctx = canvas.getContext('2d');
 			var pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
 			if (pixelRatio != 1) {
@@ -7568,7 +7568,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 
 			// NORMAN ADDITION START
 			// ALLOWS TO REGISTER CALLBACKS AFTER REPAINTING
-			this._CIrepaintCanvas = this._CIrepaintCanvas || $.Callbacks(); 
+			this._CIrepaintCanvas = this._CIrepaintCanvas || $.Callbacks(); 
 			this._CIrepaintCanvas.fireWith(this);
 			// NORMAN ADDITION END
 		}
@@ -7580,7 +7580,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 	// NORMAN ADDITION START
 	// ALLOWS TO REGISTER CALLBACKS AFTER REPAINTING
 	c._Canvas.prototype.CIOnRepaint = function(clbk) {
-		this._CIrepaintCanvas = this._CIrepaintCanvas || $.Callbacks(); 
+		this._CIrepaintCanvas = this._CIrepaintCanvas || $.Callbacks(); 
 		this._CIrepaintCanvas.add(clbk);
 	}
 
@@ -7588,7 +7588,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 	// ALLOWS TO REGISTER CALLBACKS AFTER REPAINTING
 	c._Canvas.prototype.CIOnMouseMove = function(clbk) {
 
-		this._CIOnMouseMove = this._CIOnMouseMove || $.Callbacks(); 
+		this._CIOnMouseMove = this._CIOnMouseMove || $.Callbacks(); 
 		this._CIOnMouseMove.add(clbk);
 	}
 	// NORMAN ADDITION END
@@ -7663,9 +7663,9 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 			}
 		} else if (!c.featureDetection.supports_canvas_text() && browser.msie && browser.version >= '6') {
 			// Install Google Chrome Frame
-			document.writeln('<div style="border: 1px solid black;" width="' + width + '" height="' + height + '">Please install <a href="http://code.google.com/chrome/chromeframe/">Google Chrome Frame</a>, then restart Internet Explorer.</div>');
+		//	document.writeln('<div style="border: 1px solid black;" width="' + width + '" height="' + height + '">Please install <a href="http://code.google.com/chrome/chromeframe/">Google Chrome Frame</a>, then restart Internet Explorer.</div>');
 		} else {
-			document.writeln('<canvas class="ChemDoodleWebComponent" id="' + id + '" width="' + width + '" height="' + height + '" alt="ChemDoodle Web Component">This browser does not support HTML5/Canvas.</canvas>');
+			//document.writeln('<canvas class="ChemDoodleWebComponent" id="' + id + '" width="' + width + '" height="' + height + '" alt="ChemDoodle Web Component">This browser does not support HTML5/Canvas.</canvas>');
 		}
 		var jqCapsule = q('#' + id);
 		jqCapsule.css('width', this.width);
@@ -7848,7 +7848,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 				// NORMAN ADDITION START
 				// ALLOWS TO REGISTER CALLBACKS ON MOUSE MOVE
 
-				self._CIOnMouseMove = self._CIOnMouseMove || $.Callbacks(); 
+				self._CIOnMouseMove = self._CIOnMouseMove || $.Callbacks(); 
 				self._CIOnMouseMove.fireWith(self, [e]);
 				// NORMAN ADDITION END
 			});
@@ -7977,7 +7977,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 			this.create(id, width, height);
 		}
 		form = '<br><form name="FileForm" enctype="multipart/form-data" method="POST" action="' + action + '" target="HiddenFileFrame"><input type="file" name="f" /><input type="submit" name="submitbutton" value="Show File" /></form><iframe id="HFF-' + id + '" name="HiddenFileFrame" height="0" width="0" style="display:none;" onLoad="GetMolFromFrame(\'HFF-' + id + '\', ' + id + ')"></iframe>';
-		document.writeln(form);
+		//document.writeln(form);
 		this.emptyMessage = 'Click below to load file';
 		this.repaint();
 		return true;
@@ -8078,7 +8078,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 		sb.push(id);
 		sb.push('_submit">Show Molecule</button>');
 		sb.push('</nobr>');
-		document.writeln(sb.join(''));
+	//	document.writeln(sb.join(''));
 		var self = this;
 		q('#' + id + '_submit').click(function() {
 			self.search();
@@ -9115,7 +9115,7 @@ ChemDoodle.monitor = (function(featureDetection, q, document) {
 		sb.push(id);
 		sb.push('_submit">Show Molecule</button>');
 		sb.push('</nobr>');
-		document.writeln(sb.join(''));
+//		document.writeln(sb.join(''));
 		var self = this;
 		q('#' + id + '_submit').click(function() {
 			self.search();

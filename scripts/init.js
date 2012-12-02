@@ -27,39 +27,53 @@ CI = new Object();
 	//	ajaxManager.setProxyUrl('http://localhost:8888/git/visualizer/proxify.php?url=<url>');
 		
 		var dom = $("body");
-		$(dom).mask('Data is loading. Please wait...');
-		
-
-		var _structure = "", _data = "";
-		var urlStructure = window.document.location.search.substring(1).split('&');
-		for(var i = 0; i < urlStructure.length; i++) {
-			
-			var args = urlStructure[i].split('=');
-			var val = unescape(args[1]);
-			switch(args[0]) {
-				
-				case 'viewURL':
-					_structure = val;
-				break;
-				
-				case 'dataURL':
-					_data = val;
-				break;
-				
-				case 'saveViewURL':
-					_saveViewUrl = val;
-				break;
-			}
-		}
-
-
-		window.Entry = new CI.EntryPoint(_structure, _data, {}, function() {
+	
+		window.Entry = new CI.EntryPoint({}, function() {
 			$(dom).unmask();
-			
-			CI.ConfigVisualizer();
-			
-			
+			CI.ConfigVisualizer();			
 		});
+
+
+
+	$("#visualizer-dataviews-button").bind('click', function() {
+		var dom = $("<div>").attr('id', 'visualizer-dataviews').appendTo('body');
+
+
+		dom.append('<h1>Data</h1>');
+
+		dom.append(buttons.data.copyToLocal.render());
+		dom.append(buttons.data.localToServer.render());
+		dom.append(buttons.data.snapshotLocal.render());
+		dom.append(buttons.data.autosaveLocal.render());
+		dom.append(buttons.data.branchLocal.render());
+		dom.append(buttons.data.revertLocal.render());
+
+		var _dom = $('<div class="ci-dataview-path"><label>Data path : </label></div>');
+		dom.append(_dom);
+		var _domel = $("<div />").appendTo(_dom);
+		_domel.append(CI.Data.getDom());
+
+
+		dom.append('<br /><br />');
+		dom.append('<h1>View</h1>');
+
+		dom.append(buttons.view.copyToLocal.render());
+		dom.append(buttons.view.localToServer.render());
+		dom.append(buttons.view.snapshotLocal.render());
+		dom.append(buttons.view.autosaveLocal.render());
+		dom.append(buttons.view.branchLocal.render());
+		dom.append(buttons.view.revertLocal.render());
+
+
+		var _dom = $('<div class="ci-dataview-path"><label>View path : </label></div>');
+		dom.append(_dom);
+		var _domel = $("<div />").appendTo(_dom);
+		_domel.append(CI.View.getDom());
+	
+	});
+
+
+
 	});
 }) (jQuery);
 

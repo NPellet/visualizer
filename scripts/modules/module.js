@@ -433,11 +433,7 @@ CI.Module.prototype = {
 					$('<li><a><span class="ui-icon ui-icon-gear"></span> Parameters</a></li>').bind('click', function() {
 						$(document).trigger('configModule', self);
 					})
-				)
-				;
-
-
-
+				);
 		}
 		return false;
 	},
@@ -447,7 +443,7 @@ CI.Module.prototype = {
 		this.getDomWrapper()[(bln === true || bln == undefined) ? 'addClass' : 'removeClass']('ci-module-displaywrapper');
 		
 		try {
-			this.getDomWrapper().resizable((bln === true || bln == undefined) ? 'enable' : 'disable');
+			this.getDomWrapper().resizable((bln === true || bln == undefined) ? 'enable' : 'disable');
 		} catch(e) {}; 
 	}
 };

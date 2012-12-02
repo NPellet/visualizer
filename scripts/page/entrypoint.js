@@ -1,24 +1,141 @@
 
 
-CI.EntryPoint = function(structure, data, options, onLoad) {
+CI.EntryPoint = function(options, onLoad) {
 	
 	this.options = options;
 	this.onLoad = onLoad;
-	
+	this.data = {};
+
 	var entryPoint = this;
-	
+	this.entryData = {};
 	
 	function init() {
-		if(typeof structure == "object")
+
+
+		CI.Repo = new CI.RepoPool();
+		CI.RepoHighlight = new CI.RepoPool();
+
+		CI.URLs = {};
+		var urlStructure = window.document.location.search.substring(1).split('&');
+		for(var i = 0; i < urlStructure.length; i++) {
+			var args = urlStructure[i].split('=');
+			var val = unescape(args[1]);
+			CI.URLs[args[0]] = val;
+		}
+
+		buttons = { view: {}, data: {}};
+		var pos = ['view', 'data'];
+		var pos2 = ['View', 'Data']
+
+		for(var i = 0; i < pos.length; i++) {
+
+			(function(j) {
+				
+				buttons[pos[j]].copyToLocal = new BI.Buttons.Button('Copy to local', function() {
+					// Make here dialog
+					CI[pos2[j]].serverCopy((j == 0 ? Entry.structure : Entry.data));
+				}, { color: 'red' });
+
+
+				buttons[pos[j]].snapshotLocal = new BI.Buttons.Button('Snapshot', function() {
+					CI[pos2[j]].localSnapshot(j == 0 ? Entry.structure : Entry.data);
+				}, { color: 'blue' });
+
+				buttons[pos[j]].autosaveLocal = new BI.Buttons.Button('Autosave', function(event, val, item) {
+					CI[pos2[j]].localAutosave(val, function() {
+						return j == 0 ? Entry.structure : Entry.data;
+					}, function() {
+						item.children().find('span').remove();
+						var date = new Date();
+						date = date.getHours() + ":" + date.getMinutes();
+						item.children().append('<span> (' + date + ')</span>');
+					});
+				}, { checkbox: true, color: 'blue' });
+
+
+				buttons[pos[j]].branchLocal = new BI.Buttons.Button('Make branch', function() {
+
+					// Make here dialog
+					$("<div />").dialog({ modal: true, width: '80%', title: "Edit Vizualizer"}).biForm({}, function() {
+				
+						var inst = this;			
+						var section = new BI.Forms.Section('cfg', { multiple: false });
+						this.addSection(section);
+						var title = new BI.Title();
+						title.setLabel('Branch name');
+						section.setTitle(title);
+						
+						var groupfield = new BI.Forms.GroupFields.List('general');
+						section.addFieldGroup(groupfield);
+						
+						var field = groupfield.addField({
+							type: 'Text',
+							name: 'name'
+						});
+						field.setTitle(new BI.Title('Branch name'));
+						
+						var save = new BI.Buttons.Button('Save', function() {
+							inst.dom.trigger('stopEditing');
+							var value = inst.getValue();
+
+							CI[pos2[j]].localBranch((j == 0 ? Entry.structure : Entry.data), value.cfg[0].general[0].name[0]);	
+							inst.getDom().dialog('close');
+						});
+						
+						save.setColor('blue');
+						this.addButtonZone().addButton(save);
+						
+					}, function() {
+
+
+
+
+					});
+
+				}, { color: 'blue' });
+				
+
+				buttons[pos[j]].revertLocal = new BI.Buttons.Button('Revert to this version', function() {
+					// Make here dialog
+					CI[pos2[j]].localRevert((j == 0 ? Entry.structure : Entry.data));
+				}, { color: 'blue' });
+
+				buttons[pos[j]].localToServer = new BI.Buttons.Button('Push to server', function(event, val, item) {
+					// Make here dialog
+					CI[pos2[j]].serverPush((j == 0 ? Entry.structure : Entry.data)).done(function() {
+						item.children().find('span').remove();
+						var date = new Date();
+						date = date.getHours() + ":" + date.getMinutes();
+						item.children().append('<span> (' + date + ')</span>');
+					});
+				}, { color: 'green' });
+			}) (i);
+		}
+
+		CI.Data = new CI.DataViewHandler(CI.URLs['dataURL']);
+		CI.Data.setType('data');
+
+		CI.Data.onLoaded = function(data, path) {
+			
+			doData(data);
+		}
+
+		CI.View = new CI.DataViewHandler(CI.URLs['viewURL']);
+		CI.View.setType('view');
+		CI.View.onLoaded = function(structure, path) {
+			
 			doStructure(structure);
-		else
-			doGetStructure(structure);
+		}
+
+		doGetStructure();
+		doGetData();
+
 	}
 	
 	function doStructure(structure) {
 		
-		CI.Grid.init(structure.grid);
-		
+		CI.Grid.init(structure.grid || {});
+		CI.modules = {};
 		entryPoint.structure = structure;
 		Saver.setLatestScript(structure);
 		
@@ -28,10 +145,10 @@ CI.EntryPoint = function(structure, data, options, onLoad) {
 		if(!structure.modules)
 			structure.modules = [];
 		
-		if(!structure.configuration)
+		if(typeof structure.configuration == "undefined")
 			structure.configuration = {};
-		
-		if(!structure.configuration.variableFilters)
+
+		if(typeof structure.configuration.variableFilters == "undefined")
 			structure.configuration.variableFilters = {};
 
 
@@ -39,19 +156,15 @@ CI.EntryPoint = function(structure, data, options, onLoad) {
 			$("#ci-expand-left").trigger('click');
 			
 		$("#ci-header .title").text(structure.configuration.title || 'No title').attr('contenteditable', 'true').bind('keypress', function(e) {
-
 			if(e.keyCode == 13) { // Enter
 				e.preventDefault();
 				$(this).trigger('blur');
 				return false;
 			}
-
-
-			}).bind('blur', function() {
-//console.log($(this).text());
-				structure.configuration.title = $(this).text().replace(/[\r\n]/g, "");
-				Saver.doSave();
-			});
+		}).bind('blur', function() {
+			structure.configuration.title = $(this).text().replace(/[\r\n]/g, "");
+			Saver.doSave();
+		});
 			
 		entryPoint.entryData = structure.entryPoint;
 		
@@ -61,32 +174,16 @@ CI.EntryPoint = function(structure, data, options, onLoad) {
 			}
 		
 		CI.Grid.checkDimensions();
-		if(typeof data == "object")
-			doData(data);
-		else
-			doGetData(data);
+
+		entryPoint.loaded();
 		
 	}
 	
-	function doGetStructure(structure) {
+	function doGetStructure() {
 
-		if(structure == "")
-			doStructure({});
-		else 
-			jQuery.ajax({
-				url: structure,
-				data: {},
-				type: 'get',
-				dataType: 'json',
-				success: function(structure) {
-					doStructure(structure);
-				},
-				
-				error: function(value) {
-					doStructure({});	
-				//	$("body").unmask().mask("Error while loading structure JSON. Check JSON integrity", { error: true });
-				}
-			});
+		$.when(CI.View.load()).then(function(el) {
+			doStructure(el);
+		});
 	}
 	
 	this.getStructure = getStructure;
@@ -95,78 +192,47 @@ CI.EntryPoint = function(structure, data, options, onLoad) {
 	}
 	
 	function doData(page) {
-		entryPoint.loaded(page);
+		entryPoint.data = page;
+		entryPoint.loaded();
 	}
 	
-	function doGetData(data) {
-		jQuery.ajax({
-			url: data,
-			data: {},
-			type: 'get',
-			dataType: 'text',
-			success: function(data) {
-				$("body").unmask().mask("Parsing data...", { error: true });
-				CI.WebWorker.send('jsonparser', data, function(data) {
-					$("body").unmask();
-					doData(data);	
-				});
-			},
+	function doGetData() {
+		var self = this;
+		CI.Data.load().done(function(el) {
 			
-			error: function() {
-				$("body").unmask().mask("Error while loading data JSON. Check JSON integrity", { error: true });				
-			}
+			doData(el);
 		});
 	}
-	
 	init();
 }
 
 
 CI.EntryPoint.prototype = {
 
-	loaded: function(data, doNotCallback) {
-		
-		this.data = data;
-	
-		if(this.entryData && this.entryData.variables) {
-		
-			var vars = this.entryData.variables;
-			if(!vars)
-				return;
-		
-			if(vars[0] && vars[0].sourcename) {
-				console.error("Soon deprecated. Please upgrade to new entry definition");
-				for(var i in this.data) {
-					for(var j = 0; j < vars.length; j++) {
-						if(vars[j].sourcename == i)
-							CI.API.setSharedVarFromJPath(vars[j].varname, this.data[i], vars[j].jpath);
-					}
-				}
-			} else {
+	loaded: function() {
 
-				var jpath, varname;
-				if(vars.length == 0) {
-					for(var i in this.data) {
-						if(i.slice(0, 1) == '_')
-							continue;
-						jpath = 'element.' + i;
-						varname = i;
-						vars.push({ varname: varname, jpath: jpath });
-						CI.API.setSharedVarFromJPath(varname, this.data, jpath);	
-					}
-				} else {
-					for(var i = 0; i < vars.length; i++) {
-						CI.API.setSharedVarFromJPath(vars[i].varname, this.data, vars[i].jpath);
-					}
-				}
+		if(this.entryData && this.entryData.variables && this.entryData.variables.length > 0) {
+			var vars = this.entryData.variables;
+			for(var i = 0; i < vars.length; i++) {
+				
+				CI.API.setSharedVarFromJPath(vars[i].varname, this.data, vars[i].jpath);
 			}
+		} else if(this.data) {
+
+			var jpath, varname, vars = [];
+			for(var i in this.data) {
+				if(i.slice(0, 1) == '_')
+					continue;
+				jpath = 'element.' + i;
+				varname = i;
+				vars.push({ varname: varname, jpath: jpath });
+				CI.API.setSharedVarFromJPath(varname, this.data, jpath);	
+			}
+			this.entryData.variables = vars;
 		}
 
-		this.entryData.variables = vars;
 		
-		if(doNotCallback)
-			return;
-			
+		
 		if(typeof this.onLoad == 'function')
 			this.onLoad(this, this.data);
 	},
@@ -182,13 +248,6 @@ CI.EntryPoint.prototype = {
 		this.entryData.variables = vars;
 		this.loaded(this.data, false);
 	},
-	
-	save: function() {
-		console.info('Method will soon be removed. Please call Saver.doSave(); directly');
-		Saver.doSave();	
-	},
-
-
 	
 	getDataFromSource: function(child) {
 		

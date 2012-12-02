@@ -14,6 +14,7 @@ CI.Grid = {
 		CI.Grid.definition = $.extend(true, CI.Grid.defaults, definition);
 		
 		CI.Grid._el = $("#ci-modules-grid");
+		CI.Grid._el.empty();
 		CI.Grid._el.get(0).addEventListener('contextmenu', function(e) {
 			e.preventDefault();
 
@@ -86,6 +87,8 @@ CI.Grid = {
 			e.preventDefault();
 			return false;
 		}, false);
+
+		CI.Grid.checkDimensions();
 
 	},
 	
@@ -341,7 +344,6 @@ CI.Grid = {
 			if(pos.top && size.height)
 				bottomMax = Math.max(bottomMax, pos.top + size.height);
 		}
-
 		CI.Grid._el.css('height', Math.max($(window).height() - $("#ci-header").outerHeight(true) - 1, (CI.Grid.defaults.yHeight * bottomMax + (extend ? 1000 : 0))));
 	},
 	
@@ -364,7 +366,7 @@ CI.Grid = {
 
 	moveToBack: function(module) {
 		var dom = module.dom;
-		var myZIndex  = module.definition.zindex || 1;
+		var myZIndex  = module.definition.zindex || 1;
 		var count = 0;
 		for (var i in CI.modules) {
 			CI.modules[i].definition.zindex = CI.modules[i].definition.zindex || 1;

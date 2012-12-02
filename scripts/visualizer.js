@@ -3,7 +3,9 @@ CI.ConfigVisualizer = function() {
 	var self = this;
 	var vars = Entry.getEntryDataVariables();	
 	var allSharedVars = CI.API.getAllSharedVariables();
-		
+
+	
+	
 	var html = $("<div />");
 	var configurationElement = new CI.ConfMenuSupElement({ title: 'Configuration' });
 
@@ -16,7 +18,6 @@ CI.ConfigVisualizer = function() {
 		configureEntryPoint();
 	});
 	btnzone.addButton(btn);
-	
 	
 	var btn = new BI.Buttons.Button('Configure visualizer', function() {
 		configureVisualizer();
@@ -68,9 +69,6 @@ CI.ConfigVisualizer = function() {
 				};
 				
 				Entry.addModuleFromJSON(module, true);
-
-
-
 		 }  }));
 	}
 

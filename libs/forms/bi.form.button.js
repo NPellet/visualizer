@@ -2,12 +2,17 @@
 var BI = BI || {};
 BI.Buttons = BI.Buttons || {};
 
-BI.Buttons.Button = function(label, onClick) {
+BI.Buttons.Button = function(label, onClick, options) {
 	if(label)
 		this.title = new BI.Title(label);
 	if(onClick)
 		this.onClick = onClick;
 	this.color = null;
+	this.options = options || {};
+	this.color = this.options.color || '';
+
+	this.value = 0;
+	this.disabled = false;
 	
 	this.id = ++BI.Buttons.Button.prototype.absId;
 	BI.Buttons.Button.prototype._buttons[this.id] = this;
@@ -16,7 +21,7 @@ BI.Buttons.Button = function(label, onClick) {
 
 BI.Buttons.Button.prototype = {
 	
-	_buttons: [],
+	_buttons: {},
 	absId: 0,
 	
 	getId: function() {
@@ -36,28 +41,44 @@ BI.Buttons.Button.prototype = {
 	},
 	
 	render: function() {
+
 		var html = "";
 		html += '<div class="bi-form-button';
-		
 		if(this.color !== null)
 			html += ' ' + this.color; 
-		
+
+		if(this.disabled)
+			html += ' disabled';
+
 		html += '" data-id="';
 		html += this.id;
-		html += '"><span>';
+		html += '" id="button-' + this.id + '"><span>';
 		html += this.title.getLabel();
 		html += '</span></div>';
 		return html;
 	},
 	
-	doClick: function(event) {
-		
+	doClick: function(event, item) {
+		this.value = !this.value;
+
+		if(this.options.checkbox)
+			item.toggleClass('bi-active');
 		if(typeof this.onClick == "function")
-			this.onClick(event);
+			this.onClick(event, this.value, item);
 	},
 	
 	getButtonById: function(id) {
 		return BI.Buttons.Button.prototype._buttons[id];
+	},
+
+	disable: function() {
+		this.disabled = true;
+		$("#button-" + this.id).addClass('disabled');
+	},
+
+	enable: function() {
+		this.disabled = false;
+		$("#button-" + this.id).removeClass('disabled');	
 	}
 };
 
@@ -67,7 +88,9 @@ BI.Buttons.Button.prototype = {
 	
 	$(document).on('click', '.bi-form-button', function(event) {
 		var btnId = $(this).data('id');
-		BI.Buttons.Button.prototype.getButtonById(btnId).doClick(event);
+		var btn = BI.Buttons.Button.prototype.getButtonById(btnId);
+		if(btn)
+			btn.doClick(event, $(this));
 	});
 	
 }) (jQuery);

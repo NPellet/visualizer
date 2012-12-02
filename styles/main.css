@@ -536,7 +536,7 @@ div.ci-module-display_value div.ci-module-content img {
 
 
 
-.ci-contextmenu.ui-menu, .ci-contextmenu.ui-menu .ui-menu {
+.ui-menu, .ui-menu .ui-menu {
 	list-style:none;
 	width: 150px;
 	border-radius: 0px;
@@ -572,8 +572,116 @@ div.ci-module-display_value div.ci-module-content img {
 	color: #FFFFFF;
 	/*text-shadow: 0px 1px 1px #234386;*/
 	border-color: #466086;
-		-moz-border-radius: 0; 
-		-webkit-border-radius: 0;
-		border-radius: 0;
+	-moz-border-radius: 0; 
+	-webkit-border-radius: 0;
+	border-radius: 0;
 	border-width: 0px;
+}
+
+
+
+#visualizer-dataviews-button {
+	float: right;
+	text-align: center;
+	height: 20px;	
+	padding-top: 2px;
+	margin-top: 8px;
+	margin-right: 10px;
+}
+
+#visualizer-dataviews {
+	position: absolute;
+	right: 0px;
+	top: 35px;
+	
+
+	background: -moz-linear-gradient(left, #e2e2e2 0%, #dbdbdb 49%, #fefefe 99%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#e2e2e2), color-stop(49%,#dbdbdb), color-stop(99%,#fefefe)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, #e2e2e2 0%,#dbdbdb 49%,#fefefe 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, #e2e2e2 0%,#dbdbdb 49%,#fefefe 99%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left, #e2e2e2 0%,#dbdbdb 49%,#fefefe 99%); /* IE10+ */
+	background: linear-gradient(to right, #e2e2e2 0%,#dbdbdb 49%,#fefefe 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#fefefe',GradientType=1 ); /* IE6-9 */
+
+	border: 1px solid #b6b6b6;
+	box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
+	min-width: 600px;
+	min-height: 150px;
+	
+}
+
+#visualizer-dataviews h1 {
+	font-size: 14px;
+	background-color: #e2e2e2;
+	
+	border-bottom: 1px solid #d0d0d0;
+	border-top: 1px solid #d0d0d0;
+	padding: 5px;
+	padding-left: 10px;
+}
+
+#visualizer-dataviews > * {
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+ul.ci-dataview {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.ci-dataview li {
+	float: left;
+	padding: 3px;
+	
+	margin-left: 4px;
+}
+
+ul.ci-dataview li:hover {
+	font-weight: normal;
+	/*margin: -1px;*/
+	background: #5f83b9;
+	cursor: pointer;
+	color: #FFFFFF;
+	/*text-shadow: 0px 1px 1px #234386;*/
+	border-color: #466086;
+	-moz-border-radius: 0; 
+	-webkit-border-radius: 0;
+	border-radius: 0;
+	
+}
+
+ul.ci-dataview li:active, ul.ci-dataview li.Selected {
+		font-weight: normal;
+	/*margin: -1px;*/
+	background: #5f83b9;
+	cursor: pointer;
+	color: #FFFFFF;
+	/*text-shadow: 0px 1px 1px #234386;*/
+	border-color: #466086;
+	-moz-border-radius: 0; 
+	-webkit-border-radius: 0;
+	border-radius: 0;
+	
+}
+
+li.ci-spacer {
+	clear: both;
+	float: none;
+	visibility: hidden;
+	border: none;
+	width: 0px;
+	height: 0px;
+}
+
+.ci-dataview-path {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+
+.ci-dataview-menu.ui-menu, .ci-dataview-menu ul.ui-menu {
+	width: 130px;
+	border-radius: 0px;
 }

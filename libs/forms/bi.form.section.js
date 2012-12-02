@@ -208,6 +208,7 @@ BI.Forms.Section.prototype = {
 	},
 	
 	addFieldGroup: function(fieldGroup) {
+		
 		this.fieldGroups.push(fieldGroup);
 		fieldGroup.setSection(this);
 		this.renumberFieldGroups();

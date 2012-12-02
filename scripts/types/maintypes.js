@@ -802,7 +802,7 @@ CI.DataType._toScreen = function(element, box, opts) {
 CI.DataType.toScreen = CI.DataType._toScreen;
 
 CI.DataType.getOptions = function(value) {
-	return value._options || {};
+	return value._options || {};
 }
 
 CI.DataType.getHighlights = function(value) {
@@ -917,7 +917,7 @@ CI.Type["mol2d"] = {
 
 				canvas.repaint();
 
-			}, true, box.id || 0);
+			}, true, box.id || 0);
 
 
 		});
@@ -995,7 +995,7 @@ CI.Type["jcamp"] = {
 
 		if(!dom.data('spectra')) {
 
-			var spectra = new ChemDoodle.OverlayCanvas(dom.attr('id'), opts.width || 300, opts.height || 150);
+			var spectra = new ChemDoodle.OverlayCanvas(dom.attr('id'), opts.width || 300, opts.height || 150);
 			spectra.CIOnRepaint(function() {
 				var h = [], zones = dom.data('zones'), all = dom.data('allspectras');
 				
@@ -1030,7 +1030,7 @@ CI.Type["jcamp"] = {
 
 			spectra.CIOnMouseMove(function(e) {
 				var zones = dom.data('zones');
-				spectra._highlights = spectra._highlights || {};
+				spectra._highlights = spectra._highlights || {};
 				var mem = this.spectrum.memory;
 				var x = e.offsetX;
 				var x1 = this.spectrum.getInverseTransformedX(x);

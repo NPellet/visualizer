@@ -130,7 +130,7 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 			molLoaded.scaleToAverageBondLength(30);
 			deferred.resolve(molLoaded);
 			self._currentValue = moduleValue;
-			molLoaded._highlights = molLoaded._highlights || {};
+			molLoaded._highlights = molLoaded._highlights || {};
 			self._canvas.CIOnMouseMove(function(e) {
 				var b, radius = self._canvas.specs.atoms_font_size_2D;
 				var x = e.offsetX, y = e.offsetY;
