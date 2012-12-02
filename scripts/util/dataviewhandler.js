@@ -61,7 +61,7 @@ CI.DataViewHandler.prototype = {
 			var branches = {};
 
 			for(var i in data) {
-				branches[i] = i + " (" + data[i].list.length + ")";
+				branches[i] = i + " (" + (data[i].list.length + 1) + ")";
 			}
 			return branches;
 		});
