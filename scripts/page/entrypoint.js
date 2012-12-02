@@ -217,7 +217,9 @@ CI.EntryPoint.prototype = {
 				
 				CI.API.setSharedVarFromJPath(vars[i].varname, this.data, vars[i].jpath);
 			}
-		} else if(this.data) {
+		}
+
+		if(this.data) {
 
 			var jpath, varname, vars = [];
 			for(var i in this.data) {
@@ -248,7 +250,7 @@ CI.EntryPoint.prototype = {
 		this.entryData.variables = vars;
 		this.loaded(this.data, false);
 	},
-	
+		
 	getDataFromSource: function(child) {
 		
 		if(!child)

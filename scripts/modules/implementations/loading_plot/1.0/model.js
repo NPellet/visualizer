@@ -31,8 +31,9 @@ $.extend(CI.Module.prototype._types.loading_plot.Model.prototype, {
 			var structure = CI.DataType.getStructureFromElement(data, structure)
 			
 			if(rel == 'element') {
+				
 				if(structure.elements)
-					CI.DataType.getJPathsFromStructure(structure.elements.series.elements.elements.data.elements, null, jpaths);
+					CI.DataType.getJPathsFromStructure(structure.elements.series, null, jpaths);
 			}
 			return jpaths;
 		}
