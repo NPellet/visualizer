@@ -270,6 +270,7 @@ BI.Forms.GroupFields.Table.prototype = {
 		for(var i = 0; i < this.fields.length; i++)
 			fieldsByName[this.fields[i].getName()] = this.fields[i];
 		
+
 		for(var i in json) {
 			
 			if(!done) {
@@ -281,6 +282,7 @@ BI.Forms.GroupFields.Table.prototype = {
 			var name = i;
 			
 			var field = fieldsByName[name];		
+			
 			//field.resetDuplicate();
 			for(var j = 0; j < json[i].length; j++)
 				field.implementation.setValue(j, json[i][j]);

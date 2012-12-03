@@ -44,6 +44,7 @@ $.extend(BI.Forms.Fields.Table.Checkbox.prototype, {
 		
 		for(var i in this.options) {
 			fieldAttrId = fieldId + "_" + i;
+			
 			html.push('<input type="checkbox" name="');
 			html.push(this.main.getFieldName(1));
 			html.push('[]" id="');
@@ -87,7 +88,4 @@ $.extend(BI.Forms.Fields.Table.Checkbox.prototype, {
 	
 	},
 
-	setValue: function(index, value) {
-	
-	}
 });

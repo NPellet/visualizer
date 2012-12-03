@@ -201,6 +201,9 @@ $(document).bind('configModule', function(event, module) {
 			for(var i = 0; i < currentCfg.length; i++) {
 				receivedVars.rel.push(currentCfg[i].rel);
 				receivedVars.name.push(currentCfg[i].name);
+
+				if(module.controller.fillReceivedVars)
+					module.controller.fillReceivedVars(receivedVars, currentCfg[i], i);
 			}
 		}
 		

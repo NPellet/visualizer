@@ -150,14 +150,23 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 			type: 'Checkbox',
 			name: 'continuous'
 		});
-		field.implementation.setOptions(['continuous']);
+		field.implementation.setOptions({'continuous': 'Continuous plot'});
 		field.setTitle(new BI.Title('Continuous'));
+	},
+
+	fillReceivedVars: function(ref, el, i) {
+		ref.continuous = ref.continuous || [];
+
+		this.module.getConfiguration().continuous = this.module.getConfiguration().continuous || {};
+		
+		if(this.module.getConfiguration().continuous[ref.name[i]])
+			ref.continuous.push(['continuous']);
 	},
 
 	processReceivedVars: function(val) {
 		this.module.getConfiguration().continuous = {};
 		for(var i = 0, l = val.length; i < l; i++) {
-			if(val[i].continuous[0][0])
+			if(val[i].continuous[0] && val[i].continuous[0][0])
 				this.module.getConfiguration().continuous[val[i].name] = true;
 		}
 	}

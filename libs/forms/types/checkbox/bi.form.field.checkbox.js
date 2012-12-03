@@ -105,7 +105,8 @@ BI.Forms.Fields.Checkbox.prototype = {
 	
 	setValue: function(index, value) {
 		
-		var stack = this.main.fields[index].field;
+		var stack = this.main.fields[index].field || this.main.fields[index].html;
+
 		if(!value instanceof Array)
 			value = [value];
 			
