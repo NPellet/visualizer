@@ -36,6 +36,15 @@ CI = new Object();
 
 
 	$("#visualizer-dataviews-button").bind('click', function() {
+
+		if($(this).hasClass('bi-active')) {
+			$("#visualizer-dataviews").remove();
+			$(this).removeClass('bi-active');
+
+			return;
+		}
+
+		$(this).addClass('bi-active');
 		var dom = $("<div>").attr('id', 'visualizer-dataviews').appendTo('body');
 
 

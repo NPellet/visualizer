@@ -143,5 +143,22 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		this.module.getConfiguration().flipX = flipX;
 		this.module.getConfiguration().flipY = flipY;
 		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor;
+	},
+
+	addToReceivedVars: function(group) {
+		var field = group.addField({
+			type: 'Checkbox',
+			name: 'continuous'
+		});
+		field.implementation.setOptions(['continuous']);
+		field.setTitle(new BI.Title('Continuous'));
+	},
+
+	processReceivedVars: function(val) {
+		this.module.getConfiguration().continuous = {};
+		for(var i = 0, l = val.length; i < l; i++) {
+			if(val[i].continuous[0][0])
+				this.module.getConfiguration().continuous[val[i].name] = true;
+		}
 	}
 }

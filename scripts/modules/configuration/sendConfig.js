@@ -121,7 +121,6 @@ $(document).bind('configModule', function(event, module) {
 		field.implementation.setOptions(allRels);
 		field.setTitle(new BI.Title('Internal reference'));
 		
-		
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'name'
@@ -134,6 +133,8 @@ $(document).bind('configModule', function(event, module) {
 		}
 		field.implementation.setAutocompleteOptions(objs);
 
+		if(module.controller.addToReceivedVars)
+			module.controller.addToReceivedVars(groupfield);
 
 		
 		var save = new BI.Buttons.Button('Save', function() {
@@ -152,7 +153,10 @@ $(document).bind('configModule', function(event, module) {
 				
 			module.setSendVars(value.send[0].sentvars[0]);
 			module.setSourceVars(value.receive[0].receivedvars[0]);
-			
+
+			if(module.controller.processReceivedVars)
+				module.controller.processReceivedVars(value.receive[0].receivedvars[0]);
+
 			if(module.controller.doSaveConfiguration) 
 				module.controller.doSaveConfiguration(value.module);
 			

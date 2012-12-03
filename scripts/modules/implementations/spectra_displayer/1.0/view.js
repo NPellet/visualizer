@@ -84,7 +84,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			var view = this;
 			
 			var cfg = {
-				continuous: (cfgM.mode == 'curve'), 
+				continuous: !!cfgM.continuous[varname], 
 				flipX: cfgM.flipX, 
 				flipY: cfgM.flipY, 
 				plotcolor: color,

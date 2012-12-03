@@ -1059,7 +1059,7 @@ CI.Type["jcamp"] = {
 			spectra.specs.plots_showYAxis = true;
 			//spectra.specs.plots_flipXAxis = false;
 			if(!opts) opts = {};
-			var ctns = opts.continuous || false;
+				
 			spectra.specs.plots_flipXAxis =  opts.flipX || false;
 			spectra.specs.plots_flipYAxis =  opts.flipY || false;
 		//	spectra.specs.plots_color = opts.plotcolor || 'black';
@@ -1102,7 +1102,7 @@ CI.Type["jcamp"] = {
 	//	}
 		
 		allspectras[spectraid].plots_color = opts.plotcolor;
-  		allspectras[spectraid].continuous = ctns;
+  		allspectras[spectraid].continuous = opts.continuous || false;
 
 		if(allspectrasid[spectraid] == undefined) {
 	  		var id = spectra.addSpectrum(allspectras[spectraid]);
