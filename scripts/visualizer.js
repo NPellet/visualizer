@@ -393,7 +393,7 @@ configureEntryPoint = function() {
 				var value = inst.getValue();
 				var data = value.cfg[0].tablevars[0];
 				Entry.setEntryDataVariables(data);
-				Entry.save();
+				/*Entry.save();*/
 
 				inst.getDom().dialog('close');
 			});

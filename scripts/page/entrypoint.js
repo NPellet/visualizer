@@ -250,6 +250,7 @@ CI.EntryPoint.prototype = {
 	
 	setEntryDataVariables: function(vars) {
 		this.entryData.variables = vars;
+		console.log(vars);
 		this.loaded(this.data, false);
 	},
 		

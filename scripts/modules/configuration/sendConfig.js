@@ -236,7 +236,7 @@ function buildGeneralConfig(module) {
 	
 	html.append(CI.SaveButton.clone(true).bind('click', function() {
 		module.setTitle($("input[name=modulename]").val());
-		Entry.save();
+		/*Saver.doSave();*/
 	}).after('<div class="ci-spacer"></div>'));
 	
 	
@@ -321,7 +321,7 @@ function buildSendConfig(module) {
 		});
 		
 		module.setSendVars(vars);
-		Entry.save();
+	/*	Entry.save();*/
 		
 	})).next().after('<div class="ci-spacer"></div>');
 	
@@ -397,7 +397,7 @@ function buildReceiveConfig(module) {
 		});
 		
 		module.setSourceVars(vars);
-		Entry.save();
+	/*	Entry.save();*/
 		
 	})).next().after('<div class="ci-spacer"></div>');
 	
