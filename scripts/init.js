@@ -14,7 +14,7 @@ _namespaces = {
 CI = new Object();
 
 (function($) {
-	
+
 	$(document).ready(function() {
 		
 		CI.WebWorker.create('jsonparser', './scripts/webworker/scripts/jsonparser.js');

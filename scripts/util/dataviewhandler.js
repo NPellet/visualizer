@@ -326,6 +326,7 @@ CI.DataViewHandler.prototype = {
 				}
 
 				self.make(el, branch, i);
+				self._savedLocal = JSON.stringify(el);
 				self.onLoaded(el);
 			});
 		}	
@@ -333,7 +334,7 @@ CI.DataViewHandler.prototype = {
 	},
 
 	getFromServer: function(url) {
-
+		var self = this;
 		var def = $.Deferred();
 		$.ajax({
 
@@ -342,6 +343,8 @@ CI.DataViewHandler.prototype = {
 			url: url,
 			cache: false,
 			success: function(data) {
+				self._savedServer = JSON.stringify(data);
+			//	console.log(self._savedServer);
 				def.resolve(data);
 			},
 			error: function() {
@@ -365,54 +368,87 @@ CI.DataViewHandler.prototype = {
 		});
 	},
 
-	serverPush: function() {
-		return Saver.doSave(CI.URLs[(this.type == 'view' ? 'saveViewURL' : '')]);
+	serverPush: function(obj, mode) {
+		return this._saveToServer(obj, mode);
 	},
 
 	load: function(local) {
 
 		var self = this;
 
-		function makeLocalCall() {
+		var def = $.Deferred();
+		var defServer = this.getFromServer(CI.URLs[this.type + "URL"])/*.pipe(function(el) {
+			self.currentPath[1] = 'server';
+			self.currentPath[2] = el._name || 'Master';
+			self.currentPath[3] = el._time || 'head';
+			self.make(el, self.currentPath[2], self.currentPath[3]);
 
-			// If no URL is defined
-			return $.when(self._getLocalHead('Master')).pipe(function(el) {
-				// Current OR empty (and saved) is sent from local DB
-				// Get the master head
+			return el;
+		});
+*/;
+		var defLocal = self._getLocalHead('Master');/*.pipe(function(el) {
+			// Current OR empty (and saved) is sent from local DB
+			// Get the master head
+			self.currentPath[1] = 'local';
+			self.currentPath[2] = 'Master';
+			self.currentPath[3] = 'head';
+			self.make(el, self.currentPath[2], self.currentPath[3]);
+			return el;
+		});*/
 
-				self.currentPath[1] = 'local';
-				self.currentPath[2] = 'Master';
-				self.currentPath[3] = 'head';
 
-				self.make(el, self.currentPath[2], self.currentPath[3]);
+		// First load the server
+		// Needed to identify branch and revision of the file
+		$.when(defServer).then(function(server) {
+			// Success
+			var branch = server._name || 'Master';
+			var rev = server._time || 'Head';
+			var saved = server._saved || 0;
 
-				return el;
+			// Always compare to the head of the local branch
+			var defLocal = self._getLocalHead(branch);
+			$.when(defLocal).then(function(el) {
+				var savedLocal = el._saved || 0;
+				// Loads the latest file
+				if(savedLocal > saved)
+					doLocal(el);
+				else
+					doServer(server);
 			});
+		}, function(local, server) {
+			$.when(self._getLocalHead(branch)).then(function(el) {
+				doLocal(el);
+			});
+		});
+
+		function doLocal(el) {
+			console.log('Do Local');
+			console.log(el);
+			self.currentPath[1] = 'local';
+			self.currentPath[2] = 'Master';
+			self.currentPath[3] = 'head';
+			self.make(el, self.currentPath[2], self.currentPath[3]);
+			def.resolve(el);
+		}
+
+
+		function doServer(el) {console.log('Do Server');
+			self.currentPath[1] = 'server';
+			self.currentPath[2] = el._name || 'Master';
+			self.currentPath[3] = el._time || 'head';
+			self.make(el, self.currentPath[2], self.currentPath[3]);
+			def.resolve(el);
 		}
 		
-
-		if(CI.URLs[this.type + "URL"] && !local)
-			return this.getFromServer(CI.URLs[this.type + "URL"]).pipe(function(el) {
-				self.currentPath[1] = 'server';
-				self.currentPath[2] = el._name || 'Master';
-				self.currentPath[3] = el._time || 'head';
-				self.make(el, self.currentPath[2], self.currentPath[3]);
-
-				return el;
-			}, function() {
-
-				return makeLocalCall();
-			});
-		else
-			return makeLocalCall();
+		return def;
 	},
 
 	_saveToServer: function(obj, mode) {
+		obj._name = mode || 'Master';
 		obj._local = false;
-		return $.post({
-
-
-		});
+		obj._saved = Date.now();
+		this._savedServer = JSON.stringify(obj);
+		return $.post(CI.URLs[(this.type == 'view' ? 'saveViewURL' : 'saveDataURL')], { content: this._savedServer });
 	},
 
 	getMonth: function(i) {
@@ -442,11 +478,15 @@ CI.DataViewHandler.prototype = {
 
 
 	_localSave: function(obj, mode, name) {
+
 		var self = this;
 		obj._local = true;
 		// IF: Already Head => Erase current head, IF: New head: Overwrite head (keep current)
 		obj._time = mode == 'head' ? false : Date.now();
+		obj._saved = Date.now();
 		
+		this._savedLocal = JSON.stringify(obj);
+
 		return CI.DB.open().pipe(function() {
 
 			return CI.DB[mode == 'head' ? 'storeToHead' : 'store'](self.type, self._dirUrl, name, obj).pipe(function(element) {
@@ -505,6 +545,7 @@ CI.DataViewHandler.prototype = {
 	},
 
 	saveServer: function(data, name) {
+		
 		return this._saveToServer(data, 'stored', name);
 	},
 
@@ -523,6 +564,36 @@ CI.DataViewHandler.prototype = {
 			}, 10000);
 	}
 }
+
+
+
+
+
+window.onbeforeunload = function() {
+    var dommessage = { data: false, view: false };
+    var data = JSON.stringify(Entry.data);
+    var struc = JSON.stringify(Entry.structure);
+
+
+	if(CI.View._savedLocal != struc && CI.View._savedServer != struc)
+		dommessage.view = true;
+
+	if(CI.Data._savedLocal != data && CI.Data._savedServer != data)
+		dommessage.data = true;
+
+	var message = [];
+	if(dommessage.view)
+		message.push('The view file has not been saved. If you continue, you will loose your changes');
+	if(dommessage.data)
+		message.push('The data file has not been saved. If you continue, you will loose your changes');
+	
+	if(message.length > 0)
+		return message.join("\n\n");
+}
+
+
+
+
 
 
 /*
