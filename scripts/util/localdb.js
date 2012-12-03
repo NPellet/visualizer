@@ -4,7 +4,11 @@ CI.DB = {};
 CI.DB.open = function() {
 	var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 
+
 	var def = $.Deferred();
+	if(!indexedDB)
+		return def.reject();
+
 	if(CI.DB.db)
 		return def.resolve();
 
