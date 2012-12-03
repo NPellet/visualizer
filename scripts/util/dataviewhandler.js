@@ -273,7 +273,7 @@ CI.DataViewHandler.prototype = {
 		if(this.currentPath[1] == 'local') {
 
 			buttons[this.type].copyToLocal.disable();
-			buttons[this.type].localToServer.enable();
+		//	buttons[this.type].localToServer.enable();
 
 			buttons[this.type].snapshotLocal.enable();
 			buttons[this.type].branchLocal.enable();
@@ -285,7 +285,7 @@ CI.DataViewHandler.prototype = {
 			
 		} else {
 			buttons[this.type].copyToLocal.enable();
-			buttons[this.type].localToServer.disable();
+		//	buttons[this.type].localToServer.disable();
 
 			buttons[this.type].snapshotLocal.disable();
 			buttons[this.type].branchLocal.disable();
