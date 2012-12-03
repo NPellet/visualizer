@@ -20,7 +20,6 @@ CI.Module.prototype._types.display_value.View.prototype = {
 		html += '<div></div>';
 		this.dom = $(html).css('display', 'table').css('height', '100%').css('width', '100%');
 		this.module.getDomContent().html(this.dom);
-	
 	},
 	
 	onResize: function() {
@@ -50,9 +49,15 @@ CI.Module.prototype._types.display_value.View.prototype = {
 				view.fillWithVal(cfg.defaultvalue || '');
 			else
 				CI.DataType.toScreen(moduleValue, this.module).done(function(val) {
-					if(cfg.sprintf && cfg.sprintf != "")
-						val = sprintf(cfg.sprintf, val);
-					view.fillWithVal(val);
+
+					try {
+						if(cfg.sprintf && cfg.sprintf != "")
+							val = sprintf(cfg.sprintf, val);
+						else
+							throw {};
+					} catch(e) {
+						view.fillWithVal(val);
+					}
 				});
 		}
 	},
@@ -74,7 +79,6 @@ CI.Module.prototype._types.display_value.View.prototype = {
 
 		this.dom.html(div);
 		CI.Util.ResolveDOMDeferred(div);
-
 	},
 	
 	getDom: function() {
