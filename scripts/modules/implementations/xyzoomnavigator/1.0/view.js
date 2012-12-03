@@ -125,12 +125,11 @@ CI.Module.prototype._types.xyzoomnavigator.View.prototype = {
 		},
 
 		zoom: function(zoom) {
-
 			if(!(zoom))
 				return;
-
 			this._zoom = zoom;
-			this._zoomWidget.slider('value', this._zoom);
+			if(this._zoomWidget.hasClass('ui-slider'))
+				this._zoomWidget.slider('value', this._zoom);
 		}
 
 	},

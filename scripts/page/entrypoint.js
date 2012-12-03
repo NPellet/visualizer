@@ -12,7 +12,7 @@ CI.EntryPoint = function(options, onLoad) {
 	function pad(val) {
 		return val < 10 ? '0' + val : val;
 	}
-	
+
 	function init() {
 
 
@@ -155,7 +155,6 @@ CI.EntryPoint = function(options, onLoad) {
 		if(typeof structure.configuration.variableFilters == "undefined")
 			structure.configuration.variableFilters = {};
 
-
 		if(structure.configuration.showMenuBarOnStart)
 			$("#ci-expand-left").trigger('click');
 			
@@ -218,7 +217,6 @@ CI.EntryPoint.prototype = {
 		if(this.entryData && this.entryData.variables && this.entryData.variables.length > 0) {
 			var vars = this.entryData.variables;
 			for(var i = 0; i < vars.length; i++) {
-				
 				CI.API.setSharedVarFromJPath(vars[i].varname, this.data, vars[i].jpath);
 			}
 		}
