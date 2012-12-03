@@ -9,6 +9,10 @@ CI.EntryPoint = function(options, onLoad) {
 	var entryPoint = this;
 	this.entryData = {};
 	
+	function pad(val) {
+		return val < 10 ? '0' + val : val;
+	}
+	
 	function init() {
 
 
@@ -47,7 +51,7 @@ CI.EntryPoint = function(options, onLoad) {
 					}, function() {
 						item.children().find('span').remove();
 						var date = new Date();
-						date = date.getHours() + ":" + date.getMinutes();
+						date = pad(date.getHours()) + ":" + pad(date.getMinutes());
 						item.children().append('<span> (' + date + ')</span>');
 					});
 				}, { checkbox: true, color: 'blue' });
@@ -105,7 +109,7 @@ CI.EntryPoint = function(options, onLoad) {
 					CI[pos2[j]].serverPush((j == 0 ? Entry.structure : Entry.data)).done(function() {
 						item.children().find('span').remove();
 						var date = new Date();
-						date = date.getHours() + ":" + date.getMinutes();
+						date = pad(date.getHours()) + ":" + pad(date.getMinutes());
 						item.children().append('<span> (' + date + ')</span>');
 					});
 				}, { color: 'green' });
