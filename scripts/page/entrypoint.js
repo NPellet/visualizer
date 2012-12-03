@@ -231,12 +231,22 @@ CI.EntryPoint.prototype = {
 				varname = i;
 				vars.push({ varname: varname, jpath: jpath });
 				CI.API.setSharedVarFromJPath(varname, this.data, jpath);	
+
+				var found = false;
+				if(this.entryData.variables) {
+					for(var j = 0, l = this.entryData.variables.length; j < l; j++) {
+						if(this.entryData.variables[j].varname == varname)
+							found = true;
+					}
+
+					if(!found)
+						this.entryData.variables.push({ varname: varname, jpath: jpath });
+				}
 			}
-			this.entryData.variables = vars;
+			
 		}
 
-		
-		
+			
 		if(typeof this.onLoad == 'function')
 			this.onLoad(this, this.data);
 	},
@@ -250,8 +260,8 @@ CI.EntryPoint.prototype = {
 	
 	setEntryDataVariables: function(vars) {
 		this.entryData.variables = vars;
-		console.log(vars);
-		this.loaded(this.data, false);
+		
+		this.loaded();
 	},
 		
 	getDataFromSource: function(child) {
