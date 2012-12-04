@@ -4,37 +4,6 @@
 <head>
 	<title>Visualizer</title>
 	<link rel="stylesheet" href="styles/main.css" media="screen, print" />
-<script>
-
-window.applicationCache.onchecking = function() {
-	console.log('Checking');
-}
-
-window.applicationCache.ondownloading = function() {
-	console.log('Downloading');
-}
-
-window.applicationCache.onprogress = function() {
-	console.log('Progress');
-}
-
-window.applicationCache.oncached = function() {
-	console.log('Cached');
-}
-
-window.applicationCache.onnoupdate = function() {
-	console.log('No Updated');
-}
-
-window.applicationCache.onerror = function(e) {
-	console.log('Error');
-	console.log(e);
-}
-
-console.log(window.applicationCache);
-
-
-</script>
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" language="javascript" type="text/javascript"></script>-->
 	<script src="./libs/jquery/jquery-1.8.2.min.js" language="javascript" type="text/javascript" data-pack="jquery"></script>

@@ -5,7 +5,7 @@ CI.DB.open = function() {
 	var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 
 
-	var def = $.Deferred();
+	var def = $.Deferred();	
 	if(!indexedDB)
 		return def.reject();
 
@@ -67,7 +67,7 @@ CI.DB.open = function() {
 CI.DB.getAll = function(type, key, branch) {
 
 	var def = $.Deferred();
-	type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
+	type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
 
 	var trans = CI.DB.db.transaction([type], 'readwrite');
 	var store = trans.objectStore(type);
