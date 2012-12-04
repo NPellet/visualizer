@@ -451,7 +451,7 @@ CI.DataViewHandler.prototype = {
 
 	_saveToServer: function(obj, mode) {
 
-		obj._name = mode || 'Master';
+		obj._name = mode || 'Master';
 		obj._local = false;
 		obj._saved = Date.now();
 		this._savedServer = JSON.stringify(obj);

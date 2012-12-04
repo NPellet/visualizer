@@ -161,7 +161,7 @@ CI.DB.storeToHead = function(type, key, branch, obj) {
 CI.DB.store = function(type, key, branch, obj) {
 
 	var def = $.Deferred();
-	type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
+	type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
 	var trans = CI.DB.db.transaction(type, 'readwrite');
 	var store = trans.objectStore(type);	
 	var req = store.get(key + ";" + branch);
