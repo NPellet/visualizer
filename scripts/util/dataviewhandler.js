@@ -399,6 +399,7 @@ CI.DataViewHandler.prototype = {
 
 		// First load the server
 		// Needed to identify branch and revision of the file
+		var branch = 'Master';
 		$.when(defServer).then(function(server) {
 			// Success
 			var branch = server._name || 'Master';
@@ -415,28 +416,33 @@ CI.DataViewHandler.prototype = {
 				else
 					doServer(server);
 			});
-		}, function(local, server) {
+		}, function(server) {
 			$.when(self._getLocalHead(branch)).then(function(el) {
 				doLocal(el);
 			});
 		});
 
 		function doLocal(el) {
-			console.log('Do Local');
-			console.log(el);
+			
 			self.currentPath[1] = 'local';
 			self.currentPath[2] = 'Master';
 			self.currentPath[3] = 'head';
+
+			self._savedLocal = JSON.stringify(el);
+
 			self.make(el, self.currentPath[2], self.currentPath[3]);
 			def.resolve(el);
 		}
 
 
-		function doServer(el) {console.log('Do Server');
+		function doServer(el) {
 			self.currentPath[1] = 'server';
 			self.currentPath[2] = el._name || 'Master';
 			self.currentPath[3] = el._time || 'head';
 			self.make(el, self.currentPath[2], self.currentPath[3]);
+
+			self._savedServer = JSON.stringify(el);
+
 			def.resolve(el);
 		}
 		
@@ -444,6 +450,7 @@ CI.DataViewHandler.prototype = {
 	},
 
 	_saveToServer: function(obj, mode) {
+
 		obj._name = mode || 'Master';
 		obj._local = false;
 		obj._saved = Date.now();
@@ -484,7 +491,7 @@ CI.DataViewHandler.prototype = {
 		// IF: Already Head => Erase current head, IF: New head: Overwrite head (keep current)
 		obj._time = mode == 'head' ? false : Date.now();
 		obj._saved = Date.now();
-		
+
 		this._savedLocal = JSON.stringify(obj);
 
 		return CI.DB.open().pipe(function() {
@@ -573,7 +580,6 @@ window.onbeforeunload = function() {
     var dommessage = { data: false, view: false };
     var data = JSON.stringify(Entry.data);
     var struc = JSON.stringify(Entry.structure);
-
 
 	if(CI.View._savedLocal != struc && CI.View._savedServer != struc)
 		dommessage.view = true;

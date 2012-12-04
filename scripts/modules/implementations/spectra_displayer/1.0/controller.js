@@ -79,13 +79,13 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		var groupfield = new BI.Forms.GroupFields.List('gencfg');
 		section.addFieldGroup(groupfield);
 
-		var field = groupfield.addField({
+	/*	var field = groupfield.addField({
 			type: 'Options',
 			name: 'mode'
 		});
-
-		field.setTitle(new BI.Title('Mode'));
-		field.implementation.setOptions({ 'peaks': 'Display as peaks', 'curve': 'Display as a curve' });
+*/
+//		field.setTitle(new BI.Title('Mode'));
+//		field.implementation.setOptions({ 'peaks': 'Display as peaks', 'curve': 'Display as a curve' });
 
 
 		var field = groupfield.addField({
@@ -96,20 +96,48 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		field.implementation.setOptions({ 'flipX': 'Flip X', 'flipY': 'Flip Y' });
 
 
-		field = groupfield.addField({
-			'type': 'Color',
-			'name': 'plotcolor',
-			multiple: true
+
+		var group = new BI.Forms.GroupFields.Table('spectrainfos');
+		section.addFieldGroup(group);
+
+		field = group.addField({
+			'type': 'Combo',
+			'name': 'variable',
+			title: new BI.Title('Variable')
 		});
 
-		field.setTitle(new BI.Title('Color'));
+		var vars = [];
+		var currentCfg = this.module.definition.dataSource;
+
+		if(currentCfg)
+			for(var i = 0; i < currentCfg.length; i++) {
+				if(currentCfg[i].rel == 'jcamp')
+					vars.push({title: currentCfg[i].name, key: currentCfg[i].name});
+			}
+
+		field.implementation.setOptions(vars);
+
+
+		field = group.addField({
+			'type': 'Color',
+			'name': 'plotcolor',
+			title: new BI.Title('Color')
+		});
+
+
+		field = group.addField({
+			'type': 'Checkbox',
+			'name': 'plotcontinuous',
+			title: new BI.Title('Continuous')
+		});
+		field.implementation.setOptions({'continuous': 'Continuous'});
 
 		return true;
 	},
 	
 	doFillConfiguration: function() {
 		
-		var mode = this.module.getConfiguration().mode || 'peaks';
+	//	var mode = this.module.getConfiguration().mode || 'peaks';
 		
 		var flipArray = [];
 		if(this.module.getConfiguration().flipX)
@@ -117,13 +145,23 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		if(this.module.getConfiguration().flipY)
 			flipArray.push('flipY');
 	
+		var spectrainfos = { 'variable': [], 'plotcolor': [], 'plotcontinuous': [] };
+
+		var infos = this.module.getConfiguration().plotinfos || [];
+		for(var i = 0, l = infos.length; i < l; i++) {
+			spectrainfos.variable.push(infos[i].variable);
+			spectrainfos.plotcolor.push(infos[i].plotcolor);
+			spectrainfos.plotcontinuous.push([infos[i].plotcontinuous ? 'continuous' : null]);
+		}
+
 		return {
 			groups: {
 				gencfg: [{
-					mode: [mode],
+		//			mode: [mode],
 					flip: [flipArray],
-					plotcolor: this.module.getConfiguration().plotcolor || ['#000000']
-				}]
+		//			plotcolor: this.module.getConfiguration().plotcolor || ['#000000']
+				}],
+				spectrainfos: [spectrainfos]
 			}
 		}	
 	},
@@ -139,13 +177,15 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 					flipY = true;
 		}
 
-		this.module.getConfiguration().mode = confSection[0].gencfg[0].mode[0];
+//		this.module.getConfiguration().mode = confSection[0].gencfg[0].mode[0];
 		this.module.getConfiguration().flipX = flipX;
 		this.module.getConfiguration().flipY = flipY;
-		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor;
+//		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor;
+
+		this.module.getConfiguration().plotinfos = confSection[0].spectrainfos[0];
 	},
 
-	addToReceivedVars: function(group) {
+/*	addToReceivedVars: function(group) {
 		var field = group.addField({
 			type: 'Checkbox',
 			name: 'continuous'
@@ -169,5 +209,5 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 			if(val[i].continuous[0] && val[i].continuous[0][0])
 				this.module.getConfiguration().continuous[val[i].name] = true;
 		}
-	}
+	}*/
 }

@@ -1100,7 +1100,7 @@ CI.Type["jcamp"] = {
 				CI.Type.jcamp._id--;
 			}
 	//	}
-		console.log(opts);
+		
 		allspectras[spectraid].plots_color = opts.plotcolor;
   		allspectras[spectraid].continuous = opts.continuous || false;
 

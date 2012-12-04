@@ -485,7 +485,6 @@ BI.Forms.Section.prototype = {
 	
 	getValue: function(section, values) {
 		
-		console.log(section, section.sections.length);
 		for(var i = 0; i < section.sections.length; i++) {
 		
 			if(values[section.sections[i].getName()] == undefined)

@@ -67,24 +67,26 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		'jcamp': function(moduleValue, varname) {
-			var cfgM = this.module.getConfiguration();
-			if(!(cfgM.plotcolor instanceof Array))
-				cfgM.plotcolor = [cfgM.plotcolor];
 
 			CI.RepoHighlight.kill(this.module.id + "_" + varname);
-			var index;
-			if((index = this.colorvars.indexOf(varname)) <= -1) {
-				index = this.colorvars.length;
-				this.colorvars.push(varname);
-			}
-
-			var color = cfgM.plotcolor[index] || 'black';
-				
+			var index;				
 			this._jcampValue = moduleValue;
 			var view = this;
+			var cfgM = this.module.getConfiguration();
+
+			var color = '#000000', continuous = false;
+
+			if(cfgM.plotinfos)
+				for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
+					if(varname == cfgM.plotinfos[i].variable) {
+						color = cfgM.plotinfos[i].plotcolor;
+						continuous = cfgM.plotinfos[i].plotcontinuous;
+					}	
+				}
 			
+
 			var cfg = {
-				continuous: cfgM.continuous ? !!cfgM.continuous[varname] : false, 
+				continuous:  continuous,
 				flipX: cfgM.flipX, 
 				flipY: cfgM.flipY, 
 				plotcolor: color,
