@@ -65,7 +65,8 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 				var atoms = view._molecule.atoms;
 				if(canDoAtomLabels && self._atomLabels) {
 					for(var i = 0, l = self._atomLabels.length; i < l; i++) {
-						atoms[i].altLabel = self._atomLabels[i] == "" ? null : (self._atomLabels[i] || null);
+						if(atoms[i])
+							atoms[i].altLabel = self._atomLabels[i] == "" ? null : (self._atomLabels[i] || null);
 					}
 				} else {
 					this._atomLabels = false;

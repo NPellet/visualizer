@@ -51,13 +51,16 @@ CI.Module.prototype._types.grid.View.prototype = {
 
 		list: function(moduleValue) {
 		
+
+			CI.RepoHighlight.kill(this.module.id);
+/*
 			for(var i = 0; i < this._highlights.length; i++) {
 				if(!this._highlights[i][0])
 					continue;
 				CI.RepoHighlight.unListen(this._highlights[i][0], this._highlights[i][1]);
 			}
 			this._highlights = [];
-
+*/
 			if(!moduleValue)
 				return;
 			var view = this;
@@ -161,7 +164,7 @@ CI.Module.prototype._types.grid.View.prototype = {
 						self.table.highlight(myElement);
 					};
 
-					id = CI.RepoHighlight.listen(source[i]._highlight, execFunc);
+					id = CI.RepoHighlight.listen(source[i]._highlight, execFunc, box.id);
 
 				}
 			}) (element);
