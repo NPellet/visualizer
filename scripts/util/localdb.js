@@ -118,7 +118,7 @@ CI.DB.create = function(type, key, branch) {
 
 	var def = $.Deferred();
 
-	type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
+	type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
 	var trans = CI.DB.db.transaction(type, 'readwrite');
 	var store = trans.objectStore(type);
 	var req = store.put(obj);
@@ -132,7 +132,7 @@ CI.DB.create = function(type, key, branch) {
 CI.DB.storeToHead = function(type, key, branch, obj) {
 	
 	var def = $.Deferred();
-	type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
+	type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
 	var trans = CI.DB.db.transaction(type, 'readwrite');
 	var store = trans.objectStore(type);
 	

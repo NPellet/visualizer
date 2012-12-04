@@ -402,14 +402,14 @@ CI.DataViewHandler.prototype = {
 		var branch = 'Master';
 		$.when(defServer).then(function(server) {
 			// Success
-			var branch = server._name || 'Master';
-			var rev = server._time || 'Head';
-			var saved = server._saved || 0;
+			var branch = server._name || 'Master';
+			var rev = server._time || 'Head';
+			var saved = server._saved || 0;
 
 			// Always compare to the head of the local branch
 			var defLocal = self._getLocalHead(branch);
 			$.when(defLocal).then(function(el) {
-				var savedLocal = el._saved || 0;
+				var savedLocal = el._saved || 0;
 				// Loads the latest file
 				if(savedLocal > saved)
 					doLocal(el);
