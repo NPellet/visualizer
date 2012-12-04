@@ -415,6 +415,8 @@ CI.DataViewHandler.prototype = {
 					doLocal(el);
 				else
 					doServer(server);
+			}, function() {
+				doLocal(el);
 			});
 		}, function(server) {
 			$.when(self._getLocalHead(branch)).then(function(el) {

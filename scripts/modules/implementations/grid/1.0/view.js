@@ -163,12 +163,9 @@ CI.Module.prototype._types.grid.View.prototype = {
 						myElement._highlight = value;
 						self.table.highlight(myElement);
 					};
-
 					id = CI.RepoHighlight.listen(source[i]._highlight, execFunc, false, box.id);
-
 				}
 			}) (element);
-			
 			this._highlights.push([source[i]._highlight, id]);
 			element._source = source[i];
 			arrayToPush.push(element);
@@ -181,7 +178,6 @@ CI.Module.prototype._types.grid.View.prototype = {
 	
 	typeToScreen: {
 		
-	
 	}
 }
 
