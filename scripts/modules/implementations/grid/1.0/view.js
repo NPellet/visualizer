@@ -164,7 +164,7 @@ CI.Module.prototype._types.grid.View.prototype = {
 						self.table.highlight(myElement);
 					};
 
-					id = CI.RepoHighlight.listen(source[i]._highlight, execFunc, box.id);
+					id = CI.RepoHighlight.listen(source[i]._highlight, execFunc, false, box.id);
 
 				}
 			}) (element);
