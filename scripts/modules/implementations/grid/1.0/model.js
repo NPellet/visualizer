@@ -50,6 +50,7 @@ $.extend(CI.Module.prototype._types.grid.Model.prototype, {
 			// It's like that since the data is typed and we know the structure
 			var data = data[0];
 			var jpaths = []; 
+			
 			CI.DataType.getJPathsFromElement(data, jpaths);
 			return jpaths;
 		}
