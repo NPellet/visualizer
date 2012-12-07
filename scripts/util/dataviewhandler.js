@@ -87,8 +87,7 @@ CI.DataViewHandler.prototype = {
 			if(self.currentPath[1] == 'local')
 				all['head'] = self.makeFilename(alldata[branch].head);
 
-			data = data.reverse();
-			for(var i = 0, l = data.length; i < l; i++) {
+			for(var i = data.length - 1; i >= 0; i--) {
 				all[data[i]._time] = self.makeFilename(data[i]);
 			}
 
@@ -605,6 +604,10 @@ CI.DataViewHandler.prototype = {
 	getFromServer: function(data) {
 
 		var url = this.getUrl();
+
+		if(this.type == 'view' && CI.URLs['viewURL'])
+			url = CI.URLs['viewURL'];
+		
 		data.action = 'Load';
 		var self = this;
 		var def = $.Deferred();
