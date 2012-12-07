@@ -608,6 +608,10 @@ CI.DataViewHandler.prototype = {
 		if(this.type == 'view' && CI.URLs['viewURL'])
 			url = CI.URLs['viewURL'];
 		
+
+		if(this.type == 'data' && CI.URLs['dataURL'])
+			url = CI.URLs['dataURL'];
+		
 		data.action = 'Load';
 		var self = this;
 		var def = $.Deferred();
