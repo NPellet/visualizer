@@ -48,20 +48,28 @@ CI.DataViewHandler.prototype = {
 			if(this.currentPath[1] == 'server')
 				return this._getServer().pipe(function(data) {
 					return self._data['server'] = data;
+				}, function() {
+					return false;
 				});
 			else
 				return this._getLocal().pipe(function(data) {
 					return self._data['local'] = data;
+				}, function() {
+					return false;
 				});
 	},
 
 
 	getBranches: function() {
+		var self = this;
 		return $.when(this.getData()).pipe(function(data) {
 			var branches = {};
 
 			for(var i in data) {
-				branches[i] = i + " (" + (data[i].list.length + 1) + ")";
+
+				//i is branch name
+				// data.revisions is all revs || data[i].ist
+				branches[i] = i + " (" + (data[i].list.length + (self.currentPath[1] == 'local' ? 1 : 0)) + ")";
 			}
 			return branches;
 		});
@@ -71,14 +79,18 @@ CI.DataViewHandler.prototype = {
 		var self = this;
 		var branch = this.currentPath[2];
 		return $.when(this.getData()).pipe(function(alldata) {
+
 			data = alldata[branch].list;
 			var all = {};
+
+
+			if(self.currentPath[1] == 'local')
+				all['head'] = self.makeFilename(alldata[branch].head);
+
+			data = data.reverse();
 			for(var i = 0, l = data.length; i < l; i++) {
 				all[data[i]._time] = self.makeFilename(data[i]);
 			}
-
-
-			all['head'] = self.makeFilename(alldata[branch].head);
 
 			return all;
 		});
@@ -109,13 +121,35 @@ CI.DataViewHandler.prototype = {
 	},
 
 	_getServer: function() {
-		return $.get({});
+
+		var def = $.Deferred();
+		$.ajax({
+			url: this.getUrl(),
+			type: 'get',
+			dataType: 'json',
+			data: {action: 'Dir'},
+			success: function(data) {
+
+				for(var i in data) {
+					data[i].list = [];
+					for(var j in data[i].revisions)
+						data[i].list.push({ _time: data[i].revisions[j] });
+				}
+
+				def.resolve(data);
+			},
+
+			error: function() {
+				def.reject();
+			}
+		});
+
+		return def;
 	},
 
 	makeMenu: function(level) {
 		var toOpen = this.structure, self = this;
 		var i = 0;
-
 		// Want to display the top level (server/local)
 		if(level == 1) {
 			toOpen = {'server': 'Server', 'local': 'Local Database'};
@@ -129,26 +163,26 @@ CI.DataViewHandler.prototype = {
 		return $.when(toOpen).pipe(function(toOpen) {
 			// It's still an object
 			if(!(toOpen instanceof Array))
-				return self.objectToMenu(toOpen, level, self.currentPath[level - 1]);
+				return self.objectToMenu(toOpen, level, self.currentPath[level - 1] || null, self.currentPath[level - 2] || null);
 			else
-				return self.arrayToMenu(toOpen, level, self.currentPath[level - 1]);
+				return self.arrayToMenu(toOpen, level, self.currentPath[level - 1] || null, self.currentPath[level - 2] || null);
 		});
 	},
 
-	arrayToMenu: function(array, level, parent) {
+	arrayToMenu: function(array, level, parent, parentParent) {
 
 		var html = '';
 		for(var i = 0, l = array.length; i < l; i++) {
-			html += '<li draggable="false" data-parent="' + parent + '" data-el="' + array[i][1] + '"><a>' + array[i][0] + (level < 3  ? '<ul draggable="false" class="ci-dataview-menu" data-level="' + (level + 1) + '"><li><a>Fetching data...</a></li></ul>' : '') + '</a></li>';
+			html += '<li draggable="false" data-parent-parent="' + parentParent + '" data-parent="' + parent + '" data-el="' + array[i][1] + '"><a>' + array[i][0] + (level < 3  ? '<ul draggable="false" class="ci-dataview-menu" data-level="' + (level + 1) + '"><li><a>Fetching data...</a></li></ul>' : '') + '</a></li>';
 		}
 		return html;
 	},
 
-	objectToMenu: function(object, level, parent) {
+	objectToMenu: function(object, level, parent, parentParent) {
 		
 		var html = '';
 		for(var i in object) {
-			html += '<li draggable="false" data-el="' + i + '" data-parent="' + parent + '"><a>' + object[i] + (level < 3  ? '<ul draggable="false" class="ci-dataview-menu" data-level="' + (level + 1) + '"><li><a>Fetching data...</a></li></ul>' : '') + '</a></li>';
+			html += '<li draggable="false" data-parent-parent="' + parentParent + '" data-el="' + i + '" data-parent="' + parent + '"><a>' + object[i] + (level < 3  ? '<ul draggable="false" class="ci-dataview-menu" data-level="' + (level + 1) + '"><li><a>Fetching data...</a></li></ul>' : '') + '</a></li>';
 		}
 		return html;
 	},
@@ -170,18 +204,16 @@ CI.DataViewHandler.prototype = {
 
 			self.makeMenu(level + 1).then(function(menu) {
 				menu = $(menu);
-
 				$this.find('ul').html(menu).addClass('ci-fetched');
-				
 				if(level + 1 == 3 && self.currentPath[2] == 'head')
 					menu.find('ul').remove();
-
 				self._menu.menu('refresh');
-				
+
 			}, function() {
-				$this.find('ul').html('<li><a>No element here</a></li>').addClass('ci-fetched');
 
+				$this.find('ul').html('<li><a>No element here</a></li>').addClass('ci-fetched');
 				self._menu.menu('refresh');
+
 			});
 			return false;
 		});
@@ -202,6 +234,8 @@ CI.DataViewHandler.prototype = {
 
 	buildDom: function(el) {
 		var html = '<ul draggable="false" class="ci-dataview">';
+
+
 		html += this._buildDomEl(1, this.currentPath[1]); // Local / Server
 		html += this._buildDomEl(2, this.currentPath[2]); // Master / Branch1 / Branch2
 		// Head or not head (handled by makeFilename)
@@ -305,9 +339,23 @@ CI.DataViewHandler.prototype = {
 		var self = this;
 		var i = li.data('el');
 		var branch = li.data('parent');
+		var mode = li.data('parent-parent');
 		
-		if(this.currentPath[1] == 'server') { // fetch head from server
-			this.getFromServer(false);
+		if(mode == 'server') { // fetch head from server
+
+			var data = { branch: branch };
+			if(i !== 'head')
+				data.revision = i;
+
+			this.getFromServer(data).done(function(el) {
+				self.currentPath[1] = 'server';
+				self.currentPath[2] = branch;
+				self.currentPath[3] = i;
+				self.make(el, branch, i);	
+				self._savedServer = JSON.stringify(el);
+				self.onLoaded(el);
+			});
+			
 		} else {
 			$.when(this.getData()).done(function(el) {
 				
@@ -325,6 +373,9 @@ CI.DataViewHandler.prototype = {
 					}
 				}
 
+				self.currentPath[1] = 'local';
+				self.currentPath[2] = branch;
+				self.currentPath[3] = i;
 				self.make(el, branch, i);
 				self._savedLocal = JSON.stringify(el);
 				self.onLoaded(el);
@@ -333,51 +384,13 @@ CI.DataViewHandler.prototype = {
 	
 	},
 
-	getFromServer: function(url) {
-		var self = this;
-		var def = $.Deferred();
-		$.ajax({
-
-			dataType: 'json',
-			type: 'get',
-			url: url,
-			cache: false,
-			success: function(data) {
-				self._savedServer = JSON.stringify(data);
-			//	console.log(self._savedServer);
-				def.resolve(data);
-			},
-			error: function() {
-				/*def.pipe(function() {
-					return self.load(true);
-				});
-*/
-				def.reject();
-			}
-		});
-
-		return def;
-	},
-
-	serverCopy: function(data) {
-		var self = this;
-		var branch = data._name || 'Master';
-		return this._localSave(data, 'head', branch).pipe(function(el) {
-
-			return self.make(el, branch, 'head');
-		});
-	},
-
-	serverPush: function(obj, mode) {
-		return this._saveToServer(obj, mode);
-	},
 
 	load: function(local) {
 
 		var self = this;
 
 		var def = $.Deferred();
-		var defServer = this.getFromServer(CI.URLs[this.type + "URL"])/*.pipe(function(el) {
+		var defServer = this.getFromServer({ branch: 'Master', action: 'Load' })/*.pipe(function(el) {
 			self.currentPath[1] = 'server';
 			self.currentPath[2] = el._name || 'Master';
 			self.currentPath[3] = el._time || 'head';
@@ -451,13 +464,9 @@ CI.DataViewHandler.prototype = {
 		return def;
 	},
 
-	_saveToServer: function(obj, mode) {
 
-		obj._name = mode || 'Master';
-		obj._local = false;
-		obj._saved = Date.now();
-		this._savedServer = JSON.stringify(obj);
-		return $.post(CI.URLs[(this.type == 'view' ? 'saveViewURL' : 'saveDataURL')], { content: this._savedServer });
+	getUrl: function() {
+		return CI.URLs[this.type == 'view' ? 'views' : 'results'];
 	},
 
 	getMonth: function(i) {
@@ -472,8 +481,11 @@ CI.DataViewHandler.prototype = {
 	_days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
 
 
-	/* LOCAL */
-	// Only available from the head !
+
+
+	/************************/
+	/** LOCAL SIDE **********/
+	/************************/
 
 
 	_getLocalHead: function(branch) {
@@ -550,13 +562,12 @@ CI.DataViewHandler.prototype = {
 		this._localSave(data, 'head', data._name || 'Master').done(function(obj) {
 			self.make(obj, self.currentPath[2], self.currentPath[3]);
 		});
-	//	buttons.view.autosaveLocal.enable();
 	},
 
-	saveServer: function(data, name) {
-		
-		return this._saveToServer(data, 'stored', name);
-	},
+
+	/************************/
+	/** SERVER SIDE *********/
+	/************************/
 
 	autosaveServer: function(val, callback, done) {
 		var self = this;
@@ -566,11 +577,72 @@ CI.DataViewHandler.prototype = {
 		if(val)
 			this._autosaveServer = window.setInterval(function() {
 
-				self._saveToServer(callback(), 'head', val.name).done(function() {
+				self._saveToServer(callback()).done(function() {
 					if(done)
 						done();
 				});
 			}, 10000);
+	},
+
+
+	_saveToServer: function(obj) {
+
+		//obj._name = mode || 'Master';
+		obj._local = false;
+		obj._saved = Date.now();
+		obj._time = Date.now();
+
+		this._savedServer = JSON.stringify(obj);
+		return $.ajax({
+			type: 'post',
+			url: this.getUrl(),
+			data: { content: this._savedServer, branch: obj._name, revision: obj._saved, action: 'Save' }
+		});
+	},
+
+
+
+	getFromServer: function(data) {
+
+		var url = this.getUrl();
+		data.action = 'Load';
+		var self = this;
+		var def = $.Deferred();
+		$.ajax({
+
+			dataType: 'json',
+			type: 'get',
+			url: url,
+			cache: false,
+			data: data || {},
+			success: function(data) {
+				self._savedServer = JSON.stringify(data);
+			//	console.log(self._savedServer);
+				def.resolve(data);
+			},
+			error: function() {
+				/*def.pipe(function() {
+					return self.load(true);
+				});
+*/
+				def.reject();
+			}
+		});
+
+		return def;
+	},
+
+	serverCopy: function(data) {
+		var self = this;
+		var branch = data._name || 'Master';
+		return this._localSave(data, 'head', branch).pipe(function(el) {
+
+			return self.make(el, branch, 'head');
+		});
+	},
+
+	serverPush: function(obj) {
+		return this._saveToServer(obj);
 	}
 }
 
@@ -595,6 +667,7 @@ window.onbeforeunload = function() {
 	if(dommessage.data)
 		message.push('The data file has not been saved. If you continue, you will loose your changes');
 	
+	return;
 	if(message.length > 0)
 		return message.join("\n\n");
 }
