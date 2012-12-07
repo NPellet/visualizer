@@ -329,7 +329,7 @@ CI.ConfigVisualizer = function() {
 }
 
 
-configureEntryPoint = function() {
+	configureEntryPoint = function() {
 		var now = Date.now();
 		$("<div />").dialog({ modal: true, width: '80%', title: "Edit Entry Variables"}).biForm({}, function() {
 			
@@ -382,6 +382,7 @@ configureEntryPoint = function() {
 		
 			var data = Entry.getDataFromSource();
 			var jpath = [];
+			
 			CI.DataType.getJPathsFromElement(data, jpath);
 			field.implementation.setOptions(jpath);	
 

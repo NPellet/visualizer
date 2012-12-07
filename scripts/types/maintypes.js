@@ -593,12 +593,13 @@ CI.DataType.getJPathsFromStructure = function(structure, title, jpathspool, keys
 				// Array which length is nown
 				if(!(structure.elements instanceof Array))
 					structure.elements = [structure.elements];
-				var len = structure.elements.length;
+				var len = Math.min(5, structure.elements.length);
 				if(structure.nbElements)
 					len = structure.nbElements;
 
-				for(var i = 0; i < len; i++)
+				for(var i = 0; i < len; i++) {
 					CI.DataType.getJPathsFromStructure(structure.elements[i] || structure.elements[0], i + "", children, keystr);
+				}
 			break;
 		}		
 	} else {
@@ -689,8 +690,6 @@ CI.DataType.getJPathsFromElement = function(element, jpaths) {
 
 	// We know the dynamic structure
 	// Apply to typed elements + to js objects
-
-
 	if(element.structure)
 		CI.DataType.getJPathsFromStructure(element.structure, null, jpaths);	
 	else if(element.type && CI.DataType.Structures[element.type]) {
@@ -702,6 +701,7 @@ CI.DataType.getJPathsFromElement = function(element, jpaths) {
 
 			default:
 			case 'object':
+
 				var structure = CI.DataType.getStructureFromElement(element, structure);
 
 				CI.DataType.getJPathsFromStructure(structure, null, jpaths);
