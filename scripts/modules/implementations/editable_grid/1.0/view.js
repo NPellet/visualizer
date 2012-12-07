@@ -53,6 +53,10 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 
 		list: function(moduleValue) {
 		
+			if(this.disable) {
+				this.disable = false;
+				return;
+			}
 			var colorJPath = this.module.getConfiguration().colorjPath;
 			for(var i = 0; i < this._highlights.length; i++) {
 				if(!this._highlights[i][0])
@@ -88,6 +92,13 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 				onPageChanged: function(newPage) {
 					
 					CI.Util.ResolveDOMDeferred(Table.getDom());
+				},
+
+				onChange: function() {
+
+					var name = view.module.getNameFromRel('list');
+					view.disable = true;
+					CI.API.setSharedVar(name, moduleValue);
 				}
 			});
 			this.table = Table;

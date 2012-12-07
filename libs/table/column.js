@@ -168,12 +168,17 @@ window[_namespaces['table']].Tables.Column.prototype = {
 	},
 
 	edit: function(value, source, object) {
+		var self = this;
 		return this.editableTypes[this.editableType].call(this, value, function(newVal) {
 			CI.DataType.setValueFromJPath(source[0], source[1], newVal);
 			object.searchTerm = newVal;
 			object.oldValue = object.value;
 			object.value = newVal;
 			source[2].hasChanged.call(source[2], object, source[1]);
+
+			self.table.sendBack();
+
+
 		}, this.additional);
 	},
 

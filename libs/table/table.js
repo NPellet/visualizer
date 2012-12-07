@@ -212,5 +212,11 @@ window[_namespaces['table']].Tables.Table.prototype = {
 
 	setModule: function(module) {
 		this.module = module;
+	},
+
+	sendBack: function() {
+		var inst = this;
+		if(typeof inst.options.onChange == "function")
+			inst.options.onChange();
 	}
 }

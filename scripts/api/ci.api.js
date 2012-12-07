@@ -118,3 +118,7 @@ CI.API.doHighlight = function(tagList) {
 
 }
 
+CI.API.setSharedVar = function(name, value) {
+	CI.Repo.set(name, value);
+}
+
