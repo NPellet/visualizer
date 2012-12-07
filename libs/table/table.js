@@ -208,5 +208,9 @@ window[_namespaces['table']].Tables.Table.prototype = {
 
 	exportToTabDelimited: function() {
 		return this.content.exportToTabDelimited();
+	},
+
+	setModule: function(module) {
+		this.module = module;
 	}
 }

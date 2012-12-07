@@ -91,7 +91,8 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 				}
 			});
 			this.table = Table;
-			
+			this.table.setModule(this.module);
+
 			var nbLines;
 			if(nbLines = this.module.getConfiguration().nbLines)
 				Table.setPagination(nbLines);

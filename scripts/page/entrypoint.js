@@ -242,30 +242,23 @@ CI.EntryPoint.prototype = {
 					if(!found)
 						this.entryData.variables.push({ varname: varname, jpath: jpath });
 				}
-			}
-			
+			}	
 		}
-
 			
 		if(typeof this.onLoad == 'function')
 			this.onLoad(this, this.data);
 	},
 	
 	getEntryDataVariables: function() {
-		
-		
-		return this.entryData.variables;		
-		
+		return this.entryData.variables;
 	},
 	
 	setEntryDataVariables: function(vars) {
 		this.entryData.variables = vars;
-		
 		this.loaded();
 	},
 		
 	getDataFromSource: function(child) {
-		
 		if(!child)
 			return this.data;
 		else

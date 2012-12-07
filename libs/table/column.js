@@ -158,9 +158,12 @@ window[_namespaces['table']].Tables.Column.prototype = {
 		obj.oldValue = value;
 		if(this.editableType)
 			obj.displayTerm = this.edit(value, source, obj);
-		else
-			obj.displayTerm = $('<div>' + value + '</div>');
-
+		else {
+			return CI.DataType.toScreen(value, this.table.module).pipe(function(value) {
+				obj.displayTerm = $('<div>' + value + '</div>');
+				return obj;
+			});
+		}
 		return obj;
 	},
 
