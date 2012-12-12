@@ -51,11 +51,13 @@ CI.Module.prototype._types.display_value.View.prototype = {
 				CI.DataType.toScreen(moduleValue, this.module).done(function(val) {
 
 					try {
-						if(cfg.sprintf && cfg.sprintf != "")
+						if(cfg.sprintf && cfg.sprintf != "") {
 							val = sprintf(cfg.sprintf, val);
-						else
+							throw {};
+						} else
 							throw {};
 					} catch(e) {
+						console.error(e);
 						view.fillWithVal(val);
 					}
 				});
