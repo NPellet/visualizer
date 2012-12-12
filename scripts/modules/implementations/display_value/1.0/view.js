@@ -53,11 +53,12 @@ CI.Module.prototype._types.display_value.View.prototype = {
 					try {
 						if(cfg.sprintf && cfg.sprintf != "") {
 							val = sprintf(cfg.sprintf, val);
-							throw {};
-						} else
-							throw {};
+							view.fillWithVal(val);	
+						} else {
+							view.fillWithVal(val);
+						}
+						
 					} catch(e) {
-						console.error(e);
 						view.fillWithVal(val);
 					}
 				});
