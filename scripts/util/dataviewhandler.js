@@ -84,7 +84,7 @@ CI.DataViewHandler.prototype = {
 			var all = {};
 
 
-			if(self.currentPath[1] == 'local')
+			if(self.currentPath[1] == 'local' && alldata[branch].head)
 				all['head'] = self.makeFilename(alldata[branch].head);
 
 			for(var i = data.length - 1; i >= 0; i--) {
@@ -197,6 +197,7 @@ CI.DataViewHandler.prototype = {
 			var ul = $this.parent();
 			var level = ul.data('level');
 			self.currentPath[level] = $this.data('el');
+
 			// Leaf
 			if(level == 3)
 				return;

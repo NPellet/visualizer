@@ -127,6 +127,8 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 
 		'mol2d': function(deferred, moduleValue) {
 			var self = this;
+
+
 			var molLoaded = ChemDoodle.readMOL(moduleValue.value);
 			molLoaded.scaleToAverageBondLength(30);
 			deferred.resolve(molLoaded);
@@ -153,52 +155,40 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 									self._doHighlight(i, true);
 								}
 							}
-
 							if(!inside)
 								self._doHighlight(i, false);
-							
 						} else {
 							var difX = x - molLoaded.atoms[i].x;
 							var difY = y - molLoaded.atoms[i].y;
-							
 							if(Math.pow(Math.pow(difX, 2) + Math.pow(difY, 2), 0.5) < this.specs.atoms_font_size_2D)
 								self._doHighlight(i, true);
 							else
 								self._doHighlight(i, false);
-							
 						}
 					}
 				}
 			});
 
 			CI.RepoHighlight.listen(moduleValue._highlight, function(value, commonKeys) {
+
 				var canvas = self._canvas;
 				var commonKeys2 = {};
 				var atoms = {};
-
-
 				molLoaded._highlights = molLoaded._highlights || {};
-				
-				// commonkeys: ['A', 'B'];
-
 				for(var i = commonKeys.length - 1; i >= 0; i--) {
 					atoms = moduleValue._atoms[commonKeys[i]]; // [0, 1, 15, 12]
 					if(!atoms)
 						continue;
-					
 					for(var j = atoms.length - 1; j >= 0; j--)
 						molLoaded.atoms[atoms[j]].isHover = value;
 				}
-
 				canvas._domcanvas.width = canvas._domcanvas.width; // Erase canvas
 				for(var i = 0; i < molLoaded.atoms.length; i++) {
 					molLoaded.atoms[i].drawChildExtras = true;
 				}
-
-
 				canvas.repaint();
-			}, true);
-		}
+			}, true, this.module.id);
+		}	
 	}
 }
 

@@ -26,6 +26,7 @@ CI.Module.prototype._types.grid.Controller.prototype = {
 	},
 	
 	lineHover: function(element) {
+		
 		var actions;
 		if(!(actions = this.module.definition.dataSend))	
 			return;	
