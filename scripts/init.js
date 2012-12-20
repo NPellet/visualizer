@@ -35,6 +35,13 @@ CI = new Object();
 
 
 
+	var btn = new BI.Buttons.Button('Push view to server', function() {
+		CI.View.serverPush();
+	}, {});
+	
+	$("#visualizer-buttons").append(btn.render());
+
+
 	$("#visualizer-dataviews-button").bind('click', function() {
 
 		if($(this).hasClass('bi-active')) {

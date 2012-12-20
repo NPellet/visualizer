@@ -579,14 +579,23 @@ div.ci-module-display_value div.ci-module-content img {
 }
 
 
-
-#visualizer-dataviews-button {
+#visualizer-buttons {
 	float: right;
-	text-align: center;
-	height: 20px;	
+	
+}
+
+
+#visualizer-buttons > div {
 	padding-top: 2px;
+	float: left;
+	height: 25px;
+	padding-top: 0px;
 	margin-top: 8px;
 	margin-right: 10px;
+}
+
+#visualizer-dataviews-button {
+	
 }
 
 #visualizer-dataviews {
