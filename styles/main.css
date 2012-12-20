@@ -616,6 +616,8 @@ div.ci-module-display_value div.ci-module-content img {
 	box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
 	min-width: 600px;
 	min-height: 150px;
+
+	z-index: 1000;
 	
 }
 
