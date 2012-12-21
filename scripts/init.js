@@ -36,7 +36,7 @@ CI = new Object();
 
 
 	var btn = new BI.Buttons.Button('Push view to server', function() {
-		CI.View.serverPush();
+		CI.View.serverPush(Entry.structure);
 	}, {});
 	
 	$("#visualizer-buttons").append(btn.render());
