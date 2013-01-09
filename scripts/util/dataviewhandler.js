@@ -656,8 +656,6 @@ CI.DataViewHandler.prototype = {
 
 
 
-
-
 window.onbeforeunload = function() {
     var dommessage = { data: false, view: false };
     var data = JSON.stringify(Entry.data);

@@ -116,7 +116,7 @@ CI.EntryPoint = function(options, onLoad) {
 			}) (i);
 		}
 
-		CI.Data = new CI.DataViewHandler(CI.URLs['dataURL']);
+		CI.Data = new CI.DataViewHandler(CI.URLs['results']);
 		CI.Data.setType('data');
 
 		CI.Data.onLoaded = function(data, path) {
@@ -124,7 +124,7 @@ CI.EntryPoint = function(options, onLoad) {
 			doData(data);
 		}
 
-		CI.View = new CI.DataViewHandler(CI.URLs['viewURL']);
+		CI.View = new CI.DataViewHandler(CI.URLs['views']);
 		CI.View.setType('view');
 		CI.View.onLoaded = function(structure, path) {
 			
