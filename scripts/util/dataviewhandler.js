@@ -425,15 +425,18 @@ CI.DataViewHandler.prototype = {
 
 			// Always compare to the head of the local branch
 			var defLocal = self._getLocalHead(branch);
-			$.when(defLocal).then(function(el) {
-				console.log(el);
-				var savedLocal = el._saved || 0;
-				// Loads the latest file
-				console.log('Local time: ' + savedLocal + '; server time:' + saved);
-				if(savedLocal > saved)
-					doLocal(el);
-				else
-					doServer(server);
+			$.when(defLocal).then(function(el) {				
+
+				if(!el._saved) {
+					self.serverCopy(server);
+				} else {
+					// Loads the latest file
+					console.log('Local time: ' + savedLocal + '; server time:' + saved);
+					if(savedLocal > saved)
+						doLocal(el);
+					else
+						doServer(server);
+				}
 			}, function() {
 				doServer(server);
 			});
