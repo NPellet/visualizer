@@ -146,8 +146,11 @@ CI.DB.storeToHead = function(type, key, branch, obj) {
 	var req = store.get(key + ";" + branch);
 	req.onsuccess = function(e) {
 		if(e.target.result) {
-			e.target.result.head = obj;
-			var req2 = store.put(e.target.result);
+			var obj2 = e.target.result;
+
+			obj2.head = obj;
+			
+			var req2 = store.put(obj2);
 			req2.onsuccess = function(e) {
 				def.resolve(obj);
 			}
@@ -199,7 +202,6 @@ CI.DB.store = function(type, key, branch, obj) {
 			obj2.list.push(obj);
 			var req2 = store.put(obj2);
 			req2.onsuccess = function(e) {
-				console.log('Saved');
 				def.resolve(obj);
 			}
 		}
