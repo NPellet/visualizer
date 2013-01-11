@@ -430,6 +430,7 @@ CI.DataViewHandler.prototype = {
 				if(!el._saved) {
 					self.serverCopy(server);
 				} else {
+					var savedLocal = el._saved || 0;					
 					// Loads the latest file
 					console.log('Local time: ' + savedLocal + '; server time:' + saved);
 					if(savedLocal > saved)
