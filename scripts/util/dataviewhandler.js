@@ -431,7 +431,7 @@ CI.DataViewHandler.prototype = {
 					doServer(server);
 					self.serverCopy(server);
 				} else {
-					var savedLocal = el._saved || 0;					
+					var savedLocal = el._saved || 0;					
 					// Loads the latest file
 					
 					if(savedLocal > saved)
