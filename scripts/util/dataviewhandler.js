@@ -428,6 +428,7 @@ CI.DataViewHandler.prototype = {
 			$.when(defLocal).then(function(el) {
 				var savedLocal = el._saved || 0;
 				// Loads the latest file
+				console.log('Local time: ' + savedLocal + '; server time:' + saved);
 				if(savedLocal > saved)
 					doLocal(el);
 				else
