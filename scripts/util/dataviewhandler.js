@@ -271,9 +271,12 @@ CI.DataViewHandler.prototype = {
 
 	bindEventsDom: function(dom) {
 		var self = this;
+
+
 		dom.on('mousedown', 'li', function(e) {
 			var $this = $(this);
 			var pos = $this.position();
+		
 			self.makeMenu($this.data('level')).done(function(menu) {
 				menu = $('<ul draggable="false" class="ci-dataview-menu" data-level="' + $this.data('level') + '"></ul>').append(menu).menu();
 				self._menu = menu;
@@ -284,7 +287,7 @@ CI.DataViewHandler.prototype = {
 					top: pos.top + $this.outerHeight(true)
 				});	
 			});
-		})
+		});
 
 		$(document).on('mouseup', function() {
 			$(".ci-dataview-menu").remove();
@@ -328,6 +331,7 @@ CI.DataViewHandler.prototype = {
 	
 
 		var html = $(this.buildDom(el));
+
 		this.bindEventsDom(html);
 		this.dom.empty().html(html);
 
