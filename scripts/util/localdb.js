@@ -196,8 +196,11 @@ CI.DB.store = function(type, key, branch, obj) {
 		} else {
 			console.log('Branch exists');
 			console.log(e.target.result);
-			e.target.result.list.push(obj);
-			var req2 = store.put(e.target.result);
+			var obj = e.target.result;
+
+			obj.list.push(obj);
+			console.log(obj);
+			var req2 = store.put(obj);
 			req2.onsuccess = function(e) {
 				console.log('Saved');
 				def.resolve(obj);
