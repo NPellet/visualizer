@@ -138,7 +138,7 @@ CI.DataViewHandler.prototype = {
 				def.resolve(data);
 			},
 
-			error: function() {
+			error: function() {
 				def.reject();
 			}
 		});
