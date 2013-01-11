@@ -19,7 +19,7 @@ CI.DB.open = function() {
 	if(CI.DB.db)
 		return def.resolve();
 
-	var req = indexedDB.open('ci', 22);	
+	var req = indexedDB.open('ci', 23);	
 	/*if(req.error)
 		console.warn(req.error);*/
 
