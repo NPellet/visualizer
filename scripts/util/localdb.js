@@ -2,8 +2,6 @@
 
 CI.DB = {};
 CI.DB.open = function() {
-	var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-
 	// In the following line, you should include the prefixes of implementations you want to test.
 	window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 	// DON'T use "var indexedDB = ..." if you're not in a function.
@@ -172,29 +170,36 @@ CI.DB.store = function(type, key, branch, obj) {
 	var def = $.Deferred();
 	type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
 	var trans = CI.DB.db.transaction(type, 'readwrite');
+	console.log(trans);
 	var store = trans.objectStore(type);	
+	console.log(store);
 	var req = store.get(key + ";" + branch);
+
 	req.onsuccess = function(e) {
 
 		if(e.target.result == null) {
-
+			console.log('Need to create branch');
 			// Ok here we have a new branch => Save to the head.
 			CI.DB.create(type, key, branch).done(function(resulted) {
 
 				var trans = CI.DB.db.transaction(type, 'readwrite');
 				var store = trans.objectStore(type);	
-				
+				console.log('Attempt to save');
 				resulted.head = obj;
 				var req2 = store.put(resulted);
 				req2.onsuccess = function(e) {
+					console.log('saved');
 					def.resolve(obj);
 				}
 
 			});
 		} else {
+			console.log('Branch exists');
+			console.log(e.target.result);
 			e.target.result.list.push(obj);
 			var req2 = store.put(e.target.result);
 			req2.onsuccess = function(e) {
+				console.log('Saved');
 				def.resolve(obj);
 			}
 		}
