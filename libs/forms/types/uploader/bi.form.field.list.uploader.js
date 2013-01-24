@@ -72,6 +72,7 @@ $.extend(BI.Forms.Fields.List.Uploader.prototype, {
 			var index = fieldWrapper.index();
 			self.main.changeValue(index, {});
 			self.setValue(index, null)
+			self.fileCount--;
 		});
 
 		zone.addButton(button);
@@ -86,7 +87,7 @@ $.extend(BI.Forms.Fields.List.Uploader.prototype, {
 		+ '<div class="bi-formfield-uploader-description"><label>File description</label><div><input type="text" class="bi-formfield-uploader-filedescr" /></div></div><div class="bi-formfield-spacer"></div>'
 		+ '</div></div>'
 		+ '<div class="bi-formfield-uploader-details bi-formfield-hidden">' +
-		'<div class="bi-formfield-uploader-image"><img class="bi-formfield-uploader-fileimg bi-formfield-hidden" src="http://google.com"></div>' + 
+		'<div class="bi-formfield-uploader-image"><img class="bi-formfield-uploader-fileimg bi-formfield-hidden"></div>' + 
 		zone.render() + 
 		'<div class="bi-spacer"></div></div></div><div class="bi-spacer"></div>').appendTo(fieldWrapper);
 
@@ -109,7 +110,7 @@ $.extend(BI.Forms.Fields.List.Uploader.prototype, {
 			pos = position + 1;
 		}
 
-		var fileCount = 0;
+		self.fileCount = 0;
 
 		new FileUploader({
 			dropZone: zone,
@@ -124,10 +125,11 @@ $.extend(BI.Forms.Fields.List.Uploader.prototype, {
 
 				details.hide();
 				//placeholder.html(file.name)
-				fileCount++;
-				file.uploaderId = fileCount;
-				if(fileCount > 1)
-					field.duplicate();
+				self.fileCount++;
+				file.uploaderId = self.fileCount;
+				
+				if(self.fileCount > 1)
+					self.duplicate();
 
 				progress.attr('value', 0);
 			//	fieldWrapper.addClass('bi-formfield-upload-progress');
@@ -151,6 +153,7 @@ $.extend(BI.Forms.Fields.List.Uploader.prototype, {
 
 				var index = fieldWrapper.index();
 				self.main.changeValue(index, response);
+				console.log(response, 'Uploaded !');
 				self.setValue(index, response)
 				
 			}
@@ -180,14 +183,14 @@ $.extend(BI.Forms.Fields.List.Uploader.prototype, {
 			field.progress.attr('value', 0);
 		} else {
 			var size = this.formatSize(value.size);
-			
+			this.main.changeValue(index, value);
 			field.filename.html(value.fullname);
 			field.filesize.html('(' + size.join(" ") + ')');
 			field.details.show();
 			if(value.type.toLowerCase() == 'image/jpeg' || value.type == 'image/jpg' || value.type == 'image/gif' || value.type == 'image/png')
 				field.fileimage.attr('src', value.srcpath).show();
-			else
-				field.fileimage.hide();
+			else if(value.srcpath)
+				field.fileimage.attr('src', value.srcpath).show();
 		}
 	},
 

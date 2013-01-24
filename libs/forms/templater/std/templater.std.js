@@ -53,7 +53,7 @@ BI.Forms.Templaters.std.prototype = {
 		var groups = section.getFieldGroups();
 		var sections = section.getSections();
 		
-		var html = $('<div class="bi-form-section bi-form-section-lvl-' + lvl + '" data-section-id="' + section.getId() + '" data-section-absid="' + section.getAbsId() + '" ></div>');
+		var html = $('<div class="bi-form-section bi-form-section-lvl-' + lvl + ' ' + (section.isVisible() ? 'bi-visible' : 'bi-hidden') + '" data-section-id="' + section.getId() + '" data-section-absid="' + section.getAbsId() + '" ></div>');
 		
 		if(lvl != this.sectionsTabLvl)
 			html.prepend(section.getForm().getTemplater().buildSectionHeader(section, section.getLevel()));
@@ -96,7 +96,7 @@ BI.Forms.Templaters.std.prototype = {
 			var html = [];
 			var fields = group.getFields();
 			for(var i = 0; i < fields.length; i++) {
-				html.push('<div class="bi-formfield-wrapper">');
+				html.push('<div class="bi-formfield-wrapper' + (group.isVisible() ? 'bi-visible' : 'bi-hidden') + '">');
 				html.push('<label class="bi-formfield-label">');
 				html.push(fields[i].getTitle().getLabel());
 				html.push('</label>');
@@ -111,13 +111,14 @@ BI.Forms.Templaters.std.prototype = {
 		
 		Table: function(group) {
 
-			var html = '<div class="bi-table-groupfield"><table cellpadding="0" cellspacing="0" class="bi-table-groupfield-table"><thead><tr>';
+			var html = '<div class="bi-table-groupfield' + (group.isVisible() ? 'bi-visible' : 'bi-hidden') + '"><table cellpadding="0" cellspacing="0" class="bi-table-groupfield-table"><thead><tr>';
 			var fields = group.getFields();
+			var size = Math.round(94 / fields.length) + "%";
 			html += '<th></th>';
 			for(var i = 0, length = fields.length; i < length; i++) {
 				html += '<th data-field-id="';
 				html += fields[i].getFieldId();
-				html += '">';
+				html += '" width="' + size + '">';
 				html += fields[i].getTitle().getLabel();
 				html += '</th>';
 			}

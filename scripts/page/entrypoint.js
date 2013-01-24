@@ -116,24 +116,31 @@ CI.EntryPoint = function(options, onLoad) {
 			}) (i);
 		}
 
-		CI.Data = new CI.DataViewHandler(CI.URLs['results']);
-		CI.Data.setType('data');
-
-		CI.Data.onLoaded = function(data, path) {
-			
-			doData(data);
+		if(CI.URLs['results']) {
+			CI.Data = new CI.DataViewHandler(CI.URLs['results']);
+			CI.Data.setType('data');
+			CI.Data.onLoaded = function(data, path) {
+				doData(data);
+			}
+			CI.Data.load();
+		} else if(CI.URLs['dataURL']) {
+			$.getJSON(CI.URLs['dataURL'], {}, function(results) {
+				doData(results);
+			});
 		}
 
-		CI.View = new CI.DataViewHandler(CI.URLs['views']);
-		CI.View.setType('view');
-		CI.View.onLoaded = function(structure, path) {
-			
-			doStructure(structure);
+		if(CI.URLs['views']) {
+			CI.View = new CI.DataViewHandler(CI.URLs['views']);
+			CI.View.setType('view');
+			CI.View.onLoaded = function(structure, path) {
+				doStructure(structure);
+			}
+			CI.View.load();
+		} else if(CI.URLs['viewURL']) {
+			$.getJSON(CI.URLs['viewURL'], {}, function(structure) {
+				doStructure(structure);
+			});
 		}
-
-		doGetStructure();
-		doGetData();
-
 	}
 	
 	function doStructure(structure) {
@@ -159,7 +166,7 @@ CI.EntryPoint = function(options, onLoad) {
 			$("#ci-expand-left").trigger('click');
 			
 		$("#ci-header .title").text(structure.configuration.title || 'No title').attr('contenteditable', 'true').bind('keypress', function(e) {
-			if(e.keyCode == 13) { // Enter
+			if(e.keyCode == 13) {
 				e.preventDefault();
 				$(this).trigger('blur');
 				return false;
@@ -182,30 +189,17 @@ CI.EntryPoint = function(options, onLoad) {
 		
 	}
 	
-	function doGetStructure() {
-
-		$.when(CI.View.load()).then(function(el) {
-			doStructure(el);
-		});
-	}
-	
 	this.getStructure = getStructure;
 	function getStructure() {
 		return this.structure;
 	}
 	
 	function doData(page) {
+
 		entryPoint.data = page;
 		entryPoint.loaded();
 	}
 	
-	function doGetData() {
-		var self = this;
-		CI.Data.load().done(function(el) {
-			
-			doData(el);
-		});
-	}
 	init();
 }
 
@@ -259,10 +253,12 @@ CI.EntryPoint.prototype = {
 	},
 		
 	getDataFromSource: function(child) {
+		return this.data;
+		/*
 		if(!child)
 			return this.data;
 		else
-			return this.data[child];
+			return this.data[child];*/
 	},
 	
 	addModuleFromJSON: function(json, addToDefinition) {

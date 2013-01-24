@@ -10,11 +10,12 @@ BI.Forms.Fields.List.Text.prototype = new BI.Forms.Fields.Text();
 BI.Forms.Fields.List.Text.prototype.buildHtml = BI.Forms.FieldGeneric.buildHtml;
 BI.Forms.Fields.List.Text.prototype.addField = function() {
 	var fieldWrapper = $("<div />").addClass('bi-formfield-container');
-	var duplicate = $('<div class="bi-formfield-duplicate"></div>').appendTo(fieldWrapper);
+	var right = $('<div class="bi-formfield-right"></div>').appendTo(fieldWrapper);
+	var duplicate = $('<div class="bi-formfield-duplicate"></div>').appendTo(right);
 	var label = $('<label class="bi-formfield-placeholder"></label>').appendTo(fieldWrapper);
 	var img = $('<img class="bi-formfield-image" />').appendTo(fieldWrapper);
 	var field = $('<input class="bi-formfield-styled" />').appendTo(fieldWrapper);
-	
+
 	var pos = 0;
 	if(typeof position == "undefined")
 		this.main.fieldContainer.append(fieldWrapper);

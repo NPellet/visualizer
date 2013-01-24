@@ -4,8 +4,6 @@ CI.ConfigVisualizer = function() {
 	var vars = Entry.getEntryDataVariables();	
 	var allSharedVars = CI.API.getAllSharedVariables();
 
-	
-	
 	var html = $("<div />");
 	var configurationElement = new CI.ConfMenuSupElement({ title: 'Configuration' });
 
@@ -351,6 +349,7 @@ CI.ConfigVisualizer = function() {
 			
 			var options = [];
 			var data = Entry.getDataFromSource();
+
 			for(var i in data)
 				options.push({title: i, key: i});
 				

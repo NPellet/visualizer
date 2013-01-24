@@ -10,7 +10,7 @@ BI.Forms.Fields.List.Combo = function(main) {
 	this.divs = [];
 	
 	this.optionsIndexed = [];
-	this.options;
+	this.options = {};
 	
 	this._loadedCallback = [];
 }
@@ -49,6 +49,8 @@ $.extend(BI.Forms.Fields.List.Combo.prototype, {
 	},
 	
 	setText: function(index, text) {
+		if(!this.main.fields[index])
+			return;
 		this.main.fields[index].field.html(text);
 	},
 	

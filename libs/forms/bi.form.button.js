@@ -3,8 +3,9 @@ var BI = BI || {};
 BI.Buttons = BI.Buttons || {};
 
 BI.Buttons.Button = function(label, onClick, options) {
-	if(label)
-		this.title = new BI.Title(label);
+	
+	this.title = new BI.Title(label || '');
+
 	if(onClick)
 		this.onClick = onClick;
 	this.color = null;
@@ -30,6 +31,10 @@ BI.Buttons.Button.prototype = {
 	
 	setTitle: function(title) {
 		this.title = title;
+	},
+
+	setLabel: function(label) {
+		this.title.setLabel(label);
 	},
 	
 	setOnClick: function(fct) {
@@ -71,6 +76,10 @@ BI.Buttons.Button.prototype = {
 		return BI.Buttons.Button.prototype._buttons[id];
 	},
 
+	getDom: function() {
+		return $("#button-" + this.id);
+	},
+
 	disable: function() {
 		this.disabled = true;
 		$("#button-" + this.id).addClass('disabled');
@@ -94,4 +103,3 @@ BI.Buttons.Button.prototype = {
 	});
 	
 }) (jQuery);
-

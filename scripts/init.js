@@ -61,41 +61,43 @@ CI = new Object();
 				var dom = $("<div>").attr('id', 'visualizer-dataviews').appendTo('body');
 
 
-				dom.append('<h1>Data</h1>');
+				if(CI.Data) {
+					dom.append('<h1>Data</h1>');
 
-				dom.append(buttons.data.copyToLocal.render());
-				dom.append(buttons.data.localToServer.render());
-				dom.append(buttons.data.snapshotLocal.render());
-				dom.append(buttons.data.autosaveLocal.render());
-				dom.append(buttons.data.branchLocal.render());
-				dom.append(buttons.data.revertLocal.render());
+					dom.append(buttons.data.copyToLocal.render());
+					dom.append(buttons.data.localToServer.render());
+					dom.append(buttons.data.snapshotLocal.render());
+					dom.append(buttons.data.autosaveLocal.render());
+					dom.append(buttons.data.branchLocal.render());
+					dom.append(buttons.data.revertLocal.render());
 
-				var _dom = $('<div class="ci-dataview-path"><label>Data path : </label></div>');
-				dom.append(_dom);
-				var _domel = $("<div />").appendTo(_dom);
-				_domel.append(CI.Data.getDom());
+					var _dom = $('<div class="ci-dataview-path"><label>Data path : </label></div>');
+					dom.append(_dom);
+					var _domel = $("<div />").appendTo(_dom);
+					_domel.append(CI.Data.getDom());
+				}
+
+				if(CI.View) {
+
+					dom.append('<br /><br />');
+					dom.append('<h1>View</h1>');
+
+					dom.append(buttons.view.copyToLocal.render());
+					dom.append(buttons.view.localToServer.render());
+					dom.append(buttons.view.snapshotLocal.render());
+					dom.append(buttons.view.autosaveLocal.render());
+					dom.append(buttons.view.branchLocal.render());
+					dom.append(buttons.view.revertLocal.render());
 
 
-				dom.append('<br /><br />');
-				dom.append('<h1>View</h1>');
-
-				dom.append(buttons.view.copyToLocal.render());
-				dom.append(buttons.view.localToServer.render());
-				dom.append(buttons.view.snapshotLocal.render());
-				dom.append(buttons.view.autosaveLocal.render());
-				dom.append(buttons.view.branchLocal.render());
-				dom.append(buttons.view.revertLocal.render());
-
-
-				var _dom = $('<div class="ci-dataview-path"><label>View path : </label></div>');
-				dom.append(_dom);
-				var _domel = $("<div />").appendTo(_dom);
-				_domel.append(CI.View.getDom());
+					var _dom = $('<div class="ci-dataview-path"><label>View path : </label></div>');
+					dom.append(_dom);
+					var _domel = $("<div />").appendTo(_dom);
+					_domel.append(CI.View.getDom());
+				}
 			} else {
 				dom.show();
 			}
-
-
 		});
 	});
 }) (jQuery);

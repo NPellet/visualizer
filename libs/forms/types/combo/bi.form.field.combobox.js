@@ -99,6 +99,18 @@ BI.Forms.Fields.Combo.prototype = {
 				field.main.changeValue(index, id);
 				field.setText(index, title);
 				field.main.hideExpander();
+
+				var show = ((node.data.data && node.data.data.show) || '').split(' ');
+				for(var i = 0, l = show.length; i < l; i++) {
+					field.main.section.showHideSubSection(show, true);				
+				}
+			},
+
+			onDeactivate: function(node) {
+				var show = ((node.data.data && node.data.data.show) || '').split(' ');
+				for(var i = 0, l = show.length; i < l; i++) {
+					field.main.section.showHideSubSection(show, false);				
+				}
 			},
 			
 			onClick: function() {
@@ -136,8 +148,14 @@ BI.Forms.Fields.Combo.prototype = {
 			options = this.optionsIndexed[index];
 
 		var element = this.lookRecursively(this.main.getValue(index), options);
-		if(element)
+
+		if(element) {
 			this.setText(index, element.title);
+			var show = ((element.data && element.data.show) || '').split(' ');
+			for(var i = 0, l = show.length; i < l; i++) {
+				this.main.section.showHideSubSection(show, true);				
+			}
+		}
 	},
 	
 

@@ -458,6 +458,8 @@ CI.DataViewHandler.prototype = {
 
 			self.make(el, self.currentPath[2], self.currentPath[3]);
 			def.resolve(el);
+
+			self.onLoaded(el);
 		}
 
 
@@ -470,6 +472,8 @@ CI.DataViewHandler.prototype = {
 			self._savedServer = JSON.stringify(el);
 
 			def.resolve(el);
+
+			self.onLoaded(el);
 		}
 		
 		return def;

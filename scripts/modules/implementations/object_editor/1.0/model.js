@@ -7,13 +7,13 @@
  */
 
 
-if(typeof CI.Module.prototype._types.grid_selector == 'undefined')
-	CI.Module.prototype._types.grid_selector = {};
+if(typeof CI.Module.prototype._types.object_editor == 'undefined')
+	CI.Module.prototype._types.object_editor = {};
 
-CI.Module.prototype._types.grid_selector.Model = function(module) { }
+CI.Module.prototype._types.object_editor.Model = function(module) { }
 
-$.extend(CI.Module.prototype._types.grid_selector.Model.prototype, CI.Module.prototype._impl.model);
-$.extend(CI.Module.prototype._types.grid_selector.Model.prototype, {
+$.extend(CI.Module.prototype._types.object_editor.Model.prototype, CI.Module.prototype._impl.model);
+$.extend(CI.Module.prototype._types.object_editor.Model.prototype, {
 	
 	
 	getjPath: function(rel) {

@@ -5,7 +5,7 @@ BI.Forms.Section = function(name, options, title) {
 	this.sectionId, 
 	this.sectionAbsId,
 	this.title, 
-	this.isVisible = true,
+	
 	this.fieldGroups = [];
 	this.sections = [];
 	this.options = $.extend(true, {}, BI.Forms.Section.prototype.defaults, options);
@@ -20,7 +20,8 @@ BI.Forms.Section.prototype = {
 	
 	defaults: {
 		
-		multiple: false
+		multiple: false,
+		visible: true
 		
 	},
 	
@@ -85,8 +86,8 @@ BI.Forms.Section.prototype = {
 		this.controlRemove = header.find('.bi-form-section-remove');
 		
 		this.controlShowHide.bind('click', function() {
-			if(section.isVisible) {
-				section.isVisible = false;
+			if(section.options.visible) {
+				section.options.visible = false;
 				section.domContent.hide();
 
 				header.removeClass('expanded');
@@ -94,7 +95,7 @@ BI.Forms.Section.prototype = {
 				$(this).children().removeClass('triangle-down').addClass('triangle-right');
 				section.showControls(section.getParent());
 			} else {
-				section.isVisible = true;
+				section.options.visible = true;
 				section.domContent.show();
 
 				header.addClass('expanded');
@@ -153,6 +154,18 @@ BI.Forms.Section.prototype = {
 	getDom: function() {
 		return this.dom;
 	},
+
+	show: function() {
+		this.dom.show();
+	},
+
+	hide: function() {
+		this.dom.hide();
+	},
+
+	isVisible: function() {
+		return this.options.visible
+	},
 	
 	getLevel: function() {
 		return this.level;
@@ -166,6 +179,15 @@ BI.Forms.Section.prototype = {
 		return this.name;
 	},
 	
+	showHideSubSection: function(sectionName, show) {
+		
+		for(var i = 0, l = this.sections.length; i < l; i++) {
+			console.log(this.sections[i].getName() + ', ' + sectionName);
+			if(this.sections[i].getName() == sectionName)
+				this.sections[i][show ? 'show' : 'hide']();
+		}
+	},
+
 	addSection: function(section, index) {
 		
 		if(typeof index == "undefined")
@@ -173,7 +195,6 @@ BI.Forms.Section.prototype = {
 		else
 			this.sections.splice(index + 1, 0, section);
 		section.setParentSection(this);
-		section.setForm(this.getForm());
 		section.setId(this.sections.length - 1);
 		section.setLevel(this.getLevel() + 1);
 		section.getForm().addAbsSection(section);
@@ -197,7 +218,7 @@ BI.Forms.Section.prototype = {
 	
 	getParent: function() {
 		
-		if(this.parentSection)
+		if(this.form == undefined)
 			return this.parentSection;
 			
 		return this.form;
@@ -208,7 +229,6 @@ BI.Forms.Section.prototype = {
 	},
 	
 	addFieldGroup: function(fieldGroup) {
-		
 		this.fieldGroups.push(fieldGroup);
 		fieldGroup.setSection(this);
 		this.renumberFieldGroups();
@@ -482,7 +502,6 @@ BI.Forms.Section.prototype = {
 		return groupsByName;
 	},
 	
-	
 	getValue: function(section, values) {
 		
 		for(var i = 0; i < section.sections.length; i++) {
@@ -507,5 +526,35 @@ BI.Forms.Section.prototype = {
 				section.fieldGroups[i].getValue(value);
 			}
 		}
+	},
+	
+	
+	getValueFull: function(section, values) {
+		
+		values.sections = {};
+		values.groups = {};
+		
+		for(var i = 0; i < section.sections.length; i++) {
+		
+			if(values.sections[section.sections[i].getName()] == undefined)
+				values.sections[section.sections[i].getName()] = [];
+			var value = {};
+			values.sections[section.sections[i].getName()].push(value);
+			BI.Forms.Section.prototype.getValueFull(section.sections[i], value);
+		
+		}
+		
+		if(section.fieldGroups) {
+		
+			for(var i = 0; i < section.fieldGroups.length; i++) {
+				if(values.groups[section.fieldGroups[i].getName()] == undefined)
+					values.groups[section.fieldGroups[i].getName()] = [];
+				var value = {};
+				values.groups[section.fieldGroups[i].getName()].push(value);
+				section.fieldGroups[i].getValueFull(value);
+			}
+		}
+		
+		
 	}
 }

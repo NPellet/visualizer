@@ -100,8 +100,15 @@ BI.Forms.Field.prototype = {
 	getValue: function(index) {
 		return this.values[index];		
 	},
-	
 	fillValue: function(valueStack) {
+		var length = this.values.length;
+		for(var i = 0; i < length; i++)
+			valueStack.push(this.values[i]);
+	},
+	
+	
+	fillValueFull: function(valueStack) {
+		
 		var length = this.values.length;
 		for(var i = 0; i < length; i++)
 			valueStack.push(this.values[i]);
@@ -109,6 +116,8 @@ BI.Forms.Field.prototype = {
 	
 	setValue: function(index, value) {
 		this.values[index] = value;
+		if(this.options.onChange)
+			this.options.onChange(index, value);
 	},
 		
 	resetDuplicate: function() {
@@ -169,7 +178,8 @@ BI.Forms.Field.prototype = {
 			field.index = this.fields.length;
 		
 		this.fields.splice(field.index, 0, field);
-		this.values.splice(field.index, 0, "");
+		this.setValue(field.index, "");
+		
 		var input = $('<input type="hidden" />');
 		field.input = input;
 		if(field.index == 0)
@@ -227,6 +237,8 @@ BI.Forms.Field.prototype = {
 			
 		if(!this.isInit)
 			return;
+
+		
 		
 		// Change the value of the input hidden
 		this.fields[index].input.val(value);
@@ -424,6 +436,7 @@ BI.Forms.Field.prototype = {
 	
 	duplicate: function(group) {
 		
+		group = group || this.group;
 		//var field = new BI.Forms[this.implementationLocation].Field(this.options);
 		
 		var field = group.addField(this.options);

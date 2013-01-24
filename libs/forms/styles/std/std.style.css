@@ -1046,3 +1046,7 @@ table.bi-table-groupfield-table span span {
 	width: 90px;
 	padding-top: 5px;
 }
+
+.bi-hidden {
+	display: none;
+}

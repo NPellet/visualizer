@@ -41,6 +41,7 @@ BI.Forms.Fields.Wysiwyg.prototype = {
 	
 	setValue: function(index, value) {
 		var field = this.main.fields[index].field;
+		this.main.changeValue(index, value);
 		field.children().val(value);
 	},
 	
@@ -65,18 +66,18 @@ BI.Forms.Fields.Wysiwyg.prototype = {
 	},
 
 	initField: function(index) {
-
+		
 		var field = this.main.fields[index].field;
 		this.ckinstance = field.children().ckeditor({
 			enterMode : CKEDITOR.ENTER_BR,
-        	shiftEnterMode: CKEDITOR.ENTER_P
+        		shiftEnterMode: CKEDITOR.ENTER_P
 		}).ckeditorGet();
 		
 		var self = this;
 		this.ckinstance.on( 'contentDom', function() {
-            self.ckinstance.document.on( 'keyup', function( event ) {
-            	self.main.changeValue(index, self.ckinstance.getData());
-        	});
+           		 self.ckinstance.document.on( 'keyup', function( event ) {
+            			self.main.changeValue(index, self.ckinstance.getData());
+        		});
 		});
 	},
 	

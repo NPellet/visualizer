@@ -7,14 +7,14 @@
  */
 
 
-if(typeof CI.Module.prototype._types.grid_selector == 'undefined')
-	CI.Module.prototype._types.grid_selector = {};
+if(typeof CI.Module.prototype._types.object_editor == 'undefined')
+	CI.Module.prototype._types.object_editor = {};
 
-CI.Module.prototype._types.grid_selector.View = function(module) {
+CI.Module.prototype._types.object_editor.View = function(module) {
 	this.module = module;
 }
 
-CI.Module.prototype._types.grid_selector.View.prototype = {
+CI.Module.prototype._types.object_editor.View.prototype = {
 	
 	init: function() {	
 		this.domWrapper = $('<div class="ci-display-form"></div>');
@@ -24,49 +24,25 @@ CI.Module.prototype._types.grid_selector.View.prototype = {
 	},
 
 	inDom: function() {
+		var self = this;
 		var cfg = this.module.getConfiguration();
-		var fields = cfg.fields;
-		//fields = fields.fields;
+		var xml = cfg.xml;
 
-
-		var form = $("<div />");
-		this.domWrapper.append(form);
-		form.biForm({}, function() {
-
-			var section = this.addSection(new BI.Forms.Section('main', {}, new BI.Title('Test')));
-			var group = section.addFieldGroup(new BI.Forms.GroupFields.List('group'));
-
-			for(var i = 0, l = fields.length; i < l; i++) {
-				field = group.addField({
-					type: fields[i].fieldtype,
-					title: new BI.Title(fields[i].fieldlabel),
-					name: "field" + i
-				});
-			}
-		}, function() {
-
-			var content = {};
-			for(var i = 0, l = fields.length; i < l; i++) {
-				content["field" + i] = [ 'sdfsdf' ];
-			}
-
-			var fill = {
-				sections: {
-					main: [{
-						groups: {
-							group: [
-								content
-							]
-						}
-					}]
-				}
-			}
-
-			this.fillJson(fill);
+		var xmlTransl = new BI.Forms.xmlBuilder(false, {
+			onFieldChange: function(elJPath, value, index) {
 			
+				if(self.source)
+					CI.DataType.setValueFromJPath(self.source, elJPath, value);
+			}
 		});
+		this.formBuilder = xmlTransl;
 
+		var form = xmlTransl.build($($.parseXML(xml)).children());
+		form.getTemplater().setSectionsTabLvl(10);
+		var formDom = $("<div />");
+		this.domWrapper.append(formDom);
 
+		formDom.biForm(form, function() {}, function() {});
 	},
 	
 	onResize: function() {
@@ -78,10 +54,16 @@ CI.Module.prototype._types.grid_selector.View.prototype = {
 	},
 
 	update2: {
-
 		source: function(moduleValue) {
-			
-			
+			if(!moduleValue)
+				return;
+
+			this.source = moduleValue;
+			var fields = this.formBuilder.getFieldsByJPath();
+			for(var jpath in fields)
+				CI.DataType.getValueFromJPath(moduleValue, jpath).done(function(val) {
+					fields[jpath].implementation.setValue(0, val);
+				});
 		}
 	},
 

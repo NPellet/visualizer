@@ -156,8 +156,10 @@ window[_namespaces['table']].Tables.Table.prototype = {
 	},
 	
 	commitContent: function() {
-		this.content.build();
-		this.addPagination();
+		if(this.content) {
+			this.content.build();
+			this.addPagination();
+		}
 	},
 	
 	init: function(dom) {

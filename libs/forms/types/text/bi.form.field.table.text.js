@@ -45,10 +45,11 @@ BI.Forms.Fields.Table.Text.prototype.startEditing = function(position) {
 		});
 
 		this.input.autocomplete('widget').addClass('bi-form-autocomplete');
+		this.input.autocomplete("search", this.input.val());
 	}
 
 	this.input.focus();
-	this.input.autocomplete("search", this.input.val());
+	
 };
 
 BI.Forms.Fields.Table.Text.prototype.stopEditing = function(position) {

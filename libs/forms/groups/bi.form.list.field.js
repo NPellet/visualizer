@@ -14,6 +14,7 @@ BI.Forms.List.Field.prototype.buildHtml = function() {
 	html.push('<div id="bi-formfield-');
 	html.push(this.fieldIdAbs);
 	html.push('" class="bi-formfield-element bi-formfield-type-');
+	
 	html.push(this.options.type.toLowerCase());
 	html.push('">');
 	html.push('<div class="bi-formfield-vals"></div>');
@@ -56,6 +57,8 @@ BI.Forms.List.Field.prototype.doDuplicateRefresh = function() {
 	var remove = '<span class="bi-formfield-remove">-</span>';
 	
 	for(var i = 0; i < this.fields.length; i++) {
+		if(!this.fields[i].duplicater)
+			continue;
 		this.fields[i].duplicater.empty();
 		if(!this.options.multiple)
 			continue;

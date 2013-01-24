@@ -104,12 +104,13 @@ BI.Forms.Fields.Checkbox.prototype = {
 	
 	
 	setValue: function(index, value) {
+		//console.log(value);
+		//var value = this.main.getValue(index);
 		
 		var stack = this.main.fields[index].field || this.main.fields[index].html;
-
 		if(!value instanceof Array)
 			value = [value];
-			
+		
 		for(var i = 0; i < value.length; i++) {
 			var field = stack.find('input#' + this.main.getFieldId() + '_' + value[i]);
 			if(field.length == 0)

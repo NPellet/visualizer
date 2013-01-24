@@ -8,6 +8,7 @@ BI.Forms.GroupFields.Table = function(name) {
 	this.name = name;
 	this.nbRows = 0;
 	this.fields = [];
+	this.options = {};
 	
 }
 
@@ -40,6 +41,11 @@ BI.Forms.GroupFields.Table.prototype = {
 	
 	getFields: function() {
 		return this.fields;
+	},
+
+
+	isVisible: function() {
+		return this.options.visible
 	},
 	
 	getField: function(fieldName) {
@@ -79,7 +85,7 @@ BI.Forms.GroupFields.Table.prototype = {
 	},
 	
 	afterInit: function() {
-		
+		console.log('Afterinit');
 		var inst = this;
 		this.dom = this.section.getDom().find('[data-group-id=' + this.getId() + ']');
 		
@@ -142,7 +148,8 @@ BI.Forms.GroupFields.Table.prototype = {
 		
 		var width = this.table.width();
 		var ths = this.tableHead.children().children();
-		width -= ths.eq(0).outerWidth() + ths.last().outerWidth();
+		
+		width -= ths.eq(0).outerWidth(true) + ths.last().outerWidth(true);
 		this.fieldsWidth = width;
 		width /= this.fields.length;
 		ths.not(':first,:last').css('width', width + "px");
@@ -195,8 +202,15 @@ BI.Forms.GroupFields.Table.prototype = {
 		
 		for(var i = 0; i < this.fields.length; i++)
 			this.fields[i].removeField(index);
-			
+		
 		this.tableBody.children('tr').eq(index).remove();
+	},
+
+	emptyAllRows: function() {
+
+		var nbRows = this.nbRows;
+		for(var i = 0; i < nbRows; i++)
+			this.removeRow(0);
 	},
 	
 	commitContent: function(data) {
@@ -212,7 +226,7 @@ BI.Forms.GroupFields.Table.prototype = {
 
 	duplicate: function(section) {
 		
-		var group = new BI.Forms.GroupFields.Table(this.name);
+		var group = new BI.Forms.GroupFields.Table();
 		section.addFieldGroup(group);
 		for(var i = 0; i < this.fields.length; i++)
 			var field = this.fields[i].duplicate(group);
@@ -243,6 +257,7 @@ BI.Forms.GroupFields.Table.prototype = {
 	
 	fill: function(group, xml) {
 		
+		this.emptyAllRows();
 		var fieldsByName = [];
 		for(var i = 0; i < group.fields.length; i++)
 			fieldsByName[group.fields[i].getName()] = group.fields[i];
@@ -265,12 +280,14 @@ BI.Forms.GroupFields.Table.prototype = {
 	
 	fillJson: function(json) {
 		
+		
+		this.emptyAllRows();
+		console.log(json);
 		done = false;
 		var fieldsByName = [];
 		for(var i = 0; i < this.fields.length; i++)
 			fieldsByName[this.fields[i].getName()] = this.fields[i];
 		
-
 		for(var i in json) {
 			
 			if(!done) {
@@ -282,7 +299,6 @@ BI.Forms.GroupFields.Table.prototype = {
 			var name = i;
 			
 			var field = fieldsByName[name];		
-			
 			//field.resetDuplicate();
 			for(var j = 0; j < json[i].length; j++)
 				field.implementation.setValue(j, json[i][j]);
@@ -300,5 +316,17 @@ BI.Forms.GroupFields.Table.prototype = {
 			}
 			values.push(rowValue);
 		}
+	},
+	
+	getValueFull: function(values) {
+		
+		for(var j = 0; j < this.fields.length; j++) {
+			/*for(var i = 0; i < this.nbRows; i++) {
+
+			}*/
+			values[this.fields[j].getName()] = [];
+			this.fields[j].fillValueFull(values[this.fields[j].getName()]);
+		}
 	}
+
 }

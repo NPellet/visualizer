@@ -8,6 +8,7 @@ BI.Forms.GroupFields.List = function(name) {
 	
 	this.name = name;
 	this.fields = [];
+	this.options = {};
 	
 }
 
@@ -49,6 +50,11 @@ BI.Forms.GroupFields.List.prototype = {
 	getSection: function() {
 		return this.section;
 	},
+
+
+	isVisible: function() {
+		return this.options.visible
+	},
 	
 	buildHtml: function() {
 		var html = [];
@@ -64,7 +70,7 @@ BI.Forms.GroupFields.List.prototype = {
 		
 		this.dom = this.section.getDom().find('[data-group-id=' + this.getId() + ']');
 		for(var i = 0; i < this.fields.length; i++)
-			this.fields[i].afterInit(i);
+			this.fields[i].afterInit();
 	},
 
 	duplicate: function(section) {
@@ -138,8 +144,10 @@ BI.Forms.GroupFields.List.prototype = {
 
 				field.implementation.setValue(j, json[i][j]);
 			}
+			
 		}
 	},
+	
 	
 	getValue: function(values) {
 		
@@ -148,5 +156,16 @@ BI.Forms.GroupFields.List.prototype = {
 			this.fields[i].fillValue(val);
 			values[this.fields[i].getName()] = val;
 		}
+	},
+	
+	
+	getValueFull: function(values) {
+		
+		for(var i = 0; i < this.fields.length; i++) {
+			var val = [];
+			this.fields[i].fillValueFull(val);
+			values[this.fields[i].getName()] = val;
+		}
 	}
+
 }

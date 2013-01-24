@@ -446,6 +446,9 @@ CI.DataType.SubElements = {
 */	
 
 CI.DataType.getValueIfNeeded = function(element) {
+	if(!element)
+		return;
+	
 	if(element.value && element.type)
 		return element.value;
 	if(element.url && element.type) {

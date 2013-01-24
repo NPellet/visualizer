@@ -25,7 +25,7 @@ BI.Forms.Fields.Table.Textarea.prototype.buildHtml = function(tableWrapper) {
 BI.Forms.Fields.Table.Textarea.prototype.addField = function(position) {
 	var div = $("<div />");
 	this.divs.splice(position, 0, div)
-	this.input = $("<input />");
+	this.input = $("<textarea />");
 	return { html: div, index: position };
 };
 	
@@ -39,9 +39,10 @@ BI.Forms.Fields.Table.Textarea.prototype.startEditing = function(position) {
 };
 
 BI.Forms.Fields.Table.Textarea.prototype.stopEditing = function(position) {
-	this.divs[position].show().html(this.input.text());
+
+	this.divs[position].show().html(this.input.val());
 	this.input.remove();
-	this.main.changeValue(position, this.input.text());
+	this.main.changeValue(position, this.input.val());
 }
 
 BI.Forms.Fields.Table.Textarea.prototype.setValue = function(index, value) {

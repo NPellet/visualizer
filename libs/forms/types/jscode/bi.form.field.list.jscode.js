@@ -35,7 +35,6 @@ BI.Forms.Fields.List.JSCode.prototype.initField = function() {
 	
 	var field = this;
 	var el = this.main.dom.find('.bi-formfield-jseditor');
-	console.log(el.attr('id'));
 	var editor = ace.edit(el.attr('id'));
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/javascript");

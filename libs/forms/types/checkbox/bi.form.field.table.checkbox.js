@@ -26,7 +26,6 @@ $.extend(BI.Forms.Fields.Table.Checkbox.prototype, {
 		var pos = 0;
 		
 		this.domReady = true;
-		this.loadCheckboxes();
 
 
 		return { html: div, index: position };
@@ -34,7 +33,11 @@ $.extend(BI.Forms.Fields.Table.Checkbox.prototype, {
 		//return {index: pos, placeholder: $(), wrapper: fieldWrapper, duplicater: $(), field: field, image: img};
 	},
 	
-	loadCheckboxes: function() {
+	initField: function(index) {
+		this.loadCheckboxes(index);
+	},
+	
+	loadCheckboxes: function(index) {
 		
 		this.checkboxLoaded = true;
 		var fieldId = this.main.getFieldId();
@@ -44,7 +47,6 @@ $.extend(BI.Forms.Fields.Table.Checkbox.prototype, {
 		
 		for(var i in this.options) {
 			fieldAttrId = fieldId + "_" + i;
-			
 			html.push('<input type="checkbox" name="');
 			html.push(this.main.getFieldName(1));
 			html.push('[]" id="');
@@ -65,13 +67,13 @@ $.extend(BI.Forms.Fields.Table.Checkbox.prototype, {
 		this._checkboxContainer.empty().html(html.join(''));
 		
 		var impl = this;
-		this._checkboxContainer.bind('click', 'input', function() {
+		this._checkboxContainer.on('click', 'input', function() {
 			var val = [];
-			impl._checkboxContainer.find('input:checked').each(function() {
+			
+			if($(this).is(':checked'))
 				val.push($(this).data('name'));
-			});
-			// No duplication ==> all at 0 index
-			impl.main.changeValue(0, val);
+			
+			impl.main.changeValue(index, val);
 		});
 	},
 
@@ -86,6 +88,5 @@ $.extend(BI.Forms.Fields.Table.Checkbox.prototype, {
 
 	stopEditing: function(position) {
 	
-	},
-
+	}
 });

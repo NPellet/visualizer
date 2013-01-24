@@ -6,15 +6,15 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  */
 
-if(typeof CI.Module.prototype._types.grid_selector == 'undefined')
-	CI.Module.prototype._types.grid_selector = {};
+if(typeof CI.Module.prototype._types.object_editor == 'undefined')
+	CI.Module.prototype._types.object_editor = {};
 
-CI.Module.prototype._types.grid_selector.Controller = function(module) {
+CI.Module.prototype._types.object_editor.Controller = function(module) {
 	
 	CI.Module.prototype._impl.controller.init(module, this);
 }
 
-CI.Module.prototype._types.grid_selector.Controller.prototype = {
+CI.Module.prototype._types.object_editor.Controller.prototype = {
 	
 	init: function() {
 		var module = this.module;
@@ -57,9 +57,19 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 	
 	doConfiguration: function(section) {
 
+		var group = section.addFieldGroup(new BI.Forms.GroupFields.List('xml'));
+
+		var type = group.addField({
+			type: 'Textarea',
+			name: 'xml',
+			title: new BI.Title('XML')
+		});
+
+		/*
 		var sectionAllFields = section.addSection(new BI.Forms.Section('fields', { multiple: true },  new BI.Title('Fields')), 1);
 		var group = sectionAllFields.addFieldGroup(new BI.Forms.GroupFields.List('fielddetails'));
-
+		*/
+/*
 		var type = group.addField({
 			type: 'Combo',
 			name: 'fieldtype',
@@ -81,7 +91,7 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 		});
 
 		group.addField({
-			type: 'Combo',
+			type: 'Text',
 			name: 'jpath',
 			title: new BI.Title('JPath to edit')
 		});
@@ -102,13 +112,15 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 			title: new BI.Title('Combo option label')
 		});
 
+*/
+
 
 		return true;
 	},
 	
 	doFillConfiguration: function() {
-		var cfg = this.module.getConfiguration().fields || [];
-		var allFields = [], field;
+		var xml = this.module.getConfiguration().xml || '';
+		/*var allFields = [], field;
 
 		for(var i = 0, l = cfg.length; i < l; i++) {
 			field = {};
@@ -123,18 +135,20 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 			field.groups = {};
 			field.groups.fielddetails = [{ fieldtype: [ cfg[i].fieldtype ], fieldlabel: [ cfg[i].fieldlabel ], jpath: [ cfg[i].jpath ] }];
 			field.groups.fieldoptions = [{ combovalue: values, combolabel: labels}]
-		}
+		}*/
 
 		return {	
-			sections: {
-				fields: allFields
+			groups: {
+				xml: [{
+					xml: [xml]	
+				}]
 			}
 		}
 	},
 	
 	doSaveConfiguration: function(confSection) {
 		
-		var cfg = [], field, options;
+		/*var cfg = [], field, options;
 
 		for(var i = 0, l = confSection[0].fields.length; i < l; i++) {
 			field = {};
@@ -147,10 +161,10 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 			options = confSection[0].fields[i].fieldoptions[0];
 			field.options = options;
 					cfg.push(field);
-		}
+		}*/
 
 
-		this.module.getConfiguration().fields = cfg;
+		this.module.getConfiguration().xml = confSection[0].xml[0].xml[0];
 	},
 
 	"export": function() {

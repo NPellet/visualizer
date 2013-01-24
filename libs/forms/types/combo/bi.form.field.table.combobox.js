@@ -12,7 +12,7 @@ BI.Forms.Fields.Table.Combo = function(main) {
 	this.divs = [];
 	
 	this.optionsIndexed = [];
-	this.options;
+	this.options = {};
 	
 	this._loadedCallback = [];
 }

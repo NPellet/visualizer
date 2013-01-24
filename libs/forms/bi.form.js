@@ -199,6 +199,24 @@ BI.Forms.Form.prototype = {
 		return value;
 	},
 	
+	getValueFull: function() {
+		var value = {sections: {}, groups: {}};
+		
+		for(var i = 0; i < this.sections.length; i++) {
+			
+			if(!value.sections[this.sections[i].getName()])
+				value.sections[this.sections[i].getName()] = [];
+				
+			var sectionValue = {};
+			value.sections[this.sections[i].getName()].push(sectionValue);
+			
+			BI.Forms.Section.prototype.getValueFull(this.sections[i], sectionValue);
+		}
+		
+		return value;
+		
+	},
+	
 	addButtonZone: function() {
 		this.buttonZone = new BI.Buttons.Zone();
 		this.buttonZone.setAlignment('right');
@@ -212,19 +230,25 @@ BI.Forms.Form.prototype = {
 	$.fn.biForm = function(options, onLoad, afterInit) {
 		return this.each(function() {
 			var dom = this;
-			var form = new BI.Forms.Form(options, function() {
-				
-				
-				if(typeof onLoad == "function")
-					onLoad.call(this);
-				this.init(dom);
-				this.afterInit();
-				
-				if(typeof afterInit == "function")
-					afterInit.call(this);
 
-				this.getTemplater().afterInit();
-			});
+			function callback(form) {
+				if(typeof onLoad == "function")
+					onLoad.call(form);
+
+				form.init(dom);
+				form.afterInit();
+				if(typeof afterInit == "function")
+					afterInit.call(form);
+				form.getTemplater().afterInit();
+			}
+
+			if(options instanceof BI.Forms.Form) {
+				callback(options);
+			} else {
+				var form = new BI.Forms.Form(options, function() {
+					callback(this);
+				});
+			}
 		});
 	}
 	
