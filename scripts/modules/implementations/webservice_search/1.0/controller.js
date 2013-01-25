@@ -81,6 +81,13 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 		field.setTitle(new BI.Title('Search URL'));
 
 
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'jpatharray'
+		});
+		field.setTitle(new BI.Title('JPath to array'));
+
+
 
 		var groupfield = new BI.Forms.GroupFields.Table('cols');
 
@@ -121,6 +128,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 				
 				cfg: [{
 					url: [this.module.getConfiguration().url]
+					jpatharray: [this.module.getConfiguration().jpatharray]
 				}],
 
 				cols: [{
@@ -138,6 +146,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 			cols[group[i].coltitle] = { jpath: group[i].coljpath };
 		this.module.getConfiguration().colsjPaths = cols;
 		this.module.getConfiguration().url = confSection[0].cfg[0].url[0];
+		this.module.getConfiguration().jpatharray = confSection[0].cfg[0].jpatharray[0];
 	},
 
 	"export": function() {
