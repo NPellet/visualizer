@@ -127,7 +127,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 			groups: {
 				
 				cfg: [{
-					url: [this.module.getConfiguration().url]
+					url: [this.module.getConfiguration().url],
 					jpatharray: [this.module.getConfiguration().jpatharray]
 				}],
 
