@@ -73,17 +73,17 @@ CI.Module.prototype._types.webservice_search.View.prototype = {
 
 	onSearchDone: function(elements) {
 		var self = this;
-		CI.DataType.getValueFromJPath(elements, this.module.getConfiguration().jpatharray).done(function() {
+		CI.DataType.getValueFromJPath(elements, this.module.getConfiguration().jpatharray).done(function(results) {
 
 			if(!self.table)
 				return;
 
 			var Content = new CI.Tables.Content();		
-			for(var i = 0, length = elements.length; i < length; i++) {
-				var row = new CI.Tables.Row(elements[i], self.table);
+			for(var i = 0, length = results.length; i < length; i++) {
+				var row = new CI.Tables.Row(results[i], self.table);
 				Content.addRow(row);
 			}
-			self.elements = elements;
+			self.elements = results;
 			self.table.setContent(Content);
 			CI.Util.ResolveDOMDeferred(self.table.getDom());
 			self.table.commitContent();			
