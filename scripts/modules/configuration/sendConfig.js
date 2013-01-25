@@ -17,7 +17,8 @@ $(document).bind('configModule', function(event, module) {
 		
 		var field = groupfield.addField({
 			type: 'Text',
-			name: 'moduletitle'
+			name: 'moduletitle',
+			multiple: true
 		});
 		field.setTitle(new BI.Title('Module title'));
 		
