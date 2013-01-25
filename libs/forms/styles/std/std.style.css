@@ -290,7 +290,11 @@ textarea.bi-formfield-styled {
 }
 
 div.bi-formfield-styled {
-	padding-top: 5px;
+	padding-left: 10px;
+}
+
+input.bi-formfield-styled {
+	text-indent: 5px;
 }
 
 
@@ -1050,3 +1054,62 @@ table.bi-table-groupfield-table span span {
 .bi-hidden {
 	display: none;
 }
+
+
+
+.bi-form-section-content * {
+	font-size: 10pt;
+}
+
+.bi-formfield-styled {
+	
+	border: 1px solid #dadada;
+	box-shadow: 0px 1px 1px rgba(100, 100, 100, 0.05);
+	padding-left: 10px;
+	text-shadow: none;/*1px 1px 0px rgba(255, 255, 255, 1);*/
+	color: #333333;
+	font-size: 10pt;
+	padding-top: 4px;
+	padding-bottom: 3px;
+		
+	background: #fefefe; /* Old browsers */
+	background: -moz-linear-gradient(top, #fefefe 0%, #f7f7f7 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefefe), color-stop(100%,#f7f7f7)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #fefefe 0%,#f7f7f7 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #fefefe 0%,#f7f7f7 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #fefefe 0%,#f7f7f7 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #fefefe 0%,#f7f7f7 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#f7f7f7',GradientType=0 ); /* IE6-9 */
+
+
+	letter-spacing: 0.07em;
+	
+	padding-right: 55px;
+	
+	height: 25px;
+	width: 100%;
+	-moz-box-sizing:    border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing:         border-box;
+	
+	border-radius: 0px !important;
+	border-bottom-width: 0px;
+
+	padding: 3px;
+	line-height: 19px;
+	font-family: "Helvetica Neue", Helvetica, Arial, Serif;
+	
+}
+
+
+.bi-formfield-duplicate {
+	display: none;
+}
+
+.bi-formfield-expand, .bi-table-groupfield div.dom-expander {
+
+	background-color: #f7f7f7;
+	border-color: #dadada;
+	
+}
+
