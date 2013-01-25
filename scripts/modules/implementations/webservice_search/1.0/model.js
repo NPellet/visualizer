@@ -16,4 +16,11 @@ $.extend(CI.Module.prototype._types.webservice_search.Model.prototype, CI.Module
 $.extend(CI.Module.prototype._types.webservice_search.Model.prototype, {
 
 	
+
+		getjPath: function(rel, accepts) {
+			return {};
+		}
+
+
+	
 });

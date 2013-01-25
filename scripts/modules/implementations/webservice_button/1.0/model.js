@@ -15,5 +15,10 @@ CI.Module.prototype._types.webservice_button.Model = function(module) { }
 $.extend(CI.Module.prototype._types.webservice_button.Model.prototype, CI.Module.prototype._impl.model);
 $.extend(CI.Module.prototype._types.webservice_button.Model.prototype, {
 
+
+		getjPath: function(rel, accepts) {
+			return {};
+		}
+
 	
 });
