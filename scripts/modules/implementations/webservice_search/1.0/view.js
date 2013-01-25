@@ -72,19 +72,22 @@ CI.Module.prototype._types.webservice_search.View.prototype = {
 	},
 
 	onSearchDone: function(elements) {
+		var self = this;
+		CI.DataType.getValueFromJPath(elements, this.module.getConfiguration().jpatharray).done(function() {
 
-		if(!this.table)
-			return;
+			if(!self.table)
+				return;
 
-		var Content = new CI.Tables.Content();		
-		for(var i = 0, length = elements.length; i < length; i++) {
-			var row = new CI.Tables.Row(elements[i], this.table);
-			Content.addRow(row);
-		}
-		this.elements = elements;
-		this.table.setContent(Content);
-		CI.Util.ResolveDOMDeferred(this.table.getDom());
-		this.table.commitContent();
+			var Content = new CI.Tables.Content();		
+			for(var i = 0, length = elements.length; i < length; i++) {
+				var row = new CI.Tables.Row(elements[i], self.table);
+				Content.addRow(row);
+			}
+			self.elements = elements;
+			self.table.setContent(Content);
+			CI.Util.ResolveDOMDeferred(self.table.getDom());
+			self.table.commitContent();			
+		});
 	},
 
 	getDom: function() {
