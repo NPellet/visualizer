@@ -23,12 +23,10 @@ CI.Module.prototype._types.webservice_search.View.prototype = {
 		this.domtable = $('<div class="Table"></div>');
 		this.dom.append(this.search).append(this.domtable);
 		this.module.getDomContent().html(this.dom);
-		
 		this.search.children().bind('keyup', function() {
 			var searchTerm = $(this).val();
-			
 			var url = self.module.getConfiguration().url;
-			$.getJSON(url, {search: searchTerm }, function(data) {
+			$.getJSON(url.replace('%TERM%', searchTerm), {}, function(data) {
 				self.onSearchDone(data);
 			});
 		});
