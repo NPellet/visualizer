@@ -31,8 +31,10 @@ CI.Module.prototype._types.grid.Controller.prototype = {
 		if(!(actions = this.module.definition.dataSend))	
 			return;	
 		for(var i = 0; i < actions.length; i++)
-			if(actions[i].event == "onHover")
+			if(actions[i].event == "onHover") {
+				CI.API.blankSharedVar(actions[i].name);
 				CI.API.setSharedVarFromJPath(actions[i].name, element, actions[i].jpath);
+			}
 		
 		CI.RepoHighlight.set(element._highlight, 1);
 	},
@@ -50,6 +52,7 @@ CI.Module.prototype._types.grid.Controller.prototype = {
 		for(var i = 0; i < actions.length; i++) {
 			if(actions[i].event == "onSelect") {
 				(function(element, actionName, jpath) {
+					CI.API.blankSharedVar(actionName);
 					CI.API.setSharedVarFromJPath(actionName, element, jpath);
 				}) (element, actions[i].name, actions[i].jpath)
 			}
