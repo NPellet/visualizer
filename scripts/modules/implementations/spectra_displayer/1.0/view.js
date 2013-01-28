@@ -40,7 +40,8 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 	},
 
 	blank: function() {
-		this.dom.html("");
+
+		this.dom.get(0).width = this.dom.get(0).width;
 	},
 
 	update2: { 
@@ -67,6 +68,10 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		'jcamp': function(moduleValue, varname) {
+
+			
+			if(moduleValue == "")
+				return this.blank();
 
 			CI.RepoHighlight.kill(this.module.id + "_" + varname);
 			var index;				
