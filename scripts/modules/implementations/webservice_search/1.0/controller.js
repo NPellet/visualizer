@@ -17,55 +17,68 @@ CI.Module.prototype._types.webservice_search.Controller = function(module) {
 CI.Module.prototype._types.webservice_search.Controller.prototype = {
 	
 	
-	init: function() { },
+	init: function() { 
+		this.searchTerms = {};
+	},
 	
-	onClick: function() {
-		
-		var actions;
-		if(!(actions = this.module.definition.dataSend))	
-			return;
-				
-		for(var i = 0; i < actions.length; i++) {
-			if(actions[i].event == "onSelect") {
-				(function(element, actionName, jpath) {
-					CI.API.setSharedVarFromJPath(actionName, element, jpath);
-				}) (element, actions[i].name, actions[i].jpath)
-			}
+	doSearch: function(name, val) {
+		var self = this;
+		this.searchTerms[name] = val;
+		var url = this.module.getConfiguration().url;
+		for(var i in this.searchTerms) {
+			url = url.replace('<' + i + '>', this.searchTerms[i]);
 		}
-		
+
+		$.getJSON(url, {}, function(data) {
+			self.onSearchDone(data);
+		});
+	},
+
+
+	onSearchDone: function(elements) {
+		var self = this;
+		CI.DataType.getValueFromJPath(elements, this.module.getConfiguration().jpatharray).done(function(results) {
+
+			var actions;
+			if(!(actions = self.module.definition.dataSend))	
+				return;
+					
+			for(var i = 0; i < actions.length; i++) {
+				if(actions[i].event == "onSearchReturn") {
+					(function(element, actionName, jpath) {
+						CI.API.setSharedVarFromJPath(actionName, element, jpath);
+					}) (results, actions[i].name, '');
+				}
+			}
+
+		});
 	},
 
 	configurationSend: {
 
 		events: {
 
-			onSelect: {
-				label: 'Select a line',
-				description: 'Click on a line to select it'
-			},
-			
-			onHover: {
-				label: 'Hovers a line',
-				description: 'Pass the mouse over a line to select it'
+			onSearchReturn: {
+				label: 'A search has been completed',
+				description: ''
 			}
+			
 		},
 		
 		rels: {
-			'element': {
-				label: 'Row',
-				description: 'Returns the selected row in the list'
+			'results': {
+				label: 'Results',
+				description: ''
 			}
 		}
 	},
-	
-	
 	
 	configurationReceive: {
 
 	},
 	
 	moduleInformations: {
-		moduleName: 'Webservice Search'
+		moduleName: 'Webservice Lookup'
 	},
 
 	
@@ -89,36 +102,34 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 
 
 
-		var groupfield = new BI.Forms.GroupFields.Table('cols');
+		var groupfield = new BI.Forms.GroupFields.Table('searchparams');
 
 		section.addFieldGroup(groupfield);
 		
 		var field = groupfield.addField({
 			type: 'Text',
-			name: 'coltitle'
+			name: 'name'
 		});
-		field.setTitle(new BI.Title('Columns title'));
+		field.setTitle(new BI.Title('Term name'));
 		
 		var field = groupfield.addField({
 			type: 'Text',
-			name: 'coljpath'
+			name: 'label'
 		});
 		
-		field.setTitle(new BI.Title('Value jPath'));
+		field.setTitle(new BI.Title('Term label'));
 		
-
-
 		return true;
 	},
 	
 	doFillConfiguration: function() {
 		
-		var cols = this.module.getConfiguration().colsjPaths;
-		var titles = [];
-		var jpaths = [];
-		for(var i in cols) {
-			titles.push(i);
-			jpaths.push(cols[i].jpath);
+		var searchparams = this.module.getConfiguration().searchparams;
+		var names = [];
+		var labels = [];
+		for(var i in searchparams) {
+			names.push(i);
+			labels.push(searchparams[i]);
 		}
 
 
@@ -131,20 +142,20 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 					jpatharray: [this.module.getConfiguration().jpatharray]
 				}],
 
-				cols: [{
-					coltitle: titles,
-					coljpath: jpaths
+				searchparams: [{
+					name: names,
+					label: labels
 				}]
 			}
 		}
 	},
 	
 	doSaveConfiguration: function(confSection) {
-		var group = confSection[0].cols[0];
-		var cols = {};
+		var group = confSection[0].searchparams[0];
+		var searchparams = {};
 		for(var i = 0; i < group.length; i++)
-			cols[group[i].coltitle] = { jpath: group[i].coljpath };
-		this.module.getConfiguration().colsjPaths = cols;
+			searchparams[group[i].name] = group[i].label;
+		this.module.getConfiguration().searchparams = searchparams;
 		this.module.getConfiguration().url = confSection[0].cfg[0].url[0];
 		this.module.getConfiguration().jpatharray = confSection[0].cfg[0].jpatharray[0];
 	},
