@@ -82,7 +82,7 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 
 		var field = groupfield.addField({
 			type: 'Text',
-			name: 'sprintf'
+			name: 'printf'
 		});
 		field.setTitle(new BI.Title('Printf'));
 	
@@ -98,8 +98,8 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 		var titles = [], jpaths = [], printf = [];
 		for(var i in keys) {
 			titles.push(i);
-			jpaths.push(keys[i].key);
-			printf.push(keys[i].printf);
+			jpaths.push(keys[i].key || null);
+			printf.push(keys[i].printf || null);
 		}
 
 		return {
