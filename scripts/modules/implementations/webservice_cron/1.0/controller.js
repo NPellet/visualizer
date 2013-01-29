@@ -72,13 +72,15 @@ CI.Module.prototype._types.webservice_crontab.Controller.prototype = {
 
 		if(type == 'get') {
 			ajax.success = function(data) {
-					self.module.view.log(true, variable);
+				CI.API.setSharedVar(variable, data);
+				self.module.view.log(true, variable);
 			}
 			ajax.method = 'get';
 			ajax.type = 'get';
 
 		} else {
 			ajax.success = function(data) {
+				CI.API.setSharedVar(variable, data);
 				self.module.view.log(true, variable);	
 			}
 			var variable = CI.Repo.get(variable);
@@ -139,16 +141,16 @@ CI.Module.prototype._types.webservice_crontab.Controller.prototype = {
 		section.addFieldGroup(groupfield);
 		
 		var field = groupfield.addField({
-			type: 'Combo',
+			type: 'Text',
 			name: 'variable'
 		});
 		field.setTitle(new BI.Title('Variable'));
-		var objs = [];
-		for(var i in CI.API.getAllSharedVariables()) {
+//		var objs = [];
+		/*for(var i in CI.API.getAllSharedVariables()) {
 			objs.push({key: i, title: i});
 		}
 		field.implementation.setOptions(objs);
-
+*/
 		var field = groupfield.addField({
 			type: 'Combo',
 			name: 'type'
@@ -171,6 +173,8 @@ CI.Module.prototype._types.webservice_crontab.Controller.prototype = {
 		
 		return true;
 	},
+
+
 	
 	doFillConfiguration: function() {
 		
