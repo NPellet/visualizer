@@ -18,7 +18,7 @@ $.extend(CI.Module.prototype._types.webservice_search.Model.prototype, {
 	
 
 		getjPath: function(rel, accepts) {
-			return {};
+			return [{title: "Blah", key:"sodfh"},{title:"Blah2", key:"abcd"}];
 		}
 
 
