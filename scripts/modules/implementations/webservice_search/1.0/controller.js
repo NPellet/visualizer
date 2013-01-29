@@ -47,7 +47,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 			if(actions[i].event == "onSearchReturn") {
 				(function(elements, actionName, jpath) {
 					CI.API.setSharedVarFromJPath(actionName, elements, jpath);
-				}) (elements, actions[i].name, '');
+				}) (elements, actions[i].name, actions[i].jpath);
 			}
 		}
 	},
