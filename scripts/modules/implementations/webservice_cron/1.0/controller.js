@@ -6,58 +6,101 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  */
 
-if(typeof CI.Module.prototype._types.webservice_button == 'undefined')
-	CI.Module.prototype._types.webservice_button = {};
+if(typeof CI.Module.prototype._types.webservice_crontab == 'undefined')
+	CI.Module.prototype._types.webservice_crontab = {};
 
-CI.Module.prototype._types.webservice_button.Controller = function(module) {
+CI.Module.prototype._types.webservice_crontab.Controller = function(module) {
 	
 	CI.Module.prototype._impl.controller.init(module, this);
 }
 
-CI.Module.prototype._types.webservice_button.Controller.prototype = {
+CI.Module.prototype._types.webservice_crontab.Controller.prototype = {
 	
-	
-	init: function() { },
-	
-	onClick: function() {
+	init: function() {
+		this.timeout = [];
+		this.doVariables();
+	},
+
+	doVariables: function() { 
+
+		this.clearTimeouts();
+		
 		var self = this;
-		var cfg = this.module.getConfiguration().variables, variable, type, url;
+		var cfg = this.module.getConfiguration().variables, variable, type, time;
+
+		if(!cfg)
+			return;
+
 		for(var i = 0, l = cfg.length; i < l; i++) {
 			variable = cfg[i].variable;
 			type = cfg[i].type;
+			time = cfg[i].repeat;
+			url = cfg[i].url;
 
-			(function(type, variable) {
-				var ajax = {
-					url: cfg[i].url,
-					dataType: 'json'
-				};
-
-				if(type == 'get') {
-					ajax.success = function(data) {
-						CI.Repo.set(variable, data);
-						self.module.view.buttonUpdate(true);
-					}
-					ajax.method = 'get';
-					ajax.type = 'get';
-
-				} else {
-					ajax.success = function(data) {
-						self.module.view.buttonUpdate(true);
-					}
-console.log(CI.Repo.get(variable)[1]);
-					ajax.data = {data: CI.Repo.get(variable)[1] };
-					ajax.method = 'post';
-					ajax.type = 'post';
-				}
-
-				ajax.error = function() {
-					self.view.buttonUpdate(false);
-				}
-
-				$.ajax(ajax);
-
-			}) (type, variable);
+			this.setTimeout(type, variable, time, url);
 		}
+	},
+
+	clearTimeouts: function() {
+
+		for(var i = 0, l = this.timeout.length; i < l; i++) {
+			if(this.timeout[i])
+				window.clearTimeout(this.timeout[i]);
+			this.timeout[i] = false;
+		}
+	},
+
+	setTimeout: function(type, variable, time, url) {
+		if(this.timeout[variable]) {
+			window.clearTimeout(this.timeout[variable]);
+			this.timeout[variable] = false;
+		}
+
+		var self = this;
+		window.setTimeout(function() {
+			self.doAjax(type, variable, time, url);
+		}, time * 1000);
+	},
+
+	doAjax: function(type, variable, time, url) {
+		var self = this;
+		var cfg = this.module.getConfiguration().variables
+		var ajax = {
+			url: url,
+			dataType: 'json'
+		};
+
+		if(type == 'get') {
+			ajax.success = function(data) {
+					self.module.view.log(true, variable);
+			}
+			ajax.method = 'get';
+			ajax.type = 'get';
+
+		} else {
+			ajax.success = function(data) {
+				self.module.view.log(true, variable);	
+			}
+			var variable = CI.Repo.get(variable);
+			if(!variable)
+				return;
+
+			ajax.data = {data: variable[1] };
+			ajax.method = 'post';
+			ajax.type = 'post';
+		}
+
+		ajax.complete = function() {
+
+			self.setTimeout(type, variable, time, url);
+		}
+
+		ajax.error = function() {
+			self.module.view.log(false, variable);
+			
+		}
+
+		$.ajax(ajax);
 	},
 
 	configurationSend: {
@@ -76,7 +119,7 @@ console.log(CI.Repo.get(variable)[1]);
 	},
 	
 	moduleInformations: {
-		moduleName: 'Webservice Button'
+		moduleName: 'Webservice Crontab'
 	},
 
 	
@@ -120,6 +163,12 @@ console.log(CI.Repo.get(variable)[1]);
 		field.setTitle(new BI.Title('URL'));
 		
 
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'repeat'
+		});
+		field.setTitle(new BI.Title('Repetition time (s)'));
+		
 		return true;
 	},
 	
@@ -127,11 +176,12 @@ console.log(CI.Repo.get(variable)[1]);
 		
 		var cfg = this.module.getConfiguration().variables;
 		
-		var variables = [], types = [], url = [];
+		var variables = [], types = [], url = [], repeat = [];
 		for(var i in cfg) {
 			variables.push(cfg[i].variable);
 			types.push(cfg[i].type);
 			url.push(cfg[i].url);
+			repeat.push(cfg[i].repeat);
 		}
 
 		return {	
@@ -145,7 +195,8 @@ console.log(CI.Repo.get(variable)[1]);
 				varcfg: [{
 					variable: variables,
 					type: types,
-					url: url
+					url: url,
+					repeat: repeat
 				}]
 			}
 		}
@@ -154,12 +205,13 @@ console.log(CI.Repo.get(variable)[1]);
 	doSaveConfiguration: function(confSection) {
 		var group = confSection[0].varcfg[0];
 		var vars = [];
-		for(var i = 0; i < group.length; i++)
-			vars.push({ variable: group[i].variable, type: group[i].type, url: group[i].url });
+		for(var i = 0; i < group.length; i++) {
+			vars.push({ variable: group[i].variable, type: group[i].type, url: group[i].url, repeat: group[i].repeat });
+		}
 	
 		this.module.getConfiguration().variables = vars;
 		this.module.getConfiguration().label = confSection[0].cfg[0].label[0];
-
+		this.doVariables();
 	},
 
 	"export": function() {

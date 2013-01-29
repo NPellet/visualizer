@@ -7,53 +7,30 @@
  */
 
 
-if(typeof CI.Module.prototype._types.webservice_cron == 'undefined')
-	CI.Module.prototype._types.webservice_cron = {};
+if(typeof CI.Module.prototype._types.webservice_crontab == 'undefined')
+	CI.Module.prototype._types.webservice_crontab = {};
 
-CI.Module.prototype._types.webservice_cron.View = function(module) {
+CI.Module.prototype._types.webservice_crontab.View = function(module) {
 	this.module = module;
 }
 
-CI.Module.prototype._types.webservice_cron.View.prototype = {
+CI.Module.prototype._types.webservice_crontab.View.prototype = {
 	
 	init: function() {	
 		var self = this;
 		this.dom = $('<div></div>');
-		var button = new BI.Buttons.Button(this.module.getConfiguration().label || '', function() {
-			self.buttonUpdate();
-			self.module.controller.onClick();
-		});
-
 		this.module.getDomContent().html(this.dom);
-		this.dom.html(button.render());
-		this.button = button;
 	},
 
-	buttonUpdate: function(el) {
-
-		if(el == true) {
-			this.currentNumber++;
-		} else if(el == false) {
-
-		} else {
-			this.currentNumber = 0;
-		}
-
-		var total = this.module.getConfiguration().variables.length;
-
-		if(this.currentNumber == total) {
-			var d = new Date();
-			var str = d.getHours() + ":" + d.getMinutes();
-		} else
-			var str = this.currentNumber + " / " + total;
-
-		this.button.getDom().html((this.module.getConfiguration().label || '') + " (" + str + ")");
+	log: function(success, variable) {
+		var time = new Date();
+		this.dom.append('<div>[' + time.toLocaleString() + '] - ' + (success ? 'Ok' : 'Error') + '; Variable: ' + variable + '</div>')
 	},
-
 
 	inDom: function() {},
 	
 	onResize: function() {
+
 	},
 	
 	blank: function() {

@@ -7,13 +7,13 @@
  */
 
 
-if(typeof CI.Module.prototype._types.webservice_cron == 'undefined')
-	CI.Module.prototype._types.webservice_cron = {};
+if(typeof CI.Module.prototype._types.webservice_crontab == 'undefined')
+	CI.Module.prototype._types.webservice_crontab = {};
 
-CI.Module.prototype._types.webservice_cron.Model = function(module) { }
+CI.Module.prototype._types.webservice_crontab.Model = function(module) { }
 
-$.extend(CI.Module.prototype._types.webservice_cron.Model.prototype, CI.Module.prototype._impl.model);
-$.extend(CI.Module.prototype._types.webservice_cron.Model.prototype, {
+$.extend(CI.Module.prototype._types.webservice_crontab.Model.prototype, CI.Module.prototype._impl.model);
+$.extend(CI.Module.prototype._types.webservice_crontab.Model.prototype, {
 
 
 		getjPath: function(rel, accepts) {
