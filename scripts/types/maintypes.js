@@ -687,7 +687,7 @@ CI.DataType.getJPathsFromElement = function(element, jpaths) {
 	
 	jpaths.push({title: 'Not set', key: ''});
 
-	if(element === undefined)
+	if(element === undefined || element == null)
 		return;
 	
 
