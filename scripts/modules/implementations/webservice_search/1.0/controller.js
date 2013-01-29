@@ -40,6 +40,9 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 		var self = this;
 		self.result = elements;
 
+		var actions;
+		if(!(actions = this.module.definition.dataSend))	
+			return;	
 		for(var i = 0; i < actions.length; i++) {
 			if(actions[i].event == "onSearchReturn") {
 				(function(element, actionName, jpath) {
