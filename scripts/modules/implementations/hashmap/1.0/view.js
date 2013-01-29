@@ -35,12 +35,20 @@ CI.Module.prototype._types.hashmap.View.prototype = {
 			var view = this;
 			view.dom.html('');
 
-			var cfg = this.module.getConfiguration().keys;
+			var cfgg = this.module.getConfiguration();
+			var cfg = cfgg.keys;
+
 			var html = '';
 			var def = [];
 			for(var i in cfg) {
 				(function(j) {
-					def.push(CI.DataType.asyncToScreenHtml(moduleValue, view.module, cfg[i]).pipe(function(html2) {
+					def.push(CI.DataType.asyncToScreenHtml(moduleValue, view.module, cfg[i].key).pipe(function(html2) {
+
+						if(html2 == null && cfgg.hideemptylines)
+							return;
+
+						if(cfg[i].printf)
+							html2 = sprintf(cfg[i].printf, html2);
 						return '<tr><td>' + j + '</td><td>' + html2 + '</td></tr>';
 					}));
 				}) (i);
