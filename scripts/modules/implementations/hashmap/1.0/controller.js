@@ -78,6 +78,15 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 		field.implementation.setOptions(jpaths);
 		field.setTitle(new BI.Title('Key'));
 
+
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'sprintf'
+		});
+		field.setTitle(new BI.Title('Printf'));
+	
+
 		return true;
 	},
 
@@ -86,11 +95,11 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 		
 		var keys = this.module.getConfiguration().keys;
 		var hide = this.module.getConfiguration().hideemptylines ? ['hide'] : [];
-		var titles = [];
-		var jpaths = [];
+		var titles = [], jpaths = [], printf = [];
 		for(var i in keys) {
 			titles.push(i);
-			jpaths.push(keys[i]);
+			jpaths.push(keys[i].key);
+			printf.push(keys[i].printf);
 		}
 
 		return {
@@ -102,7 +111,8 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 
 				keys: [{
 					title: titles,
-					key: jpaths
+					key: jpaths,
+					printf: printf
 				}]
 			}
 		}
@@ -110,10 +120,10 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 	
 	doSaveConfiguration: function(confSection) {
 		var group = confSection[0].keys[0];
-		this.module.getConfiguration().hideemptylines = (confSection[0].keys[0][0] == 'hide');
+		this.module.getConfiguration().hideemptylines = (confSection[0].cfg[0].hide_empty[0][0] == 'hide');
 		var cols = {};
 		for(var i = 0; i < group.length; i++)
-			cols[group[i].title] = group[i].key;
+			cols[group[i].title] = {key: group[i].key, printf: group[i].printf};
 
 		this.module.getConfiguration().keys = cols;
 	},
