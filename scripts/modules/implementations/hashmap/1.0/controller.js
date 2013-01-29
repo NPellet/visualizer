@@ -50,6 +50,18 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 		var jpaths = [];
 		CI.DataType.getJPathsFromElement(data, jpaths);
 
+		var groupfield = new BI.Forms.GroupFields.List('cfg');
+		section.addFieldGroup(groupfield);
+
+
+		var field = groupfield.addField({
+			type: 'Checkbox',
+			name: 'hide_empty'
+		});
+		field.setTitle(new BI.Title('Empty lines'));
+		field.implementation.setOptions({'hide': 'Hide empty lines'});
+
+
 		var groupfield = new BI.Forms.GroupFields.Table('keys');
 		section.addFieldGroup(groupfield);
 		
@@ -73,7 +85,7 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 	doFillConfiguration: function() {
 		
 		var keys = this.module.getConfiguration().keys;
-		
+		var hide = this.module.getConfiguration().hideemptylines ? ['hide'] : [];
 		var titles = [];
 		var jpaths = [];
 		for(var i in keys) {
@@ -83,6 +95,11 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 
 		return {
 			groups: {
+
+				cfg: [{
+					hide_empty: hide
+				}],
+
 				keys: [{
 					title: titles,
 					key: jpaths
@@ -93,6 +110,7 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 	
 	doSaveConfiguration: function(confSection) {
 		var group = confSection[0].keys[0];
+		this.module.getConfiguration().hideemptylines = (confSection[0].keys[0][0] == 'hide');
 		var cols = {};
 		for(var i = 0; i < group.length; i++)
 			cols[group[i].title] = group[i].key;
