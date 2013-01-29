@@ -20,9 +20,14 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 	init: function() { 
 		this.searchTerms = {};
 		this.result = null;
+		this.request = null;
 	},
 	
 	doSearch: function(name, val) {
+
+		if(this.request)
+			this.request.abort();
+
 		var self = this;
 		this.searchTerms[name] = val;
 		var url = this.module.getConfiguration().url;
@@ -30,7 +35,8 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 			url = url.replace('<' + i + '>', this.searchTerms[i]);
 		}
 
-		$.getJSON(url, {}, function(data) {
+		this.request = $.getJSON(url, {}, function(data) {
+			self.request = null;
 			self.onSearchDone(data);
 		});
 	},
