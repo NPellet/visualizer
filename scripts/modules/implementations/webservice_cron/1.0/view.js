@@ -24,7 +24,7 @@ CI.Module.prototype._types.webservice_crontab.View.prototype = {
 
 	log: function(success, variable) {
 		var time = new Date();
-		this.dom.append('<div>[' + time.toLocaleString() + '] - ' + (success ? 'Ok' : 'Error') + '; Variable: ' + variable + '</div>')
+		this.dom.prepend('<div>[' + time.toLocaleString() + '] - ' + (success ? 'Ok' : 'Error') + '; Variable: ' + variable + '</div>')
 	},
 
 	inDom: function() {},
