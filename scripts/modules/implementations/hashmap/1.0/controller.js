@@ -94,7 +94,7 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 	doFillConfiguration: function() {
 		
 		var keys = this.module.getConfiguration().keys;
-		var hide = [(this.module.getConfiguration().hide_empty ? ['hide'] : [])];
+		var hide = [(this.module.getConfiguration().hideemptylines ? ['hide'] : [])];
 		var titles = [], jpaths = [], printf = [];
 		for(var i in keys) {
 			titles.push(i);
