@@ -19,6 +19,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 	
 	init: function() { 
 		this.searchTerms = {};
+		this.result = null;
 	},
 	
 	doSearch: function(name, val) {
@@ -37,21 +38,15 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 
 	onSearchDone: function(elements) {
 		var self = this;
-		CI.DataType.getValueFromJPath(elements, this.module.getConfiguration().jpatharray).done(function(results) {
-
-			var actions;
-			if(!(actions = self.module.definition.dataSend))	
-				return;
-					
-			for(var i = 0; i < actions.length; i++) {
-				if(actions[i].event == "onSearchReturn") {
-					(function(element, actionName, jpath) {
-						CI.API.setSharedVarFromJPath(actionName, element, jpath);
-					}) (results, actions[i].name, '');
-				}
+		self.result = elements;
+		
+		for(var i = 0; i < actions.length; i++) {
+			if(actions[i].event == "onSearchReturn") {
+				(function(element, actionName, jpath) {
+					CI.API.setSharedVarFromJPath(actionName, element, jpath);
+				}) (results, actions[i].name, '');
 			}
-
-		});
+		}
 	},
 
 	configurationSend: {
@@ -93,7 +88,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 		});
 		field.setTitle(new BI.Title('Search URL'));
 
-
+/*
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'jpatharray'
@@ -101,7 +96,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 		field.setTitle(new BI.Title('JPath to array'));
 
 
-
+*/
 		var groupfield = new BI.Forms.GroupFields.Table('searchparams');
 
 		section.addFieldGroup(groupfield);
