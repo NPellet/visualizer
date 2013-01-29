@@ -40,13 +40,15 @@ CI.Module.prototype._types.hashmap.View.prototype = {
 
 			var html = '';
 			var def = [];
+			console.log(cfg);
 			for(var i in cfg) {
 				(function(j) {
 					def.push(CI.DataType.asyncToScreenHtml(moduleValue, view.module, cfg[i].key).pipe(function(html2) {
-
+console.log(html2);
+console.log(cfgg);
 						if(html2 == null && cfgg.hideemptylines)
 							return;
-
+console.log(cfg[i]);
 						if(cfg[i].printf)
 							html2 = sprintf(cfg[i].printf, html2);
 						return '<tr><td>' + j + '</td><td>' + html2 + '</td></tr>';
