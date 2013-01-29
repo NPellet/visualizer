@@ -39,7 +39,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 	onSearchDone: function(elements) {
 		var self = this;
 		self.result = elements;
-		
+
 		for(var i = 0; i < actions.length; i++) {
 			if(actions[i].event == "onSearchReturn") {
 				(function(element, actionName, jpath) {
@@ -133,8 +133,8 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 			groups: {
 				
 				cfg: [{
-					url: [this.module.getConfiguration().url],
-					jpatharray: [this.module.getConfiguration().jpatharray]
+					url: [this.module.getConfiguration().url]
+			//		jpatharray: [this.module.getConfiguration().jpatharray]
 				}],
 
 				searchparams: [{
@@ -152,7 +152,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 			searchparams[group[i].name] = group[i].label;
 		this.module.getConfiguration().searchparams = searchparams;
 		this.module.getConfiguration().url = confSection[0].cfg[0].url[0];
-		this.module.getConfiguration().jpatharray = confSection[0].cfg[0].jpatharray[0];
+	//	this.module.getConfiguration().jpatharray = confSection[0].cfg[0].jpatharray[0];
 	},
 
 	"export": function() {
