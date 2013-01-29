@@ -127,15 +127,6 @@ CI.Module.prototype._types.webservice_crontab.Controller.prototype = {
 	
 	doConfiguration: function(section) {
 		
-		
-		var groupfield = new BI.Forms.GroupFields.List('cfg');
-		section.addFieldGroup(groupfield);
-		var field = groupfield.addField({
-			type: 'Text',
-			name: 'label'
-		});
-		field.setTitle(new BI.Title('Button label'));
-
 		var groupfield = new BI.Forms.GroupFields.Table('varcfg');
 
 		section.addFieldGroup(groupfield);
@@ -192,10 +183,6 @@ CI.Module.prototype._types.webservice_crontab.Controller.prototype = {
 
 			groups: {
 				
-				cfg: [{
-					label: [this.module.getConfiguration().label]
-				}],
-
 				varcfg: [{
 					variable: variables,
 					type: types,
@@ -214,7 +201,7 @@ CI.Module.prototype._types.webservice_crontab.Controller.prototype = {
 		}
 	
 		this.module.getConfiguration().variables = vars;
-		this.module.getConfiguration().label = confSection[0].cfg[0].label[0];
+		
 		this.doVariables();
 	},
 
