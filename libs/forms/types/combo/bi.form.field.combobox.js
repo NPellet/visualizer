@@ -100,14 +100,14 @@ BI.Forms.Fields.Combo.prototype = {
 				field.setText(index, title);
 				field.main.hideExpander();
 
-				var show = ((node.data.data && node.data.data.show) || '').split(' ');
+				var show = ((node.data.data && node.data.data.show) || '').split(' ');
 				for(var i = 0, l = show.length; i < l; i++) {
 					field.main.section.showHideSubSection(show, true);				
 				}
 			},
 
 			onDeactivate: function(node) {
-				var show = ((node.data.data && node.data.data.show) || '').split(' ');
+				var show = ((node.data.data && node.data.data.show) || '').split(' ');
 				for(var i = 0, l = show.length; i < l; i++) {
 					field.main.section.showHideSubSection(show, false);				
 				}
@@ -151,7 +151,7 @@ BI.Forms.Fields.Combo.prototype = {
 
 		if(element) {
 			this.setText(index, element.title);
-			var show = ((element.data && element.data.show) || '').split(' ');
+			var show = ((element.data && element.data.show) || '').split(' ');
 			for(var i = 0, l = show.length; i < l; i++) {
 				this.main.section.showHideSubSection(show, true);				
 			}

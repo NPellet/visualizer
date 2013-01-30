@@ -98,8 +98,8 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 		var titles = [], jpaths = [], printf = [];
 		for(var i in keys) {
 			titles.push(i);
-			jpaths.push(keys[i].key || null);
-			printf.push(keys[i].printf || null);
+			jpaths.push(keys[i].key || null);
+			printf.push(keys[i].printf || null);
 		}
 
 		return {

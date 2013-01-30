@@ -19,7 +19,7 @@ CI.Module.prototype._types.webservice_button.View.prototype = {
 	init: function() {	
 		var self = this;
 		this.dom = $('<div></div>');
-		var button = new BI.Buttons.Button(this.module.getConfiguration().label || '', function() {
+		var button = new BI.Buttons.Button(this.module.getConfiguration().label || '', function() {
 			self.buttonUpdate();
 			self.module.controller.onClick();
 		});
@@ -47,7 +47,7 @@ CI.Module.prototype._types.webservice_button.View.prototype = {
 		} else
 			var str = this.currentNumber + " / " + total;
 
-		this.button.getDom().html((this.module.getConfiguration().label || '') + " (" + str + ")");
+		this.button.getDom().html((this.module.getConfiguration().label || '') + " (" + str + ")");
 	},
 
 

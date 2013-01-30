@@ -119,7 +119,7 @@ CI.Module.prototype._types.object_editor.Controller.prototype = {
 	},
 	
 	doFillConfiguration: function() {
-		var xml = this.module.getConfiguration().xml || '';
+		var xml = this.module.getConfiguration().xml || '';
 		/*var allFields = [], field;
 
 		for(var i = 0, l = cfg.length; i < l; i++) {

@@ -1,6 +1,6 @@
 
 BI.Forms.xmlBuilder = function(form, options) {
-	this.form = form || new BI.Forms.Form();
+	this.form = form || new BI.Forms.Form();
 	this.jpathIndexation = [];
 	this.options = $.extend({}, BI.Forms.xmlBuilder.prototype.defaults, options)
 }
@@ -26,7 +26,7 @@ BI.Forms.xmlBuilder.prototype = {
 
 			var dom = $(this);
 			var section = new BI.Forms.Section(dom.attr('name'), {
-				visible: dom.attr('visible') == 'visible' || !dom.attr('visible')
+				visible: dom.attr('visible') == 'visible' || !dom.attr('visible')
 			});
 			section.setTitle(inst.getTitle(dom));
 			parent.addSection(section);

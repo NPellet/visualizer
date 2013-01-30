@@ -19,19 +19,25 @@ CI.DB.open = function() {
 	if(CI.DB.db)
 		return def.resolve();
 
+	if(CI.DB.process)
+		return $.Deferred();
+
+	CI.DB.process = true;
 	var req = indexedDB.open('ci', 24);	
 	/*if(req.error)
 		console.warn(req.error);*/
 
 	req.onsuccess = function(e) {
-		
+		console.log('DONE');
+		CI.DB.process = false;
 		CI.DB.db = e.target.result;
 		//def.resolve();
 		def.resolve();
 	};
 
 	req.onupgradeneeded = function(e) {
-		
+		console.log('DONE');
+		CI.DB.process = false;
 		CI.DB.db = e.target.result;
 		var def1 = $.Deferred(), def2 = $.Deferred();
 	    if(CI.DB.db.objectStoreNames.contains("localview")) {
