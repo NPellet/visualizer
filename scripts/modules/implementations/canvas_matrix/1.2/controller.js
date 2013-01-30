@@ -44,7 +44,7 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 			if(isNaN(x) || isNaN(y))
 				return false;
 
-			return [xLabel[x], yLabel[y], gridData[x][y]];
+			return [xLabel[x], yLabel[y], gridData[y][x]];
 	},
 
 	init: function() {
@@ -97,7 +97,7 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 			var keyed = controller.getMatrixElementFromEvent(e);
 			if(!keyed)
 				return;
-			
+
 			var value = false;
 			for(var i in actions) {
 				if(actions[i].event == "onPixelHover") {
