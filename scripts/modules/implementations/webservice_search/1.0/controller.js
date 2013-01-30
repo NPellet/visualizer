@@ -25,6 +25,9 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 	
 	doSearch: function(name, val) {
 
+		if(!this.searchTerms)
+			this.searchTerms = [];
+		
 		if(this.request)
 			this.request.abort();
 
@@ -122,6 +125,14 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 		});
 		
 		field.setTitle(new BI.Title('Term label'));
+
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'defaultvalue'
+		});
+		
+		field.setTitle(new BI.Title('Default value'));
 		
 		return true;
 	},
@@ -133,7 +144,8 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 		var labels = [];
 		for(var i in searchparams) {
 			names.push(i);
-			labels.push(searchparams[i]);
+			labels.push(searchparams[i].label);
+			defaultvalue.push(searchparams[i].defaultvalue);
 		}
 
 
@@ -148,7 +160,8 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 
 				searchparams: [{
 					name: names,
-					label: labels
+					label: labels,
+					defaultvalue: defaultvalue 
 				}]
 			}
 		}
@@ -158,7 +171,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 		var group = confSection[0].searchparams[0];
 		var searchparams = {};
 		for(var i = 0; i < group.length; i++)
-			searchparams[group[i].name] = group[i].label;
+			searchparams[group[i].name] = {label: group[i].label, defaultvalue: group[i].defaultvalue};
 		this.module.getConfiguration().searchparams = searchparams;
 		this.module.getConfiguration().url = confSection[0].cfg[0].url[0];
 	//	this.module.getConfiguration().jpatharray = confSection[0].cfg[0].jpatharray[0];

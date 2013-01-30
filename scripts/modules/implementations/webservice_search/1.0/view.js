@@ -25,7 +25,7 @@ CI.Module.prototype._types.webservice_search.View.prototype = {
 
 		if(searchparams = this.module.getConfiguration().searchparams) {
 			for(var i in searchparams)
-				this.search.append('<div><label>' + searchparams[i] + '</label><input type="text" name="' + i +'" /></div>');
+				this.search.append('<div><label>' + searchparams[i].label + '</label><input type="text" value="' + searchparams[i].defaultvalue + '" name="' + i +'" /></div>');
 			
 			var url = self.module.getConfiguration().url;
 			this.search.on('keyup', 'input', function() {
@@ -34,6 +34,8 @@ CI.Module.prototype._types.webservice_search.View.prototype = {
 				self.module.controller.doSearch(searchName, searchTerm);
 			});
 		}
+
+		this.search.find('input:last').trigger('keyup');
 	},
 
 	inDom: function() {
