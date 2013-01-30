@@ -149,6 +149,7 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 
 		var infos = this.module.getConfiguration().plotinfos || [];
 		for(var i = 0, l = infos.length; i < l; i++) {
+		
 			spectrainfos.variable.push(infos[i].variable);
 			spectrainfos.plotcolor.push(infos[i].plotcolor);
 			spectrainfos.plotcontinuous.push([infos[i].plotcontinuous ? 'continuous' : null]);
@@ -181,7 +182,16 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		this.module.getConfiguration().flipX = flipX;
 		this.module.getConfiguration().flipY = flipY;
 //		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor;
-
+		
+		for(var i = 0, l = confSection[0].spectrainfos[0].length; i < l; i++) {
+			
+			confSection[0].
+				spectrainfos[0][i].
+				plotcontinuous = 
+				(!!confSection[0].spectrainfos[0][i].plotcontinuous[0]);
+			}
+		
+			
 		this.module.getConfiguration().plotinfos = confSection[0].spectrainfos[0];
 	},
 
