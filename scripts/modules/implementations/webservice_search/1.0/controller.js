@@ -27,7 +27,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 
 		if(!this.searchTerms)
 			this.searchTerms = [];
-		
+
 		if(this.request)
 			this.request.abort();
 
@@ -142,10 +142,11 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 		var searchparams = this.module.getConfiguration().searchparams;
 		var names = [];
 		var labels = [];
+		var defaultvalue = [];
 		for(var i in searchparams) {
 			names.push(i);
 			labels.push(searchparams[i].label);
-			defaultvalue.push(searchparams[i].defaultvalue);
+			defaultvalue.push(searchparams[i].defaultvalue || '');
 		}
 
 
