@@ -64,12 +64,13 @@ $.extend(CI.Module.prototype._types.canvas_matrix.Model.prototype, {
 				return getjPath(data, accepts);
 			break;
 			case 'col':
-				var data = data.xLabel[0];console.log(data);
+				var data = data.xLabel[0];
 				return getjPath(data, accepts);
 			break;
 			
 			case 'intersect':
-				var data = data.data[0][0];console.log(data);
+			console.log(data);
+				var data = data.data[0][0];
 				return getjPath(data, accepts);
 			break;
 

@@ -21,7 +21,7 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 
 			var moduleValue;
 			if(!(moduleValue = this.module.getDataFromRel('matrix')))
-				return;
+				return false;
 			
 			var pxPerCell = this.module.view.getPxPerCell();
 			var shift = this.module.view.getXYShift();
@@ -39,10 +39,10 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 			var gridData = moduleValue.data;
 			
 			if (!gridData || !gridData[0] || x < 0 || y < 0 || y > gridData.length || x > gridData[0].length)
-				return;
+				return false;
 			
 			if(isNaN(x) || isNaN(y))
-				return;
+				return false;
 
 			return [xLabel[x], yLabel[y], gridData[x][y]];
 	},
@@ -95,6 +95,9 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 			// No need to blank the var here
 			// No event debouncing
 			var keyed = controller.getMatrixElementFromEvent(e);
+			if(!keyed)
+				return;
+			
 			var value = false;
 			for(var i in actions) {
 				if(actions[i].event == "onPixelHover") {
