@@ -35,7 +35,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 		this.searchTerms[name] = val;
 		var url = this.module.getConfiguration().url;
 		for(var i in this.searchTerms) {
-			url = url.replace('<' + i + '>', urlencode(this.searchTerms[i]));
+			url = url.replace('<' + i + '>', escape(this.searchTerms[i]));
 		}
 
 		this.request = $.getJSON(url, {}, function(data) {
