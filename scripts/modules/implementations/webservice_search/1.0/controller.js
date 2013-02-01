@@ -146,7 +146,7 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 		for(var i in searchparams) {
 			names.push(i);
 			labels.push(searchparams[i].label);
-			defaultvalue.push(searchparams[i].defaultvalue || '');
+			defaultvalue.push(searchparams[i].defaultvalue || '');
 		}
 
 
