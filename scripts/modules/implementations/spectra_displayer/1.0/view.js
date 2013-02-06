@@ -70,7 +70,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		'jcamp': function(moduleValue, varname) {
 
 			
-			if(moduleValue == "")
+			if(!moduleValue)
 				return this.blank();
 
 			CI.RepoHighlight.kill(this.module.id + "_" + varname);
