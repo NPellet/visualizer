@@ -30,7 +30,7 @@ CI.Module.prototype._types.hashmap.View.prototype = {
 	update2: {
 		'hashmap': function(moduleValue) {
 			
-			if(moduleValue === undefined)
+			if(!moduleValue)
 				return;
 			var view = this;
 			view.dom.html('');

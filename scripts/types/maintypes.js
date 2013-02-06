@@ -478,7 +478,6 @@ CI.DataType.fetchElementIfNeeded = function(element) {
 				timeout: 120000,
 
 				success: function(data, text, jqxhr) {
-console.log(data);
 					element.value = data;
 					dfd.resolve(element);
 				},
