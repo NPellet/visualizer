@@ -523,8 +523,10 @@ CI.DataType._getValueFromJPath = function(element, jpath) {
 	var jpathElement = jpath2.shift();
 
 	if(jpathElement) {
-		if(el && el = el[jpathElement]) {
+		if(el = el[jpathElement]) {
 			return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
+				if(!elChildren)
+					return $.Deferred().resolve(null);
 				
 				return CI.DataType._getValueFromJPath(elChildren, jpath2);
 			});
