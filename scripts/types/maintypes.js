@@ -449,7 +449,7 @@ CI.DataType.getValueIfNeeded = function(element) {
 	if(!element)
 		return;
 	
-	if(element.value && element.type)
+	if(element.value && (element.type || element.url))
 		return element.value;
 	if(element.url && element.type) {
 		element.value = undefined;
@@ -464,20 +464,21 @@ CI.DataType.fetchElementIfNeeded = function(element) {
 	if(element === undefined || element == null)
 		return $.Deferred().resolve("");
 	
-	var type = element.type, ajaxType, def;
+	var type = element.type || "object", ajaxType, def;
 	if(!element.value && element.url) {
-			
+		
 		ajaxType = typeof CI.DataType.Structures[type] == "object" ? 'json' : 'text';
 		
 		return $.Deferred(function(dfd) {
 
 			$.ajax({
 				url: element.url,
-				dataType: ajaxType,
+				//dataType: ajaxType,
 				type: "get",
 				timeout: 120000,
 
 				success: function(data, text, jqxhr) {
+console.log(data);
 					element.value = data;
 					dfd.resolve(element);
 				},
@@ -555,8 +556,12 @@ CI.DataType._setValueFromJPath = function(element, jpath, newValue) {
 
 	var jpathElement = jpath2.shift();
 	if(jpathElement) {
-		el = el[jpathElement];
-		return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
+		if(!(el2 = el[jpathElement])) {
+			el[jpathElement] = {};
+			el2 = el[jpathElement];
+		}
+
+		return CI.DataType.fetchElementIfNeeded(el2).pipe(function(elChildren) {
 				return CI.DataType._setValueFromJPath(elChildren, jpath2, newValue);
 		});
 	}

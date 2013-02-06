@@ -24,6 +24,7 @@ CI.Module.prototype._types.webservice_button.Controller.prototype = {
 		var cfg = this.module.getConfiguration().variables, variable, type, url;
 		for(var i = 0, l = cfg.length; i < l; i++) {
 			variable = cfg[i].variable;
+			variableget = cfg[i].variableget;
 			type = cfg[i].type;
 
 			(function(type, variable) {
@@ -34,7 +35,7 @@ CI.Module.prototype._types.webservice_button.Controller.prototype = {
 
 				if(type == 'get') {
 					ajax.success = function(data) {
-						CI.Repo.set(variable, data);
+						CI.Repo.set(variableget, data);
 						self.module.view.buttonUpdate(true);
 					}
 					ajax.method = 'get';
@@ -42,10 +43,17 @@ CI.Module.prototype._types.webservice_button.Controller.prototype = {
 
 				} else {
 					ajax.success = function(data) {
+
+						CI.Repo.set(variableget, data);
 						self.module.view.buttonUpdate(true);
 					}
-console.log(CI.Repo.get(variable)[1]);
-					ajax.data = {data: CI.Repo.get(variable)[1] };
+//console.log(CI.Repo.get(variable)[1]);
+
+					var variable = CI.Repo.get(variable);
+					if(!variable || !variable[1])
+						return;
+
+					ajax.data = {data: variable[1] };
 					ajax.method = 'post';
 					ajax.type = 'post';
 				}
@@ -96,16 +104,25 @@ console.log(CI.Repo.get(variable)[1]);
 		section.addFieldGroup(groupfield);
 		
 		var field = groupfield.addField({
-			type: 'Combo',
+			type: 'Text',
 			name: 'variable'
 		});
-		field.setTitle(new BI.Title('Variable'));
-		var objs = [];
+		field.setTitle(new BI.Title('Source variable'));
+
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'variableget'
+		});
+		field.setTitle(new BI.Title('Target variable'));
+
+
+		/*var objs = [];
 		for(var i in CI.API.getAllSharedVariables()) {
 			objs.push({key: i, title: i});
 		}
 		field.implementation.setOptions(objs);
-
+*/
 		var field = groupfield.addField({
 			type: 'Combo',
 			name: 'type'
@@ -127,9 +144,10 @@ console.log(CI.Repo.get(variable)[1]);
 		
 		var cfg = this.module.getConfiguration().variables;
 		
-		var variables = [], types = [], url = [];
+		var variables = [], types = [], url = [], variablesget = [];
 		for(var i in cfg) {
 			variables.push(cfg[i].variable);
+			variablesget.push(cfg[i].variableget);
 			types.push(cfg[i].type);
 			url.push(cfg[i].url);
 		}
@@ -144,6 +162,7 @@ console.log(CI.Repo.get(variable)[1]);
 
 				varcfg: [{
 					variable: variables,
+					variableget: variablesget,
 					type: types,
 					url: url
 				}]
@@ -155,9 +174,10 @@ console.log(CI.Repo.get(variable)[1]);
 		var group = confSection[0].varcfg[0];
 		var vars = [];
 		for(var i = 0; i < group.length; i++)
-			vars.push({ variable: group[i].variable, type: group[i].type, url: group[i].url });
+			vars.push({ variable: group[i].variable, variableget: group[i].variableget, type: group[i].type, url: group[i].url });
 	
 		this.module.getConfiguration().variables = vars;
+
 		this.module.getConfiguration().label = confSection[0].cfg[0].label[0];
 
 	},

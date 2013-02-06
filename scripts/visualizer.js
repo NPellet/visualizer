@@ -385,7 +385,12 @@ CI.ConfigVisualizer = function() {
 			CI.DataType.getJPathsFromElement(data, jpath);
 			field.implementation.setOptions(jpath);	
 
-
+			var field = groupfield.addField({
+				type: 'Text',
+				name: 'url'
+			});
+			field.setTitle(new BI.Title('URL'));
+		
 
 			var inst = this;
 			var save = new BI.Buttons.Button('Save', function() {
@@ -405,13 +410,14 @@ CI.ConfigVisualizer = function() {
 		}, function() {
 			
 			
-			var vars = { varname: [], jpath: [], sourcename: [] };
+			var vars = { varname: [], jpath: [], sourcename: [], url: [] };
 			var entryVars = Entry.getEntryDataVariables();
 			
 			for(var i = 0; i < entryVars.length; i++) {
 				vars.varname.push(entryVars[i].varname);
 		//		vars.sourcename.push(entryVars[i].sourcename);
 				vars.jpath.push(entryVars[i].jpath);
+				vars.url.push(entryVars[i].url || '');
 				
 			}
 				

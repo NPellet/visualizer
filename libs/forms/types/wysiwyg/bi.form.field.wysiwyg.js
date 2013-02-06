@@ -17,7 +17,7 @@ BI.Forms.Fields.Wysiwyg.prototype = {
 		// Change the input value will change the input hidden value
 		var input = this.main.dom.on('click', 'div.bi-formfield-field-container > div', function(event) {
 			event.stopPropagation();
-			field.setValue($(this).index());
+			//field.setValue($(this).index());
 			field.main.toggleExpander($(this).index());
 		});
 		
@@ -38,11 +38,14 @@ BI.Forms.Fields.Wysiwyg.prototype = {
 		
 	},
 	
-	
 	setValue: function(index, value) {
 		var field = this.main.fields[index].field;
 		this.main.changeValue(index, value);
-		field.children().val(value);
+	//	field.children().val(value);
+
+	console.log('DO');
+		CKEDITOR.instances[field.children().attr('name')].setData(value);
+
 	},
 	
 	addField: function(position) {
@@ -50,7 +53,7 @@ BI.Forms.Fields.Wysiwyg.prototype = {
 		var fieldWrapper = $("<div />").addClass('bi-formfield-container');
 		var duplicate = $('<div class="bi-formfield-duplicate"></div>').appendTo(fieldWrapper);
 		var img = $('<img class="bi-formfield-image" />').appendTo(fieldWrapper);
-		var field = $('<div class="bi-formfield-styled"><textarea></textarea></div>').appendTo(fieldWrapper);
+		var field = $('<div class="bi-formfield-styled"><textarea name="' + Date.now() + Math.random() + '"></textarea></div>').appendTo(fieldWrapper);
 		
 		var pos = 0;
 		if(typeof position == "undefined")
@@ -66,19 +69,27 @@ BI.Forms.Fields.Wysiwyg.prototype = {
 	},
 
 	initField: function(index) {
-		
+		var self = this;
 		var field = this.main.fields[index].field;
-		this.ckinstance = field.children().ckeditor({
-			enterMode : CKEDITOR.ENTER_BR,
-        		shiftEnterMode: CKEDITOR.ENTER_P
-		}).ckeditorGet();
+		var editor = CKEDITOR.replace(field.children().attr('name'));
+		
+		editor.on('change', function() {
+			if(editor.checkDirty())
+				self.main.changeValue(index, editor.getData());
+		});
+	
+/*
+		CKEDITOR.instances[0].on('change', function () {
+            alert("test");
+        });
+
 		
 		var self = this;
 		this.ckinstance.on( 'contentDom', function() {
            		 self.ckinstance.document.on( 'keyup', function( event ) {
             			self.main.changeValue(index, self.ckinstance.getData());
         		});
-		});
+		});*/
 	},
 	
 	removeField: function(position) {

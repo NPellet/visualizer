@@ -107,7 +107,8 @@ CI.Module.prototype._types.editable_grid.Controller.prototype = {
 		});
 		field.setTitle(new BI.Title('Lines per page'));
 		
-		var data = this.module.getDataFromRel('list');
+		var data = CI.DataType.getValueIfNeeded(this.module.getDataFromRel('list'));
+
 		var jpaths = [];
 		
 		if(CI.DataType.getType(data) == 'array') 
@@ -173,7 +174,8 @@ CI.Module.prototype._types.editable_grid.Controller.prototype = {
 			{title: 'Editable', key: '_none', selectable: false, folder: true, children: [
 				{title: 'String', key: 'string'},
 				{title: 'Checkbox', key: 'checkbox'},
-				{title: 'Combo box', key: 'combo'}
+				{title: 'Combo box', key: 'combo'},
+				{title: 'Button', key: 'button'}
 			]}
 		]);
 

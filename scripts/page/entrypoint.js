@@ -117,7 +117,7 @@ CI.EntryPoint = function(options, onLoad) {
 		}
 
 		if(CI.URLs['results']) {
-			CI.Data = new CI.DataViewHandler(CI.URLs['results']);
+			CI.Data = new CI.DataViewHandler(CI.URLs['results'], CI.URLs['resultBranch']);
 			CI.Data.setType('data');
 			CI.Data.onLoaded = function(data, path) {
 				doData(data);
@@ -130,7 +130,7 @@ CI.EntryPoint = function(options, onLoad) {
 		}
 
 		if(CI.URLs['views']) {
-			CI.View = new CI.DataViewHandler(CI.URLs['views']);
+			CI.View = new CI.DataViewHandler(CI.URLs['views'], CI.URLs['viewBranch']);
 			CI.View.setType('view');
 			CI.View.onLoaded = function(structure, path) {
 				doStructure(structure);
@@ -207,11 +207,20 @@ CI.EntryPoint = function(options, onLoad) {
 CI.EntryPoint.prototype = {
 
 	loaded: function() {
+		var self = this;
 
 		if(this.entryData && this.entryData.variables && this.entryData.variables.length > 0) {
 			var vars = this.entryData.variables;
 			for(var i = 0; i < vars.length; i++) {
-				CI.API.setSharedVarFromJPath(vars[i].varname, this.data, vars[i].jpath);
+				if(!vars[i].jpath && vars[i].url) {
+					(function(variable) {
+						self.data[variable.varname] = { value: null, url: variable.url };
+						CI.DataType.fetchElementIfNeeded(self.data[variable.varname]).done(function(value) {
+							CI.API.setSharedVar(variable.varname, value);
+						});
+					}) (vars[i]);
+				} else 
+					CI.API.setSharedVarFromJPath(vars[i].varname, this.data, vars[i].jpath);
 			}
 		}
 

@@ -10,7 +10,7 @@
       google.load('visualization', '1.0', {'packages':['corechart']});
       // Set a callback to run when the Google Visualization API is loaded.
       google.setOnLoadCallback(function() {
-      		console.log('Chart API ready');
+      		
       });
  })();
  

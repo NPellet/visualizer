@@ -189,6 +189,10 @@ window[_namespaces['table']].Tables.Column.prototype = {
 			this.editableType = type;
 	},
 
+	getEditableType: function() {
+		return this.editableType;
+	},
+
 	editableTypes: {
 
 		'string': function(value, exec, additional) {
@@ -213,6 +217,13 @@ window[_namespaces['table']].Tables.Column.prototype = {
 			}
 			el.bind('change', function() {
 				exec($(this).val());
+			});
+			return el;
+		},
+
+		'button': function(value, exec, additional) {
+			var el = $("<button>" + additional + "</button>").bind('click', function() {
+				exec();
 			});
 			return el;
 		}

@@ -84,6 +84,7 @@ CI.Module = function(definition) {
 			Entry.removeModule(module);
 		});*/
 
+ 		this.updateAllView();
 
 
 
@@ -200,13 +201,11 @@ CI.Module.prototype = {
 	updateAllView: function() {
 		if(!this.view.update2)
 			return;
-		var val;
+		var val, name;
 		for(var i in this.view.update2) {
-			val = CI.Repo.get(this.getNameFromRel(i));
-			if(val) {
-				name = val[0][0];
-				val = val[1];
-			}
+			name = this.getNameFromRel(i);
+			val = CI.Repo.get(name);
+			if(val) val = val[1]; else val = null;
 			this.view.update2[i].call(this.view, val, name);
 		}
 	},

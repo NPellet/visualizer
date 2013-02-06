@@ -58,7 +58,8 @@ window[_namespaces['table']].Tables.Row.prototype = {
 			});
 			
 			for(var i in cols) {
-				this.hasChanged(self._dataCols[i], cols[i].jpath);
+				if(cols[i].getEditableType() != 'button')
+					this.hasChanged(self._dataCols[i], cols[i].jpath);
 			}
 			this.built = true;
 		}

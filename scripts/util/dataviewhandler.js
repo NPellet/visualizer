@@ -1,4 +1,4 @@
-CI.DataViewHandler = function(dirUrl) {
+CI.DataViewHandler = function(dirUrl, defaultBranch) {
 	
 	this._dirUrl = dirUrl;
 
@@ -6,6 +6,7 @@ CI.DataViewHandler = function(dirUrl) {
 	this._allData = {};
 	self._head = {};
 	this.dom = $("<div />");
+	this.defaultBranch = defaultBranch;
 
 	this._data = {};
 	this.structure = {
@@ -384,17 +385,16 @@ CI.DataViewHandler.prototype = {
 				self._savedLocal = JSON.stringify(el);
 				self.onLoaded(el);
 			});
-		}	
-	
+		}
 	},
-
 
 	load: function(local) {
 
 		var self = this;
 
 		var def = $.Deferred();
-		var defServer = this.getFromServer({ branch: 'Master', action: 'Load' })/*.pipe(function(el) {
+
+		var defServer = this.getFromServer({ branch: (this.defaultBranch || 'Master'), action: 'Load' })/*.pipe(function(el) {
 			self.currentPath[1] = 'server';
 			self.currentPath[2] = el._name || 'Master';
 			self.currentPath[3] = el._time || 'head';
@@ -403,7 +403,7 @@ CI.DataViewHandler.prototype = {
 			return el;
 		});
 */;
-		var defLocal = self._getLocalHead('Master');/*.pipe(function(el) {
+		var defLocal = self._getLocalHead(this.defaultBranch || 'Master');/*.pipe(function(el) {
 			// Current OR empty (and saved) is sent from local DB
 			// Get the master head
 			self.currentPath[1] = 'local';
@@ -416,11 +416,12 @@ CI.DataViewHandler.prototype = {
 
 		// First load the server
 		// Needed to identify branch and revision of the file
-		var branch = 'Master';
+		
 		$.when(defServer).then(function(server) {
+			
 			// Success
-			var branch = server._name || 'Master';
-			var rev = server._time || 'Head';
+			var branch = server._name || self.defaultBranch;
+			var rev = server._time || 'head';
 			var saved = server._saved || 0;
 
 			// Always compare to the head of the local branch
@@ -428,51 +429,48 @@ CI.DataViewHandler.prototype = {
 			$.when(defLocal).then(function(el) {				
 
 				if(!el._saved) {
-					doServer(server);
-					self.serverCopy(server);
+					//doServer(server, branch, rev);
+					self.serverCopy(server, branch, rev);
 				} else {
 					var savedLocal = el._saved || 0;					
 					// Loads the latest file
-					
+					el._name = branch;
+
 					if(savedLocal > saved)
-						doLocal(el);
+						doLocal(el, branch, rev);
 					else
-						doServer(server);
+						doServer(server, branch, rev);
 				}
 			}, function() {
-				doServer(server);
+				doServer(server, branch, rev);
 			});
 		}, function(server) {
 			$.when(self._getLocalHead(branch)).then(function(el) {
-				doLocal(el);
+				doLocal(el, branch, rev);
 			});
 		});
 
-		function doLocal(el) {
-			
+		function doLocal(el, branch, rev) {
+
 			self.currentPath[1] = 'local';
-			self.currentPath[2] = 'Master';
-			self.currentPath[3] = 'head';
+			self.currentPath[2] = branch;
+			self.currentPath[3] = rev;
+
 
 			self._savedLocal = JSON.stringify(el);
-
 			self.make(el, self.currentPath[2], self.currentPath[3]);
 			def.resolve(el);
-
 			self.onLoaded(el);
 		}
 
+		function doServer(el, branch, rev) {
 
-		function doServer(el) {
 			self.currentPath[1] = 'server';
-			self.currentPath[2] = el._name || 'Master';
-			self.currentPath[3] = el._time || 'head';
+			self.currentPath[2] = branch;
+			self.currentPath[3] = rev;
 			self.make(el, self.currentPath[2], self.currentPath[3]);
-
 			self._savedServer = JSON.stringify(el);
-
 			def.resolve(el);
-
 			self.onLoaded(el);
 		}
 		
@@ -511,8 +509,6 @@ CI.DataViewHandler.prototype = {
 		});
 	},
 
-
-
 	_localSave: function(obj, mode, name) {
 
 		var self = this;
@@ -534,8 +530,6 @@ CI.DataViewHandler.prototype = {
 		});
 
 	},
-
-
 
 	localSnapshot: function(data) {
 		this._localSave(data, 'stored', data._name || 'Master').pipe(function(element) {
@@ -624,13 +618,14 @@ CI.DataViewHandler.prototype = {
 		if(this.type == 'view' && CI.URLs['viewURL'])
 			url = CI.URLs['viewURL'];
 		
-
 		if(this.type == 'data' && CI.URLs['dataURL'])
 			url = CI.URLs['dataURL'];
 		
 		data.action = 'Load';
 		var self = this;
 		var def = $.Deferred();
+
+
 		$.ajax({
 
 			dataType: 'json',
@@ -655,12 +650,17 @@ CI.DataViewHandler.prototype = {
 		return def;
 	},
 
-	serverCopy: function(data) {
+	serverCopy: function(data, branch, rev) {
 		var self = this;
-		var branch = data._name || 'Master';
-		return this._localSave(data, 'head', branch).pipe(function(el) {
 
-			return self.make(el, branch, 'head');
+		data._name = data._name || branch;
+		data._time = Date.now();
+		data._saved = Date.now();
+
+		
+		return this._localSave(data, rev, data._name).pipe(function(el) {
+
+			return self.make(el, data._name, rev);
 		});
 	},
 

@@ -12,6 +12,7 @@ if(typeof CI.Module.prototype._types.object_editor == 'undefined')
 
 CI.Module.prototype._types.object_editor.View = function(module) {
 	this.module = module;
+	this._inDom = $.Deferred();
 }
 
 CI.Module.prototype._types.object_editor.View.prototype = {
@@ -19,8 +20,11 @@ CI.Module.prototype._types.object_editor.View.prototype = {
 	init: function() {	
 		this.domWrapper = $('<div class="ci-display-form"></div>');
 		this.module.getDomContent().html(this.domWrapper);
-	
 		var self = this;
+		
+		this.callback = null;
+		var self = this;
+		
 	},
 
 	inDom: function() {
@@ -30,11 +34,18 @@ CI.Module.prototype._types.object_editor.View.prototype = {
 
 		var xmlTransl = new BI.Forms.xmlBuilder(false, {
 			onFieldChange: function(elJPath, value, index) {
-			
-				if(self.source)
-					CI.DataType.setValueFromJPath(self.source, elJPath, value);
+
+				if(self.changing)
+					return;
+
+				if(!self.source)
+					self.source = {};
+				console.trace();
+				CI.DataType.setValueFromJPath(self.source, elJPath, value);
+		//		CI.Repo.set(self.varname, self.source, true);
 			}
 		});
+
 		this.formBuilder = xmlTransl;
 
 		var form = xmlTransl.build($($.parseXML(xml)).children());
@@ -43,6 +54,7 @@ CI.Module.prototype._types.object_editor.View.prototype = {
 		this.domWrapper.append(formDom);
 
 		formDom.biForm(form, function() {}, function() {});
+		this._inDom.resolve();
 	},
 	
 	onResize: function() {
@@ -54,16 +66,31 @@ CI.Module.prototype._types.object_editor.View.prototype = {
 	},
 
 	update2: {
-		source: function(moduleValue) {
+		source: function(moduleValue, varName) {
+
+			this.source = moduleValue;
+			this.varname = varName;
+		
 			if(!moduleValue)
 				return;
 
-			this.source = moduleValue;
-			var fields = this.formBuilder.getFieldsByJPath();
-			for(var jpath in fields)
-				CI.DataType.getValueFromJPath(moduleValue, jpath).done(function(val) {
-					fields[jpath].implementation.setValue(0, val);
+			var self = this;
+
+			(function(value) {
+console.log(value);
+				$.when(self._inDom).done(function() {
+					console.log(value);
+					self.changing = true;
+					self.source = value;
+					
+					var fields = self.formBuilder.getFieldsByJPath();
+					for(var jpath in fields)
+						CI.DataType.getValueFromJPath(value, jpath).done(function(val) {
+							fields[jpath].implementation.setValue(0, val);
+						});
+					self.changing = false;
 				});
+			}) (moduleValue);
 		}
 	},
 

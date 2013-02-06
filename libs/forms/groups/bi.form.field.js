@@ -178,7 +178,10 @@ BI.Forms.Field.prototype = {
 			field.index = this.fields.length;
 		
 		this.fields.splice(field.index, 0, field);
-		this.setValue(field.index, "");
+		// XXX: Should we actually fill the field ?
+		//this.setValue(field.index, "");
+
+
 		
 		var input = $('<input type="hidden" />');
 		field.input = input;

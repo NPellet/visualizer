@@ -109,7 +109,7 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 				Table.setPagination(nbLines);
 			
 			var Columns = {};
-
+			moduleValue = CI.DataType.getValueIfNeeded(moduleValue);
 			var type = CI.DataType.getType(moduleValue);
 			for(var j in jpaths) {
 				var Column = new CI.Tables.Column(j);

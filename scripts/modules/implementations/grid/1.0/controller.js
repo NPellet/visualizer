@@ -114,7 +114,7 @@ CI.Module.prototype._types.grid.Controller.prototype = {
 		});
 		field.setTitle(new BI.Title('Lines per page'));
 		
-		var data = this.module.getDataFromRel('list');
+		var data = CI.DataType.getValueIfNeeded(this.module.getDataFromRel('list'));
 		var jpaths = [];
 		
 		if(CI.DataType.getType(data) == 'array') 

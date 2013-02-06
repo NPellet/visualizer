@@ -157,7 +157,7 @@ CI.RepoPool.prototype.get = function(key) {
 	return this._value[key];
 }
 
-CI.RepoPool.prototype.set = function(keys, value) {
+CI.RepoPool.prototype.set = function(keys, value, noTrigger) {
 	if(!(keys instanceof Array))
 		keys = [keys];
 	else if(!keys.length)
@@ -165,7 +165,9 @@ CI.RepoPool.prototype.set = function(keys, value) {
 
 	this._value = this._value || [];
 	this._value[keys] = [keys, value];
-	this.trigger('change', keys, value);
+
+	if(!noTrigger)
+		this.trigger('change', keys, value);
 }
 
 CI.RepoPool.prototype._callbackId = -1;
