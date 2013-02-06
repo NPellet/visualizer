@@ -49,7 +49,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		'fromTo': function(moduleValue) {
 			var view = this;
 
-			if(moduleValue === undefined || moduleValue.value === undefined)
+			if(!moduleValue || !moduleValue.value)
 				return;
 
 			if(view.dom.data('spectra'))
