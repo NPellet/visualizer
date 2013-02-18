@@ -553,14 +553,19 @@ CI.DataType._setValueFromJPath = function(element, jpath, newValue) {
 	var type;
 	var jpath2 = jpath;
 
-	if(jpath2.length == 1)
-		return element[jpath2[0]] = newValue;
+	if(jpath2.length == 1) {
+		if(typeof el != "object")
+			el = {};
+		return el[jpath2[0]] = newValue;
+	}
+
 
 	var jpathElement = jpath2.shift();
 	if(jpathElement) {
+		
 		if(!(el2 = el[jpathElement])) {
-			el[jpathElement] = {};
-			el2 = el[jpathElement];
+			el2 = {};
+			el[jpathElement] = el2;
 		}
 
 		return CI.DataType.fetchElementIfNeeded(el2).pipe(function(elChildren) {

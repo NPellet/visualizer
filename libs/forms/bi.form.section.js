@@ -198,6 +198,7 @@ BI.Forms.Section.prototype = {
 		section.setId(this.sections.length - 1);
 		section.setLevel(this.getLevel() + 1);
 		section.getForm().addAbsSection(section);
+		section.setForm(this.form);
 		this.renumberSections();
 
 		return section;
@@ -517,8 +518,6 @@ BI.Forms.Section.prototype = {
 		if(section.fieldGroups) {
 		
 			for(var i = 0; i < section.fieldGroups.length; i++) {
-				
-				
 				if(values[section.fieldGroups[i].getName()] == undefined)
 					values[section.fieldGroups[i].getName()] = [];
 				var value = [];

@@ -80,8 +80,11 @@ $(document).bind('configModule', function(event, module) {
 		});
 		field.implementation.setOptions(allRels);
 		field.onChange(function(index) {
-			var value = this.getValue(index);
-			this.group.getField('jpath').implementation.setOptions(sendjpaths[value], index);
+			var value = this.getValue(index), jpath = this.group.getField('jpath');
+			if(!jpath)
+				return;
+			
+			jpath.implementation.setOptions(sendjpaths[value], index);
 		});
 		
 		

@@ -20,7 +20,7 @@ BI.Forms.Field.prototype = {
 		this.isInit;
 		this.groupId;
 		
-		this.changeHandler = [];
+		this.changeHandler = this.changeHandler || $.Callbacks();
 		this.styledElement, this.valInput, this.placeHolderElement;
 		
 		if(!this.options.reloadStructure instanceof Array)
@@ -262,8 +262,8 @@ BI.Forms.Field.prototype = {
 			this.doReloadStructure('getsNotNull');
 		
 		this.doReloadStructure('change');
-		for(var i = 0; i < this.changeHandler.length; i++)
-			this.changeHandler[i].call(this, index, value);
+		console.log('FIRE');
+		this.changeHandler.fireWith(this, [index, value]);
 	},
 	
 	isValid: function() {
@@ -444,7 +444,8 @@ BI.Forms.Field.prototype = {
 		
 		var field = group.addField(this.options);
 		field.setSection(group.getSection());
-		
+		field.changeHandler = this.changeHandler;
+
 		for(var i = 0; i < this.values.length; i++) {
 		
 			field.setTitle(this.getTitle().duplicate());
@@ -462,6 +463,6 @@ BI.Forms.Field.prototype = {
 	},
 	
 	onChange: function(fct) {
-		this.changeHandler.push(fct);
+		this.changeHandler.add(fct);
 	}
 }

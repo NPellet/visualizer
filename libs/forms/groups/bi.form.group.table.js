@@ -85,7 +85,7 @@ BI.Forms.GroupFields.Table.prototype = {
 	},
 	
 	afterInit: function() {
-		console.log('Afterinit');
+		
 		var inst = this;
 		this.dom = this.section.getDom().find('[data-group-id=' + this.getId() + ']');
 		
@@ -226,7 +226,7 @@ BI.Forms.GroupFields.Table.prototype = {
 
 	duplicate: function(section) {
 		
-		var group = new BI.Forms.GroupFields.Table();
+		var group = new BI.Forms.GroupFields.Table(this.name);
 		section.addFieldGroup(group);
 		for(var i = 0; i < this.fields.length; i++)
 			var field = this.fields[i].duplicate(group);
@@ -280,9 +280,7 @@ BI.Forms.GroupFields.Table.prototype = {
 	
 	fillJson: function(json) {
 		
-		
 		this.emptyAllRows();
-		console.log(json);
 		done = false;
 		var fieldsByName = [];
 		for(var i = 0; i < this.fields.length; i++)

@@ -51,8 +51,6 @@ BI.Forms.Table.Field.prototype.showExpander = function(index) {
 	
 	this.domExpander.css({top: pos.top + height, width: width}).slideDown(100);
 	//this.group.stopEditing();
-	console.log(this.group);
-	console.log(this.group.fieldsWidth);
 	this.domExpander.show().css({
 		width: this.group.fieldsWidth + 1,
 		marginLeft: 0

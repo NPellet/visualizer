@@ -40,9 +40,9 @@ CI.Module.prototype._types.object_editor.View.prototype = {
 
 				if(!self.source)
 					self.source = {};
-				console.trace();
+				
 				CI.DataType.setValueFromJPath(self.source, elJPath, value);
-		//		CI.Repo.set(self.varname, self.source, true);
+				CI.Repo.set(self.varname, self.source, true);
 			}
 		});
 
@@ -77,17 +77,18 @@ CI.Module.prototype._types.object_editor.View.prototype = {
 			var self = this;
 
 			(function(value) {
-console.log(value);
+
 				$.when(self._inDom).done(function() {
-					console.log(value);
+
 					self.changing = true;
 					self.source = value;
 					
 					var fields = self.formBuilder.getFieldsByJPath();
-					for(var jpath in fields)
+					for(var jpath in fields) {
 						CI.DataType.getValueFromJPath(value, jpath).done(function(val) {
 							fields[jpath].implementation.setValue(0, val);
 						});
+					}
 					self.changing = false;
 				});
 			}) (moduleValue);

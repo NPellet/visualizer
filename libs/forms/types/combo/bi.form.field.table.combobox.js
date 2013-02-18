@@ -71,7 +71,7 @@ BI.Forms.Fields.Table.Combo.prototype.stopEditing = function(position) {
 
 
 BI.Forms.Fields.Table.Combo.prototype.expanderShowed = function(index) {
-	
+	console.log(this.optionsIndexed);
 	if(this.optionsIndexed[index] !== undefined) {
 	//	this.loadTree(index);
 		this.fillTree(index);

@@ -426,11 +426,17 @@ CI.DataViewHandler.prototype = {
 
 			// Always compare to the head of the local branch
 			var defLocal = self._getLocalHead(branch);
-			$.when(defLocal).then(function(el) {				
+			$.when(defLocal).then(function(el) {
 
+				// If the corresponding head does not exist, we copy the server data
+				// to the head of the corresponding local branch
 				if(!el._saved) {
 					//doServer(server, branch, rev);
-					self.serverCopy(server, branch, rev);
+					self.serverCopy(server, branch, 'head').done(function() {
+console.log(server);
+						doLocal(server, server._name, 'head');
+					});
+
 				} else {
 					var savedLocal = el._saved || 0;					
 					// Loads the latest file
@@ -657,9 +663,7 @@ CI.DataViewHandler.prototype = {
 		data._time = Date.now();
 		data._saved = Date.now();
 
-		
 		return this._localSave(data, rev, data._name).pipe(function(el) {
-
 			return self.make(el, data._name, rev);
 		});
 	},

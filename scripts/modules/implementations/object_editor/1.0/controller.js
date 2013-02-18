@@ -28,10 +28,6 @@ CI.Module.prototype._types.object_editor.Controller.prototype = {
 	configurationSend: {
 
 		events: {
-
-			onSave: {
-				label: 'Ok button is hit'
-			}
 			
 		},
 		
