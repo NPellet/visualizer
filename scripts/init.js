@@ -42,6 +42,16 @@ CI = new Object();
 	$("#visualizer-buttons").append(btn.render());
 
 
+
+	var btn = new BI.Buttons.Button('Save locally', function() {
+		CI.View.localSave(Entry.structure);
+	}, {});
+	
+	$("#visualizer-buttons").append(btn.render());
+
+
+
+
 	if(!(window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB))
 		$("#visualizer-dataviews-button").remove();		
 	else
@@ -101,11 +111,3 @@ CI = new Object();
 		});
 	});
 }) (jQuery);
-
-
-CI.AddButton = $('<div class="ci-cfg-add">+ Add</div>').bind('click', function() {
-	$(this).prev().children(':last').clone(true).appendTo($(this).prev());
-});
-
-
-CI.SaveButton = $('<div class="ci-cfg-save">Save</div>');

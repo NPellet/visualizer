@@ -42,6 +42,10 @@ window[_namespaces['table']].Tables.Row.prototype = {
 
 	},
 
+	removeDom: function() {
+		this.tr.remove();
+	},
+
 	build: function(index) {
 		this.tr.attr('data-elementid', index);	
 		var cols = this.Content.getTable().getColumns();

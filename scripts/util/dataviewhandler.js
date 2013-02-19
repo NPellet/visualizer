@@ -433,7 +433,6 @@ CI.DataViewHandler.prototype = {
 				if(!el._saved) {
 					//doServer(server, branch, rev);
 					self.serverCopy(server, branch, 'head').done(function() {
-console.log(server);
 						doLocal(server, server._name, 'head');
 					});
 
@@ -443,7 +442,7 @@ console.log(server);
 					el._name = branch;
 
 					if(savedLocal > saved)
-						doLocal(el, branch, rev);
+						doLocal(el, el._name, el._time || 'head');
 					else
 						doServer(server, branch, rev);
 				}
@@ -535,6 +534,11 @@ console.log(server);
 			});
 		});
 
+	},
+
+	localSave: function(obj) {
+		
+		this._localSave(obj, obj._time, obj._name);
 	},
 
 	localSnapshot: function(data) {
@@ -659,12 +663,12 @@ console.log(server);
 	serverCopy: function(data, branch, rev) {
 		var self = this;
 
-		data._name = data._name || branch;
-		data._time = Date.now();
+		data._name = data._name || branch || 'Master';
+		data._time = false;
 		data._saved = Date.now();
 
-		return this._localSave(data, rev, data._name).pipe(function(el) {
-			return self.make(el, data._name, rev);
+		return this._localSave(data, 'head', data._name).pipe(function(el) {
+			return self.make(el, data._name, 'head');
 		});
 	},
 
