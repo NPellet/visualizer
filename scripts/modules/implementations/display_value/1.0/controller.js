@@ -176,9 +176,7 @@ $.extend(CI.Module.prototype._types.display_value.Controller.prototype, CI.Modul
 	
 	
 	doSaveConfiguration: function(confSection) {
-	
 		var group = confSection[0].module[0];
-		
 		var fcolor = group.fcolor[0];
 	//	var bcolor = group.bcolor[0];
 		var font = group.font[0];
@@ -187,7 +185,6 @@ $.extend(CI.Module.prototype._types.display_value.Controller.prototype, CI.Modul
 		var sprintf = group.sprintf[0];
 		var valign = group.valign[0];
 		var defaultvalue = group.defaultvalue[0];
-		console.log(defaultvalue);
 		this.module.definition.configuration = {
 			frontcolor: fcolor,
 		//	backcolor: bcolor,

@@ -127,7 +127,7 @@ CI.RepoPool = function(options) {
 
 	this._killers = {};
 	this._value = [];
-	this.options = options || {};
+	this.options = options || { doNotSave: false};
 	
 	this.on('change', function(sourcekeys, value) {
 		var callbacks = {};
@@ -170,7 +170,7 @@ CI.RepoPool.prototype.set = function(keys, value, noTrigger) {
 
 	this._value = this._value || [];
 
-	if(this.options.doNotSave === true)
+	if(!(this.options.doNotSave === true))
 		this._value[keys] = [keys, value];
 
 	if(!noTrigger)
