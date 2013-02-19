@@ -1,3 +1,4 @@
+
 if(!window[_namespaces['table']].Tables) window[_namespaces['table']].Tables = {};
 
 window[_namespaces['table']].Tables.Row = function(jsonElement, Table, filter) {
@@ -44,6 +45,23 @@ window[_namespaces['table']].Tables.Row.prototype = {
 
 	removeDom: function() {
 		this.tr.remove();
+	},
+
+	overlay: function(message, color, fontcolor) {
+
+		var div = $("<div>").css({
+			position: 'absolute',
+			width: this.tr.outerWidth(),
+			height: this.tr.outerHeight(),
+			textAlign: 'center',
+			lineHeight: this.tr.outerHeight() + "px",
+			backgroundColor: color || 'white',
+			color: fontcolor || 'black',
+			marginLeft: "-" + this.tds[0].css('padding-left'),
+			marginTop: "-" + this.tds[0].css('margin-top')
+
+		}).html(message).hide().show('slow');
+		this.tds[0].prepend(div).css('vertical-align', 'top');
 	},
 
 	build: function(index) {
