@@ -35,11 +35,11 @@ CI.Module.prototype._types.webservice_search.View.prototype = {
 			});
 		}
 
-		this.search.find('input:last').trigger('keyup');
+		
 	},
 
 	inDom: function() {
-
+		this.search.find('input:last').trigger('keyup');
 	},
 	
 	onResize: function() {
