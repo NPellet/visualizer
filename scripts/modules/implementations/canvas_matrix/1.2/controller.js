@@ -44,7 +44,7 @@ $.extend(CI.Module.prototype._types.canvas_matrix.Controller.prototype, CI.Modul
 			return [xLabel[x], yLabel[y], gridData[y][x]];
 	},
 
-	init: function() {
+	initimpl: function() {
 		
 		var module = this.module;
 		var controller = this;

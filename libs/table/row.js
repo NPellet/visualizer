@@ -58,7 +58,8 @@ window[_namespaces['table']].Tables.Row.prototype = {
 			backgroundColor: color || 'white',
 			color: fontcolor || 'black',
 			marginLeft: "-" + this.tds[0].css('padding-left'),
-			marginTop: "-" + this.tds[0].css('margin-top')
+			marginTop: "-" + this.tds[0].css('margin-top'),
+			fontWeight: 'bold'
 
 		}).html(message).hide().show('slow');
 		this.tds[0].prepend(div).css('vertical-align', 'top');
