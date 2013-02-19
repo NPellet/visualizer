@@ -131,11 +131,6 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 	
 	typeToScreen: {
 		
-		
-		asString: function(val) {
-			return val;
-		}
-		
 	}
 }
  

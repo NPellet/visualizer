@@ -62,9 +62,10 @@ $(document).bind('configModule', function(event, module) {
 	
 		var actionsCfg = module.controller.actions;
 		var allActionsRels = [];
-		for(var i in actionsCfg.rel)
-			allActionsRels.push({ title: actionsCfg.rel[i], key: i});
-	
+		if(actionsCfg)
+			for(var i in actionsCfg.rel)
+				allActionsRels.push({ title: actionsCfg.rel[i], key: i});
+		
 		var section = new BI.Forms.Section('send', { multiple: false });
 		this.addSection(section);
 		section.setTitle(new BI.Title('Variables sent'));
