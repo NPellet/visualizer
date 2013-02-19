@@ -9,15 +9,11 @@
 if(typeof CI.Module.prototype._types.webservice_search == 'undefined')
 	CI.Module.prototype._types.webservice_search = {};
 
-CI.Module.prototype._types.webservice_search.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.webservice_search.Controller = function(module) {}
 
-CI.Module.prototype._types.webservice_search.Controller.prototype = {
+$.extend(CI.Module.prototype._types.webservice_search.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
-	
-	init: function() { 
+	initimpl: function() { 
 		this.searchTerms = {};
 		this.result = null;
 		this.request = null;
@@ -180,4 +176,4 @@ CI.Module.prototype._types.webservice_search.Controller.prototype = {
 
 	"export": function() {
 	}
-}
+});

@@ -9,15 +9,12 @@
 if(typeof CI.Module.prototype._types.display_list == 'undefined')
 	CI.Module.prototype._types.display_list = {};
 
-CI.Module.prototype._types.display_list.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.display_list.Controller = function(module) {}
 
-CI.Module.prototype._types.display_list.Controller.prototype = {
+$.extend(CI.Module.prototype._types.display_list.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
 	
-	init: function() {
+	initimpl: function() {
 		
 		var module = this.module;
 		var actions;
@@ -77,4 +74,4 @@ CI.Module.prototype._types.display_list.Controller.prototype = {
 		}
 	}
 
-}
+});

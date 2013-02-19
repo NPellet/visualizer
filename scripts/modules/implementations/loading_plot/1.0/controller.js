@@ -9,22 +9,10 @@
 if(typeof CI.Module.prototype._types.loading_plot == 'undefined')
 	CI.Module.prototype._types.loading_plot = {};
 
-CI.Module.prototype._types.loading_plot.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.loading_plot.Controller = function(module) {}
 
-CI.Module.prototype._types.loading_plot.Controller.prototype = {
-	
-	
-	init: function() {
+$.extend(CI.Module.prototype._types.loading_plot.Controller.prototype, CI.Module.prototype._impl.controller, {
 		
-		var module = this.module;
-		var actions;
-		if(!(actions = this.module.definition.dataSend))	
-			return;
-	},
-	
 	hover: function(data) {
 		var actions;
 		if(!(actions = this.module.definition.dataSend))	
@@ -380,4 +368,4 @@ CI.Module.prototype._types.loading_plot.Controller.prototype = {
 		
 	}
 
-}
+});

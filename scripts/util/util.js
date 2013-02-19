@@ -123,10 +123,12 @@ CI.Observable.prototype.unpush = function() {
 	});
 }
 
-CI.RepoPool = function() {
+CI.RepoPool = function(options) {
 
 	this._killers = {};
 	this._value = [];
+	this.options = options || {};
+	
 	this.on('change', function(sourcekeys, value) {
 		var callbacks = {};
 		this._keys = this._keys || [];
@@ -154,6 +156,9 @@ CI.RepoPool = function() {
 $.extend(CI.RepoPool.prototype, CI.Event.prototype);
 
 CI.RepoPool.prototype.get = function(key) {
+	if(this.options.doNotSave === true)
+		return;
+	
 	return this._value[key];
 }
 
@@ -164,7 +169,9 @@ CI.RepoPool.prototype.set = function(keys, value, noTrigger) {
 		keys = [];
 
 	this._value = this._value || [];
-	this._value[keys] = [keys, value];
+
+	if(this.options.doNotSave === true)
+		this._value[keys] = [keys, value];
 
 	if(!noTrigger)
 		this.trigger('change', keys, value);
@@ -266,6 +273,10 @@ CI.RepoPool.prototype.compareKeysRecursively = function(set1, set2, or) {
 }
 
 CI.RepoPool.prototype.resendAll = function() {
+
+	if(this.options.doNotSave === true)
+		return;
+
 	for(var i in this._value)
 		this.set(this._value[i][0], this._value[i][1]);
 }

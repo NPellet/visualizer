@@ -10,6 +10,8 @@ if(typeof CI.Module.prototype._types.spectra_displayer == 'undefined')
 	CI.Module.prototype._types.spectra_displayer = {};
 CI.Module.prototype._types.spectra_displayer.Model = function(module) { }
 $.extend(CI.Module.prototype._types.spectra_displayer.Model.prototype, CI.Module.prototype._impl.model);
+
+
 $.extend(CI.Module.prototype._types.spectra_displayer.Model.prototype, {
 
 		getValue: function() {

@@ -18,6 +18,7 @@ CI.EntryPoint = function(options, onLoad) {
 
 		CI.Repo = new CI.RepoPool();
 		CI.RepoHighlight = new CI.RepoPool();
+		CI.Actions = new CI.RepoPool();
 
 		CI.URLs = {};
 		var urlStructure = window.document.location.search.substring(1).split('&');

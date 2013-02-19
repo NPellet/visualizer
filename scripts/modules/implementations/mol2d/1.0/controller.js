@@ -9,22 +9,9 @@
 if(typeof CI.Module.prototype._types.mol2d == 'undefined')
 	CI.Module.prototype._types.mol2d = {};
 
-CI.Module.prototype._types.mol2d.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.mol2d.Controller = function(module) { }
 
-CI.Module.prototype._types.mol2d.Controller.prototype = {
-	
-	
-	init: function() {
-		
-		var module = this.module;
-		var actions;
-		if(!(actions = this.module.definition.dataSend))	
-			return;
-	
-	},
+$.extend(CI.Module.prototype._types.mol2d.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
 	configurationSend: {
 	},
@@ -131,4 +118,4 @@ CI.Module.prototype._types.mol2d.Controller.prototype = {
 
 		
 	}
-}
+});

@@ -60,6 +60,11 @@ $(document).bind('configModule', function(event, module) {
 		for(var i in availCfg.rels)
 			allRels.push({ title: availCfg.rels[i].label, key: i})
 	
+		var actionsCfg = module.controller.actions;
+		var allActionsRels = [];
+		for(var i in actionsCfg.rel)
+			allActionsRels.push({ title: actionsCfg.rel[i], key: i});
+	
 		var section = new BI.Forms.Section('send', { multiple: false });
 		this.addSection(section);
 		section.setTitle(new BI.Title('Variables sent'));
@@ -137,6 +142,68 @@ $(document).bind('configModule', function(event, module) {
 		}
 		field.implementation.setAutocompleteOptions(objs);
 
+
+		/****************************************************************/
+		/** ACTIONS *****************************************************/
+		/** SEND ********************************************************/
+		/****************************************************************/
+		
+		var section = this.addSection(new BI.Forms.Section('actionsout', {}, new BI.Title('Send Actions')));
+		var groupfield = new BI.Forms.GroupFields.Table('actions');
+		section.addFieldGroup(groupfield);
+		
+		var field = groupfield.addField({
+			type: 'Combo',
+			name: 'event',
+			title: new BI.Title('Event')
+		});
+		field.implementation.setOptions(allEvents);
+
+		var field = groupfield.addField({
+			type: 'Combo',
+			name: 'rel',
+			title: new BI.Title('Internal reference')
+		});
+		field.implementation.setOptions(allActionsRels);
+		
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'name',
+			title: new BI.Title('Action name')
+		});
+		
+		
+		/****************************************************************/
+		/** ACTIONS *****************************************************/
+		/** RECEIVE *****************************************************/
+		/****************************************************************/
+		
+
+
+		var section = this.addSection(new BI.Forms.Section('actionsin', {}, new BI.Title('Receive Actions')));
+		var groupfield = new BI.Forms.GroupFields.Table('actions');
+		section.addFieldGroup(groupfield);
+		
+		var field = groupfield.addField({
+			type: 'Combo',
+			name: 'rel',
+			title: new BI.Title('Reference')
+		});
+		field.implementation.setOptions(allActionsRels);
+		
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'name',
+			title: new BI.Title('Action name')
+		});
+		
+		
+		/****************************************************************/
+		/****************************************************************/
+
+
+		// Er ?
+		// Used ?
 		if(module.controller.addToReceivedVars)
 			module.controller.addToReceivedVars(groupfield);
 
@@ -157,6 +224,9 @@ $(document).bind('configModule', function(event, module) {
 				
 			module.setSendVars(value.send[0].sentvars[0]);
 			module.setSourceVars(value.receive[0].receivedvars[0]);
+
+			module.setActionsIn(value.actionsin[0].actions[0]);
+			module.setActionsOut(value.actionsout[0].actions[0]);
 
 			if(module.controller.processReceivedVars)
 				module.controller.processReceivedVars(value.receive[0].receivedvars[0]);
@@ -199,7 +269,6 @@ $(document).bind('configModule', function(event, module) {
 		
 		
 		var receivedVars = { rel: [], name: []};
-		
 		if(module.definition.dataSource) {
 			var currentCfg = module.definition.dataSource;
 			for(var i = 0; i < currentCfg.length; i++) {
@@ -210,6 +279,26 @@ $(document).bind('configModule', function(event, module) {
 					module.controller.fillReceivedVars(receivedVars, currentCfg[i], i);
 			}
 		}
+
+		var actionsin = { rel: [], name: []};
+		if(module.definition.actionsIn) {
+			var currentCfg = module.definition.actionsIn;
+			for(var i = 0; i < currentCfg.length; i++) {
+				actionsin.rel.push(currentCfg[i].rel);
+				actionsin.name.push(currentCfg[i].name);
+			}
+		}
+
+
+		var actionsout = { event: [], rel: [], name: []};
+		if(module.definition.actionsOut) {
+			var currentCfg = module.definition.actionsOut;
+			for(var i = 0; i < currentCfg.length; i++) {
+				actionsout.rel.push(currentCfg[i].rel);
+				actionsout.name.push(currentCfg[i].name);
+				actionsout.event.push(currentCfg[i].event);
+			}
+		}
 		
 		
 		var fill = {
@@ -217,7 +306,9 @@ $(document).bind('configModule', function(event, module) {
 				general: [ { groups: { general: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor ],  modulewrapper: [[ (module.definition.displayWrapper === true || module.definition.displayWrapper == undefined) ? 'display' : '' ]] }] } } ],
 				module: [ /*{ groups: */module.controller.doFillConfiguration ? module.controller.doFillConfiguration() : []/* } */],
 				send: [ { groups: {sentvars: [sentVars]}} ],
-				receive: [ { groups: {receivedvars: [receivedVars]}} ]
+				receive: [ { groups: {receivedvars: [receivedVars]}} ],
+				actionsin: [ { groups: {actions: [actionsin]}} ],
+				actionsout: [ { groups: {actions: [actionsout]}} ]
 			}
 		}
 		
@@ -232,185 +323,3 @@ $(document).bind('configModule', function(event, module) {
 	
 });
 
-
-function buildGeneralConfig(module) {
-	
-	var html = [];
-	html.push('<div><ul>');
-	
-	html.push('<li><label>Module name</label><input type="text" name="modulename" value="');
-	html.push(module.getTitle());
-	html.push('"></li>');
-	html.push('</ul></div>');
-	
-	var html = $(html.join(''));
-	
-	html.append(CI.SaveButton.clone(true).bind('click', function() {
-		module.setTitle($("input[name=modulename]").val());
-		/*Saver.doSave();*/
-	}).after('<div class="ci-spacer"></div>'));
-	
-	
-	$("#ci-right").append('<h3><span class="triangle-down"></span>General Configuration</h3>').append(html);
-}
-
-function buildSendConfig(module) {
-	
-	var availCfg = module.controller.getConfigurationSend();
-	var currentCfg = module.definition.dataSend;
-	
-	var jpaths = [];
-	for(var i in availCfg.rels) {
-		jpaths[i] = CI.Types._jPathToOptions(module.model.getjPath(i));
-	}
-	
-	var allEvents = [];
-	allEvents.push('<option></option>');
-	for(var i in availCfg.events) {
-		allEvents.push('<option value="');
-		allEvents.push(i);
-		allEvents.push('">');
-		allEvents.push(availCfg.events[i].label);
-		allEvents.push('</option>');
-	}
-	
-	var allRels = [];
-	allRels.push('<option></option>');
-	for(var i in availCfg.rels) {
-		allRels.push('<option value="');
-		allRels.push(i);
-		allRels.push('">');
-		allRels.push(availCfg.rels[i].label);
-		allRels.push('</option>');
-	}
-	
-	var cfgLine = [];
-	cfgLine.push('<li class="CfgSendEl"><ul><li><label>Event: </label><select class="_eventname">');
-	cfgLine.push(allEvents.join(''));
-	cfgLine.push('</select></li><li><label>Element: </label><select class="_eventrel">');
-	cfgLine.push(allRels.join(''));
-	cfgLine.push('</select></li><li><label>Fields to send: </label><select class="_eventkeys"></select></li><li><label>Store in: </label><input type="text" class="_eventvarname" /></li></ul></li>');
-	
-	var cfg = $(cfgLine.join(''));
-	cfg.find('select._eventrel').bind('change', function(event) {
-		var rel = $(this).val();
-		var keys;
-		var cfg = $(this).parents('.CfgSendEl');
-		var options = jpaths[rel];
-		cfg.find('select._eventkeys').html(options);
-	});
-	
-	function fillLine(currentCfg, line) {
-		line.find('select._eventname').val(currentCfg.event);
-		line.find('select._eventrel').val(currentCfg.rel);
-		line.find('select._eventrel').trigger('change');
-		line.find('input._eventvarname').val(currentCfg.name);
-		line.find('select._eventkeys').val(currentCfg.jpath);
-	}
-	
-	var wrapper = $("<div />").addClass('ci-send');
-	var html = $("<ul />");
-	
-	
-	for(var i = 0; currentCfg && i < currentCfg.length; i++) {
-		var line = cfg.clone(true);
-		fillLine(currentCfg[i], line);
-		html.append(line);
-	}
-
-	if(!currentCfg || currentCfg.length == 0) {
-		var line = cfg.clone(true);
-		html.append(line);
-	}
-	
-	
-	wrapper.append(html);
-	html.after(CI.AddButton.clone(true)).next().after(CI.SaveButton.clone(true).bind('click', function() {
-		var vars = [];
-		$(".ci-send").children('ul').children('li').each(function() {
-			vars.push({ event: $(this).find('._eventname').val(), name: $(this).find('._eventvarname').val(), rel: $(this).find('._eventrel').val(), jpath: $(this).find('._eventkeys').val() });
-		});
-		
-		module.setSendVars(vars);
-	/*	Entry.save();*/
-		
-	})).next().after('<div class="ci-spacer"></div>');
-	
-	$("#ci-right").append('<h3><span class="triangle-down"></span>Sending</h3>').append(wrapper);
-}
-
-
-function buildReceiveConfig(module) {
-	
-	var availCfg = module.controller.getConfigurationReceive();
-	var currentCfg = module.definition.dataSource;
-	
-	var allRels = [];
-	allRels.push('<option></option>');
-	for(var i in availCfg) {
-		allRels.push('<option value="');
-		allRels.push(i);
-		allRels.push('">');
-		allRels.push(availCfg[i].label);
-		allRels.push('</option>');
-	}
-	
-	var cfgLine = [];
-	cfgLine.push('<li class="CfgReceiveEl"><ul>');
-	cfgLine.push('<li><label>Element: </label><select class="_eventrel">');
-	cfgLine.push(allRels.join(''));
-	cfgLine.push('</select>');
-	cfgLine.push('<li><label>Stored in: </label><input type="text" class="_eventvarname" />')
-	cfgLine.push('</ul></li>')
-	
-	var cfg = $(cfgLine.join(''));
-	cfg.find('select._eventrel').bind('change', function(event) {
-	//	var rel = $(this).val();
-	//	var types = availCfg.rel.accepts;
-	//	var options = CI.Types._jPathToOptions(module.model.getjPath(rel, types));
-	
-	});
-	
-	function fillLine(currentCfg) {
-		//line.find('select._eventname').val(eventName);
-		line.find('select._eventrel').val(currentCfg.rel);
-		//line.find('select._eventrel').trigger('change');
-		line.find('input._eventvarname').val(currentCfg.name);
-		//line.find('select._eventkeys').val(currentCfg.keys);
-	}
-	
-	var wrapper = $("<div />").addClass('ci-receive');
-	var html = $("<ul />");
-	
-	if(currentCfg)
-		for(var i = 0; i < currentCfg.length; i++) {
-			
-			/*if(!currentCfg[i] instanceof Array)
-				currentCfg[i] = [currentCfg[i]];
-			*/
-			//for(var j = 0; j < currentCfg[i].length; j++) {
-				var line = cfg.clone(true);
-				fillLine(currentCfg[i], line, i);
-				html.append(line);
-			//}
-		}
-		
-	if(!currentCfg || currentCfg.length == 0) {
-		var line = cfg.clone(true);
-		html.append(line);
-	}
-	wrapper.append(html);
-	html.after(CI.AddButton.clone(true)).next().after(CI.SaveButton.clone(true).bind('click', function() {
-		
-		var vars = [];
-		$(".ci-receive").children('ul').children('li').each(function() {
-			vars.push({ name: $(this).find('._eventvarname').val(), rel: $(this).find('._eventrel').val() });
-		});
-		
-		module.setSourceVars(vars);
-	/*	Entry.save();*/
-		
-	})).next().after('<div class="ci-spacer"></div>');
-	
-	$("#ci-right").append('<h3><span class="triangle-down"></span>Receiving</h3>').append(wrapper);
-}

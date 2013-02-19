@@ -9,26 +9,17 @@
 if(typeof CI.Module.prototype._types.spectra_displayer == 'undefined')
 	CI.Module.prototype._types.spectra_displayer = {};
 
+
 CI.Module.prototype._types.spectra_displayer.Controller = function(module) {
-	CI.Module.prototype._impl.controller.init(module, this);
+
 }
 
-CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
-	
-	init: function() {
-	},
+
+$.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.Module.prototype._impl.controller, {
 
 	zoomChanged: function(min, max) {
-		var actions;
-		if(!(actions = this.module.definition.dataSend))	
-			return;
-		for(var i = 0; i < actions.length; i++) {
-			CI.API.blankSharedVar(actions[i].name);
-			if(actions[i].event == "onZoomChange") {
-				//console.log('Ok set');
-				CI.API.setSharedVarFromJPath(actions[i].name, {type: 'fromTo', value: {from: min, to: max}}, actions[i].jpath);
-			}
-		}
+		var obj = {type: 'fromTo', value: {from: min, to: max}};
+		this.sendAction('fromto', obj);
 	},
 	
 	configurationSend: {
@@ -72,9 +63,10 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 		moduleName: 'Spectrum viewer'
 	},
 
+	actions: {
+		rel: {'fromto': 'From - To'}
+	},
 
-
-	
 	doConfiguration: function(section) {
 		var groupfield = new BI.Forms.GroupFields.List('gencfg');
 		section.addFieldGroup(groupfield);
@@ -220,4 +212,4 @@ CI.Module.prototype._types.spectra_displayer.Controller.prototype = {
 				this.module.getConfiguration().continuous[val[i].name] = true;
 		}
 	}*/
-}
+});

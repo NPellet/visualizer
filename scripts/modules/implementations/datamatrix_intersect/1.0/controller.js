@@ -9,18 +9,7 @@
 if(typeof CI.Module.prototype._types.datamatrix_intersect == 'undefined')
 	CI.Module.prototype._types.datamatrix_intersect = {};
 
-CI.Module.prototype._types.datamatrix_intersect.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
 
-CI.Module.prototype._types.datamatrix_intersect.Controller.prototype = {
+$.extend(CI.Module.prototype._types.datamatrix_intersect.Controller, CI.Module.prototype._impl.controller, {
 	
-
-	init: function() {
-		
-		var module = this.module;
-		
-		
-	}
-}
+});

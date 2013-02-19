@@ -262,7 +262,6 @@ BI.Forms.Field.prototype = {
 			this.doReloadStructure('getsNotNull');
 		
 		this.doReloadStructure('change');
-		console.log('FIRE');
 		this.changeHandler.fireWith(this, [index, value]);
 	},
 	

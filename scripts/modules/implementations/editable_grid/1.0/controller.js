@@ -14,16 +14,7 @@ CI.Module.prototype._types.editable_grid.Controller = function(module) {
 	CI.Module.prototype._impl.controller.init(module, this);
 }
 
-CI.Module.prototype._types.editable_grid.Controller.prototype = {
-	
-	
-	init: function() {
-		
-		var module = this.module;
-		var actions;
-		if(!(actions = this.module.definition.dataSend))	
-			return;
-	},
+$.extend(CI.Module.prototype._types.editable_grid.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
 	lineHover: function(element) {
 		var actions;
@@ -261,4 +252,4 @@ CI.Module.prototype._types.editable_grid.Controller.prototype = {
 	"export": function() {
 		return this.module.view.table.exportToTabDelimited();
 	}
-}
+});

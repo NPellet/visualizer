@@ -9,15 +9,9 @@
 if(typeof CI.Module.prototype._types.button_url == 'undefined')
 	CI.Module.prototype._types.button_url = {};
 
-CI.Module.prototype._types.button_url.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.button_url.Controller = function(module) { }
 
-CI.Module.prototype._types.button_url.Controller.prototype = {
-	
-	
-	init: function() { },
+$.extend(CI.Module.prototype._types.button_url.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
 	onClick: function() {
 		var self = this;
@@ -117,4 +111,4 @@ CI.Module.prototype._types.button_url.Controller.prototype = {
 
 	"export": function() {
 	}
-}
+});

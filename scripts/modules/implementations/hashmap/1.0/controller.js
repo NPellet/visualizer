@@ -9,23 +9,10 @@
 if(typeof CI.Module.prototype._types.hashmap == 'undefined')
 	CI.Module.prototype._types.hashmap = {};
 
-CI.Module.prototype._types.hashmap.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.hashmap.Controller = function(module) {}
 
-CI.Module.prototype._types.hashmap.Controller.prototype = {
-	
-	
-	init: function() {
+$.extend(CI.Module.prototype._types.hashmap.Controller.prototype, CI.Module.prototype._impl.controller, {
 		
-		var module = this.module;
-		var actions;
-		if(!(actions = this.module.definition.dataSend))	
-			return;
-	
-	},
-	
 	configurationSend: {
 
 		
@@ -127,4 +114,4 @@ CI.Module.prototype._types.hashmap.Controller.prototype = {
 
 		this.module.getConfiguration().keys = cols;
 	},
-}
+});

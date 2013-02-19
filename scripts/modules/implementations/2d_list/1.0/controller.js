@@ -10,14 +10,12 @@ if(typeof CI.Module.prototype._types['2d_list'] == 'undefined')
 	CI.Module.prototype._types['2d_list'] = {};
 
 CI.Module.prototype._types['2d_list'].Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
 }
 
-CI.Module.prototype._types['2d_list'].Controller.prototype = {
+$.extend(CI.Module.prototype._types['2d_list'].Controller.prototype, CI.Module.prototype._impl.controller, {
 	
 	
-	init: function() {
+	initimpl: function() {
 		
 		var module = this.module;
 		var actions;
@@ -186,4 +184,4 @@ CI.Module.prototype._types['2d_list'].Controller.prototype = {
 			height: height
 		};
 	}
-}
+});

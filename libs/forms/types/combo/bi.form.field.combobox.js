@@ -20,8 +20,7 @@ BI.Forms.Fields.Combo.prototype = {
 	},
 	
 	setOptions: function(options, index) {
-		console.trace();
-console.log(options, index);
+		
 		if(index !== undefined)
 			this.optionsIndexed[index] = options;
 		else

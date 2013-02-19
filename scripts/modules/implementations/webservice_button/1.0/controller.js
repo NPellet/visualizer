@@ -9,15 +9,9 @@
 if(typeof CI.Module.prototype._types.webservice_button == 'undefined')
 	CI.Module.prototype._types.webservice_button = {};
 
-CI.Module.prototype._types.webservice_button.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.webservice_button.Controller = function(module) {}
 
-CI.Module.prototype._types.webservice_button.Controller.prototype = {
-	
-	
-	init: function() { },
+$.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
 	onClick: function() {
 		var self = this;
@@ -245,4 +239,4 @@ CI.Module.prototype._types.webservice_button.Controller.prototype = {
 	"export": function() {
 		return this.module.view.table.exportToTabDelimited();
 	}
-}
+});

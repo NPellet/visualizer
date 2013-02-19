@@ -300,7 +300,14 @@ CI.Module.prototype = {
 				
 		return false;
 	},
-	
+
+	getActionRelFromName: function(name) {
+		for(var i in this.definition.actionsIn)
+			if(this.definition.actionsIn[i].name == name)
+				return this.definition.actionsIn[i].rel;
+		return false;
+	},
+
 	inDom: function() {
 		if(typeof this.view.inDom == "function")
 			this.view.inDom();
@@ -354,12 +361,19 @@ CI.Module.prototype = {
 	},
 	
 	setSourceVars: function(vars) {
-		
 		this.definition.dataSource = vars;
 	},
 	
 	setSendVars: function(vars) {
 		this.definition.dataSend = vars;
+	},
+	
+	setActionsIn: function(vars) {
+		this.definition.actionsIn = vars;
+	},
+	
+	setActionsOut: function(vars) {
+		this.definition.actionsOut = vars;
 	},
 	
 	getId: function() {
@@ -471,9 +485,12 @@ CI.Module.prototype._impl = {
 
 		resetListeners: function() {
 			this.sourceMap = null;
-			if(this._listen)
-				CI.Repo.unListen(this.getVarNameList(), this._listen);
-			this._listen = CI.Repo.listen(this.getVarNameList(), $.proxy(this.listenCallback, this));
+			if(this._varlisten && this._actionlisten) {
+				CI.Repo.unListen(this.getVarNameList(), this._varlisten);
+				CI.Actions.unListen(this.getActionNameList(), this._actionlisten);
+			}
+			this._varlisten = CI.Repo.listen(this.getVarNameList(), $.proxy(this.onVarGet, this));
+			this._actionlisten = CI.Actions.listen(this.getActionNameList(), $.proxy(this.onActionTrigger, this));
 		},
 
 		getVarNameList: function() {
@@ -488,7 +505,20 @@ CI.Module.prototype._impl = {
 			return listFinal;
 		},
 
-		listenCallback: function(varValue, varName) {
+		getActionNameList: function() {
+			var list = this.module.definition.actionsIn, 
+				names = [];
+
+			if(!list)
+				return names;
+
+			for(var l = list.length, i = l - 1; i >= 0; i--)
+				names.push(list[i].name);
+
+			return names;
+		},
+
+		onVarGet: function(varValue, varName) {
 
 			if(!this.sourceMap)
 				return;
@@ -498,6 +528,13 @@ CI.Module.prototype._impl = {
 			
 			if(rel && this.module.view.update2 && this.module.view.update2[rel])
 				this.module.view.update2[rel].call(this.module.view, varValue, varName[0]);
+ 		},
+
+		onActionTrigger: function(value, actionName) {
+
+			var actionRel = this.module.getActionRelFromName(actionName[0]);
+			if(this.module.view.onActionReceive[actionRel])
+				this.module.view.onActionReceive[actionRel].call(this.module.view, value, actionName);
  		},
 
  		buildData: function(data, source) {
@@ -526,9 +563,22 @@ CI.Module.prototype._impl = {
 		/**
 		 * Initialise the given module's controller (mvc)
 		 */
-		init: function(module, controller) {
-			controller.module = module;
-			
+		init: function(module) {
+			this.module = module;	
+			if(this.initimpl)
+				this.initimpl();
+		},
+
+		sendAction: function(rel, value) {
+			var actionsOut = this.module.definition.actionsOut;
+			if(!actionsOut)
+				return;
+
+			var i = actionsOut.length - 1;
+			for(; i >= 0; i--) {
+				if(actionsOut[i].rel == rel)
+					CI.Actions.set(actionsOut[i].name, value);
+			}
 		}
 	}
 }

@@ -9,14 +9,11 @@
 if(typeof CI.Module.prototype._types.webservice_crontab == 'undefined')
 	CI.Module.prototype._types.webservice_crontab = {};
 
-CI.Module.prototype._types.webservice_crontab.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.webservice_crontab.Controller = function(module) {}
 
-CI.Module.prototype._types.webservice_crontab.Controller.prototype = {
+$.extend(CI.Module.prototype._types.webservice_crontab.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
-	init: function() {
+	initimpl: function() {
 		this.timeout = [];
 		this.doVariables();
 	},
@@ -208,4 +205,4 @@ CI.Module.prototype._types.webservice_crontab.Controller.prototype = {
 	"export": function() {
 		return this.module.view.table.exportToTabDelimited();
 	}
-}
+});

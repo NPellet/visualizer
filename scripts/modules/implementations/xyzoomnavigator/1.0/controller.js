@@ -9,21 +9,9 @@
 if(typeof CI.Module.prototype._types.xyzoomnavigator == 'undefined')
 	CI.Module.prototype._types.xyzoomnavigator = {};
 
-CI.Module.prototype._types.xyzoomnavigator.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.xyzoomnavigator.Controller = function(module) {}
 
-CI.Module.prototype._types.xyzoomnavigator.Controller.prototype = {
-	
-	
-	init: function() {
-		
-		var module = this.module;
-		var actions;
-		if(!(actions = this.module.definition.dataSend))	
-			return;
-	},
+$.extend(CI.Module.prototype._types.xyzoomnavigator.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
 	move: function(x,y) {
 		var actions;
@@ -34,7 +22,6 @@ CI.Module.prototype._types.xyzoomnavigator.Controller.prototype = {
 				CI.API.setSharedVarFromJPath(actions[i].name, [x,y], actions[i].jpath);
 			}
 	},
-
 
 	zoom: function(zoom) {
 		var actions;
@@ -114,4 +101,4 @@ CI.Module.prototype._types.xyzoomnavigator.Controller.prototype = {
 	"export": function() {
 
 	}
-}
+});

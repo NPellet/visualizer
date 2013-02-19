@@ -9,12 +9,9 @@
 if(typeof CI.Module.prototype._types.canvas_matrix == 'undefined')
 	CI.Module.prototype._types.canvas_matrix = {};
 
-CI.Module.prototype._types.canvas_matrix.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.canvas_matrix.Controller = function(module) {}
 
-CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
+$.extend(CI.Module.prototype._types.canvas_matrix.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
 	
 	getMatrixElementFromEvent: function(e) {
@@ -213,4 +210,4 @@ CI.Module.prototype._types.canvas_matrix.Controller.prototype = {
 		this.module.getConfiguration().colors = colors;
 		this.module.getConfiguration().highContrast = confSection[0].opts[0].highcontrast[0][0];
 	}
-}
+});

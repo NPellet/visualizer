@@ -9,22 +9,10 @@
 if(typeof CI.Module.prototype._types.object_editor == 'undefined')
 	CI.Module.prototype._types.object_editor = {};
 
-CI.Module.prototype._types.object_editor.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.object_editor.Controller = function(module) {}
 
-CI.Module.prototype._types.object_editor.Controller.prototype = {
-	
-	init: function() {
-		var module = this.module;
-		var actions;
-		this._currentValue = {};
-		if(!(actions = this.module.definition.dataSend))	
-			return;
-	},
-
-	
+$.extend(CI.Module.prototype._types.object_editor.Controller.prototype, CI.Module.prototype._impl.controller, {
+		
 	configurationSend: {
 
 		events: {
@@ -166,4 +154,4 @@ CI.Module.prototype._types.object_editor.Controller.prototype = {
 	"export": function() {
 		//return this.module.view.table.exportToTabDelimited();
 	}
-}
+});

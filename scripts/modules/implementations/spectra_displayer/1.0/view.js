@@ -114,6 +114,16 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			});
 		}
 	},
+
+
+
+	onActionReceive: {
+		fromto: function(value, name) {
+			if(this.dom.data('spectra'))
+				this.dom.data('spectra').setBoundaries(value.value.from, value.value.to);
+		}
+	},
+
 	
 	getDom: function() {
 		return this.dom;
