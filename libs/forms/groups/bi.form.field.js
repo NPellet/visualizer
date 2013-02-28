@@ -116,8 +116,9 @@ BI.Forms.Field.prototype = {
 	
 	setValue: function(index, value) {
 		this.values[index] = value;
-		if(this.options.onChange)
-			this.options.onChange(index, value);
+		/*if(this.options.onChange)
+			this.options.onChange(index, value);*/
+		//this.changeHandler.fireWith();
 	},
 		
 	resetDuplicate: function() {
@@ -262,6 +263,7 @@ BI.Forms.Field.prototype = {
 			this.doReloadStructure('getsNotNull');
 		
 		this.doReloadStructure('change');
+
 		this.changeHandler.fireWith(this, [index, value]);
 	},
 	
@@ -462,6 +464,7 @@ BI.Forms.Field.prototype = {
 	},
 	
 	onChange: function(fct) {
+		
 		this.changeHandler.add(fct);
 	}
 }

@@ -13,6 +13,10 @@ CI.Module.prototype._types.webservice_button.Controller = function(module) {}
 
 $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
+	initimpl: function() {
+		this.values = {};
+	},
+
 	onClick: function() {
 		var self = this;
 		var cfg = this.module.getConfiguration().variables, variable, type, url;
@@ -30,7 +34,7 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 				};
 
 				ajax.success = function(data) {
-
+					self.values[cfg[k].url] = data;
 					for(var j = 0; j < cfg[k].subvars.length; j++)
 						CI.API.setSharedVarFromJPath(cfg[k].subvars[j].variableget, data, cfg[k].subvars[j]._jpath || '');
 					self.module.view.buttonUpdate(true);
@@ -85,7 +89,7 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 	doConfiguration: function(section) {
 		
 		
-		var groupfield = new BI.Forms.GroupFields.List('cfg');
+		var groupfield = new BI.Forms.GroupFields.List('cfg'), self = this;
 		section.addFieldGroup(groupfield);
 		var field = groupfield.addField({
 			type: 'Text',
@@ -100,27 +104,27 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 		var groupfield = new BI.Forms.GroupFields.List('vardetails');
 		section2.addFieldGroup(groupfield);
 		
-		var field = groupfield.addField({
+		var url = groupfield.addField({
 			type: 'Text',
 			name: 'url'
 		});
-		field.setTitle(new BI.Title('URL'));
+		url.setTitle(new BI.Title('URL'));
 	
-		var field = groupfield.addField({
+		var field3 = groupfield.addField({
 			type: 'Text',
 			name: 'variable'
 		});
-		field.setTitle(new BI.Title('Source variable'));
+		field3.setTitle(new BI.Title('Source variable'));
 
 
 		var groupfield = new BI.Forms.GroupFields.Table('varvar');
 		section2.addFieldGroup(groupfield);
 	
-		var field = groupfield.addField({
+		var field2 = groupfield.addField({
 			type: 'Text',
 			name: 'variableget'
 		});
-		field.setTitle(new BI.Title('Target variable'));
+		field2.setTitle(new BI.Title('Target variable'));
 
 
 		var jpathfield = groupfield.addField({
@@ -129,16 +133,17 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 		});
 		jpathfield.setTitle(new BI.Title('jPath'));
 
-
-		field.onChange(function(index, value) {
+		url.onChange(function(index, value) {
 			
-			var jpath = [], variable = CI.Repo.get(value);
+			var jpath = [], variable = self.values[value];
 			if(!variable)
 				return;
-			
-			CI.DataType.getJPathsFromElement(variable[1], jpath);
-			var jpathfield = this.group.getField('_jpath');
-			jpathfield.implementation.setOptions(jpath, index);
+
+			CI.DataType.getJPathsFromElement(variable, jpath);
+			console.log(jpath);
+			this.group.section.fieldGroups[1].fields[1].implementation.setOptions(jpath);
+			//var jpathfield = this.group.getField('_jpath');
+			//jpathfield.implementation.setOptions(jpath, index);
 		});
 
 		/*var objs = [];

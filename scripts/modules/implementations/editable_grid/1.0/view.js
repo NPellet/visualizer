@@ -74,7 +74,7 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 				onLineHover: function(element) {
 					
 					var source = element._source;
-					view.module.controller.lineHover(source);
+					view.module.controller.lineHover(source, element);
 				},
 
 				onLineOut: function(element) {
@@ -86,7 +86,7 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 				onLineClick: function(element) {
 					
 					var source = element._source;
-					view.module.controller.lineClick(source);
+					view.module.controller.lineClick(source, element);
 				},
 
 				onPageChanged: function(newPage) {

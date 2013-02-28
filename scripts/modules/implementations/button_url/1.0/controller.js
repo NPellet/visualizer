@@ -44,6 +44,13 @@ $.extend(CI.Module.prototype._types.button_url.Controller.prototype, CI.Module.p
 			description: 'Color'
 		},
 
+
+		disabled: {
+			type: ["boolean", "number"],
+			label: 'Disabled',
+			description: 'Disabled'
+		},
+
 		url: {
 			type: ["string"],
 			label: 'URL',
@@ -80,6 +87,13 @@ $.extend(CI.Module.prototype._types.button_url.Controller.prototype, CI.Module.p
 			{ title: 'Red', key: 'red'}
 		]);
 
+		var field = groupfield.addField({
+			type: 'Checkbox',
+			name: 'disabled'
+		});
+		field.setTitle(new BI.Title('Disabled'));
+		field.implementation.setOptions({'disabled': ''});
+
 
 		var field = groupfield.addField({
 			type: 'Text',
@@ -97,6 +111,7 @@ $.extend(CI.Module.prototype._types.button_url.Controller.prototype, CI.Module.p
 				cfg: [{
 					label: [cfg.label],
 					color: [cfg.color],
+					disabled: [cfg.disabled ? ['disabled'] : []],
 					url: [cfg.url]
 				}]
 			}
@@ -107,6 +122,7 @@ $.extend(CI.Module.prototype._types.button_url.Controller.prototype, CI.Module.p
 		this.module.getConfiguration().label = confSection[0].cfg[0].label[0];
 		this.module.getConfiguration().url = confSection[0].cfg[0].url[0];
 		this.module.getConfiguration().color = confSection[0].cfg[0].color[0];
+		this.module.getConfiguration().disabled = confSection[0].cfg[0].disabled[0][0] == 'disabled';
 	},
 
 	"export": function() {

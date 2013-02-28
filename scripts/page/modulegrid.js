@@ -43,6 +43,7 @@ CI.Grid = {
 			}
 
 			$menu.append('<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Configure entry point</a></li>');
+			$menu.append('<li class="ci-item-configureactions" name="refresh"><a><span class="ui-icon ui-icon-clock"></span>Configure actions</a></li>');
 			$menu.append('<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>');
 
 			$menu.append($li);
@@ -78,9 +79,10 @@ CI.Grid = {
 						CI.Grid.newModule(moduleName);
 					else if(ui.item.hasClass('ci-item-refresh'))
 						document.location.href = document.location.href;
-					else if (ui.item.hasClass('ci-item-configureentrypoint')) {
+					else if (ui.item.hasClass('ci-item-configureentrypoint'))
 						configureEntryPoint();
-					}
+					else if(ui.item.hasClass('ci-item-configureactions'))
+						configureActions();
 
 				}
 			});

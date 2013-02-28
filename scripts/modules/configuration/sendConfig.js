@@ -80,21 +80,24 @@ $(document).bind('configModule', function(event, module) {
 		field.implementation.setOptions(allEvents);
 		field.setTitle(new BI.Title('Event'));
 		
-		var field = groupfield.addField({
+		var fieldRel = groupfield.addField({
 			type: 'Combo',
 			name: 'rel'
 		});
-		field.implementation.setOptions(allRels);
-		field.onChange(function(index) {
-			var value = this.getValue(index), jpath = this.group.getField('jpath');
+		fieldRel.implementation.setOptions(allRels);
+
+
+		fieldRel.onChange(function(index) {
+			//console.log('Fired');
+			var value = this.getValue(index), 
+				jpath = this.group.getField('jpath');
 			if(!jpath)
 				return;
-			
 			jpath.implementation.setOptions(sendjpaths[value], index);
 		});
 		
 		
-		field.setTitle(new BI.Title('Internal reference'));
+		fieldRel.setTitle(new BI.Title('Internal reference'));
 		
 		var field = groupfield.addField({
 			type: 'Combo',

@@ -31,12 +31,7 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 			}
 		},
 		
-		rels: {
-			'fromTo': {
-				label: 'From - To',
-				description: 'Sends the coordinates of the zoom'
-			}
-		}
+		rels: { }
 	},
 	
 	configurationReceive: {

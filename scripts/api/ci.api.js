@@ -122,3 +122,11 @@ CI.API.setSharedVar = function(name, value) {
 	CI.Repo.set(name, value);
 }
 
+CI.API.executeActionScript = function(actionname, value) {
+
+	var script = Entry.getActionScriptsEvaluated(actionname);
+	// Execute the script
+	if(script)
+		script(value);
+}
+

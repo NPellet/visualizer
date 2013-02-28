@@ -101,6 +101,8 @@ window[_namespaces['table']].Tables.Row.prototype = {
 	},
 
 	hasChanged: function(obj, jpath) {
+		if(!obj)
+			return;
 
 		if(this.filter)
 			this.filter(obj.value, obj.oldValue, jpath, this._source, this, this.Content.getTable().getColumns());
@@ -128,6 +130,10 @@ window[_namespaces['table']].Tables.Row.prototype = {
 
 	getBackgroundColor: function() {
 		return this.tr.css('backgroundColor');
+	},
+
+	setFontColor: function(color) {
+		this.tr.css('color', color);
 	},
 
 	setItalic: function(bln) {

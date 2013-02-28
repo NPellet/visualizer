@@ -16,7 +16,10 @@ CI.Module.prototype._types.editable_grid.Controller = function(module) {
 
 $.extend(CI.Module.prototype._types.editable_grid.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
-	lineHover: function(element) {
+	lineHover: function(element, row) {
+
+		this.sendAction('row', [element, row], 'onHover');
+
 		var actions;
 		if(!(actions = this.module.definition.dataSend))	
 			return;	
@@ -31,8 +34,12 @@ $.extend(CI.Module.prototype._types.editable_grid.Controller.prototype, CI.Modul
 		CI.RepoHighlight.set(element._highlight, 0);
 	},
 
-	lineClick: function(element) {
+	lineClick: function(element, row) {
 		
+
+		this.sendAction('row', [element, row], 'onSelect');
+
+
 		var actions;
 		if(!(actions = this.module.definition.dataSend))	
 			return;
@@ -83,6 +90,10 @@ $.extend(CI.Module.prototype._types.editable_grid.Controller.prototype, CI.Modul
 		moduleName: 'Editable table'
 	},
 	
+	actions: {
+		rel: {'row': 'Row Source'}
+	},
+
 	
 	
 	

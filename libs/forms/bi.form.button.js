@@ -13,7 +13,7 @@ BI.Buttons.Button = function(label, onClick, options) {
 	this.color = this.options.color || '';
 
 	this.value = 0;
-	this.disabled = false;
+	this.disabled = this.options.disabled || false;
 	
 	this.id = ++BI.Buttons.Button.prototype.absId;
 	BI.Buttons.Button.prototype._buttons[this.id] = this;
@@ -35,6 +35,7 @@ BI.Buttons.Button.prototype = {
 
 	setLabel: function(label) {
 		this.title.setLabel(label);
+		$("#button-" + this.id).children().html(label);
 	},
 	
 	setOnClick: function(fct) {

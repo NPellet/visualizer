@@ -3,7 +3,7 @@ html, body {
 	padding: 0;
 }
 
-body, th, td {
+body {
 	font-family: "Helvetica Neue", Helvetica, Arial, Serif;
 	font-size: 11px;
 	color: black;

@@ -648,10 +648,10 @@ CI.DataType.getStructureFromElement = function(element) {
 	
 	var structure = {};
 	var el = element;
-	if(element === undefined)
+	if(element === undefined || element === null)
 		return;
 		
-	if(element.type) 
+	if(element.type)
 		element = element.value;
 	
 	if(el !== false && el.type && CI.DataType.Structures[el.type]) {

@@ -355,6 +355,14 @@ CI.Module.prototype = {
 			
 		return this.definition.size;
 	},
+
+	getWidthPx: function() {
+		return this.definition.size.width * CI.Grid.definition.xWidth;
+	},
+
+	getHeightPx: function() {
+		return this.definition.size.height * CI.Grid.definition.yHeight;
+	},
 	
 	getId: function() {
 		return this.definition.id;
@@ -569,15 +577,17 @@ CI.Module.prototype._impl = {
 				this.initimpl();
 		},
 
-		sendAction: function(rel, value) {
+		sendAction: function(rel, value, event) {
 			var actionsOut = this.module.definition.actionsOut;
 			if(!actionsOut)
 				return;
-
 			var i = actionsOut.length - 1;
 			for(; i >= 0; i--) {
-				if(actionsOut[i].rel == rel)
-					CI.Actions.set(actionsOut[i].name, value);
+				if(actionsOut[i].rel == rel && ((event && event == actionsOut[i].event) || !event)) {
+					actionname = actionsOut[i].name;
+					CI.API.executeActionScript(actionname, value);
+					CI.Actions.set(actionname, value);
+				}
 			}
 		}
 	}

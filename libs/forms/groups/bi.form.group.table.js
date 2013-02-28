@@ -50,7 +50,6 @@ BI.Forms.GroupFields.Table.prototype = {
 	
 	getField: function(fieldName) {
 		for(var i = 0; i < this.fields.length; i++) {
-			
 			if(this.fields[i].getName() == fieldName)
 				return this.fields[i];
 		}

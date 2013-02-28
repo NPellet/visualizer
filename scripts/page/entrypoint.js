@@ -151,6 +151,9 @@ CI.EntryPoint = function(options, onLoad) {
 		entryPoint.structure = structure;
 		Saver.setLatestScript(structure);
 		
+
+
+
 		if(!structure.entryPoint) 
 			structure.entryPoint = { variables: [] };
 		
@@ -178,6 +181,15 @@ CI.EntryPoint = function(options, onLoad) {
 		});
 			
 		entryPoint.entryData = structure.entryPoint;
+		
+		var scripts = entryPoint.entryData.actionscripts;
+		var evaled = {};
+		if(scripts) {
+			for(var i = 0, l = scripts.length; i < l; i++) {
+				eval("evaled[scripts[i].name] = function(value) { " + scripts[i].script + " }");
+			}
+			entryPoint.setActionScripts(scripts, evaled);
+		}
 		
 		if(structure.modules !== undefined)
 			for(var i = 0; i < structure.modules.length; i++) {
@@ -261,7 +273,20 @@ CI.EntryPoint.prototype = {
 		this.entryData.variables = vars;
 		this.loaded();
 	},
-		
+
+	getActionScripts: function() {
+		return (this.entryData.actionscripts = this.entryData.actionscripts || []);
+	},
+
+	getActionScriptsEvaluated: function(name) {
+		return this.evaluatedScripts[name] || false;
+	},
+
+	setActionScripts: function(scripts, evals) {
+		this.entryData.actionscripts = scripts;
+		this.evaluatedScripts = evals;
+	},
+
 	getDataFromSource: function(child) {
 		return this.data;
 		/*
