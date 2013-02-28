@@ -52,7 +52,7 @@ CI.Module.prototype._types['2d_list'].View.prototype = {
 
 			current = undefined;
 			var self = this;
-			this.inDom = false;
+			this._inDom = false;
 			CI.DataType.fetchElementIfNeeded(moduleValue).done(function(val) {
 				self.list = val;
 				var table = $('<table cellpadding="3" cellspacing="0">');
@@ -86,11 +86,11 @@ CI.Module.prototype._types['2d_list'].View.prototype = {
 							if(current)
 								current.appendTo(table);
 
-							if(view.inDom) {
+							if(view._inDom) {
 								CI.Util.ResolveDOMDeferred(table);
 							}
 
-							view.inDom = true;
+							view._inDom = true;
 						}
 					});
 				}
@@ -99,9 +99,9 @@ CI.Module.prototype._types['2d_list'].View.prototype = {
 
 				view.dom.html(table);
 
-				if(view.inDom)
+				if(view._inDom)
 					CI.Util.ResolveDOMDeferred(table);
-								view.inDom = true;
+								view._inDom = true;
 
 			});
 			
