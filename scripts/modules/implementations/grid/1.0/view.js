@@ -51,7 +51,6 @@ CI.Module.prototype._types.grid.View.prototype = {
 
 		list: function(moduleValue) {
 		
-console.log(moduleValue);
 			CI.RepoHighlight.kill(this.module.id);
 /*
 			for(var i = 0; i < this._highlights.length; i++) {
