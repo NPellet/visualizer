@@ -39,6 +39,10 @@ $.extend(CI.Module.prototype._types.plot.Controller.prototype, CI.Module.prototy
 		}
 	},
 	
+	actions: {
+		rel: {'addSerie': 'Add a serie', 'removeSerie': 'Remove a serie'}
+	},
+
 	moduleInformations: {
 		moduleName: 'Chart (Norman)'
 	},

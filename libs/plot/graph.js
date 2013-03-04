@@ -24,14 +24,16 @@ var Graph = function(dom, options) {
 Graph.prototype = {
 	
 	defaults: {
-		paddingTop: 40,
+		paddingTop: 30,
 		paddingBottom: 30,
 		paddingLeft: 20,
 		paddingRight: 20,
 
 		closeLeft: true,
 		closeRight: true,
-		closeTop: true
+		closeTop: true,
+
+		title: ''
 	},
 
 
@@ -45,9 +47,12 @@ Graph.prototype = {
 		this.dom.appendChild(this.defs);
 
 
-		this.domTitle = document.createElementNS(this.ns, 'title');
+		this.domTitle = document.createElementNS(this.ns, 'text');
 		this.domTitle.setAttribute('text-anchor', 'middle');
 		this.domTitle.setAttribute('y', 20); // 20px from the top ?
+
+		this.setTitle(this.options.title);
+		this.dom.appendChild(this.domTitle);
 
 		this.graphingZone = document.createElementNS(this.ns, 'g');
 		this.graphingZone.setAttribute('transform', 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')')
@@ -205,7 +210,7 @@ Graph.prototype = {
 	// Title
 	setTitle: function(title) {
 		this.title = title;
-		this.domTitle.nodeValue = title;
+		this.domTitle.textContent = title;
 	},
 
 	displayTitle: function() {
@@ -312,7 +317,7 @@ Graph.prototype = {
 	},
 
 	redraw: function() {
-console.log(this.width, this.height);
+
 		if(!this.width || !this.height)
 			return;
 
@@ -510,8 +515,11 @@ var GraphAxis = function() {
 
 GraphAxis.prototype = {
 
-	init: function(graph) {
+
+	init: function(graph, options) {
 		this.graph = graph;
+//		this.options = $.extend({}, GraphAxis.prototype.defaults, options);
+
 		this.group = document.createElementNS(this.graph.ns, 'g');
 
 
@@ -553,11 +561,16 @@ GraphAxis.prototype = {
 		this.ticks = [];
 		this.tickPosition = 1;
 
+		this.lineAt0 = false;
 		this.axisDataSpacing = {min: 0.1, max: 0.1};
 		this.primaryGrid = false;
 		this.secondaryGrid = false;
-		this.lineAt0 = true;
+		
 
+	},
+
+	setLineAt0: function(bool) {
+		this.lineAt0 = bool;
 	},
 
 	setAxisDataSpacing: function(val1, val2) {
@@ -615,7 +628,7 @@ GraphAxis.prototype = {
 	},
 
 	getNbTicksPrimary: function() {
-		return this.nbTicksPrimary || 5;
+		return this.nbTicksPrimary || 3;
 	},
 
 	getNbTicksSecondary: function() {
@@ -657,6 +670,9 @@ GraphAxis.prototype = {
 				13'453 (4) => 1.345
 				0.0000341 (-5) => 3.41
 		*/
+
+		this.decimals = - decimals;
+
 		var possibleTicks = [1,2,5,10];
 		var closest = false;
 		for(var i = possibleTicks.length - 1; i >= 0; i--)
@@ -711,6 +727,11 @@ GraphAxis.prototype = {
 		// Remove all ticks
 		while(this.groupTicks.firstChild)
 			this.groupTicks.removeChild(this.groupTicks.firstChild);
+
+
+		// Remove all ticks
+		while(this.groupTickLabels.firstChild)
+			this.groupTickLabels.removeChild(this.groupTickLabels.firstChild);
 
 		// Remove all grids
 		while(this.groupGrids.firstChild)
@@ -841,6 +862,7 @@ GraphAxis.prototype = {
 			incrTick += primary[0];
 		}
 
+		this.widthHeightTick = widthHeight;
 		return widthHeight;
 	},
 
@@ -867,7 +889,12 @@ GraphAxis.prototype = {
 
 	valueToText: function(value) {
 		value = value * Math.pow(10, this.getExponentialFactor()) * Math.pow(10, this.getExponentialLabelFactor());
-		return value.toPrecision(2);
+
+		var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
+		if(dec > 0)
+			return value.toFixed(dec);
+
+		return value.toFixed(0);
 	},
 
 	getExponentialFactor: function() {
@@ -968,11 +995,11 @@ GraphXAxis = function(graph) {
 $.extend(GraphXAxis.prototype, GraphAxis.prototype, {
 
 	getAxisPosition: function() {
-		return 100;
+		return 50;
 	},
 
 	getAxisWidthHeight: function() {
-		return 100;
+		return 50;
 	},
 
 	_setShift: function() {
@@ -1019,7 +1046,9 @@ $.extend(GraphXAxis.prototype, GraphAxis.prototype, {
 		//this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
 
 		// Place label correctly
+		this.label.setAttribute('text-anchor', 'middle');
 		this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
+
 		this.label.setAttribute('y', 35);
 
 		this.line.setAttribute('x1', this.getMinPx());
@@ -1111,7 +1140,7 @@ $.extend(GraphYAxis.prototype, GraphAxis.prototype, {
 
 		// Place label correctly
 		//this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-		this.label.setAttribute('transform', 'translate(-30, ' + ((this.getMaxPx() - this.getMinPx()) / 2) +') rotate(-90)');
+		this.label.setAttribute('transform', 'translate(' + (-this.widthHeightTick - 10 - 5) + ', ' + ((this.getMaxPx() - this.getMinPx()) / 2) +') rotate(-90)');
 
 		this.line.setAttribute('y1', this.getMinPx());
 		this.line.setAttribute('y2', this.getMaxPx());
@@ -1291,7 +1320,15 @@ GraphSerie.prototype = {
 		}
 
 		this.data = datas;
+	},
 
+	kill: function() {
+		this.graph.plotGroup.removeChild(this.groupMain);
+		this.graph.plotGroup.removeChild(this.marker);
+		this.graph.redraw();
+
+		// Remove serie
+		this.graph.series.splice(this.graph.series.indexOf(this), 1);
 	},
 
 	getName: function() {

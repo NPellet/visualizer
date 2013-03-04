@@ -357,11 +357,11 @@ CI.Module.prototype = {
 	},
 
 	getWidthPx: function() {
-		return this.definition.size.width * CI.Grid.definition.xWidth;
+		return this.getDomContent().innerWidth();
 	},
 
 	getHeightPx: function() {
-		return this.definition.size.height * CI.Grid.definition.yHeight;
+		return this.getDomContent().innerHeight();
 	},
 	
 	getId: function() {
@@ -541,7 +541,7 @@ CI.Module.prototype._impl = {
 		onActionTrigger: function(value, actionName) {
 
 			var actionRel = this.module.getActionRelFromName(actionName[0]);
-			if(this.module.view.onActionReceive[actionRel])
+			if(this.module.view.onActionReceive && this.module.view.onActionReceive[actionRel])
 				this.module.view.onActionReceive[actionRel].call(this.module.view, value, actionName);
  		},
 

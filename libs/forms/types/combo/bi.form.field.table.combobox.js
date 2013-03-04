@@ -36,7 +36,12 @@ BI.Forms.Fields.Table.Combo.prototype.setText = function(index, text) {
 };
 	
 BI.Forms.Fields.Table.Combo.prototype.setText = function(index, value) {	
-	this.divs[index].html(value);
+
+	if(this.divs && this.divs[index])
+		this.divs[index].html(value);
+
+	if(this.html && this.html[index])
+		this.html[index].html(value);
 //	this.main.changeValue(index, value);
 }
 
@@ -71,7 +76,7 @@ BI.Forms.Fields.Table.Combo.prototype.stopEditing = function(position) {
 
 
 BI.Forms.Fields.Table.Combo.prototype.expanderShowed = function(index) {
-	console.log(this.optionsIndexed);
+	
 	if(this.optionsIndexed[index] !== undefined) {
 	//	this.loadTree(index);
 		this.fillTree(index);

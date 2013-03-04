@@ -34,6 +34,15 @@ $.extend(CI.Module.prototype._types.webservice_search.Controller.prototype, CI.M
 			url = url.replace('<' + i + '>', encodeURIComponent(this.searchTerms[i]));
 		}
 
+
+		var reg = /\<var:([a-zA-Z0-9]+)\>/;
+		while(val = reg.exec(url)) {
+			variable = CI.Repo.get(val[1]) || [''];
+			variable = variable[1];
+			url = url.replace('<var:' + val[1] + '>', variable);
+		}
+		
+
 		this.request = $.getJSON(url, {}, function(data) {
 			self.request = null;
 			self.onSearchDone(data);

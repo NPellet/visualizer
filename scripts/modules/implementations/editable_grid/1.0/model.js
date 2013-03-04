@@ -48,6 +48,8 @@ $.extend(CI.Module.prototype._types.editable_grid.Model.prototype, {
 			// It's an array of equivalent elements
 			// Don't need to merge a list
 			// It's like that since the data is typed and we know the structure
+			data = CI.DataType.getValueIfNeeded(data);
+			
 			var data = data[0];
 			var jpaths = []; 
 			CI.DataType.getJPathsFromElement(data, jpaths);

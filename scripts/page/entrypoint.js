@@ -225,6 +225,7 @@ CI.EntryPoint.prototype = {
 		if(this.entryData && this.entryData.variables && this.entryData.variables.length > 0) {
 			var vars = this.entryData.variables;
 			for(var i = 0; i < vars.length; i++) {
+				console.log(vars[i]);
 				if(!vars[i].jpath && vars[i].url) {
 					(function(variable) {
 						self.data[variable.varname] = { value: null, url: variable.url };
@@ -279,6 +280,9 @@ CI.EntryPoint.prototype = {
 	},
 
 	getActionScriptsEvaluated: function(name) {
+		if(!this.evaluatedScripts)
+			return false;
+		
 		return this.evaluatedScripts[name] || false;
 	},
 

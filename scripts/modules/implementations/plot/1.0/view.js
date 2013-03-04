@@ -19,7 +19,7 @@ CI.Module.prototype._types.plot.View.prototype = {
 		var html = [];
 		html.push('<div />');
 		this.dom = $(html.join(''));
-		this.module.getDomContent().html(this.dom);
+		this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
 	},
 	
 	inDom: function() {},
@@ -49,28 +49,37 @@ CI.Module.prototype._types.plot.View.prototype = {
 			if(this.graph)
 				this.graph.kill();
 
-			this.graph = new Graph(this.dom.get(0));
+			this.graph = new Graph(this.dom.get(0), moduleValue.options || {});
 			var graph = this.graph;
 
 			if(moduleValue.leftAxis) {
 				graph.getLeftAxis(0).setExponentialFactor(moduleValue.leftAxis.exponentialFactor || 0);
 				graph.getLeftAxis(0).setLabel(moduleValue.leftAxis.label);
+				graph.getLeftAxis(0).setLineAt0(moduleValue.leftAxis.lineAt0 || false);
 				if(moduleValue.leftAxis.forceMin)
 					graph.getLeftAxis(0).forceMin(moduleValue.leftAxis.forceMin);
 				if(moduleValue.leftAxis.forceMax)
 					graph.getLeftAxis(0).forceMax(moduleValue.leftAxis.forceMax);
 				graph.getLeftAxis(0).flip(!!moduleValue.leftAxis.flipped);
+
+				graph.getLeftAxis(0).setAxisDataSpacingMin(moduleValue.leftAxis.minSpacing);
+				graph.getLeftAxis(0).setAxisDataSpacingMax(moduleValue.leftAxis.maxSpacing);
+
 			}
 
 
 			if(moduleValue.xAxis) {
 				graph.getXAxis(0).setExponentialFactor(moduleValue.xAxis.exponentialFactor || 0);
 				graph.getXAxis(0).setLabel(moduleValue.xAxis.label);
+				graph.getXAxis(0).setLineAt0(moduleValue.xAxis.lineAt0 || false);
 				if(moduleValue.xAxis.forceMin)
 					graph.getXAxis(0).forceMin(moduleValue.xAxis.forceMin);
 				if(moduleValue.xAxis.forceMax)
 					graph.getXAxis(0).forceMax(moduleValue.xAxis.forceMax);
 				graph.getXAxis(0).flip(!!moduleValue.xAxis.flipped);
+
+				graph.getXAxis(0).setAxisDataSpacingMin(moduleValue.xAxis.minSpacing);
+				graph.getXAxis(0).setAxisDataSpacingMax(moduleValue.xAxis.maxSpacing);
 			}
 
 
@@ -79,17 +88,27 @@ CI.Module.prototype._types.plot.View.prototype = {
 					serie = graph.newSerie(i, moduleValue.series[i].options || {});
 					serie.autoAxis();
 					serie.setData(moduleValue.series[i].data);
-					serie.showMarkers();
 					this.series.push(serie);
 				}
 			}
-
 			
 			this.onResize(this.module.getWidthPx(), this.module.getHeightPx());
+		}
+	},
+
+	onActionReceive:  {
+
+		addSerie: function(value) {
+			this.onActionReceive.removeSerie(value.name)
+			this.graph.newSerie(value.name, value);
 		},
 
-		serie: function(moduleValue, name) {
-
+		removeSerie: function(serieName) {
+			for(var i = 0, l = this.series.length; i < l; i++) {
+				if(this.series[i].getName() == name) {
+					this.series[i].kill();
+				}
+			}
 		}
 	},
 	

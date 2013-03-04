@@ -133,8 +133,9 @@ BI.Forms.Fields.Combo.prototype = {
 	
 
 	
-	setValue: function(index, value) {
+	setValue: function(index, value) {		
 		this.main.changeValue(index, value);
+		console.log(index, value);
 		this.checkFillState(index);
 	},
 	
@@ -146,13 +147,15 @@ BI.Forms.Fields.Combo.prototype = {
 			options = this.optionsIndexed[index];
 
 		var element = this.lookRecursively(this.main.getValue(index), options);
-
+console.log(element, index);
 		if(element) {
 			this.setText(index, element.title);
 			var show = ((element.data && element.data.show) || '').split(' ');
 			for(var i = 0, l = show.length; i < l; i++) {
 				this.main.section.showHideSubSection(show, true);				
 			}
+		} else {
+			this.setText(index, '');
 		}
 	},
 	

@@ -20,7 +20,7 @@ BI.Forms.Field.prototype = {
 		this.isInit;
 		this.groupId;
 		
-		this.changeHandler = this.changeHandler || $.Callbacks();
+		this.changeHandler = $.Callbacks();
 		this.styledElement, this.valInput, this.placeHolderElement;
 		
 		if(!this.options.reloadStructure instanceof Array)

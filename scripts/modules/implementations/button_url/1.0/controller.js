@@ -16,7 +16,12 @@ $.extend(CI.Module.prototype._types.button_url.Controller.prototype, CI.Module.p
 	onClick: function() {
 		var self = this;
 		var url = this.module.view.url || this.module.getConfiguration().url;
-		document.location.href = url;
+
+		if(url)
+			document.location.href = url;
+
+		if(this.module.getConfiguration().script)
+			eval(this.module.getConfiguration().script);
 	},
 
 	configurationSend: {
@@ -101,6 +106,15 @@ $.extend(CI.Module.prototype._types.button_url.Controller.prototype, CI.Module.p
 		});
 		field.setTitle(new BI.Title('URL'));
 		
+
+		var field = groupfield.addField({
+			type: 'JSCode',
+			name: 'script'
+		});
+		field.setTitle(new BI.Title('Script'));
+
+
+
 		return true;
 	},
 	
@@ -112,7 +126,8 @@ $.extend(CI.Module.prototype._types.button_url.Controller.prototype, CI.Module.p
 					label: [cfg.label],
 					color: [cfg.color],
 					disabled: [cfg.disabled ? ['disabled'] : []],
-					url: [cfg.url]
+					url: [cfg.url],
+					script: [cfg.script]
 				}]
 			}
 		}
@@ -122,6 +137,7 @@ $.extend(CI.Module.prototype._types.button_url.Controller.prototype, CI.Module.p
 		this.module.getConfiguration().label = confSection[0].cfg[0].label[0];
 		this.module.getConfiguration().url = confSection[0].cfg[0].url[0];
 		this.module.getConfiguration().color = confSection[0].cfg[0].color[0];
+		this.module.getConfiguration().script = confSection[0].cfg[0].script[0];
 		this.module.getConfiguration().disabled = confSection[0].cfg[0].disabled[0][0] == 'disabled';
 	},
 

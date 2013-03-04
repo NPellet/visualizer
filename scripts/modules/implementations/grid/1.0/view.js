@@ -126,6 +126,7 @@ CI.Module.prototype._types.grid.View.prototype = {
 		var jpath;
 		var box = this.module;
 		var self = this;
+
 		for(var i = 0, length = source.length; i < length; i++) {
 			var element = {};
 			element.data = {};
@@ -149,6 +150,9 @@ CI.Module.prototype._types.grid.View.prototype = {
 					if(element.data[j] == undefined)
 						element.data[j] = async.html;
 			}
+			
+			if(!source[i])
+				continue;
 			
 			if(source[i].children) {
 				element.children  = [];

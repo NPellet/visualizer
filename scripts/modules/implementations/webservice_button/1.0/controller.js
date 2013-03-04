@@ -25,7 +25,6 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 
 		for(var i = 0, l = cfg.length; i < l; i++) {
 
-			variable = cfg[i].variable;
 			type = cfg[i].type;
 
 			(function(type, variable, k) {
@@ -53,10 +52,12 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 				}
 
 				def = def.then(function(resolved) {
-					variableobj = CI.Repo.get(variable);
-					if(!variableobj || !variableobj[1])
-						return;
-					ajax.data = {data: variableobj[1] };
+					ajax.data = {};
+					for(var j = 0; j < cfg[k].varsource.length; j++) {
+						ajax.data[cfg[k].varsource[j].name] = CI.Repo.get(cfg[k].varsource[j].variable);
+						ajax.data[cfg[k].varsource[j].name] = ajax.data[cfg[k].varsource[j].name][1];
+					}
+
 					return $.ajax(ajax);
 				});
 
@@ -110,11 +111,24 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 		});
 		url.setTitle(new BI.Title('URL'));
 	
+
+
+		var groupfield = new BI.Forms.GroupFields.Table('varsource');
+		section2.addFieldGroup(groupfield);
+	
+		var field3 = groupfield.addField({
+			type: 'Text',
+			name: 'name'
+		});
+		field3.setTitle(new BI.Title('Name in URL'));
+
+
 		var field3 = groupfield.addField({
 			type: 'Text',
 			name: 'variable'
 		});
 		field3.setTitle(new BI.Title('Source variable'));
+
 
 
 		var groupfield = new BI.Forms.GroupFields.Table('varvar');
@@ -138,28 +152,9 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 			var jpath = [], variable = self.values[value];
 			if(!variable)
 				return;
-
 			CI.DataType.getJPathsFromElement(variable, jpath);
-			console.log(jpath);
-			this.group.section.fieldGroups[1].fields[1].implementation.setOptions(jpath);
-			//var jpathfield = this.group.getField('_jpath');
-			//jpathfield.implementation.setOptions(jpath, index);
+			this.group.section.fieldGroups[2].fields[1].implementation.setOptions(jpath);
 		});
-
-		/*var objs = [];
-		for(var i in CI.API.getAllSharedVariables()) {
-			objs.push({key: i, title: i});
-		}
-		field.implementation.setOptions(objs);
-*/
-		var field = groupfield.addField({
-			type: 'Combo',
-			name: 'type'
-		});
-		field.setTitle(new BI.Title('Method'));
-		field.implementation.setOptions([{key: 'get', title: 'Get'}, {key: 'put', title: 'Post'}]);
-
-
 
 		return true;
 	},
@@ -168,10 +163,9 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 		
 		var cfg = this.module.getConfiguration().variables;
 		
-		var types = [], url = [], variablesget = [];
+		var types = [], url = [], variablesget = [], variablepushname = [], variablepush = [];
 		for(var i in cfg) {
 			variablesget.push(cfg[i].variableget);
-			types.push(cfg[i].type);
 			url.push(cfg[i].url);
 		}
 
@@ -179,30 +173,36 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 		var vars = [];
 		for(var i in cfg) {
 			var variableget = [], type = [], jpath = [];
-			if(cfg[i].subvars)
+			if(cfg[i].subvars) {
 				for(var j = 0; j < cfg[i].subvars.length; j++) {
-					//variable.push(cfg[i].subvars[j].variable);
 					variableget.push(cfg[i].subvars[j].variableget);
-					type.push(cfg[i].subvars[j].type);
 					jpath.push(cfg[i].subvars[j].jpath);
 				}
+			}
+
+
+			if(cfg[i].varsource) {
+				for(var j = 0; j < cfg[i].varsource.length; j++) {
+					variablepush.push(cfg[i].varsource[j].variable);
+					variablepushname.push(cfg[i].varsource[j].name);
+				}
+			}
 
 		while(cfg[i].url instanceof Array)
 			cfg[i].url = cfg[i].url[0];
 
-		while(cfg[i].variable instanceof Array)
-			cfg[i].variable = cfg[i].variable[0];
-
 			vars.push({
 				groups: {
 					'vardetails': [{
-						url: [cfg[i].url],
-						variable: [cfg[i].variable]
+						url: [cfg[i].url]
 					}],
 					'varvar': [{
 						variableget: variableget,
-						type: type,
 						_jpath: jpath
+					}],
+					'varsource': [{
+						name: variablepushname,
+						variable: variablepush
 					}]
 				}
 			});
@@ -231,8 +231,8 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 		for(var i = 0; i < group.length; i++) {
 			obj = { 
 				url: group[i].vardetails[0].url[0],
-				variable: group[i].vardetails[0].variable[0],
-				subvars: group[i].varvar[0]
+				subvars: group[i].varvar[0],
+				varsource: group[i].varsource[0]
 			};
 			vars.push(obj);
 		}
@@ -242,6 +242,5 @@ $.extend(CI.Module.prototype._types.webservice_button.Controller.prototype, CI.M
 	},
 
 	"export": function() {
-		return this.module.view.table.exportToTabDelimited();
 	}
 });

@@ -132,6 +132,10 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 
 			var elements = moduleValue;
 			for(var i = 0, length = elements.length; i < length; i++) {
+
+				if(elements[i] == null)
+					continue;
+				
 				var row = new CI.Tables.Row(elements[i], Table, filter);
 				Content.addRow(row);
 				if(colorJPath) {

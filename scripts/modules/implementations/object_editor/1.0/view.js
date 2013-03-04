@@ -40,8 +40,9 @@ CI.Module.prototype._types.object_editor.View.prototype = {
 
 				if(!self.source)
 					self.source = {};
-				
+
 				CI.DataType.setValueFromJPath(self.source, elJPath, value);
+				console.log(self.source);
 				CI.Repo.set(self.varname, self.source, true);
 			}
 		});
@@ -67,7 +68,7 @@ CI.Module.prototype._types.object_editor.View.prototype = {
 
 	update2: {
 		source: function(moduleValue, varName) {
-
+console.log(moduleValue);
 			this.source = moduleValue;
 			this.varname = varName;
 		

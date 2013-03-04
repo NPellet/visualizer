@@ -182,7 +182,7 @@ BI.Forms.Section.prototype = {
 	showHideSubSection: function(sectionName, show) {
 		
 		for(var i = 0, l = this.sections.length; i < l; i++) {
-			console.log(this.sections[i].getName() + ', ' + sectionName);
+			
 			if(this.sections[i].getName() == sectionName)
 				this.sections[i][show ? 'show' : 'hide']();
 		}

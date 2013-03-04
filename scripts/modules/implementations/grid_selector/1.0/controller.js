@@ -9,21 +9,13 @@
 if(typeof CI.Module.prototype._types.grid_selector == 'undefined')
 	CI.Module.prototype._types.grid_selector = {};
 
-CI.Module.prototype._types.grid_selector.Controller = function(module) {
-	
-	CI.Module.prototype._impl.controller.init(module, this);
-}
+CI.Module.prototype._types.grid_selector.Controller = function(module) {}
 
-CI.Module.prototype._types.grid_selector.Controller.prototype = {
+$.extend(CI.Module.prototype._types.grid_selector.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
 	
-	init: function() {
-		
-		var module = this.module;
-		var actions;
+	initimpl: function() {
 		this._currentValue = {};
-		if(!(actions = this.module.definition.dataSend))	
-			return;
 	},
 
 	selectorChanged: function(col, line, value) {
@@ -191,4 +183,4 @@ CI.Module.prototype._types.grid_selector.Controller.prototype = {
 	"export": function() {
 		//return this.module.view.table.exportToTabDelimited();
 	}
-}
+});

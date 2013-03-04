@@ -49,7 +49,7 @@ $(document).bind('configModule', function(event, module) {
 		var availCfg = module.controller.configurationSend;
 		var sendjpaths = [];
 		for(var i in availCfg.rels) {
-			sendjpaths[i] = module.model.getjPath(i)
+			sendjpaths[i] = module.model.getjPath(i);
 		}
 		
 		var allEvents = [];
@@ -88,9 +88,9 @@ $(document).bind('configModule', function(event, module) {
 
 
 		fieldRel.onChange(function(index) {
-			//console.log('Fired');
 			var value = this.getValue(index), 
 				jpath = this.group.getField('jpath');
+
 			if(!jpath)
 				return;
 			jpath.implementation.setOptions(sendjpaths[value], index);

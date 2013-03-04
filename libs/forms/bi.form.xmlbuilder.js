@@ -74,11 +74,12 @@ BI.Forms.xmlBuilder.prototype = {
 				type: typeTranslated,
 				multiple: domField.attr('multiple') == "multiple" ? true : false,
 				name: domField.attr('name'),
-				placeholder: "",
-				onChange: function(index, value) {
+				placeholder: ""
+			});
+
+			field.onChange(function(index, value) {
 					if(inst.options.onFieldChange && jpath)
 						inst.options.onFieldChange(jpath, value, index);
-				}
 			});
 
 			if(jpath)
