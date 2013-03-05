@@ -123,6 +123,10 @@ CI.EntryPoint = function(options, onLoad) {
 			CI.Data.onLoaded = function(data, path) {
 				doData(data);
 			}
+
+			CI.Data.onReload = function(data, path) {
+				doData(data);
+			}
 			CI.Data.load();
 		} else if(CI.URLs['dataURL']) {
 			$.getJSON(CI.URLs['dataURL'], {}, function(results) {
@@ -136,6 +140,11 @@ CI.EntryPoint = function(options, onLoad) {
 			CI.View.onLoaded = function(structure, path) {
 				doStructure(structure);
 			}
+
+			CI.View.onReload = function(structure, path) {
+				doStructure(structure, true);
+				CI.Repo.resendAll();
+			}
 			CI.View.load();
 		} else if(CI.URLs['viewURL']) {
 			$.getJSON(CI.URLs['viewURL'], {}, function(structure) {
@@ -144,7 +153,7 @@ CI.EntryPoint = function(options, onLoad) {
 		}
 	}
 	
-	function doStructure(structure) {
+	function doStructure(structure, noLoad) {
 		
 		CI.Grid.init(structure.grid || {});
 		CI.modules = {};
@@ -198,6 +207,9 @@ CI.EntryPoint = function(options, onLoad) {
 		
 		CI.Grid.checkDimensions();
 
+		if(noLoad)
+			return;
+
 		entryPoint.loaded();
 		
 	}
@@ -225,7 +237,7 @@ CI.EntryPoint.prototype = {
 		if(this.entryData && this.entryData.variables && this.entryData.variables.length > 0) {
 			var vars = this.entryData.variables;
 			for(var i = 0; i < vars.length; i++) {
-				console.log(vars[i]);
+				
 				if(!vars[i].jpath && vars[i].url) {
 					(function(variable) {
 						self.data[variable.varname] = { value: null, url: variable.url };

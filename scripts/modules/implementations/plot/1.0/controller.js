@@ -32,9 +32,9 @@ $.extend(CI.Module.prototype._types.plot.Controller.prototype, CI.Module.prototy
 			description: ''
 		},
 
-		"serie": {
+		"serieSet": {
 			type: ['object'],
-			label: 'A serie',
+			label: 'A set of series',
 			description: ''
 		}
 	},
@@ -49,14 +49,58 @@ $.extend(CI.Module.prototype._types.plot.Controller.prototype, CI.Module.prototy
 	
 	doConfiguration: function(section) {
 		
+
+
+		var group = new BI.Forms.GroupFields.Table('spectrainfos');
+		section.addFieldGroup(group);
+
+		field = group.addField({
+			'type': 'Combo',
+			'name': 'variable',
+			title: new BI.Title('Variable')
+		});
+
+		var vars = [];
+		var currentCfg = this.module.definition.dataSource;
+
+		if(currentCfg)
+			for(var i = 0; i < currentCfg.length; i++) {
+				if(currentCfg[i].rel == 'serieSet')
+					vars.push({title: currentCfg[i].name, key: currentCfg[i].name});
+			}
+
+		field.implementation.setOptions(vars);
+
+
+		field = group.addField({
+			'type': 'Color',
+			'name': 'plotcolor',
+			title: new BI.Title('Color')
+		});
+
+
 		return true;
 	},
 	
 	doFillConfiguration: function() {
-		return {}
+
+
+		var spectrainfos = { 'variable': [], 'plotcolor': [] };
+		var infos = this.module.getConfiguration().plotinfos || [];
+		for(var i = 0, l = infos.length; i < l; i++) {
+			spectrainfos.variable.push(infos[i].variable);
+			spectrainfos.plotcolor.push(infos[i].plotcolor);
+		}
+
+		return {
+			groups: {
+				spectrainfos: [spectrainfos]
+			}
+		}	
 	},
 	
 	
 	doSaveConfiguration: function(confSection) {	
+		this.module.getConfiguration().plotinfos = confSection[0].spectrainfos[0];
 	}
 });

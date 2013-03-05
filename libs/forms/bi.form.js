@@ -46,6 +46,10 @@ BI.Forms.Form.prototype = {
 		templater: 'std'
 	},
 	
+	setLabels: function(bool) {
+		this.options.templater.setLabels(bool);
+	},
+
 	init: function(dom) {
 		var html = this.buildHtml();
 		$(dom).html(html);

@@ -2,7 +2,7 @@
 BI.Forms.Templaters = BI.Forms.Templaters || {};
 
 BI.Forms.Templaters.std = function () {
-	
+	this.labels = true;
 	this.sectionsTabLvl = 3;
 }
 	
@@ -15,15 +15,19 @@ BI.Forms.Templaters.std.prototype = {
 	buildForm: function(form) {
 		
 		var sections = form.getSections();
-		var html = $('<div class="form"></div>');
+		var html = $('<div class="form ' + (this.labels ? 'form-has-labels' : 'form-no-labels') + '"></div>');
 		html.append(form.getTitle());
 		var sectionsDom = $('<div class="bi-form-sections"></div>').appendTo(html);
 		for(var i = 0; i < sections.length; i++)
 			sectionsDom.append(sections[i].buildHtml());
 		return html;
 	},
-	
 
+	setLabels: function(bool) {
+
+		this.labels = bool;
+	},
+	
 
 	buildSectionHeader: function(section, lvl) {
 
@@ -97,9 +101,13 @@ BI.Forms.Templaters.std.prototype = {
 			var fields = group.getFields();
 			for(var i = 0; i < fields.length; i++) {
 				html.push('<div class="bi-formfield-wrapper' + (group.isVisible() ? 'bi-visible' : 'bi-hidden') + '">');
-				html.push('<label class="bi-formfield-label">');
-				html.push(fields[i].getTitle().getLabel());
-				html.push('</label>');
+
+				if(this.labels) {
+					html.push('<label class="bi-formfield-label">');
+					html.push(fields[i].getTitle().getLabel());
+					html.push('</label>');
+				}
+
 				html.push(fields[i].buildHtml());
 				html.push('<div class="bi-spacer"></div>');
 				html.push('</div>');

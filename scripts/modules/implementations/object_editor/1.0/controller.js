@@ -49,6 +49,16 @@ $.extend(CI.Module.prototype._types.object_editor.Controller.prototype, CI.Modul
 			title: new BI.Title('XML')
 		});
 
+
+
+		var type = group.addField({
+			type: 'Checkbox',
+			name: 'labels',
+			title: new BI.Title('Display labels')
+		});
+
+		type.implementation.setOptions({'display': ''});
+
 		/*
 		var sectionAllFields = section.addSection(new BI.Forms.Section('fields', { multiple: true },  new BI.Title('Fields')), 1);
 		var group = sectionAllFields.addFieldGroup(new BI.Forms.GroupFields.List('fielddetails'));
@@ -104,6 +114,11 @@ $.extend(CI.Module.prototype._types.object_editor.Controller.prototype, CI.Modul
 	
 	doFillConfiguration: function() {
 		var xml = this.module.getConfiguration().xml || '';
+		var label = this.module.getConfiguration().labels;
+		if(label == undefined)
+			label = true;
+		
+
 		/*var allFields = [], field;
 
 		for(var i = 0, l = cfg.length; i < l; i++) {
@@ -124,7 +139,8 @@ $.extend(CI.Module.prototype._types.object_editor.Controller.prototype, CI.Modul
 		return {	
 			groups: {
 				xml: [{
-					xml: [xml]	
+					xml: [xml],
+					labels: [label ? ['display'] : []]	
 				}]
 			}
 		}
@@ -147,8 +163,8 @@ $.extend(CI.Module.prototype._types.object_editor.Controller.prototype, CI.Modul
 					cfg.push(field);
 		}*/
 
-
 		this.module.getConfiguration().xml = confSection[0].xml[0].xml[0];
+		this.module.getConfiguration().labels = !!confSection[0].xml[0].labels[0][0];
 	},
 
 	"export": function() {

@@ -3,12 +3,16 @@ BI.Forms.xmlBuilder = function(form, options) {
 	this.form = form || new BI.Forms.Form();
 	this.jpathIndexation = [];
 	this.options = $.extend({}, BI.Forms.xmlBuilder.prototype.defaults, options)
+
+	if(!this.options.labels)
+		this.form.setLabels(false);
 }
 
 BI.Forms.xmlBuilder.prototype = {
 	
 	defaults: {
-		onFieldChange: null
+		onFieldChange: null,
+		labels: true
 	},
 
 	build: function(dom) {

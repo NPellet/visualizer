@@ -219,6 +219,11 @@ span.triangle-left {
 	padding-left: 3px;
 }
 
+.form-no-labels .bi-formfield-element {
+	padding-left: 0px;
+	margin-top: 0px;
+}
+
 .bi-formfield-element {
 	position: relative;
 	width: 100%;

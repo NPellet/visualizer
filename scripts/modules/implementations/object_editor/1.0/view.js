@@ -44,7 +44,9 @@ CI.Module.prototype._types.object_editor.View.prototype = {
 				CI.DataType.setValueFromJPath(self.source, elJPath, value);
 				console.log(self.source);
 				CI.Repo.set(self.varname, self.source, true);
-			}
+			},
+
+			labels: cfg.labels
 		});
 
 		this.formBuilder = xmlTransl;

@@ -358,7 +358,7 @@ CI.DataViewHandler.prototype = {
 				self.currentPath[3] = i;
 				self.make(el, branch, i);	
 				self._savedServer = JSON.stringify(el);
-				self.onLoaded(el);
+				self.onReload(el);
 			});
 			
 		} else {
@@ -383,7 +383,7 @@ CI.DataViewHandler.prototype = {
 				self.currentPath[3] = i;
 				self.make(el, branch, i);
 				self._savedLocal = JSON.stringify(el);
-				self.onLoaded(el);
+				self.onReload(el);
 			});
 		}
 	},

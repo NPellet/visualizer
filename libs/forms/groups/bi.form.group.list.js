@@ -61,7 +61,7 @@ BI.Forms.GroupFields.List.prototype = {
 		html.push('<div class="bi-form-groupfields" data-groupfield-id="');
 		html.push(this.getId());
 		html.push('">');
-		html.push(this.getSection().getForm().getTemplater().buildGroup.List(this));
+		html.push(this.getSection().getForm().getTemplater().buildGroup.List.call(this.getSection().getForm().getTemplater(), this));
 		html.push('</div>');
 		return html.join('');
 	},

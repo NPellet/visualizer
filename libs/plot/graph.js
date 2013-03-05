@@ -1324,7 +1324,10 @@ GraphSerie.prototype = {
 
 	kill: function() {
 		this.graph.plotGroup.removeChild(this.groupMain);
-		this.graph.plotGroup.removeChild(this.marker);
+
+		/*if(this.marker)
+			this.groupMain.removeChild(this.marker);
+*/
 		this.graph.redraw();
 
 		// Remove serie

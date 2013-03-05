@@ -18,6 +18,7 @@ CI.Module.prototype._types.plot.View.prototype = {
 	init: function() {	
 		var html = [];
 		html.push('<div />');
+		this.namedSeries = {};
 		this.dom = $(html.join(''));
 		this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
 	},
@@ -36,10 +37,11 @@ CI.Module.prototype._types.plot.View.prototype = {
 	
 	update2: {
 		'plotdata': function(moduleValue) {
-			
+		
 			var serie;
 			if(moduleValue === undefined || !moduleValue)
 				return;
+			moduleValue = CI.DataType.getValueIfNeeded(moduleValue);
 
 			if(!this.dom)
 				return;
@@ -93,6 +95,62 @@ CI.Module.prototype._types.plot.View.prototype = {
 			}
 			
 			this.onResize(this.module.getWidthPx(), this.module.getHeightPx());
+		},
+
+
+		'serieSet': function(moduleValue, name) {
+
+			var cfgM = this.module.getConfiguration();
+			var color;
+			if(cfgM.plotinfos)
+				for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
+					if(name == cfgM.plotinfos[i].variable) {
+						color = cfgM.plotinfos[i].plotcolor;
+					}	
+				}
+
+
+
+			moduleValue = CI.DataType.getValueIfNeeded(moduleValue);
+			if(!moduleValue)
+				return;
+			console.log(this.namedSeries);
+			if(this.namedSeries[name]) {
+				for(var i = 0, l = this.namedSeries[name]; i <= l; i++) {
+					for(var j = 0, k = this.series.length; j < k; j++) {
+						if(this.series[j] == null)
+							continue;
+
+						if(this.series[j].getName() == name + i) {
+							this.series[j].kill();
+							this.series.splice(j, 1);
+						}
+					}
+				}
+			}
+
+			if(!(moduleValue instanceof Array))
+				moduleValue = [moduleValue];
+
+			for(var i = 0, l = moduleValue.length; i < l; i++) {
+				k = 0;
+				for(var j in moduleValue[i]) {
+
+					if(!moduleValue[i][j])
+						continue;
+					k++
+					serie = this.graph.newSerie(name + k, moduleValue[i][j].options || {});
+					serie.autoAxis();
+					if(color)
+						serie.setLineColor(color);
+
+					serie.setData(moduleValue[i][j].data);
+					this.series.push(serie);
+				}
+			}
+
+			this.namedSeries[name] = k;
+			this.graph.drawSeries();
 		}
 	},
 
