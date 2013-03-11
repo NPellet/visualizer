@@ -275,6 +275,9 @@ CI.Module.prototype._types.canvas_matrix.View.prototype = {
 
 		matrix: function(moduleValue) {
 
+				if(!this._canvas)
+					return;
+
 				this.doCanvasErase();
 				if(!moduleValue || !moduleValue.value)
 						return;
