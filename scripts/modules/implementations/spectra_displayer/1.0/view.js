@@ -78,6 +78,9 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 		'jcamp': function(moduleValue, varname) {
 
+			if(!this.graph)
+				return;
+			
 			var cfgM = this.module.getConfiguration();			
 			if(!moduleValue)
 				return this.blank();
