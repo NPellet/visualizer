@@ -139,7 +139,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			this.series[varname] = [];
 
 			for (var i=0; i<spectra.length; i++) {
-				serie = this.graph.newSerie(Math.random(), spectra[i]);
+				serie = this.graph.newSerie(Math.random());
 				serie.setData(spectra[i].data[0]);
 				serie.autoAxis();
 
@@ -147,6 +147,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 					serie.setLineColor(color);
 
 				this.series[varname].push(serie);
+				break;
 			}
 			//this.graph.drawSeries();
 
