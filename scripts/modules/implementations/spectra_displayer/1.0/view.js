@@ -132,11 +132,11 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
  			if(cfgM.flipY)
  				this.graph.getLeftAxis().flip(true);
 
- 			if(typeof moduleValue.value !== 'object') {
+ 			//if(typeof moduleValue.value !== 'object') {
  				var spectra = CI.converter.jcampToSpectra(moduleValue.value);
- 				moduleValue.value = spectra;
- 			} else 
- 				spectra = moduleValue.value;
+ 			//	moduleValue.value = spectra;
+ 			//} else 
+ 			//	spectra = moduleValue.value;
 			
 			for(var i = 0, l = this.series[varname].length; i < l; i++)
 				this.series[varname][i].kill();
