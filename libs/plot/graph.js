@@ -1697,6 +1697,10 @@ var Graph = (function() {
 
 		draw: function(doNotRedrawZone) {
 
+
+			this.groupMain.removeChild(this.groupLines);
+			this.groupMain.removeChild(this.domMarker);
+
 /*			this.xshift = - this.getXAxis().getSerieShift();
 			this.xscale = this.getXAxis().getSerieScale();
 			this.yshift = - this.getYAxis().getSerieShift();
@@ -1727,12 +1731,19 @@ var Graph = (function() {
 					xpx = Math.round(this.getXAxis().getPx(this.data[i][j]) * 1000) / 1000;
 				//	if(xpx < this.getXAxis().getMinPx() || xpx > this.getXAxis().getMaxPx())
 				//		continue;
-					
 					ypx = Math.round(this.getYAxis().getPx(this.data[i][j + 1]) * 1000) / 1000;
 					if(k != 0)
 						currentLine += "L ";
 					k++;
-					currentLine += xpx + " " + ypx + " "; 
+
+					currentLine += xpx;
+					currentLine += " ";
+					currentLine += ypx;
+					currentLine += " "; 
+
+					if(!this.options.markers.show)
+						continue;
+
 					this._drawMarkerXY(xpx, ypx);
 				}
 
@@ -1746,6 +1757,10 @@ var Graph = (function() {
 			if(this.markerPath != "")
 				this.domMarker.setAttribute('d', this.markerPath);
 
+
+
+			this.groupMain.appendChild(this.groupLines);
+			this.groupMain.appendChild(this.domMarker);
 
 
 		},

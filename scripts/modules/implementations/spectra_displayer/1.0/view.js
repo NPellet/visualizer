@@ -36,7 +36,8 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 	},
 	
 	onResize: function(width, height) {
-		
+		this.width = width;
+		this.height = height;
 		if(this.graph)
 			this.graph.resize(width, height);
 		this.graph.redraw();
@@ -131,7 +132,11 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
  			if(cfgM.flipY)
  				this.graph.getLeftAxis().flip(true);
 
- 			var spectra = CI.converter.jcampToSpectra(moduleValue.value);
+ 			if(typeof moduleValue.value !== 'object') {
+ 				var spectra = CI.converter.jcampToSpectra(moduleValue.value);
+ 				moduleValue.value = spectra;
+ 			} else 
+ 				spectra = moduleValue.value;
 			
 			for(var i = 0, l = this.series[varname].length; i < l; i++)
 				this.series[varname][i].kill();
@@ -151,7 +156,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			}
 			//this.graph.drawSeries();
 
-			this.onResize(this.module.getWidthPx(), this.module.getHeightPx());
+			this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 		}
 	},
 
