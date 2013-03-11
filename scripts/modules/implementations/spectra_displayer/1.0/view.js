@@ -80,6 +80,15 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			var cfgM = this.module.getConfiguration();			
 			if(!moduleValue)
 				return this.blank();
+
+			if(cfgM.plotinfos)
+				for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
+					if(varname == cfgM.plotinfos[i].variable) {
+						color = cfgM.plotinfos[i].plotcolor;
+						continuous = cfgM.plotinfos[i].plotcontinuous;
+					}	
+				}
+
 /*
 			CI.RepoHighlight.kill(this.module.id + "_" + varname);
 			var index;				
@@ -89,13 +98,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 			var color = '#000000', continuous = false;
 
-			if(cfgM.plotinfos)
-				for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
-					if(varname == cfgM.plotinfos[i].variable) {
-						color = cfgM.plotinfos[i].plotcolor;
-						continuous = cfgM.plotinfos[i].plotcontinuous;
-					}	
-				}
+			
 			
 
 			var cfg = {
@@ -121,6 +124,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				CI.Grid.moduleResize(view.module);			
 			});*/
 
+			this.series[varname] = this.series[varname] || [];
  			if(cfgM.flipX)
  				this.graph.getXAxis().flip(true);
 
@@ -129,17 +133,20 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
  			var spectra = CI.converter.jcampToSpectra(moduleValue.value);
 			
-			for(var i = 0, l = this.series.length; i < l; i++) {
-				this.series[i].kill();
-			}
+			for(var i = 0, l = this.series[varname].length; i < l; i++)
+				this.series[varname][i].kill();
 			
-			this.series = [];
+			this.series[varname] = [];
 
 			for (var i=0; i<spectra.length; i++) {
 				serie = this.graph.newSerie(Math.random(), spectra[i]);
 				serie.setData(spectra[i].data[0]);
 				serie.autoAxis();
-				this.series.push(serie);
+
+				if(color)
+					serie.setLineColor(color);
+
+				this.series[varname].push(serie);
 			}
 			//this.graph.drawSeries();
 
