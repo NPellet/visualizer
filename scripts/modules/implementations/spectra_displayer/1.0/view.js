@@ -77,7 +77,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 		'jcamp': function(moduleValue, varname) {
 
-			
+			var cfgM = this.module.getConfiguration();			
 			if(!moduleValue)
 				return this.blank();
 /*
@@ -121,12 +121,18 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				CI.Grid.moduleResize(view.module);			
 			});*/
 
+ 			if(cfgM.flipX)
+ 				this.graph.getXAxis().flip(true);
+
+ 			if(cfgM.flipY)
+ 				this.graph.getLeftAxis().flip(true);
+
  			var spectra = CI.converter.jcampToSpectra(moduleValue.value);
 			
 			for(var i = 0, l = this.series.length; i < l; i++) {
 				this.series[i].kill();
 			}
-			console.log(spectra);
+			
 			this.series = [];
 
 			for (var i=0; i<spectra.length; i++) {

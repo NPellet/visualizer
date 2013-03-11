@@ -983,7 +983,7 @@ var Graph = (function() {
 		},
 
 		flip: function(bool) {
-			this.options.flipped = bool;
+			this.flipped = bool;
 		},
 
 		draw: function(doNotRecalculateMinMax) {
@@ -1725,8 +1725,8 @@ var Graph = (function() {
 				for(; j < this.data[i].length; j+=2) {
 					
 					xpx = Math.round(this.getXAxis().getPx(this.data[i][j]) * 1000) / 1000;
-					if(xpx < this.getXAxis().getMinPx() || xpx > this.getXAxis().getMaxPx())
-						continue;
+				//	if(xpx < this.getXAxis().getMinPx() || xpx > this.getXAxis().getMaxPx())
+				//		continue;
 					
 					ypx = Math.round(this.getYAxis().getPx(this.data[i][j + 1]) * 1000) / 1000;
 					if(k != 0)
