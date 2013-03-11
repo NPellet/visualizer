@@ -128,7 +128,9 @@ CI.Module.prototype._types.mol2d.View.prototype = {
 		'mol2d': function(deferred, moduleValue) {
 			var self = this;
 
-
+			if(!this._canvas)
+				return;
+			
 			var molLoaded = ChemDoodle.readMOL(moduleValue.value);
 			molLoaded.scaleToAverageBondLength(30);
 			deferred.resolve(molLoaded);
