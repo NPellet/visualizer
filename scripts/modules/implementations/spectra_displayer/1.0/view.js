@@ -80,8 +80,10 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 			if(!this.graph)
 				return;
-			
+
 			var cfgM = this.module.getConfiguration();			
+			var color;
+			
 			if(!moduleValue)
 				return this.blank();
 
