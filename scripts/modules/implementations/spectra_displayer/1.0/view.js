@@ -17,22 +17,30 @@ CI.Module.prototype._types.spectra_displayer.View = function(module) {
 CI.Module.prototype._types.spectra_displayer.View.prototype = {
 	
 	init: function() {
-		
+		this.series = [];
 		this.colorvars = [];
-		this.dom = $('<canvas id="' + BI.Util.getNextUniqueId() + '"></canvas>');
+		this.dom = $('<div />');
 		this.module.getDomContent().html(this.dom);
 	},
 	
 	inDom: function() {
 	
+		var graph = new Graph(this.dom.get(0), {closeRight: false, closeTop: false, zoomMode: 'x'});
+		graph.getLeftAxis(0).setDisplay(false);
+		graph.getXAxis().setLabel('ppm');
+		graph.redraw();
 
+		var series = [];
+		this.graph = graph;
+		
 	},
 	
 	onResize: function(width, height) {
-		var data;
-		if((data = this.dom.data('spectra')) != undefined) {
-			data.resize(width, height - 5);
-		}
+		
+		if(this.graph)
+			this.graph.resize(width, height);
+		this.graph.redraw();
+		this.graph.drawSeries();
 	},
 	
 	onProgress: function() {
@@ -72,7 +80,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			
 			if(!moduleValue)
 				return this.blank();
-
+/*
 			CI.RepoHighlight.kill(this.module.id + "_" + varname);
 			var index;				
 			this._jcampValue = moduleValue;
@@ -111,7 +119,25 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				//view.update2.fromTo(CI.Repo.getValue(''));
 				//CI.Util.ResolveDOMDeferred(view.module.getDomContent());
 				CI.Grid.moduleResize(view.module);			
-			});
+			});*/
+
+ 			var spectra = CI.converter.jcampToSpectra(moduleValue.value);
+			
+			for(var i = 0, l = this.series.length; i < l; i++) {
+				this.series[i].kill();
+			}
+			console.log(spectra);
+			this.series = [];
+
+			for (var i=0; i<spectra.length; i++) {
+				serie = this.graph.newSerie(Math.random(), spectra[i]);
+				serie.setData(spectra[i].data[0]);
+				serie.autoAxis();
+				this.series.push(serie);
+			}
+			//this.graph.drawSeries();
+
+			this.onResize(this.module.getWidthPx(), this.module.getHeightPx());
 		}
 	},
 
