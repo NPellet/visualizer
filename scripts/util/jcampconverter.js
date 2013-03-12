@@ -28,7 +28,7 @@ CI.converter.jcampToSpectra=(function() {
         var spectra = [];
         var spectrum = {};
 
-        console.time("start");
+       // console.time("start");
 
         ldrs=jcamp.split(/[\r\n]+ *##/);
         if (ldrs[0]) ldrs[0]=ldrs[0].replace(/^[\r\n ]*##/,"");
@@ -147,10 +147,11 @@ CI.converter.jcampToSpectra=(function() {
                 spectrum={};
             }
         }
-        console.timeEnd("start");
-        console.time("lowres");
+       // console.timeEnd("start");
+      //  console.time("lowres");
         if (options && options.lowRes) addLowRes(spectra,options);
-        console.timeEnd("lowres");
+       // console.timeEnd("lowres");
+
 
         return spectra;
 
@@ -222,6 +223,8 @@ CI.converter.jcampToSpectra=(function() {
                 }
 
                 
+                
+                
                 for (var j=1, jj=values.length; j<jj; j++) {
                     if (j==1 && (lastDif || lastDif==0)) {
                         lastDif = undefined; // at the beginning of each line there should be the full value X / Y so the diff is always undefined
@@ -290,6 +293,15 @@ CI.converter.jcampToSpectra=(function() {
         }
     }
 
+<<<<<<< HEAD
+=======
+
+
+    function addPoint(spectrum,currentX,currentY) {
+ //       console.log(currentX+" - "+currentY+" - "+currentX/spectrum.observeFrequency+" - "+currentY*spectrum.yFactor);
+        spectrum.currentData.push(currentX/spectrum.observeFrequency, currentY*spectrum.yFactor);
+    }
+>>>>>>> Fix scale bug
 
     function addLowRes(spectra, options) {
         var spectrum;
