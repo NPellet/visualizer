@@ -2064,6 +2064,10 @@ var Graph = (function() {
 			this.createDom();
 		},
 
+		kill: function() {
+			this.graph.shapeZone.removeChild(this._dom);
+		},
+
 		applyAll: function() {
 			for(var i in this.properties)
 				this._dom.setAttribute(i, this.properties[i]);
@@ -2137,13 +2141,13 @@ var Graph = (function() {
 		},
 
 		setFullWidth: function() {
-			this.set('x', this.xaxis.getMinPx());
-			this.set('width', this.xaxis.getMaxPx() - this.xaxis.getMinPx());
+			this.set('x', Math.min(this.xaxis.getMinPx(), this.xaxis.getMaxPx()));
+			this.set('width', Math.abs(this.xaxis.getMaxPx() - this.xaxis.getMinPx()));
 		},
 
 		setFullHeight: function() {
-			this.set('y', this.yaxis.getMinPx());
-			this.set('height', this.yaxis.getMaxPx() - this.yaxis.getMinPx());
+			this.set('y', Math.min(this.yaxis.getMinPx(), this.yaxis.getMaxPx()));
+			this.set('height', Math.abs(this.yaxis.getMaxPx() - this.yaxis.getMinPx()));
 		}
 
 	});

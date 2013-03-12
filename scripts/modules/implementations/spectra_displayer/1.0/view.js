@@ -44,14 +44,15 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 						min = Math.min(self.zones[k][i][0], self.zones[k][i][1]);
 						max = Math.max(self.zones[k][i][0], self.zones[k][i][1]);
-						console.log(min, max, val);
+
+						x1 = val[k].trueX * 1000;
 
 						if(min < x1 && max > x1) {
 							
 							CI.RepoHighlight.set(i, 1);
 							self._currentHighlights[i] = 1;
 
-						} else if(this._currentHighlights[i]) {
+						} else if(self._currentHighlights[i]) {
 
 							CI.RepoHighlight.set(i, 0);
 							self._currentHighlights[i] = 0;
@@ -88,9 +89,23 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		this.dom.get(0).width = this.dom.get(0).width;
 	},
 
-	doZone: function(varname, zone) {
+	doZone: function(varname, zone, value, color) {
 
-
+		if(value && !zone[2]) {
+			var serie = this.series[varname][0];
+			var rect = this.graph.makeShape('rect');
+			rect.setSerie(serie);
+			rect.set('fill', color);
+			rect.set('opacity', '0.5');
+			rect.setByVal('x', zone[0] / 1000, 'x');
+			rect.setWidthByVal(zone[1] / 1000);
+			rect.setFullHeight();
+			rect.done();
+			zone.push(rect);
+		} else if(zone[2] && !value) {
+			zone[2].kill();
+			zone.splice(2, 1);
+		}
 	},
 
 	update2: { 
@@ -107,7 +122,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		'jcamp': function(moduleValue, varname) {
-
+			var self = this;
 			CI.RepoHighlight.kill(this.module.id + varname);
 
 			if(!this.graph)
@@ -140,10 +155,11 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			}
 */
 
-			CI.RepoHighlight.listen(moduleValue._highlights, function(value, commonKeys) {
+			CI.RepoHighlight.listen(moduleValue._highlight, function(value, commonKeys) {
+
 				for(var i = 0; i < commonKeys.length; i++) 
 					if(self.zones[varname][commonKeys[i]])
-						self.doZone(varname, self.zones[varname][commonKeys[i]]);
+						self.doZone(varname, self.zones[varname][commonKeys[i]], value, color);
 			}, true, this.module.id + varname);
 
 			/*
