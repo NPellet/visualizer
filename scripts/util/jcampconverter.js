@@ -190,6 +190,14 @@ CI.converter.jcampToSpectra=(function() {
     }
 
     function parseXYData(spectrum, value) {
+
+
+        function addPoint(spectrum,currentX,currentY) {
+     //       console.log(currentX+" - "+currentY+" - "+currentX/spectrum.observeFrequency+" - "+currentY*spectrum.yFactor);
+            spectrum.currentData.push(currentX/spectrum.observeFrequency*spectrum.xFactor, currentY*spectrum.yFactor);
+        }
+
+    
         spectrum.continuous=true;
         spectrum.data=[];
         spectrum.currentData=[];
@@ -282,10 +290,6 @@ CI.converter.jcampToSpectra=(function() {
         }
     }
 
-    function addPoint(spectrum,currentX,currentY) {
- //       console.log(currentX+" - "+currentY+" - "+currentX/spectrum.observeFrequency+" - "+currentY*spectrum.yFactor);
-        spectrum.currentData.push(currentX/spectrum.observeFrequency*spectrum.xFactor, currentY*spectrum.yFactor);
-    }
 
     function addLowRes(spectra, options) {
         var spectrum;

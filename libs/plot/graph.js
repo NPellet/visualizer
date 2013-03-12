@@ -107,6 +107,10 @@ var Graph = (function() {
 			this._zoomingSquare.setAttribute('height', 0);
 			this.dom.appendChild(this._zoomingSquare);
 
+
+			this.shapeZone = document.createElementNS(this.ns, 'g');
+			this.graphingZone.appendChild(this.shapeZone);
+
 			this.rectEvent = document.createElementNS(this.ns, 'rect');
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
@@ -680,11 +684,18 @@ var Graph = (function() {
 
 		getZoomMode: function() {
 			return this.options.zoomMode;
+		},
+
+		makeShape: function(shapeType) {
+
+			switch(shapeType) {
+				case 'rect':
+					return new GraphRect(this);
+				break;
+
+			}
+			 
 		}
-
-
-
-
 
 	}
 
@@ -2040,5 +2051,104 @@ var Graph = (function() {
 		}
 	}
 
+
+	var GraphShape = function() {
+
+	}
+
+	GraphShape.prototype = {
+
+		init: function(graph) {
+			this.graph = graph;
+			this.properties = {};
+			this.createDom();
+		},
+
+		applyAll: function() {
+			for(var i in this.properties)
+				this._dom.setAttribute(i, this.properties[i]);
+		},
+
+		done: function() {
+			this.applyAll();
+			if(this._inDom)
+				this.graph.shapeZone.removeChild(this._dom);
+			this.graph.shapeZone.appendChild(this._dom);
+			this._inDom = true;
+		},
+
+
+		setXAxis: function(axis) {
+			this.xaxis = axis;
+		},
+
+		setYAxis: function(axis) {
+			this.yaxis = axis;
+		},
+
+		setSerie: function(serie) {
+			this.serie = serie;
+			this.setXAxis(serie.getXAxis());
+			this.setYAxis(serie.getYAxis());
+		},
+
+		// Typically for x, y, x1, y2
+		setByVal: function(prop, val, axis) {
+			this.properties[prop] = axis == 'x' ? this.xaxis.getPx(val) : this.yaxis.getPx(val);
+		},
+
+		set: function(prop, val) {
+			this.properties[prop] = val;
+		}
+	}
+
+	GraphRect = function(graph) {
+		this.init(graph);
+	}
+
+	$.extend(GraphRect.prototype, GraphShape.prototype, {
+		
+		createDom: function() {
+			this._dom = document.createElementNS(this.graph.ns, 'rect');
+		},
+
+		setWidthByVal: function(val) {
+			if(this.properties.x) {
+				var width = this.xaxis.getPx(val) - this.properties.x;
+				if(width > 0)
+					this.set('width', width);
+				else {
+					this.set('x', this.xaxis.getPx(val));
+					this.set('width', - width);
+				}
+			}
+		},
+
+		setHeightByVal: function(val) {
+			if(this.properties.y) {
+				var height = this.yaxis.getPx(val) - this.properties.y;
+				if(height > 0)
+					this.set('height', height);
+				else {
+					this.set('y', this.yaxis.getPx(val));
+					this.set('height', - height);
+				}
+			}
+		},
+
+		setFullWidth: function() {
+			this.set('x', this.xaxis.getMinPx());
+			this.set('width', this.xaxis.getMaxPx() - this.xaxis.getMinPx());
+		},
+
+		setFullHeight: function() {
+			this.set('y', this.yaxis.getMinPx());
+			this.set('height', this.yaxis.getMaxPx() - this.yaxis.getMinPx());
+		}
+
+	});
+
+
 	return Graph;
+
 })();
