@@ -293,15 +293,11 @@ CI.converter.jcampToSpectra=(function() {
         }
     }
 
-<<<<<<< HEAD
-=======
-
-
     function addPoint(spectrum,currentX,currentY) {
  //       console.log(currentX+" - "+currentY+" - "+currentX/spectrum.observeFrequency+" - "+currentY*spectrum.yFactor);
         spectrum.currentData.push(currentX/spectrum.observeFrequency, currentY*spectrum.yFactor);
     }
->>>>>>> Fix scale bug
+
 
     function addLowRes(spectra, options) {
         var spectrum;
