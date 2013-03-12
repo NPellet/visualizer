@@ -54,29 +54,35 @@ CI.converter.jcampToSpectra=(function() {
                 if (endLine>0) {
                     infos=dataValue.substring(0,endLine).split(/[ ,;\t]+/);
                     if (ntuples.first) {
-                        spectrum.firstX=ntuples.first[0];
-                        spectrum.firstY=ntuples.first[1];
+                        if (ntuples.first[0]) spectrum.firstX=ntuples.first[0];
+                        if (ntuples.first[1]) spectrum.firstY=ntuples.first[1];
                     }
                     if (ntuples.last) {
-                        spectrum.lastX=ntuples.last[0];
-                        spectrum.lastY=ntuples.last[1];
+                        if (ntuples.last[0]) spectrum.lastX=ntuples.last[0];
+                        if (ntuples.last[1]) spectrum.lastY=ntuples.last[1];
                     }
-                    if (ntuples.vardim) {
+                    if (ntuples.vardim && ntuples.vardim[0]) {
                         spectrum.nbPoints=ntuples.vardim[0];
                     }
                     if (ntuples.factor) {
-                        spectrum.xFactor=ntuples.factor[0];
-                        spectrum.yFactor=ntuples.factor[1];
+                        if (ntuples.factor[0]) spectrum.xFactor=ntuples.factor[0];
+                        if (ntuples.factor[1]) spectrum.yFactor=ntuples.factor[1];
                     }
                     if (ntuples.units) {
-                        spectrum.xUnit=ntuples.units[0];
-                        spectrum.yUnit=ntuples.units[1];
-                        spectrum.deltaX=(spectrum.lastX-spectrum.firstX)/(spectrum.nbPoints-1);
+                        if (ntuples.units[0]) spectrum.xUnit=ntuples.units[0];
+                        if (ntuples.units[1]) spectrum.yUnit=ntuples.units[1];
                     }
                     
-                    if (infos[1] && infos[1]=="PEAKS") dataLabel="PEAKTABLE";
-                    else if (infos[1] && infos[1]=="XYDATA") dataLabel="XYDATA";
-                    else if (infos[0] && infos[0].indexOf("++")>0) dataLabel="XYDATA";
+                    spectrum.datatable=infos[0];
+
+                    if (infos[1] && infos[1].indexOf("PEAKS")>-1) dataLabel="PEAKTABLE";
+
+
+
+                    else if (infos[1] && (infos[1].indexOf("XYDATA") || infos[0].indexOf("++")>0)) {
+                        dataLabel="XYDATA";
+                        spectrum.deltaX=(spectrum.lastX-spectrum.firstX)/(spectrum.nbPoints-1);
+                    }
                 }
             }
 
@@ -135,6 +141,8 @@ CI.converter.jcampToSpectra=(function() {
                 ntuples.min=convertToFloatArray(dataValue.split(/[, \t]+/));
             } else if (dataLabel=='MAX') {
                 ntuples.max=convertToFloatArray(dataValue.split(/[, \t]+/));
+            } else if (dataLabel=='PAGE') {
+                spectrum.page=dataValue.trim();
             } else if (dataLabel=="XYDATA") {
                 prepareSpectrum(spectrum);
                 parseXYData(spectrum, dataValue);
@@ -152,6 +160,7 @@ CI.converter.jcampToSpectra=(function() {
         if (options && options.lowRes) addLowRes(spectra,options);
        // console.timeEnd("lowres");
 
+       // console.log(spectra);
 
         return spectra;
 
@@ -159,47 +168,41 @@ CI.converter.jcampToSpectra=(function() {
 
 
     function prepareSpectrum(spectrum) {
+        if (! spectrum.xFactor) spectrum.xFactor=1;
+        if (! spectrum.yFactor) spectrum.yFactor=1;
         if (spectrum.observeFrequency) {
             if (spectrum.xUnit && spectrum.xUnit.toUpperCase()=='HZ') {
                 spectrum.xUnit='PPM';
             } else {
                 spectrum.observeFrequency=1;
             }
-        } else {
-            spectrum.observeFrequency=1;
         }
     }
 
     function parsePeakTable(spectrum, value) {
-        spectrum.continuous=false;
         spectrum.data=[];
         spectrum.currentData=[];
         spectrum.data.push(spectrum.currentData);
-        var lines=value.split(/[\r\n]+/);
+        var lines=value.split(/ *[;\r\n]+ */);
 
 
         for (var i=1, ii=lines.length; i<ii; i++) {
             var values=lines[i].trim().replace(removeCommentRegExp,"").split(peakTableSplitRegExp);
             if (values.length==2) {
-                spectrum.data.push(parseFloat(values[0]));
-                spectrum.data.push(parseFloat(values[1]));
+                spectrum.currentData.push(parseFloat(values[0]*spectrum.xFactor));
+                spectrum.currentData.push(parseFloat(values[1]*spectrum.yFactor));
             } else {
                 console.log("Format error: "+values);
             }
-            
         }
     }
 
     function parseXYData(spectrum, value) {
-
-
-        function addPoint(spectrum,currentX,currentY) {
-     //       console.log(currentX+" - "+currentY+" - "+currentX/spectrum.observeFrequency+" - "+currentY*spectrum.yFactor);
-            spectrum.currentData.push(currentX/spectrum.observeFrequency*spectrum.xFactor, currentY*spectrum.yFactor);
+        // we check if deltaX is defined otherwise we calculate it
+        if (! spectrum.deltaX) {
+            spectrum.deltaX=(spectrum.lastX-spectrum.firstX)/(spectrum.nbPoints-1);
         }
 
-    
-        spectrum.continuous=true;
         spectrum.data=[];
         spectrum.currentData=[];
         spectrum.data.push(spectrum.currentData);
@@ -223,8 +226,6 @@ CI.converter.jcampToSpectra=(function() {
                 }
 
                 
-                
-                
                 for (var j=1, jj=values.length; j<jj; j++) {
                     if (j==1 && (lastDif || lastDif==0)) {
                         lastDif = undefined; // at the beginning of each line there should be the full value X / Y so the diff is always undefined
@@ -234,7 +235,7 @@ CI.converter.jcampToSpectra=(function() {
                             ascii=values[j].charCodeAt(0);
                             // + - . 0 1 2 3 4 5 6 7 8 9
                             if ((ascii==43) || (ascii==45) || (ascii==46) || ((ascii>47) && (ascii<58))) {
-                                currentY=parseInt(values[j]);
+                                currentY=parseFloat(values[j]);
                                 addPoint(spectrum,currentX,currentY);
                                 currentX+=spectrum.deltaX;
                             } else
@@ -291,12 +292,19 @@ CI.converter.jcampToSpectra=(function() {
                 }  
             }  
         }
+
+
+        function addPoint(spectrum,currentX,currentY) {
+            // if (aa++<10) console.log(currentX+" - "+currentY+" - "+currentX/spectrum.observeFrequency+" - "+currentY*spectrum.yFactor);
+            if (spectrum.observeFrequency) {
+
+                spectrum.currentData.push(currentX/spectrum.observeFrequency, currentY*spectrum.yFactor);
+            } else {
+                spectrum.currentData.push(currentX, currentY*spectrum.yFactor);
+            }
+        }
     }
 
-    function addPoint(spectrum,currentX,currentY) {
- //       console.log(currentX+" - "+currentY+" - "+currentX/spectrum.observeFrequency+" - "+currentY*spectrum.yFactor);
-        spectrum.currentData.push(currentX/spectrum.observeFrequency, currentY*spectrum.yFactor);
-    }
 
 
     function addLowRes(spectra, options) {
