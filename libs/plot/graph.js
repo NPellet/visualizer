@@ -34,7 +34,7 @@ var Graph = (function() {
 			closeTop: true,
 
 			title: '',
-			zoomMode: 'xy',
+			zoomMode: 'x',
 
 			lineToZero: false
 		},
@@ -468,10 +468,10 @@ var Graph = (function() {
 			this.dom.setAttribute('height', this.height);
 			this.domTitle.setAttribute('x', this.width / 2);
 
-			this.rectEvent.setAttribute('x', this.getPaddingLeft());
-			this.rectEvent.setAttribute('y', this.getPaddingTop());
-			this.rectEvent.setAttribute('width', this.getDrawingWidth());
-			this.rectEvent.setAttribute('height', this.getDrawingHeight());
+			this.rectEvent.setAttribute('x', 0/*this.getPaddingLeft()*/);
+			this.rectEvent.setAttribute('y', 0/*this.getPaddingTop()*/);
+			this.rectEvent.setAttribute('width', this.getWidth());
+			this.rectEvent.setAttribute('height', this.getHeight());
 			
 			this.refreshDrawingZone();
 		},
@@ -1750,7 +1750,7 @@ var Graph = (function() {
 						currentLine += "L ";
 						currentLine += xpx;
 						currentLine += " ";
-						currentLine += this.getYAxis().getMinPx();
+						currentLine += this.getYAxis().getPos(0);
 						currentLine += " "; 
 							
 					}

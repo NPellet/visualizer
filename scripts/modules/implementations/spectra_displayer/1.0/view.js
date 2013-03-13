@@ -31,7 +31,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		var graph = new Graph(this.dom.get(0), {
 			closeRight: false, 
 			closeTop: false, 
-			zoomMode: 'xy',
+			zoomMode: 'x',
 
 			onMouseMoveData: function(e, val) {
 
@@ -68,6 +68,9 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		graph.getXAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('x') > -1 : false);
 		graph.getXAxis().setLabel(cfgM.xLabel || '');
 		
+		graph.getXAxis().setAxisDataSpacing(cfgM.xLeftSpacing || 0, cfgM.xRightSpacing || 0);
+		graph.getLeftAxis().setAxisDataSpacing(cfgM.yBottomSpacing || 0, cfgM.yTopSpacing || 0);
+
 
 		graph.redraw();
 

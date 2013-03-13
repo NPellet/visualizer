@@ -118,6 +118,36 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 		
 
 
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'yBottomSpacing'
+		});
+		field.setTitle(new BI.Title('Spacing below the data'));
+		
+
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'yTopSpacing'
+		});
+		field.setTitle(new BI.Title('Spacing above the data'));
+		
+
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'xLeftSpacing'
+		});
+		field.setTitle(new BI.Title('Spacing left'));
+		
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'xRightSpacing'
+		});
+		field.setTitle(new BI.Title('Spacing right'));
+		
+
 
 		var group = new BI.Forms.GroupFields.Table('spectrainfos');
 		section.addFieldGroup(group);
@@ -184,7 +214,11 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 					flip: [flipArray],
 					displayAxis: [this.module.getConfiguration().displayAxis],
 					xLabel: [this.module.getConfiguration().xLabel],
-					yLabel: [this.module.getConfiguration().yLabel]
+					yLabel: [this.module.getConfiguration().yLabel],
+					xRightSpacing: [this.module.getConfiguration().xRightSpacing],
+					xLeftSpacing: [this.module.getConfiguration().xLeftSpacing],
+					yTopSpacing: [this.module.getConfiguration().yTopSpacing],
+					yBottomSpacing: [this.module.getConfiguration().yBottomSpacing]
 		//			plotcolor: this.module.getConfiguration().plotcolor || ['#000000']
 				}],
 				spectrainfos: [spectrainfos]
@@ -209,6 +243,12 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 
 		this.module.getConfiguration().xLabel = confSection[0].gencfg[0].xLabel[0];
 		this.module.getConfiguration().yLabel = confSection[0].gencfg[0].yLabel[0];
+		
+		this.module.getConfiguration().xRightSpacing = confSection[0].gencfg[0].xRightSpacing[0];
+		this.module.getConfiguration().xLeftSpacing = confSection[0].gencfg[0].xLeftSpacing[0];
+		this.module.getConfiguration().yTopSpacing = confSection[0].gencfg[0].yTopSpacing[0];
+		this.module.getConfiguration().yBottomSpacing = confSection[0].gencfg[0].yBottomSpacing[0];
+
 		this.module.getConfiguration().displayAxis = confSection[0].gencfg[0].displayAxis[0];
 //		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor;
 		
