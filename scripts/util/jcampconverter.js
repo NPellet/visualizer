@@ -65,7 +65,6 @@ CI.converter.jcampToSpectra=(function() {
                         var secondVariable=infos[0].replace(/.*\.\.([a-zA-Z0-9]+).*/,"$1");
                         xIndex=ntuples.symbol.indexOf(firstVariable);
                         yIndex=ntuples.symbol.indexOf(secondVariable);
-                        console.log(xIndex+" - "+yIndex+" - "+firstVariable+" - "+secondVariable);
                     }
 
                     if (xIndex==-1) xIndex=0;
@@ -73,34 +72,32 @@ CI.converter.jcampToSpectra=(function() {
 
 
                     if (ntuples.first) {
-                        if (ntuples.first[xIndex]) spectrum.firstX=ntuples.first[xIndex];
-                        if (ntuples.first[yIndex]) spectrum.firstY=ntuples.first[yIndex];
+                        if (ntuples.first.length>xIndex) spectrum.firstX=ntuples.first[xIndex];
+                        if (ntuples.first.length>yIndex) spectrum.firstY=ntuples.first[yIndex];
                     }
                     if (ntuples.last) {
-                        if (ntuples.last[xIndex]) spectrum.lastX=ntuples.last[xIndex];
-                        if (ntuples.last[1]) spectrum.lastY=ntuples.last[yIndex];
+                        if (ntuples.last.length>xIndex) spectrum.lastX=ntuples.last[xIndex];
+                        if (ntuples.last.length>yIndex) spectrum.lastY=ntuples.last[yIndex];
                     }
-                    if (ntuples.vardim && ntuples.vardim[xIndex]) {
+                    if (ntuples.vardim && ntuples.vardim.length>xIndex) {
                         spectrum.nbPoints=ntuples.vardim[xIndex];
                     }
                     if (ntuples.factor) {
-                        if (ntuples.factor[xIndex]) spectrum.xFactor=ntuples.factor[xIndex];
-                        if (ntuples.factor[yIndex]) spectrum.yFactor=ntuples.factor[yIndex];
+                        if (ntuples.factor.length>xIndex) spectrum.xFactor=ntuples.factor[xIndex];
+                        if (ntuples.factor.length>yIndex) spectrum.yFactor=ntuples.factor[yIndex];
                     }
                     if (ntuples.units) {
-                        if (ntuples.units[xIndex]) spectrum.xUnit=ntuples.units[xIndex];
-                        if (ntuples.units[yIndex]) spectrum.yUnit=ntuples.units[yIndex];
+                        if (ntuples.units.length>xIndex) spectrum.xUnit=ntuples.units[xIndex];
+                        if (ntuples.units.length>yIndex) spectrum.yUnit=ntuples.units[yIndex];
                     }
                     
                     spectrum.datatable=infos[0];
 
 
 
-                    if (infos[1] && infos[1].indexOf("PEAKS")>-1) dataLabel="PEAKTABLE";
-
-
-
-                    else if (infos[1] && (infos[1].indexOf("XYDATA") || infos[0].indexOf("++")>0)) {
+                    if (infos[1] && infos[1].indexOf("PEAKS")>-1) {
+                        dataLabel="PEAKTABLE";
+                    } else if (infos[1] && (infos[1].indexOf("XYDATA") || infos[0].indexOf("++")>0)) {
                         dataLabel="XYDATA";
                         spectrum.deltaX=(spectrum.lastX-spectrum.firstX)/(spectrum.nbPoints-1);
                     }
@@ -204,17 +201,21 @@ CI.converter.jcampToSpectra=(function() {
     }
 
     function parsePeakTable(spectrum, value) {
+        var i,ii,j,jj,values;
         spectrum.data=[];
         spectrum.currentData=[];
         spectrum.data.push(spectrum.currentData);
         var lines=value.split(/ *[;\r\n]+ */);
 
 
-        for (var i=1, ii=lines.length; i<ii; i++) {
-            var values=lines[i].trim().replace(removeCommentRegExp,"").split(peakTableSplitRegExp);
-            if (values.length==2) {
-                spectrum.currentData.push(parseFloat(values[0]*spectrum.xFactor));
-                spectrum.currentData.push(parseFloat(values[1]*spectrum.yFactor));
+        for (i=1, ii=lines.length; i<ii; i++) {
+            values=lines[i].trim().replace(removeCommentRegExp,"").split(peakTableSplitRegExp);
+            if (values.length%2==0) {
+                for (j=0,jj=values.length; j<jj; j=j+2) {
+                    spectrum.currentData.push(parseFloat(values[j]*spectrum.xFactor));
+                    spectrum.currentData.push(parseFloat(values[j+1]*spectrum.yFactor));
+                }
+                
             } else {
                 console.log("Format error: "+values);
             }
