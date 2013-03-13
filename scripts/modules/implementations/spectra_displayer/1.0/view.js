@@ -31,7 +31,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		var graph = new Graph(this.dom.get(0), {
 			closeRight: false, 
 			closeTop: false, 
-			zoomMode: 'x',
+			zoomMode: 'xy',
 
 			onMouseMoveData: function(e, val) {
 
@@ -218,7 +218,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			for (var i=0; i<spectra.length; i++) {
 				
 				serie = this.graph.newSerie(varname, {trackMouse: true});
-				serie.setData(spectra[i].data[1]);
+				serie.setData(spectra[i].data[spectra[i].data.length - 1]);
 				serie.autoAxis();
 
 				if(color)
@@ -228,9 +228,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				break;
 			}
 			//this.graph.drawSeries();
-
 			this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
-
 		}
 	},
 
