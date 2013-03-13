@@ -182,7 +182,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				return;
 			this.zones[varname] = moduleValue._zones;
 			
-			var color;
+			var color, continuous;
 
 			if(!moduleValue)
 				return this.blank();
@@ -216,7 +216,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 			for (var i=0; i<spectra.length; i++) {
 				
-				serie = this.graph.newSerie(varname, {trackMouse: true});
+				serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
 				serie.setData(spectra[i].data[spectra[i].data.length - 1]);
 				serie.autoAxis();
 
