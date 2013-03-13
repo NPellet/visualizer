@@ -151,7 +151,7 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 			name: 'zoom'
 		});
 		field.setTitle(new BI.Title('Zoom'));
-		field.implementation.setOptions([{key: 'x', title: 'X only'}, {key: 'y', title: 'Y only'}, {key: 'xy', title: 'XY'}]);
+		field.implementation.setOptions([{key: 'x', title: 'X only'}, {key: 'y', title: 'Y only'}, {key: 'xy', title: 'XY'}, {key: 'none', title: 'None'}]);
 
 
 		var group = new BI.Forms.GroupFields.Table('spectrainfos');

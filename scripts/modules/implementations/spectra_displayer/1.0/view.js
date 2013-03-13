@@ -31,7 +31,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		var graph = new Graph(this.dom.get(0), {
 			closeRight: false, 
 			closeTop: false, 
-			zoomMode: cfgM.zoom || 'x',
+			zoomMode: cfgM.zoom ? (cfgM.zoom != "none" ? cfgM.zoom : false) : false,
 
 			onMouseMoveData: function(e, val) {
 
