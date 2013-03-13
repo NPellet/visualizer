@@ -123,8 +123,7 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 			name: 'yBottomSpacing'
 		});
 		field.setTitle(new BI.Title('Spacing below the data'));
-		
-
+	
 
 		var field = groupfield.addField({
 			type: 'Text',
@@ -132,7 +131,6 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 		});
 		field.setTitle(new BI.Title('Spacing above the data'));
 		
-
 
 		var field = groupfield.addField({
 			type: 'Text',
@@ -147,6 +145,13 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 		});
 		field.setTitle(new BI.Title('Spacing right'));
 		
+
+		var field = groupfield.addField({
+			type: 'Combo',
+			name: 'zoom'
+		});
+		field.setTitle(new BI.Title('Zoom'));
+		field.implementation.setOptions([{key: 'x', title: 'X only'}, {key: 'y', title: 'Y only'}, {key: 'xy', title: 'XY'}]);
 
 
 		var group = new BI.Forms.GroupFields.Table('spectrainfos');
@@ -218,7 +223,8 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 					xRightSpacing: [this.module.getConfiguration().xRightSpacing],
 					xLeftSpacing: [this.module.getConfiguration().xLeftSpacing],
 					yTopSpacing: [this.module.getConfiguration().yTopSpacing],
-					yBottomSpacing: [this.module.getConfiguration().yBottomSpacing]
+					yBottomSpacing: [this.module.getConfiguration().yBottomSpacing],
+					zoom:  [this.module.getConfiguration().zoom]
 		//			plotcolor: this.module.getConfiguration().plotcolor || ['#000000']
 				}],
 				spectrainfos: [spectrainfos]
@@ -248,6 +254,8 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 		this.module.getConfiguration().xLeftSpacing = confSection[0].gencfg[0].xLeftSpacing[0];
 		this.module.getConfiguration().yTopSpacing = confSection[0].gencfg[0].yTopSpacing[0];
 		this.module.getConfiguration().yBottomSpacing = confSection[0].gencfg[0].yBottomSpacing[0];
+
+		this.module.getConfiguration().zoom = confSection[0].gencfg[0].zoom[0];
 
 		this.module.getConfiguration().displayAxis = confSection[0].gencfg[0].displayAxis[0];
 //		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor;
