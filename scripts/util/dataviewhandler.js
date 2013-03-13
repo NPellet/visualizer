@@ -394,7 +394,7 @@ CI.DataViewHandler.prototype = {
 
 		var def = $.Deferred();
 
-		var defServer = this.getFromServer({ branch: (this.defaultBranch || 'Master'), action: 'Load' })/*.pipe(function(el) {
+		var defServer = this.getFromServer({ branch: (this.defaultBranch || 'Master'), action: 'Load' })/*.pipe(function(el) {
 			self.currentPath[1] = 'server';
 			self.currentPath[2] = el._name || 'Master';
 			self.currentPath[3] = el._time || 'head';

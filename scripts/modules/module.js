@@ -583,7 +583,7 @@ CI.Module.prototype._impl = {
 				return;
 			var i = actionsOut.length - 1;
 			for(; i >= 0; i--) {
-				if(actionsOut[i].rel == rel && ((event && event == actionsOut[i].event) || !event)) {
+				if(actionsOut[i].rel == rel && ((event && event == actionsOut[i].event) || !event)) {
 					actionname = actionsOut[i].name;
 					CI.API.executeActionScript(actionname, value);
 					CI.Actions.set(actionname, value);

@@ -17,7 +17,7 @@ CI.Module.prototype._types.spectra_displayer.View = function(module) {
 CI.Module.prototype._types.spectra_displayer.View.prototype = {
 	
 	init: function() {
-		this.series = [];
+		this.series = {};
 		this.colorvars = [];
 		this.dom = $('<div />');
 		this.zones = {};
@@ -26,7 +26,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 	},
 	
 	inDom: function() {
-	
+		var cfgM = this.module.getConfiguration();
 		var self = this;
 		var graph = new Graph(this.dom.get(0), {
 			closeRight: false, 
@@ -66,9 +66,12 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		graph.getXAxis().setLabel('ppm');
 		graph.redraw();
 
-		var series = [];
 		this.graph = graph;
-		
+		if(cfgM.flipX)
+			this.graph.getXAxis().flip(true);
+
+		if(cfgM.flipY)
+			this.graph.getLeftAxis().flip(true);		
 	},
 	
 	onResize: function(width, height) {
@@ -121,14 +124,56 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			return;
 		},
 
+		'xArray': function(moduleValue, varname) {
+
+			this.series[varname] = this.series[varname] || [];
+			for(var i = 0, l = this.series[varname].length; i < l; i++)
+				this.series[varname][i].kill();
+			this.series[varname] = [];
+
+			var cfgM = this.module.getConfiguration();			
+			var color;
+
+			if(!moduleValue)
+				return;
+
+			if(cfgM.plotinfos) {
+				for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
+					if(varname == cfgM.plotinfos[i].variable) {
+						color = cfgM.plotinfos[i].plotcolor;
+						continuous = cfgM.plotinfos[i].plotcontinuous;
+					}	
+				}
+			}
+			var val = CI.DataType.getValueIfNeeded(moduleValue);
+			var val2 = [];
+			for(var i = 0, l = val.length; i < l; i++) {
+				val2.push(i);
+				val2.push(val[i]);
+			}
+
+			serie = this.graph.newSerie(varname, {trackMouse: true});
+			serie.setData(val2);
+			serie.autoAxis();
+			if(color)
+				serie.setLineColor(color);
+
+			this.series[varname].push(serie);
+			this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
+		},
+
 		'jcamp': function(moduleValue, varname) {
+
+			if(!moduleValue)
+				return;
 			var self = this;
+			var cfgM = this.module.getConfiguration();			
 			CI.RepoHighlight.kill(this.module.id + varname);
 
 			if(!this.graph)
 				return;
 			this.zones[varname] = moduleValue._zones;
-			var cfgM = this.module.getConfiguration();			
+			
 			var color;
 
 			if(!moduleValue)
@@ -141,68 +186,14 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 						continuous = cfgM.plotinfos[i].plotcontinuous;
 					}	
 				}
-/*
-			var highlightZones = [];
-			if(moduleValue._highlights) {
-				for(var i in moduleValue._highlights) {
-					if(moduleValue._highlights[i] == 1) {
-							for(var j in zones) {
-								if(zones[j][i])
-									highlightZones.push({zone: zones[j][i], color: all[j].plots_color });
-						}
-					}
-				}
-			}
-*/
 
 			CI.RepoHighlight.listen(moduleValue._highlight, function(value, commonKeys) {
-
 				for(var i = 0; i < commonKeys.length; i++) 
 					if(self.zones[varname][commonKeys[i]])
 						self.doZone(varname, self.zones[varname][commonKeys[i]], value, color);
 			}, true, this.module.id + varname);
 
-			/*
-			var index;				
-			this._jcampValue = moduleValue;
-			var view = this;
-			var cfgM = this.module.getConfiguration();
-
-			var color = '#000000', continuous = false;
-
-			
-			
-
-			var cfg = {
-				continuous:  continuous,
-				flipX: cfgM.flipX, 
-				flipY: cfgM.flipY, 
-				plotcolor: color,
-				dom: this.dom,
-				spectraid: varname
-			};
-			// Display the jcamp to the screen using the value and the module ref
-
-			CI.DataType.toScreen(moduleValue, this.module, cfg).done(function(val) {
-				
-				if(view.dom.data('spectra'))
-					view.dom.data('spectra').onZoomChange = function(minX, maxX) {
-						view.module.controller.zoomChanged(minX, maxX);
-					};
-
-				view.module.updateView('fromTo');
-				//view.update2.fromTo(CI.Repo.getValue(''));
-				//CI.Util.ResolveDOMDeferred(view.module.getDomContent());
-				CI.Grid.moduleResize(view.module);			
-			});*/
-
 			this.series[varname] = this.series[varname] || [];
-
- 			if(cfgM.flipX)
- 				this.graph.getXAxis().flip(true);
-
- 			if(cfgM.flipY)
- 				this.graph.getLeftAxis().flip(true);
 
  			//if(typeof moduleValue.value !== 'object') {
  				var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
@@ -227,7 +218,6 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				this.series[varname].push(serie);
 				break;
 			}
-			//this.graph.drawSeries();
 			this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 		}
 	},

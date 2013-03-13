@@ -35,6 +35,18 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 	},
 	
 	configurationReceive: {
+		xArray: {
+			type: 'array',
+			label: 'Array 1D',
+			description: 'Array 1D'
+		},
+
+		xyArray: {
+			type: 'array',
+			label: 'Array XY',
+			description: 'Array XY'
+		},
+
 		jcamp: {
 			type: 'jcamp',
 			label: 'jcamp data',
@@ -98,7 +110,7 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 
 		if(currentCfg)
 			for(var i = 0; i < currentCfg.length; i++) {
-				if(currentCfg[i].rel == 'jcamp')
+				if(currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray')
 					vars.push({title: currentCfg[i].name, key: currentCfg[i].name});
 			}
 

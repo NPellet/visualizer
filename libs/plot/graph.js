@@ -609,7 +609,7 @@ var Graph = (function() {
 
 		drawSeries: function(doNotRedrawZone) {
 
-			if(!this.width || !this.height)
+			if(!this.width || !this.height)
 				return;
 
 			if(!this._painted)
@@ -2058,7 +2058,7 @@ var Graph = (function() {
 
 	GraphShape.prototype = {
 
-		init: function(graph) {
+		init: function(graph) {
 			this.graph = graph;
 			this.properties = {};
 			this.createDom();
