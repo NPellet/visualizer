@@ -34,7 +34,9 @@ var Graph = (function() {
 			closeTop: true,
 
 			title: '',
-			zoomMode: 'xy'
+			zoomMode: 'xy',
+
+			lineToZero: false
 		},
 
 
@@ -600,9 +602,8 @@ var Graph = (function() {
 			}
 		},
 
-		newSerie: function(name, options) {
+		newSerie: function(name, options, type) {
 			var serie = new GraphSerie(this, name, options);
-			
 			this.series.push(serie);
 			return serie;
 		},
@@ -1711,22 +1712,10 @@ var Graph = (function() {
 
 			this.groupMain.removeChild(this.groupLines);
 			this.groupMain.removeChild(this.domMarker);
-
-/*			this.xshift = - this.getXAxis().getSerieShift();
-			this.xscale = this.getXAxis().getSerieScale();
-			this.yshift = - this.getYAxis().getSerieShift();
-			this.yscale = this.getYAxis().getSerieScale();
-			*/
-			//this.groupMain.setAttribute('transform', 'scale(' + this.xscale + ', ' + this.yscale + ') translate(' + this.xshift + ', ' + this.yshift + ')');
-
-//			if(!this.getXAxis().hasChanged && !this.getYAxis().hasChanged)
-//				return;
-//console.log('HERE');				
-			
+				
 			while(this.groupLines.firstChild)
 				this.groupLines.removeChild(this.groupLines.firstChild);
 
-			//this.domMarker.removeAttribute('d');
 			this.markerPath = '';
 			this._markerPath = this.getMarkerPath();
 
@@ -1743,17 +1732,32 @@ var Graph = (function() {
 				//	if(xpx < this.getXAxis().getMinPx() || xpx > this.getXAxis().getMaxPx())
 				//		continue;
 					ypx = Math.round(this.getYAxis().getPx(this.data[i][j + 1]) * 1000) / 1000;
-					if(k != 0)
-						currentLine += "L ";
+					if(k != 0) {
+						if(this.options.lineToZero)
+							currentLine += 'M ';
+						else
+							currentLine += "L ";
+					}
+
 					k++;
 
 					currentLine += xpx;
 					currentLine += " ";
 					currentLine += ypx;
 					currentLine += " "; 
+					
+					if(this.options.lineToZero) {
+						currentLine += "L ";
+						currentLine += xpx;
+						currentLine += " ";
+						currentLine += this.getYAxis().getMinPx();
+						currentLine += " "; 
+							
+					}
 
 					if(!this.options.markers.show)
 						continue;
+
 
 					this._drawMarkerXY(xpx, ypx);
 				}
@@ -1931,18 +1935,21 @@ var Graph = (function() {
 				return seedB;
 
 			var seedInt;
-
+			var i = 0;
 			
 			while(true) {
+				i++;
+				if(i > 100)
+					throw "Error loop";
 
 				seedInt = (seedA + seedB) / 2;
 				seedInt -= seedInt % 2;
 
-				if(seedInt == seedA)
+				if(seedInt == seedA || haystack[seedInt] == target)
 					return seedInt;
 
 		//		console.log(seedA, seedB, seedInt, haystack[seedInt]);
-				if(haystack[seedInt] < target) {
+				if(haystack[seedInt] <= target) {
 					if(reverse)
 						seedB = seedInt;
 					else

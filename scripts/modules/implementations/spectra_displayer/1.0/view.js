@@ -64,7 +64,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 		graph.getLeftAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('y') > -1 : false);
 		graph.getLeftAxis().setLabel(cfgM.yLabel || '');
-		
+
 		graph.getXAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('x') > -1 : false);
 		graph.getXAxis().setLabel(cfgM.xLabel || '');
 		
@@ -137,7 +137,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			this.series[varname] = [];	
 
 			var cfgM = this.module.getConfiguration();			
-			var color;
+			var color, continuous;
 
 			if(!moduleValue)
 				return;
@@ -157,7 +157,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				val2.push(val[i]);
 			}
 
-			serie = this.graph.newSerie(varname, {trackMouse: true});
+			serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
 			serie.setData(val2);
 			serie.autoAxis();
 			if(color)

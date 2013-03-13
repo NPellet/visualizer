@@ -521,7 +521,7 @@ CI.DataType._getValueFromJPath = function(element, jpath) {
 	var jpath2 = jpath;
 	var jpathElement = jpath2.shift();
 
-	if(!el)
+	if(el === false)
 		return $.Deferred().resolve(null);
 
 	if(jpathElement) {
