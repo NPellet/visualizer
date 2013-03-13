@@ -17,6 +17,8 @@ CI.converter.jcampToSpectra=(function() {
     };
 
     function convert(jcamp, options) {
+        if (! (typeof jcamp == "string")) return {};
+
         var ntuples={},
             ldr,
             dataLabel,
@@ -47,33 +49,52 @@ CI.converter.jcampToSpectra=(function() {
             dataLabel=dataLabel.replace(/[_ -]/g,'').toUpperCase();
 
             if (dataLabel=='DATATABLE') {
-                // ##DATA TABLE= (X++(I..I)), XYDATA
-                // We need to find the variable, we currently deal only with some specific case
+               
                 endLine=dataValue.indexOf("\n");
                 if (endLine==-1) endLine=dataValue.indexOf("\r");
                 if (endLine>0) {
+                    var xIndex=-1;
+                    var yIndex=-1;
+                    // ##DATA TABLE= (X++(I..I)), XYDATA
+                    // We need to find the variables
+
                     infos=dataValue.substring(0,endLine).split(/[ ,;\t]+/);
+
+                    if (infos[0].indexOf("++")>0) {
+                        var firstVariable=infos[0].replace(/.*\(([a-zA-Z0-9]+)\+\+.*/,"$1");
+                        var secondVariable=infos[0].replace(/.*\.\.([a-zA-Z0-9]+).*/,"$1");
+                        xIndex=ntuples.symbol.indexOf(firstVariable);
+                        yIndex=ntuples.symbol.indexOf(secondVariable);
+                        console.log(xIndex+" - "+yIndex+" - "+firstVariable+" - "+secondVariable);
+                    }
+
+                    if (xIndex==-1) xIndex=0;
+                    if (yIndex==-1) yIndex=0;
+
+
                     if (ntuples.first) {
-                        if (ntuples.first[0]) spectrum.firstX=ntuples.first[0];
-                        if (ntuples.first[1]) spectrum.firstY=ntuples.first[1];
+                        if (ntuples.first[xIndex]) spectrum.firstX=ntuples.first[xIndex];
+                        if (ntuples.first[yIndex]) spectrum.firstY=ntuples.first[yIndex];
                     }
                     if (ntuples.last) {
-                        if (ntuples.last[0]) spectrum.lastX=ntuples.last[0];
-                        if (ntuples.last[1]) spectrum.lastY=ntuples.last[1];
+                        if (ntuples.last[xIndex]) spectrum.lastX=ntuples.last[xIndex];
+                        if (ntuples.last[1]) spectrum.lastY=ntuples.last[yIndex];
                     }
-                    if (ntuples.vardim && ntuples.vardim[0]) {
-                        spectrum.nbPoints=ntuples.vardim[0];
+                    if (ntuples.vardim && ntuples.vardim[xIndex]) {
+                        spectrum.nbPoints=ntuples.vardim[xIndex];
                     }
                     if (ntuples.factor) {
-                        if (ntuples.factor[0]) spectrum.xFactor=ntuples.factor[0];
-                        if (ntuples.factor[1]) spectrum.yFactor=ntuples.factor[1];
+                        if (ntuples.factor[xIndex]) spectrum.xFactor=ntuples.factor[xIndex];
+                        if (ntuples.factor[yIndex]) spectrum.yFactor=ntuples.factor[yIndex];
                     }
                     if (ntuples.units) {
-                        if (ntuples.units[0]) spectrum.xUnit=ntuples.units[0];
-                        if (ntuples.units[1]) spectrum.yUnit=ntuples.units[1];
+                        if (ntuples.units[xIndex]) spectrum.xUnit=ntuples.units[xIndex];
+                        if (ntuples.units[yIndex]) spectrum.yUnit=ntuples.units[yIndex];
                     }
                     
                     spectrum.datatable=infos[0];
+
+
 
                     if (infos[1] && infos[1].indexOf("PEAKS")>-1) dataLabel="PEAKTABLE";
 
@@ -161,6 +182,9 @@ CI.converter.jcampToSpectra=(function() {
        // console.timeEnd("lowres");
 
        // console.log(spectra);
+
+     //  getNoiseLevel(spectra);
+      // add2D(spectra);
 
         return spectra;
 
@@ -293,7 +317,6 @@ CI.converter.jcampToSpectra=(function() {
             }  
         }
 
-
         function addPoint(spectrum,currentX,currentY) {
             // if (aa++<10) console.log(currentX+" - "+currentY+" - "+currentX/spectrum.observeFrequency+" - "+currentY*spectrum.yFactor);
             if (spectrum.observeFrequency) {
@@ -303,6 +326,26 @@ CI.converter.jcampToSpectra=(function() {
                 spectrum.currentData.push(currentX, currentY*spectrum.yFactor);
             }
         }
+    }
+
+
+    function add2D(spectra) {
+
+    }
+
+    function getNoiseLevel(spectra) {
+        var averageAbsDifference = 0;
+        var nbPoints=0;
+        for (var i=0, ii=spectra.length; i<ii; i++) {
+            nbPoints+=spectra[i].data[0].length;
+            for (var j=1, jj=spectra[i].data[0].length; j<jj; j++) {
+                averageAbsDifference += Math.abs(spectra[i].data[0][j] - spectra[i].data[0][j-1]);
+            }
+        }
+        averageAbsDifference/=nbPoints;
+        console.log(averageAbsDifference);
+
+        return averageAbsDifference;
     }
 
 
