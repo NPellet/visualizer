@@ -95,6 +95,29 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 		field.implementation.setOptions({ 'flipX': 'Flip X', 'flipY': 'Flip Y' });
 
 
+		var field = groupfield.addField({
+			type: 'Checkbox',
+			name: 'displayAxis'
+		});
+		field.setTitle(new BI.Title('Display axis'));
+		field.implementation.setOptions({ 'x': 'X', 'y': 'Y' });
+
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'xLabel'
+		});
+		field.setTitle(new BI.Title('X axis label'));
+		
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'yLabel'
+		});
+		field.setTitle(new BI.Title('Y axis label'));
+		
+
+
 
 		var group = new BI.Forms.GroupFields.Table('spectrainfos');
 		section.addFieldGroup(group);
@@ -159,6 +182,9 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 				gencfg: [{
 		//			mode: [mode],
 					flip: [flipArray],
+					displayAxis: [this.module.getConfiguration().displayAxis],
+					xLabel: [this.module.getConfiguration().xLabel],
+					yLabel: [this.module.getConfiguration().yLabel]
 		//			plotcolor: this.module.getConfiguration().plotcolor || ['#000000']
 				}],
 				spectrainfos: [spectrainfos]
@@ -180,6 +206,10 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 //		this.module.getConfiguration().mode = confSection[0].gencfg[0].mode[0];
 		this.module.getConfiguration().flipX = flipX;
 		this.module.getConfiguration().flipY = flipY;
+
+		this.module.getConfiguration().xLabel = confSection[0].gencfg[0].xLabel[0];
+		this.module.getConfiguration().yLabel = confSection[0].gencfg[0].yLabel[0];
+		this.module.getConfiguration().displayAxis = confSection[0].gencfg[0].displayAxis[0];
 //		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor;
 		
 		for(var i = 0, l = confSection[0].spectrainfos[0].length; i < l; i++) {

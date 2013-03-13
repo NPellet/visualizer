@@ -62,8 +62,13 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 			}});
 
-		graph.getLeftAxis(0).setDisplay(false);
-		graph.getXAxis().setLabel('ppm');
+		graph.getLeftAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('y') > -1 : false);
+		graph.getLeftAxis().setLabel(cfgM.yLabel || '');
+		
+		graph.getXAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('x') > -1 : false);
+		graph.getXAxis().setLabel(cfgM.xLabel || '');
+		
+
 		graph.redraw();
 
 		this.graph = graph;
@@ -129,7 +134,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			this.series[varname] = this.series[varname] || [];
 			for(var i = 0, l = this.series[varname].length; i < l; i++)
 				this.series[varname][i].kill();
-			this.series[varname] = [];
+			this.series[varname] = [];	
 
 			var cfgM = this.module.getConfiguration();			
 			var color;

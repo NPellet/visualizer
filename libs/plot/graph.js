@@ -1434,7 +1434,7 @@ var Graph = (function() {
 
 			// Place label correctly
 			//this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-			this.label.setAttribute('transform', 'translate(' + (-this.widthHeightTick - 10 - 5) + ', ' + ((this.getMaxPx() - this.getMinPx()) / 2) +') rotate(-90)');
+			this.label.setAttribute('transform', 'translate(' + (-this.widthHeightTick - 10 - 5) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2) +') rotate(-90)');
 
 			this.line.setAttribute('y1', this.getMinPx());
 			this.line.setAttribute('y2', this.getMaxPx());
