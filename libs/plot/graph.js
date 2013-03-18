@@ -935,6 +935,10 @@ var Graph = (function() {
 			return this.mouseVal;
 		},
 
+		isFlipped: function() {
+			return this.flipped;
+		},
+
 		getUnitPerTick: function(px, nbTick, valrange) {
 
 			var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
@@ -1852,8 +1856,9 @@ var Graph = (function() {
 				//	if(xpx < this.getXAxis().getMinPx() || xpx > this.getXAxis().getMaxPx())
 				//		continue;
 					ypx = Math.round(this.getYAxis().getPx(this.data[i][j + 1]) * 1000) / 1000;
-					if(ypx > this.getYAxis().getMaxPx() || ypx < this.getYAxis().getMinPx()) {
-						
+
+					if((!this.getYAxis().isFlipped() && (ypx > this.getYAxis().getMaxPx() || ypx < this.getYAxis().getMinPx())) || (this.getYAxis().isFlipped() && (ypx < this.getYAxis().getMaxPx() || ypx > this.getYAxis().getMinPx()))) {
+
 						if(_higher != (_higher = ypx > this.getYAxis().getMaxPx())) {
 							if(_last) {
 								currentLine = this._addPoint(currentLine, _last[0], _last[1], k);
