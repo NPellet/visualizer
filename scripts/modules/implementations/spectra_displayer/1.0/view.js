@@ -34,6 +34,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			zoomMode: cfgM.zoom ? (cfgM.zoom != "none" ? cfgM.zoom : false) : false,
 
 			onMouseMoveData: function(e, val) {
+				var min, max, x1;
 
 				for(var k in self.zones) {
 
@@ -45,7 +46,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 						min = Math.min(self.zones[k][i][0], self.zones[k][i][1]);
 						max = Math.max(self.zones[k][i][0], self.zones[k][i][1]);
 
-						x1 = val[k].trueX * 1000;
+						x1 = val[k].trueX;
 
 						if(min < x1 && max > x1) {
 							
@@ -108,8 +109,8 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			rect.setSerie(serie);
 			rect.set('fill', color);
 			rect.set('opacity', '0.5');
-			rect.setByVal('x', zone[0] / 1000, 'x');
-			rect.setWidthByVal(zone[1] / 1000);
+			rect.setByVal('x', zone[0], 'x');
+			rect.setWidthByVal(zone[1]);
 			rect.setFullHeight();
 			rect.done();
 			zone.push(rect);

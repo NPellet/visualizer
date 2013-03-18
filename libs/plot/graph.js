@@ -1857,10 +1857,11 @@ var Graph = (function() {
 				//		continue;
 					ypx = Math.round(this.getYAxis().getPx(this.data[i][j + 1]) * 1000) / 1000;
 
-					if((!this.getYAxis().isFlipped() && (ypx > this.getYAxis().getMaxPx() || ypx < this.getYAxis().getMinPx())) || (this.getYAxis().isFlipped() && (ypx < this.getYAxis().getMaxPx() || ypx > this.getYAxis().getMinPx()))) {
+				/*	if((!this.getYAxis().isFlipped() && (ypx > this.getYAxis().getMaxPx() || ypx < this.getYAxis().getMinPx())) || (this.getYAxis().isFlipped() && (ypx < this.getYAxis().getMaxPx() || ypx > this.getYAxis().getMinPx()))) {
 
 						if(_higher != (_higher = ypx > this.getYAxis().getMaxPx())) {
 							if(_last) {
+
 								currentLine = this._addPoint(currentLine, _last[0], _last[1], k);
 								k++;
 								_last = false;
@@ -1883,11 +1884,11 @@ var Graph = (function() {
 						doAndContinue = false;
 					}
 
-					if(_last && !doAndContinue) {
+					if(_in && _last && !doAndContinue) {
 						currentLine = this._addPoint(currentLine, _last[0], _last[1], k);
 						k++;
 						_last = false;
-					}
+					}*/
 					
 					currentLine = this._addPoint(currentLine, xpx, ypx, k);
 					k++;
@@ -2247,6 +2248,7 @@ var Graph = (function() {
 		},
 
 		kill: function() {
+			console.log('Kill');
 			this.graph.shapeZone.removeChild(this._dom);
 		},
 
@@ -2257,10 +2259,14 @@ var Graph = (function() {
 
 		done: function() {
 			this.applyAll();
+
+
 			if(this._inDom)
 				this.graph.shapeZone.removeChild(this._dom);
-			this.graph.shapeZone.appendChild(this._dom);
-			this._inDom = true;
+			else {
+				this.graph.shapeZone.appendChild(this._dom);
+				this._inDom = true;
+			}
 		},
 
 
