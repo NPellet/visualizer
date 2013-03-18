@@ -62,7 +62,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				}
 
 			}});
-
+	graph.getLeftAxis(0, {logScale: true})
 		graph.getLeftAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('y') > -1 : false);
 		graph.getLeftAxis().setLabel(cfgM.yLabel || '');
 
