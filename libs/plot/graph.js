@@ -34,9 +34,12 @@ var Graph = (function() {
 			closeTop: true,
 
 			title: '',
-			zoomMode: 'x',
+			zoomMode: false,
 
-			lineToZero: false
+			lineToZero: false,
+
+			fontSize: 12,
+			fontFamily: 'Myriad Pro, Helvetica, Arial'
 		},
 
 
@@ -45,6 +48,9 @@ var Graph = (function() {
 			this.dom = document.createElementNS(this.ns, 'svg');
 			this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
 			this._dom.appendChild(this.dom);
+
+			this.dom.setAttribute('font-size', this.options.fontSize);
+			this.dom.setAttribute('font-family', this.options.fontFamily);
 
 			this.defs = document.createElementNS(this.ns, 'defs');
 			this.dom.appendChild(this.defs);
@@ -130,32 +136,43 @@ var Graph = (function() {
 		registerEvents: function() {
 			var self = this;
 			this.rectEvent.addEventListener('mousemove', function(e) {
-				var x = e.offsetX;
-				var y = e.offsetY;
+				e.preventDefault();
+				var x = e.offsetX || e.layerX;
+				var y = e.offsetY || e.layerY;
 				self.handleMouseMove(x,y,e);
 			});
 
 			this.rectEvent.addEventListener('mousedown', function(e) {
-				var x = e.offsetX;
-				var y = e.offsetY;
+				e.preventDefault();
+				var x = e.offsetX || e.layerX;
+				var y = e.offsetY || e.layerY;
 				self.handleMouseDown(x,y,e);
 			});
 
 			this.rectEvent.addEventListener('mouseup', function(e) {
-				var x = e.offsetX;
-				var y = e.offsetY;
+				e.preventDefault();
+				var x = e.offsetX || e.layerX;
+				var y = e.offsetY || e.layerY;
 				self.handleMouseUp(x,y,e);
 			});
 
 			this.rectEvent.addEventListener('dblclick', function(e) {
-				var x = e.offsetX;
-				var y = e.offsetY;
+				e.preventDefault();
+				var x = e.offsetX || e.layerX;
+				var y = e.offsetY || e.layerY;
 				self.handleDblClick(x,y,e);
 			});
 
 			this.rectEvent.addEventListener('mousewheel', function(e) {
-				var deltaY = e.wheelDeltaY || e.wheelDelta;
-				self.handleMouseWheel(deltaY,e);
+				var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
+				self.handleMouseWheel(deltaY,e);	
+				e.preventDefault();
+				return false;
+			});
+
+			this.rectEvent.addEventListener('wheel', function(e) {
+				var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
+				self.handleMouseWheel(deltaY,e);	
 				e.preventDefault();
 				return false;
 			});
@@ -189,6 +206,7 @@ var Graph = (function() {
 				switch(this.getZoomMode()) {
 
 					case 'xy':
+						
 						this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
 						this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
 						this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
@@ -221,11 +239,12 @@ var Graph = (function() {
 		},
 
 		handleMouseWheel: function(delta, e) {
+
 			for(var i = 0; i < this.leftyaxis.length; i++)
 				this.leftyaxis[i].handleMouseWheel(delta, e);		
 			for(var i = 0; i < this.rightyaxis.length; i++)
 				this.rightyaxis[i].handleMouseWheel(delta, e);	
-
+			this.redraw(true);
 			this.drawSeries(true);
 		},
 
@@ -258,6 +277,7 @@ var Graph = (function() {
 
 		handleMouseUp: function(x, y, e) {
 
+			
 			this._zoomingSquare.setAttribute('display', 'none');
 			var _x = x - this.options.paddingLeft;
 			var _y = y - this.options.paddingTop;
@@ -277,9 +297,11 @@ var Graph = (function() {
 				this.rightyaxis[i].handleMouseUp(_y, e);	
 
 			if(this._zooming) {
-				this.drawSeries(true);
 				this._zooming = false;
+				this.drawSeries(true);
 			}
+
+			
 		},
 
 
@@ -317,8 +339,8 @@ var Graph = (function() {
 		},
 
 		applyStyleText: function(dom) {
-			dom.setAttribute('font-family', '"Myriad Pro", Arial, Serif');
-			dom.setAttribute('font-size', '12px');
+//			dom.setAttribute('font-family', '"Myriad Pro", Arial, Serif');
+//			dom.setAttribute('font-size', '12px');
 		},
 
 		getXAxis: function(num, options) {
@@ -476,18 +498,17 @@ var Graph = (function() {
 			this.refreshDrawingZone();
 		},
 
-		redraw: function() {
+		redraw: function(doNotRecalculateMinMax) {
 
 			if(!this.width || !this.height)
 				return;
 
-			this.refreshDrawingZone();
+			this.refreshDrawingZone(doNotRecalculateMinMax);
 			return true;
 		},
 
 		// Repaints the axis and series
-		refreshDrawingZone: function() {
-
+		refreshDrawingZone: function(doNotRecalculateMinMax) {
 
 			var i, j, l, xy, min, max;
 			var axisvars = ['xaxis', 'leftyaxis', 'rightyaxis'], shift = [0, 0, 0];
@@ -524,7 +545,8 @@ var Graph = (function() {
 					continue;
 				this.leftyaxis[i].setMinPx(0);
 				this.leftyaxis[i].setMaxPx(this.getDrawingHeight(true) - shift[0]);
-				shift[1] += this.leftyaxis[i].draw();
+				shift[1] += this.leftyaxis[i].draw(doNotRecalculateMinMax);
+
 				this.leftyaxis[i].setShift(shift[1]);
 			}
 
@@ -534,7 +556,7 @@ var Graph = (function() {
 				this.rightyaxis[i].setMinPx(0);
 
 				this.rightyaxis[i].setMaxPx(this.getDrawingHeight(true) - shift[0]);
-				shift[2] += this.rightyaxis[i].draw();
+				shift[2] += this.rightyaxis[i].draw(doNotRecalculateMinMax);
 			}
 
 
@@ -547,7 +569,7 @@ var Graph = (function() {
 
 				this.xaxis[i].setMinPx(min);
 				this.xaxis[i].setMaxPx(max);
-				this.xaxis[i].draw();
+				this.xaxis[i].draw(doNotRecalculateMinMax);
 			}
 
 
@@ -723,7 +745,9 @@ var Graph = (function() {
 			exponentialFactor: 0,
 			exponentialLabelFactor: 0,
 
-			wheelBaseline: 0
+			wheelBaseline: 0,
+
+			logScale: false
 		},
 
 
@@ -853,7 +877,7 @@ var Graph = (function() {
 		},
 
 		handleMouseWheel: function(delta, e) {
-			delta /= 20;
+			
 			delta = Math.min(0.2, Math.max(-0.2, delta));
 
 
@@ -972,6 +996,13 @@ var Graph = (function() {
 			var interval = this.getMax() - this.getMin();
 			this._realMin = this.getMin() - (this.options.axisDataSpacing.min * interval);
 			this._realMax = this.getMax() + (this.options.axisDataSpacing.max * interval);
+
+			if(this.options.logScale) {
+				this._realMin = Math.max(1e-50, this._realMin);
+				this._realMax = Math.max(1e-50, this._realMax);
+
+			}
+
 		},
 
 		_getActualInterval: function() {
@@ -988,10 +1019,15 @@ var Graph = (function() {
 
 		_setRealMin: function(val) {
 			this._realMin = val;
+			if(this.options.logScale)
+				this._realMin = Math.max(1e-50, val);
 		},
 
 		_setRealMax: function(val) {
 			this._realMax = val;
+
+			if(this.options.logScale)
+				this._realMax = Math.max(1e-50, val);
 		},
 
 		flip: function(bool) {
@@ -999,6 +1035,23 @@ var Graph = (function() {
 		},
 
 		draw: function(doNotRecalculateMinMax) {
+
+			switch(this.options.tickPosition) {
+				case 1:
+					this.tickPx1 = 2;
+					this.tickPx2 = 0;
+				break;
+
+				case 2:
+					this.tickPx1 = 1;
+					this.tickPx2 = 1;
+				break;
+
+				case 3:
+					this.tickPx1 = 0;
+					this.tickPx2 = 2;
+				break;
+			}
 
 			// Remove all ticks
 			while(this.groupTicks.firstChild)
@@ -1033,15 +1086,17 @@ var Graph = (function() {
 
 			this.line.setAttribute('display', 'block');
 
-			// So the setting is: How many ticks in total ? Then we have to separate it
-			var nbTicks1 = this.getNbTicksPrimary();
-			var primaryTicks = this.getUnitPerTick(widthPx, nbTicks1, valrange);
-
-			var nbSecondaryTicks = this.secondaryTicks();
-			if(nbSecondaryTicks)
-				nbSecondaryTicks = Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
-			
-			var widthHeight = this.drawTicks(primaryTicks, nbSecondaryTicks);
+			if(!this.options.logScale) {
+				// So the setting is: How many ticks in total ? Then we have to separate it
+				var nbTicks1 = this.getNbTicksPrimary();
+				var primaryTicks = this.getUnitPerTick(widthPx, nbTicks1, valrange);
+				var nbSecondaryTicks = this.secondaryTicks();
+				if(nbSecondaryTicks)
+					nbSecondaryTicks = Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
+				var widthHeight = this.drawTicks(primaryTicks, nbSecondaryTicks);
+			} else {
+				var widthHeight = this.drawLogTicks();
+			}
 
 			/************************************/
 			/*** DRAWING LABEL ******************/
@@ -1078,6 +1133,8 @@ var Graph = (function() {
 
 		drawTicks: function(primary, secondary) {
 
+			
+
 			var unitPerTick = primary[0],
 				min = this.getActualMin(),
 				max = this.getActualMax(),
@@ -1092,22 +1149,6 @@ var Graph = (function() {
 
 			incrTick = Math.floor(min / unitPerTick) * unitPerTick;
 
-			switch(this.options.tickPosition) {
-				case 1:
-					this.tickPx1 = 2;
-					this.tickPx2 = 0;
-				break;
-
-				case 2:
-					this.tickPx1 = 1;
-					this.tickPx2 = 1;
-				break;
-
-				case 3:
-					this.tickPx1 = 0;
-					this.tickPx2 = 2;
-				break;
-			}
 			
 			while(incrTick < max) {
 				loop++;
@@ -1153,14 +1194,59 @@ var Graph = (function() {
 			return 5;
 		},
 
+		drawLogTicks: function() {
+			var min = this.getActualMin(), max = this.getActualMax();
+			var incr = Math.min(min, max);
+			var max = Math.max(min, max);
+
+			var optsMain = {
+				fontSize: '1.0em',
+				exponential: true,
+				overwrite: false
+			}
+
+
+			if(incr < 0)
+				incr = 0;
+
+			var pow = incr == 0 ? 0 : Math.floor(Math.log(incr) / Math.log(10));
+			var incr = 1, k = 0;
+
+			while((val = incr * Math.pow(10, pow)) < max) {
+				if(incr == 1) { // Superior power
+					if(val > min)
+						this.drawTick(val, true, 5, optsMain);
+				}
+				if(incr == 10) {
+					incr = 1;
+					pow++;
+				} else {
+					if(incr != 1 && val > min)
+						this.drawTick(val, true, 2, {overwrite: incr, fontSize: '0.6em' });	
+					incr++;
+				}
+			}
+			return 5;
+		},
+
 		getPx: function(value) {
 			return this.getPos(value);
 		},
 
 		getPos: function(value) {
 			// Ex 50 / (100) * (1000 - 700) + 700
-			
-				return (value - this.getActualMin()) / (this._getActualInterval()) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
+				if(!this.options.logScale)
+					return (value - this.getActualMin()) / (this._getActualInterval()) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
+				else {
+					// 0 if value = min
+					// 1 if value = max
+					if(value < 0)
+						return;
+
+					var value = ((Math.log(value) - Math.log(this.getActualMin())) / (Math.log(this.getActualMax()) - Math.log(this.getActualMin()))) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
+					
+					return value;
+				}
 		},
 
 
@@ -1261,6 +1347,27 @@ var Graph = (function() {
 
 		getColorSecondaryGrid: function() {
 			return '#f0f0f0';
+		},
+
+		setTickContent: function(dom, val, options) {
+			if(!options) options = {};
+
+			if(options.overwrite || !options.exponential)
+				dom.textContent = options.overwrite || this.valueToText(val);
+			else {
+				var log = Math.round(Math.log(val) / Math.log(10));
+				var unit = Math.floor(val * Math.pow(10, -log));
+
+				dom.textContent = (unit != 1) ? unit + "x10" : "10";
+				var tspan = document.createElementNS(this.graph.ns, 'tspan');
+				tspan.textContent = log;
+				tspan.setAttribute('font-size', '0.7em');
+				tspan.setAttribute('dy', -3);
+				dom.appendChild(tspan);
+			}
+
+			if(options.fontSize)
+				dom.setAttribute('font-size', options.fontSize);
 		}
 	}
 
@@ -1282,18 +1389,18 @@ var Graph = (function() {
 	$.extend(GraphXAxis.prototype, GraphAxis.prototype, {
 
 		getAxisPosition: function() {
-			return 20;
+			return (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize * 2;
 		},
 
 		getAxisWidthHeight: function() {
-			return 20;
+			return 200;
 		},
 
 		_setShift: function() {
 			this.group.setAttribute('transform', 'translate(0 ' + (this.graph.getDrawingHeight() - this.shift) + ')')
 		},
 
-		drawTick: function(value, label, scaling) {
+		drawTick: function(value, label, scaling, options) {
 			var group = this.groupTicks;
 			var tick = document.createElementNS(this.graph.ns, 'line'),
 				val = this.getPos(value);
@@ -1318,8 +1425,10 @@ var Graph = (function() {
 				var tickLabel = document.createElementNS(this.graph.ns, 'text');
 				tickLabel.setAttribute('x', val);
 				tickLabel.setAttribute('y', (this.options.tickPosition == 1) ? 15 : 25);
-				tickLabel.textContent = this.valueToText(value);
 				tickLabel.setAttribute('text-anchor', 'middle');
+				tickLabel.style.dominantBaseline = 'hanging';
+
+				this.setTickContent(tickLabel, value, options);
 				this.graph.applyStyleText(tickLabel);
 				this.groupTickLabels.appendChild(tickLabel);
 			}
@@ -1334,13 +1443,17 @@ var Graph = (function() {
 			// Place label correctly
 			this.label.setAttribute('text-anchor', 'middle');
 			this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-
-			this.label.setAttribute('y', 35);
+			
+			this.label.setAttribute('y', (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize);
 
 			this.line.setAttribute('x1', this.getMinPx());
 			this.line.setAttribute('x2', this.getMaxPx());
 			this.line.setAttribute('y1', 0);
-			this.line.setAttribute('y2', 0);	
+			this.line.setAttribute('y2', 0);
+
+			this.labelTspan.style.dominantBaseline = 'hanging';
+			this.expTspan.style.dominantBaseline = 'hanging';
+			this.expTspanExp.style.dominantBaseline = 'hanging';	
 		},
 
 		_draw0Line: function(px) {
@@ -1388,10 +1501,10 @@ var Graph = (function() {
 		},
 
 		getAxisWidthHeight: function() {
-			return 90;
+			return 100;
 		},
 
-		drawTick: function(value, label, scaling) {
+		drawTick: function(value, label, scaling, options) {
 			var group = this.groupTicks,
 				tickLabel,
 				labelWidth = 0,
@@ -1419,15 +1532,18 @@ var Graph = (function() {
 				tickLabel.setAttribute('y', pos);
 				tickLabel.setAttribute('x', -10);
 
-				tickLabel.textContent = this.valueToText(value);
+				
 				tickLabel.setAttribute('text-anchor', 'end');
 				tickLabel.style.dominantBaseline = 'central';
 				this.graph.applyStyleText(tickLabel);
+				this.setTickContent(tickLabel, value, options);
+
 				this.groupTickLabels.appendChild(tickLabel);
 				labelWidth = tickLabel.getComputedTextLength();
 			}
 
 			this.ticks.push(tick);
+
 			return labelWidth;
 		},
 
@@ -1709,89 +1825,143 @@ var Graph = (function() {
 
 		draw: function(doNotRedrawZone) {
 
+			var x, y, xpx, ypx, i = 0, l = this.data.length, j = 0, k, currentLine;
+
+			this._drawn = true;			
 
 			this.groupMain.removeChild(this.groupLines);
 			this.groupMain.removeChild(this.domMarker);
-				
-			while(this.groupLines.firstChild)
-				this.groupLines.removeChild(this.groupLines.firstChild);
+			this.marker.setAttribute('display', 'none');
+
+//			while(this.groupLines.firstChild)
+//				this.groupLines.removeChild(this.groupLines.firstChild);
 
 			this.markerPath = '';
 			this._markerPath = this.getMarkerPath();
-
-			var x, y, xpx, ypx, i = 0, l = this.data.length, j = 0, k, currentLine;
-
+			
 			for(; i < l ; i++) {
 				
 				currentLine = "M ";
-				
+				doAndContinue = 0;
+				_higher = false;
+				var _last = false, _in = false;
 				j = 0, k = 0;
 				for(; j < this.data[i].length; j+=2) {
-					
+
 					xpx = Math.round(this.getXAxis().getPx(this.data[i][j]) * 1000) / 1000;
 				//	if(xpx < this.getXAxis().getMinPx() || xpx > this.getXAxis().getMaxPx())
 				//		continue;
 					ypx = Math.round(this.getYAxis().getPx(this.data[i][j + 1]) * 1000) / 1000;
-					if(k != 0) {
-						if(this.options.lineToZero)
-							currentLine += 'M ';
+					if(ypx > this.getYAxis().getMaxPx() || ypx < this.getYAxis().getMinPx()) {
+						
+						if(_higher != (_higher = ypx > this.getYAxis().getMaxPx())) {
+							if(_last) {
+								currentLine = this._addPoint(currentLine, _last[0], _last[1], k);
+								k++;
+								_last = false;
+								doAndContinue = false;
+								_in = true;
+							}
+						}
+
+						if(doAndContinue || k == 0) {
+							_last = [xpx, ypx];
+							continue;
+						}
+						if(_in)
+							doAndContinue = 1;
 						else
-							currentLine += "L ";
+							_last = [xpx, ypx];
+						_in = false;
+					} else {
+						_in = true;
+						doAndContinue = false;
 					}
 
-					k++;
-
-					currentLine += xpx;
-					currentLine += " ";
-					currentLine += ypx;
-					currentLine += " "; 
+					if(_last && !doAndContinue) {
+						currentLine = this._addPoint(currentLine, _last[0], _last[1], k);
+						k++;
+						_last = false;
+					}
 					
-					if(this.options.lineToZero) {
-						currentLine += "L ";
-						currentLine += xpx;
-						currentLine += " ";
-						currentLine += this.getYAxis().getPos(0);
-						currentLine += " "; 
-							
-					}
-
-					if(!this.options.markers.show)
-						continue;
-
-
-					this._drawMarkerXY(xpx, ypx);
+					currentLine = this._addPoint(currentLine, xpx, ypx, k);
+					k++;
 				}
-
-				this._createLine(currentLine);
+				this._createLine(currentLine, i, k);
 			}
+
+			i++;
+			for(; i < this.lines.length; i++) {
+				this.groupLines.removeChild(this.lines[i]);
+				this.lines.splice(i, 1);
+			}
+
+			
 
 			this.domMarker.setAttribute('fill', this.options.markers.fillColor || 'transparent');
 			this.domMarker.setAttribute('stroke', this.options.markers.strokeColor || this.getLineColor());
 			this.domMarker.setAttribute('stroke-width', this.options.markers.strokeWidth);
-
-			if(this.markerPath != "")
-				this.domMarker.setAttribute('d', this.markerPath);
-
-
-
+			this.domMarker.setAttribute('d', this.markerPath || 'M 0 0');
 			this.groupMain.appendChild(this.groupLines);
 			this.groupMain.appendChild(this.domMarker);
 
 
 		},
 
-		_createLine: function(points) {
-			if(!points)
-				return;
-			var line = document.createElementNS(this.graph.ns, 'path');
+		_addPoint: function(currentLine, xpx, ypx, k) {
 
-			line.setAttribute('d', points);
-			line.setAttribute('stroke', this.getLineColor());
-			line.setAttribute('stroke-dasharray', this.getLineDashArray());
-			line.setAttribute('fill', 'none');
+			if(k != 0) {
+				if(this.options.lineToZero)
+					currentLine += 'M ';
+				else
+					currentLine += "L ";
+			}
 
-			this.groupLines.appendChild(line);
-			this.lines.push(line);
+			currentLine += xpx;
+			currentLine += " ";
+			currentLine += ypx;
+			currentLine += " "; 
+			
+			if(this.options.lineToZero) {
+				currentLine += "L ";
+				currentLine += xpx;
+				currentLine += " ";
+				currentLine += this.getYAxis().getPos(0);
+				currentLine += " ";
+			}
+
+			if(!this.options.markers.show)
+				return currentLine;
+			this._drawMarkerXY(xpx, ypx);
+			return currentLine;
+		},
+
+		_createLine: function(points, i, nbPoints) {
+			
+
+			if(this.lines[i]) {
+				var line = this.lines[i];
+			} else {
+				var line = document.createElementNS(this.graph.ns, 'path');
+				line.setAttribute('stroke', this.getLineColor());
+			//	line.setAttribute('shape-rendering', 'crispEdges');
+				if(this.getLineDashArray())
+					line.setAttribute('stroke-dasharray', this.getLineDashArray());
+
+				line.setAttribute('fill', 'none');
+			}
+
+			if(nbPoints == 0) {
+				line.setAttribute('d', 'M 0 0');
+			} else {
+				
+				line.setAttribute('d', points);
+			}
+
+			if(!this.lines[i]) {			
+				this.groupLines.appendChild(line);
+				this.lines[i] = line;
+			}
 		},
 
 		getMarkerPath: function() {
@@ -1945,7 +2115,7 @@ var Graph = (function() {
 				seedInt = (seedA + seedB) / 2;
 				seedInt -= seedInt % 2;
 
-				if(seedInt == seedA || haystack[seedInt] == target)
+				if(seedInt == seedA || haystack[seedInt] == target)
 					return seedInt;
 
 		//		console.log(seedA, seedB, seedInt, haystack[seedInt]);
@@ -1982,7 +2152,7 @@ var Graph = (function() {
 
 				default:
 				case 1:
-					return "1, 0";
+					return false;
 				break;
 
 			}
@@ -2011,49 +2181,49 @@ var Graph = (function() {
 		showMarkers: function(skipRedraw) {
 			this.options.markers.show = true;
 
-			if(!skipRedraw)
+			if(!skipRedraw && this._drawn)
 				this.draw();
 		},
 
 		hideMarkes: function(skipRedraw) {
 			this.options.markers.hide = true;
 
-			if(!skipRedraw)
+			if(!skipRedraw && this._drawn)
 				this.draw();
 		},
 
 		setMarkerType: function(type, skipRedraw) {
 			this.options.markers.type = type;
 			
-			if(!skipRedraw)
+			if(!skipRedraw && this._drawn)
 				this.draw();
 		},
 
 		setMarkerZoom: function(zoom, skipRedraw) {
 			this.options.markers.zoom = zoom;
 
-			if(!skipRedraw)
+			if(!skipRedraw && this._drawn)
 				this.draw();
 		},
 
 		setMarkerStrokeColor: function(color, skipRedraw) {
 			this.options.markers.strokeColor = color;
 
-			if(!skipRedraw)
+			if(!skipRedraw && this._drawn)
 				this.draw();
 		},
 
 		setMarkerStrokeWidth: function(width, skipRedraw) {
 			this.options.markers.strokeWidth = width;
 
-			if(!skipRedraw)
+			if(!skipRedraw && this._drawn)
 				this.draw();
 		},
 
 		setMarkerFillColor: function(color, skipRedraw) {
 			this.options.markers.fillColor = color;
 
-			if(!skipRedraw)
+			if(!skipRedraw && this._drawn)
 				this.draw();
 		}
 	}
@@ -2159,7 +2329,6 @@ var Graph = (function() {
 
 	});
 
-
 	return Graph;
 
-})();
+}) ();
