@@ -26,9 +26,10 @@ CI.converter.jcampToSpectra=(function() {
             ldrs,
             i, ii, position, endLine, infos;
 
-
+        var result={};
         var spectra = [];
-        spectra.info={};
+        result.spectra=spectra;
+        result.info={};
         var spectrum = {};
 
        // console.time("start");
@@ -124,7 +125,7 @@ CI.converter.jcampToSpectra=(function() {
             } else if (dataLabel=='.OBSERVEFREQUENCY' || dataLabel=='$SFO1') {
                 if (!spectrum.observeFrequency) spectrum.observeFrequency=parseFloat(dataValue);
             } else if (dataLabel=='$SFO2') {
-                if (!spectra.indirectFrequency) spectra.indirectFrequency=parseFloat(dataValue);
+                if (!result.indirectFrequency) result.indirectFrequency=parseFloat(dataValue);
             } else if (dataLabel=='$OFFSET') {   // OFFSET for Bruker spectra
                 shiftOffsetNum = 0;
                 shiftOffsetVal = parseFloat(dataValue);
@@ -160,8 +161,8 @@ CI.converter.jcampToSpectra=(function() {
             } else if (dataLabel=='PAGE') {
                 spectrum.page=dataValue.trim();
                 spectrum.pageValue=parseFloat(dataValue.replace(/^.*=/,""));
-                if (spectra.indirectFrequency) {
-                    spectrum.pageValue/=spectra.indirectFrequency;
+                if (result.indirectFrequency) {
+                    spectrum.pageValue/=result.indirectFrequency;
                 }
             } else if (dataLabel=="XYDATA") {
                 prepareSpectrum(spectrum);
@@ -174,17 +175,19 @@ CI.converter.jcampToSpectra=(function() {
                 spectra.push(spectrum);
                 spectrum={};
             } else if (dataLabel.match(/^[A-Z].*/)) {
-                spectra.info[dataLabel]=dataValue.trim();
+                result.info[dataLabel]=dataValue.trim();
             }
         }
 
         if (options && options.lowRes) addLowRes(spectra,options);
 
-        if (spectra.info.DATATYPE && (spectra.info.DATATYPE.indexOf("nD")>-1)) {
-            add2D(spectra);
+        if (result.info.DATATYPE && (result.info.DATATYPE.indexOf("nD")>-1)) {
+            add2D(result);
         }
+    //console.log(spectra);
+    //    console.log(JSON.stringify(spectra));
 
-        return spectra;
+        return result;
 
     }
 
@@ -221,6 +224,7 @@ CI.converter.jcampToSpectra=(function() {
                 console.log("Format error: "+values);
             }
         }
+        delete spectrum.currentData;
     }
 
     function parseXYData(spectrum, value) {
@@ -355,6 +359,7 @@ CI.converter.jcampToSpectra=(function() {
                 spectrum.currentData.push(currentX, currentY*spectrum.yFactor);
             }
         }
+        delete spectrum.currentData;
     }
 
     function convertTo3DZ(spectra) {
@@ -390,11 +395,11 @@ CI.converter.jcampToSpectra=(function() {
        
     }
 
-    function add2D(spectra) {
-        var zData=convertTo3DZ(spectra);
-        spectra.contourLines=generateContourLines(zData);
+    function add2D(result) {
+        var zData=convertTo3DZ(result.spectra);
+        result.contourLines=generateContourLines(zData);
         delete zData.z;
-        spectra.minMax=zData;
+        result.minMax=zData;
     }
 
  

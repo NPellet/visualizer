@@ -205,7 +205,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			this.series[varname] = this.series[varname] || [];
 
  			//if(typeof moduleValue.value !== 'object') {
- 				var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
+ 				var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024}).spectra;
  			//	moduleValue.value = spectra;
  			//} else 
  			//	spectra = moduleValue.value;
