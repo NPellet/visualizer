@@ -104,6 +104,10 @@ CI.converter.jcampToSpectra=(function() {
 
             if (dataLabel=='TITLE') {
                 spectrum.title = dataValue;
+            } else if (dataLabel=='DATATYPE') {
+                if (dataValue.indexOf("nD")>-1) {
+                    result.twoD = true;
+                }
             } else if (dataLabel=='XUNITS') {
                 spectrum.xUnit = dataValue;
             } else if (dataLabel=='YUNITS') {
@@ -124,6 +128,8 @@ CI.converter.jcampToSpectra=(function() {
                 spectrum.deltaX = parseFloat(dataValue);
             } else if (dataLabel=='.OBSERVEFREQUENCY' || dataLabel=='$SFO1') {
                 if (!spectrum.observeFrequency) spectrum.observeFrequency=parseFloat(dataValue);
+            } else if (dataLabel=='.OBSERVENUCLEUS') {
+                if (!spectrum.xType) result.xType=dataValue.replace(/[^a-zA-Z0-9]/g,"");
             } else if (dataLabel=='$SFO2') {
                 if (!result.indirectFrequency) result.indirectFrequency=parseFloat(dataValue);
             } else if (dataLabel=='$OFFSET') {   // OFFSET for Bruker spectra
@@ -158,6 +164,10 @@ CI.converter.jcampToSpectra=(function() {
                 ntuples.min=convertToFloatArray(dataValue.split(/[, \t]+/));
             } else if (dataLabel=='MAX') {
                 ntuples.max=convertToFloatArray(dataValue.split(/[, \t]+/));
+            } else if (dataLabel=='.NUCLEUS') {
+                if (result.twoD) {
+                    result.yType=dataValue.split(/[, \t]+/)[0];
+                }
             } else if (dataLabel=='PAGE') {
                 spectrum.page=dataValue.trim();
                 spectrum.pageValue=parseFloat(dataValue.replace(/^.*=/,""));
@@ -181,10 +191,10 @@ CI.converter.jcampToSpectra=(function() {
 
         if (options && options.lowRes) addLowRes(spectra,options);
 
-        if (result.info.DATATYPE && (result.info.DATATYPE.indexOf("nD")>-1)) {
+        if (result.twoD) {
             add2D(result);
         }
-    //console.log(spectra);
+    console.log(result);
     //    console.log(JSON.stringify(spectra));
 
         return result;
