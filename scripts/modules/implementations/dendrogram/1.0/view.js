@@ -19,9 +19,16 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	
 	init: function() {
 		console.log("Dendrogram: init");
-		this._id = BI.Util.getNextUniqueId();
-		this.dom = $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
-		this.module.getDomContent().html(this.dom);
+		// When we change configuration the method init is called again
+		if (! this.dom) {
+			this._id = BI.Util.getNextUniqueId();
+			this.dom = $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
+			this.module.getDomContent().html(this.dom);
+		} else {
+			// in the dom exists and the preferences has been changed we need to clean the canvas
+			this.dom.empty();
+			delete this._rgraph;
+		}
 		this._highlighted = {};
 		// this.typeToScreen.molfile2D = this.typeToScreen.dendrogram;
 		this.updateOptions();
@@ -171,15 +178,34 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	},
 
 	createDendrogram: function() {
+
+
+		// ?????? how to put this in the model ?????
+    	var actions=this.module.definition.dataSend;
+    	var hover=function() {}
+    	for (var i=0; i<actions.length; i++) {
+    		if (actions[i].event=="onHover") {
+    			var jpath=actions[i].jpath;
+    			var name=actions[i].name;
+    			hover=function(node) {
+    				console.log(jpath);
+    				console.log(name);
+    				console.log(node);
+    				CI.API.setSharedVarFromJPath(name, node, jpath);
+    			}
+    		}
+    	}
+
+
+		var cfg = this.module.getConfiguration();
+
 		if (!this._value) return;
 		this.dom.empty();
 
 		var options=this._options;
 		this._rgraph = new $jit.RGraph({
 	        injectInto: this._id,
-			duration: 500,
-			fps: 35,
-			withLabels: true,
+		//	withLabels: true,
 	     	levelDistance: 50,
 	        //Optional: create a background canvas that plots
 	        //concentric circles.
@@ -202,8 +228,8 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	        },
 	        
 	        Edge: {
-	          color: '#C17878',
-	          lineWidth:0.5
+	          color: cfg.lineColor || 'green',
+	          lineWidth: cfg.lineWidth || 0.5
 	        },
 	        //Add node click handler and some styles.
 	        //This method is called only once for each node/label crated.
@@ -269,7 +295,8 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	//		    onRightClick: function(node, eventInfo, e) {},
 	//		    onMouseMove: function(node, eventInfo, e) {},
 			    onMouseEnter: function(node, eventInfo, e) {
-			    	if (options.nodeEnter) options.nodeEnter(node);
+			    	hover(node);
+			    	// if (options.nodeEnter) options.nodeEnter(node);
 			    },
 			    onMouseLeave: function(node, eventInfo, e) {
 			    	if (options.nodeLeave) options.nodeLeave(node);

@@ -63,12 +63,7 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		field.setTitle(new BI.Title('Columns number'));
 		
 		// we look for a leave and get all the jpath from it
-		var value=this.module.view._value || {};
-		while (value.children && value.children.length>0) {
-			value=value.children[0];
-		}
-		var jpaths = [];
-		CI.DataType.getJPathsFromElement(value, jpaths);
+		var jpaths=this.getNodeJpath();
 
 		var field = groupfield.addField({
 			type: 'Combo',
@@ -97,6 +92,19 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 			name: 'nodeColor'
 		});
 		field.setTitle(new BI.Title('Node color'));
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'lineWidth'
+		});
+		field.setTitle(new BI.Title('Line width'));
+		
+		var field = groupfield.addField({
+			type: 'Color',
+			name: 'lineColor'
+		});
+		field.setTitle(new BI.Title('Line color'));
+
 		
 		return true;
 	},
@@ -109,6 +117,10 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		
 		var nodeColor = this.module.getConfiguration().nodeColor || "";
 		var nodeSize = this.module.getConfiguration().nodeSize || "";
+
+		var lineColor = this.module.getConfiguration().lineColor || "";
+		var lineWidth = this.module.getConfiguration().lineWidth || "";
+
 		
 		return { groups: {
 				module: [{
@@ -116,7 +128,9 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 					labeljPath: [labeljPath],
 					colorjPath: [colorJpath],
 					nodeSize: [nodeSize],
-					nodeColor: [nodeColor]
+					nodeColor: [nodeColor],
+					lineColor: [lineColor],
+					lineWidth: [lineWidth]
 				}]
 			}
 		}
@@ -132,13 +146,27 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		var colorjpath = group.colorjPath[0];
 		var nodeColor = group.nodeColor[0];
 		var nodeSize = group.nodeSize[0];
+		var lineColor = group.lineColor[0];
+		var lineWidth = group.lineWidth[0];
 		
 		this.module.definition.configuration = {
 			colnumber: colnumber,
 			labeljPath: labeljPath,
 			colorjpath: colorjpath,
 			nodeSize: nodeSize,
-			nodeColor: nodeColor
+			nodeColor: nodeColor,
+			lineColor: lineColor,
+			lineWidth: lineWidth
 		};
+	},
+
+	getNodeJpath: function() {
+		var value=this.module.view._value || {};
+		while (value.children && value.children.length>0) {
+			value=value.children[0];
+		}
+		var jpaths = [];
+		CI.DataType.getJPathsFromElement(value, jpaths);
+		return jpaths;
 	}
 });

@@ -43,6 +43,24 @@ $.extend(CI.Module.prototype._types.dendrogram.Model.prototype, {
 	},
 	
 	getjPath: function(rel, accepts) {
-		return [];
+		// ????????? Why it does not work ????
+		// this.module.getDataFromRel('tree'));
+		var value=this.module.view._value || {};
+		while (value.children && value.children.length>0) {
+			value=value.children[0];
+		}
+		var jpaths = [];
+		CI.DataType.getJPathsFromElement(value, jpaths);
+			
+		switch(rel) {
+			case 'node':
+				return jpaths;
+			break;
+
+			default:
+				return false;
+			break;
+		}
 	}
+
 });
