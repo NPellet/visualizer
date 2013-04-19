@@ -28,8 +28,8 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	},
 	
 
-	// What is the difference between init and inDom ????
 	inDom: function() {
+		console.log("Dendrogram: inDom");
 		if(this._value === undefined) return;
 
 
@@ -61,6 +61,11 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 		*/
 	},
 	
+
+	/* When a vaue change this method is called. It will be called for all 
+	possible received variable of this module.
+	It will also be called at the beginning and in this case the value is null !
+	*/
 	update2: {
 		'dendrogram': function(moduleValue) {
 			console.log("Dendrogram: update2 dendrogram");
@@ -69,6 +74,8 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 			// ????????? WHY THIS CODE IS CALLED 3 TIMES ?????
 
 			this._value = moduleValue.value;
+
+			if (! this._rgraph) this.createDendrogram();
 
 			this.updateDendrogram();
 

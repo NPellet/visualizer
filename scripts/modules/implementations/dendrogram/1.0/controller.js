@@ -63,7 +63,7 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		field.setTitle(new BI.Title('Columns number'));
 		
 		// we look for a leave and get all the jpath from it
-		var value=this.module.view._value;
+		var value=this.module.view._value || {};
 		while (value.children && value.children.length>0) {
 			value=value.children[0];
 		}
