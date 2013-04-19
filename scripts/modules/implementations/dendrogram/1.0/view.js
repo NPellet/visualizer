@@ -102,11 +102,22 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 			},
 			labelStyle: function(style, node) {
 	            // style.cursor = 'pointer';
-	             if (node.data && node.data.labelSize) {
+	            if (cfg.labelSizejPath) {
+	            	// ??????? how to do in a "simple" way. The async approach will give trouble ...
+					CI.DataType.getValueFromJPath(node, cfg.labelSizejPath).done(function(val) {
+						style.fontSize=val;
+					});
+				}
+	        
+	            if (node.data && node.data.labelSize) { // temporary code till we solve the other problem
 	            	style.fontSize = node.data.labelSize;
+	            } else {
+	            	style.fontSize = cfg.labelSize || "0em";
 	            }
-	            if (node.data && node.data.labelColor) {
+	            if (node.data && node.data.labelColor) { // temporary code till we solve the other problem
 	            	style.color = node.data.labelColor;
+	            } else {
+	            	style.color = cfg.labelColor;
 	            }
 			},
 		//	endNodeStyle: function(node) {},
