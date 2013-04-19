@@ -36,6 +36,7 @@ CI = new Object();
 
 
 	var btn = new BI.Buttons.Button('Push view to server', function() {
+		console.log(JSON.stringify(Entry.structure));
 		CI.View.serverPush(Entry.structure);
 	}, {});
 	

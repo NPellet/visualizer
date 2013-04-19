@@ -26,9 +26,11 @@ CI.DataType.Structures = {
 	},
 
 	'matrix': {
-
 		'type': 'object'
+	},
 
+	'tree': {
+		'type': 'object'
 	},
 
 	'fromTo': {
@@ -38,7 +40,6 @@ CI.DataType.Structures = {
 			'to': 'number'
 		}
 	},
-
 
 	'loading': {
 		'type': 'object',
@@ -73,7 +74,6 @@ CI.DataType.Structures = {
 					}
 				}
 			}
-
 		}
 	},
 
