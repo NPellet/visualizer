@@ -37,35 +37,13 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 
 	inDom: function() {
 		console.log("Dendrogram: inDom");
-		if(this._value === undefined) return;
-
-
-//		this.drawDendrogram();
-/*
-		var canvas = new ChemDoodle.ViewerCanvas(this._id, 100, 100);
-
-		canvas.specs.backgroundColor = "transparent";
-		canvas.specs.bonds_width_2D = .6;
-		canvas.specs.bonds_saturationWidth_2D = .18;
-		canvas.specs.bonds_hashSpacing_2D = 2.5;
-		canvas.specs.atoms_font_size_2D = 10;
-		canvas.specs.atoms_font_families_2D = ['Helvetica', 'Arial', 'sans-serif'];
-		canvas.specs.atoms_displayTerminalCarbonLabels_2D = true;
-
-		this._canvas = canvas;
-*/
+		// if(this._value === undefined) return;
 	},
 
 	onResize: function(width, height) {
 		console.log("Dendrogram: onResize");
 		this.createDendrogram();
 		this.updateDendrogram();
-/*		t
-		this._height = height - 20;
-		this._width = width - 20;
-		this._canvas.resize(width - 20, height - 20);
-		this.drawMolecule();
-		*/
 	},
 	
 
@@ -92,15 +70,6 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 				view._value = dendrogram;
 				view.updateDendrogram();
 			});
-
-
-/*
-			CI.DataType.toScreen(moduleValue, this.module, this._id).done(function(tree) {
-				console.log("DONE");
-				view.drawDendrogram(tree);
-			});
- */
-
 		}
 	},
 	
@@ -140,9 +109,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	            	style.color = node.data.labelColor;
 	            }
 			},
-		//	endNodeStyle: function(node) {
-		//
-		//	},
+		//	endNodeStyle: function(node) {},
 			nodeStyle: function(node) {
 				if (node.data && node.data.nodeSize) {
 	            	node.Node.dim = node.data.nodeSize;
@@ -150,14 +117,11 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 				if (node.data && node.data.nodeColor) {
 	            	node.Node.color = node.data.nodeColor;
 	        	}
-			}
-			
-		};
-
+			}	
+		}
 	},
 
 	createDendrogram: function() {
-
 
 		// ?????? how to put this in the model ?????
     	var actions=this.module.definition.dataSend;
@@ -267,17 +231,13 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	 	 		enable: true,
 	 	 		enableForEdges: true,
 	//		    type: 'auto',
-			    onClick: function(node, eventInfo, e) {
-			    },
+	//		    onClick: function(node, eventInfo, e) {},
 	//		    onRightClick: function(node, eventInfo, e) {},
 	//		    onMouseMove: function(node, eventInfo, e) {},
 			    onMouseEnter: function(node, eventInfo, e) {
 			    	hover(node);
-
 			    },
-			    onMouseLeave: function(node, eventInfo, e) {
-
-			    },
+	//		    onMouseLeave: function(node, eventInfo, e) {},
 	//		    onDragStart: function(node, eventInfo, e) {},
 	//		    onDragMove: function(node, eventInfo, e) {},
 	//		    onDragCancel: function(node, eventInfo, e) {},
@@ -288,28 +248,12 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	//		    onTouchCancel: function(node, eventInfo, e) {},
 	//		    onMouseWheel:function(node, eventInfo, e) {},
 	    	},
+	    	// onBeforeCompute: function(node){},
+	        // onAfterCompute: function(){},
 	  		Tips: {
 	      		enable: false,
-	     	},
-	    	onBeforeCompute: function(node){
-	            // Log.write("centering " + node.name + "...");
-	            //Add the relation list in the right column.
-	            //This list is taken from the data property of each JSON node.
-	            $jit.id('inner-details').innerHTML = node.data.relation;
-	        },
-	        onAfterCompute: function(){
-	            // Log.write("done");
-	        }
+	     	}
 	    });
-
-/*
-			var cfg = this.module.getConfiguration();
-			CI.RepoHighlight.kill(this.module.id);
-			var view = this, self = this;
-			var type = CI.DataType.getType(moduleValue);
-*/
-
-		
 	},
 	
 	getDom: function() {
@@ -332,6 +276,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	},
 
 	typeToScreen: {
+		// ?????????????? A quoi cela sert ????
 	}
 }
 
