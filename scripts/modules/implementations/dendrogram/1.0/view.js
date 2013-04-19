@@ -123,27 +123,6 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 		this._options={
 			nodeSize: cfg.nodeSize || 1,
 			nodeColor: cfg.nodeColor || "yellow",
-			nodeEnter:function(node) {
-				var info=document.getElementById("info");
-				if (info) {
-					var information="";
-					if (node && node.data) {
-						for (var prop in node.data) {
-							var length=node.data[prop].length;
-							if (length>20) {
-								information+="<b>"+prop + "</b>: " + node.data[prop].substring(0,10)+"..."+node.data[prop].substring(length-10)+"<br>";
-							} else {
-								information+="<b>"+prop + "</b>: " + node.data[prop]+"<br>";
-							}
-					   }
-					}
-					info.innerHTML=information;
-				}
-			},
-			nodeLeave: function(node) {
-				var info=document.getElementById("info");
-				if (info) info.innerHTML="";
-			},
 			endNodeLabel: function(node) {
 				if (node.data && node.data.label) return node.data.label;
 				return "";
@@ -188,9 +167,6 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
     			var jpath=actions[i].jpath;
     			var name=actions[i].name;
     			hover=function(node) {
-    				console.log(jpath);
-    				console.log(name);
-    				console.log(node);
     				CI.API.setSharedVarFromJPath(name, node, jpath);
     			}
     		}
@@ -291,15 +267,16 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	 	 		enable: true,
 	 	 		enableForEdges: true,
 	//		    type: 'auto',
-	//		    onClick: function(node, eventInfo, e) {},
+			    onClick: function(node, eventInfo, e) {
+			    },
 	//		    onRightClick: function(node, eventInfo, e) {},
 	//		    onMouseMove: function(node, eventInfo, e) {},
 			    onMouseEnter: function(node, eventInfo, e) {
 			    	hover(node);
-			    	// if (options.nodeEnter) options.nodeEnter(node);
+
 			    },
 			    onMouseLeave: function(node, eventInfo, e) {
-			    	if (options.nodeLeave) options.nodeLeave(node);
+
 			    },
 	//		    onDragStart: function(node, eventInfo, e) {},
 	//		    onDragMove: function(node, eventInfo, e) {},
