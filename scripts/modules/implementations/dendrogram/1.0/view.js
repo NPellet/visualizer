@@ -66,7 +66,10 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 
 			this._value = moduleValue.value;
 
-			if (! this._rgraph) return;
+			if (! this._rgraph) {
+				if (!document.getElementById(this._id)) return; // this is the case when we change of view
+				this.createDendrogram();
+			} 
 
 			this.updateDendrogram();
 
