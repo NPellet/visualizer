@@ -3,27 +3,31 @@
 $jit.RGraph.Plot.NodeTypes.implement({  
     //This node type is used for plotting the upper-left pie chart  
     'image': {
-    	'render': function(type, pos, radius, canvas){
-    		console.log(arguments);
-		 	if ( type.data && type.data.imageURxxL) {
+    	'render': function(node, canvas){
+    	    document.imageCache=document.imageCache || [];
+    		var pos = node.pos.getc(true), 
+    		dim = node.getData('dim');
+		 	if (node.data.imageURL) {
 		    	var ctx = canvas.getCtx();
 			    var image = new Image();
-			    image.src = node.data.imageURL;
-			    ctx.drawImage(image,pos.x-10, pos.y-10, image.width, image.height);
-			    ctx[type]();
+			    image.src = node.data.imageURL.value;
+				if (document.imageCache[image.src]) {
+					image=document.imageCache[image.src];
+					ctx.drawImage(image,pos.x-10, pos.y-10, image.width, image.height);
+				} else {
+				    image.onload=function() {
+				    	ctx.drawImage(image,pos.x-10, pos.y-10, image.width, image.height);
+				    	document.imageCache[image.src]=image;
+				    }
+				    
+			    }
+			    
 			} else {   
-			    var ctx = canvas.getCtx();
-	      		ctx.beginPath();
-	   			ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2, true);
-	   			ctx.closePath();
-	     		ctx[type]();
+       			this.nodeHelper.circle.render('fill', pos, dim, canvas);
 			}
 		},
-		'contains': function(npos, pos, radius){
-	      var diffx = npos.x - pos.x, 
-	          diffy = npos.y - pos.y, 
-	          diff = diffx * diffx + diffy * diffy;
-	      return diff <= radius * radius;
+		'contains': function(node, pos){
+			return false;
 	    }
     }
 })
