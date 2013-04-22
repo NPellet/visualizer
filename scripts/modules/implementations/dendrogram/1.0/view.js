@@ -19,14 +19,20 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	
 	init: function() {
 		console.log("Dendrogram: init");
-		// When we change configuration the method init is called again
+
+		// When we change configuration the method init is called again. Also the case when we change completely of view
 		if (! this.dom) {
 			this._id = BI.Util.getNextUniqueId();
 			this.dom = $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
 			this.module.getDomContent().html(this.dom);
-		} else {
+		}
+
+		if (this.dom) {
 			// in the dom exists and the preferences has been changed we need to clean the canvas
 			this.dom.empty();
+			
+		}
+		if (this._rgraph) { // if the dom existedd there was probably a rgraph or when changing of view
 			delete this._rgraph;
 		}
 		this._highlighted = {};
@@ -53,14 +59,14 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	*/
 	update2: {
 		'dendrogram': function(moduleValue) {
-			console.log("Dendrogram: update2 dendrogram");
+			console.log("Dendrogram: update2");
+
 
 			if (! moduleValue || ! moduleValue.value) return;
-			// ????????? WHY THIS CODE IS CALLED 3 TIMES ?????
 
 			this._value = moduleValue.value;
 
-			if (! this._rgraph) this.createDendrogram();
+			if (! this._rgraph) return;
 
 			this.updateDendrogram();
 
@@ -74,15 +80,15 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	},
 	
 	updateDendrogram: function() {
+		console.log("Dendrogram: updateDendrogram");
 		if (!this._rgraph || !this._value) return;
-	    this._rgraph.loadJSON(this._value);
-	    this._rgraph.compute('end');
 
-	    this._rgraph.fx.animate({
-	 		modes:['linear'],
-	 		duration: 0,
-	 		fps: 35 
-	 	});
+	    this._rgraph.loadJSON(this._value);
+	//    this._rgraph.compute('end');
+
+	    this._rgraph.refresh();
+
+
 
 	},
 
@@ -133,7 +139,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	},
 
 	createDendrogram: function() {
-
+		console.log("Dendrogram: createDendrogram");
 		// ?????? how to put this in the model ?????
     	var actions=this.module.definition.dataSend;
     	var hover=function() {}
@@ -150,7 +156,6 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 
 		var cfg = this.module.getConfiguration();
 
-		if (!this._value) return;
 		this.dom.empty();
 
 		var options=this._options;
@@ -165,6 +170,20 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	            strokeStyle: '#555'
 	          }
 	        },
+	        /*
+	        NodeStyles: {  
+			    enable: true,  
+			    type: 'Native',  
+			    stylesHover: {  
+			      CanvasStyles: {
+			      	shadowColor: '#ccc',  
+		      		shadowBlur: 10
+		      	  }
+			    },  
+			    duration: 0  
+			  },
+			  */
+
 	        //Add navigation capabilities:
 	        //zooming by scrolling and panning.
 	        Navigation: {
@@ -175,7 +194,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	        //Set Node and Edge styles.
 	        Node: {
 	        	overridable: true,
-	        	type: 'circle'
+	        	type: cfg.nodeType || "circle"
 	        },
 	        
 	        Edge: {
@@ -203,6 +222,8 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	        onBeforePlotNode: function(node) {
 	            node.Node.color=options.nodeColor;
 	            node.Node.dim=options.nodeSize;
+	            // we could think about a way to dynamically give the style
+	            // node.Node.type="triangle";
 	        	if (node.getSubnodes(1).length == 0) {
 	        		if (options.endNodeStyle) {
 	        			options.endNodeStyle(node);
@@ -247,8 +268,11 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	//		    onMouseMove: function(node, eventInfo, e) {},
 			    onMouseEnter: function(node, eventInfo, e) {
 			    	hover(node);
+
 			    },
-	//		    onMouseLeave: function(node, eventInfo, e) {},
+			    onMouseLeave: function(node, eventInfo, e) {
+
+			    },
 	//		    onDragStart: function(node, eventInfo, e) {},
 	//		    onDragMove: function(node, eventInfo, e) {},
 	//		    onDragCancel: function(node, eventInfo, e) {},

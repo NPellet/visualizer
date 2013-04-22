@@ -58,12 +58,25 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 				
 		// we look for a leave and get all the jpath from it
 		var jpaths=this.getNodeJpath();
+		var field = groupfield.addField({
+			type: 'Combo',
+			name: 'nodeType'
+		});
+		field.setTitle(new BI.Title('Node type'));
+		field.implementation.setOptions([
+			{title: 'Circle', key: 'circle'},
+			{title: 'Triangle', key: 'triangle'},
+			{title: 'Square', key: 'squqre'},
+			{title: 'Star', key: 'star'},
+			{title: 'Image', key: 'image'}
+		]);
 
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'labelSize'
 		});
 		field.setTitle(new BI.Title('Label size'));
+
 		
 		var field = groupfield.addField({
 			type: 'Color',
@@ -136,6 +149,8 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 	
 	doFillConfiguration: function() {
 		var cfg=this.module.getConfiguration();
+
+		var nodeType = cfg.nodeType || "circle";
 		var labelSizejPath =cfg.labelSizejPath || "";
 		var labelColorjPath = cfg.labelColorjPath || "";
 		var labelSize = cfg.labelSize || "";
@@ -146,10 +161,11 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		var nodeSize = cfg.nodeSize || "";
 		var lineColor = cfg.lineColor || "";
 		var lineWidth = cfg.lineWidth || "";
-		
+
 		return { 
 				groups: {
 				module: [{
+					nodeType: [nodeType],
 					labelSizejPath: [labelSizejPath],
 					labelColorjPath: [labelColorjPath],
 					labelSize: [labelSize],
@@ -170,28 +186,18 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		
 		var group = confSection[0].module[0];
 		
-		var labelSizejPath = group.labelSizejPath[0];
-		var labelColorjPath = group.labelColorjPath[0];
-		var labelSize = group.labelSize[0];
-		var labelColor = group.labelColor[0];
-		var nodeColorjPath = group.nodeColorjPath[0];
-		var nodeSizejPath = group.nodeSizejPath[0];
-		var nodeColor = group.nodeColor[0];
-		var nodeSize = group.nodeSize[0];
-		var lineColor = group.lineColor[0];
-		var lineWidth = group.lineWidth[0];
-		
 		this.module.definition.configuration = {
-			labelSizejPath: labelSizejPath,
-			labelColorjPath: labelColorjPath,
-			labelSize: labelSize,
-			labelColor: labelColor,
-			nodeColorjPath: nodeColorjPath,
-			nodeSizejPath: nodeSizejPath,
-			nodeSize: nodeSize,
-			nodeColor: nodeColor,
-			lineColor: lineColor,
-			lineWidth: lineWidth
+			nodeType: group.nodeType[0],
+			labelSizejPath: group.labelSizejPath[0],
+			labelColorjPath: group.labelColorjPath[0],
+			labelSize: group.labelSize[0],
+			labelColor: group.labelColor[0],
+			nodeColorjPath: group.nodeColorjPath[0],
+			nodeSizejPath: group.nodeSizejPath[0],
+			nodeSize: group.nodeSize[0],
+			nodeColor: group.nodeColor[0],
+			lineColor: group.lineColor[0],
+			lineWidth: group.lineWidth[0]
 		};
 	},
 
