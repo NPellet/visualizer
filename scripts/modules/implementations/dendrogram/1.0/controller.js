@@ -84,7 +84,7 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		});
 		field.setTitle(new BI.Title('Label color'));
 
-
+/*
 		var field = groupfield.addField({
 			type: 'Combo',
 			name: 'labelSizejPath'
@@ -98,7 +98,7 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		});
 		field.implementation.setOptions(jpaths);
 		field.setTitle(new BI.Title('Label color jPath'));
-		
+*/
 
 		
 		var field = groupfield.addField({
@@ -113,7 +113,7 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		});
 		field.setTitle(new BI.Title('Node color'));
 
-
+/*
 		var field = groupfield.addField({
 			type: 'Combo',
 			name: 'nodeSizejPath'
@@ -127,7 +127,7 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		});
 		field.implementation.setOptions(jpaths);
 		field.setTitle(new BI.Title('Node color jPath'));
-
+*/
 
 
 
@@ -151,12 +151,12 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		var cfg=this.module.getConfiguration();
 
 		var nodeType = cfg.nodeType || "circle";
-		var labelSizejPath =cfg.labelSizejPath || "";
-		var labelColorjPath = cfg.labelColorjPath || "";
+	//	var labelSizejPath =cfg.labelSizejPath || "";
+	//	var labelColorjPath = cfg.labelColorjPath || "";
 		var labelSize = cfg.labelSize || "";
 		var labelColor = cfg.labelColor || "";
-		var nodeColorjPath = cfg.nodeColorjPath || "";
-		var nodeSizejPath = cfg.nodeSizejPath || "";		
+	//	var nodeColorjPath = cfg.nodeColorjPath || "";
+	//	var nodeSizejPath = cfg.nodeSizejPath || "";		
 		var nodeColor = cfg.nodeColor || "";
 		var nodeSize = cfg.nodeSize || "";
 		var lineColor = cfg.lineColor || "";
@@ -166,12 +166,12 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 				groups: {
 				module: [{
 					nodeType: [nodeType],
-					labelSizejPath: [labelSizejPath],
-					labelColorjPath: [labelColorjPath],
+		//			labelSizejPath: [labelSizejPath],
+		//			labelColorjPath: [labelColorjPath],
 					labelSize: [labelSize],
 					labelColor: [labelColor],
-					nodeColorjPath: [nodeColorjPath],
-					nodeSizejPath: [nodeSizejPath],
+		//			nodeColorjPath: [nodeColorjPath],
+		//			nodeSizejPath: [nodeSizejPath],
 					nodeSize: [nodeSize],
 					nodeColor: [nodeColor],
 					lineColor: [lineColor],
@@ -188,12 +188,12 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		
 		this.module.definition.configuration = {
 			nodeType: group.nodeType[0],
-			labelSizejPath: group.labelSizejPath[0],
-			labelColorjPath: group.labelColorjPath[0],
+		//	labelSizejPath: group.labelSizejPath[0],
+		//	labelColorjPath: group.labelColorjPath[0],
 			labelSize: group.labelSize[0],
 			labelColor: group.labelColor[0],
-			nodeColorjPath: group.nodeColorjPath[0],
-			nodeSizejPath: group.nodeSizejPath[0],
+		//	nodeColorjPath: group.nodeColorjPath[0],
+		//	nodeSizejPath: group.nodeSizejPath[0],
 			nodeSize: group.nodeSize[0],
 			nodeColor: group.nodeColor[0],
 			lineColor: group.lineColor[0],
