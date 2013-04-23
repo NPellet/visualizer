@@ -97,8 +97,6 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	    	}
 		});  
 
-
-	    console.log(this._rgraph);
 	//    this._rgraph.compute('end');
 
 	    this._rgraph.refresh();
@@ -146,7 +144,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	        //concentric circles.
 	        background: {
 	          CanvasStyles: {
-	            strokeStyle: '#555'
+	            strokeStyle: cfg.strokeStyle || '#555'
 	          }
 	        },
 	        
@@ -210,11 +208,18 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 			    type: 'Native', // otherwise the events are only on the labels (if auto)
 	//		    onRightClick: function(node, eventInfo, e) {},
 			    onClick: function(node, eventInfo, e) {
+			    	if (! node) return;
 			    	var rgraph=this.getRgraph(e);
 					if (node.nodeFrom) { // click on an edge
 						var subgraph=$jit.json.getSubtree(rgraph.json, node.nodeFrom.id);
-						console.log(subgraph);
 						rgraph.loadJSON(subgraph);
+						$jit.Graph.Util.each(rgraph.graph, function(node) {
+					    	if (node.data && node.data.label) {
+					    		node.name=node.data.label
+					    	} else {
+					    		node.name="";
+					    	}
+						});  
 		   				rgraph.refresh();
 					} else {	// click on a node
 						rgraph.onClick(node.id);

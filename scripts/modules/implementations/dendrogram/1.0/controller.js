@@ -137,13 +137,13 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 
 		var field = groupfield.addField({
 			type: 'Text',
-			name: 'lineWidth'
+			name: 'edgeWidth'
 		});
 		field.setTitle(new BI.Title('Edge width'));
 		
 		var field = groupfield.addField({
 			type: 'Color',
-			name: 'lineColor'
+			name: 'edgeColor'
 		});
 		field.setTitle(new BI.Title('Edge color'));
 
@@ -165,6 +165,7 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 		var nodeSize = cfg.nodeSize || "";
 		var lineColor = cfg.lineColor || "";
 		var lineWidth = cfg.lineWidth || "";
+		var strokeStyle = cfg.strokeStyle || "";
 
 		return { 
 				groups: {
@@ -179,7 +180,8 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 					nodeSize: [nodeSize],
 					nodeColor: [nodeColor],
 					lineColor: [lineColor],
-					lineWidth: [lineWidth]
+					lineWidth: [lineWidth],
+					strokeColor: [lineWidth]
 				}]
 			}
 		}
