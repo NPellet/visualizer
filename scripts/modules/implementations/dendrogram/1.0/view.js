@@ -87,6 +87,18 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 		if (!this._rgraph || !this._value) return;
 
 	    this._rgraph.loadJSON(this._value);
+
+	    // in each node we had the content of "label"
+	    $jit.Graph.Util.each(this._rgraph.graph, function(node) {
+	    	if (node.data && node.data.label) {
+	    		node.name=node.data.label
+	    	} else {
+	    		node.name="";
+	    	}
+		});  
+
+
+	    console.log(this._rgraph);
 	//    this._rgraph.compute('end');
 
 	    this._rgraph.refresh();
@@ -101,43 +113,6 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 		this._options={
 			nodeSize: cfg.nodeSize || 1,
 			nodeColor: cfg.nodeColor || "yellow",
-			endNodeLabel: function(node) {
-				if (node.data && node.data.label) return node.data.label;
-				return "";
-			},
-			nodeLabel: function(node) {
-				if (node.data && node.data.label) return node.data.label;
-				return "";
-			},
-			labelStyle: function(style, node) {
-	            // style.cursor = 'pointer';
-	            if (cfg.labelSizejPath) {
-	            	// ??????? how to do in a "simple" way. The async approach will give trouble ...
-					CI.DataType.getValueFromJPath(node, cfg.labelSizejPath).done(function(val) {
-						style.fontSize=val;
-					});
-				}
-	        
-	            if (node.data && node.data.labelSize) { // temporary code till we solve the other problem
-	            	style.fontSize = node.data.labelSize;
-	            } else {
-	            	style.fontSize = cfg.labelSize || "0em";
-	            }
-	            if (node.data && node.data.labelColor) { // temporary code till we solve the other problem
-	            	style.color = node.data.labelColor;
-	            } else {
-	            	style.color = cfg.labelColor;
-	            }
-			},
-		//	endNodeStyle: function(node) {},
-			nodeStyle: function(node) {
-				if (node.data && node.data.nodeSize) {
-	            	node.Node.dim = node.data.nodeSize;
-		        }
-				if (node.data && node.data.nodeColor) {
-	            	node.Node.color = node.data.nodeColor;
-	        	}
-			}	
 		}
 	},
 
@@ -174,9 +149,12 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	            strokeStyle: '#555'
 	          }
 	        },
-	        /*
+	        
+	     	// onCreateLabel: function(domElement, node){},
+			// onPlaceLabel: function(domElement, node){},
+			/*
 	        NodeStyles: {  
-			    enable: true,  
+			    enable: false,  
 			    type: 'Native',  
 			    stylesHover: {  
 			      CanvasStyles: {
@@ -186,7 +164,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 			    },  
 			    duration: 0  
 			  },
-			  */
+			*/
 
 	        //Add navigation capabilities:
 	        //zooming by scrolling and panning.
@@ -196,87 +174,28 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	          zooming: 50
 	        },
 	        //Set Node and Edge styles.
-	        Node: {
-	        	overridable: true,
-	        	type: cfg.nodeType || "circle"
-	        },
 	        
 	        Edge: {
 	          color: cfg.lineColor || 'green',
 	          lineWidth: cfg.lineWidth || 0.5
 	        },
-
-	        //This method is called only once for each node/label crated.
-	        onCreateLabel: function(domElement, node){
-	        	if (node.getSubnodes(1).length == 0) {
-	        		if (options.endNodeLabel) {
-	        			domElement.innerHTML=options.endNodeLabel(node);
-	        		} else if (options.nodeLabel) {
-	        			domElement.innerHTML=options.nodeLabel(node);
-	        		}
-	        	} else {
-	        		 if (options.nodeLabel) {
-	        			 domElement.innerHTML=options.nodeLabel(node);
-	        		 }
-	        	}
-	        	if (options.labelStyle) {
-	        		options.labelStyle(domElement.style, node);
-	        	}
-	        	/*
-	        	domElement.onclick = function () {
-		        	if(node.getSubnodes(1).length == 0){
-		        		alert("Click on leaf");
-		        	} else {
-		        		rgraph.onClick(node.id, { 
-		                   	hideLabels: false,
-		                    	onComplete: function() {
-		                       	 	Log.write("done");
-		                    	}
-		                 });
-		        	}
-		        }
-		        */
-	        },
-	        onBeforePlotNode: function(node) {
-	            node.Node.color=options.nodeColor;
-	            node.Node.dim=options.nodeSize;
-	            // we could think about a way to dynamically give the style
-	            // node.Node.type="triangle";
-	        	if (node.getSubnodes(1).length == 0) {
-	        		if (options.endNodeStyle) {
-	        			options.endNodeStyle(node);
-	        		} else if (options.nodeStyle) {
-	        			options.nodeStyle(node);
-	        		}
-	        	} else {
-	        		if (options.nodeStyle) {
-	        			options.nodeStyle(node);
-	        		}
-	        	}
-	        },
-	        //Change some label dom properties.
-	        //This method is called each time a label is plotted.
-	        onPlaceLabel: function(domElement, node){
-
-
-	        	/*
-	            var style = domElement.style;
-	            style.display = '';
-	            style.cursor = 'pointer';
-
-	            if (node._depth <= 1) {
-	                style.fontSize = "0.1em";name:"";
-	            } else if(node._depth > 1 && node._depth <= 20){
-	                style.fontSize = "0.1em";
-					if(node.getSubnodes(1).length == 0)
-						style.color = "#"+node.data.colorBatch;
-					else
-				      style.color = "#00f";
-	            } else {
-	                style.display = 'none';
-	            }
-	            */
-	        },
+	        Label: {  
+			  overridable: true,  
+			  type: 'Native', //'SVG', 'Native', "HTML" 
+			  size: cfg.labelSize || 10,  
+			  family: 'sans-serif',  
+			  textAlign: 'center',  
+			  textBaseline: 'alphabetic',  
+			  color: cfg.labelColor || "black"  
+			},
+			Node: {  
+			  overridable: true,  
+			  type: cfg.nodeType || "circle",  
+			  color: cfg.nodeColor || "yellow",  
+			  dim: cfg.nodeSize || 3,  
+			  height: 20,  
+			  width: 90
+			},
 	 	 	Events: {
 	 	 		getRgraph: function(e) {
 	 	 			var src=e.srcElement.id.replace(/-.*/,"");
@@ -287,39 +206,29 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	 	 			return;
 	 	 		},
 	 	 		enable: true,
-	 	 		enableForEdges: false,
+	 	 		enableForEdges: true,
 			    type: 'Native', // otherwise the events are only on the labels (if auto)
 	//		    onRightClick: function(node, eventInfo, e) {},
 			    onClick: function(node, eventInfo, e) {
-			    	// the problem is that we get the node but not the whole rgraph so it is difficult create
-			    	// an action
-			    	// the idea is store in a kind of cache of the created rgraph
-			    	if (! this._hoverNode) return;
 			    	var rgraph=this.getRgraph(e);
-					rgraph.onClick(this._hoverNode.id);
+					if (node.nodeFrom) { // click on an edge
+						var subgraph=$jit.json.getSubtree(rgraph.json, node.nodeFrom.id);
+						console.log(subgraph);
+						rgraph.loadJSON(subgraph);
+		   				rgraph.refresh();
+					} else {	// click on a node
+						rgraph.onClick(node.id);
+					}
 			    },
 	//		    onMouseMove: function(node, eventInfo, e) {},
 			    onMouseEnter: function(node, eventInfo, e) {
-			    	this._hoverNode=node;
 			    	hover(node);
-			    	this.getRgraph(e).canvas.getElement().style.cursor = 'pointer';  
+			    	this.getRgraph(e).canvas.getElement().style.cursor = 'pointer'; 
 			    },
 			    onMouseLeave: function(node, eventInfo, e) {
-			    	delete this._hoverNode;
 			    	this.getRgraph(e).canvas.getElement().style.cursor = '';  
 			    },
-	//		    onDragStart: function(node, eventInfo, e) {},
-	//		    onDragMove: function(node, eventInfo, e) {},
-	//		    onDragCancel: function(node, eventInfo, e) {},
-	//		    onDragEnd: function(node, eventInfo, e) {},
-	//		    onTouchStart: function(node, eventInfo, e) {},
-	//		    onTouchMove: function(node, eventInfo, e) {},
-	//		    onTouchEnd: function(node, eventInfo, e) {},
-	//		    onTouchCancel: function(node, eventInfo, e) {},
-	//		    onMouseWheel:function(node, eventInfo, e) {},
 	    	},
-	    	// onBeforeCompute: function(node){},
-	        // onAfterCompute: function(){},
 	  		Tips: {
 	      		enable: false,
 	     	}
@@ -328,6 +237,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
  		// we store in a cache to have access to the rgraph from an ID
  		$jit.existingInstance=$jit.existingInstance || {};
  		$jit.existingInstance[this._id]=this._rgraph;
+
 
 
 	},

@@ -71,6 +71,21 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 			{title: 'Image', key: 'image'}
 		]);
 
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'nodeSize'
+		});
+		field.setTitle(new BI.Title('Node size'));
+		
+		var field = groupfield.addField({
+			type: 'Color',
+			name: 'nodeColor'
+		});
+		field.setTitle(new BI.Title('Node color'));
+
+
+
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'labelSize'
@@ -101,17 +116,6 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 */
 
 		
-		var field = groupfield.addField({
-			type: 'Text',
-			name: 'nodeSize'
-		});
-		field.setTitle(new BI.Title('Node size'));
-		
-		var field = groupfield.addField({
-			type: 'Color',
-			name: 'nodeColor'
-		});
-		field.setTitle(new BI.Title('Node color'));
 
 /*
 		var field = groupfield.addField({
@@ -135,13 +139,13 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 			type: 'Text',
 			name: 'lineWidth'
 		});
-		field.setTitle(new BI.Title('Line width'));
+		field.setTitle(new BI.Title('Edge width'));
 		
 		var field = groupfield.addField({
 			type: 'Color',
 			name: 'lineColor'
 		});
-		field.setTitle(new BI.Title('Line color'));
+		field.setTitle(new BI.Title('Edge color'));
 
 		
 		return true;
