@@ -205,7 +205,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	          color: cfg.lineColor || 'green',
 	          lineWidth: cfg.lineWidth || 0.5
 	        },
-	        //Add node click handler and some styles.
+
 	        //This method is called only once for each node/label crated.
 	        onCreateLabel: function(domElement, node){
 	        	if (node.getSubnodes(1).length == 0) {
@@ -222,6 +222,20 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	        	if (options.labelStyle) {
 	        		options.labelStyle(domElement.style, node);
 	        	}
+	        	/*
+	        	domElement.onclick = function () {
+		        	if(node.getSubnodes(1).length == 0){
+		        		alert("Click on leaf");
+		        	} else {
+		        		rgraph.onClick(node.id, { 
+		                   	hideLabels: false,
+		                    	onComplete: function() {
+		                       	 	Log.write("done");
+		                    	}
+		                 });
+		        	}
+		        }
+		        */
 	        },
 	        onBeforePlotNode: function(node) {
 	            node.Node.color=options.nodeColor;
@@ -263,19 +277,36 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	            }
 	            */
 	        },
-	 	 	Events: {  
+	 	 	Events: {
+	 	 		getRgraph: function(e) {
+	 	 			var src=e.srcElement.id.replace(/-.*/,"");
+	 	 			if ($jit.existingInstance[src]) return $jit.existingInstance[src];
+	 	 			// maybe we clicked on a label
+	 	 			src=e.srcElement.parentElement.id.replace(/-.*/,"");
+	 	 			if ($jit.existingInstance[src]) return $jit.existingInstance[src];
+	 	 			return;
+	 	 		},
 	 	 		enable: true,
-	 	 		enableForEdges: true,
-	//		    type: 'auto',
-	//		    onClick: function(node, eventInfo, e) {},
+	 	 		enableForEdges: false,
+			    type: 'Native', // otherwise the events are only on the labels (if auto)
 	//		    onRightClick: function(node, eventInfo, e) {},
+			    onClick: function(node, eventInfo, e) {
+			    	// the problem is that we get the node but not the whole rgraph so it is difficult create
+			    	// an action
+			    	// the idea is store in a kind of cache of the created rgraph
+			    	if (! this._hoverNode) return;
+			    	var rgraph=this.getRgraph(e);
+					rgraph.onClick(this._hoverNode.id);
+			    },
 	//		    onMouseMove: function(node, eventInfo, e) {},
 			    onMouseEnter: function(node, eventInfo, e) {
+			    	this._hoverNode=node;
 			    	hover(node);
-
+			    	this.getRgraph(e).canvas.getElement().style.cursor = 'pointer';  
 			    },
 			    onMouseLeave: function(node, eventInfo, e) {
-
+			    	delete this._hoverNode;
+			    	this.getRgraph(e).canvas.getElement().style.cursor = '';  
 			    },
 	//		    onDragStart: function(node, eventInfo, e) {},
 	//		    onDragMove: function(node, eventInfo, e) {},
@@ -293,6 +324,12 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	      		enable: false,
 	     	}
 	    });
+
+ 		// we store in a cache to have access to the rgraph from an ID
+ 		$jit.existingInstance=$jit.existingInstance || {};
+ 		$jit.existingInstance[this._id]=this._rgraph;
+
+
 	},
 	
 	getDom: function() {
