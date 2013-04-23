@@ -14,6 +14,8 @@ CI.Module.prototype._types.dendrogram.Controller = function(module) { }
 
 $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.prototype._impl.controller, {
 	
+	singleValueFields:['nodeType','nodeSize','nodeColor','labelSize','labelColor','edgeWidth','edgeColor','strokeWidth','strokeColor'],
+
 	configurationSend: {
 		events: {
 			onHover: {
@@ -76,76 +78,51 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 			type: 'Text',
 			name: 'nodeSize'
 		});
-		field.setTitle(new BI.Title('Node size'));
+		field.setTitle(new BI.Title('Default node size'));
 		
 		var field = groupfield.addField({
 			type: 'Color',
 			name: 'nodeColor'
 		});
-		field.setTitle(new BI.Title('Node color'));
-
-
+		field.setTitle(new BI.Title('Default node color'));
 
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'labelSize'
 		});
-		field.setTitle(new BI.Title('Label size'));
+		field.setTitle(new BI.Title('Default label size'));
 
-		
 		var field = groupfield.addField({
 			type: 'Color',
 			name: 'labelColor'
 		});
-		field.setTitle(new BI.Title('Label color'));
-
-/*
-		var field = groupfield.addField({
-			type: 'Combo',
-			name: 'labelSizejPath'
-		});
-		field.implementation.setOptions(jpaths);
-		field.setTitle(new BI.Title('Label size jPath'));
-		
-		var field = groupfield.addField({
-			type: 'Combo',
-			name: 'labelColorjPath'
-		});
-		field.implementation.setOptions(jpaths);
-		field.setTitle(new BI.Title('Label color jPath'));
-*/
-
-		
-
-/*
-		var field = groupfield.addField({
-			type: 'Combo',
-			name: 'nodeSizejPath'
-		});
-		field.implementation.setOptions(jpaths);
-		field.setTitle(new BI.Title('Node size jPath'));
-		
-		var field = groupfield.addField({
-			type: 'Combo',
-			name: 'nodeColorjPath'
-		});
-		field.implementation.setOptions(jpaths);
-		field.setTitle(new BI.Title('Node color jPath'));
-*/
-
-
+		field.setTitle(new BI.Title('Default label color'));
 
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'edgeWidth'
 		});
-		field.setTitle(new BI.Title('Edge width'));
+		field.setTitle(new BI.Title('Default edge width'));
 		
 		var field = groupfield.addField({
 			type: 'Color',
 			name: 'edgeColor'
 		});
-		field.setTitle(new BI.Title('Edge color'));
+		field.setTitle(new BI.Title('Default edge color'));
+
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'strokeWidth'
+		});
+		field.setTitle(new BI.Title('Background line width'));
+
+		var field = groupfield.addField({
+			type: 'Color',
+			name: 'strokeColor'
+		});
+		field.setTitle(new BI.Title('Background line color'));
+
 
 		
 		return true;
@@ -154,57 +131,30 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 	doFillConfiguration: function() {
 		var cfg=this.module.getConfiguration();
 
-		var nodeType = cfg.nodeType || "circle";
-	//	var labelSizejPath =cfg.labelSizejPath || "";
-	//	var labelColorjPath = cfg.labelColorjPath || "";
-		var labelSize = cfg.labelSize || "";
-		var labelColor = cfg.labelColor || "";
-	//	var nodeColorjPath = cfg.nodeColorjPath || "";
-	//	var nodeSizejPath = cfg.nodeSizejPath || "";		
-		var nodeColor = cfg.nodeColor || "";
-		var nodeSize = cfg.nodeSize || "";
-		var lineColor = cfg.lineColor || "";
-		var lineWidth = cfg.lineWidth || "";
-		var strokeStyle = cfg.strokeStyle || "";
+		var module={};
+		for (var i=0; i<this.singleValueFields.length; i++) {
+			var varName=this.singleValueFields[i];
+			module[varName]=[cfg[varName] || ""];
+		}
 
-		return { 
-				groups: {
-				module: [{
-					nodeType: [nodeType],
-		//			labelSizejPath: [labelSizejPath],
-		//			labelColorjPath: [labelColorjPath],
-					labelSize: [labelSize],
-					labelColor: [labelColor],
-		//			nodeColorjPath: [nodeColorjPath],
-		//			nodeSizejPath: [nodeSizejPath],
-					nodeSize: [nodeSize],
-					nodeColor: [nodeColor],
-					lineColor: [lineColor],
-					lineWidth: [lineWidth],
-					strokeColor: [lineWidth]
-				}]
+		var configuration={
+			groups: {
+				module: [module]
 			}
 		}
+
+		return configuration;
 	},
 	
 	
 	doSaveConfiguration: function(confSection) {
-		
 		var group = confSection[0].module[0];
-		
-		this.module.definition.configuration = {
-			nodeType: group.nodeType[0],
-		//	labelSizejPath: group.labelSizejPath[0],
-		//	labelColorjPath: group.labelColorjPath[0],
-			labelSize: group.labelSize[0],
-			labelColor: group.labelColor[0],
-		//	nodeColorjPath: group.nodeColorjPath[0],
-		//	nodeSizejPath: group.nodeSizejPath[0],
-			nodeSize: group.nodeSize[0],
-			nodeColor: group.nodeColor[0],
-			lineColor: group.lineColor[0],
-			lineWidth: group.lineWidth[0]
-		};
+		this.module.definition.configuration={};
+
+		for (var i=0; i<this.singleValueFields.length; i++) {
+			var varName=this.singleValueFields[i];
+			this.module.definition.configuration[varName]=group[varName][0];
+		}
 	},
 
 	getNodeJpath: function() {
