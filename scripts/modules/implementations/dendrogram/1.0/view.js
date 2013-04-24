@@ -144,25 +144,31 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	        //concentric circles.
 	        background: {
 	          CanvasStyles: {
-	            strokeStyle: cfg.strokeStyle || '#555'
+	            strokeStyle: cfg.strokeColor || '#333',
+	            lineWidth: cfg.strokeWidth || '1'
 	          }
 	        },
 	        
 	     	// onCreateLabel: function(domElement, node){},
 			// onPlaceLabel: function(domElement, node){},
+			
 			/*
 	        NodeStyles: {  
-			    enable: false,  
+			    enable: true,  
 			    type: 'Native',  
 			    stylesHover: {  
 			      CanvasStyles: {
+			      	lineWidth: 10,
+			      	strokeStyle: "#f00",
 			      	shadowColor: '#ccc',  
 		      		shadowBlur: 10
 		      	  }
 			    },  
 			    duration: 0  
-			  },
+			},
 			*/
+
+
 
 	        //Add navigation capabilities:
 	        //zooming by scrolling and panning.
@@ -174,8 +180,8 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	        //Set Node and Edge styles.
 	        
 	        Edge: {
-	          color: cfg.lineColor || 'green',
-	          lineWidth: cfg.lineWidth || 0.5
+	          color: cfg.edgeColor || 'green',
+	          lineWidth: cfg.edgeWidth || 0.5
 	        },
 	        Label: {  
 			  overridable: true,  
@@ -210,19 +216,52 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 			    onClick: function(node, eventInfo, e) {
 			    	if (! node) return;
 			    	var rgraph=this.getRgraph(e);
-					if (node.nodeFrom) { // click on an edge
-						var subgraph=$jit.json.getSubtree(rgraph.json, node.nodeFrom.id);
-						rgraph.loadJSON(subgraph);
-						$jit.Graph.Util.each(rgraph.graph, function(node) {
-					    	if (node.data && node.data.label) {
-					    		node.name=node.data.label
-					    	} else {
-					    		node.name="";
-					    	}
-						});  
-		   				rgraph.refresh();
+
+			    	var currentNode;
+					// the problem is that the event may be taken by a hidden node ...
+					if (node.collapsed) { // we click on a collapsed node
+						currentNode=node;
+					} else if (node.ignore) { // hidden node ?
+						// in this case we should check the first node that is not hidden and expand it
+						currentNode=node.getParents()[0];
+						while (currentNode.ignore) {
+							currentNode=currentNode.getParents()[0];
+						}
+					} else if (node.nodeFrom) { // click on an edge
+						// we should always take the higher depth
+						currentNode=(node.nodeFrom._depth>node.nodeTo._depth)?node.nodeFrom:node.nodeTo;
+
+console.log("FROM: "+node.nodeFrom._depth);
+console.log("TO: "+node.nodeTo._depth);
+						if (node.nodeFrom.collapsed) {
+							currentNode=node.nodeFrom;
+						}
+						if (node.nodeTo.collapsed) {
+							currentNode=node.nodeTo;
+						}
+					}
+					if (currentNode) { 
+						// is there one collapsed node ? We expand it
+						if (currentNode.collapsed) {
+							rgraph.op.expand(currentNode, {  
+									type: 'animate',  
+									duration: 1000,  
+									hideLabels: false,  
+									transition: $jit.Trans.Quart.easeInOut  
+							}); 
+						} else {
+							rgraph.op.contract(node.nodeFrom, {  
+								type: 'animate',  
+								duration: 1000,  
+								hideLabels: true,  
+								transition: $jit.Trans.Quart.easeInOut  
+							});  
+						}
 					} else {	// click on a node
-						rgraph.onClick(node.id);
+						if (! node.ignore) { // hidden node ?
+							rgraph.onClick(node.id);
+						}
+						
 					}
 			    },
 	//		    onMouseMove: function(node, eventInfo, e) {},
