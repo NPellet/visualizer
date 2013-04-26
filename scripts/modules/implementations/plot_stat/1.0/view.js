@@ -74,16 +74,30 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 			var cfg = this.module.getConfiguration();
 
 			moduleValue = CI.DataType.getValueIfNeeded(moduleValue);	
+
+			// In xase xAxis and/or yAxis are not specified we just add the missing values
+			moduleValue.xAxis=moduleValue.xAxis||{};
+			moduleValue.xAxis.label=moduleValue.xAxis.label||"X";
+			moduleValue.yAxis=moduleValue.yAxis||{};
+			moduleValue.yAxis.label=moduleValue.yAxis.label||"Y";
+			moduleValue.x=moduleValue.x||[];
+
 			var data = [[ moduleValue.xAxis.label ]];
 			
-			if (moduleValue.serieLabels && moduleValue.serieLabels.length>0) {
-				for(var i = 0, k = moduleValue.serieLabels.length; i < k; i++) {
+			for(var i = 0, k = moduleValue.series.length; i < k; i++) {
+				if (moduleValue.serieLabels && moduleValue.serieLabels[i]) {
 					data[0].push(moduleValue.serieLabels[i]);
+				} else {
+					data[0].push("Serie "+(i+1));
 				}
 			}
 			
-			for(var i = 0, k = moduleValue.x.length; i < k; i++) {
-				data.push([moduleValue.x[i]]);
+
+			for(var i = 0, k = moduleValue.series[0].length; i < k; i++) {
+				if (moduleValue.x[i])
+					data.push([moduleValue.x[i]]);
+				else
+					data.push([i]);
 			}
 			
 			for(var i = 0, k = moduleValue.series.length; i < k; i++) {
