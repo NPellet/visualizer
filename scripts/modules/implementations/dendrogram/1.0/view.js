@@ -17,6 +17,15 @@ CI.Module.prototype._types.dendrogram.View = function(module) {
 
 CI.Module.prototype._types.dendrogram.View.prototype = {
 	
+	highlightNode: function(nodeID) {
+		node.setCanvasStyle('shadowBlur', 0, 'start');  
+		node.setCanvasStyle('shadowBlur', 10, 'end');  
+		this._rgraph.fx.animate({  
+			modes: ['node-style:shadowBlur'],  
+			duration: 200  
+		}); 
+	},
+
 	init: function() {
 		console.log("Dendrogram: init");
 
@@ -180,8 +189,16 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	        //Set Node and Edge styles.
 	        
 	        Edge: {
-	          color: cfg.edgeColor || 'green',
-	          lineWidth: cfg.edgeWidth || 0.5
+	        	overridable: true,
+	        	/*
+	        	CanvasStyles: { // we need to specify it here if we want to change it later
+		        	shadowColor: "rgb(0, 0, 0)",
+					shadowBlur: 0
+	        	},
+	        	*/
+	         	color: cfg.edgeColor || 'green',
+	         	lineWidth: cfg.edgeWidth || 0.5,
+
 	        },
 	        Label: {  
 			  overridable: true,  
@@ -192,13 +209,19 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 			  textBaseline: 'alphabetic',  
 			  color: cfg.labelColor || "black"  
 			},
-			Node: {  
-			  overridable: true,  
-			  type: cfg.nodeType || "circle",  
-			  color: cfg.nodeColor || "yellow",  
-			  dim: cfg.nodeSize || 3,  
-			  height: 20,  
-			  width: 90
+			Node: {
+				CanvasStyles: { // we need to specify it here so that we can change it later (mouse enter, leave or external highlight)
+		            shadowColor: "rgb(0, 0, 0)",
+					shadowBlur: 0
+	        	},
+	        
+				overridable: true,  
+				type: cfg.nodeType || "circle",  
+				color: cfg.nodeColor || "yellow",  
+				dim: cfg.nodeSize || 3,  
+				height: 20,  
+				width: 90,
+				lineWidth: 10
 			},
 	 	 	Events: {
 	 	 		getRgraph: function(e) {
@@ -230,9 +253,6 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 					} else if (node.nodeFrom) { // click on an edge
 						// we should always take the higher depth
 						currentNode=(node.nodeFrom._depth>node.nodeTo._depth)?node.nodeFrom:node.nodeTo;
-
-console.log("FROM: "+node.nodeFrom._depth);
-console.log("TO: "+node.nodeTo._depth);
 						if (node.nodeFrom.collapsed) {
 							currentNode=node.nodeFrom;
 						}
@@ -266,8 +286,9 @@ console.log("TO: "+node.nodeTo._depth);
 			    },
 	//		    onMouseMove: function(node, eventInfo, e) {},
 			    onMouseEnter: function(node, eventInfo, e) {
+			    	console.log(node);
 			    	hover(node);
-			    	this.getRgraph(e).canvas.getElement().style.cursor = 'pointer'; 
+			    	this.getRgraph(e).canvas.getElement().style.cursor = 'pointer';
 			    },
 			    onMouseLeave: function(node, eventInfo, e) {
 			    	this.getRgraph(e).canvas.getElement().style.cursor = '';  
