@@ -56,7 +56,13 @@ $.extend(CI.Module.prototype._types.plot_stat.Controller.prototype, CI.Module.pr
 			type: ['chart'],
 			label: 'Formatted data for a chart',
 			description: ''
-		}	
+		},
+		"yArray": {
+			type: 'array',
+			label: '1D Array',
+			description: '1D Array'
+		},
+
 	},
 	
 	moduleInformations: {
