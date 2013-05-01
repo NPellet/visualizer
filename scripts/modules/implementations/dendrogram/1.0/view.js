@@ -105,13 +105,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	    		node.name="";
 	    	}
 		});  
-
-	//    this._rgraph.compute('end');
-
 	    this._rgraph.refresh();
-
-
-
 	},
 
 	updateOptions: function() {
@@ -219,8 +213,8 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 				type: cfg.nodeType || "circle",  
 				color: cfg.nodeColor || "yellow",  
 				dim: cfg.nodeSize || 3,  
-				height: 20,  
-				width: 90,
+				height: 3,  
+				width: 3,
 				lineWidth: 10
 			},
 	 	 	Events: {
