@@ -70,6 +70,8 @@ $.extend(CI.Module.prototype._types.dendrogram.Controller.prototype, CI.Module.p
 			{title: 'Triangle', key: 'triangle'},
 			{title: 'Square', key: 'squqre'},
 			{title: 'Star', key: 'star'},
+			{title: 'Ellipse', key: 'ellipse'},
+			{title: 'Rectangle', key: 'rectangle'},
 			{title: 'Image', key: 'image'}
 		]);
 
