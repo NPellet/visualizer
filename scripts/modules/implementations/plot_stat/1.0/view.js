@@ -120,7 +120,7 @@ CI.Module.prototype._types.plot_stat.View.prototype = {
 		
 
 		for(var i = 0, k = moduleValue.series[0].length; i < k; i++) {
-			if (moduleValue.x[i])
+			if (moduleValue.x[i] || moduleValue.x[i]==0)
 				data.push([moduleValue.x[i]]);
 			else
 				data.push([i]);
