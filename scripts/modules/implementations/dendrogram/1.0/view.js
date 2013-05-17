@@ -16,7 +16,8 @@ CI.Module.prototype._types.dendrogram.View = function(module) {
 }
 
 CI.Module.prototype._types.dendrogram.View.prototype = {
-	
+	DEBUG: false,
+
 	highlightNode: function(nodeID) {
 		node.setCanvasStyle('shadowBlur', 0, 'start');  
 		node.setCanvasStyle('shadowBlur', 10, 'end');  
@@ -27,7 +28,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	},
 
 	init: function() {
-		console.log("Dendrogram: init");
+		if (this.DEBUG) console.log("Dendrogram: init");
 
 		// When we change configuration the method init is called again. Also the case when we change completely of view
 		if (! this.dom) {
@@ -51,12 +52,12 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	
 
 	inDom: function() {
-		console.log("Dendrogram: inDom");
+		if (this.DEBUG) console.log("Dendrogram: inDom");
 		// if(this._value === undefined) return;
 	},
 
 	onResize: function(width, height) {
-		console.log("Dendrogram: onResize");
+		if (this.DEBUG) console.log("Dendrogram: onResize");
 		this.createDendrogram();
 		this.updateDendrogram();
 	},
@@ -68,7 +69,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	*/
 	update2: {
 		'dendrogram': function(moduleValue) {
-			console.log("Dendrogram: update2");
+			if (this.DEBUG) console.log("Dendrogram: update2");
 
 
 			if (! moduleValue || ! moduleValue.value) return;
@@ -92,7 +93,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	},
 	
 	updateDendrogram: function() {
-		console.log("Dendrogram: updateDendrogram");
+		if (this.DEBUG) console.log("Dendrogram: updateDendrogram");
 		if (!this._rgraph || !this._value) return;
 
 	    this._rgraph.loadJSON(this._value);
@@ -118,7 +119,7 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	},
 
 	createDendrogram: function() {
-		console.log("Dendrogram: createDendrogram");
+		if (this.DEBUG) console.log("Dendrogram: createDendrogram");
 		// ?????? how to put this in the model ?????
     	var actions=this.module.definition.dataSend;
     	if (! actions || actions.length==0) return;
@@ -279,7 +280,6 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 			    },
 	//		    onMouseMove: function(node, eventInfo, e) {},
 			    onMouseEnter: function(node, eventInfo, e) {
-			    	console.log(node);
 			    	hover(node);
 			    	this.getRgraph(e).canvas.getElement().style.cursor = 'pointer';
 			    },
@@ -301,12 +301,12 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 	},
 	
 	getDom: function() {
-		console.log("Dendrogram: getDom");
+		if (this.DEBUG) console.log("Dendrogram: getDom");
 		return this.dom;
 	},
 	
 	_doHighlight: function(id, val) {
-		console.log("Dendrogram: _doHighlight");
+		if (this.DEBUG) console.log("Dendrogram: _doHighlight");
 		if(this._highlighted[id] && val)
 			return;
 		if(!this._highlighted[id] && !val)
