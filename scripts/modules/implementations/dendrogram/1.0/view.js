@@ -122,14 +122,13 @@ CI.Module.prototype._types.dendrogram.View.prototype = {
 		// ?????? how to put this in the model ?????
     	var actions=this.module.definition.dataSend;
     	if (! actions || actions.length==0) return;
-    	var hover=function() {}
-    	for (var i=0; i<actions.length; i++) {
-    		if (actions[i].event=="onHover") {
-    			var jpath=actions[i].jpath;
-    			var name=actions[i].name;
-    			hover=function(node) {
-    				CI.API.setSharedVarFromJPath(name, node, jpath);
-    			}
+    	var hover=hover=function(node) {
+	    	for (var i=0; i<actions.length; i++) {
+	    		if (actions[i].event=="onHover") {
+	    			var jpath=actions[i].jpath;
+	    			var name=actions[i].name;
+					CI.API.setSharedVarFromJPath(name, node, jpath);
+				}
     		}
     	}
 
