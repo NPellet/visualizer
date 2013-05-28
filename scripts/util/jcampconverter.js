@@ -17,8 +17,6 @@ CI.converter.jcampToSpectra=(function() {
     };
 
     function convert(jcamp, options) {
-        if (! (typeof jcamp == "string")) return {};
-
         var ntuples={},
             ldr,
             dataLabel,
@@ -32,6 +30,7 @@ CI.converter.jcampToSpectra=(function() {
         result.info={};
         var spectrum = {};
 
+        if (! (typeof jcamp == "string")) return result;
        // console.time("start");
 
         ldrs=jcamp.split(/[\r\n]+ *##/);
@@ -194,9 +193,8 @@ CI.converter.jcampToSpectra=(function() {
         if (result.twoD) {
             add2D(result);
         }
-    // console.log(result);
+     // console.log(result);
     //    console.log(JSON.stringify(spectra));
-
         return result;
 
     }
@@ -219,7 +217,7 @@ CI.converter.jcampToSpectra=(function() {
         spectrum.data=[];
         spectrum.currentData=[];
         spectrum.data.push(spectrum.currentData);
-        var lines=value.split(/ *[;\r\n]+ */);
+        var lines=value.split(/,? *,?[;\r\n]+ */);
 
 
         for (i=1, ii=lines.length; i<ii; i++) {
