@@ -89,6 +89,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 	onResize: function(width, height) {
 		this.width = width;
 		this.height = height;
+
 		if(this.graph)
 			this.graph.resize(width, height);
 		this.graph.redraw();
@@ -205,9 +206,9 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
  			//if(typeof moduleValue.value !== 'object') {
 
-// 				var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024}).spectra;
+ 				var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024}).spectra;
 
- 				spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
+// 				spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
 
  			//	moduleValue.value = spectra;
  			//} else 

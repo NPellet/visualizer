@@ -199,6 +199,7 @@ CI.Module.prototype = {
 	},
 
 	updateAllView: function() {
+		
 		if(!this.view.update2)
 			return;
 		var val, name;

@@ -50,10 +50,7 @@
  	update2: {
 
  		list: function(moduleValue) {
- 			console.log(this.module.id);
-
  			this.domTable.remove();
-
  			var Content = new CI.Tables.Content();
  			this.Content = Content;
  			CI.RepoHighlight.kill(this.module.id);
