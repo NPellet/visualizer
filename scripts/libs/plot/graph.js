@@ -27,7 +27,7 @@ var Graph = (function() {
 		
 		defaults: {
 			paddingTop: 30,
-			paddingBottom: 30,
+			paddingBottom: 0,
 			paddingLeft: 20,
 			paddingRight: 20,
 
@@ -1432,7 +1432,7 @@ var Graph = (function() {
 				var groupLabel = this.groupTickLabels;
 				var tickLabel = document.createElementNS(this.graph.ns, 'text');
 				tickLabel.setAttribute('x', val);
-				tickLabel.setAttribute('y', (this.options.tickPosition == 1) ? 15 : 25);
+				tickLabel.setAttribute('y', (this.options.tickPosition == 1) ? 8 : 25);
 				tickLabel.setAttribute('text-anchor', 'middle');
 				tickLabel.style.dominantBaseline = 'hanging';
 
@@ -1450,9 +1450,9 @@ var Graph = (function() {
 
 			// Place label correctly
 			this.label.setAttribute('text-anchor', 'middle');
-			this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
+			this.label.setAttribute('x', Math.abs(this.getMaxPx() - this.getMinPx()) / 2);
 			
-			this.label.setAttribute('y', (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize);
+			this.label.setAttribute('y', (this.options.tickPosition == 1 ? 10 : 25) + this.graph.options.fontSize);
 
 			this.line.setAttribute('x1', this.getMinPx());
 			this.line.setAttribute('x2', this.getMaxPx());
