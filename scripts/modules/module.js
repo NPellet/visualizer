@@ -541,8 +541,9 @@ CI.Module.prototype._impl = {
 		onActionTrigger: function(value, actionName) {
 
 			var actionRel = this.module.getActionRelFromName(actionName[0]);
-			if(this.module.view.onActionReceive && this.module.view.onActionReceive[actionRel])
+			if(this.module.view.onActionReceive && this.module.view.onActionReceive[actionRel]) {
 				this.module.view.onActionReceive[actionRel].call(this.module.view, value, actionName);
+			}
  		},
 
  		buildData: function(data, source) {
@@ -581,12 +582,20 @@ CI.Module.prototype._impl = {
 			var actionsOut = this.module.definition.actionsOut;
 			if(!actionsOut)
 				return;
+
+
 			var i = actionsOut.length - 1;
 			for(; i >= 0; i--) {
+
 				if(actionsOut[i].rel == rel && ((event && event == actionsOut[i].event) || !event)) {
 					actionname = actionsOut[i].name;
-					CI.API.executeActionScript(actionname, value);
-					CI.Actions.set(actionname, value);
+					var jpath = actionsOut[i].jpath;
+
+					value = CI.DataType.getValueFromJPath(value, jpath || '').done(function(value) {
+
+						CI.API.executeActionScript(actionname, value);
+						CI.Actions.set(actionname, value);
+					});
 				}
 			}
 		}

@@ -31,16 +31,54 @@ $.extend(CI.Module.prototype._types.grid.Controller.prototype, CI.Module.prototy
 		CI.RepoHighlight.set(element._highlight, 0);
 	},
 
-	lineClick: function(element) {
+	lineClick: function(element, row) {
 		
 		var actions;
 		if(!(actions = this.module.definition.dataSend))	
 			return;
-				
 		for(var i = 0; i < actions.length; i++) {
-
 			if(actions[i].event == "onSelect") {
-			
+				(function(element, actionName, jpath) {
+					CI.API.blankSharedVar(actionName);
+					CI.API.setSharedVarFromJPath(actionName, element, jpath);
+				}) (element, actions[i].name, actions[i].jpath)
+			}
+		}
+	},
+
+	onToggleOn: function(element, row) {
+
+		if(!row.selected)
+			return;
+
+		this.sendAction('element', element, 'onToggleOn');
+
+		var actions;
+		if(!(actions = this.module.definition.dataSend))	
+			return;
+		for(var i = 0; i < actions.length; i++) {
+			if(actions[i].event == "onToggleOn") {
+				(function(element, actionName, jpath) {
+					CI.API.blankSharedVar(actionName);
+					CI.API.setSharedVarFromJPath(actionName, element, jpath);
+				}) (element, actions[i].name, actions[i].jpath)
+			}
+		}
+	},
+
+
+	onToggleOff: function(element, row) {
+
+		if(row.selected)
+			return;
+
+		this.sendAction('element', element, 'onToggleOff');
+
+		var actions;
+		if(!(actions = this.module.definition.dataSend))	
+			return;
+		for(var i = 0; i < actions.length; i++) {
+			if(actions[i].event == "onToggleOff") {
 				(function(element, actionName, jpath) {
 					CI.API.blankSharedVar(actionName);
 					CI.API.setSharedVarFromJPath(actionName, element, jpath);
@@ -61,6 +99,16 @@ $.extend(CI.Module.prototype._types.grid.Controller.prototype, CI.Module.prototy
 			onHover: {
 				label: 'Hovers a line',
 				description: 'Pass the mouse over a line to select it'
+			},
+
+			onToggleOn: {
+				label: 'On Toggle On',
+				description: ''
+			},
+
+			onToggleOff: {
+				label: 'On Toggle Off',
+				description: ''
 			}
 		},
 		
@@ -87,6 +135,14 @@ $.extend(CI.Module.prototype._types.grid.Controller.prototype, CI.Module.prototy
 	},
 	
 	
+	actions: {
+		rel: {'row': 'Row Source'}
+	},
+
+	actionsReceive: {
+		'addRow': 'Add a new row',
+		'removeRow': 'Remove a row'
+	},
 	
 	
 	doConfiguration: function(section) {
@@ -102,7 +158,16 @@ $.extend(CI.Module.prototype._types.grid.Controller.prototype, CI.Module.prototy
 		});
 		field.setTitle(new BI.Title('Lines per page'));
 		
-		var data = CI.DataType.getValueIfNeeded(this.module.getDataFromRel('list'));
+
+
+		var field = groupfield.addField({
+			type: 'Combo',
+			name: 'toggle'
+		});
+		field.setTitle(new BI.Title('Line toggling'));
+		field.implementation.setOptions([{key: "0", title: "No"}, {key: "single", title:"Single row"}, {key: "multiple", title:"Multiple rows"}]);
+
+		var data = CI.DataType.getValueIfNeeded(this.module.data);
 		var jpaths = [];
 		
 		if(CI.DataType.getType(data) == 'array') 
@@ -147,12 +212,13 @@ $.extend(CI.Module.prototype._types.grid.Controller.prototype, CI.Module.prototy
 	},
 	
 	doFillConfiguration: function() {
-		
-		var cols = this.module.getConfiguration().colsjPaths;
-		var nblines = this.module.getConfiguration().nbLines || 20;
-		var colorjPath = this.module.getConfiguration().colorjPath || '';
-		var search = this.module.getConfiguration().displaySearch || false;
-		
+		var cfg = this.module.getConfiguration();
+		var cols = cfg.colsjPaths;
+		var nblines = cfg.nbLines || 20;
+		var colorjPath = cfg.colorjPath || '';
+		var search = cfg.displaySearch || false;
+		var toggle = cfg.toggle;
+
 		var titles = [];
 		var jpaths = [];
 
@@ -166,6 +232,7 @@ $.extend(CI.Module.prototype._types.grid.Controller.prototype, CI.Module.prototy
 			groups: {
 				gencfg: [{
 					nblines: [nblines],
+					toggle: [toggle],
 					colorjpath: [colorjPath],
 					displaySearch: [[search ? 'allow' : '']]
 				}],
@@ -185,6 +252,7 @@ $.extend(CI.Module.prototype._types.grid.Controller.prototype, CI.Module.prototy
 			cols[group[i].coltitle] = { jpath: group[i].coljpath };
 		this.module.getConfiguration().colsjPaths = cols;
 		this.module.getConfiguration().nbLines = confSection[0].gencfg[0].nblines[0];
+		this.module.getConfiguration().toggle = confSection[0].gencfg[0].toggle[0];
 		this.module.getConfiguration().colorjPath = confSection[0].gencfg[0].colorjpath[0];
 		this.module.getConfiguration().displaySearch = !!confSection[0].gencfg[0].displaySearch[0][0];
 	},

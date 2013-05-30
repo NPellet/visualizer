@@ -30,6 +30,12 @@ $.extend(CI.Module.prototype._types.object_editor.Controller.prototype, CI.Modul
 			type: ["object"],
 			label: 'Object source',
 			description: 'An object to edit'
+		},
+
+		sourcepartial: {
+			type: ["object"],
+			label: 'Partial object',
+			description: ''
 		}		
 	},
 	

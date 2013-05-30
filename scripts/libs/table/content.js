@@ -27,6 +27,13 @@ window[_namespaces['table']].Tables.Content.prototype = {
 		this.entryCount++;
 	},
 
+	removeElement: function(elJson) {
+		for(var i = 0, l = this.elements.length; i < l; i++) {
+			if(this.elements[i] == elJson)
+				this.elements.splice(i, 1);
+		}
+	},
+
 	addRow: function(Row) {
 		this.setMode = 'rows';
 		this.rows.push(Row);
@@ -36,6 +43,15 @@ window[_namespaces['table']].Tables.Content.prototype = {
 
 	getTable: function() {
 		return this.table;
+	},
+
+	toggleAllOff: function() {
+		for(var i = 0, l = this.elements.length; i < l; i++) {
+			if(this.elements[i].selected) {
+				this.table.getDom().find('tr[data-elementid="' + this.elements[i].index + '"]').trigger('click', true);
+				this.elements[i].selected = false;
+			}
+		}
 	},
 	
 	build: function() {
@@ -142,6 +158,7 @@ window[_namespaces['table']].Tables.Content.prototype = {
 		html.push('<tr data-elementid="');
 		html.push(this.index);
 		var index = this.index;
+		
 		html.push('" data-parent-id="');
 		html.push(parent);
 		html.push('" class="');

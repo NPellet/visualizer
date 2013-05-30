@@ -245,6 +245,9 @@ CI.EntryPoint.prototype = {
 							CI.API.setSharedVar(variable.varname, value);
 						});
 					}) (vars[i]);
+				} else if(!vars[i].jpath) {
+					self.data[vars[i].varname] = {};
+					CI.API.setSharedVar(vars[i].varname, self.data[vars[i].varname]);
 				} else 
 					CI.API.setSharedVarFromJPath(vars[i].varname, this.data, vars[i].jpath);
 			}

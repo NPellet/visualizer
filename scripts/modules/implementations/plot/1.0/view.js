@@ -19,6 +19,7 @@ CI.Module.prototype._types.plot.View.prototype = {
 		var html = [];
 		html.push('<div />');
 		this.namedSeries = {};
+		this.series = [];
 		this.dom = $(html.join(''));
 		this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
 	},
@@ -45,7 +46,7 @@ CI.Module.prototype._types.plot.View.prototype = {
 
 			if(!this.dom)
 				return;
-
+console.time('plot');
 			this._chartSource = moduleValue;
 			this.series = [];
 			if(this.graph)
@@ -95,6 +96,8 @@ CI.Module.prototype._types.plot.View.prototype = {
 			}
 			
 			this.onResize(this.module.getWidthPx(), this.module.getHeightPx());
+
+			console.timeEnd('plot');
 		},
 
 
@@ -157,11 +160,20 @@ CI.Module.prototype._types.plot.View.prototype = {
 	onActionReceive:  {
 
 		addSerie: function(value) {
-			this.onActionReceive.removeSerie(value.name)
-			this.graph.newSerie(value.name, value);
+			value = CI.DataType.getValueIfNeeded(value);
+			for(var i in value) {
+				this.onActionReceive.removeSerie.call(this, value[i].name)
+				var serie = this.graph.newSerie(value[i].name);
+				serie.autoAxis();
+				serie.setData(value[i].data)
+			}
+
+			this.graph.redraw();
+			this.graph.drawSeries();
 		},
 
 		removeSerie: function(serieName) {
+			
 			for(var i = 0, l = this.series.length; i < l; i++) {
 				if(this.series[i].getName() == name) {
 					this.series[i].kill();

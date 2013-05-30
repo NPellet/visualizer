@@ -60,12 +60,21 @@ $(document).bind('configModule', function(event, module) {
 		for(var i in availCfg.rels)
 			allRels.push({ title: availCfg.rels[i].label, key: i})
 	
+		
+
 		var actionsCfg = module.controller.actions;
 		var allActionsRels = [];
 		if(actionsCfg)
 			for(var i in actionsCfg.rel)
 				allActionsRels.push({ title: actionsCfg.rel[i], key: i});
+
+
+		var actionsReceive = module.controller.actionsReceive || {};
+		var allActionsReceive = [];	
+		for(var i in actionsReceive)
+			allActionsReceive.push({ title: actionsReceive[i], key: i});
 		
+
 		var section = new BI.Forms.Section('send', { multiple: false });
 		this.addSection(section);
 		section.setTitle(new BI.Title('Variables sent'));
@@ -77,6 +86,7 @@ $(document).bind('configModule', function(event, module) {
 			type: 'Combo',
 			name: 'event'
 		});
+
 		field.implementation.setOptions(allEvents);
 		field.setTitle(new BI.Title('Event'));
 		
@@ -114,9 +124,9 @@ $(document).bind('configModule', function(event, module) {
 		// Receive configuration
 		var availCfg = module.controller.configurationReceive;
 		
-		var allRels = [];
+		var allRels2 = [];
 		for(var i in availCfg)
-			allRels.push({ key: i, title: availCfg[i].label });
+			allRels2.push({ key: i, title: availCfg[i].label });
 		
 		
 		var section = new BI.Forms.Section('receive', { multiple: false });
@@ -131,7 +141,8 @@ $(document).bind('configModule', function(event, module) {
 			type: 'Combo',
 			name: 'rel'
 		});
-		field.implementation.setOptions(allRels);
+
+		field.implementation.setOptions(allRels2);
 		field.setTitle(new BI.Title('Internal reference'));
 		
 		var field = groupfield.addField({
@@ -168,8 +179,27 @@ $(document).bind('configModule', function(event, module) {
 			name: 'rel',
 			title: new BI.Title('Internal reference')
 		});
-		field.implementation.setOptions(allActionsRels);
 		
+		field.implementation.setOptions(allRels);
+		
+		field.onChange(function(index) {
+			var value = this.getValue(index), 
+				jpath = this.group.getField('jpath');
+
+			if(!jpath)
+				return;
+			
+			jpath.implementation.setOptions(sendjpaths[value], index);
+		});
+
+		var fieldJ = groupfield.addField({
+			type: 'Combo',
+			name: 'jpath',
+			title: new BI.Title('JPath')
+		});
+		
+		
+
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'name',
@@ -193,7 +223,7 @@ $(document).bind('configModule', function(event, module) {
 			name: 'rel',
 			title: new BI.Title('Reference')
 		});
-		field.implementation.setOptions(allActionsRels);
+		field.implementation.setOptions(allActionsReceive);
 		
 		var field = groupfield.addField({
 			type: 'Text',
@@ -235,20 +265,33 @@ $(document).bind('configModule', function(event, module) {
 			if(module.controller.processReceivedVars)
 				module.controller.processReceivedVars(value.receive[0].receivedvars[0]);
 
+		//	console.time('SaveConf');
 			if(module.controller.doSaveConfiguration) 
 				module.controller.doSaveConfiguration(value.module);
-			
-			Saver.doSave();
+		//	console.timeEnd('SaveConf');
 			if(module.view.erase)
 				module.view.erase();
+
+		//	console.time('ReInit');
 			module.view.init();
-			
+		//	console.timeEnd('ReInit');
+
+		//	console.time('DOM');
 			module.view.inDom();
-			module.updateAllView();
+		//	console.timeEnd('DOM');
+
+		//	console.time('Update All');
+			//module.updateAllView();
+		//	console.timeEnd('Update All');
+
+		//	console.time('UpdateAll2');
 			
-			module.model.resetListeners();
-			CI.API.resendAllVars();
-			
+
+				module.model.resetListeners();
+				CI.API.resendAllVars();
+
+
+		//	console.timeEnd('UpdateAll2');			
 			inst.getDom().dialog('close');
 
 			document.getElementById('ci-header').scrollIntoView(true);
@@ -294,12 +337,13 @@ $(document).bind('configModule', function(event, module) {
 		}
 
 
-		var actionsout = { event: [], rel: [], name: []};
+		var actionsout = { event: [], rel: [], name: [], jpath: []};
 		if(module.definition.actionsOut) {
 			var currentCfg = module.definition.actionsOut;
 			for(var i = 0; i < currentCfg.length; i++) {
 				actionsout.rel.push(currentCfg[i].rel);
 				actionsout.name.push(currentCfg[i].name);
+				actionsout.jpath.push(currentCfg[i].jpath);
 				actionsout.event.push(currentCfg[i].event);
 			}
 		}

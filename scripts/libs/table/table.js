@@ -80,6 +80,11 @@ window[_namespaces['table']].Tables.Table.prototype = {
 	
 	buildTable: function() {
 		
+		if(this.dom) {
+			this.body.empty();
+			return this.dom;
+		}
+		
 		var html = [];
 		html.push('<table cellpadding="0" cellspacing="0" class="');
 		html.push(this.options.cssPrefix);
@@ -120,24 +125,25 @@ window[_namespaces['table']].Tables.Table.prototype = {
 			inst.commitContent();
 		});
 
-		this.dom.children('tbody').on('mouseenter', 'tr', function() {
+		this.dom.children('tbody').on('mouseenter', 'tr', function(event, parameters) {
 			
 			if($(this).hasClass('ci-table-pagination'))
 				return;
 
 			if(typeof inst.options.onLineHover == "function")
-				inst.options.onLineHover(inst.content.getElementById($(this).attr('data-elementid')));
-		}).on('click', 'tr', function() {
+				inst.options.onLineHover(inst.content.getElementById($(this).attr('data-elementid')), $(this), parameters);
+		}).on('click', 'tr', function(event, parameters) {
+			
 			if($(this).hasClass('ci-table-pagination'))
 				return;
 			if(typeof inst.options.onLineClick == "function")
-				inst.options.onLineClick(inst.content.getElementById($(this).attr('data-elementid')));
-		}).on('mouseleave', 'tr', function() {
+				inst.options.onLineClick(inst.content.getElementById($(this).attr('data-elementid')), $(this), parameters);
+		}).on('mouseleave', 'tr', function(event, parameters) {
 			if($(this).hasClass('ci-table-pagination'))
 				return;
 
 			if(typeof inst.options.onLineOut == "function")
-				inst.options.onLineOut(inst.content.getElementById($(this).attr('data-elementid')));
+				inst.options.onLineOut(inst.content.getElementById($(this).attr('data-elementid')), $(this), parameters);
 		});
 		
 		for(var i = 0; i < this.cols.length; i++) {
@@ -167,6 +173,11 @@ window[_namespaces['table']].Tables.Table.prototype = {
 		this.commitContent();
 		dom.html(this.dom);
 		this.afterInit();
+	},
+
+	toggleAllOff: function() {
+		if(this.content)
+			this.content.toggleAllOff();
 	},
 	
 	getDom: function() {

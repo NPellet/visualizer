@@ -34,15 +34,11 @@ CI.Module.prototype._types.object_editor.View.prototype = {
 
 		var xmlTransl = new BI.Forms.xmlBuilder(false, {
 			onFieldChange: function(elJPath, value, index) {
-
 				if(self.changing)
 					return;
-
 				if(!self.source)
 					self.source = {};
-
 				CI.DataType.setValueFromJPath(self.source, elJPath, value);
-				console.log(self.source);
 				CI.Repo.set(self.varname, self.source, true);
 			},
 

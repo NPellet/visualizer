@@ -23,9 +23,12 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		this.zones = {};
 		this._currentHighlights = {};
 		this.module.getDomContent().html(this.dom);
+
+	//	this.reset(false);
 	},
 	
 	inDom: function() {
+
 		var cfgM = this.module.getConfiguration();
 		var self = this;
 		var graph = new Graph(this.dom.get(0), {
@@ -175,21 +178,17 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 			if(!moduleValue)
 				return;
-			var self = this;
-			var cfgM = this.module.getConfiguration();			
+			var self = this, serie, cfgM = this.module.getConfiguration(), color, continuous, i, l, spectra;
 			CI.RepoHighlight.kill(this.module.id + varname);
 
 			if(!this.graph)
 				return;
 			this.zones[varname] = moduleValue._zones;
-			
-			var color, continuous;
-
 			if(!moduleValue)
 				return this.blank();
 
 			if(cfgM.plotinfos)
-				for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
+				for(i = 0, l = cfgM.plotinfos.length; i < l; i++) {
 					if(varname == cfgM.plotinfos[i].variable) {
 						color = cfgM.plotinfos[i].plotcolor;
 						continuous = cfgM.plotinfos[i].plotcontinuous;
@@ -205,7 +204,11 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			this.series[varname] = this.series[varname] || [];
 
  			//if(typeof moduleValue.value !== 'object') {
- 				var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024}).spectra;
+
+// 				var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024}).spectra;
+
+ 				spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
+
  			//	moduleValue.value = spectra;
  			//} else 
  			//	spectra = moduleValue.value;
@@ -215,15 +218,12 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			
 			this.series[varname] = [];
 
-			for (var i=0; i<spectra.length; i++) {
-				
+			for (var i=0, l = spectra.length; i<l; i++) {
 				serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
 				serie.setData(spectra[i].data[spectra[i].data.length - 1]);
 				serie.autoAxis();
-
 				if(color)
 					serie.setLineColor(color);
-
 				this.series[varname].push(serie);
 				break;
 			}
@@ -231,12 +231,88 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		}
 	},
 
+	redo: function() {
+
+		var twoD = false;
+		for(var i = 0, l = this.series.length; i < l; i++) {
+			if(this.series[i].twoD)
+				twoD = true;
+		}
+
+		if(this.oneD && twoD)
+			this.reset(true);
+		else if(!this.oneD && !twoD)
+			this.reset(false);
+		
+		
+	},
+
+	reset: function(twoD) {
+		this.oneD = !twoD;
+		var cfgM = this.module.getConfiguration();			
+		if(twoD) {
+
+			this.graph = new Graph_2D($("#Chart").get(0));
+
+		} else {
+
+			this.graph = new Graph(this.dom.get(0), {
+				closeRight: false, 
+				closeTop: false, 
+				zoomMode: cfgM.zoom ? (cfgM.zoom != "none" ? cfgM.zoom : false) : false,
+
+				onMouseMoveData: function(e, val) {
+					var min, max, x1;
+
+					for(var k in self.zones) {
+
+						if(!val[k])
+							continue;
+
+						for(var i in self.zones[k]) {
+
+							min = Math.min(self.zones[k][i][0], self.zones[k][i][1]);
+							max = Math.max(self.zones[k][i][0], self.zones[k][i][1]);
+
+							x1 = val[k].trueX;
+
+							if(min < x1 && max > x1) {
+								
+								CI.RepoHighlight.set(i, 1);
+								self._currentHighlights[i] = 1;
+
+							} else if(self._currentHighlights[i]) {
+
+								CI.RepoHighlight.set(i, 0);
+								self._currentHighlights[i] = 0;
+							}
+						}
+					}
+				}
+			});
+		}
+	},
 
 
 	onActionReceive: {
 		fromto: function(value, name) {
 			if(this.dom.data('spectra'))
 				this.dom.data('spectra').setBoundaries(value.value.from, value.value.to);
+		},
+
+		addSerie: function(value) {
+			value = CI.converter.jcampToSpectra(CI.DataType.getValueIfNeeded(value), {lowRes: 1024});
+			this.series.push(value);
+			this.redo();
+		},
+
+		removeSerie: function(serieName) {
+			
+			for(var i = 0, l = this.series.length; i < l; i++) {
+				if(this.series[i].getName() == name) {
+					this.series[i].kill();
+				}
+			}
 		}
 	},
 

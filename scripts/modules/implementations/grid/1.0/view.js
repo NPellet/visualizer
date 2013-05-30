@@ -7,51 +7,56 @@
  */
 
 
-if(typeof CI.Module.prototype._types.grid == 'undefined')
-	CI.Module.prototype._types.grid = {};
+ if(typeof CI.Module.prototype._types.grid == 'undefined')
+ 	CI.Module.prototype._types.grid = {};
 
-CI.Module.prototype._types.grid.View = function(module) {
-	this.module = module;
-}
+ CI.Module.prototype._types.grid.View = function(module) {
+ 	this.module = module;
+ }
 
-CI.Module.prototype._types.grid.View.prototype = {
-	
-	init: function() {	
-		this.dom = $('<div class="ci-displaylist-list"></div>');
-		this.domTable = $("<div />");
-		this.domSearch = $("<div />").addClass('ci-grid-search');
-		this.domExport = $("<div />");
-		var inst = this;
-		if(this.module.getConfiguration().displaySearch) {
-			var searchInput = $("<input />").bind('keyup', function() {
-				if(inst.table)
-					inst.table.doSearch($(this).val());;
-			});
-			this.domSearch.append(searchInput);
-			this.domSearch.prepend("<span>Search : </span>");
-		}
-		this.dom.append(this.domSearch).append(this.domExport).append(this.domTable);
-		this.module.getDomContent().html(this.dom);
-		this._highlights = this._highlights || [];
+ CI.Module.prototype._types.grid.View.prototype = {
 
-		var self = this;
-	},
+ 	init: function() {	
+ 		this.dom = $('<div class="ci-displaylist-list"></div>');
+ 		this.domTable = $("<div />");
+ 		this.domSearch = $("<div />").addClass('ci-grid-search');
+ 		this.domExport = $("<div />");
+ 		var inst = this;
+ 		if(this.module.getConfiguration().displaySearch) {
+ 			var searchInput = $("<input />").bind('keyup', function() {
+ 				if(inst.table)
+ 					inst.table.doSearch($(this).val());;
+ 			});
+ 			this.domSearch.append(searchInput);
+ 			this.domSearch.prepend("<span>Search : </span>");
+ 		}
+ 		this.dom.append(this.domSearch).append(this.domExport).append(this.domTable);
+ 		this.module.getDomContent().html(this.dom);
+ 		this._highlights = this._highlights || [];
 
-	inDom: function() {},
-	
-	onResize: function() {
-	},
-	
-	blank: function() {
-		this.domTable.empty();
-		this.table = null;
-	},
 
-	update2: {
+ 	},
 
-		list: function(moduleValue) {
-		
-			CI.RepoHighlight.kill(this.module.id);
+ 	inDom: function() {},
+
+ 	onResize: function() {
+ 	},
+
+ 	blank: function() {
+ 		this.domTable.empty();
+ 		this.table = false;
+ 	},
+
+ 	update2: {
+
+ 		list: function(moduleValue) {
+ 			console.log(this.module.id);
+
+ 			this.domTable.remove();
+
+ 			var Content = new CI.Tables.Content();
+ 			this.Content = Content;
+ 			CI.RepoHighlight.kill(this.module.id);
 /*
 			for(var i = 0; i < this._highlights.length; i++) {
 				if(!this._highlights[i][0])
@@ -59,66 +64,86 @@ CI.Module.prototype._types.grid.View.prototype = {
 				CI.RepoHighlight.unListen(this._highlights[i][0], this._highlights[i][1]);
 			}
 			this._highlights = [];
-*/
+			*/
 			if(!moduleValue)
 				return;
+
+			this.module.data = moduleValue;
+
 			var view = this;
 			var jpaths = this.module.getConfiguration().colsjPaths;
 			var colorJPath = this.module.getConfiguration().colorjPath;
 			
-			var Table = new CI.Tables.Table({
-				
-				onLineHover: function(element) {
-					var source = element._source;
-					view.module.controller.lineHover(source);
-				},
+			if(!this.table) {
+				var Table = new CI.Tables.Table({
+					
+					onLineHover: function(element) {
+						var source = element._source;
+						view.module.controller.lineHover(source);
+					},
 
-				onLineOut: function(element) {
-					var source = element._source;
-					view.module.controller.lineOut(source);
-				},
-				
-				onLineClick: function(element) {
-					var source = element._source;
-					view.module.controller.lineClick(source);
-				},
+					onLineOut: function(element) {
+						var source = element._source;
+						view.module.controller.lineOut(source);
+					},
+					
+					onLineClick: function(element, dom, params) {
+						
+						var source = element._source;
+						view.module.controller.lineClick(source);
 
-				onPageChanged: function(newPage) {
-					CI.Util.ResolveDOMDeferred(Table.getDom());
+						var toggle = view.module.getConfiguration().toggle;
+
+						if(!toggle)
+							return;
+
+						if(toggle == "single") {
+							this.toggleAllOff();
+						}
+
+						element.selected = !element.selected;
+						if(!element.selected) {
+							view.module.controller.onToggleOff(source, element);
+							dom.css('background-color', 'transparent');
+						} else {
+							view.module.controller.onToggleOn(source, element);
+							dom.css('background-color', 'red');
+						}
+					},
+
+					onPageChanged: function(newPage) {
+						CI.Util.ResolveDOMDeferred(Table.getDom());
+					}
+				});
+				this.table = Table;
+
+				var Columns = {};
+				for(var j in jpaths) {
+					var Column = new CI.Tables.Column(j);
+					Column.setTitle(new BI.Title(j));
+					if(jpaths[j].format)
+						Column.format(jpaths[j].format);
+					Table.addColumn(Column);
+					Columns[j] = Column;
 				}
-			});
-			this.table = Table;
-			
+			} else
+				var Table = this.table;
+
 			var nbLines;
 			if(nbLines = this.module.getConfiguration().nbLines)
 				Table.setPagination(nbLines);
-			
-			var Columns = {};
-
 			var type = CI.DataType.getType(moduleValue);
-			for(var j in jpaths) {
-				var Column = new CI.Tables.Column(j);
-				Column.setTitle(new BI.Title(j));
-				if(jpaths[j].format)
-					Column.format(jpaths[j].format);
-				Table.addColumn(Column);
-				Columns[j] = Column;
-			}
-		
 			var list = CI.DataType.getValueIfNeeded(moduleValue);
-			var Content = new CI.Tables.Content();
+
 			var elements = [];
 			view.buildElement(list, elements, jpaths, colorJPath);
 			for(var i = 0, length = elements.length; i < length; i++)
 				Content.addElement(elements[i]);
-
 			this.elements = elements;
 			Table.setContent(Content);
 			Table.init(view.domTable);
-
+			this.dom.append(this.domTable);
 			CI.Util.ResolveDOMDeferred(Table.getDom());
-
-			
 		}
 	},
 
@@ -126,6 +151,7 @@ CI.Module.prototype._types.grid.View.prototype = {
 		var jpath;
 		var box = this.module;
 		var self = this;
+
 
 		for(var i = 0, length = source.length; i < length; i++) {
 			var element = {};
@@ -143,12 +169,12 @@ CI.Module.prototype._types.grid.View.prototype = {
 				if(jpath.jpath)
 					jpath = jpath.jpath;
 				
-					async = CI.DataType.asyncToScreenHtml(source[i], box, jpath);
-					async.done(function(val) {
-						element.data[j] = val;
-					});
-					if(element.data[j] == undefined)
-						element.data[j] = async.html;
+				async = CI.DataType.asyncToScreenHtml(source[i], box, jpath);
+				async.done(function(val) {
+					element.data[j] = val;
+				});
+				if(element.data[j] == undefined)
+					element.data[j] = async.html;
 			}
 			
 			if(!source[i])
@@ -178,10 +204,31 @@ CI.Module.prototype._types.grid.View.prototype = {
 	getDom: function() {
 		return this.dom;
 	},
-	
-	typeToScreen: {
-		
-	}
-}
 
- 
+	onActionReceive:  {
+
+		addRow: function(source) {
+			if(!this.table)
+				this.update2.list.call(this, []);
+			this.module.data.push(source);
+			CI.Repo.set(this.module.getNameFromRel('list'), this.module.data);
+		},
+
+		removeRow: function(el) {
+			
+			for(var i = 0, l = this.module.data.length; i < l; i++)
+				if(this.module.data[i] == el) {
+					this.module.data.splice(i, 1);
+					break;
+				}
+
+				CI.Repo.set(this.module.getNameFromRel('list'), this.module.data);
+			}
+		},
+
+		typeToScreen: {
+
+		}
+	}
+
+

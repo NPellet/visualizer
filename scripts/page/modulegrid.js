@@ -302,6 +302,8 @@ CI.Grid = {
 
 		CI.Grid.moduleMove = { module: module, div: module.getDomWrapper() };
 
+		BI.Util.maskIframes();
+
 		var mouseMoveHandler = function(e) {
 			var gridPos = $("#ci-modules-grid").position();
 			CI.Grid.moduleMove.top = e.pageY/* - gridPos.left*/ - shiftY;
@@ -329,6 +331,7 @@ CI.Grid = {
 				left: left * CI.Grid.definition.xWidth
 			});
 
+			BI.Util.unmaskIframes();
 			CI.Grid.moduleMove = null;
 			$(document).unbind('click', clickHandler).unbind('mousemove', mouseMoveHandler)
 		}

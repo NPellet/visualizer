@@ -30,9 +30,16 @@ BI.Util.getNextUniqueId = function() {
 	return 'uniqid_' + (++BI.Util.uniqueid);
 }
 
+CI.formatSize = function(size) {
 
-
-
+	var i = 0;
+	while(size > 1024) {
+		size = size / 1024;	
+		i++;
+	}
+	var units = ['o', 'Ko', 'Mo', 'Go', 'To'];
+	return (Math.round(size * 10) / 10) + ' ' + units[i];	
+}
 
 
 
@@ -78,7 +85,9 @@ CI.Observable.set = function(name, value) {
 		return;
 	this.update(name, value);
 	var to = this.get(name);
+	
 	this.trigger('change', name, to, from);
+
 	return this;
 }
 

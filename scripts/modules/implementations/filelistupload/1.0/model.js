@@ -7,13 +7,13 @@
  */
 
 
-if(typeof CI.Module.prototype._types.grid == 'undefined')
-	CI.Module.prototype._types.grid = {};
+if(typeof CI.Module.prototype._types.filelistupload == 'undefined')
+	CI.Module.prototype._types.filelistupload = {};
 
-CI.Module.prototype._types.grid.Model = function(module) { }
+CI.Module.prototype._types.filelistupload.Model = function(module) { }
 
-$.extend(CI.Module.prototype._types.grid.Model.prototype, CI.Module.prototype._impl.model);
-$.extend(CI.Module.prototype._types.grid.Model.prototype, {
+$.extend(CI.Module.prototype._types.filelistupload.Model.prototype, CI.Module.prototype._impl.model);
+$.extend(CI.Module.prototype._types.filelistupload.Model.prototype, {
 	
 	/* 
 	 * This function is a handler called from any DataSource object. 

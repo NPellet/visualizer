@@ -506,6 +506,9 @@ CI.DataType.fetchElementIfNeeded = function(element) {
 
 CI.DataType.getValueFromJPath = function(element, jpath, wholeObject) {
 	
+	if(!jpath)
+		return $.Deferred().resolve(element);
+
 	if(!jpath.split)
 		jpath = '';
 		

@@ -353,6 +353,8 @@ CI.DataViewHandler.prototype = {
 				data.revision = i;
 
 			this.getFromServer(data).done(function(el) {
+
+				console.log(el);
 				self.currentPath[1] = 'server';
 				self.currentPath[2] = branch;
 				self.currentPath[3] = i;
