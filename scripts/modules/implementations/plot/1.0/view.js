@@ -46,7 +46,7 @@ CI.Module.prototype._types.plot.View.prototype = {
 
 			if(!this.dom)
 				return;
-console.time('plot');
+
 			this._chartSource = moduleValue;
 			this.series = [];
 			if(this.graph)
@@ -97,7 +97,6 @@ console.time('plot');
 			
 			this.onResize(this.module.getWidthPx(), this.module.getHeightPx());
 
-			console.timeEnd('plot');
 		},
 
 
