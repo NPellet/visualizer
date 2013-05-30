@@ -529,6 +529,7 @@ CI.DataType._getValueFromJPath = function(element, jpath) {
 
 	if(jpathElement) {
 		if(el && (el = el[jpathElement]) !== false) {
+			
 			return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
 				
 				return CI.DataType._getValueFromJPath(elChildren, jpath2);
