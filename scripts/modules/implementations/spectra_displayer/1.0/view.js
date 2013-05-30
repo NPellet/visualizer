@@ -177,8 +177,9 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 		'jcamp': function(moduleValue, varname) {
 
-			if(!moduleValue)
+			if(!moduleValue || !moduleValue.value)
 				return;
+
 			var self = this, serie, cfgM = this.module.getConfiguration(), color, continuous, i, l, spectra;
 			CI.RepoHighlight.kill(this.module.id + varname);
 

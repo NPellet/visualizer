@@ -138,16 +138,19 @@ CI.EntryPoint = function(options, onLoad) {
 			CI.View = new CI.DataViewHandler(CI.URLs['views'], CI.URLs['viewBranch']);
 			CI.View.setType('view');
 			CI.View.onLoaded = function(structure, path) {
+
 				doStructure(structure);
 			}
 
 			CI.View.onReload = function(structure, path) {
+
 				doStructure(structure, true);
 				CI.Repo.resendAll();
 			}
 			CI.View.load();
 		} else if(CI.URLs['viewURL']) {
 			$.getJSON(CI.URLs['viewURL'], {}, function(structure) {
+
 				doStructure(structure);
 			});
 		}
@@ -160,9 +163,6 @@ CI.EntryPoint = function(options, onLoad) {
 		entryPoint.structure = structure;
 		Saver.setLatestScript(structure);
 		
-
-
-
 		if(!structure.entryPoint) 
 			structure.entryPoint = { variables: [] };
 		
@@ -210,7 +210,7 @@ CI.EntryPoint = function(options, onLoad) {
 		if(noLoad)
 			return;
 
-		entryPoint.loaded();
+		entryPoint.loadedStructure();
 		
 	}
 	
@@ -222,7 +222,7 @@ CI.EntryPoint = function(options, onLoad) {
 	function doData(page) {
 
 		entryPoint.data = page;
-		entryPoint.loaded();
+		entryPoint.loadedData();
 	}
 	
 	init();
@@ -231,13 +231,30 @@ CI.EntryPoint = function(options, onLoad) {
 
 CI.EntryPoint.prototype = {
 
+	loadedStructure: function() {
+		this._loadedStructure = true;
+		this.check();
+	},
+
+	loadedData: function() {
+		this._loadedData = true;
+		this.check();
+	},
+
+	check: function() {
+		if(this._loadedData && this._loadedStructure)
+			this.loaded();
+	},
+
+
 	loaded: function() {
 		var self = this;
-
+		var allVarPaths = [];
 		if(this.entryData && this.entryData.variables && this.entryData.variables.length > 0) {
 			var vars = this.entryData.variables;
+			
 			for(var i = 0; i < vars.length; i++) {
-				
+				allVarPaths.push(vars[i].jpath);	
 				if(!vars[i].jpath && vars[i].url) {
 					(function(variable) {
 						self.data[variable.varname] = { value: null, url: variable.url };
@@ -257,9 +274,10 @@ CI.EntryPoint.prototype = {
 
 			var jpath, varname, vars = [];
 			for(var i in this.data) {
-				if(i.slice(0, 1) == '_')
-					continue;
 				jpath = 'element.' + i;
+				if(i.slice(0, 1) == '_' || allVarPaths.indexOf(jpath) > -1)
+					continue;
+				
 				varname = i;
 				vars.push({ varname: varname, jpath: jpath });
 				CI.API.setSharedVarFromJPath(varname, this.data, jpath);	

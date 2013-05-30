@@ -45,6 +45,7 @@ CI.API.resendAllVars = function() {
 
 
 CI.API.setSharedVarFromJPath = function(name, value, jpath) {
+	
 	CI.DataType.getValueFromJPath(value, jpath).done(function(returned) {
 		CI.Repo.set(name, returned);
 

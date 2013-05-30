@@ -469,7 +469,7 @@ CI.DataType.fetchElementIfNeeded = function(element) {
 		
 		ajaxType = typeof CI.DataType.Structures[type] == "object" ? 'json' : 'text';
 		
-		return $.Deferred(function(dfd) {
+		return (element.value = $.Deferred(function(dfd) {
 
 			$.ajax({
 				url: element.url,
@@ -490,12 +490,10 @@ CI.DataType.fetchElementIfNeeded = function(element) {
 
 				}
 			});
-
-
-		});
-		
+		}));
+	} else if(element.value.resolve) {
+		return element.value;
 	} else {
-
 		def = $.Deferred()
 		return def.resolve(element);
 	}
@@ -529,7 +527,7 @@ CI.DataType._getValueFromJPath = function(element, jpath) {
 
 	if(jpathElement) {
 		if(el && (el = el[jpathElement]) !== false) {
-			
+
 			return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
 				
 				return CI.DataType._getValueFromJPath(elChildren, jpath2);
