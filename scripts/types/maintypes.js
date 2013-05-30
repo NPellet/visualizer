@@ -491,7 +491,7 @@ CI.DataType.fetchElementIfNeeded = function(element) {
 				}
 			});
 		}));
-	} else if(element.value.resolve) {
+	} else if(element.value && element.value.resolve) {
 		return element.value;
 	} else {
 		def = $.Deferred()
