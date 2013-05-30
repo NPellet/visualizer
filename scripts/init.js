@@ -1,9 +1,7 @@
 /**
  * @namespace Holds all the functionality for the visualizer
  */
-require('jquery', function($) {
 
-	
 	_namespaces = {
 		title: 'CI',
 		table: 'CI',
@@ -113,4 +111,4 @@ require('jquery', function($) {
 			});
 		});
 	}) (jQuery);
-});
+
