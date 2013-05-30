@@ -1077,7 +1077,9 @@ var Graph = (function() {
 
 			var widthPx = this.maxPx - this.minPx;
 			var valrange = this._getActualInterval();
-
+			if(valrange == 0)
+				valrange = 1;
+			
 			/* Number of px per unit */
 			/* Example: width: 1000px
 			/* 			10 - 100 => 11.11
