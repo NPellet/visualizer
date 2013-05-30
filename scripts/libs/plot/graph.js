@@ -1012,15 +1012,16 @@ var Graph = (function() {
 		},
 
 		_getActualInterval: function() {
-			return this._realMax - this._realMin;
+			return this.getActualMax() - this.getActualMin();
 		},
 
 		getActualMin: function() {
-			return this._realMin;
+
+			return this._realMin == this._realMax ? this._realMin - 1 : this._realMin;
 		},
 
 		getActualMax: function() {
-			return this._realMax;
+			return this._realMax == this._realMin ? this._realMax + 1 : this._realMax;
 		},
 
 		_setRealMin: function(val) {
@@ -1077,8 +1078,6 @@ var Graph = (function() {
 
 			var widthPx = this.maxPx - this.minPx;
 			var valrange = this._getActualInterval();
-			if(valrange == 0)
-				valrange = 1;
 
 			/* Number of px per unit */
 			/* Example: width: 1000px
@@ -1243,19 +1242,16 @@ var Graph = (function() {
 		},
 
 		getPos: function(value) {
-			var interval = this._getActualInterval();
-			if(interval == 0)
-				interval = 1;
 			// Ex 50 / (100) * (1000 - 700) + 700
 				if(!this.options.logScale)
-					return (value - this.getActualMin()) / (interval) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
+					return (value - this.getActualMin()) / (this._getActualInterval()) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
 				else {
 					// 0 if value = min
 					// 1 if value = max
 					if(value < 0)
 						return;
 
-					var value = ((Math.log(value) - Math.log(interval)) / (Math.log(this.getActualMax()) - Math.log(this.getActualMin()))) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
+					var value = ((Math.log(value) - Math.log(this.getActualMin())) / (Math.log(this.getActualMax()) - Math.log(this.getActualMin()))) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
 					
 					return value;
 				}
