@@ -1079,7 +1079,7 @@ var Graph = (function() {
 			var valrange = this._getActualInterval();
 			if(valrange == 0)
 				valrange = 1;
-			
+
 			/* Number of px per unit */
 			/* Example: width: 1000px
 			/* 			10 - 100 => 11.11
@@ -1243,16 +1243,19 @@ var Graph = (function() {
 		},
 
 		getPos: function(value) {
+			var interval = this._getActualInterval();
+			if(interval == 0)
+				interval = 1;
 			// Ex 50 / (100) * (1000 - 700) + 700
 				if(!this.options.logScale)
-					return (value - this.getActualMin()) / (this._getActualInterval()) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
+					return (value - this.getActualMin()) / (interval) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
 				else {
 					// 0 if value = min
 					// 1 if value = max
 					if(value < 0)
 						return;
 
-					var value = ((Math.log(value) - Math.log(this.getActualMin())) / (Math.log(this.getActualMax()) - Math.log(this.getActualMin()))) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
+					var value = ((Math.log(value) - Math.log(interval)) / (Math.log(this.getActualMax()) - Math.log(this.getActualMin()))) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
 					
 					return value;
 				}
