@@ -74,6 +74,10 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 		rel: {'fromto': 'From - To'}
 	},
 
+	actionsReceive: {
+		'fromto': 'From - To'
+	},
+
 	doConfiguration: function(section) {
 		var groupfield = new BI.Forms.GroupFields.List('gencfg');
 		section.addFieldGroup(groupfield);
