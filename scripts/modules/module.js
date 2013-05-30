@@ -199,16 +199,15 @@ CI.Module.prototype = {
 	},
 
 	updateAllView: function() {
-		
 		if(!this.view.update2)
 			return;
-		var val, name;
-		for(var i in this.view.update2) {
-			name = this.getNameFromRel(i);
-			val = CI.Repo.get(name);
-			if(val) val = val[1]; else val = null;
-			this.view.update2[i].call(this.view, val, name);
+		var val;
+		for(var i = 0; i < this.definition.dataSource.length; i++) {
+ 			val = CI.Repo.get(this.definition.dataSource[i].name);
+ 			if(val && val[1])
+				this.view.update2[this.definition.dataSource[i].rel].call(this.view, val[1], this.definition.dataSource[i].name);
 		}
+	
 	},
 	
 	/** 

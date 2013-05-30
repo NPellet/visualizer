@@ -3,6 +3,8 @@ var Graph = (function() {
 
 	var Graph = function(dom, options) {
 		
+		this._creation = Date.now() + Math.random();
+
 		this.options = $.extend({}, Graph.prototype.defaults, options);
 		this.xaxis = [];
 		this.leftyaxis = [];
@@ -96,7 +98,7 @@ var Graph = (function() {
 
 			
 			this.clip = document.createElementNS(this.ns, 'clipPath');
-			this.clip.setAttribute('id', '_clipplot')
+			this.clip.setAttribute('id', '_clipplot' + this._creation)
 			this.defs.appendChild(this.clip);
 
 			this.clipRect = document.createElementNS(this.ns, 'rect');
@@ -123,7 +125,7 @@ var Graph = (function() {
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
 			this.dom.appendChild(this.rectEvent);
-			this.plotGroup.setAttribute('clip-path', 'url(#_clipplot)');
+			this.plotGroup.setAttribute('clip-path', 'url(#_clipplot' + this._creation + ')');
 
 
 
@@ -789,7 +791,7 @@ var Graph = (function() {
 
 			this.label.setAttribute('text-anchor', 'middle');
 
-			this.groupGrids.setAttribute('clip-path', 'url(#_clipplot)');
+			this.groupGrids.setAttribute('clip-path', 'url(#_clipplot' + this._creation + ')');
 
 			this.graph.applyStyleText(this.label);
 			this.group.appendChild(this.label);
@@ -1039,7 +1041,7 @@ var Graph = (function() {
 		},
 
 		draw: function(doNotRecalculateMinMax) {
-
+			var visible;
 			switch(this.options.tickPosition) {
 				case 1:
 					this.tickPx1 = 2;
@@ -1144,7 +1146,8 @@ var Graph = (function() {
 				max = this.getActualMax(),
 				widthHeight = 0,
 				secondaryIncr,
-				incrTick;
+				incrTick,
+				subIncrTick;
 
 			if(secondary) 
 				secondaryIncr = unitPerTick / secondary;
@@ -1214,7 +1217,7 @@ var Graph = (function() {
 				incr = 0;
 
 			var pow = incr == 0 ? 0 : Math.floor(Math.log(incr) / Math.log(10));
-			var incr = 1, k = 0;
+			var incr = 1, k = 0, val;
 
 			while((val = incr * Math.pow(10, pow)) < max) {
 				if(incr == 1) { // Superior power
@@ -1670,7 +1673,7 @@ var Graph = (function() {
 		setData: function(data, arg, type) {
 
 			var z = 0;
-			var x, dx, arg = arg || "2D", type = type || 'float';
+			var x, dx, arg = arg || "2D", type = type || 'float', arr;
 			if(!data instanceof Array)
 				return;
 
@@ -1829,7 +1832,7 @@ var Graph = (function() {
 
 		draw: function(doNotRedrawZone) {
 
-			var x, y, xpx, ypx, i = 0, l = this.data.length, j = 0, k, currentLine;
+			var x, y, xpx, ypx, i = 0, l = this.data.length, j = 0, k, currentLine, doAndContinue, _higher;
 
 			this._drawn = true;			
 

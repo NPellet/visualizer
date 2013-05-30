@@ -89,11 +89,11 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 	onResize: function(width, height) {
 		this.width = width;
 		this.height = height;
-
 		if(this.graph)
 			this.graph.resize(width, height);
 		this.graph.redraw();
 		this.graph.drawSeries();
+		console.log(window);
 	},
 	
 	onProgress: function() {
@@ -229,6 +229,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 				this.series[varname].push(serie);
 				break;
 			}
+
 			this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 		}
 	},

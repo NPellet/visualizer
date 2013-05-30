@@ -281,14 +281,15 @@ $(document).bind('configModule', function(event, module) {
 		//	console.timeEnd('DOM');
 
 		//	console.time('Update All');
-			//module.updateAllView();
+			module.model.resetListeners();	
+			module.updateAllView();
 		//	console.timeEnd('Update All');
 
 		//	console.time('UpdateAll2');
 			
 
-				module.model.resetListeners();
-				CI.API.resendAllVars();
+			//	
+			//	CI.API.resendAllVars();
 
 
 		//	console.timeEnd('UpdateAll2');			
