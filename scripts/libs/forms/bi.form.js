@@ -77,7 +77,7 @@ BI.Forms.Form.prototype = {
 		});*/
 
 
-		this.resetTabIndex();
+//		this.resetTabIndex();
 	},
 /*
 	resetTabIndex: function() {
