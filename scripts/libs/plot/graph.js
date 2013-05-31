@@ -92,7 +92,7 @@ var Graph = (function() {
 			this._makeClosingLines();
 
 			this.clip = document.createElementNS(this.ns, 'clipPath');
-			this.clip.setAttribute('id', '_clipplot')
+			this.clip.setAttribute('id', '_clipplot' + this._creation)
 			this.defs.appendChild(this.clip);
 
 			this.clipRect = document.createElementNS(this.ns, 'rect');
