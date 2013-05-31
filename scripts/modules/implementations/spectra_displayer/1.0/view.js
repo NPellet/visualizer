@@ -32,9 +32,12 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		var cfgM = this.module.getConfiguration();
 		var self = this;
 		var graph = new Graph(this.dom.get(0), {
-			closeRight: false, 
-			closeTop: false, 
-			zoomMode: cfgM.zoom ? (cfgM.zoom != "none" ? cfgM.zoom : false) : false,
+			close: {
+				left: true,
+				right: true,
+				top: true,
+				bottom: true
+			},
 
 			onMouseMoveData: function(e, val) {
 				var min, max, x1;
@@ -71,10 +74,15 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 		graph.getXAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('x') > -1 : false);
 		graph.getXAxis().setLabel(cfgM.xLabel || '');
+
+		graph.getXAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('vmain') > -1 : false);
+		graph.getXAxis().toggleSecondaryGrid(cfgM.grids ? cfgM.grids.indexOf('vsec') > -1 : false);
+	
+		graph.getYAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('hmain') > -1 : false);
+		graph.getYAxis().toggleSecondaryGrid(cfgM.grids ? cfgM.grids.indexOf('hsec') > -1 : false);
 		
 		graph.getXAxis().setAxisDataSpacing(cfgM.xLeftSpacing || 0, cfgM.xRightSpacing || 0);
 		graph.getLeftAxis().setAxisDataSpacing(cfgM.yBottomSpacing || 0, cfgM.yTopSpacing || 0);
-
 
 		graph.redraw();
 
@@ -93,7 +101,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			this.graph.resize(width, height);
 		this.graph.redraw();
 		this.graph.drawSeries();
-		console.log(window);
+		
 	},
 	
 	onProgress: function() {
@@ -138,15 +146,14 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		'xArray': function(moduleValue, varname) {
+			var cfgM, color, continuour, val, val2;
+			cfgM = this.module.getConfiguration()
 
 			this.series[varname] = this.series[varname] || [];
 			for(var i = 0, l = this.series[varname].length; i < l; i++)
 				this.series[varname][i].kill();
 			this.series[varname] = [];	
-
-			var cfgM = this.module.getConfiguration();			
-			var color, continuous;
-
+ 
 			if(!moduleValue)
 				return;
 
@@ -158,8 +165,10 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 					}	
 				}
 			}
-			var val = CI.DataType.getValueIfNeeded(moduleValue);
-			var val2 = [];
+			
+			val = CI.DataType.getValueIfNeeded(moduleValue),
+			val2 = [];
+
 			for(var i = 0, l = val.length; i < l; i++) {
 				val2.push(i);
 				val2.push(val[i]);
@@ -207,29 +216,46 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
  			//if(typeof moduleValue.value !== 'object') {
 
- 				var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024}).spectra;
-
-// 				spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
+ 			//var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
+ 			
+			spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
 
  			//	moduleValue.value = spectra;
  			//} else 
  			//	spectra = moduleValue.value;
-			
-			for(var i = 0, l = this.series[varname].length; i < l; i++)
-				this.series[varname][i].kill();
-			
+			this.graph.resetSeries();
 			this.series[varname] = [];
 
-			for (var i=0, l = spectra.length; i<l; i++) {
-				serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
-				serie.setData(spectra[i].data[spectra[i].data.length - 1]);
+			if(spectra.contourLines) {
+
+				this.graph.setOption('zoomMode', 'xy');
+				this.graph.setOption('defaultWheelAction', 'toSeries');
+				this.graph.setOption('defaultMouseAction', 'drag');
+
+				serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous}, 'contour');
+				serie.setData(spectra.contourLines);
 				serie.autoAxis();
 				if(color)
 					serie.setLineColor(color);
 				this.series[varname].push(serie);
-				break;
-			}
+			} else {
 
+
+				this.graph.setOption('zoomMode', cfgM.zoom ? (cfgM.zoom != "none" ? cfgM.zoom : false) : false);
+				this.graph.setOption('defaultWheelAction', 'zoomY');
+				this.graph.setOption('defaultMouseAction', 'zoom');
+
+				spectra = spectra.spectra;
+				for (var i=0, l = spectra.length; i<l; i++) {
+					serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
+					serie.setData(spectra[i].data[spectra[i].data.length - 1]);
+					serie.autoAxis();
+					if(color)
+						serie.setLineColor(color);
+					this.series[varname].push(serie);
+					break;
+				}
+			}
 			this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 		}
 	},

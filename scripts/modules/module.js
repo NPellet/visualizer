@@ -199,7 +199,7 @@ CI.Module.prototype = {
 	},
 
 	updateAllView: function() {
-		if(!this.view.update2)
+		if(!this.view.update2 || !this.definition || !this.definition.dataSource)
 			return;
 		var val;
 		for(var i = 0; i < this.definition.dataSource.length; i++) {

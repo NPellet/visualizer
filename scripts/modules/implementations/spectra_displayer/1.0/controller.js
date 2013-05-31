@@ -107,6 +107,15 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 		field.implementation.setOptions({ 'x': 'X', 'y': 'Y' });
 
 
+
+		var field = groupfield.addField({
+			type: 'Checkbox',
+			name: 'grids'
+		});
+		field.setTitle(new BI.Title('Grids'));
+		field.implementation.setOptions({ 'hmain': 'Horizontal Main', 'hsec': 'Honrizontal Seconday', 'vmain': 'Vertical Main', 'vsec': 'Vertical Secondary' });
+
+
 		var field = groupfield.addField({
 			type: 'Text',
 			name: 'xLabel'
@@ -222,6 +231,7 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 		//			mode: [mode],
 					flip: [flipArray],
 					displayAxis: [this.module.getConfiguration().displayAxis],
+					grids: [this.module.getConfiguration().grids || []],
 					xLabel: [this.module.getConfiguration().xLabel],
 					yLabel: [this.module.getConfiguration().yLabel],
 					xRightSpacing: [this.module.getConfiguration().xRightSpacing],
@@ -262,6 +272,7 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 		this.module.getConfiguration().zoom = confSection[0].gencfg[0].zoom[0];
 
 		this.module.getConfiguration().displayAxis = confSection[0].gencfg[0].displayAxis[0];
+		this.module.getConfiguration().grids = confSection[0].gencfg[0].grids[0];
 //		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor;
 		
 		for(var i = 0, l = confSection[0].spectrainfos[0].length; i < l; i++) {

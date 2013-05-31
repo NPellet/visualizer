@@ -35,7 +35,6 @@ BI.Forms.Field.prototype = {
 				throw "Error. No implementation for the type \"" + implementationName + "\" has been loaded";
 				return;
 			}
-			
 			this.implementation = new BI.Forms.Fields[implementationLocation][implementationName](this);
 		}
 		
@@ -238,11 +237,8 @@ BI.Forms.Field.prototype = {
 		
 		if(value == undefined)
 			return;
-			
 		if(!this.isInit)
 			return;
-
-		
 		
 		// Change the value of the input hidden
 		this.fields[index].input.val(value);

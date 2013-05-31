@@ -14,28 +14,21 @@ BI.Forms.Form = function(options, callback) {
 	this.options.templater = new BI.Forms.Templaters[this.options.templater]();
 
 	if(this.options.xmlFile) {
-		var form = this;
-		
+		var form = this;	
 		$.get(this.options.xmlFile, {}, function(data) {			
 			var builder = new BI.Forms.xmlBuilder(form);
 			builder.build($(data).children());
 			callback.call(form);
 		});
-	} else {
-		if(callback)
-			callback.call(this);
-	}
-	
-	
+	} else if(callback)
+		callback.call(this);
 	
 	if(this.options.fillFile) {
 		var form = this;
-		
 		$.get(this.options.fillFile, {}, function(data) {
 			form.fillForm($(data).children());
 		});
 	}
-
 }
 
 BI.Forms.Form.prototype = {
@@ -82,8 +75,18 @@ BI.Forms.Form.prototype = {
 			event.preventDefault();
 			inst.buttonZone.getButton($(this).data('id')).doClick();
 		});*/
+
+
+		this.resetTabIndex();
 	},
-	
+/*
+	resetTabIndex: function() {
+		this.tabIndex = 0;
+		for(var i = 0; i < this.sections.length; i++) {
+			this.sections[i]
+		}
+	},
+*/	
 	getId: function() { return this.formId; },
 	
 	/**

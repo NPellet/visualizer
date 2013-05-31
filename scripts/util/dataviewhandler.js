@@ -354,7 +354,7 @@ CI.DataViewHandler.prototype = {
 
 			this.getFromServer(data).done(function(el) {
 
-				console.log(el);
+				correspondingnsole.log(el);
 				self.currentPath[1] = 'server';
 				self.currentPath[2] = branch;
 				self.currentPath[3] = i;
@@ -395,8 +395,8 @@ CI.DataViewHandler.prototype = {
 		var self = this;
 
 		var def = $.Deferred();
-
-		var defServer = this.getFromServer({ branch: (this.defaultBranch || 'Master'), action: 'Load' })/*.pipe(function(el) {
+		var branch = (this.defaultBranch || 'Master');
+		var defServer = this.getFromServer({ branch: branch, action: 'Load' })/*.pipe(function(el) {
 			self.currentPath[1] = 'server';
 			self.currentPath[2] = el._name || 'Master';
 			self.currentPath[3] = el._time || 'head';
@@ -405,7 +405,7 @@ CI.DataViewHandler.prototype = {
 			return el;
 		});
 */;
-		var defLocal = self._getLocalHead(this.defaultBranch || 'Master');/*.pipe(function(el) {
+		var defLocal = self._getLocalHead(branch);/*.pipe(function(el) {
 			// Current OR empty (and saved) is sent from local DB
 			// Get the master head
 			self.currentPath[1] = 'local';
@@ -435,6 +435,7 @@ CI.DataViewHandler.prototype = {
 				if(!el._saved) {
 					//doServer(server, branch, rev);
 					self.serverCopy(server, branch, 'head').done(function() {
+						alert(2);
 						doLocal(server, server._name, 'head');
 					});
 
@@ -453,7 +454,8 @@ CI.DataViewHandler.prototype = {
 			});
 		}, function(server) {
 			$.when(self._getLocalHead(branch)).then(function(el) {
-				doLocal(el, branch, rev);
+
+				doLocal(el, branch, el._time || 'head');
 			});
 		});
 
