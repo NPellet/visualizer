@@ -435,7 +435,6 @@ CI.DataViewHandler.prototype = {
 				if(!el._saved) {
 					//doServer(server, branch, rev);
 					self.serverCopy(server, branch, 'head').done(function() {
-						alert(2);
 						doLocal(server, server._name, 'head');
 					});
 

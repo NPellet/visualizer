@@ -150,8 +150,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			cfgM = this.module.getConfiguration()
 
 			this.series[varname] = this.series[varname] || [];
-			for(var i = 0, l = this.series[varname].length; i < l; i++)
-				this.series[varname][i].kill();
+			this.removeSerie(varname);
 			this.series[varname] = [];	
  
 			if(!moduleValue)
@@ -212,8 +211,6 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 						self.doZone(varname, self.zones[varname][commonKeys[i]], value, color);
 			}, true, this.module.id + varname);
 
-			this.series[varname] = this.series[varname] || [];
-
  			//if(typeof moduleValue.value !== 'object') {
 
  			//var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
@@ -223,10 +220,10 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
  			//	moduleValue.value = spectra;
  			//} else 
  			//	spectra = moduleValue.value;
-			for(var i = 0; i < this.series[varname].length; i++) {
-				this.series[varname].kill();
-			}
-			
+
+
+			this.series[varname] = this.series[varname] || [];
+			this.removeSerie(varname);
 			this.series[varname] = [];
 
 			if(spectra.contourLines) {
@@ -325,6 +322,11 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		}
 	},
 
+	removeSerie: function(serieName) {
+		if(this.series[serieName])
+			for(var i = 0; i < this.series[serieName].length; i++)
+				this.series[serieName][i].kill();
+	},
 
 	onActionReceive: {
 		fromto: function(value, name) {
@@ -340,11 +342,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 		removeSerie: function(serieName) {
 			
-			for(var i = 0, l = this.series.length; i < l; i++) {
-				if(this.series[i].getName() == name) {
-					this.series[i].kill();
-				}
-			}
+			
 		}
 	},
 
