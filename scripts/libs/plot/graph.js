@@ -369,6 +369,8 @@ var Graph = (function() {
 		},
 
 		handleMouseUp: function(x, y, e) {
+
+
 			if(this.currentAction == 'dragging') {
 				this.currentAction = false;
 			} else if(this.currentAction == 'zooming') {

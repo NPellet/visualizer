@@ -223,7 +223,10 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
  			//	moduleValue.value = spectra;
  			//} else 
  			//	spectra = moduleValue.value;
-			this.graph.resetSeries();
+			for(var i = 0; i < this.series[varname].length; i++) {
+				this.series[varname].kill();
+			}
+			
 			this.series[varname] = [];
 
 			if(spectra.contourLines) {
