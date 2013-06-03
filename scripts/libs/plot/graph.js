@@ -1101,8 +1101,8 @@ var Graph = (function() {
 
 			} else {
 
-				var min = this.getPos(this.getActualMin());
-				var max = this.getPos(this.getActualMax());
+				//var min = this.getPos(this.getActualMin());
+				//var max = this.getPos(this.getActualMax());
 
 				//this._serieScale = Math.abs(max - min) / Math.abs(px1 - px2);
 				//this._serieShift = Math.min(px1, px2);
@@ -1606,6 +1606,9 @@ var Graph = (function() {
 			var tick = document.createElementNS(this.graph.ns, 'line'),
 				val = this.getPos(value);
 
+			if(val == undefined)
+				return;
+
 			tick.setAttribute('shape-rendering', 'crispEdges');
 			tick.setAttribute('x1', val);
 			tick.setAttribute('x2', val);
@@ -1738,6 +1741,9 @@ var Graph = (function() {
 				tickLabel,
 				labelWidth = 0,
 				pos = this.getPos(value);
+
+			if(pos == undefined)
+				return;
 
 			var tick = document.createElementNS(this.graph.ns, 'line');
 			tick.setAttribute('shape-rendering', 'crispEdges');	
@@ -2131,6 +2137,7 @@ var Graph = (function() {
 				_higher = false;
 				var _last = false, _in = false;
 				j = 0, k = 0;
+
 				for(; j < this.data[i].length; j+=2) {
 
 
@@ -2139,9 +2146,6 @@ var Graph = (function() {
 				
 				xpx = this.getX(this.data[i][j + incrXFlip]);
 				ypx = this.getY(this.data[i][j + incrYFlip]);
-				
-				if(!xpx || !ypx)
-					continue;
 
 				/*	if((!this.getYAxis().isFlipped() && (ypx > this.getYAxis().getMaxPx() || ypx < this.getYAxis().getMinPx())) || (this.getYAxis().isFlipped() && (ypx < this.getYAxis().getMaxPx() || ypx > this.getYAxis().getMinPx()))) {
 
@@ -2213,12 +2217,12 @@ var Graph = (function() {
 		},
 
 		getY: function(val) {
-
 			return Math.round(this.getYAxis().getPx(val) * 1000) / 1000;
 		},
 
 		_addPoint: function(currentLine, xpx, ypx, k) {
-
+			var pos;
+			
 			if(k != 0) {
 				if(this.options.lineToZero)
 					currentLine += 'M ';
@@ -2231,11 +2235,11 @@ var Graph = (function() {
 			currentLine += ypx;
 			currentLine += " "; 
 			
-			if(this.options.lineToZero) {
+			if(this.options.lineToZero && (pos = this.getYAxis().getPos(0)) !== undefined) {
 				currentLine += "L ";
 				currentLine += xpx;
 				currentLine += " ";
-				currentLine += this.getYAxis().getPos(0);
+				currentLine += pos;
 				currentLine += " ";
 			}
 
