@@ -135,25 +135,27 @@ CI.EntryPoint = function(options, onLoad) {
 		}
 
 		if(CI.URLs['views']) {
+			
 			CI.View = new CI.DataViewHandler(CI.URLs['views'], CI.URLs['viewBranch']);
 			CI.View.setType('view');
-			CI.View.onLoaded = function(structure, path) {
 
+			CI.View.onLoaded = function(structure, path) {
 				doStructure(structure);
 			}
 
 			CI.View.onReload = function(structure, path) {
-
 				doStructure(structure, true);
 				CI.Repo.resendAll();
 			}
 			CI.View.load();
 		} else if(CI.URLs['viewURL']) {
-			$.getJSON(CI.URLs['viewURL'], {}, function(structure) {
 
+			$.getJSON(CI.URLs['viewURL'], {}, function(structure) {
 				doStructure(structure);
 			});
-		}
+			
+		} else
+			doStructure({});
 	}
 	
 	function doStructure(structure, noLoad) {

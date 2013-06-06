@@ -75,7 +75,9 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 	},
 
 	actionsReceive: {
-		'fromto': 'From - To'
+		'fromto': 'From - To',
+		'addSerie': 'Add a new serie',
+		'removeSerie': 'Remove a serie'
 	},
 
 	doConfiguration: function(section) {
@@ -92,11 +94,19 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 
 
 		var field = groupfield.addField({
+			type: 'Text',
+			name: 'graphurl'
+		});
+		field.setTitle(new BI.Title('Graph URL'));
+		
+		var field = groupfield.addField({
 			type: 'Checkbox',
 			name: 'flip'
 		});
 		field.setTitle(new BI.Title('Axis flipping'));
 		field.implementation.setOptions({ 'flipX': 'Flip X', 'flipY': 'Flip Y' });
+
+
 
 
 		var field = groupfield.addField({
@@ -229,6 +239,7 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 			groups: {
 				gencfg: [{
 		//			mode: [mode],
+					graphurl: [this.module.getConfiguration().graphurl],
 					flip: [flipArray],
 					displayAxis: [this.module.getConfiguration().displayAxis],
 					grids: [this.module.getConfiguration().grids || []],
@@ -258,6 +269,8 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 		}
 
 //		this.module.getConfiguration().mode = confSection[0].gencfg[0].mode[0];
+		this.module.getConfiguration().graphurl = confSection[0].gencfg[0].graphurl[0];
+
 		this.module.getConfiguration().flipX = flipX;
 		this.module.getConfiguration().flipY = flipY;
 

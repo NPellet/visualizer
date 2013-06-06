@@ -23,6 +23,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		this.zones = {};
 		this._currentHighlights = {};
 		this.module.getDomContent().html(this.dom);
+		this.seriesActions = [];
 
 	//	this.reset(false);
 	},
@@ -31,77 +32,102 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 		var cfgM = this.module.getConfiguration();
 		var self = this;
-		var graph = new Graph(this.dom.get(0), {
-			close: {
-				left: true,
-				right: true,
-				top: true,
-				bottom: true
-			},
 
-			onMouseMoveData: function(e, val) {
-				var min, max, x1;
+		var graph;
+		var def = $.Deferred();
 
-				for(var k in self.zones) {
+		if(cfgM.graphurl) {
+				
+			$.getJSON(cfgM.graphurl, {}, function(data) {
+			 	def.resolve(new Graph(self.dom.get(0), data.options, data.axis));
+			});
 
-					if(!val[k])
-						continue;
+		} else {
 
-					for(var i in self.zones[k]) {
+			var graph = new Graph(this.dom.get(0), {
 
-						min = Math.min(self.zones[k][i][0], self.zones[k][i][1]);
-						max = Math.max(self.zones[k][i][0], self.zones[k][i][1]);
+				close: {
+					left: true,
+					right: true,
+					top: true,
+					bottom: true
+				},
 
-						x1 = val[k].trueX;
+				onMouseMoveData: function(e, val) {
+					var min, max, x1;
 
-						if(min < x1 && max > x1) {
-							
-							CI.RepoHighlight.set(i, 1);
-							self._currentHighlights[i] = 1;
+					for(var k in self.zones) {
 
-						} else if(self._currentHighlights[i]) {
+						if(!val[k])
+							continue;
 
-							CI.RepoHighlight.set(i, 0);
-							self._currentHighlights[i] = 0;
+						for(var i in self.zones[k]) {
+
+							min = Math.min(self.zones[k][i][0], self.zones[k][i][1]);
+							max = Math.max(self.zones[k][i][0], self.zones[k][i][1]);
+
+							x1 = val[k].trueX;
+
+							if(min < x1 && max > x1) {
+								
+								CI.RepoHighlight.set(i, 1);
+								self._currentHighlights[i] = 1;
+
+							} else if(self._currentHighlights[i]) {
+
+								CI.RepoHighlight.set(i, 0);
+								self._currentHighlights[i] = 0;
+							}
 						}
 					}
-				}
 
-			}});
+				}});
+
 	//graph.getLeftAxis(0, {logScale: true})
-		graph.getLeftAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('y') > -1 : false);
-		graph.getLeftAxis().setLabel(cfgM.yLabel || '');
+			graph.getLeftAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('y') > -1 : false);
+			graph.getLeftAxis().setLabel(cfgM.yLabel || '');
 
-		graph.getXAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('x') > -1 : false);
-		graph.getXAxis().setLabel(cfgM.xLabel || '');
+			graph.getXAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('x') > -1 : false);
+			graph.getXAxis().setLabel(cfgM.xLabel || '');
 
-		graph.getXAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('vmain') > -1 : false);
-		graph.getXAxis().toggleSecondaryGrid(cfgM.grids ? cfgM.grids.indexOf('vsec') > -1 : false);
-	
-		graph.getYAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('hmain') > -1 : false);
-		graph.getYAxis().toggleSecondaryGrid(cfgM.grids ? cfgM.grids.indexOf('hsec') > -1 : false);
+			graph.getXAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('vmain') > -1 : false);
+			graph.getXAxis().toggleSecondaryGrid(cfgM.grids ? cfgM.grids.indexOf('vsec') > -1 : false);
 		
-		graph.getXAxis().setAxisDataSpacing(cfgM.xLeftSpacing || 0, cfgM.xRightSpacing || 0);
-		graph.getLeftAxis().setAxisDataSpacing(cfgM.yBottomSpacing || 0, cfgM.yTopSpacing || 0);
+			graph.getYAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('hmain') > -1 : false);
+			graph.getYAxis().toggleSecondaryGrid(cfgM.grids ? cfgM.grids.indexOf('hsec') > -1 : false);
+			
+			graph.getXAxis().setAxisDataSpacing(cfgM.xLeftSpacing || 0, cfgM.xRightSpacing || 0);
+			graph.getLeftAxis().setAxisDataSpacing(cfgM.yBottomSpacing || 0, cfgM.yTopSpacing || 0);
 
-		graph.redraw();
+			def.resolve(graph);
+		}
 
-		this.graph = graph;
-		if(cfgM.flipX)
-			this.graph.getXAxis().flip(true);
+		$.when(def).then(function(graph) {
 
-		if(cfgM.flipY)
-			this.graph.getLeftAxis().flip(true);		
+			if(!graph)
+				return;
+
+			graph.redraw();
+
+			self.graph = graph;
+			if(cfgM.flipX)
+				self.graph.getXAxis().flip(true);
+
+			if(cfgM.flipY)
+				self.graph.getLeftAxis().flip(true);
+
+			self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());		
+		});
 	},
 	
 	onResize: function(width, height) {
 		this.width = width;
 		this.height = height;
-		if(this.graph)
+		if(this.graph) {
 			this.graph.resize(width, height);
-		this.graph.redraw();
-		this.graph.drawSeries();
-		
+			this.graph.redraw();
+			this.graph.drawSeries();
+		}
 	},
 	
 	onProgress: function() {
@@ -335,18 +361,32 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		addSerie: function(value) {
-			value = CI.converter.jcampToSpectra(CI.DataType.getValueIfNeeded(value), {lowRes: 1024});
-			this.series.push(value);
-			this.redo();
+
+			value = CI.DataType.getValueIfNeeded(value);
+			for(var i in value) {
+				this.onActionReceive.removeSerie.call(this, value[i].name || {});
+				var serie = this.graph.newSerie(value[i].name);
+				serie.autoAxis();
+				serie.setData(value[i].data);
+				this.seriesActions.push([value, serie]);
+			}
+
+			this.graph.redraw();
+			this.graph.drawSeries();
 		},
 
-		removeSerie: function(serieName) {
-			
-			
+		removeSerie: function(value) {	
+			value = CI.DataType.getValueIfNeeded(value);
+			for(var i = 0, l = this.seriesActions.length; i < l; i++) {
+				if(this.seriesActions[i][0] == value) {
+					this.seriesActions[i][1].kill();
+
+					this.seriesActions.splice(i, 1);
+				}
+			}
 		}
 	},
 
-	
 	getDom: function() {
 		return this.dom;
 	},

@@ -160,6 +160,7 @@ CI.Module.prototype._types.plot.View.prototype = {
 
 		addSerie: function(value) {
 			value = CI.DataType.getValueIfNeeded(value);
+			console.log(value);
 			for(var i in value) {
 				this.onActionReceive.removeSerie.call(this, value[i].name)
 				var serie = this.graph.newSerie(value[i].name);

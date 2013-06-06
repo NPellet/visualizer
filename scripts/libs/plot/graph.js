@@ -3,7 +3,7 @@ var Graph = (function() {
 
 	var _scope = this;
 
-	var Graph = function(dom, options) {
+	var Graph = function(dom, options, axis) {
 
 		this._creation = Date.now() + Math.random();
 
@@ -22,6 +22,25 @@ var Graph = (function() {
 		this.registerEvents();
 
 		this.currentAction = false;
+
+		if(axis) {
+
+			for(var i in axis) {
+		
+				for(var j = 0, l = axis[i].length; j < l; j++) {
+
+					switch(i) {
+						case 'top': funcName = 'setTopAxis'; var axisInstance = new GraphXAxis(this, 'top', axis[i][j]); break;
+						case 'bottom': funcName = 'setBottomAxis';  var axisInstance = new GraphXAxis(this, 'bottom', axis[i][j]); break;
+						case 'left': funcName = 'setLeftAxis';  var axisInstance = new GraphYAxis(this, 'left', axis[i][j]);break;
+						case 'right': funcName = 'setRightAxis';  var axisInstance = new GraphYAxis(this, 'right', axis[i][j]); break;
+					}
+
+					this[funcName](axisInstance, j);
+				}
+			}
+		}
+
 	}
 
 	Graph.extendPrototype = function(toWhat, fromWhat) {
@@ -879,6 +898,7 @@ var Graph = (function() {
 			tickPosition: 1,
 			nbTicksPrimary: 3,
 			nbTicksSecondary: 10,
+			ticklabelratio: 1,
 			exponentialFactor: 0,
 			exponentialLabelFactor: 0,
 			wheelBaseline: 0,
@@ -886,6 +906,8 @@ var Graph = (function() {
 		},
 
 		init: function(graph, options) {
+
+
 			var self = this;
 			this.graph = graph;
 			this.options = $.extend(true, {}, GraphAxis.prototype.defaults, options);
@@ -925,7 +947,7 @@ var Graph = (function() {
 
 			this.label.setAttribute('text-anchor', 'middle');
 
-			this.groupGrids.setAttribute('clip-path', 'url(#_clipplot)');
+			this.groupGrids.setAttribute('clip-path', 'url(#_clipplot' + this.graph._creation + ')');
 			this.graph.applyStyleText(this.label);
 			this.group.appendChild(this.label);
 
@@ -980,7 +1002,6 @@ var Graph = (function() {
 			for(var i = 0, l = this.series.length; i < l; i++) {
 				if(this.series[i].currentAction !== false)
 					continue;
-
 				this.series[i].addLabelObj({x: x});
 			}
 		},
@@ -1319,6 +1340,10 @@ var Graph = (function() {
 
 		},
 
+		setTickLabelRatio: function(tickRatio) {
+			this.options.ticklabelratio = tickRatio;
+		},
+
 		draw: function(doNotRecalculateMinMax) {
 			this._widthLabels = 20;
 			var drawn = this._draw(doNotRecalculateMinMax);
@@ -1446,11 +1471,11 @@ var Graph = (function() {
 
 		valueToText: function(value) {
 			value = value * Math.pow(10, this.getExponentialFactor()) * Math.pow(10, this.getExponentialLabelFactor());
-
+			if(this.options.ticklabelratio)
+				value = value * this.options.ticklabelratio;
 			var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
 			if(dec > 0)
 				return value.toFixed(dec);
-
 			return value.toFixed(0);
 		},
 
@@ -1649,7 +1674,7 @@ var Graph = (function() {
 			// Place label correctly
 			this.label.setAttribute('text-anchor', 'middle');
 			this.label.setAttribute('x', Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + this.getMinPx());
-			this.label.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 20 : 25) + this.graph.options.fontSize));
+			this.label.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 10 : 15) + this.graph.options.fontSize));
 
 			this.line.setAttribute('x1', this.getMinPx());
 			this.line.setAttribute('x2', this.getMaxPx());
@@ -1785,7 +1810,7 @@ var Graph = (function() {
 
 			// Place label correctly
 			//this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-			this.label.setAttribute('transform', 'translate(' + (-this.widthHeightTick - 10 - 5) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + Math.min(this.getMinPx(), this.getMaxPx())) +') rotate(-90)');
+			this.label.setAttribute('transform', 'translate(' + (-this.widthHeightTick - 10 - 8) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + Math.min(this.getMinPx(), this.getMaxPx())) +') rotate(-90)');
 
 			this.line.setAttribute('y1', this.getMinPx());
 			this.line.setAttribute('y2', this.getMaxPx());
@@ -2268,7 +2293,6 @@ var Graph = (function() {
 			if(nbPoints == 0) {
 				line.setAttribute('d', 'M 0 0');
 			} else {
-				
 				line.setAttribute('d', points);
 			}
 

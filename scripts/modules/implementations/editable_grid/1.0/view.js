@@ -27,7 +27,7 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 				if(e.keyCode == 16)
 					return;
 				if(inst.table)
-					inst.table.doSearch($(this).val());;
+					inst.table.doSearch($(this).val());
 			});
 			this.domSearch.append(searchInput);
 			this.domSearch.prepend("<span>Search : </span>");
@@ -52,7 +52,7 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 	update2: {
 
 		list: function(moduleValue) {
-		console.profile('a');
+		
 			if(this.disable) {
 				this.disable = false;
 				return;
@@ -152,7 +152,6 @@ CI.Module.prototype._types.editable_grid.View.prototype = {
 			Table.init(view.domTable);
 			CI.Util.ResolveDOMDeferred(Table.getDom());
 
-			console.profileEnd('a');
 		}
 	},
 

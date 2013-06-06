@@ -32,7 +32,7 @@ $.extend(CI.Module.prototype._types.grid.Controller.prototype, CI.Module.prototy
 	},
 
 	lineClick: function(element, row) {
-		
+		this.sendAction('element', element, 'onSelect');
 		var actions;
 		if(!(actions = this.module.definition.dataSend))	
 			return;
@@ -47,12 +47,9 @@ $.extend(CI.Module.prototype._types.grid.Controller.prototype, CI.Module.prototy
 	},
 
 	onToggleOn: function(element, row) {
-
 		if(!row.selected)
 			return;
-
 		this.sendAction('element', element, 'onToggleOn');
-
 		var actions;
 		if(!(actions = this.module.definition.dataSend))	
 			return;

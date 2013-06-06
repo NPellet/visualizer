@@ -81,8 +81,8 @@ window[_namespaces['table']].Tables.Table.prototype = {
 	buildTable: function() {
 		
 		if(this.dom) {
-			this.body.empty();
-			return this.dom;
+			this.dom.remove();
+			//return this.dom;
 		}
 		
 		var html = [];
@@ -170,8 +170,8 @@ window[_namespaces['table']].Tables.Table.prototype = {
 	
 	init: function(dom) {
 		this.buildTable();
-		this.commitContent();
 		dom.html(this.dom);
+		this.commitContent();
 		this.afterInit();
 	},
 
@@ -213,9 +213,12 @@ window[_namespaces['table']].Tables.Table.prototype = {
 		}
 		
 		html += '</td></tr>';
-		this.paginationDOM = $(html).on('click', 'span', function() {
-			inst.setPage($(this).data('page'));
+		this.paginationDOM = $(html);
+		this.paginationDOM.on('click', 'span', function(e) {
+			
+			inst.setPage(parseInt($(this).attr('data-page')));
 		});
+
 		this.body.append(this.paginationDOM);
 	},
 

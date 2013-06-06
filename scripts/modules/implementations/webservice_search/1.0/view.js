@@ -34,8 +34,6 @@ CI.Module.prototype._types.webservice_search.View.prototype = {
 				self.module.controller.doSearch(searchName, searchTerm);
 			});
 		}
-
-		
 	},
 
 	inDom: function() {
@@ -49,7 +47,6 @@ CI.Module.prototype._types.webservice_search.View.prototype = {
 		
 	},
 
-
 	getDom: function() {
 		return this.dom;
 	},
@@ -58,5 +55,3 @@ CI.Module.prototype._types.webservice_search.View.prototype = {
 		
 	}
 }
-
- 

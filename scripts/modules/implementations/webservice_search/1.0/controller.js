@@ -34,7 +34,7 @@ $.extend(CI.Module.prototype._types.webservice_search.Controller.prototype, CI.M
 			url = url.replace('<' + i + '>', encodeURIComponent(this.searchTerms[i]));
 		}
 
-
+		var variable;
 		var reg = /\<var:([a-zA-Z0-9]+)\>/;
 		while(val = reg.exec(url)) {
 			variable = CI.Repo.get(val[1]) || [''];

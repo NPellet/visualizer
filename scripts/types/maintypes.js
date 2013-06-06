@@ -41,6 +41,119 @@ CI.DataType.Structures = {
 		}
 	},
 
+	'plotserie': {
+		type: 'object',
+		elements: {
+			data: 'array',
+			name: 'string',
+			options: {
+				type: 'object',
+				elements: {
+					lineColor: 'string',
+					lineStyle: 'boolean',
+					flip: 'boolean',
+
+					markers: { type: 'object', elements: {
+						show: 'boolean',
+						type: 'number',
+						zoom: 'number',
+						strokeColor: 'boolean',
+						strokeWidth: 'number',
+						fillColor: 'transparent'
+					}},
+					
+					trackMouse: 'boolean',
+					trackMouseLabel: 'boolean',
+					trackMouseLabelRouding: 'number',
+					label: 'string'
+				}
+			}
+		}
+
+	},
+
+	'plotaxis': {
+		type: 'object',
+		elements: {
+
+			lineAt0: 'boolean',
+			display: 'boolean',
+			flipped: 'boolean',
+			axisDataSpacing: {
+
+				type: 'object',
+				elements: {
+					min: 'number',
+					max: 'number'
+				}
+			},
+
+			primaryGrid: 'boolean',
+			secondaryGrid: 'boolean',			
+			labelValue: 'string',
+			tickPosition: 'number',
+			nbTicksPrimary: 'number',
+			nbTicksSecondary: 'number',
+			exponentialFactor: 'number',
+			exponentialLabelFactor: 'numer',
+			wheelBaseline: 'number',
+			logScale: 'boolean'
+		}
+	},
+
+	'plot': {
+		'type': 'object',
+		'elements': {
+			'options': {
+				type: 'object',
+				elements: {
+
+					paddingTop: 'number',
+					paddingBottom: 'number',
+					paddingLeft: 'number',
+					paddingRight: 'number',
+
+					close: { type: 'object', elements: {
+						left: 'boolean',
+						right: 'boolean', 
+						top: 'boolean',
+						bottom: 'boolean'
+					}},
+
+					title: 'string',
+					zoomMode: 'mixed',
+					defaultMouseAction: 'string',
+					defaultWheelAction: 'string',
+					lineToZero: 'boolean',
+					fontSize: 'number',
+					fontFamily: 'string'
+				}
+			},
+
+			'axis': {
+				type: 'object',
+				elements: {
+					'top': {
+						type: 'array',
+						elements: 'plotaxis'
+					},
+					'bottom': {
+						type: 'array',
+						elements: 'plotaxis'
+					},
+					'left': {
+						type: 'array',
+						elements: 'plotaxis'
+					},
+					'right': {
+						type: 'array',
+						elements: 'plotaxis'
+					}
+				}
+			}
+		}
+	},
+
 	'loading': {
 		'type': 'object',
 		'elements': {
@@ -529,13 +642,15 @@ CI.DataType._getValueFromJPath = function(element, jpath) {
 		if(el && (el = el[jpathElement]) !== false) {
 
 			return CI.DataType.fetchElementIfNeeded(el).pipe(function(elChildren) {
-				
+
 				return CI.DataType._getValueFromJPath(elChildren, jpath2);
 			});
 		} else
 			return $.Deferred().resolve('');
-	} else 
+	} else {
+
 		return $.Deferred().resolve(element);
+	}
 }
 
 

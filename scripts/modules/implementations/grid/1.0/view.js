@@ -33,8 +33,6 @@
  		this.dom.append(this.domSearch).append(this.domExport).append(this.domTable);
  		this.module.getDomContent().html(this.dom);
  		this._highlights = this._highlights || [];
-
-
  	},
 
  	inDom: function() {},
@@ -50,7 +48,8 @@
  	update2: {
 
  		list: function(moduleValue) {
- 			this.domTable.remove();
+
+ 			this.domTable.remove().empty();
  			var Content = new CI.Tables.Content();
  			this.Content = Content;
  			CI.RepoHighlight.kill(this.module.id);
@@ -64,6 +63,10 @@
 			*/
 			if(!moduleValue)
 				return;
+
+			if(moduleValue.length == 0)
+				return;
+
 
 			this.module.data = moduleValue;
 

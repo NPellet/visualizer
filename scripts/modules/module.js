@@ -582,20 +582,20 @@ CI.Module.prototype._impl = {
 			var actionsOut = this.module.definition.actionsOut;
 			if(!actionsOut)
 				return;
-
-
 			var i = actionsOut.length - 1;
 			for(; i >= 0; i--) {
-
 				if(actionsOut[i].rel == rel && ((event && event == actionsOut[i].event) || !event)) {
-					actionname = actionsOut[i].name;
-					var jpath = actionsOut[i].jpath;
 
-					value = CI.DataType.getValueFromJPath(value, jpath || '').done(function(value) {
+					(function(actionname, value, jpath) {
 
-						CI.API.executeActionScript(actionname, value);
-						CI.Actions.set(actionname, value);
-					});
+						CI.DataType.getValueFromJPath(value, jpath || '').done(function(value) {
+							CI.API.executeActionScript(actionname, value);
+							
+							CI.Actions.set(actionname, value);
+						});
+
+					})(actionsOut[i].name, value, actionsOut[i].jpath)
+					
 				}
 			}
 		}

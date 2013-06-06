@@ -220,10 +220,11 @@ window[_namespaces['table']].Tables.Content.prototype = {
 	},
 	
 	setPagination: function(pagination) {
-		this.pagination = pagination;
+		this.pagination = parseInt(pagination);
 	},
 	
 	setPage: function(page) {
+		
 		this.page = page;
 	},
 	
@@ -266,7 +267,6 @@ window[_namespaces['table']].Tables.Content.prototype = {
 	},
 	
 	getElementById: function(id) {
-
 		return this.reIndexedElements[id];
 	},
 
