@@ -40,7 +40,7 @@ CI.Module.prototype._types.plot.View.prototype = {
 		'plotdata': function(moduleValue) {
 		
 			var serie;
-			if(moduleValue === undefined || !moduleValue)
+			if(moduleValue === undefined || !moduleValue)
 				return;
 			moduleValue = CI.DataType.getValueIfNeeded(moduleValue);
 
@@ -52,13 +52,13 @@ CI.Module.prototype._types.plot.View.prototype = {
 			if(this.graph)
 				this.graph.kill();
 
-			this.graph = new Graph(this.dom.get(0), moduleValue.options || {});
+			this.graph = new Graph(this.dom.get(0), moduleValue.options || {});
 			var graph = this.graph;
 
 			if(moduleValue.leftAxis) {
-				graph.getLeftAxis(0).setExponentialFactor(moduleValue.leftAxis.exponentialFactor || 0);
+				graph.getLeftAxis(0).setExponentialFactor(moduleValue.leftAxis.exponentialFactor || 0);
 				graph.getLeftAxis(0).setLabel(moduleValue.leftAxis.label);
-				graph.getLeftAxis(0).setLineAt0(moduleValue.leftAxis.lineAt0 || false);
+				graph.getLeftAxis(0).setLineAt0(moduleValue.leftAxis.lineAt0 || false);
 				if(moduleValue.leftAxis.forceMin)
 					graph.getLeftAxis(0).forceMin(moduleValue.leftAxis.forceMin);
 				if(moduleValue.leftAxis.forceMax)
@@ -72,9 +72,9 @@ CI.Module.prototype._types.plot.View.prototype = {
 
 
 			if(moduleValue.xAxis) {
-				graph.getXAxis(0).setExponentialFactor(moduleValue.xAxis.exponentialFactor || 0);
+				graph.getXAxis(0).setExponentialFactor(moduleValue.xAxis.exponentialFactor || 0);
 				graph.getXAxis(0).setLabel(moduleValue.xAxis.label);
-				graph.getXAxis(0).setLineAt0(moduleValue.xAxis.lineAt0 || false);
+				graph.getXAxis(0).setLineAt0(moduleValue.xAxis.lineAt0 || false);
 				if(moduleValue.xAxis.forceMin)
 					graph.getXAxis(0).forceMin(moduleValue.xAxis.forceMin);
 				if(moduleValue.xAxis.forceMax)
@@ -141,7 +141,7 @@ CI.Module.prototype._types.plot.View.prototype = {
 					if(!moduleValue[i][j])
 						continue;
 					k++
-					serie = this.graph.newSerie(name + k, moduleValue[i][j].options || {});
+					serie = this.graph.newSerie(name + k, moduleValue[i][j].options || {});
 					serie.autoAxis();
 					if(color)
 						serie.setLineColor(color);
@@ -160,12 +160,12 @@ CI.Module.prototype._types.plot.View.prototype = {
 
 		addSerie: function(value) {
 			value = CI.DataType.getValueIfNeeded(value);
-			console.log(value);
+
 			for(var i in value) {
-				this.onActionReceive.removeSerie.call(this, value[i].name)
+				this.onActionReceive.removeSerie.call(this, value[i].name);
 				var serie = this.graph.newSerie(value[i].name);
 				serie.autoAxis();
-				serie.setData(value[i].data)
+				serie.setData(value[i].data);
 			}
 
 			this.graph.redraw();

@@ -222,7 +222,7 @@ window[_namespaces['table']].Tables.Column.prototype = {
 		},
 
 		'button': function(value, exec, additional) {
-			var el = $("<button>" + additional + "</button>").bind('click', function() {
+			var el = $("<button>" + additional + "</button>").bind('click', function() {
 				exec();
 			});
 			return el;

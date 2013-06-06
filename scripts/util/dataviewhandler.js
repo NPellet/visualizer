@@ -666,7 +666,7 @@ CI.DataViewHandler.prototype = {
 	serverCopy: function(data, branch, rev) {
 		var self = this;
 
-		data._name = data._name || branch || 'Master';
+		data._name = data._name || branch || 'Master';
 		data._time = false;
 		data._saved = Date.now();
 

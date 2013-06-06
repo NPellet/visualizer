@@ -69,7 +69,7 @@ $(document).bind('configModule', function(event, module) {
 				allActionsRels.push({ title: actionsCfg.rel[i], key: i});
 
 
-		var actionsReceive = module.controller.actionsReceive || {};
+		var actionsReceive = module.controller.actionsReceive || {};
 		var allActionsReceive = [];	
 		for(var i in actionsReceive)
 			allActionsReceive.push({ title: actionsReceive[i], key: i});

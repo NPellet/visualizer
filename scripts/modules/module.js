@@ -199,7 +199,7 @@ CI.Module.prototype = {
 	},
 
 	updateAllView: function() {
-		if(!this.view.update2 || !this.definition || !this.definition.dataSource)
+		if(!this.view.update2 || !this.definition || !this.definition.dataSource)
 			return;
 		var val;
 		for(var i = 0; i < this.definition.dataSource.length; i++) {
@@ -588,7 +588,7 @@ CI.Module.prototype._impl = {
 
 					(function(actionname, value, jpath) {
 
-						CI.DataType.getValueFromJPath(value, jpath || '').done(function(value) {
+						CI.DataType.getValueFromJPath(value, jpath || '').done(function(value) {
 							CI.API.executeActionScript(actionname, value);
 							
 							CI.Actions.set(actionname, value);

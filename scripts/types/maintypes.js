@@ -577,7 +577,7 @@ CI.DataType.fetchElementIfNeeded = function(element) {
 	if(element === undefined || element == null)
 		return $.Deferred().resolve("");
 	
-	var type = element.type || "object", ajaxType, def;
+	var type = element.type || "object", ajaxType, def;
 	if(!element.value && element.url) {
 		
 		ajaxType = typeof CI.DataType.Structures[type] == "object" ? 'json' : 'text';
@@ -765,7 +765,7 @@ CI.DataType.getStructureFromElement = function(element) {
 	
 	var structure = {};
 	var el = element;
-	if(element === undefined || element === null)
+	if(element === undefined || element === null)
 		return;
 		
 	if(element.type)

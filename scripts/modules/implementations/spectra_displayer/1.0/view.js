@@ -85,7 +85,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 	//graph.getLeftAxis(0, {logScale: true})
 			graph.getLeftAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('y') > -1 : false);
-			graph.getLeftAxis().setLabel(cfgM.yLabel || '');
+			graph.getLeftAxis().setLabel(cfgM.yLabel || '');
 
 			graph.getXAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('x') > -1 : false);
 			graph.getXAxis().setLabel(cfgM.xLabel || '');
@@ -96,7 +96,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			graph.getYAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('hmain') > -1 : false);
 			graph.getYAxis().toggleSecondaryGrid(cfgM.grids ? cfgM.grids.indexOf('hsec') > -1 : false);
 			
-			graph.getXAxis().setAxisDataSpacing(cfgM.xLeftSpacing || 0, cfgM.xRightSpacing || 0);
+			graph.getXAxis().setAxisDataSpacing(cfgM.xLeftSpacing || 0, cfgM.xRightSpacing || 0);
 			graph.getLeftAxis().setAxisDataSpacing(cfgM.yBottomSpacing || 0, cfgM.yTopSpacing || 0);
 
 			def.resolve(graph);
@@ -211,7 +211,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 		'jcamp': function(moduleValue, varname) {
 
-			if(!moduleValue || !moduleValue.value)
+			if(!moduleValue || !moduleValue.value)
 				return;
 
 			var self = this, serie, cfgM = this.module.getConfiguration(), color, continuous, i, l, spectra;

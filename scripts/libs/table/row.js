@@ -29,7 +29,7 @@ window[_namespaces['table']].Tables.Row.prototype = {
 		var defs = [];
 		for(var i in cols)
 			defs.push(cols[i].buildRowCol(this._source, this));
-		
+
 		this.tr = $("<tr />");
 		var self = this;
 		this._mainDef = $.when.apply($, defs).then(function() {
@@ -38,9 +38,7 @@ window[_namespaces['table']].Tables.Row.prototype = {
 				self._dataCols[i] = arguments[j];
 				j++;
 			}
-
 		});
-
 	},
 
 	removeDom: function() {
@@ -55,8 +53,8 @@ window[_namespaces['table']].Tables.Row.prototype = {
 			height: this.tr.outerHeight(),
 			textAlign: 'center',
 			lineHeight: this.tr.outerHeight() + "px",
-			backgroundColor: color || 'white',
-			color: fontcolor || 'black',
+			backgroundColor: color || 'white',
+			color: fontcolor || 'black',
 			marginLeft: "-" + this.tds[0].css('padding-left'),
 			marginTop: "-" + this.tds[0].css('margin-top'),
 			fontWeight: 'bold'
