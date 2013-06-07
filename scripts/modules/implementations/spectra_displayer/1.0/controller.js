@@ -177,6 +177,31 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 			name: 'xRightSpacing'
 		});
 		field.setTitle(new BI.Title('Spacing right'));
+
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'minX'
+		});
+		field.setTitle(new BI.Title('Min X'));
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'maxX'
+		});
+		field.setTitle(new BI.Title('Max X'));
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'minY'
+		});
+		field.setTitle(new BI.Title('Min Y'));
+
+		var field = groupfield.addField({
+			type: 'Text',
+			name: 'maxY'
+		});
+		field.setTitle(new BI.Title('Max Y'));
 		
 
 		var field = groupfield.addField({
@@ -257,6 +282,10 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 					yLabel: [this.module.getConfiguration().yLabel],
 					xRightSpacing: [this.module.getConfiguration().xRightSpacing],
 					xLeftSpacing: [this.module.getConfiguration().xLeftSpacing],
+					minX: [this.module.getConfiguration().minX || ''],
+					maxX: [this.module.getConfiguration().maxX || ''],
+					minY: [this.module.getConfiguration().minY || ''],
+					maxY: [this.module.getConfiguration().maxY || ''],
 					yTopSpacing: [this.module.getConfiguration().yTopSpacing],
 					yBottomSpacing: [this.module.getConfiguration().yBottomSpacing],
 					zoom:  [this.module.getConfiguration().zoom]
@@ -292,20 +321,23 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 		this.module.getConfiguration().yTopSpacing = confSection[0].gencfg[0].yTopSpacing[0];
 		this.module.getConfiguration().yBottomSpacing = confSection[0].gencfg[0].yBottomSpacing[0];
 
+		this.module.getConfiguration().minX = parseFloat(confSection[0].gencfg[0].minX[0]);
+		this.module.getConfiguration().minY = parseFloat(confSection[0].gencfg[0].minY[0]);
+		this.module.getConfiguration().maxX = parseFloat(confSection[0].gencfg[0].maxX[0]);
+		this.module.getConfiguration().maxY = parseFloat(confSection[0].gencfg[0].maxY[0]);
+
 		this.module.getConfiguration().zoom = confSection[0].gencfg[0].zoom[0];
 
 		this.module.getConfiguration().displayAxis = confSection[0].gencfg[0].displayAxis[0];
 		this.module.getConfiguration().grids = confSection[0].gencfg[0].grids[0];
 //		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor;
 		
-		for(var i = 0, l = confSection[0].spectrainfos[0].length; i < l; i++) {
-			
+		for(var i = 0, l = confSection[0].spectrainfos[0].length; i < l; i++) {	
 			confSection[0].
 				spectrainfos[0][i].
 				plotcontinuous = 
 				(!!confSection[0].spectrainfos[0][i].plotcontinuous[0]);
-			}
-		
+		}
 			
 		this.module.getConfiguration().plotinfos = confSection[0].spectrainfos[0];
 	},

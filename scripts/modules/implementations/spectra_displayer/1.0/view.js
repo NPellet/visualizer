@@ -41,7 +41,6 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			$.getJSON(cfgM.graphurl, {}, function(data) {
 
 				data.options.onMouseMoveData = function(e, val) {
-					console.log(val);
 					self.module.controller.sendAction('mousetrack', val);
 				}
 
@@ -95,6 +94,20 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			
 			graph.getXAxis().setAxisDataSpacing(cfgM.xLeftSpacing || 0, cfgM.xRightSpacing || 0);
 			graph.getLeftAxis().setAxisDataSpacing(cfgM.yBottomSpacing || 0, cfgM.yTopSpacing || 0);
+
+
+			if(cfgM.minX)
+				graph.getXAxis().forceMin(cfgM.minX);
+			if(cfgM.minY)
+				graph.getLeftAxis().forceMin(cfgM.minY);
+			if(cfgM.maxX)
+				graph.getXAxis().forceMax(cfgM.maxX);
+			if(cfgM.maxY)
+				graph.getLeftAxis().forceMax(cfgM.maxY);
+
+
+			graph.getLeftAxis().setAxisDataSpacing(cfgM.yBottomSpacing || 0, cfgM.yTopSpacing || 0);
+
 
 			def.resolve(graph);
 		}

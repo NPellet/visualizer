@@ -902,7 +902,10 @@ var Graph = (function() {
 			exponentialFactor: 0,
 			exponentialLabelFactor: 0,
 			wheelBaseline: 0,
-			logScale: false
+			logScale: false,
+
+			forcedMin: false,
+			forcedMax: false
 		},
 
 		init: function(graph, options) {
@@ -1045,11 +1048,11 @@ var Graph = (function() {
 		},
 
 		getMin: function() {
-			return this.forcedMin || this.realMin;
+			return this.options.forcedMin || this.realMin;
 		},
 
 		getMax: function() {
-			return this.forcedMax || this.realMax;
+			return this.options.forcedMax || this.realMax;
 		},
 
 		setRealMin: function(min) {
@@ -1061,11 +1064,11 @@ var Graph = (function() {
 		},
 
 		forceMin: function(val) {
-			this.forcedMin = val || false;
+			this.options.forcedMin = val || false;
 		},
 
 		forceMax: function(val) {
-			this.forcedMax = val || false;
+			this.options.forcedMax = val || false;
 		},
 
 		getNbTicksPrimary: function() {
@@ -2960,7 +2963,6 @@ console.log(data);
 					xpx = this.getX(arr[j + 2 + incrXFlip]);
 					ypx = this.getY(arr[j + 2 + incrYFlip]);
 					
-
 					currentLine += "L";
 					currentLine += xpx;
 					currentLine += " ";
