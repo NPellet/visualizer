@@ -28,10 +28,17 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 			onZoomChange: {
 				label: 'on zoom change',
 				description: 'When the zoom changes'
+			},
+
+			onTrackMouse: {
+				label: 'mouse tracking',
+				description: ''
 			}
 		},
 		
-		rels: { }
+		rels: {
+			'x' : 'X position'
+		}
 	},
 	
 	configurationReceive: {
@@ -71,7 +78,10 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 	},
 
 	actions: {
-		rel: {'fromto': 'From - To'}
+		rel: {
+			'fromto': 'From - To', 
+			'mousetrack': 'X value'
+		}
 	},
 
 	actionsReceive: {

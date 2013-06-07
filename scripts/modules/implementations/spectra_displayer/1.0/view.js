@@ -39,6 +39,12 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		if(cfgM.graphurl) {
 				
 			$.getJSON(cfgM.graphurl, {}, function(data) {
+
+				data.options.onMouseMoveData = function(e, val) {
+					console.log(val);
+					self.module.controller.sendAction('mousetrack', val);
+				}
+
 			 	def.resolve(new Graph(self.dom.get(0), data.options, data.axis));
 			});
 
@@ -55,26 +61,17 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 				onMouseMoveData: function(e, val) {
 					var min, max, x1;
-
 					for(var k in self.zones) {
-
 						if(!val[k])
 							continue;
-
 						for(var i in self.zones[k]) {
-
 							min = Math.min(self.zones[k][i][0], self.zones[k][i][1]);
 							max = Math.max(self.zones[k][i][0], self.zones[k][i][1]);
-
 							x1 = val[k].trueX;
-
 							if(min < x1 && max > x1) {
-								
 								CI.RepoHighlight.set(i, 1);
 								self._currentHighlights[i] = 1;
-
 							} else if(self._currentHighlights[i]) {
-
 								CI.RepoHighlight.set(i, 0);
 								self._currentHighlights[i] = 0;
 							}
@@ -364,11 +361,11 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 
 			value = CI.DataType.getValueIfNeeded(value);
 			for(var i in value) {
-				this.onActionReceive.removeSerie.call(this, value[i].name || {});
+				this.onActionReceive.removeSerieByName.call(this, value[i].name || {});
 				var serie = this.graph.newSerie(value[i].name);
 				serie.autoAxis();
 				serie.setData(value[i].data);
-				this.seriesActions.push([value, serie]);
+				this.seriesActions.push([value, serie, value[i].name]);
 			}
 
 			this.graph.redraw();
@@ -380,7 +377,16 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			for(var i = 0, l = this.seriesActions.length; i < l; i++) {
 				if(this.seriesActions[i][0] == value) {
 					this.seriesActions[i][1].kill();
+					this.seriesActions.splice(i, 1);
+				}
+			}
+		},
 
+		removeSerieByName: function(value) {	
+			
+			for(var i = 0, l = this.seriesActions.length; i < l; i++) {
+				if(this.seriesActions[i][2] == value) {
+					this.seriesActions[i][1].kill();
 					this.seriesActions.splice(i, 1);
 				}
 			}

@@ -124,8 +124,9 @@ CI.API.setSharedVar = function(name, value) {
 }
 
 CI.API.executeActionScript = function(actionname, value) {
-
+console.log(actionname, value);
 	var script = Entry.getActionScriptsEvaluated(actionname);
+	console.log(script);
 	// Execute the script
 	if(script)
 		script(value);

@@ -1970,7 +1970,7 @@ var Graph = (function() {
 		 *	Converts every data type to a 1D array
 		 */
 		setData: function(data, arg, type) {
-
+console.log(data);
 			var z = 0;
 			var x, dx, arg = arg || "2D", type = type || 'float', arr;
 			if(!data instanceof Array)
@@ -2048,6 +2048,8 @@ var Graph = (function() {
 				}
 			}
 
+			console.log(datas);
+
 			this.data = datas;
 		},
 
@@ -2059,7 +2061,7 @@ var Graph = (function() {
 					var size = howmany * 4; // 4 byte per number (32 bits)
 				break;
 				case 'float':
-					var size = howmany * 4; // 4 byte per number (32 bits)
+					var size = howmany * 8; // 4 byte per number (64 bits)
 				break;
 			}
 
@@ -2072,7 +2074,7 @@ var Graph = (function() {
 
 				default:
 				case 'float':
-					return new Float32Array(arr);
+					return new Float64Array(arr);
 				break;
 			}
 		},
@@ -2498,8 +2500,8 @@ var Graph = (function() {
 
 		_searchBinary: function(target, haystack, reverse) {
 			var seedA = 0,
-				length = haystack.length;
-			var seedB = (length - 2);
+				length = haystack.length,
+				seedB = (length - 2);
 
 			if(haystack[seedA] == target)
 				return seedA;
@@ -2516,7 +2518,7 @@ var Graph = (function() {
 					throw "Error loop";
 
 				seedInt = (seedA + seedB) / 2;
-				seedInt -= seedInt % 2;
+				seedInt -= seedInt % 2; // Always looks for an x.
 
 				if(seedInt == seedA || haystack[seedInt] == target)
 					return seedInt;

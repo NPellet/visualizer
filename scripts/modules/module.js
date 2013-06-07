@@ -584,6 +584,7 @@ CI.Module.prototype._impl = {
 				return;
 			var i = actionsOut.length - 1;
 			for(; i >= 0; i--) {
+				console.log(actionsOut[i].rel, rel, event, actionsOut[i].event);
 				if(actionsOut[i].rel == rel && ((event && event == actionsOut[i].event) || !event)) {
 
 					(function(actionname, value, jpath) {

@@ -180,7 +180,7 @@ $(document).bind('configModule', function(event, module) {
 			title: new BI.Title('Internal reference')
 		});
 		
-		field.implementation.setOptions(allRels);
+		field.implementation.setOptions(allActionsRels);
 		
 		field.onChange(function(index) {
 			var value = this.getValue(index), 
