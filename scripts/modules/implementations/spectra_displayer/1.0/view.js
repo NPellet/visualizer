@@ -25,6 +25,9 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		this.module.getDomContent().html(this.dom);
 		this.seriesActions = [];
 
+		this.colorId = 0;
+		this.colors = ["red", "blue", "green", "black"];
+
 	//	this.reset(false);
 	},
 	
@@ -371,13 +374,15 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		addSerie: function(value) {
-
+			this.colorId++;
 			value = CI.DataType.getValueIfNeeded(value);
 			for(var i in value) {
 				this.onActionReceive.removeSerieByName.call(this, value[i].name || {});
 				var serie = this.graph.newSerie(value[i].name);
 				serie.autoAxis();
 				serie.setData(value[i].data);
+				serie.setLineColor(this.colors[this.colorId % this.colors.length]);
+
 				this.seriesActions.push([value, serie, value[i].name]);
 			}
 

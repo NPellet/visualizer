@@ -112,11 +112,10 @@ CI.Module.prototype._types.plot.View.prototype = {
 				}
 
 
-
 			moduleValue = CI.DataType.getValueIfNeeded(moduleValue);
 			if(!moduleValue)
 				return;
-			console.log(this.namedSeries);
+			
 			if(this.namedSeries[name]) {
 				for(var i = 0, l = this.namedSeries[name]; i <= l; i++) {
 					for(var j = 0, k = this.series.length; j < k; j++) {
@@ -164,6 +163,7 @@ CI.Module.prototype._types.plot.View.prototype = {
 			for(var i in value) {
 				this.onActionReceive.removeSerie.call(this, value[i].name);
 				var serie = this.graph.newSerie(value[i].name);
+				serie.setLineColor('red');
 				serie.autoAxis();
 				serie.setData(value[i].data);
 			}
