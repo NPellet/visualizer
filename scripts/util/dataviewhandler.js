@@ -80,10 +80,9 @@ CI.DataViewHandler.prototype = {
 		var self = this;
 		var branch = this.currentPath[2];
 		return $.when(this.getData()).pipe(function(alldata) {
-console.log(alldata);
+
 			data = alldata[branch].list;
 			var all = {};
-
 
 			if(self.currentPath[1] == 'local' && alldata[branch].head)
 				all['head'] = self.makeFilename(alldata[branch].head);

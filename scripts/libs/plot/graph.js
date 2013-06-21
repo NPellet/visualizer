@@ -894,6 +894,7 @@ var Graph = (function() {
 			display: true,
 			flipped: false,
 			axisDataSpacing: {min: 0.1, max: 0.1},
+			unitModification: false,
 			primaryGrid: true,
 			secondaryGrid: true,			
 			shiftToZero: false,
@@ -1050,11 +1051,11 @@ var Graph = (function() {
 		},
 
 		getMin: function() {
-			return this.options.forcedMin || this.realMin;
+			return this.options.forcedMin || (this.options.forcedMin === 0 ? 0 : this.realMin);
 		},
 
 		getMax: function() {
-			return this.options.forcedMax || this.realMax;
+			return this.options.forcedMax || (this.options.forcedMax === 0 ? 0 : this.realMax);
 		},
 
 		setRealMin: function(min) {
@@ -1482,10 +1483,48 @@ var Graph = (function() {
 			if(this.options.shiftToZero)
 				value -= this.getMin() * (this.options.ticklabelratio || 1);
 
+			if(this.options.unitModification) {
+				value = this.modifyUnit(value, this.options.unitModification);
+				return value;
+			}
+
 			var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
+
+
 			if(dec > 0)
 				return value.toFixed(dec);
+
 			return value.toFixed(0);
+		},
+
+		getModifiedValue: function(value) {
+			if(this.options.ticklabelratio)
+				value *= this.options.ticklabelratio;
+
+			if(this.options.shiftToZero)
+				value -= this.getMin() * (this.options.ticklabelratio || 1);
+			return value;
+		},
+
+
+
+		modifyUnit: function(value, mode) {
+			switch(mode) {
+				case 'time': // val must be in seconds => transform in hours / days / months
+					var max = this.getModifiedValue(this.getMax());
+					if(max < 3600) { // to minutes
+						value /= 60;
+						value = Math.round(value) + "min";
+					} else if(max < 3600 * 24) {
+						value /= 3600;
+						value = Math.round(value) + "h";
+					} else if(max < 3600 * 24 * 30) {
+						value /= 3600 * 24;
+						value = Math.round(value) + "d";
+					}
+				break;
+			}
+			return value;
 		},
 
 		getExponentialFactor: function() {
@@ -1979,7 +2018,7 @@ var Graph = (function() {
 		 *	Converts every data type to a 1D array
 		 */
 		setData: function(data, arg, type) {
-console.log(data);
+
 			var z = 0;
 			var x, dx, arg = arg || "2D", type = type || 'float', arr;
 			if(!data instanceof Array)
@@ -2057,7 +2096,6 @@ console.log(data);
 				}
 			}
 
-			console.log(datas);
 
 			this.data = datas;
 		},

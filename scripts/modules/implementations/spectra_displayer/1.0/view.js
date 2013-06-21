@@ -44,6 +44,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			$.getJSON(cfgM.graphurl, {}, function(data) {
 
 				data.options.onMouseMoveData = function(e, val) {
+					console.log(val);
 					self.module.controller.sendAction('mousetrack', val);
 				}
 

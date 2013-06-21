@@ -284,7 +284,7 @@ $.extend(CI.Module.prototype._types.spectra_displayer.Controller.prototype, CI.M
 					xLeftSpacing: [this.module.getConfiguration().xLeftSpacing],
 					minX: [this.module.getConfiguration().minX || ''],
 					maxX: [this.module.getConfiguration().maxX || ''],
-					minY: [this.module.getConfiguration().minY || ''],
+					minY: [this.module.getConfiguration().minY || ''],
 					maxY: [this.module.getConfiguration().maxY || ''],
 					yTopSpacing: [this.module.getConfiguration().yTopSpacing],
 					yBottomSpacing: [this.module.getConfiguration().yBottomSpacing],
