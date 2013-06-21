@@ -80,7 +80,7 @@ CI.DataViewHandler.prototype = {
 		var self = this;
 		var branch = this.currentPath[2];
 		return $.when(this.getData()).pipe(function(alldata) {
-
+console.log(alldata);
 			data = alldata[branch].list;
 			var all = {};
 
@@ -354,7 +354,7 @@ CI.DataViewHandler.prototype = {
 
 			this.getFromServer(data).done(function(el) {
 
-				correspondingnsole.log(el);
+				
 				self.currentPath[1] = 'server';
 				self.currentPath[2] = branch;
 				self.currentPath[3] = i;
