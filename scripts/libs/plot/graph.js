@@ -142,6 +142,7 @@ var Graph = (function() {
 
 		kill: function() {
 			this._dom.removeChild(this.dom);
+
 		},
 
 		getXY: function(e) {
@@ -895,6 +896,7 @@ var Graph = (function() {
 			axisDataSpacing: {min: 0.1, max: 0.1},
 			primaryGrid: true,
 			secondaryGrid: true,			
+			shiftToZero: false,
 			tickPosition: 1,
 			nbTicksPrimary: 3,
 			nbTicksSecondary: 10,
@@ -1475,7 +1477,11 @@ var Graph = (function() {
 		valueToText: function(value) {
 			value = value * Math.pow(10, this.getExponentialFactor()) * Math.pow(10, this.getExponentialLabelFactor());
 			if(this.options.ticklabelratio)
-				value = value * this.options.ticklabelratio;
+				value *= this.options.ticklabelratio;
+
+			if(this.options.shiftToZero)
+				value -= this.getMin() * (this.options.ticklabelratio || 1);
+
 			var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
 			if(dec > 0)
 				return value.toFixed(dec);
