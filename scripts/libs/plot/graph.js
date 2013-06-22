@@ -1411,13 +1411,15 @@ var Graph = (function() {
 				incrTick,
 				subIncrTick;
 
+
 			if(secondary) 
 				secondaryIncr = unitPerTick / secondary;
 			
 			var loop = 0;
 
 			incrTick = this.options.shiftToZero ? this.realMin - Math.ceil((this.realMin - min) / unitPerTick) * unitPerTick : Math.floor(min / unitPerTick) * unitPerTick;
-			
+			this.incrTick = primary[0];
+
 			while(incrTick < max) {
 				loop++;
 				if(loop > 200)
@@ -1434,7 +1436,7 @@ var Graph = (function() {
 							subIncrTick += secondaryIncr;
 							continue;
 						}
-						this.drawTick(subIncrTick, false, Math.abs(subIncrTick - incrTick - unitPerTick / 2) < 1e-4 ? 4:2);
+						this.drawTick(subIncrTick, false, Math.abs(subIncrTick - incrTick - unitPerTick / 2) < 1e-4 ? 3:2);
 						subIncrTick += secondaryIncr;
 					}
 				}
