@@ -147,7 +147,7 @@ CI.Module.prototype._types.ivstability.View.prototype = {
 
 			left: [
 				{
-					labelValue: 'Jsc',
+					labelValue: 'Jsc (mA)',
 					ticklabelratio: 1,
 					primaryGrid: true,
 					secondaryGrid: false,
