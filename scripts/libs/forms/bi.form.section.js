@@ -429,6 +429,9 @@ BI.Forms.Section.prototype = {
 		var sectionsByName = this.getSectionsByName(parent);
 		
 		var lastSection;
+
+		if(!jsonObject)
+			return;
 		
 		for(var i in jsonObject.sections) {
 			var sectionName = i;

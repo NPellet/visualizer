@@ -105,7 +105,10 @@ CI.Module = function(definition) {
 	
 		html += '" data-module-id="';
 		html += this.definition.id;
-		html += '"><div class="ci-module"><div class="ci-module-header';
+		html += '"';
+
+		html += ' style="z-index: ' + (this.definition.zindex || 0) + '"';
+		html += '><div class="ci-module"><div class="ci-module-header';
 		if(entryCfg.showModuleHeaderOnHover)
 			html += ' ci-hidden';
 		
@@ -584,7 +587,7 @@ CI.Module.prototype._impl = {
 				return;
 			var i = actionsOut.length - 1;
 			for(; i >= 0; i--) {
-				console.log(actionsOut[i].rel, rel, event, actionsOut[i].event);
+				
 				if(actionsOut[i].rel == rel && ((event && event == actionsOut[i].event) || !event)) {
 
 					(function(actionname, value, jpath) {

@@ -44,7 +44,6 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			$.getJSON(cfgM.graphurl, {}, function(data) {
 
 				data.options.onMouseMoveData = function(e, val) {
-					console.log(val);
 					self.module.controller.sendAction('mousetrack', val);
 				}
 
@@ -378,6 +377,7 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 			this.colorId++;
 			value = CI.DataType.getValueIfNeeded(value);
 			for(var i in value) {
+				console.log(value[i]);
 				this.onActionReceive.removeSerieByName.call(this, value[i].name || {});
 				var serie = this.graph.newSerie(value[i].name);
 				serie.autoAxis();
@@ -402,11 +402,11 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		},
 
 		removeSerieByName: function(value) {	
-			
-			for(var i = 0, l = this.seriesActions.length; i < l; i++) {
+			for(var i = 0; i < this.seriesActions.length; i++) {
 				if(this.seriesActions[i][2] == value) {
 					this.seriesActions[i][1].kill();
 					this.seriesActions.splice(i, 1);
+					i--;
 				}
 			}
 		}
@@ -420,4 +420,3 @@ CI.Module.prototype._types.spectra_displayer.View.prototype = {
 		
 	}
 }
- 

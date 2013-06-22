@@ -787,6 +787,13 @@ var Graph = (function() {
 			return serie;
 		},
 
+		getSerie: function(name) {
+			for(var i = 0, l = this.series.length; i < l; i++) {
+				if(this.series[i].getName() == name)
+					return this.series[i];
+			}
+		},
+
 		drawSeries: function(doNotRedrawZone) {
 			
 			if(!this.width || !this.height)
@@ -913,6 +920,7 @@ var Graph = (function() {
 
 		init: function(graph, options) {
 
+			this.unitModificationTimeTicks = [[1, [1,2,5,10,20,30]], [60, [1,2,5,10,20,30]], [3600, [1,2,6,12]], [3600*24, [1,2,3,4,5,10,20,40]]];
 
 			var self = this;
 			this.graph = graph;
@@ -1152,58 +1160,93 @@ var Graph = (function() {
 			return this.flipped;
 		},
 
-		getUnitPerTick: function(px, nbTick, valrange) {
+		getUnitPerTick: function(px, nbTick, valrange, max) {
 
 			var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
-
 			if(!nbTick)
 				nbTick = px / 10;
 			else
 				nbTick = Math.min(nbTick, px / 10);
 
+
 			// So now the question is, how many units per ticks ?
 			// Say, we have 0.0004 unit per tick
 			var unitPerTick = valrange / nbTick;
 
-			// We take the log
-			var decimals = Math.floor(Math.log(unitPerTick) / Math.log(10));
-			/*
-				Example:
-					13'453 => Math.log10() = 4.12 => 4
-					0.0000341 => Math.log10() = -4.46 => -5
-			*/
+			if(this.options.unitModification == 'time') {
+				// Determine the time domain using max.
+					
+				var max = this.getModifiedValue(this.getMax()), 
+				units = [[60, 'min'], [3600, 'h'], [3600*24, 'd']];
+				if(max < 3600) { // to minutes
+					umin = 0;
+				} else if(max < 3600 * 24) {
+					umin = 1;
+				} else {
+					umin = 2;
+				}
+		
+				var breaked = false;
+				for(var i = 0, l = this.unitModificationTimeTicks.length; i < l; i++) {
+					for(var k = 0, m = this.unitModificationTimeTicks[i][1].length; k < m; k++) {
+						if(unitPerTick < this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k]) {
+							breaked = true;
+							break;
+						}
+					}
+					if(breaked)
+						break;
+				}
 
-			var numberToNatural = unitPerTick * Math.pow(10, - decimals);
-			/*
-				Example:
-					13'453 (4) => 1.345
-					0.0000341 (-5) => 3.41
-			*/
+				//i and k contain the good variable;
+				if(i !== this.unitModificationTimeTicks.length)
+					unitPerTickCorrect = this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k];
+				else
+					unitPerTickCorrect = 1;
 
-			this.decimals = - decimals;
+			} else {
+				// We take the log
+				var decimals = Math.floor(Math.log(unitPerTick) / Math.log(10));
+				/*
+					Example:
+						13'453 => Math.log10() = 4.12 => 4
+						0.0000341 => Math.log10() = -4.46 => -5
+				*/
 
-			var possibleTicks = [1,2,5,10];
-			var closest = false;
-			for(var i = possibleTicks.length - 1; i >= 0; i--)
-				if(!closest || Math.abs(possibleTicks[i] - numberToNatural) < closest)
-					closest = possibleTicks[i];
-			
-			// Ok now closest is the number of unit per tick in the natural number
-			/*
-				Example:
-					13'453 (4) (1.345) => 1
-					0.0000341 (-5) (3.41) => 5 
-			*/
+				var numberToNatural = unitPerTick * Math.pow(10, - decimals);
+				/*
+					Example:
+						13'453 (4) => 1.345
+						0.0000341 (-5) => 3.41
+				*/
 
-			// Let's scale it back
-			var unitPerTickCorrect = closest * Math.pow(10, decimals);
-			/*
-				Example:
-					13'453 (4) (1.345) (1) => 10'000
-					0.0000341 (-5) (3.41) (5) => 0.00005
-			*/
+				this.decimals = - decimals;
+
+				var possibleTicks = [1,2,5,10];
+				var closest = false;
+				for(var i = possibleTicks.length - 1; i >= 0; i--)
+					if(!closest || Math.abs(possibleTicks[i] - numberToNatural) < closest)
+						closest = possibleTicks[i];
+				
+				// Ok now closest is the number of unit per tick in the natural number
+				/*
+					Example:
+						13'453 (4) (1.345) => 1
+						0.0000341 (-5) (3.41) => 5 
+				*/
+
+				// Let's scale it back
+				var unitPerTickCorrect = closest * Math.pow(10, decimals);
+				/*
+					Example:
+						13'453 (4) (1.345) (1) => 10'000
+						0.0000341 (-5) (3.41) (5) => 0.00005
+				*/
+			}
+
 			var nbTicks = valrange / unitPerTickCorrect;
 			var pxPerTick = px / nbTick;
+
 
 			return [unitPerTickCorrect, nbTicks, pxPerTick];
 		},
@@ -1306,7 +1349,7 @@ var Graph = (function() {
 			if(!this.options.logScale) {
 				// So the setting is: How many ticks in total ? Then we have to separate it
 				var nbTicks1 = this.getNbTicksPrimary();
-				var primaryTicks = this.getUnitPerTick(widthPx, nbTicks1, valrange);
+				var primaryTicks = this.getUnitPerTick(widthPx, nbTicks1, valrange, this.getActualMax());
 				var nbSecondaryTicks = this.secondaryTicks();
 				if(nbSecondaryTicks)
 					nbSecondaryTicks = Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
@@ -1373,8 +1416,7 @@ var Graph = (function() {
 			
 			var loop = 0;
 
-			incrTick = Math.floor(min / unitPerTick) * unitPerTick;
-
+			incrTick = this.options.shiftToZero ? this.realMin - Math.ceil((this.realMin - min) / unitPerTick) * unitPerTick : Math.floor(min / unitPerTick) * unitPerTick;
 			
 			while(incrTick < max) {
 				loop++;
@@ -1476,12 +1518,17 @@ var Graph = (function() {
 		},
 
 		valueToText: function(value) {
+			
 			value = value * Math.pow(10, this.getExponentialFactor()) * Math.pow(10, this.getExponentialLabelFactor());
+
+
+			if(this.options.shiftToZero)
+				value -= this.realMin;
+
+
 			if(this.options.ticklabelratio)
 				value *= this.options.ticklabelratio;
 
-			if(this.options.shiftToZero)
-				value -= this.getMin() * (this.options.ticklabelratio || 1);
 
 			if(this.options.unitModification) {
 				value = this.modifyUnit(value, this.options.unitModification);
@@ -1511,20 +1558,39 @@ var Graph = (function() {
 		modifyUnit: function(value, mode) {
 			switch(mode) {
 				case 'time': // val must be in seconds => transform in hours / days / months
-					var max = this.getModifiedValue(this.getMax());
+					var max = this.getModifiedValue(this.getMax()), 
+					units = [[60, 'min'], [3600, 'h'], [3600*24, 'd']];
 					if(max < 3600) { // to minutes
-						value /= 60;
-						value = Math.round(value) + "min";
+						umin = 0;
 					} else if(max < 3600 * 24) {
-						value /= 3600;
-						value = Math.round(value) + "h";
+						umin = 1;
 					} else if(max < 3600 * 24 * 30) {
-						value /= 3600 * 24;
-						value = Math.round(value) + "d";
+						umin = 2;
 					}
 				break;
 			}
-			return value;
+
+			var incr = this.incrTick;
+			var text = "", valueRounded;
+			
+			value = value / units[umin][0];
+			
+			valueRounded = Math.floor(value);
+			
+			text = valueRounded + units[umin][1];
+			umin--;
+			
+			
+			while(incr < 1 * units[umin + 1][0] && umin > -1) {
+				first = false;
+				value = (value - valueRounded) * units[umin + 1][0] / units[umin][0];
+				valueRounded = Math.round(value);
+				text += " " + valueRounded + units[umin][1];
+				umin--;
+
+			}
+			
+			return text;
 		},
 
 		getExponentialFactor: function() {

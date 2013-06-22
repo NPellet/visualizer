@@ -126,14 +126,12 @@ $.extend(CI.Module.prototype._types.grid.Controller.prototype, CI.Module.prototy
 		}		
 	},
 	
-	
 	moduleInformations: {
 		moduleName: 'Table'
 	},
 	
-	
 	actions: {
-		rel: {'row': 'Row Source'}
+		rel: {'element': 'Row'}
 	},
 
 	actionsReceive: {

@@ -382,7 +382,6 @@ CI.Grid = {
 			CI.modules[i].dom.css("zIndex", CI.modules[i].definition.zindex);
 			count++;
 		}
-		console.log($(dom).get(0))
 		$(dom).css("zIndex", 1);
 		module.definition.zindex = 1;
 	},
