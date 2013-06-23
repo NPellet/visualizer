@@ -122,7 +122,7 @@ define(['modules/defaultview', 'forms/title', 'util/util', 'util/api', 'util/dom
 
 				var elements = [];
 				view.buildElement(list, elements, jpaths, colorJPath);
-				console.log(elements);
+				
 				for(var i = 0, length = elements.length; i < length; i++)
 					Content.addElement(elements[i]);
 				this.elements = elements;
@@ -153,9 +153,9 @@ define(['modules/defaultview', 'forms/title', 'util/util', 'util/api', 'util/dom
 
 				for(var j in jpaths) {
 					jpath = jpaths[j]; jpath = jpath.jpath || jpath;
-					console.log(jpath, source[i]);
+					
 					element.data[j] = Traversing.getValueFromJPath(source[i], jpath).done(function() {
-						console.log(arguments);
+						
 					});
 				}
 

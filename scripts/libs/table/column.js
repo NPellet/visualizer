@@ -94,7 +94,7 @@ define([], function() {
 			html.append(span);
 
 			$.when(element).then(function(val) {
-				console.log(val);
+				
 				span.append(val);
 			})
 			

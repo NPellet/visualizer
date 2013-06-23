@@ -18,8 +18,6 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				API.getRepositoryActions().unListen(this.getActionNameList(), this._actionlisten);
 			}
 
-			console.log(this.getActionNameList());
-
 			this._varlisten = API.getRepositoryData().listen(this.getVarNameList(), $.proxy(this.onVarGet, this));
 			this._actionlisten = API.getRepositoryActions().listen(this.getActionNameList(), $.proxy(this.onActionTrigger, this));
 		},
