@@ -1,7 +1,6 @@
-var CI=CI?CI:{};
-CI.converter=CI.converter?CI.converter:{};
+// Define as an amd module
+define(function() {
 
-CI.converter.jcampToSpectra=(function() {
     // the following RegExp can only be used for XYdata, some peakTables have values with a "E-5" ...
     var xyDataSplitRegExp=/[,\t \+-]*(?=[^\d,\t \.])|[ \t]+(?=[\d+\.-])/;
     var removeCommentRegExp=/\$\$.*/;
@@ -23,7 +22,6 @@ CI.converter.jcampToSpectra=(function() {
             dataValue,
             ldrs,
             i, ii, position, endLine, infos;
-        var sfo1Count=0;
 
         var result={};
         var spectra = [];
@@ -126,30 +124,22 @@ CI.converter.jcampToSpectra=(function() {
                 spectrum.yFactor = parseFloat(dataValue);
             } else if (dataLabel=='DELTAX') {
                 spectrum.deltaX = parseFloat(dataValue);
-            } else if (dataLabel=='.OBSERVEFREQUENCY') {
+            } else if (dataLabel=='.OBSERVEFREQUENCY' || dataLabel=='$SFO1') {
                 if (!spectrum.observeFrequency) spectrum.observeFrequency=parseFloat(dataValue);
-            }  else if ( dataLabel=='$SFO1') {
-                sfo1Count++;
-                if (sfo1Count==1) {
-                    if (!spectrum.observeFrequency) spectrum.observeFrequency=parseFloat(dataValue);
-                } else if (sfo1Count==2) {
-                      if (!result.indirectFrequency) result.indirectFrequency=parseFloat(dataValue);                  
-                }
             } else if (dataLabel=='.OBSERVENUCLEUS') {
                 if (!spectrum.xType) result.xType=dataValue.replace(/[^a-zA-Z0-9]/g,"");
-  //          } else if (dataLabel=='$SFO2') {  // we use the second SFO1 to get frequency
-  //              if (!result.indirectFrequency) result.indirectFrequency=parseFloat(dataValue);
+            } else if (dataLabel=='$SFO2') {
+                if (!result.indirectFrequency) result.indirectFrequency=parseFloat(dataValue);
             } else if (dataLabel=='$OFFSET') {   // OFFSET for Bruker spectra
-                // we don't use this parameter because we use min / max values
-                 // shiftOffsetNum = 0;
-                 // shiftOffsetVal = parseFloat(dataValue);
+                shiftOffsetNum = 0;
+                shiftOffsetVal = parseFloat(dataValue);
             } else if (dataLabel=='$REFERENCEPOINT') {   // OFFSET for Varian spectra
         
 
             } else if (dataLabel=='.SHIFTREFERENCE') {   // OFFSET FOR Bruker Spectra
-                 //   var parts = dataValue.split(/ *, */);
-                 //   shiftOffsetNum = parseInt(parts[2].trim());
-                 //   shiftOffsetVal = parseFloat(parts[3].trim());
+                    var parts = dataValue.split(/ *, */);
+                    shiftOffsetNum = parseInt(parts[2].trim());
+                    shiftOffsetVal = parseFloat(parts[3].trim());
             } else if (dataLabel=='VARNAME') {
                 ntuples.varname=dataValue.split(/[, \t]+/);
             } else if (dataLabel=='SYMBOL') {
@@ -371,6 +361,7 @@ CI.converter.jcampToSpectra=(function() {
         function addPoint(spectrum,currentX,currentY) {
             // if (aa++<10) console.log(currentX+" - "+currentY+" - "+currentX/spectrum.observeFrequency+" - "+currentY*spectrum.yFactor);
             if (spectrum.observeFrequency) {
+
                 spectrum.currentData.push(currentX/spectrum.observeFrequency, currentY*spectrum.yFactor);
             } else {
                 spectrum.currentData.push(currentX, currentY*spectrum.yFactor);
@@ -561,6 +552,4 @@ CI.converter.jcampToSpectra=(function() {
     }
 
     return convert;
-})();
-
-
+});

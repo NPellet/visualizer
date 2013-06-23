@@ -52,56 +52,7 @@ CI.API.setSharedVarFromJPath = function(name, value, jpath) {
 	});
 }
 
-CI.API.getAllSharedVariables = function() {
-
-	var allSharedVars = {};
-
-	var entryVars = Entry.getEntryDataVariables();
-	
-	for(var i in entryVars) {
-		if(typeof allSharedVars[entryVars[i].varname] == "undefined")
-			allSharedVars[entryVars[i].varname] = {send: [], receive: []};
-			allSharedVars[entryVars[i].varname].send.push({
-				rel: '',
-				moduleName: ''
-			});
-	}
-			
-	for(var i in CI.modules) {
-
-		var def = CI.modules[i].definition;
-
-		for(var j = 0; def.dataSource && j < def.dataSource.length; j++) {
-			var source = def.dataSource[j];
-			if(source.name == "")
-				continue;
-	
-			if(typeof allSharedVars[source.name] == "undefined")
-				allSharedVars[source.name] = {send: [], receive: []};
-			
-			allSharedVars[source.name].receive.push({
-				rel: source.rel,
-				moduleName: def.title
-			});
-		}
-		
-		for(var j = 0; def.dataSend && j < def.dataSend.length; j++) {
-			
-			if(def.dataSend[j].name == "")
-				continue;
-	
-			if(typeof allSharedVars[def.dataSend[j].name] == "undefined")
-				allSharedVars[def.dataSend[j].name] = {send: [], receive: []};
-				
-			allSharedVars[def.dataSend[j].name].send.push({
-				rel: def.dataSend[j].rel,
-				moduleName: def.title
-			});
-		}
-	}
-
-	return allSharedVars;
-}
+CI.API.
 
 CI.API.getSharedFilters = function(varName) {
 	var filters = Entry.getConfiguration().variableFilters;
@@ -126,8 +77,8 @@ CI.API.setSharedVar = function(name, value) {
 CI.API.executeActionScript = function(actionname, value) {
 
 	var script = Entry.getActionScriptsEvaluated(actionname);
-	
 	// Execute the script
 	if(script)
 		script(value);
 }
+

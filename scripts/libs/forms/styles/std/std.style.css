@@ -637,7 +637,7 @@ input.bi-formfield-styled {
 .bi-formfield-jseditor  {
 	width: 100%;
 	height: 300px;
-    position: relative;
+    position: relative !important;
 
     padding: 0;
     margin: 0;

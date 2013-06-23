@@ -1,114 +1,42 @@
-/**
- * @namespace Holds all the functionality for the visualizer
- */
 
-	_namespaces = {
-		title: 'CI',
-		table: 'CI',
-		lang: 'CI',
-		util: 'CI',
-		visualizer: 'CI',
-		buttons: 'CI'
-	};
+requirejs.config({
+	"baseUrl": "scripts/",
+	"paths": {
+		"jquery": "libs/jquery/jquery",
+		"jqueryui": "libs/jqueryui/jquery-ui.min",
+		"forms": "libs/forms"
+	}
+});
 
-	CI = new Object();
+require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, Header) {
 
-	(function($) {
+	$(document).ready(function() {
 
-		$(document).ready(function() {
+		var title = $("#visualizer-title");
+		var buttons = $("#visualizer-buttons");
+
+		var entryPoint = EntryPoint.init(function() {
+
+			Header.addButtons(buttons, EntryPoint.getDataHandler(), EntryPoint.getViewHandler(), EntryPoint.getData(), EntryPoint.getView());
 			
+			if(EntryPoint.getDataHandler())
+				EntryPoint.getDataHandler().updateButtons();
+
+			if(EntryPoint.getViewHandler())
+				EntryPoint.getViewHandler().updateButtons();
+
+			if(EntryPoint.getViewHandler())
+				Header.makeHeaderEditable(title, EntryPoint.getView(), EntryPoint.getViewHandler());
+			else
+				Header.makeHeader(title, EntryPoint.getView());
+		});
+
+	});
+});
+
+/*			
 			CI.WebWorker.create('jsonparser', './scripts/webworker/scripts/jsonparser.js');
 			CI.WebWorker.create('getminmaxmatrix', './scripts/webworker/scripts/getminmaxmatrix.js');
 			CI.WebWorker.create('computesprings', './scripts/webworker/scripts/computesprings.js');
 			CI.WebWorker.create('googleVisualizationArrayToDataTable', './scripts/webworker/scripts/googleVisualizationArrayToDataTable.js');
-
-			Saver = new CI.Saver();
-			ajaxManager = new CI.Util.AjaxManager();
-		//	ajaxManager.setProxyUrl('http://localhost:8888/git/visualizer/proxify.php?url=<url>');
-			
-			var dom = $("body");
-		
-			window.Entry = new CI.EntryPoint({}, function() {
-				$(dom).unmask();
-				CI.ConfigVisualizer();			
-			});
-
-
-
-		var btn = new BI.Buttons.Button('Push view to server', function() {
-			CI.View.serverPush(Entry.structure);
-		}, {});
-		
-		$("#visualizer-buttons").append(btn.render());
-
-
-
-		var btn = new BI.Buttons.Button('Save locally', function() {
-			CI.View.localSave(Entry.structure);
-		}, {});
-		
-		$("#visualizer-buttons").append(btn.render());
-
-
-
-
-		if(!(window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB))
-			$("#visualizer-dataviews-button").remove();		
-		else
-			$("#visualizer-dataviews-button").bind('click', function() {
-
-				if($(this).hasClass('bi-active')) {
-					$("#visualizer-dataviews").hide();
-					$(this).removeClass('bi-active');
-
-					return;
-				}
-
-				$(this).addClass('bi-active');
-
-				var dom = $("#visualizer-dataviews");
-				if(dom.length == 0) {
-					var dom = $("<div>").attr('id', 'visualizer-dataviews').appendTo('body');
-
-
-					if(CI.Data) {
-						dom.append('<h1>Data</h1>');
-
-						dom.append(buttons.data.copyToLocal.render());
-						dom.append(buttons.data.localToServer.render());
-						dom.append(buttons.data.snapshotLocal.render());
-						dom.append(buttons.data.autosaveLocal.render());
-						dom.append(buttons.data.branchLocal.render());
-						dom.append(buttons.data.revertLocal.render());
-
-						var _dom = $('<div class="ci-dataview-path"><label>Data path : </label></div>');
-						dom.append(_dom);
-						var _domel = $("<div />").appendTo(_dom);
-						_domel.append(CI.Data.getDom());
-					}
-
-					if(CI.View) {
-
-						dom.append('<br /><br />');
-						dom.append('<h1>View</h1>');
-
-						dom.append(buttons.view.copyToLocal.render());
-						dom.append(buttons.view.localToServer.render());
-						dom.append(buttons.view.snapshotLocal.render());
-						dom.append(buttons.view.autosaveLocal.render());
-						dom.append(buttons.view.branchLocal.render());
-						dom.append(buttons.view.revertLocal.render());
-
-
-						var _dom = $('<div class="ci-dataview-path"><label>View path : </label></div>');
-						dom.append(_dom);
-						var _domel = $("<div />").appendTo(_dom);
-						_domel.append(CI.View.getDom());
-					}
-				} else {
-					dom.show();
-				}
-			});
-		});
-	}) (jQuery);
-
+*/
