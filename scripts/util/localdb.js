@@ -75,7 +75,7 @@ define(['jquery'], function($) {
 
 		getAll: function(type, key, branch) {
 
-			var def = $.Deferred();
+			var def = $.Deferred(), self = this;
 			type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
 
 			var trans = db.transaction([type], 'readwrite');
@@ -93,7 +93,7 @@ define(['jquery'], function($) {
 
 				if(branch) {
 					if(e.target.result == undefined) {
-						db.create(type, key, branch).pipe(function(obj) {
+						self.create(type, key, branch).pipe(function(obj) {
 							def.resolve(obj);
 						});
 					} else

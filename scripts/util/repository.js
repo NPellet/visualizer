@@ -1,4 +1,4 @@
-define(['util/event'], function(Event) {
+define(['jquery', 'util/event'], function($, Event) {
 
 	var callbackId = -1;
 
