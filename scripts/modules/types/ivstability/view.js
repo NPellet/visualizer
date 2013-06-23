@@ -5,7 +5,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing'], functio
 		
 		init: function() {	
 			var html = [];
-			html.push('<div class="ivstab"><div class="iv"><h2>IV Curve</h2><div class="ivcurve"></div></div><div class="stab"><div><h2>Voc</h2><div class="ivstability-voc"></div><h2>Jsc</h2><div class="ivstability-jsc"></div><h2>Fill Factor</h2><div class="ivstability-ff"></div><h2>Efficiency</h2><div class="ivstability-efficiency"></div></div></div></div>');
+			html.push('<div class="ivstab"><div class="iv"><h2>IV Curve</h2><div class="ivcurve"></div><h2>Legend</h2><div class="ivstablegend"></div></div><div class="stab"><div><h2>Voc</h2><div class="ivstability-voc"></div><h2>Jsc</h2><div class="ivstability-jsc"></div><h2>Fill Factor</h2><div class="ivstability-ff"></div><h2>Efficiency</h2><div class="ivstability-efficiency"></div></div></div></div>');
 			this.namedSeries = {};
 			this.graphs = [];
 			this.series = {};
@@ -13,19 +13,18 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing'], functio
 			this.colors = ['#0066cc', '#cc0033', '#cc00cc', '#00cccc', '#009933', '#999966', '#cc9900', '#669999', '#000000'];
 			this.usedColors = [];
 
+			this.legends = [];
 			this.dom = $(html.join(''));
+			this.legendDom = this.dom.find('.ivstablegend')
 			this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
 		},
 
 		doIv: function(name, val, color) {
-			
 			if(!this.ivseries[name]) {
 				this.ivseries[name] = this.iv.newSerie(name);
 				this.ivseries[name].autoAxis();
 			}
-			
 			this.ivseries[name].setData(val.data);
-			
 			this.ivseries[name].setLineColor(color);
 			this.iv.redraw();
 			this.iv.drawSeries();
@@ -151,10 +150,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing'], functio
 				this.graphs[i].resize(650, 175);
 				this.graphs[i].drawSeries();
 			}
-
 			this.iv.resize(500, 200);
 			this.iv.drawSeries();
-
 		},
 		
 		update2: {
@@ -169,6 +166,38 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing'], functio
 
 		getNextColor: function() {
 			return this.colors.shift();
+		},
+
+		addLegend: function(description, color) {
+			var div = $("<div />");
+			this.legends[description] = div;
+
+			square = $("<div />").css({
+				width: 16,
+				height: 16,
+				backgroundColor: color,
+				float: 'left',
+				'position': 'relative',
+				marginTop: '-3px',
+				marginBottom: '10px'
+			});
+
+			descriptionDom = $("<div />").css({
+				marginLeft: '21px'
+
+			}).text(description);
+
+			clearDom = $("<div />").css({
+				'clear': 'both'
+			});
+
+			div.append(square).append(descriptionDom).append(clearDom);
+			this.legendDom.append(div);
+
+		},
+
+		removeLegend: function(name) {
+			this.legends[name].remove();
 		},
 
 		onActionReceive:  {
@@ -205,16 +234,18 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing'], functio
 				serie.autoAxis();
 				serie.setData(value.curves.eff);
 				this.series[value.name].push(serie);
-				
 
 				for(var i = 0; i < 4; i++) {
 					this.graphs[i].redraw();
 					this.graphs[i].drawSeries();
 				}
+
+				this.addLegend(value.description, color);
 			},
 
 			removeSerie: function(serie) {
 				var val = Traversing.getValueIfNeeded(serie);
+				this.removeLegend(val.description);
 				this.onActionReceive.removeSerieByName.call(this, val.name);
 			},
 
