@@ -121,7 +121,12 @@ define(['jquery'], function() {
 		indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 		IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
 		IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
-	
+		
+		if(!indexedDB) {
+			ready.reject();
+			return ready;
+		}
+		
 		var openrequest = indexedDB.open(dbname, 1);
 
 		// Database is open
