@@ -21,7 +21,6 @@ define(['jquery', 'util/lru'], function($, LRU) {
 				return (pendings[url] = $.ajax({
 					url: url,
 					type: 'get',
-					dataType: ajaxType || 'json',
 					timeout: 120000, // 2 minutes timeout
 					success: function(data) {
 						// We set 20 data in memory, 500 in local database
