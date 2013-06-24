@@ -8,7 +8,6 @@ define(['jquery', 'util/lru'], function($, LRU) {
 		get: function(url, ajaxType) {
 			var def = $.Deferred();
 			var value;
-console.log(ajaxType, ajaxType || 'json');
 			if(pendings[url])
 				return pendings[url];
 
