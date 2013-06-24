@@ -8,11 +8,13 @@ define(['jquery', 'util/lru'], function($, LRU) {
 		get: function(url, ajaxType) {
 			var def = $.Deferred();
 			var value;
+console.log(ajaxType, ajaxType || 'json');
 			if(pendings[url])
 				return pendings[url];
 
 			// Check in the memory if the url exists
 			return (LRU.get('urlData', url).pipe(function(data) {
+				
 				return data; 
 			}, function() {
 
@@ -20,7 +22,7 @@ define(['jquery', 'util/lru'], function($, LRU) {
 				return (pendings[url] = $.ajax({
 					url: url,
 					type: 'get',
-				//	dataType: ajaxType,
+					dataType: ajaxType || 'json',
 					timeout: 120000, // 2 minutes timeout
 					success: function(data) {
 						// We set 20 data in memory, 500 in local database

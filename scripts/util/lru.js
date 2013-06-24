@@ -90,7 +90,7 @@ define(['jquery'], function() {
 				var lru = e.target.result;
 				// Add the store only if it doesn't exist
 				if(!lru)
-					store.put({index: '__lrudata' + storeName, store: storeName, key: '__lrudata', _count: 0, _limit: limit });
+					store.put({index: '__lrudata' + storeName, data: {}, store: storeName, key: '__lrudata', _count: 0, _limit: limit });
 			}
 			deferred.resolve();
 		}, function() {
@@ -126,7 +126,7 @@ define(['jquery'], function() {
 			ready.reject();
 			return ready;
 		}
-		
+
 		var openrequest = indexedDB.open(dbname, 1);
 
 		// Database is open
@@ -159,32 +159,35 @@ define(['jquery'], function() {
 		return ready;
 	}
 
-	function getFromDB(store, index) {
+	function getFromDB(storeName, index) {
 
 		var deferred = $.Deferred();
 
 		$.when(openDb()).then(function() {
 
 			var store = db.transaction('lru', 'readwrite').objectStore('lru'),
-				getter = store.get(store + index),
+				getter = store.get(storeName + index),
 				data,
 				defGet = $.Deferred(), defSet = $.Deferred();
 
 			getter.onsuccess = function(e) {
+
 				if(e.target.result)
-					defGet.resolve(e.target.result);
+					defGet.resolve(e.target.result.data);
 				else
 					defGet.reject();
 			}
 
-			getter = store.index('key').get('__lrudata' + store);
+			getter = store.get('__lrudata' + storeName);
 			getter.onsuccess = function(e) {
 				var lru = e.target.result;
+
 				if(!lru)
 					return defGet.reject();
 
-				lru[index] == Date.now(); // Update the date of the object
-				setter = store.put('__lrudata' + store, lru);
+				lru.data[index] == Date.now(); // Update the date of the object
+				setter = store.put(lru);
+
 				setter.onsuccess = function(e) {
 					defSet.resolve();
 				}
@@ -193,7 +196,7 @@ define(['jquery'], function() {
 			$.when(defGet, defSet).then(function(data) {
 
 				// A getter from the db must trigger a setter in the memory
-				storeInMemory(store, index, data);
+				storeInMemory(storeName, index, data);
 				deferred.resolve(data);
 			}, function() {
 				deferred.reject();
@@ -221,24 +224,28 @@ define(['jquery'], function() {
 				var lru = e.target.result;
 				if(!lru)
 					lru = {};
+
+				if(!lru.data)
+					lru.data = {};
+
 				lru['_count'] = 0 || lru['_count'] + 1;				
-				lru[index] = Date.now();
+				lru.data[index] = Date.now();
 
 				// We overflow the limit
 				if(lru['_count'] > lru['_limit']) {
 					// We have to look for the oldest timestamp
 					var time = Date.now(), oldestIndex;
-					for(var i in lru) {
-						if(i != '_count' && i != '_limit' && lru[i] < time) {
-							time = lru[i];
+					for(var i in lru.data) {
+						if(i != '_count' && i != '_limit' && lru.data[i] < time) {
+							time = lru.data[i];
 							oldestIndex = i;
 						}
 					}
-					delete lru[i];
+					delete lru.data[i];
 					// The oldest index is now known
 					store.remove(oldestIndex);
 				}
-				store.put({index: '__lrudata' + storeName, store: storeName, key: '__lrudata', _count: lru._count, _limit: lru._limit });
+				store.put({index: '__lrudata' + storeName, data: lru.data, store: storeName, key: '__lrudata', _count: lru._count, _limit: lru._limit });
 			}
 			deferred.resolve(data);
 		}, function() {
@@ -266,6 +273,7 @@ define(['jquery'], function() {
 
 		get: function(store, index) {
 			var result;
+
 			if((result = getFromMemory(store, index)) != undefined)
 				return result;
 

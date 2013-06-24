@@ -1,5 +1,5 @@
 
-define(['modules/defaultcontroller', 'util/api', 'util/datatraversing'], function(Default, API, Traversing) {
+define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/urlData'], function(Default, API, Traversing, URL) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
@@ -15,9 +15,9 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing'], functio
 			if(!this.searchTerms)
 				this.searchTerms = [];
 
-			if(this.request)
+		/*	if(this.request)
 				this.request.abort();
-
+*/
 			var self = this;
 			this.searchTerms[name] = val;
 			var url = this.module.getConfiguration().url;
@@ -33,7 +33,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing'], functio
 			}
 			
 
-			this.request = $.getJSON(url, {}, function(data) {
+			this.request = URL.get(url).done(function(data) {
+				console.log(data);
 				self.request = null;
 				self.onSearchDone(data);
 			});

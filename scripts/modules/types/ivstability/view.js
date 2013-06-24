@@ -214,6 +214,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing'], functio
 				var serie = this.graphs[0].newSerie(value.name);
 				serie.setLineColor(color);
 				serie.autoAxis();
+				
 				serie.setData(value.curves.jsc);
 				this.series[value.name].push(serie);
 
