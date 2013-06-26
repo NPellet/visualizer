@@ -284,8 +284,15 @@ define(['forms/fieldtable'], function(TableField) {
 				if(!field)
 					continue;
 
-				for(var j = 0; j < json[i].length; j++)
-					field.implementation.setValue(j, json[i][j]);
+				for(var j = 0; j < json[i].length; j++) {
+					(function(field, k, val) {
+
+						field.onLoad(function() {
+							field.implementation.setValue(k, val);	
+						});	
+					}) (field, j, json[i][j]);
+				}
+					
 			}
 		},
 		

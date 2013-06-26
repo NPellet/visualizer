@@ -100,7 +100,9 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 				$(this).children('value').each(function(i) {
 					if(i > 0)
 						field.addField();
-					field.implementation.setValue(i, $(this).text());
+					field.onLoad(function() {
+						field.implementation.setValue(i, $(this).text());	
+					});
 				});
 			});
 		},
@@ -116,7 +118,11 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 				for(var j = 0; j < json[i].length; j++) {
 					if(j > 0)
 						field.addField();
-					field.implementation.setValue(j, json[i][j]);
+					(function(k, val) {
+						field.onLoad(function() {
+							field.implementation.setValue(k, val);	
+						});	
+					}) (j, json[i][j]);
 				}
 				
 			}

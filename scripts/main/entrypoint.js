@@ -134,7 +134,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 				for(var i in data) {
 					if(i.slice(0, 1) == '_')
 						continue;
-					view.variables.push({ varname: i, jpath: 'element.' + i });
+					view.variables.push({ varname: i, jpath: i });
 				}
 			}
 
@@ -156,7 +156,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 
 					RepositoryData.set(view.variables[i].varname, data[view.variables[i].varname]);
 				} else {
-					RepositoryData.set(view.variables[i].varname, this.data, view.variables[i].jpath);
+					RepositoryData.set(view.variables[i].varname, this.data, "element." + view.variables[i].jpath);
 				}
 			}
 		}
@@ -179,6 +179,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 
 			var div = $('<div></div>').dialog({ modal: true, width: '80%', title: "Edit entry point"});
 			var options = [];
+
 			for(var i in data)
 				options.push({title: i, key: i});
 
@@ -229,8 +230,6 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 					var data = value.cfg[0].tablevars[0];
 					view.variables = data;
 					_check(true);
-
-					
 					form.getDom().dialog('close');
 				});
 				
@@ -246,6 +245,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 					vars.jpath.push(entryVars[i].jpath);
 					vars.url.push(entryVars[i].url || '');
 				}
+
 					
 				var fill = { 
 					sections: {

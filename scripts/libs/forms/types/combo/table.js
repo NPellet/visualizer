@@ -21,6 +21,7 @@ define(['./default'], function(FieldDefault) {
 		},
 
 		setText:function(index, value) {
+			
 			if(this.divs && this.divs[index])
 				this.divs[index].html(value);
 

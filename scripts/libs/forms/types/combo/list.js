@@ -38,8 +38,10 @@ define(['./default'], function(FieldDefault) {
 		},
 		
 		setText: function(index, text) {
+			
 			if(!this.main.fields[index])
 				return;
+
 			this.main.fields[index].field.html(text);
 		},
 		

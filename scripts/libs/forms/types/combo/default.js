@@ -129,9 +129,9 @@ define(['forms/fielddefault', 'libs/dynatree/dynatree'], function(Default) {
 		checkFillState: function(index) {
 
 			var options = this.options;
-			if(this.optionsIndexed[index])
+			if(index && this.optionsIndexed[index])
 				options = this.optionsIndexed[index];
-
+			
 			var element = this.lookRecursively(this.main.getValue(index), options);
 	
 			if(element) {
