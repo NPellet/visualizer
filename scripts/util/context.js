@@ -11,11 +11,11 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 			if(!(elements[0] instanceof Array))
 				elements = [elements];
 
-			dom.addEventListener('contextmenu', function() {
+			dom.addEventListener('contextmenu', function(e) {
 				
 				for(var i = 0, l = elements.length; i < l; i++) {
 					(function(element, callback) {
-						contextMenu.append(element.bind('click', function(e) {
+						contextMenu.append(element.bind('click', function(e2) {
 							callback.call(this, e);
 						}));	
 					}) ($(elements[i][0]), elements[i][1]);
@@ -77,17 +77,9 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 
 
 			dom.addEventListener('contextmenu', function(e) {
-
 				contextMenu.menu({
 					select: function(event, ui) {
 						var moduleName = ui.item.attr('name');
-						/*else if(ui.item.hasClass('ci-item-refresh'))
-							document.location.href = document.location.href;
-						else if (ui.item.hasClass('ci-item-configureentrypoint'))
-							configureEntryPoint();
-						else if(ui.item.hasClass('ci-item-configureactions'))
-							configureActions();
-*/
 					}
 				});
 				e.preventDefault();
