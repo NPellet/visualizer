@@ -24,23 +24,18 @@ define(['jquery'], function($) {
 		this.currentAction = false;
 
 		if(axis) {
-
 			for(var i in axis) {
-		
 				for(var j = 0, l = axis[i].length; j < l; j++) {
-
 					switch(i) {
 						case 'top': funcName = 'setTopAxis'; var axisInstance = new GraphXAxis(this, 'top', axis[i][j]); break;
 						case 'bottom': funcName = 'setBottomAxis';  var axisInstance = new GraphXAxis(this, 'bottom', axis[i][j]); break;
 						case 'left': funcName = 'setLeftAxis';  var axisInstance = new GraphYAxis(this, 'left', axis[i][j]);break;
 						case 'right': funcName = 'setRightAxis';  var axisInstance = new GraphYAxis(this, 'right', axis[i][j]); break;
 					}
-
 					this[funcName](axisInstance, j);
 				}
 			}
 		}
-
 	}
 
 	Graph.extendPrototype = function(toWhat, fromWhat) {
@@ -70,7 +65,9 @@ define(['jquery'], function($) {
 			lineToZero: false,
 
 			fontSize: 12,
-			fontFamily: 'Myriad Pro, Helvetica, Arial'
+			fontFamily: 'Myriad Pro, Helvetica, Arial',
+
+			addLabelOnClick: false
 		},
 
 
@@ -202,6 +199,19 @@ define(['jquery'], function($) {
 					self.handleClick(coords.x,coords.y,e);
 				}, 200);
 			});
+
+			if(require)
+				require(['util/context'], function(Context) {
+					Context.listen(self.rectEvent, [
+						['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Add tracking line</a></li>', 
+						function(e) {
+							e.preventDefault();
+							e.stopPropagation();
+
+							self.addTrackingLine();
+						}]
+					]);
+				});
 
 			document.addEventListener('keydown', function(e) {
 				var code = e.keyCode;
@@ -343,14 +353,15 @@ define(['jquery'], function($) {
 
 		handleClick: function(x, y, e) {
 			
+			if(!this.options.addLabelOnClick)
+				return;
+
 			if(this.currentAction !== false)
 				return;
 
 			for(var i = 0, l = this.series.length; i < l; i++) {
-				
 				this.series[i].addLabelX(this.series[i].getXAxis().getVal(x - this.getPaddingLeft()));
 			}
-
 		},
 
 
@@ -2028,6 +2039,7 @@ define(['jquery'], function($) {
 
 
 		init: function(graph, name, options) {
+			
 			this.graph = graph;
 			this.name = name;
 			this.options = $.extend(true, {}, GraphSerie.prototype.defaults, options);
