@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing'], function(Default, Graph, Traversing) {
+define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/urldata'], function(Default, Graph, Traversing, LRU) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -47,7 +47,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing'], functio
 				},
 
 				title: '',
-				zoomMode: 'x',
+				zoomMode: 'xy',
 				defaultMouseAction: 'zoom',
 				defaultWheelAction: 'none',
 				lineToZero: false,
@@ -64,7 +64,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing'], functio
 				onMouseMoveData: function(e, val) {
 
 					for(var i in val) {
-					    $.getJSON('http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php', {id: i, date: val[i].xBefore}, function(data) {
+						LRU.get('http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=' + i +'&date=' + val[i].xBefore).done(function(data) {
 					    	for(var i in data) {
 					        	self.doIv(i, data[i], self.graphs[0].getSerie(i).getLineColor());
 					    	}
@@ -205,32 +205,33 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing'], functio
 			addSerie: function(value) {
 				
 				value = Traversing.getValueIfNeeded(value);
-				
+				var options = { trackMouse: true };
+
 				this.onActionReceive.removeSerieByName.call(this, value.name);
 				var color = this.getNextColor();
 
 				this.series[value.name] = [];
 
-				var serie = this.graphs[0].newSerie(value.name);
+				var serie = this.graphs[0].newSerie(value.name, options);
 				serie.setLineColor(color);
 				serie.autoAxis();
 				
 				serie.setData(value.curves.jsc);
 				this.series[value.name].push(serie);
 
-				var serie = this.graphs[1].newSerie(value.name);
+				var serie = this.graphs[1].newSerie(value.name, options);
 				serie.setLineColor(color);
 				serie.autoAxis();
 				serie.setData(value.curves.voc);
 				this.series[value.name].push(serie);
 
-				var serie = this.graphs[2].newSerie(value.name);
+				var serie = this.graphs[2].newSerie(value.name, options);
 				serie.setLineColor(color);
 				serie.autoAxis();
 				serie.setData(value.curves.ff);
 				this.series[value.name].push(serie);
 
-				var serie = this.graphs[3].newSerie(value.name);
+				var serie = this.graphs[3].newSerie(value.name, options);
 				serie.setLineColor(color);
 				serie.autoAxis();
 				serie.setData(value.curves.eff);
