@@ -1,6 +1,6 @@
 
 // LRU
-define(['jquery'], function() {
+define(['jquery', 'util/debug'], function($, Debug) {
 
 	var memory = {}, 
 		memoryHead = {}, 
@@ -34,7 +34,7 @@ define(['jquery'], function() {
 			if(memory[store][index])
 				return getFromMemory(store, index);
 
-			toStore = { data: data };
+			toStore = { data: { data: data, timeout: Date.now() } };
 
 			if(typeof head == "undefined") {
 				toStore.prev = toStore;
@@ -218,7 +218,7 @@ define(['jquery'], function() {
 
 			var store = db.transaction(['lru'], 'readwrite').objectStore('lru');
 
-			var storingRequest = store.put({ data: data, index: storeName + index, key: index, store: storeName });
+			var storingRequest = store.put({ data: { data: data, timeout: Date.now() }, index: storeName + index, key: index, store: storeName });
 			var lruGet = store.get('__lrudata' + storeName);
 			lruGet.onsuccess = function(e) {
 				var lru = e.target.result;
