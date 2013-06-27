@@ -81,7 +81,7 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 		var type = getType(element);
 		if(element.url) {
 			//var ajaxType = typeof Structures[type] == "object" ? 'json' : 'text';
-			require(['util/urlData'], function(urlData) {
+			require(['util/urldata'], function(urlData) {
 				urlData.get(element.url, false, element.timeout).then(function(data) {
 					deferred.resolve(data);
 				}, function(data) {
