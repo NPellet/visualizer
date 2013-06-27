@@ -21,6 +21,16 @@ define(['jquery'], function($) {
 		this.doDom();
 		this.registerEvents();
 
+		
+		this.trackingLines = {
+			id: 0,
+			current: false,
+			dasharray: [false, "5, 5", "5, 1", "1, 5"],
+			currentDasharray: [],
+			vertical: [],
+			horizontal: []
+		}
+		
 		this.currentAction = false;
 
 		if(axis) {
@@ -67,7 +77,9 @@ define(['jquery'], function($) {
 			fontSize: 12,
 			fontFamily: 'Myriad Pro, Helvetica, Arial',
 
-			addLabelOnClick: false
+			addLabelOnClick: false,
+
+			onVerticalTracking: false
 		},
 
 
@@ -164,9 +176,10 @@ define(['jquery'], function($) {
 
 			this.dom.addEventListener('mousedown', function(e) {
 				e.preventDefault();
+				if(e.which == 3)
+					return;
 
 				var coords = self.getXY(e);
-
 				self.handleMouseDown(coords.x,coords.y,e);
 			});
 
@@ -202,13 +215,13 @@ define(['jquery'], function($) {
 
 			if(require)
 				require(['util/context'], function(Context) {
-					Context.listen(self.rectEvent, [
+					Context.listen(self.dom, [
 						['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Add tracking line</a></li>', 
 						function(e) {
 							e.preventDefault();
 							e.stopPropagation();
-
-							self.addTrackingLine();
+							var coords = self.getXY(e);
+							self.addTrackingLine(coords, true);
 						}]
 					]);
 				});
@@ -326,8 +339,11 @@ define(['jquery'], function($) {
 					if(this.series[i].labelDragging)
 						this.series[i].handleLabelMainMove(x, y);
 				}
+			} else if(this.currentAction == 'draggingVerticalLine') {
+				var obj = this.trackingLines.current;
+				if(obj)
+					this.moveTrackingLine(obj, x - this.getPaddingLeft());
 			}
-
 
 			return results;
 		},
@@ -366,13 +382,22 @@ define(['jquery'], function($) {
 
 
 		handleMouseDown: function(x,y,e) {
+			var $target = $(e.target);
+
 
 			if((this.options.defaultMouseAction == 'drag' && e.shiftKey == false)) {
 				this.currentAction = 'dragging';
 				this._draggingX = x;
 				this._draggingY = y;
 
+			} else if($target.attr('class') == 'verticalLine') {
+
+				this.currentAction = 'draggingVerticalLine';
+				this.trackingLines.current = this.trackingLines.vertical[$target.data('trackinglineid')];
+				return;
+
 			} else {
+
 				var zoomMode = this.getZoomMode();
 
 				if(zoomMode) {
@@ -401,7 +426,6 @@ define(['jquery'], function($) {
 
 		handleMouseUp: function(x, y, e) {
 
-
 			if(this.currentAction == 'dragging') {
 				this.currentAction = false;
 			} else if(this.currentAction == 'zooming') {
@@ -424,7 +448,61 @@ define(['jquery'], function($) {
 						this.series[i].labelDragging = false;
 				}
 				this.currentAction = false;
+			} else if(this.currentAction = 'draggingVerticalLine') {
+
+				this.moveTrackingLine(this.trackingLines.current, this.getXY(e).x - this.getPaddingLeft())
+				this.currentAction = false;
+				this.trackingLines.current = false;
 			}
+		},
+
+		getTrackingKeys: function(value, vertical) {
+
+		},
+
+		addTrackingLine: function(pos, vertical) {
+
+			var nextDashArray = this.trackingLines.dasharray.shift();
+			this.trackingLines.currentDasharray.push(nextDashArray);
+
+			if(vertical) {
+				pos.x -= this.getPaddingLeft();
+				var val = this.getXAxis().getVal(pos.x);
+
+				var lineDom = document.createElementNS(this.ns, 'line');
+				lineDom.setAttribute('y1', this.getYAxis().getMinPx());
+				lineDom.setAttribute('y2', this.getYAxis().getMaxPx());
+				lineDom.setAttribute('stroke', 'black');
+				lineDom.setAttribute('class', 'verticalLine');
+				if(nextDashArray)
+					lineDom.setAttribute('stroke-dasharray', nextDashArray);
+				lineDom.style.cursor = 'ew-resize';
+				lineDom.setAttribute('data-trackinglineid', this.trackingLines.vertical.length);
+
+				this.shapeZone.appendChild(lineDom);
+
+				var line = {
+					id: ++this.trackingLines.id,
+					line: lineDom,
+					dasharray: nextDashArray
+				}
+
+				this.trackingLines.vertical.push(line);
+				this.moveTrackingLine(line, pos.x);
+			}
+		},
+
+		moveTrackingLine: function(line, px) {
+		
+			var val = this.getXAxis().getVal(px);
+			
+			if(val > this.getXAxis().getActualMax() || val < this.getXAxis().getActualMin())
+				return;
+			line.line.setAttribute('x1', px);
+			line.line.setAttribute('x2', px);
+			if(!this.options.onVerticalTracking)
+				return;
+			this.options.onVerticalTracking(line.id, val, line.dasharray);
 		},
 
 
@@ -2039,7 +2117,7 @@ define(['jquery'], function($) {
 
 
 		init: function(graph, name, options) {
-			
+
 			this.graph = graph;
 			this.name = name;
 			this.options = $.extend(true, {}, GraphSerie.prototype.defaults, options);
@@ -2552,6 +2630,27 @@ define(['jquery'], function($) {
 			this.labelDragging = false;
 		},
 
+		searchClosestValue: function(valX) {
+
+			for(var i = 0; i < this.data.length; i++) {
+				if((valX <= this.data[i][this.data[i].length - 2] && valX > this.data[i][0])) {
+					xMinIndex = this._searchBinary(valX, this.data[i], false);
+				} else if((valX >= this.data[i][this.data[i].length - 2] && valX < this.data[i][0])) {
+					xMinIndex = this._searchBinary(valX, this.data[i], true);
+				} else 
+					continue;
+
+				return {
+					xMin: this.data[i][xMinIndex],
+					xMax: this.data[i][xMinIndex + 2],
+					yMin: this.data[i][xMinIndex + 1],
+					yMax: this.data[i][xMinIndex + 3]
+				}
+			}
+
+		},
+
+
 		handleMouseMove: function(x, doMarker) {
 
 			
@@ -2561,29 +2660,18 @@ define(['jquery'], function($) {
 				yMin, 
 				xMax, 
 				yMax;
- 
-			for(var i = 0; i < this.data.length; i++) {
-				if((valX <= this.data[i][this.data[i].length - 2] && valX > this.data[i][0])) {
-					xMinIndex = this._searchBinary(valX, this.data[i], false);
-				} else if((valX >= this.data[i][this.data[i].length - 2] && valX < this.data[i][0])) {
-					xMinIndex = this._searchBinary(valX, this.data[i], true);
-				} else 
-					continue;
+ 			
+ 			var value = this.searchClosestValue(valX);
+ 			if(!value)
+ 				return;
 
-				xMin = this.data[i][xMinIndex];
-				xMax = this.data[i][xMinIndex + 2];
-				yMin = this.data[i][xMinIndex + 1];
-				yMax = this.data[i][xMinIndex + 3];
-			}
-
-			var ratio = (valX - xMin) / (xMax - xMin);
-			var intY = ((1 - ratio) * yMin + ratio * yMax);
+			var ratio = (valX - value.xMin) / (value.xMax - value.xMin);
+			var intY = ((1 - ratio) * value.yMin + ratio * value.yMax);
 
 			if(doMarker && this.options.trackMouse) {
 				if(!xMin)
 					return false;
 				else {
-					
 					
 					var x = this.getX(this.getFlip() ? intY : valX);
 					var y = this.getY(this.getFlip() ? valX : intY);
@@ -2693,11 +2781,14 @@ define(['jquery'], function($) {
 					return "5, 5";
 				break;
 
-				default:
+				case false:
 				case 1:
 					return false;
 				break;
 
+				default:
+					return this.options.lineStyle;
+				break;
 			}
 		},
 
