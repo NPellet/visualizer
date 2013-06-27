@@ -1,6 +1,6 @@
 define([], function() {
 
-	var debugLevel = 0;
+	var debugLevel = -1;
 
 	return {
 		setDebugLevel: function(level) {
