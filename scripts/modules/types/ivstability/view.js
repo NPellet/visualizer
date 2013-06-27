@@ -19,13 +19,18 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 			this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
 		},
 
-		doIv: function(name, val, color) {
-			if(!this.ivseries[name]) {
-				this.ivseries[name] = this.iv.newSerie(name);
-				this.ivseries[name].autoAxis();
+		doIv: function(lineId, name, val, color, dashing) {
+
+			if(!this.ivseries[name])
+				this.ivseries[name] = {};
+
+			if(!this.ivseries[name][lineId]) {
+				this.ivseries[name][lineId] = this.iv.newSerie(name);
+				this.ivseries[name][lineId].autoAxis();
 			}
-			this.ivseries[name].setData(val.data);
-			this.ivseries[name].setLineColor(color);
+			this.ivseries[name][lineId].setData(val.data);
+			this.ivseries[name][lineId].setLineColor(color);
+			this.ivseries[name][lineId].setLineStyle(dashing);
 			this.iv.redraw();
 			this.iv.drawSeries();
 		},
@@ -62,11 +67,22 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 				},
 
 				onMouseMoveData: function(e, val) {
-
-					for(var i in val) {
+					/*console.log(val);*/
+					/*for(var i in val) {
 						LRU.get('http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=' + i +'&date=' + val[i].xBefore).done(function(data) {
 					    	for(var i in data) {
 					        	self.doIv(i, data[i], self.graphs[0].getSerie(i).getLineColor());
+					    	}
+					    });
+					}*/
+				},
+
+				onVerticalTracking: function(lineId, val, dasharray) {
+
+					for(var i in self.series) {
+						LRU.get('http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=' + i +'&date=' + val).done(function(data) {
+					    	for(var i in data) {
+					        	self.doIv(lineId, i, data[i], self.graphs[0].getSerie(i).getLineColor(), dasharray);
 					    	}
 					    });
 					}
@@ -264,7 +280,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 				if(!this.ivseries[serieName])
 					return;
 
-				this.ivseries[serieName].kill();
+				for(var i in this.ivseries[serieName])
+					this.ivseries[serieName][i].kill();
+
 				delete this.ivseries[serieName];
 			}
 		},
