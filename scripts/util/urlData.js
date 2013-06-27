@@ -1,6 +1,6 @@
 
 define(['jquery', 'util/lru', 'util/debug'], function($, LRU, Debug) {
-Debug.setDebugLevel(0);
+
 	var pendings = {};
 
 	function doByUrl(def, url, force) {

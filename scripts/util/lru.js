@@ -228,25 +228,32 @@ define(['jquery', 'util/debug'], function($, Debug) {
 				if(!lru.data)
 					lru.data = {};
 
-				lru['_count'] = 0 || lru['_count'] + 1;				
+				if(!lru.data[index]) {
+					lru['_count'] = 0 || lru['_count'] + 1;
+				}
+				
 				lru.data[index] = Date.now();
 
 				// We overflow the limit
-				if(lru['_count'] > lru['_limit']) {
+				if(lru._count > lru._limit) {
 					// We have to look for the oldest timestamp
 					var time = Date.now(), oldestIndex;
 					for(var i in lru.data) {
-						if(i != '_count' && i != '_limit' && lru.data[i] < time) {
+						if(lru.data[i] < time) {
 							time = lru.data[i];
 							oldestIndex = i;
 						}
 					}
-					delete lru.data[i];
+			
+					delete lru.data[oldestIndex];
+					
+					lru._count--;
 					// The oldest index is now known
-					store.remove(oldestIndex);
+					var deleteRequest = store.delete(storeName + oldestIndex);
 				}
 				store.put({index: '__lrudata' + storeName, data: lru.data, store: storeName, key: '__lrudata', _count: lru._count, _limit: lru._limit });
 			}
+		
 			deferred.resolve(data);
 		}, function() {
 			console.warn('IDB opening failure');
@@ -257,7 +264,7 @@ define(['jquery', 'util/debug'], function($, Debug) {
 	}
 
 	function emptyDb(store) {
-		db.transaction(['lru'], 'readwrite').objectStore('lru').index('store').delete(store);
+		db.transaction(['lru'], 'readwrite').objectStore('lru').delete(store);
 	}
 
 	return {
