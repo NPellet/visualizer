@@ -501,6 +501,9 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 		},
 
 		localSnapshot: function(data) {
+			if(!data)
+				return;
+			
 			this._localSave(data, 'stored', data._name || 'Master').pipe(function(element) {
 				element._time = false; // We saved a snapshot, but have to reload the head (we continue working on the head)
 				return element;

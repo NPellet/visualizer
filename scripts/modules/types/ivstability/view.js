@@ -184,9 +184,15 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 			return this.colors.shift();
 		},
 
-		addLegend: function(description, color) {
+		editCellComment: function(cellId, comment) {
+			$.get('http://lpidb.epfl.ch/content/ajax/setcellcomment.ajax.php', { cellid: cellId, comment: comment });
+		},
+
+		addLegend: function(id, name, description, color) {
 			var div = $("<div />");
 			this.legends[description] = div;
+			var self = this;
+			var defaultText = "(Insert a comment here)";
 
 			square = $("<div />").css({
 				width: 16,
@@ -198,18 +204,37 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 				marginBottom: '10px'
 			});
 
-			descriptionDom = $("<div />").css({
+			nameDom = $("<div />").css({
 				marginLeft: '21px'
+			}).text(name);
+console.log(description);
+			descriptionDom = $("<div />").css({
+				marginLeft: '21px',
+			}).attr('contentEditable', 'true').text(description || defaultText).bind('focus', function() {
+				if($(this).text() == defaultText)
+					$(this).text("").css({ color: 'black', fontStyle: 'normal' });
 
-			}).text(description);
+			}).bind('blur', function() {
+				var text = $(this).text();
+				if(text == "" || text == null || text == defaultText)
+					$(this).text(defaultText).css({ color: 'grey', fontStyle: 'italic' });
+				else {
+					self.editCellComment(id, text);
+				}
+
+			}).bind('change', function() {
+				
+			}).trigger('blur');
+
+
+
 
 			clearDom = $("<div />").css({
 				'clear': 'both'
 			});
 
-			div.append(square).append(descriptionDom).append(clearDom);
+			div.append(square).append(nameDom).append(descriptionDom).append(clearDom);
 			this.legendDom.append(div);
-
 		},
 
 		removeLegend: function(name) {
@@ -259,12 +284,12 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 					this.graphs[i].drawSeries();
 				}
 
-				this.addLegend(value.description, color);
+				this.addLegend(value.id, value.name, value.description, color);
 			},
 
 			removeSerie: function(serie) {
 				var val = Traversing.getValueIfNeeded(serie);
-				this.removeLegend(val.description);
+				this.removeLegend(val.cellid);
 				this.onActionReceive.removeSerieByName.call(this, val.name);
 			},
 

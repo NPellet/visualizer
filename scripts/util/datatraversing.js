@@ -76,7 +76,7 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 	function fetchElementIfNeeded(element) {
 		var deferred = $.Deferred();
 		
-		if(typeof element == "undefined")
+		if(typeof element == "undefined" || element == null)
 			return deferred.reject();
 		var type = getType(element);
 		if(element.url) {
