@@ -212,9 +212,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 			descriptionDom = $("<div />").css({
 				marginLeft: '35px',
 				marginTop: '2px'
-			}).attr('contentEditable', 'true').text(description || defaultText).bind('focus', function() {
+			}).attr('contentEditable', 'true').text(description || defaultText)
+
+			.bind('mousedown', function() {
 				if($(this).text() == defaultText)
-					$(this).text("").css({ color: 'black', fontStyle: 'normal' });
+					$(this).text("").css({ color: 'black', fontStyle: 'normal' }).focus();
 
 			}).bind('keypress', function(e) {
 
