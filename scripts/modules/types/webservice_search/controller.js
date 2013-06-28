@@ -34,7 +34,6 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			
 
 			this.request = URL.get(url, 30).done(function(data) {
-				console.log(data);
 				self.request = null;
 				self.onSearchDone(data);
 			});

@@ -214,6 +214,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 
 		removeLegend: function(name) {
 			this.legends[name].remove();
+			delete this.legends[name];
 		},
 
 		onActionReceive:  {
