@@ -195,21 +195,23 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 			var defaultText = "(Insert a comment here)";
 
 			square = $("<div />").css({
-				width: 16,
-				height: 16,
+				width: 30,
+				height: 30,
 				backgroundColor: color,
 				float: 'left',
 				'position': 'relative',
-				marginTop: '-3px',
+				marginTop: '0px',
 				marginBottom: '10px'
 			});
 
 			nameDom = $("<div />").css({
-				marginLeft: '21px'
+				marginLeft: '35px',
+				fontSize: '1.1em'
 			}).text(name);
 
 			descriptionDom = $("<div />").css({
-				marginLeft: '21px',
+				marginLeft: '35px',
+				marginTop: '2px'
 			}).attr('contentEditable', 'true').text(description || defaultText).bind('focus', function() {
 				if($(this).text() == defaultText)
 					$(this).text("").css({ color: 'black', fontStyle: 'normal' });
