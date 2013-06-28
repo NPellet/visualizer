@@ -261,35 +261,35 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 				value = Traversing.getValueIfNeeded(value);
 				var options = { trackMouse: true };
 
-				this.onActionReceive.removeSerieByName.call(this, value.name);
+				this.onActionReceive.removeSerieByName.call(this, value.id);
 				var color = this.getNextColor();
 
-				this.series[value.name] = [];
+				this.series[value.id] = [];
 
-				var serie = this.graphs[0].newSerie(value.name, options);
+				var serie = this.graphs[0].newSerie(value.id, options);
 				serie.setLineColor(color);
 				serie.autoAxis();
 				
 				serie.setData(value.curves.jsc);
-				this.series[value.name].push(serie);
+				this.series[value.id].push(serie);
 
-				var serie = this.graphs[1].newSerie(value.name, options);
+				var serie = this.graphs[1].newSerie(value.id, options);
 				serie.setLineColor(color);
 				serie.autoAxis();
 				serie.setData(value.curves.voc);
-				this.series[value.name].push(serie);
+				this.series[value.id].push(serie);
 
-				var serie = this.graphs[2].newSerie(value.name, options);
+				var serie = this.graphs[2].newSerie(value.id, options);
 				serie.setLineColor(color);
 				serie.autoAxis();
 				serie.setData(value.curves.ff);
-				this.series[value.name].push(serie);
+				this.series[value.id].push(serie);
 
-				var serie = this.graphs[3].newSerie(value.name, options);
+				var serie = this.graphs[3].newSerie(value.id, options);
 				serie.setLineColor(color);
 				serie.autoAxis();
 				serie.setData(value.curves.eff);
-				this.series[value.name].push(serie);
+				this.series[value.id].push(serie);
 
 				for(var i = 0; i < 4; i++) {
 					this.graphs[i].redraw();
