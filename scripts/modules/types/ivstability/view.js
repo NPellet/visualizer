@@ -207,12 +207,20 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 			nameDom = $("<div />").css({
 				marginLeft: '21px'
 			}).text(name);
-console.log(description);
+
 			descriptionDom = $("<div />").css({
 				marginLeft: '21px',
 			}).attr('contentEditable', 'true').text(description || defaultText).bind('focus', function() {
 				if($(this).text() == defaultText)
 					$(this).text("").css({ color: 'black', fontStyle: 'normal' });
+
+			}).bind('keypress', function(e) {
+
+				if(e.keyCode == 13) {
+					e.preventDefault();
+					$(this).trigger('blur');
+					return false;
+				}
 
 			}).bind('blur', function() {
 				var text = $(this).text();
