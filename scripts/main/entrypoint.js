@@ -178,6 +178,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 		require(['forms/formfactory', 'jqueryui', 'forms/button'], function(FormFactory, jqueryui, Button) {
 
 			var div = $('<div></div>').dialog({ modal: true, width: '80%', title: "Edit entry point"});
+			div.parent().css('zIndex', 10000)
 			var options = [];
 
 			for(var i in data)
@@ -268,7 +269,8 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 		
 		require(['forms/formfactory', 'jqueryui', 'forms/button'], function(FormFactory, jqueryui, Button) {
 
-			var div = $('<div></div>').dialog({ modal: true, width: '80%', title: "Edit module preferences"});
+			var div = $('<div></div>').dialog({ modal: true, width: '80%', title: "Edit actions"});
+			div.parent().css('zIndex', 10000);
 
 
 			FormFactory.newform(div, {
