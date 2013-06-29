@@ -24,7 +24,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 			view = JSON.stringify(view),
 			message = [];
 
-		if(viewhandler._savedLocal != struc && viewserver._savedServer != struc)
+		if(viewhandler._savedLocal != view && viewserver._savedServer != view)
 			dommessage.view = true;
 
 		if(datahandler._savedLocal != data && datahandler._savedServer != data)
