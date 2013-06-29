@@ -250,6 +250,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 		},
 
 		removeLegend: function(name) {
+			if(!this.legends[name])
+				return;
+
 			this.legends[name].remove();
 			delete this.legends[name];
 		},
@@ -301,7 +304,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 
 			removeSerie: function(serie) {
 				var val = Traversing.getValueIfNeeded(serie);
-				this.removeLegend(val.cellid);
+				this.removeLegend(val.id);
 				this.onActionReceive.removeSerieByName.call(this, val.name);
 			},
 
