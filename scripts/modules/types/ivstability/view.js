@@ -190,7 +190,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 
 		addLegend: function(id, name, description, color) {
 			var div = $("<div />");
-			this.legends[description] = div;
+			this.legends[id] = div;
 			var self = this;
 			var defaultText = "(Insert a comment here)";
 
