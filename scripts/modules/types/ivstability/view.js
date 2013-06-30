@@ -54,17 +54,12 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 				title: '',
 				zoomMode: 'xy',
 				defaultMouseAction: 'zoom',
+				defaultMouseAction: 'rangeX',
 				defaultWheelAction: 'none',
 				lineToZero: false,
 				fontSize: 12,
 				fontFamily: 'Myriad Pro, Helvetica, Arial',
 
-				close: {
-					left: true,
-					right: true,
-					top: true,
-					bottom: true
-				},
 
 				onMouseMoveData: function(e, val) {
 					/*console.log(val);*/

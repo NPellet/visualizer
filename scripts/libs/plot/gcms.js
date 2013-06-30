@@ -29,15 +29,7 @@ define(['jquery'], function($) {
 			currentDasharray: [],
 			vertical: [],
 			horizontal: []
-		};
-
-		this.ranges = {
-			current: undefined,
-			x: [],
-			y: [],
-			countX: 0,
-			countY: 0
-		};
+		}
 		
 		this.currentAction = false;
 
@@ -77,7 +69,7 @@ define(['jquery'], function($) {
 
 			title: '',
 			zoomMode: false,
-			defaultMouseAction: 'drag', // rangeX, rangeY
+			defaultMouseAction: 'drag',
 			defaultWheelAction: 'zoomY',
 
 			lineToZero: false,
@@ -87,11 +79,7 @@ define(['jquery'], function($) {
 
 			addLabelOnClick: false,
 
-			onVerticalTracking: false,
-			onHorizontalTracking: false,
-
-			rangeLimitX: 1,
-			rangeLimitY: 0,
+			onVerticalTracking: false
 		},
 
 
@@ -99,10 +87,6 @@ define(['jquery'], function($) {
 
 			this.dom = document.createElementNS(this.ns, 'svg');
 			this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
-			this.dom.setAttribute('xmlns', "http://www.w3.org/2000/xmlns");
-
-
-
 			this._dom.appendChild(this.dom);
 
 			this.dom.setAttribute('font-size', this.options.fontSize);
@@ -359,12 +343,6 @@ define(['jquery'], function($) {
 				var obj = this.trackingLines.current;
 				if(obj)
 					this.moveTrackingLine(obj, x - this.getPaddingLeft());
-
-			} else if(this.currentAction == 'rangeX' && this.ranges.current) {
-				this.ranges.current.rect.setAttribute('x', Math.min(x, this.ranges.current.xStart));
-				this.ranges.current.rect.setAttribute('width', Math.abs(this.ranges.current.xStart - x));
-				this.ranges.current.use1.setAttribute('transform', 'translate(' + Math.round(Math.min(x, this.ranges.current.xStart) - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
-				this.ranges.current.use2.setAttribute('transform', 'translate(' + Math.round(Math.max(x, this.ranges.current.xStart) - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
 			}
 
 			return results;
@@ -402,47 +380,6 @@ define(['jquery'], function($) {
 			}
 		},
 
-		makeHandle: function() {
-
-			var rangeHandle = document.createElementNS(this.ns, 'g');
-			rangeHandle.setAttribute('id', "rangeHandle" + this._creation);
-			var r = document.createElementNS(this.ns, 'rect');
-			r.setAttribute('rx', 0);
-			r.setAttribute('ry', 0);
-			r.setAttribute('stroke', 'black');
-			r.setAttribute('fill', 'white');
-
-			r.setAttribute('width', 10);
-			r.setAttribute('height', 20);
-			r.setAttribute('x', 0);
-			r.setAttribute('y', 0);
-			r.setAttribute('shape-rendering', 'crispEdges');
-			r.setAttribute('cursor', 'ew-resize');
-			rangeHandle.appendChild(r);
-
-
-			var l = document.createElementNS(this.ns, 'line');
-			l.setAttribute('x1', 4);
-			l.setAttribute('x2', 4);
-			l.setAttribute('y1', 4);
-			l.setAttribute('y2', 18);
-			l.setAttribute('stroke', 'black');
-			l.setAttribute('shape-rendering', 'crispEdges');
-			l.setAttribute('cursor', 'ew-resize');
-			rangeHandle.appendChild(l);
-
-			var l = document.createElementNS(this.ns, 'line');
-			l.setAttribute('x1', 6);
-			l.setAttribute('x2', 6);
-			l.setAttribute('y1', 4);
-			l.setAttribute('y2', 18);
-			l.setAttribute('stroke', 'black');
-			l.setAttribute('shape-rendering', 'crispEdges');
-			l.setAttribute('cursor', 'ew-resize');
-			rangeHandle.appendChild(l);
-
-			return rangeHandle;
-		},
 
 		handleMouseDown: function(x,y,e) {
 			var $target = $(e.target);
@@ -459,43 +396,6 @@ define(['jquery'], function($) {
 				this.trackingLines.current = this.trackingLines.vertical[$target.data('trackinglineid')];
 				return;
 
-			} else if(this.options.defaultMouseAction == 'rangeX' && e.shiftKey == false) {
-
-				if(this.ranges.countX == this.options.rangeLimitX)
-					return;
-
-				this.currentAction = 'rangeX';
-				var rangeGroup = document.createElementNS(this.ns, 'g');
-				var rangeRect = document.createElementNS(this.ns, 'rect');
-				rangeRect.setAttribute('y', 0);
-				rangeRect.setAttribute('height', this.getDrawingHeight() - this.shift[0] - this.shift[3]);
-				rangeRect.setAttribute('width', 0);
-				rangeRect.setAttribute('x', x);
-				rangeRect.setAttribute('fill', 'rgba(27, 122, 224, 0.3)');
-				rangeRect.setAttribute('stroke', 'rgba(27, 122, 224, 0.9)');
-
-
-				rangeGroup.appendChild(rangeRect);
-				var use = document.createElementNS(this.ns, 'use');
-				var use = this.makeHandle();
-				use.setAttribute('transform', 'translate(' + (x - 6) + " " + ((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
-				rangeGroup.appendChild(use);
-				var use2 = this.makeHandle();
-				use2.setAttribute('transform', 'translate(' + (x - 6) + " " + ((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
-
-				rangeGroup.appendChild(use2);
-
-				this.ranges.current = {
-					group: rangeGroup,
-					rect: rangeRect,
-					use1: use,
-					use2: use2,
-					xStart: x
-				};
-
-				this.shapeZone.appendChild(rangeGroup);
-				console.log(this.shapeZone);
-				
 			} else {
 
 				var zoomMode = this.getZoomMode();
@@ -548,19 +448,11 @@ define(['jquery'], function($) {
 						this.series[i].labelDragging = false;
 				}
 				this.currentAction = false;
-			} else if(this.currentAction == 'draggingVerticalLine') {
+			} else if(this.currentAction = 'draggingVerticalLine') {
 
 				this.moveTrackingLine(this.trackingLines.current, this.getXY(e).x - this.getPaddingLeft())
 				this.currentAction = false;
 				this.trackingLines.current = false;
-			} else if(this.currentAction == 'rangeX' && this.ranges.current) {
-				this.ranges.current.xEnd = x;
-				this.currentAction = false;
-				this.ranges.x.push(this.ranges.current);
-				//this.ranges.current.use1.setAttribute('data-rangex-id', this.ranges.x.length - 1);
-				//this.ranges.current.use2.setAttribute('data-rangex-id', this.ranges.x.length - 1);
-				this.ranges.current = null;
-				this.ranges.countX++;
 			}
 		},
 
