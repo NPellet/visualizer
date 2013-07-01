@@ -19,6 +19,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 			Header.addButtons(buttons, EntryPoint.getDataHandler(), EntryPoint.getViewHandler(), EntryPoint.getData(), EntryPoint.getView());
 			
+			
 			if(EntryPoint.getDataHandler())
 				EntryPoint.getDataHandler().updateButtons();
 

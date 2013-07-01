@@ -1,5 +1,5 @@
 
-define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'util/datatraversing', 'util/versionhandler'], function($, Repository, Grid, API, Context, Traversing, VersionHandler) {
+define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'util/datatraversing', 'util/versionhandler', 'modules/modulefactory'], function($, Repository, Grid, API, Context, Traversing, VersionHandler, ModuleFactory) {
 
 	var view, data, viewhandler, datahandler;
 	var _viewLoaded, _dataLoaded;
@@ -73,14 +73,18 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 			Grid.addModuleFromJSON(view.modules[i]);
 
 		Grid.checkDimensions();
+
 		if(noLoad)
 			return;
 		
+		view.modules = ModuleFactory.getDefinitions();
 		viewLoaded();
 	}
 
-	function doData(d) {
+	function doData(d, noLoad) {
 		data = d;
+		if(noLoad)
+			return; 
 		dataLoaded();
 	}
 
@@ -98,6 +102,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 	function _check(reloading) {
 
 		var self = this;
+		
 		if(_dataLoaded && _viewLoaded) {
 
 			if(_onLoaded && !reloading) {
@@ -143,7 +148,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 				if(!view.variables[i].jpath && view.variables[i].url) {
 
 					(function(variable) {				
-						Traversing.fetchElementIfNeeded(self.data[variable.varname]).done(function(value) {
+						Traversing.fetchElementIfNeeded(variable).done(function(value) {
 							RepositoryData.set(variable.varname, value);
 						});
 					}) (view.variables[i]);
@@ -384,16 +389,16 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 				datahandler = new VersionHandler(urls['results'], urls['resultBranch'], urls['dataURL']);
 				datahandler.setType('data');
 				datahandler.onLoaded = function(data, path) {
-					doData(data);
+					doData(data || {});
 				}
 				datahandler.onReload = function(data, path) {
-					doData(data);
+					doData(data || {}, true);
 				}
 				datahandler.load();
 
 			} else if(urls['dataURL']) {
 				$.getJSON(urls['dataURL'], {}, function(results) {
-					doData(results);
+					doData(results || {});
 				});
 			} else {
 				doData({});
@@ -403,10 +408,10 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 				viewhandler = new VersionHandler(urls['views'], urls['viewBranch'], urls['viewURL']);
 				viewhandler.setType('view');
 				viewhandler.onLoaded = function(structure, path) {
-					doView(structure);
+					doView(structure || {});
 				}
 				viewhandler.onReload = function(structure, path) {
-					doView(structure, true);
+					doView(structure || {}, true);
 					RepositoryData.resendAll();
 				}
 
@@ -414,7 +419,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 
 			} else if(urls['viewURL']) {
 				$.getJSON(urls['viewURL'], {}, function(structure) {
-					doView(structure);
+					doView(structure || {});
 				});
 			} else {
 				doView({});

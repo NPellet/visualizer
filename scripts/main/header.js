@@ -22,6 +22,7 @@ define(['forms/button', 'util/util'], function(Button, Util) {
 
 				buttons[pos[j]].autosaveLocal = new Button('Autosave', function(event, val, item) {
 					handler.localAutosave(val, function() {
+						
 						return subject;
 					}, function() {
 						item.children().find('span').remove();
@@ -33,34 +34,56 @@ define(['forms/button', 'util/util'], function(Button, Util) {
 
 				buttons[pos[j]].branchLocal = new Button('Make branch', function() {
 
-					// Make here dialog
-					$("<div />").dialog({ modal: true, width: '80%', title: "Edit Vizualizer"}).biForm({}, function() {
-						var inst = this;			
-						var section = new BI.Forms.Section('cfg', { multiple: false });
-						this.addSection(section);
-						var title = new BI.Title();
-						title.setLabel('Branch name');
-						section.setTitle(title);
-						var groupfield = new BI.Forms.GroupFields.List('general');
-						section.addFieldGroup(groupfield);
-						var field = groupfield.addField({
-							type: 'Text',
-							name: 'name'
+					require(['forms/formfactory', 'jqueryui', 'forms/button'], function(FormFactory, jqueryui, Button) {
+
+						var div = $('<div></div>').dialog({ modal: true, width: '80%', title: "Make brach"});
+						div.parent().css('zIndex', 10000);
+						
+						FormFactory.newform(div, {
+							sections: {
+								'cfg': {
+									config: {
+										multiple: false,
+										title: 'Branch name'
+									},
+
+									groups: {
+										'general': {
+											config: {
+												type: 'list'
+											},
+
+											fields: [
+
+												{
+													type: 'Text',
+													name: 'name',
+													multiple: false,
+													title: 'Name'
+												}
+											]
+										}
+									}
+								}
+							}
+						}, function(form) {
+							var save = new Button('Save', function() {
+								form.dom.trigger('stopEditing');
+								var value = form.getValue();
+								handler.localBranch(subject, value.cfg[0].general[0].name[0]);	
+								form.getDom().dialog('close');
+							});
+							save.setColor('blue');
+							form.addButtonZone(save);
 						});
-						field.setTitle(new BI.Title('Branch name'));
-						var save = new Button('Save', function() {
-							inst.dom.trigger('stopEditing');
-							var value = inst.getValue();
-							CI[pos2[j]].localBranch(subject, value.cfg[0].general[0].name[0]);	
-							inst.getDom().dialog('close');
-						});
-						save.setColor('blue');
-						this.addButtonZone().addButton(save);
 					});
+
 				}, { color: 'blue' });
 
 				buttons[pos[j]].revertLocal = new Button('Revert to this version', function() {
+
 					handler.localRevert(subject);
+					
 				}, { color: 'blue' });
 
 				buttons[pos[j]].localToServer = new Button('Push to server', function(event, val, item) {
@@ -89,7 +112,7 @@ define(['forms/button', 'util/util'], function(Button, Util) {
 
 		if((datahandler || viewhandler) && (window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB)) {
 
-			makeHandlerButtons(datahandler, viewhandler);
+			makeHandlerButtons(datahandler, viewhandler, view, data);
 
 			var button = new Button('<span class="ui-icon ui-icon-gear"></span>', function() {
 				var $this = $(this);
@@ -165,42 +188,44 @@ define(['forms/button', 'util/util'], function(Button, Util) {
 		headerdom.text(configuration.title || 'No title');
 	}
 
+
+	function updateButtons(type, head, path) {
+
+		if(!buttons[type].autosaveLocal)
+			return;
+
+		if(head !== 'head' || path !== 'local')
+			buttons[type].autosaveLocal.disable();
+		else
+			buttons[type].autosaveLocal.enable();
+
+		if(path == 'local') {
+
+			buttons[type].copyToLocal.disable();
+		//	buttons[this.type].localToServer.enable();
+
+			buttons[type].snapshotLocal.enable();
+			buttons[type].branchLocal.enable();
+
+			if(head == 'head')
+				buttons[type].revertLocal.disable();
+			else
+				buttons[type].revertLocal.enable();
+			
+		} else {
+			buttons[type].copyToLocal.enable();
+		//	buttons[this.type].localToServer.disable();
+
+			buttons[type].snapshotLocal.disable();
+			buttons[type].branchLocal.disable();
+			buttons[type].revertLocal.disable();
+		}
+	}
+
 	return {
 		addButtons: addButtons,
 		makeHeaderEditable: makeHeaderEditable,
 		makeHeader: makeHeader,
-		updateButtons: function(type, head, path) {
-
-			if(!buttons[type].autosaveLocal)
-				return;
-
-			if(head !== 'head' || path !== 'local')
-				buttons[type].autosaveLocal.disable();
-			else
-				buttons[type].autosaveLocal.enable();
-
-			if(path == 'local') {
-
-				buttons[type].copyToLocal.disable();
-			//	buttons[this.type].localToServer.enable();
-
-				buttons[type].snapshotLocal.enable();
-				buttons[type].branchLocal.enable();
-
-				if(head == 'head')
-					buttons[type].revertLocal.disable();
-				else
-					buttons[type].revertLocal.enable();
-				
-			} else {
-				buttons[type].copyToLocal.enable();
-			//	buttons[this.type].localToServer.disable();
-
-				buttons[type].snapshotLocal.disable();
-				buttons[type].branchLocal.disable();
-				buttons[type].revertLocal.disable();
-			}
-		}
+		updateButtons: updateButtons
 	}
-
 });

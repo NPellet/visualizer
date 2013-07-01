@@ -288,7 +288,7 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 		},
 
 		updateButtons: function() {
-			Header.updateButtons(this.type, this.currentPath[2], this.currentPath[1])
+			Header.updateButtons(this.type, this.currentPath[3], this.currentPath[1]);
 		},
 
 		make: function(el, branch, head) {
@@ -514,7 +514,7 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 			var self = this;
 			if(this._autosaveLocal)
 				window.clearInterval(this._autosaveLocal);
-
+			
 			if(val)
 				this._autosaveLocal = window.setInterval(function() {
 					var el = callback();
@@ -522,7 +522,7 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 						if(done)
 							done();
 					});
-				}, 1000);
+				}, 10000);
 		},
 
 		// When we create a branch, we switch to the branch

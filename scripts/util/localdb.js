@@ -140,7 +140,7 @@ define(['jquery'], function($) {
 
 		storeToHead: function(type, key, branch, obj) {
 			
-			var def = $.Deferred();
+			var def = $.Deferred(), self = this;
 			type = (type == 'data' || type == "localdata") ? 'localdata' : 'localview';
 			var trans = db.transaction(type, 'readwrite');
 			var store = trans.objectStore(type);
@@ -159,8 +159,8 @@ define(['jquery'], function($) {
 				}
 				else {
 					
-					db.create(type, key, branch).done(function() {
-						db.storeToHead(type, key, branch, obj).done(function() {
+					self.create(type, key, branch).done(function() {
+						self.storeToHead(type, key, branch, obj).done(function() {
 							def.resolve(obj);
 						});
 					});

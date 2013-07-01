@@ -2778,7 +2778,8 @@ define(['jquery'], function($) {
 					xMin: this.data[i][xMinIndex],
 					xMax: this.data[i][xMinIndex + 2],
 					yMin: this.data[i][xMinIndex + 1],
-					yMax: this.data[i][xMinIndex + 3]
+					yMax: this.data[i][xMinIndex + 3],
+					xBeforeIndex: xMinIndex / 2
 				}
 			}
 
@@ -2838,12 +2839,13 @@ define(['jquery'], function($) {
 			}
 
 			return {
-				xBefore: xMin,
-				xAfter: xMax,
-				yBefore: yMin,
-				yAfter: yMax,
+				xBefore: value.xMin,
+				xAfter: value.xMax,
+				yBefore: value.yMin,
+				yAfter: value.yMax,
 				trueX: valX,
-				interpolatedY: intY
+				interpolatedY: intY,
+				xBeforeIndex: value.xBeforeIndex
 			};
 		},
 

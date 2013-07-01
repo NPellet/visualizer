@@ -9,6 +9,7 @@ define(['jquery', 'util/lru', 'util/debug'], function($, LRU, Debug) {
 		return (pendings[url] = $.ajax({
 			url: url,
 			type: 'get',
+			dataType: 'json',
 			timeout: 120000, // 2 minutes timeout
 			success: function(data) {
 
