@@ -361,10 +361,18 @@ define(['jquery'], function($) {
 					this.moveTrackingLine(obj, x - this.getPaddingLeft());
 
 			} else if(this.currentAction == 'rangeX' && this.ranges.current) {
-				this.ranges.current.rect.setAttribute('x', Math.min(x, this.ranges.current.xStart));
+
+				this.ranges.current.xMin = Math.min(x, this.ranges.current.xStart);
+				this.ranges.current.xMax = Math.max(x, this.ranges.current.xStart);
+
+				this.ranges.current.rect.setAttribute('x', this.ranges.current.xMin);
 				this.ranges.current.rect.setAttribute('width', Math.abs(this.ranges.current.xStart - x));
-				this.ranges.current.use1.setAttribute('transform', 'translate(' + Math.round(Math.min(x, this.ranges.current.xStart) - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
-				this.ranges.current.use2.setAttribute('transform', 'translate(' + Math.round(Math.max(x, this.ranges.current.xStart) - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
+				this.ranges.current.use1.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMin - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
+				this.ranges.current.use2.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMax - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
+				
+					this.ranges.current.min = this.ranges.current.use1;
+					this.ranges.current.max = this.ranges.current.use2;
+
 			}
 
 			return results;
@@ -382,8 +390,6 @@ define(['jquery'], function($) {
 				for(var i = 0, l = this.series.length; i < l; i++)
 					this.series[i].handleMouseWheel(delta, e);
 			}
-
-
 
 			this.redraw(true);
 			this.drawSeries(true);
@@ -445,7 +451,7 @@ define(['jquery'], function($) {
 		},
 
 		handleMouseDown: function(x,y,e) {
-			var $target = $(e.target);
+			var $target = $(e.target), self = this;
 
 
 			if((this.options.defaultMouseAction == 'drag' && e.shiftKey == false)) {
@@ -482,6 +488,26 @@ define(['jquery'], function($) {
 				rangeGroup.appendChild(use);
 				var use2 = this.makeHandle();
 				use2.setAttribute('transform', 'translate(' + (x - 6) + " " + ((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
+				use2.addEventListener('mousedown', function(e) {
+					var id = $(this).attr('data-rangex-id');
+					var group = self.ranges.x[id];
+					
+					group.xStart = (this == group.min) ? group.xMax : group.xMin;
+					
+					self.currentAction = 'rangeX';
+					self.ranges.current = group;
+				});
+
+				use.addEventListener('mousedown', function(e) {
+					var id = $(this).attr('data-rangex-id');
+					
+					var group = self.ranges.x[id];
+
+					
+					group.xStart  = (this == group.min) ? group.xMax : group.xMin;
+					self.currentAction = 'rangeX';
+					self.ranges.current = group;
+				});
 
 				rangeGroup.appendChild(use2);
 
@@ -493,8 +519,12 @@ define(['jquery'], function($) {
 					xStart: x
 				};
 
+				this.ranges.x.push(this.ranges.current);
+				this.ranges.current.use1.setAttribute('data-rangex-id', this.ranges.x.length - 1);
+				this.ranges.current.use2.setAttribute('data-rangex-id', this.ranges.x.length - 1);
+				this.ranges.countX++;
+
 				this.shapeZone.appendChild(rangeGroup);
-				console.log(this.shapeZone);
 				
 			} else {
 
@@ -556,11 +586,7 @@ define(['jquery'], function($) {
 			} else if(this.currentAction == 'rangeX' && this.ranges.current) {
 				this.ranges.current.xEnd = x;
 				this.currentAction = false;
-				this.ranges.x.push(this.ranges.current);
-				//this.ranges.current.use1.setAttribute('data-rangex-id', this.ranges.x.length - 1);
-				//this.ranges.current.use2.setAttribute('data-rangex-id', this.ranges.x.length - 1);
 				this.ranges.current = null;
-				this.ranges.countX++;
 			}
 		},
 
