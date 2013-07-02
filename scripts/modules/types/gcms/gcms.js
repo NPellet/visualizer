@@ -37,6 +37,51 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				defaultWheelAction: 'none',
 				lineToZero: false,
 
+				onRangeX: function(xStart, xEnd) {
+					var indexStart = self.gcSerie.searchClosestValue(xStart).xBeforeIndex;
+					var indexEnd = self.gcSerie.searchClosestValue(xEnd).xBeforeIndex;
+					var indexMin = Math.min(indexStart, indexEnd);
+					var indexMax = Math.max(indexStart, indexEnd);
+
+
+					var obj = {}, allMs = [];
+
+					for(var i = indexMin; i <= indexMax; i++) {
+						
+						for(var j = 0; j < self.msData[i].length; j+=2) {
+
+							if(obj[self.msData[i][j]] !== undefined)
+								obj[self.msData[i][j]] += self.msData[i][j+1];
+							else {
+								obj[self.msData[i][j]] = self.msData[i][j+1];
+								allMs.push(self.msData[i][j]);
+
+							}
+						}
+					}
+					
+					allMs.sort(function(a, b) { return a -b; });
+
+					var finalMs = [];
+					for(var i = 0; i < allMs.length; i++) {
+						finalMs.push(allMs[i]);
+						finalMs.push(obj[allMs[i]] / Math.abs(indexMax - indexMin));
+					}
+
+					if(self.msSerieAv) {
+						self.msSerieAv.kill();
+						self.msSerieAv = null;
+					}
+
+					self.msSerieAv = self.ms.newSerie('av');
+					self.msSerieAv.autoAxis();
+					self.msSerieAv.setData(finalMs);
+					self.msSerieAv.setLineColor('blue');
+
+					self.ms.redraw();
+					self.ms.drawSeries();
+				},	
+
 				onMouseMoveData: function(e, val) {
 					if(!val.gc)
 						return;
@@ -68,7 +113,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					{
 						labelValue: 'Time',
 						unitModification: 'time',
-						shiftToZero: true,
+						
 						primaryGrid: false,
 						nbTicksPrimary: 10,
 						secondaryGrid: false,
@@ -118,7 +163,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					{
 						labelValue: 'm/z',
 						unitModification: false,
-						shiftToZero: true,
+						
 						primaryGrid: false,
 						nbTicksPrimary: 10,
 						secondaryGrid: false,
@@ -168,13 +213,11 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			this.gcSerie.autoAxis();
 			this.gc.redraw();
 			this.gc.drawSeries();
-
-			
-
 		},
 
 		setMS: function(ms) {
 			this.msData = ms;
+			
 		}
 	}
 

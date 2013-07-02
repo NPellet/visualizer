@@ -92,6 +92,9 @@ define(['jquery'], function($) {
 
 			rangeLimitX: 1,
 			rangeLimitY: 0,
+
+			onRangeX: false,
+			onRangeY: false
 		},
 
 
@@ -370,9 +373,11 @@ define(['jquery'], function($) {
 				this.ranges.current.use1.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMin - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
 				this.ranges.current.use2.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMax - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
 				
-					this.ranges.current.min = this.ranges.current.use1;
-					this.ranges.current.max = this.ranges.current.use2;
+				this.ranges.current.min = this.ranges.current.use1;
+				this.ranges.current.max = this.ranges.current.use2;
 
+				if(this.options.onRangeX)
+					this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xStart), this.getXAxis().getVal(x));
 			}
 
 			return results;
