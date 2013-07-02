@@ -78,137 +78,124 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 
 		doConfiguration: function(section) {
-			var groupfield = new BI.Forms.GroupFields.List('gencfg');
-			section.addFieldGroup(groupfield);
+			return {
+				groups: {
+					'gencfg': {
+						config: {
+							type: 'list'
+						},
 
-		/*	var field = groupfield.addField({
-				type: 'Options',
-				name: 'mode'
-			});
-	*/
-	//		field.setTitle(new BI.Title('Mode'));
-	//		field.implementation.setOptions({ 'peaks': 'Display as peaks', 'curve': 'Display as a curve' });
+						fields: [
 
+							{
+								type: 'Text',
+								name: 'graphurl',
+								title: 'Graph URL'
+							},
 
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'graphurl'
-			});
-			field.setTitle(new BI.Title('Graph URL'));
-			
-			var field = groupfield.addField({
-				type: 'Checkbox',
-				name: 'flip'
-			});
-			field.setTitle(new BI.Title('Axis flipping'));
-			field.implementation.setOptions({ 'flipX': 'Flip X', 'flipY': 'Flip Y' });
+							{
+								type: 'Checkbox',
+								name: 'flip',
+								title: 'Axis flipping',
+								options: { 'flipX': 'Flip X', 'flipY': "Flip Y"}
+							},
 
+							{
+								type: 'Checkbox',
+								name: 'displayAxis',
+								title: 'Display axis',
+								options: { 'x': 'X', 'x': "Y"}
+							},
 
+							{
+								type: 'Checkbox',
+								name: 'grids',
+								title: 'Grids',
+								options: { 'hmain': 'Horizontal Main', 'hsec': 'Honrizontal Seconday', 'vmain': 'Vertical Main', 'vsec': 'Vertical Secondary' }
+							},
 
+							{
+								type: 'Text',
+								name: 'xLabel',
+								title: 'X axis label'
+							},
 
-			var field = groupfield.addField({
-				type: 'Checkbox',
-				name: 'displayAxis'
-			});
-			field.setTitle(new BI.Title('Display axis'));
-			field.implementation.setOptions({ 'x': 'X', 'y': 'Y' });
+							{
+								type: 'Text',
+								name: 'yTopSpacing',
+								title: 'Spacing above the data'
+							},
 
+							{
+								type: 'Text',
+								name: 'yBottomSpacing',
+								title: 'Spacing below the datal'
+							},
 
+							{
+								type: 'Text',
+								name: 'xLeftSpacing',
+								title: 'Spacing left'
+							},
 
-			var field = groupfield.addField({
-				type: 'Checkbox',
-				name: 'grids'
-			});
-			field.setTitle(new BI.Title('Grids'));
-			field.implementation.setOptions({ 'hmain': 'Horizontal Main', 'hsec': 'Honrizontal Seconday', 'vmain': 'Vertical Main', 'vsec': 'Vertical Secondary' });
+							{
+								type: 'Text',
+								name: 'xRightSpacing',
+								title: 'Spacing right'
+							},
 
+							{
+								type: 'Text',
+								name: 'yLabel',
+								title: 'Y axis label'
+							},
 
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'xLabel'
-			});
-			field.setTitle(new BI.Title('X axis label'));
-			
+							{
+								type: 'Text',
+								name: 'minX',
+								title: 'Min X'
+							},
 
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'yLabel'
-			});
-			field.setTitle(new BI.Title('Y axis label'));
-			
+							{
+								type: 'Text',
+								name: 'maxX',
+								title: 'Max X'
+							},
 
+							{
+								type: 'Text',
+								name: 'minY',
+								title: 'Min Y'
+							},
 
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'yBottomSpacing'
-			});
-			field.setTitle(new BI.Title('Spacing below the data'));
-		
+							{
+								type: 'Text',
+								name: 'maxY',
+								title: 'Max Y'
+							},
 
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'yTopSpacing'
-			});
-			field.setTitle(new BI.Title('Spacing above the data'));
-			
+							{
+								type: 'Combo',
+								name: 'zoom',
+								title: 'Zoom',
+								options: [{key: 'x', title: 'X only'}, {key: 'y', title: 'Y only'}, {key: 'xy', title: 'XY'}, {key: 'none', title: 'None'}]
+							}
+						]
+					},
 
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'xLeftSpacing'
-			});
-			field.setTitle(new BI.Title('Spacing left'));
-			
+					'spectrainfos': {
+						config: {
+							type: 'table'
+						},
 
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'xRightSpacing'
-			});
-			field.setTitle(new BI.Title('Spacing right'));
+						fields: [
+							{
+								type: 'Combo',
+								name: 'variable',
+								title: 'Variable'
+							},
 
-
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'minX'
-			});
-			field.setTitle(new BI.Title('Min X'));
-
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'maxX'
-			});
-			field.setTitle(new BI.Title('Max X'));
-
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'minY'
-			});
-			field.setTitle(new BI.Title('Min Y'));
-
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'maxY'
-			});
-			field.setTitle(new BI.Title('Max Y'));
-			
-
-			var field = groupfield.addField({
-				type: 'Combo',
-				name: 'zoom'
-			});
-			field.setTitle(new BI.Title('Zoom'));
-			field.implementation.setOptions([{key: 'x', title: 'X only'}, {key: 'y', title: 'Y only'}, {key: 'xy', title: 'XY'}, {key: 'none', title: 'None'}]);
-
-
-			var group = new BI.Forms.GroupFields.Table('spectrainfos');
-			section.addFieldGroup(group);
-
-			field = group.addField({
-				'type': 'Combo',
-				'name': 'variable',
-				title: new BI.Title('Variable')
-			});
-
-			var vars = [];
+/*			var vars = [];
 			var currentCfg = this.module.definition.dataSource;
 
 			if(currentCfg)
@@ -218,23 +205,28 @@ define(['modules/defaultcontroller'], function(Default) {
 				}
 
 			field.implementation.setOptions(vars);
+*/
 
 
-			field = group.addField({
-				'type': 'Color',
-				'name': 'plotcolor',
-				title: new BI.Title('Color')
-			});
+							{
+								type: 'Color',
+								name: 'plotcolor',
+								title: 'Color'
+							},
 
 
-			field = group.addField({
-				'type': 'Checkbox',
-				'name': 'plotcontinuous',
-				title: new BI.Title('Continuous')
-			});
-			field.implementation.setOptions({'continuous': 'Continuous'});
+							{
+								type: 'Checkbox',
+								name: 'plotcontinuous',
+								title: 'Continuous'
+							}
+						]
+					}
+				}
+			}		
 
-			return true;
+
+
 		},
 		
 		doFillConfiguration: function() {
