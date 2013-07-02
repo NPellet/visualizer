@@ -13,6 +13,7 @@ define(['jquery', 'forms/title'], function($, title) {
 		this.title = new title(label);
 		this.onclick = onclick;
 		this.id = ++id;
+		this.value = false;
 		
 		if(typeof onclick !== "function" && !options)
 			this.options = onclick;
@@ -78,6 +79,8 @@ define(['jquery', 'forms/title'], function($, title) {
 		},
 
 		doClick: function(event, item) {
+			this.value = !this.value;
+			this.applyStyle();
 			if(this.onclick)
 				this.onclick(event, this.value, item);
 		},
