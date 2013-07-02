@@ -108,7 +108,6 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 
 			for(var i = 0, l = this.definition.dataSource.length; i < l; i++) {
 	 			var val = API.getRepositoryData().get(this.definition.dataSource[i].name);
-	 			
 	 			if(val && val[1])
 					this.view.update[this.definition.dataSource[i].rel].call(this.view, val[1], this.definition.dataSource[i].name);
 			}

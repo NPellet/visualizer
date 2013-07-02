@@ -149,7 +149,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 
 					(function(variable) {				
 						Traversing.fetchElementIfNeeded(variable).done(function(value) {
-							RepositoryData.set(variable.varname, value);
+							API.setVariable(variable.varname, value);
 						});
 					}) (view.variables[i]);
 
@@ -159,9 +159,9 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 					// Note: if that's not an object, we will have a problem...
 					data[view.variables[i].varname] = {};
 
-					RepositoryData.set(view.variables[i].varname, data[view.variables[i].varname]);
+					API.setVariable(view.variables[i].varname, data[view.variables[i].varname]);
 				} else {
-					RepositoryData.set(view.variables[i].varname, data, "element." + view.variables[i].jpath);
+					API.setVariable(view.variables[i].varname, data, "element." + view.variables[i].jpath);
 				}
 			}
 		}
