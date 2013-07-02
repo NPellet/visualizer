@@ -55,6 +55,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.msSerie = self.ms.newSerie();
 					self.msSerie.autoAxis();
 					self.msSerie.setData(ms);
+
 					self.ms.redraw();
 					self.ms.drawSeries();
 				}
@@ -131,6 +132,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 						ticklabelratio: 1,
 						primaryGrid: true,
 						secondaryGrid: false,
+						scientificTicks: true,
 						nbTicksPrimary: 3,
 						forcedMin: 0
 					}
@@ -143,8 +145,12 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 		},
 
 		resize: function(width, height) {
-			this.gc.resize(width, height / 2);
-			this.ms.resize(width, height / 2);
+			this.gc.resize(width - 10, height / 2 - 10);
+			this.ms.resize(width - 10, height / 2 - 10);
+
+			this.gc.redraw();
+			this.gc.drawSeries();
+			this.ms.drawSeries();
 		},
 
 		setGC: function(gc) {
