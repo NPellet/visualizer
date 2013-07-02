@@ -108,8 +108,6 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			else if(Traversing.getType(data) == 'arrayXY')
 				Traversing.getJPathsFromElement(data, jpaths);
 			
-			console.log(jpaths);
-
 			return {
 				groups: {
 					'gencfg': {

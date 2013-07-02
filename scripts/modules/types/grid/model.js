@@ -20,7 +20,7 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 				Traversing.getJPathsFromElement(data, jpaths);
 				return jpaths;
 			}
-
+console.log(rel);
 			switch(rel) {
 				default:
 				case 'element':
@@ -28,6 +28,7 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 				break;
 			}
 			var data = this.module.getDataFromRel(rel);
+			console.log(data);
 			if(!data || data == null)
 				return;
 			//data = data.getData();
