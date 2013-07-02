@@ -1437,6 +1437,7 @@ define(['jquery'], function($) {
 				*/
 
 				var numberToNatural = unitPerTick * Math.pow(10, - decimals);
+				
 				/*
 					Example:
 						13'453 (4) => 1.345
@@ -1448,8 +1449,9 @@ define(['jquery'], function($) {
 				var possibleTicks = [1,2,5,10];
 				var closest = false;
 				for(var i = possibleTicks.length - 1; i >= 0; i--)
-					if(!closest || Math.abs(possibleTicks[i] - numberToNatural) < closest)
+					if(!closest || (Math.abs(possibleTicks[i] - numberToNatural) < Math.abs(closest - numberToNatural))) {
 						closest = possibleTicks[i];
+				}
 				
 				// Ok now closest is the number of unit per tick in the natural number
 				/*
@@ -1572,6 +1574,7 @@ define(['jquery'], function($) {
 			if(!this.options.logScale) {
 				// So the setting is: How many ticks in total ? Then we have to separate it
 				var nbTicks1 = this.getNbTicksPrimary();
+
 				var primaryTicks = this.getUnitPerTick(widthPx, nbTicks1, valrange, this.getActualMax());
 				var nbSecondaryTicks = this.secondaryTicks();
 				if(nbSecondaryTicks)
