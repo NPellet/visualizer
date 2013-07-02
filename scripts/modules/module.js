@@ -92,8 +92,8 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 		 * Called to update the view (normally after a change of data)
 		 */
 		updateView: function(rel) {
-
-			var val = API.getRepositoryData(this.getNameFromRel(rel)), name;
+		
+			var val = API.getRepositoryData().get(this.getNameFromRel(rel)), name;
 			if(!val)
 				return;
 
@@ -102,11 +102,13 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 		},
 
 		updateAllView: function() {
-			
+				
 			if(!this.view.update || !this.definition || !this.definition.dataSource)
 				return;
+
 			for(var i = 0, l = this.definition.dataSource.length; i < l; i++) {
-	 			var val = API.getRepositoryData(this.definition.dataSource[i].name);
+	 			var val = API.getRepositoryData().get(this.definition.dataSource[i].name);
+	 			
 	 			if(val && val[1])
 					this.view.update[this.definition.dataSource[i].rel].call(this.view, val[1], this.definition.dataSource[i].name);
 			}

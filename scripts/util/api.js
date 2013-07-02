@@ -14,7 +14,6 @@ define(['util/datatraversing'], function(Traversing) {
 		});
 	}
 
-
 	return {
 
 		getRepositoryData: function() {

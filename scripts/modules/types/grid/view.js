@@ -130,7 +130,6 @@ define(['modules/defaultview', 'forms/title', 'util/util', 'util/api', 'util/dom
 				_table.init(view.domTable);
 				this.dom.append(this.domTable);
 				DomDeferred.notify(_table.getDom());
-
 			}
 		},
 
