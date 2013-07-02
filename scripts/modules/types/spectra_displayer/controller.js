@@ -78,6 +78,18 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 
 		doConfiguration: function(section) {
+
+
+
+			var vars = [];
+			var currentCfg = this.module.definition.dataSource;
+
+			if(currentCfg)
+				for(var i = 0; i < currentCfg.length; i++) {
+					if(currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray')
+						vars.push({title: currentCfg[i].name, key: currentCfg[i].name});
+				}
+
 			return {
 				groups: {
 					'gencfg': {
@@ -192,21 +204,9 @@ define(['modules/defaultcontroller'], function(Default) {
 							{
 								type: 'Combo',
 								name: 'variable',
-								title: 'Variable'
+								title: 'Variable',
+								options: vars
 							},
-
-/*			var vars = [];
-			var currentCfg = this.module.definition.dataSource;
-
-			if(currentCfg)
-				for(var i = 0; i < currentCfg.length; i++) {
-					if(currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray')
-						vars.push({title: currentCfg[i].name, key: currentCfg[i].name});
-				}
-
-			field.implementation.setOptions(vars);
-*/
-
 
 							{
 								type: 'Color',
