@@ -2,10 +2,12 @@
 define(function() {
 
     // the following RegExp can only be used for XYdata, some peakTables have values with a "E-5" ...
-    var xyDataSplitRegExp=/[,\t \+-]*(?=[^\d,\t \.])|[ \t]+(?=[\d+\.-])/;
+    var xyDataSplitRegExp=/ *[,\t] *|[,\t \+-]*(?=[^\d,\t \.])|[ \t]+(?=[\d+\.-])/;
     var removeCommentRegExp=/\$\$.*/;
     var peakTableSplitRegExp=/[,\t ]+/
     var DEBUG=false;
+
+    var GC_MS_FIELDS=["TIC",".RIC","SCANNUMBER"]
 
     function convertToFloatArray(stringArray) {
         var floatArray=[];
@@ -49,6 +51,7 @@ define(function() {
             dataLabel=dataLabel.replace(/[_ -]/g,'').toUpperCase();
 
             if (dataLabel=='DATATABLE') {
+
                 endLine=dataValue.indexOf("\n");
                 if (endLine==-1) endLine=dataValue.indexOf("\r");
                 if (endLine>0) {
@@ -88,7 +91,6 @@ define(function() {
                         if (ntuples.units.length>xIndex) spectrum.xUnit=ntuples.units[xIndex];
                         if (ntuples.units.length>yIndex) spectrum.yUnit=ntuples.units[yIndex];
                     }
-                    
                     spectrum.datatable=infos[0];
                     if (infos[1] && infos[1].indexOf("PEAKS")>-1) {
                         dataLabel="PEAKTABLE";
@@ -103,6 +105,7 @@ define(function() {
             if (dataLabel=='TITLE') {
                 spectrum.title = dataValue;
             } else if (dataLabel=='DATATYPE') {
+                spectrum.dataType=dataValue;
                 if (dataValue.indexOf("nD")>-1) {
                     result.twoD = true;
                 }
@@ -172,16 +175,25 @@ define(function() {
                 if (result.indirectFrequency) {
                     spectrum.pageValue/=result.indirectFrequency;
                 }
+            } else if (dataLabel=='RETENTIONTIME') {
+                spectrum.pageValue=parseFloat(dataValue);
             } else if (dataLabel=="XYDATA") {
                 prepareSpectrum(spectrum);
-                parseXYData(spectrum, dataValue);
-                spectra.push(spectrum);
-                spectrum={};
+                // well apparently we should still consider it is a PEAK TABLE if there are no "++" after
+                if (dataLabel.match(/.*\+\+.*/)) {
+                    parseXYData(spectrum, dataValue);
+                } else {
+                    parsePeakTable(spectrum, dataValue);
+                }
+                    spectra.push(spectrum);
+                    spectrum={};
             } else if (dataLabel=="PEAKTABLE") {
                 prepareSpectrum(spectrum);
                 parsePeakTable(spectrum, dataValue);
                 spectra.push(spectrum);
                 spectrum={};
+            } else if (isMSField(dataLabel)) {
+                spectrum[convertMSFieldToLabel(dataLabel)]=dataValue;
             } else if (dataLabel.match(/^[A-Z].*/)) {
                 result.info[dataLabel]=dataValue.trim();
             }
@@ -193,12 +205,55 @@ define(function() {
         if (result.twoD) {
             add2D(result);
         }
-      console.log(result);
+
+        // maybe it is a GC (HPLC) / MS. In this case we add a new format
+        if (spectra.length>1 && spectra[0].dataType.toLowerCase().match(/.*mass./)) {
+            addGCMS(result);
+        }
+
+    //  console.log(result);
     //    console.log(JSON.stringify(spectra));
         return result;
 
     }
 
+    function convertMSFieldToLabel(value) {
+        return value.toLowerCase().replace(/[^a-z0-9]/g,"");
+    }
+
+    function isMSField(dataLabel) {
+        for (var i=0; i<GC_MS_FIELDS.length; i++) {
+           if (dataLabel==GC_MS_FIELDS[i]) return true;
+        }
+        return false;
+    }
+
+    function addGCMS(result) {
+        var spectra=result.spectra;
+        var existingGCMSFields=[];
+        for (var i=0; i<GC_MS_FIELDS.length; i++) {
+            var label=convertMSFieldToLabel(GC_MS_FIELDS[i]);
+            if (spectra[0][label]) {
+                existingGCMSFields.push(label);
+            }
+        }
+        var gcms={};
+        gcms.gc={};
+        gcms.ms=[];
+        for (var i=0; i<existingGCMSFields.length; i++) {
+            gcms.gc[existingGCMSFields[i]]=[];
+        }
+        for (var i=0; i<spectra.length; i++) {
+            var spectrum=spectra[i];
+            for (var j=0; j<existingGCMSFields.length; j++) {
+                gcms.gc[existingGCMSFields[j]].push(spectrum.pageValue);
+                gcms.gc[existingGCMSFields[j]].push(spectrum[existingGCMSFields[j]]);
+            }
+            gcms.ms[i]=spectrum.data[0];
+
+        }
+        result.gcms=gcms;
+    }
 
     function prepareSpectrum(spectrum) {
         if (! spectrum.xFactor) spectrum.xFactor=1;
@@ -249,7 +304,7 @@ define(function() {
         var lines=value.split(/[\r\n]+/);
         var lastDif, values, ascii, expectedY;
         values=[];
-        for (var i=1, ii=lines.length; i<ii; i++) {
+        for (var i=1, ii=10; i<ii; i++) {
             var previousValues=JSON.parse(JSON.stringify(values));
             values=lines[i].trim().replace(removeCommentRegExp,"").split(xyDataSplitRegExp);
             if (values.length>0) {
@@ -262,10 +317,7 @@ define(function() {
                         expectedCurrentX+=spectrum.deltaX;
                     }
                     console.log("Checking X value: currentX: "+currentX+" - expectedCurrentX: "+expectedCurrentX);
-                    console.log(values);
                 }
-
-                
                 for (var j=1, jj=values.length; j<jj; j++) {
                     if (j==1 && (lastDif || lastDif==0)) {
                         lastDif = undefined; // at the beginning of each line there should be the full value X / Y so the diff is always undefined

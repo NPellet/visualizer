@@ -13,6 +13,13 @@
 		        "type": "jcamp",
 		        "url": "./testcase/data/gcms/gcms2.jdx"
 		    }
+	    },
+	    {
+	        "name": "gcms2b",
+		    "jcamp":{
+		        "type": "jcamp",
+		        "url": "./testcase/data/gcms/gcms2b.jdx"
+		    }
 	    }
     ]
 }
