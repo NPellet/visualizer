@@ -17,18 +17,24 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			var self = this;
 			var _gcms = new gcms();
 			_gcms.inDom(this.dom.find('.gc').get(0), this.dom.find('.ms').get(0));
-			this.gcms = _gcms;
+			this.gcmsInstance = _gcms;
+
+			if(this.setInit !== false)
+				this.update.gcms.call(this, moduleValue);
 		},
 
 		onResize: function(width, height) {
-			this.gcms.resize(width, height);
+			this.gcmsInstance.resize(width, height);
 		},
 		
 		update: {
 			'gcms': function(moduleValue) {
-console.log(moduleValue);
-				this.gcms.setGC(moduleValue.gc);
-				this.gcms.setMS(moduleValue.ms);
+				this.setInit = false;
+				if(!this.gcms)
+					return;
+				this.setInit = moduleValue;
+				this.gcmsInstance.setGC(moduleValue.gc);
+				this.gcmsInstance.setMS(moduleValue.ms);
 			}
 		},
 

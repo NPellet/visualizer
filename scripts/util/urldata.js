@@ -6,10 +6,14 @@ define(['jquery', 'util/lru', 'util/debug'], function($, LRU, Debug) {
 	function doByUrl(def, url, force) {
 		Debug.log('DataURL: Looking for ' + url + ' by AJAX');
 		// Nothing in the DB  -- OR -- force ajax => AJAX
+		var dataType = false;
+		if(url.indexOf('.json') > -1)
+			dataType = 'json';
+
 		return (pendings[url] = $.ajax({
 			url: url,
 			type: 'get',
-			//dataType: 'json',
+			dataType: dataType || '',
 			timeout: 120000, // 2 minutes timeout
 			success: function(data) {
 
