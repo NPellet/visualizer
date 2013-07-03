@@ -1,4 +1,4 @@
-define(['modules/defaultview','util/api.js'], function(Default, API) {
+define(['modules/defaultview','util/api'], function(Default, API) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
