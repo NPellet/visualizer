@@ -107,6 +107,7 @@ define(['forms/button', 'util/util'], function(Button, Util) {
 		}).render());
 			
 		container.append(new Button('Save locally', function() {
+			console.log(JSON.stringify(view));
 			viewhandler.localSave(view);
 		}).render());
 
