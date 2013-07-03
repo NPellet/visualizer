@@ -103,6 +103,20 @@ define(['jquery', 'libs/plot/plot'], function($, Plot) {
 				primaryGrid: true,
 				secondaryGrid: false,
 				nbTicksPrimary: 3,
+				nbTicksSecondary: 4,
+				forcedMin: 0
+			}
+		],
+
+
+		right: [
+			{
+				labelValue: '',
+				ticklabelratio: 1,
+				primaryGrid: false,
+				secondaryGrid: false,
+				nbTicksPrimary: 3,
+				nbTicksSecondary: 4,
 				forcedMin: 0
 			}
 		]
@@ -128,4 +142,8 @@ define(['jquery', 'libs/plot/plot'], function($, Plot) {
 
 		}
 	}
+
+	
+
+
 });

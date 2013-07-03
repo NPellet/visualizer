@@ -2,14 +2,18 @@
 define(['jquery', 'util/lru', 'util/debug'], function($, LRU, Debug) {
 
 	var pendings = {};
-
+	Debug.setDebugLevel(0);
 	function doByUrl(def, url, force) {
 		Debug.log('DataURL: Looking for ' + url + ' by AJAX');
 		// Nothing in the DB  -- OR -- force ajax => AJAX
+		var dataType = false;
+		if(url.indexOf('.json') > -1)
+			dataType = 'json';
+
 		return (pendings[url] = $.ajax({
 			url: url,
 			type: 'get',
-			//dataType: 'json',
+			dataType: dataType || '',
 			timeout: 120000, // 2 minutes timeout
 			success: function(data) {
 
@@ -70,6 +74,7 @@ define(['jquery', 'util/lru', 'util/debug'], function($, LRU, Debug) {
 		get: function(url, force, timeout) {
 			var def = $.Deferred();
 			var value;
+
 			if(pendings[url])
 				return pendings[url];
 

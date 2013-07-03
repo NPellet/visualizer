@@ -364,7 +364,7 @@ define(['jquery'], function($) {
 					this.moveTrackingLine(obj, x - this.getPaddingLeft());
 
 			} else if(this.currentAction == 'rangeX' && this.ranges.current) {
-
+				x -= this.getPaddingLeft();
 				this.ranges.current.xMin = Math.min(x, this.ranges.current.xStart);
 				this.ranges.current.xMax = Math.max(x, this.ranges.current.xStart);
 
@@ -474,6 +474,7 @@ define(['jquery'], function($) {
 
 				if(this.ranges.countX == this.options.rangeLimitX)
 					return;
+				x -= this.getPaddingLeft();
 
 				this.currentAction = 'rangeX';
 				var rangeGroup = document.createElementNS(this.ns, 'g');
@@ -589,6 +590,7 @@ define(['jquery'], function($) {
 				this.currentAction = false;
 				this.trackingLines.current = false;
 			} else if(this.currentAction == 'rangeX' && this.ranges.current) {
+				x -= this.getPaddingLeft();
 				this.ranges.current.xEnd = x;
 				this.currentAction = false;
 				this.ranges.current = null;
@@ -1184,8 +1186,11 @@ define(['jquery'], function($) {
 
 			this.expTspan = document.createElementNS(this.graph.ns, 'tspan');
 			this.label.appendChild(this.expTspan);
+			this.expTspan.setAttribute('dx', 10);
 			this.expTspanExp = document.createElementNS(this.graph.ns, 'tspan');
 			this.label.appendChild(this.expTspanExp);
+			this.expTspanExp.setAttribute('dy', -5);
+			this.expTspanExp.setAttribute('font-size', "0.8em");
 
 			this.label.setAttribute('text-anchor', 'middle');
 
@@ -1525,7 +1530,7 @@ define(['jquery'], function($) {
 		},
 
 		_draw: function(doNotRecalculateMinMax) {
-
+			var visible;
 			switch(this.options.tickPosition) {
 				case 1:
 					this.tickPx1 = 2;
@@ -1578,12 +1583,15 @@ define(['jquery'], function($) {
 
 			if(!this.options.logScale) {
 				// So the setting is: How many ticks in total ? Then we have to separate it
+				if(this.options.scientificTicks)
+					this.scientificExp = Math.floor(Math.log(Math.max(Math.abs(this.getActualMax()), Math.abs(this.getActualMin()))) / Math.log(10));
+
 				var nbTicks1 = this.getNbTicksPrimary();
 
 				var primaryTicks = this.getUnitPerTick(widthPx, nbTicks1, valrange, this.getActualMax());
 				var nbSecondaryTicks = this.secondaryTicks();
 				if(nbSecondaryTicks)
-					nbSecondaryTicks = Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
+					var nbSecondaryTicks = nbSecondaryTicks; // Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
 
 				// We need to get here the width of the ticks to display the axis properly, with the correct shift
 				var widthHeight = this.drawTicks(primaryTicks, nbSecondaryTicks);
@@ -1602,6 +1610,10 @@ define(['jquery'], function($) {
 				if(this.getExponentialLabelFactor()) {
 					this.expTspan.nodeValue = 'x10';
 					this.expTspanExp.nodeValue = this.getExponentialLabelFactor();
+					visible = true;
+				} else if(this.options.scientificTicks) {
+					this.expTspan.textContent = 'x10';
+					this.expTspanExp.textContent = this.scientificExp;
 					visible = true;
 				} else
 					visible = false;
@@ -1644,7 +1656,8 @@ define(['jquery'], function($) {
 
 
 			if(secondary) 
-				secondaryIncr = unitPerTick / secondary;
+				secondaryIncr = unitPerTick / (secondary + 1);
+
 			
 			var loop = 0;
 
@@ -1752,29 +1765,26 @@ define(['jquery'], function($) {
 
 		valueToText: function(value) {
 			
-			value = value * Math.pow(10, this.getExponentialFactor()) * Math.pow(10, this.getExponentialLabelFactor());
+			if(this.options.scientificTicks) {
+				value /= Math.pow(10, this.scientificExp);
+				return value.toFixed(1);
+			} else {
 
+				value = value * Math.pow(10, this.getExponentialFactor()) * Math.pow(10, this.getExponentialLabelFactor());
+				if(this.options.shiftToZero)
+					value -= this.realMin;
+				if(this.options.ticklabelratio)
+					value *= this.options.ticklabelratio;
+				if(this.options.unitModification) {
+					value = this.modifyUnit(value, this.options.unitModification);
+					return value;
+				}
+				var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
+				if(dec > 0)
+					return value.toFixed(dec);
 
-			if(this.options.shiftToZero)
-				value -= this.realMin;
-
-
-			if(this.options.ticklabelratio)
-				value *= this.options.ticklabelratio;
-
-
-			if(this.options.unitModification) {
-				value = this.modifyUnit(value, this.options.unitModification);
-				return value;
+				return value.toFixed(0);
 			}
-
-			var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
-
-
-			if(dec > 0)
-				return value.toFixed(dec);
-
-			return value.toFixed(0);
 		},
 
 		getModifiedValue: function(value) {
@@ -2136,10 +2146,13 @@ define(['jquery'], function($) {
 				var groupLabel = this.groupTickLabels;
 				tickLabel = document.createElementNS(this.graph.ns, 'text');
 				tickLabel.setAttribute('y', pos);
-				tickLabel.setAttribute('x', -10);
+				tickLabel.setAttribute('x', this.left ? -10 : 10);
 
-				
-				tickLabel.setAttribute('text-anchor', 'end');
+				if(this.left) {				
+					tickLabel.setAttribute('text-anchor', 'end');
+				} else {
+					tickLabel.setAttribute('text-anchor', 'start');
+				}
 				tickLabel.style.dominantBaseline = 'central';
 				this.graph.applyStyleText(tickLabel);
 				this.setTickContent(tickLabel, value, options);
@@ -2179,7 +2192,7 @@ define(['jquery'], function($) {
 
 		_setShift: function() {
 
-			var xshift = this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.getShift();
+			var xshift = this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift();
 			this.group.setAttribute('transform', 'translate(' + xshift + ' 0)');
 
 		},
@@ -3464,5 +3477,4 @@ define(['jquery'], function($) {
 	Graph.GraphYAxis = GraphYAxis;
 
 	return Graph;
-
 });
