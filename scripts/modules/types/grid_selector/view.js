@@ -1,4 +1,4 @@
-define(function(['modules/view'], function(Default)) {
+define(['modules/defaultview'], function(Default) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -20,7 +20,7 @@ define(function(['modules/view'], function(Default)) {
 			this.table = null;
 		},
 
-		update2: {
+		update: {
 
 			preferences: function(moduleValue) {
 				

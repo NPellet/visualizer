@@ -1,4 +1,4 @@
-define(['modules/model'], function(Default) {
+define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traversing) {
 	
 	function model() {};
 	model.prototype = $.extend(true, {}, Default, {
@@ -13,7 +13,7 @@ define(['modules/model'], function(Default) {
 				value=value.children[0];
 			}
 			var jpaths = [];
-			CI.DataType.getJPathsFromElement(value, jpaths);
+			Traversing.getJPathsFromElement(value, jpaths);
 			switch(rel) {
 				case 'node':
 					return jpaths;

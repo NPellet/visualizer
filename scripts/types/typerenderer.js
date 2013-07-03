@@ -1,5 +1,5 @@
 
-define(['jquery', 'util/domdeferred'], function($) {
+define(['jquery', 'util/domdeferred', 'util/api.js'], function($, DOMDeferred, API) {
 
 	var functions = {};
 
@@ -264,10 +264,10 @@ define(['jquery', 'util/domdeferred'], function($) {
 			spectra.loadSpectrum(allspectras[spectraid]);
 			spectra.getXMaxBound();
 			spectra.repaint();
-			CI.RepoHighlight.kill(box.id + "_"  + spectraid)
+			API.killHighlight(box.id + "_"  + spectraid)
 		} else {
 			spectra.overlaySpectra[allspectrasid[spectraid]] = allspectras[spectraid];
-			CI.RepoHighlight.kill(box.id + "_"  + spectraid)
+			API.killHighlight(box.id + "_"  + spectraid)
 		}
 
 		allzones[spectraid] = value._zones;

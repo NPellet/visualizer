@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'libs/plot/plot'], function(Default, Graph) {
+define(['modules/defaultview', 'libs/plot/plot', 'util/api.js'], function(Default, Graph, API) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -155,7 +155,7 @@ define(['modules/defaultview', 'libs/plot/plot'], function(Default, Graph) {
 			}
 		},
 
-		update2: { 
+		update: { 
 
 			'fromTo': function(moduleValue) {
 				var view = this;
@@ -212,7 +212,7 @@ define(['modules/defaultview', 'libs/plot/plot'], function(Default, Graph) {
 					return;
 
 				var self = this, serie, cfgM = this.module.getConfiguration(), color, continuous, i, l, spectra;
-				CI.RepoHighlight.kill(this.module.id + varname);
+				API.killHighlight(this.module.id + varname);
 
 				if(!this.graph)
 					return;

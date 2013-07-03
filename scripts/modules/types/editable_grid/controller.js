@@ -1,4 +1,4 @@
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller','util/api.js'], function(Default, API) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
@@ -14,11 +14,11 @@ define(['modules/defaultcontroller'], function(Default) {
 				if(actions[i].event == "onHover")
 					CI.API.setSharedVarFromJPath(actions[i].name, element, actions[i].jpath);
 			
-			CI.RepoHighlight.set(element._highlight, 1);
+			API.highlight(element._highlight, 1);
 		},
 
 		lineOut: function(element) {
-			CI.RepoHighlight.set(element._highlight, 0);
+			API.highlight(element._highlight, 0);
 		},
 
 		lineClick: function(element, row) {

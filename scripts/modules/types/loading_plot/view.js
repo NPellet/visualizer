@@ -1,4 +1,4 @@
-define(function(['modules/view'], function(Default)) {
+define(['modules/defaultview'], function(Default) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -26,7 +26,7 @@ define(function(['modules/view'], function(Default)) {
 			this.table = null;
 		},
 
-		update2: {
+		update: {
 
 			preferences: function(moduleValue) {
 				this._lastConf = moduleValue;
@@ -180,7 +180,7 @@ define(function(['modules/view'], function(Default)) {
 				Springs.resolve();
 
 				if(this._lastConf) {
-					this.update2.preferences.call(this, this._lastConf);
+					this.update.preferences.call(this, this._lastConf);
 				}
 			}
 		},

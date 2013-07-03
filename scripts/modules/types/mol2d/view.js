@@ -1,4 +1,4 @@
-define(function(['modules/view'], function(Default)) {
+define(['modules/defaultview','util/api.js'], function(Default, API) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -36,13 +36,13 @@ define(function(['modules/view'], function(Default)) {
 			this.drawMolecule();
 		},
 		
-		update2: {
+		update: {
 			'mol2d': function(moduleValue, canDoAtomLabels) {
 				
 				if(moduleValue === undefined)
 					return;
 
-				CI.RepoHighlight.kill(this.module.id);
+				API.killHighlight(this.module.id);
 				this._lastMol = moduleValue;
 				var view = this, self = this;
 				var type = CI.DataType.getType(moduleValue);
@@ -67,7 +67,7 @@ define(function(['modules/view'], function(Default)) {
 				this._atomLabels = moduleValue;
 
 				if(this._lastMol)
-					this.update2.mol2d.call(this, this._lastMol, true);
+					this.update.mol2d.call(this, this._lastMol, true);
 			}
 		},
 		
@@ -105,7 +105,7 @@ define(function(['modules/view'], function(Default)) {
 			this._highlighted[id] = val;
 			for(var i in this._currentValue._atoms) {
 				if(this._currentValue._atoms[i].indexOf(id) > -1) {
-					CI.RepoHighlight.set(i, val);
+					API.highlight(i, val);
 				}
 			}
 		},
@@ -158,7 +158,7 @@ define(function(['modules/view'], function(Default)) {
 					}
 				});
 
-				CI.RepoHighlight.listen(moduleValue._highlight, function(value, commonKeys) {
+				API.listenHighlight(moduleValue._highlight, function(value, commonKeys) {
 
 					var canvas = self._canvas;
 					var commonKeys2 = {};

@@ -1,5 +1,4 @@
-
-define(function(['modules/defaultcontroller'], function(Default)) {
+define(['modules/defaultcontroller'], function(Default) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {

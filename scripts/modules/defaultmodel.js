@@ -89,6 +89,16 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 			if(mustRebuild)
 				return dataRebuilt;
 			return false;
+		},
+
+		getValue: function() {
+			return this.dataValue;
+		},
+				
+		getjPath: function(rel, accepts) {
+			var data = this.module.getDataFromRel(rel);
+			return Traversing.getJPathsFromElement(data, jpaths);
 		}
+
 	};
 });

@@ -1,10 +1,9 @@
-define(function(['modules/defaultcontroller'], function(Default)) {
+define(['modules/defaultcontroller'], function(Default) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
 
 		configurationSend: {
-
 			events: {
 				
 			},
@@ -12,7 +11,6 @@ define(function(['modules/defaultcontroller'], function(Default)) {
 			rels: {
 				
 			}
-			
 		},
 		
 		
@@ -140,7 +138,6 @@ define(function(['modules/defaultcontroller'], function(Default)) {
 			
 			var defaultvalue = this.module.getConfiguration().defaultvalue || "";
 			var fcolor = this.module.getConfiguration().frontcolor || "";
-		//	var bcolor = this.module.getConfiguration().backcolor || "";
 			var font = this.module.getConfiguration().font || "arial";
 			var fontsize = this.module.getConfiguration().fontsize || "";
 			var align = this.module.getConfiguration().align || "left";
@@ -152,7 +149,6 @@ define(function(['modules/defaultcontroller'], function(Default)) {
 					module: [{
 						defaultvalue: [defaultvalue],
 						fcolor: [fcolor],
-					//	bcolor: [bcolor],
 						font: [font],
 						fsize: [fontsize],
 						align: [align],
@@ -167,7 +163,6 @@ define(function(['modules/defaultcontroller'], function(Default)) {
 		doSaveConfiguration: function(confSection) {
 			var group = confSection[0].module[0];
 			var fcolor = group.fcolor[0];
-		//	var bcolor = group.bcolor[0];
 			var font = group.font[0];
 			var fsize = group.fsize[0];
 			var align = group.align[0];
@@ -176,7 +171,6 @@ define(function(['modules/defaultcontroller'], function(Default)) {
 			var defaultvalue = group.defaultvalue[0];
 			this.module.definition.configuration = {
 				frontcolor: fcolor,
-			//	backcolor: bcolor,
 				font: font,
 				fontsize: fsize,
 				align: align,

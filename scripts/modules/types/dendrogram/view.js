@@ -1,4 +1,4 @@
-define(['modules/view'], function(Default) {
+define(['modules/defaultview','util/datatraversing','util/api.js'], function(Default, Traversing, API) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -53,9 +53,9 @@ define(['modules/view'], function(Default) {
 		possible received variable of this module.
 		It will also be called at the beginning and in this case the value is null !
 		*/
-		update2: {
+		update: {
 			'dendrogram': function(moduleValue) {
-				if (this.DEBUG) console.log("Dendrogram: update2");
+				if (this.DEBUG) console.log("Dendrogram: update");
 
 
 				if (! moduleValue || ! moduleValue.value) return;
@@ -71,7 +71,7 @@ define(['modules/view'], function(Default) {
 
 				// ???????? why the following code does not work
 				var view=this;
-				CI.DataType.toScreen(moduleValue, this.module, this._id).done(function(dendrogram) {
+				Traversing.toScreen(moduleValue, this.module, this._id).done(function(dendrogram) {
 					view._value = dendrogram;
 					view.updateDendrogram();
 				});
@@ -300,7 +300,7 @@ define(['modules/view'], function(Default) {
 			this._highlighted[id] = val;
 			for(var i in this._currentValue._atoms) {
 				if(this._currentValue._atoms[i].indexOf(id) > -1) {
-					CI.RepoHighlight.set(i, val);
+					API.highlight(i, val);
 				}
 			}
 		},

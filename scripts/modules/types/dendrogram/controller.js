@@ -1,6 +1,9 @@
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller','util/datatraversing'], function(Default, Traversing) {
 	
-	function controller() {};
+	function controller() {
+
+	};
+	
 	controller.prototype = $.extend(true, {}, Default, {
 		singleValueFields:['nodeType','nodeSize','nodeColor','labelSize','labelColor','edgeWidth','edgeColor','strokeWidth','strokeColor'],
 		configurationSend: {
@@ -27,7 +30,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		/*
 			We define the information that will be received by the module.
 			In a signle value module we will for example receive a value and a color
-			This information will be used in the method "update2" of the view.js
+			This information will be used in the method "update" of the view.js
 		*/
 		configurationReceive: {
 			dendrogram: {
@@ -153,7 +156,7 @@ define(['modules/defaultcontroller'], function(Default) {
 				value=value.children[0];
 			}
 			var jpaths = [];
-			CI.DataType.getJPathsFromElement(value, jpaths);
+			Traversing.getJPathsFromElement(value, jpaths);
 			return jpaths;
 		}
 

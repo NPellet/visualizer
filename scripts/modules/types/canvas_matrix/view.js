@@ -1,4 +1,4 @@
-define(['modules/view'], function(Default) {
+define(['modules/defaultview'], function(Default) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -258,7 +258,7 @@ define(['modules/view'], function(Default) {
 		},
 		
 		// Here we receive new data, we need to relaunch the workers
-		update2: {
+		update: {
 
 			matrix: function(moduleValue) {
 

@@ -1,4 +1,4 @@
-define(['modules/view'], function(Default) {
+define(['modules/defaultview','util/datatraversing','util/domdeferred'], function(Default, Traversing, DomDeferred) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -23,8 +23,7 @@ define(['modules/view'], function(Default) {
 		
 		inDom: function() {},
 
-		update2: {
-
+		update: {
 			'color': function(color) {
 				if(color === undefined)
 					return;
@@ -39,7 +38,7 @@ define(['modules/view'], function(Default) {
 				if(moduleValue == undefined)
 					view.fillWithVal(cfg.defaultvalue || '');
 				else
-					CI.DataType.toScreen(moduleValue, this.module).done(function(val) {
+					Traversing.toScreen(moduleValue, this.module).done(function(val) {
 
 						try {
 							if(cfg.sprintf && cfg.sprintf != "") {
@@ -72,7 +71,7 @@ define(['modules/view'], function(Default) {
 			}).html(val);
 
 			this.dom.html(div);
-			CI.Util.ResolveDOMDeferred(div);
+			DomDeferred.notify(div);
 		},
 		
 		getDom: function() {

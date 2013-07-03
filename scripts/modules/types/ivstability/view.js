@@ -165,7 +165,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 			this.iv.drawSeries();
 		},
 		
-		update2: {
+		update: {
 			'plotdata': function(moduleValue) {
 			
 			},

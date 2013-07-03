@@ -32,8 +32,8 @@ console.log(rel);
 			if(!data || data == null)
 				return;
 			//data = data.getData();
-			if(data == null)
-				return;
+			//if(data == null)
+			//	return;
 			return getjPath(data);
 		}
 	});

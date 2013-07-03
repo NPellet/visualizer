@@ -1,4 +1,4 @@
-define(['modules/view'], function(Default) {
+define(['modules/defaultview'], function(Default) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -86,7 +86,7 @@ define(['modules/view'], function(Default) {
 			return '<a target="_blank" href="' + (link || '') + '"><li data-file-type="' + (type || '') + '"><div class="file-filename">' + (filename || '') + '</div><div class="file-type"	>' + (type || '') + '</div><div class="file-size">Size: ' + (filesize || '') + '</div><div class="ci-spacer"></div></li></a>'
 	 	},
 
-	 	update2: {
+	 	update: {
 	 		filelist: function(moduleValue, varname) {
 	 			// { filename: '', description: '', filesize: '', type: ''} 			
 	 			if(!moduleValue)

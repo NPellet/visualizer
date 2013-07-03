@@ -190,7 +190,7 @@ define(['modules/defaultview', 'forms/title', 'util/util', 'util/api', 'util/dom
 
 			addRow: function(source) {
 				if(!this.table)
-					this.update2.list.call(this, []);
+					this.update.list.call(this, []);
 				this.module.data.push(source);
 				API.setVariable(this.module.getNameFromRel('list'), this.module.data);
 			},

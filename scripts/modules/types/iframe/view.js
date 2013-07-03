@@ -1,4 +1,4 @@
-define(function(['modules/view'], function(Default)) {
+define(['modules/defaultview'], function(Default) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -22,7 +22,7 @@ define(function(['modules/view'], function(Default)) {
 			this.dom.attr('src', null);
 		},
 
-		update2: {
+		update: {
 
 			url: function(moduleValue) {
 				if(!moduleValue)
