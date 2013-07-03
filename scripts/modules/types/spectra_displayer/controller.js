@@ -116,7 +116,7 @@ define(['modules/defaultcontroller'], function(Default) {
 								type: 'Checkbox',
 								name: 'displayAxis',
 								title: 'Display axis',
-								options: { 'x': 'X', 'x': "Y"}
+								options: { 'x': 'X', 'y': "Y"}
 							},
 
 							{
