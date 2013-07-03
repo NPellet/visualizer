@@ -1,4 +1,6 @@
-define(['forms/fielddefault', 'forms/button2', 'libs/farbtastic/farbtastic'], function(Default, Button) {
+define(['forms/fielddefault', 'forms/button2', 'util/util', 'libs/farbtastic/farbtastic'], function(Default, Button, Util) {
+
+	Util.loadCss('scripts/libs/farbtastic/farbtastic.css');
 
 	return $.extend({}, Default, {
 

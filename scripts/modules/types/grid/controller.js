@@ -9,6 +9,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		lineHover: function(element) {
 			
 			var actions;
+			
 			this.setVarFromEvent('onHover', element);
 			if(element._highlight)
 				API.highlight(element._highlight, 1);

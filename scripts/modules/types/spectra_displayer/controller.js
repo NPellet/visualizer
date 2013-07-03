@@ -42,7 +42,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			},
 
 			jcamp: {
-				type: 'jcamp',
+				type: ['jcamp', 'string'],
 				label: 'jcamp data',
 				description: 'A jcamp file'
 			},

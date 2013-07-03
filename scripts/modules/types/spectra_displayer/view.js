@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'libs/plot/plot'], function(Default, Graph) {
+define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/datatraversing'], function(Default, Graph, JcampConverter, DataTraversing) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -55,10 +55,10 @@ define(['modules/defaultview', 'libs/plot/plot'], function(Default, Graph) {
 								max = Math.max(self.zones[k][i][0], self.zones[k][i][1]);
 								x1 = val[k].trueX;
 								if(min < x1 && max > x1) {
-									CI.RepoHighlight.set(i, 1);
+									//CI.RepoHighlight.set(i, 1);
 									self._currentHighlights[i] = 1;
 								} else if(self._currentHighlights[i]) {
-									CI.RepoHighlight.set(i, 0);
+									//CI.RepoHighlight.set(i, 0);
 									self._currentHighlights[i] = 0;
 								}
 							}
@@ -155,7 +155,7 @@ define(['modules/defaultview', 'libs/plot/plot'], function(Default, Graph) {
 			}
 		},
 
-		update2: { 
+		update: { 
 
 			'fromTo': function(moduleValue) {
 				var view = this;
@@ -208,11 +208,12 @@ define(['modules/defaultview', 'libs/plot/plot'], function(Default, Graph) {
 
 			'jcamp': function(moduleValue, varname) {
 
-				if(!moduleValue || !moduleValue.value)
+				if(!moduleValue)
 					return;
 
+				moduleValue = DataTraversing.getValueIfNeeded(moduleValue);
 				var self = this, serie, cfgM = this.module.getConfiguration(), color, continuous, i, l, spectra;
-				CI.RepoHighlight.kill(this.module.id + varname);
+//				CI.RepoHighlight.kill(this.module.id + varname);
 
 				if(!this.graph)
 					return;
@@ -227,18 +228,18 @@ define(['modules/defaultview', 'libs/plot/plot'], function(Default, Graph) {
 							continuous = cfgM.plotinfos[i].plotcontinuous;
 						}	
 					}
-
+/*
 				CI.RepoHighlight.listen(moduleValue._highlight, function(value, commonKeys) {
 					for(var i = 0; i < commonKeys.length; i++) 
 						if(self.zones[varname][commonKeys[i]])
 							self.doZone(varname, self.zones[varname][commonKeys[i]], value, color);
 				}, true, this.module.id + varname);
-
+*/
 	 			//if(typeof moduleValue.value !== 'object') {
 
 	 			//var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
 	 			
-				spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
+				spectra = JcampConverter(moduleValue, {lowRes: 1024});
 
 	 			//	moduleValue.value = spectra;
 	 			//} else 
@@ -361,7 +362,7 @@ define(['modules/defaultview', 'libs/plot/plot'], function(Default, Graph) {
 				this.colorId++;
 				value = CI.DataType.getValueIfNeeded(value);
 				for(var i in value) {
-					console.log(value[i]);
+					
 					this.onActionReceive.removeSerieByName.call(this, value[i].name || {});
 					var serie = this.graph.newSerie(value[i].name);
 					serie.autoAxis();

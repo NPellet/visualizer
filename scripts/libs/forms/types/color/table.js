@@ -4,6 +4,7 @@ define(['./default'], function(FieldDefault) {
 		this.main = main;
 		this.checkboxLoaded = false;
 		this.domReady = false;
+		this.divs = [];
 	}
 
 	field.prototype = $.extend({}, FieldDefault, {
@@ -21,6 +22,7 @@ define(['./default'], function(FieldDefault) {
 		
 		addField: function(position) {
 			var div = $("<div />");
+
 			this.divs.splice(position, 0, div)
 			var input = $("<input />");
 			return { html: div, field: div, input: input, index: position };
