@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/datatraversing', 'util/api.js'], function(Default, Graph, JcampConverter, DataTraversing, AüO) {
+define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/datatraversing', 'util/api'], function(Default, Graph, JcampConverter, DataTraversing, API) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
