@@ -1,4 +1,4 @@
-define(['modules/defaultview','util/datatraversing','util/api.js'], function(Default, Traversing, API) {
+define(['modules/defaultview','util/datatraversing','util/api'], function(Default, Traversing, API) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {

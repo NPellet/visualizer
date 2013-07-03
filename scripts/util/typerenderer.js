@@ -1,5 +1,5 @@
 
-define(['jquery', 'util/domdeferred', 'util/api.js'], function($, DOMDeferred, API) {
+define(['jquery', 'util/domdeferred', 'util/api'], function($, DOMDeferred, API) {
 
 	var functions = {};
 

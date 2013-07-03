@@ -1,4 +1,4 @@
-define(['modules/defaultview','util/datatraversing','util/domdeferred'], function(Default, Traversing, DomDeferred) {
+define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api'], function(Default, Traversing, DomDeferred, API) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -33,7 +33,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred'], functio
 			'value': function(moduleValue) {
 
 				var cfg = this.module.getConfiguration(), view = this;
-				CI.RepoHighlight.kill(this.module.id);
+				API.killHighlight(this.module.id);
 				
 				if(moduleValue == undefined)
 					view.fillWithVal(cfg.defaultvalue || '');

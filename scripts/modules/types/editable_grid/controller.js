@@ -1,4 +1,4 @@
-define(['modules/defaultcontroller','util/api.js'], function(Default, API) {
+define(['modules/defaultcontroller','util/api'], function(Default, API) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
