@@ -193,7 +193,7 @@ define(function() {
         if (result.twoD) {
             add2D(result);
         }
-    //  console.log(result);
+      console.log(result);
     //    console.log(JSON.stringify(spectra));
         return result;
 
