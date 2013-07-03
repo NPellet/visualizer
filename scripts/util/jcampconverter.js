@@ -2,7 +2,7 @@
 define(function() {
 
     // the following RegExp can only be used for XYdata, some peakTables have values with a "E-5" ...
-    var xyDataSplitRegExp=/ *[,\t] *|[,\t \+-]*(?=[^\d,\t \.])|[ \t]+(?=[\d+\.-])/;
+    var xyDataSplitRegExp=/[,\t \+-]*(?=[^\d,\t \.])|[ \t]+(?=[\d+\.-])/;
     var removeCommentRegExp=/\$\$.*/;
     var peakTableSplitRegExp=/[,\t ]+/
     var DEBUG=false;
@@ -180,7 +180,7 @@ define(function() {
             } else if (dataLabel=="XYDATA") {
                 prepareSpectrum(spectrum);
                 // well apparently we should still consider it is a PEAK TABLE if there are no "++" after
-                if (dataLabel.match(/.*\+\+.*/)) {
+                if (dataValue.match(/.*\+\+.*/)) {
                     parseXYData(spectrum, dataValue);
                 } else {
                     parsePeakTable(spectrum, dataValue);
@@ -304,7 +304,7 @@ define(function() {
         var lines=value.split(/[\r\n]+/);
         var lastDif, values, ascii, expectedY;
         values=[];
-        for (var i=1, ii=10; i<ii; i++) {
+        for (var i=1, ii=lines.length; i<ii; i++) {
             var previousValues=JSON.parse(JSON.stringify(values));
             values=lines[i].trim().replace(removeCommentRegExp,"").split(xyDataSplitRegExp);
             if (values.length>0) {
