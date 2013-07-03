@@ -1,5 +1,5 @@
 
-define(['jquery', 'util/domdeferred', 'util/api'], function($, DOMDeferred, API) {
+define(['jquery', 'util/domdeferred', 'util/api','util/util'], function($, DOMDeferred, API, Util) {
 
 	var functions = {};
 
@@ -38,7 +38,7 @@ define(['jquery', 'util/domdeferred', 'util/api'], function($, DOMDeferred, API)
 	functions.mol2d = {};
 	functions.mol2d.toscreen = function(def, molfile, options, highlights, box) {
 		
-		var id = BI.Util.getNextUniqueId();
+		var id = Util.getNextUniqueId();
 		DOMDeferred.progress(function(dom) {
 			
 			// Find the dom in here
@@ -95,7 +95,7 @@ define(['jquery', 'util/domdeferred', 'util/api'], function($, DOMDeferred, API)
 	functions.mol3d = {};
 	functions.mol3d.toscreen = function(def, molfile) {
 
-		var id = BI.Util.getNextUniqueId();
+		var id = Util.getNextUniqueId();
 		CI.Util.DOMDeferred.progress(function(dom) {
 
 			if($("#" + id, dom).length == 0)
@@ -284,7 +284,7 @@ define(['jquery', 'util/domdeferred', 'util/api'], function($, DOMDeferred, API)
 	functions.jcamp.toscreen =function(def, value, args, highlights, box) {
 		if(args.dom)
 			return def.resolve(CI.Type.jcamp.doFromDom(args.dom, value, args, highlights, box));
-		var id = BI.Util.getNextUniqueId();
+		var id = Util.getNextUniqueId();
 		CI.Util.DOMDeferred.progress(function(dom) { 
 			CI.Type.jcamp.doFromDom($("#" + id, dom), value, args, highlights, box); 
 		});

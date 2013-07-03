@@ -1,10 +1,10 @@
-define(['modules/defaultview','util/api'], function(Default, API) {
+define(['modules/defaultview','util/api','util/util'], function(Default, API, Util) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-			this._id = BI.Util.getNextUniqueId();
+			this._id = Util.getNextUniqueId();
 			this.dom = $('<canvas id="' + this._id + '"></div>');
 			this.module.getDomContent().html(this.dom);
 			this._highlighted = {};

@@ -1,4 +1,4 @@
-define(['modules/defaultview','util/datatraversing','util/api'], function(Default, Traversing, API) {
+define(['modules/defaultview','util/datatraversing','util/api','util/util'], function(Default, Traversing, API, Util) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -18,7 +18,7 @@ define(['modules/defaultview','util/datatraversing','util/api'], function(Defaul
 
 			// When we change configuration the method init is called again. Also the case when we change completely of view
 			if (! this.dom) {
-				this._id = BI.Util.getNextUniqueId();
+				this._id = Util.getNextUniqueId();
 				this.dom = $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
 				this.module.getDomContent().html(this.dom);
 			}

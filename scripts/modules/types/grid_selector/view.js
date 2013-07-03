@@ -1,4 +1,4 @@
-define(['modules/defaultview'], function(Default) {
+define(['modules/defaultview','util/util'], function(Default, Util) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -134,7 +134,7 @@ define(['modules/defaultview'], function(Default) {
 		getSelector: function(col, line, colId, lineId, value) {
 			this._selectors[col.name] = this._selectors[col.name] || {};
 			if(col.selectorType == 'checkbox') {
-				var id = BI.Util.getNextUniqueId();
+				var id = Util.getNextUniqueId();
 				var defaultVal = value !== undefined ? value : col.defaultValue;
 
 				if(line)
