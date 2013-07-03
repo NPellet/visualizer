@@ -245,9 +245,11 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 				div.parent().css('z-index', 1000);
 
 				var autoComplete = [];
-				for(var i = 0, keys = API.getRepositoryData().getKeys(), l = keys.length; i < l; i++)
-					autoComplete.push({title: keys[i], label: keys[i]});
-				
+				var keys = API.getRepositoryData().getKeys();
+
+				for(var i in keys)
+					autoComplete.push({title: i, label: i});
+				console.log(autoComplete);	
 				// Receive configuration
 				var availCfg = module.controller.configurationReceive;
 				var allRels2 = [];

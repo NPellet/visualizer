@@ -83,6 +83,11 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 					field.onLoad(function(field, opts) {
 						field.implementation.setOptions(opts)
 					}, structure.fields[i].options);
+
+				if(structure.fields[i].autoComplete)
+					field.onLoad(function(field, opts) {
+						field.implementation.setAutocompleteOptions(opts)
+					}, structure.fields[i].autoComplete);
 			}
 		},
 
