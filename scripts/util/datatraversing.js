@@ -145,6 +145,7 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 		},
 
 		getJPathsFromStructure: function(structure, title, jpathspool, keystr) {		 
+			
 		 	if(!structure)
 				return;
 			var children = [];
@@ -184,6 +185,7 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 					jpathspool.push({ title: title, children: children, key: keystr });
 				}
 			}
+
 		},
 
 

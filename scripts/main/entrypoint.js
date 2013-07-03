@@ -186,8 +186,10 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 			div.parent().css('zIndex', 10000)
 			var options = [];
 
-			for(var i in data)
-				options.push({title: i, key: i});
+			Traversing.getJPathsFromElement(data, options);
+
+			//for(var i in data)
+			//	options.push({title: i, key: i});
 
 			FormFactory.newform(div, {
 				sections: {
