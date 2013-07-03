@@ -80,10 +80,12 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 			return deferred.reject();
 		var type = getType(element);
 		if(element.url) {
-
+console.log(element.url);
 			//var ajaxType = typeof Structures[type] == "object" ? 'json' : 'text';
 			require(['util/urldata'], function(urlData) {
+				console.log(urlData);
 				urlData.get(element.url, false, element.timeout).then(function(data) {
+					console.log(data);
 					deferred.resolve(data);
 				}, function(data) {
 					console.log('Fetching error');

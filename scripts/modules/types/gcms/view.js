@@ -26,7 +26,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 		
 		update: {
 			'gcms': function(moduleValue) {
-
+console.log(moduleValue);
 				this.gcms.setGC(moduleValue.gc);
 				this.gcms.setMS(moduleValue.ms);
 			}
