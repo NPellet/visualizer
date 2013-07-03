@@ -75,10 +75,11 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 					self.msSerieAv = self.ms.newSerie('av');
 					self.msSerieAv.autoAxis();
+					self.msSerieAv.setYAxis(self.ms.getRightAxis());
 					self.msSerieAv.setData(finalMs);
 					self.msSerieAv.setLineColor('blue');
 
-					self.ms.redraw();
+					self.ms.redraw(true);
 					self.ms.drawSeries();
 				},	
 
@@ -101,7 +102,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.msSerie.autoAxis();
 					self.msSerie.setData(ms);
 
-					self.ms.redraw();
+					self.ms.redraw(true);
 					self.ms.drawSeries();
 				}
 			};
@@ -152,6 +153,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 				title: '',
 				zoomMode: 'xy',
+				defaultMouseAction: 'zoom',
 				defaultWheelAction: 'zoomY',
 				lineToZero: false
 			};
@@ -166,6 +168,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 						
 						primaryGrid: false,
 						nbTicksPrimary: 10,
+						nbTicksSecondary: 4,
 						secondaryGrid: false,
 						axisDataSpacing: { min: 0, max: 0.1 },
 					}
@@ -176,10 +179,19 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 						labelValue: 'Intensity (-)',
 						ticklabelratio: 1,
 						primaryGrid: true,
+						nbTicksSecondary: 4,
 						secondaryGrid: false,
 						scientificTicks: true,
 						nbTicksPrimary: 3,
 						forcedMin: 0
+					}
+				],
+
+				right: [
+					{
+						primaryGrid: false,
+						secondaryGrid: false,
+						nbTicksSecondary: 5
 					}
 				]
 			};
