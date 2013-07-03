@@ -4,7 +4,12 @@ requirejs.config({
 	"paths": {
 		"jquery": "libs/jquery/jquery",
 		"jqueryui": "libs/jqueryui/jquery-ui.min",
-		"forms": "libs/forms"
+		"forms": "libs/forms",
+		"ckeditor": "libs/ckeditor/ckeditor"
+	},
+
+	"shims": {
+		"ckeditor": ["libs/ckeditor/adapters/jquery"]
 	}
 });
 

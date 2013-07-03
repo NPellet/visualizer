@@ -1,5 +1,5 @@
 
-define(['forms/fielddefault'], function(Default) {
+define(['forms/fielddefault', 'ckeditor'], function(Default) {
 	
 	return $.extend({}, Default, {
 
