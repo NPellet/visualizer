@@ -2,7 +2,7 @@
 define(['jquery', 'util/lru', 'util/debug'], function($, LRU, Debug) {
 
 	var pendings = {};
-
+	Debug.setDebugLevel(0);
 	function doByUrl(def, url, force) {
 		Debug.log('DataURL: Looking for ' + url + ' by AJAX');
 		// Nothing in the DB  -- OR -- force ajax => AJAX
@@ -74,6 +74,7 @@ define(['jquery', 'util/lru', 'util/debug'], function($, LRU, Debug) {
 		get: function(url, force, timeout) {
 			var def = $.Deferred();
 			var value;
+
 			if(pendings[url])
 				return pendings[url];
 

@@ -211,7 +211,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 		},
 
 		setGC: function(gc) {
-console.log(gc);
+
 			if(!this.gc)
 				return;
 			if(this.gcSerie)
