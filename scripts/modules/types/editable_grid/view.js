@@ -97,7 +97,7 @@ define(['modules/defaultview','util/datatraversing'], function(Default,Traversin
 				
 				var Columns = {};
 				moduleValue = Traversing.getValueIfNeeded(moduleValue);
-				var type = CI.DataType.getType(moduleValue);
+				var type = Traversing.getType(moduleValue);
 				for(var j in jpaths) {
 					var Column = new CI.Tables.Column(j);
 					Column.setTitle(new BI.Title(j));

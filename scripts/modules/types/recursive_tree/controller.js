@@ -90,9 +90,9 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 			var data = this.module.getDataFromRel('list');
 			var jpaths = [];
 			
-			if(CI.DataType.getType(data) == 'array') 
+			if(Traversing.getType(data) == 'array') 
 				Traversing.getJPathsFromElement(data[0], jpaths);
-			else if(CI.DataType.getType(data) == 'arrayXY')
+			else if(Traversing.getType(data) == 'arrayXY')
 				Traversing.getJPathsFromElement(data, jpaths);
 
 			var field = groupfield.addField({

@@ -1,4 +1,4 @@
-define(['modules/defaultview','util/api','util/util'], function(Default, API, Util) {
+define(['modules/defaultview','util/api','util/util','util/datatraversing'], function(Default, API, Util, Traversing) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -45,7 +45,7 @@ define(['modules/defaultview','util/api','util/util'], function(Default, API, Ut
 				API.killHighlight(this.module.id);
 				this._lastMol = moduleValue;
 				var view = this, self = this;
-				var type = CI.DataType.getType(moduleValue);
+				var type = Traversing.getType(moduleValue);
 
 				CI.DataType.toScreen(moduleValue, this.module, this._id).done(function(mol) {
 					view._molecule = mol;
