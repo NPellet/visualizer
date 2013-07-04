@@ -1561,7 +1561,7 @@ define(['jquery'], function($) {
 			while(this.groupGrids.firstChild)
 				this.groupGrids.removeChild(this.groupGrids.firstChild);
 
-			if(!doNotRecalculateMinMax)
+			if(!doNotRecalculateMinMax || !this._realMin || !this._realMax)
 				this._recalculateDataInterval();
 
 			var widthPx = this.maxPx - this.minPx;
@@ -2531,6 +2531,7 @@ define(['jquery'], function($) {
 				//	if(xpx < this.getXAxis().getMinPx() || xpx > this.getXAxis().getMaxPx())
 				//		continue;
 				
+
 				xpx = this.getX(this.data[i][j + incrXFlip]);
 				ypx = this.getY(this.data[i][j + incrYFlip]);
 

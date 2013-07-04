@@ -1,12 +1,10 @@
 
 define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
-	
-
-
 
 	var gcms = function() {
-
+		this.gcSeries = [];
+		this.msData = null;
 
 
 
@@ -38,35 +36,41 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				lineToZero: false,
 
 				onRangeX: function(xStart, xEnd) {
-					var indexStart = self.gcSerie.searchClosestValue(xStart).xBeforeIndex;
-					var indexEnd = self.gcSerie.searchClosestValue(xEnd).xBeforeIndex;
+					var indexStart = self.gcSeries[0].searchClosestValue(xStart).xBeforeIndex;
+					var indexEnd = self.gcSeries[0].searchClosestValue(xEnd).xBeforeIndex;
 					var indexMin = Math.min(indexStart, indexEnd);
 					var indexMax = Math.max(indexStart, indexEnd);
 
 
-					var obj = {}, allMs = [];
+					console.time('PushInInitial');
+					var obj = [], allMs = [], i, j;
 
-					for(var i = indexMin; i <= indexMax; i++) {
-						
-						for(var j = 0; j < self.msData[i].length; j+=2) {
-
-							if(obj[self.msData[i][j]] !== undefined)
-								obj[self.msData[i][j]] += self.msData[i][j+1];
+					for(i = indexMin; i <= indexMax; i++) {
+						for(j = 0, l = self.msData[i].length; j < l; j+=2) {
+							
+							if(obj[self.msData[i][j]])
+								obj[self.msData[i][j]] += self.msData[i][j+1];	
 							else {
 								obj[self.msData[i][j]] = self.msData[i][j+1];
 								allMs.push(self.msData[i][j]);
-
 							}
 						}
 					}
-					
-					allMs.sort(function(a, b) { return a -b; });
 
+					console.timeEnd('PushInInitial');
+
+					console.time('sort');
+					allMs.sort(function(a, b) { return a -b; });
+console.timeEnd('sort');
+console.log(allMs.length);
+					
+					console.time('PushInFinal');
 					var finalMs = [];
 					for(var i = 0; i < allMs.length; i++) {
 						finalMs.push(allMs[i]);
 						finalMs.push(obj[allMs[i]] / Math.abs(indexMax - indexMin));
 					}
+					console.timeEnd('PushInFinal');
 
 					if(self.msSerieAv) {
 						self.msSerieAv.kill();
@@ -84,10 +88,14 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				},	
 
 				onMouseMoveData: function(e, val) {
-					if(!val.gc)
+					for(var i in val) {
+						break;
+					}
+
+					if(val[i] == undefined)
 						return;
 
-					var x = val.gc.xBeforeIndex;
+					var x = val[i].xBeforeIndex;
 					var ms = self.msData[x];
 
 					if(self.msSerie) {
@@ -211,20 +219,22 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 		},
 
 		setGC: function(gc) {
-
+			var serie;
 			if(!this.gc)
 				return;
-			if(this.gcSerie)
-				this.gcSerie.kill();
 
-			this.gcSerie = this.gc.newSerie('gc', {
+			for(var i = 0, l = this.gcSeries.length; i < l; i++)
+				this.gcSeries[i].kill();
+			this.gcSeries = [];
 
-			});
-
-			this.gcSerie.setData(gc);
-			this.gcSerie.autoAxis();
-			this.gc.redraw();
-			this.gc.drawSeries();
+			for(var i in gc) {
+				serie = this.gc.newSerie(i, {});
+				this.gcSeries.push(serie);
+				serie.setData(gc[i]);
+				serie.autoAxis();
+				this.gc.redraw();
+				this.gc.drawSeries();
+			}
 		},
 
 		setMS: function(ms) {

@@ -26,6 +26,17 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 		},
 		
 		update: {
+			'jcamp': function(moduleValue) {
+				var self = this;
+				require(['util/jcampconverter'], function(tojcamp) {
+					var jcamp = tojcamp(moduleValue);
+					if(jcamp.gcms) {
+						self.gcmsInstance.setGC(jcamp.gcms.gc);
+						self.gcmsInstance.setMS(jcamp.gcms.ms);		
+					}
+				});
+			},
+
 			'gcms': function(moduleValue) {
 				
 				this.gcmsInstance.setGC(moduleValue.gc);

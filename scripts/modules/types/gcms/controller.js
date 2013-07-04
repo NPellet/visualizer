@@ -24,6 +24,11 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 			gcms: {
 				type: ["array", "object"],
 				label: 'GC-MS data'
+			},
+
+			jcamp: {
+				type: ["jcamp", "string"],
+				label: 'GC-MS data via JCamp'
 			}		
 		},
 		

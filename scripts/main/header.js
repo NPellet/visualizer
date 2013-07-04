@@ -108,7 +108,9 @@ define(['forms/button', 'util/util'], function(Button, Util) {
 			
 		container.append(new Button('Save locally', function() {
 			console.log(JSON.stringify(view));
-			viewhandler.localSave(view);
+			console.trace();
+			if(viewhandler)
+				viewhandler.localSave(view);
 		}).render());
 
 		if((datahandler || viewhandler) && (window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB)) {
