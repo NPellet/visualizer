@@ -1,4 +1,4 @@
-define(['modules/defaultcontroller','util/api'], function(Default, API) {
+define(['modules/defaultcontroller','util/api','util/datatraversing'], function(Default, API, Traversing) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
@@ -87,9 +87,9 @@ define(['modules/defaultcontroller','util/api'], function(Default, API) {
 			var data = CI.DataType.getValueIfNeeded(this.module.getDataFromRel('list'));
 			var jpaths = [];
 			if(CI.DataType.getType(data) == 'array') 
-				CI.DataType.getJPathsFromElement(data[0], jpaths);
+				Traversing.getJPathsFromElement(data[0], jpaths);
 			else if(CI.DataType.getType(data) == 'arrayXY')
-				CI.DataType.getJPathsFromElement(data, jpaths);
+				Traversing.getJPathsFromElement(data, jpaths);
 
 
 			return {

@@ -1,4 +1,4 @@
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller','util/datatraversing'], function(Default,Traversing) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
@@ -20,7 +20,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			var data = this.module.getDataFromRel('hashmap');
 			
 			var jpaths = [];
-			CI.DataType.getJPathsFromElement(data, jpaths);
+			Traversing.getJPathsFromElement(data, jpaths);
 
 			var groupfield = new BI.Forms.GroupFields.List('cfg');
 			section.addFieldGroup(groupfield);

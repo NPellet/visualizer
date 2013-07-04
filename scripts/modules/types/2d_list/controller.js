@@ -1,4 +1,4 @@
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, Traversing) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
@@ -55,7 +55,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			
 			var jpaths = [], data;
 			if((data = this.module.getDataFromRel('list') && data != null)
-				CI.DataType.getJPathsFromElement(data[0], jpaths);
+				Traversing.getJPathsFromElement(data[0], jpaths);
 			
 			return {
 				groups: {

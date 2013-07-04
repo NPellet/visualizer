@@ -1,4 +1,4 @@
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller','util/datatraversing'], function(Default,Traversing) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
@@ -91,9 +91,9 @@ define(['modules/defaultcontroller'], function(Default) {
 			var jpaths = [];
 			
 			if(CI.DataType.getType(data) == 'array') 
-				CI.DataType.getJPathsFromElement(data[0], jpaths);
+				Traversing.getJPathsFromElement(data[0], jpaths);
 			else if(CI.DataType.getType(data) == 'arrayXY')
-				CI.DataType.getJPathsFromElement(data, jpaths);
+				Traversing.getJPathsFromElement(data, jpaths);
 
 			var field = groupfield.addField({
 				type: 'Combo',

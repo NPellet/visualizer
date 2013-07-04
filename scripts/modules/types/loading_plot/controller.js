@@ -1,4 +1,4 @@
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller','util/datatraversing'], function(Default,Traversing) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
@@ -187,7 +187,7 @@ define(['modules/defaultcontroller'], function(Default) {
 
 			/* */
 			if(data.value)
-				CI.DataType.getJPathsFromElement(data.value.series[0].data[0], jpaths);
+				Traversing.getJPathsFromElement(data.value.series[0].data[0], jpaths);
 
 			var field = groupfield.addField({
 				type: 'Color',

@@ -1,5 +1,5 @@
 
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller','util/datatraversing'], function(Default,Traversing) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
@@ -143,7 +143,7 @@ define(['modules/defaultcontroller'], function(Default) {
 				var jpath = [], variable = self.values[value];
 				if(!variable)
 					return;
-				CI.DataType.getJPathsFromElement(variable, jpath);
+				Traversing.getJPathsFromElement(variable, jpath);
 				this.group.section.fieldGroups[2].fields[1].implementation.setOptions(jpath);
 			});
 
