@@ -1,5 +1,5 @@
 
-define(['jquery', 'util/domdeferred', 'util/api','util/util'], function($, DOMDeferred, API, Util) {
+define(['jquery', 'util/domdeferred', 'util/api','util/util','util/datatraversing'], function($, DOMDeferred, API, Util, Traversing) {
 
 	var functions = {};
 
@@ -26,7 +26,7 @@ define(['jquery', 'util/domdeferred', 'util/api','util/util'], function($, DOMDe
 
 	functions.picture = {};
 	functions.picture.toscreen = function(def, val) {
-		def.resolve('<img src="' + CI.DataType.getValueIfNeeded(val) + '" />')
+		def.resolve('<img src="' + Traversing.getValueIfNeeded(val) + '" />')
 	}
 
 	functions.gif = functions.picture;
@@ -294,7 +294,7 @@ define(['jquery', 'util/domdeferred', 'util/api','util/util'], function($, DOMDe
 
 	functions.mf = {};
 	functions.mf.toscreen = function(dev, value) {
-		return def.resolve(CI.DataType.getValueIfNeeded(value).replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
+		return def.resolve(Traversing.getValueIfNeeded(value).replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
 	}
 
 	functions.boolean = {};

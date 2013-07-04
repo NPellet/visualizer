@@ -14,7 +14,7 @@ define(['modules/defaultmodel','util/datatraversing'], function(Default,Traversi
 				// It's an array of equivalent elements
 				// Don't need to merge a list
 				// It's like that since the data is typed and we know the structure
-				data = CI.DataType.getValueIfNeeded(data);
+				data = Traversing.getValueIfNeeded(data);
 				
 				var data = data[0];
 				var jpaths = []; 

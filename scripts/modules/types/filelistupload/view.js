@@ -1,4 +1,4 @@
-define(['modules/defaultview'], function(Default) {
+define(['modules/defaultview','util/datatraversing'], function(Default,Traversing) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -97,7 +97,7 @@ define(['modules/defaultview'], function(Default) {
 
 	 			this.varname = varname;
 
-	 			var list = CI.DataType.getValueIfNeeded(moduleValue).value;
+	 			var list = Traversing.getValueIfNeeded(moduleValue).value;
 
 	 			for(var i = 0, l = list.length; i < l; i++) {
 	 				this.dom.append(this.newLi(list[i].type, list[i].filename, list[i].filesize, list[i].link));

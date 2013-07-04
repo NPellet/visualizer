@@ -84,7 +84,7 @@ define(['modules/defaultcontroller','util/api','util/datatraversing'], function(
 		
 		doConfiguration: function(section) {
 
-			var data = CI.DataType.getValueIfNeeded(this.module.getDataFromRel('list'));
+			var data = Traversing.getValueIfNeeded(this.module.getDataFromRel('list'));
 			var jpaths = [];
 			if(CI.DataType.getType(data) == 'array') 
 				Traversing.getJPathsFromElement(data[0], jpaths);

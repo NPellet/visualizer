@@ -188,7 +188,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					}
 				}
 				
-				val = CI.DataType.getValueIfNeeded(moduleValue),
+				val = Traversing.getValueIfNeeded(moduleValue),
 				val2 = [];
 
 				for(var i = 0, l = val.length; i < l; i++) {
@@ -361,7 +361,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 			addSerie: function(value) {
 				this.colorId++;
-				value = CI.DataType.getValueIfNeeded(value);
+				value = Traversing.getValueIfNeeded(value);
 				for(var i in value) {
 					
 					this.onActionReceive.removeSerieByName.call(this, value[i].name || {});
@@ -378,7 +378,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			},
 
 			removeSerie: function(value) {	
-				value = CI.DataType.getValueIfNeeded(value);
+				value = Traversing.getValueIfNeeded(value);
 				for(var i = 0, l = this.seriesActions.length; i < l; i++) {
 					if(this.seriesActions[i][0] == value) {
 						this.seriesActions[i][1].kill();

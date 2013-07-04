@@ -13,7 +13,7 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 					var elementId = trIndex * cols + tdIndex;
 					if(!(moduleValue = module.getDataFromRel('list')))
 						return;
-					var value = CI.DataType.getValueIfNeeded(moduleValue);
+					var value = Traversing.getValueIfNeeded(moduleValue);
 					CI.API.setSharedVarFromJPath(actions[j].name, value[elementId], actions[j].jpath);
 				});
 

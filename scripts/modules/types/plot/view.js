@@ -1,4 +1,4 @@
-define(['modules/defaultview'], function(Default) {
+define(['modules/defaultview','util/datatraversing'], function(Default,Traversing) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -30,7 +30,7 @@ define(['modules/defaultview'], function(Default) {
 				var serie;
 				if(moduleValue === undefined || !moduleValue)
 					return;
-				moduleValue = CI.DataType.getValueIfNeeded(moduleValue);
+				moduleValue = Traversing.getValueIfNeeded(moduleValue);
 
 				if(!this.dom)
 					return;
@@ -101,7 +101,7 @@ define(['modules/defaultview'], function(Default) {
 
 
 
-				moduleValue = CI.DataType.getValueIfNeeded(moduleValue);
+				moduleValue = Traversing.getValueIfNeeded(moduleValue);
 				if(!moduleValue)
 					return;
 				console.log(this.namedSeries);
@@ -147,7 +147,7 @@ define(['modules/defaultview'], function(Default) {
 		onActionReceive:  {
 
 			addSerie: function(value) {
-				value = CI.DataType.getValueIfNeeded(value);
+				value = Traversing.getValueIfNeeded(value);
 				for(var i in value) {
 					this.onActionReceive.removeSerie.call(this, value[i].name)
 					var serie = this.graph.newSerie(value[i].name);

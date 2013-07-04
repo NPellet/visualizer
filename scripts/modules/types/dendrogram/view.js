@@ -114,7 +114,7 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 		    		if (actions[i].event=="onHover") {
 		    			var jpath=actions[i].jpath;
 		    			var name=actions[i].name;
-						CI.API.setSharedVarFromJPath(name, node, jpath);
+						API.setVar(name, node, jpath);
 					}
 	    		}
 	    	}

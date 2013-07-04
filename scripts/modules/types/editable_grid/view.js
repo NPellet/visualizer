@@ -1,4 +1,4 @@
-define(['modules/defaultview'], function(Default) {
+define(['modules/defaultview','util/datatraversing'], function(Default,Traversing) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -96,7 +96,7 @@ define(['modules/defaultview'], function(Default) {
 					Table.setPagination(nbLines);
 				
 				var Columns = {};
-				moduleValue = CI.DataType.getValueIfNeeded(moduleValue);
+				moduleValue = Traversing.getValueIfNeeded(moduleValue);
 				var type = CI.DataType.getType(moduleValue);
 				for(var j in jpaths) {
 					var Column = new CI.Tables.Column(j);
@@ -110,7 +110,7 @@ define(['modules/defaultview'], function(Default) {
 					Columns[j] = Column;
 				}
 			
-				var list = CI.DataType.getValueIfNeeded(moduleValue);
+				var list = Traversing.getValueIfNeeded(moduleValue);
 				var Content = new CI.Tables.Content();
 
 				var filter = this.module.getConfiguration().filterRow;
