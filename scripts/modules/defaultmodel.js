@@ -49,15 +49,14 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		},
 
 		onVarGet: function(varValue, varName) {
+
 			if(!this.sourceMap)
 				return;
 
 			var value = this.buildData(varValue, this.module.controller.configurationReceive[this.sourceMap[varName].rel].type);
 			this.data[varName] = value;
 			var rel = this.module.getDataRelFromName(varName);
-			
 			if(rel && this.module.view.update && this.module.view.update[rel]) {
-			
 				this.module.view.update[rel].call(this.module.view, value, varName[0]);
 			}
  		},
@@ -93,7 +92,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		},
 
 		getValue: function() {
-			return this.dataValue;
+			return this.data;
 		},
 				
 		getjPath: function(rel, accepts) {

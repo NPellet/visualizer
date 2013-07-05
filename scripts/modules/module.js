@@ -105,9 +105,10 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 				
 			if(!this.view.update || !this.definition || !this.definition.dataSource)
 				return;
-
+console.log(API.getRepositoryData().getKeys());
 			for(var i = 0, l = this.definition.dataSource.length; i < l; i++) {
 	 			var val = API.getRepositoryData().get(this.definition.dataSource[i].name);
+
 	 			if(val && val[1])
 	 				this.model.onVarGet(val[1], this.definition.dataSource[i].name);
 //					this.view.update[this.definition.dataSource[i].rel].call(this.view, val[1], this.definition.dataSource[i].name);
@@ -249,7 +250,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 
 				for(var i in keys)
 					autoComplete.push({title: i, label: i});
-				console.log(autoComplete);	
+				
 				// Receive configuration
 				var availCfg = module.controller.configurationReceive;
 				var allRels2 = [];

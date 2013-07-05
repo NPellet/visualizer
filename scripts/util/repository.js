@@ -84,12 +84,14 @@ define(['jquery', 'util/event'], function($, Event) {
 	$.extend(Repository.prototype, Event.prototype);
 
 	Repository.prototype.get = function(key) {
+
 		if(this.options.doNotSave === true)
 			return;	
 		return this._value[key];
 	}
 
 	Repository.prototype.set = function(keys, value, noTrigger) {
+		
 		if(!(keys instanceof Array))
 			keys = [keys];
 		else if(!keys.length)

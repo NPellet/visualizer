@@ -44,7 +44,7 @@ define(['jquery'], function($) {
 
 		this._creation = Date.now() + Math.random();
 
-		this.options = $.extend({}, defaults, options);
+		this.options = $.extend({}, graphDefaults, options);
 		this.axis = {left: [], top: [], bottom: [], right: []};
 		this.title = false;
 

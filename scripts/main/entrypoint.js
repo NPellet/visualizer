@@ -160,9 +160,8 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 					data[view.variables[i].varname] = {};
 
 					API.setVariable(view.variables[i].varname, data[view.variables[i].varname]);
-				} else {
-					API.setVariable(view.variables[i].varname, data, "element." + view.variables[i].jpath);
-				}
+				} else
+					API.setVariable(view.variables[i].varname, data, view.variables[i].jpath);
 			}
 		}
 	}
