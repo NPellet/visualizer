@@ -3,11 +3,48 @@ define(['jquery'], function($) {
 
 	var _scope = this;
 
+
+	var graphDefaults =  {
+		paddingTop: 30,
+		paddingBottom: 0,
+		paddingLeft: 20,
+		paddingRight: 20,
+
+		close: {
+			left: true,
+			right: true, 
+			top: true,
+			bottom: true
+		},
+
+		title: '',
+		zoomMode: false,
+		defaultMouseAction: 'drag', // rangeX, rangeY
+		defaultWheelAction: 'zoomY',
+
+		lineToZero: false,
+
+		fontSize: 12,
+		fontFamily: 'Myriad Pro, Helvetica, Arial',
+
+		addLabelOnClick: false,
+
+		onVerticalTracking: false,
+		onHorizontalTracking: false,
+
+		rangeLimitX: 1,
+		rangeLimitY: 0,
+
+		onRangeX: false,
+		onRangeY: false
+	};
+
+
 	var Graph = function(dom, options, axis) {
 
 		this._creation = Date.now() + Math.random();
 
-		this.options = $.extend({}, Graph.prototype.defaults, options);
+		this.options = $.extend({}, defaults, options);
 		this.axis = {left: [], top: [], bottom: [], right: []};
 		this.title = false;
 
@@ -61,50 +98,12 @@ define(['jquery'], function($) {
 	};
 
 	Graph.prototype = {
-		
-		defaults: {
-			paddingTop: 30,
-			paddingBottom: 0,
-			paddingLeft: 20,
-			paddingRight: 20,
-
-			close: {
-				left: true,
-				right: true, 
-				top: true,
-				bottom: true
-			},
-
-			title: '',
-			zoomMode: false,
-			defaultMouseAction: 'drag', // rangeX, rangeY
-			defaultWheelAction: 'zoomY',
-
-			lineToZero: false,
-
-			fontSize: 12,
-			fontFamily: 'Myriad Pro, Helvetica, Arial',
-
-			addLabelOnClick: false,
-
-			onVerticalTracking: false,
-			onHorizontalTracking: false,
-
-			rangeLimitX: 1,
-			rangeLimitY: 0,
-
-			onRangeX: false,
-			onRangeY: false
-		},
-
 
 		doDom: function() {
 
 			this.dom = document.createElementNS(this.ns, 'svg');
 			this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
 			this.dom.setAttribute('xmlns', "http://www.w3.org/2000/xmlns");
-
-
 
 			this._dom.appendChild(this.dom);
 

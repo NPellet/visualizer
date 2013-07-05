@@ -34,6 +34,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				defaultMouseAction: 'rangeX',
 				defaultWheelAction: 'none',
 				lineToZero: false,
+				rangeLimitX: 2,
 
 				onRangeX: function(xStart, xEnd) {
 					var indexStart = self.gcSeries[0].searchClosestValue(xStart).xBeforeIndex;
@@ -41,8 +42,6 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					var indexMin = Math.min(indexStart, indexEnd);
 					var indexMax = Math.max(indexStart, indexEnd);
 
-
-					console.time('PushInInitial');
 					var obj = [], allMs = [], i, j;
 
 					for(i = indexMin; i <= indexMax; i++) {
@@ -57,20 +56,12 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 						}
 					}
 
-					console.timeEnd('PushInInitial');
-
-					console.time('sort');
 					allMs.sort(function(a, b) { return a -b; });
-console.timeEnd('sort');
-console.log(allMs.length);
-					
-					console.time('PushInFinal');
 					var finalMs = [];
 					for(var i = 0; i < allMs.length; i++) {
 						finalMs.push(allMs[i]);
 						finalMs.push(obj[allMs[i]] / Math.abs(indexMax - indexMin));
 					}
-					console.timeEnd('PushInFinal');
 
 					if(self.msSerieAv) {
 						self.msSerieAv.kill();
