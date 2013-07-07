@@ -194,7 +194,7 @@ define(['jquery'], function($) {
 
 			this.dom.addEventListener('mousedown', function(e) {
 				e.preventDefault();
-console.log(e.which);
+console.log(e.which, e);
 				if(e.which == 3)
 					return;
 
@@ -218,7 +218,7 @@ console.log(e.which);
 			});
 
 			this.dom.addEventListener('click', function(e) {
-console.log(e.which);
+console.log(e.which, e);
 				if(e.which == 3)
 					return;
 				e.preventDefault();
