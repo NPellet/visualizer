@@ -217,7 +217,8 @@ define(['jquery'], function($) {
 			});
 
 			this.dom.addEventListener('click', function(e) {
-				
+				if(e.which == 3)
+					return;
 				e.preventDefault();
 				var coords = self.getXY(e);
 				if(self.clickTimeout)
