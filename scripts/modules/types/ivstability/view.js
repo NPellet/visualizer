@@ -54,7 +54,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 				title: '',
 				zoomMode: 'xy',
 				defaultMouseAction: 'zoom',
-				defaultMouseAction: 'rangeX',
+
 				defaultWheelAction: 'none',
 				lineToZero: false,
 				fontSize: 12,
