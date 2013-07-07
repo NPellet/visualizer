@@ -194,8 +194,8 @@ define(['jquery'], function($) {
 
 			this.dom.addEventListener('mousedown', function(e) {
 				e.preventDefault();
-console.log(e.which, e);
-				if(e.which == 3)
+
+				if(e.which == 3 || e.ctrlKey)
 					return;
 
 				var coords = self.getXY(e);
@@ -218,8 +218,8 @@ console.log(e.which, e);
 			});
 
 			this.dom.addEventListener('click', function(e) {
-console.log(e.which, e);
-				if(e.which == 3)
+
+				if(e.which == 3 || e.ctrlKey)
 					return;
 				e.preventDefault();
 				var coords = self.getXY(e);
