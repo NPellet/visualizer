@@ -79,15 +79,15 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 			var field;
 			for(var i in structure.fields) {
 
-				if(structure.fields.hasOwnProperty(i))
+				if(!structure.fields.hasOwnProperty(i))
 					return;
 				
 				field = this.addField(structure.fields[i]);
 
-				field.onChange(function() {
+				/*field.onChange(function() {
 					self.form.options.onFieldChange(self.options.jpath, value, index);
 				});
-
+*/
 				if(structure.fields[i].options)
 					field.onLoad(function(field, opts) {
 						field.implementation.setOptions(opts)
