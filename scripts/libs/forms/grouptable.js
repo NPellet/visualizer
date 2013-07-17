@@ -10,6 +10,7 @@ define(['forms/fieldtable'], function(TableField) {
 	group.prototype = {
 
 		addField: function(options) {
+
 			var field = new TableField(options, this);
 			this.fields.push(field);
 			field.setGroupId(this.fields.length - 1);
@@ -62,7 +63,12 @@ define(['forms/fieldtable'], function(TableField) {
 
 		setStructure: function(structure) {
 			var field;
+			
 			for(var i in structure.fields) {
+
+				if(!structure.fields.hasOwnProperty(i))
+					return;
+
 				field = this.addField(structure.fields[i]);
 				if(structure.fields[i].options)
 					field.onLoad(function(field, opts) {

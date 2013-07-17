@@ -1,4 +1,4 @@
-define(['modules/defaultview'], function(Default) {
+define(['modules/defaultview', 'libs/forms/formfactory'], function(Default, FormFactory) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -19,7 +19,11 @@ define(['modules/defaultview'], function(Default) {
 			var cfg = this.module.getConfiguration();
 			var xml = cfg.xml;
 
-			var xmlTransl = new BI.Forms.xmlBuilder(false, {
+			var xmlTransl = FormFactory.newForm(this.domWrapper, json, function() {
+
+
+
+			}, {
 				onFieldChange: function(elJPath, value, index) {
 					if(self.changing)
 						return;
@@ -31,15 +35,7 @@ define(['modules/defaultview'], function(Default) {
 
 				labels: cfg.labels
 			});
-
-			this.formBuilder = xmlTransl;
-
-			var form = xmlTransl.build($($.parseXML(xml)).children());
-			form.getTemplater().setSectionsTabLvl(10);
-			var formDom = $("<div />");
-			this.domWrapper.append(formDom);
-
-			formDom.biForm(form, function() {}, function() {});
+			
 			this._inDom.resolve();
 		},
 		

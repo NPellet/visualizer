@@ -2,6 +2,7 @@ define(['jquery', 'forms/field'], function($, fieldPrototype) {
 
 	var field = function(options, group) {
 		this.init(options);
+		
 		var type = this.options.type, self = this;
 		self.deferred = $.Deferred();
 		

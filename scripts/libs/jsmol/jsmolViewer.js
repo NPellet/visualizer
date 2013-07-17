@@ -4487,6 +4487,7 @@ Clazz.addProto = function(proto, name, func) {
 };
 
 ;(function(proto) {
+	
   Clazz.addProto(proto, "equals", function (obj) {
   	return this == obj;
   });

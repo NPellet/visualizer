@@ -3,9 +3,9 @@ define(['forms/form'], function(form) {
 
 	return {
 
-		newform: function(dom, structure, onReady) {
+		newform: function(dom, structure, onReady, options) {
 			
-			var formInst = new form();
+			var formInst = new form(options);
 
 			formInst.setStructure(structure);
 			formInst.onLoaded(function() {

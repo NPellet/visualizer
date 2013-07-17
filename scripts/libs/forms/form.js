@@ -30,6 +30,8 @@ define(['require', 'jquery', 'forms/section', 'forms/title', 'forms/buttonzone']
 			templaterLoaded.resolve();
 		});
 		
+	//	this.setLabels(this.options.labels);
+
 		if(this.options.xmlFile) {
 			
 			xmlLoaded = $.Deferred(), builderLoaded = $.Deferred();
@@ -112,6 +114,7 @@ define(['require', 'jquery', 'forms/section', 'forms/title', 'forms/buttonzone']
 		},
 
 		setStructure: function(structure) {
+			
 			var section, defs = [];
 			for(var i in structure.sections) {
 				section = new Section(i, structure.sections[i].config);

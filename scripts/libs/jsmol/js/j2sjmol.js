@@ -167,6 +167,7 @@ Clazz.addProto = function(proto, name, func) {
 };
 
 ;(function(proto) {
+	console.log(proto);
   Clazz.addProto(proto, "equals", function (obj) {
   	return this == obj;
   });
@@ -4645,7 +4646,7 @@ ClazzLoader.loadScript = function (file, why) {
 	ClazzLoader.inLoadingThreads++;
 	//alert("threads:"+ClazzLoader.inLoadingThreads);
 	// Add script DOM element to document tree
-	console.trace();
+	
 	head.appendChild (script);
 	ClazzLoader.scriptLoading (file);
 };
@@ -6874,3 +6875,5 @@ Clazz.setConsoleDiv = function(d) {
 	
 
 };
+
+

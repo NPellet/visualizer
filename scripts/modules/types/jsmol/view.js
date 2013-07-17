@@ -17,15 +17,15 @@ function(Default, UTIL, DataTraversing) {
 	view.prototype = $.extend(true, {}, Default, {
 
 	 	init: function() {	
-	 		this.id = UTIL.getNextUniqueId();
-	 		this.dom = $('<div id="' + this.id + '"></div>');
+	 		this.jsmolid = UTIL.getNextUniqueId();
+	 		this.dom = $('<div id="' + this.jsmolid + '"></div>');
 	 		this.module.getDomContent().html(this.dom);
 	 		this._highlights = this._highlights || [];
 	 	},
 
 	 	inDom: function() {
 	 		var useSignedApplet = false;
-			Info = {
+			var info = {
 				width: 700,
 				height: 300,
 				debug: false,
@@ -57,7 +57,8 @@ function(Default, UTIL, DataTraversing) {
 
 			Jmol._XhtmlElement = this.dom.get(0);
 			Jmol._XhtmlAppendChild = true;
-			this.applet = Jmol.getApplet(this.id, Info);
+			this.applet = Jmol.getApplet(this.jsmolid, info);
+
 	 	},
 
 	 	onResize: function() {
@@ -70,7 +71,7 @@ function(Default, UTIL, DataTraversing) {
 
 	 	update: {
 
-	 		data: function(data) {
+	 	/*	data: function(data) {
 	 			if(!data)
 	 				return;
 	 			data = DataTraversing.getValueIfNeeded(data);
@@ -82,7 +83,7 @@ function(Default, UTIL, DataTraversing) {
     			if(cfg && cfg.afterloadscript)
     				actions.push(cfg.afterloadscript);
     			Jmol.script(this.applet, actions.join('\r\n')); 
-	 		}
+	 		}*/
 		},
 
 
