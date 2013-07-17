@@ -304,4 +304,6 @@ define(['jquery', 'util/domdeferred', 'util/api','util/util','util/datatraversin
 		else
 			def.resolve('<span style="color: red;">&#10008;</span>');
 	}
+
+	return functions;
 });

@@ -52,7 +52,7 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 		args = $.extend(args, getOptions(data));
 		if(box.view.typeToScreen && box.view.typeToScreen[type])
 			return box.view.typeToScreen[type].call(box.view, deferred, data, args, highlights, box);
-		TypeRenderer.toScreen(deferred, data, args, highlights, box);
+		TypeRenderer[type].toscreen(deferred, data, args, highlights, box);
 	}
 
 	function getOptions(value) {
