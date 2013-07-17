@@ -110,7 +110,8 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 			xml.children().each(function() {
 				var name = $(this).attr('name');
 				var field = fieldsByName[name];
-
+				if(!field)
+					return;
 				field.resetDuplicate();
 				$(this).children('value').each(function(i) {
 					if(i > 0)
