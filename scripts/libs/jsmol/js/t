@@ -1,0 +1,397 @@
+
+---------- J2SJMOL.JS
+ // BH 3/2/2013 9:09:53 AM delete globals c$ and $fz
+ // BH removed Clazz.ie$plit = "\\2".split (/\\/).length == 1; unnecessary; using RegEx slows process significantly in all browsers
+ # _x_CLASS_NAME__ -> C$N
+ # _x_PKG_NAME__ -> P$N
+  Clazz.addProto(proto, "to$tring", Object.prototype.toString);
+  		return this.to$tring.apply (this, arguments);
+  			"equals", "hashCode", "getClass", "clone", "finalize", "notify", "notifyAll", "wait", "to$tring", "toString"
+		s = s.replace (/^\s+/, "").replace (/\s+$/, ""); // .trim ()
+		if (o != "b$" && o != "prototype" && o != "superClazz"
+		if (o != "b$" && o != "prototype" && o != "superClazz"
+					&& ss[0].con$truct != null) {
+				ss[0].con$truct.apply (objThis, []);
+		/*# {$no.debug.support} >>x #*/
+			Clazz.pu$hCalling (new Clazz.callingStack (caller, clazzThis));
+	if (clazzThis.con$truct != null) {
+		clazzThis.con$truct.apply (objThis, []);
+/*# {$no.debug.support} >>x #*/
+			/*# {$no.debug.support} >>x #*/
+					Clazz.pu$hCalling (new Clazz.callingStack (xcaller, owner));
+					Clazz.pu$hCalling (new Clazz.callingStack (caller, owner));
+/*# {$no.debug.support} >>x #*/
+Clazz.expExpandParameters = function ($0, $1) {
+	if ($1 == 'N') {
+	} else if ($1 == 'B') {
+	} else if ($1 == 'S') {
+	} else if ($1 == 'O') {
+	} else if ($1 == 'A') {
+				.replace (/\$/g, "org.eclipse.s");
+	var f$ = Clazz.getSignature(proto, funName, funBody, false);
+  if (f$ == null || (f$.claxxOwner === clazzThis && f$.funParams == fpName)) {
+    delete $fz;           // BH -- delete global variables when no longer needed
+		if (f$.stacks == null) {
+			oldFun = f$;
+			if (f$.claxxOwner != null) {
+			oldStacks = f$.stacks;
+	if (f$.stacks == null 
+			|| f$.claxxReference !== clazzThis) {
+        //alert(f$.claxxReference + " " + clazzThis)
+		f$ = Clazz.getSignature(proto, funName, Clazz.generateDelegatingMethod (clazzThis, funName, f$), true);				
+		f$.stacks = arr;
+	var ss = f$.stacks;
+			f$[oldFun.funParams] = oldFun;
+			f$["\\unknown"] = oldFun;
+	f$[fpName] = funBody;
+  delete $fz;           // BH -- delete global variables when no longer needed
+	return f$;
+	if (clazzThis.con$truct != null) {
+		clazzThis.con$truct.index = clazzThis.con$truct.stacks.length;
+	//clazzThis.con$truct = clazzThis.prototype.con$truct = null;
+// $_k  @j2sOverrideConstructor
+	if (clazzThis.con$truct != null) {
+		clazzThis.con$truct.index = clazzThis.con$truct.stacks.length;
+	//clazzThis.con$truct = clazzThis.prototype.con$truct = null;
+	/*# {$no.javascript.support} >>x #*/
+	if (objThis.con$truct != null) {
+		objThis.con$truct.apply (objThis, args);
+		if (objThis.con$truct == null) { // no need to init fields
+			objThis.con$truct.apply (objThis, []);
+			 * call #con$truct back
+						&& c.claxxOwner.con$truct != null) {
+				c.claxxOwner.con$truct.apply (objThis, []);
+				c.stacks[0].con$truct.apply (objThis, []);
+			objThis.con$truct.apply (objThis, []);
+	} else if (objThis.con$truct != null) {
+		objThis.con$truct.apply (objThis, []);
+	"equals", "hashCode", /*"toString",*/ "getName", "getClassLoader", "getResourceAsStream" /*# {$no.javascript.support} >>x #*/, "defineMethod", "defineStaticMethod",
+	}/*# {$no.javascript.support} >>x #*/,
+		regexp = new RegExp("^"+str+"$");
+var $$o$$ = null;
+	$$o$$.hello ();
+		Clazz._exceptionNPERegExp = Clazz._ex_reg(e.message, "$$o$$");
+	var cbName = "b$"; // "callbacks";
+			obs[className.replace (/org\.eclipse\.swt\./, "$wt.")] = classThisObj;
+						.replace (/org\.eclipse\.swt\./, "$wt.")] = classThisObj;
+ * @param classInner given inner class, alway with name like "*$*"
+	if (finalVars == null && objThis.$finals == null) {
+		// f$ is short for the once choosen "$finals"
+		if (finalVars != null && objThis.f$ == null) {
+			obj.f$ = finalVars;
+		} else if (finalVars == null && objThis.f$ != null) {
+			obj.f$ = objThis.f$;
+		} else if (finalVars != null && objThis.f$ != null) {
+			for (var attr in objThis.f$) {
+				o[attr] = objThis.f$[attr];
+			obj.f$ = o;
+	if (finalVars != null && objThis.$finals == null) {
+		obj.$finals = finalVars;
+	} else if (finalVars == null && objThis.$finals != null) {
+		obj.$finals = objThis.$finals;
+	} else if (finalVars != null && objThis.$finals != null) {
+		for (var attr in objThis.$finals) {
+			o[attr] = objThis.$finals[attr];
+		obj.$finals = o;
+	if (clazzEnum["$ values"] == null) {  // BH added
+	  clazzEnum["$ values"] = []          // BH added
+	    return this["$ values"];          // BH added
+	clazzEnum["$ values"].push(o);
+$_AI=Clazz.newIntArray;
+$_AF=Clazz.newFloatArray;
+$_AD=Clazz.newDoubleArray;
+$_AL=Clazz.newLongArray;
+$_AS=Clazz.newShortArray;
+$_AB=Clazz.newByteArray;
+$_AC=Clazz.newCharArray;
+$_Ab=Clazz.newBooleanArray;
+	if (clazz.con$truct != null) {
+		var ss = clazz.con$truct.stacks;
+		var idx = 0;//clazz.con$truct.index;
+	Clazz.addProto(clazz.prototype, "con$truct", clazz.con$truct = function () {
+	clazz.con$truct.stacks = stacks;
+	clazz.con$truct.index = 0;
+	if (clazz.declared$Fields != null) {
+		for (var i = 0; i < clazz.declared$Fields.length; i++) {
+			newArr[i] = clazz.declared$Fields[i];
+	clazz.declared$Fields = newArr;
+		var fs = clazz.declared$Fields;
+ *			var $private = Clazz.checkPrivateMethod (arguments);
+ *			if ($private != null) {
+ *				return $private.apply (this, arguments);
+$fz = null; // for private method declaration
+//var cla$$ = null;
+c$ = null;
+/*-# cla$$$tack -> cst  #-*/
+Clazz.cla$$$tack = new Array ();
+Clazz.pu$h = function () {
+	if (c$ != null) { // if (cla$$ != null) {
+		Clazz.cla$$$tack[Clazz.cla$$$tack.length] = c$; // cla$$;
+	if (Clazz.cla$$$tack.length > 0) {
+		var clazz = Clazz.cla$$$tack[Clazz.cla$$$tack.length - 1];
+		Clazz.cla$$$tack.length--;
+/*# {$no.debug.support} >>x #*/
+Clazz.pu$hCalling = function (stack) {
+  delete c$;           // BH -- delete global variables when no longer needed?
+w$ = window; // Short for browser's window object
+d$ = document; // Short for browser's document object
+$_L=Clazz.load;
+$_W=Clazz.declareAnonymous;$_T=Clazz.declareType;
+$_J=Clazz.declarePackage;$_C=Clazz.decorateAsClass;
+$_Z=Clazz.instantialize;$_I=Clazz.declareInterface;$_D=Clazz.isClassDefined;
+$_H=Clazz.pu$h;$_P=Clazz.p0p;$_B=Clazz.prepareCallback;
+$_N=Clazz.innerTypeInstance;$_K=Clazz.makeConstructor;$_U=Clazz.superCall;$_R=Clazz.superConstructor;
+$_M=Clazz.defineMethod;$_V=Clazz.overrideMethod;$_S=Clazz.defineStatics;
+$_E=Clazz.defineEnumConstant;
+$_F=Clazz.cloneFinals;
+$_Y=Clazz.prepareFields;$_A=Clazz.newArray;$_O=Clazz.instanceOf;
+$_G=Clazz.inheritArgs;$_X=Clazz.checkPrivateMethod;$_Q=Clazz.makeFunction;
+$_s=Clazz.registerSerializableFields;
+$_k=Clazz.overrideConstructor;
+				if (c.indexOf (qClazzName + "$") == 0) {
+				if (c.indexOf (pkgFrags[pkgFrags.length - 1] + "$") == 0) {
+				if (c.indexOf (qClazzName + "$") == 0) {
+		if (!handler.$$guid) handler.$$guid = Clazz.addEvent.guid++;
+		handlers[handler.$$guid] = handler;
+			delete element.events[type][handler.$$guid];
+		this.$$handleEvent = handlers[i];
+		if (typeof this.$$handleEvent != "function") {
+		if (this.$$handleEvent(event) === false) {
+ * Clazz.load (..., "$wt.widgets.Control", ...);
+ * <code>$_L(["$wt.graphics.Drawable","$wt.widgets.Widget"],
+ *  "$wt.widgets.Control", ...</code>
+ * <code>$_L(["$wt.widgets.Widget", "$wt.graphics.Drawable"],
+ *  "$wt.widgets.Control", ...</code>
+ # ClazzNode -> $CN$
+ # ClazzLoader -> $CL$
+ # <<< ClazzLoader = $CL$;
+/*# {$clazz.existed} >>x #*/
+	/*# {$no.clazzloader.mode} >>x #*/
+/*# {$no.clazzloader.mode} >>x #*/
+ * $wt.widgets.Shell, $.Display, $.Decorations
+ * in which "$wt." stands for "org.eclipse.swt.", and "$." stands for
+		if (arr[i].charAt (0) == '$') {
+	ClazzLoader.classpathMap["$" + jar] = clazzes;
+			if (oldVersion != "$") {
+			if (newVersion != "$") {
+		  var xhr = Jmol.$ajax(info);
+	var clazzes = ClazzLoader.classpathMap["$" + file];
+$_L(["$wt.graphics.Drawable","$wt.widgets.Widget"],"$wt.widgets.Control",
+$_L(["$wt.widgets.Widget","$wt.graphics.Drawable"],"$wt.widgets.Control", 
+	if (clazz.charAt (0) == '$') {
+	if (window["$_L"] != null) {
+		$_L = Clazz.load;
+	if (name.indexOf (swtPkg) == 0 || name.indexOf ("$wt") == 0) {
+	if (clazz.charAt (0) == '$') {
+					|| child.name.indexOf ("$wt") == 0) {
+		var arr = ClazzLoader.classpathMap["$" + pp];
+			ClazzLoader.classpathMap["$" + pp] = arr;
+		if (clzzName.indexOf ("$") != -1) return;
+		var key = clzzName + "$";
+
+---------- JSMOL.JS
+      var container = Jmol.$(this, "appletdiv");
+//				Math.floor(Jmol.$(this, "appletdiv").height()));
+		var container = Jmol.$(applet, "appletdiv");
+      //$("body").removeChild(d);
+	  	//$("body").append(d);
+
+---------- JSMOLAPI.JS
+	  ["$", "NCI(small molecules)"],
+    Jmol.$html(divid, applet._code);
+
+---------- JSMOLAPPLET.JS
+
+---------- JSMOLCONTROLS.JS
+
+---------- JSMOLCORE.JS
+			_databasePrefixes: "$=:",
+				"$": "http://cactus.nci.nih.gov/chemical/structure/%FILE/file?format=sdf&get3d=True",
+				"$$": "http://cactus.nci.nih.gov/chemical/structure/%FILE/file?format=sdf",
+(function (Jmol, $) {
+  Jmol.$ = function(appletOrId, what) {
+		return $("#" + appletOrId._id + (what ? "_" + what : ""));
+  Jmol.$ajax = function (info) {
+    return $.ajax(info);
+  Jmol.$attr = function (id, a, val) {
+    return $("#" + id).attr(a, val);
+  Jmol.$bind = function(id, list, f) {
+    return (f ? $(id).bind(list, f) : $(id).unbind(list));
+  Jmol.$html = function(id, html) {
+    return $("#" + id).html(html);
+  Jmol.$offset = function (id) {
+    return $("#" + id).offset();
+  Jmol.$on = function (evt, f) {
+    return $(window).on(evt, f);
+  Jmol.$resize = function (f) {
+    return $(window).resize(f);
+  Jmol.$submit = function(form) {
+    return $("#" + form).submit();
+  Jmol.$val = function (id, v) {
+    return $("#" + id).val(v);
+  ;(function($,c,b){
+  $.map("click mousemove mouseup touchmove touchend".split(" "),function(d){a(d)});
+  	var d=$(),h=g+"."+e+"-special-event";
+  	$.event.special[e]={
+  				$(c).bind(h,f)
+  				$(c).unbind(h)
+  		$(d).each(function(){
+  			var j=$(this);
+    delete $;
+    delete c$;
+    delete d$;
+    delete w$;      
+    delete $_A;
+    delete $_AB;
+    delete $_AC;
+    delete $_AD;
+    delete $_AF;
+    delete $_AI;
+    delete $_AL;
+    delete $_AS;
+    delete $_Ab;
+    delete $_B;
+    delete $_C;
+    delete $_D;
+    delete $_E;
+    delete $_F;
+    delete $_G;
+    delete $_H;
+    delete $_I;
+    delete $_J;
+    delete $_K;
+    delete $_L;
+    delete $_M;
+    delete $_N;
+    delete $_O;
+    delete $_P;
+    delete $_Q;
+    delete $_R;
+    delete $_S;
+    delete $_T;
+    delete $_U;
+    delete $_V;
+    delete $_W;
+    delete $_X;
+    delete $_Y;
+    delete $_Z;
+    delete $_k;
+    delete $_s;
+    delete $t$;
+		features.supportsXhr2 = function() {return ($.support.cors || $.support.iecors)}
+	  	return Jmol.$ajax(info).responseText;
+		info && Jmol.$ajax(info);
+	  ["$", "NCI(small molecules)"],
+		Jmol.$attr("__jsmolform__", "action", url + "?" + (new Date()).getMilliseconds());
+		Jmol.$val("__jsmoldata__", data);
+		Jmol.$val("__jsmolfilename__", filename);
+		Jmol.$val("__jsmolmimetype__", mimetype);
+		Jmol.$val("__jsmolencoding__", encoding);
+		Jmol.$submit("__jsmolform__");
+		Jmol.$val("__jsmoldata__", "");
+		return (database == "$" ? Jmol.db._nciLoadScript : database == ":" ? Jmol.db._pubChemLoadScript : Jmol.db._fileLoadScript);
+			case "$": // NCI
+  		database = (applet._hasOptions ? Jmol._getElement(applet, "select").value : "$");
+  	if (database == "$" || database == ":")
+    var cantDoSynchronousLoad = (!isMyHost && $.support.iecors);
+		var xhr = Jmol.$ajax(info);
+		if (database == "$" || database == ":")
+      Jmol.$on('beforeunload', function () { Jmol._destroy(applet); } );
+		var offsets = Jmol.$offset(canvas.id);
+			var offsets = Jmol.$offset(canvas.id);
+		Jmol.$bind(canvas, 'mousedown touchstart', function(ev) {
+		Jmol.$bind(canvas, 'mouseup touchend', function(ev) {
+		Jmol.$bind(canvas, 'mousemove touchmove', function(ev) { // touchmove
+		Jmol.$bind(canvas, 'DOMMouseScroll mousewheel', function(ev) { // Zoom
+		Jmol.$bind(canvas, "contextmenu", function() {return false;});
+		Jmol.$bind(canvas, 'mouseout', function(ev) {
+		Jmol.$bind(canvas, 'mouseenter', function(ev) {
+    	Jmol.$resize(function() {
+		Jmol.$bind('body', 'mouseup touchend', function(ev) {
+		Jmol.$bind(canvas, 'mousedown touchstart mousemove touchmove mouseup touchend DOMMouseScroll mousewheel contextmenu mouseout mouseenter', null);
+      var offsets = Jmol.$offset(id);
+
+---------- JSMOLGLMOL.JS
+// update 3/27/2013 6:14:21 PM -- broken implementing  Jmol.$
+THREE.ShaderLib.lambert.vertexShader = THREE.ShaderLib.lambert.vertexShader.replace(/\}$/, "#ifdef DOUBLE_SIDED\n if (transformedNormal.z < 0.0) vLightFront = vLightBack;\n #endif\n }");
+	this.container = Jmol.$(this.applet, "appletdiv");
+	Jmol.$resize(function() { // only window can capture resize event
+
+---------- JSMOLJME.JS
+		if (database == "$")
+			query = "$" + query; // 2D variant
+				    Jmol.script(jmol, "load \"$" + jmeSMILES + "\"");
+
+---------- JSMOLJQUERY.JS
+	// Map over the $ in case of overwrite
+	_$ = window.$,
+	quickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
+	trimRight = /\s+$/,
+	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
+	rvalidchars = /^[\],:{}\s]*$/,
+		// Handle $(""), $(null), or $(undefined)
+		// Handle $(DOMElement)
+				// HANDLE: $(html) -> $(array)
+				// HANDLE: $("#id")
+			// HANDLE: $(expr, $(...))
+			// HANDLE: $(expr, context)
+			// (which is just equivalent to: $(context).find(expr)
+		// HANDLE: $(function)
+		if ( window.$ === jQuery ) {
+			window.$ = _$;
+		// Catch cases where $(document).ready() is called after the
+	trimRight = /[\s\xA0]+$/;
+var rbrace = /^(?:\{.*\}|\[.*\])$/,
+		var name = "data-" + key.replace( rmultiDash, "-$1" ).toLowerCase();
+	rtype = /^(?:button|input)$/i,
+	rfocusable = /^(?:button|input|object|select|textarea)$/i,
+	rclickable = /^a(?:rea)?$/i,
+	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
+var rformElems = /^(?:textarea|input|select)$/i,
+	rtypenamespace = /^([^\.]*)?(?:\.(.+))?$/,
+	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
+	rquickIs = /^(\w*)(?:#([\w\-]+))?(?:\.([\w\-]+))?$/,
+			quick[3] = quick[3] && new RegExp( "(?:^|\\s)" + quick[3] + "(?:\\s|$)" );
+		return jQuery.event.special.hover ? events : events.replace( rhoverHack, "mouseenter$1 mouseleave$1" );
+			namespaces = namespaces ? new RegExp("(^|\\.)" + namespaces.split(".").sort().join("\\.(?:.*\\.)?") + "(\\.|$)") : null;
+		event.namespace_re = event.namespace? new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)") : null;
+		POS: /:(nth|eq|gt|lt|first|last|even|odd)(?:\((\d*)\))?(?=[^\-]|$)/,
+				type === "$=" ?
+				var match = /^(\w+$)|^\.([\w\-]+$)|^#([\w\-]+$)/.exec( query );
+						nid = nid.replace( /'/g, "\\$&" );
+			expr = expr.replace(/\=\s*([^'"\]]*)\s*\]/g, "='$1']");
+var runtil = /Until$/,
+	isSimple = /^.[^:#\[\.,]*$/,
+				// so $("p:first").is("p:last") won't return true for a doc with two "p".
+				value = value.replace( rxhtmlTag, "<$1></$2>" );
+						jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "/*$0*/" ) );
+					elem = elem.replace(rxhtmlTag, "<$1></$2>");
+	rnum = /^[\-+]?(?:\d*\.)?\d+$/i,
+	rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
+		name = name.replace( rupper, "-$1" ).toLowerCase();
+				( parseFloat( RegExp.$1 ) / 100 ) + "" :
+	rbracket = /\[\]$/,
+	rhash = /#.*$/,
+	rheaders = /^(.*?):[ \t]*([^\r\n]*)\r?$/mg, // IE leaves an \r character at EOL
+	rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
+	rlocalProtocol = /^(?:about|app|app\-storage|.+\-extension|file|res|widget):$/,
+	rnoContent = /^(?:GET|HEAD)$/,
+					ret = s.url.replace( rts, "$1_=" + ts );
+	jsre = /(\=)\?(&|$)|\?\?/i;
+			replace = "$1" + jsonpCallback + "$2";
+	rfxtypes = /^(?:toggle|show|hide)$/,
+	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
+					// not quite $.extend, this wont overwrite keys already present.
+	rtable = /^t(?:able|d|h)$/i,
+	rroot = /^(?:body|html)$/i;
+window.jQuery = window.$ = jQuery;
+
+---------- JSMOLJSV.JS
+
+---------- JSMOLTHREE.JS
+
+---------- JSMOLTM.JS
+  ["$", "NCI(small molecules)"],
+  var container = Jmol.$(this, "appletdiv");
+
+---------- T

@@ -25,6 +25,7 @@ define(['modules/module'], function(Module) {
 // Science modules
 				'spectra_displayer': 'Spectra displayer',
 				'gcms': 'GC-MS',
+				'jsmol': 'JSMol',
 				'ivstability': 'IV stability',
 				'mol2d': '2D Molecule viewer',
 // Statistics modules
