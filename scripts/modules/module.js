@@ -105,7 +105,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 				
 			if(!this.view.update || !this.definition || !this.definition.dataSource)
 				return;
-console.log(API.getRepositoryData().getKeys());
+
 			for(var i = 0, l = this.definition.dataSource.length; i < l; i++) {
 	 			var val = API.getRepositoryData().get(this.definition.dataSource[i].name);
 
@@ -248,8 +248,8 @@ console.log(API.getRepositoryData().getKeys());
 				var autoComplete = [];
 				var keys = API.getRepositoryData().getKeys();
 
-				for(var i in keys)
-					autoComplete.push({title: i, label: i});
+				for(var i = 0, l = keys.length; i < l; i++)
+					autoComplete.push({title: keys[i], label: keys[i]});
 				
 				// Receive configuration
 				var availCfg = module.controller.configurationReceive;

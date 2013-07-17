@@ -166,7 +166,11 @@ define(['jquery', 'util/event'], function($, Event) {
 	}
 
 	Repository.prototype.getKeys = function() {
-		return this._keys;
+		var value = this._value, keys = [];
+		for(var i in value) {
+			keys.push(i);
+		}
+		return keys;
 	}
 
 	return Repository;
