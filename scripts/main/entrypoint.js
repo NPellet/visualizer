@@ -139,7 +139,8 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 				for(var i in data) {
 					if(i.slice(0, 1) == '_')
 						continue;
-					view.variables.push({ varname: i, jpath: i });
+
+					view.variables.push({ varname: i, jpath: "element." + i });
 				}
 			}
 
