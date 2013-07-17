@@ -1,4 +1,6 @@
 define(['modules/defaultview', 
+		'util/util',
+		'util/datatraversing',
 		"libs/jsmol/js/JSmolCore",
 		"libs/jsmol/js/JSmolApplet",
 		"libs/jsmol/js/JSmolApi",
@@ -9,13 +11,14 @@ define(['modules/defaultview',
 		"libs/jsmol/js/JSmolGLmol"
 		], 
 
-function(Default) {
+function(Default, UTIL, DataTraversing) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
 	 	init: function() {	
-	 		this.dom = $('<div id="jmolApplet0"></div>');
+	 		this.id = UTIL.getNextUniqueId();
+	 		this.dom = $('<div id="' + this.id + '"></div>');
 	 		this.module.getDomContent().html(this.dom);
 	 		this._highlights = this._highlights || [];
 	 	},
@@ -52,28 +55,33 @@ function(Default) {
 			  //delay 3;background yellow;delay 0.1;background white;for (var i = 0; i < 10; i+=1){rotate y 3;delay 0.01}"
 			};
 
-			Jmol._XhtmlElement = document.getElementById("jmolApplet0");
+			Jmol._XhtmlElement = this.dom.get(0);
 			Jmol._XhtmlAppendChild = true;
-			this.applet = Jmol.getApplet("jmolApplet0", Info);
-			console.log(this.applet);
-
-			Jmol.loadFile(this.applet,'scripts/libs/jsmol/data/caffeine.mol')
-
-
+			this.applet = Jmol.getApplet(this.id, Info);
 	 	},
 
 	 	onResize: function() {
 	 	},
 
 	 	blank: function() {
-	 		this.domTable.empty();
-	 		this.table = false;
+	 		
+	 		
 	 	},
 
 	 	update: {
 
-	 		list: function(moduleValue) {
-	 			
+	 		data: function(data) {
+	 			if(!data)
+	 				return;
+	 			data = DataTraversing.getValueIfNeeded(data);
+	 			var actions = [];
+    			actions.push("load data 'model'");
+    			actions.push(data);
+    			actions.push("end 'model';");
+    			var cfg = this.module.getConfiguration();
+    			if(cfg && cfg.afterloadscript)
+    				actions.push(cfg.afterloadscript);
+    			Jmol.script(this.applet, actions.join('\r\n')); 
 	 		}
 		},
 

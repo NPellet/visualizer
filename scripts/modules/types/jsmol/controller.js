@@ -11,15 +11,18 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			events: {
 
 			},
-			
+
 			rels: {
 
 			}
-			
 		},
 		
 		configurationReceive: {
-
+			data: {
+				type: ['pdb', 'mol'],
+				label: 'A molecule/protein data',
+				description: ''
+			}
 		},
 		
 		
