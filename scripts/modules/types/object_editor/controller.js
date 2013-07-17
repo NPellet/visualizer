@@ -33,21 +33,32 @@ define(['modules/defaultcontroller'], function(Default) {
 		
 		doConfiguration: function(section) {
 
-			var group = section.addFieldGroup(new BI.Forms.GroupFields.List('xml'));
+			return {
+				groups: {
+					'xml': {
+						config: {
+							type: 'list'
+						},
 
-			var type = group.addField({
-				type: 'Textarea',
-				name: 'xml',
-				title: new BI.Title('XML')
-			});
+						fields: [
 
-			var type = group.addField({
-				type: 'Checkbox',
-				name: 'labels',
-				title: new BI.Title('Display labels')
-			});
-			type.implementation.setOptions({'display': ''});
-			return true;
+							{
+								type: 'Textarea',
+								name: 'xml',
+								title: 'XML'
+							},
+
+							{
+								type: 'Checkbox',
+								name: 'labels',
+								title: 'Display labels',
+								options: {'display': ''}
+							}
+						]
+					}
+				}
+			}	
+
 		},
 		
 		doFillConfiguration: function() {

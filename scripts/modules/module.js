@@ -325,7 +325,13 @@ console.log(API.getRepositoryData().getKeys());
 							}
 						},
 
-						'moduleconfiguration': module.controller.doConfiguration() || {},
+						'moduleconfiguration': $.extend(module.controller.doConfiguration() || {}, 	{
+							config: {
+								multiple: false,
+								title: 'Module configuration'
+							}
+						}),
+
 						'send': {
 							config: {
 								multiple: false,

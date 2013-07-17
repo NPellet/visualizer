@@ -4,7 +4,7 @@ define(['forms/form'], function(form) {
 	return {
 
 		newform: function(dom, structure, onReady, options) {
-			
+			console.log(options);
 			var formInst = new form(options);
 
 			formInst.setStructure(structure);

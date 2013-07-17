@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'libs/forms/formfactory'], function(Default, FormFactory) {
+define(['modules/defaultview', 'forms/formfactory'], function(Default, FormFactory) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -17,9 +17,9 @@ define(['modules/defaultview', 'libs/forms/formfactory'], function(Default, Form
 		inDom: function() {
 			var self = this;
 			var cfg = this.module.getConfiguration();
-			var xml = cfg.xml;
+			var json = cfg.json || {};
 
-			var xmlTransl = FormFactory.newForm(this.domWrapper, json, function() {
+			var xmlTransl = FormFactory.newform(this.domWrapper, json, function() {
 
 
 
@@ -36,7 +36,7 @@ define(['modules/defaultview', 'libs/forms/formfactory'], function(Default, Form
 				labels: cfg.labels
 			});
 			
-			this._inDom.resolve();
+			//this._inDom.resolve();
 		},
 		
 		onResize: function() {

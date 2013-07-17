@@ -110,6 +110,7 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 			xml.children().each(function() {
 				var name = $(this).attr('name');
 				var field = fieldsByName[name];
+
 				field.resetDuplicate();
 				$(this).children('value').each(function(i) {
 					if(i > 0)
@@ -123,11 +124,14 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 		
 		fillJson: function(json) {
 			var fieldsByName = [];
+
 			for(var i = 0; i < this.fields.length; i++)
 				fieldsByName[this.fields[i].getName()] = this.fields[i];
 			for(var i in json) {
 				var name = i;
 				var field = fieldsByName[name];
+				if(!field)
+					continue;
 				field.resetDuplicate();
 				for(var j = 0; j < json[i].length; j++) {
 					if(j > 0)
