@@ -57,6 +57,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				return;
 
 			var value = this.buildData(varValue, this.module.controller.configurationReceive[this.sourceMap[varName].rel].type);
+
 			this.data[varName] = value;
 			var rel = this.module.getDataRelFromName(varName);
 			if(rel && this.module.view.update && this.module.view.update[rel]) {

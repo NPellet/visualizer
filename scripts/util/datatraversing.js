@@ -67,9 +67,12 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 		if(typeof element == "undefined")
 			return;
 
-		if(typeof element == "object" && (element.value || element.url))
-			return this.fetchElementIfNeeded(element);
+		if(typeof element == "object" && element.url)
+			return fetchElementIfNeeded(element);
 
+		if(element.value)
+			return element.value;
+		
 		return element;
 	}
 
@@ -84,7 +87,7 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 			require(['util/urldata'], function(urlData) {
 				
 				urlData.get(element.url, false, element.timeout).then(function(data) {
-					
+					data = {type: type, value: data};
 					deferred.resolve(data);
 				}, function(data) {
 					console.log('Fetching error');

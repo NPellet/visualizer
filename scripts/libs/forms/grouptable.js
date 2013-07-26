@@ -307,7 +307,9 @@ define(['forms/fieldtable'], function(TableField) {
 			}
 		},
 		
-		
+		empty: function() {
+			this.emptyAllRows();
+		},
 		
 		getValue: function(values) {
 			

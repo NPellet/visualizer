@@ -393,7 +393,18 @@ define(['jquery', 'forms/grouplist', 'forms/grouptable', 'forms/title'], functio
 			});
 		},
 		
-		
+		empty: function(section) {
+
+			for(var i = 0, l = section.sections.length; i < l; i++) {
+				section.sections[i].empty();
+			}
+
+			for(var i = 0, l = section.groupsFields.length; i < l; i++) {
+				section.groupsFields[i].empty();
+			}
+		},
+
+
 		fillSectionsJson: function(parent, jsonObject) {
 			
 			var sectionsByName = this.getSectionsByName(parent);

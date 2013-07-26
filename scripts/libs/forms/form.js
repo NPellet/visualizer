@@ -24,14 +24,13 @@ define(['require', 'jquery', 'forms/section', 'forms/title', 'forms/buttonzone']
 		this.ready = $.Deferred(), this.notReady = 0;
 
 		var templaterLoaded = $.Deferred(), loaded = $.Deferred();
+		this.setLabels(this.options.labels);
 
 		require(['forms/templater/' + this.options.templater], function(FormTemplater) {
 			self.templater = new FormTemplater();
 			templaterLoaded.resolve();
 		});
 		
-	//	this.setLabels(this.options.labels);
-
 		if(this.options.xmlFile) {
 			
 			xmlLoaded = $.Deferred(), builderLoaded = $.Deferred();
@@ -82,6 +81,11 @@ define(['require', 'jquery', 'forms/section', 'forms/title', 'forms/buttonzone']
 
 		afterInit: function() {
 		
+		},
+
+
+		setLabels: function(bool) {
+			this.templater.setLabels(bool);
 		},
 
 		fieldNotReady: function(fieldId) {
@@ -191,6 +195,10 @@ define(['require', 'jquery', 'forms/section', 'forms/title', 'forms/buttonzone']
 		
 		fillJson: function(json) {
 			Section.prototype.fillSectionsJson(this, json);
+		},
+
+		empty: function() {
+			Section.prototype.emptySection(this);
 		},
 		
 		getValue: function() {

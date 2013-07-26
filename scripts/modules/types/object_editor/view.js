@@ -21,26 +21,28 @@ define(['modules/defaultview', 'forms/formfactory'], function(Default, FormFacto
 
 			try {
 				json = JSON.parse(json);
-				var xmlTransl = FormFactory.newform(this.domWrapper, json, function() {
-
-
-
-				}, {
-					onFieldChange: function(elJPath, value, index) {
-						if(self.changing)
-							return;
-						if(!self.source)
-							self.source = {};
-						CI.DataType.setValueFromJPath(self.source, elJPath, value);
-						CI.Repo.set(self.varname, self.source, true);
-					},
-
-					labels: cfg.labels
-				});
 			} catch(e) {
 				console.log(e);
+				return;
 			}
-			
+		
+			var xmlTransl = FormFactory.newform(this.domWrapper, json, function() {
+
+
+
+			}, {
+				onFieldChange: function(elJPath, value, index) {
+					if(self.changing)
+						return;
+					if(!self.source)
+						self.source = {};
+					CI.DataType.setValueFromJPath(self.source, elJPath, value);
+					CI.Repo.set(self.varname, self.source, true);
+				},
+
+				labels: cfg.labels
+			});
+		
 			//this._inDom.resolve();
 		},
 		

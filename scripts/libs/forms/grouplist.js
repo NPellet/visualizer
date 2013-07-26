@@ -63,6 +63,11 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 			this.dom.remove();
 			this.getSection().removeFieldGroup(this);
 		},
+
+
+		empty: function() {
+			
+		},
 		
 		removeField: function(field) {
 			this.fields[field.getGroupId()] = null;

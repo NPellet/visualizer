@@ -32,7 +32,7 @@ function(Default, UTIL, DataTraversing) {
 				color: "0xF0F0F0",
 				addSelectionOptions: false,
 				serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
-				use: "WEBGL HTML5",
+				use: "HTML5",
 			  //language: "fr", // NOTE: LOCALIZATION REQUIRES <meta charset="utf-8"> (see JSmolCore Jmol.featureDetection.supportsLocalization)
 				jarPath: "java",
 				j2sPath: "scripts/libs/jsmol/j2s",
@@ -71,7 +71,8 @@ function(Default, UTIL, DataTraversing) {
 
 	 	update: {
 
-	 	/*	data: function(data) {
+	 		data: function(data) {
+
 	 			if(!data)
 	 				return;
 	 			data = DataTraversing.getValueIfNeeded(data);
@@ -83,7 +84,7 @@ function(Default, UTIL, DataTraversing) {
     			if(cfg && cfg.afterloadscript)
     				actions.push(cfg.afterloadscript);
     			Jmol.script(this.applet, actions.join('\r\n')); 
-	 		}*/
+	 		}
 		},
 
 
