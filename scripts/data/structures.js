@@ -405,7 +405,9 @@ define(function() {
 				}
 				
 			}
-		}
+		},
+
+		"pdb": "string"
 	};
 
 

@@ -44,7 +44,7 @@ define(['modules/defaultcontroller'], function(Default) {
 
 							{
 								type: 'Textarea',
-								name: 'xml',
+								name: 'json',
 								title: 'XML'
 							},
 
@@ -62,7 +62,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 		doFillConfiguration: function() {
-			var xml = this.module.getConfiguration().xml || '';
+			var json = this.module.getConfiguration().json || '';
 			var label = this.module.getConfiguration().labels;
 			if(label == undefined)
 				label = true;
@@ -70,7 +70,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			return {	
 				groups: {
 					xml: [{
-						xml: [xml],
+						json: [json],
 						labels: [label ? ['display'] : []]	
 					}]
 				}
@@ -79,7 +79,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		
 		doSaveConfiguration: function(confSection) {
 			
-			this.module.getConfiguration().xml = confSection[0].xml[0].xml[0];
+			this.module.getConfiguration().json = confSection[0].xml[0].json[0];
 			this.module.getConfiguration().labels = !!confSection[0].xml[0].labels[0][0];
 		},
 
