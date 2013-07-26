@@ -28,8 +28,6 @@ define(['modules/defaultview', 'forms/formfactory'], function(Default, FormFacto
 		
 			var xmlTransl = FormFactory.newform(this.domWrapper, json, function() {
 
-
-
 			}, {
 				onFieldChange: function(elJPath, value, index) {
 					if(self.changing)
