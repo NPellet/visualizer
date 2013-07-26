@@ -49,9 +49,10 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		},
 
 		onVarGet: function(varValue, varName) {
+			console.log(varName);
 			if(varName instanceof Array)
 				varName = varName[0];
-			
+
 			if(!this.sourceMap)
 				return;
 
