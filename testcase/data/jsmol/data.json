@@ -1,0 +1,7 @@
+{"result":
+	{"pdbs":[
+		{"id": 1, "pdb": {"type":"pdb","url":"./testcase/data/jsmol/4DGD.pdb"}},
+		{"id": 2, "pdb": {"type":"pdb","url":"./testcase/data/jsmol/1CSA.pdb"}}
+		]
+	}
+}
