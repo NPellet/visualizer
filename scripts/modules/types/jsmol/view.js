@@ -87,7 +87,8 @@ function(Default, UTIL, DataTraversing) {
     			var cfg = this.module.getConfiguration();
     			if(cfg && cfg.afterloadscript)
     				actions.push(cfg.afterloadscript);
-    			Jmol.script(this.applet, actions.join('\r\n')); 
+    			if(this.applet)
+    				Jmol.script(this.applet, actions.join('\r\n')); 
 	 		}
 		},
 

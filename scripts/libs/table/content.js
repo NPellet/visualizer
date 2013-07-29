@@ -90,6 +90,7 @@ define([], function() {
 				this.entryCount = 0;
 
 				for(var i = 0; i < this.elements.length; i++) {
+					
 					if(!this.doSearch(this.elements[i]))
 						continue;
 					this.entryCount++;
@@ -235,6 +236,7 @@ define([], function() {
 		},
 		
 		setSearch: function(search) {
+
 			this.search = null;
 			if(search == null)
 				return;
