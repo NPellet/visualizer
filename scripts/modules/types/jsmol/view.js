@@ -61,7 +61,11 @@ function(Default, UTIL, DataTraversing) {
 
 	 	},
 
-	 	onResize: function() {
+	 	onResize: function(w, h) {
+	 		if(!this.applet)
+	 			return;
+
+	 		Jmol.resizeApplet(this.applet, [w - 8,h - 15]);
 	 	},
 
 	 	blank: function() {

@@ -246,6 +246,11 @@ define(['require', 'jquery', 'forms/section', 'forms/title', 'forms/buttonzone']
 				this.dom.children().append(this.buttonZone.render());
 
 			return this.buttonZone;
+		},
+
+		onFieldChange: function(jpath, value, index) {
+			if(this.options.onFieldChange)
+				this.options.onFieldChange(jpath, value, index);
 		}
 	});
 

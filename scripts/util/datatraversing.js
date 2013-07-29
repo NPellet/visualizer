@@ -70,9 +70,9 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 		if(typeof element == "object" && element.url)
 			return fetchElementIfNeeded(element);
 
-		if(element.value)
+		if(element.value && element.type)
 			return element.value;
-		
+
 		return element;
 	}
 
@@ -143,7 +143,9 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 			if(!jpath.split)
 				jpath = '';
 
-			var jpathSplitted = jpath.split('.').shift();
+
+			var jpathSplitted = jpath.split('.');
+			jpathSplitted.shift();
 			return _setValueFromJPath(element, jpathSplitted, newValue);
 		},
 

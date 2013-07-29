@@ -152,9 +152,7 @@ define(['modules/defaultview', 'forms/title', 'util/util', 'util/api', 'util/dom
 
 				for(var j in jpaths) {
 					jpath = jpaths[j]; jpath = jpath.jpath || jpath;
-					
 					element.data[j] = Traversing.getValueFromJPath(source[i], jpath).done(function() {
-						
 					});
 				}
 

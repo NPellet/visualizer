@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'forms/formfactory'], function(Default, FormFactory) {
+define(['modules/defaultview', 'forms/formfactory', 'util/datatraversing', 'util/api'], function(Default, FormFactory, DataTraversing, API) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -30,12 +30,14 @@ define(['modules/defaultview', 'forms/formfactory'], function(Default, FormFacto
 
 			}, {
 				onFieldChange: function(elJPath, value, index) {
+
 					if(self.changing)
 						return;
 					if(!self.source)
 						self.source = {};
-					CI.DataType.setValueFromJPath(self.source, elJPath, value);
-					CI.Repo.set(self.varname, self.source, true);
+					DataTraversing.setValueFromJPath(self.source, elJPath, value);
+					console.log(self.source);
+					API.setVariable(self.varname, self.source, true);
 				},
 
 				labels: cfg.labels
@@ -89,9 +91,6 @@ define(['modules/defaultview', 'forms/formfactory'], function(Default, FormFacto
 			
 		
 		}
-
-
-
 	});
 	return view;
 });
