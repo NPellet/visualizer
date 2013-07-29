@@ -68,7 +68,9 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 			return;
 
 		if(typeof element == "object" && element.url)
-			return fetchElementIfNeeded(element);
+			return fetchElementIfNeeded(element).pipe(function(value) {
+				return value.data;
+			});
 
 		if(element.value && element.type)
 			return element.value;
@@ -82,7 +84,7 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 		if(typeof element == "undefined" || element == null)
 			return deferred.reject();
 		var type = getType(element);
-		if(element.url) {
+		if(element.url && element.type) {
 			//var ajaxType = typeof Structures[type] == "object" ? 'json' : 'text';
 			require(['util/urldata'], function(urlData) {
 				
@@ -94,9 +96,9 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 				});
 			});
 			return deferred;
-		} else if(element.value) {
+		}/* else if(element.value) {
 			return deferred.resolve(element.value);
-		} else
+		} */else
 			return deferred.resolve(element);
 	}
 
