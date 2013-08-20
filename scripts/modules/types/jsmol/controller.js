@@ -6,6 +6,11 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 
 	controller.prototype = $.extend(true, {}, Default, {
 
+		onJSMolScriptRecieve:function(a){
+			console.log(a) ;
+			this.module.view.executeScript(a.value);
+		},
+
 		configurationSend: {
 
 			events: {
@@ -36,7 +41,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		},
 
 		actionsReceive: {
-			
+			'jsmolscript': 'Some JSMol Script recieved'
 		},
 		
 		

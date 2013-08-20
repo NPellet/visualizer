@@ -98,7 +98,16 @@ function(Default, UTIL, DataTraversing) {
 		},
 
 		onActionReceive:  {
+			jsmolscript : function(a){
+				self = this ;
+				self.module.controller.onJSMolScriptRecieve(a);
+			}
+		},
 
+		executeScript : function(src){
+			if(this.applet){
+    			Jmol.script(this.applet, src); 
+    		}
 		},
 
 		typeToScreen: {
