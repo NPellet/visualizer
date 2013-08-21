@@ -47,6 +47,12 @@ define(['modules/defaultcontroller'], function(Default) {
 				description: 'A jcamp file'
 			},
 
+
+			annotation: {
+				type: ['array'],
+				label: 'Annotation file'
+			},
+
 			fromTo: {
 				type: 'fromTo',
 				label: 'From - To data',

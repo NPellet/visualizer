@@ -1301,7 +1301,6 @@ define(['jquery'], function($) {
 
 				switch(self.graph._zoomingMode) {
 					case 'x': 
-					console.log(self.shift, self.totalDimension);
 						self.graph._zoomingSquare.setAttribute('y', self.graph.getPaddingTop() + self.shift - self.totalDimension);
 						self.graph._zoomingSquare.setAttribute('height', self.totalDimension);
 					break;

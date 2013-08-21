@@ -206,6 +206,19 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 			},
 
+			'annotation': function(value) {
+				value = DataTraversing.getValueIfNeeded(value);
+				if(!value)
+					return;
+				var i = 0, l = value.length, annotation;
+				for(; i < l; i++) {
+					annotation = value[i]
+
+
+
+				}
+			},
+
 			'jcamp': function(moduleValue, varname) {
 
 				if(!moduleValue)
