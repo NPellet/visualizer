@@ -66,19 +66,15 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 
 				if(!this._instance)
 					return;
-			
 				var value = JcampConverter(Traversing.getValueIfNeeded(moduleValue));
-				
 				if(!value.contourLines)
 					return;
-
-				var NMR = this._instance,
-					serie = NMR.newSerie('2d' + Date.now(), {}, 'contour');
-
+				var NMR = this._instance;
+					NMR.resetSeries();
+				var serie = NMR.newSerie('2d' + Date.now(), {}, 'contour');
 				serie.setData(value.contourLines);
 				serie.setXAxis(NMR.getTopAxis());
 				serie.setYAxis(NMR.getLeftAxis());
-
 				this.redraw();
 			}
 		},
@@ -108,6 +104,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 				serie.setData(spectra[i].data[spectra[i].data.length - 1]);
 				if(!x)
 					serie.setFlip(true);
+
+				break;
 			}
 		},
 

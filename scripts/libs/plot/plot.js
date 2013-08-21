@@ -661,9 +661,10 @@ define(['jquery'], function($) {
 		},
 
 		resetSeries: function() {
+			for(var i = 0; i < this.series.length; i++) {
+				this.series[i].kill(true);	
+			}
 			this.series = [];
-			//while(this.plotGroup.firstChild)
-			//	this.plotGroup.removeChild(this.plotGroup.firstChild);
 		},
 
 		applyToAxis: {
