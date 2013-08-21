@@ -218,7 +218,8 @@ define(['modules/defaultcontroller'], function(Default) {
 							{
 								type: 'Checkbox',
 								name: 'plotcontinuous',
-								title: 'Continuous'
+								title: 'Continuous',
+								options: {'continuous': 'Continuous'}
 							}
 						]
 					}
