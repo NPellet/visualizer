@@ -386,12 +386,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			switch(annotation.type) {
 				case 'rect':
 				case 'rectangle':
-				console.log(annotation.width);
 					shape.setWidthPx(annotation.width);
 					shape.setHeightPx(annotation.height);
-
 				break;
-
 			}
 
 			shape.done();

@@ -3545,20 +3545,25 @@ define(['jquery'], function($) {
 			this.properties[prop] = val;
 		},
 
-		setPosPxX: function(px_x) {
-			this.set('x', px_x, 'px');
-		},
-
-		setPosPxY: function(px_y) {
-			this.set('y', px_y, 'px');
-		},
-
 		setPosX: function(x) {
-			this.setPosPxX(this.serie.getXAxis().getPos(x));
+			this.set('x', this.parseUnitX(x));
 		},
 
 		setPosY: function(y) {
-			this.setPosPxY(this.serie.getYAxis().getPos(y));
+			this.set('y', this.parseUnitY(y));
+		},
+
+		parsePx: function(px) {
+			if(px.indexOf && px.indexOf('px') > -1)
+				return parseInt(px.replace('px', '')) + "px";
+			return false;
+		},
+
+		parseUnitX: function(px) {
+			return this.parsePx(px) || this.serie.getXAxis().getPos(px);
+		},
+		parseUnitY: function(px) {
+			return this.parsePx(px) || this.serie.getYAxis().getPos(px);
 		},
 
 		setAutoY: function(x) {
