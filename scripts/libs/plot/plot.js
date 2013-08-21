@@ -1728,7 +1728,6 @@ define(['jquery'], function($) {
 			var drawn = this._draw(doNotRecalculateMinMax);
 			this._widthLabels += drawn;
 			this.graph.redrawShapes();
-
 			return this.series.length > 0 ? 100 : drawn;
 		},
 
@@ -3670,25 +3669,31 @@ console.log(variable);
 		setLabelPosition: function(positionValue, positionType) {
 			positionType = positionType || 'relative';
 
-			var x = positionValue.x || 0;
-			var y = positionValue.y || 0;
+			var x = positionValue.x || 0, parsedX = this.parsePx(positionValue.x) || positionValue.x;
+			var y = positionValue.y || 0, parsedY = this.parsePx(positionValue.y) || positionValue.y;
 
 			this._set('labelPositionValue', positionValue);
 			this._set('labelPositionType', positionType);
 
 			if(positionType == 'relative') {
 				if(this.parsePx(x))
-					x = this.parseUnitX(this.reverseUnitX(this._get('x'))) + this.parsePx(x); //px + px, ok
+					x = this.parseUnitX(this.reverseUnitX(this._get('x'))) + parsedX; //px + px, ok
 				else
 					x = this.parseUnitX(this.reverseUnitX(this._get('x')) + x);
 
 				if(this.parsePx(y))
-					y = this.parseUnitY(this.reverseUnitY(this._get('y'))) + this.parsePx(y); //px + px, ok
+					y = this.parseUnitY(this.reverseUnitY(this._get('y'))) + parsedY; //px + px, ok
 				else
 					y = this.parseUnitY(this.reverseUnitY(this._get('y')) + y);
 
 				this.label.setAttribute('x', x);
 				this.label.setAttribute('y', y);
+
+				
+				this.label.setAttribute('text-anchor', parsedX < 0 ? 'end' : (parsedX == 0 ? 'middle' : 'start'));
+				this.label.setAttribute('dominant-baseline', parsedY < 0 ? 'no-change' : (parsedY == 0 ? 'middle' : 'hanging'));
+				
+
 			} else {
 				this.label.setAttribute('x', this.parsePx(x));
 				this.label.setAttribute('y', this.parsePx(y));
