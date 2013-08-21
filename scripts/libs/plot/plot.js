@@ -3572,10 +3572,10 @@ define(['jquery'], function($) {
 		},
 
 		parseUnitX: function(px) { // returns px units
-			return this.parsePx(px) || (this.serie.getXAxis().getPos(px));
+			return (this.parsePx(px) !== false) ? this.parsePx(px) : (this.serie.getXAxis().getPos(px));
 		},
 		parseUnitY: function(px) {
-			return this.parsePx(px) || (this.serie.getYAxis().getPos(px));
+			return (this.parsePx(px) !== false) ? this.parsePx(px) : (this.serie.getYAxis().getPos(px));
 		},
 
 		reverseUnitX: function(val) {
