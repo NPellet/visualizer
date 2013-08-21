@@ -67,7 +67,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				if(!this.module.view.update[rel[i]])
 					return;
 
-				this.module.view.update[rel[i]].call(this.module.view, value, varName[0]);
+				this.module.view.update[rel[i]].call(this.module.view, value, varName);
 			}
 			
  		},

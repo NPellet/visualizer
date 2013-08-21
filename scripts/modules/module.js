@@ -96,7 +96,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 			var val = API.getRepositoryData().get(this.getNameFromRel(rel)), name;
 			if(!val)
 				return;
-
+console.log(val);
 			if(this.view.update && this.view.update[rel])
 				this.view.update[rel].call(this.view, val[1], val[0][0]);
 		},
