@@ -101,6 +101,10 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				
 		getjPath: function(rel, accepts) {
 			var data = this.module.getDataFromRel(rel);
+/**START*EDIT*****************/
+			if(! jpaths)
+				jpaths = [] ;
+/**END*EDIT*******************/
 			return Traversing.getJPathsFromElement(data, jpaths);
 		}
 
