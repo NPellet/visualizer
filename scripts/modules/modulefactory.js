@@ -23,6 +23,7 @@ define(['modules/module'], function(Module) {
 				'object_editor': 'Object editor',
 				'xyzoomnavigator': 'XY zoom navigator',	
 // Science modules
+				'2dnmr': '2D NMR',
 				'spectra_displayer': 'Spectra displayer',
 				'gcms': 'GC-MS',
 				'jsmol': 'JSMol',

@@ -2077,7 +2077,6 @@ define(['jquery'], function($) {
 
 
 		addSerie: function(name, options) {
-
 			var serie = new GraphSerieAxisX(name, options);
 			serie.setAxis(this);
 			serie.init(this.graph, name, options);
