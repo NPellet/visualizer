@@ -1164,6 +1164,7 @@ define(['jquery'], function($) {
 			var self = this;
 			this.graph = graph;
 			this.options = $.extend(true, {}, GraphAxis.prototype.defaults, options);
+
 			this.group = document.createElementNS(this.graph.ns, 'g');
 			this.hasChanged = true;
 			this.groupGrids = document.createElementNS(this.graph.ns, 'g');
@@ -1289,7 +1290,7 @@ define(['jquery'], function($) {
 		},
 
 		getMinPx: function() {
-			return this.flipped ? this.maxPx : this.minPx;
+			return this.options.flipped ? this.maxPx : this.minPx;
 		},
 
 		setMaxPx: function(px) {
@@ -1297,7 +1298,7 @@ define(['jquery'], function($) {
 		},
 
 		getMaxPx: function(px) {
-			return this.flipped ? this.minPx : this.maxPx;
+			return this.options.flipped ? this.minPx : this.maxPx;
 		},
 
 		getMin: function() {
@@ -1399,7 +1400,7 @@ define(['jquery'], function($) {
 		},
 
 		isFlipped: function() {
-			return this.flipped;
+			return this.options.flipped;
 		},
 
 		getUnitPerTick: function(px, nbTick, valrange, max) {
@@ -1535,7 +1536,7 @@ define(['jquery'], function($) {
 		},
 
 		flip: function(bool) {
-			this.flipped = bool;
+			this.options.flipped = bool;
 		},
 
 		_draw: function(doNotRecalculateMinMax) {

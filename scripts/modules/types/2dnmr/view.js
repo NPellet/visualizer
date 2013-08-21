@@ -24,8 +24,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 			NMR.setOption('defaultWheelAction', 'toSeries');
 			NMR.setOption('defaultMouseAction', 'drag');
 
-			NMR.getTopAxis().setLabel('ppm');
-			NMR.getLeftAxis().setLabel('ppm');
+			NMR.getTopAxis(0, { flipped: true }).setLabel('ppm');
+			NMR.getLeftAxis(0, { flipped: false }).setLabel('ppm');
 		},
 
 		onResize: function(width, height) {
