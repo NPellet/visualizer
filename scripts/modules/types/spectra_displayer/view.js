@@ -392,6 +392,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			if(annotation.strokeWidth)
 				shape.setStrokeWidth(annotation.strokeWidth);
 			
+			if(annotation.label) {
+				shape.createLabel();
+				shape.setLabelText(annotation.label.text);
+				shape.setLabelPosition(annotation.label.position, annotation.label.positionType || 'relative')
+			}
 
 			switch(annotation.type) {
 				case 'rect':

@@ -3497,6 +3497,7 @@ define(['jquery'], function($) {
 		init: function(graph) {
 			this.graph = graph;
 			this.properties = {};
+			this.saved = {};
 			this.createDom();
 		},
 
@@ -3517,6 +3518,8 @@ define(['jquery'], function($) {
 				this.graph.shapeZone.removeChild(this._dom);
 			else {
 				this.graph.shapeZone.appendChild(this._dom);
+				if(this.label)
+					this.graph.shapeZone.appendChild(this.label);
 				this._inDom = true;
 			}
 		},
@@ -3541,29 +3544,56 @@ define(['jquery'], function($) {
 			this.properties[prop] = axis == 'x' ? this.xaxis.getPx(val) : this.yaxis.getPx(val);
 		},
 
-		set: function(prop, val) {
+		set: function(prop, val, toSave) {
 			this.properties[prop] = val;
+			this._set(prop, toSave);
+		},
+
+		_set: function(prop, val) {
+			this.saved[prop] = val;
+		},
+
+		_get: function(prop) {
+			return this.saved[prop];
 		},
 
 		setPosX: function(x) {
-			this.set('x', this.parseUnitX(x));
+			this.set('x', this.parseUnitX(x) + "px", x);
 		},
 
 		setPosY: function(y) {
-			this.set('y', this.parseUnitY(y));
+			this.set('y', this.parseUnitY(y) + "px", y);
 		},
 
 		parsePx: function(px) {
 			if(px.indexOf && px.indexOf('px') > -1)
-				return parseInt(px.replace('px', '')) + "px";
+				return parseInt(px.replace('px', ''));
 			return false;
 		},
 
-		parseUnitX: function(px) {
-			return this.parsePx(px) || this.serie.getXAxis().getPos(px);
+		parseUnitX: function(px) { // returns px units
+			return this.parsePx(px) || (this.serie.getXAxis().getPos(px));
 		},
 		parseUnitY: function(px) {
-			return this.parsePx(px) || this.serie.getYAxis().getPos(px);
+			return this.parsePx(px) || (this.serie.getYAxis().getPos(px));
+		},
+
+		reverseUnitX: function(val) {
+
+			if(value = this.parsePx(val)) {
+
+				return this.serie.getXAxis().getVal(value);
+			}
+			else
+				return val;
+		},
+
+		reverseUnitY: function(val) {
+			if(value = this.parsePx(val)) {
+				return this.serie.getYAxis().getVal(value);
+			}
+			else
+				return val;
 		},
 
 		setAutoY: function(x) {
@@ -3572,6 +3602,7 @@ define(['jquery'], function($) {
 		},
 
 		setFillColor: function(color) {
+			this._set('fill', color);
 			this.set('fill', color);
 		},
 
@@ -3581,6 +3612,47 @@ define(['jquery'], function($) {
 
 		setStrokeWidth: function(width) {
 			this.set('stroke-width', width);
+		},
+
+		createLabel: function() {
+			this.label = document.createElementNS(this.graph.ns, 'text');
+		},
+
+		setLabelText: function(text) {
+			if(!this.label)
+				return;
+			this.label.textContent = text;
+		},
+
+		setLabelPosition: function(positionValue, positionType) {
+			positionType = positionType || 'relative';
+
+			var x = positionValue.x || 0;
+			var y = positionValue.y || 0;
+
+			this._set('labelPositionValue', positionValue);
+			this._set('labelPositionType', positionType);
+
+			if(positionType == 'relative') {
+				if(this.parsePx(x)) {
+					x = this.parseUnitX(this.reverseUnitX(this._get('x'))) + this.parsePx(x); //px + px, ok
+				}
+				else
+					x = this.parseUnitX(this.reverseUnitX(this._get('x')) + x);
+
+				if(this.parsePx(y)) {
+					console.log(this._get('y'), this.reverseUnitY(this._get('y')), this.parseUnitY(this.reverseUnitY(this._get('y'))));
+					y = this.parseUnitY(this.reverseUnitY(this._get('y'))) + this.parsePx(y); //px + px, ok
+				}
+				else
+					y = this.parseUnitY(this.reverseUnitY(this._get('y')) + y);
+//console.log(x);
+				this.label.setAttribute('x', x);
+				this.label.setAttribute('y', y);
+			} else {
+				this.label.setAttribute('x', this.parsePx(x));
+				this.label.setAttribute('y', this.parsePx(y));
+			}
 		}
 	}
 
