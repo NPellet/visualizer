@@ -382,7 +382,17 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				else
 					shape.setAutoY(annotation.pos.x);
 			}
+
+			if(annotation.fillColor)
+				shape.setFillColor(annotation.fillColor);
+
+			if(annotation.strokeColor)
+				shape.setStrokeColor(annotation.strokeColor);
 			
+			if(annotation.strokeWidth)
+				shape.setStrokeWidth(annotation.strokeWidth);
+			
+
 			switch(annotation.type) {
 				case 'rect':
 				case 'rectangle':
