@@ -1050,6 +1050,9 @@ define(['jquery'], function($) {
 		},
 
 		getSerie: function(name) {
+			if(typeof name == 'number')
+				return this.series[name];
+
 			for(var i = 0, l = this.series.length; i < l; i++) {
 				if(this.series[i].getName() == name)
 					return this.series[i];
@@ -1126,6 +1129,7 @@ define(['jquery'], function($) {
 
 		makeShape: function(shapeType) {
 			switch(shapeType) {
+				case 'rectangle':
 				case 'rect':
 					return new GraphRect(this);
 				break;
@@ -3508,6 +3512,7 @@ define(['jquery'], function($) {
 
 		done: function() {
 			this.applyAll();
+			console.log(this.graph.shapeZone);
 			if(this._inDom)
 				this.graph.shapeZone.removeChild(this._dom);
 			else {
@@ -3538,6 +3543,39 @@ define(['jquery'], function($) {
 
 		set: function(prop, val) {
 			this.properties[prop] = val;
+		},
+
+		setPosPxX: function(px_x) {
+			this.set('x', px_x, 'px');
+		},
+
+		setPosPxY: function(px_y) {
+			this.set('y', px_y, 'px');
+		},
+
+		setPosX: function(x) {
+			this.setPosPxX(this.serie.getXAxis().getPos(x));
+		},
+
+		setPosY: function(y) {
+			this.setPosPxY(this.serie.getYAxis().getPos(y));
+		},
+
+		setAutoY: function(x) {
+			var closest = this.serie.searchClosestValue(x);
+			this.setPosY(closest.yMin);
+		},
+
+		setFillColor: function(color) {
+			this.set('fill', color);
+		},
+
+		setStrokeColor: function(color) {
+			this.set('stroke', color);
+		},
+
+		setStrokeWidth: function(width) {
+			this.set('stroke-width', width);
 		}
 	}
 
@@ -3549,6 +3587,15 @@ define(['jquery'], function($) {
 		
 		createDom: function() {
 			this._dom = document.createElementNS(this.graph.ns, 'rect');
+		},
+
+		setWidthPx: function(px) {
+			console.log(px);
+			this.set('width', px);
+		},
+
+		setHeightPx: function(px) {
+			this.set('height', px);
 		},
 
 		setWidthByVal: function(val) {
@@ -3584,8 +3631,63 @@ define(['jquery'], function($) {
 			this.set('y', Math.min(this.yaxis.getMinPx(), this.yaxis.getMaxPx()));
 			this.set('height', Math.abs(this.yaxis.getMaxPx() - this.yaxis.getMinPx()));
 		}
-
 	});
+
+
+	var GraphLine = function(graph) {
+		this.init(graph);
+	}
+/*
+	$.extend(GraphRect.prototype, GraphShape.prototype, {
+		
+		createDom: function() {
+			this._dom = document.createElementNS(this.graph.ns, 'line');
+		},
+
+		setWidthPx: function(px) {
+			this.set('width', px);
+		},
+
+		setHeightPx: function(px) {
+			this.set('height', px);
+		},
+
+		setWidthByVal: function(val) {
+			if(this.properties.x) {
+				var width = this.xaxis.getPx(val) - this.properties.x;
+				if(width > 0)
+					this.set('width', width);
+				else {
+					this.set('x', this.xaxis.getPx(val));
+					this.set('width', - width);
+				}
+			}
+		},
+
+		setHeightByVal: function(val) {
+			if(this.properties.y) {
+				var height = this.yaxis.getPx(val) - this.properties.y;
+				if(height > 0)
+					this.set('height', height);
+				else {
+					this.set('y', this.yaxis.getPx(val));
+					this.set('height', - height);
+				}
+			}
+		},
+
+		setFullWidth: function() {
+			this.set('x', Math.min(this.xaxis.getMinPx(), this.xaxis.getMaxPx()));
+			this.set('width', Math.abs(this.xaxis.getMaxPx() - this.xaxis.getMinPx()));
+		},
+
+		setFullHeight: function() {
+			this.set('y', Math.min(this.yaxis.getMinPx(), this.yaxis.getMaxPx()));
+			this.set('height', Math.abs(this.yaxis.getMaxPx() - this.yaxis.getMinPx()));
+		}
+	});*/
+
+
 	Graph.GraphSerie = GraphSerie;
 	Graph.GraphXAxis = GraphXAxis;
 	Graph.GraphYAxis = GraphYAxis;

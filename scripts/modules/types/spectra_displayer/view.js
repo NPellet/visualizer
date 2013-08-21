@@ -103,10 +103,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				if(!graph)
 					return;
-
 				graph.redraw();
-
 				self.graph = graph;
+				
 				if(cfgM.flipX)
 					self.graph.getXAxis().flip(true);
 
@@ -210,13 +209,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				value = DataTraversing.getValueIfNeeded(value);
 				if(!value)
 					return;
-				var i = 0, l = value.length, annotation;
-				for(; i < l; i++) {
-					annotation = value[i]
 
-
-
-				}
+				this.annotations = value;
 			},
 
 			'jcamp': function(moduleValue, varname) {
@@ -296,6 +290,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					}
 				}
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
+				this.resetAnnotations();
 			}
 		},
 
@@ -359,6 +354,48 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					}
 				});
 			}
+		},
+
+		resetAnnotations: function() {
+			var value = this.annotations;
+			if(!value)
+				return;
+
+			var i = 0, l = value.length, annotation;
+			for(; i < l; i++) {
+				this._addAnnotation(value[i]);
+			}
+		},
+
+		_addAnnotation: function(annotation) {
+			
+			if(!this.graph)
+				return;
+
+			var shape = this.graph.makeShape(annotation.type);
+
+			shape.setSerie(this.graph.getSerie(0));
+			if(annotation.pos) {
+				shape.setPosX(annotation.pos.x);
+				if(annotation.pos.y)
+					shape.setPosY(annotation.pos.y);
+				else
+					shape.setAutoY(annotation.pos.x);
+			}
+			
+			switch(annotation.type) {
+				case 'rect':
+				case 'rectangle':
+				console.log(annotation.width);
+					shape.setWidthPx(annotation.width);
+					shape.setHeightPx(annotation.height);
+
+				break;
+
+			}
+
+			shape.done();
+
 		},
 
 		removeSerie: function(serieName) {
