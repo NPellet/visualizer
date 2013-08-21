@@ -63,7 +63,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
 			var textbox = null ;
 			if(cfg.iseditable && cfg.iseditable.length > 0){
-				textbox = $('<textarea>',{cols:20,rows:5}).html(cfg.script) ;
+				textbox = $('<textarea>',{cols:20,rows:5}).html(cfg.script).css({width:'95%'}) ;
 				textbox.on('input',function(e,f){
 					cfg.script = $(this).val() ;
 					//self.update.script($(this).val()) ;
