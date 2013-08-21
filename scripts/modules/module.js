@@ -192,12 +192,11 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 		},
 		
 		getDataRelFromName: function(name) {
-			
+			var rels = [];
 			for(var i in this.definition.dataSource)
 				if(this.definition.dataSource[i].name == name)
-					return this.definition.dataSource[i].rel;
-					
-			return false;
+					rels.push(this.definition.dataSource[i].rel);
+			return rels;
 		},
 
 		getActionRelFromName: function(name) {

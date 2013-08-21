@@ -28,7 +28,7 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 
 			jcampy: {
 				type: ["jcamp"],
-				label: 'Left data'
+				label: 'Left axis'
 			},
 
 			jcampxy: {

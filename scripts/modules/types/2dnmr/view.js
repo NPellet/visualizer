@@ -33,30 +33,29 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 		},
 		
 		update: {
-			'jcamp2d': function(moduleValue) {
-				var self = this;
-				require(['util/jcampconverter'], function(tojcamp) {
-					var jcamp = tojcamp(moduleValue);
-					if(jcamp.gcms) {
-						self._instance.setMS(jcamp.gcms.ms);		
-					}
-				});
-			},
-
+		
 			'jcampx': function(moduleValue) {
+				if(!this._instance)
+					return;
+			
 				this.addSerieJcampXOrY(moduleValue, true);
-
 				this.redraw();
 			},
 
 			'jcampy': function(moduleValue) {
+				if(!this._instance)
+					return;
+			
 				this.addSerieJcampXOrY(moduleValue, false);
-
 				this.redraw();
 			},
 
 			'jcampxy': function(moduleValue) {
-				value = JcampConverter(DataTraversing.getValueIfNeeded(moduleValue));
+
+				if(!this._instance)
+					return;
+			
+				value = JcampConverter(Traversing.getValueIfNeeded(moduleValue), {lowres: 1024});
 				this.addSerieXOrY(value, true);
 				this.addSerieXOrY(value, false);
 
@@ -64,28 +63,39 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 			},
 
 			'jcamp2d': function(moduleValue) {
-				var value = JcampConverter(DataTraversing.getValueIfNeeded(moduleValue)),
-					NMR = this._instance,
+
+				if(!this._instance)
+					return;
+			
+				var value = JcampConverter(Traversing.getValueIfNeeded(moduleValue));
+				
+				if(!value.contourLines)
+					return;
+
+				var NMR = this._instance,
 					serie = NMR.newSerie('2d' + Date.now(), {}, 'contour');
 
 				serie.setData(value.contourLines);
 				serie.setXAxis(NMR.getTopAxis());
 				serie.setYAxis(NMR.getLeftAxis());
+
+				this.redraw();
 			}
 		},
 
 
 		addSerieJcampXOrY: function(value, x) {
-			value = DataTraversing.getValueIfNeeded(value);
-			spectra = JcampConverter(value);
+			value = Traversing.getValueIfNeeded(value);
+			spectra = JcampConverter(value, {lowres: 1024});
 			this.addSerieXOrY(spectra, x);
 		},
 
 		addSerieXOrY: function(spectra, x) {
 
 			var NMR = this._instance,
-				axis = x ? NMR.getLeftAxis() : NMR.getTopAxis();
-			axis.killSeries();	
+				axis = x ? NMR.getTopAxis() : NMR.getLeftAxis();
+
+			axis.killSeries(true);
 			spectra = spectra.spectra;
 			for (var i = 0, l = spectra.length; i<l; i++) {
 

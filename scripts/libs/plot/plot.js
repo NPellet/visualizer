@@ -662,8 +662,8 @@ define(['jquery'], function($) {
 
 		resetSeries: function() {
 			this.series = [];
-			while(this.plotGroup.firstChild)
-				this.plotGroup.removeChild(this.plotGroup.firstChild);
+			//while(this.plotGroup.firstChild)
+			//	this.plotGroup.removeChild(this.plotGroup.firstChild);
 		},
 
 		applyToAxis: {
@@ -858,7 +858,7 @@ define(['jquery'], function($) {
 				l;
 
 			val = min ? Number.MAX_VALUE : Number.MIN_VALUE;
-			series = this.getSeriesFromAxis(axis);
+			series = this.getSeriesFromAxis(axis, true);
 			for(i = 0, l = series.length; i < l; i++) {
 
 				serie = series[i];
@@ -875,12 +875,18 @@ define(['jquery'], function($) {
 			return val;
 		},
 
-		getSeriesFromAxis: function(axis) {
+		getSeriesFromAxis: function(axis, selfSeries) {
 			var series = [],
 				i = this.series.length - 1;
 			for(; i >= 0; i--)
 				if(this.series[i].getXAxis() == axis || this.series[i].getYAxis() == axis)
 					series.push(this.series[i]);
+
+			if(selfSeries) {
+				for(i = 0; i < axis.series.length; i++)
+					series.push(axis.series[i])
+			}
+
 			return series;
 		},
 
@@ -1947,6 +1953,17 @@ define(['jquery'], function($) {
 			this.series.splice(this.series.indexOf(serie), 1);
 		},
 
+		killSeries: function(noRedraw) {
+			for(var i = 0; i < this.series.length; i++) {
+				this.series[i].kill(noRedraw);
+			}
+			this.series = [];
+		},
+
+		removeSeries: function() {
+			this.killSeries();
+		},
+
 		handleMouseOutLocal: function(x, y, e) {
 			for(var i = 0, l = this.series.length; i < l; i++)
 				this.series[i].hideTrackingMarker();
@@ -2440,17 +2457,17 @@ define(['jquery'], function($) {
 			}
 		},
 
-		kill: function() {
+		kill: function(noRedraw) {
 
 			this.graph.plotGroup.removeChild(this.groupMain);
-
 			/*if(this.marker)
 				this.groupMain.removeChild(this.marker);
 	*/
-			this.graph.redraw();
-
-			// Remove serie
 			this.graph.series.splice(this.graph.series.indexOf(this), 1);
+			if(!noRedraw)
+				this.graph.redraw();
+			// Remove serie
+			
 		},
 
 		handleMouseWheel: function() {},
@@ -3163,11 +3180,10 @@ define(['jquery'], function($) {
 		}
 	}
 
-	var GraphSerieAxisX = function() {};
-	$.extend(GraphSerieAxisX.prototype, GraphSerie.prototype, {		
+	var GraphSerieAxis = function() {};
+	GraphSerieAxis.prototype = {
 
 		initExtended1: function() {
-
 			if(this.initExtended2)
 				this.initExtended2();
 		},
@@ -3175,10 +3191,17 @@ define(['jquery'], function($) {
 		setAxis: function(axis) {
 			this.axis = axis;
 		},
-		
-		getY: function(value) {
-			var x = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (100 - this.axis._widthLabels) - this.axis._widthLabels;
-			return x;
+
+
+		kill: function(noRedraw) {
+			this.getAxis().groupSeries.removeChild(this.groupMain);
+			this.getAxis().series.splice(this.getAxis().series.indexOf(this), 1);
+			if(!noRedraw)
+				this.graph.redraw();
+		},
+
+		getAxis: function() {
+			return this.axis;
 		},
 
 		getXAxis: function() {
@@ -3187,13 +3210,24 @@ define(['jquery'], function($) {
 
 		getYAxis: function() {
 			return this.axis;
+		}
+	};
+
+
+	var GraphSerieAxisX = function() {};
+	$.extend(GraphSerieAxisX.prototype, GraphSerie.prototype, GraphSerieAxis.prototype, {	
+		
+		getY: function(value) {
+			var y = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (100 - this.axis._widthLabels) - this.axis._widthLabels;
+			return y;
 		},
 
 		getX: function(value) {
-			var y = Math.round(1000*(((value - this.axis.getActualMin()) / (this.axis._getActualInterval())) * (this.axis.getMaxPx() - this.axis.getMinPx()) + this.axis.getMinPx())) / 1000;	
-			if((this.axis.isFlipped() && (y < this.axis.getMaxPx() || y > this.axis.getMinPx())) || (!this.axis.isFlipped() && (y > this.axis.getMaxPx() || y < this.axis.getMinPx())))
-				return;
-			return y;
+			//console.log(value, this.axis.getActualMin())
+			var x = Math.round(1000*(((value - this.axis.getActualMin()) / (this.axis._getActualInterval())) * (this.axis.getMaxPx() - this.axis.getMinPx()) + this.axis.getMinPx())) / 1000;	
+			//if((this.axis.isFlipped() && (x < this.axis.getMaxPx() || x > this.axis.getMinPx())) || (!this.axis.isFlipped() && (x > this.axis.getMaxPx() || x < this.axis.getMinPx())))
+			//	return;
+			return x;
 		},
 
 		bindLabelHandlers: function(label) {
@@ -3244,30 +3278,39 @@ define(['jquery'], function($) {
 	});
 
 	var GraphSerieAxisY = function() {};
-	$.extend(GraphSerieAxisY.prototype, GraphSerie.prototype, {
-		setAxis: function(axis) {
-			this.axis = axis;
-		},
-
-		getXAxis: function() {
-			return this.axis;
-		},
-
-		getYAxis: function() {
-			return this.axis;
-		},
-
+	$.extend(GraphSerieAxisY.prototype, GraphSerie.prototype, GraphSerieAxis.prototype, {
+		
 		getX: function(value) {
+			
 			var x = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (100 - this.axis._widthLabels) - this.axis._widthLabels;
 			return x;
 		},
 
 		getY: function(value) {
+			
 			var y = Math.round(1000*(((value - this.axis.getActualMin()) / (this.axis._getActualInterval())) * (this.axis.getMaxPx() - this.axis.getMinPx()) + this.axis.getMinPx())) / 1000;
-			if((this.axis.isFlipped() && y < this.axis.getMaxPx() || y > this.axis.getMinPx()) || (!this.axis.isFlipped() && (y > this.axis.getMaxPx() || y < this.axis.getMinPx())))
-				return;
+			//if((this.axis.isFlipped() && y < this.axis.getMaxPx() || y > this.axis.getMinPx()) || (!this.axis.isFlipped() && (y > this.axis.getMaxPx() || y < this.axis.getMinPx())))
+		//		return;
 			return y;
+		},
+
+
+		getMinX: function() {
+			return this.minY;
+		},
+
+		getMaxX: function() {
+			return this.maxY;
+		},
+
+		getMinY: function() {
+			return this.minX;
+		},
+
+		getMaxY: function() {
+			return this.maxX;
 		}
+
 	});
 
 	var GraphSerieContour = function() {

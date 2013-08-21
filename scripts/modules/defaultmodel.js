@@ -49,7 +49,6 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		},
 
 		onVarGet: function(varValue, varName) {
-			console.log(varName);
 			if(varName instanceof Array)
 				varName = varName[0];
 
@@ -60,9 +59,17 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 
 			this.data[varName] = value;
 			var rel = this.module.getDataRelFromName(varName);
-			if(rel && this.module.view.update && this.module.view.update[rel]) {
-				this.module.view.update[rel].call(this.module.view, value, varName[0]);
+			if(!this.module.view.update)
+				return;
+
+			for(var i = 0; i < rel.length; i++) {
+
+				if(!this.module.view.update[rel[i]])
+					return;
+
+				this.module.view.update[rel[i]].call(this.module.view, value, varName[0]);
 			}
+			
  		},
 
 		onActionTrigger: function(value, actionName) {

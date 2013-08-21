@@ -29,12 +29,15 @@ define(['jquery', 'util/api', 'util/datatraversing'], function($, API, Traversin
 
 		setVarFromEvent: function(event, element) {
 			var actions;
+			
 			if(!(actions = this.module.definition.dataSend))	
 				return;
-			for(var i = 0; i < actions.length; i++)
+			
+			for(var i = 0; i < actions.length; i++) {
 				if(actions[i].event == event) {
 					API.setVar(actions[i].name, element, actions[i].jpath);
 				}
+			}
 		}
 	}
 });
