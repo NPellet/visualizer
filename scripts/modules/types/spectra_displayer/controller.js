@@ -47,7 +47,6 @@ define(['modules/defaultcontroller'], function(Default) {
 				description: 'A jcamp file'
 			},
 
-
 			annotation: {
 				type: ['array'],
 				label: 'Annotation file'

@@ -2129,7 +2129,7 @@ define(['jquery'], function($) {
 
 		drawSeries: function() {
 
-			this.rectEvent.setAttribute('y', - this.shift);
+			this.rectEvent.setAttribute('y', !this.top ? 0 : -this.shift);
 			this.rectEvent.setAttribute('height', this.totalDimension);
 			this.rectEvent.setAttribute('x', Math.min(this.getMinPx(), this.getMaxPx()));
 			this.rectEvent.setAttribute('width', Math.abs(this.getMinPx() - this.getMaxPx()));
@@ -2189,7 +2189,7 @@ define(['jquery'], function($) {
 		this.init(graph, options);
 		this.leftright = leftright;
 		this.left = leftright == 'left';
-		this.flipped = true;
+		this.options.flipped = true;
 	}
 
 	$.extend(GraphYAxis.prototype, GraphAxis.prototype, {
