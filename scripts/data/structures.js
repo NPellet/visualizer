@@ -407,7 +407,8 @@ define(function() {
 			}
 		},
 
-		"pdb": "string"
+		"pdb": "string",
+		"jsmolscript": "string",
 	};
 
 

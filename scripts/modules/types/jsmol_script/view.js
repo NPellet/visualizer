@@ -14,12 +14,27 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
 			view.dom = html ;
 			view.module.getDomContent().html(this.dom);
+			view.textbox = null ;
+			view.button = null ;
 			//view.fillWithScript(cfg.btnvalue);
 			view.fillWithScript();
 		},
+
+		resizeTextEditor: function(){
+			view = this ;
+			if(view.textbox){
+				margin = (13+5)*2 ;
+				view.textbox.height(
+					$(view.module.getDomContent()[0]).height()
+					- view.button.height()
+					- margin
+				);
+
+			}
+		},
 		
 		onResize: function() {
-			
+			this.resizeTextEditor() ;
 		},
 		
 		blank: function() {
@@ -70,11 +85,13 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 				});				
 			}
 
+			// Remember to the view
+			self.textbox = textbox ;
+			self.button = button ;
+
 			dom.append(button);
 			if(textbox)
 				dom.prepend(textbox);
-
-			
 	
 			DomDeferred.notify(button);
 		},

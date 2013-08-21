@@ -99,7 +99,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			
 			var defaultbtnvalue = this.module.getConfiguration().btnvalue || "Execute script";
 			var defaultscript = this.module.getConfiguration().script || "";
-			var defaultiseditable= this.module.getConfiguration().iseditable || "allow" ;
+			var defaultiseditable = this.module.getConfiguration().iseditable || "allow" ;
 
 			return {
 				groups: {
