@@ -8,7 +8,8 @@ define(['require', 'jquery', 'forms/section', 'forms/title', 'forms/buttonzone']
 	});
 
 	var defaults = {
-		templater: 'std'
+		templater: 'std',
+		labels: true
 	};
 
 	var form = function(options, onloaded) {
@@ -29,7 +30,7 @@ define(['require', 'jquery', 'forms/section', 'forms/title', 'forms/buttonzone']
 		require(['forms/templater/' + this.options.templater], function(FormTemplater) {
 			self.templater = new FormTemplater();
 			templaterLoaded.resolve();
-			self.setLabels(self.options.labels);
+			self.setLabels(self.options.labels == undefined ? true : self.options.labels);
 		});
 		
 		if(this.options.xmlFile) {
