@@ -194,10 +194,8 @@ define(['jquery'], function($) {
 
 			this.dom.addEventListener('mousedown', function(e) {
 				e.preventDefault();
-
 				if(e.which == 3 || e.ctrlKey)
 					return;
-
 				var coords = self.getXY(e);
 				self.handleMouseDown(coords.x,coords.y,e);
 			});
@@ -291,7 +289,6 @@ define(['jquery'], function($) {
 			this.applyToAxes('handleMouseMove', [_x, e], true, false);
 			this.applyToAxes('handleMouseMove', [_y, e], false, true);
 
-
 			if(this.currentAction == false) {
 
 				var results = {};
@@ -325,10 +322,9 @@ define(['jquery'], function($) {
 
 			} else if(this.currentAction == 'zooming') {
 
-				switch(this.getZoomMode()) {
+				switch(this._zoomingMode) {
 
 					case 'xy':
-						
 						this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
 						this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
 						this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
@@ -337,15 +333,11 @@ define(['jquery'], function($) {
 
 					case 'x': 
 						this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
-						this._zoomingSquare.setAttribute('y', this.options.paddingTop);
 						this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
-						this._zoomingSquare.setAttribute('height', this.getDrawingHeight() - this.shift[0]);
 					break;
 
 					case 'y':
-						this._zoomingSquare.setAttribute('x', this.options.paddingLeft + this.shift[1]);
 						this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
-						this._zoomingSquare.setAttribute('width', this.getDrawingWidth() - this.shift[1] - this.shift[2]);
 						this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
 					break;
 				}
@@ -542,6 +534,7 @@ define(['jquery'], function($) {
 					
 					this.currentAction = 'zooming';
 
+					this._zoomingMode = zoomMode;
 					this._zoomingXStart = x;
 					this._zoomingYStart = y;
 					this._zoomingXStartRel = x - this.getPaddingLeft();
@@ -549,6 +542,17 @@ define(['jquery'], function($) {
 					this._zoomingSquare.setAttribute('width', 0);
 					this._zoomingSquare.setAttribute('height', 0);
 					this._zoomingSquare.setAttribute('display', 'block');
+
+					switch(zoomMode) {
+						case 'x': 
+							this._zoomingSquare.setAttribute('y', this.options.paddingTop);
+							this._zoomingSquare.setAttribute('height', this.getDrawingHeight() - this.shift[0]);
+						break;
+						case 'y':
+							this._zoomingSquare.setAttribute('x', this.options.paddingLeft/* + this.shift[1]*/);
+							this._zoomingSquare.setAttribute('width', this.getDrawingWidth()/* - this.shift[1] - this.shift[2]*/);
+						break;
+					}
 				} else {
 					this.handleMouseUp(x, y, e);
 				}
@@ -570,7 +574,7 @@ define(['jquery'], function($) {
 				this._zoomingSquare.setAttribute('display', 'none');
 				var _x = x - this.options.paddingLeft;
 				var _y = y - this.options.paddingTop;
-				if((x - this._zoomingXStart == 0 && this.getZoomMode() != 'y') || (y - this._zoomingYStart == 0 && this.getZoomMode() != 'x')) {
+				if((x - this._zoomingXStart == 0 && this._zoomingMode != 'y') || (y - this._zoomingYStart == 0 && this._zoomingMode != 'x')) {
 					this.currentAction = false;
 					return;
 				}
@@ -928,8 +932,6 @@ define(['jquery'], function($) {
 						continue;
 					axis.setRealMin(this.getBoundaryAxisFromSeries(this.axis[axisvars[j]][i], xy, 'min'));
 					axis.setRealMax(this.getBoundaryAxisFromSeries(this.axis[axisvars[j]][i], xy, 'max'));
-					axis.setShift(shift[j] + axis.getAxisPosition(), shift[j]);
-					shift[j] += axis.getAxisPosition();
 				}
 			}
 
@@ -937,6 +939,19 @@ define(['jquery'], function($) {
 			shift[2] = 0;
 			shift[3] = 0;
 
+
+			// Apply to top and bottom
+			this.applyToAxes(function(axis) {
+				if(axis.disabled)
+					return;
+				var axisIndex = axisvars.indexOf(arguments[1]);
+				axis.setShift(shift[axisIndex] + axis.getAxisPosition(), axis.getAxisPosition()); 
+				shift[axisIndex] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
+			}, false, true, false);
+
+
+
+			// Applied to left and right
 			this.applyToAxes(function(axis) {
 				if(axis.disabled)
 					return;
@@ -944,14 +959,21 @@ define(['jquery'], function($) {
 				axis.setMinPx(shift[1]);
 				axis.setMaxPx(this.getDrawingHeight(true) - shift[0]);
 
-				var drawn = axis.draw(doNotRecalculateMinMax) || 0;
+				// First we need to draw it in order to determine the width to allocate
+				// This is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
 
-				axis.setShift(shift[axisvars.indexOf(arguments[1])] + drawn, shift[axisvars.indexOf(arguments[1])]);
-				shift[axisvars.indexOf(arguments[1])] += drawn;
+				var drawn = axis.draw(doNotRecalculateMinMax) || 0,
+					axisIndex = axisvars.indexOf(arguments[1]),
+					axisDim = axis.getAxisPosition();
+
+				// Get axis position gives the extra shift that is common
+				axis.setShift(shift[axisIndex] + axisDim + drawn, drawn + axisDim);
+				shift[axisIndex] += drawn + axisDim;
 
 			}, false, false, true);
 
 			
+			// Apply to top and bottom
 			this.applyToAxes(function(axis) {
 				if(axis.disabled)
 					return;
@@ -960,6 +982,7 @@ define(['jquery'], function($) {
 				axis.draw(doNotRecalculateMinMax);
 			}, false, true, false);
 
+			// Apply to all axis
 			this.applyToAxes(function(axis) {
 				axis.drawSeries();
 			}, false, true, true);
@@ -1152,7 +1175,7 @@ define(['jquery'], function($) {
 			exponentialLabelFactor: 0,
 			wheelBaseline: 0,
 			logScale: false,
-
+			allowedPxSerie: 100,
 			forcedMin: false,
 			forcedMax: false
 		},
@@ -1171,8 +1194,10 @@ define(['jquery'], function($) {
 			this.graph.axisGroup.insertBefore(this.groupGrids, this.graph.axisGroup.firstChild);
 			this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
 			this.rectEvent.setAttribute('pointer-events', 'fill');
-			this.rectEvent.setAttribute('fill', 'transparent');
+			this.rectEvent.setAttribute('fill', 'rgba(0, 0, 0, 0.2)');
 			this.group.appendChild(this.rectEvent);
+
+			this.setEvents();
 
 			this.graph.axisGroup.appendChild(this.group); // Adds to the main axiszone
 
@@ -1255,6 +1280,40 @@ define(['jquery'], function($) {
 			});
 		},
 
+		setEvents: function() {
+			var self = this;
+			this.rectEvent.addEventListener('mousedown', function(e) {
+
+				e.stopPropagation();
+				e.preventDefault();
+				if(e.which == 3 || e.ctrlKey)
+					return;
+				var coords = self.graph.getXY(e);
+
+				self.graph.currentAction = 'zooming';
+				self.graph._zoomingMode = self instanceof GraphXAxis ? 'x' : 'y';
+				self.graph._zoomingXStart = coords.x;
+				self.graph._zoomingYStart = coords.y;
+				self.graph._zoomingXStartRel = coords.x - self.graph.getPaddingLeft();
+				self.graph._zoomingYStartRel = coords.y - self.graph.getPaddingTop();
+				self.graph._zoomingSquare.setAttribute('width', 0);
+				self.graph._zoomingSquare.setAttribute('height', 0);
+
+				switch(self.graph._zoomingMode) {
+					case 'x': 
+						self.graph._zoomingSquare.setAttribute('y', self.graph.options.paddingTop);
+						self.graph._zoomingSquare.setAttribute('height', self.graph.getDrawingHeight() - self.graph.shift[0]);
+					break;
+					case 'y':
+						self.graph._zoomingSquare.setAttribute('x', self.graph.options.paddingLeft/* + this.shift[1]*/);
+						self.graph._zoomingSquare.setAttribute('width', self.graph.getDrawingWidth()/* - this.shift[1] - this.shift[2]*/);
+					break;
+				}
+
+				self.graph._zoomingSquare.setAttribute('display', 'block');
+			});
+		},
+
 		addLabel: function(x) {
 			for(var i = 0, l = this.series.length; i < l; i++) {
 				if(this.series[i].currentAction !== false)
@@ -1299,6 +1358,10 @@ define(['jquery'], function($) {
 
 		getMaxPx: function(px) {
 			return this.options.flipped ? this.minPx : this.maxPx;
+		},
+
+		getMathMaxPx: function() {
+			return this.maxPx;
 		},
 
 		getMin: function() {
@@ -1870,9 +1933,9 @@ define(['jquery'], function($) {
 			return this.options.labelValue;
 		},
 
-		setShift: function(shift, previousShift) {
+		setShift: function(shift, totalDimension) {
 			this.shift = shift;
-			this.previousShift = previousShift;
+			this.totalDimension = totalDimension; // Width (axis y) or height (axis x) of the axis.
 			this._setShift();
 		},
 
@@ -1990,14 +2053,14 @@ define(['jquery'], function($) {
 	$.extend(GraphXAxis.prototype, GraphAxis.prototype, {
 
 		getAxisPosition: function() {
-			if(this.top)
-				return 100;
-
-			return (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize * 2;
+			var size = (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize * 2;	
+			if(this.options.allowedPxSerie && this.series.length > 0)
+				size += this.options.allowedPxSerie;
+			return size;
 		},
 
 		getAxisWidthHeight: function() {
-			return 200;
+			return;
 		},
 
 		_setShift: function() {
@@ -2020,9 +2083,9 @@ define(['jquery'], function($) {
 			tick.setAttribute('y2', (this.top ? 1 : -1) * this.tickPx2 * scaling);
 
 			if(label && this.options.primaryGrid)
-				this.doGridLine(true, val, val, 0, this.getMaxPx());
+				this.doGridLine(true, val, val, 0, this.graph.getDrawingHeight());
 			else if(!label && this.options.secondaryGrid)
-				this.doGridLine(false, val, val, 0, this.getMaxPx());
+				this.doGridLine(false, val, val, 0, this.graph.getDrawingHeight());
 			
 			tick.setAttribute('stroke', 'black');
 
@@ -2065,8 +2128,9 @@ define(['jquery'], function($) {
 		},
 
 		drawSeries: function() {
-			this.rectEvent.setAttribute('y', - Math.max(this.shift, this.previousShift));
-			this.rectEvent.setAttribute('height', Math.abs(this.shift - this.previousShift));
+
+			this.rectEvent.setAttribute('y', - this.shift);
+			this.rectEvent.setAttribute('height', this.totalDimension);
 			this.rectEvent.setAttribute('x', Math.min(this.getMinPx(), this.getMaxPx()));
 			this.rectEvent.setAttribute('width', Math.abs(this.getMinPx() - this.getMaxPx()));
 
@@ -2087,7 +2151,7 @@ define(['jquery'], function($) {
 		},
 
 		_handleZoom: function(px2) {
-			var mode = this.graph.getZoomMode(), px1;
+			var mode = this.graph._zoomingMode, px1;
 			if(!(mode == 'xy' || mode == 'x'))
 				return;
 			px1 = this.graph._zoomingXStartRel;
@@ -2131,11 +2195,14 @@ define(['jquery'], function($) {
 	$.extend(GraphYAxis.prototype, GraphAxis.prototype, {
 
 		getAxisPosition: function() {
-			return 0;
+			var size = 0;
+			if(this.options.allowedPxSerie && this.series.length > 0)
+				size = this.options.allowedPxSerie;
+			return size;
 		},
 
 		getAxisWidthHeight: function() {
-			return 100;
+			return 15;
 		},
 
 		drawTick: function(value, label, scaling, options) {
@@ -2200,8 +2267,8 @@ define(['jquery'], function($) {
 
 		drawSeries: function() {
 
-			this.rectEvent.setAttribute('x', - Math.max(this.shift, this.previousShift));
-			this.rectEvent.setAttribute('width', Math.abs(this.shift - this.previousShift));
+			this.rectEvent.setAttribute('x', - this.shift);
+			this.rectEvent.setAttribute('width', this.totalDimension);
 			this.rectEvent.setAttribute('y', Math.min(this.getMinPx(), this.getMaxPx()));
 			this.rectEvent.setAttribute('height', Math.abs(this.getMinPx() - this.getMaxPx()));
 
@@ -2243,7 +2310,7 @@ define(['jquery'], function($) {
 
 
 		_handleZoom: function(px2) {
-			var mode = this.graph.getZoomMode(), px1;
+			var mode = this.graph._zoomingMode, px1;
 			if(!(mode == 'xy' || mode == 'y'))
 				return;
 			px1 = this.graph._zoomingYStartRel;

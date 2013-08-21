@@ -29,7 +29,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 		},
 
 		onResize: function(width, height) {
-			this._instance.resize(width, height);
+			this._instance.resize(width - 20, height - 20);
 		},
 		
 		update: {
@@ -98,13 +98,12 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 				serie = axis.addSerie((x ? 'x' : 'y') + Date.now(), {
 					trackMouse: false, 
 					trackMouseLabel: '<x>', 
-					trackMouseLabelRouding: 3
+					trackMouseLabelRouding: 3,
+					zoomMode: x ? 'x' : 'y'
 				});
-
 				serie.setData(spectra[i].data[spectra[i].data.length - 1]);
 				if(!x)
 					serie.setFlip(true);
-
 				break;
 			}
 		},
