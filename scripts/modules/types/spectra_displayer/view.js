@@ -396,6 +396,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				shape.createLabel();
 				shape.setLabelText(annotation.label.text);
 				shape.setLabelPosition(annotation.label.position, annotation.label.positionType || 'relative')
+				shape.setLabelSize(annotation.label.size);
 			}
 
 			switch(annotation.type) {

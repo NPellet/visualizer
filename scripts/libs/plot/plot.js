@@ -3653,6 +3653,13 @@ define(['jquery'], function($) {
 				this.label.setAttribute('x', this.parsePx(x));
 				this.label.setAttribute('y', this.parsePx(y));
 			}
+		},
+
+		setLabelSize: function(size) {
+			if(!this.label)
+				return;
+			
+			this.label.setAttribute('font-size', size);
 		}
 	}
 
