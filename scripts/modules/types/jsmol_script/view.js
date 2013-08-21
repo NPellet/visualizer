@@ -5,19 +5,17 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
 		init: function() {	
 
-			var cfg = this.module.getConfiguration(), view = this;
 			var html = $('<div>');
-			//html.css({"background-color":"#f00","height":"100%"}) ;
 			html.css("text-align","center");
 			html.css("padding","1em");
-			/*this.dom = $(html).css('display', 'table').css('height', '100%').css('width', '100%');*/
 
+			var view = this;
 			view.dom = html ;
 			view.module.getDomContent().html(this.dom);
 			view.textbox = null ;
 			view.button = null ;
-			//view.fillWithScript(cfg.btnvalue);
 			view.fillWithScript();
+
 		},
 
 		resizeTextEditor: function(){
@@ -32,7 +30,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
 			}
 		},
-		
+
 		onResize: function() {
 			this.resizeTextEditor() ;
 		},
@@ -70,22 +68,23 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
 			dom.html("");
 
-			var button = $('<div>').html(cfg.btnvalue).addClass("bi-form-button");
-			button.on("click",function(){
-				self.module.controller.onButtonClick();
-				return false ;
-			}) ;
+			var button = null ;
+			if(cfg.btnvalue){
+				var button = $('<div>').html(cfg.btnvalue).addClass("bi-form-button");
+				button.on("click",function(){
+					self.module.controller.onButtonClick();
+					return false ;
+				}) ;
+			}
 
 			var textbox = null ;
 			if(cfg.iseditable && cfg.iseditable.length > 0){
 				textbox = $('<textarea>',{cols:20,rows:5}).html(cfg.script).css({width:'95%'}) ;
 				textbox.on('input',function(e,f){
-					cfg.script = $(this).val() ;
-					//self.update.script($(this).val()) ;
+					cfg.script = $(this).val();
 				});				
 			}
 
-			// Remember to the view
 			self.textbox = textbox ;
 			self.button = button ;
 
