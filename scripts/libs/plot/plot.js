@@ -1301,12 +1301,13 @@ define(['jquery'], function($) {
 
 				switch(self.graph._zoomingMode) {
 					case 'x': 
-						self.graph._zoomingSquare.setAttribute('y', self.graph.options.paddingTop);
-						self.graph._zoomingSquare.setAttribute('height', self.graph.getDrawingHeight() - self.graph.shift[0]);
+					console.log(self.shift, self.totalDimension);
+						self.graph._zoomingSquare.setAttribute('y', self.graph.getPaddingTop() + self.shift - self.totalDimension);
+						self.graph._zoomingSquare.setAttribute('height', self.totalDimension);
 					break;
 					case 'y':
-						self.graph._zoomingSquare.setAttribute('x', self.graph.options.paddingLeft/* + this.shift[1]*/);
-						self.graph._zoomingSquare.setAttribute('width', self.graph.getDrawingWidth()/* - this.shift[1] - this.shift[2]*/);
+						self.graph._zoomingSquare.setAttribute('x', self.graph.getPaddingLeft() + self.shift - self.totalDimension);
+						self.graph._zoomingSquare.setAttribute('width', self.totalDimension);
 					break;
 				}
 
