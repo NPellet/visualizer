@@ -57,6 +57,7 @@ define(['jquery'], function($) {
 		// DOM
 		this.doDom();
 		this.registerEvents();
+		this.shapes = [];
 
 		
 		this.trackingLines = {
@@ -913,6 +914,7 @@ define(['jquery'], function($) {
 				return;
 
 			this.refreshDrawingZone(doNotRecalculateMinMax);
+
 			return true;
 		},
 
@@ -1004,8 +1006,8 @@ define(['jquery'], function($) {
 			this.rectEvent.setAttribute('width', this.getDrawingWidth() - shift[2] - shift[3]);
 			this.rectEvent.setAttribute('height', this.getDrawingHeight() - shift[1] - shift[0]);
 
-
 			this.shift = shift;
+			this.redrawShapes();
 		},
 
 		closeLine: function(mode, x1, x2, y1, y2) {	
@@ -1131,11 +1133,19 @@ define(['jquery'], function($) {
 			switch(shapeType) {
 				case 'rectangle':
 				case 'rect':
-					return new GraphRect(this);
+					var shape = new GraphRect(this);
 				break;
 			}
+
+			this.shapes.push(shape);
+			return shape;
 		},
 
+		redrawShapes: function() {
+			for(var i = 0, l = this.shapes.length; i < l; i++) {
+				this.shapes[i].redraw();
+			}
+		},
 
 		_makeClosingLines: function() {
 
@@ -1717,6 +1727,7 @@ define(['jquery'], function($) {
 			this._widthLabels = 20;
 			var drawn = this._draw(doNotRecalculateMinMax);
 			this._widthLabels += drawn;
+			this.graph.redrawShapes();
 
 			return this.series.length > 0 ? 100 : drawn;
 		},
@@ -3504,6 +3515,9 @@ define(['jquery'], function($) {
 		kill: function() {
 			
 			this.graph.shapeZone.removeChild(this._dom);
+			if(this.label)
+				this.graph.shapeZone.removeChild(this.label);
+			this.label = false;
 		},
 
 		applyAll: function() {
@@ -3511,17 +3525,45 @@ define(['jquery'], function($) {
 				this._dom.setAttribute(i, this.properties[i]);
 		},
 
+		redraw: function() {
+
+			this.kill();
+
+
+			var variable;
+			if(variable = this._get('x'))
+				this.setPosX(variable);
+console.log(variable);
+			if(variable = this._get('y'))
+				this.setPosY(variable);
+
+			if(variable = this._get('fill'))
+				this.setFillColor(variable);
+
+			if(variable = this._get('stroke'))
+				this.setStrokeColor(variable);
+
+			if(variable = this._get('stroke-width'))
+				this.setStrokeWidth(variable);
+
+			if(this._get('label')) {
+				this.createLabel();
+				this.setLabelText(this._get('labelText'));
+				this.setLabelPosition(this._get('labelPositionValue'), this._get('labelPositionType'));
+				this.setLabelSize(this._get('labelSize'));
+			}
+
+			this.done();
+
+		},
+
 		done: function() {
 			this.applyAll();
-			console.log(this.graph.shapeZone);
-			if(this._inDom)
-				this.graph.shapeZone.removeChild(this._dom);
-			else {
-				this.graph.shapeZone.appendChild(this._dom);
-				if(this.label)
-					this.graph.shapeZone.appendChild(this.label);
-				this._inDom = true;
-			}
+			
+			this.graph.shapeZone.appendChild(this._dom);
+			if(this.label)
+				this.graph.shapeZone.appendChild(this.label);
+			this._inDom = true;
 		},
 
 
@@ -3574,24 +3616,21 @@ define(['jquery'], function($) {
 		parseUnitX: function(px) { // returns px units
 			return (this.parsePx(px) !== false) ? this.parsePx(px) : (this.serie.getXAxis().getPos(px));
 		},
+
 		parseUnitY: function(px) {
 			return (this.parsePx(px) !== false) ? this.parsePx(px) : (this.serie.getYAxis().getPos(px));
 		},
 
 		reverseUnitX: function(val) {
-
-			if(value = this.parsePx(val)) {
-
+			if(value = this.parsePx(val))
 				return this.serie.getXAxis().getVal(value);
-			}
 			else
 				return val;
 		},
 
 		reverseUnitY: function(val) {
-			if(value = this.parsePx(val)) {
+			if(value = this.parsePx(val))
 				return this.serie.getYAxis().getVal(value);
-			}
 			else
 				return val;
 		},
@@ -3602,26 +3641,30 @@ define(['jquery'], function($) {
 		},
 
 		setFillColor: function(color) {
-			this._set('fill', color);
-			this.set('fill', color);
+			this.set('fill', color, color);
 		},
 
 		setStrokeColor: function(color) {
-			this.set('stroke', color);
+			this.set('stroke', color, color);
 		},
 
 		setStrokeWidth: function(width) {
-			this.set('stroke-width', width);
+			this.set('stroke-width', width, width);
 		},
 
 		createLabel: function() {
+			if(this.label)
+				this.graph.shapeZone.removeChild(this.label);
+
 			this.label = document.createElementNS(this.graph.ns, 'text');
+			this._set('label', true);
 		},
 
 		setLabelText: function(text) {
 			if(!this.label)
 				return;
 			this.label.textContent = text;
+			this._set('labelText', text);
 		},
 
 		setLabelPosition: function(positionValue, positionType) {
@@ -3634,19 +3677,16 @@ define(['jquery'], function($) {
 			this._set('labelPositionType', positionType);
 
 			if(positionType == 'relative') {
-				if(this.parsePx(x)) {
+				if(this.parsePx(x))
 					x = this.parseUnitX(this.reverseUnitX(this._get('x'))) + this.parsePx(x); //px + px, ok
-				}
 				else
 					x = this.parseUnitX(this.reverseUnitX(this._get('x')) + x);
 
-				if(this.parsePx(y)) {
-					console.log(this._get('y'), this.reverseUnitY(this._get('y')), this.parseUnitY(this.reverseUnitY(this._get('y'))));
+				if(this.parsePx(y))
 					y = this.parseUnitY(this.reverseUnitY(this._get('y'))) + this.parsePx(y); //px + px, ok
-				}
 				else
 					y = this.parseUnitY(this.reverseUnitY(this._get('y')) + y);
-//console.log(x);
+
 				this.label.setAttribute('x', x);
 				this.label.setAttribute('y', y);
 			} else {
@@ -3658,7 +3698,7 @@ define(['jquery'], function($) {
 		setLabelSize: function(size) {
 			if(!this.label)
 				return;
-			
+			this._set('labelSize', size);
 			this.label.setAttribute('font-size', size);
 		}
 	}
@@ -3674,7 +3714,6 @@ define(['jquery'], function($) {
 		},
 
 		setWidthPx: function(px) {
-			console.log(px);
 			this.set('width', px);
 		},
 
