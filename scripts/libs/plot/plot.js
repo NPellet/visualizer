@@ -3805,20 +3805,20 @@ define(['jquery'], function($) {
 		},
 
 		setPosX: function(x) {
-			this.set('x1', this.parseUnitX(x) + "px", x);
+			this.set('x2', this.parseUnitX(x) + "px", x);
 			this._set('x', x);
 		},
 
 		setPosY: function(y) {
-			this.set('y1', this.parseUnitY(y) + "px", y);
+			this.set('y2', this.parseUnitY(y) + "px", y);
 			this._set('y', y);
 		},
 
 		setLabelPosition: function(val, type) {
 			
 			this._setLabelPosition(val, type);
-			this.set('x2', this.label.getAttribute('x'));
-			this.set('y2', this.label.getAttribute('y'));
+			this.set('x1', this.label.getAttribute('x'));
+			this.set('y1', this.label.getAttribute('y'));
 		}
 	});
 
