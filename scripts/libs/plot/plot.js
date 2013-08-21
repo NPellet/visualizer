@@ -158,6 +158,24 @@ define(['jquery'], function($) {
 			this._zoomingSquare.setAttribute('height', 0);
 			this.dom.appendChild(this._zoomingSquare);
 
+			this.markerArrow = document.createElementNS(this.ns, 'marker');
+			this.markerArrow.setAttribute('viewBox', '0 0 10 10');
+			this.markerArrow.setAttribute('id', 'arrow' + this._creation);
+			this.markerArrow.setAttribute('refX', '0');
+			this.markerArrow.setAttribute('refY', '5');
+			this.markerArrow.setAttribute('markerUnits', 'strokeWidth');
+			this.markerArrow.setAttribute('markerWidth', '4');
+			this.markerArrow.setAttribute('markerHeight', '3');
+			this.markerArrow.setAttribute('orient', 'auto');
+			this.markerArrow.setAttribute('fill', 'inherit');
+			this.markerArrow.setAttribute('stroke', 'inherit');
+
+			var pathArrow = document.createElementNS(this.ns, 'path');
+			pathArrow.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z')
+			this.markerArrow.appendChild(pathArrow);
+
+			this.defs.appendChild(this.markerArrow);
+
 			this.shapeZone = document.createElementNS(this.ns, 'g');
 			this.graphingZone.appendChild(this.shapeZone);
 
@@ -1134,6 +1152,10 @@ define(['jquery'], function($) {
 				case 'rectangle':
 				case 'rect':
 					var shape = new GraphRect(this);
+				break;
+
+				case 'arrow':
+					var shape = new GraphArrow(this);
 				break;
 			}
 
@@ -3532,7 +3554,7 @@ define(['jquery'], function($) {
 			var variable;
 			if(variable = this._get('x'))
 				this.setPosX(variable);
-console.log(variable);
+
 			if(variable = this._get('y'))
 				this.setPosY(variable);
 
@@ -3607,7 +3629,9 @@ console.log(variable);
 		},
 
 		parsePx: function(px) {
-			if(px.indexOf && px.indexOf('px') > -1)
+			
+			console.log(px);
+			if(px && px.indexOf && px.indexOf('px') > -1)
 				return parseInt(px.replace('px', ''));
 			return false;
 		},
@@ -3667,6 +3691,10 @@ console.log(variable);
 		},
 
 		setLabelPosition: function(positionValue, positionType) {
+			this._setLabelPosition(positionValue, positionType);
+		},
+		
+		_setLabelPosition: function(positionValue, positionType) {
 			positionType = positionType || 'relative';
 
 			var x = positionValue.x || 0, parsedX = this.parsePx(positionValue.x) || positionValue.x;
@@ -3676,6 +3704,7 @@ console.log(variable);
 			this._set('labelPositionType', positionType);
 
 			if(positionType == 'relative') {
+
 				if(this.parsePx(x))
 					x = this.parseUnitX(this.reverseUnitX(this._get('x'))) + parsedX; //px + px, ok
 				else
@@ -3761,13 +3790,45 @@ console.log(variable);
 		}
 	});
 
-
 	var GraphLine = function(graph) {
 		this.init(graph);
 	}
+
+	var GraphArrow = function(graph) {
+		this.init(graph);
+	}
+
+	$.extend(GraphArrow.prototype, GraphShape.prototype, {
+		createDom: function() {
+			this._dom = document.createElementNS(this.graph.ns, 'line');
+			this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
+		},
+
+		setPosX: function(x) {
+			this.set('x1', this.parseUnitX(x) + "px", x);
+			this._set('x', x);
+		},
+
+		setPosY: function(y) {
+			this.set('y1', this.parseUnitY(y) + "px", y);
+			this._set('y', y);
+		},
+
+		setLabelPosition: function(val, type) {
+			
+			this._setLabelPosition(val, type);
+			this.set('x2', this.label.getAttribute('x'));
+			this.set('y2', this.label.getAttribute('y'));
+		}
+	});
+
+	
+
 /*
 	$.extend(GraphRect.prototype, GraphShape.prototype, {
 		
+
+
 		createDom: function() {
 			this._dom = document.createElementNS(this.graph.ns, 'line');
 		},
