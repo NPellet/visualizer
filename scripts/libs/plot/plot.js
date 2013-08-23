@@ -1,5 +1,5 @@
 
-define(['jquery'], function($) {
+define(['jquery', 'util/util'], function($, Util) {
 
 	var _scope = this;
 
@@ -32,7 +32,7 @@ define(['jquery'], function($) {
 		onVerticalTracking: false,
 		onHorizontalTracking: false,
 
-		rangeLimitX: 1,
+		rangeLimitX: 10,
 		rangeLimitY: 0,
 
 		onRangeX: false,
@@ -390,7 +390,23 @@ define(['jquery'], function($) {
 				this.ranges.current.max = this.ranges.current.use2;
 
 				if(this.options.onRangeX)
-					this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xStart), this.getXAxis().getVal(x));
+					this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xStart), this.getXAxis().getVal(x), this.ranges.current);
+			} else if(this.currentAction == 'moveRangeX' && this.ranges.current) {
+				
+				x -= this.getPaddingLeft();
+				var deltaX = this.ranges.current.lastX - x;
+				this.ranges.current.lastX = x;
+
+				this.ranges.current.xMin -= deltaX;
+				this.ranges.current.xMax -= deltaX;
+				
+				this.ranges.current.rect.setAttribute('x', this.ranges.current.xMin);
+				this.ranges.current.rect.setAttribute('width', Math.abs(this.ranges.current.xMax - this.ranges.current.xMin));
+				this.ranges.current.use1.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMin - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
+				this.ranges.current.use2.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMax - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
+
+				if(this.options.onRangeX)
+					this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xMin), this.getXAxis().getVal(this.ranges.current.xMax), this.ranges.current);
 			}
 
 			return results;
@@ -483,6 +499,15 @@ define(['jquery'], function($) {
 				this.trackingLines.current = this.trackingLines.vertical[$target.data('trackinglineid')];
 				return;
 
+			} else if($target.attr('class') == 'rangeRect') {
+
+				var id = $target.attr('data-rangex-id');
+				var group = self.ranges.x[id];
+				
+				self.currentAction = 'moveRangeX';
+				self.ranges.current = group;
+				self.ranges.current.lastX = x - self.getPaddingLeft();
+
 			} else if(this.options.defaultMouseAction == 'rangeX' && e.shiftKey == false) {
 
 				if(this.ranges.countX == this.options.rangeLimitX)
@@ -496,8 +521,12 @@ define(['jquery'], function($) {
 				rangeRect.setAttribute('height', this.getDrawingHeight() - this.shift[0] - this.shift[3]);
 				rangeRect.setAttribute('width', 0);
 				rangeRect.setAttribute('x', x);
-				rangeRect.setAttribute('fill', 'rgba(27, 122, 224, 0.3)');
-				rangeRect.setAttribute('stroke', 'rgba(27, 122, 224, 0.9)');
+				rangeRect.setAttribute('class', 'rangeRect');
+				rangeRect.setAttribute('cursor', 'move');
+				var color = Util.getNextColorRGB(this.ranges.x.length + this.ranges.y.length, 16);
+
+				rangeRect.setAttribute('fill', 'rgba(' + color + ', 0.3)');
+				rangeRect.setAttribute('stroke', 'rgba(' + color + ', 0.9)');
 
 
 				rangeGroup.appendChild(rangeRect);
@@ -535,10 +564,12 @@ define(['jquery'], function($) {
 					rect: rangeRect,
 					use1: use,
 					use2: use2,
-					xStart: x
+					xStart: x,
+					color: color
 				};
 
 				this.ranges.x.push(this.ranges.current);
+				this.ranges.current.rect.setAttribute('data-rangex-id', this.ranges.x.length - 1);
 				this.ranges.current.use1.setAttribute('data-rangex-id', this.ranges.x.length - 1);
 				this.ranges.current.use2.setAttribute('data-rangex-id', this.ranges.x.length - 1);
 				this.ranges.countX++;
@@ -619,6 +650,8 @@ define(['jquery'], function($) {
 				this.ranges.current.xEnd = x;
 				this.currentAction = false;
 				this.ranges.current = null;
+			} else if(this.currentAction == 'moveRangeX') {
+				this.currentAction = false;
 			}
 		},
 
@@ -926,18 +959,18 @@ define(['jquery'], function($) {
 			this.refreshDrawingZone();
 		},
 
-		redraw: function(doNotRecalculateMinMax) {
+		redraw: function(doNotRecalculateMinMax, noX, noY) {
 
 			if(!this.width || !this.height)
 				return;
 
-			this.refreshDrawingZone(doNotRecalculateMinMax);
+			this.refreshDrawingZone(doNotRecalculateMinMax, noX, noY);
 
 			return true;
 		},
 
 		// Repaints the axis and series
-		refreshDrawingZone: function(doNotRecalculateMinMax) {
+		refreshDrawingZone: function(doNotRecalculateMinMax, noX, noY) {
 
 			var i, j, l, xy, min, max;
 			var axisvars = ['bottom', 'top', 'left', 'right'], shift = [0, 0, 0, 0], axis;
@@ -946,10 +979,16 @@ define(['jquery'], function($) {
 
 			for(j = 0, l = axisvars.length; j < l; j++) {
 				xy = j < 2 ? 'x' : 'y';
+				if(noX && j < 2)
+					continue;
+				else if(noY && j > 1)
+					continue;
+
 				for(i = this.axis[axisvars[j]].length - 1; i >= 0; i--) {
 					axis = this.axis[axisvars[j]][i];
 					if(axis.disabled)
 						continue;
+
 					axis.setRealMin(this.getBoundaryAxisFromSeries(this.axis[axisvars[j]][i], xy, 'min'));
 					axis.setRealMax(this.getBoundaryAxisFromSeries(this.axis[axisvars[j]][i], xy, 'max'));
 				}
@@ -960,53 +999,54 @@ define(['jquery'], function($) {
 			shift[2] = 0;
 			shift[3] = 0;
 
+			if(!noX) {
+				// Apply to top and bottom
+				this.applyToAxes(function(axis) {
+					if(axis.disabled)
+						return;
+					var axisIndex = axisvars.indexOf(arguments[1]);
+					axis.setShift(shift[axisIndex] + axis.getAxisPosition(), axis.getAxisPosition()); 
+					shift[axisIndex] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
+				}, false, true, false);
+			}
 
-			// Apply to top and bottom
-			this.applyToAxes(function(axis) {
-				if(axis.disabled)
-					return;
-				var axisIndex = axisvars.indexOf(arguments[1]);
-				axis.setShift(shift[axisIndex] + axis.getAxisPosition(), axis.getAxisPosition()); 
-				shift[axisIndex] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
-			}, false, true, false);
+			if(!noY) {
+				// Applied to left and right
+				this.applyToAxes(function(axis) {
+					if(axis.disabled)
+						return;
 
+					axis.setMinPx(shift[1]);
+					axis.setMaxPx(this.getDrawingHeight(true) - shift[0]);
 
+					// First we need to draw it in order to determine the width to allocate
+					// This is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
 
-			// Applied to left and right
-			this.applyToAxes(function(axis) {
-				if(axis.disabled)
-					return;
+					var drawn = axis.draw(doNotRecalculateMinMax) || 0,
+						axisIndex = axisvars.indexOf(arguments[1]),
+						axisDim = axis.getAxisPosition();
 
-				axis.setMinPx(shift[1]);
-				axis.setMaxPx(this.getDrawingHeight(true) - shift[0]);
+					// Get axis position gives the extra shift that is common
+					axis.setShift(shift[axisIndex] + axisDim + drawn, drawn + axisDim);
+					shift[axisIndex] += drawn + axisDim;
 
-				// First we need to draw it in order to determine the width to allocate
-				// This is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
+				}, false, false, true);
 
-				var drawn = axis.draw(doNotRecalculateMinMax) || 0,
-					axisIndex = axisvars.indexOf(arguments[1]),
-					axisDim = axis.getAxisPosition();
-
-				// Get axis position gives the extra shift that is common
-				axis.setShift(shift[axisIndex] + axisDim + drawn, drawn + axisDim);
-				shift[axisIndex] += drawn + axisDim;
-
-			}, false, false, true);
-
-			
-			// Apply to top and bottom
-			this.applyToAxes(function(axis) {
-				if(axis.disabled)
-					return;
-				axis.setMinPx(shift[2]);
-				axis.setMaxPx(this.getDrawingWidth(true) - shift[3]);
-				axis.draw(doNotRecalculateMinMax);
-			}, false, true, false);
+		
+				// Apply to top and bottom
+				this.applyToAxes(function(axis) {
+					if(axis.disabled)
+						return;
+					axis.setMinPx(shift[2]);
+					axis.setMaxPx(this.getDrawingWidth(true) - shift[3]);
+					axis.draw(doNotRecalculateMinMax);
+				}, false, true, false);
+			}
 
 			// Apply to all axis
-			this.applyToAxes(function(axis) {
-				axis.drawSeries();
-			}, false, true, true);
+			//this.applyToAxes(function(axis) {
+		//		axis.drawSeries();
+		//	}, false, true, true);
 
 			
 			this.closeLine('right', this.getDrawingWidth(true), this.getDrawingWidth(true), 0, this.getDrawingHeight(true) - shift[0]);
@@ -1601,11 +1641,9 @@ define(['jquery'], function($) {
 			var interval = this.getMax() - this.getMin();
 			this._realMin = this.getMin() - (this.options.axisDataSpacing.min * interval);
 			this._realMax = this.getMax() + (this.options.axisDataSpacing.max * interval);
-
 			if(this.options.logScale) {
 				this._realMin = Math.max(1e-50, this._realMin);
 				this._realMax = Math.max(1e-50, this._realMax);
-
 			}
 
 		},
@@ -1852,8 +1890,10 @@ define(['jquery'], function($) {
 //				console.log(this);
 //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
 			// Ex 50 / (100) * (1000 - 700) + 700
-				if(!this.options.logScale)
+				if(!this.options.logScale) {
+
 					return (value - this.getActualMin()) / (this._getActualInterval()) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
+				}
 				else {
 					// 0 if value = min
 					// 1 if value = max
@@ -3631,7 +3671,7 @@ define(['jquery'], function($) {
 
 		parsePx: function(px) {
 			
-			console.log(px);
+			
 			if(px && px.indexOf && px.indexOf('px') > -1)
 				return parseInt(px.replace('px', ''));
 			return false;

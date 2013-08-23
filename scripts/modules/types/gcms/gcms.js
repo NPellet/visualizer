@@ -34,9 +34,9 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				defaultMouseAction: 'rangeX',
 				defaultWheelAction: 'none',
 				lineToZero: false,
-				rangeLimitX: 2,
+				rangeLimitX: 20,
 
-				onRangeX: function(xStart, xEnd) {
+				onRangeX: function(xStart, xEnd, range) {
 					var indexStart = self.gcSeries[0].searchClosestValue(xStart).xBeforeIndex;
 					var indexEnd = self.gcSeries[0].searchClosestValue(xEnd).xBeforeIndex;
 					var indexMin = Math.min(indexStart, indexEnd);
@@ -46,7 +46,6 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 					for(i = indexMin; i <= indexMax; i++) {
 						for(j = 0, l = self.msData[i].length; j < l; j+=2) {
-							
 							if(obj[self.msData[i][j]])
 								obj[self.msData[i][j]] += self.msData[i][j+1];	
 							else {
@@ -63,18 +62,21 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 						finalMs.push(obj[allMs[i]] / Math.abs(indexMax - indexMin));
 					}
 
-					if(self.msSerieAv) {
-						self.msSerieAv.kill();
-						self.msSerieAv = null;
+					if(range.serie) {
+						range.serie.kill(true);
+						range.serie = false;
 					}
 
-					self.msSerieAv = self.ms.newSerie('av');
-					self.msSerieAv.autoAxis();
-					self.msSerieAv.setYAxis(self.ms.getRightAxis());
-					self.msSerieAv.setData(finalMs);
-					self.msSerieAv.setLineColor('blue');
+					range.serie = self.ms.newSerie('av');
+					range.serie.autoAxis();
+					range.serie.setYAxis(self.ms.getRightAxis());
+					range.serie.setData(finalMs);
+					range.serie.setLineColor('rgb(' + range.color + ')');
 
 					self.ms.redraw(true);
+					self.ms.getRightAxis()._recalculateDataInterval();
+					self.ms.getLeftAxis()._recalculateDataInterval();
+					
 					self.ms.drawSeries();
 				},	
 
@@ -100,6 +102,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.msSerie = self.ms.newSerie();
 					self.msSerie.autoAxis();
 					self.msSerie.setData(ms);
+
+					self.ms.getLeftAxis()._recalculateDataInterval();
 					
 					self.ms.redraw(!self.firstMs);
 					self.firstMs = false;
