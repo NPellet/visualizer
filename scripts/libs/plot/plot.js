@@ -1217,13 +1217,13 @@ define(['jquery'], function($) {
 			forcedMax: false
 		},
 
-		init: function(graph, options) {
+		init: function(graph, options, overwriteoptions) {
 
 			this.unitModificationTimeTicks = [[1, [1,2,5,10,20,30]], [60, [1,2,5,10,20,30]], [3600, [1,2,6,12]], [3600*24, [1,2,3,4,5,10,20,40]]];
 
 			var self = this;
 			this.graph = graph;
-			this.options = $.extend(true, {}, GraphAxis.prototype.defaults, options);
+			this.options = $.extend(true, {}, GraphAxis.prototype.defaults, overwriteoptions, options);
 
 			this.group = document.createElementNS(this.graph.ns, 'g');
 			this.hasChanged = true;
@@ -2223,10 +2223,10 @@ define(['jquery'], function($) {
 	/*******************************************/
 
 	var GraphYAxis = function(graph, leftright, options) {
-		this.init(graph, options);
+		this.init(graph, options, { flipped: true });
 		this.leftright = leftright;
 		this.left = leftright == 'left';
-		//this.options.flipped = true;
+		
 	}
 
 	$.extend(GraphYAxis.prototype, GraphAxis.prototype, {
