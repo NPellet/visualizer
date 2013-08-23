@@ -94,8 +94,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 
 				graph.getLeftAxis().setAxisDataSpacing(cfgM.yBottomSpacing || 0, cfgM.yTopSpacing || 0);
-
-
 				def.resolve(graph);
 			}
 
@@ -260,7 +258,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				this.series[varname] = [];
 
 				if(spectra.contourLines) {
-
+					
 					this.graph.setOption('zoomMode', 'xy');
 					this.graph.setOption('defaultWheelAction', 'toSeries');
 					this.graph.setOption('defaultMouseAction', 'drag');

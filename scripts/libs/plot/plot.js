@@ -2226,7 +2226,7 @@ define(['jquery'], function($) {
 		this.init(graph, options);
 		this.leftright = leftright;
 		this.left = leftright == 'left';
-		this.options.flipped = true;
+		//this.options.flipped = true;
 	}
 
 	$.extend(GraphYAxis.prototype, GraphAxis.prototype, {
