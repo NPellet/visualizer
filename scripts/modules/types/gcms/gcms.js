@@ -5,7 +5,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 	var gcms = function() {
 		this.gcSeries = [];
 		this.msData = null;
-
+		this.firstMs = true;
 
 
 	}
@@ -90,7 +90,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					var ms = self.msData[x];
 
 					if(self.msSerie) {
-						self.msSerie.kill();
+						self.msSerie.kill(true);
 						self.msSerie = false;
 					}
 
@@ -100,8 +100,9 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.msSerie = self.ms.newSerie();
 					self.msSerie.autoAxis();
 					self.msSerie.setData(ms);
-
-					self.ms.redraw();
+					
+					self.ms.redraw(!self.firstMs);
+					self.firstMs = false;
 					self.ms.drawSeries();
 				}
 			};

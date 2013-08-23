@@ -955,6 +955,7 @@ define(['jquery'], function($) {
 				}
 			}
 
+
 			min = shift[0];
 			shift[2] = 0;
 			shift[3] = 0;
