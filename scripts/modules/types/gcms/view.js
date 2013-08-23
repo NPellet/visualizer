@@ -28,8 +28,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 		update: {
 			'jcamp': function(moduleValue) {
 				var self = this;
+				moduleValue = Traversing.getValueIfNeeded(moduleValue);
 				require(['util/jcampconverter'], function(tojcamp) {
+
 					var jcamp = tojcamp(moduleValue);
+					console.log(jcamp);
 					if(jcamp.gcms) {
 						self.gcmsInstance.setGC(jcamp.gcms.gc);
 						self.gcmsInstance.setMS(jcamp.gcms.ms);		
