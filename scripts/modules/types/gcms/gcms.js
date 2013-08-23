@@ -101,7 +101,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.msSerie.autoAxis();
 					self.msSerie.setData(ms);
 
-					self.ms.redraw(true);
+					self.ms.redraw();
 					self.ms.drawSeries();
 				}
 			};
