@@ -365,10 +365,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 		resetAnnotations: function() {
 			var value = this.annotations;
-			
 			if(!value)
 				return;
-
 			var i = 0, l = value.length, annotation;
 			for(; i < l; i++) {
 				this._addAnnotation(value[i]);
@@ -383,42 +381,29 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			if(!annotation.type)
 				return;
 			var shape = this.graph.makeShape(annotation.type);
-
 			shape.setSerie(this.graph.getSerie(0));
-			if(annotation.pos) {
-				shape.setPosX(annotation.pos.x);
-				if(annotation.pos.y)
-					shape.setPosY(annotation.pos.y);
-				else
-					shape.setAutoY(annotation.pos.x);
-			}
 
-			if(annotation.fillColor)
-				shape.setFillColor(annotation.fillColor);
-
-			if(annotation.strokeColor)
-				shape.setStrokeColor(annotation.strokeColor);
+			shape.set('position', annotation.pos);
+			if(annotation.pos2)
+				shape.set('position2', annotation.pos2);
 			
-			if(annotation.strokeWidth)
-				shape.setStrokeWidth(annotation.strokeWidth);
-			
+			if(annotation.fillColor)	shape.set('fillColor', annotation.fillColor);
+			if(annotation.strokeColor)	shape.set('strokeColor', annotation.strokeColor);
+			if(annotation.strokeWidth)	shape.set('strokeWidth', annotation.strokeWidth);
 			if(annotation.label) {
-				shape.createLabel();
-				shape.setLabelText(annotation.label.text);
-				shape.setLabelPosition(annotation.label.position, annotation.label.positionType || 'relative')
-				shape.setLabelSize(annotation.label.size);
+				shape.set('labelText', annotation.label.text);
+				shape.set('labelPosition', annotation.label.position);
+				shape.set('labelSize', annotation.label.size);
 			}
 
 			switch(annotation.type) {
 				case 'rect':
 				case 'rectangle':
-					shape.setWidthPx(annotation.width);
-					shape.setHeightPx(annotation.height);
+					shape.set('width', annotation.width);
+					shape.set('height', annotation.height);
 				break;
 			}
-
-			shape.done();
-
+			shape.redraw();
 		},
 
 		removeSerie: function(serieName) {

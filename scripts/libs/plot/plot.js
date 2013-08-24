@@ -171,10 +171,33 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.markerArrow.setAttribute('stroke', 'inherit');
 
 			var pathArrow = document.createElementNS(this.ns, 'path');
-			pathArrow.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z')
+			pathArrow.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
 			this.markerArrow.appendChild(pathArrow);
 
 			this.defs.appendChild(this.markerArrow);
+
+
+
+			this.vertLineArrow = document.createElementNS(this.ns, 'marker');
+			this.vertLineArrow.setAttribute('viewBox', '0 0 10 10');
+			this.vertLineArrow.setAttribute('id', 'verticalline' + this._creation);
+			this.vertLineArrow.setAttribute('refX', '0');
+			this.vertLineArrow.setAttribute('refY', '5');
+			this.vertLineArrow.setAttribute('markerUnits', 'strokeWidth');
+			this.vertLineArrow.setAttribute('markerWidth', '20');
+			this.vertLineArrow.setAttribute('markerHeight', '10');
+			this.vertLineArrow.setAttribute('orient', 'auto');
+			this.vertLineArrow.setAttribute('fill', 'inherit');
+			this.vertLineArrow.setAttribute('stroke', 'black');
+			this.vertLineArrow.setAttribute('stroke-width', '2px');
+
+			var pathVertLine = document.createElementNS(this.ns, 'path');
+			pathVertLine.setAttribute('d', 'M 0 -10 L 0 10');
+			pathVertLine.setAttribute('stroke-width', '1px');
+			
+			this.vertLineArrow.appendChild(pathVertLine);
+
+			this.defs.appendChild(this.vertLineArrow);
 
 			this.shapeZone = document.createElementNS(this.ns, 'g');
 			this.graphingZone.appendChild(this.shapeZone);
@@ -1206,6 +1229,16 @@ define(['jquery', 'util/util'], function($, Util) {
 
 				case 'arrow':
 					var shape = new GraphArrow(this);
+				break;
+
+
+				case 'line':
+					var shape = new GraphLine(this);
+				break;
+
+
+				case 'peakInterval':
+					var shape = new GraphPeakInterval(this);
 				break;
 			}
 
@@ -3589,7 +3622,8 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		kill: function() {
-			
+			if(!this._inDom)
+				return;
 			this.graph.shapeZone.removeChild(this._dom);
 			if(this.label)
 				this.graph.shapeZone.removeChild(this.label);
@@ -3605,33 +3639,23 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.kill();
 
-
 			var variable;
-			if(variable = this._get('x'))
-				this.setPosX(variable);
+			
+			this.setPosition();
+			this.setFillColor();
+			this.setFillColor();
+			this.setStrokeColor();
 
-			if(variable = this._get('y'))
-				this.setPosY(variable);
-
-			if(variable = this._get('fill'))
-				this.setFillColor(variable);
-
-			if(variable = this._get('stroke'))
-				this.setStrokeColor(variable);
-
-			if(variable = this._get('stroke-width'))
-				this.setStrokeWidth(variable);
-
-			if(this._get('label')) {
-				this.createLabel();
-				this.setLabelText(this._get('labelText'));
-				this.setLabelPosition(this._get('labelPositionValue'), this._get('labelPositionType'));
-				this.setLabelSize(this._get('labelSize'));
-			}
-
+			this._makeLabel();
+			this.setLabelText();
+			this.setLabelPosition();
+			this.setLabelSize();
+			
+			this.redrawImpl();
 			this.done();
-
 		},
+
+		redrawImpl: function() {},
 
 		done: function() {
 			this.applyAll();
@@ -3642,155 +3666,100 @@ define(['jquery', 'util/util'], function($, Util) {
 			this._inDom = true;
 		},
 
+		setSerie: function(serie) {			this.serie = serie;								},
+		set: function(prop, val) {			this.properties[prop] = val;					},
+		get: function(prop) {				return this.properties[prop];					},
+		setDom: function(prop, val) {		this._dom.setAttribute(prop, val);				},
 
-		setXAxis: function(axis) {
-			this.xaxis = axis;
+		setPosition: function() {
+			var position = this._getPosition(this.get('position'));
+			this.setDom('x', position.x);
+			this.setDom('y', position.y);
+		},
+		setFillColor: function() {			this.setDom('fill', this.get('fillColor'));					},
+		setStrokeColor: function() {		this.setDom('stroke', this.get('strokeColor'));				},
+		setStrokeWidth: function() {		this.setDom('stroke-width', this.get('strokeWidth'));		},
+
+		setLabelText: function() {	 		if(this.label) this.label.textContent = this.get('labelText'); 					},
+		setLabelSize: function() {			if(this.label) this.label.setAttribute('font-size', this.get('labelSize'))		},
+		setLabelPosition: function() {		if(this.label) this._setLabelPosition();										},
+		
+		_getPosition: function(value, relTo) {
+			var parsed, pos = {x: false, y: false};
+
+			for(var i in pos) {
+				if(!value[i] && !value['d' + i]) {
+					if(i == 'x')
+						pos[i] = rel ? relTo[i] : 0;
+					else {
+
+						var closest = this.serie.searchClosestValue(value.x);
+						pos[i] = closest.yMin;
+					}
+				} else if(value[i]) {
+					if((parsed = this._parsePx(value[i])) !== false)
+						pos[i] = parsed; // return integer (will be interpreted as px)
+					else if(parsed = this._parsePercent(value[i]))
+						pos[i] = parsed; // returns xx%
+					else if(this.serie)
+						pos[i] = this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getPos(value[i]);
+				} else if(value['d' + i] && relTo[i]) {
+
+					var def = (this._getPositionPx(relTo[i], true) || 0);
+					if((parsed = this._parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
+						pos[i] = def + parsed;  // return integer (will be interpreted as px)
+					} else if(parsed = this._parsePercent(value['d' + i]))
+						pos[i] = def + this._getPositionPx(parsed, true); // returns xx%
+					else if(this.serie)
+						pos[i] = def + this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getRelPx(value['d' + i]); // px + unittopx
+					
+				}
+			}
+
+			return pos;
 		},
 
-		setYAxis: function(axis) {
-			this.yaxis = axis;
+		_getPositionPx: function(value, x) {
+			if(parsed = this._parsePx(value))
+				return parsed; // return integer (will be interpreted as px)
+			if(parsed = this._parsePercent(value))
+				return parsed / 100 * (x ? this.graph.getDrawingWidth() : this.graph.getDrawingHeight());
+			else if(this.serie)
+				return this.serie[x ? 'getXAxis' : 'getYAxis']().getPos(px);
 		},
 
-		setSerie: function(serie) {
-			this.serie = serie;
-			this.setXAxis(serie.getXAxis());
-			this.setYAxis(serie.getYAxis());
-		},
 
-		// Typically for x, y, x1, y2
-		setByVal: function(prop, val, axis) {
-			this.properties[prop] = axis == 'x' ? this.xaxis.getPx(val) : this.yaxis.getPx(val);
-		},
-
-		set: function(prop, val, toSave) {
-			this.properties[prop] = val;
-			this._set(prop, toSave);
-		},
-
-		_set: function(prop, val) {
-			this.saved[prop] = val;
-		},
-
-		_get: function(prop) {
-			return this.saved[prop];
-		},
-
-		setPosX: function(x) {
-			this.set('x', this.parseUnitX(x) + "px", x);
-		},
-
-		setPosY: function(y) {
-			this.set('y', this.parseUnitY(y) + "px", y);
-		},
-
-		parsePx: function(px) {
-			
-			
+		_parsePx: function(px) {
 			if(px && px.indexOf && px.indexOf('px') > -1)
 				return parseInt(px.replace('px', ''));
 			return false;
 		},
 
-		parseUnitX: function(px) { // returns px units
-			return (this.parsePx(px) !== false) ? this.parsePx(px) : (this.serie.getXAxis().getPos(px));
+		_parsePercent: function(percent) {
+			if(percent && percent.indexOf && percent.indexOf('px') > -1)
+				return percent;
+			return false;	
 		},
 
-		parseUnitY: function(px) {
-			return (this.parsePx(px) !== false) ? this.parsePx(px) : (this.serie.getYAxis().getPos(px));
-		},
-
-		reverseUnitX: function(val) {
-			if(value = this.parsePx(val))
-				return this.serie.getXAxis().getVal(value);
-			else
-				return val;
-		},
-
-		reverseUnitY: function(val) {
-			if(value = this.parsePx(val))
-				return this.serie.getYAxis().getVal(value);
-			else
-				return val;
-		},
-
-		setAutoY: function(x) {
-			var closest = this.serie.searchClosestValue(x);
-			this.setPosY(closest.yMin);
-		},
-
-		setFillColor: function(color) {
-			this.set('fill', color, color);
-		},
-
-		setStrokeColor: function(color) {
-			this.set('stroke', color, color);
-		},
-
-		setStrokeWidth: function(width) {
-			this.set('stroke-width', width, width);
-		},
-
-		createLabel: function() {
+		_makeLabel: function() {
 			if(this.label)
 				this.graph.shapeZone.removeChild(this.label);
-
 			this.label = document.createElementNS(this.graph.ns, 'text');
-			this._set('label', true);
 		},
 
-		setLabelText: function(text) {
-			if(!this.label)
-				return;
-			this.label.textContent = text;
-			this._set('labelText', text);
-		},
-
-		setLabelPosition: function(positionValue, positionType) {
-			this._setLabelPosition(positionValue, positionType);
-		},
-		
-		_setLabelPosition: function(positionValue, positionType) {
-			positionType = positionType || 'relative';
-
-			var x = positionValue.x || 0, parsedX = this.parsePx(positionValue.x) || positionValue.x;
-			var y = positionValue.y || 0, parsedY = this.parsePx(positionValue.y) || positionValue.y;
-
-			this._set('labelPositionValue', positionValue);
-			this._set('labelPositionType', positionType);
-
-			if(positionType == 'relative') {
-
-				if(this.parsePx(x))
-					x = this.parseUnitX(this.reverseUnitX(this._get('x'))) + parsedX; //px + px, ok
-				else
-					x = this.parseUnitX(this.reverseUnitX(this._get('x')) + x);
-
-				if(this.parsePx(y))
-					y = this.parseUnitY(this.reverseUnitY(this._get('y'))) + parsedY; //px + px, ok
-				else
-					y = this.parseUnitY(this.reverseUnitY(this._get('y')) + y);
-
-				this.label.setAttribute('x', x);
-				this.label.setAttribute('y', y);
-
-				
-				this.label.setAttribute('text-anchor', parsedX < 0 ? 'end' : (parsedX == 0 ? 'middle' : 'start'));
-				this.label.setAttribute('dominant-baseline', parsedY < 0 ? 'no-change' : (parsedY == 0 ? 'middle' : 'hanging'));
-				
-
-			} else {
-				this.label.setAttribute('x', this.parsePx(x));
-				this.label.setAttribute('y', this.parsePx(y));
-			}
-		},
-
-		setLabelSize: function(size) {
-			if(!this.label)
-				return;
-			this._set('labelSize', size);
-			this.label.setAttribute('font-size', size);
+		_setLabelPosition: function(pos) {
+			var currPos = this.get('position');
+			if(!pos)
+				var pos = this._getPosition(this.get('labelPosition'), currPos);
+			this.label.setAttribute('x', pos.x);
+			this.label.setAttribute('y', pos.y);
+			this.label.setAttribute('text-anchor', pos.x < currPos ? 'end' : (pos.x == currPos ? 'middle' : 'start'));
+			this.label.setAttribute('dominant-baseline', pos.y == currPos ? 'no-change' : (pos.y == currPos ? 'middle' : 'hanging'));
 		}
 	}
+
+
+
 
 	var GraphRect = function(graph) {
 		this.init(graph);
@@ -3802,135 +3771,94 @@ define(['jquery', 'util/util'], function($, Util) {
 			this._dom = document.createElementNS(this.graph.ns, 'rect');
 		},
 
-		setWidthPx: function(px) {
-			this.set('width', px);
-		},
-
-		setHeightPx: function(px) {
-			this.set('height', px);
-		},
-
-		setWidthByVal: function(val) {
-			if(this.properties.x) {
-				var width = this.xaxis.getPx(val) - this.properties.x;
-				if(width > 0)
-					this.set('width', width);
-				else {
-					this.set('x', this.xaxis.getPx(val));
-					this.set('width', - width);
-				}
-			}
-		},
-
-		setHeightByVal: function(val) {
-			if(this.properties.y) {
-				var height = this.yaxis.getPx(val) - this.properties.y;
-				if(height > 0)
-					this.set('height', height);
-				else {
-					this.set('y', this.yaxis.getPx(val));
-					this.set('height', - height);
-				}
-			}
-		},
-
+		setWidthPx: function(px) {		this.set('width', px);	},
+		setHeightPx: function(px) {		this.set('height', px);	},
 		setFullWidth: function() {
-			this.set('x', Math.min(this.xaxis.getMinPx(), this.xaxis.getMaxPx()));
-			this.set('width', Math.abs(this.xaxis.getMaxPx() - this.xaxis.getMinPx()));
+			this.set('x', Math.min(this.serie.getXAxis().getMinPx(), this.serie.getXAxis().getMaxPx()));
+			this.set('width', Math.abs(this.serie.getXAxis().getMaxPx() - this.serie.getXAxis().getMinPx()));
+		},
+		setFullHeight: function() {
+			this.set('y', Math.min(this.serie.getYAxis().getMinPx(), this.serie.getYAxis().getMaxPx()));
+			this.set('height', Math.abs(this.serie.getYAxis().getMaxPx() - this.serie.getYAxis().getMinPx()));
 		},
 
-		setFullHeight: function() {
-			this.set('y', Math.min(this.yaxis.getMinPx(), this.yaxis.getMaxPx()));
-			this.set('height', Math.abs(this.yaxis.getMaxPx() - this.yaxis.getMinPx()));
+		redrawImpl: function() {
+			this.setDom('width', this.get('width'));
+			this.setDom('height', this.get('height'));
 		}
 	});
+
+
 
 	var GraphLine = function(graph) {
 		this.init(graph);
 	}
 
+
+	$.extend(GraphLine.prototype, GraphShape.prototype, {
+		createDom: function() {
+			this._dom = document.createElementNS(this.graph.ns, 'line');
+		},
+
+		setPosition: function() {
+			var position = this._getPosition(this.get('position'));
+			this.setDom('x2', position.x);
+			this.setDom('y2', position.y);
+		},
+
+		setPosition2: function() {
+			var position = this._getPosition(this.get('position2'), this.get('position'));
+			this.setDom('x1', position.x);
+			this.setDom('y1', position.y);
+		},
+
+		redrawImpl: function() {
+			this.setPosition();
+			this.setPosition2();
+		}
+	});
+
+
 	var GraphArrow = function(graph) {
 		this.init(graph);
 	}
 
-	$.extend(GraphArrow.prototype, GraphShape.prototype, {
+	$.extend(GraphArrow.prototype, GraphLine.prototype, {
 		createDom: function() {
 			this._dom = document.createElementNS(this.graph.ns, 'line');
 			this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
 		},
 
-		setPosX: function(x) {
-			this.set('x2', this.parseUnitX(x) + "px", x);
-			this._set('x', x);
-		},
-
-		setPosY: function(y) {
-			this.set('y2', this.parseUnitY(y) + "px", y);
-			this._set('y', y);
-		},
-
-		setLabelPosition: function(val, type) {
-			
-			this._setLabelPosition(val, type);
-			this.set('x1', this.label.getAttribute('x'));
-			this.set('y1', this.label.getAttribute('y'));
+		setLabelPosition: function() {
+			this._setLabelPosition();
+			var pos = this._getPosition(this.get('labelPosition'));
+			this.set('x1', pos.x);
+			this.set('y1', pos.y);
 		}
 	});
 
+
+
+
+	var GraphPeakInterval = function(graph) {
+		this.init(graph);
+	}
 	
-
-/*
-	$.extend(GraphRect.prototype, GraphShape.prototype, {
-		
-
-
+	$.extend(GraphPeakInterval.prototype, GraphLine.prototype, {
 		createDom: function() {
 			this._dom = document.createElementNS(this.graph.ns, 'line');
+			this._dom.setAttribute('marker-end', 'url(#verticalline' + this.graph._creation + ')');
+			this._dom.setAttribute('marker-start', 'url(#verticalline' + this.graph._creation + ')');
 		},
 
-		setWidthPx: function(px) {
-			this.set('width', px);
-		},
+		setLabelPosition: function() {
+			var pos1 = this._getPosition(this.get('position'));
+			var pos2 = this._getPosition(this.get('position2'), this.get('position'));
 
-		setHeightPx: function(px) {
-			this.set('height', px);
-		},
-
-		setWidthByVal: function(val) {
-			if(this.properties.x) {
-				var width = this.xaxis.getPx(val) - this.properties.x;
-				if(width > 0)
-					this.set('width', width);
-				else {
-					this.set('x', this.xaxis.getPx(val));
-					this.set('width', - width);
-				}
-			}
-		},
-
-		setHeightByVal: function(val) {
-			if(this.properties.y) {
-				var height = this.yaxis.getPx(val) - this.properties.y;
-				if(height > 0)
-					this.set('height', height);
-				else {
-					this.set('y', this.yaxis.getPx(val));
-					this.set('height', - height);
-				}
-			}
-		},
-
-		setFullWidth: function() {
-			this.set('x', Math.min(this.xaxis.getMinPx(), this.xaxis.getMaxPx()));
-			this.set('width', Math.abs(this.xaxis.getMaxPx() - this.xaxis.getMinPx()));
-		},
-
-		setFullHeight: function() {
-			this.set('y', Math.min(this.yaxis.getMinPx(), this.yaxis.getMaxPx()));
-			this.set('height', Math.abs(this.yaxis.getMaxPx() - this.yaxis.getMinPx()));
+			this._setLabelPosition(this._getPosition(this.get('labelPosition'), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
+			
 		}
-	});*/
-
+	});
 
 	Graph.GraphSerie = GraphSerie;
 	Graph.GraphXAxis = GraphXAxis;
