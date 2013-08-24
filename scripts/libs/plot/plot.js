@@ -3750,13 +3750,14 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		_setLabelPosition: function(pos) {
-			var currPos = this.get('position');
+			var currPos = this._getPosition(this.get('position'));
 			if(!pos)
 				var pos = this._getPosition(this.get('labelPosition'), currPos);
+
 			this.label.setAttribute('x', pos.x);
 			this.label.setAttribute('y', pos.y);
-			this.label.setAttribute('text-anchor', pos.x < currPos ? 'end' : (pos.x == currPos ? 'middle' : 'start'));
-			this.label.setAttribute('dominant-baseline', pos.y == currPos ? 'no-change' : (pos.y == currPos ? 'middle' : 'hanging'));
+			this.label.setAttribute('text-anchor', pos.x < currPos.x ? 'end' : (pos.x == currPos.x ? 'middle' : 'start'));
+			this.label.setAttribute('dominant-baseline', pos.y < currPos.y ? 'no-change' : (pos.y == currPos.y ? 'middle' : 'hanging'));
 		},
 
 		_forceLabelAnchor: function() {
