@@ -374,7 +374,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		},
 
 		_addAnnotation: function(annotation) {
-			console.log(annotation);
+			
 			if(!this.graph || !this.graph.getSerie(0))
 				return;
 
@@ -405,6 +405,15 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					shape.set('width', annotation.width);
 					shape.set('height', annotation.height);
 				break;
+			}
+
+			if(annotation._highlight) {
+				API.listenHighlight(annotation._highlight, function(onOff) {
+					if(onOff)
+						shape.highlight();
+					else
+						shape.unHighlight();
+				});
 			}
 			shape.redraw();
 		},

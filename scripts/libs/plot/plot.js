@@ -167,11 +167,12 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.markerArrow.setAttribute('markerWidth', '4');
 			this.markerArrow.setAttribute('markerHeight', '3');
 			this.markerArrow.setAttribute('orient', 'auto');
-			this.markerArrow.setAttribute('fill', 'inherit');
-			this.markerArrow.setAttribute('stroke', 'inherit');
+			//this.markerArrow.setAttribute('fill', 'context-stroke');
+			//this.markerArrow.setAttribute('stroke', 'context-stroke');
 
 			var pathArrow = document.createElementNS(this.ns, 'path');
 			pathArrow.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+			pathArrow.setAttribute('fill', 'context-stroke');
 			this.markerArrow.appendChild(pathArrow);
 
 			this.defs.appendChild(this.markerArrow);
@@ -187,13 +188,13 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.vertLineArrow.setAttribute('markerWidth', '20');
 			this.vertLineArrow.setAttribute('markerHeight', '10');
 			this.vertLineArrow.setAttribute('orient', 'auto');
-			this.vertLineArrow.setAttribute('fill', 'inherit');
-			this.vertLineArrow.setAttribute('stroke', 'black');
-			this.vertLineArrow.setAttribute('stroke-width', '2px');
+			//this.vertLineArrow.setAttribute('fill', 'context-stroke');
+			//this.vertLineArrow.setAttribute('stroke', 'context-stroke');
+			this.vertLineArrow.setAttribute('stroke-width', '1px');
 
 			var pathVertLine = document.createElementNS(this.ns, 'path');
 			pathVertLine.setAttribute('d', 'M 0 -10 L 0 10');
-			pathVertLine.setAttribute('stroke-width', '1px');
+			pathVertLine.setAttribute('stroke', 'black');
 			
 			this.vertLineArrow.appendChild(pathVertLine);
 
@@ -3636,23 +3637,19 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		redraw: function() {
-
 			this.kill();
-
 			var variable;
-			
 			this.setPosition();
 			this.setFillColor();
-			this.setFillColor();
+			
 			this.setStrokeColor();
-
+			this.setStrokeWidth();
 			this._makeLabel();
 			this.setLabelText();
 			this.setLabelPosition();
 			this.setLabelSize();
 			if(this.get('labelAnchor'))
 				this._forceLabelAnchor();
-
 			this.redrawImpl();
 			this.done();
 		},
@@ -3686,6 +3683,20 @@ define(['jquery', 'util/util'], function($, Util) {
 		setLabelSize: function() {			if(this.label) this.label.setAttribute('font-size', this.get('labelSize'))		},
 		setLabelPosition: function() {		if(this.label) this._setLabelPosition();										},
 		
+		highlight: function() {
+			this.tempStrokeWidth = parseInt(this._dom.getAttribute('stroke-width').replace('px', ''));
+			this.setDom('stroke-width', this.tempStrokeWidth + 2);
+			this.highlightImpl();
+		},
+
+		unHighlight: function() {
+			this.setDom('stroke-width', this.tempStrokeWidth);
+			this.unHighlightImpl();
+		},
+
+		highlightImpl: function() {},
+		unHighlightImpl: function() {},
+
 		_getPosition: function(value, relTo) {
 			var parsed, pos = {x: false, y: false};
 
@@ -3714,10 +3725,8 @@ define(['jquery', 'util/util'], function($, Util) {
 						pos[i] = def + this._getPositionPx(parsed, true); // returns xx%
 					else if(this.serie)
 						pos[i] = def + this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getRelPx(value['d' + i]); // px + unittopx
-					
 				}
 			}
-
 			return pos;
 		},
 
@@ -3839,7 +3848,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		setLabelPosition: function() {
 			this._setLabelPosition();
-			var pos = this._getPosition(this.get('labelPosition'));
+			var pos = this._getPosition(this.get('labelPosition'), this.get('position'));
 			this.set('x1', pos.x);
 			this.set('y1', pos.y);
 		}

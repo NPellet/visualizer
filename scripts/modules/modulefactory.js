@@ -8,6 +8,7 @@ define(['modules/module'], function(Module) {
 			return {
 				'display_value': 'Single value',
 				'grid': 'Table',
+				'jqgrid': 'Table v2',
 				'2d_list': '2D Grid',
 				'hashmap': 'Object viewer',
 				'recursive_tree': 'Recursive tree',

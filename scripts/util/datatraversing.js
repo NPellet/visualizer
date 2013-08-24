@@ -50,8 +50,9 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 			highlights = getHighlights(data);
 
 		args = $.extend(args, getOptions(data));
-		if(box.view.typeToScreen && box.view.typeToScreen[type])
-			return box.view.typeToScreen[type].call(box.view, deferred, data, args, highlights, box);
+		//if(box.view.typeToScreen && box.view.typeToScreen[type])
+			//return box.view.typeToScreen[type].call(box.view, deferred, data, args, highlights, box);
+			
 		TypeRenderer[type].toscreen(deferred, data, args, highlights, box);
 	}
 
@@ -252,7 +253,6 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 		},
 
 		toScreen: function(element, box, opts) {
-			var slice = Array.prototype.slice;
 			var deferred = $.Deferred();
 			this.fetchElementIfNeeded(element).done(function(data) { 
 				_valueToScreen(deferred, data, box, opts); 
