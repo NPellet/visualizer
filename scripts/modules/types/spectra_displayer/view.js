@@ -390,10 +390,13 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			if(annotation.fillColor)	shape.set('fillColor', annotation.fillColor);
 			if(annotation.strokeColor)	shape.set('strokeColor', annotation.strokeColor);
 			if(annotation.strokeWidth)	shape.set('strokeWidth', annotation.strokeWidth);
+
 			if(annotation.label) {
 				shape.set('labelText', annotation.label.text);
 				shape.set('labelPosition', annotation.label.position);
 				shape.set('labelSize', annotation.label.size);
+				if(annotation.label.anchor)
+					shape.set('labelAnchor', annotation.label.anchor);
 			}
 
 			switch(annotation.type) {

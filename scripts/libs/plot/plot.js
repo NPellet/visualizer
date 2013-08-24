@@ -3650,7 +3650,9 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.setLabelText();
 			this.setLabelPosition();
 			this.setLabelSize();
-			
+			if(this.get('labelAnchor'))
+				this._forceLabelAnchor();
+
 			this.redrawImpl();
 			this.done();
 		},
@@ -3755,6 +3757,10 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.label.setAttribute('y', pos.y);
 			this.label.setAttribute('text-anchor', pos.x < currPos ? 'end' : (pos.x == currPos ? 'middle' : 'start'));
 			this.label.setAttribute('dominant-baseline', pos.y == currPos ? 'no-change' : (pos.y == currPos ? 'middle' : 'hanging'));
+		},
+
+		_forceLabelAnchor: function() {
+			this.label.setAttribute('text-anchor', this.get('labelAnchor'))
 		}
 	}
 
