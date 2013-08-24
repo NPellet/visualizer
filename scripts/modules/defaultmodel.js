@@ -49,27 +49,30 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		},
 
 		onVarGet: function(varValue, varName) {
-			if(varName instanceof Array)
-				varName = varName[0];
+			var self = this;
+			$.when(this.module.view.onReady).then(function() {
+			
+				if(varName instanceof Array)
+					varName = varName[0];
 
-			if(!this.sourceMap)
-				return;
-
-			var value = this.buildData(varValue, this.module.controller.configurationReceive[this.sourceMap[varName].rel].type);
-
-			this.data[varName] = value;
-			var rel = this.module.getDataRelFromName(varName);
-			if(!this.module.view.update)
-				return;
-
-			for(var i = 0; i < rel.length; i++) {
-
-				if(!this.module.view.update[rel[i]])
+				if(!self.sourceMap)
 					return;
 
-				this.module.view.update[rel[i]].call(this.module.view, value, varName);
-			}
-			
+				var value = self.buildData(varValue, self.module.controller.configurationReceive[self.sourceMap[varName].rel].type);
+				self.data[varName] = value;
+				var rel = self.module.getDataRelFromName(varName);
+				
+				if(!self.module.view.update)
+					return;
+
+				for(var i = 0; i < rel.length; i++) {
+
+					if(!self.module.view.update[rel[i]])
+						return;
+
+					self.module.view.update[rel[i]].call(self.module.view, value, varName);
+				}
+			});		
  		},
 
 		onActionTrigger: function(value, actionName) {

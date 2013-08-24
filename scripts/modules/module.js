@@ -22,6 +22,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 			module.controller.setModule(module);
 			module.model.setModule(module);
 
+			module.view.onReady = true;
 			module.view.init();
 			module.controller.init();
 			module.model.init();
@@ -93,12 +94,14 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 		 */
 		updateView: function(rel) {
 		
-			var val = API.getRepositoryData().get(this.getNameFromRel(rel)), name;
-			if(!val)
-				return;
-console.log(val);
-			if(this.view.update && this.view.update[rel])
-				this.view.update[rel].call(this.view, val[1], val[0][0]);
+			$.when(this.view.onReady).then(function() {
+				var val = API.getRepositoryData().get(this.getNameFromRel(rel)), name;
+				if(!val)
+					return;
+
+				if(this.view.update && this.view.update[rel])
+					this.view.update[rel].call(this.view, val[1], val[0][0]);	
+			});
 		},
 
 		updateAllView: function() {

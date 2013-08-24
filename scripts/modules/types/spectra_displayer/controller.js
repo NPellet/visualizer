@@ -196,6 +196,14 @@ define(['modules/defaultcontroller'], function(Default) {
 								name: 'zoom',
 								title: 'Zoom',
 								options: [{key: 'x', title: 'X only'}, {key: 'y', title: 'Y only'}, {key: 'xy', title: 'XY'}, {key: 'none', title: 'None'}]
+							},
+
+
+							{
+								type: 'Combo',
+								name: 'wheelAction',
+								title: 'Mouse Wheel',
+								options: [{key: 'zoomX', title: 'Zoom x'}, {key: 'zoomY', title: 'Zoom Y'}, {key: 'none', title: 'None'}]
 							}
 						]
 					},
@@ -273,7 +281,8 @@ define(['modules/defaultcontroller'], function(Default) {
 						maxY: [this.module.getConfiguration().maxY || ''],
 						yTopSpacing: [this.module.getConfiguration().yTopSpacing],
 						yBottomSpacing: [this.module.getConfiguration().yBottomSpacing],
-						zoom:  [this.module.getConfiguration().zoom]
+						zoom:  [this.module.getConfiguration().zoom],
+						wheelAction:  [this.module.getConfiguration().wheelAction || 'none']
 			//			plotcolor: this.module.getConfiguration().plotcolor || ['#000000']
 					}],
 					spectrainfos: [spectrainfos]
@@ -312,6 +321,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			this.module.getConfiguration().maxY = parseFloat(confSection[0].gencfg[0].maxY[0]);
 
 			this.module.getConfiguration().zoom = confSection[0].gencfg[0].zoom[0];
+			this.module.getConfiguration().wheelAction = confSection[0].gencfg[0].wheelAction[0];
 
 			this.module.getConfiguration().displayAxis = confSection[0].gencfg[0].displayAxis[0];
 			this.module.getConfiguration().grids = confSection[0].gencfg[0].grids[0];

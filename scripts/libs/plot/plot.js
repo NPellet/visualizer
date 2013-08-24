@@ -419,6 +419,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		handleMouseWheel: function(delta, e) {
 
 			if(this.options.defaultWheelAction == 'zoomY' || this.options.defaultWheelAction == 'zoomX') {
+
 				this.applyToAxes('handleMouseWheel', [delta, e], false, true);
 			} else if(this.options.defaultWheelAction == 'toSeries') {
 				for(var i = 0, l = this.series.length; i < l; i++)
@@ -1044,11 +1045,10 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 
 			// Apply to all axis
-			//this.applyToAxes(function(axis) {
-		//		axis.drawSeries();
-		//	}, false, true, true);
-
-			
+	/*		this.applyToAxes(function(axis) {
+				axis.drawSeries();
+			}, false, true, true);
+	*/		
 			this.closeLine('right', this.getDrawingWidth(true), this.getDrawingWidth(true), 0, this.getDrawingHeight(true) - shift[0]);
 			this.closeLine('left', shift[1], shift[1], 0, this.getHeight(true) - shift[0]);
 			this.closeLine('top', shift[1], this.getDrawingWidth(true) - shift[2], 0, 0);
@@ -1182,6 +1182,15 @@ define(['jquery', 'util/util'], function($, Util) {
 		setZoomMode: function(zoomMode) {
 			if(zoomMode == 'x' || zoomMode == 'y' || zoomMode == 'xy' || !zoomMode)
 				this.options.zoomMode = zoomMode;
+		},
+
+		setDefaultWheelAction: function(wheelAction) {
+
+			if(wheelAction != 'zoomY' && wheelAction != 'zoomX' && wheelAction != 'none')
+				return;
+
+
+			this.options.defaultWheelAction = wheelAction;
 		},
 
 		getZoomMode: function() {
@@ -1479,6 +1488,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		handleMouseWheel: function(delta, e) {
 			delta = Math.min(0.2, Math.max(-0.2, delta));
+
 			this._doZoomVal(
 				((this.getActualMax() - this.options.wheelBaseline) * (1 + delta)) + this.options.wheelBaseline,
 				((this.getActualMin() - this.options.wheelBaseline) * (1 + delta)) + this.options.wheelBaseline
@@ -1499,6 +1509,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		_doZoomVal: function(val1, val2) {
+
 			return this._doZoom(this.getPx(val1), this.getPx(val2), val1, val2);
 		},
 
@@ -1510,6 +1521,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				var val2 = val2 || this.getVal(px2);
 				this._setRealMin(Math.min(val1, val2));
 				this._setRealMax(Math.max(val1, val2));
+
 				this.draw(true);
 				this.drawSeries();
 				this._hasChanged = true;
@@ -1641,6 +1653,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var interval = this.getMax() - this.getMin();
 			this._realMin = this.getMin() - (this.options.axisDataSpacing.min * interval);
 			this._realMax = this.getMax() + (this.options.axisDataSpacing.max * interval);
+
 			if(this.options.logScale) {
 				this._realMin = Math.max(1e-50, this._realMin);
 				this._realMax = Math.max(1e-50, this._realMax);
@@ -1679,6 +1692,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		_draw: function(doNotRecalculateMinMax) {
 			var visible;
+
 			switch(this.options.tickPosition) {
 				case 1:
 					this.tickPx1 = 2;
@@ -1709,7 +1723,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			while(this.groupGrids.firstChild)
 				this.groupGrids.removeChild(this.groupGrids.firstChild);
 
-			if(!doNotRecalculateMinMax || !this._realMin || !this._realMax)
+			if(!doNotRecalculateMinMax || this._realMin == undefined || !this._realMax == undefined)
 				this._recalculateDataInterval();
 
 			var widthPx = this.maxPx - this.minPx;

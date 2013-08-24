@@ -13,6 +13,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			this.seriesActions = [];
 			this.colorId = 0;
 			this.colors = ["red", "blue", "green", "black"];
+			this.onReady = $.Deferred();
 		},
 		
 		inDom: function() {
@@ -82,6 +83,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				graph.getXAxis().setAxisDataSpacing(cfgM.xLeftSpacing || 0, cfgM.xRightSpacing || 0);
 				graph.getLeftAxis().setAxisDataSpacing(cfgM.yBottomSpacing || 0, cfgM.yTopSpacing || 0);
 
+				graph.setDefaultWheelAction(cfgM.wheelAction || 'none');
 
 				if(cfgM.minX)
 					graph.getXAxis().forceMin(cfgM.minX);
@@ -111,6 +113,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					self.graph.getLeftAxis().flip(true);
 
 				self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());		
+				self.onReady.resolve();
 			});
 		},
 		
@@ -204,11 +207,15 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			},
 
 			'annotation': function(value) {
+				
 				value = DataTraversing.getValueIfNeeded(value);
+
 				if(!value)
 					return;
-
+				
 				this.annotations = value;
+				this.resetAnnotations();
+				
 			},
 
 			'jcamp': function(moduleValue, varname) {
@@ -217,6 +224,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					return;
 
 				moduleValue = DataTraversing.getValueIfNeeded(moduleValue);
+
 				var self = this, serie, cfgM = this.module.getConfiguration(), color, continuous, i, l, spectra;
 				API.killHighlight(this.module.id + varname);
 
@@ -287,6 +295,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 						break;
 					}
 				}
+
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 				this.resetAnnotations();
 			}
@@ -356,6 +365,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 		resetAnnotations: function() {
 			var value = this.annotations;
+			
 			if(!value)
 				return;
 
@@ -366,10 +376,12 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		},
 
 		_addAnnotation: function(annotation) {
-			
-			if(!this.graph)
+			console.log(annotation);
+			if(!this.graph || !this.graph.getSerie(0))
 				return;
 
+			if(!annotation.type)
+				return;
 			var shape = this.graph.makeShape(annotation.type);
 
 			shape.setSerie(this.graph.getSerie(0));
