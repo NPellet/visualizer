@@ -3727,7 +3727,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(parsed = this._parsePercent(value))
 				return parsed / 100 * (x ? this.graph.getDrawingWidth() : this.graph.getDrawingHeight());
 			else if(this.serie)
-				return this.serie[x ? 'getXAxis' : 'getYAxis']().getPos(px);
+				return this.serie[x ? 'getXAxis' : 'getYAxis']().getPos(value);
 		},
 
 
@@ -3750,14 +3750,15 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		_setLabelPosition: function(pos) {
-			var currPos = this._getPosition(this.get('position'));
+			var currPos = this.get('position');
+			var parsedCurrPos = this._getPosition(currPos);
 			if(!pos)
 				var pos = this._getPosition(this.get('labelPosition'), currPos);
 
 			this.label.setAttribute('x', pos.x);
 			this.label.setAttribute('y', pos.y);
-			this.label.setAttribute('text-anchor', pos.x < currPos.x ? 'end' : (pos.x == currPos.x ? 'middle' : 'start'));
-			this.label.setAttribute('dominant-baseline', pos.y < currPos.y ? 'no-change' : (pos.y == currPos.y ? 'middle' : 'hanging'));
+			this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
+			this.label.setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
 		},
 
 		_forceLabelAnchor: function() {
