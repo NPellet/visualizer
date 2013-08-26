@@ -52,7 +52,7 @@ var d = this.mad;
 if (d < 0) {
 d = atom.screenDiameter;
 if (d == 0) {
-var ellipsemax = atom.getADPMinMax (true);
+var ellipsemax = (atom.isShapeVisible (20) ? atom.getADPMinMax (true) : 0);
 if (ellipsemax > 0) d = this.viewer.scaleToScreen (z, Clazz.doubleToInt (Math.floor (ellipsemax * 2000)));
 if (d == 0) {
 d = Clazz.floatToInt (this.viewer.scaleToScreen (z, this.mad == -2 ? 250 : 500));

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.symmetry");
-Clazz.load (["J.util.SimpleUnitCell", "$.P3"], "J.symmetry.UnitCell", ["J.util.BoxInfo", "$.Matrix4f", "$.Quadric"], function () {
+Clazz.load (["J.util.SimpleUnitCell", "$.P3", "J.viewer.JC"], "J.symmetry.UnitCell", ["J.util.BoxInfo", "$.Escape", "$.Matrix4f", "$.Tensor"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vertices = null;
 this.cartesianOffset = null;
@@ -151,13 +151,13 @@ $_M(c$, "getFractionalOffset",
 function () {
 return this.fractionalOffset;
 });
-$_M(c$, "getEllipsoid", 
+$_M(c$, "getTensor", 
 function (parBorU) {
 if (parBorU == null) return null;
 if (parBorU[0] == 0) {
-var lengths =  Clazz.newFloatArray (3, 0);
-lengths[0] = lengths[1] = lengths[2] = Math.sqrt (parBorU[7]);
-return  new J.util.Quadric ().fromVectors (null, lengths, true);
+var f = parBorU[7];
+var eigenValues = [f, f, f];
+return J.util.Tensor.getTensorFromEigenVectors (J.symmetry.UnitCell.unitVectors, eigenValues, "iso", "Uiso=" + f);
 }var Bcart =  Clazz.newDoubleArray (6, 0);
 var ortepType = Clazz.floatToInt (parBorU[6]);
 if (ortepType == 12) {
@@ -185,7 +185,7 @@ Bcart[2] = this.c * this.c * this.cB_ * this.cB_ * B33;
 Bcart[3] = 2 * this.b * this.b * this.cosGamma * this.sinGamma * B22 + 2 * this.c * this.c * this.cA_ * this.cosBeta * B33 + this.a * this.b * this.sinGamma * B12 + this.b * this.c * (this.cA_ * this.cosGamma + this.sinGamma * this.cosBeta) * B23 + this.a * this.c * this.cA_ * B13;
 Bcart[4] = 2 * this.c * this.c * this.cB_ * this.cosBeta * B33 + this.b * this.c * this.cosGamma * B23 + this.a * this.c * this.cB_ * B13;
 Bcart[5] = 2 * this.c * this.c * this.cA_ * this.cB_ * B33 + this.b * this.c * this.cB_ * this.sinGamma * B23;
-}return  new J.util.Quadric ().fromBCart (Bcart);
+}return J.util.Tensor.getTensorFromThermalEquation (Bcart, J.util.Escape.eAF (parBorU));
 }, "~A");
 $_M(c$, "getCanonicalCopy", 
 function (scale) {
@@ -240,4 +240,5 @@ return [J.util.P3.newP (this.cartesianOffset), J.util.P3.new3 (m.m00, m.m10, m.m
 });
 Clazz.defineStatics (c$,
 "twoP2", 19.739208802178716);
+c$.unitVectors = c$.prototype.unitVectors = [J.viewer.JC.axisX, J.viewer.JC.axisY, J.viewer.JC.axisZ];
 });

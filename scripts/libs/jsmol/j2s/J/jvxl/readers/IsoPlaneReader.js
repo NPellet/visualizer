@@ -5,9 +5,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoPlaneReader, []);
 });
-$_M(c$, "init", 
+Clazz.overrideMethod (c$, "init", 
 function (sg) {
-Clazz.superCall (this, J.jvxl.readers.IsoPlaneReader, "init", [sg]);
+this.initADR (sg);
 this.precalculateVoxelData = false;
 }, "J.jvxl.readers.SurfaceGenerator");
 Clazz.overrideMethod (c$, "setup", 

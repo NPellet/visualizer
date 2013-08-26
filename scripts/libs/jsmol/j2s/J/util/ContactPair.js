@@ -35,7 +35,7 @@ var f = (R - r + this.d) / (2 * this.d);
 this.pt =  new J.util.P3 ();
 this.pt.scaleAdd2 (f, v, this.myAtoms[0]);
 this.score = this.d - vdwA - vdwB;
-this.contactType = (this.score < 0 ? 1073741881 : 1649412112);
+this.contactType = (this.score < 0 ? 1073741881 : 1649412120);
 if (this.score < 0) {
 this.radii[0] = R = vdwA;
 this.radii[1] = r = vdwB;
@@ -56,7 +56,7 @@ function (isVdw) {
 if (Float.isNaN (this.xVdwClash)) return false;
 if (isVdw) {
 this.oldType = this.contactType;
-this.contactType = 1649412112;
+this.contactType = 1649412120;
 this.radii[0] = this.vdws[0] + this.xVdwClash;
 this.radii[1] = this.vdws[1] + this.xVdwClash;
 } else {

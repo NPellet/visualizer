@@ -14,7 +14,6 @@ this.bsSurfaceDone = null;
 this.bsLocale = null;
 this.htEdges = null;
 this.vEdges = null;
-this.aEdges = null;
 this.vFaces = null;
 this.vTemp = null;
 this.plane = null;
@@ -51,6 +50,10 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoSolventReader, []);
 });
+Clazz.overrideMethod (c$, "init", 
+function (sg) {
+this.initADR (sg);
+}, "J.jvxl.readers.SurfaceGenerator");
 Clazz.overrideMethod (c$, "readVolumeParameters", 
 function (isMapData) {
 this.setup (isMapData);
@@ -175,7 +178,7 @@ if (this.doCalculateTroughs && this.bsSurfacePoints != null) {
 var bsAll =  new J.util.BS ();
 var bsSurfaces = this.meshData.getSurfaceSet ();
 var bsSources = null;
-var volumes = (this.isPocket ? null : this.meshData.calculateVolumeOrArea (-1, false, false));
+var volumes = (this.isPocket ? null : this.meshData.calculateVolumeOrArea (-2147483648, false, false));
 var minVolume = (1.5 * 3.141592653589793 * Math.pow (this.solventRadius, 3));
 var maxVolume = 0;
 var maxIsNegative = false;
@@ -258,7 +261,6 @@ J.util.Logger.info (this.vEdges.size () + " edges");
 this.vFaces =  new J.util.JmolList ();
 this.getFaces ();
 J.util.Logger.info (this.vFaces.size () + " faces");
-this.vEdges = null;
 this.bsLocale = null;
 this.htEdges = null;
 this.iter.release ();
@@ -267,7 +269,7 @@ this.newVoxelDataCube ();
 this.resetVoxelData (3.4028235E38);
 this.markFaceVoxels (true);
 this.markToroidVoxels ();
-this.aEdges = null;
+this.vEdges = null;
 this.markFaceVoxels (false);
 this.vFaces = null;
 } else {
@@ -334,12 +336,6 @@ this.noFaceSpheres.clear (ib);
 this.noFaceSpheres.clear (ic);
 }}}
 }
-var bsOK =  new J.util.BS ();
-for (var i = this.vEdges.size (); --i >= 0; ) if (this.vEdges.get (i).getType () >= 0) bsOK.set (i);
-
-this.aEdges =  new Array (bsOK.cardinality ());
-for (var i = bsOK.nextSetBit (0), j = 0; i >= 0; i = bsOK.nextSetBit (i + 1)) this.aEdges[j++] = this.vEdges.get (i);
-
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getSolventPoints", 
 ($fz = function (ia, ib, ic) {
@@ -431,8 +427,8 @@ var ptA0 =  new J.util.P3i ();
 var ptB0 =  new J.util.P3i ();
 var ptA1 =  new J.util.P3i ();
 var ptB1 =  new J.util.P3i ();
-for (var ei = 0; ei < this.aEdges.length; ei++) {
-var edge = this.aEdges[ei];
+for (var ei = this.vEdges.size (); --ei >= 0; ) {
+var edge = this.vEdges.get (ei);
 var ia = edge.ia;
 var ib = edge.ib;
 var ptA = this.atomXyz[ia];
@@ -601,10 +597,6 @@ return;
 this.aFaces.addLast (a);
 this.nFaces++;
 }, "J.jvxl.readers.IsoSolventReader.Face");
-$_M(c$, "getType", 
-function () {
-return (this.nFaces > 0 ? this.nFaces : this.nInvalid > 0 ? -this.nInvalid : 0);
-});
 Clazz.overrideMethod (c$, "toString", 
 function () {
 return this.ia + "_" + this.ib;

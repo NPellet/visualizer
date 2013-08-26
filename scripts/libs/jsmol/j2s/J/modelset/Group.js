@@ -53,22 +53,22 @@ return true;
 $_M(c$, "setGroupParameter", 
 function (tok, f) {
 switch (tok) {
-case 1112539143:
+case 1112539145:
 this.phi = f;
 break;
-case 1112539144:
+case 1112539146:
 this.psi = f;
 break;
-case 1112539142:
+case 1112539144:
 this.omega = f;
 break;
-case 1112539140:
+case 1112539141:
 this.mu = f;
 break;
-case 1112539150:
+case 1112539152:
 this.theta = f;
 break;
-case 1112539148:
+case 1112539150:
 this.straightness = f;
 break;
 }
@@ -77,17 +77,17 @@ $_M(c$, "getGroupParameter",
 function (tok) {
 if (!this.haveParameters ()) this.calcBioParameters ();
 switch (tok) {
-case 1112539142:
-return this.omega;
-case 1112539143:
-return this.phi;
 case 1112539144:
+return this.omega;
+case 1112539145:
+return this.phi;
+case 1112539146:
 return this.psi;
-case 1112539140:
+case 1112539141:
 return this.mu;
-case 1112539150:
+case 1112539152:
 return this.theta;
-case 1112539148:
+case 1112539150:
 return this.straightness;
 }
 return NaN;
@@ -208,14 +208,6 @@ if (boxedGroupID != null) return boxedGroupID.shortValue ();
 $_M(c$, "getResno", 
 function () {
 return (this.seqcode == -2147483648 ? 0 : this.seqcode >> 8);
-});
-$_M(c$, "getSeqcode", 
-function () {
-return this.seqcode;
-});
-$_M(c$, "getSeqNumber", 
-function () {
-return this.seqcode >> 8;
 });
 c$.getSeqNumberFor = $_M(c$, "getSeqNumberFor", 
 function (seqcode) {

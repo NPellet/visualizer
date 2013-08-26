@@ -35,6 +35,8 @@ this.selectedMoleculeCount = 0;
 this.showRebondTimes = true;
 this.bsAll = null;
 this.shapeManager = null;
+this.ptTemp1 = null;
+this.ptTemp2 = null;
 this.proteinStructureTainted = false;
 this.symTemp = null;
 this.htPeaks = null;
@@ -55,6 +57,8 @@ this.boxInfo.addBoundBoxPoint (J.util.P3.new3 (-10, -10, -10));
 this.boxInfo.addBoundBoxPoint (J.util.P3.new3 (10, 10, 10));
 }this.stateScripts =  new J.util.JmolList ();
 this.selectedMolecules =  new J.util.BS ();
+this.ptTemp1 =  new J.util.P3 ();
+this.ptTemp2 =  new J.util.P3 ();
 });
 $_M(c$, "mergeModelArrays", 
 function (mergeModelSet) {
@@ -71,13 +75,13 @@ this.modelNumbers = mergeModelSet.modelNumbers;
 this.frameTitles = mergeModelSet.frameTitles;
 this.mergeAtomArrays (mergeModelSet);
 }, "J.modelset.ModelSet");
-$_M(c$, "releaseModelSet", 
+Clazz.overrideMethod (c$, "releaseModelSet", 
 function () {
 this.models = null;
 this.bsSymmetry = null;
 this.bsAll = null;
 this.unitCells = null;
-Clazz.superCall (this, J.modelset.ModelCollection, "releaseModelSet", []);
+this.releaseModelSetBC ();
 });
 $_M(c$, "getUnitCell", 
 function (modelIndex) {
@@ -141,7 +145,7 @@ return this.modelNumbersForAtomLabel[modelIndex];
 $_M(c$, "calculatePolymers", 
 function (groups, groupCount, baseGroupIndex, modelsExcluded) {
 if (!this.isPDB) return;
-var checkConnections = !this.viewer.getBoolean (603979891);
+var checkConnections = !this.viewer.getBoolean (603979892);
 for (var i = 0; i < this.modelCount; i++) if ((modelsExcluded == null || !modelsExcluded.get (i)) && this.models[i].isBioModel) {
 this.models[i].calculatePolymers (groups, groupCount, baseGroupIndex, modelsExcluded, checkConnections);
 return;
@@ -976,7 +980,7 @@ return this.unitCells[modelIndex].getCellRange ();
 }, "~N");
 $_M(c$, "modelHasVibrationVectors", 
 function (modelIndex) {
-if (this.vibrationVectors != null) for (var i = this.atomCount; --i >= 0; ) if ((modelIndex < 0 || this.atoms[i].modelIndex == modelIndex) && this.vibrationVectors[i] != null && this.vibrationVectors[i].length () > 0) return true;
+if (this.vibrations != null) for (var i = this.atomCount; --i >= 0; ) if ((modelIndex < 0 || this.atoms[i].modelIndex == modelIndex) && this.vibrations[i] != null && this.vibrations[i].length () > 0) return true;
 
 return false;
 }, "~N");
@@ -1087,11 +1091,17 @@ this.selectedMoleculeCount++;
 }}
 }, "J.util.BS");
 $_M(c$, "setCentroid", 
-function (iAtom0, iAtom1, minmax) {
+function (bs, minmax) {
+var bsDelete = this.getNotInCentroid (bs, minmax);
+if (bsDelete != null && bsDelete.nextSetBit (0) >= 0) this.viewer.deleteAtoms (bsDelete, false);
+}, "J.util.BS,~A");
+$_M(c$, "getNotInCentroid", 
+($fz = function (bs, minmax) {
+var iAtom0 = bs.nextSetBit (0);
+if (iAtom0 < 0) return null;
 var uc = this.getUnitCell (this.atoms[iAtom0].modelIndex);
-if (uc == null) return;
-uc.setCentroid (this, iAtom0, iAtom1, minmax);
-}, "~N,~N,~A");
+return (uc == null ? null : uc.notInCentroid (this, bs, minmax));
+}, $fz.isPrivate = true, $fz), "J.util.BS,~A");
 $_M(c$, "getMolecules", 
 function () {
 if (this.moleculeCount > 0) return this.molecules;
@@ -1177,6 +1187,10 @@ return (modelIndex < 0 ? this.bondCount : this.models[modelIndex].getBondCount (
 }, "~N");
 $_M(c$, "calculateStruts", 
 function (bs1, bs2) {
+return this.calculateStrutsMC (bs1, bs2);
+}, "J.util.BS,J.util.BS");
+$_M(c$, "calculateStrutsMC", 
+function (bs1, bs2) {
 this.makeConnections2 (0, 3.4028235E38, 32768, 12291, bs1, bs2, null, false, false, 0);
 var iAtom = bs1.nextSetBit (0);
 if (iAtom < 0) return 0;
@@ -1206,7 +1220,6 @@ $_M(c$, "getAtomBitsMaybeDeleted",
 function (tokType, specInfo) {
 var info;
 var bs;
-var pt;
 switch (tokType) {
 default:
 return this.getAtomBitsMDa (tokType, specInfo);
@@ -1224,11 +1237,22 @@ return bs;
 case 1095761925:
 bs =  new J.util.BS ();
 info = specInfo;
-var ptcell = J.util.P3.new3 (info[0] / 1000, info[1] / 1000, info[2] / 1000);
-pt =  new J.util.P3 ();
+this.ptTemp1.set (info[0] / 1000, info[1] / 1000, info[2] / 1000);
 var isAbsolute = !this.viewer.getBoolean (603979848);
-for (var i = this.atomCount; --i >= 0; ) if (this.isInLatticeCell (i, ptcell, pt, isAbsolute)) bs.set (i);
+for (var i = this.atomCount; --i >= 0; ) if (this.isInLatticeCell (i, this.ptTemp1, this.ptTemp2, isAbsolute)) bs.set (i);
 
+return bs;
+case 1095761926:
+bs = J.util.BSUtil.newBitSet2 (0, this.atomCount);
+info = specInfo;
+var minmax = [Clazz.doubleToInt (info[0] / 1000) - 1, Clazz.doubleToInt (info[1] / 1000) - 1, Clazz.doubleToInt (info[2] / 1000) - 1, Clazz.doubleToInt (info[0] / 1000), Clazz.doubleToInt (info[1] / 1000), Clazz.doubleToInt (info[2] / 1000), 0];
+for (var i = this.modelCount; --i >= 0; ) {
+var uc = this.getUnitCell (i);
+if (uc == null) {
+J.util.BSUtil.andNot (bs, this.models[i].bsAtoms);
+continue;
+}bs.andNot (uc.notInCentroid (this, this.models[i].bsAtoms, minmax));
+}
 return bs;
 case 1095761934:
 return this.getMoleculeBitSet (specInfo);
@@ -1242,7 +1266,7 @@ var chainID = String.fromCharCode (info[2]);
 bs =  new J.util.BS ();
 var caseSensitive = this.viewer.getBoolean (603979822);
 if (!caseSensitive) chainID = Character.toUpperCase (chainID);
-for (var i = this.modelCount; --i >= 0; ) if (this.models[i].isBioModel) this.models[i].selectSeqcodeRange (seqcodeA, seqcodeB, chainID, bs, caseSensitive);
+for (var i = this.modelCount; --i >= 0; ) if (this.models[i].isBioModel) this.models[i].selectSeqcodeRange (seqcodeA, seqcodeB, chainID.charCodeAt (0), bs, caseSensitive);
 
 return bs;
 case 3145772:
@@ -1270,25 +1294,18 @@ case 1614417948:
 bs =  new J.util.BS ();
 var unitcell = this.viewer.getCurrentUnitCell ();
 if (unitcell == null) return bs;
-var cell = J.util.P3.new3 (1, 1, 1);
-pt =  new J.util.P3 ();
-for (var i = this.atomCount; --i >= 0; ) if (this.isInLatticeCell (i, cell, pt, false)) bs.set (i);
+this.ptTemp1.set (1, 1, 1);
+for (var i = this.atomCount; --i >= 0; ) if (this.isInLatticeCell (i, this.ptTemp1, this.ptTemp2, false)) bs.set (i);
 
 return bs;
 }
 }, "~N,~O");
 $_M(c$, "isInLatticeCell", 
-($fz = function (i, cell, pt, isAbsolute) {
+($fz = function (i, cell, ptTemp, isAbsolute) {
 var iModel = this.atoms[i].modelIndex;
 var uc = this.getUnitCell (iModel);
-if (uc == null) return false;
-pt.setT (this.atoms[i]);
-uc.toFractional (pt, isAbsolute);
-var slop = 0.02;
-if (pt.x < cell.x - 1 - slop || pt.x > cell.x + slop) return false;
-if (pt.y < cell.y - 1 - slop || pt.y > cell.y + slop) return false;
-if (pt.z < cell.z - 1 - slop || pt.z > cell.z + slop) return false;
-return true;
+ptTemp.setT (this.atoms[i]);
+return (uc != null && uc.checkUnitCell (uc, cell, ptTemp, isAbsolute));
 }, $fz.isPrivate = true, $fz), "~N,J.util.P3,J.util.P3,~B");
 $_M(c$, "getAtomsWithinRD", 
 function (distance, bs, withinAllModels, rd) {
@@ -1333,12 +1350,10 @@ function (distance, coord, bsResult, modelIndex) {
 if (bsResult == null) bsResult =  new J.util.BS ();
 if (distance < 0) {
 distance = -distance;
-var ptTemp1 =  new J.util.P3 ();
-var ptTemp2 =  new J.util.P3 ();
 for (var i = this.atomCount; --i >= 0; ) {
 var atom = this.atoms[i];
 if (modelIndex >= 0 && this.atoms[i].modelIndex != modelIndex) continue;
-if (!bsResult.get (i) && atom.getFractionalUnitDistance (coord, ptTemp1, ptTemp2) <= distance) bsResult.set (atom.index);
+if (!bsResult.get (i) && atom.getFractionalUnitDistance (coord, this.ptTemp1, this.ptTemp2) <= distance) bsResult.set (atom.index);
 }
 return bsResult;
 }var bsCheck = this.getIterativeModels (true);
@@ -1963,7 +1978,7 @@ $_M(c$, "deleteAtoms",
 function (bs) {
 if (bs == null) return;
 var bsBonds =  new J.util.BS ();
-for (var i = bs.nextSetBit (0); i >= 0 && i < this.atomCount; i = bs.nextSetBit (i + 1)) this.atoms[i].$delete (bsBonds);
+for (var i = bs.nextSetBit (0); i >= 0 && i < this.atomCount; i = bs.nextSetBit (i + 1)) this.atoms[i].deleteBonds (bsBonds);
 
 for (var i = 0; i < this.modelCount; i++) {
 this.models[i].bsAtomsDeleted.or (bs);
@@ -2013,7 +2028,7 @@ var m = this.models[this.atoms[i].modelIndex];
 if (m.firstAtomIndex == map[i]) m.firstAtomIndex = i;
 m.bsAtoms.set (i);
 }
-if (this.vibrationVectors != null) for (var i = i0; i < atomCount; i++) this.vibrationVectors[i] = this.vibrationVectors[map[i]];
+if (this.vibrations != null) for (var i = i0; i < atomCount; i++) this.vibrations[i] = this.vibrations[map[i]];
 
 if (this.occupancies != null) for (var i = i0; i < atomCount; i++) this.occupancies[i] = this.occupancies[map[i]];
 
@@ -2021,9 +2036,15 @@ if (this.bfactor100s != null) for (var i = i0; i < atomCount; i++) this.bfactor1
 
 if (this.partialCharges != null) for (var i = i0; i < atomCount; i++) this.partialCharges[i] = this.partialCharges[map[i]];
 
-if (this.ellipsoids != null) for (var i = i0; i < atomCount; i++) this.ellipsoids[i] = this.ellipsoids[map[i]];
-
-if (this.atomNames != null) for (var i = i0; i < atomCount; i++) this.atomNames[i] = this.atomNames[map[i]];
+if (this.atomTensorList != null) {
+for (var i = i0; i < atomCount; i++) {
+var list = this.atomTensorList[i] = this.atomTensorList[map[i]];
+for (var j = list.length; --j >= 0; ) {
+var t = list[j];
+if (t != null) t.atomIndex1 = map[t.atomIndex1];
+}
+}
+}if (this.atomNames != null) for (var i = i0; i < atomCount; i++) this.atomNames[i] = this.atomNames[map[i]];
 
 if (this.atomTypes != null) for (var i = i0; i < atomCount; i++) this.atomTypes[i] = this.atomTypes[map[i]];
 
@@ -2033,27 +2054,27 @@ if (this.atomSerials != null) for (var i = i0; i < atomCount; i++) this.atomSeri
 $_M(c$, "growAtomArrays", 
 function (newLength) {
 this.atoms = J.util.ArrayUtil.arrayCopyObject (this.atoms, newLength);
-if (this.vibrationVectors != null) this.vibrationVectors = J.util.ArrayUtil.arrayCopyObject (this.vibrationVectors, newLength);
+if (this.vibrations != null) this.vibrations = J.util.ArrayUtil.arrayCopyObject (this.vibrations, newLength);
 if (this.occupancies != null) this.occupancies = J.util.ArrayUtil.arrayCopyByte (this.occupancies, newLength);
 if (this.bfactor100s != null) this.bfactor100s = J.util.ArrayUtil.arrayCopyShort (this.bfactor100s, newLength);
 if (this.partialCharges != null) this.partialCharges = J.util.ArrayUtil.arrayCopyF (this.partialCharges, newLength);
-if (this.ellipsoids != null) this.ellipsoids = J.util.ArrayUtil.arrayCopyObject (this.ellipsoids, newLength);
+if (this.atomTensorList != null) this.atomTensorList = J.util.ArrayUtil.arrayCopyObject (this.atomTensorList, newLength);
 if (this.atomNames != null) this.atomNames = J.util.ArrayUtil.arrayCopyS (this.atomNames, newLength);
 if (this.atomTypes != null) this.atomTypes = J.util.ArrayUtil.arrayCopyS (this.atomTypes, newLength);
 if (this.atomSerials != null) this.atomSerials = J.util.ArrayUtil.arrayCopyI (this.atomSerials, newLength);
 }, "~N");
 $_M(c$, "addAtom", 
-function (modelIndex, group, atomicAndIsotopeNumber, atomName, atomSerial, atomSite, x, y, z, radius, vectorX, vectorY, vectorZ, formalCharge, partialCharge, occupancy, bfactor, ellipsoid, isHetero, specialAtomID, atomSymmetry) {
+function (modelIndex, group, atomicAndIsotopeNumber, atomName, atomSerial, atomSite, x, y, z, radius, vectorX, vectorY, vectorZ, formalCharge, partialCharge, occupancy, bfactor, tensors, isHetero, specialAtomID, atomSymmetry) {
 var atom =  new J.modelset.Atom (modelIndex, this.atomCount, x, y, z, radius, atomSymmetry, atomSite, atomicAndIsotopeNumber, formalCharge, isHetero);
 this.models[modelIndex].atomCount++;
 this.models[modelIndex].bsAtoms.set (this.atomCount);
-if (atomicAndIsotopeNumber % 128 == 1) this.models[modelIndex].hydrogenCount++;
+if (J.util.Elements.isElement (atomicAndIsotopeNumber, 1)) this.models[modelIndex].hydrogenCount++;
 if (this.atomCount >= this.atoms.length) this.growAtomArrays (this.atomCount + 100);
 this.atoms[this.atomCount] = atom;
 this.setBFactor (this.atomCount, bfactor);
 this.setOccupancy (this.atomCount, occupancy);
 this.setPartialCharge (this.atomCount, partialCharge);
-if (ellipsoid != null) this.setEllipsoid (this.atomCount, ellipsoid);
+if (tensors != null) this.setAtomTensors (this.atomCount, tensors);
 atom.group = group;
 atom.colixAtom = this.viewer.getColixAtomPalette (atom, J.constant.EnumPalette.CPK.id);
 if (atomName != null) {
@@ -2069,10 +2090,10 @@ this.atomNames[this.atomCount] = atomName.intern ();
 }}if (atomSerial != -2147483648) {
 if (this.atomSerials == null) this.atomSerials =  Clazz.newIntArray (this.atoms.length, 0);
 this.atomSerials[this.atomCount] = atomSerial;
-}if (!Float.isNaN (vectorX)) this.setVibrationVector (this.atomCount, vectorX, vectorY, vectorZ);
+}if (!Float.isNaN (vectorZ)) this.setVibrationVector (this.atomCount, vectorX, vectorY, vectorZ);
 this.atomCount++;
 return atom;
-}, "~N,J.modelset.Group,~N,~S,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~A,~B,~N,J.util.BS");
+}, "~N,J.modelset.Group,~N,~S,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,J.util.JmolList,~B,~N,J.util.BS");
 $_M(c$, "getInlineData", 
 function (modelIndex) {
 var data = null;
@@ -2135,9 +2156,10 @@ var atom = this.atoms[i];
 if (atom.modelIndex != lastModelIndex) {
 lastModelIndex = atom.modelIndex;
 atomNo = (isZeroBased ? 0 : 1);
-}if (this.atomSerials[i] == 0 || baseAtomIndex < 0) this.atomSerials[i] = (i < baseAtomIndex ? mergeSet.atomSerials[i] : atomNo);
+}if (i >= -baseAtomIndex) {
+if (this.atomSerials[i] == 0 || baseAtomIndex < 0) this.atomSerials[i] = (i < baseAtomIndex ? mergeSet.atomSerials[i] : atomNo);
 if (this.atomNames[i] == null || baseAtomIndex < 0) this.atomNames[i] = (atom.getElementSymbol () + this.atomSerials[i]).intern ();
-if (!this.models[lastModelIndex].isModelKit || atom.getElementNumber () > 0 && !atom.isDeleted ()) atomNo++;
+}if (!this.models[lastModelIndex].isModelKit || atom.getElementNumber () > 0 && !atom.isDeleted ()) atomNo++;
 }
 }, "~N,~N,J.modelset.AtomCollection");
 $_M(c$, "setUnitCellOffset", 
@@ -2219,6 +2241,35 @@ models.addLast (modelinfo);
 info.put ("models", models);
 return info;
 }, "J.util.BS");
+$_M(c$, "getDihedralMap", 
+function (alist) {
+var list =  new J.util.JmolList ();
+var n = alist.length;
+var ai = null;
+var aj = null;
+var ak = null;
+var al = null;
+for (var i = n - 1; --i >= 0; ) for (var j = n; --j > i; ) {
+ai = this.atoms[alist[i]];
+aj = this.atoms[alist[j]];
+if (ai.isBonded (aj)) {
+for (var k = n; --k >= 0; ) if (k != i && k != j && (ak = this.atoms[alist[k]]).isBonded (ai)) for (var l = n; --l >= 0; ) if (l != i && l != j && l != k && (al = this.atoms[alist[l]]).isBonded (aj)) {
+var a =  Clazz.newIntArray (4, 0);
+a[0] = ak.index;
+a[1] = ai.index;
+a[2] = aj.index;
+a[3] = al.index;
+list.addLast (a);
+}
+
+}}
+
+n = list.size ();
+var ilist = J.util.ArrayUtil.newInt2 (n);
+for (var i = n; --i >= 0; ) ilist[n - i - 1] = list.get (i);
+
+return ilist;
+}, "~A");
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
 this.modelIndex = 0;

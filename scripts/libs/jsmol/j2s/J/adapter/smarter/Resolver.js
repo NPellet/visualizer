@@ -123,8 +123,10 @@ if (lines[i].length > 0) nLines++;
 }
 var readerName;
 if ((readerName = J.adapter.smarter.Resolver.checkSpecial (nLines, lines, false)) != null) return readerName;
-if ((readerName = J.adapter.smarter.Resolver.checkLineStarts (lines)) != null) return readerName;
-if ((readerName = J.adapter.smarter.Resolver.checkHeaderContains (llr.getHeader (0))) != null) return readerName;
+if ((readerName = J.adapter.smarter.Resolver.checkLineStarts (lines)) != null) {
+if (readerName.equals ("Cif") && llr.getHeader (0).contains ("mmcif_pdbx.dic")) readerName = "MMCIF_PDBX";
+return readerName;
+}if ((readerName = J.adapter.smarter.Resolver.checkHeaderContains (llr.getHeader (0))) != null) return readerName;
 if ((readerName = J.adapter.smarter.Resolver.checkSpecial (nLines, lines, true)) != null) return readerName;
 return (returnLines ? "\n" + lines[0] + "\n" + lines[1] + "\n" + lines[2] + "\n" : null);
 }, $fz.isPrivate = true, $fz), "java.io.BufferedReader,~B");
@@ -263,16 +265,15 @@ return false;
 c$.checkCube = $_M(c$, "checkCube", 
 ($fz = function (lines) {
 try {
-var tokens2 =  new java.util.StringTokenizer (lines[2]);
-if (tokens2.countTokens () != 4) return false;
+for (var j = 2; j <= 5; j++) {
+var tokens2 =  new java.util.StringTokenizer (lines[j]);
+var n = tokens2.countTokens ();
+if (!(n == 4 || j == 2 && n == 5)) return false;
 Integer.parseInt (tokens2.nextToken ());
 for (var i = 3; --i >= 0; ) J.util.Parser.fVal (tokens2.nextToken ());
 
-var tokens3 =  new java.util.StringTokenizer (lines[3]);
-if (tokens3.countTokens () != 4) return false;
-Integer.parseInt (tokens3.nextToken ());
-for (var i = 3; --i >= 0; ) if (J.util.Parser.fVal (tokens3.nextToken ()) < 0) return false;
-
+if (n == 5) Integer.parseInt (tokens2.nextToken ());
+}
 return true;
 } catch (nfe) {
 if (Clazz.exceptionOf (nfe, NumberFormatException)) {
@@ -383,7 +384,7 @@ return false;
 }, $fz.isPrivate = true, $fz), "~A");
 Clazz.defineStatics (c$,
 "classBase", "J.adapter.readers.");
-c$.readerSets = c$.prototype.readerSets = ["cifpdb.", ";Cif;Pdb;", "molxyz.", ";Mol3D;Mol;Xyz;", "more.", ";BinaryDcd;Gromacs;Jcampdx;MdCrd;MdTop;Mol2;Pqr;P2n;TlsDataOnly;", "quantum.", ";Adf;Csf;Dgrid;GamessUK;GamessUS;Gaussian;GausianWfn;Jaguar;Molden;MopacGraphf;GenNBO;NWChem;Odyssey;Psi;Qchem;Spartan;SpartanSmol;WebMO;", "pymol.", ";PyMOL;", "simple.", ";Alchemy;Ampac;Cube;FoldingXyz;GhemicalMM;HyperChem;Jme;Mopac;MopacArchive;ZMatrix;", "xtal.", ";Aims;Castep;Crystal;Dmol;Espresso;Gulp;MagRes;Shelx;Siesta;VaspOutcar;VaspPoscar;Wien2k;Xcrysden;"];
+c$.readerSets = c$.prototype.readerSets = ["cifpdb.", ";Cif;Pdb;MMCIF_PDBX;", "molxyz.", ";Mol3D;Mol;Xyz;", "more.", ";BinaryDcd;Gromacs;Jcampdx;MdCrd;MdTop;Mol2;Pqr;P2n;TlsDataOnly;", "quantum.", ";Adf;Csf;Dgrid;GamessUK;GamessUS;Gaussian;GausianWfn;Jaguar;Molden;MopacGraphf;GenNBO;NWChem;Odyssey;Psi;Qchem;Spartan;SpartanSmol;WebMO;", "pymol.", ";PyMOL;", "simple.", ";Alchemy;Ampac;Cube;FoldingXyz;GhemicalMM;HyperChem;Jme;Mopac;MopacArchive;ZMatrix;", "xtal.", ";Aims;Castep;Crystal;Dmol;Espresso;Gulp;Magres;Shelx;Siesta;VaspOutcar;VaspPoscar;Wien2k;Xcrysden;"];
 Clazz.defineStatics (c$,
 "CML_NAMESPACE_URI", "http://www.xml-cml.org/schema",
 "SPECIAL_JME", 0,
@@ -426,9 +427,9 @@ Clazz.defineStatics (c$,
 "dcdFileStartRecords", ["BinaryDcd", "T\0\0\0CORD", "\0\0\0TCORD"],
 "tlsDataOnlyFileStartRecords", ["TlsDataOnly", "REFMAC\n\nTL", "REFMAC\r\n\r\n", "REFMAC\r\rTL"],
 "zMatrixFileStartRecords", ["ZMatrix", "#ZMATRIX"],
-"magResFileStartRecords", ["MagRes", "# magres"],
+"magresFileStartRecords", ["Magres", "#$magres", "# magres"],
 "pymolStartRecords", ["PyMOL", "}q"]);
-c$.fileStartsWithRecords = c$.prototype.fileStartsWithRecords = [J.adapter.smarter.Resolver.sptContainsRecords, J.adapter.smarter.Resolver.cubeFileStartRecords, J.adapter.smarter.Resolver.mol2Records, J.adapter.smarter.Resolver.webmoFileStartRecords, J.adapter.smarter.Resolver.moldenFileStartRecords, J.adapter.smarter.Resolver.dcdFileStartRecords, J.adapter.smarter.Resolver.tlsDataOnlyFileStartRecords, J.adapter.smarter.Resolver.zMatrixFileStartRecords, J.adapter.smarter.Resolver.magResFileStartRecords, J.adapter.smarter.Resolver.pymolStartRecords];
+c$.fileStartsWithRecords = c$.prototype.fileStartsWithRecords = [J.adapter.smarter.Resolver.sptContainsRecords, J.adapter.smarter.Resolver.cubeFileStartRecords, J.adapter.smarter.Resolver.mol2Records, J.adapter.smarter.Resolver.webmoFileStartRecords, J.adapter.smarter.Resolver.moldenFileStartRecords, J.adapter.smarter.Resolver.dcdFileStartRecords, J.adapter.smarter.Resolver.tlsDataOnlyFileStartRecords, J.adapter.smarter.Resolver.zMatrixFileStartRecords, J.adapter.smarter.Resolver.magresFileStartRecords, J.adapter.smarter.Resolver.pymolStartRecords];
 Clazz.defineStatics (c$,
 "pqrLineStartRecords", ["Pqr", "REMARK   1 PQR"],
 "p2nLineStartRecords", ["P2n", "REMARK   1 P2N"],

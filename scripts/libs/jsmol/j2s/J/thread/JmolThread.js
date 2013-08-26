@@ -56,7 +56,7 @@ this.run1 (-1);
 if (Clazz.exceptionOf (e$$, InterruptedException)) {
 var e = e$$;
 {
-if (J.util.Logger.debugging) this.oops (e);
+if (J.util.Logger.debugging && !(Clazz.instanceOf (this, J.thread.HoverWatcherThread))) this.oops (e);
 }
 } else if (Clazz.exceptionOf (e$$, Exception)) {
 var e = e$$;
@@ -70,8 +70,8 @@ throw e$$;
 });
 $_M(c$, "oops", 
 function (e) {
-System.out.println (this.$name + " exception " + e);
-e.printStackTrace ();
+J.util.Logger.debug (this.$name + " exception " + e);
+if (!this.viewer.isJS ()) e.printStackTrace ();
 this.viewer.queueOnHold = false;
 }, "Exception");
 $_M(c$, "runSleep", 

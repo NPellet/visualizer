@@ -22,7 +22,10 @@ this.jsConsole = new Jmol.Console.JSConsole(this);
 }, "~S");
 Clazz.overrideMethod (c$, "setTitle", 
 function () {
-});
+{
+if (this.jsConsole)
+this.jsConsole.setTitle(this.getLabel("title"));
+}});
 Clazz.overrideMethod (c$, "setVisible", 
 function (visible) {
 {

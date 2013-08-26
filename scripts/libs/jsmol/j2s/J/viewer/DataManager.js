@@ -204,4 +204,12 @@ function (loadScript, strModel, isAppend, loadFilter) {
 var tag = (isAppend ? "append" : "model") + " inline";
 loadScript.append ("load /*data*/ data \"").append (tag).append ("\"\n").append (strModel).append ("end \"").append (tag).append (loadFilter == null || loadFilter.length == 0 ? "" : " filter" + J.util.Escape.eS (loadFilter)).append ("\";");
 }, "J.util.SB,~S,~B,~S");
+Clazz.defineStatics (c$,
+"DATA_TYPE_STRING", 0,
+"DATA_TYPE_AF", 1,
+"DATA_ARRAY_FF", 2,
+"DATA_ARRAY_FFF", 3,
+"DATA_VALUE", 1,
+"DATA_SELECTION_MAP", 2,
+"DATA_TYPE", 3);
 });

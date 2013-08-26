@@ -61,7 +61,7 @@ this.elementNames =  new J.util.JmolList ();
 var elementList = "";
 while (this.readLine () != null && this.line.indexOf ("VRHFIN") < 0) {
 var pt = (this.line.contains ("_") ? 2 : 1);
-if (pt == 2) this.line = this.line.$replace ("_", " ");
+if (pt == 2) this.line = this.line.$replace ('_', ' ');
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (this.line.indexOf (":") + 1));
 var sym = tokens[pt];
 var key = ";" + sym + ";";

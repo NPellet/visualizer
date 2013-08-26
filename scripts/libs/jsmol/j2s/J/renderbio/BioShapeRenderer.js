@@ -30,6 +30,7 @@ this.colixes = null;
 this.colixesBack = null;
 this.structureTypes = null;
 this.isPass2 = false;
+this.$wireframeOnly = false;
 this.pointT = null;
 this.iPrev = 0;
 this.iNext = 0;
@@ -85,28 +86,37 @@ this.norml =  new J.util.V3 ();
 Clazz.overrideMethod (c$, "render", 
 function () {
 if (this.shape == null) return false;
+this.setGlobals ();
+this.renderShapes ();
+return this.needTranslucent;
+});
+$_M(c$, "setGlobals", 
+($fz = function () {
 this.isPass2 = this.g3d.isPass2 ();
 this.invalidateMesh = false;
 this.needTranslucent = false;
-var TF = (this.isExport || this.viewer.getBoolean (603979864));
+var TF = (!this.isExport && this.viewer.getBoolean (603979976) && this.viewer.getInMotion (true));
+if (TF != this.$wireframeOnly) this.invalidateMesh = true;
+this.$wireframeOnly = TF;
+TF = (this.isExport || !this.$wireframeOnly && this.viewer.getBoolean (603979864));
 if (TF != this.isHighRes) this.invalidateMesh = true;
 this.isHighRes = TF;
-var v = this.viewer.getBoolean (603979819);
-if (this.cartoonsFancy != v) {
+TF = !this.$wireframeOnly && this.viewer.getBoolean (603979819);
+if (this.cartoonsFancy != TF) {
 this.invalidateMesh = true;
-this.cartoonsFancy = v;
+this.cartoonsFancy = TF;
 }var val1 = this.viewer.getHermiteLevel ();
-val1 = (val1 <= 0 ? -val1 : this.viewer.getInMotion () ? 0 : val1);
-if (this.cartoonsFancy) val1 = Math.max (val1, 3);
+val1 = (val1 <= 0 ? -val1 : this.viewer.getInMotion (true) ? 0 : val1);
+if (this.cartoonsFancy && !this.$wireframeOnly) val1 = Math.max (val1, 3);
 if (val1 != this.hermiteLevel) this.invalidateMesh = true;
 this.hermiteLevel = Math.min (val1, 8);
 var val = this.viewer.getInt (553648166);
 val = Math.min (Math.max (0, val), 20);
 if (this.cartoonsFancy && val >= 16) val = 4;
-if (this.hermiteLevel == 0) val = 0;
+if (this.$wireframeOnly || this.hermiteLevel == 0) val = 0;
 if (val != this.aspectRatio && val != 0 && val1 != 0) this.invalidateMesh = true;
 this.aspectRatio = val;
-TF = this.viewer.getBoolean (603979967);
+TF = this.viewer.getBoolean (603979966);
 if (TF != this.isTraceAlpha) this.invalidateMesh = true;
 this.isTraceAlpha = TF;
 this.invalidateSheets = false;
@@ -115,7 +125,10 @@ if (fval != this.sheetSmoothing && this.isTraceAlpha) {
 this.sheetSmoothing = fval;
 this.invalidateMesh = true;
 this.invalidateSheets = true;
-}var mps = this.shape;
+}}, $fz.isPrivate = true, $fz));
+$_M(c$, "renderShapes", 
+($fz = function () {
+var mps = this.shape;
 for (var c = mps.bioShapes.length; --c >= 0; ) {
 var bioShape = mps.getBioShape (c);
 if ((bioShape.modelVisibilityFlags & this.myVisibilityFlag) == 0) continue;
@@ -125,8 +138,7 @@ this.renderBioShape (bioShape);
 this.renderMeshes ();
 this.freeTempArrays ();
 }}
-return this.needTranslucent;
-});
+}, $fz.isPrivate = true, $fz));
 $_M(c$, "setBioColix", 
 function (colix) {
 if (this.g3d.setColix (colix)) return true;
@@ -288,7 +300,8 @@ J.util.Logger.error ("render mesh error hermiteConic: " + e.toString ());
 throw e;
 }
 }
-}this.g3d.fillHermite (this.isNucleic ? 4 : 7, this.diameterBeg, this.diameterMid, this.diameterEnd, this.controlPointScreens[this.iPrev], this.controlPointScreens[i], this.controlPointScreens[this.iNext], this.controlPointScreens[this.iNext2]);
+}if (this.diameterBeg == 0 && this.diameterEnd == 0 || this.$wireframeOnly) this.g3d.drawLineAB (this.controlPointScreens[i], this.controlPointScreens[this.iNext]);
+ else this.g3d.fillHermite (this.isNucleic ? 4 : 7, this.diameterBeg, this.diameterMid, this.diameterEnd, this.controlPointScreens[this.iPrev], this.controlPointScreens[i], this.controlPointScreens[this.iNext], this.controlPointScreens[this.iNext2]);
 }, "~N,~B");
 $_M(c$, "renderHermiteRibbon", 
 function (doFill, i, thisTypeOnly) {

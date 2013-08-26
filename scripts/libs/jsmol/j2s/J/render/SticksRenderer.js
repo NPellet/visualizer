@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.ShapeRenderer", "J.util.BS", "$.P3", "$.P3i", "$.V3"], "J.render.SticksRenderer", ["java.lang.Float", "J.constant.EnumPalette", "J.modelset.Bond", "J.util.C", "$.JmolEdge"], function () {
+Clazz.load (["J.render.FontLineShapeRenderer", "J.util.BS", "$.P3", "$.V3"], "J.render.SticksRenderer", ["java.lang.Float", "J.constant.EnumPalette", "J.modelset.Bond", "J.util.C", "$.JmolEdge"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.showMultipleBonds = false;
 this.multipleBondSpacing = 0;
@@ -11,8 +11,8 @@ this.ssbondsBackbone = false;
 this.hbondsBackbone = false;
 this.bondsBackbone = false;
 this.hbondsSolid = false;
-this.atomA = null;
-this.atomB = null;
+this.a = null;
+this.b = null;
 this.bond = null;
 this.xA = 0;
 this.yA = 0;
@@ -23,27 +23,18 @@ this.zB = 0;
 this.dx = 0;
 this.dy = 0;
 this.mag2d = 0;
-this.colixA = 0;
-this.colixB = 0;
-this.width = 0;
-this.lineBond = false;
 this.bondOrder = 0;
 this.renderWireframe = false;
 this.isAntialiased = false;
 this.slabbing = false;
 this.slabByAtom = false;
-this.dashDots = null;
 this.x = null;
 this.y = null;
 this.z = null;
 this.p1 = null;
 this.p2 = null;
-this.s1 = null;
-this.s2 = null;
 this.bsForPass2 = null;
 this.isPass2 = false;
-this.atomA0 = null;
-this.atomB0 = null;
 this.xAxis1 = 0;
 this.yAxis1 = 0;
 this.xAxis2 = 0;
@@ -51,15 +42,13 @@ this.yAxis2 = 0;
 this.dxStep = 0;
 this.dyStep = 0;
 Clazz.instantialize (this, arguments);
-}, J.render, "SticksRenderer", J.render.ShapeRenderer);
+}, J.render, "SticksRenderer", J.render.FontLineShapeRenderer);
 Clazz.prepareFields (c$, function () {
 this.x =  new J.util.V3 ();
 this.y =  new J.util.V3 ();
 this.z =  new J.util.V3 ();
 this.p1 =  new J.util.P3 ();
 this.p2 =  new J.util.P3 ();
-this.s1 =  new J.util.P3i ();
-this.s2 =  new J.util.P3i ();
 this.bsForPass2 = J.util.BS.newN (64);
 });
 Clazz.overrideMethod (c$, "render", 
@@ -69,14 +58,14 @@ if (!this.isPass2) this.bsForPass2.clearAll ();
 this.slabbing = this.viewer.getSlabEnabled ();
 this.slabByAtom = this.viewer.getBoolean (603979938);
 this.endcaps = 3;
-this.dashDots = (this.viewer.getBoolean (603979888) ? J.render.SticksRenderer.sixdots : J.render.SticksRenderer.dashes);
+this.dashDots = (this.viewer.getBoolean (603979889) ? J.render.FontLineShapeRenderer.sixdots : J.render.FontLineShapeRenderer.dashes);
 this.multipleBondSpacing = this.viewer.getFloat (570425369);
 this.isCartesianExport = (this.exportType == 1);
 if (this.multipleBondSpacing == 0 && this.isCartesianExport) this.multipleBondSpacing = 0.2;
 this.multipleBondRadiusFactor = this.viewer.getFloat (570425368);
-this.showMultipleBonds = this.multipleBondSpacing != 0 && this.viewer.getBoolean (603979928);
 this.modeMultipleBond = this.viewer.getModeMultipleBond ();
-this.renderWireframe = this.viewer.getInMotion () && this.viewer.getBoolean (603979976);
+this.showMultipleBonds = (this.multipleBondSpacing != 0 && this.modeMultipleBond != 0 && this.viewer.getBoolean (603979928));
+this.renderWireframe = this.viewer.getInMotion (true) && this.viewer.getBoolean (603979976);
 this.ssbondsBackbone = this.viewer.getBoolean (603979952);
 this.hbondsBackbone = this.viewer.getBoolean (603979852);
 this.bondsBackbone =  new Boolean (this.hbondsBackbone | this.ssbondsBackbone).valueOf ();
@@ -98,29 +87,31 @@ return needTranslucent;
 });
 $_M(c$, "renderBond", 
 ($fz = function () {
-this.atomA = this.atomA0 = this.bond.getAtom1 ();
-this.atomB = this.atomB0 = this.bond.getAtom2 ();
+var atomA0;
+var atomB0;
+this.a = atomA0 = this.bond.getAtom1 ();
+this.b = atomB0 = this.bond.getAtom2 ();
 var order = this.bond.order & -131073;
 if (this.bondsBackbone) {
 if (this.ssbondsBackbone && (order & 256) != 0) {
-this.atomA = this.atomA.getGroup ().getLeadAtomOr (this.atomA);
-this.atomB = this.atomB.getGroup ().getLeadAtomOr (this.atomB);
+this.a = this.a.getGroup ().getLeadAtomOr (this.a);
+this.b = this.b.getGroup ().getLeadAtomOr (this.b);
 } else if (this.hbondsBackbone && J.modelset.Bond.isOrderH (order)) {
-this.atomA = this.atomA.getGroup ().getLeadAtomOr (this.atomA);
-this.atomB = this.atomB.getGroup ().getLeadAtomOr (this.atomB);
-}}if (!this.isPass2 && (!this.atomA.isInFrame () || !this.atomB.isInFrame () || !this.g3d.isInDisplayRange (this.atomA.screenX, this.atomA.screenY) || !this.g3d.isInDisplayRange (this.atomB.screenX, this.atomB.screenY) || this.modelSet.isAtomHidden (this.atomA.getIndex ()) || this.modelSet.isAtomHidden (this.atomB.getIndex ()))) return false;
+this.a = this.a.getGroup ().getLeadAtomOr (this.a);
+this.b = this.b.getGroup ().getLeadAtomOr (this.b);
+}}if (!this.isPass2 && (!this.a.isInFrame () || !this.b.isInFrame () || !this.g3d.isInDisplayRange (this.a.screenX, this.a.screenY) || !this.g3d.isInDisplayRange (this.b.screenX, this.b.screenY) || this.modelSet.isAtomHidden (this.a.getIndex ()) || this.modelSet.isAtomHidden (this.b.getIndex ()))) return false;
 if (this.slabbing) {
-if (this.g3d.isClippedZ (this.atomA.screenZ) && this.g3d.isClippedZ (this.atomB.screenZ)) return false;
-if (this.slabByAtom && (this.g3d.isClippedZ (this.atomA.screenZ) || this.g3d.isClippedZ (this.atomB.screenZ))) return false;
-}this.zA = this.atomA.screenZ;
-this.zB = this.atomB.screenZ;
+if (this.g3d.isClippedZ (this.a.screenZ) && this.g3d.isClippedZ (this.b.screenZ)) return false;
+if (this.slabByAtom && (this.g3d.isClippedZ (this.a.screenZ) || this.g3d.isClippedZ (this.b.screenZ))) return false;
+}this.zA = this.a.screenZ;
+this.zB = this.b.screenZ;
 if (this.zA == 1 || this.zB == 1) return false;
-this.colixA = this.atomA0.getColix ();
-this.colixB = this.atomB0.getColix ();
+this.colixA = atomA0.getColix ();
+this.colixB = atomB0.getColix ();
 if (((this.colix = this.bond.colix) & -30721) == 2) {
 this.colix = (this.colix & 30720);
-this.colixA = J.util.C.getColixInherited ((this.colix | this.viewer.getColixAtomPalette (this.atomA0, J.constant.EnumPalette.CPK.id)), this.colixA);
-this.colixB = J.util.C.getColixInherited ((this.colix | this.viewer.getColixAtomPalette (this.atomB0, J.constant.EnumPalette.CPK.id)), this.colixB);
+this.colixA = J.util.C.getColixInherited ((this.colix | this.viewer.getColixAtomPalette (atomA0, J.constant.EnumPalette.CPK.id)), this.colixA);
+this.colixB = J.util.C.getColixInherited ((this.colix | this.viewer.getColixAtomPalette (atomB0, J.constant.EnumPalette.CPK.id)), this.colixB);
 } else {
 this.colixA = J.util.C.getColixInherited (this.colix, this.colixA);
 this.colixB = J.util.C.getColixInherited (this.colix, this.colixB);
@@ -137,7 +128,7 @@ return true;
 if ((this.bondOrder & 224) == 0) {
 if ((this.bondOrder & 256) != 0) this.bondOrder &= -257;
 if ((this.bondOrder & 1023) != 0) {
-if (!this.showMultipleBonds || this.modeMultipleBond == 0 || (this.modeMultipleBond == 2 && this.mad > 500)) {
+if (!this.showMultipleBonds || (this.modeMultipleBond == 2 && this.mad > 500) || (this.bondOrder & 65536) != 0) {
 this.bondOrder = 1;
 }}}var mask = 0;
 switch (this.bondOrder) {
@@ -166,10 +157,10 @@ if (!this.hbondsSolid) mask = -1;
 } else if (this.bondOrder == 32768) {
 this.bondOrder = 1;
 }}
-this.xA = this.atomA.screenX;
-this.yA = this.atomA.screenY;
-this.xB = this.atomB.screenX;
-this.yB = this.atomB.screenY;
+this.xA = this.a.screenX;
+this.yA = this.a.screenY;
+this.xB = this.b.screenX;
+this.yB = this.b.screenY;
 this.mad = this.bond.mad;
 if (this.multipleBondRadiusFactor > 0 && this.bondOrder > 1) this.mad *= this.multipleBondRadiusFactor;
 this.dx = this.xB - this.xA;
@@ -177,13 +168,13 @@ this.dy = this.yB - this.yA;
 this.width = Clazz.floatToInt (this.viewer.scaleToScreen (Clazz.doubleToInt ((this.zA + this.zB) / 2), this.mad));
 if (this.renderWireframe && this.width > 0) this.width = 1;
 if (!this.isCartesianExport) {
-this.lineBond = (this.width <= 1);
-if (this.lineBond && (this.isAntialiased)) {
+this.asLineOnly = (this.width <= 1);
+if (this.asLineOnly && (this.isAntialiased)) {
 this.width = 3;
-this.lineBond = false;
+this.asLineOnly = false;
 }}switch (mask) {
 case -1:
-this.drawDashed (this.xA, this.yA, this.zA, this.xB, this.yB, this.zB, J.render.SticksRenderer.hDashes);
+this.drawDashed (this.xA, this.yA, this.zA, this.xB, this.yB, this.zB, J.render.FontLineShapeRenderer.hDashes);
 break;
 default:
 this.drawBond (mask);
@@ -194,12 +185,12 @@ return needTranslucent;
 $_M(c$, "drawBond", 
 ($fz = function (dottedMask) {
 if (this.isCartesianExport && this.bondOrder == 1) {
-this.g3d.drawBond (this.atomA, this.atomB, this.colixA, this.colixB, this.endcaps, this.mad, -1);
+this.g3d.drawBond (this.a, this.b, this.colixA, this.colixB, this.endcaps, this.mad, -1);
 return;
 }var isEndOn = (this.dx == 0 && this.dy == 0);
-if (isEndOn && this.lineBond) return;
+if (isEndOn && this.asLineOnly) return;
 var doFixedSpacing = (this.bondOrder > 1 && this.multipleBondSpacing > 0);
-var isPiBonded = doFixedSpacing && (this.viewer.getHybridizationAndAxes (this.atomA.index, this.z, this.x, "pz") != null || this.viewer.getHybridizationAndAxes (this.atomB.index, this.z, this.x, "pz") != null) && !Float.isNaN (this.x.x);
+var isPiBonded = doFixedSpacing && (this.viewer.getHybridizationAndAxes (this.a.index, this.z, this.x, "pz") != null || this.viewer.getHybridizationAndAxes (this.b.index, this.z, this.x, "pz") != null) && !Float.isNaN (this.x.x);
 if (isEndOn && !doFixedSpacing) {
 var space = Clazz.doubleToInt (this.width / 8) + 3;
 var step = this.width + space;
@@ -216,7 +207,7 @@ if (isDashed) this.drawDashed (this.xA, this.yA, this.zA, this.xB, this.yB, this
 return;
 }if (doFixedSpacing) {
 if (!isPiBonded) this.z.set (3.141592653589793, 2.718281828459045, (8.539734222673566));
-this.x.sub2 (this.atomB, this.atomA);
+this.x.sub2 (this.b, this.a);
 this.y.cross (this.x, this.z);
 this.y.normalize ();
 if (Float.isNaN (this.y.x)) {
@@ -227,8 +218,8 @@ this.y.normalize ();
 }this.y.scale (this.multipleBondSpacing);
 this.x.setT (this.y);
 this.x.scale ((this.bondOrder - 1) / 2);
-this.p1.sub2 (this.atomA, this.x);
-this.p2.sub2 (this.atomB, this.x);
+this.p1.sub2 (this.a, this.x);
+this.p2.sub2 (this.b, this.x);
 while (true) {
 if (this.isCartesianExport && !isDashed) {
 this.g3d.drawBond (this.p1, this.p2, this.colixA, this.colixB, this.endcaps, this.mad, -2);
@@ -283,55 +274,10 @@ this.yAxis2 += this.dyStep;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getAromaticDottedBondMask", 
 ($fz = function () {
-var atomC = this.atomB.findAromaticNeighbor (this.atomA.getIndex ());
+var atomC = this.b.findAromaticNeighbor (this.a.getIndex ());
 if (atomC == null) return 1;
 var dxAC = atomC.screenX - this.xA;
 var dyAC = atomC.screenY - this.yA;
 return ((this.dx * dyAC - this.dy * dxAC) < 0 ? 2 : 1);
 }, $fz.isPrivate = true, $fz));
-$_M(c$, "drawDashed", 
-($fz = function (xA, yA, zA, xB, yB, zB, array) {
-var dx = xB - xA;
-var dy = yB - yA;
-var dz = zB - zA;
-var isDots = (array === J.render.SticksRenderer.sixdots);
-if (isDots) {
-if (this.mad * 4 > 1500) array = J.render.SticksRenderer.twodots;
- else if (this.mad * 6 > 1500) array = J.render.SticksRenderer.fourdots;
-}var f = array[0];
-var ptS = array[1];
-var ptE = array[2];
-var colixS = this.colixA;
-var colixE = (ptE == 0 ? this.colixB : this.colixA);
-for (var pt = 3; pt < array.length; pt++) {
-var i = array[pt];
-var xS = Clazz.doubleToInt (Math.floor (xA + dx * i / f));
-var yS = Clazz.doubleToInt (Math.floor (yA + dy * i / f));
-var zS = Clazz.doubleToInt (Math.floor (zA + dz * i / f));
-if (isDots) {
-this.s1.set (xS, yS, zS);
-if (pt == ptS) this.g3d.setColix (this.colixA);
- else if (pt == ptE) this.g3d.setColix (this.colixB);
-this.g3d.fillSphereI (this.width, this.s1);
-continue;
-}if (pt == ptS) colixS = this.colixB;
-i = array[++pt];
-if (pt == ptE) colixE = this.colixB;
-var xE = Clazz.doubleToInt (Math.floor (xA + dx * i / f));
-var yE = Clazz.doubleToInt (Math.floor (yA + dy * i / f));
-var zE = Clazz.doubleToInt (Math.floor (zA + dz * i / f));
-this.fillCylinder (colixS, colixE, 2, this.width, xS, yS, zS, xE, yE, zE);
-}
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~A");
-$_M(c$, "fillCylinder", 
-($fz = function (colixA, colixB, endcaps, diameter, xA, yA, zA, xB, yB, zB) {
-if (this.lineBond) this.g3d.drawLine (colixA, colixB, xA, yA, zA, xB, yB, zB);
- else this.g3d.fillCylinderXYZ (colixA, colixB, endcaps, (!this.isExport || this.mad == 1 ? diameter : this.mad), xA, yA, zA, xB, yB, zB);
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N,~N,~N,~N");
-Clazz.defineStatics (c$,
-"dashes", [12, 0, 0, 2, 5, 7, 10],
-"hDashes", [10, 7, 6, 1, 3, 4, 6, 7, 9],
-"sixdots", [12, 3, 6, 1, 3, 5, 7, 9, 11],
-"fourdots", [13, 3, 5, 2, 5, 8, 11],
-"twodots", [12, 3, 4, 3, 9]);
 });

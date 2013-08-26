@@ -1,13 +1,17 @@
 Clazz.declarePackage ("J.modelset");
 Clazz.load (null, "J.modelset.Measurement", ["java.lang.Float", "J.atomdata.RadiusData", "J.constant.EnumVdw", "J.modelset.LabelToken", "J.util.AxisAngle4f", "$.Escape", "$.JmolList", "$.Measure", "$.P3", "$.SB", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
+this.thisID = null;
 this.modelSet = null;
 this.index = 0;
 this.isVisible = true;
 this.isHidden = false;
 this.isDynamic = false;
 this.isTrajectory = false;
+this.$isValid = true;
 this.colix = 0;
+this.labelColix = -1;
+this.mad = 0;
 this.tickInfo = null;
 this.traceX = -2147483648;
 this.traceY = 0;
@@ -15,11 +19,13 @@ this.count = 0;
 this.countPlusIndices = null;
 this.pts = null;
 this.value = 0;
-this.viewer = null;
 this.strFormat = null;
+this.viewer = null;
 this.strMeasurement = null;
 this.aa = null;
 this.pointArc = null;
+this.text = null;
+this.type = null;
 Clazz.instantialize (this, arguments);
 }, J.modelset, "Measurement");
 Clazz.prepareFields (c$, function () {
@@ -35,6 +41,10 @@ this.strFormat = strFormat;
 if (m != null) {
 this.tickInfo = m.tickInfo;
 this.pts = m.pts;
+this.mad = m.mad;
+this.thisID = m.thisID;
+this.text = m.text;
+if (this.thisID != null && this.text != null) this.labelColix = this.text.colix;
 }if (this.pts == null) this.pts =  new Array (4);
 var indices = (m == null ? null : m.countPlusIndices);
 this.count = (indices == null ? 0 : indices[0]);
@@ -60,6 +70,10 @@ function () {
 return this.count;
 });
 $_M(c$, "setCount", 
+function (count) {
+this.setCountM (count);
+}, "~N");
+$_M(c$, "setCountM", 
 function (count) {
 this.count = this.countPlusIndices[0] = count;
 }, "~N");
@@ -175,15 +189,16 @@ var label = this.getLabelString ();
 if (label == null) return "";
 if (units == null) {
 var pt = this.strFormat.indexOf ("//");
-if (pt >= 0) {
-units = this.strFormat.substring (pt + 2);
-} else {
+units = (pt >= 0 ? this.strFormat.substring (pt + 2) : null);
+if (units == null) {
 units = this.viewer.getMeasureDistanceUnits ();
 this.strFormat += "//" + units;
 }}units = J.modelset.Measurement.fixUnits (units);
 var pt = label.indexOf ("//");
-if (pt >= 0) label = label.substring (0, pt);
-var f = this.fixValue (units, (label.indexOf ("%V") >= 0));
+if (pt >= 0) {
+label = label.substring (0, pt);
+if (label.length == 0) label = "%VALUE";
+}var f = this.fixValue (units, (label.indexOf ("%V") >= 0));
 return this.formatString (f, units, label);
 }, $fz.isPrivate = true, $fz), "~S");
 c$.fixUnits = $_M(c$, "fixUnits", 
@@ -199,19 +214,28 @@ function (units, andRound) {
 if (this.count != 2) return this.value;
 var dist = this.value;
 if (units != null) {
-if (units.equals ("%")) {
+var isPercent = units.equals ("%");
+if (isPercent || units.endsWith ("hz")) {
 var i1 = this.getAtomIndex (1);
 var i2 = this.getAtomIndex (2);
 if (i1 >= 0 && i2 >= 0) {
-var vdw = (this.getAtom (1)).getVanderwaalsRadiusFloat (this.viewer, J.constant.EnumVdw.AUTO) + (this.getAtom (2)).getVanderwaalsRadiusFloat (this.viewer, J.constant.EnumVdw.AUTO);
-dist /= vdw;
-return (andRound ? Math.round (dist * 1000) / 10 : dist * 100);
-}units = "ang";
-}if (units.equals ("nm")) return (andRound ? Math.round (dist * 100) / 1000 : dist / 10);
+var a1 = this.getAtom (1);
+var a2 = this.getAtom (2);
+var isDC = (!isPercent && J.modelset.Measurement.nmrType (units) == 1);
+this.type = (isPercent ? "percent" : isDC ? "dipoleCouplingConstant" : "J-CouplingConstant");
+dist = (isPercent ? dist / (a1.getVanderwaalsRadiusFloat (this.viewer, J.constant.EnumVdw.AUTO) + a2.getVanderwaalsRadiusFloat (this.viewer, J.constant.EnumVdw.AUTO)) : isDC ? this.viewer.getNMRCalculation ().getDipolarConstantHz (a1, a2) : this.viewer.getNMRCalculation ().getIsoOrAnisoHz (true, a1, a2, units, null));
+this.$isValid = !Float.isNaN (dist);
+if (isPercent) units = "pm";
+}}if (units.equals ("nm")) return (andRound ? Math.round (dist * 100) / 1000 : dist / 10);
 if (units.equals ("pm")) return (andRound ? Math.round (dist * 1000) / 10 : dist * 100);
 if (units.equals ("au")) return (andRound ? Math.round (dist / 0.5291772 * 1000) / 1000 : dist / 0.5291772);
+if (units.endsWith ("khz")) return (andRound ? Math.round (dist / 10) / 100 : dist / 1000);
 }return (andRound ? Math.round (dist * 100) / 100 : dist);
 }, "~S,~B");
+c$.nmrType = $_M(c$, "nmrType", 
+function (units) {
+return (units.indexOf ("hz") < 0 ? 0 : units.startsWith ("dc_") || units.equals ("khz") ? 1 : 2);
+}, "~S");
 $_M(c$, "formatAngle", 
 ($fz = function (angle) {
 var label = this.getLabelString ();
@@ -339,11 +363,12 @@ $_M(c$, "getInfoAsString",
 function (units) {
 var f = this.fixValue (units, true);
 var sb =  new J.util.SB ();
-sb.append (this.count == 2 ? "distance" : this.count == 3 ? "angle" : "dihedral");
+sb.append (this.count == 2 ? (this.type == null ? "distance" : this.type) : this.count == 3 ? "angle" : "dihedral");
 sb.append (" \t").appendF (f);
-sb.append (" \t").append (this.getString ());
+sb.append (" \t").append (J.util.Escape.eS (this.strMeasurement));
 for (var i = 1; i <= this.count; i++) sb.append (" \t").append (this.getLabel (i, false, false));
 
+if (this.thisID != null) sb.append (" \t").append (this.thisID);
 return sb.toString ();
 }, "~S");
 $_M(c$, "isInRange", 
@@ -367,4 +392,19 @@ if (molecule < 0) molecule = m;
 }
 return true;
 }, "~A,~N");
+$_M(c$, "isMin", 
+function (htMin) {
+var a1 = this.getAtom (1);
+var a2 = this.getAtom (2);
+var d = Clazz.floatToInt (a2.distanceSquared (a1) * 100);
+var n1 = a1.getAtomName ();
+var n2 = a2.getAtomName ();
+var key = (n1.compareTo (n2) < 0 ? n1 + n2 : n2 + n1);
+var min = htMin.get (key);
+return (min != null && d == min.intValue ());
+}, "java.util.Map");
+Clazz.defineStatics (c$,
+"NMR_NOT", 0,
+"NMR_DC", 1,
+"NMR_JC", 2);
 });

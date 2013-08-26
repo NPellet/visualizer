@@ -28,7 +28,7 @@ return this.pointGroup.getInfo (modelIndex, asDraw, asInfo, type, index, scale);
 }, "~N,~B,~B,~S,~N,~N");
 $_M(c$, "setSpaceGroup", 
 function (doNormalize) {
-if (this.spaceGroup == null) this.spaceGroup = ( new J.symmetry.SpaceGroup (null)).set (doNormalize);
+if (this.spaceGroup == null) this.spaceGroup = (J.symmetry.SpaceGroup.getNull ()).set (doNormalize);
 }, "~B");
 $_M(c$, "addSpaceGroupOperation", 
 function (xyz, opId) {
@@ -109,8 +109,8 @@ function (p) {
 return J.symmetry.SymmetryOperation.fcoord (p);
 }, "J.util.Tuple3f");
 Clazz.overrideMethod (c$, "getMatrixFromString", 
-function (xyz, temp, allowScaling) {
-return J.symmetry.SymmetryOperation.getMatrixFromString (xyz, temp, false, allowScaling);
+function (xyz, rotTransMatrix, allowScaling) {
+return J.symmetry.SymmetryOperation.getMatrixFromString (xyz, rotTransMatrix, null, false, allowScaling);
 }, "~S,~A,~B");
 Clazz.overrideMethod (c$, "ijkToPoint3f", 
 function (nnn) {
@@ -191,10 +191,10 @@ Clazz.overrideMethod (c$, "getUnitCellAsArray",
 function (vectorsOnly) {
 return this.unitCell.getUnitCellAsArray (vectorsOnly);
 }, "~B");
-Clazz.overrideMethod (c$, "getEllipsoid", 
+Clazz.overrideMethod (c$, "getTensor", 
 function (parBorU) {
 if (this.unitCell == null) this.unitCell = J.symmetry.UnitCell.newA ([1, 1, 1, 90, 90, 90]);
-return this.unitCell.getEllipsoid (parBorU);
+return this.unitCell.getTensor (parBorU);
 }, "~A");
 Clazz.overrideMethod (c$, "getUnitCellVertices", 
 function () {
@@ -388,17 +388,18 @@ case 12:
 return info[10];
 }
 }, "J.modelset.ModelSet,~N,~N,J.api.SymmetryInterface,~S,~N,J.util.P3,J.util.P3,~S,~N");
-Clazz.overrideMethod (c$, "setCentroid", 
-function (modelSet, iAtom0, iAtom1, minmax) {
+Clazz.overrideMethod (c$, "notInCentroid", 
+function (modelSet, bsAtoms, minmax) {
 try {
 var bsDelete =  new J.util.BS ();
+var iAtom0 = bsAtoms.nextSetBit (0);
 var molecules = modelSet.getMolecules ();
 var moleculeCount = molecules.length;
 var atoms = modelSet.atoms;
-var isOneMolecule = (molecules[moleculeCount - 1].firstAtomIndex == modelSet.models[atoms[iAtom1].modelIndex].firstAtomIndex);
+var isOneMolecule = (molecules[moleculeCount - 1].firstAtomIndex == modelSet.models[atoms[iAtom0].modelIndex].firstAtomIndex);
 var center =  new J.util.P3 ();
 var centroidPacked = (minmax[6] == 1);
-nextMol : for (var i = moleculeCount; --i >= 0 && molecules[i].firstAtomIndex >= iAtom0 && molecules[i].firstAtomIndex < iAtom1; ) {
+nextMol : for (var i = moleculeCount; --i >= 0 && bsAtoms.get (molecules[i].firstAtomIndex); ) {
 var bs = molecules[i].atomList;
 center.set (0, 0, 0);
 var n = 0;
@@ -415,19 +416,26 @@ n++;
 }}
 if (centroidPacked || n > 0 && this.isNotCentroid (center, n, minmax, false)) bsDelete.or (bs);
 }
-if (bsDelete.nextSetBit (0) >= 0) modelSet.viewer.deleteAtoms (bsDelete, false);
+return bsDelete;
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
+return null;
 } else {
 throw e;
 }
 }
-}, "J.modelset.ModelSet,~N,~N,~A");
+}, "J.modelset.ModelSet,J.util.BS,~A");
 $_M(c$, "isNotCentroid", 
 ($fz = function (center, n, minmax, centroidPacked) {
 center.scale (1 / n);
 this.toFractional (center, false);
 if (centroidPacked) return (center.x + 0.000005 <= minmax[0] || center.x - 0.000005 > minmax[3] || center.y + 0.000005 <= minmax[1] || center.y - 0.000005 > minmax[4] || center.z + 0.000005 <= minmax[2] || center.z - 0.000005 > minmax[5]);
-return (center.x + 0.000005 <= minmax[0] || center.x + 0.00001 > minmax[3] || center.y + 0.000005 <= minmax[1] || center.y + 0.00001 > minmax[4] || center.z + 0.000005 <= minmax[2] || center.z + 0.00001 > minmax[5]);
+return (center.x + 0.000005 <= minmax[0] || center.x + 0.00005 > minmax[3] || center.y + 0.000005 <= minmax[1] || center.y + 0.00005 > minmax[4] || center.z + 0.000005 <= minmax[2] || center.z + 0.00005 > minmax[5]);
 }, $fz.isPrivate = true, $fz), "J.util.P3,~N,~A,~B");
+Clazz.overrideMethod (c$, "checkUnitCell", 
+function (uc, cell, ptTemp, isAbsolute) {
+uc.toFractional (ptTemp, isAbsolute);
+var slop = 0.02;
+return (ptTemp.x >= cell.x - 1 - slop && ptTemp.x <= cell.x + slop && ptTemp.y >= cell.y - 1 - slop && ptTemp.y <= cell.y + slop && ptTemp.z >= cell.z - 1 - slop && ptTemp.z <= cell.z + slop);
+}, "J.api.SymmetryInterface,J.util.P3,J.util.P3,~B");
 });

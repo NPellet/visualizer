@@ -2,7 +2,6 @@ Clazz.declarePackage ("J.shape");
 Clazz.load (["J.shape.FontLineShape"], "J.shape.Bbcage", null, function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isVisible = false;
-this.mad = 0;
 Clazz.instantialize (this, arguments);
 }, J.shape, "Bbcage", J.shape.FontLineShape);
 Clazz.overrideMethod (c$, "setProperty", 

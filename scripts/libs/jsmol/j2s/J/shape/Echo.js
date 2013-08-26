@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.TextShape"], "J.shape.Echo", ["J.shape.Object2d", "$.Text", "J.util.TextFormat"], function () {
+Clazz.load (["J.shape.TextShape"], "J.shape.Echo", ["J.modelset.Object2d", "$.Text", "J.util.TextFormat"], function () {
 c$ = Clazz.declareType (J.shape, "Echo", J.shape.TextShape);
 $_M(c$, "initShape", 
 function () {
@@ -13,6 +13,12 @@ if (this.currentObject != null) {
 var val = (value).floatValue ();
 this.currentObject.setScalePixelsPerMicron (val == 0 ? 0 : 10000 / val);
 }return;
+}if ("point" === propertyName) {
+if (this.currentObject == null) return;
+var t = this.currentObject;
+t.pointerPt = (value == null ? null : value);
+t.pointer = (value == null ? 0 : 1);
+return;
 }if ("xyz" === propertyName) {
 if (this.currentObject != null && this.viewer.getBoolean (603979845)) this.currentObject.setScalePixelsPerMicron (this.viewer.getScalePixelsPerAngstrom (false) * 10000);
 }if ("scale" === propertyName) {
@@ -52,7 +58,7 @@ if (this.isAll || J.util.TextFormat.isMatch (text.target.toUpperCase (), this.th
 }return;
 }(this.currentObject).hidden = isHidden;
 return;
-}if (J.shape.Object2d.setProperty (propertyName, value, this.currentObject)) return;
+}if (J.modelset.Object2d.setProperty (propertyName, value, this.currentObject)) return;
 if ("target" === propertyName) {
 this.thisID = null;
 var target = (value).intern ().toLowerCase ();
@@ -71,7 +77,7 @@ valign = 3;
 halign = 2;
 } else if ("bottom" === target) {
 valign = 2;
-}text = J.shape.Text.newEcho (this.viewer, this.gdata, this.gdata.getFont3DFS ("Serif", 20), target, 10, valign, halign, 0);
+}text = J.modelset.Text.newEcho (this.viewer, this.gdata, this.gdata.getFont3DFS ("Serif", 20), target, 10, valign, halign, 0);
 text.setAdjustForWindow (true);
 this.objects.put (target, text);
 if (this.currentFont != null) text.setFont (this.currentFont, true);

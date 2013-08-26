@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapespecial");
-Clazz.load (["J.shape.AtomShape", "J.atomdata.RadiusData", "J.util.BS"], "J.shapespecial.Dots", ["java.util.Hashtable", "J.constant.EnumVdw", "J.geodesic.EnvelopeCalculation", "J.util.BSUtil", "$.C", "$.Escape", "$.Logger", "$.Matrix3f", "$.SB"], function () {
+Clazz.load (["J.shape.AtomShape", "J.atomdata.RadiusData", "J.util.BS"], "J.shapespecial.Dots", ["java.util.Hashtable", "J.constant.EnumVdw", "J.geodesic.EnvelopeCalculation", "J.util.BSUtil", "$.C", "$.Escape", "$.Matrix3f", "$.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.ec = null;
 this.isSurface = false;
@@ -103,9 +103,7 @@ Clazz.overrideMethod (c$, "setSizeRD",
 function (rd, bsSelected) {
 if (rd == null) rd =  new J.atomdata.RadiusData (null, 0, J.atomdata.RadiusData.EnumType.ABSOLUTE, null);
 if (this.bsSelected != null) bsSelected = this.bsSelected;
-if (J.util.Logger.debugging) {
-J.util.Logger.debug ("Dots.setSize " + rd.value);
-}var isVisible = true;
+var isVisible = true;
 var setRadius = 3.4028235E38;
 this.isActive = true;
 switch (rd.factorType) {
@@ -154,7 +152,7 @@ if (dotsConvexMaps != null) {
 for (var i = this.atomCount; --i >= 0; ) if (this.bsOn.get (i)) {
 dotsConvexMaps[i] = null;
 }
-}if (dotsConvexMaps == null) {
+}if (dotsConvexMaps == null && (this.colixes == null || this.colixes.length != this.atomCount)) {
 this.colixes =  Clazz.newShortArray (this.atomCount, 0);
 this.paletteIDs =  Clazz.newByteArray (this.atomCount, 0);
 }this.ec.calculate (rd, maxRadius, this.bsOn, this.bsIgnore, !this.viewer.getBoolean (603979830), this.viewer.getBoolean (603979829), this.isSurface, true);

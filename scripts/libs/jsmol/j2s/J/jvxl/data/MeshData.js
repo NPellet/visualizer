@@ -135,9 +135,9 @@ return (val1 >= 0 && val2 >= 0 && val3 >= 0 || val1 <= 0 && val2 <= 0 && val3 <=
 }, "~N,~N,~N,~A");
 $_M(c$, "calculateVolumeOrArea", 
 function (thisSet, isArea, getSets) {
-if (getSets) this.getSurfaceSet ();
-var justOne = (this.nSets == 0 || thisSet >= 0);
-var n = (justOne ? 1 : this.nSets);
+if (getSets || this.nSets == 0) this.getSurfaceSet ();
+var justOne = (thisSet >= -1);
+var n = (justOne || this.nSets == 0 ? 1 : this.nSets);
 var v =  Clazz.newDoubleArray (n, 0);
 var vAB =  new J.util.V3 ();
 var vAC =  new J.util.V3 ();
@@ -161,7 +161,7 @@ v[justOne ? 0 : iSet] += vAC.dot (vTemp);
 var factor = (isArea ? 2 : 6);
 for (var i = 0; i < n; i++) v[i] /= factor;
 
-if (justOne && thisSet != -2147483648) return Float.$valueOf (v[0]);
+if (justOne) return Float.$valueOf (v[0]);
 return v;
 }, "~N,~B,~B");
 $_M(c$, "updateInvalidatedVertices", 

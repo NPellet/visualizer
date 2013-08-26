@@ -14,9 +14,13 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoFxyReader, []);
 });
-$_M(c$, "init", 
+Clazz.overrideMethod (c$, "init", 
 function (sg) {
-Clazz.superCall (this, J.jvxl.readers.IsoFxyReader, "init", [sg]);
+this.initIFR (sg);
+}, "J.jvxl.readers.SurfaceGenerator");
+$_M(c$, "initIFR", 
+function (sg) {
+this.initADR (sg);
 this.isXLowToHigh = true;
 this.precalculateVoxelData = false;
 this.atomDataServer = sg.getAtomDataServer ();
@@ -40,10 +44,10 @@ if (this.params.thePlane != null || this.data == null && !this.useOriginStepsPoi
  else this.setVolumeData ();
 J.jvxl.data.JvxlCoder.jvxlCreateHeaderWithoutTitleOrAtoms (this.volumeData, this.jvxlFileHeaderBuffer);
 }, "~S");
-$_M(c$, "setVolumeData", 
+Clazz.overrideMethod (c$, "setVolumeData", 
 function () {
 if (this.data == null) {
-Clazz.superCall (this, J.jvxl.readers.IsoFxyReader, "setVolumeData", []);
+this.setVolumeDataADR ();
 return;
 }this.volumetricOrigin.setT (this.params.functionInfo.get (1));
 for (var i = 0; i < 3; i++) {

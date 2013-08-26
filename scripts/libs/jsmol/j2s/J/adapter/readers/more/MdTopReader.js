@@ -24,9 +24,9 @@ if (this.line.equals ("POINTERS")) this.getPointers ();
  else if (this.line.equals ("MASS")) this.getMasses ();
 return false;
 });
-$_M(c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeReader", 
 function () {
-Clazz.superCall (this, J.adapter.readers.more.MdTopReader, "finalizeReader", []);
+this.finalizeReaderASCR ();
 var atoms = this.atomSetCollection.getAtoms ();
 var atom;
 for (var i = 0; i < this.atomCount; i++) {

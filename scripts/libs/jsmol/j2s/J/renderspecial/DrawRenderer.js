@@ -4,9 +4,9 @@ c$ = Clazz.decorateAsClass (function () {
 this.drawType = null;
 this.dmesh = null;
 this.controlHermites = null;
-this.vpt0 = null;
-this.vpt1 = null;
-this.vpt2 = null;
+this.pt0 = null;
+this.pt1 = null;
+this.pt2 = null;
 this.vTemp = null;
 this.vTemp2 = null;
 this.pt0f = null;
@@ -16,9 +16,9 @@ this.bsHandles = null;
 Clazz.instantialize (this, arguments);
 }, J.renderspecial, "DrawRenderer", J.render.MeshRenderer);
 Clazz.prepareFields (c$, function () {
-this.vpt0 =  new J.util.P3 ();
-this.vpt1 =  new J.util.P3 ();
-this.vpt2 =  new J.util.P3 ();
+this.pt0 =  new J.util.P3 ();
+this.pt1 =  new J.util.P3 ();
+this.pt2 =  new J.util.P3 ();
 this.vTemp =  new J.util.V3 ();
 this.vTemp2 =  new J.util.V3 ();
 this.pt0f =  new J.util.P3 ();
@@ -130,16 +130,16 @@ mat.setAA (J.util.AxisAngle4f.newVA (this.vTemp, (degrees * 3.141592653589793 / 
 this.screens = this.viewer.allocTempScreens (nPoints);
 var iBase = nPoints - (this.dmesh.scale < 2 ? 3 : 3);
 for (var i = 0; i < nPoints; i++) {
-if (i == iBase) this.vpt0.setT (this.vpt1);
-this.vpt1.scaleAdd2 (1, this.vTemp2, this.pt1f);
-if (i == 0) this.vpt2.setT (this.vpt1);
-this.viewer.transformPtScr (this.vpt1, this.screens[i]);
+if (i == iBase) this.pt0.setT (this.pt1);
+this.pt1.scaleAdd2 (1, this.vTemp2, this.pt1f);
+if (i == 0) this.pt2.setT (this.pt1);
+this.viewer.transformPtScr (this.pt1, this.screens[i]);
 mat.transform (this.vTemp2);
 }
 if (this.dmesh.isVector && !this.dmesh.noHead) {
-this.renderArrowHead (this.vpt0, this.vpt1, 0.3, false, false, this.dmesh.isBarb);
+this.renderArrowHead (this.pt0, this.pt1, 0.3, false, false, this.dmesh.isBarb);
 this.viewer.transformPtScr (this.pt1f, this.screens[nPoints - 1]);
-}this.pt1f.setT (this.vpt2);
+}this.pt1f.setT (this.pt2);
 break;
 case J.shapespecial.Draw.EnumDrawType.ARROW:
 if (this.vertexCount == 2) {
@@ -178,38 +178,38 @@ i0 = i;
 j0 = j;
 }}
 
-this.vpt0.setT (this.vertices[0]);
-this.vpt0.add (this.vertices[1]);
-this.vpt0.scale (0.5);
-this.vpt2.setT (this.vertices[2]);
-this.vpt2.add (this.vertices[3]);
-this.vpt2.scale (0.5);
-this.vpt1.setT (this.vpt0);
-this.vpt1.add (this.vpt2);
-this.vpt1.scale (0.5);
+this.pt0.setT (this.vertices[0]);
+this.pt0.add (this.vertices[1]);
+this.pt0.scale (0.5);
+this.pt2.setT (this.vertices[2]);
+this.pt2.add (this.vertices[3]);
+this.pt2.scale (0.5);
+this.pt1.setT (this.pt0);
+this.pt1.add (this.pt2);
+this.pt1.scale (0.5);
 this.vertices[3] = J.util.P3.newP (this.vertices[i0]);
 this.vertices[3].add (this.vertices[j0]);
 this.vertices[3].scale (0.5);
-this.vertices[1] = J.util.P3.newP (this.vpt1);
-this.vertices[0] = J.util.P3.newP (this.vpt0);
-this.vertices[2] = J.util.P3.newP (this.vpt2);
+this.vertices[1] = J.util.P3.newP (this.pt1);
+this.vertices[0] = J.util.P3.newP (this.pt0);
+this.vertices[2] = J.util.P3.newP (this.pt2);
 for (var i = 0; i < 4; i++) this.viewer.transformPtScr (this.vertices[i], this.screens[i]);
 
-var f = 1;
+var f = 4 * this.getArrowScale ();
 var endoffset = 0.2;
-var offsetside = 10 * this.width;
-this.vpt0.set (this.screens[0].x, this.screens[0].y, this.screens[0].z);
-this.vpt1.set (this.screens[1].x, this.screens[1].y, this.screens[1].z);
-this.vpt2.set (this.screens[3].x, this.screens[3].y, this.screens[3].z);
+var offsetside = (this.width == 0 ? 0.1 : this.width);
+this.pt0.set (this.screens[0].x, this.screens[0].y, this.screens[0].z);
+this.pt1.set (this.screens[1].x, this.screens[1].y, this.screens[1].z);
+this.pt2.set (this.screens[3].x, this.screens[3].y, this.screens[3].z);
 var dx = (this.screens[1].x - this.screens[0].x) * f;
 var dy = (this.screens[1].y - this.screens[0].y) * f;
-if (dmax == 0 || J.util.Measure.computeTorsion (this.vpt2, this.vpt0, J.util.P3.new3 (this.vpt0.x, this.vpt0.y, 10000), this.vpt1, false) > 0) {
+if (dmax == 0 || J.util.Measure.computeTorsion (this.pt2, this.pt0, J.util.P3.new3 (this.pt0.x, this.pt0.y, 10000), this.pt1, false) > 0) {
 dx = -dx;
 dy = -dy;
-}this.vpt2.set (dy, -dx, 0);
-this.vpt1.add (this.vpt2);
-this.viewer.unTransformPoint (this.vpt1, this.vertices[1]);
-this.vpt2.scale (offsetside);
+}this.pt2.set (dy, -dx, 0);
+this.pt1.add (this.pt2);
+this.viewer.unTransformPoint (this.pt1, this.vertices[1]);
+this.pt2.scale (offsetside);
 this.vTemp.setT (this.vertices[1]);
 this.vTemp.sub (this.vertices[0]);
 this.vTemp.scale (endoffset);
@@ -221,10 +221,10 @@ this.vertices[2].add (this.vTemp);
 for (var i = 0; i < 3; i++) {
 this.viewer.transformPtScr (this.vertices[i], this.screens[i]);
 if (offsetside != 0) {
-this.screens[i].x += Math.round (this.vpt2.x);
-this.screens[i].y += Math.round (this.vpt2.y);
-this.vpt1.set (this.screens[i].x, this.screens[i].y, this.screens[i].z);
-this.viewer.unTransformPoint (this.vpt1, this.vertices[i]);
+this.screens[i].x += Math.round (this.pt2.x);
+this.screens[i].y += Math.round (this.pt2.y);
+this.pt1.set (this.screens[i].x, this.screens[i].y, this.screens[i].z);
+this.viewer.unTransformPoint (this.pt1, this.vertices[i]);
 }}
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "drawLineData", 
@@ -241,27 +241,25 @@ $_M(c$, "renderXyArrow",
 ($fz = function (ptXY) {
 var ptXYZ = 1 - ptXY;
 var arrowPt =  new Array (2);
-arrowPt[ptXYZ] = this.vpt1;
-arrowPt[ptXY] = this.vpt0;
-this.vpt0.set (this.screens[ptXY].x, this.screens[ptXY].y, this.screens[ptXY].z);
-this.viewer.rotatePoint (this.vertices[ptXYZ], this.vpt1);
-this.vpt1.z *= -1;
+arrowPt[ptXYZ] = this.pt1;
+arrowPt[ptXY] = this.pt0;
+this.pt0.set (this.screens[ptXY].x, this.screens[ptXY].y, this.screens[ptXY].z);
+this.viewer.rotatePoint (this.vertices[ptXYZ], this.pt1);
+this.pt1.z *= -1;
 var zoomDimension = this.viewer.getScreenDim ();
 var scaleFactor = zoomDimension / 20;
-this.vpt1.scaleAdd2 (this.dmesh.scale * scaleFactor, this.vpt1, this.vpt0);
+this.pt1.scaleAdd2 (this.dmesh.scale * scaleFactor, this.pt1, this.pt0);
 if (this.diameter == 0) this.diameter = 1;
-this.$pt1i.set (Math.round (this.vpt0.x), Math.round (this.vpt0.y), Math.round (this.vpt0.z));
-this.pt2i.set (Math.round (this.vpt1.x), Math.round (this.vpt1.y), Math.round (this.vpt1.z));
+this.$pt1i.set (Math.round (this.pt0.x), Math.round (this.pt0.y), Math.round (this.pt0.z));
+this.pt2i.set (Math.round (this.pt1.x), Math.round (this.pt1.y), Math.round (this.pt1.z));
 if (this.diameter < 0) this.g3d.drawDottedLine (this.$pt1i, this.pt2i);
  else this.g3d.fillCylinder (2, this.diameter, this.$pt1i, this.pt2i);
-this.renderArrowHead (this.vpt0, this.vpt1, 0, true, false, false);
+this.renderArrowHead (this.pt0, this.pt1, 0, true, false, false);
 }, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "renderArrowHead", 
 ($fz = function (pt1, pt2, factor2, isTransformed, withShaft, isBarb) {
 if (this.dmesh.noHead) return;
-var fScale = this.dmesh.drawArrowScale;
-if (fScale == 0) fScale = this.viewer.getFloat (570425352) * (this.dmesh.connections == null ? 1 : 0.5);
-if (fScale <= 0) fScale = 0.5;
+var fScale = this.getArrowScale ();
 if (isTransformed) fScale *= 40;
 if (factor2 > 0) fScale *= factor2;
 this.pt0f.setT (pt1);
@@ -295,6 +293,13 @@ this.diameter = Clazz.doubleToInt (headDiameter / 5);
 if (headDiameter > 2) this.g3d.fillConeScreen (2, headDiameter, this.$pt1i, this.pt2i, isBarb);
 if (withShaft) this.g3d.fillCylinderScreen3I (4, this.diameter, this.pt0i, this.$pt1i, null, null, this.mad / 2000);
 }, $fz.isPrivate = true, $fz), "J.util.P3,J.util.P3,~N,~B,~B,~B");
+$_M(c$, "getArrowScale", 
+($fz = function () {
+var fScale = (this.dmesh.isScaleSet ? this.dmesh.scale : 0);
+if (fScale == 0) fScale = this.viewer.getFloat (570425352) * (this.dmesh.connections == null ? 1 : 0.5);
+if (fScale <= 0) fScale = 0.5;
+return fScale;
+}, $fz.isPrivate = true, $fz));
 $_M(c$, "renderHandles", 
 ($fz = function () {
 var diameter = Math.round (10 * this.imageFontScaling);

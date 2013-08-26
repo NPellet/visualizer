@@ -73,14 +73,9 @@ function (name, type, bufferedReader) {
 return this.getAtomSetCollectionFromReader (name, type, bufferedReader, null);
 }, "~S,~S,java.io.BufferedReader");
 c$.canonizeAlphaDigit = $_M(c$, "canonizeAlphaDigit", 
-function (ch) {
-if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9')) return ch;
-return '\0';
-}, "~S");
-c$.canonizeChainID = $_M(c$, "canonizeChainID", 
-function (chainID) {
-return J.api.JmolAdapter.canonizeAlphaDigit (chainID);
-}, "~S");
+($fz = function (ch) {
+return ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') ? ch : '\0');
+}, $fz.isPrivate = true, $fz), "~S");
 c$.canonizeInsertionCode = $_M(c$, "canonizeInsertionCode", 
 function (insertionCode) {
 return J.api.JmolAdapter.canonizeAlphaDigit (insertionCode);
@@ -103,7 +98,8 @@ Clazz.defineStatics (c$,
 "ORDER_PARTIAL12", 66,
 "ORDER_PARTIAL23", 97,
 "ORDER_PARTIAL32", 100,
-"ORDER_UNSPECIFIED", 17);
+"ORDER_UNSPECIFIED", 17,
+"ORDER_AS_SINGLE", 65536);
 c$.SHELL_S = c$.prototype.SHELL_S = J.constant.EnumQuantumShell.S.id;
 c$.SHELL_P = c$.prototype.SHELL_P = J.constant.EnumQuantumShell.P.id;
 c$.SHELL_SP = c$.prototype.SHELL_SP = J.constant.EnumQuantumShell.SP.id;
@@ -112,6 +108,8 @@ c$.SHELL_D_SPHERICAL = c$.prototype.SHELL_D_SPHERICAL = J.constant.EnumQuantumSh
 c$.SHELL_D_CARTESIAN = c$.prototype.SHELL_D_CARTESIAN = J.constant.EnumQuantumShell.D_CARTESIAN.id;
 c$.SHELL_F_SPHERICAL = c$.prototype.SHELL_F_SPHERICAL = J.constant.EnumQuantumShell.F_SPHERICAL.id;
 c$.SHELL_F_CARTESIAN = c$.prototype.SHELL_F_CARTESIAN = J.constant.EnumQuantumShell.F_CARTESIAN.id;
+c$.SHELL_G_SPHERICAL = c$.prototype.SHELL_G_SPHERICAL = J.constant.EnumQuantumShell.G_SPHERICAL.id;
+c$.SHELL_G_CARTESIAN = c$.prototype.SHELL_G_CARTESIAN = J.constant.EnumQuantumShell.G_CARTESIAN.id;
 c$.SUPPORTED_BASIS_FUNCTIONS = c$.prototype.SUPPORTED_BASIS_FUNCTIONS = "SPLDF";
 c$.NOTE_SCRIPT_FILE = c$.prototype.NOTE_SCRIPT_FILE = "NOTE: file recognized as a script file: ";
 Clazz.defineStatics (c$,

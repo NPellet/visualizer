@@ -13,7 +13,7 @@ var bundle =  new J.modelkit.ModelKitPopupResourceBundle ();
 this.initialize (viewer, bundle, bundle.getMenuName ());
 J.i18n.GT.setDoTranslate (doTranslate);
 }, "J.viewer.Viewer,~S");
-$_M(c$, "checkMenuClick", 
+Clazz.overrideMethod (c$, "checkMenuClick", 
 function (source, script) {
 if (script.equals ("clearQ")) {
 for (var o, $o = this.htCheckbox.values ().iterator (); $o.hasNext () && ((o = $o.next ()) || true);) {
@@ -27,7 +27,7 @@ this.thisPopup.tainted = true;
 }}
 this.viewer.evalStringQuiet ("set picking assignAtom_C");
 return;
-}Clazz.superCall (this, J.awtjs2d.JSModelKitPopup, "checkMenuClick", [source, script]);
+}this.checkMenuClickGP (source, script);
 }, "~O,~S");
 Clazz.overrideMethod (c$, "menuSetCheckBoxOption", 
 function (item, name, what) {

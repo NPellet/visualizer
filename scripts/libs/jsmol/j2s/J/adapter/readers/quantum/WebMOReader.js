@@ -28,9 +28,9 @@ this.readMolecularOrbital ();
 return false;
 }return true;
 });
-$_M(c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeReader", 
 function () {
-Clazz.superCall (this, J.adapter.readers.quantum.WebMOReader, "finalizeReader", []);
+this.finalizeReaderASCR ();
 if (this.nOrbitals > 0) this.setMOs ("eV");
 if (J.util.Logger.debugging) J.util.Logger.debug (this.orbitals.size () + " molecular orbitals read");
 });

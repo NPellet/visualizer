@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (["J.util.BS"], "J.util.Elements", ["java.util.Hashtable", "J.util.Logger"], function () {
+Clazz.load (["J.util.BS"], "J.util.Elements", ["java.lang.Character", "java.util.Hashtable", "J.util.Logger", "$.Parser"], function () {
 c$ = Clazz.declareType (J.util, "Elements");
 c$.getAtomicMass = $_M(c$, "getAtomicMass", 
 function (i) {
@@ -25,18 +25,35 @@ if (symbol.length == 2) map.put (symbol.toUpperCase (), boxed);
 }if (elementSymbol == null) return 0;
 var boxedAtomicNumber = J.util.Elements.htElementMap.get (elementSymbol);
 if (boxedAtomicNumber != null) return boxedAtomicNumber.intValue ();
-if (!isSilent) J.util.Logger.error ("'" + elementSymbol + "' is not a recognized symbol");
+if (Character.isDigit (elementSymbol.charAt (0))) {
+var pt = elementSymbol.length - 2;
+if (pt >= 0 && Character.isDigit (elementSymbol.charAt (pt))) pt++;
+var isotope = (pt > 0 ? J.util.Parser.parseInt (elementSymbol.substring (0, pt)) : 0);
+if (isotope > 0) {
+var n = J.util.Elements.elementNumberFromSymbol (elementSymbol.substring (pt), true);
+if (n > 0) {
+isotope = J.util.Elements.getAtomicAndIsotopeNumber (n, isotope);
+J.util.Elements.htElementMap.put (elementSymbol.toUpperCase (), Integer.$valueOf (isotope));
+return isotope;
+}}}if (!isSilent) J.util.Logger.error ("'" + elementSymbol + "' is not a recognized symbol");
 return 0;
 }, "~S,~B");
 c$.elementSymbolFromNumber = $_M(c$, "elementSymbolFromNumber", 
-function (elementNumber) {
-if (elementNumber >= J.util.Elements.elementNumberMax) {
-for (var j = J.util.Elements.altElementMax; --j >= 0; ) if (elementNumber == J.util.Elements.altElementNumbers[j]) return J.util.Elements.altElementSymbols[j];
+function (elemNo) {
+var isoNumber = 0;
+if (elemNo >= J.util.Elements.elementNumberMax) {
+for (var j = J.util.Elements.altElementMax; --j >= 0; ) if (elemNo == J.util.Elements.altElementNumbers[j]) return J.util.Elements.altElementSymbols[j];
 
-elementNumber %= 128;
-}if (elementNumber < 0 || elementNumber >= J.util.Elements.elementNumberMax) elementNumber = 0;
-return J.util.Elements.elementSymbols[elementNumber];
+isoNumber = J.util.Elements.getIsotopeNumber (elemNo);
+elemNo %= 128;
+return "" + isoNumber + J.util.Elements.getElementSymbol (elemNo);
+}return J.util.Elements.getElementSymbol (elemNo);
 }, "~N");
+c$.getElementSymbol = $_M(c$, "getElementSymbol", 
+($fz = function (elemNo) {
+if (elemNo < 0 || elemNo >= J.util.Elements.elementNumberMax) elemNo = 0;
+return J.util.Elements.elementSymbols[elemNo];
+}, $fz.isPrivate = true, $fz), "~N");
 c$.elementNameFromNumber = $_M(c$, "elementNameFromNumber", 
 function (elementNumber) {
 if (elementNumber >= J.util.Elements.elementNumberMax) {
@@ -70,11 +87,11 @@ return J.util.Elements.elementSymbolFromNumber (code & 127) + (code >> 7);
 }, "~N");
 c$.getElementNumber = $_M(c$, "getElementNumber", 
 function (atomicAndIsotopeNumber) {
-return (atomicAndIsotopeNumber % 128);
+return atomicAndIsotopeNumber & 127;
 }, "~N");
 c$.getIsotopeNumber = $_M(c$, "getIsotopeNumber", 
 function (atomicAndIsotopeNumber) {
-return (atomicAndIsotopeNumber >> 7);
+return atomicAndIsotopeNumber >> 7;
 }, "~N");
 c$.getAtomicAndIsotopeNumber = $_M(c$, "getAtomicAndIsotopeNumber", 
 function (n, mass) {
@@ -98,14 +115,14 @@ return ("1H,12C,14N,".indexOf (isotopeSymbol + ",") >= 0);
 }, "~S");
 c$.getBondingRadiusFloat = $_M(c$, "getBondingRadiusFloat", 
 function (atomicNumberAndIsotope, charge) {
-var atomicNumber = J.util.Elements.getElementNumber (atomicNumberAndIsotope);
+var atomicNumber = atomicNumberAndIsotope & 127;
 if (charge > 0 && J.util.Elements.bsCations.get (atomicNumber)) return J.util.Elements.getBondingRadFromTable (atomicNumber, charge, J.util.Elements.cationLookupTable);
 if (charge < 0 && J.util.Elements.bsAnions.get (atomicNumber)) return J.util.Elements.getBondingRadFromTable (atomicNumber, charge, J.util.Elements.anionLookupTable);
 return J.util.Elements.covalentMars[atomicNumber] / 1000;
 }, "~N,~N");
 c$.getBondingRadFromTable = $_M(c$, "getBondingRadFromTable", 
 function (atomicNumber, charge, table) {
-var ionic = ((atomicNumber << 4) + (charge + 4));
+var ionic = (atomicNumber << 4) + (charge + 4);
 var iVal = 0;
 var iMid = 0;
 var iMin = 0;
@@ -123,8 +140,8 @@ if (atomicNumber != (iVal >> 4)) iMid++;
 return table[(iMid << 1) + 1] / 1000;
 }, "~N,~N,~A");
 c$.getVanderwaalsMar = $_M(c$, "getVanderwaalsMar", 
-function (i, type) {
-return J.util.Elements.vanderwaalsMars[(i << 2) + (type.pt % 4)];
+function (atomicAndIsotopeNumber, type) {
+return J.util.Elements.vanderwaalsMars[((atomicAndIsotopeNumber & 127) << 2) + (type.pt % 4)];
 }, "~N,J.constant.EnumVdw");
 c$.getHydrophobicity = $_M(c$, "getHydrophobicity", 
 function (i) {
@@ -134,6 +151,10 @@ c$.getAllredRochowElectroNeg = $_M(c$, "getAllredRochowElectroNeg",
 function (elemno) {
 return (elemno > 0 && elemno < J.util.Elements.electroNegativities.length ? J.util.Elements.electroNegativities[elemno] : 0);
 }, "~N");
+c$.isElement = $_M(c$, "isElement", 
+function (atomicAndIsotopeNumber, elemNo) {
+return ((atomicAndIsotopeNumber & 127) == elemNo);
+}, "~N,~N");
 Clazz.defineStatics (c$,
 "elementSymbols", ["Xx", "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt"],
 "atomicMass", [0, 1.008, 4.003, 6.941, 9.012, 10.81, 12.011, 14.007, 15.999, 18.998, 20.18, 22.99, 24.305, 26.981, 28.086, 30.974, 32.07, 35.453, 39.948, 39.1, 40.08, 44.956, 47.88, 50.941, 52, 54.938, 55.847, 58.93, 58.69, 63.55, 65.39, 69.72, 72.61, 74.92, 78.96, 79.9, 83.8, 85.47, 87.62, 88.91, 91.22, 92.91, 95.94, 98.91, 101.07, 102.91, 106.42, 107.87, 112.41, 114.82, 118.71, 121.75, 127.6, 126.91, 131.29, 132.91, 137.33, 138.91, 140.12, 140.91, 144.24, 144.9, 150.36, 151.96, 157.25, 158.93, 162.5, 164.93, 167.26, 168.93, 173.04, 174.97, 178.49, 180.95, 183.85, 186.21, 190.2, 192.22, 195.08, 196.97, 200.59, 204.38, 207.2, 208.98, 210, 210, 222, 223, 226.03, 227.03, 232.04, 231.04, 238.03, 237.05, 239.1, 243.1, 247.1, 247.1, 252.1, 252.1, 257.1, 256.1, 259.1, 260.1, 261, 262, 263, 262, 265, 268]);

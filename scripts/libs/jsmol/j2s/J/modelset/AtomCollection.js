@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["java.lang.Float", "J.util.BS", "$.V3"], "J.modelset.AtomCollection", ["java.lang.Character", "java.util.Arrays", "J.atomdata.RadiusData", "J.constant.EnumPalette", "$.EnumStructure", "$.EnumVdw", "J.geodesic.EnvelopeCalculation", "J.modelset.Group", "$.LabelToken", "J.script.T", "J.util.ArrayUtil", "$.AxisAngle4f", "$.BSUtil", "$.Elements", "$.Escape", "$.JmolList", "$.Logger", "$.Matrix3f", "$.Measure", "$.P3", "$.Parser", "$.TextFormat", "J.viewer.JC"], function () {
+Clazz.load (["java.lang.Float", "J.util.BS", "$.V3"], "J.modelset.AtomCollection", ["java.lang.Character", "java.util.Arrays", "$.Hashtable", "J.atomdata.RadiusData", "J.constant.EnumPalette", "$.EnumStructure", "$.EnumVdw", "J.geodesic.EnvelopeCalculation", "J.modelset.Group", "$.LabelToken", "J.script.T", "J.util.ArrayUtil", "$.AxisAngle4f", "$.BSUtil", "$.Elements", "$.Escape", "$.JmolList", "$.Logger", "$.Matrix3f", "$.Measure", "$.P3", "$.Parser", "$.TextFormat", "$.Vibration", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.g3d = null;
@@ -8,13 +8,14 @@ this.atomCount = 0;
 this.atomNames = null;
 this.atomTypes = null;
 this.atomSerials = null;
-this.vibrationVectors = null;
+this.vibrations = null;
 this.occupancies = null;
 this.bfactor100s = null;
 this.partialCharges = null;
 this.ionicRadii = null;
 this.hydrophobicities = null;
-this.ellipsoids = null;
+this.atomTensorList = null;
+this.atomTensors = null;
 this.surfaceDistance100s = null;
 this.haveStraightness = false;
 this.bsHidden = null;
@@ -45,6 +46,10 @@ this.bsFoundRectangle =  new J.util.BS ();
 });
 $_M(c$, "releaseModelSet", 
 function () {
+this.releaseModelSetAC ();
+});
+$_M(c$, "releaseModelSetAC", 
+function () {
 this.atoms = null;
 this.viewer = null;
 this.g3d = null;
@@ -55,12 +60,12 @@ this.tainted = null;
 this.atomNames = null;
 this.atomTypes = null;
 this.atomSerials = null;
-this.vibrationVectors = null;
+this.vibrations = null;
 this.occupancies = null;
 this.bfactor100s = null;
 this.partialCharges = null;
 this.ionicRadii = null;
-this.ellipsoids = null;
+this.atomTensors = null;
 });
 $_M(c$, "mergeAtomArrays", 
 function (mergeModelSet) {
@@ -68,12 +73,13 @@ this.tainted = mergeModelSet.tainted;
 this.atomNames = mergeModelSet.atomNames;
 this.atomTypes = mergeModelSet.atomTypes;
 this.atomSerials = mergeModelSet.atomSerials;
-this.vibrationVectors = mergeModelSet.vibrationVectors;
+this.vibrations = mergeModelSet.vibrations;
 this.occupancies = mergeModelSet.occupancies;
 this.bfactor100s = mergeModelSet.bfactor100s;
 this.ionicRadii = mergeModelSet.ionicRadii;
 this.partialCharges = mergeModelSet.partialCharges;
-this.ellipsoids = mergeModelSet.ellipsoids;
+this.atomTensors = mergeModelSet.atomTensors;
+this.atomTensorList = mergeModelSet.atomTensorList;
 this.setHaveStraightness (false);
 this.surfaceDistance100s = null;
 }, "J.modelset.AtomCollection");
@@ -100,7 +106,7 @@ return this.atomCount;
 });
 $_M(c$, "modelSetHasVibrationVectors", 
 function () {
-return (this.vibrationVectors != null);
+return (this.vibrations != null);
 });
 $_M(c$, "getAtomTypes", 
 function () {
@@ -176,11 +182,7 @@ return this.atoms[i].getColix ();
 }, "~N");
 $_M(c$, "getAtomChain", 
 function (i) {
-return "" + this.atoms[i].getChainID ();
-}, "~N");
-$_M(c$, "getEllipsoid", 
-function (i) {
-return (i < 0 || this.ellipsoids == null || i >= this.ellipsoids.length ? null : this.ellipsoids[i]);
+return this.atoms[i].getChainIDStr ();
 }, "~N");
 $_M(c$, "getQuaternion", 
 function (i, qtype) {
@@ -376,17 +378,30 @@ this.taintAtom (atomIndex, 12);
 $_M(c$, "setAtomCoord", 
 function (atomIndex, x, y, z) {
 if (atomIndex < 0 || atomIndex >= this.atomCount) return;
-this.atoms[atomIndex].x = x;
-this.atoms[atomIndex].y = y;
-this.atoms[atomIndex].z = z;
+var a = this.atoms[atomIndex];
+a.set (x, y, z);
+this.fixTrajectory (a);
 this.taintAtom (atomIndex, 2);
 }, "~N,~N,~N,~N");
+$_M(c$, "fixTrajectory", 
+($fz = function (a) {
+var m = a.modelIndex;
+var mc = this;
+var isTraj = mc.isTrajectory (m);
+if (!isTraj) return;
+var isFrac = mc.unitCells != null && mc.unitCells[m].getCoordinatesAreFractional ();
+var pt = mc.trajectorySteps.get (m)[a.index - mc.models[m].firstAtomIndex];
+pt.set (a.x, a.y, a.z);
+if (isFrac) mc.unitCells[m].toFractional (pt, true);
+}, $fz.isPrivate = true, $fz), "J.modelset.Atom");
 $_M(c$, "setAtomCoordRelative", 
 function (atomIndex, x, y, z) {
 if (atomIndex < 0 || atomIndex >= this.atomCount) return;
-this.atoms[atomIndex].x += x;
-this.atoms[atomIndex].y += y;
-this.atoms[atomIndex].z += z;
+var a = this.atoms[atomIndex];
+a.x += x;
+a.y += y;
+a.z += z;
+this.fixTrajectory (a);
 this.taintAtom (atomIndex, 2);
 }, "~N,~N,~N,~N");
 $_M(c$, "setAtomsCoordRelative", 
@@ -459,7 +474,7 @@ case 1632634889:
 atom.setFormalCharge (iValue);
 this.taintAtom (i, 4);
 break;
-case 1114638346:
+case 1114638362:
 if (this.setHydrophobicity (i, fValue)) this.taintAtom (i, 5);
 break;
 case 1826248715:
@@ -482,7 +497,7 @@ if (fValue < 0) fValue = 0;
  else if (fValue > 16) fValue = 16;
 atom.madAtom = (Clazz.floatToShort (fValue * 2000));
 break;
-case 1114638350:
+case 1114638363:
 this.viewer.setSelectedAtom (atom.index, (fValue != 0));
 break;
 case 1112541199:
@@ -492,7 +507,7 @@ case 1095763988:
 atom.setValence (iValue);
 this.taintAtom (i, 10);
 break;
-case 1649412112:
+case 1649412120:
 if (atom.setRadius (fValue)) this.taintAtom (i, 11);
  else this.untaint (i, 11);
 break;
@@ -501,7 +516,7 @@ J.util.Logger.error ("unsettable atom property: " + J.script.T.nameOf (tok));
 break;
 }
 }
-if (tok == 1114638350) this.viewer.setSelectedAtom (-1, false);
+if (tok == 1114638363) this.viewer.setSelectedAtom (-1, false);
 }, "J.util.BS,~N,~N,~N,~S,~A,~A");
 $_M(c$, "setElement", 
 function (atom, atomicNumber) {
@@ -512,33 +527,32 @@ atom.setColixAtom (this.viewer.getColixAtomPalette (atom, J.constant.EnumPalette
 }, "J.modelset.Atom,~N");
 $_M(c$, "getVibrationCoord", 
 function (atomIndex, c) {
-if (this.vibrationVectors == null || this.vibrationVectors[atomIndex] == null) return 0;
+if (this.vibrations == null || this.vibrations[atomIndex] == null) return 0;
 switch (c) {
 case 'X':
-return this.vibrationVectors[atomIndex].x;
+return this.vibrations[atomIndex].x;
 case 'Y':
-return this.vibrationVectors[atomIndex].y;
+return this.vibrations[atomIndex].y;
 default:
-return this.vibrationVectors[atomIndex].z;
+return this.vibrations[atomIndex].z;
 }
 }, "~N,~S");
-$_M(c$, "getVibrationVector", 
+$_M(c$, "getVibration", 
 function (atomIndex, forceNew) {
-var v = (this.vibrationVectors == null ? null : this.vibrationVectors[atomIndex]);
-return (v == null && forceNew ?  new J.util.V3 () : v);
+var v = (this.vibrations == null ? null : this.vibrations[atomIndex]);
+return (v == null && forceNew ?  new J.util.Vibration () : v);
 }, "~N,~B");
 $_M(c$, "setVibrationVector", 
 function (atomIndex, x, y, z) {
 if (Float.isNaN (x) || Float.isNaN (y) || Float.isNaN (z)) return;
-if (this.vibrationVectors == null || this.vibrationVectors.length < atomIndex) this.vibrationVectors =  new Array (this.atoms.length);
-if (this.vibrationVectors[atomIndex] == null) this.vibrationVectors[atomIndex] = J.util.V3.new3 (x, y, z);
- else this.vibrationVectors[atomIndex].set (x, y, z);
+if (this.vibrations == null || this.vibrations.length < atomIndex) this.vibrations =  new Array (this.atoms.length);
+if (this.vibrations[atomIndex] == null) this.vibrations[atomIndex] =  new J.util.Vibration ();
+this.vibrations[atomIndex].set (x, y, z);
 this.atoms[atomIndex].setVibrationVector ();
 }, "~N,~N,~N,~N");
 $_M(c$, "setVibrationVector2", 
 ($fz = function (atomIndex, tok, fValue) {
-var v = this.getVibrationVector (atomIndex, true);
-if (v == null) v =  new J.util.V3 ();
+var v = this.getVibration (atomIndex, true);
 switch (tok) {
 case 1112541202:
 v.x = fValue;
@@ -618,12 +632,6 @@ for (var i = 0; i < this.atoms.length; i++) this.hydrophobicities[i] = J.util.El
 }this.hydrophobicities[atomIndex] = value;
 return true;
 }, "~N,~N");
-$_M(c$, "setEllipsoid", 
-function (atomIndex, ellipsoid) {
-if (ellipsoid == null) return;
-if (this.ellipsoids == null) this.ellipsoids =  new Array (this.atoms.length);
-this.ellipsoids[atomIndex] = ellipsoid;
-}, "~N,~A");
 $_M(c$, "setAtomData", 
 function (type, name, dataString, isDefault) {
 var fData = null;
@@ -766,7 +774,7 @@ if (!this.preserveState) return;
 if (this.tainted == null) this.tainted =  new Array (14);
 if (this.tainted[type] == null) this.tainted[type] = J.util.BSUtil.newBitSet (this.atomCount);
 this.tainted[type].set (atomIndex);
-if (type == 2) this.validateBspfForModel (this.atoms[atomIndex].modelIndex, false);
+if (type == 2) this.validateBspfForModel ((this).models[this.atoms[atomIndex].modelIndex].trajectoryBaseIndex, false);
 }, "~N,~N");
 $_M(c$, "untaint", 
 ($fz = function (atomIndex, type) {
@@ -884,7 +892,7 @@ break;
 case 6:
 }
 if (doAll && atom.getCovalentHydrogenCount () > 0) continue;
-var n = this.getImplicitHydrogenCount (atom);
+var n = this.getImplicitHydrogenCount (atom, false);
 if (n == 0) continue;
 var targetValence = this.aaRet[0];
 var hybridization = this.aaRet[2];
@@ -1004,8 +1012,9 @@ return true;
 return false;
 }, $fz.isPrivate = true, $fz), "J.modelset.Atom");
 $_M(c$, "getImplicitHydrogenCount", 
-function (atom) {
+function (atom, allowNegative) {
 var targetValence = atom.getTargetValence ();
+if (targetValence < 0) return 0;
 var charge = atom.getFormalCharge ();
 if (this.aaRet == null) this.aaRet =  Clazz.newIntArray (4, 0);
 this.aaRet[0] = targetValence;
@@ -1022,8 +1031,24 @@ charge = this.aaRet[1];
 targetValence += (targetValence == 4 ? -Math.abs (charge) : charge);
 this.aaRet[0] = targetValence;
 }var n = targetValence - atom.getValence ();
-return (n < 0 ? 0 : n);
-}, "J.modelset.Atom");
+return (n < 0 && !allowNegative ? 0 : n);
+}, "J.modelset.Atom,~B");
+$_M(c$, "fixFormalCharges", 
+function (bs) {
+var n = 0;
+for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
+var a = this.atoms[i];
+var nH = this.getImplicitHydrogenCount (a, true);
+if (nH != 0) {
+var c0 = a.getFormalCharge ();
+var c = c0 - nH;
+a.setFormalCharge (c);
+this.taintAtom (i, 4);
+if (J.util.Logger.debugging) J.util.Logger.debug ("atom " + a + " formal charge " + c0 + " -> " + c);
+n++;
+}}
+return n;
+}, "J.util.BS");
 $_M(c$, "getHybridizationAndAxes", 
 function (atomIndex, atomicNumber, z, x, lcaoTypeRaw, hybridizationCompatible, doAlignZ) {
 var lcaoType = (lcaoTypeRaw.length > 0 && lcaoTypeRaw.charAt (0) == '-' ? lcaoTypeRaw.substring (1) : lcaoTypeRaw);
@@ -1480,7 +1505,7 @@ for (i = this.atomCount; --i >= 0; ) if (this.atoms[i].getGroupID () == iSpec) b
 
 break;
 case 1048609:
-return J.util.BSUtil.copy (this.getChainBits (String.fromCharCode ((specInfo).intValue ())));
+return J.util.BSUtil.copy (this.getChainBits ((specInfo).intValue ()));
 case 1048614:
 return J.util.BSUtil.copy (this.getSeqcodeBits ((specInfo).intValue (), true));
 case 1613758470:
@@ -1659,7 +1684,7 @@ pt++;
 }bs.and (bsInsert);
 if (pt >= len) return bs;
 var chainID = identifier.charAt (pt++);
-bs.and (this.getChainBits (chainID));
+bs.and (this.getChainBits (chainID.charCodeAt (0)));
 if (pt == len) return bs;
 return null;
 }, $fz.isPrivate = true, $fz), "~S");
@@ -1721,21 +1746,21 @@ isEmpty = false;
 return (!isEmpty || returnEmpty ? bs : null);
 }, "~N,~B");
 $_M(c$, "getChainBits", 
-function (chainId) {
+function (chainID) {
 var caseSensitive = this.viewer.getBoolean (603979822);
-if (!caseSensitive) chainId = Character.toUpperCase (chainId);
+if (!caseSensitive) chainID = Character.toUpperCase (chainID);
 var bs =  new J.util.BS ();
 var bsDone = J.util.BSUtil.newBitSet (this.atomCount);
 for (var i = bsDone.nextClearBit (0); i < this.atomCount; i = bsDone.nextClearBit (i + 1)) {
 var chain = this.atoms[i].getChain ();
-if (chainId == (caseSensitive ? chain.chainID : Character.toUpperCase (chain.chainID))) {
+if (chainID == (caseSensitive ? chain.chainID : Character.toUpperCase (chain.chainID))) {
 chain.setAtomBitSet (bs);
 bsDone.or (bs);
 } else {
 chain.setAtomBitSet (bsDone);
 }}
 return bs;
-}, "~S");
+}, "~N");
 $_M(c$, "getAtomIndices", 
 function (bs) {
 var n = 0;
@@ -1783,13 +1808,14 @@ for (var i = this.atomCount; --i >= 0; ) if (this.atoms[i].isClickable ()) bs.se
 return bs;
 });
 $_M(c$, "deleteModelAtoms", 
-function (firstAtomIndex, nAtoms, bs) {
+function (firstAtomIndex, nAtoms, bsAtoms) {
 this.atoms = J.util.ArrayUtil.deleteElements (this.atoms, firstAtomIndex, nAtoms);
 this.atomCount = this.atoms.length;
 for (var j = firstAtomIndex; j < this.atomCount; j++) {
 this.atoms[j].index = j;
 this.atoms[j].modelIndex--;
 }
+this.deleteAtomTensors (bsAtoms);
 this.atomNames = J.util.ArrayUtil.deleteElements (this.atomNames, firstAtomIndex, nAtoms);
 this.atomTypes = J.util.ArrayUtil.deleteElements (this.atomTypes, firstAtomIndex, nAtoms);
 this.atomSerials = J.util.ArrayUtil.deleteElements (this.atomSerials, firstAtomIndex, nAtoms);
@@ -1797,14 +1823,108 @@ this.bfactor100s = J.util.ArrayUtil.deleteElements (this.bfactor100s, firstAtomI
 this.hasBfactorRange = false;
 this.occupancies = J.util.ArrayUtil.deleteElements (this.occupancies, firstAtomIndex, nAtoms);
 this.partialCharges = J.util.ArrayUtil.deleteElements (this.partialCharges, firstAtomIndex, nAtoms);
-this.ellipsoids = J.util.ArrayUtil.deleteElements (this.ellipsoids, firstAtomIndex, nAtoms);
-this.vibrationVectors = J.util.ArrayUtil.deleteElements (this.vibrationVectors, firstAtomIndex, nAtoms);
+this.atomTensorList = J.util.ArrayUtil.deleteElements (this.atomTensorList, firstAtomIndex, nAtoms);
+this.vibrations = J.util.ArrayUtil.deleteElements (this.vibrations, firstAtomIndex, nAtoms);
 this.nSurfaceAtoms = 0;
 this.bsSurface = null;
 this.surfaceDistance100s = null;
-if (this.tainted != null) for (var i = 0; i < 14; i++) J.util.BSUtil.deleteBits (this.tainted[i], bs);
+if (this.tainted != null) for (var i = 0; i < 14; i++) J.util.BSUtil.deleteBits (this.tainted[i], bsAtoms);
 
 }, "~N,~N,J.util.BS");
+$_M(c$, "getAtomIdentityInfo", 
+function (i, info) {
+info.put ("_ipt", Integer.$valueOf (i));
+info.put ("atomIndex", Integer.$valueOf (i));
+info.put ("atomno", Integer.$valueOf (this.getAtomNumber (i)));
+info.put ("info", this.getAtomInfo (i, null));
+info.put ("sym", this.getElementSymbol (i));
+}, "~N,java.util.Map");
+$_M(c$, "getAtomTensorList", 
+function (i) {
+return (i < 0 || this.atomTensorList == null || i >= this.atomTensorList.length ? null : this.atomTensorList[i]);
+}, "~N");
+$_M(c$, "deleteAtomTensors", 
+($fz = function (bsAtoms) {
+if (this.atomTensors == null) return;
+var toDelete =  new J.util.JmolList ();
+for (var key, $key = this.atomTensors.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
+var list = this.atomTensors.get (key);
+for (var i = list.size (); --i >= 0; ) {
+var t = list.get (i);
+if (bsAtoms.get (t.atomIndex1) || t.atomIndex2 >= 0 && bsAtoms.get (t.atomIndex2)) list.remove (i);
+}
+if (list.size () == 0) toDelete.addLast (key);
+}
+for (var i = toDelete.size (); --i >= 0; ) this.atomTensors.remove (toDelete.get (i));
+
+}, $fz.isPrivate = true, $fz), "J.util.BS");
+$_M(c$, "setAtomTensors", 
+function (atomIndex, list) {
+if (list == null || list.size () == 0) return;
+if (this.atomTensors == null) this.atomTensors =  new java.util.Hashtable ();
+if (this.atomTensorList == null) this.atomTensorList =  new Array (this.atoms.length);
+this.atomTensorList = J.util.ArrayUtil.ensureLength (this.atomTensorList, this.atoms.length);
+this.atomTensorList[atomIndex] = J.modelset.AtomCollection.getTensorList (list);
+for (var i = list.size (); --i >= 0; ) {
+var t = list.get (i);
+t.atomIndex1 = atomIndex;
+t.atomIndex2 = -1;
+t.modelIndex = this.atoms[atomIndex].modelIndex;
+this.addTensor (t, t.type);
+if (t.altType != null) this.addTensor (t, t.altType);
+}
+}, "~N,J.util.JmolList");
+c$.getTensorList = $_M(c$, "getTensorList", 
+($fz = function (list) {
+var pt = -1;
+var haveTLS = false;
+var n = list.size ();
+for (var i = n; --i >= 0; ) {
+var t = list.get (i);
+if (t.forThermalEllipsoid) pt = i;
+ else if (t.iType == 2) haveTLS = true;
+}
+var a =  new Array ((pt >= 0 || !haveTLS ? 0 : 1) + n);
+if (pt >= 0) {
+a[0] = list.get (pt);
+if (list.size () == 1) return a;
+}if (haveTLS) {
+pt = 0;
+for (var i = n; --i >= 0; ) {
+var t = list.get (i);
+if (t.forThermalEllipsoid) continue;
+a[++pt] = t;
+}
+} else {
+for (var i = 0; i < n; i++) a[i] = list.get (i);
+
+}return a;
+}, $fz.isPrivate = true, $fz), "J.util.JmolList");
+$_M(c$, "getAtomTensor", 
+function (i, type) {
+var tensors = this.getAtomTensorList (i);
+if (tensors == null || type == null) return null;
+type = type.toLowerCase ();
+for (var j = 0; j < tensors.length; j++) if (tensors[j] != null && type.equals (tensors[j].type)) return tensors[j];
+
+return null;
+}, "~N,~S");
+$_M(c$, "addTensor", 
+function (t, type) {
+type = type.toLowerCase ();
+var tensors = this.atomTensors.get (type);
+if (tensors == null) this.atomTensors.put (type, tensors =  new J.util.JmolList ());
+tensors.addLast (t);
+}, "J.util.Tensor,~S");
+$_M(c$, "getAllAtomTensors", 
+function (type) {
+if (this.atomTensors == null) return null;
+if (type != null) return this.atomTensors.get (type.toLowerCase ());
+var list =  new J.util.JmolList ();
+for (var e, $e = this.atomTensors.entrySet ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) list.addAll (e.getValue ());
+
+return list;
+}, "~S");
 c$.$AtomCollection$AtomSorter$ = function () {
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {

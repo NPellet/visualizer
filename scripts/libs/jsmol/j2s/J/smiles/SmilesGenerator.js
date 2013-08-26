@@ -59,8 +59,8 @@ end = null;
 len = 0;
 if (bioStructureName.length > 0) {
 var id = a.getChainID ();
-if (id != '\0') {
-s = "//* chain " + id + " " + bioStructureName + " " + a.getResno () + " *// ";
+if (id != 0) {
+s = "//* chain " + a.getChainIDStr () + " " + bioStructureName + " " + a.getResno () + " *// ";
 len = s.length;
 sb.append (s);
 }sb.append ("~").appendC (bioStructureName.charAt (0)).append ("~");
@@ -122,11 +122,11 @@ $_M(c$, "addBracketedBioName",
 ($fz = function (sb, a, atomName) {
 sb.append ("[");
 if (atomName != null) {
-var chChain = a.getChainID ();
+var chain = a.getChainIDStr ();
 sb.append (a.getGroup3 (false));
 if (!atomName.equals (".0")) sb.append (atomName).append ("#").appendI (a.getElementNumber ());
 sb.append ("//* ").appendI (a.getResno ());
-if (chChain != '\0') sb.append (":").appendC (chChain);
+if (chain.length > 0) sb.append (":").append (chain);
 sb.append (" *//");
 } else {
 sb.append (J.util.Elements.elementNameFromNumber (a.getElementNumber ()));
@@ -508,10 +508,10 @@ var o = ht.get (key);
 var s = (o == null ? null : o[0]);
 if (s == null) {
 ht.put (key, [s = J.smiles.SmilesParser.getRingPointer (++this.nPairs), Integer.$valueOf (i1)]);
-if (J.util.Logger.debugging) J.util.Logger.info ("adding for " + i0 + " ring key " + this.nPairs + ": " + key);
+if (J.util.Logger.debugging) J.util.Logger.debug ("adding for " + i0 + " ring key " + this.nPairs + ": " + key);
 } else {
 ht.remove (key);
-if (J.util.Logger.debugging) J.util.Logger.info ("using ring key " + key);
+if (J.util.Logger.debugging) J.util.Logger.debug ("using ring key " + key);
 }return s;
 }, $fz.isPrivate = true, $fz), "~N,~N,java.util.Map");
 $_M(c$, "dumpRingKeys", 

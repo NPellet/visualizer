@@ -188,7 +188,7 @@ return J.script.SV.newVariable (7, objects);
 c$.getVariableAI = $_M(c$, "getVariableAI", 
 function (ix) {
 var objects =  new J.util.JmolList ();
-for (var i = 0; i < ix.length; i++) objects.addLast (J.script.SV.newVariable (2, Integer.$valueOf (ix[i])));
+for (var i = 0; i < ix.length; i++) objects.addLast (J.script.SV.newScriptVariableInt (ix[i]));
 
 return J.script.SV.newVariable (7, objects);
 }, "~A");
@@ -878,6 +878,24 @@ for (var i = sv.size (); --i >= 0; ) list[i] = J.script.SV.sValue (sv.get (i));
 
 return list;
 }, "J.script.T");
+c$.listAny = $_M(c$, "listAny", 
+function (x) {
+var list =  new J.util.JmolList ();
+var l = x.getList ();
+for (var i = 0; i < l.size (); i++) {
+var v = l.get (i);
+var l2 = v.getList ();
+if (l2 == null) {
+list.addLast (v.value);
+} else {
+var o =  new J.util.JmolList ();
+for (var j = 0; j < l2.size (); j++) {
+v = l2.get (j);
+}
+list.addLast (o);
+}}
+return list;
+}, "J.script.SV");
 c$.flistValue = $_M(c$, "flistValue", 
 function (x, nMin) {
 if (x.tok != 7) return [J.script.SV.fValue (x)];

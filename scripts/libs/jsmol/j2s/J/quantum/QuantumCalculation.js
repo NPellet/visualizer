@@ -97,6 +97,10 @@ this.process ();
 });
 $_M(c$, "initializeOnePoint", 
 function () {
+this.initializeOnePointQC ();
+});
+$_M(c$, "initializeOnePointQC", 
+function () {
 this.points =  new Array (1);
 this.points[0] =  new J.util.P3 ();
 if (this.voxelData == null || this.voxelData === this.voxelDataTemp) {

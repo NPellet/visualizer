@@ -9,6 +9,7 @@ this.vertexValues = null;
 this.vertexSource = null;
 this.polygonCount = 0;
 this.polygonIndexes = null;
+this.polygonTranslucencies = null;
 this.isTriangleSet = false;
 this.haveQuads = false;
 this.colix = 0;
@@ -37,6 +38,7 @@ this.polygonCount0 = 0;
 this.vertexCount0 = 0;
 this.bsSlabDisplay = null;
 this.bsSlabGhost = null;
+this.bsTransPolygons = null;
 this.slabMeshType = 0;
 this.slabColix = 0;
 this.bsDisplay = null;
@@ -169,6 +171,9 @@ this.iB = vertexIndexes[1];
 this.iC = vertexIndexes[2];
 return this.vertexValues == null || !(Float.isNaN (this.vertexValues[this.iA]) || Float.isNaN (this.vertexValues[this.iB]) || Float.isNaN (this.vertexValues[this.iC]));
 }, "~N");
+$_M(c$, "setTranslucentVertices", 
+function (bsVertices) {
+}, "J.util.BS");
 $_M(c$, "setSlab", 
 function (bsDisplay, bsGhost, type, color, translucency) {
 this.bsSlabDisplay = bsDisplay;
@@ -192,6 +197,19 @@ c$.getSlabWithinRange = $_M(c$, "getSlabWithinRange",
 function (min, max) {
 return [Integer.$valueOf (1073742114), [Float.$valueOf (min), Float.$valueOf (max)], Boolean.FALSE, null];
 }, "~N,~N");
+$_M(c$, "resetTransPolygons", 
+function () {
+var isTranslucent = J.util.C.isColixTranslucent (this.colix);
+var translucentLevel = J.util.C.getColixTranslucencyFractional (this.colix);
+for (var i = 0; i < this.polygonCount; i++) if (this.bsTransPolygons.get (i)) {
+if (!this.setABC (i)) continue;
+this.vertexColixes[this.iA] = J.util.C.getColixTranslucent3 (this.vertexColixes[this.iA], isTranslucent, translucentLevel);
+this.vertexColixes[this.iB] = J.util.C.getColixTranslucent3 (this.vertexColixes[this.iB], isTranslucent, translucentLevel);
+this.vertexColixes[this.iC] = J.util.C.getColixTranslucent3 (this.vertexColixes[this.iC], isTranslucent, translucentLevel);
+}
+this.bsTransPolygons = null;
+this.polygonTranslucencies = null;
+});
 $_M(c$, "resetSlab", 
 function () {
 this.slabPolygons (J.util.MeshSurface.getSlabObject (1048587, null, false, null), false);
@@ -254,13 +272,14 @@ if (this.polygonCount == 0) this.bsSlabDisplay.setBits (this.mergeVertexCount0, 
 if (this.bsSlabGhost == null) this.bsSlabGhost =  new J.util.BS ();
 this.slabMeshType = (colorData[0]).intValue ();
 this.slabColix = (colorData[1]).shortValue ();
-if (J.util.C.isColixColorInherited (this.slabColix)) this.slabColix = J.util.C.copyColixTranslucency (this.slabColix, this.colix);
 andCap = false;
 this.colix = J.util.C.getColixTranslucent3 (this.colix, false, 0);
 }var sb =  new J.util.SB ();
 sb.append (andCap ? " cap " : " slab ");
 if (isGhost) {
-sb.append ("translucent ").appendF (J.util.C.getColixTranslucencyFractional (this.slabColix)).append (" ").append (J.util.C.getHexCode (this.slabColix)).append (" ");
+sb.append ("translucent ").appendF (J.util.C.getColixTranslucencyFractional (this.slabColix)).append (" ");
+var s = J.util.C.getHexCode (this.slabColix);
+if (s != null) sb.append (s).append (" ");
 if (this.slabMeshType == 1073742018) sb.append ("mesh ");
 }switch (slabType) {
 case 1073741872:
@@ -347,8 +366,14 @@ $_M(c$, "getIntersection",
 function (distance, plane, ptCenters, vData, fData, bsSource, meshSurface, andCap, doClean, tokType, isGhost) {
 var isSlab = (vData == null);
 var pts = null;
-if (fData == null) fData = this.vertexValues;
-var mapEdge =  new java.util.Hashtable ();
+if (fData == null) {
+if (tokType == 3 && bsSource != null) {
+fData =  Clazz.newFloatArray (this.vertexCount, 0);
+for (var i = 0; i < this.vertexCount; i++) if ((fData[i] = this.vertexSource[i]) == -1) System.out.println ("meshsurface hmm");
+
+} else {
+fData = this.vertexValues;
+}}var mapEdge =  new java.util.Hashtable ();
 if (ptCenters != null || isGhost) andCap = false;
 var values =  Clazz.newFloatArray (2, 0);
 var fracs =  Clazz.newFloatArray (2, 0);
@@ -562,7 +587,7 @@ c$.checkSlab = $_M(c$, "checkSlab",
 var d;
 switch (tokType) {
 case 3:
-return (bs.get (Clazz.floatToInt (val)) ? 1 : -1);
+return (val >= 0 && bs.get (Clazz.floatToInt (val)) ? 1 : -1);
 case 32:
 d = distance - val;
 break;

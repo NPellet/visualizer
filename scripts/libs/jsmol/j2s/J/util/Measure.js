@@ -253,7 +253,7 @@ function (ptsA, ptsB, m, centerA) {
 var cptsA = J.util.Measure.getCenterAndPoints (ptsA);
 var cptsB = J.util.Measure.getCenterAndPoints (ptsB);
 var retStddev =  Clazz.newFloatArray (2, 0);
-var q = J.util.Measure.calculateQuaternionRotation ([cptsA, cptsB], retStddev, false);
+var q = J.util.Measure.calculateQuaternionRotation ([cptsA, cptsB], retStddev, true);
 var v = J.util.V3.newV (cptsB[0]);
 v.sub (cptsA[0]);
 m.setMV (q.getMatrix (), v);
@@ -269,7 +269,7 @@ var n = centerAndPoints[0].length - 1;
 if (doReport) for (var i = 1; i <= n; i++) {
 var aij = centerAndPoints[0][i];
 var bij = centerAndPoints[1][i];
-if (Clazz.instanceOf (aij, J.modelset.Atom)) J.util.Logger.info (" atom 1 " + (aij).getInfo () + "\tatom 2 " + (bij).getInfo ());
+if (Clazz.instanceOf (aij, J.modelset.Atom) && Clazz.instanceOf (bij, J.modelset.Atom)) J.util.Logger.info (" atom 1 " + (aij).getInfo () + "\tatom 2 " + (bij).getInfo ());
  else break;
 }
 if (n < 2) return q;

@@ -145,7 +145,7 @@ return J.util.C.getColixInherited ((colixes == null || i >= colixes.length ? 0 :
 c$.getFontCommand = $_M(c$, "getFontCommand", 
 function (type, font) {
 if (font == null) return "";
-return "font " + type + " " + font.fontSizeNominal + " " + font.fontFace + " " + font.fontStyle;
+return "font " + type + " " + font.getInfo ();
 }, "~S,J.util.JmolFont");
 c$.getColorCommandUnk = $_M(c$, "getColorCommandUnk", 
 function (type, colix, translucentAllowed) {

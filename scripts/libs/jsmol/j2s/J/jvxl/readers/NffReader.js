@@ -14,6 +14,10 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.NffReader, []);
 });
+Clazz.overrideMethod (c$, "init2", 
+function (sg, br) {
+this.init2PFR (sg, br);
+}, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
 $_M(c$, "setHeader", 
 function () {
 this.jvxlFileHeaderBuffer.append ("NFF file format\nvertices and triangles only\n");

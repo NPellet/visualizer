@@ -160,6 +160,27 @@ this.paletteIDs[i] = J.constant.EnumPalette.UNKNOWN.id;
 this.bsColixSet.set (i);
 }}
 }, "~A,J.util.BS");
+$_M(c$, "setParams", 
+function (data, atomMap, bsSelected) {
+if (this.monomerCount == 0) return;
+var c = data[0];
+var atrans = data[1];
+this.isActive = true;
+if (this.bsColixSet == null) this.bsColixSet =  new J.util.BS ();
+var n = atomMap.length;
+for (var i = this.monomerCount; --i >= 0; ) {
+var atomIndex = this.leadAtomIndices[i];
+if (bsSelected.get (atomIndex) && i < this.colixes.length && atomIndex < n) {
+var pt = atomMap[atomIndex];
+var colix = (c == null ? 0 : c[pt]);
+var f = (atrans == null ? 0 : atrans[pt]);
+if (f > 0.01) colix = J.util.C.getColixTranslucent3 (colix, true, f);
+this.colixes[i] = this.shape.getColixI (colix, J.constant.EnumPalette.UNKNOWN.id, atomIndex);
+if (this.colixesBack != null && i < this.colixesBack.length) this.colixesBack[i] = 0;
+this.paletteIDs[i] = J.constant.EnumPalette.UNKNOWN.id;
+this.bsColixSet.set (i);
+}}
+}, "~A,~A,J.util.BS");
 $_M(c$, "setColixBack", 
 function (colix, bsSelected) {
 for (var i = this.monomerCount; --i >= 0; ) {

@@ -55,9 +55,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.AtomDataReader, []);
 });
-$_M(c$, "init", 
+$_M(c$, "initADR", 
 function (sg) {
-Clazz.superCall (this, J.jvxl.readers.AtomDataReader, "init", [sg]);
+this.initVDR (sg);
 this.precalculateVoxelData = true;
 this.atomDataServer = sg.getAtomDataServer ();
 }, "J.jvxl.readers.SurfaceGenerator");
@@ -217,7 +217,6 @@ this.atomXyz[this.myAtomCount] = this.atomData.atomXyz[i];
 this.atomRadius[this.myAtomCount++] = this.atomData.atomRadius[i];
 }
 }this.haveOneProperty = (!Float.isNaN (this.theProperty));
-System.out.println ("AtomDataR theProperty=" + this.theProperty);
 }, "J.util.BS,~B,~B,~B,~B,~B,~B,~N");
 $_M(c$, "addAtomProp", 
 ($fz = function (i, f) {
@@ -245,6 +244,10 @@ this.setVolumeData ();
 J.jvxl.data.JvxlCoder.jvxlCreateHeader (this.volumeData, this.jvxlFileHeaderBuffer);
 }, "~N,~N,~N");
 Clazz.overrideMethod (c$, "setVolumeData", 
+function () {
+this.setVolumeDataADR ();
+});
+$_M(c$, "setVolumeDataADR", 
 function () {
 if (!this.setVolumeDataParams ()) {
 this.setVoxelRange (0, this.xyzMin.x, this.xyzMax.x, this.ptsPerAngstrom, this.maxGrid, this.minPtsPerAng);

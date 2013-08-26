@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["J.modelset.AtomCollection", "J.util.BS"], "J.modelset.BondCollection", ["J.modelset.Bond", "$.BondIteratorSelected", "$.HBond", "J.util.ArrayUtil", "$.BSUtil", "$.JmolEdge", "$.Logger"], function () {
+Clazz.load (["J.modelset.AtomCollection", "J.util.BS"], "J.modelset.BondCollection", ["java.lang.Float", "J.modelset.Bond", "$.BondIteratorSelected", "$.HBond", "J.util.ArrayUtil", "$.BSUtil", "$.C", "$.JmolEdge", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.molecules = null;
 this.moleculeCount = 0;
@@ -23,11 +23,15 @@ for (var i = 5; --i > 0; ) this.freeBonds[i] =  new Array (200);
 
 }this.bsAromatic =  new J.util.BS ();
 });
-$_M(c$, "releaseModelSet", 
+Clazz.overrideMethod (c$, "releaseModelSet", 
+function () {
+this.releaseModelSetBC ();
+});
+$_M(c$, "releaseModelSetBC", 
 function () {
 this.bonds = null;
 this.freeBonds = null;
-Clazz.superCall (this, J.modelset.BondCollection, "releaseModelSet", []);
+this.releaseModelSetAC ();
 });
 $_M(c$, "resetMolecules", 
 function () {
@@ -233,9 +237,13 @@ if (matchNull || newOrder == (bond.order & -257 | 131072) || (order & bond.order
 bsDelete.set (i);
 nDeleted++;
 }}
-if (nDeleted > 0) this.dBb (bsDelete, false);
+if (nDeleted > 0) this.dBm (bsDelete, false);
 return [0, nDeleted];
 }, "~N,~N,~N,J.util.BS,J.util.BS,~B,~B,~N,~N");
+$_M(c$, "dBm", 
+function (bsBonds, isFullModel) {
+(this).deleteBonds (bsBonds, isFullModel);
+}, "J.util.BS,~B");
 $_M(c$, "dBb", 
 function (bsBond, isFullModel) {
 var iDst = bsBond.nextSetBit (0);
@@ -481,7 +489,7 @@ var bs =  new J.util.BS ();
 bs.set (bond.index);
 bsAtoms.set (bond.getAtomIndex1 ());
 bsAtoms.set (bond.getAtomIndex2 ());
-this.dBb (bs, false);
+this.dBm (bs, false);
 return bsAtoms;
 }bond.setOrder (bondOrder | 131072);
 this.removeUnnecessaryBonds (bond.atom1, false);
@@ -509,7 +517,7 @@ if (atom2.getElementNumber () == 1) bs.set (bonds[i].getOtherAtom (atom).index);
 } else {
 bsBonds.set (bonds[i].index);
 }
-if (bsBonds.nextSetBit (0) >= 0) this.dBb (bsBonds, false);
+if (bsBonds.nextSetBit (0) >= 0) this.dBm (bsBonds, false);
 if (deleteAtom) bs.set (atom.index);
 if (bs.nextSetBit (0) >= 0) this.viewer.deleteAtoms (bs, false);
 }, "J.modelset.Atom,~B");
@@ -519,6 +527,25 @@ if (!isDisplay) this.haveHiddenBonds = true;
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) if (i < this.bondCount && this.bonds[i].mad != 0) this.bonds[i].setShapeVisibility (isDisplay);
 
 }, "J.modelset.Bond.BondSet,~B");
+$_M(c$, "setBondParametersBS", 
+function (modelIndex, iBond, bsBonds, rad, pymolValence, argb, trans) {
+if (bsBonds == null) this.setBondParameters (modelIndex, iBond, rad, pymolValence, argb, trans);
+ else for (var i = bsBonds.nextSetBit (0); i >= 0; i = bsBonds.nextSetBit (i + 1)) this.setBondParameters (modelIndex, i, rad, pymolValence, argb, trans);
+
+}, "~N,~N,J.util.BS,~N,~N,~N,~N");
+$_M(c$, "setBondParameters", 
+function (modelIndex, i, rad, pymolValence, argb, trans) {
+if (i < 0 || i >= this.bondCount) return;
+var b = this.bonds[i];
+if (modelIndex >= 0 && b.atom1.modelIndex != modelIndex) return;
+if (!Float.isNaN (rad)) b.mad = Clazz.floatToShort (rad * 2000);
+var colix = b.colix;
+if (argb != 2147483647) colix = J.util.C.getColix (argb);
+if (!Float.isNaN (trans)) b.colix = J.util.C.getColixTranslucent3 (colix, trans != 0, trans);
+ else if (b.colix != colix) b.colix = J.util.C.copyColixTranslucency (b.colix, colix);
+if (pymolValence == 1) b.order &= -65537;
+ else if (pymolValence == 0) b.order |= 65536;
+}, "~N,~N,~N,~N,~N,~N");
 Clazz.defineStatics (c$,
 "BOND_GROWTH_INCREMENT", 250,
 "MAX_BONDS_LENGTH_TO_CACHE", 5,

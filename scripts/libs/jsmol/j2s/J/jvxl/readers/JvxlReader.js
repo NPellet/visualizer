@@ -5,9 +5,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.JvxlReader, []);
 });
-$_M(c$, "init2", 
+Clazz.overrideMethod (c$, "init2", 
 function (sg, br) {
-Clazz.superCall (this, J.jvxl.readers.JvxlReader, "init2", [sg, br]);
+this.init2JXR (sg, br);
 this.isXmlFile = false;
 this.JVXL_VERSION = "2.0";
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
@@ -159,8 +159,7 @@ blue = this.parseFloat ();
 Clazz.overrideMethod (c$, "readSurfaceData", 
 function (isMapDataIgnored) {
 this.thisInside = !this.params.isContoured;
-if (this.readSurfaceDataXML ()) return;
-this.readVolumeFileSurfaceData ();
+if (!this.readSurfaceDataXML ()) this.readSurfaceDataJXR ();
 }, "~B");
 Clazz.overrideMethod (c$, "jvxlSkipData", 
 function (nPoints, doSkipColorData) {

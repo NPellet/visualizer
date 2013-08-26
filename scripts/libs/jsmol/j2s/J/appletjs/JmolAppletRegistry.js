@@ -3,7 +3,9 @@ Clazz.load (["java.util.Hashtable"], "J.appletjs.JmolAppletRegistry", ["J.util.L
 c$ = Clazz.declareType (J.appletjs, "JmolAppletRegistry");
 c$.checkIn = $_M(c$, "checkIn", 
 function (name, applet) {
-J.appletjs.JmolAppletRegistry.cleanRegistry ();
+{
+if (Jmol._htRegistry) {J.appletjs.JmolAppletRegistry.htRegistry = Jmol._htRegistry} else {Jmol._htRegistry = J.appletjs.JmolAppletRegistry.htRegistry};
+}J.appletjs.JmolAppletRegistry.cleanRegistry ();
 if (name != null) {
 J.util.Logger.info ("AppletRegistry.checkIn(" + name + ")");
 J.appletjs.JmolAppletRegistry.htRegistry.put (name, applet);
@@ -27,7 +29,7 @@ return;
 }var ext = "__" + mySyncId + "__";
 if (appletName == null || appletName.equals ("*") || appletName.equals (">")) {
 for (var appletName2, $appletName2 = J.appletjs.JmolAppletRegistry.htRegistry.keySet ().iterator (); $appletName2.hasNext () && ((appletName2 = $appletName2.next ()) || true);) {
-if (!appletName2.equals (excludeName) && appletName2.indexOf (ext) > 0) {
+if (!appletName2.equals (excludeName)) {
 apps.addLast (appletName2);
 }}
 return;

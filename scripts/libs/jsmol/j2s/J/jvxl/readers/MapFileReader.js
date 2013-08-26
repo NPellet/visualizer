@@ -37,9 +37,13 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.MapFileReader, []);
 });
-$_M(c$, "init2", 
+Clazz.overrideMethod (c$, "init2", 
 function (sg, br) {
-Clazz.superCall (this, J.jvxl.readers.MapFileReader, "init2", [sg, br]);
+this.init2MFR (sg, br);
+}, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
+$_M(c$, "init2MFR", 
+function (sg, br) {
+this.init2VFR (sg, br);
 this.isAngstroms = true;
 this.adjustment = sg.getParams ().center;
 if (this.adjustment == null || this.adjustment.x == 3.4028235E38) this.adjustment =  new J.util.P3 ();

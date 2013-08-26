@@ -127,7 +127,7 @@ return this.chains;
 });
 $_M(c$, "getChainCount", 
 function (countWater) {
-if (this.chainCount > 1 && !countWater) for (var i = 0; i < this.chainCount; i++) if (this.chains[i].chainID == '\0') return this.chainCount - 1;
+if (this.chainCount > 1 && !countWater) for (var i = 0; i < this.chainCount; i++) if (this.chains[i].chainID == 0) return this.chainCount - 1;
 
 return this.chainCount;
 }, "~B");
@@ -163,8 +163,12 @@ var chain = this.chains[i];
 if (chain.chainID == chainID) return chain;
 }
 return null;
-}, "~S");
+}, "~N");
 $_M(c$, "fixIndices", 
+function (modelIndex, nAtomsDeleted, bsDeleted) {
+this.fixIndicesM (modelIndex, nAtomsDeleted, bsDeleted);
+}, "~N,~N,J.util.BS");
+$_M(c$, "fixIndicesM", 
 function (modelIndex, nAtomsDeleted, bsDeleted) {
 if (this.dataSourceFrame > modelIndex) this.dataSourceFrame--;
 if (this.trajectoryBaseIndex > modelIndex) this.trajectoryBaseIndex--;
@@ -175,6 +179,10 @@ J.util.BSUtil.deleteBits (this.bsAtoms, bsDeleted);
 J.util.BSUtil.deleteBits (this.bsAtomsDeleted, bsDeleted);
 }, "~N,~N,J.util.BS");
 $_M(c$, "freeze", 
+function () {
+this.freezeM ();
+});
+$_M(c$, "freezeM", 
 function () {
 this.chains = J.util.ArrayUtil.arrayCopyObject (this.chains, this.chainCount);
 this.groupCount = -1;
@@ -230,9 +238,6 @@ return null;
 $_M(c$, "recalculateLeadMidpointsAndWingVectors", 
 function () {
 });
-$_M(c$, "addSecondaryStructure", 
-function (type, structureID, serialID, strandCount, startChainID, startSeqcode, endChainID, endSeqcode, istart, iend, bsAssigned) {
-}, "J.constant.EnumStructure,~S,~N,~N,~S,~N,~S,~N,~N,~N,J.util.BS");
 $_M(c$, "calculateStructures", 
 function (asDSSP, doReport, dsspIgnoreHydrogen, setStructure, includeAlpha) {
 return "";
@@ -241,6 +246,10 @@ $_M(c$, "setStructureList",
 function (structureList) {
 }, "java.util.Map");
 $_M(c$, "getChimeInfo", 
+function (sb, nHetero) {
+this.getChimeInfoM (sb, nHetero);
+}, "J.util.SB,~N");
+$_M(c$, "getChimeInfoM", 
 function (sb, nHetero) {
 sb.append ("\nNumber of Atoms ..... " + (this.modelSet.atomCount - nHetero));
 if (nHetero > 0) sb.append (" (" + nHetero + ")");
@@ -256,7 +265,7 @@ function (viewer, ctype, qtype, mStep) {
 }, "J.viewer.Viewer,~S,~S,~N");
 $_M(c$, "selectSeqcodeRange", 
 function (seqcodeA, seqcodeB, chainID, bs, caseSensitive) {
-}, "~N,~N,~S,J.util.BS,~B");
+}, "~N,~N,~N,J.util.BS,~B");
 $_M(c$, "setConformation", 
 function (bsConformation) {
 }, "J.util.BS");

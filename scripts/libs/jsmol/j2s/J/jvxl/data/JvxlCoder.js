@@ -66,7 +66,8 @@ data.appendSB (sb);
 if (jvxlData.vContours != null && jvxlData.vContours.length > 0) {
 J.jvxl.data.JvxlCoder.jvxlEncodeContourData (jvxlData.vContours, data);
 }if (jvxlData.vertexColorMap != null) {
-J.io.XmlUtil.openTag (data, "jvxlVertexColorData");
+if (jvxlData.baseColor == null) J.io.XmlUtil.openTag (data, "jvxlVertexColorData");
+ else J.io.XmlUtil.openTagAttr (data, "jvxlVertexColorData", ["baseColor", jvxlData.baseColor]);
 for (var entry, $entry = jvxlData.vertexColorMap.entrySet ().iterator (); $entry.hasNext () && ((entry = $entry.next ()) || true);) J.jvxl.data.JvxlCoder.appendEncodedBitSetTag (data, "jvxlColorMap", entry.getValue (), -1, ["color", entry.getKey ()]);
 
 jvxlData.vertexColorMap = null;
@@ -144,6 +145,7 @@ if (n > 0) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  nInvalidatedVertexes",
 if (jvxlData.slabInfo != null) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  slabInfo", jvxlData.slabInfo);
 if (jvxlData.isJvxlPrecisionColor) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  precisionColor", "true");
 if (jvxlData.colorDensity) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  colorDensity", "true");
+if (!Float.isNaN (jvxlData.pointSize)) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  pointSize", "" + jvxlData.pointSize);
  else if (jvxlData.diameter != 0) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  diameter", "" + jvxlData.diameter);
 if (!jvxlData.allowVolumeRender) J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  allowVolumeRender", "false");
 if (jvxlData.jvxlPlane == null || vertexDataOnly) {
@@ -389,9 +391,14 @@ var value = vertexValues[polygonCount == 0 ? i : vertexIdOld[i]];
 J.jvxl.data.JvxlCoder.jvxlAppendCharacter2 (value, jvxlData.mappedDataMin, jvxlData.mappedDataMax, colorFractionBase, colorFractionRange, list1, list2);
 }
 } else {
+var lastColor = 0;
 list1.appendI (n).append (" ");
 for (var i = 0; i < vertexCount; i++) if (!removeSlabbed || bsSlabDisplay.get (i)) {
-list1.appendI (vertexColors[polygonCount == 0 ? i : vertexIdOld[i]]).append (" ");
+var c = vertexColors[polygonCount == 0 ? i : vertexIdOld[i]];
+if (c == lastColor) c = 0;
+ else lastColor = c;
+list1.appendI (c);
+list1.append (" ");
 }
 }J.jvxl.data.JvxlCoder.appendXmlColorData (sb, list1.appendSB (list2).append ("\n").toString (), (vertexColors == null), true, jvxlData.valueMappedToRed, jvxlData.valueMappedToBlue);
 }, $fz.isPrivate = true, $fz), "J.util.SB,J.jvxl.data.JvxlData,~A,~A,~A,~N,~S,~N,J.util.BS,~A,~B,~B");

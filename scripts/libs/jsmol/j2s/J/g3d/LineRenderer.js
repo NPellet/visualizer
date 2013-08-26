@@ -33,8 +33,8 @@ $_M(c$, "setLineBits",
 function (dx, dy) {
 this.slope = (dx != 0 ? dy / dx : dy >= 0 ? 3.4028235E38 : -3.4028235E38);
 this.lineTypeX = (this.slope <= 1 && this.slope >= -1);
-if (this.getCachedLine ()) return;
 this.nBits = (this.lineTypeX ? this.g3d.getRenderWidth () : this.g3d.getRenderHeight ());
+if (this.getCachedLine ()) return;
 this.lineBits = J.util.BSUtil.newBitSet (this.nBits);
 dy = Math.abs (dy);
 dx = Math.abs (dx);
@@ -54,6 +54,11 @@ twoDError -= twoDx;
 this.lineCache.put (this.slopeKey, this.lineBits);
 this.nCached++;
 }, "~N,~N");
+$_M(c$, "clearLineCache", 
+function () {
+this.lineCache.clear ();
+this.nCached = 0;
+});
 $_M(c$, "plotLine", 
 function (argbA, tScreenedA, argbB, tScreenedB, xA, yA, zA, xB, yB, zB, clipped) {
 this.x1t = xA;
@@ -137,9 +142,9 @@ $_M(c$, "getCachedLine",
 this.slopeKey = Float.$valueOf (this.slope);
 if (!this.lineCache.containsKey (this.slopeKey)) return false;
 this.lineBits = this.lineCache.get (this.slopeKey);
+if (J.util.Logger.debugging) {
 this.nFound++;
-if (this.nFound == 1000000) if (J.util.Logger.debugging) {
-J.util.Logger.debug ("nCached/nFound lines: " + this.nCached + " " + this.nFound);
+if (this.nFound == 1000000) J.util.Logger.debug ("nCached/nFound lines: " + this.nCached + " " + this.nFound);
 }return true;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getTrimmedLine", 

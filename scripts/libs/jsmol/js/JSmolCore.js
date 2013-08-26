@@ -1,6 +1,9 @@
-// JSmolCore.js -- Jmol core capability  3/22/2013 5:52:54 PM 
+// JSmolCore.js -- Jmol core capability  8/16/2013 12:03:14 PM
 
 // see JSmolApi.js for public user-interface. All these are private functions
+
+// BH 8/16/2013 12:02:20 PM: JSmoljQueryExt.js pulled out
+// BH 8/16/2013 12:02:20 PM: Jmol._touching used properly
 
 // BH 3/22/2013 5:53:02 PM: Adds noscript option, JSmol.min.core.js
 // BH 1/17/2013 5:20:44 PM: Fixed problem with console not getting initial position if no first click
@@ -30,7 +33,7 @@
 // If you are using jQuery already on your page and you do not need any
 // binary file transfer, you can  
 
-// required/optional librariespreferably in the following order):
+// required/optional libraries (preferably in the following order):
 
 //		JSmoljQuery.js      -- required for binary file transfer; otherwise standard jQuery should be OK
 //		JSmolCore.js      -- required;
@@ -123,157 +126,69 @@ Jmol = (function(document) {
   // hooks to jQuery -- if you have a different AJAX tool, feel free to adapt.
   // There should be no other references to jQuery in all the JSmol libraries.
 
-  Jmol.$ = function(appletOrId, what) {
-		return $("#" + appletOrId._id + (what ? "_" + what : ""));
-	}	
+  Jmol.$ = function(objectOrId, appletDiv) {
+	  return $(appletDiv ? "#" + objectOrId._id + "_" + appletDiv : objectOrId);
+  }	
 
+  Jmol.$after = function (what, s) {
+	  $(what).after(s);
+  }
+	  
   Jmol.$ajax = function (info) {
-    return $.ajax(info);
+	  return $.ajax(info);
   }
 
   Jmol.$attr = function (id, a, val) {
-    return $("#" + id).attr(a, val);
+	  return $("#" + id).attr(a, val);
   }
   
-  Jmol.$bind = function(id, list, f) {
-    return (f ? $(id).bind(list, f) : $(id).unbind(list));
+  Jmol.$bind = function(what, list, f) {
+	  return (f ? $(what).bind(list, f) : $(what).unbind(list));
   }
 
+  Jmol.$focus = function(id) {
+	  return $("#" + id).focus();
+  }
+	   
+  Jmol.$get = function(what, i) {
+	return $(what).get(i);
+  }
+ 
   Jmol.$html = function(id, html) {
     return $("#" + id).html(html);
   }
    
-  Jmol.$offset = function (id) {
+  Jmol.$offset = function(id) {
     return $("#" + id).offset();
   }
   
-  Jmol.$on = function (evt, f) {
+  Jmol.$documentOff = function(evt, id) {
+	$(document).off(evt, "#" + id);
+  }
+  
+  Jmol.$documentOn = function(evt, id, f) {
+		$(document).on(evt, "#" + id, f);
+	  }
+	  
+  Jmol.$windowOn = function(evt, f) {
     return $(window).on(evt, f);
   }
 
+  Jmol.$prop = function(id, p) {
+	return $("#" + id).prop(p);
+  }
+  
   Jmol.$resize = function (f) {
     return $(window).resize(f);
   }
   
-  Jmol.$submit = function(form) {
-    return $("#" + form).submit();
+  Jmol.$submit = function(id) {
+    return $("#" + id).submit();
   }
 
   Jmol.$val = function (id, v) {
-    return $("#" + id).val(v);
+    return (arguments.length == 1 ? $("#" + id).val() : $("#" + id).val(v));
   }
-  
-  /*
-   * jQuery outside events - v1.1 - 3/16/2010
-   * http://benalman.com/projects/jquery-outside-events-plugin/
-   * 
-   * Copyright (c) 2010 "Cowboy" Ben Alman
-   * Dual licensed under the MIT and GPL licenses.
-   * http://benalman.com/about/license/
-   * 
-   * modified by Bob Hanson to streamline and to add parameter reference to actual jQuery event
-   *   
-   */
-  ;(function($,c,b){
-  $.map("click mousemove mouseup touchmove touchend".split(" "),function(d){a(d)});
-  function a(g){
-  	var e=g+b;
-  	var d=$(),h=g+"."+e+"-special-event";
-  	$.event.special[e]={
-  		setup:function(){
-  			d=d.add(this);
-  			if(d.length===1){
-  				$(c).bind(h,f)
-  			}
-  		},
-  		teardown:function(){
-  			d=d.not(this);
-  			if(d.length===0){
-  				$(c).unbind(h)
-  			}
-  		},
-  		add:function(i){
-  			var j=i.handler;
-  			i.handler=function(l,k){
-  				l.target=k;
-  				j.apply(this,arguments)
-  			}
-  		}
-  	};
-  	function f(ev){
-  		$(d).each(function(){
-  			var j=$(this);
-  			if(this!==ev.target&&!j.has(ev.target).length){
-  	//BH: adds ev to pass that along to our handler as well.
-  				j.triggerHandler(e,[ev.target, ev])
-  			}
-  		}
-  		)
-  	}
-  }
-  })(jQuery,document,"outjsmol");
-  
-  // source: https://github.com/dkastner/jquery.iecors
-  // author: Derek Kastner dkastner@gmail.com http://dkastner.github.com
-  
-  // MSIE cross-domain request
-  
-  ;(function( jQuery ) {
-  
-    // Create the request object
-    // (This is still attached to ajaxSettings for backward compatibility)
-    jQuery.ajaxSettings.xdr = function() {
-      return (window.XDomainRequest ? new window.XDomainRequest() : null);
-    };
-  
-    // Determine support properties
-    (function( xdr ) {
-      jQuery.extend( jQuery.support, { iecors: !!xdr });
-    })( jQuery.ajaxSettings.xdr() );
-  
-    // Create transport if the browser can provide an xdr
-    if ( jQuery.support.iecors ) {
-  
-      jQuery.ajaxTransport(function( s ) {
-        var callback;
-        return {
-          send: function( headers, complete ) {
-            var xdr = s.xdr();
-            xdr.onload = function() {          
-              var headers = { 'Content-Type': xdr.contentType };
-              complete(200, 'OK', { text: xdr.responseText }, headers);
-            };
-  
-  
-            // Apply custom fields if provided
-  					if ( s.xhrFields ) {
-              xdr.onerror = s.xhrFields.error;
-              xdr.ontimeout = s.xhrFields.timeout;
-  					}
-  //if (!xdr.onerror)xdr.onerror=function(a){alert("xdr error:" + a)}
-  //if (!xdr.onprogress)xdr.onprogress=function(a,b,c){alert("xdr progress:" + this.responseText)}
-  //if (!xdr.ontimeout)xdr.ontimeout=function(a){alert("xdr timeout:" + a)}
-  
-  // note that xdr is not synchronous
-  
-  
-            xdr.open( s.type, s.url );
-  
-            // XDR has no method for setting headers O_o
-  
-            xdr.send( ( s.hasContent && s.data ) || null );
-            
-          },
-  
-          abort: function() {
-          
-            xdr.abort();
-          }
-        };
-      });
-    }
-  })( jQuery );
-  // end of jQuery.iecors
   
   ////////////// protected variables ///////////
   
@@ -482,7 +397,20 @@ Jmol = (function(document) {
 			// do something local here;
 			return;
 		}
-		Jmol.$attr("__jsmolform__", "action", url + "?" + (new Date()).getMilliseconds());
+		if (!Jmol._formdiv) {
+	      var sform = '<div id="__jsmolformdiv__" style="display:none">\
+	 				<form id="__jsmolform__" method="post" target="_blank" action="">\
+	 				<input name="call" value="saveFile"/>\
+	 				<input id="__jsmolmimetype__" name="mimetype" value=""/>\
+	 				<input id="__jsmolencoding__" name="encoding" value=""/>\
+	 				<input id="__jsmolfilename__" name="filename" value=""/>\
+	 				<input id="__jsmoldata__" name="data" value=""/>\
+	 				</form>\
+	 				</div>'
+	 	  Jmol.$after("body", sform);
+	 	  Jmol._formdiv = "__jsmolform__";
+		}
+		Jmol.$attr(Jmol._formdiv, "action", url + "?" + (new Date()).getMilliseconds());
 		Jmol.$val("__jsmoldata__", data);
 		Jmol.$val("__jsmolfilename__", filename);
 		Jmol.$val("__jsmolmimetype__", mimetype);
@@ -731,7 +659,7 @@ Jmol = (function(document) {
 			var xhr = new window.XMLHttpRequest();
 		  xhr.open( "text", "http://google.com", false );
 		  if (xhr.hasOwnProperty("responseType")) {
-		    //xhr.responseType = "arraybuffer";
+		    xhr.responseType = "arraybuffer";
 		  } else if (xhr.overrideMimeType) {
 		    xhr.overrideMimeType('text/plain; charset=x-user-defined');
 		  }
@@ -891,42 +819,21 @@ Jmol = (function(document) {
         img = "<div id=\"ID_coverdiv\" style=\"backgoround-color:red;z-index:10000;width:100%;height:100%;display:inline;position:absolute;top:0px;left:0px\"><image id=\"ID_coverimage\" src=\""
          + applet._coverImage + "\" style=\"width:100%;height:100%\"" + more + "/>" + play + "</div>";
       }
-      var sform = (!isHeader && !Jmol._formdiv ? 
-			 '<div id="__jsmolformdiv__" style="display:none">\
-				<form id="__jsmolform__" method="post" target="_blank" action="">\
-				<input name="call" value="saveFile"/>\
-				<input id="__jsmolmimetype__" name="mimetype" value=""/>\
-				<input id="__jsmolencoding__" name="encoding" value=""/>\
-				<input id="__jsmolfilename__" name="filename" value=""/>\
-				<input id="__jsmoldata__" name="data" value=""/>\
-				</form>\
-				</div>': ""); 
-			if (sform)
-				Jmol._formdiv = "__jsmolform__";
+
 			var s = (isHeader ? "<div id=\"ID_appletinfotablediv\" style=\"width:Wpx;height:Hpx;position:relative\">IMG<div id=\"ID_appletdiv\" style=\"z-index:9999;width:100%;height:100%;position:absolute:top:0px;left:0px;\">"
 				: "</div><div id=\"ID_infotablediv\" style=\"width:100%;height:100%;position:absolute;top:0px;left:0px\">\
 			<div id=\"ID_infoheaderdiv\" style=\"height:20px;width:100%;background:yellow;display:none\"><span id=\"ID_infoheaderspan\"></span><span id=\"ID_infocheckboxspan\" style=\"position:absolute;text-align:right;right:1px;\"><a href=\"javascript:Jmol.showInfo(ID,false)\">[x]</a></span></div>\
-			<div id=\"ID_infodiv\" style=\"position:absolute;top:20px;bottom:0;width:100%;height:95%;overflow:auto\"></div></div></div>"+sform);
+			<div id=\"ID_infodiv\" style=\"position:absolute;top:20px;bottom:0;width:100%;height:95%;overflow:auto\"></div></div></div>");
 		return s.replace(/IMG/, img).replace(/Hpx/g, height).replace(/Wpx/g, width).replace(/ID/g, applet._id);
 	}
 
-	Jmol._documentWrite = function(text, id) {
-
-    var node;
+	Jmol._documentWrite = function(text) {
 		if (Jmol._document) {
-/*
-      if(node = document.getElementById(id)) {
-        node.innerHTML = text;
-        return;
-      }
-*/
 			if (Jmol._isXHTML && !Jmol._XhtmlElement) {
 				var s = document.getElementsByTagName("script");
 				Jmol._XhtmlElement = s.item(s.length - 1);
 				Jmol._XhtmlAppendChild = false;
 			}
-
-
 			if (Jmol._XhtmlElement)
 				Jmol._domWrite(text);
 			else
@@ -1097,7 +1004,7 @@ Jmol = (function(document) {
     //MSIE bug responds to any link click even if it is just a JavaScript call
     
     if (Jmol.featureDetection.allowDestroy)
-      Jmol.$on('beforeunload', function () { Jmol._destroy(applet); } );
+      Jmol.$windowOn('beforeunload', function () { Jmol._destroy(applet); } );
   }
   
   Jmol._destroy = function(applet) {
@@ -1204,7 +1111,7 @@ Jmol = (function(document) {
 	}
 
 	Jmol._jsGetXY = function(canvas, ev) {
-    if (!canvas.applet._ready)
+    if (!canvas.applet._ready || Jmol._touching && ev.type.indexOf("touch") < 0)
       return false;
 		ev.preventDefault();
 		var offsets = Jmol.$offset(canvas.id);
@@ -1229,7 +1136,6 @@ Jmol = (function(document) {
    	ev.stopPropagation();
   	ev.preventDefault();
     var oe = ev.originalEvent;
-    
     switch (ev.type) {
     case "touchstart":
       Jmol._touching = true;
@@ -1245,16 +1151,23 @@ Jmol = (function(document) {
       break;
     case "touchmove":
 			var offsets = Jmol.$offset(canvas.id);
-	    canvas._touches[0].push([oe.touches[0].pageX - offsets.left, oe.touches[0].pageY - offsets.top]);
-	    canvas._touches[1].push([oe.touches[1].pageX - offsets.left, oe.touches[1].pageY - offsets.top]);
-	    if (canvas._touches[0].length >= 2)
+      var t0 = canvas._touches[0];
+	    var t1 = canvas._touches[1];
+      t0.push([oe.touches[0].pageX - offsets.left, oe.touches[0].pageY - offsets.top]);
+      t1.push([oe.touches[1].pageX - offsets.left, oe.touches[1].pageY - offsets.top]);
+      var n = t0.length;
+      if (n > 3) {
+        t0.shift();
+        t1.shift();
+      }
+	    if (n >= 2)
 				canvas.applet._processGesture(canvas._touches);
       break;
     }
     return true;
   }
   
-	Jmol._jsSetMouse = function(canvas) {
+  Jmol._jsSetMouse = function(canvas) {
 		Jmol.$bind(canvas, 'mousedown touchstart', function(ev) {
 	   	ev.stopPropagation();
 	  	ev.preventDefault();
@@ -1265,9 +1178,8 @@ Jmol = (function(document) {
 			var xym = Jmol._jsGetXY(canvas, ev);
 			if(!xym)
         return false;
-			
 			if (ev.button != 2 && canvas.applet._popups)
-				Jmol.Menu.hidePopups(canvas.applet.popups);
+				Jmol.Menu.hidePopups(canvas.applet._popups);
 
 			canvas.applet._processEvent(501, xym); //J.api.Event.MOUSE_DOWN
 			return false;
@@ -1287,7 +1199,7 @@ Jmol = (function(document) {
 		Jmol.$bind(canvas, 'mousemove touchmove', function(ev) { // touchmove
      	ev.stopPropagation();
 	  	ev.preventDefault();
-      var isTouch = (ev.type == "touchmove") || Jmol._touching;
+      var isTouch = (ev.type == "touchmove");
 	    if (isTouch && Jmol._gestureUpdate(canvas, ev))
         return false;
 			var xym = Jmol._jsGetXY(canvas, ev);
@@ -1316,6 +1228,7 @@ Jmol = (function(document) {
 		Jmol.$bind(canvas, 'mouseout', function(ev) {
       if (canvas.applet._applet)
         canvas.applet._applet.viewer.startHoverWatcher(false);
+      canvas.isDragging = false;
 		});
 
 		Jmol.$bind(canvas, 'mouseenter', function(ev) {
@@ -1425,4 +1338,3 @@ Jmol._setDraggable = function(Obj) {
 }
 
 })(Jmol, jQuery);
-

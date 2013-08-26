@@ -13,9 +13,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.KinemageReader, []);
 });
-$_M(c$, "init2", 
+Clazz.overrideMethod (c$, "init2", 
 function (sg, br) {
-Clazz.superCall (this, J.jvxl.readers.KinemageReader, "init2", [sg, br]);
+this.init2PR (sg, br);
 this.type = "kinemage";
 this.setHeader ();
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");

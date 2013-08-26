@@ -104,7 +104,7 @@ J.i18n.GT.setDoTranslate (false);
 J.util.Logger.warn ("Note -- language translation disabled");
 }if (!this.getBooleanValue ("popupMenu", true)) this.viewer.getProperty ("DATA_API", "disablePopupMenu", null);
 var scriptParam = this.getValue ("script", "");
-this.viewer.popHoldRepaint ();
+this.viewer.popHoldRepaint ("applet init");
 if (scriptParam.length > 0) this.scriptProcessor (scriptParam, null, 1);
 this.jmolReady ();
 }, $fz.isPrivate = true, $fz));
@@ -220,15 +220,21 @@ return J.i18n.GT._ ("Jmol Applet version {0} {1}.\n\nAn OpenScience project.\n\n
 });
 Clazz.overrideMethod (c$, "getProperty", 
 function (infoType, paramInfo) {
-return this.viewer.getProperty (null, infoType, paramInfo);
+{
+paramInfo || (paramInfo = "");
+}return this.viewer.getProperty (null, infoType, paramInfo);
 }, "~S,~S");
 Clazz.overrideMethod (c$, "getPropertyAsString", 
 function (infoType, paramInfo) {
-return this.viewer.getProperty ("readable", infoType, paramInfo).toString ();
+{
+paramInfo || (paramInfo = "");
+}return this.viewer.getProperty ("readable", infoType, paramInfo).toString ();
 }, "~S,~S");
 Clazz.overrideMethod (c$, "getPropertyAsJSON", 
 function (infoType, paramInfo) {
-return this.viewer.getProperty ("JSON", infoType, paramInfo).toString ();
+{
+paramInfo || (paramInfo = "");
+}return this.viewer.getProperty ("JSON", infoType, paramInfo).toString ();
 }, "~S,~S");
 $_M(c$, "loadInlineString", 
 function (strModel, script, isAppend) {
@@ -541,7 +547,7 @@ throw mue;
 }}, "~S");
 $_M(c$, "finalize", 
 function () {
-J.util.Logger.debug ("MyStatusListener finalize " + this);
+if (J.util.Logger.debugging) J.util.Logger.debug ("MyStatusListener finalize " + this);
 Clazz.superCall (this, J.appletjs.Jmol.MyStatusListener, "finalize", []);
 });
 $_M(c$, "showStatus", 
@@ -577,7 +583,7 @@ if (h) this.b$["J.appletjs.Jmol"].gRight = null;
 for (var j = 0; j < f; j++) {
 var k = e.get (j);
 var l = J.appletjs.JmolAppletRegistry.htRegistry.get (k);
-var m = (Clazz.instanceOf (l, J.api.JmolScriptInterface));
+var m = true;
 if (J.util.Logger.debugging) J.util.Logger.debug (this.b$["J.appletjs.Jmol"].fullName + " sending to " + k + ": " + a);
 try {
 if (m && (h || i)) {

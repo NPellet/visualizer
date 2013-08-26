@@ -79,6 +79,10 @@ $_M(c$, "stringWidth",
 function (text) {
 return this.apiPlatform.fontStringWidth (this, this.fontMetrics, text);
 }, "~S");
+$_M(c$, "getInfo", 
+function () {
+return this.fontSizeNominal + " " + this.fontFace + " " + this.fontStyle;
+});
 Clazz.defineStatics (c$,
 "FONT_ALLOCATION_UNIT", 8,
 "fontkeyCount", 1,

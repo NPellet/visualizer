@@ -155,11 +155,11 @@ function () {
 this.setXYZBohr (this.points);
 this.process ();
 });
-$_M(c$, "initializeOnePoint", 
+Clazz.overrideMethod (c$, "initializeOnePoint", 
 function () {
 if (this.eigen == null) this.initializeEigen ();
 this.isReducedDensity = false;
-Clazz.superCall (this, J.quantum.NciCalculation, "initializeOnePoint", []);
+this.initializeOnePointQC ();
 });
 $_M(c$, "initializeEigen", 
 ($fz = function () {

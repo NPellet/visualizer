@@ -8,6 +8,10 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.XsfReader, []);
 });
+Clazz.overrideMethod (c$, "init2", 
+function (sg, br) {
+this.init2VFR (sg, br);
+}, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
 Clazz.overrideMethod (c$, "readParameters", 
 function () {
 this.isAngstroms = false;
@@ -56,9 +60,9 @@ if (this.isBXSF) J.util.Logger.info (this.readLine ());
 for (var i = 0; i < n; i++) this.skipData (nPoints);
 
 }, "~N,~N");
-$_M(c$, "skipData", 
+Clazz.overrideMethod (c$, "skipData", 
 function (nPoints) {
-Clazz.superCall (this, J.jvxl.readers.XsfReader, "skipData", [nPoints]);
+this.skipDataVFR (nPoints);
 if (this.isBXSF) J.util.Logger.info (this.readLine ());
 }, "~N");
 });

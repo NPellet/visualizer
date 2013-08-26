@@ -14,6 +14,9 @@ this.note = null;
 this.isAll = false;
 this.colix = 0;
 this.intramolecular = null;
+this.mad = 0;
+this.thisID = null;
+this.text = null;
 this.atoms = null;
 this.units = null;
 this.minArray = null;
@@ -21,25 +24,28 @@ this.modelSet = null;
 this.viewer = null;
 this.iFirstAtom = 0;
 this.justOneModel = true;
+this.htMin = null;
 Clazz.instantialize (this, arguments);
 }, J.modelset, "MeasurementData", null, J.api.JmolMeasurementClient);
 Clazz.makeConstructor (c$, 
-function (viewer, points) {
+function (id, viewer, points) {
 this.viewer = viewer;
 this.points = points;
-}, "J.viewer.Viewer,J.util.JmolList");
+this.thisID = id;
+}, "~S,J.viewer.Viewer,J.util.JmolList");
 $_M(c$, "setModelSet", 
 function (m) {
 this.modelSet = m;
 return this;
 }, "J.modelset.ModelSet");
 $_M(c$, "set", 
-function (tokAction, radiusData, strFormat, units, tickInfo, mustBeConnected, mustNotBeConnected, intramolecular, isAll) {
+function (tokAction, htMin, radiusData, strFormat, units, tickInfo, mustBeConnected, mustNotBeConnected, intramolecular, isAll, mad, colix, text) {
 this.modelSet = this.viewer.getModelSet ();
 this.tokAction = tokAction;
 if (this.points.size () >= 2 && Clazz.instanceOf (this.points.get (0), J.util.BS) && Clazz.instanceOf (this.points.get (1), J.util.BS)) {
 this.justOneModel = J.util.BSUtil.haveCommon (this.viewer.getModelBitSet (this.points.get (0), false), this.viewer.getModelBitSet (this.points.get (1), false));
-}this.radiusData = radiusData;
+}this.htMin = htMin;
+this.radiusData = radiusData;
 this.strFormat = strFormat;
 this.units = units;
 this.tickInfo = tickInfo;
@@ -47,12 +53,15 @@ this.mustBeConnected = mustBeConnected;
 this.mustNotBeConnected = mustNotBeConnected;
 this.intramolecular = intramolecular;
 this.isAll = isAll;
+this.mad = mad;
+this.colix = colix;
+this.text = text;
 return this;
-}, "~N,J.atomdata.RadiusData,~S,~S,J.modelset.TickInfo,~B,~B,Boolean,~B");
+}, "~N,java.util.Map,J.atomdata.RadiusData,~S,~S,J.modelset.TickInfo,~B,~B,Boolean,~B,~N,~N,J.modelset.Text");
 $_M(c$, "processNextMeasure", 
 function (m) {
 var value = m.getMeasurement ();
-if (this.radiusData != null && !m.isInRange (this.radiusData, value)) return;
+if (this.htMin != null && !m.isMin (this.htMin) || this.radiusData != null && !m.isInRange (this.radiusData, value)) return;
 if (this.measurementStrings == null) {
 var f = this.minArray[this.iFirstAtom];
 m.value = value;

@@ -35,41 +35,53 @@ J.util.BSUtil.deleteBits (this.bsDeleted, bsDeleted);
 $_M(c$, "clear", 
 function () {
 this.clearSelection (true);
-this.hide (null, null, null, true);
+this.hide (null, null, 0, true);
 this.setSelectionSubset (null);
 this.bsDeleted = null;
 this.setMotionFixedAtoms (null);
 });
-$_M(c$, "hide", 
-function (modelSet, bs, addRemove, isQuiet) {
-if (bs == null) {
-this.bsHidden.clearAll ();
-} else if (addRemove == null) {
-this.bsHidden.clearAll ();
-this.bsHidden.or (bs);
-} else if (addRemove.booleanValue ()) {
-this.bsHidden.or (bs);
-} else {
-this.bsHidden.andNot (bs);
-}if (modelSet != null) modelSet.setBsHidden (this.bsHidden);
-if (!isQuiet) this.viewer.reportSelection (J.i18n.GT._ ("{0} atoms hidden", "" + this.bsHidden.cardinality ()));
-}, "J.modelset.ModelSet,J.util.BS,Boolean,~B");
 $_M(c$, "display", 
 function (modelSet, bs, addRemove, isQuiet) {
+switch (addRemove) {
+default:
 var bsAll = modelSet.getModelAtomBitSetIncludingDeleted (-1, false);
-if (bs == null) {
-this.bsHidden.clearAll ();
-} else if (addRemove == null) {
 this.bsHidden.or (bsAll);
-this.bsHidden.andNot (bs);
-} else if (addRemove.booleanValue ()) {
-this.bsHidden.andNot (bs);
-} else {
-this.bsHidden.or (bs);
-}J.util.BSUtil.andNot (this.bsHidden, this.bsDeleted);
+case 1276118017:
+if (bs != null) this.bsHidden.andNot (bs);
+break;
+case 1073742119:
+if (bs != null) this.bsHidden.or (bs);
+break;
+}
+J.util.BSUtil.andNot (this.bsHidden, this.bsDeleted);
 modelSet.setBsHidden (this.bsHidden);
 if (!isQuiet) this.viewer.reportSelection (J.i18n.GT._ ("{0} atoms hidden", "" + this.bsHidden.cardinality ()));
-}, "J.modelset.ModelSet,J.util.BS,Boolean,~B");
+}, "J.modelset.ModelSet,J.util.BS,~N,~B");
+$_M(c$, "hide", 
+function (modelSet, bs, addRemove, isQuiet) {
+J.viewer.SelectionManager.setBitSet (this.bsHidden, bs, addRemove);
+if (modelSet != null) modelSet.setBsHidden (this.bsHidden);
+if (!isQuiet) this.viewer.reportSelection (J.i18n.GT._ ("{0} atoms hidden", "" + this.bsHidden.cardinality ()));
+}, "J.modelset.ModelSet,J.util.BS,~N,~B");
+$_M(c$, "setSelectionSet", 
+function (set, addRemove) {
+J.viewer.SelectionManager.setBitSet (this.bsSelection, set, addRemove);
+this.empty = -1;
+this.selectionChanged (false);
+}, "J.util.BS,~N");
+c$.setBitSet = $_M(c$, "setBitSet", 
+($fz = function (bsWhat, bs, addRemove) {
+switch (addRemove) {
+default:
+bsWhat.clearAll ();
+case 1276118017:
+if (bs != null) bsWhat.or (bs);
+break;
+case 1073742119:
+if (bs != null) bsWhat.andNot (bs);
+break;
+}
+}, $fz.isPrivate = true, $fz), "J.util.BS,J.util.BS,~N");
 $_M(c$, "getHiddenSet", 
 function () {
 return this.bsHidden;
@@ -96,12 +108,12 @@ if (!this.viewer.getBoolean (1613758470)) this.excludeSelectionSet (this.viewer.
 this.selectionChanged (false);
 } else {
 this.setSelectionSet (bs, addRemove);
-}var reportChime = this.viewer.getBoolean (603979879);
+}var reportChime = this.viewer.getBoolean (603979880);
 if (!reportChime && isQuiet) return;
 var n = this.getSelectionCount ();
 if (reportChime) this.viewer.reportSelection ((n == 0 ? "No atoms" : n == 1 ? "1 atom" : n + " atoms") + " selected!");
  else if (!isQuiet) this.viewer.reportSelection (J.i18n.GT._ ("{0} atoms selected", n));
-}, "J.util.BS,Boolean,~B");
+}, "J.util.BS,~N,~B");
 $_M(c$, "selectAll", 
 function (isQuiet) {
 var count = this.viewer.getAtomCount ();
@@ -132,20 +144,6 @@ this.bsSelection.setBitTo (atomIndex, TF);
 if (TF) this.empty = 0;
  else this.empty = -1;
 }, "~N,~B");
-$_M(c$, "setSelectionSet", 
-function (set, addRemove) {
-if (set == null) {
-this.bsSelection.clearAll ();
-} else if (addRemove == null) {
-this.bsSelection.clearAll ();
-this.bsSelection.or (set);
-} else if (addRemove.booleanValue ()) {
-this.bsSelection.or (set);
-} else {
-this.bsSelection.andNot (set);
-}this.empty = -1;
-this.selectionChanged (false);
-}, "J.util.BS,Boolean");
 $_M(c$, "setSelectionSubset", 
 function (bs) {
 this.bsSubset = bs;
@@ -199,7 +197,7 @@ this.listeners[len] = listener;
 }, "J.api.JmolSelectionListener");
 $_M(c$, "selectionChanged", 
 ($fz = function (isQuiet) {
-if (this.hideNotSelected) this.hide (this.viewer.getModelSet (), J.util.BSUtil.copyInvert (this.bsSelection, this.viewer.getAtomCount ()), null, isQuiet);
+if (this.hideNotSelected) this.hide (this.viewer.getModelSet (), J.util.BSUtil.copyInvert (this.bsSelection, this.viewer.getAtomCount ()), 0, isQuiet);
 if (isQuiet || this.listeners.length == 0) return;
 for (var i = this.listeners.length; --i >= 0; ) if (this.listeners[i] != null) this.listeners[i].selectionChanged (this.bsSelection);
 
@@ -245,7 +243,7 @@ J.util.BSUtil.deleteBits (this.bsFixed, bsAtoms);
 J.util.BSUtil.deleteBits (this.bsHidden, bsAtoms);
 var bs = J.util.BSUtil.copy (this.bsSelection);
 J.util.BSUtil.deleteBits (bs, bsAtoms);
-this.setSelectionSet (bs, null);
+this.setSelectionSet (bs, 0);
 }, "J.util.BS");
 $_M(c$, "setMotionFixedAtoms", 
 function (bs) {

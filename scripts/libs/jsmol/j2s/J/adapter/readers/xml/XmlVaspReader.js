@@ -34,10 +34,10 @@ Clazz.overrideMethod (c$, "getDOMAttributes",
 function () {
 return this.myAttributes;
 });
-$_M(c$, "processXml", 
+Clazz.overrideMethod (c$, "processXml", 
 function (parent, saxReader) {
 parent.doProcessLines = true;
-Clazz.superCall (this, J.adapter.readers.xml.XmlVaspReader, "processXml", [parent, saxReader]);
+this.PX (parent, saxReader);
 }, "J.adapter.readers.xml.XmlReader,~O");
 Clazz.overrideMethod (c$, "processStartElement", 
 function (localName) {
@@ -77,7 +77,7 @@ this.keepChars = (this.iAtom < this.atomCount);
 return;
 }if ("varray".equals (localName)) {
 this.name = this.atts.get ("name");
-if (this.name != null && J.util.Parser.isOneOf (this.name, "basis;positions;forces")) this.data =  new J.util.SB ();
+if (this.name != null && J.util.Parser.isOneOf (this.name, ";basis;positions;forces;")) this.data =  new J.util.SB ();
 return;
 }if ("atoms".equals (localName)) {
 this.keepChars = true;

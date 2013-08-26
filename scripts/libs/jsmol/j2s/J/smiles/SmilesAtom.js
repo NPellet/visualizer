@@ -29,7 +29,7 @@ this.parent = null;
 this.bonds = null;
 this.bondCount = 0;
 this.iNested = 0;
-this.atomicMass = -32768;
+this.atomicMass = -2147483648;
 this.charge = -2147483648;
 this.matchingAtom = -1;
 this.chiralClass = -2147483648;
@@ -443,7 +443,11 @@ return 0;
 });
 Clazz.overrideMethod (c$, "getChainID", 
 function () {
-return '\0';
+return 0;
+});
+Clazz.overrideMethod (c$, "getChainIDStr", 
+function () {
+return "";
 });
 c$.getAtomLabel = $_M(c$, "getAtomLabel", 
 function (atomicNumber, isotopeNumber, valence, charge, nH, isAromatic, stereo) {

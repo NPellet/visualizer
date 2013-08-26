@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.AtomShape", "java.util.Hashtable"], "J.shape.Labels", ["J.constant.EnumPalette", "J.modelset.LabelToken", "J.shape.Object2d", "$.Text", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.C", "$.JmolFont"], function () {
+Clazz.load (["J.shape.AtomShape", "java.util.Hashtable"], "J.shape.Labels", ["J.constant.EnumPalette", "J.modelset.LabelToken", "$.Object2d", "$.Text", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.C", "$.JmolFont"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.strings = null;
 this.formats = null;
@@ -66,7 +66,7 @@ for (var i = bsSelected.nextSetBit (0); i >= 0 && i < this.atomCount; i = bsSele
 if (this.strings.length <= i) continue;
 this.text = this.getLabel (i);
 if (this.text == null) {
-this.text = J.shape.Text.newLabel (this.gdata, null, this.strings[i], 0, 0, 0, scalePixelsPerMicron, null);
+this.text = J.modelset.Text.newLabel (this.gdata, null, this.strings[i], 0, 0, 0, scalePixelsPerMicron, null);
 this.putLabel (i, this.text);
 } else {
 this.text.setScalePixelsPerMicron (scalePixelsPerMicron);
@@ -105,7 +105,7 @@ return;
 if ("textLabels" === propertyName) {
 this.setScaling ();
 var labels = value;
-for (var i = bsSelected.nextSetBit (0), pt = 0; i >= 0 && i < this.atomCount; i = bsSelected.nextSetBit (i + 1)) this.setTextLabel (i, labels.get (pt++));
+for (var i = bsSelected.nextSetBit (0); i >= 0 && i < this.atomCount; i = bsSelected.nextSetBit (i + 1)) this.setTextLabel (i, labels.get (Integer.$valueOf (i)));
 
 return;
 }if ("fontsize" === propertyName) {
@@ -226,7 +226,7 @@ var fid = (this.bsFontSet != null && this.bsFontSet.get (i) ? this.fids[i] : -1)
 if (fid < 0) this.setFont (i, fid = this.defaultFontId);
 var font = J.util.JmolFont.getFont3D (fid);
 var colix = this.getColix2 (i, this.atoms[i], false);
-text = J.shape.Text.newLabel (this.gdata, font, this.formats[i], colix, this.getColix2 (i, this.atoms[i], true), 0, this.scalePixelsPerMicron, value);
+text = J.modelset.Text.newLabel (this.gdata, font, this.strings[i], colix, this.getColix2 (i, this.atoms[i], true), 0, this.scalePixelsPerMicron, value);
 this.setTextLabel (i, text);
 } else {
 text.pymolOffset = value;
@@ -240,14 +240,15 @@ this.scalePixelsPerMicron = (this.isScaled ? this.viewer.getScalePixelsPerAngstr
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "setTextLabel", 
 ($fz = function (i, t) {
+if (t == null) return;
 var label = t.getText ();
 var atom = this.atoms[i];
 this.addString (atom, i, label, label);
 atom.setShapeVisibility (this.myVisibilityFlag, true);
-this.setLabelColix (i, t.colix, J.constant.EnumPalette.UNKNOWN.id);
+if (t.colix >= 0) this.setLabelColix (i, t.colix, J.constant.EnumPalette.UNKNOWN.id);
 this.setFont (i, t.font.fid);
 this.putLabel (i, t);
-}, $fz.isPrivate = true, $fz), "~N,J.shape.Text");
+}, $fz.isPrivate = true, $fz), "~N,J.modelset.Text");
 $_M(c$, "setLabel", 
 ($fz = function (temp, strLabel, i) {
 var atom = this.atoms[i];
@@ -257,9 +258,9 @@ var label = (tokens == null ? null : J.modelset.LabelToken.formatLabelAtomArray 
 this.addString (atom, i, label, strLabel);
 this.text = this.getLabel (i);
 if (this.isScaled) {
-this.text = J.shape.Text.newLabel (this.gdata, null, label, 0, 0, 0, this.scalePixelsPerMicron, null);
+this.text = J.modelset.Text.newLabel (this.gdata, null, label, 0, 0, 0, this.scalePixelsPerMicron, null);
 this.putLabel (i, this.text);
-} else if (this.text != null) {
+} else if (this.text != null && label != null) {
 this.text.setText (label);
 }if (this.defaultOffset != J.shape.Labels.zeroOffset) this.setOffsets (i, this.defaultOffset, false);
 if (this.defaultAlignment != 1) this.setAlignment (i, this.defaultAlignment);
@@ -289,7 +290,7 @@ $_M(c$, "putLabel",
 function (i, text) {
 if (text == null) this.atomLabels.remove (Integer.$valueOf (i));
  else this.atomLabels.put (Integer.$valueOf (i), text);
-}, "~N,J.shape.Text");
+}, "~N,J.modelset.Text");
 $_M(c$, "getLabel", 
 function (i) {
 return this.atomLabels.get (Integer.$valueOf (i));
@@ -430,11 +431,11 @@ return imin;
 }, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "move2D", 
 ($fz = function (pickedAtom, x, y) {
-var xOffset = J.shape.Object2d.getXOffset (this.pickedOffset);
-var yOffset = -J.shape.Object2d.getYOffset (this.pickedOffset);
+var xOffset = J.modelset.Object2d.getXOffset (this.pickedOffset);
+var yOffset = -J.modelset.Object2d.getYOffset (this.pickedOffset);
 xOffset += x - this.pickedX;
 yOffset += this.pickedY - y;
-var offset = J.shape.Object2d.getOffset (xOffset, yOffset);
+var offset = J.modelset.Object2d.getOffset (xOffset, yOffset);
 if (offset == 0) offset = 32767;
  else if (offset == J.shape.Labels.zeroOffset) offset = 0;
 this.setOffsets (pickedAtom, offset, true);

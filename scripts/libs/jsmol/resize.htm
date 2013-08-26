@@ -2,15 +2,7 @@
 <html style="height:100%">
 <title>HTML5-only and WebGL Jmol Demo</title>
 <head>
-<script type="text/javascript" src="js/JSmoljQuery.js"></script>
-<script type="text/javascript" src="js/JSmolCore.js"></script>
-<script type="text/javascript" src="js/JSmolApplet.js"></script>
-<script type="text/javascript" src="js/JSmolApi.js"></script>
-<script type="text/javascript" src="js/j2sjmol.js"></script>
-<script type="text/javascript" src="js/JSmol.js"></script>
-<!-- // following two only necessary for WebGL version: -->
-<script type="text/javascript" src="js/JSmolThree.js"></script>
-<script type="text/javascript" src="js/JSmolGLmol.js"></script>
+<script type="text/javascript" src="JSmol.min.js"></script>
 
   <script type="text/javascript">
 
@@ -64,7 +56,7 @@ InfoA = {
 	debug: false,
 	color: "white",
 	addSelectionOptions: false,
-	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
+	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
 	use: use,
   coverImage: "",//"data/1hxw.png",        // initial image instead of applet
   coverScript: "",	// special script for click of cover image (otherwise equal to script)

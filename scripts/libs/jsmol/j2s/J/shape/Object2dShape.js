@@ -143,10 +143,11 @@ t.setVisibility (t.modelIndex < 0 || bs.get (t.modelIndex));
 Clazz.overrideMethod (c$, "checkObjectClicked", 
 function (x, y, modifiers, bsVisible, drawPicking) {
 if (this.isHover || modifiers == 0) return null;
+var isAntialiased = this.viewer.isAntialiased ();
 var e = this.objects.values ().iterator ();
 while (e.hasNext ()) {
 var obj = e.next ();
-if (obj.checkObjectClicked (x, y, bsVisible)) {
+if (obj.checkObjectClicked (isAntialiased, x, y, bsVisible)) {
 var s = obj.getScript ();
 if (s != null) {
 this.viewer.evalStringQuiet (s);
@@ -165,14 +166,15 @@ return null;
 Clazz.overrideMethod (c$, "checkObjectHovered", 
 function (x, y, bsVisible) {
 if (this.isHover) return false;
-var e = this.objects.values ().iterator ();
 var haveScripts = false;
+var isAntialiased = this.viewer.isAntialiased ();
+var e = this.objects.values ().iterator ();
 while (e.hasNext ()) {
 var obj = e.next ();
 var s = obj.getScript ();
 if (s != null) {
 haveScripts = true;
-if (obj.checkObjectClicked (x, y, bsVisible)) {
+if (obj.checkObjectClicked (isAntialiased, x, y, bsVisible)) {
 this.viewer.setCursor (1);
 return true;
 }}}

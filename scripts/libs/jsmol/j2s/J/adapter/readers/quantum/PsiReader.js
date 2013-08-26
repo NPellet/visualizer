@@ -180,7 +180,7 @@ throw e;
 }
 this.addMOData (nThisLine, data, mos);
 this.moData.put ("mos", this.orbitals);
-this.setMOData (this.moData);
+this.finalizeMOData (this.moData);
 });
 $_M(c$, "readFrequencies", 
 ($fz = function () {

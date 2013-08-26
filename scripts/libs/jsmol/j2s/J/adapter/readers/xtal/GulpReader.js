@@ -183,7 +183,7 @@ this.primitiveData[i++] = v.x;
 this.primitiveData[i++] = v.y;
 this.primitiveData[i++] = v.z;
 }, $fz.isPrivate = true, $fz), "~N,~N");
-$_M(c$, "applySymmetryAndSetTrajectory", 
+Clazz.overrideMethod (c$, "applySymmetryAndSetTrajectory", 
 function () {
 if (this.coordinatesArePrimitive && this.iHaveUnitCell && this.doCheckUnitCell && this.primitiveData != null && !this.isPrimitive) {
 this.setModelParameters (false);
@@ -198,7 +198,7 @@ this.symmetry.toCartesian (atom, true);
 symFull.toFractional (atom, true);
 }
 this.setModelParameters (false);
-}Clazz.superCall (this, J.adapter.readers.xtal.GulpReader, "applySymmetryAndSetTrajectory", []);
+}this.applySymTrajASCR ();
 });
 $_M(c$, "readAtomicPos", 
 ($fz = function (finalizeSymmetry) {

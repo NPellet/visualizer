@@ -69,9 +69,9 @@ this.atoms = this.viewer.getModelSet ().atoms;
 var intramolecularMode = Clazz.floatToInt (parameters == null || parameters.length < 2 ? 0 : parameters[1]);
 var ptSize = (colorDensity && parameters != null && parameters[0] < 0 ? Math.abs (parameters[0]) : 0.15);
 if (J.util.Logger.debugging) {
-J.util.Logger.info ("Contact intramolecularMode " + intramolecularMode);
-J.util.Logger.info ("Contacts for " + bsA.cardinality () + ": " + J.util.Escape.eBS (bsA));
-J.util.Logger.info ("Contacts to " + bsB.cardinality () + ": " + J.util.Escape.eBS (bsB));
+J.util.Logger.debug ("Contact intramolecularMode " + intramolecularMode);
+J.util.Logger.debug ("Contacts for " + bsA.cardinality () + ": " + J.util.Escape.eBS (bsA));
+J.util.Logger.debug ("Contacts to " + bsB.cardinality () + ": " + J.util.Escape.eBS (bsB));
 }this.setPropI ("newObject", null, null);
 this.thisMesh.setMerged (true);
 this.thisMesh.nSets = 0;
@@ -197,12 +197,12 @@ if (displayType == 1073741961 && resolution == 3.4028235E38) resolution = (nCont
 for (var i = nContacts; --i >= 0; ) {
 var cp = pairs.get (i);
 var oldScore = cp.score;
-var isVdwClash = (displayType == 135266319 && (contactType == 1649412112 || contactType == 0) && cp.setForVdwClash (true));
+var isVdwClash = (displayType == 135266319 && (contactType == 1649412120 || contactType == 0) && cp.setForVdwClash (true));
 if (isVdwClash) cp.score = 0;
 if (contactType != 0 && cp.contactType != contactType) continue;
 var nV = this.thisMesh.vertexCount;
 this.thisMesh.nSets++;
-if (contactType != 0 || cp.contactType != 1649412112) volume += cp.volume;
+if (contactType != 0 || cp.contactType != 1649412120) volume += cp.volume;
 this.setVolumeData (displayType, volumeData, cp, resolution, nContacts);
 switch (displayType) {
 case 1073741961:
@@ -312,7 +312,7 @@ default:
 }
 for (var i = bsBad.length (); --i >= 0; ) if (bsBad.get (i)) list.remove (i);
 
-if (J.util.Logger.debugging) for (var i = 0; i < list.size (); i++) J.util.Logger.info (list.get (i).toString ());
+if (J.util.Logger.debugging) for (var i = 0; i < list.size (); i++) J.util.Logger.debug (list.get (i).toString ());
 
 J.util.Logger.info ("Contact pairs: " + list.size ());
 return list;

@@ -178,11 +178,14 @@ return true;
 }
 return true;
 });
-$_M(c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeReader", 
+function () {
+this.finalizeReaderPDB ();
+});
+$_M(c$, "finalizeReaderPDB", 
 function () {
 this.checkNotPDB ();
 this.atomSetCollection.connectAll (this.maxSerial, this.isConnectStateBug);
-if (this.atomSetCollection.getStructureCount () > 0) this.atomSetCollection.bsStructuredModels.setBits (0, this.atomSetCollection.getAtomSetCount ());
 if (this.vBiomolecules != null && this.vBiomolecules.size () > 0 && this.atomSetCollection.getAtomCount () > 0) {
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("biomolecules", this.vBiomolecules);
 this.setBiomoleculeAtomCounts ();
@@ -205,7 +208,7 @@ for (var i = n; --i >= 0; ) this.setTlsGroups (0, i, symmetry);
 }if (this.sbTlsErrors != null) {
 this.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("tlsErrors", this.sbTlsErrors.toString ());
 this.appendLoadNote (this.sbTlsErrors.toString ());
-}Clazz.superCall (this, J.adapter.readers.cifpdb.PdbReader, "finalizeReader", []);
+}this.finalizeReaderASCR ();
 if (this.vCompnds != null) this.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("compoundSource", this.vCompnds);
 if (this.htSites != null) {
 this.addSites (this.htSites);
@@ -235,7 +238,7 @@ if (!isResidual) resid -= (anisou[0] + anisou[1] + anisou[2]) / 3;
 anisou[0] += resid;
 anisou[1] += resid;
 anisou[2] += resid;
-entry.getKey ().ellipsoid[1] = symmetry.getEllipsoid (anisou);
+entry.getKey ().addTensor (symmetry.getTensor (anisou).setType (null), "TLS-R");
 System.out.println ("TLS-U:  " + J.util.Escape.eAF (anisou));
 anisou = (entry.getKey ().anisoBorU);
 if (anisou != null) System.out.println ("ANISOU: " + J.util.Escape.eAF (anisou));
@@ -459,15 +462,15 @@ atom.atomName = name;
 var ch = altID;
 if (ch != ' ') atom.alternateLocationID = ch;
 atom.group3 = group3;
-ch = chain;
+ch = chain < 256 ? String.fromCharCode (chain) : 0;
 if (this.chainAtomCounts != null) this.chainAtomCounts[ch.charCodeAt (0)]++;
-atom.chainID = ch;
+this.setChainID (atom, ch);
 atom.sequenceNumber = seqNo;
 atom.insertionCode = J.api.JmolAdapter.canonizeInsertionCode (insCode);
 atom.isHetero = isHetero;
 atom.elementSymbol = sym;
 return atom;
-}, "J.adapter.smarter.Atom,~S,~S,~S,~S,~N,~S,~B,~S");
+}, "J.adapter.smarter.Atom,~S,~S,~S,~N,~N,~S,~B,~S");
 $_M(c$, "processAtom2", 
 function (atom, serial, x, y, z, charge) {
 atom.atomSerial = serial;
@@ -497,7 +500,7 @@ this.htHetero = null;
 $_M(c$, "atom", 
 ($fz = function () {
 var isHetero = this.line.startsWith ("HETATM");
-var atom = this.processAtom ( new J.adapter.smarter.Atom (), this.line.substring (12, 16).trim (), this.line.charAt (16), this.parseTokenRange (this.line, 17, 20), this.line.charAt (21), this.getSeqNo (22, 26), this.line.charAt (26), isHetero, this.deduceElementSymbol (isHetero));
+var atom = this.processAtom ( new J.adapter.smarter.Atom (), this.line.substring (12, 16).trim (), this.line.charAt (16), this.parseTokenRange (this.line, 17, 20), this.line.charCodeAt (21), this.getSeqNo (22, 26), this.line.charAt (26), isHetero, this.deduceElementSymbol (isHetero));
 if (this.atomTypeLen > 0) {
 var s = this.line.substring (this.atomTypePt0, this.atomTypePt0 + this.atomTypeLen).trim ();
 if (s.length > 0) atom.atomName += "\0" + s;
@@ -536,7 +539,7 @@ this.lastGroup = atom.sequenceNumber;
 this.lastInsertion = atom.insertionCode;
 this.lastAltLoc = '\0';
 }if (atom.alternateLocationID != '\0') {
-var msg = " atom [" + atom.group3 + "]" + atom.sequenceNumber + (atom.insertionCode == '\0' ? "" : "^" + atom.insertionCode) + (atom.chainID == '\0' ? "" : ":" + atom.chainID) + "." + atom.atomName + "%" + atom.alternateLocationID + "\n";
+var msg = " atom [" + atom.group3 + "]" + atom.sequenceNumber + (atom.insertionCode == '\0' ? "" : "^" + atom.insertionCode) + (atom.chainID == 0 ? "" : ":" + this.viewer.getChainIDStr (atom.chainID)) + "." + atom.atomName + "%" + atom.alternateLocationID + "\n";
 if (this.conformationIndex >= 0 && atom.alternateLocationID != this.lastAltLoc) {
 this.lastAltLoc = atom.alternateLocationID;
 this.conformationIndex--;
@@ -665,7 +668,7 @@ var endInsertionCode = ' ';
 if (this.lineLength > endIndex + 4) endInsertionCode = this.line.charAt (endIndex + 4);
 if (substructureType === J.constant.EnumStructure.NONE) substructureType = structureType;
 var structure =  new J.adapter.smarter.Structure (-1, structureType, substructureType, structureID, serialID, strandCount);
-structure.set (startChainID, startSequenceNumber, startInsertionCode, endChainID, endSequenceNumber, endInsertionCode, -1, -1);
+structure.set (startChainID.charCodeAt (0), startSequenceNumber, startInsertionCode, endChainID.charCodeAt (0), endSequenceNumber, endInsertionCode, -2147483648, 2147483647);
 this.atomSetCollection.addStructure (structure);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getModelNumber", 
@@ -901,17 +904,16 @@ this.tlsAddError ("invalid origin: " + this.line);
 var tensorType = tokens[0].charAt (0);
 var s = (this.readLine ().substring (10) + this.readLine ().substring (10) + this.readLine ().substring (10)).$replace (tensorType, ' ').$replace (':', ' ');
 tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (s);
-var tensor =  Clazz.newFloatArray (3, 3, 0);
-tlsGroup.put ("t" + tensorType, tensor);
+var data =  Clazz.newFloatArray (3, 3, 0);
+tlsGroup.put ("t" + tensorType, data);
 for (var i = 0; i < tokens.length; i++) {
 var ti = tokens[i].charCodeAt (0) - 49;
 var tj = tokens[i].charCodeAt (1) - 49;
-tensor[ti][tj] = this.parseFloatStr (tokens[++i]);
-if (ti < tj) tensor[tj][ti] = tensor[ti][tj];
+data[ti][tj] = this.parseFloatStr (tokens[++i]);
+if (ti < tj) data[tj][ti] = data[ti][tj];
 }
-for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) if (Float.isNaN (tensor[i][j])) {
-this.tlsAddError ("invalid tensor: " + J.util.Escape.escapeFloatAA (tensor, false));
-}
+for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) if (Float.isNaN (data[i][j])) this.tlsAddError ("invalid tensor: " + J.util.Escape.escapeFloatAA (data, false));
+
 
 if (tensorType == 'S' && ++iGroup == nGroups) {
 J.util.Logger.info (nGroups + " TLS groups read");
@@ -929,10 +931,10 @@ throw e;
 }
 }
 if (tlsGroups != null) {
-var groups =  new java.util.Hashtable ();
-groups.put ("groupCount", Integer.$valueOf (nGroups));
-groups.put ("groups", tlsGroups);
-this.vTlsModels.addLast (groups);
+var tlsModel =  new java.util.Hashtable ();
+tlsModel.put ("groupCount", Integer.$valueOf (nGroups));
+tlsModel.put ("groups", tlsGroups);
+this.vTlsModels.addLast (tlsModel);
 }return (nGroups < 1);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "handleTlsMissingModels", 
@@ -956,8 +958,8 @@ this.tlsGroupID = (group.get ("id")).intValue ();
 for (var j = ranges.size (); --j >= 0; ) {
 var chains = ranges.get (j).get ("chains");
 var residues = ranges.get (j).get ("residues");
-var chain0 = chains.charAt (0);
-var chain1 = chains.charAt (1);
+var chain0 = 0 + chains.charCodeAt (0);
+var chain1 = 0 + chains.charCodeAt (1);
 var res0 = residues[0];
 var res1 = residues[1];
 var index1 = this.findAtomForRange (index0, indexMax, chain0, res0, false);
@@ -971,7 +973,7 @@ for (var iAtom = index0; iAtom < indexMax; iAtom++) {
 var atom = atoms[iAtom];
 if (isSameChain ? atom.sequenceNumber >= res0 && atom.sequenceNumber <= res1 : atom.chainID > chain0 && atom.chainID < chain1 || atom.chainID == chain0 && atom.sequenceNumber >= res0 || atom.chainID == chain1 && atom.sequenceNumber <= res1) {
 data[iAtom - index0] = this.tlsGroupID;
-this.setTlsEllipsoid (atom, group, symmetry);
+this.setTlsTensor (atom, group, symmetry);
 }}
 }
 }
@@ -980,13 +982,13 @@ for (var i = 0; i < data.length; i++) sdata.appendI (data[i]).appendC ('\n');
 
 this.atomSetCollection.setAtomSetAtomProperty ("tlsGroup", sdata.toString (), iModel);
 this.atomSetCollection.setAtomSetAuxiliaryInfoForSet ("TLS", tlsGroupInfo, iModel);
-this.atomSetCollection.setEllipsoids ();
+this.atomSetCollection.setTensors ();
 }, $fz.isPrivate = true, $fz), "~N,~N,J.api.SymmetryInterface");
 $_M(c$, "findAtomForRange", 
 ($fz = function (atom1, atom2, chain, resno, isLast) {
 var iAtom = this.findAtom (atom1, atom2, chain, resno, true);
 return (isLast && iAtom >= 0 ? this.findAtom (iAtom, atom2, chain, resno, false) : iAtom);
-}, $fz.isPrivate = true, $fz), "~N,~N,~S,~N,~B");
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~B");
 $_M(c$, "findAtom", 
 ($fz = function (atom1, atom2, chain, resno, isTrue) {
 var atoms = this.atomSetCollection.getAtoms ();
@@ -998,8 +1000,8 @@ if (isTrue) {
 J.util.Logger.warn ("PdbReader findAtom chain=" + chain + " resno=" + resno + " not found");
 this.tlsAddError ("atom not found: chain=" + chain + " resno=" + resno);
 }return (isTrue ? -1 : atom2);
-}, $fz.isPrivate = true, $fz), "~N,~N,~S,~N,~B");
-$_M(c$, "setTlsEllipsoid", 
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~B");
+$_M(c$, "setTlsTensor", 
 ($fz = function (atom, group, symmetry) {
 var origin = group.get ("origin");
 if (Float.isNaN (origin.x)) return;
@@ -1033,10 +1035,9 @@ anisou[4] = this.dataT[4] - L[1][1] * xz + L[1][2] * xy - L[2][0] * yy + L[0][1]
 anisou[5] = this.dataT[5] - L[0][0] * yz - L[1][2] * xx + L[2][0] * xy + L[0][1] * xz - S[1][1] * x + S[2][2] * x + S[0][1] * y - S[0][2] * z;
 anisou[6] = 12;
 anisou[7] = bresidual;
-if (Float.isNaN (bresidual)) System.out.println ("hmm");
 if (this.tlsU == null) this.tlsU =  new java.util.Hashtable ();
 this.tlsU.put (atom, anisou);
-atom.ellipsoid = [null, null, symmetry.getEllipsoid (this.dataT)];
+atom.addTensor (symmetry.getTensor (this.dataT).setType (null), "TLS-U");
 }, $fz.isPrivate = true, $fz), "J.adapter.smarter.Atom,java.util.Map,J.api.SymmetryInterface");
 $_M(c$, "tlsAddError", 
 ($fz = function (error) {

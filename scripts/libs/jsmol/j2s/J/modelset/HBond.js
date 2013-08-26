@@ -9,7 +9,7 @@ Clazz.makeConstructor (c$,
 function (atom1, atom2, order, mad, colix, energy) {
 Clazz.superConstructor (this, J.modelset.HBond, [atom1, atom2, order, mad, colix]);
 this.energy = energy;
-if (J.util.Logger.debugging) J.util.Logger.info ("HBond energy = " + energy + " #" + this.getIdentity ());
+if (J.util.Logger.debugging) J.util.Logger.debug ("HBond energy = " + energy + " #" + this.getIdentity ());
 }, "J.modelset.Atom,J.modelset.Atom,~N,~N,~N,~N");
 $_M(c$, "getEnergy", 
 function () {

@@ -39,9 +39,14 @@ this.seitzMatrixInv.setA (dataInv);
 }, $fz.isPrivate = true, $fz), "~S,~S");
 c$.lookup = $_M(c$, "lookup", 
 function (code) {
-for (var i = J.symmetry.HallRotation.hallRotationTerms.length; --i >= 0; ) if (J.symmetry.HallRotation.hallRotationTerms[i].rotCode.equals (code)) return J.symmetry.HallRotation.hallRotationTerms[i];
+for (var i = J.symmetry.HallRotation.getHallTerms ().length; --i >= 0; ) if (J.symmetry.HallRotation.hallRotationTerms[i].rotCode.equals (code)) return J.symmetry.HallRotation.hallRotationTerms[i];
 
 return null;
 }, "~S");
-c$.hallRotationTerms = c$.prototype.hallRotationTerms = [ new J.symmetry.HallRotation ("1_", "+00 0+0 00+"),  new J.symmetry.HallRotation ("2x", "+00 0-0 00-"),  new J.symmetry.HallRotation ("2y", "-00 0+0 00-"),  new J.symmetry.HallRotation ("2z", "-00 0-0 00+"),  new J.symmetry.HallRotation ("2\'", "0-0 -00 00-"),  new J.symmetry.HallRotation ("2\"", "0+0 +00 00-"),  new J.symmetry.HallRotation ("2x\'", "-00 00- 0-0"),  new J.symmetry.HallRotation ("2x\"", "-00 00+ 0+0"),  new J.symmetry.HallRotation ("2y\'", "00- 0-0 -00"),  new J.symmetry.HallRotation ("2y\"", "00+ 0-0 +00"),  new J.symmetry.HallRotation ("2z\'", "0-0 -00 00-"),  new J.symmetry.HallRotation ("2z\"", "0+0 +00 00-"),  new J.symmetry.HallRotation ("3x", "+00 00- 0+-"),  new J.symmetry.HallRotation ("3y", "-0+ 0+0 -00"),  new J.symmetry.HallRotation ("3z", "0-0 +-0 00+"),  new J.symmetry.HallRotation ("3*", "00+ +00 0+0"),  new J.symmetry.HallRotation ("4x", "+00 00- 0+0"),  new J.symmetry.HallRotation ("4y", "00+ 0+0 -00"),  new J.symmetry.HallRotation ("4z", "0-0 +00 00+"),  new J.symmetry.HallRotation ("6x", "+00 0+- 0+0"),  new J.symmetry.HallRotation ("6y", "00+ 0+0 -0+"),  new J.symmetry.HallRotation ("6z", "+-0 +00 00+")];
+c$.getHallTerms = $_M(c$, "getHallTerms", 
+($fz = function () {
+return (J.symmetry.HallRotation.hallRotationTerms == null ? ($t$ = J.symmetry.HallRotation.hallRotationTerms = [ new J.symmetry.HallRotation ("1_", "+00 0+0 00+"),  new J.symmetry.HallRotation ("2x", "+00 0-0 00-"),  new J.symmetry.HallRotation ("2y", "-00 0+0 00-"),  new J.symmetry.HallRotation ("2z", "-00 0-0 00+"),  new J.symmetry.HallRotation ("2\'", "0-0 -00 00-"),  new J.symmetry.HallRotation ("2\"", "0+0 +00 00-"),  new J.symmetry.HallRotation ("2x\'", "-00 00- 0-0"),  new J.symmetry.HallRotation ("2x\"", "-00 00+ 0+0"),  new J.symmetry.HallRotation ("2y\'", "00- 0-0 -00"),  new J.symmetry.HallRotation ("2y\"", "00+ 0-0 +00"),  new J.symmetry.HallRotation ("2z\'", "0-0 -00 00-"),  new J.symmetry.HallRotation ("2z\"", "0+0 +00 00-"),  new J.symmetry.HallRotation ("3x", "+00 00- 0+-"),  new J.symmetry.HallRotation ("3y", "-0+ 0+0 -00"),  new J.symmetry.HallRotation ("3z", "0-0 +-0 00+"),  new J.symmetry.HallRotation ("3*", "00+ +00 0+0"),  new J.symmetry.HallRotation ("4x", "+00 00- 0+0"),  new J.symmetry.HallRotation ("4y", "00+ 0+0 -00"),  new J.symmetry.HallRotation ("4z", "0-0 +00 00+"),  new J.symmetry.HallRotation ("6x", "+00 0+- 0+0"),  new J.symmetry.HallRotation ("6y", "00+ 0+0 -0+"),  new J.symmetry.HallRotation ("6z", "+-0 +00 00+")], J.symmetry.HallRotation.prototype.hallRotationTerms = J.symmetry.HallRotation.hallRotationTerms, $t$) : J.symmetry.HallRotation.hallRotationTerms);
+}, $fz.isPrivate = true, $fz));
+Clazz.defineStatics (c$,
+"hallRotationTerms", null);
 });

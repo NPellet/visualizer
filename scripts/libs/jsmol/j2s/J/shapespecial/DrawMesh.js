@@ -14,6 +14,8 @@ this.isVector = false;
 this.drawArrowScale = 0;
 this.noHead = false;
 this.isBarb = false;
+this.scale = 1;
+this.isScaleSet = false;
 this.bsMeshesVisible = null;
 Clazz.instantialize (this, arguments);
 }, J.shapespecial, "DrawMesh", J.shape.Mesh);
@@ -27,6 +29,12 @@ function (thisID, colix, index) {
 Clazz.superConstructor (this, J.shapespecial.DrawMesh, []);
 this.mesh1 (thisID, colix, index);
 }, "~S,~N,~N");
+Clazz.overrideMethod (c$, "clear", 
+function (meshType) {
+this.clearMesh (meshType);
+this.scale = 1;
+this.isScaleSet = false;
+}, "~S");
 $_M(c$, "setCenters", 
 function () {
 if (this.ptCenters == null) this.setCenter (-1);
@@ -76,4 +84,17 @@ this.axes = J.util.ArrayUtil.deleteElements (this.axes, modelIndex, 1);
 var bs = J.util.BSUtil.newAndSetBit (modelIndex);
 J.util.BSUtil.deleteBits (this.modelFlags, bs);
 }, "~N");
+$_M(c$, "isRenderScalable", 
+function () {
+switch (this.drawType) {
+case J.shapespecial.Draw.EnumDrawType.ARROW:
+return (this.connections != null);
+case J.shapespecial.Draw.EnumDrawType.ARC:
+case J.shapespecial.Draw.EnumDrawType.CIRCLE:
+case J.shapespecial.Draw.EnumDrawType.CIRCULARPLANE:
+return true;
+default:
+return this.haveXyPoints;
+}
+});
 });

@@ -668,7 +668,7 @@ function () {
 this.index = ++this.b$["J.symmetry.PointGroup"].nOps;
 this.type = 3;
 this.order = 1;
-if (J.util.Logger.debugging) J.util.Logger.info ("new operation -- " + J.symmetry.PointGroup.typeNames[this.type]);
+if (J.util.Logger.debugging) J.util.Logger.debug ("new operation -- " + J.symmetry.PointGroup.typeNames[this.type]);
 });
 Clazz.makeConstructor (c$, 
 function (a, b) {
@@ -676,7 +676,7 @@ this.index = ++this.b$["J.symmetry.PointGroup"].nOps;
 this.type = (b < 14 ? 2 : 1);
 this.order = b % 14;
 this.normalOrAxis = J.util.Quaternion.newVA (a, 180).getNormal ();
-if (J.util.Logger.debugging) J.util.Logger.info ("new operation -- " + (this.order == b ? "S" : "C") + this.order + " " + this.normalOrAxis);
+if (J.util.Logger.debugging) J.util.Logger.debug ("new operation -- " + (this.order == b ? "S" : "C") + this.order + " " + this.normalOrAxis);
 }, "J.util.V3,~N");
 Clazz.makeConstructor (c$, 
 function (a) {
@@ -684,7 +684,7 @@ if (a == null) return;
 this.index = ++this.b$["J.symmetry.PointGroup"].nOps;
 this.type = 0;
 this.normalOrAxis = J.util.Quaternion.newVA (a, 180).getNormal ();
-if (J.util.Logger.debugging) J.util.Logger.info ("new operation -- plane " + this.normalOrAxis);
+if (J.util.Logger.debugging) J.util.Logger.debug ("new operation -- plane " + this.normalOrAxis);
 }, "J.util.V3");
 $_M(c$, "getLabel", 
 function () {

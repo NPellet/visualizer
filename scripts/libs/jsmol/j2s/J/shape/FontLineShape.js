@@ -2,6 +2,7 @@ Clazz.declarePackage ("J.shape");
 Clazz.load (["J.shape.FontShape"], "J.shape.FontLineShape", null, function () {
 c$ = Clazz.decorateAsClass (function () {
 this.tickInfos = null;
+this.mad = 0;
 Clazz.instantialize (this, arguments);
 }, J.shape, "FontLineShape", J.shape.FontShape);
 Clazz.prepareFields (c$, function () {

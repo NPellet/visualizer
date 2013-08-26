@@ -47,7 +47,7 @@ return (s.indexOf ("&") < 0 && s.indexOf ("<") < 0 ? (s.startsWith ("\n") ? "" :
 }, "~O");
 c$.unwrapCdata = $_M(c$, "unwrapCdata", 
 function (s) {
-return (s.startsWith ("<![CDATA[") && s.endsWith ("]]>") ? s.substring (9, s.length - 3).$replace ("]]]]><![CDATA[>", "]]>") : s);
+return (s.startsWith ("<![CDATA[") && s.endsWith ("]]>") ? J.util.TextFormat.simpleReplace (s.substring (9, s.length - 3), "]]]]><![CDATA[>", "]]>") : s);
 }, "~S");
 c$.appendTagObj = $_M(c$, "appendTagObj", 
 function (sb, name, attributes, data) {

@@ -3,17 +3,15 @@
 <title>HTML5-only and WebGL Jmol Demo</title>
 <head>
 <meta charset="utf-8">
-<script type="text/javascript" src="js/JSmolJQuery.js"></script>
+<script type="text/javascript" src="jquery/jquery.js"></script>
+<script type="text/javascript" src="js/JSmoljQueryExt.js"></script>
 <script type="text/javascript" src="js/JSmolCore.js"></script>
 <script type="text/javascript" src="js/JSmolApplet.js"></script>
 <script type="text/javascript" src="js/JSmolApi.js"></script>
+<script type="text/javascript" src="js/JSmolControls.js"></script>
 <script type="text/javascript" src="js/j2sjmol.js"></script>
 <script type="text/javascript" src="js/JSmol.js"></script>
 <!-- // following two only necessary for WebGL version: 
-
-<script type="text/javascript" src="js/JSmoljQuery.js"></script>
-
-
 -->
 <script type="text/javascript" src="js/JSmolThree.js"></script>
 <script type="text/javascript" src="js/JSmolGLmol.js"></script>
@@ -69,15 +67,15 @@ Info = {
 	debug: false,
 	color: "0xF0F0F0",
 	addSelectionOptions: true,
-	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
+	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
 	use: use,
   //language: "fr", // NOTE: LOCALIZATION REQUIRES <meta charset="utf-8"> (see JSmolCore Jmol.featureDetection.supportsLocalization)
 	jarPath: "java",
 	j2sPath: "j2s",
 	jarFile: (useSignedApplet ? "JmolAppletSigned.jar" : "JmolApplet.jar"),
 	isSigned: useSignedApplet,
-	disableJ2SLoadMonitor: true,
-	disableInitialConsole: true,
+	disableJ2SLoadMonitor: false,
+	disableInitialConsole: false,
 	readyFunction: jmol_isReady,
   allowjavascript: true,
 	script: "set antialiasDisplay;load data/caffeine.mol;"
@@ -207,6 +205,8 @@ Enter "!" and a command into the search box and press ENTER to execute a <a targ
  <a href="javascript:Jmol.script(jmolApplet0,'set modelkitmode;set picking dragMinimize')">drag-minimize</a>
  <a href="javascript:Jmol.script(jmolApplet0,'!quit;set modelkitmode false;set picking ident;')">!quit</a>
  <br />
+ <a href="javascript:Jmol.script(jmolApplet0,'script data/flexfit.spt')">flexible fit</a>
+<br />
  <a href="javascript:Jmol.script(jmolApplet0,'load data/dna.pse')">PyMOL session - dna</a>
  <br />
  <a href="javascript:Jmol.script(jmolApplet0,'load data/estron.cml;delete molecule!=1;moveto /* time, axisAngle */ 0.0 { -569 -266 778 170.22} /* zoom, translation */ 210.8 0.0 0.0 /* center, rotationRadius */ {1.612277686904762 3.7877332476190473 1.6109263519047616} 16.399569513870535 /* navigation center, translation, depth */ {0 0 0} 9.485930041021248 -20.361702729557265 0;')">estron.cml</a>
@@ -273,7 +273,7 @@ Enter "!" and a command into the search box and press ENTER to execute a <a targ
  <br /> 
 
  </td><td valign=top>
-	<b>direct database calls(<a href="javascript:alert('MSIE cannot do synchronous cross-domain file transfer, so if you want to do that, you must put jsmol.php on your OWN server and point to it using Info.serverURL, which for this page is ' + Info.serverURL + '\nA text version of this php file is at http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php.txt')">unless MSIE</a>)</b>
+	<b>direct database calls(<a href="javascript:alert('MSIE cannot do synchronous cross-domain file transfer, so if you want to do that, you must put jsmol.php on your OWN server and point to it using Info.serverURL, which for this page is ' + Info.serverURL + '\nA text version of this php file is at http://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php.txt')">unless MSIE</a>)</b>
  <br />
  <a href="javascript:Jmol.loadFile(jmolApplet0,'$caffeine')">load $caffeine (from NCI)</a>
  <br /> 
@@ -296,6 +296,7 @@ Enter "!" and a command into the search box and press ENTER to execute a <a targ
  <a href="javascript:Jmol.search(jmolApplet0,'$caffeine',';moveto /* time, axisAngle */ 0.0 { -18 -17 1000 179.69} /* zoom, translation */  100.0 0.0 0.0  /* center, rotationRadius */ {-0.44874999999999954 0.18930000000000002 -0.06529999999999997} 5.536731293601459 /* navigation center, translation, depth */ {0 0 0} -4.041090898432742 -1.7041175988342825 0;calculate partialCharge;isosurface vdw map mep translucent')">load $caffeine (NCI, with MMFF94 mep)</a>
  <br /> 
  <a href="javascript:Jmol.loadFile(jmolApplet0,'==HEM')">load ==HEM (RCSB ligand)</a>
+
 </td></tr></table>
 </td>
 </tr></table>

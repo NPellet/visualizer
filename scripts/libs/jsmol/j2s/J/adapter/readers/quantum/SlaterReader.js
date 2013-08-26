@@ -49,7 +49,7 @@ $_M(c$, "setMOs",
 function (units) {
 this.moData.put ("mos", this.orbitals);
 this.moData.put ("energyUnits", units);
-this.setMOData (this.moData);
+this.finalizeMOData (this.moData);
 }, "~S");
 $_M(c$, "sortOrbitalCoefficients", 
 function (pointers) {

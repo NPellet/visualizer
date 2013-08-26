@@ -475,4 +475,8 @@ function (TF) {
 Clazz.overrideMethod (c$, "renderAllStrings", 
 function (jmolRenderer) {
 }, "~O");
+Clazz.overrideMethod (c$, "getTranslucentCoverOnly", 
+function () {
+return this.g3d.getTranslucentCoverOnly ();
+});
 });

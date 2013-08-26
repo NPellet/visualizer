@@ -21,7 +21,7 @@ J.util.Logger.info ("minimize: setting atom types...");
 if (J.minimize.forcefield.ForceFieldUFF.atomTypes == null && (($t$ = J.minimize.forcefield.ForceFieldUFF.atomTypes = this.getAtomTypes (), J.minimize.forcefield.ForceFieldUFF.prototype.atomTypes = J.minimize.forcefield.ForceFieldUFF.atomTypes, $t$)) == null) return false;
 if (J.minimize.forcefield.ForceFieldUFF.ffParams == null && (($t$ = J.minimize.forcefield.ForceFieldUFF.ffParams = this.getFFParameters (), J.minimize.forcefield.ForceFieldUFF.prototype.ffParams = J.minimize.forcefield.ForceFieldUFF.ffParams, $t$)) == null) return false;
 this.setAtomTypes (bsElements, elemnoMax);
-this.calc =  new J.minimize.forcefield.CalculationsUFF (this, J.minimize.forcefield.ForceFieldUFF.ffParams, this.minAtoms, this.minBonds, this.minAngles, this.minTorsions, this.minimizer.constraints);
+this.calc =  new J.minimize.forcefield.CalculationsUFF (this, J.minimize.forcefield.ForceFieldUFF.ffParams, this.minAtoms, this.minBonds, this.minAngles, this.minTorsions, this.minPositions, this.minimizer.constraints);
 return this.calc.setupCalculations ();
 }, "J.util.BS,~N");
 $_M(c$, "setAtomTypes", 
@@ -102,7 +102,7 @@ var line;
 while ((line = br.readLine ()) != null) {
 var vs = J.util.Parser.getTokens (line);
 if (vs.length < 13) continue;
-if (J.util.Logger.debugging) J.util.Logger.info (line);
+if (J.util.Logger.debugging) J.util.Logger.debug (line);
 if (line.substring (0, 5).equals ("param")) {
 ffParam =  new J.minimize.forcefield.FFParam ();
 temp.put (vs[1], ffParam);

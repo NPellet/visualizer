@@ -45,7 +45,7 @@ var returnType = scriptItem.get (2);
 var isScriptFile = (scriptItem.get (3)).booleanValue ();
 var isQuiet = (scriptItem.get (4)).booleanValue ();
 if (J.util.Logger.debugging) {
-J.util.Logger.info ("Queue[" + this.pt + "][" + queue.size () + "] scripts; running: " + script);
+J.util.Logger.debug ("Queue[" + this.pt + "][" + queue.size () + "] scripts; running: " + script);
 }queue.remove (0);
 this.viewer.evalStringWaitStatusQueued (returnType, script, statusList, isScriptFile, isQuiet, true);
 if (queue.size () == 0) {

@@ -5,10 +5,14 @@ this.viewer = null;
 this.saved = null;
 this.lastOrientation = "";
 this.lastConnections = "";
+this.lastScene = "";
 this.lastSelected = "";
 this.lastState = "";
 this.lastShape = "";
 this.lastCoordinates = "";
+if (!Clazz.isClassDefined ("J.viewer.StateManager.Scene")) {
+J.viewer.StateManager.$StateManager$Scene$ ();
+}
 if (!Clazz.isClassDefined ("J.viewer.StateManager.Orientation")) {
 J.viewer.StateManager.$StateManager$Orientation$ ();
 }
@@ -56,6 +60,7 @@ this.viewer = viewer;
 }, "J.viewer.Viewer");
 $_M(c$, "getGlobalSettings", 
 function (gsOld, clearUserVariables) {
+this.saved.clear ();
 return Clazz.innerTypeInstance (J.viewer.StateManager.GlobalSettings, this, null, gsOld, clearUserVariables);
 }, "J.viewer.StateManager.GlobalSettings,~B");
 $_M(c$, "clear", 
@@ -77,11 +82,12 @@ $_M(c$, "setCommonDefaults",
 this.viewer.setBooleanProperty ("perspectiveDepth", true);
 this.viewer.setFloatProperty ("bondTolerance", 0.45);
 this.viewer.setFloatProperty ("minBondDistance", 0.4);
+this.viewer.setBooleanProperty ("translucent", true);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "setJmolDefaults", 
 function () {
 this.setCommonDefaults ();
-this.viewer.setStringProperty ("defaultColorScheme", "Jmol");
+this.viewer.setStringProperty ("ColorScheme", "Jmol");
 this.viewer.setBooleanProperty ("axesOrientationRasmol", false);
 this.viewer.setBooleanProperty ("zeroBasedXyzRasmol", false);
 this.viewer.setIntProperty ("percentVdwAtom", 23);
@@ -98,6 +104,18 @@ this.viewer.setIntProperty ("percentVdwAtom", 0);
 this.viewer.setIntProperty ("bondRadiusMilliAngstroms", 1);
 this.viewer.setDefaultVdw ("Rasmol");
 });
+$_M(c$, "setPyMOLDefaults", 
+function () {
+this.setCommonDefaults ();
+this.viewer.setStringProperty ("measurementUnits", "ANGSTROMS");
+this.viewer.setBooleanProperty ("zoomHeight", true);
+});
+c$.getNoCase = $_M(c$, "getNoCase", 
+($fz = function (saved, name) {
+for (var e, $e = saved.entrySet ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) if (e.getKey ().equalsIgnoreCase (name)) return e.getValue ();
+
+return null;
+}, $fz.isPrivate = true, $fz), "java.util.Map,~S");
 $_M(c$, "listSavedStates", 
 function () {
 var names = "";
@@ -113,7 +131,6 @@ while (e.hasNext ()) {
 var name = e.next ();
 if (name.startsWith (type)) {
 e.remove ();
-J.util.Logger.debug ("deleted " + name);
 }}
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "deleteSaved", 
@@ -131,11 +148,11 @@ this.saved.put (saveName, J.util.BSUtil.copy (bsSelected));
 $_M(c$, "restoreSelection", 
 function (saveName) {
 var name = (saveName.length > 0 ? "Selected_" + saveName : this.lastSelected);
-var bsSelected = this.saved.get (name);
+var bsSelected = J.viewer.StateManager.getNoCase (this.saved, name);
 if (bsSelected == null) {
-this.viewer.select ( new J.util.BS (), false, null, false);
+this.viewer.select ( new J.util.BS (), false, 0, false);
 return false;
-}this.viewer.select (bsSelected, false, null, false);
+}this.viewer.select (bsSelected, false, 0, false);
 return true;
 }, "~S");
 $_M(c$, "saveState", 
@@ -149,7 +166,7 @@ this.saved.put (saveName, this.viewer.getStateInfo ());
 $_M(c$, "getSavedState", 
 function (saveName) {
 var name = (saveName.length > 0 ? "State_" + saveName : this.lastState);
-var script = this.saved.get (name);
+var script = J.viewer.StateManager.getNoCase (this.saved, name);
 return (script == null ? "" : script);
 }, "~S");
 $_M(c$, "saveStructure", 
@@ -163,7 +180,7 @@ this.saved.put (saveName, this.viewer.getStructureState ());
 $_M(c$, "getSavedStructure", 
 function (saveName) {
 var name = (saveName.length > 0 ? "Shape_" + saveName : this.lastShape);
-var script = this.saved.get (name);
+var script = J.viewer.StateManager.getNoCase (this.saved, name);
 return (script == null ? "" : script);
 }, "~S");
 $_M(c$, "saveCoordinates", 
@@ -177,12 +194,12 @@ this.saved.put (saveName, this.viewer.getCoordinateState (bsSelected));
 $_M(c$, "getSavedCoordinates", 
 function (saveName) {
 var name = (saveName.length > 0 ? "Coordinates_" + saveName : this.lastCoordinates);
-var script = this.saved.get (name);
+var script = J.viewer.StateManager.getNoCase (this.saved, name);
 return (script == null ? "" : script);
 }, "~S");
 $_M(c$, "getOrientation", 
 function () {
-return Clazz.innerTypeInstance (J.viewer.StateManager.Orientation, this, null, false);
+return Clazz.innerTypeInstance (J.viewer.StateManager.Orientation, this, null, false, null);
 });
 $_M(c$, "getSavedOrientationText", 
 function (saveName) {
@@ -191,35 +208,49 @@ if (saveName != null) {
 o = this.getOrientationFor (saveName);
 return (o == null ? "" : o.getMoveToText (true));
 }var sb =  new J.util.SB ();
-var e = this.saved.keySet ().iterator ();
-while (e.hasNext ()) {
-var name = e.next ();
-if (!name.startsWith ("Orientation_")) {
-continue;
-}sb.append ((this.saved.get (name)).getMoveToText (true));
+for (var e, $e = this.saved.entrySet ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) {
+var name = e.getKey ();
+if (name.startsWith ("Orientation_")) sb.append ((e.getValue ()).getMoveToText (true));
 }
 return sb.toString ();
 }, "~S");
+$_M(c$, "saveScene", 
+function (saveName, scene) {
+if (saveName.equalsIgnoreCase ("DELETE")) {
+this.deleteSavedType ("Scene_");
+return;
+}var o = Clazz.innerTypeInstance (J.viewer.StateManager.Scene, this, null, scene);
+o.saveName = this.lastScene = "Scene_" + saveName;
+this.saved.put (o.saveName, o);
+}, "~S,java.util.Map");
+$_M(c$, "restoreScene", 
+function (saveName, timeSeconds) {
+var o = this.getSceneFor (saveName);
+return (o != null && o.restore (timeSeconds));
+}, "~S,~N");
+$_M(c$, "getSceneFor", 
+($fz = function (saveName) {
+var name = (saveName.length > 0 ? "Scene_" + saveName : this.lastScene);
+return J.viewer.StateManager.getNoCase (this.saved, name);
+}, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "saveOrientation", 
-function (saveName) {
+function (saveName, pymolView) {
 if (saveName.equalsIgnoreCase ("DELETE")) {
 this.deleteSavedType ("Orientation_");
 return;
-}var o = Clazz.innerTypeInstance (J.viewer.StateManager.Orientation, this, null, saveName.equals ("default"));
+}var o = Clazz.innerTypeInstance (J.viewer.StateManager.Orientation, this, null, saveName.equalsIgnoreCase ("default"), pymolView);
 o.saveName = this.lastOrientation = "Orientation_" + saveName;
 this.saved.put (o.saveName, o);
-}, "~S");
+}, "~S,~A");
 $_M(c$, "restoreOrientation", 
 function (saveName, timeSeconds, isAll) {
 var o = this.getOrientationFor (saveName);
-if (o == null) return false;
-o.restore (timeSeconds, isAll);
-return true;
+return (o != null && o.restore (timeSeconds, isAll));
 }, "~S,~N,~B");
 $_M(c$, "getOrientationFor", 
 ($fz = function (saveName) {
 var name = (saveName.length > 0 ? "Orientation_" + saveName : this.lastOrientation);
-return this.saved.get (name);
+return J.viewer.StateManager.getNoCase (this.saved, name);
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "saveBonds", 
 function (saveName) {
@@ -233,10 +264,8 @@ this.saved.put (b.saveName, b);
 $_M(c$, "restoreBonds", 
 function (saveName) {
 var name = (saveName.length > 0 ? "Bonds_" + saveName : this.lastConnections);
-var c = this.saved.get (name);
-if (c == null) return false;
-c.restore ();
-return true;
+var c = J.viewer.StateManager.getNoCase (this.saved, name);
+return (c != null && c.restore ());
 }, "~S");
 c$.doReportProperty = $_M(c$, "doReportProperty", 
 function (name) {
@@ -277,6 +306,27 @@ function (name, sv, nMax) {
 if (nMax > 0 && sv.length > nMax) sv = sv.substring (0, nMax) + " #...more (" + sv.length + " bytes -- use SHOW " + name + " or MESSAGE @" + name + " to view)";
 return sv;
 }, "~S,~S,~N");
+c$.$StateManager$Scene$ = function () {
+Clazz.pu$h ();
+c$ = Clazz.decorateAsClass (function () {
+Clazz.prepareCallback (this, arguments);
+this.saveName = null;
+this.scene = null;
+Clazz.instantialize (this, arguments);
+}, J.viewer.StateManager, "Scene");
+Clazz.makeConstructor (c$, 
+function (a) {
+this.scene = a;
+}, "java.util.Map");
+$_M(c$, "restore", 
+function (a) {
+var b = this.scene.get ("generator");
+if (b != null) b.generateScene (this.scene);
+var c = this.scene.get ("pymolView");
+return (c != null && this.b$["J.viewer.StateManager"].viewer.movePyMOL (this.b$["J.viewer.StateManager"].viewer.eval, a, c));
+}, "~N");
+c$ = Clazz.p0p ();
+};
 c$.$StateManager$Orientation$ = function () {
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
@@ -292,9 +342,13 @@ this.navCenter = null;
 this.xNav = NaN;
 this.yNav = NaN;
 this.navDepth = NaN;
+this.cameraDepth = NaN;
+this.cameraX = NaN;
+this.cameraY = NaN;
 this.windowCenteredFlag = false;
 this.navigationMode = false;
 this.moveToText = null;
+this.pymolView = null;
 Clazz.instantialize (this, arguments);
 }, J.viewer.StateManager, "Orientation");
 Clazz.prepareFields (c$, function () {
@@ -303,11 +357,16 @@ this.center =  new J.util.P3 ();
 this.navCenter =  new J.util.P3 ();
 });
 Clazz.makeConstructor (c$, 
-function (a) {
+function (a, b) {
+if (b != null) {
+this.pymolView = b;
+this.moveToText = "moveTo -1.0 PyMOL " + J.util.Escape.eAF (b);
+return;
+}this.b$["J.viewer.StateManager"].viewer.finalizeTransformParameters ();
 if (a) {
-var b = this.b$["J.viewer.StateManager"].viewer.getModelSetAuxiliaryInfoValue ("defaultOrientationMatrix");
-if (b == null) this.rotationMatrix.setIdentity ();
- else this.rotationMatrix.setM (b);
+var c = this.b$["J.viewer.StateManager"].viewer.getModelSetAuxiliaryInfoValue ("defaultOrientationMatrix");
+if (c == null) this.rotationMatrix.setIdentity ();
+ else this.rotationMatrix.setM (c);
 } else {
 this.b$["J.viewer.StateManager"].viewer.getRotation (this.rotationMatrix);
 }this.xTrans = this.b$["J.viewer.StateManager"].viewer.getTranslationXPercent ();
@@ -316,26 +375,32 @@ this.zoom = this.b$["J.viewer.StateManager"].viewer.getZoomSetting ();
 this.center.setT (this.b$["J.viewer.StateManager"].viewer.getRotationCenter ());
 this.windowCenteredFlag = this.b$["J.viewer.StateManager"].viewer.isWindowCentered ();
 this.rotationRadius = this.b$["J.viewer.StateManager"].viewer.getFloat (570425388);
-this.navigationMode = this.b$["J.viewer.StateManager"].viewer.getBoolean (603979886);
+this.navigationMode = this.b$["J.viewer.StateManager"].viewer.getBoolean (603979887);
 this.moveToText = this.b$["J.viewer.StateManager"].viewer.getMoveToText (-1);
 if (this.navigationMode) {
 this.xNav = this.b$["J.viewer.StateManager"].viewer.getNavigationOffsetPercent ('X');
 this.yNav = this.b$["J.viewer.StateManager"].viewer.getNavigationOffsetPercent ('Y');
 this.navDepth = this.b$["J.viewer.StateManager"].viewer.getNavigationDepthPercent ();
 this.navCenter = J.util.P3.newP (this.b$["J.viewer.StateManager"].viewer.getNavigationCenter ());
-}}, "~B");
+}if (this.b$["J.viewer.StateManager"].viewer.getCamera ().z != 0) {
+this.cameraDepth = this.b$["J.viewer.StateManager"].viewer.getCameraDepth ();
+this.cameraX = this.b$["J.viewer.StateManager"].viewer.getCamera ().x;
+this.cameraY = this.b$["J.viewer.StateManager"].viewer.getCamera ().y;
+}}, "~B,~A");
 $_M(c$, "getMoveToText", 
 function (a) {
-return (a ? "  " + this.moveToText + "\n  save orientation \"" + this.saveName.substring (12) + "\";\n" : this.moveToText);
+return (a ? "   " + this.moveToText + "\n  save orientation " + J.util.Escape.eS (this.saveName.substring (12)) + ";\n" : this.moveToText);
 }, "~B");
 $_M(c$, "restore", 
 function (a, b) {
-if (!b) {
-this.b$["J.viewer.StateManager"].viewer.setRotationMatrix (this.rotationMatrix);
-return;
-}this.b$["J.viewer.StateManager"].viewer.setBooleanProperty ("windowCentered", this.windowCenteredFlag);
+if (b) {
+this.b$["J.viewer.StateManager"].viewer.setBooleanProperty ("windowCentered", this.windowCenteredFlag);
 this.b$["J.viewer.StateManager"].viewer.setBooleanProperty ("navigationMode", this.navigationMode);
-this.b$["J.viewer.StateManager"].viewer.moveTo (this.b$["J.viewer.StateManager"].viewer.eval, a, this.center, null, NaN, this.rotationMatrix, this.zoom, this.xTrans, this.yTrans, this.rotationRadius, this.navCenter, this.xNav, this.yNav, this.navDepth);
+if (this.pymolView == null) this.b$["J.viewer.StateManager"].viewer.moveTo (this.b$["J.viewer.StateManager"].viewer.eval, a, this.center, null, NaN, this.rotationMatrix, this.zoom, this.xTrans, this.yTrans, this.rotationRadius, this.navCenter, this.xNav, this.yNav, this.navDepth, this.cameraDepth, this.cameraX, this.cameraY);
+ else this.b$["J.viewer.StateManager"].viewer.movePyMOL (this.b$["J.viewer.StateManager"].viewer.eval, a, this.pymolView);
+} else {
+this.b$["J.viewer.StateManager"].viewer.setRotationMatrix (this.rotationMatrix);
+}return true;
 }, "~N,~B");
 c$ = Clazz.p0p ();
 };
@@ -363,7 +428,7 @@ this.connections[c] =  new J.viewer.StateManager.Connection (d.getAtomIndex1 (),
 $_M(c$, "restore", 
 function () {
 var a = this.b$["J.viewer.StateManager"].viewer.getModelSet ();
-if (a == null) return;
+if (a == null) return false;
 a.deleteAllBonds ();
 for (var b = this.bondCount; --b >= 0; ) {
 var c = this.connections[b];
@@ -376,6 +441,7 @@ e.setShapeVisibilityFlags (c.shapeVisibilityFlags);
 for (var c = this.bondCount; --c >= 0; ) a.getBondAt (c).setIndex (c);
 
 this.b$["J.viewer.StateManager"].viewer.setShapeProperty (1, "reportAll", null);
+return true;
 });
 c$ = Clazz.p0p ();
 };
@@ -414,7 +480,7 @@ this.defaultStructureDSSP = true;
 this.ptDefaultLattice = null;
 this.defaultLoadScript = "";
 this.defaultLoadFilter = "";
-this.defaultDropScript = "zap; load SYNC %FILE;if (%ALLOWCARTOONS && _loadScript == '' && defaultLoadScript == '' && _filetype == 'Pdb') {if ({(protein or nucleic)&*/1.1} && {*/1.1}[1].groupindex != {*/1.1}[0].groupindex){select protein or nucleic;cartoons only;}if ({visible}){color structure}else{wireframe -0.1};if (!{visible}){spacefill 23%};select *}";
+this.defaultDropScript = "zap; load SYNC \"%FILE\";if (%ALLOWCARTOONS && _loadScript == '' && defaultLoadScript == '' && _filetype == 'Pdb') {if ({(protein or nucleic)&*/1.1} && {*/1.1}[1].groupindex != {*/1.1}[0].groupindex){select protein or nucleic;cartoons only;}if ({visible}){color structure}else{wireframe -0.1};if (!{visible}){spacefill 23%};select *}";
 this.forceAutoBond = false;
 this.fractionalRelative = false;
 this.inlineNewlineChar = '|';
@@ -437,9 +503,10 @@ this.smallMoleculeMaxAtoms = 40000;
 this.smartAromatic = true;
 this.zeroBasedXyzRasmol = false;
 this.legacyAutoBonding = false;
+this.legacyHAddition = false;
 this.allowRotateSelected = false;
 this.allowMoveAtoms = false;
-this.perspectiveDepth = true;
+this.defaultPerspectiveDepth = true;
 this.visualRange = 5;
 this.solventOn = false;
 this.defaultAngleLabel = "%VALUE %UNITS";
@@ -472,6 +539,7 @@ this.showKeyStrokes = true;
 this.showMeasurements = true;
 this.showTiming = false;
 this.zoomLarge = true;
+this.zoomHeight = false;
 this.backgroundImageFileName = null;
 this.partialDots = false;
 this.bondModeOr = false;
@@ -501,6 +569,7 @@ this.ribbonBorder = false;
 this.rocketBarrels = false;
 this.sheetSmoothing = 1;
 this.traceAlpha = true;
+this.translucent = true;
 this.twistedSheets = false;
 this.allowGestures = false;
 this.allowModelkit = true;
@@ -513,7 +582,7 @@ this.axesMode = null;
 this.axesScale = 2;
 this.starScale = 0.05;
 this.bondPicking = false;
-this.cameraDepth = 3.0;
+this.defaultCameraDepth = 3.0;
 this.celShading = false;
 this.dataSeparator = "~~~";
 this.debugScript = false;
@@ -522,13 +591,14 @@ this.defaultLabelXYZ = "%a";
 this.defaultLabelPDB = "%m%r";
 this.defaultTranslucent = 0.5;
 this.delayMaximumMs = 0;
-this.dipoleScale = 1.0;
+this.dipoleScale = 1;
 this.disablePopupMenu = false;
 this.dragSelected = false;
 this.drawHover = false;
 this.drawPicking = false;
 this.dsspCalcHydrogen = true;
 this.energyUnits = "kJ";
+this.exportScale = 1;
 this.helpPath = "http://chemapps.stolaf.edu/jmol/docs/index.htm";
 this.fontScaling = false;
 this.fontCaching = true;
@@ -585,6 +655,7 @@ this.objMad = null;
 this.ellipsoidAxes = false;
 this.ellipsoidDots = false;
 this.ellipsoidArcs = false;
+this.ellipsoidArrows = false;
 this.ellipsoidFill = false;
 this.ellipsoidBall = true;
 this.ellipsoidDotCount = 200;
@@ -629,6 +700,7 @@ this.setB ("selectionhalos", false);
 this.setB ("hidenotselected", false);
 this.setB ("measurementlabels", this.measurementLabels = true);
 this.setB ("drawHover", this.drawHover = false);
+this.b$["J.viewer.StateManager"].saveScene ("DELETE", null);
 });
 $_M(c$, "registerAllValues", 
 function (a, b) {
@@ -646,9 +718,11 @@ this.allowModelkit = a.allowModelkit;
 this.allowMultiTouch = a.allowMultiTouch;
 this.allowKeyStrokes = a.allowKeyStrokes;
 this.legacyAutoBonding = a.legacyAutoBonding;
+this.legacyHAddition = a.legacyHAddition;
 this.useScriptQueue = a.useScriptQueue;
 this.useArcBall = a.useArcBall;
 this.databases = a.databases;
+this.showTiming = a.showTiming;
 }if (this.databases == null) {
 this.databases =  new java.util.Hashtable ();
 this.getDataBaseList (J.viewer.JC.databases);
@@ -752,7 +826,7 @@ this.setB ("bondModeOr", this.bondModeOr);
 this.setB ("bondPicking", this.bondPicking);
 this.setI ("bondRadiusMilliAngstroms", this.bondRadiusMilliAngstroms);
 this.setF ("bondTolerance", this.bondTolerance);
-this.setF ("cameraDepth", this.cameraDepth);
+this.setF ("cameraDepth", this.defaultCameraDepth);
 this.setB ("cartoonBaseEdges", this.cartoonBaseEdges);
 this.setB ("cartoonFancy", this.cartoonFancy);
 this.setB ("cartoonLadders", this.cartoonLadders);
@@ -790,6 +864,7 @@ this.setB ("dynamicMeasurements", this.dynamicMeasurements);
 this.setS ("edsUrlFormat", this.edsUrlFormat);
 this.setS ("edsUrlCutoff", this.edsUrlCutoff);
 this.setB ("ellipsoidArcs", this.ellipsoidArcs);
+this.setB ("ellipsoidArrows", this.ellipsoidArrows);
 this.setB ("ellipsoidAxes", this.ellipsoidAxes);
 this.setF ("ellipsoidAxisDiameter", this.ellipsoidAxisDiameter);
 this.setB ("ellipsoidBall", this.ellipsoidBall);
@@ -797,6 +872,7 @@ this.setI ("ellipsoidDotCount", this.ellipsoidDotCount);
 this.setB ("ellipsoidDots", this.ellipsoidDots);
 this.setB ("ellipsoidFill", this.ellipsoidFill);
 this.setS ("energyUnits", this.energyUnits);
+this.setF ("exportScale", this.exportScale);
 this.setB ("fontScaling", this.fontScaling);
 this.setB ("fontCaching", this.fontCaching);
 this.setB ("forceAutoBond", this.forceAutoBond);
@@ -821,6 +897,7 @@ this.setB ("isosurfacePropertySmoothing", this.isosurfacePropertySmoothing);
 this.setI ("isosurfacePropertySmoothingPower", this.isosurfacePropertySmoothingPower);
 this.setB ("justifyMeasurements", this.justifyMeasurements);
 this.setB ("legacyAutoBonding", this.legacyAutoBonding);
+this.setB ("legacyHAddition", this.legacyHAddition);
 this.setF ("loadAtomDataTolerance", this.loadAtomDataTolerance);
 this.setS ("loadFormat", this.loadFormat);
 this.setS ("loadLigandFormat", this.loadLigandFormat);
@@ -850,7 +927,7 @@ this.setB ("partialDots", this.partialDots);
 this.setB ("pdbAddHydrogens", this.pdbAddHydrogens);
 this.setB ("pdbGetHeader", this.pdbGetHeader);
 this.setB ("pdbSequential", this.pdbSequential);
-this.setB ("perspectiveDepth", this.perspectiveDepth);
+this.setB ("perspectiveDepth", this.defaultPerspectiveDepth);
 this.setI ("percentVdwAtom", this.percentVdwAtom);
 this.setI ("phongExponent", this.phongExponent);
 this.setI ("pickingSpinRate", this.pickingSpinRate);
@@ -907,6 +984,7 @@ this.setB ("testFlag2", this.testFlag2);
 this.setB ("testFlag3", this.testFlag3);
 this.setB ("testFlag4", this.testFlag4);
 this.setB ("traceAlpha", this.traceAlpha);
+this.setB ("translucent", this.translucent);
 this.setB ("twistedSheets", this.twistedSheets);
 this.setB ("useArcBall", this.useArcBall);
 this.setB ("useMinimizationThread", this.useMinimizationThread);
@@ -920,6 +998,7 @@ this.setB ("waitForMoveTo", this.waitForMoveTo);
 this.setB ("wireframeRotation", this.wireframeRotation);
 this.setI ("zDepth", this.zDepth);
 this.setB ("zeroBasedXyzRasmol", this.zeroBasedXyzRasmol);
+this.setB ("zoomHeight", this.zoomHeight);
 this.setB ("zoomLarge", this.zoomLarge);
 this.setI ("zShadePower", this.zShadePower);
 this.setI ("zSlab", this.zSlab);
@@ -941,6 +1020,7 @@ if (a.equalsIgnoreCase ("angstroms")) this.measureDistanceUnits = "angstroms";
  else if (a.equalsIgnoreCase ("picometers") || a.equalsIgnoreCase ("pm")) this.measureDistanceUnits = "picometers";
  else if (a.equalsIgnoreCase ("bohr") || a.equalsIgnoreCase ("au")) this.measureDistanceUnits = "au";
  else if (a.equalsIgnoreCase ("vanderwaals") || a.equalsIgnoreCase ("vdw")) this.measureDistanceUnits = "vdw";
+ else if (a.toLowerCase ().endsWith ("hz") || a.toLowerCase ().endsWith ("khz")) this.measureDistanceUnits = a.toLowerCase ();
  else if (a.equalsIgnoreCase ("kj")) this.energyUnits = "kJ";
  else if (a.equalsIgnoreCase ("kcal")) this.energyUnits = "kcal";
 if (!b.equalsIgnoreCase (this.measureDistanceUnits)) this.setS ("measurementUnits", this.measureDistanceUnits);
@@ -1126,5 +1206,5 @@ Clazz.defineStatics (c$,
 "OBJ_FRANK", 6,
 "OBJ_MAX", 8,
 "objectNameList", "background axis1      axis2      axis3      boundbox   unitcell   frank      ");
-c$.unreportedProperties = c$.prototype.unreportedProperties = (";ambientpercent;animationfps;antialiasdisplay;antialiasimages;antialiastranslucent;appendnew;axescolor;axesposition;axesmolecular;axesorientationrasmol;axesunitcell;axeswindow;axis1color;axis2color;axis3color;backgroundcolor;backgroundmodel;bondsymmetryatoms;boundboxcolor;cameradepth;debug;debugscript;defaultlatttice;defaults;defaultdropscript;diffusepercent;exportdrivers;_filecaching;_filecache;fontcaching;fontscaling;forcefield;language;legacyautobonding;loglevel;logfile;loggestures;logcommands;measurestylechime;loadformat;loadligandformat;smilesurlformat;pubchemformat;nihresolverformat;edsurlformat;edsurlcutoff;multiprocessor;navigationmode;;pathforallfiles;perspectivedepth;phongexponent;perspectivemodel;preservestate;refreshing;repaintwaitms;rotationradius;showaxes;showaxis1;showaxis2;showaxis3;showboundbox;showfrank;showtiming;showunitcell;slabenabled;slab;slabrange;depth;zshade;zshadepower;specular;specularexponent;specularpercent;celshading;specularpower;stateversion;statusreporting;stereo;stereostate;vibrationperiod;unitcellcolor;visualrange;windowcentered;zerobasedxyzrasmol;zoomenabled;mousedragfactor;mousewheelfactor;scriptqueue;scriptreportinglevel;syncscript;syncmouse;syncstereo;;defaultdirectory;currentlocalpath;defaultdirectorylocal;ambient;bonds;colorrasmol;diffuse;frank;hetero;hidenotselected;hoverlabel;hydrogen;languagetranslation;measurementunits;navigationdepth;navigationslab;picking;pickingstyle;propertycolorschemeoverload;radius;rgbblue;rgbgreen;rgbred;scaleangstromsperinch;selectionhalos;showscript;showselections;solvent;strandcount;spinx;spiny;spinz;spinfps;navx;navy;navz;navfps;" + J.constant.EnumCallback.getNameList () + ";undo;bondpicking;modelkitmode;allowgestures;allowkeystrokes;allowmultitouch;allowmodelkit" + ";").toLowerCase ();
+c$.unreportedProperties = c$.prototype.unreportedProperties = (";ambientpercent;animationfps;antialiasdisplay;antialiasimages;antialiastranslucent;appendnew;axescolor;axesposition;axesmolecular;axesorientationrasmol;axesunitcell;axeswindow;axis1color;axis2color;axis3color;backgroundcolor;backgroundmodel;bondsymmetryatoms;boundboxcolor;cameradepth;debug;debugscript;defaultlatttice;defaults;defaultdropscript;diffusepercent;;exportdrivers;exportscale;_filecaching;_filecache;fontcaching;fontscaling;forcefield;language;legacyautobonding;legacyhaddition;loglevel;logfile;loggestures;logcommands;measurestylechime;loadformat;loadligandformat;smilesurlformat;pubchemformat;nihresolverformat;edsurlformat;edsurlcutoff;multiprocessor;navigationmode;;pathforallfiles;perspectivedepth;phongexponent;perspectivemodel;preservestate;refreshing;repaintwaitms;rotationradius;showaxes;showaxis1;showaxis2;showaxis3;showboundbox;showfrank;showtiming;showunitcell;slabenabled;slab;slabrange;depth;zshade;zshadepower;specular;specularexponent;specularpercent;celshading;specularpower;stateversion;statusreporting;stereo;stereostate;vibrationperiod;unitcellcolor;visualrange;windowcentered;zerobasedxyzrasmol;zoomenabled;mousedragfactor;mousewheelfactor;scriptqueue;scriptreportinglevel;syncscript;syncmouse;syncstereo;;defaultdirectory;currentlocalpath;defaultdirectorylocal;ambient;bonds;colorrasmol;diffuse;frank;hetero;hidenotselected;hoverlabel;hydrogen;languagetranslation;measurementunits;navigationdepth;navigationslab;picking;pickingstyle;propertycolorschemeoverload;radius;rgbblue;rgbgreen;rgbred;scaleangstromsperinch;selectionhalos;showscript;showselections;solvent;strandcount;spinx;spiny;spinz;spinfps;navx;navy;navz;navfps;" + J.constant.EnumCallback.getNameList () + ";undo;bondpicking;modelkitmode;allowgestures;allowkeystrokes;allowmultitouch;allowmodelkit" + ";").toLowerCase ();
 });

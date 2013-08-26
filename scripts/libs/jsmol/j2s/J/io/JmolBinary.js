@@ -229,7 +229,7 @@ var pt2 = script.indexOf ((script.charAt (pt1 + 2) == '*' ? "*" : "") + "*/", pt
 if (pt1 >= 0 && pt2 >= pt) script = script.substring (pt + "**** Jmol Embedded Script ****".length, pt2) + "\n";
 while ((pt1 = script.indexOf (" #Jmol...\u0000")) >= 0) script = script.substring (0, pt1) + script.substring (pt1 + " #Jmol...\u0000".length + 4);
 
-if (J.util.Logger.debugging) J.util.Logger.info (script);
+if (J.util.Logger.debugging) J.util.Logger.debug (script);
 return script;
 }, "~S");
 c$.getJzu = $_M(c$, "getJzu", 

@@ -8,6 +8,7 @@ this.isFinalized = false;
 this.opId = 0;
 this.atomTest = null;
 this.temp3 = null;
+this.myLabels = null;
 Clazz.instantialize (this, arguments);
 }, J.symmetry, "SymmetryOperation", J.util.Matrix4f);
 Clazz.overrideConstructor (c$, 
@@ -51,46 +52,62 @@ return  new J.util.SB ().append ("{\t").appendI (Clazz.floatToInt (s.m00)).appen
 }, "J.util.Matrix4f");
 c$.dumpCanonicalSeitz = $_M(c$, "dumpCanonicalSeitz", 
 function (s) {
-return  new J.util.SB ().append ("{\t").appendI (Clazz.floatToInt (s.m00)).append ("\t").appendI (Clazz.floatToInt (s.m01)).append ("\t").appendI (Clazz.floatToInt (s.m02)).append ("\t").append (J.symmetry.SymmetryOperation.twelfthsOf (s.m03 + 12)).append ("\t}\n").append ("{\t").appendI (Clazz.floatToInt (s.m10)).append ("\t").appendI (Clazz.floatToInt (s.m11)).append ("\t").appendI (Clazz.floatToInt (s.m12)).append ("\t").append (J.symmetry.SymmetryOperation.twelfthsOf (s.m13 + 12)).append ("\t}\n").append ("{\t").appendI (Clazz.floatToInt (s.m20)).append ("\t").appendI (Clazz.floatToInt (s.m21)).append ("\t").appendI (Clazz.floatToInt (s.m22)).append ("\t").append (J.symmetry.SymmetryOperation.twelfthsOf (s.m23 + 12)).append ("\t}\n").append ("{\t0\t0\t0\t1\t}\n").toString ();
+return  new J.util.SB ().append ("{\t").appendI (Clazz.floatToInt (s.m00)).append ("\t").appendI (Clazz.floatToInt (s.m01)).append ("\t").appendI (Clazz.floatToInt (s.m02)).append ("\t").append (J.symmetry.SymmetryOperation.twelfthsOf ((s.m03 + 12) % 12)).append ("\t}\n").append ("{\t").appendI (Clazz.floatToInt (s.m10)).append ("\t").appendI (Clazz.floatToInt (s.m11)).append ("\t").appendI (Clazz.floatToInt (s.m12)).append ("\t").append (J.symmetry.SymmetryOperation.twelfthsOf ((s.m13 + 12) % 12)).append ("\t}\n").append ("{\t").appendI (Clazz.floatToInt (s.m20)).append ("\t").appendI (Clazz.floatToInt (s.m21)).append ("\t").appendI (Clazz.floatToInt (s.m22)).append ("\t").append (J.symmetry.SymmetryOperation.twelfthsOf ((s.m23 + 12) % 12)).append ("\t}\n").append ("{\t0\t0\t0\t1\t}\n").toString ();
 }, "J.util.Matrix4f");
 $_M(c$, "setMatrixFromXYZ", 
-function (xyz) {
+function (xyz, modulationDimension) {
 if (xyz == null) return false;
 this.xyzOriginal = xyz;
 xyz = xyz.toLowerCase ();
-var temp =  Clazz.newFloatArray (16, 0);
+var n = 16;
+if (modulationDimension > 0) {
+n += 2 * modulationDimension;
+if (modulationDimension == 1) {
+this.myLabels = J.symmetry.SymmetryOperation.labelsX1234;
+} else {
+this.myLabels =  new Array (modulationDimension + 3);
+for (var i = modulationDimension + 3; --i >= 0; ) this.myLabels[i] = "x" + i;
+
+}}var rotTransMatrix =  Clazz.newFloatArray (n, 0);
+switch (modulationDimension) {
+case 0:
+break;
+case 1:
+break;
+default:
+}
 var isReverse = (xyz.startsWith ("!"));
 if (isReverse) xyz = xyz.substring (1);
 if (xyz.indexOf ("xyz matrix:") == 0) {
 this.xyz = xyz;
-J.util.Parser.parseStringInfestedFloatArray (xyz, null, temp);
+J.util.Parser.parseStringInfestedFloatArray (xyz, null, rotTransMatrix);
 for (var i = 0; i < 16; i++) {
-if (Float.isNaN (temp[i])) return false;
-var v = temp[i];
+if (Float.isNaN (rotTransMatrix[i])) return false;
+var v = rotTransMatrix[i];
 if (Math.abs (v) < 0.00001) v = 0;
 if (i % 4 == 3) v = J.symmetry.SymmetryOperation.normalizeTwelfths ((v < 0 ? -1 : 1) * Math.round (Math.abs (v * 12)), this.doNormalize);
-temp[i] = v;
+rotTransMatrix[i] = v;
 }
-temp[15] = 1;
-this.setA (temp);
+rotTransMatrix[15] = 1;
+this.setA (rotTransMatrix);
 this.isFinalized = true;
 if (isReverse) this.invertM (this);
 this.xyz = J.symmetry.SymmetryOperation.getXYZFromMatrix (this, true, false, false);
 return true;
 }if (xyz.indexOf ("[[") == 0) {
 xyz = xyz.$replace ('[', ' ').$replace (']', ' ').$replace (',', ' ');
-J.util.Parser.parseStringInfestedFloatArray (xyz, null, temp);
+J.util.Parser.parseStringInfestedFloatArray (xyz, null, rotTransMatrix);
 for (var i = 0; i < 16; i++) {
-if (Float.isNaN (temp[i])) return false;
+if (Float.isNaN (rotTransMatrix[i])) return false;
 }
-this.setA (temp);
+this.setA (rotTransMatrix);
 this.isFinalized = true;
 if (isReverse) this.invertM (this);
 this.xyz = J.symmetry.SymmetryOperation.getXYZFromMatrix (this, false, false, false);
 return true;
-}var strOut = J.symmetry.SymmetryOperation.getMatrixFromString (xyz, temp, this.doNormalize, false);
+}var strOut = J.symmetry.SymmetryOperation.getMatrixFromString (xyz, rotTransMatrix, this.myLabels, this.doNormalize, false);
 if (strOut == null) return false;
-this.setA (temp);
+this.setA (rotTransMatrix);
 if (isReverse) {
 this.invertM (this);
 this.xyz = J.symmetry.SymmetryOperation.getXYZFromMatrix (this, true, false, false);
@@ -98,30 +115,31 @@ this.xyz = J.symmetry.SymmetryOperation.getXYZFromMatrix (this, true, false, fal
 this.xyz = strOut;
 }if (J.util.Logger.debugging) J.util.Logger.debug ("" + this);
 return true;
-}, "~S");
+}, "~S,~N");
 c$.getMatrixFromString = $_M(c$, "getMatrixFromString", 
-function (xyz, temp, doNormalize, allowScaling) {
+function (xyz, rotTransMatrix, myLabels, doNormalize, allowScaling) {
 var isDenominator = false;
 var isDecimal = false;
 var isNegative = false;
+var incommensurate = (rotTransMatrix.length > 16);
+rotTransMatrix[15] = 1;
+if (myLabels == null) myLabels = J.symmetry.SymmetryOperation.labelsXYZ;
 var ch;
 var x = 0;
 var y = 0;
 var z = 0;
+var w = 0;
 var iValue = 0;
 var strOut = "";
 var strT;
 var rowPt = -1;
 var decimalMultiplier = 1;
-while (xyz.indexOf ("x4") >= 0) {
-J.util.Logger.info ("ignoring last parameter in " + xyz);
-xyz = xyz.substring (0, xyz.lastIndexOf (","));
+xyz += ",";
+if (incommensurate) {
 xyz = J.util.TextFormat.simpleReplace (xyz, "x1", "x");
 xyz = J.util.TextFormat.simpleReplace (xyz, "x2", "y");
 xyz = J.util.TextFormat.simpleReplace (xyz, "x3", "z");
-}
-xyz += ",";
-for (var i = 0; i < xyz.length; i++) {
+}for (var i = 0; i < xyz.length; i++) {
 ch = xyz.charAt (i);
 switch (ch) {
 case '\'':
@@ -141,10 +159,14 @@ isDenominator = true;
 continue;
 case 'X':
 case 'x':
-x = (isNegative ? -1 : 1);
+var val = (isNegative ? -1 : 1);
 if (allowScaling && iValue != 0) {
-x *= iValue;
+val *= iValue;
 iValue = 0;
+}if (incommensurate && rowPt > 0) {
+w = val;
+} else {
+x = val;
 }break;
 case 'Y':
 case 'y':
@@ -161,25 +183,30 @@ z *= iValue;
 iValue = 0;
 }break;
 case ',':
-if (++rowPt > 2) {
+if (++rowPt > 2 && !incommensurate) {
 J.util.Logger.warn ("Symmetry Operation? " + xyz);
 return null;
-}var tpt = rowPt * 4;
-iValue = J.symmetry.SymmetryOperation.normalizeTwelfths (iValue, doNormalize);
-temp[tpt++] = x;
-temp[tpt++] = y;
-temp[tpt++] = z;
-temp[tpt] = iValue;
+}iValue = J.symmetry.SymmetryOperation.normalizeTwelfths (iValue, doNormalize);
+var tpt;
+if (rowPt > 2 && incommensurate) {
+tpt = 16 + 2 * (rowPt + -2);
+rotTransMatrix[tpt++] = w;
+rotTransMatrix[tpt] = iValue;
+} else {
+tpt = rowPt * 4;
+rotTransMatrix[tpt++] = x;
+rotTransMatrix[tpt++] = y;
+rotTransMatrix[tpt++] = z;
+rotTransMatrix[tpt] = iValue;
 strT = "";
-strT += (x == 0 ? "" : x < 0 ? "-x" : strT.length == 0 ? "x" : "+x");
-strT += (y == 0 ? "" : y < 0 ? "-y" : strT.length == 0 ? "y" : "+y");
-strT += (z == 0 ? "" : z < 0 ? "-z" : strT.length == 0 ? "z" : "+z");
+strT += J.symmetry.SymmetryOperation.plusMinus (strT, x, "x");
+strT += J.symmetry.SymmetryOperation.plusMinus (strT, y, "y");
+strT += J.symmetry.SymmetryOperation.plusMinus (strT, z, "z");
 strT += J.symmetry.SymmetryOperation.xyzFraction (iValue, false, true);
 strOut += (strOut === "" ? "" : ",") + strT;
 if (rowPt == 2) {
-temp[15] = 1;
 return strOut;
-}x = y = z = 0;
+}}x = y = z = 0;
 iValue = 0;
 break;
 case '.':
@@ -207,7 +234,11 @@ J.util.Logger.warn ("symmetry character?" + ch);
 isDecimal = isDenominator = isNegative = false;
 }
 return null;
-}, "~S,~A,~B,~B");
+}, "~S,~A,~A,~B,~B");
+c$.plusMinus = $_M(c$, "plusMinus", 
+($fz = function (strT, x, sx) {
+return (x == 0 ? "" : (x < 0 ? "-" : strT.length == 0 ? "" : "+") + sx);
+}, $fz.isPrivate = true, $fz), "~S,~N,~S");
 c$.normalizeTwelfths = $_M(c$, "normalizeTwelfths", 
 ($fz = function (iValue, doNormalize) {
 iValue *= 12;
@@ -221,15 +252,15 @@ while (iValue <= -6) iValue += 12;
 c$.getXYZFromMatrix = $_M(c$, "getXYZFromMatrix", 
 function (mat, is12ths, allPositive, halfOrLess) {
 var str = "";
+var thisLabels = (Clazz.instanceOf (mat, J.symmetry.SymmetryOperation) ? (mat).myLabels : null);
+if (thisLabels == null) thisLabels = J.symmetry.SymmetryOperation.labelsXYZ;
 var row =  Clazz.newFloatArray (4, 0);
 for (var i = 0; i < 3; i++) {
 mat.getRow (i, row);
 var term = "";
-if (row[0] != 0) term += (row[0] < 0 ? "-" : "+") + "x";
-if (row[1] != 0) term += (row[1] < 0 ? "-" : "+") + "y";
-if (row[2] != 0) term += (row[2] < 0 ? "-" : "+") + "z";
+for (var j = 0; j < 3; j++) if (row[j] != 0) term += J.symmetry.SymmetryOperation.plusMinus (term, row[j], thisLabels[j]);
+
 term += J.symmetry.SymmetryOperation.xyzFraction ((is12ths ? row[3] : row[3] * 12), allPositive, halfOrLess);
-if (term.length > 0 && term.charAt (0) == '+') term = term.substring (1);
 str += "," + term;
 }
 return str.substring (1);
@@ -638,7 +669,7 @@ v.addLast (uc.getCanonicalCopy (1.05));
 J.util.TriangleData.intersectPlane (plane, v, 3);
 for (var i = v.size (); --i >= 0; ) {
 var pts = v.get (i);
-draw1.append (drawid).append ("planep").appendI (i).append (J.util.Escape.eP (pts[0])).append (J.util.Escape.eP (pts[1]));
+draw1.append (drawid).append ("planep").appendI (i).append (" ").append (J.util.Escape.eP (pts[0])).append (J.util.Escape.eP (pts[1]));
 if (pts.length == 3) draw1.append (J.util.Escape.eP (pts[2]));
 draw1.append (" color translucent ").append (color);
 }
@@ -752,6 +783,8 @@ operation.m03 = (Clazz.floatToInt (operation.m03) + 12) % 12;
 operation.m13 = (Clazz.floatToInt (operation.m13) + 12) % 12;
 operation.m23 = (Clazz.floatToInt (operation.m23) + 12) % 12;
 }, "J.util.Matrix4f");
+c$.labelsXYZ = c$.prototype.labelsXYZ = ["x", "y", "z"];
+c$.labelsX1234 = c$.prototype.labelsX1234 = ["x1", "x2", "x3", "x4"];
 Clazz.defineStatics (c$,
 "twelfths", ["0", "1/12", "1/6", "1/4", "1/3", "5/12", "1/2", "7/12", "2/3", "3/4", "5/6", "11/12"]);
 });

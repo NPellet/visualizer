@@ -472,7 +472,7 @@ if (patternAtom.atomType != null && !patternAtom.atomType.equals (atom.getAtomTy
 if (patternAtom.elementNumber >= 0 && patternAtom.elementNumber != atom.getElementNumber ()) break;
 var isAromatic = patternAtom.isAromatic ();
 if (!this.noAromatic && !patternAtom.aromaticAmbiguous && isAromatic != this.bsAromatic.get (iAtom)) break;
-if ((n = patternAtom.getAtomicMass ()) != -32768) {
+if ((n = patternAtom.getAtomicMass ()) != -2147483648) {
 var isotope = atom.getIsotopeNumber ();
 if (n >= 0 && n != isotope || n < 0 && isotope != 0 && -n != isotope) {
 break;

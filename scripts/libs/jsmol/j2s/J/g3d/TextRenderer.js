@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.g3d");
-Clazz.load (["java.util.Hashtable"], "J.g3d.TextRenderer", null, function () {
+Clazz.load (["java.util.Hashtable"], "J.g3d.TextRenderer", ["J.util.ColorUtil"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.height = 0;
 this.ascent = 0;
@@ -19,7 +19,7 @@ J.g3d.TextRenderer.htFont3dAntialias.clear ();
 c$.plot = $_M(c$, "plot", 
 function (x, y, z, argb, bgargb, text, font3d, g3d, jmolRenderer, antialias) {
 if (text.length == 0) return 0;
-if (text.indexOf ("<su") >= 0) return J.g3d.TextRenderer.plotByCharacter (x, y, z, argb, bgargb, text, font3d, g3d, jmolRenderer, antialias);
+if (text.indexOf ("<su") >= 0 || text.indexOf ("<color") >= 0) return J.g3d.TextRenderer.plotByCharacter (x, y, z, argb, bgargb, text, font3d, g3d, jmolRenderer, antialias);
 var offset = font3d.getAscent ();
 y -= offset;
 var text3d = J.g3d.TextRenderer.getPlotText3D (x, y, g3d, text, font3d, antialias);
@@ -36,9 +36,21 @@ var w = 0;
 var len = text.length;
 var suboffset = Math.round (font3d.getHeight () * 0.25);
 var supoffset = -Math.round (font3d.getHeight () * 0.3);
+var argb0 = 0;
 for (var i = 0; i < len; i++) {
 if (text.charAt (i) == '<') {
-if (i + 4 < len && text.substring (i, i + 5).equals ("<sub>")) {
+if (i + 5 < len && text.substring (i, i + 6).equals ("<color")) {
+argb0 = argb;
+var pt = text.indexOf (">", i);
+if (pt < 0) continue;
+argb = J.util.ColorUtil.getArgbFromString (text.substring (i + 7, pt).trim ());
+i = pt;
+continue;
+}if (i + 7 < len && text.substring (i, i + 8).equals ("</color>")) {
+i += 7;
+argb = argb0;
+continue;
+}if (i + 4 < len && text.substring (i, i + 5).equals ("<sub>")) {
 i += 4;
 y += suboffset;
 continue;

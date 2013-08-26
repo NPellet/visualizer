@@ -35,9 +35,9 @@ for (var i = 1; i <= this.numSet; i++) if (this.countPlusIndices[i] == atomIndex
 
 return 0;
 }, "~N");
-$_M(c$, "setCount", 
+Clazz.overrideMethod (c$, "setCount", 
 function (count) {
-Clazz.superCall (this, J.modelset.MeasurementPending, "setCount", [count]);
+this.setCountM (count);
 this.numSet = count;
 }, "~N");
 $_M(c$, "addPoint", 

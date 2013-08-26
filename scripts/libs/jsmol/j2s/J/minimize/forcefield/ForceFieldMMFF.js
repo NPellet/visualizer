@@ -37,7 +37,7 @@ var m = this.minimizer;
 if (!this.setArrays (m.atoms, m.bsAtoms, m.bonds, m.rawBondCount, false, false)) return false;
 this.setModelFields ();
 this.fixTypes ();
-this.calc =  new J.minimize.forcefield.CalculationsMMFF (this, J.minimize.forcefield.ForceFieldMMFF.ffParams, this.minAtoms, this.minBonds, this.minAngles, this.minTorsions, this.minimizer.constraints);
+this.calc =  new J.minimize.forcefield.CalculationsMMFF (this, J.minimize.forcefield.ForceFieldMMFF.ffParams, this.minAtoms, this.minBonds, this.minAngles, this.minTorsions, this.minPositions, this.minimizer.constraints);
 this.calc.setLoggingEnabled (true);
 return this.calc.setupCalculations ();
 }, "J.util.BS,~N");
@@ -77,7 +77,7 @@ $_M(c$, "getMmffParameters",
 ($fz = function (fileName, data, dataType) {
 var line = null;
 var value = null;
-if (J.util.Logger.debugging) J.util.Logger.info ("reading data from " + fileName);
+if (J.util.Logger.debugging) J.util.Logger.debug ("reading data from " + fileName);
 try {
 var br = this.getBufferedReader (fileName);
 while ((line = br.readLine ()) != null && line.length < 5 || !line.startsWith ("*")) continue;
@@ -194,7 +194,7 @@ break;
 }
 var key = J.minimize.MinObject.getKey (type, a1, a2, a3, a4);
 data.put (key, value);
-if (J.util.Logger.debugging) J.util.Logger.info (J.minimize.MinObject.decodeKey (key) + " " + (Clazz.instanceOf (value, Float) ? value : J.util.Escape.eAD (value)));
+if (J.util.Logger.debugging) J.util.Logger.debug (J.minimize.MinObject.decodeKey (key) + " " + (Clazz.instanceOf (value, Float) ? value : J.util.Escape.eAD (value)));
 }
 br.close ();
 } catch (e) {
@@ -493,7 +493,7 @@ var j = types[bonds[0].getOtherAtom (atoms[i]).index];
 if (j != 0) bsDone.set (i);
 types[i] = -J.minimize.forcefield.ForceFieldMMFF.atomTypes.get (j).hType;
 }}
-if (J.util.Logger.debugging) for (var i = bsConnected.nextSetBit (0); i >= 0; i = bsConnected.nextSetBit (i + 1)) J.util.Logger.info ("atom " + atoms[i] + "\ttype " + (types[i] < 0 ? "" + -types[i] : (J.minimize.forcefield.ForceFieldMMFF.atomTypes.get (types[i]).mmType + "\t" + J.minimize.forcefield.ForceFieldMMFF.atomTypes.get (types[i]).smartsCode + "\t" + J.minimize.forcefield.ForceFieldMMFF.atomTypes.get (types[i]).descr)));
+if (J.util.Logger.debugging) for (var i = bsConnected.nextSetBit (0); i >= 0; i = bsConnected.nextSetBit (i + 1)) J.util.Logger.debug ("atom " + atoms[i] + "\ttype " + (types[i] < 0 ? "" + -types[i] : (J.minimize.forcefield.ForceFieldMMFF.atomTypes.get (types[i]).mmType + "\t" + J.minimize.forcefield.ForceFieldMMFF.atomTypes.get (types[i]).smartsCode + "\t" + J.minimize.forcefield.ForceFieldMMFF.atomTypes.get (types[i]).descr)));
 
 if (!allowUnknowns && bsDone.cardinality () != bsConnected.cardinality ()) return null;
 return types;

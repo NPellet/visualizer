@@ -43,7 +43,7 @@ return J.util.Normix.getNormix (v.x, v.y, v.z, 3, bsTemp);
 }, "J.util.V3,J.util.BS");
 c$.get2SidedNormix = $_M(c$, "get2SidedNormix", 
 function (v, bsTemp) {
-return ~J.util.Normix.getNormix (v.x, v.y, v.z, 3, bsTemp);
+return ~J.util.Normix.getNormixV (v, bsTemp);
 }, "J.util.V3,J.util.BS");
 c$.getNormix = $_M(c$, "getNormix", 
 ($fz = function (x, y, z, geodesicLevel, bsConsidered) {

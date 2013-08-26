@@ -252,7 +252,7 @@
 			+ (Info.addSelectionOptions ? Jmol._getGrabberOptions(applet, caption) : "");
 		if (Jmol._debugAlert)
 			alert(t);
-		applet._code = Jmol._documentWrite(t, applet._id);
+		applet._code = Jmol._documentWrite(t);
 	}
 
   var japroto = Jmol._Applet.prototype;
@@ -616,7 +616,7 @@
 			+ (Info.addSelectionOptions ? Jmol._getGrabberOptions(this, caption) : "");
 		if (Jmol._debugAlert)
 			alert(t);
-		this._code = Jmol._documentWrite(t, id);
+		this._code = Jmol._documentWrite(t);
 		this._ready = false;
 		if (Jmol._document)
 			this._readyCallback(id, null, this._ready = true, null);

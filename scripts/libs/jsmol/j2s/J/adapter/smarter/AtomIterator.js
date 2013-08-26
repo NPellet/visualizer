@@ -19,7 +19,7 @@ this.iatom = 0;
 Clazz.overrideMethod (c$, "hasNext", 
 function () {
 if (this.iatom == this.atomCount) return false;
-while ((this.atom = this.atoms[this.iatom++]) == null || (this.bsAtoms != null && !this.bsAtoms.get (this.atom.atomIndex))) if (this.iatom == this.atomCount) return false;
+while ((this.atom = this.atoms[this.iatom++]) == null || (this.bsAtoms != null && !this.bsAtoms.get (this.atom.index))) if (this.iatom == this.atomCount) return false;
 
 this.atoms[this.iatom - 1] = null;
 return true;
@@ -38,7 +38,7 @@ return this.atom.atomSite + 1;
 });
 Clazz.overrideMethod (c$, "getUniqueID", 
 function () {
-return Integer.$valueOf (this.atom.atomIndex);
+return Integer.$valueOf (this.atom.index);
 });
 Clazz.overrideMethod (c$, "getElementNumber", 
 function () {
@@ -56,9 +56,9 @@ Clazz.overrideMethod (c$, "getPartialCharge",
 function () {
 return this.atom.partialCharge;
 });
-Clazz.overrideMethod (c$, "getEllipsoid", 
+Clazz.overrideMethod (c$, "getTensors", 
 function () {
-return this.atom.ellipsoid;
+return this.atom.tensors;
 });
 Clazz.overrideMethod (c$, "getRadius", 
 function () {
@@ -106,7 +106,7 @@ return this.atom.atomSerial;
 });
 Clazz.overrideMethod (c$, "getChainID", 
 function () {
-return J.api.JmolAdapter.canonizeChainID (this.atom.chainID);
+return this.atom.chainID;
 });
 Clazz.overrideMethod (c$, "getAlternateLocationID", 
 function () {

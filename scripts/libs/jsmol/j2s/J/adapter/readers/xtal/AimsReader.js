@@ -30,12 +30,12 @@ this.readMultipole (tokens);
 return true;
 }return true;
 });
-$_M(c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeReader", 
 function () {
 this.doApplySymmetry = this.globalDoApplySymmetry;
 if (this.nLatticeVectors == 1 || this.nLatticeVectors == 2) {
 J.util.Logger.warn ("ignoring translation symmetry for more or less than 3 dimensions(which is currently neither supported by FHI-aims");
-}Clazz.superCall (this, J.adapter.readers.xtal.AimsReader, "finalizeReader", []);
+}this.finalizeReaderASCR ();
 });
 $_M(c$, "readLatticeVector", 
 ($fz = function (tokens) {

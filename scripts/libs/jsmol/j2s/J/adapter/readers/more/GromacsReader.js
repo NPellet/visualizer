@@ -44,7 +44,7 @@ var vx = this.parseFloatRange (this.line, 44, 52) * 10;
 var vy = this.parseFloatRange (this.line, 52, 60) * 10;
 var vz = this.parseFloatRange (this.line, 60, 68) * 10;
 if (Float.isNaN (vx) || Float.isNaN (vy) || Float.isNaN (vz)) continue;
-this.atomSetCollection.addVibrationVector (atom.atomIndex, vx, vy, vz);
+this.atomSetCollection.addVibrationVector (atom.index, vx, vy, vz);
 }
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "setAtomName", 

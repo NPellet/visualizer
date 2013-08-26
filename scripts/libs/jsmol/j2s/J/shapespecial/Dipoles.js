@@ -34,7 +34,6 @@ this.tempDipole.modelIndex = -1;
 this.dipoleValue = 0;
 this.calculatedDipole = null;
 this.isUserValue = this.isBond = this.iHaveTwoEnds = false;
-if (this.currentDipole != null) J.util.Logger.debug ("current dipole: " + this.currentDipole.thisID);
 return;
 }if ("calculate" === propertyName) {
 this.calculatedDipole = this.viewer.calculateMolecularDipole ();
@@ -49,7 +48,6 @@ if (thisID != null) this.wildID = thisID.toUpperCase ();
 return;
 }this.currentDipole = this.findDipole (thisID);
 if (this.currentDipole == null) this.currentDipole = this.allocDipole (thisID, "");
-J.util.Logger.debug ("current dipole now " + this.currentDipole.thisID);
 this.tempDipole = this.currentDipole;
 if (thisID.equals ("molecular")) {
 var v = this.calculatedDipole;
@@ -112,7 +110,7 @@ this.setColixDipole (this.colix, 1023, bs);
 this.setProperty (1766856708, false, 0, 0);
 }return;
 }if ("translucency" === propertyName) {
-this.setProperty (1073742180, this.isBond, (value.equals ("translucent") ? 1 : 0), 0);
+this.setProperty (603979967, this.isBond, (value.equals ("translucent") ? 1 : 0), 0);
 return;
 }if ("clear" === propertyName) {
 this.currentDipole = null;
@@ -215,7 +213,7 @@ return;
 case 1766856708:
 dipole.colix = this.colix;
 return;
-case 1073742180:
+case 603979967:
 dipole.setTranslucent (iValue == 1, this.translucentLevel);
 return;
 }

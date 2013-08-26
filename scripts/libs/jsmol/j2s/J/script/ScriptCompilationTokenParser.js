@@ -213,7 +213,7 @@ return this.addTokenToPostfixToken (J.script.T.tv (tok, intValue, value));
 $_M(c$, "addTokenToPostfixToken", 
 ($fz = function (token) {
 if (token == null) return false;
-if (this.logMessages) J.util.Logger.info ("addTokenToPostfix" + token);
+if (this.logMessages) J.util.Logger.debug ("addTokenToPostfix" + token);
 this.ltokenPostfix.addLast (token);
 this.lastToken = token;
 return true;
@@ -289,7 +289,8 @@ return this.addNextToken ();
 case 3:
 return this.addTokenToPostfixInt (1048611, this.fixModelSpec (this.getToken ()), this.theValue);
 case 1095761925:
-return this.clauseCell ();
+case 1095761926:
+return this.clauseCell (tok);
 case 135266310:
 return this.clauseConnected ();
 case 135267335:
@@ -478,7 +479,7 @@ case 3145760:
 case 1095761938:
 case 1641025539:
 case 4:
-case 1649412112:
+case 1649412120:
 key = this.theValue;
 break;
 case 1073741824:
@@ -520,7 +521,7 @@ this.addTokenToPostfix (4, "$" + this.theValue);
 done = true;
 break;
 case 1087373318:
-case 1649412112:
+case 1649412120:
 this.getToken ();
 this.addTokenToPostfix (4, J.script.T.nameOf (tok));
 break;
@@ -568,7 +569,8 @@ if (this.addNextTokenIf (2)) if (!this.addNextTokenIf (269484080)) break;
 if (this.addNextTokenIf (2)) if (!this.addNextTokenIf (269484080)) break;
 if (this.addNextTokenIf (3)) if (!this.addNextTokenIf (269484080)) break;
 if (this.addNextTokenIf (3)) if (!this.addNextTokenIf (269484080)) break;
-var strOrder = this.getToken ().value;
+var o = this.getToken ().value;
+var strOrder = (Clazz.instanceOf (o, String) ? o : " ");
 var intType = J.script.ScriptEvaluator.getBondOrderFromString (strOrder);
 if (intType == 131071) {
 this.returnToken ();
@@ -633,7 +635,7 @@ default:
 if (!J.script.T.tokAttr (this.theToken.tok, 1073741824)) return this.error (13);
 }
 this.addTokenToPostfixInt (tokenComparator.tok, tokenAtomProperty.tok, tokenComparator.value + (isNegative ? " -" : ""));
-if (tokenAtomProperty.tok == 1716520973) this.addTokenToPostfixToken (tokenAtomProperty);
+if (tokenAtomProperty.tok == 1716520985) this.addTokenToPostfixToken (tokenAtomProperty);
 if (this.isToken (1048586)) {
 this.returnToken ();
 return this.clausePrimitive ();
@@ -642,7 +644,7 @@ if (this.theToken.tok == 1060866) return this.clauseDefine (true, false);
 return true;
 }, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "clauseCell", 
-($fz = function () {
+($fz = function (tok) {
 var cell =  new J.util.P3 ();
 this.tokenNext ();
 if (!this.tokenNextTok (269484436)) return this.errorStr (15, "=");
@@ -652,7 +654,7 @@ var nnn = this.theToken.intValue;
 cell.x = Clazz.doubleToInt (nnn / 100) - 4;
 cell.y = Clazz.doubleToInt ((nnn % 100) / 10) - 4;
 cell.z = (nnn % 10) - 4;
-return this.addTokenToPostfix (1095761925, cell);
+return this.addTokenToPostfix (tok, cell);
 }if (!this.isToken (1048586) || !this.getNumericalToken ()) return this.error (3);
 cell.x = this.floatValue ();
 if (this.tokPeekIs (269484080)) this.tokenNext ();
@@ -661,8 +663,8 @@ cell.y = this.floatValue ();
 if (this.tokPeekIs (269484080)) this.tokenNext ();
 if (!this.getNumericalToken () || !this.tokenNextTok (1048590)) return this.error (3);
 cell.z = this.floatValue ();
-return this.addTokenToPostfix (1095761925, cell);
-}, $fz.isPrivate = true, $fz));
+return this.addTokenToPostfix (tok, cell);
+}, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "clauseDefine", 
 ($fz = function (haveToken, forceString) {
 if (!haveToken) {
@@ -814,17 +816,16 @@ return (this.getToken () != null);
 case 2:
 this.getToken ();
 var val = this.theToken.intValue;
-if (val < 0 || val > 9) return this.error (8);
-chain = String.fromCharCode (48 + val);
+if (val < 0 || val > 9999) return this.error (8);
+chain = this.viewer.getChainID ("" + val);
 break;
 default:
 var strChain = "" + this.getToken ().value;
-if (strChain.length != 1) return this.error (8);
-chain = strChain.charAt (0);
-if (chain == '?') return true;
+if (strChain.equals ("?")) return true;
+chain = this.viewer.getChainID (strChain);
 break;
 }
-return this.generateResidueSpecCode (J.script.T.tv (1048609, chain.charCodeAt (0), "spec_chain"));
+return this.generateResidueSpecCode (J.script.T.tv (1048609, chain, "spec_chain"));
 }, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "isSpecTerminator", 
 ($fz = function (tok) {

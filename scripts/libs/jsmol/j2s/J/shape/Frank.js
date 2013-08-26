@@ -41,7 +41,7 @@ return true;
 }, "~N,~N,J.util.BS");
 $_M(c$, "calcMetrics", 
 function () {
-if (this.viewer.isJS) this.frankString = "JSmol";
+if (this.viewer.$isJS) this.frankString = "JSmol";
  else if (this.viewer.isSignedApplet ()) this.frankString = "Jmol_S";
 if (this.font3d === this.currentMetricsFont3d) return;
 this.currentMetricsFont3d = this.font3d;

@@ -53,11 +53,15 @@ throw e;
 }
 }}
 }, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeReader", 
+function () {
+this.finalizeReaderMR ();
+});
+$_M(c$, "finalizeReaderMR", 
 function () {
 if (this.is2D) this.set2D ();
 this.isTrajectory = false;
-Clazz.superCall (this, J.adapter.readers.molxyz.MolReader, "finalizeReader", []);
+this.finalizeReaderASCR ();
 });
 $_M(c$, "processMolSdHeader", 
 function () {

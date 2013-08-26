@@ -9,9 +9,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.PolygonFileReader, []);
 });
-$_M(c$, "init2", 
+$_M(c$, "init2PFR", 
 function (sg, br) {
-Clazz.superCall (this, J.jvxl.readers.PolygonFileReader, "init2", [sg, br]);
+this.init2SFR (sg, br);
 this.jvxlFileHeaderBuffer =  new J.util.SB ();
 this.jvxlFileHeaderBuffer.append ("#created ").append ("" +  new java.util.Date ()).append ("\n");
 this.vertexDataOnly = true;

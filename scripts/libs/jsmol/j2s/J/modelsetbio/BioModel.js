@@ -11,23 +11,23 @@ Clazz.superConstructor (this, J.modelsetbio.BioModel, [modelSet, modelIndex, tra
 this.isBioModel = true;
 this.clearBioPolymers ();
 }, "J.modelset.ModelSet,~N,~N,~S,java.util.Properties,java.util.Map");
-$_M(c$, "freeze", 
+Clazz.overrideMethod (c$, "freeze", 
 function () {
-Clazz.superCall (this, J.modelsetbio.BioModel, "freeze", []);
+this.freezeM ();
 this.bioPolymers = J.util.ArrayUtil.arrayCopyObject (this.bioPolymers, this.bioPolymerCount);
 });
-Clazz.overrideMethod (c$, "addSecondaryStructure", 
+$_M(c$, "addSecondaryStructure", 
 function (type, structureID, serialID, strandCount, startChainID, startSeqcode, endChainID, endSeqcode, istart, iend, bsAssigned) {
-for (var i = this.bioPolymerCount; --i >= 0; ) this.bioPolymers[i].addStructure (type, structureID, serialID, strandCount, startChainID, startSeqcode, endChainID, endSeqcode, istart, iend, bsAssigned);
+for (var i = this.bioPolymerCount; --i >= 0; ) if (Clazz.instanceOf (this.bioPolymers[i], J.modelsetbio.AlphaPolymer)) (this.bioPolymers[i]).addStructure (type, structureID, serialID, strandCount, startChainID, startSeqcode, endChainID, endSeqcode, istart, iend, bsAssigned);
 
-}, "J.constant.EnumStructure,~S,~N,~N,~S,~N,~S,~N,~N,~N,J.util.BS");
+}, "J.constant.EnumStructure,~S,~N,~N,~N,~N,~N,~N,~N,~N,J.util.BS");
 Clazz.overrideMethod (c$, "calculateStructures", 
 function (asDSSP, doReport, dsspIgnoreHydrogen, setStructure, includeAlpha) {
 if (this.bioPolymerCount == 0 || !setStructure && !asDSSP) return "";
 this.modelSet.proteinStructureTainted = this.structureTainted = true;
 if (setStructure) for (var i = this.bioPolymerCount; --i >= 0; ) if (!asDSSP || this.bioPolymers[i].getGroups ()[0].getNitrogenAtom () != null) this.bioPolymers[i].clearStructures ();
 
-if (!asDSSP || includeAlpha) for (var i = this.bioPolymerCount; --i >= 0; ) this.bioPolymers[i].calculateStructures (includeAlpha);
+if (!asDSSP || includeAlpha) for (var i = this.bioPolymerCount; --i >= 0; ) if (Clazz.instanceOf (this.bioPolymers[i], J.modelsetbio.AlphaPolymer)) (this.bioPolymers[i]).calculateStructures (includeAlpha);
 
 return (asDSSP ? this.bioPolymers[0].calculateDssp (this.bioPolymers, this.bioPolymerCount, null, doReport, dsspIgnoreHydrogen, setStructure) : "");
 }, "~B,~B,~B,~B,~B");
@@ -77,9 +77,9 @@ bs2.or (this.bsAtoms);
 bs2.andNot (bs);
 if (bs2.nextSetBit (0) >= 0) sb.append ("select " + J.util.Escape.eBS (bs2) + " & !connected;stars 0.5;");
 }}, "J.util.SB,~N");
-$_M(c$, "fixIndices", 
+Clazz.overrideMethod (c$, "fixIndices", 
 function (modelIndex, nAtomsDeleted, bsDeleted) {
-Clazz.superCall (this, J.modelsetbio.BioModel, "fixIndices", [modelIndex, nAtomsDeleted, bsDeleted]);
+this.fixIndicesM (modelIndex, nAtomsDeleted, bsDeleted);
 for (var i = 0; i < this.bioPolymerCount; i++) this.bioPolymers[i].recalculateLeadMidpointsAndWingVectors ();
 
 }, "~N,~N,J.util.BS");
@@ -166,11 +166,11 @@ while ((j = sequence.indexOf (specInfo, ++j)) >= 0) this.bioPolymers[ip].getPoly
 }, "~S,J.util.BS,J.util.BS");
 Clazz.overrideMethod (c$, "selectSeqcodeRange", 
 function (seqcodeA, seqcodeB, chainID, bs, caseSensitive) {
-var ch;
-for (var i = this.chainCount; --i >= 0; ) if (chainID == (ch = this.chains[i].chainID) || chainID == '\t' || !caseSensitive && chainID == Character.toUpperCase (ch)) for (var index = 0; index >= 0; ) index = this.chains[i].selectSeqcodeRange (index, seqcodeA, seqcodeB, bs);
+var id;
+for (var i = this.chainCount; --i >= 0; ) if (chainID == -1 || chainID == (id = this.chains[i].chainID) || !caseSensitive && chainID == Character.toUpperCase (id)) for (var index = 0; index >= 0; ) index = this.chains[i].selectSeqcodeRange (index, seqcodeA, seqcodeB, bs);
 
 
-}, "~N,~N,~S,J.util.BS,~B");
+}, "~N,~N,~N,J.util.BS,~B");
 Clazz.overrideMethod (c$, "getRasmolHydrogenBonds", 
 function (bsA, bsB, vHBonds, nucleicOnly, nMax, dsspIgnoreHydrogens, bsHBonds) {
 var doAdd = (vHBonds == null);
@@ -270,7 +270,7 @@ modelInfo.put ("modelIndex", Integer.$valueOf (this.modelIndex));
 modelInfo.put ("polymers", info);
 modelVector.addLast (modelInfo);
 }}, "J.util.BS,java.util.Map,J.util.JmolList");
-$_M(c$, "getChimeInfo", 
+Clazz.overrideMethod (c$, "getChimeInfo", 
 function (sb, nHetero) {
 var n = 0;
 var models = this.modelSet.models;
@@ -293,7 +293,7 @@ sb.append ("\nNumber of Groups .... " + n);
 if (nHetero > 0) sb.append (" (" + nHetero + ")");
 for (var i = atomCount; --i >= 0; ) if (atoms[i].isHetero ()) nHetero++;
 
-Clazz.superCall (this, J.modelsetbio.BioModel, "getChimeInfo", [sb, nHetero]);
+this.getChimeInfoM (sb, nHetero);
 var nH = 0;
 var nS = 0;
 var nT = 0;
@@ -428,14 +428,13 @@ if (showMode) sb.append (" strucno= ").appendI (lastId);
 sb.append ("\n");
 }}
 bs = null;
-}if (id == 0 || bsAtoms != null && needPhiPsi && (Float.isNaN (atoms[i].getGroupParameter (1112539143)) || Float.isNaN (atoms[i].getGroupParameter (1112539144)))) continue;
-}var ch = atoms[i].getChainID ();
-if (ch.charCodeAt (0) == 0) ch = ' ';
+}if (id == 0 || bsAtoms != null && needPhiPsi && (Float.isNaN (atoms[i].getGroupParameter (1112539145)) || Float.isNaN (atoms[i].getGroupParameter (1112539146)))) continue;
+}var ch = atoms[i].getChainIDStr ();
 if (bs == null) {
 bs =  new J.util.BS ();
 res1 = atoms[i].getResno ();
 group1 = atoms[i].getGroup3 (false);
-chain1 = "" + ch;
+chain1 = ch;
 }type = atoms[i].getProteinStructureType ();
 subtype = atoms[i].getProteinStructureSubType ();
 sid = atoms[i].getProteinStructureTag ();
@@ -443,7 +442,7 @@ bs.set (i);
 lastId = id;
 res2 = atoms[i].getResno ();
 group2 = atoms[i].getGroup3 (false);
-chain2 = "" + ch;
+chain2 = ch;
 iLastAtom = i;
 }
 if (n > 0) cmd.append ("\n");

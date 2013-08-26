@@ -54,12 +54,12 @@ while ((pt1 = this.line.indexOf ('(')) >= 0 && (pt2 = this.line.indexOf ('(', pt
 
 this.line = this.line.trim ();
 }, $fz.isPrivate = true, $fz));
-$_M(c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeReader", 
 function () {
 var firstLine = 0;
 for (var i = firstLine; i < this.lineBuffer.size (); i++) if ((this.tokens = this.lineBuffer.get (i)).length > 0) this.getAtom ();
 
-Clazz.superCall (this, J.adapter.readers.simple.ZMatrixReader, "finalizeReader", []);
+this.finalizeReaderASCR ();
 });
 $_M(c$, "getSymbolic", 
 ($fz = function () {
@@ -136,7 +136,7 @@ J.util.Logger.info ("#dummy atom ignored: atom " + this.atomCount + " - " + atom
 this.atomSetCollection.addAtom (atom);
 this.setAtomCoord (atom);
 J.util.Logger.info (atom.atomName + " " + atom.x + " " + atom.y + " " + atom.z);
-if (this.isJmolZformat && bondOrder > 0) this.atomSetCollection.addBond ( new J.adapter.smarter.Bond (atom.atomIndex, this.vAtoms.get (ia).atomIndex, bondOrder));
+if (this.isJmolZformat && bondOrder > 0) this.atomSetCollection.addBond ( new J.adapter.smarter.Bond (atom.index, this.vAtoms.get (ia).index, bondOrder));
 }}, $fz.isPrivate = true, $fz));
 $_M(c$, "getSymbolic", 
 ($fz = function (key) {

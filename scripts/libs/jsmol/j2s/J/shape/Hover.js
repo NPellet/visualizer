@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.TextShape"], "J.shape.Hover", ["J.shape.Text", "J.util.ArrayUtil", "$.C"], function () {
+Clazz.load (["J.shape.TextShape"], "J.shape.Hover", ["J.modelset.Text", "J.util.ArrayUtil", "$.C"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.hoverText = null;
 this.atomIndex = -1;
@@ -17,7 +17,7 @@ this.isHover = true;
 var font3d = this.gdata.getFont3DFSS ("SansSerif", "Plain", 12);
 var bgcolix = J.util.C.getColixS ("#FFFFC3");
 var colix = 4;
-this.currentObject = this.hoverText = J.shape.Text.newLabel (this.gdata, font3d, null, colix, bgcolix, 1, 0, null);
+this.currentObject = this.hoverText = J.modelset.Text.newLabel (this.gdata, font3d, null, colix, bgcolix, 1, 0, null);
 this.hoverText.setAdjustForWindow (true);
 });
 Clazz.overrideMethod (c$, "setProperty", 

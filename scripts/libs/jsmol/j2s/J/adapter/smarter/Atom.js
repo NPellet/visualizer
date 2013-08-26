@@ -1,8 +1,8 @@
 Clazz.declarePackage ("J.adapter.smarter");
-Clazz.load (["J.util.P3"], "J.adapter.smarter.Atom", ["java.lang.Float"], function () {
+Clazz.load (["J.util.P3"], "J.adapter.smarter.Atom", ["java.lang.Float", "J.util.JmolList"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomSetIndex = 0;
-this.atomIndex = 0;
+this.index = 0;
 this.bsSymmetry = null;
 this.atomSite = 0;
 this.elementSymbol = null;
@@ -18,22 +18,23 @@ this.occupancy = 100;
 this.radius = NaN;
 this.isHetero = false;
 this.atomSerial = -2147483648;
-this.chainID = '\0';
+this.chainID = 0;
 this.alternateLocationID = '\0';
 this.group3 = null;
 this.sequenceNumber = -2147483648;
 this.insertionCode = '\0';
 this.anisoBorU = null;
-this.ellipsoid = null;
+this.tensors = null;
 this.ignoreSymmetry = false;
 Clazz.instantialize (this, arguments);
 }, J.adapter.smarter, "Atom", J.util.P3, Cloneable);
-$_M(c$, "setEllipsoid", 
-function (e) {
-if (e == null) return;
-if (this.ellipsoid != null && this.ellipsoid.length == 3) this.ellipsoid[0] = e;
- else this.ellipsoid = [e];
-}, "J.util.Quadric");
+$_M(c$, "addTensor", 
+function (tensor, type) {
+if (tensor == null) return;
+if (this.tensors == null) this.tensors =  new J.util.JmolList ();
+this.tensors.addLast (tensor);
+if (type != null) tensor.setType (type);
+}, "J.util.Tensor,~S");
 Clazz.overrideConstructor (c$, 
 function () {
 this.set (NaN, NaN, NaN);

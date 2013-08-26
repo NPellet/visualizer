@@ -2,18 +2,18 @@ Clazz.declarePackage ("J.thread");
 Clazz.load (["J.thread.JmolThread"], "J.thread.AnimationThread", ["J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.animationManager = null;
-this.framePointer = 0;
+this.framePointer1 = 0;
 this.framePointer2 = 0;
 this.intThread = 0;
 this.isFirst = false;
 Clazz.instantialize (this, arguments);
 }, J.thread, "AnimationThread", J.thread.JmolThread);
 Clazz.makeConstructor (c$, 
-function (animationManager, viewer, framePointer, framePointer2, intAnimThread) {
+function (animationManager, viewer, framePointer1, framePointer2, intAnimThread) {
 Clazz.superConstructor (this, J.thread.AnimationThread);
 this.setViewer (viewer, "AnimationThread");
 this.animationManager = animationManager;
-this.framePointer = framePointer;
+this.framePointer1 = framePointer1;
 this.framePointer2 = framePointer2;
 this.intThread = intAnimThread;
 viewer.startHoverWatcher (false);
@@ -22,7 +22,7 @@ $_M(c$, "interrupt",
 function () {
 if (this.stopped) return;
 this.stopped = true;
-J.util.Logger.debug ("animation thread interrupted!");
+if (J.util.Logger.debugging) J.util.Logger.debug ("animation thread interrupted!");
 try {
 this.animationManager.setAnimationOn (false);
 } catch (e) {
@@ -35,10 +35,11 @@ Clazz.superCall (this, J.thread.AnimationThread, "interrupt", []);
 });
 Clazz.overrideMethod (c$, "run1", 
 function (mode) {
-while (true) switch (mode) {
+while (true) {
+switch (mode) {
 case -1:
 if (J.util.Logger.debugging) J.util.Logger.debug ("animation thread " + this.intThread + " running");
-this.viewer.requestRepaintAndWait ();
+this.viewer.requestRepaintAndWait ("animation thread");
 this.viewer.startHoverWatcher (false);
 this.isFirst = true;
 mode = 0;
@@ -47,7 +48,7 @@ case 0:
 if (this.checkInterrupted () || !this.animationManager.animationOn) {
 mode = -2;
 break;
-}if (this.animationManager.currentFrameIs (this.framePointer)) {
+}if (this.animationManager.currentFrameIs (this.framePointer1)) {
 this.targetTime += this.animationManager.firstFrameDelayMs;
 this.sleepTime = (this.targetTime - (System.currentTimeMillis () - this.startTime));
 if (!this.runSleep (this.sleepTime, 1)) return;
@@ -65,7 +66,7 @@ if (!this.isFirst && this.animationManager.currentIsLast () && !this.animationMa
 mode = -2;
 break;
 }this.isFirst = false;
-this.targetTime += Clazz.floatToInt ((1000 / this.animationManager.animationFps) + this.viewer.getFrameDelayMs (this.animationManager.getCurrentFrame ()));
+this.targetTime += Clazz.floatToInt ((1000 / this.animationManager.animationFps) + this.viewer.getFrameDelayMs (this.animationManager.getCurrentModelIndex ()));
 mode = 3;
 break;
 case 3:
@@ -78,10 +79,10 @@ if (!this.runSleep (this.sleepTime, 0)) return;
 mode = 0;
 break;
 case -2:
-J.util.Logger.debug ("animation thread " + this.intThread + " exiting");
+if (J.util.Logger.debugging) J.util.Logger.debug ("animation thread " + this.intThread + " exiting");
 this.animationManager.stopThread (false);
 return;
 }
-
+}
 }, "~N");
 });

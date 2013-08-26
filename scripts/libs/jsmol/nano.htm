@@ -66,14 +66,15 @@ var useSignedApplet = true;//(document.location.href.indexOf("SIGNED") >= 0);
 var Info = {
 	width: 450,
 	height: 450,
-	script: script,
-	use: use,
+	script: "script data/rabe1.spt",
+	color: "black",
+	use: "HTML5",
 	jarPath: "java",
 	j2sPath: "j2s",
 	jarFile: (useSignedApplet ? "JmolAppletSigned.jar" : "JmolApplet.jar"),
 	isSigned: useSignedApplet,
 	addSelectionOptions: false,
-	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
+	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
 	readyFunction: null,
 	console: "jmol_infodiv",
 	disableInitialConsole: true,
@@ -156,12 +157,6 @@ $(document).ready(function(){
 		["set background black", "black"]
 		];
 
-		$("#leftpanel").html(
-		  Jmol.jmolLink(jmol,"script data/rabe.spt", "GO!")
-			+ "<br /><br /><br /><br /><br />    "
-			+ "<br />Background: "
-			+ Jmol.jmolRadioGroup(jmol, radios)
-		);
 
   // the HTML code is in jmol._code since we are using Jmol.setDocument(0)
   
@@ -169,62 +164,6 @@ $(document).ready(function(){
 
   	$("#middlepanel").html(Jmol.getAppletHtml(jmol));
 
-  // right panel
-  
-	Jmol.setButtonCss(null, "style='width:160px'");	
-	$("#rightpanel").html(
-		Jmol.jmolButton(jmol,"if (!molname) { molname = 'tylenol'};var x = prompt('Enter the name or identifier (SMILES, InChI, CAS) of a molecule',molname);if (!x) { quit }; molname = x; load @{'$' + molname} #alt:LOAD $??Enter a model name","Load MOL (NCI)")
-		+ "<br />"
-		+ Jmol.jmolButton(jmol,"if (!molname) { molname = 'tylenol'};var x = prompt('Enter the name of a compound',molname);if (!x) { quit }; molname = x; load @{':' + molname} #alt:LOAD :??Enter a model name","Load MOL (PubChem)")
-		+ (isApplet ? 
-		"<br />"
-		+ Jmol.jmolButton(jmol,(isApplet ? "minimize" : "set forceField UFF;minimize"),"Minimize (MMFF94)")
-		: "")
- 		+ (isApplet ?
-		"<br />"
-		+ Jmol.jmolButton(jmol,"load ? ","Load URL")
-		+ "<br />"
-		+ Jmol.jmolButton(jmol,"load ? ","Load FILE")
-		+ "<br />"
-		+ Jmol.jmolButton(jmol,"script ?.spt","Load SCRIPT")
-		: "")
-		+ "<br /><br />"
-		+ Jmol.jmolButton(jmol,"select *;if ($s1) {isosurface s1 delete} else {calculate partialcharge;isosurface s1 vdw map MEP translucent}","show/hide MEP")
-		+ "<br /><br />"
-		+ (isApplet ?
-		Jmol.jmolButton(jmol,"show NMR","Predict NMR")
-		+ "<br /><br />"
-		+ Jmol.jmolButton(jmol,"write FILE ?","Save FILE")
-		+ "<br />"
-		+ Jmol.jmolButton(jmol,"write PNGJ ?.png","Save PNG")
-		+ "<br /><br /><a href=simple2.htm?USE=HTML5>HTML5 version</a>"
-		: 
-		"<br /><br />"
-		+ Jmol.jmolButton(jmol,"write FILE ?","Save FILE")
-		+ "<br />"
-		+ Jmol.jmolButton(jmol,"write PNGJ ?.png","Save PNG")
-		+ "<br /><br /><a href=simple2.htm?USE=JAVA>JAVA version</a>"
-    + "<br /><br /><a href=javascript:Jmol.showInfo(jmol,true)>show info</a>"
-    )
-	);
-	
-	// lower panel:
-			
-	Jmol.setButtonCss(null,"style='width:120px'");
-	var s = "<br />"
-		+ Jmol.jmolButton(jmol,"wireframe -0.1 #alt:SETTING Line", "wireframe")
-		+ Jmol.jmolButton(jmol,"spacefill only;spacefill 23%;wireframe 0.15 #alt:SETTING Ball and Stick","ball&stick");
-		s += Jmol.jmolButton(jmol,"spacefill #alt:SETTING van der Waals Spheres", "spacefill");	
-		Jmol.setButtonCss(null,"style='width:100px'");
-	
-		s += "<br />"
-
-    s += Jmol.jmolButton(jmol,"console");
-		
-    s += Jmol.jmolCommandInput(jmol);
-    
-    
-	$("#lowerpanel").html(s);
 })
 
 //]]>
@@ -234,15 +173,35 @@ $(document).ready(function(){
 <body>
 <table border="1" style="margin-left:auto; margin-right:auto;">
 	<tr>
-		<td><div id="leftpanel"></div></td>
+		<td><div id="leftpanel" style="width:500px;overflow:auto;font-size:20px;height:500px; margin-left:20px; margin-right:20px; margin-top:20px; margin-bottom:20px">
+
+
+Carbon nanotubes (CNTs) can be thought of as a rolled sheet of graphene. The direction on this roll can change, it can either be straight across or on a twist. The diameter of nanotubes is also variable. Therefore, different nanotubes must be labeled in a way that conveys these differences. The convention to do is uses two numbers n and m. These numbers correspond to the number of <IMG SRC="a1 vect.png"WIDTH=25 HEIGHT=25> (red)and <IMG SRC="a2 vect.png"WIDTH=25 HEIGHT=25> (blue) used to define the unit square, which defines the circumference of the nanotube. This means that <IMG SRC="equation.png"WIDTH=125 HEIGHT=25>  
+<br />
+<br />
+To visualize this <a href="javascript:Jmol.script(jmol,'getN')">choose n </a> and <a href="javascript:Jmol.script(jmol,'getM()')">choose m</a> 
+and then show<a href="javascript:Jmol.script(jmol,'drawComponent1()')"><IMG SRC="bluea1.png"WIDTH=39 HEIGHT=23></a>
+
+ and 
+
+<a href="javascript:Jmol.script(jmol,'drawComponent2()')"><IMG SRC="bluea2.png"WIDTH=38 HEIGHT=25></a>.
+
+<br />
+
+ Next, let's see the resulting vector when we 
+<a href="javascript:Jmol.script(jmol,'drawVnm()')">add</a>
+the vectors. So as previously stated, this resulting vector is the circumference and the vertical axis of the tube will be vertical to this vector. To visualize this watch the tube <a href="javascript:Jmol.script(jmol,'makeTube(f)')">roll</a> and notice what happened to the circumference vector. 
+<br />
+<br />
+Now try with other values of n and m to see how the chirality and diameter of nanotubes can change. 
+
+
+
+
+</div></td>
 		<td><div id="middlepanel"></div></td>
-		<td><div id="rightpanel"></div></td>
 	</tr>
-	<tr>
-		<td>over here</td>
-		<td style="text-align:center"><div id="lowerpanel"></div></td>
-		<td>and here</td>
-	</tr>
+	
 </table>
 <div id="console"></div>
 </body>

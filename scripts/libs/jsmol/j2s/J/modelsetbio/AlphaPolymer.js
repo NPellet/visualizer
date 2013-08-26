@@ -14,18 +14,23 @@ $_M(c$, "getPdbData",
 function (viewer, ctype, qtype, mStep, derivType, bsAtoms, bsSelected, bothEnds, isDraw, addHeader, tokens, pdbATOM, pdbCONECT, bsWritten) {
 J.modelsetbio.BioPolymer.getPdbData (viewer, this, ctype, qtype, mStep, derivType, bsAtoms, bsSelected, bothEnds, isDraw, addHeader, tokens, pdbATOM, pdbCONECT, bsWritten);
 }, "J.viewer.Viewer,~S,~S,~N,~N,J.util.BS,J.util.BS,~B,~B,~B,~A,J.io.OutputStringBuilder,J.util.SB,J.util.BS");
-Clazz.overrideMethod (c$, "addStructure", 
+$_M(c$, "addStructure", 
 function (type, structureID, serialID, strandCount, startChainID, startSeqcode, endChainID, endSeqcode, istart, iend, bsAssigned) {
-if (istart >= 0 && (this.monomers[0].firstAtomIndex > iend || this.monomers[this.monomerCount - 1].lastAtomIndex < istart)) return;
-var indexStart;
+var i0 = -1;
+var i1 = -1;
+if (istart < iend) {
+if (this.monomers[0].firstAtomIndex > iend || this.monomers[this.monomerCount - 1].lastAtomIndex < istart) return;
+i0 = istart;
+i1 = iend;
+}var indexStart;
 var indexEnd;
-if ((indexStart = this.getIndex (startChainID, startSeqcode)) == -1 || (indexEnd = this.getIndex (endChainID, endSeqcode)) == -1) return;
+if ((indexStart = this.getIndex (startChainID, startSeqcode, i0, i1)) == -1 || (indexEnd = this.getIndex (endChainID, endSeqcode, i0, i1)) == -1) return;
 if (istart >= 0 && bsAssigned != null) {
 var pt = bsAssigned.nextSetBit (this.monomers[indexStart].firstAtomIndex);
 if (pt >= 0 && pt < this.monomers[indexEnd].lastAtomIndex) return;
 }this.addStructureProtected (type, structureID, serialID, strandCount, indexStart, indexEnd);
 if (istart >= 0) bsAssigned.setBits (istart, iend + 1);
-}, "J.constant.EnumStructure,~S,~N,~N,~S,~N,~S,~N,~N,~N,J.util.BS");
+}, "J.constant.EnumStructure,~S,~N,~N,~N,~N,~N,~N,~N,~N,J.util.BS");
 $_M(c$, "addStructureProtected", 
 function (type, structureID, serialID, strandCount, indexStart, indexEnd) {
 if (indexEnd < indexStart) {
@@ -172,7 +177,7 @@ bsNotAvailable.set (ipt);
 }}
 }
 }, $fz.isPrivate = true, $fz), "~N,~N,~N,J.util.JmolList,J.util.BS,J.util.BS,J.util.JmolList,J.util.BS,J.util.BS,J.util.BS,~N");
-Clazz.overrideMethod (c$, "calculateStructures", 
+$_M(c$, "calculateStructures", 
 function (alphaOnly) {
 if (this.monomerCount < 4) return;
 var angles = this.calculateAnglesInDegrees ();

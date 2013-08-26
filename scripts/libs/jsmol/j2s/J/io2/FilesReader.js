@@ -49,7 +49,7 @@ this.htParams.remove ("subFileList");
 if (name.indexOf ("|") >= 0) {
 subFileList = J.util.TextFormat.splitChars (name, "|");
 name = subFileList[0];
-}var t = this.fm.getUnzippedBufferedReaderOrErrorMessageFromName (name, null, true, isBinary, false, true);
+}var t = this.fm.getUnzippedBufferedReaderOrErrorMessageFromName (name, null, true, isBinary, false, true, this.htParams);
 if (Clazz.instanceOf (t, java.util.zip.ZipInputStream)) {
 if (subFileList != null) this.htParams.put ("subFileList", subFileList);
 var zipDirectory = this.fm.getZipDirectory (name, true);

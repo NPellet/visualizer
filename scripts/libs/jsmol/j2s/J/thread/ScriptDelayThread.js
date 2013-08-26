@@ -30,7 +30,7 @@ this.seconds = 0;
 this.seconds = Clazz.doubleToInt (this.millis / 1000);
 this.millis -= this.seconds * 1000;
 if (this.millis <= 0) this.millis = 1;
-}if (this.doPopPush) this.viewer.popHoldRepaintWhy ("delay INIT");
+}if (this.doPopPush) this.viewer.popHoldRepaint ("scriptDelayThread INIT");
 mode = 0;
 break;
 case 0:

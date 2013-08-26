@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.util.BS"], "J.viewer.ShapeManager", ["java.lang.Boolean", "java.util.Hashtable", "J.constant.EnumPalette", "$.EnumVdw", "J.util.Logger", "$.P3", "$.SB", "J.viewer.JC"], function () {
+Clazz.load (["J.util.BS"], "J.viewer.ShapeManager", ["java.lang.Boolean", "java.util.Hashtable", "J.constant.EnumPalette", "$.EnumVdw", "J.util.BSUtil", "$.Logger", "$.P3", "$.SB", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.gdata = null;
 this.modelSet = null;
@@ -269,7 +269,7 @@ this.bsRenderableAtoms.set (i);
 }, "J.util.BS,J.util.P3");
 $_M(c$, "transformAtoms", 
 function () {
-var vibrationVectors = this.modelSet.vibrationVectors;
+var vibrationVectors = this.modelSet.vibrations;
 var atoms = this.modelSet.atoms;
 for (var i = this.bsRenderableAtoms.nextSetBit (0); i >= 0; i = this.bsRenderableAtoms.nextSetBit (i + 1)) {
 var atom = atoms[i];
@@ -336,6 +336,33 @@ function () {
 if (this.shapes[24] == null) return;
 this.setShapePropertyBs (24, "remapInherited", null, null);
 });
+$_M(c$, "restrictSelected", 
+function (isBond, doInvert) {
+var bsSelected = J.util.BSUtil.copy (this.viewer.getSelectionSet (true));
+if (doInvert) {
+this.viewer.invertSelection ();
+var bsSubset = this.viewer.getSelectionSubset ();
+if (bsSubset != null) {
+bsSelected = J.util.BSUtil.copy (this.viewer.getSelectionSet (true));
+bsSelected.and (bsSubset);
+this.viewer.select (bsSelected, false, 0, true);
+J.util.BSUtil.invertInPlace (bsSelected, this.viewer.getAtomCount ());
+bsSelected.and (bsSubset);
+}}J.util.BSUtil.andNot (bsSelected, this.viewer.getDeletedAtoms ());
+var bondmode = this.viewer.getBoolean (603979812);
+if (!isBond) this.viewer.setBooleanProperty ("bondModeOr", true);
+this.setShapeSizeBs (1, 0, null, null);
+this.setShapePropertyBs (1, "type", Integer.$valueOf (32768), null);
+this.setShapeSizeBs (1, 0, null, null);
+this.setShapePropertyBs (1, "type", Integer.$valueOf (1023), null);
+var bs = this.viewer.getSelectionSet (false);
+for (var iShape = 21; --iShape >= 0; ) if (iShape != 6 && this.getShape (iShape) != null) this.setShapeSizeBs (iShape, 0, null, bs);
+
+if (this.getShape (21) != null) this.setShapePropertyBs (21, "delete", bs, null);
+this.setLabel (null, bs);
+if (!isBond) this.viewer.setBooleanProperty ("bondModeOr", bondmode);
+this.viewer.select (bsSelected, false, 0, true);
+}, "~B,~B");
 Clazz.defineStatics (c$,
 "hoverable", [30, 25, 24, 22, 35]);
 c$.clickableMax = c$.prototype.clickableMax = J.viewer.ShapeManager.hoverable.length - 1;

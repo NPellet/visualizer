@@ -12,7 +12,6 @@ this.colorCommand = null;
 this.lattice = null;
 this.visible = true;
 this.lighting = 1073741958;
-this.scale = 1;
 this.haveXyPoints = false;
 this.diameter = 0;
 this.width = 0;
@@ -20,6 +19,7 @@ this.ptCenter = null;
 this.linkedMesh = null;
 this.vertexColorMap = null;
 this.color = 0;
+this.useColix = true;
 this.unitCell = null;
 this.scale3d = 0;
 this.index = 0;
@@ -43,6 +43,7 @@ this.vTemp = null;
 this.colorDensity = false;
 this.cappingObject = null;
 this.slabbingObject = null;
+this.volumeRenderPointSize = 0.15;
 this.connections = null;
 this.recalcAltVertices = false;
 Clazz.instantialize (this, arguments);
@@ -71,10 +72,15 @@ return this;
 }, "~S,~N,~N");
 $_M(c$, "clear", 
 function (meshType) {
+this.clearMesh (meshType);
+}, "~S");
+$_M(c$, "clearMesh", 
+function (meshType) {
 this.altVertices = null;
 this.bsDisplay = null;
 this.bsSlabDisplay = null;
 this.bsSlabGhost = null;
+this.bsTransPolygons = null;
 this.cappingObject = null;
 this.colix = 23;
 this.colorDensity = false;
@@ -90,19 +96,21 @@ this.isTwoSided = false;
 this.lattice = null;
 this.mat4 = null;
 this.normixes = null;
-this.scale3d = 0;
 this.polygonIndexes = null;
-this.scale = 1;
+this.polygonTranslucencies = null;
+this.scale3d = 0;
 this.showContourLines = false;
 this.showPoints = false;
 this.showTriangles = false;
 this.slabbingObject = null;
 this.slabOptions = null;
+this.spanningVectors = null;
 this.title = null;
 this.unitCell = null;
+this.useColix = true;
 this.vertexCount0 = this.polygonCount0 = this.vertexCount = this.polygonCount = 0;
 this.vertices = null;
-this.spanningVectors = null;
+this.volumeRenderPointSize = 0.15;
 this.meshType = meshType;
 }, "~S");
 $_M(c$, "initialize", 
@@ -282,19 +290,6 @@ function () {
 var bs =  new J.util.BS ();
 if (this.polygonCount == 0 && this.bsSlabDisplay != null) J.util.BSUtil.copy2 (this.bsSlabDisplay, bs);
  else for (var i = this.polygonCount; --i >= 0; ) if (this.bsSlabDisplay == null || this.bsSlabDisplay.get (i)) {
-var vertexIndexes = this.polygonIndexes[i];
-if (vertexIndexes == null) continue;
-bs.set (vertexIndexes[0]);
-bs.set (vertexIndexes[1]);
-bs.set (vertexIndexes[2]);
-}
-return bs;
-});
-$_M(c$, "getVisibleGhostBitSet", 
-function () {
-var bs =  new J.util.BS ();
-if (this.polygonCount == 0 && this.bsSlabGhost != null) J.util.BSUtil.copy2 (this.bsSlabGhost, bs);
- else for (var i = this.polygonCount; --i >= 0; ) if (this.bsSlabGhost == null || this.bsSlabGhost.get (i)) {
 var vertexIndexes = this.polygonIndexes[i];
 if (vertexIndexes == null) continue;
 bs.set (vertexIndexes[0]);

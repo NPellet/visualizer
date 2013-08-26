@@ -29,7 +29,7 @@ break;
 default:
 f = NaN;
 }
-}}if (J.util.Logger.debugging) J.util.Logger.info (atoms[i].getInfo () + " " + f);
+}}if (J.util.Logger.debugging) J.util.Logger.debug (atoms[i].getInfo () + " " + f);
 potentials[i] = f;
 }
 }, "~A,~A,J.util.BS,J.util.BS,J.util.BS,~S");

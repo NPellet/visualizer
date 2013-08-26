@@ -30,9 +30,11 @@ var z = atom.screenZ;
 var d = Clazz.floatToInt (this.viewer.scaleToScreen (z, mad));
 d -= (d & 1) ^ 1;
 var r = Clazz.doubleToInt (d / 2);
-if (r < 3) return;
+if (r < 1) r = 1;
 if (this.mar > 0) {
 this.width = Clazz.floatToInt (this.viewer.scaleToScreen (z, this.mar));
+if (this.width == 0) this.width = 1;
+if (this.width == 1 && this.g3d.isAntialiased ()) this.width = 2;
 } else {
 this.drawLine (x - r - 1, y + 1, z, x - r - 1 + d, y + 1, z);
 this.drawLine (x + 1, y + 1 - r, z, x + 1, y + 1 - r + d, z);

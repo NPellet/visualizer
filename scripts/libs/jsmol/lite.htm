@@ -3,10 +3,10 @@
 <title>Super-Lightweight Jmol Testing</title>
 <head>
 <meta charset="utf-8">
-<!-- 
-<script type="text/javascript" src="jquery/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="jquery/jquery.js"></script>
 <script type="text/javascript" src="JSmol.lite.nojq.js"></script>
 
+<!-- 
 Note that this version of JSmol.lite.nojq.js does not include jQuery. 
 You must provide that yourself, as has been done here.
 If you aren't using jQuery for anything else on your page, you can
@@ -16,10 +16,11 @@ just use this one library:
 
 If you are a developer and want to work with the code, use these instead:
 
---> 
-<script type="text/javascript" src="jquery/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="jquery/jquery.js"></script>
+<script type="text/javascript" src="js/JSmoljQueryExt.js"></script>
 <script type="text/javascript" src="js/JSmolCore.js"></script>
 <script type="text/javascript" src="js/JSmolTM.js"></script>  
+--> 
 
 <script type="text/javascript"> 
 
@@ -34,7 +35,7 @@ Info = {
 	debug: false,
 	color: "0xC0C0C0",
 	addSelectionOptions: true,
-	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
+	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
 	use: "HTML5",
 	readyFunction: null,
 	defaultModel: ":dopamine", // PubChem -- use $ for NCI

@@ -4,12 +4,7 @@
 <title>Jmol/JME Demo</title>
 <meta charset="utf-8" />
 <script type="text/javascript" language="javascript" src="jsme/jsme/jsme.nocache.js"></script>
-<script type="text/javascript" src="js/JSmoljQuery.js"></script>
-<script type="text/javascript" src="js/JSmolCore.js"></script>
-<script type="text/javascript" src="js/JSmolApplet.js"></script>
-<script type="text/javascript" src="js/JSmolApi.js"></script>
-<script type="text/javascript" src="js/j2sjmol.js"></script>
-<script type="text/javascript" src="js/JSmol.js"></script>
+<script type="text/javascript" src="JSmol.min.js"></script>
 <script type="text/javascript" src="js/JSmolJME.js"></script>
 
 <script type="text/javascript">
@@ -24,12 +19,12 @@ var JmolInfo = {
 	color: "black",
 	use: "HTML5",
   addSelectionOptions: true,
-	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
+	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
 	jarPath: "..",
 	jarFile: "JmolAppletSigned.jar",
   j2sPath: "../jsmol/j2s",
 	isSigned: true,
-  defaultModel: "$morphine",
+  defaultModel: ":morphine",
 	console: "none",
 	script: ""
 }
@@ -44,7 +39,8 @@ var JMEInfo = {
   //,"jme" : startingStructure   
 }
 
-Jmol.setGrabberOptions([["$", "NCI"]])
+Jmol.setGrabberOptions([[":", "PubChem"]])
+//Jmol.setGrabberOptions([["$", "NCI"]])
         
 </script>
 </head>

@@ -123,7 +123,7 @@ vNH.sub2 (prev.getCarbonylCarbonAtom (), oxygen);
 }vNH.normalize ();
 aminoHydrogenPoint.add2 (nitrogenPoint, vNH);
 this.nitrogenHydrogenPoint = J.util.P3.newP (aminoHydrogenPoint);
-if (J.util.Logger.debugging) J.util.Logger.info ("draw ID \"pta" + this.monomerIndex + "_" + nitrogenPoint.index + "\" " + J.util.Escape.eP (nitrogenPoint) + J.util.Escape.eP (aminoHydrogenPoint) + " # " + nitrogenPoint);
+if (J.util.Logger.debugging) J.util.Logger.debug ("draw ID \"pta" + this.monomerIndex + "_" + nitrogenPoint.index + "\" " + J.util.Escape.eP (nitrogenPoint) + J.util.Escape.eP (aminoHydrogenPoint) + " # " + nitrogenPoint);
 return true;
 }, "J.util.P3,J.util.V3,~B,~B");
 Clazz.overrideMethod (c$, "getQuaternionFrameCenter", 

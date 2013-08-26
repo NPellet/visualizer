@@ -13,7 +13,7 @@ translucentFlag = J.util.C.getTranslucentFlag ((argb >> 24) & 0xFF);
 argb |= 0xFF000000;
 }var c = J.util.C.colixHash.get (argb);
 if ((c & 3) == 3) translucentFlag = 0;
-return (c > 0 ? (c | translucentFlag) : (J.util.C.allocateColix (argb) | translucentFlag));
+return ((c > 0 ? c : J.util.C.allocateColix (argb)) | translucentFlag);
 }, "~N");
 c$.allocateColix = $_M(c$, "allocateColix", 
 function (argb) {
@@ -106,8 +106,8 @@ return (colix >= 0 ? -1 : (colix & 2047));
 }, "~N");
 c$.getColixTranslucent3 = $_M(c$, "getColixTranslucent3", 
 function (colix, isTranslucent, translucentLevel) {
-if (colix == 0) colix = 1;
 colix &= -30721;
+if (colix == 0) colix = 1;
 return (isTranslucent ? (colix | J.util.C.getTranslucentFlag (translucentLevel)) : colix);
 }, "~N,~B,~N");
 c$.copyColixTranslucency = $_M(c$, "copyColixTranslucency", 

@@ -63,6 +63,8 @@ this.atoms[i].setTranslucent (isTranslucent, this.translucentLevel);
 if (isTranslucent) this.bsColixSet.set (i);
 }
 return;
+}if (propertyName.startsWith ("ball")) {
+propertyName = propertyName.substring (4).intern ();
 }this.setPropAS (propertyName, value, bs);
 }, "~S,~O,J.util.BS");
 Clazz.overrideMethod (c$, "setModelClickability", 

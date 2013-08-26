@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.renderbio");
-Clazz.load (["J.renderbio.BioShapeRenderer", "J.util.P3", "$.V3"], "J.renderbio.RocketsRenderer", ["J.constant.EnumStructure"], function () {
+Clazz.load (["J.renderbio.MeshRibbonRenderer", "J.util.P3", "$.V3"], "J.renderbio.RocketsRenderer", ["J.constant.EnumStructure"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.newRockets = false;
 this.renderArrowHeads = false;
@@ -20,7 +20,7 @@ this.scaledHeightVector = null;
 this.lengthVector = null;
 this.pointCorner = null;
 Clazz.instantialize (this, arguments);
-}, J.renderbio, "RocketsRenderer", J.renderbio.BioShapeRenderer);
+}, J.renderbio, "RocketsRenderer", J.renderbio.MeshRibbonRenderer);
 Clazz.prepareFields (c$, function () {
 this.screenA =  new J.util.P3 ();
 this.screenB =  new J.util.P3 ();
@@ -41,15 +41,18 @@ this.pointCorner =  new J.util.P3 ();
 });
 Clazz.overrideMethod (c$, "renderBioShape", 
 function (bioShape) {
-if (!(Clazz.instanceOf (bioShape.bioPolymer, J.modelsetbio.AminoPolymer))) return;
-var val = !this.viewer.getBoolean (603979900);
+if (!(Clazz.instanceOf (bioShape.bioPolymer, J.modelsetbio.AlphaPolymer))) return;
+if (this.$wireframeOnly) {
+this.renderMeshRibbon ();
+return;
+}var val = !this.viewer.getBoolean (603979900);
 if (this.renderArrowHeads != val) {
 bioShape.falsifyMesh ();
 this.renderArrowHeads = val;
 }this.calcRopeMidPoints (this.newRockets);
 this.calcScreenControlPoints (this.cordMidPoints);
 this.controlPoints = this.cordMidPoints;
-this.render1 ();
+this.renderRockets ();
 this.viewer.freeTempPoints (this.cordMidPoints);
 }, "J.shapebio.BioShape");
 $_M(c$, "isSheet", 
@@ -82,7 +85,7 @@ if (proteinstructurePrev != null) point.setT (proteinstructurePrev.getAxisEndPoi
  else {
 point.setT (this.controlPoints[this.monomerCount]);
 }}, "~B");
-$_M(c$, "render1", 
+$_M(c$, "renderRockets", 
 function () {
 this.tPending = false;
 for (var i = this.bsVisible.nextSetBit (0); i >= 0; i = this.bsVisible.nextSetBit (i + 1)) {
@@ -124,8 +127,8 @@ this.viewer.transformPt3f (pointStart, this.screenA);
 this.viewer.transformPt3f (pointEnd, this.screenB);
 var zMid = Clazz.doubleToInt (Math.floor ((this.screenA.z + this.screenB.z) / 2));
 var diameter = Clazz.floatToInt (this.viewer.scaleToScreen (zMid, this.mad));
-this.g3d.fillCylinderBits (2, diameter, this.screenA, this.screenB);
 if (this.g3d.setColix (this.colix)) {
+this.g3d.fillCylinderBits (2, diameter, this.screenA, this.screenB);
 if (tEnd && this.renderArrowHeads) {
 this.vtemp.sub2 (pointEnd, pointStart);
 this.vtemp.normalize ();

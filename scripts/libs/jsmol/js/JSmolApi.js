@@ -1,5 +1,6 @@
 // JmolApi.js -- Jmol user functions  Bob Hanson hansonr@stolaf.edu
 
+// BH 5/16/2013 9:01:41 AM checkbox group fix
 // BH 1/15/2013 10:55:06 AM updated to default to HTML5 not JAVA
  
 // along with this file you need at least JmolCore.js and JmolApplet.js. Also, if you want buttons, JmolControls.js
@@ -253,8 +254,9 @@
 		return Jmol.controls._getRadioGroup(appletOrId, arrayOfRadioButtons, separatorHtml, groupName, id, title);
 	}
 
-	Jmol.setCheckboxGroup = function(chkMaster,chkBox) {
-		Jmol.controls._cbSetCheckboxGroup(chkMaster, chkBox);
+	Jmol.setCheckboxGroup = function(chkMaster, chkBoxes) {
+    // chkBoxes can be an array or any number of additional string arguments
+		Jmol.controls._cbSetCheckboxGroup(chkMaster, chkBoxes, arguments);
 	}
 	
 	Jmol.setDocument = function(doc) {

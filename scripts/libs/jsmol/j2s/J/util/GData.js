@@ -2,6 +2,7 @@ Clazz.declarePackage ("J.util");
 Clazz.load (["J.api.JmolGraphicsInterface"], "J.util.GData", ["J.util.ArrayUtil", "$.C", "$.JmolFont", "$.Shader"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.apiPlatform = null;
+this.translucentCoverOnly = false;
 this.windowWidth = 0;
 this.windowHeight = 0;
 this.displayMinX = 0;
@@ -39,6 +40,14 @@ Clazz.instantialize (this, arguments);
 }, J.util, "GData", null, J.api.JmolGraphicsInterface);
 Clazz.prepareFields (c$, function () {
 this.changeableColixMap =  Clazz.newShortArray (16, 0);
+});
+$_M(c$, "setTranslucentCoverOnly", 
+function (TF) {
+this.translucentCoverOnly = TF;
+}, "~B");
+$_M(c$, "getTranslucentCoverOnly", 
+function () {
+return this.translucentCoverOnly;
 });
 Clazz.makeConstructor (c$, 
 function () {
@@ -329,8 +338,8 @@ this.displayMaxY = this.height - this.displayMinY;
 this.bufferSize = this.width * this.height;
 }, "~B");
 $_M(c$, "beginRendering", 
-function (stereoRotationMatrix, isImageWrite) {
-}, "J.util.Matrix3f,~B");
+function (stereoRotationMatrix, translucentMode, isImageWrite) {
+}, "J.util.Matrix3f,~B,~B");
 $_M(c$, "endRendering", 
 function () {
 });
@@ -410,6 +419,14 @@ function () {
 Clazz.overrideMethod (c$, "renderAllStrings", 
 function (jmolRenderer) {
 }, "~O");
+c$.getScreenOctant = $_M(c$, "getScreenOctant", 
+function (pt) {
+var i = 0;
+if (pt.x < 0) i |= 1;
+if (pt.y < 0) i |= 2;
+if (pt.z < 0) i |= 4;
+return i;
+}, "J.util.P3");
 Clazz.defineStatics (c$,
 "ENDCAPS_NONE", 0,
 "ENDCAPS_OPEN", 1,

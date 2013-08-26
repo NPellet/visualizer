@@ -73,10 +73,7 @@ this.ptTemp =  new J.util.P3 ();
 Clazz.makeConstructor (c$, 
 function () {
 });
-$_M(c$, "init2", 
-function (surfaceGenerator, br) {
-}, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-$_M(c$, "init", 
+$_M(c$, "initSR", 
 function (sg) {
 this.sg = sg;
 this.params = sg.getParams ();
@@ -172,6 +169,7 @@ this.jvxlData.jvxlEdgeData = this.edgeData;
 this.jvxlData.isBicolorMap = this.params.isBicolorMap;
 this.jvxlData.isContoured = this.params.isContoured;
 this.jvxlData.colorDensity = this.params.colorDensity;
+this.jvxlData.pointSize = this.params.pointSize;
 if (this.jvxlData.vContours != null) this.params.nContours = this.jvxlData.vContours.length;
 this.jvxlData.nContours = (this.params.contourFromZero ? this.params.nContours : -1 - this.params.nContours);
 this.jvxlData.nEdges = this.edgeCount;
@@ -214,6 +212,10 @@ this.colorFractionRange = 90;
 this.params.mappedDataMin = 3.4028235E38;
 });
 $_M(c$, "discardTempData", 
+function (discardAll) {
+this.discardTempDataSR (discardAll);
+}, "~B");
+$_M(c$, "discardTempDataSR", 
 function (discardAll) {
 if (!discardAll) return;
 this.voxelData = null;

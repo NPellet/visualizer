@@ -9,6 +9,7 @@ this.minAtoms = null;
 this.minBonds = null;
 this.minAngles = null;
 this.minTorsions = null;
+this.minPositions = null;
 this.bsMinFixed = null;
 this.atomCount = 0;
 this.bondCount = 0;
@@ -132,6 +133,7 @@ val = this.viewer.getParameter ("minimizationCriterion");
 if (val != null && Clazz.instanceOf (val, Float)) crit = (val).floatValue ();
 }this.crit = Math.max (crit, 0.0001);
 if (this.$minimizationOn) return false;
+var pFF0 = this.pFF;
 this.getForceField (ff);
 if (this.pFF == null) {
 J.util.Logger.error (J.i18n.GT._ ("Could not get class for force field {0}", ff));
@@ -146,6 +148,7 @@ if (bsFixed != null) this.bsAtoms.or (bsFixed);
 this.atomCount = this.bsAtoms.cardinality ();
 var sameAtoms = J.util.BSUtil.areEqual (bsSelected, this.bsSelected);
 this.bsSelected = bsSelected;
+if (pFF0 != null && this.pFF !== pFF0) sameAtoms = false;
 if (!sameAtoms) this.pFF.clear ();
 if ((!sameAtoms || !J.util.BSUtil.areEqual (bsFixed, this.bsFixed)) && !this.setupMinimization ()) {
 this.clear ();

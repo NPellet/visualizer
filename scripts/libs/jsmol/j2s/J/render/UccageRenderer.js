@@ -32,7 +32,7 @@ function () {
 this.imageFontScaling = this.viewer.getImageFontScaling ();
 this.font3d = this.g3d.getFont3DScaled ((this.shape).font3d, this.imageFontScaling);
 var mad = this.viewer.getObjectMad (5);
-if (mad == 0 || this.viewer.isJmolDataFrame () || this.viewer.isNavigating () && this.viewer.getBoolean (603979887)) return false;
+if (mad == 0 || this.viewer.isJmolDataFrame () || this.viewer.isNavigating () && this.viewer.getBoolean (603979888)) return false;
 this.colix = this.viewer.getObjectColix (5);
 var needTranslucent = J.util.C.isColixTranslucent (this.colix);
 if (!this.isExport && needTranslucent != this.g3d.isPass2 ()) return needTranslucent;

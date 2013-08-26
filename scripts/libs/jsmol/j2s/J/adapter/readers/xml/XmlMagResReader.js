@@ -15,10 +15,10 @@ Clazz.overrideMethod (c$, "getDOMAttributes",
 function () {
 return this.myAttributes;
 });
-$_M(c$, "processXml", 
+Clazz.overrideMethod (c$, "processXml", 
 function (parent, saxReader) {
 parent.doProcessLines = true;
-Clazz.superCall (this, J.adapter.readers.xml.XmlMagResReader, "processXml", [parent, saxReader]);
+this.PX (parent, saxReader);
 }, "J.adapter.readers.xml.XmlReader,~O");
 Clazz.overrideMethod (c$, "processStartElement", 
 function (localName) {

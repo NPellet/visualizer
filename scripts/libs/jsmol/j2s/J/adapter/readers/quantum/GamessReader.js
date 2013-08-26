@@ -6,6 +6,14 @@ this.calcOptions = null;
 this.isTypeSet = false;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "GamessReader", J.adapter.readers.quantum.MOReader);
+$_M(c$, "readEnergy", 
+function () {
+var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (this.line.indexOf ("ENERGY")));
+if (tokens.length < 3) return;
+var strEnergy = tokens[2];
+var e = this.parseFloatStr (strEnergy);
+if (!Float.isNaN (e)) this.atomSetCollection.setAtomSetEnergy (strEnergy, e);
+});
 $_M(c$, "readGaussianBasis", 
 function (initiator, terminator) {
 var gdata =  new J.util.JmolList ();

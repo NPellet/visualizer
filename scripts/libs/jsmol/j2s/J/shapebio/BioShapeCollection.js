@@ -72,17 +72,13 @@ var bioShape = this.bioShapes[i];
 if (bioShape.monomerCount > 0) bioShape.setColixBS (colix, pid, bsSelected);
 }
 return;
-}if ("colors" === propertyName) {
-var data = value;
-var colixes = data[0];
-var translucency = (data[1]).floatValue ();
-var isTranslucent = (translucency > 0);
-for (var i = this.bioShapes.length; --i >= 0; ) {
-var bioShape = this.bioShapes[i];
-if (bioShape.monomerCount > 0) {
-bioShape.setColixes (colixes, bsSelected);
-if (isTranslucent) bioShape.setTranslucent (isTranslucent, bsSelected, translucency);
-}}
+}if ("params" === propertyName) {
+var n = bsSelected.length ();
+var atomMap =  Clazz.newIntArray (n, 0);
+for (var pt = 0, i = bsSelected.nextSetBit (0); i >= 0; i = bsSelected.nextSetBit (i + 1), pt++) atomMap[i] = pt;
+
+for (var i = this.bioShapes.length; --i >= 0; ) this.bioShapes[i].setParams (value, atomMap, bsSelected);
+
 return;
 }if ("colorPhase" === propertyName) {
 var twoColors = value;

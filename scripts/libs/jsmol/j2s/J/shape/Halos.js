@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.AtomShape"], "J.shape.Halos", ["J.util.BSUtil", "$.C", "$.Logger"], function () {
+Clazz.load (["J.shape.AtomShape"], "J.shape.Halos", ["J.util.BSUtil", "$.C"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.colixSelection = 2;
 this.bsHighlight = null;
@@ -8,7 +8,6 @@ Clazz.instantialize (this, arguments);
 }, J.shape, "Halos", J.shape.AtomShape);
 $_M(c$, "initState", 
 function () {
-J.util.Logger.debug ("init halos");
 this.translucentAllowed = false;
 });
 Clazz.overrideMethod (c$, "setProperty", 

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["java.util.Hashtable"], "J.viewer.FileManager", ["java.io.BufferedInputStream", "$.ByteArrayInputStream", "java.net.URL", "$.URLEncoder", "J.api.Interface", "J.io.Base64", "$.FileReader", "$.JmolBinary", "J.util.Escape", "$.JmolList", "$.Logger", "$.SB", "$.TextFormat", "J.viewer.DataManager", "$.Viewer"], function () {
+Clazz.load (["java.util.Hashtable"], "J.viewer.FileManager", ["java.io.BufferedInputStream", "$.ByteArrayInputStream", "java.lang.Boolean", "java.net.URL", "$.URLEncoder", "J.api.Interface", "J.io.Base64", "$.FileReader", "$.JmolBinary", "J.util.Escape", "$.JmolList", "$.Logger", "$.SB", "$.TextFormat", "J.viewer.DataManager", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.pathForAllFiles = "";
@@ -82,7 +82,7 @@ function (fileName) {
 var pt = fileName.indexOf ("::");
 if (pt >= 0) return fileName.substring (0, pt);
 if (fileName.startsWith ("=")) return "pdb";
-var br = this.getUnzippedBufferedReaderOrErrorMessageFromName (fileName, null, true, false, true, true);
+var br = this.getUnzippedBufferedReaderOrErrorMessageFromName (fileName, null, true, false, true, true, null);
 if (Clazz.instanceOf (br, java.io.BufferedReader)) return this.viewer.getModelAdapter ().getFileTypeName (br);
 if (Clazz.instanceOf (br, J.api.ZInputStream)) {
 var zipDirectory = this.getZipDirectoryAsString (fileName);
@@ -111,7 +111,7 @@ if (names.length == 1) return names[0];
 var fullPathName = names[0];
 var fileName = names[1];
 htParams.put ("fullPathName", (fileType == null ? "" : fileType + "::") + fullPathName.$replace ('\\', '/'));
-if (this.viewer.getBoolean (603979879) && this.viewer.getBoolean (603979824)) this.viewer.scriptStatus ("Requesting " + fullPathName);
+if (this.viewer.getBoolean (603979880) && this.viewer.getBoolean (603979824)) this.viewer.scriptStatus ("Requesting " + fullPathName);
 var fileReader =  new J.io.FileReader (this, this.viewer, fileName, fullPathName, nameAsGiven, fileType, null, htParams, isAppend);
 fileReader.run ();
 return fileReader.getAtomSetCollection ();
@@ -150,7 +150,7 @@ fileReader.run ();
 if (fnames != null) this.setFileInfo (fnames);
 if (!isAppend && !(Clazz.instanceOf (fileReader.getAtomSetCollection (), String))) {
 this.viewer.zap (false, true, false);
-this.fullPathName = this.fileName = (strModel === "1 0 C 0 0" ? "Jmol Model Kit" : "string");
+this.fullPathName = this.fileName = (strModel === "5\n\nC 0 0 0\nH .63 .63 .63\nH -.63 -.63 .63\nH -.63 .63 -.63\nH .63 -.63 -.63" ? "Jmol Model Kit" : "string");
 }return fileReader.getAtomSetCollection ();
 }, "~S,J.util.SB,java.util.Map,~B,~B");
 $_M(c$, "createAtomSeCollectionFromStrings", 
@@ -250,12 +250,13 @@ post = name.substring (iurl + 6);
 name = name.substring (0, iurl);
 }var isApplet = (this.appletDocumentBaseURL != null);
 var fai = this.viewer.getFileAdapter ();
+if (name.indexOf (".png") >= 0 && this.pngjCache == null && this.viewer.cachePngFiles ()) J.io.JmolBinary.cachePngjFile (this, null);
 if (isApplet || isURL) {
 if (isApplet && isURL && this.appletProxy != null) name = this.appletProxy + "?url=" + this.urlEncode (name);
 var url = (isApplet ?  new java.net.URL (this.appletDocumentBaseURL, name, null) :  new java.net.URL (Clazz.castNullAs ("java.net.URL"), name, null));
 if (checkOnly) return null;
 name = url.toString ();
-if (showMsg && name.toLowerCase ().indexOf ("password") < 0) J.util.Logger.info ("FileManager opening " + name);
+if (showMsg && name.toLowerCase ().indexOf ("password") < 0) J.util.Logger.info ("FileManager opening 1 " + name);
 ret = fai.getBufferedURLInputStream (url, outputBytes, post);
 if (Clazz.instanceOf (ret, J.util.SB)) {
 var sb = ret;
@@ -264,7 +265,7 @@ ret = J.io.JmolBinary.getBISForStringXBuilder (sb);
 } else if (J.util.Escape.isAB (ret)) {
 ret =  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (ret));
 }} else if ((cacheBytes = this.cacheGet (name, true)) == null) {
-if (showMsg) J.util.Logger.info ("FileManager opening " + name);
+if (showMsg) J.util.Logger.info ("FileManager opening 2 " + name);
 ret = fai.getBufferedFileInputStream (name);
 }if (Clazz.instanceOf (ret, String)) return ret;
 }if (cacheBytes == null) bis = ret;
@@ -326,7 +327,7 @@ return J.io.JmolBinary.getBufferedReaderForString (data);
 }}var names = this.classifyName (name, true);
 if (names == null) return "cannot read file name: " + name;
 if (fullPathNameReturn != null) fullPathNameReturn[0] = names[0].$replace ('\\', '/');
-return this.getUnzippedBufferedReaderOrErrorMessageFromName (names[0], bytes, false, isBinary, false, doSpecialLoad);
+return this.getUnzippedBufferedReaderOrErrorMessageFromName (names[0], bytes, false, isBinary, false, doSpecialLoad, null);
 }, "~S,~A,~B,~B");
 $_M(c$, "getEmbeddedFileState", 
 function (fileName) {
@@ -343,7 +344,7 @@ return data[1];
 return "";
 }, "~S");
 $_M(c$, "getUnzippedBufferedReaderOrErrorMessageFromName", 
-function (name, bytes, allowZipStream, asInputStream, isTypeCheckOnly, doSpecialLoad) {
+function (name, bytes, allowZipStream, asInputStream, isTypeCheckOnly, doSpecialLoad, htParams) {
 var subFileList = null;
 var info = (bytes == null && doSpecialLoad ? this.getSpartanFileList (name) : null);
 var name00 = name;
@@ -374,11 +375,13 @@ s = sb.toString ();
 if (this.spardirCache == null) this.spardirCache =  new java.util.Hashtable ();
 this.spardirCache.put (name00.$replace ('\\', '/'), s.getBytes ());
 return J.io.JmolBinary.getBufferedReaderForString (s);
-}}if (bytes == null && this.pngjCache != null) bytes = J.io.JmolBinary.getCachedPngjBytes (this, name);
-var fullName = name;
+}}if (bytes == null && this.pngjCache != null) {
+bytes = J.io.JmolBinary.getCachedPngjBytes (this, name);
+if (bytes != null && htParams != null) htParams.put ("sourcePNGJ", Boolean.TRUE);
+}var fullName = name;
 if (name.indexOf ("|") >= 0) {
 subFileList = J.util.TextFormat.splitChars (name, "|");
-if (bytes == null) J.util.Logger.info ("FileManager opening " + name);
+if (bytes == null) J.util.Logger.info ("FileManager opening 3 " + name);
 name = subFileList[0];
 }var t = (bytes == null ? this.getBufferedInputStreamOrErrorMessageFromName (name, fullName, true, false, null, !asInputStream) :  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes)));
 try {
@@ -408,7 +411,7 @@ return ioe.toString ();
 throw ioe;
 }
 }
-}, "~S,~A,~B,~B,~B,~B");
+}, "~S,~A,~B,~B,~B,~B,java.util.Map");
 $_M(c$, "getSpartanFileList", 
 ($fz = function (name) {
 if (name.endsWith (".spt")) return [null, null, null];
@@ -585,8 +588,8 @@ var ret = this.getFileAsBytes (fullPathName, null, true);
 if (!J.util.Escape.isAB (ret)) {
 fullPathName = "" + ret;
 break;
-}image = (this.viewer.isJS ? ret : apiPlatform.createImage (ret));
-} else if (this.viewer.isJS) {
+}image = (this.viewer.$isJS ? ret : apiPlatform.createImage (ret));
+} else if (this.viewer.$isJS) {
 } else if (J.viewer.FileManager.urlTypeIndex (fullPathName) >= 0) {
 try {
 image = apiPlatform.createImage ( new java.net.URL (Clazz.castNullAs ("java.net.URL"), fullPathName, null));
@@ -611,7 +614,7 @@ return;
 }} catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
 System.out.println (e.toString ());
-fullPathName = e.toString () + " opening " + fullPathName;
+fullPathName = e.toString () + " opening 4 " + fullPathName;
 image = null;
 break;
 } else {
@@ -826,25 +829,29 @@ return str;
 }, "~S,~S");
 $_M(c$, "clearPngjCache", 
 function (fileName) {
-if (fileName == null || this.pngjCache != null && this.pngjCache.containsKey (this.getCanonicalName (J.io.JmolBinary.getZipRoot (fileName)))) this.pngjCache = null;
+if (fileName != null && (this.pngjCache == null || !this.pngjCache.containsKey (this.getCanonicalName (J.io.JmolBinary.getZipRoot (fileName))))) return;
+this.pngjCache = null;
+J.util.Logger.info ("PNGJ cache cleared");
 }, "~S");
 $_M(c$, "cachePut", 
 function (key, data) {
 key = key.$replace ('\\', '/');
-if (J.util.Logger.debugging) J.util.Logger.info ("cachePut " + key);
-if (data == null || data.equals ("")) this.cache.remove (key);
+if (J.util.Logger.debugging) J.util.Logger.debug ("cachePut " + key);
+if ("".equals (data)) this.cache.remove (key);
  else this.cache.put (key, data);
 }, "~S,~O");
 $_M(c$, "cacheGet", 
 function (key, bytesOnly) {
 key = key.$replace ('\\', '/');
-if (J.util.Logger.debugging && this.cache.containsKey (key)) J.util.Logger.info ("cacheGet " + key);
+if (J.util.Logger.debugging) J.util.Logger.debug ("cacheGet " + key + " " + this.cache.containsKey (key));
 var data = this.cache.get (key);
 return (bytesOnly && (Clazz.instanceOf (data, String)) ? null : data);
 }, "~S,~B");
 $_M(c$, "cacheClear", 
 function () {
+J.util.Logger.info ("cache cleared");
 this.cache.clear ();
+this.clearPngjCache (null);
 });
 $_M(c$, "cacheFileByNameAdd", 
 function (fileName, isAdd) {

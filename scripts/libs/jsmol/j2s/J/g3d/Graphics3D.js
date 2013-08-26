@@ -16,7 +16,6 @@ this.anaglyphChannelBytes = null;
 this.twoPass = false;
 this.addAllPixels = false;
 this.$haveTranslucentObjects = false;
-this.translucentCoverOnly = false;
 this.pbuf = null;
 this.pbufT = null;
 this.zbuf = null;
@@ -71,10 +70,6 @@ Clazz.overrideMethod (c$, "getGData",
 function () {
 return this;
 });
-Clazz.overrideMethod (c$, "setTranslucentCoverOnly", 
-function (TF) {
-this.translucentCoverOnly = TF;
-}, "~B");
 $_M(c$, "setZMargin", 
 function (dz) {
 this.zMargin = dz;
@@ -110,7 +105,7 @@ if (isAlphaTranslucent) this.$haveTranslucentObjects = true;
 return (!this.twoPass || this.twoPass && (this.$isPass2 == isAlphaTranslucent));
 }, "~B");
 Clazz.overrideMethod (c$, "beginRendering", 
-function (rotationMatrix, isImageWrite) {
+function (rotationMatrix, translucentMode, isImageWrite) {
 if (this.$currentlyRendering) this.endRendering ();
 if (this.windowWidth != this.newWindowWidth || this.windowHeight != this.newWindowHeight || this.newAntialiasing != this.isFullSceneAntialiasingEnabled) {
 this.windowWidth = this.newWindowWidth;
@@ -127,6 +122,7 @@ this.twoPass = true;
 this.$isPass2 = false;
 this.colixCurrent = 0;
 this.$haveTranslucentObjects = false;
+this.translucentCoverOnly = !translucentMode;
 this.addAllPixels = true;
 if (this.pbuf == null) {
 this.platform.allocateBuffers (this.windowWidth, this.windowHeight, this.antialiasThisFrame, isImageWrite);
@@ -135,7 +131,7 @@ this.zbuf = this.platform.zBuffer;
 }this.setWidthHeight (this.antialiasThisFrame);
 this.platform.clearBuffer ();
 if (this.backgroundImage != null) this.plotImage (-2147483648, 0, -2147483648, this.backgroundImage, null, 0, 0, 0);
-}, "J.util.Matrix3f,~B");
+}, "J.util.Matrix3f,~B,~B");
 Clazz.overrideMethod (c$, "setBackgroundTransparent", 
 function (TF) {
 if (this.platform != null) this.platform.setBackgroundTransparent (TF);
@@ -147,6 +143,7 @@ this.zbuf = null;
 this.pbufT = null;
 this.zbufT = null;
 this.platform.releaseBuffers ();
+this.line3d.clearLineCache ();
 }, $fz.isPrivate = true, $fz));
 Clazz.overrideMethod (c$, "setPass2", 
 function (antialiasTranslucent) {

@@ -163,19 +163,18 @@ return this.bioPolymer.haveParameters;
 $_M(c$, "getMyInfo", 
 function () {
 var info = this.getGroupInfo (this.groupIndex);
-var chainID = this.chain.chainID;
-info.put ("chain", (chainID == '\0' ? "" : "" + chainID));
-var seqNum = this.getSeqNumber ();
-var insCode = this.getInsertionCode ();
+info.put ("chain", this.chain.getIDStr ());
+var seqNum = this.getResno ();
 if (seqNum > 0) info.put ("sequenceNumber", Integer.$valueOf (seqNum));
+var insCode = this.getInsertionCode ();
 if (insCode.charCodeAt (0) != 0) info.put ("insertionCode", "" + insCode);
-var f = this.getGroupParameter (1112539143);
+var f = this.getGroupParameter (1112539145);
 if (!Float.isNaN (f)) info.put ("phi", Float.$valueOf (f));
-f = this.getGroupParameter (1112539144);
+f = this.getGroupParameter (1112539146);
 if (!Float.isNaN (f)) info.put ("psi", Float.$valueOf (f));
-f = this.getGroupParameter (1112539140);
+f = this.getGroupParameter (1112539141);
 if (!Float.isNaN (f)) info.put ("mu", Float.$valueOf (f));
-f = this.getGroupParameter (1112539150);
+f = this.getGroupParameter (1112539152);
 if (!Float.isNaN (f)) info.put ("theta", Float.$valueOf (f));
 var structure = this.getProteinStructure ();
 if (structure != null) {
@@ -257,9 +256,9 @@ $_M(c$, "getUniqueID",
 function () {
 var cid = this.getChainID ();
 var a = this.getLeadAtom ();
-var id = (a == null ? "" : "_" + a.getModelIndex ()) + "_" + this.getResno () + (cid == '\0' ? "" : "" + cid);
-cid = (a == null ? '\0' : this.getLeadAtom ().getAlternateLocationID ());
-if (cid != '\0') id += cid;
+var id = (a == null ? "" : "_" + a.getModelIndex ()) + "_" + this.getResno () + (cid == 0 ? "" : "_" + cid);
+var aid = (a == null ? '\0' : this.getLeadAtom ().getAlternateLocationID ());
+if (aid != '\0') id += "_" + aid;
 return id;
 });
 Clazz.overrideMethod (c$, "isCrossLinked", 

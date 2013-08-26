@@ -66,6 +66,10 @@ return null;
 }, $fz.isPrivate = true, $fz), "~O");
 $_M(c$, "processXml", 
 function (parent, saxReader) {
+this.PX (parent, saxReader);
+}, "J.adapter.readers.xml.XmlReader,~O");
+$_M(c$, "PX", 
+function (parent, saxReader) {
 this.parent = parent;
 this.atomSetCollection = parent.atomSetCollection;
 this.reader = parent.reader;
@@ -86,10 +90,10 @@ parent.viewer.applet._createDomNode("xmlReader",null);
 var saxHandler = J.api.Interface.getOptionInterface ("adapter.readers.xml.XmlHandler");
 saxHandler.parseXML (this, saxReader, this.reader);
 }}, "J.adapter.readers.xml.XmlReader,~O");
-$_M(c$, "applySymmetryAndSetTrajectory", 
+Clazz.overrideMethod (c$, "applySymmetryAndSetTrajectory", 
 function () {
 try {
-if (this.parent == null) Clazz.superCall (this, J.adapter.readers.xml.XmlReader, "applySymmetryAndSetTrajectory", []);
+if (this.parent == null) this.applySymTrajASCR ();
  else this.parent.applySymmetryAndSetTrajectory ();
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {

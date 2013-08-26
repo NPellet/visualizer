@@ -73,7 +73,7 @@ if (bonds[destination][j] == origin) {
 correct = true;
 }}
 }if (correct && (destination > origin)) {
-this.atomSetCollection.addNewBond (origin, destination);
+this.atomSetCollection.addNewBondWithOrder (origin, destination, 1);
 }}
 }}
 }}, "~N");

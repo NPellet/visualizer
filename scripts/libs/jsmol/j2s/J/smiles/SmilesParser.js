@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.smiles");
-Clazz.load (["java.util.Hashtable"], "J.smiles.SmilesParser", ["java.lang.Character", "$.Float", "J.smiles.InvalidSmilesException", "$.SmilesAtom", "$.SmilesBond", "$.SmilesMeasure", "$.SmilesSearch", "J.util.Elements", "$.JmolList", "$.Logger", "$.Parser", "$.SB", "$.TextFormat"], function () {
+Clazz.load (["java.util.Hashtable"], "J.smiles.SmilesParser", ["java.lang.Character", "J.smiles.InvalidSmilesException", "$.SmilesAtom", "$.SmilesBond", "$.SmilesMeasure", "$.SmilesSearch", "J.util.Elements", "$.JmolList", "$.Logger", "$.Parser", "$.SB", "$.TextFormat"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isSmarts = false;
 this.isBioSequence = false;
@@ -354,9 +354,9 @@ var s = strMeasure.substring (pt + 1, pt2);
 if (s.startsWith ("!")) {
 isNot = true;
 s = s.substring (1);
-}var min = (pt + 1 == pt2 ? 0 : Float.parseFloat (s));
+}var min = (pt + 1 == pt2 ? 0 : J.util.Parser.fVal (s));
 s = strMeasure.substring (pt2 + 1);
-var max = (s.length == 0 ? 3.4028235E38 : Float.parseFloat (s));
+var max = (s.length == 0 ? 3.4028235E38 : J.util.Parser.fVal (s));
 m =  new J.smiles.SmilesMeasure (molecule, index, type, min, max, isNot);
 molecule.measures.addLast (m);
 if (index > 0) this.htMeasures.put (id, m);

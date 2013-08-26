@@ -79,6 +79,7 @@ if (key.startsWith (skey)) this.removeBinding (e, key);
 }, "~N");
 $_M(c$, "isBound", 
 function (mouseAction, action) {
+if (mouseAction == 1040 && action == 2) System.out.println ("left-down-2" + this.bindings.containsKey (mouseAction + "\t" + action));
 return this.bindings.containsKey (mouseAction + "\t" + action);
 }, "~N,~N");
 $_M(c$, "isUserAction", 
@@ -100,9 +101,10 @@ if (desc.indexOf ("MIDDLE") >= 0) action |= 8;
  else if (desc.indexOf ("WHEEL") >= 0) action |= 32;
  else if (desc.indexOf ("LEFT") >= 0) action |= 16;
 var isDefaultButton = (action == 0);
+var isDown = (desc.indexOf ("DOWN") >= 0);
 if (desc.indexOf ("DOUBLE") >= 0) action |= 512;
- else if (action > 0 && (action & 32) == 0 || desc.indexOf ("SINGLE") >= 0) action |= 256;
- else if (desc.indexOf ("DOWN") >= 0) action |= 1024;
+ else if (action > 0 && (action & 32) == 0 && !isDown || desc.indexOf ("SINGLE") >= 0) action |= 256;
+ else if (isDown) action |= 1024;
 if (desc.indexOf ("CTRL") >= 0) action |= 2;
 if (desc.indexOf ("ALT") >= 0) action |= 8;
 if (desc.indexOf ("SHIFT") >= 0) action |= 1;
@@ -118,37 +120,37 @@ function (mouseAction) {
 return mouseAction >> 8;
 }, "~N");
 $_M(c$, "getBindingInfo", 
-function (actionNames, qualifiers) {
+function (actionInfo, actionNames, qualifiers) {
 var sb =  new J.util.SB ();
 var qlow = (qualifiers == null || qualifiers.equalsIgnoreCase ("all") ? null : qualifiers.toLowerCase ());
-var names =  new Array (actionNames.length);
-for (var i = 0; i < actionNames.length; i++) names[i] = (qlow == null || actionNames[i].toLowerCase ().indexOf (qlow) >= 0 ?  new J.util.JmolList () : null);
+var names =  new Array (actionInfo.length);
+for (var i = 0; i < actionInfo.length; i++) names[i] = (qlow == null || actionInfo[i].toLowerCase ().indexOf (qlow) >= 0 ?  new J.util.JmolList () : null);
 
-var e = this.bindings.keySet ().iterator ();
-while (e.hasNext ()) {
-var obj = this.bindings.get (e.next ());
+for (var obj, $obj = this.bindings.values ().iterator (); $obj.hasNext () && ((obj = $obj.next ()) || true);) {
 if (!J.util.Escape.isAI (obj)) continue;
 var info = obj;
 var i = info[1];
 if (names[i] == null) continue;
 names[i].addLast (J.viewer.binding.Binding.getMouseActionName (info[0], true));
 }
-for (var i = 0; i < actionNames.length; i++) {
+for (var i = 0; i < actionInfo.length; i++) {
 var n;
 if (names[i] == null || (n = names[i].size ()) == 0) continue;
 var list = names[i].toArray ( new Array (n));
 java.util.Arrays.sort (list);
-sb.append (actionNames[i]).append ("\t");
+sb.append ((actionNames[i] + "                  ").substring (0, 22)).append ("\t");
 var sep = "";
+var len = sb.length ();
 for (var j = 0; j < n; j++) {
-sb.append (sep);
-sb.append (list[j].substring (7));
+sb.append (sep).append (list[j].substring (7));
 sep = ", ";
 }
-sb.appendC ('\n');
+len = sb.length () - len;
+if (len < 20) sb.append ("                 ".substring (0, 20 - len));
+sb.append ("\t").append (actionInfo[i]).appendC ('\n');
 }
 return sb.toString ();
-}, "~A,~S");
+}, "~A,~A,~S");
 c$.includes = $_M(c$, "includes", 
 ($fz = function (mouseAction, mod) {
 return ((mouseAction & mod) == mod);
@@ -207,6 +209,7 @@ Clazz.defineStatics (c$,
 "DOUBLE_CLICK", 512,
 "SINGLE_CLICK", 256,
 "DOWN", 1024,
+"CLICK_MASK", 1792,
 "MOVED", 0,
 "DRAGGED", 1,
 "CLICKED", 2,

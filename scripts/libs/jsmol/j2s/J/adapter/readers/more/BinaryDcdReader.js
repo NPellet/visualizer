@@ -62,7 +62,6 @@ var data =  Clazz.newFloatArray (n, 0);
 for (var i = 0; i < n; i++) data[i] = this.binaryDoc.readFloat ();
 
 n = Clazz.doubleToInt (this.binaryDoc.readInt () / 4);
-if (J.util.Logger.debugging) System.out.println (this.modelNumber + " " + this.binaryDoc.getPosition () + ": " + n + " " + data[0] + "\t" + data[1] + "\t" + data[2]);
 return data;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readCoordinates", 

@@ -76,9 +76,9 @@ return false;
 }if (this.line.indexOf ("5D shell") >= 0) this.moData.put ("calculationType", this.calculationType = this.line);
 return true;
 });
-$_M(c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeReader", 
 function () {
-Clazz.superCall (this, J.adapter.readers.quantum.SpartanSmolReader, "finalizeReader", []);
+this.finalizeReaderASCR ();
 if (this.atomCount > 0 && this.spartanArchive != null && this.atomSetCollection.getBondCount () == 0 && this.bondData != null) this.spartanArchive.addBonds (this.bondData, 0);
 if (this.moData != null) {
 var n = this.atomSetCollection.getAtomSetCollectionAuxiliaryInfo ("HOMO_N");
@@ -150,11 +150,11 @@ throw e;
 $_M(c$, "readArchiveHeader", 
 ($fz = function () {
 var modelInfo = this.readLine ();
-J.util.Logger.debug (modelInfo);
+if (J.util.Logger.debugging) J.util.Logger.debug (modelInfo);
 if (modelInfo.indexOf ("Error:") == 0) return false;
 this.atomSetCollection.setCollectionName (modelInfo);
 this.modelName = this.readLine ();
-J.util.Logger.debug (this.modelName);
+if (J.util.Logger.debugging) J.util.Logger.debug (this.modelName);
 this.readLine ();
 return true;
 }, $fz.isPrivate = true, $fz));

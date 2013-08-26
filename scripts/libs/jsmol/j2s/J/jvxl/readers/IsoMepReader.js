@@ -8,9 +8,13 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoMepReader, []);
 });
-$_M(c$, "init", 
+Clazz.overrideMethod (c$, "init", 
 function (sg) {
-Clazz.superCall (this, J.jvxl.readers.IsoMepReader, "init", [sg]);
+this.initIMR (sg);
+}, "J.jvxl.readers.SurfaceGenerator");
+$_M(c$, "initIMR", 
+function (sg) {
+this.initADR (sg);
 this.type = "Mep";
 }, "J.jvxl.readers.SurfaceGenerator");
 Clazz.overrideMethod (c$, "setup", 

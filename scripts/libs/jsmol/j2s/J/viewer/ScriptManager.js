@@ -88,11 +88,11 @@ Clazz.overrideMethod (c$, "waitForQueue",
 function () {
 if (this.viewer.isSingleThreaded) return;
 var n = 0;
-while (this.queueThreads[0] != null || this.queueThreads[1] != null) {
+while (this.isQueueProcessing ()) {
 try {
 Thread.sleep (100);
 if (((n++) % 10) == 0) if (J.util.Logger.debugging) {
-J.util.Logger.info ("...scriptManager waiting for queue: " + this.scriptQueue.size () + " thread=" + Thread.currentThread ().getName ());
+J.util.Logger.debug ("...scriptManager waiting for queue: " + this.scriptQueue.size () + " thread=" + Thread.currentThread ().getName ());
 }} catch (e) {
 if (Clazz.exceptionOf (e, InterruptedException)) {
 } else {
@@ -100,6 +100,10 @@ throw e;
 }
 }
 }
+});
+Clazz.overrideMethod (c$, "isQueueProcessing", 
+function () {
+return this.queueThreads[0] != null || this.queueThreads[1] != null;
 });
 $_M(c$, "flushQueue", 
 ($fz = function (command) {
@@ -137,7 +141,7 @@ this.commandWatcherThread.start ();
 if (this.commandWatcherThread == null) return;
 this.clearCommandWatcherThread ();
 }if (J.util.Logger.debugging) {
-J.util.Logger.info ("command watcher " + (isStart ? "started" : "stopped") + this.commandWatcherThread);
+J.util.Logger.debug ("command watcher " + (isStart ? "started" : "stopped") + this.commandWatcherThread);
 }}, "~B");
 $_M(c$, "interruptQueueThreads", 
 function () {
@@ -245,7 +249,7 @@ if (strScript.indexOf ("moveto ") == 0) this.flushQueue ("moveto ");
 return "!" + strScript;
 }this.viewer.insertedCommand = "";
 if (isQuiet) strScript += "\u0001## EDITOR_IGNORE ##";
-return this.addScript (strScript, false, isQuiet && !this.viewer.getBoolean (603979879));
+return this.addScript (strScript, false, isQuiet && !this.viewer.getBoolean (603979880));
 }, "~S,~B,~B");
 Clazz.overrideMethod (c$, "checkHalt", 
 function (str, isInsert) {

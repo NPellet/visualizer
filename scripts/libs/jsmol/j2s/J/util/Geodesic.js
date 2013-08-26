@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.Geodesic", ["java.lang.NullPointerException", "$.Short", "java.util.Hashtable", "J.util.ArrayUtil", "$.V3"], function () {
+Clazz.load (["J.util.ArrayUtil"], "J.util.Geodesic", ["java.lang.NullPointerException", "$.Short", "java.util.Hashtable", "J.util.V3"], function () {
 c$ = Clazz.declareType (J.util, "Geodesic");
 c$.getNeighborVertexesArrays = $_M(c$, "getNeighborVertexesArrays", 
 function () {

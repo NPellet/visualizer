@@ -15,7 +15,15 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.SurfaceFileReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+Clazz.overrideMethod (c$, "init", 
+function (sg) {
+this.initSR (sg);
+}, "J.jvxl.readers.SurfaceGenerator");
+$_M(c$, "init2", 
+function (sg, br) {
+this.init2SFR (sg, br);
+}, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
+$_M(c$, "init2SFR", 
 function (sg, br) {
 this.init (sg);
 this.br = br;
@@ -30,6 +38,10 @@ if (this.binarydoc == null) this.os = os;
  else this.sg.setOutputStream (this.binarydoc, os);
 }, "java.io.OutputStream");
 Clazz.overrideMethod (c$, "closeReader", 
+function () {
+this.closeReaderSFR ();
+});
+$_M(c$, "closeReaderSFR", 
 function () {
 if (this.br != null) try {
 this.br.close ();
@@ -50,10 +62,10 @@ throw e;
 }
 if (this.binarydoc != null) this.binarydoc.close ();
 });
-$_M(c$, "discardTempData", 
+Clazz.overrideMethod (c$, "discardTempData", 
 function (discardAll) {
 this.closeReader ();
-Clazz.superCall (this, J.jvxl.readers.SurfaceFileReader, "discardTempData", [discardAll]);
+this.discardTempDataSR (discardAll);
 }, "~B");
 $_M(c$, "getTokens", 
 function () {

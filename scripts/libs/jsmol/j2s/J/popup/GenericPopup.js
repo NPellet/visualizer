@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.popup");
-Clazz.load (["J.api.JmolPopupInterface", "J.popup.JmolAbstractMenu", "java.util.Hashtable", "$.Properties", "J.util.JmolList"], "J.popup.GenericPopup", ["java.lang.Boolean", "$.Long", "java.util.StringTokenizer", "J.i18n.GT", "J.popup.MainPopupResourceBundle", "J.util.Elements", "$.Logger", "$.Parser", "$.SB", "$.TextFormat", "J.viewer.JC"], function () {
+Clazz.load (["J.api.JmolPopupInterface", "J.popup.JmolAbstractMenu", "java.util.Hashtable", "$.Properties", "J.util.JmolList"], "J.popup.GenericPopup", ["java.lang.Boolean", "$.Long", "java.util.StringTokenizer", "J.i18n.GT", "J.popup.MainPopupResourceBundle", "J.util.Elements", "$.Escape", "$.Logger", "$.Parser", "$.SB", "$.TextFormat", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.htCheckbox = null;
@@ -42,6 +42,7 @@ this.AppletOnly = null;
 this.ChargesOnly = null;
 this.TemperatureOnly = null;
 this.allowSignedFeatures = false;
+this.isJS = false;
 this.fileHasUnitCell = false;
 this.haveBFactors = false;
 this.haveCharges = false;
@@ -211,6 +212,7 @@ this.popupMenu = this.menuCreatePopup (title);
 this.thisPopup = this.popupMenu;
 this.menuSetListeners ();
 this.htMenus.put (title, this.popupMenu);
+this.isJS = viewer.$isJS;
 this.allowSignedFeatures = (!viewer.isApplet () || viewer.getBooleanProperty ("_signedApplet"));
 this.addMenuItems ("", title, this.popupMenu, bundle);
 try {
@@ -310,6 +312,7 @@ $_M(c$, "addMenuItems",
 ($fz = function (parentId, key, menu, popupResourceBundle) {
 var id = parentId + "." + key;
 var value = popupResourceBundle.getStructure (key);
+if (J.util.Logger.debugging) J.util.Logger.debug (id + " --- " + value);
 if (value == null) {
 this.menuCreateItem (menu, "#" + key, "", "");
 return;
@@ -353,6 +356,7 @@ if (isRadio) this.menuAddButtonGroup (newMenu);
 } else {
 script = popupResourceBundle.getStructure (item);
 if (script == null) script = item;
+if (!this.isJS && item.startsWith ("JS")) continue;
 newMenu = this.menuCreateItem (menu, label, script, id + "." + item);
 }if (!this.allowSignedFeatures && item.startsWith ("SIGNED")) this.menuEnable (newMenu, false);
 if (item.indexOf ("VARIABLE") >= 0) this.htMenus.put (item, newMenu);
@@ -390,7 +394,8 @@ J.util.Logger.info (str);
 $_M(c$, "checkKey", 
 ($fz = function (key) {
 {
-return (key.indexOf("JAVA") < 0 && !(key.indexOf("NOGL") && this.viewer.isWebGL));
+return (key.indexOf("JAVA") < 0 && !(key.indexOf("NOGL") &&
+this.viewer.isWebGL));
 }}, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "rememberCheckbox", 
 ($fz = function (key, checkboxMenuItem) {
@@ -418,6 +423,10 @@ what = J.util.TextFormat.simpleReplace (what, "T/F", (TF ? " TRUE" : " FALSE"));
 }}this.viewer.evalStringQuiet (what);
 }, $fz.isPrivate = true, $fz), "~O,~S,~B");
 Clazz.overrideMethod (c$, "checkMenuClick", 
+function (source, script) {
+this.checkMenuClickGP (source, script);
+}, "~O,~S");
+$_M(c$, "checkMenuClickGP", 
 function (source, script) {
 this.restorePopupMenu ();
 if (script == null || script.length == 0) return;
@@ -571,6 +580,18 @@ var script = "mo " + (i + 1);
 this.menuCreateItem (subMenu, entryName, script, null);
 }
 }, $fz.isPrivate = true, $fz), "java.util.Map");
+$_M(c$, "updateSceneComputedMenu", 
+($fz = function () {
+var menu = this.htMenus.get ("sceneComputedMenu");
+if (menu == null) return;
+this.menuRemoveAll (menu, 0);
+this.menuEnable (menu, false);
+var scenes = this.viewer.getSceneList ();
+if (scenes == null) return;
+for (var i = 0; i < scenes.length; i++) this.menuCreateItem (menu, scenes[i], "restore scene " + J.util.Escape.eS (scenes[i]) + " 1.0", null);
+
+this.menuEnable (menu, true);
+}, $fz.isPrivate = true, $fz));
 $_M(c$, "updatePDBComputedMenus", 
 ($fz = function () {
 var menu = this.htMenus.get ("PDBaaResiduesComputedMenu");
@@ -868,6 +889,7 @@ this.updateMode = 2;
 this.updateSelectMenu ();
 this.updateSpectraMenu ();
 this.updateFRAMESbyModelComputedMenu ();
+this.updateSceneComputedMenu ();
 this.updateModelSetComputedMenu ();
 this.updateAboutSubmenu ();
 }, $fz.isPrivate = true, $fz));

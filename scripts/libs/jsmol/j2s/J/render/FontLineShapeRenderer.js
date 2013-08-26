@@ -7,9 +7,11 @@ this.atomB = null;
 this.atomC = null;
 this.atomD = null;
 this.font3d = null;
-this.pt0 = null;
-this.pt1 = null;
-this.pt2 = null;
+this.pt0i = null;
+this.pt1i = null;
+this.pt2i = null;
+this.s1 = null;
+this.s2 = null;
 this.pointT = null;
 this.pointT2 = null;
 this.pointT3 = null;
@@ -18,13 +20,21 @@ this.vectorT2 = null;
 this.vectorT3 = null;
 this.tickInfo = null;
 this.draw000 = true;
+this.width = 0;
 this.endcap = 3;
+this.colixA = 0;
+this.colixB = 0;
+this.dotsOrDashes = false;
+this.dashDots = null;
+this.asLineOnly = false;
 Clazz.instantialize (this, arguments);
 }, J.render, "FontLineShapeRenderer", J.render.ShapeRenderer);
 Clazz.prepareFields (c$, function () {
-this.pt0 =  new J.util.P3i ();
-this.pt1 =  new J.util.P3i ();
-this.pt2 =  new J.util.P3i ();
+this.pt0i =  new J.util.P3i ();
+this.pt1i =  new J.util.P3i ();
+this.pt2i =  new J.util.P3i ();
+this.s1 =  new J.util.P3i ();
+this.s2 =  new J.util.P3i ();
 this.pointT =  new J.util.P3 ();
 this.pointT2 =  new J.util.P3 ();
 this.pointT3 =  new J.util.P3 ();
@@ -111,7 +121,7 @@ this.pointT3.y += 1.0;
 this.pointT3.z += 1.0;
 }} else {
 this.pointT3.setT (ptRef);
-}this.viewer.transformPtScr (this.pointT3, this.pt2);
+}this.viewer.transformPtScr (this.pointT3, this.pt2i);
 var horizontal = (Math.abs (this.vectorT2.x / this.vectorT2.y) < 0.2);
 var centerX = horizontal;
 var centerY = !horizontal;
@@ -142,13 +152,16 @@ return this.drawLine2 (x1, y1, z1, x2, y2, z2, diameter);
 }, "~N,~N,~N,~N,~N,~N,~N");
 $_M(c$, "drawLine2", 
 function (x1, y1, z1, x2, y2, z2, diameter) {
-this.pt0.set (x1, y1, z1);
-this.pt1.set (x2, y2, z2);
+this.pt0i.set (x1, y1, z1);
+this.pt1i.set (x2, y2, z2);
+if (this.dotsOrDashes) {
+if (this.dashDots != null) this.drawDashed (x1, y1, z1, x2, y2, z2, this.dashDots);
+} else {
 if (diameter < 0) {
-this.g3d.drawDashedLine (4, 2, this.pt0, this.pt1);
+this.g3d.drawDashedLine (4, 2, this.pt0i, this.pt1i);
 return 1;
-}this.g3d.fillCylinder (2, diameter, this.pt0, this.pt1);
-return Clazz.doubleToInt ((diameter + 1) / 2);
+}this.g3d.fillCylinder (2, diameter, this.pt0i, this.pt1i);
+}return Clazz.doubleToInt ((diameter + 1) / 2);
 }, "~N,~N,~N,~N,~N,~N,~N");
 $_M(c$, "drawString", 
 function (x, y, z, radius, rightJustify, centerX, centerY, yRef, sVal) {
@@ -167,4 +180,60 @@ var zT = z - radius - 2;
 if (zT < 1) zT = 1;
 this.g3d.drawString (sVal, this.font3d, xT, yT, zT, zT, 0);
 }, "~N,~N,~N,~N,~B,~B,~B,~N,~S");
+$_M(c$, "drawDashed", 
+function (xA, yA, zA, xB, yB, zB, array) {
+if (array == null || this.width < 0) return;
+var f = array[0];
+var dx = xB - xA;
+var dy = yB - yA;
+var dz = zB - zA;
+var n = 0;
+var isNdots = (array === J.render.FontLineShapeRenderer.ndots);
+var isDots = (isNdots || array === J.render.FontLineShapeRenderer.sixdots);
+if (isDots) {
+var d2 = (dx * dx + dy * dy) / (this.width * this.width);
+if (isNdots) {
+f = (Math.sqrt (d2) / 1.5);
+n = Clazz.floatToInt (f) + 3;
+} else if (d2 < 8) {
+array = J.render.FontLineShapeRenderer.twodots;
+} else if (d2 < 32) {
+array = J.render.FontLineShapeRenderer.fourdots;
+}}var ptS = array[1];
+var ptE = array[2];
+var colixS = this.colixA;
+var colixE = (ptE == 0 ? this.colixB : this.colixA);
+if (n == 0) n = array.length;
+for (var i = 0, pt = 3; pt < n; pt++) {
+i = (isNdots ? i + 1 : array[pt]);
+var xS = Clazz.doubleToInt (Math.floor (xA + dx * i / f));
+var yS = Clazz.doubleToInt (Math.floor (yA + dy * i / f));
+var zS = Clazz.doubleToInt (Math.floor (zA + dz * i / f));
+if (isDots) {
+this.s1.set (xS, yS, zS);
+if (pt == ptS) this.g3d.setColix (this.colixA);
+ else if (pt == ptE) this.g3d.setColix (this.colixB);
+this.g3d.fillSphereI (this.width, this.s1);
+continue;
+}if (pt == ptS) colixS = this.colixB;
+i = array[++pt];
+if (pt == ptE) colixE = this.colixB;
+var xE = Clazz.doubleToInt (Math.floor (xA + dx * i / f));
+var yE = Clazz.doubleToInt (Math.floor (yA + dy * i / f));
+var zE = Clazz.doubleToInt (Math.floor (zA + dz * i / f));
+this.fillCylinder (colixS, colixE, 2, this.width, xS, yS, zS, xE, yE, zE);
+}
+}, "~N,~N,~N,~N,~N,~N,~A");
+$_M(c$, "fillCylinder", 
+function (colixA, colixB, endcaps, diameter, xA, yA, zA, xB, yB, zB) {
+if (this.asLineOnly) this.g3d.drawLine (colixA, colixB, xA, yA, zA, xB, yB, zB);
+ else this.g3d.fillCylinderXYZ (colixA, colixB, endcaps, (!this.isExport || this.mad == 1 ? diameter : this.mad), xA, yA, zA, xB, yB, zB);
+}, "~N,~N,~N,~N,~N,~N,~N,~N,~N,~N");
+Clazz.defineStatics (c$,
+"dashes", [12, 0, 0, 2, 5, 7, 10],
+"hDashes", [10, 7, 6, 1, 3, 4, 6, 7, 9],
+"ndots", [0, 3, 1000],
+"sixdots", [12, 3, 6, 1, 3, 5, 7, 9, 11],
+"fourdots", [13, 3, 5, 2, 5, 8, 11],
+"twodots", [12, 3, 4, 3, 9]);
 });

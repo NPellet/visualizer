@@ -161,8 +161,8 @@ for (var i = gdata.size (); --i >= 0; ) garray[i] = gdata.get (i);
 this.moData.put ("shells", sarray);
 this.moData.put ("gaussians", garray);
 if (J.util.Logger.debugging) {
-J.util.Logger.info (sarray.size () + " slater shells read");
-J.util.Logger.info (this.gaussianCount + " gaussian primitives read");
+J.util.Logger.debug (sarray.size () + " slater shells read");
+J.util.Logger.debug (this.gaussianCount + " gaussian primitives read");
 }this.moData.put ("isNormalized", Boolean.TRUE);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readJaguarMolecularOrbitals", 
@@ -197,7 +197,7 @@ this.setMO (mo);
 }
 }
 this.moData.put ("mos", this.orbitals);
-this.setMOData (this.moData);
+this.finalizeMOData (this.moData);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readFrequencies", 
 ($fz = function () {

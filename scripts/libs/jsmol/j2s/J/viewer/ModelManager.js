@@ -14,7 +14,7 @@ this.viewer = viewer;
 $_M(c$, "zap", 
 function () {
 this.modelSetPathName = this.fileName = null;
-return (this.modelSet = ( new J.modelset.ModelLoader (this.viewer, this.viewer.getZapName (), null, null, null, null)).getModelSet ());
+ new J.modelset.ModelLoader (this.viewer, this.viewer.getZapName (), null, null, null, null);
 });
 $_M(c$, "getModelSetFileName", 
 function () {
@@ -32,7 +32,7 @@ modelSetName = this.modelSet.modelSetName;
 if (modelSetName.equals ("zapped")) modelSetName = null;
  else if (modelSetName.indexOf (" (modified)") < 0) modelSetName += " (modified)";
 } else if (atomSetCollection == null) {
-return this.zap ();
+this.zap ();
 } else {
 this.modelSetPathName = fullPathName;
 this.fileName = fileName;
@@ -43,9 +43,8 @@ if (modelSetName != null) {
 modelSetName = modelSetName.trim ();
 if (modelSetName.length == 0) modelSetName = null;
 }if (modelSetName == null) modelSetName = J.viewer.ModelManager.reduceFilename (fileName);
-}this.modelSet = ( new J.modelset.ModelLoader (this.viewer, modelSetName, loadScript, atomSetCollection, (isAppend ? this.modelSet : null), bsNew)).getModelSet ();
+} new J.modelset.ModelLoader (this.viewer, modelSetName, loadScript, atomSetCollection, (isAppend ? this.modelSet : null), bsNew);
 }if (this.modelSet.getAtomCount () == 0 && !this.modelSet.getModelSetAuxiliaryInfoBoolean ("isPyMOL")) this.zap ();
-return this.modelSet;
 }, "~S,~S,J.util.SB,~O,J.util.BS,~B");
 c$.reduceFilename = $_M(c$, "reduceFilename", 
 ($fz = function (fileName) {

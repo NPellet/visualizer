@@ -314,22 +314,11 @@ return str;
 }, "~S,~S,~S");
 c$.simpleReplace = $_M(c$, "simpleReplace", 
 function (str, strFrom, strTo) {
-if (str == null || str.indexOf (strFrom) < 0 || strFrom.equals (strTo)) return str;
-var fromLength = strFrom.length;
-if (fromLength == 0) return str;
+if (str == null || strFrom.length == 0 || str.indexOf (strFrom) < 0) return str;
 var isOnce = (strTo.indexOf (strFrom) >= 0);
-var ipt;
-while (str.indexOf (strFrom) >= 0) {
-var s =  new J.util.SB ();
-var ipt0 = 0;
-while ((ipt = str.indexOf (strFrom, ipt0)) >= 0) {
-s.append (str.substring (ipt0, ipt)).append (strTo);
-ipt0 = ipt + fromLength;
-}
-s.append (str.substring (ipt0));
-str = s.toString ();
-if (isOnce) break;
-}
+do {
+str = str.$replace (strFrom, strTo);
+} while (!isOnce && str.indexOf (strFrom) >= 0);
 return str;
 }, "~S,~S,~S");
 c$.trim = $_M(c$, "trim", 

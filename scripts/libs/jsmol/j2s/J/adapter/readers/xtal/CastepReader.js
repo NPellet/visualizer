@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.CastepReader", ["java.lang.Double", "$.Float", "J.adapter.smarter.Atom", "J.util.Eigen", "$.Escape", "$.JmolList", "$.Logger", "$.P3", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.CastepReader", ["java.lang.Double", "$.Float", "J.adapter.smarter.Atom", "J.util.Escape", "$.JmolList", "$.Logger", "$.P3", "$.Tensor", "$.TextFormat", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.tokens = null;
 this.isPhonon = false;
@@ -20,6 +20,8 @@ this.qpt2 = 0;
 this.desiredQpt = null;
 this.desiredQ = null;
 this.chargeType = "MULL";
+this.isAllQ = false;
+this.haveCharges = false;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "CastepReader", J.adapter.smarter.AtomSetCollectionReader);
 Clazz.prepareFields (c$, function () {
@@ -33,7 +35,8 @@ this.chargeType = this.filter.substring (this.filter.indexOf ("CHARGE=") + 7);
 if (this.chargeType.length > 4) this.chargeType = this.chargeType.substring (0, 4);
 }this.filter = this.filter.$replace ('(', '{').$replace (')', '}');
 this.filter = J.util.TextFormat.simpleReplace (this.filter, "  ", " ");
-if (this.filter.indexOf ("{") >= 0) this.setDesiredQpt (this.filter.substring (this.filter.indexOf ("{")));
+this.isAllQ = (this.filter.indexOf ("Q=ALL") >= 0);
+if (!this.isAllQ && this.filter.indexOf ("{") >= 0) this.setDesiredQpt (this.filter.substring (this.filter.indexOf ("{")));
 this.filter = J.util.TextFormat.simpleReplace (this.filter, "-PT", "");
 }this.continuing = this.readFileData ();
 });
@@ -126,8 +129,12 @@ this.readOutputAtoms ();
 this.readOutputCharges ();
 } else if (this.doProcessLines && this.line.contains ("Born Effective Charges")) {
 this.readOutputBornChargeTensors ();
-} else if (this.line.contains ("Final energy")) {
-this.readEnergy ();
+} else if (this.line.contains ("Final energy ")) {
+this.readEnergy (3);
+} else if (this.line.contains ("Dispersion corrected final energy*")) {
+this.readEnergy (5);
+} else if (this.line.contains ("Total energy corrected")) {
+this.readEnergy (8);
 }return true;
 }if (this.line.contains ("<-- E")) {
 this.readPhononTrajectories ();
@@ -163,22 +170,30 @@ this.setAtomCoordXYZ (atom, this.parseFloatStr (this.tokens[3]), this.parseFloat
 }
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readEnergy", 
-($fz = function () {
+($fz = function (pt) {
 this.tokens = this.getTokens ();
-var energy = Double.$valueOf (Double.parseDouble (this.tokens[4]));
+try {
+var energy = Double.$valueOf (Double.parseDouble (this.tokens[pt]));
 this.atomSetCollection.setAtomSetName ("Energy = " + energy + " eV");
 this.atomSetCollection.setAtomSetEnergy ("" + energy, energy.floatValue ());
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("Energy", energy);
+} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+this.appendLoadNote ("CASTEP Energy could not be read: " + this.line);
+} else {
+throw e;
+}
+}
 this.applySymmetryAndSetTrajectory ();
-this.atomSetCollection.newAtomSet ();
+this.atomSetCollection.newAtomSetClear (false);
 this.setLatticeVectors ();
-}, $fz.isPrivate = true, $fz));
+}, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "readPhononTrajectories", 
 ($fz = function () {
 this.isTrajectory = (this.desiredVibrationNumber <= 0);
 this.doApplySymmetry = true;
 while (this.line != null && this.line.contains ("<-- E")) {
-this.atomSetCollection.newAtomSet ();
+this.atomSetCollection.newAtomSetClear (false);
 this.discardLinesUntilContains ("<-- h");
 this.setSpaceGroupName ("P1");
 this.abc = this.read3Vectors (true);
@@ -196,18 +211,17 @@ this.applySymmetryAndSetTrajectory ();
 this.discardLinesUntilContains ("<-- E");
 }
 }, $fz.isPrivate = true, $fz));
-$_M(c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeReader", 
 function () {
 if (this.isPhonon || this.isOutput) {
 this.isTrajectory = false;
-Clazz.superCall (this, J.adapter.readers.xtal.CastepReader, "finalizeReader", []);
-return;
-}this.doApplySymmetry = true;
+} else {
+this.doApplySymmetry = true;
 this.setLatticeVectors ();
 var nAtoms = this.atomSetCollection.getAtomCount ();
 for (var i = 0; i < nAtoms; i++) this.setAtomCoord (this.atomSetCollection.getAtom (i));
 
-Clazz.superCall (this, J.adapter.readers.xtal.CastepReader, "finalizeReader", []);
+}this.finalizeReaderASCR ();
 });
 $_M(c$, "setLatticeVectors", 
 ($fz = function () {
@@ -328,15 +342,17 @@ $_M(c$, "readOutputBornChargeTensors",
 ($fz = function () {
 if (this.readLine ().indexOf ("--------") < 0) return;
 var atoms = this.atomSetCollection.getAtoms ();
-while (this.readLine ().indexOf ('=') < 0) this.getOutputEllipsoid (atoms[this.readOutputAtomIndex ()], this.line.substring (12));
+this.appendLoadNote ("Ellipsoids: Born Charge Tensors");
+while (this.readLine ().indexOf ('=') < 0) this.getTensor (atoms[this.readOutputAtomIndex ()], this.line.substring (12));
 
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readOutputAtomIndex", 
 ($fz = function () {
 this.tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
-return this.atomSetCollection.getAtomIndexFromName (this.tokens[0] + this.tokens[1]);
+var name = this.tokens[0] + this.tokens[1];
+return this.atomSetCollection.getAtomIndexFromName (name);
 }, $fz.isPrivate = true, $fz));
-$_M(c$, "getOutputEllipsoid", 
+$_M(c$, "getTensor", 
 ($fz = function (atom, line0) {
 var data =  Clazz.newFloatArray (9, 0);
 var a =  Clazz.newDoubleArray (3, 3, 0);
@@ -345,20 +361,9 @@ J.util.Logger.info ("tensor " + atom.atomName + "\t" + J.util.Escape.eAF (data))
 for (var p = 0, i = 0; i < 3; i++) for (var j = 0; j < 3; j++) a[i][j] = data[p++];
 
 
-var x = 0;
-var y = 0;
-var z = 0;
-if (a[0][1] != a[1][0]) {
-z = (a[0][1] - a[1][0]) / 2;
-a[0][1] = a[1][0] = (a[0][1] + a[1][0]) / 2;
-}if (a[1][2] != a[2][1]) {
-x = (a[1][2] - a[2][1]) / 2;
-a[1][2] = a[2][1] = (a[1][2] + a[2][1]) / 2;
-}if (a[0][2] != a[2][0]) {
-y = -(a[0][2] - a[2][0]) / 2;
-a[0][2] = a[2][0] = (a[0][2] + a[2][0]) / 2;
-}atom.setEllipsoid (J.util.Eigen.getEllipsoidDD (a));
-this.atomSetCollection.addVibrationVector (atom.atomIndex, x, y, z);
+atom.addTensor (J.util.Tensor.getTensorFromAsymmetricTensor (a, "charge", atom.atomName + " " + line0), null);
+if (!this.haveCharges) this.appendLoadNote ("Ellipsoids set \"charge\": Born Effective Charges");
+this.haveCharges = true;
 }, $fz.isPrivate = true, $fz), "J.adapter.smarter.Atom,~S");
 $_M(c$, "readOutputCharges", 
 ($fz = function () {
@@ -412,11 +417,11 @@ var fcoord = this.getFractionalCoord (qvec);
 var qtoks = "{" + this.tokens[2] + " " + this.tokens[3] + " " + this.tokens[4] + "}";
 if (fcoord == null) fcoord = qtoks;
  else fcoord = "{" + fcoord + "}";
-var isOK = false;
+var isOK = this.isAllQ;
 var isSecond = (this.tokens[1].equals (this.lastQPt));
 this.qpt2 = (isSecond ? this.qpt2 + 1 : 1);
 this.lastQPt = this.tokens[1];
-if (this.filter != null && this.checkFilterKey ("Q=")) {
+if (!isOK && this.filter != null && this.checkFilterKey ("Q=")) {
 if (this.desiredQpt != null) {
 v.sub2 (this.desiredQpt, qvec);
 if (v.length () < 0.001) fcoord = this.desiredQ;
@@ -439,7 +444,7 @@ isOK = true;
 }if (this.ptSupercell == null || !this.havePhonons) this.appendLoadNote (this.line);
 if (!isOK && isSecond) return;
 if (!isOK && (this.ptSupercell == null) == !isGammaPoint) return;
-if (this.havePhonons) return;
+if (this.havePhonons && !this.isAllQ) return;
 this.havePhonons = true;
 var qname = "q=" + this.lastQPt + " " + fcoord;
 this.applySymmetryAndSetTrajectory ();

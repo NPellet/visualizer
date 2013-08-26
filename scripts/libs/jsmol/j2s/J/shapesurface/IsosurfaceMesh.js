@@ -16,7 +16,6 @@ this.centers = null;
 this.contourValues = null;
 this.contourColixes = null;
 this.colorEncoder = null;
-this.volumeRenderPointSize = 0.15;
 this.bsVdw = null;
 this.colorPhased = false;
 Clazz.instantialize (this, arguments);
@@ -56,7 +55,6 @@ this.vertexColorMap = null;
 this.vertexIncrement = 1;
 this.vertexSets = null;
 this.vertexValues = null;
-this.volumeRenderPointSize = 0.15;
 }, "~S,~B");
 $_M(c$, "allocVertexColixes", 
 function () {
@@ -303,28 +301,47 @@ this.jvxlData.contourValues = null;
 this.jvxlData.contourColixes = null;
 this.jvxlData.vContours = null;
 });
-$_M(c$, "colorAtoms", 
-function (colix, bs) {
-this.colorVertices2 (colix, bs, true);
-}, "~N,J.util.BS");
+$_M(c$, "setVertexColorMap", 
+function () {
+this.vertexColorMap =  new java.util.Hashtable ();
+var lastColix = -999;
+var bs = null;
+for (var i = this.vertexCount; --i >= 0; ) {
+var c = this.vertexColixes[i];
+if (c != lastColix) {
+var color = J.util.C.getHexCode (lastColix = c);
+bs = this.vertexColorMap.get (color);
+if (bs == null) this.vertexColorMap.put (color, bs =  new J.util.BS ());
+}bs.set (i);
+}
+});
+$_M(c$, "setVertexColixesForAtoms", 
+function (viewer, colixes, atomMap, bs) {
+this.jvxlData.vertexDataOnly = true;
+this.jvxlData.vertexColors =  Clazz.newIntArray (this.vertexCount, 0);
+this.jvxlData.nVertexColors = this.vertexCount;
+var atoms = viewer.modelSet.atoms;
+for (var i = this.mergeVertexCount0; i < this.vertexCount; i++) {
+var iAtom = this.vertexSource[i];
+if (iAtom < 0 || !bs.get (iAtom)) continue;
+this.jvxlData.vertexColors[i] = viewer.getColorArgbOrGray (this.vertexColixes[i] = J.util.C.copyColixTranslucency (this.colix, atoms[iAtom].getColix ()));
+var colix = (colixes == null ? 0 : colixes[atomMap[iAtom]]);
+if (colix == 0) colix = atoms[iAtom].getColix ();
+this.vertexColixes[i] = J.util.C.copyColixTranslucency (this.colix, colix);
+}
+}, "J.viewer.Viewer,~A,~A,J.util.BS");
 $_M(c$, "colorVertices", 
-function (colix, bs) {
-this.colorVertices2 (colix, bs, false);
-}, "~N,J.util.BS");
-$_M(c$, "colorVertices2", 
-($fz = function (colix, bs, isAtoms) {
+function (colix, bs, isAtoms) {
 if (this.vertexSource == null) return;
 colix = J.util.C.copyColixTranslucency (this.colix, colix);
 var bsVertices = (isAtoms ?  new J.util.BS () : bs);
-if (this.vertexColixes == null || this.vertexColorMap == null && this.isColorSolid) {
-this.vertexColixes =  Clazz.newShortArray (this.vertexCount, 0);
-for (var i = 0; i < this.vertexCount; i++) this.vertexColixes[i] = this.colix;
-
-}this.isColorSolid = false;
+this.checkAllocColixes ();
 if (isAtoms) for (var i = 0; i < this.vertexCount; i++) {
-if (bs.get (this.vertexSource[i])) {
+var pt = this.vertexSource[i];
+if (pt < 0) continue;
+if (bs.get (pt)) {
 this.vertexColixes[i] = colix;
-bsVertices.set (i);
+if (bsVertices != null) bsVertices.set (i);
 }}
  else for (var i = 0; i < this.vertexCount; i++) if (bsVertices.get (i)) this.vertexColixes[i] = colix;
 
@@ -333,7 +350,12 @@ return;
 }var color = J.util.C.getHexCode (colix);
 if (this.vertexColorMap == null) this.vertexColorMap =  new java.util.Hashtable ();
 J.shapesurface.IsosurfaceMesh.addColorToMap (this.vertexColorMap, color, bs);
-}, $fz.isPrivate = true, $fz), "~N,J.util.BS,~B");
+}, "~N,J.util.BS,~B");
+$_M(c$, "checkAllocColixes", 
+function () {
+if (this.vertexColixes == null || this.vertexColorMap == null && this.isColorSolid) this.allocVertexColixes ();
+this.isColorSolid = false;
+});
 c$.addColorToMap = $_M(c$, "addColorToMap", 
 ($fz = function (colorMap, color, bs) {
 var bsMap = null;
@@ -390,21 +412,26 @@ this.colix = J.util.C.getColixS (this.jvxlData.color);
 this.colix = J.util.C.getColixTranslucent3 (this.colix, this.jvxlData.translucency != 0, this.jvxlData.translucency);
 if (this.jvxlData.meshColor != null) this.meshColix = J.util.C.getColixS (this.jvxlData.meshColor);
 this.setJvxlDataRendering ();
-this.isColorSolid = !this.jvxlData.isBicolorMap && this.jvxlData.vertexColors == null;
+this.isColorSolid = !this.jvxlData.isBicolorMap && this.jvxlData.vertexColors == null && this.jvxlData.vertexColorMap == null;
 if (this.colorEncoder != null) {
+if (this.jvxlData.vertexColorMap == null) {
 if (this.jvxlData.colorScheme != null) {
 var colorScheme = this.jvxlData.colorScheme;
 var isTranslucent = colorScheme.startsWith ("translucent ");
 if (isTranslucent) colorScheme = colorScheme.substring (12);
 this.colorEncoder.setColorScheme (colorScheme, isTranslucent);
 this.remapColors (null, null, NaN);
-}if (this.jvxlData.vertexColorMap != null) for (var entry, $entry = this.jvxlData.vertexColorMap.entrySet ().iterator (); $entry.hasNext () && ((entry = $entry.next ()) || true);) {
+}} else {
+if (this.jvxlData.baseColor != null) {
+for (var i = this.vertexCount; --i >= 0; ) this.vertexColixes[i] = this.colix;
+
+}for (var entry, $entry = this.jvxlData.vertexColorMap.entrySet ().iterator (); $entry.hasNext () && ((entry = $entry.next ()) || true);) {
 var bsMap = entry.getValue ();
 var colix = J.util.C.copyColixTranslucency (this.colix, J.util.C.getColixS (entry.getKey ()));
 for (var i = bsMap.nextSetBit (0); i >= 0; i = bsMap.nextSetBit (i + 1)) this.vertexColixes[i] = colix;
 
 }
-}}, "~N");
+}}}, "~N");
 $_M(c$, "setJvxlDataRendering", 
 function () {
 if (this.jvxlData.rendering != null) {
@@ -427,9 +454,10 @@ var max = ce.hi;
 var inherit = (this.vertexSource != null && ce.currentPalette == 14);
 this.vertexColorMap = null;
 this.polygonColixes = null;
+this.jvxlData.baseColor = null;
 this.jvxlData.vertexCount = this.vertexCount;
 if (this.vertexValues == null || this.jvxlData.vertexCount == 0) return;
-if (this.vertexColixes == null || this.vertexColixes.length != this.vertexCount) this.vertexColixes =  Clazz.newShortArray (this.vertexCount, 0);
+if (this.vertexColixes == null || this.vertexColixes.length != this.vertexCount) this.allocVertexColixes ();
 if (inherit) {
 this.jvxlData.vertexDataOnly = true;
 this.jvxlData.vertexColors =  Clazz.newIntArray (this.vertexCount, 0);
@@ -440,7 +468,9 @@ var pt = this.vertexSource[i];
 if (pt < atoms.length) this.jvxlData.vertexColors[i] = viewer.getColorArgbOrGray (this.vertexColixes[i] = J.util.C.copyColixTranslucency (this.colix, atoms[pt].getColix ()));
 }
 return;
-}if (this.jvxlData.isBicolorMap) {
+}this.jvxlData.vertexColors = null;
+this.jvxlData.vertexColorMap = null;
+if (this.jvxlData.isBicolorMap) {
 for (var i = this.mergeVertexCount0; i < this.vertexCount; i++) this.vertexColixes[i] = J.util.C.copyColixTranslucency (this.colix, this.vertexValues[i] < 0 ? this.jvxlData.minColorIndex : this.jvxlData.maxColorIndex);
 
 return;

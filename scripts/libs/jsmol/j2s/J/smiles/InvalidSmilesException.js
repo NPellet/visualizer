@@ -13,7 +13,6 @@ Clazz.makeConstructor (c$,
 function (message) {
 Clazz.superConstructor (this, J.smiles.InvalidSmilesException, [message]);
 ($t$ = J.smiles.InvalidSmilesException.lastError = message, J.smiles.InvalidSmilesException.prototype.lastError = J.smiles.InvalidSmilesException.lastError, $t$);
-this.printStackTrace ();
 }, "~S");
 Clazz.makeConstructor (c$, 
 function (cause) {

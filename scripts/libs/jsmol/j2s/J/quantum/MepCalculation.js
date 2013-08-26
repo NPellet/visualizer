@@ -26,7 +26,7 @@ f = NaN;
 } else {
 f = this.getTabulatedPotential (atoms[i]);
 if (Float.isNaN (f)) f = 0;
-}if (J.util.Logger.debugging) J.util.Logger.info (atoms[i].getInfo () + " " + f);
+}if (J.util.Logger.debugging) J.util.Logger.debug (atoms[i].getInfo () + " " + f);
 potentials[i] = f;
 }
 }, "~A,~A,J.util.BS,J.util.BS,J.util.BS,~S");
@@ -62,7 +62,7 @@ function () {
 for (var atomIndex = this.qmAtoms.length; --atomIndex >= 0; ) {
 if ((this.thisAtom = this.qmAtoms[atomIndex]) == null) continue;
 var x0 = this.potentials[atomIndex];
-if (J.util.Logger.debugging) J.util.Logger.info ("process map for atom " + atomIndex + this.thisAtom + "  charge=" + x0);
+if (J.util.Logger.debugging) J.util.Logger.debug ("process map for atom " + atomIndex + this.thisAtom + "  charge=" + x0);
 this.thisAtom.setXYZ (this, true);
 for (var ix = this.xMax; --ix >= this.xMin; ) {
 var dX = this.X2[ix];
@@ -122,7 +122,7 @@ while ((line = br.readLine ()) != null) {
 if (line.startsWith ("#")) continue;
 var vs = J.util.Parser.getTokens (line);
 if (vs.length < 2) continue;
-if (J.util.Logger.debugging) J.util.Logger.info (line);
+if (J.util.Logger.debugging) J.util.Logger.debug (line);
 this.htAtomicPotentials.put (vs[0], Float.$valueOf (J.util.Parser.parseFloatStr (vs[1])));
 }
 br.close ();

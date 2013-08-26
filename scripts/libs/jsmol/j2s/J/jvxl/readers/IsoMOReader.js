@@ -23,9 +23,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoMOReader, []);
 });
-$_M(c$, "init", 
+Clazz.overrideMethod (c$, "init", 
 function (sg) {
-Clazz.superCall (this, J.jvxl.readers.IsoMOReader, "init", [sg]);
+this.initADR (sg);
 this.isNci = (this.params.qmOrbitalType == 3);
 if (this.isNci) {
 this.isXLowToHigh = this.hasColorData = true;

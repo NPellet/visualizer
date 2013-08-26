@@ -15,9 +15,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.VolumeDataReader, []);
 });
-$_M(c$, "init", 
+$_M(c$, "initVDR", 
 function (sg) {
-Clazz.superCall (this, J.jvxl.readers.VolumeDataReader, "init", [sg]);
+this.initSR (sg);
 this.useOriginStepsPoints = (this.params.origin != null && this.params.points != null && this.params.steps != null);
 this.dataType = this.params.dataType;
 this.precalculateVoxelData = true;

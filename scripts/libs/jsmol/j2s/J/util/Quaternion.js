@@ -80,8 +80,8 @@ function (pt, theta) {
 if (pt.x == 0 && pt.y == 0 && pt.z == 0) {
 this.q0 = 1;
 return;
-}var fact = (Math.sin (theta / 2 * 3.141592653589793 / 180) / Math.sqrt (pt.x * pt.x + pt.y * pt.y + pt.z * pt.z));
-this.q0 = (Math.cos (theta / 2 * 3.141592653589793 / 180));
+}var fact = (Math.sin (theta / 2 * 0.017453292519943295) / Math.sqrt (pt.x * pt.x + pt.y * pt.y + pt.z * pt.z));
+this.q0 = (Math.cos (theta / 2 * 0.017453292519943295));
 this.q1 = (pt.x * fact);
 this.q2 = (pt.y * fact);
 this.q3 = (pt.z * fact);
@@ -142,10 +142,11 @@ this.q3 *= -1;
 c$.getQuaternionFrame = $_M(c$, "getQuaternionFrame", 
 function (center, x, xy) {
 var vA = J.util.V3.newV (x);
-vA.sub (center);
 var vB = J.util.V3.newV (xy);
+if (center != null) {
+vA.sub (center);
 vB.sub (center);
-return J.util.Quaternion.getQuaternionFrameV (vA, vB, null, false);
+}return J.util.Quaternion.getQuaternionFrameV (vA, vB, null, false);
 }, "J.util.P3,J.util.Tuple3f,J.util.Tuple3f");
 c$.getQuaternionFrameV = $_M(c$, "getQuaternionFrameV", 
 function (vA, vB, vC, yBased) {
@@ -426,5 +427,27 @@ sum2 = sum2 - sum * sum / n;
 if (sum2 < 0) sum2 = 0;
 return Math.sqrt (sum2 / (n - 1));
 }, $fz.isPrivate = true, $fz), "~A,J.util.Quaternion");
+$_M(c$, "getEulerZYZ", 
+function () {
+var rA;
+var rB;
+var rG;
+rA = Math.atan2 (2 * (this.q2 * this.q3 - this.q0 * this.q1), 2 * (this.q1 * this.q3 + this.q0 * this.q2));
+rB = Math.acos (this.q3 * this.q3 - this.q2 * this.q2 - this.q1 * this.q1 + this.q0 * this.q0);
+rG = Math.atan2 (2 * (this.q2 * this.q3 + this.q0 * this.q1), 2 * (this.q0 * this.q2 - this.q1 * this.q3));
+return [(rA / 0.017453292519943295), (rB / 0.017453292519943295), (rG / 0.017453292519943295)];
+});
+$_M(c$, "getEulerZXZ", 
+function () {
+var rA;
+var rB;
+var rG;
+rA = Math.atan2 (2 * (this.q1 * this.q3 + this.q0 * this.q2), 2 * (this.q0 * this.q1 - this.q2 * this.q3));
+rB = Math.acos (this.q3 * this.q3 - this.q2 * this.q2 - this.q1 * this.q1 + this.q0 * this.q0);
+rG = Math.atan2 (2 * (this.q1 * this.q3 - this.q0 * this.q2), 2 * (this.q2 * this.q3 + this.q0 * this.q1));
+return [(rA / 0.017453292519943295), (rB / 0.017453292519943295), (rG / 0.017453292519943295)];
+});
 c$.qZero = c$.prototype.qZero =  new J.util.P4 ();
+Clazz.defineStatics (c$,
+"RAD_PER_DEG", 0.017453292519943295);
 });

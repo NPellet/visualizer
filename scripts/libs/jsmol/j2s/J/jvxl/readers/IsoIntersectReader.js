@@ -20,6 +20,10 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoIntersectReader, []);
 });
+Clazz.overrideMethod (c$, "init", 
+function (sg) {
+this.initADR (sg);
+}, "J.jvxl.readers.SurfaceGenerator");
 Clazz.overrideMethod (c$, "readVolumeParameters", 
 function (isMapData) {
 this.setup (isMapData);

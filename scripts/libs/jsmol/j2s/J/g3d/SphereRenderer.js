@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.g3d");
-Clazz.load (["J.util.P3", "$.Shader"], "J.g3d.SphereRenderer", ["J.util.Quadric"], function () {
+Clazz.load (["J.util.P3", "$.Shader"], "J.g3d.SphereRenderer", ["J.util.GData"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.g3d = null;
 this.shader = null;
@@ -356,7 +356,7 @@ continue;
 }if (this.tScreened && (((xCurrent ^ yCurrent) & 1) != 0)) continue;
 var zPixel;
 if (isEllipsoid) {
-if (!J.util.Quadric.getQuardricZ (xCurrent, yCurrent, this.coef, this.zroot)) {
+if (!J.g3d.SphereRenderer.getQuardricZ (xCurrent, yCurrent, this.coef, this.zroot)) {
 if (iRoot >= 0) {
 break;
 }continue;
@@ -364,11 +364,11 @@ break;
 zPixel = Clazz.doubleToInt (this.zroot[iRoot]);
 if (zPixel == 0) zPixel = this.z;
 mode = 2;
+this.z0 = zPixel;
 if (checkOctant) {
 this.ptTemp.set (xCurrent - this.x, yCurrent - this.y, zPixel - this.z);
 this.mat.transform (this.ptTemp);
-var thisOctant = J.util.Quadric.getOctant (this.ptTemp);
-this.z0 = zPixel;
+var thisOctant = J.util.GData.getScreenOctant (this.ptTemp);
 if (thisOctant == this.selectedOctant) {
 iShade = this.getPlaneShade (xCurrent, yCurrent, this.zroot);
 zPixel = Clazz.doubleToInt (this.zroot[0]);
@@ -377,8 +377,8 @@ mode = 3;
 if (isCore) {
 this.z0 = zPixel = this.slab;
 mode = 0;
-}if (zPixel < this.slab || zPixel > this.depth || this.zbuf[offset] <= this.z0) continue;
-}} else {
+}}if (zPixel < this.slab || zPixel > this.depth || this.zbuf[offset] <= this.z0) continue;
+} else {
 var zOffset = Clazz.doubleToInt (Math.sqrt (s2 - j2));
 zPixel = this.z + (this.z < this.slab ? zOffset : -zOffset);
 var isCore = (this.z < this.slab ? zPixel >= this.slab : zPixel < this.slab);
@@ -408,6 +408,17 @@ this.g3d.addPixel (offset, zPixel, this.shades[iShade]);
 randu = ((randu + xCurrent + yCurrent) | 1) & 0x7FFFFFFF;
 }
 }, $fz.isPrivate = true, $fz), "~N,~N,~N");
+c$.getQuardricZ = $_M(c$, "getQuardricZ", 
+($fz = function (x, y, coef, zroot) {
+var b_2a = (coef[4] * x + coef[5] * y + coef[8]) / coef[2] / 2;
+var c_a = (coef[0] * x * x + coef[1] * y * y + coef[3] * x * y + coef[6] * x + coef[7] * y - 1) / coef[2];
+var f = b_2a * b_2a - c_a;
+if (f < 0) return false;
+f = Math.sqrt (f);
+zroot[0] = (-b_2a - f);
+zroot[1] = (-b_2a + f);
+return true;
+}, $fz.isPrivate = true, $fz), "~N,~N,~A,~A");
 $_M(c$, "setPlaneDerivatives", 
 ($fz = function () {
 this.planeShade = -1;

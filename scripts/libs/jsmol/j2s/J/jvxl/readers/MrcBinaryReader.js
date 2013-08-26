@@ -8,10 +8,10 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.MrcBinaryReader, []);
 });
-$_M(c$, "init2", 
+Clazz.overrideMethod (c$, "init2", 
 function (sg, brNull) {
 var fileName = (sg.getReaderData ())[0];
-Clazz.superCall (this, J.jvxl.readers.MrcBinaryReader, "init2", [sg, null]);
+this.init2MFR (sg, this.br);
 this.binarydoc = this.newBinaryDocument ();
 this.binarydoc.setStream (sg.getAtomDataServer ().getBufferedInputStream (fileName), true);
 this.nSurfaces = 1;

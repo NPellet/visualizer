@@ -290,15 +290,16 @@ var os =  new java.util.zip.ZipOutputStream (bos == null ?  new java.io.FileOutp
 for (var i = 0; i < fileNamesAndByteArrays.size (); i += 3) {
 var fname = fileNamesAndByteArrays.get (i);
 var bytes = null;
+var data = fm.cacheGet (fname, false);
+if (Clazz.instanceOf (data, java.util.Map)) continue;
 if (fname.indexOf ("file:/") == 0) {
 fname = fname.substring (5);
 if (fname.length > 2 && fname.charAt (2) == ':') fname = fname.substring (1);
 } else if (fname.indexOf ("cache://") == 0) {
-var data = fm.cacheGet (fname, false);
 fname = fname.substring (8);
-bytes = (J.util.Escape.isAB (data) ? data : (data).getBytes ());
 }var fnameShort = fileNamesAndByteArrays.get (i + 1);
 if (fnameShort == null) fnameShort = fname;
+if (data != null) bytes = (J.util.Escape.isAB (data) ? data : (data).getBytes ());
 if (bytes == null) bytes = fileNamesAndByteArrays.get (i + 2);
 var key = ";" + fnameShort + ";";
 if (fileList.indexOf (key) >= 0) {
@@ -398,7 +399,7 @@ if (fileRoot.indexOf (".") >= 0) fileRoot = fileRoot.substring (0, fileRoot.inde
 }var newFileNames =  new J.util.JmolList ();
 for (var iFile = 0; iFile < nFiles; iFile++) {
 var name = fileNames.get (iFile);
-var isLocal = !viewer.isJS && J.viewer.FileManager.isLocal (name);
+var isLocal = !viewer.$isJS && J.viewer.FileManager.isLocal (name);
 var newName = name;
 if (isLocal || includeRemoteFiles) {
 var ptSlash = name.lastIndexOf ("/");
@@ -464,7 +465,7 @@ var useFileManifest = (manifest == null);
 if (useFileManifest) manifest = (zipDirectory.length > 0 ? zipDirectory[0] : "");
 var haveManifest = (manifest.length > 0);
 if (haveManifest) {
-if (J.util.Logger.debugging) J.util.Logger.info ("manifest for  " + fileName + ":\n" + manifest);
+if (J.util.Logger.debugging) J.util.Logger.debug ("manifest for  " + fileName + ":\n" + manifest);
 }var ignoreErrors = (manifest.indexOf ("IGNORE_ERRORS") >= 0);
 var selectAll = (manifest.indexOf ("IGNORE_MANIFEST") >= 0);
 var exceptFiles = (manifest.indexOf ("EXCEPT_FILES") >= 0);
@@ -562,7 +563,7 @@ for (var i = 0; i < list.length; i++) {
 var file = list[i];
 if (file.length == 0 || file.indexOf ("#") == 0) continue;
 if (htCollections.containsKey (file)) vCollections.addLast (htCollections.get (file));
- else if (J.util.Logger.debugging) J.util.Logger.info ("manifested file " + file + " was not found in " + fileName);
+ else if (J.util.Logger.debugging) J.util.Logger.debug ("manifested file " + file + " was not found in " + fileName);
 }
 }if (!doCombine) return vCollections;
 var result =  new J.adapter.smarter.AtomSetCollection ("Array", null, null, vCollections);
@@ -687,16 +688,14 @@ if (pathName.indexOf ("|") < 0) shortName = cName;
 }if (pngjCache.containsKey (shortName)) {
 J.util.Logger.info ("FileManager using memory cache " + shortName);
 return pngjCache.get (shortName);
-}for (var key, $key = pngjCache.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) System.out.println (key);
-
-System.out.println ("FileManager memory cache (" + pngjCache.size () + ") did not find " + pathName + " as " + shortName);
-if (!isMin || !this.cachePngjFile (fm, [pathName, null])) return null;
+}if (!isMin || !this.cachePngjFile (fm, [pathName, null])) return null;
 J.util.Logger.info ("FileManager using memory cache " + shortName);
 return pngjCache.get (shortName);
 }, "J.viewer.FileManager,~S");
 Clazz.overrideMethod (c$, "cachePngjFile", 
 function (fm, data) {
 var pngjCache = fm.pngjCache =  new java.util.Hashtable ();
+if (data == null) return false;
 data[1] = null;
 if (data[0] == null) return false;
 data[0] = J.io.JmolBinary.getZipRoot (data[0]);

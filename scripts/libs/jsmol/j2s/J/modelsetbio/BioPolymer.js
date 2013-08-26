@@ -70,12 +70,14 @@ this.invalidLead = false;
 }return this.leadAtomIndices;
 });
 $_M(c$, "getIndex", 
-function (chainID, seqcode) {
+function (chainID, seqcode, istart, iend) {
 var i;
-for (i = this.monomerCount; --i >= 0; ) if (this.monomers[i].getChainID () == chainID) if (this.monomers[i].getSeqcode () == seqcode) break;
-
+for (i = this.monomerCount; --i >= 0; ) {
+var m = this.monomers[i];
+if (m.chain.chainID == chainID && m.seqcode == seqcode && (istart < 0 || istart == m.firstAtomIndex || iend == m.lastAtomIndex)) break;
+}
 return i;
-}, "~S,~N");
+}, "~N,~N,~N,~N");
 $_M(c$, "getLeadPoint", 
 function (monomerIndex) {
 return this.monomers[monomerIndex].getLeadAtom ();
@@ -388,10 +390,10 @@ if (bsAtoms == null || bsAtoms.get (monomer.leadAtomIndex)) {
 var a = monomer.getLeadAtom ();
 var id = monomer.getUniqueID ();
 if (isRamachandran) {
-if (ctype == 'S') monomer.setGroupParameter (1112539148, NaN);
-x = monomer.getGroupParameter (1112539143);
-y = monomer.getGroupParameter (1112539144);
-z = monomer.getGroupParameter (1112539142);
+if (ctype == 'S') monomer.setGroupParameter (1112539150, NaN);
+x = monomer.getGroupParameter (1112539145);
+y = monomer.getGroupParameter (1112539146);
+z = monomer.getGroupParameter (1112539144);
 if (z < -90) z += 360;
 z -= 180;
 if (Float.isNaN (x) || Float.isNaN (y) || Float.isNaN (z)) {
@@ -400,7 +402,7 @@ continue;
 }var angledeg = (writeRamachandranStraightness ? p.calculateRamachandranHelixAngle (m, qtype) : 0);
 var straightness = (calcRamachandranStraightness || writeRamachandranStraightness ? J.modelsetbio.BioPolymer.getStraightness (Math.cos (angledeg / 2 / 180 * 3.141592653589793)) : 0);
 if (ctype == 'S') {
-monomer.setGroupParameter (1112539148, straightness);
+monomer.setGroupParameter (1112539150, straightness);
 continue;
 }if (isDraw) {
 if (bsSelected != null && !bsSelected.get (a.getIndex ())) continue;
@@ -429,7 +431,7 @@ q = monomer.getQuaternion (qtype);
 if (q != null) {
 q.setRef (qref);
 qref = J.util.Quaternion.newQ (q);
-}if (derivType == 2) monomer.setGroupParameter (1112539148, NaN);
+}if (derivType == 2) monomer.setGroupParameter (1112539150, NaN);
 if (q == null) {
 qprev = null;
 qref = null;
@@ -452,7 +454,7 @@ q = null;
 q = dq.rightDifference (dqprev);
 val1 = J.modelsetbio.BioPolymer.getQuaternionStraightness (id, dqprev, dq);
 val2 = J.modelsetbio.BioPolymer.get3DStraightness (id, dqprev, dq);
-aprev.getGroup ().setGroupParameter (1112539148, useQuaternionStraightness ? val1 : val2);
+aprev.getGroup ().setGroupParameter (1112539150, useQuaternionStraightness ? val1 : val2);
 }dqprev = dq;
 }aprev = anext;
 qprev = qnext;
@@ -554,12 +556,6 @@ $_M(c$, "calculateDssp",
 function (bioPolymers, bioPolymerCount, vHBonds, doReport, dsspIgnoreHydrogens, setStructure) {
 return J.modelsetbio.AminoPolymer.calculateStructuresDssp (bioPolymers, bioPolymerCount, vHBonds, doReport, dsspIgnoreHydrogens, setStructure);
 }, "~A,~N,J.util.JmolList,~B,~B,~B");
-$_M(c$, "addStructure", 
-function (type, structureID, serialID, strandCount, startChainID, startSeqcode, endChainID, endSeqcode, istart, iend, bsAssigned) {
-}, "J.constant.EnumStructure,~S,~N,~N,~S,~N,~S,~N,~N,~N,J.util.BS");
-$_M(c$, "calculateStructures", 
-function (alphaOnly) {
-}, "~B");
 $_M(c$, "calcRasmolHydrogenBonds", 
 function (polymer, bsA, bsB, vHBonds, nMaxPerResidue, min, checkDistances, dsspIgnoreHydrogens) {
 }, "J.modelsetbio.BioPolymer,J.util.BS,J.util.BS,J.util.JmolList,~N,~A,~B,~B");

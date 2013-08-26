@@ -10,6 +10,7 @@ this.angleCalc = null;
 this.torsionCalc = null;
 this.oopCalc = null;
 this.vdwCalc = null;
+this.posCalc = null;
 if (!Clazz.isClassDefined ("J.minimize.forcefield.CalculationsUFF.DistanceCalc")) {
 J.minimize.forcefield.CalculationsUFF.$CalculationsUFF$DistanceCalc$ ();
 }
@@ -18,6 +19,9 @@ J.minimize.forcefield.CalculationsUFF.$CalculationsUFF$AngleCalc$ ();
 }
 if (!Clazz.isClassDefined ("J.minimize.forcefield.CalculationsUFF.TorsionCalc")) {
 J.minimize.forcefield.CalculationsUFF.$CalculationsUFF$TorsionCalc$ ();
+}
+if (!Clazz.isClassDefined ("J.minimize.forcefield.CalculationsUFF.PositionCalc")) {
+J.minimize.forcefield.CalculationsUFF.$CalculationsUFF$PositionCalc$ ();
 }
 if (!Clazz.isClassDefined ("J.minimize.forcefield.CalculationsUFF.OOPCalc")) {
 J.minimize.forcefield.CalculationsUFF.$CalculationsUFF$OOPCalc$ ();
@@ -28,15 +32,16 @@ J.minimize.forcefield.CalculationsUFF.$CalculationsUFF$VDWCalc$ ();
 Clazz.instantialize (this, arguments);
 }, J.minimize.forcefield, "CalculationsUFF", J.minimize.forcefield.Calculations);
 Clazz.makeConstructor (c$, 
-function (ff, ffParams, minAtoms, minBonds, minAngles, minTorsions, constraints) {
-Clazz.superConstructor (this, J.minimize.forcefield.CalculationsUFF, [ff, minAtoms, minBonds, minAngles, minTorsions, constraints]);
+function (ff, ffParams, minAtoms, minBonds, minAngles, minTorsions, minPositions, constraints) {
+Clazz.superConstructor (this, J.minimize.forcefield.CalculationsUFF, [ff, minAtoms, minBonds, minAngles, minTorsions, minPositions, constraints]);
 this.ffParams = ffParams;
 this.bondCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsUFF.DistanceCalc, this, null);
 this.angleCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsUFF.AngleCalc, this, null);
 this.torsionCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsUFF.TorsionCalc, this, null);
 this.oopCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsUFF.OOPCalc, this, null);
 this.vdwCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsUFF.VDWCalc, this, null);
-}, "J.minimize.forcefield.ForceField,java.util.Map,~A,~A,~A,~A,J.util.JmolList");
+this.posCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsUFF.PositionCalc, this, null);
+}, "J.minimize.forcefield.ForceField,java.util.Map,~A,~A,~A,~A,~A,J.util.JmolList");
 Clazz.overrideMethod (c$, "getUnits", 
 function () {
 return "kJ";
@@ -68,7 +73,12 @@ for (var i = 0; i < this.atomCount; i++) {
 var a = this.minAtoms[i];
 if (a.nBonds == 3 && J.minimize.forcefield.CalculationsUFF.isInvertible (elemNo = a.atom.getElementNumber ())) oopCalc.setData (calc, i, elemNo);
 }
-this.pairSearch (this.calculations[5] =  new J.util.JmolList (), Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsUFF.VDWCalc, this, null), null, null);
+if (this.minPositions != null) {
+calc = this.calculations[7] =  new J.util.JmolList ();
+var posCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsUFF.PositionCalc, this, null);
+for (var i = this.minPositions.length; --i >= 0; ) posCalc.setData (calc, this.minPositions[i].data, this.minPositions[i].ddata);
+
+}this.pairSearch (this.calculations[5] =  new J.util.JmolList (), Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsUFF.VDWCalc, this, null), null, null);
 return true;
 });
 c$.isInvertible = $_M(c$, "isInvertible", 
@@ -106,6 +116,8 @@ case 4:
 return this.oopCalc.compute (dataIn);
 case 5:
 return this.vdwCalc.compute (dataIn);
+case 7:
+return this.posCalc.compute (dataIn);
 }
 return 0.0;
 }, "~N,~A");
@@ -353,6 +365,21 @@ this.b$["J.minimize.forcefield.CalculationsUFF"].addForces (this, 4);
 }if (this.b$["J.minimize.forcefield.CalculationsUFF"].logging) this.b$["J.minimize.forcefield.CalculationsUFF"].appendLogData (this.b$["J.minimize.forcefield.CalculationsUFF"].getDebugLine (3, this));
 return this.energy;
 }, "~A");
+c$ = Clazz.p0p ();
+};
+c$.$CalculationsUFF$PositionCalc$ = function () {
+Clazz.pu$h ();
+c$ = Clazz.decorateAsClass (function () {
+Clazz.prepareCallback (this, arguments);
+Clazz.instantialize (this, arguments);
+}, J.minimize.forcefield.CalculationsUFF, "PositionCalc", J.minimize.forcefield.Calculation);
+Clazz.overrideMethod (c$, "compute", 
+function (a) {
+return 0;
+}, "~A");
+$_M(c$, "setData", 
+function (a, b, c) {
+}, "J.util.JmolList,~A,~A");
 c$ = Clazz.p0p ();
 };
 c$.$CalculationsUFF$OOPCalc$ = function () {

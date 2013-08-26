@@ -28,8 +28,12 @@ this.ring6Screens[i] =  new J.util.P3i ();
 }});
 Clazz.overrideMethod (c$, "renderBioShape", 
 function (bioShape) {
-this.newRockets = true;
-if (bioShape.wingVectors == null || this.isCarbohydrate) return;
+if (this.$wireframeOnly) {
+if (this.wingVectors == null || this.isCarbohydrate) this.renderTrace ();
+ else this.renderMeshRibbon ();
+return;
+}this.newRockets = true;
+if (this.wingVectors == null || this.isCarbohydrate) return;
 this.getScreenControlPoints ();
 if (this.isNucleic) {
 this.renderNucleic ();
@@ -48,7 +52,7 @@ this.calcRopeMidPoints (this.newRockets);
 if (!this.renderArrowHeads) {
 this.calcScreenControlPoints (this.cordMidPoints);
 this.controlPoints = this.cordMidPoints;
-}this.render1 ();
+}this.renderRockets ();
 this.viewer.freeTempPoints (this.cordMidPoints);
 this.viewer.freeTempScreens (this.ribbonTopScreens);
 this.viewer.freeTempScreens (this.ribbonBottomScreens);
@@ -57,7 +61,7 @@ $_M(c$, "renderNucleic",
 function () {
 this.renderEdges = this.viewer.getBoolean (603979817);
 this.ladderOnly = this.viewer.getBoolean (603979820);
-var isTraceAlpha = this.viewer.getBoolean (603979967);
+var isTraceAlpha = this.viewer.getBoolean (603979966);
 for (var i = this.bsVisible.nextSetBit (0); i >= 0; i = this.bsVisible.nextSetBit (i + 1)) {
 if (isTraceAlpha) {
 this.ptConnectScr.set (Clazz.doubleToInt ((this.controlPointScreens[i].x + this.controlPointScreens[i + 1].x) / 2), Clazz.doubleToInt ((this.controlPointScreens[i].y + this.controlPointScreens[i + 1].y) / 2), Clazz.doubleToInt ((this.controlPointScreens[i].z + this.controlPointScreens[i + 1].z) / 2));
@@ -72,7 +76,7 @@ this.colix = this.getLeadColix (i);
 if (this.setBioColix (this.colix)) this.renderNucleicBaseStep (this.monomers[i], this.mads[i], this.ptConnectScr, this.ptConnect);
 }
 });
-Clazz.overrideMethod (c$, "render1", 
+Clazz.overrideMethod (c$, "renderRockets", 
 function () {
 var lastWasSheet = false;
 var lastWasHelix = false;
@@ -99,9 +103,9 @@ this.renderHermiteConic (i, true);
 }}lastWasSheet = isSheet;
 lastWasHelix = isHelix;
 }
-if (this.renderAsRockets || !this.renderArrowHeads) this.renderRockets ();
+if (this.renderAsRockets || !this.renderArrowHeads) this.renderCartoonRockets ();
 });
-$_M(c$, "renderRockets", 
+$_M(c$, "renderCartoonRockets", 
 ($fz = function () {
 this.tPending = false;
 for (var i = this.bsVisible.nextSetBit (0); i >= 0; i = this.bsVisible.nextSetBit (i + 1)) if (this.isHelix (i)) this.renderSpecialSegment (this.monomers[i], this.getLeadColix (i), this.mads[i]);

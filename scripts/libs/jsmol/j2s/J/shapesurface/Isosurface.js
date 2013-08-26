@@ -44,7 +44,7 @@ var index = this.meshCount++;
 this.meshes = this.isomeshes = J.util.ArrayUtil.ensureLength (this.isomeshes, this.meshCount * 2);
 this.currentMesh = this.thisMesh = this.isomeshes[index] = (m == null ?  new J.shapesurface.IsosurfaceMesh (thisID, this.colix, index) : m);
 this.currentMesh.index = index;
-this.sg.setJvxlData (this.jvxlData = this.thisMesh.jvxlData);
+if (this.sg != null) this.sg.setJvxlData (this.jvxlData = this.thisMesh.jvxlData);
 }, "~S,J.shape.Mesh");
 $_M(c$, "initShape", 
 function () {
@@ -55,7 +55,7 @@ this.newSg ();
 $_M(c$, "newSg", 
 function () {
 this.sg =  new J.jvxl.readers.SurfaceGenerator (this.viewer, this, null, this.jvxlData =  new J.jvxl.data.JvxlData ());
-this.sg.getParams ().showTiming = this.viewer.global.showTiming;
+this.sg.getParams ().showTiming = this.viewer.getBoolean (603979934);
 this.sg.setVersion ("Jmol " + J.viewer.Viewer.getJmolVersion ());
 });
 $_M(c$, "clearSg", 
@@ -68,7 +68,21 @@ this.setPropI (propertyName, value, bs);
 }, "~S,~O,J.util.BS");
 $_M(c$, "setPropI", 
 function (propertyName, value, bs) {
-if ("delete" === propertyName) {
+if ("cache" === propertyName) {
+if (this.currentMesh == null) return;
+var id = this.currentMesh.thisID;
+var imodel = this.currentMesh.modelIndex;
+this.viewer.cachePut ("cache://isosurface_" + id, this.getPropI ("jvxlDataXml"));
+this.deleteMeshI (this.currentMesh.index);
+this.setPropI ("init", null, null);
+this.setPropI ("thisID", id, null);
+this.setPropI ("modelIndex", Integer.$valueOf (imodel), null);
+this.setPropI ("fileName", "cache://isosurface_" + id, null);
+this.setPropI ("readFile", null, null);
+this.setPropI ("finalize", "isosurface ID " + J.util.Escape.eS (id) + (imodel >= 0 ? " modelIndex " + imodel : "") + " /*file*/" + J.util.Escape.eS ("cache://isosurface_" + id), null);
+this.setPropI ("clear", null, null);
+return;
+}if ("delete" === propertyName) {
 this.setPropertySuper (propertyName, value, bs);
 if (!this.explicitID) this.nLCAO = this.nUnnamed = 0;
 this.currentMesh = this.thisMesh = null;
@@ -85,17 +99,30 @@ return;
 if (this.actualID != null) value = this.actualID;
 this.setPropertySuper ("thisID", value, null);
 return;
+}if ("params" === propertyName) {
+if (this.thisMesh != null) {
+this.ensureMeshSource ();
+this.thisMesh.checkAllocColixes ();
+var data = value;
+var colixes = data[0];
+var atomMap = null;
+if (colixes != null) {
+for (var i = 0; i < colixes.length; i++) {
+var colix = colixes[i];
+var f = 0;
+if (f > 0.01) colix = J.util.C.getColixTranslucent3 (colix, true, f);
+colixes[i] = colix;
+}
+atomMap =  Clazz.newIntArray (bs.length (), 0);
+for (var pt = 0, i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1), pt++) atomMap[i] = pt;
+
+}this.thisMesh.setVertexColixesForAtoms (this.viewer, colixes, atomMap, bs);
+this.thisMesh.setVertexColorMap ();
+}return;
 }if ("atomcolor" === propertyName) {
 if (this.thisMesh != null) {
-if (this.thisMesh.vertexSource == null) {
-var colix = (!this.thisMesh.isColorSolid ? 0 : this.thisMesh.colix);
-this.setProperty ("init", null, null);
-this.setProperty ("map", Boolean.FALSE, null);
-this.setProperty ("property",  Clazz.newFloatArray (this.viewer.getAtomCount (), 0), null);
-if (colix != 0) {
-this.thisMesh.colorCommand = "color isosurface " + J.util.C.getHexCode (colix);
-this.setProperty ("color", Integer.$valueOf (J.util.C.getArgb (colix)), null);
-}}this.thisMesh.colorAtoms (J.util.C.getColixO (value), bs);
+this.ensureMeshSource ();
+this.thisMesh.colorVertices (J.util.C.getColixO (value), bs, true);
 }return;
 }if ("pointSize" === propertyName) {
 if (this.thisMesh != null) {
@@ -103,7 +130,7 @@ this.thisMesh.volumeRenderPointSize = (value).floatValue ();
 }return;
 }if ("vertexcolor" === propertyName) {
 if (this.thisMesh != null) {
-this.thisMesh.colorVertices (J.util.C.getColixO (value), bs);
+this.thisMesh.colorVertices (J.util.C.getColixO (value), bs, false);
 }return;
 }if ("colorPhase" === propertyName) {
 var colors = value;
@@ -117,13 +144,16 @@ this.thisMesh.isColorSolid = false;
 this.thisMesh.remapColors (this.viewer, null, this.translucentLevel);
 }return;
 }if ("color" === propertyName) {
+var color = J.util.C.getHexCode (J.util.C.getColixO (value));
 if (this.thisMesh != null) {
+this.thisMesh.jvxlData.baseColor = color;
 this.thisMesh.isColorSolid = true;
 this.thisMesh.polygonColixes = null;
 this.thisMesh.colorEncoder = null;
 this.thisMesh.vertexColorMap = null;
 } else if (!J.util.TextFormat.isWild (this.previousMeshID)) {
 for (var i = this.meshCount; --i >= 0; ) {
+this.isomeshes[i].jvxlData.baseColor = color;
 this.isomeshes[i].isColorSolid = true;
 this.isomeshes[i].polygonColixes = null;
 this.isomeshes[i].colorEncoder = null;
@@ -264,6 +294,7 @@ throw e;
 }
 }} else if ("atomIndex" === propertyName) {
 this.atomIndex = (value).intValue ();
+if (this.thisMesh != null) this.thisMesh.atomIndex = this.atomIndex;
 } else if ("center" === propertyName) {
 this.center.setT (value);
 } else if ("colorRGB" === propertyName) {
@@ -313,8 +344,6 @@ this.withinPoints = o[3];
 if (this.withinPoints.size () == 0) this.withinPoints = this.viewer.getAtomPointVector (o[2]);
 } else if (("nci" === propertyName || "orbital" === propertyName) && this.sg != null) {
 this.sg.getParams ().testFlags = (this.viewer.getTestFlag (2) ? 2 : 0);
-} else if ("solvent" === propertyName) {
-this.sg.getParams ().testFlags = (this.viewer.getTestFlag (1) ? 1 : 0);
 }if (this.sg != null && this.sg.setProp (propertyName, value, bs)) {
 if (this.sg.isValid ()) return;
 propertyName = "delete";
@@ -331,6 +360,9 @@ this.sg.setModelIndex (this.isFixed ? -1 : this.modelIndex);
 return;
 }if ("clear" === propertyName) {
 this.discardTempData (true);
+return;
+}if ("colorDensity" === propertyName) {
+if (value != null && this.currentMesh != null) this.currentMesh.volumeRenderPointSize = (value).floatValue ();
 return;
 }if (propertyName === "deleteModelAtoms") {
 var modelIndex = ((value)[2])[0];
@@ -355,6 +387,29 @@ if (m.atomIndex >= firstAtomDeleted) m.atomIndex -= nAtomsDeleted;
 return;
 }this.setPropertySuper (propertyName, value, bs);
 }, "~S,~O,J.util.BS");
+$_M(c$, "ensureMeshSource", 
+($fz = function () {
+var haveColors = (this.thisMesh.vertexSource != null);
+if (haveColors) for (var i = this.thisMesh.vertexCount; --i >= 0; ) if (this.thisMesh.vertexSource[i] < 0) {
+haveColors = false;
+break;
+}
+if (!haveColors) {
+var source = this.thisMesh.vertexSource;
+var vertexColixes = this.thisMesh.vertexColixes;
+var colix = (this.thisMesh.isColorSolid ? this.thisMesh.colix : 0);
+this.setProperty ("init", null, null);
+this.setProperty ("map", Boolean.FALSE, null);
+this.setProperty ("property",  Clazz.newFloatArray (this.viewer.getAtomCount (), 0), null);
+if (colix != 0) {
+this.thisMesh.colorCommand = "color isosurface " + J.util.C.getHexCode (colix);
+this.setProperty ("color", Integer.$valueOf (J.util.C.getArgb (colix)), null);
+}if (source != null) {
+for (var i = this.thisMesh.vertexCount; --i >= 0; ) if (source[i] < 0) source[i] = this.thisMesh.vertexSource[i];
+
+this.thisMesh.vertexSource = source;
+this.thisMesh.vertexColixes = vertexColixes;
+}}}, $fz.isPrivate = true, $fz));
 $_M(c$, "slabPolygons", 
 function (slabInfo) {
 this.thisMesh.slabPolygons (slabInfo, false);
@@ -362,7 +417,7 @@ this.thisMesh.reinitializeLightingAndColor (this.viewer);
 }, "~A");
 $_M(c$, "setPropertySuper", 
 ($fz = function (propertyName, value, bs) {
-if (propertyName === "thisID" && this.currentMesh != null && this.currentMesh.thisID.equals (value)) {
+if (propertyName === "thisID" && this.currentMesh != null && this.currentMesh.thisID != null && this.currentMesh.thisID.equals (value)) {
 this.checkExplicit (value);
 return;
 }this.currentMesh = this.thisMesh;
@@ -528,6 +583,7 @@ if (pt >= 0) cmd = cmd.substring (0, pt);
 if (imesh.connections != null) cmd += " connect " + J.util.Escape.eAI (imesh.connections);
 cmd = J.util.TextFormat.trim (cmd, ";");
 if (imesh.linkedMesh != null) cmd += " LINK";
+if (this.myType === "lcaoCartoon" && imesh.atomIndex >= 0) cmd += " ATOMINDEX " + imesh.atomIndex;
 J.shape.Shape.appendCmd (sb, cmd);
 var id = this.myType + " ID " + J.util.Escape.eS (imesh.thisID);
 if (imesh.jvxlData.thisSet >= 0) J.shape.Shape.appendCmd (sb, id + " set " + (imesh.jvxlData.thisSet + 1));
@@ -594,23 +650,23 @@ if (i >= 0) this.sg.setParameter ("slab", J.util.MeshSurface.getCapSlabObject (J
 $_M(c$, "initializeIsosurface", 
 ($fz = function () {
 if (!this.iHaveModelIndex) this.modelIndex = this.viewer.getCurrentModelIndex ();
-this.isFixed = (this.modelIndex < 0);
-if (this.modelIndex < 0) this.modelIndex = 0;
-this.title = null;
-this.explicitContours = false;
 this.atomIndex = -1;
-this.colix = 5;
-this.translucentLevel = 0;
-this.defaultColix = this.meshColix = 0;
-this.isPhaseColored = this.isColorExplicit = false;
-this.center = J.util.P3.new3 (3.4028235E38, 3.4028235E38, 3.4028235E38);
-this.scale3d = 0;
-this.withinPoints = null;
-this.cutoffRange = null;
-this.displayWithinPoints = null;
 this.bsDisplay = null;
-this.linkedMesh = null;
+this.center = J.util.P3.new3 (3.4028235E38, 3.4028235E38, 3.4028235E38);
+this.colix = 5;
 this.connections = null;
+this.cutoffRange = null;
+this.defaultColix = this.meshColix = 0;
+this.displayWithinPoints = null;
+this.explicitContours = false;
+this.isFixed = (this.modelIndex < 0);
+this.isPhaseColored = this.isColorExplicit = false;
+this.linkedMesh = null;
+if (this.modelIndex < 0) this.modelIndex = 0;
+this.scale3d = 0;
+this.title = null;
+this.translucentLevel = 0;
+this.withinPoints = null;
 this.initState ();
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "initState", 
@@ -829,6 +885,7 @@ this.thisMesh.setJvxlDataRendering ();
 }this.setBsVdw ();
 this.thisMesh.isColorSolid = false;
 this.thisMesh.colorDensity = this.jvxlData.colorDensity;
+this.thisMesh.volumeRenderPointSize = this.jvxlData.pointSize;
 this.thisMesh.colorEncoder = this.sg.getColorEncoder ();
 this.thisMesh.getContours ();
 if (this.thisMesh.jvxlData.nContours != 0 && this.thisMesh.jvxlData.nContours != -1) this.explicitContours = true;
@@ -910,6 +967,7 @@ return V;
 $_M(c$, "addMeshInfo", 
 function (mesh, info) {
 info.put ("ID", (mesh.thisID == null ? "<noid>" : mesh.thisID));
+info.put ("visible", Boolean.$valueOf (mesh.visible));
 info.put ("vertexCount", Integer.$valueOf (mesh.vertexCount));
 if (mesh.calculatedVolume != null) info.put ("volume", mesh.calculatedVolume);
 if (mesh.calculatedArea != null) info.put ("area", mesh.calculatedArea);
@@ -982,7 +1040,7 @@ throw e;
 Clazz.overrideMethod (c$, "checkObjectClicked", 
 function (x, y, action, bsVisible, drawPicking) {
 if (!drawPicking) return null;
-if (!this.viewer.isBound (action, 38)) return null;
+if (!this.viewer.isBound (action, 18)) return null;
 var dmin2 = 100;
 if (this.gdata.isAntialiased ()) {
 x <<= 1;

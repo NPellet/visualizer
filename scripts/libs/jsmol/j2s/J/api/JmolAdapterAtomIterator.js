@@ -28,7 +28,7 @@ $_M(c$, "getPartialCharge",
 function () {
 return NaN;
 });
-$_M(c$, "getEllipsoid", 
+$_M(c$, "getTensors", 
 function () {
 return null;
 });
@@ -66,7 +66,7 @@ return -2147483648;
 });
 $_M(c$, "getChainID", 
 function () {
-return '\0';
+return 0;
 });
 $_M(c$, "getAlternateLocationID", 
 function () {

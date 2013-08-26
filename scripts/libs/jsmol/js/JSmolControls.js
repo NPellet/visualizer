@@ -1,3 +1,4 @@
+// BH 5/16/2013 8:14:47 AM fix for checkbox groups and default radio names
 // BH 8:36 AM 7/27/2012  adds name/id for cmd button 
 // BH 8/12/2012 6:51:53 AM adds function() {...} option for all controls:
 //    Jmol.jmolButton(jmol, function(jmol) {...}, "xxxx")
@@ -12,6 +13,7 @@
 		_scripts: [""],
 		_checkboxMasters: {},
 		_checkboxItems: {},
+		_actions: {},
 	
 		_buttonCount: 0,
 		_checkboxCount: 0,
@@ -40,16 +42,15 @@
 	};
 
 	c._addScript = function(appId,script) {
-		if (!script)
-			return 0;
 		var index = c._scripts.length;
 		c._scripts[index] = [appId, script];
 		return index;
 	}
 	
 	c._getIdForControl = function(appletOrId, script) {
+  //alert(appletOrId + " " + typeof appletOrId + " " + script + appletOrId._canScript)
 		return (typeof appletOrId == "string" ? appletOrId 
-		  : !script || appletOrId._canScript(script) ? appletOrId._id
+		  : !script || !appletOrId._canScript || appletOrId._canScript(script) ? appletOrId._id
 			: null);
 	}
 		
@@ -61,14 +62,16 @@
 		groupName != undefined && groupName != null || (groupName = "jmolRadioGroup" + (c._radioGroupCount - 1));
 		if (!script)
 			return "";
+		id != undefined && id != null || (id = "jmolRadio" + (c._radioCount - 1));
 		labelHtml != undefined && labelHtml != null || (labelHtml = script.substring(0, 32));
 		separatorHtml || (separatorHtml = "");
-		var scriptIndex = c._addScript(appId, script);
 		var eospan = "</span>";
+		c._actions[id] = c._addScript(appId, script);
 		var t = "<span id=\"span_"+id+"\""+(title ? " title=\"" + title + "\"":"")+"><input name='"
-		+ groupName + "' id='"+id+"' type='radio' onclick='Jmol.controls._click(this," +
-					 scriptIndex + "," + appId + ");return true;' onmouseover='Jmol.controls._mouseOver(" +
-					 scriptIndex + ");return true;' onmouseout='Jmol.controls._mouseOut()' " +
+		  + groupName + "' id='"+id+"' type='radio'"
+      + " onclick='Jmol.controls._click(this);return true;'"
+      + " onmouseover='Jmol.controls._mouseOver(this);return true;'"
+      + " onmouseout='Jmol.controls._mouseOut()' " +
 		 (isChecked ? "checked='true' " : "") + c._radioCssText + " />";
 		if (labelHtml.toLowerCase().indexOf("<td>")>=0) {
 			t += eospan;
@@ -95,26 +98,28 @@
 		var keycode = (e == 13 ? 13 : window.event ? window.event.keyCode : e ? e.which : 0);
 		if (keycode == 13) {
 			var inputBox = document.getElementById(id)
-			Jmol.controls._scriptExecute(inputBox, [appId, inputBox.value]);
+			c._scriptExecute(inputBox, [appId, inputBox.value]);
 		}
 	}
 	
-	c._click = function(elementClicked, scriptIndex) {
-		Jmol.controls._element = elementClicked;
-		Jmol.controls._scriptExecute(elementClicked, Jmol.controls._scripts[scriptIndex]);
+	c._click = function(obj, scriptIndex) {
+		c._element = obj;
+    if (arguments.length == 1)
+      scriptIndex = c._actions[obj.id];
+		c._scriptExecute(obj, c._scripts[scriptIndex]);
 	}
 	
-	c._menuSelected = function(menuObject, appId) {
+	c._menuSelected = function(menuObject) {
 		var scriptIndex = menuObject.value;
 		if (scriptIndex != undefined) {
-			Jmol.controls._scriptExecute(menuObject, Jmol.controls._scripts[scriptIndex]);
+			c._scriptExecute(menuObject, c._scripts[scriptIndex]);
 			return;
 		}
 		var len = menuObject.length;
 		if (typeof len == "number")
 			for (var i = 0; i < len; ++i)
 				if (menuObject[i].selected) {
-					Jmol.controls._click(menuObject[i], menuObject[i].value, appId);
+					c._click(menuObject[i], menuObject[i].value);
 					return;
 				}
 		alert("?Que? menu selected bug #8734");
@@ -132,53 +137,68 @@
 		}
 		if (allOn)m.chkMaster.checked = true;
 		if (allOff)m.chkMaster.checked = false;
-		if ((allOn || allOff) && Jmol.controls._checkboxItems[m.chkMaster.id])
-			Jmol.controls._cbNotifyMaster(Jmol.controls._checkboxItems[m.chkMaster.id])
+		if ((allOn || allOff) && c._checkboxItems[m.chkMaster.id])
+			c._cbNotifyMaster(c._checkboxItems[m.chkMaster.id])
 	}
 	
 	c._cbNotifyGroup = function(m, isOn){
 		//called when a master item is checked
 		for (var chkBox in m.chkGroup){
 			var item = m.chkGroup[chkBox]
-			item.checked = isOn;
-			if (Jmol.controls._checkboxMasters[item.id])
-				Jmol.controls._cbNotifyGroup(Jmol.controls._checkboxMasters[item.id], isOn)
+      if (item.checked != isOn) {
+  			item.checked = isOn;
+        c._cbClick(item);
+      }
+			if (c._checkboxMasters[item.id])
+				c._cbNotifyGroup(c._checkboxMasters[item.id], isOn)
 		}
 	}
 	
-	c._cbSetCheckboxGroup = function(chkMaster, chkbox){
+	c._cbSetCheckboxGroup = function(chkMaster, chkboxes, args){
 		var id = chkMaster;
 		if(typeof(id)=="number")id = "jmolCheckbox" + id;
 		chkMaster = document.getElementById(id);
 		if (!chkMaster)alert("jmolSetCheckboxGroup: master checkbox not found: " + id);
-		var m = Jmol.controls._checkboxMasters[id] = {};
+		var m = c._checkboxMasters[id] = {};
 		m.chkMaster = chkMaster;
 		m.chkGroup = {};
-		for (var i = 1; i < arguments.length; i++){
-			var id = arguments[i];
+    var i0;
+    if (typeof(chkboxes)=="string") {
+      chkboxes = args;
+      i0 = 1;
+    } else {
+      i0 = 0;
+    }
+		for (var i = i0; i < chkboxes.length; i++){
+			var id = chkboxes[i];
 			if(typeof(id)=="number")id = "jmolCheckbox" + id;
 			checkboxItem = document.getElementById(id);
 			if (!checkboxItem)alert("jmolSetCheckboxGroup: group checkbox not found: " + id);
 			m.chkGroup[id] = checkboxItem;
-			Jmol.controls._checkboxItems[id] = m;
+			c._checkboxItems[id] = m;
 		}
 	}
 	
-	c._cbClick = function(ckbox, whenChecked, whenUnchecked, applet) {
-		var c = Jmol.controls;
+	c._cbClick = function(ckbox) {
 		c._control = ckbox;
-		c._click(ckbox, ckbox.checked ? whenChecked : whenUnchecked, applet);
+    var whenChecked = c._actions[ckbox.id][0];
+    var whenUnchecked = c._actions[ckbox.id][1];
+		c._click(ckbox, ckbox.checked ? whenChecked : whenUnchecked);
 		if(c._checkboxMasters[ckbox.id])
-			c._notifyGroup(c._checkboxMasters[ckbox.id], ckbox.checked)
+			c._cbNotifyGroup(c._checkboxMasters[ckbox.id], ckbox.checked)
 		if(c._checkboxItems[ckbox.id])
-			c._notifyMaster(c._checkboxItems[ckbox.id])
+			c._cbNotifyMaster(c._checkboxItems[ckbox.id])
 	}
 	
-	c._cbOver = function(ckbox, whenChecked, whenUnchecked) {
-		window.status = Jmol.controls._scripts[ckbox.checked ? whenUnchecked : whenChecked];
+	c._cbOver = function(ckbox) {
+    var whenChecked = c._actions[ckbox.id][0];
+    var whenUnchecked = c._actions[ckbox.id][1];
+		window.status = c._scripts[ckbox.checked ? whenUnchecked : whenChecked];
 	}
 	
-	c._mouseOver = function(scriptIndex) {
+	c._mouseOver = function(obj, scriptIndex) {
+    if (arguments.length == 1)
+      scriptIndex = c._actions[obj.id];
 		window.status = c._scripts[scriptIndex];
 	}
 	
@@ -190,14 +210,13 @@
 // from JmolApplet
 
 	c._onloadResetForms = function() {
-		var c = Jmol.controls;
 		// must be evaluated ONLY once -- is this compatible with jQuery?
 		if (c._hasResetForms)
 			return;
 		c._hasResetForms = true;
 		c._previousOnloadHandler = window.onload;
 		window.onload = function() {
-			var c = Jmol.controls;
+//			var c = Jmol.controls;
 			if (c._buttonCount+c._checkboxCount+c._menuCount+c._radioCount+c._radioGroupCount > 0) {
 				var forms = document.forms;
 				for (var i = forms.length; --i >= 0; )
@@ -211,21 +230,17 @@
 // from JmolApi
 
 	c._getButton = function(appletOrId, script, label, id, title) {
-		var c = Jmol.controls;
 		var appId = c._getIdForControl(appletOrId, script);
 		if (appId == null)
 			return "";
-		var c = Jmol.controls;
 		//_jmolInitCheck();
 		id != undefined && id != null || (id = "jmolButton" + c._buttonCount);
 		label != undefined && label != null || (label = script.substring(0, 32));
 		++c._buttonCount;
-		var scriptIndex = c._addScript(appId, script);
+    c._actions[id] = c._addScript(appId, script);
 		var t = "<span id=\"span_"+id+"\""+(title ? " title=\"" + title + "\"":"")+"><input type='button' name='" + id + "' id='" + id +
 						"' value='" + label +
-						"' onclick='Jmol.controls._click(this," + scriptIndex +
-						")' onmouseover='Jmol.controls._mouseOver(" + scriptIndex +
-						");return true' onmouseout='Jmol.controls._mouseOut()' " +
+						"' onclick='Jmol.controls._click(this)' onmouseover='Jmol.controls._mouseOver(this);return true' onmouseout='Jmol.controls._mouseOut()' " +
 						c._buttonCssText + " /></span>";
 		if (Jmol._debugAlert)
 			alert(t);
@@ -234,8 +249,6 @@
 
 	c._getCheckbox = function(appletOrId, scriptWhenChecked, scriptWhenUnchecked,
 			labelHtml, isChecked, id, title) {
-
-		var c = Jmol.controls;
 
 		var appId = c._getIdForControl(appletOrId, scriptWhenChecked);
 		if (appId != null)
@@ -255,15 +268,12 @@
 			alert("jmolCheckbox requires a label");
 			return;
 		}
-		var indexChecked = c._addScript(appId, scriptWhenChecked);
-		var indexUnchecked = c._addScript(appId, scriptWhenUnchecked);
+    c._actions[id] = [c._addScript(appId, scriptWhenChecked),c._addScript(appId, scriptWhenUnchecked)];
 		var eospan = "</span>"
 		var t = "<span id=\"span_"+id+"\""+(title ? " title=\"" + title + "\"":"")+"><input type='checkbox' name='" + id + "' id='" + id +
-						"' onclick='Jmol.controls._cbClick(this," +
-						indexChecked + "," + indexUnchecked +
-						")' onmouseover='Jmol.controls._cbOver(this," + indexChecked + "," +
-						indexUnchecked +
-						");return true' onmouseout='Jmol.controls._mouseOut()' " +
+						"' onclick='Jmol.controls._cbClick(this)" +
+						"' onmouseover='Jmol.controls._cbOver(this)" +
+						";return true' onmouseout='Jmol.controls._mouseOut()' " +
 			(isChecked ? "checked='true' " : "")+ c._checkboxCssText + " />"
 		if (labelHtml.toLowerCase().indexOf("<td>")>=0) {
 			t += eospan
@@ -276,7 +286,6 @@
 	}
 
 	c._getCommandInput = function(appletOrId, label, size, id, title) {
-		var c = Jmol.controls;
 		var appId = c._getIdForControl(appletOrId, "x");
 		if (appId == null)
 			return "";
@@ -294,7 +303,6 @@
 	}
 
 	c._getLink = function(appletOrId, script, label, id, title) {
-		var c = Jmol.controls;
 		var appId = c._getIdForControl(appletOrId, script);
 		if (appId == null)
 			return "";
@@ -304,8 +312,7 @@
 		++c._linkCount;
 		var scriptIndex = c._addScript(appId, script);
 		var t = "<span id=\"span_"+id+"\""+(title ? " title=\"" + title + "\"":"")+"><a name='" + id + "' id='" + id +
-						"' href='javascript:Jmol.controls._click(this," + scriptIndex + ");' onmouseover='Jmol.controls._mouseOver(" + scriptIndex +
-						");return true;' onmouseout='Jmol.controls._mouseOut()' " +
+						"' href='javascript:Jmol.controls._click(null,"+scriptIndex+");' onmouseover='Jmol.controls._mouseOver(null,"+scriptIndex+");return true;' onmouseout='Jmol.controls._mouseOut()' " +
 						c._linkCssText + ">" + label + "</a></span>";
 		if (Jmol._debugAlert)
 			alert(t);
@@ -313,7 +320,6 @@
 	}
 
 	c._getMenu = function(appletOrId, arrayOfMenuItems, size, id, title) {
-		var c = Jmol.controls;
 		var appId = c._getIdForControl(appletOrId, null);
 		var optgroup = null;
 		//_jmolInitCheck();
@@ -328,7 +334,7 @@
 				size = len;
 			var sizeText = size ? " size='" + size + "' " : "";
 			var t = "<span id=\"span_"+id+"\""+(title ? " title=\"" + title + "\"":"")+"><select name='" + id + "' id='" + id +
-							"' onChange='Jmol.controls._menuSelected(this,\"" + appId + "\")'" +
+							"' onChange='Jmol.controls._menuSelected(this)'" +
 							sizeText + c._menuCssText + ">";
 			for (var i = 0; i < len; ++i) {
 				var menuItem = arrayOfMenuItems[i];
@@ -366,10 +372,10 @@
 	
 	c._getRadio = function(appletOrId, script, labelHtml, isChecked, separatorHtml, groupName, id, title) {
 		//_jmolInitCheck();
-		var c = Jmol.controls;
 		if (c._radioGroupCount == 0)
 			++c._radioGroupCount;
-		var t = c._radio(appletOrId, script, labelHtml, isChecked, separatorHtml, groupName, (id ? id : groupName + "_" + Jmol._radioCount), title ? title : 0);
+		groupName || (groupName = "jmolRadioGroup" + (c._radioGroupCount - 1));
+		var t = c._radio(appletOrId, script, labelHtml, isChecked, separatorHtml, groupName, (id ? id : groupName + "_" + c._radioCount), title ? title : 0);
 		if (t == null)
 			return "";
 		if (Jmol._debugAlert)
@@ -391,7 +397,6 @@
 			alert("invalid arrayOfRadioButtons");
 			return;
 		}
-		var c = Jmol.controls;
 		separatorHtml != undefined && separatorHtml != null || (separatorHtml = "&#xa0; ");
 		var len = arrayOfRadioButtons.length;
 		++c._radioGroupCount;

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader"], "J.adapter.readers.quantum.GaussianReader", ["java.lang.Character", "$.Exception", "$.Float", "java.util.Hashtable", "J.adapter.smarter.SmarterJmolAdapter", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.Escape", "$.JmolList", "$.Logger", "$.Parser", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader", "J.util.BS"], "J.adapter.readers.quantum.GaussianReader", ["java.lang.Character", "$.Exception", "$.Float", "java.util.Hashtable", "J.adapter.smarter.SmarterJmolAdapter", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.Escape", "$.JmolList", "$.Logger", "$.Parser", "$.TextFormat", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.energyString = "";
 this.energyKey = "";
@@ -7,8 +7,13 @@ this.calculationNumber = 1;
 this.scanPoint = -1;
 this.equivalentAtomSets = 0;
 this.stepNumber = 0;
+this.moModelSet = -1;
+this.namedSets = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "GaussianReader", J.adapter.readers.quantum.MOReader);
+Clazz.prepareFields (c$, function () {
+this.namedSets =  new J.util.BS ();
+});
 Clazz.overrideMethod (c$, "checkLine", 
 function () {
 if (this.line.startsWith (" Step number")) {
@@ -70,7 +75,7 @@ if (tokens.length < 4) return;
 this.energyKey = tokens[0];
 this.atomSetCollection.setAtomSetEnergy (tokens[2], this.parseFloatStr (tokens[2]));
 this.energyString = tokens[2] + " " + tokens[3];
-this.atomSetCollection.setAtomSetNames (this.energyKey + " = " + this.energyString, this.equivalentAtomSets);
+this.atomSetCollection.setAtomSetNames (this.energyKey + " = " + this.energyString, this.equivalentAtomSets, this.namedSets);
 this.atomSetCollection.setAtomSetPropertyForSets (this.energyKey, this.energyString, this.equivalentAtomSets);
 tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine ());
 if (tokens.length > 2) {
@@ -84,13 +89,13 @@ $_M(c$, "setEnergy",
 var tokens = this.getTokens ();
 this.energyKey = "Energy";
 this.energyString = tokens[1];
-this.atomSetCollection.setAtomSetNames ("Energy = " + tokens[1], this.equivalentAtomSets);
+this.atomSetCollection.setAtomSetNames ("Energy = " + tokens[1], this.equivalentAtomSets, this.namedSets);
 this.atomSetCollection.setAtomSetEnergy (this.energyString, this.parseFloatStr (this.energyString));
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readAtoms", 
 ($fz = function () {
 this.atomSetCollection.newAtomSet ();
-this.atomSetCollection.setAtomSetName (this.energyKey + " = " + this.energyString);
+if (this.energyKey.length != 0) this.atomSetCollection.setAtomSetName (this.energyKey + " = " + this.energyString);
 this.atomSetCollection.setAtomSetEnergy (this.energyString, this.parseFloatStr (this.energyString));
 var path = this.getTokens ()[0];
 this.readLines (4);
@@ -132,14 +137,14 @@ if (doSphericalF && oType.indexOf ("F") >= 0 || doSphericalD && oType.indexOf ("
 var nGaussians = this.parseIntStr (tokens[1]);
 slater[2] = this.gaussianCount;
 slater[3] = nGaussians;
-if (J.util.Logger.debugging) J.util.Logger.info ("Slater " + this.shells.size () + " " + J.util.Escape.eAI (slater));
+if (J.util.Logger.debugging) J.util.Logger.debug ("Slater " + this.shells.size () + " " + J.util.Escape.eAI (slater));
 this.shells.addLast (slater);
 this.gaussianCount += nGaussians;
 for (var i = 0; i < nGaussians; i++) {
 this.readLine ();
 this.line = J.util.TextFormat.simpleReplace (this.line, "D ", "D+");
 tokens = this.getTokens ();
-if (J.util.Logger.debugging) J.util.Logger.info ("Gaussians " + (i + 1) + " " + J.util.Escape.eAS (tokens, true));
+if (J.util.Logger.debugging) J.util.Logger.debug ("Gaussians " + (i + 1) + " " + J.util.Escape.eAS (tokens, true));
 gdata.addLast (tokens);
 }
 }
@@ -209,8 +214,10 @@ if (isNOtype) continue;
 this.line = this.readLine ().substring (21);
 tokens = this.getTokens ();
 if (tokens.length != nThisLine) tokens = J.adapter.smarter.AtomSetCollectionReader.getStrings (this.line, nThisLine, 10);
-for (var i = 0; i < nThisLine; i++) mos[i].put ("energy", Float.$valueOf (J.util.Parser.fVal (tokens[i])));
-
+for (var i = 0; i < nThisLine; i++) {
+mos[i].put ("energy", Float.$valueOf (J.util.Parser.fVal (tokens[i])));
+System.out.println (i + " gaussian energy " + mos[i].get ("energy"));
+}
 continue;
 } else if (this.line.length < 21 || (this.line.charAt (5) != ' ' && !Character.isDigit (this.line.charAt (5)))) {
 continue;
@@ -234,7 +241,8 @@ throw e;
 }
 }
 this.addMOData (nThisLine, data, mos);
-this.setMOData (false);
+this.setMOData (this.moModelSet != this.atomSetCollection.getAtomSetCount ());
+this.moModelSet = this.atomSetCollection.getAtomSetCount ();
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readFrequencies", 
 ($fz = function () {
@@ -254,7 +262,9 @@ for (var i = 0; i < frequencyCount; ++i) {
 ignore[i] = !this.doGetVibration (++this.vibrationNumber);
 if (ignore[i]) continue;
 this.atomSetCollection.cloneLastAtomSet ();
-this.atomSetCollection.setAtomSetFrequency ("Calculation " + this.calculationNumber, symmetries[i], frequencies[i], null);
+var name = this.atomSetCollection.setAtomSetFrequency ("Calculation " + this.calculationNumber, symmetries[i], frequencies[i], null);
+this.appendLoadNote ("model " + this.atomSetCollection.getAtomSetCount () + ": " + name);
+this.namedSets.set (this.atomSetCollection.getCurrentAtomSetIndex ());
 this.atomSetCollection.setAtomSetModelProperty ("ReducedMass", red_masses[i] + " AMU");
 this.atomSetCollection.setAtomSetModelProperty ("ForceConstant", frc_consts[i] + " mDyne/A");
 this.atomSetCollection.setAtomSetModelProperty ("IRIntensity", intensities[i] + " KM/Mole");

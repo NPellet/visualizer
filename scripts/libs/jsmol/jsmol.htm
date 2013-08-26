@@ -37,7 +37,7 @@ var Info = {
 	debug: false,
 	color: "0xFFFFFF",
 	addSelectionOptions: true,
-	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
+	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
 	use: "HTML5",
 	j2sPath: "j2s",
 	readyFunction: jmol_isReady,
@@ -147,6 +147,8 @@ Enter "!" and a command into the search box and press ENTER or open the <a href=
  <a href="javascript:Jmol.script(jmolApplet0,'set modelkitmode;set picking dragMinimize')">drag-minimize</a>
  <a href="javascript:Jmol.script(jmolApplet0,'!quit;set modelkitmode false;set picking ident;')">!quit</a>
 <br />
+ <a href="javascript:Jmol.script(jmolApplet0,'script data/flexfit.spt')">flexible fit</a>
+<br />
  <a href="javascript:Jmol.script(jmolApplet0,'load data/dna.pse')">PyMOL session - dna</a>
   <br />
  <a href="javascript:Jmol.script(jmolApplet0,'load data/estron.cml;display molecule=1;moveto /* time, axisAngle */ 0.0 { -569 -266 778 170.22} /* zoom, translation */ 210.8 0.0 0.0 /* center, rotationRadius */ {1.612277686904762 3.7877332476190473 1.6109263519047616} 16.399569513870535 /* navigation center, translation, depth */ {0 0 0} 9.485930041021248 -20.361702729557265 0;')">estron.cml</a>
@@ -176,6 +178,8 @@ Enter "!" and a command into the search box and press ENTER or open the <a href=
  <a href="javascript:Jmol.script(jmolApplet0,'load data/square_planar.spartan')">load data/square_planar.spartan</a>
  <br />
  <a href="javascript:Jmol.script(jmolApplet0,'load data/water.xyz.gz')">load data/water.xyz.gz</a>
+ <br />
+ <a href="javascript:Jmol.script(jmolApplet0,'load data/no2_nbo.log.gz')">load data/no2_nbo.log.gz</a>
  <br />
  <a href="javascript:Jmol.script(jmolApplet0,'zap;pmesh &quot;data/sage.pmesh&quot fullylit;')">pmesh "data/sage.pmesh"</a>
  <br /> 
@@ -213,7 +217,7 @@ Enter "!" and a command into the search box and press ENTER or open the <a href=
  <br /> 
 
  </td><td valign=top>
-	<b>direct database calls(<a href="javascript:alert('MSIE cannot do synchronous cross-domain file transfer, so if you want to do that, you must put jsmol.php on your OWN server and point to it using Info.serverURL, which for this page is ' + Info.serverURL + '\nA text version of this php file is at http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php.txt')">unless MSIE</a>)</b>
+	<b>direct database calls(<a href="javascript:alert('MSIE cannot do synchronous cross-domain file transfer, so if you want to do that, you must put jsmol.php on your OWN server and point to it using Info.serverURL, which for this page is ' + Info.serverURL + '\nA text version of this php file is at http://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php.txt')">unless MSIE</a>)</b>
  <br />
  <a href="javascript:Jmol.loadFile(jmolApplet0,'$caffeine')">load $caffeine (from NCI)</a>
  <br /> 

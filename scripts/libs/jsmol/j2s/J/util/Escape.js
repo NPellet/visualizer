@@ -3,7 +3,7 @@ Clazz.load (null, "J.util.Escape", ["java.lang.Character", "$.Float", "J.script.
 c$ = Clazz.declareType (J.util, "Escape");
 c$.escapeColor = $_M(c$, "escapeColor", 
 function (argb) {
-return "[x" + J.util.Escape.getHexColorFromRGB (argb) + "]";
+return (argb == 0 ? null : "[x" + J.util.Escape.getHexColorFromRGB (argb) + "]");
 }, "~N");
 c$.getHexColorFromRGB = $_M(c$, "getHexColorFromRGB", 
 function (argb) {
@@ -68,28 +68,34 @@ return Clazz.isAP(x);
 }}, "~O");
 c$.isAF = $_M(c$, "isAF", 
 function (x) {
-return Clazz.instanceOf (x, Array);
-}, "~O");
+{
+return Clazz.isAF(x);
+}}, "~O");
 c$.isAFloat = $_M(c$, "isAFloat", 
 function (x) {
-return Clazz.instanceOf (x, Array);
-}, "~O");
+{
+return Clazz.isAFloat(x);
+}}, "~O");
 c$.isAV = $_M(c$, "isAV", 
 function (x) {
-return Clazz.instanceOf (x, Array);
-}, "~O");
+{
+return Clazz.instanceOf(x[0], J.script.SV);
+}}, "~O");
 c$.isAD = $_M(c$, "isAD", 
 function (x) {
-return Clazz.instanceOf (x, Array);
-}, "~O");
+{
+return Clazz.isAF(x);
+}}, "~O");
 c$.isAB = $_M(c$, "isAB", 
 function (x) {
-return Clazz.instanceOf (x, Array);
-}, "~O");
+{
+return Clazz.isAI(x);
+}}, "~O");
 c$.isAI = $_M(c$, "isAI", 
 function (x) {
-return Clazz.instanceOf (x, Array);
-}, "~O");
+{
+return Clazz.isAI(x);
+}}, "~O");
 c$.isAII = $_M(c$, "isAII", 
 function (x) {
 {
@@ -406,7 +412,9 @@ return "\"" + infoType + "\": " + info;
 }, $fz.isPrivate = true, $fz), "~S,~S");
 c$.fixString = $_M(c$, "fixString", 
 ($fz = function (s) {
-if (s == null || s.indexOf ("{\"") == 0) return s;
+{
+if (typeof s == "undefined") return "null"
+}if (s == null || s.indexOf ("{\"") == 0) return s;
 s = J.util.TextFormat.simpleReplace (s, "\"", "''");
 s = J.util.TextFormat.simpleReplace (s, "\n", " | ");
 return "\"" + s + "\"";
@@ -589,6 +597,15 @@ sep = ",";
 }
 sb.append ("]");
 return J.util.Escape.packageReadableSb (name, "float[" + imax + "]", sb);
+}if (J.util.Escape.isAD (info)) {
+sb.append ("[");
+var imax = (info).length;
+for (var i = 0; i < imax; i++) {
+sb.append (sep).appendD ((info)[i]);
+sep = ",";
+}
+sb.append ("]");
+return J.util.Escape.packageReadableSb (name, "double[" + imax + "]", sb);
 }if (J.util.Escape.isAP (info)) {
 sb.append ("[");
 var imax = (info).length;

@@ -35,7 +35,7 @@ var t = null;
 if (this.reader == null) {
 if (this.fileTypeIn == null) this.fileTypeIn = J.io.JmolBinary.getBinaryType (this.fullPathNameIn);
 var isBinary = J.io.JmolBinary.checkBinaryType (this.fileTypeIn);
-t = this.fm.getUnzippedBufferedReaderOrErrorMessageFromName (this.fullPathNameIn, this.bytes, true, isBinary, false, true);
+t = this.fm.getUnzippedBufferedReaderOrErrorMessageFromName (this.fullPathNameIn, this.bytes, true, isBinary, false, true, this.htParams);
 if (t == null || Clazz.instanceOf (t, String)) {
 errorMessage = (t == null ? "error opening:" + this.nameAsGivenIn : t);
 if (!errorMessage.startsWith ("NOTE:")) J.util.Logger.error ("file ERROR: " + this.fullPathNameIn + "\n" + errorMessage);

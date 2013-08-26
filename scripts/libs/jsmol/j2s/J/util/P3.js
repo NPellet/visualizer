@@ -23,9 +23,9 @@ var dx = this.x - p1.x;
 var dy = this.y - p1.y;
 var dz = this.z - p1.z;
 return (dx * dx + dy * dy + dz * dz);
-}, "J.util.P3");
+}, "J.util.Tuple3f");
 $_M(c$, "distance", 
 function (p1) {
 return Math.sqrt (this.distanceSquared (p1));
-}, "J.util.P3");
+}, "J.util.Tuple3f");
 });

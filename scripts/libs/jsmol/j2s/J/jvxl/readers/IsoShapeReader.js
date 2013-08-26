@@ -36,9 +36,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoShapeReader, []);
 });
-$_M(c$, "init", 
+Clazz.overrideMethod (c$, "init", 
 function (sg) {
-Clazz.superCall (this, J.jvxl.readers.IsoShapeReader, "init", [sg]);
+this.initVDR (sg);
 var o = sg.getReaderData ();
 if (Clazz.instanceOf (o, Float)) {
 this.sphere_radiusAngstroms = (o).floatValue ();

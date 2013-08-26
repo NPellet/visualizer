@@ -30,7 +30,7 @@ var thisDataSetName = this.readLine ().trim ();
 if (!this.doGetModel (++this.modelNumber, thisDataSetName)) {
 return false;
 }this.lastSequenceNumber = 2147483647;
-this.chainID = String.fromCharCode ( 64);
+this.chainID = 64;
 this.readLine ();
 this.line += " 0 0 0 0 0 0";
 this.atomCount = this.parseIntStr (this.line);
@@ -79,10 +79,10 @@ atom.set (this.parseFloatStr (tokens[2]), this.parseFloatStr (tokens[3]), this.p
 if (tokens.length > 6) {
 atom.sequenceNumber = this.parseIntStr (tokens[6]);
 if (atom.sequenceNumber < this.lastSequenceNumber) {
-if (this.chainID == 'Z') this.chainID = String.fromCharCode ( 96);
-(this.chainID = String.fromCharCode (($c$ = this.chainID).charCodeAt (0) + 1), $c$);
+if (this.chainID == 90) this.chainID = 96;
+this.chainID++;
 }this.lastSequenceNumber = atom.sequenceNumber;
-atom.chainID = this.chainID;
+this.setChainID (atom, String.fromCharCode (this.chainID));
 }if (tokens.length > 7) atom.group3 = tokens[7];
 if (tokens.length > 8) {
 atom.partialCharge = this.parseFloatStr (tokens[8]);

@@ -1,14 +1,6 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.LabelsRenderer", "J.util.P3i"], "J.render.EchoRenderer", ["J.render.TextRenderer", "J.util.C"], function () {
-c$ = Clazz.decorateAsClass (function () {
-this.imageFontScaling = 0;
-this.ptAtom = null;
-this.pt = null;
-Clazz.instantialize (this, arguments);
-}, J.render, "EchoRenderer", J.render.LabelsRenderer);
-Clazz.prepareFields (c$, function () {
-this.pt =  new J.util.P3i ();
-});
+Clazz.load (["J.render.LabelsRenderer"], "J.render.EchoRenderer", ["J.render.TextRenderer", "J.util.C"], function () {
+c$ = Clazz.declareType (J.render, "EchoRenderer", J.render.LabelsRenderer);
 Clazz.overrideMethod (c$, "render", 
 function () {
 if (this.viewer.isPreviewOnly ()) return false;
@@ -21,12 +13,23 @@ while (e.hasNext ()) {
 var t = e.next ();
 if (!t.visible || t.hidden) {
 continue;
+}if (Clazz.instanceOf (t.pointerPt, J.modelset.Atom)) {
+if (!(t.pointerPt).isVisible (-1)) continue;
 }if (t.valign == 4) {
-this.viewer.transformPtScr (t.xyz, this.pt);
-t.setXYZs (this.pt.x, this.pt.y, this.pt.z, this.pt.z);
+this.viewer.transformPtScr (t.xyz, this.pt0i);
+t.setXYZs (this.pt0i.x, this.pt0i.y, this.pt0i.z, this.pt0i.z);
 } else if (t.movableZPercent != 2147483647) {
 var z = this.viewer.zValueFromPercent (t.movableZPercent);
 t.setZs (z, z);
+}if (t.pointerPt == null) {
+t.pointer = 0;
+} else {
+t.pointer = 1;
+this.viewer.transformPtScr (t.pointerPt, this.pt0i);
+t.atomX = this.pt0i.x;
+t.atomY = this.pt0i.y;
+t.atomZ = this.pt0i.z;
+if (t.zSlab == -2147483648) t.zSlab = 1;
 }J.render.TextRenderer.render (t, this.viewer, this.g3d, scalePixelsPerMicron, this.imageFontScaling, false, null, this.xy);
 if (J.util.C.isColixTranslucent (t.bgcolix) || J.util.C.isColixTranslucent (t.colix)) haveTranslucent = true;
 }

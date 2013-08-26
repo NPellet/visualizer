@@ -1,15 +1,17 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader", "J.util.BS"], "J.adapter.readers.quantum.MoldenReader", ["java.lang.Exception", "$.Float", "java.util.Hashtable", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.JmolList", "$.Logger", "$.Parser"], function () {
+Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader", "J.util.BS"], "J.adapter.readers.quantum.MoldenReader", ["java.lang.Exception", "$.Float", "java.util.Arrays", "$.Hashtable", "J.adapter.readers.quantum.BasisFunctionReader", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.JmolList", "$.Logger", "$.Parser"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.loadGeometries = false;
 this.loadVibrations = false;
 this.vibOnly = false;
 this.optOnly = false;
+this.doSort = true;
 this.orbitalType = "";
 this.modelAtomCount = 0;
 this.bsAtomOK = null;
 this.bsBadIndex = null;
 this.nSPDF = null;
+this.haveEnergy = true;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "MoldenReader", J.adapter.readers.quantum.MopacSlaterReader);
 Clazz.prepareFields (c$, function () {
@@ -20,10 +22,12 @@ Clazz.overrideMethod (c$, "initializeReader",
 function () {
 this.vibOnly = this.checkFilterKey ("VIBONLY");
 this.optOnly = this.checkFilterKey ("OPTONLY");
+this.doSort = !this.checkFilterKey ("NOSORT");
 this.loadGeometries = !this.vibOnly && this.desiredVibrationNumber < 0 && !this.checkFilterKey ("NOOPT");
 this.loadVibrations = !this.optOnly && this.desiredModelNumber < 0 && !this.checkFilterKey ("NOVIB");
 if (this.checkFilterKey ("ALPHA")) this.filter = "alpha";
  else if (this.checkFilterKey ("BETA")) this.filter = "beta";
+ else if (this.checkFilterKey ("SYM=")) this.filter = this.filter.substring (this.filter.indexOf ("SYM=") + 4);
  else this.filter = null;
 });
 Clazz.overrideMethod (c$, "checkLine", 
@@ -35,6 +39,7 @@ J.util.Logger.info (this.line);
 if (this.line.indexOf ("[ATOMS]") == 0) {
 this.readAtoms ();
 this.modelAtomCount = this.atomSetCollection.getFirstAtomSetAtomCount ();
+if (this.atomSetCollection.getAtomSetCount () == 1 && this.moData != null) this.finalizeMOData (this.moData);
 return false;
 }if (this.line.indexOf ("[GTO]") == 0) return this.readGaussianBasis ();
 if (this.line.indexOf ("[MO]") == 0) return (!this.doReadMolecularOrbitals || this.readMolecularOrbitals ());
@@ -107,14 +112,15 @@ var atomIndex = 0;
 var gaussianPtr = 0;
 this.nCoef = 0;
 this.nSPDF =  Clazz.newIntArray (12, 0);
-while (this.readLine () != null && !((this.line = this.line.trim ()).length == 0 || this.line.charAt (0) == '[')) {
+this.discardLinesUntilNonBlank ();
+while (this.line != null && !((this.line = this.line.trim ()).length == 0 || this.line.charAt (0) == '[')) {
 var tokens = this.getTokens ();
 atomIndex = this.parseIntStr (tokens[0]) - 1;
 if (atomIndex == 2147483647) {
 this.bsBadIndex.set (this.shells.size ());
 } else {
 this.bsAtomOK.set (atomIndex);
-}while (this.readLine () != null && this.line.trim ().length > 0) {
+}while (this.readLine () != null && (this.line = this.line.trim ()).length > 0 && this.line.charAt (0) != '[') {
 tokens = this.getTokens ();
 var shellLabel = tokens[0].toUpperCase ();
 var type = J.api.JmolAdapter.getQuantumShellTagID (shellLabel);
@@ -137,6 +143,8 @@ gaussianPtr++;
 }
 this.shells.addLast (slater);
 }
+if (this.line.length > 0 && this.line.charAt (0) == '[') break;
+this.readLine ();
 }
 var garray = J.util.ArrayUtil.newFloat2 (gaussianPtr);
 for (var i = 0; i < gaussianPtr; i++) {
@@ -156,7 +164,7 @@ while (this.checkOrbitalType (this.readLine ())) {
 }
 this.fixOrbitalType ();
 var tokens = this.getMoTokens (this.line);
-while (tokens != null && tokens[0].indexOf ('[') < 0) {
+while (tokens != null && tokens.length > 0 && tokens[0].indexOf ('[') < 0) {
 var mo =  new java.util.Hashtable ();
 var data =  new J.util.JmolList ();
 var energy = NaN;
@@ -174,7 +182,7 @@ symmetry = tokens[1];
 this.alphaBeta = tokens[1].toLowerCase ();
 }tokens = this.getMoTokens (null);
 }
-while (tokens != null && this.parseIntStr (tokens[0]) != -2147483648) {
+while (tokens != null && tokens.length > 0 && this.parseIntStr (tokens[0]) != -2147483648) {
 if (tokens.length != 2) throw  new Exception ("invalid MO coefficient specification");
 data.addLast (tokens[1]);
 tokens = this.getMoTokens (null);
@@ -182,16 +190,18 @@ tokens = this.getMoTokens (null);
 var coefs =  Clazz.newFloatArray (data.size (), 0);
 if (this.orbitalType.equals ("") && coefs.length < this.nCoef) {
 J.util.Logger.info ("too few orbital coefficients for 6D");
-this.orbitalType = "[5D]";
-this.fixOrbitalType ();
+this.checkOrbitalType ("[5D]");
 }for (var i = data.size (); --i >= 0; ) coefs[i] = this.parseFloatStr (data.get (i));
 
 var l = this.line;
-this.line = "";
+this.line = "" + symmetry;
 if (this.filterMO ()) {
 mo.put ("coefficients", coefs);
-if (!Float.isNaN (energy)) mo.put ("energy", Float.$valueOf (energy));
-if (!Float.isNaN (occupancy)) mo.put ("occupancy", Float.$valueOf (occupancy));
+if (Float.isNaN (energy)) {
+this.haveEnergy = false;
+} else {
+mo.put ("energy", Float.$valueOf (energy));
+}if (!Float.isNaN (occupancy)) mo.put ("occupancy", Float.$valueOf (occupancy));
 if (symmetry != null) mo.put ("symmetry", symmetry);
 if (this.alphaBeta.length > 0) mo.put ("type", this.alphaBeta);
 this.setMO (mo);
@@ -199,9 +209,18 @@ if (J.util.Logger.debugging) {
 J.util.Logger.debug (coefs.length + " coefficients in MO " + this.orbitals.size ());
 }}this.line = l;
 }
-J.util.Logger.debug ("read " + this.orbitals.size () + " MOs");
+if (J.util.Logger.debugging) J.util.Logger.debug ("read " + this.orbitals.size () + " MOs");
 this.setMOs ("eV");
+if (this.haveEnergy && this.doSort) this.sortMOs ();
 return false;
+}, $fz.isPrivate = true, $fz));
+$_M(c$, "sortMOs", 
+($fz = function () {
+var list = this.orbitals.toArray ();
+java.util.Arrays.sort (list, Clazz.innerTypeInstance (J.adapter.readers.quantum.BasisFunctionReader.MOEnergySorter, this, null));
+this.orbitals.clear ();
+for (var i = 0; i < list.length; i++) this.orbitals.addLast (list[i]);
+
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getMoTokens", 
 ($fz = function (line) {
@@ -209,8 +228,10 @@ return (line == null && (line = this.readLine ()) == null ? null : J.adapter.sma
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "checkOrbitalType", 
 ($fz = function (line) {
-if (line.length > 3 && "5D 6D 7F 10".indexOf (line.substring (1, 3)) >= 0) {
+if (line.length > 3 && "5D 6D 7F 10 9G 15".indexOf (line.substring (1, 3)) >= 0) {
+if (this.orbitalType.indexOf (line) >= 0) return true;
 this.orbitalType += line;
+J.util.Logger.info ("Orbital type set to " + this.orbitalType);
 this.fixOrbitalType ();
 return true;
 }return false;
@@ -220,8 +241,12 @@ $_M(c$, "fixOrbitalType",
 if (this.orbitalType.contains ("5D")) {
 this.fixSlaterTypes (J.api.JmolAdapter.SHELL_D_CARTESIAN, J.api.JmolAdapter.SHELL_D_SPHERICAL);
 this.fixSlaterTypes (J.api.JmolAdapter.SHELL_F_CARTESIAN, J.api.JmolAdapter.SHELL_F_SPHERICAL);
+this.fixSlaterTypes (J.api.JmolAdapter.SHELL_G_CARTESIAN, J.api.JmolAdapter.SHELL_G_SPHERICAL);
 }if (this.orbitalType.contains ("10F")) {
 this.fixSlaterTypes (J.api.JmolAdapter.SHELL_F_SPHERICAL, J.api.JmolAdapter.SHELL_F_CARTESIAN);
+this.fixSlaterTypes (J.api.JmolAdapter.SHELL_G_SPHERICAL, J.api.JmolAdapter.SHELL_G_CARTESIAN);
+}if (this.orbitalType.contains ("15G")) {
+this.fixSlaterTypes (J.api.JmolAdapter.SHELL_G_SPHERICAL, J.api.JmolAdapter.SHELL_G_CARTESIAN);
 }}, $fz.isPrivate = true, $fz));
 $_M(c$, "readFreqsAndModes", 
 ($fz = function () {
@@ -262,7 +287,7 @@ var firstModel = (this.optOnly || this.desiredModelNumber >= 0 ? 0 : 1);
 this.modelNumber = firstModel;
 var haveModel = false;
 if (this.desiredModelNumber == 0 || this.desiredModelNumber == nGeom) this.desiredModelNumber = nGeom;
- else this.setMOData (null);
+ else this.finalizeMOData (null);
 for (var i = 0; i < nGeom; i++) {
 this.readLines (2);
 if (this.doGetModel (++this.modelNumber, null)) {

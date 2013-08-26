@@ -10,6 +10,9 @@ this.alphaBeta = "";
 this.dfCoefMaps = null;
 this.filterTokens = null;
 this.filterIsNot = false;
+if (!Clazz.isClassDefined ("J.adapter.readers.quantum.BasisFunctionReader.MOEnergySorter")) {
+J.adapter.readers.quantum.BasisFunctionReader.$BasisFunctionReader$MOEnergySorter$ ();
+}
 this.nCoef = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "BasisFunctionReader", J.adapter.smarter.AtomSetCollectionReader);
@@ -91,10 +94,25 @@ this.nCoef = 0;
 for (var i = this.shells.size (); --i >= 0; ) {
 var slater = this.shells.get (i);
 if (slater[1] == typeOld) slater[1] = typeNew;
-this.nCoef += this.getDfCoefMaps ()[slater[1]].length;
+var m = this.getDfCoefMaps ()[slater[1]].length;
+this.nCoef += m;
 }
 return this.nCoef;
 }, "~N,~N");
+c$.$BasisFunctionReader$MOEnergySorter$ = function () {
+Clazz.pu$h ();
+c$ = Clazz.decorateAsClass (function () {
+Clazz.prepareCallback (this, arguments);
+Clazz.instantialize (this, arguments);
+}, J.adapter.readers.quantum.BasisFunctionReader, "MOEnergySorter", null, java.util.Comparator);
+Clazz.overrideMethod (c$, "compare", 
+function (a, b) {
+var c = ((a).get ("energy")).floatValue ();
+var d = ((b).get ("energy")).floatValue ();
+return (c < d ? -1 : c > d ? 1 : 0);
+}, "~O,~O");
+c$ = Clazz.p0p ();
+};
 Clazz.defineStatics (c$,
 "CANONICAL_DC_LIST", "DXX   DYY   DZZ   DXY   DXZ   DYZ",
 "CANONICAL_FC_LIST", "XXX   YYY   ZZZ   XYY   XXY   XXZ   XZZ   YZZ   YYZ   XYZ",

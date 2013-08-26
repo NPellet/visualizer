@@ -1,15 +1,23 @@
 Clazz.declarePackage ("J.adapter.readers.pymol");
 Clazz.load (["java.util.Hashtable", "J.util.JmolList"], "J.adapter.readers.pymol.PickleReader", ["java.lang.Double", "$.Long", "J.util.Logger", "$.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
+this.viewer = null;
 this.binaryDoc = null;
 this.stack = null;
 this.marks = null;
 this.build = null;
-this.logging = false;
-this.viewer = null;
-this.id = 0;
 this.memo = null;
+this.logging = false;
+this.id = 0;
 this.markCount = 0;
+this.filePt = 0;
+this.emptyListPt = 0;
+this.thisSection = null;
+this.inMovie = false;
+this.inNames = false;
+this.thisName = null;
+this.lastMark = 0;
+this.retrieveCount = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.pymol, "PickleReader");
 Clazz.prepareFields (c$, function () {
@@ -52,7 +60,14 @@ o = this.pop ();
 break;
 case 101:
 l = this.getObjects (this.getMark ());
-(this.peek ()).addAll (l);
+if (this.inNames && this.markCount == 2) {
+var pt = this.binaryDoc.getPosition ();
+System.out.println (" " + this.thisName + " " + this.filePt + " " + (pt - this.filePt));
+var l2 =  new J.util.JmolList ();
+l2.addLast (Integer.$valueOf (this.filePt));
+l2.addLast (Integer.$valueOf (pt - this.filePt));
+l.addLast (l2);
+}(this.peek ()).addAll (l);
 break;
 case 71:
 d = this.binaryDoc.readDouble ();
@@ -72,27 +87,22 @@ this.push (Integer.$valueOf (i));
 break;
 case 113:
 i = this.binaryDoc.readByte ();
-o = this.peek ();
-if (Clazz.instanceOf (o, String)) {
-this.memo.put (Integer.$valueOf (i), this.peek ());
-}break;
+this.putMemo (i, false);
+break;
 case 114:
 i = this.binaryDoc.readIntLE ();
-o = this.peek ();
-if (Clazz.instanceOf (o, String) && this.markCount < 6) {
-if (this.markCount == 3 && "movie".equals (this.stack.get (this.marks.get (1).intValue () - 2))) break;
-this.memo.put (Integer.$valueOf (i), this.peek ());
-}break;
+this.putMemo (i, true);
+break;
 case 104:
 i = this.binaryDoc.readByte ();
-o = this.memo.get (Integer.$valueOf (i));
+o = this.getMemo (i);
 this.push (o == null ? "BINGET" + (++this.id) : o);
 break;
 case 106:
 i = this.binaryDoc.readIntLE ();
-o = this.memo.get (Integer.$valueOf (i));
+o = this.getMemo (i);
 if (o == null) {
-System.out.println ("did not find memo item for " + i);
+J.util.Logger.error ("did not find memo item for " + i);
 this.push ("LONG_BINGET" + (++this.id));
 } else {
 this.push (o);
@@ -102,7 +112,10 @@ i = this.binaryDoc.readByte () & 0xff;
 a =  Clazz.newByteArray (i, 0);
 this.binaryDoc.readByteArray (a, 0, i);
 s =  String.instantialize (a, "UTF-8");
-this.push (s);
+if (this.inNames && this.markCount == 3 && this.lastMark == this.stack.size ()) {
+this.thisName = s;
+this.filePt = this.emptyListPt;
+}this.push (s);
 break;
 case 84:
 i = this.binaryDoc.readIntLE ();
@@ -119,6 +132,7 @@ s =  String.instantialize (a, "UTF-8");
 this.push (s);
 break;
 case 93:
+this.emptyListPt = this.binaryDoc.getPosition () - 1;
 this.push ( new J.util.JmolList ());
 break;
 case 99:
@@ -133,10 +147,7 @@ o = this.pop ();
 this.build.addLast (o);
 break;
 case 40:
-i = this.stack.size ();
-if (logging) this.log ("\n " + Integer.toHexString (this.binaryDoc.getPosition ()) + " [");
-this.marks.addLast (Integer.$valueOf (i));
-this.markCount++;
+this.putMark (this.stack.size ());
 break;
 case 78:
 this.push (null);
@@ -146,7 +157,7 @@ this.push (this.getObjects (this.getMark ()));
 break;
 case 115:
 o = this.pop ();
-if (!(Clazz.instanceOf (this.peek (), String))) System.out.println (this.peek () + " is not a string");
+if (!(Clazz.instanceOf (this.peek (), String))) J.util.Logger.error (this.peek () + " is not a string");
 s = this.pop ();
 (this.peek ()).put (s, o);
 break;
@@ -179,8 +190,6 @@ this.push (Integer.$valueOf (Integer.parseInt (s)));
 if (Clazz.exceptionOf (e, Exception)) {
 var ll = Long.parseLong (s);
 this.push (Integer.$valueOf ((ll & 0xFFFFFFFF)));
-System.out.println ("INT too large: " + s + " @ " + this.binaryDoc.getPosition ());
-this.push (Integer.$valueOf (2147483647));
 } else {
 throw e;
 }
@@ -191,7 +200,7 @@ J.util.Logger.error ("Pickle reader error: " + b + " " + this.binaryDoc.getPosit
 }
 }
 if (logging) this.log ("");
-System.out.println ("PyMOL Pickle reader cached " + this.memo.size () + " tokens");
+J.util.Logger.info ("PyMOL Pickle reader cached " + this.memo.size () + " tokens; retrieved " + this.retrieveCount);
 this.memo = null;
 map = this.stack.remove (0);
 if (map.size () == 0) for (i = this.stack.size (); --i >= 0; ) {
@@ -201,6 +210,21 @@ map.put (s, o);
 }
 return map;
 }, "~B");
+$_M(c$, "putMemo", 
+($fz = function (i, doCheck) {
+var o = this.peek ();
+if (Clazz.instanceOf (o, String)) {
+if (doCheck && this.markCount >= 6 || this.markCount == 3 && this.inMovie) return;
+this.memo.put (Integer.$valueOf (i), o);
+}}, $fz.isPrivate = true, $fz), "~N,~B");
+$_M(c$, "getMemo", 
+($fz = function (i) {
+var o = this.memo.get (Integer.$valueOf (i));
+if (o == null) return o;
+System.out.println ("retrieving string " + o + " at " + this.binaryDoc.getPosition ());
+this.retrieveCount++;
+return o;
+}, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "getObjects", 
 ($fz = function (mark) {
 var n = this.stack.size () - mark;
@@ -221,6 +245,21 @@ sb.appendC (String.fromCharCode (b));
 }
 return sb.toString ();
 }, $fz.isPrivate = true, $fz));
+$_M(c$, "putMark", 
+($fz = function (i) {
+if (this.logging) this.log ("\n " + Integer.toHexString (this.binaryDoc.getPosition ()) + " [");
+this.marks.addLast (Integer.$valueOf (this.lastMark = i));
+this.markCount++;
+switch (this.markCount) {
+case 2:
+this.thisSection = this.stack.get (i - 2);
+this.inMovie = "movie".equals (this.thisSection);
+this.inNames = "names".equals (this.thisSection);
+break;
+default:
+break;
+}
+}, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "getMark", 
 ($fz = function () {
 return this.marks.remove (--this.markCount).intValue ();

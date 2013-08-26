@@ -24,10 +24,10 @@ this.skipAtomSet (modelAtomCount);
 }this.discardLinesUntilNonBlank ();
 return false;
 });
-$_M(c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeReader", 
 function () {
 this.isTrajectory = false;
-Clazz.superCall (this, J.adapter.readers.molxyz.XyzReader, "finalizeReader", []);
+this.finalizeReaderASCR ();
 });
 $_M(c$, "skipAtomSet", 
 ($fz = function (modelAtomCount) {
@@ -80,7 +80,7 @@ var vx = this.parseFloatStr (tokens[vpt++]);
 var vy = this.parseFloatStr (tokens[vpt++]);
 var vz = this.parseFloatStr (tokens[vpt++]);
 if (Float.isNaN (vx) || Float.isNaN (vy) || Float.isNaN (vz)) continue;
-this.atomSetCollection.addVibrationVector (atom.atomIndex, vx, vy, vz);
+this.atomSetCollection.addVibrationVector (atom.index, vx, vy, vz);
 }
 }
 }, $fz.isPrivate = true, $fz), "~N");

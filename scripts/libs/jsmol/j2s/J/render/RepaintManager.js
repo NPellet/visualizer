@@ -25,40 +25,40 @@ function () {
 return this.repaintPending;
 });
 Clazz.overrideMethod (c$, "pushHoldRepaint", 
-function () {
+function (why) {
 ++this.holdRepaint;
-});
+}, "~S");
 Clazz.overrideMethod (c$, "popHoldRepaint", 
-function (andRepaint) {
+function (andRepaint, why) {
 --this.holdRepaint;
 if (this.holdRepaint <= 0) {
 this.holdRepaint = 0;
 if (andRepaint) {
 this.repaintPending = true;
-this.repaintNow ();
-}}}, "~B");
+this.repaintNow (why);
+}}}, "~B,~S");
 Clazz.overrideMethod (c$, "requestRepaintAndWait", 
-function () {
+function (why) {
 {
 if (typeof Jmol != "undefined" && Jmol._repaint)
 Jmol._repaint(this.viewer.applet, false);
 this.repaintDone();
-}});
+}}, "~S");
 Clazz.overrideMethod (c$, "repaintIfReady", 
-function () {
+function (why) {
 if (this.repaintPending) return false;
 this.repaintPending = true;
 if (this.holdRepaint == 0) {
-this.repaintNow ();
+this.repaintNow (why);
 }return true;
-});
+}, "~S");
 $_M(c$, "repaintNow", 
-($fz = function () {
+($fz = function (why) {
 if (!this.viewer.haveDisplay) return;
 {
 if (typeof Jmol != "undefined" && Jmol._repaint)
 Jmol._repaint(this.viewer.applet,true);
-}}, $fz.isPrivate = true, $fz));
+}}, $fz.isPrivate = true, $fz), "~S");
 Clazz.overrideMethod (c$, "repaintDone", 
 function () {
 this.repaintPending = false;
@@ -91,7 +91,7 @@ throw e;
 }, $fz.isPrivate = true, $fz), "~N");
 Clazz.overrideMethod (c$, "render", 
 function (gdata, modelSet, isFirstPass, minMax) {
-var logTime = this.viewer.global.showTiming;
+var logTime = this.viewer.getBoolean (603979934);
 try {
 var g3d = gdata;
 g3d.renderBackground (null);
@@ -114,8 +114,8 @@ if (logTime) J.util.Logger.checkTimer (msg, false);
 g3d.renderAllStrings (null);
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
-e.printStackTrace ();
-J.util.Logger.error ("rendering error? ");
+if (!this.viewer.isJS ()) e.printStackTrace ();
+J.util.Logger.error ("rendering error? " + e);
 } else {
 throw e;
 }
@@ -124,7 +124,7 @@ throw e;
 Clazz.overrideMethod (c$, "renderExport", 
 function (type, gdata, modelSet, fileName) {
 var isOK;
-var logTime = this.viewer.global.showTiming;
+var logTime = this.viewer.getBoolean (603979934);
 this.viewer.finalizeTransformParameters ();
 this.shapeManager.finalizeAtoms (null, null);
 this.shapeManager.transformAtoms ();

@@ -25,7 +25,7 @@ var axes = this.shape;
 var mad = this.viewer.getObjectMad (1);
 if (mad == 0 || !this.g3d.checkTranslucent (false)) return false;
 var isXY = (axes.axisXY.z != 0);
-if (!isXY && this.viewer.isNavigating () && this.viewer.getBoolean (603979887)) return false;
+if (!isXY && this.viewer.isNavigating () && this.viewer.getBoolean (603979888)) return false;
 var axesMode = this.viewer.getAxesMode ();
 this.imageFontScaling = this.viewer.getImageFontScaling ();
 if (this.viewer.areAxesTainted ()) {
@@ -63,8 +63,8 @@ if (diameter == 0) diameter = 2;
 } else {
 if (this.g3d.isAntialiased ()) diameter += diameter;
 }this.g3d.setSlab (0);
-this.pt0.setT (this.viewer.transformPt (axes.axisXY));
-this.originScreen.set (this.pt0.x, this.pt0.y, this.pt0.z);
+this.pt0i.setT (this.viewer.transformPt (axes.axisXY));
+this.originScreen.set (this.pt0i.x, this.pt0i.y, this.pt0i.z);
 var zoomDimension = this.viewer.getScreenDim ();
 var scaleFactor = zoomDimension / 10 * axes.scale;
 if (this.g3d.isAntialiased ()) scaleFactor *= 2;
@@ -101,7 +101,7 @@ this.atomB.setT (axes.getAxisPoint (i, isDataFrame));
 if (this.tickInfo != null) {
 this.tickInfo.first = 0;
 this.tickInfo.signFactor = (i % 6 >= 3 ? -1 : 1);
-}}this.renderLine (this.originScreen, this.screens[i], diameter, this.pt0, this.pt1, drawTicks && this.tickInfo != null);
+}}this.renderLine (this.originScreen, this.screens[i], diameter, this.pt0i, this.pt1i, drawTicks && this.tickInfo != null);
 }
 if (nPoints == 3 && !isXY) {
 var label0 = (axes.labels == null || axes.labels.length == 3 || axes.labels[3] == null ? "0" : axes.labels[3]);

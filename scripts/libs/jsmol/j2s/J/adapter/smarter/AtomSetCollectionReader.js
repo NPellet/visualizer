@@ -43,6 +43,7 @@ this.iHaveFractionalCoordinates = false;
 this.doPackUnitCell = false;
 this.strSupercell = null;
 this.ptSupercell = null;
+this.mustFinalizeModelSet = false;
 this.loadNote = null;
 this.doConvertToFractional = false;
 this.fileCoordinatesAreFractional = false;
@@ -100,6 +101,11 @@ this.loadNote =  new J.util.SB ();
 });
 $_M(c$, "setup", 
 function (fullPath, htParams, reader) {
+this.setupASCR (fullPath, htParams, reader);
+}, "~S,java.util.Map,~O");
+$_M(c$, "setupASCR", 
+function (fullPath, htParams, reader) {
+if (fullPath == null) return;
 this.htParams = htParams;
 this.filePath = fullPath.$replace ('\\', '/');
 var i = this.filePath.lastIndexOf ('/');
@@ -121,14 +127,30 @@ while (this.line != null && this.continuing) if (this.checkLine ()) this.readLin
 this.processBinaryDocument (this.doc);
 }this.finalizeReader ();
 } catch (e) {
-System.out.println (e);
-{
-}this.setError (e);
+J.util.Logger.info ("Reader error: " + e);
+if (!this.viewer.isJS ()) e.printStackTrace ();
+this.setError (e);
 }
 if (this.reader != null) this.reader.close ();
 if (this.doc != null) this.doc.close ();
 return this.finish ();
 });
+$_M(c$, "fixBaseIndices", 
+($fz = function () {
+try {
+var baseAtomIndex = (this.htParams.get ("baseAtomIndex")).intValue ();
+var baseModelIndex = (this.htParams.get ("baseModelIndex")).intValue ();
+baseAtomIndex += this.atomSetCollection.getAtomCount ();
+baseModelIndex += this.atomSetCollection.getAtomSetCount ();
+this.htParams.put ("baseAtomIndex", Integer.$valueOf (baseAtomIndex));
+this.htParams.put ("baseModelIndex", Integer.$valueOf (baseModelIndex));
+} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
+}, $fz.isPrivate = true, $fz));
 $_M(c$, "readDataObject", 
 function (node) {
 this.initialize ();
@@ -176,9 +198,18 @@ if (this.trajectorySteps == null) this.htParams.put ("trajectorySteps", this.tra
 });
 $_M(c$, "finalizeReader", 
 function () {
+this.finalizeReaderASCR ();
+});
+$_M(c$, "finalizeReaderASCR", 
+function () {
 this.applySymmetryAndSetTrajectory ();
-if (this.loadNote.length () > 0) this.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("modelLoadNote", this.loadNote.toString ());
+this.setLoadNote ();
+this.atomSetCollection.finalizeStructures ();
 if (this.doCentralize) this.atomSetCollection.centralize ();
+});
+$_M(c$, "setLoadNote", 
+function () {
+if (this.loadNote.length () > 0) this.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("modelLoadNote", this.loadNote.toString ());
 });
 $_M(c$, "setIsPDB", 
 function () {
@@ -208,6 +239,7 @@ this.atomSetCollection.setAtomSetAuxiliaryInfoForSet ("fileType", fileType, i);
 this.atomSetCollection.freeze (this.reverseModels);
 if (this.atomSetCollection.errorMessage != null) return this.atomSetCollection.errorMessage + "\nfor file " + this.filePath + "\ntype " + name;
 if ((this.atomSetCollection.bsAtoms == null ? this.atomSetCollection.getAtomCount () : this.atomSetCollection.bsAtoms.cardinality ()) == 0 && fileType.indexOf ("DataOnly") < 0 && this.atomSetCollection.getAtomSetCollectionAuxiliaryInfo ("dataOnly") == null) return "No atoms found\nfor file " + this.filePath + "\ntype " + name;
+this.fixBaseIndices ();
 return this.atomSetCollection;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "setError", 
@@ -220,6 +252,7 @@ else
 s = e.toString();
 }if (this.line == null) this.atomSetCollection.errorMessage = "Error reading file at end of file \n" + s;
  else this.atomSetCollection.errorMessage = "Error reading file at line " + this.ptLine + ":\n" + this.line + "\n" + s;
+if (!this.viewer.isJS ()) e.printStackTrace ();
 }, $fz.isPrivate = true, $fz), "Throwable");
 $_M(c$, "initialize", 
 ($fz = function () {
@@ -497,7 +530,7 @@ return isOK;
 }, "J.adapter.smarter.Atom,~N");
 $_M(c$, "checkFilter", 
 ($fz = function (atom, f) {
-return (!this.filterGroup3 || atom.group3 == null || !this.filterReject (f, "[", atom.group3.toUpperCase () + "]")) && (!this.filterAtomName || atom.atomName == null || !this.filterReject (f, ".", atom.atomName.toUpperCase () + (this.filterAtomTypeStr == null ? ";" : "\0"))) && (this.filterAtomTypeStr == null || atom.atomName == null || atom.atomName.toUpperCase ().indexOf ("\0" + this.filterAtomTypeStr) >= 0) && (!this.filterElement || atom.elementSymbol == null || !this.filterReject (f, "_", atom.elementSymbol.toUpperCase () + ";")) && (!this.filterChain || atom.chainID == '\0' || !this.filterReject (f, ":", "" + atom.chainID)) && (!this.filterAltLoc || atom.alternateLocationID == '\0' || !this.filterReject (f, "%", "" + atom.alternateLocationID)) && (!this.filterHetero || !this.filterReject (f, "HETATM", atom.isHetero ? "HETATM" : "ATOM"));
+return (!this.filterGroup3 || atom.group3 == null || !this.filterReject (f, "[", atom.group3.toUpperCase () + "]")) && (!this.filterAtomName || atom.atomName == null || !this.filterReject (f, ".", atom.atomName.toUpperCase () + (this.filterAtomTypeStr == null ? ";" : "\0"))) && (this.filterAtomTypeStr == null || atom.atomName == null || atom.atomName.toUpperCase ().indexOf ("\0" + this.filterAtomTypeStr) >= 0) && (!this.filterElement || atom.elementSymbol == null || !this.filterReject (f, "_", atom.elementSymbol.toUpperCase () + ";")) && (!this.filterChain || atom.chainID == 0 || !this.filterReject (f, ":", "" + this.viewer.getChainIDStr (atom.chainID))) && (!this.filterAltLoc || atom.alternateLocationID == '\0' || !this.filterReject (f, "%", "" + atom.alternateLocationID)) && (!this.filterHetero || !this.filterReject (f, "HETATM", atom.isHetero ? "HETATM" : "ATOM"));
 }, $fz.isPrivate = true, $fz), "J.adapter.smarter.Atom,~S");
 $_M(c$, "filterReject", 
 function (f, code, atomCode) {
@@ -568,6 +601,10 @@ this.addSiteScript ("site_list = \"" + sites + "\".split(\",\")");
 }, "java.util.Map");
 $_M(c$, "applySymmetryAndSetTrajectory", 
 function () {
+this.applySymTrajASCR ();
+});
+$_M(c$, "applySymTrajASCR", 
+function () {
 if (this.iHaveUnitCell && this.doCheckUnitCell) {
 this.atomSetCollection.setCoordinatesAreFractional (this.iHaveFractionalCoordinates);
 this.atomSetCollection.setNotionalUnitCell (this.notionalUnitCell, this.matUnitCellOrientation, this.unitCellOffset);
@@ -589,7 +626,7 @@ this.addVibrations = false;
 }}if (this.isTrajectory) this.atomSetCollection.setTrajectory ();
 this.initializeSymmetry ();
 });
-$_M(c$, "setMOData", 
+$_M(c$, "finalizeMOData", 
 function (moData) {
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("moData", moData);
 if (moData == null) return;
@@ -769,6 +806,10 @@ this.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("sitescript", this.sit
 }, "~S");
 $_M(c$, "readLine", 
 function () {
+return this.RL ();
+});
+$_M(c$, "RL", 
+function () {
 this.prevline = this.line;
 this.line = this.reader.readLine ();
 if (this.os != null && this.line != null) {
@@ -937,8 +978,12 @@ str = str.substring (("" + isotope).length);
 atom.elementNumber = (str.length == 0 ? isotope : ((isotope << 7) + J.api.JmolAdapter.getElementNumber (str)));
 }}, "J.adapter.smarter.Atom,~S");
 $_M(c$, "finalizeModelSet", 
-function (modelSet, baseModelIndex, baseAtomIndex) {
-}, "J.modelset.ModelSet,~N,~N");
+function () {
+});
+$_M(c$, "setChainID", 
+function (atom, ch) {
+atom.chainID = this.viewer.getChainID ("" + ch);
+}, "J.adapter.smarter.Atom,~S");
 Clazz.defineStatics (c$,
 "ANGSTROMS_PER_BOHR", 0.5291772);
 });

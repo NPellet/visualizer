@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.symmetry");
-Clazz.load (["J.util.P3i"], "J.symmetry.HallTranslation", null, function () {
+Clazz.load (null, "J.symmetry.HallTranslation", ["J.util.P3i"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.translationCode = '\0';
 this.rotationOrder = 0;
@@ -11,19 +11,7 @@ Clazz.makeConstructor (c$,
 function (translationCode, params) {
 this.translationCode = translationCode;
 if (params != null) {
-if (params.y < 0) {
-var order = params.x;
-for (var i = 0; i < J.symmetry.HallTranslation.hallTranslationTerms.length; i++) {
-var h = J.symmetry.HallTranslation.hallTranslationTerms[i];
-if (h.translationCode == translationCode) {
-if (h.rotationOrder == 0 || h.rotationOrder == order) {
-this.translationCode = translationCode;
-this.rotationShift12ths = h.rotationShift12ths;
-this.vectorShift12ths = h.vectorShift12ths;
-break;
-}}}
-return;
-}if (params.z >= 0) {
+if (params.z >= 0) {
 this.vectorShift12ths = params;
 return;
 }this.rotationOrder = params.x;
@@ -67,8 +55,28 @@ for (var i = 1, ipt = 3; i <= J.symmetry.HallTranslation.nLatticeTypes; i++, ipt
 
 return "";
 }, "~S,~B");
+c$.getHallTerms = $_M(c$, "getHallTerms", 
+($fz = function () {
+return (J.symmetry.HallTranslation.hallTranslationTerms == null ? ($t$ = J.symmetry.HallTranslation.hallTranslationTerms = [ new J.symmetry.HallTranslation ('a', J.util.P3i.new3 (6, 0, 0)),  new J.symmetry.HallTranslation ('b', J.util.P3i.new3 (0, 6, 0)),  new J.symmetry.HallTranslation ('c', J.util.P3i.new3 (0, 0, 6)),  new J.symmetry.HallTranslation ('n', J.util.P3i.new3 (6, 6, 6)),  new J.symmetry.HallTranslation ('u', J.util.P3i.new3 (3, 0, 0)),  new J.symmetry.HallTranslation ('v', J.util.P3i.new3 (0, 3, 0)),  new J.symmetry.HallTranslation ('w', J.util.P3i.new3 (0, 0, 3)),  new J.symmetry.HallTranslation ('d', J.util.P3i.new3 (3, 3, 3)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (2, 6, -1)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (3, 4, -1)),  new J.symmetry.HallTranslation ('2', J.util.P3i.new3 (3, 8, -1)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (4, 3, -1)),  new J.symmetry.HallTranslation ('3', J.util.P3i.new3 (4, 9, -1)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (6, 2, -1)),  new J.symmetry.HallTranslation ('2', J.util.P3i.new3 (6, 4, -1)),  new J.symmetry.HallTranslation ('4', J.util.P3i.new3 (6, 8, -1)),  new J.symmetry.HallTranslation ('5', J.util.P3i.new3 (6, 10, -1)),  new J.symmetry.HallTranslation ('r', J.util.P3i.new3 (4, 8, 8)),  new J.symmetry.HallTranslation ('s', J.util.P3i.new3 (8, 8, 4)),  new J.symmetry.HallTranslation ('t', J.util.P3i.new3 (8, 4, 8))], J.symmetry.HallTranslation.prototype.hallTranslationTerms = J.symmetry.HallTranslation.hallTranslationTerms, $t$) : J.symmetry.HallTranslation.hallTranslationTerms);
+}, $fz.isPrivate = true, $fz));
+c$.getHallTranslation = $_M(c$, "getHallTranslation", 
+function (translationCode, order) {
+var ht = null;
+for (var i = J.symmetry.HallTranslation.getHallTerms ().length; --i >= 0; ) {
+var h = J.symmetry.HallTranslation.hallTranslationTerms[i];
+if (h.translationCode == translationCode) {
+if (h.rotationOrder == 0 || h.rotationOrder == order) {
+ht =  new J.symmetry.HallTranslation (translationCode, null);
+ht.translationCode = translationCode;
+ht.rotationShift12ths = h.rotationShift12ths;
+ht.vectorShift12ths = h.vectorShift12ths;
+return ht;
+}}}
+return ht;
+}, "~S,~N");
 Clazz.defineStatics (c$,
 "latticeTranslationData", ["\0", "unknown", "", "P", "primitive", "", "I", "body-centered", " 1n", "R", "rhombohedral", " 1r 1r", "F", "face-centered", " 1ab 1bc 1ac", "A", "A-centered", " 1bc", "B", "B-centered", " 1ac", "C", "C-centered", " 1ab", "S", "rhombohedral(S)", " 1s 1s", "T", "rhombohedral(T)", " 1t 1t"]);
 c$.nLatticeTypes = c$.prototype.nLatticeTypes = Clazz.doubleToInt (J.symmetry.HallTranslation.latticeTranslationData.length / 3) - 1;
-c$.hallTranslationTerms = c$.prototype.hallTranslationTerms = [ new J.symmetry.HallTranslation ('a', J.util.P3i.new3 (6, 0, 0)),  new J.symmetry.HallTranslation ('b', J.util.P3i.new3 (0, 6, 0)),  new J.symmetry.HallTranslation ('c', J.util.P3i.new3 (0, 0, 6)),  new J.symmetry.HallTranslation ('n', J.util.P3i.new3 (6, 6, 6)),  new J.symmetry.HallTranslation ('u', J.util.P3i.new3 (3, 0, 0)),  new J.symmetry.HallTranslation ('v', J.util.P3i.new3 (0, 3, 0)),  new J.symmetry.HallTranslation ('w', J.util.P3i.new3 (0, 0, 3)),  new J.symmetry.HallTranslation ('d', J.util.P3i.new3 (3, 3, 3)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (2, 6, -1)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (3, 4, -1)),  new J.symmetry.HallTranslation ('2', J.util.P3i.new3 (3, 8, -1)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (4, 3, -1)),  new J.symmetry.HallTranslation ('3', J.util.P3i.new3 (4, 9, -1)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (6, 2, -1)),  new J.symmetry.HallTranslation ('2', J.util.P3i.new3 (6, 4, -1)),  new J.symmetry.HallTranslation ('4', J.util.P3i.new3 (6, 8, -1)),  new J.symmetry.HallTranslation ('5', J.util.P3i.new3 (6, 10, -1)),  new J.symmetry.HallTranslation ('r', J.util.P3i.new3 (4, 8, 8)),  new J.symmetry.HallTranslation ('s', J.util.P3i.new3 (8, 8, 4)),  new J.symmetry.HallTranslation ('t', J.util.P3i.new3 (8, 4, 8))];
+Clazz.defineStatics (c$,
+"hallTranslationTerms", null);
 });

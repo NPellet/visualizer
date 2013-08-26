@@ -135,7 +135,7 @@ this.currentMesh.color = this.color;
 }this.setTokenProperty (1766856708, false, false);
 return;
 }if ("translucency" === propertyName) {
-this.setTokenProperty (1073742180, ((value).equals ("translucent")), false);
+this.setTokenProperty (603979967, ((value).equals ("translucent")), false);
 return;
 }if ("hidden" === propertyName) {
 value = Integer.$valueOf ((value).booleanValue () ? 1048588 : 1048589);
@@ -230,9 +230,10 @@ return;
 case 1766856708:
 m.colix = this.colix;
 return;
-case 1073742180:
+case 603979967:
 m.setTranslucent (bProp, this.translucentLevel);
 if (bProp && m.bsSlabGhost != null) m.resetSlab ();
+if (m.bsTransPolygons != null) m.resetTransPolygons ();
 return;
 default:
 m.setTokenProperty (tokProp, bProp);

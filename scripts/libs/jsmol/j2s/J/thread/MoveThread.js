@@ -69,7 +69,7 @@ if (this.dSlab != 0) this.transformManager.slabToPercent (Clazz.doubleToInt (Mat
 var timeSpent = (System.currentTimeMillis () - this.startTime);
 var timeAllowed = this.iStep * this.timePerStep;
 if (timeSpent < timeAllowed) {
-this.viewer.requestRepaintAndWait ();
+this.viewer.requestRepaintAndWait ("move thread");
 if (!this.isJS && !this.viewer.isScriptExecuting ()) {
 mode = -2;
 break;

@@ -6,6 +6,7 @@ this.atomIndex2 = 0;
 this.order = 0;
 this.radius = -1;
 this.colix = -1;
+this.uniqueID = -1;
 Clazz.instantialize (this, arguments);
 }, J.adapter.smarter, "Bond", J.adapter.smarter.AtomSetObject);
 Clazz.makeConstructor (c$, 

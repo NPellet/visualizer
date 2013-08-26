@@ -149,7 +149,7 @@ if (this.stopped || this.iStep >= this.totalSteps) {
 mode = -2;
 break;
 }this.doNavStep (this.iStep++);
-this.viewer.requestRepaintAndWait ();
+this.viewer.requestRepaintAndWait ("navigator");
 var sleepTime = (this.targetTime - System.currentTimeMillis ());
 if (!this.runSleep (sleepTime, 0)) return;
 mode = 0;
@@ -334,7 +334,7 @@ this.tm.unTransformPoint (this.tm.navigationOffset, this.tm.navigationCenter);
 break;
 }
 this.tm.matrixTransform.transform2 (this.tm.navigationCenter, this.tm.navigationShiftXY);
-if (this.viewer.getBoolean (603979887)) {
+if (this.viewer.getBoolean (603979888)) {
 var pt = J.util.P3.newP (this.tm.navigationCenter);
 this.viewer.toUnitCell (this.tm.navigationCenter, null);
 if (pt.distance (this.tm.navigationCenter) > 0.01) {
@@ -432,7 +432,7 @@ break;
 this.tm.rotateXRadians (0.017453292 * -0.2 * this.multiplier, null);
 this.tm.navMode = 3;
 break;
-}this.tm.modelCenterOffset -= speed * (this.viewer.getBoolean (603979887) ? 1 : this.multiplier);
+}this.tm.modelCenterOffset -= speed * (this.viewer.getBoolean (603979888) ? 1 : this.multiplier);
 this.tm.navMode = 4;
 break;
 case 40:
@@ -454,7 +454,7 @@ break;
 this.tm.rotateXRadians (0.017453292 * .2 * this.multiplier, null);
 this.tm.navMode = 3;
 break;
-}this.tm.modelCenterOffset += speed * (this.viewer.getBoolean (603979887) ? 1 : this.multiplier);
+}this.tm.modelCenterOffset += speed * (this.viewer.getBoolean (603979888) ? 1 : this.multiplier);
 this.tm.navMode = 4;
 break;
 case 37:

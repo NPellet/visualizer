@@ -10,9 +10,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.UhbdReader, []);
 });
-$_M(c$, "init2", 
+Clazz.overrideMethod (c$, "init2", 
 function (sg, br) {
-Clazz.superCall (this, J.jvxl.readers.UhbdReader, "init2", [sg, br]);
+this.init2VFR (sg, br);
 if (this.params.thePlane == null) this.params.insideOut = !this.params.insideOut;
 this.isAngstroms = true;
 this.nSurfaces = 1;

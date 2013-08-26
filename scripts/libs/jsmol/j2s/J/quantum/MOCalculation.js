@@ -883,14 +883,14 @@ var c1 = this.gaussians[this.gaussianPtr + ig][1];
 J.util.Logger.debug ("\t\t\tGaussian " + (ig + 1) + " alpha=" + alpha + " c=" + c1);
 }
 var so = J.quantum.MOCalculation.getShellOrder (shell);
-for (var i = 0; i < so.length; i++) {
+for (var i = 0; i < this.map.length; i++) {
 var c = this.coeffs[i];
-J.util.Logger.debug ("MO coeff " + so[i] + " " + (this.map[i] + this.moCoeff - this.map.length + i + 1) + "\t" + c + "\t" + this.thisAtom.atom);
+J.util.Logger.debug ("MO coeff " + (so == null ? "?" : so[i]) + " " + (this.map[i] + this.moCoeff - this.map.length + i + 1) + "\t" + c + "\t" + this.thisAtom.atom);
 }
 }, $fz.isPrivate = true, $fz), "~N");
 c$.getShellOrder = $_M(c$, "getShellOrder", 
 ($fz = function (i) {
-return (i < 0 || i > J.quantum.MOCalculation.shellOrder.length ? null : J.quantum.MOCalculation.shellOrder[i]);
+return (i < 0 || i >= J.quantum.MOCalculation.shellOrder.length ? null : J.quantum.MOCalculation.shellOrder[i]);
 }, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "calculateElectronDensity", 
 function () {

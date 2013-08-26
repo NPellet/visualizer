@@ -28,8 +28,8 @@ eta = J.util.Measure.computeTorsion (c40, p1, c41, p2, true);
 }var theta = J.util.Measure.computeTorsion (p1, c41, p2, c42, true);
 if (eta < 0) eta += 360;
 if (theta < 0) theta += 360;
-m1.setGroupParameter (1112539140, eta);
-m1.setGroupParameter (1112539150, theta);
+m1.setGroupParameter (1112539141, eta);
+m1.setGroupParameter (1112539152, theta);
 }
 return true;
 });

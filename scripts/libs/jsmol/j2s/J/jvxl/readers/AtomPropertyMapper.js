@@ -14,9 +14,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.AtomPropertyMapper, []);
 });
-$_M(c$, "init", 
+Clazz.overrideMethod (c$, "init", 
 function (sg) {
-Clazz.superCall (this, J.jvxl.readers.AtomPropertyMapper, "init", [sg]);
+this.initADR (sg);
 this.mepType = sg.getReaderData ();
 }, "J.jvxl.readers.SurfaceGenerator");
 Clazz.overrideMethod (c$, "setup", 
@@ -56,9 +56,9 @@ break;
 this.setRanges (this.params.solvent_ptsPerAngstrom, this.params.solvent_gridMax, 0);
 this.params.cutoff = 0;
 }, "~B");
-$_M(c$, "setVolumeData", 
+Clazz.overrideMethod (c$, "setVolumeData", 
 function () {
-if (this.params.thePlane != null) Clazz.superCall (this, J.jvxl.readers.AtomPropertyMapper, "setVolumeData", []);
+if (this.params.thePlane != null) this.setVolumeDataADR ();
 });
 Clazz.overrideMethod (c$, "initializeMapping", 
 function () {

@@ -22,10 +22,6 @@ if (this.istructure == this.structureCount) return false;
 this.structure = this.structures[this.istructure++];
 return true;
 });
-Clazz.overrideMethod (c$, "getModelIndex", 
-function () {
-return this.structure.atomSetIndex;
-});
 Clazz.overrideMethod (c$, "getStructureType", 
 function () {
 return this.structure.structureType;
@@ -44,7 +40,7 @@ return this.structure.serialID;
 });
 Clazz.overrideMethod (c$, "getStartChainID", 
 function () {
-return J.api.JmolAdapter.canonizeChainID (this.structure.startChainID);
+return this.structure.startChainID;
 });
 Clazz.overrideMethod (c$, "getStartSequenceNumber", 
 function () {
@@ -56,7 +52,7 @@ return J.api.JmolAdapter.canonizeInsertionCode (this.structure.startInsertionCod
 });
 Clazz.overrideMethod (c$, "getEndChainID", 
 function () {
-return J.api.JmolAdapter.canonizeChainID (this.structure.endChainID);
+return this.structure.endChainID;
 });
 Clazz.overrideMethod (c$, "getEndSequenceNumber", 
 function () {
@@ -74,12 +70,12 @@ Clazz.overrideMethod (c$, "getStructuredModels",
 function () {
 return this.bsModelsDefined;
 });
-Clazz.overrideMethod (c$, "getStartIndex", 
+Clazz.overrideMethod (c$, "getAtomIndices", 
 function () {
-return this.structure.istart;
+return this.structure.atomStartEnd;
 });
-Clazz.overrideMethod (c$, "getEndIndex", 
+Clazz.overrideMethod (c$, "getModelIndices", 
 function () {
-return this.structure.iend;
+return this.structure.modelStartEnd;
 });
 });

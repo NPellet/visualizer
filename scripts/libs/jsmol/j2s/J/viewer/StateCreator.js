@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.api.JmolStateCreator", "java.util.Hashtable"], "J.viewer.StateCreator", ["java.io.BufferedOutputStream", "$.BufferedWriter", "$.FileWriter", "java.lang.Boolean", "$.Float", "java.util.Arrays", "$.Date", "J.constant.EnumAxesMode", "$.EnumPalette", "$.EnumStereoMode", "$.EnumStructure", "$.EnumVdw", "J.io.Base64", "$.JmolBinary", "$.OutputStringBuilder", "J.modelset.AtomCollection", "$.Bond", "J.shape.Object2d", "$.Shape", "J.util.BSUtil", "$.ColorEncoder", "$.Escape", "$.JmolEdge", "$.JmolFont", "$.JmolList", "$.Logger", "$.P3", "$.Parser", "$.SB", "$.TextFormat", "$.V3", "J.viewer.DataManager", "$.FileManager", "$.JC", "$.StateManager", "$.Viewer"], function () {
+Clazz.load (["J.api.JmolStateCreator", "java.util.Hashtable"], "J.viewer.StateCreator", ["java.io.BufferedOutputStream", "$.BufferedWriter", "$.FileWriter", "java.lang.Boolean", "$.Float", "java.util.Arrays", "$.Date", "J.constant.EnumAxesMode", "$.EnumPalette", "$.EnumStereoMode", "$.EnumStructure", "$.EnumVdw", "J.io.Base64", "$.JmolBinary", "$.OutputStringBuilder", "J.modelset.AtomCollection", "$.Bond", "$.Object2d", "J.shape.Shape", "J.util.BSUtil", "$.C", "$.ColorEncoder", "$.Escape", "$.JmolEdge", "$.JmolFont", "$.JmolList", "$.Logger", "$.P3", "$.Parser", "$.SB", "$.TextFormat", "$.V3", "J.viewer.DataManager", "$.FileManager", "$.JC", "$.StateManager", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.temp = null;
@@ -156,7 +156,7 @@ commands.append (";\n");
 }
 this.getShapeState (commands, isAll, 33);
 }commands.append ("  set fontScaling " + this.viewer.getBoolean (603979845) + ";\n");
-if (this.viewer.getBoolean (603979882)) commands.append ("  set modelKitMode true;\n");
+if (this.viewer.getBoolean (603979883)) commands.append ("  set modelKitMode true;\n");
 }if (sfunc != null) commands.append ("\n}\n\n");
 return commands.toString ();
 }, "J.util.SB,~B,~B");
@@ -229,14 +229,14 @@ $_M(c$, "getDataState",
 if (dm.dataValues == null) return;
 var e = dm.dataValues.keySet ().iterator ();
 var sb =  new J.util.SB ();
-var n = 0;
+var haveData = false;
 if (atomProps.length > 0) {
-n = 1;
+haveData = true;
 sb.append (atomProps);
 }while (e.hasNext ()) {
 var name = e.next ();
 if (name.indexOf ("property_") == 0) {
-n++;
+haveData = true;
 var obj = dm.dataValues.get (name);
 var data = obj[1];
 if (data != null && (obj[3]).intValue () == 1) {
@@ -248,21 +248,22 @@ sb.append ("\n").append (J.util.Escape.encapsulateData (name, data, 0));
 var obj = dm.dataValues.get (name);
 var data = obj[1];
 if (data != null && (obj[3]).intValue () == 2) {
-n++;
+haveData = true;
 sb.append ("\n").append (J.util.Escape.encapsulateData (name, data, 2));
 }} else if (name.indexOf ("data3d") == 0) {
 var obj = dm.dataValues.get (name);
 var data = obj[1];
 if (data != null && (obj[3]).intValue () == 3) {
-n++;
+haveData = true;
 sb.append ("\n").append (J.util.Escape.encapsulateData (name, data, 3));
 }}}
 if (dm.userVdws != null) {
 var info = dm.getDefaultVdwNameOrData (0, J.constant.EnumVdw.USER, dm.bsUserVdws);
 if (info.length > 0) {
-n++;
+haveData = true;
 sb.append (info);
-}}if (n == 0) return;
+}}if (this.viewer.nmrCalculation != null) haveData = new Boolean (haveData | this.viewer.getNMRCalculation ().getState (sb)).valueOf ();
+if (!haveData) return;
 if (sfunc != null) state.append ("function _setDataState() {\n");
 state.appendSB (sb);
 if (sfunc != null) {
@@ -298,12 +299,19 @@ commands.append ("# modelCount ").appendI (modelCount).append (";\n# first ").ap
 if (am.backgroundModelIndex >= 0) J.viewer.StateCreator.appendCmd (commands, "set backgroundModel " + this.viewer.getModelNumberDotted (am.backgroundModelIndex));
 var bs = this.viewer.getFrameOffsets ();
 if (bs != null) J.viewer.StateCreator.appendCmd (commands, "frame align " + J.util.Escape.eBS (bs));
-J.viewer.StateCreator.appendCmd (commands, "frame RANGE " + am.getModelNumber (-1) + " " + am.getModelNumber (1));
+J.viewer.StateCreator.appendCmd (commands, "frame RANGE " + am.getModelSpecial (-1) + " " + am.getModelSpecial (1));
 J.viewer.StateCreator.appendCmd (commands, "animation DIRECTION " + (am.animationDirection == 1 ? "+1" : "-1"));
 J.viewer.StateCreator.appendCmd (commands, "animation FPS " + am.animationFps);
 J.viewer.StateCreator.appendCmd (commands, "animation MODE " + am.animationReplayMode.name () + " " + am.firstFrameDelay + " " + am.lastFrameDelay);
 if (am.morphCount > 0) J.viewer.StateCreator.appendCmd (commands, "animation MORPH " + am.morphCount);
-J.viewer.StateCreator.appendCmd (commands, "frame " + am.getModelNumber (0));
+var frames = am.getAnimationFrames ();
+var showModel = true;
+if (frames != null) {
+J.viewer.StateCreator.appendCmd (commands, "anim frames " + J.util.Escape.eAI (frames));
+var i = am.getCurrentFrameIndex ();
+J.viewer.StateCreator.appendCmd (commands, "frame " + (i + 1));
+showModel = (am.getCurrentModelIndex () != am.modelIndexForFrame (i));
+}if (showModel) J.viewer.StateCreator.appendCmd (commands, "model " + am.getModelSpecial (0));
 J.viewer.StateCreator.appendCmd (commands, "animation " + (!am.animationOn ? "OFF" : am.currentDirection == 1 ? "PLAY" : "PLAYREV"));
 if (am.animationOn && am.animationPaused) J.viewer.StateCreator.appendCmd (commands, "animation PAUSE");
 if (sfunc != null) commands.append ("}\n\n");
@@ -355,8 +363,7 @@ var s = J.viewer.StateManager.getVariableList (global.htUserVariables, 0, false,
 if (s.length > 0) {
 commands.append ("\n#user-defined atom sets; \n");
 commands.append (s);
-}this.viewer.loadShape (5);
-commands.append (this.getDefaultLabelState (this.viewer.shapeManager.shapes[5]));
+}if (this.viewer.shapeManager.getShape (5) != null) commands.append (this.getDefaultLabelState (this.viewer.shapeManager.shapes[5]));
 if (global.haveSetStructureList) {
 var slist = global.structureList;
 commands.append ("struture HELIX set " + J.util.Escape.eAF (slist.get (J.constant.EnumStructure.HELIX)));
@@ -371,10 +378,10 @@ var s =  new J.util.SB ().append ("\n# label defaults;\n");
 J.viewer.StateCreator.appendCmd (s, "select none");
 J.viewer.StateCreator.appendCmd (s, J.shape.Shape.getColorCommand ("label", l.defaultPaletteID, l.defaultColix, l.translucentAllowed));
 J.viewer.StateCreator.appendCmd (s, "background label " + J.shape.Shape.encodeColor (l.defaultBgcolix));
-J.viewer.StateCreator.appendCmd (s, "set labelOffset " + J.shape.Object2d.getXOffset (l.defaultOffset) + " " + (-J.shape.Object2d.getYOffset (l.defaultOffset)));
-var align = J.shape.Object2d.getAlignmentName (l.defaultAlignment);
+J.viewer.StateCreator.appendCmd (s, "set labelOffset " + J.modelset.Object2d.getXOffset (l.defaultOffset) + " " + (-J.modelset.Object2d.getYOffset (l.defaultOffset)));
+var align = J.modelset.Object2d.getAlignmentName (l.defaultAlignment);
 J.viewer.StateCreator.appendCmd (s, "set labelAlignment " + (align.length < 5 ? "left" : align));
-var pointer = J.shape.Object2d.getPointer (l.defaultPointer);
+var pointer = J.modelset.Object2d.getPointer (l.defaultPointer);
 J.viewer.StateCreator.appendCmd (s, "set labelPointer " + (pointer.length == 0 ? "off" : pointer));
 if ((l.defaultZPos & 32) != 0) J.viewer.StateCreator.appendCmd (s, "set labelFront");
  else if ((l.defaultZPos & 16) != 0) J.viewer.StateCreator.appendCmd (s, "set labelGroup");
@@ -421,6 +428,7 @@ return s;
 $_M(c$, "getViewState", 
 ($fz = function (tm, sfunc) {
 var commands =  new J.util.SB ();
+var moveToText = tm.getMoveToText (0, false);
 if (sfunc != null) {
 sfunc.append ("  _setPerspectiveState;\n");
 commands.append ("function _setPerspectiveState() {\n");
@@ -430,14 +438,15 @@ J.viewer.StateCreator.appendCmd (commands, "set perspectiveDepth " + tm.perspect
 J.viewer.StateCreator.appendCmd (commands, "set visualRange " + tm.visualRange);
 if (!tm.isWindowCentered ()) J.viewer.StateCreator.appendCmd (commands, "set windowCentered false");
 J.viewer.StateCreator.appendCmd (commands, "set cameraDepth " + tm.cameraDepth);
-if (tm.mode == 1) J.viewer.StateCreator.appendCmd (commands, "set navigationMode true");
+var navigating = (tm.mode == 1);
+if (navigating) J.viewer.StateCreator.appendCmd (commands, "set navigationMode true");
 J.viewer.StateCreator.appendCmd (commands, this.viewer.getBoundBoxCommand (false));
 J.viewer.StateCreator.appendCmd (commands, "center " + J.util.Escape.eP (tm.fixedRotationCenter));
-commands.append (this.viewer.getSavedOrienationText (null));
-J.viewer.StateCreator.appendCmd (commands, tm.getMoveToText (0, false));
+commands.append (this.viewer.getOrientationText (1073742158, null));
+J.viewer.StateCreator.appendCmd (commands, moveToText);
 if (tm.stereoMode !== J.constant.EnumStereoMode.NONE) J.viewer.StateCreator.appendCmd (commands, "stereo " + (tm.stereoColors == null ? tm.stereoMode.getName () : J.util.Escape.escapeColor (tm.stereoColors[0]) + " " + J.util.Escape.escapeColor (tm.stereoColors[1])) + " " + tm.stereoDegrees);
-if (tm.mode != 1 && !tm.zoomEnabled) J.viewer.StateCreator.appendCmd (commands, "zoom off");
-commands.append ("  slab ").appendI (tm.slabPercentSetting).append (";depth ").appendI (tm.depthPercentSetting).append (tm.slabEnabled && tm.mode != 1 ? ";slab on" : "").append (";\n");
+if (!navigating && !tm.zoomEnabled) J.viewer.StateCreator.appendCmd (commands, "zoom off");
+commands.append ("  slab ").appendI (tm.slabPercentSetting).append (";depth ").appendI (tm.depthPercentSetting).append (tm.slabEnabled && !navigating ? ";slab on" : "").append (";\n");
 commands.append ("  set slabRange ").appendF (tm.slabRange).append (";\n");
 if (tm.zShadeEnabled) commands.append ("  set zShade;\n");
 try {
@@ -452,7 +461,7 @@ if (tm.slabPlane != null) commands.append ("  slab plane ").append (J.util.Escap
 if (tm.depthPlane != null) commands.append ("  depth plane ").append (J.util.Escape.eP4 (tm.depthPlane)).append (";\n");
 commands.append (this.getSpinState (true)).append ("\n");
 if (this.viewer.modelSetHasVibrationVectors () && tm.vibrationOn) J.viewer.StateCreator.appendCmd (commands, "set vibrationPeriod " + tm.vibrationPeriod + ";vibration on");
-if (tm.mode == 1) {
+if (navigating) {
 commands.append (tm.getNavigationState ());
 if (tm.depthPlane != null || tm.slabPlane != null) commands.append ("  slab on;\n");
 }if (sfunc != null) commands.append ("}\n\n");
@@ -489,7 +498,11 @@ info.put ("lastModelIndex", Integer.$valueOf (am.lastFrameIndex));
 info.put ("animationDirection", Integer.$valueOf (am.animationDirection));
 info.put ("currentDirection", Integer.$valueOf (am.currentDirection));
 info.put ("displayModelIndex", Integer.$valueOf (am.currentModelIndex));
-info.put ("displayModelNumber", this.viewer.getModelNumberDotted (am.currentModelIndex));
+if (am.animationFrames != null) {
+info.put ("isMovie", Boolean.TRUE);
+info.put ("frames", J.util.Escape.eAI (am.animationFrames));
+info.put ("currentAnimationFrame", Integer.$valueOf (am.currentAnimationFrame));
+}info.put ("displayModelNumber", this.viewer.getModelNumberDotted (am.currentModelIndex));
 info.put ("displayModelName", (am.currentModelIndex >= 0 ? this.viewer.getModelName (am.currentModelIndex) : ""));
 info.put ("animationFps", Integer.$valueOf (am.animationFps));
 info.put ("animationReplayMode", am.animationReplayMode.name ());
@@ -582,18 +595,24 @@ if (bsSizeDefault.get (i)) J.util.BSUtil.setMapBitSet (temp, atomIndex1, atomInd
 }
 }, "J.shape.AtomShape,J.shape.Shape,~N,~A,J.util.BS,java.util.Map,java.util.Map");
 Clazz.overrideMethod (c$, "getMeasurementState", 
-function (as, mList, measurementCount, font3d, ti) {
+function (shape, mList, measurementCount, font3d, ti) {
 var commands =  new J.util.SB ();
 J.viewer.StateCreator.appendCmd (commands, "measures delete");
 for (var i = 0; i < measurementCount; i++) {
 var m = mList.get (i);
 var count = m.getCount ();
 var sb =  new J.util.SB ().append ("measure");
-var tickInfo = m.tickInfo;
+if (m.thisID != null) sb.append (" ID ").append (J.util.Escape.eS (m.thisID));
+if (m.mad != 0) sb.append (" radius ").appendF (m.thisID == null || m.mad > 0 ? m.mad / 2000 : 0);
+if (m.colix != 0) sb.append (" color ").append (J.util.Escape.escapeColor (J.util.C.getArgb (m.colix)));
+if (m.text != null) {
+sb.append (" font ").append (m.text.font.getInfo ());
+if (m.text.pymolOffset != null) sb.append (" offset ").append (J.util.Escape.eAF (m.text.pymolOffset));
+}var tickInfo = m.tickInfo;
 if (tickInfo != null) J.viewer.StateCreator.addTickInfo (sb, tickInfo, true);
 for (var j = 1; j <= count; j++) sb.append (" ").append (m.getLabel (j, true, true));
 
-sb.append ("; # " + as.getInfoAsString (i));
+sb.append ("; # " + shape.getInfoAsString (i));
 J.viewer.StateCreator.appendCmd (commands, sb.toString ());
 }
 J.viewer.StateCreator.appendCmd (commands, "select *; set measures " + this.viewer.getMeasureDistanceUnits ());
@@ -606,7 +625,7 @@ var m = mList.get (i);
 if (m.isHidden) {
 nHidden++;
 bs.set (i);
-}if (as.bsColixSet != null && as.bsColixSet.get (i)) J.util.BSUtil.setMapBitSet (temp, i, i, J.shape.Shape.getColorCommandUnk ("measure", m.colix, as.translucentAllowed));
+}if (shape.bsColixSet != null && shape.bsColixSet.get (i)) J.util.BSUtil.setMapBitSet (temp, i, i, J.shape.Shape.getColorCommandUnk ("measure", m.colix, shape.translucentAllowed));
 if (m.getStrFormat () != null) J.util.BSUtil.setMapBitSet (temp, i, i, "measure " + J.util.Escape.eS (m.getStrFormat ()));
 }
 if (nHidden > 0) if (nHidden == measurementCount) J.viewer.StateCreator.appendCmd (commands, "measures off; # lines and numbers off");
@@ -616,13 +635,13 @@ if (ti != null) {
 commands.append (" measure ");
 J.viewer.StateCreator.addTickInfo (commands, ti, true);
 commands.append (";\n");
-}if (as.mad >= 0) commands.append (" set measurements " + (as.mad / 2000)).append (";\n");
+}if (shape.mad >= 0) commands.append (" set measurements " + (shape.mad / 2000)).append (";\n");
 var s = this.getCommands (temp, null, "select measures");
 if (s != null && s.length != 0) {
 commands.append (s);
 J.viewer.StateCreator.appendCmd (commands, "select measures ({null})");
 }return commands.toString ();
-}, "J.shape.AtomShape,J.util.JmolList,~N,J.util.JmolFont,J.modelset.TickInfo");
+}, "J.shape.Measures,J.util.JmolList,~N,J.util.JmolFont,J.modelset.TickInfo");
 Clazz.overrideMethod (c$, "getBondState", 
 function (shape, bsOrderSet, reportAll) {
 this.clearTemp ();
@@ -670,7 +689,6 @@ return s;
 }, "J.shape.Shape,~A");
 $_M(c$, "getShapeState", 
 function (shape) {
-this.clearTemp ();
 var s;
 switch (shape.shapeID) {
 case 30:
@@ -680,7 +698,7 @@ sb.append ("\n  set echo off;\n");
 var e = es.objects.values ().iterator ();
 while (e.hasNext ()) {
 var t = e.next ();
-sb.append (t.getState ());
+sb.append (this.getTextState (t));
 if (t.hidden) sb.append ("  set echo ID ").append (J.util.Escape.eS (t.target)).append (" hidden;\n");
 }
 s = sb.toString ();
@@ -691,17 +709,23 @@ s = this.getAtomShapeState (hs) + (hs.colixSelection == 2 ? "" : hs.colixSelecti
 if (hs.bsHighlight != null) s += "  set highlight " + J.util.Escape.eBS (hs.bsHighlight) + "; " + J.shape.Shape.getColorCommandUnk ("highlight", hs.colixHighlight, hs.translucentAllowed) + ";\n";
 break;
 case 34:
+this.clearTemp ();
 var h = shape;
 if (h.atomFormats != null) for (var i = this.viewer.getAtomCount (); --i >= 0; ) if (h.atomFormats[i] != null) J.util.BSUtil.setMapBitSet (this.temp, i, i, "set hoverLabel " + J.util.Escape.eS (h.atomFormats[i]));
 
 s = "\n  hover " + J.util.Escape.eS ((h.labelFormat == null ? "" : h.labelFormat)) + ";\n" + this.getCommands (this.temp, null, "select");
+this.clearTemp ();
 break;
 case 5:
+this.clearTemp ();
 var l = shape;
 for (var i = l.bsSizeSet.nextSetBit (0); i >= 0; i = l.bsSizeSet.nextSetBit (i + 1)) {
 var t = l.getLabel (i);
-var cmd = (t == null ? null : t.getCommand ());
-if (cmd == null) cmd = "label " + J.util.Escape.eS (l.formats[i]);
+var cmd = null;
+if (t != null) {
+cmd = "label " + J.util.Escape.eS (t.textUnformatted);
+if (t.pymolOffset != null) cmd += ";set labelOffset " + J.util.Escape.eAF (t.pymolOffset);
+}if (cmd == null) cmd = "label " + J.util.Escape.eS (l.formats[i]);
 J.util.BSUtil.setMapBitSet (this.temp, i, i, cmd);
 if (l.bsColixSet != null && l.bsColixSet.get (i)) J.util.BSUtil.setMapBitSet (this.temp2, i, i, J.shape.Shape.getColorCommand ("label", l.paletteIDs[i], l.colixes[i], l.translucentAllowed));
 if (l.bsBgColixSet != null && l.bsBgColixSet.get (i)) J.util.BSUtil.setMapBitSet (this.temp2, i, i, "background label " + J.shape.Shape.encodeColor (l.bgcolixes[i]));
@@ -710,9 +734,9 @@ var sppm = (text != null ? text.getScalePixelsPerMicron () : 0);
 if (sppm > 0) J.util.BSUtil.setMapBitSet (this.temp2, i, i, "set labelScaleReference " + (10000 / sppm));
 if (l.offsets != null && l.offsets.length > i) {
 var offsetFull = l.offsets[i];
-J.util.BSUtil.setMapBitSet (this.temp2, i, i, "set " + ((offsetFull & 128) == 128 ? "labelOffsetExact " : "labelOffset ") + J.shape.Object2d.getXOffset (offsetFull >> 8) + " " + (-J.shape.Object2d.getYOffset (offsetFull >> 8)));
-var align = J.shape.Object2d.getAlignmentName (offsetFull >> 2);
-var pointer = J.shape.Object2d.getPointer (offsetFull);
+J.util.BSUtil.setMapBitSet (this.temp2, i, i, "set " + ((offsetFull & 128) == 128 ? "labelOffsetExact " : "labelOffset ") + J.modelset.Object2d.getXOffset (offsetFull >> 8) + " " + (-J.modelset.Object2d.getYOffset (offsetFull >> 8)));
+var align = J.modelset.Object2d.getAlignmentName (offsetFull >> 2);
+var pointer = J.modelset.Object2d.getPointer (offsetFull);
 if (pointer.length > 0) J.util.BSUtil.setMapBitSet (this.temp2, i, i, "set labelPointer " + pointer);
 if ((offsetFull & 32) != 0) J.util.BSUtil.setMapBitSet (this.temp2, i, i, "set labelFront");
  else if ((offsetFull & 16) != 0) J.util.BSUtil.setMapBitSet (this.temp2, i, i, "set labelGroup");
@@ -722,10 +746,15 @@ if (l.bsFontSet != null && l.bsFontSet.get (i)) J.util.BSUtil.setMapBitSet (this
 }
 s = this.getCommands (this.temp, this.temp2, "select") + this.getCommands (null, this.temp3, "select");
 this.temp3.clear ();
+this.clearTemp ();
 break;
 case 0:
+this.clearTemp ();
 var atomCount = this.viewer.getAtomCount ();
 var atoms = this.viewer.modelSet.atoms;
+var balls = shape;
+var colixes = balls.colixes;
+var pids = balls.paletteIDs;
 var r = 0;
 for (var i = 0; i < atomCount; i++) {
 if (shape.bsSizeSet != null && shape.bsSizeSet.get (i)) {
@@ -734,15 +763,60 @@ if ((r = atoms[i].madAtom) < 0) J.util.BSUtil.setMapBitSet (this.temp, i, i, "Sp
 }if (shape.bsColixSet != null && shape.bsColixSet.get (i)) {
 var pid = atoms[i].getPaletteID ();
 if (pid != J.constant.EnumPalette.CPK.id || atoms[i].isTranslucent ()) J.util.BSUtil.setMapBitSet (this.temp, i, i, J.shape.Shape.getColorCommand ("atoms", pid, atoms[i].getColix (), shape.translucentAllowed));
+if (colixes != null && i < colixes.length) J.util.BSUtil.setMapBitSet (this.temp2, i, i, J.shape.Shape.getColorCommand ("balls", pids[i], colixes[i], shape.translucentAllowed));
 }}
-s = this.getCommands (this.temp, null, "select");
+s = this.getCommands (this.temp, this.temp2, "select");
+this.clearTemp ();
 break;
 default:
 s = "";
 }
-this.clearTemp ();
 return s;
 }, "J.shape.Shape");
+$_M(c$, "getTextState", 
+($fz = function (t) {
+var s =  new J.util.SB ();
+var text = t.getText ();
+if (text == null || t.isLabelOrHover || t.target.equals ("error")) return "";
+var isImage = (t.image != null);
+var strOff = null;
+var echoCmd = "set echo ID " + J.util.Escape.eS (t.target);
+switch (t.valign) {
+case 0:
+if (t.movableXPercent == 2147483647 || t.movableYPercent == 2147483647) {
+strOff = (t.movableXPercent == 2147483647 ? t.movableX + " " : t.movableXPercent + "% ") + (t.movableYPercent == 2147483647 ? t.movableY + "" : t.movableYPercent + "%");
+} else {
+strOff = "[" + t.movableXPercent + " " + t.movableYPercent + "%]";
+}case 4:
+if (strOff == null) strOff = J.util.Escape.eP (t.xyz);
+s.append ("  ").append (echoCmd).append (" ").append (strOff);
+if (t.align != 1) s.append (";  ").append (echoCmd).append (" ").append (J.modelset.Object2d.hAlignNames[t.align]);
+break;
+default:
+s.append ("  set echo ").append (J.modelset.Object2d.vAlignNames[t.align]).append (" ").append (J.modelset.Object2d.hAlignNames[t.align]);
+}
+if (t.valign == 0 && t.movableZPercent != 2147483647) s.append (";  ").append (echoCmd).append (" depth ").appendI (t.movableZPercent);
+if (isImage) s.append ("; ").append (echoCmd).append (" IMAGE /*file*/");
+ else s.append ("; echo ");
+s.append (J.util.Escape.eS (text));
+s.append (";\n");
+if (isImage && t.imageScale != 1) s.append ("  ").append (echoCmd).append (" scale ").appendF (t.imageScale).append (";\n");
+if (t.script != null) s.append ("  ").append (echoCmd).append (" script ").append (J.util.Escape.eS (t.script)).append (";\n");
+if (t.modelIndex >= 0) s.append ("  ").append (echoCmd).append (" model ").append (this.viewer.getModelNumberDotted (t.modelIndex)).append (";\n");
+if (t.pointerPt != null) {
+s.append ("  ").append (echoCmd).append (" point ").append (Clazz.instanceOf (t.pointerPt, J.modelset.Atom) ? "({" + (t.pointerPt).index + "})" : J.util.Escape.eP (t.pointerPt)).append (";\n");
+}s.append ("  " + J.shape.Shape.getFontCommand ("echo", t.font));
+if (t.scalePixelsPerMicron > 0) s.append (" " + (10000 / t.scalePixelsPerMicron));
+s.append ("; color echo");
+if (J.util.C.isColixTranslucent (t.colix)) s.append (" translucent " + J.util.C.getColixTranslucencyFractional (t.colix));
+s.append (" ").append (J.util.C.getHexCode (t.colix));
+if (t.bgcolix != 0) {
+s.append ("; color echo background");
+if (J.util.C.isColixTranslucent (t.bgcolix)) s.append (" translucent " + J.util.C.getColixTranslucencyFractional (t.bgcolix));
+s.append (" ").append (J.util.C.getHexCode (t.bgcolix));
+}s.append (";\n");
+return s.toString ();
+}, $fz.isPrivate = true, $fz), "J.modelset.Text");
 Clazz.overrideMethod (c$, "getLoadState", 
 function (htParams) {
 var g = this.viewer.global;
@@ -775,6 +849,7 @@ J.viewer.StateCreator.appendCmd (str, "#set pubChemFormat " + J.util.Escape.eS (
 J.viewer.StateCreator.appendCmd (str, "#set edsUrlFormat " + J.util.Escape.eS (g.edsUrlFormat));
 J.viewer.StateCreator.appendCmd (str, "#set edsUrlCutoff " + J.util.Escape.eS (g.edsUrlCutoff));
 J.viewer.StateCreator.appendCmd (str, "set legacyAutoBonding " + g.legacyAutoBonding);
+J.viewer.StateCreator.appendCmd (str, "set legacyHAddition " + g.legacyHAddition);
 J.viewer.StateCreator.appendCmd (str, "set minBondDistance " + g.minBondDistance);
 J.viewer.StateCreator.appendCmd (str, "set minimizationCriterion  " + g.minimizationCriterion);
 J.viewer.StateCreator.appendCmd (str, "set minimizationSteps  " + g.minimizationSteps);
@@ -1089,7 +1164,7 @@ var scenes = J.util.TextFormat.splitChars (script0, "pause scene ");
 var htScenes =  new java.util.Hashtable ();
 var list =  new J.util.JmolList ();
 var script = J.io.JmolBinary.getSceneScript (scenes, htScenes, list);
-J.util.Logger.debug (script);
+if (J.util.Logger.debugging) J.util.Logger.debug (script);
 script0 = J.util.TextFormat.simpleReplace (script0, "pause scene", "delay " + this.viewer.animationManager.lastFrameDelay + " # scene");
 var str = [script0, script, null];
 this.viewer.saveState ("_scene0");
@@ -1179,7 +1254,7 @@ var isClip = (fileName == null);
 if (!isClip) {
 if (doCheck) fileName = this.getOutputFileNameFromDialog (fileName, quality);
 if (fileName == null) return null;
-if (!this.viewer.isJS && J.viewer.FileManager.isLocal (fileName)) localName = fileName;
+if (!this.viewer.$isJS && J.viewer.FileManager.isLocal (fileName)) localName = fileName;
 if (fullPath != null) fullPath[0] = fileName;
 }var saveWidth = this.viewer.dimScreen.width;
 var saveHeight = this.viewer.dimScreen.height;
@@ -1197,7 +1272,7 @@ if (type.equals ("ZIP") || type.equals ("ZIPALL")) {
 if (scripts != null && type.equals ("ZIP")) type = "ZIPALL";
 ret = J.io.JmolBinary.createZipSet (this.viewer.fileManager, this.viewer, localName, text, scripts, type.equals ("ZIPALL"));
 } else if (type.equals ("SCENE")) {
-ret = (this.viewer.isJS ? "ERROR: Not Available" : this.createSceneSet (fileName, text, width, height));
+ret = (this.viewer.$isJS ? "ERROR: Not Available" : this.createSceneSet (fileName, text, width, height));
 } else {
 if (!type.equals ("OutputStream")) ret = this.viewer.statusManager.createImage (fileName, type, text, bytes, quality);
 if (ret == null) {
@@ -1333,7 +1408,7 @@ this.viewer.creatingImage = true;
 var c = null;
 var bytes = null;
 type = type.toLowerCase ();
-if (!J.util.Parser.isOneOf (type, "jpg;jpeg;jpg64;jpeg64")) try {
+if (!J.util.Parser.isOneOf (type, ";jpg;jpeg;jpg64;jpeg64;")) try {
 c = this.viewer.getImageCreator ();
 } catch (er) {
 if (Clazz.exceptionOf (er, Error)) {
@@ -1493,7 +1568,7 @@ if (ptEnd < 0) out.write (10);
 }out.close ();
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
-J.util.Logger.debug ("cannot log " + data);
+if (J.util.Logger.debugging) J.util.Logger.debug ("cannot log " + data);
 } else {
 throw e;
 }

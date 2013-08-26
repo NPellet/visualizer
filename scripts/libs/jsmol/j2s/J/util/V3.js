@@ -3,12 +3,12 @@ Clazz.load (["J.util.Tuple3f"], "J.util.V3", null, function () {
 c$ = Clazz.declareType (J.util, "V3", J.util.Tuple3f);
 c$.newV = $_M(c$, "newV", 
 function (t) {
-var v =  new J.util.V3 ();
-v.x = t.x;
-v.y = t.y;
-v.z = t.z;
-return v;
+return J.util.V3.new3 (t.x, t.y, t.z);
 }, "J.util.Tuple3f");
+c$.newVsub = $_M(c$, "newVsub", 
+function (t1, t2) {
+return J.util.V3.new3 (t1.x - t2.x, t1.y - t2.y, t1.z - t2.z);
+}, "J.util.Tuple3f,J.util.Tuple3f");
 c$.new3 = $_M(c$, "new3", 
 function (x, y, z) {
 var v =  new J.util.V3 ();

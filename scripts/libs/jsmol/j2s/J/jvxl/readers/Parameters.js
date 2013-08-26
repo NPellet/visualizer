@@ -141,6 +141,7 @@ this.contactPair = null;
 this.mapLattice = null;
 this.isMapped = false;
 this.showTiming = false;
+this.pointSize = 0;
 Clazz.instantialize (this, arguments);
 }, J.jvxl.readers, "Parameters");
 Clazz.prepareFields (c$, function () {
@@ -209,6 +210,7 @@ this.minSet = 0;
 this.modelIndex = -1;
 this.nContours = 0;
 this.pocket = null;
+this.pointSize = NaN;
 this.propertyDistanceMax = 2147483647;
 this.propertySmoothing = false;
 this.propertySmoothingPower = 4;
@@ -279,7 +281,7 @@ this.isCutoffAbsolute = false;
 this.isSilent = !this.logMessages;
 this.script = this.getScriptParams () + " SPHERE " + radius + ";";
 }, "~N,~B");
-$_M(c$, "setEllipsoid", 
+$_M(c$, "setEllipsoidP4", 
 function (v) {
 this.dataType = 66;
 this.distance = 1;
@@ -288,7 +290,7 @@ this.cutoff = 1.4E-45;
 this.isCutoffAbsolute = false;
 this.isSilent = !this.logMessages;
 }, "J.util.P4");
-$_M(c$, "setEllipsoid", 
+$_M(c$, "setEllipsoidAF", 
 function (bList) {
 this.anisoB = bList;
 this.dataType = 67;

@@ -271,7 +271,7 @@ this.moData.put ("energyUnits", this.energyUnits);
 this.moData.put ("shells", this.shells);
 this.moData.put ("gaussians", this.gaussians);
 this.moData.put ("mos", this.orbitals);
-this.setMOData (this.lastMoData = this.moData);
+this.finalizeMOData (this.lastMoData = this.moData);
 }if (clearOrbitals) {
 this.orbitals =  new J.util.JmolList ();
 this.moData =  new java.util.Hashtable ();
@@ -279,12 +279,12 @@ this.alphaBeta = "";
 }}, "~B");
 $_M(c$, "readSecondOrderData", 
 ($fz = function () {
+this.readLines (5);
 if (this.lastMoData == null || this.moTypes == null) return;
 var ht =  new java.util.Hashtable ();
 for (var i = this.moTypes.size (); --i >= 0; ) ht.put (J.util.TextFormat.simpleReplace (this.moTypes.get (i).substring (10), " ", ""), Integer.$valueOf (i + this.iMo0));
 
 var strSecondOrderData =  new J.util.JmolList ();
-this.readLines (5);
 while (this.readLine () != null && this.line.indexOf ("NBO") < 0) {
 if (this.line.length < 5 || this.line.charAt (4) != '.') continue;
 strSecondOrderData.addLast ([J.util.TextFormat.simpleReplace (this.line.substring (5, 27).trim (), " ", ""), J.util.TextFormat.simpleReplace (this.line.substring (32, 54).trim (), " ", ""), this.line.substring (55, 62).trim (), this.line.substring (71).trim ()]);

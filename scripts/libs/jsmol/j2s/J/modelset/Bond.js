@@ -92,10 +92,6 @@ $_M(c$, "setTranslucent",
 function (isTranslucent, translucentLevel) {
 this.colix = J.util.C.getColixTranslucent3 (this.colix, isTranslucent, translucentLevel);
 }, "~B,~N");
-$_M(c$, "isTranslucent", 
-function () {
-return J.util.C.isColixTranslucent (this.colix);
-});
 $_M(c$, "setOrder", 
 function (order) {
 if (this.atom1.getElementNumber () == 16 && this.atom2.getElementNumber () == 16) order |= 256;

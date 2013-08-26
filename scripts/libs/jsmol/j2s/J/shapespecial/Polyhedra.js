@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapespecial");
-Clazz.load (["J.shape.AtomShape", "J.util.P3", "$.V3"], "J.shapespecial.Polyhedra", ["J.constant.EnumPalette", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.Logger", "$.Measure", "$.Normix", "$.P3i", "$.SB"], function () {
+Clazz.load (["J.shape.AtomShape", "J.util.P3", "$.V3"], "J.shapespecial.Polyhedra", ["java.lang.Boolean", "J.constant.EnumPalette", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.Logger", "$.Measure", "$.Normix", "$.P3i", "$.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.otherAtoms = null;
 this.polyhedronCount = 0;
@@ -49,8 +49,8 @@ this.bsVertices = null;
 this.centers = null;
 this.bsVertexCount =  new J.util.BS ();
 this.bondedOnly = this.isCollapsed = this.iHaveCenterBitSet = false;
-this.drawEdges = 0;
 this.haveBitSetVertices = false;
+if (Boolean.TRUE === value) this.drawEdges = 0;
 return;
 }if ("generate" === propertyName) {
 if (!this.iHaveCenterBitSet) {
@@ -242,8 +242,7 @@ var bs = J.util.BSUtil.newBitSet (ptCenter);
 var isOK = (dAverage == 0);
 while (!isOK && factor < 10.0) {
 distMax = dAverage * factor;
-for (var i = 0; i < ptCenter; i++) bs.set (i);
-
+bs.setBits (0, ptCenter);
 for (var i = 0; i < ptCenter - 2; i++) for (var j = i + 1; j < ptCenter - 1; j++) {
 if (points[i].distance (points[j]) > distMax) continue;
 for (var k = j + 1; k < ptCenter; k++) {
@@ -278,7 +277,10 @@ if (this.bsTemp == null) this.bsTemp = J.util.Normix.newVertexBitSet ();
 for (var i = 0; i < ptCenter - 2; i++) for (var j = i + 1; j < ptCenter - 1; j++) {
 if (points[i].distance (points[j]) > distMax) continue;
 for (var k = j + 1; k < ptCenter; k++) {
+System.out.println ("checking poly " + i + " " + j + " " + k);
+System.out.println ("checking poly " + points[i] + " " + points[j] + " " + points[k]);
 if (points[i].distance (points[k]) > distMax || points[j].distance (points[k]) > distMax) continue;
+System.out.println ("checking poly " + i + " " + j + " " + k + " ok ");
 if (planeCount >= 147) {
 J.util.Logger.error ("Polyhedron error: maximum face(147) -- reduce RADIUS or DISTANCEFACTOR");
 return null;
@@ -413,7 +415,7 @@ function () {
 var a =  new J.util.BS ();
 for (var b = 0; b < this.ptCenter; b++) a.set ((this.vertices[b]).getIndex ());
 
-return "  polyhedra ({" + this.centralAtom.getIndex () + "}) " + (this.myDistanceFactor == 1.85 ? "" : " distanceFactor " + this.myDistanceFactor) + (this.myFaceCenterOffset == 0.25 ? "" : " faceCenterOffset " + this.myFaceCenterOffset) + " to " + J.util.Escape.eBS (a) + (this.collapsed ? " collapsed" : "") + (this.isFullyLit ? " fullyLit" : "") + ";" + (this.visible ? "" : "polyhedra off;") + "\n";
+return "  polyhedra ({" + this.centralAtom.getIndex () + "}) to " + J.util.Escape.eBS (a) + (this.collapsed ? " collapsed" : "") + " distanceFactor " + this.myDistanceFactor + " faceCenterOffset " + this.myFaceCenterOffset + (this.isFullyLit ? " fullyLit" : "") + ";" + (this.visible ? "" : "polyhedra off;") + "\n";
 });
 c$ = Clazz.p0p ();
 };

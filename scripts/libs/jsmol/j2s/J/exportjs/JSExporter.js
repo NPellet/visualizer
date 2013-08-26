@@ -73,13 +73,16 @@ return true;
 Clazz.overrideMethod (c$, "outputCircle", 
 function (pt1, pt2, radius, colix, doFill) {
 }, "J.util.P3,J.util.P3,~N,~N,~B");
+Clazz.overrideMethod (c$, "outputEllipsoid", 
+function (center, points, colix) {
+}, "J.util.P3,~A,~N");
+$_M(c$, "output", 
+function (pt) {
+}, "J.util.Tuple3f");
 Clazz.overrideMethod (c$, "outputCone", 
 function (ptBase, ptTip, radius, colix) {
 this.outputCylinder (null, ptBase, ptTip, colix, 0, radius, null, null, false);
 }, "J.util.P3,J.util.P3,~N,~N");
-Clazz.overrideMethod (c$, "outputEllipsoid", 
-function (center, points, colix) {
-}, "J.util.P3,~A,~N");
 $_M(c$, "getColor", 
 ($fz = function (colix) {
 return Integer.$valueOf (this.g3d.getColorArgbOrGray (colix));
@@ -92,7 +95,6 @@ this.jsSurface (this.applet, vertices, normals, indices, nVertices, nPolygons, n
 }, "~A,~A,~A,~A,~A,~N,~N,~N,J.util.BS,~N,~N,J.util.P3");
 $_M(c$, "jsSurface", 
 function (applet, vertices, normals, indices, nVertices, nPolygons, nFaces, bsPolygons, faceVertexMax, color, vertexColors, polygonColors) {
-System.out.println ("jsSurface -- nV=" + nVertices + " nPoly=" + nPolygons + " nFaces=" + nFaces + " faceVertexMax=" + faceVertexMax);
 }, "~O,~A,~A,~A,~N,~N,~N,J.util.BS,~N,~N,~A,~A");
 $_M(c$, "getColors", 
 ($fz = function (colixes) {
@@ -107,9 +109,6 @@ Clazz.overrideMethod (c$, "outputTriangle",
 function (pt1, pt2, pt3, colix) {
 this.jsTriangle (this.applet, this.g3d.getColorArgbOrGray (colix), pt1, pt2, pt3);
 }, "J.util.P3,J.util.P3,J.util.P3,~N");
-$_M(c$, "output", 
-function (pt) {
-}, "J.util.Tuple3f");
 Clazz.overrideMethod (c$, "plotText", 
 function (x, y, z, colix, text, font3d) {
 }, "~N,~N,~N,~N,~S,J.util.JmolFont");

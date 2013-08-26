@@ -4,6 +4,7 @@ c$ = Clazz.decorateAsClass (function () {
 this.transformManager = null;
 this.endDegrees = 0;
 this.endPositions = null;
+this.dihedralList = null;
 this.nDegrees = 0;
 this.bsAtoms = null;
 this.isNav = false;
@@ -12,6 +13,8 @@ this.myFps = 0;
 this.angle = 0;
 this.haveNotified = false;
 this.index = 0;
+this.bsBranches = null;
+this.isDone = false;
 Clazz.instantialize (this, arguments);
 }, J.thread, "SpinThread", J.thread.JmolThread);
 $_M(c$, "isGesture", 
@@ -19,16 +22,18 @@ function () {
 return this.$isGesture;
 });
 Clazz.makeConstructor (c$, 
-function (transformManager, viewer, endDegrees, endPositions, bsAtoms, isNav, isGesture) {
+function (transformManager, viewer, endDegrees, endPositions, dihedralList, bsAtoms, isNav, isGesture) {
 Clazz.superConstructor (this, J.thread.SpinThread);
 this.setViewer (viewer, "SpinThread");
 this.transformManager = transformManager;
-this.endDegrees = Math.abs (endDegrees);
+this.endDegrees = endDegrees;
+this.dihedralList = dihedralList;
+if (dihedralList != null) this.bsBranches = viewer.getBsBranches (dihedralList);
 this.endPositions = endPositions;
 this.bsAtoms = bsAtoms;
 this.isNav = isNav;
 this.$isGesture = isGesture;
-}, "J.viewer.TransformManager,J.viewer.Viewer,~N,J.util.JmolList,J.util.BS,~B,~B");
+}, "J.viewer.TransformManager,J.viewer.Viewer,~N,J.util.JmolList,~A,J.util.BS,~B,~B");
 Clazz.overrideMethod (c$, "run1", 
 function (mode) {
 while (true) switch (mode) {
@@ -62,7 +67,7 @@ if (!this.haveNotified) J.util.Logger.info ("spinFPS is set too fast (" + this.m
 this.haveNotified = true;
 this.startTime -= this.sleepTime;
 this.sleepTime = 0;
-}var isInMotion = (this.bsAtoms == null && this.viewer.getInMotion ());
+}var isInMotion = (this.bsAtoms == null && this.viewer.getInMotion (false));
 if (isInMotion) {
 if (this.$isGesture) {
 mode = -2;
@@ -75,27 +80,37 @@ case 1:
 while (!this.checkInterrupted () && !this.viewer.getRefreshing ()) if (!this.runSleep (10, 1)) return;
 
 if (this.bsAtoms == null) this.viewer.refresh (1, "SpinThread:run()");
- else this.viewer.requestRepaintAndWait ();
-if (!this.isNav && this.nDegrees >= this.endDegrees - 0.001) this.transformManager.setSpinOff ();
-if (!this.runSleep (this.sleepTime, 0)) return;
+ else this.viewer.requestRepaintAndWait ("spin thread");
+if (!this.isNav && this.nDegrees >= this.endDegrees - 0.001) {
+this.isDone = true;
+this.transformManager.setSpinOff ();
+}if (!this.runSleep (this.sleepTime, 0)) return;
 mode = 0;
 break;
 case -2:
-if (this.bsAtoms != null && this.endPositions != null) {
+if (this.dihedralList != null) {
+this.viewer.setDihedrals (this.dihedralList, this.bsBranches, 0);
+} else if (this.bsAtoms != null && this.endPositions != null) {
 this.viewer.setAtomCoords (this.bsAtoms, 1146095626, this.endPositions);
 this.bsAtoms = null;
 this.endPositions = null;
 }if (!this.isReset) {
 this.transformManager.setSpinOff ();
 this.viewer.startHoverWatcher (true);
-}this.resumeEval ();
+}this.stopped = !this.isDone;
+this.resumeEval ();
+this.stopped = true;
 return;
 }
 
 }, "~N");
 $_M(c$, "doTransform", 
 ($fz = function () {
-if (this.isNav) {
+if (this.dihedralList != null) {
+var f = 1 / this.myFps / this.endDegrees;
+this.viewer.setDihedrals (this.dihedralList, this.bsBranches, f);
+this.nDegrees += 1 / this.myFps;
+} else if (this.isNav) {
 this.transformManager.setNavigationOffsetRelative ();
 } else if (this.transformManager.isSpinInternal || this.transformManager.isSpinFixed) {
 this.angle = (this.transformManager.isSpinInternal ? this.transformManager.internalRotationAxis : this.transformManager.fixedRotationAxis).angle / this.myFps;

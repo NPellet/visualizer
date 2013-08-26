@@ -95,13 +95,17 @@ function (filesReader, names, types, htParams, getReadersOnly) {
 var size = names.length;
 var readers = (getReadersOnly ?  new Array (size) : null);
 var atomsets = (getReadersOnly ? null :  new Array (size));
+var r = null;
+var viewer = htParams.get ("viewer");
 for (var i = 0; i < size; i++) {
 try {
+if (r != null) htParams.put ("viewer", viewer);
 var reader = filesReader.getBufferedReaderOrBinaryDocument (i, false);
 if (!(Clazz.instanceOf (reader, java.io.BufferedReader) || Clazz.instanceOf (reader, J.api.JmolDocument))) return reader;
 var ret = J.adapter.smarter.Resolver.getAtomCollectionReader (names[i], (types == null ? null : types[i]), reader, htParams, i);
 if (!(Clazz.instanceOf (ret, J.adapter.smarter.AtomSetCollectionReader))) return ret;
-var r = ret;
+r = ret;
+r.setup (null, null, null);
 if (r.isBinary) {
 r.setup (names[i], htParams, filesReader.getBufferedReaderOrBinaryDocument (i, true));
 } else {
@@ -115,6 +119,7 @@ atomsets[i] = ret;
 if (atomsets[i].errorMessage != null) return atomsets[i].errorMessage;
 }} catch (e) {
 J.util.Logger.error ("" + e);
+if (!viewer.isJS ()) e.printStackTrace ();
 return "" + e;
 }
 }
@@ -175,9 +180,9 @@ return "" + e;
 }
 }, "~O,java.util.Map");
 Clazz.overrideMethod (c$, "finish", 
-function (atomSetCollection, modelSet, baseModelIndex, baseAtomIndex) {
-(atomSetCollection).finish (modelSet, baseModelIndex, baseAtomIndex);
-}, "~O,J.modelset.ModelSet,~N,~N");
+function (atomSetCollection) {
+(atomSetCollection).finish ();
+}, "~O");
 Clazz.overrideMethod (c$, "getAtomSetCollectionName", 
 function (atomSetCollection) {
 return (atomSetCollection).getCollectionName ();

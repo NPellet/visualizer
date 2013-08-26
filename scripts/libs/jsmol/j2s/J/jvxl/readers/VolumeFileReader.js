@@ -25,9 +25,13 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.VolumeFileReader, []);
 });
-$_M(c$, "init2", 
+Clazz.overrideMethod (c$, "init2", 
 function (sg, br) {
-Clazz.superCall (this, J.jvxl.readers.VolumeFileReader, "init2", [sg, br]);
+this.init2VFR (sg, br);
+}, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
+$_M(c$, "init2VFR", 
+function (sg, br) {
+this.init2SFR (sg, br);
 this.canDownsample = this.isProgressive = this.isXLowToHigh = true;
 this.jvxlData.wasCubic = true;
 this.boundingBox = this.params.boundingBox;
@@ -45,11 +49,11 @@ this.dataMean += value;
 this.nData++;
 return value;
 }, "~N");
-$_M(c$, "closeReader", 
+Clazz.overrideMethod (c$, "closeReader", 
 function () {
 if (this.readerClosed) return;
 this.readerClosed = true;
-Clazz.superCall (this, J.jvxl.readers.VolumeFileReader, "closeReader", []);
+this.closeReaderSFR ();
 if (this.nData == 0 || this.dataMax == -3.4028235E38) return;
 this.dataMean /= this.nData;
 J.util.Logger.info ("VolumeFileReader closing file: " + this.nData + " points read \ndata min/max/mean = " + this.dataMin + "/" + this.dataMax + "/" + this.dataMean);
@@ -79,7 +83,7 @@ $_M(c$, "readVolumetricHeader",
 try {
 this.readParameters ();
 if (this.atomCount == -2147483648) return 0;
-J.util.Logger.info ("voxel grid origin:" + this.volumetricOrigin);
+if (!this.vertexDataOnly) J.util.Logger.info ("voxel grid origin:" + this.volumetricOrigin);
 var downsampleFactor = this.params.downsampleFactor;
 var downsampling = (this.canDownsample && downsampleFactor > 0);
 if (downsampling) {
@@ -92,7 +96,7 @@ this.voxelCounts[i] /= downsampleFactor;
 this.volumetricVectors[i].scale (downsampleFactor);
 J.util.Logger.info ("downsampling axis " + (i + 1) + " from " + n + " to " + this.voxelCounts[i]);
 }
-}for (var i = 0; i < 3; ++i) {
+}if (!this.vertexDataOnly) for (var i = 0; i < 3; ++i) {
 if (!this.isAngstroms) this.volumetricVectors[i].scale (0.5291772);
 this.line = this.voxelCounts[i] + " " + this.volumetricVectors[i].x + " " + this.volumetricVectors[i].y + " " + this.volumetricVectors[i].z;
 this.jvxlFileHeaderBuffer.append (this.line).appendC ('\n');
@@ -145,6 +149,10 @@ this.line = "";
 this.jvxlNSurfaceInts = 0;
 });
 Clazz.overrideMethod (c$, "readSurfaceData", 
+function (isMapData) {
+this.readSurfaceDataVFR (isMapData);
+}, "~B");
+$_M(c$, "readSurfaceDataVFR", 
 function (isMapData) {
 this.initializeSurfaceData ();
 if (this.isProgressive && !isMapData || this.isJvxl) {
@@ -309,6 +317,10 @@ for (var i = 0; i < n; i++) this.skipData (nPoints);
 
 }, "~N,~N");
 $_M(c$, "skipData", 
+function (nPoints) {
+this.skipDataVFR (nPoints);
+}, "~N");
+$_M(c$, "skipDataVFR", 
 function (nPoints) {
 var iV = 0;
 while (iV < nPoints) iV += this.countData (this.readLine ());

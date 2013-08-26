@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.bspt");
-Clazz.load (["J.bspt.Element"], "J.bspt.Node", ["java.lang.NullPointerException", "J.bspt.Leaf", "J.util.Logger"], function () {
+Clazz.load (["J.bspt.Element"], "J.bspt.Node", ["java.lang.NullPointerException", "J.bspt.Leaf"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.dim = 0;
 this.minLeft = 0;
@@ -16,7 +16,6 @@ Clazz.superConstructor (this, J.bspt.Node, []);
 this.bspt = bspt;
 if (level == bspt.treeDepth) {
 bspt.treeDepth = level + 1;
-if (bspt.treeDepth >= 100) J.util.Logger.error ("BSPT tree depth too great:" + bspt.treeDepth);
 }if (leafLeft.count != 2) throw  new NullPointerException ();
 this.dim = level % bspt.dimMax;
 leafLeft.sort (this.dim);

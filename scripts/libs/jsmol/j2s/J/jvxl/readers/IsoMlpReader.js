@@ -5,9 +5,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoMlpReader, []);
 });
-$_M(c$, "init", 
+Clazz.overrideMethod (c$, "init", 
 function (sg) {
-Clazz.superCall (this, J.jvxl.readers.IsoMlpReader, "init", [sg]);
+this.initIMR (sg);
 this.type = "Mlp";
 }, "J.jvxl.readers.SurfaceGenerator");
 });

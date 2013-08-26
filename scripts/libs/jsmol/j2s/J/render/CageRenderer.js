@@ -63,7 +63,7 @@ this.tickInfo = fls.tickInfos["xyz".indexOf (edge) + 1];
 if (this.tickInfo == null) this.tickInfo = fls.tickInfos[0];
 if (this.tickInfo == null) drawTicks = false;
  else this.tickInfo.first = start;
-}this.renderLine (this.screens[edge0], this.screens[edge1], diameter, this.pt0, this.pt1, drawTicks);
+}this.renderLine (this.screens[edge0], this.screens[edge1], diameter, this.pt0i, this.pt1i, drawTicks);
 }
 }, "~N,~A,~A,~N,~N,~N,~N");
 });

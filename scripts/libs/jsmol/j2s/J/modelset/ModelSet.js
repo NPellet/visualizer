@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["J.modelset.ModelCollection", "J.util.Matrix3f", "$.Matrix4f", "$.V3"], "J.modelset.ModelSet", ["J.api.Interface", "J.atomdata.RadiusData", "J.util.BS", "$.BSUtil", "$.JmolList", "$.JmolMolecule", "$.Measure", "$.P3", "$.Quaternion", "$.SB", "J.viewer.JC"], function () {
+Clazz.load (["J.modelset.ModelCollection", "J.util.Matrix3f", "$.Matrix4f", "$.V3"], "J.modelset.ModelSet", ["java.lang.Boolean", "java.util.Hashtable", "J.api.Interface", "J.atomdata.RadiusData", "J.util.AxisAngle4f", "$.BS", "$.BSUtil", "$.JmolList", "$.JmolMolecule", "$.Measure", "$.P3", "$.Quaternion", "$.SB", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.selectionHaloEnabled = false;
 this.echoShapeActive = false;
@@ -177,12 +177,13 @@ return offsets;
 $_M(c$, "getAtomBits", 
 function (tokType, specInfo) {
 switch (tokType) {
+default:
+return J.util.BSUtil.andNot (this.getAtomBitsMaybeDeleted (tokType, specInfo), this.viewer.getDeletedAtoms ());
 case 1048610:
 var modelNumber = (specInfo).intValue ();
 var modelIndex = this.getModelNumberIndex (modelNumber, true, true);
 return (modelIndex < 0 && modelNumber > 0 ?  new J.util.BS () : this.viewer.getModelUndeletedAtomsBitSet (modelIndex));
 }
-return J.util.BSUtil.andNot (this.getAtomBitsMaybeDeleted (tokType, specInfo), this.viewer.getDeletedAtoms ());
 }, "~N,~O");
 $_M(c$, "getAtomLabel", 
 function (i) {
@@ -424,10 +425,10 @@ fileData = this.viewer.getCifData (modelIndex);
 this.setModelAuxiliaryInfo (modelIndex, "fileData", fileData);
 return fileData;
 }, "~N");
-$_M(c$, "calculateStruts", 
+Clazz.overrideMethod (c$, "calculateStruts", 
 function (bs1, bs2) {
 this.viewer.setModelVisibility ();
-return Clazz.superCall (this, J.modelset.ModelSet, "calculateStruts", [bs1, bs2]);
+return this.calculateStrutsMC (bs1, bs2);
 }, "J.util.BS,J.util.BS");
 $_M(c$, "addHydrogens", 
 function (vConnections, pts) {
@@ -512,6 +513,28 @@ v.sub (pt);
 var q = J.util.Quaternion.newVA (v, 180);
 this.moveAtoms (null, q.getMatrix (), null, bsAtoms, thisAtom, true);
 }}, "J.util.P3,J.util.P4,~N,J.util.BS,J.util.BS");
+$_M(c$, "setDihedrals", 
+function (dihedralList, bsBranches, f) {
+var n = Clazz.doubleToInt (dihedralList.length / 6);
+for (var j = 0, pt = 0; j < n; j++, pt += 6) {
+var bs = bsBranches[j];
+if (bs == null || bs.isEmpty ()) continue;
+var a1 = this.atoms[Clazz.floatToInt (dihedralList[pt + 1])];
+var a2 = this.atoms[Clazz.floatToInt (dihedralList[pt + 2])];
+var v = J.util.V3.newV (a2);
+v.sub (a1);
+var angle = (dihedralList[pt + 5] - dihedralList[pt + 4]) * f;
+var aa = J.util.AxisAngle4f.newVA (v, (-angle / 57.29577951308232));
+this.matTemp.setAA (aa);
+this.ptTemp.setT (a1);
+for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
+this.atoms[i].sub (this.ptTemp);
+this.matTemp.transform (this.atoms[i]);
+this.atoms[i].add (this.ptTemp);
+this.taintAtom (i, 2);
+}
+}
+}, "~A,~A,~N");
 $_M(c$, "moveAtoms", 
 function (mNew, matrixRotate, translation, bs, center, isInternal) {
 if (mNew == null) {
@@ -563,4 +586,33 @@ var bsModels = this.getModelBitSet (bs, false);
 for (var i = bsModels.nextSetBit (0); i >= 0; i = bsModels.nextSetBit (i + 1)) this.shapeManager.refreshShapeTrajectories (i, bs, mat);
 
 }, "J.util.BS,J.util.Matrix4f");
+$_M(c$, "getBsBranches", 
+function (dihedralList) {
+var n = Clazz.doubleToInt (dihedralList.length / 6);
+var bsBranches =  new Array (n);
+var map =  new java.util.Hashtable ();
+for (var i = 0, pt = 0; i < n; i++, pt += 6) {
+var dv = dihedralList[pt + 5] - dihedralList[pt + 4];
+if (Math.abs (dv) < 1) continue;
+var i0 = Clazz.floatToInt (dihedralList[pt + 1]);
+var i1 = Clazz.floatToInt (dihedralList[pt + 2]);
+var s = "" + i0 + "_" + i1;
+if (map.containsKey (s)) continue;
+map.put (s, Boolean.TRUE);
+var bs = this.viewer.getBranchBitSet (i1, i0, true);
+var bonds = this.atoms[i0].bonds;
+var a0 = this.atoms[i0];
+for (var j = 0; j < bonds.length; j++) {
+var b = bonds[j];
+if (!b.isCovalent ()) continue;
+var i2 = b.getOtherAtom (a0).index;
+if (i2 == i1) continue;
+if (bs.get (i2)) {
+bs = null;
+break;
+}}
+bsBranches[i] = bs;
+}
+return bsBranches;
+}, "~A");
 });

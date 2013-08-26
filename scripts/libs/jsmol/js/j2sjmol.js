@@ -1,30 +1,37 @@
-LoadClazz = function() {
+// j2sjmol.js 
 
-if (!window["j2s.clazzloaded"])
-window["j2s.clazzloaded"] = false;
+// Java programming notes:
+//   
+//   There are a few motifs to avoid when optimizing Java code to work smoothly
+//   with the J2S compiler:
+//   
+//   arrays: 
+//   
+// 1. an array with null elements cannot be typed and must be avoided.
+// 2. instances of Java "instance of" involving arrays must be found and convered to calls to Clazz.isA...
+// 3. new int[n][] must not be used. Use instead J.util.ArrayUtil.newInt2(n);
+// 4. new int[] { 1, 2, 3 } has problems because it creates simply [ ] and not IntArray32
+//   
+//   numbers:
+//   
+// 1. Remember that EVERY number in JavaScript is a double -- doesn't matter if it is in IntArray32 or not. 
+// 2. You cannot reliably use Java long, because doubles consume bits for the exponent which cannot be tested.
+// 3. Bit 31 of an integer is unreliable, since (int) -1 is now  , not just 0zFFFFFFFF, and 
+//    FFFFFFFF + 1 = 100000000, not 0. In JavaScript, 0xFFFFFFFF is 4294967295, not -1.
+//    This means that writeInt(b) will fail if b is negative. What you need is instead
+//    writeInt((int)(b & 0xFFFFFFFFl) so that JavaScript knocks off the high bits explicitly. 
+//
+//   general:
+//
+// 1. j2sRequireImport xxxx is needed if xxxx is a method used in a static function
 
-if (window["j2s.clazzloaded"])return;
+ // NOTES by Bob Hanson: 
 
-window["j2s.clazzloaded"] = true;
-
-// BH this just allows me to monitor exactly what is being delegated
-// I run xxxShowParams from the developer console in the browser.
-bhtest = false;
-xxxbhparams = {};
-xxxShowParams = function() {
-  var s = "";
-  for (var i in xxxbhparams) {
-    s += ("#P " + xxxbhparams[i] + "\t" + i + "\n");
-  }
-  xxxbhparams= {};
-  alert(s)
-}
-
-
-window["j2s.object.native"] = true;
-
- // Clazz changes:
-
+  
+ // J2S class changes:
+ 
+ // BH 6/15/2013 8:02:07 AM corrections to Class.isAS to return true if first element is null
+ // BH 6/14/2013 4:41:09 PM corrections to Clazz.isAI and related methods to include check for null object
  // BH 3/17/2013 11:54:28 AM adds stackTrace for ERROR 
 
  // BH 3/13/2013 6:58:26 PM adds Clazz.clone(me) for BS clone 
@@ -33,13 +40,11 @@ window["j2s.object.native"] = true;
  // BH 3/2/2013 9:10:45 AM optimizing defineMethod using "look no further" "@" parameter designation (see "\\@" below -- removed 3/23/13)
  // BH 2/27/2013 optimizing getParamsType for common cases () and (Number)
  // BH 2/27/2013 optimizing SAEM delegation for hashCode and equals -- disallows overloading of equals(Object)
- // BH 1/25/2013 1:55:31 AM moved package.js from j2s/java to j2s/core 
- 
- // Java class changes:
  
  // BH 2/23/2013 found String.replaceAll does not work -- solution was to never call it.
- // BH 1/17/2013 4:37:17 PM String.compareTo() added
  // BH 2/9/2013 9:18:03 PM Int32Array/Float64Array fixed for MSIE9
+ // BH 1/25/2013 1:55:31 AM moved package.js from j2s/java to j2s/core 
+ // BH 1/17/2013 4:37:17 PM String.compareTo() added
  // BH 1/17/2013 4:52:22 PM Int32Array and Float64Array may not have .prototype.sort method
  // BH 1/16/2013 6:20:34 PM Float64Array not available in Safari 5.1
  // BH 1/14/2013 11:28:58 PM  Going to all doubles in JavaScript (Float64Array, not Float32Array)
@@ -74,6 +79,35 @@ window["j2s.object.native"] = true;
  // BH added Clazz.exceptionOf = updated
  // BH added String.getBytes() at end
  
+
+LoadClazz = function() {
+
+if (!window["j2s.clazzloaded"])
+window["j2s.clazzloaded"] = false;
+
+if (window["j2s.clazzloaded"])return;
+
+window["j2s.clazzloaded"] = true;
+
+// BH this just allows me to monitor exactly what is being delegated
+// I run xxxShowParams from the developer console in the browser.
+bhtest = false;
+xxxbhtest=""
+xxxbhparams = {};
+xxxShowParams = function() {
+  var s = "";
+  for (var i in xxxbhparams) {
+    s += ("#P " + xxxbhparams[i] + "\t" + i + "\n");
+  }
+  xxxbhparams= {};
+  alert(s)
+}
+
+
+window["j2s.object.native"] = true;
+
+ // Clazz changes:
+
  /* http://j2s.sf.net/ *//******************************************************************************
  * Copyright (c) 2007 java2script.org and others.
  * All rights reserved. This program and the accompanying materials
@@ -167,7 +201,6 @@ Clazz.addProto = function(proto, name, func) {
 };
 
 ;(function(proto) {
-	console.log(proto);
   Clazz.addProto(proto, "equals", function (obj) {
   	return this == obj;
   });
@@ -2551,39 +2584,39 @@ $_Ab=Clazz.newBooleanArray;
 
 
 Clazz.isAS = function(a) { // just checking first parameter
-  return (typeof a == "object" && a.constructor && a.constructor.toString().indexOf(" Array") >= 0 && typeof a[0] == "string");
+  return (a && typeof a == "object" && a.constructor && a.constructor.toString().indexOf(" Array") >= 0 && (typeof a[0] == "string" || typeof a[0] == "undefined"));
 }
 
-Clazz.isASS = function(a) { // assumes non-null a[0]
-  return (typeof a == "object" && Clazz.isAS(a[0]));
+Clazz.isASS = function(a) {
+  return (a && typeof a == "object" && Clazz.isAS(a[0]));
 }
 
 Clazz.isAP = function(a) {
-  return (Clazz.getClassName(a[0]) == "J.util.Point3f");
+  return (a && Clazz.getClassName(a[0]) == "J.util.Point3f");
 }
 
 Clazz.isAI = function(a) {
-  return (typeof a == "object" && (Clazz.haveInt32 ? a.constructor && a.constructor.toString().indexOf("Int32Array") >= 0 : a.int32Fake ? true : false));
+  return (a && typeof a == "object" && (Clazz.haveInt32 ? a.constructor && a.constructor.toString().indexOf("Int32Array") >= 0 : a.int32Fake ? true : false));
 }
 
 Clazz.isAII = function(a) { // assumes non-null a[0]
-  return (typeof a == "object" && Clazz.isAI(a[0]));
+  return (a && typeof a == "object" && Clazz.isAI(a[0]));
 }
 
 Clazz.isAF = function(a) {
-  return (typeof a == "object" && (Clazz.haveFloat64 ? a.constructor && a.constructor.toString().indexOf("Float64Array") >= 0 : a.float64Fake ? true : false));
+  return (a && typeof a == "object" && (Clazz.haveFloat64 ? a.constructor && a.constructor.toString().indexOf("Float64Array") >= 0 : a.float64Fake ? true : false));
 }
 
 Clazz.isAFF = function(a) { // assumes non-null a[0]
-  return (typeof a == "object" && Clazz.isAF(a[0]));
+  return (a && typeof a == "object" && Clazz.isAF(a[0]));
 }
 
 Clazz.isAFFF = function(a) { // assumes non-null a[0]
-  return (typeof a == "object" && Clazz.isAFF(a[0]));
+  return (a && typeof a == "object" && Clazz.isAFF(a[0]));
 }
 
 Clazz.isAFloat = function(a) { // just checking first parameter
-  return (typeof a == "object" && a.constructor && a.constructor.toString().indexOf(" Array") >= 0 && Clazz.instanceOf(a[0], Float));
+  return (a && typeof a == "object" && a.constructor && a.constructor.toString().indexOf(" Array") >= 0 && Clazz.instanceOf(a[0], Float));
 }
 
 
@@ -4646,7 +4679,6 @@ ClazzLoader.loadScript = function (file, why) {
 	ClazzLoader.inLoadingThreads++;
 	//alert("threads:"+ClazzLoader.inLoadingThreads);
 	// Add script DOM element to document tree
-	
 	head.appendChild (script);
 	ClazzLoader.scriptLoading (file);
 };
@@ -5139,6 +5171,8 @@ $_L(["$wt.widgets.Widget","$wt.graphics.Drawable"],"$wt.widgets.Control",
 	}
 	//alert ("There are " + count + " script loading ...");
 	*/
+  //System.out.println("testing " + node.name + " " + isMustsOK + " " + node.status + " " +  ClazzNode.STATUS_DECLARED + "isnull?" + (node.declaration == null))
+
 	if (isMustsOK) {
 		if (node.status < ClazzNode.STATUS_DECLARED) {
 			var decl = node.declaration;
@@ -5147,7 +5181,7 @@ $_L(["$wt.widgets.Widget","$wt.graphics.Drawable"],"$wt.widgets.Control",
 					decl ();
 					decl.executed = true;
 				} else {
-					decl ();
+          decl ();
 				}
 			}
 			node.status = ClazzNode.STATUS_DECLARED;
@@ -5468,6 +5502,7 @@ ClazzLoader.load = function (musts, clazz, optionals, declaration) {
 		if (n != null) {
 			node = n;
 		} else {
+      xxxbhtest += clazz + ";" + declaration + "\n"
 			node = new ClazzNode ();
 		}
 		node.name = clazz;
@@ -6875,5 +6910,3 @@ Clazz.setConsoleDiv = function(d) {
 	
 
 };
-
-

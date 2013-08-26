@@ -16,10 +16,10 @@ Clazz.overrideMethod (c$, "getDOMAttributes",
 function () {
 return ["id", "symbol", "cartCoords", "bondAtom1", "bondAtom2", "bondOrder", "gridDatXDim", "gridDatYDim", "gridDatZDim", "gridDatXSize", "gridDatYSize", "gridDatZSize", "gridDatOrigin", "gridDatData", "calcPartialCharges", "calcAtoms"];
 });
-$_M(c$, "processXml", 
+Clazz.overrideMethod (c$, "processXml", 
 function (parent, saxReader) {
-Clazz.superCall (this, J.adapter.readers.xml.XmlChem3dReader, "processXml", [parent, saxReader]);
-this.setMOData (this.moData);
+this.PX (parent, saxReader);
+this.finalizeMOData (this.moData);
 }, "J.adapter.readers.xml.XmlReader,~O");
 Clazz.overrideMethod (c$, "processStartElement", 
 function (localName) {

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.Shape"], "J.shape.AtomShape", ["J.atomdata.RadiusData", "J.constant.EnumPalette", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.C"], function () {
+Clazz.load (["J.shape.Shape"], "J.shape.AtomShape", ["J.atomdata.RadiusData", "J.constant.EnumPalette", "$.EnumVdw", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.C"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.mad = -1;
 this.mads = null;
@@ -10,6 +10,7 @@ this.atoms = null;
 this.isActive = false;
 this.monomerCount = 0;
 this.bsSizeDefault = null;
+this.rd = null;
 Clazz.instantialize (this, arguments);
 }, J.shape, "AtomShape", J.shape.Shape);
 $_M(c$, "getMonomers", 
@@ -34,7 +35,12 @@ this.setSize2 (size, bsSelected);
 }, "~N,J.util.BS");
 $_M(c$, "setSize2", 
 function (size, bsSelected) {
-this.setSizeRD (size == 0 ? null :  new J.atomdata.RadiusData (null, size, J.atomdata.RadiusData.EnumType.SCREEN, null), bsSelected);
+if (size == 0) {
+this.setSizeRD (null, bsSelected);
+return;
+}if (this.rd == null) this.rd =  new J.atomdata.RadiusData (null, size, J.atomdata.RadiusData.EnumType.SCREEN, null);
+ else this.rd.value = size;
+this.setSizeRD (this.rd, bsSelected);
 }, "~N,J.util.BS");
 Clazz.overrideMethod (c$, "setSizeRD", 
 function (rd, bsSelected) {
@@ -45,13 +51,16 @@ var isVisible = (rd != null && rd.value != 0);
 var isAll = (bsSelected == null);
 var i0 = (isAll ? this.atomCount - 1 : bsSelected.nextSetBit (0));
 if (this.mads == null && i0 >= 0) this.mads =  Clazz.newShortArray (this.atomCount, 0);
-for (var i = i0; i >= 0; i = (isAll ? i - 1 : bsSelected.nextSetBit (i + 1))) {
+for (var i = i0; i >= 0; i = (isAll ? i - 1 : bsSelected.nextSetBit (i + 1))) this.setSizeRD2 (i, rd, isVisible);
+
+}, "J.atomdata.RadiusData,J.util.BS");
+$_M(c$, "setSizeRD2", 
+function (i, rd, isVisible) {
 var atom = this.atoms[i];
 this.mads[i] = atom.calculateMad (this.viewer, rd);
 this.bsSizeSet.setBitTo (i, isVisible);
 atom.setShapeVisibility (this.myVisibilityFlag, isVisible);
-}
-}, "J.atomdata.RadiusData,J.util.BS");
+}, "~N,J.atomdata.RadiusData,~B");
 $_M(c$, "setPropAS", 
 function (propertyName, value, bs) {
 if ("color" === propertyName) {
@@ -62,17 +71,26 @@ if (this.bsColixSet == null) this.bsColixSet =  new J.util.BS ();
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) this.setColixAndPalette (colix, pid, i);
 
 return;
-}if ("colors" === propertyName) {
+}if ("params" === propertyName) {
 this.isActive = true;
 var data = value;
 var colixes = data[0];
-var translucency = (data[1]).floatValue ();
+var atrans = data[1];
+var sizes = data[2];
+var rd =  new J.atomdata.RadiusData (null, 0, J.atomdata.RadiusData.EnumType.FACTOR, J.constant.EnumVdw.AUTO);
 if (this.bsColixSet == null) this.bsColixSet =  new J.util.BS ();
-for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
-if (i >= colixes.length) continue;
-var colix = colixes[i];
-if (translucency > 0.01) colix = J.util.C.getColixTranslucent3 (colix, true, translucency);
+if (this.bsSizeSet == null) this.bsSizeSet =  new J.util.BS ();
+var i0 = bs.nextSetBit (0);
+if (this.mads == null && i0 >= 0) this.mads =  Clazz.newShortArray (this.atomCount, 0);
+for (var i = i0, pt = 0; i >= 0; i = bs.nextSetBit (i + 1), pt++) {
+var colix = (colixes == null ? 0 : colixes[pt]);
+if (colix == 0) colix = 0;
+var f = (atrans == null ? 0 : atrans[pt]);
+if (f > 0.01) colix = J.util.C.getColixTranslucent3 (colix, true, f);
 this.setColixAndPalette (colix, J.constant.EnumPalette.UNKNOWN.id, i);
+if (sizes == null) continue;
+var isVisible = ((rd.value = sizes[pt]) > 0);
+this.setSizeRD2 (i, rd, isVisible);
 }
 return;
 }if ("translucency" === propertyName) {

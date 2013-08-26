@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.modelset");
 c$ = Clazz.decorateAsClass (function () {
 this.model = null;
-this.chainID = '\0';
+this.chainID = 0;
 this.isDna = false;
 this.isRna = false;
 this.groupCount = 0;
@@ -20,7 +20,7 @@ Clazz.makeConstructor (c$,
 function (model, chainID) {
 this.model = model;
 this.chainID = chainID;
-}, "J.modelset.Model,~S");
+}, "J.modelset.Model,~N");
 $_M(c$, "getGroup", 
 function (groupIndex) {
 return this.groups[groupIndex];
@@ -82,3 +82,7 @@ function (bs) {
 for (var i = 0; i < this.groupCount; i++) this.groups[i].selectAtoms (bs);
 
 }, "J.util.BS");
+$_M(c$, "getIDStr", 
+function () {
+return (this.chainID == 0 ? "" : this.chainID < 256 ? "" + String.fromCharCode (this.chainID) : this.model.modelSet.viewer.chainMap.get (Integer.$valueOf (this.chainID)));
+});

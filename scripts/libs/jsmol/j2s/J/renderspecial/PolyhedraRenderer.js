@@ -57,9 +57,10 @@ this.drawCylinderTriangle (A.x, A.y, A.z, B.x, B.y, B.z, C.x, C.y, C.z);
 }}, $fz.isPrivate = true, $fz), "~N,J.util.P3i,J.util.P3i,J.util.P3i");
 $_M(c$, "drawCylinderTriangle", 
 ($fz = function (xA, yA, zA, xB, yB, zB, xC, yC, zC) {
-this.g3d.fillCylinderScreen (3, 3, xA, yA, zA, xB, yB, zB);
-this.g3d.fillCylinderScreen (3, 3, xB, yB, zB, xC, yC, zC);
-this.g3d.fillCylinderScreen (3, 3, xA, yA, zA, xC, yC, zC);
+var d = (this.g3d.isAntialiased () ? 6 : 3);
+this.g3d.fillCylinderScreen (3, d, xA, yA, zA, xB, yB, zB);
+this.g3d.fillCylinderScreen (3, d, xB, yB, zB, xC, yC, zC);
+this.g3d.fillCylinderScreen (3, d, xA, yA, zA, xC, yC, zC);
 }, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N,~N,~N");
 $_M(c$, "fillFace", 
 ($fz = function (normix, A, B, C) {

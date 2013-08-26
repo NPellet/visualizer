@@ -218,7 +218,7 @@ var isError = (strErrorMessageUntranslated != null);
 this.setStatusChanged ((isError ? "scriptError" : "scriptStatus"), 0, strStatus, false);
 if (isError || isScriptCompletion) this.setStatusChanged ("scriptTerminated", 1, "Jmol script terminated" + (isError ? " unsuccessfully: " + strStatus : " successfully"), false);
 }var data;
-if (isScriptCompletion && this.viewer.getBoolean (603979879) && this.viewer.getBoolean (603979824)) {
+if (isScriptCompletion && this.viewer.getBoolean (603979880) && this.viewer.getBoolean (603979824)) {
 data = [null, "script <exiting>", statusMessage, Integer.$valueOf (-1), strErrorMessageUntranslated];
 if (this.notifyEnabled (J.constant.EnumCallback.SCRIPT)) this.jmolCallbackListener.notifyCallback (J.constant.EnumCallback.SCRIPT, data);
 this.processScript (data);

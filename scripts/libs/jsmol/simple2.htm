@@ -5,18 +5,8 @@
 	<title>JSmol -- platform-aware Jmol using jQuery</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<!-- 
-
-JSmoljQuery.js 			  required
-JSmolCore.js					essential; add next in the order given here
-JSmolApplet.js				essential
-JSmolControls.js			required for any interactivity
-JSmolApi.js						essential
-JSmol.js							required
--->
-
-
 <script type="text/javascript" src="JSmol.min.js"></script>
+
 <script type="text/javascript">
 //<![CDATA[
 
@@ -27,7 +17,8 @@ JSmol.js							required
 
 ////// special stuff just for this particular page
 
-var xxxx = document.location.search.split("USE=")[0]
+var s = unescape(document.location.search);
+var xxxx = s.split("USE=")[0]
 if (xxxx.length == 0) {
 	xxxx = "ethanol"
 	script = 'set errorCallback "myCallback";'
@@ -36,11 +27,10 @@ if (xxxx.length == 0) {
 	+''
 	script = script.replace(/XXXX/g, xxxx)
 } else {
-	script = unescape(xxxx.substring(1))
+	script = xxxx.substring(1)
 }
 
 var use = "JAVA HTML5 IMAGE"
-var s = document.location.search;
 
 if (s.indexOf("USE=") >= 0)
   use = s.split("USE=")[1].split("&")[0]
@@ -73,7 +63,7 @@ var Info = {
 	jarFile: (useSignedApplet ? "JmolAppletSigned.jar" : "JmolApplet.jar"),
 	isSigned: useSignedApplet,
 	addSelectionOptions: false,
-	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
+	serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
 	readyFunction: null,
 	console: "jmol_infodiv",
 	disableInitialConsole: true,
@@ -86,7 +76,7 @@ var Info = {
 
 	// "true" here indicates just a check
 
-	var appletCheck = Jmol.getApplet("test", Info, true);
+	Jmol.getApplet("appletCheck", Info, true);
 	var isApplet = (appletCheck._jmolType.indexOf("_Applet") >= 0);
 	var is2D = appletCheck._is2D;
 
@@ -157,7 +147,7 @@ $(document).ready(function(){
 		];
 
 		$("#leftpanel").html(
-		  '<a target="_blank" href="chairflip.png">images</a> '
+		  '<a target="_blank" href="data/chairflip.png">images</a> '
 			+ '<a target="_blank" href="simple2.htm?cd%20data%3Bscript%20cyclflip2.spt;//USE=' + use + '">cyclohexane ring flip</a> '
 			+ '<a href="simple2.htm?USE=' + use + '">back</a><br />'
 			+ (true || isApplet ? 
@@ -173,7 +163,7 @@ $(document).ready(function(){
 			+ "<br />Display calculated MMFF94 energy "
 			+ Jmol.jmolLink(jmol,"set minimizationSteps 200;set loadstructcallback 'minimize energy';set minimizationcallback '';set echo top left;echo @{'' + _minimizationEnergy + ' ' + energyUnits + '/mol'};minimize energy", "on")
 			+ "    "
-			+ Jmol.jmolLink(jmol,"echo '';set minimizationCallback '';set loadstructcallback ''", "off")
+			+ Jmol.jmolLink(jmol,"echo @{''};set minimizationCallback '';set loadstructcallback ''", "off")
 			+ "<br />Energy Units "
 			+ Jmol.jmolLink(jmol,"set energyunits kcal;minimize energy", "kcal/mol")
 			+ "    "
@@ -183,8 +173,7 @@ $(document).ready(function(){
 		);
 
   // the HTML code is in jmol._code since we are using Jmol.setDocument(0)
-  
-			jmol = Jmol.getApplet("jmol", Info);
+			Jmol.getApplet("jmol", Info);
 
   	$("#middlepanel").html(Jmol.getAppletHtml(jmol));
 

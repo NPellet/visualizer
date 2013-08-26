@@ -47,10 +47,10 @@ if (label.equals ("##$MODELS")) return this.readModels ();
 if (label.equals ("##$PEAKS")) return this.readPeaks ();
 return true;
 });
-$_M(c$, "finalizeReader", 
+Clazz.overrideMethod (c$, "finalizeReader", 
 function () {
 this.processPeakData ();
-Clazz.superCall (this, J.adapter.readers.more.JcampdxReader, "finalizeReader", []);
+this.finalizeReaderMR ();
 });
 $_M(c$, "findModelById", 
 ($fz = function (modelID) {
