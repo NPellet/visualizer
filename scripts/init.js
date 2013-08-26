@@ -11,7 +11,9 @@ requirejs.config({
 	"shim": {
 		"ckeditor": ["libs/ckeditor/adapters/jquery"],
 		"libs/jqgrid/js/jqgrid": ["jquery", "libs/jqgrid/js/i18n/grid.locale-en"],
+		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"]
 
+/*
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/js/JSmolCore"],
 		"libs/jsmol/js/JSmolApi": ["libs/jsmol/js/JSmolCore"],
 		"libs/jsmol/js/JSmolControls": ["libs/jsmol/js/JSmolCore"],
@@ -19,6 +21,7 @@ requirejs.config({
 		"libs/jsmol/js/JSmol": ["libs/jsmol/js/JSmolCore"],
 		"libs/jsmol/js/JSmolThree": ["libs/jsmol/js/JSmolCore"],
 		"libs/jsmol/js/JSmolGLmol": ["libs/jsmol/js/JSmolCore", "libs/jsmol/js/JSmolThree"]
+		*/
 	}
 });
 

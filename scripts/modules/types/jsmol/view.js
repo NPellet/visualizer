@@ -1,6 +1,10 @@
 define(['modules/defaultview', 
 		'util/util',
 		'util/datatraversing',
+		"libs/jsmol/JSmol.min.nojq"
+		], 
+
+/*
 		"libs/jsmol/js/JSmolCore",
 		"libs/jsmol/js/JSmolApplet",
 		"libs/jsmol/js/JSmolApi",
@@ -9,7 +13,7 @@ define(['modules/defaultview',
 		"libs/jsmol/js/JSmol",	
 		"libs/jsmol/js/JSmolThree",
 		"libs/jsmol/js/JSmolGLmol"
-		], 
+*/
 
 function(Default, UTIL, DataTraversing) {
 	
