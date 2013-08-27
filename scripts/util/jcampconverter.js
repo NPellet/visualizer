@@ -213,7 +213,7 @@ define(function() {
             addGCMS(result);
         }
 
-     console.log(result);
+    // console.log(result);
     //    console.log(JSON.stringify(spectra));
         return result;
 
