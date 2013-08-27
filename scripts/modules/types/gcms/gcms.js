@@ -156,7 +156,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				},
 
 				title: '',
-				zoomMode: 'xy',
+				zoomMode: 'x',
 				defaultMouseAction: 'zoom',
 				defaultWheelAction: 'zoomY',
 				lineToZero: false
