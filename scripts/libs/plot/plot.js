@@ -1320,7 +1320,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.graph.axisGroup.insertBefore(this.groupGrids, this.graph.axisGroup.firstChild);
 			this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
 			this.rectEvent.setAttribute('pointer-events', 'fill');
-			//this.rectEvent.setAttribute('fill', 'rgba(0, 0, 0, 0.2)');
+			this.rectEvent.setAttribute('fill', 'transparent');
 			this.group.appendChild(this.rectEvent);
 
 			this.setEvents();
