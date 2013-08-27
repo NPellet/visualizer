@@ -562,6 +562,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				var use2 = this.makeHandle();
 				use2.setAttribute('transform', 'translate(' + (x - 6) + " " + ((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
 				use2.addEventListener('mousedown', function(e) {
+					e.stopPropagation();
 					var id = $(this).attr('data-rangex-id');
 					var group = self.ranges.x[id];
 					
@@ -572,6 +573,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				});
 
 				use.addEventListener('mousedown', function(e) {
+					e.stopPropagation();
 					var id = $(this).attr('data-rangex-id');
 					
 					var group = self.ranges.x[id];
