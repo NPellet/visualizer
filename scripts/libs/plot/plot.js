@@ -1056,6 +1056,7 @@ define(['jquery', 'util/util'], function($, Util) {
 					// Get axis position gives the extra shift that is common
 					axis.setShift(shift[axisIndex] + axisDim + drawn, drawn + axisDim);
 					shift[axisIndex] += drawn + axisDim;
+					axis.drawSeries();
 
 				}, false, false, true);
 
@@ -1067,6 +1068,8 @@ define(['jquery', 'util/util'], function($, Util) {
 					axis.setMinPx(shift[2]);
 					axis.setMaxPx(this.getDrawingWidth(true) - shift[3]);
 					axis.draw(doNotRecalculateMinMax);
+					axis.drawSeries();
+
 				}, false, true, false);
 			}
 
@@ -1148,6 +1151,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		drawSeries: function(doNotRedrawZone) {
 			
+
 			if(!this.width || !this.height)
 				return;
 			if(!this._painted)
@@ -1316,7 +1320,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.graph.axisGroup.insertBefore(this.groupGrids, this.graph.axisGroup.firstChild);
 			this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
 			this.rectEvent.setAttribute('pointer-events', 'fill');
-			this.rectEvent.setAttribute('fill', 'rgba(0, 0, 0, 0.2)');
+			//this.rectEvent.setAttribute('fill', 'rgba(0, 0, 0, 0.2)');
 			this.group.appendChild(this.rectEvent);
 
 			this.setEvents();
@@ -1765,6 +1769,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var widthPx = this.maxPx - this.minPx;
 			var valrange = this._getActualInterval();
 
+
 			/* Number of px per unit */
 			/* Example: width: 1000px
 			/* 			10 - 100 => 11.11
@@ -1826,6 +1831,8 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.drawSpecifics();
 			if(this.options.lineAt0 && this.getActualMin() < 0 && this.getActualMax() > 0)
 				this._draw0Line(this.getPx(0));
+
+
 			return widthHeight + (label ? 20 : 0);
 
 		},
@@ -1839,6 +1846,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var drawn = this._draw(doNotRecalculateMinMax);
 			this._widthLabels += drawn;
 			this.graph.redrawShapes();
+
 			return this.series.length > 0 ? 100 : drawn;
 		},
 
@@ -2183,6 +2191,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var size = (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize * 2;	
 			if(this.options.allowedPxSerie && this.series.length > 0)
 				size += this.options.allowedPxSerie;
+
 			return size;
 		},
 
@@ -2255,6 +2264,9 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		drawSeries: function() {
+
+			if(!this.shift)
+				return;
 
 			this.rectEvent.setAttribute('y', !this.top ? 0 : -this.shift);
 			this.rectEvent.setAttribute('height', this.totalDimension);
@@ -2393,7 +2405,10 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		drawSeries: function() {
+			if(!this.shift)
+				return;
 
+console.log(this.totalDimension);
 			this.rectEvent.setAttribute('x', - this.shift);
 			this.rectEvent.setAttribute('width', this.totalDimension);
 			this.rectEvent.setAttribute('y', Math.min(this.getMinPx(), this.getMaxPx()));

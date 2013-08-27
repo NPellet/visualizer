@@ -40,6 +40,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 			
 				this.addSerieJcampXOrY(moduleValue, true);
 				this.redraw();
+
 			},
 
 			'jcampy': function(moduleValue) {
