@@ -133,16 +133,18 @@ define(function() {
                 if (!spectrum.xType) result.xType=dataValue.replace(/[^a-zA-Z0-9]/g,"");
             } else if (dataLabel=='$SFO2') {
                 if (!result.indirectFrequency) result.indirectFrequency=parseFloat(dataValue);
+    
             } else if (dataLabel=='$OFFSET') {   // OFFSET for Bruker spectra
-                shiftOffsetNum = 0;
-                shiftOffsetVal = parseFloat(dataValue);
+                result.shiftOffsetNum = 0;
+                if (! result.shiftOffsetVal)  result.shiftOffsetVal = parseFloat(dataValue);
             } else if (dataLabel=='$REFERENCEPOINT') {   // OFFSET for Varian spectra
         
-
-            } else if (dataLabel=='.SHIFTREFERENCE') {   // OFFSET FOR Bruker Spectra
-                    var parts = dataValue.split(/ *, */);
-                    shiftOffsetNum = parseInt(parts[2].trim());
-                    shiftOffsetVal = parseFloat(parts[3].trim());
+    
+    // if we activate this part it does not work for ACD specmanager
+   //         } else if (dataLabel=='.SHIFTREFERENCE') {   // OFFSET FOR Bruker Spectra
+   //                 var parts = dataValue.split(/ *, */);
+   //                 result.shiftOffsetNum = parseInt(parts[2].trim());
+   //                 result.shiftOffsetVal = parseFloat(parts[3].trim());
             } else if (dataLabel=='VARNAME') {
                 ntuples.varname=dataValue.split(/[, \t]+/);
             } else if (dataLabel=='SYMBOL') {
@@ -178,7 +180,7 @@ define(function() {
             } else if (dataLabel=='RETENTIONTIME') {
                 spectrum.pageValue=parseFloat(dataValue);
             } else if (dataLabel=="XYDATA") {
-                prepareSpectrum(spectrum);
+                prepareSpectrum(result, spectrum);
                 // well apparently we should still consider it is a PEAK TABLE if there are no "++" after
                 if (dataValue.match(/.*\+\+.*/)) {
                     parseXYData(spectrum, dataValue);
@@ -188,7 +190,7 @@ define(function() {
                     spectra.push(spectrum);
                     spectrum={};
             } else if (dataLabel=="PEAKTABLE") {
-                prepareSpectrum(spectrum);
+                prepareSpectrum(result, spectrum);
                 parsePeakTable(spectrum, dataValue);
                 spectra.push(spectrum);
                 spectrum={};
@@ -211,11 +213,13 @@ define(function() {
             addGCMS(result);
         }
 
-    //  console.log(result);
+     console.log(result);
     //    console.log(JSON.stringify(spectra));
         return result;
 
     }
+
+
 
     function convertMSFieldToLabel(value) {
         return value.toLowerCase().replace(/[^a-z0-9]/g,"");
@@ -255,15 +259,22 @@ define(function() {
         result.gcms=gcms;
     }
 
-    function prepareSpectrum(spectrum) {
+    function prepareSpectrum(result, spectrum) {
         if (! spectrum.xFactor) spectrum.xFactor=1;
         if (! spectrum.yFactor) spectrum.yFactor=1;
         if (spectrum.observeFrequency) {
             if (spectrum.xUnit && spectrum.xUnit.toUpperCase()=='HZ') {
                 spectrum.xUnit='PPM';
-            } else {
-                spectrum.observeFrequency=1;
+                spectrum.xFactor=spectrum.xFactor/spectrum.observeFrequency;
+                spectrum.firstX=spectrum.firstX/spectrum.observeFrequency;
+                spectrum.lastX=spectrum.lastX/spectrum.observeFrequency;
+                spectrum.deltaX=spectrum.deltaX/spectrum.observeFrequency;
             }
+        }
+         if (result.shiftOffsetVal) {
+            var shift = spectrum.firstX - result.shiftOffsetVal;
+            spectrum.firstX = spectrum.firstX - shift;
+            spectrum.lastX = spectrum.lastX - shift;
         }
     }
 
@@ -412,12 +423,7 @@ define(function() {
 
         function addPoint(spectrum,currentX,currentY) {
             // if (aa++<10) console.log(currentX+" - "+currentY+" - "+currentX/spectrum.observeFrequency+" - "+currentY*spectrum.yFactor);
-            if (spectrum.observeFrequency) {
-
-                spectrum.currentData.push(currentX/spectrum.observeFrequency, currentY*spectrum.yFactor);
-            } else {
                 spectrum.currentData.push(currentX, currentY*spectrum.yFactor);
-            }
         }
         delete spectrum.currentData;
     }
