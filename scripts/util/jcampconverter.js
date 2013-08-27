@@ -213,7 +213,7 @@ define(function() {
             addGCMS(result);
         }
 
-    // console.log(result);
+ //   console.log(result);
     //    console.log(JSON.stringify(spectra));
         return result;
 
@@ -251,7 +251,7 @@ define(function() {
             var spectrum=spectra[i];
             for (var j=0; j<existingGCMSFields.length; j++) {
                 gcms.gc[existingGCMSFields[j]].push(spectrum.pageValue);
-                gcms.gc[existingGCMSFields[j]].push(spectrum[existingGCMSFields[j]]);
+                gcms.gc[existingGCMSFields[j]].push(parseFloat(spectrum[existingGCMSFields[j]]));
             }
             gcms.ms[i]=spectrum.data[0];
 
