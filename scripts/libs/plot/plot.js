@@ -413,8 +413,8 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.ranges.current.min = this.ranges.current.use1;
 				this.ranges.current.max = this.ranges.current.use2;
 
-				if(this.options.onRangeX)
-					this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xStart), this.getXAxis().getVal(x), this.ranges.current);
+		//		if(this.options.onRangeX)
+		//			this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xStart), this.getXAxis().getVal(x), this.ranges.current);
 			} else if(this.currentAction == 'moveRangeX' && this.ranges.current) {
 				
 				x -= this.getPaddingLeft();
@@ -429,8 +429,8 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.ranges.current.use1.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMin - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
 				this.ranges.current.use2.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMax - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
 
-				if(this.options.onRangeX)
-					this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xMin), this.getXAxis().getVal(this.ranges.current.xMax), this.ranges.current);
+		//		if(this.options.onRangeX)
+		//			this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xMin), this.getXAxis().getVal(this.ranges.current.xMax), this.ranges.current);
 			}
 
 			return results;
@@ -676,9 +676,18 @@ define(['jquery', 'util/util'], function($, Util) {
 				x -= this.getPaddingLeft();
 				this.ranges.current.xEnd = x;
 				this.currentAction = false;
+
+				if(this.options.onRangeX)
+					this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xStart), this.getXAxis().getVal(x), this.ranges.current);
+
 				this.ranges.current = null;
+				
+
 			} else if(this.currentAction == 'moveRangeX') {
 				this.currentAction = false;
+				if(this.options.onRangeX)
+					this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xStart), this.getXAxis().getVal(x), this.ranges.current);
+				this.ranges.current = null;
 			}
 		},
 
@@ -2408,7 +2417,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(!this.shift)
 				return;
 
-console.log(this.totalDimension);
 			this.rectEvent.setAttribute('x', - this.shift);
 			this.rectEvent.setAttribute('width', this.totalDimension);
 			this.rectEvent.setAttribute('y', Math.min(this.getMinPx(), this.getMaxPx()));
