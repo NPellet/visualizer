@@ -6,7 +6,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 		this.gcSeries = [];
 		this.msData = null;
 		this.firstMs = true;
-
+		this.msContinuous = false;
 
 	}
 
@@ -67,7 +67,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 						range.serie = false;
 					}
 
-					range.serie = self.ms.newSerie('av');
+					range.serie = self.ms.newSerie('av', { lineToZero: !this.msContinuous });
 					range.serie.autoAxis();
 					range.serie.setYAxis(self.ms.getRightAxis());
 					range.serie.setData(finalMs);
@@ -99,7 +99,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					if(!ms)
 						return;
 
-					self.msSerie = self.ms.newSerie();
+					self.msSerie = self.ms.newSerie('', { lineToZero: !this.msContinuous });
 					self.msSerie.autoAxis();
 					self.msSerie.setData(ms);
 
@@ -118,7 +118,6 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					{
 						labelValue: 'Time',
 						unitModification: 'time',
-						
 						primaryGrid: false,
 						nbTicksPrimary: 10,
 						secondaryGrid: false,
@@ -158,8 +157,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				title: '',
 				zoomMode: 'x',
 				defaultMouseAction: 'zoom',
-				defaultWheelAction: 'zoomY',
-				lineToZero: false
+				defaultWheelAction: 'zoomY'
+				
 			};
 
 
@@ -205,6 +204,10 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 		},
 
+		setMSContinuous: function(cont) {
+			this.msContinuous = cont;
+		},
+
 		resize: function(width, height) {
 			this.gc.resize(width - 10, height / 2 - 10);
 			this.ms.resize(width - 10, height / 2 - 10);
@@ -224,7 +227,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			this.gcSeries = [];
 
 			for(var i in gc) {
-				serie = this.gc.newSerie(i, {});
+				serie = this.gc.newSerie(i);
 				this.gcSeries.push(serie);
 				serie.setData(gc[i]);
 				serie.autoAxis();

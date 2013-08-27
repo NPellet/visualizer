@@ -2504,7 +2504,8 @@ define(['jquery', 'util/util'], function($, Util) {
 			trackMouse: false,
 			trackMouseLabel: false,
 			trackMouseLabelRouding: 1,
-			label: ''
+			label: '',
+			lineToZero: false
 		},
 
 

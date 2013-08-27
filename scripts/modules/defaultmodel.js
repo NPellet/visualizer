@@ -50,6 +50,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 
 		onVarGet: function(varValue, varName) {
 			var self = this;
+			
 			$.when(this.module.view.onReady).then(function() {
 			
 				if(varName instanceof Array)
