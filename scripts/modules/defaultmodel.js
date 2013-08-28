@@ -50,15 +50,12 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 
 		onVarGet: function(varValue, varName) {
 			var self = this;
-			
+
 			$.when(this.module.view.onReady).then(function() {
-			
 				if(varName instanceof Array)
 					varName = varName[0];
-
 				if(!self.sourceMap)
 					return;
-
 				var value = self.buildData(varValue, self.module.controller.configurationReceive[self.sourceMap[varName].rel].type);
 				self.data[varName] = value;
 				var rel = self.module.getDataRelFromName(varName);

@@ -36,7 +36,9 @@ define(['jquery', 'util/util'], function($, Util) {
 		rangeLimitY: 0,
 
 		onRangeX: false,
-		onRangeY: false
+		onRangeY: false,
+
+		onRangeXRemove: false
 	};
 
 
@@ -274,8 +276,8 @@ define(['jquery', 'util/util'], function($, Util) {
 					self.handleClick(coords.x,coords.y,e);
 				}, 200);
 			});
-
-			if(require)
+ 
+			if(require) {
 				require(['util/context'], function(Context) {
 					Context.listen(self.dom, [
 						['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Add tracking line</a></li>', 
@@ -286,7 +288,10 @@ define(['jquery', 'util/util'], function($, Util) {
 							self.addTrackingLine(coords, true);
 						}]
 					]);
+
 				});
+
+			}
 
 			document.addEventListener('keydown', function(e) {
 				var code = e.keyCode;
@@ -297,8 +302,8 @@ define(['jquery', 'util/util'], function($, Util) {
 					var min = axis.getActualMin(),
 						max = axis.getActualMax(),
 						shift = (max - min) * 0.05 * (axis.isFlipped() ? -1 : 1) * ((code == 39 || code == 40) ? -1 : 1);
-					axis._setRealMin(min + shift);
-					axis._setRealMax(max + shift);
+					axis.setCurrentMin(min + shift);
+					axis.setCurrentMax(max + shift);
 				}, code, (code == 39 || code == 37), (code == 40 || code == 38));
 				self.refreshDrawingZone(true);
 				self.drawSeries(true);
@@ -347,14 +352,13 @@ define(['jquery', 'util/util'], function($, Util) {
 				var deltaY = y - this._draggingY;
 
 				this.applyToAxes(function(axis) {
-					axis._setRealMin(axis.getVal(axis.getMinPx() - deltaX));
-					axis._setRealMax(axis.getVal(axis.getMaxPx() - deltaX));
+					axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaX));
+					axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaX));
 				}, false, true, false);
-
-
+ 
 				this.applyToAxes(function(axis) {
-					axis._setRealMin(axis.getVal(axis.getMinPx() - deltaY));
-					axis._setRealMax(axis.getVal(axis.getMaxPx() - deltaY));
+					axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaY));
+					axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaY));
 				}, false, false, true);
 
 				this._draggingX = x;
@@ -553,6 +557,18 @@ define(['jquery', 'util/util'], function($, Util) {
 				rangeRect.setAttribute('fill', 'rgba(' + color + ', 0.3)');
 				rangeRect.setAttribute('stroke', 'rgba(' + color + ', 0.9)');
 
+				if(require) {
+					require(['util/context'], function(Context) {
+						Context.listen(rangeRect, [
+							['<li><a><span class="ui-icon ui-icon-cross"></span> Remove range zone</a></li>', 
+							function(e) {
+								var id = rangeRect.getAttribute('data-rangex-id');
+								self.removeRangeX(id);
+							}]
+						]);
+					});
+				}
+
 
 				rangeGroup.appendChild(rangeRect);
 				var use = document.createElementNS(this.ns, 'use');
@@ -634,6 +650,15 @@ define(['jquery', 'util/util'], function($, Util) {
 					this.handleMouseUp(x, y, e);
 				}
 			}
+		},
+
+		removeRangeX: function(id) {
+			this.shapeZone.removeChild(this.ranges.x[id].group);
+			
+			if(this.options.onRangeXRemove)
+				this.options.onRangeXRemove(this.ranges.x[id]);
+
+			this.ranges.x[id] = false;
 		},
 
 		handleDblClick: function(x,y,e) {
@@ -1025,8 +1050,8 @@ define(['jquery', 'util/util'], function($, Util) {
 					if(axis.disabled)
 						continue;
 
-					axis.setRealMin(this.getBoundaryAxisFromSeries(this.axis[axisvars[j]][i], xy, 'min'));
-					axis.setRealMax(this.getBoundaryAxisFromSeries(this.axis[axisvars[j]][i], xy, 'max'));
+					axis.setMinValue(this.getBoundaryAxisFromSeries(this.axis[axisvars[j]][i], xy, 'min'));
+					axis.setMaxValue(this.getBoundaryAxisFromSeries(this.axis[axisvars[j]][i], xy, 'max'));
 				}
 			}
 
@@ -1159,8 +1184,6 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		drawSeries: function(doNotRedrawZone) {
-			
-
 			if(!this.width || !this.height)
 				return;
 			if(!this._painted)
@@ -1168,7 +1191,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			var i = this.series.length - 1;
 			for(;i >= 0; i--)
 				this.series[i].draw(doNotRedrawZone);
-			
 		},
 
 		checkMinOrMax: function(serie) {
@@ -1181,22 +1203,22 @@ define(['jquery', 'util/util'], function($, Util) {
 				maxY = serie.getMaxY(),
 				isMinMax = false;
 
-			if(minX <= xAxis.getMin()) {
+			if(minX <= xAxis.getMinValue()) {
 				isMinMax = true;
 				serie.isMinOrMax(true, 'x', 'min');
 			}
 
-			if(maxX >= xAxis.getMax()) {
+			if(maxX >= xAxis.getMaxValue()) {
 				isMinMax = true;
 				serie.isMinOrMax(true, 'x', 'max');
 			}
 
-			if(minY <= yAxis.getMin()) {
+			if(minY <= yAxis.getMinValue()) {
 				isMinMax = true;
 				serie.isMinOrMax(true, 'y', 'min');
 			}
 
-			if(maxX >= xAxis.getMax()) {
+			if(maxX >= xAxis.getMaxValue()) {
 				isMinMax = true;
 				serie.isMinOrMax(true, 'y', 'max');
 			}
@@ -1210,13 +1232,10 @@ define(['jquery', 'util/util'], function($, Util) {
 				if(this.series[i] == serie)
 					this.series.slice(i, 1);
 			}
-
 			serie.removeDom();
-
 			if(serie.isMinOrMax())
 				this.refreshDrawingZone();
 		},
-
 
 		setZoomMode: function(zoomMode) {
 			if(zoomMode == 'x' || zoomMode == 'y' || zoomMode == 'xy' || !zoomMode)
@@ -1224,11 +1243,8 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		setDefaultWheelAction: function(wheelAction) {
-
 			if(wheelAction != 'zoomY' && wheelAction != 'zoomX' && wheelAction != 'none')
 				return;
-
-
 			this.options.defaultWheelAction = wheelAction;
 		},
 
@@ -1373,11 +1389,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.ticks = [];
 			this.series = [];
-			//this._serieShift = 0;
-			//this._serieScale = 1;
-
 			this.totalDelta = 0;
-
 			this.currentAction = false;
 
 			this.group.addEventListener('mousemove', function(e) {
@@ -1479,49 +1491,25 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.options.axisDataSpacing.max = val;
 		},
 
-		setMinPx: function(px) {
-			this.minPx = px;
-		},
+		setMinPx: function(px) { this.minPx = px; },
+		getMinPx: function() { return this.options.flipped ? this.maxPx : this.minPx; },
+		setMaxPx: function(px) { this.maxPx = px; },
+		getMaxPx: function(px) { return this.options.flipped ? this.minPx : this.maxPx; },
+		getMathMaxPx: function() { return this.maxPx; },
 
-		getMinPx: function() {
-			return this.options.flipped ? this.maxPx : this.minPx;
-		},
-
-		setMaxPx: function(px) {
-			this.maxPx = px;
-		},
-
-		getMaxPx: function(px) {
-			return this.options.flipped ? this.minPx : this.maxPx;
-		},
-
-		getMathMaxPx: function() {
-			return this.maxPx;
-		},
-
-		getMin: function() {
+		// Returns the true minimum of the axis. Either forced in options
+		getMinValue: function() {
 			return this.options.forcedMin || (this.options.forcedMin === 0 ? 0 : this.realMin);
 		},
 
-		getMax: function() {
+		getMaxValue: function() {
 			return this.options.forcedMax || (this.options.forcedMax === 0 ? 0 : this.realMax);
 		},
 
-		setRealMin: function(min) {
-			this.realMin = min;
-		},
-
-		setRealMax: function(max) {
-			this.realMax = max;
-		},
-
-		forceMin: function(val) {
-			this.options.forcedMin = val || false;
-		},
-
-		forceMax: function(val) {
-			this.options.forcedMax = val || false;
-		},
+		setMinValue: function(min) { this.realMin = min; },
+		setMaxValue: function(max) { this.realMax = max; },
+		forceMin: function(val) {    this.options.forcedMin = val || false; },
+		forceMax: function(val) {    this.options.forcedMax = val || false; },
 
 		getNbTicksPrimary: function() {
 			return this.options.nbTicksPrimary;
@@ -1565,19 +1553,13 @@ define(['jquery', 'util/util'], function($, Util) {
 		_doZoom: function(px1, px2, val1, val2) {
 
 			if(this.options.display || 1 == 1) {
-				
 				var val1 = val1 || this.getVal(px1);
 				var val2 = val2 || this.getVal(px2);
-				this._setRealMin(Math.min(val1, val2));
-				this._setRealMax(Math.max(val1, val2));
-
+				this.setCurrentMin(Math.min(val1, val2));
+				this.setCurrentMax(Math.max(val1, val2));
 				this.draw(true);
 				this.drawSeries();
 				this._hasChanged = true;
-
-		//		this._serieShift = 0;
-		//		this._serieScale = 0;
-
 			} else {
 
 				//var min = this.getPos(this.getActualMin());
@@ -1620,7 +1602,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(this.options.unitModification == 'time') {
 				// Determine the time domain using max.
 					
-				var max = this.getModifiedValue(this.getMax()), 
+				var max = this.getModifiedValue(this.getMaxValue()), 
 				units = [[60, 'min'], [3600, 'h'], [3600*24, 'd']];
 				if(max < 3600) { // to minutes
 					umin = 0;
@@ -1697,11 +1679,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			return [unitPerTickCorrect, nbTicks, pxPerTick];
 		},
 
-		_recalculateDataInterval: function() {
+		setMinMaxToFitSeries: function() {
 
-			var interval = this.getMax() - this.getMin();
-			this._realMin = this.getMin() - (this.options.axisDataSpacing.min * interval);
-			this._realMax = this.getMax() + (this.options.axisDataSpacing.max * interval);
+			var interval = this.getMaxValue() - this.getMinValue();
+			this._realMin = this.getMinValue() - (this.options.axisDataSpacing.min * interval);
+			this._realMax = this.getMaxValue() + (this.options.axisDataSpacing.max * interval);
 
 			if(this.options.logScale) {
 				this._realMin = Math.max(1e-50, this._realMin);
@@ -1722,13 +1704,13 @@ define(['jquery', 'util/util'], function($, Util) {
 			return this._realMax == this._realMin ? this._realMax + 1 : this._realMax;
 		},
 
-		_setRealMin: function(val) {
+		setCurrentMin: function(val) {
 			this._realMin = val;
 			if(this.options.logScale)
 				this._realMin = Math.max(1e-50, val);
 		},
 
-		_setRealMax: function(val) {
+		setCurrentMax: function(val) {
 			this._realMax = val;
 
 			if(this.options.logScale)
@@ -1773,7 +1755,8 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.groupGrids.removeChild(this.groupGrids.firstChild);
 
 			if(!doNotRecalculateMinMax || this._realMin == undefined || !this._realMax == undefined)
-				this._recalculateDataInterval();
+				this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
+			// The data min max is stored in this.realMin, this.realMax
 
 			var widthPx = this.maxPx - this.minPx;
 			var valrange = this._getActualInterval();
@@ -2018,7 +2001,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		modifyUnit: function(value, mode) {
 			switch(mode) {
 				case 'time': // val must be in seconds => transform in hours / days / months
-					var max = this.getModifiedValue(this.getMax()), 
+					var max = this.getModifiedValue(this.getMaxValue()), 
 					units = [[60, 'min'], [3600, 'h'], [3600*24, 'd']];
 					if(max < 3600) { // to minutes
 						umin = 0;

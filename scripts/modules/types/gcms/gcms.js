@@ -6,6 +6,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 		this.gcSeries = [];
 		this.msData = null;
 		this.firstMs = true;
+		this.firstRange = true;
 		this.msContinuous = false;
 
 	}
@@ -42,6 +43,10 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					var indexMin = Math.min(indexStart, indexEnd);
 					var indexMax = Math.max(indexStart, indexEnd);
 
+					if(indexMax == indexMin)
+						return;
+					
+
 					var obj = [], allMs = [], i, j;
 
 					for(i = indexMin; i <= indexMax; i++) {
@@ -57,10 +62,12 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 					allMs.sort(function(a, b) { return a -b; });
 					var finalMs = [];
+
 					for(var i = 0; i < allMs.length; i++) {
 						finalMs.push(allMs[i]);
 						finalMs.push(obj[allMs[i]] / Math.abs(indexMax - indexMin));
 					}
+
 
 					if(range.serie) {
 						range.serie.kill(true);
@@ -73,12 +80,19 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					range.serie.setData(finalMs);
 					range.serie.setLineColor('rgb(' + range.color + ')');
 
-					self.ms.redraw(true);
-					self.ms.getRightAxis()._recalculateDataInterval();
-					self.ms.getLeftAxis()._recalculateDataInterval();
-					
+					self.ms.getRightAxis().setMaxValue(self.ms.getBoundaryAxisFromSeries(self.ms.getRightAxis(), 'y', 'max'));
+					self.ms.getRightAxis().setMinMaxToFitSeries();
+					//self.ms.getLeftAxis().setMinMaxToFitSeries();
+
+					self.ms.redraw(!self.firstRange);
+					self.firstRange = false;
 					self.ms.drawSeries();
 				},	
+
+				onRangeXRemove: function(range) {
+					range.serie.kill(true);
+					range.serie = false;
+				},
 
 				onMouseMoveData: function(e, val) {
 					for(var i in val) {
@@ -102,8 +116,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.msSerie = self.ms.newSerie('', { lineToZero: !this.msContinuous });
 					self.msSerie.autoAxis();
 					self.msSerie.setData(ms);
-
-					self.ms.getLeftAxis()._recalculateDataInterval();
+					self.ms.getLeftAxis().setMaxValue(self.ms.getBoundaryAxisFromSeries(self.ms.getLeftAxis(), 'y', 'max'));
+					self.ms.getLeftAxis().setMinMaxToFitSeries();
 					
 					self.ms.redraw(!self.firstMs);
 					self.firstMs = false;
