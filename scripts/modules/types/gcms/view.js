@@ -12,7 +12,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			this.module.getDomContent().html(this.dom);
 		},
 
-		
+		unload: function() {
+			this.gcmsInstance.unload();
+			this.dom.remove();
+		},
+
 		inDom: function() {
 			var self = this;
 			var _gcms = new gcms();

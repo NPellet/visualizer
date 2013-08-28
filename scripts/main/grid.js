@@ -45,7 +45,6 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 			height: Math.round(moduleSize.height) * definition.yHeight
 		});
 
-
 		Context.listen(module.getDomWrapper().get(0), [
 			['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>', 
 			function() {

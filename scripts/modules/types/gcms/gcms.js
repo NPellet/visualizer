@@ -203,7 +203,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 						secondaryGrid: false,
 						scientificTicks: true,
 						nbTicksPrimary: 3,
-						forcedMin: 0
+						forcedMin: 0,
+						axisDataSpacing: { min: 0, max: 0.2 },
 					}
 				],
 
@@ -211,7 +212,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					{
 						primaryGrid: false,
 						secondaryGrid: false,
-						nbTicksSecondary: 5
+						nbTicksSecondary: 5,
+						axisDataSpacing: { min: 0, max: 0.2 },
 					}
 				]
 			};
@@ -219,6 +221,11 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			this.gc = new Graph(domGc, optionsGc, axisGc);
 			this.ms = new Graph(domMs, optionsMs, axisMs);
 
+		},
+
+		unload: function() {
+			this.gc.kill();
+			this.ms.kill();
 		},
 
 		setMSContinuous: function(cont) {

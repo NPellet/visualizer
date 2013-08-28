@@ -521,8 +521,11 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 							module.controller.processReceivedVars(value.receive[0].receivedvars[0]);
 						if(module.controller.doSaveConfiguration) 
 							module.controller.doSaveConfiguration(value.moduleconfiguration);
+						if(module.view.unload)
+							module.view.unload();
 						module.view.init();
 						module.view.inDom();
+						module.view.onResize(module.view.width || module.getWidthPx(), module.view.height || module.getHeightPx());
 						module.model.resetListeners();	
 						module.updateAllView();
 						form.getDom().dialog('close');
@@ -531,7 +534,6 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 					
 					save.setColor('blue');
 					form.addButtonZone(save);
-				
 
 					var sentVars = { event: [], rel: [], jpath: [], name: []};	
 					if(module.definition.dataSend) {
