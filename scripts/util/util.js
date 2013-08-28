@@ -1,4 +1,4 @@
-define(function() {
+define(['util/api'], function(API) {
 
 	var uniqueid = 0;
 
@@ -127,24 +127,26 @@ define(function() {
 
 
         doAnnotations: function(annotations, graph) {
-        	var value = this.annotations;
+        	var value = annotations;
+
 			if(!value)
 				return;
-			var i = 0, l = value.length, annotation;
+			var i = 0, l = value.length;
 			for(; i < l; i++) {
+				console.log(value[i]);
 				this._addAnnotation(value[i], graph);
 			}
         },
 
 
         _addAnnotation: function(annotation, graph) {
-			if(!this.graph || !this.graph.getSerie(0))
+			if(!graph || !graph.getSerie(0))
 				return;
 
 			if(!annotation.type)
 				return;
-			var shape = this.graph.makeShape(annotation.type);
-			shape.setSerie(this.graph.getSerie(0));
+			var shape = graph.makeShape(annotation.type);
+			shape.setSerie(graph.getSerie(0));
 
 			shape.set('position', annotation.pos);
 			if(annotation.pos2)

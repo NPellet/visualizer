@@ -207,6 +207,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			},
 
 			'annotation': function(value) {
+
 				value = DataTraversing.getValueIfNeeded(value);
 				if(!value)
 					return;
@@ -360,6 +361,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		},
 
 		resetAnnotations: function() {
+			
 			Util.doAnnotations(this.annotations, this.graph)
 		},
 
