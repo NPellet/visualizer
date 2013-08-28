@@ -245,6 +245,10 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			this.ms.drawSeries();
 		},
 
+		getGC: function() {
+			return this.gc;
+		},
+		
 		setGC: function(gc) {
 			var serie;
 			if(!this.gc)

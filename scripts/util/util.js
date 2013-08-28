@@ -123,7 +123,66 @@ define(function() {
             if(t < 1/2) return q;
             if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
             return p;
-        }
+        },
 
+
+        doAnnotations: function(annotations, graph) {
+        	var value = this.annotations;
+			if(!value)
+				return;
+			var i = 0, l = value.length, annotation;
+			for(; i < l; i++) {
+				this._addAnnotation(value[i], graph);
+			}
+        },
+
+
+        _addAnnotation: function(annotation, graph) {
+			if(!this.graph || !this.graph.getSerie(0))
+				return;
+
+			if(!annotation.type)
+				return;
+			var shape = this.graph.makeShape(annotation.type);
+			shape.setSerie(this.graph.getSerie(0));
+
+			shape.set('position', annotation.pos);
+			if(annotation.pos2)
+				shape.set('position2', annotation.pos2);
+			
+			if(annotation.fillColor)	shape.set('fillColor', annotation.fillColor);
+			if(annotation.strokeColor)	shape.set('strokeColor', annotation.strokeColor);
+			if(annotation.strokeWidth)	shape.set('strokeWidth', annotation.strokeWidth);
+
+			if(annotation.label) {
+				shape.set('labelText', annotation.label.text);
+				shape.set('labelPosition', annotation.label.position);
+				shape.set('labelSize', annotation.label.size);
+				if(annotation.label.anchor)
+					shape.set('labelAnchor', annotation.label.anchor);
+			}
+
+			switch(annotation.type) {
+				case 'rect':
+				case 'rectangle':
+					shape.set('width', annotation.width);
+					shape.set('height', annotation.height);
+				break;
+			}
+
+			shape.setMouseOver(function() {
+				console.log('HOVER');
+			});
+
+			if(annotation._highlight) {
+				API.listenHighlight(annotation._highlight, function(onOff) {
+					if(onOff)
+						shape.highlight();
+					else
+						shape.unHighlight();
+				});
+			}
+			shape.redraw();
+		}
 	}
 });

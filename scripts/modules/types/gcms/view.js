@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'], function(Default, Graph, Traversing, gcms) {
+define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms', 'util/util'], function(Default, Graph, Traversing, gcms, Util) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -41,21 +41,40 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 					var jcamp = tojcamp(moduleValue);
 					if(jcamp.gcms) {
 						self.gcmsInstance.setGC(jcamp.gcms.gc);
-						self.gcmsInstance.setMS(jcamp.gcms.ms);		
+						self.gcmsInstance.setMS(jcamp.gcms.ms);
+
+						this.resetAnnotationsGC();
 					}
 				});
+			},
+
+
+			'annotationgc': function(value) {
+				value = DataTraversing.getValueIfNeeded(value);
+				if(!value)
+					return;
+				this.annotations = value;
+				this.resetAnnotationsGC();
 			},
 
 			'gcms': function(moduleValue) {
 				
 				this.gcmsInstance.setGC(moduleValue.gc);
 				this.gcmsInstance.setMS(moduleValue.ms);
+
+				this.resetAnnotationsGC();
 			}
 		},
 
 		getDom: function() {
 			return this.dom;
-		}
+		},
+
+
+		resetAnnotationsGC: function() {
+			Util.doAnnotations(this.annotations, this.gcmsInstance.getGC());
+		},
+
 	});
 
 	return view;

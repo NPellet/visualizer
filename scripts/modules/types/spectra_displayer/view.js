@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/datatraversing', 'util/api'], function(Default, Graph, JcampConverter, DataTraversing, API) {
+define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/datatraversing', 'util/api', 'util/util'], function(Default, Graph, JcampConverter, DataTraversing, API, Util) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -207,15 +207,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			},
 
 			'annotation': function(value) {
-				
 				value = DataTraversing.getValueIfNeeded(value);
-
 				if(!value)
 					return;
-				
 				this.annotations = value;
 				this.resetAnnotations();
-				
 			},
 
 			'jcamp': function(moduleValue, varname) {
@@ -364,58 +360,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		},
 
 		resetAnnotations: function() {
-			var value = this.annotations;
-			if(!value)
-				return;
-			var i = 0, l = value.length, annotation;
-			for(; i < l; i++) {
-				this._addAnnotation(value[i]);
-			}
-		},
-
-		_addAnnotation: function(annotation) {
-			
-			if(!this.graph || !this.graph.getSerie(0))
-				return;
-
-			if(!annotation.type)
-				return;
-			var shape = this.graph.makeShape(annotation.type);
-			shape.setSerie(this.graph.getSerie(0));
-
-			shape.set('position', annotation.pos);
-			if(annotation.pos2)
-				shape.set('position2', annotation.pos2);
-			
-			if(annotation.fillColor)	shape.set('fillColor', annotation.fillColor);
-			if(annotation.strokeColor)	shape.set('strokeColor', annotation.strokeColor);
-			if(annotation.strokeWidth)	shape.set('strokeWidth', annotation.strokeWidth);
-
-			if(annotation.label) {
-				shape.set('labelText', annotation.label.text);
-				shape.set('labelPosition', annotation.label.position);
-				shape.set('labelSize', annotation.label.size);
-				if(annotation.label.anchor)
-					shape.set('labelAnchor', annotation.label.anchor);
-			}
-
-			switch(annotation.type) {
-				case 'rect':
-				case 'rectangle':
-					shape.set('width', annotation.width);
-					shape.set('height', annotation.height);
-				break;
-			}
-
-			if(annotation._highlight) {
-				API.listenHighlight(annotation._highlight, function(onOff) {
-					if(onOff)
-						shape.highlight();
-					else
-						shape.unHighlight();
-				});
-			}
-			shape.redraw();
+			Util.doAnnotations(this.annotations, this.graph)
 		},
 
 		removeSerie: function(serieName) {
@@ -434,13 +379,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				this.colorId++;
 				value = Traversing.getValueIfNeeded(value);
 				for(var i in value) {
-					
 					this.onActionReceive.removeSerieByName.call(this, value[i].name || {});
 					var serie = this.graph.newSerie(value[i].name);
 					serie.autoAxis();
 					serie.setData(value[i].data);
 					serie.setLineColor(this.colors[this.colorId % this.colors.length]);
-
 					this.seriesActions.push([value, serie, value[i].name]);
 				}
 

@@ -1282,6 +1282,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		redrawShapes: function() {
+			//console.trace();
 			for(var i = 0, l = this.shapes.length; i < l; i++) {
 				this.shapes[i].redraw();
 			}
@@ -1840,7 +1841,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this._widthLabels = 20;
 			var drawn = this._draw(doNotRecalculateMinMax);
 			this._widthLabels += drawn;
-			this.graph.redrawShapes();
+	//		this.graph.redrawShapes();
 
 			return this.series.length > 0 ? 100 : drawn;
 		},
@@ -3632,15 +3633,39 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.properties = {};
 			this.saved = {};
 			this.createDom();
+			this.group = document.createElementNS(this.graph.ns, 'g');
+
+			this._makeLabel();
+
+			this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
+			this.rectEvent.setAttribute('pointer-events', 'fill');
+			this.rectEvent.setAttribute('fill', 'transparent');
+
+			this.group.appendChild(this._dom);
+			this.group.appendChild(this.label);
+			this.group.appendChild(this.rectEvent);
+		},
+
+		setBBox: function() {
+
+			this.group.removeChild(this.rectEvent);
+			var box = this.group.getBBox();
+			this.rectEvent.setAttribute('x', box.x);
+			this.rectEvent.setAttribute('y', box.y);
+			this.rectEvent.setAttribute('width', box.width);
+			this.rectEvent.setAttribute('height', box.height);
+
+			this.group.appendChild(this.rectEvent);
+		},
+
+		setMouseOver: function(callback) {
+			this.rectEvent.addEventListener('mouseover', callback);
 		},
 
 		kill: function() {
 			if(!this._inDom)
 				return;
-			this.graph.shapeZone.removeChild(this._dom);
-			if(this.label)
-				this.graph.shapeZone.removeChild(this.label);
-			this.label = false;
+			this.graph.shapeZone.removeChild(this.group);
 		},
 
 		applyAll: function() {
@@ -3656,7 +3681,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			
 			this.setStrokeColor();
 			this.setStrokeWidth();
-			this._makeLabel();
 			this.setLabelText();
 			this.setLabelPosition();
 			this.setLabelSize();
@@ -3670,11 +3694,10 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		done: function() {
 			this.applyAll();
-			
-			this.graph.shapeZone.appendChild(this._dom);
-			if(this.label)
-				this.graph.shapeZone.appendChild(this.label);
+			this.graph.shapeZone.appendChild(this.group);
 			this._inDom = true;
+			if(this.afterDone)
+				this.afterDone();
 		},
 
 		setSerie: function(serie) {			this.serie = serie;								},
@@ -3765,8 +3788,6 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		_makeLabel: function() {
-			if(this.label)
-				this.graph.shapeZone.removeChild(this.label);
 			this.label = document.createElementNS(this.graph.ns, 'text');
 		},
 
@@ -3867,8 +3888,6 @@ define(['jquery', 'util/util'], function($, Util) {
 	});
 
 
-
-
 	var GraphPeakInterval = function(graph) {
 		this.init(graph);
 	}
@@ -3883,9 +3902,15 @@ define(['jquery', 'util/util'], function($, Util) {
 		setLabelPosition: function() {
 			var pos1 = this._getPosition(this.get('position'));
 			var pos2 = this._getPosition(this.get('position2'), this.get('position'));
-
 			this._setLabelPosition(this._getPosition(this.get('labelPosition'), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
 			
+		},
+
+		afterDone: function() {
+			/*$(this.group).children().each(function() {
+				console.log(this.getAttribute('x'), this.getAttribute('x1'), this.getAttribute('width'))
+			})*/
+			this.setBBox();
 		}
 	});
 
