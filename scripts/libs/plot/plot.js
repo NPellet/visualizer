@@ -608,7 +608,8 @@ define(['jquery', 'util/util'], function($, Util) {
 					use1: use,
 					use2: use2,
 					xStart: x,
-					color: color
+					color: color,
+					id: this.ranges.x.length
 				};
 
 				this.ranges.x.push(this.ranges.current);
@@ -654,10 +655,9 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		removeRangeX: function(id) {
 			this.shapeZone.removeChild(this.ranges.x[id].group);
-			
 			if(this.options.onRangeXRemove)
 				this.options.onRangeXRemove(this.ranges.x[id]);
-
+			this.ranges.countX--;
 			this.ranges.x[id] = false;
 		},
 
@@ -701,6 +701,9 @@ define(['jquery', 'util/util'], function($, Util) {
 				x -= this.getPaddingLeft();
 				this.ranges.current.xEnd = x;
 				this.currentAction = false;
+
+				if(this.ranges.current.xEnd == this.ranges.current.xStart)
+					this.removeRangeX(this.ranges.current.id);
 
 				if(this.options.onRangeX)
 					this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xStart), this.getXAxis().getVal(x), this.ranges.current);

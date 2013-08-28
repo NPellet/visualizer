@@ -91,6 +91,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				},	
 
 				onRangeXRemove: function(range) {
+					if(!range.serie)
+						return;
 					range.serie.kill(true);
 					range.serie = false;
 				},
