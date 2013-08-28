@@ -1295,6 +1295,10 @@ define(['jquery', 'util/util'], function($, Util) {
 		redrawRanges: function() {
 			for(var i = 0, l = this.ranges.x.length; i < l; i++) {
 				var range = this.ranges.x[i];
+
+				if(!range)
+					continue;
+				
 				var minX = this.getXAxis().getPx(range.valStart);
 				var maxX = this.getXAxis().getPx(range.valEnd);
 				
@@ -1303,6 +1307,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 				range.xMax = maxX;
 				range.xEnd = maxX;
+
 				range.rect.setAttribute('x', Math.min(minX, maxX));
 				range.rect.setAttribute('width', Math.abs(maxX - minX));
 				range.use1.setAttribute('transform', 'translate(' + Math.round(minX - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
