@@ -71,6 +71,7 @@ define(function() {
 		},
 
 		getDistinctColors: function(numColors) {
+			
 			var colors=[], j = 0;
 			for(var i = 0; i < 360; i += 360 / numColors) {
 				j++;

@@ -32,7 +32,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		onVerticalTracking: false,
 		onHorizontalTracking: false,
 
-		rangeLimitX: 10,
+		rangeLimitX: 0,
 		rangeLimitY: 0,
 
 		onRangeX: false,
@@ -552,7 +552,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				rangeRect.setAttribute('x', x);
 				rangeRect.setAttribute('class', 'rangeRect');
 				rangeRect.setAttribute('cursor', 'move');
-				var color = Util.getNextColorRGB(this.ranges.x.length + this.ranges.y.length, 16);
+				var color = Util.getNextColorRGB(this.ranges.countX + this.ranges.countY, this.options.rangeLimitX + this.options.rangeLimitY);
 
 				rangeRect.setAttribute('fill', 'rgba(' + color + ', 0.3)');
 				rangeRect.setAttribute('stroke', 'rgba(' + color + ', 0.9)');

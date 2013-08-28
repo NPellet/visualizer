@@ -36,7 +36,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				defaultMouseAction: 'rangeX',
 				defaultWheelAction: 'zoomY',
 				lineToZero: false,
-				rangeLimitX: this.rangeLimit || 1,
+				rangeLimitX: parseInt(this.rangeLimit) || 1,
 
 				onRangeX: function(xStart, xEnd, range) {
 					var indexStart = self.gcSeries[0].searchClosestValue(xStart).xBeforeIndex;
