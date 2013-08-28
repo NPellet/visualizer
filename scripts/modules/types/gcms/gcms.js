@@ -8,6 +8,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 		this.firstMs = true;
 		this.firstRange = true;
 		this.msContinuous = false;
+		this.rangeLimit = false;
 
 	}
 
@@ -33,9 +34,9 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				title: '',
 				zoomMode: 'x',
 				defaultMouseAction: 'rangeX',
-				defaultWheelAction: 'none',
+				defaultWheelAction: 'zoomY',
 				lineToZero: false,
-				rangeLimitX: 20,
+				rangeLimitX: this.rangeLimit || 1,
 
 				onRangeX: function(xStart, xEnd, range) {
 					var indexStart = self.gcSeries[0].searchClosestValue(xStart).xBeforeIndex;
@@ -220,6 +221,10 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 		setMSContinuous: function(cont) {
 			this.msContinuous = cont;
+		},
+
+		setRangeLimit: function(nbRange) {
+			this.rangeLimit = nbRange;
 		},
 
 		resize: function(width, height) {

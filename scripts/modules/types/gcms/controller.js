@@ -62,6 +62,12 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 								name: 'continuous',
 								title: 'Continuous',
 								options: {'continuous': 'Continuous'}
+							},
+
+							{
+								type: 'Text',
+								name: 'nbzones',
+								title: 'Maximum number of zones'
 							}
 						]
 					}
@@ -74,7 +80,8 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 			return {
 				groups: {
 					gencfg: [{
-						continuous: [this.module.getConfiguration().continuous ? ['continuous'] : []]
+						continuous: [this.module.getConfiguration().continuous ? ['continuous'] : []],
+						nbzones: [this.module.getConfiguration().nbzones || 1]
 					}]
 				}
 			}
@@ -83,6 +90,7 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 		doSaveConfiguration: function(confSection) {	
 
 			this.module.getConfiguration().continuous = confSection[0].gencfg[0].continuous[0][0] == 'continuous';
+			this.module.getConfiguration().nbzones = confSection[0].gencfg[0].nbzones[0];
 		
 
 		}
