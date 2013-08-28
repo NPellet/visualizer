@@ -43,14 +43,14 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 						self.gcmsInstance.setGC(jcamp.gcms.gc);
 						self.gcmsInstance.setMS(jcamp.gcms.ms);
 
-						this.resetAnnotationsGC();
+						self.resetAnnotationsGC();
 					}
 				});
 			},
 
 
 			'annotationgc': function(value) {
-				value = DataTraversing.getValueIfNeeded(value);
+				value = Traversing.getValueIfNeeded(value);
 				if(!value)
 					return;
 				this.annotations = value;
@@ -72,6 +72,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 
 		resetAnnotationsGC: function() {
+			if(!this.gcmsInstance)
+				return;
+			console.log(this.annotations);
 			Util.doAnnotations(this.annotations, this.gcmsInstance.getGC());
 		},
 

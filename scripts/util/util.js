@@ -20,7 +20,7 @@ define(['util/api'], function(API) {
 				iframe.before($('<div />').css({
 					position: 'absolute',
 					width: width,
-					height: height,
+					heiGEBABEBBght: height,
 					top: pos.top,
 					left: pos.left,
 					background: 'white',
@@ -133,7 +133,6 @@ define(['util/api'], function(API) {
 				return;
 			var i = 0, l = value.length;
 			for(; i < l; i++) {
-				console.log(value[i]);
 				this._addAnnotation(value[i], graph);
 			}
         },

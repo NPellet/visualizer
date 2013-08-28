@@ -537,7 +537,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				self.ranges.current = group;
 				self.ranges.current.lastX = x - self.getPaddingLeft();
 
-			} else if(this.options.defaultMouseAction == 'rangeX' && e.shiftKey == false) {
+			} else if(this.options.defaultMouseAction == 'rangeX' && e.shiftKey == false || (this.options.defaultMouseAction !== 'rangeX' && e.shiftKey == true)) {
 
 				if(this.ranges.countX == this.options.rangeLimitX)
 					return;
@@ -705,8 +705,11 @@ define(['jquery', 'util/util'], function($, Util) {
 				if(this.ranges.current.xEnd == this.ranges.current.xStart)
 					this.removeRangeX(this.ranges.current.id);
 
+				this.ranges.current.valStart = this.getXAxis().getVal(this.ranges.current.xStart);
+				this.ranges.current.valEnd = this.getXAxis().getVal(x);
+
 				if(this.options.onRangeX)
-					this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xStart), this.getXAxis().getVal(x), this.ranges.current);
+					this.options.onRangeX(this.ranges.current.valStart, this.ranges.current.valEnd, this.ranges.current);
 
 				this.ranges.current = null;
 				
@@ -1133,6 +1136,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.shift = shift;
 			this.redrawShapes();
+			this.redrawRanges();
 		},
 
 		closeLine: function(mode, x1, x2, y1, y2) {	
@@ -1288,6 +1292,26 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 		},
 
+		redrawRanges: function() {
+			for(var i = 0, l = this.ranges.x.length; i < l; i++) {
+				var range = this.ranges.x[i];
+				var minX = this.getXAxis().getPx(range.valStart);
+				var maxX = this.getXAxis().getPx(range.valEnd);
+				
+				range.xMin = minX;
+				range.xStart = minX;
+
+				range.xMax = maxX;
+				range.xEnd = maxX;
+				range.rect.setAttribute('x', Math.min(minX, maxX));
+				range.rect.setAttribute('width', Math.abs(maxX - minX));
+				range.use1.setAttribute('transform', 'translate(' + Math.round(minX - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
+				range.use2.setAttribute('transform', 'translate(' + Math.round(maxX - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
+
+
+			}	
+		},
+
 		_makeClosingLines: function() {
 
 			this.closingLines = {};
@@ -1429,6 +1453,15 @@ define(['jquery', 'util/util'], function($, Util) {
 				var coords = self.graph.getXY(e);
 				self.addLabel(self.getVal(coords.x - self.graph.getPaddingLeft()));
 			});
+
+			this.axisRand = Math.random();
+			this.clip = document.createElementNS(this.graph.ns, 'clipPath');
+			this.clip.setAttribute('id', '_clip' + this.axisRand)
+			this.graph.defs.appendChild(this.clip);
+
+			this.clipRect = document.createElementNS(this.graph.ns, 'rect');
+			this.clip.appendChild(this.clipRect);
+			this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
 		},
 
 		setEvents: function() {
@@ -1842,6 +1875,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var drawn = this._draw(doNotRecalculateMinMax);
 			this._widthLabels += drawn;
 			this.graph.redrawShapes();
+			this.graph.redrawRanges();
 
 			return this.series.length > 0 ? 100 : drawn;
 		},
@@ -2268,6 +2302,13 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.rectEvent.setAttribute('height', this.totalDimension);
 			this.rectEvent.setAttribute('x', Math.min(this.getMinPx(), this.getMaxPx()));
 			this.rectEvent.setAttribute('width', Math.abs(this.getMinPx() - this.getMaxPx()));
+			//this.rectEvent.setAttribute('fill', 'rgba(0, 0, 0, 0.5)');
+//console.log(this.clipRect);
+			this.clipRect.setAttribute('y', !this.top ? 0 : -this.shift);
+			this.clipRect.setAttribute('height', this.totalDimension);
+			this.clipRect.setAttribute('x', Math.min(this.getMinPx(), this.getMaxPx()));
+			this.clipRect.setAttribute('width', Math.abs(this.getMinPx() - this.getMaxPx()));
+
 
 			for(var i = 0, l = this.series.length; i < l; i++)
 				this.series[i].draw();	
@@ -2302,6 +2343,8 @@ define(['jquery', 'util/util'], function($, Util) {
 			serie.setXAxis(this);
 			this.series.push(serie);
 			this.groupSeries.appendChild(serie.groupMain);
+			this.groupSeries.setAttribute('clip-path', 'url(#_clip' + this.axisRand + ')');
+
 			return serie;
 		},
 
@@ -2409,6 +2452,12 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.rectEvent.setAttribute('y', Math.min(this.getMinPx(), this.getMaxPx()));
 			this.rectEvent.setAttribute('height', Math.abs(this.getMinPx() - this.getMaxPx()));
 
+			this.clipRect.setAttribute('y', !this.top ? 0 : -this.shift);
+			this.clipRect.setAttribute('height', this.totalDimension);
+			this.clipRect.setAttribute('x', Math.min(this.getMinPx(), this.getMaxPx()));
+			this.clipRect.setAttribute('width', Math.abs(this.getMinPx() - this.getMaxPx()));
+
+
 			for(var i = 0, l = this.series.length; i < l; i++)
 				this.series[i].draw();	
 			
@@ -2462,6 +2511,8 @@ define(['jquery', 'util/util'], function($, Util) {
 			serie.setYAxis(this);
 			this.series.push(serie);
 			this.groupSeries.appendChild(serie.groupMain);
+			this.groupSeries.setAttribute('clip-path', 'url(#_clip' + this.axisRand + ')');
+
 			return serie;
 		},
 
@@ -3642,7 +3693,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.rectEvent.setAttribute('fill', 'transparent');
 
 			this.group.appendChild(this._dom);
-			this.group.appendChild(this.label);
 			this.group.appendChild(this.rectEvent);
 		},
 
@@ -3681,9 +3731,17 @@ define(['jquery', 'util/util'], function($, Util) {
 			
 			this.setStrokeColor();
 			this.setStrokeWidth();
-			this.setLabelText();
-			this.setLabelPosition();
-			this.setLabelSize();
+
+			if(this.get('labelPosition')) {
+				this.setLabelText();
+				this.setLabelPosition();
+				this.setLabelSize();
+				this.group.appendChild(this.label);
+				this.labelIn = true;
+			} else if(this.labelIn) {
+				this.group.removeChild(this.label);
+				this.labelIn = false;
+			}
 			if(this.get('labelAnchor'))
 				this._forceLabelAnchor();
 			this.redrawImpl();
@@ -3808,9 +3866,6 @@ define(['jquery', 'util/util'], function($, Util) {
 		}
 	}
 
-
-
-
 	var GraphRect = function(graph) {
 		this.init(graph);
 	}
@@ -3838,13 +3893,9 @@ define(['jquery', 'util/util'], function($, Util) {
 		}
 	});
 
-
-
 	var GraphLine = function(graph) {
 		this.init(graph);
 	}
-
-
 	$.extend(GraphLine.prototype, GraphShape.prototype, {
 		createDom: function() {
 			this._dom = document.createElementNS(this.graph.ns, 'line');

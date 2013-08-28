@@ -33,7 +33,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 				title: '',
 				zoomMode: 'x',
-				defaultMouseAction: 'rangeX',
+				defaultMouseAction: 'zoomX',
 				defaultWheelAction: 'zoomY',
 				lineToZero: false,
 				rangeLimitX: parseInt(this.rangeLimit) || 1,
@@ -134,7 +134,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				bottom: [
 					{
 						labelValue: 'Time',
-						unitModification: 'time',
+						//unitModification: 'time',
 						primaryGrid: false,
 						nbTicksPrimary: 10,
 						secondaryGrid: false,
@@ -248,7 +248,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 		getGC: function() {
 			return this.gc;
 		},
-		
+
 		setGC: function(gc) {
 			var serie;
 			if(!this.gc)
