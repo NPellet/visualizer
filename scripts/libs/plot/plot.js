@@ -1841,7 +1841,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this._widthLabels = 20;
 			var drawn = this._draw(doNotRecalculateMinMax);
 			this._widthLabels += drawn;
-	//		this.graph.redrawShapes();
+			this.graph.redrawShapes();
 
 			return this.series.length > 0 ? 100 : drawn;
 		},
