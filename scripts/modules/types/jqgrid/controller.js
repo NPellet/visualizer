@@ -213,9 +213,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 				Traversing.getJPathsFromElement(data[0], jpaths);
 			else if(Traversing.getType(data) == 'arrayXY')
 				Traversing.getJPathsFromElement(data, jpaths);
-
 			confSection.getGroup('cols').getField('coljpath').implementation.setOptions(jpaths);
-			
 		},
 
 		"export": function() {

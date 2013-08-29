@@ -2457,10 +2457,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.rectEvent.setAttribute('y', Math.min(this.getMinPx(), this.getMaxPx()));
 			this.rectEvent.setAttribute('height', Math.abs(this.getMinPx() - this.getMaxPx()));
 
-			this.clipRect.setAttribute('y', !this.top ? 0 : -this.shift);
-			this.clipRect.setAttribute('height', this.totalDimension);
-			this.clipRect.setAttribute('x', Math.min(this.getMinPx(), this.getMaxPx()));
-			this.clipRect.setAttribute('width', Math.abs(this.getMinPx() - this.getMaxPx()));
+
+			this.clipRect.setAttribute('x', - this.shift);
+			this.clipRect.setAttribute('width', this.totalDimension);
+			this.clipRect.setAttribute('y', Math.min(this.getMinPx(), this.getMaxPx()));
+			this.clipRect.setAttribute('height', Math.abs(this.getMinPx() - this.getMaxPx()));
 
 
 			for(var i = 0, l = this.series.length; i < l; i++)
