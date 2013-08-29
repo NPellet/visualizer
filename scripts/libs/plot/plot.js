@@ -1867,9 +1867,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(this.options.lineAt0 && this.getActualMin() < 0 && this.getActualMax() > 0)
 				this._draw0Line(this.getPx(0));
 
-
 			return widthHeight + (label ? 20 : 0);
-
 		},
 
 		setTickLabelRatio: function(tickRatio) {
@@ -1877,7 +1875,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		draw: function(doNotRecalculateMinMax) {
-			this._widthLabels = 20;
+			this._widthLabels = 0;
 			var drawn = this._draw(doNotRecalculateMinMax);
 			this._widthLabels += drawn;
 			this.graph.redrawShapes();
@@ -2227,7 +2225,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			var size = (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize * 2;	
 			if(this.options.allowedPxSerie && this.series.length > 0)
 				size += this.options.allowedPxSerie;
-
 			return size;
 		},
 
@@ -2427,9 +2424,8 @@ define(['jquery', 'util/util'], function($, Util) {
 				tickLabel.style.dominantBaseline = 'central';
 				this.graph.applyStyleText(tickLabel);
 				this.setTickContent(tickLabel, value, options);
-
 				this.groupTickLabels.appendChild(tickLabel);
-				labelWidth = tickLabel.getComputedTextLength();
+				labelWidth = tickLabel.getComputedTextLength() + (this.left ? 10 : 0);
 			}
 
 			this.ticks.push(tick);
@@ -2441,7 +2437,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			// Place label correctly
 			//this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-			this.label.setAttribute('transform', 'translate(' + (-this.widthHeightTick - 10 - 8) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + Math.min(this.getMinPx(), this.getMaxPx())) +') rotate(-90)');
+			this.label.setAttribute('transform', 'translate(' + (-this.widthHeightTick - 8) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + Math.min(this.getMinPx(), this.getMaxPx())) +') rotate(-90)');
 
 			this.line.setAttribute('y1', this.getMinPx());
 			this.line.setAttribute('y2', this.getMaxPx());
@@ -3483,7 +3479,7 @@ define(['jquery', 'util/util'], function($, Util) {
 	$.extend(GraphSerieAxisX.prototype, GraphSerie.prototype, GraphSerieAxis.prototype, {	
 		
 		getY: function(value) {
-			var y = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (100 - this.axis._widthLabels) - this.axis._widthLabels;
+			var y = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (this.axis.totalDimension - this.axis._widthLabels) - this.axis._widthLabels;
 			return y;
 		},
 
@@ -3547,7 +3543,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		
 		getX: function(value) {
 			
-			var x = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (100 - this.axis._widthLabels) - this.axis._widthLabels;
+			var x = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (this.axis.totalDimension - this.axis._widthLabels) - this.axis._widthLabels - 5;
 			return x;
 		},
 
@@ -3716,7 +3712,6 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		setMouseOver: function(callback) {
-			console.log(this.rectEvent);
 			this.rectEvent.addEventListener('mouseover', callback);
 		},
 

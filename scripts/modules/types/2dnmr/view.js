@@ -25,7 +25,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 			NMR.setOption('defaultMouseAction', 'zoomXY');
 			NMR.setOption('shiftMouseAction', 'drag');
 
-			NMR.getTopAxis(0, { flipped: true }).setLabel('ppm');
+			NMR.getTopAxis(0, { flipped: true }).setLabel('Blahppm');
 			NMR.getLeftAxis(0, { flipped: false }).setLabel('ppm');
 		},
 
