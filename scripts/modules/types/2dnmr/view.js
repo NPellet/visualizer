@@ -22,7 +22,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 			NMR.resetSeries();
 			NMR.setOption('zoomMode', 'xy');
 			NMR.setOption('defaultWheelAction', 'toSeries');
-			NMR.setOption('defaultMouseAction', 'drag');
+			NMR.setOption('defaultMouseAction', 'zoomXY');
+			NMR.setOption('shiftMouseAction', 'drag');
 
 			NMR.getTopAxis(0, { flipped: true }).setLabel('ppm');
 			NMR.getLeftAxis(0, { flipped: false }).setLabel('ppm');

@@ -20,6 +20,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		title: '',
 		zoomMode: false,
 		defaultMouseAction: 'drag', // rangeX, rangeY
+		shiftMouseAction: 'zoomXY', // rangeX, rangeY
 		defaultWheelAction: 'zoomY',
 
 		lineToZero: false,
@@ -517,7 +518,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var $target = $(e.target), self = this;
 
 
-			if((this.options.defaultMouseAction == 'drag' && e.shiftKey == false)) {
+			if((this.options.defaultMouseAction == 'drag' && e.shiftKey == false) || (this.options.shiftMouseAction == 'drag' && e.shiftKey == true)) {
 				this.currentAction = 'dragging';
 				this._draggingX = x;
 				this._draggingY = y;
@@ -537,7 +538,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				self.ranges.current = group;
 				self.ranges.current.lastX = x - self.getPaddingLeft();
 
-			} else if(this.options.defaultMouseAction == 'rangeX' && e.shiftKey == false || (this.options.defaultMouseAction !== 'rangeX' && e.shiftKey == true)) {
+			} else if((this.options.defaultMouseAction == 'rangeX' && e.shiftKey == false) || (this.options.shiftMouseAction == 'rangeX' && e.shiftKey == true)) {
 
 				if(this.ranges.countX == this.options.rangeLimitX)
 					return;
