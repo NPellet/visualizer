@@ -252,11 +252,15 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 			}
 		},
 
-		toScreen: function(element, box, opts) {
-			var deferred = $.Deferred();
-			this.fetchElementIfNeeded(element).done(function(data) { 
-				_valueToScreen(deferred, data, box, opts); 
-			});
+		toScreen: function(element, box, opts, jpath) {
+			var deferred = $.Deferred(), self = this;;
+
+			this.getValueFromJPath(element, jpath).done(function(element) {
+				self.fetchElementIfNeeded(element).done(function(element) { 
+					_valueToScreen(deferred, element, box, opts); 
+				});	
+			})
+			
 			return deferred.promise();
 		}
 

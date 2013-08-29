@@ -1298,7 +1298,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 				if(!range)
 					continue;
-				
+
 				var minX = this.getXAxis().getPx(range.valStart);
 				var maxX = this.getXAxis().getPx(range.valEnd);
 				
@@ -3706,14 +3706,15 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.group.removeChild(this.rectEvent);
 			var box = this.group.getBBox();
 			this.rectEvent.setAttribute('x', box.x);
-			this.rectEvent.setAttribute('y', box.y);
+			this.rectEvent.setAttribute('y', box.y - 10);
 			this.rectEvent.setAttribute('width', box.width);
-			this.rectEvent.setAttribute('height', box.height);
+			this.rectEvent.setAttribute('height', box.height + 20);
 
 			this.group.appendChild(this.rectEvent);
 		},
 
 		setMouseOver: function(callback) {
+			console.log(this.rectEvent);
 			this.rectEvent.addEventListener('mouseover', callback);
 		},
 

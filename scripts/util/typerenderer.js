@@ -1,5 +1,5 @@
 
-define(['jquery', 'util/domdeferred', 'util/api','util/util','util/datatraversing'], function($, DOMDeferred, API, Util, Traversing) {
+define(['jquery', 'util/domdeferred', 'util/api','util/util'], function($, DOMDeferred, API, Util) {
 
 	var functions = {};
 
@@ -294,8 +294,9 @@ define(['jquery', 'util/domdeferred', 'util/api','util/util','util/datatraversin
 	}
 
 	functions.mf = {};
-	functions.mf.toscreen = function(dev, value) {
-		return def.resolve(Traversing.getValueIfNeeded(value).replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
+	functions.mf.toscreen = function(def, value) {
+		
+		return def.resolve(value.value.replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
 	}
 
 	functions.pdb = {};

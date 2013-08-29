@@ -171,9 +171,9 @@ define(['util/api'], function(API) {
 				break;
 			}
 
-			shape.setMouseOver(function() {
-				console.log('HOVER');
-			});
+			if(annotation.callback) {
+				shape.setMouseOver(annotation.callback);
+			}
 
 			if(annotation._highlight) {
 				API.listenHighlight(annotation._highlight, function(onOff) {

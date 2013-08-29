@@ -74,7 +74,13 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 		resetAnnotationsGC: function() {
 			if(!this.gcmsInstance)
 				return;
-			console.log(this.annotations);
+
+			for(var i = 0, l = this.annotations.length; i < l; i++) {
+				if(this.annotations[i].type == 'peakInterval')
+					this.annotations[i].callback = function() {
+						console.log('dsf');
+					}
+			}
 			Util.doAnnotations(this.annotations, this.gcmsInstance.getGC());
 		},
 

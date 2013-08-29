@@ -39,6 +39,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	inDom: function() {},
 
 	 	onResize: function(w, h) {
+
+	 		if(!this.jqGrid)
+	 			return;
 	 		this.jqGrid('setGridWidth', w-30);
 	 		this.jqGrid('setGridHeight', h - 40);
 	 	},
@@ -94,6 +97,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				for(var i = 0; i < elements.length; i++) {
 					this.jqGrid('addRowData', i, elements[i]);
 				}
+
+				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 			}
 		},
 
@@ -108,8 +113,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				for(var j in jpaths) {
 					jpath = jpaths[j]; jpath = jpath.jpath || jpath;
 					element[j] = 'Loading';
-					element["_" + j] = Traversing.toScreen(source[i][j], box, {}).done(function(value) {
+
+					element["_" + j] = Traversing.toScreen(source[i], box, {}, jpath).done(function(value) {
+						console.log(value);
 						element[j] = value;
+						console.log(value);
 						self.jqGrid('setCell', i, j, value);
 						//self.jqGrid('getLocalRow', i)[j] = value;
 					});
