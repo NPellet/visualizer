@@ -11,7 +11,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
     
 	 		
 	 		this.dom = $('<div class="ci-displaylist-list"></div>');
-	 		this.domTable = $("<table />");
+	 		this.domTable = $("<table />").attr('id', this.unique);
 
 	 		this.dom.on('mouseover', '.jqgrow', function() {
 				self.module.controller.lineHover(self.elements[$(this).attr('id')]);
@@ -54,9 +54,15 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	update: {
 
 	 		list: function(moduleValue) {
-	 			
-
+	 		
 	 			var jpaths = this.module.getConfiguration().colsjPaths, self = this;
+	 			this.module.data = moduleValue;
+
+	 			if(jpaths[''])
+	 				return;
+
+	 			if(jpaths.length == 0)
+	 				return;
 				var colNames = [];
 				var colModel = [];
 				for(var j in jpaths) {
@@ -80,14 +86,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 						self.module.controller.lineClick(self.elements[rowid]);
 				    },
-
-				    
-
 				});
 
 
 				this.jqGrid = $.proxy($(this.domTable).jqGrid, $(this.domTable));
-				this.module.data = moduleValue;
+				
 				var view = this;
 				var list = Traversing.getValueIfNeeded(moduleValue);
 				this.elements = list;
@@ -106,20 +109,25 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			var jpath;
 			var box = this.module;
 			var self = this;
-
+			self.done = 0;
 			for(var i = 0, length = source.length; i < length; i++) {
 				var element = {};
 
 				for(var j in jpaths) {
 					jpath = jpaths[j]; jpath = jpath.jpath || jpath;
 					element[j] = 'Loading';
-					(function(k) {
-						element["_" + j] = Renderer.toScreen(source[i], box, {}, jpath).done(function(value) {
-							element[j] = value;
-							self.jqGrid('setCell', k, j, value);
+					(function(k, l) {
+						self.done++;
+						element["_" + l] = Renderer.toScreen(source[k], box, {}, jpath).done(function(value) {
+							element[l] = value;
+							self.done--;
+							self.jqGrid('setCell', k, l, value);
 							//self.jqGrid('getLocalRow', i)[j] = value;
+
+							if(self.done == 0)
+								self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
 						});
-					}) (i);
+					}) (i, j);
 				}
 
 				arrayToPush.push(element)

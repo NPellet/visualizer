@@ -3,7 +3,6 @@ define(['util/datatraversing'], function(Traversing) {
 	var allScripts = [];
 	function setVar(name, element, jpath) {
 		var self = this;
-		
 		if(!jpath) {
 			this.getRepositoryData().set(name, element);
 			return;
@@ -42,6 +41,13 @@ define(['util/datatraversing'], function(Traversing) {
 
 		setVar: setVar,
 		setVariable: setVar,
+
+		getVar: function(name) {
+			var data = this.repositoryData.get(name);
+			if(data && data[1])
+				return data[1];
+			return;
+		},
 
 		listenHighlight: function() {
 			this.repositoryHighlights.listen.apply(this.repositoryHighlights, arguments);

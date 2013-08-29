@@ -495,6 +495,24 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 					});
 
 
+
+					form.getSection('receive').getGroup('receivedvars').getField('rel').onChange(function(index) {
+						var value = this.getValue(index),
+						name = this.group.getField('name');
+						if(module.controller.onVarReceiveChange) 
+							module.controller.onVarReceiveChange(name.values[index], value, form.getSection('moduleconfiguration'));
+					});
+
+
+
+					form.getSection('receive').getGroup('receivedvars').getField('name').onChange(function(index) {
+						var value = this.getValue(index),
+							rel = this.group.getField('rel');
+						if(module.controller.onVarReceiveChange) 
+							module.controller.onVarReceiveChange(value, rel.values[index], form.getSection('moduleconfiguration'));
+					});
+
+
 					form.getSection('actionsout').getGroup('actions').getField('rel').onChange(function(index) {
 						var value = this.getValue(index), 
 						jpath = this.group.getField('jpath');

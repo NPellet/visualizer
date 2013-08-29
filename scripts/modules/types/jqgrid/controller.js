@@ -206,6 +206,18 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			this.module.getConfiguration().displaySearch = !!confSection[0].gencfg[0].displaySearch[0][0];
 		},
 
+		onVarReceiveChange: function(name, rel, confSection) {
+			var data = API.getVar(name);
+			var jpaths = [];
+			if(Traversing.getType(data) == 'array') 
+				Traversing.getJPathsFromElement(data[0], jpaths);
+			else if(Traversing.getType(data) == 'arrayXY')
+				Traversing.getJPathsFromElement(data, jpaths);
+
+			confSection.getGroup('cols').getField('coljpath').implementation.setOptions(jpaths);
+			
+		},
+
 		"export": function() {
 			return this.module.view.table.exportToTabDelimited();
 		}

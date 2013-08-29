@@ -355,6 +355,9 @@ console.log(API, Util, Traversing);
 		var type = Traversing.getType(data),
 			highlights = Traversing.getHighlights(data);
 		args = $.extend(args, Traversing.getOptions(data));
+		if(!functions[type])
+			return deferred.resolve('');
+
 		functions[type].toscreen(deferred, data, args, highlights, box);
 	}
 
