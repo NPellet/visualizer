@@ -226,7 +226,7 @@ define(['jquery', 'forms/grouplist', 'forms/grouptable', 'forms/title'], functio
 			for(var i = 0, l = this.fieldGroups.length; i < l; i++) {
 				if(this.fieldGroups[i].getName() == groupName)
 					return this.fieldGroups[i];
-				console.log(this.fieldGroups[i].getName());
+				
 			}
 		},
 

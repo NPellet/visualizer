@@ -516,6 +516,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 					form.getSection('actionsout').getGroup('actions').getField('rel').onChange(function(index) {
 						var value = this.getValue(index), 
 						jpath = this.group.getField('jpath');
+						
 						if(!jpath)
 							return;							
 						jpath.implementation.setOptions(sendjpaths[value], index);

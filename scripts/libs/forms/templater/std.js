@@ -21,7 +21,6 @@ define(['jquery'], function($) {
 
 		setLabels: function(bool) {
 			this.labels = bool;
-			console.log('Through');
 		},
 
 		buildSectionHeader: function(section, lvl) {
