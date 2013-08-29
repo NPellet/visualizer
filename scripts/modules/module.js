@@ -244,7 +244,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 			var module = this;
 			require(['forms/formfactory', 'jqueryui'], function(FormFactory, jqueryui) {
 
-				var div = $('<div></div>').dialog({ modal: true, width: '80%', title: "Edit module preferences"});
+				var div = $('<div></div>').dialog({ modal: true, position: ['center', 20], width: '80%', title: "Edit module preferences"});
 				div.parent().css('z-index', 1000);
 
 				var autoComplete = [];
