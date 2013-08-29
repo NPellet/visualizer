@@ -239,6 +239,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 		resize: function(width, height) {
 			this.gc.resize(width - 10, height / 2 - 10);
 			this.ms.resize(width - 10, height / 2 - 10);
+			
 
 			this.gc.redraw();
 			this.gc.drawSeries();

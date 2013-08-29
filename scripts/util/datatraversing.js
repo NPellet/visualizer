@@ -1,5 +1,5 @@
 
-define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structures, TypeRenderer) {
+define(['jquery', 'data/structures'], function($, Structures) {
 
 	var asyncId = 0;
 
@@ -45,16 +45,6 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 		}
 	}
 
-	function _valueToScreen(deferred, data, box, args) {
-		var type = getType(data),
-			highlights = getHighlights(data);
-
-		args = $.extend(args, getOptions(data));
-		//if(box.view.typeToScreen && box.view.typeToScreen[type])
-			//return box.view.typeToScreen[type].call(box.view, deferred, data, args, highlights, box);
-			
-		TypeRenderer[type].toscreen(deferred, data, args, highlights, box);
-	}
 
 	function getOptions(value) {
 		return value._options || {};
@@ -252,18 +242,8 @@ define(['jquery', 'data/structures', 'util/typerenderer'], function($, Structure
 			}
 		},
 
-		toScreen: function(element, box, opts, jpath) {
-			var deferred = $.Deferred(), self = this;;
-
-			this.getValueFromJPath(element, jpath).done(function(element) {
-				self.fetchElementIfNeeded(element).done(function(element) { 
-					_valueToScreen(deferred, element, box, opts); 
-				});	
-			})
-			
-			return deferred.promise();
-		}
-
+		getHighlights: getHighlights,
+		getOptions: getOptions
 	}
 });
 

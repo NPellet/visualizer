@@ -1,6 +1,6 @@
 
-define(['jquery', 'util/domdeferred', 'util/api','util/util'], function($, DOMDeferred, API, Util) {
-
+define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, API, Util, Traversing) {
+console.log(API, Util, Traversing);
 	var functions = {};
 
 
@@ -283,14 +283,51 @@ define(['jquery', 'util/domdeferred', 'util/api','util/util'], function($, DOMDe
 	}
 
 	functions.jcamp.toscreen =function(def, value, args, highlights, box) {
-		if(args.dom)
-			return def.resolve(CI.Type.jcamp.doFromDom(args.dom, value, args, highlights, box));
-		var id = Util.getNextUniqueId();
-		CI.Util.DOMDeferred.progress(function(dom) { 
-			CI.Type.jcamp.doFromDom($("#" + id, dom), value, args, highlights, box); 
+
+		require(['libs/plot/plot', 'util/jcampconverter'], function(Graph, Converter) {
+
+			console.log(value);
+			var dom = $("<div />").css({width: 200, height: 200});
+			graph = new Graph(dom.get(0), {
+				closeRight: false, 
+				closeTop: false, 
+				zoomMode: ''
+			},  {
+				bottom: [
+					{
+						unitModification: false,
+						primaryGrid: false,
+						nbTicksPrimary: 5,
+						nbTicksSecondary: 2,
+						secondaryGrid: false,
+						axisDataSpacing: { min: 0, max: 0 },
+					}
+				],
+
+				left: [
+					{
+						ticklabelratio: 1,
+						primaryGrid: true,
+						nbTicksSecondary: 4,
+						secondaryGrid: false,
+						//scientificTicks: true,
+						nbTicksPrimary: 2,
+						forcedMin: 0,
+						axisDataSpacing: { min: 0, max: 0 },
+					}
+				]}
+			);
+			graph.resize(200, 200);
+			value = Converter(value.value);
+			var serie = graph.newSerie('serie', {lineToZero: true});
+			serie.autoAxis();
+			serie.setData(value.spectra[0].data[0]);
+			def.resolve(graph._dom);
+			graph.redraw();
+			graph.drawSeries();
 		});
 
-		def.resolve('<canvas id="' + id + '"></canvas>');
+		
 	}
 
 	functions.mf = {};
@@ -311,6 +348,26 @@ define(['jquery', 'util/domdeferred', 'util/api','util/util'], function($, DOMDe
 			def.resolve('<span style="color: green;">&#10004;</span>');
 		else
 			def.resolve('<span style="color: red;">&#10008;</span>');
+	}
+
+
+	function _valueToScreen(deferred, data, box, args) {
+		var type = Traversing.getType(data),
+			highlights = Traversing.getHighlights(data);
+		args = $.extend(args, Traversing.getOptions(data));
+		functions[type].toscreen(deferred, data, args, highlights, box);
+	}
+
+	functions.toScreen = function(element, box, opts, jpath) {
+		var deferred = $.Deferred(), self = this;;
+
+		Traversing.getValueFromJPath(element, jpath).done(function(element) {
+			Traversing.fetchElementIfNeeded(element).done(function(element) { 
+				_valueToScreen(deferred, element, box, opts); 
+			});	
+		})
+		
+		return deferred.promise();
 	}
 
 	return functions;

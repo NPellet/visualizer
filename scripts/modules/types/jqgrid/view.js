@@ -1,4 +1,4 @@
-define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdeferred', 'util/datatraversing', 'libs/jqgrid/js/jqgrid'], function(require, Default, Util, API, DomDeferred, Traversing, JQGrid) {
+define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdeferred', 'util/datatraversing', 'util/typerenderer', 'libs/jqgrid/js/jqgrid'], function(require, Default, Util, API, DomDeferred, Traversing, Renderer, JQGrid) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -113,14 +113,13 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				for(var j in jpaths) {
 					jpath = jpaths[j]; jpath = jpath.jpath || jpath;
 					element[j] = 'Loading';
-
-					element["_" + j] = Traversing.toScreen(source[i], box, {}, jpath).done(function(value) {
-						console.log(value);
-						element[j] = value;
-						console.log(value);
-						self.jqGrid('setCell', i, j, value);
-						//self.jqGrid('getLocalRow', i)[j] = value;
-					});
+					(function(k) {
+						element["_" + j] = Renderer.toScreen(source[i], box, {}, jpath).done(function(value) {
+							element[j] = value;
+							self.jqGrid('setCell', k, j, value);
+							//self.jqGrid('getLocalRow', i)[j] = value;
+						});
+					}) (i);
 				}
 
 				arrayToPush.push(element)
