@@ -71,7 +71,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				graph.getLeftAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('y') > -1 : false);
 				graph.getLeftAxis().setLabel(cfgM.yLabel || '');
 
-				graph.getXAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('x') > -1 : false);
+				graph.getXAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('x') > -1 : true);
 				graph.getXAxis().setLabel(cfgM.xLabel || '');
 
 				graph.getXAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('vmain') > -1 : false);
@@ -361,7 +361,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		},
 
 		resetAnnotations: function() {
-			
+
 			Util.doAnnotations(this.annotations, this.graph)
 		},
 

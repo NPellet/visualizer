@@ -269,7 +269,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			//			mode: [mode],
 						graphurl: [this.module.getConfiguration().graphurl],
 						flip: [flipArray],
-						displayAxis: [this.module.getConfiguration().displayAxis],
+						displayAxis: [this.module.getConfiguration().displayAxis || ['x']],
 						grids: [this.module.getConfiguration().grids || []],
 						xLabel: [this.module.getConfiguration().xLabel],
 						yLabel: [this.module.getConfiguration().yLabel],
