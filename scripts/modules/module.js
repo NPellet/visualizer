@@ -516,7 +516,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 					form.getSection('actionsout').getGroup('actions').getField('rel').onChange(function(index) {
 						var value = this.getValue(index), 
 						jpath = this.group.getField('jpath');
-						
+
 						if(!jpath)
 							return;							
 						jpath.implementation.setOptions(sendjpaths[value], index);
@@ -667,6 +667,10 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 		
 		setSendVars: function(vars) {
 			this.definition.dataSend = vars;
+			for(var i = 0, l = vars.length; i < l; i++) {
+				if(vars[i].name)
+					API.setVar(vars[i].name, API.getVar(vars[i].name));
+			}
 		},
 		
 		setActionsIn: function(vars) {

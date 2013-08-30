@@ -35,6 +35,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				zoomMode: 'x',
 				defaultMouseAction: 'zoomX',
 				defaultWheelAction: 'zoomY',
+				shiftMouseAction: 'rangeX',
 				lineToZero: false,
 				rangeLimitX: parseInt(this.rangeLimit) || 1,
 

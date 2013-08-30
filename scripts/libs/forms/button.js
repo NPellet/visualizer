@@ -4,7 +4,9 @@ define(['jquery', 'forms/title'], function($, title) {
 	var stack = {};
 
 	$(document).on('click', '.bi-form-button', function(event) {
+
 		var btn = stack[$(this).data('id')];
+
 		if(btn)
 			btn.doClick(event, $(this));
 	});
