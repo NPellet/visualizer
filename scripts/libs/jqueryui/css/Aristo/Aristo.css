@@ -531,7 +531,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  *
  * http://docs.jquery.com/UI/Dialog#theming
  */
-.ui-dialog { position: absolute; padding: 0; width: 300px; overflow: hidden; }
+.ui-dialog { position: absolute; padding: 0; width: 300px;/* overflow: hidden; */}
 .ui-dialog {
 	-webkit-box-shadow: 0 2px 12px rgba(0,0,0,0.6);
 	-moz-box-shadow: 0 2px 12px rgba(0,0,0,0.6);
