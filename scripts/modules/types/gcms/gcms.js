@@ -281,8 +281,9 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			if(this.extGC)
 				this.extGC.kill();
 
-			this.extGC = this.gc.newSerie('external');
-			this.extGC.autoAxis();
+			this.extGC = this.gc.newSerie('external', {lineWidth: 2, lineColor: 'red'});
+			this.extGC.setXAxis(this.gc.getXAxis());
+			this.extGC.setYAxis(this.gc.getRightAxis(0, {primaryGrid: false, secondaryGrid: false, axisDataSpacing: { min: 0, max: 0}, display: false }));
 			this.extGC.setData(gc);
 
 			this.gc.redraw();

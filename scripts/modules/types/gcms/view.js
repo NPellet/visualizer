@@ -69,7 +69,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				require(['util/jcampconverter'], function(tojcamp) {
 					var jcamp = tojcamp(Traversing.getValueIfNeeded(moduleValue));
 					if(jcamp.spectra)
-						self.gcmsInstance.setExternalGC(jcamp.spectra[0].data);
+						self.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
 				});
 			},
 
