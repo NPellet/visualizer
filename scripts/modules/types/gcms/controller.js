@@ -31,6 +31,21 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 				label: 'GC-MS data via JCamp'
 			},
 
+			gc: {
+				type: ["jcamp"],
+				label: 'GC'	
+			},
+			
+			ms: {
+				type: ["jcamp"],
+				label: 'MS'	
+			},
+
+			mscont: {
+				type: ["jcamp"],
+				label: 'Continuous MS'	
+			},
+
 			annotationgc: {
 				type: ["array"],
 				label: 'Annotation for GC'

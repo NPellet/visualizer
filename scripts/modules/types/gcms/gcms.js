@@ -273,8 +273,34 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 		},
 
 		setMS: function(ms) {
-			this.msData = ms;
-			
+			this.msData = ms;	
+		},
+
+
+		setExternalGC: function(gc) {
+			if(this.extGC)
+				this.extGC.kill();
+
+			this.extGC = this.gc.newSerie('external');
+			this.extGC.autoAxis();
+			this.extGC.setData(gc);
+
+			this.gc.redraw();
+			this.gc.drawSeries(true);
+		},
+
+
+		setExternalMS: function(ms, cont) {
+			if(this.extMS)
+				this.extMS.kill();
+
+			this.extMS = this.ms.newSerie('external', { lineToZero: !cont, lineWidth: 2, lineColor: 'red' });
+			this.extMS.setXAxis(this.ms.getXAxis());
+			this.extMS.setYAxis(this.ms.getRightAxis(1, {primaryGrid: false, secondaryGrid: false, axisDataSpacing: { min: 0, max: 0}, display: false }));
+			this.extMS.setData(ms);
+
+			this.ms.redraw();
+			this.ms.drawSeries(true);
 		}
 	}
 

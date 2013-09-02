@@ -2517,9 +2517,10 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.setTickContent(tickLabel, value, options);
 				this.groupTickLabels.appendChild(tickLabel);
 				
-				if(tickLabel.length > this.longestTick[1]) {
+				if((tickLabel + "").length > this.longestTick[1]) {
 					this.longestTick[0] = tickLabel;
-					this.longestTick[1] = tickLabel.length;
+					this.longestTick[1] = (tickLabel + "").length;
+
 				}
 			}
 			this.ticks.push(tick);
@@ -2677,7 +2678,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.maxY = Number.MIN_VALUE;
 
 			this.lines = [];
-			this.aulines = [];	
+			
 
 			this.groupMain.appendChild(this.groupLines);
 			this.groupMain.appendChild(this.groupLabels);
@@ -2848,8 +2849,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			for(var i = 0, l = this.lines.length; i < l; i++) {
 				this.groupLines.removeChild(this.lines[i]);
-				if(this.options.areaUnderLine)
-					this.graph.defs.removeChild(this.aulines[i]);
+				
 			}
 
 			while(this.groupMarkers.firstChild)
@@ -2958,10 +2958,6 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.lines.splice(i, 1);
 
 
-				if(this.options.areaUnderLine) {
-					this.graph.defs.removeChild(this.aulines[i])
-					this.aulines.splace(i, 1);
-				}
 			}
 
 			this.domMarker.setAttribute('fill', this.options.markers.fillColor || 'transparent');
@@ -3026,30 +3022,17 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			if(this.lines[i]) {
 				var line = this.lines[i];
-				if(this.options.areaUnderLine)
-					var auline = this.aulines[i];
 			} else {
-
-							
 				var line = document.createElementNS(this.graph.ns, 'path');
 				line.setAttribute('stroke', this.getLineColor());
-				
+				line.setAttribute('stroke-width', this.getLineWidth());
 				if(this.getLineDashArray())
 					line.setAttribute('stroke-dasharray', this.getLineDashArray());
 				line.setAttribute('fill', 'none');
-
-				if(this.options.areaUnderLine) {
-					var auline = document.createElementNS(this.graph.ns, 'path');
-					auline.setAttribute('id', "auline_" + this.id);
-					auline.setAttribute('stroke', 'none');
-					auline.setAttribute('fill', 'black');
-				}
-
 			}
 
 			if(nbPoints == 0) {
 				line.setAttribute('d', 'M 0 0');
-				auline.setAttribute('d', 'M 0 0');
 			} else {
 				line.setAttribute('d', points);
 
@@ -3065,10 +3048,6 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.groupLines.appendChild(line);
 				this.lines[i] = line;
 
-				if(this.options.areaUnderLine) {
-					this.graph.defs.appendChild(auline);
-					this.aulines[i] = auline;
-				}
 			}
 			
 			return line;
@@ -3361,6 +3340,16 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		/*  */
 
+
+
+
+		setLineWidth: function(width) {
+			this.options.lineWidth = width;
+		},
+
+		getLineWidth: function() {
+			return this.options.lineWidth;
+		},
 
 
 		/* LINE COLOR */

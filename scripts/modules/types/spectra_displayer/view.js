@@ -362,7 +362,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 		resetAnnotations: function() {
 
-			Util.doAnnotations(this.annotations, this.graph)
+		//	Util.doAnnotations(this.annotations, this.graph)
 		},
 
 		removeSerie: function(serieName) {
