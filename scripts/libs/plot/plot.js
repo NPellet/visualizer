@@ -4207,6 +4207,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		handleMouseDown: function(e, resize) {
 
+			this.graph.shapeZone.appendChild(this.group);
 			if(!resize) {
 				this.coordsI = this.graph.getXY(e);
 				this.moving = true;
