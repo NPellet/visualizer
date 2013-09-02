@@ -310,7 +310,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			if(this.extMS)
 				this.extMS.kill();
 
-			this.extMS = this.ms.newSerie('external', { lineToZero: !cont, lineWidth: 2, lineColor: 'red' });
+			this.extMS = this.ms.newSerie('external', { lineToZero: !cont, lineWidth: 3, lineColor: 'rgba(0, 0, 255, 0.2)' });
 			this.extMS.setXAxis(this.ms.getXAxis());
 			this.extMS.setYAxis(this.ms.getRightAxis(1, {primaryGrid: false, secondaryGrid: false, axisDataSpacing: { min: 0, max: 0}, display: false }));
 			this.extMS.setData(ms);
