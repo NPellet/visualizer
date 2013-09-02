@@ -1,4 +1,4 @@
-define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api'], function(Default, Traversing, DomDeferred, API) {
+define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api', 'util/typerenderer'], function(Default, Traversing, DomDeferred, API, Renderer) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -38,7 +38,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 				if(moduleValue == undefined)
 					view.fillWithVal(cfg.defaultvalue || '');
 				else
-					Traversing.toScreen(moduleValue, this.module).done(function(val) {
+					Renderer.toScreen(moduleValue, this.module).done(function(val) {
 
 						try {
 							if(cfg.sprintf && cfg.sprintf != "") {

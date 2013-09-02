@@ -14,6 +14,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this.domTable = $("<table />").attr('id', this.unique);
 
 	 		this.dom.on('mouseover', '.jqgrow', function() {
+	 		
 				self.module.controller.lineHover(self.elements[$(this).attr('id')]);
 	 		}).on('mouseout', '.jqgrow', function() {
 				self.module.controller.lineOut(self.elements[$(this).attr('id')]);
