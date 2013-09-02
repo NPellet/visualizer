@@ -294,7 +294,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 		setExternalGC: function(gc) {
 			if(this.extGC)
-				this.extGC.kill();
+				this.extGC.kill(true);
 
 			this.extGC = this.gc.newSerie('external', {lineWidth: 2, lineColor: 'red'});
 			this.extGC.setXAxis(this.gc.getXAxis());
@@ -308,14 +308,13 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 		setExternalMS: function(ms, cont) {
 			if(this.extMS)
-				this.extMS.kill();
+				this.extMS.kill(true);
 
 			this.extMS = this.ms.newSerie('external', { lineToZero: !cont, lineWidth: 3, lineColor: 'rgba(0, 0, 255, 0.2)' });
 			this.extMS.setXAxis(this.ms.getXAxis());
 			this.extMS.setYAxis(this.ms.getRightAxis(1, {primaryGrid: false, secondaryGrid: false, axisDataSpacing: { min: 0, max: 0}, display: false }));
 			this.extMS.setData(ms);
-
-			this.ms.redraw();
+			this.ms.redraw(true, true, false);
 			this.ms.drawSeries(true);
 		}
 	}

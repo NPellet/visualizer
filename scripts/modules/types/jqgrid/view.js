@@ -68,7 +68,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				var colModel = [];
 				for(var j in jpaths) {
 					colNames.push(j);
-					colModel.push({name: j, index: j, width: 100, title: false , editable: true, _jpath: jpaths[j].jpath});
+					colModel.push({name: j, index: j, title: false , editable: true, _jpath: jpaths[j].jpath});
 				}
 				//colModel[colModel.length - 1].width = "*";
 				nbLines = this.module.getConfiguration().nbLines || 10;	
@@ -84,6 +84,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				   	colModel: colModel,
 				   	rowNum: nbLines,
 				   	editable: true,
+				   	forceFit: true,
+				   	//autoWidth: true,
+				   	shrinkToFit: true,
 				   	cellsubmit: 'clientArray',
 				   	cellEdit: true,
 				   	rowList:[10,20,30,100],

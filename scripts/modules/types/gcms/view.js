@@ -117,14 +117,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 		onActionReceive: {
 			fromtoGC: function(value, name) {
 				this.gcmsInstance.getGC().getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
-				this.gcmsInstance.getGC().redraw(true);
-				this.gcmsInstance.getGC().drawSeries(true);
 			},
 
 			fromtoMS: function(value, name) {
 				this.gcmsInstance.getMS().getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
-				this.gcmsInstance.getMS().redraw(true);
-				this.gcmsInstance.getMS().drawSeries(true);
 			}
 		},
 
@@ -135,9 +131,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 					Traversing.triggerDataChange(newData);
 				}
 			});
+
 			Traversing.listenDataChange(annotation, function(value) {
 				shape.draw();
-				shape.redraw();				
+				shape.redraw();
 			});
 			
 			if(annotation._highlight) {
@@ -148,6 +145,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 						shape.unHighlight();
 				});
 			}
+
 			shape.draw();
 			shape.redraw();
 		}

@@ -1118,52 +1118,48 @@ define(['jquery', 'util/util'], function($, Util) {
 			shift[2] = 0;
 			shift[3] = 0;
 
-			if(!noX) {
-				// Apply to top and bottom
-				this.applyToAxes(function(axis) {
-					if(axis.disabled)
-						return;
-					var axisIndex = axisvars.indexOf(arguments[1]);
-					axis.setShift(shift[axisIndex] + axis.getAxisPosition(), axis.getAxisPosition()); 
-					shift[axisIndex] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
-				}, false, true, false);
-			}
+		
+			// Apply to top and bottom
+			this.applyToAxes(function(axis) {
+				if(axis.disabled)
+					return;
+				var axisIndex = axisvars.indexOf(arguments[1]);
+				axis.setShift(shift[axisIndex] + axis.getAxisPosition(), axis.getAxisPosition()); 
+				shift[axisIndex] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
+			}, false, true, false);
+	
+	
+			// Applied to left and right
+			this.applyToAxes(function(axis) {
+				if(axis.disabled)
+					return;
 
-			if(!noY) {
-				// Applied to left and right
-				this.applyToAxes(function(axis) {
-					if(axis.disabled)
-						return;
+				axis.setMinPx(shift[1]);
+				axis.setMaxPx(this.getDrawingHeight(true) - shift[0]);
 
-					axis.setMinPx(shift[1]);
-					axis.setMaxPx(this.getDrawingHeight(true) - shift[0]);
+				// First we need to draw it in order to determine the width to allocate
+				// This is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
 
-					// First we need to draw it in order to determine the width to allocate
-					// This is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
+				var drawn = axis.draw(doNotRecalculateMinMax) || 0,
+					axisIndex = axisvars.indexOf(arguments[1]),
+					axisDim = axis.getAxisPosition();
 
-					var drawn = axis.draw(doNotRecalculateMinMax) || 0,
-						axisIndex = axisvars.indexOf(arguments[1]),
-						axisDim = axis.getAxisPosition();
-
-					// Get axis position gives the extra shift that is common
-					axis.setShift(shift[axisIndex] + axisDim + drawn, drawn + axisDim);
-					shift[axisIndex] += drawn + axisDim;
-					axis.drawSeries();
-
-				}, false, false, true);
+				// Get axis position gives the extra shift that is common
+				axis.setShift(shift[axisIndex] + axisDim + drawn, drawn + axisDim);
+				shift[axisIndex] += drawn + axisDim;
+				axis.drawSeries();
+			}, false, false, true);
 
 		
-				// Apply to top and bottom
-				this.applyToAxes(function(axis) {
-					if(axis.disabled)
-						return;
-					axis.setMinPx(shift[2]);
-					axis.setMaxPx(this.getDrawingWidth(true) - shift[3]);
-					axis.draw(doNotRecalculateMinMax);
-					axis.drawSeries();
-
-				}, false, true, false);
-			}
+			// Apply to top and bottom
+			this.applyToAxes(function(axis) {
+				if(axis.disabled)
+					return;
+				axis.setMinPx(shift[2]);
+				axis.setMaxPx(this.getDrawingWidth(true) - shift[3]);
+				axis.draw(doNotRecalculateMinMax);
+				axis.drawSeries();
+			}, false, true, false);
 
 			// Apply to all axis
 	/*		this.applyToAxes(function(axis) {
