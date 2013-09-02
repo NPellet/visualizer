@@ -2003,7 +2003,8 @@ define(['jquery', 'util/util'], function($, Util) {
 					incrTick += primary[0];
 					continue;
 				}
-				
+
+				this.drawTick(incrTick, true, 4);
 				incrTick += primary[0];
 			}
 
