@@ -9,15 +9,16 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 
 
 		configurationSend: {
-
+			
 			events: {
-				
-			},
-			
-			rels: {
-				
+				onZoomGCChange: {
+					label: 'Zoom over GC spectra'
+				},
+
+				onZoomMSChange: {
+					label: 'Zoom over MS spectra'
+				}
 			}
-			
 		},
 		
 		configurationReceive: {
@@ -52,16 +53,18 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 			}		
 		},
 		
-		actions: {
-			//rel: {'addSerie': 'Add a serie', 'removeSerie': 'Remove a serie'}
-		},
 
+		actions: {
+			rel: {
+				'fromtoGC': 'From - To on GC', 
+				'fromtoMS': 'From - To on MS'
+			}
+		},
 
 		actionsReceive: {
-			'addSerie': 'Add a new serie',
-			'removeSerie': 'Remove a serie'
+			'fromtoGC': 'From - To on GC',
+			'fromtoMS': 'From - To on MS'
 		},
-
 
 		moduleInformations: {
 			moduleName: 'GC MS'

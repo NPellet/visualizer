@@ -139,7 +139,7 @@ define(['jquery', 'data/structures'], function($, Structures) {
 
 		getValueFromJPath: function(element, jpath) {
 			if(!jpath)
-				return element;
+				return $.Deferred().resolve(element);
 			if(!jpath.split)
 				jpath = '';
 

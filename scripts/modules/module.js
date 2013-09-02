@@ -433,7 +433,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 											type: 'Combo',
 											name: 'rel',
 											title: 'Internal ref.',
-											options: allRels,
+											options: allActionsRels,
 										},
 
 										{

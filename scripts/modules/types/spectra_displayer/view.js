@@ -65,8 +65,12 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 							}
 						}
 
-					}});
+					}
+				});
 
+				graph.getBottomAxis().options.onZoom = function(from, to) {
+					self.module.controller.sendAction('fromto', {type: 'fromTo', value: { from: from, to: to }}, 'onZoomChange');
+				}
 		//graph.getLeftAxis(0, {logScale: true})
 				graph.getLeftAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('y') > -1 : false);
 				graph.getLeftAxis().setLabel(cfgM.yLabel || '');
@@ -165,6 +169,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				if(view.dom.data('spectra'))
 					view.dom.data('spectra').setBoundaries(moduleValue.value.from, moduleValue.value.to);
+
+
 				return;
 			},
 
@@ -373,8 +379,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 		onActionReceive: {
 			fromto: function(value, name) {
-				if(this.dom.data('spectra'))
-					this.dom.data('spectra').setBoundaries(value.value.from, value.value.to);
+				this.graph.getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
+
+				this.graph.redraw(true);
+				this.graph.drawSeries(true);
+
 			},
 
 			addSerie: function(value) {

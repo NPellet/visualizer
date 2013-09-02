@@ -23,6 +23,15 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			_gcms.setMSContinuous(this.module.getConfiguration().continuous);
 			_gcms.setRangeLimit(this.module.getConfiguration().nbzones || 1);
 			_gcms.inDom(this.dom.find('.gc').get(0), this.dom.find('.ms').get(0));
+
+			_gcms.onZoomGC = function(from, to) {
+				self.module.controller.sendAction('fromtoGC', {type: 'fromTo', value: { from: from, to: to }}, 'onZoomGCChange');
+			}
+
+			_gcms.onZoomMS = function(from, to) {
+				self.module.controller.sendAction('fromtoMS', {type: 'fromTo', value: { from: from, to: to }}, 'onZoomMSChange');
+			}
+
 			this.gcmsInstance = _gcms;
 		},
 
@@ -101,6 +110,21 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				return;
 			for(var i = 0, l = this.annotations.length; i < l; i++) {
 				this.doAnnotation(this.annotations[i]);
+			}
+		},
+
+
+		onActionReceive: {
+			fromtoGC: function(value, name) {
+				this.gcmsInstance.getGC().getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
+				this.gcmsInstance.getGC().redraw(true);
+				this.gcmsInstance.getGC().drawSeries(true);
+			},
+
+			fromtoMS: function(value, name) {
+				this.gcmsInstance.getMS().getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
+				this.gcmsInstance.getMS().redraw(true);
+				this.gcmsInstance.getMS().drawSeries(true);
 			}
 		},
 

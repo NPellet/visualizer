@@ -289,7 +289,7 @@ define(['jquery', 'util/util'], function($, Util) {
 					window.clearTimeout(self.clickTimeout);
 				var coords = self.getXY(e);
 				self.cancelClick = true;
-				self.handleDblClick(coords.x,coords.y,e);2
+				self.handleDblClick(coords.x,coords.y,e);
 			});
 
 			this.dom.addEventListener('click', function(e) {
@@ -702,10 +702,16 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		handleDblClick: function(x,y,e) {
-			var _x = x - this.options.paddingLeft;
-			var _y = y - this.options.paddingTop;
+		//	var _x = x - this.options.paddingLeft;
+		//	var _y = y - this.options.paddingTop;
 			this.redraw();
 			this.drawSeries();
+
+			if(this.getXAxis().options.onZoom)
+				this.getXAxis().options.onZoom(this.getXAxis().getActualMin(), this.getXAxis().getActualMax());
+
+			if(this.getYAxis().options.onZoom)
+				this.getYAxis().options.onZoom(this.getYAxis().getActualMin(), this.getYAxis().getActualMax());
 		},
 
 		handleMouseUp: function(x, y, e) {
@@ -1649,6 +1655,10 @@ define(['jquery', 'util/util'], function($, Util) {
 				((this.getActualMax() - this.options.wheelBaseline) * (1 + delta)) + this.options.wheelBaseline,
 				((this.getActualMin() - this.options.wheelBaseline) * (1 + delta)) + this.options.wheelBaseline
 			);
+
+			this.graph.redraw(true);
+			this.graph.drawSeries(true);
+
 		},
 
 		handleMouseUp: function(px, e) {
@@ -1664,21 +1674,27 @@ define(['jquery', 'util/util'], function($, Util) {
 			
 		},
 
-		_doZoomVal: function(val1, val2) {
+		_doZoomVal: function(val1, val2, mute) {
 
-			return this._doZoom(this.getPx(val1), this.getPx(val2), val1, val2);
+			return this._doZoom(this.getPx(val1), this.getPx(val2), val1, val2, mute);
 		},
 
-		_doZoom: function(px1, px2, val1, val2) {
+		_doZoom: function(px1, px2, val1, val2, mute) {
 
 			if(this.options.display || 1 == 1) {
 				var val1 = val1 || this.getVal(px1);
 				var val2 = val2 || this.getVal(px2);
 				this.setCurrentMin(Math.min(val1, val2));
 				this.setCurrentMax(Math.max(val1, val2));
-				this.draw(true);
-				this.drawSeries();
+
+		//		this.draw(true);
+		//		this.drawSeries();
+
 				this._hasChanged = true;
+
+				if(this.options.onZoom && !mute)
+					this.options.onZoom(this._realMin, this._realMax);
+
 			} else {
 
 				//var min = this.getPos(this.getActualMin());

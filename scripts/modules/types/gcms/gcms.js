@@ -140,6 +140,11 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 						nbTicksPrimary: 10,
 						secondaryGrid: false,
 						axisDataSpacing: { min: 0, max: 0.1 },
+
+						onZoom: function(from, to) {
+							if(self.onZoomGC)
+								self.onZoomGC(from, to);
+						}
 					}
 				],
 
@@ -192,6 +197,11 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 						nbTicksSecondary: 4,
 						secondaryGrid: false,
 						axisDataSpacing: { min: 0, max: 0.1 },
+
+						onZoom: function(from, to) {
+							if(self.onZoomMS)
+								self.onZoomMS(from, to);
+						}
 					}
 				],
 
@@ -251,6 +261,10 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			return this.gc;
 		},
 
+		getMS: function() {
+			return this.ms;
+		},
+
 		setGC: function(gc) {
 			var serie;
 			if(!this.gc)
@@ -275,6 +289,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 		setMS: function(ms) {
 			this.msData = ms;	
 		},
+
 
 
 		setExternalGC: function(gc) {
