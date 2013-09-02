@@ -3880,14 +3880,17 @@ define(['jquery', 'util/util'], function($, Util) {
 		//	this.kill();
 			var variable;
 			this.position = this.setPosition();
+			this.redrawImpl();
+
+			if(!this.position)
+				return;
 
 			if(this.get('labelPosition')) {
 				this.setLabelPosition();
 //				this.group.appendChild(this.label);
 			}
 		
-			this.redrawImpl();
-
+		
 			if(this.afterDone)
 				this.afterDone();
 		//	this.done();
@@ -3940,23 +3943,25 @@ define(['jquery', 'util/util'], function($, Util) {
 			var parsed, pos = {x: false, y: false};
 
 			for(var i in pos) {
-				if(!value[i] && !value['d' + i]) {
+				if(value[i] === undefined && value['d' + i] === undefined) {
 					if(i == 'x')
-						pos[i] = relTo ? relTo[i] : 0;
+						pos[i] = relTo ? relTo[i] : this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getPos(0);
 					else {
 						var closest = this.serie.searchClosestValue(value.x);
 						pos[i] = closest.yMin;
 					}
-				} else if(value[i]) {
+				} else if(value[i] !== undefined) {
 					if((parsed = this._parsePx(value[i])) !== false)
 						pos[i] = parsed; // return integer (will be interpreted as px)
 					else if(parsed = this._parsePercent(value[i]))
 						pos[i] = parsed; // returns xx%
 					else if(this.serie)
 						pos[i] = this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getPos(value[i]);
-				} else if(value['d' + i] && relTo[i]) {
+				} 
 
-					var def = (this._getPositionPx(relTo[i], true) || 0);
+				if(value['d' + i]) {
+
+					var def = (value[i] !== undefined || relTo == undefined || relTo[i] == undefined) ? pos[i] : (this._getPositionPx(relTo[i], true) || 0);
 					if((parsed = this._parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
 						pos[i] = def + parsed;  // return integer (will be interpreted as px)
 					} else if(parsed = this._parsePercent(value['d' + i]))
@@ -4319,6 +4324,8 @@ define(['jquery', 'util/util'], function($, Util) {
 		setLabelPosition: function() {
 			var pos1 = this._getPosition(this.getFromData('pos'));
 			var pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
+
+			//console.log(this._getPosition(this.get('labelPosition')));
 			this._setLabelPosition(this._getPosition(this.get('labelPosition'), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
 			
 		},
