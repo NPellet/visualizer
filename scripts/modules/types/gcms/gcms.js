@@ -135,7 +135,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				bottom: [
 					{
 						labelValue: 'Time',
-						//unitModification: 'time',
+						unitModification: 'time',
 						primaryGrid: false,
 						nbTicksPrimary: 10,
 						secondaryGrid: false,
