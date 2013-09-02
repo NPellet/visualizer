@@ -80,6 +80,10 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				   	cellEdit: true,
 				   	rowList:[10,20,30,100],
 				   	pager: '#pager' + this.unique,
+				   	rowattr: function() {
+				   		if(arguments[1]._backgroundColor)
+				   			return {'style': 'background-color: ' + arguments[1]._backgroundColor };
+				   	},
 				   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
 				   		if(jpaths[colModel[colNum].name].number)
 				   			value = parseFloat(value);
@@ -126,7 +130,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 				Traversing.listenDataChange(source[i], function(data) {
 
-
 					var id = source.indexOf(data);
 					var element = {};
 					for(var j in jpaths) {
@@ -136,6 +139,10 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					}
 					
 					self.jqGrid('setRowData', id, element);
+					var scroll = $("body").scrollTop();
+					var target = $("tr#" + id, self.domTable).effect('highlight').get(0).scrollIntoView();
+					$("body").scrollTop(scroll);
+					
 				});
 					
 				for(var j in jpaths) {
@@ -146,7 +153,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 						element["_" + l] = self.renderElement(element, source[k], jpath, k, l);
 					}) (i, j);
 				}
+				Traversing.getValueFromJPath(source[i], this.module.getConfiguration().colorjPath).done(function(value) {
 
+					element._backgroundColor = value;
+				});
+				
 				arrayToPush.push(element);
 			}
 		},

@@ -20,7 +20,7 @@ define(['util/api'], function(API) {
 				iframe.before($('<div />').css({
 					position: 'absolute',
 					width: width,
-					heiGEBABEBBght: height,
+					height: height,
 					top: pos.top,
 					left: pos.left,
 					background: 'white',

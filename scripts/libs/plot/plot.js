@@ -347,9 +347,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			});
 
 			this.rectEvent.addEventListener('mousewheel', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
 				var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
 				self.handleMouseWheel(deltaY,e);	
-				e.preventDefault();
+
 				return false;
 			});
 

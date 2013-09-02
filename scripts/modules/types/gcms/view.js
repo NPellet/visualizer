@@ -46,7 +46,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				});
 			},
 
-
 			'annotationgc': function(value) {
 				value = Traversing.getValueIfNeeded(value);
 				if(!value)
@@ -56,10 +55,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			},
 
 			'gcms': function(moduleValue) {
-				
 				this.gcmsInstance.setGC(moduleValue.gc);
 				this.gcmsInstance.setMS(moduleValue.ms);
-
 				this.resetAnnotationsGC();
 			}
 		},
