@@ -24,7 +24,7 @@ define(['modules/defaultview'], function(Default) {
 		},
 
 		inDom: function() {
-			this.search.find('input').trigger('keyup');
+			this.search.find('input:last').trigger('keyup');
 		},
 		
 		onResize: function() {

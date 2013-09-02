@@ -14,7 +14,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this.domTable = $("<table />").attr('id', this.unique);
 
 	 		this.dom.on('mouseover', '.jqgrow', function() {
-	 		
+
 				self.module.controller.lineHover(self.elements[$(this).attr('id')]);
 	 		}).on('mouseout', '.jqgrow', function() {
 				self.module.controller.lineOut(self.elements[$(this).attr('id')]);
@@ -72,6 +72,13 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				}
 				//colModel[colModel.length - 1].width = "*";
 				nbLines = this.module.getConfiguration().nbLines || 10;	
+
+				if(self.jqGrid) {
+					self.jqGrid('GridDestroy');
+					self.jqGrid = undefined;
+					this.domTable = $("<table />").attr('id', this.unique).appendTo(this.dom);
+				}
+
 				$(this.domTable).jqGrid({		 			
 				   	colNames: colNames,
 				   	colModel: colModel,

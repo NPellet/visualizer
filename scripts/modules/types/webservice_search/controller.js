@@ -21,9 +21,15 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			var self = this;
 			this.searchTerms[name] = val;
 			var url = this.module.getConfiguration().url;
-			for(var i in this.searchTerms) {
-				url = url.replace('<' + i + '>', encodeURIComponent(this.searchTerms[i]));
+			//for(var i in this.searchTerms) {
+			//	url = url.replace('<' + i + '>', encodeURIComponent(this.searchTerms[i]));
+			//}
+
+			var reg = /\<([a-zA-Z0-9]+)\>/;
+			while(val = reg.exec(url)) {
+				url = url.replace('<' + val[1] + '>', (encodeURIComponent(this.searchTerms[val[1]] || '')));
 			}
+
 
 			var reg = /\<var:([a-zA-Z0-9]+)\>/;
 			while(val = reg.exec(url)) {
@@ -35,6 +41,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 			this.request = URL.get(url, 30).done(function(data) {
 				self.request = null;
+				console.log(data);
 				self.onSearchDone(data);
 			});
 		},
@@ -43,6 +50,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		onSearchDone: function(elements) {
 			var self = this;
 			self.result = elements;
+
 			this.setVarFromEvent('onSearchReturn', elements);
 		},
 
