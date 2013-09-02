@@ -17,7 +17,7 @@ define(['modules/module'], function(Module) {
 				'button_url': 'Button URL',
 				'webservice_button': 'Webservice button',
 				'webservice_cron': 'Webservice cron',
-				'webservice_Search': 'Webservice search',
+				'webservice_search': 'Webservice search',
 				'editable_grid': 'Editable Table',
 				'grid_selector': 'Table Selector',	
 				'filelistupload': 'Files upload',	
