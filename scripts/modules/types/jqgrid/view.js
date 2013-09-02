@@ -140,7 +140,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					
 					self.jqGrid('setRowData', id, element);
 					var scroll = $("body").scrollTop();
-					var target = $("tr#" + id, self.domTable).effect('highlight').get(0).scrollIntoView();
+					var target = $("tr#" + id, self.domTable).effect('highlight', {}, 1000).get(0).scrollIntoView();
 					$("body").scrollTop(scroll);
 					
 				});
