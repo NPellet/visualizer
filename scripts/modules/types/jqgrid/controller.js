@@ -99,7 +99,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 				Traversing.getJPathsFromElement(data[0], jpaths);
 			else if(Traversing.getType(data) == 'arrayXY')
 				Traversing.getJPathsFromElement(data, jpaths);
-			
+			//console.log(data, data[0],jpaths);
 			return {
 				groups: {
 					'gencfg': {
@@ -155,6 +155,14 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 								name: 'coljpath',
 								title: 'jPath',
 								options: jpaths
+							},
+
+
+							{
+								type: 'Checkbox',
+								name: 'number',
+								title: 'Is a number ?',
+								options: {number: 'number'}
 							}
 
 						]
@@ -168,12 +176,14 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			var cfg = this.module.getConfiguration();
 			var cols = cfg.colsjPaths;
 			
-			var titles = [];
-			var jpaths = [];
+			var titles = [],
+				jpaths = [],
+				colnumber = [];
 
 			for(var i in cols) {
 				titles.push(i);
 				jpaths.push(cols[i].jpath);
+				colnumber.push(cols[i].number ? ['number'] : []);
 			}
 
 			return {	
@@ -188,7 +198,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 					
 					cols: [{
 						coltitle: titles,
-						coljpath: jpaths
+						coljpath: jpaths,
+						number: colnumber
 					}]
 				}
 			}
@@ -197,8 +208,9 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		doSaveConfiguration: function(confSection) {
 			var group = confSection[0].cols[0];
 			var cols = {};
-			for(var i = 0; i < group.length; i++)
-				cols[group[i].coltitle] = { jpath: group[i].coljpath };
+			for(var i = 0; i < group.length; i++) {
+				cols[group[i].coltitle] = { jpath: group[i].coljpath, number: group[i].number[0] == 'number' };
+			}
 			this.module.getConfiguration().colsjPaths = cols;
 			this.module.getConfiguration().nbLines = confSection[0].gencfg[0].nblines[0];
 			this.module.getConfiguration().toggle = confSection[0].gencfg[0].toggle[0];

@@ -152,6 +152,6 @@ tr.ui-search-toolbar select {margin: 1px 0 0 0}
 
 
 /* Norman modification */
-.jqgrow.ui-state-hover {
-	background-color: #e5be39;
+.jqgrow:hover {
+	background-color: #e5be39 !important;
 }

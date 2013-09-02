@@ -83,6 +83,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 
 	function doData(d, noLoad) {
 		data = d;
+		//document.write(JSON.stringify(d));
 		if(noLoad)
 			return; 
 		dataLoaded();

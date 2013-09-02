@@ -67,7 +67,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				var colModel = [];
 				for(var j in jpaths) {
 					colNames.push(j);
-					colModel.push({name: j, index: j, width: 100, title: false });
+					colModel.push({name: j, index: j, width: 100, title: false , editable: true, _jpath: jpaths[j].jpath});
 				}
 				//colModel[colModel.length - 1].width = "*";
 				nbLines = this.module.getConfiguration().nbLines || 10;	
@@ -75,15 +75,24 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				   	colNames: colNames,
 				   	colModel: colModel,
 				   	rowNum: nbLines,
+				   	editable: true,
+				   	cellsubmit: 'clientArray',
+				   	cellEdit: true,
 				   	rowList:[10,20,30,100],
 				   	pager: '#pager' + this.unique,
+				   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
+				   		if(jpaths[colModel[colNum].name].number)
+				   			value = parseFloat(value);
+				   		
+
+				   		Traversing.setValueFromJPath(self.elements[rowId], colModel[colNum]._jpath, value);
+				   	},
 				    viewrecords: true,
 				    onSelectRow: function(rowid, status) {
 				    	if(status)
 				    		self.module.controller.onToggleOn(self.elements[rowid]);
 				    	else
 				    		self.module.controller.onToggleOff(self.elements[rowid]);
-
 						self.module.controller.lineClick(self.elements[rowid]);
 				    },
 				});
@@ -97,6 +106,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 				var elements = [];
 				view.buildElement(list, elements, jpaths);
+				this.gridElements = elements;
+
 				for(var i = 0; i < elements.length; i++) {
 					this.jqGrid('addRowData', i, elements[i]);
 				}
@@ -107,31 +118,48 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 		buildElement: function(source, arrayToPush, jpaths, colorJPath) {
 			var jpath;
-			var box = this.module;
+			
 			var self = this;
 			self.done = 0;
 			for(var i = 0, length = source.length; i < length; i++) {
 				var element = {};
 
+				Traversing.listenDataChange(source[i], function(data) {
+
+
+					var id = source.indexOf(data);
+					var element = {};
+					for(var j in jpaths) {
+						jpath = jpaths[j]; jpath = jpath.jpath || jpath;
+						element[j] = 'Loading';
+						element["_" + j] = self.renderElement(element, data, jpath, id, j);
+					}
+					
+					self.jqGrid('setRowData', id, element);
+				});
+					
 				for(var j in jpaths) {
 					jpath = jpaths[j]; jpath = jpath.jpath || jpath;
 					element[j] = 'Loading';
 					(function(k, l) {
 						self.done++;
-						element["_" + l] = Renderer.toScreen(source[k], box, {}, jpath).done(function(value) {
-							element[l] = value;
-							self.done--;
-							self.jqGrid('setCell', k, l, value);
-							//self.jqGrid('getLocalRow', i)[j] = value;
-
-							if(self.done == 0)
-								self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
-						});
+						element["_" + l] = self.renderElement(element, source[k], jpath, k, l);
 					}) (i, j);
 				}
 
-				arrayToPush.push(element)
+				arrayToPush.push(element);
 			}
+		},
+
+		renderElement: function(element, source, jpath, k, l) {
+			var self = this, box = self.module;
+			return Renderer.toScreen(source, box, {}, jpath).done(function(value) {
+				element[l] = value;
+				self.done--;
+				self.jqGrid('setCell', k, l, value);
+				if(self.done == 0)
+					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
+			});
 		},
 
 		getDom: function() {

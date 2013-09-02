@@ -4,6 +4,7 @@ define(['jquery', 'data/structures'], function($, Structures) {
 	var asyncId = 0;
 
 	function _getValueFromJPath(element, jpath) {
+
 		var el = getValueIfNeeded(element),
 			type,
 			jpathElement = jpath.shift();
@@ -32,6 +33,8 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			return el[jpath[0]] = newValue;
 		
 		var jpathElement = jpath.shift();
+		
+
 		if(jpathElement) {
 			if(!(subelement = el[jpathElement])) { // If not an object, we make it an object
 				subelement = {};
@@ -39,8 +42,10 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			}
 
 			// Perhaps the subelement is set only by URL, in which case we have to set it.
-			return this.fetchElementIfNeeded(subelement).pipe(function(elChildren) {
-				return _setValueFromJPath(elChildren, jpath2, newValue);
+			return fetchElementIfNeeded(subelement).pipe(function(elChildren) {
+				return _setValueFromJPath(elChildren, jpath, newValue);
+			}).done(function() {
+				triggerDataChange(el);
 			});
 		}
 	}
@@ -100,10 +105,11 @@ define(['jquery', 'data/structures'], function($, Structures) {
 		if(type == 'object') {
 			if(element instanceof Array)
 				return "array";
+			if(Structures[element.type] && (element.value || element.url))
+				return element.type;
+			
 			if(typeof element.type == "undefined")
 				return "object";
-			else if(Structures[element.type])
-				return element.type;
 			else {
 				console.error("Type " + element.type + " could not be found");
 				return;
@@ -111,6 +117,17 @@ define(['jquery', 'data/structures'], function($, Structures) {
 		}
 		// Native types: int, string, boolean
 		return type;
+	}
+
+	function listenDataChange(data, callback) {
+		if(!data._onDataChanged)
+			data._onDataChanged = $.Callbacks();
+		data._onDataChanged.add(callback);
+	}
+
+	function triggerDataChange(data) {
+		if(data._onDataChanged)
+			data._onDataChanged.fire(data);
 	}
 
 	return {
@@ -147,6 +164,7 @@ define(['jquery', 'data/structures'], function($, Structures) {
 		 	if(!structure)
 				return;
 			var children = [];
+
 			if(structure.elements) {
 				if(!keystr || keystr == null) {
 					keystr = "element";
@@ -191,15 +209,18 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			
 			var structure = {};
 			var el = element;
+
 			if(element === undefined || element === null)
 				return;
 				
-			if(element.type)
+			if(element.type && element.value)
 				element = element.value;
 			
-			if(el !== false && el.type && Structures[el.type]) {
+			if(el !== false && el.type && Structures[el.type] && (element.value || element.url)) {
+
 				structure = Structures[el.type];
 			} else if(element instanceof Array) {
+
 				structure.type = "array";
 				structure.elements = [];
 				var length = Math.min(5, element.length);
@@ -210,12 +231,14 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			} else if(typeof element == "object") {
 				structure.type = "object";	
 				structure.elements = {};
+
 				for(var i in element) 
 					structure.elements[i] = this.getStructureFromElement(element[i]);
-			} else if(el.type)
+			} else if(el.type && el.value)
 				structure = el.type;
 			else
 				return typeof el;
+
 			return structure;
 		},
 
@@ -229,21 +252,25 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			// Apply to typed elements + to js objects
 			if(element.structure)
 				this.getJPathsFromStructure(element.structure, null, jpaths);	
-			else if(element.type && Structures[element.type])
+			else if(element.type && Structures[element.type] && (element.value || element.url)) {
 				this.getJPathsFromStructure(Structures[element.type], null, jpaths);
-			else {
+			} else {
 				switch(typeof element) {
 					default:
 					case 'object':
 						var structure = this.getStructureFromElement(element, structure);
 						this.getJPathsFromStructure(structure, null, jpaths);
+
 					break;
 				}
 			}
 		},
 
 		getHighlights: getHighlights,
-		getOptions: getOptions
+		getOptions: getOptions,
+
+		triggerDataChange: triggerDataChange,
+		listenDataChange: listenDataChange
 	}
 });
 

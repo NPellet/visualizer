@@ -2638,6 +2638,7 @@ $.fn.jqGrid = function( pin ) {
 		}
 		var ri,ci, tdHtml;
 		$(ts).before(grid.hDiv).click(function(e) {
+
 			td = e.target;
 			ptr = $(td,ts.rows).closest("tr.jqgrow");
 			if($(ptr).length === 0 || ptr[0].className.indexOf( 'ui-state-disabled' ) > -1 || ($(td,ts).closest("table.ui-jqgrid-btable").attr('id') || '').replace("_frozen","") !== ts.id ) {
@@ -2648,6 +2649,7 @@ $.fn.jqGrid = function( pin ) {
 			cSel = (cSel === false || cSel === 'stop') ? false : true;
 			if(cSel && $.isFunction(ts.p.beforeSelectRow)) { cSel = ts.p.beforeSelectRow.call(ts,ptr[0].id, e); }
 			if (td.tagName === 'A' || ((td.tagName === 'INPUT' || td.tagName === 'TEXTAREA' || td.tagName === 'OPTION' || td.tagName === 'SELECT' ) && !scb) ) { return; }
+
 			if(cSel === true) {
 				ri = ptr[0].id;
 				ci = $.jgrid.getCellIndex(td);
@@ -2656,6 +2658,7 @@ $.fn.jqGrid = function( pin ) {
 				if($.isFunction(ts.p.onCellSelect)) {
 					ts.p.onCellSelect.call(ts,ri,ci,tdHtml,e);
 				}
+
 				if(ts.p.cellEdit === true) {
 					if(ts.p.multiselect && scb){
 						$(ts).jqGrid("setSelection", ri ,true,e);
@@ -9219,6 +9222,7 @@ $.jgrid.extend({
 
 		// End compatible
 		return this.each(function(){
+
 			var $t = this, nm, tmp, editable, cnt=0, focus=null, svr={}, ind,cm;
 			if (!$t.grid ) { return; }
 			ind = $($t).jqGrid("getInd",rowid,true);
@@ -9240,6 +9244,7 @@ $.jgrid.extend({
 					if ( nm !== 'cb' && nm !== 'subgrid' && nm !== 'rn') {
 						if($t.p.autoencode) { tmp = $.jgrid.htmlDecode(tmp); }
 						svr[nm]=tmp;
+
 						if(cm[i].editable===true) {
 							if(focus===null) { focus = i; }
 							if (treeg) { $("span:first",this).html(""); }
@@ -9859,7 +9864,7 @@ $.jgrid.extend({
 					$("td:eq("+$t.p.iCol+")",$t.rows[$t.p.iRow]).removeClass("edit-cell ui-state-highlight");
 					$($t.rows[$t.p.iRow]).removeClass("selected-row ui-state-hover");
 				}
-				$(cc).addClass("edit-cell ui-state-highlight");
+				$(cc).addClass("edit-cell");// ui-state-highlight");
 				$($t.rows[iRow]).addClass("selected-row ui-state-hover");
 				try {
 					tmp =  $.unformat.call($t,cc,{rowId: $t.rows[iRow].id, colModel:cm},iCol);
@@ -9928,6 +9933,7 @@ $.jgrid.extend({
 		});
 	},
 	saveCell : function (iRow, iCol){
+
 		return this.each(function(){
 			var $t= this, fr;
 			if (!$t.grid || $t.p.cellEdit !== true) {return;}
@@ -9981,6 +9987,7 @@ $.jgrid.extend({
 						}
 						break;
 				}
+
 				// The common approach is if nothing changed do not do anything
 				if (v2 !== $t.p.savedRow[fr].v){
 					var vvv = $($t).triggerHandler("jqGridBeforeSaveCell", [$t.rows[iRow].id, nm, v, iRow, iCol]);
@@ -9997,6 +10004,7 @@ $.jgrid.extend({
 							if (!addpost) {addpost={};}
 						}
 						if( $("input.hasDatepicker",cc).length >0) { $("input.hasDatepicker",cc).datepicker('hide'); }
+
 						if ($t.p.cellsubmit === 'remote') {
 							if ($t.p.cellurl) {
 								var postdata = {};

@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms', 'util/util'], function(Default, Graph, Traversing, gcms, Util) {
+define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms', 'util/util', 'util/api'], function(Default, Graph, Traversing, gcms, Util, API) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -24,8 +24,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			_gcms.setRangeLimit(this.module.getConfiguration().nbzones || 1);
 			_gcms.inDom(this.dom.find('.gc').get(0), this.dom.find('.ms').get(0));
 			this.gcmsInstance = _gcms;
-
-			
 		},
 
 		onResize: function(width, height) {
@@ -70,20 +68,37 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			return this.dom;
 		},
 
-
 		resetAnnotationsGC: function() {
 			if(!this.gcmsInstance)
 				return;
-
 			for(var i = 0, l = this.annotations.length; i < l; i++) {
-				if(this.annotations[i].type == 'peakInterval')
-					this.annotations[i].callback = function() {
-						console.log('dsf');
-					}
+				this.doAnnotation(this.annotations[i]);
 			}
-			Util.doAnnotations(this.annotations, this.gcmsInstance.getGC());
 		},
 
+		doAnnotation: function(annotation) {
+			
+			var shape = this.gcmsInstance.getGC().makeShape(annotation, {
+				onChange: function(newData) {
+					Traversing.triggerDataChange(newData);
+				}
+			});
+			Traversing.listenDataChange(annotation, function(value) {
+				shape.draw();
+				shape.redraw();				
+			});
+			
+			if(annotation._highlight) {
+				API.listenHighlight(annotation._highlight, function(onOff) {
+					if(onOff)
+						shape.highlight();
+					else
+						shape.unHighlight();
+				});
+			}
+			shape.draw();
+			shape.redraw();
+		}
 	});
 
 	return view;

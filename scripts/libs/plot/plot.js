@@ -39,7 +39,9 @@ define(['jquery', 'util/util'], function($, Util) {
 		onRangeX: false,
 		onRangeY: false,
 
-		onRangeXRemove: false
+		onRangeXRemove: false,
+
+		useIntegrals: true
 	};
 
 
@@ -55,6 +57,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		this.height = 0;
 
 		this.ns = 'http://www.w3.org/2000/svg';
+		this.nsxml = "http://www.w3.org/1999/xlink";
 		this.series = [];
 		this._dom = dom;
 		// DOM
@@ -62,7 +65,8 @@ define(['jquery', 'util/util'], function($, Util) {
 		this.registerEvents();
 		this.shapes = [];
 
-		
+		this.bypassHandleMouseMove = false;
+
 		this.trackingLines = {
 			id: 0,
 			current: false,
@@ -106,7 +110,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		doDom: function() {
 
 			this.dom = document.createElementNS(this.ns, 'svg');
-			this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
+			this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", this.nsxml);
 			this.dom.setAttribute('xmlns', "http://www.w3.org/2000/xmlns");
 
 			this._dom.appendChild(this.dom);
@@ -116,6 +120,8 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.defs = document.createElementNS(this.ns, 'defs');
 			this.dom.appendChild(this.defs);
+
+			
 
 			this.rectEvent = document.createElementNS(this.ns, 'rect');
 			this.rectEvent.setAttribute('pointer-events', 'fill');
@@ -133,8 +139,17 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.graphingZone.setAttribute('transform', 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')')
 			this.dom.appendChild(this.graphingZone);
 
+			this.shapeZone = document.createElementNS(this.ns, 'g');
+			this.graphingZone.appendChild(this.shapeZone);
+
+		/*	this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
+			//this.shapeZoneRect.setAttribute('pointer-events', 'fill');
+			this.shapeZoneRect.setAttribute('fill', 'transparent');
+			this.shapeZone.appendChild(this.shapeZoneRect);
+		*/
 			this.axisGroup = document.createElementNS(this.ns, 'g');
 			this.graphingZone.appendChild(this.axisGroup);
+
 
 			this.plotGroup = document.createElementNS(this.ns, 'g');
 			this.graphingZone.appendChild(this.plotGroup);
@@ -180,8 +195,21 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.defs.appendChild(this.markerArrow);
 
-
-
+/*
+			this.patternFill = document.createElementNS(this.ns, 'pattern');
+			this.patternFill.setAttribute('clipPathUnits', 'userSpaceOnUse');
+			this.patternFill.setAttribute('viewBox', '0 0 10 10');
+			this.patternFill.setAttribute('width', '5');
+			this.patternFill.setAttribute('height', '5');
+			this.patternFill.setAttribute('stroke-width', '1px');
+			var pattern = document.createElementNS(this.ns, 'path');
+			pattern.setAttribute('d', 'M 0 0 L 10 10 L 10 0');
+			pattern.setAttribute('stroke', 'black');
+			pattern.setAttribute('stroke-width', '1px');
+			this.patternFill.setAttribute('id', 'patternFill' + this._creation);
+			this.patternFill.appendChild(pattern);
+			this.defs.appendChild(this.patternFill);
+*/
 			this.vertLineArrow = document.createElementNS(this.ns, 'marker');
 			this.vertLineArrow.setAttribute('viewBox', '0 0 10 10');
 			this.vertLineArrow.setAttribute('id', 'verticalline' + this._creation);
@@ -203,11 +231,14 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.defs.appendChild(this.vertLineArrow);
 
-			this.shapeZone = document.createElementNS(this.ns, 'g');
-			this.graphingZone.appendChild(this.shapeZone);
 
 			this.plotGroup.setAttribute('clip-path', 'url(#_clipplot' + this._creation + ')');
 		},
+
+		annotationMoving: function(start) {
+			this.bypassHandleMouse = start;
+		},
+
 
 		setOption: function(name, val) {
 			this.options[name] = val;
@@ -332,6 +363,12 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		handleMouseMove: function(x, y, e) {
 
+			if(this.bypassHandleMouse) {
+				this.bypassHandleMouse.handleMouseMove(e);
+				return;
+			}
+
+
 			var _x = x - this.options.paddingLeft;
 			var _y = y - this.options.paddingTop;
 
@@ -346,7 +383,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				
 				if(this.options.onMouseMoveData)
 					this.options.onMouseMoveData(e, results);
-			
+
 			} else if(this.currentAction == 'dragging') {
 
 				var deltaX = x - this._draggingX;
@@ -671,6 +708,11 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		handleMouseUp: function(x, y, e) {
 
+			if(this.bypassHandleMouse) {
+				this.bypassHandleMouse.handleMouseUp(e);
+				return;
+			}
+
 			if(this.currentAction == 'dragging') {
 				this.currentAction = false;
 			} else if(this.currentAction == 'zooming') {
@@ -685,6 +727,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.applyToAxes('handleMouseUp', [_y, e], false, true);
 				if(this.currentAction == 'zooming') {
 					this.currentAction = false;
+					this.redraw(true);
 					this.drawSeries(true);
 				}
 			} else if(this.currentAction == 'labelDragging' || this.currentAction == 'labelDraggingMain') {
@@ -1135,6 +1178,12 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.rectEvent.setAttribute('width', this.getDrawingWidth() - shift[2] - shift[3]);
 			this.rectEvent.setAttribute('height', this.getDrawingHeight() - shift[1] - shift[0]);
 
+/*
+			this.shapeZoneRect.setAttribute('x', shift[1]);
+			this.shapeZoneRect.setAttribute('y', shift[2]);
+			this.shapeZoneRect.setAttribute('width', this.getDrawingWidth() - shift[2] - shift[3]);
+			this.shapeZoneRect.setAttribute('height', this.getDrawingHeight() - shift[1] - shift[0]);
+*/
 			this.shift = shift;
 			this.redrawShapes();
 			this.redrawRanges();
@@ -1260,8 +1309,8 @@ define(['jquery', 'util/util'], function($, Util) {
 			return this.options.zoomMode;
 		},
 
-		makeShape: function(shapeType) {
-			switch(shapeType) {
+		makeShape: function(annotation, events) {
+			switch(annotation.type) {
 				case 'rectangle':
 				case 'rect':
 					var shape = new GraphRect(this);
@@ -1282,15 +1331,40 @@ define(['jquery', 'util/util'], function($, Util) {
 				break;
 			}
 
+			shape.setOriginalData(annotation, events);
+			shape.setSerie(this.getSerie(0));
+
+			
+			if(annotation.fillColor)	shape.set('fillColor', annotation.fillColor);
+			if(annotation.strokeColor)	shape.set('strokeColor', annotation.strokeColor);
+			if(annotation.strokeWidth)	shape.set('strokeWidth', annotation.strokeWidth);
+
+			if(annotation.label) {
+				//shape.set('labelText', annotation.label.text);
+				shape.set('labelPosition', annotation.label.position);
+				shape.set('labelSize', annotation.label.size);
+				if(annotation.label.anchor)
+					shape.set('labelAnchor', annotation.label.anchor);
+			}
+
+			switch(annotation.type) {
+				case 'rect':
+				case 'rectangle':
+					shape.set('width', annotation.width);
+					shape.set('height', annotation.height);
+				break;
+			}
+
 			this.shapes.push(shape);
 			return shape;
 		},
 
 		redrawShapes: function() {
-			//console.trace();
+			this.graphingZone.removeChild(this.shapeZone);
 			for(var i = 0, l = this.shapes.length; i < l; i++) {
 				this.shapes[i].redraw();
 			}
+			this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
 		},
 
 		redrawRanges: function() {
@@ -1878,7 +1952,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this._widthLabels = 0;
 			var drawn = this._draw(doNotRecalculateMinMax);
 			this._widthLabels += drawn;
-			this.graph.redrawShapes();
+	//		this.graph.redrawShapes();
 			this.graph.redrawRanges();
 
 			return this.series.length > 0 ? 100 : drawn;
@@ -1903,7 +1977,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			incrTick = this.options.shiftToZero ? this.realMin - Math.ceil((this.realMin - min) / unitPerTick) * unitPerTick : Math.floor(min / unitPerTick) * unitPerTick;
 			this.incrTick = primary[0];
-
+			this.resetTicks();
 			while(incrTick < max) {
 				loop++;
 				if(loop > 200)
@@ -1930,13 +2004,14 @@ define(['jquery', 'util/util'], function($, Util) {
 					continue;
 				}
 				
-				widthHeight = Math.max(widthHeight, this.drawTick(incrTick, true, 4));
 				incrTick += primary[0];
 			}
 
-			this.widthHeightTick = widthHeight;
-			return widthHeight;
+			this.widthHeightTick = this.getMaxSizeTick();
+			return this.widthHeightTick;
 		},
+
+		resetTicks: function() {},
 
 		secondaryTicks: function() {
 			return this.options.nbTicksSecondary;
@@ -1998,7 +2073,9 @@ define(['jquery', 'util/util'], function($, Util) {
 				}
 		},
 
-
+		getRelPx: function(value) {
+			return value / (this.getMaxPx() - this.getMinPx()) * this._getActualInterval();
+		},
 
 		getVal: function(px) {
 			// Ex 50 / (100) * (1000 - 700) + 700
@@ -2236,6 +2313,10 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.group.setAttribute('transform', 'translate(0 ' + (this.top ? this.shift : (this.graph.getDrawingHeight() - this.shift)) + ')')
 		},
 
+		getMaxSizeTick: function() {
+			return (this.top ? -1 : 1) * ((this.options.tickPosition == 1) ? 15 : 25)
+		},
+
 		drawTick: function(value, label, scaling, options) {
 			var group = this.groupTicks;
 			var tick = document.createElementNS(this.graph.ns, 'line'),
@@ -2272,8 +2353,6 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.groupTickLabels.appendChild(tickLabel);
 			}
 			this.ticks.push(tick);
-			return (this.top ? -1 : 1) * ((this.options.tickPosition == 1) ? 15 : 25);
-
 		},
 
 		drawSpecifics: function() {
@@ -2386,6 +2465,15 @@ define(['jquery', 'util/util'], function($, Util) {
 			return 15;
 		},
 
+		resetTicks: function() {
+			this.longestTick = [false, 0];
+		},
+
+		getMaxSizeTick: function() {
+
+			return (this.longestTick[0] ? this.longestTick[0].getComputedTextLength() : 0) + (this.left ? 10 : 0);
+		},
+
 		drawTick: function(value, label, scaling, options) {
 			var group = this.groupTicks,
 				tickLabel,
@@ -2425,12 +2513,13 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.graph.applyStyleText(tickLabel);
 				this.setTickContent(tickLabel, value, options);
 				this.groupTickLabels.appendChild(tickLabel);
-				labelWidth = tickLabel.getComputedTextLength() + (this.left ? 10 : 0);
+				
+				if(tickLabel.length > this.longestTick[1]) {
+					this.longestTick[0] = tickLabel;
+					this.longestTick[1] = tickLabel.length;
+				}
 			}
-
 			this.ticks.push(tick);
-
-			return labelWidth;
 		},
 
 		drawSpecifics: function() {
@@ -2554,6 +2643,8 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.graph = graph;
 			this.name = name;
+			this.id = Math.random() + Date.now();
+
 			this.options = $.extend(true, {}, GraphSerie.prototype.defaults, options);
 			this.data = [];
 			this._isMinOrMax = { x: { min: false, max: false}, y: { min: false, max: false} };
@@ -2582,7 +2673,8 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.maxX = Number.MIN_VALUE;
 			this.maxY = Number.MIN_VALUE;
 
-			this.lines = [];	
+			this.lines = [];
+			this.aulines = [];	
 
 			this.groupMain.appendChild(this.groupLines);
 			this.groupMain.appendChild(this.groupLabels);
@@ -2751,8 +2843,11 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		empty: function() {
 
-			for(var i = 0, l = this.lines.length; i < l; i++)
+			for(var i = 0, l = this.lines.length; i < l; i++) {
 				this.groupLines.removeChild(this.lines[i]);
+				if(this.options.areaUnderLine)
+					this.graph.defs.removeChild(this.aulines[i]);
+			}
 
 			while(this.groupMarkers.firstChild)
 				this.groupMarkers.removeChild(this.groupMarkers.firstChild);
@@ -2858,6 +2953,12 @@ define(['jquery', 'util/util'], function($, Util) {
 			for(; i < this.lines.length; i++) {
 				this.groupLines.removeChild(this.lines[i]);
 				this.lines.splice(i, 1);
+
+
+				if(this.options.areaUnderLine) {
+					this.graph.defs.removeChild(this.aulines[i])
+					this.aulines.splace(i, 1);
+				}
 			}
 
 			this.domMarker.setAttribute('fill', this.options.markers.fillColor || 'transparent');
@@ -2922,27 +3023,51 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			if(this.lines[i]) {
 				var line = this.lines[i];
+				if(this.options.areaUnderLine)
+					var auline = this.aulines[i];
 			} else {
+
+							
 				var line = document.createElementNS(this.graph.ns, 'path');
 				line.setAttribute('stroke', this.getLineColor());
-			//	line.setAttribute('shape-rendering', 'crispEdges');
+				
 				if(this.getLineDashArray())
 					line.setAttribute('stroke-dasharray', this.getLineDashArray());
-
 				line.setAttribute('fill', 'none');
+
+				if(this.options.areaUnderLine) {
+					var auline = document.createElementNS(this.graph.ns, 'path');
+					auline.setAttribute('id', "auline_" + this.id);
+					auline.setAttribute('stroke', 'none');
+					auline.setAttribute('fill', 'black');
+				}
+
 			}
 
 			if(nbPoints == 0) {
 				line.setAttribute('d', 'M 0 0');
+				auline.setAttribute('d', 'M 0 0');
 			} else {
 				line.setAttribute('d', points);
+
+
+				if(this.options.areaUnderLine) {
+					points += " V " + this.getYAxis().getPx(0) + " H " + this.getXAxis().getPx(0) + " z";
+				//	auline.setAttribute('d', points);
+				}
+		
 			}
 
 			if(!this.lines[i]) {			
 				this.groupLines.appendChild(line);
 				this.lines[i] = line;
-			}
 
+				if(this.options.areaUnderLine) {
+					this.graph.defs.appendChild(auline);
+					this.aulines[i] = auline;
+				}
+			}
+			
 			return line;
 		},
 
@@ -3076,11 +3201,13 @@ define(['jquery', 'util/util'], function($, Util) {
 					continue;
 
 				return {
+					dataIndex: i,
 					xMin: this.data[i][xMinIndex],
 					xMax: this.data[i][xMinIndex + 2],
 					yMin: this.data[i][xMinIndex + 1],
 					yMax: this.data[i][xMinIndex + 3],
-					xBeforeIndex: xMinIndex / 2
+					xBeforeIndex: xMinIndex / 2,
+					xBeforeIndexArr: xMinIndex
 				}
 			}
 
@@ -3312,7 +3439,6 @@ define(['jquery', 'util/util'], function($, Util) {
 				label: label
 			});
 		},
-
 
 		repositionLabel: function(label, recalculateLabel) {
 			var x = !this.getFlip() ? this.getX(label.x) : this.getY(label.x),
@@ -3686,9 +3812,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.graph = graph;
 			this.properties = {};
 			this.saved = {};
-			this.createDom();
 			this.group = document.createElementNS(this.graph.ns, 'g');
 
+			this.createDom();
+			
+			
 			this._makeLabel();
 
 			this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
@@ -3697,6 +3825,21 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.group.appendChild(this._dom);
 			this.group.appendChild(this.rectEvent);
+			this.group.appendChild(this.label);
+
+			this.graph.shapeZone.appendChild(this.group);
+		},
+
+		setOriginalData: function(data, events) {
+			this.data = data;
+			this.events = events;
+		},
+
+		triggerChange: function() {
+			if(this.events.onChange)
+				this.events.onChange(this.data);
+
+			
 		},
 
 		setBBox: function() {
@@ -3721,53 +3864,61 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.graph.shapeZone.removeChild(this.group);
 		},
 
-		applyAll: function() {
+	/*	applyAll: function() {
 			for(var i in this.properties)
 				this._dom.setAttribute(i, this.properties[i]);
 		},
+*/
+		draw: function() {
 
-		redraw: function() {
-			this.kill();
-			var variable;
-			this.setPosition();
 			this.setFillColor();
-			
 			this.setStrokeColor();
 			this.setStrokeWidth();
 
 			if(this.get('labelPosition')) {
 				this.setLabelText();
-				this.setLabelPosition();
 				this.setLabelSize();
-				this.group.appendChild(this.label);
-				this.labelIn = true;
-			} else if(this.labelIn) {
-				this.group.removeChild(this.label);
-				this.labelIn = false;
 			}
+
 			if(this.get('labelAnchor'))
 				this._forceLabelAnchor();
+		},
+
+		redraw: function() {
+		//	this.kill();
+			var variable;
+			this.position = this.setPosition();
+
+			if(this.get('labelPosition')) {
+				this.setLabelPosition();
+//				this.group.appendChild(this.label);
+			}
+		
 			this.redrawImpl();
-			this.done();
+
+			if(this.afterDone)
+				this.afterDone();
+		//	this.done();
 		},
 
 		redrawImpl: function() {},
 
 		done: function() {
-			this.applyAll();
-			this.graph.shapeZone.appendChild(this.group);
-			this._inDom = true;
-			if(this.afterDone)
-				this.afterDone();
+			//this.applyAll();
+			//;
+			
+			
 		},
 
 		setSerie: function(serie) {			this.serie = serie;								},
 		set: function(prop, val) {			this.properties[prop] = val;					},
 		get: function(prop) {				return this.properties[prop];					},
+
+		getFromData: function(prop)			{ return this.data[prop]; 						},
 		setDom: function(prop, val) {		this._dom.setAttribute(prop, val);				},
 
 		setPosition: function() {
-			var position = this._getPosition(this.get('position'));
+			var position = this._getPosition(this.getFromData('pos'));
 			this.setDom('x', position.x);
 			this.setDom('y', position.y);
 		},
@@ -3775,7 +3926,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		setStrokeColor: function() {		this.setDom('stroke', this.get('strokeColor'));				},
 		setStrokeWidth: function() {		this.setDom('stroke-width', this.get('strokeWidth'));		},
 
-		setLabelText: function() {	 		if(this.label) this.label.textContent = this.get('labelText'); 					},
+		setLabelText: function() {	 		if(this.label) this.label.textContent = this.data.label.text;					},
 		setLabelSize: function() {			if(this.label) this.label.setAttribute('font-size', this.get('labelSize'))		},
 		setLabelPosition: function() {		if(this.label) this._setLabelPosition();										},
 		
@@ -3799,9 +3950,8 @@ define(['jquery', 'util/util'], function($, Util) {
 			for(var i in pos) {
 				if(!value[i] && !value['d' + i]) {
 					if(i == 'x')
-						pos[i] = rel ? relTo[i] : 0;
+						pos[i] = relTo ? relTo[i] : 0;
 					else {
-
 						var closest = this.serie.searchClosestValue(value.x);
 						pos[i] = closest.yMin;
 					}
@@ -3849,18 +3999,41 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		_makeLabel: function() {
+			var self = this;
 			this.label = document.createElementNS(this.graph.ns, 'text');
+			this.label.addEventListener('dblclick', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				$('<input type="text" />').attr('value', e.target.textContent).prependTo(self.graph._dom).css({
+					position: 'absolute',
+					'margin-top': (parseInt(e.target.getAttribute('y').replace('px', '')) - 10) + "px",
+					'margin-left': (parseInt(e.target.getAttribute('x').replace('px', '')) - 50) + "px",
+					textAlign: 'center',
+					width: '100px'
+				}).on('blur', function() {
+					$(this).remove();
+					//self.label.textContent = ;
+					self.data.label.text = $(this).attr('value');
+					self.triggerChange();
+				}).on('keyup', function(e) {
+					console.log(e.keyCode);
+					if(e.keyCode == 13)
+						$(this).trigger('blur');
+				}).focus();
+
+			});
 		},
 
 		_setLabelPosition: function(pos) {
-			var currPos = this.get('position');
+			var currPos = this.getFromData('pos');
 			var parsedCurrPos = this._getPosition(currPos);
 			if(!pos)
 				var pos = this._getPosition(this.get('labelPosition'), currPos);
 
 			this.label.setAttribute('x', pos.x);
 			this.label.setAttribute('y', pos.y);
-			this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
+			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
 			this.label.setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
 		},
 
@@ -3905,13 +4078,13 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		setPosition: function() {
-			var position = this._getPosition(this.get('position'));
+			var position = this._getPosition(this.getFromData('pos'));
 			this.setDom('x2', position.x);
 			this.setDom('y2', position.y);
 		},
 
 		setPosition2: function() {
-			var position = this._getPosition(this.get('position2'), this.get('position'));
+			var position = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
 			this.setDom('x1', position.x);
 			this.setDom('y1', position.y);
 		},
@@ -3935,7 +4108,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		setLabelPosition: function() {
 			this._setLabelPosition();
-			var pos = this._getPosition(this.get('labelPosition'), this.get('position'));
+			var pos = this._getPosition(this.get('labelPosition'), this.getFromData('pos'));
 			this.set('x1', pos.x);
 			this.set('y1', pos.y);
 		}
@@ -3954,8 +4127,8 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		setLabelPosition: function() {
-			var pos1 = this._getPosition(this.get('position'));
-			var pos2 = this._getPosition(this.get('position2'), this.get('position'));
+			var pos1 = this._getPosition(this.getFromData('pos'));
+			var pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
 			this._setLabelPosition(this._getPosition(this.get('labelPosition'), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
 			
 		},
@@ -3964,7 +4137,204 @@ define(['jquery', 'util/util'], function($, Util) {
 			/*$(this.group).children().each(function() {
 				console.log(this.getAttribute('x'), this.getAttribute('x1'), this.getAttribute('width'))
 			})*/
-			this.setBBox();
+	//		this.setBBox();
+		}
+	});
+
+
+
+	$.extend(GraphPeakInterval.prototype, GraphLine.prototype, {
+		createDom: function() {
+
+			this._dom = document.createElementNS(this.graph.ns, 'path');
+
+			this.domLine1 = document.createElementNS(this.graph.ns, 'line');
+			this.domLine1.setAttribute('stroke-width', '3');
+			this.domLine1.setAttribute('stroke', 'transparent');
+			this.domLine1.setAttribute('pointer-events', 'stroke');
+			this.domLine1.setAttribute('cursor', 'ew-resize');
+
+			this.domLine2 = document.createElementNS(this.graph.ns, 'line');
+			this.domLine2.setAttribute('stroke-width', '3');
+			this.domLine2.setAttribute('stroke', 'transparent');
+			this.domLine2.setAttribute('pointer-events', 'stroke');
+			this.domLine2.setAttribute('cursor', 'ew-resize');
+
+
+/*
+			this._clipper = document.createElementNS(this.graph.ns, 'rect');
+			this.clipPath = document.createElementNS(this.graph.ns, 'clipPath');
+			this.clipPath.appendChild(this._clipper);
+			this.clipPathId = Math.random() + Date.now();
+			this.clipPath.setAttribute('id', this.clipPathId);
+			this.group.appendChild(this.clipPath);
+			this._dom.setAttribute('clip-path', 'url(#' + this.clipPathId + ')');*/
+			this.setDom('cursor', 'move');
+			this.doDraw = undefined;
+			var self = this;
+
+			this._dom.addEventListener('mousedown', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				self.handleMouseDown(e);
+			});
+
+			this.domLine1.addEventListener('mousedown', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				self.handleMouseDown(e, 1);
+			});
+
+			this.domLine2.addEventListener('mousedown', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				self.handleMouseDown(e, 2);
+			});
+
+			this._dom.addEventListener('mousemove', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				self.handleMouseMove(e);
+			});
+
+			this._dom.addEventListener('mouseup', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				self.handleMouseUp(e);
+			});
+
+		},
+
+		handleMouseDown: function(e, resize) {
+
+			if(!resize) {
+				this.coordsI = this.graph.getXY(e);
+				this.moving = true;
+			} else {
+				this.resize = resize;
+				this.resizingPosition = ((this.reversed && resize == 2) || (!this.reversed && resize == 1)) ? this.getFromData('pos') : this.getFromData('pos2');
+			}
+
+			this.graph.annotationMoving(this);
+		},
+
+		handleMouseUp: function() {
+			this.moving = false;
+			this.resize = false;
+			this.graph.annotationMoving(false);
+
+			this.triggerChange();
+		},
+
+		handleMouseMove: function(e) {
+
+			if(this.moving) {
+				var coords = this.graph.getXY(e);
+				var delta = this.serie.getXAxis().getRelPx(coords.x - this.coordsI.x);
+				var pos1 = this.getFromData('pos');
+				var pos2 = this.getFromData('pos2');
+				pos1.x += delta;
+				pos2.x += delta;
+				
+				this.coordsI = coords;
+				this.setPosition();
+				this.redrawImpl();
+			} else if(this.resize) {
+				var value = this.serie.searchClosestValue(this.serie.getXAxis().getVal(this.graph.getXY(e).x - this.graph.getPaddingLeft()));
+				this.setPosition();
+				this.resizingPosition.x = value.xMin;
+				this.redrawImpl();
+			}
+		},
+
+		redrawImpl: function() {
+			//var doDraw = this.setPosition();
+		//	this.setDom('fill', 'url(#' + 'patternFill' + this.graph._creation + ')')
+			if(this.position != this.doDraw) {
+				this.group.setAttribute("visibility", this.position ? "visible" : 'hidden');
+				this.doDraw = this.position;
+			}
+		},
+
+		setPosition: function() {
+
+			
+			var posXY = this._getPosition(this.getFromData('pos')),
+				posXY2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos')),
+				w = Math.abs(posXY.x - posXY2.x),
+				x = Math.min(posXY.x, posXY2.x);
+
+			this.reversed = x == posXY2.x;
+			
+
+//				console.log(this.getFromData('pos'), this.getFromData('pos2'), posXY, posXY2);
+
+			if(w < 2 || x + w < 0 || x > this.graph.getDrawingWidth())
+				return false;
+
+			this.group.appendChild(this.domLine1);
+			this.group.appendChild(this.domLine2);
+
+
+			var v1 = this.serie.searchClosestValue(this.getFromData(this.reversed ? 'pos2' : 'pos').x),
+				v2 = this.serie.searchClosestValue(this.getFromData(this.reversed ? 'pos' : 'pos2').x),
+				i, j, init, max, k, x, y, firstX, firstY, currentLine;
+
+
+			if(!v1 || !v2)
+				return false;
+			for(i = v1.dataIndex; i <= v2.dataIndex ; i++) {
+				currentLine = "M ";
+				init = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+				max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[j].length;
+				k = 0;
+				for(j = init; j <= max; j+=2) {
+					x = this.serie.getX(this.serie.data[i][j + 0]),
+					y = this.serie.getY(this.serie.data[i][j + 1]);
+					if(j == init) {
+						firstX = x;
+						firstY = y;
+					}
+					currentLine = this.serie._addPoint(currentLine, x, y, k);
+					k++;
+				}
+
+				if(!firstX || !firstY || !x || !y)
+					return;
+
+				this.domLine1.setAttribute('x1', firstX);
+				this.domLine1.setAttribute('x2', firstX);
+
+				this.domLine2.setAttribute('x1', x);
+				this.domLine2.setAttribute('x2', x);
+
+				this.domLine1.setAttribute('y1', firstY);
+				this.domLine1.setAttribute('y2', this.serie.getY(0));
+
+				this.domLine2.setAttribute('y1', y);
+				this.domLine2.setAttribute('y2', this.serie.getY(0));
+
+
+				currentLine += " V " + this.serie.getYAxis().getPx(0) + " H " + firstX + " z";
+				this.setDom('d', currentLine);
+			}
+			
+			return true;
+		},
+
+
+		setLabelPosition: function() {
+			var pos1 = this._getPosition(this.getFromData('pos'));
+			var pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
+			this._setLabelPosition(this._getPosition(this.get('labelPosition'), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
+			
+		},
+
+		afterDone: function() {
+			/*$(this.group).children().each(function() {
+				console.log(this.getAttribute('x'), this.getAttribute('x1'), this.getAttribute('width'))
+			})*/
+		//	this.setBBox();
 		}
 	});
 

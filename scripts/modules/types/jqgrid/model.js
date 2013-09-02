@@ -28,7 +28,6 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 				break;
 			}
 			var data = this.module.getDataFromRel(rel);
-			console.log(data);
 			if(!data || data == null)
 				return;
 			//data = data.getData();

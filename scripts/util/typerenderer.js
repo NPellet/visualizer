@@ -1,6 +1,6 @@
 
 define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, API, Util, Traversing) {
-console.log(API, Util, Traversing);
+
 	var functions = {};
 
 
@@ -286,7 +286,6 @@ console.log(API, Util, Traversing);
 
 		require(['libs/plot/plot', 'util/jcampconverter'], function(Graph, Converter) {
 
-			console.log(value);
 			var dom = $("<div />").css({width: 200, height: 200});
 			graph = new Graph(dom.get(0), {
 				closeRight: false, 
@@ -366,6 +365,7 @@ console.log(API, Util, Traversing);
 
 		Traversing.getValueFromJPath(element, jpath).done(function(element) {
 			Traversing.fetchElementIfNeeded(element).done(function(element) { 
+
 				_valueToScreen(deferred, element, box, opts); 
 			});	
 		})

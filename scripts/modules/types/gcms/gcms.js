@@ -261,7 +261,9 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			this.gcSeries = [];
 
 			for(var i in gc) {
-				serie = this.gc.newSerie(i);
+				serie = this.gc.newSerie(i, {
+					areaUnderLine: true
+				});
 				this.gcSeries.push(serie);
 				serie.setData(gc[i]);
 				serie.autoAxis();
