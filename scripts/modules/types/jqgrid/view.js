@@ -85,7 +85,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				   	rowNum: nbLines,
 				   	editable: true,
 				   	forceFit: true,
-				   	//autoWidth: true,
+				   	autoWidth: true,
 				   	shrinkToFit: true,
 				   	cellsubmit: 'clientArray',
 				   	cellEdit: true,

@@ -2126,7 +2126,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				value *= this.options.ticklabelratio;
 
 			if(this.options.shiftToZero)
-				value -= this.getMin() * (this.options.ticklabelratio || 1);
+				value -= this.getMinValue() * (this.options.ticklabelratio || 1);
 			return value;
 		},
 

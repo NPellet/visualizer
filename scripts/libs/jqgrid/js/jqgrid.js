@@ -2283,6 +2283,7 @@ $.fn.jqGrid = function( pin ) {
 			}
 			grid.width = ts.p.width;
 			ts.p.tblwidth = initwidth;
+			console.log(ts.p.forceFit);
 			if(ts.p.shrinkToFit ===false && ts.p.forceFit === true) {ts.p.forceFit=false;}
 			if(ts.p.shrinkToFit===true && vc > 0) {
 				aw = grid.width-brd*vc-gw;

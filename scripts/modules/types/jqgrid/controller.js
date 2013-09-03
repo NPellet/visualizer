@@ -161,8 +161,22 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 							{
 								type: 'Checkbox',
 								name: 'number',
-								title: 'Is a number ?',
-								options: {number: 'number'}
+								title: 'Number ?',
+								options: {number: 'Yes'}
+							},
+
+							{
+								type: 'Checkbox',
+								name: 'editable',
+								title: 'Editable',
+								options: {number: 'Yes'}
+							},
+
+
+							{
+								type: 'Text',
+								name: 'width',
+								title: 'Width (rel)'
 							}
 
 						]
@@ -178,12 +192,16 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			
 			var titles = [],
 				jpaths = [],
-				colnumber = [];
+				colnumber = [],
+				coleditable = [],
+				colwidth = [];
 
 			for(var i in cols) {
 				titles.push(i);
 				jpaths.push(cols[i].jpath);
 				colnumber.push(cols[i].number ? ['number'] : []);
+				coleditable.push(cols[i].editable ? ['true'] : []);
+				colwidth.push(cols[i].width);
 			}
 
 			return {	
