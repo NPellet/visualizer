@@ -68,8 +68,15 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				var colModel = [];
 				for(var j in jpaths) {
 					colNames.push(j);
-					colModel.push({name: j, index: j, title: false , editable: true, _jpath: jpaths[j].jpath});
+					colModel.push({
+						name: j, 
+						index: j, 
+						title: false, 
+						editable: jpaths[j].editable || false,
+						_jpath: jpaths[j].jpath
+					});
 				}
+
 				//colModel[colModel.length - 1].width = "*";
 				nbLines = this.module.getConfiguration().nbLines || 10;	
 
@@ -89,7 +96,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				   	shrinkToFit: true,
 				   	cellsubmit: 'clientArray',
 				   	cellEdit: true,
-				   	rowList:[10,20,30,100],
+				   	rowList: [10,20,30,100],
 				   	pager: '#pager' + this.unique,
 				   	rowattr: function() {
 				   		if(arguments[1]._backgroundColor)
@@ -104,6 +111,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				   	},
 				    viewrecords: true,
 				    onSelectRow: function(rowid, status) {
+				
 				    	if(status)
 				    		self.module.controller.onToggleOn(self.elements[rowid]);
 				    	else

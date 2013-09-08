@@ -121,6 +121,13 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 			fromtoMS: function(value, name) {
 				this.gcmsInstance.getMS().getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
+			},
+
+			zoomOnAnnotation: function(value, name) {
+				if(!value.pos && !value.pos2)
+					return;
+				console.log(value);
+				this.gcmsInstance.zoomOn(value.pos.x, value.pos2.x);
 			}
 		},
 
@@ -136,7 +143,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				shape.draw();
 				shape.redraw();
 			});
-			
+
 			if(annotation._highlight) {
 				API.listenHighlight(annotation._highlight, function(onOff) {
 					if(onOff)
@@ -153,5 +160,3 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 	return view;
 });
-
- 

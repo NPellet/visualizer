@@ -20,6 +20,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 
 		lineClick: function(element, row) {
 			this.setVarFromEvent('onSelect', element);
+			this.sendAction('row', element, 'onSelect');
 		},
 
 		onToggleOn: function(element, row) {
@@ -169,16 +170,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 								type: 'Checkbox',
 								name: 'editable',
 								title: 'Editable',
-								options: {number: 'Yes'}
-							},
-
-
-							{
-								type: 'Text',
-								name: 'width',
-								title: 'Width (rel)'
+								options: {editable: 'Yes'}
 							}
-
 						]
 					}
 				}
@@ -201,7 +194,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 				jpaths.push(cols[i].jpath);
 				colnumber.push(cols[i].number ? ['number'] : []);
 				coleditable.push(cols[i].editable ? ['true'] : []);
-				colwidth.push(cols[i].width);
+			//	colwidth.push(cols[i].width);
 			}
 
 			return {	
@@ -217,7 +210,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 					cols: [{
 						coltitle: titles,
 						coljpath: jpaths,
-						number: colnumber
+						number: colnumber,
+						editable: coleditable
 					}]
 				}
 			}
@@ -227,7 +221,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			var group = confSection[0].cols[0];
 			var cols = {};
 			for(var i = 0; i < group.length; i++) {
-				cols[group[i].coltitle] = { jpath: group[i].coljpath, number: group[i].number[0] == 'number' };
+				cols[group[i].coltitle] = { jpath: group[i].coljpath, number: group[i].number[0] == 'number', editable: group[i].editable[0] == 'editable' };
 			}
 			this.module.getConfiguration().colsjPaths = cols;
 			this.module.getConfiguration().nbLines = confSection[0].gencfg[0].nblines[0];

@@ -2283,7 +2283,7 @@ $.fn.jqGrid = function( pin ) {
 			}
 			grid.width = ts.p.width;
 			ts.p.tblwidth = initwidth;
-			console.log(ts.p.forceFit);
+			
 			if(ts.p.shrinkToFit ===false && ts.p.forceFit === true) {ts.p.forceFit=false;}
 			if(ts.p.shrinkToFit===true && vc > 0) {
 				aw = grid.width-brd*vc-gw;
@@ -2637,6 +2637,7 @@ $.fn.jqGrid = function( pin ) {
 			$(ptr).removeClass("ui-state-hover");
 		});
 		}
+
 		var ri,ci, tdHtml;
 		$(ts).before(grid.hDiv).click(function(e) {
 
@@ -2648,6 +2649,7 @@ $.fn.jqGrid = function( pin ) {
 			var scb = $(td).hasClass("cbox"),
 			cSel = $(ts).triggerHandler("jqGridBeforeSelectRow", [ptr[0].id, e]);
 			cSel = (cSel === false || cSel === 'stop') ? false : true;
+
 			if(cSel && $.isFunction(ts.p.beforeSelectRow)) { cSel = ts.p.beforeSelectRow.call(ts,ptr[0].id, e); }
 			if (td.tagName === 'A' || ((td.tagName === 'INPUT' || td.tagName === 'TEXTAREA' || td.tagName === 'OPTION' || td.tagName === 'SELECT' ) && !scb) ) { return; }
 
@@ -2659,12 +2661,13 @@ $.fn.jqGrid = function( pin ) {
 				if($.isFunction(ts.p.onCellSelect)) {
 					ts.p.onCellSelect.call(ts,ri,ci,tdHtml,e);
 				}
-
+console.log(ts.p.multikey, scb);
 				if(ts.p.cellEdit === true) {
 					if(ts.p.multiselect && scb){
 						$(ts).jqGrid("setSelection", ri ,true,e);
 					} else {
 						ri = ptr[0].rowIndex;
+						$(ts).jqGrid("setSelection", ri ,true,e);
 						try {$(ts).jqGrid("editCell",ri,ci,true);} catch (_) {}
 					}
 				} else if ( !ts.p.multikey ) {

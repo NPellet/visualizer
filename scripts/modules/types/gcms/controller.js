@@ -63,7 +63,8 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 
 		actionsReceive: {
 			'fromtoGC': 'From - To on GC',
-			'fromtoMS': 'From - To on MS'
+			'fromtoMS': 'From - To on MS',
+			'zoomOnAnnotation': 'Zoom on annotation'
 		},
 
 		moduleInformations: {

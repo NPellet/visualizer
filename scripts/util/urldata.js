@@ -79,8 +79,14 @@ define(['jquery', 'util/lru', 'util/debug'], function($, LRU, Debug) {
 				return pendings[url];
 
 			if(typeof force == "number") {
-
 				timeout = force;
+				force = false;
+			} else if(typeof timeout == "object") {
+				data = timeout;
+				timeout = 0;
+				force = false;
+			} else if(typeof force == "object") {
+				data = force;
 				force = false;
 			}
 
@@ -97,6 +103,15 @@ define(['jquery', 'util/lru', 'util/debug'], function($, LRU, Debug) {
 			// Standard: first LRU, then ajax
 			doLRUOrAjax(def, url, force, timeout);
 			return def;
+		},
+
+		post: function(url, data) {
+			return $.ajax({
+				url: url,
+				timeout: 120000,
+				data: data,
+				type: 'post',
+			});
 		},
 
 		emptyMemory: function() {

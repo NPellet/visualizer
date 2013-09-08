@@ -155,3 +155,8 @@ tr.ui-search-toolbar select {margin: 1px 0 0 0}
 .jqgrow:hover {
 	background-color: #e5be39 !important;
 }
+
+.jqgrow td.ui-state-highlight {
+	background-color: transparent;
+	border: none;
+}

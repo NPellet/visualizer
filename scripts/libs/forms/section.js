@@ -22,7 +22,7 @@ define(['jquery', 'forms/grouplist', 'forms/grouptable', 'forms/title'], functio
 			this.setTitle(this.options.title);
 	}
 
-	section.prototype = {
+	var prototype = {
 			
 		setForm: function(form) { this.form = form; },
 		getForm: function() {
@@ -53,12 +53,12 @@ define(['jquery', 'forms/grouplist', 'forms/grouptable', 'forms/title'], functio
 		},
 
 		setStructure: function(structure) {
-			var section, group;
+			var _section, group;
 			if(structure.sections)
 				for(var i in structure.sections) {
-					section = new Section(i, structure.sections[i].config);
-					this.addSection(section);
-					section.setStructure(structure.sections[i]);
+					_section = new section(i, structure.sections[i].config);
+					this.addSection(_section);
+					_section.setStructure(structure.sections[i]);
 				}
 
 			if(structure.groups)
@@ -357,7 +357,7 @@ define(['jquery', 'forms/grouplist', 'forms/grouptable', 'forms/title'], functio
 				
 				var sectionsXML;
 				if((sectionsXML = $(this).children('sections')).length > 0)
-					section.prototype.fillSections(section, sectionsXML);
+					prototype.fillSections(section, sectionsXML);
 					
 					
 				if(section.fieldGroups) {
@@ -482,7 +482,7 @@ define(['jquery', 'forms/grouplist', 'forms/grouptable', 'forms/title'], functio
 					values[section.sections[i].getName()] = [];
 				var value = {};
 				values[section.sections[i].getName()].push(value);
-				section.prototype.getValue(section.sections[i], value);
+				prototype.getValue(section.sections[i], value);
 			
 			}
 			
@@ -509,7 +509,7 @@ define(['jquery', 'forms/grouplist', 'forms/grouptable', 'forms/title'], functio
 					values.sections[section.sections[i].getName()] = [];
 				var value = {};
 				values.sections[section.sections[i].getName()].push(value);
-				section.prototype.getValueFull(section.sections[i], value);
+				prototype.getValueFull(section.sections[i], value);
 			}
 			
 			if(section.fieldGroups) {
@@ -523,6 +523,8 @@ define(['jquery', 'forms/grouplist', 'forms/grouptable', 'forms/title'], functio
 			}
 		}
 	}
+
+	section.prototype = prototype;
 
 	return section;
 });

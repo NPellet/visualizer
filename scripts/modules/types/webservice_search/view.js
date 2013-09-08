@@ -28,12 +28,22 @@ define(['modules/defaultview'], function(Default) {
 		},
 		
 		onResize: function() {
+			
 		},
 		
 		blank: function() {
 			
 		},
 		
+		update: {
+			'vartrigger': function(variable) {
+				if(variable == undefined)
+					return;
+				
+				this.module.controller.doSearch();
+			}
+		},
+
 		getDom: function() {
 			return this.dom;
 		},

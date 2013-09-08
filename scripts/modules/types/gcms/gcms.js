@@ -239,6 +239,14 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			this.ms.kill();
 		},
 
+		zoomOn: function(start, end) {
+			this.gc.getBottomAxis()._doZoomVal(start - (end - start)*0.4, end + (end - start)*0.4);
+
+			this.gc.redraw(true);
+			this.gc.drawSeries(true);
+
+		},
+
 		setMSContinuous: function(cont) {
 			this.msContinuous = cont;
 		},
