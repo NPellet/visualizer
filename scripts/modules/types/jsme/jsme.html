@@ -15,6 +15,10 @@
 			this.controller = controller;
 		}
 
+		this.setMolFile = function(mol) {
+			jsmeApplet.readMolFile(mol);
+		}
+
 		function jsmeOnLoad() {
 			var w = window.innerWidth;
 			var h = window.innerHeight;
@@ -24,6 +28,7 @@
 				//optional parameters
 				"options" : "query,hydrogens"
 			});
+			console.log(jsmeApplet);
 			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() {  var mol = this.jsmeApplet.molFile(); this.controller.onChange(mol); })');
 
 		}

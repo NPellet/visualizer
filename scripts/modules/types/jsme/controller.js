@@ -6,9 +6,7 @@ define(['modules/defaultcontroller'], function(Default) {
 
 		onChange: function(mol) {
 			this.setVarFromEvent('onStructureChange', mol);
-			console.log(mol);
 		},
-		
 
 		configurationSend: {
 			
@@ -27,10 +25,10 @@ define(['modules/defaultcontroller'], function(Default) {
 		
 		configurationReceive: {
 			
-			mol2d: {
-				type: ['mol2d'],
+			mol: {
+				type: ['molfile2D'],
 				label: 'Mol 2D'
-			},
+			}
 
 		},
 

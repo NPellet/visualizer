@@ -56,6 +56,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 					varName = varName[0];
 				if(!self.sourceMap)
 					return;
+				
 				var value = self.buildData(varValue, self.module.controller.configurationReceive[self.sourceMap[varName].rel].type);
 				self.data[varName] = value;
 				var rel = self.module.getDataRelFromName(varName);

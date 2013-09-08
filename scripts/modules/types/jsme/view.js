@@ -8,7 +8,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 			this.colorvars = [];
 			this.dom = $('<iframe />').attr('src', require.toUrl('./jsme.html'));
 			this.module.getDomContent().html(this.dom);
-			this.onReady = $.Deferred();
+			this.onReady = $.Deferred().resolve();
 			var self = this;
 			this.dom.bind('load', function() {
 				self.dom.get(0).contentWindow.setController(self.module.controller);
@@ -39,9 +39,9 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 
 		update: { 
 
-			'fromTo': function(moduleValue) {
-				
-				return;
+			'mol': function(moduleValue) {
+				console.log(moduleValue);
+				this.dom.get(0).contentWindow.setMolFile(DataTraversing.getValueIfNeeded(moduleValue));
 			},
 
 			'xArray': function(moduleValue, varname) {
