@@ -1,0 +1,34 @@
+
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<title></title>
+		<script type="text/javascript" language="javascript" src="./libs/jsme/jsme.nocache.js"></script>
+	</head>
+	<body style="margin: 0; padding: 0;">
+
+<div id="appletContainer"></div>
+	<script type="text/javascript">
+
+		this.setController = function(controller) {
+			this.controller = controller;
+		}
+
+		function jsmeOnLoad() {
+			var w = window.innerWidth;
+			var h = window.innerHeight;
+			
+			var __self = window;
+			jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px", {
+				//optional parameters
+				"options" : "query,hydrogens"
+			});
+			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() {  var mol = this.jsmeApplet.molFile(); this.controller.onChange(mol); })');
+
+		}
+	</script>
+
+
+	</body>
+</html>

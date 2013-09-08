@@ -27,6 +27,7 @@ define(['modules/module'], function(Module) {
 				'2dnmr': '2D NMR',
 				'spectra_displayer': 'Spectra displayer',
 				'gcms': 'GC-MS',
+				'jsme': 'JSME Molecular Editor',
 				'jsmol': 'JSMol',
 				'jsmol_script': 'JSMol Script',
 				'ivstability': 'IV stability',
