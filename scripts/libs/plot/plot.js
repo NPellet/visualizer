@@ -1,9 +1,6 @@
-
 define(['jquery', 'util/util'], function($, Util) {
 
 	var _scope = this;
-
-
 	var graphDefaults =  {
 		paddingTop: 30,
 		paddingBottom: 0,
@@ -22,26 +19,27 @@ define(['jquery', 'util/util'], function($, Util) {
 		defaultMouseAction: 'drag', // rangeX, rangeY
 		shiftMouseAction: 'zoomXY', // rangeX, rangeY
 		defaultWheelAction: 'zoomY',
-
 		lineToZero: false,
-
 		fontSize: 12,
 		fontFamily: 'Myriad Pro, Helvetica, Arial',
-
 		addLabelOnClick: false,
-
 		onVerticalTracking: false,
 		onHorizontalTracking: false,
-
-		rangeLimitX: 0,
+		rangeLimitX: 1,
 		rangeLimitY: 0,
 
 		onRangeX: false,
 		onRangeY: false,
-
 		onRangeXRemove: false,
+		
+		unzoomGradual: true,
 
-		useIntegrals: true
+		plugins: ['zoom', 'drag'],
+
+		keyCombinations: {
+			integral: { shift: true, ctrl: false },
+			zoom: { shift: false, ctrl: false }
+		}
 	};
 
 
@@ -65,8 +63,6 @@ define(['jquery', 'util/util'], function($, Util) {
 		this.registerEvents();
 		this.shapes = [];
 
-		this.bypassHandleMouseMove = false;
-
 		this.trackingLines = {
 			id: 0,
 			current: false,
@@ -86,6 +82,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		
 		this.currentAction = false;
 
+		var funcName;
 		if(axis) {
 			for(var i in axis) {
 				for(var j = 0, l = axis[i].length; j < l; j++) {
@@ -99,6 +96,8 @@ define(['jquery', 'util/util'], function($, Util) {
 				}
 			}
 		}
+
+		this._pluginsInit();
 	}
 
 	Graph.extendPrototype = function(toWhat, fromWhat) {
@@ -120,8 +119,6 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.defs = document.createElementNS(this.ns, 'defs');
 			this.dom.appendChild(this.defs);
-
-			
 
 			this.rectEvent = document.createElementNS(this.ns, 'rect');
 			this.rectEvent.setAttribute('pointer-events', 'fill');
@@ -233,12 +230,9 @@ define(['jquery', 'util/util'], function($, Util) {
 
 
 			this.plotGroup.setAttribute('clip-path', 'url(#_clipplot' + this._creation + ')');
-		},
 
-		annotationMoving: function(start) {
-			this.bypassHandleMouse = start;
+			this.bypassHandleMouse = false;
 		},
-
 
 		setOption: function(name, val) {
 			this.options[name] = val;
@@ -294,6 +288,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.dom.addEventListener('click', function(e) {
 
+				// Cancel right click or Command+Click
 				if(e.which == 3 || e.ctrlKey)
 					return;
 				e.preventDefault();
@@ -301,29 +296,12 @@ define(['jquery', 'util/util'], function($, Util) {
 				if(self.clickTimeout)
 					window.clearTimeout(self.clickTimeout);
 
+				// Only execute the action after 200ms
 				self.clickTimeout = window.setTimeout(function() {
-					//if(self.cancelClick)
-					//	return self.cancelClick = false;
-					
 					self.handleClick(coords.x,coords.y,e);
 				}, 200);
 			});
- 
-			if(require) {
-				require(['util/context'], function(Context) {
-					Context.listen(self.dom, [
-						['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Add tracking line</a></li>', 
-						function(e) {
-							e.preventDefault();
-							e.stopPropagation();
-							var coords = self.getXY(e);
-							self.addTrackingLine(coords, true);
-						}]
-					]);
 
-				});
-
-			}
 
 			document.addEventListener('keydown', function(e) {
 				var code = e.keyCode;
@@ -363,122 +341,66 @@ define(['jquery', 'util/util'], function($, Util) {
 			});
 		},
 
+
+
+		handleMouseDown: function(x,y,e) {
+			var self = this,
+				$target = $(e.target), 
+				shift = e.shiftKey, 
+				ctrl = e.ctrlKey, 
+				keyComb = this.options.keyCombinations,
+				i;
+
+			for(i in keyComb) {
+				if(!keyComb[i]._forced) {
+					if(shift !== keyComb[i].shift)
+						continue;
+					if(ctrl !== keyComb[i].ctrl)
+						continue;
+				}
+				this.mouseLease = i; // Lease the mouse action to the current action
+				this._pluginExecute(i, 'onMouseDown', [x, y, e]);
+				break;
+			}
+		},
+
+
 		handleMouseMove: function(x, y, e) {
 
 			if(this.bypassHandleMouse) {
 				this.bypassHandleMouse.handleMouseMove(e);
 				return;
 			}
+			
+			this.applyToAxes('handleMouseMove', [x - this.options.paddingLeft, e], true, false);
+			this.applyToAxes('handleMouseMove', [y - this.options.paddingTop, e], false, true);
 
-
-			var _x = x - this.options.paddingLeft;
-			var _y = y - this.options.paddingTop;
-
-			this.applyToAxes('handleMouseMove', [_x, e], true, false);
-			this.applyToAxes('handleMouseMove', [_y, e], false, true);
-
-			if(this.currentAction == false) {
-
+			if(!this.mouseLease) {
 				var results = {};
 				for(var i = 0; i < this.series.length; i++)
 					results[this.series[i].getName()] = this.series[i].handleMouseMove(false, true);
-				
 				if(this.options.onMouseMoveData)
 					this.options.onMouseMoveData(e, results);
-
-			} else if(this.currentAction == 'dragging') {
-
-				var deltaX = x - this._draggingX;
-				var deltaY = y - this._draggingY;
-
-				this.applyToAxes(function(axis) {
-					axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaX));
-					axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaX));
-				}, false, true, false);
- 
-				this.applyToAxes(function(axis) {
-					axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaY));
-					axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaY));
-				}, false, false, true);
-
-				this._draggingX = x;
-				this._draggingY = y;
-
-				this.refreshDrawingZone(true);
-				this.drawSeries();
-
-			} else if(this.currentAction == 'zooming') {
-
-				switch(this._zoomingMode) {
-
-					case 'xy':
-						this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
-						this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
-						this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
-						this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
-					break;
-
-					case 'x': 
-						this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
-						this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
-					break;
-
-					case 'y':
-						this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
-						this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
-					break;
-				}
-				
-			} else if(this.currentAction == 'labelDragging') {
-				for(var i = 0, l = this.series.length; i < l; i++) {
-					if(this.series[i].labelDragging)
-						this.series[i].handleLabelMove(x, y);
-				}
-			} else if(this.currentAction == 'labelDraggingMain') {
-				for(var i = 0, l = this.series.length; i < l; i++) {
-					if(this.series[i].labelDragging)
-						this.series[i].handleLabelMainMove(x, y);
-				}
-			} else if(this.currentAction == 'draggingVerticalLine') {
-				var obj = this.trackingLines.current;
-				if(obj)
-					this.moveTrackingLine(obj, x - this.getPaddingLeft());
-
-			} else if(this.currentAction == 'rangeX' && this.ranges.current) {
-				x -= this.getPaddingLeft();
-				this.ranges.current.xMin = Math.min(x, this.ranges.current.xStart);
-				this.ranges.current.xMax = Math.max(x, this.ranges.current.xStart);
-
-				this.ranges.current.rect.setAttribute('x', this.ranges.current.xMin);
-				this.ranges.current.rect.setAttribute('width', Math.abs(this.ranges.current.xStart - x));
-				this.ranges.current.use1.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMin - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
-				this.ranges.current.use2.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMax - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
-				
-				this.ranges.current.min = this.ranges.current.use1;
-				this.ranges.current.max = this.ranges.current.use2;
-
-		//		if(this.options.onRangeX)
-		//			this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xStart), this.getXAxis().getVal(x), this.ranges.current);
-			} else if(this.currentAction == 'moveRangeX' && this.ranges.current) {
-				
-				x -= this.getPaddingLeft();
-				var deltaX = this.ranges.current.lastX - x;
-				this.ranges.current.lastX = x;
-
-				this.ranges.current.xMin -= deltaX;
-				this.ranges.current.xMax -= deltaX;
-				
-				this.ranges.current.rect.setAttribute('x', this.ranges.current.xMin);
-				this.ranges.current.rect.setAttribute('width', Math.abs(this.ranges.current.xMax - this.ranges.current.xMin));
-				this.ranges.current.use1.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMin - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
-				this.ranges.current.use2.setAttribute('transform', 'translate(' + Math.round(this.ranges.current.xMax - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
-
-		//		if(this.options.onRangeX)
-		//			this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xMin), this.getXAxis().getVal(this.ranges.current.xMax), this.ranges.current);
+				return;
 			}
 
-			return results;
+			this._pluginExecute(this.mouseLease, 'onMouseMove', [x, y, e, $target = $(e.target)]);
 		},
+
+
+		handleMouseUp: function(x, y, e) {
+
+			if(this.bypassHandleMouse) {
+				this.bypassHandleMouse.handleMouseUp(e);
+				return;
+			}
+
+			this._pluginExecute(this.mouseLease, 'onMouseUp', [x, y, e, $(e.target)]);
+			this.mouseLease = false;
+
+		},
+
+
 
 		isZooming: function() {
 			return this.currentAction == 'zooming';
@@ -489,9 +411,13 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(this.options.defaultWheelAction == 'zoomY' || this.options.defaultWheelAction == 'zoomX') {
 
 				this.applyToAxes('handleMouseWheel', [delta, e], false, true);
+
 			} else if(this.options.defaultWheelAction == 'toSeries') {
-				for(var i = 0, l = this.series.length; i < l; i++)
+
+				for(var i = 0, l = this.series.length; i < l; i++) {
 					this.series[i].handleMouseWheel(delta, e);
+				}
+
 			}
 
 			this.redraw(true);
@@ -500,329 +426,55 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		handleClick: function(x, y, e) {
 			
-			if(!this.options.addLabelOnClick)
+			if(!this.options.addLabelOnClick){
 				return;
+			}
 
-			if(this.currentAction !== false)
+			if(this.currentAction !== false) {
 				return;
+			}
 
 			for(var i = 0, l = this.series.length; i < l; i++) {
 				this.series[i].addLabelX(this.series[i].getXAxis().getVal(x - this.getPaddingLeft()));
 			}
 		},
 
-		makeHandle: function() {
-
-			var rangeHandle = document.createElementNS(this.ns, 'g');
-			rangeHandle.setAttribute('id', "rangeHandle" + this._creation);
-			var r = document.createElementNS(this.ns, 'rect');
-			r.setAttribute('rx', 0);
-			r.setAttribute('ry', 0);
-			r.setAttribute('stroke', 'black');
-			r.setAttribute('fill', 'white');
-
-			r.setAttribute('width', 10);
-			r.setAttribute('height', 20);
-			r.setAttribute('x', 0);
-			r.setAttribute('y', 0);
-			r.setAttribute('shape-rendering', 'crispEdges');
-			r.setAttribute('cursor', 'ew-resize');
-			rangeHandle.appendChild(r);
-
-
-			var l = document.createElementNS(this.ns, 'line');
-			l.setAttribute('x1', 4);
-			l.setAttribute('x2', 4);
-			l.setAttribute('y1', 4);
-			l.setAttribute('y2', 18);
-			l.setAttribute('stroke', 'black');
-			l.setAttribute('shape-rendering', 'crispEdges');
-			l.setAttribute('cursor', 'ew-resize');
-			rangeHandle.appendChild(l);
-
-			var l = document.createElementNS(this.ns, 'line');
-			l.setAttribute('x1', 6);
-			l.setAttribute('x2', 6);
-			l.setAttribute('y1', 4);
-			l.setAttribute('y2', 18);
-			l.setAttribute('stroke', 'black');
-			l.setAttribute('shape-rendering', 'crispEdges');
-			l.setAttribute('cursor', 'ew-resize');
-			rangeHandle.appendChild(l);
-
-			return rangeHandle;
-		},
-
-		handleMouseDown: function(x,y,e) {
-			var $target = $(e.target), self = this;
-
-
-			if((this.options.defaultMouseAction == 'drag' && e.shiftKey == false) || (this.options.shiftMouseAction == 'drag' && e.shiftKey == true)) {
-				this.currentAction = 'dragging';
-				this._draggingX = x;
-				this._draggingY = y;
-
-			} else if($target.attr('class') == 'verticalLine') {
-
-				this.currentAction = 'draggingVerticalLine';
-				this.trackingLines.current = this.trackingLines.vertical[$target.data('trackinglineid')];
-				return;
-
-			} else if($target.attr('class') == 'rangeRect') {
-
-				var id = $target.attr('data-rangex-id');
-				var group = self.ranges.x[id];
-				
-				self.currentAction = 'moveRangeX';
-				self.ranges.current = group;
-				self.ranges.current.lastX = x - self.getPaddingLeft();
-
-			} else if((this.options.defaultMouseAction == 'rangeX' && e.shiftKey == false) || (this.options.shiftMouseAction == 'rangeX' && e.shiftKey == true)) {
-
-				if(this.ranges.countX == this.options.rangeLimitX)
-					return;
-				x -= this.getPaddingLeft();
-
-				this.currentAction = 'rangeX';
-				var rangeGroup = document.createElementNS(this.ns, 'g');
-				var rangeRect = document.createElementNS(this.ns, 'rect');
-				rangeRect.setAttribute('y', 0);
-				rangeRect.setAttribute('height', this.getDrawingHeight() - this.shift[0] - this.shift[3]);
-				rangeRect.setAttribute('width', 0);
-				rangeRect.setAttribute('x', x);
-				rangeRect.setAttribute('class', 'rangeRect');
-				rangeRect.setAttribute('cursor', 'move');
-				var color = Util.getNextColorRGB(this.ranges.countX + this.ranges.countY, this.options.rangeLimitX + this.options.rangeLimitY);
-
-				rangeRect.setAttribute('fill', 'rgba(' + color + ', 0.3)');
-				rangeRect.setAttribute('stroke', 'rgba(' + color + ', 0.9)');
-
-				if(require) {
-					require(['util/context'], function(Context) {
-						Context.listen(rangeRect, [
-							['<li><a><span class="ui-icon ui-icon-cross"></span> Remove range zone</a></li>', 
-							function(e) {
-								var id = rangeRect.getAttribute('data-rangex-id');
-								self.removeRangeX(id);
-							}]
-						]);
-					});
-				}
-
-
-				rangeGroup.appendChild(rangeRect);
-				var use = document.createElementNS(this.ns, 'use');
-				var use = this.makeHandle();
-				use.setAttribute('transform', 'translate(' + (x - 6) + " " + ((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
-				rangeGroup.appendChild(use);
-				var use2 = this.makeHandle();
-				use2.setAttribute('transform', 'translate(' + (x - 6) + " " + ((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
-				use2.addEventListener('mousedown', function(e) {
-					e.stopPropagation();
-					var id = $(this).attr('data-rangex-id');
-					var group = self.ranges.x[id];
-					
-					group.xStart = (this == group.min) ? group.xMax : group.xMin;
-					
-					self.currentAction = 'rangeX';
-					self.ranges.current = group;
-				});
-
-				use.addEventListener('mousedown', function(e) {
-					e.stopPropagation();
-					var id = $(this).attr('data-rangex-id');
-					
-					var group = self.ranges.x[id];
-
-					
-					group.xStart  = (this == group.min) ? group.xMax : group.xMin;
-					self.currentAction = 'rangeX';
-					self.ranges.current = group;
-				});
-
-				rangeGroup.appendChild(use2);
-
-				this.ranges.current = {
-					group: rangeGroup,
-					rect: rangeRect,
-					use1: use,
-					use2: use2,
-					xStart: x,
-					color: color,
-					id: this.ranges.x.length
-				};
-
-				this.ranges.x.push(this.ranges.current);
-				this.ranges.current.rect.setAttribute('data-rangex-id', this.ranges.x.length - 1);
-				this.ranges.current.use1.setAttribute('data-rangex-id', this.ranges.x.length - 1);
-				this.ranges.current.use2.setAttribute('data-rangex-id', this.ranges.x.length - 1);
-				this.ranges.countX++;
-
-				this.shapeZone.appendChild(rangeGroup);
-				
-			} else {
-
-				var zoomMode = this.getZoomMode();
-
-				if(zoomMode) {
-					
-					this.currentAction = 'zooming';
-
-					this._zoomingMode = zoomMode;
-					this._zoomingXStart = x;
-					this._zoomingYStart = y;
-					this._zoomingXStartRel = x - this.getPaddingLeft();
-					this._zoomingYStartRel = y - this.getPaddingTop();
-					this._zoomingSquare.setAttribute('width', 0);
-					this._zoomingSquare.setAttribute('height', 0);
-					this._zoomingSquare.setAttribute('display', 'block');
-
-					switch(zoomMode) {
-						case 'x': 
-							this._zoomingSquare.setAttribute('y', this.options.paddingTop);
-							this._zoomingSquare.setAttribute('height', this.getDrawingHeight() - this.shift[0]);
-						break;
-						case 'y':
-							this._zoomingSquare.setAttribute('x', this.options.paddingLeft/* + this.shift[1]*/);
-							this._zoomingSquare.setAttribute('width', this.getDrawingWidth()/* - this.shift[1] - this.shift[2]*/);
-						break;
-					}
-				} else {
-					this.handleMouseUp(x, y, e);
-				}
-			}
-		},
-
-		removeRangeX: function(id) {
-			this.shapeZone.removeChild(this.ranges.x[id].group);
-			if(this.options.onRangeXRemove)
-				this.options.onRangeXRemove(this.ranges.x[id]);
-			this.ranges.countX--;
-			this.ranges.x[id] = false;
+		annotationMoving: function(start) {
+			this.bypassHandleMouse = start;
 		},
 
 		handleDblClick: function(x,y,e) {
 		//	var _x = x - this.options.paddingLeft;
 		//	var _y = y - this.options.paddingTop;
-			this.redraw();
-			this.drawSeries();
 
+			if(this.options.unzoomGradual) {
+				var xAxis = this.getXAxis();
+				var xMin = xAxis.getActualMin(),
+					xMax = xAxis.getActualMax(),
+					diff = xMax - xMin;
+
+				xMin = Math.max(xAxis.getMinValue(), xMin - diff);
+				xMax = Math.min(xAxis.getMaxValue(), xMax + diff);
+
+				xAxis.setCurrentMin(xMin);
+				xAxis.setCurrentMax(xMax);
+
+				this.redraw(true);
+				this.drawSeries(true);
+
+			} else {
+
+				this.redraw();
+				this.drawSeries();
+			}
+/*
 			if(this.getXAxis().options.onZoom)
 				this.getXAxis().options.onZoom(this.getXAxis().getActualMin(), this.getXAxis().getActualMax());
 
 			if(this.getYAxis().options.onZoom)
 				this.getYAxis().options.onZoom(this.getYAxis().getActualMin(), this.getYAxis().getActualMax());
+			*/
 		},
-
-		handleMouseUp: function(x, y, e) {
-
-			if(this.bypassHandleMouse) {
-				this.bypassHandleMouse.handleMouseUp(e);
-				return;
-			}
-
-			if(this.currentAction == 'dragging') {
-				this.currentAction = false;
-			} else if(this.currentAction == 'zooming') {
-				this._zoomingSquare.setAttribute('display', 'none');
-				var _x = x - this.options.paddingLeft;
-				var _y = y - this.options.paddingTop;
-				if((x - this._zoomingXStart == 0 && this._zoomingMode != 'y') || (y - this._zoomingYStart == 0 && this._zoomingMode != 'x')) {
-					this.currentAction = false;
-					return;
-				}
-				this.applyToAxes('handleMouseUp', [_x, e], true, false);
-				this.applyToAxes('handleMouseUp', [_y, e], false, true);
-				if(this.currentAction == 'zooming') {
-					this.currentAction = false;
-					this.redraw(true);
-					this.drawSeries(true);
-				}
-			} else if(this.currentAction == 'labelDragging' || this.currentAction == 'labelDraggingMain') {
-				for(var i = 0, l = this.series.length; i < l; i++) {
-					if(this.series[i].labelDragging)
-						this.series[i].labelDragging = false;
-				}
-				this.currentAction = false;
-			} else if(this.currentAction == 'draggingVerticalLine') {
-
-				this.moveTrackingLine(this.trackingLines.current, this.getXY(e).x - this.getPaddingLeft())
-				this.currentAction = false;
-				this.trackingLines.current = false;
-			} else if(this.currentAction == 'rangeX' && this.ranges.current) {
-				x -= this.getPaddingLeft();
-				this.ranges.current.xEnd = x;
-				this.currentAction = false;
-
-				if(this.ranges.current.xEnd == this.ranges.current.xStart)
-					this.removeRangeX(this.ranges.current.id);
-
-				this.ranges.current.valStart = this.getXAxis().getVal(this.ranges.current.xStart);
-				this.ranges.current.valEnd = this.getXAxis().getVal(x);
-
-				if(this.options.onRangeX)
-					this.options.onRangeX(this.ranges.current.valStart, this.ranges.current.valEnd, this.ranges.current);
-
-				this.ranges.current = null;
-				
-
-			} else if(this.currentAction == 'moveRangeX') {
-				this.currentAction = false;
-				if(this.options.onRangeX)
-					this.options.onRangeX(this.getXAxis().getVal(this.ranges.current.xStart), this.getXAxis().getVal(x), this.ranges.current);
-				this.ranges.current = null;
-			}
-		},
-
-		getTrackingKeys: function(value, vertical) {
-
-		},
-
-		addTrackingLine: function(pos, vertical) {
-
-			var nextDashArray = this.trackingLines.dasharray.shift();
-			this.trackingLines.currentDasharray.push(nextDashArray);
-
-			if(vertical) {
-				pos.x -= this.getPaddingLeft();
-				var val = this.getXAxis().getVal(pos.x);
-
-				var lineDom = document.createElementNS(this.ns, 'line');
-				lineDom.setAttribute('y1', this.getYAxis().getMinPx());
-				lineDom.setAttribute('y2', this.getYAxis().getMaxPx());
-				lineDom.setAttribute('stroke', 'black');
-				lineDom.setAttribute('class', 'verticalLine');
-				if(nextDashArray)
-					lineDom.setAttribute('stroke-dasharray', nextDashArray);
-				lineDom.style.cursor = 'ew-resize';
-				lineDom.setAttribute('data-trackinglineid', this.trackingLines.vertical.length);
-
-				this.shapeZone.appendChild(lineDom);
-
-				var line = {
-					id: ++this.trackingLines.id,
-					line: lineDom,
-					dasharray: nextDashArray
-				}
-
-				this.trackingLines.vertical.push(line);
-				this.moveTrackingLine(line, pos.x);
-			}
-		},
-
-		moveTrackingLine: function(line, px) {
-		
-			var val = this.getXAxis().getVal(px);
-			
-			if(val > this.getXAxis().getActualMax() || val < this.getXAxis().getActualMin())
-				return;
-			line.line.setAttribute('x1', px);
-			line.line.setAttribute('x2', px);
-			if(!this.options.onVerticalTracking)
-				return;
-			this.options.onVerticalTracking(line.id, val, line.dasharray);
-		},
-
 
 		resetAxis: function() {
 
@@ -844,7 +496,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		applyToAxis: {
 			'string': function(type, func, params) {
-				params.splice(1, 0, type);
+		//		params.splice(1, 0, type);
 
 				for(var i = 0; i < this.axis[type].length; i++)
 					this.axis[type][i][func].apply(this.axis[type][i], params);	
@@ -1190,7 +842,6 @@ define(['jquery', 'util/util'], function($, Util) {
 */
 			this.shift = shift;
 			this.redrawShapes();
-			this.redrawRanges();
 		},
 
 		closeLine: function(mode, x1, x2, y1, y2) {	
@@ -1212,7 +863,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 		},
 
-		makeSerie: function(name, options, type) {
+		_makeSerie: function(name, options, type) {
 			switch(type) {
 				case 'contour':
 					var serie = new GraphSerieContour();
@@ -1229,16 +880,17 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		newSerie: function(name, options, type) {
-			var serie = this.makeSerie(name, options, type);
+			var serie = this._makeSerie(name, options, type);
 			this.series.push(serie);
 			return serie;
 		},
 
 		getSerie: function(name) {
-			if(typeof name == 'number')
+			if(typeof name == 'number') {
 				return this.series[name];
-
-			for(var i = 0, l = this.series.length; i < l; i++) {
+			}
+			var i = 0, l = this.series.length;
+			for(; i < l; i++) {
 				if(this.series[i].getName() == name)
 					return this.series[i];
 			}
@@ -1247,10 +899,9 @@ define(['jquery', 'util/util'], function($, Util) {
 		drawSeries: function(doNotRedrawZone) {
 			if(!this.width || !this.height)
 				return;
-			if(!this._painted)
-				return;
 			var i = this.series.length - 1;
-			for(;i >= 0; i--)
+
+			for(; i >= 0; i--)
 				this.series[i].draw(doNotRedrawZone);
 		},
 
@@ -1313,7 +964,14 @@ define(['jquery', 'util/util'], function($, Util) {
 			return this.options.zoomMode;
 		},
 
-		makeShape: function(annotation, events) {
+		makeShape: function(annotation, events, notify) {
+
+			if(this.options.onAnnotationMake && notify) {
+				var res = this.options.onAnnotationMake(annotation);
+				if(res === false)
+					return;
+			}
+
 			switch(annotation.type) {
 				case 'rectangle':
 				case 'rect':
@@ -1324,16 +982,22 @@ define(['jquery', 'util/util'], function($, Util) {
 					var shape = new GraphArrow(this);
 				break;
 
-
 				case 'line':
 					var shape = new GraphLine(this);
 				break;
 
-
 				case 'peakInterval':
 					var shape = new GraphPeakInterval(this);
 				break;
+
+				case 'rangeX':
+					var shape = new GraphRangeX(this);
+				break;
 			}
+
+
+			if(!shape)
+				return;
 
 			shape.setOriginalData(annotation, events);
 			shape.setSerie(this.getSerie(0));
@@ -1360,6 +1024,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 
 			this.shapes.push(shape);
+
 			return shape;
 		},
 
@@ -1371,6 +1036,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
 		},
 
+/*
 		redrawRanges: function() {
 			for(var i = 0, l = this.ranges.x.length; i < l; i++) {
 				var range = this.ranges.x[i];
@@ -1391,11 +1057,9 @@ define(['jquery', 'util/util'], function($, Util) {
 				range.rect.setAttribute('width', Math.abs(maxX - minX));
 				range.use1.setAttribute('transform', 'translate(' + Math.round(minX - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
 				range.use2.setAttribute('transform', 'translate(' + Math.round(maxX - 6) + " " + Math.round((this.getDrawingHeight() - this.shift[0]) / 2 - 10) + ")");
-
-
 			}	
 		},
-
+*/
 		_makeClosingLines: function() {
 
 			this.closingLines = {};
@@ -1409,9 +1073,237 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.closingLines[els[i]] = line;
 				this.graphingZone.appendChild(line);
 			}
+		},
+
+		_pluginsExecute: function(funcName, args) {
+			Array.prototype.splice.apply(args, [0, 0, this]);
+			var i = 0, l = this.options.plugins.length;
+			for(; i < l; i++) {
+				if(this.plugins[this.options.plugins[i]] && this.plugins[this.options.plugins[i]][funcName])
+					this.plugins[this.options.plugins[i]][funcName].apply(this, args);
+			}
+		},
+
+		_pluginExecute: function(which, func, args) {
+			Array.prototype.splice.apply(args, [0, 0, this]);
+			if(this.plugins[which] && this.plugins[which][func])
+				this.plugins[which][func].apply(this.plugins[which], args);
+			else
+				return;
+		},
+
+		_pluginsInit: function() {
+			this._pluginsExecute('init', arguments);
 		}
 
 	}
+
+
+
+	Graph.prototype.plugins = {};
+
+	Graph.prototype.plugins.drag = {
+
+		onMouseDown: function(graph, x, y, e, target) {
+			this._draggingX = x;
+			this._draggingY = y;
+
+			return true;
+		},
+
+		onMouseMove: function(graph, x, y, e, target) {
+			var deltaX = x - this._draggingX;
+			var deltaY = y - this._draggingY;
+
+			graph.applyToAxes(function(axis) {
+				axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaX));
+				axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaX));
+			}, false, true, false);
+
+			graph.applyToAxes(function(axis) {
+				axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaY));
+				axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaY));
+			}, false, false, true);
+
+			this._draggingX = x;
+			this._draggingY = y;
+
+			graph.refreshDrawingZone(true);
+			graph.drawSeries();
+		}
+	}
+
+			/*
+			} else if(this.currentAction == 'labelDragging') {
+				for(var i = 0, l = this.series.length; i < l; i++) {
+					if(this.series[i].labelDragging)
+						this.series[i].handleLabelMove(x, y);
+				}
+			} else if(this.currentAction == 'labelDraggingMain') {
+				for(var i = 0, l = this.series.length; i < l; i++) {
+					if(this.series[i].labelDragging)
+						this.series[i].handleLabelMainMove(x, y);
+				}
+			}*/ 
+
+			/*
+
+
+			} else if(this.currentAction == 'labelDragging' || this.currentAction == 'labelDraggingMain') {
+				for(var i = 0, l = this.series.length; i < l; i++) {
+					if(this.series[i].labelDragging)
+						this.series[i].labelDragging = false;
+				}
+				this.currentAction = false;
+			
+
+			*/
+
+	
+	Graph.prototype.plugins.rangeX = {
+
+		onMouseDown: function(graph, x, y, e, target) {
+			this.count = this.count || 0;
+			if(this.count == graph.options.rangeLimitX)
+				return;
+			x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal(x);
+			var shape = graph.makeShape({type: 'rangeX', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {}, true);
+
+			if(require) {
+				require(['util/context'], function(Context) {
+					Context.listen(shape._dom, [
+						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove range zone</a></li>', 
+						function(e) {
+							shape.kill();
+						}]
+					]);
+				});
+			}
+
+			var color = Util.getNextColorRGB(this.count, graph.options.rangeLimitX);
+			
+			shape.set('fillColor', 'rgba(' + color + ', 0.3)');
+			shape.set('strokeColor', 'rgba(' + color + ', 0.9)');
+			this.count++;
+			shape.handleMouseDown(e, true);
+			shape.draw();
+		}
+	}
+
+
+
+	Graph.prototype.plugins.integral = {
+
+		onMouseDown: function(graph, x, y, e, target) {
+			this.count = this.count || 0;
+			x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal(x);
+			var shape = graph.makeShape({type: 'peakInterval', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {}, true);
+
+			if(!shape)
+				return;
+
+			if(require) {
+				require(['util/context'], function(Context) {
+					Context.listen(shape._dom, [
+						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove integral</a></li>', 
+						function(e) {
+							shape.kill();
+						}]
+					]);
+				});
+			}
+
+			var color = Util.getNextColorRGB(this.count, graph.options.rangeLimitX);
+			
+			shape.set('fillColor', 'rgba(' + color + ', 0.3)');
+			shape.set('strokeColor', 'rgba(' + color + ', 0.9)');
+			this.count++;
+			shape.handleMouseDown(e, true);
+			shape.draw();
+		}
+	}
+
+
+
+	Graph.prototype.plugins.zoom = {
+
+		onMouseDown: function(graph, x, y, e, target) {
+
+			var zoomMode = graph.getZoomMode();
+			if(!zoomMode)
+				return;
+
+			this._zoomingMode = zoomMode;
+			this._zoomingXStart = x;
+			this._zoomingYStart = y;
+			this.x1 = x - graph.getPaddingLeft();
+			this.y1 = y - graph.getPaddingTop();
+
+			graph._zoomingSquare.setAttribute('width', 0);
+			graph._zoomingSquare.setAttribute('height', 0);
+			graph._zoomingSquare.setAttribute('display', 'block');
+
+			switch(zoomMode) {
+				case 'x': 
+					graph._zoomingSquare.setAttribute('y', graph.options.paddingTop);
+					graph._zoomingSquare.setAttribute('height', graph.getDrawingHeight() - graph.shift[0]);
+				break;
+				case 'y':
+					graph._zoomingSquare.setAttribute('x', graph.options.paddingLeft/* + this.shift[1]*/);
+					graph._zoomingSquare.setAttribute('width', graph.getDrawingWidth()/* - this.shift[1] - this.shift[2]*/);
+				break;
+			}
+		},
+
+		onMouseMove: function(graph, x, y, e, target) {
+			switch(this._zoomingMode) {
+				case 'xy':
+					graph._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
+					graph._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
+					graph._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
+					graph._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
+				break;
+				case 'x': 
+					graph._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
+					graph._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
+				break;
+				case 'y':
+					graph._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
+					graph._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
+				break;
+			}	
+		},
+
+		onMouseUp: function(graph, x, y, e, target) {
+			graph._zoomingSquare.setAttribute('display', 'none');
+			var _x = x - graph.options.paddingLeft;
+			var _y = y - graph.options.paddingTop;
+
+			if((x - this._zoomingXStart == 0 && this._zoomingMode != 'y') || (y - this._zoomingYStart == 0 && this._zoomingMode != 'x')) {
+				return;
+			}
+
+			switch(this._zoomingMode) {
+				case 'x':
+					graph.applyToAxes('_doZoom', [_x, this.x1], true, false);
+				break;
+				case 'y':
+					graph.applyToAxes('_doZoom', [_y, this.y1], false, true);
+				break;
+				case 'xy':
+					graph.applyToAxes('_doZoom', [_x, this.x1], true, false);
+					graph.applyToAxes('_doZoom', [_y, this.y1], false, true);
+				break;
+			}
+			
+			graph.redraw(true);
+			graph.drawSeries(true);
+		}
+	}
+
+	/****************************************************/
+	/*** GRAPH AXIS *************************************/
+	/****************************************************/
 
 
 	var GraphAxis = function() {
@@ -1677,28 +1569,15 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		_doZoom: function(px1, px2, val1, val2, mute) {
 
-			if(this.options.display || 1 == 1) {
-				var val1 = val1 || this.getVal(px1);
-				var val2 = val2 || this.getVal(px2);
-				this.setCurrentMin(Math.min(val1, val2));
-				this.setCurrentMax(Math.max(val1, val2));
-
-		//		this.draw(true);
-		//		this.drawSeries();
-
-				this._hasChanged = true;
-
-				if(this.options.onZoom && !mute)
-					this.options.onZoom(this._realMin, this._realMax);
-
-			} else {
-
-				//var min = this.getPos(this.getActualMin());
-				//var max = this.getPos(this.getActualMax());
-
-				//this._serieScale = Math.abs(max - min) / Math.abs(px1 - px2);
-				//this._serieShift = Math.min(px1, px2);
-			}
+			//if(this.options.display || 1 == 1) {
+			var val1 = val1 || this.getVal(px1);
+			var val2 = val2 || this.getVal(px2);
+			this.setCurrentMin(Math.min(val1, val2));
+			this.setCurrentMax(Math.max(val1, val2));
+			this._hasChanged = true;
+			if(this.options.onZoom && !mute)
+				this.options.onZoom(this._realMin, this._realMax);
+		//	}
 		},
 
 		getSerieShift: function() {
@@ -1966,8 +1845,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			this._widthLabels = 0;
 			var drawn = this._draw(doNotRecalculateMinMax);
 			this._widthLabels += drawn;
-	//		this.graph.redrawShapes();
-			this.graph.redrawRanges();
 
 			return this.series.length > 0 ? 100 : drawn;
 		},
@@ -2423,13 +2300,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.groupGrids.appendChild(this._0line);
 		},
 
-		_handleZoom: function(px2) {
-			var mode = this.graph._zoomingMode, px1;
-			if(!(mode == 'xy' || mode == 'x'))
-				return;
-			px1 = this.graph._zoomingXStartRel;
-			this._doZoom(px1, px2);
-		},
 
 
 		addSerie: function(name, options) {
@@ -2600,15 +2470,6 @@ define(['jquery', 'util/util'], function($, Util) {
 		
 			this._0line.setAttribute('stroke', 'black');
 			this.groupGrids.appendChild(this._0line);
-		},
-
-
-		_handleZoom: function(px2) {
-			var mode = this.graph._zoomingMode, px1;
-			if(!(mode == 'xy' || mode == 'y'))
-				return;
-			px1 = this.graph._zoomingYStartRel;
-			this._doZoom(px1, px2);
 		},
 
 		addSerie: function(name, options) {
@@ -3819,7 +3680,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.group = document.createElementNS(this.graph.ns, 'g');
 
 			this.createDom();
-			
+			this.setEvents();
 			
 			this._makeLabel();
 
@@ -3840,11 +3701,11 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		triggerChange: function() {
-			if(this.events.onChange)
-				this.events.onChange(this.data);
-
-			
+			if(this.events && this.events.onChange)
+				this.events.onChange(this.data);	
 		},
+
+		setEvents: function() {},
 
 		setBBox: function() {
 
@@ -3878,6 +3739,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.setFillColor();
 			this.setStrokeColor();
 			this.setStrokeWidth();
+			this.setDashArray();
 
 			if(this.get('labelPosition')) {
 				this.setLabelText();
@@ -3929,9 +3791,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.setDom('x', position.x);
 			this.setDom('y', position.y);
 		},
+
 		setFillColor: function() {			this.setDom('fill', this.get('fillColor'));					},
 		setStrokeColor: function() {		this.setDom('stroke', this.get('strokeColor'));				},
 		setStrokeWidth: function() {		this.setDom('stroke-width', this.get('strokeWidth'));		},
+		setDashArray: function() {			this.setDom('stroke-dasharray', this.get('strokeDashArray'));				},
 
 		setLabelText: function() {	 		if(this.label) this.label.textContent = this.data.label.text;					},
 		setLabelSize: function() {			if(this.label) this.label.setAttribute('font-size', this.get('labelSize'))		},
@@ -4026,7 +3890,6 @@ define(['jquery', 'util/util'], function($, Util) {
 					self.data.label.text = $(this).attr('value');
 					self.triggerChange();
 				}).on('keyup', function(e) {
-					console.log(e.keyCode);
 					if(e.keyCode == 13)
 						$(this).trigger('blur');
 				}).focus();
@@ -4123,6 +3986,57 @@ define(['jquery', 'util/util'], function($, Util) {
 		}
 	});
 
+	var GraphShapeVerticalLine = function() { this.init(graph); };
+	$.extend(GraphShapeVerticalLine.prototype, GraphLine.prototype, {
+
+		setEvents: function() {
+
+			this._dom.addEventListener('mousedown', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				self.handleMouseDown(e);
+			});
+
+			this._dom.addEventListener('mousemove', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				self.handleMouseMove(e);
+			});
+
+			this._dom.addEventListener('mouseup', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				self.handleMouseUp(e);
+			});
+		},
+
+		handleMouseDown: function() {
+			this.moving = true;
+			this.graph.annotationMoving(this);
+		},
+
+		handleMouseMove: function(e) {
+			if(!this.moving)
+				return;
+			var coords = this.graph.getXY(e),
+				delta = this.serie.getXAxis().getRelPx(coords.x - this.coordsI.x),
+				pos = this.getFromData('pos');
+				pos.x += delta;
+			this.setPosition();
+/*
+			if(this.graph.options.onVerticalTracking)
+				this.options.onVerticalTracking(line.id, val, line.dasharray);*/
+		},
+
+		setPosition: function() {
+			var position = this._getPosition(this.getFromData('pos'));
+			this.setDom('x1', position.x);
+			this.setDom('x2', position.x);
+			this.setDom('y1', this.graph.getYAxis().getMinPx());
+			this.setDom('y2', this.graph.getYAxis().getMaxPx());
+		}
+	})
+
 
 	var GraphPeakInterval = function(graph) {
 		this.init(graph);
@@ -4143,13 +4057,9 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		afterDone: function() {
-			/*$(this.group).children().each(function() {
-				console.log(this.getAttribute('x'), this.getAttribute('x1'), this.getAttribute('width'))
-			})*/
-	//		this.setBBox();
+			
 		}
 	});
-
 
 
 	$.extend(GraphPeakInterval.prototype, GraphLine.prototype, {
@@ -4157,44 +4067,38 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this._dom = document.createElementNS(this.graph.ns, 'path');
 
-			this.domLine1 = document.createElementNS(this.graph.ns, 'line');
-			this.domLine1.setAttribute('stroke-width', '3');
-			this.domLine1.setAttribute('stroke', 'transparent');
-			this.domLine1.setAttribute('pointer-events', 'stroke');
-			this.domLine1.setAttribute('cursor', 'ew-resize');
+			this.handle1 = document.createElementNS(this.graph.ns, 'line');
+			this.handle1.setAttribute('stroke-width', '3');
+			this.handle1.setAttribute('stroke', 'transparent');
+			this.handle1.setAttribute('pointer-events', 'stroke');
+			this.handle1.setAttribute('cursor', 'ew-resize');
 
-			this.domLine2 = document.createElementNS(this.graph.ns, 'line');
-			this.domLine2.setAttribute('stroke-width', '3');
-			this.domLine2.setAttribute('stroke', 'transparent');
-			this.domLine2.setAttribute('pointer-events', 'stroke');
-			this.domLine2.setAttribute('cursor', 'ew-resize');
+			this.handle2 = document.createElementNS(this.graph.ns, 'line');
+			this.handle2.setAttribute('stroke-width', '3');
+			this.handle2.setAttribute('stroke', 'transparent');
+			this.handle2.setAttribute('pointer-events', 'stroke');
+			this.handle2.setAttribute('cursor', 'ew-resize');
 
-
-/*
-			this._clipper = document.createElementNS(this.graph.ns, 'rect');
-			this.clipPath = document.createElementNS(this.graph.ns, 'clipPath');
-			this.clipPath.appendChild(this._clipper);
-			this.clipPathId = Math.random() + Date.now();
-			this.clipPath.setAttribute('id', this.clipPathId);
-			this.group.appendChild(this.clipPath);
-			this._dom.setAttribute('clip-path', 'url(#' + this.clipPathId + ')');*/
 			this.setDom('cursor', 'move');
 			this.doDraw = undefined;
-			var self = this;
+			
+		},
 
+		setEvents: function() {
+			var self = this;
 			this._dom.addEventListener('mousedown', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
 				self.handleMouseDown(e);
 			});
 
-			this.domLine1.addEventListener('mousedown', function(e) {
+			this.handle1.addEventListener('mousedown', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
 				self.handleMouseDown(e, 1);
 			});
 
-			this.domLine2.addEventListener('mousedown', function(e) {
+			this.handle2.addEventListener('mousedown', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
 				self.handleMouseDown(e, 2);
@@ -4211,7 +4115,6 @@ define(['jquery', 'util/util'], function($, Util) {
 				e.stopPropagation();
 				self.handleMouseUp(e);
 			});
-
 		},
 
 		handleMouseDown: function(e, resize) {
@@ -4267,7 +4170,6 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		setPosition: function() {
-
 			
 			var posXY = this._getPosition(this.getFromData('pos')),
 				posXY2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos')),
@@ -4275,20 +4177,27 @@ define(['jquery', 'util/util'], function($, Util) {
 				x = Math.min(posXY.x, posXY2.x);
 
 			this.reversed = x == posXY2.x;
-			
 
-//				console.log(this.getFromData('pos'), this.getFromData('pos2'), posXY, posXY2);
-
-			if(w < 2 || x + w < 0 || x > this.graph.getDrawingWidth())
+			if(w < 2 || x + w < 0 || x > this.graph.getDrawingWidth()) {
 				return false;
+			}
 
-			this.group.appendChild(this.domLine1);
-			this.group.appendChild(this.domLine2);
+			this.group.appendChild(this.handle1);
+			this.group.appendChild(this.handle2);
 
 
 			var v1 = this.serie.searchClosestValue(this.getFromData(this.reversed ? 'pos2' : 'pos').x),
 				v2 = this.serie.searchClosestValue(this.getFromData(this.reversed ? 'pos' : 'pos2').x),
-				i, j, init, max, k, x, y, firstX, firstY, currentLine;
+				i, 
+				j, 
+				init, 
+				max, 
+				k, 
+				x, 
+				y, 
+				firstX, 
+				firstY, 
+				currentLine;
 
 
 			if(!v1 || !v2)
@@ -4312,17 +4221,17 @@ define(['jquery', 'util/util'], function($, Util) {
 				if(!firstX || !firstY || !x || !y)
 					return;
 
-				this.domLine1.setAttribute('x1', firstX);
-				this.domLine1.setAttribute('x2', firstX);
+				this.handle1.setAttribute('x1', firstX);
+				this.handle1.setAttribute('x2', firstX);
 
-				this.domLine2.setAttribute('x1', x);
-				this.domLine2.setAttribute('x2', x);
+				this.handle2.setAttribute('x1', x);
+				this.handle2.setAttribute('x2', x);
 
-				this.domLine1.setAttribute('y1', firstY);
-				this.domLine1.setAttribute('y2', this.serie.getY(0));
+				this.handle1.setAttribute('y1', firstY);
+				this.handle1.setAttribute('y2', this.serie.getY(0));
 
-				this.domLine2.setAttribute('y1', y);
-				this.domLine2.setAttribute('y2', this.serie.getY(0));
+				this.handle2.setAttribute('y1', y);
+				this.handle2.setAttribute('y2', this.serie.getY(0));
 
 
 				currentLine += " V " + this.serie.getYAxis().getPx(0) + " H " + firstX + " z";
@@ -4334,19 +4243,100 @@ define(['jquery', 'util/util'], function($, Util) {
 
 
 		setLabelPosition: function() {
-			var pos1 = this._getPosition(this.getFromData('pos'));
-			var pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
 
-			//console.log(this._getPosition(this.get('labelPosition')));
+			var pos1 = this._getPosition(this.getFromData('pos')),
+				pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
+
 			this._setLabelPosition(this._getPosition(this.get('labelPosition'), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
 			
 		},
 
 		afterDone: function() {
-			/*$(this.group).children().each(function() {
-				console.log(this.getAttribute('x'), this.getAttribute('x1'), this.getAttribute('width'))
-			})*/
-		//	this.setBBox();
+			
+		}
+	});
+
+
+
+	var GraphRangeX = function(graph) { this.init(graph); };
+	$.extend(GraphRangeX.prototype, GraphPeakInterval.prototype, {
+
+		createDom: function() {
+			this._dom = document.createElementNS(this.graph.ns, 'rect');
+			this._dom.setAttribute('class', 'rangeRect');
+			this._dom.setAttribute('cursor', 'move');
+			this.handle1 = this._makeHandle();
+			this.handle2 = this._makeHandle();
+			
+			this.setDom('cursor', 'move');
+			this.doDraw = undefined;	
+		},
+
+		setPosition: function() {
+			var posXY = this._getPosition(this.getFromData('pos')),
+				posXY2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos')),
+				w = Math.abs(posXY.x - posXY2.x),
+				x = Math.min(posXY.x, posXY2.x);
+			this.reversed = x == posXY2.x;
+
+			if(w < 2 || x + w < 0 || x > this.graph.getDrawingWidth()) {
+				return false;
+			}
+
+			this.group.appendChild(this.handle1);
+			this.group.appendChild(this.handle2);
+
+			this.handle1.setAttribute('transform', 'translate(' + (x - 6) + " " + ((this.graph.getDrawingHeight() - this.graph.shift[0]) / 2 - 10) + ")");
+			this.handle2.setAttribute('transform', 'translate(' + (x + w - 6) + " " + ((this.graph.getDrawingHeight() - this.graph.shift[0]) / 2 - 10) + ")");
+			this.setDom('x', x);
+			this.setDom('width', w);
+			this.setDom('y', 0);
+			this.setDom('height', this.graph.getDrawingHeight() - this.graph.shift[0]);
+
+			return true;
+		},
+
+		_makeHandle: function() {
+
+
+			var rangeHandle = document.createElementNS(this.graph.ns, 'g');
+			rangeHandle.setAttribute('id', "rangeHandle" + this.graph._creation);
+			var r = document.createElementNS(this.graph.ns, 'rect');
+			r.setAttribute('rx', 0);
+			r.setAttribute('ry', 0);
+			r.setAttribute('stroke', 'black');
+			r.setAttribute('fill', 'white');
+
+			r.setAttribute('width', 10);
+			r.setAttribute('height', 20);
+			r.setAttribute('x', 0);
+			r.setAttribute('y', 0);
+			r.setAttribute('shape-rendering', 'crispEdges');
+			r.setAttribute('cursor', 'ew-resize');
+			rangeHandle.appendChild(r);
+
+
+			var l = document.createElementNS(this.graph.ns, 'line');
+			l.setAttribute('x1', 4);
+			l.setAttribute('x2', 4);
+			l.setAttribute('y1', 4);
+			l.setAttribute('y2', 18);
+			l.setAttribute('stroke', 'black');
+			l.setAttribute('shape-rendering', 'crispEdges');
+			l.setAttribute('cursor', 'ew-resize');
+			rangeHandle.appendChild(l);
+
+			var l = document.createElementNS(this.graph.ns, 'line');
+			l.setAttribute('x1', 6);
+			l.setAttribute('x2', 6);
+			l.setAttribute('y1', 4);
+			l.setAttribute('y2', 18);
+			l.setAttribute('stroke', 'black');
+			l.setAttribute('shape-rendering', 'crispEdges');
+			l.setAttribute('cursor', 'ew-resize');
+			rangeHandle.appendChild(l);
+
+			return rangeHandle;
 		}
 	});
 
