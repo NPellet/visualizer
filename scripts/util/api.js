@@ -9,7 +9,6 @@ define(['util/datatraversing'], function(Traversing) {
 		}
 
 		Traversing.getValueFromJPath(element, jpath).done(function(returned) {
-			console.log(returned);
 			self.repositoryData.set(name, returned);
 		});
 	}
