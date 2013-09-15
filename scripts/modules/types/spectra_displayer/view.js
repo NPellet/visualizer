@@ -46,6 +46,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 						bottom: true
 					},
 
+					onAnnotationMake: function(annot) {
+						console.log(annot);
+					},
+
 					onMouseMoveData: function(e, val) {
 						var min, max, x1;
 						for(var k in self.zones) {
