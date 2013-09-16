@@ -108,7 +108,7 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			if(Structures[element.type] && (element.value || element.url))
 				return element.type;
 			
-			if(typeof element.type == "undefined")
+			if(typeof element.type == "undefined" || !element.value)
 				return "object";
 			else {
 				console.error("Type " + element.type + " could not be found");
@@ -126,6 +126,7 @@ define(['jquery', 'data/structures'], function($, Structures) {
 	}
 
 	function triggerDataChange(data) {
+		console.log(data);
 		if(data._onDataChanged)
 			data._onDataChanged.fire(data);
 	}

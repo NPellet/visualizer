@@ -13,7 +13,13 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 	
 		Util.loadCss(require.toUrl('modules/types/' + moduleType + '/style.css'));
 
+		if(!moduleType) {
+			def.reject();
+			return def;
+		}
+
 		require(['modules/types/' + moduleType + '/model', 'modules/types/' + moduleType + '/view', 'modules/types/' + moduleType + '/controller'], function(M, V, C) {
+
 			module.model = new M();
 			module.view = new V();
 			module.controller = new C();

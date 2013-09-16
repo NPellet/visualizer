@@ -47,7 +47,12 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					},
 
 					onAnnotationMake: function(annot) {
-						console.log(annot);
+						self.module.controller.sendAction('annotation', annot, 'onAnnotationAdd');
+					},
+
+					onAnnotationChange: function(annot) {
+						self.module.controller.sendAction('annotation', annot, 'onAnnotationChange');
+						DataTraversing.triggerDataChange(annot);
 					},
 
 					onMouseMoveData: function(e, val) {

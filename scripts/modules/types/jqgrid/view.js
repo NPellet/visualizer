@@ -35,9 +35,77 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this.dom.append(this.domSearch).append(this.domPaging).append(this.domTable);
 	 		this.module.getDomContent().html(this.dom);
 	 		this._highlights = this._highlights || [];
+
+	 		this.onReady = $.Deferred();
+
 	 	},
 
-	 	inDom: function() {},
+	 	inDom: function() {
+
+
+			var colNames = [];
+			var colModel = [];
+			var jpaths = this.module.getConfiguration().colsjPaths
+			if(typeof jpaths == 'object') {
+				for(var j in jpaths) {
+					colNames.push(j);
+					colModel.push({
+						name: j, 
+						index: j, 
+						title: false, 
+						editable: jpaths[j].editable || false,
+						_jpath: jpaths[j].jpath
+					});
+				}
+			}
+
+			//colModel[colModel.length - 1].width = "*";
+			nbLines = this.module.getConfiguration().nbLines || 10;	
+
+			if(self.jqGrid) {
+				self.jqGrid('GridDestroy');
+				self.jqGrid = undefined;
+				this.domTable = $("<table />").attr('id', this.unique).appendTo(this.dom);
+			}
+
+			$(this.domTable).jqGrid({		 			
+			   	colNames: colNames,
+			   	colModel: colModel,
+			   	rowNum: nbLines,
+			   	editable: true,
+			   	forceFit: true,
+			   	autoWidth: true,
+			   	shrinkToFit: true,
+			   	cellsubmit: 'clientArray',
+			   	cellEdit: true,
+			   	rowList: [10,20,30,100],
+			   	pager: '#pager' + this.unique,
+			   	rowattr: function() {
+			   		if(arguments[1]._backgroundColor)
+			   			return {'style': 'background-color: ' + arguments[1]._backgroundColor };
+			   	},
+			   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
+			   		if(jpaths[colModel[colNum].name].number)
+			   			value = parseFloat(value);
+			   		
+
+			   		Traversing.setValueFromJPath(self.elements[rowId], colModel[colNum]._jpath, value);
+			   	},
+			    viewrecords: true,
+			    onSelectRow: function(rowid, status) {
+			
+			    	if(status)
+			    		self.module.controller.onToggleOn(self.elements[rowid]);
+			    	else
+			    		self.module.controller.onToggleOff(self.elements[rowid]);
+					self.module.controller.lineClick(self.elements[rowid]);
+			    },
+			});
+
+
+			this.jqGrid = $.proxy($(this.domTable).jqGrid, $(this.domTable));
+			this.onReady.resolve();
+	 	},
 
 	 	onResize: function(w, h) {
 
@@ -56,73 +124,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 		list: function(moduleValue) {
 	 		
-	 			var jpaths = this.module.getConfiguration().colsjPaths, self = this;
+	 			var jpaths = this.module.getConfiguration().colsjPaths
+
+	 			var self = this;
 	 			this.module.data = moduleValue;
 
-	 			if(jpaths[''])
-	 				return;
-
-	 			if(jpaths.length == 0)
-	 				return;
-				var colNames = [];
-				var colModel = [];
-				for(var j in jpaths) {
-					colNames.push(j);
-					colModel.push({
-						name: j, 
-						index: j, 
-						title: false, 
-						editable: jpaths[j].editable || false,
-						_jpath: jpaths[j].jpath
-					});
-				}
-
-				//colModel[colModel.length - 1].width = "*";
-				nbLines = this.module.getConfiguration().nbLines || 10;	
-
-				if(self.jqGrid) {
-					self.jqGrid('GridDestroy');
-					self.jqGrid = undefined;
-					this.domTable = $("<table />").attr('id', this.unique).appendTo(this.dom);
-				}
-
-				$(this.domTable).jqGrid({		 			
-				   	colNames: colNames,
-				   	colModel: colModel,
-				   	rowNum: nbLines,
-				   	editable: true,
-				   	forceFit: true,
-				   	autoWidth: true,
-				   	shrinkToFit: true,
-				   	cellsubmit: 'clientArray',
-				   	cellEdit: true,
-				   	rowList: [10,20,30,100],
-				   	pager: '#pager' + this.unique,
-				   	rowattr: function() {
-				   		if(arguments[1]._backgroundColor)
-				   			return {'style': 'background-color: ' + arguments[1]._backgroundColor };
-				   	},
-				   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
-				   		if(jpaths[colModel[colNum].name].number)
-				   			value = parseFloat(value);
-				   		
-
-				   		Traversing.setValueFromJPath(self.elements[rowId], colModel[colNum]._jpath, value);
-				   	},
-				    viewrecords: true,
-				    onSelectRow: function(rowid, status) {
-				
-				    	if(status)
-				    		self.module.controller.onToggleOn(self.elements[rowid]);
-				    	else
-				    		self.module.controller.onToggleOff(self.elements[rowid]);
-						self.module.controller.lineClick(self.elements[rowid]);
-				    },
-				});
-
-
-				this.jqGrid = $.proxy($(this.domTable).jqGrid, $(this.domTable));
-				
 				var view = this;
 				var list = Traversing.getValueIfNeeded(moduleValue);
 				this.elements = list;
@@ -139,50 +145,56 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			}
 		},
 
-		buildElement: function(source, arrayToPush, jpaths, colorJPath) {
+		buildElements: function(source, arrayToPush, jpaths, colorJPath, muteListen) {
 			var jpath;
 			
 			var self = this;
 			self.done = 0;
+
 			for(var i = 0, length = source.length; i < length; i++) {
+				arrayToPush.push(this.buildElement(source[i], i, jpaths, arrayToPush));
+			}
+		},
+
+		buildElement: function(s, i, jp, a) {
+			var element = {};
+			this.listenFor(s, jp, i);
+			for(var j in jp) {
+				var jpath = jp[j]; jpath = jpath.jpath || jpath;
+				element[j] = 'Loading';
+				self.done++;
+				element["_" + j] = this.renderElement(element, s, jpath, i, j);
+			}
+
+			Traversing.getValueFromJPath(s, this.module.getConfiguration().colorjPath).done(function(value) {
+				element._backgroundColor = value;
+			});
+			
+			return element;
+		},
+
+		listenFor: function(source, jpaths, id) {
+			var self = this;
+			
+			Traversing.listenDataChange(source, function(data) {
 				var element = {};
-
-				Traversing.listenDataChange(source[i], function(data) {
-
-					var id = source.indexOf(data);
-					var element = {};
-					for(var j in jpaths) {
-						jpath = jpaths[j]; jpath = jpath.jpath || jpath;
-						element[j] = 'Loading';
-						element["_" + j] = self.renderElement(element, data, jpath, id, j);
-					}
-					
-					self.jqGrid('setRowData', id, element);
-					var scroll = $("body").scrollTop();
-					var target = $("tr#" + id, self.domTable).effect('highlight', {}, 1000).get(0).scrollIntoView();
-					$("body").scrollTop(scroll);
-					
-				});
-					
+				
 				for(var j in jpaths) {
 					jpath = jpaths[j]; jpath = jpath.jpath || jpath;
 					element[j] = 'Loading';
-					(function(k, l) {
-						self.done++;
-						element["_" + l] = self.renderElement(element, source[k], jpath, k, l);
-					}) (i, j);
+					console.log('Render from Listen');
+					element["_" + j] = self.renderElement(element, data, jpath, id, j);
 				}
-				Traversing.getValueFromJPath(source[i], this.module.getConfiguration().colorjPath).done(function(value) {
-
-					element._backgroundColor = value;
-				});
-				
-				arrayToPush.push(element);
-			}
+				self.jqGrid('setRowData', id, element);
+				var scroll = $("body").scrollTop();
+				var target = $("tr#" + id, self.domTable).effect('highlight', {}, 1000).get(0).scrollIntoView();
+				$("body").scrollTop(scroll);
+			});
 		},
 
 		renderElement: function(element, source, jpath, k, l) {
 			var self = this, box = self.module;
+
 			return Renderer.toScreen(source, box, {}, jpath).done(function(value) {
 				element[l] = value;
 				self.done--;
@@ -199,14 +211,21 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 		onActionReceive:  {
 
 			addRow: function(source) {
-				if(!this.table)
-					this.update.list.call(this, []);
-				this.module.data.push(source);
-				API.setVariable(this.module.getNameFromRel('list'), this.module.data);
+				
+				this.elements = this.elements || [];
+				this.elements.push(source);
+				this.module.data = this.elements;
+
+				var jpaths = this.module.getConfiguration().colsjPaths;
+				var l = this.elements.length - 1;
+				var el = this.buildElement(source, l, jpaths);
+
+				this.jqGrid('addRowData', l, el);
+				
+			//	API.setVariable(this.module.getNameFromRel('list'), this.module.data, false, true);
 			},
 
 			removeRow: function(el) {
-				
 				for(var i = 0, l = this.module.data.length; i < l; i++) { 
 					if(this.module.data[i] == el) {
 						this.module.data.splice(i, 1);

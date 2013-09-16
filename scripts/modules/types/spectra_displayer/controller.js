@@ -20,6 +20,11 @@ define(['modules/defaultcontroller'], function(Default) {
 				onTrackMouse: {
 					label: 'mouse tracking',
 					description: ''
+				},
+
+				onAnnotationAdd: {
+					label: 'Annotation added',
+					description: ''
 				}
 			},
 			
@@ -72,7 +77,8 @@ define(['modules/defaultcontroller'], function(Default) {
 		actions: {
 			rel: {
 				'fromto': 'From - To', 
-				'mousetrack': 'X value'
+				'mousetrack': 'X value',
+				'annotation': 'Annotation'
 			}
 		},
 

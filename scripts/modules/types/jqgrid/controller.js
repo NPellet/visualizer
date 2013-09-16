@@ -93,13 +93,14 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		
 		doConfiguration: function(section) {
 			
-			var data = Traversing.getValueIfNeeded(this.module.data),
-				jpaths = [];
-			
+			var jpaths = this.module.model.getjPath();
+
+			/*
 			if(Traversing.getType(data) == 'array') 
 				Traversing.getJPathsFromElement(data[0], jpaths);
 			else if(Traversing.getType(data) == 'arrayXY')
 				Traversing.getJPathsFromElement(data, jpaths);
+			*/
 			//console.log(data, data[0],jpaths);
 			return {
 				groups: {
@@ -237,7 +238,9 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 				Traversing.getJPathsFromElement(data[0], jpaths);
 			else if(Traversing.getType(data) == 'arrayXY')
 				Traversing.getJPathsFromElement(data, jpaths);
-			confSection.getGroup('cols').getField('coljpath').implementation.setOptions(jpaths);
+
+			if(jpaths.length > 1)
+				confSection.getGroup('cols').getField('coljpath').implementation.setOptions(jpaths);
 		},
 
 		"export": function() {

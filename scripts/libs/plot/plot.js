@@ -966,10 +966,10 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		makeShape: function(annotation, events, notify) {
 
-			if(this.options.onAnnotationMake && notify) {
-				var res = this.options.onAnnotationMake(annotation);
-				if(res === false)
+			if(notify) {
+				if(false === this.triggerEvent('onAnnotationMake', annotation)) {
 					return;
+				}
 			}
 
 			switch(annotation.type) {
@@ -1094,6 +1094,14 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		_pluginsInit: function() {
 			this._pluginsExecute('init', arguments);
+		},
+
+		triggerEvent: function() {
+			var func = arguments[0], 
+				args = Array.prototype.splice.apply(arguments, [0, 1]);
+			if(typeof this.options[func] == "function")
+				return this.options[func].apply(this, arguments);
+			return true;
 		}
 
 	}
@@ -1163,11 +1171,16 @@ define(['jquery', 'util/util'], function($, Util) {
 	Graph.prototype.plugins.rangeX = {
 
 		onMouseDown: function(graph, x, y, e, target) {
+			var self = graph;
 			this.count = this.count || 0;
 			if(this.count == graph.options.rangeLimitX)
 				return;
 			x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal(x);
-			var shape = graph.makeShape({type: 'rangeX', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {}, true);
+			var shape = graph.makeShape({type: 'rangeX', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {
+				onChange: function(newData) {
+					self.triggerEvent('onAnnotationChange', newData);
+				}
+			}, true);
 
 			if(require) {
 				require(['util/context'], function(Context) {
@@ -1195,9 +1208,14 @@ define(['jquery', 'util/util'], function($, Util) {
 	Graph.prototype.plugins.integral = {
 
 		onMouseDown: function(graph, x, y, e, target) {
+			var self = graph;
 			this.count = this.count || 0;
 			x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal(x);
-			var shape = graph.makeShape({type: 'peakInterval', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {}, true);
+			var shape = graph.makeShape({type: 'peakInterval', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {
+				onChange: function(newData) {
+					self.triggerEvent('onAnnotationChange', newData);
+				}
+			}, true);
 
 			if(!shape)
 				return;
