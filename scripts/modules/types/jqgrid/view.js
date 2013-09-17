@@ -43,9 +43,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	inDom: function() {
 
 
-			var colNames = [];
-			var colModel = [];
-			var jpaths = this.module.getConfiguration().colsjPaths
+			var self = this, 
+				colNames = [], 
+				colModel = [], 
+				jpaths = this.module.getConfiguration().colsjPaths;
+
 			if(typeof jpaths == 'object') {
 				for(var j in jpaths) {
 					colNames.push(j);

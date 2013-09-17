@@ -2661,7 +2661,7 @@ $.fn.jqGrid = function( pin ) {
 				if($.isFunction(ts.p.onCellSelect)) {
 					ts.p.onCellSelect.call(ts,ri,ci,tdHtml,e);
 				}
-console.log(ts.p.multikey, scb);
+
 				if(ts.p.cellEdit === true) {
 					if(ts.p.multiselect && scb){
 						$(ts).jqGrid("setSelection", ri ,true,e);
@@ -2908,12 +2908,15 @@ $.jgrid.extend({
 		return ids;
 	},
 	setSelection : function(selection,onsr, e) {
+
 		return this.each(function(){
+
 			var $t = this, stat,pt, ner, ia, tpsr, fid;
 			if(selection === undefined) { return; }
 			onsr = onsr === false ? false : true;
 			pt=$t.rows.namedItem(String(selection));
 			if(!pt || !pt.className || pt.className.indexOf( 'ui-state-disabled' ) > -1 ) { return; }
+			console.log(2);
 			function scrGrid(iR){
 				var ch = $($t.grid.bDiv)[0].clientHeight,
 				st = $($t.grid.bDiv)[0].scrollTop,
@@ -2935,7 +2938,9 @@ $.jgrid.extend({
 			if($t.p.frozenColumns === true ) {
 				fid = $t.p.id+"_frozen";
 			}
+
 			if(!$t.p.multiselect) {	
+
 				if(pt.className !== "ui-subgrid") {
 					if( $t.p.selrow !== pt.id) {
 						$($t.rows.namedItem($t.p.selrow)).removeClass("ui-state-highlight").attr({"aria-selected":"false", "tabindex" : "-1"});
