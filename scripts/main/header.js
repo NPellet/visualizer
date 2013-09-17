@@ -118,13 +118,14 @@ define(['forms/button', 'util/util'], function(Button, Util) {
 			makeHandlerButtons(datahandler, viewhandler, view, data);
 
 			var button = new Button('<span class="ui-icon ui-icon-gear"></span>', function() {
-				var $this = $(this);
-				if($this.hasClass('bi-active')) {
-				$("#visualizer-dataviews").hide();
-					$this.removeClass('bi-active');
+				var $this = $(this.dom);
+
+				if($this.hasClass('active')) {
+					$("#visualizer-dataviews").hide();
+					$this.removeClass('active');
 					return;
 				}
-				$this.addClass('bi-active');
+				$this.addClass('active');
 					
 				var $dom = $("#visualizer-dataviews");
 				if($dom.length == 0) {
