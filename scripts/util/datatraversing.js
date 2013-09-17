@@ -119,16 +119,20 @@ define(['jquery', 'data/structures'], function($, Structures) {
 		return type;
 	}
 
-	function listenDataChange(data, callback) {
+	function listenDataChange(data, callback, id) {
 		if(!data._onDataChanged)
-			data._onDataChanged = $.Callbacks();
-		data._onDataChanged.add(callback);
+			data._onDataChanged = [];
+		data._onDataChanged.push([callback, id]);
 	}
 
-	function triggerDataChange(data) {
-		console.log(data);
-		if(data._onDataChanged)
-			data._onDataChanged.fire(data);
+	function triggerDataChange(data, id) {
+		if(data._onDataChanged) {
+			for(var i = 0, l = data._onDataChanged; i < l; i++) {
+				if((id !== undefined && data._onDataChanged[i][1] !== id) || id === undefined) {
+					data._onDataChanged[i][0].call(data, data);	
+				}
+			}
+		}
 	}
 
 	return {
@@ -143,18 +147,14 @@ define(['jquery', 'data/structures'], function($, Structures) {
 				return $.Deferred().resolve(element);
 			if(!jpath.split)
 				jpath = '';
-
 			var jpathSplitted = jpath.split('.'); // Remove first element, which should always be "element"
 			jpathSplitted.shift();
-
 			return _getValueFromJPath(element, jpathSplitted)
 		},
 
 		setValueFromJPath: function(element, jpath, newValue) {
 			if(!jpath.split)
 				jpath = '';
-
-
 			var jpathSplitted = jpath.split('.');
 			jpathSplitted.shift();
 			return _setValueFromJPath(element, jpathSplitted, newValue);
@@ -274,45 +274,3 @@ define(['jquery', 'data/structures'], function($, Structures) {
 		listenDataChange: listenDataChange
 	}
 });
-
-/*
-
-CI.DataType.asyncToScreenAttribute = function(source, attribute, jpath, element) {
-		
-	var def = $.Deferred();
-	var _class = "callback-load-attr-";
-	_class += ++CI.DataType.asyncId;
-	
-	var def = CI.DataType.getValueFromJPath(source, jpath).done(function(value) {
-
-			if(attribute == 'style.backgroundColor') {
-				$("." + _class).css('background-color', value);
-			} else {
-				if(element)
-					element.attr(attribute, value);
-				else
-					$("." + _class).attr(attribute, value);
-			}
-		});
-
-	def._class = _class;
-	if(source.type && !source.value && source.url) {
-		return def;
-	} else
-		return def;
-}
-
-
-CI.DataType.asyncToScreenHtml = function(element, box, jpath) {
-	var asyncId = 'callback-load-' + (++CI.DataType.asyncId);
-	var html = "";
-		html += '<span id="';
-		html += asyncId;
-		html += '" class="loading">Loading...</span>';
-	var def = CI.DataType.getValueFromJPath(element, jpath).pipe(function(data) { var el = CI.DataType._toScreen(data, box).done(function(el) { $("#" + asyncId).html(el); CI.Util.ResolveDOMDeferred($("#" + asyncId)); }); return el; });
-	def.html = html;
-	def.id = asyncId;
-	return def; 	
-}
-
-*/
