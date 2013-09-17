@@ -22,7 +22,7 @@ define(['libs/jquery', 'util/event'], function($, Event) {
 		this.update(name, value);
 		var to = this.get(name);
 		
-		this.trigger('change', name, to, from);
+		this.trigger('change', name, to, current);
 
 		return this;
 	}
