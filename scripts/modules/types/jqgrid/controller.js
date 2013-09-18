@@ -194,7 +194,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 				titles.push(i);
 				jpaths.push(cols[i].jpath);
 				colnumber.push(cols[i].number ? ['number'] : []);
-				coleditable.push(cols[i].editable ? ['true'] : []);
+				coleditable.push(cols[i].editable ? ['editable'] : []);
 			//	colwidth.push(cols[i].width);
 			}
 
