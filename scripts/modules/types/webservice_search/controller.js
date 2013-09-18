@@ -64,6 +64,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		onSearchDone: function(elements) {
 			var self = this;
 			self.result = elements;
+			self.module.data = elements;
+			
 			this.setVarFromEvent('onSearchReturn', elements);
 		},
 
@@ -102,12 +104,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 		
 		doConfiguration: function(section) {
-			
-
-			var data = Traversing.getValueIfNeeded(this.module.data),
+			var data = Traversing.getValueIfNeeded(this.result),
 				jpaths = [];
-			
-			console.log(data);
 			Traversing.getJPathsFromElement(data, jpaths);
 			
 			return {

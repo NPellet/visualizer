@@ -101,15 +101,17 @@ define(['jquery', 'util/util'], function($, Util) {
 
 	Graph.prototype = {
 
-		setAttributeTo: function(to, param, ns) {
+		setAttributeTo: function(to, params, ns) {
 			var i;
+
 			if(ns) {
 				for(i in params) {
-					to.setAttributeNS(ns, i, param);
+					console.log(ns, i, params[i]);
+					to.setAttributeNS(ns, i, params[i]);
 				}
 			} else {
 				for(i in params) {
-					to.setAttribute(i, param);
+					to.setAttribute(i, params[i]);
 				}
 			}
 		},
@@ -118,16 +120,22 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			// Create SVG element, set the NS
 			this.dom = document.createElementNS(this.ns, 'svg');
+			this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
+			//this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);	
 			this.setAttributeTo(this.dom, {
 				'xmlns': this.ns,
 				'font-family': this.options.fontFamily,
 				'font-size': this.options.fontSize 
 			});
 			
+/*
+
 			this.setAttributeTo(this.dom, {
 				'xmlns:xlink': this.nsxlink
-			}, this.ns);
-			
+			});
+
+*/
+		
 			this._dom.appendChild(this.dom);
 			
 			
@@ -143,14 +151,15 @@ define(['jquery', 'util/util'], function($, Util) {
 
 
 			// Handling graph title
-			this.setTitle(this.options.title);
 			this.domTitle = document.createElementNS(this.ns, 'text');
+			this.setTitle(this.options.title);
 			this.setAttributeTo(this.domTitle, {
 				'text-anchor': 'middle',
 				'y': 20
 			});
 			this.dom.appendChild(this.domTitle);
 			//
+
 
 			this.graphingZone = document.createElementNS(this.ns, 'g');
 			this.setAttributeTo(this.graphingZone, {
