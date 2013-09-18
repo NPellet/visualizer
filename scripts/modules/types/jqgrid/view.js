@@ -56,10 +56,12 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 						index: j, 
 						title: false, 
 						editable: jpaths[j].editable || false,
-						_jpath: jpaths[j].jpath
+						_jpath: jpaths[j].jpath,
+						sortable: true
 					});
 				}
 			}
+
 
 			//colModel[colModel.length - 1].width = "*";
 			nbLines = this.module.getConfiguration().nbLines || 10;	
@@ -136,9 +138,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				this.elements = list;
 
 				var elements = [];
-				view.buildElement(list, elements, jpaths);
+				view.buildElements(list, elements, jpaths);
 				this.gridElements = elements;
-
+console.log(elements);
 				for(var i = 0; i < elements.length; i++) {
 					this.jqGrid('addRowData', i, elements[i]);
 				}

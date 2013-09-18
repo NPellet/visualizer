@@ -53,8 +53,7 @@ define(['forms/fielddefault', 'ckeditor'], function(Default) {
 			var self = this;
 			var field = this.main.fields[index].field;
 			var editor = CKEDITOR.replace(field.children().attr('name'));
-			
-			editor.on('change', function() {
+			editor.on('onChange', function() {			
 				if(editor.checkDirty())
 					self.main.changeValue(index, editor.getData());
 			});

@@ -11,8 +11,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			this._currentHighlights = {};
 			this.module.getDomContent().html(this.dom);
 			this.seriesActions = [];
-			this.colorId = 0;
-			this.colors = ["red", "blue", "green", "black"];
+			//this.colorId = 0;
+			//this.colors = ["red", "blue", "green", "black"];
 			this.onReady = $.Deferred();
 		},
 		

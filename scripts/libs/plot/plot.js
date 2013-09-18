@@ -26,12 +26,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		onVerticalTracking: false,
 		onHorizontalTracking: false,
 		rangeLimitX: 1,
-		rangeLimitY: 0,
-
-		onRangeX: false,
-		onRangeY: false,
-		onRangeXRemove: false,
-		
+		rangeLimitY: 0,		
 		unzoomGradual: true,
 
 		plugins: ['zoom', 'drag'],
@@ -55,7 +50,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		this.height = 0;
 
 		this.ns = 'http://www.w3.org/2000/svg';
-		this.nsxml = "http://www.w3.org/1999/xlink";
+		this.nsxlink = "http://www.w3.org/1999/xlink";
 		this.series = [];
 		this._dom = dom;
 		// DOM
@@ -106,34 +101,61 @@ define(['jquery', 'util/util'], function($, Util) {
 
 	Graph.prototype = {
 
+		setAttributeTo: function(to, param, ns) {
+			var i;
+			if(ns) {
+				for(i in params) {
+					to.setAttributeNS(ns, i, param);
+				}
+			} else {
+				for(i in params) {
+					to.setAttribute(i, param);
+				}
+			}
+		},
+
 		doDom: function() {
 
+			// Create SVG element, set the NS
 			this.dom = document.createElementNS(this.ns, 'svg');
-			this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", this.nsxml);
-			this.dom.setAttribute('xmlns', "http://www.w3.org/2000/xmlns");
-
+			this.setAttributeTo(this.dom, {
+				'xmlns': this.ns,
+				'font-family': this.options.fontFamily,
+				'font-size': this.options.fontSize 
+			});
+			
+			this.setAttributeTo(this.dom, {
+				'xmlns:xlink': this.nsxlink
+			}, this.ns);
+			
 			this._dom.appendChild(this.dom);
-
-			this.dom.setAttribute('font-size', this.options.fontSize);
-			this.dom.setAttribute('font-family', this.options.fontFamily);
-
+			
+			
 			this.defs = document.createElementNS(this.ns, 'defs');
 			this.dom.appendChild(this.defs);
 
 			this.rectEvent = document.createElementNS(this.ns, 'rect');
-			this.rectEvent.setAttribute('pointer-events', 'fill');
-			this.rectEvent.setAttribute('fill', 'transparent');
+			this.setAttributeTo(this.rectEvent, {
+				'pointer-events': 'fill',
+				'fill': 'transparent'
+			});
 			this.dom.appendChild(this.rectEvent);
 
-			this.domTitle = document.createElementNS(this.ns, 'text');
-			this.domTitle.setAttribute('text-anchor', 'middle');
-			this.domTitle.setAttribute('y', 20); // 20px from the top ?
 
+			// Handling graph title
 			this.setTitle(this.options.title);
+			this.domTitle = document.createElementNS(this.ns, 'text');
+			this.setAttributeTo(this.domTitle, {
+				'text-anchor': 'middle',
+				'y': 20
+			});
 			this.dom.appendChild(this.domTitle);
+			//
 
 			this.graphingZone = document.createElementNS(this.ns, 'g');
-			this.graphingZone.setAttribute('transform', 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')')
+			this.setAttributeTo(this.graphingZone, {
+				'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
+			});
 			this.dom.appendChild(this.graphingZone);
 
 			this.shapeZone = document.createElementNS(this.ns, 'g');
@@ -161,17 +183,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.clip.appendChild(this.clipRect);
 			this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
 
-
-			this._zoomingSquare = document.createElementNS(this.ns, 'rect');
-			this._zoomingSquare.setAttribute('display', 'none');
-			this._zoomingSquare.setAttribute('fill', 'rgba(171, 12, 12, 0.2)');
-			this._zoomingSquare.setAttribute('stroke', 'rgba(171, 12, 12, 1)');
-			this._zoomingSquare.setAttribute('shape-rendering', 'crispEdges');
-			this._zoomingSquare.setAttribute('x', 0);
-			this._zoomingSquare.setAttribute('y', 0);
-			this._zoomingSquare.setAttribute('width', 0);
-			this._zoomingSquare.setAttribute('height', 0);
-			this.dom.appendChild(this._zoomingSquare);
 
 			this.markerArrow = document.createElementNS(this.ns, 'marker');
 			this.markerArrow.setAttribute('viewBox', '0 0 10 10');
@@ -1221,6 +1232,23 @@ define(['jquery', 'util/util'], function($, Util) {
 
 	Graph.prototype.plugins.zoom = {
 
+		init: function(graph) {
+
+			this._zoomingSquare = document.createElementNS(this.ns, 'rect');
+			graph.setAttributeTo(this._zoomingSquare, {
+				'display': 'none',
+				'fill': 'rgba(171,12,12,0.2)',
+				'stroke': 'rgba(171,12,12,1)',
+				'shape-rendering': 'crispEdges',
+				'x': 0,
+				'y': 0,
+				'height': 0,
+				'width': 0
+			});
+
+			graph.dom.appendChild(this._zoomingSquare);
+		},
+
 		onMouseDown: function(graph, x, y, e, target) {
 
 			var zoomMode = graph.getZoomMode();
@@ -1233,18 +1261,18 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.x1 = x - graph.getPaddingLeft();
 			this.y1 = y - graph.getPaddingTop();
 
-			graph._zoomingSquare.setAttribute('width', 0);
-			graph._zoomingSquare.setAttribute('height', 0);
-			graph._zoomingSquare.setAttribute('display', 'block');
+			this._zoomingSquare.setAttribute('width', 0);
+			this._zoomingSquare.setAttribute('height', 0);
+			this._zoomingSquare.setAttribute('display', 'block');
 
 			switch(zoomMode) {
 				case 'x': 
-					graph._zoomingSquare.setAttribute('y', graph.options.paddingTop);
-					graph._zoomingSquare.setAttribute('height', graph.getDrawingHeight() - graph.shift[0]);
+					this._zoomingSquare.setAttribute('y', graph.options.paddingTop);
+					this._zoomingSquare.setAttribute('height', graph.getDrawingHeight() - graph.shift[0]);
 				break;
 				case 'y':
-					graph._zoomingSquare.setAttribute('x', graph.options.paddingLeft/* + this.shift[1]*/);
-					graph._zoomingSquare.setAttribute('width', graph.getDrawingWidth()/* - this.shift[1] - this.shift[2]*/);
+					this._zoomingSquare.setAttribute('x', graph.options.paddingLeft/* + this.shift[1]*/);
+					this._zoomingSquare.setAttribute('width', graph.getDrawingWidth()/* - this.shift[1] - this.shift[2]*/);
 				break;
 			}
 		},
@@ -1252,24 +1280,24 @@ define(['jquery', 'util/util'], function($, Util) {
 		onMouseMove: function(graph, x, y, e, target) {
 			switch(this._zoomingMode) {
 				case 'xy':
-					graph._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
-					graph._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
-					graph._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
-					graph._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
+					this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
+					this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
+					this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
+					this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
 				break;
 				case 'x': 
-					graph._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
-					graph._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
+					this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
+					this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
 				break;
 				case 'y':
-					graph._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
-					graph._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
+					this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
+					this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
 				break;
 			}	
 		},
 
 		onMouseUp: function(graph, x, y, e, target) {
-			graph._zoomingSquare.setAttribute('display', 'none');
+			this._zoomingSquare.setAttribute('display', 'none');
 			var _x = x - graph.options.paddingLeft;
 			var _y = y - graph.options.paddingTop;
 
@@ -1450,21 +1478,21 @@ define(['jquery', 'util/util'], function($, Util) {
 				self.graph._zoomingYStart = coords.y;
 				self.graph._zoomingXStartRel = coords.x - self.graph.getPaddingLeft();
 				self.graph._zoomingYStartRel = coords.y - self.graph.getPaddingTop();
-				self.graph._zoomingSquare.setAttribute('width', 0);
-				self.graph._zoomingSquare.setAttribute('height', 0);
+				self.this._zoomingSquare.setAttribute('width', 0);
+				self.this._zoomingSquare.setAttribute('height', 0);
 
 				switch(self.graph._zoomingMode) {
 					case 'x': 
-						self.graph._zoomingSquare.setAttribute('y', self.graph.getPaddingTop() + self.shift - self.totalDimension);
-						self.graph._zoomingSquare.setAttribute('height', self.totalDimension);
+						self.this._zoomingSquare.setAttribute('y', self.graph.getPaddingTop() + self.shift - self.totalDimension);
+						self.this._zoomingSquare.setAttribute('height', self.totalDimension);
 					break;
 					case 'y':
-						self.graph._zoomingSquare.setAttribute('x', self.graph.getPaddingLeft() + self.shift - self.totalDimension);
-						self.graph._zoomingSquare.setAttribute('width', self.totalDimension);
+						self.this._zoomingSquare.setAttribute('x', self.graph.getPaddingLeft() + self.shift - self.totalDimension);
+						self.this._zoomingSquare.setAttribute('width', self.totalDimension);
 					break;
 				}
 
-				self.graph._zoomingSquare.setAttribute('display', 'block');
+				self.this._zoomingSquare.setAttribute('display', 'block');
 			});
 		},
 
