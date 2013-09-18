@@ -176,7 +176,9 @@ define(['forms/button', 'util/util'], function(Button, Util) {
 
 	function makeHeaderEditable(headerdom, configuration, viewhandler) {
 
-		headerdom.text(configuration.title).attr('contenteditable', 'true').bind('keypress', function(e) {
+		headerdom.text(configuration.title || 'Untitled').attr('contenteditable', 'true').bind('keypress', function(e) {
+			
+			e.stopPropagation();
 			if(e.keyCode == 13) {
 				e.preventDefault();
 				$(this).trigger('blur');
@@ -184,7 +186,7 @@ define(['forms/button', 'util/util'], function(Button, Util) {
 			}
 		}).bind('blur', function() {
 			configuration.title = $(this).text().replace(/[\r\n]/g, "");
-			viewhandler.save();
+			//viewhandler.save();
 		});
 	}
 
