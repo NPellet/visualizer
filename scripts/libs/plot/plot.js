@@ -1076,7 +1076,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var i = 0, l = this.options.plugins.length;
 			for(; i < l; i++) {
 				if(this.plugins[this.options.plugins[i]] && this.plugins[this.options.plugins[i]][funcName])
-					this.plugins[this.options.plugins[i]][funcName].apply(this, args);
+					this.plugins[this.options.plugins[i]][funcName].apply(this.plugins[this.options.plugins[i]], args);
 			}
 		},
 
@@ -1243,7 +1243,8 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		init: function(graph) {
 
-			this._zoomingSquare = document.createElementNS(this.ns, 'rect');
+			this._zoomingSquare = document.createElementNS(graph.ns, 'rect');
+
 			graph.setAttributeTo(this._zoomingSquare, {
 				'display': 'none',
 				'fill': 'rgba(171,12,12,0.2)',
