@@ -29,7 +29,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		rangeLimitY: 0,		
 		unzoomGradual: true,
 
-		plugins: ['zoom', 'drag'],
+		plugins: ['zoom', 'drag', 'integral'],
 
 		keyCombinations: {
 			integral: { shift: true, ctrl: false },
@@ -1073,23 +1073,27 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		_pluginsExecute: function(funcName, args) {
 			Array.prototype.splice.apply(args, [0, 0, this]);
-			var i = 0, l = this.options.plugins.length;
-			for(; i < l; i++) {
-				if(this.plugins[this.options.plugins[i]] && this.plugins[this.options.plugins[i]][funcName])
-					this.plugins[this.options.plugins[i]][funcName].apply(this.plugins[this.options.plugins[i]], args);
+			for(var i in this._plugins) {
+				if(this._plugins[i] && this._plugins[i][funcName])
+					this._plugins[i][funcName].apply(this._plugins[i], args);
 			}
 		},
 
 		_pluginExecute: function(which, func, args) {
 			Array.prototype.splice.apply(args, [0, 0, this]);
-			if(this.plugins[which] && this.plugins[which][func])
-				this.plugins[which][func].apply(this.plugins[which], args);
+			if(this._plugins[which] && this._plugins[which][func])
+				this._plugins[which][func].apply(this._plugins[which], args);
 			else
 				return;
 		},
 
 		_pluginsInit: function() {
-			this._pluginsExecute('init', arguments);
+			this._plugins = this._plugins || {};
+			for(var i = 0, l = this.options.plugins.length; i < l; i++) {
+				this._plugins[this.options.plugins[i]] = new this.plugins[this.options.plugins[i]]();
+				this._plugins[this.options.plugins[i]].init(this);
+			}
+			//this._pluginsExecute('init', arguments);
 		},
 
 		triggerEvent: function() {
@@ -1106,7 +1110,10 @@ define(['jquery', 'util/util'], function($, Util) {
 
 	Graph.prototype.plugins = {};
 
-	Graph.prototype.plugins.drag = {
+	Graph.prototype.plugins.drag = function () { }
+	Graph.prototype.plugins.drag.prototype = {
+
+		init: function() {},
 
 		onMouseDown: function(graph, x, y, e, target) {
 			this._draggingX = x;
@@ -1164,8 +1171,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			*/
 
 	
-	Graph.prototype.plugins.rangeX = {
+	Graph.prototype.plugins.rangeX = function() { };
+	Graph.prototype.plugins.rangeX.prototype = {
 
+		init: function() {},
+	
 		onMouseDown: function(graph, x, y, e, target) {
 			var self = graph;
 			this.count = this.count || 0;
@@ -1201,8 +1211,11 @@ define(['jquery', 'util/util'], function($, Util) {
 
 
 
-	Graph.prototype.plugins.integral = {
+	Graph.prototype.plugins.integral = function() { };
+	Graph.prototype.plugins.integral.prototype = {
 
+		init: function() {},
+		
 		onMouseDown: function(graph, x, y, e, target) {
 			var self = graph;
 			this.count = this.count || 0;
@@ -1239,12 +1252,13 @@ define(['jquery', 'util/util'], function($, Util) {
 
 
 
-	Graph.prototype.plugins.zoom = {
+	Graph.prototype.plugins.zoom = function() { };
+	Graph.prototype.plugins.zoom.prototype = {
 
 		init: function(graph) {
 
 			this._zoomingSquare = document.createElementNS(graph.ns, 'rect');
-
+console.log(this._zoomingSquare);
 			graph.setAttributeTo(this._zoomingSquare, {
 				'display': 'none',
 				'fill': 'rgba(171,12,12,0.2)',
@@ -1262,6 +1276,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		onMouseDown: function(graph, x, y, e, target) {
 
 			var zoomMode = graph.getZoomMode();
+			
 			if(!zoomMode)
 				return;
 

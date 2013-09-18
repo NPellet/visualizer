@@ -104,9 +104,6 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 		
 		doConfiguration: function(section) {
-			var data = Traversing.getValueIfNeeded(this.result),
-				jpaths = [];
-			Traversing.getJPathsFromElement(data, jpaths);
 			
 			return {
 				groups: {

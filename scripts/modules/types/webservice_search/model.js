@@ -5,7 +5,7 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 
 		getjPath: function(rel, accepts) {
 			var jpath = [];
-			Traversing.getJPathsFromElement(this.module.model.data, jpath);
+			Traversing.getJPathsFromElement(this.module.model.data || {}, jpath);
 			return jpath;
 		}
 

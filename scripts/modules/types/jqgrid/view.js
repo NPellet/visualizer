@@ -140,7 +140,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				var elements = [];
 				view.buildElements(list, elements, jpaths);
 				this.gridElements = elements;
-console.log(elements);
+
 				for(var i = 0; i < elements.length; i++) {
 					this.jqGrid('addRowData', i, elements[i]);
 				}
