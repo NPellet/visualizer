@@ -132,12 +132,14 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 
 			for(var i = 0; i < this.fields.length; i++)
 				fieldsByName[this.fields[i].getName()] = this.fields[i];
+			
 			for(var i in json) {
 				var name = i;
 				var field = fieldsByName[name];
 				if(!field)
 					continue;
 				field.resetDuplicate();
+
 				for(var j = 0; j < json[i].length; j++) {
 					if(j > 0)
 						field.addField();
