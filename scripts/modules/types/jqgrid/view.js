@@ -64,7 +64,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 
 			//colModel[colModel.length - 1].width = "*";
-			nbLines = this.module.getConfiguration().nbLines || 10;	
+			var nbLines = this.module.getConfiguration().nbLines || 10;	
 
 			if(self.jqGrid) {
 				self.jqGrid('GridDestroy');
@@ -132,15 +132,14 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 			var self = this;
 	 			this.module.data = moduleValue;
-
-				var view = this;
 				var list = Traversing.getValueIfNeeded(moduleValue);
 				this.elements = list;
 
 				var elements = [];
-				view.buildElements(list, elements, jpaths);
+				this.buildElements(list, elements, jpaths);
 				this.gridElements = elements;
-
+				this.jqGrid('clearGridData');
+				
 				for(var i = 0; i < elements.length; i++) {
 					this.jqGrid('addRowData', i, elements[i]);
 				}
@@ -160,9 +159,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			}
 		},
 
-		buildElement: function(s, i, jp, a) {
+		buildElement: function(s, i, jp, m) {
 			var element = {};
-			this.listenFor(s, jp, i);
+
+			if(!m)
+				this.listenFor(s, jp, i);
 			for(var j in jp) {
 				var jpath = jp[j]; jpath = jpath.jpath || jpath;
 				element[j] = 'Loading';
@@ -181,14 +182,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			var self = this;
 			
 			Traversing.listenDataChange(source, function(data) {
-				var element = {};
-				
-				for(var j in jpaths) {
-					jpath = jpaths[j]; jpath = jpath.jpath || jpath;
-					element[j] = 'Loading';
-					console.log('Render from Listen');
-					element["_" + j] = self.renderElement(element, data, jpath, id, j);
-				}
+				var element = self.buildElement(source, id, jpaths, true);
 				self.jqGrid('setRowData', id, element);
 				var scroll = $("body").scrollTop();
 				var target = $("tr#" + id, self.domTable).effect('highlight', {}, 1000).get(0).scrollIntoView();
