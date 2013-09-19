@@ -8,13 +8,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		var self = this;
 			this.unique = Util.getNextUniqueId();
     		Util.loadCss(require.toUrl('libs/jqgrid/css/ui.jqgrid.css'));
-    
-	 		
 	 		this.dom = $('<div class="ci-displaylist-list"></div>');
 	 		this.domTable = $("<table />").attr('id', this.unique);
-
 	 		this.dom.on('mouseover', '.jqgrow', function() {
-
 				self.module.controller.lineHover(self.elements[$(this).attr('id')]);
 	 		}).on('mouseout', '.jqgrow', function() {
 				self.module.controller.lineOut(self.elements[$(this).attr('id')]);
@@ -91,17 +87,17 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
 			   		if(jpaths[colModel[colNum].name].number)
 			   			value = parseFloat(value);
-			   		
-
 			   		Traversing.setValueFromJPath(self.elements[rowId], colModel[colNum]._jpath, value);
 			   	},
 			    viewrecords: true,
 			    onSelectRow: function(rowid, status) {
-			
-			    	if(status)
+			    	rowid--; // ?? Plugin mistake ?
+			    	if(status) {
 			    		self.module.controller.onToggleOn(self.elements[rowid]);
-			    	else
+			    	}
+			    	else {
 			    		self.module.controller.onToggleOff(self.elements[rowid]);
+			    	}
 					self.module.controller.lineClick(self.elements[rowid]);
 			    },
 			});
@@ -149,11 +145,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 		},
 
 		buildElements: function(source, arrayToPush, jpaths, colorJPath, muteListen) {
-			var jpath;
-			
-			var self = this;
+			var self = this,
+				jpath;
 			self.done = 0;
-
 			for(var i = 0, length = source.length; i < length; i++) {
 				arrayToPush.push(this.buildElement(source[i], i, jpaths));
 			}
@@ -161,7 +155,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 		buildElement: function(s, i, jp, m) {
 			var element = {};
-
 			if(!m)
 				this.listenFor(s, jp, i);
 			for(var j in jp) {
@@ -170,11 +163,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				self.done++;
 				element["_" + j] = this.renderElement(element, s, jpath, i, j);
 			}
-
 			Traversing.getValueFromJPath(s, this.module.getConfiguration().colorjPath).done(function(value) {
 				element._backgroundColor = value;
 			});
-			
 			return element;
 		},
 
@@ -191,7 +182,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 		renderElement: function(element, source, jpath, k, l) {
 			var self = this, box = self.module;
-
 			return Renderer.toScreen(source, box, {}, jpath).done(function(value) {
 				element[l] = value;
 				self.done--;
@@ -208,17 +198,13 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 		onActionReceive:  {
 
 			addRow: function(source) {
-				
 				this.elements = this.elements || [];
 				this.elements.push(source);
 				this.module.data = this.elements;
-
 				var jpaths = this.module.getConfiguration().colsjPaths;
 				var l = this.elements.length - 1;
 				var el = this.buildElement(source, l, jpaths);
-
 				this.jqGrid('addRowData', l, el);
-				
 			//	API.setVariable(this.module.getNameFromRel('list'), this.module.data, false, true);
 			},
 
