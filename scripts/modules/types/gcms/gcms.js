@@ -40,6 +40,14 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				rangeLimitX: parseInt(this.rangeLimit) || 1,
 
 				onRangeX: function(xStart, xEnd, range) {
+					
+				},	
+
+				onAnnotationSelect: function(annot) {
+
+					var xStart = annot.pos.x;
+					var xEnd = annot.pos2.x;
+
 					var indexStart = self.gcSeries[0].searchClosestValue(xStart).xBeforeIndex;
 					var indexEnd = self.gcSeries[0].searchClosestValue(xEnd).xBeforeIndex;
 					var indexMin = Math.min(indexStart, indexEnd);
@@ -71,16 +79,16 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					}
 
 
-					if(range.serie) {
-						range.serie.kill(true);
-						range.serie = false;
+					if(self.serieIntegral) {
+						self.serieIntegral.kill(true);
+						self.serieIntegral = false;
 					}
 
-					range.serie = self.ms.newSerie('av', { lineToZero: !this.msContinuous });
-					range.serie.autoAxis();
-					range.serie.setYAxis(self.ms.getRightAxis());
-					range.serie.setData(finalMs);
-					range.serie.setLineColor('rgb(' + range.color + ')');
+					self.serieIntegral = self.ms.newSerie('av', { lineToZero: !this.msContinuous });
+					self.serieIntegral.autoAxis();
+					self.serieIntegral.setYAxis(self.ms.getRightAxis());
+					self.serieIntegral.setData(finalMs);
+					self.serieIntegral.setLineColor(annot.fillColor);
 
 					self.ms.getRightAxis().setMaxValue(self.ms.getBoundaryAxisFromSeries(self.ms.getRightAxis(), 'y', 'max'));
 					self.ms.getRightAxis().setMinMaxToFitSeries();
@@ -89,7 +97,15 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.ms.redraw(!self.firstRange);
 					self.firstRange = false;
 					self.ms.drawSeries();
-				},	
+				},
+
+				onAnnotationUnselect: function(annot) {
+					
+					if(self.serieIntegral) {
+						self.serieIntegral.kill(true);
+						self.serieIntegral = false;
+					}
+				},
 
 				onRangeXRemove: function(range) {
 					if(!range.serie)

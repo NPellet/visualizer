@@ -106,7 +106,6 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			if(ns) {
 				for(i in params) {
-					console.log(ns, i, params[i]);
 					to.setAttributeNS(ns, i, params[i]);
 				}
 			} else {
@@ -1025,7 +1024,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			
 			if(annotation.fillColor)	shape.set('fillColor', annotation.fillColor);
 			if(annotation.strokeColor)	shape.set('strokeColor', annotation.strokeColor);
-			if(annotation.strokeWidth)	shape.set('strokeWidth', annotation.strokeWidth);
+			if(annotation.strokeWidth)	shape.set('strokeWidth', annotation.strokeWidth || (annotation.strokeColor ? 1 : 0));
 
 			if(annotation.label) {
 				//shape.set('labelText', annotation.label.text);
@@ -1103,8 +1102,24 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(typeof this.options[func] == "function")
 				return this.options[func].apply(this, arguments);
 			return true;
-		}
+		},
 
+		selectAnnotation: function(annot) {
+			if(this.selectedAnnotation == annot)
+				return;
+
+			if(this.selectedAnnotation) {
+				this.selectedAnnotation.unselect();
+			}
+
+			this.selectedAnnotation = annot;
+			this.triggerEvent('onAnnotationSelect', annot.data);
+		},
+
+		unselectAnnotation: function(annot) {
+			this.selectedAnnotation = false;
+			this.triggerEvent('onAnnotationUnselect', annot.data);
+		}
 	}
 
 
@@ -2540,15 +2555,11 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		scaleToFitAxis: function(axis, start, end) {
 			var max = 0;
-			console.log(this.graph.series);
 			for(var i = 0, l = this.graph.series.length; i < l; i++) {
-
 				if(!(this.graph.series[i].getXAxis() == axis))
 					continue;
-
 				max = Math.max(max, this.graph.series[i].getMax(start, end));
 			}
-			console.log(max);
 			this._doZoomVal(0, max);
 		}
 	});
@@ -3754,6 +3765,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.saved = {};
 			this.group = document.createElementNS(this.graph.ns, 'g');
 
+			this._selected = false;
 			this.createDom();
 			this.setEvents();
 			
@@ -3781,6 +3793,16 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		setEvents: function() {},
+		setSelectableOnClick: function() {
+			return;
+			var self = this;
+			this._dom.addEventListener('click', function() {
+				if(!self._selectable)
+					return;
+				self._selected = !self._selected;
+				self[self._selected ? 'select' : 'unselect']();
+			});
+		},
 
 		setBBox: function() {
 
@@ -3986,7 +4008,14 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		_forceLabelAnchor: function() {
 			this.label.setAttribute('text-anchor', this.get('labelAnchor'))
-		}
+		},
+
+		setSelectable: function(bln) {
+			this._selectable = bln;
+		},
+
+		select: function() {},
+		unselect: function() {}
 	}
 
 	var GraphRect = function(graph) {
@@ -4162,6 +4191,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		setEvents: function() {
 			var self = this;
 			this._dom.addEventListener('mousedown', function(e) {
+			
 				e.preventDefault();
 				e.stopPropagation();
 				self.handleMouseDown(e);
@@ -4190,6 +4220,8 @@ define(['jquery', 'util/util'], function($, Util) {
 				e.stopPropagation();
 				self.handleMouseUp(e);
 			});
+			
+		//	this.setSelectableOnClick();
 		},
 
 		handleMouseDown: function(e, resize) {
@@ -4203,13 +4235,27 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.resizingPosition = ((this.reversed && resize == 2) || (!this.reversed && resize == 1)) ? this.getFromData('pos') : this.getFromData('pos2');
 			}
 
+			var self = this;
 			this.graph.annotationMoving(this);
+			if(!this._selected) {
+				self.preventUnselect = true;
+				self.timeoutSelect = window.setTimeout(function() {
+					self.select();
+					self.timeoutSelect = false;
+				}, 100);
+			}
 		},
 
 		handleMouseUp: function() {
 			this.moving = false;
 			this.resize = false;
 			this.graph.annotationMoving(false);
+
+			if(this.preventUnselect)
+				this.preventUnselect = false;
+			else if(this._selected) {
+				this.unselect();
+			}
 
 			this.triggerChange();
 		},
@@ -4224,12 +4270,18 @@ define(['jquery', 'util/util'], function($, Util) {
 				pos1.x += delta;
 				pos2.x += delta;
 				
+				if(delta != 0)
+					this.preventUnselect = true;
+
 				this.coordsI = coords;
 				this.setPosition();
 				this.redrawImpl();
 			} else if(this.resize) {
 				var value = this.serie.searchClosestValue(this.serie.getXAxis().getVal(this.graph.getXY(e).x - this.graph.getPaddingLeft()));
 				this.setPosition();
+				if(this.resizingPosition.x != value.xMin)
+					this.preventUnselect = true;
+
 				this.resizingPosition.x = value.xMin;
 				this.redrawImpl();
 			}
@@ -4257,9 +4309,6 @@ define(['jquery', 'util/util'], function($, Util) {
 				return false;
 			}
 
-			this.group.appendChild(this.handle1);
-			this.group.appendChild(this.handle2);
-
 
 			var v1 = this.serie.searchClosestValue(this.getFromData(this.reversed ? 'pos2' : 'pos').x),
 				v2 = this.serie.searchClosestValue(this.getFromData(this.reversed ? 'pos' : 'pos2').x),
@@ -4272,7 +4321,8 @@ define(['jquery', 'util/util'], function($, Util) {
 				y, 
 				firstX, 
 				firstY, 
-				currentLine;
+				currentLine,
+				maxY = 0;
 
 
 			if(!v1 || !v2)
@@ -4285,51 +4335,76 @@ define(['jquery', 'util/util'], function($, Util) {
 				for(j = init; j <= max; j+=2) {
 					x = this.serie.getX(this.serie.data[i][j + 0]),
 					y = this.serie.getY(this.serie.data[i][j + 1]);
+					maxY = Math.max(this.serie.data[i][j + 1], maxY);
 					if(j == init) {
-						firstX = x;
-						firstY = y;
+						this.firstX = x;
+						this.firstY = y;
 					}
 					currentLine = this.serie._addPoint(currentLine, x, y, k);
 					k++;
 				}
 
-
-				if(!firstX || !firstY || !x || !y)
+				this.lastX = x;
+				this.lastY = y;
+				if(!this.firstX || !this.firstY || !this.lastX || !this.lastY)
 					return;
 
-				this.handle1.setAttribute('x1', firstX);
-				this.handle1.setAttribute('x2', firstX);
-
-				this.handle2.setAttribute('x1', x);
-				this.handle2.setAttribute('x2', x);
-
-				this.handle1.setAttribute('y1', firstY);
-				this.handle1.setAttribute('y2', this.serie.getY(0));
-
-				this.handle2.setAttribute('y1', y);
-				this.handle2.setAttribute('y2', this.serie.getY(0));
-
-
-				currentLine += " V " + this.serie.getYAxis().getPx(0) + " H " + firstX + " z";
+				currentLine += " V " + this.serie.getYAxis().getPx(0) + " H " + this.firstX + " z";
 				this.setDom('d', currentLine);
 			}
+
+			this.maxY = this.serie.getY(maxY);
+			if(this._selected)
+				this.select();
 			
 			return true;
 		},
 
+		select: function() {
 
-		setLabelPosition: function() {
+			this._selected = true;
+			this.handle1.setAttribute('x1', this.firstX);
+			this.handle1.setAttribute('x2', this.firstX);
 
-			var pos1 = this._getPosition(this.getFromData('pos')),
-				pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
+			this.handle2.setAttribute('x1', this.lastX);
+			this.handle2.setAttribute('x2', this.lastX);
 
-			this._setLabelPosition(this._getPosition(this.get('labelPosition'), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
-			
+			this.handle1.setAttribute('y1', this.serie.getYAxis().getMaxPx());
+			this.handle1.setAttribute('y2', this.serie.getY(0));
+
+			this.handle2.setAttribute('y1', this.serie.getYAxis().getMaxPx());
+			this.handle2.setAttribute('y2', this.serie.getY(0));
+
+			this.group.appendChild(this.handle1);
+			this.group.appendChild(this.handle2);
+
+			this.setDom('stroke', 'red');
+			this.setDom('stroke-width', '2');
+			this.setDom('stroke-dasharray', '10 10');
+
+			this.graph.selectAnnotation(this);
 		},
 
-		afterDone: function() {
-			
+		unselect: function() {
+
+			this._selected = false;
+
+			this.group.removeChild(this.handle1);
+			this.group.removeChild(this.handle2);
+
+			this.setStrokeWidth();
+			this.setStrokeColor();
+			this.setDashArray();
+
+			this.graph.unselectAnnotation(this);
+		},
+
+		setLabelPosition: function() {
+			var pos1 = this._getPosition(this.getFromData('pos')),
+				pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
+			this._setLabelPosition(this._getPosition(this.get('labelPosition'), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));			
 		}
+
 	});
 
 

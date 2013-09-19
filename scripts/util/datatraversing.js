@@ -22,7 +22,7 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			return $.Deferred().resolve(element);
 	}
 
-	function _setValueFromJPath(element, jpath, newValue) {
+	function _setValueFromJPath(element, jpath, newValue, moduleId) {
 		var el = getValueIfNeeded(element);
 		var type;
 
@@ -45,7 +45,7 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			return fetchElementIfNeeded(subelement).pipe(function(elChildren) {
 				return _setValueFromJPath(elChildren, jpath, newValue);
 			}).done(function() {
-				triggerDataChange(el);
+				triggerDataChange(el, moduleId);
 			});
 		}
 	}
@@ -120,6 +120,7 @@ define(['jquery', 'data/structures'], function($, Structures) {
 	function listenDataChange(data, callback, id) {
 		if(!data.__onDataChanged)
 			data.__onDataChanged = [];
+		console.log(id);
 		data.__onDataChanged.push([callback, id]);
 	}
 

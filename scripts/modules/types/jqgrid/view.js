@@ -87,7 +87,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
 			   		if(jpaths[colModel[colNum].name].number)
 			   			value = parseFloat(value);
-			   		Traversing.setValueFromJPath(self.elements[rowId], colModel[colNum]._jpath, value);
+			   		Traversing.setValueFromJPath(self.elements[rowId], colModel[colNum]._jpath, value, self.module.getId());
 			   	},
 			    viewrecords: true,
 			    onSelectRow: function(rowid, status) {
@@ -173,13 +173,12 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			var self = this;
 			
 			Traversing.listenDataChange(source, function(data) {
-				console.trace();
 				var element = self.buildElement(source, id, jpaths, true);
 				self.jqGrid('setRowData', id, element);
 				var scroll = $("body").scrollTop();
 				var target = $("tr#" + id, self.domTable).effect('highlight', {}, 1000).get(0).scrollIntoView();
 				$("body").scrollTop(scroll);
-			});
+			}, self.module.getId());
 		},
 
 		renderElement: function(element, source, jpath, k, l) {
