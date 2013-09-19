@@ -67,10 +67,8 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			return fetchElementIfNeeded(element).pipe(function(value) {
 				return value.data;
 			});
-
 		if(element.value && element.type)
 			return element.value;
-
 		return element;
 	}
 
@@ -126,8 +124,9 @@ define(['jquery', 'data/structures'], function($, Structures) {
 	}
 
 	function triggerDataChange(data, id) {
+
 		if(data._onDataChanged) {
-			for(var i = 0, l = data._onDataChanged; i < l; i++) {
+			for(var i = 0, l = data._onDataChanged.length; i < l; i++) {
 				if((id !== undefined && data._onDataChanged[i][1] !== id) || id === undefined) {
 					data._onDataChanged[i][0].call(data, data);	
 				}

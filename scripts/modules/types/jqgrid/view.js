@@ -155,7 +155,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			self.done = 0;
 
 			for(var i = 0, length = source.length; i < length; i++) {
-				arrayToPush.push(this.buildElement(source[i], i, jpaths, arrayToPush));
+				arrayToPush.push(this.buildElement(source[i], i, jpaths));
 			}
 		},
 

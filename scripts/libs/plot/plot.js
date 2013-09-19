@@ -1258,7 +1258,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		init: function(graph) {
 
 			this._zoomingSquare = document.createElementNS(graph.ns, 'rect');
-console.log(this._zoomingSquare);
+
 			graph.setAttributeTo(this._zoomingSquare, {
 				'display': 'none',
 				'fill': 'rgba(171,12,12,0.2)',
@@ -1276,7 +1276,7 @@ console.log(this._zoomingSquare);
 		onMouseDown: function(graph, x, y, e, target) {
 
 			var zoomMode = graph.getZoomMode();
-			
+
 			if(!zoomMode)
 				return;
 
