@@ -180,7 +180,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 		listenFor: function(source, jpaths, id) {
 			var self = this;
-			
 			Traversing.listenDataChange(source, function(data) {
 				var element = self.buildElement(source, id, jpaths, true);
 				self.jqGrid('setRowData', id, element);

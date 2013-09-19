@@ -64,8 +64,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		onSearchDone: function(elements) {
 			var self = this;
 			self.result = elements;
-			self.module.data = elements;
-			
+			self.module.model.data = elements;
 			this.setVarFromEvent('onSearchReturn', elements);
 		},
 
