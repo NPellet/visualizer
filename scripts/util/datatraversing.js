@@ -118,17 +118,16 @@ define(['jquery', 'data/structures'], function($, Structures) {
 	}
 
 	function listenDataChange(data, callback, id) {
-		if(!data._onDataChanged)
-			data._onDataChanged = [];
-		data._onDataChanged.push([callback, id]);
+		if(!data.__onDataChanged)
+			data.__onDataChanged = [];
+		data.__onDataChanged.push([callback, id]);
 	}
 
 	function triggerDataChange(data, id) {
-
-		if(data._onDataChanged) {
-			for(var i = 0, l = data._onDataChanged.length; i < l; i++) {
-				if((id !== undefined && data._onDataChanged[i][1] !== id) || id === undefined) {
-					data._onDataChanged[i][0].call(data, data);	
+		if(data.__onDataChanged) {
+			for(var i = 0, l = data.__onDataChanged.length; i < l; i++) {
+				if((id !== undefined && data.__onDataChanged[i][1] !== id) || id === undefined) {
+					data.__onDataChanged[i][0].call(data, data);	
 				}
 			}
 		}

@@ -133,7 +133,7 @@ define(['forms/fieldtable'], function(TableField) {
 				if($(event.target).hasClass('dynatree-expander'))
 					return;
 					
-				if($(event.target).parents().andSelf().filter('.bi-formfield-expand').length == 0)
+				if($(event.target).parents().addBack().filter('.bi-formfield-expand').length == 0)
 					inst.stopEditing();
 			});
 			

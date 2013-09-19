@@ -239,8 +239,9 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			this.ms.kill();
 		},
 
-		zoomOn: function(start, end) {
+		zoomOn: function(start, end, y) {
 			this.gc.getBottomAxis()._doZoomVal(start - (end - start)*0.4, end + (end - start)*0.4);
+			this.gc.getLeftAxis().scaleToFitAxis(this.gc.getBottomAxis(), start, end);
 
 			this.gc.redraw(true);
 			this.gc.drawSeries(true);

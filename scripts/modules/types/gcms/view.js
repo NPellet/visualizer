@@ -36,6 +36,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 		},
 
 		onResize: function(width, height) {
+
 			this.gcmsInstance.resize(width, height);
 		},
 		
@@ -126,8 +127,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			zoomOnAnnotation: function(value, name) {
 				if(!value.pos && !value.pos2)
 					return;
-				console.log(value);
-				this.gcmsInstance.zoomOn(value.pos.x, value.pos2.x);
+				this.gcmsInstance.zoomOn(value.pos.x, value.pos2.x, value._max || false);
 			}
 		},
 

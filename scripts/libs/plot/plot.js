@@ -1049,11 +1049,12 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		redrawShapes: function() {
-			this.graphingZone.removeChild(this.shapeZone);
+
+			//this.graphingZone.removeChild(this.shapeZone);
 			for(var i = 0, l = this.shapes.length; i < l; i++) {
 				this.shapes[i].redraw();
 			}
-			this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
+			//this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
 		},
 
 		_makeClosingLines: function() {
@@ -2535,6 +2536,20 @@ define(['jquery', 'util/util'], function($, Util) {
 		handleMouseMoveLocal: function(x, y, e) {
 			y -= this.graph.getPaddingTop();
 			this.mouseVal = this.getVal(y);
+		},
+
+		scaleToFitAxis: function(axis, start, end) {
+			var max = 0;
+			console.log(this.graph.series);
+			for(var i = 0, l = this.graph.series.length; i < l; i++) {
+
+				if(!(this.graph.series[i].getXAxis() == axis))
+					continue;
+
+				max = Math.max(max, this.graph.series[i].getMax(start, end));
+			}
+			console.log(max);
+			this._doZoomVal(0, max);
 		}
 	});
 
@@ -2956,12 +2971,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			} else {
 				line.setAttribute('d', points);
 
-
-				if(this.options.areaUnderLine) {
-					points += " V " + this.getYAxis().getPx(0) + " H " + this.getXAxis().getPx(0) + " z";
-				//	auline.setAttribute('d', points);
-				}
-		
 			}
 
 			if(!this.lines[i]) {			
@@ -3217,6 +3226,25 @@ define(['jquery', 'util/util'], function($, Util) {
 						seedB = seedInt;
 				}
 			}
+		},
+
+		getMax: function(start, end) {
+
+			var start2 = Math.min(start, end),
+				end2 = Math.max(start, end),
+				v1 = this.searchClosestValue(start2),
+				v2 = this.searchClosestValue(end2),
+				i, j, max = 0, initJ, maxJ;
+
+			for(i = v1.dataIndex; i <= v2.dataIndex ; i++) {
+				initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+				maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
+				for(j = initJ; j <= maxJ; j+=2) {
+					max = Math.max(max, this.data[i][j + 1]);
+				}
+			}
+
+			return max;
 		},
 
 		/* FLIP */
@@ -4252,7 +4280,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			for(i = v1.dataIndex; i <= v2.dataIndex ; i++) {
 				currentLine = "M ";
 				init = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-				max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[j].length;
+				max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[i].length;
 				k = 0;
 				for(j = init; j <= max; j+=2) {
 					x = this.serie.getX(this.serie.data[i][j + 0]),
@@ -4264,6 +4292,7 @@ define(['jquery', 'util/util'], function($, Util) {
 					currentLine = this.serie._addPoint(currentLine, x, y, k);
 					k++;
 				}
+
 
 				if(!firstX || !firstY || !x || !y)
 					return;
