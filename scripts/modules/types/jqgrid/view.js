@@ -183,7 +183,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 		renderElement: function(element, source, jpath, k, l) {
 			var self = this, box = self.module;
-			return Renderer.toScreen(source, box, {}, jpath).done(function(value) {
+			return Renderer.toScreen(source, box, {}, jpath).then(function(value) {
 				element[l] = value;
 				self.done--;
 				self.jqGrid('setCell', k, l, value);
@@ -191,6 +191,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
 			}, function() {
 				self.done--;
+console.log(source, jpath);
+				Traversing.setValueFromJPath(source, jpath, 'N/A', true);
 				self.jqGrid('setCell', k, l, 'N/A');
 				self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
 			});

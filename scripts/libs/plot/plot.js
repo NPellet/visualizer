@@ -4279,6 +4279,9 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.redrawImpl();
 			} else if(this.resize) {
 				var value = this.serie.searchClosestValue(this.serie.getXAxis().getVal(this.graph.getXY(e).x - this.graph.getPaddingLeft()));
+				if(!value)
+					return;
+
 				this.setPosition();
 				if(this.resizingPosition.x != value.xMin)
 					this.preventUnselect = true;
@@ -4351,7 +4354,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				if(!this.firstX || !this.firstY || !this.lastX || !this.lastY)
 					return;
 
-				currentLine += " V " + this.serie.getYAxis().getPx(minY) + " H " + this.firstX + " z";
+				currentLine += " V " + this.serie.getYAxis().getPx(0) + " H " + this.firstX + " z";
 				this.setDom('d', currentLine);
 			}
 

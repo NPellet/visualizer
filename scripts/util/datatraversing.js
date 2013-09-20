@@ -22,7 +22,7 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			return $.Deferred().resolve(element);
 	}
 
-	function _setValueFromJPath(element, jpath, newValue, moduleId) {
+	function _setValueFromJPath(element, jpath, newValue, moduleId, mute) {
 		var el = getValueIfNeeded(element);
 		var type;
 
@@ -45,7 +45,9 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			return fetchElementIfNeeded(subelement).pipe(function(elChildren) {
 				return _setValueFromJPath(elChildren, jpath, newValue);
 			}).done(function() {
-				triggerDataChange(el, moduleId);
+
+				if(!mute)
+					triggerDataChange(el, moduleId);
 			});
 		}
 	}
@@ -147,15 +149,21 @@ define(['jquery', 'data/structures'], function($, Structures) {
 				jpath = '';
 			var jpathSplitted = jpath.split('.'); // Remove first element, which should always be "element"
 			jpathSplitted.shift();
-			return _getValueFromJPath(element, jpathSplitted)
+			return _getValueFromJPath(element, jpathSplitted);
 		},
 
-		setValueFromJPath: function(element, jpath, newValue) {
+		setValueFromJPath: function(element, jpath, newValue, moduleId, mute) {
 			if(!jpath.split)
 				jpath = '';
 			var jpathSplitted = jpath.split('.');
 			jpathSplitted.shift();
-			return _setValueFromJPath(element, jpathSplitted, newValue);
+
+			if(moduleId === true || moduleId === false) {
+				mute = moduleId;
+				moduleId = undefined;
+			}
+			
+			return _setValueFromJPath(element, jpathSplitted, newValue, moduleId, mute);
 		},
 
 		getJPathsFromStructure: function(structure, title, jpathspool, keystr) {		 
