@@ -2666,8 +2666,8 @@ $.fn.jqGrid = function( pin ) {
 					if(ts.p.multiselect && scb){
 						$(ts).jqGrid("setSelection", ri ,true,e);
 					} else {
-						ri = ptr[0].rowIndex;
 						$(ts).jqGrid("setSelection", ri ,true,e);
+						ri = ptr[0].rowIndex;console.log(ri);
 						try {$(ts).jqGrid("editCell",ri,ci,true);} catch (_) {}
 					}
 				} else if ( !ts.p.multikey ) {
@@ -2916,7 +2916,6 @@ $.jgrid.extend({
 			onsr = onsr === false ? false : true;
 			pt=$t.rows.namedItem(String(selection));
 			if(!pt || !pt.className || pt.className.indexOf( 'ui-state-disabled' ) > -1 ) { return; }
-			console.log(2);
 			function scrGrid(iR){
 				var ch = $($t.grid.bDiv)[0].clientHeight,
 				st = $($t.grid.bDiv)[0].scrollTop,

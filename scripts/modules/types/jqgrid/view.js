@@ -91,7 +91,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	},
 			    viewrecords: true,
 			    onSelectRow: function(rowid, status) {
-			    	rowid--; // ?? Plugin mistake ?
+			    	//rowid--; // ?? Plugin mistake ?
 			    	if(status) {
 			    		self.module.controller.onToggleOn(self.elements[rowid]);
 			    	}
