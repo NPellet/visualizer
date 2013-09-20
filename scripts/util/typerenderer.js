@@ -22,7 +22,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 
 	functions.chemical = {};
 	functions.chemical.toscreen = function(def, val) {
-		CI.DataType.getValueFromJPath(source, "element.iupac.0.value").then(def.resolve, def.reject;
+		CI.DataType.getValueFromJPath(source, "element.iupac.0.value").then(def.resolve, def.reject);
 	}
 
 	functions.picture = {};
