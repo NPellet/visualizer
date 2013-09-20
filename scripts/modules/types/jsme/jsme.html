@@ -19,6 +19,11 @@
 			jsmeApplet.readMolFile(mol);
 		}
 
+
+		this.setSmiles = function(smiles) {
+			jsmeApplet.readMolecule(smiles);
+		}
+
 		function jsmeOnLoad() {
 			var w = window.innerWidth;
 			var h = window.innerHeight;
@@ -28,8 +33,8 @@
 				//optional parameters
 				"options" : "query,hydrogens"
 			});
-			console.log(jsmeApplet);
-			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() {  var mol = this.jsmeApplet.molFile(); this.controller.onChange(mol); })');
+			
+			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() {  var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
 
 		}
 	</script>

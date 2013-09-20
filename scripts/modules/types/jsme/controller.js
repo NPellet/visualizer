@@ -4,8 +4,9 @@ define(['modules/defaultcontroller'], function(Default) {
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
 
-		onChange: function(mol) {
-			this.setVarFromEvent('onStructureChange', mol);
+		onChange: function(mol, smiles) {
+			this.setVarFromEvent('onStructureChange', mol, 'mol');
+			this.setVarFromEvent('onStructureChange', smiles, 'smiles');
 		},
 
 		configurationSend: {
@@ -19,6 +20,10 @@ define(['modules/defaultcontroller'], function(Default) {
 			rels: {
 				'mol': {
 					label: 'Mol 2D'
+				},
+
+				'smiles': {
+					label: 'Smiles'
 				}
 			}
 		},
