@@ -226,7 +226,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 						groups: {
 							sendvariables: [{
 								variable: postvariables,
-								names: postnames		
+								name: postnames		
 							}]
 						}
 					}]

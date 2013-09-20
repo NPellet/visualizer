@@ -36,10 +36,9 @@ define(['modules/defaultview'], function(Default) {
 		},
 		
 		update: {
-			'vartrigger': function(variable) {
+			'vartrigger': function(variable) {			
 				if(variable == undefined)
 					return;
-				
 				this.module.controller.doSearch();
 			}
 		},
