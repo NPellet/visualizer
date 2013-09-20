@@ -24,6 +24,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			_gcms.setRangeLimit(this.module.getConfiguration().nbzones || 1);
 			_gcms.inDom(this.dom.find('.gc').get(0), this.dom.find('.ms').get(0));
 
+			_gcms.onAnnotationChange = function(annot) {
+				Traversing.triggerDataChange(annot);
+			}
+
 			_gcms.onZoomGC = function(from, to) {
 				self.module.controller.sendAction('fromtoGC', {type: 'fromTo', value: { from: from, to: to }}, 'onZoomGCChange');
 			}
@@ -68,8 +72,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				this.gcmsInstance.setGC(moduleValue.gc);
 				this.gcmsInstance.setMS(moduleValue.ms);
 				this.resetAnnotationsGC();
-
-
 			},
 
 			'gc': function(moduleValue) {
@@ -90,7 +92,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 					return;
 				require(['util/jcampconverter'], function(tojcamp) {
 					var jcamp = tojcamp(Traversing.getValueIfNeeded(moduleValue));
-					
 					if(jcamp.spectra)
 						self.gcmsInstance.setExternalMS(jcamp.spectra[0].data[0], cont);
 				});
@@ -99,7 +100,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			'mscont': function(moduleValue, name) {
 				this.update.ms(moduleValue, name, true);
 			}
-
 		},
 
 		getDom: function() {

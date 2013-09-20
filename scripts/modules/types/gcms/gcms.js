@@ -102,6 +102,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				onAnnotationChange: function(annot) {
 					
 					this.triggerEvent('onAnnotationSelect', annot);
+					self.onAnnotationChange(annot);
 				},
 
 				onAnnotationUnselect: function(annot) {
