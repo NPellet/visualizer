@@ -189,6 +189,10 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				self.jqGrid('setCell', k, l, value);
 				if(self.done == 0)
 					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
+			}, function() {
+				self.done--;
+				self.jqGrid('setCell', k, l, 'N/A');
+				self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
 			});
 		},
 

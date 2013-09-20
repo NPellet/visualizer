@@ -6,7 +6,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 
 	functions.string = {};
 	functions.string.toscreen = function(def, val) {
-		def.resolve(val);	
+		def.resolve(val);
 	}
 		
 	functions.matrix = {};
@@ -22,7 +22,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 
 	functions.chemical = {};
 	functions.chemical.toscreen = function(def, val) {
-		CI.DataType.getValueFromJPath(source, "element.iupac.0.value").done(def.resolve);
+		CI.DataType.getValueFromJPath(source, "element.iupac.0.value").then(def.resolve, def.reject;
 	}
 
 	functions.picture = {};
@@ -363,12 +363,11 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 	functions.toScreen = function(element, box, opts, jpath) {
 		var deferred = $.Deferred(), self = this;;
 
-		Traversing.getValueFromJPath(element, jpath).done(function(element) {
-			Traversing.fetchElementIfNeeded(element).done(function(element) { 
-
+		Traversing.getValueFromJPath(element, jpath).then(function(element) {
+			Traversing.fetchElementIfNeeded(element).then(function(element) { 
 				_valueToScreen(deferred, element, box, opts); 
-			});	
-		})
+			}, function() { deferred.reject(); });	
+		}, function() { deferred.reject(); })
 		
 		return deferred.promise();
 	}
