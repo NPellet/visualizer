@@ -199,6 +199,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 		onActionReceive:  {
 
 			addRow: function(source) {
+				console.log('Ok from JQ pdv');
 				this.elements = this.elements || [];
 				this.elements.push(source);
 				this.module.data = this.elements;

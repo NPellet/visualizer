@@ -82,7 +82,7 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 				checkDimensions(true);
 			});
 
-			
+			//console.log(module.getDomWrapper());
 			// Insert jQuery UI resizable and draggable
 			module.getDomWrapper().resizable({
 
@@ -175,7 +175,7 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 		module.getDomContent().css({
 			height: containerHeight
 		});
-console.log('Do Resize');
+
 		module.view.onResize(module.getDomContent().width(), containerHeight);
 	}
 

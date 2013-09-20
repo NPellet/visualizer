@@ -51,7 +51,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		onVarGet: function(varValue, varName) {
 			var self = this;
 
-			$.when(this.module.view.onReady).then(function() {
+			$.when(this.module.ready, this.module.view.onReady).then(function() {
 				if(varName instanceof Array)
 					varName = varName[0];
 				if(!self.sourceMap)

@@ -1041,7 +1041,6 @@ define(['jquery', 'util/util'], function($, Util) {
 					shape.set('height', annotation.height);
 				break;
 			}
-
 			this.shapes.push(shape);
 
 			return shape;
@@ -4324,8 +4323,8 @@ define(['jquery', 'util/util'], function($, Util) {
 				firstX, 
 				firstY, 
 				currentLine,
-				maxY = 0;
-
+				maxY = 0,
+				minY = Number.MAX_VALUE;
 
 			if(!v1 || !v2)
 				return false;
@@ -4338,6 +4337,7 @@ define(['jquery', 'util/util'], function($, Util) {
 					x = this.serie.getX(this.serie.data[i][j + 0]),
 					y = this.serie.getY(this.serie.data[i][j + 1]);
 					maxY = Math.max(this.serie.data[i][j + 1], maxY);
+					minY = Math.min(this.serie.data[i][j + 1], minY);
 					if(j == init) {
 						this.firstX = x;
 						this.firstY = y;
@@ -4351,7 +4351,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				if(!this.firstX || !this.firstY || !this.lastX || !this.lastY)
 					return;
 
-				currentLine += " V " + this.serie.getYAxis().getPx(0) + " H " + this.firstX + " z";
+				currentLine += " V " + this.serie.getYAxis().getPx(minY) + " H " + this.firstX + " z";
 				this.setDom('d', currentLine);
 			}
 
@@ -4363,6 +4363,9 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		select: function() {
+
+			if(!this.firstX || !this.lastX)
+				return;
 
 			this._selected = true;
 			this.handle1.setAttribute('x1', this.firstX);

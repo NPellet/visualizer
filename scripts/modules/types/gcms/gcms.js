@@ -105,6 +105,10 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.onAnnotationChange(annot);
 				},
 
+				onAnnotationMake: function(annot) {
+					self.onAnnotationMake(annot);
+				},
+
 				onAnnotationUnselect: function(annot) {
 					
 					if(self.serieIntegral) {

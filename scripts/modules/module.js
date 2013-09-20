@@ -34,11 +34,10 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 			module.model.init();
 			
  			module.updateAllView();
-
 			def.resolve();
 		});
 
-		return def;
+		return def.promise();
 	}
 
 	 var Module = function(definition) {
@@ -100,7 +99,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 		 */
 		updateView: function(rel) {
 		
-			$.when(this.view.onReady).then(function() {
+			$.when(this.ready, this.view.onReady).then(function() {
 				var val = API.getRepositoryData().get(this.getNameFromRel(rel)), name;
 				if(!val)
 					return;

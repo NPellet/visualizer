@@ -25,7 +25,12 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			_gcms.inDom(this.dom.find('.gc').get(0), this.dom.find('.ms').get(0));
 
 			_gcms.onAnnotationChange = function(annot) {
+				self.module.controller.sendAction('annotation', annot, 'onAnnotationChange');
 				Traversing.triggerDataChange(annot);
+			}
+
+			_gcms.onAnnotationMake = function(annot) {
+				self.module.controller.sendAction('annotation', annot, 'onAnnotationAdd');
 			}
 
 			_gcms.onZoomGC = function(from, to) {

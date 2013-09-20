@@ -17,6 +17,11 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 
 				onZoomMSChange: {
 					label: 'Zoom over MS spectra'
+				},
+
+				onAnnotationAdd: {
+					label: 'Annotation added',
+					description: ''
 				}
 			}
 		},
@@ -57,14 +62,16 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 		actions: {
 			rel: {
 				'fromtoGC': 'From - To on GC', 
-				'fromtoMS': 'From - To on MS'
+				'fromtoMS': 'From - To on MS',
+				'annotation': 'Annotation'
 			}
 		},
 
 		actionsReceive: {
 			'fromtoGC': 'From - To on GC',
 			'fromtoMS': 'From - To on MS',
-			'zoomOnAnnotation': 'Zoom on annotation'
+			'zoomOnAnnotation': 'Zoom on annotation',
+			'annotation': 'Annotation'
 		},
 
 		moduleInformations: {
