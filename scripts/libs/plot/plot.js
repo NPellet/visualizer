@@ -3788,8 +3788,10 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		triggerChange: function() {
-			if(this.events && this.events.onChange)
-				this.events.onChange(this.data);	
+			//if(this.events && this.events.onChange)
+			//	this.events.onChange(this.data);
+
+			this.graph.triggerEvent('onAnnotationChange', this.data, this);
 		},
 
 		setEvents: function() {},

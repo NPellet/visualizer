@@ -120,7 +120,6 @@ define(['jquery', 'data/structures'], function($, Structures) {
 	function listenDataChange(data, callback, id) {
 		if(!data.__onDataChanged)
 			data.__onDataChanged = [];
-		console.log(id);
 		data.__onDataChanged.push([callback, id]);
 	}
 

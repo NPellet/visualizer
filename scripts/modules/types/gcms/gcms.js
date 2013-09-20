@@ -99,6 +99,11 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.ms.drawSeries();
 				},
 
+				onAnnotationChange: function(annot) {
+					
+					this.triggerEvent('onAnnotationSelect', annot);
+				},
+
 				onAnnotationUnselect: function(annot) {
 					
 					if(self.serieIntegral) {

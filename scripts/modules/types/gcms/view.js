@@ -133,11 +133,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 		doAnnotation: function(annotation) {
 			var self = this;
-			var shape = this.gcmsInstance.getGC().makeShape(annotation, {
-				onChange: function(newData) {
-					Traversing.triggerDataChange(newData, self.module.getId());
-				}
-			}, false);
+			var shape = this.gcmsInstance.getGC().makeShape(annotation, {}, false);
 
 			shape.setSelectable(true);
 
