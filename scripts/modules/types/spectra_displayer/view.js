@@ -98,13 +98,13 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				graph.setDefaultWheelAction(cfgM.wheelAction || 'none');
 
-				if(cfgM.minX)
+				if(cfgM.minX !== null)
 					graph.getXAxis().forceMin(cfgM.minX);
-				if(cfgM.minY)
+				if(cfgM.minY !== null)
 					graph.getLeftAxis().forceMin(cfgM.minY);
-				if(cfgM.maxX)
+				if(cfgM.maxX !== null)
 					graph.getXAxis().forceMax(cfgM.maxX);
-				if(cfgM.maxY)
+				if(cfgM.maxY != null)
 					graph.getLeftAxis().forceMax(cfgM.maxY);
 
 
@@ -183,10 +183,41 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				return;
 			},
 
-			'xArray': function(moduleValue, varname) {
-				var cfgM, color, continuour, val, val2;
-				cfgM = this.module.getConfiguration()
+			xyArray: function(moduleValue, varname) {
 
+				var cfgM = this.module.getConfiguration(), color, continuour, val, val2;
+				this.series[varname] = this.series[varname] || [];
+				this.removeSerie(varname);
+				this.series[varname] = [];	
+	 
+				if(!moduleValue)
+					return;
+
+				var continuous = false;
+				if(cfgM.plotinfos) {
+					for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
+						if(varname == cfgM.plotinfos[i].variable) {
+							color = cfgM.plotinfos[i].plotcolor;
+							continuous = cfgM.plotinfos[i].plotcontinuous;
+						}	
+					}
+				}
+				
+				val = DataTraversing.getValueIfNeeded(moduleValue),
+				serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
+
+				serie.setData(val);
+				serie.autoAxis();
+				if(color)
+					serie.setLineColor(color);
+
+				this.series[varname].push(serie);
+				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
+			},
+
+			'xArray': function(moduleValue, varname) {
+				var cfgM = this.module.getConfiguration(), color, continuour, val, val2;
+				
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie(varname);
 				this.series[varname] = [];	

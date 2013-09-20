@@ -1583,8 +1583,8 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		setMinValue: function(min) { this.realMin = min; },
 		setMaxValue: function(max) { this.realMax = max; },
-		forceMin: function(val) {    this.options.forcedMin = val || false; },
-		forceMax: function(val) {    this.options.forcedMax = val || false; },
+		forceMin: function(val) {    this.options.forcedMin = val; },
+		forceMax: function(val) {    this.options.forcedMax = val; },
 
 		getNbTicksPrimary: function() {
 			return this.options.nbTicksPrimary;
@@ -2461,12 +2461,13 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.setTickContent(tickLabel, value, options);
 				this.groupTickLabels.appendChild(tickLabel);
 				
-				if((tickLabel + "").length > this.longestTick[1]) {
+				if(String(tickLabel).length >= this.longestTick[1]) {
 					this.longestTick[0] = tickLabel;
-					this.longestTick[1] = (tickLabel + "").length;
+					this.longestTick[1] = String(tickLabel.textContent).length;
 
 				}
 			}
+
 			this.ticks.push(tick);
 		},
 
