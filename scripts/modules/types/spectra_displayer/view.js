@@ -193,7 +193,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 	 
 				if(!moduleValue)
 					return;
-
+				var continuous = false;
 				if(cfgM.plotinfos) {
 					for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
 						if(varname == cfgM.plotinfos[i].variable) {
@@ -203,7 +203,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					}
 				}
 				
-				val = Traversing.getValueIfNeeded(moduleValue),
+				val = DataTraversing.getValueIfNeeded(moduleValue),
 				val2 = [];
 
 				for(var i = 0, l = val.length; i < l; i++) {

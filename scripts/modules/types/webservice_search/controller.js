@@ -36,9 +36,9 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			// Replace all variables in the URL
 			var reg = /\<var:([a-zA-Z0-9]+)\>/;
 			while(val = reg.exec(url)) {
-				variable = API.getRepositoryData.get(val[1]) || [''];
+				variable = API.getRepositoryData().get(val[1]) || [''];
 				variable = variable[1];
-				url = url.replace('<var:' + val[1] + '>', encoreURIComponent(variable));
+				url = url.replace('<var:' + val[1] + '>', encodeURIComponent(variable));
 			}
 			
 			for(; i < l; i++) {
@@ -93,7 +93,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 				type: [],
 				label: 'A variable to trigger the search',
 				description: ''
-			},
+			}
 
 		},
 		
@@ -116,6 +116,13 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 								type: 'Text',
 								name: 'url',
 								title: 'Search URL'
+							},
+
+							{
+								type: 'Checkbox',
+								name: 'button',
+								title: 'Search button',
+								options: { button: '' }
 							}
 						]
 					},
@@ -210,7 +217,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 				groups: {
 					
 					cfg: [{
-						url: [this.module.getConfiguration().url]
+						url: [this.module.getConfiguration().url],
+						button: [this.module.getConfiguration().button ? ['button'] : []]
 				//		jpatharray: [this.module.getConfiguration().jpatharray]
 					}],
 
@@ -245,6 +253,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			for(var i = 0; i < group.length; i++)
 				postvariables.push([group[i].name, group[i].variable]);
 
+			this.module.getConfiguration().button = confSection[0].cfg[0].button[0][0] == 'button';
 			this.module.getConfiguration().searchparams = searchparams;
 			this.module.getConfiguration().postvariables = postvariables;
 			this.module.getConfiguration().url = confSection[0].cfg[0].url[0];
