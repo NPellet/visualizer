@@ -88,7 +88,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.serieIntegral.autoAxis();
 					self.serieIntegral.setYAxis(self.ms.getRightAxis());
 					self.serieIntegral.setData(finalMs);
-					self.serieIntegral.setLineColor(annot.fillColor);
+					self.serieIntegral.setLineColor(annot.strokeColor || annot.fillColor);
 
 					self.ms.getRightAxis().setMaxValue(self.ms.getBoundaryAxisFromSeries(self.ms.getRightAxis(), 'y', 'max'));
 					self.ms.getRightAxis().setMinMaxToFitSeries();
