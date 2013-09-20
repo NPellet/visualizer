@@ -25,16 +25,11 @@ define(['jquery', 'data/structures'], function($, Structures) {
 	function _setValueFromJPath(element, jpath, newValue, moduleId, mute) {
 		var el = getValueIfNeeded(element);
 		var type;
-
 		if(typeof el != "object" && jpath.length > 0)
 			el = {};
-		
 		if(jpath.length == 1)
 			return el[jpath[0]] = newValue;
-		
 		var jpathElement = jpath.shift();
-		
-
 		if(jpathElement) {
 			if(!(subelement = el[jpathElement])) { // If not an object, we make it an object
 				subelement = {};
@@ -45,7 +40,6 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			return fetchElementIfNeeded(subelement).pipe(function(elChildren) {
 				return _setValueFromJPath(elChildren, jpath, newValue);
 			}).done(function() {
-
 				if(!mute)
 					triggerDataChange(el, moduleId);
 			});
