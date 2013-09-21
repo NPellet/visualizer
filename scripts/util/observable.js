@@ -21,9 +21,7 @@ define(['libs/jquery', 'util/event'], function($, Event) {
 			return;
 		this.update(name, value);
 		var to = this.get(name);
-		
 		this.trigger('change', name, to, current);
-
 		return this;
 	}
 

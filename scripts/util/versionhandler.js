@@ -1,17 +1,13 @@
-define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) {
-
+define(['util/util', 'util/localdb'], function(Util, db) {
 
 	var DataViewHandler = function(dirUrl, defaultBranch, defaultUrl) {
 		
-		this._dirUrl = dirUrl;
-		this._defaultUrl = defaultUrl;
-
 		this.currentPath = [];
 		this._allData = {};
 		self._head = {};
 		this.dom = $("<div />");
-		this.defaultBranch = defaultBranch;
-
+		
+ 		this.versionChangeDeferred = $.Deferred();
 		this._data = {};
 		this.structure = {
 			server: { title: 'Server', children: {
@@ -26,9 +22,7 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 					}
 			}
 		};
-
 	}
-
 
 	DataViewHandler.prototype = {
 		
@@ -36,6 +30,9 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 			this.type = type;
 		},
 
+		set reviver(rev) {
+			this._reviver = rev;
+		},
 
 		getData: function() {
 			var self = this;
@@ -114,7 +111,9 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 				url: this.getUrl(),
 				type: 'get',
 				dataType: 'json',
-				data: {action: 'Dir'},
+				data: {
+					action: 'Dir'
+				},
 				success: function(data) {
 
 					for(var i in data) {
@@ -287,19 +286,25 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 			return this.dom;
 		},
 
-		updateButtons: function() {
-			Header.updateButtons(this.type, this.currentPath[3], this.currentPath[1]);
+		doUpdateButtons: function() {
+			if(this.updateButtons)
+				this.updateButtons(this.type, this.currentPath[3], this.currentPath[1]);
 		},
 
 		make: function(el, branch, head) {
-			this.updateButtons();
+			
+			this.currentElement = el;
+			this.doUpdateButtons();
 			var html = $(this.buildDom(el));
 			this.bindEventsDom(html);
 			this.dom.empty().html(html);
-
+			this.versionChange().notify(el);
 			this._html = html;
 		},
 
+		versionChange: function() {
+			return this.versionChangeDeferred;
+		},
 
 		clickLeaf: function(li) {
 			var self = this;
@@ -351,31 +356,41 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 			}
 		},
 
-		load: function(local) {
+		loadReadonly: function(def) {
+			var self = this,
+				url = this._defaultUrl;
+
+			$.ajax({
+				url: url,
+				timeout: 200000,
+				dataType: 'text',
+				success: function(data) {
+					//console.log(this._reviver);
+					data = JSON.parse(data, self._reviver);
+					self.make(data);
+					self.onLoaded(data);
+					def.resolve();
+				}
+			});
+		},
+
+		load: function(dirUrl, defaultBranch, defaultUrl) {
+
+			this._dirUrl = dirUrl;
+			this._defaultUrl = defaultUrl;
+			this.defaultBranch = defaultBranch;
 
 			var self = this;
-
 			var def = $.Deferred();
+
+			if(!this._dirUrl) {
+				this.loadReadonly(def);
+				return def;
+			}
+
 			var branch = (this.defaultBranch || 'Master');
-			var defServer = this.getFromServer({ branch: branch, action: 'Load' })/*.pipe(function(el) {
-				self.currentPath[1] = 'server';
-				self.currentPath[2] = el._name || 'Master';
-				self.currentPath[3] = el._time || 'head';
-				self.make(el, self.currentPath[2], self.currentPath[3]);
-
-				return el;
-			});
-	*/;
-			var defLocal = self._getLocalHead(branch);/*.pipe(function(el) {
-				// Current OR empty (and saved) is sent from local DB
-				// Get the master head
-				self.currentPath[1] = 'local';
-				self.currentPath[2] = 'Master';
-				self.currentPath[3] = 'head';
-				self.make(el, self.currentPath[2], self.currentPath[3]);
-				return el;
-			});*/
-
+			var defServer = this.getFromServer({ branch: branch, action: 'Load' });
+			var defLocal = self._getLocalHead(branch);
 
 			// First load the server
 			// Needed to identify branch and revision of the file
@@ -404,7 +419,7 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 						// Loads the latest file
 						el._name = branch;
 
-						if(savedLocal > saved)
+						if(savedLocal > saved && 1 == 0) // Prevent loading local for now
 							doLocal(el, el._name, el._time || 'head');
 						else
 							doServer(server, branch, rev);
@@ -429,6 +444,7 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 				self._savedLocal = JSON.stringify(el);
 				self.make(el, self.currentPath[2], self.currentPath[3]);
 				def.resolve(el);
+				
 				self.onLoaded(el);
 			}
 
@@ -581,34 +597,25 @@ define(['util/util', 'util/localdb', 'main/header'], function(Util, db, Header) 
 			});
 		},
 
-
-
 		getFromServer: function(data) {
-
-			var url = this.getUrl() || this._defaultUrl;
+			var self = this, 
+				def = $.Deferred(),
+				url = this.getUrl() || this._defaultUrl;
 
 			data.action = 'Load';
-			var self = this;
-			var def = $.Deferred();
-
-
 			$.ajax({
-
-				dataType: 'json',
+				dataType: 'text',
 				type: 'get',
 				url: url,
 				cache: false,
 				data: data || {},
-				success: function(data) {
-					self._savedServer = JSON.stringify(data);
-				//	console.log(self._savedServer);
+				success: function(data) { // data is now a text
+					self._savedServer = data;
+					data = JSON.parse(data, self._reviver);
 					def.resolve(data);
 				},
+
 				error: function() {
-					/*def.pipe(function() {
-						return self.load(true);
-					});
-	*/
 					def.reject();
 				}
 			});

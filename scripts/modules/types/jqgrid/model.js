@@ -7,14 +7,17 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 			return this.dataValue;
 		},
 		
-		getjPath: function(rel) {
-			
-			var data = this.module.data || [];
-			data = Traversing.getValueIfNeeded(data);
-			var data = data[0];
+		getjPath: function(rel, temporary) {
+			var data;
+			switch(rel) {
+				case 'element': // Wants to get the row ?
+					data = temporary['list'] ? temporary['list'] : (this.module.data || []);
+					data = Traversing.getValueIfNeeded(data)[0];
+				break;
+			}
+
 			var jpaths = []; 
 			Traversing.getJPathsFromElement(data, jpaths);
-			
 			return jpaths;
 		}
 	});

@@ -5,8 +5,8 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 	var definition, jqdom, self = this, moduleMove;
 
 	var defaults = {
-		xWidth: 20, // 20px per step
-		yHeight: 20 // 20px per step
+		xWidth: 10, // 20px per step
+		yHeight: 10 // 20px per step
 	};
 
 	function checkDimensions(extend) {
@@ -18,8 +18,8 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 
 			if(pos.top && size.height)
 				bottomMax = Math.max(bottomMax, pos.top + size.height);
-
 		}
+
 		jqdom.css('height', 
 			Math.max($(window).height() - $("#ci-header").outerHeight(true) - 1, (defaults.yHeight * bottomMax + (extend ? 1000 : 0)))
 		);
@@ -68,38 +68,29 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 				var shiftY = e.pageY - pos.top;
 				moveModule(module, shiftX, shiftY);
 			}],
-
 		]);
 
-
 		module.ready.done(function() {
-
 			if(module.inDom)
 				module.inDom();
-
 			// Expands the grid when one click on the header
 			module.getDomHeader().bind('mousedown', function() {
 				checkDimensions(true);
 			});
-
-			//console.log(module.getDomWrapper());
+			
 			// Insert jQuery UI resizable and draggable
 			module.getDomWrapper().resizable({
-
 				grid: [definition.xWidth, definition.yHeight],
-				
 				start: function() {
 					Util.maskIframes();
 					module.resizing = true;
 				},
-				
 				stop: function() {
 					Util.unmaskIframes();
 					moduleResize(module);
 					module.resizing = false;
 					checkDimensions(false);
 				},
-				
 				containment: "parent"
 				
 			}).draggable({
@@ -112,17 +103,14 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 					checkDimensions(true);
 					module.moving = true;
 				},
-				
 				stop: function() {
 					var position = $(this).position();
-					
 					Util.unmaskIframes();
-					module.getPosition().left = position.left / definition.xWidth;
-					module.getPosition().top = position.top / definition.yHeight;
+					module.getPosition().set('left', position.left / definition.xWidth);
+					module.getPosition().set('top', position.top / definition.yHeight);
 					module.moving = false;
 					checkDimensions(false);
 				},
-				
 				drag: function() {
 					checkDimensions(true);
 				}
@@ -131,7 +119,6 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 				
 				if(module.resizing || module.moving)
 					return;
-					
 				if(module.getDomHeader().hasClass('ci-hidden')) {
 					module.getDomHeader().removeClass('ci-hidden').addClass('ci-hidden-disabled');
 					moduleResize(module);
@@ -167,8 +154,8 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 		
 		var wrapper = module.getDomWrapper();
 		
-		module.getSize().width = wrapper.width() / definition.xWidth;
-		module.getSize().height = wrapper.height() / definition.yHeight;
+		module.getSize().set('width', wrapper.width() / definition.xWidth);
+		module.getSize().set('height', wrapper.height() / definition.yHeight);
 
 		var containerHeight = wrapper.height() - (module.getDomHeader().is(':visible') ? module.getDomHeader().outerHeight(true) : 0);
 		
@@ -194,20 +181,20 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 			modulePos.div.remove();
 			modulePos = {};
 
-			var module = ModuleFactory.newModule({
+			var module = ModuleFactory.newModule(new ViewObject({
 				type: type,
 				title: "Untitled module",
 				displayWrapper: true,
-				position: {
+				position: new ViewObject({
 					left: left,
 					top: top	
-				},
+				}),
 				
-				size: {
+				size: new ViewObject({
 					width: width,
 					height: height
-				}
-			});
+				})
+			}));
 
 			$.when(module.ready).then(function() {
 				addModule(module);	
@@ -370,8 +357,7 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 			definition = $.extend(true, defaults, def);
 			jqdom = $(dom).empty();
 			
-			Context.init(jqdom.parent().get(0));
-
+			
 			Context.listen(dom, [], function(contextDom) {
 				$li = $('<li><a> Add a module</a></li>');
 				$ulModules = $("<ul />").appendTo($li);

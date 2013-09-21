@@ -42,7 +42,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 
 	 var Module = function(definition) {
 		this.definition = definition;
-		this.definition.configuration = this.definition.configuration || {};
+		this.definition.configuration = this.definition.configuration || new ViewObject({});
 		this.ready = init(this);
 	};
 	/**
@@ -265,10 +265,16 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 					allRels2.push({ key: i, title: availCfg[i].label });
 
 				// Send configuration
+				var temporary = {}, 
+					sendjpaths = [];
+
 				var availCfg = module.controller.configurationSend;
-				var sendjpaths = [];
-				for(var i in availCfg.rels)
-					sendjpaths[i] = module.model.getjPath(i);
+				var makeSendJpaths = function() {	
+					sendjpaths = {};
+					for(var i in availCfg.rels)
+						sendjpaths[i] = module.model.getjPath(i, temporary);
+				}
+				makeSendJpaths();
 				
 				var allEvents = [];
 				for(var i in availCfg.events)
@@ -491,30 +497,35 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 					}
 				}, function(form) {
 
+					var varReceiveChanged = function(name, rel) {
+						if(name) {
+							temporary[rel] = API.getVar(name);
+							makeSendJpaths();
+						}
+
+						if(module.controller.onVarReceiveChange) 
+							module.controller.onVarReceiveChange(name, rel, form.getSection('moduleconfiguration'));
+					}
+
+
 					form.getSection('send').getGroup('sentvars').getField('rel').onChange(function(index) {
 						var value = this.getValue(index), 
 						jpath = this.group.getField('jpath');
 						if(!jpath)
-							return;							
+							return;
 						jpath.implementation.setOptions(sendjpaths[value], index);
 					});
 
-
-
 					form.getSection('receive').getGroup('receivedvars').getField('rel').onChange(function(index) {
-						var value = this.getValue(index),
-						name = this.group.getField('name');
-						if(module.controller.onVarReceiveChange) 
-							module.controller.onVarReceiveChange(name.values[index], value, form.getSection('moduleconfiguration'));
+						var rel = this.getValue(index),
+							name = this.group.getField('name').values[index];
+						varReceiveChanged(name, rel);
 					});
 
-
-
 					form.getSection('receive').getGroup('receivedvars').getField('name').onChange(function(index) {
-						var value = this.getValue(index),
-							rel = this.group.getField('rel');
-						if(module.controller.onVarReceiveChange) 
-							module.controller.onVarReceiveChange(value, rel.values[index], form.getSection('moduleconfiguration'));
+						var name = this.getValue(index),
+							rel = this.group.getField('rel').values[index];
+						varReceiveChanged(name, rel);
 					});
 
 
@@ -541,19 +552,23 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 						module.setSourceVars(value.receive[0].receivedvars[0]);
 						module.setActionsIn(value.actionsin[0].actions[0]);
 						module.setActionsOut(value.actionsout[0].actions[0]);
+
 						if(module.controller.processReceivedVars)
 							module.controller.processReceivedVars(value.receive[0].receivedvars[0]);
+
 						if(module.controller.doSaveConfiguration) 
 							module.controller.doSaveConfiguration(value.moduleconfiguration);
+
 						if(module.view.unload)
 							module.view.unload();
+
 						module.view.init();
 						module.view.inDom();
 						module.view.onResize(module.view.width || module.getWidthPx(), module.view.height || module.getHeightPx());
 						module.model.resetListeners();	
 						module.updateAllView();
 						form.getDom().dialog('close');
-						document.getElementById('ci-header').scrollIntoView(true);
+						document.getElementById('header').scrollIntoView(true);
 					});
 					
 					save.setColor('blue');
@@ -663,15 +678,15 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 		},
 
 		setId: function(id) {
-			this.definition.id = id;
+			this.definition.set('id', id);
 		},
 		
 		setSourceVars: function(vars) {
-			this.definition.dataSource = vars;
+			this.definition.set('dataSource', vars, true);
 		},
 		
 		setSendVars: function(vars) {
-			this.definition.dataSend = vars;
+			this.definition.set('dataSend', vars, true);
 			for(var i = 0, l = vars.length; i < l; i++) {
 				if(vars[i].name)
 					API.setVar(vars[i].name, API.getVar(vars[i].name));
@@ -679,11 +694,11 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 		},
 		
 		setActionsIn: function(vars) {
-			this.definition.actionsIn = vars;
+			this.definition.set('actionsIn', vars, true);
 		},
 		
 		setActionsOut: function(vars) {
-			this.definition.actionsOut = vars;
+			this.definition.set('actionsOut', vars, true);
 		},
 		
 		getDefinition: function() {
@@ -691,12 +706,11 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 		},
 		
 		getTitle: function() {
-			
 			return this.definition.title;
 		},
 		
 		setTitle: function(title) {
-			this.definition.title = title;
+			this.definition.set('title', title);
 			this.domHeader.find('.ci-module-header-title').text(title);
 		},
 

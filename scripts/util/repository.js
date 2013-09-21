@@ -145,9 +145,14 @@ define(['jquery', 'util/event'], function($, Event) {
 		this._killers[killerId] = [];
 	}
 
-	Repository.prototype.reset = function() {
-		this._callbacks = [];
+	Repository.prototype.resetVariables = function() {
 		this._keys = {};
+		this._value = undefined;
+	}
+
+	Repository.prototype.resetCallbacks = function() {
+		this._killers = {};
+		this._callbacks = [];
 	}
 
 	Repository.prototype.unListen = function(keys, callbackId) {

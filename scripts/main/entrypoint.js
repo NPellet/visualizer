@@ -1,9 +1,7 @@
 
-define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'util/datatraversing', 'util/versionhandler', 'modules/modulefactory'], function($, Repository, Grid, API, Context, Traversing, VersionHandler, ModuleFactory) {
+define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'util/datatraversing', 'util/versioning', 'modules/modulefactory'], function($, Repository, Grid, API, Context, Traversing, Versioning, ModuleFactory) {
 
-	var view, data, viewhandler, datahandler;
 	var _viewLoaded, _dataLoaded;
-	var _onLoaded;
 
 	var evaluatedScripts = {};
 	
@@ -16,6 +14,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 	API.setRepositoryActions(RepositoryActions);
 
 	window.onbeforeunload = function() {
+		return;
 		var dommessage = { 
 			data: false, 
 			view: false
@@ -39,7 +38,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 			return message.join("\n\n");
 	}
 
-	function doScripts() {
+	function doScripts(data) {
 
 		var scripts = data.actionscripts;
 		if(!scripts)
@@ -58,37 +57,45 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 		}
 	}
 
-	function doView(v, noLoad) {
-		view = v;
+	function doView(view, reloading) {
 
+		if(reloading)
+			reloadingView();
+		
 		Grid.init(view.grid, document.getElementById("ci-modules-grid"));
 
-		view.modules = view.modules || [];
-		view.variables = view.variables || [];
-		view.configuration = view.configuration || {};
-		//structure.configuration.variableFilters = structure.configuration.variableFilters || {};
+		view.modules = view.modules || new ViewArray();
+		view.variables = view.variables || new ViewArray();
+		view.configuration = view.configuration || new ViewObject();
 		view.configuration.title = view.configuration.title || 'No title';
-	
-		for(var i = 0; i < view.modules.length; i++)
-			Grid.addModuleFromJSON(view.modules[i]);
-
-		Grid.checkDimensions();
-
-		if(noLoad)
-			return;
 		
+		for(var i = 0; i < view.modules.length; i++) {
+			Grid.addModuleFromJSON(view.modules[i]);
+		}
+		Grid.checkDimensions();
 		view.modules = ModuleFactory.getDefinitions();
 		viewLoaded();
 	}
 
-	function doData(d, noLoad) {
-		data = d;
-		//document.write(JSON.stringify(d));
-		if(noLoad)
-			return; 
+	function reloadingView() {
+		// Grid is automatically emptied
+		RepositoryData.resetCallbacks();
+		RepositoryActions.resetCallbacks();
+
+	}
+
+	function doData(data, reloading) {
+		if(reloading)
+			reloadingData();
 		dataLoaded();
 	}
 
+	function reloadingData() {
+		RepositoryData.resetVariables();
+		RepositoryActions.resetVariables();
+		RepositoryHighlight.resetCallbacks();
+		RepositoryHighlight.resetVariables();
+	}
 
 	function viewLoaded() {
 		_viewLoaded = true;
@@ -100,70 +107,42 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 		_check();
 	}
 
-	function _check(reloading) {
+	function _check() {
+		var view = Versioning.getView(),
+			data = Versioning.getData();
 
-		var self = this;
-		
-		if(_dataLoaded && _viewLoaded) {
+		if(!_dataLoaded || !_viewLoaded)
+			return;
 
-			if(_onLoaded && !reloading) {
-				_onLoaded.call();
+		// If no variable is defined in the view, we start browsing the data and add all the first level
+		if(view.variables.length == 0) {
+			var jpath;
+			for(var i in data) {
+				if(i.slice(0, 1) == '_')
+					continue;
 
-				Context.listen(Context.getRootDom(), [
-					['<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Configure entry point</a></li>', 
-					function() {
-						configureEntryPoint();
-					}]]
-				);
-
-
-				Context.listen(Context.getRootDom(), [
-					['<li class="ci-item-configureactions" name="refresh"><a><span class="ui-icon ui-icon-clock"></span>Configure actions</a></li>', 
-					function() {
-						configureActions();
-					}]]
-				);
-
-
-				Context.listen(Context.getRootDom(), [
-					['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>', 
-					function() {
-						document.location.href = document.location.href;
-					}]]
-				);
-
+				view.variables.push(new ViewObject({ varname: i, jpath: "element." + i }));
 			}
+		}
 
-			// If no variable is defined in the view, we start browsing the data and add all the first level
-			if(view.variables.length == 0) {
-				var jpath;
-				for(var i in data) {
-					if(i.slice(0, 1) == '_')
-						continue;
+		// Entry point variables
+		for(var i = 0, l = view.variables; i < view.variables.length; i++) {
+			// Defined by an URL
 
-					view.variables.push({ varname: i, jpath: "element." + i });
-				}
-			}
+			if(!view.variables[i].jpath && view.variables[i].url) {
 
-			for(var i = 0, l = view.variables; i < view.variables.length; i++) {
-				// Defined by an URL
-				if(!view.variables[i].jpath && view.variables[i].url) {
+				variable.fetch().done(function(v) {
+					API.setVariable(variable.get('varname'), v);
+				});
 
-					(function(variable) {				
-						Traversing.fetchElementIfNeeded(variable).done(function(value) {
-							API.setVariable(variable.varname, value);
-						});
-					}) (view.variables[i]);
+			} else if(!view.variables[i].jpath) {
 
-				} else if(!view.variables[i].jpath) {
-
-					// If there is no jpath, we assume the variable is an object and we add it in the data stack
-					// Note: if that's not an object, we will have a problem...
-					data[view.variables[i].varname] = {};
-					API.setVariable(view.variables[i].varname, data[view.variables[i].varname]);
-				} else {
-					API.setVariable(view.variables[i].varname, data, view.variables[i].jpath);
-				}
+				// If there is no jpath, we assume the variable is an object and we add it in the data stack
+				// Note: if that's not an object, we will have a problem...
+				data[view.variables[i].varname] = new DataObject();
+				API.setVariable(view.variables[i].varname, data[view.variables[i].varname]);
+			} else {
+				API.setVariable(view.variables[i].varname, data, view.variables[i].jpath);
 			}
 		}
 	}
@@ -178,7 +157,9 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 	}
 
 	function configureEntryPoint() {
-		var now = Date.now();
+		var now = Date.now(),
+			data = Versioning.getData(),
+			view = Versioning.getView();
 
 
 		require(['forms/formfactory', 'jqueryui', 'forms/button'], function(FormFactory, jqueryui, Button) {
@@ -237,7 +218,12 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 					form.dom.trigger('stopEditing');
 					var value = form.getValue();
 					var data = value.cfg[0].tablevars[0];
-					view.variables = data;
+
+					view.variables = new ViewArray();
+					for(var i = 0, l = data.length; i < l; i++) {
+						view.variables[i] = data[i];
+					}
+
 					_check(true);
 					form.getDom().dialog('close');
 				});
@@ -376,57 +362,43 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 			return datahandler || false;
 		},
 
-		init: function(onLoaded) {
+		init: function(urls) {
 
-			var url, i, args, urls = {};
-			_onLoaded = onLoaded;
+			var url, i, args;
+
 			
-			url = window.document.location.search.substring(1).split('&');
-			for(var i = 0; i < url.length; i++) {
-				var args = url[i].split('=');
-				urls[args[0]] = unescape(args[1]);
-			}
+			Versioning.setView(urls['views'], urls['viewBranch'], urls['viewURL']);
+			Versioning.setViewLoadCallback(doView);
+
+			Versioning.setData(urls['results'], urls['resultBranch'], urls['dataURL']);
+			Versioning.setDataLoadCallback(doData);
+			
+
+			Context.init($("#ci-modules-grid").get(0));
+
+			Context.listen(Context.getRootDom(), [
+				['<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Configure entry point</a></li>', 
+				function() {
+					configureEntryPoint();
+				}]]
+			);
 
 
-			if(urls['results']) {
-				datahandler = new VersionHandler(urls['results'], urls['resultBranch'], urls['dataURL']);
-				datahandler.setType('data');
-				datahandler.onLoaded = function(data, path) {
-					doData(data || {});
-				}
-				datahandler.onReload = function(data, path) {
-					doData(data || {}, true);
-				}
-				datahandler.load();
+			Context.listen(Context.getRootDom(), [
+				['<li class="ci-item-configureactions" name="refresh"><a><span class="ui-icon ui-icon-clock"></span>Configure actions</a></li>', 
+				function() {
+					configureActions();
+				}]]
+			);
 
-			} else if(urls['dataURL']) {
-				$.getJSON(urls['dataURL'], {}, function(results) {
-					doData(results || {});
-				});
-			} else {
-				doData({});
-			}
 
-			if(urls['views']) {
-				viewhandler = new VersionHandler(urls['views'], urls['viewBranch'], urls['viewURL']);
-				viewhandler.setType('view');
-				viewhandler.onLoaded = function(structure, path) {
-					doView(structure || {});
-				}
-				viewhandler.onReload = function(structure, path) {
-					doView(structure || {}, true);
-					RepositoryData.resendAll();
-				}
+			Context.listen(Context.getRootDom(), [
+				['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>', 
+				function() {
+					document.location.href = document.location.href;
+				}]]
+			);
 
-				viewhandler.load();
-
-			} else if(urls['viewURL']) {
-				$.getJSON(urls['viewURL'], {}, function(structure) {
-					doView(structure || {});
-				});
-			} else {
-				doView({});
-			}
 
 		},
 

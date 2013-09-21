@@ -1,0 +1,55 @@
+<script src="./scripts/libs/jquery/jquery.js"></script>
+
+<script>
+
+MyObj = function(el) {
+    for(var i in el) {
+        this[i] = el[i]   
+    }
+};
+$.extend(MyObj.prototype, Object.prototype);
+
+var test = new MyObj({
+    hello: new MyObj({   
+        coucou: {
+            type: 'test',
+            url: 'http://test'
+        }
+    }),
+    
+    hello2: new MyObj({
+        coucou: new MyObj()
+    })
+});
+
+
+function getEl(source, prop) {
+
+	this.deferred = $.Deferred();
+	this.get = function() {
+		el = getEl();
+		this.deferred.done(function(element) {
+			element.get(val);
+		});
+		return el;
+	};
+
+	if(!source[prop].url)
+		this.deferred.resolve(source[prop]);
+	else {
+
+	}
+
+	return this.get();
+}
+
+Object.defineProperty(MyObj.prototype, 'get', {
+    value: function(prop) {
+    	return getEl(this, prop);
+    }
+});
+
+
+console.log(test.get('hello'));
+
+</script>

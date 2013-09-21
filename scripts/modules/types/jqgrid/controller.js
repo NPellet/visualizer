@@ -232,11 +232,15 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		},
 
 		onVarReceiveChange: function(name, rel, confSection) {
+
 			var data = API.getVar(name);
 			var jpaths = [];
-			if(Traversing.getType(data) == 'array') 
+			if(!data)
+				return;
+			
+			if(data.getType() == 'array') 
 				Traversing.getJPathsFromElement(data[0], jpaths);
-			else if(Traversing.getType(data) == 'arrayXY')
+			else if(data.getType() == 'arrayXY')
 				Traversing.getJPathsFromElement(data, jpaths);
 
 			if(jpaths.length > 1)

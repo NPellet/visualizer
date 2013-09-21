@@ -1,237 +1,130 @@
-define(['forms/button', 'util/util'], function(Button, Util) {
+define(['jquery', 'util/versioning'], function($, Versioning) {
 
-	var buttons = { view: {}, data: {}};
-	function makeHandlerButtons(datahandler, viewhandler, view, data) {
+	var elements = [];
+	return {
 
-		var pos = ['view', 'data'];
-		var pos2 = ['View', 'Data']
-
-		for(var i = 0; i < pos.length; i++) {
-
-			(function(j) {
-				var subject = j == 0 ?	view : data;
-				var handler = j == 0 ? viewhandler : datahandler;
-
-				buttons[pos[j]].copyToLocal = new Button('Copy to local', function() {
-					handler.serverCopy(subject);
-				}, { color: 'red' });
-
-				buttons[pos[j]].snapshotLocal = new Button('Snapshot', function() {
-					handler.localSnapshot(subject);
-				}, { color: 'blue' });
-
-				buttons[pos[j]].autosaveLocal = new Button('Autosave', function(event, val, item) {
-					handler.localAutosave(val, function() {
-						
-						return subject;
-					}, function() {
-						item.children().find('span').remove();
-						var date = new Date();
-						date = Util.pad(date.getHours()) + ":" + Util.pad(date.getMinutes());
-						item.children().append('<span> (' + date + ')</span>');
-					});
-				}, { checkbox: true, color: 'blue' });
-
-				buttons[pos[j]].branchLocal = new Button('Make branch', function() {
-
-					require(['forms/formfactory', 'jqueryui', 'forms/button'], function(FormFactory, jqueryui, Button) {
-
-						var div = $('<div></div>').dialog({ modal: true, width: '80%', title: "Make brach"});
-						div.parent().css('zIndex', 10000);
-						
-						FormFactory.newform(div, {
-							sections: {
-								'cfg': {
-									config: {
-										multiple: false,
-										title: 'Branch name'
-									},
-
-									groups: {
-										'general': {
-											config: {
-												type: 'list'
-											},
-
-											fields: [
-
-												{
-													type: 'Text',
-													name: 'name',
-													multiple: false,
-													title: 'Name'
-												}
-											]
-										}
-									}
-								}
-							}
-						}, function(form) {
-							var save = new Button('Save', function() {
-								form.dom.trigger('stopEditing');
-								var value = form.getValue();
-								handler.localBranch(subject, value.cfg[0].general[0].name[0]);	
-								form.getDom().dialog('close');
-							});
-							save.setColor('blue');
-							form.addButtonZone(save);
-						});
-					});
-
-				}, { color: 'blue' });
-
-				buttons[pos[j]].revertLocal = new Button('Revert to this version', function() {
-
-					handler.localRevert(subject);
-					
-				}, { color: 'blue' });
-
-				buttons[pos[j]].localToServer = new Button('Push to server', function(event, val, item) {
-					handler.serverPush(subject).done(function() {
-						item.children().find('span').remove();
-						var date = new Date();
-						date = Util.pad(date.getHours()) + ":" + Util.pad(date.getMinutes());
-						item.children().append('<span> (' + date + ')</span>');
-					});
-				}, { color: 'green' });
-			}) (i);
-		}
-
-		return buttons;
-	}
-
-	function addButtons(container, datahandler, viewhandler, data, view) {
-
-		container.append(new Button('Push view to server', function() {
-			viewhandler.serverPush(view);
-		}).render());
-			
-		container.append(new Button('Save locally', function() {
-			console.log(JSON.stringify(view));
-			console.trace();
-			if(viewhandler)
-				viewhandler.localSave(view);
-		}).render());
-
-		if((datahandler || viewhandler) && (window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB)) {
-
-			makeHandlerButtons(datahandler, viewhandler, view, data);
-
-			var button = new Button('<span class="ui-icon ui-icon-gear"></span>', function() {
-				var $this = $(this.dom);
-
-				if($this.hasClass('active')) {
-					$("#visualizer-dataviews").hide();
-					$this.removeClass('active');
-					return;
-				}
-				$this.addClass('active');
-					
-				var $dom = $("#visualizer-dataviews");
-				if($dom.length == 0) {
-					$dom = $("<div>").attr('id', 'visualizer-dataviews').appendTo('body');
-
-					if(datahandler) {
-						$dom.append('<h1>Data</h1>');
-
-						$dom.append(buttons.data.copyToLocal.render());
-						$dom.append(buttons.data.localToServer.render());
-						$dom.append(buttons.data.snapshotLocal.render());
-						$dom.append(buttons.data.autosaveLocal.render());
-						$dom.append(buttons.data.branchLocal.render());
-						$dom.append(buttons.data.revertLocal.render());
-
-						var _dom = $('<div class="ci-dataview-path"><label>Data path : </label></div>');
-						$dom.append(_dom);
-						var _domel = $("<div />").appendTo(_dom);
-						_domel.append(datahandler.getDom());
-					}
-
-					if(viewhandler) {
-
-						$dom.append('<br /><br />');
-						$dom.append('<h1>View</h1>');
-
-						$dom.append(buttons.view.copyToLocal.render());
-						$dom.append(buttons.view.localToServer.render());
-						$dom.append(buttons.view.snapshotLocal.render());
-						$dom.append(buttons.view.autosaveLocal.render());
-						$dom.append(buttons.view.branchLocal.render());
-						$dom.append(buttons.view.revertLocal.render());
-
-
-						var _dom = $('<div class="ci-dataview-path"><label>View path : </label></div>');
-						$dom.append(_dom);
-						var _domel = $("<div />").appendTo(_dom);
-						_domel.append(viewhandler.getDom());
-					}
-				} else {
-					$dom.show();
-				}
-			});
-
-			container.append(button.render());
-		}
-	}
-
-	function makeHeaderEditable(headerdom, configuration, viewhandler) {
-
-		headerdom.text(configuration.title || 'Untitled').attr('contenteditable', 'true').bind('keypress', function(e) {
-			
-			e.stopPropagation();
-			if(e.keyCode == 13) {
-				e.preventDefault();
-				$(this).trigger('blur');
-				return false;
+		init: function(urls) {
+			var self = this;
+			if(urls.header) {
+				this.load(urls.header);
 			}
-		}).bind('blur', function() {
-			configuration.title = $(this).text().replace(/[\r\n]/g, "");
-			//viewhandler.save();
-		});
-	}
 
-	function makeHeader(headerdom, configuration) {
-		headerdom.text(configuration.title || 'No title');
-	}
+			Versioning.getViewHandler().versionChange().progress(function(el) {
+				self.setTitle(el);
+			});
+		},
 
+		setTitle: function(view) {
+			var dom = $("#title");
 
-	function updateButtons(type, head, path) {
+			dom
+				.text(view.title || 'Untitled')
+				.attr('contenteditable', 'true')
+				.bind('keypress', function(e) {
+					e.stopPropagation();
+					if(e.keyCode !== 13)
+						return;
+					e.preventDefault();
+					$(this).trigger('blur');
+				})
 
-		if(!buttons[type].autosaveLocal)
-			return;
+				.bind('blur', function() {
+					view.set('title', $(this).text().replace(/[\r\n]/g, ""));
+				});
+		},
 
-		if(head !== 'head' || path !== 'local')
-			buttons[type].autosaveLocal.disable();
-		else
-			buttons[type].autosaveLocal.enable();
+		load: function(url) {
+			var self = this;
+			$.getJSON(url, {}, function(data) {
+				self.loadHeaderElements(data);
+			});
+		},
 
-		if(path == 'local') {
+		loadHeaderElements: function(all) {
+			if(!$.isArray(all))
+				return;
 
-			buttons[type].copyToLocal.disable();
-		//	buttons[this.type].localToServer.enable();
+			var self = this,
+				i = 0, 
+				l = all.length;
 
-			buttons[type].snapshotLocal.enable();
-			buttons[type].branchLocal.enable();
+			for (; i < l; i++) {
+				this.addHeaderElement(i, this.createElement(all[i]));
+			}
 
-			if(head == 'head')
-				buttons[type].revertLocal.disable();
-			else
-				buttons[type].revertLocal.enable();
+			$.when.apply($.when, elements).then(function() {
+				self.buildHeaderElements(arguments);
+			});
+		},
+
+		addHeaderElement: function(i, el) {
+			elements[i] = el;
+		},
+
+		createElement: function(source) {
+			var def = $.Deferred();
 			
-		} else {
-			buttons[type].copyToLocal.enable();
-		//	buttons[this.type].localToServer.disable();
+			switch(source.type) {
+				case 'versioning':
+					require(['main/elements/versioning'], function(El) {
+						el = new El();
+						el.init(source);
+						def.resolve(el);
+					});
+				break;
 
-			buttons[type].snapshotLocal.disable();
-			buttons[type].branchLocal.disable();
-			buttons[type].revertLocal.disable();
+				case 'versionloader': 
+					require(['main/elements/versionloader'], function(El) {
+						el = new El();
+						el.init(source);
+						def.resolve(el);
+					});
+				break;
+
+				case 'autosavelocalview':
+					require(['main/elements/autosavelocalview'], function(El) {
+						el = new El();
+						el.init(source);
+						def.resolve(el);
+					});
+				break;
+
+
+				case 'copyview':
+					require(['main/elements/copyview'], function(El) {
+						el = new El();
+						el.init(source);
+						def.resolve(el);
+					});
+				break;
+
+
+			}
+
+			return def.promise();
+		},
+
+		buildHeaderElements: function(elements) {
+			if(this.ul)
+				this.ul.empty();
+
+			this.ul = this.ul || $("<ul />").appendTo("#header");
+			var i = 0, l = elements.length;
+			for( ; i < l; i++) {
+
+				this.ul.append(elements[i].getDom());
+			}
 		}
+
+		// 'forms/button'
 	}
+
+			/*Header.addButtons(buttons, EntryPoint.getDataHandler(), EntryPoint.getViewHandler(), EntryPoint.getData(), EntryPoint.getView());
+			
+*/
+
 
 	return {
-		addButtons: addButtons,
 		makeHeaderEditable: makeHeaderEditable,
-		makeHeader: makeHeader,
-		updateButtons: updateButtons
 	}
 });

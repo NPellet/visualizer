@@ -18,6 +18,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				API.getRepositoryActions().unListen(this.getActionNameList(), this._actionlisten);
 			}
 
+
 			this._varlisten = API.getRepositoryData().listen(this.getVarNameList(), $.proxy(this.onVarGet, this));
 			this._actionlisten = API.getRepositoryActions().listen(this.getActionNameList(), $.proxy(this.onActionTrigger, this));
 		},
@@ -56,7 +57,6 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 					varName = varName[0];
 				if(!self.sourceMap)
 					return;
-				
 				var value = self.buildData(varValue, self.module.controller.configurationReceive[self.sourceMap[varName].rel].type);
 				self.data[varName] = value;
 				var rel = self.module.getDataRelFromName(varName);
@@ -90,17 +90,18 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 			if(!(sourceTypes instanceof Array))
 				sourceTypes = [sourceTypes];
 
-			var dataType = Traversing.getType(data);
+			var dataType = data.getType(),
+				mustRebuild = false;
 
-			var mustRebuild = false;
 			for(var i = 0; i < sourceTypes.length; i++) {
-
 				if(sourceTypes[i] == dataType) {
 					return data;
 				}
 			}
+
 			if(mustRebuild)
 				return dataRebuilt;
+			
 			return false;
 		},
 

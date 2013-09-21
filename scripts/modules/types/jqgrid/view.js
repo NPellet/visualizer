@@ -8,6 +8,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		var self = this;
 			this.unique = Util.getNextUniqueId();
     		Util.loadCss(require.toUrl('libs/jqgrid/css/ui.jqgrid.css'));
+
 	 		this.dom = $('<div class="ci-displaylist-list"></div>');
 	 		this.domTable = $("<table />").attr('id', this.unique);
 	 		this.dom.on('mouseover', '.jqgrow', function() {
@@ -37,7 +38,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	},
 
 	 	inDom: function() {
-
 
 			var self = this, 
 				colNames = [], 
@@ -87,15 +87,14 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
 			   		if(jpaths[colModel[colNum].name].number)
 			   			value = parseFloat(value);
-			   		Traversing.setValueFromJPath(self.elements[rowId], colModel[colNum]._jpath, value, self.module.getId());
+			   		self.elements[rowId].set(colModel[colNum]._jpath, value, { moduleid: self.module.getId() });
 			   	},
 			    viewrecords: true,
 			    onSelectRow: function(rowid, status) {
 			    	//rowid--; // ?? Plugin mistake ?
 			    	if(status) {
 			    		self.module.controller.onToggleOn(self.elements[rowid]);
-			    	}
-			    	else {
+			    	} else {
 			    		self.module.controller.onToggleOff(self.elements[rowid]);
 			    	}
 					self.module.controller.lineClick(self.elements[rowid]);
@@ -123,23 +122,19 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	update: {
 
 	 		list: function(moduleValue) {
-	 		
-	 			var jpaths = this.module.getConfiguration().colsjPaths
+	 			var self = this, 
+	 				jpaths = this.module.getConfiguration().colsjPaths, 
+	 				list = moduleValue.get(),
+	 				elements = []
 
-	 			var self = this;
+	 			this.elements = list;
 	 			this.module.data = moduleValue;
-				var list = Traversing.getValueIfNeeded(moduleValue);
-				this.elements = list;
-
-				var elements = [];
 				this.buildElements(list, elements, jpaths);
 				this.gridElements = elements;
 				this.jqGrid('clearGridData');
-				
 				for(var i = 0; i < elements.length; i++) {
 					this.jqGrid('addRowData', i, elements[i]);
 				}
-
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 			}
 		},
@@ -163,7 +158,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				self.done++;
 				element["_" + j] = this.renderElement(element, s, jpath, i, j);
 			}
-			Traversing.getValueFromJPath(s, this.module.getConfiguration().colorjPath).done(function(value) {
+
+			s.getChild(this.module.getConfiguration().colorjPath).done(function(value) {
 				element._backgroundColor = value;
 			});
 			return element;
@@ -171,8 +167,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 		listenFor: function(source, jpaths, id) {
 			var self = this;
-			
-			Traversing.listenDataChange(source, function(data) {
+
+			source.onChange(function(data) {
 				var element = self.buildElement(source, id, jpaths, true);
 				self.jqGrid('setRowData', id, element);
 				var scroll = $("body").scrollTop();
@@ -191,8 +187,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
 			}, function() {
 				self.done--;
-console.log(source, jpath);
-				Traversing.setValueFromJPath(source, jpath, 'N/A', true);
+				source.set(jpath, 'N/A', { mute: true });
 				self.jqGrid('setCell', k, l, 'N/A');
 				self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
 			});
@@ -205,7 +200,7 @@ console.log(source, jpath);
 		onActionReceive:  {
 
 			addRow: function(source) {
-				console.log('Ok from JQ pdv');
+				
 				this.elements = this.elements || [];
 				this.elements.push(source);
 				this.module.data = this.elements;

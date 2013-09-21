@@ -7,12 +7,9 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 	return {
 
 		listen: function(dom, elements, callback) {
-
 			if(!(elements[0] instanceof Array))
 				elements = [elements];
-
-			dom.addEventListener('contextmenu', function(e) {
-				
+			dom.addEventListener('contextmenu', function(e) {	
 				for(var i = 0, l = elements.length; i < l; i++) {
 					(function(element, callback) {
 						contextMenu.append(element.bind('click', function(e2) {
@@ -20,10 +17,8 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 						}));	
 					}) ($(elements[i][0]), elements[i][1]);
 				}
-
 				if(callback)
 					callback(contextMenu);
-
 			}, true);
 		},
 
@@ -36,15 +31,11 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 		},
 		
 		init: function(dom) {
-
 			this.dom = dom;
 			dom.addEventListener('contextmenu', function(e) {
-
 				e.preventDefault();
-
 				if(contextMenu)
 					contextMenu.menu('destroy').remove();
-
 				contextMenu = null;
 				$menu = $('<ul class="ci-contextmenu"></ul>').css({
 					'position': 'absolute',
@@ -66,26 +57,29 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 					if(contextMenu)
 						contextMenu.menu('destroy').remove();
 					contextMenu = null;
-			//		$("#ci-header").unbind('contextmenu', rightClickHandler);
 				}
 				
-				//$("#ci-header").bind('contextmenu', rightClickHandler);
 				$(document).bind('click', clickHandler);
 				return false;
 
 			}, true);
 
 
-			dom.addEventListener('contextmenu', function(e) {
-				contextMenu.menu({
-					select: function(event, ui) {
-						var moduleName = ui.item.attr('name');
-					}
-				});
-				e.preventDefault();
-				return false;
+		dom.parentNode.addEventListener('contextmenu', function(e) {
+			contextMenu.menu({
+				select: function(event, ui) {
+					var moduleName = ui.item.attr('name');
+				}
+			});
+			e.preventDefault();
+			e.stopPropagation();
+			return false;
 
-			}, false);
+		}, false);
+
+
 		}
+
+
 	}
 });

@@ -19,7 +19,7 @@ define(['jquery', 'util/api', 'util/datatraversing'], function($, API, Traversin
 					actionname = actionsOut[i].name;
 					var jpath = actionsOut[i].jpath;
 
-					value = Traversing.getValueFromJPath(value, jpath || '').done(function(value) {
+					value.getChild(jpath).done(function(value) {
 						API.executeAction(actionname, value);
 						API.doAction(actionname, value);
 					});
