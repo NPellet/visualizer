@@ -207,6 +207,7 @@ define(['jquery', 'main/elements/default', 'util/versioning', 'forms/button', 'u
 
 		_onClick: function() { // Overwrite usual onclick which loads a list / loads views/datas
 			var el = this.getReady();
+			this.setStyleOpen(this._open);
 			if(this._open) {
 				this.open();
 			} else {

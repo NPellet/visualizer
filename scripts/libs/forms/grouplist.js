@@ -143,11 +143,11 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 				for(var j = 0; j < json[i].length; j++) {
 					if(j > 0)
 						field.addField();
-					(function(k, val) {
-						field.onLoad(function() {
-							field.implementation.setValue(k, val);	
+					(function(k, val, f) {
+						f.onLoad(function() {
+							f.implementation.setValue(k, val);	
 						});	
-					}) (j, json[i][j]);
+					}) (j, json[i][j], field);
 				}
 				
 			}

@@ -366,6 +366,7 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 				dataType: 'text',
 				success: function(data) {
 					//console.log(this._reviver);
+					
 					data = JSON.parse(data, self._reviver);
 					self.make(data);
 					self.onLoaded(data);

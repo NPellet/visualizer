@@ -10,8 +10,7 @@ define(['./default'], function(FieldDefault) {
 		initHtml: function() { },
 		removeField: function(position) {},
 		startEditing: function(position) {},
-		stopEditing: function(position) {},
-		setValue: function(index, value) {}
+		stopEditing: function(position) {}
 	});
 
 	return field;

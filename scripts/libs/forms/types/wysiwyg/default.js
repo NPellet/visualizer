@@ -1,6 +1,10 @@
 
 define(['forms/fielddefault', 'ckeditor'], function(Default) {
 	
+
+	CKEDITOR.disableAutoInline = true;
+
+
 	return $.extend({}, Default, {
 
 		initHtml: function() {		
@@ -24,6 +28,7 @@ define(['forms/fielddefault', 'ckeditor'], function(Default) {
 		},
 		
 		setValue: function(index, value) {
+			
 			var field = this.main.fields[index].field;
 			this.main.changeValue(index, value);
 			CKEDITOR.instances[field.children().attr('name')].setData(value);
@@ -52,8 +57,11 @@ define(['forms/fielddefault', 'ckeditor'], function(Default) {
 		initField: function(index) {
 			var self = this;
 			var field = this.main.fields[index].field;
-			var editor = CKEDITOR.replace(field.children().attr('name'));
-			editor.on('onChange', function() {			
+			var editor = CKEDITOR.replace(field.children().attr('name'), {
+				extraPlugins: 'onchange'
+			});
+			editor.on('change', function() {			
+				
 				if(editor.checkDirty())
 					self.main.changeValue(index, editor.getData());
 			});
