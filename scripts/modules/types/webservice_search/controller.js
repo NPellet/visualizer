@@ -38,7 +38,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 			// Replace all search terms in the URL
 			var reg = /\<([a-zA-Z0-9]+)\>/;
-			console.trace();
+			
 			while(val = reg.exec(url)) {
 				url = url.replace('<' + val[1] + '>', (encodeURIComponent(this.searchTerms[val[1]] || '')));
 			}
