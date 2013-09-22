@@ -760,7 +760,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.dom.setAttribute('width', this.width);
 			this.dom.setAttribute('height', this.height);
 			this.domTitle.setAttribute('x', this.width / 2);
-			
 			this.refreshDrawingZone();
 		},
 
@@ -798,12 +797,6 @@ define(['jquery', 'util/util'], function($, Util) {
 					axis.setMaxValue(this.getBoundaryAxisFromSeries(this.axis[axisvars[j]][i], xy, 'max'));
 				}
 			}
-
-
-			min = shift[0];
-			shift[2] = 0;
-			shift[3] = 0;
-
 		
 			// Apply to top and bottom
 			this.applyToAxes(function(axis) {
@@ -2799,7 +2792,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			for(var i = 0, l = this.picks.length; i < l; i++) {
 				this.picks[i].kill();
 			}
-			
+
 			this.graph.series.splice(this.graph.series.indexOf(this), 1);
 			if(!noRedraw)
 				this.graph.redraw();
