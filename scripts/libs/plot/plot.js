@@ -27,7 +27,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		onHorizontalTracking: false,
 		rangeLimitX: 1,
 		rangeLimitY: 0,		
-		unZoomMode: 'total',
+		unZoomMode: 'gradualX',
 
 		plugins: ['zoom', 'drag', 'integral'],
 
@@ -473,6 +473,9 @@ define(['jquery', 'util/util'], function($, Util) {
 				return;
 			}
 
+ 			x -= this.options.paddingLeft;
+ 			y -= this.options.paddingTop;
+
 			var	
 				xAxis = this.getXAxis(),
 				yAxis = this.getYAxis(),
@@ -480,24 +483,26 @@ define(['jquery', 'util/util'], function($, Util) {
 				xMin = xAxis.getActualMin(),
 				xMax = xAxis.getActualMax(),
 				xActual = xAxis.getVal(x),
+				diffX = xMax - xMin,
 
 				yMin = yAxis.getActualMin(),
 				yMax = yAxis.getActualMax(),
-				yActual = yAxis.getVal(y);
+				yActual = yAxis.getVal(y),
+				diffY = yMax - yMin;
 
-
+console.log(xActual);
 			if(pref == 'gradualXY' || pref == 'gradualX') {
 				var ratio = (xActual - xMin) / (xMax - xMin);
-				xMin = Math.max(xAxis.getMinValue(), xMin - diff * ratio);
-				xMax = Math.min(xAxis.getMaxValue(), xMax + diff * (1 - ratio));
+				xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
+				xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
 				xAxis.setCurrentMin(xMin);
 				xAxis.setCurrentMax(xMax);
 			}
 
 			if(pref == 'gradualXY' || pref == 'gradualY') {
 				var ratio = (yActual - yMin) / (yMax - yMin);
-				yMin = Math.max(yAxis.getMinValue(), yMin - diff * ratio);
-				yMax = Math.min(yAxis.getMaxValue(), yMax + diff * (1 - ratio));
+				yMin = Math.max(yAxis.getMinValue(), yMin - diffY * ratio);
+				yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
 				yAxis.setCurrentMin(yMin);
 				yAxis.setCurrentMax(yMax);
 			}
