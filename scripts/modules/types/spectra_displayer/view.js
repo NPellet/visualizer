@@ -78,7 +78,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				});
 
 				graph.getBottomAxis().options.onZoom = function(from, to) {
-					self.module.controller.sendAction('fromto', {type: 'fromTo', value: { from: from, to: to }}, 'onZoomChange');
+					self.module.controller.sendAction('fromto', new DataObject({type: 'fromTo', value: new DataObject({ from: from, to: to })}), 'onZoomChange');
 				}
 		//graph.getLeftAxis(0, {logScale: true})
 
