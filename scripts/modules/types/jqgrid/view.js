@@ -122,6 +122,10 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	update: {
 
 	 		list: function(moduleValue) {
+
+	 			if(!moduleValue)
+	 				return;
+	 			
 	 			var self = this, 
 	 				jpaths = this.module.getConfiguration().colsjPaths, 
 	 				list = moduleValue.get(),
