@@ -5,12 +5,17 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 
 		init: function(urls) {
 			var self = this;
-			var dom = $('<div id="header"><div id="title"></div></div>');
-			$("body").prepend(dom);
+			this.dom = $('<div id="header"><div id="title"></div></div>');
+			$("body").prepend(this.dom);
 			this.load(urls.header);
+			this.setHeight("30px");
 			Versioning.getViewHandler().versionChange().progress(function(el) {
 				self.setTitle(el);
 			});
+		},
+
+		setHeight: function(height) {
+			this.dom.css('height', height)
 		},
 
 		setTitle: function(view) {
@@ -35,7 +40,9 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 		load: function(url) {
 			var self = this;
 			$.getJSON(url, {}, function(data) {
-				self.loadHeaderElements(data);
+				if(data.elements)
+					self.loadHeaderElements(data.elements);
+				self.setHeight(data.height || "30px");
 			});
 		},
 
@@ -107,10 +114,9 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 			if(this.ul)
 				this.ul.empty();
 
-			this.ul = this.ul || $("<ul />").appendTo("#header");
+			this.ul = this.ul || $("<ul />").appendTo(this.dom);
 			var i = 0, l = elements.length;
 			for( ; i < l; i++) {
-
 				this.ul.append(elements[i].getDom());
 			}
 		}
