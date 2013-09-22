@@ -74,6 +74,10 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	colModel: colModel,
 			   	rowNum: nbLines,
 			   	editable: true,
+			   	sortable: true,
+			   	sortname: j,
+			   	
+				datatype: "local",
 			   	forceFit: true,
 			   	autoWidth: true,
 			   	shrinkToFit: true,
