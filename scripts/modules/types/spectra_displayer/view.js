@@ -253,7 +253,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				if(!value)
 					return;
 				this.annotations = value;
-				this.resetAnnotations();
+				this.resetAnnotations(true);
 			},
 
 			jcamp : function(moduleValue, varname) {
@@ -313,7 +313,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				this.setSerieParameters(serie, varname);
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
-				this.resetAnnotations();
+				this.resetAnnotations(true);
 			}
 		},
 
@@ -379,12 +379,25 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			}
 		},
 
-		resetAnnotations: function() {
+		resetAnnotations: function(force) {
 			if(!this.annotations)
 				return;
+
+			if(this.annotationsDone && !force)
+				return this.graph.redrawShapes();
+
+			this.annotationsDone = true;
+			this.graph.removeAnnotations();
 			var i = 0, l = this.annotations.length
 			for ( ; i < l ; i++ ) {
 				this.doAnnotation(this.annotations[i]);
+			}
+		},
+
+		getFirstSerie: function() {
+			console.log(this.series);
+			for(var i in this.series) {
+				return this.series[i][0];
 			}
 		},
 
@@ -397,6 +410,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				shape = this.graph.makeShape( annotation, {}, false );
 
 			shape.setSelectable( true );
+			shape.setSerie(this.getFirstSerie());
 
 			annotation.onChange(annotation, function(value) {
 				shape.draw();

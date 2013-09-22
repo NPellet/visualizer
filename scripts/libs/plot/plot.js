@@ -1060,6 +1060,14 @@ define(['jquery', 'util/util'], function($, Util) {
 			//this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
 		},
 
+		removeAnnotations: function() {
+			for(var i = 0, l = this.shapes.length; i < l; i++) {
+				this.shapes[i].kill();
+			}
+			this.shapes = [];
+		},
+
+
 		_makeClosingLines: function() {
 
 			this.closingLines = {};
@@ -3897,8 +3905,6 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		kill: function() {
-			if(!this._inDom)
-				return;
 			this.graph.shapeZone.removeChild(this.group);
 		},
 
@@ -3991,7 +3997,9 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		_getPosition: function(value, relTo) {
 			var parsed, pos = {x: false, y: false};
-			if(!value) return;
+			if(!value)
+				return;
+
 			for(var i in pos) {
 				if(value[i] === undefined && ((value['d' + i] !== undefined && relTo === undefined) || relTo === undefined)) {
 					if(i == 'x')
@@ -4012,15 +4020,14 @@ define(['jquery', 'util/util'], function($, Util) {
 				}
 
 				if(value['d' + i] !== undefined) {
-
 					var def = (value[i] !== undefined || relTo == undefined || relTo[i] == undefined) ? pos[i] : (this._getPositionPx(relTo[i], true) || 0);
-					console.log(def);
 					if((parsed = this._parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
 						pos[i] = def + parsed;  // return integer (will be interpreted as px)
-					} else if(parsed = this._parsePercent(value['d' + i]))
+					} else if(parsed = this._parsePercent(value['d' + i])) {
 						pos[i] = def + this._getPositionPx(parsed, true); // returns xx%
-					else if(this.serie)
+					} else if(this.serie) {
 						pos[i] = def + this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getRelPx(value['d' + i]); // px + unittopx
+					}
 				}
 			}
 			return pos;
@@ -4079,7 +4086,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var parsedCurrPos = this._getPosition(currPos);
 			if(!pos)
 				var pos = this._getPosition(this.get('labelPosition'), currPos);
-
+console.log(this.get('labelPosition'), currPos);
 			this.label.setAttribute('x', pos.x);
 			this.label.setAttribute('y', pos.y);
 			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
