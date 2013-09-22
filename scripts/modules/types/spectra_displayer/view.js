@@ -255,22 +255,16 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			},
 
 			'jcamp': function(moduleValue, varname) {
-				console.log(moduleValue);
 				if(!moduleValue)
 					return;
-
 				moduleValue = DataTraversing.getValueIfNeeded(moduleValue);
-
 				var self = this, serie, cfgM = this.module.getConfiguration(), color, continuous, i, l, spectra;
 				API.killHighlight(this.module.id + varname);
-
 				if(!this.graph)
 					return;
 				this.zones[varname] = moduleValue._zones;
 				if(!moduleValue)
 					return this.blank();
-
-
 
 /*
 				CI.RepoHighlight.listen(moduleValue._highlight, function(value, commonKeys) {
