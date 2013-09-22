@@ -52,9 +52,16 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 						fields: [
 							{
 								type: 'Text',
+								name: 'label',
+								title: 'Button label'
+							},
+
+							{
+								type: 'Text',
 								name: 'text',
 								title: 'Action text to send'
 							}
+
 
 						]
 					}
@@ -67,6 +74,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 			return {
 				groups: {
 					gencfg: [{
+						label: [this.module.getConfiguration().label],
 						text: [this.module.getConfiguration().text]
 					}]
 				}
@@ -75,6 +83,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 			
 		doSaveConfiguration: function(confSection) {	
 			this.module.getConfiguration().text = confSection[0].gencfg[0].text[0];
+			this.module.getConfiguration().label = confSection[0].gencfg[0].label[0];
 		},
 
 		"export": function() {
