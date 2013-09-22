@@ -56,6 +56,9 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			
 			this.request.done(function(data) {
 				self.request = null;
+				console.log(data);
+				var data = DataObject.check(data, true);
+				console.log(data);
 				self.onSearchDone(data);
 			});
 		},

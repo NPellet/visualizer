@@ -26,7 +26,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 					this[i] = l[i];
 					continue;
 				} else {
-					this[i] = DataObject.check(l[i]);
+					this[i] = DataObject.check(l[i], true);
 				}
 			}
 		}
@@ -39,7 +39,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 					this[i] = l[i];
 					continue;
 				} else {
-					this[i] = ViewObject.check(l[i]);
+					this[i] = ViewObject.check(l[i], true);
 				}
 			}
 		}
@@ -59,7 +59,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 	DataObject.check = function(el, check) {
 		if(Array.isArray(el))
-			return DataArray(el, check);
+			return new DataArray(el, check);
 		else if(el === null)
 			return null;
 		else if(typeof el == "object")
@@ -86,6 +86,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	
 
 	function DataArray(arr, deep) { 
+		console.log(arr, deep);
 	  if(deep)
 	  	for(var i = 0, l = arr.length; i < l; i++)
 	  		arr[i] = DataObject.check(arr[i], deep);
