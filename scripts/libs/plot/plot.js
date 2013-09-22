@@ -2950,27 +2950,41 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		makePeakPicking: function(allY) {
 			
-			var x, m = 0, passed = [], px;
+			var x,
+				px,
+				passed = [],
+				px,
+				i = 0,
+				l = allY.length,
+				k, m;
+			
 			allY.sort(function(a, b) {
 				return b[0] - a[0];
 			});
-			
-			for(var i = 0, l = allY.length; i < l; i++) {
 
-				x = allY[i][1], px = this.getX(x);
-				for(var k = 0, m = passed.length; k < m; k++) {
-					if(Math.abs(passed[k] - px) < this.options.autoPeakPickingMinDistance)
+			for( ; i < l ; i++ ) {
+
+				x = allY[i][1],
+				px = this.getX(x),
+				k = 0, m = passed.length;
+
+				for( ; k < m ; m++) {
+					if(Math.abs(passed[k] - px) < this.options.autoPeakPickingMinDistance) {
 						break;
+					}
 				}
 
 				if(k < m)
-					continue;
+					break;
 
-				passed.push(this.getX(x));
-				this.picks[m].set('labelPosition', { x: x, dy: "-10px" });
+				passed.push(px);
+				this.picks[m].set('labelPosition', { 
+														x: x,
+				 										dy: "-10px"
+				 									});
+
 				this.picks[m].data.label.text = String(x);
-				m++;
-				if(m == this.options.autoPeakPickingNb - 1)
+				if(passed.length == this.options.autoPeakPickingNb - 1)
 					break;
 			}
 
