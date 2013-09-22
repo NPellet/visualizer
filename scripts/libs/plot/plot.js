@@ -584,7 +584,8 @@ define(['jquery', 'util/util'], function($, Util) {
 		resize: function(w, h) {
 			this.setWidth(w, true);
 			this.setHeight(h, true);
-
+			this.getDrawingHeight();
+			this.getDrawingWidth();
 			this._resize();
 		},
 
