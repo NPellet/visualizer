@@ -232,17 +232,36 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			addColumn: function(jpath) {
 				var module = this.module;
-				
-				module.getConfiguration().colsjPaths["NEW"] = { editable: false, jpath: jpath, number: false };
-				if(module.view.unload)
-					module.view.unload();
-				module.view.init();
-				module.view.inDom();
-				module.view.onResize(module.view.width || module.getWidthPx(), module.view.height || module.getHeightPx());
-				module.model.resetListeners();	
-				module.updateAllView();
+				var jpath2 = jpath.split('.');
+					jpath2 = jpath2.pop();
+
+				module.getConfiguration().colsjPaths[jpath2] = { editable: false, jpath: jpath, number: false };
+				this.reloadModule();
+			},
+
+			removeColumn: function(jpath) {
+				var module = this.module;
+				var jpaths = module.getConfiguration().colsjPaths;
+				for(var i in jpaths) {
+					if(jpaths[i].jpath == jpath)
+						delete jpaths[i];
+				}
+				this.reloadModule();
+
 			}
 		},
+
+		reloadModule: function() {
+			var module = this.module;
+			if(module.view.unload)
+				module.view.unload();
+			module.view.init();
+			module.view.inDom();
+			module.view.onResize(module.view.width || module.getWidthPx(), module.view.height || module.getHeightPx());
+			module.model.resetListeners();	
+			module.updateAllView();
+		},
+
 
 		typeToScreen: {
 
