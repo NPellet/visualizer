@@ -321,6 +321,8 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 		value: function() { return 'number'; }
 	});
 
+
+
 	$(document).ready(function() {
 
 		var title = $("#title");
@@ -334,7 +336,10 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 		}
 
 		var entryPoint = EntryPoint.init(urls);
-		Header.init(urls);
+
+		if(urls['header'])
+			Header.init(urls);
+		
 		//Header.setTitle(title, Versioning.getViewHandler());
 	});
 });

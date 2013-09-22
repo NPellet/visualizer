@@ -5,12 +5,9 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 
 		init: function(urls) {
 			var self = this;
-			if(urls.header) {
-				this.load(urls.header);
-			} else {
-				$("#header").remove();
-			}
-
+			var dom = $('<div id="header"><div id="title"></div></div>');
+			$("body").prepend(dom);
+			this.load(urls.header);
 			Versioning.getViewHandler().versionChange().progress(function(el) {
 				self.setTitle(el);
 			});
