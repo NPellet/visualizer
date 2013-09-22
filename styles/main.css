@@ -276,6 +276,11 @@ div.ci-module-wrapper.ci-module-jqgrid .ci-module-content {
 
 div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid {
 	border-top-width: 0px;
+	background: transparent;
+}
+
+div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid .ui-widget-content {
+	background: transparent;
 }
 
 
