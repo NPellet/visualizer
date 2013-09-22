@@ -1001,6 +1001,11 @@ define(['jquery', 'util/util'], function($, Util) {
 					var shape = new GraphArrow(this);
 				break;
 
+
+				case 'label':
+					var shape = new GraphLabel(this);
+				break;
+
 				case 'line':
 					var shape = new GraphLine(this);
 				break;
@@ -2585,7 +2590,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			trackMouseLabel: false,
 			trackMouseLabelRouding: 1,
 			label: '',
-			lineToZero: false
+			lineToZero: false,
+
+			autoPeakPicking: false,
+			autoPeakPickingNb: 10,
+			autoPeakPickingMinDistance: 10
 		},
 
 
@@ -2822,6 +2831,21 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			var x, y, xpx, ypx, i = 0, l = this.data.length, j = 0, k, currentLine, doAndContinue, _higher;
 
+			this.picks = this.picks || [];
+			var shape;
+			if(this.options.autoPeakPicking) {
+				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
+					shape = this.graph.makeShape({ type: 'label', label: {
+						text: "",
+						position: {x: 0},
+						anchor: 'middle'
+					}});
+					shape.setSerie(this);
+					this.picks.push(shape);
+				}
+			}
+
+
 			this._drawn = true;			
 
 			var next = this.groupLines.nextSibling;
@@ -2840,6 +2864,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				incrYFlip = 0;
 			}
 
+			var allY = [];
 			for(; i < l ; i++) {
 				
 				currentLine = "M ";
@@ -2849,15 +2874,18 @@ define(['jquery', 'util/util'], function($, Util) {
 				j = 0, k = 0;
 
 				for(; j < this.data[i].length; j+=2) {
+					xpx = this.getX(this.data[i][j + incrXFlip]);
+					ypx = this.getY(this.data[i][j + incrYFlip]);
 
+					if(this.options.autoPeakPicking) {
+						allY.push([(this.data[i][j + incrYFlip]), this.data[i][j + incrXFlip]]);
+					}
 
 				//	if(xpx < this.getXAxis().getMinPx() || xpx > this.getXAxis().getMaxPx())
 				//		continue;
 				
 
-				xpx = this.getX(this.data[i][j + incrXFlip]);
-				ypx = this.getY(this.data[i][j + incrYFlip]);
-
+				
 				/*	if((!this.getYAxis().isFlipped() && (ypx > this.getYAxis().getMaxPx() || ypx < this.getYAxis().getMinPx())) || (this.getYAxis().isFlipped() && (ypx < this.getYAxis().getMaxPx() || ypx > this.getYAxis().getMinPx()))) {
 
 						if(_higher != (_higher = ypx > this.getYAxis().getMaxPx())) {
@@ -2898,12 +2926,13 @@ define(['jquery', 'util/util'], function($, Util) {
 				this._createLine(currentLine, i, k);
 			}
 
+			if(this.options.autoPeakPicking)
+				this.makePeakPicking(allY);
+
 			i++;
 			for(; i < this.lines.length; i++) {
 				this.groupLines.removeChild(this.lines[i]);
 				this.lines.splice(i, 1);
-
-
 			}
 
 			this.domMarker.setAttribute('fill', this.options.markers.fillColor || 'transparent');
@@ -2917,6 +2946,35 @@ define(['jquery', 'util/util'], function($, Util) {
 			var label;
 			for(var i = 0, l = this.labels.length; i < l; i++)
 				this.repositionLabel(this.labels[i]);
+		},
+
+		makePeakPicking: function(allY) {
+			
+			var x, m = 0, passed = [], px;
+			allY.sort(function(a, b) {
+				return b[0] - a[0];
+			});
+			
+			for(var i = 0, l = allY.length; i < l; i++) {
+
+				x = allY[i][1], px = this.getX(x);
+				for(var k = 0, m = passed.length; k < m; k++) {
+					if(Math.abs(passed[k] - px) < this.options.autoPeakPickingMinDistance)
+						break;
+				}
+
+				if(k < m)
+					continue;
+
+				passed.push(this.getX(x));
+				this.picks[m].set('labelPosition', { x: x, dy: "-10px" });
+				this.picks[m].data.label.text = String(x);
+				m++;
+				if(m == this.options.autoPeakPickingNb - 1)
+					break;
+			}
+
+			this.graph.redrawShapes();
 		},
 
 		hideTrackingMarker: function() {
@@ -3775,8 +3833,10 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
 
-			this.group.appendChild(this._dom);
-			this.group.appendChild(this.rectEvent);
+			if(this._dom)
+				this.group.appendChild(this._dom);
+
+//			this.group.appendChild(this.rectEvent);
 			this.group.appendChild(this.label);
 
 			this.graph.shapeZone.appendChild(this.group);
@@ -3883,7 +3943,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		get: function(prop) {				return this.properties[prop];					},
 
 		getFromData: function(prop)			{ return this.data[prop]; 						},
-		setDom: function(prop, val) {		this._dom.setAttribute(prop, val);				},
+		setDom: function(prop, val) {		if(this.dom) this._dom.setAttribute(prop, val);				},
 
 		setPosition: function() {
 			var position = this._getPosition(this.getFromData('pos'));
@@ -3918,12 +3978,14 @@ define(['jquery', 'util/util'], function($, Util) {
 			var parsed, pos = {x: false, y: false};
 
 			for(var i in pos) {
-				if(value[i] === undefined && value['d' + i] === undefined) {
+				if(value[i] === undefined && (value['d' + i] !== undefined || relTo === undefined)) {
 					if(i == 'x')
 						pos[i] = relTo ? relTo[i] : this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getPos(0);
 					else {
 						var closest = this.serie.searchClosestValue(value.x);
-						pos[i] = closest.yMin;
+						if(!closest)
+							return;
+						pos[i] = this.serie.getY(closest.yMin);
 					}
 				} else if(value[i] !== undefined) {
 					if((parsed = this._parsePx(value[i])) !== false)
@@ -3937,6 +3999,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				if(value['d' + i]) {
 
 					var def = (value[i] !== undefined || relTo == undefined || relTo[i] == undefined) ? pos[i] : (this._getPositionPx(relTo[i], true) || 0);
+					
 					if((parsed = this._parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
 						pos[i] = def + parsed;  // return integer (will be interpreted as px)
 					} else if(parsed = this._parsePercent(value['d' + i]))
@@ -4046,6 +4109,30 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.setDom('height', this.get('height'));
 		}
 	});
+
+	var GraphLabel = function(graph) {
+		this.init(graph);
+	}
+	$.extend(GraphLabel.prototype, GraphShape.prototype, {
+		createDom: function() {
+			this._dom = false;
+		},
+
+		setPosition: function() {
+			var pos = this._getPosition(this.get('labelPosition'));
+			if(!pos)
+				return;
+			
+			this.label.setAttribute('x', pos.x);
+			this.label.setAttribute('y', pos.y);
+		},
+
+		redrawImpl: function() {
+			this.draw();
+		}
+	});
+
+
 
 	var GraphLine = function(graph) {
 		this.init(graph);

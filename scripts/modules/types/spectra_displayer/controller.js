@@ -130,6 +130,14 @@ define(['modules/defaultcontroller'], function(Default) {
 								options: { 'x': 'X', 'y': "Y"}
 							},
 
+
+					/*		{
+								type: 'Checkbox',
+								name: 'peakpicking',
+								title: 'Auto peak picking',
+								options: { 'true': '' }
+							},
+*/
 							{
 								type: 'Checkbox',
 								name: 'grids',
@@ -245,6 +253,14 @@ define(['modules/defaultcontroller'], function(Default) {
 								name: 'plotcontinuous',
 								title: 'Continuous',
 								options: {'continuous': 'Continuous'}
+							},
+
+
+							{
+								type: 'Checkbox',
+								name: 'peakpicking',
+								title: 'Peak Picking',
+								options: {'picking': 'Peak Picking'}
 							}
 						]
 					}
@@ -265,7 +281,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			if(this.module.getConfiguration().flipY)
 				flipArray.push('flipY');
 		
-			var spectrainfos = { 'variable': [], 'plotcolor': [], 'plotcontinuous': [], strokewidth: [] };
+			var spectrainfos = { 'variable': [], 'plotcolor': [], 'plotcontinuous': [], strokewidth: [], peakpicking: [] };
 
 			var infos = this.module.getConfiguration().plotinfos || [];
 			for(var i = 0, l = infos.length; i < l; i++) {
@@ -274,6 +290,7 @@ define(['modules/defaultcontroller'], function(Default) {
 				spectrainfos.plotcolor.push(infos[i].plotcolor);
 				spectrainfos.strokewidth.push(infos[i].strokewidth);
 				spectrainfos.plotcontinuous.push([infos[i].plotcontinuous ? 'continuous' : null]);
+				spectrainfos.peakpicking.push([infos[i].peakpicking ? 'picking' : null]);
 			}
 
 			return {
@@ -283,6 +300,7 @@ define(['modules/defaultcontroller'], function(Default) {
 						graphurl: [this.module.getConfiguration().graphurl],
 						flip: [flipArray],
 						displayAxis: [this.module.getConfiguration().displayAxis || ['x']],
+					//	peakpicking: [this.module.getConfiguration().peakpicking || []],
 						grids: [this.module.getConfiguration().grids || []],
 						xLabel: [this.module.getConfiguration().xLabel],
 						yLabel: [this.module.getConfiguration().yLabel],
@@ -337,6 +355,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			this.module.getConfiguration().wheelAction = confSection[0].gencfg[0].wheelAction[0];
 
 			this.module.getConfiguration().displayAxis = confSection[0].gencfg[0].displayAxis[0];
+			//this.module.getConfiguration().peakpicking = confSection[0].gencfg[0].peakpicking[0][0] == "true";
 			this.module.getConfiguration().grids = confSection[0].gencfg[0].grids[0];
 	//		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor;
 			
@@ -344,6 +363,10 @@ define(['modules/defaultcontroller'], function(Default) {
 				confSection[0].
 					spectrainfos[0][i].
 					plotcontinuous = (!!confSection[0].spectrainfos[0][i].plotcontinuous[0]);
+
+				confSection[0].
+					spectrainfos[0][i].
+					peakpicking = !!confSection[0].spectrainfos[0][i].peakpicking[0];
 			}
 				
 			this.module.getConfiguration().plotinfos = confSection[0].spectrainfos[0];

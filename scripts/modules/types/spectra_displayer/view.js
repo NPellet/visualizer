@@ -177,6 +177,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 						serie.options.lineToZero = !cfgM.plotinfos[i].plotcontinuous;
 						serie.setLineColor("rgba(" + (cfgM.plotinfos[i].plotcolor || [0, 0, 0, 1]) + ")");
 						serie.setLineWidth(cfgM.plotinfos[i].strokewidth || 1);
+						serie.options.autoPeakPicking = cfgM.plotinfos[i].peakpicking;
 					}	
 				}
 			}	
@@ -384,9 +385,44 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		},
 
 		resetAnnotations: function() {
-
-		//	Util.doAnnotations(this.annotations, this.graph)
+			if(!this.annotations)
+				return;
+			
+			var i = 0, l = this.annotations.length
+			for ( ; i < l ; i++ ) {
+				this.doAnnotation(this.annotations[i]);
+			}
 		},
+
+		doAnnotation: function(annotation) {
+			if ( !this.graph ) {
+				return;
+			}
+
+			var self = this,
+				shape = this.graph.makeShape( annotation, {}, false );
+
+			shape.setSelectable( true );
+
+			Traversing.listenDataChange(annotation, function(value) {
+				shape.draw();
+				shape.redraw();
+			}, self.module.getId());
+
+			if(annotation._highlight) {
+				API.listenHighlight(annotation._highlight, function(onOff) {
+					if(onOff)
+						shape.highlight();
+					else
+						shape.unHighlight();
+				});
+			}
+
+			shape.draw();
+			shape.redraw();
+		},
+
+
 
 		removeSerie: function(serieName) {
 			if(this.series[serieName])
