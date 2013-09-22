@@ -15,6 +15,7 @@ define(['modules/module'], function(Module) {
 				'iframe': 'iFrame',
 // Interactive modules	
 				'button_url': 'Button URL',
+				'button_action': 'Button to action',
 				'webservice_button': 'Webservice button',
 				'webservice_cron': 'Webservice cron',
 				'webservice_search': 'Webservice search',
