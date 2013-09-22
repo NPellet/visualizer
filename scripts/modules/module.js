@@ -724,7 +724,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 		},
 
 		setBackgroundColor: function(color) {
-			this.domContent.get(0).style.backgroundColor = color;
+			this.domContent.get(0).style.backgroundColor = 'rgba(' + color + ')';
 		},
 
 		setDisplayWrapper: function() {
