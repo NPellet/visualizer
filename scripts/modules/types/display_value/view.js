@@ -39,15 +39,15 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 					view.fillWithVal(cfg.defaultvalue || '');
 				else
 					Renderer.toScreen(moduleValue, this.module).done(function(val) {
-
 						try {
 							if(cfg.sprintf && cfg.sprintf != "") {
-								val = sprintf(cfg.sprintf, val);
-								view.fillWithVal(val);	
+								require(['libs/sprintf/sprintf'], function() {
+									val = sprintf(cfg.sprintf, val);
+									view.fillWithVal(val);	
+								});
 							} else {
 								view.fillWithVal(val);
 							}
-							
 						} catch(e) {
 							view.fillWithVal(val);
 						}
