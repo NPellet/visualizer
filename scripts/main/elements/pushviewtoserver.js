@@ -18,28 +18,21 @@ define(['jquery', 'main/elements/default', 'util/versioning'], function($, Defau
 		},
 
 		open: function() {
+
 			var self = this;
-			this.interval = window.setInterval(function() {
-				var view = Versioning.getView();
-				
-				if(self.viewHandler.currentPath[3] !== 'head') 
-					self.viewHandler.serverCopy(view);
-
-				self.viewHandler._localSave(view, 'head', view._name);
-				self.$_dom.css({ color: '#BCF2BB' });
-			/*	}
-				else // We're not on the HEAD ! Therefore we cannot autosave (revert needed first)
-					self.$_dom.css({ color: '#E0B1B1' });
-*/
-			}, 1000);
-
-			this.$_dom.addClass('toggledOn');
+			self.$_dom.css({ color: '' });
+			
+			self.viewHandler.serverPush(Versioning.getView()).then(function() {
+				self.$_dom.css({ color: '#357535' });
+			}, function() {
+				self.$_dom.css({ color: '#872A2A' });
+			});
 		},
 
 		close: function() {
 			window.clearTimeout(this.interval);
 			this.$_dom.css({ color: '' });
-			this.$_dom.removeClass('toggledOn');
+			//this.$_dom.removeClass('toggledOn');
 		}
 	});
 

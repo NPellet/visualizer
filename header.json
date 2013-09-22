@@ -14,6 +14,11 @@
 		},
 
 		{
+			"type": "pushviewtoserver",
+			"label": "Save to server"
+		},
+
+		{
 			"type": "versioning",
 			"label": "Versioning"
 		},

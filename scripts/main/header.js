@@ -69,7 +69,7 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 
 		createElement: function(source) {
 			var def = $.Deferred();
-			
+			console.log(source.type);
 			switch(source.type) {
 				case 'versioning':
 					require(['main/elements/versioning'], function(El) {
@@ -89,6 +89,15 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 
 				case 'autosavelocalview':
 					require(['main/elements/autosavelocalview'], function(El) {
+						el = new El();
+						el.init(source);
+						def.resolve(el);
+					});
+				break;
+
+
+				case 'pushviewtoserver':
+					require(['main/elements/pushviewtoserver'], function(El) {
 						el = new El();
 						el.init(source);
 						def.resolve(el);
