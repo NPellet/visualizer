@@ -8,9 +8,7 @@ define(['util/datatraversing'], function(Traversing) {
 			return;
 		}
 
-
 		element.getChild(jpath).done(function(returned) {
-			console.log(returned);
 			self.repositoryData.set(name, returned);
 		});
 	}

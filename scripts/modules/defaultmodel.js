@@ -84,12 +84,15 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 
  		buildData: function(data, sourceTypes) {
 
+ 			if(!data)
+ 				return false;
+ 			
 			var dataRebuilt = {};
 			if(!sourceTypes)
 				return;
 			if(!(sourceTypes instanceof Array))
 				sourceTypes = [sourceTypes];
-console.log(data);
+
 			var dataType = data.getType(),
 				mustRebuild = false;
 
