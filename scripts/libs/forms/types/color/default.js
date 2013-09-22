@@ -15,7 +15,7 @@ define(['forms/fielddefault', 'forms/button2', 'util/util', 'libs/farbtastic/far
 				var color = Util.rgbToHex(v[0], v[1], v[2]);
 				$.farbtastic(field._picker).setColor(color);
 
-				field.main.domExpander.find('.bi-formfield-coloropacity input').spinner('value', v[3]);
+				field.main.domExpander.find('.bi-formfield-coloropacity input').spinner('value', v[3] || 1);
 				field.main.toggleExpander($(this).index());
 			});
 			
@@ -42,12 +42,12 @@ define(['forms/fielddefault', 'forms/button2', 'util/util', 'libs/farbtastic/far
 				step: 0.01,
       			numberFormat: "n",
       			min: 0,
-      			max: 1,
-      			spin: function(e, ui) {
-      				console.log(ui);
-      				field.opacity = ui.value;
-      				field._hasChanged((field.rgb || [0, 0, 0]).concat(field.opacity || 1));
-      			}
+      			max: 1
+			}).bind('change', function() {
+  				field.opacity = $(this).attr('value');
+  				console.log(field.opacity);
+  				field._hasChanged((field.rgb || [0, 0, 0]).concat(field.opacity || 1));
+
 			}).parent().on('click', function(e) {
 				e.stopPropagation();
 			});
