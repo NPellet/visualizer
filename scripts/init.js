@@ -221,7 +221,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 			for (; i < l; i++) {
 				if(moduleid === undefined || (this._listenersDataChanged[i][1] !== moduleid)) {
-					data._listenersDataChanged[i][0].call(this, this);
+					this._listenersDataChanged[i][0].call(this, this);
 				}
 			}
 		}
