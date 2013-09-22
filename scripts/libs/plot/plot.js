@@ -2795,9 +2795,11 @@ define(['jquery', 'util/util'], function($, Util) {
 		kill: function(noRedraw) {
 
 			this.graph.plotGroup.removeChild(this.groupMain);
-			/*if(this.marker)
-				this.groupMain.removeChild(this.marker);
-	*/
+
+			for(var i = 0, l = this.picks.length; i < l; i++) {
+				this.picks[i].kill();
+			}
+			
 			this.graph.series.splice(this.graph.series.indexOf(this), 1);
 			if(!noRedraw)
 				this.graph.redraw();
