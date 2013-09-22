@@ -194,11 +194,16 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 		value: function(jpath, newValue, options) {
 			var self = this;
 
+			if(jpath.split) { // Old version
+				jpath = jpath.split('.');
+				jpath.shift();
+			}
+			
 			if(!jpath || jpath.length == 0)
 				return $.Deferred().reject();
 
 			if(jpath.length == 1) // Ok we're done, let's set it
-				return $.Deferred().resolve(element.set(jpath[0], newValue));
+				return $.Deferred().resolve(this.set(jpath[0], newValue));
 
 			var el = jpath.shift();
 			if(!this[el]) // We need to set an empty object to create the elements
@@ -293,6 +298,11 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 	Object.defineProperty(DataObject.prototype, 'get', dataGetter);
 	Object.defineProperty(DataArray.prototype, 'get', dataGetter);
+
+	Object.defineProperty(DataObject.prototype, 'setChild', setChild);
+	Object.defineProperty(DataArray.prototype, 'setChild', setChild);
+
+
 	Object.defineProperty(DataObject.prototype, 'fetch', fetch);
 	Object.defineProperty(ViewObject.prototype, 'fetch', fetch);
 

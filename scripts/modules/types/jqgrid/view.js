@@ -20,6 +20,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this.domPaging = $('<div id="#pager' + this.unique + '"></div>');
 	 		this.domSearch = $("<div />").addClass('ci-grid-search');
 	 		
+			var filter = this.module.getConfiguration().filterRow || '';
+
+			eval("self.filter = function(jqGrid, source, rowId) { try { \n " + filter + "\n } catch(_) { console.log(_); } }");
+
+
 	 		var inst = this;
 	 		if(this.module.getConfiguration().displaySearch) {
 	 			var searchInput = $("<input />").bind('keyup', function() {
@@ -92,7 +97,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
 			   		if(jpaths[colModel[colNum].name].number)
 			   			value = parseFloat(value);
-			   		self.elements[rowId].set(colModel[colNum]._jpath, value, { moduleid: self.module.getId() });
+			   		self.elements[rowId].setChild(colModel[colNum]._jpath, value, { moduleid: self.module.getId() });
+			   		self.applyFilterToRow(rowId);
 			   	},
 			    viewrecords: true,
 			    onSelectRow: function(rowid, status) {
@@ -109,6 +115,12 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			this.jqGrid = $.proxy($(this.domTable).jqGrid, $(this.domTable));
 			this.onReady.resolve();
+	 	},
+
+
+	 	applyFilterToRow: function(rowId) {
+			if(this.filter)
+			   	this.filter(this.jqGrid, this.elements[rowId], rowId);
 	 	},
 
 	 	onResize: function(w, h) {
@@ -136,13 +148,16 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 				list = moduleValue.get(),
 	 				elements = []
 
+
 	 			this.elements = list;
 	 			this.module.data = moduleValue;
+
 				this.buildElements(list, elements, jpaths);
 				this.gridElements = elements;
 				this.jqGrid('clearGridData');
 				for(var i = 0; i < elements.length; i++) {
 					this.jqGrid('addRowData', i, elements[i]);
+					this.applyFilterToRow(i);
 				}
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 			}
