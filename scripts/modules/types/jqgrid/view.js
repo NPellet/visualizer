@@ -53,7 +53,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 						title: false, 
 						editable: jpaths[j].editable || false,
 						_jpath: jpaths[j].jpath,
-						sortable: true
+						sortable: true,
+						sorttype: jpaths[j].number ? 'float' : 'text'
 					});
 				}
 			}
@@ -125,7 +126,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 			if(!moduleValue)
 	 				return;
-	 			
+
 	 			var self = this, 
 	 				jpaths = this.module.getConfiguration().colsjPaths, 
 	 				list = moduleValue.get(),
