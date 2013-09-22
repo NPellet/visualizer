@@ -5,7 +5,7 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 
 		init: function(urls) {
 			var self = this;
-			this.dom = $('<div id="header"><div id="title"></div></div>');
+			this.dom = $('<div id="header"><div id="title"><div></div></div></div>');
 			$("body").prepend(this.dom);
 			this.load(urls.header);
 			this.setHeight("30px");
@@ -19,7 +19,7 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 		},
 
 		setTitle: function(view) {
-			var dom = $("#title");
+			var dom = $("#title").children('div');
 
 			dom
 				.text(view.title || 'Untitled')
