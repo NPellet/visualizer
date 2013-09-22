@@ -10,15 +10,17 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
     		Util.loadCss(require.toUrl('libs/jqgrid/css/ui.jqgrid.css'));
 
 	 		this.dom = $('<div class="ci-displaylist-list"></div>');
-	 		this.domTable = $("<table />").attr('id', this.unique);
+	 		this.domTable = $("<table />").attr('id', this.unique).css({width: '100%'});
+
+
 	 		this.dom.on('mouseover', '.jqgrow', function() {
 				self.module.controller.lineHover(self.elements[$(this).attr('id')]);
 	 		}).on('mouseout', '.jqgrow', function() {
 				self.module.controller.lineOut(self.elements[$(this).attr('id')]);
 	 		});
 
-	 		this.domPaging = $('<div id="#pager' + this.unique + '"></div>');
-	 		this.domSearch = $("<div />").addClass('ci-grid-search');
+	 		//this.domPaging = $('<div id="#pager' + this.unique + '"></div>');
+	 		//this.domSearch = $("<div />").addClass('ci-grid-search');
 	 		
 			var filter = this.module.getConfiguration().filterRow || '';
 
@@ -26,15 +28,17 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 
 	 		var inst = this;
-	 		if(this.module.getConfiguration().displaySearch) {
+	 		/*if(this.module.getConfiguration().displaySearch) {
 	 			var searchInput = $("<input />").bind('keyup', function() {
 	 				if(inst.table)
 	 					inst.table.doSearch($(this).val());
 	 			});
 	 			this.domSearch.append(searchInput);
 	 			this.domSearch.prepend("<span>Search : </span>");
-	 		}
-	 		this.dom.append(this.domSearch).append(this.domPaging).append(this.domTable);
+	 		}*/
+	 		this.dom.//append(this.domSearch).append(this.domPaging).
+				append(this.domTable);
+
 	 		this.module.getDomContent().html(this.dom);
 	 		this._highlights = this._highlights || [];
 
@@ -43,7 +47,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	},
 
 	 	unload: function() {
-	 		console.trace();
 	 		this.jqGrid('GridDestroy');
 	 		this.module.getDomContent().empty();
 	 	},
@@ -88,10 +91,12 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	sortable: true,
 			   	sortname: j,
 			   	
+			   	width: '100%',
 				datatype: "local",
+			   	//forceFit: true,
+			   	autowidth: true,
+			   	
 			   	forceFit: true,
-			   	autoWidth: true,
-			   	shrinkToFit: true,
 			   	cellsubmit: 'clientArray',
 			   	cellEdit: true,
 			   	rowList: [10,20,30,100],
@@ -133,8 +138,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 		if(!this.jqGrid)
 	 			return;
-	 		this.jqGrid('setGridWidth', w-30);
-	 		this.jqGrid('setGridHeight', h - 40);
+	 		this.jqGrid('setGridWidth', w);
+	 		this.jqGrid('setGridHeight', h);
 	 	},
 
 	 	blank: function() {

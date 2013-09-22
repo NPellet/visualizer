@@ -270,10 +270,36 @@ div.ci-module-wrapper .ci-module-content {
 	font-weight: bold;
 }
 
-.ci-displaylist-list {
-	margin: 10px;
-	margin-top: 5px;
+div.ci-module-wrapper.ci-module-jqgrid .ci-module-content {
+	overflow: hidden;
 }
+
+div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid {
+	border-top-width: 0px;
+}
+
+
+div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid th {
+	background: none;
+	background-color: #d3d3d3;
+	box-shadow: none;
+	padding-top: 4px;
+}
+
+div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid tr.ui-state-highlight {
+	border-color: #B6B6B6;
+}
+div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid tr.ui-state-highlight td {
+	
+	border-bottom-color: inherit;
+	
+}
+
+
+
+
+
+
 
 .ci-displaylist-list > div {
 	/*margin-bottom: 10px;*/
