@@ -140,7 +140,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 			if(el) {
 				var val = this.get();
 				if(returnDeferred) { // Returns a deferred if asked
-					if(val) {
+					if(val[el]) {
 						if(val[el].fetch)
 							return val[el].fetch();
 						else
@@ -178,8 +178,6 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
 
-			
-			console.log(jpath, el);
 			return this
 					.get(el, true)
 					.pipe(function(el) { 
@@ -339,7 +337,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 		if(urls['header'])
 			Header.init(urls);
-		
+
 		//Header.setTitle(title, Versioning.getViewHandler());
 	});
 });
