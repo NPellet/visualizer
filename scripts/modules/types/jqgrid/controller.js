@@ -87,6 +87,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 
 		actionsReceive: {
 			'addRow': 'Add a new row',
+			'addColumn': 'Add a new column',
 			'removeRow': 'Remove a row'
 		},
 		

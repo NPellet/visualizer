@@ -228,6 +228,19 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					}
 				}
 				API.setVariable(this.module.getNameFromRel('list'), this.module.data);
+			},
+
+			addColumn: function(jpath) {
+				var module = this.module;
+				
+				module.getConfiguration().colsjPaths["NEW"] = { editable: false, jpath: jpath, number: false };
+				if(module.view.unload)
+					module.view.unload();
+				module.view.init();
+				module.view.inDom();
+				module.view.onResize(module.view.width || module.getWidthPx(), module.view.height || module.getHeightPx());
+				module.model.resetListeners();	
+				module.updateAllView();
 			}
 		},
 
