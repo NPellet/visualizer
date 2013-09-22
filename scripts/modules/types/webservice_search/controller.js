@@ -6,6 +6,16 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 		initimpl: function() { 
 			this.searchTerms = {};
+			var searchparams;
+			if(searchparams = this.module.getConfiguration().searchparams) {
+				for(var i in searchparams) {
+					if(!i) {
+						continue;
+					}
+					this.searchTerms[i] = searchparams[i].defaultvalue;
+				}
+			}
+			
 			this.result = null;
 			this.request = null;
 		},
@@ -28,6 +38,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 			// Replace all search terms in the URL
 			var reg = /\<([a-zA-Z0-9]+)\>/;
+			console.trace();
 			while(val = reg.exec(url)) {
 				url = url.replace('<' + val[1] + '>', (encodeURIComponent(this.searchTerms[val[1]] || '')));
 			}
@@ -56,9 +67,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			
 			this.request.done(function(data) {
 				self.request = null;
-				console.log(data);
 				var data = DataObject.check(data, true);
-				console.log(data);
 				self.onSearchDone(data);
 			});
 		},
