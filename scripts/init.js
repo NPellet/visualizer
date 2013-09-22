@@ -86,7 +86,6 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	
 
 	function DataArray(arr, deep) { 
-		console.log(arr, deep);
 	  if(deep)
 	  	for(var i = 0, l = arr.length; i < l; i++)
 	  		arr[i] = DataObject.check(arr[i], deep);
@@ -138,19 +137,23 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 		configurable: false,
 		writable: false,
 		value: function(el, returnDeferred) {
-
 			if(el) {
-				if(this[el]) {
-					
-					if(returnDeferred) // Returns a deferred if asked
-						if(this[el].fetch)
-							return this[el].fetch();
+				var val = this.get();
+				if(returnDeferred) { // Returns a deferred if asked
+					if(val) {
+						if(val[el].fetch)
+							return val[el].fetch();
 						else
-							return $.Deferred().resolve(this[el]);
-
-					return this[el];
+							return $.Deferred().resolve(val[el]);
+					} else {
+						return $.Deferred().reject();
+					}
+				} else {
+					if(val[el])
+						return val[el];
+					else
+						return;
 				}
-				return;
 			}
 
 			if(this.value && this.type)
@@ -174,19 +177,18 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 			}
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
-			if(this[el]) {
-				return this
-						.get(el, true)
-						.pipe(function(el) { 
-							if(el.getChild) { // If the element could be fetched further down
-								return el.getChild(jpath);
-							} else {
-								return el;
-							}
-						});
-			} else {
-				return $.Deferred().reject(); // Failure : el is not found
-			}
+
+			
+			console.log(jpath, el);
+			return this
+					.get(el, true)
+					.pipe(function(el) { 
+						if(el.getChild) { // If the element could be fetched further down
+							return el.getChild(jpath);
+						} else {
+							return el;
+						}
+					});
 		}
 	};
 

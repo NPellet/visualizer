@@ -28,6 +28,7 @@ define(['jquery', 'util/api', 'util/datatraversing'], function($, API, Traversin
 		},
 
 		setVarFromEvent: function(event, element) {
+
 			var actions;
 			
 			if(!(actions = this.module.definition.dataSend))	
