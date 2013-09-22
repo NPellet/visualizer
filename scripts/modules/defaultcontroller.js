@@ -17,12 +17,18 @@ define(['jquery', 'util/api', 'util/datatraversing'], function($, API, Traversin
 
 				if(actionsOut[i].rel == rel && ((event && event == actionsOut[i].event) || !event)) {
 					actionname = actionsOut[i].name;
-					var jpath = actionsOut[i].jpath;
+					var jpath = actionsOut[i].jpath;	
 
-					value.getChild(jpath).done(function(value) {
+					if(!jpath) {
 						API.executeAction(actionname, value);
 						API.doAction(actionname, value);
-					});
+						continue;
+					} else if(value.getChild) {
+						value.getChild(jpath).done(function(returned) {
+								API.executeAction(actionname, returned);
+								API.doAction(actionname, returned);
+						});
+					}
 				}
 			}
 		},
