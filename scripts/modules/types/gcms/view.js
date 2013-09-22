@@ -34,11 +34,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			}
 
 			_gcms.onZoomGC = function(from, to) {
-				self.module.controller.sendAction('fromtoGC', {type: 'fromTo', value: { from: from, to: to }}, 'onZoomGCChange');
+				self.module.controller.sendAction('fromtoGC', new DataObject({type: 'fromTo', value: new DataObject ({ from: from, to: to })}), 'onZoomGCChange');
 			}
 
 			_gcms.onZoomMS = function(from, to) {
-				self.module.controller.sendAction('fromtoMS', {type: 'fromTo', value: { from: from, to: to }}, 'onZoomMSChange');
+				self.module.controller.sendAction('fromtoMS', new DataObject({type: 'fromTo', value: new DataObject ({ from: from, to: to })}), 'onZoomMSChange');
 			}
 
 			this.gcmsInstance = _gcms;
