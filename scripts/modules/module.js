@@ -1,5 +1,5 @@
 
-define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], function($, ContextMenu, API, Button, Util) {
+define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], function($, ContextMenu, API, Button, Util) {
 	
 	function init(module) {
 		//define object properties
@@ -295,8 +295,6 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 				for(var i in actionsReceive)
 					allActionsReceive.push({ title: actionsReceive[i], key: i});
 				
-
-
 				FormFactory.newform(div, {
 					sections: {
 						'general': {
@@ -561,8 +559,9 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 
 						if(module.view.unload)
 							module.view.unload();
-
+						
 						module.view.init();
+
 						module.view.inDom();
 						module.view.onResize(module.view.width || module.getWidthPx(), module.view.height || module.getHeightPx());
 						module.model.resetListeners();	

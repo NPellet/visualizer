@@ -7,8 +7,7 @@ define(['forms/fielddefault', 'libs/dynatree/dynatree'], function(Default) {
 		},
 		
 		setOptions: function(options, index) {
-			if(this.main.getName() == 'colorjpath')
-				console.log(options);
+			
 			if(index !== undefined)
 				this.optionsIndexed[index] = options;
 			else

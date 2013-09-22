@@ -96,16 +96,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		doConfiguration: function(section) {
 			
 			var jpaths = this.module.model.getjPath();
-console.log(jpaths);
-console.log('___');
 
-			/*
-			if(Traversing.getType(data) == 'array') 
-				Traversing.getJPathsFromElement(data[0], jpaths);
-			else if(Traversing.getType(data) == 'arrayXY')
-				Traversing.getJPathsFromElement(data, jpaths);
-			*/
-			//console.log(data, data[0],jpaths);
 			return {
 				groups: {
 					'gencfg': {
@@ -234,6 +225,7 @@ console.log('___');
 			for(var i = 0; i < group.length; i++) {
 				cols[group[i].coltitle] = { jpath: group[i].coljpath, number: group[i].number[0] == 'number', editable: group[i].editable[0] == 'editable' };
 			}
+			
 
 			this.module.getConfiguration().colsjPaths = cols;
 			this.module.getConfiguration().nbLines = confSection[0].gencfg[0].nblines[0];

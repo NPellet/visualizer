@@ -42,6 +42,12 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 	},
 
+	 	unload: function() {
+	 		console.trace();
+	 		this.jqGrid('GridDestroy');
+	 		this.module.getDomContent().empty();
+	 	},
+
 	 	inDom: function() {
 
 			var self = this, 

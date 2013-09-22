@@ -4,9 +4,8 @@ define(['jquery', 'forms/title'], function($, title) {
 	var stack = {};
 
 	$(document).on('click', '.bi-form-button', function(event) {
-
 		var btn = stack[$(this).data('id')];
-
+		console.log(btn);
 		if(btn)
 			btn.doClick(event, $(this));
 	});
@@ -16,12 +15,14 @@ define(['jquery', 'forms/title'], function($, title) {
 		this.onclick = onclick;
 		this.id = ++id;
 		this.value = false;
-		
+		/*
 		if(typeof onclick !== "function" && !options)
 			this.options = onclick;
 		else
 			this.options = options || {};
+*/
 
+		this.options = options || {};
 		// Store button in the stack
 		stack[this.id] = this;
 	};
@@ -81,6 +82,7 @@ define(['jquery', 'forms/title'], function($, title) {
 		},
 
 		doClick: function(event, item) {
+
 			this.value = !this.value;
 			this.applyStyle();
 			if(this.onclick)
