@@ -7,6 +7,7 @@ define(['modules/module'], function(Module) {
 		getTypes: function() {
 			return {
 				'display_value': 'Single value',
+				'postit': 'postit',
 				'grid': 'Table',
 				'jqgrid': 'Table v2',
 				'2d_list': '2D Grid',
