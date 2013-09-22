@@ -27,7 +27,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		onHorizontalTracking: false,
 		rangeLimitX: 1,
 		rangeLimitY: 0,		
-		unzoomGradual: true,
+		unZoomMode: 'total',
 
 		plugins: ['zoom', 'drag', 'integral'],
 
@@ -465,34 +465,45 @@ define(['jquery', 'util/util'], function($, Util) {
 		handleDblClick: function(x,y,e) {
 		//	var _x = x - this.options.paddingLeft;
 		//	var _y = y - this.options.paddingTop;
+			var pref = this.options.unZoomMode;
 
-			if(this.options.unzoomGradual) {
-				var xAxis = this.getXAxis();
-				var xMin = xAxis.getActualMin(),
-					xMax = xAxis.getActualMax(),
-					diff = xMax - xMin;
-
-				xMin = Math.max(xAxis.getMinValue(), xMin - diff);
-				xMax = Math.min(xAxis.getMaxValue(), xMax + diff);
-
-				xAxis.setCurrentMin(xMin);
-				xAxis.setCurrentMax(xMax);
-
-				this.redraw(true);
-				this.drawSeries(true);
-
-			} else {
-
+			if(pref == 'total') {
 				this.redraw();
 				this.drawSeries();
+				return;
 			}
-/*
-			if(this.getXAxis().options.onZoom)
-				this.getXAxis().options.onZoom(this.getXAxis().getActualMin(), this.getXAxis().getActualMax());
 
-			if(this.getYAxis().options.onZoom)
-				this.getYAxis().options.onZoom(this.getYAxis().getActualMin(), this.getYAxis().getActualMax());
-			*/
+			var	
+				xAxis = this.getXAxis(),
+				yAxis = this.getYAxis(),
+
+				xMin = xAxis.getActualMin(),
+				xMax = xAxis.getActualMax(),
+				xActual = xAxis.getVal(x),
+
+				yMin = yAxis.getActualMin(),
+				yMax = yAxis.getActualMax(),
+				yActual = yAxis.getVal(y);
+
+
+			if(pref == 'gradualXY' || pref == 'gradualX') {
+				var ratio = (xActual - xMin) / (xMax - xMin);
+				xMin = Math.max(xAxis.getMinValue(), xMin - diff * ratio);
+				xMax = Math.min(xAxis.getMaxValue(), xMax + diff * (1 - ratio));
+				xAxis.setCurrentMin(xMin);
+				xAxis.setCurrentMax(xMax);
+			}
+
+			if(pref == 'gradualXY' || pref == 'gradualY') {
+				var ratio = (yActual - yMin) / (yMax - yMin);
+				yMin = Math.max(yAxis.getMinValue(), yMin - diff * ratio);
+				yMax = Math.min(yAxis.getMaxValue(), yMax + diff * (1 - ratio));
+				yAxis.setCurrentMin(yMin);
+				yAxis.setCurrentMax(yMax);
+			}
+
+			this.redraw(true);
+			this.drawSeries(true);
 		},
 
 		resetAxis: function() {
