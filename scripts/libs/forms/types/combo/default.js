@@ -109,7 +109,6 @@ define(['forms/fielddefault', 'libs/dynatree/dynatree'], function(Default) {
 		},
 
 		fillTree: function(index) {
-
 			var options = this.options;
 			if(this.optionsIndexed[index])
 				options = this.optionsIndexed[index];
@@ -117,6 +116,18 @@ define(['forms/fielddefault', 'libs/dynatree/dynatree'], function(Default) {
 			var root = this.domTree.dynatree('getRoot');
 			root.removeChildren();
 			root.addChild(options);
+
+			tree = this.main.domExpander.children().dynatree("getTree");
+			if(!tree.getActiveNode)
+				return;
+			var node;
+			if((node = tree.getActiveNode()) != null)
+				node.deactivate();
+				
+
+			if(tree.getNodeByKey && (node = tree.getNodeByKey(this.main.getValue(index)))) {
+				node.activateSilently();
+			}
 		},
 		
 
