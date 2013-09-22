@@ -7,6 +7,8 @@ define(['forms/fielddefault', 'libs/dynatree/dynatree'], function(Default) {
 		},
 		
 		setOptions: function(options, index) {
+			if(this.main.getName() == 'colorjpath')
+				console.log(options);
 			if(index !== undefined)
 				this.optionsIndexed[index] = options;
 			else
@@ -127,15 +129,18 @@ define(['forms/fielddefault', 'libs/dynatree/dynatree'], function(Default) {
 		
 
 		checkFillState: function(index) {
+
+
 			var options = (!index) ? this.options : (this.optionsIndexed[index] || []);
 			if(!index)
 				index = Object.keys(this.main.fields);
 			else
 				index = [index];
-
+			
 			for(var i = 0, l = index.length; i < l; i++) {
 				
 				var element = this.lookRecursively(this.main.getValue(index[i]), options);
+
 				if(element) {
 					this.setText(index[i], element.title);
 					var show = ((element.data && element.data.show) || '').split(' ');

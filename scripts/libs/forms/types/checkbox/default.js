@@ -52,7 +52,8 @@ define(['forms/fielddefault', 'libs/custominput/custominput'], function(Default)
 				html.push(i);
 				html.push('" data-name="');
 				html.push(i)
-				html.push('"/><label for="');
+				html.push('"');
+				html.push('/><label for="');
 				html.push(fieldAttrId);
 				html.push('">');
 				html.push(this.options[i]);

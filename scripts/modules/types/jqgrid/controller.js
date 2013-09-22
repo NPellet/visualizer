@@ -96,6 +96,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		doConfiguration: function(section) {
 			
 			var jpaths = this.module.model.getjPath();
+console.log(jpaths);
+console.log('___');
 
 			/*
 			if(Traversing.getType(data) == 'array') 
