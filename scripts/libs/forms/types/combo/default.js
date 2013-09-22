@@ -120,24 +120,31 @@ define(['forms/fielddefault', 'libs/dynatree/dynatree'], function(Default) {
 
 		
 		setValue: function(index, value) {		
+
 			this.main.changeValue(index, value);
 			this.checkFillState(index);
 		},
 		
 
 		checkFillState: function(index) {
-			var options = this.options;
-			if(index !== undefined && this.optionsIndexed[index])
-				options = this.optionsIndexed[index];
-			var element = this.lookRecursively(this.main.getValue(index), options);
-			if(element) {
-				this.setText(index, element.title);
-				var show = ((element.data && element.data.show) || '').split(' ');
-				for(var i = 0, l = show.length; i < l; i++) {
-					this.main.section.showHideSubSection(show, true);				
-				}
-			} else
-				this.setText(index, '');
+			var options = (!index) ? this.options : (this.optionsIndexed[index] || []);
+			if(!index)
+				index = Object.keys(this.main.fields);
+			else
+				index = [index];
+
+			for(var i = 0, l = index.length; i < l; i++) {
+				
+				var element = this.lookRecursively(this.main.getValue(index[i]), options);
+				if(element) {
+					this.setText(index[i], element.title);
+					var show = ((element.data && element.data.show) || '').split(' ');
+					for(var j = 0, k = show.length; j < k; j++) {
+						this.main.section.showHideSubSection(show, true);				
+					}
+				} else
+					this.setText(index[i], '');
+			}
 		},
 		
 

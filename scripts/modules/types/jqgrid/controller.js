@@ -232,7 +232,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			for(var i = 0; i < group.length; i++) {
 				cols[group[i].coltitle] = { jpath: group[i].coljpath, number: group[i].number[0] == 'number', editable: group[i].editable[0] == 'editable' };
 			}
-			console.log(confSection[0].gencfg[0].filterRow[0]);
+
 			this.module.getConfiguration().colsjPaths = cols;
 			this.module.getConfiguration().nbLines = confSection[0].gencfg[0].nblines[0];
 			this.module.getConfiguration().toggle = confSection[0].gencfg[0].toggle[0];
