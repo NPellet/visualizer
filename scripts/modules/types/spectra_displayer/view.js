@@ -174,9 +174,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			if(cfgM.plotinfos) {
 				for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
 					if(varname == cfgM.plotinfos[i].variable) {
-						console.log(cfgM.plotinfos[i]);
 						serie.options.lineToZero = !cfgM.plotinfos[i].plotcontinuous;
-						serie.setLineColor("rgba(" + cfgM.plotinfos[i].plotcolor + ")");
+						serie.setLineColor("rgba(" + (cfgM.plotinfos[i].plotcolor || [0, 0, 0, 1]) + ")");
 						serie.setLineWidth(cfgM.plotinfos[i].strokewidth || 1);
 					}	
 				}
@@ -256,6 +255,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			},
 
 			'jcamp': function(moduleValue, varname) {
+				console.log(moduleValue);
 				if(!moduleValue)
 					return;
 
