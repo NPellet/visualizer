@@ -4086,7 +4086,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var parsedCurrPos = this._getPosition(currPos);
 			if(!pos)
 				var pos = this._getPosition(this.get('labelPosition'), currPos);
-console.log(this.get('labelPosition'), currPos);
+
 			this.label.setAttribute('x', pos.x);
 			this.label.setAttribute('y', pos.y);
 			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
