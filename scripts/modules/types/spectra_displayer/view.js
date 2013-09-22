@@ -134,6 +134,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		onResize: function(width, height) {
 			this.width = width;
 			this.height = height;
+
 			if(this.graph) {
 				this.graph.resize(width, height);
 				this.graph.redraw();
@@ -255,35 +256,29 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				this.resetAnnotations();
 			},
 
-			'jcamp': function(moduleValue, varname) {
+			jcamp : function(moduleValue, varname) {
+
 				if(!moduleValue)
 					return;
-				moduleValue = DataTraversing.getValueIfNeeded(moduleValue);
-				var self = this, serie, cfgM = this.module.getConfiguration(), color, continuous, i, l, spectra;
+
+				moduleValue = moduleValue.get(); // Get the true jcamp value
+
+				var self = this, 
+					serie, 
+					cfgM = this.module.getConfiguration(), 
+					spectra;
+
 				API.killHighlight(this.module.id + varname);
+
 				if(!this.graph)
 					return;
+
 				this.zones[varname] = moduleValue._zones;
+
 				if(!moduleValue)
 					return this.blank();
 
-/*
-				CI.RepoHighlight.listen(moduleValue._highlight, function(value, commonKeys) {
-					for(var i = 0; i < commonKeys.length; i++) 
-						if(self.zones[varname][commonKeys[i]])
-							self.doZone(varname, self.zones[varname][commonKeys[i]], value, color);
-				}, true, this.module.id + varname);
-*/
-	 			//if(typeof moduleValue.value !== 'object') {
-
-	 			//var spectra = CI.converter.jcampToSpectra(moduleValue.value, {lowRes: 1024});
-	 			
 				spectra = JcampConverter(moduleValue, {lowRes: 1024});
-
-	 			//	moduleValue.value = spectra;
-	 			//} else 
-	 			//	spectra = moduleValue.value;
-
 
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie(varname);
@@ -295,12 +290,12 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					this.graph.setOption('defaultWheelAction', 'toSeries');
 					this.graph.setOption('defaultMouseAction', 'drag');
 
-					serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous}, 'contour');
+					serie = this.graph.newSerie(varname, {trackMouse: true}, 'contour');
 					serie.setData(spectra.contourLines);
 					serie.autoAxis();
 					this.series[varname].push(serie);
-				} else {
 
+				} else {
 
 					this.graph.setOption('zoomMode', cfgM.zoom ? (cfgM.zoom != "none" ? cfgM.zoom : false) : false);
 					this.graph.setOption('defaultWheelAction', 'zoomY');
@@ -308,7 +303,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 					spectra = spectra.spectra;
 					for (var i=0, l = spectra.length; i<l; i++) {
-						serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
+						serie = this.graph.newSerie(varname, {trackMouse: true});
 						serie.setData(spectra[i].data[spectra[i].data.length - 1]);
 						serie.autoAxis();
 						this.series[varname].push(serie);
@@ -387,7 +382,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		resetAnnotations: function() {
 			if(!this.annotations)
 				return;
-			
 			var i = 0, l = this.annotations.length
 			for ( ; i < l ; i++ ) {
 				this.doAnnotation(this.annotations[i]);
@@ -404,7 +398,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 			shape.setSelectable( true );
 
-			Traversing.listenDataChange(annotation, function(value) {
+			annotation.onChange(annotation, function(value) {
 				shape.draw();
 				shape.redraw();
 			}, self.module.getId());

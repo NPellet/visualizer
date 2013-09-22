@@ -2593,7 +2593,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			lineToZero: false,
 
 			autoPeakPicking: false,
-			autoPeakPickingNb: 10,
+			autoPeakPickingNb: 4,
 			autoPeakPickingMinDistance: 10
 		},
 
@@ -2962,29 +2962,29 @@ define(['jquery', 'util/util'], function($, Util) {
 				return b[0] - a[0];
 			});
 
-			for( ; i < l ; i++ ) {
+			for( ; i < l ; i ++ ) {
 
 				x = allY[i][1],
 				px = this.getX(x),
 				k = 0, m = passed.length;
 
-				for( ; k < m ; m++) {
+				for( ; k < m ; k++) {
 					if(Math.abs(passed[k] - px) < this.options.autoPeakPickingMinDistance) {
 						break;
 					}
 				}
 
-				if(k < m)
-					break;
+				if(k < m) {
+					continue;
+				}
 
-				passed.push(px);
 				this.picks[m].set('labelPosition', { 
 														x: x,
 				 										dy: "-10px"
 				 									});
-
 				this.picks[m].data.label.text = String(x);
-				if(passed.length == this.options.autoPeakPickingNb - 1)
+				passed.push(px);
+				if(passed.length == this.options.autoPeakPickingNb)
 					break;
 			}
 
@@ -3927,6 +3927,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		//	this.kill();
 			var variable;
 			this.position = this.setPosition();
+
 			this.redrawImpl();
 
 			if(!this.position)
@@ -3957,7 +3958,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		get: function(prop) {				return this.properties[prop];					},
 
 		getFromData: function(prop)			{ return this.data[prop]; 						},
-		setDom: function(prop, val) {		if(this.dom) this._dom.setAttribute(prop, val);				},
+		setDom: function(prop, val) {		if(this._dom) this._dom.setAttribute(prop, val);				},
 
 		setPosition: function() {
 			var position = this._getPosition(this.getFromData('pos'));
@@ -3968,7 +3969,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		setFillColor: function() {			this.setDom('fill', this.get('fillColor'));					},
 		setStrokeColor: function() {		this.setDom('stroke', this.get('strokeColor'));				},
 		setStrokeWidth: function() {		this.setDom('stroke-width', this.get('strokeWidth'));		},
-		setDashArray: function() {			this.setDom('stroke-dasharray', this.get('strokeDashArray'));				},
+		setDashArray: function() {			if(this.get('strokeDashArray')) this.setDom('stroke-dasharray', this.get('strokeDashArray'));				},
 
 		setLabelText: function() {	 		if(this.label) this.label.textContent = this.data.label.text;					},
 		setLabelSize: function() {			if(this.label) this.label.setAttribute('font-size', this.get('labelSize'))		},
@@ -3990,12 +3991,12 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		_getPosition: function(value, relTo) {
 			var parsed, pos = {x: false, y: false};
-
+			if(!value) return;
 			for(var i in pos) {
-				if(value[i] === undefined && (value['d' + i] !== undefined || relTo === undefined)) {
+				if(value[i] === undefined && ((value['d' + i] !== undefined && relTo === undefined) || relTo === undefined)) {
 					if(i == 'x')
 						pos[i] = relTo ? relTo[i] : this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getPos(0);
-					else {
+					else if(value.x && this.serie) {
 						var closest = this.serie.searchClosestValue(value.x);
 						if(!closest)
 							return;
@@ -4008,12 +4009,12 @@ define(['jquery', 'util/util'], function($, Util) {
 						pos[i] = parsed; // returns xx%
 					else if(this.serie)
 						pos[i] = this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getPos(value[i]);
-				} 
+				}
 
-				if(value['d' + i]) {
+				if(value['d' + i] !== undefined) {
 
 					var def = (value[i] !== undefined || relTo == undefined || relTo[i] == undefined) ? pos[i] : (this._getPositionPx(relTo[i], true) || 0);
-					
+					console.log(def);
 					if((parsed = this._parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
 						pos[i] = def + parsed;  // return integer (will be interpreted as px)
 					} else if(parsed = this._parsePercent(value['d' + i]))
@@ -4160,6 +4161,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var position = this._getPosition(this.getFromData('pos'));
 			this.setDom('x2', position.x);
 			this.setDom('y2', position.y);
+			return true;
 		},
 
 		setPosition2: function() {
@@ -4187,9 +4189,9 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		setLabelPosition: function() {
 			this._setLabelPosition();
-			var pos = this._getPosition(this.get('labelPosition'), this.getFromData('pos'));
-			this.set('x1', pos.x);
-			this.set('y1', pos.y);
+			//var pos = this._getPosition(this.get('labelPosition'), this.getFromData('pos'));
+			//this.label.setAttribute('x', pos.x);
+			//this.label.setAttribute('y', pos.y);
 		}
 	});
 

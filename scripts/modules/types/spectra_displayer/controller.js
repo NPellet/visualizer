@@ -292,7 +292,7 @@ define(['modules/defaultcontroller'], function(Default) {
 				spectrainfos.plotcontinuous.push([infos[i].plotcontinuous ? 'continuous' : null]);
 				spectrainfos.peakpicking.push([infos[i].peakpicking ? 'picking' : null]);
 			}
-
+console.log([this.module.getConfiguration().wheelAction || 'none']);
 			return {
 				groups: {
 					gencfg: [{
