@@ -7,6 +7,8 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 			var self = this;
 			if(urls.header) {
 				this.load(urls.header);
+			} else {
+				$("#header").remove();
 			}
 
 			Versioning.getViewHandler().versionChange().progress(function(el) {
