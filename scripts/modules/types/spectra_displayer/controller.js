@@ -214,11 +214,19 @@ define(['modules/defaultcontroller'], function(Default) {
 
 
 							{
+								type: 'Checkbox',
+								name: 'shiftxtozero',
+								title: 'Shift X to Min',
+								options: {'shift': ''}
+							},
+
+							{
 								type: 'Combo',
 								name: 'wheelAction',
 								title: 'Mouse Wheel',
 								options: [{key: 'zoomX', title: 'Zoom x'}, {key: 'zoomY', title: 'Zoom Y'}, {key: 'none', title: 'None'}]
 							}
+
 						]
 					},
 
@@ -292,7 +300,7 @@ define(['modules/defaultcontroller'], function(Default) {
 				spectrainfos.plotcontinuous.push([infos[i].plotcontinuous ? 'continuous' : null]);
 				spectrainfos.peakpicking.push([infos[i].peakpicking ? 'picking' : null]);
 			}
-console.log([this.module.getConfiguration().wheelAction || 'none']);
+
 			return {
 				groups: {
 					gencfg: [{
@@ -312,6 +320,7 @@ console.log([this.module.getConfiguration().wheelAction || 'none']);
 						maxY: [this.module.getConfiguration().maxY],
 						yTopSpacing: [this.module.getConfiguration().yTopSpacing],
 						yBottomSpacing: [this.module.getConfiguration().yBottomSpacing],
+						shiftxtozero: [this.module.getConfiguration().shiftxtozero ? ['shift'] : []],
 						zoom:  [this.module.getConfiguration().zoom],
 						wheelAction:  [this.module.getConfiguration().wheelAction || 'none']
 			//			plotcolor: this.module.getConfiguration().plotcolor || ['#000000']
@@ -353,6 +362,7 @@ console.log([this.module.getConfiguration().wheelAction || 'none']);
 
 			this.module.getConfiguration().zoom = confSection[0].gencfg[0].zoom[0];
 			this.module.getConfiguration().wheelAction = confSection[0].gencfg[0].wheelAction[0];
+			this.module.getConfiguration().shiftxtozero = confSection[0].gencfg[0].shiftxtozero[0][0] == "shift";
 
 			this.module.getConfiguration().displayAxis = confSection[0].gencfg[0].displayAxis[0];
 			//this.module.getConfiguration().peakpicking = confSection[0].gencfg[0].peakpicking[0][0] == "true";

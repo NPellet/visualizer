@@ -82,6 +82,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				}
 		//graph.getLeftAxis(0, {logScale: true})
 
+
+				if(cfgM.shiftxtozero)
+					graph.getXAxis().options.shiftToZero = true;
+
 				graph.getLeftAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('y') > -1 : false);
 				graph.getLeftAxis().setLabel(cfgM.yLabel || '');
 

@@ -27,7 +27,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		onHorizontalTracking: false,
 		rangeLimitX: 1,
 		rangeLimitY: 0,		
-		unZoomMode: 'gradualX',
+		unZoomMode: 'total',
 
 		plugins: ['zoom', 'drag', 'integral'],
 
@@ -490,7 +490,6 @@ define(['jquery', 'util/util'], function($, Util) {
 				yActual = yAxis.getVal(y),
 				diffY = yMax - yMin;
 
-console.log(xActual);
 			if(pref == 'gradualXY' || pref == 'gradualX') {
 				var ratio = (xActual - xMin) / (xMax - xMin);
 				xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
