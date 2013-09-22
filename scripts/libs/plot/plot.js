@@ -321,8 +321,17 @@ define(['jquery', 'util/util'], function($, Util) {
 				}, 200);
 			});
 
+/*
+			this._dom.setAttribute('tabindex', 2);
+			console.log(this._dom);
+			this._dom.addEventListener('click', function() {
+				$(this._dom).focus();
+			});
+*/
 
-			document.addEventListener('keydown', function(e) {
+/*
+			this._dom.addEventListener('keydown', function(e) {
+				
 				var code = e.keyCode;
 				if(code < 37 || code > 40)
 					return;
@@ -342,7 +351,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				// Top: 38
 
 			});
-
+*/
 			this.rectEvent.addEventListener('mousewheel', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
