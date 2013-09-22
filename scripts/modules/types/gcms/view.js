@@ -26,7 +26,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 			_gcms.onAnnotationChange = function(annot) {
 				self.module.controller.sendAction('annotation', annot, 'onAnnotationChange');
-				Traversing.triggerDataChange(annot);
+				annot.triggerChange();
 			}
 
 			_gcms.onAnnotationMake = function(annot) {
@@ -52,9 +52,13 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 		update: {
 			'jcamp': function(moduleValue) {
 				var self = this;
-				moduleValue = Traversing.getValueIfNeeded(moduleValue);
-				require(['util/jcampconverter'], function(tojcamp) {
 
+				if(!moduleValue) {
+					return;
+				}
+
+				moduleValue = moduleValue.get();
+				require(['util/jcampconverter'], function(tojcamp) {
 					var jcamp = tojcamp(moduleValue);
 					if(jcamp.gcms) {
 						self.gcmsInstance.setGC(jcamp.gcms.gc);
@@ -66,10 +70,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			},
 
 			'annotationgc': function(value) {
-				value = Traversing.getValueIfNeeded(value);
 				if(!value)
 					return;
-				this.annotations = value;
+				this.annotations = value.get();
 				this.resetAnnotationsGC();
 			},
 
@@ -81,22 +84,25 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 			'gc': function(moduleValue) {
 				var self = this;
-				if(!this.gcmsInstance)
+				if(!this.gcmsInstance || !moduleValue)
 					return;
+
 				require(['util/jcampconverter'], function(tojcamp) {
-					var jcamp = tojcamp(Traversing.getValueIfNeeded(moduleValue));
+					var jcamp = tojcamp(moduleValue.get());
 					if(jcamp.spectra)
 						self.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
 				});
+
 			},
 
 
 			'ms': function(moduleValue, name, cont) {
 				var self = this;
-				if(!this.gcmsInstance)
+				if(!this.gcmsInstance || !moduleValue)
 					return;
+
 				require(['util/jcampconverter'], function(tojcamp) {
-					var jcamp = tojcamp(Traversing.getValueIfNeeded(moduleValue));
+					var jcamp = tojcamp(moduleValue.get());
 					if(jcamp.spectra)
 						self.gcmsInstance.setExternalMS(jcamp.spectra[0].data[0], cont);
 				});
@@ -142,11 +148,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 			shape.setSelectable(true);
 
-			Traversing.listenDataChange(annotation, function(value) {
+			annotation.onChange(function(value) {
 				shape.draw();
 				shape.redraw();
-			}, self.module.getId());
-
+			});
+			
 			if(annotation._highlight) {
 				API.listenHighlight(annotation._highlight, function(onOff) {
 					if(onOff)
