@@ -10,21 +10,11 @@ define(['util/versionhandler'], function(VersionHandler) {
 	viewHandler.setType('view');
 
 	dataHandler.reviver = function(k, l) {
-		if(Array.isArray(l)) {
-			return new DataArray(l, k);
-		} else if(typeof l == "object") {
-			return new DataObject(l, k);
-		}
-		return l;
+		return DataObject.check(l);
 	};
 
 	viewHandler.reviver = function(k, l) {
-		if(Array.isArray(l)) {
-			return new ViewArray(l, k);
-		} else if(typeof l == "object") {
-			return new ViewObject(l, k);
-		}
-		return l;
+		return ViewObject.check(l);
 	};
 				
 	return {

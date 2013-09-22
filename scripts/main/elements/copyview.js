@@ -9,7 +9,8 @@ define(['jquery', 'jqueryui', 'main/elements/default', 'util/versioning'], funct
 		},
 
 		_onClick: function() { // Overwrite usual onclick which loads a list / loads views/datas
-			
+			console.log(Versioning.getView());
+			console.log(JSON.stringify(Versioning.getView()));
 			$("<div />").html(JSON.stringify(Versioning.getView(), null, "\t")).dialog({ modal: true, width: '80%' });
 		}
 

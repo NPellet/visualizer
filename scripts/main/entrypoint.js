@@ -219,11 +219,8 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 					var value = form.getValue();
 					var data = value.cfg[0].tablevars[0];
 
-					view.variables = new ViewArray();
-					for(var i = 0, l = data.length; i < l; i++) {
-						view.variables[i] = data[i];
-					}
-
+					view.set('variables', data, true);
+					
 					_check(true);
 					form.getDom().dialog('close');
 				});

@@ -89,7 +89,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				return;
 			if(!(sourceTypes instanceof Array))
 				sourceTypes = [sourceTypes];
-
+console.log(data);
 			var dataType = data.getType(),
 				mustRebuild = false;
 

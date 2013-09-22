@@ -235,6 +235,12 @@ define(['modules/defaultcontroller'], function(Default) {
 
 
 							{
+								type: 'Text',
+								name: 'strokewidth',
+								title: 'Width (px)'
+							},
+
+							{
 								type: 'Checkbox',
 								name: 'plotcontinuous',
 								title: 'Continuous',
@@ -259,13 +265,14 @@ define(['modules/defaultcontroller'], function(Default) {
 			if(this.module.getConfiguration().flipY)
 				flipArray.push('flipY');
 		
-			var spectrainfos = { 'variable': [], 'plotcolor': [], 'plotcontinuous': [] };
+			var spectrainfos = { 'variable': [], 'plotcolor': [], 'plotcontinuous': [], strokewidth: [] };
 
 			var infos = this.module.getConfiguration().plotinfos || [];
 			for(var i = 0, l = infos.length; i < l; i++) {
 			
 				spectrainfos.variable.push(infos[i].variable);
 				spectrainfos.plotcolor.push(infos[i].plotcolor);
+				spectrainfos.strokewidth.push(infos[i].strokewidth);
 				spectrainfos.plotcontinuous.push([infos[i].plotcontinuous ? 'continuous' : null]);
 			}
 
@@ -281,10 +288,10 @@ define(['modules/defaultcontroller'], function(Default) {
 						yLabel: [this.module.getConfiguration().yLabel],
 						xRightSpacing: [this.module.getConfiguration().xRightSpacing],
 						xLeftSpacing: [this.module.getConfiguration().xLeftSpacing],
-						minX: [this.module.getConfiguration().minX || ''],
-						maxX: [this.module.getConfiguration().maxX || ''],
-						minY: [this.module.getConfiguration().minY || ''],
-						maxY: [this.module.getConfiguration().maxY || ''],
+						minX: [this.module.getConfiguration().minX],
+						maxX: [this.module.getConfiguration().maxX],
+						minY: [this.module.getConfiguration().minY],
+						maxY: [this.module.getConfiguration().maxY],
 						yTopSpacing: [this.module.getConfiguration().yTopSpacing],
 						yBottomSpacing: [this.module.getConfiguration().yBottomSpacing],
 						zoom:  [this.module.getConfiguration().zoom],
@@ -321,10 +328,10 @@ define(['modules/defaultcontroller'], function(Default) {
 			this.module.getConfiguration().yTopSpacing = confSection[0].gencfg[0].yTopSpacing[0];
 			this.module.getConfiguration().yBottomSpacing = confSection[0].gencfg[0].yBottomSpacing[0];
 
-			this.module.getConfiguration().minX = parseFloat(confSection[0].gencfg[0].minX[0]);
-			this.module.getConfiguration().minY = parseFloat(confSection[0].gencfg[0].minY[0]);
-			this.module.getConfiguration().maxX = parseFloat(confSection[0].gencfg[0].maxX[0]);
-			this.module.getConfiguration().maxY = parseFloat(confSection[0].gencfg[0].maxY[0]);
+			this.module.getConfiguration().minX = parseFloat(confSection[0].gencfg[0].minX[0]) || null;
+			this.module.getConfiguration().minY = parseFloat(confSection[0].gencfg[0].minY[0]) || null;
+			this.module.getConfiguration().maxX = parseFloat(confSection[0].gencfg[0].maxX[0]) || null;
+			this.module.getConfiguration().maxY = parseFloat(confSection[0].gencfg[0].maxY[0]) || null;
 
 			this.module.getConfiguration().zoom = confSection[0].gencfg[0].zoom[0];
 			this.module.getConfiguration().wheelAction = confSection[0].gencfg[0].wheelAction[0];
@@ -336,8 +343,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			for(var i = 0, l = confSection[0].spectrainfos[0].length; i < l; i++) {	
 				confSection[0].
 					spectrainfos[0][i].
-					plotcontinuous = 
-					(!!confSection[0].spectrainfos[0][i].plotcontinuous[0]);
+					plotcontinuous = (!!confSection[0].spectrainfos[0][i].plotcontinuous[0]);
 			}
 				
 			this.module.getConfiguration().plotinfos = confSection[0].spectrainfos[0];

@@ -591,6 +591,14 @@ input.bi-formfield-styled {
 	float: left;
 }
 
+.bi-formfield-coloropacity {
+	margin-top: 10px;
+}
+
+.bi-formfield-coloropacity input {
+	height: 19px;
+}
+
 .bi-formfield-colorcontainer .bi-form-button {
 	margin-top: 30px;
 }

@@ -81,7 +81,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button2', 'util/util'], fun
 			
 			if(this.definition.bgColor) {
 				html += "background-color: ";
-				html += this.definition.bgColor;
+				html += "rgba(" + this.definition.bgColor + ")";
 			} /*else if(entryCfg.moduleBackground) {
 				html += "background-color: ";
 				html += entryCfg.moduleBackground;

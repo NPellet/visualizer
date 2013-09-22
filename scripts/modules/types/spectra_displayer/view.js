@@ -81,6 +81,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					self.module.controller.sendAction('fromto', {type: 'fromTo', value: { from: from, to: to }}, 'onZoomChange');
 				}
 		//graph.getLeftAxis(0, {logScale: true})
+
 				graph.getLeftAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('y') > -1 : false);
 				graph.getLeftAxis().setLabel(cfgM.yLabel || '');
 
@@ -168,6 +169,20 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			}
 		},
 
+		setSerieParameters: function(serie, varname) {
+			var cfgM = this.module.getConfiguration();
+			if(cfgM.plotinfos) {
+				for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
+					if(varname == cfgM.plotinfos[i].variable) {
+						console.log(cfgM.plotinfos[i]);
+						serie.options.lineToZero = !cfgM.plotinfos[i].plotcontinuous;
+						serie.setLineColor("rgba(" + cfgM.plotinfos[i].plotcolor + ")");
+						serie.setLineWidth(cfgM.plotinfos[i].strokewidth || 1);
+					}	
+				}
+			}	
+		},
+
 		update: { 
 
 			'fromTo': function(moduleValue) {
@@ -185,32 +200,20 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 			xyArray: function(moduleValue, varname) {
 
-				var cfgM = this.module.getConfiguration(), color, continuour, val, val2;
+				var cfgM = this.module.getConfiguration(), val, val2;
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie(varname);
 				this.series[varname] = [];	
 	 
 				if(!moduleValue)
 					return;
-
-				var continuous = false;
-				if(cfgM.plotinfos) {
-					for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
-						if(varname == cfgM.plotinfos[i].variable) {
-							color = cfgM.plotinfos[i].plotcolor;
-							continuous = cfgM.plotinfos[i].plotcontinuous;
-						}	
-					}
-				}
 				
 				val = DataTraversing.getValueIfNeeded(moduleValue),
-				serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
-
+				serie = this.graph.newSerie(varname, {trackMouse: true});
+				this.setSerieParameters(serie, varname);
 				serie.setData(val);
 				serie.autoAxis();
-				if(color)
-					serie.setLineColor(color);
-
+				
 				this.series[varname].push(serie);
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 			},
@@ -224,16 +227,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 	 
 				if(!moduleValue)
 					return;
-				var continuous = false;
-				if(cfgM.plotinfos) {
-					for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
-						if(varname == cfgM.plotinfos[i].variable) {
-							color = cfgM.plotinfos[i].plotcolor;
-							continuous = cfgM.plotinfos[i].plotcontinuous;
-						}	
-					}
-				}
 				
+
 				val = DataTraversing.getValueIfNeeded(moduleValue),
 				val2 = [];
 
@@ -243,11 +238,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				}
 
 				serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
+				this.setSerieParameters(serie, varname);
+
 				serie.setData(val2);
 				serie.autoAxis();
-				if(color)
-					serie.setLineColor(color);
-
 				this.series[varname].push(serie);
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 			},
@@ -262,7 +256,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			},
 
 			'jcamp': function(moduleValue, varname) {
-
 				if(!moduleValue)
 					return;
 
@@ -277,15 +270,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				if(!moduleValue)
 					return this.blank();
 
-				if(cfgM.plotinfos) {
-					for(i = 0, l = cfgM.plotinfos.length; i < l; i++) {
 
-						if(varname == cfgM.plotinfos[i].variable) {
-							color = cfgM.plotinfos[i].plotcolor;
-							continuous = cfgM.plotinfos[i].plotcontinuous;
-						}	
-					}
-				}
+
 /*
 				CI.RepoHighlight.listen(moduleValue._highlight, function(value, commonKeys) {
 					for(var i = 0; i < commonKeys.length; i++) 
@@ -317,8 +303,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous}, 'contour');
 					serie.setData(spectra.contourLines);
 					serie.autoAxis();
-					if(color)
-						serie.setLineColor(color);
 					this.series[varname].push(serie);
 				} else {
 
@@ -332,13 +316,12 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 						serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
 						serie.setData(spectra[i].data[spectra[i].data.length - 1]);
 						serie.autoAxis();
-						if(color)
-							serie.setLineColor(color);
 						this.series[varname].push(serie);
 						break;
 					}
 				}
 
+				this.setSerieParameters(serie, varname);
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 				this.resetAnnotations();
 			}

@@ -10,8 +10,12 @@ define(['forms/fielddefault', 'forms/button2', 'util/util', 'libs/farbtastic/far
 			// Change the input value will change the input hidden value
 			var input = this.main.dom.on('click', 'div.bi-formfield-field-container > div', function(event) {
 				event.stopPropagation();
-				var index = $(this).index();
-				$.farbtastic(field._picker).setColor(field.main.getValue(index));
+				var v = field.main.getValue($(this).index());
+
+				var color = Util.rgbToHex(v[0], v[1], v[2]);
+				$.farbtastic(field._picker).setColor(color);
+
+				field.main.domExpander.find('.bi-formfield-coloropacity input').spinner('value', v[3]);
 				field.main.toggleExpander($(this).index());
 			});
 			
@@ -30,7 +34,22 @@ define(['forms/fielddefault', 'forms/button2', 'util/util', 'libs/farbtastic/far
 			
 			this.fillExpander();
 			this._picker = this.main.domExpander.find('.bi-formfield-colorpicker').farbtastic(function(color) {
-				field._hasChanged(color);
+				field.rgb = Util.hexToRgb(color);
+				field._hasChanged(field.rgb.concat(field.opacity || 1));
+			});
+
+			this.main.domExpander.find('.bi-formfield-coloropacity > input').spinner({
+				step: 0.01,
+      			numberFormat: "n",
+      			min: 0,
+      			max: 1,
+      			spin: function(e, ui) {
+      				console.log(ui);
+      				field.opacity = ui.value;
+      				field._hasChanged((field.rgb || [0, 0, 0]).concat(field.opacity || 1));
+      			}
+			}).parent().on('click', function(e) {
+				e.stopPropagation();
 			});
 			
 		},
@@ -58,13 +77,8 @@ define(['forms/fielddefault', 'forms/button2', 'util/util', 'libs/farbtastic/far
 		
 		fillExpander: function() {
 			var field = this;
-			var btn = new Button('Blank', function(e) {
-				e.stopPropagation();
-				field._hasChanged('');
-			});
-			html = $('<div class="bi-formfield-colorcontainer"><div class="bi-formfield-colorpicker"></div></div>');
-			html.append(btn.render());
-			this.main.domExpander.html(html);	
+			html = $('<div class="bi-formfield-colorcontainer"><div class="bi-formfield-colorpicker"></div><div class="bi-formfield-coloropacity">Opacity: <input /></div></div>');
+			this.main.domExpander.html(html);
 		}
 	});
 });

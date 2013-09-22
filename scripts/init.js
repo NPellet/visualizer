@@ -26,17 +26,11 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 					this[i] = l[i];
 					continue;
 				} else {
-					if(Array.isArray(l[i]))
-						this[i] = new DataArray(l[i], true);
-					else if(typeof l[i] == "object")
-						this[i] = new DataObject(l[i], true);
-					else
-						this[i] = l[i];
+					this[i] = DataObject.check(l[i]);
 				}
 			}
 		}
 	};
-
 
 	ViewObject = function(l, checkDeep) {	
 		for(var i in l) {
@@ -45,55 +39,69 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 					this[i] = l[i];
 					continue;
 				} else {
-					if(Array.isArray(l[i]))
-						this[i] = new ViewArray(l[i], true);
-					else if(typeof l[i] == "object")
-						this[i] = new ViewObject(l[i], true);
-					else
-						this[i] = l[i];
+					this[i] = ViewObject.check(l[i]);
 				}
 			}
 		}
 	};
+
+	ViewObject.check = function(el, check) {
+		if(Array.isArray(el))
+			return new ViewArray(el, check);
+		else if(el === null)
+			return null;
+		else if(typeof el == "object")
+			return new ViewObject(el, check);
+		else
+			return el;
+	};
+
+
+	DataObject.check = function(el, check) {
+		if(Array.isArray(el))
+			return DataArray(el, check);
+		else if(el === null)
+			return null;
+		else if(typeof el == "object")
+			return new DataObject(el, check);
+		else
+			return el;
+	};
+
 	$.extend(ViewObject.prototype, Object.prototype);
 	$.extend(DataObject.prototype, Object.prototype);
 
 	
-	ViewArray  = function(l, checkDeep) {
-		for(var i = 0, ll = l.length; i < ll; i++) {
-			if(!checkDeep) {
-				this.push(l[i]);
-				continue;
-			} else {
-				if(Array.isArray(l[i]))
-					this.push(new ViewArray(l[i], true));
-				else if(typeof l[i] == "object")
-					this.push(new ViewObject(l[i], true));
-				else
-					this.push(l[i]);
-			}
-		}
+	function ViewArray(arr, deep) { 
+	  if(deep)
+	  	for(var i = 0, l = arr.length; i < l; i++)
+	  		arr[i] = ViewObject.check(arr[i], deep);
+	  arr.__proto__ = DataArray.prototype;
+	  return arr;
 	}
 	ViewArray.prototype = new Array;
+	ViewArray.prototype.last = function() {
+	  return this[this.length - 1];
+	};
 	
 
-	DataArray  = function(l, checkDeep) {
-		for(var i = 0, ll = l.length; i < ll; i++) {
-			if(!checkDeep) {
-				this.push(l[i]);
-				continue;
-			} else {
-				if(Array.isArray(l[i]))
-					this.push(new DataArray(l[i], true));
-				else if(typeof l[i] == "object")
-					this.push(new DataObject(l[i], true));
-				else
-					this.push(l[i]);
-			}
-		}
+	function DataArray(arr, deep) { 
+	  if(deep)
+	  	for(var i = 0, l = arr.length; i < l; i++)
+	  		arr[i] = DataObject.check(arr[i], deep);
+	  arr.__proto__ = DataArray.prototype;
+	  return arr;
 	}
 	DataArray.prototype = new Array;
+	DataArray.prototype.last = function() {
+	  return this[this.length - 1];
+	};
 	
+
+
+
+	//DataArray.prototype = new Array;
+	//console.
 
 	var viewSetter = {
 		enumerable: false,
@@ -250,17 +258,23 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 	var fetch = {
 		value: function() {
-			var deferred = $.Deferred();
+			var self = this,
+				deferred = $.Deferred();
 			if(this.url && this.type) {
 				var type = this.getType();
 				require(['util/urldata'], function(urlData) {
-					urlData.get(this.url, false, this.timeout).then(function(data) {
+					urlData.get(self.url, false, self.timeout).then(function(data) {
+						
+						if(Array.isArray(data))
+							data = new DataArray(data, true);
+						else if(typeof data == "object")
+							data = new DataObject(data, true);
 
-						if(this.keep) {
-							this.value = data;
+						if(self.keep) {
+							self.value = data;
 							deferred.resolve(this);
 						} else {
-							deferred.resolve({type: type, value: data});
+							deferred.resolve(new DataObject({type: type, value: data}));
 						}
 
 					}, function(data) { });
@@ -292,6 +306,9 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 	Object.defineProperty(DataObject.prototype, 'getType', getType);
 	Object.defineProperty(DataArray.prototype, 'getType', getType);
+
+	Object.defineProperty(ViewObject.prototype, 'getType', getType);
+	Object.defineProperty(ViewArray.prototype, 'getType', getType);
 
 	Object.defineProperty(String.prototype, 'getType', {
 		value: function() { return 'string'; }
