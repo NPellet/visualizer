@@ -9,9 +9,17 @@ define(['jquery', 'jqueryui', 'main/elements/default', 'util/versioning'], funct
 		},
 
 		_onClick: function() { // Overwrite usual onclick which loads a list / loads views/datas
-			console.log(Versioning.getView());
-			console.log(JSON.stringify(Versioning.getView()));
-			$("<div />").html($('<textarea>' + JSON.stringify(Versioning.getView(), null, "\t") + "</textarea>").css({width: '100%', height: '200px'})).dialog({ modal: true, width: '80%' });
+			var str = JSON.stringify(Versioning.getView(), null, "\t");
+			var strlen = str.length;
+			var txtarea = $('<textarea>' + str + "</textarea>").css({width: '100%', height: '200px'});
+
+			$("<div />").html(txtarea).dialog({ modal: true, width: '80%' });
+			var txtdom = txtarea.get(0);
+
+			
+			txtdom.selectionStart = 0;
+            txtdom.selectionEnd = strlen;
+            txtdom.focus();
 		}
 
 	
