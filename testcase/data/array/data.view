@@ -66,7 +66,7 @@
 			},
 			"size": {
 				"width": 22,
-				"height": 31
+				"height": 30
 			},
 			"configuration": {
 				"colsjPaths": {
@@ -89,7 +89,13 @@
 					"event": "onHover",
 					"rel": "element",
 					"jpath": "element.theValue",
-					"name": "theValue"
+					"name": "hoverValue"
+				},
+				{
+					"event": "onSelect",
+					"rel": "element",
+					"jpath": "element.theValue",
+					"name": "clickedValue"
 				}
 			],
 			"dataSource": [
@@ -147,7 +153,7 @@
 			"dataSource": [
 				{
 					"rel": "value",
-					"name": "theValue"
+					"name": "hoverValue"
 				}
 			],
 			"actionsIn": [
@@ -170,15 +176,136 @@
 			"title": "Table V2",
 			"displayWrapper": true,
 			"position": {
-				"left": 40,
+				"left": 39,
 				"top": 0
 			},
 			"size": {
 				"width": 24,
-				"height": 31
+				"height": 30
 			},
 			"configuration": {},
 			"id": 4
+		},
+		{
+			"type": "display_value",
+			"title": "Mouse clicked value",
+			"displayWrapper": true,
+			"position": {
+				"left": 23,
+				"top": 21
+			},
+			"size": {
+				"width": 15,
+				"height": 9
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "",
+				"align": "left",
+				"valign": "top",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"id": 5,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "clickedValue"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "display_value",
+			"title": "Untitled module11",
+			"displayWrapper": true,
+			"position": {
+				"left": 66,
+				"top": 4
+			},
+			"size": {
+				"width": 34,
+				"height": 41
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "",
+				"align": "left",
+				"valign": "top",
+				"defaultvalue": "<h1>Single value module</h1>\n\n<p>Default value can be used to enter text and table</p>\n\n<table border=\"1\" cellpadding=\"1\" cellspacing=\"1\" style=\"width:500px\">\n\t<tbody>\n\t\t<tr>\n\t\t\t<td>1</td>\n\t\t\t<td>2</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>3</td>\n\t\t\t<td>4</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>5</td>\n\t\t\t<td>6</td>\n\t\t</tr>\n\t</tbody>\n</table>\n\n<p> </p>\n",
+				"sprintf": ""
+			},
+			"id": 6,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "postit",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 12,
+				"top": 32
+			},
+			"size": {
+				"width": 33,
+				"height": 19
+			},
+			"configuration": {
+				"text": "<p>Comparison of table V1 and V2 with sorting and searching behaviour.</p><p><br></p>"
+			},
+			"id": 7
 		}
 	],
 	"variables": [
