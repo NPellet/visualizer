@@ -1,5 +1,5 @@
 
-define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'util/datatraversing', 'util/versioning', 'modules/modulefactory'], function($, Repository, Grid, API, Context, Traversing, Versioning, ModuleFactory) {
+define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'util/datatraversing', 'util/versioning', 'modules/modulefactory', 'util/viewmigration'], function($, Repository, Grid, API, Context, Traversing, Versioning, ModuleFactory, Migration) {
 
 	var _viewLoaded, _dataLoaded;
 
@@ -59,9 +59,11 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 
 	function doView(view, reloading) {
 
+		view = Migration(view)
+console.log(view);
 		if(reloading)
 			reloadingView();
-		console.log(window.ViewArray);
+		
 		Grid.init(view.grid, document.getElementById("ci-modules-grid"));
 
 		view.modules = view.modules || new ViewArray();

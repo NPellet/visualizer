@@ -2,10 +2,13 @@
 
 define(['util/versionhandler'], function(VersionHandler) {
 	
+	var version = [2, 1];
 	var dataHandler = new VersionHandler(),
 		viewHandler = new VersionHandler(),
 		view, data;
 
+
+	viewHandler.version = version;
 	dataHandler.setType('data');
 	viewHandler.setType('view');
 
@@ -18,6 +21,10 @@ define(['util/versionhandler'], function(VersionHandler) {
 	};
 				
 	return {
+
+		get version() {
+			return String(version);
+		},
 
 		setView: function(url, branch, defUrl) {
 			viewHandler.load(url, branch, defUrl);
