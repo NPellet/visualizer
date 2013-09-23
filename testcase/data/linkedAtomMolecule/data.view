@@ -1,1 +1,143 @@
-{"entryPoint":{"variables":[{"varname":"atomTypes","sourcename":"atomTypes","jpath":"element"},{"varname":"mols","sourcename":"mols","jpath":""},{"varname":"visualizerLayoutReadURL","jpath":"element.visualizerLayoutReadURL"},{"varname":"visualizerLayoutWriteURL","jpath":"element.visualizerLayoutWriteURL"}]},"modules":[{"type":"grid","title":"Molecules","position":{"left":12,"right":1,"top":0},"size":{"width":33,"height":26},"configuration":{"colsjPaths":{"Molecules":{"jpath":"element.molfile"}},"nbLines":"4","colorjPath":"","displaySearch":false},"bgColor":"","dataSend":[{"event":"onHover","rel":"element","jpath":"element.molfile","name":"aMolfile"}],"dataSource":[{"rel":"list","name":"mols","type":[null]}],"displayWrapper":true},{"type":"grid","title":"Elements","position":{"left":0,"right":1,"top":0},"size":{"width":11,"height":26},"configuration":{"colsjPaths":{"Column":{"jpath":"element.label"}},"nbLines":20,"colorjPath":"","displaySearch":false},"bgColor":"","dataSend":[{"event":"onHover","rel":"element","jpath":"element._highlight","name":"links"}],"dataSource":[{"rel":"list","name":"atomTypes","type":[null]}]},{"type":"mol2d","title":"Molecule display with Hover atom highlight","position":{"left":46.000002002716066,"right":1,"top":0},"size":{"width":29,"height":26},"configuration":{},"bgColor":"","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"mol2d","name":"aMolfile"}],"displayWrapper":true}],"configuration":{"showMenuBarOnStart":false,"showModuleHeaderOnHover":false,"title":"Example of linked information between modules","moduleBackground":"#ffffff","variableFilters":{}},"_local":false,"_saved":1359619638762,"_time":1359619638762}
+{
+	"modules": [
+		{
+			"type": "grid",
+			"title": "Molecules",
+			"position": {
+				"left": 24,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 66,
+				"height": 52
+			},
+			"configuration": {
+				"colsjPaths": {
+					"Molecules": {
+						"jpath": "element.molfile"
+					}
+				},
+				"nbLines": "4",
+				"colorjPath": "",
+				"displaySearch": false
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.molfile",
+					"name": "aMolfile"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "list",
+					"name": "mols",
+					"type": [
+						null
+					]
+				}
+			],
+			"displayWrapper": true,
+			"id": 1
+		},
+		{
+			"type": "grid",
+			"title": "Elements",
+			"position": {
+				"left": 0,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 22,
+				"height": 52
+			},
+			"configuration": {
+				"colsjPaths": {
+					"Column": {
+						"jpath": "element.label"
+					}
+				},
+				"nbLines": 20,
+				"colorjPath": "",
+				"displaySearch": false
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element._highlight",
+					"name": "links"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "list",
+					"name": "atomTypes",
+					"type": [
+						null
+					]
+				}
+			],
+			"id": 2
+		},
+		{
+			"type": "mol2d",
+			"title": "Molecule display with Hover atom highlight",
+			"position": {
+				"left": 92.00000400543213,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 58,
+				"height": 52
+			},
+			"configuration": {},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "mol2d",
+					"name": "aMolfile"
+				}
+			],
+			"displayWrapper": true,
+			"id": 3
+		}
+	],
+	"configuration": {
+		"showMenuBarOnStart": false,
+		"showModuleHeaderOnHover": false,
+		"title": "Example of linked information between modules",
+		"moduleBackground": "#ffffff",
+		"variableFilters": {}
+	},
+	"_local": false,
+	"_saved": 1359619638762,
+	"_time": 1359619638762,
+	"variables": [
+		{
+			"varname": "atomTypes",
+			"jpath": "element.atomTypes",
+			"url": ""
+		},
+		{
+			"varname": "mols",
+			"jpath": "element.mols",
+			"url": ""
+		}
+	],
+	"_version": "2.1"
+}
