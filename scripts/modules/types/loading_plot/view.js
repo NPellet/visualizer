@@ -1,5 +1,7 @@
-define(['modules/defaultview'], function(Default) {
+define(['modules/defaultview', 'util/util', 'libs/loadingplot/libs/jquery.mousewheel.min', 'libs/loadingplot/svg', 'libs/loadingplot/point', , 'libs/loadingplot/springs'], function(Default, Util) {
 	
+	Util.loadCss('libs/loadingplot/svg.css');
+
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
@@ -77,7 +79,7 @@ define(['modules/defaultview'], function(Default) {
 					if(!this._highlights[i][0])
 						continue;
 					
-					CI.RepoHighlight.unListen(this._highlights[i][0], this._highlights[i][1]);
+		//			CI.RepoHighlight.unListen(this._highlights[i][0], this._highlights[i][1]);
 				}
 
 				this._highlights = [];
@@ -160,8 +162,8 @@ define(['modules/defaultview'], function(Default) {
 								el.setLabelScale(layers[i].scalelabel);
 								var fnc = $.proxy(el.highlight, el);
 
-								var id = CI.RepoHighlight.listen(datas[k]._highlight, fnc);
-								this._highlights.push([datas[k]._highlight, id]);
+						//var id = CI.RepoHighlight.listen(datas[k]._highlight, fnc);
+							//	this._highlights.push([datas[k]._highlight, id]);
 
 								el.hoverCallback = function() {
 									self.module.controller.hover(this._data);

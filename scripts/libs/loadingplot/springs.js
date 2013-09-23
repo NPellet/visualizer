@@ -19,6 +19,9 @@ LoadingPlot.SpringLabels.prototype.resolve = function(coords) {
 		var coords = els[0];
 		var labels = els[1];
 
+		if(typeof CI == "undefined")
+			return;
+
 		CI.WebWorker.send('computesprings', {coords: coords, zoom: this.svg._zoom}, function(response) {
 			coords = response.coords;
 
