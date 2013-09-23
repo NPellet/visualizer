@@ -27,10 +27,15 @@ define(['modules/defaultcontroller'], function(Default) {
 				
 			*/
 		},
+
+
+		actions: {
+			rel: {'jsmolscript': 'Script JSMol'}
+		},
 		
 		// Called by view
 		onButtonClick:function(){
-			var obj = {type: 'jsmolscript', value: this.module.getConfiguration().script};
+			var obj = new DataObject({type: 'jsmolscript', value: this.module.getConfiguration().script});
 			this.sendAction('jsmolscript', obj);
 		},
 		

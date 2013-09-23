@@ -2551,7 +2551,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		flip: function(bool) {
-			this.flipped = !bool;
+			this.options.flipped = !bool;
 		},
 
 		_draw0Line: function(px) {

@@ -102,8 +102,8 @@ function(Default, UTIL, DataTraversing) {
 		},
 
 		onActionReceive:  {
-			jsmolscript : function(a){
-				self = this ;
+			jsmolscript : function(a) {
+				self = this;
 				self.module.controller.onJSMolScriptRecieve(a);
 			}
 		},

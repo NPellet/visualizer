@@ -127,8 +127,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				if(cfgM.flipX)
 					self.graph.getXAxis().flip(true);
 
-				if(cfgM.flipY)
-					self.graph.getLeftAxis().flip(true);
+				
+				self.graph.getYAxis().flip(cfgM.flipY);
 
 				self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());		
 				self.onReady.resolve();
