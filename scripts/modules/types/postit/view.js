@@ -1,10 +1,10 @@
-define(['modules/defaultview', 'forms/button', 'util/util', 'main/grid', 'ckeditor'], function(Default, Button, Util, Grid) {
+define(['modules/defaultview', 'forms/button', 'util/util', 'main/grid'], function(Default, Button, Util, Grid) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-			var self = this, cfg = this.module.getConfiguration(), id = Util.getNextUniqueId();
+			var self = this, cfg = this.module.getConfiguration(), id = Util.getNextUniqueId(), done = false, inline;
 			this._id = id;
 
 			this.dom = $('<div />', {  class: 'postit' });
@@ -14,17 +14,25 @@ define(['modules/defaultview', 'forms/button', 'util/util', 'main/grid', 'ckedit
 				Grid.moduleResize(self.module);
 
 				//console.log($(this).html());
-			}).html(cfg.text || 'No text');
+			}).html(cfg.text || 'No text').bind('focus', function() {
+				require(['ckeditor'], function() {
+					if(done)
+						return;
+					CKEDITOR.disableAutoInline = true;
+					CKEDITOR.inline(self._id);
+					done = true;
+				});
+			});
 
 		
 			this.dom.html(this.inside);
 			this.module.getDomContent().html(this.dom);
 
-			CKEDITOR.disableAutoInline = true;
+			
 		},
 
 		inDom: function() {
-			CKEDITOR.inline(this._id);
+			
 		},
 
 		onResize: function() {},		
