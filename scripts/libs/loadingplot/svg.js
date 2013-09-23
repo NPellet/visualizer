@@ -76,8 +76,7 @@ LoadingPlot.SVG.prototype.setSize = function(width, height) {
 
 	this._width = width;
 	this._height = height;
-	console.log(height);
-
+	
 	this._svgEl.setAttribute('width', width + this._px);
 	this._svgEl.setAttribute('height', height + this._px);
 
@@ -297,7 +296,7 @@ LoadingPlot.SVG.prototype.setViewBox = function(force, x1, y1, x2, y2) {
 
 	if(x1 && x2 && y1 && y2)
 		this._viewBox = [x1, y1, x2, y2];
-console.log(this._viewBox);
+
 	if(this.navigation && !force) {
 		
 		this.navRect.setAttribute('x', this._viewBox[0]);
