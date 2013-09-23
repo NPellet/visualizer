@@ -24,6 +24,8 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 			break;
 		}
 
+		view._version = Versioning.version;
+		
 		return view;
 	}
 

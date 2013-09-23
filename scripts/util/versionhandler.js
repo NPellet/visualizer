@@ -34,10 +34,6 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 			this._reviver = rev;
 		},
 
-		set version(v) {
-			this._version = v;
-		},
-
 		getData: function() {
 			var self = this;
 		
@@ -501,8 +497,6 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 			// IF: Already Head => Erase current head, IF: New head: Overwrite head (keep current)
 			obj._time = mode == 'head' ? false : Date.now();
 			obj._saved = Date.now();
-			if(this._version)
-				obj._version = String(this._version);
 
 			this._savedLocal = JSON.stringify(obj);
 
@@ -595,8 +589,6 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 			obj._local = false;
 			obj._saved = Date.now();
 			obj._time = Date.now();
-			if(this._version)
-				obj._version = String(this._version);
 			
 			this._savedServer = JSON.stringify(obj);
 			return $.ajax({
