@@ -180,7 +180,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
 					if(varname == cfgM.plotinfos[i].variable) {
 						serie.options.lineToZero = !cfgM.plotinfos[i].plotcontinuous;
-						serie.setLineColor("rgba(" + (cfgM.plotinfos[i].plotcolor || [0, 0, 0, 1]) + ")");
+						serie.setLineColor(Util.getColor(cfgM.plotinfos[i].plotcolor));
 						serie.setLineWidth(cfgM.plotinfos[i].strokewidth || 1);
 						serie.options.autoPeakPicking = cfgM.plotinfos[i].peakpicking;
 					}	
