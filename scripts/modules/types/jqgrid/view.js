@@ -36,8 +36,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 			this.domSearch.append(searchInput);
 	 			this.domSearch.prepend("<span>Search : </span>");
 	 		}*/
-	 		this.dom.//append(this.domSearch).append(this.domPaging).
-				append(this.domTable);
+	 	//	this.dom.//append(this.domSearch).append(this.domPaging).
+		//		append(this.domTable);
 
 	 		this.module.getDomContent().html(this.dom);
 	 		this._highlights = this._highlights || [];
@@ -48,6 +48,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 	unload: function() {
 	 		this.jqGrid('GridDestroy');
+	 		this.jqGrid = false;
 	 		this.module.getDomContent().empty();
 	 	},
 
@@ -75,13 +76,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 
 			//colModel[colModel.length - 1].width = "*";
-			var nbLines = this.module.getConfiguration().nbLines || 10;	
+			var nbLines = this.module.getConfiguration().nbLines || 10000;	
 
-			if(self.jqGrid) {
-				self.jqGrid('GridDestroy');
-				self.jqGrid = undefined;
-				this.domTable = $("<table />").attr('id', this.unique).appendTo(this.dom);
-			}
+			this.domTable = $("<table />").attr('id', this.unique).appendTo(this.dom);
 
 			$(this.domTable).jqGrid({		 			
 			   	colNames: colNames,
@@ -90,17 +87,18 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	editable: true,
 			   	sortable: true,
 			   	sortname: j,
-			   	
+			   	loadonce: false,
 			   	width: '100%',
 				datatype: "local",
 			   	//forceFit: true,
 			   	autowidth: true,
+			   	gridview: true,
 			   	
 			   	forceFit: true,
 			   	cellsubmit: 'clientArray',
 			   	cellEdit: true,
 			   	rowList: [10,20,30,100],
-			   	pager: '#pager' + this.unique,
+			//   	pager: '#pager' + this.unique,
 			   	rowattr: function() {
 			   		if(arguments[1]._backgroundColor)
 			   			return {'style': 'background-color: ' + arguments[1]._backgroundColor };
@@ -166,11 +164,13 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				this.buildElements(list, elements, jpaths);
 				this.gridElements = elements;
 				this.jqGrid('clearGridData');
+				
 				for(var i = 0; i < elements.length; i++) {
-					this.jqGrid('addRowData', i, elements[i]);
+					this.jqGrid('addRowData', elements[i].id, elements[i]);
 					this.applyFilterToRow(i);
 				}
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
+				//this.jqGrid('sortGrid');
 			}
 		},
 
@@ -187,13 +187,15 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			var element = {};
 			if(!m)
 				this.listenFor(s, jp, i);
+
+			element['id'] = String(i);
 			for(var j in jp) {
 				var jpath = jp[j]; jpath = jpath.jpath || jpath;
 				element[j] = 'Loading';
 				self.done++;
-				element["_" + j] = this.renderElement(element, s, jpath, i, j);
+				element["_" + j] = this.renderElement(element, s, jpath, j);
 			}
-
+			
 			s.getChild(this.module.getConfiguration().colorjPath).done(function(value) {
 				element._backgroundColor = value;
 			});
@@ -212,18 +214,18 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			}, self.module.getId());
 		},
 
-		renderElement: function(element, source, jpath, k, l) {
+		renderElement: function(element, source, jpath, l) {
 			var self = this, box = self.module;
 			return Renderer.toScreen(source, box, {}, jpath).then(function(value) {
 				element[l] = value;
 				self.done--;
-				self.jqGrid('setCell', k, l, value);
+				self.jqGrid('setCell', element.id, l, value);
 				if(self.done == 0)
 					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
 			}, function() {
 				self.done--;
 				source.set(jpath, 'N/A', { mute: true });
-				self.jqGrid('setCell', k, l, 'N/A');
+				self.jqGrid('setCell', element.id, l, 'N/A');
 				self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
 			});
 		},
@@ -242,7 +244,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				var jpaths = this.module.getConfiguration().colsjPaths;
 				var l = this.elements.length - 1;
 				var el = this.buildElement(source, l, jpaths);
-				this.jqGrid('addRowData', l, el);
+				this.jqGrid('addRowData', el.id, el);
 			//	API.setVariable(this.module.getNameFromRel('list'), this.module.data, false, true);
 			},
 

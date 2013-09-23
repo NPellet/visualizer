@@ -1,55 +1,60 @@
 <script src="./scripts/libs/jquery/jquery.js"></script>
+<script src="./scripts/libs/jqueryui/jquery-ui.min.js"></script>
+<script src="./scripts/libs/jqgrid/js/jqgrid.js"></script>
+
+<script src="./scripts/libs/jqgrid/js/i18n/grid.locale-en.js"></script>
+<link href="./scripts/libs/jqueryui/css/aristo/Aristo.css" rel="stylesheet" />
+<link href="./scripts/libs/jqgrid/css/ui.jqgrid.css" rel="stylesheet" />
+<table id="grid"></table>
 
 <script>
 
-MyObj = function(el) {
-    for(var i in el) {
-        this[i] = el[i]   
-    }
-};
-$.extend(MyObj.prototype, Object.prototype);
+    var $el = $("#grid");
+    var colModel = [{ id: 'test', name: 'test', sortable: true }];
+    var colNames = ['Yo'];
 
-var test = new MyObj({
-    hello: new MyObj({   
-        coucou: {
-            type: 'test',
-            url: 'http://test'
+    $el.jqGrid({                   
+        colNames: colNames,
+        colModel: colModel,
+        rowNum: 1000,
+        sortable: true,
+        loadonce: true,
+        datatype: "local",
+        autowidth: true,
+        gridview: true,
+        forceFit: true,
+        rowList: [10,20,30,100],
+    //      pager: '#pager' + this.unique,
+        rowattr: function() {
+        //    if(arguments[1]._backgroundColor)
+          //      return {'style': 'background-color: ' + arguments[1]._backgroundColor };
+        },
+        afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
+            /*if(jpaths[colModel[colNum].name].number)
+                value = parseFloat(value);
+            self.elements[rowId].setChild(colModel[colNum]._jpath, value, { moduleid: self.module.getId() });
+            self.applyFilterToRow(rowId);*/
+        },
+        viewrecords: true,
+        onSelectRow: function(rowid, status) {
+            //rowid--; // ?? Plugin mistake ?
+            /*if(status) {
+                self.module.controller.onToggleOn(self.elements[rowid]);
+            } else {
+                self.module.controller.onToggleOff(self.elements[rowid]);
+            }
+            self.module.controller.lineClick(self.elements[rowid]);*/
         }
-    }),
-    
-    hello2: new MyObj({
-        coucou: new MyObj()
-    })
-});
+    });
+
+var el = {test: 'COUCOU', id: 1};
+$el.jqGrid('addRowData', el.id, el);   
 
 
-function getEl(source, prop) {
 
-	this.deferred = $.Deferred();
-	this.get = function() {
-		el = getEl();
-		this.deferred.done(function(element) {
-			element.get(val);
-		});
-		return el;
-	};
-
-	if(!source[prop].url)
-		this.deferred.resolve(source[prop]);
-	else {
-
-	}
-
-	return this.get();
-}
-
-Object.defineProperty(MyObj.prototype, 'get', {
-    value: function(prop) {
-    	return getEl(this, prop);
-    }
-});
+var el = {test: 'COUCO23U', id: 2};
+$el.jqGrid('addRowData', el.id, el);   
 
 
-console.log(test.get('hello'));
 
 </script>
