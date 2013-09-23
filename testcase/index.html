@@ -1,11 +1,18 @@
-<!DOCTYPE html>
+d<!DOCTYPE html>
 <html>
 <head>
 	<title>Visualizer Demo</title>
 	<link rel="stylesheet" href="../styles/main.css" media="screen, print" />
 	<!-- We call directly from google not to have problems during compression -->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> 
+	
 	<script>
+		var headers=[];
+		headers.push({description:"Empty", name:""});
+		headers.push({description:"Default", name:"default"});
+		headers.push({description:"Test", name:"test"});
+		headers.push({description:"Title only", name:"title"});
+		var currentHeader="default";
 		var examples=[];
 		examples.push({description:"Fibers", folder:"fiber"});
 		examples.push({description:"ChemCalc", folder:"chemcalc"});
@@ -26,10 +33,11 @@
 </head>
 <body>
 	
-	The visualizer page requires 2 parameters:
+	The visualizer page requires 3 parameters:
 	<ul>
 	<li>viewURL: url towards a JSON file describing the elements to display
-	<li>dataURL: url pointing to the JSON contianing the data
+	<li>dataURL: url pointing to the JSON containing the data
+	<li>header: url point to a JSON containing information about the header of the page (optional)
 	
 	
 	<h1>Examples</h1>
@@ -38,23 +46,42 @@
 	
 	Also the examples DO NOT WORK with CHROME. Ajax query on local harddisk are not allowed in the current version of Chrome.
 	
-	Or starts chrome using command line (on MacOsX): open /Applications/Google\ Chrome.app --args -allow-file-access-from-files
+	Or starts chrome using command line (on MacOSx): open /Applications/Google\ Chrome.app --args -allow-file-access-from-files
 
-	
+	Select the header type: <div id="headers"></div>
 	<div id="examples"></div>
 	
 	
 	<script>
-		var size=examples.length;
-		var html=[];
-		
-		for (var i=0; i<size; i++) {
-			var viewURL="./testcase/data/"+examples[i].folder+"/data.view";
-			var dataURL="./testcase/data/"+examples[i].folder+"/data.json";
-			html.push("<a target='_blank' href='../index.html?viewURL="+viewURL+"&dataURL="+dataURL+"'>"+examples[i].description+"</a>");
-			html.push("<br>");
+		function updateHeaders() {
+			var html=[];
+			html.push("<select id='selectedHeader' onchange='updateExamples();'>");
+			for (var i=0; i<headers.length; i++) {
+				var defaultHeader="";
+				if (headers[i].name==currentHeader) defaultHeader="selected";
+				html.push("<option value='"+headers[i].name+"' "+defaultHeader+">"+headers[i].description+"</option>"); 
+			}
+			html.push("</select>");
+			$("#headers").html(html.join(""));
 		}
-		$("#examples").html(html.join(""));
+		updateHeaders();
+	
+		function updateExamples() {
+			var currentHeader=$('#selectedHeader').val();
+		
+		
+			var html=[];
+			for (var i=0; i<examples.length; i++) {
+				var viewURL="./testcase/data/"+examples[i].folder+"/data.view";
+				var dataURL="./testcase/data/"+examples[i].folder+"/data.json";
+				var headerURL="";
+				if (currentHeader) headerURL="./testcase/header/"+currentHeader+".json";
+				html.push("<a target='_blank' href='../index.html?header="+headerURL+"&viewURL="+viewURL+"&dataURL="+dataURL+"'>"+examples[i].description+"</a>");
+				html.push("<br>");
+			}
+			$("#examples").html(html.join(""));
+		}
+		updateExamples();
 	
 	</script>
 		
