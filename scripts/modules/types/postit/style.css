@@ -48,6 +48,17 @@
   box-shadow: 0px 2px 3px rgba(0,0,0,0.25);
   font-family: Post_IT, Arial;
   font-size: 20px;
+
+  background: #f4f39e; /* Old browsers */
+background: -moz-radial-gradient(center, ellipse cover, #f4f39e 0%, #f2f079 100%); /* FF3.6+ */
+background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#f4f39e), color-stop(100%,#f2f079)); /* Chrome,Safari4+ */
+background: -webkit-radial-gradient(center, ellipse cover, #f4f39e 0%,#f2f079 100%); /* Chrome10+,Safari5.1+ */
+background: -o-radial-gradient(center, ellipse cover, #f4f39e 0%,#f2f079 100%); /* Opera 12+ */
+background: -ms-radial-gradient(center, ellipse cover, #f4f39e 0%,#f2f079 100%); /* IE10+ */
+background: radial-gradient(ellipse at center, #f4f39e 0%,#f2f079 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4f39e', endColorstr='#f2f079',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+
        
   margin-top: 20px;
 }
