@@ -1,4 +1,4 @@
-define(['jquery', 'util/Versioning'], function($, Versioning) {
+define(['jquery', 'util/versioning'], function($, Versioning) {
 
 	var migrate = function(view) {
 
@@ -7,8 +7,10 @@ define(['jquery', 'util/Versioning'], function($, Versioning) {
 
 		switch(view._version) {
 			case undefined:
-				view.variables = view.entryPoint.variables;
-				delete view.entryPoint;
+				if(view.entryPoint) {
+					view.variables = view.entryPoint.variables;
+					delete view.entryPoint;
+				}
 			break;
 		}
 
