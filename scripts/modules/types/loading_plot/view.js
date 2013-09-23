@@ -64,7 +64,6 @@ define(['modules/defaultview', 'util/util', 'libs/loadingplot/libs/jquery.mousew
 				if(!viewport)
 					return;
 
-
 				this._svg.setViewBox.apply(this._svg, [false].concat(viewport));
 			},
 
@@ -75,12 +74,12 @@ define(['modules/defaultview', 'util/util', 'libs/loadingplot/libs/jquery.mousew
 					return;
 
 				
-				for(var i = 0; i < this._highlights.length; i++) {
+				/*for(var i = 0; i < this._highlights.length; i++) {
 					if(!this._highlights[i][0])
 						continue;
 					
 		//			CI.RepoHighlight.unListen(this._highlights[i][0], this._highlights[i][1]);
-				}
+				}*/
 
 				this._highlights = [];
 

@@ -54,6 +54,7 @@ LoadingPlot.SVG.prototype.remove = function() {
 LoadingPlot.SVG.prototype.setViewBoxWidth = function(x, y, w, h, force) {
 	this._viewWidth = w;
 	this._viewHeight = h;
+
 	this._viewBox = [x, y, this._viewWidth, this._viewHeight];
 
 	this.zones = [];
@@ -75,6 +76,7 @@ LoadingPlot.SVG.prototype.setSize = function(width, height) {
 
 	this._width = width;
 	this._height = height;
+	console.log(height);
 
 	this._svgEl.setAttribute('width', width + this._px);
 	this._svgEl.setAttribute('height', height + this._px);
@@ -95,12 +97,18 @@ LoadingPlot.SVG.prototype.initZoom = function() {
 	this._izoom = zoom;
 	this._zoomMode = zoom == rY ? 'y' : 'x';
 
+
 	if(this._zoomMode == 'y') {
+		if(!this._width)
+			return;
 		this._viewBox[2] = this._width / rY;
 		this._viewWidth = this._viewBox[2];
 	} else {
+		if(!this._height)
+			return;
 		this._viewBox[3] = this._height / rX;
 		this._viewHeight = this._viewBox[3];
+		
 	}
 
 	this.setViewBox(true);
@@ -289,7 +297,7 @@ LoadingPlot.SVG.prototype.setViewBox = function(force, x1, y1, x2, y2) {
 
 	if(x1 && x2 && y1 && y2)
 		this._viewBox = [x1, y1, x2, y2];
-
+console.log(this._viewBox);
 	if(this.navigation && !force) {
 		
 		this.navRect.setAttribute('x', this._viewBox[0]);
