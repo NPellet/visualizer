@@ -109,5 +109,6 @@
 	"configuration": {
 		"title": "No title"
 	},
-	"title": "J$MOL demonstration"
+	"title": "J$MOL demonstration",
+	"_version": "2.1"
 }

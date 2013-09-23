@@ -9,8 +9,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 51,
-				"height": 47
+				"width": 51.01818182468414,
+				"height": 47.01818182468414
 			},
 			"configuration": {},
 			"id": 1,
@@ -54,8 +54,8 @@
 				"top": 39
 			},
 			"size": {
-				"width": 22,
-				"height": 8
+				"width": 22.01818182468414,
+				"height": 8.018181824684143
 			},
 			"configuration": {
 				"btnvalue": "WIREFRAME 2",
@@ -103,8 +103,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 22,
-				"height": 29
+				"width": 22.01818182468414,
+				"height": 29.01818182468414
 			},
 			"configuration": {
 				"btnvalue": "Execute edited script",
@@ -184,8 +184,8 @@
 				"top": 30
 			},
 			"size": {
-				"width": 22,
-				"height": 8
+				"width": 22.01818182468414,
+				"height": 8.018181824684143
 			},
 			"configuration": {
 				"btnvalue": "WIREFRAME 100",
@@ -240,5 +240,6 @@
 	"configuration": {
 		"title": "JSMol Scripting"
 	},
-	"title": "Scripting JSMol"
+	"title": "Scripting JSMol",
+	"_version": "2.1"
 }
