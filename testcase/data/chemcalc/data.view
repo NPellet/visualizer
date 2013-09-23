@@ -1,1 +1,532 @@
-{"entryPoint":{"variables":[{"varname":"mfRange","jpath":"element.chemcalc.options.mfRange"},{"varname":"minMass","jpath":"element.chemcalc.options.minMass"},{"varname":"maxMass","jpath":"element.chemcalc.options.maxMass"},{"varname":"chemcalcResults","jpath":"element.chemcalc.results"},{"varname":"aJcamp","jpath":"element.aJcamp"},{"varname":"chemcalc","jpath":"element.chemcalc"}]},"modules":[{"type":"grid","title":[[[[[[[[[[[[[["Possible mass"]]]]]]]]]]]]]],"position":{"left":0.95,"right":1,"top":7.95},"size":{"width":31,"height":24},"dataSend":[{"event":"onHover","rel":"element","jpath":"element.jcamp","name":"OneMF"},{"event":"onSelect","rel":"element","jpath":"element.jcamp","name":"SecondMF"}],"dataSource":[{"rel":"list","name":"chemcalcResults","type":[null]}],"configuration":{"colsjPaths":{"MF":{"jpath":"element.mf"},"Monoisotopic mass":{"jpath":"element.em"},"Unsat":{"jpath":"element.unsat"},"Error":{"jpath":"element.error"}},"nbLines":"20","colorjPath":"","displaySearch":false},"bgColor":"#f2e4e4","displayWrapper":true},{"type":"spectra_displayer","title":[[[[["Isotopic distribution"]]]]],"position":{"left":33.00000057220459,"right":1,"top":0},"size":{"width":32,"height":16},"configuration":{"plotcolor":[null]},"dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"jcamp","name":"OneMF","type":[null]}],"bgColor":""},{"type":"display_value","title":[["Molecular formula range"]],"position":{"left":1,"right":1,"top":4},"size":{"width":31,"height":3},"configuration":{"frontcolor":"","font":"arial","fontsize":"18pt","align":"center","valign":"middle","defaultvalue":""},"dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"value","name":"mfRange","type":[null]}],"bgColor":""},{"type":"display_value","title":"maxMass","position":{"left":18,"right":1,"top":0},"size":{"width":14,"height":3},"configuration":{"frontcolor":"","font":"arial","fontsize":"24pt","align":"center","defaultvalue":""},"dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"value","name":"maxMass","type":[null]}],"bgColor":"#daa9c4"},{"type":"display_value","title":["minMass"],"position":{"left":1,"right":1,"top":0},"size":{"width":16,"height":3},"configuration":{"frontcolor":"","font":"arial","fontsize":"24pt","align":"center","valign":"middle","defaultvalue":"","sprintf":""},"dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"value","name":"minMass","type":[null]}],"bgColor":"#f95d5d","displayWrapper":true},{"type":"spectra_displayer","title":["Clicked spectrum"],"position":{"left":1,"right":1,"top":33},"size":{"width":64,"height":14},"configuration":{"plotcolor":[null]},"dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"jcamp","name":"SecondMF","type":[null]}],"bgColor":""},{"type":"spectra_displayer","title":"A jcamp encode in the JSON (Isotopic distribution of C10H10)","position":{"left":33,"right":1,"top":17},"size":{"width":32,"height":15},"configuration":{"plotcolor":[null]},"bgColor":"","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"jcamp","name":"aJcamp","type":[null]}]},{"type":"display_value","title":"Untitled module","displayWrapper":false,"position":{"left":66,"top":0},"size":{"width":17,"height":33},"configuration":{"frontcolor":"","font":"arial","fontsize":"","align":"left","valign":"top","defaultvalue":"This example display possible molecular for a specified monoisotopic mass and is using chemcalc.","sprintf":""},"bgColor":"#fcff99","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"","name":""}]}],"configuration":{"showMenuBarOnStart":false,"showModuleHeaderOnHover":false,"title":"ChemCalc demonstration","moduleBackground":"#ffffff","variableFilters":{}},"_name":"Master","_local":false,"_saved":1359617535702,"_time":1359617535702}
+{
+	"modules": [
+		{
+			"type": "grid",
+			"title": [
+				[
+					[
+						[
+							[
+								[
+									[
+										[
+											[
+												[
+													[
+														[
+															[
+																[
+																	"Possible mass"
+																]
+															]
+														]
+													]
+												]
+											]
+										]
+									]
+								]
+							]
+						]
+					]
+				]
+			],
+			"position": {
+				"left": 1.9,
+				"right": 1,
+				"top": 15.9
+			},
+			"size": {
+				"width": 62,
+				"height": 48
+			},
+			"dataSend": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.jcamp",
+					"name": "OneMF"
+				},
+				{
+					"event": "onSelect",
+					"rel": "element",
+					"jpath": "element.jcamp",
+					"name": "SecondMF"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "list",
+					"name": "chemcalcResults",
+					"type": [
+						null
+					]
+				}
+			],
+			"configuration": {
+				"colsjPaths": {
+					"MF": {
+						"jpath": "element.mf"
+					},
+					"Monoisotopic mass": {
+						"jpath": "element.em"
+					},
+					"Unsat": {
+						"jpath": "element.unsat"
+					},
+					"Error": {
+						"jpath": "element.error"
+					}
+				},
+				"nbLines": "20",
+				"colorjPath": "",
+				"displaySearch": false
+			},
+			"bgColor": "#f2e4e4",
+			"displayWrapper": true,
+			"id": 1
+		},
+		{
+			"type": "spectra_displayer",
+			"title": [
+				[
+					[
+						[
+							[
+								"Isotopic distribution"
+							]
+						]
+					]
+				]
+			],
+			"position": {
+				"left": 66.00000114440918,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 64,
+				"height": 32
+			},
+			"configuration": {
+				"plotcolor": [
+					null
+				],
+				"graphurl": "",
+				"flipX": false,
+				"flipY": false,
+				"xLabel": "",
+				"yLabel": "",
+				"xRightSpacing": "",
+				"xLeftSpacing": "",
+				"yTopSpacing": "",
+				"yBottomSpacing": "",
+				"minX": null,
+				"minY": null,
+				"maxX": null,
+				"maxY": null,
+				"zoom": "",
+				"wheelAction": "none",
+				"shiftxtozero": false,
+				"displayAxis": [
+					"x"
+				],
+				"grids": [],
+				"plotinfos": [
+					{
+						"variable": "OneMF",
+						"plotcolor": [
+							0,
+							0,
+							0,
+							1
+						],
+						"strokewidth": "1",
+						"plotcontinuous": false,
+						"peakpicking": true
+					}
+				]
+			},
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "jcamp",
+					"name": "OneMF"
+				}
+			],
+			"bgColor": "",
+			"id": 2,
+			"displayWrapper": true,
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "display_value",
+			"title": [
+				[
+					"Molecular formula range"
+				]
+			],
+			"position": {
+				"left": 2,
+				"right": 1,
+				"top": 8
+			},
+			"size": {
+				"width": 62,
+				"height": 6
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "18pt",
+				"align": "center",
+				"valign": "middle",
+				"defaultvalue": ""
+			},
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "mfRange",
+					"type": [
+						null
+					]
+				}
+			],
+			"bgColor": "",
+			"id": 3
+		},
+		{
+			"type": "display_value",
+			"title": "maxMass",
+			"position": {
+				"left": 36,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 28,
+				"height": 6
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "24pt",
+				"align": "center",
+				"defaultvalue": ""
+			},
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "maxMass",
+					"type": [
+						null
+					]
+				}
+			],
+			"bgColor": "#daa9c4",
+			"id": 4
+		},
+		{
+			"type": "display_value",
+			"title": [
+				"minMass"
+			],
+			"position": {
+				"left": 2,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 32,
+				"height": 6
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "24pt",
+				"align": "center",
+				"valign": "middle",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "minMass",
+					"type": [
+						null
+					]
+				}
+			],
+			"bgColor": "#f95d5d",
+			"displayWrapper": true,
+			"id": 5
+		},
+		{
+			"type": "spectra_displayer",
+			"title": [
+				"Clicked spectrum"
+			],
+			"position": {
+				"left": 2,
+				"right": 1,
+				"top": 66
+			},
+			"size": {
+				"width": 128,
+				"height": 28
+			},
+			"configuration": {
+				"plotcolor": [
+					null
+				],
+				"graphurl": "",
+				"flipX": false,
+				"flipY": false,
+				"xLabel": "",
+				"yLabel": "",
+				"xRightSpacing": "",
+				"xLeftSpacing": "",
+				"yTopSpacing": "",
+				"yBottomSpacing": "",
+				"minX": null,
+				"minY": null,
+				"maxX": null,
+				"maxY": null,
+				"zoom": "",
+				"wheelAction": "none",
+				"shiftxtozero": false,
+				"displayAxis": [
+					"x"
+				],
+				"grids": [],
+				"plotinfos": [
+					{
+						"variable": "SecondMF",
+						"plotcolor": [
+							0,
+							0,
+							0,
+							1
+						],
+						"strokewidth": "",
+						"plotcontinuous": false,
+						"peakpicking": true
+					}
+				]
+			},
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "jcamp",
+					"name": "SecondMF"
+				}
+			],
+			"bgColor": "",
+			"id": 6,
+			"displayWrapper": true,
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "A jcamp encode in the JSON (Isotopic distribution of C10H10)",
+			"position": {
+				"left": 66,
+				"right": 1,
+				"top": 34
+			},
+			"size": {
+				"width": 64,
+				"height": 30
+			},
+			"configuration": {
+				"plotcolor": [
+					null
+				],
+				"graphurl": "",
+				"flipX": false,
+				"flipY": false,
+				"xLabel": "",
+				"yLabel": "",
+				"xRightSpacing": "",
+				"xLeftSpacing": "",
+				"yTopSpacing": "",
+				"yBottomSpacing": "",
+				"minX": null,
+				"minY": null,
+				"maxX": null,
+				"maxY": null,
+				"zoom": "",
+				"wheelAction": "none",
+				"shiftxtozero": false,
+				"displayAxis": [
+					"x"
+				],
+				"grids": [],
+				"plotinfos": [
+					{
+						"variable": "aJcamp",
+						"plotcolor": [
+							0,
+							0,
+							0,
+							1
+						],
+						"strokewidth": "",
+						"plotcontinuous": false,
+						"peakpicking": true
+					}
+				]
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "jcamp",
+					"name": "aJcamp"
+				}
+			],
+			"id": 7,
+			"displayWrapper": true,
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "postit",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 131,
+				"top": 3
+			},
+			"size": {
+				"width": 37,
+				"height": 15
+			},
+			"configuration": {
+				"text": "<p>This example display possible molecular for a specified monoisotopic mass and is using chemcalc.</p>"
+			},
+			"id": 9
+		}
+	],
+	"configuration": {
+		"showMenuBarOnStart": false,
+		"showModuleHeaderOnHover": false,
+		"title": "ChemCalc demonstration",
+		"moduleBackground": "#ffffff",
+		"variableFilters": {}
+	},
+	"_name": "Master",
+	"_local": false,
+	"_saved": 1359617535702,
+	"_time": 1359617535702,
+	"variables": [
+		{
+			"varname": "mfRange",
+			"jpath": "element.chemcalc.options.mfRange"
+		},
+		{
+			"varname": "minMass",
+			"jpath": "element.chemcalc.options.minMass"
+		},
+		{
+			"varname": "maxMass",
+			"jpath": "element.chemcalc.options.maxMass"
+		},
+		{
+			"varname": "chemcalcResults",
+			"jpath": "element.chemcalc.results"
+		},
+		{
+			"varname": "aJcamp",
+			"jpath": "element.aJcamp"
+		},
+		{
+			"varname": "chemcalc",
+			"jpath": "element.chemcalc"
+		}
+	]
+}
