@@ -61,7 +61,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 
 		if(reloading)
 			reloadingView();
-		
+		console.log(window.ViewArray);
 		Grid.init(view.grid, document.getElementById("ci-modules-grid"));
 
 		view.modules = view.modules || new ViewArray();

@@ -72,11 +72,12 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	$.extend(DataObject.prototype, Object.prototype);
 
 	
-	function ViewArray(arr, deep) { 
+	ViewArray = function(arr, deep) { 
+	  arr = arr || [];
 	  if(deep)
 	  	for(var i = 0, l = arr.length; i < l; i++)
 	  		arr[i] = ViewObject.check(arr[i], deep);
-	  arr.__proto__ = DataArray.prototype;
+	  arr.__proto__ = ViewArray.prototype;
 	  return arr;
 	}
 	ViewArray.prototype = new Array;
@@ -86,6 +87,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	
 
 	function DataArray(arr, deep) { 
+	  arr = arr || [];
 	  if(deep)
 	  	for(var i = 0, l = arr.length; i < l; i++)
 	  		arr[i] = DataObject.check(arr[i], deep);
@@ -97,6 +99,8 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	  return this[this.length - 1];
 	};
 	
+	window.ViewArray = ViewArray;
+	window.DataArray = DataArray;
 
 
 
@@ -342,6 +346,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 			var args = url[i].split('=');
 			urls[args[0]] = unescape(args[1]);
 		}
+
 
 		var entryPoint = EntryPoint.init(urls);
 
