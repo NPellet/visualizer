@@ -8,7 +8,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 		},
 
 		onDropped: function(obj) {
-			
+
 			this.setVarFromEvent('onDropped', obj);
 		},
 
@@ -56,6 +56,12 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 								type: 'Text',
 								name: 'vartype',
 								title: 'Variable type (optional)'
+							},
+
+							{
+								type: 'Text',
+								name: 'label',
+								title: 'Displayed text'
 							}
 						]
 					}
@@ -71,7 +77,8 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 			return {	
 				groups: {
 					gencfg: [{
-						vartype: [cfg.vartype]
+						vartype: [cfg.vartype],
+						label: [cfg.label]
 					}]
 				}
 			}
@@ -79,6 +86,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 		
 		doSaveConfiguration: function(confSection) {
 			this.module.getConfiguration().vartype = confSection[0].gencfg[0].vartype[0];
+			this.module.getConfiguration().label = confSection[0].gencfg[0].label[0];
 		},
 
 		onVarReceiveChange: function(name, rel, confSection) {
