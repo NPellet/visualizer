@@ -183,8 +183,55 @@
 				"width": 24,
 				"height": 30
 			},
-			"configuration": {},
-			"id": 4
+			"configuration": {
+				"colsjPaths": {
+					"id": {
+						"jpath": "element.id",
+						"number": false,
+						"editable": false
+					},
+					"value": {
+						"jpath": "element.theValue",
+						"number": false,
+						"editable": false
+					}
+				},
+				"nbLines": 20,
+				"toggle": "",
+				"colorjPath": "",
+				"displaySearch": false,
+				"filterRow": ""
+			},
+			"id": 4,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "list",
+					"name": "results"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
 		},
 		{
 			"type": "display_value",
@@ -323,5 +370,6 @@
 	"configuration": {
 		"title": "No title"
 	},
-	"title": "Simple module demonstration"
+	"title": "Simple module demonstration",
+	"_version": "2.1"
 }

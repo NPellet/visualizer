@@ -30,7 +30,7 @@
 					"event": "onSelect",
 					"rel": "element",
 					"jpath": "element.pdb",
-					"name": "pdb"
+					"name": "pdbSelected"
 				}
 			],
 			"dataSource": [
@@ -80,7 +80,7 @@
 			"dataSource": [
 				{
 					"rel": "data",
-					"name": "pdb"
+					"name": "pdbSelected"
 				}
 			],
 			"actionsIn": [
