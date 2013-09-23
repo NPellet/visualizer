@@ -377,6 +377,7 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 
 		addModule: addModule,
 		addModuleFromJSON: addModuleFromJSON,
-		checkDimensions: checkDimensions
+		checkDimensions: checkDimensions,
+		moduleResize: moduleResize
 	}
 });
