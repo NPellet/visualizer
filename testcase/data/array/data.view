@@ -1,1 +1,200 @@
-{"_name":"Master","_time":1375084553986,"_saved":1375084553986,"_local":false,"modules":[{"type":"display_value","title":"Untitled module","displayWrapper":true,"position":{"left":23,"top":0},"size":{"width":10.019999998807908,"height":5.019999998807907},"configuration":{"frontcolor":"","font":"arial","fontsize":"18pt","align":"center","valign":"middle","defaultvalue":"","sprintf":""},"id":1,"bgColor":"","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"value","name":"myFirstValue"}],"actionsIn":[{"rel":"","name":""}],"actionsOut":[{"event":"","rel":"","jpath":"","name":""}]},{"type":"grid","title":"Untitled module","displayWrapper":true,"position":{"left":0,"top":0},"size":{"width":22.019999998807908,"height":31.019999998807908},"configuration":{"colsjPaths":{"valeur":{"jpath":"element.theValue"},"id":{"jpath":"element.id"}},"nbLines":20,"toggle":"","colorjPath":"","displaySearch":true},"id":2,"bgColor":"","dataSend":[{"event":"onHover","rel":"element","jpath":"element.theValue","name":"theValue"}],"dataSource":[{"rel":"list","name":"results"}],"actionsIn":[{"rel":"","name":""}],"actionsOut":[{"event":"","rel":"","jpath":"","name":""}]},{"type":"display_value","title":"Untitled module","displayWrapper":true,"position":{"left":25,"top":9},"size":{"width":9.019999998807908,"height":6.019999998807907},"configuration":{"frontcolor":"","font":"arial","fontsize":"14pt","align":"center","valign":"middle","defaultvalue":"","sprintf":""},"id":3,"bgColor":"","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"value","name":"theValue"}],"actionsIn":[{"rel":"","name":""}],"actionsOut":[{"event":"","rel":"","jpath":"","name":""}]}],"variables":[{"varname":"results","jpath":"element.results","url":""},{"varname":"myFirstValue","jpath":"element.results.0.theValue","url":""}],"configuration":{"title":"No title"}} 
+{
+	"_name": "Master",
+	"_time": 1375084553986,
+	"_saved": 1375084553986,
+	"_local": false,
+	"modules": [
+		{
+			"type": "display_value",
+			"title": "A single value",
+			"displayWrapper": true,
+			"position": {
+				"left": 23,
+				"top": 0
+			},
+			"size": {
+				"width": 15,
+				"height": 10
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "18pt",
+				"align": "center",
+				"valign": "middle",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"id": 1,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "myFirstValue"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "grid",
+			"title": "Simple table V1",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 22,
+				"height": 31
+			},
+			"configuration": {
+				"colsjPaths": {
+					"valeur": {
+						"jpath": "element.theValue"
+					},
+					"id": {
+						"jpath": "element.id"
+					}
+				},
+				"nbLines": 20,
+				"toggle": "",
+				"colorjPath": "",
+				"displaySearch": true
+			},
+			"id": 2,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.theValue",
+					"name": "theValue"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "list",
+					"name": "results"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "display_value",
+			"title": "Mouse over value",
+			"displayWrapper": true,
+			"position": {
+				"left": 23,
+				"top": 11
+			},
+			"size": {
+				"width": 15,
+				"height": 9
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "14pt",
+				"align": "center",
+				"valign": "middle",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"id": 3,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "theValue"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "jqgrid",
+			"title": "Table V2",
+			"displayWrapper": true,
+			"position": {
+				"left": 40,
+				"top": 0
+			},
+			"size": {
+				"width": 24,
+				"height": 31
+			},
+			"configuration": {},
+			"id": 4
+		}
+	],
+	"variables": [
+		{
+			"varname": "results",
+			"jpath": "element.results",
+			"url": ""
+		},
+		{
+			"varname": "myFirstValue",
+			"jpath": "element.results.0.theValue",
+			"url": ""
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"title": "Simple module demonstration"
+}
