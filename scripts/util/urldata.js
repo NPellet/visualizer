@@ -56,6 +56,7 @@ define(['jquery', 'util/lru', 'util/debug'], function($, LRU, Debug) {
 			}
 
 			Debug.log('DataURL: URL is under timeout threshold. Return cached version');
+			
 			def.resolve(data.data || data); 
 		}, function() {
 

@@ -46,7 +46,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	};
 
 	ViewObject.check = function(el, check) {
-		if(Array.isArray(el))
+		if(el instanceof Array)
 			return new ViewArray(el, check);
 		else if(el === null)
 			return null;
@@ -58,7 +58,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 
 	DataObject.check = function(el, check) {
-		if(Array.isArray(el))
+		if(el instanceof Array)
 			return new DataArray(el, check);
 		else if(el === null)
 			return null;
@@ -87,6 +87,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	
 
 	function DataArray(arr, deep) { 
+		
 	  arr = arr || [];
 	  if(deep)
 	  	for(var i = 0, l = arr.length; i < l; i++)
@@ -115,7 +116,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 			console.log('View has changed');
 
 			if(check) {
-				if(Array.isArray(l))
+				if(l instanceof Array)
 					l = new ViewArray(l, true);
 				else if(typeof l == 'object')
 					l = new ViewObject(l, true);
@@ -273,9 +274,9 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 			if(this.url && this.type) {
 				var type = this.getType();
 				require(['util/urldata'], function(urlData) {
+
 					urlData.get(self.url, false, self.timeout).then(function(data) {
-						
-						if(Array.isArray(data))
+						if(data instanceof Array)
 							data = new DataArray(data, true);
 						else if(typeof data == "object")
 							data = new DataObject(data, true);
