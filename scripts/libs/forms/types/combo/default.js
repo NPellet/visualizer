@@ -140,7 +140,6 @@ define(['forms/fielddefault', 'libs/dynatree/dynatree'], function(Default) {
 
 		checkFillState: function(index) {
 
-
 			var options = (!index) ? this.options : (this.optionsIndexed[index] || []);
 			if(!index)
 				index = Object.keys(this.main.fields);
@@ -148,9 +147,7 @@ define(['forms/fielddefault', 'libs/dynatree/dynatree'], function(Default) {
 				index = [index];
 			
 			for(var i = 0, l = index.length; i < l; i++) {
-				
-				var element = this.lookRecursively(this.main.getValue(index[i]), options);
-
+				var element = this.lookRecursively(this.main.getValue(index[i]), this.optionsIndexed[index[i]] || this.options);
 				if(element) {
 					this.setText(index[i], element.title);
 					var show = ((element.data && element.data.show) || '').split(' ');
