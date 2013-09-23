@@ -7,7 +7,7 @@ define(['modules/module'], function(Module) {
 		getTypes: function() {
 			return {
 				'display_value': 'Single value',
-				'postit': 'postit',
+				'postit': 'Sticky note',
 				'grid': 'Table',
 				'jqgrid': 'Table v2',
 				'2d_list': '2D Grid',
@@ -15,6 +15,7 @@ define(['modules/module'], function(Module) {
 				'recursive_tree': 'Recursive tree',
 				'iframe': 'iFrame',
 // Interactive modules	
+				'dragdrop': 'Drag and Drop file',
 				'button_url': 'Button URL',
 				'button_action': 'Button to action',
 				'webservice_button': 'Webservice button',

@@ -60,7 +60,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 	function doView(view, reloading) {
 
 		view = Migration(view)
-console.log(view);
+
 		if(reloading)
 			reloadingView();
 		
