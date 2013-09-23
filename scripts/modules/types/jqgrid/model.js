@@ -12,7 +12,7 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 			switch(rel) {
 				default:
 				case 'element': // Wants to get the row ?
-					data = (temporary && temporary['list']) ? temporary['list'] : (this.module.data || []);
+					data = (temporary && temporary['list']) ? temporary['list'] : (this.module.data || new DataArray());
 					data = data.get(0)[0];
 				break;
 			}
