@@ -6,7 +6,7 @@ define(['modules/defaultview', 'util/util', 'util/Versioning'], function(Default
 		init: function() {	
 			var self = this, cfg = this.module.getConfiguration(), id = Util.getNextUniqueId(), done = false, inline;
 			this._id = id;
-			this.dom = $('<div />', {  class: 'dragdropzone' });
+			this.dom = $('<div />', {  class: 'dragdropzone' }).html('Drop your file here');
 			this.module.getDomContent().html(this.dom);
 		},
 
