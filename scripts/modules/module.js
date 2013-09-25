@@ -659,7 +659,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		getSize: function() {
 			
 			if(!this.definition.size)
-				this.definition.size = { width: 20, height: 20};
+				this.definition.size = new ViewObject({ width: 20, height: 20});
 				
 			return this.definition.size;
 		},

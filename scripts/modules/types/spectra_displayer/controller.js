@@ -8,7 +8,17 @@ define(['modules/defaultcontroller'], function(Default) {
 			var obj = {type: 'fromTo', value: {from: min, to: max}};
 			this.sendAction('fromto', obj);
 		},
-		
+
+		onMouseOverMarker: function(xy, infos) {
+			this.setVarFromEvent('onMouseOverMarker', infos, 'markerInfos');
+			this.setVarFromEvent('onMouseOverMarker', xy, 'markerXY');
+		},
+
+		onMouseOutMarker: function(xy, infos) {
+			this.setVarFromEvent('onMouseOutMarker', infos, 'markerInfos');
+			this.setVarFromEvent('onMouseOutMarker', xy, 'markerXY');
+		},
+
 		configurationSend: {
 			
 			events: {
@@ -25,11 +35,23 @@ define(['modules/defaultcontroller'], function(Default) {
 				onAnnotationAdd: {
 					label: 'Annotation added',
 					description: ''
+				},
+
+				onMouseOverMarker: {
+					label: 'Mouse over a marker',
+					description: ''
+				},
+
+				onMouseOutMarker: {
+					label: 'Mouse out of a marker',
+					description: ''
 				}
 			},
 			
 			rels: {
-				'x' : 'X position'
+				'x' : { label: 'X position' },
+				'markerInfos' : { label: 'Marker infos' },
+				'markerXY' : { label: 'Marker [x,y]' }
 			}
 		},
 		
@@ -269,6 +291,14 @@ define(['modules/defaultcontroller'], function(Default) {
 								name: 'peakpicking',
 								title: 'Peak Picking',
 								options: {'picking': 'Peak Picking'}
+							},
+
+
+							{
+								type: 'Checkbox',
+								name: 'markers',
+								title: 'Markers',
+								options: {'markers': 'Show markers'}
 							}
 						]
 					}
@@ -289,7 +319,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			if(this.module.getConfiguration().flipY)
 				flipArray.push('flipY');
 		
-			var spectrainfos = { 'variable': [], 'plotcolor': [], 'plotcontinuous': [], strokewidth: [], peakpicking: [] };
+			var spectrainfos = { 'variable': [], 'plotcolor': [], 'plotcontinuous': [], strokewidth: [], peakpicking: [], markers: [] };
 
 			var infos = this.module.getConfiguration().plotinfos || [];
 			for(var i = 0, l = infos.length; i < l; i++) {
@@ -299,7 +329,9 @@ define(['modules/defaultcontroller'], function(Default) {
 				spectrainfos.strokewidth.push(infos[i].strokewidth);
 				spectrainfos.plotcontinuous.push([infos[i].plotcontinuous ? 'continuous' : null]);
 				spectrainfos.peakpicking.push([infos[i].peakpicking ? 'picking' : null]);
+				spectrainfos.markers.push([infos[i].markers ? 'markers' : null]);
 			}
+
 
 			return {
 				groups: {
@@ -377,6 +409,10 @@ define(['modules/defaultcontroller'], function(Default) {
 				confSection[0].
 					spectrainfos[0][i].
 					peakpicking = !!confSection[0].spectrainfos[0][i].peakpicking[0];
+
+				confSection[0].
+					spectrainfos[0][i].
+					markers = !!confSection[0].spectrainfos[0][i].markers[0];
 			}
 				
 			this.module.getConfiguration().plotinfos = confSection[0].spectrainfos[0];

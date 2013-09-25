@@ -1,3 +1,5 @@
 .DS_Store
 
 scripts/libs/.DS_Store
+
+scripts/modules/types/plot/view.js

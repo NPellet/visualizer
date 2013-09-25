@@ -161,6 +161,20 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 								type: 'Text',
 								name: 'defaultvalue',
 								title: 'Default value'
+							},
+
+
+							{
+								type: 'Combo',
+								name: 'fieldtype',
+								title: 'Field type',
+								options: [{ key: 'text', title: 'Text'}, { key: 'combo', title: 'Combo'}, { key: 'checkbox', title: 'Checkbox'}]
+							},
+
+							{
+								type: 'Text',
+								name: 'fieldoptions',
+								title: 'Field options (a:b;)'
 							}
 
 						]
@@ -209,14 +223,19 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			var names = [];
 			var labels = [],
 				postvariables = [],
-				postnames = [];
+				postnames = [],
+				fieldtype = [],
+				fieldoptions = [];
 				
 			var defaultvalue = [];
 			for(var i in searchparams) {
 				names.push(i);
 				labels.push(searchparams[i].label);
 				defaultvalue.push(searchparams[i].defaultvalue || '');
+				fieldtype.push(searchparams[i].fieldtype || 'text');
+				fieldoptions.push(searchparams[i].fieldoptions || '');
 			}
+
 
 			var _postvariables = this.module.getConfiguration().postvariables || [];
 			for(var i = 0, l = _postvariables.length; i < l; i++) {
@@ -237,7 +256,9 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 					searchparams: [{
 						name: names,
 						label: labels,
-						defaultvalue: defaultvalue 
+						defaultvalue: defaultvalue,
+						fieldtype: fieldtype,
+						fieldoptions: fieldoptions 
 					}]
 				},
 
@@ -258,7 +279,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			var group = confSection[0].searchparams[0];
 			var searchparams = {};
 			for(var i = 0; i < group.length; i++)
-				searchparams[group[i].name] = {label: group[i].label, defaultvalue: group[i].defaultvalue};
+				searchparams[group[i].name] = {label: group[i].label, defaultvalue: group[i].defaultvalue, fieldtype: group[i].fieldtype, fieldoptions: group[i].fieldoptions };
 
 			var group = confSection[0].sendvariables[0].sendvariables[0];
 			var postvariables = [];

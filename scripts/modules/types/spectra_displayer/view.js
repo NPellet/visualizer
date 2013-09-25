@@ -175,17 +175,40 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		},
 
 		setSerieParameters: function(serie, varname) {
-			var cfgM = this.module.getConfiguration();
-			if(cfgM.plotinfos) {
-				for(var i = 0, l = cfgM.plotinfos.length; i < l; i++) {
-					if(varname == cfgM.plotinfos[i].variable) {
+			var self = this,
+				cfgM = this.module.getConfiguration();
+
+			if( cfgM.plotinfos ) {
+
+				for ( var i = 0, l = cfgM.plotinfos.length ; i < l ; i++ ) {
+
+					if( varname == cfgM.plotinfos[i].variable ) {
+
 						serie.options.lineToZero = !cfgM.plotinfos[i].plotcontinuous;
 						serie.setLineColor(Util.getColor(cfgM.plotinfos[i].plotcolor));
 						serie.setLineWidth(cfgM.plotinfos[i].strokewidth || 1);
 						serie.options.autoPeakPicking = cfgM.plotinfos[i].peakpicking;
+
+						if( cfgM.plotinfos[i].markers ) {
+
+							serie.showMarkers();
+							serie.setMarkerType(1);
+							serie.setMarkerZoom(2);
+
+							serie.setMarkerStrokeColor(Util.getColor(cfgM.plotinfos[i].plotcolor));
+							serie.setMarkerFillColor(Util.getColor(cfgM.plotinfos[i].plotcolor));
+
+						}
 					}	
 				}
-			}	
+			}
+
+			serie.options.onMouseOverMarker = function(index, infos, xy) {
+				self.module.controller.onMouseOverMarker(xy, infos);
+			};
+			serie.options.onMouseOutMarker = function(index, infos, xy) {
+				self.module.controller.onMouseOutMarker(xy, infos);
+			};
 		},
 
 		update: { 
@@ -205,26 +228,39 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 			xyArray: function(moduleValue, varname) {
 
-				var cfgM = this.module.getConfiguration(), val, val2;
+				var cfgM = this.module.getConfiguration();
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie(varname);
 				this.series[varname] = [];	
 	 
 				if(!moduleValue)
 					return;
+
+				var val = moduleValue.get(), valFinal;
+
+				if(val.y) {
+					for(var i = 0, l = val.y.length; i < l; i++) {
+						valFinal.push(val.x ? val.x[i] : i);
+						valFinal.push(val.y[i]);
+					}
+					val = valFinal;
+				}
 				
-				val = DataTraversing.getValueIfNeeded(moduleValue),
-				serie = this.graph.newSerie(varname, {trackMouse: true});
+				var serie = this.graph.newSerie(varname, {trackMouse: true});
 				this.setSerieParameters(serie, varname);
 				serie.setData(val);
+				if(val.info)
+					serie.setInfos(val.info);
 				serie.autoAxis();
-				
 				this.series[varname].push(serie);
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 			},
 
-			'xArray': function(moduleValue, varname) {
-				var cfgM = this.module.getConfiguration(), color, continuour, val, val2;
+			xArray: function(moduleValue, varname) {
+				var self = this,
+					cfgM = this.module.getConfiguration(), 
+					val, 
+					val2;
 				
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie(varname);
@@ -233,7 +269,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				if(!moduleValue)
 					return;
 				
-
 				val = DataTraversing.getValueIfNeeded(moduleValue),
 				val2 = [];
 
@@ -244,6 +279,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
 				this.setSerieParameters(serie, varname);
+
+
+				if(val.infos)
+					serie.setInfos(infos);
+
 
 				serie.setData(val2);
 				serie.autoAxis();
@@ -256,6 +296,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				value = DataTraversing.getValueIfNeeded(value);
 				if(!value)
 					return;
+
 				this.annotations = value;
 				this.resetAnnotations(true);
 			},
@@ -314,6 +355,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 						break;
 					}
 				}
+
+
+				serie.setInfos(["test1", "test2", "test3"]);
 
 				this.setSerieParameters(serie, varname);
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());

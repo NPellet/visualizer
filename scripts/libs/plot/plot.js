@@ -1050,11 +1050,20 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(annotation.strokeWidth)	shape.set('strokeWidth', annotation.strokeWidth || (annotation.strokeColor ? 1 : 0));
 
 			if(annotation.label) {
-				//shape.set('labelText', annotation.label.text);
-				shape.set('labelPosition', annotation.label.position);
-				shape.set('labelSize', annotation.label.size);
-				if(annotation.label.anchor)
-					shape.set('labelAnchor', annotation.label.anchor);
+
+				if ( ! ( annotation.label instanceof Array ) ) {
+					annotation.label = [ annotation.label ];
+				}
+
+				for ( var i = 0, l = annotation.label.length ; i < l ; i++) {
+
+					shape.set('labelPosition', annotation.label[i].position, i);
+					shape.set('labelSize', annotation.label[i].size, i);
+					if(annotation.label[i].anchor)
+						shape.set('labelAnchor', annotation.label[i].anchor, i);
+				}
+
+				shape.setLabelNumber(l);
 			}
 
 			switch(annotation.type) {
@@ -2626,6 +2635,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		init: function(graph, name, options) {
 
+			var self = this;
 			this.graph = graph;
 			this.name = name;
 			this.id = Math.random() + Date.now();
@@ -2636,8 +2646,27 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.groupLines = document.createElementNS(this.graph.ns, 'g');
 			this.domMarker = document.createElementNS(this.graph.ns, 'path');
+			this.domMarker.style.cursor = 'pointer';
+
 			this.groupMain = document.createElementNS(this.graph.ns, 'g');
 			
+
+			this.domMarker.addEventListener('mouseover', function(e) {
+				var closest = self._getMarkerIndexFromEvent(e);
+				self.onMouseOverMarker(e, closest);
+			});
+
+
+			this.domMarker.addEventListener('mouseout', function(e) {
+				var closest = self._getMarkerIndexFromEvent(e);
+				self.onMouseOutMarker(e, closest);
+			});
+
+
+			this.domMarker.addEventListener('click', function(e) {
+				var closest = self._getMarkerIndexFromEvent(e);
+				self.onClickOnMarker(e, closest);
+			});
 
 			this.marker = document.createElementNS(this.graph.ns, 'circle');
 			this.marker.setAttribute('fill', 'black');
@@ -2647,7 +2676,10 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.markerLabel = document.createElementNS(this.graph.ns, 'text');
 			this.markerLabelSquare = document.createElementNS(this.graph.ns, 'rect');
 			this.markerLabelSquare.setAttribute('fill', 'white');
-
+			this.domMarkerHover = {};
+			this.domMarkerSelect = {};
+			this.markerHovered = 0;
+			this.groupMarkerSelected = document.createElementNS(this.graph.ns, 'g');
 
 			this.groupLabels = document.createElementNS(this.graph.ns, 'g');
 			//this.scale = 1;
@@ -2665,6 +2697,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.groupMain.appendChild(this.groupLabels);
 			this.groupMain.appendChild(this.marker);
 			this.groupMain.appendChild(this.domMarker);
+			this.groupMain.appendChild(this.groupMarkerSelected);
 			this.groupMain.appendChild(this.markerLabelSquare);
 			this.groupMain.appendChild(this.markerLabel);
 
@@ -2806,8 +2839,99 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.graph.series.splice(this.graph.series.indexOf(this), 1);
 			if(!noRedraw)
 				this.graph.redraw();
-			// Remove serie
+		},
+
+		onMouseOverMarker: function(e, index) {
+			var toggledOn = this.toggleMarker(index, true, true);
+			if(this.options.onMouseOverMarker) {
+				this.options.onMouseOverMarker(index, this.infos[index[0]] || false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
+			}
+		},
+
+
+		onMouseOutMarker: function(e, index) {
+			this.markersOffHover();
+			if(this.options.onMouseOutMarker) {
+				this.options.onMouseOutMarker(index, this.infos[index[0]] || false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
+			}
+		},
+
+		toggleMarker: function(index, force, hover) {
+			var i = index[0],
+				k = index[1] || 0;
+
+			index = index.join();
+
+			var _on = !hover ? !this.domMarkerSelect[index] : !this.domMarkerHover[index];
+			var el = this['domMarker' + (hover ? 'Hover' : 'Select')];
 			
+			if(_on || (force === true && force !== false)) {
+
+				if(!el[index]) {
+
+					var dom = document.createElementNS(this.graph.ns, 'path');
+					this.setMarkerStyleTo(dom, true);
+
+					var x = this.getX(this.data[k][i * 2]);
+					var y = this.getY(this.data[k][i * 2 + 1]);
+
+					dom.setAttribute('d', "M " + x + " " + y + " " + this.getMarkerPath(this.options.markers.zoom + 1).join(" "));
+
+					this['domMarker' + (hover ? 'Hover' : 'Select')][index] = dom;
+					this.groupMarkerSelected.appendChild(dom);
+					
+					if(hover)
+						this.markerHovered++;
+				}
+
+			} else if(force === false || !_on) {
+
+				if((hover && this.domMarkerHover[index] && !this.domMarkerSelect[index]) || this.domMarkerSelect[index]) {
+					
+					if(!el[index])
+						return;
+					this.groupMarkerSelected.removeChild(el[index]);
+					delete el[index];
+
+					if(hover)
+						this.markerHovered--;
+				}
+
+			}
+
+			return _on;
+		},
+
+		markersOffHover: function() {
+
+			for(var i in this.domMarkerHover) {
+				this.toggleMarker(i.split(','), false, true);
+			}
+		},
+
+		onClickOnMarker: function(e, index) {
+			
+			var toggledOn = this.toggleMarker(index);
+
+			if(toggledOn && this.options.onSelectMarker)
+				this.options.onSelectMarker(index, this.infos[index[0]] || false);
+
+			if(!toggledOn && this.options.onUnselectMarker)
+				this.options.onUnselectMarker(index, this.infos[index[0]] || false);
+
+			if(this.options.onToggleMarker)
+				this.options.onToggleMarker(index, this.infos[index[0]] || false, toggledOn);
+		},
+
+
+		_getMarkerIndexFromEvent: function(e) {
+			var px = this.graph.getXY(e);
+			return this.searchIndexByPxXY((px.x - this.graph.getPaddingLeft()), (px.y - this.graph.getPaddingTop()));
+
+		},
+
+		setInfos: function(infos) {
+			this.infos = infos;
 		},
 
 		handleMouseWheel: function() {},
@@ -2883,7 +3007,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			
 			this.markerPath = '';
-			this._markerPath = this.getMarkerPath();
+			this._markerPath = this.getMarkerPath().join(' ');
 			
 			var incrXFlip = 0;
 			var incrYFlip = 1;
@@ -2963,9 +3087,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.lines.splice(i, 1);
 			}
 
-			this.domMarker.setAttribute('fill', this.options.markers.fillColor || 'transparent');
-			this.domMarker.setAttribute('stroke', this.options.markers.strokeColor || this.getLineColor());
-			this.domMarker.setAttribute('stroke-width', this.options.markers.strokeWidth);
+			this.setMarkerStyleTo(this.domMarker);
 			this.domMarker.setAttribute('d', this.markerPath || 'M 0 0');
 
 			//this.groupMain.appendChild(this.groupLines);
@@ -2976,6 +3098,13 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.repositionLabel(this.labels[i]);
 		},
 
+		setMarkerStyleTo: function(dom, noFill) {
+			
+			dom.setAttribute('fill', !noFill ? (this.options.markers.fillColor || 'transparent') : 'transparent');
+			dom.setAttribute('stroke', this.options.markers.strokeColor || this.getLineColor());
+			dom.setAttribute('stroke-width', this.options.markers.strokeWidth);
+		},
+
 		makePeakPicking: function(allY) {
 			
 			var x,
@@ -2984,7 +3113,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				px,
 				i = 0,
 				l = allY.length,
-				k, m;
+				k, m, y;
 			
 			allY.sort(function(a, b) {
 				return b[0] - a[0];
@@ -2994,7 +3123,14 @@ define(['jquery', 'util/util'], function($, Util) {
 
 				x = allY[i][1],
 				px = this.getX(x),
-				k = 0, m = passed.length;
+				k = 0, m = passed.length,
+				y = this.getY(allY[i][0]);
+
+				if(px < this.getXAxis().getMinPx() || px > this.getXAxis().getMaxPx())
+					continue;
+
+				if(y > this.getYAxis().getMinPx() || y < this.getYAxis().getMaxPx())
+					continue;
 
 				for( ; k < m ; k++) {
 					if(Math.abs(passed[k] - px) < this.options.autoPeakPickingMinDistance) {
@@ -3009,8 +3145,10 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.picks[m].set('labelPosition', { 
 														x: x,
 				 										dy: "-10px"
-				 									});
-				this.picks[m].data.label.text = String(x);
+				 									}
+				 				);
+
+				this.picks[m].data.label[0].text = String(Math.round(x * 1000) / 1000);
 				passed.push(px);
 				if(passed.length == this.options.autoPeakPickingNb)
 					break;
@@ -3045,7 +3183,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			currentLine += xpx;
 			currentLine += " ";
-			currentLine += ypx;
+			currentLine += ypx;	
 			currentLine += " "; 
 			
 			if(this.options.lineToZero && (pos = this.getYAxis().getPos(0)) !== undefined) {
@@ -3058,7 +3196,10 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			if(!this.options.markers.show)
 				return currentLine;
-			this._drawMarkerXY(xpx, ypx);
+
+			if(!(xpx > this.getXAxis().getMaxPx() || xpx < this.getXAxis().getMinPx())) {
+				this._drawMarkerXY(xpx, ypx);
+			}
 			return currentLine;
 		},
 
@@ -3093,17 +3234,35 @@ define(['jquery', 'util/util'], function($, Util) {
 			return line;
 		},
 
-		getMarkerPath: function() {
+		getMarkerPath: function(zoom, add) {
+			var z = zoom || this.options.markers.zoom,
+				add = add || 0,
+				el;
 
 			switch(this.options.markers.type) {
 				case 1:
-					return 'm -2 -2 l 4 0 l 0 4 l -4 0 z';
+					el = ['m', -2, -2, 'l', 4, 0, 'l', 0, 4, 'l', -4, 0, 'z'];
 				break;
 
 				case 2:
-					return 'm -2 -2 l 4 4 m -4 0 l 4 -4 z';
+					el = ['m', -2, -2, 'l', 4, 4, 'l', -4, 0, 'l', 4, -4, 'z'];
 				break;
 			}
+
+
+			if((z == 1 || !z) && !add)
+				return el;
+
+			var num = "number";
+			for(var i = 0, l = el.length; i < l; i++) {
+				if(typeof el[i] == num) {
+					el[i] *= z;
+				//	el[i] += ((!el[i] || !add) ? 0 : (Math.abs(el[i]) / el[i]) * add);
+				}
+			}
+
+
+			return el;
 		},
 
 		_drawMarkerXY: function(x, y) {
@@ -3111,14 +3270,15 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(!this.options.markers.show)
 				return;
 
-			this.markerPath += 'M ' + x + ' ' + y + ' ';
-			this.markerPath += this._markerPath;
 
-			/*var shape = document.createElementNS(this.graph.ns, 'path');
-			shape.setAttribute('transform', 'translate(' + x + ' ' + y + ') scale(' + this.options.markers.zoom + ')');
-			shape.setAttribute('d', this._markerPath);
+			this.markerPath += 'M ' + x + ' ' + y + ' ';
+
+			this.markerPath += this._markerPath + ' ';
+
+			//shape.setAttribute('transform', 'translate(' + x + ' ' + y + ') scale(' + this.options.markers.zoom + ')');
+			//shape.setAttribute('d', this._markerPath);
 			
-			this.groupMarkers.appendChild(shape);*/
+			//this.groupMarkers.appendChild(shape);*/
 		},
 
 		autoAxis: function() {
@@ -3212,15 +3372,61 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.labelDragging = false;
 		},
 
+		searchIndexByXY: function(x,y) {
+
+			var oldDist = false,
+				xyindex = false;
+
+			for(var i = 0, l = this.data.length; i < l; i++) {
+				for(var k = 0, m = this.data[i].length; k < m; k+=2) {
+
+					dist = Math.pow((this.data[i][k] - x), 2) + Math.pow((this.data[i][k + 1] - y), 2);
+					//console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
+					if(!oldDist || dist < oldDist) {
+						oldDist = dist;
+						xyindex = [k / 2, i];
+					}
+				}
+			}
+			console.log(k, i);
+
+			return xyindex;
+		},
+
+
+
+		searchIndexByPxXY: function(x,y) {
+
+			var oldDist = false,
+				xyindex = false;
+
+			for(var i = 0, l = this.data.length; i < l; i++) {
+				for(var k = 0, m = this.data[i].length; k < m; k+=2) {
+
+					dist = Math.pow((this.getX(this.data[i][k]) - x), 2) + Math.pow((this.getY(this.data[i][k + 1]) - y), 2);
+					//console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
+					if(!oldDist || dist < oldDist) {
+						oldDist = dist;
+						xyindex = [k / 2, i];
+					}
+				}
+			}
+
+			return xyindex;
+		},
+
+
 		searchClosestValue: function(valX) {
 
 			for(var i = 0; i < this.data.length; i++) {
+
 				if((valX <= this.data[i][this.data[i].length - 2] && valX > this.data[i][0])) {
 					xMinIndex = this._searchBinary(valX, this.data[i], false);
 				} else if((valX >= this.data[i][this.data[i].length - 2] && valX < this.data[i][0])) {
 					xMinIndex = this._searchBinary(valX, this.data[i], true);
 				} else 
 					continue;
+			
 
 				return {
 					dataIndex: i,
@@ -3228,11 +3434,12 @@ define(['jquery', 'util/util'], function($, Util) {
 					xMax: this.data[i][xMinIndex + 2],
 					yMin: this.data[i][xMinIndex + 1],
 					yMax: this.data[i][xMinIndex + 3],
-					xBeforeIndex: xMinIndex / 2,
-					xBeforeIndexArr: xMinIndex
-				}
-			}
 
+					xBeforeIndex: xMinIndex / 2,
+					xAfterIndex: xMinIndex / 2 + 2,
+					xBeforeIndexArr: xMinIndex
+				}	
+			}
 		},
 
 
@@ -3840,26 +4047,22 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		handleMouseWheel: function(delta, e) {
+
 			this.accumulatedDelta = Math.min(1, Math.max(-1, this.accumulatedDelta + Math.min(0.1, Math.max(-0.1, delta))));
 			this.threshold = Math.max(-this.minZ, this.maxZ) * (Math.pow(this.accumulatedDelta, 3));
+
 			for(var i in this.zValues) {
-				if(Math.abs(i) < this.threshold) {
-					this.zValues[i].dom.setAttribute('display', 'none');
-				} else {
-					this.zValues[i].dom.setAttribute('display', 'block');
-				}
+				this.zValues[i].dom.setAttribute('display', Math.abs(i) < this.threshold ? 'none' : 'block');
 			}
 		}
 	});
 
 
-	var GraphShape = function() {
-
-	}
-
+	var GraphShape = function() { }
 	GraphShape.prototype = {
 
 		init: function(graph) {
+
 			this.graph = graph;
 			this.properties = {};
 			this.saved = {};
@@ -3869,8 +4072,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.createDom();
 			this.setEvents();
 			
-			this._makeLabel();
-
 			this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
@@ -3879,9 +4080,9 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.group.appendChild(this._dom);
 
 //			this.group.appendChild(this.rectEvent);
-			this.group.appendChild(this.label);
-
+			
 			this.graph.shapeZone.appendChild(this.group);
+
 		},
 
 		setOriginalData: function(data, events) {
@@ -3890,13 +4091,11 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		triggerChange: function() {
-			//if(this.events && this.events.onChange)
-			//	this.events.onChange(this.data);
-
 			this.graph.triggerEvent('onAnnotationChange', this.data, this);
 		},
 
 		setEvents: function() {},
+
 		setSelectableOnClick: function() {
 			return;
 			var self = this;
@@ -3935,18 +4134,29 @@ define(['jquery', 'util/util'], function($, Util) {
 */
 		draw: function() {
 
+			if(this.labelNumber == undefined)
+				this.setLabelNumber(1);
+
 			this.setFillColor();
 			this.setStrokeColor();
 			this.setStrokeWidth();
 			this.setDashArray();
 
-			if(this.get('labelPosition')) {
-				this.setLabelText();
-				this.setLabelSize();
-			}
+			this.everyLabel(function(i) {
 
-			if(this.get('labelAnchor'))
-				this._forceLabelAnchor();
+				if(this.get('labelPosition', i)) {
+
+					this.setLabelText(i);
+					this.setLabelSize(i);
+
+				}
+
+				if(this.get('labelAnchor', i)) {
+
+					this._forceLabelAnchor(i);
+
+				}
+			});
 		},
 
 		redraw: function() {
@@ -3959,10 +4169,15 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(!this.position)
 				return;
 
-			if(this.get('labelPosition')) {
-				this.setLabelPosition();
-//				this.group.appendChild(this.label);
-			}
+			this.everyLabel(function(i) {
+
+				if(this.get('labelPosition')) {
+
+					this.setLabelPosition(i);
+
+				}
+
+			});
 		
 		
 			if(this.afterDone)
@@ -3980,8 +4195,16 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		setSerie: function(serie) {			this.serie = serie;								},
-		set: function(prop, val) {			this.properties[prop] = val;					},
-		get: function(prop) {				return this.properties[prop];					},
+		set: function(prop, val, index) {
+
+			this.properties[prop] = this.properties[prop] || [];
+			this.properties[prop][index || 0] = val;
+		},
+
+		get: function(prop, index) {
+			return ( this.properties[ prop ] || [] ) [ index || 0 ];
+		},
+
 
 		getFromData: function(prop)			{ return this.data[prop]; 						},
 		setDom: function(prop, val) {		if(this._dom) this._dom.setAttribute(prop, val);				},
@@ -3997,9 +4220,9 @@ define(['jquery', 'util/util'], function($, Util) {
 		setStrokeWidth: function() {		this.setDom('stroke-width', this.get('strokeWidth'));		},
 		setDashArray: function() {			if(this.get('strokeDashArray')) this.setDom('stroke-dasharray', this.get('strokeDashArray'));				},
 
-		setLabelText: function() {	 		if(this.label) this.label.textContent = this.data.label.text;					},
-		setLabelSize: function() {			if(this.label) this.label.setAttribute('font-size', this.get('labelSize'))		},
-		setLabelPosition: function() {		if(this.label) this._setLabelPosition();										},
+		setLabelText: function(index) {		if(this.label) this.label[index].textContent = this.data.label[index].text;					},
+		setLabelSize: function(index) {		if(this.label) this.label[index].setAttribute('font-size', this.get('labelSize'))		},
+		setLabelPosition: function(index) {	if(this.label) this._setLabelPosition(index);											},
 		
 		highlight: function() {
 			this.tempStrokeWidth = parseInt(this._dom.getAttribute('stroke-width').replace('px', ''));
@@ -4075,46 +4298,67 @@ define(['jquery', 'util/util'], function($, Util) {
 			return false;	
 		},
 
+		setLabelNumber: function(nb) {
+			this.labelNumber = nb;
+			this._makeLabel();
+		},
+
+		everyLabel: function(callback) {
+			for(var i = 0; i < this.labelNumber; i++) {
+				callback.call(this, i);
+			}
+		},
+
 		_makeLabel: function() {
 			var self = this;
-			this.label = document.createElementNS(this.graph.ns, 'text');
-			this.label.addEventListener('dblclick', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
+			this.label = this.label || [];
 
-				$('<input type="text" />').attr('value', e.target.textContent).prependTo(self.graph._dom).css({
-					position: 'absolute',
-					'margin-top': (parseInt(e.target.getAttribute('y').replace('px', '')) - 10) + "px",
-					'margin-left': (parseInt(e.target.getAttribute('x').replace('px', '')) - 50) + "px",
-					textAlign: 'center',
-					width: '100px'
-				}).on('blur', function() {
-					$(this).remove();
-					//self.label.textContent = ;
-					self.data.label.text = $(this).attr('value');
-					self.triggerChange();
-				}).on('keyup', function(e) {
-					if(e.keyCode == 13)
-						$(this).trigger('blur');
-				}).focus();
+			this.everyLabel(function(i) {
 
+				this.label[i] = document.createElementNS(this.graph.ns, 'text');
+				this.label[i].addEventListener('dblclick', function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+
+					$('<input type="text" />').attr('value', e.target.textContent).prependTo(self.graph._dom).css({
+						position: 'absolute',
+						'margin-top': (parseInt(e.target.getAttribute('y').replace('px', '')) - 10) + "px",
+						'margin-left': (parseInt(e.target.getAttribute('x').replace('px', '')) - 50) + "px",
+						textAlign: 'center',
+						width: '100px'
+					}).on('blur', function() {
+
+						$( this ).remove();
+						self.data.label.text = $ ( this ).attr( 'value' );
+						self.triggerChange();
+
+					}).on('keyup', function(e) {
+
+						if ( e.keyCode == 13 )
+							$( this ).trigger( 'blur' );
+						
+					}).focus();
+
+				});
+
+				self.group.appendChild(this.label[i]);
 			});
 		},
 
-		_setLabelPosition: function(pos) {
+		_setLabelPosition: function(labelIndex, pos) {
 			var currPos = this.getFromData('pos');
 			var parsedCurrPos = this._getPosition(currPos);
 			if(!pos)
-				var pos = this._getPosition(this.get('labelPosition'), currPos);
+				var pos = this._getPosition(this.get('labelPosition', labelIndex), currPos);
 
-			this.label.setAttribute('x', pos.x);
-			this.label.setAttribute('y', pos.y);
+			this.label[labelIndex].setAttribute('x', pos.x);
+			this.label[labelIndex].setAttribute('y', pos.y);
 			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
-			this.label.setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
+			this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
 		},
 
-		_forceLabelAnchor: function() {
-			this.label.setAttribute('text-anchor', this.get('labelAnchor'))
+		_forceLabelAnchor: function(i) {
+			this.label[i].setAttribute('text-anchor', this.get('labelAnchor'))
 		},
 
 		setSelectable: function(bln) {
@@ -4165,8 +4409,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(!pos)
 				return;
 			
-			this.label.setAttribute('x', pos.x);
-			this.label.setAttribute('y', pos.y);
+			this.everyLabel(function(i) {
+				this.label[i].setAttribute('x', pos.x);
+				this.label[i].setAttribute('y', pos.y);	
+			});
+			
 		},
 
 		redrawImpl: function() {
@@ -4212,13 +4459,6 @@ define(['jquery', 'util/util'], function($, Util) {
 		createDom: function() {
 			this._dom = document.createElementNS(this.graph.ns, 'line');
 			this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
-		},
-
-		setLabelPosition: function() {
-			this._setLabelPosition();
-			//var pos = this._getPosition(this.get('labelPosition'), this.getFromData('pos'));
-			//this.label.setAttribute('x', pos.x);
-			//this.label.setAttribute('y', pos.y);
 		}
 	});
 
@@ -4285,10 +4525,10 @@ define(['jquery', 'util/util'], function($, Util) {
 			this._dom.setAttribute('marker-start', 'url(#verticalline' + this.graph._creation + ')');
 		},
 
-		setLabelPosition: function() {
+		setLabelPosition: function(labelIndex) {
 			var pos1 = this._getPosition(this.getFromData('pos'));
 			var pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
-			this._setLabelPosition(this._getPosition(this.get('labelPosition'), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
+			this._setLabelPosition(labelIndex, this._getPosition(this.get('labelPosition', labelIndex), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
 			
 		},
 
@@ -4439,7 +4679,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				x = Math.min(posXY.x, posXY2.x);
 
 			this.reversed = x == posXY2.x;
-
+			
 			if(w < 2 || x + w < 0 || x > this.graph.getDrawingWidth()) {
 				return false;
 			}
@@ -4538,10 +4778,10 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.graph.unselectAnnotation(this);
 		},
 
-		setLabelPosition: function() {
+		setLabelPosition: function(labelIndex) {
 			var pos1 = this._getPosition(this.getFromData('pos')),
 				pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
-			this._setLabelPosition(this._getPosition(this.get('labelPosition'), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));			
+			this._setLabelPosition(labelIndex, this._getPosition(this.get('labelPosition', labelIndex), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));			
 		}
 
 	});
@@ -4604,7 +4844,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			r.setAttribute('shape-rendering', 'crispEdges');
 			r.setAttribute('cursor', 'ew-resize');
 			rangeHandle.appendChild(r);
-
 
 			var l = document.createElementNS(this.graph.ns, 'line');
 			l.setAttribute('x1', 4);

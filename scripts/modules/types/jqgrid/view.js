@@ -66,7 +66,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 						name: j, 
 						index: j, 
 						title: false, 
-						editable: jpaths[j].editable || false,
+						editable: (jpaths[j].editable !== 'none' && jpaths[j].editable !== 'false'),
+						editoptions: {value: jpaths[j].options},
+						edittype: jpaths[j].editable,
 						_jpath: jpaths[j].jpath,
 						sortable: true,
 						sorttype: jpaths[j].number ? 'float' : 'text'

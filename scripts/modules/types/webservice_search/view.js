@@ -14,7 +14,7 @@ define(['modules/defaultview'], function(Default) {
 				for(var i in searchparams) {
 					if(!i)
 						continue;
-					this.search.append('<div><label>' + searchparams[i].label + '</label><input type="text" value="' + searchparams[i].defaultvalue + '" name="' + i +'" /></div>');
+					this.search.append('<div><label>' + searchparams[i].label + '</label>' + this._makeFormEl(searchparams[i], i));
 				}
 				
 				var url = self.module.getConfiguration().url;
@@ -28,8 +28,14 @@ define(['modules/defaultview'], function(Default) {
 						.render());
 					});
 				} else {
-					this.search.on('keyup', 'input', function() {
+					this.search.on('change', 'input[type=text], select', function() {
 						var searchTerm = $(this).val();
+						var searchName = $(this).attr('name');
+						self.module.controller.doSearch(searchName, searchTerm);
+					});
+
+					this.search.on('change', 'input[type=checkbox]', function() {
+						var searchTerm = $(this).is(':checked');
 						var searchName = $(this).attr('name');
 						self.module.controller.doSearch(searchName, searchTerm);
 					});
@@ -37,8 +43,34 @@ define(['modules/defaultview'], function(Default) {
 			}			
 		},
 
+		_makeFormEl: function(spec, name) {
+
+			switch(spec.fieldtype) {
+
+				case 'combo':
+					var opts = (spec.fieldoptions || '').split(';'),
+						opt, html = '';
+					html += '<option ' + (spec.defaultvalue == '' ? 'selected="selected" ' : '') + 'value=""></option>';
+					for(var i = 0, l = opts.length; i < l; i++) {
+						opt = opts[i].split(':');
+						html += '<option ' + (spec.defaultvalue == opt[0] ? 'selected="selected" ' : '') + 'value="' + opt[0] + '">' + (opt[1] || opt[0]) + '</option>';
+					}
+					return '<select name="' + name + '">' + html + '</select>';
+				break;
+
+				case 'checkbox':
+					return '<input type="checkbox" ' + (spec.defaultvalue ? 'checked="checked"' : '') + ' value="1" offvalue="0" name="' +  name +'" /></div>';
+				break;
+				
+				default:
+				case 'text':
+					return '<input type="text" value="' + spec.defaultvalue + '" name="' +  name +'" /></div>';
+				break;
+			}	
+		},
+
 		inDom: function() {
-			this.search.find('input:last').trigger('keyup');
+			this.search.find('input:last').trigger('change');
 		},
 		
 		onResize: function() {
