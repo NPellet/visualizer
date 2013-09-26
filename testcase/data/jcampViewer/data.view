@@ -1,0 +1,151 @@
+{
+	"_version": "2.1",
+	"modules": [
+		{
+			"type": "jqgrid",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 43,
+				"height": 43
+			},
+			"configuration": {
+				"colsjPaths": {
+					"Name": {
+						"jpath": "element.name",
+						"number": false,
+						"editable": false
+					}
+				},
+				"nbLines": 20,
+				"toggle": "",
+				"colorjPath": "",
+				"displaySearch": false,
+				"filterRow": ""
+			},
+			"id": 1,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.jcamp",
+					"name": "jcamp"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "list",
+					"name": "spectra"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 45,
+				"top": 0
+			},
+			"size": {
+				"width": 73,
+				"height": 43
+			},
+			"configuration": {
+				"graphurl": "",
+				"flipX": true,
+				"flipY": false,
+				"xLabel": "",
+				"yLabel": "",
+				"xRightSpacing": "",
+				"xLeftSpacing": "",
+				"yTopSpacing": "",
+				"yBottomSpacing": "",
+				"minX": null,
+				"minY": null,
+				"maxX": null,
+				"maxY": null,
+				"zoom": "x",
+				"wheelAction": "zoomY",
+				"shiftxtozero": false,
+				"displayAxis": [
+					"x"
+				],
+				"grids": [],
+				"plotinfos": [
+					{
+						"variable": "jcamp",
+						"plotcolor": [
+							114,
+							4,
+							4,
+							1
+						],
+						"strokewidth": "",
+						"plotcontinuous": true,
+						"peakpicking": false
+					}
+				]
+			},
+			"id": 2,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "spectra",
+			"jpath": "element.spectra",
+			"url": ""
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	}
+}

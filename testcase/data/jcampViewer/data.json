@@ -1,0 +1,17 @@
+{
+	"spectra":
+	[
+		{
+			"name":"Simulated 1H",
+			"jcamp":{"type":"jcamp","url":"testcase/data/jcampViewer/data/simulated1H.jdx"}
+		},
+		{
+			"name":"IR",
+			"jcamp":{"type":"jcamp","url":"testcase/data/jcampViewer/data/ir.jdx"}
+		},
+		{
+			"name":"Mass",
+			"jcamp":{"type":"jcamp","url":"testcase/data/jcampViewer/data/ms.jdx"}
+		}
+	]
+}
