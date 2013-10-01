@@ -15,7 +15,8 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 		},
 
 		setHeight: function(height) {
-			this.dom.css('height', height)
+			this.dom.css('height', height);
+			$("#ci-modules-grid").css('margin-top', '30px');
 		},
 
 		setTitle: function(view) {

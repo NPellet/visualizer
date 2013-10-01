@@ -28,6 +28,9 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 			this.dom.attr('height', height);
 
 			this.module.getDomContent().css('overflow', 'hidden');
+
+			if(this.dom.get(0).contentWindow.setSize)
+				this.dom.get(0).contentWindow.setSize(width, height);
 		},
 		
 		onProgress: function() {

@@ -14,9 +14,13 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 
 	 		this.dom.on('mouseover', '.jqgrow', function() {
+
 				self.module.controller.lineHover(self.elements[$(this).attr('id')]);
+
 	 		}).on('mouseout', '.jqgrow', function() {
+
 				self.module.controller.lineOut(self.elements[$(this).attr('id')]);
+
 	 		});
 
 	 		//this.domPaging = $('<div id="#pager' + this.unique + '"></div>');
@@ -57,18 +61,25 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			var self = this, 
 				colNames = [], 
 				colModel = [], 
+				j,
+				editable,
 				jpaths = this.module.getConfiguration().colsjPaths;
 
-			if(typeof jpaths == 'object') {
-				for(var j in jpaths) {
+
+			if( typeof jpaths == 'object' ) {
+
+				for( j in jpaths ) {
+
+					editable = ( jpaths[j].editable !== 'none' && jpaths[j].editable !== 'false' );
+
 					colNames.push(j);
 					colModel.push({
 						name: j, 
 						index: j, 
 						title: false, 
-						editable: (jpaths[j].editable !== 'none' && jpaths[j].editable !== 'false'),
-						editoptions: {value: jpaths[j].options},
-						edittype: jpaths[j].editable,
+						editable: ( jpaths[j].editable !== 'none' && jpaths[j].editable !== 'false' ),
+						editoptions: { value: jpaths[j].options },
+						edittype: editable ? jpaths[j].editable : false,
 						_jpath: jpaths[j].jpath,
 						sortable: true,
 						sorttype: jpaths[j].number ? 'float' : 'text'

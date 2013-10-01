@@ -443,7 +443,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		},
 
 		getFirstSerie: function() {
-			console.log(this.series);
 			for(var i in this.series) {
 				return this.series[i][0];
 			}
@@ -458,19 +457,38 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				shape = this.graph.makeShape( annotation, {}, false );
 
 			shape.setSelectable( true );
-			shape.setSerie(this.getFirstSerie());
+			shape.setSerie( this.getFirstSerie() );
 
-			annotation.onChange(annotation, function(value) {
+			annotation.onChange( annotation, function( value ) {
+
 				shape.draw();
 				shape.redraw();
-			}, self.module.getId());
+
+			}, self.module.getId() );
+
+			shape.onMouseOver( function ( data ) {
+
+				API.highlight( data._highlight , 1 );
+
+			});
+
+			shape.onMouseOut( function ( data ) {
+
+				API.highlight( data._highlight , 0 );
+
+			});
+
+
 
 			if(annotation._highlight) {
 				API.listenHighlight(annotation._highlight, function(onOff) {
-					if(onOff)
+
+					if(onOff) {
 						shape.highlight();
-					else
+					
+					} else {
 						shape.unHighlight();
+					}
 				});
 			}
 

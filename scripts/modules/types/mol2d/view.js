@@ -1,4 +1,4 @@
-define(['modules/defaultview','util/api','util/util','util/datatraversing'], function(Default, API, Util, Traversing) {
+define(['modules/defaultview','util/api','util/util','util/datatraversing', 'util/typerenderer', 'ChemDoodle'], function(Default, API, Util, Traversing, Renderer) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -47,7 +47,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing'], fun
 				var view = this, self = this;
 				var type = Traversing.getType(moduleValue);
 
-				CI.DataType.toScreen(moduleValue, this.module, this._id).done(function(mol) {
+				Renderer.toScreen(moduleValue, this.module, this._id).done(function(mol) {
 					view._molecule = mol;
 					var atoms = view._molecule.atoms;
 					if(canDoAtomLabels && self._atomLabels) {
@@ -158,7 +158,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing'], fun
 					}
 				});
 
-				API.listenHighlight(moduleValue._highlight, function(value, commonKeys) {
+				API.listenHighlight( moduleValue._highlight, function(value, commonKeys) {
 
 					var canvas = self._canvas;
 					var commonKeys2 = {};

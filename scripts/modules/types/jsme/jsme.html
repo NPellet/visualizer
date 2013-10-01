@@ -19,6 +19,10 @@
 			jsmeApplet.readMolFile(mol);
 		}
 
+		this.setSize = function(w, h) {
+
+			jsmeApplet.setSize([w, h]);
+		}
 
 		this.setSmiles = function(smiles) {
 			jsmeApplet.readMolecule(smiles);

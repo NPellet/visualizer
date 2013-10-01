@@ -479,6 +479,10 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(pref == 'total') {
 				this.redraw();
 				this.drawSeries();
+
+				if(this.options.onZoom)
+					this.options.onZoom(this.getMinValue(), this.getMaxValue());
+
 				return;
 			}
 
@@ -1028,6 +1032,10 @@ define(['jquery', 'util/util'], function($, Util) {
 					var shape = new GraphLine(this);
 				break;
 
+				case 'surfaceUnderCurve':
+					var shape = new GraphSurfaceUnderCurve(this);
+				break;
+
 				case 'peakInterval':
 					var shape = new GraphPeakInterval(this);
 				break;
@@ -1058,6 +1066,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				for ( var i = 0, l = annotation.label.length ; i < l ; i++) {
 
 					shape.set('labelPosition', annotation.label[i].position, i);
+					shape.set('labelColor', annotation.label[i].color || 'black', i);
 					shape.set('labelSize', annotation.label[i].size, i);
 					if(annotation.label[i].anchor)
 						shape.set('labelAnchor', annotation.label[i].anchor, i);
@@ -1066,7 +1075,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				shape.setLabelNumber(l);
 			}
 
-			switch(annotation.type) {
+			/*switch(annotation.type) {
 				case 'rect':
 				case 'rectangle':
 					shape.set('width', annotation.width);
@@ -1074,7 +1083,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				break;
 			}
 			this.shapes.push(shape);
-
+*/
 			return shape;
 		},
 
@@ -4063,6 +4072,8 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		init: function(graph) {
 
+			var self = this;
+
 			this.graph = graph;
 			this.properties = {};
 			this.saved = {};
@@ -4076,8 +4087,24 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
 
-			if(this._dom)
+			if(this._dom) {
 				this.group.appendChild(this._dom);
+
+				this._dom.addEventListener('mouseover', function (e) {
+
+					self.doHover(true);
+					e.stopPropagation();
+
+				});
+
+
+				this._dom.addEventListener('mouseout', function (e) {
+
+					self.doHover(false);
+					e.stopPropagation();
+
+				});
+			}
 
 //			this.group.appendChild(this.rectEvent);
 			
@@ -4148,6 +4175,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 					this.setLabelText(i);
 					this.setLabelSize(i);
+					this.setLabelColor(i);
 
 				}
 
@@ -4221,7 +4249,8 @@ define(['jquery', 'util/util'], function($, Util) {
 		setDashArray: function() {			if(this.get('strokeDashArray')) this.setDom('stroke-dasharray', this.get('strokeDashArray'));				},
 
 		setLabelText: function(index) {		if(this.label) this.label[index].textContent = this.data.label[index].text;					},
-		setLabelSize: function(index) {		if(this.label) this.label[index].setAttribute('font-size', this.get('labelSize'))		},
+		setLabelColor: function(index) {	if(this.label) this.label[index].setAttribute('color', this.get('labelColor'));				},
+		setLabelSize: function(index) {		if(this.label) this.label[index].setAttribute('font-size', this.get('labelSize'));		},
 		setLabelPosition: function(index) {	if(this.label) this._setLabelPosition(index);											},
 		setLabelAngle: function(index) {	if(this.label) this._setLabelAngle(index);												},
 		
@@ -4323,7 +4352,26 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.everyLabel(function(i) {
 
 				this.label[i] = document.createElementNS(this.graph.ns, 'text');
-				this.label[i].addEventListener('dblclick', function(e) {
+
+
+				this.label[i].addEventListener( 'mouseover', function ( e ) {
+
+					self.doHover( true );
+					e.stopPropagation();
+					
+				});
+
+
+				this.label[i].addEventListener( 'mouseout', function ( e ) {
+
+					self.doHover( false );
+					e.stopPropagation();
+
+				});
+
+
+				this.label[i].addEventListener( 'dblclick', function( e ) {
+
 					e.preventDefault();
 					e.stopPropagation();
 
@@ -4355,8 +4403,9 @@ define(['jquery', 'util/util'], function($, Util) {
 		_setLabelPosition: function(labelIndex, pos) {
 			var currPos = this.getFromData('pos');
 			var parsedCurrPos = this._getPosition(currPos);
-			if(!pos)
-				var pos = this._getPosition(this.get('labelPosition', labelIndex), currPos);
+			if( !pos ) {
+				var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
+			}
 
 			this.label[labelIndex].setAttribute('x', pos.x);
 			this.label[labelIndex].setAttribute('y', pos.y);
@@ -4370,7 +4419,30 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		_forceLabelAnchor: function(i) {
-			this.label[i].setAttribute('text-anchor', this.get('labelAnchor'))
+			this.label[i].setAttribute('text-anchor', this._getLabelAnchor());
+		},
+
+		_getLabelAnchor: function() {
+			var anchor = this.get('labelAnchor');
+			switch(anchor) {
+				case 'middle':
+				case 'start':
+				case 'end':
+					return anchor;
+				break;
+
+				case 'right':
+					return 'end';
+				break;
+
+				case 'left':
+					return 'start';
+				break;
+
+				default:
+					return 'start';
+				break;
+			}
 		},
 
 		setSelectable: function(bln) {
@@ -4378,7 +4450,24 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		select: function() {},
-		unselect: function() {}
+		unselect: function() {},
+
+		onMouseOver: function (clbk) {
+			var callbacks = (this._mouseOverCallbacks = this._mouseOverCallbacks || $.Callbacks());
+			callbacks.add(clbk);
+		},
+
+		onMouseOut: function (clbk) {
+			var callbacks = (this._mouseOutCallbacks = this._mouseOutCallbacks || $.Callbacks());
+			callbacks.add(clbk);
+		},
+
+		doHover: function(bln) {
+			var clbks;
+			if( !(clbks = this[ bln ? '_mouseOverCallbacks' : '_mouseOutCallbacks' ] ) )
+				return;
+			clbks.fireWith( this, [ this.data, this.parameters ] );
+		}
 	}
 
 	var GraphRect = function(graph) {
@@ -4403,8 +4492,17 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		redrawImpl: function() {
-			this.setDom('width', this.get('width'));
-			this.setDom('height', this.get('height'));
+			var width = this.getFromData('width'),
+				height = this.getFromData('height');
+
+			if(width == undefined || height == undefined) {
+				var position = this._getPosition(this.getFromData('pos2'));
+				width = position.x;
+				height = position.y;
+			}
+
+			this.setDom('width', width);
+			this.setDom('height', height);
 		}
 	});
 
@@ -4550,7 +4648,11 @@ define(['jquery', 'util/util'], function($, Util) {
 	});
 
 
-	$.extend(GraphPeakInterval.prototype, GraphLine.prototype, {
+	var GraphSurfaceUnderCurve = function(graph) {
+		this.init(graph);
+	}
+	
+	$.extend(GraphSurfaceUnderCurve.prototype, GraphLine.prototype, {
 		createDom: function() {
 
 			this._dom = document.createElementNS(this.graph.ns, 'path');
@@ -4813,7 +4915,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 
 	var GraphRangeX = function(graph) { this.init(graph); };
-	$.extend(GraphRangeX.prototype, GraphPeakInterval.prototype, {
+	$.extend(GraphRangeX.prototype, GraphSurfaceUnderCurve.prototype, {
 
 		createDom: function() {
 			this._dom = document.createElementNS(this.graph.ns, 'rect');

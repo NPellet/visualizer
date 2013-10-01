@@ -2,19 +2,22 @@
 requirejs.config({
 	"baseUrl": "scripts/",
 	"paths": {
-		"jquery": 'libs/jquery/jquery',
-		//"jquery": "http://code.jquery.com/jquery-migrate-1.2.1",
+		//"jquery": 'libs/jquery/jquery',
+		"jquery": "http://code.jquery.com/jquery-migrate-1.2.1",
 		"jqueryui": "libs/jqueryui/jquery-ui.min",
 		"forms": "libs/forms",
-		"ckeditor": "libs/ckeditor/ckeditor"
+		"ckeditor": "libs/ckeditor/ckeditor",
+
+		'ChemDoodle': 'libs/chemdoodle/ChemDoodleWeb'
 	},
 
 	"shim": {
-		//"jquery": ['libs/jquery/jquery'],
+		"jquery": ['libs/jquery/jquery'],
 		"ckeditor": ["libs/ckeditor/adapters/jquery"],
 		"libs/jqgrid/js/jqgrid": ["jquery", "libs/jqgrid/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
-		"jqueryui": ["jquery"]
+		"jqueryui": ["jquery"],
+		"ChemDoodle": ["libs/chemdoodle/ChemDoodleWeb-libs"]
 	}
 });
 
