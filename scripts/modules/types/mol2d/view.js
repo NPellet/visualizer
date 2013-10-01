@@ -5,7 +5,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 
 		init: function() {	
 			this._id = Util.getNextUniqueId();
-			this.dom = $('<canvas id="' + this._id + '"></div>');
+			//this.dom = $('<canvas id="' + this._id + '"></div>');
 			this.module.getDomContent().html(this.dom);
 			this._highlighted = {};
 
@@ -13,7 +13,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 		},
 		
 		inDom: function() {
-
+/*
 			var canvas = new ChemDoodle.ViewerCanvas(this._id, 100, 100);
 
 			canvas.specs.backgroundColor = "transparent";
@@ -24,7 +24,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 			canvas.specs.atoms_font_families_2D = ['Helvetica', 'Arial', 'sans-serif'];
 			canvas.specs.atoms_displayTerminalCarbonLabels_2D = true;
 
-			this._canvas = canvas;
+			this._canvas = canvas;*/
 
 		},
 
@@ -32,7 +32,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 
 			this._height = height - 20;
 			this._width = width - 20;
-			this._canvas.resize(width - 20, height - 20);
+			this.def.canvas.resize(width - 20, height - 20);
 			this.drawMolecule();
 		},
 		
@@ -47,8 +47,18 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 				var view = this, self = this;
 				var type = Traversing.getType(moduleValue);
 
-				Renderer.toScreen(moduleValue, this.module, this._id).done(function(mol) {
-					view._molecule = mol;
+//				moduleValue = moduleValue.get();
+
+				var def = Renderer.toScreen(moduleValue, this.module, this._id);
+				this.def = def;
+				
+
+				this.def.done(function(mol) {
+
+					view.module.getDomContent().html(mol);
+					view.def.build();
+
+					view._molecule = view.def.canvas;
 					var atoms = view._molecule.atoms;
 					if(canDoAtomLabels && self._atomLabels) {
 						for(var i = 0, l = self._atomLabels.length; i < l; i++) {
@@ -61,6 +71,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 
 					view.drawMolecule();
 				});
+				
 			},
 
 			'atomLabels': function(moduleValue) {
@@ -76,7 +87,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 			if(!this._width || !this._height || !this._molecule || !this._canvas)
 					return;
 
-			var dim = this._molecule.getDimension();
+			var dim = this.def.canvas.getDimension();
 
 			var ratio = Math.max(this._width / dim.x, this._height / dim.y);
 			if(this._canvas._domcanvas)

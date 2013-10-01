@@ -40,14 +40,14 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 	functions.mol2d.toscreen = function(def, molfile, options, highlights, box) {
 		
 		var id = Util.getNextUniqueId();
-		DOMDeferred.progress(function(dom) {
-			
-			// Find the dom in here
-			if($("#" + id, dom).length == 0)
-				return;
+		
+		// Find the dom in here
+		var can = $( '<canvas />', { id: id } );
+		
+		def.build = function() {
 
 			var canvas = new ChemDoodle.ViewerCanvas(id, 100, 100);
-
+			this.canvas = canvas;
 			canvas.specs.backgroundColor = "transparent";
 			canvas.specs.bonds_width_2D = .6;
 			canvas.specs.bonds_saturationWidth_2D = .18;
@@ -60,7 +60,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 			molLoaded.scaleToAverageBondLength(14.4);
 			canvas.loadMolecule(molLoaded);
 
-			CI.RepoHighlight.listen(molfile._highlight, function(value, commonKeys) {
+			API.listenHighlight(molfile._highlight, function(value, commonKeys) {
 
 				if($("#" + id, dom).length == 0)
 					return;
@@ -88,9 +88,17 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 				canvas.repaint();
 
 			}, true, box.id || 0);
-		});
+		}
 
-		def.resolve('<canvas id="' + id + '"></canvas>');
+		def.unbuild = function() {
+			//$(this.canvas).remove();
+		};
+
+		def.getCWC = function() {
+			return this.canvas;
+		}
+		
+		def.resolve(can);
 	}
 
 	functions.mol3d = {};
@@ -369,7 +377,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 			}, function() { deferred.reject(); });	
 		}, function() { deferred.reject(); })
 		
-		return deferred.promise();
+		return deferred;
 	}
 
 	return functions;
