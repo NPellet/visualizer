@@ -4367,7 +4367,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		_setLabelAngle: function(labelIndex, angle) {
 			var currAnge = this.get('labelAngle', labelIndex) || 0;
 			this.label[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ', ' + this.label[labelIndex].getAttribute('x') + ', ' + this.label[labelIndex].getAttribute('y') + ')');
-		}
+		},
 
 		_forceLabelAnchor: function(i) {
 			this.label[i].setAttribute('text-anchor', this.get('labelAnchor'))
