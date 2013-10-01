@@ -1081,9 +1081,9 @@ define(['jquery', 'util/util'], function($, Util) {
 					shape.set('width', annotation.width);
 					shape.set('height', annotation.height);
 				break;
-			}
+			}*/
 			this.shapes.push(shape);
-*/
+
 			return shape;
 		},
 
