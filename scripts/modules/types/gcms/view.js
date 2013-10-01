@@ -120,8 +120,15 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 		resetAnnotationsGC: function() {
 			if(!this.gcmsInstance)
 				return;
+			if ( this.shapes ) {
+				for( var i = 0, l = this.shapes.length; i < l; i++) {
+					this.shapes[i].kill();
+				}
+			}
+
+			this.shapes = [];
 			for(var i = 0, l = this.annotations.length; i < l; i++) {
-				this.doAnnotation(this.annotations[i]);
+				this.shapes.push(this.doAnnotation(this.annotations[i]));
 			}
 		},
 
@@ -139,6 +146,26 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				if(!value.pos && !value.pos2)
 					return;
 				this.gcmsInstance.zoomOn(value.pos.x, value.pos2.x, value._max || false);
+			},
+
+			displayChemicalLabels: function() {
+				var i = 0, 
+					l = this.shapes.length;
+
+				for ( ; i < l ; i++ ) {
+					this.shapes[i].toggleLabel( 1 , true );
+				}
+
+			},
+
+			hideChemicalLabels: function() {
+				var i = 0, 
+					l = this.shapes.length;
+
+				for ( ; i < l ; i++ ) {
+					this.shapes[i].toggleLabel( 1 , false );
+				}
+
 			}
 		},
 
@@ -164,6 +191,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 			shape.draw();
 			shape.redraw();
+
+			return shape;
 		}
 	});
 

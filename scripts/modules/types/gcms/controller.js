@@ -71,7 +71,9 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 			'fromtoGC': 'From - To on GC',
 			'fromtoMS': 'From - To on MS',
 			'zoomOnAnnotation': 'Zoom on annotation',
-			'annotation': 'Annotation'
+			'annotation': 'Annotation',
+			'displayChemicalLabels': 'Display chemical labels',
+			'hideChemicalLabels': 'Hide chemical labels'
 		},
 
 		moduleInformations: {

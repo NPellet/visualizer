@@ -4223,6 +4223,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		setLabelText: function(index) {		if(this.label) this.label[index].textContent = this.data.label[index].text;					},
 		setLabelSize: function(index) {		if(this.label) this.label[index].setAttribute('font-size', this.get('labelSize'))		},
 		setLabelPosition: function(index) {	if(this.label) this._setLabelPosition(index);											},
+		setLabelAngle: function(index) {	if(this.label) this._setLabelAngle(index);												},
 		
 		highlight: function() {
 			this.tempStrokeWidth = parseInt(this._dom.getAttribute('stroke-width').replace('px', ''));
@@ -4309,6 +4310,12 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 		},
 
+		toggleLabel: function(labelId, visible) {
+			if(this.labelNumber && this.label[i]) {
+				this.label[i].setAttribute('display', visible ? 'block' : 'none');
+			}
+		},
+
 		_makeLabel: function() {
 			var self = this;
 			this.label = this.label || [];
@@ -4356,6 +4363,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
 			this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
 		},
+
+		_setLabelAngle: function(labelIndex, angle) {
+			var currAnge = this.get('labelAngle', labelIndex) || 0;
+			this.label[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ', ' + this.label[labelIndex].getAttribute('x') + ', ' + this.label[labelIndex].getAttribute('y') + ')');
+		}
 
 		_forceLabelAnchor: function(i) {
 			this.label[i].setAttribute('text-anchor', this.get('labelAnchor'))
@@ -4557,6 +4569,18 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.setDom('cursor', 'move');
 			this.doDraw = undefined;
+
+			if(require) {
+				var self = this;
+				require(['util/context'], function(Context) {
+					Context.listen(this._dom, [
+						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove integral</a></li>', 
+						function(e) {
+							self.kill();
+						}]
+					]);
+				});
+			}
 			
 		},
 

@@ -28,7 +28,13 @@ define(['modules/defaultview'], function(Default) {
 						.render());
 					});
 				} else {
-					this.search.on('change', 'input[type=text], select', function() {
+					this.search.on('keyup', 'input[type=text]', function() {
+						var searchTerm = $(this).val();
+						var searchName = $(this).attr('name');
+						self.module.controller.doSearch(searchName, searchTerm);
+					});
+
+					this.search.on('change', 'select', function() {
 						var searchTerm = $(this).val();
 						var searchName = $(this).attr('name');
 						self.module.controller.doSearch(searchName, searchTerm);
