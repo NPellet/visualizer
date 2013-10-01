@@ -25,10 +25,12 @@ function(Default, UTIL, DataTraversing) {
 	 		this.dom = $('<div id="' + this.jsmolid + '"></div>');
 	 		this.module.getDomContent().html(this.dom);
 	 		this._highlights = this._highlights || [];
+
+	 		this.onReady = $.Deferred();
 	 	},
 
 	 	inDom: function() {
-	 		var useSignedApplet = false;
+	 		var useSignedApplet = false, self = this;
 			var info = {
 				width: 700,
 				height: 300,
@@ -46,9 +48,7 @@ function(Default, UTIL, DataTraversing) {
 				disableJ2SLoadMonitor: true,
 				disableInitialConsole: true,
 				readyFunction: function() {
-
-					
-
+					self.onReady.resolve();
 				},
 			    allowjavascript: true,
 				script: "set antialiasDisplay"
@@ -80,14 +80,14 @@ function(Default, UTIL, DataTraversing) {
 	 	update: {
 
 	 		data: function(data) {
-
 	 			if(!data)
 	 				return;
 	 			data = DataTraversing.getValueIfNeeded(data);
 	 			var actions = [];
     			actions.push("load data 'model'");
     			actions.push(data);
-    			actions.push("end 'model';");
+    			actions.push("end 'model';");	
+
     			var cfg = this.module.getConfiguration();
     			if(cfg && cfg.afterloadscript)
     				actions.push(cfg.afterloadscript);
