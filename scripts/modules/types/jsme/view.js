@@ -8,11 +8,15 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 			this.colorvars = [];
 			this.dom = $('<iframe />').attr('src', require.toUrl('./jsme.html'));
 			this.module.getDomContent().html(this.dom);
-			this.onReady = $.Deferred().resolve();
 			var self = this;
+
+			
 			this.dom.bind('load', function() {
 				self.dom.get(0).contentWindow.setController(self.module.controller);
+				self.dom.get(0).contentWindow.setView(self);
 			});
+			this.onReady = $.Deferred();
+			this._highlights = this._highlights || [];
 		},
 		
 		inDom: function() {
@@ -20,6 +24,10 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 			var self = this;
 		},
 		
+		getPrefs: function() {
+			return this.module.getConfiguration().prefs.join(",");
+		},
+
 		onResize: function(width, height) {
 			this.width = width;
 			this.height = height;
@@ -43,14 +51,36 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 		update: { 
 
 			'mol': function(moduleValue) {
-				console.log(moduleValue);
+
 				this.dom.get(0).contentWindow.setMolFile(DataTraversing.getValueIfNeeded(moduleValue));
+				this._currentValue=moduleValue;
 			},
 
 			'xArray': function(moduleValue, varname) {
 				
 			},
 		},
+
+
+		_doHighlight: function(mol, id, val) {
+			console.log("DO: "+mol+" - "+id+" - "+val);
+	/*		
+			if(this._highlighted[id] && val)
+				return;
+			if(!this._highlighted[id] && !val)
+				return;
+			
+			//this._highlighted[id] = val;
+
+			for(var i in this._currentValue._atoms) {
+				if(this._currentValue._atoms[i].indexOf(id) > -1) {
+					console.log("---------- "+i)
+					API.highlight(i, true);
+				}
+			}
+	*/
+		},
+
 
 		resetAnnotations: function() {
 

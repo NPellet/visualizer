@@ -8,24 +8,50 @@
 	</head>
 	<body style="margin: 0; padding: 0;">
 
-<div id="appletContainer"></div>
+	<div id="appletContainer"></div>
+
 	<script type="text/javascript">
 
 		this.setController = function(controller) {
 			this.controller = controller;
 		}
 
+		this.setView = function(view) {
+			this.view = view;
+		}
+
 		this.setMolFile = function(mol) {
 			jsmeApplet.readMolFile(mol);
+		//	this.highlight(1,[1,2,3]);
 		}
 
 		this.setSize = function(w, h) {
-
-			jsmeApplet.setSize([w, h]);
+			var width=w+"px";
+			var height=h+"px";
+			console.log(width+" - "+height);
+	//		jsmeApplet.setWidth(width);
+	//		jsmeApplet.setHeight(height);
+			
+			jsmeApplet.setSize(width, height);
+			jsmeApplet.repaint();
 		}
 
-		this.setSmiles = function(smiles) {
-			jsmeApplet.readMolecule(smiles);
+		this.highlight = function(molIndex, atomsIndex) {
+			var highlights=[];;
+			if (atomsIndex.length) {
+				for (var i=0; i<atomsIndex.length; i++) {
+					highlights.push(atomsIndex[i]+",3");
+				}
+				
+			} else {
+				highlights.push(atomsIndex+",3");
+			}
+			jsmeApplet.setAtomBackgroundColors(molIndex,highlights.join(","))
+			// jsmeApplet.resetAtomColors(1);
+		}
+		
+		this.clearHighlight = function(molIndex, atomsIndex) {
+			jsmeApplet.resetAtomColors(molIndex);
 		}
 
 		function jsmeOnLoad() {
@@ -33,12 +59,17 @@
 			var h = window.innerHeight;
 			
 			var __self = window;
-			jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px", {
-				//optional parameters
-				"options" : "query,hydrogens"
-			});
-			
+			jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px");
+
+			jsmeApplet.options(this.view.getPrefs());
+
 			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() {  var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
+
+			// The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
+			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom,status) {console.log(mol+" - "+atom+" - "+status); this.view._doHighlight(mol,atom,status);})');
+
+
+			this.view.onReady.resolve();
 
 		}
 	</script>
