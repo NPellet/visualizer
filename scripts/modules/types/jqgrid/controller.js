@@ -207,7 +207,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 				titles.push(i);
 				jpaths.push(cols[i].jpath);
 				colnumber.push(cols[i].number ? ['number'] : []);
-				coleditable.push(cols[i].editable);
+				coleditable.push(cols[i].editable || 'none');
 				coloptions.push(cols[i].options);
 			//	colwidth.push(cols[i].width);
 			}
@@ -241,7 +241,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 				cols[group[i].coltitle] = { 
 					jpath: group[i].coljpath, 
 					number: group[i].number[0] == 'number', 
-					editable: group[i].editable,
+					editable: group[i].editable || 'none',
 					options: group[i].options
 				};
 			}

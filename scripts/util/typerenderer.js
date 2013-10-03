@@ -6,7 +6,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 
 	functions.string = {};
 	functions.string.toscreen = function(def, val) {
-		def.resolve(val);
+		def.reject(val);
 	}
 		
 	functions.matrix = {};
@@ -16,8 +16,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 
 	functions.number = {};
 	functions.number.toscreen = function(def, val) {
-
-		def.resolve(val);
+		def.reject(val);
 	}
 
 	functions.chemical = {};
@@ -27,7 +26,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 
 	functions.picture = {};
 	functions.picture.toscreen = function(def, val) {
-		def.resolve('<img src="' + Traversing.getValueIfNeeded(val) + '" />')
+		def.reject('<img src="' + Traversing.getValueIfNeeded(val) + '" />')
 	}
 
 	functions.gif = functions.picture;
@@ -377,13 +376,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 		}
 		
 		element.getChild(jpath).done(function(element) {
-
-			//element
-
-				_valueToScreen(deferred, element, box, opts); 
-
-			//}, function() { deferred.reject(); });	
-
+			_valueToScreen(deferred, element, box, opts); 
 		}, function() { deferred.reject(); })
 		
 		return deferred;

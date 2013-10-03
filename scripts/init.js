@@ -146,10 +146,10 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 		configurable: false,
 		writable: false,
 		value: function(el, returnDeferred) {
-			if(el) {
+			if(el !== undefined) {
 				var val = this.get();
 				if(returnDeferred) { // Returns a deferred if asked
-					if(val[el]) {
+					if(val[el] !== undefined) {
 						if(val[el].fetch)
 							return val[el].fetch();
 						else

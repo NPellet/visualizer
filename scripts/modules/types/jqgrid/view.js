@@ -184,18 +184,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				for(var i = 0; i < elements.length; i++) {
 					this.jqGrid('addRowData', elements[i].id, elements[i]);
 					this.applyFilterToRow(i);
-
 					elements[i]._inDom.resolve();
-
-					/*
-					for(var k in elements[i]) {
-
-						if(k.substring(0, 1) == ';'/* && elements[i][k].build) {
-							
-						//	this.inDomEl(elements[i][k]);
-							
-						}
-					}*/
 				}
 
 
@@ -256,6 +245,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 		renderElement: function(element, source, jpath, l) {
 			var self = this, box = self.module;
 			var defScreen = Renderer.toScreen(source, box, {}, jpath);
+
 			$.when(element._inDom, defScreen).then(function(something, value) {
 				element[l] = value;
 				self.done--;
@@ -267,11 +257,12 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				
 				if(self.done == 0)
 					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
-			}).fail(function() {
+			}, function(value) {
+
+				element[l] = value;
 				self.done--;
-				source.set(jpath, 'N/A', { mute: true });
-				self.jqGrid('setCell', element.id, l, 'N/A');
 				self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
+				
 			});
 		},
 
