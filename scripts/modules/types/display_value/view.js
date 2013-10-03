@@ -37,8 +37,10 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 				
 				if(moduleValue == undefined)
 					view.fillWithVal(cfg.defaultvalue || '');
-				else
-					Renderer.toScreen(moduleValue, this.module).done(function(val) {
+				else {
+
+					Renderer.toScreen(moduleValue, this.module).always(function(val) {
+
 						try {
 							if(cfg.sprintf && cfg.sprintf != "") {
 								require(['libs/sprintf/sprintf'], function() {
@@ -52,6 +54,8 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 							view.fillWithVal(val);
 						}
 					});
+
+				}
 			}
 		},
 		

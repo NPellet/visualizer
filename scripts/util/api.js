@@ -2,6 +2,7 @@ define(['util/datatraversing'], function(Traversing) {
 
 	var allScripts = [];
 	function setVar(name, element, jpath) {
+
 		var self = this;
 		if(!jpath) {
 			this.getRepositoryData().set(name, element);
@@ -10,7 +11,6 @@ define(['util/datatraversing'], function(Traversing) {
 
 		self.repositoryData.set(name, null);
 		element.getChild(jpath).done(function(returned) {
-			console.log(name, returned);
 			self.repositoryData.set(name, returned);
 		});
 	}

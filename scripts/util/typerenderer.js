@@ -360,6 +360,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 	function _valueToScreen(deferred, data, box, args) {
 		var type = Traversing.getType(data),
 			highlights = Traversing.getHighlights(data);
+
 		args = $.extend(args, Traversing.getOptions(data));
 		if(!functions[type])
 			return deferred.resolve('');
@@ -371,7 +372,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 		var deferred = $.Deferred(), self = this;;
 
 		if(!element.getChild) {
-			deferred.reject();
+			_valueToScreen(deferred, element, box, opts);
 			return deferred;
 		}
 		
