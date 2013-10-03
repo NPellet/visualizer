@@ -175,7 +175,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 			this.module.data = moduleValue;
 
 				this.buildElements(list, elements, jpaths);
-				console.log(elements);
+				
 				this.gridElements = elements;
 				this.jqGrid('clearGridData');
 				
@@ -184,13 +184,13 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				for(var i = 0; i < elements.length; i++) {
 					this.jqGrid('addRowData', elements[i].id, elements[i]);
 					this.applyFilterToRow(i);
-
+/*
 					for(var k in elements[i]) {
 						if(k.substring(0, 1) == ';' && elements[i][k].build) {
 
 							elements[i][k].build();
 						}
-					}
+					}*/
 				}
 
 
@@ -214,6 +214,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				this.listenFor(s, jp, i);
 
 			element['id'] = String(i);
+			element['__source'] = s;
+
 			for(var j in jp) {
 				var jpath = jp[j]; jpath = jpath.jpath || jpath;
 				element[j] = 'Loading';

@@ -58,6 +58,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 
 console.log("==========")
 console.log(moduleValue._highlight);
+
 				contentWindow.setMolFile(moduleValue.get());
 				this._currentValue = moduleValue;
 /*
