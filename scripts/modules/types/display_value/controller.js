@@ -16,7 +16,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		
 		configurationReceive: {
 			"value": {
-				type: ['string', 'number', 'mf', 'picture', 'gif', 'jpeg', 'png', 'mol2d'],
+				type: ['string', 'number', 'mf', 'picture', 'gif', 'jpeg', 'png', 'mol2d', 'jpg'],
 				label: 'Any string, number or picture',
 				description: ''
 			},
