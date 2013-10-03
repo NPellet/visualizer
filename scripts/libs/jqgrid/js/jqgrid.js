@@ -6156,8 +6156,11 @@ $.extend($.jgrid,{
 				else { role = "textbox"; }
 				elem = document.createElement("input");
 				elem.type = eltype;
+				
 				elem.value = vl;
+				
 				setAttributes(elem, options);
+				
 				if(eltype !== "button"){
 					if(autowidth) {
 						if(!options.size) { $(elem).css({width:"98%"}); }
@@ -9893,12 +9896,14 @@ $.jgrid.extend({
 					var tmp2 = $t.p.formatCell.call($t, $t.rows[iRow].id,nm,tmp,iRow,iCol);
 					if(tmp2 !== undefined ) {tmp = tmp2;}
 				}
+				
 				var opt = $.extend({}, cm.editoptions || {} ,{id:iRow+"_"+nm,name:nm});
 				var elc = $.jgrid.createEl.call($t,cm.edittype,opt,tmp,true,$.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions || {}));
 				$($t).triggerHandler("jqGridBeforeEditCell", [$t.rows[iRow].id, nm, tmp, iRow, iCol]);
 				if ($.isFunction($t.p.beforeEditCell)) {
 					$t.p.beforeEditCell.call($t, $t.rows[iRow].id,nm,tmp,iRow,iCol);
 				}
+
 				$(cc).html("").append(elc).attr("tabindex","0");
 				$.jgrid.bindEv.call($t, elc, opt);
 				window.setTimeout(function () { $(elc).focus();},0);

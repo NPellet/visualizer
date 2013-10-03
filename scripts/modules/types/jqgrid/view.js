@@ -78,7 +78,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 						index: j, 
 						title: false, 
 						editable: editable,
-						editoptions: { value: jpaths[j].options },
+						editoptions: jpaths[j].editable == 'select' ? { value: jpaths[j].options } : {},
 						edittype: editable ? jpaths[j].editable : false,
 						_jpath: jpaths[j].jpath,
 						sortable: true,
@@ -120,8 +120,10 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   		if(jpaths[colModel[colNum].name].number)
 			   			value = parseFloat(value);
 			   		self.elements[rowId].setChild(colModel[colNum]._jpath, value, { moduleid: self.module.getId() });
+			   		
 			   		self.applyFilterToRow(rowId);
 			   	},
+
 			    viewrecords: true,
 			    onSelectRow: function(rowid, status) {
 			    	//rowid--; // ?? Plugin mistake ?
