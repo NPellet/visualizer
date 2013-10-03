@@ -3159,6 +3159,7 @@ $.jgrid.extend({
 		return success;
 	},
 	addRowData : function(rowid,rdata,pos,src) {
+		console.log(rowid, rdata, pos);
 		if(!pos) {pos = "last";}
 		var success = false, nm, row, gi, si, ni,sind, i, v, prp="", aradd, cnm, cn, data, cm, id;
 		if(rdata) {
@@ -3568,15 +3569,24 @@ $.jgrid.extend({
 				});
 			} else {pos = parseInt(colname,10);}
 			if(pos>=0) {
-				var ind = $t.rows.namedItem(rowid);
+				
+				var ind = $t.rows[rowid];//.namedItem(rowid);
+
+				for(var i in $t.rows) {
+					console.log(i, $t.rows[i]);
+				}
+				//console.log(, rowid, $t.rows[rowid]);
 				if (ind){
+
 					var tcell = $("td:eq("+pos+")",ind);
+
 					if(nData !== "" || forceupd === true) {
 						v = $t.formatter(rowid, nData, pos,ind,'edit');
 						title = $t.p.colModel[pos].title ? {"title":$.jgrid.stripHtml(v)} : {};
 						if($t.p.treeGrid && $(".tree-wrap",$(tcell)).length>0) {
 							$("span",$(tcell)).html(v).attr(title);
 						} else {
+
 							if(nData.getAttribute)
 								$(tcell).html(nData).attr(title);	
 							else

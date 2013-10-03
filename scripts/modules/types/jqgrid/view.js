@@ -181,21 +181,33 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				this.tableElements = elements;
 
 				for(var i = 0; i < elements.length; i++) {
+					console.log(elements[i]);
 					this.jqGrid('addRowData', elements[i].id, elements[i]);
 					this.applyFilterToRow(i);
-console.log(elements[i]);
-					for(var k in elements[i]) {
-						if(k.substring(0, 1) == '_' && elements[i][k].build) {
 
-							elements[i][k].build();
+				}
+
+				for(var i = 0; i < elements.length; i++) {
+					for( var k in elements[ i ] ) {
+						if(k.substring(0, 1) == ';' && elements[i][k].done) {
+							console.log('sfsdfsdf');
+						this.inDomElement(elements[i][k]);	
 						}
 					}
 				}
 
-
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 				//this.jqGrid('sortGrid');
 			}
+		},
+
+		inDomElement: function(el) {
+			el.done(function() {
+				console.log('123');
+				console.log(el);
+		//		if(el.build)
+		//			el.build();	
+			});
 		},
 
 		buildElements: function(source, arrayToPush, jpaths, colorJPath, muteListen) {
@@ -212,12 +224,12 @@ console.log(elements[i]);
 			if(!m)
 				this.listenFor(s, jp, i);
 
-			element['id'] = String(i);
+			element['id'] = i;
 			for(var j in jp) {
 				var jpath = jp[j]; jpath = jpath.jpath || jpath;
 				element[j] = 'Loading';
 				self.done++;
-				element["_" + j] = this.renderElement(element, s, jpath, j);
+				element[";" + j] = this.renderElement(element, s, jpath, j);
 			}
 			
 			s.getChild(this.module.getConfiguration().colorjPath).done(function(value) {
@@ -240,13 +252,16 @@ console.log(elements[i]);
 
 		renderElement: function(element, source, jpath, l) {
 			var self = this, box = self.module;
-			return Renderer.toScreen(source, box, {}, jpath).then(function(value) {
+			return Renderer.toScreen(source, box, {}, jpath).done(function(value) {
+
 				element[l] = value;
 				self.done--;
+
 				self.jqGrid('setCell', element.id, l, value);
+				
 				if(self.done == 0)
 					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
-			}, function() {
+			}).fail(function() {
 				self.done--;
 				source.set(jpath, 'N/A', { mute: true });
 				self.jqGrid('setCell', element.id, l, 'N/A');

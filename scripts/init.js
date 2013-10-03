@@ -174,7 +174,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	var getChild = {
 		value: function(jpath) {
 
-			if(jpath.split) { // Old version
+			if(jpath && jpath.split) { // Old version
 				jpath = jpath.split('.');
 				jpath.shift();
 			}
