@@ -5,6 +5,7 @@ define(['modules/defaultcontroller'], function(Default) {
 	controller.prototype = $.extend(true, {}, Default, {
 
 		onChange: function(mol, smiles) {
+			console.log(mol, smiles);
 			this.setVarFromEvent('onStructureChange', mol, 'mol');
 			this.setVarFromEvent('onStructureChange', smiles, 'smiles');
 		},

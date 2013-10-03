@@ -25,6 +25,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 		},
 
 		getPrefs: function() {
+			if (! this.module.getConfiguration().prefs) return "";
 			return this.module.getConfiguration().prefs.join(",");
 		},
 
