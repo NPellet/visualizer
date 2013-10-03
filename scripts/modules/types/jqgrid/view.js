@@ -70,14 +70,14 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 				for( j in jpaths ) {
 
-					editable = ( jpaths[j].editable !== 'none' && jpaths[j].editable !== 'false' );
+					editable = ( jpaths[j].editable !== 'none' && jpaths[j].editable !== 'false' && jpaths[j].editable !== '' );
 
 					colNames.push(j);
 					colModel.push({
 						name: j, 
 						index: j, 
 						title: false, 
-						editable: ( jpaths[j].editable !== 'none' && jpaths[j].editable !== 'false' ),
+						editable: editable,
 						editoptions: { value: jpaths[j].options },
 						edittype: editable ? jpaths[j].editable : false,
 						_jpath: jpaths[j].jpath,
@@ -184,11 +184,16 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				for(var i = 0; i < elements.length; i++) {
 					this.jqGrid('addRowData', elements[i].id, elements[i]);
 					this.applyFilterToRow(i);
-/*
-					for(var k in elements[i]) {
-						if(k.substring(0, 1) == ';' && elements[i][k].build) {
 
-							elements[i][k].build();
+					elements[i]._inDom.resolve();
+
+					/*
+					for(var k in elements[i]) {
+
+						if(k.substring(0, 1) == ';'/* && elements[i][k].build) {
+							
+						//	this.inDomEl(elements[i][k]);
+							
 						}
 					}*/
 				}
@@ -197,6 +202,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
 				//this.jqGrid('sortGrid');
 			}
+		},
+
+		inDomEl: function(el) {
+			if(el.build)
+				el.build();
 		},
 
 		buildElements: function(source, arrayToPush, jpaths, colorJPath, muteListen) {
@@ -215,6 +225,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			element['id'] = String(i);
 			element['__source'] = s;
+
+			element._inDom = $.Deferred();
 
 			for(var j in jp) {
 				var jpath = jp[j]; jpath = jpath.jpath || jpath;
@@ -243,13 +255,19 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 		renderElement: function(element, source, jpath, l) {
 			var self = this, box = self.module;
-			return Renderer.toScreen(source, box, {}, jpath).then(function(value) {
+			var defScreen = Renderer.toScreen(source, box, {}, jpath);
+			$.when(element._inDom, defScreen).then(function(something, value) {
 				element[l] = value;
 				self.done--;
 				self.jqGrid('setCell', element.id, l, value);
+
+
+				if(defScreen.build)
+					defScreen.build();
+				
 				if(self.done == 0)
 					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
-			}, function() {
+			}).fail(function() {
 				self.done--;
 				source.set(jpath, 'N/A', { mute: true });
 				self.jqGrid('setCell', element.id, l, 'N/A');
