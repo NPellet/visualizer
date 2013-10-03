@@ -37,11 +37,17 @@
 		}
 
 		this.setHighlight = function(atoms, onOff) {
-
+			var molIndex=1;
+			console.log(atoms);
 			if(!onOff) {
 				jsmeApplet.resetAtomColors(1);	
 			} else {
-				jsmeApplet.setAtomBackgroundColors(molIndex,atoms.join(","))	
+				var highlight=[];
+				for (var i=0; i<atoms.length; i++) {
+					highlight.push(atoms[i]);
+					highlight.push(3);
+				}
+				jsmeApplet.setAtomBackgroundColors(molIndex,highlight.join(","))	
 			}
 		}
 		

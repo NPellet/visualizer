@@ -61,7 +61,7 @@ console.log(moduleValue._highlight);
 
 				contentWindow.setMolFile(moduleValue.get());
 				this._currentValue = moduleValue;
-/*
+
 				API.killHighlight( this.module.getId() );
 
 				API.listenHighlight( moduleValue._highlight, function(onOff, highlightId) {
@@ -70,14 +70,14 @@ console.log(moduleValue._highlight);
 					var atoms = [];
 					for ( var i = 0, l = highlightId.length ; i < l ; i++ ) {
 
-						if(!(moduleValue._atomsId[highlightId[i]] instanceof Array))
-							moduleValue._atomsId[highlightId[i]] = [moduleValue._atomsId[highlightId[i]]];
-						atoms = atoms.concat(moduleValue._atomsId[highlightId[i]]);
+						if(!(moduleValue._atoms[highlightId[i]] instanceof Array))
+							moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]]];
+						atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
 					}
 
 					contentWindow.setHighlight(atoms, onOff);
 					
-				}, this.module.getId());*/
+				}, this.module.getId());
 			},
 
 			'xArray': function(moduleValue, varname) {
