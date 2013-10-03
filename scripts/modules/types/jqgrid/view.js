@@ -186,7 +186,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					this.applyFilterToRow(i);
 
 					for(var k in elements[i]) {
-						if(k.substring(0, 1) == '_' && elements[i][k].build) {
+						if(k.substring(0, 1) == ';' && elements[i][k].build) {
 
 							elements[i][k].build();
 						}
@@ -218,7 +218,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				var jpath = jp[j]; jpath = jpath.jpath || jpath;
 				element[j] = 'Loading';
 				self.done++;
-				element["_" + j] = this.renderElement(element, s, jpath, j);
+				element[";" + j] = this.renderElement(element, s, jpath, j);
 			}
 			
 			s.getChild(this.module.getConfiguration().colorjPath).done(function(value) {
