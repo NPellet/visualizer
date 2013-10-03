@@ -22,7 +22,6 @@
 
 		this.setMolFile = function(mol) {
 			jsmeApplet.readMolFile(mol);
-		//	this.highlight(1,[1,2,3]);
 		}
 
 		this.setSize = function(w, h) {
@@ -38,7 +37,6 @@
 
 		this.setHighlight = function(atoms, onOff) {
 			var molIndex=1;
-			console.log(atoms);
 			if(!onOff) {
 				jsmeApplet.resetAtomColors(1);	
 			} else {
@@ -67,7 +65,7 @@
 			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() {  var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
 
 			// The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
-			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom,status) {console.log(mol+" - "+atom+" - "+status); this.view._doHighlight(mol,atom,status);})');
+			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom,status) {this.view._doHighlight(mol,atom,status);})');
 
 
 			this.view.onReady.resolve();
