@@ -23,7 +23,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 			var cfgM = this.module.getConfiguration();
 			var self = this;
 		},
-		
+
 		getPrefs: function() {
 			return this.module.getConfiguration().prefs.join(",");
 		},
@@ -51,9 +51,32 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 		update: { 
 
 			'mol': function(moduleValue) {
+				var contentWindow = this.dom.get(0).contentWindow;
 
-				this.dom.get(0).contentWindow.setMolFile(DataTraversing.getValueIfNeeded(moduleValue));
-				this._currentValue=moduleValue;
+				if(!moduleValue)
+					return;
+
+console.log("==========")
+console.log(moduleValue._highlight);
+				contentWindow.setMolFile(moduleValue.get());
+				this._currentValue = moduleValue;
+/*
+				API.killHighlight( this.module.getId() );
+
+				API.listenHighlight( moduleValue._highlight, function(onOff, highlightId) {
+					console.log("--------------")
+					console.log(highlightId, moduleValue);
+					var atoms = [];
+					for ( var i = 0, l = highlightId.length ; i < l ; i++ ) {
+
+						if(!(moduleValue._atomsId[highlightId[i]] instanceof Array))
+							moduleValue._atomsId[highlightId[i]] = [moduleValue._atomsId[highlightId[i]]];
+						atoms = atoms.concat(moduleValue._atomsId[highlightId[i]]);
+					}
+
+					contentWindow.setHighlight(atoms, onOff);
+					
+				}, this.module.getId());*/
 			},
 
 			'xArray': function(moduleValue, varname) {

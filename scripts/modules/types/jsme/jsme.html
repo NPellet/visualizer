@@ -36,18 +36,13 @@
 			jsmeApplet.repaint();
 		}
 
-		this.highlight = function(molIndex, atomsIndex) {
-			var highlights=[];;
-			if (atomsIndex.length) {
-				for (var i=0; i<atomsIndex.length; i++) {
-					highlights.push(atomsIndex[i]+",3");
-				}
-				
+		this.setHighlight = function(atoms, onOff) {
+
+			if(!onOff) {
+				jsmeApplet.resetAtomColors(1);	
 			} else {
-				highlights.push(atomsIndex+",3");
+				jsmeApplet.setAtomBackgroundColors(molIndex,atoms.join(","))	
 			}
-			jsmeApplet.setAtomBackgroundColors(molIndex,highlights.join(","))
-			// jsmeApplet.resetAtomColors(1);
 		}
 		
 		this.clearHighlight = function(molIndex, atomsIndex) {
