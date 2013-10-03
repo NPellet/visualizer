@@ -42,10 +42,10 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 		var id = Util.getNextUniqueId();
 		
 		// Find the dom in here
-		var can = $( '<canvas />', { id: id } );
+		var can = $( '<canvas />', { id: id } ).css({width: 100, height: 100}).get(0);
 		
 		def.build = function() {
-
+//console.trace();
 			var canvas = new ChemDoodle.ViewerCanvas(id, 100, 100);
 			this.canvas = canvas;
 			canvas.specs.backgroundColor = "transparent";
@@ -97,7 +97,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 		def.getCWC = function() {
 			return this.canvas;
 		}
-		
+
 		def.resolve(can);
 	}
 
@@ -371,10 +371,19 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 	functions.toScreen = function(element, box, opts, jpath) {
 		var deferred = $.Deferred(), self = this;;
 
-		Traversing.getValueFromJPath(element, jpath).then(function(element) {
-			Traversing.fetchElementIfNeeded(element).then(function(element) { 
+		if(!element.getChild) {
+			deferred.reject();
+			return deferred;
+		}
+		
+		element.getChild(jpath).done(function(element) {
+
+			//element
+
 				_valueToScreen(deferred, element, box, opts); 
-			}, function() { deferred.reject(); });	
+
+			//}, function() { deferred.reject(); });	
+
 		}, function() { deferred.reject(); })
 		
 		return deferred;

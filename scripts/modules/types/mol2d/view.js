@@ -32,7 +32,10 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 
 			this._height = height - 20;
 			this._width = width - 20;
-			this.def.canvas.resize(width - 20, height - 20);
+
+			if(this.def)
+				this.def.canvas.resize(width - 20, height - 20);
+			
 			this.drawMolecule();
 		},
 		
