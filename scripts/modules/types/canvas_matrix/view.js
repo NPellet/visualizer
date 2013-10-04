@@ -288,11 +288,11 @@ define(['modules/defaultview', 'util/webworker', 'libs/jquery.event.drag/jquery.
 	*/
 
 				var self = this;
-
+console.log('REDO');
 				if(!this.minmaxworker) {
 					this.minmaxworker = new Worker('./scripts/webworker/scripts/getminmaxmatrix.js');
 					this.minmaxworker.addEventListener('message', function(event) {
-							
+							console.log('Get message');
 						var data = event.data.message;
 						
 						self.minValue = data.min;

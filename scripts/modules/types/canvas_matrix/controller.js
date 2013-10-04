@@ -196,7 +196,8 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 		},
 		
 		doSaveConfiguration: function(confSection) {
-			var group = confSection[0].colors[0];		
+			
+			var group = confSection[0].opts[0].color;		
 			var colors = [];
 			for(var i = 0; i < group.length; i++)
 				colors.push(group[i].color);
