@@ -1,0 +1,209 @@
+{
+	"_version": "2.1",
+	"modules": [
+		{
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 13,
+				"top": 10
+			},
+			"size": {
+				"width": 0,
+				"height": 0
+			},
+			"configuration": {},
+			"id": 1
+		},
+		{
+			"type": "jqgrid",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 31,
+				"height": 34
+			},
+			"configuration": {
+				"colsjPaths": {
+					"ID": {
+						"jpath": "element.name",
+						"number": false,
+						"editable": "none",
+						"options": ""
+					},
+					"highlight": {
+						"jpath": "element._highlight.0",
+						"number": false,
+						"editable": "none",
+						"options": ""
+					}
+				},
+				"nbLines": 20,
+				"toggle": "",
+				"colorjPath": "",
+				"displaySearch": false,
+				"filterRow": ""
+			},
+			"id": 2,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.molfile",
+					"name": "mol2d"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "list",
+					"name": "mols2d"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "jsme",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 42,
+				"top": 0
+			},
+			"size": {
+				"width": 50,
+				"height": 45
+			},
+			"configuration": {
+				"prefs": [
+					"noxbutton",
+					"rbutton",
+					"nohydrogens",
+					"query",
+					"oldlook"
+				]
+			},
+			"id": 3,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onStructureChange",
+					"rel": "mol",
+					"jpath": "_2",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "mol",
+					"name": "mol2d"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "jsme",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 37
+			},
+			"size": {
+				"width": 38,
+				"height": 34
+			},
+			"configuration": {
+				"prefs": [
+					"depict",
+					"oldlook"
+				]
+			},
+			"id": 4,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "mol",
+					"name": "mol2d"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "mol2d",
+			"jpath": "element.mol2d"
+		},
+		{
+			"varname": "mols3d",
+			"jpath": "element.mols3d"
+		},
+		{
+			"varname": "mol3d",
+			"jpath": "element.mol3d"
+		},
+		{
+			"varname": "mols2d",
+			"jpath": "element.mols2d"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"_local": false,
+	"_saved": 1380886298789,
+	"_time": 1380886298789,
+	"_name": "Master"
+}
