@@ -27,10 +27,6 @@
 		this.setSize = function(w, h) {
 			var width=w+"px";
 			var height=h+"px";
-			console.log(width+" - "+height);
-	//		jsmeApplet.setWidth(width);
-	//		jsmeApplet.setHeight(height);
-			
 			jsmeApplet.setSize(width, height);
 			jsmeApplet.repaint();
 		}
@@ -62,10 +58,10 @@
 
 			jsmeApplet.options(this.view.getPrefs());
 
-			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() {  console.log(this.jsmeApplet.smiles()); var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
+			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() {  var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
 
 			// The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
-			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom,status) {this.view._doHighlight(mol,atom,status);})');
+			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom,status) {this.view._doHighlight(mol,atom);})');
 
 
 			this.view.onReady.resolve();

@@ -4,8 +4,8 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {
-			this.series = {};
-			this.colorvars = [];
+
+			this.highlightedAtom;
 			this.dom = $('<iframe />').attr('src', require.toUrl('./jsme.html'));
 			this.module.getDomContent().html(this.dom);
 			var self = this;
@@ -25,7 +25,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 		},
 
 		getPrefs: function() {
-			if (! this.module.getConfiguration().prefs) return "";
+			if (! this.module.getConfiguration().prefs) return "oldLook";
 			return this.module.getConfiguration().prefs.join(",");
 		},
 
@@ -83,22 +83,20 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 
 
 		_doHighlight: function(mol, id, val) {
-			console.log("DO: "+mol+" - "+id+" - "+val);
-	/*		
-			if(this._highlighted[id] && val)
-				return;
-			if(!this._highlighted[id] && !val)
-				return;
-			
-			//this._highlighted[id] = val;
-
 			for(var i in this._currentValue._atoms) {
-				if(this._currentValue._atoms[i].indexOf(id) > -1) {
-					console.log("---------- "+i)
-					API.highlight(i, true);
+				if (id==0) {
+					if(this._currentValue._atoms[i].indexOf(this.highlightedAtom) > -1) {
+						API.highlight(i, false);
+					}
+				} else {
+					if(this._currentValue._atoms[i].indexOf(id) > -1) {
+						API.highlight(i, true);
+					}						
 				}
+
 			}
-	*/
+
+			this.highlightedAtom = id;	
 		},
 
 

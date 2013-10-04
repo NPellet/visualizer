@@ -5,13 +5,11 @@ define(['modules/defaultcontroller'], function(Default) {
 	controller.prototype = $.extend(true, {}, Default, {
 
 		onChange: function(mol, smiles) {
-			console.log(mol, smiles);
 			this.setVarFromEvent('onStructureChange', mol, 'mol');
 			this.setVarFromEvent('onStructureChange', smiles, 'smiles');
 		},
 
 		configurationSend: {
-			
 			events: {
 				'onStructureChange': {
 					label: 'Molecular structure has changed'
@@ -91,7 +89,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			return {
 				groups: {
 					gencfg: [{
-						prefs: [this.module.getConfiguration().prefs || []],
+						prefs: [this.module.getConfiguration().prefs || ["oldlook"]],
 					}]
 				}
 			}
