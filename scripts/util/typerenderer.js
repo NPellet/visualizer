@@ -38,66 +38,68 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 	functions.mol2d = {};
 	functions.mol2d.toscreen = function(def, molfile, options, highlights, box) {
 		
-		var id = Util.getNextUniqueId();
-		
-		// Find the dom in here
-		var can = $( '<canvas />', { id: id } ).css({width: 100, height: 100}).get(0);
-		
-		def.build = function() {
-//console.trace();
-			var canvas = new ChemDoodle.ViewerCanvas(id, 100, 100);
-			this.canvas = canvas;
-			canvas.specs.backgroundColor = "transparent";
-			canvas.specs.bonds_width_2D = .6;
-			canvas.specs.bonds_saturationWidth_2D = .18;
-			canvas.specs.bonds_hashSpacing_2D = 2.5;
-			canvas.specs.atoms_font_size_2D = 10;
-			canvas.specs.atoms_font_families_2D = ['Helvetica', 'Arial', 'sans-serif'];
-			canvas.specs.atoms_displayTerminalCarbonLabels_2D = true;
+		require(['ChemDoodle'], function() {
+			var id = Util.getNextUniqueId();
+			
+			// Find the dom in here
+			var can = $( '<canvas />', { id: id } ).css({width: 100, height: 100}).get(0);
+			
+			def.build = function() {
+	//console.trace();
+				var canvas = new ChemDoodle.ViewerCanvas(id, 100, 100);
+				this.canvas = canvas;
+				canvas.specs.backgroundColor = "transparent";
+				canvas.specs.bonds_width_2D = .6;
+				canvas.specs.bonds_saturationWidth_2D = .18;
+				canvas.specs.bonds_hashSpacing_2D = 2.5;
+				canvas.specs.atoms_font_size_2D = 10;
+				canvas.specs.atoms_font_families_2D = ['Helvetica', 'Arial', 'sans-serif'];
+				canvas.specs.atoms_displayTerminalCarbonLabels_2D = true;
 
-			var molLoaded = ChemDoodle.readMOL(molfile.value);
-			molLoaded.scaleToAverageBondLength(14.4);
-			canvas.loadMolecule(molLoaded);
+				var molLoaded = ChemDoodle.readMOL(molfile.value);
+				molLoaded.scaleToAverageBondLength(14.4);
+				canvas.loadMolecule(molLoaded);
 
-			API.listenHighlight(molfile._highlight, function(value, commonKeys) {
+				API.listenHighlight(molfile._highlight, function(value, commonKeys) {
 
-				if($("#" + id, dom).length == 0)
-					return;
+					if($("#" + id, dom).length == 0)
+						return;
 
-				var commonKeys2 = {};
-				var atoms;
+					var commonKeys2 = {};
+					var atoms;
 
-				// commonkeys: ['A', 'B'];
-				for(var i = commonKeys.length - 1; i >= 0; i--) {
-					atoms = molfile._atoms[commonKeys[i]]; // [0, 1, 15, 12]
-					if(!atoms)
-						continue;
+					// commonkeys: ['A', 'B'];
+					for(var i = commonKeys.length - 1; i >= 0; i--) {
+						atoms = molfile._atoms[commonKeys[i]]; // [0, 1, 15, 12]
+						if(!atoms)
+							continue;
 
-					for(var j = atoms.length - 1; j >= 0; j--) {
+						for(var j = atoms.length - 1; j >= 0; j--) {
 
-						molLoaded.atoms[atoms[j]].isHover = value;
+							molLoaded.atoms[atoms[j]].isHover = value;
+						}
 					}
-				}
 
-				for(var i = 0; i < molLoaded.atoms.length; i++) {
-					canvas._domcanvas.width = canvas._domcanvas.width; // Erase canvas
-					molLoaded.atoms[i].drawChildExtras = true;
-				}
+					for(var i = 0; i < molLoaded.atoms.length; i++) {
+						canvas._domcanvas.width = canvas._domcanvas.width; // Erase canvas
+						molLoaded.atoms[i].drawChildExtras = true;
+					}
 
-				canvas.repaint();
+					canvas.repaint();
 
-			}, true, box.id || 0);
-		}
+				}, true, box.id || 0);
+			}
 
-		def.unbuild = function() {
-			//$(this.canvas).remove();
-		};
+			def.unbuild = function() {
+				//$(this.canvas).remove();
+			};
 
-		def.getCWC = function() {
-			return this.canvas;
-		}
+			def.getCWC = function() {
+				return this.canvas;
+			}
 
-		def.resolve(can);
+			def.resolve(can);
+		});
 	}
 
 	functions.mol3d = {};
