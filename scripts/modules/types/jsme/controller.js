@@ -10,7 +10,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			this.setVarFromEvent('onStructureChange', smiles, 'smiles');
 	
 // BUG prevent to send the molfile
-		//	this.setVarFromEvent('onStructureChange', {type:"mol2d", value:mol}, 'mol');
+			this.setVarFromEvent('onStructureChange', new DataObject({type:"mol2d", value:mol}), 'mol');
 		},
 
 		configurationSend: {

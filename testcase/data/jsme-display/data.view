@@ -107,7 +107,13 @@
 					"event": "onStructureChange",
 					"rel": "mol",
 					"jpath": "_2",
-					"name": ""
+					"name": "molfile"
+				},
+				{
+					"event": "onStructureChange",
+					"rel": "smiles",
+					"jpath": "",
+					"name": "smiles"
 				}
 			],
 			"dataSource": [
