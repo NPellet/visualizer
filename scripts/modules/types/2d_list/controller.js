@@ -4,8 +4,9 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 	controller.prototype = $.extend(true, {}, Default, {
 
 		initimpl: function() {
+/*
 			var actions;
-			module.getActionForEvent('onHover', function(action) {
+			this.module.getActionForEvent('onHover', function(action) {
 				this.module.getDomView().on('hover', 'table td', function() {
 					var tdIndex = $(this).index();
 					var trIndex = $(this).parent().index();
@@ -18,7 +19,7 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 				});
 
 			});
-
+*/
 		},
 		
 		configurationSend:  {
@@ -54,7 +55,7 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 		doConfiguration: function(section) {
 			
 			var jpaths = [], data;
-			if((data = this.module.getDataFromRel('list') && data != null)
+			if(data = this.module.getDataFromRel('list') && data != null)
 				Traversing.getJPathsFromElement(data[0], jpaths);
 			
 			return {
