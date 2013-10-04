@@ -8,7 +8,7 @@ define(['modules/module'], function(Module) {
 			return {
 				'display_value': 'Single value',
 				'postit': 'Sticky note',
-				'grid': 'Table',
+//				'grid': 'Table',
 				'jqgrid': 'Table v2',
 				'2d_list': '2D Grid',
 				'hashmap': 'Object viewer',
@@ -21,7 +21,7 @@ define(['modules/module'], function(Module) {
 				'webservice_button': 'Webservice button',
 				'webservice_cron': 'Webservice cron',
 				'webservice_search': 'Webservice search',
-				'editable_grid': 'Editable Table',
+//				'editable_grid': 'Editable Table',
 				'grid_selector': 'Table Selector',	
 				'filelistupload': 'Files upload',	
 				'object_editor': 'Object editor',

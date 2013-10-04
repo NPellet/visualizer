@@ -2,7 +2,7 @@
 	"modules": [
 		{
 			"type": "grid",
-			"title": "Untitled module",
+			"title": "Click on a line",
 			"displayWrapper": true,
 			"position": {
 				"left": 0,
