@@ -1,5 +1,5 @@
 
-define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, API, Util, Traversing) {
+define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], function(require, $, API, Util, Traversing) {
 
 	var functions = {};
 
@@ -39,14 +39,15 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 	functions.mol2d.toscreen = function(def, molfile, options, highlights, box) {
 		
 		require(['ChemDoodle'], function() {
+
 			var id = Util.getNextUniqueId();
 			
 			// Find the dom in here
-			var can = $( '<canvas />', { id: id } ).css({width: 100, height: 100}).get(0);
+			var can = $( '<canvas />', { id: id } ).get(0);
 			
 			def.build = function() {
 	//console.trace();
-				var canvas = new ChemDoodle.ViewerCanvas(id, 100, 100);
+				var canvas = new ChemDoodle.ViewerCanvas(id);
 				this.canvas = canvas;
 				canvas.specs.backgroundColor = "transparent";
 				canvas.specs.bonds_width_2D = .6;
@@ -60,6 +61,8 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 				molLoaded.scaleToAverageBondLength(14.4);
 				canvas.loadMolecule(molLoaded);
 
+				this.molecule = molLoaded;
+				
 				API.listenHighlight(molfile._highlight, function(value, commonKeys) {
 
 					if($("#" + id, dom).length == 0)
@@ -97,6 +100,8 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 			def.getCWC = function() {
 				return this.canvas;
 			}
+
+			def.canvasdom = can;
 
 			def.resolve(can);
 		});
@@ -373,7 +378,7 @@ define(['jquery', 'util/api', 'util/util', 'util/datatraversing'], function($, A
 	functions.toScreen = function(element, box, opts, jpath) {
 		var deferred = $.Deferred(), self = this;;
 
-		if(!element.getChild) {
+		if(!element.getChild || !jpath) {
 			_valueToScreen(deferred, element, box, opts);
 			return deferred;
 		}

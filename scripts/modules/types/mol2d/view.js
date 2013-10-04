@@ -42,7 +42,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 		update: {
 			'mol2d': function(moduleValue, canDoAtomLabels) {
 				
-				if(moduleValue === undefined)
+				if(!moduleValue)
 					return;
 
 				API.killHighlight(this.module.id);
@@ -56,9 +56,13 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 				this.def = def;
 				
 
-				this.def.done(function(mol) {
+				this.def.always(function(mol) {
 
 					view.module.getDomContent().html(mol);
+
+					if(!view.def.build)
+						return;
+
 					view.def.build();
 
 					view._molecule = view.def.canvas;
@@ -87,24 +91,31 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 		
 		drawMolecule: function() {
 
-			if(!this._width || !this._height || !this._molecule || !this._canvas)
-					return;
 
-			var dim = this.def.canvas.getDimension();
+
+		if(!this._width || !this._height || !this.def || !this.def.molecule || !this.def.canvas)
+				return;
+
+			var dim = this.def.molecule.getDimension();
 
 			var ratio = Math.max(this._width / dim.x, this._height / dim.y);
-			if(this._canvas._domcanvas)
-				this._canvas._domcanvas.width = this._width;
-			
+			if(this.def.canvasdom) {
+				this.def.canvasdom.width = this._width;
+				this.def.canvasdom.height = this._height;
+
+				this.def.canvas.width = this._width;
+				this.def.canvas.height = this._height;
+			}
 			
 			var ratio = Math.min(1, ratio);
-			this._molecule.scaleToAverageBondLength(30 * ratio);
+			this.def.molecule.scaleToAverageBondLength(30 * ratio);
 
-			this._canvas.specs.atoms_font_size_2D = 10 * ratio;
-			this._canvas.specs.bonds_hashSpacing_2D = 2.5 * ratio;
-			this._canvas.specs.bonds_width_2D = .6 * ratio;
+			this.def.canvas.specs.atoms_font_size_2D = 10 * ratio;
+			this.def.canvas.specs.bonds_hashSpacing_2D = 2.5 * ratio;
+			this.def.canvas.specs.bonds_width_2D = .6 * ratio;
 			//this._canvas.specs.bonds_saturationWidth_2D = .18 * ratio;
-			this._canvas.loadMolecule(this._molecule);
+			this.def.canvas.loadMolecule(this.def.molecule);
+
 		},
 		
 		getDom: function() {

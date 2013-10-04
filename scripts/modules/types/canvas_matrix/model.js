@@ -42,7 +42,7 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 				break;
 				
 				case 'intersect':
-				console.log(data);
+
 					var data = data.data[0][0];
 					return getjPath(data, accepts);
 				break;

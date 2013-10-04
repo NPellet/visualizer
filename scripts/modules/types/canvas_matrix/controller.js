@@ -1,4 +1,4 @@
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
@@ -62,17 +62,17 @@ define(['modules/defaultcontroller'], function(Default) {
 									value = keyed[2];
 
 
-							CI.API.setSharedVarFromJPath(actions[i].name, value, actions[i].jpath);
+							API.setVariable(actions[i].name, value, actions[i].jpath);
 						}
 					}
-				})).on('mousemove', 'canvas', function() {
+				}))//.on('mousemove', 'canvas', function() {
 
-				for(var i in actions)
+/*				for(var i in actions)
 					if(actions[i].event == "onPixelHover")
-						CI.API.blankSharedVar(actions[i].name);
+						API.blankSharedVar(actions[i].name);
 
 				});
-			
+*/			
 			
 
 
@@ -93,7 +93,7 @@ define(['modules/defaultcontroller'], function(Default) {
 								value = keyed[1];
 						else if(actions[i].rel == "intersect")
 								value = keyed[2];
-						CI.API.setSharedVarFromJPath(actions[i].name, value, actions[i].jpath);
+						API.setVariable(actions[i].name, value, actions[i].jpath);
 					}
 				}
 			});

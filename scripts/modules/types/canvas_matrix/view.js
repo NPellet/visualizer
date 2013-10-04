@@ -1,4 +1,4 @@
-define(['modules/defaultview'], function(Default) {
+define(['modules/defaultview', 'util/webworker', 'libs/jquery.event.drag/jquery.event.drag-2.2', 'libs/throttle-debounce/jquery.ba-throttle-debounce.min'], function(Default, WorkerHandler) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -262,26 +262,39 @@ define(['modules/defaultview'], function(Default) {
 
 			matrix: function(moduleValue) {
 
-					if(!this.canvas)
+				if(!this.canvas)
+					return;
+
+				this.doCanvasErase();
+				if(!moduleValue || !moduleValue.value)
 						return;
 
-					this.doCanvasErase();
-					if(!moduleValue || !moduleValue.value)
-							return;
-
-					
-					var gridData;
-					// Get the new module value
-					var moduleValue;
-					this.gridData = moduleValue.value.data;
-					this.canvasNbX = this.gridData[0].length;
-					this.canvasNbY = this.gridData.length;
-					timeStart = Date.now();
-					var self = this;
+				
+				var gridData;
+				// Get the new module value
+				var moduleValue;
+				this.gridData = moduleValue.value.data;
+				this.canvasNbX = this.gridData[0].length;
+				this.canvasNbY = this.gridData.length;
+				timeStart = Date.now();
+				var self = this;
 
 
+	/*			
+				CI.WebWorker.create('jsonparser', './scripts/webworker/scripts/jsonparser.js');
+				CI.WebWorker.create('getminmaxmatrix', './scripts/webworker/scripts/getminmaxmatrix.js');
+				CI.WebWorker.create('computesprings', './scripts/webworker/scripts/computesprings.js');
+				CI.WebWorker.create('googleVisualizationArrayToDataTable', './scripts/webworker/scripts/googleVisualizationArrayToDataTable.js');
+	*/
 
-					CI.WebWorker.send('getminmaxmatrix', moduleValue.value.data, function(data) {
+				var self = this;
+
+				if(!this.minmaxworker) {
+					this.minmaxworker = new Worker('./scripts/webworker/scripts/getminmaxmatrix.js');
+					this.minmaxworker.addEventListener('message', function(event) {
+							
+						var data = event.data.message;
+						
 						self.minValue = data.min;
 						self.maxValue = data.max;
 						self.doChangeWorkersData();
@@ -294,9 +307,13 @@ define(['modules/defaultview'], function(Default) {
 						}
 						self.redoScale(self.minValue, self.maxValue);
 						self.launchWorkers();
-					});			
+					});
+				}
 
+				this.minmaxworker.postMessage({ time: Date.now(), message: moduleValue.value.data });
 			}
+			
+			
 		},
 		
 		initWorkers: function() {
@@ -386,12 +403,12 @@ define(['modules/defaultview'], function(Default) {
 		
 		initWorker: function(pxPerCell) {
 			
-			var worker = new Worker('./scripts/modules/implementations/canvas_matrix/1.2/worker.js');
+			var worker = new Worker('./scripts/modules/types/canvas_matrix/worker.js');
 			worker.postMessage({ title: "init", message: { colors: this.getColors(), squareLoading: this.squareLoading, highcontrast: this.getHighContrast() } });
 			
 			var self = this;
 			worker.addEventListener('message', function(event) {
-				
+				console.log(event.data);
 				var data = event.data;
 				var pxPerCell = data.pxPerCell;
 				var buffIndexX = data.indexX;
