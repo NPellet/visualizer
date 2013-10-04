@@ -170,7 +170,8 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 							{
 								type: 'Color',
 								name: 'color',
-								title: 'Color'
+								title: 'Color',
+								multiple: true
 							}
 						]
 					}
