@@ -5,8 +5,12 @@ define(['modules/defaultcontroller'], function(Default) {
 	controller.prototype = $.extend(true, {}, Default, {
 
 		onChange: function(mol, smiles) {
-			this.setVarFromEvent('onStructureChange', mol, 'mol');
+// console.log(mol);
+// console.log(smiles);
 			this.setVarFromEvent('onStructureChange', smiles, 'smiles');
+	
+// BUG prevent to send the molfile
+		//	this.setVarFromEvent('onStructureChange', {type:"mol2d", value:mol}, 'mol');
 		},
 
 		configurationSend: {

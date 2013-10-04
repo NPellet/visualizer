@@ -11,6 +11,7 @@
 	<div id="appletContainer"></div>
 
 	<script type="text/javascript">
+	var jsmeApplet;
 
 		this.setController = function(controller) {
 			this.controller = controller;
@@ -28,7 +29,7 @@
 			var width=w+"px";
 			var height=h+"px";
 			jsmeApplet.setSize(width, height);
-			jsmeApplet.repaint();
+//			jsmeApplet.repaint();
 		}
 
 		this.setHighlight = function(atoms, onOff) {
@@ -53,12 +54,11 @@
 			var w = window.innerWidth;
 			var h = window.innerHeight;
 			
-			var __self = window;
+			//var __self = window;
 			jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px");
-
 			jsmeApplet.options(this.view.getPrefs());
 
-			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() {  var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
+			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
 
 			// The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
 			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom,status) {this.view._doHighlight(mol,atom);})');

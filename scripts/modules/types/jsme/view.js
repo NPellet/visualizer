@@ -53,11 +53,12 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 
 			'mol': function(moduleValue) {
 				var contentWindow = this.dom.get(0).contentWindow;
-
+//console.log(this.dom.get(0));
 				if(!moduleValue)
 					return;
 
 				contentWindow.setMolFile(moduleValue.get());
+				return;
 				this._currentValue = moduleValue;
 
 				API.killHighlight( this.module.getId() );
@@ -83,6 +84,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 
 
 		_doHighlight: function(mol, id, val) {
+			if (! this._currentValue) return;
 			for(var i in this._currentValue._atoms) {
 				if (id==0) {
 					if(this._currentValue._atoms[i].indexOf(this.highlightedAtom) > -1) {
