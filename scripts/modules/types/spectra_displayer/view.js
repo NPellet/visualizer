@@ -551,7 +551,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				for(var i = 0; i < this.series[serieName].length; i++)
 					this.series[serieName][i].kill();
 
-			this.series[varname] = [];
+			this.series[serieName] = [];
 		},
 
 		makeSerie: function(data, value) {
