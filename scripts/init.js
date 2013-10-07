@@ -233,7 +233,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 	var dataChanged = {
 		value: function(moduleid) {
-			console.log(this, this._listenersDataChanged);
+			
 			if(!this._listenersDataChanged)
 				return;
 
@@ -250,17 +250,17 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 	var listenDataChanged = {
 		value: function(callback, moduleid) {
-			console.log(this);
+			
 			if(!this._listenersDataChanged)
 				Object.defineProperty(this, '_listenersDataChanged', {
 					value: [],
-					enumerable: true,
+					enumerable: false,
 					writable: true,
 					configurable: true
 				});
 
 			this._listenersDataChanged.push([callback, moduleid]);
-			console.log(this._listenersDataChanged);
+			
 		}
 	}
 

@@ -1078,6 +1078,9 @@ define(['jquery', 'util/util'], function($, Util) {
 					shape.set('labelPosition', annotation.label[i].position, i);
 					shape.set('labelColor', annotation.label[i].color || 'black', i);
 					shape.set('labelSize', annotation.label[i].size, i);
+					shape.set('labelAngle', annotation.label[i].angle || 0, i);
+
+
 					if(annotation.label[i].anchor)
 						shape.set('labelAnchor', annotation.label[i].anchor, i);
 				}
@@ -4222,6 +4225,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 					this.setLabelText(i);
 					this.setLabelSize(i);
+					//this.setLabelAngle(i);
 					this.setLabelColor(i);
 
 				}
@@ -4238,17 +4242,16 @@ define(['jquery', 'util/util'], function($, Util) {
 		//	this.kill();
 			var variable;
 			this.position = this.setPosition();
-
 			this.redrawImpl();
-
 			if(!this.position)
 				return;
 
 			this.everyLabel(function(i) {
 
-				if(this.get('labelPosition')) {
+				if(this.get('labelPosition', i)) {
 
 					this.setLabelPosition(i);
+					this.setLabelAngle(i);
 
 				}
 
@@ -4288,6 +4291,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var position = this._getPosition(this.getFromData('pos'));
 			this.setDom('x', position.x);
 			this.setDom('y', position.y);
+			return true;
 		},
 
 		setFillColor: function() {			this.setDom('fill', this.get('fillColor'));					},
@@ -4454,6 +4458,8 @@ define(['jquery', 'util/util'], function($, Util) {
 				var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
 			}
 
+			console.log(pos);
+
 			this.label[labelIndex].setAttribute('x', pos.x);
 			this.label[labelIndex].setAttribute('y', pos.y);
 			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
@@ -4461,8 +4467,14 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		_setLabelAngle: function(labelIndex, angle) {
-			var currAnge = this.get('labelAngle', labelIndex) || 0;
-			this.label[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ', ' + this.label[labelIndex].getAttribute('x') + ', ' + this.label[labelIndex].getAttribute('y') + ')');
+			var currAngle = this.get('labelAngle', labelIndex) || 0;
+
+			if(currAngle == 0)
+				return;
+
+			var x = this.label[labelIndex].getAttribute('x');
+			var y = this.label[labelIndex].getAttribute('y');
+			this.label[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')');
 		},
 
 		_forceLabelAnchor: function(i) {
@@ -4590,6 +4602,8 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		setPosition: function() {
 			var position = this._getPosition(this.getFromData('pos'));
+			if(!position.x || !position.y)
+				return;
 			this.setDom('x2', position.x);
 			this.setDom('y2', position.y);
 			return true;
@@ -4597,6 +4611,8 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		setPosition2: function() {
 			var position = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
+			if(!position.x || !position.y)
+				return;
 			this.setDom('x1', position.x);
 			this.setDom('y1', position.y);
 		},
@@ -4969,6 +4985,8 @@ define(['jquery', 'util/util'], function($, Util) {
 		setLabelPosition: function(labelIndex) {
 			var pos1 = this._getPosition(this.getFromData('pos')),
 				pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
+
+
 			this._setLabelPosition(labelIndex, this._getPosition(this.get('labelPosition', labelIndex), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));			
 		}
 
