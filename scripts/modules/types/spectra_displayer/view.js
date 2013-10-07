@@ -389,7 +389,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 						break;
 					}
 
-					API.listenHighlight.listen(moduleValue._highlight || [], function(value, commonKeys) {
+					API.listenHighlight(moduleValue._highlight || [], function(value, commonKeys) {
 
 						for(var i = 0; i < commonKeys.length; i++) {
 
