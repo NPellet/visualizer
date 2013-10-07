@@ -85,9 +85,7 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 
 					can.width = can.width; // Erase canvas
 					for(var i = 0; i < molLoaded.atoms.length; i++) {
-
-						molLoaded.atoms[i].drawChildExtras = true;
-
+						molLoaded.atoms[i].drawChildExtras = molLoaded.atoms[i].isHover;
 					}
 
 					canvas.repaint();

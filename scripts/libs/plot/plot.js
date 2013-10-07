@@ -4296,7 +4296,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		setDashArray: function() {			if(this.get('strokeDashArray')) this.setDom('stroke-dasharray', this.get('strokeDashArray'));				},
 
 		setLabelText: function(index) {		if(this.label) this.label[index].textContent = this.data.label[index].text;					},
-		setLabelColor: function(index) {	if(this.label) this.label[index].setAttribute('color', this.get('labelColor'));				},
+		setLabelColor: function(index) {	if(this.label) this.label[index].setAttribute('fill', this.get('labelColor'));				},
 		setLabelSize: function(index) {		if(this.label) this.label[index].setAttribute('font-size', this.get('labelSize'));		},
 		setLabelPosition: function(index) {	if(this.label) this._setLabelPosition(index);											},
 		setLabelAngle: function(index) {	if(this.label) this._setLabelAngle(index);												},

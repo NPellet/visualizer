@@ -77,6 +77,49 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 					}
 
 					view.drawMolecule();
+
+					view.def.canvas.CIOnMouseMove(function(e) {
+
+						var b, radius = view.def.canvas.specs.atoms_font_size_2D;
+						var x = e.offsetX, y = e.offsetY;
+						
+
+						if(moduleValue._atoms && moduleValue._highlight) {
+
+							x -= this.width / 2; x /= this.specs.scale; x += this.width / 2; 
+							y -= this.height / 2; y /= this.specs.scale; y += this.height / 2;
+
+							for(var i = 0, l = view.def.molecule.atoms.length; i < l; i++) {
+
+								if(view.def.molecule.atoms[i].textBounds.length > 0) {
+									inside = false;
+									for(var j = 0, k = view.def.molecule.atoms[i].textBounds.length; j < k; j++) {
+										b = view.def.molecule.atoms[i].textBounds[j];
+
+										if(b.x < x && b.x + b.w > x && b.y < y && b.y + b.h > y) {
+											self._doHighlight(i, true);
+											inside = true;
+											break;
+										}
+									}
+
+									if(!inside) {
+										self._doHighlight(i, false);
+									}
+									
+								} else {
+									var difX = x - view.def.molecule.atoms[i].x;
+									var difY = y - view.def.molecule.atoms[i].y;
+									if(Math.pow(Math.pow(difX, 2) + Math.pow(difY, 2), 0.5) < this.specs.atoms_font_size_2D)
+										self._doHighlight(i, true);
+									else 
+										self._doHighlight(i, false);
+								}
+							}
+						}
+					});
+
+
 				});
 				
 			},
@@ -93,7 +136,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 
 
 
-		if(!this._width || !this._height || !this.def || !this.def.molecule || !this.def.canvas)
+			if(!this._width || !this._height || !this.def || !this.def.molecule || !this.def.canvas)
 				return;
 
 			var dim = this.def.molecule.getDimension();
@@ -123,13 +166,16 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 		},
 		
 		_doHighlight: function(id, val) {
+
 			if(this._highlighted[id] && val)
 				return;
 			if(!this._highlighted[id] && !val)
 				return;
+			
 			this._highlighted[id] = val;
-			for(var i in this._currentValue._atoms) {
-				if(this._currentValue._atoms[i].indexOf(id) > -1) {
+			
+			for(var i in this._lastMol._atoms) {
+				if(this._lastMol._atoms[i].indexOf(id) > -1) {
 					API.highlight(i, val);
 				}
 			}
@@ -148,40 +194,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 				deferred.resolve(molLoaded);
 				self._currentValue = moduleValue;
 				molLoaded._highlights = molLoaded._highlights || {};
-				self._canvas.CIOnMouseMove(function(e) {
-					var b, radius = self._canvas.specs.atoms_font_size_2D;
-					var x = e.offsetX, y = e.offsetY;
-					
-
-					if(moduleValue._atoms && moduleValue._highlight) {
-						x -= this.width / 2; x /= this.specs.scale; x += this.width / 2; 
-						y -= this.height / 2; y /= this.specs.scale; y += this.height / 2;
-
-						for(var i = 0, l = molLoaded.atoms.length; i < l; i++) {
-
-							if(molLoaded.atoms[i].textBounds.length > 0) {
-								inside = false;
-								for(var j = 0, k = molLoaded.atoms[i].textBounds.length; j < k; j++) {
-									b = molLoaded.atoms[i].textBounds[j];
-
-									if(b.x < x && b.x + b.w > x && b.y < y && b.y + b.h > y) {
-										inside = true;
-										self._doHighlight(i, true);
-									}
-								}
-								if(!inside)
-									self._doHighlight(i, false);
-							} else {
-								var difX = x - molLoaded.atoms[i].x;
-								var difY = y - molLoaded.atoms[i].y;
-								if(Math.pow(Math.pow(difX, 2) + Math.pow(difY, 2), 0.5) < this.specs.atoms_font_size_2D)
-									self._doHighlight(i, true);
-								else
-									self._doHighlight(i, false);
-							}
-						}
-					}
-				});
+				
 
 				API.listenHighlight( moduleValue._highlight, function(value, commonKeys) {
 
