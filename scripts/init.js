@@ -283,30 +283,38 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 	var fetch = {
 		value: function() {
+
 			var self = this,
 				deferred = $.Deferred();
-			if(this.url && this.type) {
-				var type = this.getType();
-				require(['util/urldata'], function(urlData) {
 
-					urlData.get(self.url, false, self.timeout).then(function(data) {
-						if(data instanceof Array)
-							data = new DataArray(data, true);
-						else if(typeof data == "object")
-							data = new DataObject(data, true);
-
-						if(self.keep) {
-							self.value = data;
-							deferred.resolve(this);
-						} else {
-							deferred.resolve(new DataObject({type: type, value: data}));
-						}
-
-					}, function(data) { });
-				});
-				return deferred;
+			if(!this.url || !this.type) {
+				return deferred.resolve( this );
 			}
-			return deferred.resolve(this);
+
+			var type = this.getType();
+
+			require( [ 'util/urldata' ], function( urlData ) {
+
+				urlData.get( self.url, false, self.timeout ).then( function(data) {
+
+					data = DataObject.check( data, true );
+					
+					Object.defineProperty( self, 'value', {
+						enumerable: self.keep || false,
+						writable: true,
+						configurable: false,
+						value: data
+					} );
+
+					deferred.resolve( self );
+					
+
+				}, function( data ) { 
+
+					deferred.reject( self ); 
+				});
+			});
+			return deferred;
 		}
 	};
 
