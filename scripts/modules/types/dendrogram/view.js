@@ -120,9 +120,6 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 			}
 		},
 
-		setVariable: function(event, id) {
-			this.module.controller.setVarFromEvent('onHover', new DataObject(this._idHash[id]), 'node');
-		},
 
 		createDendrogram: function() {
 			var self = this;
@@ -132,7 +129,7 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 	    	var actions=this.module.definition.dataSend;
 	    	if (! actions || actions.length==0) return;
 	    	var hover=hover=function(node) {
-	    		self.setVariable('onHover',node.id);
+	    		self.module.controller.setVarFromEvent('onHover', new DataObject(self._idHash[node.id]), 'node');
 	    	}
 
 
