@@ -52,6 +52,8 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 		update: { 
 
 			'mol': function(moduleValue) {
+
+				//console.log(moduleValue);
 				var contentWindow = this.dom.get(0).contentWindow;
 //console.log(this.dom.get(0));
 				if(!moduleValue)

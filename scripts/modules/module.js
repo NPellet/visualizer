@@ -119,11 +119,13 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 				l = this.definition.dataSource.length, 
 				val;
 
+
+
 			for( ; i < l ; i++ ) {
 				
 	 			val = API.getVar(this.definition.dataSource[i].name);
 
-	 			if( val && val[ 1 ] ) {
+	 			if( val ) {
 	 				this.model.onVarGet( val, this.definition.dataSource[ i ].name );
 	 			}
 			}
