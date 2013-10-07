@@ -8,7 +8,7 @@ requirejs.config({
 		"forms": "libs/forms",
 		"ckeditor": "libs/ckeditor/ckeditor",
 
-		'ChemDoodle': 'libs/chemdoodle/ChemDoodleWeb'
+		'ChemDoodle': 'libs/chemdoodle/ChemDoodleWeb-unpacked'
 	},
 
 	"shim": {

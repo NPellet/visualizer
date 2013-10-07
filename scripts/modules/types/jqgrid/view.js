@@ -6,6 +6,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	init: function() {	
 
 	 		var self = this;
+
+	 		this.uniqId = Util.getNextUniqueId();
 			this.unique = Util.getNextUniqueId();
     		Util.loadCss(require.toUrl('libs/jqgrid/css/ui.jqgrid.css'));
 
@@ -15,11 +17,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 		this.dom.on('mouseover', '.jqgrow', function() {
 
-				self.module.controller.lineHover(self.elements[$(this).attr('id')]);
+				self.module.controller.lineHover(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
 
 	 		}).on('mouseout', '.jqgrow', function() {
 
-				self.module.controller.lineOut(self.elements[$(this).attr('id')]);
+				self.module.controller.lineOut(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
 
 	 		});
 
@@ -210,17 +212,27 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				jpath;
 			self.done = 0;
 			for(var i = 0, length = source.length; i < length; i++) {
-				arrayToPush.push(this.buildElement(source[i], i, jpaths));
+				arrayToPush.push(this.buildElement(source[i], self.uniqId + i, jpaths));
 			}
 		},
 
 		buildElement: function(s, i, jp, m) {
-			var element = {};
+
+			var self = this,
+				element = {};
+
 			if(!m)
 				this.listenFor(s, jp, i);
 
 			element['id'] = String(i);
 			element['__source'] = s;
+
+			if(s._highlight) {
+				API.listenHighlight(s._highlight, function(onOff, key) {
+					$("#" + i)[onOff ? 'addClass' : 'removeClass']('ci-highlight');
+				});
+			}
+
 
 			element._inDom = $.Deferred();
 
@@ -241,7 +253,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			var self = this;
 
 			source.onChange(function(data) {
-				var element = self.buildElement(source, id, jpaths, true);
+				var element = self.buildElement(source, self.uniqId, jpaths, true);
 				self.jqGrid('setRowData', id, element);
 				var scroll = $("body").scrollTop();
 				var target = $("tr#" + id, self.domTable).effect('highlight', {}, 1000).get(0).scrollIntoView();
@@ -286,7 +298,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				this.module.data = this.elements;
 				var jpaths = this.module.getConfiguration().colsjPaths;
 				var l = this.elements.length - 1;
-				var el = this.buildElement(source, l, jpaths);
+				var el = this.buildElement(source, self.uniqId + l, jpaths);
 				this.jqGrid('addRowData', el.id, el);
 			//	API.setVariable(this.module.getNameFromRel('list'), this.module.data, false, true);
 			},

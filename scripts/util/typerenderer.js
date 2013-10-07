@@ -65,7 +65,7 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 				
 				API.listenHighlight(molfile._highlight, function(value, commonKeys) {
 
-					if($("#" + id, dom).length == 0)
+					if($("#" + id).length == 0)
 						return;
 
 					var commonKeys2 = {};
@@ -74,18 +74,20 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 					// commonkeys: ['A', 'B'];
 					for(var i = commonKeys.length - 1; i >= 0; i--) {
 						atoms = molfile._atoms[commonKeys[i]]; // [0, 1, 15, 12]
-						if(!atoms)
+
+						if( !atoms )
 							continue;
 
-						for(var j = atoms.length - 1; j >= 0; j--) {
-
+						for( var j = atoms.length - 1 ; j >= 0 ; j-- ) {
 							molLoaded.atoms[atoms[j]].isHover = value;
 						}
 					}
 
+					can.width = can.width; // Erase canvas
 					for(var i = 0; i < molLoaded.atoms.length; i++) {
-						canvas._domcanvas.width = canvas._domcanvas.width; // Erase canvas
+
 						molLoaded.atoms[i].drawChildExtras = true;
+
 					}
 
 					canvas.repaint();
