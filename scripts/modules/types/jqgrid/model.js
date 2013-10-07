@@ -13,7 +13,11 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 				default:
 				case 'element': // Wants to get the row ?
 					data = (temporary && temporary['list']) ? temporary['list'] : (this.module.data || new DataArray());
-					data = data.get(0)[0];
+					data = data.get(0);
+
+					if(data)
+						return data[0];
+					return [];
 				break;
 			}
 
