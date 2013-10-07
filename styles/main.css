@@ -187,7 +187,10 @@ div.ci-module-wrapper .ci-module {
 	
 }
 
-
+.ci-module-jsme iframe {
+	border: none;
+	outline: none;
+}
 
 #ci-modules-grid > div.ci-module-wrapper .ci-module-header {
 	display: none;
