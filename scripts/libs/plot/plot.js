@@ -25,11 +25,11 @@ define(['jquery', 'util/util'], function($, Util) {
 		addLabelOnClick: false,
 		onVerticalTracking: false,
 		onHorizontalTracking: false,
-		rangeLimitX: 1,
+		rangeLimitX: 10,
 		rangeLimitY: 0,		
 		unZoomMode: 'total',
 
-		plugins: ['zoom', 'drag', 'integral'],
+		plugins: ['zoom', 'drag', 'verticalLine'],
 
 		keyCombinations: {
 			integral: { shift: true, ctrl: false },
@@ -1007,6 +1007,8 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		makeShape: function(annotation, events, notify) {
 
+			annotation.id = Math.random();
+			
 			if(notify) {
 				if(false === this.triggerEvent('onAnnotationMake', annotation)) {
 					return;
@@ -1040,6 +1042,11 @@ define(['jquery', 'util/util'], function($, Util) {
 					var shape = new GraphPeakInterval(this);
 				break;
 
+
+				case 'verticalLine':
+					var shape = new GraphShapeVerticalLine(this);
+				break;
+
 				case 'rangeX':
 					var shape = new GraphRangeX(this);
 				break;
@@ -1050,6 +1057,9 @@ define(['jquery', 'util/util'], function($, Util) {
 				return;
 
 			shape.setOriginalData(annotation, events);
+			if(annotation.data)
+				annotation.data.id = this.id;
+
 			shape.setSerie(this.getSerie(0));
 
 			
@@ -1208,6 +1218,64 @@ define(['jquery', 'util/util'], function($, Util) {
 		}
 	}
 
+
+
+	Graph.prototype.plugins.verticalLine = function () { }
+	Graph.prototype.plugins.verticalLine.prototype = {
+
+		init: function(graph) {
+			var self = this;
+			self.graph = graph;
+			if(require) {
+				require(['util/context'], function(Context) {
+					Context.listen(graph._dom, [
+						['<li><a><span class="ui-icon ui-icon-cross"></span> Add vertical line</a></li>', 
+						function(e) {
+							self.addLine(e);
+						}]
+					]);
+				});
+			}
+
+		},
+
+
+		addLine: function(e) {
+
+			this.count = this.count || 0;
+
+			var coords = this.graph.getXY(e),
+				x = this.graph.getXAxis().getVal(coords.x - this.graph.getPaddingLeft()),
+				color = Util.getNextColorRGB(this.count, 10);
+
+			var shape = this.graph.makeShape({
+				type: 'verticalLine', 
+				pos: {
+					x: x, 
+					y: 0
+				}, 
+				
+				fillColor: 'rgba(' + color + ', 0.3)',
+				strokeColor: 'rgba(' + color + ', 0.9)',
+			
+				onChange: function(newData) {
+					self.triggerEvent('onAnnotationChange', newData);
+				}
+			}, {}, true);
+
+			if(!shape)
+				return;
+
+			this.count++;
+
+	//		shape.handleMouseDown(e, true);
+			shape.draw();
+			shape.redraw();
+
+		},
+
+	}
+
 			/*
 			} else if(this.currentAction == 'labelDragging') {
 				for(var i = 0, l = this.series.length; i < l; i++) {
@@ -1284,30 +1352,29 @@ define(['jquery', 'util/util'], function($, Util) {
 			var self = graph;
 			this.count = this.count || 0;
 			x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal(x);
-			var shape = graph.makeShape({type: 'peakInterval', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {
-				onChange: function(newData) {
-					self.triggerEvent('onAnnotationChange', newData);
-				}
+			var color = Util.getNextColorRGB(this.count, graph.options.rangeLimitX);
+
+			var shape = graph.makeShape({
+					type: 'surfaceUnderCurve', 
+					pos: {
+						x: xVal, 
+						y: 0
+					}, 
+					pos2: {
+						x: xVal,
+						y: 0
+					},
+					fillColor: 'rgba(' + color + ', 0.3)',
+					strokeColor: 'rgba(' + color + ', 0.9)',
+				
+					onChange: function(newData) {
+						self.triggerEvent('onAnnotationChange', newData);
+					}
 			}, true);
 
 			if(!shape)
 				return;
 
-			if(require) {
-				require(['util/context'], function(Context) {
-					Context.listen(shape._dom, [
-						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove integral</a></li>', 
-						function(e) {
-							shape.kill();
-						}]
-					]);
-				});
-			}
-
-			var color = Util.getNextColorRGB(this.count, graph.options.rangeLimitX);
-			
-			shape.set('fillColor', 'rgba(' + color + ', 0.3)');
-			shape.set('strokeColor', 'rgba(' + color + ', 0.9)');
 			this.count++;
 			shape.handleMouseDown(e, true);
 			shape.draw();
@@ -3381,28 +3448,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.labelDragging = false;
 		},
 
-		searchIndexByXY: function(x,y) {
-
-			var oldDist = false,
-				xyindex = false;
-
-			for(var i = 0, l = this.data.length; i < l; i++) {
-				for(var k = 0, m = this.data[i].length; k < m; k+=2) {
-
-					dist = Math.pow((this.data[i][k] - x), 2) + Math.pow((this.data[i][k + 1] - y), 2);
-					//console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
-					if(!oldDist || dist < oldDist) {
-						oldDist = dist;
-						xyindex = [k / 2, i];
-					}
-				}
-			}
-			console.log(k, i);
-
-			return xyindex;
-		},
-
-
 
 		searchIndexByPxXY: function(x,y) {
 
@@ -4109,8 +4154,10 @@ define(['jquery', 'util/util'], function($, Util) {
 //			this.group.appendChild(this.rectEvent);
 			
 			this.graph.shapeZone.appendChild(this.group);
-
+			this.initImpl();
 		},
+
+		initImpl: function() {},
 
 		setOriginalData: function(data, events) {
 			this.data = data;
@@ -4572,11 +4619,15 @@ define(['jquery', 'util/util'], function($, Util) {
 		}
 	});
 
-	var GraphShapeVerticalLine = function() { this.init(graph); };
+	var GraphShapeVerticalLine = function(graph) { this.init(graph); };
 	$.extend(GraphShapeVerticalLine.prototype, GraphLine.prototype, {
 
-		setEvents: function() {
+		initImpl: function() {
+			this._dom.style.cursor = 'ew-resize';
+		},
 
+		setEvents: function() {
+			var self = this;
 			this._dom.addEventListener('mousedown', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
@@ -4596,31 +4647,42 @@ define(['jquery', 'util/util'], function($, Util) {
 			});
 		},
 
-		handleMouseDown: function() {
+		handleMouseDown: function(e) {
 			this.moving = true;
 			this.graph.annotationMoving(this);
+			this.coordsI = this.graph.getXY(e);
 		},
 
 		handleMouseMove: function(e) {
 			if(!this.moving)
 				return;
 			var coords = this.graph.getXY(e),
-				delta = this.serie.getXAxis().getRelPx(coords.x - this.coordsI.x),
+				delta = this.graph.getXAxis().getRelPx(coords.x - this.coordsI.x),
 				pos = this.getFromData('pos');
 				pos.x += delta;
+
+			this.coordsI = coords;
 			this.setPosition();
 /*
 			if(this.graph.options.onVerticalTracking)
 				this.options.onVerticalTracking(line.id, val, line.dasharray);*/
 		},
 
+		handleMouseUp: function() {
+			this.moving = false;
+			this.triggerChange();
+		},
+
 		setPosition: function() {
+			
 			var position = this._getPosition(this.getFromData('pos'));
 			this.setDom('x1', position.x);
 			this.setDom('x2', position.x);
 			this.setDom('y1', this.graph.getYAxis().getMinPx());
 			this.setDom('y2', this.graph.getYAxis().getMaxPx());
-		}
+		},
+
+		setPosition2: function() {}
 	})
 
 
@@ -4675,7 +4737,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(require) {
 				var self = this;
 				require(['util/context'], function(Context) {
-					Context.listen(this._dom, [
+					Context.listen(self._dom, [
 						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove integral</a></li>', 
 						function(e) {
 							self.kill();

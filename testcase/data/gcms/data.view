@@ -27,7 +27,7 @@
 				"colorjPath": "",
 				"displaySearch": false
 			},
-			"id": 2,
+			"id": 1,
 			"bgColor": "",
 			"dataSend": [
 				{
@@ -70,8 +70,11 @@
 				"width": 62,
 				"height": 84
 			},
-			"configuration": {},
-			"id": 3,
+			"configuration": {
+				"continuous": false,
+				"nbzones": 1
+			},
+			"id": 2,
 			"bgColor": "",
 			"dataSend": [
 				{
@@ -91,6 +94,82 @@
 				{
 					"rel": "",
 					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "onMSTrackingAdded",
+					"rel": "msIon",
+					"jpath": "",
+					"name": "msIon"
+				}
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 86,
+				"top": 45
+			},
+			"size": {
+				"width": 49,
+				"height": 26
+			},
+			"configuration": {
+				"graphurl": "",
+				"flipX": false,
+				"flipY": false,
+				"xLabel": "",
+				"yLabel": "",
+				"xRightSpacing": "",
+				"xLeftSpacing": "",
+				"yTopSpacing": "",
+				"yBottomSpacing": "",
+				"minX": null,
+				"minY": null,
+				"maxX": null,
+				"maxY": null,
+				"zoom": "x",
+				"wheelAction": "zoomY",
+				"shiftxtozero": false,
+				"displayAxis": [
+					"x"
+				],
+				"grids": [],
+				"plotinfos": [
+					{
+						"variable": "",
+						"plotcolor": "",
+						"strokewidth": "",
+						"plotcontinuous": false,
+						"peakpicking": false,
+						"markers": false
+					}
+				],
+				"xastime": true
+			},
+			"id": 3,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "addSerie",
+					"name": "msIon"
 				}
 			],
 			"actionsOut": [

@@ -5,6 +5,9 @@ define(['jquery', 'forms/field'], function($, fieldPrototype) {
 		var type = this.options.type, self = this;
 		self.deferred = $.Deferred();
 	
+	if(type == undefined)
+		console.trace();
+	
 		require(['forms/types/' + type.toLowerCase() + '/list'], function(FieldImplement) {
 			self.implementation = new FieldImplement(self);
 			self.getGroup().getSection().getForm().fieldReady(self.fieldIdAbs);

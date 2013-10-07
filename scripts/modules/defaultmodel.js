@@ -50,26 +50,38 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		},
 
 		onVarGet: function(varValue, varName) {
-			var self = this;
+			var self = this,
+				i,
+				l,
+				rel;
 
 			$.when(this.module.ready, this.module.view.onReady).then(function() {
-				if(varName instanceof Array)
-					varName = varName[0];
-				if(!self.sourceMap)
+
+				if( varName instanceof Array ) {
+					varName = varName[ 0 ];
+				}
+
+				if( !self.sourceMap ) {
 					return;
-				var value = self.buildData(varValue, self.module.controller.configurationReceive[self.sourceMap[varName].rel].type);
-				self.data[varName] = value;
-				var rel = self.module.getDataRelFromName(varName);
+				}
 				
-				if(!self.module.view.update)
-					return;
+				self.data[ varName ] = self.buildData( varValue, self.module.controller.configurationReceive[ self.sourceMap[ varName ].rel ].type );
+				rel = self.module.getDataRelFromName( varName );
 
-				for(var i = 0; i < rel.length; i++) {
+				i = 0, l = rel.length;
 
-					if(!self.module.view.update[rel[i]])
-						return;
+				for( ; i < l; i++) {
 
-					self.module.view.update[rel[i]].call(self.module.view, value, varName);
+
+					if( self.module.view.update[ rel[ i ] ] && varValue !== null ) {
+
+						self.module.view.update[ rel[ i ] ].call( self.module.view, self.data[ varName ], varName );
+
+					} else if (  self.module.view.blank[ rel[ i ] ] && varValue == null  ) {
+
+						self.module.view.blank[ rel[ i ] ].call( self.module.view, varName );
+
+					}
 				}
 			});		
  		},

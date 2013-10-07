@@ -168,7 +168,7 @@ define(['jquery', 'forms/title'], function($, Title) {
 			this.fields.splice(field.index, 0, field);
 			// XXX: Should we actually fill the field ?
 			//this.setValue(field.index, "");
-
+console.log(this.fields);
 
 			
 			var input = $('<input type="hidden" />');
@@ -423,20 +423,29 @@ define(['jquery', 'forms/title'], function($, Title) {
 		
 		duplicate: function(group) {
 			
+			var self = this;
 			group = group || this.group;
 			//var field = new BI.Forms[this.implementationLocation].Field(this.options);
-			
-			var field = group.addField(this.options);
-			field.setSection(group.getSection());
-			field.changeHandler = this.changeHandler;
 
-			for(var i = 0; i < this.values.length; i++) {
+			var field = group.addField(self.options);
+
+			$.when(this.deferred, field.deferred).then(function() {
+
+				field.setSection(group.getSection());
+				field.changeHandler = self.changeHandler;
+
+				for(var i = 0; i < self.values.length; i++) {
+				
+					field.setTitle(self.getTitle());
+					field.deferred.done(function() {
+						if(typeof field.implementation.options != "undefined")
+							field.implementation.setOptions(self.implementation.options);
+					})
+					
+					field.setValue(i, self.values[i]);
+				}
+			});
 			
-				field.setTitle(this.getTitle().duplicate());
-				if(typeof this.implementation.options != "undefined")
-				field.implementation.setOptions(this.implementation.options);
-				field.setValue(i, this.values[i]);
-			}
 			
 			return field;
 		},

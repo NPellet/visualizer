@@ -10,8 +10,11 @@ define(['util/datatraversing'], function(Traversing) {
 		}
 
 		self.repositoryData.set(name, null);
+
 		element.getChild(jpath).done(function(returned) {
+
 			self.repositoryData.set(name, returned);
+			
 		});
 	}
 

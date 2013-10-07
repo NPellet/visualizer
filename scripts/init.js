@@ -2,8 +2,8 @@
 requirejs.config({
 	"baseUrl": "scripts/",
 	"paths": {
-		//"jquery": 'libs/jquery/jquery',
-		"jquery": "http://code.jquery.com/jquery-migrate-1.2.1",
+		"jquery": 'libs/jquery/jquery',
+		//"jquery": "http://code.jquery.com/jquery-migrate-1.2.1",
 		"jqueryui": "libs/jqueryui/jquery-ui.min",
 		"forms": "libs/forms",
 		"ckeditor": "libs/ckeditor/ckeditor",
@@ -12,7 +12,7 @@ requirejs.config({
 	},
 
 	"shim": {
-		"jquery": ['libs/jquery/jquery'],
+		//"jquery": ['libs/jquery/jquery'],
 		"ckeditor": ["libs/ckeditor/adapters/jquery"],
 		"libs/jqgrid/js/jqgrid": ["jquery", "libs/jqgrid/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
@@ -50,7 +50,10 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	};
 
 	ViewObject.check = function(el, check) {
-		if(el instanceof Array)
+		
+		if(el instanceof ViewObject || el instanceof ViewArray) {
+			return el;
+		} else if(el instanceof Array)
 			return new ViewArray(el, check);
 		else if(el === null)
 			return null;
@@ -62,7 +65,10 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 
 	DataObject.check = function(el, check) {
-		if(el instanceof Array)
+
+		if(el instanceof DataObject || el instanceof DataArray) {
+			return el;
+		} else if(el instanceof Array)
 			return new DataArray(el, check);
 		else if(el === null)
 			return null;
@@ -227,6 +233,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 	var dataChanged = {
 		value: function(moduleid) {
+			console.log(this, this._listenersDataChanged);
 			if(!this._listenersDataChanged)
 				return;
 
@@ -243,14 +250,17 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 	var listenDataChanged = {
 		value: function(callback, moduleid) {
+			console.log(this);
 			if(!this._listenersDataChanged)
 				Object.defineProperty(this, '_listenersDataChanged', {
 					value: [],
-					enumerable: false,
-					writable: true
+					enumerable: true,
+					writable: true,
+					configurable: true
 				});
 
 			this._listenersDataChanged.push([callback, moduleid]);
+			console.log(this._listenersDataChanged);
 		}
 	}
 

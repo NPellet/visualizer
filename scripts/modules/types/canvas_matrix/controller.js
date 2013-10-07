@@ -144,11 +144,6 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 			}
 		},
 		
-		moduleInformations: {
-			moduleName: 'Matrix'
-		},
-		
-		
 		doConfiguration: function(section) {
 			
 			return {

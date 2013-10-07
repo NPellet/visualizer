@@ -26,11 +26,20 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 			_gcms.onAnnotationChange = function(annot) {
 				self.module.controller.sendAction('annotation', annot, 'onAnnotationChange');
+				annot = new DataObject(annot, true);
 				annot.triggerChange();
 			}
 
 			_gcms.onAnnotationMake = function(annot) {
 				self.module.controller.sendAction('annotation', annot, 'onAnnotationAdd');
+
+				switch(annot.type) {
+					case 'verticalLine':
+						if(annot._msIon) {
+							self.module.controller.sendAction('msIon', annot._msIon, 'onMSTrackingAdded');	
+						}
+					break;
+				}
 			}
 
 			_gcms.onZoomGC = function(from, to) {
@@ -41,6 +50,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				self.module.controller.sendAction('fromtoMS', new DataObject({type: 'fromTo', value: new DataObject ({ from: from, to: to })}), 'onZoomMSChange');
 			}
 
+			_gcms.msIonAdded = function( el ) {
+				
+			};
+				
 			this.gcmsInstance = _gcms;
 		},
 
@@ -49,6 +62,12 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			this.gcmsInstance.resize(width, height);
 		},
 		
+		blank: {
+			jcamp: function(varname) {
+				this.gcmsInstance.blank();
+			}
+		},
+
 		update: {
 			'jcamp': function(moduleValue) {
 				var self = this;
@@ -118,8 +137,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 		},
 
 		resetAnnotationsGC: function() {
-			if(!this.gcmsInstance)
+
+			if(!this.gcmsInstance || !this.annotations)
 				return;
+
 			if ( this.shapes ) {
 				for( var i = 0, l = this.shapes.length; i < l; i++) {
 					this.shapes[i].kill();

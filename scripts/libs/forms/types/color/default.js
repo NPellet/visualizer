@@ -71,7 +71,7 @@ define(['forms/fielddefault', 'forms/button', 'util/util', 'libs/farbtastic/farb
 		},
 		
 		_setValueText: function(index, str) {
-			
+			console.log(this.main.fields);
 			this.main.fields[index].field.html(str);		
 		},
 		

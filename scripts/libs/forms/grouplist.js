@@ -50,11 +50,11 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 
 		duplicate: function(section) {
 			
-			var group = new FieldList(this.name);
-			section.addFieldGroup(group);
+			var _group = new group(this.name);
+			section.addFieldGroup(_group);
 			for(var i = 0; i < this.fields.length; i++)
-				var field = this.fields[i].duplicate(group);
-			return group;
+				var field = this.fields[i].duplicate(_group);
+			return _group;
 		},
 		
 		remove: function() {
@@ -141,10 +141,10 @@ define(['jquery', 'forms/fieldlist'], function($, FieldList) {
 				field.resetDuplicate();
 
 				for(var j = 0; j < json[i].length; j++) {
-					if(j > 0)
-						field.addField();
 					(function(k, val, f) {
 						f.onLoad(function() {
+							if(k > 0)
+								f.addField();
 							f.implementation.setValue(k, val);	
 						});	
 					}) (j, json[i][j], field);

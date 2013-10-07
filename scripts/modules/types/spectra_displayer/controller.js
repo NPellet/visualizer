@@ -242,6 +242,14 @@ define(['modules/defaultcontroller'], function(Default) {
 								options: {'shift': ''}
 							},
 
+
+							{
+								type: 'Checkbox',
+								name: 'xastime',
+								title: 'X axis as time',
+								options: {'xastime': ''}
+							},
+
 							{
 								type: 'Combo',
 								name: 'wheelAction',
@@ -353,6 +361,9 @@ define(['modules/defaultcontroller'], function(Default) {
 						yTopSpacing: [this.module.getConfiguration().yTopSpacing],
 						yBottomSpacing: [this.module.getConfiguration().yBottomSpacing],
 						shiftxtozero: [this.module.getConfiguration().shiftxtozero ? ['shift'] : []],
+						xastime: [this.module.getConfiguration().xastime ? ['xastime'] : []],
+
+
 						zoom:  [this.module.getConfiguration().zoom],
 						wheelAction:  [this.module.getConfiguration().wheelAction || 'none']
 			//			plotcolor: this.module.getConfiguration().plotcolor || ['#000000']
@@ -395,6 +406,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			this.module.getConfiguration().zoom = confSection[0].gencfg[0].zoom[0];
 			this.module.getConfiguration().wheelAction = confSection[0].gencfg[0].wheelAction[0];
 			this.module.getConfiguration().shiftxtozero = confSection[0].gencfg[0].shiftxtozero[0][0] == "shift";
+			this.module.getConfiguration().xastime = confSection[0].gencfg[0].xastime[0][0] == "xastime";
 
 			this.module.getConfiguration().displayAxis = confSection[0].gencfg[0].displayAxis[0];
 			//this.module.getConfiguration().peakpicking = confSection[0].gencfg[0].peakpicking[0][0] == "true";

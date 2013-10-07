@@ -261,7 +261,7 @@ define(['modules/defaultview', 'util/webworker', 'libs/jquery.event.drag/jquery.
 		update: {
 
 			matrix: function(moduleValue) {
-
+console.log(moduleValue);
 				if(!this.canvas)
 					return;
 

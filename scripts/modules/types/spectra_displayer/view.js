@@ -11,8 +11,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			this._currentHighlights = {};
 			this.module.getDomContent().html(this.dom);
 			this.seriesActions = [];
-			//this.colorId = 0;
-			//this.colors = ["red", "blue", "green", "black"];
+
+			this.colorId = 0;
+			this.colors = ["red", "blue", "green", "black"];
+
 			this.onReady = $.Deferred();
 		},
 		
@@ -95,6 +97,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				graph.getXAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('vmain') > -1 : false);
 				graph.getXAxis().toggleSecondaryGrid(cfgM.grids ? cfgM.grids.indexOf('vsec') > -1 : false);
 			
+				if(cfgM.xastime) {
+					graph.getXAxis().options.unitModification = 'time';
+				}
+
 				graph.getYAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('hmain') > -1 : false);
 				graph.getYAxis().toggleSecondaryGrid(cfgM.grids ? cfgM.grids.indexOf('hsec') > -1 : false);
 				
@@ -150,11 +156,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			this.dom.html("Progress. Please wait...");
 		},
 
-		blank: function() {
-
-			this.dom.get(0).width = this.dom.get(0).width;
-		},
-
 		doZone: function(varname, zone, value, color) {
 
 			if(value && !zone[2]) {
@@ -173,6 +174,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				zone.splice(2, 1);
 			}
 		},
+
 
 		setSerieParameters: function(serie, varname) {
 			var self = this,
@@ -211,6 +213,26 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			};
 		},
 
+
+		blank: {
+
+			xyArray: function ( varName ) {
+
+				this.removeSerie(varName);
+			},
+
+			xArray: function ( varName ) {
+
+				this.removeSerie( varName );
+			},
+
+			jcamp: function ( varName ) {
+
+				this.removeSerie( varName );
+			}
+		},
+		
+
 		update: { 
 
 			'fromTo': function(moduleValue) {
@@ -229,9 +251,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			xyArray: function(moduleValue, varname) {
 
 				var cfgM = this.module.getConfiguration();
+
 				this.series[varname] = this.series[varname] || [];
-				this.removeSerie(varname);
-				this.series[varname] = [];	
+				this.removeSerie( varname );
+				
 	 
 				if(!moduleValue)
 					return;
@@ -264,8 +287,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie(varname);
-				this.series[varname] = [];	
-	 
+	
 				if(!moduleValue)
 					return;
 				
@@ -326,7 +348,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				spectra = JcampConverter(moduleValue, {lowRes: 1024});
 
 				this.series[varname] = this.series[varname] || [];
-				this.removeSerie(varname);
+				
 				this.series[varname] = [];
 
 				if(spectra.contourLines) {
@@ -354,10 +376,24 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 						this.series[varname].push(serie);
 						break;
 					}
+
+					API.listenHighlight.listen(moduleValue._highlight || [], function(value, commonKeys) {
+
+						for(var i = 0; i < commonKeys.length; i++) {
+
+							if( self.zones[ varname ][ commonKeys[ i ] ] ) {
+
+								self.doZone( varname, self.zones[ varname ][ commonKeys [ i ] ], value, this.series[varname].options.lineColor );
+
+							}
+
+						}
+
+					}, true, this.module.id + varname);
+
 				}
 
-
-				serie.setInfos(["test1", "test2", "test3"]);
+//				serie.setInfos(["test1", "test2", "test3"]);
 
 				this.setSerieParameters(serie, varname);
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
@@ -502,7 +538,29 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			if(this.series[serieName])
 				for(var i = 0; i < this.series[serieName].length; i++)
 					this.series[serieName][i].kill();
+
+			this.series[varname] = [];
 		},
+
+		makeSerie: function(data, value) {
+
+			var self = this,
+				serie = this.graph.newSerie( data.name );
+
+			data.onChange(function() {
+
+				serie.setData(data.data);
+				self.graph.redraw();
+				self.graph.drawSeries();
+			});
+
+			this.onActionReceive.removeSerieByName.call( this, data.name || {} );
+			serie.autoAxis();
+			serie.setData( data.data );
+			serie.setLineColor( data.lineColor || this.colors[ this.colorId % this.colors.length ] );
+			this.seriesActions.push( [ value, serie, data.name ] );
+		},
+
 
 		onActionReceive: {
 			fromto: function(value, name) {
@@ -514,27 +572,31 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			},
 
 			addSerie: function(value) {
-				this.colorId++;
-				value = Traversing.getValueIfNeeded(value);
-				for(var i in value) {
-					this.onActionReceive.removeSerieByName.call(this, value[i].name || {});
-					var serie = this.graph.newSerie(value[i].name);
-					serie.autoAxis();
-					serie.setData(value[i].data);
-					serie.setLineColor(this.colors[this.colorId % this.colors.length]);
-					this.seriesActions.push([value, serie, value[i].name]);
-				}
 
+				this.colorId ++;
+				value = value.get();
+
+				if(value.name) {
+					this.makeSerie(value, value);	
+				} else {
+
+					for( var i in value ) {
+						this.makeSerie(value[i], value);
+					}
+				}
 				this.graph.redraw();
 				this.graph.drawSeries();
 			},
 
 			removeSerie: function(value) {	
-				value = Traversing.getValueIfNeeded(value);
-				for(var i = 0, l = this.seriesActions.length; i < l; i++) {
-					if(this.seriesActions[i][0] == value) {
-						this.seriesActions[i][1].kill();
-						this.seriesActions.splice(i, 1);
+
+				value = value.get();
+
+				for( var i = 0, l = this.seriesActions.length ; i < l ; i++ ) {
+
+					if( this.seriesActions[ i ][ 0 ] == value ) {
+						this.seriesActions[ i ][ 1 ].kill();
+						this.seriesActions.splice( i, 1 );
 					}
 				}
 			},

@@ -111,15 +111,21 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 
 		updateAllView: function() {
 				
-			if(!this.view.update || !this.definition || !this.definition.dataSource)
+			if(!this.view.update || !this.definition || !this.definition.dataSource) {
 				return;
+			}
 
-			for(var i = 0, l = this.definition.dataSource.length; i < l; i++) {
-	 			var val = API.getRepositoryData().get(this.definition.dataSource[i].name);
+			var i = 0, 
+				l = this.definition.dataSource.length, 
+				val;
 
-	 			if(val && val[1])
-	 				this.model.onVarGet(val[1], this.definition.dataSource[i].name);
-//					this.view.update[this.definition.dataSource[i].rel].call(this.view, val[1], this.definition.dataSource[i].name);
+			for( ; i < l ; i++ ) {
+				
+	 			val = API.getVar(this.definition.dataSource[i].name);
+
+	 			if( val && val[ 1 ] ) {
+	 				this.model.onVarGet( val, this.definition.dataSource[ i ].name );
+	 			}
 			}
 		
 		},

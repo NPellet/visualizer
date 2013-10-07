@@ -22,6 +22,10 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 				onAnnotationAdd: {
 					label: 'Annotation added',
 					description: ''
+				},
+
+				onMSTrackingAdded: {
+					label: 'Add vertical tracking line over MS spectra'
 				}
 			}
 		},
@@ -63,7 +67,8 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 			rel: {
 				'fromtoGC': 'From - To on GC', 
 				'fromtoMS': 'From - To on MS',
-				'annotation': 'Annotation'
+				'annotation': 'Annotation',
+				'msIon': 'Correspond MS Ion'
 			}
 		},
 

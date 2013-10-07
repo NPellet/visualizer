@@ -125,26 +125,31 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	},
 
 			    viewrecords: true,
-			    onSelectRow: function(rowid, status) {
+			    onSelectRow: function( rowid, status ) {
 			    	//rowid--; // ?? Plugin mistake ?
-			    	if(status) {
+			    	if ( status ) {
+
 			    		self.module.controller.onToggleOn(self.elements[rowid]);
+
 			    	} else {
+
 			    		self.module.controller.onToggleOff(self.elements[rowid]);
+
 			    	}
+
 					self.module.controller.lineClick(self.elements[rowid]);
 			    },
 			});
 
 
-			this.jqGrid = $.proxy($(this.domTable).jqGrid, $(this.domTable));
+			this.jqGrid = $.proxy( $( this.domTable ).jqGrid, $( this.domTable ) );
 			this.onReady.resolve();
 	 	},
 
 
 	 	applyFilterToRow: function(rowId) {
-			if(this.filter)
-			   	this.filter(this.jqGrid, this.elements[rowId], rowId);
+			if( this.filter )
+			   	this.filter( this.jqGrid, this.elements[ rowId ], rowId );
 	 	},
 
 	 	onResize: function(w, h) {
