@@ -159,19 +159,31 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		doZone: function(varname, zone, value, color) {
 
 			if(value && !zone[2]) {
+
 				var serie = this.series[varname][0];
-				var rect = this.graph.makeShape('rect');
-				rect.setSerie(serie);
-				rect.set('fill', color);
-				rect.set('opacity', '0.5');
-				rect.setByVal('x', zone[0], 'x');
-				rect.setWidthByVal(zone[1]);
+				var rect = this.graph.makeShape({ 
+					type: 'rect',
+					pos: {
+						x: zone[0]
+					},
+
+					pos2: {
+						x: zone[1]
+					},
+
+					fillColor: color,
+					opacity: '0.5'
+				});
+				
 				rect.setFullHeight();
-				rect.done();
+
 				zone.push(rect);
+
 			} else if(zone[2] && !value) {
+
 				zone[2].kill();
 				zone.splice(2, 1);
+
 			}
 		},
 
