@@ -60,7 +60,7 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 
 				if (! moduleValue || ! moduleValue.value) return;
 
-				this._value = moduleValue.value;
+				this._value = moduleValue.get();
 
 				if (! this._rgraph) {
 					if (!document.getElementById(this._id)) return; // this is the case when we change of view
@@ -68,13 +68,14 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 				} 
 
 				this.updateDendrogram();
-
-				// ???????? why the following code does not work
-				var view=this;
-				Traversing.toScreen(moduleValue, this.module, this._id).done(function(dendrogram) {
-					view._value = dendrogram;
-					view.updateDendrogram();
-				});
+/*
+				moduleValue.fetch().done(
+					function(dendrogram) {
+						self._value = dendrogram.get();
+						self.updateDendrogram();
+					}
+				);
+*/
 			}
 		},
 		
