@@ -32,14 +32,12 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 				delete this._rgraph;
 			}
 			this._highlighted = {};
-			// this.typeToScreen.molfile2D = this.typeToScreen.dendrogram;
 			this.updateOptions();
 		},
 		
 
 		inDom: function() {
 			if (this.DEBUG) console.log("Dendrogram: inDom");
-			// if(this._value === undefined) return;
 		},
 
 		onResize: function(width, height) {
@@ -48,6 +46,18 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 			this.updateDendrogram();
 		},
 		
+
+		getIdHash: function(currentNode) {
+			if (currentNode.id) {
+				this._idHash[currentNode.id]=currentNode;
+			}
+			if (currentNode.children instanceof Array) {
+				for (var i=0; i<currentNode.children.length; i++) {
+					this.getIdHash(currentNode.children[i]);
+				}
+			}
+		},
+
 
 		/* When a vaue change this method is called. It will be called for all 
 		possible received variable of this module.
@@ -60,7 +70,12 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 
 				if (! moduleValue || ! moduleValue.value) return;
 
-				this._value = moduleValue.get();
+				this._value= $.extend(true, new DataObject({}),  moduleValue.get());
+				this._idHash={};
+				this.getIdHash(moduleValue.get());
+
+
+			//	this._value = moduleValue.get();
 
 				if (! this._rgraph) {
 					if (!document.getElementById(this._id)) return; // this is the case when we change of view
@@ -105,19 +120,19 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 			}
 		},
 
+		setVariable: function(event, id) {
+			this.module.controller.setVarFromEvent('onHover', new DataObject(this._idHash[id]), 'node');
+		},
+
 		createDendrogram: function() {
+			var self = this;
+
 			if (this.DEBUG) console.log("Dendrogram: createDendrogram");
 			// ?????? how to put this in the model ?????
 	    	var actions=this.module.definition.dataSend;
 	    	if (! actions || actions.length==0) return;
 	    	var hover=hover=function(node) {
-		    	for (var i=0; i<actions.length; i++) {
-		    		if (actions[i].event=="onHover") {
-		    			var jpath=actions[i].jpath;
-		    			var name=actions[i].name;
-						API.setVar(name, node, jpath);
-					}
-	    		}
+	    		self.setVariable('onHover',node.id);
 	    	}
 
 
@@ -294,6 +309,9 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 		
 		_doHighlight: function(id, val) {
 			if (this.DEBUG) console.log("Dendrogram: _doHighlight");
+			console.log(id, val);
+console.log(moduleValue);
+
 			if(this._highlighted[id] && val)
 				return;
 			if(!this._highlighted[id] && !val)
@@ -301,14 +319,11 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 			this._highlighted[id] = val;
 			for(var i in this._currentValue._atoms) {
 				if(this._currentValue._atoms[i].indexOf(id) > -1) {
+					console.log(val);
 					API.highlight(i, val);
 				}
 			}
 		},
-
-		typeToScreen: {
-			// ?????????????? A quoi cela sert ????
-		}
 	});
 
 	return view;

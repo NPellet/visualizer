@@ -1,1 +1,142 @@
-{"entryPoint":{"variables":[{"varname":"labels","jpath":"element.labels","url":""},{"varname":"matrix","jpath":"element.matrix","url":""},{"varname":"result","jpath":"element.result","url":""}]},"modules":[{"type":"display_value","title":["minMass"],"position":{"left":29,"right":1,"top":1.0000001907348632},"size":{"width":15.983333331346511,"height":2.983333331346512},"configuration":{"frontcolor":"","font":"arial","fontsize":"24pt","align":"center","valign":"middle","defaultvalue":"","sprintf":""},"dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"value","name":"minMass","type":[null]}],"bgColor":"#f95d5d","displayWrapper":true},{"type":"dendrogram","title":"Untitled module","displayWrapper":true,"position":{"left":1,"top":0},"size":{"width":20.98333333134651,"height":14.983333331346511},"configuration":{},"bgColor":"","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"dendrogram","name":"result","type":[null]}],"actionsIn":[{"rel":"","name":""}],"actionsOut":[{"event":"","rel":"","name":""}]}],"configuration":{"showMenuBarOnStart":false,"showModuleHeaderOnHover":false,"title":"ChemCalc demonstration","moduleBackground":"#ffffff","variableFilters":{}},"_name":"Master","_local":false,"_saved":1359617535702,"_time":1359617535702} 
+{
+	"modules": [
+		{
+			"type": "display_value",
+			"title": [
+				"minMass"
+			],
+			"position": {
+				"left": 91,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 32,
+				"height": 6
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "24pt",
+				"align": "center",
+				"valign": "middle",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "label"
+				}
+			],
+			"bgColor": "#f95d5d",
+			"displayWrapper": true,
+			"id": 1,
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "dendrogram",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 2,
+				"top": 0
+			},
+			"size": {
+				"width": 69,
+				"height": 81
+			},
+			"configuration": {
+				"nodeType": "",
+				"nodeSize": "",
+				"nodeColor": "",
+				"labelSize": "",
+				"labelColor": "",
+				"edgeWidth": "",
+				"edgeColor": "",
+				"strokeWidth": "",
+				"strokeColor": ""
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onHover",
+					"rel": "node",
+					"jpath": "element.data.label",
+					"name": "label"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "dendrogram",
+					"name": "result"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"id": 2
+		}
+	],
+	"configuration": {
+		"showMenuBarOnStart": false,
+		"showModuleHeaderOnHover": false,
+		"title": "ChemCalc demonstration",
+		"moduleBackground": "#ffffff",
+		"variableFilters": {}
+	},
+	"_name": "Master",
+	"_local": false,
+	"_saved": 1359617535702,
+	"_time": 1359617535702,
+	"variables": [
+		{
+			"varname": "labels",
+			"jpath": "element.labels",
+			"url": ""
+		},
+		{
+			"varname": "matrix",
+			"jpath": "element.matrix",
+			"url": ""
+		},
+		{
+			"varname": "result",
+			"jpath": "element.result",
+			"url": ""
+		}
+	],
+	"_version": "2.1"
+}
