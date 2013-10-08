@@ -27,6 +27,10 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 				onMSTrackingAdded: {
 					label: 'Add vertical tracking line over MS spectra'
 				}
+			},
+
+			rel: {
+				
 			}
 		},
 		

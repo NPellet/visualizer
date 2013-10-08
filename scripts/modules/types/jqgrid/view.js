@@ -121,7 +121,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
 			   		if(jpaths[colModel[colNum].name].number)
 			   			value = parseFloat(value);
-			   		self.elements[rowId].setChild(colModel[colNum]._jpath, value, { moduleid: self.module.getId() });
+			   		self.elements[rowId.replace(self.uniqId, '')].setChild(colModel[colNum]._jpath, value, { moduleid: self.module.getId() });
 			   		
 			   		self.applyFilterToRow(rowId);
 			   	},
@@ -129,17 +129,18 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			    viewrecords: true,
 			    onSelectRow: function( rowid, status ) {
 			    	//rowid--; // ?? Plugin mistake ?
+
 			    	if ( status ) {
 
-			    		self.module.controller.onToggleOn(self.elements[rowid]);
+			    		self.module.controller.onToggleOn(self.elements[rowid.replace(self.uniqId, '')]);
 
 			    	} else {
 
-			    		self.module.controller.onToggleOff(self.elements[rowid]);
+			    		self.module.controller.onToggleOff(self.elements[rowid.replace(self.uniqId, '')]);
 
 			    	}
 
-					self.module.controller.lineClick(self.elements[rowid]);
+					self.module.controller.lineClick(self.elements[rowid.replace(self.uniqId, '')]);
 			    },
 			});
 

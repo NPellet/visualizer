@@ -78,16 +78,20 @@
 			"bgColor": "",
 			"dataSend": [
 				{
-					"event": "",
+					"event": "onZoomGCChange",
 					"rel": "",
 					"jpath": "",
-					"name": ""
+					"name": "sdsdf"
 				}
 			],
 			"dataSource": [
 				{
 					"rel": "jcamp",
 					"name": "jcamp"
+				},
+				{
+					"rel": "",
+					"name": ""
 				}
 			],
 			"actionsIn": [
@@ -102,6 +106,12 @@
 					"rel": "msIon",
 					"jpath": "",
 					"name": "msIon"
+				},
+				{
+					"event": "onZoomGCChange",
+					"rel": "fromtoGC",
+					"jpath": "",
+					"name": "setGCFromTo"
 				}
 			]
 		},
@@ -170,6 +180,54 @@
 				{
 					"rel": "addSerie",
 					"name": "msIon"
+				},
+				{
+					"rel": "fromto",
+					"name": "setGCFromTo"
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "mol2d",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 88,
+				"top": 6
+			},
+			"size": {
+				"width": 57,
+				"height": 25
+			},
+			"configuration": {},
+			"id": 4,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "mol2d",
+					"name": "mol"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
 				}
 			],
 			"actionsOut": [
@@ -190,6 +248,11 @@
 		{
 			"varname": "result",
 			"jpath": "element.result",
+			"url": ""
+		},
+		{
+			"varname": "mol",
+			"jpath": "element.mol.0.MOL",
 			"url": ""
 		}
 	],

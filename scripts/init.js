@@ -282,25 +282,26 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	}
 
 	var fetch = {
+
 		value: function() {
 
 			var self = this,
-				deferred = $.Deferred();
+				deferred = $.Deferred( );
 
-			if(!this.url || !this.type) {
+			if( !this.url || !this.type ) { // No need for fetching. Still returning a deferred, though.
 				return deferred.resolve( this );
 			}
 
-			var type = this.getType();
+			var type = this.getType( );
 
-			require( [ 'util/urldata' ], function( urlData ) {
+			require( [ 'util/urldata' ], function( urlData ) { // We don't know yet if URLData has been loaded
 
-				urlData.get( self.url, false, self.timeout ).then( function(data) {
+				urlData.get( self.url , false , self.timeout ).then( function(data) {
 
-					data = DataObject.check( data, true );
+					data = DataObject.check( data, true );	// Transform the input into a DataObject
 					
-					Object.defineProperty( self, 'value', {
-						enumerable: self.keep || false,
+					Object.defineProperty( self, 'value', {	// Sets the value to the object
+						enumerable: self._keep || false, // If this._keep is true, then we will save the fetched data
 						writable: true,
 						configurable: false,
 						value: data
