@@ -151,8 +151,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 
 	 	applyFilterToRow: function(rowId) {
+
 			if( this.filter )
-			   	this.filter( this.jqGrid, this.elements[ rowId.replace(self.uniqId, '') ], rowId );
+			   	this.filter( this.jqGrid, this.elements[ (rowId).replace(this.uniqId, '') ], rowId );
 	 	},
 
 	 	onResize: function(w, h) {
@@ -193,7 +194,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 				for(var i = 0; i < elements.length; i++) {
 					this.jqGrid('addRowData', elements[i].id, elements[i]);
-					this.applyFilterToRow(i);
+					this.applyFilterToRow(elements[i].id);
 					elements[i]._inDom.resolve();
 				}
 
