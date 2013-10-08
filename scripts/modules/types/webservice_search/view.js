@@ -6,7 +6,7 @@ define(['modules/defaultview'], function(Default) {
 		init: function() {	
 			var self = this;
 			this.dom = $('<div></div>');
-			this.search = $('<div class="Search"></div>');
+			this.search = $('<table class="Search" cellpadding="5" cellspacing="0"><col width="100"><col width="*"></table>').css('width', '90%');
 			this.dom.append(this.search);
 			this.module.getDomContent().html(this.dom);
 
@@ -14,7 +14,7 @@ define(['modules/defaultview'], function(Default) {
 				for(var i in searchparams) {
 					if(!i)
 						continue;
-					this.search.append('<div><label>' + searchparams[i].label + '</label>' + this._makeFormEl(searchparams[i], i));
+					this.search.append('<tr><td>' + searchparams[i].label + '</td><td>' + this._makeFormEl(searchparams[i], i) + '</td></tr>');
 				}
 				
 				var url = self.module.getConfiguration().url;
@@ -70,7 +70,7 @@ define(['modules/defaultview'], function(Default) {
 				
 				default:
 				case 'text':
-					return '<input type="text" value="' + spec.defaultvalue + '" name="' +  name +'" /></div>';
+					return '<input type="text" value="' + spec.defaultvalue + '" name="' +  name +'" style="width: 100%" /></div>';
 				break;
 			}	
 		},
