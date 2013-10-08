@@ -102,10 +102,11 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 			}
 
 			def.canvasdom = can;
-
 			def.resolve(can);
 		});
 	}
+
+	functions.molfile2D = functions.mol2d;
 
 	functions.mol3d = {};
 	functions.mol3d.toscreen = function(def, molfile) {
@@ -369,6 +370,7 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 			highlights = Traversing.getHighlights(data);
 
 		args = $.extend(args, Traversing.getOptions(data));
+		
 		if(!functions[type])
 			return deferred.resolve('');
 
@@ -384,8 +386,9 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 		}
 		
 		element.getChild(jpath).done(function(element) {
+			
 			_valueToScreen(deferred, element, box, opts); 
-		}, function() { deferred.reject(); })
+		}).fail(function() { deferred.reject(); });
 		
 		return deferred;
 	}
