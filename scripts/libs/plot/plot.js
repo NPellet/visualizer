@@ -29,7 +29,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		rangeLimitY: 0,		
 		unZoomMode: 'total',
 
-		plugins: ['zoom', 'drag', 'verticalLine'],
+		plugins: ['zoom', 'drag'],
 
 		keyCombinations: {
 			integral: { shift: true, ctrl: false },

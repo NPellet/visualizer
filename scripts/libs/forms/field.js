@@ -168,8 +168,6 @@ define(['jquery', 'forms/title'], function($, Title) {
 			this.fields.splice(field.index, 0, field);
 			// XXX: Should we actually fill the field ?
 			//this.setValue(field.index, "");
-console.log(this.fields);
-
 			
 			var input = $('<input type="hidden" />');
 			field.input = input;

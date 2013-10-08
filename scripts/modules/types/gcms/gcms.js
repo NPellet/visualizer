@@ -39,6 +39,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				lineToZero: false,
 				rangeLimitX: parseInt(this.rangeLimit) || 1,
 
+				plugins: ['zoom', 'drag', 'integral'],
+
 				onRangeX: function(xStart, xEnd, range) {
 					
 				},	
@@ -222,6 +224,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				defaultMouseAction: 'zoom',
 				defaultWheelAction: 'zoomY',
 
+				plugins: ['zoom', 'drag', 'verticalLine'],
 
 				onAnnotationMake: function(annot) {
 					annot._msIon = new DataObject({ name: annot.id, data: [], lineColor: annot.fillColor || annot.strokeColor });
