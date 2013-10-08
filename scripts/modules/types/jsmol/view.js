@@ -82,7 +82,7 @@ function(Default, UTIL, DataTraversing) {
 	 		data: function(data) {
 	 			if(!data)
 	 				return;
-	 			data = DataTraversing.getValueIfNeeded(data);
+	 			data = data.get();
 	 			var actions = [];
     			actions.push("load data 'model'");
     			actions.push(data);
