@@ -60,12 +60,15 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 					return;
 
 				contentWindow.setMolFile(moduleValue.get());
-				return;
+			
 				this._currentValue = moduleValue;
 
 				API.killHighlight( this.module.getId() );
 
 				API.listenHighlight( moduleValue._highlight, function(onOff, highlightId) {
+
+console.log(onOff, highlightId);
+
 					var atoms = [];
 					for ( var i = 0, l = highlightId.length ; i < l ; i++ ) {
 
