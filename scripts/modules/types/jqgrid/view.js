@@ -9,7 +9,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 		this.uniqId = Util.getNextUniqueId();
 			this.unique = Util.getNextUniqueId();
-    		Util.loadCss(require.toUrl('libs/jqgrid/css/ui.jqgrid.css'));
+    	
 
 	 		this.dom = $('<div class="ci-displaylist-list"></div>');
 	 		this.domTable = $("<table />").attr('id', this.unique).css({width: '100%'});
@@ -25,26 +25,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 		});
 
-	 		
-	 		//this.domSearch = $("<div />").addClass('ci-grid-search');
-	 		
 			var filter = this.module.getConfiguration().filterRow || '';
-
 			eval("self.filter = function(jqGrid, source, rowId) { try { \n " + filter + "\n } catch(_) { console.log(_); } }");
-
-
 	 		var inst = this;
-	 		/*if(this.module.getConfiguration().displaySearch) {
-	 			var searchInput = $("<input />").bind('keyup', function() {
-	 				if(inst.table)
-	 					inst.table.doSearch($(this).val());
-	 			});
-	 			this.domSearch.append(searchInput);
-	 			this.domSearch.prepend("<span>Search : </span>");
-	 		}*/
-	 		//append(this.domSearch).append(this.domPaging).
-		//		append(this.domTable);
-
 	 		this.module.getDomContent().html(this.dom);
 	 		this._highlights = this._highlights || [];
 
