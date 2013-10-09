@@ -25,7 +25,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 		});
 
-	 		//this.domPaging = $('<div id="#pager' + this.unique + '"></div>');
+	 		
 	 		//this.domSearch = $("<div />").addClass('ci-grid-search');
 	 		
 			var filter = this.module.getConfiguration().filterRow || '';
@@ -42,7 +42,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 			this.domSearch.append(searchInput);
 	 			this.domSearch.prepend("<span>Search : </span>");
 	 		}*/
-	 	//	this.dom.//append(this.domSearch).append(this.domPaging).
+	 		//append(this.domSearch).append(this.domPaging).
 		//		append(this.domTable);
 
 	 		this.module.getDomContent().html(this.dom);
@@ -91,9 +91,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 
 			//colModel[colModel.length - 1].width = "*";
-			var nbLines = this.module.getConfiguration().nbLines || 10000;	
+			var nbLines = this.module.getConfiguration().nbLines || 2;	
 
 			this.domTable = $("<table />").attr('id', this.unique).appendTo(this.dom);
+			this.domPaging = $('<div />', { id: "pager" + this.unique }).appendTo(this.dom);
+			
 
 			$(this.domTable).jqGrid({		 			
 			   	colNames: colNames,
@@ -103,17 +105,20 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	sortable: true,
 			   	sortname: j,
 			   	loadonce: false,
-			   	width: '100%',
+			   	//width: '100%',
 				datatype: "local",
-			   	//forceFit: true,
-			   	autowidth: true,
+			  //forceFit: true,
+			//   	autowidth: true,
 			   	gridview: true,
 			   	
 			   	forceFit: true,
+			   	shrinkToFit: true,
 			   	cellsubmit: 'clientArray',
 			   	cellEdit: true,
 			   	rowList: [10,20,30,100],
-			//   	pager: '#pager' + this.unique,
+			  	pager: '#pager' + this.unique,
+			   	height: '100%',
+
 			   	rowattr: function() {
 			   		if(arguments[1]._backgroundColor)
 			   			return {'style': 'background-color: ' + arguments[1]._backgroundColor };
@@ -157,11 +162,13 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	},
 
 	 	onResize: function(w, h) {
+	 		this.w = w;
+	 		this.h = h;
 
 	 		if(!this.jqGrid)
 	 			return;
 	 		this.jqGrid('setGridWidth', w);
-	 		this.jqGrid('setGridHeight', h);
+	 		//this.jqGrid('setGridHeight', h - 30);
 	 	},
 
 	 	blank: function() {
@@ -198,8 +205,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					elements[i]._inDom.resolve();
 				}
 
-
-				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
+				this.onResize(this.w, this.h);
 				//this.jqGrid('sortGrid');
 			}
 		},
@@ -274,12 +280,12 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					defScreen.build();
 				
 				if(self.done == 0)
-					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
+					self.onResize(self.w, self.h);
 			}, function(value) {
 
 				element[l] = value;
 				self.done--;
-				self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
+				self.onResize(self.w, self.h);
 				
 			});
 		},
@@ -339,7 +345,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				module.view.unload();
 			module.view.init();
 			module.view.inDom();
-			module.view.onResize(module.view.width || module.getWidthPx(), module.view.height || module.getHeightPx());
+			module.view.onResize(this.w, this.h);
 			module.model.resetListeners();	
 			module.updateAllView();
 		},
