@@ -76,7 +76,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 						this._atomLabels = false;
 					}
 
-					view.drawMolecule();
+				//	view.drawMolecule();
 
 					view.def.canvas.CIOnMouseMove(function(e) {
 
@@ -134,14 +134,11 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 		
 		drawMolecule: function() {
 
-
-
 			if(!this._width || !this._height || !this.def || !this.def.molecule || !this.def.canvas)
 				return;
-
+/*
 			var dim = this.def.molecule.getDimension();
-
-			var ratio = Math.max(this._width / dim.x, this._height / dim.y);
+			var ratio = Math.min(1, Math.max(this._width / dim.x, this._height / dim.y));
 			if(this.def.canvasdom) {
 				this.def.canvasdom.width = this._width;
 				this.def.canvasdom.height = this._height;
@@ -150,15 +147,11 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 				this.def.canvas.height = this._height;
 			}
 			
-			var ratio = Math.min(1, ratio);
 			this.def.molecule.scaleToAverageBondLength(30 * ratio);
-
 			this.def.canvas.specs.atoms_font_size_2D = 10 * ratio;
 			this.def.canvas.specs.bonds_hashSpacing_2D = 2.5 * ratio;
 			this.def.canvas.specs.bonds_width_2D = .6 * ratio;
-			//this._canvas.specs.bonds_saturationWidth_2D = .18 * ratio;
-			this.def.canvas.loadMolecule(this.def.molecule);
-
+			this.def.canvas.loadMolecule(this.def.molecule);*/
 		},
 		
 		getDom: function() {
@@ -173,7 +166,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 				return;
 			
 			this._highlighted[id] = val;
-			
+
 			for(var i in this._lastMol._atoms) {
 				if(this._lastMol._atoms[i].indexOf(id) > -1) {
 					API.highlight(i, val);

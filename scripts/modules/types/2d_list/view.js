@@ -99,10 +99,8 @@ define(['modules/defaultview', 'util/typerenderer'], function(Default, Renderer)
 				});
 
 			}
-
 			var async = Renderer.toScreen(element, this.module, {}, valJpath);
-			async.done(function(val) {
-				
+			async.done(function(val) {	
 				td.html(val);
 			});
 
