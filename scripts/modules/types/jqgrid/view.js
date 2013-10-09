@@ -73,8 +73,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			}
 
 
-			//colModel[colModel.length - 1].width = "*";
-			var nbLines = this.module.getConfiguration().nbLines || 2;	
+
+			var nbLines = this.module.getConfiguration().nbLines || 20;	
 
 			this.domTable = $("<table />").attr('id', this.unique).appendTo(this.dom);
 			this.domPaging = $('<div />', { id: "pager" + this.unique }).appendTo(this.dom);
@@ -83,7 +83,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			$(this.domTable).jqGrid({		 			
 			   	colNames: colNames,
 			   	colModel: colModel,
-			   	rowNum: nbLines,
+			   	
 			   	editable: true,
 			   	sortable: true,
 			   	sortname: j,
@@ -93,14 +93,16 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			  //forceFit: true,
 			//   	autowidth: true,
 			   	gridview: true,
-			   	
+			   	scrollerbar: true,
+			   	height: "100%",
 			   	forceFit: true,
 			   	shrinkToFit: true,
 			   	cellsubmit: 'clientArray',
 			   	cellEdit: true,
-			   	rowList: [10,20,30,100],
+			   	rowNum: nbLines,
+			   	rowList: [2, 10,20,30,100],
 			  	pager: '#pager' + this.unique,
-			   	height: '100%',
+			//   	height: '100%',
 
 			   	rowattr: function() {
 			   		if(arguments[1]._backgroundColor)
@@ -111,7 +113,22 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   			value = parseFloat(value);
 			   		self.elements[rowId.replace(self.uniqId, '')].setChild(colModel[colNum]._jpath, value, { moduleid: self.module.getId() });
 			   		
-			   		self.applyFilterToRow(rowId);
+			   		self.applyFilterToRow(rowId.replace(self.uniqId, ''), rowId);
+			   	},
+
+			   	loadComplete: function() {
+
+			   		if(!self.jqGrid)
+			   			return;
+					var ids = self.jqGrid('getDataIDs');
+					for(var i = 0; i < ids.length; i++) {
+						//console.log(ids[i], ids[i].replace(self.uniqId, ''), self.elements);
+						var id = ids[i].replace(self.uniqId, '');
+						self.applyFilterToRow(id, ids[i]);
+						self.tableElements[id]._inDom.resolve();
+					}
+
+
 			   	},
 
 			    viewrecords: true,
@@ -138,10 +155,10 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	},
 
 
-	 	applyFilterToRow: function(rowId) {
+	 	applyFilterToRow: function(elId, rowId) {
 
 			if( this.filter )
-			   	this.filter( this.jqGrid, this.elements[ (rowId).replace(this.uniqId, '') ], rowId );
+			   	this.filter( this.jqGrid, this.elements[ elId ], rowId );
 	 	},
 
 	 	onResize: function(w, h) {
@@ -151,7 +168,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		if(!this.jqGrid)
 	 			return;
 	 		this.jqGrid('setGridWidth', w);
-	 		//this.jqGrid('setGridHeight', h - 30);
+	 		this.jqGrid('setGridHeight', h - 26 - 27);
 	 	},
 
 	 	blank: function() {
@@ -182,11 +199,20 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				
 				this.tableElements = elements;
 
+				var allEls = [];
 				for(var i = 0; i < elements.length; i++) {
-					this.jqGrid('addRowData', elements[i].id, elements[i]);
-					this.applyFilterToRow(elements[i].id);
-					elements[i]._inDom.resolve();
+					allEls.push(elements[i]);
+					
+/*					this.applyFilterToRow(elements[i].id);
+					elements[i]._inDom.resolve();*/
 				}
+
+
+				this.jqGrid('setGridParam', { datatype: 'local', data:allEls });
+				$(this.domTable).trigger("reloadGrid");
+
+
+
 
 				this.onResize(this.w, this.h);
 				//this.jqGrid('sortGrid');
@@ -262,13 +288,17 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				if(defScreen.build)
 					defScreen.build();
 				
-				if(self.done == 0)
+				if(self.done == 0) {
 					self.onResize(self.w, self.h);
+				}
 			}, function(value) {
 
 				element[l] = value;
 				self.done--;
-				self.onResize(self.w, self.h);
+				
+				if(self.done == 0) {
+					self.onResize(self.w, self.h);
+				}
 				
 			});
 		},
@@ -287,7 +317,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				var jpaths = this.module.getConfiguration().colsjPaths;
 				var l = this.elements.length - 1;
 				var el = this.buildElement(source, self.uniqId + l, jpaths);
-				this.jqGrid('addRowData', el.id, el);
+		//		this.jqGrid('addRowData', el.id, el);
 			//	API.setVariable(this.module.getNameFromRel('list'), this.module.data, false, true);
 			},
 
