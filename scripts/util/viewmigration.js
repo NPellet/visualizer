@@ -2,6 +2,8 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 
 	var migrate = function(view) {
 
+console.log(view.entryPoint)
+
 		if(view._version == Versioning.version)
 			return view;
 
@@ -21,11 +23,18 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 						module.size.height*=2;
 					}
 				}
-			break;
+			
+			case "2.1": // we change the grid to jqgrid and the editable_grid to jqgrid
+				if (view.modules) {
+					for (var i=0; i<view.modules.length; i++) {
+						var module=view.modules[i];
+						if ((module.type=="grid") || (module.type=="editable_grid")) module.type="jqgrid";
+					}
+				}
+				console.log(view);
 		}
 
 		view._version = Versioning.version;
-		
 		return view;
 	}
 
