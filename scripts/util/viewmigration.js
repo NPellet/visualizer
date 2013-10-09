@@ -2,8 +2,6 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 
 	var migrate = function(view) {
 
-console.log(view.entryPoint)
-
 		if(view._version == Versioning.version)
 			return view;
 
@@ -31,7 +29,6 @@ console.log(view.entryPoint)
 						if ((module.type=="grid") || (module.type=="editable_grid")) module.type="jqgrid";
 					}
 				}
-				console.log(view);
 		}
 
 		view._version = Versioning.version;
