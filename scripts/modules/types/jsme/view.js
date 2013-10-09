@@ -66,19 +66,14 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 				API.killHighlight( this.module.getId() );
 
 				API.listenHighlight( moduleValue._highlight, function(onOff, highlightId) {
-
-console.log(onOff, highlightId);
-
 					var atoms = [];
 					for ( var i = 0, l = highlightId.length ; i < l ; i++ ) {
-
 						if(!(moduleValue._atoms[highlightId[i]] instanceof Array))
 							moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]]];
 						atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
 					}
-
 					contentWindow.setHighlight(atoms, onOff);
-					
+
 				}, this.module.getId());
 			},
 
