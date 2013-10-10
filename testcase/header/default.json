@@ -13,6 +13,11 @@
 			"label": "Copy view"
 		},
 
+        {
+                "type": "blankview",
+                "label": "Blank view"
+        },
+
 		{
 			"type": "pushviewtoserver",
 			"label": "Save to server"
