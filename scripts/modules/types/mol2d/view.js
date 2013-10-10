@@ -188,6 +188,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 				self._currentValue = moduleValue;
 				molLoaded._highlights = molLoaded._highlights || {};
 				
+				API.killHighlight( this.module.id );
 
 				API.listenHighlight( moduleValue._highlight, function(value, commonKeys) {
 
@@ -207,6 +208,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 						molLoaded.atoms[i].drawChildExtras = true;
 					}
 					canvas.repaint();
+					
 				}, true, this.module.id);
 			}	
 		}
