@@ -115,6 +115,16 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 				break;
 
 
+
+				case 'blankview':
+					require(['main/elements/blankview'], function(El) {
+						el = new El();
+						el.init(source);
+						def.resolve(el);
+					});
+				break;
+
+
 			}
 
 			return def.promise();

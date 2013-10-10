@@ -52,6 +52,7 @@ define(['util/versionhandler'], function(VersionHandler) {
 		},
 
 		setViewLoadCallback: function(c) {
+			this.viewCallback = c;
 			viewHandler.onLoaded = function(v) {
 				view = v;
 				c(v);
@@ -64,6 +65,7 @@ define(['util/versionhandler'], function(VersionHandler) {
 
 
 		setDataLoadCallback: function(c) {
+			this.dataCallback = c;
 			dataHandler.onLoaded = function(d) {
 				data = d;
 				c(d);
@@ -72,6 +74,10 @@ define(['util/versionhandler'], function(VersionHandler) {
 				data = d;
 				c(d, true);
 			};
+		},
+
+		blankView: function() {
+			this.viewCallback({});
 		}
 	}
 });

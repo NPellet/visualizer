@@ -9,6 +9,7 @@ define(['modules/defaultview'], function(Default) {
 			this.search = $('<table class="Search" cellpadding="5" cellspacing="0"><col width="100"><col width="*"></table>').css('width', '90%');
 			this.dom.append(this.search);
 			this.module.getDomContent().html(this.dom);
+			this.oldVal = {};
 
 			if(searchparams = this.module.getConfiguration().searchparams) {
 				for(var i in searchparams) {
@@ -31,10 +32,14 @@ define(['modules/defaultview'], function(Default) {
 					this.search.on('keyup', 'input[type=text]', function() {
 						var searchTerm = $(this).val();
 						var searchName = $(this).attr('name');
-						self.module.controller.doSearch(searchName, searchTerm);
+
+						if(!self.oldVal[searchName] || self.oldVal[searchName] !== searchTerm)
+							$(this).trigger('change');
+
+						self.oldVal[searchName] = searchTerm
 					});
 
-					this.search.on('change', 'select', function() {
+					this.search.on('change', 'select, input[type=text]', function() {
 						var searchTerm = $(this).val();
 						var searchName = $(this).attr('name');
 						self.module.controller.doSearch(searchName, searchTerm);

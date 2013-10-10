@@ -23,6 +23,18 @@
 			"label": "Versioning"
 		},
 
+
+		{
+			"type": "blankview",
+			"label": "Blank"
+		},
+
+
+		{
+			"type": "pasteview",
+			"label": "Paste view"
+		},
+
 		{
 			"type": "versionloader",
 			"label": "Exercices",
