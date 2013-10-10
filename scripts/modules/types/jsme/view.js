@@ -64,7 +64,6 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 				this._currentValue = moduleValue;
 
 				API.killHighlight( this.module.getId() );
-
 				API.listenHighlight( moduleValue._highlight, function(onOff, highlightId) {
 					var atoms = [];
 					for ( var i = 0, l = highlightId.length ; i < l ; i++ ) {
@@ -74,7 +73,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 					}
 					contentWindow.setHighlight(atoms, onOff);
 
-				}, this.module.getId());
+				}, false, this.module.getId());
 			},
 
 			'xArray': function(moduleValue, varname) {

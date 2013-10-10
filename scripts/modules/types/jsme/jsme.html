@@ -33,14 +33,13 @@
 		}
 
 		this.setHighlight = function(atoms, onOff) {
-			console.log(atoms);
 			var molIndex=1;
 			if(!onOff) {
 				jsmeApplet.resetAtomColors(1);	
 			} else {
 				var highlight=[];
 				for (var i=0; i<atoms.length; i++) {
-					highlight.push(atoms[i]-1);
+					highlight.push(atoms[i]+1);
 					highlight.push(3);
 				}
 				jsmeApplet.setAtomBackgroundColors(molIndex,highlight.join(","))	
