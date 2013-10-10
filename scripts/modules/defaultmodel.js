@@ -54,8 +54,6 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				l,
 				rel;
 
-
-
 			$.when(this.module.ready, this.module.view.onReady).then(function() {
 
 				if( varName instanceof Array ) {
@@ -65,7 +63,6 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				if( !self.sourceMap ) {
 					return;
 				}
-				
 				self.data[ varName ] = self.buildData( varValue, self.module.controller.configurationReceive[ self.sourceMap[ varName ].rel ].type );
 				rel = self.module.getDataRelFromName( varName );
 
@@ -74,13 +71,15 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				for( ; i < l; i++) {
 
 
+					if (  self.module.view.blank[ rel[ i ] ] ) {
+
+						self.module.view.blank[ rel[ i ] ].call( self.module.view, varName );
+
+					}
+
 					if( self.module.view.update[ rel[ i ] ] && varValue !== null ) {
 
 						self.module.view.update[ rel[ i ] ].call( self.module.view, self.data[ varName ], varName );
-
-					} else if (  self.module.view.blank[ rel[ i ] ] && varValue == null  ) {
-
-						self.module.view.blank[ rel[ i ] ].call( self.module.view, varName );
 
 					}
 				}

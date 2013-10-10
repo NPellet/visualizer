@@ -171,9 +171,13 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this.jqGrid('setGridHeight', h - 26 - 27);
 	 	},
 
-	 	blank: function() {
-	 		this.domTable.empty();
-	 		this.table = false;
+	 	blank: {
+
+	 		list: function() {
+				this.jqGrid('clearGridData');
+				$(this.domTable).trigger("reloadGrid");
+	 		}
+	 	
 	 	},
 
 	 	update: {
@@ -195,7 +199,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				this.buildElements(list, elements, jpaths);
 				
 				this.gridElements = elements;
-				this.jqGrid('clearGridData');
+			//	this.jqGrid('clearGridData');
 				
 				this.tableElements = elements;
 
@@ -210,9 +214,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 				this.jqGrid('setGridParam', { datatype: 'local', data:allEls });
 				$(this.domTable).trigger("reloadGrid");
-
-
-
 
 				this.onResize(this.w, this.h);
 				//this.jqGrid('sortGrid');

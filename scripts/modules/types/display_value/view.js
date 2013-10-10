@@ -17,8 +17,10 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 			
 		},
 		
-		blank: function() {
-			this.dom.empty();
+		blank: {
+			value: function(varName) {
+				this.dom.empty();
+			}
 		},
 		
 		inDom: function() {},
