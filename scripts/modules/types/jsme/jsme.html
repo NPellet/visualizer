@@ -61,7 +61,7 @@
 			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
 
 			// The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
-			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom,status) {this.view._doHighlight(mol,atom);})');
+			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom) {this.view._doHighlight(mol,atom);})');
 
 
 			this.view.onReady.resolve();

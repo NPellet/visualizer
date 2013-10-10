@@ -82,7 +82,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 		},
 
 
-		_doHighlight: function(mol, id, val) {
+		_doHighlight: function(mol, id) {
 			if (! this._currentValue) return;
 			for(var i in this._currentValue._atoms) {
 				if (id==0) {
@@ -97,7 +97,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 
 			}
 
-			this.highlightedAtom = id;	
+			this.highlightedAtom = id-1;
 		},
 
 
