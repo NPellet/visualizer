@@ -90,7 +90,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 						API.highlight(i, false);
 					}
 				} else {
-					if(this._currentValue._atoms[i].indexOf(id) > -1) {
+					if(this._currentValue._atoms[i].indexOf(id-1) > -1) {
 						API.highlight(i, true);
 					}						
 				}
