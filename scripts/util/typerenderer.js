@@ -40,6 +40,9 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 		
 		require(['ChemDoodle'], function() {
 
+			ChemDoodle.ELEMENT.H.jmolColor="#BBBBBB";
+			ChemDoodle.ELEMENT.S.jmolColor="#CCCC30";
+
 			var id = Util.getNextUniqueId();
 			
 			// Find the dom in here
@@ -55,18 +58,29 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 				
 				this.canvas = canvas;
 				canvas.specs.backgroundColor = "transparent";
-				canvas.specs.bonds_width_2D = .6;
 				canvas.specs.bonds_saturationWidth_2D = .18;
-				canvas.specs.bonds_hashSpacing_2D = 2.5;
-				canvas.specs.atoms_font_size_2D = 10;
 				canvas.specs.atoms_font_families_2D = ['Helvetica', 'Arial', 'sans-serif'];
 				canvas.specs.atoms_displayTerminalCarbonLabels_2D = true;
 
 				var molLoaded = ChemDoodle.readMOL(molfile.value);
-				molLoaded.scaleToAverageBondLength(14.4);
-				canvas.loadMolecule(molLoaded);
+				//molLoaded.scaleToAverageBondLength(14.4);
+				//canvas.loadMolecule(molLoaded);
+
+
+ 				var dim = molLoaded.getDimension();
+
+	//			var ratio = Math.min(1, Math.max(parent.width() / dim.x, parent.height() / dim.y));
+				var ratio=1;
 
 				this.molecule = molLoaded;
+
+				molLoaded.scaleToAverageBondLength(20 * ratio);
+				canvas.specs.atoms_font_size_2D = 14 * ratio;
+				canvas.specs.bonds_hashSpacing_2D = 2.5 * ratio;
+				canvas.specs.bonds_width_2D = 1.2 * ratio;
+				canvas.specs.atoms_useJMOLColors = true;
+				canvas.loadMolecule(molLoaded);
+
 				
 				API.listenHighlight(molfile._highlight, function(value, commonKeys) {
 
