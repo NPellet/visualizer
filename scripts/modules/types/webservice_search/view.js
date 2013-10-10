@@ -14,7 +14,7 @@ define(['modules/defaultview'], function(Default) {
 				for(var i in searchparams) {
 					if(!i)
 						continue;
-					this.search.append('<tr><td>' + searchparams[i].label + '</td><td>' + this._makeFormEl(searchparams[i], i) + '</td></tr>');
+					this.search.append('<tr><td><nobr>' + searchparams[i].label + '</nobr></td><td>' + this._makeFormEl(searchparams[i], i) + '</td></tr>');
 				}
 				
 				var url = self.module.getConfiguration().url;
