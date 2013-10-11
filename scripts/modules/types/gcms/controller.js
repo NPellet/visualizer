@@ -19,6 +19,10 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 					label: 'Zoom over MS spectra'
 				},
 
+				onMSSelect: {
+					label: 'Integration is selected'
+				},
+
 				onAnnotationAdd: {
 					label: 'Annotation added',
 					description: ''
@@ -30,7 +34,9 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 			},
 
 			rel: {
-				
+				'msSelected': {
+					label: 'Selected ms'
+				}
 			}
 		},
 		

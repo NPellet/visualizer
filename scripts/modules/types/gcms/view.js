@@ -42,6 +42,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				}
 			}
 
+			_gcms.onMSSelect = function(ms) {
+				self.module.controller.setVarFromEvent('onMSSelect', ms, msSelected);
+			}
+
 			_gcms.onZoomGC = function(from, to) {
 				self.module.controller.sendAction('fromtoGC', new DataObject({type: 'fromTo', value: new DataObject ({ from: from, to: to })}), 'onZoomGCChange');
 			}
@@ -201,12 +205,15 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				shape.redraw();
 			});
 			
-			if(annotation._highlight) {
-				API.listenHighlight(annotation._highlight, function(onOff) {
-					if(onOff)
+			if( annotation._highlight ) {
+
+				API.listenHighlight( annotation._highlight, function( onOff ) {
+
+					if( onOff ) {
 						shape.highlight();
-					else
+					} else {
 						shape.unHighlight();
+					}
 				});
 			}
 

@@ -110,6 +110,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 							self.firstRange = false;
 							self.ms.drawSeries();
 
+							self.onMSSelect(finalMs);
 
 						break;
 					}
