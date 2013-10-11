@@ -41,6 +41,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 
 		blank: {
 			mol2d: function() {
+				var view = this;
 				API.killHighlight(this.module.id);
 				view.module.getDomContent().empty();
 			}

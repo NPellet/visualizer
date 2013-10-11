@@ -5,7 +5,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 	init: function() {	
 
-	 		var self = this;
+	 		var self = this, lastTr;
 
 	 		this.uniqId = Util.getNextUniqueId();
 			this.unique = Util.getNextUniqueId();
@@ -15,14 +15,21 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this.domTable = $("<table />").attr('id', this.unique).css({width: '100%'});
 
 
-	 		this.dom.on('mouseover', '.jqgrow', function() {
+	 		this.dom.on('mouseover', 'tr.jqgrow', function() {
 
-				self.module.controller.lineHover(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
+	 			if(this !== lastTr)
+					self.module.controller.lineHover(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
 
-	 		}).on('mouseout', '.jqgrow', function() {
+				lastTr = this;
 
-				self.module.controller.lineOut(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
+	 		}).on('mouseout', 'tr.jqgrow', function() {
 
+	 			if(this == lastTr) {
+					self.module.controller.lineOut(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
+					lastTr = this;
+	 			}
+
+				
 	 		});
 
 			var filter = this.module.getConfiguration().filterRow || '';

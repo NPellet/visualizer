@@ -48,7 +48,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 
 		blank: {
 			'mol': function(varName) {
-			//	console.log("CLEAR");
+		//		console.log("CLEAR");
 				this.dom.get(0).contentWindow.clear();
 			}
 		},

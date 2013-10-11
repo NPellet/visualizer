@@ -2,7 +2,7 @@ define(['util/datatraversing'], function(Traversing) {
 
 	var allScripts = [];
 	function setVar(name, element, jpath) {
-
+//console.log('sfgs');
 		var self = this;
 		if(!jpath) {
 			this.getRepositoryData().set(name, element);
