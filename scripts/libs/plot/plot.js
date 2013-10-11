@@ -1263,7 +1263,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				strokeColor: 'rgba(' + color + ', 0.9)',
 			
 				onChange: function(newData) {
-					self.triggerEvent('onAnnotationChange', newData);
+				//	self.graph.triggerEvent('onAnnotationChange', newData);
 				}
 			}, {}, true);
 

@@ -31,13 +31,17 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			}
 
 			_gcms.onAnnotationMake = function(annot) {
-				self.module.controller.sendAction('annotation', annot, 'onAnnotationAdd');
+				
 
 				switch(annot.type) {
 					case 'verticalLine':
 						if(annot._msIon) {
 							self.module.controller.sendAction('msIon', annot._msIon, 'onMSTrackingAdded');	
 						}
+					break;
+
+					case 'surfaceUnderCurve':
+						self.module.controller.sendAction('annotation', annot, 'onAnnotationAdd');
 					break;
 				}
 			}

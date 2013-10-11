@@ -237,6 +237,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 				onAnnotationChange: function(annot) {
 
+					var annot = new DataObject(annot, true);
+
 					var val = annot.pos.x, 
 						index, 
 						index2, 
