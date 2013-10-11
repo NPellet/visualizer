@@ -277,6 +277,11 @@ div.ci-module-wrapper.ci-module-jqgrid .ci-module-content {
 	overflow: hidden;
 }
 
+
+div.ci-module-wrapper.ci-module-gcms .ci-module-content {
+	overflow: hidden;
+}
+
 div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid {
 	border-top-width: 0px;
 	background: transparent;
