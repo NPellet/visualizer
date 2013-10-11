@@ -7,9 +7,22 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 			return this.dataValue;
 		},
 		
+
 		getjPath: function(rel) {
-			return []
+			var data;
+			switch(rel) {
+				default:
+				case 'annotation':
+					data = this.annotations[0];
+				break;
+			}
+
+			var jpaths = []; 
+			Traversing.getJPathsFromElement(data, jpaths);
+			return jpaths;
 		}
+
+
 	});
 
 	return model;
