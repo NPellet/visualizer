@@ -167,14 +167,21 @@ LoadingPlot.SVGElement.prototype.inDom = function() {};
 
 LoadingPlot.SVGElement.prototype.mouseover = function() {
 	//this.highlight(true);
-	CI.RepoHighlight.set(this._data._highlight, 1);
+
+	require(['util/api'], function(API) {
+		API.highlight(this._data._highlight, 1);	
+	});
+	
 	if(this.hoverCallback)
 		this.hoverCallback.call(this);
 }
 
 LoadingPlot.SVGElement.prototype.mouseout = function() {
 	//this.highlight(false);
-	CI.RepoHighlight.set(this._data._highlight, 0);
+	
+	require(['util/api'], function(API) {
+		API.highlight(this._data._highlight, 0);
+	});
 }
 
 

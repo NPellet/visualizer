@@ -38,11 +38,21 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 			
 			this.drawMolecule();
 		},
+
+		blank: {
+			mol2d: function() {
+				API.killHighlight(this.module.id);
+				view.module.getDomContent().empty();
+			}
+		},
 		
 		update: {
 			'mol2d': function(moduleValue, canDoAtomLabels) {
 				
 				if(!moduleValue)
+					return;
+
+				if(!moduleValue.get())
 					return;
 
 				API.killHighlight(this.module.id);
@@ -58,6 +68,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 
 				this.def.always(function(mol) {
 
+					view.module.getDomContent().empty();
 					view.module.getDomContent().html(mol);
 
 					if(!view.def.build)
