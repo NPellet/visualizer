@@ -22,21 +22,27 @@ define(['modules/defaultview'], function(Default) {
 				var button = self.module.getConfiguration().button || false;
 
 				if(button) {
-					require(['forms/button'], function(Button) {
-						self.search.append(new Button('Search', function() {
+
+					require( [ 'forms/button' ], function( Button ) {
+
+						self.search.append( new Button( 'Search', function() {
 								self.module.controller.doSearch();
-							})
-						.render());
+							} ).render() );
 					});
+
 				} else {
-					this.search.on('keyup', 'input[type=text]', function() {
-						var searchTerm = $(this).val();
-						var searchName = $(this).attr('name');
 
-						if(!self.oldVal[searchName] || self.oldVal[searchName] !== searchTerm)
-							$(this).trigger('change');
+					this.search.on( 'keyup', 'input[type=text]', function() {
 
-						self.oldVal[searchName] = searchTerm
+						var searchTerm = $(this).val(),
+							searchName = $(this).attr('name');
+							
+						if( !self.oldVal[ searchName ] || self.oldVal[ searchName ] !== searchTerm ) {
+							$( this ).trigger( 'change' );
+						}
+
+						self.oldVal[ searchName ] = searchTerm
+
 					});
 
 					this.search.on('change', 'select, input[type=text]', function() {
