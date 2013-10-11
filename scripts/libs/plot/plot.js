@@ -1164,6 +1164,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		triggerEvent: function() {
 			var func = arguments[0], 
 				args = Array.prototype.splice.apply(arguments, [0, 1]);
+				
 			if(typeof this.options[func] == "function")
 				return this.options[func].apply(this, arguments);
 			return true;
@@ -4759,6 +4760,7 @@ define(['jquery', 'util/util'], function($, Util) {
 						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove integral</a></li>', 
 						function(e) {
 							self.kill();
+							self.graph.triggerEvent('onAnnotationRemove', self.data);
 						}]
 					]);
 				});

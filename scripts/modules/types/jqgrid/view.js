@@ -329,7 +329,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				var jpaths = this.module.getConfiguration().colsjPaths;
 				var l = this.elements.length - 1;
 				var el = this.buildElement(source, this.uniqId + l, jpaths);
-				console.log(this.uniqId, l);
+				this.gridElements.push(el);
 
 				this.jqGrid('addRowData', el.id, el);
 
@@ -337,13 +337,20 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			},
 
 			removeRow: function(el) {
-				for(var i = 0, l = this.module.data.length; i < l; i++) { 
-					if(this.module.data[i] == el) {
-						this.module.data.splice(i, 1);
+				this.elements = this.elements || [];
+				var id, index;
+				
+				for(var i = 0, l = this.gridElements.length; i < l; i++) {
+					if(this.gridElements[i].__source == el) {
+						id = this.gridElements[i].id;
+						index = i;
 						break;
 					}
 				}
-				API.setVariable(this.module.getNameFromRel('list'), this.module.data);
+
+				this.elements.splice(index, 0, 1);
+				this.gridElements.splice(index, 0, 1);
+
 			},
 
 			addColumn: function(jpath) {

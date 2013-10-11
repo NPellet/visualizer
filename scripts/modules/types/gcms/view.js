@@ -45,6 +45,20 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				}
 			}
 
+			_gcms.onAnnotationRemove = function(annot) {
+
+				switch(annot.type) {
+					case 'verticalLine':
+						
+					break;
+
+					case 'surfaceUnderCurve':
+
+						self.module.controller.sendAction('annotation', annot, 'onIntegralRemove');
+					break;
+				}
+			}
+
 			_gcms.onMSSelect = function(ms) {
 				self.module.controller.setVarFromEvent('onMSSelect', new DataArray(ms), 'msSelected');
 			}

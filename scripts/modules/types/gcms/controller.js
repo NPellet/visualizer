@@ -28,6 +28,11 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 					description: ''
 				},
 
+				onIntegralRemove: {
+					label: 'Integral is removed',
+					description: ''
+				},
+
 				onMSTrackingAdded: {
 					label: 'Add vertical tracking line over MS spectra'
 				}

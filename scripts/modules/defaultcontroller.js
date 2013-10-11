@@ -20,6 +20,9 @@ define(['jquery', 'util/api', 'util/datatraversing'], function($, API, Traversin
 					var jpath = actionsOut[i].jpath;	
 
 					if(!jpath) {
+
+						console.log(actionname, value);
+
 						API.executeAction(actionname, value);
 						API.doAction(actionname, value);
 						continue;

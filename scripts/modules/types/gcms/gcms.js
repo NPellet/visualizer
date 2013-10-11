@@ -123,6 +123,12 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.onAnnotationChange(annot);
 				},
 
+
+				onAnnotationRemove: function(annot) {
+					self.onAnnotationRemove(annot);
+				},
+
+				
 				onAnnotationMake: function(annot) {
 					annot = new DataObject(annot, true);
 					self.onAnnotationMake(annot);
@@ -235,6 +241,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					this.options.onAnnotationChange(annot);
 					self.onAnnotationMake(annot);
 				},
+
+
 
 				onAnnotationChange: function(annot) {
 
