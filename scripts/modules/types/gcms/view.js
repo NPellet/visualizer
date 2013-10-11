@@ -26,12 +26,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 			_gcms.onAnnotationChange = function(annot) {
 				self.module.controller.sendAction('annotation', annot, 'onAnnotationChange');
-				annot = new DataObject(annot, true);
-				annot.triggerChange();
+				if(annot)
+					annot.triggerChange(self.module.getId());
 			}
 
 			_gcms.onAnnotationMake = function(annot) {
-				
 
 				switch(annot.type) {
 					case 'verticalLine':
@@ -207,7 +206,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			annotation.onChange(function(value) {
 				shape.draw();
 				shape.redraw();
-			});
+			}, self.module.getId());
 			
 			if( annotation._highlight ) {
 

@@ -86,7 +86,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	
 			   	editable: true,
 			   	sortable: true,
-			   	sortname: j,
+			  // 	sortname: j,
 			   	loadonce: false,
 			   	//width: '100%',
 				datatype: "local",
@@ -109,6 +109,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   			return {'style': 'background-color: ' + arguments[1]._backgroundColor };
 			   	},
 			   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
+			   	
 			   		if(jpaths[colModel[colNum].name].number)
 			   			value = parseFloat(value);
 			   		self.elements[rowId.replace(self.uniqId, '')].setChild(colModel[colNum]._jpath, value, { moduleid: self.module.getId() });
@@ -267,12 +268,22 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 		listenFor: function(source, jpaths, id) {
 			var self = this;
+			source.onChange(function( data ) {
 
-			source.onChange(function(data) {
-				var element = self.buildElement(source, self.uniqId, jpaths, true);
-				self.jqGrid('setRowData', id, element);
+	
+				var element = self.buildElement( data, id, jpaths, true );
+				self.jqGrid( 'setRowData', id, element );
 				var scroll = $("body").scrollTop();
-				var target = $("tr#" + id, self.domTable).effect('highlight', {}, 1000).get(0).scrollIntoView();
+
+				//console.log(self.jqGrid('getLocalRow', id));
+//console.log(self.elements);
+//				self.jqGrid( 'setSelection', id );
+
+
+				var target = $("tr#" + id, self.domTable).effect('highlight', {}, 1000).get(0);
+				if(target)
+					target.scrollIntoView();
+
 				$("body").scrollTop(scroll);
 			}, self.module.getId());
 		},
@@ -317,8 +328,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				this.module.data = this.elements;
 				var jpaths = this.module.getConfiguration().colsjPaths;
 				var l = this.elements.length - 1;
-				var el = this.buildElement(source, self.uniqId + l, jpaths);
-		//		this.jqGrid('addRowData', el.id, el);
+				var el = this.buildElement(source, this.uniqId + l, jpaths);
+				console.log(this.uniqId, l);
+
+				this.jqGrid('addRowData', el.id, el);
+
 			//	API.setVariable(this.module.getNameFromRel('list'), this.module.data, false, true);
 			},
 

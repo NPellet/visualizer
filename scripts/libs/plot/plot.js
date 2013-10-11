@@ -1006,13 +1006,17 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		makeShape: function(annotation, events, notify) {
-
+			var response;
 			annotation.id = Math.random();
 			
 			if(notify) {
-				if(false === this.triggerEvent('onAnnotationMake', annotation)) {
+				if(false === (response = this.triggerEvent('onAnnotationMake', annotation))) {
 					return;
 				}
+			}
+
+			if(response) {
+				annotation = response;
 			}
 
 			switch(annotation.type) {
@@ -1374,7 +1378,7 @@ define(['jquery', 'util/util'], function($, Util) {
 					onChange: function(newData) {
 						self.triggerEvent('onAnnotationChange', newData);
 					}
-			}, true);
+			}, {}, true);
 
 			if(!shape)
 				return;

@@ -7,6 +7,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 	controller.prototype = $.extend(true, {}, Default, {
 
 		lineHover: function(element) {
+			if(!element)
+				return;
 			var actions;
 			this.setVarFromEvent('onHover', element);
 			if(element._highlight !== false)
@@ -14,6 +16,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		},
 
 		lineOut: function(element) {
+			if(!element)
+				return;
 			if(element._highlight !== false)
 				API.highlight(element._highlight, 0);
 		},

@@ -124,8 +124,9 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				},
 
 				onAnnotationMake: function(annot) {
+					annot = new DataObject(annot, true);
 					self.onAnnotationMake(annot);
-
+					return annot;
 				},
 
 				onAnnotationUnselect: function(annot) {
