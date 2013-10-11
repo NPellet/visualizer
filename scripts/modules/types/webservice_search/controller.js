@@ -135,6 +135,18 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 								name: 'button',
 								title: 'Search button',
 								options: { button: '' }
+							},
+
+							{
+								type: 'Text',
+								name: 'buttonlabel',
+								title: 'Button text'
+							},
+
+							{
+								type: 'Text',
+								name: 'buttonlabel_exec',
+								title: 'Button text (executing)'
 							}
 						]
 					},
@@ -249,6 +261,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 					
 					cfg: [{
 						url: [this.module.getConfiguration().url],
+						buttonlabel: [this.module.getConfiguration().buttonlabel],
+						buttonlabel_exec: [this.module.getConfiguration().buttonlabel_exec],
 						button: [this.module.getConfiguration().button ? ['button'] : []]
 				//		jpatharray: [this.module.getConfiguration().jpatharray]
 					}],
@@ -290,6 +304,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			this.module.getConfiguration().searchparams = searchparams;
 			this.module.getConfiguration().postvariables = postvariables;
 			this.module.getConfiguration().url = confSection[0].cfg[0].url[0];
+			this.module.getConfiguration().buttonlabel = confSection[0].cfg[0].buttonlabel[0];
+			this.module.getConfiguration().buttonlabel_exec = confSection[0].cfg[0].buttonlabel_exec[0];
 		//	this.module.getConfiguration().jpatharray = confSection[0].cfg[0].jpatharray[0];
 		},
 

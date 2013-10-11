@@ -4,14 +4,17 @@ define(['modules/defaultview'], function(Default) {
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-			var self = this;
+
+			var self = this,
+				cfg = this.module.getConfiguration();
+
 			this.dom = $('<div></div>');
 			this.search = $('<table class="Search" cellpadding="5" cellspacing="0"><col width="100"><col width="*"></table>').css('width', '90%');
 			this.dom.append(this.search);
 			this.module.getDomContent().html(this.dom);
 			this.oldVal = {};
 
-			if(searchparams = this.module.getConfiguration().searchparams) {
+			if(searchparams = cfg.searchparams) {
 				for(var i in searchparams) {
 					if(!i)
 						continue;
@@ -25,9 +28,11 @@ define(['modules/defaultview'], function(Default) {
 
 					require( [ 'forms/button' ], function( Button ) {
 
-						self.search.append( new Button( 'Search', function() {
-								self.module.controller.doSearch();
-							} ).render() );
+						self.search.append( new Button( cfg.buttonlabel || 'Search', function() {
+
+							self.module.controller.doSearch();
+							
+						} ).render() );
 					});
 
 				} else {
@@ -36,7 +41,7 @@ define(['modules/defaultview'], function(Default) {
 
 						var searchTerm = $(this).val(),
 							searchName = $(this).attr('name');
-							
+
 						if( !self.oldVal[ searchName ] || self.oldVal[ searchName ] !== searchTerm ) {
 							$( this ).trigger( 'change' );
 						}

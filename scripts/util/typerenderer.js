@@ -51,11 +51,8 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 			def.build = function() {
 	//console.trace();
 				var canvas = new ChemDoodle.ViewerCanvas(id);
-
 				var parent = $(can).parent();
-
 				canvas.resize(parent.width(), parent.height());
-				
 				this.canvas = canvas;
 				canvas.specs.backgroundColor = "transparent";
 				canvas.specs.bonds_saturationWidth_2D = .18;
@@ -405,7 +402,6 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 		}
 		
 		element.getChild(jpath).done(function(element) {
-			
 			_valueToScreen(deferred, element, box, opts); 
 		}).fail(function() { deferred.reject(); });
 		
