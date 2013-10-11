@@ -13,8 +13,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 54,
-				"height": 26
+				"width": 53.96666666269302,
+				"height": 25.966666662693022
 			},
 			"configuration": {
 				"flipX": true,
@@ -78,12 +78,12 @@
 				"top": 28
 			},
 			"size": {
-				"width": 54,
-				"height": 38
+				"width": 53.96666666269302,
+				"height": 37.96666666269302
 			},
 			"configuration": {
 				"flipX": true,
-				"flipY": false,
+				"flipY": true,
 				"xLabel": "",
 				"yLabel": "",
 				"xRightSpacing": "",
@@ -102,7 +102,8 @@
 						"plotcolor": "#1f0ce4",
 						"strokewidth": "",
 						"plotcontinuous": false,
-						"peakpicking": false
+						"peakpicking": false,
+						"markers": false
 					}
 				],
 				"graphurl": "",
@@ -111,7 +112,8 @@
 				"maxX": null,
 				"maxY": null,
 				"wheelAction": "none",
-				"shiftxtozero": false
+				"shiftxtozero": false,
+				"xastime": false
 			},
 			"bgColor": "",
 			"dataSend": [
@@ -153,8 +155,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 68,
-				"height": 66
+				"width": 67.96666666269303,
+				"height": 65.96666666269303
 			},
 			"configuration": {
 				"flipX": true,
@@ -252,5 +254,5 @@
 			"jpath": "element.h1"
 		}
 	],
-	"_version": "2.1"
+	"_version": "2.2"
 }
