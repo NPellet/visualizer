@@ -112,7 +112,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 							self.firstRange = false;
 							self.ms.drawSeries();
 
-							self.onMSSelect(finalMs);
+							self.onMSSelect(finalMs, annot);
 
 						break;
 					}
@@ -128,7 +128,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					self.onAnnotationRemove(annot);
 				},
 
-				
+
 				onAnnotationMake: function(annot) {
 					annot = new DataObject(annot, true);
 					self.onAnnotationMake(annot);

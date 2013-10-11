@@ -25,22 +25,36 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			_gcms.inDom(this.dom.find('.gc').get(0), this.dom.find('.ms').get(0));
 
 			_gcms.onAnnotationChange = function(annot) {
-				self.module.controller.sendAction('annotation', annot, 'onAnnotationChange');
+
+				switch(annot.type) {
+
+					case 'verticalLine':
+					break;
+
+					case 'surfaceUnderCurve':
+						self.module.controller.sendAction('annotation', annot, 'onIntegralChange');
+					break;
+
+				}
+
 				if(annot)
 					annot.triggerChange(self.module.getId());
 			}
 
 			_gcms.onAnnotationMake = function(annot) {
 
-				switch(annot.type) {
+				switch( annot.type ) {
+
 					case 'verticalLine':
-						if(annot._msIon) {
+
+						if( annot._msIon ) {
 							self.module.controller.sendAction('msIon', annot._msIon, 'onMSTrackingAdded');	
 						}
+
 					break;
 
 					case 'surfaceUnderCurve':
-						self.module.controller.sendAction('annotation', annot, 'onAnnotationAdd');
+						self.module.controller.sendAction('annotation', annot, 'onIntegralAdd');
 					break;
 				}
 			}
@@ -59,8 +73,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				}
 			}
 
-			_gcms.onMSSelect = function(ms) {
-				self.module.controller.setVarFromEvent('onMSSelect', new DataArray(ms), 'msSelected');
+			_gcms.onMSSelect = function(ms, annot) {
+				self.module.controller.setVarFromEvent('onIntegralSelect', new DataArray(ms), 'msSelected');
+				self.module.controller.setVarFromEvent('onIntegralSelect', annot, 'annotation');
 			}
 
 			_gcms.onZoomGC = function(from, to) {

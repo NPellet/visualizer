@@ -19,17 +19,22 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 					label: 'Zoom over MS spectra'
 				},
 
-				onMSSelect: {
+				onIntegralSelect: {
 					label: 'Integration is selected'
 				},
 
-				onAnnotationAdd: {
-					label: 'Annotation added',
+				onIntegralAdd: {
+					label: 'Integral is added',
 					description: ''
 				},
 
 				onIntegralRemove: {
 					label: 'Integral is removed',
+					description: ''
+				},
+
+				onIntegralChange: {
+					label: 'Integral is changed',
 					description: ''
 				},
 
@@ -41,6 +46,10 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 			rels: {
 				'msSelected': {
 					label: 'Selected ms'
+				},
+
+				'annotation': {
+					label: 'Annotation'
 				}
 			}
 		},
