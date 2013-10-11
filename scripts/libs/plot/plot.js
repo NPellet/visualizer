@@ -1245,6 +1245,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		addLine: function(e) {
 
+			var self = this;
 			this.count = this.count || 0;
 
 			var coords = this.graph.getXY(e),
