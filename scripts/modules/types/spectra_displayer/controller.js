@@ -254,7 +254,7 @@ define(['modules/defaultcontroller'], function(Default) {
 								type: 'Combo',
 								name: 'wheelAction',
 								title: 'Mouse Wheel',
-								options: [{key: 'zoomX', title: 'Zoom x'}, {key: 'zoomY', title: 'Zoom Y'}, {key: 'none', title: 'None'}]
+								options: [{key: 'zoomX', title: 'Zoom X'}, {key: 'zoomY', title: 'Zoom Y'}, {key: 'none', title: 'None'}]
 							}
 
 						]

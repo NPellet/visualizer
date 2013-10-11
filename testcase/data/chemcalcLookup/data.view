@@ -1,1 +1,432 @@
-{"entryPoint":{"variables":[{"varname":"Test","jpath":"element.Test"}]},"modules":[{"type":"webservice_search","title":"Enter a monoisotopic mass","displayWrapper":true,"position":{"left":0,"top":0},"size":{"width":21,"height":7},"configuration":{"colsjPaths":{"em":{"jpath":"element.em"},"Mol. Formula":{"jpath":"element.mf"}},"url":"http://www.chemcalc.org/chemcalc?monoisotopicMass=<TERM>&mfRange=C0-30H0-60N0-5O0-10F0-3Cl0-3&action=em2mf&typedResult=true&maxNumberRows=100","jpatharray":"element.results","searchparams":{"TERM":{"label":"Monoisotopic mass","defaultvalue":"300"}}},"bgColor":"","dataSend":[{"event":"onSearchReturn","rel":"results","jpath":"element.results","name":"chemcalc"}],"dataSource":[{"rel":"","name":""}]},{"type":"grid","title":"Possible molecular formula","displayWrapper":true,"position":{"left":0,"top":8},"size":{"width":21,"height":32},"configuration":{"colsjPaths":{"Molecular formula":{"jpath":"element.mf"},"Monoisotopic mass":{"jpath":"element.em"},"Unsaturation":{"jpath":"element.unsat"},"Error":{"jpath":"element.error"}},"nbLines":"200","colorjPath":"","displaySearch":false},"bgColor":"","dataSend":[{"event":"onHover","rel":"element","jpath":"element.jcamp","name":"jcamp"},{"event":"onHover","rel":"element","jpath":"element.mf","name":"hoverMF"},{"event":"onSelect","rel":"element","jpath":"element.jcamp","name":"clickedJcamp"},{"event":"onSelect","rel":"element","jpath":"element.mf","name":"clickedMF"},{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"list","name":"chemcalc","type":[null]}]},{"type":"spectra_displayer","title":"Untitled module","displayWrapper":true,"position":{"left":22,"top":0},"size":{"width":47,"height":18},"configuration":{"flipX":false,"flipY":false,"plotinfos":[{"variable":"jcamp","plotcolor":"#e01a1a","plotcontinuous":false},{"variable":"clickedJcamp","plotcolor":"#21990f","plotcontinuous":false},{"variable":"jcampFromMF","plotcolor":"#151ee0","plotcontinuous":false}]},"bgColor":"","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"jcamp","name":"jcamp","type":[null]},{"rel":"jcamp","name":"clickedJcamp","type":[null]},{"rel":"jcamp","name":"jcampFromMF","type":[null]}]},{"type":"webservice_search","title":"Molecular formula","displayWrapper":true,"position":{"left":22,"top":25},"size":{"width":15,"height":7},"configuration":{"searchparams":{"MF":{"label":"Molecular formula","defaultvalue":""}},"url":"http://www.chemcalc.org/service?mf=<MF>&isotopomers=jcamp&typedResult=true"},"bgColor":"","dataSend":[{"event":"onSearchReturn","rel":"results","jpath":"element.jcamp","name":"jcampFromMF"},{"event":"onSearchReturn","rel":"results","jpath":"element.mf","name":"mfFromMF"}],"dataSource":[{"rel":"","name":""}]},{"type":"display_value","title":"Clicked Molecular Formula","displayWrapper":true,"position":{"left":38,"top":19},"size":{"width":15,"height":5},"configuration":{"frontcolor":"#008507","font":"arial","fontsize":"24pt","align":"center","valign":"middle","defaultvalue":"","sprintf":""},"bgColor":"","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"value","name":"clickedMF","type":[null]}]},{"type":"display_value","title":"Hover Molecular Formula","displayWrapper":true,"position":{"left":54,"top":19},"size":{"width":15,"height":5},"configuration":{"frontcolor":"#f81b1b","font":"arial","fontsize":"24pt","align":"center","valign":"middle","defaultvalue":"","sprintf":""},"bgColor":"","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"value","name":"hoverMF","type":[null]}]},{"type":"display_value","title":"Lookup Molecular Formula","displayWrapper":true,"position":{"left":22,"top":19},"size":{"width":15,"height":5},"configuration":{"frontcolor":"#051fc7","font":"arial","fontsize":"24pt","align":"center","valign":"middle","defaultvalue":"","sprintf":""},"bgColor":"","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"value","name":"mfFromMF","type":[null]}]}],"configuration":{"variableFilters":{},"title":"ChemCalc interactive lookup"},"_local":false,"_saved":1359620583463,"_time":1359620583463}
+{
+	"modules": [
+		{
+			"type": "webservice_search",
+			"title": "Enter a monoisotopic mass",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 42.039999997615816,
+				"height": 14.039999997615814
+			},
+			"configuration": {
+				"colsjPaths": {
+					"em": {
+						"jpath": "element.em"
+					},
+					"Mol. Formula": {
+						"jpath": "element.mf"
+					}
+				},
+				"url": "http://www.chemcalc.org/chemcalc?monoisotopicMass=<TERM>&mfRange=C0-30H0-60N0-5O0-10F0-3Cl0-3&action=em2mf&typedResult=true&maxNumberRows=100",
+				"jpatharray": "element.results",
+				"searchparams": {
+					"TERM": {
+						"label": "Monoisotopic mass",
+						"defaultvalue": "300"
+					}
+				}
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": "element.results",
+					"name": "chemcalc"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"id": 1
+		},
+		{
+			"type": "jqgrid",
+			"title": "Possible molecular formula",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 16
+			},
+			"size": {
+				"width": 42.039999997615816,
+				"height": 64.03999999761581
+			},
+			"configuration": {
+				"colsjPaths": {
+					"Molecular formula": {
+						"jpath": "element.mf",
+						"number": false,
+						"editable": "none",
+						"options": ""
+					},
+					"Monoisotopic mass": {
+						"jpath": "element.em",
+						"number": false,
+						"editable": "none",
+						"options": ""
+					},
+					"Unsaturation": {
+						"jpath": "element.unsat",
+						"number": false,
+						"editable": "none",
+						"options": ""
+					},
+					"Error": {
+						"jpath": "element.error",
+						"number": false,
+						"editable": "none",
+						"options": ""
+					}
+				},
+				"nbLines": "200",
+				"colorjPath": "",
+				"displaySearch": false,
+				"toggle": "",
+				"filterRow": ""
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.jcamp",
+					"name": "jcamp"
+				},
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.mf",
+					"name": "hoverMF"
+				},
+				{
+					"event": "onSelect",
+					"rel": "element",
+					"jpath": "element.jcamp",
+					"name": "clickedJcamp"
+				},
+				{
+					"event": "onSelect",
+					"rel": "element",
+					"jpath": "element.mf",
+					"name": "clickedMF"
+				},
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "list",
+					"name": "chemcalc"
+				}
+			],
+			"id": 2,
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 44,
+				"top": 0
+			},
+			"size": {
+				"width": 94.03999999761581,
+				"height": 36.039999997615816
+			},
+			"configuration": {
+				"flipX": false,
+				"flipY": false,
+				"plotinfos": [
+					{
+						"variable": "jcamp",
+						"plotcolor": "#e01a1a",
+						"strokewidth": "",
+						"plotcontinuous": false,
+						"peakpicking": true,
+						"markers": false
+					},
+					{
+						"variable": "clickedJcamp",
+						"plotcolor": "#21990f",
+						"strokewidth": "",
+						"plotcontinuous": false,
+						"peakpicking": false,
+						"markers": false
+					},
+					{
+						"variable": "jcampFromMF",
+						"plotcolor": "#151ee0",
+						"strokewidth": "",
+						"plotcontinuous": false,
+						"peakpicking": false,
+						"markers": false
+					}
+				],
+				"graphurl": "",
+				"xLabel": "",
+				"yLabel": "",
+				"xRightSpacing": "",
+				"xLeftSpacing": "",
+				"yTopSpacing": "",
+				"yBottomSpacing": "",
+				"minX": null,
+				"minY": null,
+				"maxX": null,
+				"maxY": null,
+				"zoom": "",
+				"wheelAction": "none",
+				"shiftxtozero": false,
+				"xastime": false,
+				"displayAxis": [
+					"x"
+				],
+				"grids": []
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp"
+				},
+				{
+					"rel": "jcamp",
+					"name": "clickedJcamp"
+				},
+				{
+					"rel": "jcamp",
+					"name": "jcampFromMF"
+				}
+			],
+			"id": 3,
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "webservice_search",
+			"title": "Molecular formula",
+			"displayWrapper": true,
+			"position": {
+				"left": 44,
+				"top": 50
+			},
+			"size": {
+				"width": 30.039999997615816,
+				"height": 14.039999997615814
+			},
+			"configuration": {
+				"searchparams": {
+					"MF": {
+						"label": "Molecular formula",
+						"defaultvalue": ""
+					}
+				},
+				"url": "http://www.chemcalc.org/service?mf=<MF>&isotopomers=jcamp&typedResult=true"
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": "element.jcamp",
+					"name": "jcampFromMF"
+				},
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": "element.mf",
+					"name": "mfFromMF"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"id": 4
+		},
+		{
+			"type": "display_value",
+			"title": "Clicked Molecular Formula",
+			"displayWrapper": true,
+			"position": {
+				"left": 76,
+				"top": 38
+			},
+			"size": {
+				"width": 30.039999997615816,
+				"height": 10.039999997615814
+			},
+			"configuration": {
+				"frontcolor": "#008507",
+				"font": "arial",
+				"fontsize": "24pt",
+				"align": "center",
+				"valign": "middle",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "clickedMF",
+					"type": [
+						null
+					]
+				}
+			],
+			"id": 5
+		},
+		{
+			"type": "display_value",
+			"title": "Hover Molecular Formula",
+			"displayWrapper": true,
+			"position": {
+				"left": 108,
+				"top": 38
+			},
+			"size": {
+				"width": 30.039999997615816,
+				"height": 10.039999997615814
+			},
+			"configuration": {
+				"frontcolor": "#f81b1b",
+				"font": "arial",
+				"fontsize": "24pt",
+				"align": "center",
+				"valign": "middle",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "hoverMF",
+					"type": [
+						null
+					]
+				}
+			],
+			"id": 6
+		},
+		{
+			"type": "display_value",
+			"title": "Lookup Molecular Formula",
+			"displayWrapper": true,
+			"position": {
+				"left": 44,
+				"top": 38
+			},
+			"size": {
+				"width": 30.039999997615816,
+				"height": 10.039999997615814
+			},
+			"configuration": {
+				"frontcolor": "#051fc7",
+				"font": "arial",
+				"fontsize": "24pt",
+				"align": "center",
+				"valign": "middle",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "mfFromMF",
+					"type": [
+						null
+					]
+				}
+			],
+			"id": 7
+		}
+	],
+	"configuration": {
+		"variableFilters": {},
+		"title": "ChemCalc interactive lookup"
+	},
+	"_local": false,
+	"_saved": 1359620583463,
+	"_time": 1359620583463,
+	"variables": [
+		{
+			"varname": "Test",
+			"jpath": "element.Test"
+		}
+	],
+	"_version": "2.2"
+}
