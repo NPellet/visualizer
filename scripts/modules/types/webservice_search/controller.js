@@ -54,6 +54,10 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			
 			for(; i < l; i++) {
 				data[toPost[i][0]] = API.getVar(toPost[i][1]);
+
+				switch(typeof data[toPost[i][0]].getType() == "object") {
+					data[toPost[i][0]] = JSON.stringify(data[toPost[i][0]]);
+				}
 			}
 
 			if(this.request && this.request.abort)
