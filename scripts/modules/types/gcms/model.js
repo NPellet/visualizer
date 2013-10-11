@@ -13,11 +13,11 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 			switch(rel) {
 				default:
 				case 'annotation':
-					data = this.annotations[0];
+					data = this.module.view.annotations[0];
 				break;
 			}
 
-			var jpaths = []; 
+			var jpaths = [];
 			Traversing.getJPathsFromElement(data, jpaths);
 			return jpaths;
 		}
