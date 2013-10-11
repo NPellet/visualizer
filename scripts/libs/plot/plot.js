@@ -476,12 +476,23 @@ define(['jquery', 'util/util'], function($, Util) {
 		//	var _y = y - this.options.paddingTop;
 			var pref = this.options.unZoomMode;
 
+			var	
+				xAxis = this.getXAxis(),
+				yAxis = this.getYAxis();
+
+
 			if(pref == 'total') {
 				this.redraw();
 				this.drawSeries();
 
-				if(this.options.onZoom)
-					this.options.onZoom(this.getMinValue(), this.getMaxValue());
+				if( yAxis.options.onZoom ) {
+					yAxis.options.onZoom( yAxis.getMinValue(), yAxis.getMaxValue() );
+				}
+
+
+				if( xAxis.options.onZoom ) {
+					xAxis.options.onZoom( xAxis.getMinValue(), xAxis.getMaxValue() );
+				}
 
 				return;
 			}
@@ -489,10 +500,7 @@ define(['jquery', 'util/util'], function($, Util) {
  			x -= this.options.paddingLeft;
  			y -= this.options.paddingTop;
 
-			var	
-				xAxis = this.getXAxis(),
-				yAxis = this.getYAxis(),
-
+			var
 				xMin = xAxis.getActualMin(),
 				xMax = xAxis.getActualMax(),
 				xActual = xAxis.getVal(x),
@@ -509,6 +517,10 @@ define(['jquery', 'util/util'], function($, Util) {
 				xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
 				xAxis.setCurrentMin(xMin);
 				xAxis.setCurrentMax(xMax);
+
+				if( xAxis.options.onZoom ) {
+					xAxis.options.onZoom( xMin, xMax );
+				}
 			}
 
 			if(pref == 'gradualXY' || pref == 'gradualY') {
@@ -517,10 +529,15 @@ define(['jquery', 'util/util'], function($, Util) {
 				yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
 				yAxis.setCurrentMin(yMin);
 				yAxis.setCurrentMax(yMax);
+
+
+				if( yAxis.options.onZoom ) {
+					yAxis.options.onZoom( yMin, yMax );
+				}
 			}
 
-			this.redraw(true);
-			this.drawSeries(true);
+			this.redraw( true );
+			this.drawSeries( true );
 		},
 
 		resetAxis: function() {
