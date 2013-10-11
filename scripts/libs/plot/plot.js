@@ -1263,7 +1263,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				strokeColor: 'rgba(' + color + ', 0.9)',
 			
 				onChange: function(newData) {
-				//	self.graph.triggerEvent('onAnnotationChange', newData);
+					self.graph.triggerEvent('onAnnotationChange', newData);
 				}
 			}, {}, true);
 
@@ -4458,9 +4458,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			if( !pos ) {
 				var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
 			}
-
-			console.log(pos);
-
 			this.label[labelIndex].setAttribute('x', pos.x);
 			this.label[labelIndex].setAttribute('y', pos.y);
 			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
