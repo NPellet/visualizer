@@ -339,15 +339,18 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			removeRow: function(el) {
 				this.elements = this.elements || [];
 				var id, index;
-				
+				console.log(this.gridElements);
 				for(var i = 0, l = this.gridElements.length; i < l; i++) {
 					if(this.gridElements[i].__source == el) {
+
 						id = this.gridElements[i].id;
 						index = i;
 						break;
 					}
 				}
 
+				this.jqGrid('delRowData', id);
+				
 				this.elements.splice(index, 0, 1);
 				this.gridElements.splice(index, 0, 1);
 
