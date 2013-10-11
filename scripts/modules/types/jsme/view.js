@@ -46,7 +46,11 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 			this.dom.html("Progress. Please wait...");
 		},
 
-		blank: function() {
+		blank: {
+			'mol': function(varName) {
+			//	console.log("CLEAR");
+				this.dom.get(0).contentWindow.clear();
+			}
 		},
 
 		update: { 

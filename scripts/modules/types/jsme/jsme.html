@@ -22,6 +22,7 @@
 		}
 
 		this.setMolFile = function(mol) {
+			console.log("set molfile")
 			jsmeApplet.readMolFile(mol);
 		}
 
@@ -30,6 +31,10 @@
 			var height=h+"px";
 			jsmeApplet.setSize(width, height);
 //			jsmeApplet.repaint();
+		}
+
+		this.clear = function() {
+			jsmeApplet.reset();
 		}
 
 		this.setHighlight = function(atoms, onOff) {
