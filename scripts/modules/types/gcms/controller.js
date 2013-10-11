@@ -33,7 +33,7 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 				}
 			},
 
-			rel: {
+			rels: {
 				'msSelected': {
 					label: 'Selected ms'
 				}

@@ -43,7 +43,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			}
 
 			_gcms.onMSSelect = function(ms) {
-				self.module.controller.setVarFromEvent('onMSSelect', ms, msSelected);
+				self.module.controller.setVarFromEvent('onMSSelect', new DataArray(ms), 'msSelected');
 			}
 
 			_gcms.onZoomGC = function(from, to) {

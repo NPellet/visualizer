@@ -100,6 +100,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 							self.serieIntegral.setYAxis(self.ms.getRightAxis());
 							self.serieIntegral.setData(finalMs);
 
+							self.serieIntegral.options.autoPeakPicking = true;
+
 							self.serieIntegral.setLineColor(annot.strokeColor || annot.fillColor);
 
 							self.ms.getRightAxis().setMaxValue(self.ms.getBoundaryAxisFromSeries(self.ms.getRightAxis(), 'y', 'max'));

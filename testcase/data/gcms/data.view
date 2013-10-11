@@ -5,7 +5,7 @@
 	"_local": false,
 	"modules": [
 		{
-			"type": "grid",
+			"type": "jqgrid",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -82,6 +82,12 @@
 					"rel": "",
 					"jpath": "",
 					"name": "sdsdf"
+				},
+				{
+					"event": "onMSSelect",
+					"rel": "msSelected",
+					"jpath": "",
+					"name": "MS"
 				}
 			],
 			"dataSource": [
@@ -238,6 +244,67 @@
 					"name": ""
 				}
 			]
+		},
+		{
+			"type": "webservice_search",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 83,
+				"top": 34
+			},
+			"size": {
+				"width": 43,
+				"height": 9
+			},
+			"configuration": {
+				"button": false,
+				"searchparams": {
+					"": {
+						"label": "",
+						"defaultvalue": "",
+						"fieldtype": "",
+						"fieldoptions": ""
+					}
+				},
+				"postvariables": [
+					[
+						"MS",
+						"MS"
+					]
+				],
+				"url": "http://google.com"
+			},
+			"id": 5,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "vartrigger",
+					"name": "MS"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
 		}
 	],
 	"configuration": {
@@ -256,5 +323,5 @@
 			"url": ""
 		}
 	],
-	"_version": "2.1"
+	"_version": "2.2"
 }
