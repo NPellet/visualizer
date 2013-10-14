@@ -1,1 +1,408 @@
-{"_name":"Master","_time":1379952067471,"_saved":1379952067471,"_local":false,"modules":[{"type":"webservice_search","title":"SMILES structure for IR","displayWrapper":false,"position":{"left":24,"top":27},"size":{"width":13,"height":8},"configuration":{"searchparams":{"":{"label":"","defaultvalue":""}},"url":"http://www.chemexper.com/search/referenceIR/json2/smiles/<var:smiles>","postvariables":[["",""]],"button":true},"id":1,"bgColor":[249,47,47,"0.00"],"dataSend":[{"event":"onSearchReturn","rel":"results","jpath":"element.entry","name":"entries"}],"dataSource":[{"rel":"vartrigger","name":""}],"actionsIn":[{"rel":"","name":""}],"actionsOut":[{"event":"","rel":"","jpath":"","name":""}],"zindex":4},{"type":"jqgrid","title":"Untitled module","displayWrapper":true,"position":{"left":0,"top":33},"size":{"width":37.039999997615816,"height":34.039999997615816},"configuration":{"colsjPaths":{"Structure":{"jpath":"element.mol.0.gif","number":false,"editable":false}},"nbLines":20,"toggle":"","colorjPath":"","displaySearch":false},"id":2,"bgColor":"","dataSend":[{"event":"onHover","rel":"element","jpath":"element.entryDetails.ir.0.jcamp","name":"irHover"},{"event":"onSelect","rel":"element","jpath":"element.entryDetails.ir.0.jcamp","name":"irClicked"},{"event":"onHover","rel":"element","jpath":"element.mol.0.gif","name":"molHover"},{"event":"onSelect","rel":"element","jpath":"element.mol.0.gif","name":"molClicked"}],"dataSource":[{"rel":"list","name":"entries"}],"actionsIn":[{"rel":"","name":""}],"actionsOut":[{"event":"","rel":"","jpath":"","name":""}],"zindex":4},{"type":"spectra_displayer","title":"Hover IR spectrum","displayWrapper":true,"position":{"left":39,"top":0},"size":{"width":77.03999999761581,"height":52.039999997615816},"configuration":{"graphurl":"","flipX":true,"flipY":false,"xLabel":"","yLabel":"","xRightSpacing":"","xLeftSpacing":"","yTopSpacing":"","yBottomSpacing":"","minX":null,"minY":null,"maxX":null,"maxY":null,"zoom":"x","wheelAction":"none","displayAxis":["x"],"grids":[],"plotinfos":[{"variable":"irHover","plotcolor":[0,0,0,1],"strokewidth":"1","plotcontinuous":true,"peakpicking":false},{"variable":"irClicked","plotcolor":[250,0,0,0.5],"strokewidth":"3","plotcontinuous":true,"peakpicking":false}],"shiftxtozero":false},"id":3,"bgColor":"","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"jcamp","name":"irHover"},{"rel":"jcamp","name":"irClicked"}],"actionsIn":[{"rel":"fromto","name":"fromTo"}],"actionsOut":[{"event":"onZoomChange","rel":"fromto","jpath":"","name":"fromTo"}],"zindex":3},{"type":"display_value","title":"Untitled module","displayWrapper":false,"position":{"left":41,"top":5},"size":{"width":11,"height":11},"configuration":{"frontcolor":"","font":"arial","fontsize":"","align":"left","valign":"top","defaultvalue":"","sprintf":""},"id":4,"bgColor":"","dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"value","name":"molHover"}],"actionsIn":[{"rel":"","name":""}],"actionsOut":[{"event":"","rel":"","jpath":"","name":""}],"zindex":2},{"type":"display_value","title":"Untitled module","displayWrapper":false,"position":{"left":42,"top":37},"size":{"width":12,"height":10},"configuration":{"frontcolor":"","font":"arial","fontsize":"","align":"left","valign":"top","defaultvalue":"","sprintf":""},"id":5,"bgColor":[255,46,26,"0.20"],"dataSend":[{"event":"","rel":"","jpath":"","name":""}],"dataSource":[{"rel":"value","name":"molClicked"}],"actionsIn":[{"rel":"","name":""}],"actionsOut":[{"event":"","rel":"","jpath":"","name":""}],"zindex":1},{"type":"jsme","title":"Untitled module","displayWrapper":true,"position":{"left":0,"top":0},"size":{"width":37.039999997615816,"height":27.039999997615816},"configuration":{},"id":6,"bgColor":"","dataSend":[{"event":"onStructureChange","rel":"smiles","jpath":"","name":"smiles"}],"dataSource":[{"rel":"","name":""}],"actionsIn":[{"rel":"","name":""}],"actionsOut":[{"event":"","rel":"","jpath":"","name":""}],"zindex":4}],"variables":[],"configuration":{"title":"No title"},"title":"Search by substructure for IR spectra and compare","_version":"2.1"}
+{
+	"_name": "Master",
+	"_time": 1379952067471,
+	"_saved": 1379952067471,
+	"_local": false,
+	"modules": [
+		{
+			"type": "webservice_search",
+			"title": "SMILES structure for IR",
+			"displayWrapper": false,
+			"position": {
+				"left": 24,
+				"top": 27
+			},
+			"size": {
+				"width": 13,
+				"height": 8
+			},
+			"configuration": {
+				"searchparams": {
+					"": {
+						"label": "",
+						"defaultvalue": ""
+					}
+				},
+				"url": "http://www.chemexper.com/search/referenceIR/json2/smiles/<var:smiles>",
+				"postvariables": [
+					[
+						"",
+						""
+					]
+				],
+				"button": true
+			},
+			"id": 1,
+			"bgColor": [
+				249,
+				47,
+				47,
+				"0.00"
+			],
+			"dataSend": [
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": "element.entry",
+					"name": "entries"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "vartrigger",
+					"name": ""
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"zindex": 4
+		},
+		{
+			"type": "jqgrid",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 33
+			},
+			"size": {
+				"width": 37,
+				"height": 34
+			},
+			"configuration": {
+				"colsjPaths": {
+					"Structure": {
+						"jpath": "element.mol.0.gif",
+						"number": false,
+						"editable": "none",
+						"options": ""
+					}
+				},
+				"nbLines": 20,
+				"toggle": "",
+				"colorjPath": "",
+				"displaySearch": false,
+				"filterRow": ""
+			},
+			"id": 2,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.entryDetails.ir.0.jcamp",
+					"name": "irHover"
+				},
+				{
+					"event": "onSelect",
+					"rel": "element",
+					"jpath": "element.entryDetails.ir.0.jcamp",
+					"name": "irClicked"
+				},
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.mol.0.gif",
+					"name": "molHover"
+				},
+				{
+					"event": "onSelect",
+					"rel": "element",
+					"jpath": "element.mol.0.gif",
+					"name": "molClicked"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "list",
+					"name": "entries"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"zindex": 4
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Hover IR spectrum",
+			"displayWrapper": true,
+			"position": {
+				"left": 39,
+				"top": 0
+			},
+			"size": {
+				"width": 77,
+				"height": 52
+			},
+			"configuration": {
+				"graphurl": "",
+				"flipX": true,
+				"flipY": false,
+				"xLabel": "",
+				"yLabel": "",
+				"xRightSpacing": "",
+				"xLeftSpacing": "",
+				"yTopSpacing": "",
+				"yBottomSpacing": "",
+				"minX": null,
+				"minY": null,
+				"maxX": null,
+				"maxY": null,
+				"zoom": "x",
+				"wheelAction": "none",
+				"displayAxis": [
+					"x"
+				],
+				"grids": [],
+				"plotinfos": [
+					{
+						"variable": "irHover",
+						"plotcolor": [
+							0,
+							0,
+							0,
+							1
+						],
+						"strokewidth": "1",
+						"plotcontinuous": true,
+						"peakpicking": false
+					},
+					{
+						"variable": "irClicked",
+						"plotcolor": [
+							250,
+							0,
+							0,
+							0.5
+						],
+						"strokewidth": "3",
+						"plotcontinuous": true,
+						"peakpicking": false
+					}
+				],
+				"shiftxtozero": false
+			},
+			"id": 3,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "jcamp",
+					"name": "irHover"
+				},
+				{
+					"rel": "jcamp",
+					"name": "irClicked"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "fromto",
+					"name": "fromTo"
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "onZoomChange",
+					"rel": "fromto",
+					"jpath": "",
+					"name": "fromTo"
+				}
+			],
+			"zindex": 3
+		},
+		{
+			"type": "display_value",
+			"title": "Untitled module",
+			"displayWrapper": false,
+			"position": {
+				"left": 41,
+				"top": 5
+			},
+			"size": {
+				"width": 11,
+				"height": 11
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "",
+				"align": "left",
+				"valign": "top",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"id": 4,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "molHover"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"zindex": 2
+		},
+		{
+			"type": "display_value",
+			"title": "Untitled module",
+			"displayWrapper": false,
+			"position": {
+				"left": 42,
+				"top": 37
+			},
+			"size": {
+				"width": 12,
+				"height": 10
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "",
+				"align": "left",
+				"valign": "top",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"id": 5,
+			"bgColor": [
+				255,
+				46,
+				26,
+				"0.20"
+			],
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "value",
+					"name": "molClicked"
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"zindex": 1
+		},
+		{
+			"type": "jsme",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 37,
+				"height": 27
+			},
+			"configuration": {},
+			"id": 6,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onStructureChange",
+					"rel": "smiles",
+					"jpath": "",
+					"name": "smiles"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsIn": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"zindex": 4
+		}
+	],
+	"variables": [],
+	"configuration": {
+		"title": "No title"
+	},
+	"title": "Search by substructure for IR spectra and compare",
+	"_version": "2.2"
+}
