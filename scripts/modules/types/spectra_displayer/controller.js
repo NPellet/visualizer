@@ -307,6 +307,13 @@ define(['modules/defaultcontroller'], function(Default) {
 								name: 'markers',
 								title: 'Markers',
 								options: {'markers': 'Show markers'}
+							},
+
+							{
+								type: 'Combo',
+								name: 'normalize',
+								title: 'Normalize',
+								options: [{key: 'none', title: 'None'}, {key: 'max1', title: 'Set max to 1'}, {key: 'sum1', title: 'Set sum to 1'}, {key: 'max1min0', title: 'Max 1, Min 0'} ]
 							}
 						]
 					}
@@ -327,7 +334,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			if(this.module.getConfiguration().flipY)
 				flipArray.push('flipY');
 		
-			var spectrainfos = { 'variable': [], 'plotcolor': [], 'plotcontinuous': [], strokewidth: [], peakpicking: [], markers: [] };
+			var spectrainfos = { 'variable': [], 'plotcolor': [], 'plotcontinuous': [], strokewidth: [], peakpicking: [], markers: [], normalize: [] };
 
 			var infos = this.module.getConfiguration().plotinfos || [];
 			for(var i = 0, l = infos.length; i < l; i++) {
@@ -338,6 +345,7 @@ define(['modules/defaultcontroller'], function(Default) {
 				spectrainfos.plotcontinuous.push([infos[i].plotcontinuous ? 'continuous' : null]);
 				spectrainfos.peakpicking.push([infos[i].peakpicking ? 'picking' : null]);
 				spectrainfos.markers.push([infos[i].markers ? 'markers' : null]);
+				spectrainfos.normalize.push([infos[i].normalize || 'none']);
 			}
 
 
@@ -412,7 +420,8 @@ define(['modules/defaultcontroller'], function(Default) {
 			//this.module.getConfiguration().peakpicking = confSection[0].gencfg[0].peakpicking[0][0] == "true";
 			this.module.getConfiguration().grids = confSection[0].gencfg[0].grids[0];
 	//		this.module.getConfiguration().plotcolor = confSection[0].gencfg[0].plotcolor;
-			
+
+
 			for(var i = 0, l = confSection[0].spectrainfos[0].length; i < l; i++) {	
 				confSection[0].
 					spectrainfos[0][i].
@@ -426,7 +435,7 @@ define(['modules/defaultcontroller'], function(Default) {
 					spectrainfos[0][i].
 					markers = !!confSection[0].spectrainfos[0][i].markers[0];
 			}
-				
+
 			this.module.getConfiguration().plotinfos = confSection[0].spectrainfos[0];
 		}
 

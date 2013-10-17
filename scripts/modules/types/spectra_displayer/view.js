@@ -283,6 +283,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				
 				var serie = this.graph.newSerie(varname, {trackMouse: true});
 				this.setSerieParameters(serie, varname);
+
+				this.normalize(val, cfgM, varname);
 				serie.setData(val);
 				if(val.info)
 					serie.setInfos(val.info);
@@ -318,6 +320,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				if(val.infos)
 					serie.setInfos(infos);
 
+				this.normalize(val2, cfgM, varname);
 
 				serie.setData(val2);
 				serie.autoAxis();
@@ -346,6 +349,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					serie, 
 					cfgM = this.module.getConfiguration(), 
 					spectra;
+
 
 				API.killHighlight(this.module.id + varname);
 
@@ -383,7 +387,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					spectra = spectra.spectra;
 					for (var i=0, l = spectra.length; i<l; i++) {
 						serie = this.graph.newSerie(varname, {trackMouse: true});
-						serie.setData(spectra[i].data[spectra[i].data.length - 1]);
+
+						var data=spectra[i].data[spectra[i].data.length - 1];
+
+						this.normalize(data, cfgM, varname);
+						serie.setData(data);
 						serie.autoAxis();
 						this.series[varname].push(serie);
 						break;
@@ -405,7 +413,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				}
 
-//				serie.setInfos(["test1", "test2", "test3"]);
 
 				this.setSerieParameters(serie, varname);
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
@@ -630,6 +637,46 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		
 		typeToScreen: {
 			
+		},
+
+
+		normalize: function(array, cfgM, varname) {
+			if (! cfgM.plotinfos) return;
+			var normalize="";
+			for ( var i = 0, l = cfgM.plotinfos.length ; i < l ; i++ ) {
+				if( varname == cfgM.plotinfos[i].variable ) {
+					normalize=cfgM.plotinfos[i].normalize
+				}
+			}
+			if (! normalize) return;
+			if (normalize=="max1") {
+				var maxValue=Number.MIN_VALUE;
+				for (var i=1; i<array.length; i=i+2) {
+					if (array[i]>maxValue) maxValue=array[i];
+				}
+				for (var i=1; i<array.length; i=i+2) {
+					array[i]/=maxValue;
+				}
+			} else if (normalize=="sum1") {
+				var total=0;
+				for (var i=1; i<array.length; i=i+2) {
+					total+=array[i];
+				}
+				for (var i=1; i<array.length; i=i+2) {
+					array[i]/=total;
+				}
+			} else if (normalize=="max1min0") {
+				var maxValue=Number.MIN_VALUE;
+				var minValue=Number.MAX_VALUE;
+				for (var i=1; i<array.length; i=i+2) {
+					if (array[i]>maxValue) maxValue=array[i];
+					if (array[i]<minValue) minValue=array[i];
+				}
+				var ratio=1/(maxValue-minValue);
+				for (var i=1; i<array.length; i=i+2) {
+					array[i]=(array[i]-minValue)*ratio;
+				}
+			}
 		}
 	});
 	return view;
