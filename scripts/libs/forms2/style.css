@@ -1,0 +1,158 @@
+body, th, td, input, select, textarea {
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+	font-size: 11px;
+	color: black;
+}
+
+.forms {
+	background-color: #f0f0f0;
+	border: 1px solid #c0c0c0;
+}
+
+.forms .cleaner {
+	clear: both;
+	
+}
+
+.forms .form-section-select-wrapper {
+	width: 100%;
+	
+	height: 60px;
+	overflow: hidden;
+	
+}
+
+.forms .form-section-select { 
+	height: 60px;
+	box-sizing: border-box;
+	position: relative;
+	background: #ddd;
+	background-image: linear-gradient(to bottom, #f0f0f0, #d0d0d0);  
+	padding: .7em 3.5em;
+	float: left;
+	color: #444;
+	text-shadow: 0 1px 0 rgba(255,255,255,.8);
+	box-shadow: 0px 0px 2px rgba(0,0,0,.3);
+	cursor: pointer;
+}
+
+
+.forms .form-section-select:hover {
+	background-image: linear-gradient(to bottom, #ffffff, #eeeeee);  
+}
+
+
+.forms .form-section-select.selected {
+	background-image: linear-gradient(to bottom, #fefefe, #ffffff);  
+	z-index: 3;
+}
+
+
+.form-sections-wrapper {
+
+    padding: 2em;
+	height: 220px;
+	position: relative;
+	z-index: 2;	
+    
+    -moz-border-radius: 0 5px 0px 0px;
+    -webkit-border-radius: 0 5px 0px 0px;
+    border-radius: 0 5px 0px 0px;
+
+    -moz-box-shadow: 0 -2px 3px -2px rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 0 -2px 3px -2px rgba(0, 0, 0, .5);
+    box-shadow: 0 -2px 3px -2px rgba(0, 0, 0, .5);
+    background-color: white;
+}
+
+.form-section-select:last-child:after {
+	clear: both;
+	content: '';	
+}
+
+
+.form-group-table table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 10px;
+}
+
+
+.form-group-table th {
+	background-image: linear-gradient(to bottom, #f0f0f0, #d0d0d0); 
+	height: 25px;
+	border: 1px solid #c0c0c0;
+	border-bottom: 1px solid #333333;
+}
+
+.form-group-table td {
+	border: 1px solid #c0c0c0;
+}
+
+
+.form-group-table tr td:first-child, .form-group-table tr td.form-table-duplicator {
+	text-align: center;
+}
+
+.form-group-table tr td.form-table-duplicator {
+	width: 30px;
+}
+
+.form-group-table table input[type="text"] {
+	width: 100%;
+	outline: none;
+	border: none;
+	padding-left: 4px;
+}
+
+
+.form-duplicator {
+	cursor: pointer;
+	font-size: 1.2em;
+	margin-left: 2px;
+	margin-right: 2px;
+	display: inline-block;
+}
+
+
+.form-group-list label {
+	float: left;
+	width: 120px;
+}
+
+.forms .form-field-list-elements {
+	margin-left: 120px;
+}
+
+
+.forms .form-field-list-text input {
+	width: 100%;
+	border: 1px solid #c0c0c0;
+	padding: 3px;
+	outline: none;
+	height: 25px;
+	margin-bottom: 5px;
+	box-sizing: border-box;
+}
+
+.forms .form-field-list-text input:focus {
+	background-color: #eeeeee;
+}
+
+
+.forms .form-field-list-elements .form-duplicator-wrapper {
+	
+	display: inline-block;
+	position: absolute;
+	margin-left: -30px;
+	width: 30px;
+	border: 1px solid #c0c0c0;
+	padding: 0px;
+	box-sizing: border-box;
+	height: 25px;
+	line-height: 23px;
+	text-align: center;
+	background-color: #eeeeee;
+	/*display: block;*/
+}
+

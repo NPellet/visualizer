@@ -261,7 +261,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			element._inDom = $.Deferred();
 			for(var j in jp) {
-				var jpath = jp[j]; jpath = jpath.jpath || jpath;
+				var jpath = jp[j]; jpath = jpath.jpath;
 				element[j] = 'Loading';
 				self.done++;
 				element[";" + j] = this.renderElement(element, s, jpath, j);
