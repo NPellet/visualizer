@@ -313,7 +313,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					val2.push(val[i]);
 				}
 
-				serie = this.graph.newSerie(varname, {trackMouse: true, lineToZero: !continuous});
+				serie = this.graph.newSerie(varname, {trackMouse: true}); // lineToZero: !continuous}
 				this.setSerieParameters(serie, varname);
 
 
