@@ -90,16 +90,38 @@ define(['require', 'jquery'], function(require, $) {
 		},
 
 		inDom: function( ) {
+			this.eachElements( function( element ) {
+				element.inDom();
+			} );
+		},
+
+		eachElements: function( callback ) {
+
 			var self = this;
 			this.section.eachGroups( function( group ) {
 
 				self.eachGroupElements( group.getName() , function( groupElement ) {
 
-					groupElement.inDom();
+					callback.call( groupElement );
+					
 				});
 			});
-		},
 
+			this.section.eachSections( function( section ) {
+
+				self.eachSectionElements( section.getName() , function( sectionElement ) {
+
+					callback.call( sectionElement );
+					
+				});
+			});
+		}
+
+		redoTabIndices: function() {
+			this.eachElements( function( element ) {
+				element.redoTabIndices();
+			} );
+		},
 
 		eachSectionElements: function(sectionName, callback) {
 			if( ! this.sectionElements[ sectionName ]) {

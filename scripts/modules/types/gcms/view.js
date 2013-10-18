@@ -67,7 +67,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 					break;
 
 					case 'surfaceUnderCurve':
-
 						self.module.controller.sendAction('annotation', annot, 'onIntegralRemove');
 					break;
 				}

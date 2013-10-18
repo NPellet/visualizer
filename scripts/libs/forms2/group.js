@@ -14,7 +14,9 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 			this.options = $.extend({}, Group.defaultOptions, options); // Creates the options
 
 			this.fields = {};
+			this.deferreds = {};
 			this.elements = [];
+
 		},
 
 		getName: function() {
@@ -58,7 +60,7 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 
 				this.form.addField( deferred );
 
-				this.fields[ fieldName ] = deferred;
+				this.deferreds[ fieldName ] = deferred;
 				return deferred;
 
 			} else {
@@ -117,10 +119,12 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 			this.elements.push( subelement );
 
 			return subelement;
+		},
+
+		ready: function() {
+			return $.when( this.deferreds )
 		}
-
 	});
-
 
 
 	Object.defineProperty(Group.prototype, 'section', {

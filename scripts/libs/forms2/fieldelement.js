@@ -39,6 +39,7 @@ define(['jquery'], function($) {
 
 		setValueSilent: function( value, doNotNotifyForm ) {
 			this._value = value;
+			this.field.changed( );
 			
 			if( ! doNotNotifyForm ) {
 				this.form.fieldElementValueChanged( this, value );

@@ -101,9 +101,15 @@ define(['jquery', './sectionelement', './group'], function($, SectionElement, Gr
 
 		eachGroups: function(callback) {
 			var i;
-
 			for(i in this.groups) {
 				callback.call( this, this.groups[ i ] );
+			}
+		},
+
+		eachSections: function() {
+			var i;
+			for(i in this.sections) {
+				callback.call( this, this.sections[ i ] );
 			}
 		},
 

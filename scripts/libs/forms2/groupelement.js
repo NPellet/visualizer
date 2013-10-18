@@ -13,8 +13,8 @@ define(['jquery'], function($) {
 			this.options = $.extend({}, GroupElement.defaultOptions, options); // Creates the options
 			this.splice = Array.prototype.splice;
 
-			this.done = 0;
 			this.fieldElements = {};
+			this.fieldDeferreds = {};
 		},
 
 		set section(section) {
@@ -69,6 +69,7 @@ define(['jquery'], function($) {
 		},
 
 		fill: function( json, clearFirst ) {
+
 			this._fill( json, clearFirst );
 		},
 
@@ -92,6 +93,9 @@ define(['jquery'], function($) {
 			} );
 		},
 
+		redoTabIndices: function( ) {
+
+		},
 
 		getFieldElement: function( fieldName, fieldId ) {
 			
@@ -102,30 +106,18 @@ define(['jquery'], function($) {
 
 			if( ! this.fieldElements[ fieldName ][ fieldId ] ) {
 
-				self.done++;
 				el = this.group.getField( fieldName ).makeElement( ).done( function(value) {
 
 					value.group = self.group;
 					value.groupElement = self;
 					self.fieldElements[ fieldName ][ fieldId ] = value;
 
-					self.done--;
-					self.checkDone();
-
 				} );
 
-				this.fieldElements[ fieldName ][ fieldId ] = el;
-			}	
+				return this.fieldDeferreds[ fieldName + fieldId ] = el;
+			}
 
 			return this.fieldElements[ fieldName ][ fieldId ];
-		},
-
-
-		checkDone: function() {
-
-			if( this.done == 0 ) {
-
-			}
 		},
 
 		_getElement: function(stack, getter, name, id) {
@@ -169,6 +161,10 @@ define(['jquery'], function($) {
 			}
 
 			return stackTo;
+		},
+
+		ready: function() {
+			return $.when.apply( $.when, this.fieldDeferreds );
 		}
 	});
 

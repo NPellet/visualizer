@@ -79,7 +79,6 @@ define(['require', 'jquery'], function(require, $) {
 			if( this.options.onChanged ) {
 				this.options.onChanged.call( this, this.elements );
 			}
-
 		}
 	});
 	

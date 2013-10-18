@@ -200,7 +200,7 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 		_getElement: SectionElement.prototype._getElement,
 
 
-		inDom: function( ) {
+		eachSectionElements: function( callback ) {
 
 			var i, j, l;
 
@@ -211,11 +211,21 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 
 				for( ; j < l ; j ++ ) {
 
-					this.sectionElements[ i ][ j ].inDom();
-
+					callback.call( this, this.sectionElements[ i ][ j ] );
 				}
 			}
+		},
 
+		redoTabIndices: function() {
+			this.eachSectionElements( function( element ) {
+				element.redoTabIndices( );
+			})
+		},
+
+		inDom: function( ) {
+			this.eachSectionElements( function( element ) {
+				element.inDom( );
+			});
 		},
 
 		onReady: function( callback ) {

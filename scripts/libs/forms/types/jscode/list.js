@@ -27,7 +27,6 @@ define(['./default', 'libs/ace/ace'], function(FieldDefault) {
 		initHtml: function() {},
 		initField: function() {
 			var field = this;
-			
 			var el = this.main.dom.find('.bi-formfield-jseditor');
 			var editor = ace.edit(el.attr('id'));
 		    editor.setTheme("ace/theme/monokai");
@@ -39,11 +38,6 @@ define(['./default', 'libs/ace/ace'], function(FieldDefault) {
 				var index = el.parent().index();
 				field.main.changeValue(index, val);
 			});
-
-
-			this.main.fields[index].field.data('editor').setValue(value);
-
-			
 
 		    $('#' + el.attr('id')).data('editor', editor);
 		}
