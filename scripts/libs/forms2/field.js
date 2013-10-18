@@ -11,9 +11,7 @@ define(['require', 'jquery'], function(require, $) {
 	$.extend(Field.prototype, {
 		
 		init: function(options) {
-
 			this.options = $.extend({}, Field.defaultOptions, options); // Creates the options
-
 			this.elements = [];
 		},
 
@@ -63,6 +61,7 @@ define(['require', 'jquery'], function(require, $) {
 
 
 		showExpander: function( fieldElement ) {
+
 			this._showExpander( fieldElement );
 		},
 
@@ -74,8 +73,14 @@ define(['require', 'jquery'], function(require, $) {
 
 		getElementExpanded: function( ) {
 			return this.fieldElementExpanded;
-		}
+		},
 
+		changed: function() {
+			if( this.options.onChanged ) {
+				this.options.onChanged.call( this, this.elements );
+			}
+
+		}
 	});
 	
 

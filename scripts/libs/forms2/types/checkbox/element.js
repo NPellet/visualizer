@@ -9,7 +9,11 @@ define( [ ], function(  ) {
 			dom = $("<div />"),
 			div = $( "<div></div>" )
 					.addClass( 'form-field' )
+					.on('click', function() {
+						self.select();
+					})
 					.on('click', 'input[type="checkbox"]', function() {
+
 						var id = $(this).attr('data-checkbox-id');
 						var value = self.value || [];
 

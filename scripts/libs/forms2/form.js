@@ -144,9 +144,29 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 			dom.get(0).addEventListener('click', function() {
 
 				self.hideExpander();
+				self._unselectField();
 
-			}, true); // Use capture is wanted here
+			}, false);
 
+		},
+
+		_unselectField: function() {
+
+			if( this.selectedFieldElement ) {
+				this.selectedFieldElement.unSelect( true );
+			}
+		},
+
+		selectFieldElement : function ( fieldElement ) {
+			
+			this._unselectField( );
+			this.selectedFieldElement = fieldElement;
+			//this.hideExpander( );
+		},
+
+
+		unSelectFieldElement : function ( fieldElement ) {
+			this.selectedFieldElement = false;
 		},
 
 		// Getting the value
@@ -233,18 +253,28 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 
 
 		getExpanderDom: function() {
-			return this.expander.dom || ( this.expander.dom = $("<div />").addClass('form-expander').appendTo(this.dom) );
+			return this.expander.dom || ( this.expander.dom = $("<div />").addClass('form-expander').appendTo(this.dom).on('click', function( event ) {
+				event.stopPropagation();
+			}) );
 		},
 
 		setExpander: function(dom, fieldElement) {
 
+			var self = this;
+
 			if( this.expander.open ) {
 				this.hideExpander( true );
+			} else {
+				this.getExpanderDom().hide();
 			}
-
-			this.expander.open = true;
+			
+			this.getExpanderDom().children().detach();
 			this.getExpanderDom().html(dom);
-			this.getExpanderDom().slideDown();
+			this.getExpanderDom().stop().slideDown(function() {
+
+				self.expander.open = true;
+
+			});
 		},
 
 		hideExpander: function(fast) {

@@ -182,7 +182,7 @@ define(['require', 'jquery'], function(require, $) {
 		},
 
 		getTitle: function() {
-			return this.options.title || 'No title';
+			return this.section.options.title || 'No title';
 		},
 
 		getTitleIcon: function() {

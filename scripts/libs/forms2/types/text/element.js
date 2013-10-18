@@ -11,6 +11,11 @@ define( [ ], function(  ) {
 			input = $( "<input />" , { type: 'text' } )
 					.addClass( 'field-list' )
 					.appendTo( dom )
+					.bind('click', function( event ) {
+
+						self.toggleSelect( event );
+						
+					})
 					.bind('keyup blur', function() {
 						var val;
 						if( self.value !== ( val = $( this ).val( ) ) ) {
@@ -20,6 +25,7 @@ define( [ ], function(  ) {
 
 		this.dom = dom;
 		this.input = input;
+		this.fieldElement = input;
 		return dom;
 	};
 

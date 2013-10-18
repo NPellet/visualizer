@@ -16,6 +16,7 @@ define(['./fieldelement'], function(FieldElement) {
 		return (this._dom = this._makeDom() || $("<div />").addClass('field-list'));
 	};
 
+
 	FieldListElement.prototype.makeDuplicator = function() {
 		
 		var self = this;

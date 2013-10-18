@@ -21,10 +21,17 @@ define( [ require, '../../field', 'util/util', 'jqueryui', 'libs/farbtastic/farb
 		}).appendTo( this.domExpander );
 
 		$("<div></div>").addClass('form-slider').css({ height: '180px', marginLeft: '20px', float: 'left' }).slider({ 
+
 			orientation: "vertical",
 		    min: 0,
-		    max: 100,
-		    step: 1,
+		    max: 1,
+		    step: 0.01,
+
+		    start: function( event, ui ) {
+		    	//event.preventDefault();
+		    	event.stopPropagation();
+		    },
+
 		    slide: function( event, ui ) {
 
 		    	self.getElementExpanded( ).value = [ self.getElementExpanded( ).value[ 0 ], self.getElementExpanded( ).value[ 1 ], self.getElementExpanded( ).value[ 2 ], ui.value ] ;
@@ -36,9 +43,11 @@ define( [ require, '../../field', 'util/util', 'jqueryui', 'libs/farbtastic/farb
 		    	event.preventDefault( );
 
 		    }
+
 		}).appendTo( this.domExpander );
 
 
+		$("<div />").addClass('clear').appendTo( this.domExpander );
 	};
 
 	FieldConstructor.prototype = new FieldDefaultConstructor( );

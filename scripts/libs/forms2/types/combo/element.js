@@ -7,15 +7,14 @@ define( [ ], function(  ) {
 		
 		var self = this,
 			dom = $("<div />"),
-			div = $( "<div>adasd</div>" )
+			div = $( "<div></div>" )
 					.addClass( 'form-field' )
 					.appendTo( dom )
-					.bind('click', function() {
-						
-						self.showExpander();
-
+					.bind('click', function( event ) {
+						self.toggleSelect( event );
 					});
 
+		this.fieldElement = div;
 		this.div = div;
 		this.dom = dom;
 		
@@ -31,7 +30,8 @@ define( [ ], function(  ) {
 				text = this.lookRecursively( val, options );
 
 			if( text !== false ) {
-				this.div.html( text.title + "asdasd" );
+				this.div.html( text.title );
+				this.form.hideExpander( );
 			}
 		}
 

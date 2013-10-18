@@ -119,12 +119,12 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 		var fieldName = fieldElement.name,
 			i = 0;
 
-		var posDom = fieldElement._dom.position();
+		var posDom = fieldElement._dom.offset();
 
 		return {
 			width: fieldElement._dom.width(),
 			left: posDom.left,
-			top: posDom.top
+			top: posDom.top + fieldElement._dom.height() - 1
 		};
 	}
 

@@ -16,26 +16,34 @@ body, th, td, input, select, textarea {
 
 .forms .form-section-select-wrapper {
 	width: 100%;
-	
-	height: 60px;
+	height: 65px;
 	overflow: hidden;
 	
 }
 
 .forms .form-section-select { 
-	height: 60px;
+	height: 65px;
 	box-sizing: border-box;
 	position: relative;
 	background: #ddd;
 	background-image: linear-gradient(to bottom, #f0f0f0, #d0d0d0);  
-	padding: .7em 3.5em;
+	padding-left: 10px;
+	padding-right: 10px;
+	width: 130px;
+	padding-top: 8px;
 	float: left;
 	color: #444;
 	text-shadow: 0 1px 0 rgba(255,255,255,.8);
 	box-shadow: 0px 0px 2px rgba(0,0,0,.3);
 	cursor: pointer;
+	text-align: center;
 }
 
+
+.forms .form-section-select img {
+	margin: auto;
+	margin-bottom: 3px;
+}
 
 .forms .form-section-select:hover {
 	background-image: linear-gradient(to bottom, #ffffff, #eeeeee);  
@@ -50,7 +58,7 @@ body, th, td, input, select, textarea {
 
 .form-sections-wrapper {
 
-    padding: 2em;
+    padding: 1em;
 	height: 220px;
 	position: relative;
 	z-index: 2;	
@@ -118,12 +126,31 @@ body, th, td, input, select, textarea {
 .form-group-list label {
 	float: left;
 	width: 120px;
+	height: 25px;
+	line-height: 25px;
 }
 
 .forms .form-field-list-elements {
 	margin-left: 120px;
 }
 
+
+
+
+.form-field-list-elements > div > div {
+	height: 25px;
+	line-height: 18px;
+	border: 1px solid #c0c0c0;
+	padding: 3px;
+	margin-bottom: 5px;
+	box-sizing: border-box;
+	outline: none;
+}
+
+
+.form-field-list-elements div.selected {
+	background-color: #eeeeee;
+}
 
 .forms .form-field-list-text input {
 	width: 100%;
@@ -135,10 +162,9 @@ body, th, td, input, select, textarea {
 	box-sizing: border-box;
 }
 
-.forms .form-field-list-text input:focus {
+.forms .form-field-list-text input.selected {
 	background-color: #eeeeee;
 }
-
 
 .forms .form-field-list-elements .form-duplicator-wrapper {
 	
@@ -156,3 +182,12 @@ body, th, td, input, select, textarea {
 	/*display: block;*/
 }
 
+
+.form-expander {
+	position: absolute;
+	z-index: 4;
+	border: 1px solid #c0c0c0;
+	box-sizing: border-box;
+	background-color: #eeeeee;
+	border-top: none;
+}

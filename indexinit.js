@@ -28,11 +28,8 @@ require(['jquery', './libs/forms2/form'], function($, Form) {
 			
 		}
 	});
-	form.setStructure({
-		sections: {
 
-			sectionName: {
-/*
+	/*
 'basket_put',
 'basket_remove',
 'door_in',
@@ -44,8 +41,16 @@ require(['jquery', './libs/forms2/form'], function($, Form) {
 ''
 */
 
+
+
+	form.setStructure({
+		sections: {
+
+			module_config: {
+
 				options: {
-					icon: 'layer_export'
+					title: 'General configuration',
+					icon: 'page_white_paint'
 				},
 
 				groups: {
@@ -58,19 +63,15 @@ require(['jquery', './libs/forms2/form'], function($, Form) {
 
 						fields: {
 
-
-							text: {
-								name: 'Hello',
-								type: 'text',
-								options: [{ key: 'a', title: 'b'}, { key: 'c', title : 'd' }],
-								multiple: true
+							moduletitle: {
+								type: 'combo',
+								title: 'Module title',
+								options: [{key: 1, title: "Salut"}, {key: 2, title: "Coucou"}, {key:3, title: "Hello"}]
 							},
 
-
-							text2: {
-								name: 'Hello2',
-								type: 'checkbox',
-								options: {'c':'d'}
+							bgcolor: {
+								type: 'color',
+								title: 'Background color'
 							}
 						}
 					}
@@ -78,23 +79,145 @@ require(['jquery', './libs/forms2/form'], function($, Form) {
 			},
 
 
-			sectionName2: {
+			module_specific_config: {
+
+				options: {
+					title: 'Module configuration',
+					icon: 'page_white_wrench'
+				},
+
 				groups: {
 
 					groupName: {
 						options: {
-							type: 'table',
+							type: 'list',
 							multiple: true
 						},
 
 						fields: {
 
-							text3: {
+							text: {
 								name: 'Hello',
-								type: 'jscode',
+								type: 'text',
+								options: [{ key: 'a', title: 'b'}, { key: 'c', title : 'd' }],
 								multiple: true
 							}
+						}
+					}
+				}
+			},
 
+
+			vars_in: {
+
+				options: {
+					title: 'Variables in',
+					icon: 'basket_put'
+				},
+
+				groups: {
+
+					groupName: {
+						options: {
+							type: 'list',
+							multiple: true
+						},
+
+						fields: {
+
+							text: {
+								name: 'Hello',
+								type: 'text',
+								options: [{ key: 'a', title: 'b'}, { key: 'c', title : 'd' }],
+								multiple: true
+							}
+						}
+					}
+				}
+			},
+
+
+			vars_out: {
+
+				options: {
+					title: 'Variables out',
+					icon: 'basket_remove'
+				},
+
+				groups: {
+
+					groupName: {
+						options: {
+							type: 'list',
+							multiple: true
+						},
+
+						fields: {
+
+							text: {
+								name: 'Hello',
+								type: 'text',
+								options: [{ key: 'a', title: 'b'}, { key: 'c', title : 'd' }],
+								multiple: true
+							}
+						}
+					}
+				}
+			},
+
+
+			actions_in: {
+
+				options: {
+					title: 'Actions in',
+					icon: 'door_in'
+				},
+
+				groups: {
+
+					groupName: {
+						options: {
+							type: 'list',
+							multiple: true
+						},
+
+						fields: {
+
+							text: {
+								name: 'Hello',
+								type: 'text',
+								options: [{ key: 'a', title: 'b'}, { key: 'c', title : 'd' }],
+								multiple: true
+							}
+						}
+					}
+				}
+			},
+
+
+			actions_out: {
+
+				options: {
+					title: 'Actions out',
+					icon: 'door_out'
+				},
+
+				groups: {
+
+					groupName: {
+						options: {
+							type: 'list',
+							multiple: true
+						},
+
+						fields: {
+
+							text: {
+								name: 'Hello',
+								type: 'text',
+								options: [{ key: 'a', title: 'b'}, { key: 'c', title : 'd' }],
+								multiple: true
+							}
 						}
 					}
 				}

@@ -23,11 +23,18 @@ define(['jquery'], function($) {
 
 		getExpander: function( delay ) {
 			var dom = this.form.getExpanderDom();
-			dom.css( this.group.getExpanderInfosFor( this ) );
+			dom.css( this.groupElement.getExpanderInfosFor( this ) ).css( 'height', '' );
+		},
+
+		hideExpander: function() {
+			this.form.hideExpander();
 		},
 
 		showExpander: function() {
+
+			this.getExpander( );
 			this.field.showExpander( this );
+
 		},
 
 		setValueSilent: function( value, doNotNotifyForm ) {
@@ -38,10 +45,59 @@ define(['jquery'], function($) {
 			}
 		},
 
-		inDom: function() { }
+		inDom: function() { },
 
 
+		unSelect: function( mute ) {
 
+			this.selected = false;
+
+			if( ! mute ) {
+
+				if( this.field.domExpander ) {
+
+					this.hideExpander( );
+				}
+
+				this.form.unSelectFieldElement( this );
+			}
+
+			if( this.fieldElement ) {
+				this.fieldElement.removeClass('selected');
+			}
+		},
+
+		select: function( mute ) {
+
+			this.selected = true;
+
+			if( ! mute ) {
+
+				// Does the dom exist ?
+				if( this.field.domExpander ) {
+
+					this.showExpander( );
+				}
+
+				this.form.selectFieldElement( this );
+			}
+
+			if( this.fieldElement ) {
+				this.fieldElement.addClass('selected');
+			}
+		},
+
+		toggleSelect: function( event ) {
+
+			event.preventDefault( );
+			event.stopPropagation( );
+
+			if( !this.selected ) {
+				this.select( );
+			} else {
+				this.unSelect( );
+			}
+		}
 	});
 
 

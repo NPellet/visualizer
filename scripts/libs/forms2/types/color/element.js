@@ -8,15 +8,15 @@ define( [ ], function(  ) {
 		var self = this,
 			dom = $("<div />"),
 			div = $( "<div></div>" )
+					.attr( 'tabindex', '1' )
 					.addClass( 'form-field' )
 					.appendTo( dom )
-					.bind('click', function() {
-						
-						self.showExpander();
-
+					.bind('click', function( event ) {
+						self.toggleSelect( event );
 					});
 
 		this.div = div;
+		this.fieldElement = div;
 		this.dom = dom;
 		
 		return dom;

@@ -21,6 +21,7 @@ define( [ 'jquery', 'util/util', 'libs/ace/ace' ], function( $, Util ) {
 					.addClass( 'field-list' )
 					.appendTo( dom );
 		
+		this.fieldElement = input;
 		this.input = input;
 		this.dom = dom;
 		return dom;

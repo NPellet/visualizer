@@ -439,3 +439,14 @@ span.custom1 a
 	background-color: maroon;
 	color: yellow;
 }
+
+
+
+
+
+ul.dynatree-container {
+	padding: 0px;
+	outline: none;
+	border: none;
+	background-color: transparent;
+}

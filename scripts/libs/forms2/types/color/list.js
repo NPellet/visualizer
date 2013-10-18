@@ -16,7 +16,7 @@ define( [ '../../fieldlistelement', './element' ], function( ElementDefault, Ele
 			
 			this.checkValue();
 
-			return dom;
+			return this.dom;
 		}
 
 	});
