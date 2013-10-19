@@ -71,6 +71,11 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			
 			this.request.done(function(data) {
 				self.request = null;
+
+				if (self.module.resultFilter) {
+					data=self.module.resultFilter(data);
+				}
+
 				data = DataObject.check(data, true);
 				self.onSearchDone(data);
 			});
@@ -119,7 +124,6 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 		
 		doConfiguration: function(section) {
-			
 			return {
 				groups: {
 					'cfg': {
@@ -151,6 +155,12 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 								type: 'Text',
 								name: 'buttonlabel_exec',
 								title: 'Button text (executing)'
+							},
+
+							{
+								type: 'JSCode',
+								name: 'resultFilter',
+								title: 'Result filter'
 							}
 						]
 					},
@@ -267,7 +277,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 						url: [this.module.getConfiguration().url],
 						buttonlabel: [this.module.getConfiguration().buttonlabel],
 						buttonlabel_exec: [this.module.getConfiguration().buttonlabel_exec],
-						button: [this.module.getConfiguration().button ? ['button'] : []]
+						button: [this.module.getConfiguration().button ? ['button'] : []],
+						resultFilter: [this.module.getConfiguration().resultFilter] || ''
 				//		jpatharray: [this.module.getConfiguration().jpatharray]
 					}],
 
@@ -310,6 +321,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			this.module.getConfiguration().url = confSection[0].cfg[0].url[0];
 			this.module.getConfiguration().buttonlabel = confSection[0].cfg[0].buttonlabel[0];
 			this.module.getConfiguration().buttonlabel_exec = confSection[0].cfg[0].buttonlabel_exec[0];
+			this.module.getConfiguration().resultFilter = confSection[0].cfg[0].resultFilter[0];
 		//	this.module.getConfiguration().jpatharray = confSection[0].cfg[0].jpatharray[0];
 		},
 

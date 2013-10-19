@@ -4,7 +4,6 @@ define(['modules/defaultview'], function(Default) {
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-
 			var self = this,
 				cfg = this.module.getConfiguration();
 
@@ -13,6 +12,13 @@ define(['modules/defaultview'], function(Default) {
 			this.dom.append(this.search);
 			this.module.getDomContent().html(this.dom);
 			this.oldVal = {};
+
+
+			if (cfg.resultFilter) {
+				eval("self.module.resultFilter = function(data) { try { \n " + cfg.resultFilter + "\n } catch(_) { console.log(_); } }");
+			}
+
+
 
 			if(searchparams = cfg.searchparams) {
 				for(var i in searchparams) {
