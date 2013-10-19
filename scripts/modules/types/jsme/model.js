@@ -11,15 +11,18 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 
 			var data = this.module.getDataFromRel('list');
 			
-			if(!data || data == null)
+			if( ! data || data == null ) {
 				return;
-			data = data.getData();
+			}
+
+			data = data.getData( );
 			
-			if(data == null)
+			if( data == null ) {
 				return;
+			}
 			
 			var jpath = {};
-			Traversing._getjPath(data[i], jpath);	
+			Traversing._getjPath( data[ i ], jpath );	
 			return jpath;
 		}
 	});

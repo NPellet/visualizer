@@ -4,46 +4,47 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {
+			
+			var self = this;
 
 			this.highlightedAtom;
 			this.dom = $('<iframe />').attr('src', require.toUrl('./jsme.html'));
 			this.module.getDomContent().html(this.dom);
-			var self = this;
-
 			
 			this.dom.bind('load', function() {
-				self.dom.get(0).contentWindow.setController(self.module.controller);
-				self.dom.get(0).contentWindow.setView(self);
+
+				self.dom.get( 0 ).contentWindow.setController( self.module.controller );
+				self.dom.get( 0 ).contentWindow.setView( self );
 			});
+
 			this.onReady = $.Deferred();
 			this._highlights = this._highlights || [];
 		},
 		
-		inDom: function() {
-			var cfgM = this.module.getConfiguration();
-			var self = this;
-		},
+		inDom: function() { },
 
 		getPrefs: function() {
-			if (! this.module.getConfiguration().prefs) return "oldLook";
-			return this.module.getConfiguration().prefs.join(",");
+			return this.module.getConfiguration( 'prefs', [ 'oldLook' ] ).join( );
 		},
 
-		onResize: function(width, height) {
+		onResize: function( width, height ) {
+
 			this.width = width;
 			this.height = height;
 
-			this.dom.attr('width', width);
-			this.dom.attr('height', height);
+			this.dom.attr( 'width', width );
+			this.dom.attr( 'height', height );
 
-			this.module.getDomContent().css('overflow', 'hidden');
+			this.module.getDomContent().css( 'overflow', 'hidden' );
 
-			if(this.dom.get(0).contentWindow.setSize)
-				this.dom.get(0).contentWindow.setSize(width, height);
+			if( this.dom.get( 0 ).contentWindow.setSize ) {
+				this.dom.get( 0 ).contentWindow.setSize( width, height );
+			}
 		},
 		
 		onProgress: function() {
-			this.dom.html("Progress. Please wait...");
+
+			this.dom.html( "Progress. Please wait..." );
 		},
 
 		blank: {

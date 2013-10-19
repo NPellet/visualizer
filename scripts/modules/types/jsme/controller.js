@@ -49,20 +49,26 @@ define(['modules/defaultcontroller'], function(Default) {
 			
 		},
 
-		doConfiguration: function(section) {
+		configurationStructure: function(section) {
+
 			return {
 				groups: {
-					'gencfg': {
-						config: {
+
+					group: {
+
+						options: {
 							type: 'list'
 						},
 
-						fields: [
-							{
-								type: 'Checkbox',
-								name: 'prefs',
+						fields: {
+							
+							prefs: {
+
+								type: 'checkbox',
 								title: 'Options',
+
 								options: {
+
 									'noxbutton': 'Hide X button',
 								 	'rbutton': 'Show R button',
 								 	'nohydrogens': 'Hide hydrogens',
@@ -79,28 +85,15 @@ define(['modules/defaultcontroller'], function(Default) {
 									'oldlook': 'Use the old look'
 								}
 							}
-						]
+						}
 					}
 				}
 			}
 		},
-		
-		doFillConfiguration: function() {
-			return {
-				groups: {
-					gencfg: [{
-						prefs: [this.module.getConfiguration().prefs || ["oldlook"]],
-					}]
-				}
-			}
-		},
-		
-		doSaveConfiguration: function(confSection) {
-			this.module.getConfiguration().prefs = confSection[0].gencfg[0].prefs[0];
-			return;
+
+		configAliases: {
+			prefs: function(cfg) { return cfg.groups.group[ 0 ].prefs[ 0 ]; }
 		}
-
-
 	});
 
 	return controller;
