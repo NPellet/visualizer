@@ -23,6 +23,10 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 			return this.name;
 		},
 
+		getTitle: function() {
+			return this.options.title;
+		},
+
 		setStructure: function(json) {
 			
 			var i;

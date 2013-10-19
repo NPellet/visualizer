@@ -6,29 +6,30 @@ define(['modules/defaultview'], function(Default) {
 		init: function() {	
 
 			var self = this,
-				cfg = this.module.getConfiguration();
+				cfg = $.proxy(this.module.getConfiguration, this.module);
 
 			this.dom = $('<div></div>');
 			this.search = $('<table class="Search" cellpadding="5" cellspacing="0"><col width="100"><col width="*"></table>').css('width', '90%');
-			this.dom.append(this.search);
-			this.module.getDomContent().html(this.dom);
+
+			this.dom.append( this.search );
+			this.module.getDomContent( ).html( this.dom );
 			this.oldVal = {};
 
-			if(searchparams = cfg.searchparams) {
+			if(searchparams = cfg('searchparams' ) ) {
 				for(var i in searchparams) {
 					if(!i)
 						continue;
 					this.search.append('<tr><td><nobr>' + searchparams[i].label + '</nobr></td><td>' + this._makeFormEl(searchparams[i], i) + '</td></tr>');
 				}
 				
-				var url = self.module.getConfiguration().url;
-				var button = self.module.getConfiguration().button || false;
+				var url = cfg( 'url' ),
+					button = cfg( 'button', false )
 
 				if(button) {
 
 					require( [ 'forms/button' ], function( Button ) {
 
-						self.search.append( new Button( cfg.buttonlabel || 'Search', function() {
+						self.search.append( new Button( cfg('buttonlabel') || 'Search', function() {
 
 							self.module.controller.doSearch();
 							

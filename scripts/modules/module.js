@@ -354,21 +354,18 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 
 										moduletitle: {
 											type: 'text',
-											name: 'moduletitle',
 											multiple: false,
 											title: 'Module title'
 										},
 
 										bgcolor: {
 											type: 'color',
-											name: 'bgcolor',
 											multiple: false,
 											title: 'Background color'
 										},
 
 										modulewrapper: {
 											type: 'checkbox',
-											name: 'modulewrapper',
 											title: 'Module boundaries',
 											options: {'display': ''}
 										}
@@ -661,7 +658,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 					console.log(module.vars_out(), module.vars_in());
 					var fill = {
 						sections: {
-							module_config: [ { groups: { group: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor ],  modulewrapper: [[ (module.definition.displayWrapper === true || module.definition.displayWrapper == undefined) ? 'display' : '' ]] }] } } ],
+							module_config: [ { groups: { group: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor || [ 255, 255, 255, 0 ] ],  modulewrapper: [[ (module.definition.displayWrapper === true || module.definition.displayWrapper == undefined) ? 'display' : '' ]] }] } } ],
 							module_specific_config: [ module.configuration || {} ],
 
 							vars_out: [ { groups: { group: [ module.vars_out() ] } } ],
@@ -676,17 +673,14 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 				});
 
 				form.addButton('Cancel', { color: 'blue' }, function() {
-
 					div.dialog( 'close' );
 				});
 
 				form.addButton('Save', { color: 'green' }, function() {
 
-					
 					var value = form.getValue().sections;
 
 					module.setTitle( value.module_config[ 0 ].groups.group[ 0 ].moduletitle[ 0 ] );
-
 					module.definition.bgColor 			= value.module_config[ 0 ].groups.group[ 0 ].bgcolor[ 0 ];
 					module.setBackgroundColor( module.definition.bgColor );
 

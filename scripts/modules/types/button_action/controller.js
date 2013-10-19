@@ -4,9 +4,11 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 	controller.prototype = $.extend(true, {}, Default, {
 	
 		onClick: function(on) {
-			var self = this;
-			this.sendAction('string', this.module.getConfiguration().text, 'onClick');
-			this.sendAction('string', this.module.getConfiguration().text, (on ? 'onToggleOn' : 'onToggleOff'));
+			
+			var text = this.module.getConfiguration( 'text' );
+
+			this.sendAction('string', text, 'onClick');
+			this.sendAction('string', text, (on ? 'onToggleOn' : 'onToggleOff'));
 		},
 
 		configurationSend: {
@@ -40,50 +42,39 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 				
 		},
 		
-		doConfiguration: function(section) {
+		configurationStructure: function(section) {
 
 			return {
+
 				groups: {
-					'gencfg': {
-						config: {
+
+					group: {
+
+						options: {
 							type: 'list'
 						},
 
-						fields: [
-							{
-								type: 'Text',
-								name: 'label',
+						fields: {
+
+							label: {
+								type: 'text',								
 								title: 'Button label'
 							},
 
-							{
-								type: 'Text',
-								name: 'text',
+							text: {
+								type: 'text',
 								title: 'Action text to send'
 							}
-
-
-						]
+						}
 					}
 				}
 			};
 		},
 		
-		doFillConfiguration: function() {
 
-			return {
-				groups: {
-					gencfg: [{
-						label: [this.module.getConfiguration().label],
-						text: [this.module.getConfiguration().text]
-					}]
-				}
-			}
-		},
-			
-		doSaveConfiguration: function(confSection) {	
-			this.module.getConfiguration().text = confSection[0].gencfg[0].text[0];
-			this.module.getConfiguration().label = confSection[0].gencfg[0].label[0];
+		configAliases: {
+			'label': function(cfg) { return cfg.groups.group[ 0 ].label[ 0 ]; },
+			'text': function(cfg) { return cfg.groups.group[ 0 ].text[ 0 ]; }
 		},
 
 		"export": function() {

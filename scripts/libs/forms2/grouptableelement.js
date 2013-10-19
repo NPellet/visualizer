@@ -12,6 +12,11 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			dom = $("<div />").addClass('form-group-table'),
 			table, domHead, domBody, tr, th, divFieldElements;
 
+
+		if( this.group.getTitle() ) {
+			dom.append('<div class="form-groupelement-title">' + this.group.getTitle() + '</div>');
+		}
+
 		table = $("<table />", { cellpadding: 0, cellspacing: 0 } ).css( { width: '100%' } );
 		domHead = $("<thead />");
 		domBody = $("<tbody />");

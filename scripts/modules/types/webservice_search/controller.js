@@ -7,11 +7,14 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		initimpl: function() { 
 			this.searchTerms = {};
 			var searchparams;
-			if(searchparams = this.module.getConfiguration().searchparams) {
+
+			if( searchparams = this.module.getConfiguration( 'searchparams' ) ) {
+
 				for(var i in searchparams) {
 					if(!i) {
 						continue;
 					}
+
 					this.searchTerms[i] = searchparams[i].defaultvalue;
 				}
 			}
@@ -26,9 +29,9 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 				this.request.abort();
 */
 			var self = this,
-				url = this.module.getConfiguration().url,
+				url = this.module.getConfiguration( 'url' ),
 				reg,
-				toPost = this.module.getConfiguration().postvariables || [],
+				toPost = this.module.getConfiguration( 'postvariables', [] ),
 				l = toPost.length,
 				i = 0,
 				data = {};
@@ -118,112 +121,104 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		},
 
 		
-		doConfiguration: function(section) {
+		configurationStructure: function(section) {
 			
 			return {
 				groups: {
-					'cfg': {
-						config: {
+					group: {
+						options: {
 							type: 'list'
 						},
 
-						fields: [
-							{
-								type: 'Text',
-								name: 'url',
+						fields: {
+
+							url: {
+								type: 'text',
 								title: 'Search URL'
 							},
 
-							{
-								type: 'Checkbox',
-								name: 'button',
+							button: {
+								type: 'checkbox',
 								title: 'Search button',
 								options: { button: '' }
 							},
 
-							{
-								type: 'Text',
-								name: 'buttonlabel',
+							buttonlabel: {
+								type: 'text',
 								title: 'Button text'
 							},
 
-							{
-								type: 'Text',
-								name: 'buttonlabel_exec',
+							buttonlabel_exec: {
+								type: 'text',
 								title: 'Button text (executing)'
 							}
-						]
+						}
 					},
 
-					'searchparams': {
-						config: {
-							type: 'table'
+					searchparams: {
+						options: {
+							type: 'table',
+							multiple: true,
+							title: 'Seach parameters'
 						},
 
-						fields: [
-							{
-								type: 'Text',
-								name: 'name',
+						fields: {
+							name: {
+								type: 'text',
 								title: 'Term name'
 							},
 
-							{
-								type: 'Text',
-								name: 'label',
+							label: {
+								type: 'text',
 								title: 'Term label'
 							},
 
-							{
-								type: 'Text',
-								name: 'defaultvalue',
+							defaultvalue: {
+								type: 'text',
 								title: 'Default value'
 							},
 
-
-							{
-								type: 'Combo',
-								name: 'fieldtype',
+							fieldtype: {
+								type: 'combo',
 								title: 'Field type',
 								options: [{ key: 'text', title: 'Text'}, { key: 'combo', title: 'Combo'}, { key: 'checkbox', title: 'Checkbox'}]
 							},
 
-							{
-								type: 'Text',
-								name: 'fieldoptions',
+							fieldoptions: {
+								type: 'text',
 								title: 'Field options (a:b;)'
 							}
-
-						]
+						}
 					},
 
 				},
 
 				sections: {
-					'sendvariables': {
-						config: {
+					postvariables: {
+						options: {
 							multiple: false,
 							title: 'POST variables'
 						},
 
 						groups: {
-							'sendvariables': {
-								config: {
-									type: 'table'
+							postvariables: {
+								options: {
+									type: 'table',
+									multiple: true
 								},
 
-								fields: [
-									{
-										type: 'Text',
-										name: 'variable',
+								fields: {
+									
+									variable: {
+										type: 'text',
 										title: 'Variable'
 									},
 
-									{
-										type: 'Text',
-										name: 'name',
+									name: {
+										type: 'text',
 										title: 'Name'
 									}
-								]
+								}
 							},
 						}
 
@@ -233,84 +228,12 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			}
 		},
 		
-		doFillConfiguration: function() {
-			
-			var searchparams = this.module.getConfiguration().searchparams;
-			var names = [];
-			var labels = [],
-				postvariables = [],
-				postnames = [],
-				fieldtype = [],
-				fieldoptions = [];
-				
-			var defaultvalue = [];
-			for(var i in searchparams) {
-				names.push(i);
-				labels.push(searchparams[i].label);
-				defaultvalue.push(searchparams[i].defaultvalue || '');
-				fieldtype.push(searchparams[i].fieldtype || 'text');
-				fieldoptions.push(searchparams[i].fieldoptions || '');
-			}
-
-
-			var _postvariables = this.module.getConfiguration().postvariables || [];
-			for(var i = 0, l = _postvariables.length; i < l; i++) {
-				postvariables.push(_postvariables[i][1]);
-				postnames.push(_postvariables[i][0]);
-			}
-
-			return {	
-
-				groups: {
-					
-					cfg: [{
-						url: [this.module.getConfiguration().url],
-						buttonlabel: [this.module.getConfiguration().buttonlabel],
-						buttonlabel_exec: [this.module.getConfiguration().buttonlabel_exec],
-						button: [this.module.getConfiguration().button ? ['button'] : []]
-				//		jpatharray: [this.module.getConfiguration().jpatharray]
-					}],
-
-					searchparams: [{
-						name: names,
-						label: labels,
-						defaultvalue: defaultvalue,
-						fieldtype: fieldtype,
-						fieldoptions: fieldoptions 
-					}]
-				},
-
-				sections: {
-					sendvariables: [{
-						groups: {
-							sendvariables: [{
-								variable: postvariables,
-								name: postnames		
-							}]
-						}
-					}]
-				}
-			}
-		},
-		
-		doSaveConfiguration: function(confSection) {
-			var group = confSection[0].searchparams[0];
-			var searchparams = {};
-			for(var i = 0; i < group.length; i++)
-				searchparams[group[i].name] = {label: group[i].label, defaultvalue: group[i].defaultvalue, fieldtype: group[i].fieldtype, fieldoptions: group[i].fieldoptions };
-
-			var group = confSection[0].sendvariables[0].sendvariables[0];
-			var postvariables = [];
-			for(var i = 0; i < group.length; i++)
-				postvariables.push([group[i].name, group[i].variable]);
-
-			this.module.getConfiguration().button = confSection[0].cfg[0].button[0][0] == 'button';
-			this.module.getConfiguration().searchparams = searchparams;
-			this.module.getConfiguration().postvariables = postvariables;
-			this.module.getConfiguration().url = confSection[0].cfg[0].url[0];
-			this.module.getConfiguration().buttonlabel = confSection[0].cfg[0].buttonlabel[0];
-			this.module.getConfiguration().buttonlabel_exec = confSection[0].cfg[0].buttonlabel_exec[0];
-		//	this.module.getConfiguration().jpatharray = confSection[0].cfg[0].jpatharray[0];
+		configAliases: {
+			'button': function(cfg) { return cfg.groups.group[ 0 ].button[ 0 ][ 0 ] == "button"; },
+			'url': function(cfg) { return cfg.groups.group[ 0 ].url[ 0 ]; },
+			'searchparams': function(cfg) { return cfg.groups.searchparams[ 0 ]; },
+			'buttonlabel': function(cfg) { return cfg.groups.group[ 0 ].buttonlabel[ 0 ]; },
+			'postvariables': function(cfg) { return cfg.sections.postvariables[ 0 ].postvariables[ 0 ]; }
 		},
 
 		"export": function() {

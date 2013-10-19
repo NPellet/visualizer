@@ -397,3 +397,37 @@ div.selected {
 	border-top: 1px solid #c0c0c0;
 	text-align: right;
 }
+
+
+
+.form-groupelement-title, .forms h2 {
+	border-top: 1px solid #c0c0c0;
+	border-bottom: 1px solid #c0c0c0;
+	background-color: #fcfcfc;
+	
+	padding-top: 4px;
+	padding-bottom: 2px;
+
+	width: -webkit-calc(100% + 22px);
+	box-sizing: border-box;
+	/*border-left: 1px solid #f0f0f0;*/
+}
+
+
+
+ .form-groupelement-title {
+	font-size: 1.2em;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	margin-left: -11px;
+	padding-left: 15px;
+}
+
+.forms h2 {
+	font-size: 1.6em;
+	font-weight: normal;
+	margin-top: 30px;
+	margin-bottom: 7px;
+	margin-left: -11px;
+	padding-left: 8px;
+}

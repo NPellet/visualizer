@@ -16,6 +16,10 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			label, 
 			divFieldElements;
 
+		if( this.group.getTitle() ) {
+			dom.append('<div class="form-groupelement-title">' + this.group.getTitle() + '</div>');
+		}
+
 		self.fieldElementsDom = self.fieldElementsDom || { };
 		this.group.eachFields( function( field ) {
 

@@ -230,16 +230,26 @@ define(['require', 'jquery'], function(require, $) {
 					if( this.section.sectionLevel == 1 ) {
 						this.section.form.sectionLvl1Buttons.append('<div data-section-name="' + this.section.getName() + '" class="form-section-select">' + this.getTitleIcon( ) + '</div>');	
 						dom.hide();
+					} else {
+						dom.append('<h' + (this.section.sectionLevel) + '>' + this.getTitle( ) + '</h' + (this.section.sectionLevel) + '>');
 					}
 					
 				break;
 
 				default:
-					dom.append('<h' + (this.section.sectionLevel) + '>' + this.getTitle( ) + '</h' + (this.section.sectionLevel) + '>')
+					dom.append('<h' + (this.section.sectionLevel) + '>' + this.getTitle( ) + '</h' + (this.section.sectionLevel) + '>');
 				break;
 
 			}
 
+			for( i in this.groupElements ) {
+				l = this.groupElements[ i ].length;
+				for( j = 0; j < l ; j++) {
+					dom.append( this.groupElements[ i ][ j ].makeDom( ) );
+				}
+			}
+
+			
 			for( i in this.sectionElements ) {
 				l = this.sectionElements[ i ].length;
 				for( j = 0 ; j < l ; j++) {
@@ -247,12 +257,6 @@ define(['require', 'jquery'], function(require, $) {
 				}
 			}
 			
-			for( i in this.groupElements ) {
-				l = this.groupElements[ i ].length;
-				for( j = 0; j < l ; j++) {
-					dom.append( this.groupElements[ i ][ j ].makeDom( ) );
-				}
-			}
 	
 			return (this.dom = dom);
 		}
