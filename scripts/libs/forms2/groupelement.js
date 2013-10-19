@@ -55,6 +55,7 @@ define(['jquery'], function($) {
 				j = 0,
 				l = json[ i ].length;
 
+
 				for( ; j < l ; j ++ ) {
 
 					this.fillElement( i, j, json[ i ][ j ], clearFirst );
@@ -76,24 +77,20 @@ define(['jquery'], function($) {
 		fillElement: function( i, j, json, clear ) {
 
 			$.when( this.getFieldElement( i , j ) ).then( function( el ) {
-				el.setValueSilent( json, true );
+				el.value = json;
 			} );
 		},
 
 		inDom: function() {
-
 			var self = this;
 			this.group.eachFields( function( field ) {
-
 				self.eachFieldElements( field.getName() , function( fieldElement ) {
-
 					fieldElement.inDom();
 				} );
-				
 			} );
 		},
 
-		redoTabIndices: function( ) {
+		visible: function() {
 
 		},
 
@@ -104,20 +101,20 @@ define(['jquery'], function($) {
 
 			this.fieldElements[ fieldName ] = this.fieldElements[ fieldName ] || [];
 
-			if( ! this.fieldElements[ fieldName ][ fieldId ] ) {
+			if( ! this.fieldElements[ fieldName ][ fieldId ] && ! this.fieldDeferreds[ fieldName + fieldId ] ) {
 
-				el = this.group.getField( fieldName ).makeElement( ).done( function(value) {
+				el = this.group.getField( fieldName ).makeElement( ).pipe( function(value) {
 
 					value.group = self.group;
 					value.groupElement = self;
-					self.fieldElements[ fieldName ][ fieldId ] = value;
 
+					return self.fieldElements[ fieldName ][ fieldId ] = value;
 				} );
 
 				return this.fieldDeferreds[ fieldName + fieldId ] = el;
 			}
 
-			return this.fieldElements[ fieldName ][ fieldId ];
+			return this.fieldElements[ fieldName ][ fieldId ] || this.fieldDeferreds[ fieldName + fieldId ];
 		},
 
 		_getElement: function(stack, getter, name, id) {
@@ -137,7 +134,7 @@ define(['jquery'], function($) {
 			var els = this.getFieldElements( )[ fieldName ];
 
 			if( ! els ) {
-				return this.form( ).throwError( "Cannot iterate over field. Field " + fieldName + " does not exist" );
+				return this.form.throwError( "Cannot iterate over field. Field " + fieldName + " does not exist" );
 			}
 
 			for( i in els ) {
@@ -145,23 +142,6 @@ define(['jquery'], function($) {
 			}
 		},
 
-		getValue: function(stackFrom, stackTo) {
-
-			var i, j, l, stackTo = { };
-
-			for( i in this.fieldElements ) {
-
-				j = 0, 
-				l = this.fieldElements[ i ].length,
-				stackTo[ i ] = [ ];
-
-				for( ; j < l ; j ++) {
-					stackTo[ i ].push( this.fieldElements[ i ][ j ].value );
-				}
-			}
-
-			return stackTo;
-		},
 
 		ready: function() {
 			return $.when.apply( $.when, this.fieldDeferreds );

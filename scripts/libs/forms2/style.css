@@ -1,4 +1,4 @@
-body, th, td, input, select, textarea {
+body, th, td, .forms input, .forms select, .forms textarea {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
 	font-size: 11px;
 	color: black;
@@ -7,6 +7,8 @@ body, th, td, input, select, textarea {
 .forms {
 	background-color: #f0f0f0;
 	border: 1px solid #c0c0c0;
+	position: relative;
+	outline: none;
 }
 
 .forms .cleaner {
@@ -33,7 +35,7 @@ body, th, td, input, select, textarea {
 	padding-top: 8px;
 	float: left;
 	color: #444;
-	text-shadow: 0 1px 0 rgba(255,255,255,.8);
+	text-shadow: 0 1px 0 rgba(255,255,255,.6);
 	box-shadow: 0px 0px 2px rgba(0,0,0,.3);
 	cursor: pointer;
 	text-align: center;
@@ -59,8 +61,7 @@ body, th, td, input, select, textarea {
 .form-sections-wrapper {
 
     padding: 1em;
-	height: 220px;
-	position: relative;
+	/*position: relative;*/
 	z-index: 2;	
     
     -moz-border-radius: 0 5px 0px 0px;
@@ -83,6 +84,7 @@ body, th, td, input, select, textarea {
 	width: 100%;
 	border-collapse: collapse;
 	margin-bottom: 10px;
+	
 }
 
 
@@ -95,6 +97,9 @@ body, th, td, input, select, textarea {
 
 .form-group-table td {
 	border: 1px solid #c0c0c0;
+	padding: 0;
+	margin: 0;
+
 }
 
 
@@ -111,7 +116,22 @@ body, th, td, input, select, textarea {
 	outline: none;
 	border: none;
 	padding-left: 4px;
+	box-sizing: border-box;
 }
+
+
+.form-group-table table td > div {
+	width: 100%;
+	height: 100%;
+}
+
+.form-group-table table td > div > div {
+	outline: none;	
+	height: 20px;
+	line-height: 20px;
+	padding-left: 5px;
+}
+
 
 
 .form-duplicator {
@@ -135,22 +155,21 @@ body, th, td, input, select, textarea {
 }
 
 
-
+.form-field-list-elements > div {
+	margin-bottom: 5px;
+}
 
 .form-field-list-elements > div > div {
 	height: 25px;
 	line-height: 18px;
 	border: 1px solid #c0c0c0;
 	padding: 3px;
-	margin-bottom: 5px;
 	box-sizing: border-box;
 	outline: none;
+	width: 100%;
+	display: inline-block;
 }
 
-
-.form-field-list-elements div.selected {
-	background-color: #eeeeee;
-}
 
 .forms .form-field-list-text input {
 	width: 100%;
@@ -158,9 +177,23 @@ body, th, td, input, select, textarea {
 	padding: 3px;
 	outline: none;
 	height: 25px;
-	margin-bottom: 5px;
 	box-sizing: border-box;
 }
+
+.forms .form-field-list-wysiwyg .form-field-list-elements > div > div {
+	height: auto;
+}
+
+
+.forms .form-field-list-checkbox .form-field-list-elements > div > div {
+	height: auto;
+}
+
+
+div.selected {
+	background-color: #eeeeee;
+}
+
 
 .forms .form-field-list-text input.selected {
 	background-color: #eeeeee;
@@ -174,6 +207,7 @@ body, th, td, input, select, textarea {
 	width: 30px;
 	border: 1px solid #c0c0c0;
 	padding: 0px;
+
 	box-sizing: border-box;
 	height: 25px;
 	line-height: 23px;
@@ -190,4 +224,176 @@ body, th, td, input, select, textarea {
 	box-sizing: border-box;
 	background-color: #eeeeee;
 	border-top: none;
+}
+
+
+
+
+ 
+.form-button {
+	
+	height: 27px;
+	padding-left: 10px;
+	padding-right: 10px;
+	
+	font-weight: bold;
+	text-align: center;
+	line-height: 27px;
+	display: inline-block;
+	
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	
+	cursor: pointer;
+	
+	background: #f5f5f5;
+	background: -moz-linear-gradient(top, #f5f5f5 0%, #f1f1f1 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f5f5), color-stop(100%,#f1f1f1));
+	background: -webkit-linear-gradient(top, #f5f5f5 0%,#f1f1f1 100%);
+	background: -o-linear-gradient(top, #f5f5f5 0%,#f1f1f1 100%);
+	background: -ms-linear-gradient(top, #f5f5f5 0%,#f1f1f1 100%);
+	background: linear-gradient(top, #f5f5f5 0%,#f1f1f1 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#f1f1f1',GradientType=0 );
+	
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.form-button a {
+	text-decoration: none;
+	color: black;
+}
+
+.form-button:hover {
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+	border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.form-button:active, .form-button.bi-active {
+	background: #a1a1a1; /* Old browsers */
+	background: -moz-linear-gradient(top, #a1a1a1 0%, #7c7c7c 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a1a1a1), color-stop(100%,#7c7c7c)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #a1a1a1 0%,#7c7c7c 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #a1a1a1 0%,#7c7c7c 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #a1a1a1 0%,#7c7c7c 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #a1a1a1 0%,#7c7c7c 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a1a1a1', endColorstr='#7c7c7c',GradientType=0 ); /* IE6-9 */
+	color: white;
+}
+
+.form-button.blue {
+	background: #5a68e8;
+	background: -moz-linear-gradient(top, #5a68e8 0%, #3152c6 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5a68e8), color-stop(100%,#3152c6));
+	background: -webkit-linear-gradient(top, #5a68e8 0%,#3152c6 100%);
+	background: -o-linear-gradient(top, #5a68e8 0%,#3152c6 100%);
+	background: -ms-linear-gradient(top, #5a68e8 0%,#3152c6 100%);
+	background: linear-gradient(top, #5a68e8 0%,#3152c6 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5a68e8', endColorstr='#3152c6',GradientType=0 );
+	color: white;
+	border: 1px solid rgba(49,82,198,1);
+}
+
+.form-button.blue a {
+	color: white;
+}
+
+
+.form-button.blue:hover {
+	border: 1px solid rgba(43,36,145,0.9);
+}
+
+.form-button.blue:active, .form-button.blue.bi-active {
+	background: #1b2d6f; /* Old browsers */
+	background: -moz-linear-gradient(top, #1b2d6f 0%, #16249e 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1b2d6f), color-stop(100%,#16249e)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #1b2d6f 0%,#16249e 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #1b2d6f 0%,#16249e 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #1b2d6f 0%,#16249e 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #1b2d6f 0%,#16249e 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1b2d6f', endColorstr='#16249e',GradientType=0 ); /* IE6-9 */
+}
+
+
+.form-button.red {
+	
+	background: #ec422c; /* Old browsers */
+	background: -moz-linear-gradient(top, #ec422c 0%, #bb1d1d 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ec422c), color-stop(100%,#bb1d1d)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #ec422c 0%,#bb1d1d 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #ec422c 0%,#bb1d1d 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #ec422c 0%,#bb1d1d 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #ec422c 0%,#bb1d1d 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ec422c', endColorstr='#bb1d1d',GradientType=0 ); /* IE6-9 */
+	color: white;
+	border: 1px solid rgba(198, 49, 49, 1);
+}
+
+.form-button.red a {
+	color: white;
+}
+
+.form-button.red:hover {
+	border: 1px solid rgba(198, 49, 49, 0.9);
+}
+
+
+.form-button.red:active, .form-button.red.bi-active {
+	background: #851515; /* Old browsers */
+	background: -moz-linear-gradient(top, #851515 0%, #b62410 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#851515), color-stop(100%,#b62410)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #851515 0%,#b62410 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #851515 0%,#b62410 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #851515 0%,#b62410 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #851515 0%,#b62410 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#851515', endColorstr='#b62410',GradientType=0 ); /* IE6-9 */	
+	border: 1px solid rgba(198, 49, 49, 0.9);
+}
+
+
+.form-button.green {
+	background: #11d151; /* Old browsers */
+	background: -moz-linear-gradient(top, #11d151 0%, #159932 80%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#11d151), color-stop(80%,#159932)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #11d151 0%,#159932 80%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #11d151 0%,#159932 80%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #11d151 0%,#159932 80%); /* IE10+ */
+	background: linear-gradient(to bottom, #11d151 0%,#159932 80%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#11d151', endColorstr='#159932',GradientType=0 ); /* IE6-9 */
+	color: white;
+	border: 1px solid rgba(15,140, 57, 1);
+}
+
+.form-button.green a {
+	color: white;
+}
+.form-button.green:hover {
+	border: 1px solid rgba(15,140, 57, 9);	
+}
+
+
+
+.form-button.disabled, .form-button.disabled:hover {
+	
+	background: #a1a1a1; /* Old browsers */
+	background: -moz-linear-gradient(top, #a1a1a1 0%, #bbbbbb 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a1a1a1), color-stop(100%,#bbbbbb)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #a1a1a1 0%,#bbbbbb 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #a1a1a1 0%,#bbbbbb 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #a1a1a1 0%,#bbbbbb 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #a1a1a1 0%,#bbbbbb 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a1a1a1', endColorstr='#bbbbbb',GradientType=0 ); /* IE6-9 */
+
+	color: #666666;
+	border: 1px solid rgba(150, 150, 150, 1);
+}
+
+
+.form-buttonzone {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-top: 1px solid #c0c0c0;
+	text-align: right;
 }

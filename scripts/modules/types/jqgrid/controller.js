@@ -7,19 +7,20 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 	controller.prototype = $.extend(true, {}, Default, {
 
 		lineHover: function(element) {
-			if(!element)
+			if(!element) {
 				return;
-			var actions;
+			}
 			this.setVarFromEvent('onHover', element);
-			if(element._highlight !== false)
+			if(element._highlight !== false) {
 				API.highlight(element._highlight, 1);
+			}
 		},
 
 		lineOut: function(element) {
-			if(!element)
-				return;
-			if(element._highlight !== false)
+			
+			if(element && element._highlight !== false) {
 				API.highlight(element._highlight, 0);
+			}
 		},
 
 		lineClick: function(element, row) {
@@ -104,98 +105,92 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		},
 		
 		
-		doConfiguration: function(section) {
+		configurationStructure: function(section) {
 			
 			var jpaths = this.module.model.getjPath();
 
 			return {
 				groups: {
-					'gencfg': {
-						config: {
-							type: 'list'
+
+					group: {
+						options: {
+							type: 'list',
+							multiple: false
 						},
 
-						fields: [
+						fields: {
 
-							{
-								type: 'Text',
-								name: 'nblines',
+							nblines: {
+								type: 'text',
 								title: 'Lines per page'
 							},
 
-							{
-								type: 'Combo',
-								name: 'toggle',
+							toggle: {
+								type: 'combo',
 								title: 'Line toggling',
 								options: [{key: "0", title: "No"}, {key: "single", title:"Single row"}, {key: "multiple", title:"Multiple rows"}]
 							},
 
-							{
-								type: 'Combo',
-								name: 'colorjpath',
+							colorjpath: {
+								type: 'combo',
 								title: 'Color jPath',
 								options: jpaths
 							},
 
-							{
-								type: 'Checkbox',
-								name: 'displaySearch',
-								options: { 'allow': 'Allow searching'}
+							displaySearch: {
+								type: 'checkbox',
+								options: { 'allow': 'Allow searching', 'allow2': 'Allow searching', 'allow3': 'Allow searching'}
 							},
 
-							{
-								type: 'JSCode',
-								name: 'filterRow'
+
+							filterRow: {
+								type: 'jscode',
 							}
 
-						]
+						}
 					},
 
-					'cols': {
-						config: {
-							type: 'table'
+					cols: {
+						options: {
+							type: 'table',
+							multiple: true
 						},
 
-						fields: [
-							{
-								type: 'Text',
-								name: 'coltitle',
+						fields: {
+
+							name: {
+								type: 'text',
 								title: 'Columns title'
 							},
 
-							{
-								type: 'Combo',
-								name: 'coljpath',
+							jpath: {
+								type: 'combo',
 								title: 'jPath',
 								options: jpaths
 							},
 
-
-							{
-								type: 'Checkbox',
-								name: 'number',
+							number: {
+								type: 'checkbox',
 								title: 'Number ?',
 								options: {number: 'Yes'}
 							},
 
-							{
-								type: 'Combo',
-								name: 'editable',
+							editable: {
+								type: 'combo',
 								title: 'Editable',
 								options: [{key: 'none', title: 'No'}, {key: 'text', title: 'Text'}, {key: 'checkbox', title: 'Checkbox'}, {key: 'select', title: 'Combo'}]
 							},
 
-							{
-								type: 'Text',
-								name: 'options',
+							options: {
+								type: 'text',
 								title: 'Options (; separated)'
 							}
-						]
+						}
 					}
 				}
 			}		
 		},
-		
+		/*
 		doFillConfiguration: function() {
 
 			var cfg = this.module.getConfiguration();
@@ -257,7 +252,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			this.module.getConfiguration().displaySearch = !!confSection[0].gencfg[0].displaySearch[0][0];
 			this.module.getConfiguration().filterRow = confSection[0].gencfg[0].filterRow[0];
 		},
-
+*/
 		onVarReceiveChange: function(name, rel, confSection) {
 
 			var data = API.getVar(name);
@@ -272,6 +267,15 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 
 			if(jpaths.length > 1)
 				confSection.getGroup('cols').getField('coljpath').implementation.setOptions(jpaths);
+		},
+
+		configAliases: {
+			'colsjPaths': function(cfg) { return cfg.groups.cols[ 0 ]; },
+			'nbLines': function(cfg) { return cfg.groups.group[ 0 ].nblines[ 0 ]; },
+			'toggle': function(cfg) { return cfg.groups.group[ 0 ].toggle[ 0 ]; },
+			'colorjPath': function(cfg) { return cfg.groups.group[ 0 ].colorjpath[ 0 ]; },
+			'displaySearch': function(cfg) { return cfg.groups.group[ 0 ].displaySearch[ 0 ][ 0 ] == 'allow'; },
+			'filterRow': function(cfg) { return cfg.groups.group[ 0 ].filterRow[ 0 ] }
 		},
 
 		"export": function() {

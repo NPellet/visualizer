@@ -55,6 +55,8 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			//self.fieldElementsDom[ field.getName() ] = divFieldElements;
 		});
 
+		this.group.form.redoTabIndices();
+
 		return this.dom;
 	};
 
@@ -75,6 +77,27 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 		return index;
 	};
+
+
+
+	GroupListElement.prototype.getValue = function(stackFrom, stackTo) {
+
+		var i, j, l, stackTo = { };
+
+		for( i in this.fieldElements ) {
+
+			j = 0, 
+			l = this.fieldElements[ i ].length,
+			stackTo[ i ] = [ ];
+
+			for( ; j < l ; j ++) {
+				stackTo[ i ].push( this.fieldElements[ i ][ j ].value );
+			}
+		}
+
+		return stackTo;
+	};
+
 
 
 	GroupListElement.prototype.duplicateFieldElement = function( fieldElement ) {
@@ -119,15 +142,27 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 		var fieldName = fieldElement.name,
 			i = 0;
 
-		var posDom = fieldElement._dom.offset();
+		var posDom = fieldElement._dom.position();
 
 		return {
-			width: fieldElement._dom.width(),
+			width: fieldElement._dom.innerWidth(),
 			left: posDom.left,
 			top: posDom.top + fieldElement._dom.height() - 1
 		};
 	}
 
+	GroupListElement.prototype.redoTabIndices = function( ) {
+
+		var self = this;
+		this.group.eachFields( function( field ) {
+
+			self.eachFieldElements( field.getName() , function( fieldElement ) {
+
+				fieldElement.redoTabIndices();
+			} );
+			
+		} );
+	}
 	
 	return GroupListElement;
 });

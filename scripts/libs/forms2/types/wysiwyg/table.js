@@ -3,7 +3,7 @@ define( [ '../../fieldlistelement', './element' ], function( ElementDefault, Ele
 
 	var Element = function() {};
 
-	Element.prototype = new ElementDefault();
+	Element.prototype = new ElementImpl();
 	Element.prototype = $.extend(Element.prototype, ElementImpl.prototype, {
 
 		_makeDom: function() {

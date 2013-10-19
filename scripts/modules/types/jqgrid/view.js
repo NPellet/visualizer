@@ -8,18 +8,14 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		var self = this, lastTr;
 
 	 		this.uniqId = Util.getNextUniqueId();
-			this.unique = Util.getNextUniqueId();
-    	
-
 	 		this.dom = $('<div class="ci-displaylist-list"></div>');
-	 		this.domTable = $("<table />").attr('id', this.unique).css({width: '100%'});
-
+	 		this.domTable = $("<table />").attr('id', this.uniqId).css({width: '100%'});
 
 	 		this.dom.on('mouseover', 'tr.jqgrow', function() {
 
-	 			if(this !== lastTr)
+	 			if(this !== lastTr) {
 					self.module.controller.lineHover(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
-
+	 			}
 				lastTr = this;
 
 	 		}).on('mouseout', 'tr.jqgrow', function() {
@@ -28,24 +24,22 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					self.module.controller.lineOut(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
 					lastTr = this;
 	 			}
-
-				
 	 		});
 
-			var filter = this.module.getConfiguration().filterRow || '';
+			var filter = this.module.getConfiguration( 'filterRow' );
 			eval("self.filter = function(jqGrid, source, rowId) { try { \n " + filter + "\n } catch(_) { console.log(_); } }");
-	 		var inst = this;
-	 		this.module.getDomContent().html(this.dom);
+
+	 		this.module.getDomContent( ).html( this.dom );
 	 		this._highlights = this._highlights || [];
 
 	 		this.onReady = $.Deferred();
-
 	 	},
 
 	 	unload: function() {
-	 		this.jqGrid('GridDestroy');
+
+	 		this.jqGrid( 'GridDestroy' );
 	 		this.jqGrid = false;
-	 		this.module.getDomContent().empty();
+	 		this.module.getDomContent( ).empty( );
 	 	},
 
 	 	inDom: function() {
@@ -53,38 +47,40 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			var self = this, 
 				colNames = [], 
 				colModel = [], 
-				j,
+				j = 0,
 				editable,
-				jpaths = this.module.getConfiguration().colsjPaths;
+				jpaths = this.module.getConfiguration( 'colsjPaths' ),
+				l;
 
 
 			if( typeof jpaths == 'object' ) {
 
-				for( j in jpaths ) {
+				l = jpaths.length;
+
+				for( ; j < l ; j ++ ) {
 
 					editable = ( jpaths[j].editable !== 'none' && jpaths[j].editable !== 'false' && jpaths[j].editable !== '' );
-
-					colNames.push(j);
+					colNames.push( jpaths[j].name );
 					colModel.push({
-						name: j, 
-						index: j, 
+						name: jpaths[ j ].name, 
+						index: jpaths[ j ].name,
 						title: false, 
 						editable: editable,
-						editoptions: jpaths[j].editable == 'select' ? { value: jpaths[j].options } : {},
-						edittype: editable ? jpaths[j].editable : false,
-						_jpath: jpaths[j].jpath,
+						editoptions: jpaths[ j ].editable == 'select' ? { value: jpaths[ j ].options } : {},
+						edittype: editable ? jpaths[ j ].editable : false,
+						_jpath: jpaths[ j ].jpath,
 						sortable: true,
-						sorttype: jpaths[j].number ? 'float' : 'text'
+						sorttype: jpaths[ j ].number ? 'float' : 'text'
 					});
 				}
 			}
 
 
 
-			var nbLines = this.module.getConfiguration().nbLines || 20;	
+			var nbLines = this.module.getConfiguration( 'nbLines' ) || 20;	
 
-			this.domTable = $("<table />").attr('id', this.unique).appendTo(this.dom);
-			this.domPaging = $('<div />', { id: "pager" + this.unique }).appendTo(this.dom);
+			this.domTable = $( '<table />' ).attr( 'id', this.uniqId ).appendTo( this.dom );
+			this.domPaging = $( '<div />', { id: 'pager' + this.uniqId } ).appendTo( this.dom );
 			
 
 			$(this.domTable).jqGrid({		 			
@@ -108,32 +104,40 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	cellEdit: true,
 			   	rowNum: nbLines,
 			   	rowList: [2, 10,20,30,100],
-			  	pager: '#pager' + this.unique,
+			  	pager: '#pager' + this.uniqId,
 			//   	height: '100%',
 
 			   	rowattr: function() {
-			   		if(arguments[1]._backgroundColor)
+
+			   		if( arguments[1]._backgroundColor ) {
 			   			return {'style': 'background-color: ' + arguments[1]._backgroundColor };
+			   		}
 			   	},
+
 			   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
 			   	
-			   		if(jpaths[colModel[colNum].name].number)
+			   		if( jpaths[ colModel[ colNum ].name ].number ) {
 			   			value = parseFloat(value);
-			   		self.elements[rowId.replace(self.uniqId, '')].setChild(colModel[colNum]._jpath, value, { moduleid: self.module.getId() });
-			   		
-			   		self.applyFilterToRow(rowId.replace(self.uniqId, ''), rowId);
+			   		}
+			   		self.elements[ rowId.replace( self.uniqId, '') ].setChild( colModel[ colNum ]._jpath, value, { moduleid: self.module.getId( ) } );
+			   		self.applyFilterToRow( rowId.replace( self.uniqId, '' ), rowId );
 			   	},
 
 			   	loadComplete: function() {
 
-			   		if(!self.jqGrid)
+			   		if( ! self.jqGrid ) {
 			   			return;
-					var ids = self.jqGrid('getDataIDs');
-					for(var i = 0; i < ids.length; i++) {
-						//console.log(ids[i], ids[i].replace(self.uniqId, ''), self.elements);
-						var id = ids[i].replace(self.uniqId, '');
-						self.applyFilterToRow(id, ids[i]);
-						self.tableElements[id]._inDom.resolve();
+			   		}
+
+					var ids = self.jqGrid( 'getDataIDs' ),
+						i = 0,
+						l = ids.length,
+						id;
+
+					for( ; i < l ; i++ ) {
+						id = ids[ i ].replace( self.uniqId, '' );
+						self.applyFilterToRow( id , ids[ i ] );
+						self.tableElements[ id ]._inDom.resolve( );
 					}
 
 
@@ -165,25 +169,29 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 	applyFilterToRow: function(elId, rowId) {
 
-			if( this.filter )
+			if( this.filter ) {
 			   	this.filter( this.jqGrid, this.elements[ elId ], rowId );
+			}
 	 	},
 
-	 	onResize: function(w, h) {
+	 	onResize: function( w, h ) {
+	 		
 	 		this.w = w;
 	 		this.h = h;
 
-	 		if(!this.jqGrid)
+	 		if( ! this.jqGrid ) {
 	 			return;
-	 		this.jqGrid('setGridWidth', w);
-	 		this.jqGrid('setGridHeight', h - 26 - 27);
+	 		}
+
+	 		this.jqGrid( 'setGridWidth', w );
+	 		this.jqGrid( 'setGridHeight', h - 26 - 27 );
 	 	},
 
 	 	blank: {
 
 	 		list: function() {
-				this.jqGrid('clearGridData');
-				$(this.domTable).trigger("reloadGrid");
+				this.jqGrid( 'clearGridData' );
+				$( this.domTable ).trigger( 'reloadGrid' );
 	 		}
 	 	
 	 	},
@@ -192,84 +200,99 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 		list: function(moduleValue) {
 
-	 			if(!moduleValue)
+	 			if( ! moduleValue ) {
 	 				return;
+	 			}
 
 	 			var self = this, 
-	 				jpaths = this.module.getConfiguration().colsjPaths, 
 	 				list = moduleValue.get(),
+	 				jpaths = this.module.getConfiguration( 'colsjPaths' ), 
 	 				elements = []
-
 
 	 			this.elements = list;
 	 			this.module.data = moduleValue;
 
-				this.buildElements(list, elements, jpaths);
-				
+
+	 			if( ! jpaths ) {
+	 				return;
+	 			}
+
+				this.buildElements( list , elements , jpaths );
 				this.gridElements = elements;
-			//	this.jqGrid('clearGridData');
-				
 				this.tableElements = elements;
 
-				var allEls = [];
-				for(var i = 0; i < elements.length; i++) {
-					allEls.push(elements[i]);
-					
-/*					this.applyFilterToRow(elements[i].id);
-					elements[i]._inDom.resolve();*/
+				var allEls = [],
+					i = 0,
+					l = elements.length;
+
+				for( ; i < l ; i++ ) {
+					allEls.push( elements[ i ] );
 				}
 
+				this.jqGrid('setGridParam', { datatype: 'local', data: allEls });
+				$( this.domTable ).trigger( 'reloadGrid' );
 
-				this.jqGrid('setGridParam', { datatype: 'local', data:allEls });
-				$(this.domTable).trigger("reloadGrid");
-
-				this.onResize(this.w, this.h);
-				//this.jqGrid('sortGrid');
+				this.onResize( this.w, this.h );
 			}
 		},
 
 		inDomEl: function(el) {
-			if(el.build)
-				el.build();
+
+			if( el.build ) {
+				el.build( );
+			}
+
 		},
 
 		buildElements: function(source, arrayToPush, jpaths, colorJPath, muteListen) {
 			var self = this,
-				jpath;
+				jpath,
+				i = 0,
+				l = source.length;
+
 			self.done = 0;
-			for(var i = 0, length = source.length; i < length; i++) {
-				arrayToPush.push(this.buildElement(source[i], self.uniqId + i, jpaths));
+
+			for( ; i < l ; i++) {
+				arrayToPush.push( this.buildElement( source[ i ], self.uniqId + i, jpaths ) );
 			}
+
 		},
 
 		buildElement: function(s, i, jp, m) {
 
 			var self = this,
-				element = {};
+				element = { },
+				j = 0,
+				l = jp.length;
 
-			if(!m)
-				this.listenFor(s, jp, i);
+			if( !m ) {
+				this.listenFor( s, jp, i );
+			}
 
-			element['id'] = String(i);
-			element['__source'] = s;
+			element[ 'id' ] = String( i );
+			element[ '__source' ] = s;
 
 			if(s._highlight) {
-				API.listenHighlight(s._highlight, function(onOff, key) {
-					$("#" + i)[onOff ? 'addClass' : 'removeClass']('ci-highlight');
+
+				API.listenHighlight( s._highlight, function( onOff, key ) {
+
+					$( "#" + i )[ onOff ? 'addClass' : 'removeClass' ]( 'ci-highlight' );
 				});
 			}
 
 			element._inDom = $.Deferred();
-			for(var j in jp) {
-				var jpath = jp[j]; jpath = jpath.jpath;
-				element[j] = 'Loading';
-				self.done++;
-				element[";" + j] = this.renderElement(element, s, jpath, j);
+			for( ; j < l ; j ++) {
+
+				var jpath = jp[ j ].jpath;
+				element[ jp[ j ].name ] = 'Loading';
+				self.done ++;
+				element[ ";" + jp[ j ].name ] = this.renderElement( element, s, jpath, jp[ j ].name );
 			}
 			
-			s.getChild(this.module.getConfiguration().colorjPath).done(function(value) {
+			s.getChild( this.module.getConfiguration( 'colorjPath' ) ).done( function(value) {
 				element._backgroundColor = value;
-			});
+			} );
+
 			return element;
 		},
 
@@ -277,25 +300,20 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			var self = this;
 			source.onChange(function( data ) {
 
-	
-				var element = self.buildElement( data, id, jpaths, true );
-				self.jqGrid( 'setRowData', id, element );
-				var scroll = $("body").scrollTop();
+				self.jqGrid( 'setRowData', id, self.buildElement( data, id, jpaths, true ) );
+				var scroll = $( "body" ).scrollTop( );
+				var target = $( "tr#" + id, self.domTable ).effect( 'highlight', {}, 1000 ).get( 0 );
 
-				//console.log(self.jqGrid('getLocalRow', id));
-//console.log(self.elements);
-//				self.jqGrid( 'setSelection', id );
-
-
-				var target = $("tr#" + id, self.domTable).effect('highlight', {}, 1000).get(0);
-				if(target)
-					target.scrollIntoView();
-
-				$("body").scrollTop(scroll);
-			}, self.module.getId());
+				if(target) {
+					target.scrollIntoView( );
+					$("body").scrollTop( scroll );
+				}
+				
+			}, self.module.getId( ) );
 		},
 
 		renderElement: function(element, source, jpath, l) {
+
 			var self = this, box = self.module;
 			var defScreen = Renderer.toScreen(source, box, {}, jpath);
 
@@ -333,7 +351,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				this.elements = this.elements || [];
 				this.elements.push(source);
 				this.module.data = this.elements;
-				var jpaths = this.module.getConfiguration().colsjPaths;
+				var jpaths = this.module.getConfiguration( 'colsjPaths' );
 				var l = this.elements.length - 1;
 				var el = this.buildElement(source, this.uniqId + l, jpaths);
 				this.gridElements.push(el);
@@ -346,7 +364,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			removeRow: function(el) {
 				this.elements = this.elements || [];
 				var id, index;
-				console.log(this.gridElements);
+				
 				for(var i = 0, l = this.gridElements.length; i < l; i++) {
 					if(this.gridElements[i].__source == el) {
 
@@ -360,7 +378,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				
 				this.elements.splice(index, 0, 1);
 				this.gridElements.splice(index, 0, 1);
-
 			},
 
 			addColumn: function(jpath) {
@@ -368,16 +385,21 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				var jpath2 = jpath.split('.');
 					jpath2 = jpath2.pop();
 
-				module.getConfiguration().colsjPaths[jpath2] = { editable: false, jpath: jpath, number: false };
+				module.getConfiguration( 'colsjPaths' )[ jpath2 ] = { editable: false, jpath: jpath, number: false };
 				this.reloadModule();
 			},
 
 			removeColumn: function(jpath) {
-				var module = this.module;
-				var jpaths = module.getConfiguration().colsjPaths;
-				for(var i in jpaths) {
+				var module = this.module,
+					jpaths = module.getConfiguration( 'colsjPaths' ),
+					i = 0,
+					l = jpaths.length;
+
+				for( ; i < l ; i ++) {
+
 					if(jpaths[i].jpath == jpath)
 						delete jpaths[i];
+
 				}
 				this.reloadModule();
 
@@ -386,11 +408,14 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 		reloadModule: function() {
 			var module = this.module;
-			if(module.view.unload)
+
+			if( module.view.unload ) {
 				module.view.unload();
+			}
+
 			module.view.init();
 			module.view.inDom();
-			module.view.onResize(this.w, this.h);
+			module.view.onResize( this.w, this.h );
 			module.model.resetListeners();	
 			module.updateAllView();
 		},

@@ -1,5 +1,5 @@
 
-define( [ require, '../../field', 'dynatree' ], function( require, FieldDefaultConstructor ) {
+define( [ require, '../../field' ], function( require, FieldDefaultConstructor ) {
 
 	var FieldConstructor = function(name) {
 

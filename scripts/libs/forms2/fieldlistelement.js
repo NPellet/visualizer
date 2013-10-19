@@ -7,16 +7,16 @@ define(['./fieldelement'], function(FieldElement) {
 	};
 
 	FieldListElement.prototype = new FieldElement();
-
+/*
 	FieldListElement.prototype.makeDom = function(forceMake) {
-
+alert('MAKE DOM');
 		if( ! forceMake && this.dom ) {
 			this.updateDom( );
 		}
 		return (this._dom = this._makeDom() || $("<div />").addClass('field-list'));
 	};
 
-
+*/
 	FieldListElement.prototype.makeDuplicator = function() {
 		
 		var self = this;

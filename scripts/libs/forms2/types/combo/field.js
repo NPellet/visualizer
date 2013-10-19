@@ -1,5 +1,5 @@
 
-define( [ require, '../../field', 'dynatree' ], function( require, FieldDefaultConstructor ) {
+define( [ require, '../../field', 'libs/dynatree/dynatree' ], function( require, FieldDefaultConstructor ) {
 
 	var FieldConstructor = function(name) {
 
@@ -13,7 +13,6 @@ define( [ require, '../../field', 'dynatree' ], function( require, FieldDefaultC
 				if( node.data.isFolder ) {
 					return;
 				}				
-
 				self.getElementExpanded( ).value = node.data.key;
 			}
 		});
@@ -36,6 +35,7 @@ define( [ require, '../../field', 'dynatree' ], function( require, FieldDefaultC
 
 		root.removeChildren( );
 		root.addChild( optionsSource );
+
 
 		if( tree.getActiveNode ) {
 			if( ( node = tree.getActiveNode( ) ) != null ) {

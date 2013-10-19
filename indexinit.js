@@ -5,7 +5,8 @@ requirejs.config({
 		"jquery": 'libs/jquery/jquery',
 		'dynatree': 'libs/dynatree/dynatree',
 		"jqueryui": "libs/jqueryui/jquery-ui.min",
-		"ckeditor": "libs/ckeditor/ckeditor"
+		"ckeditor": "libs/ckeditor/ckeditor",
+		"forms": "libs/forms"
 	},
 
 	"shim": {
@@ -44,6 +45,7 @@ require(['jquery', './libs/forms2/form'], function($, Form) {
 
 
 	form.setStructure({
+
 		sections: {
 
 			module_config: {
@@ -64,14 +66,24 @@ require(['jquery', './libs/forms2/form'], function($, Form) {
 						fields: {
 
 							moduletitle: {
-								type: 'combo',
-								title: 'Module title',
-								options: [{key: 1, title: "Salut"}, {key: 2, title: "Coucou"}, {key:3, title: "Hello"}]
+								type: 'Text',
+								name: 'moduletitle',
+								multiple: false,
+								title: 'Module title'
 							},
 
 							bgcolor: {
-								type: 'color',
+								type: 'Color',
+								name: 'bgcolor',
+								multiple: false,
 								title: 'Background color'
+							},
+
+							modulewrapper: {
+								type: 'Checkbox',
+								name: 'modulewrapper',
+								title: 'Module boundaries',
+								options: {'display': ''}
 							}
 						}
 					}
@@ -79,34 +91,13 @@ require(['jquery', './libs/forms2/form'], function($, Form) {
 			},
 
 
-			module_specific_config: {
-
-				options: {
-					title: 'Module configuration',
-					icon: 'page_white_wrench'
-				},
-
-				groups: {
-
-					groupName: {
-						options: {
-							type: 'list',
-							multiple: true
-						},
-
-						fields: {
-
-							text: {
-								name: 'Hello',
-								type: 'text',
-								options: [{ key: 'a', title: 'b'}, { key: 'c', title : 'd' }],
-								multiple: true
-							}
-						}
+			module_specific_config: 
+				$.extend(module.controller.doConfiguration() || {}, 	{
+					options: {
+						title: 'Module configuration',
+						icon: 'page_white_wrench'
 					}
-				}
-			},
-
+				}),
 
 			vars_in: {
 
@@ -119,17 +110,22 @@ require(['jquery', './libs/forms2/form'], function($, Form) {
 
 					groupName: {
 						options: {
-							type: 'list',
+							type: 'table',
 							multiple: true
 						},
 
 						fields: {
 
-							text: {
-								name: 'Hello',
+							rel: {
+								type: 'combo',
+								options: allRels2,
+								title: 'Reference'
+							},
+
+							name: {
 								type: 'text',
-								options: [{ key: 'a', title: 'b'}, { key: 'c', title : 'd' }],
-								multiple: true
+								title: 'From variable',
+								autoComplete: autoComplete
 							}
 						}
 					}
@@ -148,17 +144,32 @@ require(['jquery', './libs/forms2/form'], function($, Form) {
 
 					groupName: {
 						options: {
-							type: 'list',
-							multiple: true
+							type: 'list'
 						},
 
 						fields: {
 
-							text: {
-								name: 'Hello',
+							event: {
+								type: 'combo',
+								title: 'Event',
+								options: allEvents
+							},
+
+							rel: {
+								type: 'combo',
+								title: 'Internal ref.',
+								options: allRels
+							},
+
+							jpath: {
+								type: 'combo',
+								title: 'jPath',
+								options: {}
+							},
+
+							name: {
 								type: 'text',
-								options: [{ key: 'a', title: 'b'}, { key: 'c', title : 'd' }],
-								multiple: true
+								title: 'To variable'
 							}
 						}
 					}
@@ -176,18 +187,22 @@ require(['jquery', './libs/forms2/form'], function($, Form) {
 				groups: {
 
 					groupName: {
+
 						options: {
-							type: 'list',
-							multiple: true
+							type: 'list'
 						},
 
 						fields: {
 
-							text: {
-								name: 'Hello',
+							rel: {
+								type: 'combo',
+								title: 'Reference',
+								options: allActionsReceive
+							},
+
+							name: {
 								type: 'text',
-								options: [{ key: 'a', title: 'b'}, { key: 'c', title : 'd' }],
-								multiple: true
+								title: 'Action name'
 							}
 						}
 					}
@@ -212,11 +227,27 @@ require(['jquery', './libs/forms2/form'], function($, Form) {
 
 						fields: {
 
-							text: {
-								name: 'Hello',
+							event: {
+								type: 'combo',
+								title: 'On event',
+								options: allEvents
+							},
+
+							rel: {
+								type: 'combo',
+								title: 'Reference',
+								options: allActionsRels,
+							},
+
+							jpath: {
+								type: 'combo',
+								title: 'jPath',
+								options: {}
+							},
+
+							name: {
 								type: 'text',
-								options: [{ key: 'a', title: 'b'}, { key: 'c', title : 'd' }],
-								multiple: true
+								title: 'Action name'
 							}
 						}
 					}
@@ -261,6 +292,10 @@ form.onStructureLoaded().done(function() {
 		}
 
 	});
+});
+
+form.addButton('Save', { color: 'blue' }, function() {
+
 });
 
 form.onLoaded().done(function() {

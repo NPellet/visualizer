@@ -7,12 +7,14 @@ define( [ ], function(  ) {
 		
 		var self = this,
 			dom = $("<div />"),
-			div = $( "<div></div>" )
+			div = $( "<div></div>", { tabindex: 1 } )
 					.addClass( 'form-field' )
 					.on('click', function() {
-						self.select();
+						self.toggleSelect( event );
 					})
-					.on('click', 'input[type="checkbox"]', function() {
+					.on('click', 'input[type="checkbox"]', function( event ) {
+
+						event.stopPropagation();
 
 						var id = $(this).attr('data-checkbox-id');
 						var value = self.value || [];
@@ -29,21 +31,44 @@ define( [ ], function(  ) {
 
 						self.value = value;
 					})
+					.on('keydown', 'input[type="checkbox"]', function( event ) {
+						
+
+						//event.preventDefault();
+						event.stopPropagation();
+						//self.form.tabPressed( event, self);
+					})
+					.on('keydown', 'input[type="checkbox"]:last', function( event ) {
+						
+						event.preventDefault();
+						event.stopPropagation();
+						if( self.form.tabPressed( event, self) ) {
+							this.blur();
+						}
+					})
 					.appendTo( dom );
 
 		this.div = div;
 		this.dom = dom;
+		this.fieldElement = div;
 		this.checkboxes = {};
 
 		var i, options = this.field.getOptions( this );
 
 		for( i in options ) {
-			this.checkboxes[ i ] = ( $( '<input type="checkbox" data-checkbox-id="' + i + '" />' + options[ i ] + '<br />' ) );
+			this.checkboxes[ i ] = ( $( '<input type="checkbox" tabindex="1" data-checkbox-id="' + i + '" />' + options[ i ] + '<br />' ) );
 			this.div.append( this.checkboxes[ i ] );
 		}
 
 		return dom;
 	};
+
+	FieldConstructor.prototype.focus = function() {
+
+		console.log('FOC');
+		this.fieldElement.find('input:first').focus();
+		this.select();
+	}
 
 	FieldConstructor.prototype.checkValue = function() {
 

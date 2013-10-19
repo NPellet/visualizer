@@ -110,220 +110,231 @@ define(['modules/defaultcontroller'], function(Default) {
 			'removeSerie': 'Remove a serie'
 		},
 
-		doConfiguration: function(section) {
-
-
+		configurationStructure: function(section) {
 
 			var vars = [];
 			var currentCfg = this.module.definition.dataSource;
 
-			if(currentCfg)
-				for(var i = 0; i < currentCfg.length; i++) {
-					if(currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray')
-						vars.push({title: currentCfg[i].name, key: currentCfg[i].name});
+			if(currentCfg) {
+
+				var i = 0,
+					l = currentCfg.length;
+
+				for( ; i < l ; i++) {
+
+					if( currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray' ) {
+						vars.push({ 
+							title: currentCfg[i].name,
+							key: currentCfg[i].name
+						});
+					}
 				}
+			}
 
 			return {
 				groups: {
-					'gencfg': {
-						config: {
+
+					group: {
+
+						options: {
 							type: 'list'
 						},
 
-						fields: [
+						fields: {
 
-							{
-								type: 'Text',
-								name: 'graphurl',
+							graphurl: {
+								type: 'text',
 								title: 'Graph URL'
 							},
 
-							{
-								type: 'Checkbox',
-								name: 'flip',
+							flip: {
+								type: 'checkbox',
 								title: 'Axis flipping',
 								options: { 'flipX': 'Flip X', 'flipY': "Flip Y"}
 							},
 
-							{
-								type: 'Checkbox',
-								name: 'displayAxis',
+							displayAxis: {
+								type: 'checkbox',
 								title: 'Display axis',
 								options: { 'x': 'X', 'y': "Y"}
 							},
 
-
-					/*		{
-								type: 'Checkbox',
-								name: 'peakpicking',
-								title: 'Auto peak picking',
-								options: { 'true': '' }
-							},
-*/
-							{
-								type: 'Checkbox',
-								name: 'grids',
+							grids: {
+								type: 'checkbox',
 								title: 'Grids',
 								options: { 'hmain': 'Horizontal Main', 'hsec': 'Honrizontal Seconday', 'vmain': 'Vertical Main', 'vsec': 'Vertical Secondary' }
 							},
 
-							{
-								type: 'Text',
-								name: 'xLabel',
+							xLabel: {
+								type: 'text',
 								title: 'X axis label'
 							},
 
-							{
-								type: 'Text',
-								name: 'yTopSpacing',
+							yTopSpacing: {
+								type: 'text',
 								title: 'Spacing above the data'
 							},
 
-							{
-								type: 'Text',
-								name: 'yBottomSpacing',
+							yBottomSpacing: {
+								type: 'text',
 								title: 'Spacing below the datal'
 							},
 
-							{
-								type: 'Text',
-								name: 'xLeftSpacing',
+							xLeftSpacing: {
+								type: 'text',
 								title: 'Spacing left'
 							},
 
-							{
-								type: 'Text',
-								name: 'xRightSpacing',
+							xRightSpacing: {
+								type: 'text',
 								title: 'Spacing right'
 							},
 
-							{
-								type: 'Text',
-								name: 'yLabel',
+							yLabel: {
+								type: 'text',
 								title: 'Y axis label'
 							},
 
-							{
-								type: 'Text',
-								name: 'minX',
+							minX: {
+								type: 'text',
 								title: 'Min X'
 							},
 
-							{
-								type: 'Text',
-								name: 'maxX',
+							maxX: {
+								type: 'text',
 								title: 'Max X'
 							},
 
-							{
-								type: 'Text',
-								name: 'minY',
+							minY: {
+								type: 'text',
 								title: 'Min Y'
 							},
 
-							{
-								type: 'Text',
-								name: 'maxY',
+							maxY: {
+								type: 'text',
 								title: 'Max Y'
 							},
 
-							{
-								type: 'Combo',
-								name: 'zoom',
+							zoom: {
+								type: 'combo',
 								title: 'Zoom',
 								options: [{key: 'x', title: 'X only'}, {key: 'y', title: 'Y only'}, {key: 'xy', title: 'XY'}, {key: 'none', title: 'None'}]
 							},
 
 
-							{
-								type: 'Checkbox',
-								name: 'shiftxtozero',
+							shiftxtozero: {
+								type: 'checkbox',
 								title: 'Shift X to Min',
 								options: {'shift': ''}
 							},
 
 
-							{
-								type: 'Checkbox',
-								name: 'xastime',
+							xastime: {
+								type: 'checkbox',
 								title: 'X axis as time',
 								options: {'xastime': ''}
 							},
 
-							{
-								type: 'Combo',
-								name: 'wheelAction',
+							wheelAction: {
+								type: 'combo',
 								title: 'Mouse Wheel',
 								options: [{key: 'zoomX', title: 'Zoom X'}, {key: 'zoomY', title: 'Zoom Y'}, {key: 'none', title: 'None'}]
 							}
 
-						]
+						}
 					},
 
-					'spectrainfos': {
-						config: {
-							type: 'table'
+
+					plotinfos: {
+
+						options: {
+							type: 'table',
+							multiple: true
 						},
 
-						fields: [
-							{
-								type: 'Combo',
-								name: 'variable',
+						fields: {
+							
+							variable: {
+								type: 'combo',
 								title: 'Variable',
 								options: vars
 							},
 
-							{
-								type: 'Color',
-								name: 'plotcolor',
+							plotcolor: {
+								type: 'color',
 								title: 'Color'
 							},
 
 
-							{
-								type: 'Text',
-								name: 'strokewidth',
+							strokewidth: {
+								type: 'text',
 								title: 'Width (px)'
 							},
 
-							{
-								type: 'Checkbox',
-								name: 'plotcontinuous',
+							plotcontinuous: {
+								type: 'checkbox',
 								title: 'Continuous',
 								options: {'continuous': 'Continuous'}
 							},
 
-
-							{
-								type: 'Checkbox',
-								name: 'peakpicking',
+							peakpicking: {
+								type: 'checkbox',
 								title: 'Peak Picking',
 								options: {'picking': 'Peak Picking'}
 							},
 
 
-							{
-								type: 'Checkbox',
-								name: 'markers',
+							markers: {
+								type: 'checkbox',
 								title: 'Markers',
 								options: {'markers': 'Show markers'}
 							},
 
-							{
-								type: 'Combo',
-								name: 'normalize',
+							normalize: {
+								type: 'combo',
 								title: 'Normalize',
 								options: [{key: 'none', title: 'None'}, {key: 'max1', title: 'Set max to 1'}, {key: 'sum1', title: 'Set sum to 1'}, {key: 'max1min0', title: 'Max 1, Min 0'} ]
 							}
-						]
+						}
 					}
 				}
 			}		
-
-
-
 		},
 		
+
+		configAliases: {
+			'graphurl': function(cfg) { console.log(cfg.groups);  return cfg.groups.group[ 0 ].graphurl[ 0 ]; },
+			'shiftxtozero': function(cfg) { return cfg.groups.group[ 0 ].shiftxtozero[ 0 ]; },
+			'displayYAxis': function(cfg) { return cfg.groups.group[ 0 ].displayAxis[ 0 ].indexOf('y') > -1; },
+			'yLabel': function(cfg) { return cfg.groups.group[ 0 ].yLabel[ 0 ]; },
+			'displayXAxis': function(cfg) { return cfg.groups.group[ 0 ].displayAxis[ 0 ].indexOf('x') > -1; },
+			'xLabel': function(cfg) { return cfg.groups.group[ 0 ].xLabel[ 0 ]; },
+			'vertGridMain': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('vmain') > -1; },
+			'vertGridSec': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('vsec') > -1; },
+			'xastime': function(cfg) { return cfg.groups.group[ 0 ].xastime[ 0 ]; },
+			'horGridMain': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('hmain') > -1; },
+			'horGridSec': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('hsec') > -1; },
+			'xLeftSpacing': function(cfg) { return cfg.groups.group[ 0 ].xLeftSpacing[ 0 ]; },
+			'xRightSpacing': function(cfg) { return cfg.groups.group[ 0 ].xRightSpacing[ 0 ]; },
+			'yBottomSpacing': function(cfg) { return cfg.groups.group[ 0 ].yBottomSpacing[ 0 ]; },
+			'yTopSpacing': function(cfg) { return cfg.groups.group[ 0 ].yTopSpacing[ 0 ]; },
+			'wheelAction': function(cfg) { return cfg.groups.group[ 0 ].wheelAction[ 0 ]; },
+
+			'minX': function(cfg) { return cfg.groups.group[ 0 ].minX[ 0 ]; },
+			'minY': function(cfg) { return cfg.groups.group[ 0 ].minY[ 0 ]; },
+			'maxX': function(cfg) { return cfg.groups.group[ 0 ].maxX[ 0 ]; },
+			'maxY': function(cfg) { return cfg.groups.group[ 0 ].maxY[ 0 ]; },
+
+
+			'flipX': function(cfg) { return cfg.groups.group[ 0 ].flip[ 0 ].indexOf('flipX') > -1; },
+			'flipY': function(cfg) { return cfg.groups.group[ 0 ].flip[ 0 ].indexOf('flipY') > -1; },
+
+			'plotinfos': function(cfg) { return cfg.groups.plotinfos[ 0 ]; }
+		},
+
+
+
+		/*
 		doFillConfiguration: function() {
 			
 		//	var mode = this.module.getConfiguration().mode || 'peaks';
@@ -439,7 +450,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			this.module.getConfiguration().plotinfos = confSection[0].spectrainfos[0];
 		}
 
-
+*/
 	});
 
 	return controller;

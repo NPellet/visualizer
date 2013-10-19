@@ -33,32 +33,31 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 
-		doConfiguration: function(section) {
+		configurationStructure: function(section) {
 			
 			return {
+
 				groups: {
-					'module': {
-						config: {
+
+					group: {
+						options: {
 							type: 'list'
 						},
 
-						fields: [
+						fields: {
 
-							{
-								type: 'Wysiwyg',
-								name: 'defaultvalue',
+							defaultvalue: {
+								type: 'wysiwyg',
 								title: 'Default value'
 							},
 
-							{
-								type: 'Color',
-								name: 'fcolor',
+							fontcolor: {
+								type: 'color',
 								title: 'Foreground color'
 							},
 
-							{
-								type: 'Combo',
-								name: 'font',
+							font: {
+								type: 'combo',
 								title: 'Font',
 								options: [
 									{title: 'Arial', key: 'arial'},
@@ -76,9 +75,8 @@ define(['modules/defaultcontroller'], function(Default) {
 								]
 							},
 
-							{
-								type: 'Combo',
-								name: 'fsize',
+							fontsize: {
+								type: 'combo',
 								title: 'Font size',
 								options: [
 									{title: '8pt', key: '8pt'},
@@ -96,12 +94,9 @@ define(['modules/defaultcontroller'], function(Default) {
 									{title: '64pt', key: '64pt'}
 								]
 							},
-
-
 							
-							{
-								type: 'Combo',
-								name: 'align',
+							align: {
+								type: 'combo',
 								title: 'Alignment',
 								options: [
 									{title: 'Left', key: 'left'},
@@ -110,11 +105,8 @@ define(['modules/defaultcontroller'], function(Default) {
 								]
 							},
 
-
-							
-							{
-								type: 'Combo',
-								name: 'valign',
+							valign: {
+								type: 'combo',
 								title: 'Vertical align',
 								options: [
 									{title: 'Top', key: 'top'},
@@ -123,66 +115,26 @@ define(['modules/defaultcontroller'], function(Default) {
 								]
 							},
 
-							{
-								type: 'Text',
-								name: 'sprintf',
+							sprintf: {
+								type: 'text',
 								title: 'Sprintf'
 							}
-						]
+						}
 					}
 				}
 			}
 		},
 		
-		doFillConfiguration: function() {
-			
-			var defaultvalue = this.module.getConfiguration().defaultvalue || "";
-			var fcolor = this.module.getConfiguration().frontcolor || "";
-			var font = this.module.getConfiguration().font || "arial";
-			var fontsize = this.module.getConfiguration().fontsize || "";
-			var align = this.module.getConfiguration().align || "left";
-			var valign = this.module.getConfiguration().valign || "top";
-			var sprintf = this.module.getConfiguration().sprintf || "";
-		
-			return {
-				groups: {
-					module: [{
-						defaultvalue: [defaultvalue],
-						fcolor: [fcolor],
-						font: [font],
-						fsize: [fontsize],
-						align: [align],
-						valign: [valign],
-						sprintf: [sprintf]
-					}]
-				}
-			}
-		},
-		
-		
-		doSaveConfiguration: function(confSection) {
-			var group = confSection[0].module[0];
-			var fcolor = group.fcolor[0];
-			var font = group.font[0];
-			var fsize = group.fsize[0];
-			var align = group.align[0];
-			var sprintf = group.sprintf[0];
-			var valign = group.valign[0];
-			var defaultvalue = group.defaultvalue[0];
-			this.module.definition.configuration = {
-				frontcolor: fcolor,
-				font: font,
-				fontsize: fsize,
-				align: align,
-				valign: valign,
-				defaultvalue: defaultvalue,
-				sprintf: sprintf
-			};
 
-
+		configAliases: {
+			'fontcolor': function(cfg) { return cfg.groups.group[ 0 ].fontcolor[ 0 ]; },
+			'font': function(cfg) { return cfg.groups.group[ 0 ].font[ 0 ]; },
+			'fontsize': function(cfg) { return cfg.groups.group[ 0 ].fontsize[ 0 ]; },
+			'align': function(cfg) { return cfg.groups.group[ 0 ].align[ 0 ]; },
+			'valign': function(cfg) { return cfg.groups.group[ 0 ].valign[ 0 ] },
+			'defaultvalue': function(cfg) { return cfg.groups.group[ 0 ].defaultvalue[ 0 ] },
+			'sprintf': function(cfg) { return cfg.groups.group[ 0 ].sprintf[ 0 ] },
 		}
-
-		
 	});
 
 	return controller;

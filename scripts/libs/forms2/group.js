@@ -16,7 +16,7 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 			this.fields = {};
 			this.deferreds = {};
 			this.elements = [];
-
+			this.nbFields = 0;
 		},
 
 		getName: function() {
@@ -42,6 +42,8 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 				return this.form.throwError('Field "' + sectionobj.getName( ) + '" already exists');
 			}
 
+			this.nbFields++;
+
 			if( ! ( fieldobj instanceof Field ) ) {
 
 				var type = fieldobj.type,
@@ -61,6 +63,8 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 				this.form.addField( deferred );
 
 				this.deferreds[ fieldName ] = deferred;
+				this.fields[ fieldName ] = false;
+
 				return deferred;
 
 			} else {
@@ -68,6 +72,8 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 				this.sections[ fieldobj.getName() ] = fieldobj;
 				return fieldobj;
 			}
+
+			
 		},
 
 		fieldExists: function(fieldName) {

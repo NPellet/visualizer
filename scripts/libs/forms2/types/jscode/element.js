@@ -10,7 +10,7 @@ define( [ 'jquery', 'util/util', 'libs/ace/ace' ], function( $, Util ) {
 		var self = this,
 			dom = $("<div />"),
 
-			input = $( "<div />", { id: this._id } )
+			input = $( "<div />", { id: this._id, tabindex: 1 } )
 					.css({
 						width: '100%',
 						height: '200px',
@@ -27,6 +27,13 @@ define( [ 'jquery', 'util/util', 'libs/ace/ace' ], function( $, Util ) {
 		return dom;
 	};
 
+	FieldConstructor.prototype.focus = function() {
+
+		if( this.editor ) {
+			this.editor.focus();
+		}
+		
+	}
 
 	FieldConstructor.prototype.inDom = function() {
 

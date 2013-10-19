@@ -75,6 +75,11 @@ define(['require', 'jquery'], function(require, $) {
 			}
 		},
 
+		visible: function() {
+			this.eachElements( function( element ) {
+				element.visible();
+			} );
+		},
 
 		eachGroupElements: function(groupName, callback) {
 			if( ! this.groupElements[ groupName ]) {
@@ -102,8 +107,7 @@ define(['require', 'jquery'], function(require, $) {
 
 				self.eachGroupElements( group.getName() , function( groupElement ) {
 
-					callback.call( groupElement );
-					
+					callback( groupElement );					
 				});
 			});
 
@@ -111,11 +115,10 @@ define(['require', 'jquery'], function(require, $) {
 
 				self.eachSectionElements( section.getName() , function( sectionElement ) {
 
-					callback.call( sectionElement );
-					
+					callback( sectionElement );
 				});
 			});
-		}
+		},
 
 		redoTabIndices: function() {
 			this.eachElements( function( element ) {
@@ -225,7 +228,7 @@ define(['require', 'jquery'], function(require, $) {
 				case 1:
 				
 					if( this.section.sectionLevel == 1 ) {
-						this.section.form.sectionLvl1Buttons.append('<div class="form-section-select">' + this.getTitleIcon( ) + '</div>');	
+						this.section.form.sectionLvl1Buttons.append('<div data-section-name="' + this.section.getName() + '" class="form-section-select">' + this.getTitleIcon( ) + '</div>');	
 						dom.hide();
 					}
 					

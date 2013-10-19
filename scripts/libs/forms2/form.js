@@ -30,6 +30,9 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 			this.sectionLevel = 0;
 			this.expander = {};
 			this.form = this;
+
+			this.buttons = [];
+			this.buttonsDom = $("<div />").addClass('form-buttonzone');
 		},
 
 		triggerAction: function() {
@@ -40,8 +43,8 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 
 			var func = arguments[ 0 ];
 			if(typeof this.options[ func ] == "function") {
-				var args = this.splice.call( arguments, 0, 1 );
 
+				var args = this.splice.call( arguments, 0, 1 );
 				this.options[ func ].apply(this, arguments);
 			}
 		},
@@ -91,7 +94,8 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 
 		makeDom: function(tplMode) {
 
-			var dom = $('<form class="forms" />'),
+			var self = this,
+				dom = $('<form class="forms" tabindex="1" />'),
 				i,
 				j, 
 				l,
@@ -102,12 +106,28 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 
 			switch(this.tplMode) {
 				case 1:
-					this.sectionLvl1Buttons = $("<div />").addClass( 'form-section-select-wrapper' ).appendTo( dom );
+
+					this.sectionLvl1Buttons = $("<div />")
+												.addClass( 'form-section-select-wrapper' )
+												.appendTo( dom );
+
 					this.sectionLvl1Buttons.on( 'click' , '.form-section-select' , function() {
+
 						$(this).siblings().removeClass('selected');
 						$(this).addClass('selected');
+
 						sections.children().hide().eq( $(this).index() ).show();
+
+						var j = 0,
+							els = self.sectionElements[ $(this).attr('data-section-name') ],
+							l = els.length;
+
+						for( ; j < l ; j ++ ) {
+							els[ j ].visible();
+						}
+
 					});
+
 				break;
 			}
 
@@ -134,6 +154,8 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 				break;
 			}
 
+			dom.append( this.buttonsDom );
+
 			return (this.dom = dom);
 		},
 
@@ -142,18 +164,26 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 			var self = this;
 
 			dom.get(0).addEventListener('click', function() {
-
 				self.hideExpander();
 				self._unselectField();
+			}, false);
+
+
+
+			dom.get(0).addEventListener('keydown', function( event ) {
+				
+				self.tabPressed( event );
 
 			}, false);
+
+
 
 		},
 
 		_unselectField: function() {
 
 			if( this.selectedFieldElement ) {
-				this.selectedFieldElement.unSelect( true );
+				this.selectedFieldElement.unSelect(  );
 			}
 		},
 
@@ -161,7 +191,7 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 			
 			this._unselectField( );
 			this.selectedFieldElement = fieldElement;
-			//this.hideExpander( );
+			this.hideExpander( );
 		},
 
 
@@ -199,6 +229,10 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 		getSectionElement: SectionElement.prototype.getSectionElement,
 		_getElement: SectionElement.prototype._getElement,
 
+		getSection: function( sectionName ) {
+			return this.sections[ sectionName ] || this.throwError("Cannot find section " + secionName + ".");
+		},
+
 
 		eachSectionElements: function( callback ) {
 
@@ -216,7 +250,37 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 			}
 		},
 
+		tabPressed: function( event, fieldElement ) {
+
+			if( event.keyCode == 9 ) {
+				event.preventDefault( );
+				event.stopPropagation( );
+
+				if( ! fieldElement ) {
+					if( this.selectedFieldElement ) {
+						fieldElement = this.selectedFieldElement;
+					} else {
+						return;
+					}
+				}
+
+				fieldElement.unSelect();
+				var index = this.tabIndexed.indexOf( fieldElement );
+				this.tabIndexed[ index + ( event.shiftKey ? -1 : 1)  ].focus();
+
+				return true;
+			}
+		},
+
+		incrementTabIndex: function( field ) {
+			return this.tabIndexed[ ++ this.lastIndex ] = field;
+		},
+
 		redoTabIndices: function() {
+
+			this.lastIndex = 1;
+			this.tabIndexed = [];
+
 			this.eachSectionElements( function( element ) {
 				element.redoTabIndices( );
 			})
@@ -226,6 +290,8 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 			this.eachSectionElements( function( element ) {
 				element.inDom( );
 			});
+
+			this.redoTabIndices( );
 		},
 
 		onReady: function( callback ) {
@@ -265,13 +331,14 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 		getExpanderDom: function() {
 			return this.expander.dom || ( this.expander.dom = $("<div />").addClass('form-expander').appendTo(this.dom).on('click', function( event ) {
 				event.stopPropagation();
+				event.preventDefault();
+
 			}) );
 		},
 
 		setExpander: function(dom, fieldElement) {
 
 			var self = this;
-
 			if( this.expander.open ) {
 				this.hideExpander( true );
 			} else {
@@ -280,19 +347,32 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 			
 			this.getExpanderDom().children().detach();
 			this.getExpanderDom().html(dom);
-			this.getExpanderDom().stop().slideDown(function() {
+			
+			this.getExpanderDom().stop(true).show();
+			self.expander.open = true;
 
-				self.expander.open = true;
-
-			});
 		},
 
 		hideExpander: function(fast) {
 			
 			if( this.expander.open ) {
-				this.getExpanderDom().stop()[fast ? 'hide' : 'slideUp']();
+				this.getExpanderDom().stop(true).hide();//[fast ? 'hide' : 'slideUp']();
 				this.expander.open = false;
 			}
+		},
+
+		addButton: function( label, options, callback ) {
+
+			var self = this;
+			require(['forms/button'], function( Button ) {
+
+				var btn = new Button( label, callback, options );
+				self.buttons.push( btn );
+
+				self.onReady().done( function( ) {
+					self.buttonsDom.append( btn.render() );	
+				});
+			});
 		}
 
 	});

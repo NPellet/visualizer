@@ -59,12 +59,10 @@ define( [ require, '../../field', 'util/util', 'jqueryui', 'libs/farbtastic/farb
 
 	FieldConstructor.prototype.showExpander = function( fieldElement ) {
 
+		this._showExpander( fieldElement );
 		var value = fieldElement.value || [0, 0, 0, 1];
-		
 		$.farbtastic( this.domExpander.children( '.form-colorpicker' ) ).setColor( Util.rgbToHex( value[0], value[1], value[2] ) );
 		this.domExpander.children( '.form-slider' ).slider( 'value', value[ 3 ] );
-
-		this._showExpander( fieldElement );
 	};
 
 	return FieldConstructor;

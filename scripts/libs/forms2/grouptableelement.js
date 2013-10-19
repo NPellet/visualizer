@@ -61,12 +61,43 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 		return this.dom;
 	};
 
+
+	GroupTableElement.prototype.visible = function() {
+
+		var w = this.domBody.width(), $el, self = this;
+
+		w -= 20;
+		if( this.options.multiple ) {
+			w -= 30;
+		}
+
+		w /= this.group.nbFields;
+
+		this.domHead.children().children().each(function( i , el ) {
+			$el = $(el);
+
+			if( i == 0 ) {
+				$el.css('width', 20);
+				return;
+			}
+
+			if( self.group.options.multiple && i == self.group.nbFields + 1) {
+				$el.css('width', 30);
+				return;
+			}
+
+			$el.css('width', w);
+
+		});
+	}
+
+
 	GroupTableElement.prototype.updateDom = function() {
 
 		var self = this;
 		var trs = [], tr, td, i = 0, l, j = 0, fields = [ ];
 
-		this.domBody.empty( );
+		this.domBody.children().detach( );
 
 		this.group.eachFields( function( field ) {
 
@@ -111,8 +142,10 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 			this.domBody.append( tr );
 		}
-		
 
+
+		this.group.form.redoTabIndices();
+	
 		return this.dom;
 	};
 
@@ -151,7 +184,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 		$.when.apply($.when, els).then(function() {
 
-			self.updateDom();
+			self.updateDom( );
 			var i = 0,
 				l = arguments.length;
 
@@ -187,6 +220,29 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 	GroupTableElement.prototype.fill = function( json, clearFirst ) {
 
+		if( ! ( json instanceof Array ) ) {
+			return this.fillOld( json, clearFirst );
+		}
+
+		var i = 0, l = json.length, j,
+			finalEl = {};
+
+		for( ; i < l ; i ++ ) {
+
+			for( j in json[ i ] ) {
+
+				finalEl[ j ] = finalEl[ j ] || [ ];
+				finalEl[ j ][ i ] = json[ i ][ j ]; 
+			}
+		}
+
+		return this._fill( finalEl, clearFirst );
+	};
+
+
+	GroupTableElement.prototype.fillOld = function( json, clearFirst ) {
+
+	
 		var i, l, max = 0, j;
 
 		this.group.eachFields(function( field ) {
@@ -203,12 +259,34 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 		}
 		
 		this._fill( json, clearFirst );
+
+	}
+
+	GroupTableElement.prototype.getValue = function(stackFrom, stackTo) {
+
+		var i, j, l, stackTo = [ ];
+
+		for( i in this.fieldElements ) {
+
+			j = 0, 
+			l = this.fieldElements[ i ].length;
+			
+			for( ; j < l ; j ++) {
+
+				stackTo[ j ] = stackTo[ j ] || { };
+				stackTo[ j ][ i ] = this.fieldElements[ i ][ j ].value;
+			}
+		}
+
+		return stackTo;
 	};
+
+
 
 
 	GroupTableElement.prototype.getExpanderInfosFor = function( fieldElement ) {
 
-		var fieldName = fieldElement.name,
+		var fieldName = fieldElement.getName(),
 			i = 0, j;
 
 		this.eachFieldElements( fieldName, function( el ) {
@@ -218,14 +296,48 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			i++;
 		});
 
-		var posTr = this.domBody.children('tr:eq(' + j + ')').position();
-
+		var posDom = this.domBody.children('tr:eq(' + j + ')').position();
 		return {
-			width: this.domBody.width(),
-			left: posTr.left,
-			top: posTr.top
+			width: this.domBody.innerWidth(),
+			left: posDom.left,
+			top: posDom.top + this.domBody.children('tr:eq(' + j + ')').innerHeight() - 1
 		};
 	};
+
+
+
+
+	GroupTableElement.prototype.redoTabIndices = function( ) {
+
+		var self = this,
+			increment = 0,
+			nbFields = this.group.nbFields,
+			fieldPos = 0,
+			stack = [],
+			i = 0, l;
+
+		this.group.eachFields( function( field ) {
+
+			increment = 0;
+			self.eachFieldElements( field.getName() , function( fieldElement ) {
+				stack[ increment * nbFields + fieldPos ] = fieldElement;
+				increment ++;
+			} );
+
+			fieldPos++;
+		} );
+
+		for( l = stack.length ; i < l ; i ++ ) {
+			this.group.form.incrementTabIndex( stack[ i ] );
+		}
+	}
+	
+
+	GroupTableElement.prototype.getFieldElementCorrespondingTo = function( element, name ) {
+
+		return this.getFieldElement( name, this.fieldElements[ element.getName() ].indexOf( element ) );
+	}
+
 
 	return GroupTableElement;
 });

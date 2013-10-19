@@ -24,16 +24,17 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			module.view = new V();
 			module.controller = new C();
 
-			module.view.setModule(module);
-			module.controller.setModule(module);
-			module.model.setModule(module);
+			module.view.setModule( module );
+			module.controller.setModule( module );
+			module.model.setModule( module );
 
 			module.view.onReady = true;
-			module.view.init();
-			module.controller.init();
-			module.model.init();
+
+			module.view.init( );
+			module.controller.init( );
+			module.model.init( );
 			
- 			module.updateAllView();
+ 			module.updateAllView( );
 			def.resolve();
 		});
 
@@ -44,6 +45,9 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		this.definition = definition;
 		this.definition.configuration = this.definition.configuration || new ViewObject({});
 		this.ready = init(this);
+
+		console.log(this.definition);
+
 	};
 	/**
 	 * Overrideable prototype
@@ -111,25 +115,22 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 
 		updateAllView: function() {
 				
-			if(!this.view.update || !this.definition || !this.definition.dataSource) {
+			if(!this.view.update || !this.definition) {
 				return;
 			}
 
-			var i = 0, 
-				l = this.definition.dataSource.length, 
+			var vars = this.vars_in(),
+				i = 0, 
+				l = vars.length, 
 				val;
-
-
 
 			for( ; i < l ; i++ ) {
 				
-	 			val = API.getVar(this.definition.dataSource[i].name);
-
-	 			if( val ) {
-	 				this.model.onVarGet( val, this.definition.dataSource[ i ].name );
+	 			val = API.getVar( vars[ i ].name );
+	 			if( val ) {	 				
+	 				this.model.onVarGet( val, vars[ i ].name );
 	 			}
 			}
-		
 		},
 		
 		/** 
@@ -169,14 +170,6 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		},
 		
 		/**
-		 * Returns the configuration of the module
-		 */
-		getConfiguration: function() {
-			return this.definition.configuration;
-		},
-		
-		
-		/**
 		 * Returns all accepted types defined in the controller
 		 */
 		getAcceptedTypes: function(rel) {
@@ -189,17 +182,21 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		
 		getDataFromRel: function(rel) {
 
-			for(var i in this.definition.dataSource)
-				if(this.definition.dataSource[i].rel == rel) {
-					return this.model.data[this.definition.dataSource[i].name];
-				}
-			return false;
+			return this.model.data[ this.getNameFromRel( rel ) ] || false;
 		},
 
 		getNameFromRel: function(rel) {
-			for(var i in this.definition.dataSource)
-				if(this.definition.dataSource[i].rel == rel)
-					return this.definition.dataSource[i].name;
+
+			var vars = this.vars_in(),
+				i = 0,
+				l = vars.length;
+
+			for( ; i < l ; i ++ ) {
+				if( vars[ i ].rel == rel) {
+					return vars[ i ].name;
+				}
+			}
+
 			return false;
 		},
 		
@@ -208,30 +205,49 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		},
 		
 		getDataRelFromName: function(name) {
-			var rels = [];
-			for(var i in this.definition.dataSource)
-				if(this.definition.dataSource[i].name == name)
-					rels.push(this.definition.dataSource[i].rel);
+
+			var vars = this.vars_in(),
+				i = 0,
+				l = vars.length,
+				rels = [];
+
+			for( ; i < l ; i ++ ) {
+				if( vars[ i ].name == name) {
+					rels.push( vars[ i ].rel );
+				}
+			}
+
 			return rels;
 		},
 
 		getActionRelFromName: function(name) {
-			for(var i in this.definition.actionsIn)
-				if(this.definition.actionsIn[i].name == name)
-					return this.definition.actionsIn[i].rel;
+
+			var vars = this.actions_in(),
+				i = 0,
+				l = vars.length;
+
+			for( ; i < l ; i ++ ) {
+				if( vars[ i ].name == name) {
+					return vars[ i ].rel;
+				}
+			}
+
 			return false;
 		},
 
 		inDom: function() {
 
-			if(this.view.inDom)
+			if(this.view.inDom) {
 				this.view.inDom();
+			}
 
-			if(this.controller.inDom)
+			if(this.controller.inDom) {
 				this.controller.inDom();
+			}
 
-			if(this.model.inDom)
+			if(this.model.inDom) {
 				this.model.inDom();
+			}
 
 			var self = this;
 
@@ -255,253 +271,284 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		doConfig: function() {
 
 			var module = this;
-			require(['forms/formfactory', 'jqueryui'], function(FormFactory, jqueryui) {
+		
+			var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: "Edit module preferences"});
 
-				var div = $('<div></div>').dialog({ modal: true, position: ['center', 20], width: '80%', title: "Edit module preferences"});
-				div.parent().css('z-index', 1000);
 
-				var autoComplete = [];
-				var keys = API.getRepositoryData().getKeys();
+			div.prev().remove();
+			div.parent().css('z-index', 1000);
 
-				for(var i = 0, l = keys.length; i < l; i++)
-					autoComplete.push({title: keys[i], label: keys[i]});
-				
-				// Receive configuration
-				var availCfg = module.controller.configurationReceive;
-				var allRels2 = [];
-				for(var i in availCfg)
-					allRels2.push({ key: i, title: availCfg[i].label });
+			var autoComplete = [];
+			var keys = API.getRepositoryData().getKeys();
 
-				// Send configuration
-				var temporary = {}, 
-					sendjpaths = [];
-
-				var availCfg = module.controller.configurationSend;
-				var makeSendJpaths = function() {	
-					sendjpaths = {};
-					for(var i in availCfg.rels)
-						sendjpaths[i] = module.model.getjPath(i, temporary);
-				}
-				makeSendJpaths();
-				
-				var allEvents = [];
-				for(var i in availCfg.events)
-					allEvents.push({title: availCfg.events[i].label, key: i});
-				
-				var allRels = [];
-				for(var i in availCfg.rels)
-					allRels.push({ title: availCfg.rels[i].label, key: i})
+			for(var i = 0, l = keys.length; i < l; i++)
+				autoComplete.push({title: keys[i], label: keys[i]});
 			
-				var actionsCfg = module.controller.actions;
-				var allActionsRels = [];
-				if(actionsCfg)
-					for(var i in actionsCfg.rel)
-						allActionsRels.push({ title: actionsCfg.rel[i], key: i});
+			// Receive configuration
+			var availCfg = module.controller.configurationReceive;
+			var allRels2 = [];
+			for(var i in availCfg)
+				allRels2.push({ key: i, title: availCfg[i].label });
 
-				var actionsReceive = module.controller.actionsReceive || {};
-				var allActionsReceive = [];	
-				for(var i in actionsReceive)
-					allActionsReceive.push({ title: actionsReceive[i], key: i});
-				
-				FormFactory.newform(div, {
+			// Send configuration
+			var temporary = {}, 
+				sendjpaths = [];
+
+			var availCfg = module.controller.configurationSend;
+			var makeSendJpaths = function() {	
+				sendjpaths = {};
+				for(var i in availCfg.rels)
+					sendjpaths[i] = module.model.getjPath(i, temporary);
+			}
+			makeSendJpaths();
+			
+			var allEvents = [];
+			for(var i in availCfg.events)
+				allEvents.push({title: availCfg.events[i].label, key: i});
+			
+			var allRels = [];
+			for(var i in availCfg.rels)
+				allRels.push({ title: availCfg.rels[i].label, key: i})
+		
+			var actionsCfg = module.controller.actions;
+			var allActionsRels = [];
+			if(actionsCfg)
+				for(var i in actionsCfg.rel)
+					allActionsRels.push({ title: actionsCfg.rel[i], key: i});
+
+			var actionsReceive = module.controller.actionsReceive || {};
+			var allActionsReceive = [];	
+			for(var i in actionsReceive)
+				allActionsReceive.push({ title: actionsReceive[i], key: i});
+			
+
+			require(['./libs/forms2/form'], function(Form) {
+
+				var form = new Form({
+				});
+
+				form.init({
+					onValueChanged: function( value ) {	}
+				});
+
+				form.setStructure({
+
 					sections: {
-						'general': {
-							config: {
-								multiple: false,
-								title: 'General Configuration'
+
+						module_config: {
+
+							options: {
+								title: 'General configuration',
+								icon: 'page_white_paint'
 							},
 
 							groups: {
-								'general': {
-									config: {
-										type: 'list'
+
+								group: {
+									options: {
+										type: 'list',
+										multiple: true
 									},
 
-									fields: [
+									fields: {
 
-										{
-											type: 'Text',
+										moduletitle: {
+											type: 'text',
 											name: 'moduletitle',
 											multiple: false,
 											title: 'Module title'
 										},
 
-										{
-											type: 'Color',
+										bgcolor: {
+											type: 'color',
 											name: 'bgcolor',
 											multiple: false,
 											title: 'Background color'
 										},
 
-										{
-											type: 'Checkbox',
+										modulewrapper: {
+											type: 'checkbox',
 											name: 'modulewrapper',
-											title: 'Display module boundaries',
+											title: 'Module boundaries',
 											options: {'display': ''}
 										}
-									]
+									}
 								}
 							}
 						},
 
-						'moduleconfiguration': $.extend(module.controller.doConfiguration() || {}, 	{
-							config: {
-								multiple: false,
-								title: 'Module configuration'
-							}
-						}),
 
-						'send': {
-							config: {
-								multiple: false,
-								title: 'Variables Out'
+						module_specific_config: 
+
+							$.extend( module.controller.configurationStructure( ), {
+								options: {
+									title: 'Module configuration',
+									icon: 'page_white_wrench'
+								}
+							}),
+
+						vars_in: {
+
+							options: {
+								title: 'Variables in',
+								icon: 'basket_put'
 							},
 
 							groups: {
-								'sentvars': {
-									config: {
-										type: 'table'
+
+								group: {
+									options: {
+										type: 'table',
+										multiple: true
 									},
 
-									fields: [
-										{
-											type: 'Combo',
-											name: 'event',
+									fields: {
+
+										rel: {
+											type: 'combo',
+											options: allRels2,
+											title: 'Reference'
+										},
+
+										name: {
+											type: 'text',
+											title: 'From variable',
+											autoComplete: autoComplete
+										}
+									}
+								}
+							}
+						},
+
+
+						vars_out: {
+
+							options: {
+								title: 'Variables out',
+								icon: 'basket_remove'
+							},
+
+							groups: {
+
+								group: {
+									options: {
+										type: 'table',
+										multiple: true
+									},
+
+									fields: {
+
+										event: {
+											type: 'combo',
 											title: 'Event',
 											options: allEvents
 										},
 
-										{
-											type: 'Combo',
-											name: 'rel',
+										rel: {
+											type: 'combo',
 											title: 'Internal ref.',
 											options: allRels
 										},
 
-										{
-											type: 'Combo',
-											name: 'jpath',
+										jpath: {
+											type: 'combo',
 											title: 'jPath',
 											options: {}
 										},
 
-										{
-											type: 'Text',
-											name: 'name',
-											title: 'Variable name'
+										name: {
+											type: 'text',
+											title: 'To variable'
 										}
-									]
-								}
-							}
-
-						},
-
-						'receive': {
-							config: {
-								multiple: false,
-								title: 'Variables In'
-							},
-
-							groups: {
-								'receivedvars': {
-									config: {
-										type: 'table'
-									},
-
-									fields: [
-										{
-											type: 'Combo',
-											name: 'rel',
-											options: allRels2,
-											title: 'Internal ref.'
-										},
-										{
-											type: 'Text',
-											name: 'name',
-											title: 'Stores in variable',
-											autoComplete: autoComplete
-										}
-									]
-								}
-
-							}
-						},
-
-						'actionsout': {
-							config: {
-								title: 'Actions Out'
-							},
-
-							groups: {
-								'actions': {
-									config: {
-										type: 'table'
-									},
-
-									fields: [
-										{
-											type: 'Combo',
-											name: 'event',
-											title: 'Event',
-											options: allEvents
-										},
-
-										{
-											type: 'Combo',
-											name: 'rel',
-											title: 'Internal ref.',
-											options: allActionsRels,
-										},
-
-										{
-											type: 'Combo',
-											name: 'jpath',
-											title: 'jPath',
-											options: {}
-										},
-
-										{
-											type: 'Text',
-											name: 'name',
-											title: 'Action name'
-										}
-									]
+									}
 								}
 							}
 						},
 
-						'actionsin': {
-							config: {
-								title: 'Actions In'
+
+						actions_in: {
+
+							options: {
+								title: 'Actions in',
+								icon: 'door_in'
 							},
 
 							groups: {
-								'actions': {
-									config: {
-										type: 'table'
+
+								group: {
+
+									options: {
+										type: 'table',
+										multiple: true
 									},
 
-									fields: [
-										{
-											type: 'Combo',
-											name: 'rel',
-											title: 'Internal ref.',
+									fields: {
+
+										rel: {
+											type: 'combo',
+											title: 'Reference',
 											options: allActionsReceive
 										},
 
-										{
-											type: 'Text',
-											name: 'name',
+										name: {
+											type: 'text',
 											title: 'Action name'
 										}
-									]
+									}
 								}
-
 							}
+						},
 
+
+						actions_out: {
+
+							options: {
+								title: 'Actions out',
+								icon: 'door_out'
+							},
+
+							groups: {
+
+								group: {
+									options: {
+										type: 'table',
+										multiple: true
+									},
+
+									fields: {
+
+										event: {
+											type: 'combo',
+											title: 'On event',
+											options: allEvents
+										},
+
+										rel: {
+											type: 'combo',
+											title: 'Reference',
+											options: allActionsRels,
+										},
+
+										jpath: {
+											type: 'combo',
+											title: 'jPath',
+											options: {}
+										},
+
+										name: {
+											type: 'text',
+											title: 'Action name'
+										}
+									}
+								}
+							}
 						}
 					}
-				}, function(form) {
+				});
+
+
+	
+				form.onStructureLoaded().done(function() {
 
 					var varReceiveChanged = function(name, rel) {
 						if(name) {
@@ -509,78 +556,64 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 							makeSendJpaths();
 						}
 
-						if(module.controller.onVarReceiveChange) 
-							module.controller.onVarReceiveChange(name, rel, form.getSection('moduleconfiguration'));
+						if( module.controller.onVarReceiveChange ) {
+							module.controller.onVarReceiveChange( name , rel , form.getSection( 'moduleconfiguration' ) );
+						}
 					}
 
 
-					form.getSection('send').getGroup('sentvars').getField('rel').onChange(function(index) {
-						var value = this.getValue(index), 
-						jpath = this.group.getField('jpath');
-						if(!jpath)
+					form.getSection( 'vars_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {
+
+						if( ! fieldElement.groupElement ) {
 							return;
-						jpath.implementation.setOptions(sendjpaths[value], index);
-					});
+						}
 
-					form.getSection('receive').getGroup('receivedvars').getField('rel').onChange(function(index) {
-						var rel = this.getValue(index),
-							name = this.group.getField('name').values[index];
-						varReceiveChanged(name, rel);
-					});
-
-					form.getSection('receive').getGroup('receivedvars').getField('name').onChange(function(index) {
-						var name = this.getValue(index),
-							rel = this.group.getField('rel').values[index];
-						varReceiveChanged(name, rel);
-					});
+						fieldElement
+							.groupElement
+							.getFieldElementCorrespondingTo(fieldElement, 'jpath')
+							.setOptions( sendjpaths[ fieldElement.value ] );
+					};
 
 
-					form.getSection('actionsout').getGroup('actions').getField('rel').onChange(function(index) {
-						var value = this.getValue(index), 
-						jpath = this.group.getField('jpath');
+					form.getSection( 'vars_in' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {
 
-						if(!jpath)
-							return;							
-						jpath.implementation.setOptions(sendjpaths[value], index);
-					});
-				
-					var save = new Button('Save', function() {
-						form.dom.trigger('stopEditing');
-						var value = form.getValue();
+						if( ! fieldElement.groupElement ) {
+							return;
+						}
 
-						module.setTitle(value.general[0].general[0].moduletitle[0]);
-						module.definition.bgColor = value.general[0].general[0].bgcolor[0];
-						module.definition.displayWrapper = !!value.general[0].general[0].modulewrapper[0][0];
-						module.setBackgroundColor(value.general[0].general[0].bgcolor[0]);
-						module.setDisplayWrapper();
-						module.setSendVars(value.send[0].sentvars[0]);
+						varReceiveChanged(
+							fieldElement.groupElement.getFieldElementCorrespondingTo( fieldElement, 'name' ).value,
+							this.value
+						);
 
-						module.setSourceVars(value.receive[0].receivedvars[0]);
-						module.setActionsIn(value.actionsin[0].actions[0]);
-						module.setActionsOut(value.actionsout[0].actions[0]);
+					};
 
-						if(module.controller.processReceivedVars)
-							module.controller.processReceivedVars(value.receive[0].receivedvars[0]);
+					form.getSection( 'vars_in' ).getGroup( 'group' ).getField( 'name' ).options.onChange = function( fieldElement ) {
 
-						if(module.controller.doSaveConfiguration) 
-							module.controller.doSaveConfiguration(value.moduleconfiguration);
+						if( ! fieldElement.groupElement ) {
+							return;
+						}
 
-						if(module.view.unload)
-							module.view.unload();
-						
-						module.view.init();
+						varReceiveChanged(
+							this.value,
+							fieldElement.groupElement.getFieldElementCorrespondingTo( fieldElement, 'rel' ).value
+						);
+					};
 
-						module.view.inDom();
-						module.view.onResize(module.view.width || module.getWidthPx(), module.view.height || module.getHeightPx());
-						module.model.resetListeners();	
-						module.updateAllView();
-						form.getDom().dialog('close');
-						document.getElementById('header').scrollIntoView(true);
-					});
-					
-					save.setColor('blue');
-					form.addButtonZone(save);
 
+					form.getSection( 'actions_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {						
+
+						if( ! fieldElement.groupElement ) {
+							return;
+						}
+
+						fieldElement
+							.groupElement
+							.getFieldElementCorrespondingTo(fieldElement, 'jpath')
+							.setOptions( sendjpaths[ fieldElement.value ] );
+					};
+
+/*
 					var sentVars = { event: [], rel: [], jpath: [], name: []};	
 					if(module.definition.dataSend) {
 						var currentCfg = module.definition.dataSend;
@@ -623,22 +656,88 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 							actionsout.event.push(currentCfg[i].event);
 						}
 					}
-					
+					*/
+
+					console.log(module.vars_out(), module.vars_in());
 					var fill = {
 						sections: {
-							general: [ { groups: { general: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor ],  modulewrapper: [[ (module.definition.displayWrapper === true || module.definition.displayWrapper == undefined) ? 'display' : '' ]] }] } } ],
-							moduleconfiguration: [ module.controller.doFillConfiguration ? module.controller.doFillConfiguration() : []],
-							send: [ { groups: {sentvars: [sentVars]}} ],
-							receive: [ { groups: {receivedvars: [receivedVars]}} ],
-							actionsin: [ { groups: {actions: [actionsin]}} ],
-							actionsout: [ { groups: {actions: [actionsout]}} ]
+							module_config: [ { groups: { group: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor ],  modulewrapper: [[ (module.definition.displayWrapper === true || module.definition.displayWrapper == undefined) ? 'display' : '' ]] }] } } ],
+							module_specific_config: [ module.configuration || {} ],
+
+							vars_out: [ { groups: { group: [ module.vars_out() ] } } ],
+							vars_in: [ { groups: { group: [ module.vars_in() ] } } ],
+							actions_in: [ { groups: { group: [ module.actions_in() ] } } ],
+							actions_out: [ { groups: { group: [ module.actions_out() ]}} ]
 						}
 					}
-					form.fillJson(fill);
-					form.getDom().dialog('option', 'position', 'center');
+
+					form.fill(fill);
 
 				});
+
+				form.addButton('Cancel', { color: 'blue' }, function() {
+
+					div.dialog( 'close' );
+				});
+
+				form.addButton('Save', { color: 'green' }, function() {
+
+					
+					var value = form.getValue().sections;
+
+					module.setTitle( value.module_config[ 0 ].groups.group[ 0 ].moduletitle[ 0 ] );
+
+					module.definition.bgColor 			= value.module_config[ 0 ].groups.group[ 0 ].bgcolor[ 0 ];
+					module.setBackgroundColor( module.definition.bgColor );
+
+					module.definition.displayWrapper 	= value.module_config[ 0 ].groups.group[ 0 ].modulewrapper[ 0 ][ 0 ] == 'display';
+					module.setDisplayWrapper();
+
+					module.setSendVars(		value.vars_out[ 0 ].groups.group[ 0 ]			);
+					module.setSourceVars(	value.vars_in[ 0 ].groups.group[ 0 ]			);
+					module.setActionsIn(	value.actions_in[ 0 ].groups.group[ 0 ]			);
+					module.setActionsOut(	value.actions_out[ 0 ].groups.group[ 0 ]		);
+
+					module.configuration =	value.module_specific_config[ 0 ];
+
+					if( module.view.unload ) {
+						module.view.unload();
+					}
+					
+					module.view.init();
+					module.view.inDom();
+
+					module.view.onResize( module.view.width, module.view.height );
+
+					module.model.resetListeners( );
+					module.updateAllView( );
+
+					div.dialog('close');
+					document.getElementById('header').scrollIntoView(true);
+				});
+
+				form.onLoaded().done(function() {
+
+					div.html(form.makeDom());
+					form.inDom();
+				});
 			});
+		},
+
+		getConfiguration: function( alias, _default ) {
+
+			var config;
+			
+			try {
+				if( this.controller.configAliases[ alias ] ) {
+					config = this.controller.configAliases[ alias ].call( this, this.configuration );
+				}
+			} catch(_e) {
+				console.error( 'Cannot fetch alias ' + alias + ' in configuration. Return default: ' + _default + "." );
+				return _default;
+			}
+			
+			return config;
 		},
 
 		/** 
@@ -688,24 +787,78 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			this.definition.set('id', id);
 		},
 		
+
 		setSourceVars: function(vars) {
-			this.definition.set('dataSource', vars, true);
+			this.definition.set('vars_in', vars, true);
 		},
 		
 		setSendVars: function(vars) {
-			this.definition.set('dataSend', vars, true);
-			for(var i = 0, l = vars.length; i < l; i++) {
-				if(vars[i].name)
-					API.setVar(vars[i].name, API.getVar(vars[i].name));
-			}
+			this.definition.set('vars_out', vars, true);
+			var i = 0,
+				l = vars.length;
+
+/*
+			for( ; i < l ; i++ ) {
+				if( vars[ i ].name ) {
+
+					API.setVar( vars[ i ].name, API.getVar( vars[ i ].name ) );
+				}
+			}*/
 		},
 		
 		setActionsIn: function(vars) {
-			this.definition.set('actionsIn', vars, true);
+			this.definition.set('actions_in', vars, true);
 		},
 		
 		setActionsOut: function(vars) {
-			this.definition.set('actionsOut', vars, true);
+			this.definition.set('actions_out', vars, true);
+		},
+
+		vars_in: function() {
+
+			// Backward compatibility
+			if( ! this.definition.vars_in && this.definition.dataSource) {
+				this.definition.vars_in = this.definition.dataSource;
+				delete this.definition.dataSource;
+			}
+
+			return this.definition.vars_in = this.definition.vars_in || {};
+		},
+
+
+		vars_out: function() {
+			
+			// Backward compatibility
+			if( ! this.definition.vars_out && this.definition.dataSend) {
+				this.definition.vars_out = this.definition.dataSend;
+				delete this.definition.dataSend;
+			}
+
+			return this.definition.vars_out = this.definition.vars_out || {};
+		},
+
+
+		actions_in: function() {
+			
+			// Backward compatibility
+			if( ! this.definition.actions_in && this.definition.actionsIn) {
+				this.definition.actions_in = this.definition.actionsIn;
+				delete this.definition.actionsIn;
+			}
+
+			return this.definition.actions_in = this.definition.actions_in || {};
+		},
+
+
+		actions_out: function() {
+			
+			// Backward compatibility
+			if( ! this.definition.actions_out && this.definition.actionsOut) {
+				this.definition.actions_out = this.definition.actionsOut;
+				delete this.definition.actionsOut;
+			}
+
+			return this.definition.actions_out = this.definition.actions_out || {};
 		},
 		
 		getDefinition: function() {

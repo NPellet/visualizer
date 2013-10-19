@@ -7,12 +7,24 @@ define( [ ], function(  ) {
 		
 		var self = this,
 			dom = $("<div />"),
-			div = $( "<div></div>" )
+			div = $( "<div>&nbsp;</div>" )
 					.addClass( 'form-field' )
+					.attr('tabIndex', '1')
 					.appendTo( dom )
 					.bind('click', function( event ) {
+
 						self.toggleSelect( event );
-					});
+
+					}).bind('click', function( event ) {
+
+						event.stopPropagation();
+
+					});/*.bind('keydown', function( event ) {
+console.log('GOTONEXT');
+						if( self.field.form.tabPressed( event, self ) ) {
+							this.blur();
+						}
+					})*/
 
 		this.fieldElement = div;
 		this.div = div;
@@ -31,7 +43,8 @@ define( [ ], function(  ) {
 
 			if( text !== false ) {
 				this.div.html( text.title );
-				this.form.hideExpander( );
+			//	this.fieldElement.trigger( 'focus' );
+			//	this.form.hideExpander( true );				
 			}
 		}
 

@@ -3,11 +3,11 @@ define(['jquery', 'forms/title'], function($, title) {
 	var id = 0;
 	var stack = {};
 
-	$(document).on('click', '.bi-form-button', function(event) {
+	$(document).on('click', '.form-button', function(event) {
 		var btn = stack[$(this).data('id')];
-		console.log(btn);
-		if(btn)
+		if(btn) {
 			btn.doClick(event, $(this));
+		}
 	});
 
 	var button = function(label, onclick, options) {
@@ -50,7 +50,7 @@ define(['jquery', 'forms/title'], function($, title) {
 
 		render: function() {
 			var html = "";
-			html += '<div class="bi-form-button';
+			html += '<div class="form-button';
 			html += '" data-id="';
 			html += this.id;
 			html += '" id="button-' + this.id + '"><span>';

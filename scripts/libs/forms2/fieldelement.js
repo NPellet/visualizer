@@ -34,13 +34,27 @@ define(['jquery'], function($) {
 
 			this.getExpander( );
 			this.field.showExpander( this );
+		},
 
+		redoTabIndices: function( ) {
+
+			if ( this.fieldElement ) {
+				this.fieldElement.attr( 'tabindex', 1 );
+			}
+			this.form.incrementTabIndex( this );
+		},
+
+		focus: function( ) {
+			
+			if( this.fieldElement ) {
+				this.fieldElement.trigger( 'click' ).trigger( 'focus' );
+			}
 		},
 
 		setValueSilent: function( value, doNotNotifyForm ) {
 			this._value = value;
 			this.field.changed( );
-			
+
 			if( ! doNotNotifyForm ) {
 				this.form.fieldElementValueChanged( this, value );
 			}
@@ -49,39 +63,42 @@ define(['jquery'], function($) {
 		inDom: function() { },
 
 
-		unSelect: function( mute ) {
+		unSelect: function( event ) {
 
-			this.selected = false;
-
-			if( ! mute ) {
-
-				if( this.field.domExpander ) {
-
-					this.hideExpander( );
-				}
-
-				this.form.unSelectFieldElement( this );
+			if( event ) {
+				event.preventDefault( );
+				event.stopPropagation( );
 			}
 
+			this.selected = false;
+			this.form.unSelectFieldElement( this );
+
+			if( this.field.domExpander ) {
+				this.hideExpander( );
+			}
+
+			
 			if( this.fieldElement ) {
 				this.fieldElement.removeClass('selected');
 			}
 		},
 
-		select: function( mute ) {
+		select: function( event ) {
+
+			if( event ) {
+				event.preventDefault( );
+				event.stopPropagation( );
+			}
 
 			this.selected = true;
 
-			if( ! mute ) {
-
-				// Does the dom exist ?
-				if( this.field.domExpander ) {
-
-					this.showExpander( );
-				}
-
-				this.form.selectFieldElement( this );
+			this.form.selectFieldElement( this );
+			
+			// Does the dom exist ?
+			if( this.field.domExpander ) {
+				this.showExpander( );
 			}
+
 
 			if( this.fieldElement ) {
 				this.fieldElement.addClass('selected');
@@ -90,13 +107,10 @@ define(['jquery'], function($) {
 
 		toggleSelect: function( event ) {
 
-			event.preventDefault( );
-			event.stopPropagation( );
-
 			if( !this.selected ) {
-				this.select( );
+				this.select( event );
 			} else {
-				this.unSelect( );
+				this.unSelect( event );
 			}
 		}
 	});
@@ -146,7 +160,7 @@ define(['jquery'], function($) {
 		},
 
 		set: function(value) {
-	//		console.log('set value from ' + this._value + ' to ' + value);
+	
 			this.setValueSilent(value);
 			this.checkValue();
 		}

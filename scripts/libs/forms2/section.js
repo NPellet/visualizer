@@ -145,12 +145,8 @@ define(['jquery', './sectionelement', './group'], function($, SectionElement, Gr
 			return !! this.sections[ sectionName ];
 		},
 
-		getGroup: function( groupName, groupNumber ) {
-
-			var group = this.groups[ groupName ];
-			if( groupNumber == undefined )
-				return group;
-			return group.getElement( groupNumber );
+		getGroup: function( groupName ) {
+			return this.groups[ groupName ] || this.form.throwError("Cannot find group " + groupName + ".");
 		},
 
 		groupExists: function( groupName ) {

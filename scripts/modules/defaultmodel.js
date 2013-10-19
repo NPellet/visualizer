@@ -23,7 +23,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		},
 
 		getVarNameList: function() {
-			var list = this.module.definition.dataSource, listFinal = [], keyedMap = {};
+			var list = this.module.vars_in(), listFinal = [], keyedMap = {};
 			if(!list)
 				return [];
 			for(var l = list.length, i = l - 1; i >= 0; i--) {
@@ -36,7 +36,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		},
 
 		getActionNameList: function() {
-			var list = this.module.definition.actionsIn, 
+			var list = this.module.actions_in(), 
 				names = [];
 
 			if(!list)
@@ -63,6 +63,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				if( !self.sourceMap ) {
 					return;
 				}
+
 				self.data[ varName ] = self.buildData( varValue, self.module.controller.configurationReceive[ self.sourceMap[ varName ].rel ].type );
 				rel = self.module.getDataRelFromName( varName );
 
@@ -76,7 +77,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 						self.module.view.blank[ rel[ i ] ].call( self.module.view, varName );
 
 					}
-
+					
 					if( self.module.view.update[ rel[ i ] ] && varValue !== null ) {
 
 						self.module.view.update[ rel[ i ] ].call( self.module.view, self.data[ varName ], varName );

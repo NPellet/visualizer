@@ -12,20 +12,28 @@ define( [ ], function(  ) {
 					.addClass( 'field-list' )
 					.appendTo( dom )
 					.bind('click', function( event ) {
-
 						self.toggleSelect( event );
-						
 					})
 					.bind('keyup blur', function() {
 						var val;
 						if( self.value !== ( val = $( this ).val( ) ) ) {
 							self.setValueSilent( $( this ).val( ) );
 						}
+
+					}).bind('keydown', function( e ) {
+
+						if( self.field.form.tabPressed( e, self ) ) {
+							this.blur( );
+						}
+
 					});
 
 		this.dom = dom;
 		this.input = input;
 		this.fieldElement = input;
+
+		this.checkValue();
+
 		return dom;
 	};
 

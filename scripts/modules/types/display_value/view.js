@@ -8,9 +8,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 			html += '<div></div>';
 			this.dom = $(html).css('display', 'table').css('height', '100%').css('width', '100%');
 			this.module.getDomContent().html(this.dom);
-
-			var cfg = this.module.getConfiguration(), view = this;
-			view.fillWithVal(cfg.defaultvalue || '');
+			this.fillWithVal( this.module.getConfiguration( 'defaultvalue' ) );
 		},
 		
 		onResize: function() {
@@ -34,26 +32,30 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
 			'value': function(moduleValue) {
 
-				var cfg = this.module.getConfiguration(), view = this;
-				API.killHighlight(this.module.id);
-				
-				if(moduleValue == undefined)
-					view.fillWithVal(cfg.defaultvalue || '');
-				else {
+				var view = this,
+					sprintf = this.module.getConfiguration('sprintf');
 
-					Renderer.toScreen(moduleValue, this.module).always(function(val) {
+				if(moduleValue == undefined) {
+
+					this.fillWithVal( this.module.getConfiguration('defaultvalue') || '' );
+
+				} else {
+
+					Renderer.toScreen( moduleValue, this.module ).always(function(val) {
 
 						try {
-							if(cfg.sprintf && cfg.sprintf != "") {
+
+							if(sprintf && sprintf != "") {
 								require(['libs/sprintf/sprintf'], function() {
-									val = sprintf(cfg.sprintf, val);
-									view.fillWithVal(val);	
+									val = sprintf(sprintf, val);
+									view.fillWithVal( val );	
 								});
 							} else {
-								view.fillWithVal(val);
+								view.fillWithVal( val );
 							}
-						} catch(e) {
-							view.fillWithVal(val);
+
+						} catch( e ) {
+							view.fillWithVal( val );
 						}
 					});
 
@@ -63,21 +65,27 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 		
 		fillWithVal: function(val) {
 			
-			var cfg = this.module.getConfiguration();
+			var valign = this.module.getConfiguration('valign'),
+				align = this.module.getConfiguration('align'),
+				fontcolor = this.module.getConfiguration('fontcolor'),
+				fontsize = this.module.getConfiguration('fontsize'),
+				font = this.module.getConfiguration('font');
 			
 			var div = $("<div />").css({
-				fontFamily: cfg.font || 'Arial',
-				fontSize: cfg.fontsize || '10pt',
-				color: cfg.frontcolor || '#000000',
+
+				fontFamily: font || 'Arial',
+				fontSize: fontsize || '10pt',
+				color: fontcolor || '#000000',
 				display: 'table-cell',
-				'vertical-align': cfg.valign || 'top',
-				textAlign: cfg.align || 'center',
+				'vertical-align': valign || 'top',
+				textAlign: align || 'center',
 				width: '100%',
 				height: '100%'
+
 			}).html(val);
 
-			this.dom.html(div);
-			DomDeferred.notify(div);
+			this.dom.html( div );
+			DomDeferred.notify( div );
 		},
 		
 		getDom: function() {

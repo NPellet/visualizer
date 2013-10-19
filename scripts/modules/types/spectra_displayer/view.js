@@ -20,21 +20,21 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		
 		inDom: function() {
 
-			var cfgM = this.module.getConfiguration();
-			var self = this;
+			var self = this,
+				cfg = $.proxy(this.module.getConfiguration, this.module),
+				graphurl = cfg( 'graphurl' ),
+				graph,
+				def = $.Deferred();
 
-			var graph;
-			var def = $.Deferred();
-
-			if(cfgM.graphurl) {
+			if(graphurl) {
 					
-				$.getJSON(cfgM.graphurl, {}, function(data) {
+				$.getJSON(graphurl, {}, function(data) {
 
 					data.options.onMouseMoveData = function(e, val) {
 						self.module.controller.sendAction('mousetrack', val);
 					}
 
-				 	def.resolve(new Graph(self.dom.get(0), data.options, data.axis));
+				 	def.resolve( new Graph(self.dom.get(0), data.options, data.axis) );
 				});
 
 			} else {
@@ -85,41 +85,37 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		//graph.getLeftAxis(0, {logScale: true})
 
 
-				if(cfgM.shiftxtozero)
-					graph.getXAxis().options.shiftToZero = true;
+				if( cfg( 'shiftxtozero' ) ) {
 
-				graph.getLeftAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('y') > -1 : false);
-				graph.getLeftAxis().setLabel(cfgM.yLabel || '');
+					graph.getXAxis( ).options.shiftToZero = true;
+				}
 
-				graph.getXAxis().setDisplay(cfgM.displayAxis ? cfgM.displayAxis.indexOf('x') > -1 : true);
-				graph.getXAxis().setLabel(cfgM.xLabel || '');
+				graph.getLeftAxis().setDisplay( cfg('displayYAxis', false) );
+				graph.getLeftAxis().setLabel( cfg('yLabel', '') );
 
-				graph.getXAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('vmain') > -1 : false);
-				graph.getXAxis().toggleSecondaryGrid(cfgM.grids ? cfgM.grids.indexOf('vsec') > -1 : false);
+				graph.getXAxis().setDisplay(cfg('displayXAxis', true));
+				graph.getXAxis().setLabel( cfg('xLabel', '') );
+
+				graph.getXAxis().togglePrimaryGrid( cfg( 'vertGridMain', false ) );
+				graph.getXAxis().toggleSecondaryGrid( cfg( 'vertGridSec', false ) );
 			
-				if(cfgM.xastime) {
+				if( cfg( 'xastime' ) ) {
 					graph.getXAxis().options.unitModification = 'time';
 				}
 
-				graph.getYAxis().togglePrimaryGrid(cfgM.grids ? cfgM.grids.indexOf('hmain') > -1 : false);
-				graph.getYAxis().toggleSecondaryGrid(cfgM.grids ? cfgM.grids.indexOf('hsec') > -1 : false);
-				
-				graph.getXAxis().setAxisDataSpacing(cfgM.xLeftSpacing || 0, cfgM.xRightSpacing || 0);
-				graph.getLeftAxis().setAxisDataSpacing(cfgM.yBottomSpacing || 0, cfgM.yTopSpacing || 0);
+				graph.getYAxis().togglePrimaryGrid( cfg( 'horGridMain', false ) );
+				graph.getYAxis().toggleSecondaryGrid( cfg( 'horGridSec', false ) );
+			
+				graph.getXAxis().setAxisDataSpacing( cfg( 'xLeftSpacing', 0 ), cfg( 'xRightSpacing', 0 ) );
+				graph.getYAxis().setAxisDataSpacing( cfg( 'yBottomSpacing', 0 ), cfg( 'yTopSpacing', 0 ) );
 
-				graph.setDefaultWheelAction(cfgM.wheelAction || 'none');
+				graph.setDefaultWheelAction( cfg('wheelAction', 'none') );
 
-				if(cfgM.minX !== null)
-					graph.getXAxis().forceMin(cfgM.minX);
-				if(cfgM.minY !== null)
-					graph.getLeftAxis().forceMin(cfgM.minY);
-				if(cfgM.maxX !== null)
-					graph.getXAxis().forceMax(cfgM.maxX);
-				if(cfgM.maxY != null)
-					graph.getLeftAxis().forceMax(cfgM.maxY);
+				graph.getXAxis().forceMin( cfg('minX', false) );
+				graph.getLeftAxis().forceMin( cfg('minY', false) );
+				graph.getXAxis().forceMax( cfg('maxX', false) );
+				graph.getLeftAxis().forceMax( cfg('maxY', false) );
 
-
-				graph.getLeftAxis().setAxisDataSpacing(cfgM.yBottomSpacing || 0, cfgM.yTopSpacing || 0);
 				def.resolve(graph);
 			}
 
@@ -130,11 +126,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				graph.redraw();
 				self.graph = graph;
 				
-				if(cfgM.flipX)
-					self.graph.getXAxis().flip(true);
-
-				
-				self.graph.getYAxis().flip(cfgM.flipY);
+				self.graph.getXAxis().flip( cfg('flipX', false) );
+				self.graph.getYAxis().flip( cfg('flipY', false) );
 
 				self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());		
 				self.onReady.resolve();
@@ -152,10 +145,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			}
 		},
 		
-		onProgress: function() {
-			this.dom.html("Progress. Please wait...");
-		},
-
 		doZone: function(varname, zone, value, color) {
 
 			if(value && !zone[2]) {
@@ -190,27 +179,27 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 		setSerieParameters: function(serie, varname) {
 			var self = this,
-				cfgM = this.module.getConfiguration();
+				plotinfos = this.module.getConfiguration( 'plotinfos' );
 
-			if( cfgM.plotinfos ) {
+			if( plotinfos ) {
 
-				for ( var i = 0, l = cfgM.plotinfos.length ; i < l ; i++ ) {
+				for ( var i = 0, l = plotinfos.length ; i < l ; i++ ) {
 
-					if( varname == cfgM.plotinfos[i].variable ) {
+					if( varname == plotinfos[i].variable ) {
 
-						serie.options.lineToZero = !cfgM.plotinfos[i].plotcontinuous;
-						serie.setLineColor(Util.getColor(cfgM.plotinfos[i].plotcolor));
-						serie.setLineWidth(cfgM.plotinfos[i].strokewidth || 1);
-						serie.options.autoPeakPicking = cfgM.plotinfos[i].peakpicking;
+						serie.options.lineToZero = ! plotinfos[i].plotcontinuous;
+						serie.setLineColor( Util.getColor( plotinfos[i].plotcolor ) );
+						serie.setLineWidth( plotinfos[i].strokewidth || 1 );
+						serie.options.autoPeakPicking = plotinfos[i].peakpicking;
 
-						if( cfgM.plotinfos[i].markers ) {
+						if( plotinfos[i].markers ) {
 
 							serie.showMarkers();
 							serie.setMarkerType(1);
 							serie.setMarkerZoom(2);
 
-							serie.setMarkerStrokeColor(Util.getColor(cfgM.plotinfos[i].plotcolor));
-							serie.setMarkerFillColor(Util.getColor(cfgM.plotinfos[i].plotcolor));
+							serie.setMarkerStrokeColor( Util.getColor( plotinfos[i].plotcolor ) );
+							serie.setMarkerFillColor( Util.getColor( plotinfos[i].plotcolor ) );
 
 						}
 					}	
@@ -253,16 +242,14 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				if(!moduleValue || !moduleValue.value)
 					return;
 
-				if(view.dom.data('spectra'))
+				if(view.dom.data('spectra')) {
 					view.dom.data('spectra').setBoundaries(moduleValue.value.from, moduleValue.value.to);
-
+				}
 
 				return;
 			},
 
 			xyArray: function(moduleValue, varname) {
-
-				var cfgM = this.module.getConfiguration();
 
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie( varname );
@@ -284,10 +271,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				var serie = this.graph.newSerie(varname, {trackMouse: true});
 				this.setSerieParameters(serie, varname);
 
-				this.normalize(val, cfgM, varname);
+				this.normalize(val, varname);
 				serie.setData(val);
-				if(val.info)
+				if(val.info) {
 					serie.setInfos(val.info);
+				}
 				serie.autoAxis();
 				this.series[varname].push(serie);
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
@@ -295,7 +283,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 			xArray: function(moduleValue, varname) {
 				var self = this,
-					cfgM = this.module.getConfiguration(), 
 					val, 
 					val2;
 				
@@ -320,7 +307,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				if(val.infos)
 					serie.setInfos(infos);
 
-				this.normalize(val2, cfgM, varname);
+				this.normalize(val2, varname);
 
 				serie.setData(val2);
 				serie.autoAxis();
@@ -347,7 +334,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				var self = this, 
 					serie, 
-					cfgM = this.module.getConfiguration(), 
+				
 					spectra;
 
 
@@ -380,7 +367,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				} else {
 
-					this.graph.setOption('zoomMode', cfgM.zoom ? (cfgM.zoom != "none" ? cfgM.zoom : false) : false);
+					this.graph.setOption('zoomMode', this.module.getConfiguration( 'zoom', false ) );
 					this.graph.setOption('defaultWheelAction', 'zoomY');
 					this.graph.setOption('defaultMouseAction', 'zoom');
 
@@ -390,7 +377,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 						var data=spectra[i].data[spectra[i].data.length - 1];
 
-						this.normalize(data, cfgM, varname);
+						this.normalize(data, varname);
 						serie.setData(data);
 						serie.autoAxis();
 						this.series[varname].push(serie);
@@ -415,70 +402,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 
 				this.setSerieParameters(serie, varname);
+				
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
-				this.resetAnnotations(true);
-			}
-		},
 
-		redo: function() {
-
-			var twoD = false;
-			for(var i = 0, l = this.series.length; i < l; i++) {
-				if(this.series[i].twoD)
-					twoD = true;
-			}
-
-			if(this.oneD && twoD)
-				this.reset(true);
-			else if(!this.oneD && !twoD)
-				this.reset(false);
-			
-			
-		},
-
-		reset: function(twoD) {
-			this.oneD = !twoD;
-			var cfgM = this.module.getConfiguration();			
-			if(twoD) {
-
-				this.graph = new Graph_2D($("#Chart").get(0));
-
-			} else {
-
-				this.graph = new Graph(this.dom.get(0), {
-					closeRight: false, 
-					closeTop: false, 
-					zoomMode: cfgM.zoom ? (cfgM.zoom != "none" ? cfgM.zoom : false) : false,
-
-					onMouseMoveData: function(e, val) {
-						var min, max, x1;
-
-						for(var k in self.zones) {
-
-							if(!val[k])
-								continue;
-
-							for(var i in self.zones[k]) {
-
-								min = Math.min(self.zones[k][i][0], self.zones[k][i][1]);
-								max = Math.max(self.zones[k][i][0], self.zones[k][i][1]);
-
-								x1 = val[k].trueX;
-
-								if(min < x1 && max > x1) {
-									
-									CI.RepoHighlight.set(i, 1);
-									self._currentHighlights[i] = 1;
-
-								} else if(self._currentHighlights[i]) {
-
-									CI.RepoHighlight.set(i, 0);
-									self._currentHighlights[i] = 0;
-								}
-							}
-						}
-					}
-				});
+				this.resetAnnotations( true );
 			}
 		},
 
@@ -535,16 +462,16 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 
 
-			if(annotation._highlight) {
-				API.listenHighlight(annotation._highlight, function(onOff) {
+			if( annotation._highlight ) {
+
+				API.listenHighlight( annotation._highlight, function(onOff) {
 
 					if(onOff) {
-						shape.highlight();
-					
+						shape.highlight( );
 					} else {
-						shape.unHighlight();
+						shape.unHighlight( );
 					}
-				});
+				} );
 			}
 
 			shape.draw();
@@ -554,9 +481,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 
 		removeSerie: function(serieName) {
-			if(this.series[serieName])
-				for(var i = 0; i < this.series[serieName].length; i++)
+			if(this.series[serieName]) {
+				for(var i = 0; i < this.series[serieName].length; i++) {
 					this.series[serieName][i].kill();
+				}
+			}
 
 			this.series[serieName] = [];
 		},
@@ -640,12 +569,15 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		},
 
 
-		normalize: function(array, cfgM, varname) {
-			if (! cfgM.plotinfos) return;
+		normalize: function(array, varname) {
+
+			var plotinfos = this.module.getConfiguration('plotinfos');
+
+			if (! plotinfos) return;
 			var normalize="";
-			for ( var i = 0, l = cfgM.plotinfos.length ; i < l ; i++ ) {
-				if( varname == cfgM.plotinfos[i].variable ) {
-					normalize=cfgM.plotinfos[i].normalize
+			for ( var i = 0, l = plotinfos.length ; i < l ; i++ ) {
+				if( varname == plotinfos[i].variable ) {
+					normalize=plotinfos[i].normalize
 				}
 			}
 			if (! normalize) return;

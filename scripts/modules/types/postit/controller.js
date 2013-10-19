@@ -26,7 +26,9 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 			rel: {}
 		},
 
-		actionsReceive: { },
+		actionsReceive: {
+			
+		},
 
 		configurationReceive: {
 				
@@ -35,35 +37,9 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 		doConfiguration: function(section) {
 
 			return {
-				groups: {
-					'gencfg': {
-						config: {
-							type: 'list'
-						},
-
-						fields: [
-							
-						]
-					}
-				}
 			};
 		},
 		
-		doFillConfiguration: function() {
-
-			return {
-				groups: {
-					gencfg: [{
-						
-					}]
-				}
-			}
-		},
-			
-		doSaveConfiguration: function(confSection) {	
-			
-		},
-
 		"export": function() {
 		}
 	});
