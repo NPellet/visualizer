@@ -150,12 +150,13 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 	}
 
 	function getActionScripts() {
-		return data.actionscripts || [];
+
+		return Versioning.getData().actionscripts || [];
 	}
 
 	function setActionScripts(scripts, evaledScripts) {
 		this.evaluatedScripts = evaluatedScripts;
-		data.actionscripts = scripts;
+		Versioning.getData().actionscripts = scripts;
 	}
 
 	function configureEntryPoint() {
@@ -163,158 +164,199 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 			data = Versioning.getData(),
 			view = Versioning.getView();
 
+		var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%' });
+		div.prev().remove();
+		div.parent().css('z-index', 1000);
 
-		require(['forms/formfactory', 'jqueryui', 'forms/button'], function(FormFactory, jqueryui, Button) {
+		var options = [];
+		Traversing.getJPathsFromElement(data, options);
 
-			var div = $('<div></div>').dialog({ modal: true, width: '80%', title: "Edit entry point"});
-			div.parent().css('zIndex', 10000)
-			var options = [];
+		require(['./libs/forms2/form'], function(Form) {
 
-			Traversing.getJPathsFromElement(data, options);
-
-			//for(var i in data)
-			//	options.push({title: i, key: i});
-
-			FormFactory.newform(div, {
+			var form = new Form();
+			form.init({
+				onValueChanged: function( value ) {	}
+			});
+			form.setStructure({
 				sections: {
-					'cfg': {
-						config: {
-							multiple: true,
-							title: 'Entry variables'
+					cfg: {
+						options: {
+							title: 'General configuration',
+							icon: 'hostname'
 						},
 
 						groups: {
-							'tablevars': {
-								config: {
-									type: 'table'
+							tablevars: {
+
+								options: {
+									type: 'table',
+									multiple: true
 								},
 
-								fields: [
-
-									{
-										type: 'Text',
-										name: 'varname',
+								fields: {
+									varname: {
+										type: 'text',
 										multiple: false,
-										title: 'Variable'
+										title: 'Variable name'
 									},
 
-									{
-										type: 'Combo',
-										name: 'jpath',
-										title: 'jPath',
+									jpath: {
+										type: 'combo',
+										title: 'J-Path',
 										options: options
 									},
 
-									{
-										type: 'Text',
-										name: 'url',
-										title: 'URL'
+									url: {
+										type: 'text',
+										title: 'From URL'
 									}
-								]
+								}
 							}
 						}
 					}
 				}
-			}, function(form) {
-				var save = new Button('Save', function() {
-					form.dom.trigger('stopEditing');
-					var value = form.getValue();
-					var data = value.cfg[0].tablevars[0];
-
-					view.set('variables', data, true);
-					
-					_check(true);
-					form.getDom().dialog('close');
-				});
-				
-				save.setColor('blue');
-				form.addButtonZone(save);
-
-
-				var vars = { varname: [], jpath: [], sourcename: [], url: [] };
-				var entryVars = view.variables;
-
-				for(var i = 0; i < entryVars.length; i++) {
-					vars.varname.push(entryVars[i].varname);
-					vars.jpath.push(entryVars[i].jpath);
-					vars.url.push(entryVars[i].url || '');
-				}
-
-					
-				var fill = { 
-					sections: {
-						cfg: [
-							{
-								groups: {
-									tablevars: [vars]
-								}
-							}
-						]
-					}
-				};
-				form.fillJson(fill);
 			});
+
+
+			form.onStructureLoaded().done(function() {
+				form.fill({ 
+					sections: {
+						cfg: [{
+							groups: {
+								tablevars: [ view.variables ]
+							}
+						}]
+					}
+				});
+			});
+
+
+			form.addButton('Cancel', { color: 'blue' }, function() {
+				div.dialog( 'close' );
+			});
+
+			form.addButton('Save', { color: 'green' }, function() {
+
+				form.getDom().dialog('close');
+				var data = form.getValue().sections[ 0 ].groups.tablevars[ 0 ];
+				view.set('variables', data, true);
+				_check(true);
+
+			});
+
+			form.onLoaded().done(function() {
+				div.html(form.makeDom());
+				form.inDom();
+			});
+
 		});
 	}
 
 
 	function configureActions() {
 		
-		require(['forms/formfactory', 'jqueryui', 'forms/button'], function(FormFactory, jqueryui, Button) {
+		var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%' });
+		div.prev().remove();
+		div.parent().css('z-index', 1000);
 
-			var div = $('<div></div>').dialog({ modal: true, width: '80%', title: "Edit actions"});
-			div.parent().css('zIndex', 10000);
 
+		require(['./libs/forms2/form'], function(Form) {
 
-			FormFactory.newform(div, {
+			var form = new Form();
+			form.init({
+				onValueChanged: function( value ) {	}
+			});
+
+			form.setStructure({
 				sections: {
-					'general': {
-						config: {
-							multiple: true,
-							title: 'Execute script on actions'
+					general: {
+						options: {
+							title: 'Action scripting',
+							icon: 'script_go'
 						},
 
-						groups: {
-							'action': {
-								config: {
-									type: 'list'
+						sections: {
+
+							actions: {
+								options: {
+									multiple: true,
+									title: "Action"
 								},
 
-								fields: [
+								groups: {
+									action: {
 
-									{
-										type: 'Text',
-										name: 'actionname',
-										multiple: false,
-										title: 'Action name'
-									},
+										options: {
+											type: 'list'
+										},
 
-									{
-										type: 'JSCode',
-										name: 'script',
-										multiple: false,
-										title: 'Script to execute'
+										fields: {
+
+											name: {
+												type: 'text',
+												title: 'Action name'
+											},
+
+											script: {
+												type: 'jscode',
+												title: 'Script'
+											}
+										}
 									}
-								]
+								}
 							}
 						}
 					}
 				}
-			}, function(form) {
-				
+			});
+
+
+			form.onStructureLoaded().done(function() {
+
+				form.fill({ 
+					sections: {
+						general: [{
+							sections: {
+								actions: getActionScripts()
+							}
+						}]
+					}
+				});
+			});
+
+
+			form.addButton('Cancel', { color: 'blue' }, function() {
+				div.dialog( 'close' );
+			});
+
+			form.addButton('Save', { color: 'green' }, function() {
+
+				var data = form.getValue().sections.general[ 0 ].sections.actions,
+					actionScripts = {},
+					i = 0,
+					l = data.length
+
+				for( ; i < l ; i ++ ) {
+					eval( "evalscripted = function(value) { " + data[i].groups.action[ 0 ].script[ 0 ] + " } " );
+					actionScripts[ data[ i ].groups.action[ 0 ].name[ 0 ] ] = evalscripted;
+				}
+
+				setActionScripts(data, actionScripts);
+				div.dialog('close');
+			});
+
+			form.onLoaded().done(function() {
+				div.html(form.makeDom());
+				form.inDom();
+			});
+
+		});
+
+			/*
 				var actions = [];
 				var save = new Button('Save', function() {
 					form.dom.trigger('stopEditing');
-					var value = form.getValue(), data = value.general, evalscripted;
-					var actionScripts = {};
-
-					for(var i = 0; i < data.length; i++) {
-						eval("evalscripted = function(value) { " + data[i].action[0].script[0] + " } ");
-						actions.push({name: data[i].action[0].actionname[0], script: data[i].action[0].script[0] });
-						actionScripts[data[i].action[0].actionname[0]] = evalscripted;
-					}
-
-					setActionScripts(actions, actionScripts);
+					
 					div.dialog('close');
 				});
 				save.setColor('blue');
@@ -334,7 +376,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 
 			});
 	
-		});
+		});*/
 	}
 
 	
