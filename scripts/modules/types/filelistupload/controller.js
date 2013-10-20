@@ -23,12 +23,6 @@ define(['modules/defaultcontroller'], function(Default) {
 			}		
 		},
 		
-		
-		moduleInformations: {
-			moduleName: 'Upload files'
-		},
-		
-		
 		actions: {
 		
 		},
@@ -38,38 +32,32 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 		
-		doConfiguration: function(section) {
+		configurationStructure: function() {
 
 			return {
 				groups: {
-					'gen': {
-						config: { type: 'list' },
-						fields: [
-							{
-								type: 'Text',
-								name: 'fileuploadurl',
+					group: {
+
+						options: { 
+							type: 'list' 
+						},
+
+						fields: {
+
+							fileuploadurl: {
+								type: 'text',
 								title: 'Upload URL'
 							}
-						]
+
+						}
 					}
 				}
 			}
 		},
 		
-		doFillConfiguration: function() {
-			
-			return {	
 
-				groups: {
-					gen: [{
-						fileuploadurl: [this.module.getConfiguration().fileuploadurl],
-					}],
-				}
-			}
-		},
-		
-		doSaveConfiguration: function(confSection) {
-			this.module.getConfiguration().fileuploadurl = confSection[0].gen[0].fileuploadurl[0];
+		configAliases: {
+			'fileuploadurl': function(cfg) { return cfg.groups.group[ 0 ].fileuploadurl[ 0 ]; }
 		},
 
 		"export": function() {

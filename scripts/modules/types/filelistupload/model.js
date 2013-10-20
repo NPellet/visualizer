@@ -1,6 +1,7 @@
 define(['modules/defaultmodel','util/datatraversing'], function(Default,Traversing) {
 	
 	function model() {};
+	
 	model.prototype = $.extend(true, {}, Default, {
 		getValue: function() {
 			return this.dataValue;
@@ -36,8 +37,9 @@ define(['modules/defaultmodel','util/datatraversing'], function(Default,Traversi
 			return getjPath(data);
 		}
 
-	}
+	});
 
 	return model;
+
 });
 	
