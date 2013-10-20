@@ -109,52 +109,30 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 			moduleName: 'GC MS'
 		},
 		
-		doConfiguration: function(section) {
+		configurationStructure: function(section) {
 
 			return {
 				groups: {
-					'gencfg': {
-						config: {
+					group: {
+						options: {
 							type: 'list'
 						},
 
-						fields: [
-							{
-								type: 'Checkbox',
-								name: 'continuous',
-								title: 'Continuous',
+						fields: {
+							
+							continuous: {
+								type: 'checkbox',
+								title: 'MS Continuous',
 								options: {'continuous': 'Continuous'}
-							},
-
-							{
-								type: 'Text',
-								name: 'nbzones',
-								title: 'Maximum number of zones'
 							}
-						]
+						}
 					}
 				}
 			};
 		},
-		
-		doFillConfiguration: function() {
 
-			return {
-				groups: {
-					gencfg: [{
-						continuous: [this.module.getConfiguration().continuous ? ['continuous'] : []],
-						nbzones: [this.module.getConfiguration().nbzones || 1]
-					}]
-				}
-			}
-		},
-			
-		doSaveConfiguration: function(confSection) {	
-
-			this.module.getConfiguration().continuous = confSection[0].gencfg[0].continuous[0][0] == 'continuous';
-			this.module.getConfiguration().nbzones = confSection[0].gencfg[0].nbzones[0];
-		
-
+		configAliases: {
+			'continuous': function(cfg) { return cfg.groups.group[ 0 ].continuous[ 0 ][ 0 ] == "continuous"; }
 		}
 	});
 

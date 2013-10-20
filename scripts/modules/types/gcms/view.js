@@ -20,10 +20,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 		inDom: function() {
 			var self = this;
 			var _gcms = new gcms();
-			_gcms.setMSContinuous(this.module.getConfiguration().continuous);
-			_gcms.setRangeLimit(this.module.getConfiguration().nbzones || 1);
+			_gcms.setMSContinuous(this.module.getConfiguration( 'continuous' ));
 			_gcms.inDom(this.dom.find('.gc').get(0), this.dom.find('.ms').get(0));
-
 			_gcms.onAnnotationChange = function(annot) {
 
 				switch(annot.type) {
