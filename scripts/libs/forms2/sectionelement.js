@@ -39,10 +39,10 @@ define(['require', 'jquery'], function(require, $) {
 
 			// Let's make at least 1 section element
 			var groups = this.section.getGroups();
-			for( i in groups ) {
+	/*		for( i in groups ) {
 				this.getGroupElement( groups[ i ].getName( ), 0 );
 			}
-
+*/
 			this._fill( groups, this.getGroupElement, groupsObj, clearFirst );
 		},
 
@@ -50,10 +50,10 @@ define(['require', 'jquery'], function(require, $) {
 
 			// Let's make at least 1 section element
 			var sections = this.section.getSections();
-			for( i in sections ) {
+	/*		for( i in sections ) {
 				this.getSectionElement( sections[ i ].getName( ), 0 );
 			}
-
+*/
 			this._fill( sections, this.getSectionElement, sectionsObj, clearFirst );
 		},
 
@@ -79,11 +79,15 @@ define(['require', 'jquery'], function(require, $) {
 				j = 0,
 				l = stack[ i ].length;
 
+				if( l == 0 ) {
+					stack[ i ][ 0 ] = { };
+					l++;
+				}
+
 				for( ; j < l ; j ++) {
 
 					self.done++;
 					getter.call( this, i , j ).fill( stack[ i ][ j ] , clearFirst ).done( function() { // Returns a deferred
-
 						self.done--;
 						if( self.done == 0 ) { // All subgroups and subsections are loaded. Let's move to the parent !
 							self.readyDef.resolve();
@@ -199,8 +203,7 @@ define(['require', 'jquery'], function(require, $) {
 		getValue: function() {
 
 			var groupEls = this.getGroupElements(),
-				sectionEls = this.getSectionElements();
-
+				sectionEls = this.getSectionElements(),
 				json = { sections: {}, groups: {} };
 
 			this._getValue(sectionEls, json.sections);
@@ -245,7 +248,9 @@ define(['require', 'jquery'], function(require, $) {
 			var self = this,
 				dom = $("<div />"),
 				i,
-				h;
+				h,
+				j,
+				l;
 
 			switch( this.section.form.tplMode ) {
 				case 1:
@@ -282,7 +287,6 @@ define(['require', 'jquery'], function(require, $) {
 				}
 			}
 
-			
 			for( i in this.sectionElements ) {
 				l = this.sectionElements[ i ].length;
 				for( j = 0 ; j < l ; j++) {
