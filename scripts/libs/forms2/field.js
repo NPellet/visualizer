@@ -82,7 +82,6 @@ define(['require', 'jquery'], function(require, $) {
 		},
 
 		getOptions: function( fieldElement ) {
-			console.log(fieldElement);
 			return fieldElement.getOptions() || this.options.options;
 		}
 
