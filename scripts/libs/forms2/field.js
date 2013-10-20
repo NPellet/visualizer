@@ -79,7 +79,13 @@ define(['require', 'jquery'], function(require, $) {
 			if( this.options.onChange ) {
 				this.options.onChange.call( this, this.elements );
 			}
+		},
+
+		getOptions: function( fieldElement ) {
+			console.log(fieldElement);
+			return fieldElement.getOptions() || this.options.options;
 		}
+
 	});
 	
 

@@ -147,11 +147,12 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			i = 0;
 
 		var posDom = fieldElement._dom.position();
+		var posWrap = this.group.form.dom.find('.form-sections-wrapper').position();
 
 		return {
 			width: fieldElement._dom.innerWidth(),
-			left: posDom.left,
-			top: posDom.top + fieldElement._dom.height() - 1
+			left: posDom.left + posWrap.left,
+			top: posDom.top + posWrap.top + fieldElement._dom.height() - 1
 		};
 	}
 

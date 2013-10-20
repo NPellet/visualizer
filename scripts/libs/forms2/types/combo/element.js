@@ -13,18 +13,9 @@ define( [ ], function(  ) {
 					.appendTo( dom )
 					.bind('click', function( event ) {
 
-						self.toggleSelect( event );
-
-					}).bind('click', function( event ) {
-
+						self.select( event );
 						event.stopPropagation();
-
-					});/*.bind('keydown', function( event ) {
-console.log('GOTONEXT');
-						if( self.field.form.tabPressed( event, self ) ) {
-							this.blur();
-						}
-					})*/
+					});
 
 		this.fieldElement = div;
 		this.div = div;
@@ -43,6 +34,7 @@ console.log('GOTONEXT');
 
 			if( text !== false ) {
 				this.div.html( text.title );
+
 			//	this.fieldElement.trigger( 'focus' );
 			//	this.form.hideExpander( true );				
 			}

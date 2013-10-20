@@ -153,7 +153,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 					cols: {
 						options: {
 							type: 'table',
-							multiple: true
+							multiple: true,
+							title: 'Columns'
 						},
 
 						fields: {

@@ -28,6 +28,19 @@ define( [ ], function(  ) {
 
 					});
 
+
+		if( this.field.getOptions ( this ) ) {
+
+			input.autocomplete( {
+				minLength: 0,
+				source: this.field.getOptions ( this )
+			});
+			
+			input.autocomplete( 'widget' ).addClass( 'form-autocomplete' );
+			//input.autocomplete("search", this.val);
+		}
+
+
 		this.dom = dom;
 		this.input = input;
 		this.fieldElement = input;
@@ -42,8 +55,15 @@ define( [ ], function(  ) {
 		if( this.dom ) {
 			this.input.val(this.value);
 		}
+	};
 
-	}
+	FieldConstructor.prototype.getOptions = function() {
+		return this.autocomplete || false;
+	};
+
+	FieldConstructor.prototype.setOptions = function(options) {
+		this.autocomplete = options;
+	};
 
 	return FieldConstructor;
 });

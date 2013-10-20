@@ -104,116 +104,74 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			var data = Traversing.getValueIfNeeded(this.module.data),
 				jpaths = [];
 			
-			if(Traversing.getType(data) == 'array') 
+			if(Traversing.getType(data) == 'array')  {
+
 				Traversing.getJPathsFromElement(data[0], jpaths);
-			else if(Traversing.getType(data) == 'arrayXY')
+
+			} else if(Traversing.getType(data) == 'arrayXY') {
+
 				Traversing.getJPathsFromElement(data, jpaths);
+
+			}
 			
 			return {
 				groups: {
-					'gencfg': {
-						config: {
+					gencfg: {
+						options: {
 							type: 'list'
 						},
 
-						fields: [
+						fields: {
 
-							{
-								type: 'Text',
-								name: 'nblines',
+							nblines: {
+								type: 'text',
 								title: 'Lines per page'
 							},
 
-							{
-								type: 'Combo',
-								name: 'toggle',
+							toggle: {
+								type: 'combo',
 								title: 'Line toggling',
 								options: [{key: "0", title: "No"}, {key: "single", title:"Single row"}, {key: "multiple", title:"Multiple rows"}]
 							},
 
-							{
+							colorjpath: {
 								type: 'Combo',
-								name: 'colorjpath',
 								title: 'Color jPath',
 								options: jpaths
 							},
 
-							{
+							displaySearch: {
 								type: 'Checkbox',
-								name: 'displaySearch',
 								options: { 'allow': 'Allow searching'}
 							}
-
-						]
+						}
 					},
 
 					'cols': {
-						config: {
-							type: 'table'
+						options: {
+							type: 'table',
+							multiple: true
 						},
 
-						fields: [
-							{
+						fields: {
+
+							coltitle: {
 								type: 'Text',
-								name: 'coltitle',
 								title: 'Columns title'
 							},
 
-							{
+							coljpath: {
 								type: 'Combo',
-								name: 'coljpath',
 								title: 'jPath',
 								options: jpaths
 							}
-
-						]
+						}
 					}
 				}
 			}		
 		},
 		
-		doFillConfiguration: function() {
-
-			var cfg = this.module.getConfiguration();
-			var cols = cfg.colsjPaths;
-			
-			var titles = [];
-			var jpaths = [];
-
-			for(var i in cols) {
-				titles.push(i);
-				jpaths.push(cols[i].jpath);
-			}
-
-			return {	
-
-				groups: {
-					gencfg: [{
-						nblines: [cfg.nbLines || 20],
-						toggle: [cfg.toggle],
-						colorjpath: [cfg.colorjPath || ''],
-						displaySearch: [[cfg.displaySearch ? 'allow' : '']]
-					}],
-					
-					cols: [{
-						coltitle: titles,
-						coljpath: jpaths
-					}]
-				}
-			}
-		},
 		
-		doSaveConfiguration: function(confSection) {
-			var group = confSection[0].cols[0];
-			var cols = {};
-			for(var i = 0; i < group.length; i++)
-				cols[group[i].coltitle] = { jpath: group[i].coljpath };
-			this.module.getConfiguration().colsjPaths = cols;
-			this.module.getConfiguration().nbLines = confSection[0].gencfg[0].nblines[0];
-			this.module.getConfiguration().toggle = confSection[0].gencfg[0].toggle[0];
-			this.module.getConfiguration().colorjPath = confSection[0].gencfg[0].colorjpath[0];
-			this.module.getConfiguration().displaySearch = !!confSection[0].gencfg[0].displaySearch[0][0];
-		},
 
 		"export": function() {
 			return this.module.view.table.exportToTabDelimited();

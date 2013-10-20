@@ -8,16 +8,15 @@ define(['modules/defaultmodel','util/datatraversing'], function(Default,Traversi
 		},
 				
 		getjPath: function(rel) {
-			function getjPath(data) {
-				var jpaths = [];
-				Traversing.getJPathsFromElement(data, jpaths);
+			var jpaths = [];
+			var data = this.module.getDataFromRel('list');
+			if(!data || data == null) {
 				return jpaths;
 			}
-			var data = this.module.getDataFromRel('list');
-			if(!data || data == null)
-				return;
+
 			data = data[0];
-			return getjPath(data);
+			Traversing.getJPathsFromElement(data, jpaths);
+			return jpaths;
 		}
 	});
 

@@ -278,11 +278,31 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			div.prev().remove();
 			div.parent().css('z-index', 1000);
 
-			var autoComplete = [];
-			var keys = API.getRepositoryData().getKeys();
+			// AUTOCOMPLETE VARIABLES
+			var autoCompleteVariables = [],
+				keys = API.getRepositoryData().getKeys(),
+				i = 0,
+				l = keys.length;
 
-			for(var i = 0, l = keys.length; i < l; i++)
-				autoComplete.push({title: keys[i], label: keys[i]});
+			for( ; i < l; i++ ) {
+				autoCompleteVariables.push({title: keys[i], label: keys[i]});
+			}
+
+
+
+			// AUTOCOMPLETE ACTIONS
+			var autoCompleteActions = [],
+				keys = API.getRepositoryActions().getKeys(),
+				i = 0,
+				l = keys.length;
+
+			for( ; i < l; i++ ) {
+				autoCompleteActions.push({title: keys[i], label: keys[i]});
+			}
+
+
+
+
 			
 			// Receive configuration
 			var availCfg = module.controller.configurationReceive;
@@ -410,7 +430,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 										name: {
 											type: 'text',
 											title: 'From variable',
-											autoComplete: autoComplete
+											options: autoCompleteVariables
 										}
 									}
 								}
@@ -489,7 +509,8 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 
 										name: {
 											type: 'text',
-											title: 'Action name'
+											title: 'Action name',
+											options: autoCompleteActions
 										}
 									}
 								}

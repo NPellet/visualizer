@@ -14,7 +14,7 @@ define(['./default'], function(FieldDefault) {
 		addField: function(position) {
 			var div = $("<div />");
 			this.divs.splice(position, 0, div)
-			this.input = $("<input />");
+			this.input = $("<input />", { type: 'text' });
 
 
 			return { html: div, index: position };		

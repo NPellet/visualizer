@@ -301,11 +301,13 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			i++;
 		});
 
+		var posWrap = this.group.form.dom.find('.form-sections-wrapper').position();
 		var posDom = this.domBody.children('tr:eq(' + j + ')').position();
+
 		return {
 			width: this.domBody.innerWidth(),
-			left: posDom.left,
-			top: posDom.top + this.domBody.children('tr:eq(' + j + ')').innerHeight() - 1
+			left: posDom.left + posWrap.left,
+			top: posDom.top + posWrap.top + this.domBody.children('tr:eq(' + j + ')').innerHeight() - 1
 		};
 	};
 

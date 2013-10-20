@@ -9,14 +9,20 @@ define(['modules/defaultview', 'forms/title', 'util/util', 'util/api', 'util/dom
 	 		this.domSearch = $("<div />").addClass('ci-grid-search');
 	 		this.domExport = $("<div />");
 	 		var inst = this;
+
 	 		if(this.module.getConfiguration().displaySearch) {
+
 	 			var searchInput = $("<input />").bind('keyup', function() {
-	 				if(inst.table)
-	 					inst.table.doSearch($(this).val());;
+	 				if(inst.table) {
+	 					inst.table.doSearch( $( this ).val( ) );
+	 				}
 	 			});
+
 	 			this.domSearch.append(searchInput);
 	 			this.domSearch.prepend("<span>Search : </span>");
+
 	 		}
+
 	 		this.dom.append(this.domSearch).append(this.domExport).append(this.domTable);
 	 		this.module.getDomContent().html(this.dom);
 	 		this._highlights = this._highlights || [];

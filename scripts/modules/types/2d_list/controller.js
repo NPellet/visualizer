@@ -52,98 +52,57 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 				moduleName: 'Grid'
 		},
 		
-		doConfiguration: function(section) {
+		configurationStructure: function(section) {
 			
-			var jpaths = [], data;
-			if(data = this.module.getDataFromRel('list') && data != null)
-				Traversing.getJPathsFromElement(data[0], jpaths);
+			var jpaths = this.module.model.getjPath();
 			
 			return {
 				groups: {
-					'module': {
-						config: {
+					group: {
+						options: {
 							type: 'list'
 						},
 
-						fields: [
+						fields: {
 
-							{
-								type: 'Text',
-								name: 'colnumber',
+							colnumber: {
+								type: 'text',
 								title: 'Number of columns'
 							},
 
-							{
-								type: 'Combo',
-								name: 'valjPath',
+							valjPath: {
+								type: 'combo',
 								title: 'Value jPath',
 								options: jpaths
 							},
 
-							{
-								type: 'Combo',
-								name: 'colorjPath',
+							colorjPath: {
+								type: 'combo',
 								title: 'Color jPath',
-								options: jpath
+								options: jpaths
 							},
 
-							{
-								type: 'Text',
-								name: 'width',
+							width: {
+								type: 'text',
 								title: 'Cell width'
 							},
 
-							{
-								type: 'Text',
-								name: 'height',
+							height: {
+								type: 'text',
 								title: 'Cell height'
 							}
-						]
+						}
 					}
 				}
 			}
 		},
-		
-		doFillConfiguration: function() {
 			
-			var valJpath = this.module.getConfiguration().valjpath || "";
-			var colorJpath = this.module.getConfiguration().colorjpath || "";
-			var cols = this.module.getConfiguration().colnumber || 4;
-			
-			var height = this.module.getConfiguration().height || "";
-			var width = this.module.getConfiguration().width || "";
-			
-			return { groups: {
-					module: [{
-						colnumber: [cols],
-						valjPath: [valJpath],
-						colorjPath: [colorJpath],
-						width: [width],
-						height: [height]
-					}]
-				}
-			}
-		},
-		
-		
-		doSaveConfiguration: function(confSection) {
-			
-			var group = confSection[0].module[0];
-			
-			var colnumber = group.colnumber[0];
-			var valjpath = group.valjPath[0];
-			var colorjpath = group.colorjPath[0];
-			var height = group.width[0];
-			var width = group.height[0];
-			
-			this.module.definition.configuration = {
-				colnumber: colnumber,
-				valjpath: valjpath,
-				colorjpath: colorjpath,
-				width: width,
-				height: height
-			};
+		configAliases: {
+			'colnumber': function(cfg) { return cfg.groups.group[ 0 ].colnumber[ 0 ]; },
+			'colorjpath': function(cfg) { return cfg.groups.group[ 0 ].colorjPath[ 0 ]; },
+			'valjpath': function(cfg) { return cfg.groups.group[ 0 ].valjPath[ 0 ]; }
 		}
+
 	});
 
  	return controller;

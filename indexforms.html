@@ -1,16 +1,191 @@
 <html>
 	<head>
-
-		<link rel="stylesheet" href="scripts/libs/jqueryui/css/Aristo/Aristo.css" media="screen, print" />
-		
-		<link rel="stylesheet" href="scripts/libs/dynatree/skin/ui.dynatree.css" media="screen, print" />
-	
-		<script data-main="indexinit" src="./scripts/libs/require/require.js"></script>
-
+<script language="javascript" src="./scripts/libs/jquery/jquery.js"> </script>
 	</head>
 	<body>
-	<div id="form" style="width: 850px; float: left;"> </div>
-	<div style="width: 50%; float: left;"> <pre id="json"></pre></div>
+
+	<script>
+
+var orPos = [ [ 2, 6 ], [ 2, 10 ], [3, 11], [7, 11] ];
+var obstacles = [ [7, 1], [7, 9], [3, 9], [4, 10], [3, 10], [4, 6] ];
+var pos;
+
+var goal = [ 4, 9 ];
+var size = [ 8, 12 ];
+
+function isObstacleAt( posX, posY ) {
+
+	if(posY < 1)
+		return true;
+	if(posY > size[ 1 ])
+		return true;
+
+	if(posX < 1) 
+		return true;
+
+	if(posX > size[ 0 ])
+		return true;
+
+	var i = 0, l = pos.length;
+	for( ; i < l ; i ++ ) {
+		if(pos[i][1] == posY && pos[i][0] == posX ) {
+			return true;
+		}
+	}
+
+	var i = 0, l = obstacles.length;
+	for( ; i < l ; i ++ ) {
+		if(obstacles[i][1] == posY && obstacles[i][0] == posX ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+function isNextPossible( pos, dir ) {
+	
+	if( dir == 0 ) {
+		return ! isObstacleAt( pos[ 0 ], pos[ 1 ] + 1);
+	} 
+	
+	if( dir == 1 ) {
+		return ! isObstacleAt( pos[ 0 ], pos[ 1 ] - 1);
+	} 
+	
+	if( dir == 2 ) {
+		return ! isObstacleAt( pos[ 0 ] + 1, pos[ 1 ] );
+	} 
+	
+	if( dir == 3 ) {
+		return ! isObstacleAt( pos[ 0 ] - 1, pos[ 1 ] );
+	} 
+}
+
+function check(ball) {
+
+	if( (ball[0] == goal[ 0 ] && ball[1] == goal[ 1 ])) {
+		console.log(ball);
+		console.log(stack);
+		found = true;
+		return true;
+	}
+}
+
+
+function moveTo(ball, dir) {
+
+	if(isNextPossible( ball, dir )) {
+
+		if(dir == 0) {
+			while( ! isObstacleAt( ball[ 0 ] , ball[ 1 ] - 1 ) ) {
+				ball[ 1 ]--;
+				if(check( ball )) {
+					break;
+				}
+			}
+		} else
+
+		if(dir == 1) {
+			while( ! isObstacleAt( ball[ 0 ] , ball[ 1 ] + 1 ) ) {
+				ball[ 1 ]++;
+				if(check( ball )) {
+					break;
+				}
+			}
+			
+		} else
+
+		if(dir == 2) {
+			while( ! isObstacleAt( ball[ 0 ] - 1, ball[ 1 ]) ) {
+				ball[ 0 ]--;
+				if(check( ball )) {
+					break;
+				}
+			}
+			
+		} else
+
+		if(dir == 3) {
+			while( ! isObstacleAt( ball[ 0 ] + 1, ball[ 1 ] ) ) {
+				ball[ 0 ]++;
+				if(check( ball )) {
+					break;
+				}
+			}
+			
+		}
+
+		return true;
+	} 
+
+}
+
+console.time('Trials');
+
+var i = 0;
+var found = false;
+// New try
+while( true ) {
+	i++;
+	if(i > 1000000000) {
+		break;
+	}
+
+	if(i % 1000000 == 0) {
+		console.log(i);
+	}
+
+	pos = null;
+	pos = $.extend(true, [], orPos);
+
+	//console.log(' New try ');
+	// New ball
+	stack = [];
+
+	k = 0;
+	while( true ) {
+
+		k++;
+		if( k > 40) {// More than 100 moves !
+			break;
+		}
+
+		ball = Math.round(Math.random() * (pos.length - 1));
+		dir = Math.round(Math.random() * 3);
+
+
+		j = 0;
+		while( j < 10 ) {
+			j++;
+			if(moveTo(pos[ ball ], dir)) {
+				stack.push([ball, dir, pos[ball][0], pos[ball][1]]);
+				//console.log(ball, dir, pos[ball]);
+				break;
+			}
+		}
+
+		if(found) {
+			break;
+		}
+
+		//console.log(pos[ball]);
+
+	}
+
+	if(found) {
+		break;
+	}
+
+}
+
+if(!found)
+	console.log('NOT FOUND =(');
+
+console.log(i);
+console.log(orPos);
+console.timeEnd('Trials');
+
+	</script>
 	</body>
 </html>
 

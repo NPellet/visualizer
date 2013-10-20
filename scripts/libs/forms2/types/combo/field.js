@@ -14,16 +14,18 @@ define( [ require, '../../field', 'libs/dynatree/dynatree' ], function( require,
 					return;
 				}				
 				self.getElementExpanded( ).value = node.data.key;
+			},
+
+			onClick: function(node, event) {
+
+				if( node && node.data.isFolder == false ) {
+					self.form.hideExpander( true );
+				}
 			}
 		});
 	};
 
 	FieldConstructor.prototype = new FieldDefaultConstructor( );
-
-	FieldConstructor.prototype.getOptions = function( fieldElement ) {
-		
-		return fieldElement.getOptions() || this.options.options
-	};
 
 	FieldConstructor.prototype.showExpander = function( fieldElement ) {
 
