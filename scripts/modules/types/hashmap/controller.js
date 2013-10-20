@@ -5,101 +5,70 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 
 		configurationSend: { },
 		configurationReceive: {
-			"hashmap": {
-				type: ['object'],
+			'hashmap': {
+				type: [ 'object' ],
 				label: 'A simple 1 level json object',
 				description: ''
 			}	
 		},
-		moduleInformations: {
-			moduleName: 'Object viewer'
-		},
 		
-		doConfiguration: function(section) {
+		configurationStructure: function(section) {
 
-			var data = this.module.getDataFromRel('hashmap');
-			
-			var jpaths = [];
-			Traversing.getJPathsFromElement(data, jpaths);
-
-			var groupfield = new BI.Forms.GroupFields.List('cfg');
-			section.addFieldGroup(groupfield);
-
-
-			var field = groupfield.addField({
-				type: 'Checkbox',
-				name: 'hide_empty'
-			});
-			field.setTitle(new BI.Title('Empty lines'));
-			field.implementation.setOptions({'hide': 'Hide empty lines'});
-
-
-			var groupfield = new BI.Forms.GroupFields.Table('keys');
-			section.addFieldGroup(groupfield);
-			
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'title'
-			});
-			field.setTitle(new BI.Title('Columns title'));
-		
-			var field = groupfield.addField({
-				type: 'Combo',
-				name: 'key'
-			});
-			field.implementation.setOptions(jpaths);
-			field.setTitle(new BI.Title('Key'));
-
-
-
-			var field = groupfield.addField({
-				type: 'Text',
-				name: 'printf'
-			});
-			field.setTitle(new BI.Title('Printf'));
-		
-
-			return true;
-		},
-
-		
-		doFillConfiguration: function() {
-			
-			var keys = this.module.getConfiguration().keys;
-			var hide = [(this.module.getConfiguration().hideemptylines ? ['hide'] : [])];
-			var titles = [], jpaths = [], printf = [];
-			for(var i in keys) {
-				titles.push(i);
-				jpaths.push(keys[i].key || null);
-				printf.push(keys[i].printf || null);
-			}
-
+			var jpaths = this.module.model.getjPath( 'hashmap' );			
 			return {
+
 				groups: {
+					group: {
+						options: {
+							type: 'list'
+						},
 
-					cfg: [{
-						hide_empty: hide
-					}],
+						fields: {
 
-					keys: [{
-						title: titles,
-						key: jpaths,
-						printf: printf
-					}]
+							hideemptylines: {
+								type: 'checkbox',
+								title: 'Hide empty lines',
+								options: {'hide': 'Hide empty lines'}
+							}
+						}
+					},
+
+					keys: {
+
+						options: {
+							type: 'table',
+							multiple: true,
+							title: 'Fields to display'
+						},
+
+						fields: {
+
+							jpath: {
+								type: 'combo',
+								title: 'J-Path',
+								options: jpaths
+							},
+
+							label: {
+								type: 'text',
+								title: 'Label'
+							},
+
+							printf: {
+								type: 'text',
+								title: 'printf'
+							} 
+						}
+
+					}
 				}
 			}
 		},
-		
-		doSaveConfiguration: function(confSection) {
-			var group = confSection[0].keys[0];
-			this.module.getConfiguration().hideemptylines = (confSection[0].cfg[0].hide_empty[0][0] == 'hide');
-			var cols = {};
-			for(var i = 0; i < group.length; i++)
-				cols[group[i].title] = {key: group[i].key, printf: group[i].printf};
-
-			this.module.getConfiguration().keys = cols;
+	
+		configAliases: {
+			'keys': function(cfg) { return cfg.groups.keys[ 0 ]; },
+			'hideemptylines': function(cfg) { return cfg.groups.group[ 0 ].hideemptylines[ 0 ][ 0 ] == 'hide'; }
 		}
-
 	});
 
 	return controller;

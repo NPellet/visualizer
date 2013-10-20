@@ -18,7 +18,7 @@ define( [ require, '../../field', 'libs/dynatree/dynatree' ], function( require,
 
 			onClick: function(node, event) {
 
-				if( node && node.data.isFolder == false ) {
+				if( node && node.data.children && node.data.children.length == 0 ) {
 					self.form.hideExpander( true );
 				}
 			}

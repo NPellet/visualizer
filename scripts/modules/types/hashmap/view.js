@@ -1,10 +1,10 @@
-define(['modules/defaultview'], function(Default) {
+define(['modules/defaultview', 'util/typerenderer'], function(Default, Renderer) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-			this.dom = $('<table></table>');
+			this.dom = $('<table><tbody></tbody></table>');
 			this.module.getDomContent().html(this.dom);
 		},
 		
@@ -13,54 +13,50 @@ define(['modules/defaultview'], function(Default) {
 		onResize: function() {
 			
 		},
-		
-		update: {
-			'hashmap': function(moduleValue) {
-				
-				if(!moduleValue)
+
+		renderElement: function( element, el, i, html ) {
+
+			var self = this;
+
+			Renderer.toScreen( element, this.module, { }, el.jpath ).always( function( value ) {
+
+				if( value == "" && self.module.getConfiguration('hideemptylines', false) ) {
 					return;
-				var view = this;
-				view.dom.html('');
-
-				var cfgg = this.module.getConfiguration();
-				var cfg = cfgg.keys;
-
-				var html = '';
-				var def = [];
-		
-				for(var i in cfg) {
-					(function(j) {
-						def.push(CI.DataType.asyncToScreenHtml(moduleValue, view.module, cfg[i].key).pipe(function(html2) {
-
-							if(html2 == "" && cfgg.hideemptylines)
-								return;
-
-							if(cfg[i].printf)
-								html2 = sprintf(cfg[i].printf, html2);
-							return '<tr><td>' + j + '</td><td>' + html2 + '</td></tr>';
-						}));
-					}) (i);
 				}
 
-				$.when.apply($, def).done(function() {
-					var html = '';
-					for(var i in arguments) {
-						html += arguments[i];
-					}
-					view.dom.html(html);
-					CI.Util.ResolveDOMDeferred(view.dom);
-				});
+				if( el.printf ) {
+					value = sprintf( el.printf, value );
+				}
 
+				html.append( '<tr><td>' + el.label + '</td><td>' + value + '</td></tr>' );
+			} );
+
+		},
+		
+		update: {
+
+			'hashmap': function(moduleValue) {
 				
+				if( ! moduleValue ) {
+					return;
+				}
 				
-				/*
-				var type = CI.DataType.getType(moduleValue);
-				CI.DataType.toScreen(moduleValue, this.module).done(function(html) {
-					view.dom.append(html);
-					CI.Util.ResolveDOMDeferred();
-				});*/
+				var cfg = this.module.getConfiguration('keys'),
+					html = this.dom.children(' tbody ').empty(),
+					i = 0,
+					l = cfg.length; 
+				
+				for( ; i < l; i ++ ) {
+
+					if( cfg[ i ].jpath != null) {
+
+						this.renderElement ( moduleValue, cfg[ i ] , i, html);
+						
+					}
+				}			
 			}
 		},
+
 		getDom: function() {
 			return this.dom;
 		},

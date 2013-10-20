@@ -1,4 +1,4 @@
-define(['modules/defaultmodel'], function(Default) {
+define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traversing) {
 	
 	function model() {};
 	model.prototype = $.extend(true, {}, Default, {
@@ -9,7 +9,12 @@ define(['modules/defaultmodel'], function(Default) {
 		},
 		
 		getjPath: function(rel, accepts) {
-			return [];	
+			var data = this.module.getDataFromRel( rel ),
+				jpaths = [];
+
+			Traversing.getJPathsFromElement(data, jpaths);
+
+			return jpaths;
 		}
 
 	});

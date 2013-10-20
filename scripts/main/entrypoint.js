@@ -23,19 +23,25 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 			view = JSON.stringify(view),
 			message = [];
 
-		if(viewhandler && viewhandler._savedLocal != view && viewserver._savedServer != view)
+		if( viewhandler && viewhandler._savedLocal != view && viewserver._savedServer != view ) {
 			dommessage.view = true;
+		}
 
-		if(datahandler && datahandler._savedLocal != data && datahandler._savedServer != data)
+		if( datahandler && datahandler._savedLocal != data && datahandler._savedServer != data ) {
 			dommessage.data = true;
+		}
 
-		if(dommessage.view)
+		if( dommessage.view ) {
 			message.push("The view file has not been saved. If you continue, you will loose your changes");
-		if(dommessage.data)
+		}
+
+		if( dommessage.data ) {
 			message.push("The data file has not been saved. If you continue, you will loose your changes");
+		}
 		
-		if(message.length > 0)
-			return message.join("\n\n");
+		if( message.length > 0 ) {
+			return message.join( "\n\n" );
+		}
 	}
 
 	function doScripts(data) {
@@ -164,19 +170,22 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 			data = Versioning.getData(),
 			view = Versioning.getView();
 
-		var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%' });
+
+
+		var div = $('<div></div>').dialog({ modal: true, position: [ 'center', 50 ], width: '80%' } );
 		div.prev().remove();
 		div.parent().css('z-index', 1000);
 
 		var options = [];
 		Traversing.getJPathsFromElement(data, options);
-
 		require(['./libs/forms2/form'], function(Form) {
 
 			var form = new Form();
+			
 			form.init({
 				onValueChanged: function( value ) {	}
 			});
+
 			form.setStructure({
 				sections: {
 					cfg: {
@@ -216,7 +225,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 					}
 				}
 			});
-
+console.log(view.variables);
 
 			form.onStructureLoaded().done(function() {
 				form.fill({ 

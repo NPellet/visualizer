@@ -367,7 +367,7 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 				success: function(data) {
 					//console.log(this._reviver);
 					
-					data = JSON.parse(data, self._reviver);
+					data = JSON.parse( data, self._reviver );
 					self.make(data);
 					self.onLoaded(data);
 					def.resolve();
