@@ -357,14 +357,29 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 			definition = $.extend(true, defaults, def);
 			jqdom = $(dom).empty();
 			
+			function makeRecursiveMenu( elements, dom ) {
+
+				for( var i in elements ) {
+					if( typeof elements[ i ] == 'object' ) {
+						el = $('<li><a>' + i + '</a></li>');
+						ul = $("<ul />").appendTo( el );
+						makeRecursiveMenu( elements[ i ], ul  )
+						dom.append( el );
+
+					} else {
+						dom.append('<li class="ci-item-newnmodule" data-name="' + i + '"><a>' + elements[ i ] + '</a></li>');
+					}
+				}
+			}
 			
 			Context.listen(dom, [], function(contextDom) {
 				$li = $('<li><a> Add a module</a></li>');
+
 				$ulModules = $("<ul />").appendTo($li);
 				var allTypes = ModuleFactory.getTypes();
-				for(var i in allTypes)
-					$ulModules.append('<li class="ci-item-newnmodule" data-name="' + i + '"><a>' + allTypes[i] + '</a></li>');
 
+				makeRecursiveMenu( allTypes, $ulModules );
+				
 				$(contextDom).append($li);
 
 				$li.bind('click', function(event) {

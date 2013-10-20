@@ -6,42 +6,56 @@ define(['modules/module'], function(Module) {
 	return {
 		getTypes: function() {
 			return {
-				'display_value': 'Single value',
-				'postit': 'Sticky note',
-//				'grid': 'Table',
-				'jqgrid': 'Table v2',
-				'2d_list': '2D Grid',
-				'hashmap': 'Object viewer',
-				'recursive_tree': 'Recursive tree',
-				'iframe': 'iFrame',
-// Interactive modules	
-				'dragdrop': 'Drag and Drop file',
-				'button_url': 'Button URL',
-				'button_action': 'Button to action',
-				'webservice_button': 'Webservice button',
-				'webservice_cron': 'Webservice cron',
-				'webservice_search': 'Webservice search',
-//				'editable_grid': 'Editable Table',
-				'grid_selector': 'Table Selector',	
-				'filelistupload': 'Files upload',	
-				'object_editor': 'Object editor',
-				'xyzoomnavigator': 'XY zoom navigator',	
-// Science modules
-				'2dnmr': '2D NMR',
-				'spectra_displayer': 'Spectra displayer',
-				'gcms': 'GC-MS',
-				'jsme': 'JSME Molecular Editor',
-				'jsmol': 'JSMol',
-				'jsmol_script': 'JSMol Script',
-				'ivstability': 'IV stability',
-				'mol2d': '2D Molecule viewer',
-// Statistics modules
-				'dendrogram': 'Dendrogram',
-				'loading_plot': 'Loading plot',
-				
-// Graphical modules
-				'canvas_matrix': 'Matrix',
-				'plot': 'Plot',
+
+				'Displaying information': {
+					'display_value': 'Single value',
+					'jqgrid': 'Table',
+					'2d_list': '2D List',
+					'hashmap': 'Object viewer',
+					'postit': 'Sticky note',
+					'iframe': 'iFrame',
+					'recursive_tree': 'Recursive tree (?)'
+				},
+
+				'Client interaction': {
+					'dragdrop': 'Drag and Drop file',
+					'button_action': 'Button to action',
+					'grid_selector': 'Table Selector (?)',
+					'xyzoomnavigator': 'XY zoom navigator (?)'
+				},
+
+				'Server interaction': {
+					'button_url': 'Button URL',
+					'webservice_button': 'Webservice button (?)',
+					'webservice_cron': 'Webservice cron (?)',
+					'webservice_search': 'Webservice search',
+					'filelistupload': 'Files upload (?)'
+				},
+
+				'Data edition': {
+					'object_editor': 'Object editor (?)'
+				},
+
+				'Science': {
+					'2dnmr': '2D NMR',
+					'spectra_displayer': 'Spectra displayer',
+					'gcms': 'GC-MS',
+					'jsme': 'JSME Molecular Editor',
+					'jsmol': 'JSMol',
+					'jsmol_script': 'JSMol Script',
+					'ivstability': 'IV stability',
+					'mol2d': '2D Molecule viewer'
+				},
+
+				'Statistics': {
+					'dendrogram': 'Dendrogram',
+					'loading_plot': 'Loading plot'
+				},
+
+				'Charting': {
+					'canvas_matrix': 'Matrix',
+					'plot': 'Plot'
+				}
 			}
 		},
 
