@@ -4,7 +4,6 @@ define(['modules/defaultview'], function(Default) {
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-
 			var self = this,
 				cfg = $.proxy(this.module.getConfiguration, this.module);
 
@@ -15,7 +14,9 @@ define(['modules/defaultview'], function(Default) {
 			this.module.getDomContent( ).html( this.dom );
 			this.oldVal = {};
 
+
 			if(searchparams = cfg('searchparams' ) ) {
+
 				for(var i in searchparams) {
 					if(!i)
 						continue;

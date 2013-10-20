@@ -74,6 +74,11 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			
 			this.request.done(function(data) {
 				self.request = null;
+
+				if (self.module.resultFilter) {
+					data=self.module.resultFilter(data);
+				}
+
 				data = DataObject.check(data, true);
 				self.onSearchDone(data);
 			});
@@ -122,7 +127,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 		
 		configurationStructure: function(section) {
-			
+
 			return {
 				groups: {
 					group: {
@@ -151,6 +156,12 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 							buttonlabel_exec: {
 								type: 'text',
 								title: 'Button text (executing)'
+							},
+
+							{
+								type: 'JSCode',
+								name: 'resultFilter',
+								title: 'Result filter'
 							}
 						}
 					},
@@ -228,6 +239,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			}
 		},
 		
+
 		configAliases: {
 			'button': function(cfg) { return cfg.groups.group[ 0 ].button[ 0 ][ 0 ] == "button"; },
 			'url': function(cfg) { return cfg.groups.group[ 0 ].url[ 0 ]; },
