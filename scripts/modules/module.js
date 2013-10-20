@@ -676,7 +676,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 					}
 					*/
 
-					console.log(module.vars_out(), module.vars_in());
+
 					var fill = {
 						sections: {
 							module_config: [ { groups: { group: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor || [ 255, 255, 255, 0 ] ],  modulewrapper: [[ (module.definition.displayWrapper === true || module.definition.displayWrapper == undefined) ? 'display' : '' ]] }] } } ],
