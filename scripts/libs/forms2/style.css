@@ -199,6 +199,12 @@ div.selected {
 	background-color: #eeeeee;
 }
 
+h2 .form-duplicator-wrapper {
+	float: right;
+	font-size: 10px;
+	padding-top: 3px;
+}
+
 .forms .form-field-list-elements .form-duplicator-wrapper {
 	
 	display: inline-block;
@@ -441,4 +447,5 @@ div.selected {
 	margin-bottom: 7px;
 	margin-left: -11px;
 	padding-left: 8px;
+	padding-right: 20px;
 }

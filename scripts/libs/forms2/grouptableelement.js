@@ -187,7 +187,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 		});
 
-		$.when.apply($.when, els).then(function() {
+		$.when.apply( $.when, els ).then(function() {
 
 			self.updateDom( );
 			var i = 0,
@@ -263,8 +263,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			}
 		}
 		
-		this._fill( json, clearFirst );
-
+		return this._fill( json, clearFirst );
 	}
 
 	GroupTableElement.prototype.getValue = function(stackFrom, stackTo) {

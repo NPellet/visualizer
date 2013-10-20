@@ -13,8 +13,8 @@ define(['jquery'], function($) {
 			this.options = $.extend({}, GroupElement.defaultOptions, options); // Creates the options
 			this.splice = Array.prototype.splice;
 
+			this.readyDef = $.Deferred();
 			this.fieldElements = {};
-			this.fieldDeferreds = {};
 		},
 
 		set section(section) {
@@ -44,8 +44,20 @@ define(['jquery'], function($) {
 		_fill: function( json, clearFirst ) {
 			
 			var self = this,
-				i, j, l;
+				i, j, l,
+				done = 0;
 				
+			this.group.eachFields(function(field) {
+				self.getFieldElement( field.getName( ) , 0 );
+
+				if( ! json[ field.getName() ] ) {
+
+					json[ field.getName() ] = [];
+
+				}
+
+			});
+
 			for( i in json ) {
 				// i is fieldname, json[i] is mixed (obj/array)
 				if( ! ( json[ i ] instanceof Array ) ) {
@@ -55,34 +67,41 @@ define(['jquery'], function($) {
 				j = 0,
 				l = json[ i ].length;
 
+				if( l == 0 ) {
+					json[ i ][ 0 ] = null;
+					l = 1;
+				}
 
 				for( ; j < l ; j ++ ) {
-
-					this.fillElement( i, j, json[ i ][ j ], clearFirst );
+					done++;
+					this.fillElement( i, j, json[ i ][ j ], clearFirst ).then( function () {
+						done--;
+						if(done == 0) { // All has been created and filled. We can release the deferreds
+							self.readyDef.resolve();
+						}
+					});
 				}
 			}
 
-			this.group.eachFields(function(field) {
+			return self.readyDef;
 
-				self.getFieldElement( field.getName( ) , 0 );
-
-			});
 		},
 
 		fill: function( json, clearFirst ) {
 
-			this._fill( json, clearFirst );
+			return this._fill( json, clearFirst );
 		},
 
 		fillElement: function( i, j, json, clear ) {
 
-			$.when( this.getFieldElement( i , j ) ).then( function( el ) {
+			return $.when( this.getFieldElement( i , j ) ).then( function( el ) {
 				el.value = json;
 			} );
 		},
 
 		inDom: function() {
 			var self = this;
+
 			this.group.eachFields( function( field ) {
 				self.eachFieldElements( field.getName() , function( fieldElement ) {
 					fieldElement.inDom();
@@ -95,26 +114,23 @@ define(['jquery'], function($) {
 		},
 
 		getFieldElement: function( fieldName, fieldId ) {
-			
 			var self = this,
 				el;
-
+		
 			this.fieldElements[ fieldName ] = this.fieldElements[ fieldName ] || [];
 
-			if( ! this.fieldElements[ fieldName ][ fieldId ] && ! this.fieldDeferreds[ fieldName + fieldId ] ) {
+			if( ! this.fieldElements[ fieldName ][ fieldId ] ) {
 
-				el = this.group.getField( fieldName ).makeElement( ).pipe( function(value) {
-
+				el = this.group.getField( fieldName ).makeElement( ).done( function(value) {
 					value.group = self.group;
 					value.groupElement = self;
-
-					return self.fieldElements[ fieldName ][ fieldId ] = value;
+					self.fieldElements[ fieldName ][ fieldId ] = value;
 				} );
 
-				return this.fieldDeferreds[ fieldName + fieldId ] = el;
+				return el;
 			}
 
-			return this.fieldElements[ fieldName ][ fieldId ] || this.fieldDeferreds[ fieldName + fieldId ];
+			return this.fieldElements[ fieldName ][ fieldId ];
 		},
 
 		_getElement: function(stack, getter, name, id) {
@@ -140,11 +156,6 @@ define(['jquery'], function($) {
 			for( i in els ) {
 				callback.call( this, els[ i ] );
 			}
-		},
-
-
-		ready: function() {
-			return $.when.apply( $.when, this.fieldDeferreds );
 		}
 	});
 

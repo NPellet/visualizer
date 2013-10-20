@@ -2,7 +2,6 @@ define(['require', 'jquery'], function(require, $) {
 
 	var SectionElement = function() {
 
-		console.log('MAKE');
 	};
 
 	SectionElement.defaultOptions = {
@@ -15,15 +14,25 @@ define(['require', 'jquery'], function(require, $) {
 
 			this.options = $.extend({}, SectionElement.defaultOptions, options); // Creates the options
 			this.splice = Array.prototype.splice;
-
+		
 			this.groupElements = {};
 			this.sectionElements = {};
+
+			this.readyDef = $.Deferred();
+			this.done = 0;
 		},
 
 		fill: function( json, clearFirst ) {
 
 			this._fillGroups( json.groups, clearFirst );
 			this._fillSections( json.sections, clearFirst );
+
+			// Check for empty shit
+			if( this.done == 0 ) { // All subgroups and subsections are loaded. Let's move to the parent !
+				this.readyDef.resolve();
+			}
+
+			return this.readyDef;
 		},
 
 		_fillGroups: function( groupsObj, clearFirst ) {
@@ -50,6 +59,8 @@ define(['require', 'jquery'], function(require, $) {
 
 		_fill: function( stackStructure, getter, stack, clearFirst ) {
 
+			var self = this;
+
 			if( ! stack ) {
 				stack = { };
 			}
@@ -70,9 +81,18 @@ define(['require', 'jquery'], function(require, $) {
 
 				for( ; j < l ; j ++) {
 
-					getter.call( this, i , j ).fill( stack[ i ][ j ] , clearFirst );
+					self.done++;
+					getter.call( this, i , j ).fill( stack[ i ][ j ] , clearFirst ).done( function() { // Returns a deferred
+
+						self.done--;
+						if( self.done == 0 ) { // All subgroups and subsections are loaded. Let's move to the parent !
+							self.readyDef.resolve();
+						}
+					});
+
 				}
 			}
+
 		},
 
 		visible: function() {
@@ -95,6 +115,7 @@ define(['require', 'jquery'], function(require, $) {
 		},
 
 		inDom: function( ) {
+
 			this.eachElements( function( element ) {
 				element.inDom();
 			} );
@@ -221,8 +242,10 @@ define(['require', 'jquery'], function(require, $) {
 
 		makeDom: function() {
 
-			var dom = $("<div />"),
-				i;
+			var self = this,
+				dom = $("<div />"),
+				i,
+				h;
 
 			switch( this.section.form.tplMode ) {
 				case 1:
@@ -231,7 +254,17 @@ define(['require', 'jquery'], function(require, $) {
 						this.section.form.sectionLvl1Buttons.append('<div data-section-name="' + this.section.getName() + '" class="form-section-select">' + this.getTitleIcon( ) + '</div>');	
 						dom.hide();
 					} else {
-						dom.append('<h' + (this.section.sectionLevel) + '>' + this.getTitle( ) + '</h' + (this.section.sectionLevel) + '>');
+						h = $('<h' + (this.section.sectionLevel) + '>' + this.getTitle( ) + '</h' + (this.section.sectionLevel) + '>')
+						if( this.section.options.multiple ) {
+							var spanDupl = $('<div class="form-duplicator-wrapper"><span class="form-duplicator form-duplicator-add">duplicate</span> - <span class="form-duplicator form-duplicator-remove">remove</span></div>').on('click', 'span', function() {
+								var dupl = $(this).hasClass('form-duplicator-add');
+								// Call parent
+								self.sectionElement[ dupl ? 'duplicateSectionElement' : 'removeSectionElement']( self );
+							});
+							h.append(spanDupl);
+						}
+
+						dom.append(h);
 					}
 					
 				break;
@@ -259,8 +292,85 @@ define(['require', 'jquery'], function(require, $) {
 			
 	
 			return (this.dom = dom);
-		}
+		},
+
+
+		getSectionIndex: function( sectionElement ) {
+
+			var name = sectionElement.section.getName();
+
+			if( ! this.sectionElements[ name ]) {
+				return this.form.throwError("Cannot get section index. Section name " + name + " doesn't exist");
+			}
+
+			var index = this.sectionElements[ name ].indexOf( sectionElement );
+
+			if( index < 0 ) {
+				return this.form.throwError("Cannot get section index. Cannot find section element");
+			}
+
+			return index;
+		},
+
+		removeSectionElement: function( sectionElement ) {
+
+			var self = this,
+				name = sectionElement.section.getName( ),
+				sectionIndex = this.getSectionIndex( sectionElement );
+
+			if(sectionIndex === false) {
+				return;
+			}
+
+			if( this.sectionElements[ name ].length == 1 ) {
+				this.duplicateSectionElement( sectionElement );
+			}
+
+			this.sectionElements[ name ].splice( sectionIndex, 1 ); // Remove the element from the stack
+			sectionElement.dom.remove();
+			sectionElement.dom = null;
+			sectionElement = null;
+		},
+
+
+		duplicateSectionElement: function( sectionElement ) {
+
+			var self = this,
+				name = sectionElement.section.getName( ),
+				sectionIndex = this.getSectionIndex( sectionElement );
+
+			if(sectionIndex === false) {
+				return;
+			}
+
+			var newSectionEl = this
+								.section
+								.getSection( name )
+								.makeElement();
+
+			newSectionEl.sectionElement = this; // Sets the parent element as being this
+
+			this.sectionElements[ name ].splice( sectionIndex + 1, 0, newSectionEl ); // Add the section in the stack
+			
+			newSectionEl.fill( { } ); // Fill the section with empty stuff
+			
+			newSectionEl.readyDef.then( function() { // Only when all fields have loaded we can trigger a dom creation
+
+				if( sectionElement && sectionElement.dom ) { // If it exists, we add it right after
+					sectionElement.dom.after( newSectionEl.makeDom( ) );	
+				} else { // Else we add it at the end
+					self.dom.append( newSectionEl.makeDom( ) );
+				}
+			
+				newSectionEl.inDom( );
+			});
 		
+			return newSectionEl;
+		},
+
+		ready: function() {
+			return $.when.apply( $.when, this.deferreds );
+		}
 	});
 
 

@@ -23,7 +23,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 		self.fieldElementsDom = self.fieldElementsDom || { };
 		this.group.eachFields( function( field ) {
 
-			self.getFieldElement( field.getName(), 0 );
+			//self.getFieldElement( field.getName(), 0 );
 
 			div = $( "<div />" ).addClass( 'form-field-list-' + field.getType() );
 			label = $( "<label />" ).html( field.getTitle( true ) ); // Title is attached to field element
@@ -47,15 +47,11 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 		this.group.eachFields( function( field ) {
 
-			$.when(self.getFieldElement( field.getName( ), 0 )).then(function() {
+			self.fieldElementsDom[ field.getName() ].children().detach(); // Empty the dom
 
-				self.fieldElementsDom[ field.getName() ].children().detach(); // Empty the dom
-
-				self.eachFieldElements( field.getName(), function(fieldElement) {
-					self.fieldElementsDom[ field.getName() ].append( fieldElement.getDom( ) );
-				});
+			self.eachFieldElements( field.getName(), function(fieldElement) {
+				self.fieldElementsDom[ field.getName() ].append( fieldElement.getDom( ) );
 			});
-		
 			//self.fieldElementsDom[ field.getName() ] = divFieldElements;
 		});
 
@@ -70,13 +66,13 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 		var name = fieldElement.field.getName();
 
 		if( ! this.fieldElements[ name ]) {
-			return this.form.throwError("Cannot duplicate field. Field name " + name + " doesn't exist");
+			return this.form.throwError("Cannot get field index. Field name " + name + " doesn't exist");
 		}
 
 		var index = this.fieldElements[ name ].indexOf( fieldElement );
 
 		if( index < 0 ) {
-			return this.form.throwError("Cannot duplicate field. Cannot find field element");
+			return this.form.throwError("Cannot get field index. Cannot find field element");
 		}
 
 		return index;
