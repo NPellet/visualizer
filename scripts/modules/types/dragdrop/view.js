@@ -4,10 +4,14 @@ define(['modules/defaultview', 'util/util', 'util/Versioning'], function(Default
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-			var self = this, cfg = this.module.getConfiguration(), id = Util.getNextUniqueId(), done = false, inline;
+			var self = this,
+				id = Util.getNextUniqueId(),
+				done = false,
+				inline;
+
 			this._id = id;
-			this.dom = $('<div />', {  class: 'dragdropzone' }).html(cfg.label || 'Drop your file here');
-			this.module.getDomContent().html(this.dom);
+			this.dom = $('<div />', { class: 'dragdropzone' } ).html( this.module.getConfiguration( 'label', 'Drop your file here' ));
+			this.module.getDomContent().html( this.dom );
 		},
 
 		inDom: function() {
@@ -41,7 +45,7 @@ define(['modules/defaultview', 'util/util', 'util/Versioning'], function(Default
 		open: function(files) {
 			var self = this,
 				file = files[0],
-				vartype = this.module.getConfiguration().vartype,
+				vartype = this.module.getConfiguration('vartype'),
 				obj;
 
 			if(!this.reader) {
@@ -67,8 +71,14 @@ define(['modules/defaultview', 'util/util', 'util/Versioning'], function(Default
 			this.reader.readAsText(file);
 		},
 
-		onResize: function() {},		
-		blank: function() {},
+		onResize: function() {
+
+		},
+
+		blank: {
+
+		},
+
 		update: {
 
 		},
