@@ -67,51 +67,59 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 					}
 				}))//.on('mousemove', 'canvas', function() {
 
-/*				for(var i in actions)
-					if(actions[i].event == "onPixelHover")
-						API.blankSharedVar(actions[i].name);
-
-				});
-*/			
-			
-
 
 			$(this.module.getDomContent()).on('mousedown', 'canvas', function(e) {
 
 				// No need to blank the var here
 				// No event debouncing
+				
 				var keyed = controller.getMatrixElementFromEvent(e);
-				if(!keyed)
-					return;
 
-				var value = false;
-				for(var i in actions) {
-					if(actions[i].event == "onPixelHover") {
-						if(actions[i].rel == "row")
-								value = keyed[0];
-						else if(actions[i].rel == "col")
-								value = keyed[1];
-						else if(actions[i].rel == "intersect")
-								value = keyed[2];
-						API.setVariable(actions[i].name, value, actions[i].jpath);
+				if(!keyed) {
+					return;
+				}
+
+				var value = false,
+					i;
+
+				for( i in actions ) {
+
+					if( actions[ i ].event == "onPixelHover" ) {
+						
+						if( actions[ i ].rel == "row" ) {
+
+							value = keyed[ 0 ];
+
+						} else if( actions[ i ].rel == "col" ) {
+
+							value = keyed[ 1 ];
+
+						} else if( actions[ i ].rel == "intersect" ) {
+
+							value = keyed[ 2 ];
+
+						}
+
+						API.setVariable( actions[ i ].name, value, actions[ i ].jpath );
 					}
 				}
 			});
 		},
 		
-
-
 		configurationSend: {
 
 			events: {
+
 				onPixelHover: {
 					label: 'mouse hover pixel',
 					description: 'When the mouses moves over a new pixel of the data matrix'
 				},
+
 				onPixelClick: {
 					label: 'click on a pixel',
 					description: 'When the users click on any pixel'
 				},
+
 				onPixelDblClick: {
 					label: 'double click on a pixel',
 					description: 'When the user double clics on any pixel'
