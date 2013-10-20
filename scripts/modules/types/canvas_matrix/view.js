@@ -426,11 +426,11 @@ console.log('REDO');
 		},
 		
 		getColors: function() {
-			return this.colors || (this.colors = this.module.getConfiguration().colors)
+			return this.colors || (this.colors = this.module.getConfiguration('colors'))
 		},
 		
 		getHighContrast: function() {
-			return this.highContrast || (this.highContrast = this.module.getConfiguration().highContrast)
+			return this.highContrast || (this.highContrast = this.module.getConfiguration('highContrast', false ) )
 		},
 		
 		redoScale: function(min, max) {
