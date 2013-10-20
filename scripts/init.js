@@ -91,13 +91,9 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	  return arr;
 	}
 	ViewArray.prototype = new Array;
-	ViewArray.prototype.last = function() {
-	  return this[this.length - 1];
-	};
-	
+
 
 	function DataArray(arr, deep) { 
-		
 	  arr = arr || [];
 	  if(deep)
 	  	for(var i = 0, l = arr.length; i < l; i++)
@@ -106,10 +102,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 	  return arr;
 	}
 	DataArray.prototype = new Array;
-	DataArray.prototype.last = function() {
-	  return this[this.length - 1];
-	};
-	
+
 	window.ViewArray = ViewArray;
 	window.DataArray = DataArray;
 
