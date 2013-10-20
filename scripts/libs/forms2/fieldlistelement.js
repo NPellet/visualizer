@@ -17,6 +17,8 @@ alert('MAKE DOM');
 	};
 
 */
+
+	
 	FieldListElement.prototype.makeDuplicator = function() {
 		
 		var self = this;

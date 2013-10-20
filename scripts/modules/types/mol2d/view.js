@@ -204,15 +204,14 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 					for(var i = 0; i < molLoaded.atoms.length; i++) {
 						molLoaded.atoms[i].drawChildExtras = true;
 					}
-					
+
 					canvas.repaint();
 					
 				}, true, this.module.id);
 			}	
 		}
-
-
 	});
+
 	return view;
 });
  
