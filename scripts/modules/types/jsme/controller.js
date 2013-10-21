@@ -68,7 +68,6 @@ define(['modules/defaultcontroller'], function(Default) {
 								title: 'Options',
 
 								options: {
-
 									'noxbutton': 'Hide X button',
 								 	'rbutton': 'Show R button',
 								 	'nohydrogens': 'Hide hydrogens',
@@ -82,6 +81,7 @@ define(['modules/defaultcontroller'], function(Default) {
 									'number': 'Allow to number atoms',
 									'depict': 'Only display structure (no editing)',
 									'border': 'With depict option, display the border around the molecule',
+									'star': 'Display start button allowing hightlight of atoms (placed in the smiels)',
 									'oldlook': 'Use the old look'
 								}
 							}
