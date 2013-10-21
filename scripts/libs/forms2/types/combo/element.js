@@ -77,6 +77,7 @@ define( [ ], function(  ) {
 
 	FieldConstructor.prototype.setOptions = function(options) {
 		this.combooptions = options;
+		this.checkValue( );
 	}
 
 	return FieldConstructor;

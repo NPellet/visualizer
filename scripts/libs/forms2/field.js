@@ -75,9 +75,9 @@ define(['require', 'jquery'], function(require, $) {
 			return this.fieldElementExpanded;
 		},
 
-		changed: function() {
+		changed: function( fieldElement ) {
 			if( this.options.onChange ) {
-				this.options.onChange.call( this, this.elements );
+				this.options.onChange.call( this, fieldElement );
 			}
 		},
 

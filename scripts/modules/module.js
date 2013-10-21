@@ -565,7 +565,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 	
 				form.onStructureLoaded().done(function() {
 
-					var varReceiveChanged = function(name, rel) {
+					/*var varReceiveChanged = function(name, rel) {
 						if(name) {
 							temporary[rel] = API.getVar(name);
 							makeSendJpaths();
@@ -574,7 +574,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 						if( module.controller.onVarReceiveChange ) {
 							module.controller.onVarReceiveChange( name , rel , form.getSection( 'moduleconfiguration' ) );
 						}
-					}
+					}*/
 
 
 					form.getSection( 'vars_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {
@@ -589,7 +589,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 							.setOptions( sendjpaths[ fieldElement.value ] );
 					};
 
-
+/*
 					form.getSection( 'vars_in' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {
 
 						if( ! fieldElement.groupElement ) {
@@ -614,7 +614,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 							fieldElement.groupElement.getFieldElementCorrespondingTo( fieldElement, 'rel' ).value
 						);
 					};
-
+*/
 
 					form.getSection( 'actions_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {						
 

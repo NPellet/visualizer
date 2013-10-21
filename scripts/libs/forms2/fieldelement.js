@@ -14,7 +14,9 @@ define(['jquery'], function($) {
 		},
 
 		getDom: function() {
-			return this._dom || (this._dom = this._makeDom());
+			this._dom || (this._dom = this._makeDom());
+			this.field.changed( this );
+			return this.dom;
 		},
 
 		getName: function() {
@@ -53,7 +55,7 @@ define(['jquery'], function($) {
 
 		setValueSilent: function( value, doNotNotifyForm ) {
 			this._value = value;
-			this.field.changed( );
+			this.field.changed( this );
 
 			if( ! doNotNotifyForm ) {
 				this.form.fieldElementValueChanged( this, value );
