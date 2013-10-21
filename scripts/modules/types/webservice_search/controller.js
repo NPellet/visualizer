@@ -158,9 +158,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 								title: 'Button text (executing)'
 							},
 
-							{
+							resultFilter: {
 								type: 'JSCode',
-								name: 'resultFilter',
 								title: 'Result filter'
 							}
 						}
