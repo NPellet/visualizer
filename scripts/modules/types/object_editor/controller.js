@@ -14,75 +14,40 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 		configurationReceive: {
-			source: {
-				type: ["object"],
-				label: 'Object source',
-				description: 'An object to edit'
-			},
 
-			sourcepartial: {
-				type: ["object"],
-				label: 'Partial object',
-				description: ''
-			}		
+			source: {
+				type: [ "object" ],
+				label: 'Source object'
+			}
 		},
 		
-		moduleInformations: {
-			moduleName: 'Object editor'
-		},
-		
-		doConfiguration: function(section) {
+		configurationStructure: function() {
 
 			return {
 				groups: {
-					'xml': {
-						config: {
+					group: {
+						options: {
 							type: 'list'
 						},
 
-						fields: [
+						fields: {
 
-							{
-								type: 'Textarea',
-								name: 'json',
-								title: 'XML'
+							json: {
+								type: 'textarea',
+								title: 'JSON Structure'
 							},
 
-							{
-								type: 'Checkbox',
-								name: 'labels',
+							labels: {
+								type: 'checkbox',
 								title: 'Display labels',
 								options: {'display': ''}
 							}
-						]
+						}
 					}
-				}
-			}	
-
-		},
-		
-		doFillConfiguration: function() {
-			var json = this.module.getConfiguration().json || '';
-			var label = this.module.getConfiguration().labels;
-			if(label == undefined)
-				label = true;
-			
-			return {	
-				groups: {
-					xml: [{
-						json: [json],
-						labels: [label ? ['display'] : []]	
-					}]
 				}
 			}
 		},
 		
-		doSaveConfiguration: function(confSection) {
-			
-			this.module.getConfiguration().json = confSection[0].xml[0].json[0];
-			this.module.getConfiguration().labels = !!confSection[0].xml[0].labels[0][0];
-		},
-
 		"export": function() {
 			//return this.module.view.table.exportToTabDelimited();
 		}

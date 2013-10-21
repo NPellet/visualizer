@@ -1,85 +1,87 @@
-define(['modules/defaultview', 'forms/formfactory', 'util/datatraversing', 'util/api'], function(Default, FormFactory, DataTraversing, API) {
+define(['modules/defaultview', 'util/datatraversing', 'util/api'], function(Default, DataTraversing, API) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
+		init: function() {
 
-		init: function() {	
-			this.domWrapper = $('<div class="ci-display-form"></div>');
-			this.module.getDomContent().html(this.domWrapper);
-			var self = this;
-			
+			this.dom = $('<div />');
+			this.module.getDomContent( ).html( this.dom );
 			this.callback = null;
-			var self = this;
-			
 		},
 
 		inDom: function() {
-			var self = this;
-			var cfg = this.module.getConfiguration();
-			var json = cfg.json || cfg.xml || {};
 
+			var self = this,
+				cfg = this.module.getConfiguration('json');
+			
 			try {
-				json = JSON.parse(json);
+
+				json = JSON.parse(cfg);
 			} catch(e) {
+				console.log(cfg);
 				console.log(e);
 				return;
 			}
 		
-			var xmlTransl = FormFactory.newform(this.domWrapper, json, function() {
+			require(['./libs/forms2/form'], function(Form) {
 
-			}, {
-				onFieldChange: function(elJPath, value, index) {
+				var form = new Form({
+				});
 
-					if(self.changing)
-						return;
-					if(!self.source)
-						self.source = {};
-					DataTraversing.setValueFromJPath(self.source, elJPath, value);
-					console.log(self.source);
-					API.setVariable(self.varname, self.source, true);
-				},
+				form.init({
+					onValueChanged: function( value, fieldElement ) {
+						var jpath = fieldElement.field.options.jpath;
+						self.value.setChild( jpath, fieldElement.value );
+					}
+				});
 
-				labels: cfg.labels
+				form.setStructure( json );
+				form.onStructureLoaded( ).done( function( ) {
+					form.fill( { } ); // For now let's keep it empty.
+				} );
+
+				form.onLoaded( ).done( function( ) {
+
+					div.html( form.makeDom( ) );
+					form.inDom( );
+				} );
+
 			});
-		
-			//this._inDom.resolve();
+
+			this.form = form;
 		},
 		
 		onResize: function() {
 		},
 		
-		blank: function() {
-			//this.domTable.empty();
-			this.table = null;
+		blank: {
 		},
 
 		update: {
 			source: function(moduleValue, varName) {
-	
-				this.source = moduleValue;
-				this.varname = varName;
-				if(!moduleValue)
-					return;
 
 				var self = this;
 
-				(function(value) {
+				if ( ! moduleValue ) {
+					return;
+				}
 
-					$.when(self._inDom).done(function() {
+				this.value = moduleValue;
 
-						self.changing = true;
-						self.source = value;
-						
-						var fields = self.formBuilder.getFieldsByJPath();
-						for(var jpath in fields) {
-							CI.DataType.getValueFromJPath(value, jpath).done(function(val) {
-								fields[jpath].implementation.setValue(0, val);
-							});
-						}
-						self.changing = false;
-					});
-				}) (moduleValue);
+				form.onLoaded( ).done(function( ) {
+
+					form.eachFieldsElements( function( fieldElement ) {
+
+						var jpath = fieldElement.field.options.jpath;
+
+						self.value.getChild( jpath ).done( function( val ) {
+
+							fieldElement.value = val;
+
+						} );
+					} );
+				} );
 			}
 		},
 

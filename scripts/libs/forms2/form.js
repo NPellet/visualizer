@@ -58,7 +58,7 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 		fieldElementValueChanged: function( fieldElement, value ) {
 
 			if( this.doneDom ) {
-				this.triggerAction('onValueChanged', this.getValue( ) );
+				this.triggerAction('onValueChanged', fieldElement, this.getValue( ) );
 			}
 		},
 

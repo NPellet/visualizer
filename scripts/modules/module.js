@@ -45,9 +45,6 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		this.definition = definition;
 		this.definition.configuration = this.definition.configuration || new ViewObject({});
 		this.ready = init(this);
-
-		console.log(this.definition);
-
 	};
 	/**
 	 * Overrideable prototype
