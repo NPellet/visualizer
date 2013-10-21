@@ -10,12 +10,16 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 		getjPath: function(rel, temporary) {
 			var data;
 			switch(rel) {
-				default:
+				
 				case 'element': // Wants to get the row ?
 					data = (temporary && temporary['list']) ? temporary['list'] : (this.module.data || new DataArray());
 					data = data.get(0);
 					if(!data)
 						return [];
+				break;
+
+				default:
+					data = this.module.data;
 				break;
 			}
 

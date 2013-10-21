@@ -317,6 +317,8 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 				for(var i in availCfg.rels)
 					sendjpaths[i] = module.model.getjPath(i, temporary);
 			}
+
+			
 			makeSendJpaths();
 			
 			var allEvents = [];
