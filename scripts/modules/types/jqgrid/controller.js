@@ -7,12 +7,13 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 	controller.prototype = $.extend(true, {}, Default, {
 
 		lineHover: function(element) {
-			if(!element) {
+			if( ! element ) {
 				return;
 			}
-			this.setVarFromEvent('onHover', element);
-			if(element._highlight !== false) {
-				API.highlight(element._highlight, 1);
+
+			this.setVarFromEvent( 'onHover', element );
+			if( element._highlight !== false ) {
+				API.highlight( element._highlight, 1 );
 			}
 		},
 
@@ -107,7 +108,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		
 		configurationStructure: function(section) {
 			
-			var jpaths = this.module.model.getjPath();
+			var jpaths = this.module.model.getjPath('element');
 
 			return {
 				groups: {
