@@ -679,7 +679,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 					var fill = {
 						sections: {
 							module_config: [ { groups: { group: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor || [ 255, 255, 255, 0 ] ],  modulewrapper: [[ (module.definition.displayWrapper === true || module.definition.displayWrapper == undefined) ? 'display' : '' ]] }] } } ],
-							module_specific_config: [ module.configuration || {} ],
+							module_specific_config: [ module.definition.configuration || {} ],
 
 							vars_out: [ { groups: { group: [ module.vars_out() ] } } ],
 							vars_in: [ { groups: { group: [ module.vars_in() ] } } ],
@@ -712,7 +712,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 					module.setActionsIn(	value.actions_in[ 0 ].groups.group[ 0 ]			);
 					module.setActionsOut(	value.actions_out[ 0 ].groups.group[ 0 ]		);
 
-					module.configuration =	value.module_specific_config[ 0 ];
+					module.definition.configuration =	value.module_specific_config[ 0 ];
 
 					if( module.view.unload ) {
 						module.view.unload();
@@ -744,7 +744,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			
 			try {
 				if( this.controller.configAliases[ alias ] ) {
-					config = this.controller.configAliases[ alias ].call( this, this.configuration );
+					config = this.controller.configAliases[ alias ].call( this, this.definition.configuration );
 				}
 			} catch(_e) {
 				console.error( 'Cannot fetch alias ' + alias + ' in configuration. Return default: ' + _default + "." );
