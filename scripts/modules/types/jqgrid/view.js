@@ -116,9 +116,10 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
 			   	
-			   		if( jpaths[ colModel[ colNum ].name ].number ) {
+			   		if( self.jpaths[ colNum ].number ) {
 			   			value = parseFloat(value);
 			   		}
+
 			   		self.elements[ rowId.replace( self.uniqId, '') ].setChild( colModel[ colNum ]._jpath, value, { moduleid: self.module.getId( ) } );
 			   		self.applyFilterToRow( rowId.replace( self.uniqId, '' ), rowId );
 			   	},
@@ -209,9 +210,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 				jpaths = this.module.getConfiguration( 'colsjPaths' ), 
 	 				elements = []
 
+	 			this.jpaths = jpaths;
 	 			this.elements = list;
 	 			this.module.data = moduleValue;
-
 
 	 			if( ! jpaths ) {
 	 				return;
