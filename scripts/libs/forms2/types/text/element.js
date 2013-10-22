@@ -37,7 +37,7 @@ define( [ ], function(  ) {
 			});
 			
 			input.autocomplete( 'widget' ).addClass( 'form-autocomplete' );
-			//input.autocomplete("search", this.val);
+			input.autocomplete( 'search', this.value ); // To allow to display everything when the field is blank
 		}
 
 
