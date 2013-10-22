@@ -384,7 +384,7 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 			var self = this;
 			var def = $.Deferred();
 
-			if(!this._dirUrl) {
+			if(!this._dirUrl && this._defaultUrl) {
 				this.loadReadonly(def);
 				return def;
 			}
@@ -607,6 +607,10 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 			var self = this, 
 				def = $.Deferred(),
 				url = this.getUrl() || this._defaultUrl;
+
+			if(!url) {
+				return def.resolve({});
+			}
 
 			data.action = 'Load';
 			$.ajax({
