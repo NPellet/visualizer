@@ -58,7 +58,7 @@ define( [ ], function(  ) {
 			});
 
 			this.input.autocomplete( 'widget' ).addClass( 'form-autocomplete' );
-			this.input.autocomplete( 'search', this.value ); // To allow to display everything when the field is blank
+			//this.input.autocomplete( 'search', this.value ); // To allow to display everything when the field is blank
 		}
 	}
 
