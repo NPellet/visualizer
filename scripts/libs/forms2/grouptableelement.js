@@ -128,7 +128,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 		for( ; i < l; i++ ) {
 
 			tr = $("<tr />");
-			tr.append('<td>' + i + '</td>'); // Numbering
+			tr.append('<td>' + (i + 1) + '</td>'); // Numbering
 		
 			for(j = 0, m = trs[ i ].length; j < m ; j++ ) {
 /*
