@@ -93,7 +93,7 @@ define(['modules/defaultview'], function(Default) {
 		},
 
 		_makeFormEl: function(spec, name) {
-console.log(spec);
+
 			switch(spec.fieldtype) {
 
 				case 'combo':
