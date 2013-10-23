@@ -72,6 +72,11 @@ define(['modules/module'], function(Module) {
 			definitions.splice(definitions.indexOf(module.definition), 1);
 		},
 
+		empty: function() {
+			definitions = [];
+			modules = [];
+		},
+
 		getModules: function() {
 			return modules;
 		},

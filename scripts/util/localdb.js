@@ -123,7 +123,7 @@ define(['jquery'], function($) {
 
 			// Create empty head, empty list
 
-			obj = { readURL: key + ";" + branch, url: key, branch: branch, list: [], head: {} };
+			obj = { readURL: key + ";" + branch, url: key, branch: branch, list: [], head: "{}" };
 
 			var def = $.Deferred();
 
@@ -131,6 +131,7 @@ define(['jquery'], function($) {
 			var trans = db.transaction(type, 'readwrite');
 			var store = trans.objectStore(type);
 			var req = store.put(obj);
+
 			req.onsuccess = function(e) {
 				def.resolve(obj);
 			}
@@ -147,11 +148,11 @@ define(['jquery'], function($) {
 			
 			var req = store.get(key + ";" + branch);
 			req.onsuccess = function(e) {
-				if(e.target.result) {
-					var obj2 = e.target.result;
 
-					obj2.head = obj;
-					
+				if(e.target.result) {
+
+					var obj2 = e.target.result;
+					obj2.head = JSON.stringify(obj);
 					var req2 = store.put(obj2);
 					req2.onsuccess = function(e) {
 						def.resolve(obj);
@@ -177,7 +178,8 @@ define(['jquery'], function($) {
 			
 			var store = trans.objectStore(type);	
 			
-			var req = store.get(key + ";" + branch);
+			var req = store.get(key + ";" + branch),
+				obj = JSON.stringify( obj );
 
 			req.onsuccess = function(e) {
 

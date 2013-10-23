@@ -67,12 +67,15 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 
 		view = Migration(view);
 
-		if(reloading)
+		if(reloading) {
 			reloadingView();
+		}
 		
 		Grid.init(view.grid, document.getElementById("ci-modules-grid"));
-
+		ModuleFactory.empty();
+		
 		view.modules = view.modules || new ViewArray();
+		console.log(view.modules, view.modules.length);
 		view.variables = view.variables || new ViewArray();
 		view.configuration = view.configuration || new ViewObject();
 		view.configuration.title = view.configuration.title || 'No title';

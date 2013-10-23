@@ -37,18 +37,30 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 		getData: function() {
 			var self = this;
 		
-			if(this.currentPath[1] == 'server')
+			if(this.currentPath[1] == 'server') {
+
 				return this._getServer().pipe(function(data) {
-					return self._data['server'] = data;
+					console.log(data);
+					if(self.type == 'view')
+						return self._data['server'] = new ViewObject(data, true);
+					else if(self.type == 'data')
+						return self._data['server'] = new DataObject(data, true);
 				}, function() {
 					return false;
 				});
-			else
+
+			} else {
+				
 				return this._getLocal().pipe(function(data) {
-					return self._data['local'] = data;
+					//console.log(data);
+					if(self.type == 'view')
+						return self._data['local'] = new ViewObject(data, true);
+					else if(self.type == 'data')
+						return self._data['local'] = new DataObject(data, true);
 				}, function() {
 					return false;
 				});
+			}
 		},
 
 
@@ -67,11 +79,12 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 		},
 
 		getElements: function(level) {
+
 			var self = this;
 			var branch = this.currentPath[2];
 			return $.when(this.getData()).pipe(function(alldata) {
 
-				data = alldata[branch].list;
+				data = alldata[ branch ].list;
 				var all = {};
 
 				if(self.currentPath[1] == 'local' && alldata[branch].head)
@@ -99,6 +112,7 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 			var self = this;
 			return db.open().pipe(function() {
 				return db.getAll(self.type, self._dirUrl).pipe(function(all) {
+					console.log(all);
 					return all;
 				});
 			});
@@ -134,6 +148,7 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 		},
 
 		makeMenu: function(level) {
+
 			var toOpen = this.structure, self = this;
 			var i = 0;
 			// Want to display the top level (server/local)
@@ -175,6 +190,7 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 
 		bindEventsMenu: function(dom) {
 			var self = this;
+
 			dom.on('mouseenter', 'li', function(e) {
 				
 				var $this = $(this);
@@ -292,11 +308,11 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 		},
 
 		make: function(el, branch, head) {
-			
 			this.currentElement = el;
 			this.doUpdateButtons();
 			var html = $(this.buildDom(el));
 			this.bindEventsDom(html);
+
 			this.dom.empty().html(html);
 			this.versionChange().notify(el);
 			this._html = html;
@@ -311,7 +327,7 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 			var i = li.data('el');
 			var branch = li.data('parent');
 			var mode = li.data('parent-parent');
-			
+
 			if(mode == 'server') { // fetch head from server
 
 				var data = { branch: branch };
@@ -320,7 +336,6 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 
 				this.getFromServer(data).done(function(el) {
 
-					correspondingnsole.log(el);
 					self.currentPath[1] = 'server';
 					self.currentPath[2] = branch;
 					self.currentPath[3] = i;
@@ -405,6 +420,7 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 
 				// Always compare to the head of the local branch
 				var defLocal = self._getLocalHead(branch);
+
 				$.when(defLocal).then(function(el) {
 
 					// If the corresponding head does not exist, we copy the server data
@@ -412,6 +428,7 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 					if(!el._saved) {
 						//doServer(server, branch, rev);
 						self.serverCopy(server, branch, 'head').done(function() {
+
 							doLocal(server, server._name, 'head');
 						});
 
@@ -487,11 +504,13 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 			var self = this;
 			
 			return db.getHead(this.type, this._dirUrl, branch).pipe(function(el) {
+
+				el = JSON.parse( el );
 				if(self.type == 'view')
 					return new ViewObject(el, true);
 				else if(self.type == 'data')
 					return new DataObject(el, true);
-				return el;
+
 			});
 		},
 
@@ -503,11 +522,12 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 			obj._time = mode == 'head' ? false : Date.now();
 			obj._saved = Date.now();
 
-			this._savedLocal = JSON.stringify(obj);
-
+			//this._savedLocal = JSON.stringify(obj);
+			
 			return db.open().pipe(function() {
 
 				return db[mode == 'head' ? 'storeToHead' : 'store'](self.type, self._dirUrl, name, obj).pipe(function(element) {
+
 					self.currentPath[1] = 'local';
 					self.currentPath[2] = name;
 					self.currentPath[3] = obj._time || 'head';

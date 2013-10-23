@@ -8,45 +8,45 @@ define( [ ], function(  ) {
 		var self = this,
 			dom = $("<div />"),
 			div = $( "<div></div>", { tabindex: 1 } )
-					.addClass( 'form-field' )
-					.on('click', function() {
-						self.toggleSelect( event );
-					})
-					.on('click', 'input[type="checkbox"]', function( event ) {
+				.addClass( 'form-field' )
+				.on('click', function() {
+					self.toggleSelect( event );
+				})
+				.on('click', 'input[type="checkbox"]', function( event ) {
 
-						event.stopPropagation();
+					event.stopPropagation();
 
-						var id = $(this).attr('data-checkbox-id');
-						var value = self.value || [];
+					var id = $(this).attr('data-checkbox-id');
+					var value = self.value || [];
 
-						if( $(this).is(':checked') ) {
+					if( $(this).is(':checked') ) {
 
-							value.push( id );
+						value.push( id );
 
-						} else if( id = value.indexOf( id ) ) {
+					} else if( id = value.indexOf( id ) ) {
 
-							value.splice( id, 1 );
+						value.splice( id, 1 );
 
-						}
+					}
 
-						self.value = value;
-					})
-					.on('keydown', 'input[type="checkbox"]', function( event ) {
-						
+					self.setValueSilent(value);
+				})
+				.on('keydown', 'input[type="checkbox"]', function( event ) {
+					
 
-						//event.preventDefault();
-						event.stopPropagation();
-						//self.form.tabPressed( event, self);
-					})
-					.on('keydown', 'input[type="checkbox"]:last', function( event ) {
-						
-						event.preventDefault();
-						event.stopPropagation();
-						if( self.form.tabPressed( event, self) ) {
-							this.blur();
-						}
-					})
-					.appendTo( dom );
+					//event.preventDefault();
+					event.stopPropagation();
+					//self.form.tabPressed( event, self);
+				})
+				.on('keydown', 'input[type="checkbox"]:last', function( event ) {
+					
+					event.preventDefault();
+					event.stopPropagation();
+					if( self.form.tabPressed( event, self) ) {
+						this.blur();
+					}
+				})
+				.appendTo( dom );
 
 		this.div = div;
 		this.dom = dom;
@@ -65,7 +65,6 @@ define( [ ], function(  ) {
 
 	FieldConstructor.prototype.focus = function() {
 
-		console.log('FOC');
 		this.fieldElement.find('input:first').focus();
 		this.select();
 	}
