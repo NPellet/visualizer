@@ -12,7 +12,9 @@ define( [ ], function(  ) {
 					.addClass( 'field-list' )
 					.appendTo( dom )
 					.bind('click', function( event ) {
+
 						self.toggleSelect( event );
+
 					})
 					.bind('keyup blur', function() {
 						var val;
@@ -29,26 +31,36 @@ define( [ ], function(  ) {
 					});
 
 
-		if( this.field.getOptions ( this ) ) {
-
-			input.autocomplete( {
-				minLength: 0,
-				source: this.field.getOptions ( this )
-			});
-			
-			input.autocomplete( 'widget' ).addClass( 'form-autocomplete' );
-			input.autocomplete( 'search', this.value ); // To allow to display everything when the field is blank
-		}
+		this.checkValue();
 
 
 		this.dom = dom;
 		this.input = input;
 		this.fieldElement = input;
 
-		this.checkValue();
-
 		return dom;
 	};
+
+
+	FieldConstructor.prototype.inDom = function() {
+
+		var self = this;
+
+		if( this.field.getOptions ( this ) ) {
+
+			this.input.autocomplete( {
+				minLength: 0,
+				source: this.field.getOptions ( this )
+			});
+
+			this.input.bind('focus', function() {
+				self.input.autocomplete( 'search', self.value );
+			});
+
+			this.input.autocomplete( 'widget' ).addClass( 'form-autocomplete' );
+			this.input.autocomplete( 'search', this.value ); // To allow to display everything when the field is blank
+		}
+	}
 
 	FieldConstructor.prototype.checkValue = function() {
 
