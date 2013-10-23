@@ -587,8 +587,8 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 
 						$.when(fieldElement
 								.groupElement
-								.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function( fieldElement ) {
-									fieldElement.setOptions( sendjpaths[ fieldElement.value ] );	
+								.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function( el ) {
+									el.setOptions( sendjpaths[ fieldElement.value ] );
 								});
 					};
 
@@ -627,8 +627,8 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 
 						$.when(fieldElement
 							.groupElement
-							.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function ( fieldElement ) {
-								fieldElement.setOptions( sendjpaths[ fieldElement.value ] );	
+							.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function ( el ) {
+								el.setOptions( sendjpaths[ fieldElement.value ] );	
 							});
 					};
 
