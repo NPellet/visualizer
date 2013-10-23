@@ -26,44 +26,49 @@ define(['modules/defaultview'], function(Default) {
 				var url = cfg( 'url' ),
 					button = cfg( 'button', false )
 
-				if(button) {
+				var url = self.module.getConfiguration().url;
+				this.button = self.module.getConfiguration().button || false;
+
+				if(this.button) {
 
 					require( [ 'forms/button' ], function( Button ) {
 
-						self.search.append( new Button( cfg('buttonlabel') || 'Search', function() {
+						self.search.append( new Button( cfg.buttonlabel || 'Search', function() {
 
 							self.module.controller.doSearch();
 							
 						} ).render() );
 					});
 
-				} else {
-
-					this.search.on( 'keyup', 'input[type=text]', function() {
-
-						var searchTerm = $(this).val(),
-							searchName = $(this).attr('name');
-
-						if( !self.oldVal[ searchName ] || self.oldVal[ searchName ] !== searchTerm ) {
-							$( this ).trigger( 'change' );
-						}
-
-						self.oldVal[ searchName ] = searchTerm
-
-					});
-
-					this.search.on('change', 'select, input[type=text]', function() {
-						var searchTerm = $(this).val();
-						var searchName = $(this).attr('name');
-						self.module.controller.doSearch(searchName, searchTerm);
-					});
-
-					this.search.on('change', 'input[type=checkbox]', function() {
-						var searchTerm = $(this).is(':checked');
-						var searchName = $(this).attr('name');
-						self.module.controller.doSearch(searchName, searchTerm);
-					});
 				}
+
+
+				this.search.on( 'keyup', 'input[type=text]', function() {
+
+					var searchTerm = $(this).val(),
+						searchName = $(this).attr('name');
+
+					if( !self.oldVal[ searchName ] || self.oldVal[ searchName ] !== searchTerm ) {
+						$( this ).trigger( 'change' );
+					}
+
+					self.oldVal[ searchName ] = searchTerm
+
+				});
+
+				this.search.on('change', 'select, input[type=text]', function() {
+					var searchTerm = $(this).val();
+					var searchName = $(this).attr('name');
+					if(searchName !== undefined) self.module.controller.searchTerms[searchName] = searchTerm;
+					if (!self.button) self.module.controller.doSearch();
+				});
+
+				this.search.on('change', 'input[type=checkbox]', function() {
+					var searchTerm = $(this).is(':checked');
+					var searchName = $(this).attr('name');
+					if(searchName !== undefined) self.module.controller.searchTerms[searchName] = searchTerm;
+					if (!self.button) self.module.controller.doSearch();
+				});
 			}			
 		},
 

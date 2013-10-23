@@ -23,7 +23,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			this.request = null;
 		},
 		
-		doSearch: function(name, val) {
+		doSearch: function() {
 
 		/*	if(this.request)
 				this.request.abort();
@@ -36,8 +36,6 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 				i = 0,
 				data = {};
 
-			if(name !== undefined)
-				this.searchTerms[name] = val;
 
 			// Replace all search terms in the URL
 			var reg = /\<([a-zA-Z0-9]+)\>/;
