@@ -313,9 +313,11 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 		var posWrap = this.group.form.dom.find('.form-sections-wrapper').position();
 		var posDom = fieldElement.dom.position();
+		var row = this.domBody.children('tr:eq(' + j + ')');
+		var tablePos = this.domBody.position();
 
 		return {
-			width: fieldElement.dom.width(),
+			width: row.outerWidth() - posDom.left + tablePos.left + 2,
 			left: posDom.left + posWrap.left - 1,
 			top: posDom.top + posWrap.top + this.domBody.children('tr:eq(' + j + ')').innerHeight() - 1
 		};

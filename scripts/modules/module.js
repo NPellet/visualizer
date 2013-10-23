@@ -585,10 +585,11 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 							return;
 						}
 
-						fieldElement
-							.groupElement
-							.getFieldElementCorrespondingTo(fieldElement, 'jpath')
-							.setOptions( sendjpaths[ fieldElement.value ] );
+						$.when(fieldElement
+								.groupElement
+								.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function( fieldElement ) {
+									fieldElement.setOptions( sendjpaths[ fieldElement.value ] );	
+								});
 					};
 
 /*
@@ -624,10 +625,11 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 							return;
 						}
 
-						fieldElement
+						$.when(fieldElement
 							.groupElement
-							.getFieldElementCorrespondingTo(fieldElement, 'jpath')
-							.setOptions( sendjpaths[ fieldElement.value ] );
+							.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function ( fieldElement ) {
+								fieldElement.setOptions( sendjpaths[ fieldElement.value ] );	
+							});
 					};
 
 /*

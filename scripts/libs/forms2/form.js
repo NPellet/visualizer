@@ -291,6 +291,7 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 				element.inDom( );
 			});
 
+			this.dom.focus();
 			this.redoTabIndices( );
 		},
 
@@ -356,7 +357,7 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 		hideExpander: function(fast) {
 			
 			if( this.expander.open ) {
-				this.getExpanderDom().stop(true).hide();//[fast ? 'hide' : 'slideUp']();
+				this.getExpanderDom( ).stop( true ).hide( );//[fast ? 'hide' : 'slideUp']();
 				this.expander.open = false;
 			}
 		},
@@ -364,13 +365,12 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 		addButton: function( label, options, callback ) {
 
 			var self = this;
-			require(['forms/button'], function( Button ) {
+			require( [ 'forms/button' ], function( Button ) {
 
 				var btn = new Button( label, callback, options );
 				self.buttons.push( btn );
-
-				self.onReady().done( function( ) {
-					self.buttonsDom.append( btn.render() );	
+				self.onReady( ).done( function( ) {
+					self.buttonsDom.append( btn.render( ) );	
 				});
 			});
 		}
