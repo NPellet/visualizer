@@ -23,7 +23,7 @@ define( [ ], function(  ) {
 
 						value.push( id );
 
-					} else if( id = value.indexOf( id ) ) {
+					} else if( ( id = value.indexOf( id ) ) > -1 ) {
 
 						value.splice( id, 1 );
 
