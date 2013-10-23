@@ -33,6 +33,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this._highlights = this._highlights || [];
 
 	 		this.onReady = $.Deferred();
+	 		this.onResize( this.w, this.h );
 	 	},
 
 	 	unload: function() {
@@ -164,6 +165,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 
 			this.jqGrid = $.proxy( $( this.domTable ).jqGrid, $( this.domTable ) );
+
 			this.onReady.resolve();
 	 	},
 
@@ -232,8 +234,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 				this.jqGrid('setGridParam', { datatype: 'local', data: allEls });
 				$( this.domTable ).trigger( 'reloadGrid' );
-
-				this.onResize( this.w, this.h );
 			}
 		},
 
