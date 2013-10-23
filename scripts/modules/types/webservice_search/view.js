@@ -52,7 +52,6 @@ define(['modules/defaultview'], function(Default) {
 						$( this ).trigger( 'change' );
 					}
 
-console.log('Up');
 					if( searchName !== undefined ) {
 						self.module.controller.searchTerms[ searchName ] = searchTerm;
 					}
@@ -64,13 +63,14 @@ console.log('Up');
 				});
 
 				this.search.on('change', 'select, input[type=text]', function() {
-					console.log('UpChange');
+					
 					var searchTerm = $(this).val();
 					var searchName = $(this).attr('name');
 					
 					if(searchName !== undefined) {
 						self.module.controller.searchTerms[ searchName ] = searchTerm;
 					}
+
 					
 					if ( ! self.button ) {
 						self.module.controller.doSearch();
@@ -93,7 +93,7 @@ console.log('Up');
 		},
 
 		_makeFormEl: function(spec, name) {
-
+console.log(spec);
 			switch(spec.fieldtype) {
 
 				case 'combo':
@@ -104,16 +104,16 @@ console.log('Up');
 						opt = opts[i].split(':');
 						html += '<option ' + (spec.defaultvalue == opt[0] ? 'selected="selected" ' : '') + 'value="' + opt[0] + '">' + (opt[1] || opt[0]) + '</option>';
 					}
-					return '<select name="' + name + '">' + html + '</select>';
+					return '<select name="' + spec.name + '">' + html + '</select>';
 				break;
 
 				case 'checkbox':
-					return '<input type="checkbox" ' + (spec.defaultvalue ? 'checked="checked"' : '') + ' value="1" offvalue="0" name="' +  name +'" /></div>';
+					return '<input type="checkbox" ' + (spec.defaultvalue ? 'checked="checked"' : '') + ' value="1" offvalue="0" name="' +  spec.name +'" /></div>';
 				break;
 				
 				default:
 				case 'text':
-					return '<input type="text" value="' + (spec.defaultvalue || '') + '" name="' +  name +'" style="width: 100%" /></div>';
+					return '<input type="text" value="' + (spec.defaultvalue || '') + '" name="' + spec.name +'" style="width: 100%" /></div>';
 				break;
 			}	
 		},
