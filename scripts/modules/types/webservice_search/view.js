@@ -89,7 +89,14 @@ define(['modules/defaultview'], function(Default) {
 						self.module.controller.doSearch();
 					}
 				});
-			}			
+			}
+
+
+			if (cfg('resultfilter')) {
+        		eval("self.module.resultfilter = function(data) { try { \n " + cfg('resultfilter') + "\n } catch(_) { console.log(_); } }");
+      		} else {
+      			delete self.module.resultfilter;
+      		}
 		},
 
 		_makeFormEl: function(spec, name) {

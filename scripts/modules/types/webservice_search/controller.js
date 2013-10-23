@@ -9,18 +9,20 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			var searchparams;
 
 			if( searchparams = this.module.getConfiguration( 'searchparams' ) ) {
-
 				for(var i in searchparams) {
 					if(!i) {
 						continue;
 					}
-
-					this.searchTerms[i] = searchparams[i].defaultvalue;
+					this.searchTerms[searchparams[i].name] = searchparams[i].defaultvalue;
 				}
 			}
 			
 			this.result = null;
 			this.request = null;
+
+			if ( this.module.getConfiguration( 'onloadsearch' )) {
+				this.doSearch();
+			}
 		},
 		
 		doSearch: function() {
@@ -39,11 +41,9 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 			// Replace all search terms in the URL
 			var reg = /\<([a-zA-Z0-9]+)\>/;
-			
 			while(val = reg.exec(url)) {
 				url = url.replace('<' + val[1] + '>', (encodeURIComponent(this.searchTerms[val[1]] || '')));
 			}
-			
 
 			// Replace all variables in the URL
 			var reg = /\<var:([a-zA-Z0-9]+)\>/;
@@ -73,8 +73,9 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			this.request.done(function(data) {
 				self.request = null;
 
-				if (self.module.resultFilter) {
-					data=self.module.resultFilter(data);
+
+				if (self.module.resultfilter) {
+					data=self.module.resultfilter(data);
 				}
 
 				data = DataObject.check(data, true);
@@ -156,9 +157,15 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 								title: 'Button text (executing)'
 							},
 
-							resultFilter: {
+							onloadsearch: {
+								type: 'checkbox',
+								title: 'Make one query on load',
+								options: { button: '' }
+							},
+
+							resultfilter: {
 								type: 'jscode',
-								title: 'Result filter'
+								title: 'Result data filter'
 							}
 						}
 					},
@@ -242,6 +249,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			'url': function(cfg) { return cfg.groups.group[ 0 ].url[ 0 ]; },
 			'searchparams': function(cfg) { return cfg.groups.searchparams[ 0 ]; },
 			'buttonlabel': function(cfg) { return cfg.groups.group[ 0 ].buttonlabel[ 0 ]; },
+			'onloadsearch': function(cfg) { return cfg.groups.group[ 0 ].onloadsearch[ 0 ]; },
+			'resultfilter': function(cfg) { return cfg.groups.group[ 0 ].resultfilter[ 0 ]; },
 			'postvariables': function(cfg) { return cfg.sections.postvariables[ 0 ].postvariables[ 0 ]; }
 		},
 
