@@ -245,8 +245,7 @@ console.log(view.variables);
 			});
 
 			form.addButton('Save', { color: 'green' }, function() {
-
-				form.getDom().dialog('close');
+				div.dialog('close');
 				var data = form.getValue().sections[ 0 ].groups.tablevars[ 0 ];
 				view.set('variables', data, true);
 				_check(true);
