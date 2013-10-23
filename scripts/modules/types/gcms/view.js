@@ -18,6 +18,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 		},
 
 		inDom: function() {
+
 			var self = this;
 			var _gcms = new gcms();
 			_gcms.setMSContinuous(this.module.getConfiguration( 'continuous' ));
@@ -88,6 +89,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			};
 				
 			this.gcmsInstance = _gcms;
+		},
+
+		unload: function() {
+			this.dom.remove();
+			this.gcmsInstance = false;
 		},
 
 		onResize: function(width, height) {
