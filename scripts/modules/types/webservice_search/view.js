@@ -88,7 +88,7 @@ define(['modules/defaultview'], function(Default) {
 				
 				default:
 				case 'text':
-					return '<input type="text" value="' + spec.defaultvalue + '" name="' +  name +'" style="width: 100%" /></div>';
+					return '<input type="text" value="' + (spec.defaultvalue || '') + '" name="' +  name +'" style="width: 100%" /></div>';
 				break;
 			}	
 		},
