@@ -140,7 +140,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 
 							displaySearch: {
 								type: 'checkbox',
-								options: { 'allow': 'Allow searching', 'allow2': 'Allow searching', 'allow3': 'Allow searching'}
+								options: { 'allow': 'Allow searching' }
 							},
 
 
