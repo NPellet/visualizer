@@ -229,8 +229,11 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			return this.fillOld( json, clearFirst );
 		}
 
-		var i = 0, l = json.length, j,
-			finalEl = {};
+		var i = 0,
+			l = json.length,
+			j,
+			finalEl = {},
+			allJ = {};
 
 		for( ; i < l ; i ++ ) {
 
@@ -238,9 +241,17 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 				finalEl[ j ] = finalEl[ j ] || [ ];
 				finalEl[ j ][ i ] = json[ i ][ j ]; 
+				allJ[ j ] = true;
 			}
 		}
 
+		for( j in allJ ) {
+			i = 0;
+			for( ; i < l ; i ++ ) {
+				finalEl[ j ][ i ] = finalEl[ j ][ i ] || null; 
+			}
+		}
+		
 		return this._fill( finalEl, clearFirst );
 	};
 
