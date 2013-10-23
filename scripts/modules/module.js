@@ -720,7 +720,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 					
 					module.view.init();
 					module.view.inDom();
-
+console.log(module.view);
 					module.view.onResize( module.view.width, module.view.height );
 
 					module.model.resetListeners( );

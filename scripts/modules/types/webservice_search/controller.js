@@ -159,7 +159,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 							},
 
 							resultFilter: {
-								type: 'JSCode',
+								type: 'jscode',
 								title: 'Result filter'
 							}
 						}
