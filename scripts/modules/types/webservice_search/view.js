@@ -26,8 +26,8 @@ define(['modules/defaultview'], function(Default) {
 				var url = cfg( 'url' ),
 					button = cfg( 'button', false )
 
-				var url = self.module.getConfiguration().url;
-				this.button = self.module.getConfiguration().button || false;
+				var url = cfg( 'url' );
+				this.button = cfg( 'button', false );
 
 				if(this.button) {
 
@@ -52,22 +52,42 @@ define(['modules/defaultview'], function(Default) {
 						$( this ).trigger( 'change' );
 					}
 
-					self.oldVal[ searchName ] = searchTerm
+console.log('Up');
+					if( searchName !== undefined ) {
+						self.module.controller.searchTerms[ searchName ] = searchTerm;
+					}
+					
+					if ( ! self.button ) {
+						self.module.controller.doSearch();
+					}
 
 				});
 
 				this.search.on('change', 'select, input[type=text]', function() {
+					console.log('UpChange');
 					var searchTerm = $(this).val();
 					var searchName = $(this).attr('name');
-					if(searchName !== undefined) self.module.controller.searchTerms[searchName] = searchTerm;
-					if (!self.button) self.module.controller.doSearch();
+					
+					if(searchName !== undefined) {
+						self.module.controller.searchTerms[ searchName ] = searchTerm;
+					}
+					
+					if ( ! self.button ) {
+						self.module.controller.doSearch();
+					}
 				});
 
 				this.search.on('change', 'input[type=checkbox]', function() {
 					var searchTerm = $(this).is(':checked');
 					var searchName = $(this).attr('name');
-					if(searchName !== undefined) self.module.controller.searchTerms[searchName] = searchTerm;
-					if (!self.button) self.module.controller.doSearch();
+					
+					if( searchName !== undefined ) {
+						self.module.controller.searchTerms[ searchName ] = searchTerm;
+					}
+
+					if ( ! self.button ) {
+						self.module.controller.doSearch();
+					}
 				});
 			}			
 		},
