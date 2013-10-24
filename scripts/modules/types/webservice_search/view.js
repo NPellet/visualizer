@@ -33,7 +33,7 @@ define(['modules/defaultview'], function(Default) {
 
 					require( [ 'forms/button' ], function( Button ) {
 
-						self.search.append( new Button( cfg.buttonlabel || 'Search', function() {
+						self.search.append( new Button( cfg("buttonlabel") || 'Search', function() {
 
 							self.module.controller.doSearch();
 							

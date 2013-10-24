@@ -26,7 +26,6 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		},
 		
 		doSearch: function() {
-console.log("DO SEARCH");
 		/*	if(this.request)
 				this.request.abort();
 */
@@ -232,7 +231,7 @@ console.log("DO SEARCH");
 
 									name: {
 										type: 'text',
-										title: 'Name'
+										title: 'Form variable name'
 									}
 								}
 							},
@@ -250,6 +249,7 @@ console.log("DO SEARCH");
 			'url': function(cfg) { return cfg.groups.group[ 0 ].url[ 0 ]; },
 			'searchparams': function(cfg) { return cfg.groups.searchparams[ 0 ]; },
 			'buttonlabel': function(cfg) { return cfg.groups.group[ 0 ].buttonlabel[ 0 ]; },
+			'buttonlabel_exec': function(cfg) { return cfg.groups.group[ 0 ].buttonlabel_exec[ 0 ]; },
 			'onloadsearch': function(cfg) { return cfg.groups.group[ 0 ].onloadsearch[ 0 ]; },
 			'resultfilter': function(cfg) { return cfg.groups.group[ 0 ].resultfilter[ 0 ]; },
 			'postvariables': function(cfg) { return cfg.sections.postvariables[ 0 ].groups.postvariables[ 0 ]; }
