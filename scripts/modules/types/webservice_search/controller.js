@@ -26,7 +26,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		},
 		
 		doSearch: function() {
-
+console.log("DO SEARCH");
 		/*	if(this.request)
 				this.request.abort();
 */
@@ -54,10 +54,14 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			}
 			
 			for(; i < l; i++) {
-				data[toPost[i][0]] = API.getVar(toPost[i][1]);
+				data[toPost[i].name] = API.getVar(toPost[i].variable);
 
-				if(data[toPost[i][0]] && typeof data[toPost[i][0]].getType() == "object") {
-					data[toPost[i][0]] = JSON.stringify(data[toPost[i][0]]);
+
+//console.log(typeof data[toPost[i].name].getType());
+				if(data[toPost[i].name] && (typeof data[toPost[i].name].getType() == "object" || typeof data[toPost[i].name].getType() == "array" )) {
+
+//console.log("STRINGIFY");
+					data[toPost[i].name] = JSON.stringify(data[toPost[i].name]);
 				}
 			}
 
@@ -251,7 +255,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			'buttonlabel': function(cfg) { return cfg.groups.group[ 0 ].buttonlabel[ 0 ]; },
 			'onloadsearch': function(cfg) { return cfg.groups.group[ 0 ].onloadsearch[ 0 ]; },
 			'resultfilter': function(cfg) { return cfg.groups.group[ 0 ].resultfilter[ 0 ]; },
-			'postvariables': function(cfg) { return cfg.sections.postvariables[ 0 ].postvariables[ 0 ]; }
+			'postvariables': function(cfg) { return cfg.sections.postvariables[ 0 ].groups.postvariables[ 0 ]; }
 		},
 
 		"export": function() {

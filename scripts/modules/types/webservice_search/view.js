@@ -18,7 +18,7 @@ define(['modules/defaultview'], function(Default) {
 			if(searchparams = cfg('searchparams' ) ) {
 
 				for(var i in searchparams) {
-					if(!i)
+					if(!i ||  ! searchparams[i].label)
 						continue;
 					this.search.append('<tr><td><nobr>' + searchparams[i].label + '</nobr></td><td>' + this._makeFormEl(searchparams[i], i) + '</td></tr>');
 				}
