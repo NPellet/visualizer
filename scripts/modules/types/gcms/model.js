@@ -10,17 +10,21 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 
 		getjPath: function(rel) {
 			var data = [];
+
 			switch(rel) {
 				default:
 				case 'annotation':
+
 					if( this.module.view.annotations ) {
 						data = this.module.view.annotations[0];
 					}
+					console.log(data);
 				break;
 			}
 
 			var jpaths = [];
 			Traversing.getJPathsFromElement(data, jpaths);
+			console.log(jpaths);
 			return jpaths;
 		}
 

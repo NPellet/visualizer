@@ -354,8 +354,10 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 	
 
 	GroupTableElement.prototype.getFieldElementCorrespondingTo = function( element, name ) {
-
-		return this.getFieldElement( name, this.fieldElements[ element.getName() ].indexOf( element ) );
+		var field;
+		if( this.fieldElements[ name ] && ( field = this.fieldElements[ name ][ this.fieldElements[ element.getName() ].indexOf( element ) ] ) ) {
+			return field;
+		}
 	}
 
 
