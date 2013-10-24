@@ -57,10 +57,7 @@ console.log("DO SEARCH");
 				data[toPost[i].name] = API.getVar(toPost[i].variable);
 
 
-//console.log(typeof data[toPost[i].name].getType());
-				if(data[toPost[i].name] && (typeof data[toPost[i].name].getType() == "object" || typeof data[toPost[i].name].getType() == "array" )) {
-
-//console.log("STRINGIFY");
+				if(data[toPost[i].name] && (data[toPost[i].name].getType() == "object" || data[toPost[i].name].getType() == "array" )) {
 					data[toPost[i].name] = JSON.stringify(data[toPost[i].name]);
 				}
 			}
