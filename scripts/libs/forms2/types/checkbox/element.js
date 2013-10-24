@@ -75,7 +75,7 @@ define( [ ], function(  ) {
 
 			if( ! ( this.value instanceof Array ) ) {
 
-				if(this.value == null) {
+				if(this.value == null || this.value == "") {
 
 					this.value = [];
 				} else {

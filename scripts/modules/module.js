@@ -712,7 +712,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 					module.definition.bgColor 			= value.module_config[ 0 ].groups.group[ 0 ].bgcolor[ 0 ];
 					module.setBackgroundColor( module.definition.bgColor );
 
-					module.definition.displayWrapper 	= value.module_config[ 0 ].groups.group[ 0 ].modulewrapper[ 0 ][ 0 ] == 'display';
+					module.definition.displayWrapper 	= value.module_config[ 0 ].groups.group[ 0 ].modulewrapper[ 0 ].indexOf('display') > -1;
 					module.setDisplayWrapper();
 
 					module.setSendVars(		value.vars_out[ 0 ].groups.group[ 0 ]			);
