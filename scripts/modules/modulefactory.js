@@ -54,7 +54,7 @@ define(['modules/module'], function(Module) {
 
 				'Charting': {
 					'canvas_matrix': 'Matrix',
-					'plot': 'Plot'
+					'spectra_displayer': 'Plot'
 				}
 			}
 		},
