@@ -220,7 +220,7 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 			return this
 					.get(el, true)
 					.pipe(function(el) { el.setChild(jpath, newValue, options) })
-					.done(function() { if(!options.mute) self._dataChanged(options.moduleid); });
+					.done(function() { if(!options.mute) self.triggerChange(options.moduleid); });
 		}
 	};
 
