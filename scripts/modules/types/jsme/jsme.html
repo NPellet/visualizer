@@ -15,6 +15,7 @@
 
 	<script type="text/javascript">
 		var jsmeApplet;
+		var deferred=$.Deferred();
 
 		this.setController = function(controller) {
 			this.controller = controller;
@@ -22,6 +23,7 @@
 
 		this.setView = function(view) {
 			this.view = view;
+			deferred.resolve();
 		}
 
 		this.setMolFile = function(mol) {
@@ -65,7 +67,11 @@
 
 			//var __self = window;
 			jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px");
-			jsmeApplet.options(this.view.getPrefs());
+
+
+			deferred.done(function() {
+				jsmeApplet.options(window.view.getPrefs());
+			})
 
 			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
 
