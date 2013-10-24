@@ -36,7 +36,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			tr.append("<th />");	
 		}
 		
-		table.append(domHead).append(domBody);
+		table.append( domHead ).append( domBody );
 
 		this.dom = dom;
 		this.domHead = domHead;
@@ -46,8 +46,8 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 			table.on('click', '.form-duplicator', function() {
 
-				var add = $(this).hasClass('form-duplicator-add'),
-					rowid = $(this).parent().attr('data-rowid');
+				var add = $( this ).hasClass( 'form-duplicator-add' ),
+					rowid = $( this ).parent( ).attr( 'data-rowid' );
 
 				if( add ) {
 
@@ -233,11 +233,12 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			l = json.length,
 			j,
 			finalEl = {},
-			allJ = {};
+			allJ = {},
+			fields = this.group.fields;
 
 		for( ; i < l ; i ++ ) {
 
-			for( j in json[ i ] ) {
+			for( j in fields ) {
 
 				finalEl[ j ] = finalEl[ j ] || [ ];
 				finalEl[ j ][ i ] = json[ i ][ j ]; 
@@ -245,13 +246,13 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			}
 		}
 
-		for( j in allJ ) {
+		for( j in fields ) {
 			i = 0;
 			for( ; i < l ; i ++ ) {
 				finalEl[ j ][ i ] = finalEl[ j ][ i ] || null; 
 			}
 		}
-		
+
 		return this._fill( finalEl, clearFirst );
 	};
 
@@ -268,8 +269,8 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 		});
 
-		for(i in json) {
-			for(j = json[ i ].length ; j < max ; j ++) {
+		for( i in json ) {
+			for( j = json[ i ].length ; j < max ; j ++ ) {
 				json[ i ][ j ] = null;
 			}
 		}

@@ -228,7 +228,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 					}
 				}
 			});
-console.log(view.variables);
+
 
 			form.onStructureLoaded().done(function() {
 				form.fill({ 
@@ -249,10 +249,9 @@ console.log(view.variables);
 
 			form.addButton('Save', { color: 'green' }, function() {
 				div.dialog('close');
-				var data = form.getValue().sections[ 0 ].groups.tablevars[ 0 ];
-				view.set('variables', data, true);
+				var data = form.getValue().sections.cfg[ 0 ].groups.tablevars[ 0 ];
+				view.variables = data;
 				_check(true);
-
 			});
 
 			form.onLoaded().done(function() {
