@@ -37,6 +37,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				defaultWheelAction: 'zoomY',
 				shiftMouseAction: 'rangeX',
 				lineToZero: false,
+				unZoomMode: 'gradualX',
 				rangeLimitX: parseInt(this.rangeLimit) || 1,
 
 				plugins: ['zoom', 'drag', 'integral'],
@@ -144,8 +145,9 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 				},
 
 				onRangeXRemove: function(range) {
-					if(!range.serie)
+					if(!range.serie) {
 						return;
+					}
 					range.serie.kill(true);
 					range.serie = false;
 				},
@@ -241,8 +243,6 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 					this.options.onAnnotationChange(annot);
 					self.onAnnotationMake(annot);
 				},
-
-
 
 				onAnnotationChange: function(annot) {
 
