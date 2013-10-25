@@ -74,7 +74,6 @@ define( [ ], function(  ) {
 
 
 	FieldConstructor.prototype.getOptions = function() {
-		console.log(this.combooptions);
 		return this.combooptions || false;
 	}
 

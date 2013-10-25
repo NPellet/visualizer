@@ -23,8 +23,9 @@ define(['jquery', 'util/event'], function($, Event) {
 
 	var getCommonKeys = function(set1, set2) {
 		var set3 = set2.slice(0), set1Rev = {};
-		for(var i = 0, l = set1.length; i < l; i++)
+		for(var i = 0, l = set1.length; i < l; i++) {
 			set1Rev[set1[i]] = true;
+		}
 		return compareKeysRecursively(set1Rev, set3, true);
 	}
 

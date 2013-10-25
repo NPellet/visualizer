@@ -117,11 +117,14 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			   	afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
 			   	
-			   		if( self.jpaths[ colNum ].number ) {
+			   	
+			   		if( self.jpaths[ colNum ].number.indexOf('number') > -1 ) {
 			   			value = parseFloat(value);
 			   		}
 
 			   		self.elements[ rowId.replace( self.uniqId, '') ].setChild( colModel[ colNum ]._jpath, value, { moduleid: self.module.getId( ) } );
+
+			   		console.log(self.elements[ rowId.replace( self.uniqId, '') ]);
 			   		self.applyFilterToRow( rowId.replace( self.uniqId, '' ), rowId );
 			   	},
 

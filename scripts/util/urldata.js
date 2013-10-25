@@ -20,8 +20,10 @@ define(['jquery', 'util/lru', 'util/debug'], function($, LRU, Debug) {
 				Debug.log('DataURL: Found ' + url + ' by AJAX');
 
 				// We set 20 data in memory, 500 in local database
-				if(!LRU.exists('urlData'))
+				if(!LRU.exists('urlData')) {
 					LRU.create('urlData', 20, 500);
+				}
+				
 				LRU.store('urlData', url, data);
 
 				delete pendings[url];
