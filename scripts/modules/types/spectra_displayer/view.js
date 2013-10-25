@@ -82,8 +82,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				graph.getBottomAxis().options.onZoom = function(from, to) {
 					self.module.controller.sendAction('fromto', new DataObject({type: 'fromTo', value: new DataObject({ from: from, to: to })}), 'onZoomChange');
 				}
-		//graph.getLeftAxis(0, {logScale: true})
-
 
 				if( cfg( 'shiftxtozero' ) ) {
 
@@ -121,8 +119,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 			$.when(def).then(function(graph) {
 
-				if(!graph)
+				if(!graph) {
 					return;
+				}
+
 				graph.redraw();
 				self.graph = graph;
 				
@@ -490,7 +490,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			this.series[serieName] = [];
 		},
 
-		makeSerie: function(data, value) {
+		makeSerie: function(data, value, name) {
 
 			var self = this,
 				serie = this.graph.newSerie( data.name );
@@ -505,8 +505,19 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			this.onActionReceive.removeSerieByName.call( this, data.name || {} );
 			serie.autoAxis();
 			serie.setData( data.data );
-			serie.setLineColor( data.lineColor || this.colors[ this.colorId % this.colors.length ] );
+			
 			this.seriesActions.push( [ value, serie, data.name ] );
+			this.setSerieParameters( serie, name );
+			
+			if( data.lineColor ) {
+				serie.setLineColor( data.lineColor );
+			}
+
+			if( data.lineWidth ) {
+				serie.setLineWidth( data.lineWidth );
+			}
+
+			this.onResize(this.width, this.height);
 		},
 
 
@@ -525,7 +536,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				value = value.get();
 
 				if(value.name) {
-					this.makeSerie(value, value);	
+					this.makeSerie(value, value, value.name);
 				} else {
 
 					for( var i in value ) {

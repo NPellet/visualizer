@@ -204,8 +204,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			},
 
 			zoomOnAnnotation: function(value, name) {
-				if(!value.pos && !value.pos2)
+				if(!value.pos && !value.pos2) {
 					return;
+				}
 				this.gcmsInstance.zoomOn(value.pos.x, value.pos2.x, value._max || false);
 			},
 
@@ -216,7 +217,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				for ( ; i < l ; i++ ) {
 					this.shapes[i].toggleLabel( 1 , true );
 				}
-
 			},
 
 			hideChemicalLabels: function() {

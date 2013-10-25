@@ -131,6 +131,18 @@ define(['modules/defaultcontroller'], function(Default) {
 				}
 			}
 
+
+			if( this.module.view.seriesActions ) {
+
+				for(var i = 0, l = this.module.view.seriesActions.length ; i < l; i++ ) {
+
+					vars.push({ 
+						title: this.module.view.seriesActions[i][2],
+						key: this.module.view.seriesActions[i][2]
+					});
+				}
+			}
+
 			return {
 				groups: {
 
