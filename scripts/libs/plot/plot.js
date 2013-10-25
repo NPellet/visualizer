@@ -1378,7 +1378,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var self = graph;
 			this.count = this.count || 0;
 			x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal(x);
-			var color = Util.getNextColorRGB(this.count, graph.options.rangeLimitX);
+			var color = Util.getNextColorRGB(this.count, 100);
 
 			var shape = graph.makeShape({
 					type: 'surfaceUnderCurve', 
@@ -4873,7 +4873,9 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.coordsI = coords;
 				this.setPosition();
 				this.redrawImpl();
+
 			} else if(this.resize) {
+
 				var value = this.serie.searchClosestValue(this.serie.getXAxis().getVal(this.graph.getXY(e).x - this.graph.getPaddingLeft()));
 				if(!value)
 					return;

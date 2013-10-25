@@ -35,9 +35,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 					break;
 
 				}
-console.log(annot);
-				if(annot)
+
+				if(annot) {
 					annot.triggerChange(self.module.getId());
+				}
 			}
 
 			_gcms.onAnnotationMake = function(annot) {
