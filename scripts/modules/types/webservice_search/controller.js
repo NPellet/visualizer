@@ -73,7 +73,6 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			this.request.done(function(data) {
 				self.request = null;
 
-
 				if (self.module.resultfilter) {
 					data=self.module.resultfilter(data);
 				}
@@ -250,7 +249,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			'searchparams': function(cfg) { return cfg.groups.searchparams[ 0 ]; },
 			'buttonlabel': function(cfg) { return cfg.groups.group[ 0 ].buttonlabel[ 0 ]; },
 			'buttonlabel_exec': function(cfg) { return cfg.groups.group[ 0 ].buttonlabel_exec[ 0 ]; },
-			'onloadsearch': function(cfg) { return cfg.groups.group[ 0 ].onloadsearch[ 0 ]; },
+			'onloadsearch': function(cfg) { return cfg.groups.group[ 0 ].onloadsearch[ 0 ][ 0 ]; },
 			'resultfilter': function(cfg) { return cfg.groups.group[ 0 ].resultfilter[ 0 ]; },
 			'postvariables': function(cfg) { return cfg.sections.postvariables[ 0 ].groups.postvariables[ 0 ]; }
 		},
