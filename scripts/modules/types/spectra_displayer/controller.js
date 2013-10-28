@@ -316,14 +316,14 @@ define(['modules/defaultcontroller'], function(Default) {
 
 		configAliases: {
 			'graphurl': function(cfg) { console.log(cfg.groups);  return cfg.groups.group[ 0 ].graphurl[ 0 ]; },
-			'shiftxtozero': function(cfg) { return cfg.groups.group[ 0 ].shiftxtozero[ 0 ]; },
+			'shiftxtozero': function(cfg) { return cfg.groups.group[ 0 ].shiftxtozero[ 0 ][ 0 ]; },
 			'displayYAxis': function(cfg) { return cfg.groups.group[ 0 ].displayAxis[ 0 ].indexOf('y') > -1; },
 			'yLabel': function(cfg) { return cfg.groups.group[ 0 ].yLabel[ 0 ]; },
 			'displayXAxis': function(cfg) { return cfg.groups.group[ 0 ].displayAxis[ 0 ].indexOf('x') > -1; },
 			'xLabel': function(cfg) { return cfg.groups.group[ 0 ].xLabel[ 0 ]; },
 			'vertGridMain': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('vmain') > -1; },
 			'vertGridSec': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('vsec') > -1; },
-			'xastime': function(cfg) { return cfg.groups.group[ 0 ].xastime[ 0 ]; },
+			'xastime': function(cfg) { return cfg.groups.group[ 0 ].xastime[ 0 ][ 0 ]; },
 			'horGridMain': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('hmain') > -1; },
 			'horGridSec': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('hsec') > -1; },
 			'xLeftSpacing': function(cfg) { return cfg.groups.group[ 0 ].xLeftSpacing[ 0 ]; },
@@ -331,6 +331,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			'yBottomSpacing': function(cfg) { return cfg.groups.group[ 0 ].yBottomSpacing[ 0 ]; },
 			'yTopSpacing': function(cfg) { return cfg.groups.group[ 0 ].yTopSpacing[ 0 ]; },
 			'wheelAction': function(cfg) { return cfg.groups.group[ 0 ].wheelAction[ 0 ]; },
+			'zoom': function(cfg) { return cfg.groups.group[ 0 ].zoom[ 0 ]; },
 
 			'minX': function(cfg) { return cfg.groups.group[ 0 ].minX[ 0 ]; },
 			'minY': function(cfg) { return cfg.groups.group[ 0 ].minY[ 0 ]; },

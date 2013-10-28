@@ -318,7 +318,6 @@ define(function() {
 				},
 				
 				"density": {
-					
 					"type": "array",
 					"elements": {
 						"type": "object",
@@ -353,11 +352,8 @@ define(function() {
 									"pdf": "string"
 								}
 							}
-							
 						}
-						
 					}
-					
 				},
 				
 				
@@ -382,13 +378,136 @@ define(function() {
 									"pdf": "string"
 								}
 							}
-							
 						}
-						
 					}
-					
 				},
-				
+
+				"nmrExperiment": {
+					"type": "object",
+					"elements": {
+						"1H":{
+							"type": "array",
+							"elements": {
+								"type": "object",
+								"elements": {
+									"pressure": "string",
+									"solvent": "string",
+									"experiment": "string",
+									"frequency": "number",
+									"nucleus": "string",
+									"temperature": "string",
+									"jcamp": "jcamp",
+									"view": {
+										"type": "object",
+										"elements": {
+											"description": "string",
+											"value": "string",
+											"url": "string",
+											"pdf": "string"
+										}
+									}
+								}
+							}
+						},
+						"13C":{
+							"type": "array",
+							"elements": {
+								"type": "object",
+								"elements": {
+									"pressure": "string",
+									"solvent": "string",
+									"experiment": "string",
+									"frequency": "number",
+									"nucleus": "string",
+									"temperature": "string",
+									"jcamp": "jcamp",
+									"view": {
+										"type": "object",
+										"elements": {
+											"description": "string",
+											"value": "string",
+											"url": "string",
+											"pdf": "string"
+										}
+									}
+								}
+							}
+						},
+						"cosy":{
+							"type": "array",
+							"elements": {
+								"type": "object",
+								"elements": {
+									"pressure": "string",
+									"solvent": "string",
+									"experiment": "string",
+									"frequency": "number",
+									"nucleus": "string",
+									"temperature": "string",
+									"jcamp": "jcamp",
+									"view": {
+										"type": "object",
+										"elements": {
+											"description": "string",
+											"value": "string",
+											"url": "string",
+											"pdf": "string"
+										}
+									}
+								}
+							}
+						},
+						"hsqc":{
+							"type": "array",
+							"elements": {
+								"type": "object",
+								"elements": {
+									"pressure": "string",
+									"solvent": "string",
+									"experiment": "string",
+									"frequency": "number",
+									"nucleus": "string",
+									"temperature": "string",
+									"jcamp": "jcamp",
+									"view": {
+										"type": "object",
+										"elements": {
+											"description": "string",
+											"value": "string",
+											"url": "string",
+											"pdf": "string"
+										}
+									}
+								}
+							}
+						},
+						"mmbc":{
+							"type": "array",
+							"elements": {
+								"type": "object",
+								"elements": {
+									"pressure": "string",
+									"solvent": "string",
+									"experiment": "string",
+									"frequency": "number",
+									"nucleus": "string",
+									"temperature": "string",
+									"jcamp": "jcamp",
+									"view": {
+										"type": "object",
+										"elements": {
+											"description": "string",
+											"value": "string",
+											"url": "string",
+											"pdf": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+						
+				},				
 				
 				
 				"mass": {
