@@ -115,15 +115,12 @@ define(['modules/defaultcontroller'], function(Default) {
 			var vars = [];
 			var currentCfg = this.module.definition.vars_in;
 
-
-console.log(this.module.definition);
 			if(currentCfg) {
 
 				var i = 0,
 					l = currentCfg.length;
 
 				for( ; i < l ; i++) {
-console.log( currentCfg[i].rel);
 					if( currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray' ) {
 						vars.push({ 
 							title: currentCfg[i].name,
@@ -132,9 +129,6 @@ console.log( currentCfg[i].rel);
 					}
 				}
 			}
-console.log("------------")
-
-console.log(vars);
 
 
 			if( this.module.view.seriesActions ) {
