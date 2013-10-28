@@ -56,19 +56,9 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 			
 		},
 		
-		doConfiguration: function(section) {
-
-			return true;
-		},
-		
-		doFillConfiguration: function() {
-
-
-		},
-			
-		doSaveConfiguration: function(confSection) {	
-
+		configurationStructure: function(section) {
 		}
+
 	});
 
 	return controller;

@@ -481,7 +481,7 @@ define(function() {
 								}
 							}
 						},
-						"mmbc":{
+						"hmbc":{
 							"type": "array",
 							"elements": {
 								"type": "object",
@@ -504,7 +504,31 @@ define(function() {
 									}
 								}
 							}
-						}
+						},
+						"jresolv":{
+							"type": "array",
+							"elements": {
+								"type": "object",
+								"elements": {
+									"pressure": "string",
+									"solvent": "string",
+									"experiment": "string",
+									"frequency": "number",
+									"nucleus": "string",
+									"temperature": "string",
+									"jcamp": "jcamp",
+									"view": {
+										"type": "object",
+										"elements": {
+											"description": "string",
+											"value": "string",
+											"url": "string",
+											"pdf": "string"
+										}
+									}
+								}
+							}
+						}						
 					}
 						
 				},				
