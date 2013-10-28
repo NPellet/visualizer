@@ -68,15 +68,19 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 								return;
 							
 
-							var obj = [], allMs = [], i, j;
+							var obj = [], allMs = [], i, j, floor;
 
 							for(i = indexMin; i <= indexMax; i++) {
 								for(j = 0, l = self.msData[i].length; j < l; j+=2) {
-									if(obj[self.msData[i][j]])
-										obj[self.msData[i][j]] += self.msData[i][j+1];	
-									else {
-										obj[self.msData[i][j]] = self.msData[i][j+1];
-										allMs.push(self.msData[i][j]);
+									floor = Math.floor( self.msData[i][j] + 0.3 );
+									if(obj[ floor ]) {
+
+										obj[ floor ] += self.msData[i][j+1];	
+
+									} else {
+
+										obj[ floor ] = self.msData[i][j+1];
+										allMs.push( floor );
 									}
 								}
 							}
@@ -85,8 +89,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 							var finalMs = [];
 
 							for(var i = 0; i < allMs.length; i++) {
-								finalMs.push(allMs[i]);
-								finalMs.push(obj[allMs[i]] / Math.abs(indexMax - indexMin));
+								finalMs.push( allMs[i] );
+								finalMs.push( Math.round( obj[ allMs[ i ] ] / Math.abs( indexMax - indexMin ) ) );
 							}
 
 
