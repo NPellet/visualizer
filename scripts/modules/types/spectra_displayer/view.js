@@ -181,18 +181,18 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			var self = this,
 				plotinfos = this.module.getConfiguration( 'plotinfos' );
 
+
 			if( plotinfos ) {
 
 				for ( var i = 0, l = plotinfos.length ; i < l ; i++ ) {
-
 					if( varname == plotinfos[i].variable ) {
 
-						serie.options.lineToZero = ! plotinfos[i].plotcontinuous;
+						serie.options.lineToZero = ! plotinfos[i].plotcontinuous[0];
 						serie.setLineColor( Util.getColor( plotinfos[i].plotcolor ) );
 						serie.setLineWidth( plotinfos[i].strokewidth || 1 );
-						serie.options.autoPeakPicking = plotinfos[i].peakpicking;
+						serie.options.autoPeakPicking = plotinfos[i].peakpicking[0];
 
-						if( plotinfos[i].markers ) {
+						if( plotinfos[i].markers[0] ) {
 
 							serie.showMarkers();
 							serie.setMarkerType(1);
@@ -200,7 +200,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 							serie.setMarkerStrokeColor( Util.getColor( plotinfos[i].plotcolor ) );
 							serie.setMarkerFillColor( Util.getColor( plotinfos[i].plotcolor ) );
-
 						}
 					}	
 				}

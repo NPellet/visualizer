@@ -9,29 +9,85 @@
 				"top": 0
 			},
 			"size": {
-				"width": 42.039999997615816,
-				"height": 14.039999997615814
+				"width": 41.96666666269302,
+				"height": 13.966666662693024
 			},
 			"configuration": {
-				"colsjPaths": {
-					"em": {
-						"jpath": "element.em"
-					},
-					"Mol. Formula": {
-						"jpath": "element.mf"
-					}
+				"sections": {
+					"postvariables": [
+						{
+							"sections": {},
+							"groups": {
+								"postvariables": [
+									[
+										{
+											"variable": null,
+											"name": null
+										}
+									]
+								]
+							}
+						}
+					]
 				},
-				"url": "http://www.chemcalc.org/chemcalc?monoisotopicMass=<TERM>&mfRange=C0-30H0-60N0-5O0-10F0-3Cl0-3&action=em2mf&typedResult=true&maxNumberRows=100",
-				"jpatharray": "element.results",
-				"searchparams": {
-					"TERM": {
-						"label": "Monoisotopic mass",
-						"defaultvalue": "300"
-					}
+				"groups": {
+					"group": [
+						{
+							"url": [
+								"http://www.chemcalc.org/chemcalc?monoisotopicMass=<TERM>&mfRange=C0-30H0-60N0-5O0-10F0-3Cl0-3&action=em2mf&typedResult=true&maxNumberRows=100"
+							],
+							"button": [
+								[]
+							],
+							"buttonlabel": [
+								null
+							],
+							"buttonlabel_exec": [
+								null
+							],
+							"onloadsearch": [
+								[
+									"button"
+								]
+							],
+							"resultfilter": [
+								null
+							]
+						}
+					],
+					"searchparams": [
+						[
+							{
+								"name": "TERM",
+								"label": "Monoisotopic mass",
+								"defaultvalue": "300",
+								"fieldtype": "text",
+								"fieldoptions": null
+							}
+						]
+					]
 				}
 			},
-			"bgColor": "",
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
 				{
 					"event": "onSearchReturn",
 					"rel": "results",
@@ -39,13 +95,14 @@
 					"name": "chemcalc"
 				}
 			],
-			"dataSource": [
+			"actions_out": [
 				{
-					"rel": "",
-					"name": ""
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
 				}
-			],
-			"id": 1
+			]
 		},
 		{
 			"type": "jqgrid",
@@ -56,44 +113,82 @@
 				"top": 16
 			},
 			"size": {
-				"width": 42.039999997615816,
-				"height": 64.03999999761581
+				"width": 41.96666666269302,
+				"height": 63.96666666269302
 			},
 			"configuration": {
-				"colsjPaths": {
-					"Molecular formula": {
-						"jpath": "element.mf",
-						"number": false,
-						"editable": "none",
-						"options": ""
-					},
-					"Monoisotopic mass": {
-						"jpath": "element.em",
-						"number": false,
-						"editable": "none",
-						"options": ""
-					},
-					"Unsaturation": {
-						"jpath": "element.unsat",
-						"number": false,
-						"editable": "none",
-						"options": ""
-					},
-					"Error": {
-						"jpath": "element.error",
-						"number": false,
-						"editable": "none",
-						"options": ""
-					}
-				},
-				"nbLines": "200",
-				"colorjPath": "",
-				"displaySearch": false,
-				"toggle": "",
-				"filterRow": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								null
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Molecular formula",
+								"jpath": "element.mf",
+								"number": [],
+								"editable": "none",
+								"options": null
+							},
+							{
+								"name": "Monoisotopic mass",
+								"jpath": "element.em",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Unsaturation",
+								"jpath": "element.unsat",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Error",
+								"jpath": "element.error",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
 			},
-			"bgColor": "",
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "chemcalc"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
 				{
 					"event": "onHover",
 					"rel": "element",
@@ -117,33 +212,14 @@
 					"rel": "element",
 					"jpath": "element.mf",
 					"name": "clickedMF"
-				},
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
 				}
 			],
-			"dataSource": [
+			"actions_out": [
 				{
-					"rel": "list",
-					"name": "chemcalc"
-				}
-			],
-			"id": 2,
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
 				}
 			]
 		},
@@ -156,68 +232,130 @@
 				"top": 0
 			},
 			"size": {
-				"width": 94.03999999761581,
-				"height": 36.039999997615816
+				"width": 93.96666666269303,
+				"height": 35.96666666269302
 			},
 			"configuration": {
-				"flipX": false,
-				"flipY": false,
-				"plotinfos": [
-					{
-						"variable": "jcamp",
-						"plotcolor": "#e01a1a",
-						"strokewidth": "",
-						"plotcontinuous": false,
-						"peakpicking": true,
-						"markers": false
-					},
-					{
-						"variable": "clickedJcamp",
-						"plotcolor": "#21990f",
-						"strokewidth": "",
-						"plotcontinuous": false,
-						"peakpicking": false,
-						"markers": false
-					},
-					{
-						"variable": "jcampFromMF",
-						"plotcolor": "#151ee0",
-						"strokewidth": "",
-						"plotcontinuous": false,
-						"peakpicking": false,
-						"markers": false
-					}
-				],
-				"graphurl": "",
-				"xLabel": "",
-				"yLabel": "",
-				"xRightSpacing": "",
-				"xLeftSpacing": "",
-				"yTopSpacing": "",
-				"yBottomSpacing": "",
-				"minX": null,
-				"minY": null,
-				"maxX": null,
-				"maxY": null,
-				"zoom": "",
-				"wheelAction": "none",
-				"shiftxtozero": false,
-				"xastime": false,
-				"displayAxis": [
-					"x"
-				],
-				"grids": []
-			},
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								null
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								null
+							],
+							"yTopSpacing": [
+								null
+							],
+							"yBottomSpacing": [
+								null
+							],
+							"xLeftSpacing": [
+								null
+							],
+							"xRightSpacing": [
+								null
+							],
+							"yLabel": [
+								null
+							],
+							"minX": [
+								null
+							],
+							"maxX": [
+								null
+							],
+							"minY": [
+								null
+							],
+							"maxY": [
+								null
+							],
+							"zoom": [
+								null
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								null
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "jcamp",
+								"plotcolor": [
+									255,
+									32,
+									15,
+									1
+								],
+								"strokewidth": null,
+								"plotcontinuous": [],
+								"peakpicking": [
+									"picking"
+								],
+								"markers": [],
+								"normalize": null
+							},
+							{
+								"variable": "clickedJcamp",
+								"plotcolor": [
+									10,
+									245,
+									0,
+									1
+								],
+								"strokewidth": null,
+								"plotcontinuous": [],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": null
+							},
+							{
+								"variable": "jcampFromMF",
+								"plotcolor": [
+									2,
+									33,
+									217,
+									1
+								],
+								"strokewidth": null,
+								"plotcontinuous": [],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": null
+							}
+						]
+					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"id": 3,
+			"vars_in": [
 				{
 					"rel": "jcamp",
 					"name": "jcamp"
@@ -231,19 +369,26 @@
 					"name": "jcampFromMF"
 				}
 			],
-			"id": 3,
-			"actionsIn": [
+			"actions_in": [
 				{
-					"rel": "",
-					"name": ""
+					"rel": null,
+					"name": null
 				}
 			],
-			"actionsOut": [
+			"vars_out": [
 				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
 				}
 			]
 		},
@@ -256,20 +401,83 @@
 				"top": 50
 			},
 			"size": {
-				"width": 30.039999997615816,
-				"height": 14.039999997615814
+				"width": 29.966666662693022,
+				"height": 13.966666662693024
 			},
 			"configuration": {
-				"searchparams": {
-					"MF": {
-						"label": "Molecular formula",
-						"defaultvalue": ""
-					}
+				"sections": {
+					"postvariables": [
+						{
+							"sections": {},
+							"groups": {
+								"postvariables": [
+									[
+										{
+											"variable": null,
+											"name": null
+										}
+									]
+								]
+							}
+						}
+					]
 				},
-				"url": "http://www.chemcalc.org/service?mf=<MF>&isotopomers=jcamp&typedResult=true"
+				"groups": {
+					"group": [
+						{
+							"url": [
+								"http://www.chemcalc.org/service?mf=<MF>&isotopomers=jcamp&typedResult=true"
+							],
+							"button": [
+								[]
+							],
+							"buttonlabel": [
+								null
+							],
+							"buttonlabel_exec": [
+								null
+							],
+							"onloadsearch": [
+								[]
+							],
+							"resultfilter": [
+								null
+							]
+						}
+					],
+					"searchparams": [
+						[
+							{
+								"name": "MF",
+								"label": "Molecular formula",
+								"defaultvalue": null,
+								"fieldtype": "text",
+								"fieldoptions": null
+							}
+						]
+					]
+				}
 			},
-			"bgColor": "",
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
 				{
 					"event": "onSearchReturn",
 					"rel": "results",
@@ -283,13 +491,14 @@
 					"name": "mfFromMF"
 				}
 			],
-			"dataSource": [
+			"actions_out": [
 				{
-					"rel": "",
-					"name": ""
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
 				}
-			],
-			"id": 4
+			]
 		},
 		{
 			"type": "display_value",
@@ -300,37 +509,79 @@
 				"top": 38
 			},
 			"size": {
-				"width": 30.039999997615816,
-				"height": 10.039999997615814
+				"width": 29.966666662693022,
+				"height": 9.966666662693024
 			},
 			"configuration": {
-				"frontcolor": "#008507",
-				"font": "arial",
-				"fontsize": "24pt",
-				"align": "center",
-				"valign": "middle",
-				"defaultvalue": "",
-				"sprintf": ""
-			},
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"dataSource": [
-				{
-					"rel": "value",
-					"name": "clickedMF",
-					"type": [
-						null
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									245,
+									8,
+									1
+								]
+							],
+							"font": [
+								"arial"
+							],
+							"fontsize": [
+								"24pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								null
+							]
+						}
 					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"id": 5
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "clickedMF"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			]
 		},
 		{
 			"type": "display_value",
@@ -341,37 +592,79 @@
 				"top": 38
 			},
 			"size": {
-				"width": 30.039999997615816,
-				"height": 10.039999997615814
+				"width": 29.966666662693022,
+				"height": 9.966666662693024
 			},
 			"configuration": {
-				"frontcolor": "#f81b1b",
-				"font": "arial",
-				"fontsize": "24pt",
-				"align": "center",
-				"valign": "middle",
-				"defaultvalue": "",
-				"sprintf": ""
-			},
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"dataSource": [
-				{
-					"rel": "value",
-					"name": "hoverMF",
-					"type": [
-						null
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									255,
+									33,
+									20,
+									1
+								]
+							],
+							"font": [
+								"arial"
+							],
+							"fontsize": [
+								"24pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								""
+							]
+						}
 					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"id": 6
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "hoverMF"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			]
 		},
 		{
 			"type": "display_value",
@@ -382,37 +675,79 @@
 				"top": 38
 			},
 			"size": {
-				"width": 30.039999997615816,
-				"height": 10.039999997615814
+				"width": 29.966666662693022,
+				"height": 9.966666662693024
 			},
 			"configuration": {
-				"frontcolor": "#051fc7",
-				"font": "arial",
-				"fontsize": "24pt",
-				"align": "center",
-				"valign": "middle",
-				"defaultvalue": "",
-				"sprintf": ""
-			},
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"dataSource": [
-				{
-					"rel": "value",
-					"name": "mfFromMF",
-					"type": [
-						null
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									54,
+									250,
+									1
+								]
+							],
+							"font": [
+								"arial"
+							],
+							"fontsize": [
+								"24pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								null
+							]
+						}
 					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"id": 7
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "mfFromMF"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			]
 		}
 	],
 	"configuration": {
