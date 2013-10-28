@@ -70,7 +70,7 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 
 		createElement: function(source) {
 			var def = $.Deferred();
-			console.log(source.type);
+			
 			switch(source.type) {
 				case 'versioning':
 					require(['main/elements/versioning'], function(El) {

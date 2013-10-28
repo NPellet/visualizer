@@ -55,7 +55,6 @@ define(['util/versionhandler'], function(VersionHandler) {
 			this.viewCallback = c;
 
 			viewHandler.onLoaded = function(v) {
-				console.log(v);
 				view = v;
 				c(v);
 			};
