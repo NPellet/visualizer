@@ -21,7 +21,8 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 
 	functions.chemical = {};
 	functions.chemical.toscreen = function(def, val) {
-		CI.DataType.getValueFromJPath(source, "element.iupac.0.value").then(def.resolve, def.reject);
+	//	CI.DataType.getValueFromJPath(source, "element.iupac.0.value").then(def.resolve, def.reject);
+		def.reject();
 	}
 
 	functions.picture = {};
