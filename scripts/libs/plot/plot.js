@@ -2934,8 +2934,10 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.graph.plotGroup.removeChild(this.groupMain);
 
-			for(var i = 0, l = this.picks.length; i < l; i++) {
-				this.picks[i].kill();
+			if (this.picks && this.picks.length) {
+				for(var i = 0, l = this.picks.length; i < l; i++) {
+					this.picks[i].kill();
+				}
 			}
 
 			this.graph.series.splice(this.graph.series.indexOf(this), 1);
