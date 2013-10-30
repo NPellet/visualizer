@@ -154,22 +154,20 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			    	if ( status ) {
 
-			    		self.module.controller.onToggleOn(self.elements[rowid.replace(self.uniqId, '')]);
+			    		self.module.controller.onToggleOn( self.elements[ rowid.replace( self.uniqId, '' ) ] );
 
 			    	} else {
 
-			    		self.module.controller.onToggleOff(self.elements[rowid.replace(self.uniqId, '')]);
+			    		self.module.controller.onToggleOff( self.elements[ rowid.replace( self.uniqId, '' ) ] );
 
 			    	}
 
-					self.module.controller.lineClick(self.elements[rowid.replace(self.uniqId, '')]);
+					self.module.controller.lineClick( self.elements[ rowid.replace( self.uniqId, '' ) ] );
 			    },
 			});
 
-
 			this.jqGrid = $.proxy( $( this.domTable ).jqGrid, $( this.domTable ) );
-
-			this.onReady.resolve();
+			this.onReady.resolve( );
 	 	},
 
 
@@ -389,7 +387,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				var jpath2 = jpath.split('.');
 					jpath2 = jpath2.pop();
 
-				module.getConfiguration( 'colsjPaths' )[ jpath2 ] = { editable: false, jpath: jpath, number: false };
+				module.getConfiguration( 'colsjPaths' ).push({ editable: false, jpath: jpath, number: false });
 				this.reloadModule();
 			},
 
