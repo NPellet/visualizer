@@ -63,7 +63,7 @@
 			var w = window.innerWidth;
 			var h = window.innerHeight;
 			
-
+			var self=this;
 
 			//var __self = window;
 			jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px");
@@ -71,7 +71,7 @@
 
 			deferred.done(function() {
 				jsmeApplet.options(window.view.getPrefs());
-				this.view.onReady.resolve();
+				self.view.onReady.resolve();
 			})
 
 			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
