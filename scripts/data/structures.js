@@ -170,6 +170,8 @@ define(function() {
 
 							"_entryID": "int",
 							"supplierName": "string",
+							"_dateCreated": "string",
+							"_dateLastModified": "string",
 							"iupac": {
 								"type": "array",
 								'nbElements': 2,
@@ -231,6 +233,8 @@ define(function() {
 			"elements": {
 				"_entryID": "int",
 				"supplierName": "string",
+				"_dateCreated": "string",
+				"_dateLastModified": "string",
 				"iupac": {
 					"type": "array",
 					"elements": {
