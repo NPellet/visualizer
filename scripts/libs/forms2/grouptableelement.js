@@ -47,7 +47,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			table.on('click', '.form-duplicator', function() {
 
 				var add = $( this ).hasClass( 'form-duplicator-add' ),
-					rowid = $( this ).parent( ).attr( 'data-rowid' );
+					rowid = parseInt( $( this ).parent( ).attr( 'data-rowid' ) );
 
 				if( add ) {
 
@@ -112,11 +112,13 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 			i = 0;
 
-			self.eachFieldElements( fieldName, function(fieldElement) {
+			self.eachFieldElements( fieldName, function( fieldElement ) {
+
 				td = $( "<td />" ).html( fieldElement.getDom( ) );
 				trs[ i ] = trs[ i ] || [ ];
 				trs[ i ][ j ] = td;
 				i++;
+
 			});
 
 			j++;
@@ -206,10 +208,11 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			length;
 
 		this.group.eachFields( function( field ) {
+
 			field.removeElement( self.fieldElements[ field.getName() ][ rowId ] );
 			self.fieldElements[ field.getName() ].splice( rowId, 1 );
-
 			length = self.fieldElements[ field.getName() ].length;
+
 		});
 
 		if( length == 0 ) {
