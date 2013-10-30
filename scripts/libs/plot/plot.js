@@ -2793,7 +2793,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.maxY = Number.MIN_VALUE;
 
 			this.lines = [];
-			
+			this.picks = [];
 
 			this.groupMain.appendChild(this.groupLines);
 			this.groupMain.appendChild(this.groupLabels);
@@ -2933,11 +2933,8 @@ define(['jquery', 'util/util'], function($, Util) {
 		kill: function(noRedraw) {
 
 			this.graph.plotGroup.removeChild(this.groupMain);
-
-			if (this.picks && this.picks.length) {
-				for(var i = 0, l = this.picks.length; i < l; i++) {
-					this.picks[i].kill();
-				}
+			for(var i = 0, l = this.picks.length; i < l; i++) {
+				this.picks[i].kill();
 			}
 
 			this.graph.series.splice(this.graph.series.indexOf(this), 1);
@@ -3087,7 +3084,6 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			var x, y, xpx, ypx, i = 0, l = this.data.length, j = 0, k, currentLine, doAndContinue, _higher;
 
-			this.picks = this.picks || [];
 			var shape;
 			if(this.options.autoPeakPicking) {
 				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
