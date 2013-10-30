@@ -71,6 +71,7 @@
 
 			deferred.done(function() {
 				jsmeApplet.options(window.view.getPrefs());
+				this.view.onReady.resolve();
 			})
 
 			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
@@ -79,7 +80,7 @@
 			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom) {this.view._doHighlight(mol,atom);})');
 
 
-			this.view.onReady.resolve();
+			
 
 		}
 	</script>
