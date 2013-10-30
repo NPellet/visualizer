@@ -147,13 +147,14 @@ define(['jquery'], function($) {
 
 		eachFieldElements: function(fieldName, callback) {
 
-			var els = this.getFieldElements( )[ fieldName ];
+			var els = this.getFieldElements( )[ fieldName ],
+				i, l;
 
 			if( ! els ) {
 				return this.form.throwError( "Cannot iterate over field. Field " + fieldName + " does not exist" );
 			}
 
-			for( i in els ) {
+			for( i = 0, l = els.length; i < l ; i ++ ) {
 				callback.call( this, els[ i ] );
 			}
 		}

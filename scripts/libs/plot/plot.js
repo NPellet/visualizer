@@ -1720,13 +1720,14 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		getMaxValue: function() {
+			console.log(this.options.forcedMax || (this.options.forcedMax === 0 ? 0 : this.realMax));
 			return this.options.forcedMax || (this.options.forcedMax === 0 ? 0 : this.realMax);
 		},
 
 		setMinValue: function(min) { this.realMin = min; },
 		setMaxValue: function(max) { this.realMax = max; },
 		forceMin: function(val) {    this.options.forcedMin = val; },
-		forceMax: function(val) {    this.options.forcedMax = val; },
+		forceMax: function(val) {   console.log(val); this.options.forcedMax = val; },
 
 		getNbTicksPrimary: function() {
 			return this.options.nbTicksPrimary;

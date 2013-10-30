@@ -125,10 +125,10 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 		});
 
 		i = 0, l = trs.length;
-		for( ; i < l; i++ ) {
+		for( ; i < l ; i++ ) {
 
 			tr = $("<tr />");
-			tr.append('<td>' + (i + 1) + '</td>'); // Numbering
+			tr.append('<td>' + ( i + 1 ) + '</td>'); // Numbering
 		
 			for(j = 0, m = trs[ i ].length; j < m ; j++ ) {
 /*
@@ -180,7 +180,6 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 				value.group = self.group;
 				value.groupElement = self;
 				self.fieldElements[ field.getName() ].splice( rowId + 1, 0, value );
-
 			});
 
 			els.push( el );

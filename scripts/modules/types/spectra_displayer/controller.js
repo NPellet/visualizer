@@ -332,10 +332,10 @@ define(['modules/defaultcontroller'], function(Default) {
 			'wheelAction': function(cfg) { return cfg.groups.group[ 0 ].wheelAction[ 0 ]; },
 			'zoom': function(cfg) { return cfg.groups.group[ 0 ].zoom[ 0 ]; },
 
-			'minX': function(cfg) { return cfg.groups.group[ 0 ].minX[ 0 ]; },
-			'minY': function(cfg) { return cfg.groups.group[ 0 ].minY[ 0 ]; },
-			'maxX': function(cfg) { return cfg.groups.group[ 0 ].maxX[ 0 ]; },
-			'maxY': function(cfg) { return cfg.groups.group[ 0 ].maxY[ 0 ]; },
+			'minX': function(cfg) { return parseFloat(cfg.groups.group[ 0 ].minX[ 0 ]); },
+			'minY': function(cfg) { return parseFloat(cfg.groups.group[ 0 ].minY[ 0 ]); },
+			'maxX': function(cfg) { return parseFloat(cfg.groups.group[ 0 ].maxX[ 0 ]); },
+			'maxY': function(cfg) { return parseFloat(cfg.groups.group[ 0 ].maxY[ 0 ]); },
 
 
 			'flipX': function(cfg) { return cfg.groups.group[ 0 ].flip[ 0 ].indexOf('flipX') > -1; },
