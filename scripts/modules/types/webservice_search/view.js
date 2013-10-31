@@ -137,14 +137,14 @@ define(['modules/defaultview'], function(Default) {
 		lock: function() {
 			this.locked = true;
 			if( this.button ) {
-				this.buttonInst.setTitle( this.module.getConfiguration('buttonlabel_exec' || 'Loading...') );
+				this.buttonInst.setTitle( this.module.getConfiguration('buttonlabel_exec', 'Loading...') );
 				this.buttonInst.disable();
 			}
 		},
 
 		unlock: function() {
 			this.locked = false;
-			this.buttonInst.setTitle( this.module.getConfiguration('buttonlabel' || 'Search') );
+			this.buttonInst.setTitle( this.module.getConfiguration( 'buttonlabel', 'Search' ) );
 			this.buttonInst.enable();
 		},
 		
