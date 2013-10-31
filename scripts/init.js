@@ -149,10 +149,11 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 				var val = this.get();
 				if(returnDeferred) { // Returns a deferred if asked
 					if(val[el] !== undefined) {
-						if(val[el].fetch)
+						if(val[el] && val[el].fetch) {
 							return val[el].fetch();
-						else
+						} else {
 							return $.Deferred().resolve(val[el]);
+						}
 					} else {
 						return $.Deferred().reject();
 					}
