@@ -373,6 +373,11 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 					self.buttonsDom.append( btn.render( ) );	
 				});
 			});
+		},
+
+		throwError: function(error) {
+			console.error(error);
+			return false;
 		}
 
 	});
