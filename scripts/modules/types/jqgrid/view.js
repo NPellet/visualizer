@@ -66,6 +66,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 						name: jpaths[ j ].name, 
 						index: jpaths[ j ].name,
 						title: false, 
+						width: jpaths[ j ].width || 150,
 						editable: editable,
 						editoptions: jpaths[ j ].editable == 'select' ? { value: jpaths[ j ].options } : {},
 						edittype: editable ? jpaths[ j ].editable : false,
@@ -76,8 +77,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				}
 			}
 
-
-
 			var nbLines = this.module.getConfiguration( 'nbLines' ) || 20;	
 
 			this.domTable = $( '<table />' ).attr( 'id', this.uniqId ).appendTo( this.dom );
@@ -87,15 +86,10 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			$(this.domTable).jqGrid({		 			
 			   	colNames: colNames,
 			   	colModel: colModel,
-			   	
 			   	editable: true,
 			   	sortable: true,
-			  // 	sortname: j,
 			   	loadonce: false,
-			   	//width: '100%',
 				datatype: "local",
-			  //forceFit: true,
-			//   	autowidth: true,
 			   	gridview: true,
 			   	scrollerbar: true,
 			   	height: "100%",
@@ -106,7 +100,13 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			   	rowNum: nbLines,
 			   	rowList: [2, 10,20,30,100],
 			  	pager: '#pager' + this.uniqId,
-			//   	height: '100%',
+
+				resizeStop: function(width, index) { 
+
+					self.domTable.children().children().eq(0).children().each( function( i ) {
+						jpaths[ i ].width = $(this).width();
+					});
+				},
 
 			   	rowattr: function() {
 

@@ -186,6 +186,11 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 							options: {
 								type: 'text',
 								title: 'Options (; separated)'
+							},
+
+							width: {
+								type: 'text',
+								title: 'Width'
 							}
 						}
 					}
