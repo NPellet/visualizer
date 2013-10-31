@@ -23,9 +23,6 @@ define(['modules/defaultview'], function(Default) {
 					this.search.append('<tr><td><nobr>' + searchparams[i].label + '</nobr></td><td>' + this._makeFormEl(searchparams[i], i) + '</td></tr>');
 				}
 				
-				var url = cfg( 'url' ),
-					button = cfg( 'button', false )
-
 				var url = cfg( 'url' );
 				this.button = cfg( 'button', false );
 
@@ -33,11 +30,11 @@ define(['modules/defaultview'], function(Default) {
 
 					require( [ 'forms/button' ], function( Button ) {
 
-						self.search.append( new Button( cfg("buttonlabel") || 'Search', function() {
+						self.search.append( (self.buttonInst = new Button( cfg("buttonlabel") || 'Search', function() {
 
 							self.module.controller.doSearch();
 							
-						} ).render() );
+						} ) ).render() );
 					});
 
 				}
@@ -133,14 +130,29 @@ define(['modules/defaultview'], function(Default) {
 			
 		},
 		
-		blank: function() {
+		blank:  {
 			
+		},
+
+		lock: function() {
+			this.locked = true;
+			if( this.button ) {
+				this.buttonInst.setTitle( this.module.getConfiguration('buttonlabel_exec' || 'Loading...') );
+				this.buttonInst.disable();
+			}
+		},
+
+		unlock: function() {
+			this.locked = false;
+			this.buttonInst.setTitle( this.module.getConfiguration('buttonlabel' || 'Search') );
+			this.buttonInst.enable();
 		},
 		
 		update: {
 			'vartrigger': function(variable) {			
 				if(variable == undefined)
 					return;
+
 				this.module.controller.doSearch();
 			}
 		},

@@ -30,12 +30,14 @@ define(['jquery', 'forms/title'], function($, title) {
 	button.prototype = {
 		getTitle: function() { return this.title; },
 
-		setTitle: function(title) {
-			if(!(title instanceof title))
-				title = new title(title);
-			this.title = title;
+		setTitle: function(objtitle) {
+			
+			if( ! ( objtitle instanceof title ) ) {
+				objtitle = new title( objtitle );
+			}
 
-			this.applyStyle();
+			this.title = objtitle;
+			this.applyStyle( );
 		},
 		getId: function() {
 			return this.id;
@@ -63,20 +65,28 @@ define(['jquery', 'forms/title'], function($, title) {
 		},
 
 		applyStyle: function() {
-			if(!this.dom)
-				return;
-			if(this.options.color)
-				this.dom.addClass(this.options.color);
-			if(this.options.disabled)
-				this.dom.addClass('disabled');
-			else
-				this.dom.removeClass('disabled');
 
-			if(this.options.checkbox)
-				if(this.value)
+			if( ! this.dom ) {
+				return;
+			}
+
+			if( this.options.color ) {
+				this.dom.addClass(this.options.color);
+			}
+
+			if( this.options.disabled ) {
+				this.dom.addClass( 'disabled' );
+			} else {
+				this.dom.removeClass('disabled' );
+			}
+
+			if(this.options.checkbox) {
+				if( this.value ) {
 					this.dom.addClass('bi-active');
-				else
+				} else {
 					this.dom.removeClass('bi-active');
+				}
+			}
 
 			this.dom.children().html(this.title.getLabel());
 		},

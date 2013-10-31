@@ -61,21 +61,26 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 				}
 			}
 
-			if(this.request && this.request.abort)
+			if(this.request && this.request.abort) {
 				this.request.abort();
+			}
 
 			if(l == 0) {
 				this.request = URL.get(url, 30, data);	
 			} else {
 				this.request = URL.post(url, data);	
 			}
+
+			this.module.view.lock();
 			
 			this.request.done(function(data) {
 				self.request = null;
 
 				if (self.module.resultfilter) {
-					data=self.module.resultfilter(data);
+					data = self.module.resultfilter(data);
 				}
+
+				self.module.view.unlock();
 
 				data = DataObject.check(data, true);
 				self.onSearchDone(data);
