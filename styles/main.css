@@ -6,6 +6,7 @@ html, body {
 body {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
 	font-size: 11px;
+background-image: url('../wp.jpg');
 	color: black;
 }
 
@@ -37,7 +38,8 @@ html, body {
 #ci-modules-grid {
 	/*margin-top: 30px; */
 	min-height: 100%;
-	background: #fefefe;
+	/*background: #fefefe;*/
+
 	position: relative;
 }
 
