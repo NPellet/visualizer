@@ -144,8 +144,10 @@ define(['modules/defaultview'], function(Default) {
 
 		unlock: function() {
 			this.locked = false;
-			this.buttonInst.setTitle( this.module.getConfiguration( 'buttonlabel', 'Search' ) || 'Search' );
-			this.buttonInst.enable();
+			if( this.buttonInst ) {
+				this.buttonInst.setTitle( this.module.getConfiguration( 'buttonlabel', 'Search' ) || 'Search' );
+				this.buttonInst.enable();
+			}
 		},
 		
 		update: {

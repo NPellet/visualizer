@@ -4,7 +4,7 @@ define(['util/datatraversing'], function(Traversing) {
 	function setVar(name, element, jpath) {
 //console.log('sfgs');
 		var self = this;
-		if(!jpath) {
+		if( ! jpath || ! element.getChild ) {
 			this.getRepositoryData().set(name, element);
 			return;
 		}

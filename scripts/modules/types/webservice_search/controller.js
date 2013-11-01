@@ -82,7 +82,10 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 				self.module.view.unlock();
 
-				data = DataObject.check(data, true);
+				if(typeof data == "object") {
+					data = new DataObject.check(data, true);
+				}
+				console.log(data);
 				self.onSearchDone(data);
 			});
 		},
