@@ -261,7 +261,7 @@ define(['modules/defaultview', 'util/webworker', 'libs/jquery.event.drag/jquery.
 		update: {
 
 			matrix: function(moduleValue) {
-console.log(moduleValue);
+
 				if(!this.canvas)
 					return;
 
@@ -426,7 +426,7 @@ console.log('REDO');
 		},
 		
 		getColors: function() {
-			return this.colors || (this.colors = this.module.getConfiguration('colors'))
+			return this.colors || (this.colors = this.module.getConfiguration('colors') || ['#000000', '#ffffff'])
 		},
 		
 		getHighContrast: function() {
