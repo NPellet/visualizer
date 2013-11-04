@@ -16,9 +16,7 @@ function getColorFromValue(value) {
 	var color1Id = Math.round(segNb * (value - minValue) / diff);
 	color1Id = Math.min(Math.max(0, color1Id), colors.length - 2);
 
-	var color;
-	color = getColorBetween(value, colors[color1Id], colors[color1Id + 1], color1Id * step + minValue, (color1Id + 1) * step + minValue);
-	return color;
+	return getColorBetween(value, colors[color1Id], colors[color1Id + 1], color1Id * step + minValue, (color1Id + 1) * step + minValue);
 }
 
 
@@ -30,7 +28,7 @@ function getColorBetween(value, color1, color2, color1Val, color2Val) {
 	// Between 0 and 1
 	var ratio = (value - color1Val) / (color2Val - color1Val);
 	
-	return [parseInt(ratio * (color2[0] - color1[0]) + color1[0]), parseInt(ratio * (color2[1] - color1[1]) + color1[1]), parseInt(ratio * (color2[2] - color1[2]) + color1[2])];
+	return [parseInt(ratio * (color2[0] - color1[0]) + color1[0]), parseInt(ratio * (color2[1] - color1[1]) + color1[1]), parseInt(ratio * (color2[2] - color1[2]) + color1[2]), parseInt(ratio * (color2[3] - color1[3]) + color1[3])];
 //	return [parseInt(ratio * Math.abs(color2[0] - color1[0]) + Math.min(color2[0], color1[0])), parseInt(ratio * Math.abs(color2[1] - color1[1]) + Math.min(color2[1], color1[1])), parseInt(ratio * Math.abs(color2[2] - color1[2]) + Math.min(color2[2], color1[2]))];
 }
 
