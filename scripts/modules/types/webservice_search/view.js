@@ -136,7 +136,7 @@ define(['modules/defaultview'], function(Default) {
 
 		lock: function() {
 			this.locked = true;
-			if( this.button ) {
+			if( this.buttonInst ) {
 				this.buttonInst.setTitle( this.module.getConfiguration( 'buttonlabel_exec', 'Loading...' ) || 'Loading...');
 				this.buttonInst.disable();
 			}
