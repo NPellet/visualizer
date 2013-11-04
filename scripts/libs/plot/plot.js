@@ -4584,10 +4584,11 @@ define(['jquery', 'util/util'], function($, Util) {
 				x = pos.x,
 				y = pos.y;
 				
+
 			if(width == undefined || height == undefined) {
-				var position2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
-				width = position2.x;
-				height = position2.y;
+				var position2 = this._getPosition(this.getFromData('pos2'));
+				width = position2.x - pos.x;
+				height = position2.y - pos.y;
 			}
 
 			if(width < 0) {
