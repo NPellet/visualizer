@@ -1,5 +1,13 @@
 // Define as an amd module
-define(function() {
+define(['require'], function(require) {
+
+    if( ! this.worker ) {
+        var url = require.toUrl('util/jcampconverter_worker.js');    
+        var worker = new Worker( url );
+    }
+    
+
+
 
     // the following RegExp can only be used for XYdata, some peakTables have values with a "E-5" ...
     var xyDataSplitRegExp=/[,\t \+-]*(?=[^\d,\t \.])|[ \t]+(?=[\d+\.-])/;

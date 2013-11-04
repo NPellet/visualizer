@@ -75,6 +75,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 						sorttype: jpaths[ j ].number ? 'float' : 'text'
 					});
 				}
+
+
 			}
 
 			var nbLines = this.module.getConfiguration( 'nbLines' ) || 20;	
@@ -387,7 +389,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				var jpath2 = jpath.split('.');
 					jpath2 = jpath2.pop();
 
-				module.getConfiguration( 'colsjPaths' ).push({ editable: false, jpath: jpath, number: false });
+				module.getConfiguration( 'colsjPaths' ).push({ name: jpath2, editable: false, jpath: jpath, number: false });
 				this.reloadModule();
 			},
 
@@ -397,12 +399,14 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					i = 0,
 					l = jpaths.length;
 
+
 				for( ; i < l ; i ++) {
-
-					if(jpaths[i].jpath == jpath)
-						delete jpaths[i];
-
+					if(jpaths[i].jpath == jpath) {
+						jpaths.splice( i , 1 );
+						break;
+					}
 				}
+				
 				this.reloadModule();
 
 			}
