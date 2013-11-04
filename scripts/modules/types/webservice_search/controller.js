@@ -51,11 +51,12 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 				variable = variable[1];
 				url = url.replace('<var:' + val[1] + '>', encodeURIComponent(variable));
 			}
+
+			this.url=url;
+
 			
 			for(; i < l; i++) {
 				data[toPost[i].name] = API.getVar(toPost[i].variable);
-
-
 				if(data[toPost[i].name] && (data[toPost[i].name].getType() == "object" || data[toPost[i].name].getType() == "array" )) {
 					data[toPost[i].name] = JSON.stringify(data[toPost[i].name]);
 				}
@@ -85,7 +86,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 				if(typeof data == "object") {
 					data = new DataObject.check(data, true);
 				}
-				console.log(data);
+				//console.log(data);
 				self.onSearchDone(data);
 			});
 		},
@@ -95,7 +96,22 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			var self = this;
 			self.result = elements;
 			self.module.model.data = elements;
-			this.setVarFromEvent('onSearchReturn', elements);
+
+
+			if( ! ( actions = this.module.vars_out() ) ) {
+				return;
+			}
+
+			for( i in actions ) {
+				if( actions[ i ].event == "onSearchReturn" ) {
+					if( actions[ i ].rel == "results" ) {
+						API.setVar( actions[i].name, element, actions[i].jpath );
+					} if ( actions[ i ].rel == "url" ) {
+							API.setVar( actions[i].name, self.url);
+					}
+				}
+			}
+
 		},
 
 		configurationSend: {
@@ -112,6 +128,10 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			rels: {
 				'results': {
 					label: 'Results',
+					description: ''
+				},
+				'url': {
+					label: 'URL',
 					description: ''
 				}
 			}
