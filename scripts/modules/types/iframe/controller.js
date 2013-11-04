@@ -27,25 +27,17 @@ define(['modules/defaultcontroller'], function(Default) {
 			moduleName: 'Iframe'
 		},
 		
-		
-		
-		
-		doConfiguration: function(section) {
-			
-			return true;
-		},
-		
-		doFillConfiguration: function() {
-			
-		},
-		
-		doSaveConfiguration: function(confSection) {
-			
+		configurationStructure: function(section) {
+			return {}
 		},
 
-		"export": function() {
-			
+		configAliases: {
+			prefs: function(cfg) { return cfg.groups.group[ 0 ].prefs[ 0 ]; }
 		}
+		
+
+
+
 		
 	});
 
