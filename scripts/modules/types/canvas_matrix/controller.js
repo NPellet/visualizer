@@ -181,7 +181,7 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 		},
 
 		configAliases: {
-			'color': function(cfg) { return cfg.groups.group[ 0 ].color; },
+			'colors': function(cfg) { return cfg.groups.group[ 0 ].color; },
 			'highContrast': function(cfg) { return cfg.groups.group[ 0 ].highcontrast[ 0 ][ 0 ] == "true"; }
 		}
 	});

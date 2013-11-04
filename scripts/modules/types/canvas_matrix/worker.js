@@ -24,9 +24,9 @@ function getColorFromValue(value) {
 
 function getColorBetween(value, color1, color2, color1Val, color2Val) {
 	
-	var color1 = getRGB(color1);
+	/*var color1 = getRGB(color1);
 	var color2 = getRGB(color2);
-	
+	*/
 	// Between 0 and 1
 	var ratio = (value - color1Val) / (color2Val - color1Val);
 	

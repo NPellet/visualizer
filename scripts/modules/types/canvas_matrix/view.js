@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'util/webworker', 'libs/jquery.event.drag/jquery.event.drag-2.2', 'libs/throttle-debounce/jquery.ba-throttle-debounce.min'], function(Default, WorkerHandler) {
+define(['modules/defaultview', 'util/webworker', 'util/util', 'libs/jquery.event.drag/jquery.event.drag-2.2', 'libs/throttle-debounce/jquery.ba-throttle-debounce.min'], function(Default, WorkerHandler, Util) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -426,7 +426,7 @@ console.log('REDO');
 		},
 		
 		getColors: function() {
-			return this.colors || (this.colors = this.module.getConfiguration('colors') || ['#000000', '#ffffff'])
+			return this.colors || (this.colors = ( this.module.getConfiguration('colors') || ['#000000', '#ffffff']) );
 		},
 		
 		getHighContrast: function() {
@@ -446,7 +446,7 @@ console.log('REDO');
 			var lineargradient = this.scaleCanvasContext.createLinearGradient(0, 0, 0, gradHeight);
 		
 			for(var i = 0; i < colors.length; i++) {
-				lineargradient.addColorStop(i / (colors.length - 1), colors[i]);
+				lineargradient.addColorStop(i / (colors.length - 1), Util.getColor( colors[i] ) );
 				this.scaleCanvasContext.fillText(Math.round(100 * (i * step + min)) / 100, 5, stepPx * i <= 0 ? 15 : stepPx * i - 5);	
 			}  
 		
