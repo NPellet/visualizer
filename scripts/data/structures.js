@@ -219,7 +219,7 @@ define(function() {
 									}
 								}
 							},
-							"bachID": "string",
+							"batchID": "string",
 							"catalogID": "string",
 							"entryDetails": "chemicalDetails"
 						}
@@ -279,7 +279,7 @@ define(function() {
 					}
 				},
 				
-				"bachID": "string",
+				"batchID": "string",
 				"catalogID": "string",
 				
 				"bp": {
@@ -549,6 +549,43 @@ define(function() {
 						
 					}
 					
+				},
+
+				"massExperiment": {
+					"type": "object",
+					"elements": {
+						"hplcMS":{
+							"type": "array",
+								"elements": {
+								"type": "object",
+								"elements": {
+									"experiment": "string",
+									"jcamp": "jcamp"
+								}
+							}
+						},
+						"gcMS":{
+							"type": "array",
+								"elements": {
+								"type": "object",
+								"elements": {
+									"experiment": "string",
+									"jcamp": "jcamp"
+								}
+							}
+						},
+						"ms":{
+							"type": "array",
+								"elements": {
+								"type": "object",
+								"elements": {
+									"experiment": "string",
+									"jcamp": "jcamp"
+								}
+							}
+						}						
+					}
+						
 				}
 				
 			}
