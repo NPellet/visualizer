@@ -333,9 +333,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				var self = this, 
 					serie, 
-				
 					spectra;
-
 
 				API.killHighlight(this.module.id + varname);
 
@@ -347,64 +345,65 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				if(!moduleValue)
 					return this.blank();
 
-				spectra = JcampConverter(moduleValue, {lowRes: 1024});
+				spectra = JcampConverter(moduleValue, {lowRes: 1024}).done( function( spectra ) {
 
-				this.series[varname] = this.series[varname] || [];
-				
-				this.series[varname] = [];
-
-				if(spectra.contourLines) {
+					self.series[varname] = self.series[varname] || [];
 					
-					this.graph.setOption('zoomMode', 'xy');
-					this.graph.setOption('defaultWheelAction', 'toSeries');
-					this.graph.setOption('defaultMouseAction', 'drag');
+					self.series[varname] = [];
 
-					serie = this.graph.newSerie(varname, {trackMouse: true}, 'contour');
-					serie.setData(spectra.contourLines);
-					serie.autoAxis();
-					this.series[varname].push(serie);
+					if(spectra.contourLines) {
+						
+						self.graph.setOption('zoomMode', 'xy');
+						self.graph.setOption('defaultWheelAction', 'toSeries');
+						self.graph.setOption('defaultMouseAction', 'drag');
 
-				} else {
+						serie = self.graph.newSerie( varname, { trackMouse: true }, 'contour' );
+						serie.setData( spectra.contourLines );
+						serie.autoAxis( );
+						self.series[ varname ].push( serie );
 
-					this.graph.setOption('zoomMode', this.module.getConfiguration( 'zoom', false ) );
-					this.graph.setOption('defaultWheelAction', 'zoomY');
-					this.graph.setOption('defaultMouseAction', 'zoom');
+					} else {
 
-					spectra = spectra.spectra;
-					for (var i=0, l = spectra.length; i<l; i++) {
-						serie = this.graph.newSerie(varname, {trackMouse: true});
+						self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom', false ) );
+						self.graph.setOption('defaultWheelAction', 'zoomY');
+						self.graph.setOption('defaultMouseAction', 'zoom');
 
-						var data=spectra[i].data[spectra[i].data.length - 1];
+						spectra = spectra.spectra;
+						for (var i=0, l = spectra.length; i<l; i++) {
+							serie = self.graph.newSerie(varname, {trackMouse: true});
 
-						this.normalize(data, varname);
-						serie.setData(data);
-						serie.autoAxis();
-						this.series[varname].push(serie);
-						break;
-					}
+							var data=spectra[i].data[spectra[i].data.length - 1];
 
-					API.listenHighlight(moduleValue._highlight || [], function(value, commonKeys) {
+							self.normalize(data, varname);
+							serie.setData(data);
+							serie.autoAxis();
+							self.series[varname].push(serie);
+							break;
+						}
 
-						for(var i = 0; i < commonKeys.length; i++) {
+						API.listenHighlight(moduleValue._highlight || [], function(value, commonKeys) {
 
-							if( self.zones[ varname ][ commonKeys[ i ] ] ) {
+							for(var i = 0; i < commonKeys.length; i++) {
 
-								self.doZone( varname, self.zones[ varname ][ commonKeys [ i ] ], value, this.series[varname].options.lineColor );
+								if( self.zones[ varname ][ commonKeys[ i ] ] ) {
+
+									self.doZone( varname, self.zones[ varname ][ commonKeys [ i ] ], value, self.series[varname].options.lineColor );
+
+								}
 
 							}
 
-						}
+						}, true, self.module.id + varname);
 
-					}, true, this.module.id + varname);
-
-				}
+					}
 
 
-				this.setSerieParameters(serie, varname);
-				
-				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
+					self.setSerieParameters(serie, varname);
+					
+					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
 
-				this.resetAnnotations( true );
+					self.resetAnnotations( true );
+				});
 			}
 		},
 
@@ -425,7 +424,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 		getFirstSerie: function() {
 			for(var i in this.series) {
-				return this.series[i][0];
+				if( this.series[i][0] ) {
+					return this.series[i][0];
+				}
 			}
 		},
 

@@ -1726,7 +1726,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		setMinValue: function(min) { this.realMin = min; },
 		setMaxValue: function(max) { this.realMax = max; },
 		forceMin: function(val) {    this.options.forcedMin = val; },
-		forceMax: function(val) {   console.log(val); this.options.forcedMax = val; },
+		forceMax: function(val) {   this.options.forcedMax = val; },
 
 		getNbTicksPrimary: function() {
 			return this.options.nbTicksPrimary;
@@ -4351,21 +4351,23 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			for(var i in pos) {
 				if(value[i] === undefined && ((value['d' + i] !== undefined && relTo === undefined) || relTo === undefined)) {
-					if(i == 'x')
+					if(i == 'x') {
 						pos[i] = relTo ? relTo[i] : this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getPos(0);
-					else if(value.x && this.serie) {
+					} else if(value.x && this.serie) {
 						var closest = this.serie.searchClosestValue(value.x);
 						if(!closest)
 							return;
 						pos[i] = this.serie.getY(closest.yMin);
 					}
 				} else if(value[i] !== undefined) {
-					if((parsed = this._parsePx(value[i])) !== false)
+
+					if((parsed = this._parsePx(value[i])) !== false) {
 						pos[i] = parsed; // return integer (will be interpreted as px)
-					else if(parsed = this._parsePercent(value[i]))
+					} else if(parsed = this._parsePercent(value[i])) {
 						pos[i] = parsed; // returns xx%
-					else if(this.serie)
+					} else if(this.serie) {
 						pos[i] = this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getPos(value[i]);
+					}
 				}
 
 				if(value['d' + i] !== undefined) {
@@ -4572,18 +4574,46 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.set('height', Math.abs(this.serie.getYAxis().getMaxPx() - this.serie.getYAxis().getMinPx()));
 		},
 
-		redrawImpl: function() {
+
+		setPosition: function() {
+
 			var width = this.getFromData('width'),
 				height = this.getFromData('height');
 
+			var pos = this._getPosition( this.getFromData('pos') ),
+				x = pos.x,
+				y = pos.y;
+				
 			if(width == undefined || height == undefined) {
-				var position = this._getPosition(this.getFromData('pos2'));
-				width = position.x;
-				height = position.y;
+				var position2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
+				width = position2.x;
+				height = position2.y;
 			}
 
-			this.setDom('width', width);
-			this.setDom('height', height);
+			if(width < 0) {
+				x = x - width;
+				width = - width;
+			}
+
+			if(height < 0) {
+				y = y - height;
+				height = - height;
+			}
+
+			if( x !== NaN && x !== false && y !== NaN && y !== false) {
+				this.setDom('width', width);
+				this.setDom('height', height);
+				this.setDom('x', x);
+				this.setDom('y', y);
+				return true;
+			}
+
+			return false;
+		},
+
+
+		redrawImpl: function() {
+
 		}
 	});
 
