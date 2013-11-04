@@ -15,6 +15,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			this.colorId = 0;
 			this.colors = ["red", "blue", "green", "black"];
 
+			this.deferreds = {};
 			this.onReady = $.Deferred();
 		},
 		
@@ -326,8 +327,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 			jcamp : function(moduleValue, varname) {
 
-				if(!moduleValue)
+				if(!moduleValue) {
 					return;
+				}
 
 				moduleValue = moduleValue.get(); // Get the true jcamp value
 
@@ -337,19 +339,22 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				API.killHighlight(this.module.id + varname);
 
-				if(!this.graph)
+				if(!this.graph) {
 					return;
+				}
 
 				this.zones[varname] = moduleValue._zones;
 
-				if(!moduleValue)
-					return this.blank();
+				
+				if( self.deferreds[ varname ] ) {
+					self.deferreds[ varname ].reject();
+				}
 
-				spectra = JcampConverter(moduleValue, {lowRes: 1024}).done( function( spectra ) {
+				self.deferreds[ varname ] = JcampConverter(moduleValue, {lowRes: 1024}).done( function( spectra ) {
 
-					self.series[varname] = self.series[varname] || [];
-					
-					self.series[varname] = [];
+//					self.blank.jcamp( varname );
+					self.series[ varname ] = self.series[ varname ] || [];
+					self.series[ varname ] = [];
 
 					if(spectra.contourLines) {
 						
