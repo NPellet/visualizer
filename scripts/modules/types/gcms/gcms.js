@@ -56,68 +56,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 						case 'surfaceUnderCurve': 
 
-							var xStart = annot.pos.x;
-							var xEnd = annot.pos2.x;
-
-							var indexStart = self.gcSeries[0].searchClosestValue(xStart).xBeforeIndex;
-							var indexEnd = self.gcSeries[0].searchClosestValue(xEnd).xBeforeIndex;
-							var indexMin = Math.min(indexStart, indexEnd);
-							var indexMax = Math.max(indexStart, indexEnd);
-
-							if(indexMax == indexMin)
-								return;
-							
-
-							var obj = [], allMs = [], i, j, floor;
-
-							for(i = indexMin; i <= indexMax; i++) {
-								for(j = 0, l = self.msData[i].length; j < l; j+=2) {
-									floor = Math.floor( self.msData[i][j] + 0.3 );
-									if(obj[ floor ]) {
-
-										obj[ floor ] += self.msData[i][j+1];	
-
-									} else {
-
-										obj[ floor ] = self.msData[i][j+1];
-										allMs.push( floor );
-									}
-								}
-							}
-
-							allMs.sort(function(a, b) { return a -b; });
-							var finalMs = [];
-
-							for(var i = 0; i < allMs.length; i++) {
-								finalMs.push( allMs[i] );
-								finalMs.push( Math.round( obj[ allMs[ i ] ] / Math.abs( indexMax - indexMin ) ) );
-							}
-
-
-
-							if(self.serieIntegral) {
-								self.serieIntegral.kill(true);
-								self.serieIntegral = false;
-							}
-
-							self.serieIntegral = self.ms.newSerie('av', { lineToZero: !this.msContinuous });
-							self.serieIntegral.autoAxis();
-							self.serieIntegral.setYAxis(self.ms.getRightAxis());
-							self.serieIntegral.setData(finalMs);
-
-							self.serieIntegral.options.autoPeakPicking = true;
-
-							self.serieIntegral.setLineColor(annot.strokeColor || annot.fillColor);
-
-							self.ms.getRightAxis().setMaxValue(self.ms.getBoundaryAxisFromSeries(self.ms.getRightAxis(), 'y', 'max'));
-							self.ms.getRightAxis().setMinMaxToFitSeries();
-							//self.ms.getLeftAxis().setMinMaxToFitSeries();
-
-							self.ms.redraw(!self.firstRange);
-							self.firstRange = false;
-							self.ms.drawSeries();
-
-							self.onMSSelect(finalMs, annot);
+							self.selectAnnot( annot );
 
 						break;
 					}
@@ -125,6 +64,8 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 				onAnnotationChange: function(annot) {
 					//this.triggerEvent('onAnnotationSelect', annot);
+
+					self.selectAnnot( annot );
 					self.onAnnotationChange(annot);
 				},
 
@@ -337,6 +278,71 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			this.gc = new Graph(domGc, optionsGc, axisGc);
 			this.ms = new Graph(domMs, optionsMs, axisMs);
 
+		},
+
+		selectAnnot: function( annot ) {
+
+			var self = this;
+			var xStart = annot.pos.x;
+			var xEnd = annot.pos2.x;
+
+			var indexStart = self.gcSeries[0].searchClosestValue(xStart).xBeforeIndex;
+			var indexEnd = self.gcSeries[0].searchClosestValue(xEnd).xBeforeIndex;
+			var indexMin = Math.min(indexStart, indexEnd);
+			var indexMax = Math.max(indexStart, indexEnd);
+
+			if(indexMax == indexMin)
+				return;
+			
+
+			var obj = [], allMs = [], i, j, floor;
+
+			for(i = indexMin; i <= indexMax; i++) {
+				for(j = 0, l = self.msData[i].length; j < l; j+=2) {
+					floor = Math.floor( self.msData[i][j] + 0.3 );
+					if(obj[ floor ]) {
+
+						obj[ floor ] += self.msData[i][j+1];	
+
+					} else {
+
+						obj[ floor ] = self.msData[i][j+1];
+						allMs.push( floor );
+					}
+				}
+			}
+
+			allMs.sort(function(a, b) { return a -b; });
+			var finalMs = [];
+
+			for(var i = 0; i < allMs.length; i++) {
+				finalMs.push( allMs[i] );
+				finalMs.push( Math.round( obj[ allMs[ i ] ] / Math.abs( indexMax - indexMin ) ) );
+			}
+
+			if(self.serieIntegral) {
+				self.serieIntegral.kill(true);
+				self.serieIntegral = false;
+			}
+
+			self.serieIntegral = self.ms.newSerie('av', { lineToZero: !this.msContinuous });
+			self.serieIntegral.autoAxis();
+			self.serieIntegral.setYAxis(self.ms.getRightAxis());
+			self.serieIntegral.setData(finalMs);
+
+			self.serieIntegral.options.autoPeakPicking = true;
+
+			self.serieIntegral.setLineColor(annot.strokeColor || annot.fillColor);
+
+			self.ms.getRightAxis().setMaxValue(self.ms.getBoundaryAxisFromSeries(self.ms.getRightAxis(), 'y', 'max'));
+			self.ms.getRightAxis().setMinMaxToFitSeries();
+			//self.ms.getLeftAxis().setMinMaxToFitSeries();
+
+			self.ms.redraw(!self.firstRange);
+			self.firstRange = false;
+			self.ms.drawSeries();
+
+			self.onMSSelect(finalMs, annot);
 		},
 
 		unload: function() {
