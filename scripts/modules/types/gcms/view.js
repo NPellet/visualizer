@@ -117,14 +117,18 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				}
 
 				moduleValue = moduleValue.get();
-				require(['util/jcampconverter'], function(tojcamp) {
-					var jcamp = tojcamp(moduleValue);
-					if(jcamp.gcms) {
-						self.gcmsInstance.setGC(jcamp.gcms.gc);
-						self.gcmsInstance.setMS(jcamp.gcms.ms);
+				require(['util/jcampconverter'], function( tojcamp ) {
 
-						self.resetAnnotationsGC();
-					}
+					var jcamp = tojcamp(moduleValue).done( function( jcamp ) {
+
+						if(jcamp.gcms) {
+							self.gcmsInstance.setGC(jcamp.gcms.gc);
+							self.gcmsInstance.setMS(jcamp.gcms.ms);
+
+							self.resetAnnotationsGC();
+						}
+					});
+					
 				});
 			},
 
@@ -146,12 +150,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				if(!this.gcmsInstance || !moduleValue)
 					return;
 
-				require(['util/jcampconverter'], function(tojcamp) {
-					var jcamp = tojcamp(moduleValue.get());
-					if(jcamp.spectra)
+				var jcamp = tojcamp(moduleValue.get()).done( function( jcamp ) {
+					if(jcamp.spectra) {
 						self.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
+					}
 				});
-
 			},
 
 
@@ -161,9 +164,13 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 					return;
 
 				require(['util/jcampconverter'], function(tojcamp) {
-					var jcamp = tojcamp(moduleValue.get());
-					if(jcamp.spectra)
-						self.gcmsInstance.setExternalMS(jcamp.spectra[0].data[0], cont);
+					var jcamp = tojcamp(moduleValue.get()).done( function(jcamp) {
+
+						if( jcamp.spectra ) {
+							self.gcmsInstance.setExternalMS( jcamp.spectra[ 0 ].data[ 0 ], cont );
+						}
+					});
+					
 				});
 			},
 
