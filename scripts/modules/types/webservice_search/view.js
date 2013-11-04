@@ -40,10 +40,12 @@ define(['modules/defaultview'], function(Default) {
 				}
 
 
-				this.search.on( 'keyup', 'input[type=text]', function() {
+				this.search.on( 'keyup', 'input[type=text]', function( e ) {
 
 					var searchTerm = $(this).val(),
 						searchName = $(this).attr('name');
+
+
 
 					if( !self.oldVal[ searchName ] || self.oldVal[ searchName ] !== searchTerm ) {
 						$( this ).trigger( 'change' );
@@ -54,6 +56,11 @@ define(['modules/defaultview'], function(Default) {
 					}
 					
 					if ( ! self.button ) {
+						self.module.controller.doSearch();
+					}
+
+
+					if( self.buttonInst && e.keyCode == 13) {
 						self.module.controller.doSearch();
 					}
 
