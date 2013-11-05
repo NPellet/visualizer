@@ -105,7 +105,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			for( i in actions ) {
 				if( actions[ i ].event == "onSearchReturn" ) {
 					if( actions[ i ].rel == "results" ) {
-						API.setVar( actions[i].name, element, actions[i].jpath );
+						API.setVar( actions[i].name, elements, actions[i].jpath );
 					} if ( actions[ i ].rel == "url" ) {
 							API.setVar( actions[i].name, self.url);
 					}
