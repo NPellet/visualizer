@@ -20,7 +20,7 @@ define(['jquery'], function($) {
 			if(db)
 				return def.resolve();
 
-			var req = indexedDB.open('ci', 25);	
+			var req = indexedDB.open('ci', 22);	
 			/*if(req.error)
 				console.warn(req.error);*/
 
@@ -63,6 +63,7 @@ define(['jquery'], function($) {
 
 			req.onerror = function(e) {
 				console.log(e.target);
+				def.reject();
 			}
 
 			req.oncomplete = function(e) {
