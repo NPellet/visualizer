@@ -294,7 +294,7 @@ function parsePeakTable(spectrum, value) {
             }
             
         } else {
-            console.log("Format error: "+values);
+            // console.log("Format error: "+values);
         }
     }
     delete spectrum.currentData;
@@ -326,7 +326,7 @@ function parseXYData(spectrum, value) {
                 if ((lastDif || lastDif==0)) {
                     expectedCurrentX+=spectrum.deltaX;
                 }
-                console.log("Checking X value: currentX: "+currentX+" - expectedCurrentX: "+expectedCurrentX);
+                if (console) console.log("Checking X value: currentX: "+currentX+" - expectedCurrentX: "+expectedCurrentX);
             }
             for (var j=1, jj=values.length; j<jj; j++) {
                 if (j==1 && (lastDif || lastDif==0)) {
@@ -347,7 +347,7 @@ function parseXYData(spectrum, value) {
                         if ((ascii>96) && (ascii<106)) {
                             expectedY=- parseInt(String.fromCharCode(ascii-48)+values[j].substring(1));
                        }
-                       if (expectedY!=currentY) {
+                       if (expectedY!=currentY && console) {
                             console.log("Y value check error: Found: "+expectedY+" - Current: "+currentY);
                             console.log("Previous values: "+previousValues.length);
                             console.log(previousValues);
