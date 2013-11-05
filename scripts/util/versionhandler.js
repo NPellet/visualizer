@@ -40,11 +40,13 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 			if(this.currentPath[1] == 'server') {
 
 				return this._getServer().pipe(function(data) {
-					console.log(data);
-					if(self.type == 'view')
+					
+					if(self.type == 'view') {
 						return self._data['server'] = new ViewObject(data, true);
-					else if(self.type == 'data')
+					} else if(self.type == 'data') {
 						return self._data['server'] = new DataObject(data, true);
+					}
+
 				}, function() {
 					return false;
 				});
@@ -53,10 +55,17 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 				
 				return this._getLocal().pipe(function(data) {
 					//console.log(data);
-					if(self.type == 'view')
+
+					if( ! ( typeof el == 'object' ) ) {
+						el = JSON.parse( el );
+					}
+					
+					if(self.type == 'view') {
 						return self._data['local'] = new ViewObject(data, true);
-					else if(self.type == 'data')
+					} else if(self.type == 'data') {
 						return self._data['local'] = new DataObject(data, true);
+					}
+					
 				}, function() {
 					return false;
 				});
@@ -505,7 +514,10 @@ define(['util/util', 'util/localdb'], function(Util, db) {
 			
 			return db.getHead(this.type, this._dirUrl, branch).pipe(function(el) {
 
-				el = JSON.parse( el );
+				if( ! ( typeof el == 'object' ) ) {
+					el = JSON.parse( el );
+				}
+
 				if(self.type == 'view')
 					return new ViewObject(el, true);
 				else if(self.type == 'data')

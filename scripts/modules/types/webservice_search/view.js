@@ -60,7 +60,7 @@ define(['modules/defaultview'], function(Default) {
 					}
 
 
-					if( self.buttonInst && e.keyCode == 13) {
+					if( self.buttonInst && e.keyCode == 13 ) {
 						self.module.controller.doSearch();
 					}
 
