@@ -25,7 +25,7 @@ define([ 'modules/defaultview', 'util/typerenderer' ], function( Default, Render
 
 				var view = this,
 					cfg = $.proxy( this.module.getConfiguration, this.module ),
-					cols = cfg('colnumber', 4),
+					cols = cfg('colnumber', 4) || 4,
 					sizeStyle = "",
 					self = this,
 					val = moduleValue.get(),
