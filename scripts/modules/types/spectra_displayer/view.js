@@ -273,8 +273,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				this.normalize(val, varname);
 				serie.setData(val);
-				if(val.info) {
-					serie.setInfos(val.info);
+				if(val.data) {
+					serie.setInfos(val.data);
 				}
 				serie.autoAxis();
 				this.series[varname].push(serie);
@@ -304,8 +304,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				this.setSerieParameters(serie, varname);
 
 
-				if(val.infos)
-					serie.setInfos(infos);
+				if(val.data)
+					serie.setInfos(val.data);
 
 				this.normalize(val2, varname);
 
