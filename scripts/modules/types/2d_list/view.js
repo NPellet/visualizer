@@ -12,7 +12,20 @@ define([ 'modules/defaultview', 'util/typerenderer' ], function( Default, Render
 		},
 		
 		onResize: function(w, h) { },
-		inDom: function() {},
+		inDom: function() {
+			var self = this;
+			this.module.getDomView().on('hover', 'table td', function() {
+				var tdIndex = $(this).index();
+				var trIndex = $(this).parent().index();
+				var cols = self.module.getConfiguration('colnumber', 4) || 4;
+				var elementId = trIndex * cols + tdIndex;
+			
+				var value = self.list.get();
+
+				self.module.controller.setVarFromEvent('onHover', value[elementId], 'cell');
+			});
+
+		},
 
 		update: {
 
