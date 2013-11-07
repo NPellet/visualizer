@@ -2905,20 +2905,17 @@ define(['jquery', 'util/util'], function($, Util) {
 
 
 			// Determination of slots for low res spectrum
-			var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth( ) / 4,
+			var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth( ),
 				ws = [];
 
 			ws.push( w );
 
-			do {
-				w *= 4;
+			while( w > 1 / this.graph.getDrawingWidth( ) ) {
+				w /= 2;
 				ws.push( w );
-			} while( w < this.graph.getDrawingWidth( ) );
+			}
 
 			this.slots = ws;
-			console.log(ws);
-
-		
 			this.data = datas;
 			this.calculateSlots();
 		},
@@ -2960,14 +2957,20 @@ define(['jquery', 'util/util'], function($, Util) {
 
 					for(var m = 0, n = this.data[ j ].length ; m < n ; m += 2 ) {
 
-						slotNumber = this.data[ j ][ m ] % this.slots[ i ];
+						slotNumber = Math.floor(this.data[ j ][ m ] / this.slots[ i ]);
+
 						this.slotsData[ this.slots[ i ] ] = this.slotsData[ this.slots[ i ] ] || [];
 
-						this.slotsData[ this.slots[ i ] ][ slotNumber ] = this.slotsData[ this.slots[ i ] ][ slotNumber ] || { min: false, max: false, start: this.data[ j ][ m ], stop: false };
+						this.slotsData[ this.slots[ i ] ][ slotNumber ] = this.slotsData[ this.slots[ i ] ][ slotNumber ] || { 
+								min: this.data[ j ][ m + 1 ], 
+								max: this.data[ j ][ m + 1 ], 
+								start: this.data[ j ][ m + 1 ],
+								stop: false,
+								x: this.data[ j ][ m ] };
 
-						this.slotsData[ this.slots[ i ] ][ slotNumber ].stop = this.data[ j ][ m ];
-						this.slotsData[ this.slots[ i ] ][ slotNumber ].min = ! this.slotsData[ this.slots[ i ] ][ slotNumber ] ? this.slotsData[ this.slots[ i ] ][ slotNumber ] : Math.min( this.data[ j ][ m ], this.slotsData[ this.slots[ i ] ][ slotNumber ].min );
-						this.slotsData[ this.slots[ i ] ][ slotNumber ].max = ! this.slotsData[ this.slots[ i ] ][ slotNumber ] ? this.slotsData[ this.slots[ i ] ][ slotNumber ] : Math.max( this.data[ j ][ m ], this.slotsData[ this.slots[ i ] ][ slotNumber ].max );
+						this.slotsData[ this.slots[ i ] ][ slotNumber ].stop = this.data[ j ][ m + 1 ];
+						this.slotsData[ this.slots[ i ] ][ slotNumber ].min = Math.min( this.data[ j ][ m + 1 ], this.slotsData[ this.slots[ i ] ][ slotNumber ].min );
+						this.slotsData[ this.slots[ i ] ][ slotNumber ].max = Math.max( this.data[ j ][ m + 1 ], this.slotsData[ this.slots[ i ] ][ slotNumber ].max );
 
 					}
 				}
@@ -3178,30 +3181,85 @@ define(['jquery', 'util/util'], function($, Util) {
 			i = 0;
 
 			var allY = [ ];
-			console.time('Draw');
-			for(; i < l ; i++) {
-				
+
+			var slot = ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() ) / this.graph.getDrawingWidth( ),
+				slotToUse;
+			//console.log(slot, this.slots);
+			for( var y = 0, z = this.slots.length; y < z ; y ++ ) {
+				if( this.slots[ y ] <= slot ) {
+					slotToUse = this.slotsData[ this.slots[ y ] ];
+					break;
+				}
+			}
+
+			if(slotToUse) {
+
+
+				console.time('Slots');
 				currentLine = "M ";
-				doAndContinue = 0;
-				_higher = false;
-				var _last = false, _in = false;
-				j = 0, k = 0;
+				k = 0;
+				var j;
 
-				for( ; j < this.data[ i ].length; j += 200 ) {
+				var slotInit = Math.floor( this.getXAxis( ).getActualMin( ) / this.slots[ y ] );
+				var slotFinal = Math.ceil( this.getXAxis( ).getActualMax( ) / this.slots[ y ] );
 
-					xpx = this.getX( this.data[ i ][ j + incrXFlip ] );
-					ypx = this.getY( this.data[ i ][ j + incrYFlip ] );
+console.log(slotInit, slotFinal);
+				for( j = slotInit ;  j < slotFinal ; j ++ ) {
 
+					if( ! slotToUse[ j ] ) {
+						continue;
+					}
+
+					xpx = Math.floor( this.getX( slotToUse[ j ].x ) );
+	/*
 					if(this.options.autoPeakPicking) {
 						allY.push( [ ( this.data[ i ][ j + incrYFlip ] ), this.data[ i ][ j + incrXFlip ] ] );
 					}
-					currentLine = this._addPoint( currentLine, xpx, ypx, k );
+					*/
+
+
+					currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].start ) , k );
+					currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].max ) );
+					currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].min ) );
+					currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].stop ) );
+
 					k++;
+					
 				}
-				
+
 				this._createLine(currentLine, i, k);
+				i++;
+
+				console.timeEnd('Slots');
+			} else {
+
+
+
+				console.time('Draw');
+				for(; i < l ; i++) {
+					
+					currentLine = "M ";
+					doAndContinue = 0;
+					_higher = false;
+					var _last = false, _in = false;
+					j = 0, k = 0;
+
+					for( ; j < this.data[ i ].length; j += 2 ) {
+
+						xpx = this.getX( this.data[ i ][ j + incrXFlip ] );
+						ypx = this.getY( this.data[ i ][ j + incrYFlip ] );
+
+						if(this.options.autoPeakPicking) {
+							allY.push( [ ( this.data[ i ][ j + incrYFlip ] ), this.data[ i ][ j + incrXFlip ] ] );
+						}
+						currentLine = this._addPoint( currentLine, xpx, ypx, k );
+						k++;
+					}
+					
+					this._createLine(currentLine, i, k);
+				}
+				console.timeEnd('Draw');
 			}
-			console.timeEnd('Draw');
 
 			if(this.options.autoPeakPicking)
 				this.makePeakPicking(allY);
