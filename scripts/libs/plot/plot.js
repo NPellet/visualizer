@@ -3178,6 +3178,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			i = 0;
 
 			var allY = [ ];
+			console.time('Draw');
 			for(; i < l ; i++) {
 				
 				currentLine = "M ";
@@ -3200,6 +3201,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				
 				this._createLine(currentLine, i, k);
 			}
+			console.timeEnd('Draw');
 
 			if(this.options.autoPeakPicking)
 				this.makePeakPicking(allY);
