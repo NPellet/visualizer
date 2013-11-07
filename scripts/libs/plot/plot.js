@@ -3203,7 +3203,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				var slotInit = Math.floor( this.getXAxis( ).getActualMin( ) / this.slots[ y ] );
 				var slotFinal = Math.ceil( this.getXAxis( ).getActualMax( ) / this.slots[ y ] );
 
-console.log(slotInit, slotFinal);
+
 				for( j = slotInit ;  j < slotFinal ; j ++ ) {
 
 					if( ! slotToUse[ j ] ) {
