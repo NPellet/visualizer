@@ -10,6 +10,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 
 		onMouseOverMarker: function(xy, infos) {
+			this.infos=infos;
 			this.setVarFromEvent('onMouseOverMarker', infos, 'markerInfos');
 			this.setVarFromEvent('onMouseOverMarker', xy, 'markerXY');
 		},

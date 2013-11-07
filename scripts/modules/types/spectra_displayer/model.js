@@ -9,19 +9,32 @@ define(['modules/defaultmodel', 'util/datatraversing'], function(Default, Traver
 
 		getjPath: function(rel, accepts) {
 
-			var data = this.module.getDataFromRel('list');
-			
-			if(!data || data == null)
-				return;
-			data = data.getData();
-			
-			if(data == null)
-				return;
-			
-			var jpath = {};
-			Traversing._getjPath(data[i], jpath);	
-			return jpath;
+
+			var data;
+
+			switch(rel) {
+				case 'markerXY':
+					break;
+				case 'markerInfos':
+					data = this.module.controller.infos;
+
+					break;
+
+				default:
+					data = this.module.data;
+				break;
+			}
+
+			if(!data) return [];
+
+			var jpaths = []; 
+			Traversing.getJPathsFromElement(data, jpaths);
+			return jpaths;
+
 		}
+
+			
+
 	});
 	
 	return model;
