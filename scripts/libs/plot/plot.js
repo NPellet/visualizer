@@ -18,7 +18,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		zoomMode: false,
 		defaultMouseAction: 'drag', // rangeX, rangeY
 		shiftMouseAction: 'zoomXY', // rangeX, rangeY
-		defaultWheelAction: 'zoomY',
+		defaultWheelAction: 'none',
 		lineToZero: false,
 		fontSize: 12,
 		fontFamily: 'Myriad Pro, Helvetica, Arial',

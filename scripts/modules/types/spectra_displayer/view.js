@@ -249,33 +249,58 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				return;
 			},
 
-			xyArray: function(moduleValue, varname) {
-
+			chart: function(moduleValue, varname) {
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie( varname );
-				
-	 
+
 				if(!moduleValue)
 					return;
 
-				var val = moduleValue.get(), valFinal;
-
-				if(val.y) {
-					for(var i = 0, l = val.y.length; i < l; i++) {
-						valFinal.push(val.x ? val.x[i] : i);
-						valFinal.push(val.y[i]);
-					}
-					val = valFinal;
+				var newSeries=moduleValue.series || moduleValue;
+				if (!(newSeries instanceof Array)) {
+					newSeries=[newSeries];
 				}
+
+				for (var i=0; i<newSeries.length; i++) {
+					var newSerie = newSeries[i];
+					var valFinal=[];
+					if(newSerie.y) {
+						for(var j = 0, l = newSerie.y.length; j < l; j++) {
+							valFinal.push(newSerie.x ? newSerie.x[j] : j);
+							valFinal.push(newSerie.y[j]);
+						}
+					}
+					
+					var serie = this.graph.newSerie(varname, {trackMouse: true});
+					this.setSerieParameters(serie, varname);
+
+					this.normalize(valFinal, varname);
+					serie.setData(valFinal);
+
+					if(newSerie.infos) {
+						serie.setInfos(newSerie.infos);
+					}
+					serie.autoAxis();
+					this.series[varname].push(serie);
+				}
+
+				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
+			},
+
+			xyArray: function(moduleValue, varname) {
+				this.series[varname] = this.series[varname] || [];
+				this.removeSerie( varname );
+
+				if(!moduleValue)
+					return;
+
+				var val = moduleValue.get();
 				
 				var serie = this.graph.newSerie(varname, {trackMouse: true});
 				this.setSerieParameters(serie, varname);
 
 				this.normalize(val, varname);
 				serie.setData(val);
-				if(val.infos) {
-					serie.setInfos(val.infos);
-				}
 				serie.autoAxis();
 				this.series[varname].push(serie);
 				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
@@ -285,7 +310,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				var self = this,
 					val, 
 					val2;
-				
+
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie(varname);
 	
@@ -300,13 +325,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					val2.push(val[i]);
 				}
 
-				serie = this.graph.newSerie(varname, {trackMouse: true}); // lineToZero: !continuous}
+				var serie = this.graph.newSerie(varname, {trackMouse: true}); // lineToZero: !continuous}
 				this.setSerieParameters(serie, varname);
-
-
-				if(val.infos)
-					serie.setInfos(val.infos);
-
 				this.normalize(val2, varname);
 
 				serie.setData(val2);

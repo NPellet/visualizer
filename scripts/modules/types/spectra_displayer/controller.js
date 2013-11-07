@@ -56,16 +56,22 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 		configurationReceive: {
+			chart: {
+				type: ['array','object'],
+				label: 'Chart object ',
+				description: 'Chart object with x,y,infos'
+			},
+
 			xArray: {
 				type: 'array',
-				label: 'Array 1D',
-				description: 'Array 1D'
+				label: '1D Y array',
+				description: '1D array of Y values'
 			},
 
 			xyArray: {
 				type: 'array',
-				label: 'Array XY',
-				description: 'Array XY'
+				label: '1D XY array',
+				description: '1D array of XY values'
 			},
 
 			jcamp: {
@@ -121,7 +127,7 @@ define(['modules/defaultcontroller'], function(Default) {
 					l = currentCfg.length;
 
 				for( ; i < l ; i++) {
-					if( currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray' ) {
+					if( currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray' || currentCfg[i].rel == 'xyArray' || currentCfg[i].rel == 'chart') {
 						vars.push({ 
 							title: currentCfg[i].name,
 							key: currentCfg[i].name
