@@ -1,0 +1,238 @@
+{
+	"modules": [
+		{
+			"type": "phylogram",
+			"title": "Tree 1",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 85,
+				"height": 72
+			},
+			"configuration": {},
+			"id": 1,
+			"bgColor": "",
+			"vars_in": [
+				{
+					"rel": "array",
+					"name": "tree"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actions_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onBranchSelect",
+					"rel": "tree",
+					"jpath": "_2",
+					"name": "treeout"
+				}
+			]
+		},
+		{
+			"type": "jqgrid",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 86,
+				"top": 0
+			},
+			"size": {
+				"width": 70,
+				"height": 28
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								null
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "",
+								"jpath": "element.element",
+								"number": [],
+								"editable": null,
+								"options": null,
+								"width": null
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "labels"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			]
+		},
+		{
+			"type": "phylogram",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 86,
+				"top": 29
+			},
+			"size": {
+				"width": 33,
+				"height": 43
+			},
+			"configuration": {},
+			"id": 3,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onBranchHover",
+					"rel": "tree",
+					"jpath": "_2",
+					"name": "tree2"
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "array",
+					"name": "treeout"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "phylogram",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 120,
+				"top": 29
+			},
+			"size": {
+				"width": 36,
+				"height": 43
+			},
+			"configuration": {},
+			"id": 4,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "array",
+					"name": "tree2"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "tree",
+			"jpath": "element.tree"
+		},
+		{
+			"varname": "labels",
+			"jpath": "element.labels"
+		},
+		{
+			"varname": "matrix",
+			"jpath": "element.matrix"
+		}
+	],
+	"configuration": {
+		"title": "Test D3"
+	},
+	"_version": "2.2"
+}
