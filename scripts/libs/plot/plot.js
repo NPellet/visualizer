@@ -2840,8 +2840,9 @@ define(['jquery', 'util/util'], function($, Util) {
 			var _2d = (arg == "2D");
 
 			// [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-			if(data[0] instanceof Array && arg == "2D" && !(data[0][0] instanceof Array))
-				data = [data];
+			if( data[ 0 ] instanceof Array && arg == "2D" && !( data[ 0 ][ 0 ] instanceof Array ) ) {
+				data = [ data ];
+			}
 
 
 			if(data[0] instanceof Array) {
@@ -2849,7 +2850,7 @@ define(['jquery', 'util/util'], function($, Util) {
 					arr = this._addData(type, _2d ? data[i].length * 2 : data[i].length);
 					datas.push(arr);
 					z = 0;
-					
+					console.log(data[i].length);
 					for(var j = 0, l = data[i].length; j < l; j++) {
 
 						if(_2d) {
@@ -2900,8 +2901,26 @@ define(['jquery', 'util/util'], function($, Util) {
 				}
 			}
 
+			console.log(numbers);
 
+
+			// Determination of slots for low res spectrum
+			var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth( ) / 4,
+				ws = [];
+
+			ws.push( w );
+
+			do {
+				w *= 4;
+				ws.push( w );
+			} while( w < this.graph.getDrawingWidth( ) );
+
+			this.slots = ws;
+			console.log(ws);
+
+		
 			this.data = datas;
+			this.calculateSlots();
 		},
 
 
@@ -2928,6 +2947,35 @@ define(['jquery', 'util/util'], function($, Util) {
 					return new Float64Array(arr);
 				break;
 			}
+		},
+
+		calculateSlots: function( ) {
+
+			var slotNumber;
+			this.slotsData = {};
+
+			for(var i = 0, l = this.slots.length; i < l ; i ++) {
+
+				for(var j = 0, k = this.data.length; j < k ; j ++ ) {
+
+					for(var m = 0, n = this.data[ j ].length ; m < n ; m += 2 ) {
+
+						slotNumber = this.data[ j ][ m ] % this.slots[ i ];
+						this.slotsData[ this.slots[ i ] ] = this.slotsData[ this.slots[ i ] ] || [];
+
+						this.slotsData[ this.slots[ i ] ][ slotNumber ] = this.slotsData[ this.slots[ i ] ][ slotNumber ] || { min: false, max: false, start: this.data[ j ][ m ], stop: false };
+
+						this.slotsData[ this.slots[ i ] ][ slotNumber ].stop = this.data[ j ][ m ];
+						this.slotsData[ this.slots[ i ] ][ slotNumber ].min = ! this.slotsData[ this.slots[ i ] ][ slotNumber ] ? this.slotsData[ this.slots[ i ] ][ slotNumber ] : Math.min( this.data[ j ][ m ], this.slotsData[ this.slots[ i ] ][ slotNumber ].min );
+						this.slotsData[ this.slots[ i ] ][ slotNumber ].max = ! this.slotsData[ this.slots[ i ] ][ slotNumber ] ? this.slotsData[ this.slots[ i ] ][ slotNumber ] : Math.max( this.data[ j ][ m ], this.slotsData[ this.slots[ i ] ][ slotNumber ].max );
+
+					}
+				}
+
+//				this.slotsData[ this.slots[ i ] ].max = this.data[ j ][ m ];
+			}
+
+			console.log(this.slotsData);
 		},
 
 		kill: function(noRedraw) {
@@ -3093,11 +3141,11 @@ define(['jquery', 'util/util'], function($, Util) {
 				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
 					shape = this.graph.makeShape({ type: 'label', label: {
 						text: "",
-						position: {x: 0},
+						position: { x: 0 },
 						anchor: 'middle'
-					}});
-					shape.setSerie(this);
-					this.picks.push(shape);
+					} } );
+					shape.setSerie( this );
+					this.picks.push( shape );
 				}
 			}
 
@@ -3115,12 +3163,21 @@ define(['jquery', 'util/util'], function($, Util) {
 			
 			var incrXFlip = 0;
 			var incrYFlip = 1;
-			if(this.getFlip()) {
+
+			if( this.getFlip( ) ) {
+
 				incrXFlip = 1;
 				incrYFlip = 0;
 			}
 
-			var allY = [];
+			var totalLength = 0;
+			for( ; i < l ; i ++ ) {
+				totalLength += this.data[ i ].length / 2;
+			}
+
+			i = 0;
+
+			var allY = [ ];
 			for(; i < l ; i++) {
 				
 				currentLine = "M ";
@@ -3129,53 +3186,15 @@ define(['jquery', 'util/util'], function($, Util) {
 				var _last = false, _in = false;
 				j = 0, k = 0;
 
-				for(; j < this.data[i].length; j+=2) {
-					xpx = this.getX(this.data[i][j + incrXFlip]);
-					ypx = this.getY(this.data[i][j + incrYFlip]);
+				for( ; j < this.data[ i ].length; j += 200 ) {
+
+					xpx = this.getX( this.data[ i ][ j + incrXFlip ] );
+					ypx = this.getY( this.data[ i ][ j + incrYFlip ] );
 
 					if(this.options.autoPeakPicking) {
-						allY.push([(this.data[i][j + incrYFlip]), this.data[i][j + incrXFlip]]);
+						allY.push( [ ( this.data[ i ][ j + incrYFlip ] ), this.data[ i ][ j + incrXFlip ] ] );
 					}
-
-				//	if(xpx < this.getXAxis().getMinPx() || xpx > this.getXAxis().getMaxPx())
-				//		continue;
-				
-
-				
-				/*	if((!this.getYAxis().isFlipped() && (ypx > this.getYAxis().getMaxPx() || ypx < this.getYAxis().getMinPx())) || (this.getYAxis().isFlipped() && (ypx < this.getYAxis().getMaxPx() || ypx > this.getYAxis().getMinPx()))) {
-
-						if(_higher != (_higher = ypx > this.getYAxis().getMaxPx())) {
-							if(_last) {
-
-								currentLine = this._addPoint(currentLine, _last[0], _last[1], k);
-								k++;
-								_last = false;
-								doAndContinue = false;
-								_in = true;
-							}
-						}
-
-						if(doAndContinue || k == 0) {
-							_last = [xpx, ypx];
-							continue;
-						}
-						if(_in)
-							doAndContinue = 1;
-						else
-							_last = [xpx, ypx];
-						_in = false;
-					} else {
-						_in = true;
-						doAndContinue = false;
-					}
-
-					if(_in && _last && !doAndContinue) {
-						currentLine = this._addPoint(currentLine, _last[0], _last[1], k);
-						k++;
-						_last = false;
-					}*/
-					
-					currentLine = this._addPoint(currentLine, xpx, ypx, k);
+					currentLine = this._addPoint( currentLine, xpx, ypx, k );
 					k++;
 				}
 				
@@ -3246,16 +3265,18 @@ define(['jquery', 'util/util'], function($, Util) {
 					continue;
 				}
 
-				this.picks[m].set('labelPosition', { 
+				this.picks[ m ].set('labelPosition', { 
 														x: x,
 				 										dy: "-10px"
 				 									}
 				 				);
 
-				this.picks[m].data.label[0].text = String(Math.round(x * 1000) / 1000);
-				passed.push(px);
-				if(passed.length == this.options.autoPeakPickingNb)
+				this.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+				passed.push( px );
+
+				if(passed.length == this.options.autoPeakPickingNb) {
 					break;
+				}
 			}
 
 			this.graph.redrawShapes();
