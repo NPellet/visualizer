@@ -114,12 +114,12 @@ define(['jquery', 'util/event'], function($, Event) {
 		this._keys = this._keys || {};
 		this._callbacks = this._callbacks || [];
 
-
+		if(!(keys instanceof Array))
+			keys = [keys];
+		
 		if(!keys || keys.length == undefined || keys.length == 0)
 			return;
 
-		if(!(keys instanceof Array))
-			keys = [keys];
 
 		var _callbackId = ++callbackId;
 		this._callbacks[_callbackId] = [keys, callback, sendCallbackOnEmptyArray];

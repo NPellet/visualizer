@@ -178,10 +178,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		},
 
 
-		setSerieParameters: function(serie, varname) {
+		setSerieParameters: function(serie, varname, highlight) {
 			var self = this,
 				plotinfos = this.module.getConfiguration( 'plotinfos' );
 
+			highlight=highlight||[];
 
 			if( plotinfos ) {
 
@@ -206,10 +207,17 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				}
 			}
 
+			API.listenHighlight(highlight, function(value, commonKeys) {
+				
+				serie.toggleMarker([ highlight.indexOf(commonKeys[0]), 0 ], value, true);
+			});
+
 			serie.options.onMouseOverMarker = function(index, infos, xy) {
+				API.highlight(highlight[index[0]], 1);
 				self.module.controller.onMouseOverMarker(xy, infos);
 			};
 			serie.options.onMouseOutMarker = function(index, infos, xy) {
+				API.highlight(highlight[index[0]], 0);
 				self.module.controller.onMouseOutMarker(xy, infos);
 			};
 		},
@@ -272,7 +280,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					}
 					
 					var serie = this.graph.newSerie(varname, {trackMouse: true});
-					this.setSerieParameters(serie, varname);
+
+					this.setSerieParameters(serie, varname, newSerie._highlight);
 
 					this.normalize(valFinal, varname);
 					serie.setData(valFinal);

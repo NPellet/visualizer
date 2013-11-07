@@ -18,6 +18,12 @@ define(['util/datatraversing'], function(Traversing) {
 		});
 	}
 
+	function setHighlight(key, value) {
+		this.repositoryHighlights.set(key, value);
+	}
+
+
+
 	return {
 
 		getRepositoryData: function() {
@@ -65,9 +71,8 @@ define(['util/datatraversing'], function(Traversing) {
 			this.repositoryHighlights.kill.apply(this.repositoryHighlights, arguments);
 		},
 
-		highlight: function(key, value) {
-			this.repositoryHighlights.set(key, value);
-		},
+		highlight: setHighlight,
+		setHighlight: setHighlight,
 
 		doAction: function(key, value) {
 			this.repositoryActions.set(key, value);	
