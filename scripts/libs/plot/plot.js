@@ -2978,7 +2978,6 @@ define(['jquery', 'util/util'], function($, Util) {
 //				this.slotsData[ this.slots[ i ] ].max = this.data[ j ][ m ];
 			}
 
-			console.log(this.slotsData);
 		},
 
 		kill: function(noRedraw) {
@@ -3136,7 +3135,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		draw: function() {
 
-			var x, y, xpx, ypx, i = 0, l = this.data.length, j = 0, k, currentLine, doAndContinue, _higher;
+			var x, y, xpx, ypx, i = 0, l = this.data.length, j = 0, k, currentLine, doAndContinue, _higher, max;
 
 			this.picks = this.picks || [];
 			var shape;
@@ -3210,18 +3209,19 @@ define(['jquery', 'util/util'], function($, Util) {
 						continue;
 					}
 
-					xpx = Math.floor( this.getX( slotToUse[ j ].x ) );
-	/*
+					xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
+					max = this.getY( slotToUse[ j ].max );
+		
 					if(this.options.autoPeakPicking) {
-						allY.push( [ ( this.data[ i ][ j + incrYFlip ] ), this.data[ i ][ j + incrXFlip ] ] );
+						allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
 					}
-					*/
+					
 
 
 					currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].start ) , k );
-					currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].max ) );
+					currentLine = this._addPoint( currentLine, xpx, max , false, true );
 					currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].min ) );
-					currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].stop ) );
+					currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].stop ), false, true );
 
 					k++;
 					
@@ -3356,11 +3356,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			return Math.round(this.getYAxis().getPx(val) * 1000) / 1000;
 		},
 
-		_addPoint: function(currentLine, xpx, ypx, k) {
+		_addPoint: function(currentLine, xpx, ypx, k, move) {
 			var pos;
 			
-			if(k != 0) {
-				if(this.options.lineToZero)
+			if(k !== 0) {
+				if(this.options.lineToZero || move)
 					currentLine += 'M ';
 				else
 					currentLine += "L ";
