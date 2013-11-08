@@ -190,8 +190,7 @@ define(['modules/defaultcontroller'], function(Default) {
 							xLabel: {
 								type: 'text',
 								title: 'X axis label',
-								default: 'dfsdf',
-								multiple: true
+								default: ''
 							},
 
 							yTopSpacing: {
@@ -252,7 +251,7 @@ define(['modules/defaultcontroller'], function(Default) {
 								type: 'combo',
 								title: 'Zoom',
 								options: [{key: 'x', title: 'X only'}, {key: 'y', title: 'Y only'}, {key: 'xy', title: 'XY'}, {key: 'none', title: 'None'}],
-								default: ['none']
+								default: 'none'
 							},
 
 
@@ -366,7 +365,12 @@ define(['modules/defaultcontroller'], function(Default) {
 			'minX': function(cfg) { return parseFloat(cfg) || false; },
 			'minY': function(cfg) { return parseFloat(cfg) || false; },
 			'maxX': function(cfg) { return parseFloat(cfg) || false; },
-			'maxY': function(cfg) { return parseFloat(cfg) || false; }
+			'maxY': function(cfg) { return parseFloat(cfg) || false; },
+
+			'xastime': function(cfg) { return cfg.indexOf('xastime') > -1 },
+
+			'flipX': function(cfg) { return cfg.indexOf('flipX') > -1 },
+			'flipY': function(cfg) { return cfg.indexOf('flipY') > -1 }
 		},
 
 		
@@ -380,7 +384,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			'xLabel': [ 'groups', 'group', 0, 'xLabel', 0 ],
 			'vertGridMain': [ 'groups', 'group', 0, 'grids', 0 ],
 			'vertGridSec': [ 'groups', 'group', 0, 'grids', 0 ],
-			'xastime': [ 'groups', 'group', 0, 'xastime', 0, 0 ],
+			'xastime': [ 'groups', 'group', 0, 'xastime', 0 ],
 			'horGridMain': [ 'groups', 'group', 0, 'grids', 0 ],
 			'horGridSec': [ 'groups', 'group', 0, 'grids', 0 ],
 			'xLeftSpacing': [ 'groups', 'group', 0, 'xLeftSpacing', 0 ],

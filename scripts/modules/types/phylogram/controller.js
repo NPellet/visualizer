@@ -66,34 +66,6 @@ define(['modules/defaultcontroller'], function(Default) {
 
 		moduleInformations: {
 			moduleName: 'D3 Test'
-		},
-		
-
-		doConfiguration: function(section) {
-			return {};
-			/*
-			return {
-				groups: {
-					'module': {
-						config: {
-							type: 'list'
-						},
-
-						fields: []
-					}
-				}
-			}
-			*/
-		},
-		
-		doFillConfiguration: function() {
-			return {}
-		},
-		
-		
-		doSaveConfiguration: function(confSection) {
-
-			this.module.definition.configuration = {};
 		}
 
 		

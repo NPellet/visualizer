@@ -83,9 +83,9 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 		},
 			
 		configAliases: {
-			'colnumber': function(cfg) { return cfg.groups.group[ 0 ].colnumber[ 0 ]; },
-			'colorjpath': function(cfg) { return cfg.groups.group[ 0 ].colorjPath[ 0 ]; },
-			'valjpath': function(cfg) { return cfg.groups.group[ 0 ].valjPath[ 0 ]; }
+			'colnumber': [ 'groups', 'group', 0, 'colnumber', 0 ],
+			'colorjpath': [ 'groups', 'group', 0, 'colorjPath', 0 ],
+			'valjpath': [ 'groups', 'group', 0, 'valjPath', 0 ]
 		}
 
 	});

@@ -131,9 +131,9 @@ define(['modules/defaultcontroller'], function(Default) {
 			'font': [ 'groups', 'group', 0, 'font', 0 ],
 			'fontsize': [ 'groups', 'group', 0, 'fontsize', 0 ],
 			'align': [ 'groups', 'group', 0, 'align', 0 ],
-			'valign': [ 'groups', 'group', 0, 'valign', '0},' ],
-			'defaultvalue': [ 'groups', 'group', 0, 'defaultvalue', '0},' ],
-			'sprintf': [ 'groups', 'group', 0, 'sprintf', '0},' ]
+			'valign': [ 'groups', 'group', 0, 'valign', 0 ],
+			'defaultvalue': [ 'groups', 'group', 0, 'defaultvalue', 0 ],
+			'sprintf': [ 'groups', 'group', 0, 'sprintf', 0 ]
 		}
 	});
 

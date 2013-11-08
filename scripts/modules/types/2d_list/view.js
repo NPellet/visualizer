@@ -82,7 +82,10 @@ define([ 'modules/defaultview', 'util/typerenderer' ], function( Default, Render
 					td.appendTo( current );
 				}
 
-				current.appendTo( table );
+				if( current ) {
+					current.appendTo( table );
+				}
+				
 				view.dom.html( table );
 
 				i = 0;
