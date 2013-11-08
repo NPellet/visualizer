@@ -70,7 +70,7 @@ define( [ ], function(  ) {
 	}
 
 	FieldConstructor.prototype.checkValue = function() {
-
+console.log(this.value);
 		if( this.dom ) {
 
 			if( ! ( this.value instanceof Array ) ) {
