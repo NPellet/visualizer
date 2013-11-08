@@ -2951,6 +2951,16 @@ define(['jquery', 'util/util'], function($, Util) {
 			var slotNumber;
 			this.slotsData = {};
 
+
+			var incrXFlip = 0;
+			var incrYFlip = 1;
+
+			if( this.getFlip( ) ) {
+				incrXFlip = 1;
+				incrYFlip = 0;
+			}
+
+
 			for(var i = 0, l = this.slots.length; i < l ; i ++) {
 
 				for(var j = 0, k = this.data.length; j < k ; j ++ ) {
@@ -2962,15 +2972,15 @@ define(['jquery', 'util/util'], function($, Util) {
 						this.slotsData[ this.slots[ i ] ] = this.slotsData[ this.slots[ i ] ] || [];
 
 						this.slotsData[ this.slots[ i ] ][ slotNumber ] = this.slotsData[ this.slots[ i ] ][ slotNumber ] || { 
-								min: this.data[ j ][ m + 1 ], 
-								max: this.data[ j ][ m + 1 ], 
-								start: this.data[ j ][ m + 1 ],
+								min: this.data[ j ][ m + incrYFlip ], 
+								max: this.data[ j ][ m + incrYFlip ], 
+								start: this.data[ j ][ m + incrYFlip ],
 								stop: false,
-								x: this.data[ j ][ m ] };
+								x: this.data[ j ][ m + incrXFlip ] };
 
-						this.slotsData[ this.slots[ i ] ][ slotNumber ].stop = this.data[ j ][ m + 1 ];
-						this.slotsData[ this.slots[ i ] ][ slotNumber ].min = Math.min( this.data[ j ][ m + 1 ], this.slotsData[ this.slots[ i ] ][ slotNumber ].min );
-						this.slotsData[ this.slots[ i ] ][ slotNumber ].max = Math.max( this.data[ j ][ m + 1 ], this.slotsData[ this.slots[ i ] ][ slotNumber ].max );
+						this.slotsData[ this.slots[ i ] ][ slotNumber ].stop = this.data[ j ][ m + incrYFlip ];
+						this.slotsData[ this.slots[ i ] ][ slotNumber ].min = Math.min( this.data[ j ][ m + incrYFlip ], this.slotsData[ this.slots[ i ] ][ slotNumber ].min );
+						this.slotsData[ this.slots[ i ] ][ slotNumber ].max = Math.max( this.data[ j ][ m + incrYFlip ], this.slotsData[ this.slots[ i ] ][ slotNumber ].max );
 
 					}
 				}
@@ -3135,7 +3145,18 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		draw: function() {
 
-			var x, y, xpx, ypx, i = 0, l = this.data.length, j = 0, k, currentLine, doAndContinue, _higher, max;
+			var x, 
+				y, 
+				xpx, 
+				ypx, 
+				i = 0, 
+				l = this.data.length, 
+				j = 0, 
+				k, 
+				currentLine, 
+				doAndContinue, 
+				_higher, 
+				max;
 
 			this.picks = this.picks || [];
 			var shape;
@@ -3167,7 +3188,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			var incrYFlip = 1;
 
 			if( this.getFlip( ) ) {
-
 				incrXFlip = 1;
 				incrYFlip = 0;
 			}
@@ -3181,16 +3201,19 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			var allY = [ ];
 
-			var slot = ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() ) / this.graph.getDrawingWidth( ),
-				slotToUse;
-			//console.log(slot, this.slots);
-			for( var y = 0, z = this.slots.length; y < z ; y ++ ) {
-				if( this.slots[ y ] <= slot ) {
-					slotToUse = this.slotsData[ this.slots[ y ] ];
-					break;
+
+			if( this.options.useSlots ) {
+				var slot = ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() ) / this.graph.getDrawingWidth( ),
+					slotToUse;
+				//console.log(slot, this.slots);
+				for( var y = 0, z = this.slots.length; y < z ; y ++ ) {
+					if( this.slots[ y ] <= slot ) {
+						slotToUse = this.slotsData[ this.slots[ y ] ];
+						break;
+					}
 				}
 			}
-
+			
 			if(slotToUse) {
 
 
