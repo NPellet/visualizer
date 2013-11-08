@@ -70,7 +70,7 @@ define( [ ], function(  ) {
 	}
 
 	FieldConstructor.prototype.checkValue = function() {
-console.log(this.value);
+
 		if( this.dom ) {
 
 			if( ! ( this.value instanceof Array ) ) {
@@ -87,7 +87,6 @@ console.log(this.value);
 
 			var val = this.value,
 				options = this.field.getOptions( this );
-				
 
 			$.each( this.checkboxes, function( index, element ) {
 				
