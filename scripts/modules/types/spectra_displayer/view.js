@@ -190,7 +190,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					if( varname == plotinfos[i].variable ) {
 
 						serie.options.lineToZero = ! plotinfos[i].plotcontinuous[0];
-						serie.options.useSlots =  (plotinfos[i].optimizeSlots ? plotinfos[i].optimizeSlots[0] : false);
+						serie.options.useSlots =  (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
 
 						
 						serie.setLineColor( Util.getColor( plotinfos[i].plotcolor ) );
@@ -378,6 +378,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				this.zones[varname] = moduleValue._zones;
 
 				
+				
 				if( self.deferreds[ varname ] ) {
 					self.deferreds[ varname ].reject();
 				}
@@ -395,6 +396,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 						self.graph.setOption('defaultMouseAction', 'drag');
 
 						serie = self.graph.newSerie( varname, { trackMouse: true }, 'contour' );
+						self.setSerieParameters(serie, varname);
 						serie.setData( spectra.contourLines );
 						serie.autoAxis( );
 						self.series[ varname ].push( serie );
@@ -411,6 +413,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 							var data=spectra[i].data[spectra[i].data.length - 1];
 
+							self.setSerieParameters(serie, varname);
 							self.normalize(data, varname);
 							serie.setData(data);
 							serie.autoAxis();
@@ -435,7 +438,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					}
 
 
-					self.setSerieParameters(serie, varname);
 					
 					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
 
