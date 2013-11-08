@@ -116,6 +116,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				graph.getXAxis().forceMax( cfg('maxX', false) );
 				graph.getLeftAxis().forceMax( cfg('maxY', false) );
 
+				graph.setOption('zoomMode', cfg( 'zoom' ) );
+
 				def.resolve(graph);
 			}
 
@@ -324,6 +326,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					val, 
 					val2;
 
+
+	//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
+
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie(varname);
 	
@@ -392,10 +397,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 					if(spectra.contourLines) {
 						
-						self.graph.setOption('zoomMode', 'xy');
-						self.graph.setOption('defaultWheelAction', 'toSeries');
+//						self.graph.setOption('zoomMode', 'xy');
+					/*	self.graph.setOption('defaultWheelAction', 'toSeries');
 						self.graph.setOption('defaultMouseAction', 'drag');
-
+*/
 						serie = self.graph.newSerie( varname, { trackMouse: true }, 'contour' );
 						self.setSerieParameters(serie, varname);
 						serie.setData( spectra.contourLines );
@@ -404,10 +409,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 					} else {
 
-						self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom', false ) );
-						self.graph.setOption('defaultWheelAction', 'zoomY');
+			//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
+						/*self.graph.setOption('defaultWheelAction', 'zoomY');
 						self.graph.setOption('defaultMouseAction', 'zoom');
-
+*/
 						spectra = spectra.spectra;
 						for (var i=0, l = spectra.length; i<l; i++) {
 							serie = self.graph.newSerie(varname, {trackMouse: true});
