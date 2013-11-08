@@ -56,9 +56,17 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 			
 			for(; i < l; i++) {
-				data[toPost[i].name] = API.getVar(toPost[i].variable);
-				if(data[toPost[i].name] && (data[toPost[i].name].getType() == "object" || data[toPost[i].name].getType() == "array" )) {
-					data[toPost[i].name] = JSON.stringify(data[toPost[i].name]);
+				var valueToPost = API.getVar(toPost[i].variable);
+				if (valueToPost) {
+					if ( valueToPost.getType() != "number" && valueToPost.getType() != "string" ) {
+						if (toPost[i].filter=="value") {
+							data[toPost[i].name]=valueToPost.get();
+						} else {
+							data[toPost[i].name] = JSON.stringify(valueToPost);
+						}
+					} else {
+						data[toPost[i].name]=valueToPost;
+					}
 				}
 			}
 
@@ -259,6 +267,12 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 									name: {
 										type: 'text',
 										title: 'Form variable name'
+									},
+
+									filter: {
+										type: 'combo',
+										title: 'Filter',
+										options: [{key: 'none', title: 'None'}, {key: 'value', title: 'Only value'}]
 									}
 								}
 							},
