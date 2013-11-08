@@ -190,7 +190,8 @@ define(['modules/defaultcontroller'], function(Default) {
 							xLabel: {
 								type: 'text',
 								title: 'X axis label',
-								default: ''
+								default: 'dfsdf',
+								multiple: true
 							},
 
 							yTopSpacing: {
