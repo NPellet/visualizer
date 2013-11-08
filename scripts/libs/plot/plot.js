@@ -3270,7 +3270,6 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		drawSlot: function( slotToUse, y ) {
 			console.time('Slots');
-			console.log(slotToUse);
 			currentLine = "M ";
 			k = 0;
 			var i = 0;
