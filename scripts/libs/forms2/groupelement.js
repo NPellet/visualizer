@@ -95,7 +95,9 @@ define(['jquery'], function($) {
 		fillElement: function( i, j, json, clear ) {
 
 			return $.when( this.getFieldElement( i , j ) ).then( function( el ) {
-				el.value = json;
+
+				el.setDefaultOr( json );
+				
 			} );
 		},
 

@@ -299,7 +299,7 @@ define(['modules/defaultcontroller'], function(Default) {
 							plotcolor: {
 								type: 'color',
 								title: 'Color',
-								default: [0, 0, 0, 1]
+								default: [1, 1, 255, 1]
 							},
 
 

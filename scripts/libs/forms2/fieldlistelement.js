@@ -24,9 +24,8 @@ alert('MAKE DOM');
 		var self = this;
 		var plus = $("<span>+</span>").addClass('form-duplicator form-duplicator-add').on('click', function() {
 
-			self.groupElement.duplicateFieldElement( self ).done( function() {
+			self.groupElement.duplicateFieldElement( self ).done( function( ) {
 				self.groupElement.updateDom( );	
-				self.inDom( );
 			} );
 
 		} );
