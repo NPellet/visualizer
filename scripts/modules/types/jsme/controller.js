@@ -66,7 +66,7 @@ define(['modules/defaultcontroller'], function(Default) {
 
 								type: 'checkbox',
 								title: 'Options',
-								default: [ 'oldLook' ],
+								default: [ 'oldlook' ],
 								options: {
 									'noxbutton': 'Hide X button',
 								 	'rbutton': 'Show R button',

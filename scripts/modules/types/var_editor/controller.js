@@ -188,55 +188,21 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 						}
 					},
 
-				},
-
-				sections: {
-
-					/*
-					postvariables: {
-						options: {
-							multiple: false,
-							title: 'POST variables'
-						},
-
-						groups: {
-							postvariables: {
-								options: {
-									type: 'table',
-									multiple: true
-								},
-
-								fields: {
-									
-									variable: {
-										type: 'text',
-										title: 'Variable'
-									},
-
-									name: {
-										type: 'text',
-										title: 'Form variable name'
-									}
-								}
-							},
-						}
-
-					}
-					*/
-
 				}
 			}
 		},
 		
+		configFunctions: {
+			'button': function(cfg) { return cfg.indexOf('button')>-1; }
+		},
 
 		configAliases: {
-			'button': function(cfg) { return cfg.groups.group[ 0 ].button[ 0 ][ 0 ] == "button"; },
-			'searchparams': function(cfg) { return cfg.groups.searchparams[ 0 ]; },
-			'buttonlabel': function(cfg) { return cfg.groups.group[ 0 ].buttonlabel[ 0 ]; },
-			'buttonlabel_exec': function(cfg) { return cfg.groups.group[ 0 ].buttonlabel_exec[ 0 ]; },
-			'onloadsearch': function(cfg) { return cfg.groups.group[ 0 ].onloadsearch[ 0 ][ 0 ]; },
-			'resultfilter': function(cfg) { return cfg.groups.group[ 0 ].resultfilter[ 0 ]; },
-			//'postvariables': function(cfg) { return cfg.sections.postvariables[ 0 ].groups.postvariables[ 0 ]; }
+			'button': [ 'groups', 'group', 0, 'button', 0 ],
+			'searchparams': [ 'groups', 'searchparams', 0 ],
+			'buttonlabel': [ 'groups', 'group', 0, 'buttonlabel', 0 ],
+			'buttonlabel_exec': [ 'groups', 'group', 0, 'buttonlabel_exec', 0 ],
+			'onloadsearch': [ 'groups', 'group', 0, 'onloadsearch', 0, 0 ],
+			'resultfilter': [ 'groups', 'group', 0, 'resultfilter', 0 ]
 		},
 
 		"export": function() {

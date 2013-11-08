@@ -69,8 +69,8 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 		
 
 		configAliases: {
-			'vartype': function(cfg) { return cfg.groups.group[ 0 ].vartype[ 0 ]; },
-			'label': function(cfg) { return cfg.groups.group[ 0 ].label[ 0 ]; }
+			'vartype': [ 'groups', 'group', 0, 'vartype', 0 ],
+			'label': [ 'groups', 'group', 0, 'label', 0 ]
 		},
 
 

@@ -127,13 +127,13 @@ define(['modules/defaultcontroller'], function(Default) {
 		
 
 		configAliases: {
-			'fontcolor': function(cfg) { return cfg.groups.group[ 0 ].fontcolor[ 0 ]; },
-			'font': function(cfg) { return cfg.groups.group[ 0 ].font[ 0 ]; },
-			'fontsize': function(cfg) { return cfg.groups.group[ 0 ].fontsize[ 0 ]; },
-			'align': function(cfg) { return cfg.groups.group[ 0 ].align[ 0 ]; },
-			'valign': function(cfg) { return cfg.groups.group[ 0 ].valign[ 0 ] },
-			'defaultvalue': function(cfg) { return cfg.groups.group[ 0 ].defaultvalue[ 0 ] },
-			'sprintf': function(cfg) { return cfg.groups.group[ 0 ].sprintf[ 0 ] },
+			'fontcolor': [ 'groups', 'group', 0, 'fontcolor', 0 ],
+			'font': [ 'groups', 'group', 0, 'font', 0 ],
+			'fontsize': [ 'groups', 'group', 0, 'fontsize', 0 ],
+			'align': [ 'groups', 'group', 0, 'align', 0 ],
+			'valign': [ 'groups', 'group', 0, 'valign', '0},' ],
+			'defaultvalue': [ 'groups', 'group', 0, 'defaultvalue', '0},' ],
+			'sprintf': [ 'groups', 'group', 0, 'sprintf', '0},' ]
 		}
 	});
 

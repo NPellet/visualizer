@@ -34,12 +34,6 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 				
 		},
 		
-		doConfiguration: function(section) {
-
-			return {
-			};
-		},
-		
 		"export": function() {
 		}
 	});

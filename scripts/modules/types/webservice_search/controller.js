@@ -284,9 +284,12 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			}
 		},
 		
+		configFunctions: {
+			'button': function(cfg) { return cfg.indexOf('button')>-1; }
+		},
 
 		configAliases: {
-			'button': [ 'groups', 'group', 0, 'button', 0, 0 ],
+			'button': [ 'groups', 'group', 0, 'button', 0 ],
 			'url': [ 'groups', 'group', 0, 'url', 0 ],
 			'searchparams': [ 'groups', 'searchparams', 0 ],
 			'buttonlabel': [ 'groups', 'group', 0, 'buttonlabel', 0 ],
