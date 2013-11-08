@@ -32,7 +32,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 
 		configAliases: {
-			prefs: function(cfg) { return cfg.groups.group[ 0 ].prefs[ 0 ]; }
+
 		}
 		
 
