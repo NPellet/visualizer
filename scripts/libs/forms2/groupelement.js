@@ -119,7 +119,7 @@ define(['jquery'], function($) {
 		
 			this.fieldElements[ fieldName ] = this.fieldElements[ fieldName ] || [];
 
-			if( ! this.fieldElements[ fieldName ][ fieldId ] ) {
+			if( ! this.fieldElements[ fieldName ][ fieldId ] && this.group.getField( fieldName ) ) {
 
 				el = this.group.getField( fieldName ).makeElement( ).done( function(value) {
 					value.group = self.group;
