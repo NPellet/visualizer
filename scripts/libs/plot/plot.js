@@ -1749,7 +1749,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			);
 
 			this.graph.redraw(true);
-			this.graph.drawSeries(true);
+		//	this.graph.drawSeries(true);
 
 		},
 
@@ -2908,18 +2908,19 @@ define(['jquery', 'util/util'], function($, Util) {
 			ws.push( w );
 
 			while( w > 1 / this.graph.getDrawingWidth( ) ) {
-				w /= 2;
+				w /= 4;
 				ws.push( w );
 			}
 
 			this.slots = ws;
 			this.data = datas;
 
+
 			if( this.options.useSlots ) {
 
 				this.calculateSlots();	
 			}
-			
+
 		},
 
 
@@ -3222,7 +3223,6 @@ define(['jquery', 'util/util'], function($, Util) {
 				
 			} else {
 
-				console.time('Draw');
 				for(; i < l ; i++) {
 					
 					currentLine = "M ";
@@ -3245,7 +3245,7 @@ define(['jquery', 'util/util'], function($, Util) {
 					
 					this._createLine(currentLine, i, k);
 				}
-				console.timeEnd('Draw');
+				
 			}
 
 			if(this.options.autoPeakPicking)
@@ -3269,7 +3269,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		drawSlot: function( slotToUse, y ) {
-			console.time('Slots');
+			console.time('Slot');
 			currentLine = "M ";
 			k = 0;
 			var i = 0;
@@ -3305,8 +3305,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this._createLine(currentLine, i, k);
 			i++;
-
-			console.timeEnd('Slots');
+			console.timeEnd('Slot');
 		},
 
 		setMarkerStyleTo: function(dom, noFill) {
