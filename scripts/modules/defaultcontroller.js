@@ -61,6 +61,9 @@ define(['jquery', 'util/api', 'util/datatraversing'], function($, API, Traversin
 
 				}
 			}
-		}
+		},
+
+		configFunctions: {},
+		configAliases: {}
 	}
 });

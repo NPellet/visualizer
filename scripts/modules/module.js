@@ -755,7 +755,6 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			for( var i = 0, l = alias.length ; i < l ; i ++) {
 				cfgEl = cfgEl[ alias[ i ] ];
 
-
 				if( typeof cfgEl == 'undefined' ) {
 
 					return this._getConfigurationDefault( alias, aliasName );
@@ -769,21 +768,30 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		_getConfigurationDefault: function( alias, aliasName ) {
 
 			this._cfgStructure = this._cfgStructure || this.controller.configurationStructure();
+
 			var cfgEl = this._cfgStructure;
 
-			for( var i = 0, l = this._cfgStructure.length ; i < l ; i ++) {
+			for( var i = 0, l = alias.length ; i < l ; i ++) {
 
-				if( String( parseInt( cfg[ i ] ) ) == cfg[ i ] ) {
+				if( typeof alias[ i ] == 'number') {
 					continue;
 				}
 
-				cfgEl = cfgEl[ cfg[ i ] ];
+				if( cfgEl.fields ) {
+					i--;
+					cfgEl = cfgEl.fields;
+					continue;
+				}
 
+
+				cfgEl = cfgEl[ alias[ i ] ];
 				if( ! cfgEl ) {
+
 					return 'error';
 				}
 
 			}
+
 
 			return this._doConfigurationFunction( cfgEl.default, aliasName );
 		},
