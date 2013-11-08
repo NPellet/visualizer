@@ -72,7 +72,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 						edittype: editable ? jpaths[ j ].editable : false,
 						_jpath: jpaths[ j ].jpath,
 						sortable: true,
-						sorttype: jpaths[ j ].number ? 'float' : 'text'
+						sorttype: jpaths[ j ].number[ 0 ] ? 'float' : 'text'
 					});
 				}
 
@@ -146,8 +146,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 						self.applyFilterToRow( id , ids[ i ] );
 						self.tableElements[ id ]._inDom.resolve( );
 					}
-
-
 			   	},
 
 			    viewrecords: true,
