@@ -286,14 +286,14 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		
 
 		configAliases: {
-			'button': function(cfg) { return cfg.groups.group[ 0 ].button[ 0 ][ 0 ] == "button"; },
-			'url': function(cfg) { return cfg.groups.group[ 0 ].url[ 0 ]; },
-			'searchparams': function(cfg) { return cfg.groups.searchparams[ 0 ]; },
-			'buttonlabel': function(cfg) { return cfg.groups.group[ 0 ].buttonlabel[ 0 ]; },
-			'buttonlabel_exec': function(cfg) { return cfg.groups.group[ 0 ].buttonlabel_exec[ 0 ]; },
-			'onloadsearch': function(cfg) { return cfg.groups.group[ 0 ].onloadsearch[ 0 ][ 0 ]; },
-			'resultfilter': function(cfg) { return cfg.groups.group[ 0 ].resultfilter[ 0 ]; },
-			'postvariables': function(cfg) { return cfg.sections.postvariables[ 0 ].groups.postvariables[ 0 ]; }
+			'button': [ 'groups', 'group', 0, 'button', 0, 0 ],
+			'url': [ 'groups', 'group', 0, 'url', 0 ],
+			'searchparams': [ 'groups', 'searchparams', 0 ],
+			'buttonlabel': [ 'groups', 'group', 0, 'buttonlabel', 0 ],
+			'buttonlabel_exec': [ 'groups', 'group', 0, 'buttonlabel_exec', 0 ],
+			'onloadsearch': [ 'groups', 'group', 0, 'onloadsearch', 0, 0 ],
+			'resultfilter': [ 'groups', 'group', 0, 'resultfilter', 0 ],
+			'postvariables': [ 'sections', 'postvariables', 0, 'groups', 'postvariables', 0 ]
 		},
 
 		"export": function() {

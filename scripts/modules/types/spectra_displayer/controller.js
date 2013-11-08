@@ -162,103 +162,120 @@ define(['modules/defaultcontroller'], function(Default) {
 
 							graphurl: {
 								type: 'text',
-								title: 'Graph URL'
+								title: 'Graph URL',
+								default: ''
 							},
 
 							flip: {
 								type: 'checkbox',
 								title: 'Axis flipping',
-								options: { 'flipX': 'Flip X', 'flipY': "Flip Y"}
+								options: { 'flipX': 'Flip X', 'flipY': "Flip Y"},
+								default: []
 							},
 
 							displayAxis: {
 								type: 'checkbox',
 								title: 'Display axis',
-								options: { 'x': 'X', 'y': "Y"}
+								options: { 'x': 'X', 'y': "Y"},
+								default: ['y']
 							},
 
 							grids: {
 								type: 'checkbox',
 								title: 'Grids',
-								options: { 'hmain': 'Horizontal Main', 'hsec': 'Honrizontal Seconday', 'vmain': 'Vertical Main', 'vsec': 'Vertical Secondary' }
+								options: { 'hmain': 'Horizontal Main', 'hsec': 'Honrizontal Seconday', 'vmain': 'Vertical Main', 'vsec': 'Vertical Secondary' },
+								default: []
 							},
 
 							xLabel: {
 								type: 'text',
-								title: 'X axis label'
+								title: 'X axis label',
+								default: ''
 							},
 
 							yTopSpacing: {
 								type: 'text',
-								title: 'Spacing above the data'
+								title: 'Spacing above the data',
+								default: 0
 							},
 
 							yBottomSpacing: {
 								type: 'text',
-								title: 'Spacing below the datal'
+								title: 'Spacing below the data',
+								default: 0
 							},
 
 							xLeftSpacing: {
 								type: 'text',
-								title: 'Spacing left'
+								title: 'Spacing left',
+								default: 0
 							},
 
 							xRightSpacing: {
 								type: 'text',
-								title: 'Spacing right'
+								title: 'Spacing right',
+								default: 0
 							},
 
 							yLabel: {
 								type: 'text',
-								title: 'Y axis label'
+								title: 'Y axis label',
+								default: ''
 							},
 
 							minX: {
 								type: 'text',
-								title: 'Min X'
+								title: 'Min X',
+								default: ''
 							},
 
 							maxX: {
 								type: 'text',
-								title: 'Max X'
+								title: 'Max X',
+								default: ''
 							},
 
 							minY: {
 								type: 'text',
-								title: 'Min Y'
+								title: 'Min Y',
+								default: ''
 							},
 
 							maxY: {
 								type: 'text',
-								title: 'Max Y'
+								title: 'Max Y',
+								default: ''
 							},
 
 							zoom: {
 								type: 'combo',
 								title: 'Zoom',
-								options: [{key: 'x', title: 'X only'}, {key: 'y', title: 'Y only'}, {key: 'xy', title: 'XY'}, {key: 'none', title: 'None'}]
+								options: [{key: 'x', title: 'X only'}, {key: 'y', title: 'Y only'}, {key: 'xy', title: 'XY'}, {key: 'none', title: 'None'}],
+								default: ['none']
 							},
 
 
 							shiftxtozero: {
 								type: 'checkbox',
 								title: 'Shift X to Min',
-								options: {'shift': ''}
+								options: {'shift': ''},
+								default: []
 							},
 
 
 							xastime: {
 								type: 'checkbox',
 								title: 'X axis as time',
-								options: {'xastime': ''}
+								options: {'xastime': ''},
+								default: []
 							},
 
 							wheelAction: {
 								type: 'combo',
 								title: 'Mouse Wheel',
-								options: [{key: 'zoomX', title: 'Zoom X'}, {key: 'zoomY', title: 'Zoom Y'}, {key: 'none', title: 'None'}]
+								options: [{key: 'zoomX', title: 'Zoom X'}, {key: 'zoomY', title: 'Zoom Y'}, {key: 'none', title: 'None'}],
+								default: 'none'
 							}
-
 						}
 					},
 
@@ -275,49 +292,57 @@ define(['modules/defaultcontroller'], function(Default) {
 							variable: {
 								type: 'combo',
 								title: 'Variable',
-								options: vars
+								options: vars,
+								default: ''
 							},
 
 							plotcolor: {
 								type: 'color',
-								title: 'Color'
+								title: 'Color',
+								default: [0, 0, 0, 1]
 							},
 
 
 							strokewidth: {
 								type: 'text',
-								title: 'Width (px)'
+								title: 'Width (px)',
+								default: '1'
 							},
 
 							plotcontinuous: {
 								type: 'checkbox',
 								title: 'Continuous',
-								options: {'continuous': 'Continuous'}
+								options: {'continuous': 'Continuous'},
+								default: ['continuous']
 							},
 
 							peakpicking: {
 								type: 'checkbox',
 								title: 'Peak Picking',
-								options: {'picking': 'Peak Picking'}
+								options: {'picking': 'Peak Picking'},
+								default: []
 							},
 
 
 							markers: {
 								type: 'checkbox',
 								title: 'Markers',
-								options: {'markers': 'Show markers'}
+								options: {'markers': 'Show markers'},
+								default: []
 							},
 
 							normalize: {
 								type: 'combo',
 								title: 'Normalize',
-								options: [{key: 'none', title: 'None'}, {key: 'max1', title: 'Set max to 1'}, {key: 'sum1', title: 'Set sum to 1'}, {key: 'max1min0', title: 'Max 1, Min 0'} ]
+								options: [{key: 'none', title: 'None'}, {key: 'max1', title: 'Set max to 1'}, {key: 'sum1', title: 'Set sum to 1'}, {key: 'max1min0', title: 'Max 1, Min 0'} ],
+								default: 'none'
 							},
 
 							optimizeSlots: {
 								type: 'checkbox',
 								title: 'Optimize with slots',
-								options: { 'slots': '' }
+								options: { 'slots': '' },
+								default: []
 							}
 						}
 					}
@@ -326,35 +351,50 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 
+
+		configFunctions: {
+
+			'displayYAxis': function(cfg) { return cfg.indexOf('y') > -1; },
+			'displayXAxis': function(cfg) { return cfg.indexOf('x') > -1; },
+			'vertGridMain': function(cfg) { return cfg.indexOf('vmain') > -1; },
+			'vertGridSec': function(cfg) { return cfg.indexOf('vsec') > -1; },
+			'horGridMain': function(cfg) { return cfg.indexOf('hmain') > -1; },
+			'horGridSec': function(cfg) { return cfg.indexOf('hsec') > -1; },
+
+			'shiftxtozero': function(cfg) { return cfg.indexOf('shift') > -1 },
+			'minX': function(cfg) { return parseFloat(cfg) || false; },
+			'minY': function(cfg) { return parseFloat(cfg) || false; },
+			'maxX': function(cfg) { return parseFloat(cfg) || false; },
+			'maxY': function(cfg) { return parseFloat(cfg) || false; }
+		},
+
+		
 		configAliases: {
-			'graphurl': function(cfg) { console.log(cfg.groups);  return cfg.groups.group[ 0 ].graphurl[ 0 ]; },
-			'shiftxtozero': function(cfg) { return cfg.groups.group[ 0 ].shiftxtozero[ 0 ][ 0 ]; },
-			'displayYAxis': function(cfg) { return cfg.groups.group[ 0 ].displayAxis[ 0 ].indexOf('y') > -1; },
-			'yLabel': function(cfg) { return cfg.groups.group[ 0 ].yLabel[ 0 ]; },
-			'displayXAxis': function(cfg) { return cfg.groups.group[ 0 ].displayAxis[ 0 ].indexOf('x') > -1; },
-			'xLabel': function(cfg) { return cfg.groups.group[ 0 ].xLabel[ 0 ]; },
-			'vertGridMain': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('vmain') > -1; },
-			'vertGridSec': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('vsec') > -1; },
-			'xastime': function(cfg) { return cfg.groups.group[ 0 ].xastime[ 0 ][ 0 ]; },
-			'horGridMain': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('hmain') > -1; },
-			'horGridSec': function(cfg) { return cfg.groups.group[ 0 ].grids[ 0 ].indexOf('hsec') > -1; },
-			'xLeftSpacing': function(cfg) { return cfg.groups.group[ 0 ].xLeftSpacing[ 0 ]; },
-			'xRightSpacing': function(cfg) { return cfg.groups.group[ 0 ].xRightSpacing[ 0 ]; },
-			'yBottomSpacing': function(cfg) { return cfg.groups.group[ 0 ].yBottomSpacing[ 0 ]; },
-			'yTopSpacing': function(cfg) { return cfg.groups.group[ 0 ].yTopSpacing[ 0 ]; },
-			'wheelAction': function(cfg) { return cfg.groups.group[ 0 ].wheelAction[ 0 ]; },
-			'zoom': function(cfg) { return cfg.groups.group[ 0 ].zoom[ 0 ]; },
 
-			'minX': function(cfg) { return parseFloat(cfg.groups.group[ 0 ].minX[ 0 ]); },
-			'minY': function(cfg) { return parseFloat(cfg.groups.group[ 0 ].minY[ 0 ]); },
-			'maxX': function(cfg) { return parseFloat(cfg.groups.group[ 0 ].maxX[ 0 ]); },
-			'maxY': function(cfg) { return parseFloat(cfg.groups.group[ 0 ].maxY[ 0 ]); },
-
-
-			'flipX': function(cfg) { return cfg.groups.group[ 0 ].flip[ 0 ].indexOf('flipX') > -1; },
-			'flipY': function(cfg) { return cfg.groups.group[ 0 ].flip[ 0 ].indexOf('flipY') > -1; },
-
-			'plotinfos': function(cfg) { return cfg.groups.plotinfos[ 0 ]; }
+			'graphurl': [ 'groups', 'group', 0, 'graphurl', 0 ],
+			'shiftxtozero': [ 'groups', 'group', 0, 'shiftxtozero', 0 ],
+			'displayYAxis': [ 'groups', 'group', 0, 'displayAxis', 0 ],
+			'yLabel': [ 'groups', 'group', 0, 'yLabel', 0 ],
+			'displayXAxis': [ 'groups', 'group', 0, 'displayAxis', 0 ],
+			'xLabel': [ 'groups', 'group', 0, 'xLabel', 0 ],
+			'vertGridMain': [ 'groups', 'group', 0, 'grids', 0 ],
+			'vertGridSec': [ 'groups', 'group', 0, 'grids', 0 ],
+			'xastime': [ 'groups', 'group', 0, 'xastime', 0, 0 ],
+			'horGridMain': [ 'groups', 'group', 0, 'grids', 0 ],
+			'horGridSec': [ 'groups', 'group', 0, 'grids', 0 ],
+			'xLeftSpacing': [ 'groups', 'group', 0, 'xLeftSpacing', 0 ],
+			'xRightSpacing': [ 'groups', 'group', 0, 'xRightSpacing', 0 ],
+			'yBottomSpacing': [ 'groups', 'group', 0, 'yBottomSpacing', 0 ],
+			'yTopSpacing': [ 'groups', 'group', 0, 'yTopSpacing', 0 ],
+			'wheelAction': [ 'groups', 'group', 0, 'wheelAction', 0 ],
+			'zoom': [ 'groups', 'group', 0, 'zoom', 0 ],
+			'minX': [ 'groups', 'group', 0, 'minX', 0 ],
+			'minY': [ 'groups', 'group', 0, 'minY', 0 ],
+			'maxX': [ 'groups', 'group', 0, 'maxX', 0 ],
+			'maxY': [ 'groups', 'group', 0, 'maxY', 0 ],
+			'flipX': [ 'groups', 'group', 0, 'flip', 0 ],
+			'flipY': [ 'groups', 'group', 0, 'flip', 0 ],
+			'plotinfos': [ 'groups', 'plotinfos', 0 ]
 		},
 
 

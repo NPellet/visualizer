@@ -1,60 +1,23 @@
-<script src="./scripts/libs/jquery/jquery.js"></script>
-<script src="./scripts/libs/jqueryui/jquery-ui.min.js"></script>
-<script src="./scripts/libs/jqgrid/js/jqgrid.js"></script>
+<html>
+<head>
+<script language="javascript" src="./scripts/libs/jquery/jquery.js"></script>
+</head>
 
-<script src="./scripts/libs/jqgrid/js/i18n/grid.locale-en.js"></script>
-<link href="./scripts/libs/jqueryui/css/aristo/Aristo.css" rel="stylesheet" />
-<link href="./scripts/libs/jqgrid/css/ui.jqgrid.css" rel="stylesheet" />
-<table id="grid"></table>
+<body>
+
+<textarea></textarea>
+<pre id="result"> </pre>
 
 <script>
 
-    var $el = $("#grid");
-    var colModel = [{ id: 'test', name: 'test', sortable: true }];
-    var colNames = ['Yo'];
+$('textarea').bind('keyup', function() {
 
-    $el.jqGrid({                   
-        colNames: colNames,
-        colModel: colModel,
-        rowNum: 1000,
-        sortable: true,
-        loadonce: true,
-        datatype: "local",
-        autowidth: true,
-        gridview: true,
-        forceFit: true,
-        rowList: [10,20,30,100],
-    //      pager: '#pager' + this.unique,
-        rowattr: function() {
-        //    if(arguments[1]._backgroundColor)
-          //      return {'style': 'background-color: ' + arguments[1]._backgroundColor };
-        },
-        afterSaveCell: function(rowId, colName, value, rowNum, colNum) {
-            /*if(jpaths[colModel[colNum].name].number)
-                value = parseFloat(value);
-            self.elements[rowId].setChild(colModel[colNum]._jpath, value, { moduleid: self.module.getId() });
-            self.applyFilterToRow(rowId);*/
-        },
-        viewrecords: true,
-        onSelectRow: function(rowid, status) {
-            //rowid--; // ?? Plugin mistake ?
-            /*if(status) {
-                self.module.controller.onToggleOn(self.elements[rowid]);
-            } else {
-                self.module.controller.onToggleOff(self.elements[rowid]);
-            }
-            self.module.controller.lineClick(self.elements[rowid]);*/
-        }
-    });
+    $.getJSON('http://script-test.epfl.ch/script/Service/20131108/fRQsUJVMTr', { text: $(this).val() }, function(val) {
+        console.log(val);
+        $("#result").html(val.results);
+    })
 
-var el = {test: 'COUCOU', id: 1};
-$el.jqGrid('addRowData', el.id, el);   
-
-
-
-var el = {test: 'COUCO23U', id: 2};
-$el.jqGrid('addRowData', el.id, el);   
-
-
-
+});
 </script>
+</body>
+</html>

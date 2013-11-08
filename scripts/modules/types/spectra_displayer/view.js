@@ -89,6 +89,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					graph.getXAxis( ).options.shiftToZero = true;
 				}
 
+
 				graph.getLeftAxis().setDisplay( cfg('displayYAxis', false) );
 				graph.getLeftAxis().setLabel( cfg('yLabel', '') );
 
@@ -105,8 +106,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				graph.getYAxis().togglePrimaryGrid( cfg( 'horGridMain', false ) );
 				graph.getYAxis().toggleSecondaryGrid( cfg( 'horGridSec', false ) );
 			
-				graph.getXAxis().setAxisDataSpacing( cfg( 'xLeftSpacing', 0 ), cfg( 'xRightSpacing', 0 ) );
-				graph.getYAxis().setAxisDataSpacing( cfg( 'yBottomSpacing', 0 ), cfg( 'yTopSpacing', 0 ) );
+				graph.getXAxis().setAxisDataSpacing( cfg( 'xLeftSpacing' ), cfg( 'xRightSpacing' ) );
+				graph.getYAxis().setAxisDataSpacing( cfg( 'yBottomSpacing' ), cfg( 'yTopSpacing' ) );
 
 				graph.setDefaultWheelAction( cfg('wheelAction', 'none') );
 

@@ -746,20 +746,59 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			});
 		},
 
-		getConfiguration: function( alias, _default ) {
+		getConfiguration: function( aliasName ) {
 
-			var config;
-			
-			try {
-				if( this.controller.configAliases[ alias ] ) {
-					config = this.controller.configAliases[ alias ].call( this, this.definition.configuration );
+
+			var cfgEl = this.definition.configuration,
+				alias = this.controller.configAliases[ aliasName ];
+
+			for( var i = 0, l = alias.length ; i < l ; i ++) {
+				cfgEl = cfgEl[ alias[ i ] ];
+
+
+				if( typeof cfgEl == 'undefined' ) {
+
+					return this._getConfigurationDefault( alias, aliasName );
 				}
-			} catch(_e) {
-				console.error( 'Cannot fetch alias ' + alias + ' in configuration. Return default: ' + _default + "." );
-				return _default;
 			}
-			
-			return config;
+
+
+			return this._doConfigurationFunction( cfgEl, aliasName );
+		},
+
+		_getConfigurationDefault: function( alias, aliasName ) {
+
+			this._cfgStructure = this._cfgStructure || this.controller.configurationStructure();
+			var cfgEl = this._cfgStructure;
+
+			for( var i = 0, l = this._cfgStructure.length ; i < l ; i ++) {
+
+				if( String( parseInt( cfg[ i ] ) ) == cfg[ i ] ) {
+					continue;
+				}
+
+				cfgEl = cfgEl[ cfg[ i ] ];
+
+				if( ! cfgEl ) {
+					return 'error';
+				}
+
+			}
+
+			return this._doConfigurationFunction( cfgEl.default, aliasName );
+		},
+
+		_doConfigurationFunction: function( element, aliasName ) {
+
+			if( this.controller.configFunctions[ aliasName ] ) {
+				try {
+					return this.controller.configFunctions[ aliasName ]( element );
+				} catch( e ) {
+					return element;
+				}
+			}
+
+			return element;
 		},
 
 		/** 
