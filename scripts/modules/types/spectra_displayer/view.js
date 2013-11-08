@@ -190,7 +190,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					if( varname == plotinfos[i].variable ) {
 
 						serie.options.lineToZero = ! plotinfos[i].plotcontinuous[0];
-						serie.options.useSlots = ! plotinfos[i].optimizeSlots[0];
+						serie.options.useSlots =  (plotinfos[i].optimizeSlots ? plotinfos[i].optimizeSlots[0] : false);
 
 						
 						serie.setLineColor( Util.getColor( plotinfos[i].plotcolor ) );

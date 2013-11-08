@@ -3007,7 +3007,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		onMouseOverMarker: function(e, index) {
 			var toggledOn = this.toggleMarker(index, true, true);
-			if(this.options.onMouseOverMarker) {
+			if(this.options.onMouseOverMarker && this.infos) {
 				this.options.onMouseOverMarker(index, this.infos[index[0]] || false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
 			}
 		},
@@ -3015,7 +3015,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		onMouseOutMarker: function(e, index) {
 			this.markersOffHover();
-			if(this.options.onMouseOutMarker) {
+			if(this.options.onMouseOutMarker && this.infos) {
 				this.options.onMouseOutMarker(index, this.infos[index[0]] || false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
 			}
 		},
