@@ -3203,6 +3203,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 
 			if( this.options.useSlots ) {
+				
 				var slot = ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() ) / this.graph.getDrawingWidth( ),
 					slotToUse;
 				//console.log(slot, this.slots);
@@ -3213,7 +3214,7 @@ define(['jquery', 'util/util'], function($, Util) {
 					}
 				}
 			}
-			
+
 			if(slotToUse) {
 
 

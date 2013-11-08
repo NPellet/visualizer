@@ -312,6 +312,12 @@ define(['modules/defaultcontroller'], function(Default) {
 								type: 'combo',
 								title: 'Normalize',
 								options: [{key: 'none', title: 'None'}, {key: 'max1', title: 'Set max to 1'}, {key: 'sum1', title: 'Set sum to 1'}, {key: 'max1min0', title: 'Max 1, Min 0'} ]
+							},
+
+							optimizeSlots: {
+								type: 'checkbox',
+								title: 'Optimize with slots',
+								options: { 'slots': '' }
 							}
 						}
 					}
