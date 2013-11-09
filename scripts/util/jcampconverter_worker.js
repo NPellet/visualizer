@@ -36,7 +36,9 @@ function convert(jcamp, options) {
     if (! (typeof jcamp == "string")) return result;
    // console.time("start");
 
-    ldrs=jcamp.split(/[\r\n]+ *##/);
+    if (result.profiling) result.profiling.push({action: "Before split to LDRS",time:new Date()-start});
+
+    ldrs=jcamp.split(/[\r\n]+##/);
 
     if (result.profiling) result.profiling.push({action: "Split to LDRS",time:new Date()-start});
 
@@ -299,14 +301,18 @@ function parsePeakTable(spectrum, value) {
     spectrum.currentData=[];
     spectrum.data.push(spectrum.currentData);
 
+    // counts for around 20% of the time
     var lines=value.split(/,? *,?[;\r\n]+ */);
 
+
+    var k=0;
     for (i=1, ii=lines.length; i<ii; i++) {
         values=lines[i].trim().replace(removeCommentRegExp,"").split(peakTableSplitRegExp);
         if (values.length%2==0) {
             for (j=0,jj=values.length; j<jj; j=j+2) {
-                spectrum.currentData.push(parseFloat(values[j])*spectrum.xFactor);
-                spectrum.currentData.push(parseFloat(values[j+1])*spectrum.yFactor);
+                // takes around 40% of the time to add and parse the 2 values nearly exclusively because of parseFloat
+                spectrum.currentData[k++]=(parseFloat(values[j])*spectrum.xFactor);
+                spectrum.currentData[k++]=(parseFloat(values[j+1])*spectrum.yFactor);
             }
         } else {
             if (console) console.log("Format error: "+values);
@@ -436,11 +442,11 @@ function parseXYData(spectrum, value) {
         }
     }
 
-
     function addPoint(spectrum,currentX,currentY) {
         // if (aa++<10) console.log(currentX+" - "+currentY+" - "+currentX/spectrum.observeFrequency+" - "+currentY*spectrum.yFactor);
             spectrum.currentData.push(currentX, currentY*spectrum.yFactor);
     }
+    
     delete spectrum.currentData;
 }
 
