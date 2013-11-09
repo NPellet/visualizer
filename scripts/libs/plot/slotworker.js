@@ -5,7 +5,10 @@ onmessage = function( e ) {
 	var slotNb = e.data.slotNumber;
 	var slot = e.data.slot;
 	var flip = e.data.flip;
+	var max = e.data.max;
+	var min = e.data.min;
 
+	var dataPerSlot = slot / (max - min);
 
 	var incrXFlip = 0;
 	var incrYFlip = 1;
@@ -23,9 +26,7 @@ onmessage = function( e ) {
 
 		for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
 
-			slotNumber = Math.floor( data[ j ][ m ] / slot );
-
-			
+			slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
 			this.slotsData[ slotNumber ] = this.slotsData[ slotNumber ] || { 
 					min: data[ j ][ m + incrYFlip ], 
 					max: data[ j ][ m + incrYFlip ], 

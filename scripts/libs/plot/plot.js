@@ -2824,7 +2824,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		setData: function(data, arg, type) {
 
 			var z = 0;
-			var x, dx, arg = arg || "2D", type = type || 'float', arr;
+			var x, dx, arg = arg || "2D", type = type || 'float', arr, total = 0;
 			if(!data instanceof Array)
 				return;
 
@@ -2860,10 +2860,12 @@ define(['jquery', 'util/util'], function($, Util) {
 							arr[z] = (data[i][j][1]);
 							this._checkY(arr[z]);
 							z++;
+							total++;
 						} else { // 1D Array
 							arr[z] = data[i][j];
 							this[j % 2 == 0 ? '_checkX' : '_checkY'](arr[z]);
 							z++;
+							total += j % 2 ? 1 : 0;
 
 						}
 					}
@@ -2891,6 +2893,7 @@ define(['jquery', 'util/util'], function($, Util) {
 						datas[k][z] = (data[i].y[j]);
 						this._checkY(datas[k][z]);
 						z++;
+						total++;
 					}
 					number += data[i].y.length;
 					if(numbers[k] == number) {
@@ -2905,14 +2908,20 @@ define(['jquery', 'util/util'], function($, Util) {
 			var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth( ),
 				ws = [];
 
-			ws.push( w );
+			var min = this.graph.getDrawingWidth( ) * 4;
+			var max = total / 4;
 
-			while( w > 1 / this.graph.getDrawingWidth( ) ) {
-				w /= 4;
-				ws.push( w );
+			var min = this.graph.getDrawingWidth( );
+			var max = total;
+
+
+			while( min < max ) {
+				ws.push( min );
+				min *= 4;
 			}
 
 			this.slots = ws;
+
 			this.data = datas;
 
 
@@ -2969,7 +2978,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		slotCalculator: function( slot, slotNumber ) {
 			var def = $.Deferred();
-			this.slotWorker.postMessage({ data: this.data, slot: slot, slotNumber: slotNumber, flip: this.getFlip() });
+			this.slotWorker.postMessage({ min: this.minX, max: this.maxX, data: this.data, slot: slot, slotNumber: slotNumber, flip: this.getFlip() });
 			return def;
 		},
 
@@ -3117,23 +3126,27 @@ define(['jquery', 'util/util'], function($, Util) {
 				
 			}
 
-			while(this.groupMarkers.firstChild)
+			while(this.groupMarkers.firstChild) {
 				this.groupMarkers.removeChild(this.groupMarkers.firstChild);
+			}
 		},
 
 
 		isMinOrMax: function(bool, xy, minmax) {
-			if(bool == undefined)
-				return this._isMinOrMax.x.min || this._isMinOrMax.x.max || this._isMinOrMax.y.min || this._isMinOrMax.y.max;
 
-			if(minmax == undefined && xy != undefined) {
-				this._isMinOrMax[xy].min = bool;
-				this._isMinOrMax[xy].max = bool;
+			if( bool == undefined ) {
+				return this._isMinOrMax.x.min || this._isMinOrMax.x.max || this._isMinOrMax.y.min || this._isMinOrMax.y.max;
+			}
+
+			if( minmax == undefined && xy != undefined ) {
+				this._isMinOrMax[ xy ].min = bool;
+				this._isMinOrMax[ xy ].max = bool;
 				return;
 			}
 
-			if(xy != undefined && minmax != undefined)
-				this._isMinOrMax[xy][minmax] = bool;
+			if( xy != undefined && minmax != undefined ) {
+				this._isMinOrMax[ xy ][ minmax ] = bool;
+			}
 		},
 
 
@@ -3193,17 +3206,16 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 
 			i = 0;
-
 			var allY = [ ];
-
 			if( this.options.useSlots ) {
 				
-				var slot = ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() ) / this.graph.getDrawingWidth( ),
+				var slot = this.graph.getDrawingWidth( ) * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() ),
 					slotToUse;
-				//console.log(slot, this.slots);
+				
+				console.log(slot, this.slots);
 				for( var y = 0, z = this.slots.length; y < z ; y ++ ) {
 
-					if( this.slots[ y ] <= slot ) {
+					if( slot < this.slots[ y ] ) {
 						slotToUse = this.slotsData[ this.slots[ y ] ];
 						break;
 					}
@@ -3264,22 +3276,26 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.groupMain.appendChild(this.domMarker);
 			this.groupMain.insertBefore(this.groupLines, next);
 			var label;
-			for(var i = 0, l = this.labels.length; i < l; i++)
+			for(var i = 0, l = this.labels.length; i < l; i++) {
 				this.repositionLabel(this.labels[i]);
+			}
 		},
 
 		drawSlot: function( slotToUse, y ) {
+
+			var dataPerSlot = this.slots[ y ] / (this.maxX - this.minX);
+
+			//console.log(slotToUse, y, this.slots[ y ]);
 			console.time('Slot');
 			currentLine = "M ";
 			k = 0;
 			var i = 0;
 			var j;
 
-			var slotInit = Math.floor( this.getXAxis( ).getActualMin( ) / this.slots[ y ] );
-			var slotFinal = Math.ceil( this.getXAxis( ).getActualMax( ) / this.slots[ y ] );
+			var slotInit = Math.floor( ( this.getXAxis( ).getActualMin( ) - this.minX ) * dataPerSlot );
+			var slotFinal = Math.ceil( ( this.getXAxis( ).getActualMax( ) - this.minX ) * dataPerSlot );
 
-
-			for( j = slotInit ;  j < slotFinal ; j ++ ) {
+			for( j = slotInit ;  j <= slotFinal ; j ++ ) {
 
 				if( ! slotToUse[ j ] ) {
 					continue;
@@ -3292,8 +3308,6 @@ define(['jquery', 'util/util'], function($, Util) {
 					allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
 				}
 				
-
-
 				currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].start ) , k );
 				currentLine = this._addPoint( currentLine, xpx, max , false, true );
 				currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].min ) );
