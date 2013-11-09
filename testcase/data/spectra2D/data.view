@@ -13,61 +13,119 @@
 				"top": 0
 			},
 			"size": {
-				"width": 53.96666666269302,
-				"height": 25.966666662693022
+				"width": 54,
+				"height": 26
 			},
 			"configuration": {
-				"flipX": true,
-				"flipY": false,
-				"xLabel": "PPM",
-				"yLabel": "",
-				"xRightSpacing": "",
-				"xLeftSpacing": "",
-				"yTopSpacing": "",
-				"yBottomSpacing": "0.1",
-				"zoom": "x",
-				"displayAxis": [
-					"x"
-				],
-				"plotinfos": [
-					{
-						"variable": "h1",
-						"plotcolor": "#6a06b7",
-						"plotcontinuous": true
-					}
-				],
-				"grids": []
-			},
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[
+									"flipX"
+								]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"none"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"id": 1,
+			"vars_in": [
 				{
 					"rel": "jcamp",
 					"name": "h1"
 				}
 			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"actions_in": [
+				{}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"vars_out": [
+				{}
 			],
-			"id": 1
+			"actions_out": [
+				{}
+			]
 		},
 		{
 			"type": "spectra_displayer",
@@ -78,154 +136,267 @@
 				"top": 28
 			},
 			"size": {
-				"width": 53.96666666269302,
-				"height": 37.96666666269302
+				"width": 54,
+				"height": 38
 			},
 			"configuration": {
-				"flipX": true,
-				"flipY": true,
-				"xLabel": "",
-				"yLabel": "",
-				"xRightSpacing": "",
-				"xLeftSpacing": "",
-				"yTopSpacing": "",
-				"yBottomSpacing": "",
-				"zoom": "",
-				"displayAxis": [
-					"x",
-					"y"
-				],
-				"grids": [],
-				"plotinfos": [
-					{
-						"variable": "cosy",
-						"plotcolor": "#1f0ce4",
-						"strokewidth": "",
-						"plotcontinuous": false,
-						"peakpicking": false,
-						"markers": false
-					}
-				],
-				"graphurl": "",
-				"minX": null,
-				"minY": null,
-				"maxX": null,
-				"maxY": null,
-				"wheelAction": "none",
-				"shiftxtozero": false,
-				"xastime": false
-			},
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[
+									"flipX",
+									"flipY"
+								]
+							],
+							"displayAxis": [
+								[
+									"y",
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"xy"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"id": 2,
+			"vars_in": [
 				{
 					"rel": "jcamp",
 					"name": "cosy"
 				}
 			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"actions_in": [
+				{}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"vars_out": [
+				{}
 			],
-			"id": 2
+			"actions_out": [
+				{}
+			]
 		},
 		{
 			"type": "spectra_displayer",
 			"title": "HSQC (orange) / HMBC (black)",
 			"displayWrapper": true,
 			"position": {
-				"left": 56,
+				"left": 55,
 				"top": 0
 			},
 			"size": {
-				"width": 67.96666666269303,
-				"height": 65.96666666269303
+				"width": 68,
+				"height": 66
 			},
 			"configuration": {
-				"flipX": true,
-				"flipY": true,
-				"xLabel": "",
-				"yLabel": "",
-				"xRightSpacing": "",
-				"xLeftSpacing": "",
-				"yTopSpacing": "",
-				"yBottomSpacing": "",
-				"zoom": "",
-				"displayAxis": [
-					"x",
-					"y"
-				],
-				"grids": [],
-				"plotinfos": [
-					{
-						"variable": "hsqc",
-						"plotcolor": "#ffe42e",
-						"plotcontinuous": false
-					},
-					{
-						"variable": "hmbc",
-						"plotcolor": "#524700",
-						"plotcontinuous": false
-					}
-				]
-			},
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[
+									"flipY",
+									"flipX"
+								]
+							],
+							"displayAxis": [
+								[
+									"y",
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"xy"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "hsqc",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							},
+							{
+								"variable": "hmbc",
+								"plotcolor": [
+									235,
+									8,
+									0,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"id": 3,
+			"vars_in": [
 				{
 					"rel": "jcamp",
-					"name": "hsqc",
-					"type": [
-						null
-					]
+					"name": "hsqc"
 				},
 				{
 					"rel": "jcamp",
-					"name": "hmbc",
-					"type": [
-						null
-					]
+					"name": "hmbc"
 				}
 			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"actions_in": [
+				{}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"vars_out": [
+				{}
 			],
-			"id": 3
+			"actions_out": [
+				{}
+			]
 		}
 	],
 	"configuration": {
