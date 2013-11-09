@@ -460,7 +460,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 			for(var i in gc) {
 				serie = this.gc.newSerie(i, {
-					areaUnderLine: true
+					areaUnderLine: true,
 					useSlots: true
 				});
 				this.gcSeries.push(serie);

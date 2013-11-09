@@ -121,6 +121,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 					var jcamp = tojcamp(moduleValue).done( function( jcamp ) {
 
+console.log(JSON.stringify(jcamp.profiling,true));
+
 						if(jcamp.gcms) {
 							self.gcmsInstance.setGC(jcamp.gcms.gc);
 							self.gcmsInstance.setMS(jcamp.gcms.ms);

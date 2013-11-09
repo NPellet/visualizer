@@ -3,7 +3,7 @@
 // the following RegExp can only be used for XYdata, some peakTables have values with a "E-5" ...
 var xyDataSplitRegExp=/[,\t \+-]*(?=[^\d,\t \.])|[ \t]+(?=[\d+\.-])/;
 var removeCommentRegExp=/\$\$.*/;
-var peakTableSplitRegExp=/[,\t ]+/
+var peakTableSplitRegExp=/[,\t ]+/;
 var DEBUG=false;
 
 var GC_MS_FIELDS=["TIC",".RIC","SCANNUMBER"]
@@ -17,6 +17,8 @@ function convertToFloatArray(stringArray) {
 };
 
 function convert(jcamp, options) {
+    var start=new Date();
+
     var ntuples={},
         ldr,
         dataLabel,
@@ -25,6 +27,7 @@ function convert(jcamp, options) {
         i, ii, position, endLine, infos;
 
     var result={};
+    result.profiling=[];
     var spectra = [];
     result.spectra=spectra;
     result.info={};
@@ -34,6 +37,9 @@ function convert(jcamp, options) {
    // console.time("start");
 
     ldrs=jcamp.split(/[\r\n]+ *##/);
+
+    if (result.profiling) result.profiling.push({action: "Split to LDRS",time:new Date()-start});
+
     if (ldrs[0]) ldrs[0]=ldrs[0].replace(/^[\r\n ]*##/,"");
 
     for (i=0, ii=ldrs.length; i<ii; i++) {
@@ -203,13 +209,23 @@ function convert(jcamp, options) {
     // Currently disabled
 //    if (options && options.lowRes) addLowRes(spectra,options);
 
+    if (result.profiling) result.profiling.push({action: "Finished parsing",time:new Date()-start});
+
     if (result.twoD) {
         add2D(result);
     }
 
+    if (result.profiling) result.profiling.push({action: "Finished countour plot calculation",time:new Date()-start});
+
     // maybe it is a GC (HPLC) / MS. In this case we add a new format
     if (spectra.length>1 && spectra[0].dataType.toLowerCase().match(/.*mass./)) {
         addGCMS(result);
+    }
+
+    if (result.profiling) result.profiling.push({action: "Finished GCMS calculation",time:new Date()-start});
+
+    if (result.profiling) {
+        result.profiling.push({action: "Total time",time:new Date()-start});
     }
 
 //   console.log(result);
@@ -252,7 +268,7 @@ function addGCMS(result) {
             gcms.gc[existingGCMSFields[j]].push(spectrum.pageValue);
             gcms.gc[existingGCMSFields[j]].push(parseFloat(spectrum[existingGCMSFields[j]]));
         }
-        gcms.ms[i]=spectrum.data[0];
+        if (spectrum.data) gcms.ms[i]=spectrum.data[0];
 
     }
     result.gcms=gcms;
@@ -282,19 +298,18 @@ function parsePeakTable(spectrum, value) {
     spectrum.data=[];
     spectrum.currentData=[];
     spectrum.data.push(spectrum.currentData);
-    var lines=value.split(/,? *,?[;\r\n]+ */);
 
+    var lines=value.split(/,? *,?[;\r\n]+ */);
 
     for (i=1, ii=lines.length; i<ii; i++) {
         values=lines[i].trim().replace(removeCommentRegExp,"").split(peakTableSplitRegExp);
         if (values.length%2==0) {
             for (j=0,jj=values.length; j<jj; j=j+2) {
-                spectrum.currentData.push(parseFloat(values[j]*spectrum.xFactor));
-                spectrum.currentData.push(parseFloat(values[j+1]*spectrum.yFactor));
+                spectrum.currentData.push(parseFloat(values[j])*spectrum.xFactor);
+                spectrum.currentData.push(parseFloat(values[j+1])*spectrum.yFactor);
             }
-            
         } else {
-            // console.log("Format error: "+values);
+            if (console) console.log("Format error: "+values);
         }
     }
     delete spectrum.currentData;
@@ -315,7 +330,7 @@ function parseXYData(spectrum, value) {
     var lastDif, values, ascii, expectedY;
     values=[];
     for (var i=1, ii=lines.length; i<ii; i++) {
-        var previousValues=JSON.parse(JSON.stringify(values));
+        //var previousValues=JSON.parse(JSON.stringify(values));
         values=lines[i].trim().replace(removeCommentRegExp,"").split(xyDataSplitRegExp);
         if (values.length>0) {
             if (DEBUG) {
@@ -341,11 +356,13 @@ function parseXYData(spectrum, value) {
                         } else
                         // positive SQZ digits @ A B C D E F G H I (ascii 64-73)
                         if ((ascii>63) && (ascii<74)) {
-                            expectedY=parseInt(String.fromCharCode(ascii-16)+values[j].substring(1));
+                            // we could use parseInt but parseFloat is faster at least in Chrome
+                            expectedY=parseFloat(String.fromCharCode(ascii-16)+values[j].substring(1));
                         } else
                         // negative SQZ digits a b c d e f g h i (ascii 97-105)
                         if ((ascii>96) && (ascii<106)) {
-                            expectedY=- parseInt(String.fromCharCode(ascii-48)+values[j].substring(1));
+                            // we could use parseInt but parseFloat is faster at least in Chrome
+                            expectedY=- parseFloat(String.fromCharCode(ascii-48)+values[j].substring(1));
                        }
                        if (expectedY!=currentY && console) {
                             console.log("Y value check error: Found: "+expectedY+" - Current: "+currentY);
@@ -366,14 +383,14 @@ function parseXYData(spectrum, value) {
                         // positive SQZ digits @ A B C D E F G H I (ascii 64-73)
                         if ((ascii>63) && (ascii<74)) {
                             lastDif=undefined;
-                            currentY=parseInt(String.fromCharCode(ascii-16)+values[j].substring(1));
+                            currentY=parseFloat(String.fromCharCode(ascii-16)+values[j].substring(1));
                             addPoint(spectrum,currentX,currentY);
                             currentX+=spectrum.deltaX;
                         } else
                         // negative SQZ digits a b c d e f g h i (ascii 97-105)
                         if ((ascii>96) && (ascii<106)) {
                             lastDif=undefined;
-                            currentY=-parseInt(String.fromCharCode(ascii-48)+values[j].substring(1));
+                            currentY=-parseFloat(String.fromCharCode(ascii-48)+values[j].substring(1));
                             addPoint(spectrum,currentX,currentY);
                             currentX+=spectrum.deltaX;
                        } else 
@@ -382,9 +399,9 @@ function parseXYData(spectrum, value) {
 
                         // DUP digits S T U V W X Y Z s (ascii 83-90, 115)
                         if  (((ascii>82) && (ascii<91)) || (ascii==115)) {
-                            var dup = parseInt(String.fromCharCode(ascii-34)+values[j].substring(1))-1;
+                            var dup = parseFloat(String.fromCharCode(ascii-34)+values[j].substring(1))-1;
                             if (ascii==115) {
-                                dup = parseInt("9"+values[j].substring(1))-1;
+                                dup = parseFloat("9"+values[j].substring(1))-1;
                             }
                             for ( var l=0; l<dup; l++) {
                                 if (lastDif) {
@@ -396,19 +413,19 @@ function parseXYData(spectrum, value) {
                         } else
                         // positive DIF digits % J K L M N O P Q R (ascii 37, 74-82)
                         if  (ascii==37) {
-                            lastDif=parseInt("0"+values[j].substring(1));
+                            lastDif=parseFloat("0"+values[j].substring(1));
                             currentY+=lastDif;
                             addPoint(spectrum,currentX,currentY);
                             currentX+=spectrum.deltaX;
                         } else if ((ascii>73) && (ascii<83)) {
-                            lastDif=parseInt(String.fromCharCode(ascii-25)+values[j].substring(1));
+                            lastDif=parseFloat(String.fromCharCode(ascii-25)+values[j].substring(1));
                             currentY+=lastDif;
                             addPoint(spectrum,currentX,currentY);
                             currentX+=spectrum.deltaX;
                        } else
                         // negative DIF digits j k l m n o p q r (ascii 106-114)
                         if ((ascii>105) && (ascii<115)) {
-                            lastDif=-parseInt(String.fromCharCode(ascii-57)+values[j].substring(1));
+                            lastDif=-parseFloat(String.fromCharCode(ascii-57)+values[j].substring(1));
                             currentY+=lastDif;
                             addPoint(spectrum,currentX,currentY);
                             currentX+=spectrum.deltaX;
