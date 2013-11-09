@@ -391,6 +391,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				self.deferreds[ varname ] = JcampConverter(moduleValue, {lowRes: 1024}).done( function( spectra ) {
 
+					console.log(JSON.stringify(spectra.profiling,true));
+
 //					self.blank.jcamp( varname );
 					self.series[ varname ] = self.series[ varname ] || [];
 					self.series[ varname ] = [];
