@@ -28,6 +28,7 @@ function convert(jcamp, options) {
 
     var result={};
     result.profiling=[];
+    result.logs=[];
     var spectra = [];
     result.spectra=spectra;
     result.info={};
@@ -190,15 +191,15 @@ function convert(jcamp, options) {
             prepareSpectrum(result, spectrum);
             // well apparently we should still consider it is a PEAK TABLE if there are no "++" after
             if (dataValue.match(/.*\+\+.*/)) {
-                parseXYData(spectrum, dataValue);
+                parseXYData(spectrum, dataValue, result);
             } else {
-                parsePeakTable(spectrum, dataValue);
+                parsePeakTable(spectrum, dataValue, result);
             }
                 spectra.push(spectrum);
                 spectrum={};
         } else if (dataLabel=="PEAKTABLE") {
             prepareSpectrum(result, spectrum);
-            parsePeakTable(spectrum, dataValue);
+            parsePeakTable(spectrum, dataValue, result);
             spectra.push(spectrum);
             spectrum={};
         } else if (isMSField(dataLabel)) {
@@ -295,7 +296,7 @@ function prepareSpectrum(result, spectrum) {
     }
 }
 
-function parsePeakTable(spectrum, value) {
+function parsePeakTable(spectrum, value, result) {
     var i,ii,j,jj,values;
     spectrum.data=[];
     spectrum.currentData=[];
@@ -315,13 +316,13 @@ function parsePeakTable(spectrum, value) {
                 spectrum.currentData[k++]=(parseFloat(values[j+1])*spectrum.yFactor);
             }
         } else {
-            if (console) console.log("Format error: "+values);
+          result.logs.push("Format error: "+values);
         }
     }
     delete spectrum.currentData;
 }
 
-function parseXYData(spectrum, value) {
+function parseXYData(spectrum, value, result) {
     // we check if deltaX is defined otherwise we calculate it
     if (! spectrum.deltaX) {
         spectrum.deltaX=(spectrum.lastX-spectrum.firstX)/(spectrum.nbPoints-1);
@@ -347,7 +348,7 @@ function parseXYData(spectrum, value) {
                 if ((lastDif || lastDif==0)) {
                     expectedCurrentX+=spectrum.deltaX;
                 }
-                if (console) console.log("Checking X value: currentX: "+currentX+" - expectedCurrentX: "+expectedCurrentX);
+                result.logs.push("Checking X value: currentX: "+currentX+" - expectedCurrentX: "+expectedCurrentX);
             }
             for (var j=1, jj=values.length; j<jj; j++) {
                 if (j==1 && (lastDif || lastDif==0)) {
@@ -370,10 +371,10 @@ function parseXYData(spectrum, value) {
                             // we could use parseInt but parseFloat is faster at least in Chrome
                             expectedY=- parseFloat(String.fromCharCode(ascii-48)+values[j].substring(1));
                        }
-                       if (expectedY!=currentY && console) {
-                            console.log("Y value check error: Found: "+expectedY+" - Current: "+currentY);
-                            console.log("Previous values: "+previousValues.length);
-                            console.log(previousValues);
+                       if (expectedY!=currentY) {
+                            result.logs.push("Y value check error: Found: "+expectedY+" - Current: "+currentY);
+                            result.logs.push("Previous values: "+previousValues.length);
+                            result.logs.push(previousValues);
                        }
                    }
                 } else {
