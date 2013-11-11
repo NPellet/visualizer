@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'util/util', 'util/Versioning'], function(Default, Util, Versioning) {
+define(['modules/defaultview', 'util/util', 'util/versioning'], function(Default, Util, Versioning) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
