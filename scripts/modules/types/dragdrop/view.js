@@ -7,11 +7,19 @@ define(['modules/defaultview', 'util/util', 'util/versioning'], function(Default
 			var self = this,
 				id = Util.getNextUniqueId(),
 				done = false,
+				cfg = $.proxy(this.module.getConfiguration, this.module),
 				inline;
 
 			this._id = id;
 			this.dom = $('<div />', { class: 'dragdropzone' } ).html( this.module.getConfiguration( 'label', 'Drop your file here' ));
 			this.module.getDomContent().html( this.dom );
+
+			if (cfg('filter')) {
+        		eval("self.filter = function(data) { try { \n " + cfg('filter') + "\n } catch(_) { console.log(_); } }");
+      		} else {
+      			delete self.filter;
+      		}
+
 		},
 
 		inDom: function() {
@@ -59,6 +67,12 @@ define(['modules/defaultview', 'util/util', 'util/versioning'], function(Default
 						if(vartype)
 							obj = new DataObject({ type: vartype, value: obj });
 					}
+
+					if (self.filter) {
+						obj = self.filter(obj);
+					}
+
+
 					self.module.model.data = obj;
 					self.module.controller.onDropped(obj);			
 				}
