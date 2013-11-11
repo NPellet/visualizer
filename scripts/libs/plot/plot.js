@@ -1749,7 +1749,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			);
 
 			this.graph.redraw(true);
-			this.graph.drawSeries(true);
+		//	this.graph.drawSeries(true);
 
 		},
 
@@ -2824,7 +2824,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		setData: function(data, arg, type) {
 
 			var z = 0;
-			var x, dx, arg = arg || "2D", type = type || 'float', arr;
+			var x, dx, arg = arg || "2D", type = type || 'float', arr, total = 0;
 			if(!data instanceof Array)
 				return;
 
@@ -2840,8 +2840,9 @@ define(['jquery', 'util/util'], function($, Util) {
 			var _2d = (arg == "2D");
 
 			// [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-			if(data[0] instanceof Array && arg == "2D" && !(data[0][0] instanceof Array))
-				data = [data];
+			if( data[ 0 ] instanceof Array && arg == "2D" && !( data[ 0 ][ 0 ] instanceof Array ) ) {
+				data = [ data ];
+			}
 
 
 			if(data[0] instanceof Array) {
@@ -2859,10 +2860,12 @@ define(['jquery', 'util/util'], function($, Util) {
 							arr[z] = (data[i][j][1]);
 							this._checkY(arr[z]);
 							z++;
+							total++;
 						} else { // 1D Array
 							arr[z] = data[i][j];
 							this[j % 2 == 0 ? '_checkX' : '_checkY'](arr[z]);
 							z++;
+							total += j % 2 ? 1 : 0;
 
 						}
 					}
@@ -2890,6 +2893,7 @@ define(['jquery', 'util/util'], function($, Util) {
 						datas[k][z] = (data[i].y[j]);
 						this._checkY(datas[k][z]);
 						z++;
+						total++;
 					}
 					number += data[i].y.length;
 					if(numbers[k] == number) {
@@ -2900,8 +2904,32 @@ define(['jquery', 'util/util'], function($, Util) {
 				}
 			}
 
+			// Determination of slots for low res spectrum
+			var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth( ),
+				ws = [];
+
+			var min = this.graph.getDrawingWidth( ) * 4;
+			var max = total / 4;
+
+			var min = this.graph.getDrawingWidth( );
+			var max = total;
+
+
+			while( min < max ) {
+				ws.push( min );
+				min *= 4;
+			}
+
+			this.slots = ws;
 
 			this.data = datas;
+
+
+			if( this.options.useSlots ) {
+
+				this.calculateSlots();	
+			}
+
 		},
 
 
@@ -2930,6 +2958,40 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 		},
 
+		calculateSlots: function( ) {
+
+			var self = this;
+			this.slotsData = {};
+			this.slotWorker = new Worker('./scripts/libs/plot/slotworker.js');
+
+			this.slotWorker.onmessage = function( e ) {
+				self.slotsData[ e.data.slot ].resolve( e.data.data );
+			}
+
+			for(var i = 0, l = this.slots.length; i < l ; i ++) {
+
+				//this.slotsData[ i ] = $.Deferred();
+				this.calculateSlot( this.slots[ i ], i );
+//				this.slotsData[ this.slots[ i ] ].max = this.data[ j ][ m ];
+			}
+		},
+
+		slotCalculator: function( slot, slotNumber ) {
+			var def = $.Deferred();
+			this.slotWorker.postMessage({ min: this.minX, max: this.maxX, data: this.data, slot: slot, slotNumber: slotNumber, flip: this.getFlip() });
+			return def;
+		},
+
+		calculateSlot: function( slot, slotNumber ) {
+			var self = this;
+			this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
+			this.slotsData[ slot ].pipe( function( data ) {
+				
+				self.slotsData[ slot ] = data;
+				return data;
+			});
+		},
+
 		kill: function(noRedraw) {
 
 			this.graph.plotGroup.removeChild(this.groupMain);
@@ -2941,13 +3003,14 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 
 			this.graph.series.splice(this.graph.series.indexOf(this), 1);
-			if(!noRedraw)
+			if(!noRedraw) {
 				this.graph.redraw();
+			}
 		},
 
 		onMouseOverMarker: function(e, index) {
 			var toggledOn = this.toggleMarker(index, true, true);
-			if(this.options.onMouseOverMarker) {
+			if(this.options.onMouseOverMarker && this.infos) {
 				this.options.onMouseOverMarker(index, this.infos[index[0]] || false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
 			}
 		},
@@ -2955,7 +3018,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		onMouseOutMarker: function(e, index) {
 			this.markersOffHover();
-			if(this.options.onMouseOutMarker) {
+			if(this.options.onMouseOutMarker && this.infos) {
 				this.options.onMouseOutMarker(index, this.infos[index[0]] || false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
 			}
 		},
@@ -3063,29 +3126,45 @@ define(['jquery', 'util/util'], function($, Util) {
 				
 			}
 
-			while(this.groupMarkers.firstChild)
+			while(this.groupMarkers.firstChild) {
 				this.groupMarkers.removeChild(this.groupMarkers.firstChild);
+			}
 		},
 
 
 		isMinOrMax: function(bool, xy, minmax) {
-			if(bool == undefined)
-				return this._isMinOrMax.x.min || this._isMinOrMax.x.max || this._isMinOrMax.y.min || this._isMinOrMax.y.max;
 
-			if(minmax == undefined && xy != undefined) {
-				this._isMinOrMax[xy].min = bool;
-				this._isMinOrMax[xy].max = bool;
+			if( bool == undefined ) {
+				return this._isMinOrMax.x.min || this._isMinOrMax.x.max || this._isMinOrMax.y.min || this._isMinOrMax.y.max;
+			}
+
+			if( minmax == undefined && xy != undefined ) {
+				this._isMinOrMax[ xy ].min = bool;
+				this._isMinOrMax[ xy ].max = bool;
 				return;
 			}
 
-			if(xy != undefined && minmax != undefined)
-				this._isMinOrMax[xy][minmax] = bool;
+			if( xy != undefined && minmax != undefined ) {
+				this._isMinOrMax[ xy ][ minmax ] = bool;
+			}
 		},
 
 
 		draw: function() {
 
-			var x, y, xpx, ypx, i = 0, l = this.data.length, j = 0, k, currentLine, doAndContinue, _higher;
+			var x, 
+				y, 
+				xpx, 
+				ypx, 
+				i = 0, 
+				l = this.data.length, 
+				j = 0, 
+				k, 
+				currentLine, 
+				doAndContinue, 
+				_higher, 
+				max,
+				self = this;
 
 			this.picks = this.picks || [];
 			var shape;
@@ -3093,11 +3172,11 @@ define(['jquery', 'util/util'], function($, Util) {
 				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
 					shape = this.graph.makeShape({ type: 'label', label: {
 						text: "",
-						position: {x: 0},
+						position: { x: 0 },
 						anchor: 'middle'
-					}});
-					shape.setSerie(this);
-					this.picks.push(shape);
+					} } );
+					shape.setSerie( this );
+					this.picks.push( shape );
 				}
 			}
 
@@ -3115,71 +3194,70 @@ define(['jquery', 'util/util'], function($, Util) {
 			
 			var incrXFlip = 0;
 			var incrYFlip = 1;
-			if(this.getFlip()) {
+
+			if( this.getFlip( ) ) {
 				incrXFlip = 1;
 				incrYFlip = 0;
 			}
 
-			var allY = [];
-			for(; i < l ; i++) {
+			var totalLength = 0;
+			for( ; i < l ; i ++ ) {
+				totalLength += this.data[ i ].length / 2;
+			}
+
+			i = 0;
+			var allY = [ ];
+			if( this.options.useSlots ) {
 				
-				currentLine = "M ";
-				doAndContinue = 0;
-				_higher = false;
-				var _last = false, _in = false;
-				j = 0, k = 0;
+				var slot = this.graph.getDrawingWidth( ) * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() ),
+					slotToUse;
+				
+				console.log(slot, this.slots);
+				for( var y = 0, z = this.slots.length; y < z ; y ++ ) {
 
-				for(; j < this.data[i].length; j+=2) {
-					xpx = this.getX(this.data[i][j + incrXFlip]);
-					ypx = this.getY(this.data[i][j + incrYFlip]);
-
-					if(this.options.autoPeakPicking) {
-						allY.push([(this.data[i][j + incrYFlip]), this.data[i][j + incrXFlip]]);
+					if( slot < this.slots[ y ] ) {
+						slotToUse = this.slotsData[ this.slots[ y ] ];
+						break;
 					}
+				}
+			}
 
-				//	if(xpx < this.getXAxis().getMinPx() || xpx > this.getXAxis().getMaxPx())
-				//		continue;
-				
 
-				
-				/*	if((!this.getYAxis().isFlipped() && (ypx > this.getYAxis().getMaxPx() || ypx < this.getYAxis().getMinPx())) || (this.getYAxis().isFlipped() && (ypx < this.getYAxis().getMaxPx() || ypx > this.getYAxis().getMinPx()))) {
+			if(slotToUse) {
+				if( slotToUse.done ) {
 
-						if(_higher != (_higher = ypx > this.getYAxis().getMaxPx())) {
-							if(_last) {
-
-								currentLine = this._addPoint(currentLine, _last[0], _last[1], k);
-								k++;
-								_last = false;
-								doAndContinue = false;
-								_in = true;
-							}
-						}
-
-						if(doAndContinue || k == 0) {
-							_last = [xpx, ypx];
-							continue;
-						}
-						if(_in)
-							doAndContinue = 1;
-						else
-							_last = [xpx, ypx];
-						_in = false;
-					} else {
-						_in = true;
-						doAndContinue = false;
-					}
-
-					if(_in && _last && !doAndContinue) {
-						currentLine = this._addPoint(currentLine, _last[0], _last[1], k);
-						k++;
-						_last = false;
-					}*/
-					
-					currentLine = this._addPoint(currentLine, xpx, ypx, k);
-					k++;
+					slotToUse.done( function( data ) {
+						self.drawSlot( data, y );
+					});
+				} else {
+					this.drawSlot( slotToUse, y );	
 				}
 				
-				this._createLine(currentLine, i, k);
+			} else {
+
+				for(; i < l ; i++) {
+					
+					currentLine = "M ";
+					doAndContinue = 0;
+					_higher = false;
+					var _last = false, _in = false;
+					j = 0, k = 0;
+
+					for( ; j < this.data[ i ].length; j += 2 ) {
+
+						xpx = this.getX( this.data[ i ][ j + incrXFlip ] );
+						ypx = this.getY( this.data[ i ][ j + incrYFlip ] );
+
+						if(this.options.autoPeakPicking) {
+							allY.push( [ ( this.data[ i ][ j + incrYFlip ] ), this.data[ i ][ j + incrXFlip ] ] );
+						}
+						currentLine = this._addPoint( currentLine, xpx, ypx, k );
+						k++;
+					}
+					
+					this._createLine(currentLine, i, k);
+				}
+				
 			}
 
 			if(this.options.autoPeakPicking)
@@ -3198,8 +3276,50 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.groupMain.appendChild(this.domMarker);
 			this.groupMain.insertBefore(this.groupLines, next);
 			var label;
-			for(var i = 0, l = this.labels.length; i < l; i++)
+			for(var i = 0, l = this.labels.length; i < l; i++) {
 				this.repositionLabel(this.labels[i]);
+			}
+		},
+
+		drawSlot: function( slotToUse, y ) {
+
+			var dataPerSlot = this.slots[ y ] / (this.maxX - this.minX);
+
+			//console.log(slotToUse, y, this.slots[ y ]);
+			console.time('Slot');
+			currentLine = "M ";
+			k = 0;
+			var i = 0;
+			var j;
+
+			var slotInit = Math.floor( ( this.getXAxis( ).getActualMin( ) - this.minX ) * dataPerSlot );
+			var slotFinal = Math.ceil( ( this.getXAxis( ).getActualMax( ) - this.minX ) * dataPerSlot );
+
+			for( j = slotInit ;  j <= slotFinal ; j ++ ) {
+
+				if( ! slotToUse[ j ] ) {
+					continue;
+				}
+
+				xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
+				max = this.getY( slotToUse[ j ].max );
+	
+				if(this.options.autoPeakPicking) {
+					allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
+				}
+				
+				currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].start ) , k );
+				currentLine = this._addPoint( currentLine, xpx, max , false, true );
+				currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].min ) );
+				currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].stop ), false, true );
+
+				k++;
+				
+			}
+
+			this._createLine(currentLine, i, k);
+			i++;
+			console.timeEnd('Slot');
 		},
 
 		setMarkerStyleTo: function(dom, noFill) {
@@ -3246,16 +3366,18 @@ define(['jquery', 'util/util'], function($, Util) {
 					continue;
 				}
 
-				this.picks[m].set('labelPosition', { 
+				this.picks[ m ].set('labelPosition', { 
 														x: x,
 				 										dy: "-10px"
 				 									}
 				 				);
 
-				this.picks[m].data.label[0].text = String(Math.round(x * 1000) / 1000);
-				passed.push(px);
-				if(passed.length == this.options.autoPeakPickingNb)
+				this.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+				passed.push( px );
+
+				if(passed.length == this.options.autoPeakPickingNb) {
 					break;
+				}
 			}
 
 			this.graph.redrawShapes();
@@ -3275,11 +3397,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			return Math.round(this.getYAxis().getPx(val) * 1000) / 1000;
 		},
 
-		_addPoint: function(currentLine, xpx, ypx, k) {
+		_addPoint: function(currentLine, xpx, ypx, k, move) {
 			var pos;
 			
-			if(k != 0) {
-				if(this.options.lineToZero)
+			if(k !== 0) {
+				if(this.options.lineToZero || move)
 					currentLine += 'M ';
 				else
 					currentLine += "L ";

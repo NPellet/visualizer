@@ -164,6 +164,7 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 						fields: {
 
 							highcontrast: {
+								default: 'true',
 								type: 'checkbox',
 								title: 'Contrast',
 								options: { 'true': 'Take data min/max as boundaries'}
@@ -181,8 +182,8 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 		},
 
 		configAliases: {
-			'colors': function(cfg) { return cfg.groups.group[ 0 ].color; },
-			'highContrast': function(cfg) { return cfg.groups.group[ 0 ].highcontrast[ 0 ][ 0 ] == "true"; }
+			'colors': [ 'groups', 'group', 0, 'color' ],
+			'highContrast': [ 'groups', 'group', 0, 'highcontrast', 0, 0 ]
 		}
 	});
 

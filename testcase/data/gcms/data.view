@@ -17,19 +17,55 @@
 				"height": 20
 			},
 			"configuration": {
-				"colsjPaths": {
-					"Name": {
-						"jpath": "element.name"
-					}
-				},
-				"nbLines": 20,
-				"toggle": "",
-				"colorjPath": "",
-				"displaySearch": false
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								null
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": []
+							}
+						]
+					]
+				}
 			},
 			"id": 1,
-			"bgColor": "",
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "result"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
 				{
 					"event": "onHover",
 					"rel": "element",
@@ -37,25 +73,8 @@
 					"name": "jcamp"
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "list",
-					"name": "result"
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"actions_out": [
+				{}
 			]
 		},
 		{
@@ -90,22 +109,6 @@
 					"name": "MS"
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "jcamp",
-					"name": "jcamp"
-				},
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
 			"actionsOut": [
 				{
 					"event": "onMSTrackingAdded",
@@ -118,6 +121,22 @@
 					"rel": "fromtoGC",
 					"jpath": "",
 					"name": "setGCFromTo"
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp"
+				},
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
 				}
 			]
 		},
@@ -176,13 +195,21 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
 				{
 					"rel": "",
 					"name": ""
 				}
 			],
-			"actionsIn": [
+			"actions_in": [
 				{
 					"rel": "addSerie",
 					"name": "msIon"
@@ -190,14 +217,6 @@
 				{
 					"rel": "fromto",
 					"name": "setGCFromTo"
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
 				}
 			]
 		},
@@ -224,23 +243,23 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "mol2d",
-					"name": "mol"
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
 			"actionsOut": [
 				{
 					"event": "",
 					"rel": "",
 					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "mol2d",
+					"name": "mol"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
 					"name": ""
 				}
 			]
@@ -285,23 +304,23 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "vartrigger",
-					"name": "MS"
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
 			"actionsOut": [
 				{
 					"event": "",
 					"rel": "",
 					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "vartrigger",
+					"name": "MS"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
 					"name": ""
 				}
 			]

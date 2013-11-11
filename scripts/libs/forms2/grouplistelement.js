@@ -116,6 +116,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 							.makeElement( )
 							.done(function( value ) {
 
+								value.setDefaultOr();
 								value.group = self.group;
 								value.groupElement = self;
 								self.fieldElements[ name ].splice( fieldIndex + 1, 0, value );

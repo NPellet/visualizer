@@ -26,24 +26,22 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		},
 		
 		doSearch: function() {
+
+
 		/*	if(this.request)
 				this.request.abort();
 */
 			var self = this,
-				url = this.module.getConfiguration( 'url' ),
+				//url = this.module.getConfiguration( 'url' ),
 				reg,
-				toPost = this.module.getConfiguration( 'postvariables', [] ),
-				l = toPost.length,
 				i = 0,
 				data = {};
 
 
-			// Replace all search terms in the URL
-			var reg = /\<([a-zA-Z0-9]+)\>/;
-			while(val = reg.exec(url)) {
-				url = url.replace('<' + val[1] + '>', (encodeURIComponent(this.searchTerms[val[1]] || '')));
-			}
+			var data = self.searchTerms ;
 
+			//console.warn();
+			/*
 			// Replace all variables in the URL
 			var reg = /\<var:([a-zA-Z0-9]+)\>/;
 			while(val = reg.exec(url)) {
@@ -51,52 +49,25 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 				variable = variable[1];
 				url = url.replace('<var:' + val[1] + '>', encodeURIComponent(variable));
 			}
+			*/
 
-			this.url=url;
-
-			
-			for(; i < l; i++) {
-				var valueToPost = API.getVar(toPost[i].variable);
-				if (valueToPost) {
-					if ( valueToPost.getType() != "number" && valueToPost.getType() != "string" ) {
-						if (toPost[i].filter=="value") {
-							data[toPost[i].name]=valueToPost.get();
-						} else {
-							data[toPost[i].name] = JSON.stringify(valueToPost);
-						}
-					} else {
-						data[toPost[i].name]=valueToPost;
-					}
-				}
-			}
-
-			if(this.request && this.request.abort) {
-				this.request.abort();
-			}
-
-			if(l == 0) {
-				this.request = URL.get(url, 30, data);	
-			} else {
-				this.request = URL.post(url, data);	
-			}
 
 			this.module.view.lock();
-			
-			this.request.done(function(data) {
-				self.request = null;
 
-				if (self.module.resultfilter) {
-					data = self.module.resultfilter(data);
-				}
+			if (self.module.resultfilter) {
+				var dataTemp = self.module.resultfilter(data);
+				if(dataTemp)
+					data = dataTemp ;
+			}
 
-				self.module.view.unlock();
+			self.module.view.unlock();
 
-				if(typeof data == "object") {
-					data = new DataObject.check(data, true);
-				}
-				//console.log(data);
-				self.onSearchDone(data);
-			});
+			if(typeof data == "object") {
+				data = new DataObject.check(data, true);
+			}
+
+			self.onSearchDone(data);
+
 		},
 
 
@@ -104,22 +75,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			var self = this;
 			self.result = elements;
 			self.module.model.data = elements;
-
-
-			if( ! ( actions = this.module.vars_out() ) ) {
-				return;
-			}
-
-			for( i in actions ) {
-				if( actions[ i ].event == "onSearchReturn" ) {
-					if( actions[ i ].rel == "results" ) {
-						API.setVar( actions[i].name, elements, actions[i].jpath );
-					} if ( actions[ i ].rel == "url" ) {
-							API.setVar( actions[i].name, self.url);
-					}
-				}
-			}
-
+			this.setVarFromEvent('onSearchReturn', elements);
 		},
 
 		configurationSend: {
@@ -127,7 +83,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			events: {
 
 				onSearchReturn: {
-					label: 'A search has been completed',
+					label: 'An edition has been completed',
 					description: ''
 				}
 				
@@ -136,10 +92,6 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			rels: {
 				'results': {
 					label: 'Results',
-					description: ''
-				},
-				'url': {
-					label: 'URL',
 					description: ''
 				}
 			}
@@ -156,7 +108,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		},
 		
 		moduleInformations: {
-			moduleName: 'Webservice Lookup'
+			moduleName: 'Var Editor'
 		},
 
 		
@@ -170,11 +122,6 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 						},
 
 						fields: {
-
-							url: {
-								type: 'text',
-								title: 'Search URL'
-							},
 
 							button: {
 								type: 'checkbox',
@@ -241,45 +188,6 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 						}
 					},
 
-				},
-
-				sections: {
-					postvariables: {
-						options: {
-							multiple: false,
-							title: 'POST variables'
-						},
-
-						groups: {
-							postvariables: {
-								options: {
-									type: 'table',
-									multiple: true
-								},
-
-								fields: {
-									
-									variable: {
-										type: 'text',
-										title: 'Variable'
-									},
-
-									name: {
-										type: 'text',
-										title: 'Form variable name'
-									},
-
-									filter: {
-										type: 'combo',
-										title: 'Filter',
-										options: [{key: 'none', title: 'None'}, {key: 'value', title: 'Only value'}]
-									}
-								}
-							},
-						}
-
-					}
-
 				}
 			}
 		},
@@ -290,13 +198,11 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 		configAliases: {
 			'button': [ 'groups', 'group', 0, 'button', 0 ],
-			'url': [ 'groups', 'group', 0, 'url', 0 ],
 			'searchparams': [ 'groups', 'searchparams', 0 ],
 			'buttonlabel': [ 'groups', 'group', 0, 'buttonlabel', 0 ],
 			'buttonlabel_exec': [ 'groups', 'group', 0, 'buttonlabel_exec', 0 ],
 			'onloadsearch': [ 'groups', 'group', 0, 'onloadsearch', 0, 0 ],
-			'resultfilter': [ 'groups', 'group', 0, 'resultfilter', 0 ],
-			'postvariables': [ 'sections', 'postvariables', 0, 'groups', 'postvariables', 0 ]
+			'resultfilter': [ 'groups', 'group', 0, 'resultfilter', 0 ]
 		},
 
 		"export": function() {

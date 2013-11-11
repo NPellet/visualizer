@@ -276,13 +276,17 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 				confSection.getGroup('cols').getField('coljpath').implementation.setOptions(jpaths);
 		},
 
+		configFunctions: {
+			'displaySearch': function(cfg) { return cfg.indexOf('allow')>-1; }
+		},
+
 		configAliases: {
-			'colsjPaths': function(cfg) { return cfg.groups.cols[ 0 ]; },
-			'nbLines': function(cfg) { return cfg.groups.group[ 0 ].nblines[ 0 ]; },
-			'toggle': function(cfg) { return cfg.groups.group[ 0 ].toggle[ 0 ]; },
-			'colorjPath': function(cfg) { return cfg.groups.group[ 0 ].colorjpath[ 0 ]; },
-			'displaySearch': function(cfg) { return cfg.groups.group[ 0 ].displaySearch[ 0 ][ 0 ] == 'allow'; },
-			'filterRow': function(cfg) { return cfg.groups.group[ 0 ].filterRow[ 0 ] }
+			'colsjPaths': [ 'groups', 'cols', 0 ],
+			'nbLines': [ 'groups', 'group', 0, 'nblines', 0 ],
+			'toggle': [ 'groups', 'group', 0, 'toggle', 0 ],
+			'colorjPath': [ 'groups', 'group', 0, 'colorjpath', 0 ],
+			'displaySearch': [ 'groups', 'group', 0, 'displaySearch', 0, 0 ],
+			'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ]
 		},
 
 		"export": function() {

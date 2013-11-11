@@ -1,0 +1,195 @@
+{
+	"_version": "2.2",
+	"modules": [
+		{
+			"type": "var_editor",
+			"title": "Calculate",
+			"displayWrapper": true,
+			"position": {
+				"left": 22,
+				"top": 7
+			},
+			"size": {
+				"width": 36,
+				"height": 10
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"button": [
+								[]
+							],
+							"buttonlabel": [
+								null
+							],
+							"buttonlabel_exec": [
+								null
+							],
+							"onloadsearch": [
+								[]
+							],
+							"resultfilter": [
+								"data.result = parseInt(data.var1)+parseInt(data.var2);\nreturn data;"
+							]
+						}
+					],
+					"searchparams": [
+						[
+							{
+								"name": "var1",
+								"label": "Sum",
+								"defaultvalue": "12",
+								"fieldtype": "text",
+								"fieldoptions": null
+							},
+							{
+								"name": "var2",
+								"label": "with",
+								"defaultvalue": "45",
+								"fieldtype": "text",
+								"fieldoptions": null
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": "element.result",
+					"name": "reees"
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "display_value",
+			"title": "Result",
+			"displayWrapper": true,
+			"position": {
+				"left": 22,
+				"top": 18
+			},
+			"size": {
+				"width": 36,
+				"height": 5
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "reees"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "myValue",
+			"jpath": "element.myValue"
+		},
+		{
+			"varname": "test",
+			"jpath": "element.test"
+		},
+		{
+			"varname": "toto",
+			"jpath": "element.toto"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	}
+}

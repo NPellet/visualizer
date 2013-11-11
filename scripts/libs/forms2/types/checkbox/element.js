@@ -87,7 +87,6 @@ define( [ ], function(  ) {
 
 			var val = this.value,
 				options = this.field.getOptions( this );
-				
 
 			$.each( this.checkboxes, function( index, element ) {
 				

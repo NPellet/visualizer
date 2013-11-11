@@ -430,6 +430,7 @@ $.extend($.jgrid,{
 			return 0;
 		};
 		this._performSort=function(){
+
 			if(_sorting.length===0){return;}
 			_data=self._doSort(_data,0);
 		};

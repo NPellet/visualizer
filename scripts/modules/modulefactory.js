@@ -33,7 +33,8 @@ define(['modules/module'], function(Module) {
 				},
 
 				'Data edition': {
-					'object_editor': 'Object editor (?)'
+					'object_editor': 'Object editor (?)',
+					'var_editor': 'Manipulate variables values'
 				},
 
 				'Science': {
@@ -54,7 +55,8 @@ define(['modules/module'], function(Module) {
 
 				'Charting': {
 					'canvas_matrix': 'Matrix',
-					'spectra_displayer': 'Plot'
+					'spectra_displayer': 'Plot',
+					'phylogram': 'Display phylogram'
 				}
 			}
 		},

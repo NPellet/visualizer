@@ -41,35 +41,6 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 
 		actionsReceive: {
 			'jsmolscript': 'Some JSMol Script recieved'
-		},
-		
-		
-		doConfiguration: function(section) {
-			
-			var data = Traversing.getValueIfNeeded(this.module.data),
-				jpaths = [];
-			
-			if(Traversing.getType(data) == 'array') 
-				Traversing.getJPathsFromElement(data[0], jpaths);
-			else if(Traversing.getType(data) == 'arrayXY')
-				Traversing.getJPathsFromElement(data, jpaths);
-			
-			return {
-			}		
-		},
-		
-		doFillConfiguration: function() {
-			return {};
-		},
-		
-		doSaveConfiguration: function(confSection) {
-			
-		},
-
-		
-
-		"export": function() {
-
 		}
 
 	});

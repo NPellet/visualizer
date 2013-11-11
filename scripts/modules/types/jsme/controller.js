@@ -66,7 +66,7 @@ define(['modules/defaultcontroller'], function(Default) {
 
 								type: 'checkbox',
 								title: 'Options',
-
+								default: [ 'oldlook' ],
 								options: {
 									'noxbutton': 'Hide X button',
 								 	'rbutton': 'Show R button',
@@ -92,7 +92,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 
 		configAliases: {
-			prefs: function(cfg) { return cfg.groups.group[ 0 ].prefs[ 0 ]; }
+			prefs: [ 'groups', 'group', 0, 'prefs', 0 ]
 		}
 	});
 

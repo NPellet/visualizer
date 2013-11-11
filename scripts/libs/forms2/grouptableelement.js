@@ -196,6 +196,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 			for( ; i < l ; i ++ ) {
 
+				arguments[ i ].setDefaultOr();
 				arguments[ i ].inDom( );
 			}
 

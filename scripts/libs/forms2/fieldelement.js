@@ -62,6 +62,15 @@ define(['jquery'], function($) {
 			}
 		},
 
+		setDefaultOr: function( el ) {
+
+			if( el !== undefined && el !== null) {
+				this.value = el;
+			} else {
+				this.value = this.field.options.default;
+			}
+		},
+
 		inDom: function() { },
 
 

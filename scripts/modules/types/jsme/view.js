@@ -24,7 +24,11 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 		inDom: function() { },
 
 		getPrefs: function() {
-			return this.module.getConfiguration( 'prefs', [ 'oldLook' ] ).join( );
+			console.log(this);
+console.log("-----")
+console.log(this.module.getConfiguration('prefs').join())
+
+			return this.module.getConfiguration( 'prefs' ).join( );
 		},
 
 		onResize: function( width, height ) {

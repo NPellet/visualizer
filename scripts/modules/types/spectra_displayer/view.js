@@ -89,6 +89,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					graph.getXAxis( ).options.shiftToZero = true;
 				}
 
+
 				graph.getLeftAxis().setDisplay( cfg('displayYAxis', false) );
 				graph.getLeftAxis().setLabel( cfg('yLabel', '') );
 
@@ -105,8 +106,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				graph.getYAxis().togglePrimaryGrid( cfg( 'horGridMain', false ) );
 				graph.getYAxis().toggleSecondaryGrid( cfg( 'horGridSec', false ) );
 			
-				graph.getXAxis().setAxisDataSpacing( cfg( 'xLeftSpacing', 0 ), cfg( 'xRightSpacing', 0 ) );
-				graph.getYAxis().setAxisDataSpacing( cfg( 'yBottomSpacing', 0 ), cfg( 'yTopSpacing', 0 ) );
+				graph.getXAxis().setAxisDataSpacing( cfg( 'xLeftSpacing' ), cfg( 'xRightSpacing' ) );
+				graph.getYAxis().setAxisDataSpacing( cfg( 'yBottomSpacing' ), cfg( 'yTopSpacing' ) );
 
 				graph.setDefaultWheelAction( cfg('wheelAction', 'none') );
 
@@ -114,6 +115,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				graph.getLeftAxis().forceMin( cfg('minY', false) );
 				graph.getXAxis().forceMax( cfg('maxX', false) );
 				graph.getLeftAxis().forceMax( cfg('maxY', false) );
+
+				graph.setOption('zoomMode', cfg( 'zoom' ) );
 
 				def.resolve(graph);
 			}
@@ -178,10 +181,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		},
 
 
-		setSerieParameters: function(serie, varname) {
+		setSerieParameters: function(serie, varname, highlight) {
 			var self = this,
 				plotinfos = this.module.getConfiguration( 'plotinfos' );
 
+			highlight=highlight||[];
 
 			if( plotinfos ) {
 
@@ -189,6 +193,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					if( varname == plotinfos[i].variable ) {
 
 						serie.options.lineToZero = ! plotinfos[i].plotcontinuous[0];
+						serie.options.useSlots =  (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
+
+						
 						serie.setLineColor( Util.getColor( plotinfos[i].plotcolor ) );
 						serie.setLineWidth( plotinfos[i].strokewidth || 1 );
 						serie.options.autoPeakPicking = plotinfos[i].peakpicking[0];
@@ -206,10 +213,17 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				}
 			}
 
+			API.listenHighlight(highlight, function(value, commonKeys) {
+				
+				serie.toggleMarker([ highlight.indexOf(commonKeys[0]), 0 ], value, true);
+			});
+
 			serie.options.onMouseOverMarker = function(index, infos, xy) {
+				API.highlight(highlight[index[0]], 1);
 				self.module.controller.onMouseOverMarker(xy, infos);
 			};
 			serie.options.onMouseOutMarker = function(index, infos, xy) {
+				API.highlight(highlight[index[0]], 0);
 				self.module.controller.onMouseOutMarker(xy, infos);
 			};
 		},
@@ -272,7 +286,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					}
 					
 					var serie = this.graph.newSerie(varname, {trackMouse: true});
-					this.setSerieParameters(serie, varname);
+
+					this.setSerieParameters(serie, varname, newSerie._highlight);
 
 					this.normalize(valFinal, varname);
 					serie.setData(valFinal);
@@ -310,6 +325,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				var self = this,
 					val, 
 					val2;
+
+
+	//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
 
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie(varname);
@@ -366,11 +384,14 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				this.zones[varname] = moduleValue._zones;
 
 				
+				
 				if( self.deferreds[ varname ] ) {
 					self.deferreds[ varname ].reject();
 				}
 
 				self.deferreds[ varname ] = JcampConverter(moduleValue, {lowRes: 1024}).done( function( spectra ) {
+
+					console.log(JSON.stringify(spectra.profiling,true));
 
 //					self.blank.jcamp( varname );
 					self.series[ varname ] = self.series[ varname ] || [];
@@ -378,27 +399,29 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 					if(spectra.contourLines) {
 						
-						self.graph.setOption('zoomMode', 'xy');
-						self.graph.setOption('defaultWheelAction', 'toSeries');
+//						self.graph.setOption('zoomMode', 'xy');
+					/*	self.graph.setOption('defaultWheelAction', 'toSeries');
 						self.graph.setOption('defaultMouseAction', 'drag');
-
+*/
 						serie = self.graph.newSerie( varname, { trackMouse: true }, 'contour' );
+						self.setSerieParameters(serie, varname);
 						serie.setData( spectra.contourLines );
 						serie.autoAxis( );
 						self.series[ varname ].push( serie );
 
 					} else {
 
-						self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom', false ) );
-						self.graph.setOption('defaultWheelAction', 'zoomY');
+			//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
+						/*self.graph.setOption('defaultWheelAction', 'zoomY');
 						self.graph.setOption('defaultMouseAction', 'zoom');
-
+*/
 						spectra = spectra.spectra;
 						for (var i=0, l = spectra.length; i<l; i++) {
 							serie = self.graph.newSerie(varname, {trackMouse: true});
 
 							var data=spectra[i].data[spectra[i].data.length - 1];
 
+							self.setSerieParameters(serie, varname);
 							self.normalize(data, varname);
 							serie.setData(data);
 							serie.autoAxis();
@@ -423,7 +446,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					}
 
 
-					self.setSerieParameters(serie, varname);
 					
 					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
 
