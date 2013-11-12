@@ -2065,7 +2065,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 
 			if(secondary) 
-				secondaryIncr = unitPerTick / (secondary + 1);
+				secondaryIncr = unitPerTick / (secondary );
 
 			
 			var loop = 0;
@@ -2921,12 +2921,9 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 
 			this.slots = ws;
-
 			this.data = datas;
 
-
 			if( this.options.useSlots ) {
-
 				this.calculateSlots();	
 			}
 

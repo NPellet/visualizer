@@ -58,8 +58,9 @@ define(['util/datatraversing'], function(Traversing) {
 
 		getVar: function(name) {
 			var data = this.repositoryData.get(name);
-			if(data && data[1])
+			if(data && data[1]) {
 				return data[1];
+			}
 			return;
 		},
 

@@ -72,7 +72,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				for( ; i < l; i++) {
 
 
-					if (  self.module.view.blank[ rel[ i ] ] ) {
+					if (  self.module.view.blank[ rel[ i ] ] && varValue === null ) {
 
 						self.module.view.blank[ rel[ i ] ].call( self.module.view, varName );
 
