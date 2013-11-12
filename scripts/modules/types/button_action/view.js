@@ -7,7 +7,7 @@ define(['modules/defaultview', 'forms/button'], function(Default, Button) {
 			this.dom = $('<div></div>');
 
 			var self = this,
-				button = new Button( this.module.getConfiguration('label', 'Action'), function(e, val) {
+				button = new Button( this.module.getConfiguration('label'), function(e, val) {
 					self.module.controller.onClick(val);
 				}, 
 

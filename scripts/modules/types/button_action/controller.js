@@ -58,7 +58,8 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 
 							label: {
 								type: 'text',								
-								title: 'Button label'
+								title: 'Button label',
+								default: 'Action'
 							},
 
 							text: {
@@ -73,8 +74,8 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 		
 
 		configAliases: {
-			'label': function(cfg) { return cfg.groups.group[ 0 ].label[ 0 ]; },
-			'text': function(cfg) { return cfg.groups.group[ 0 ].text[ 0 ]; }
+			'label': [ 'groups', 'group', 0, 'label', 0 ],
+			'text': [ 'groups', 'group', 0, 'text', 0 ]
 		},
 
 		"export": function() {
