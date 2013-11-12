@@ -86,24 +86,24 @@
 				"width": 50,
 				"height": 48
 			},
-			"configuration": {},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"script": [
+								"cpk 0;\n"
+							]
+						}
+					]
+				}
+			},
 			"id": 2,
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
 			"vars_in": [
 				{
@@ -112,10 +112,13 @@
 				}
 			],
 			"actions_in": [
-				{
-					"rel": "",
-					"name": ""
-				}
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
 			]
 		}
 	],

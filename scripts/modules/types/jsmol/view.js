@@ -80,11 +80,13 @@ function(Default, UTIL, DataTraversing) {
     			actions.push(data);
     			actions.push("end 'model';");	
 
-console.log(this.module.getConfiguration());
 
-    			var cfg = this.module.getConfiguration();
-    			if(cfg && cfg.afterloadscript)
-    				actions.push(cfg.afterloadscript);
+
+				var cfg = $.proxy(this.module.getConfiguration, this.module);
+				if (cfg('script')) {
+        			actions.push(cfg('script'));
+        		}
+
     			if(this.applet)
     				Jmol.script(this.applet, actions.join('\r\n')); 
 	 		}

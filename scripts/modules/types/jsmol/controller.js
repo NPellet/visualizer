@@ -34,7 +34,32 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			moduleName: 'JSMol'
 		},
 		
-		
+		configurationStructure: function(section) {
+			
+			var jpaths = this.module.model.getjPath();
+
+			return {
+				groups: {
+					group: {
+						options: {
+							type: 'list'
+						},
+
+						fields: {
+							script: {
+								type: 'jscode',
+								title: 'After load script'
+							}
+						}
+					}
+				}
+			}		
+		},
+
+		configAliases: {
+			'script': [ 'groups', 'group', 0, 'script', 0 ]
+		},
+
 		actions: {
 			rel: {}
 		},
