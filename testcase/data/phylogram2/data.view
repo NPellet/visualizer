@@ -1,0 +1,154 @@
+{
+	"modules": [
+		{
+			"type": "phylogram",
+			"title": "Tree 1",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 85,
+				"height": 72
+			},
+			"configuration": {},
+			"id": 1,
+			"bgColor": "",
+			"vars_in": [
+				{
+					"rel": "array",
+					"name": "tree"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actions_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onBranchSelect",
+					"rel": "tree",
+					"jpath": "_2",
+					"name": "treeout"
+				}
+			]
+		},
+		{
+			"type": "phylogram",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 86,
+				"top": 0
+			},
+			"size": {
+				"width": 33,
+				"height": 72
+			},
+			"configuration": {},
+			"id": 2,
+			"bgColor": "",
+			"vars_in": [
+				{
+					"rel": "array",
+					"name": "treeout"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actions_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onBranchHover",
+					"rel": "tree",
+					"jpath": "_2",
+					"name": "tree2"
+				}
+			]
+		},
+		{
+			"type": "phylogram",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 120,
+				"top": 0
+			},
+			"size": {
+				"width": 20,
+				"height": 72
+			},
+			"configuration": {},
+			"id": 3,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "array",
+					"name": "tree2"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "tree",
+			"jpath": "element.tree"
+		},
+		{
+			"varname": "labels",
+			"jpath": "element.labels"
+		},
+		{
+			"varname": "matrix",
+			"jpath": "element.matrix"
+		}
+	],
+	"configuration": {
+		"title": "Test D3"
+	},
+	"_version": "2.2"
+}
