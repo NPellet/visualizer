@@ -61,10 +61,13 @@ define(['modules/defaultview','util/util','libs/d3/d3.v2.min','util/api'], funct
 				require(['libs/d3/d3.phylogram'], function(d3Phylo) {
 
 					$(view.selectorId).html("");
+                    var skipBranchLengthScaling = true ;
+                    if(data.value.children.length > 0)
+                        skipBranchLengthScaling = (data.value.children[0].length == undefined);
 
 					this.phylogram = d3.phylogram.build(view.selectorId, data.value, {
 						//height : view._idHash.length*8,
-						skipBranchLengthScaling : true,
+						skipBranchLengthScaling : skipBranchLengthScaling,
 						skipTicks : true,
 
 						// LEAF
