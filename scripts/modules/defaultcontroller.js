@@ -46,6 +46,10 @@ define(['jquery', 'util/api', 'util/datatraversing'], function($, API, Traversin
 			}
 		},
 
+		configurationStructure: function() {
+			return {};
+		},
+
 		setVarFromEvent: function(event, element, rel) {
 
 			var actions, i = 0;

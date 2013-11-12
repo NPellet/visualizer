@@ -71,6 +71,7 @@ function(Default, UTIL, DataTraversing) {
 	 	update: {
 
 	 		data: function(data) {
+
 	 			if(!data)
 	 				return;
 	 			data = data.get();
@@ -78,6 +79,8 @@ function(Default, UTIL, DataTraversing) {
     			actions.push("load data 'model'");
     			actions.push(data);
     			actions.push("end 'model';");	
+
+console.log(this.module.getConfiguration());
 
     			var cfg = this.module.getConfiguration();
     			if(cfg && cfg.afterloadscript)
