@@ -28,7 +28,7 @@ define(['modules/defaultcontroller'], function(Default) {
 
 		sendEvent: function(obj) {
 			var actions;
-			if(!(actions = this.module.definition.dataSend))	
+			if(!(actions = this.module.definition.vars_out))	
 				return;
 			for(var i = 0; i < actions.length; i++) {
 				if(actions[i].event == "onChangePref") {

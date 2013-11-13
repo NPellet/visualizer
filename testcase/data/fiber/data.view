@@ -13,15 +13,57 @@
 				"height": 56
 			},
 			"configuration": {
-				"colors": [
-					"#0001a3",
-					"#08e725",
-					"#eeef1a",
-					"#ed0c17"
-				],
-				"highContrast": "true"
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"highcontrast": [
+								[
+									"true"
+								]
+							],
+							"color": [
+								[
+									255,
+									245,
+									245,
+									1
+								],
+								[
+									255,
+									31,
+									31,
+									1
+								],
+								[
+									17,
+									255,
+									10,
+									1
+								]
+							]
+						}
+					]
+				}
 			},
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"displayWrapper": true,
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "matrix",
+					"name": "distanceMatrix"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
 				{
 					"event": "onPixelHover",
 					"rel": "row",
@@ -41,18 +83,9 @@
 					"name": "similarity"
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "matrix",
-					"name": "distanceMatrix",
-					"type": [
-						null
-					]
-				}
-			],
-			"bgColor": "",
-			"displayWrapper": true,
-			"id": 1
+			"actions_out": [
+				{}
+			]
 		},
 		{
 			"type": "spectra_displayer",
@@ -63,50 +96,135 @@
 				"top": 0
 			},
 			"size": {
-				"width": 60,
-				"height": 24
+				"width": 61,
+				"height": 23
 			},
 			"configuration": {
-				"mode": "curve",
-				"flipX": true,
-				"flipY": true,
-				"plotcolor": [
-					null
-				],
-				"plotinfos": [
-					{
-						"variable": "row",
-						"plotcolor": "",
-						"plotcontinuous": [
-							"continuous"
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"y",
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"none"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
 						]
-					}
-				]
-			},
-			"dataSend": [
-				{
-					"event": "onZoomChange",
-					"rel": "fromTo",
-					"jpath": "",
-					"name": "fromTo"
+					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"displayWrapper": true,
+			"id": 2,
+			"vars_in": [
 				{
 					"rel": "jcamp",
-					"name": "row",
-					"type": [
-						null
-					]
+					"name": "row"
 				},
 				{
 					"rel": "fromTo",
 					"name": "fromTo"
 				}
 			],
-			"bgColor": "",
-			"displayWrapper": true,
-			"id": 2
+			"actions_in": [
+				{
+					"rel": "fromto",
+					"name": "fromTo"
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onZoomChange",
+					"rel": "fromTo",
+					"name": "fromTo"
+				}
+			],
+			"actions_out": [
+				{
+					"event": "onZoomChange",
+					"rel": "fromto",
+					"jpath": "_2",
+					"name": "fromTo"
+				}
+			]
 		},
 		{
 			"type": "spectra_displayer",
@@ -121,48 +239,131 @@
 				"height": 26
 			},
 			"configuration": {
-				"mode": "curve",
-				"flipX": true,
-				"flipY": false,
-				"plotcolor": [
-					null
-				],
-				"plotinfos": [
-					{
-						"variable": "col",
-						"plotcolor": "",
-						"plotcontinuous": [
-							"continuous"
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"none"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
 						]
-					}
-				]
-			},
-			"dataSend": [
-				{
-					"event": "onZoomChange",
-					"rel": "fromTo",
-					"jpath": "",
-					"name": "fromTo"
+					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"displayWrapper": true,
+			"id": 3,
+			"vars_in": [
 				{
 					"rel": "fromTo",
 					"name": "fromTo"
 				},
 				{
 					"rel": "jcamp",
-					"name": "col",
-					"type": [
-						null
-					]
+					"name": "col"
 				}
 			],
-			"bgColor": "",
-			"displayWrapper": true,
-			"id": 3
+			"actions_in": [
+				{
+					"rel": "fromto",
+					"name": "fromTo"
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onZoomChange",
+					"rel": "fromTo",
+					"name": "fromTo"
+				}
+			],
+			"actions_out": [
+				{
+					"event": "onZoomChange",
+					"rel": "fromto",
+					"jpath": "_2",
+					"name": "fromTo"
+				}
+			]
 		},
-		
 		{
 			"type": "display_value",
 			"title": [
@@ -194,7 +395,10 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
+			"bgColor": "",
+			"displayWrapper": false,
+			"id": 4,
+			"vars_in": [
 				{
 					"rel": "value",
 					"name": "rocARUC",
@@ -203,9 +407,7 @@
 					]
 				}
 			],
-			"bgColor": "",
-			"displayWrapper": false,
-			"id": 6
+			"actions_in": {}
 		},
 		{
 			"type": "display_value",
@@ -220,34 +422,63 @@
 				"height": 8
 			},
 			"configuration": {
-				"frontcolor": "",
-				"font": "arial",
-				"fontsize": "24pt",
-				"align": "center",
-				"valign": "middle",
-				"defaultvalue": "",
-				"sprintf": "Similarity: %04.3f"
-			},
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"dataSource": [
-				{
-					"rel": "value",
-					"name": "similarity",
-					"type": [
-						null
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								"Similarity: %2f "
+							]
+						}
 					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"displayWrapper": false,
-			"id": 7
+			"displayWrapper": true,
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "similarity"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			]
 		},
 		{
 			"type": "display_value",
@@ -279,13 +510,14 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
+			"id": 6,
+			"vars_in": [
 				{
 					"rel": "",
 					"name": ""
 				}
 			],
-			"id": 8
+			"actions_in": {}
 		}
 	],
 	"configuration": {
@@ -300,8 +532,8 @@
 		}
 	},
 	"_local": false,
-	"_saved": 1359616968523,
-	"_time": 1359616968523,
+	"_saved": 1384272048641,
+	"_time": 1384272048641,
 	"variables": [
 		{
 			"varname": "histogram",
@@ -328,5 +560,6 @@
 			"jpath": "element.roc"
 		}
 	],
-	"_version": "2.1"
+	"_version": "2.2",
+	"title": "IR spectra similarity"
 }

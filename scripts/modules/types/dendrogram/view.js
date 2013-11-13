@@ -126,7 +126,7 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 
 			if (this.DEBUG) console.log("Dendrogram: createDendrogram");
 			// ?????? how to put this in the model ?????
-	    	var actions=this.module.definition.dataSend;
+	    	var actions=this.module.definition.vars_out;
 	    	if (! actions || actions.length==0) return;
 	    	var hover=hover=function(node) {
 	    		self.module.controller.setVarFromEvent('onHover', new DataObject(self._idHash[node.id]), 'node');

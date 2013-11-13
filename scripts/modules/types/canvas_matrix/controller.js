@@ -39,14 +39,13 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 			var controller = this;
 			var actions;
 
-			// Nothing to send ?
-			if(!(actions = this.module.definition.dataSend))	
+
+			if(!(actions = this.module.definition.vars_out))	
 				return;
-			
+
 			$( this.module.getDomContent( ) ).on( 'mousemove', 'canvas',
 				// Debounce the hover event
 				$.debounce( 25, function( e ) {
-					
 					var keyed = controller.getMatrixElementFromEvent(e);
 					if(!keyed)
 						return;
@@ -60,7 +59,6 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 									value = keyed[1];
 							else if(actions[i].rel == "intersect")
 									value = keyed[2];
-
 
 							API.setVariable(actions[i].name, value, actions[i].jpath);
 						}

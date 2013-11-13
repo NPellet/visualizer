@@ -288,7 +288,7 @@ define(['modules/defaultview', 'util/webworker', 'util/util', 'libs/jquery.event
 	*/
 
 				var self = this;
-console.log('REDO');
+
 				if(!this.minmaxworker) {
 					this.minmaxworker = new Worker('./scripts/webworker/scripts/getminmaxmatrix.js');
 					this.minmaxworker.addEventListener('message', function(event) {

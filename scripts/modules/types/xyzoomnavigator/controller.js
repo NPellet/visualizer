@@ -5,7 +5,7 @@ define(['modules/defaultcontroller'], function(Default) {
 
 		move: function(x,y) {
 			var actions;
-			if(!(actions = this.module.definition.dataSend))	
+			if(!(actions = this.module.definition.vars_out))	
 				return;	
 			for(var i = 0; i < actions.length; i++)
 				if(actions[i].event == "onMove") {
@@ -15,7 +15,7 @@ define(['modules/defaultcontroller'], function(Default) {
 
 		zoom: function(zoom) {
 			var actions;
-			if(!(actions = this.module.definition.dataSend))	
+			if(!(actions = this.module.definition.vars_out))	
 				return;	
 			for(var i = 0; i < actions.length; i++)
 				if(actions[i].event == "onZoomChange") {
