@@ -27,10 +27,11 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 			if (!gridData || !gridData[0] || x < 0 || y < 0 || y > gridData.length || x > gridData[0].length)
 				return false;
 			
-			if(isNaN(x) || isNaN(y))
+			if( isNaN( x ) || isNaN( y ) || !gridData[ y ][ x ] ) {
 				return false;
+			}
 
-			return [xLabel[x], yLabel[y], gridData[y][x]];
+			return [ xLabel[ x ], yLabel[ y ], gridData[ y ][ x ] ];
 		},
 
 		initimpl: function() {
@@ -60,6 +61,10 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 							else if(actions[i].rel == "intersect")
 									value = keyed[2];
 
+							if( value === undefined ) {
+								return;
+							}
+							
 							API.setVariable(actions[i].name, value, actions[i].jpath);
 						}
 					}

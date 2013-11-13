@@ -72,7 +72,14 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				for( ; i < l; i++) {
 
 
-					if (  self.module.view.blank[ rel[ i ] ] && varValue === null ) {
+					if (  self.module.view.blank[ rel[ i ] ] ) {
+
+					/*
+					  && varValue === null
+					  has been removed. We need to clear the module even for the true variable value.
+					  This is to account for asynchronous fetching that may come back in between two clearing elements
+					  DO NOT ADD THIS BACK !!!
+					*/
 
 						self.module.view.blank[ rel[ i ] ].call( self.module.view, varName );
 

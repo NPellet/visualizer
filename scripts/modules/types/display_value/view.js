@@ -1,4 +1,4 @@
-define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api', 'util/typerenderer'], function(Default, Traversing, DomDeferred, API, Renderer) {
+define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/api', 'util/typerenderer'], function(Default, Traversing, DomDeferred, API, Renderer) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -33,9 +33,9 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 			'value': function(moduleValue) {
 
 				var view = this,
-					sprintf = this.module.getConfiguration('sprintf');
+					sprintfVal = this.module.getConfiguration('sprintf');
 
-				if(moduleValue == undefined) {
+				if (moduleValue == undefined) {
 
 					this.fillWithVal( this.module.getConfiguration('defaultvalue') || '' );
 
@@ -43,20 +43,21 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
 					Renderer.toScreen( moduleValue, this.module ).always(function(val) {
 
-						try {
+						if ( sprintfVal && sprintfVal != "" ) {
 
-							if(sprintf && sprintf != "") {
-								require(['libs/sprintf/sprintf'], function() {
-									val = sprintf(sprintf, val);
+							try {
+								require( [ 'libs/sprintf/sprintf' ], function( ) {
+									val = sprintf( sprintfVal, val );
 									view.fillWithVal( val );	
 								});
-							} else {
+							} catch( e ) {
 								view.fillWithVal( val );
 							}
 
-						} catch( e ) {
+						} else {
 							view.fillWithVal( val );
 						}
+
 					});
 
 				}
@@ -71,7 +72,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 				fontsize = this.module.getConfiguration('fontsize'),
 				font = this.module.getConfiguration('font');
 			
-			var div = $("<div />").css({
+			var div = $("<div />").css( {
 
 				fontFamily: font || 'Arial',
 				fontSize: fontsize || '10pt',
@@ -82,7 +83,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 				width: '100%',
 				height: '100%'
 
-			}).html(val);
+			} ).html( val );
 
 			this.dom.html( div );
 			DomDeferred.notify( div );

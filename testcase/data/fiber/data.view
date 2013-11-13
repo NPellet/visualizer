@@ -366,27 +366,26 @@
 		},
 		{
 			"type": "display_value",
-			"title": [
-				"Area under the ROC curve"
-			],
+			"title": "Untitled module",
+			"displayWrapper": false,
 			"position": {
-				"left": 32,
-				"right": 1,
-				"top": 74
+				"left": 130,
+				"top": 0
 			},
 			"size": {
-				"width": 28,
-				"height": 8
+				"width": 34,
+				"height": 88
 			},
 			"configuration": {
-				"frontcolor": "#d81818",
+				"frontcolor": "",
 				"font": "arial",
-				"fontsize": "24pt",
-				"align": "center",
-				"valign": "middle",
-				"defaultvalue": "",
-				"sprintf": "ARUC= %.3f"
+				"fontsize": "",
+				"align": "left",
+				"valign": "top",
+				"defaultvalue": "Fiber analysis<br />\nThis example display the result of a similarity analysis of fibers done using infrared spectroscopy.<br />\n<br />\nThe similarity matrix shows as expected a red line on the diagonal. A IR spectrum is obviously similar to itself.<br />\n<br />\nEach IR spectrum is associated with a keyowrd describing the category to which it belongs. A ROC curve analysis shows a nearly perfect result. The perfect model having a AROC (Area under the ROC curve) of 1.<br />\n<br />\nHistogram for inter and intra similarity shows also a clear separation.<br />\n<br />\n",
+				"sprintf": ""
 			},
+			"bgColor": "#feffa8",
 			"dataSend": [
 				{
 					"event": "",
@@ -395,30 +394,25 @@
 					"name": ""
 				}
 			],
-			"bgColor": "",
-			"displayWrapper": false,
-			"id": 4,
+			"id": 5,
 			"vars_in": [
 				{
-					"rel": "value",
-					"name": "rocARUC",
-					"type": [
-						null
-					]
+					"rel": "",
+					"name": ""
 				}
 			],
 			"actions_in": {}
 		},
 		{
 			"type": "display_value",
-			"title": "Similarity",
+			"title": "Untitled module",
+			"displayWrapper": true,
 			"position": {
-				"left": 84,
-				"right": 1,
-				"top": 24
+				"left": 78,
+				"top": 23
 			},
 			"size": {
-				"width": 28,
+				"width": 45,
 				"height": 8
 			},
 			"configuration": {
@@ -450,20 +444,13 @@
 								null
 							],
 							"sprintf": [
-								"Similarity: %2f "
+								"Test %.2f"
 							]
 						}
 					]
 				}
 			},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"displayWrapper": true,
-			"id": 5,
+			"id": 6,
 			"vars_in": [
 				{
 					"rel": "value",
@@ -478,46 +465,13 @@
 			],
 			"actions_out": [
 				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			]
-		},
-		{
-			"type": "display_value",
-			"title": "Untitled module",
-			"displayWrapper": false,
-			"position": {
-				"left": 130,
-				"top": 0
-			},
-			"size": {
-				"width": 34,
-				"height": 88
-			},
-			"configuration": {
-				"frontcolor": "",
-				"font": "arial",
-				"fontsize": "",
-				"align": "left",
-				"valign": "top",
-				"defaultvalue": "Fiber analysis<br />\nThis example display the result of a similarity analysis of fibers done using infrared spectroscopy.<br />\n<br />\nThe similarity matrix shows as expected a red line on the diagonal. A IR spectrum is obviously similar to itself.<br />\n<br />\nEach IR spectrum is associated with a keyowrd describing the category to which it belongs. A ROC curve analysis shows a nearly perfect result. The perfect model having a AROC (Area under the ROC curve) of 1.<br />\n<br />\nHistogram for inter and intra similarity shows also a clear separation.<br />\n<br />\n",
-				"sprintf": ""
-			},
-			"bgColor": "#feffa8",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"id": 6,
-			"vars_in": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actions_in": {}
 		}
 	],
 	"configuration": {
@@ -532,8 +486,8 @@
 		}
 	},
 	"_local": false,
-	"_saved": 1384272048641,
-	"_time": 1384272048641,
+	"_saved": 1384340810681,
+	"_time": 1384340810681,
 	"variables": [
 		{
 			"varname": "histogram",
