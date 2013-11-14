@@ -35,18 +35,6 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "value",
-					"name": "myFirstValue"
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
 			"actionsOut": [
 				{
 					"event": "",
@@ -54,10 +42,22 @@
 					"jpath": "",
 					"name": ""
 				}
+			],
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "myFirstValue"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
 			]
 		},
 		{
-			"type": "grid",
+			"type": "jqgrid",
 			"title": "Simple table V1",
 			"displayWrapper": true,
 			"position": {
@@ -69,22 +69,66 @@
 				"height": 30
 			},
 			"configuration": {
-				"colsjPaths": {
-					"valeur": {
-						"jpath": "element.theValue"
-					},
-					"id": {
-						"jpath": "element.id"
-					}
-				},
-				"nbLines": 20,
-				"toggle": "",
-				"colorjPath": "",
-				"displaySearch": true
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								""
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "ID",
+								"jpath": "element.id",
+								"number": [
+									"number"
+								],
+								"editable": "none"
+							},
+							{
+								"name": "Value",
+								"jpath": "element.theValue",
+								"number": [
+									"number"
+								],
+								"editable": "none"
+							}
+						]
+					]
+				}
 			},
 			"id": 2,
-			"bgColor": "",
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "results"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
 				{
 					"event": "onHover",
 					"rel": "element",
@@ -98,25 +142,8 @@
 					"name": "clickedValue"
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "list",
-					"name": "results"
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"actions_out": [
+				{}
 			]
 		},
 		{
@@ -150,85 +177,23 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
 				{
 					"rel": "value",
 					"name": "hoverValue"
 				}
 			],
-			"actionsIn": [
+			"actions_in": [
 				{
 					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			]
-		},
-		{
-			"type": "jqgrid",
-			"title": "Table V2",
-			"displayWrapper": true,
-			"position": {
-				"left": 39,
-				"top": 0
-			},
-			"size": {
-				"width": 24,
-				"height": 30
-			},
-			"configuration": {
-				"colsjPaths": {
-					"id": {
-						"jpath": "element.id",
-						"number": false,
-						"editable": false
-					},
-					"value": {
-						"jpath": "element.theValue",
-						"number": false,
-						"editable": false
-					}
-				},
-				"nbLines": 20,
-				"toggle": "",
-				"colorjPath": "",
-				"displaySearch": false,
-				"filterRow": ""
-			},
-			"id": 4,
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"dataSource": [
-				{
-					"rel": "list",
-					"name": "results"
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
 					"name": ""
 				}
 			]
@@ -254,61 +219,21 @@
 				"defaultvalue": "",
 				"sprintf": ""
 			},
-			"id": 5,
+			"id": 4,
 			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"dataSource": [
+			"vars_in": [
 				{
 					"rel": "value",
 					"name": "clickedValue"
 				}
 			],
-			"actionsIn": [
+			"actions_in": [
 				{
 					"rel": "",
 					"name": ""
 				}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			]
-		},
-		{
-			"type": "display_value",
-			"title": "Untitled module11",
-			"displayWrapper": true,
-			"position": {
-				"left": 66,
-				"top": 4
-			},
-			"size": {
-				"width": 34,
-				"height": 41
-			},
-			"configuration": {
-				"frontcolor": "",
-				"font": "arial",
-				"fontsize": "",
-				"align": "left",
-				"valign": "top",
-				"defaultvalue": "<h1>Single value module</h1>\n\n<p>Default value can be used to enter text and table</p>\n\n<table border=\"1\" cellpadding=\"1\" cellspacing=\"1\" style=\"width:500px\">\n\t<tbody>\n\t\t<tr>\n\t\t\t<td>1</td>\n\t\t\t<td>2</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>3</td>\n\t\t\t<td>4</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>5</td>\n\t\t\t<td>6</td>\n\t\t</tr>\n\t</tbody>\n</table>\n\n<p> </p>\n",
-				"sprintf": ""
-			},
-			"id": 6,
-			"bgColor": "",
-			"dataSend": [
+			"vars_out": [
 				{
 					"event": "",
 					"rel": "",
@@ -316,19 +241,7 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
+			"actions_out": [
 				{
 					"event": "",
 					"rel": "",
@@ -342,8 +255,8 @@
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 12,
-				"top": 32
+				"left": 43,
+				"top": 4
 			},
 			"size": {
 				"width": 33,
@@ -352,7 +265,10 @@
 			"configuration": {
 				"text": "<p>Comparison of table V1 and V2 with sorting and searching behaviour.</p><p><br></p>"
 			},
-			"id": 7
+			"id": 5,
+			"vars_in": {},
+			"actions_in": {},
+			"text": "<p>A simple table with linked values for mouse over and mouse clicked.</p><p>And a post-it !</p>"
 		}
 	],
 	"variables": [
@@ -371,5 +287,5 @@
 		"title": "No title"
 	},
 	"title": "Simple module demonstration",
-	"_version": "2.1"
+	"_version": "2.2"
 }

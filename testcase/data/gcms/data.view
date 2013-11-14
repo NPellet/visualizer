@@ -43,7 +43,8 @@
 							{
 								"name": "Name",
 								"jpath": "element.name",
-								"number": []
+								"number": [],
+								"editable": "none"
 							}
 						]
 					]
@@ -95,34 +96,6 @@
 			},
 			"id": 2,
 			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "onZoomGCChange",
-					"rel": "",
-					"jpath": "",
-					"name": "sdsdf"
-				},
-				{
-					"event": "onMSSelect",
-					"rel": "msSelected",
-					"jpath": "",
-					"name": "MS"
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "onMSTrackingAdded",
-					"rel": "msIon",
-					"jpath": "",
-					"name": "msIon"
-				},
-				{
-					"event": "onZoomGCChange",
-					"rel": "fromtoGC",
-					"jpath": "",
-					"name": "setGCFromTo"
-				}
-			],
 			"vars_in": [
 				{
 					"rel": "jcamp",
@@ -138,190 +111,33 @@
 					"rel": "",
 					"name": ""
 				}
-			]
-		},
-		{
-			"type": "spectra_displayer",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 86,
-				"top": 45
-			},
-			"size": {
-				"width": 49,
-				"height": 26
-			},
-			"configuration": {
-				"graphurl": "",
-				"flipX": false,
-				"flipY": false,
-				"xLabel": "",
-				"yLabel": "",
-				"xRightSpacing": "",
-				"xLeftSpacing": "",
-				"yTopSpacing": "",
-				"yBottomSpacing": "",
-				"minX": null,
-				"minY": null,
-				"maxX": null,
-				"maxY": null,
-				"zoom": "x",
-				"wheelAction": "zoomY",
-				"shiftxtozero": false,
-				"displayAxis": [
-					"x"
-				],
-				"grids": [],
-				"plotinfos": [
-					{
-						"variable": "",
-						"plotcolor": "",
-						"strokewidth": "",
-						"plotcontinuous": false,
-						"peakpicking": false,
-						"markers": false
-					}
-				],
-				"xastime": true
-			},
-			"id": 3,
-			"bgColor": "",
-			"dataSend": [
+			],
+			"actions_out": [
 				{
-					"event": "",
-					"rel": "",
+					"event": "onMSTrackingAdded",
+					"rel": "msIon",
 					"jpath": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"vars_in": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actions_in": [
-				{
-					"rel": "addSerie",
 					"name": "msIon"
 				},
 				{
-					"rel": "fromto",
+					"event": "onZoomGCChange",
+					"rel": "fromtoGC",
+					"jpath": "",
 					"name": "setGCFromTo"
 				}
-			]
-		},
-		{
-			"type": "mol2d",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 88,
-				"top": 6
-			},
-			"size": {
-				"width": 57,
-				"height": 25
-			},
-			"configuration": {},
-			"id": 4,
-			"bgColor": "",
-			"dataSend": [
+			],
+			"vars_out": [
 				{
-					"event": "",
+					"event": "onZoomGCChange",
 					"rel": "",
 					"jpath": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"vars_in": [
-				{
-					"rel": "mol2d",
-					"name": "mol"
-				}
-			],
-			"actions_in": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			]
-		},
-		{
-			"type": "webservice_search",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 83,
-				"top": 34
-			},
-			"size": {
-				"width": 43,
-				"height": 9
-			},
-			"configuration": {
-				"button": false,
-				"searchparams": {
-					"": {
-						"label": "",
-						"defaultvalue": "",
-						"fieldtype": "",
-						"fieldoptions": ""
-					}
+					"name": "sdsdf"
 				},
-				"postvariables": [
-					[
-						"MS",
-						"MS"
-					]
-				],
-				"url": "http://google.com"
-			},
-			"id": 5,
-			"bgColor": "",
-			"dataSend": [
 				{
-					"event": "",
-					"rel": "",
+					"event": "onMSSelect",
+					"rel": "msSelected",
 					"jpath": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"vars_in": [
-				{
-					"rel": "vartrigger",
 					"name": "MS"
-				}
-			],
-			"actions_in": [
-				{
-					"rel": "",
-					"name": ""
 				}
 			]
 		}

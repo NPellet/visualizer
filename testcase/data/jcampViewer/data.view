@@ -10,27 +10,60 @@
 				"top": 0
 			},
 			"size": {
-				"width": 43.039999997615816,
-				"height": 43.039999997615816
+				"width": 43,
+				"height": 43
 			},
 			"configuration": {
-				"colsjPaths": {
-					"Name": {
-						"jpath": "element.name",
-						"number": false,
-						"editable": "none",
-						"options": ""
-					}
-				},
-				"nbLines": 20,
-				"toggle": "",
-				"colorjPath": "",
-				"displaySearch": false,
-				"filterRow": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								null
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
 			},
 			"id": 1,
-			"bgColor": "",
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "spectra"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
 				{
 					"event": "onHover",
 					"rel": "element",
@@ -38,25 +71,8 @@
 					"name": "jcamp"
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "list",
-					"name": "spectra"
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"actions_out": [
+				{}
 			]
 		},
 		{
@@ -68,74 +84,120 @@
 				"top": 0
 			},
 			"size": {
-				"width": 73.03999999761581,
-				"height": 43.039999997615816
+				"width": 73,
+				"height": 43
 			},
 			"configuration": {
-				"graphurl": "",
-				"flipX": true,
-				"flipY": false,
-				"xLabel": "",
-				"yLabel": "",
-				"xRightSpacing": "",
-				"xLeftSpacing": "",
-				"yTopSpacing": "",
-				"yBottomSpacing": "",
-				"minX": null,
-				"minY": null,
-				"maxX": null,
-				"maxY": null,
-				"zoom": "x",
-				"wheelAction": "zoomY",
-				"shiftxtozero": false,
-				"displayAxis": [
-					"x"
-				],
-				"grids": [],
-				"plotinfos": [
-					{
-						"variable": "jcamp",
-						"plotcolor": [
-							114,
-							4,
-							4,
-							1
-						],
-						"strokewidth": "",
-						"plotcontinuous": true,
-						"peakpicking": false
-					}
-				]
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[
+									"flipX"
+								]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"x"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"zoomY"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "jcamp",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": [
+									"slots"
+								]
+							}
+						]
+					]
+				}
 			},
 			"id": 2,
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"vars_in": [
 				{
 					"rel": "jcamp",
 					"name": "jcamp"
 				}
 			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"actions_in": [
+				{}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
 			]
 		}
 	],

@@ -35,10 +35,13 @@ define(['modules/defaultcontroller'], function(Default) {
 		
 		// Called by view
 		onButtonClick:function(){
-			var obj = new DataObject({type: 'jsmolscript', value: this.module.getConfiguration().script});
+
+            var cfg = $.proxy(this.module.getConfiguration, this.module);
+			var obj = new DataObject({type: 'jsmolscript', value:cfg("script")[0]});
 			this.sendAction('jsmolscript', obj);
 		},
-		
+
+        /*
 		configurationReceive: {
 
 			"script":{
@@ -57,6 +60,7 @@ define(['modules/defaultcontroller'], function(Default) {
 				description: ''
 			}
 		},
+		*/
 		
 		
 		moduleInformations: {
@@ -64,6 +68,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 
+        /*
 		doConfiguration: function(section) {
 			
 			return {
@@ -99,7 +104,8 @@ define(['modules/defaultcontroller'], function(Default) {
 			}
 			
 		},
-		
+
+
 		doFillConfiguration: function() {
 			
 			var defaultbtnvalue = this.module.getConfiguration().btnvalue || "Execute script";
@@ -133,6 +139,53 @@ define(['modules/defaultcontroller'], function(Default) {
 			};
 			
 		}
+		*/
+
+
+        configurationStructure: function(section) {
+
+            //var jpaths = this.module.model.getjPath();
+
+            return {
+                groups: {
+                    'group': {
+                        options: {
+                            type: 'list'
+                        },
+
+                        fields: {
+
+                            btnvalue :{
+                                type: 'text',
+                                name: 'btnvalue',
+                                title: 'Button text',
+                                default:'Execute script'
+                            },
+
+                            iseditable :{
+                                name: 'iseditable',
+                                title: 'Display editor',
+                                default: 'true',
+                                type: 'checkbox',
+                                options: { 'true': 'Show the script editor'}
+                            },
+
+                            script : {
+                                type: 'jscode',
+                                name: 'script',
+                                title: 'Script'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        configAliases: {
+            'btnvalue': [ 'groups', 'group', 0, 'btnvalue'],
+            'iseditable': [ 'groups', 'group', 0 , 'iseditable'],
+            'script': [ 'groups', 'group', 0, 'script']
+        }
 
 		
 	});
