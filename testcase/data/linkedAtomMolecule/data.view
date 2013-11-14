@@ -1,7 +1,7 @@
 {
 	"modules": [
 		{
-			"type": "grid",
+			"type": "jqgrid",
 			"title": "Elements",
 			"position": {
 				"left": 0,
@@ -13,17 +13,56 @@
 				"height": 52
 			},
 			"configuration": {
-				"colsjPaths": {
-					"Column": {
-						"jpath": "element.label"
-					}
-				},
-				"nbLines": 20,
-				"colorjPath": "",
-				"displaySearch": false
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								null
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Label",
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
 			},
-			"bgColor": "",
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "atomTypes"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
 				{
 					"event": "onHover",
 					"rel": "element",
@@ -31,16 +70,10 @@
 					"name": "links"
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "list",
-					"name": "atomTypes",
-					"type": [
-						null
-					]
-				}
+			"actions_out": [
+				{}
 			],
-			"id": 1
+			"displayWrapper": true
 		},
 		{
 			"type": "mol2d",
@@ -56,7 +89,23 @@
 			},
 			"configuration": {},
 			"bgColor": "",
-			"dataSend": [
+			"displayWrapper": true,
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "mol2d",
+					"name": "aMolfile"
+				}
+			],
+			"actions_in": {
+				"rel": [
+					null
+				],
+				"name": [
+					null
+				]
+			},
+			"vars_out": [
 				{
 					"event": "",
 					"rel": "",
@@ -64,18 +113,24 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "mol2d",
-					"name": "aMolfile"
-				}
-			],
-			"displayWrapper": true,
-			"id": 2
+			"actions_out": {
+				"event": [
+					null
+				],
+				"rel": [
+					null
+				],
+				"jpath": [
+					null
+				],
+				"name": [
+					null
+				]
+			}
 		},
 		{
 			"type": "jqgrid",
-			"title": "Untitled module",
+			"title": "List of molecules",
 			"displayWrapper": true,
 			"position": {
 				"left": 24,
@@ -86,49 +141,65 @@
 				"height": 52
 			},
 			"configuration": {
-				"colsjPaths": {
-					"Molfile": {
-						"jpath": "element.molfile",
-						"number": false,
-						"editable": "none",
-						"options": ""
-					}
-				},
-				"nbLines": 20,
-				"toggle": "",
-				"colorjPath": "",
-				"displaySearch": false,
-				"filterRow": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								null
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Molecules",
+								"jpath": "element.molfile",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
 			},
 			"id": 3,
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "onHover",
-					"rel": "element",
-					"jpath": "_2",
-					"name": "aMolfile"
-				}
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"vars_in": [
 				{
 					"rel": "list",
 					"name": "mols"
 				}
 			],
-			"actionsIn": [
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
 				{
-					"rel": "",
-					"name": ""
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.molfile",
+					"name": "aMolfile"
 				}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"actions_out": [
+				{}
 			]
 		},
 		{
@@ -150,7 +221,7 @@
 			},
 			"id": 4,
 			"bgColor": "",
-			"dataSend": [
+			"actionsOut": [
 				{
 					"event": "",
 					"rel": "",
@@ -158,19 +229,19 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
+			"vars_in": [
 				{
 					"rel": "mol",
 					"name": "aMolfile"
 				}
 			],
-			"actionsIn": [
+			"actions_in": [
 				{
 					"rel": "",
 					"name": ""
 				}
 			],
-			"actionsOut": [
+			"vars_out": [
 				{
 					"event": "",
 					"rel": "",
@@ -188,8 +259,8 @@
 		"variableFilters": {}
 	},
 	"_local": false,
-	"_saved": 1359619638762,
-	"_time": 1359619638762,
+	"_saved": 1384437656867,
+	"_time": 1384437656867,
 	"variables": [
 		{
 			"varname": "atomTypes",
@@ -202,5 +273,5 @@
 			"url": ""
 		}
 	],
-	"_version": "2.1"
+	"_version": "2.2"
 }

@@ -180,6 +180,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 							editable: {
 								type: 'combo',
 								title: 'Editable',
+								default: 'none',
 								options: [{key: 'none', title: 'No'}, {key: 'text', title: 'Text'}, {key: 'checkbox', title: 'Checkbox'}, {key: 'select', title: 'Combo'}]
 							},
 

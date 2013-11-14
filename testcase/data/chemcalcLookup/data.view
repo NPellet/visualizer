@@ -9,8 +9,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 41.96666666269302,
-				"height": 13.966666662693024
+				"width": 42,
+				"height": 14
 			},
 			"configuration": {
 				"sections": {
@@ -113,8 +113,8 @@
 				"top": 16
 			},
 			"size": {
-				"width": 41.96666666269302,
-				"height": 63.96666666269302
+				"width": 42,
+				"height": 64
 			},
 			"configuration": {
 				"sections": {},
@@ -232,8 +232,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 93.96666666269303,
-				"height": 35.96666666269302
+				"width": 94,
+				"height": 36
 			},
 			"configuration": {
 				"sections": {},
@@ -241,7 +241,7 @@
 					"group": [
 						{
 							"graphurl": [
-								null
+								""
 							],
 							"flip": [
 								[]
@@ -255,37 +255,37 @@
 								[]
 							],
 							"xLabel": [
-								null
+								""
 							],
 							"yTopSpacing": [
-								null
+								0
 							],
 							"yBottomSpacing": [
-								null
+								0
 							],
 							"xLeftSpacing": [
-								null
+								0
 							],
 							"xRightSpacing": [
-								null
+								0
 							],
 							"yLabel": [
-								null
+								""
 							],
 							"minX": [
-								null
+								""
 							],
 							"maxX": [
-								null
+								""
 							],
 							"minY": [
-								null
+								""
 							],
 							"maxY": [
-								null
+								""
 							],
 							"zoom": [
-								null
+								"x"
 							],
 							"shiftxtozero": [
 								[]
@@ -294,7 +294,7 @@
 								[]
 							],
 							"wheelAction": [
-								null
+								"zoomY"
 							]
 						}
 					],
@@ -308,13 +308,14 @@
 									15,
 									1
 								],
-								"strokewidth": null,
+								"strokewidth": "1",
 								"plotcontinuous": [],
 								"peakpicking": [
 									"picking"
 								],
 								"markers": [],
-								"normalize": null
+								"normalize": "none",
+								"optimizeSlots": []
 							},
 							{
 								"variable": "clickedJcamp",
@@ -324,11 +325,12 @@
 									0,
 									1
 								],
-								"strokewidth": null,
+								"strokewidth": "1",
 								"plotcontinuous": [],
 								"peakpicking": [],
 								"markers": [],
-								"normalize": null
+								"normalize": "none",
+								"optimizeSlots": []
 							},
 							{
 								"variable": "jcampFromMF",
@@ -338,11 +340,12 @@
 									217,
 									1
 								],
-								"strokewidth": null,
+								"strokewidth": "1",
 								"plotcontinuous": [],
 								"peakpicking": [],
 								"markers": [],
-								"normalize": null
+								"normalize": "none",
+								"optimizeSlots": []
 							}
 						]
 					]
@@ -370,26 +373,13 @@
 				}
 			],
 			"actions_in": [
-				{
-					"rel": null,
-					"name": null
-				}
+				{}
 			],
 			"vars_out": [
-				{
-					"event": null,
-					"rel": null,
-					"jpath": null,
-					"name": null
-				}
+				{}
 			],
 			"actions_out": [
-				{
-					"event": null,
-					"rel": null,
-					"jpath": null,
-					"name": null
-				}
+				{}
 			]
 		},
 		{
@@ -401,8 +391,8 @@
 				"top": 50
 			},
 			"size": {
-				"width": 29.966666662693022,
-				"height": 13.966666662693024
+				"width": 30,
+				"height": 14
 			},
 			"configuration": {
 				"sections": {
@@ -509,8 +499,8 @@
 				"top": 38
 			},
 			"size": {
-				"width": 29.966666662693022,
-				"height": 9.966666662693024
+				"width": 30,
+				"height": 10
 			},
 			"configuration": {
 				"sections": {},
@@ -592,8 +582,8 @@
 				"top": 38
 			},
 			"size": {
-				"width": 29.966666662693022,
-				"height": 9.966666662693024
+				"width": 30,
+				"height": 10
 			},
 			"configuration": {
 				"sections": {},
@@ -675,8 +665,8 @@
 				"top": 38
 			},
 			"size": {
-				"width": 29.966666662693022,
-				"height": 9.966666662693024
+				"width": 30,
+				"height": 10
 			},
 			"configuration": {
 				"sections": {},
@@ -763,5 +753,6 @@
 			"jpath": "element.Test"
 		}
 	],
-	"_version": "2.2"
+	"_version": "2.2",
+	"title": "Analyse molecular formula"
 }

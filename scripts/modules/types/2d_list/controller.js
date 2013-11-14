@@ -52,6 +52,7 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 
 							colnumber: {
 								type: 'text',
+								default: 5,
 								title: 'Number of columns'
 							},
 

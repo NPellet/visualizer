@@ -54,9 +54,9 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 					var value = false;
 					for(var i in actions) {
 						if(actions[i].event == "onPixelHover") {
-							if(actions[i].rel == "row")
+							if(actions[i].rel == "col")
 									value = keyed[0];
-							else if(actions[i].rel == "col")
+							else if(actions[i].rel == "row")
 									value = keyed[1];
 							else if(actions[i].rel == "intersect")
 									value = keyed[2];
@@ -89,11 +89,11 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 
 					if( actions[ i ].event == "onPixelHover" ) {
 						
-						if( actions[ i ].rel == "row" ) {
+						if( actions[ i ].rel == "col" ) {
 
 							value = keyed[ 0 ];
 
-						} else if( actions[ i ].rel == "col" ) {
+						} else if( actions[ i ].rel == "row" ) {
 
 							value = keyed[ 1 ];
 

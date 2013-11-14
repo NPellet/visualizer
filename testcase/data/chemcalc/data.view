@@ -1,36 +1,8 @@
 {
 	"modules": [
 		{
-			"type": "grid",
-			"title": [
-				[
-					[
-						[
-							[
-								[
-									[
-										[
-											[
-												[
-													[
-														[
-															[
-																[
-																	"Possible mass"
-																]
-															]
-														]
-													]
-												]
-											]
-										]
-									]
-								]
-							]
-						]
-					]
-				]
-			],
+			"type": "jqgrid",
+			"title": "Possible mass",
 			"position": {
 				"left": 1.9,
 				"right": 1,
@@ -40,7 +12,66 @@
 				"width": 62,
 				"height": 48
 			},
-			"dataSend": [
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								null
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "MF",
+								"jpath": "element.mf",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Monoisotopic Mass",
+								"jpath": "element.em",
+								"number": [
+									"number"
+								],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"displayWrapper": true,
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "chemcalcResults"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
 				{
 					"event": "onHover",
 					"rel": "element",
@@ -54,37 +85,9 @@
 					"name": "SecondMF"
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "list",
-					"name": "chemcalcResults",
-					"type": [
-						null
-					]
-				}
-			],
-			"configuration": {
-				"colsjPaths": {
-					"MF": {
-						"jpath": "element.mf"
-					},
-					"Monoisotopic mass": {
-						"jpath": "element.em"
-					},
-					"Unsat": {
-						"jpath": "element.unsat"
-					},
-					"Error": {
-						"jpath": "element.error"
-					}
-				},
-				"nbLines": "20",
-				"colorjPath": "",
-				"displaySearch": false
-			},
-			"bgColor": "#f2e4e4",
-			"displayWrapper": true,
-			"id": 1
+			"actions_out": [
+				{}
+			]
 		},
 		{
 			"type": "spectra_displayer",
@@ -109,74 +112,113 @@
 				"height": 32
 			},
 			"configuration": {
-				"plotcolor": [
-					null
-				],
-				"graphurl": "",
-				"flipX": false,
-				"flipY": false,
-				"xLabel": "",
-				"yLabel": "",
-				"xRightSpacing": "",
-				"xLeftSpacing": "",
-				"yTopSpacing": "",
-				"yBottomSpacing": "",
-				"minX": null,
-				"minY": null,
-				"maxX": null,
-				"maxY": null,
-				"zoom": "",
-				"wheelAction": "none",
-				"shiftxtozero": false,
-				"displayAxis": [
-					"x"
-				],
-				"grids": [],
-				"plotinfos": [
-					{
-						"variable": "OneMF",
-						"plotcolor": [
-							0,
-							0,
-							0,
-							1
-						],
-						"strokewidth": "1",
-						"plotcontinuous": false,
-						"peakpicking": true
-					}
-				]
-			},
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"none"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "OneMF",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [],
+								"peakpicking": [
+									"picking"
+								],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"id": 2,
+			"displayWrapper": true,
+			"vars_in": [
 				{
 					"rel": "jcamp",
 					"name": "OneMF"
 				}
 			],
-			"bgColor": "",
-			"id": 2,
-			"displayWrapper": true,
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"actions_in": [
+				{}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
 			]
 		},
 		{
@@ -211,7 +253,9 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
+			"bgColor": "",
+			"id": 3,
+			"vars_in": [
 				{
 					"rel": "value",
 					"name": "mfRange",
@@ -220,8 +264,7 @@
 					]
 				}
 			],
-			"bgColor": "",
-			"id": 3
+			"actions_in": {}
 		},
 		{
 			"type": "display_value",
@@ -250,7 +293,9 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
+			"bgColor": "#daa9c4",
+			"id": 4,
+			"vars_in": [
 				{
 					"rel": "value",
 					"name": "maxMass",
@@ -259,8 +304,7 @@
 					]
 				}
 			],
-			"bgColor": "#daa9c4",
-			"id": 4
+			"actions_in": {}
 		},
 		{
 			"type": "display_value",
@@ -293,7 +337,10 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
+			"bgColor": "#f95d5d",
+			"displayWrapper": true,
+			"id": 5,
+			"vars_in": [
 				{
 					"rel": "value",
 					"name": "minMass",
@@ -302,9 +349,7 @@
 					]
 				}
 			],
-			"bgColor": "#f95d5d",
-			"displayWrapper": true,
-			"id": 5
+			"actions_in": {}
 		},
 		{
 			"type": "spectra_displayer",
@@ -321,74 +366,113 @@
 				"height": 28
 			},
 			"configuration": {
-				"plotcolor": [
-					null
-				],
-				"graphurl": "",
-				"flipX": false,
-				"flipY": false,
-				"xLabel": "",
-				"yLabel": "",
-				"xRightSpacing": "",
-				"xLeftSpacing": "",
-				"yTopSpacing": "",
-				"yBottomSpacing": "",
-				"minX": null,
-				"minY": null,
-				"maxX": null,
-				"maxY": null,
-				"zoom": "",
-				"wheelAction": "none",
-				"shiftxtozero": false,
-				"displayAxis": [
-					"x"
-				],
-				"grids": [],
-				"plotinfos": [
-					{
-						"variable": "SecondMF",
-						"plotcolor": [
-							0,
-							0,
-							0,
-							1
-						],
-						"strokewidth": "",
-						"plotcontinuous": false,
-						"peakpicking": true
-					}
-				]
-			},
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"none"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "SecondMF",
+								"plotcolor": [
+									255,
+									1,
+									35,
+									1
+								],
+								"strokewidth": "3",
+								"plotcontinuous": [],
+								"peakpicking": [
+									"picking"
+								],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"id": 6,
+			"displayWrapper": true,
+			"vars_in": [
 				{
 					"rel": "jcamp",
 					"name": "SecondMF"
 				}
 			],
-			"bgColor": "",
-			"id": 6,
-			"displayWrapper": true,
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"actions_in": [
+				{}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
 			]
 		},
 		{
@@ -404,74 +488,113 @@
 				"height": 30
 			},
 			"configuration": {
-				"plotcolor": [
-					null
-				],
-				"graphurl": "",
-				"flipX": false,
-				"flipY": false,
-				"xLabel": "",
-				"yLabel": "",
-				"xRightSpacing": "",
-				"xLeftSpacing": "",
-				"yTopSpacing": "",
-				"yBottomSpacing": "",
-				"minX": null,
-				"minY": null,
-				"maxX": null,
-				"maxY": null,
-				"zoom": "",
-				"wheelAction": "none",
-				"shiftxtozero": false,
-				"displayAxis": [
-					"x"
-				],
-				"grids": [],
-				"plotinfos": [
-					{
-						"variable": "aJcamp",
-						"plotcolor": [
-							0,
-							0,
-							0,
-							1
-						],
-						"strokewidth": "",
-						"plotcontinuous": false,
-						"peakpicking": true
-					}
-				]
-			},
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"none"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "aJcamp",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [],
+								"peakpicking": [],
+								"markers": [
+									"markers"
+								],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
 				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"id": 7,
+			"displayWrapper": true,
+			"vars_in": [
 				{
 					"rel": "jcamp",
 					"name": "aJcamp"
 				}
 			],
-			"id": 7,
-			"displayWrapper": true,
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"actions_in": [
+				{}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
 			]
 		},
 		{
@@ -489,7 +612,9 @@
 			"configuration": {
 				"text": "<p>This example display possible molecular for a specified monoisotopic mass and is using chemcalc.</p>"
 			},
-			"id": 9
+			"id": 8,
+			"vars_in": {},
+			"actions_in": {}
 		}
 	],
 	"configuration": {
@@ -528,5 +653,6 @@
 			"varname": "chemcalc",
 			"jpath": "element.chemcalc"
 		}
-	]
+	],
+	"_version": "2.2"
 }

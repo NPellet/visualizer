@@ -394,7 +394,7 @@
 					"name": ""
 				}
 			],
-			"id": 5,
+			"id": 4,
 			"vars_in": [
 				{
 					"rel": "",
@@ -406,7 +406,7 @@
 		{
 			"type": "display_value",
 			"title": "Untitled module",
-			"displayWrapper": true,
+			"displayWrapper": false,
 			"position": {
 				"left": 78,
 				"top": 23
@@ -432,25 +432,25 @@
 								]
 							],
 							"font": [
-								null
+								"arial black"
 							],
 							"fontsize": [
-								null
+								"14pt"
 							],
 							"align": [
-								null
+								"center"
 							],
 							"valign": [
-								null
+								"middle"
 							],
 							"sprintf": [
-								"Test %.2f"
+								"Similarity %.2f"
 							]
 						}
 					]
 				}
 			},
-			"id": 6,
+			"id": 5,
 			"vars_in": [
 				{
 					"rel": "value",
