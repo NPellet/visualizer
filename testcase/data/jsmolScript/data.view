@@ -2,227 +2,110 @@
 	"modules": [
 		{
 			"type": "jsmol",
-			"title": "Display",
+			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 0,
-				"top": 0
+				"left": 1,
+				"top": 1
 			},
 			"size": {
-				"width": 51.01818182468414,
-				"height": 47.01818182468414
+				"width": 54,
+				"height": 53
 			},
-			"configuration": {},
-			"id": 1,
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"script": [
+								null
+							]
+						}
+					]
 				}
-			],
-			"dataSource": [
+			},
+			"id": 1,
+			"vars_in": [
 				{
 					"rel": "data",
 					"name": "pdb"
 				}
 			],
-			"actionsIn": [
+			"actions_in": [
 				{
 					"rel": "jsmolscript",
-					"name": "jsmolscript"
+					"name": "testscript"
 				}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"vars_out": [
+				{}
 			],
-			"zindex": 0
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
 		},
 		{
 			"type": "jsmol_script",
-			"title": "Just a button 2",
+			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 52,
-				"top": 39
+				"left": 57,
+				"top": 1
 			},
 			"size": {
-				"width": 22.01818182468414,
-				"height": 8.018181824684143
+				"width": 41,
+				"height": 53
 			},
 			"configuration": {
-				"btnvalue": "WIREFRAME 2",
-				"script": "WIREFRAME 2 ; ",
-				"iseditable": []
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"btnvalue": [
+								"Display title"
+							],
+							"iseditable": [
+								[
+									"true"
+								]
+							],
+							"script": [
+								"cpk 0 ;"
+							]
+						}
+					]
+				}
 			},
 			"id": 2,
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"vars_in": [
+				{}
 			],
-			"dataSource": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"actions_in": [
+				{}
 			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"vars_out": [
+				{}
 			],
-			"actionsOut": [
+			"actions_out": [
 				{
 					"event": "onActionSent",
 					"rel": "jsmolscript",
 					"jpath": "_2",
-					"name": "jsmolscript"
+					"name": "testscript"
 				}
 			],
-			"zindex": 0
-		},
-		{
-			"type": "jsmol_script",
-			"title": "Edit your script here",
-			"displayWrapper": true,
-			"position": {
-				"left": 52,
-				"top": 0
-			},
-			"size": {
-				"width": 22.01818182468414,
-				"height": 29.01818182468414
-			},
-			"configuration": {
-				"btnvalue": "Execute edited script",
-				"script": "WIREFRAME 50 ;\nCPK 100 ; \nSPIN ON ;",
-				"iseditable": [
-					"allow"
-				]
-			},
-			"id": 3,
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"dataSource": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "onActionSent",
-					"rel": "jsmolscript",
-					"jpath": "_2",
-					"name": "jsmolscript"
-				}
-			],
-			"zindex": 0
-		},
-		{
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 47,
-				"top": 11
-			},
-			"size": {
-				"width": 13,
-				"height": 8
-			},
-			"configuration": {},
-			"id": 4,
-			"zindex": 0
-		},
-		{
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 54,
-				"top": 13
-			},
-			"size": {
-				"width": 3,
-				"height": 1
-			},
-			"configuration": {},
-			"id": 5,
-			"zindex": 0
-		},
-		{
-			"type": "jsmol_script",
-			"title": "Just a button 1",
-			"displayWrapper": true,
-			"position": {
-				"left": 52,
-				"top": 30
-			},
-			"size": {
-				"width": 22.01818182468414,
-				"height": 8.018181824684143
-			},
-			"configuration": {
-				"btnvalue": "WIREFRAME 100",
-				"script": "WIREFRAME 100 ;",
-				"iseditable": []
-			},
-			"id": 6,
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"dataSource": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "onActionSent",
-					"rel": "jsmolscript",
-					"jpath": "_2",
-					"name": "jsmolscript"
-				}
-			],
-			"zindex": 0
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
 		}
 	],
 	"variables": [
@@ -241,5 +124,5 @@
 		"title": "JSMol Scripting"
 	},
 	"title": "Scripting JSMol",
-	"_version": "2.1"
+	"_version": "2.2"
 }
