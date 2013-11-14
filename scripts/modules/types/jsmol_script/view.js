@@ -14,6 +14,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 			view.module.getDomContent().html(this.dom);
 			view.textbox = null ;
 			view.button = null ;
+
 			view.fillWithScript();
 
 		},
@@ -45,32 +46,32 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
 			'script': function(script) {
 				
-				var cfg = this.module.getConfiguration(), view = this;
-				cfg.script = script ;
+				var cfg = $.proxy(this.module.getConfiguration, this.module), view = this;
+				cfg('script') = script ;
 				view.fillWithScript();
 
 			},
 
 			'btnvalue': function(value) {
 
-				var cfg = this.module.getConfiguration(), view = this;
-				cfg.btnvalue = value ;
+                var cfg = $.proxy(this.module.getConfiguration, this.module), view = this;
+				cfg('btnvalue') = value ;
 				view.fillWithScript();
 
 			}
 		},
 		
 		fillWithScript: function() {
-			
-			var cfg = this.module.getConfiguration() ;
-			var self = this ;
+
+            var cfg = $.proxy(this.module.getConfiguration, this.module);
+			var self = this, view = this ;
 			var dom = self.dom
 
 			dom.html("");
 
 			var button = null ;
-			if(cfg.btnvalue){
-				var button = $('<div>').html(cfg.btnvalue).addClass("bi-form-button");
+			if(cfg('btnvalue')){
+				var button = $('<div>').html(cfg('btnvalue')).addClass("bi-form-button").addClass("btn");
 				button.on("click",function(){
 					self.module.controller.onButtonClick();
 					return false ;
@@ -78,8 +79,8 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 			}
 
 			var textbox = null ;
-			if(cfg.iseditable && cfg.iseditable.length > 0){
-				textbox = $('<textarea>',{cols:20,rows:5}).html(cfg.script).css({width:'95%'}) ;
+			if(cfg('iseditable') && cfg('iseditable').length > 0){
+				textbox = $('<textarea>',{cols:20,rows:5}).html(cfg('script')).css({width:'95%'}) ;
 				textbox.on('input',function(e,f){
 					cfg.script = $(this).val();
 				});				
@@ -93,6 +94,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 				dom.prepend(textbox);
 	
 			DomDeferred.notify(button);
+
 		},
 		
 		getDom: function() {
