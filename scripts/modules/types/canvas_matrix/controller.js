@@ -41,7 +41,7 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 			var actions;
 
 
-			if(!(actions = this.module.definition.vars_out))	
+			if(!(actions = this.module.vars_out()))	
 				return;
 
 			$( this.module.getDomContent( ) ).on( 'mousemove', 'canvas',

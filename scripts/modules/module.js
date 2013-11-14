@@ -787,7 +787,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 				cfgEl = cfgEl[ alias[ i ] ];
 				if( ! cfgEl ) {
 
-					return 'error';
+					return 'Error in configuration file - Alias is not a correct jPath';
 				}
 
 			}

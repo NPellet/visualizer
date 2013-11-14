@@ -6,7 +6,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 		lineHover: function(element) {
 			
 			var actions;
-			if(!(actions = this.module.definition.vars_out))	
+			if(!(actions = this.module.vars_out()))	
 				return;	
 			for(var i = 0; i < actions.length; i++)
 				if(actions[i].event == "onHover")
@@ -22,7 +22,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 		lineClick: function(element) {
 			
 			var actions;
-			if(!(actions = this.module.definition.vars_out))	
+			if(!(actions = this.module.vars_out()))	
 				return;
 					
 			for(var i = 0; i < actions.length; i++) {

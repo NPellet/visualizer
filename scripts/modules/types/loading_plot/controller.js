@@ -5,7 +5,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 
 		hover: function(data) {
 			var actions;
-			if(!(actions = this.module.definition.vars_out))	
+			if(!(actions = this.module.vars_out()))	
 				return;	
 			for(var i = 0; i < actions.length; i++)
 				if(actions[i].event == "onHover") {
@@ -15,7 +15,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 
 		onZoomChange: function(zoom) {
 			var actions;
-			if(!(actions = this.module.definition.vars_out))	
+			if(!(actions = this.module.vars_out()))	
 				return;	
 			for(var i = 0; i < actions.length; i++)
 				if(actions[i].event == "onZoomChange") {
@@ -25,7 +25,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 
 		onMove: function(x, y) {
 			var actions;
-			if(!(actions = this.module.definition.vars_out))	
+			if(!(actions = this.module.vars_out()))	
 				return;	
 			for(var i = 0; i < actions.length; i++)
 				if(actions[i].event == "onMove") {
@@ -36,7 +36,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 
 		onChangeViewport: function(vp) {
 			var actions;
-			if(!(actions = this.module.definition.vars_out))	
+			if(!(actions = this.module.vars_out()))	
 				return;	
 			for(var i = 0; i < actions.length; i++)
 				if(actions[i].event == "onViewPortChange") {

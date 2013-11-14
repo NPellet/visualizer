@@ -1,11 +1,10 @@
 define(['modules/defaultcontroller','util/datatraversing'], function(Default, Traversing) {
 	
-	function controller() {
-
-	};
-	
+	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
+		
 		singleValueFields:['nodeType','nodeSize','nodeColor','labelSize','labelColor','edgeWidth','edgeColor','strokeWidth','strokeColor'],
+		
 		configurationSend: {
 			events: {
 				onHover: {
@@ -44,21 +43,21 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default, Tr
 			moduleName: 'Dendrogram'
 		},
 		
-		doConfiguration: function(section) {
+
+		configurationStructure: function() {
 			
 			return {
 				groups: {
-					'module': {
-						config: {
+					group: {
+						options: {
 							type: 'list'
 						},
 
-						fields: [
-
-							{
-								type: 'Combo',
-								name: 'nodeType',
+						fields: {
+							nodeType : {
+								type: 'combo',
 								title: 'Node Type',
+								default: 'circle',
 								options: [
 									{title: 'Circle', key: 'circle'},
 									{title: 'Triangle', key: 'triangle'},
@@ -70,84 +69,61 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default, Tr
 								]
 							},
 
-							{
-								type: 'Text',
-								name: 'nodeSize',
+							nodeSize: {
+								type: 'text',
 								title: 'Default node size'
 							},
 
-							{
-								type: 'Color',
-								name: 'nodeColor',
+							nodeColor: {
+								type: 'color',
 								title: 'Default node color'
 							},
 
-							{
-								type: 'Text',
-								name: 'labelSize',
+							labelSize: {
+								type: 'text',
 								title: 'Default label size'
 							},
 
-							{
-								type: 'Color',
-								name: 'labelColor',
+							labelColor: {
+								type: 'color',
 								title: 'Default label color'
 							},
 
-							{
-								type: 'Text',
-								name: 'edgeWidth',
+							edgeWidth: {
+								type: 'text',
 								title: 'Default edge width'
 							},
 
-							{
-								type: 'Color',
-								name: 'edgeColor',
+							edgeColor: {
+								type: 'color',
 								title: 'Default edge color'
 							},
 
-							{
-								type: 'Text',
-								name: 'strokeWidth',
+							strokeWidth: {
+								type: 'text',
 								title: 'Background line width'
 							},
 
-							{
-								type: 'Color',
-								name: 'strokeColor',
+							strokeColor: {
+								type: 'color',
 								title: 'Background line color'
 							}
-						]
+						}
 					}
 				}
 			}
 		},
 		
-		doFillConfiguration: function() {
-			var cfg=this.module.getConfiguration();
-
-			var module={};
-			for (var i=0; i<this.singleValueFields.length; i++) {
-				var varName=this.singleValueFields[i];
-				module[varName]=[cfg[varName] || ""];
-			}
-
-			return configuration={
-				groups: {
-					module: [module]
-				}
-			}
-		},
-		
-		
-		doSaveConfiguration: function(confSection) {
-			var group = confSection[0].module[0];
-			this.module.definition.configuration={};
-
-			for (var i=0; i<this.singleValueFields.length; i++) {
-				var varName=this.singleValueFields[i];
-				this.module.definition.configuration[varName]=group[varName][0];
-			}
+		configAliases: {
+			'nodeType': [ 'groups', 'group', 0, 'nodeType', 0 ],
+			'nodeSize': [ 'groups', 'group', 0, 'nodeSize', 0 ],
+			'nodeColor': [ 'groups', 'group', 0, 'nodeColor', 0 ],
+			'labelSize': [ 'groups', 'group', 0, 'labelSize', 0 ],
+			'labelColor': [ 'groups', 'group', 0, 'labelColor', 0 ],
+			'edgeWidth': [ 'groups', 'group', 0, 'edgeWidth', 0 ],
+			'edgeColor': [ 'groups', 'group', 0, 'edgeColor', 0 ],
+			'strokeWidth': [ 'groups', 'group', 0, 'strokeWidth', 0 ],
+			'strokeColor': [ 'groups', 'group', 0, 'strokeColor', 0 ]
 		},
 
 		getNodeJpath: function() {

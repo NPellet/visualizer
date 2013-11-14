@@ -23,6 +23,7 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 				this.module.getDomContent().html(this.dom);
 			}
 
+
 			if (this.dom) {
 				// in the dom exists and the preferences has been changed we need to clean the canvas
 				this.dom.empty();
@@ -33,6 +34,9 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 			}
 			this._highlighted = {};
 			this.updateOptions();
+
+			if (this.DEBUG) console.log("Dendrogram: ID: "+this._id);
+
 		},
 		
 
@@ -112,11 +116,11 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 		},
 
 		updateOptions: function() {
-	 		var cfg = this.module.getConfiguration();
+	 		var cfg = $.proxy( this.module.getConfiguration, this.module );
 
 			this._options={
-				nodeSize: cfg.nodeSize || 1,
-				nodeColor: cfg.nodeColor || "yellow",
+				nodeSize: cfg('nodeSize') || 1,
+				nodeColor: cfg('nodeColor') || "yellow",
 			}
 		},
 
@@ -126,14 +130,15 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 
 			if (this.DEBUG) console.log("Dendrogram: createDendrogram");
 			// ?????? how to put this in the model ?????
-	    	var actions=this.module.definition.vars_out;
+
+	    	var actions=this.module.vars_out();
 	    	if (! actions || actions.length==0) return;
 	    	var hover=hover=function(node) {
 	    		self.module.controller.setVarFromEvent('onHover', new DataObject(self._idHash[node.id]), 'node');
 	    	}
 
 
-			var cfg = this.module.getConfiguration();
+			var cfg = $.proxy( this.module.getConfiguration, this.module );
 
 			this.dom.empty();
 
@@ -146,8 +151,8 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 		        //concentric circles.
 		        background: {
 		          CanvasStyles: {
-		            strokeStyle: cfg.strokeColor || '#333',
-		            lineWidth: cfg.strokeWidth || '1'
+		            strokeStyle: cfg('strokeColor') || '#333',
+		            lineWidth: cfg('strokeWidth') || '1'
 		          }
 		        },
 		        
@@ -189,19 +194,20 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 						shadowBlur: 0
 		        	},
 		        	*/
-		         	color: cfg.edgeColor || 'green',
-		         	lineWidth: cfg.edgeWidth || 0.5,
+		         	color: cfg('edgeColor') || 'green',
+		         	lineWidth: cfg('edgeWidth') || 0.5,
 
 		        },
 		        Label: {  
 				  overridable: true,  
 				  type: 'Native', //'SVG', 'Native', "HTML" 
-				  size: cfg.labelSize || 10,  
+				  size: cfg('labelSize') || 10,  
 				  family: 'sans-serif',  
 				  textAlign: 'center',  
 				  textBaseline: 'alphabetic',  
-				  color: cfg.labelColor || "black"  
+				  color: cfg('labelColor') || "black"  
 				},
+				
 				Node: {
 					CanvasStyles: { // we need to specify it here so that we can change it later (mouse enter, leave or external highlight)
 			            shadowColor: "rgb(0, 0, 0)",
@@ -209,13 +215,14 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 		        	},
 		        
 					overridable: true,  
-					type: cfg.nodeType || "circle",  
-					color: cfg.nodeColor || "yellow",  
-					dim: cfg.nodeSize || 3,  
+					type: cfg('nodeType') || "circle",  
+					color: cfg('nodeColor') || "yellow",  
+					dim: cfg('nodeSize') || 3,  
 					height: 3,  
 					width: 3,
 					lineWidth: 10
 				},
+				
 		 	 	Events: {
 		 	 		getRgraph: function(e) {
 		 	 			var src=e.srcElement.id.replace(/-.*/,"");
@@ -306,8 +313,6 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 		
 		_doHighlight: function(id, val) {
 			if (this.DEBUG) console.log("Dendrogram: _doHighlight");
-			console.log(id, val);
-console.log(moduleValue);
 
 			if(this._highlighted[id] && val)
 				return;
@@ -316,7 +321,6 @@ console.log(moduleValue);
 			this._highlighted[id] = val;
 			for(var i in this._currentValue._atoms) {
 				if(this._currentValue._atoms[i].indexOf(id) > -1) {
-					console.log(val);
 					API.highlight(i, val);
 				}
 			}
