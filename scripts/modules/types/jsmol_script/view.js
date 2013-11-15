@@ -60,7 +60,12 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
 			}
 		},
-		
+
+        getIsEditable:function(){
+            var ised = this.module.getConfiguration('iseditable',false) ;
+            return ised[0].length > 0 ;
+        },
+
 		fillWithScript: function() {
 
             var cfg = $.proxy(this.module.getConfiguration, this.module);
@@ -79,11 +84,12 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 			}
 
 			var textbox = null ;
-			if(cfg('iseditable') && cfg('iseditable').length > 0){
+			if(this.getIsEditable()){
 				textbox = $('<textarea>',{cols:20,rows:5}).html(cfg('script')).css({width:'95%'}) ;
 				textbox.on('input',function(e,f){
-					cfg.script = $(this).val();
-				});				
+					var s = cfg('script');
+                    s[0] = $(this).val() ;
+				});
 			}
 
 			self.textbox = textbox ;
