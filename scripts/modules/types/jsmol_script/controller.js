@@ -35,7 +35,6 @@ define(['modules/defaultcontroller'], function(Default) {
 		
 		// Called by view
 		onButtonClick:function(){
-
             var cfg = $.proxy(this.module.getConfiguration, this.module);
 			var obj = new DataObject({type: 'jsmolscript', value:cfg("script")[0]});
 			this.sendAction('jsmolscript', obj);
