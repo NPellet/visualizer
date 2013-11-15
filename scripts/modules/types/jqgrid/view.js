@@ -36,6 +36,36 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this.onResize( this.w, this.h );
 	 	},
 
+		exportToTabDelimited: function() {
+ 			if( ! this.jpaths ) {
+ 				return;
+ 			}
+
+ 			var result=[];
+			var allEls = [],
+				i = 0,
+				l = this.elements.length;
+			
+			var header=[];
+			for (var j=0; j<this.jpaths.length; j++) {
+				header.push(this.jpaths[j].name);
+			}
+			result.push(header.join("\t"));
+
+			for( ; i < l ; i++ ) {
+				var line=[];
+				for (var j=0; j<this.jpaths.length; j++) {
+					Traversing.getValueFromJPath(this.elements[i], this.jpaths[j].jpath).done(function(elVal) {
+						line.push(elVal);
+						//allEls.push(elVal);
+					});
+				}
+				result.push(line.join("\t"));
+			}
+
+			console.log(result.join("\r\n"));
+		},
+
 	 	unload: function() {
 
 	 		this.jqGrid( 'GridDestroy' );

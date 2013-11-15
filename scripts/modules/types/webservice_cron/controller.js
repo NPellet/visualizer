@@ -191,10 +191,6 @@ define(['modules/defaultcontroller'], function(Default) {
 			this.module.getConfiguration().variables = vars;
 			
 			this.doVariables();
-		},
-
-		"export": function() {
-			return this.module.view.table.exportToTabDelimited();
 		}
 
 	});

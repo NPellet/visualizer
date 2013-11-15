@@ -198,69 +198,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 				}
 			}		
 		},
-		/*
-		doFillConfiguration: function() {
 
-			var cfg = this.module.getConfiguration();
-			var cols = cfg.colsjPaths;
-			
-			var titles = [],
-				jpaths = [],
-				colnumber = [],
-				coleditable = [],
-				coloptions = [];
 
-			for(var i in cols) {
-				titles.push(i);
-				jpaths.push(cols[i].jpath);
-				colnumber.push(cols[i].number ? ['number'] : []);
-				coleditable.push(cols[i].editable || 'none');
-				coloptions.push(cols[i].options);
-			//	colwidth.push(cols[i].width);
-			}
-
-			return {	
-
-				groups: {
-					gencfg: [{
-						nblines: [cfg.nbLines || 20],
-						toggle: [cfg.toggle],
-						colorjpath: [cfg.colorjPath || ''],
-						displaySearch: [[cfg.displaySearch ? 'allow' : '']],
-						filterRow: [cfg.filterRow]
-					}],
-					
-					cols: [{
-						coltitle: titles,
-						coljpath: jpaths,
-						number: colnumber,
-						editable: coleditable,
-						options: coloptions
-					}]
-				}
-			}
-		},
-		
-		doSaveConfiguration: function(confSection) {
-			var group = confSection[0].cols[0];
-			var cols = {};
-			for(var i = 0; i < group.length; i++) {
-				cols[group[i].coltitle] = { 
-					jpath: group[i].coljpath, 
-					number: group[i].number[0] == 'number', 
-					editable: group[i].editable || 'none',
-					options: group[i].options
-				};
-			}
-			
-			this.module.getConfiguration().colsjPaths = cols;
-			this.module.getConfiguration().nbLines = confSection[0].gencfg[0].nblines[0];
-			this.module.getConfiguration().toggle = confSection[0].gencfg[0].toggle[0];
-			this.module.getConfiguration().colorjPath = confSection[0].gencfg[0].colorjpath[0];
-			this.module.getConfiguration().displaySearch = !!confSection[0].gencfg[0].displaySearch[0][0];
-			this.module.getConfiguration().filterRow = confSection[0].gencfg[0].filterRow[0];
-		},
-*/
 		onVarReceiveChange: function(name, rel, confSection) {
 
 			var data = API.getVar(name);
@@ -291,7 +230,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		},
 
 		"export": function() {
-			return this.module.view.table.exportToTabDelimited();
+			console.log(this.module);
+			return this.module.view.exportToTabDelimited();
 		}
 
 	});

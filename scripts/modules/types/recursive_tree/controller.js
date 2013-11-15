@@ -172,11 +172,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 			this.module.getConfiguration().nbLines = confSection[0].gencfg[0].nblines[0];
 			this.module.getConfiguration().colorjPath = confSection[0].gencfg[0].colorjpath[0];
 			this.module.getConfiguration().displaySearch = !!confSection[0].gencfg[0].displaySearch[0][0];
-		},
-
-		"export": function() {
-			return this.module.view.table.exportToTabDelimited();
-		}		
+		}	
 	});
 
 	return controller;

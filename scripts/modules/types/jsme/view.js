@@ -3,6 +3,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
+
 		init: function() {
 			
 			var self = this;
@@ -24,10 +25,6 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 		inDom: function() { },
 
 		getPrefs: function() {
-			console.log(this);
-console.log("-----")
-console.log(this.module.getConfiguration('prefs').join())
-
 			return this.module.getConfiguration( 'prefs' ).join( );
 		},
 

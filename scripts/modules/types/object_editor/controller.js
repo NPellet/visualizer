@@ -49,7 +49,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 		"export": function() {
-			//return this.module.view.table.exportToTabDelimited();
+
 		}
 
 	});
