@@ -63,7 +63,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
         getIsEditable:function(){
             var ised = this.module.getConfiguration('iseditable',false) ;
-            return ised[0].length > 0 ;
+            return ised.length > 0 ;
         },
 
 		fillWithScript: function() {

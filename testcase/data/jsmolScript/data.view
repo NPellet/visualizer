@@ -2,11 +2,11 @@
 	"modules": [
 		{
 			"type": "jsmol",
-			"title": "Untitled module",
+			"title": "JSMol molecule",
 			"displayWrapper": true,
 			"position": {
-				"left": 1,
-				"top": 1
+				"left": 0,
+				"top": 0
 			},
 			"size": {
 				"width": 54,
@@ -52,11 +52,11 @@
 		},
 		{
 			"type": "jsmol_script",
-			"title": "Untitled module",
+			"title": "Script editor",
 			"displayWrapper": true,
 			"position": {
-				"left": 57,
-				"top": 1
+				"left": 55,
+				"top": 0
 			},
 			"size": {
 				"width": 41,
@@ -68,7 +68,7 @@
 					"group": [
 						{
 							"btnvalue": [
-								"Display title"
+								"Run script"
 							],
 							"iseditable": [
 								[

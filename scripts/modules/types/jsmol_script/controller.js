@@ -181,8 +181,8 @@ define(['modules/defaultcontroller'], function(Default) {
         },
 
         configAliases: {
-            'btnvalue': [ 'groups', 'group', 0, 'btnvalue'],
-            'iseditable': [ 'groups', 'group', 0 , 'iseditable'],
+            'btnvalue': [ 'groups', 'group', 0, 'btnvalue', 0],
+            'iseditable': [ 'groups', 'group', 0 , 'iseditable', 0],
             'script': [ 'groups', 'group', 0, 'script']
         }
 
