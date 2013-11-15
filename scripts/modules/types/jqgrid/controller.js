@@ -230,7 +230,6 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		},
 
 		"export": function() {
-			console.log(this.module);
 			return this.module.view.exportToTabDelimited();
 		}
 

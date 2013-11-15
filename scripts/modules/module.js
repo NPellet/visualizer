@@ -946,6 +946,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		exportData: function() {
 			var module = this;
 			$('<div class="ci-module-export"><textarea></textarea></div>').dialog({
+				'modal': true,
 				'title': 'Export data from module ' + module.getTitle(),
 				'width': '70%',
 				height: 500

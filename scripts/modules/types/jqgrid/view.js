@@ -63,7 +63,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				result.push(line.join("\t"));
 			}
 
-			console.log(result.join("\r\n"));
+			return (result.join("\r\n"));
 		},
 
 	 	unload: function() {
