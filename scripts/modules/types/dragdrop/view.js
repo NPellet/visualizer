@@ -6,9 +6,7 @@ define(['modules/defaultview', 'util/util', 'util/versioning'], function(Default
 		init: function() {	
 			var self = this,
 				id = Util.getNextUniqueId(),
-				done = false,
-				cfg = $.proxy(this.module.getConfiguration, this.module),
-				inline;
+				cfg = $.proxy(this.module.getConfiguration, this.module);
 
 			this._id = id;
 			this.dom = $('<div />', { class: 'dragdropzone' } ).html( this.module.getConfiguration( 'label', 'Drop your file here' ));
@@ -17,9 +15,9 @@ define(['modules/defaultview', 'util/util', 'util/versioning'], function(Default
 			if (cfg('filter')) {
         		eval("self.filter = function(data) { try { \n " + cfg('filter') + "\n } catch(_) { console.log(_); } }");
       		} else {
+      			// WTF ?
       			delete self.filter;
       		}
-
 		},
 
 		inDom: function() {
@@ -56,33 +54,9 @@ define(['modules/defaultview', 'util/util', 'util/versioning'], function(Default
 				vartype = this.module.getConfiguration('vartype'),
 				obj;
 
-			if(!this.reader) {
-				this.reader = new FileReader();
-				this.reader.onload = function(e) {
-
-					var obj = e.target.result;				
-					try {
-						obj = JSON.parse(obj, Versioning.getDataHandler().reviver);
-					} catch(_) {
-						if(vartype)
-							obj = new DataObject({ type: vartype, value: obj });
-					}
-
-					if (self.filter) {
-						obj = self.filter(obj);
-					}
-
-
-					self.module.model.data = obj;
-					self.module.controller.onDropped(obj);			
-				}
-
-				this.reader.onerror = function(e) {
-					console.error(e);
-				}
-			}		
-
-			this.reader.readAsText(file);
+			if( ! self.module.controller.leased ) {
+				self.module.controller.onDropped( file );
+			}
 		},
 
 		onResize: function() {

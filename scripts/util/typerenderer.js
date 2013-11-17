@@ -6,6 +6,12 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 
 	functions.string = {};
 	functions.string.toscreen = function(def, val) {
+
+		if( val.get ) {
+			def.reject( val.get() );
+			return;
+		}
+
 		def.reject(val);
 	}
 		
@@ -387,15 +393,16 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 
 		args = $.extend(args, Traversing.getOptions(data));
 		
-		if(!functions[type])
+		if( ! functions[ type ] ) {
 			return deferred.resolve('');
+		}
 
-		functions[type].toscreen(deferred, data, args, highlights, box);
+		functions[ type ].toscreen(deferred, data, args, highlights, box);
 	}
 
 	functions.toScreen = function(element, box, opts, jpath) {
 		var deferred = $.Deferred(), self = this;;
-
+		
 		if(!element.getChild || !jpath) {
 			_valueToScreen(deferred, element, box, opts);
 			return deferred;

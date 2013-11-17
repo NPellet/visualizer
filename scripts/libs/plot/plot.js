@@ -2061,14 +2061,13 @@ define(['jquery', 'util/util'], function($, Util) {
 				widthHeight = 0,
 				secondaryIncr,
 				incrTick,
-				subIncrTick;
+				subIncrTick,
+				loop = 0;
 
 
-			if(secondary) 
-				secondaryIncr = unitPerTick / (secondary );
-
-			
-			var loop = 0;
+			if(secondary)  {
+				secondaryIncr = unitPerTick / secondary;
+			}
 
 			incrTick = this.options.shiftToZero ? this.realMin - Math.ceil((this.realMin - min) / unitPerTick) * unitPerTick : Math.floor(min / unitPerTick) * unitPerTick;
 			this.incrTick = primary[0];
