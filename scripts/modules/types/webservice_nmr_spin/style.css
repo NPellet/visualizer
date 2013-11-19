@@ -1,13 +1,29 @@
 
-.ci-module-webservice_search label {
-	width: 150px;
-	font-weight: bold;
-	float: left;
-	padding-top: 4px;
+.ci-module-webservice_nmr_spin table {
+	border-collapse : collapse ;
 }
 
-.ci-module-webservice_search .Search > div {
-	padding-left: 5px;
-	margin-top: 8px;
-	
+.ci-module-webservice_nmr_spin table th,
+.ci-module-webservice_nmr_spin table td {
+	padding : 0 ;
+	margin : 0 ;
+	border : 1px solid #ccc ;
 }
+
+.ci-module-webservice_nmr_spin table th {
+	background-color: #eee ;
+	padding : 0 5px ;
+}
+
+.ci-module-webservice_nmr_spin table td input {
+	border : 0 ;
+	text-align : center;
+	display: block ;
+	width : 60px;
+	padding : 2px 0 ;
+}
+
+	.ci-module-webservice_nmr_spin table td input:hover, 
+	.ci-module-webservice_nmr_spin table td input:focus {
+		background-color: #ddd ;
+	}

@@ -4,34 +4,48 @@ define(['modules/defaultview'], function(Default) {
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-			var self = this,
-				cfg = $.proxy(this.module.getConfiguration, this.module);
+			var self = this;
 
-			this.dom = $('<div></div>');
-			this.system = $(this._getTable(cfg('systemSize' )));
+			this.cfg = $.proxy(this.module.getConfiguration, this.module);
 
+			this.dom = $('<div>').addClass('ci-module-webservice_nmr_spin');
 
+			var selector=[];
+			selector.push("<select name='system'>");
+			selector.push("<option value='2' selected>AB</option>");
+			selector.push("<option value='3'>ABC</option>");
+			selector.push("<option value='4'>ABCD</option>");
+			selector.push("<option value='5'>ABCDE</option>");
+			selector.push("<option value='6'>ABCDEF</option>");
+			selector.push("</select>");
+			var selectorSelect=$(selector.join(""));
+			selectorSelect.val(this.cfg('systemSize')[0]);
+			this.systemSelector=$("<div>Select your spin system: </div>");
+			this.systemSelector.append(selectorSelect);
+
+			this.dom.append(this.systemSelector);
+
+			this.systemSelector.on('change', 'select', function() {
+				var s = self.cfg('systemSize');
+				s[0] = $(this).val();
+				self.init();
+			});
+
+			this.system = $(this._getTable(this.cfg('systemSize')[0] ));
 			this.dom.append( this.system );
 			this.module.getDomContent( ).html( this.dom );
 
-
 			require( [ 'forms/button' ], function( Button ) {
-				self.system.append( (self.buttonInst = new Button( cfg("buttonlabel"), function() {
+				self.system.append( (self.buttonInst = new Button( self.cfg("buttonlabel"), function() {
 					self.module.controller.doAnalysis();
 				} ) ).render() );
 			});
 
 		},
 
-	
-
-
-		
-
 		_getTable: function(size) {
 			var content=[];
 
-			content.push("Spin system");
 			
 			content.push("<table border=1><tbody id='table2'><tr>");
 			content.push("<td></td>");

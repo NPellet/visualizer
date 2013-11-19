@@ -169,7 +169,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		
 		configAliases: {
 			'url': [ 'groups', 'group', 0, 'url', 0 ],
-			'systemSize': [ 'groups', 'group', 0, 'systemSize', 0 ],
+			'systemSize': [ 'groups', 'group', 0, 'systemSize' ],
 			'buttonlabel': [ 'groups', 'group', 0, 'buttonlabel', 0 ],
 			'buttonlabel_exec': [ 'groups', 'group', 0, 'buttonlabel_exec', 0 ],
 			'onloadanalysis': [ 'groups', 'group', 0, 'onloadanalysis', 0, 0 ]
