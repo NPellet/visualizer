@@ -24,6 +24,10 @@ define(['modules/defaultcontroller'], function(Default) {
 			this.setVarFromEvent(name, element,'tree');
 		},
 
+        configurationStructure : function(){
+            return {};
+        },
+
 		configurationSend: {
 			events: {
 
