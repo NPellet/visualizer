@@ -106,6 +106,56 @@
 				255,
 				0
 			]
+		},
+		{
+			"type": "jsmol2",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 100,
+				"top": 1
+			},
+			"size": {
+				"width": 44,
+				"height": 53
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"script": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "data",
+					"name": "pdb"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "jsmolscript",
+					"name": "testscript"
+				}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
 		}
 	],
 	"variables": [

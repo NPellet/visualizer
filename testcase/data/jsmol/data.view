@@ -120,6 +120,100 @@
 			"actions_out": [
 				{}
 			]
+		},
+		{
+			"type": "jsmol2",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 76,
+				"top": 0
+			},
+			"size": {
+				"width": 40,
+				"height": 48
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"script": [
+								"cpk 0;\n"
+							]
+						}
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "data",
+					"name": "pdbSelected"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "jsmol",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 117,
+				"top": 0
+			},
+			"size": {
+				"width": 36,
+				"height": 48
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"script": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "data",
+					"name": "pdbSelected"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
 		}
 	],
 	"variables": [
