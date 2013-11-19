@@ -5,14 +5,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 	controller.prototype = $.extend(true, {}, Default, {
 
 		initimpl: function() { 
-
-			
 			this.result = null;
 			this.request = null;
-
-			if ( this.module.getConfiguration( 'onloadanalysis' )) {
-				this.doAnalysis();
-			}
 		},
 		
 		doAnalysis: function() {
@@ -56,7 +50,6 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 				if(typeof data == "object") {
 					data = new DataObject.check(data, true);
 				}
-				//console.log(data);
 				self.onAnalysisDone(data);
 			});
 		},
@@ -144,6 +137,13 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 								]
 							},
 
+							button: {
+								type: 'checkbox',
+								title: 'Process button',
+								default: true,
+								options: { button: '' }
+							},
+
 							buttonlabel: {
 								type: 'text',
 								default:'Calculate',
@@ -158,7 +158,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 							onloadanalysis: {
 								type: 'checkbox',
-								title: 'Make one query on load',
+								title: 'Make one process on load',
+								default: true,
 								options: { button: '' }
 							}
 						}
@@ -169,6 +170,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		
 		configAliases: {
 			'url': [ 'groups', 'group', 0, 'url', 0 ],
+			'button': [ 'groups', 'group', 0, 'button', 0 ],
 			'systemSize': [ 'groups', 'group', 0, 'systemSize' ],
 			'buttonlabel': [ 'groups', 'group', 0, 'buttonlabel', 0 ],
 			'buttonlabel_exec': [ 'groups', 'group', 0, 'buttonlabel_exec', 0 ],

@@ -23,7 +23,12 @@
 	padding : 2px 0 ;
 }
 
-	.ci-module-webservice_nmr_spin table td input:hover, 
-	.ci-module-webservice_nmr_spin table td input:focus {
-		background-color: #ddd ;
-	}
+.ci-module-webservice_nmr_spin table td input:hover, 
+.ci-module-webservice_nmr_spin table td input:focus {
+	background-color: #ddd ;
+}
+
+.ci-module-webservice_nmr_spin h1 {
+	font-size: 14px;
+}
+
