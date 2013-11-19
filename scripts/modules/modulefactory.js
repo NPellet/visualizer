@@ -40,6 +40,7 @@ define(['modules/module'], function(Module) {
 				'Science': {
 					'2dnmr': '2D NMR',
 					'spectra_displayer': 'Spectra displayer',
+					'webservice_nmr_spin': 'NMR spin system simulation',
 					'gcms': 'GC-MS',
 					'jsme': 'JSME Molecular Editor',
 					'jsmol': 'JSMol',

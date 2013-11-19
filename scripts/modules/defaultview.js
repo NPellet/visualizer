@@ -6,7 +6,9 @@ define(['jquery'], function() {
 		setModule: function(module) { this.module = module; },
 
 		update: {},
-		blank: {}
+		blank: {},
+		onResize: function() {},
+		inDom: function() {}
 
 	};
 });
