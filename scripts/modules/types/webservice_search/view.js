@@ -40,12 +40,9 @@ define(['modules/defaultview'], function(Default) {
 				}
 
 
-				this.search.on( 'keyup', 'input[type=text]', function( e ) {
-
+				this.search.on( 'keyup', 'input[type=text], textarea', function( e ) {
 					var searchTerm = $(this).val(),
 						searchName = $(this).attr('name');
-
-
 
 					if( !self.oldVal[ searchName ] || self.oldVal[ searchName ] !== searchTerm ) {
 						$( this ).trigger( 'change' );
