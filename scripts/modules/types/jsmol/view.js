@@ -1,4 +1,5 @@
-define(['modules/defaultview', 
+define(['require',
+        'modules/defaultview',
 		'util/util',
 		'util/datatraversing',
 		"libs/jsmol/JSmol.min.nojq"
@@ -6,91 +7,56 @@ define(['modules/defaultview',
 
 
 
-function(Default, UTIL, DataTraversing) {
+function(require,Default, UTIL, DataTraversing) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
-	 	init: function() {	
-	 		this.jsmolid = UTIL.getNextUniqueId();
-	 		this.dom = $('<div id="' + this.jsmolid + '"></div>');
-	 		this.module.getDomContent().html(this.dom);
-	 		this._highlights = this._highlights || [];
+	 	init: function() {
+            var self = this;
 
-	 		this.onReady = $.Deferred();
+            this.highlightedAtom;
+            this.dom = $('<iframe>',{src:require.toUrl('./jsmol.html')}).css("border",0);
+            this.module.getDomContent().html(this.dom);
+
+            this.dom.bind('load', function() {
+            	self.dom.get( 0 ).contentWindow.setInDom( self.module.inDom,Jmol );
+                self.dom.get( 0 ).contentWindow.setController( self.module.controller );
+                self.dom.get( 0 ).contentWindow.setView( self );
+            });
+
+            this._highlights = this._highlights || [];
+            this.onReady = $.Deferred();
 	 	},
 
-	 	inDom: function() {
-	 		var useSignedApplet = false, self = this;
-			var info = {
-				width: 700,
-				height: 300,
-				debug: false,
-				color: "0xF0F0F0",
-				addSelectionOptions: false,
-				serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
-				use: "HTML5",
-			  //language: "fr", // NOTE: LOCALIZATION REQUIRES <meta charset="utf-8"> (see JSmolCore Jmol.featureDetection.supportsLocalization)
-				jarPath: "java",
-				j2sPath: "scripts/libs/jsmol/j2s",
+	 	inDom: function() {},
 
-				jarFile: (useSignedApplet ? "JmolAppletSigned.jar" : "JmolApplet.jar"),
-				isSigned: useSignedApplet,
-				disableJ2SLoadMonitor: true,
-				disableInitialConsole: true,
-				readyFunction: function() {
-					self.onReady.resolve();
-				},
-			    allowjavascript: true,
-				script: "set antialiasDisplay"
-				//,defaultModel: ":dopamine"
-			  //,noscript: true
-				//console: "none", // default will be jmolApplet0_infodiv
-				//script: "set antialiasDisplay;background white;load data/caffeine.mol;"
-			  //delay 3;background yellow;delay 0.1;background white;for (var i = 0; i < 10; i+=1){rotate y 3;delay 0.01}"
-			};
+	 	onResize: function() {
 
-			Jmol._XhtmlElement = this.dom.get(0);
-			Jmol._XhtmlAppendChild = true;
-			this.applet = Jmol.getApplet(this.jsmolid, info);
+        	this.dom.height(this.height).width(this.width);
 
-	 	},
-
-	 	onResize: function(w, h) {
-	 		if(!this.applet)
-	 			return;
-
-	 		Jmol.resizeApplet(this.applet, [w - 8,h - 15]);
+            if( this.dom.get( 0 ).contentWindow.setSize ) {
+                this.dom.get( 0 ).contentWindow.setSize( this.width, this.height );
+            }
 	 	},
 
 	 	blank: function() {
-	 		
-	 		
 	 	},
 
-	 	update: {
+        update: {
 
-	 		data: function(data) {
+            data: function(data) {
+                var self = this ;
+                this.onReady.done(function() {
+	                self.dom.get( 0 ).contentWindow.setMolFile(data);
 
-	 			if(!data)
-	 				return;
-	 			data = data.get();
-	 			var actions = [];
-    			actions.push("load data 'model'");
-    			actions.push(data);
-    			actions.push("end 'model';");	
-
-
-
-				var cfg = $.proxy(this.module.getConfiguration, this.module);
-				if (cfg('script')) {
-        			actions.push(cfg('script'));
-        		}
-
-    			if(this.applet)
-    				Jmol.script(this.applet, actions.join('\r\n')); 
-	 		}
-		},
+	                var cfg = $.proxy(self.module.getConfiguration, self.module);
+	                if (cfg('script')) {
+	                    self.dom.get( 0 ).contentWindow.executeScript([cfg('script')]);
+	                }
+	            });
+            }
+        },
 
 
 		getDom: function() {
@@ -99,15 +65,12 @@ function(Default, UTIL, DataTraversing) {
 
 		onActionReceive:  {
 			jsmolscript : function(a) {
-				self = this;
-				self.module.controller.onJSMolScriptRecieve(a);
+				this.module.controller.onJSMolScriptReceive(a);
 			}
 		},
 
 		executeScript : function(src){
-			if(this.applet){
-    			Jmol.script(this.applet, src); 
-    		}
+            this.dom.get( 0 ).contentWindow.executeScript([src]);
 		},
 
 		typeToScreen: {

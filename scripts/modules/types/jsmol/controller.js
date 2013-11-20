@@ -6,7 +6,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 
 	controller.prototype = $.extend(true, {}, Default, {
 
-		onJSMolScriptRecieve:function(a){
+		onJSMolScriptReceive:function(a){
 			this.module.view.executeScript(a.value);
 		},
 
@@ -36,7 +36,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		
 		configurationStructure: function(section) {
 			
-			var jpaths = this.module.model.getjPath();
+			// var jpaths = this.module.model.getjPath();
 
 			return {
 				groups: {

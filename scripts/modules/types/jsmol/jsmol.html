@@ -23,6 +23,7 @@
     var jsmolApplet;
     var deferred=$.Deferred();
     var Jmol ;
+    var self=this;
 
     this.setController = function(controller) {
         this.controller = controller ;
@@ -35,17 +36,14 @@
     }
 
     this.setInDom = function(a){
-
-        console.log("In dom");
-
         var useSignedApplet = false, self = this;
         var info = {
-            width: $(document).width(),
-            height: $(document).height(),
+            width: window.innerWidth,
+            height: window.innerHeight,
             debug: false,
             color: "0xF0F0F0",
             addSelectionOptions: false,
-            serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
+            // serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
             use: "HTML5",
             //language: "fr", // NOTE: LOCALIZATION REQUIRES <meta charset="utf-8"> (see JSmolCore Jmol.featureDetection.supportsLocalization)
             jarPath: "java",
@@ -55,8 +53,12 @@
             isSigned: useSignedApplet,
             disableJ2SLoadMonitor: true,
             disableInitialConsole: true,
+
             readyFunction: function() {
-                self.onReady.resolve();
+                deferred.done(function() {
+                    self.view.onReady.resolve();
+                });
+                
             },
             allowjavascript: true,
             script: "set antialiasDisplay"
@@ -84,8 +86,6 @@
     };
 
     this.setMolFile = function(data) {
-
-        //jsmeApplet.readMolFile(mol);
         if(!data)
             return;
         data = data.get();
@@ -93,14 +93,11 @@
         actions.push("load data 'model'");
         actions.push(data);
         actions.push("end 'model';");
-
-
         this.executeScript(actions);
-
-
     }
 
     this.setSize = function(w, h) {
+        console.log("SETSIZE: "+w+" - "+h)
         Jmol.resizeApplet(this.applet, [w ,h ]);
     }
 
@@ -108,7 +105,9 @@
         this.applet.reset();
     }
 
-    this.setHighlight = function(atoms, onOff) {
+
+// TODO !!!!
+    this.setHighlight = function(atoms, onOff) { 
         var molIndex=1;
         if(!onOff) {
             jsmeApplet.resetAtomColors(1);
@@ -121,37 +120,12 @@
             jsmeApplet.setAtomBackgroundColors(molIndex,highlight.join(","))
         }
     }
-
+// TODO !!!!
     this.clearHighlight = function(molIndex, atomsIndex) {
         jsmeApplet.resetAtomColors(molIndex);
     }
 
-    function jsmeOnLoad() {
-        var w = window.innerWidth;
-        var h = window.innerHeight;
 
-        var self=this;
-
-        //var __self = window;
-        jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px");
-
-
-        deferred.done(function() {
-            jsmeApplet.options(window.view.getPrefs());
-            self.view.onReady.resolve();
-        })
-
-        jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
-
-        // The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
-        jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom) {this.view._doHighlight(mol,atom);})');
-
-
-
-
-    }
 </script>
-
-
 </body>
 </html>
