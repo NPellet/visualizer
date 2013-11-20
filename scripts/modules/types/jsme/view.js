@@ -18,7 +18,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 				self.dom.get( 0 ).contentWindow.setView( self );
 			});
 
-			this.onReady = $.Deferred();
+		//	this.onReady = $.Deferred();
 			this._highlights = this._highlights || [];
 		},
 		
