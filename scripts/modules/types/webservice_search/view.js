@@ -63,7 +63,7 @@ define(['modules/defaultview'], function(Default) {
 
 				});
 
-				this.search.on('change', 'select, input[type=text]', function() {
+				this.search.on('change', 'select, input[type=text], textarea', function() {
 					
 					var searchTerm = $(this).val();
 					var searchName = $(this).attr('name');
@@ -118,9 +118,9 @@ define(['modules/defaultview'], function(Default) {
 				case 'checkbox':
 					return '<input type="checkbox" ' + (spec.defaultvalue ? 'checked="checked"' : '') + ' value="1" offvalue="0" name="' +  spec.name +'" />';
 				break;
+
 				case 'textarea':
-	
-					return '<textarea value= name="' + spec.name +
+					return '<textarea name="' + spec.name +
 						'" style="width: 100%" ' + (spec.fieldoptions || '') + '>' +
 						(spec.defaultvalue || '') +
 						'</textarea>';
