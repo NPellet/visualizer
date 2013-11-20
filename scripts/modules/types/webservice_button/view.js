@@ -38,19 +38,12 @@ define(['modules/defaultview'], function(Default) {
 		},
 
 
-		inDom: function() {},
-		
-		onResize: function() {
-		},
-		
 		blank: function() {
 			this.domTable.empty();
 			this.table = null;
 		},
 
-		update: {
 
-		},
 
 		buildElement: function(source, arrayToPush, jpaths, colorJPath) {
 		

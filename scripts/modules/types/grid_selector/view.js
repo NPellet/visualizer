@@ -10,10 +10,6 @@ define(['modules/defaultview','util/util'], function(Default, Util) {
 			var self = this;
 		},
 
-		inDom: function() {},
-		
-		onResize: function() {
-		},
 		
 		blank: function() {
 			this.domTable.empty();

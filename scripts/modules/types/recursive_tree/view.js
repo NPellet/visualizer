@@ -19,9 +19,7 @@ define(['modules/defaultview'], function(Default) {
 			}).dynatree('getTree');
 		},
 		
-		onResize: function() {
-		},
-		
+
 		blank: function() {
 			this.dom.empty();
 		},

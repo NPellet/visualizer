@@ -52,11 +52,6 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api'], function(Defa
 			this.form = form;
 		},
 		
-		onResize: function() {
-		},
-		
-		blank: {
-		},
 
 		update: {
 			source: function(moduleValue, varName) {

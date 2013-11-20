@@ -39,10 +39,7 @@ define(['modules/defaultview'], function(Default) {
 			var self = this;
 		},
 
-		inDom: function() {
 
-
-		},
 
 		zoom: function(val) {
 			this.module.controller.zoom(val);
@@ -93,13 +90,7 @@ define(['modules/defaultview'], function(Default) {
 
 			execute();	
 		},
-		
-		onResize: function() {
-		},
-		
-		blank: function() {
-		
-		},
+
 
 		update: {
 

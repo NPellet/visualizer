@@ -21,8 +21,6 @@ define(['modules/defaultview'], function(Default) {
 
 		inDom: function() {},
 		
-		onResize: function() {
-		},
 		
 		blank: function() {
 			this.domTable.empty();

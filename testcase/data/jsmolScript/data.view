@@ -1,56 +1,6 @@
 {
 	"modules": [
 		{
-			"type": "jsmol",
-			"title": "JSMol molecule",
-			"displayWrapper": true,
-			"position": {
-				"left": 0,
-				"top": 0
-			},
-			"size": {
-				"width": 54,
-				"height": 53
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"script": [
-								null
-							]
-						}
-					]
-				}
-			},
-			"id": 1,
-			"vars_in": [
-				{
-					"rel": "data",
-					"name": "pdb"
-				}
-			],
-			"actions_in": [
-				{
-					"rel": "jsmolscript",
-					"name": "testscript"
-				}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
-		},
-		{
 			"type": "jsmol_script",
 			"title": "Script editor",
 			"displayWrapper": true,
@@ -108,15 +58,15 @@
 			]
 		},
 		{
-			"type": "jsmol2",
+			"type": "jsmol",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 100,
-				"top": 1
+				"left": 0,
+				"top": 0
 			},
 			"size": {
-				"width": 44,
+				"width": 54,
 				"height": 53
 			},
 			"configuration": {
@@ -125,7 +75,7 @@
 					"group": [
 						{
 							"script": [
-								null
+								"wireframe 0;\nribbon on;\n"
 							]
 						}
 					]

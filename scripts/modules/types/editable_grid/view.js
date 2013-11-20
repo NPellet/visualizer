@@ -26,10 +26,6 @@ define(['modules/defaultview','util/datatraversing'], function(Default,Traversin
 			var self = this;
 		},
 
-		inDom: function() {},
-		
-		onResize: function() {
-		},
 		
 		blank: function() {
 			this.domTable.empty();

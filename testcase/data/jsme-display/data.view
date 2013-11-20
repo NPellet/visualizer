@@ -1,5 +1,5 @@
 {
-	"_version": "2.1",
+	"_version": "2.2",
 	"modules": [
 		{
 			"title": "Untitled module",
@@ -28,35 +28,56 @@
 				"height": 34
 			},
 			"configuration": {
-				"colsjPaths": {
-					"ID": {
-						"jpath": "element.name",
-						"number": false,
-						"editable": "none",
-						"options": ""
-					},
-					"highlight": {
-						"jpath": "element._highlight.0",
-						"number": false,
-						"editable": "none",
-						"options": ""
-					},
-					"molfile": {
-						"jpath": "element.molfile",
-						"number": false,
-						"editable": "none",
-						"options": ""
-					}
-				},
-				"nbLines": 20,
-				"toggle": "",
-				"colorjPath": "",
-				"displaySearch": false,
-				"filterRow": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								null
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Molecule",
+								"jpath": "element.molfile",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
 			},
 			"id": 2,
-			"bgColor": "",
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "mols2d"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
 				{
 					"event": "onHover",
 					"rel": "element",
@@ -64,25 +85,8 @@
 					"name": "mol2d"
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "list",
-					"name": "mols2d"
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"actions_out": [
+				{}
 			]
 		},
 		{
@@ -108,7 +112,27 @@
 			},
 			"id": 3,
 			"bgColor": "",
-			"dataSend": [
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "mol",
+					"name": "mol2d"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"vars_out": [
 				{
 					"event": "onStructureChange",
 					"rel": "mol",
@@ -120,26 +144,6 @@
 					"rel": "smiles",
 					"jpath": "",
 					"name": "smiles"
-				}
-			],
-			"dataSource": [
-				{
-					"rel": "mol",
-					"name": "mol2d"
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
 				}
 			]
 		},
@@ -163,7 +167,7 @@
 			},
 			"id": 4,
 			"bgColor": "",
-			"dataSend": [
+			"actionsOut": [
 				{
 					"event": "",
 					"rel": "",
@@ -171,19 +175,19 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
+			"vars_in": [
 				{
 					"rel": "mol",
 					"name": "mol2d"
 				}
 			],
-			"actionsIn": [
+			"actions_in": [
 				{
 					"rel": "",
 					"name": ""
 				}
 			],
-			"actionsOut": [
+			"vars_out": [
 				{
 					"event": "",
 					"rel": "",
@@ -211,7 +215,7 @@
 			},
 			"id": 5,
 			"bgColor": "",
-			"dataSend": [
+			"actionsOut": [
 				{
 					"event": "",
 					"rel": "",
@@ -219,19 +223,19 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
+			"vars_in": [
 				{
 					"rel": "mol",
 					"name": "molfile"
 				}
 			],
-			"actionsIn": [
+			"actions_in": [
 				{
 					"rel": "",
 					"name": ""
 				}
 			],
-			"actionsOut": [
+			"vars_out": [
 				{
 					"event": "",
 					"rel": "",
@@ -245,51 +249,69 @@
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 66,
-				"top": 48
+				"left": 96,
+				"top": 55
 			},
 			"size": {
 				"width": 45,
 				"height": 28
 			},
 			"configuration": {
-				"frontcolor": "",
-				"font": "arial",
-				"fontsize": "",
-				"align": "left",
-				"valign": "top",
-				"defaultvalue": "",
-				"sprintf": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							]
+						}
+					]
+				}
 			},
 			"id": 6,
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
-			"dataSource": [
+			"vars_in": [
 				{
 					"rel": "value",
-					"name": "molfile"
+					"name": "mol2d"
 				}
 			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"actions_in": [
+				{}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
 			]
 		},
 		{
@@ -297,8 +319,8 @@
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 42,
-				"top": 52
+				"left": 41,
+				"top": 47
 			},
 			"size": {
 				"width": 51,
@@ -307,7 +329,19 @@
 			"configuration": {},
 			"id": 7,
 			"bgColor": "",
-			"dataSend": [
+			"vars_in": [
+				{
+					"rel": "mol2d",
+					"name": "molfile"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"vars_out": [
 				{
 					"event": "",
 					"rel": "",
@@ -315,19 +349,7 @@
 					"name": ""
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "mol2d",
-					"name": "molfile"
-				}
-			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
+			"actions_out": [
 				{
 					"event": "",
 					"rel": "",

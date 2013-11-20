@@ -17,18 +17,6 @@ define(['modules/defaultview','util/util','libs/d3/d3.v2.min','util/api'], funct
 
 		},
 
-		inDom: function(){
-
-		},
-
-		onResize: function(w,h) {
-			/*
-			var elWidth = w-2 ;//$(this.selectorId).width()-2 ;
-			var elHeight = h-2 ; //$(this.selectorId).height()-2 ;
-
-			// return elHeight-this.getBBox().height ;
-			*/
-		},
 
 		blank: function() {
 			this.dom.empty();

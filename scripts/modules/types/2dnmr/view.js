@@ -29,8 +29,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 			NMR.getLeftAxis(0, { flipped: false }).setLabel('ppm');
 		},
 
-		onResize: function(width, height) {
-			this._instance.resize(width - 20, height - 20);
+		onResize: function() {
+			this._instance.resize(this.width - 20, this.height - 20);
 		},
 		
 		update: {

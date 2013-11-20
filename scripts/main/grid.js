@@ -163,7 +163,9 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 			height: containerHeight
 		});
 
-		module.view.onResize(module.getDomContent().width(), containerHeight);
+		module.view.width = module.getDomContent( ).width( );
+		module.view.height = containerHeight;
+		module.view.onResize();
 	}
 
 	function newModule(type) {

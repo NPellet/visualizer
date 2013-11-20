@@ -97,9 +97,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 			this.gcmsInstance = false;
 		},
 
-		onResize: function(width, height) {
-
-			this.gcmsInstance.resize(width, height);
+		onResize: function() {
+			this.gcmsInstance.resize(this.width, this.height);
 		},
 		
 		blank: {

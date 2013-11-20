@@ -9,14 +9,6 @@ define(['modules/defaultview'], function(Default) {
 			var self = this;
 		},
 
-		inDom: function() {
-
-		},
-		
-		onResize: function(w, h) {
-
-
-		},
 		
 		blank: function() {
 			this.dom.attr('src', null);

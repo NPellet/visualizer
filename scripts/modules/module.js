@@ -727,15 +727,17 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 					}
 					
 					module.view.init();
+
 					module.view.inDom();
 
-					module.view.onResize( module.view.width, module.view.height );
+					module.view.onResize( );
 
 					module.model.resetListeners( );
+
 					module.updateAllView( );
 
 					div.dialog('close');
-					document.getElementById('header').scrollIntoView(true);
+					document.getElementById('header').scrollIntoView( true );
 				});
 
 				form.onLoaded().done(function() {

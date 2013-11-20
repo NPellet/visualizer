@@ -16,13 +16,13 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 
 		},
 
-		onResize: function(width, height) {
+		onResize: function() {
 
-			this._height = height - 20;
-			this._width = width - 20;
+			this._height = this.height - 20;
+			this._width = this.width - 20;
 
 			if( this.def && this.def.canvas ) {
-				this.def.canvas.resize( width - 20 , height - 20 );
+				this.def.canvas.resize( this._width , this._height );
 			}
 			
 			this.drawMolecule( );

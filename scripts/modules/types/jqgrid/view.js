@@ -33,7 +33,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this._highlights = this._highlights || [];
 
 	 		this.onReady = $.Deferred();
-	 		this.onResize( this.w, this.h );
+	 		this.onResize( );
 	 	},
 
 		exportToTabDelimited: function() {
@@ -208,17 +208,14 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			}
 	 	},
 
-	 	onResize: function( w, h ) {
+	 	onResize: function( ) {
 	 		
-	 		this.w = w;
-	 		this.h = h;
-
 	 		if( ! this.jqGrid ) {
 	 			return;
 	 		}
 
-	 		this.jqGrid( 'setGridWidth', w );
-	 		this.jqGrid( 'setGridHeight', h - 26 - 27 );
+	 		this.jqGrid( 'setGridWidth', this.width );
+	 		this.jqGrid( 'setGridHeight', this.height - 26 - 27 );
 	 	},
 
 	 	blank: {

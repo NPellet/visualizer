@@ -448,8 +448,8 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			}
 
-			this.redraw(true);
-			this.drawSeries(true);
+			this.redraw( true );
+			this.drawSeries( true );
 		},
 
 		handleClick: function(x, y, e) {
@@ -794,10 +794,15 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.refreshDrawingZone();
 		},
 
+		canRedraw: function() {
+			return (this.width && this.height);
+		},
+
 		redraw: function(doNotRecalculateMinMax, noX, noY) {
 
-			if(!this.width || !this.height)
+			if( ! this.canRedraw() ) {
 				return;
+			}
 
 			this.refreshDrawingZone(doNotRecalculateMinMax, noX, noY);
 
@@ -814,25 +819,29 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			for(j = 0, l = axisvars.length; j < l; j++) {
 				xy = j < 2 ? 'x' : 'y';
-				if(noX && j < 2)
+				if(noX && j < 2) {
 					continue;
-				else if(noY && j > 1)
+				} else if(noY && j > 1) {
 					continue;
+				}
 
 				for(i = this.axis[axisvars[j]].length - 1; i >= 0; i--) {
 					axis = this.axis[axisvars[j]][i];
 					if(axis.disabled)
 						continue;
 
-					axis.setMinValue(this.getBoundaryAxisFromSeries(this.axis[axisvars[j]][i], xy, 'min'));
-					axis.setMaxValue(this.getBoundaryAxisFromSeries(this.axis[axisvars[j]][i], xy, 'max'));
+					// Sets the values from the raw data
+					// Does not go through here if noX or noY is true and xy == 'x' || 'y', respectively
+					axis.setMinValue( this.getBoundaryAxisFromSeries(this.axis[ axisvars[ j ] ][ i ], xy, 'min') );
+					axis.setMaxValue( this.getBoundaryAxisFromSeries(this.axis[ axisvars[j]][i], xy, 'max') );
 				}
 			}
 		
 			// Apply to top and bottom
 			this.applyToAxes(function(axis) {
-				if(axis.disabled)
+				if(axis.disabled) {
 					return;
+				}
 				var axisIndex = axisvars.indexOf(arguments[1]);
 				axis.setShift(shift[axisIndex] + axis.getAxisPosition(), axis.getAxisPosition()); 
 				shift[axisIndex] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
@@ -954,13 +963,16 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 		},
 
-		drawSeries: function(doNotRedrawZone) {
-			if(!this.width || !this.height)
-				return;
-			var i = this.series.length - 1;
+		drawSeries: function( ) {
 
-			for(; i >= 0; i--)
-				this.series[i].draw(doNotRedrawZone);
+			if( ! this.width || ! this.height ) {
+				return;
+			}
+
+			var i = this.series.length - 1;
+			for( ; i >= 0; i-- ) {
+				this.series[i].draw( );
+			}
 		},
 
 		checkMinOrMax: function(serie) {
@@ -1501,7 +1513,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 			
 			graph.redraw(true);
-			graph.drawSeries(true);
+			graph.drawSeries();
 		}
 	}
 
@@ -1935,7 +1947,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.options.flipped = bool;
 		},
 
-		_draw: function(doNotRecalculateMinMax) {
+		_draw: function(doNotRecalculateMinMax) { // Redrawing of the axis
 			var visible;
 
 			switch(this.options.tickPosition) {
@@ -2694,11 +2706,14 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.mouseVal = this.getVal(y);
 		},
 
+		// TODO: Get the min value as well
 		scaleToFitAxis: function(axis, start, end) {
 			var max = 0;
 			for(var i = 0, l = this.graph.series.length; i < l; i++) {
-				if(!(this.graph.series[i].getXAxis() == axis))
+				if(!(this.graph.series[i].getXAxis() == axis)) {
 					continue;
+				}
+
 				max = Math.max(max, this.graph.series[i].getMax(start, end));
 			}
 			this._doZoomVal(0, max);
@@ -3146,7 +3161,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 
-		draw: function() {
+		draw: function() { // Serie redrawing
 
 			var x, 
 				y, 
@@ -3256,12 +3271,13 @@ define(['jquery', 'util/util'], function($, Util) {
 				
 			}
 
-			if(this.options.autoPeakPicking)
-				this.makePeakPicking(allY);
+			if( this.options.autoPeakPicking ) {
+				this.makePeakPicking( allY );
+			}
 
 			i++;
-			for(; i < this.lines.length; i++) {
-				this.groupLines.removeChild(this.lines[i]);
+			for( ; i < this.lines.length ; i++ ) {
+				this.groupLines.removeChild( this.lines[ i ] );
 				this.lines.splice(i, 1);
 			}
 
@@ -3272,8 +3288,8 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.groupMain.appendChild(this.domMarker);
 			this.groupMain.insertBefore(this.groupLines, next);
 			var label;
-			for(var i = 0, l = this.labels.length; i < l; i++) {
-				this.repositionLabel(this.labels[i]);
+			for( var i = 0, l = this.labels.length ; i < l ; i ++ ) {
+				this.repositionLabel( this.labels[ i ] );
 			}
 		},
 

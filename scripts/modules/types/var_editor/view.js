@@ -124,14 +124,6 @@ define(['modules/defaultview'], function(Default) {
 		inDom: function() {
 			this.search.find('input:last').trigger('change');
 		},
-		
-		onResize: function() {
-			
-		},
-		
-		blank:  {
-			
-		},
 
 		lock: function() {
 			this.locked = true;

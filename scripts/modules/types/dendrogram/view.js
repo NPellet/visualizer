@@ -44,7 +44,7 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 			if (this.DEBUG) console.log("Dendrogram: inDom");
 		},
 
-		onResize: function(width, height) {
+		onResize: function() {
 			if (this.DEBUG) console.log("Dendrogram: onResize");
 			this.createDendrogram();
 			this.updateDendrogram();

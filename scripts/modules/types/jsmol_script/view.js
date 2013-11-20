@@ -9,31 +9,20 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 			html.css("text-align","center");
 			html.css("padding","1em");
 
-			var view = this;
-			view.dom = html ;
-			view.module.getDomContent().html(this.dom);
-			view.textbox = null ;
-			view.button = null ;
+			this.dom = html ;
+			this.module.getDomContent().html(this.dom);
+			this.textbox = null ;
+			this.button = null ;
 
-			view.fillWithScript();
-
+			this.fillWithScript();
 		},
 
-		resizeTextEditor: function(){
-			view = this ;
-			if(view.textbox){
-				margin = (13+5)*2 ;
-				view.textbox.height(
-					$(view.module.getDomContent()[0]).height()
-					- view.button.height()
-					- margin
-				);
-
-			}
-		},
 
 		onResize: function() {
-			this.resizeTextEditor() ;
+			if(this.textbox){
+				margin = (13+5)*2 ;
+				this.textbox.height( this.height - this.button.height() - margin );
+			}
 		},
 		
 		blank: function() {

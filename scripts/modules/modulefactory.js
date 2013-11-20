@@ -34,7 +34,8 @@ define(['modules/module'], function(Module) {
 
 				'Data edition': {
 					'object_editor': 'Object editor (?)',
-					'var_editor': 'Manipulate variables values'
+					'var_editor': 'Data manipulation'
+					//'array_search': 'Data searching'
 				},
 
 				'Science': {
@@ -44,7 +45,6 @@ define(['modules/module'], function(Module) {
 					'gcms': 'GC-MS',
 					'jsme': 'JSME Molecular Editor',
 					'jsmol': 'JSMol',
-                    'jsmol2': 'JSMol 2',
 					'jsmol_script': 'JSMol Script',
 					'ivstability': 'IV stability',
 					'mol2d': '2D Molecule viewer'

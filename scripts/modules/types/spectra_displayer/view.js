@@ -133,20 +133,21 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				self.graph.getXAxis().flip( cfg('flipX', false) );
 				self.graph.getYAxis().flip( cfg('flipY', false) );
 
-				self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());		
+				self.redraw( );
 				self.onReady.resolve();
 			});
 		},
 		
-		onResize: function(width, height) {
-			this.width = width;
-			this.height = height;
-
+		onResize: function() {
 			if(this.graph) {
-				this.graph.resize(width, height);
-				this.graph.redraw();
-				this.graph.drawSeries();
+				this.graph.resize( this.width, this.height );
+				this.redraw();
 			}
+		},
+
+		redraw: function() {
+			this.graph.redraw();
+			this.graph.drawSeries();
 		},
 		
 		doZone: function(varname, zone, value, color) {
@@ -299,7 +300,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					this.series[varname].push(serie);
 				}
 
-				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
+				this.redraw();
 			},
 
 			xyArray: function(moduleValue, varname) {
@@ -318,7 +319,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				serie.setData(val);
 				serie.autoAxis();
 				this.series[varname].push(serie);
-				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
+				this.redraw();
 			},
 
 			xArray: function(moduleValue, varname) {
@@ -350,7 +351,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				serie.setData(val2);
 				serie.autoAxis();
 				this.series[varname].push(serie);
-				this.onResize(this.width || this.module.getWidthPx(), this.height || this.module.getHeightPx());
+				this.redraw();
 			},
 
 			'annotation': function(value) {
@@ -391,7 +392,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				self.deferreds[ varname ] = JcampConverter(moduleValue, {lowRes: 1024}).done( function( spectra ) {
 
-					console.log(JSON.stringify(spectra.profiling,true));
+				//	console.log(JSON.stringify(spectra.profiling,true));
 
 //					self.blank.jcamp( varname );
 					self.series[ varname ] = self.series[ varname ] || [];
@@ -447,7 +448,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 
 					
-					self.onResize(self.width || self.module.getWidthPx(), self.height || self.module.getHeightPx());
+					self.redraw( );
 
 					self.resetAnnotations( true );
 				});
@@ -564,7 +565,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				serie.setLineWidth( data.lineWidth );
 			}
 
-			this.onResize(this.width, this.height);
+			this.redraw( );
 		},
 
 
@@ -573,7 +574,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 				this.graph.getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
 
 				this.graph.redraw(true);
-				this.graph.drawSeries(true);
+				this.graph.drawSeries();
 
 			},
 
@@ -590,8 +591,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 						this.makeSerie(value[i], value);
 					}
 				}
-				this.graph.redraw();
-				this.graph.drawSeries();
 			},
 
 			removeSerie: function(value) {	

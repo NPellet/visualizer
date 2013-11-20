@@ -90,8 +90,6 @@ define(['modules/defaultview','util/datatraversing', 'util/api', 'util/util'], f
 
 	 	inDom: function() {},
 
-	 	onResize: function() {
-	 	},
 
 	 	blank: function() {
 	 		this.dom.empty();

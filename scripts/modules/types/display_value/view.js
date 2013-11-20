@@ -11,10 +11,6 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 			this.fillWithVal( this.module.getConfiguration( 'defaultvalue' ) );
 		},
 		
-		onResize: function() {
-			
-		},
-		
 		blank: {
 			value: function(varName) {
 				this.dom.empty();

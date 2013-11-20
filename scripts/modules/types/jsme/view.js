@@ -13,7 +13,6 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 			this.module.getDomContent().html(this.dom);
 			
 			this.dom.bind('load', function() {
-
 				self.dom.get( 0 ).contentWindow.setController( self.module.controller );
 				self.dom.get( 0 ).contentWindow.setView( self );
 			});
@@ -28,18 +27,14 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 			return this.module.getConfiguration( 'prefs' ).join( );
 		},
 
-		onResize: function( width, height ) {
-
-			this.width = width;
-			this.height = height;
-
-			this.dom.attr( 'width', width );
-			this.dom.attr( 'height', height );
+		onResize: function() {
+			this.dom.attr( 'width', this.width );
+			this.dom.attr( 'height', this.height );
 
 			this.module.getDomContent().css( 'overflow', 'hidden' );
 
 			if( this.dom.get( 0 ).contentWindow.setSize ) {
-				this.dom.get( 0 ).contentWindow.setSize( width, height );
+				this.dom.get( 0 ).contentWindow.setSize( this.width, this.height );
 			}
 		},
 		

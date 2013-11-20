@@ -156,7 +156,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ur
 
 		},
 
-		onResize: function(width, height) {
+		onResize: function() {
 			for(var i = 0; i < 4; i++) {
 				this.graphs[i].resize(650, 175);
 				this.graphs[i].drawSeries();

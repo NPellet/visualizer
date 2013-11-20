@@ -23,7 +23,7 @@ define(['modules/defaultview', 'forms/button'], function(Default, Button) {
 		},
 
 		inDom: function() {},
-		onResize: function() {},		
+
 		blank: function() {},
 		update: {
 

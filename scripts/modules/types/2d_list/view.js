@@ -11,7 +11,6 @@ define([ 'modules/defaultview', 'util/typerenderer' ], function( Default, Render
 
 		},
 		
-		onResize: function(w, h) { },
 		inDom: function() {
 			var self = this;
 			this.module.getDomView().on('hover', 'table td', function() {

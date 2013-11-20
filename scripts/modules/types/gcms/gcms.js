@@ -355,7 +355,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			this.gc.getLeftAxis().scaleToFitAxis(this.gc.getBottomAxis(), start, end);
 
 			this.gc.redraw(true);
-			this.gc.drawSeries(true);
+			this.gc.drawSeries();
 
 		},
 
@@ -491,7 +491,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			this.extGC.setData(gc);
 
 			this.gc.redraw();
-			this.gc.drawSeries(true);
+			this.gc.drawSeries();
 		},
 
 
@@ -504,7 +504,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			this.extMS.setYAxis(this.ms.getRightAxis(1, {primaryGrid: false, secondaryGrid: false, axisDataSpacing: { min: 0, max: 0}, display: false }));
 			this.extMS.setData(ms);
 			this.ms.redraw(true, true, false);
-			this.ms.drawSeries(true);
+			this.ms.drawSeries();
 		}
 	}
 

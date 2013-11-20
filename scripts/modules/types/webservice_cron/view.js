@@ -14,12 +14,7 @@ define(['modules/defaultview'], function(Default) {
 			this.dom.prepend('<div>[' + time.toLocaleString() + '] - ' + (success ? 'Ok' : 'Error') + '; Variable: ' + variable + '</div>')
 		},
 
-		inDom: function() {},
-		
-		onResize: function() {
 
-		},
-		
 		blank: function() {
 			this.domTable.empty();
 			this.table = null;

@@ -59,9 +59,6 @@ define(['modules/defaultview', 'util/util', 'util/versioning'], function(Default
 			}
 		},
 
-		onResize: function() {
-
-		},
 
 		blank: {
 
