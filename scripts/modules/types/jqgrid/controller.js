@@ -123,7 +123,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 
 							nblines: {
 								type: 'text',
-								title: 'Lines per page'
+								title: 'Lines per page',
+								default: 20
 							},
 
 							toggle: {

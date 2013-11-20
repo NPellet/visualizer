@@ -354,16 +354,18 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				if(defScreen.build)
 					defScreen.build();
 				
+				/* todo In this required ??? */
 				if(self.done == 0) {
-					self.onResize(self.w, self.h);
+					self.onResize(self.width, self.height);
 				}
 			}, function(value) {
 
 				element[l] = value;
 				self.done--;
 				
+				/* todo In this required ??? */
 				if(self.done == 0) {
-					self.onResize(self.w, self.h);
+					self.onResize(self.width, self.height);
 				}
 				
 			});
@@ -446,7 +448,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			module.view.init();
 			module.view.inDom();
-			module.view.onResize( this.w, this.h );
+			module.view.onResize();
 			module.model.resetListeners();	
 			module.updateAllView();
 		},
