@@ -127,7 +127,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					return;
 				}
 
-				graph.redraw();
+				graph.redraw(true);
 				self.graph = graph;
 				
 				self.graph.getXAxis().flip( cfg('flipX', false) );
@@ -141,13 +141,26 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 		onResize: function() {
 			if(this.graph) {
 				this.graph.resize( this.width, this.height );
-				this.redraw();
+				this.redraw(true);
 			}
 		},
 
-		redraw: function() {
-			this.graph.redraw();
+		redraw: function(forceReacalculateAxis) {
+			console.log("REDRAW: ",forceReacalculateAxis);
+			var cfg = $.proxy(this.module.getConfiguration, this.module);
+			if (forceReacalculateAxis) {
+				this.graph.redraw();
+			} else  if (cfg('fullOut')=="none") {
+				this.graph.redraw(false, true, true);
+			} else if (cfg('fullOut')=="xAxis") {
+				this.graph.redraw(false, false, true);
+			} else if (cfg('fullOut')=="yAxis") {
+				this.graph.redraw(false, true, false);
+			} else {
+				this.graph.redraw();
+			}
 			this.graph.drawSeries();
+
 		},
 		
 		doZone: function(varname, zone, value, color) {

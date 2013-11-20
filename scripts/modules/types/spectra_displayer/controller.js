@@ -275,6 +275,13 @@ define(['modules/defaultcontroller'], function(Default) {
 								title: 'Mouse Wheel',
 								options: [{key: 'zoomX', title: 'Zoom X'}, {key: 'zoomY', title: 'Zoom Y'}, {key: 'none', title: 'None'}],
 								default: 'none'
+							},
+
+							fullOut: {
+								type: 'combo',
+								title: 'Full out on load',
+								options: [{key: 'none', title: 'Never'}, {key: 'xAxis', title: 'X axis'}, {key: 'yAxis', title: 'Y axis'}, {key: 'both', title: 'Both axis'}],
+								default: 'both'
 							}
 						}
 					},
@@ -392,6 +399,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			'yBottomSpacing': [ 'groups', 'group', 0, 'yBottomSpacing', 0 ],
 			'yTopSpacing': [ 'groups', 'group', 0, 'yTopSpacing', 0 ],
 			'wheelAction': [ 'groups', 'group', 0, 'wheelAction', 0 ],
+			'fullOut': [ 'groups', 'group', 0, 'fullOut', 0 ],
 			'zoom': [ 'groups', 'group', 0, 'zoom', 0 ],
 			'minX': [ 'groups', 'group', 0, 'minX', 0 ],
 			'minY': [ 'groups', 'group', 0, 'minY', 0 ],
