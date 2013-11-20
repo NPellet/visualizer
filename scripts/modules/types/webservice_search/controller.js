@@ -231,7 +231,12 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 							fieldtype: {
 								type: 'combo',
 								title: 'Field type',
-								options: [{ key: 'text', title: 'Text'}, { key: 'combo', title: 'Combo'}, { key: 'checkbox', title: 'Checkbox'}]
+								options: [
+									{ key: 'text', title: 'Text'},
+									{ key: 'textarea', title: 'Textarea'},
+									{ key: 'combo', title: 'Combo'},
+									{ key: 'checkbox', title: 'Checkbox'}
+								]
 							},
 
 							fieldoptions: {

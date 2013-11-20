@@ -119,12 +119,18 @@ define(['modules/defaultview'], function(Default) {
 				break;
 
 				case 'checkbox':
-					return '<input type="checkbox" ' + (spec.defaultvalue ? 'checked="checked"' : '') + ' value="1" offvalue="0" name="' +  spec.name +'" /></div>';
+					return '<input type="checkbox" ' + (spec.defaultvalue ? 'checked="checked"' : '') + ' value="1" offvalue="0" name="' +  spec.name +'" />';
 				break;
+				case 'textarea':
+	
+					return '<textarea value= name="' + spec.name +
+						'" style="width: 100%" ' + (spec.fieldoptions || '') + '>' +
+						(spec.defaultvalue || '') +
+						'</textarea>';
 				
 				default:
 				case 'text':
-					return '<input type="text" value="' + (spec.defaultvalue || '') + '" name="' + spec.name +'" style="width: 100%" /></div>';
+					return '<input type="text" value="' + (spec.defaultvalue || '') + '" name="' + spec.name +'" style="width: 100%" />';
 				break;
 			}	
 		},
