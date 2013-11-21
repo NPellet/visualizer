@@ -48,7 +48,7 @@ define(['modules/defaultview','util/util','libs/d3/d3.v2.min','util/api'], funct
 		update: {
 			'array':function(data){
 
-				console.log("UPDATE "+this._id) ;
+				//console.log("UPDATE "+this._id) ;
 
 				var view = this ;
 				var box = this.module ;
@@ -62,7 +62,7 @@ define(['modules/defaultview','util/util','libs/d3/d3.v2.min','util/api'], funct
 
 					$(view.selectorId).html("");
                     var skipBranchLengthScaling = true ;
-                    if(data.value.children.length > 0)
+                    if(data.value.children && data.value.children.length > 0)
                         skipBranchLengthScaling = (data.value.children[0].length == undefined);
 
 					this.phylogram = d3.phylogram.build(view.selectorId, data.value, {
@@ -103,9 +103,6 @@ define(['modules/defaultview','util/util','libs/d3/d3.v2.min','util/api'], funct
 						//skipLabels: false
 					}) ;
 
-
-					var phylogram = this.phylogram ;
-
 					leaves = d3.selectAll(view.selectorId + " .leaf") ;
 
 					leaves.each(function(data){
@@ -135,6 +132,12 @@ define(['modules/defaultview','util/util','libs/d3/d3.v2.min','util/api'], funct
 						})(data,d3.select(this));
 
 					});
+
+                    // ( this.module.getConfiguration('defaultvalue') || '' )
+                    d3.selectAll(view.selectorId + " .link").each(function(){
+                        //d3.select(this).attr("stroke",( view.module.getConfiguration('branchColor') || '#cccccc' ));
+                        d3.select(this).attr("stroke-width",( view.module.getConfiguration('branchWidth')+"px" || '5px' ));
+                    });
 
 				}); // End require phylogram
 

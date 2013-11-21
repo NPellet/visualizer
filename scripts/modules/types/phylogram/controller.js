@@ -25,7 +25,35 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 
         configurationStructure : function(){
-            return {};
+            return {
+                groups: {
+                    group: {
+                        options: {
+                            type: 'list'
+                        },
+
+                        fields: {
+                            branchWidth: {
+                                type: 'text',
+                                default : 4,
+                                title: 'Branch width'
+                            },
+
+                            /*
+                            branchColor: {
+                                type: 'color',
+                                title: 'Branch color'
+                            }
+                            */
+                        }
+                    }
+                }
+            };
+        },
+
+        configAliases: {
+            'branchWidth': [ 'groups', 'group', 0, 'branchWidth', 0 ],
+            //'branchColor': [ 'groups', 'group', 0, 'branchColor', 0 ]
         },
 
 		configurationSend: {
