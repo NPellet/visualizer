@@ -147,7 +147,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 							resultfilter: {
 								type: 'jscode',
-								title: 'Result data filter'
+								title: 'Result data filter',
+								default: '/**\r\ndata.result = parseInt(data.var1)+parseInt(data.var2);\r\nreturn data;\r\n*/'
 							}
 						}
 					},
@@ -156,7 +157,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 						options: {
 							type: 'table',
 							multiple: true,
-							title: 'Seach parameters'
+							title: 'Variable creation parameters'
 						},
 
 						fields: {
