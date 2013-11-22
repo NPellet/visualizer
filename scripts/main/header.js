@@ -96,6 +96,14 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 					});
 				break;
 
+				case 'pasteview':
+					require(['main/elements/pasteview'], function(El) {
+						el = new El();
+						el.init(source);
+						def.resolve(el);
+					});
+				break;
+
 
 				case 'pushviewtoserver':
 					require(['main/elements/pushviewtoserver'], function(El) {

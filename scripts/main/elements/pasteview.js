@@ -1,4 +1,4 @@
-define(['jquery', 'main/elements/default', 'util/versioning'], function($, Default, Versioning, Button, Util) {
+define(['jquery', 'jqueryui', 'main/elements/default', 'util/versioning', 'forms/button'], function($, ui, Default, Versioning, Button) {
 
 
 	var Element = function() {};
@@ -10,36 +10,22 @@ define(['jquery', 'main/elements/default', 'util/versioning'], function($, Defau
 
 		_onClick: function() { // Overwrite usual onclick which loads a list / loads views/datas
 			
-			if(this._open) {
-				this.open();
-			} else {
-				this.close();
-			}
-		},
+			var txtarea = $('<textarea></textarea>').css({width: '100%', height: '200px'}),
+				val,
+				btn = new Button('Paste', function( ) {
 
-		open: function() {
-			var self = this;
-			this.interval = window.setInterval(function() {
-				var view = Versioning.getView();
-				
-				if(self.viewHandler.currentPath[3] !== 'head') 
-					self.viewHandler.serverCopy(view);
+					try {
 
-				self.viewHandler._localSave(view, 'head', view._name);
-				self.$_dom.css({ color: '#BCF2BB' });
-			/*	}
-				else // We're not on the HEAD ! Therefore we cannot autosave (revert needed first)
-					self.$_dom.css({ color: '#E0B1B1' });
-*/
-			}, 1000);
+						val = JSON.parse( txtarea.val(), Versioning.getViewHandler()._reviver );
+						Versioning.setViewJSON( val );
 
-			this.$_dom.addClass('toggledOn');
-		},
+					} catch(_) { }
 
-		close: function() {
-			window.clearTimeout(this.interval);
-			this.$_dom.css({ color: '' });
-			this.$_dom.removeClass('toggledOn');
+					div.dialog( 'close' );
+				}),
+				div;
+
+			div = $("<div />").html(txtarea).append( btn.render( ) ).dialog({ modal: true, width: '80%' });
 		}
 	});
 

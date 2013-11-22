@@ -77,9 +77,15 @@ define(['util/versionhandler'], function(VersionHandler) {
 			};
 		},
 
-		blankView: function() {
-			view = {};
+		setViewJSON: function( json ) {
+
+			view = json;
 			this.viewCallback( view, true );
+			
+		},
+
+		blankView: function( ) {
+			this.setViewJSON( { } );
 		}
 	}
 });
