@@ -16,8 +16,9 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 			var pos = this.modules[i].getPosition(),
 				size = this.modules[i].getSize();
 
-			if(pos.top && size.height)
-				bottomMax = Math.max(bottomMax, pos.top + size.height);
+			if(pos.top && size.height) {
+				bottomMax = Math.max( bottomMax, pos.top + size.height );
+			}
 		}
 
 		jqdom.css('height', 
@@ -374,11 +375,10 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 		 * @param {integer} [definition.xWidth] The width of the grid cells
 		 * @param {integer} [definition.xHeight] The height of the grid cells
 		 */
-		init: function(def, dom, modules) {
+		init: function( def, dom, modules ) {
 			
 			this.modules = modules;
-			definition = $.extend(true, defaults, def);
-			jqdom = $(dom).empty();
+			jqdom = $( dom );
 			
 			function makeRecursiveMenu( elements, dom ) {
 
@@ -403,14 +403,21 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 
 				makeRecursiveMenu( allTypes, $ulModules );
 				
-				$(contextDom).append($li);
+				$(contextDom).append( $li );
 
-				$li.bind('click', function(event) {
+				$li.bind( 'click', function( event ) {
 					newModule($(event.target.parentNode).attr('data-name'));
 				});
 			});
 
-			checkDimensions();
+			this.reset( def );
+		},
+
+		reset: function( def ) {
+
+			definition = $.extend(true, defaults, def);
+			$( jqdom ).empty( );
+			checkDimensions( );
 		},
 
 		addModule: addModule,

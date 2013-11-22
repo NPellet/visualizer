@@ -65,23 +65,41 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 
 	function doView(view, reloading) {
 
+		var i = 0, l;
+
 		view = Migration(view);
 
-		if(reloading) {
-			reloadingView();
+		if( reloading ) {
+			reloadingView( );
 		}
-		
-		Grid.init(view.grid, document.getElementById("ci-modules-grid"));
-		ModuleFactory.empty();
+
+		if( ! reloading ) {
+
+			Grid.init( view.grid, document.getElementById( "modules-grid" ) );
+
+		} else {
+
+			Grid.reset( view.grid );
+
+		}
+
+		ModuleFactory.empty( );
 		
 		view.modules = view.modules || new ViewArray();
+
+		l = view.modules.length;
+
 		view.variables = view.variables || new ViewArray();
 		view.configuration = view.configuration || new ViewObject();
 		view.configuration.title = view.configuration.title || 'No title';
 		
-		for(var i = 0; i < view.modules.length; i++) {
-			Grid.addModuleFromJSON(view.modules[i]);
+
+		for( ; i < l ; ) {
+
+			Grid.addModuleFromJSON( view.modules[ i ] );
+			i ++
 		}
+
 		Grid.checkDimensions();
 		view.modules = ModuleFactory.getDefinitions();
 		viewLoaded();
@@ -118,32 +136,36 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 	}
 
 	function _check() {
+
 		var view = Versioning.getView(),
 			data = Versioning.getData();
 
-		if(!_dataLoaded || !_viewLoaded)
+		if( ! _dataLoaded || ! _viewLoaded ) {
 			return;
+		}
 
 		// If no variable is defined in the view, we start browsing the data and add all the first level
 		if(view.variables.length == 0) {
 			var jpath;
 			for(var i in data) {
-				if(i.slice(0, 1) == '_')
-					continue;
 
-				view.variables.push(new ViewObject({ varname: i, jpath: "element." + i }));
+				if( i.slice( 0, 1 ) == '_' ) {
+					continue;
+				}
+
+				view.variables.push( new ViewObject( { varname: i, jpath: "element." + i } ) );
 			}
 		}
 
 		// Entry point variables
-		for(var i = 0, l = view.variables; i < view.variables.length; i++) {
+		for( var i = 0, l = view.variables; i < view.variables.length; i++ ) {
 			// Defined by an URL
 
-			if(!view.variables[i].jpath && view.variables[i].url) {
+			if( ! view.variables[i].jpath && view.variables[i].url ) {
 
-				variable.fetch().done(function(v) {
-					API.setVariable(variable.get('varname'), v);
-				});
+				variable.fetch( ).done( function( v ) {
+					API.setVariable( variable.get( 'varname' ), v );
+				} );
 
 			} else if(!view.variables[i].jpath) {
 
@@ -174,9 +196,9 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 
 
 
-		var div = $('<div></div>').dialog({ modal: true, position: [ 'center', 50 ], width: '80%' } );
-		div.prev().remove();
-		div.parent().css('z-index', 1000);
+		var div = $('<div></div>').dialog( { modal: true, position: [ 'center', 50 ], width: '80%' } );
+		div.prev( ).remove( );
+		div.parent( ).css( 'z-index', 1000 );
 
 		var options = [];
 		Traversing.getJPathsFromElement(data, options);
@@ -424,7 +446,7 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 			Versioning.setDataLoadCallback(doData);
 			
 
-			Context.init($("#ci-modules-grid").get(0));
+			Context.init( document.getElementById( 'modules-grid' ) );
 
 			Context.listen(Context.getRootDom(), [
 				['<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Configure entry point</a></li>', 

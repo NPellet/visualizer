@@ -78,7 +78,8 @@ define(['util/versionhandler'], function(VersionHandler) {
 		},
 
 		blankView: function() {
-			this.viewCallback({});
+			view = {};
+			this.viewCallback( view, true );
 		}
 	}
 });

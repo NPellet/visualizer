@@ -1,4 +1,4 @@
-define(['jquery', 'main/elements/default', 'util/versioning'], function($, Default, Versioning, Button, Util) {
+define(['jquery', 'main/elements/default', 'util/versioning'], function($, Default, Versioning) {
 
 
 	var Element = function() {};

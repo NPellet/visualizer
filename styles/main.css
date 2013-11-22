@@ -35,7 +35,7 @@ html, body {
 	display: none;
 }
 
-#ci-modules-grid {
+#modules-grid {
 	/*margin-top: 30px; */
 	min-height: 100%;
 	/*background: #fefefe;*/
@@ -170,7 +170,7 @@ td.ci-expand {
 	padding-left: 4px;
 }
 
-#ci-modules-grid > div.ci-module-wrapper {
+#modules-grid > div.ci-module-wrapper {
 	position: absolute; /* important */
 	z-index: 0; /* needs to be specified for the resize handle to appear in the right layer */
 	opacity: 1 !important;
@@ -180,11 +180,11 @@ div.ci-module-wrapper .ci-module {
 	height: 100%;
 }
 
-#ci-modules-grid > div.ci-module-wrapper .ci-module-content {
+#modules-grid > div.ci-module-wrapper .ci-module-content {
 /*	background: transparent !important;*/
 }
 
-#ci-modules-grid > div.ci-module-wrapper.ci-module-displaywrapper {
+#modules-grid > div.ci-module-wrapper.ci-module-displaywrapper {
 	border: 1px solid #666666;
 	
 }
@@ -194,12 +194,12 @@ div.ci-module-wrapper .ci-module {
 	outline: none;
 }
 
-#ci-modules-grid > div.ci-module-wrapper .ci-module-header {
+#modules-grid > div.ci-module-wrapper .ci-module-header {
 	display: none;
 }
 
 
-#ci-modules-grid > div.ci-module-wrapper.ci-module-displaywrapper .ci-module-header {
+#modules-grid > div.ci-module-wrapper.ci-module-displaywrapper .ci-module-header {
 	display: block;
 	height: 20px;
 	cursor: move;
