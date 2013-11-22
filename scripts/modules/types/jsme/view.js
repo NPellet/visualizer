@@ -17,7 +17,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 				self.dom.get( 0 ).contentWindow.setView( self );
 			});
 
-		//	this.onReady = $.Deferred();
+			this.onReady = $.Deferred();
 			this._highlights = this._highlights || [];
 		},
 		
@@ -46,7 +46,9 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 		blank: {
 			'mol': function(varName) {
 		//		console.log("CLEAR");
-				this.dom.get(0).contentWindow.clear();
+				if (this.dom.get(0).contentWindow.clear) {
+					this.dom.get(0).contentWindow.clear();
+				}
 			}
 		},
 

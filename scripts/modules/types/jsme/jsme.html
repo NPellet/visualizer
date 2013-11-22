@@ -71,7 +71,7 @@
 
 			deferred.done(function() {
 				jsmeApplet.options(window.view.getPrefs());
-			//	self.view.onReady.resolve();
+				self.view.onReady.resolve();
 			})
 
 			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles); })');
