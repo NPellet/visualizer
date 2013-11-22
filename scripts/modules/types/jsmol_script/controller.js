@@ -4,7 +4,6 @@ define(['modules/defaultcontroller'], function(Default) {
 	controller.prototype = $.extend(true, {}, Default, {
 
 		configurationSend: {
-			
 			events: {
 				onActionSent: {
 					label: 'Send the JSMol script',
@@ -19,15 +18,7 @@ define(['modules/defaultcontroller'], function(Default) {
 				}
 				
 			}
-
-			/*
-			'element': {
-					label: 'Row',
-					description: 'Returns the selected row in the list'
-				
-			*/
 		},
-
 
 		actions: {
 			rel: {'jsmolscript': 'Script JSMol'}
@@ -39,108 +30,11 @@ define(['modules/defaultcontroller'], function(Default) {
 			var obj = new DataObject({type: 'jsmolscript', value:cfg("script")[0]});
 			this.sendAction('jsmolscript', obj);
 		},
-
-        /*
-		configurationReceive: {
-
-			"script":{
-				type:['string','text'],
-				label:"Script text"
-			},
-
-			"iseditable":{
-				type:['boolean','text'],
-				label:"Is editable boolean"
-			},
-			
-			"btnvalue": {
-				type: ['string'],
-				label: 'Button text',
-				description: ''
-			}
-		},
-		*/
-		
 		
 		moduleInformations: {
 			moduleName: 'Script Action'
 		},
 		
-
-        /*
-		doConfiguration: function(section) {
-			
-			return {
-				groups: {
-					'module': {
-						config: {
-							type: 'list'
-						},
-
-						fields: [
-
-							{
-								type: 'text',
-								name: 'btnvalue',
-								title: 'Button text'
-							},
-
-							{
-								type: 'Checkbox',
-								options: { 'allow': 'Show the script editor'},
-								name: 'iseditable',
-								title: 'Display editor'
-							},
-
-							{
-								type: 'JScode',
-								name: 'script',
-								title: 'Script'
-							}
-						]
-					}
-				}
-			}
-			
-		},
-
-
-		doFillConfiguration: function() {
-			
-			var defaultbtnvalue = this.module.getConfiguration().btnvalue || "Execute script";
-			var defaultscript = this.module.getConfiguration().script || "";
-			var defaultiseditable = this.module.getConfiguration().iseditable || "allow" ;
-
-			return {
-				groups: {
-					module: [{
-						btnvalue: [defaultbtnvalue],
-						script: [defaultscript],
-						iseditable: [defaultiseditable],
-					}]
-				}
-			}
-			
-		},
-		
-		
-		doSaveConfiguration: function(confSection) {
-
-			var group = confSection[0].module[0];
-			var btnvalue = group.btnvalue[0];
-			var script = group.script[0];
-			var iseditable = group.iseditable[0];
-
-			this.module.definition.configuration = {
-				btnvalue: btnvalue,
-				script: script,
-				iseditable: iseditable,
-			};
-			
-		}
-		*/
-
-
         configurationStructure: function(section) {
 
             //var jpaths = this.module.model.getjPath();
@@ -153,6 +47,13 @@ define(['modules/defaultcontroller'], function(Default) {
                         },
 
                         fields: {
+
+                            padding :{
+                                type: 'text',
+                                name: 'padding',
+                                title: 'Padding (px)',
+                                default:'6'
+                            },
 
                             btnvalue :{
                                 type: 'text',
@@ -181,6 +82,7 @@ define(['modules/defaultcontroller'], function(Default) {
         },
 
         configAliases: {
+            'padding': [ 'groups', 'group', 0, 'padding', 0],
             'btnvalue': [ 'groups', 'group', 0, 'btnvalue', 0],
             'iseditable': [ 'groups', 'group', 0 , 'iseditable', 0],
             'script': [ 'groups', 'group', 0, 'script']

@@ -4,10 +4,10 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-
+			var cfg = $.proxy(this.module.getConfiguration, this.module), view = this;
 			var html = $('<div>');
 			html.css("text-align","center");
-			html.css("padding","1em");
+			html.css("padding",cfg('padding'));
 
 			this.dom = html ;
 			this.module.getDomContent().html(this.dom);
@@ -20,7 +20,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
 		onResize: function() {
 			if(this.textbox){
-				margin = (13+5)*2 ;
+				margin = 20 ;
 				this.textbox.height( this.height - this.button.height() - margin );
 			}
 		},
@@ -65,7 +65,7 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 
 			var button = null ;
 			if(cfg('btnvalue')){
-				var button = $('<div>').html(cfg('btnvalue')).addClass("bi-form-button").addClass("btn");
+				var button = $('<div>').html(cfg('btnvalue')).addClass("form-button");
 				button.on("click",function(){
 					self.module.controller.onButtonClick();
 					return false ;
