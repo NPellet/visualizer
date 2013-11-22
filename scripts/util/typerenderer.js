@@ -6,18 +6,12 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 
 	functions.string = {};
 	functions.string.toscreen = function(def, val) {
-
-		if( val.get ) {
-			def.reject( val.get() );
-			return;
-		}
-
-		def.reject(val);
+		def.reject( Traversing.get( val ) );
 	}
 		
 	functions.matrix = {};
 	functions.matrix.toscreen = function(def, val) {
-		def.resolve(val);
+		def.resolve( Traversing.get( val ) );
 	}
 
 	functions.number = {};
@@ -32,7 +26,7 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 
 	functions.picture = {};
 	functions.picture.toscreen = function(def, val) {
-		def.reject('<img src="' + Traversing.getValueIfNeeded(val) + '" />')
+		def.reject('<img src="' + Traversing.get(val) + '" />')
 	}
 
 	functions.gif = functions.picture;

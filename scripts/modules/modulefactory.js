@@ -65,9 +65,9 @@ define(['modules/module'], function(Module) {
 
 		newModule: function(definition) {
 			var module = new Module(definition);
-			module.setId(++incrementalId);
-			modules.push(module);
-			definitions.push(definition);
+			module.setId( ++ incrementalId );
+			modules.push( module );
+			definitions.push( definition );
 			return module;
 		},
 

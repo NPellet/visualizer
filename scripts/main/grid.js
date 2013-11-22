@@ -1,5 +1,5 @@
 
-define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/context'], function($, ui, Util, ModuleFactory, Context) {	
+define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/context', 'util/versioning'], function($, ui, Util, ModuleFactory, Context, Versioning) {	
 
 
 	var definition, jqdom, self = this, moduleMove;
@@ -25,27 +25,40 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 		);
 	}
 
-	function addModuleFromJSON(json) {
-		var module = ModuleFactory.newModule(json);
-		$.when(module.ready).then(function() {
-			addModule(module);	
-		});
+	function addModuleFromJSON( json ) {
+
+		var module = ModuleFactory.newModule( json );
+		$.when( module.ready ).then( function( ) {
+
+			addModule( module );	
+		} );
+	}
+
+	function duplicateModule( module ) {
+
+		var def = JSON.parse( JSON.stringify( module.definition ), Versioning.getViewHandler()._reviver );
+		def.position.left += 2;
+		def.position.top += 2;
+		addModuleFromJSON( def );
 	}
 
 	function addModule(module) {
 		
 		var grid = this,
-			modulePos = module.getPosition(),
-			moduleSize = module.getSize();
-		
-		module.getDomWrapper().appendTo(jqdom).css({
-			top: Math.round(modulePos.top) * definition.yHeight,
-			left: Math.round(modulePos.left) * definition.xWidth,
-			width: Math.round(moduleSize.width) * definition.xWidth,
-			height: Math.round(moduleSize.height) * definition.yHeight
-		});
+			modulePos = module.getPosition( ),
+			moduleSize = module.getSize( );
+
+		module.getDomWrapper( ).appendTo( jqdom ).css( {
+
+			top: Math.round( modulePos.top ) * definition.yHeight,
+			left: Math.round( modulePos.left ) * definition.xWidth,
+			width: Math.round( moduleSize.width ) * definition.xWidth,
+			height: Math.round( moduleSize.height ) * definition.yHeight
+
+		} );
 
 		Context.listen(module.getDomWrapper().get(0), [
+
 			['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>', 
 			function() {
 				moveToFront(module);
@@ -68,11 +81,19 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 				var shiftY = e.pageY - pos.top;
 				moveModule(module, shiftX, shiftY);
 			}],
+
+
+			['<li><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>', 
+			function() {
+				duplicateModule( module );
+			}]
 		]);
 
 		module.ready.done(function() {
-			if(module.inDom)
-				module.inDom();
+
+			if( module.inDom ) {
+				module.inDom( );
+			}
 			// Expands the grid when one click on the header
 			module.getDomHeader().bind('mousedown', function() {
 				checkDimensions(true);

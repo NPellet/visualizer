@@ -6,15 +6,16 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		var moduleType = module.definition.type, def = $.Deferred();
 		
 		//Construct the DOM within the module
-		module.dom = $(module.buildDom());
-		module.domContent = module.dom.children().children('.ci-module-content');
-		module.domHeader = module.dom.children().children('.ci-module-header');
+		module.dom = $( module.buildDom( ) );
+
+		module.domContent = module.dom.children( ).children( '.ci-module-content' );
+		module.domHeader = module.dom.children( ).children( '.ci-module-header' );
 		module.domWrapper = module.dom;
 	
-		Util.loadCss(require.toUrl('modules/types/' + moduleType + '/style.css'));
+		Util.loadCss( require.toUrl( 'modules/types/' + moduleType + '/style.css' ) );
 
-		if(!moduleType) {
-			def.reject();
+		if( ! moduleType ) {
+			def.reject( );
 			return def;
 		}
 
@@ -143,8 +144,10 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		 * Returns the DOM object which corresponds to the module's wrapper
 		 */
 		getDomWrapper: function() {
-			if(typeof this.domWrapper !== 'undefined')
+
+			if( typeof this.domWrapper !== 'undefined' ) {
 				return this.domWrapper;
+			}
 			throw "The module has not been loaded yet";
 		},
 		
@@ -747,6 +750,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 				});
 			});
 		},
+
 
 		getConfiguration: function( aliasName ) {
 

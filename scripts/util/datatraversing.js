@@ -267,6 +267,14 @@ define(['jquery', 'data/structures'], function($, Structures) {
 			}
 		},
 
+		get: function( data ) {
+			if( data.get ) {
+				return data.get();
+			}
+
+			return data;
+		},
+
 		getHighlights: getHighlights,
 		getOptions: getOptions,
 
