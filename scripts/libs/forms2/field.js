@@ -13,6 +13,12 @@ define(['require', 'jquery'], function(require, $) {
 		init: function(options) {
 			this.options = $.extend({}, Field.defaultOptions, options); // Creates the options
 			this.elements = [];
+
+			this.initimpl( );
+		},
+
+		initimpl: function() {
+
 		},
 
 		getTitle: function() {
