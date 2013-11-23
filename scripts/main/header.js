@@ -7,16 +7,19 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 			var self = this;
 			this.dom = $('<div id="header"><div id="title"><div></div></div></div>');
 			$("body").prepend(this.dom);
-			this.load(urls.header);
-			this.setHeight("30px");
-			Versioning.getViewHandler().versionChange().progress(function(el) {
-				self.setTitle(el);
-			});
+			this.load( urls.header );
+			this.setHeight( "30px" );
+
+			Versioning.getViewHandler( ).versionChange( ).progress( function(el) {
+
+				self.setTitle( el );
+				
+			} );
 		},
 
 		setHeight: function(height) {
 			this.dom.css('height', height);
-			$("#ci-modules-grid").css('margin-top', '30px');
+			$("#modules-grid").css('margin-top', '30px');
 		},
 
 		setTitle: function(view) {

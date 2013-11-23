@@ -20,7 +20,7 @@ define(['jquery'], function($) {
 			if(db)
 				return def.resolve();
 
-			var req = indexedDB.open('ci', 22);	
+			var req = indexedDB.open('ci', 26);	
 			/*if(req.error)
 				console.warn(req.error);*/
 
