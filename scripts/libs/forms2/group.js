@@ -60,6 +60,10 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 					field.group = self;
 					
 					self.fields[ fieldName ] = field;
+
+					if( field.options.displaySource || field.options.displayTarget ) {
+						self.form.conditionalElementDisplayer.init( field, field.options.displaySource, field.options.displayTarget );
+					}
 					
 					deferred.resolve( field );
 				});

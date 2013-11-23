@@ -170,19 +170,28 @@ define(['modules/defaultcontroller'], function(Default) {
 								type: 'checkbox',
 								title: 'Axis flipping',
 								options: { 'flipX': 'Flip X', 'flipY': "Flip Y"},
+								caseDisplay: {
+									flipX: 1,
+									flipY: 2
+								},
 								default: []
 							},
 
 							displayAxis: {
 								type: 'checkbox',
 								title: 'Display axis',
-								options: { 'x': 'X', 'y': "Y"},
+								options: { 
+									'x': 'X', 
+									'y': 'Y'
+								},
+								displayCase: [ 1 ],
 								default: ['y']
 							},
 
 							grids: {
 								type: 'checkbox',
 								title: 'Grids',
+								displayCase: [ 2 ],
 								options: { 'hmain': 'Horizontal Main', 'hsec': 'Honrizontal Seconday', 'vmain': 'Vertical Main', 'vsec': 'Vertical Secondary' },
 								default: []
 							},

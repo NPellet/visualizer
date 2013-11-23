@@ -21,8 +21,8 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 			this.sections = {}; // List all sections
 			this.sectionElements = {};
 
-			this.allFields = []; // List all fields
-			this.allFieldElements = [];
+			this.allFields = []; // List all fields, DEFERRED
+			this.allFieldElements = []; // List of all field elements, DEFERRED
 
 			this._onStructureLoaded = $.Deferred();
 			this._onValueLoaded = $.Deferred();	
