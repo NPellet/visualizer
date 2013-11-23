@@ -6,8 +6,14 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 		init: function() {	
 			var html = "";
 			html += '<div></div>';
-			this.dom = $(html).css('display', 'table').css('height', '100%').css('width', '100%');
-			this.module.getDomContent().html(this.dom);
+			
+			this.dom = $( html ).css( { 
+				display: 'table',
+				height: '100%',
+				width: '100%'
+			} );
+
+			this.module.getDomContent( ).html( this.dom );
 			this.fillWithVal( this.module.getConfiguration( 'defaultvalue' ) );
 		},
 		
@@ -21,9 +27,12 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 
 		update: {
 			'color': function(color) {
-				if(color === undefined)
+
+				if( color === undefined ) {
 					return;
-				this.module.getDomContent().css('backgroundColor', color);
+				}
+
+				this.module.getDomContent( ).css( 'backgroundColor', color );
 			},
 
 			'value': function(moduleValue) {
@@ -31,7 +40,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				var view = this,
 					sprintfVal = this.module.getConfiguration('sprintf');
 
-				if (moduleValue == undefined) {
+				if( moduleValue == undefined ) {
 
 					this.fillWithVal( this.module.getConfiguration('defaultvalue') || '' );
 
