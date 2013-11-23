@@ -106,6 +106,7 @@ define(['jquery'], function($) {
 
 			this.group.eachFields( function( field ) {
 				self.eachFieldElements( field.getName() , function( fieldElement ) {
+					fieldElement._inDom = true;
 					fieldElement.inDom();
 				} );
 			} );

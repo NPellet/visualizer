@@ -81,10 +81,18 @@ define(['modules/defaultcontroller'], function(Default) {
 									{title: 'Times new roman', key: 'times new roman'},
 									{title: 'Trebuchet MS', key: 'trebuchet ms'},
 									{title: 'Verdana', key: 'verdana'}
-								]
+								],
+
+								displaySource:  {
+									'arial': 1,
+									'verdana': [4,5]
+								}
 							},
 
 							fontsize: {
+
+								displayTarget: [1,3,4],
+
 								type: 'combo',
 								title: 'Font size',
 								options: [

@@ -62,7 +62,7 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 					self.fields[ fieldName ] = field;
 
 					if( field.options.displaySource || field.options.displayTarget ) {
-						self.form.conditionalElementDisplayer.init( field, field.options.displaySource, field.options.displayTarget );
+						self.form.conditionalDisplayer.init( field, field.options.displaySource, field.options.displayTarget );
 					}
 					
 					deferred.resolve( field );

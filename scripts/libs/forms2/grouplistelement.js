@@ -23,13 +23,11 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 		self.fieldElementsDom = self.fieldElementsDom || { };
 		this.group.eachFields( function( field ) {
 
-			//self.getFieldElement( field.getName(), 0 );
-
-			div = $( "<div />" ).addClass( 'form-field-list-' + field.getType() );
+			div = $( "<div />" ).addClass( 'form-field-list-' + field.getType( ) );
 			label = $( "<label />" ).html( field.getTitle( true ) ); // Title is attached to field element
 
 			div.append( label );
-			divFieldElements = $( "<div />" ).addClass( 'form-field-list-elements' );
+			divFieldElements = $( '<div />' ).addClass( 'form-field-list-elements' );
 			div.append( divFieldElements );
 			dom.append( div );
 
@@ -60,6 +58,18 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 		return this.dom;
 	};
 
+
+	GroupListElement.prototype.condDisplay = function( fieldName, displayOrHide ) {
+console.trace();
+		this.eachFieldElements( fieldName, function( fieldEl ) {
+			if( displayOrHide ) {
+				this.fieldElementsDom[ fieldName ].parent( ).show();
+			} else {
+				this.fieldElementsDom[ fieldName ].parent( ).hide();
+			}
+		});
+		
+	}
 
 	GroupListElement.prototype.getFieldIndex = function( fieldElement ) {
 

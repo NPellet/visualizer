@@ -1,4 +1,4 @@
-define(['jquery', './section', './sectionelement'], function($, Section, SectionElement) {
+define(['jquery', './section', './sectionelement', './conditionalelementdisplayer'], function($, Section, SectionElement, ConditionElementDispalyer) {
 
 	var Form = function() { };
 
@@ -31,6 +31,8 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 			this.expander = {};
 			this.form = this;
 
+			this.conditionalDisplayer = new ConditionElementDispalyer();
+
 			this.buttons = [];
 			this.buttonsDom = $("<div />").addClass('form-buttonzone');
 		},
@@ -55,7 +57,7 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 			this.allFieldElements.push( deferred );
 		},
 
-		fieldElementValueChanged: function( fieldElement, value ) {
+		fieldElementValueChanged: function( fieldElement, value, oldValue ) {
 
 			if( this.doneDom ) {
 				this.triggerAction('onValueChanged', fieldElement, this.getValue( ) );
@@ -155,6 +157,18 @@ define(['jquery', './section', './sectionelement'], function($, Section, Section
 			}
 
 			dom.append( this.buttonsDom );
+
+			// When the dom is created we can display / hide additional fields based on conditioning
+			$.when.apply( $, this.allFieldElements ).then( function( ) {
+
+				var i = 0,
+					l = arguments.length;
+
+				for( ; i < l ; i ++ ) {
+					self.conditionalDisplayer.changed( arguments[ i ] );
+				}
+
+			} );
 
 			return (this.dom = dom);
 		},

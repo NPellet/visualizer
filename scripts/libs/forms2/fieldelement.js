@@ -14,9 +14,17 @@ define(['jquery'], function($) {
 		},
 
 		getDom: function() {
-			this._dom || (this._dom = this._makeDom());
+			this._dom || ( this._dom = this._makeDom( ) );
 			this.field.changed( this );
 			return this.dom;
+		},
+
+		display: function() {
+			this.getDom().show();
+		},
+
+		hide: function() {
+			this.getDom().hide();
 		},
 
 		getName: function() {
@@ -54,11 +62,17 @@ define(['jquery'], function($) {
 		},
 
 		setValueSilent: function( value, doNotNotifyForm ) {
+			var oldValue = this._value;
+
 			this._value = value;
 			this.field.changed( this );
 
 			if( ! doNotNotifyForm ) {
-				this.form.fieldElementValueChanged( this, value );
+				this.form.fieldElementValueChanged( this, value, oldValue );
+			}
+
+			if( this._inDom ) {
+				this.form.conditionalDisplayer.changed( this, oldValue );
 			}
 		},
 
@@ -72,7 +86,6 @@ define(['jquery'], function($) {
 		},
 
 		inDom: function() { },
-
 
 		unSelect: function( event ) {
 

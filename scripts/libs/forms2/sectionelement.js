@@ -132,7 +132,7 @@ define(['require', 'jquery'], function(require, $) {
 
 				self.eachGroupElements( group.getName() , function( groupElement ) {
 
-					callback( groupElement );					
+					callback( groupElement, 'group' );					
 				});
 			});
 
@@ -140,7 +140,7 @@ define(['require', 'jquery'], function(require, $) {
 
 				self.eachSectionElements( section.getName() , function( sectionElement ) {
 
-					callback( sectionElement );
+					callback( sectionElement, 'section' );
 				});
 			});
 		},
