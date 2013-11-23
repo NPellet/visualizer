@@ -105,6 +105,36 @@ define(['require', 'jquery'], function(require, $) {
 			} );
 		},
 
+
+		condDisplay: function( elementName, elementType, displayOrHide ) {
+
+			var els,
+				i = 0,
+				l;
+
+			switch( elementType ) {
+
+				case 'section':
+					els = this.sectionElements[ elementName ];
+				break;
+
+				case 'group':
+					els = this.groupElements[ elementName ];
+				break;
+			}
+
+			for( l = els.length ; i < l ; i ++ ) {
+
+				if( displayOrHide ) {
+					els[ i ].show();
+				} else {
+					els[ i ].hide();
+				}
+
+			}
+		},
+
+
 		eachGroupElements: function(groupName, callback) {
 			if( ! this.groupElements[ groupName ]) {
 				return;
@@ -298,6 +328,13 @@ define(['require', 'jquery'], function(require, $) {
 			return (this.dom = dom);
 		},
 
+		show: function() {
+			this.dom.show();
+		},
+
+		hide: function() {
+			this.dom.hide();
+		},
 
 		getSectionIndex: function( sectionElement ) {
 

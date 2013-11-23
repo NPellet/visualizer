@@ -63,33 +63,19 @@ define( [ 'jquery' ], function( $ ) {
 
 		lookForGroupOrSection: function( sectionElement, key, displayOrHide ) {
 
-			sectionElement.eachElements( function( element, nodeType ) {
+			sectionElement.section.eachSections( function( section ) {
 
-				switch( nodeType ) {
+				if( section.options.displayTarget && section.options.displayTarget.indexOf( key ) > -1 ) {
 
-					
-					case 'section':
-
-						if( element.section.options.displayTarget && element.section.options.displayTarget.indexOf( key ) > -1 ) {
-
-							sectionElement.condDisplay( element, nodeType, displayOrHide );
-
-						}
-					break;
-
-					case 'group':
-
-
-						if( element.group.options.displayTarget && element.group.options.displayTarget.indexOf( key ) > -1 ) {
-
-							sectionElement.condDisplay( element, nodeType, displayOrHide );
-
-						}
-
-					break;
+					sectionElement.condDisplay( section.getName( ), 'section', displayOrHide );
 				}
+			});
 
-			} );
+			sectionElement.section.eachGroups( function( group ) {
+				if( group.options.displayTarget && group.options.displayTarget.indexOf( key ) > -1 ) {
+					sectionElement.condDisplay( group.getName( ), 'group', displayOrHide );
+				}
+			});
 
 			sectionElement = sectionElement.sectionElement;
 

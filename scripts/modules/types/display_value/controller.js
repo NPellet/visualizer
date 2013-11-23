@@ -137,7 +137,29 @@ define(['modules/defaultcontroller'], function(Default) {
 								title: 'Sprintf'
 							}
 						}
+					},
+
+
+
+					group2: {
+						options: {
+							type: 'list',
+							displayTarget: [ 1 ]
+						},
+
+						fields: {
+
+							defaultvalue1: {
+								type: 'slider',
+								title: 'Default value',
+								default: 0.4,
+								min: -1,
+								max: 5,
+								step: 0.001
+							}
+						}
 					}
+
 				}
 			}
 		},

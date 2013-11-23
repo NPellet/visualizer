@@ -116,6 +116,15 @@ define(['jquery'], function($) {
 
 		},
 
+
+		show: function() {
+			this.dom.show();
+		},
+
+		hide: function() {
+			this.dom.hide();
+		},
+
 		getFieldElement: function( fieldName, fieldId ) {
 			var self = this,
 				el;
