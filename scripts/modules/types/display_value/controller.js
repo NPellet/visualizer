@@ -46,6 +46,12 @@ define(['modules/defaultcontroller'], function(Default) {
 
 						fields: {
 
+							defaultvalue1: {
+								type: 'slider',
+								title: 'Default value',
+								default: 0.4
+							},
+
 							defaultvalue: {
 								type: 'wysiwyg',
 								title: 'Default value'

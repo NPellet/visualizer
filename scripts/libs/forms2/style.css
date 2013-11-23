@@ -199,6 +199,16 @@ div.selected {
 	background-color: #eeeeee;
 }
 
+.forms .form-field-list-slider .field-list {
+	border: none;
+	height: auto;
+}
+
+.forms .forms-field-slider-value {
+	margin-top: 8px;
+	height: 25px;
+}
+
 h2 .form-duplicator-wrapper {
 	float: right;
 	font-size: 10px;
