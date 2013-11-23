@@ -33,6 +33,10 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 		configurationReceive: {
 				
 		},
+
+		configurationStructure: function() {
+			return {};
+		},
 		
 		"export": function() {
 		}

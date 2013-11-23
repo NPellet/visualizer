@@ -14,15 +14,15 @@
 
 
 
-#ci-modules-grid > div.ci-module-wrapper.ci-module-displaywrapper.ci-module-postit {
+#modules-grid > div.ci-module-wrapper.ci-module-displaywrapper.ci-module-postit {
 	border: none;
 }
 
-#ci-modules-grid > .ci-module-wrapper.ci-module-displaywrapper.ci-module-postit .ci-module-header {
+#modules-grid > .ci-module-wrapper.ci-module-displaywrapper.ci-module-postit .ci-module-header {
 	display: none;
 }
 
-#ci-modules-grid > .ci-module-wrapper.ci-module-displaywrapper.ci-module-postit .ci-module-content {
+#modules-grid > .ci-module-wrapper.ci-module-displaywrapper.ci-module-postit .ci-module-content {
 	overflow: hidden;
 	border: none;
 }
