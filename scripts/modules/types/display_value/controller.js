@@ -49,7 +49,10 @@ define(['modules/defaultcontroller'], function(Default) {
 							defaultvalue1: {
 								type: 'slider',
 								title: 'Default value',
-								default: 0.4
+								default: 0.4,
+								min: -1,
+								max: 5,
+								step: 0.001
 							},
 
 							defaultvalue: {

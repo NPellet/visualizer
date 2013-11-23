@@ -10,13 +10,12 @@ define( [ require, '../../field', ], function( require, FieldDefaultConstructor 
 	FieldConstructor.prototype = new FieldDefaultConstructor( );
 
 	FieldConstructor.prototype.initimpl = function() {
-		 
-		 $.extend(this.options, {
+
+		 this.options = $.extend( {
 		 	min: 0,
 		 	max: 1,
 		 	step: 0.1
-		 });
-
+		 }, this.options );
 	}
 
 	return FieldConstructor;
