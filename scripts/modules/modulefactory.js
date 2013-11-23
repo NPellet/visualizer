@@ -34,6 +34,7 @@ define(['modules/module'], function(Module) {
 
 				'Data edition': {
 					'object_editor': 'Object editor (?)',
+					'filter': 'General filtering',
 					'var_editor': 'Data manipulation'
 					//'array_search': 'Data searching'
 				},

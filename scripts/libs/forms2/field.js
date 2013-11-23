@@ -49,6 +49,7 @@ define(['require', 'jquery'], function(require, $) {
 				element.field = self;
 
 				self.elements.push( element );
+			
 
 				$.when( element.ready ).then( function() {
 					deferred.resolve( element );

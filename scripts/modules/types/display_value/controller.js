@@ -85,7 +85,10 @@ define(['modules/defaultcontroller'], function(Default) {
 
 								displaySource:  {
 									'arial': 1,
-									'verdana': [4,5]
+									'verdana': 4,
+									'trebuchet ms': 3,
+									'palatino': 5
+
 								}
 							},
 
@@ -139,12 +142,10 @@ define(['modules/defaultcontroller'], function(Default) {
 						}
 					},
 
-
-
 					group2: {
 						options: {
 							type: 'list',
-							displayTarget: [ 1 ]
+							displayTarget: [ 5 ]
 						},
 
 						fields: {
@@ -159,12 +160,10 @@ define(['modules/defaultcontroller'], function(Default) {
 							}
 						}
 					}
-
 				}
 			}
 		},
 		
-
 		configAliases: {
 			'fontcolor': [ 'groups', 'group', 0, 'fontcolor', 0 ],
 			'font': [ 'groups', 'group', 0, 'font', 0 ],

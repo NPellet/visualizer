@@ -18,6 +18,9 @@ define(['require', 'jquery'], function(require, $) {
 			this.groupElements = {};
 			this.sectionElements = {};
 
+			// Collection of all field elements in groupElements and sectionElements...
+			this.fieldElements = [];
+
 			this.readyDef = $.Deferred();
 			this.done = 0;
 		},
@@ -179,6 +182,14 @@ define(['require', 'jquery'], function(require, $) {
 			this.eachElements( function( element ) {
 				element.redoTabIndices();
 			} );
+		},
+
+		addFieldElement: function( fieldElement ) {
+			this.fieldElements.push( fieldElement );
+		},
+
+		removeFieldElement: function( fieldElement ) {
+			this.fieldElements.splice( this.fieldElements.indexOf( fieldElement ), 1 );
 		},
 
 		eachSectionElements: function(sectionName, callback) {
@@ -359,7 +370,7 @@ define(['require', 'jquery'], function(require, $) {
 				name = sectionElement.section.getName( ),
 				sectionIndex = this.getSectionIndex( sectionElement );
 
-			if(sectionIndex === false) {
+			if( sectionIndex === false ) {
 				return;
 			}
 
@@ -368,7 +379,7 @@ define(['require', 'jquery'], function(require, $) {
 			}
 
 			this.sectionElements[ name ].splice( sectionIndex, 1 ); // Remove the element from the stack
-			sectionElement.dom.remove();
+			sectionElement.dom.remove( );
 			sectionElement.dom = null;
 			sectionElement = null;
 		},
@@ -387,7 +398,7 @@ define(['require', 'jquery'], function(require, $) {
 			var newSectionEl = this
 								.section
 								.getSection( name )
-								.makeElement();
+								.makeElement( );
 
 			newSectionEl.sectionElement = this; // Sets the parent element as being this
 
@@ -397,12 +408,20 @@ define(['require', 'jquery'], function(require, $) {
 			
 			newSectionEl.readyDef.then( function() { // Only when all fields have loaded we can trigger a dom creation
 
-				if( sectionElement && sectionElement.dom ) { // If it exists, we add it right after
-					sectionElement.dom.after( newSectionEl.makeDom( ) );	
+				if( sectionElement && sectionElement.dom ) { // If we actually duplicate an existing section, we add it right after
+
+					sectionElement.dom.after( newSectionEl.makeDom( ) );
+
 				} else { // Else we add it at the end
+
 					self.dom.append( newSectionEl.makeDom( ) );
+
 				}
-			
+
+				for( var i = 0, l = newSectionEl.fieldElements.length ; i < l ; i ++ ) {
+					self.section.form.conditionalDisplayer.changed( newSectionEl.fieldElements[ i ] );
+				}
+
 				newSectionEl.inDom( );
 			});
 		

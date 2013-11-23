@@ -94,9 +94,9 @@ define(['jquery'], function($) {
 
 		fillElement: function( i, j, json, clear ) {
 
-			return $.when( this.getFieldElement( i , j ) ).then( function( el ) {
+			return $.when( this.getFieldElement( i , j ) ).then( function( el ) { // When the field element is loaded.
 
-				el.setDefaultOr( json );
+				el.setDefaultOr( json ); // The filling adds either the json, which is the data loaded, or the default from the structure (automatic)
 				
 			} );
 		},
@@ -125,7 +125,7 @@ define(['jquery'], function($) {
 			this.dom.hide();
 		},
 
-		getFieldElement: function( fieldName, fieldId ) {
+		getFieldElement: function( fieldName, fieldId ) { // Creates the fieldEl and returns deferred OR returns the already created field element
 			var self = this,
 				el;
 		
@@ -133,16 +133,20 @@ define(['jquery'], function($) {
 
 			if( ! this.fieldElements[ fieldName ][ fieldId ] && this.group.getField( fieldName ) ) {
 
-				el = this.group.getField( fieldName ).makeElement( ).done( function(value) {
-					value.group = self.group;
-					value.groupElement = self;
-					self.fieldElements[ fieldName ][ fieldId ] = value;
+				el = this.group.getField( fieldName ).makeElement( ).done( function( fieldElement ) {
+					fieldElement.group = self.group;
+					fieldElement.groupElement = self;
+
+					// Adds the field element to its own section for logging purposes.
+					self.sectionElement.addFieldElement( fieldElement );
+
+					self.fieldElements[ fieldName ][ fieldId ] = fieldElement; // Adds to its own field elements
 				} );
 
 				return el;
 			}
 
-			return this.fieldElements[ fieldName ][ fieldId ];
+			return this.fieldElements[ fieldName ][ fieldId ]; // If no creation is needed, we return the fieldElement defined by fieldName and fieldId
 		},
 
 		_getElement: function(stack, getter, name, id) {

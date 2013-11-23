@@ -52,7 +52,7 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 		},
 
 
-		addFieldElement: function( deferred ) {
+		addFieldElement: function( deferred ) { // Called from field.js, method makeElement()
 
 			this.allFieldElements.push( deferred );
 		},

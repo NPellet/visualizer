@@ -71,6 +71,9 @@ define(['jquery'], function($) {
 				this.form.fieldElementValueChanged( this, value, oldValue );
 			}
 
+			// The conditional displaying will mess with the dom. This can be done only if the dom whole document model is 
+			// already created. Otherwise nevermind, all fields will be examined when the dom is created.
+			// This is due to the fact that setting a value may (and will) occur before creating the dom.
 			if( this._inDom ) {
 				this.form.conditionalDisplayer.changed( this, oldValue );
 			}
