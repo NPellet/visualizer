@@ -272,15 +272,19 @@ define(['require', 'jquery'], function(require, $) {
 		},
 
 		getTitle: function() {
-			return this.section.options.title || 'No title';
+			return this.section.options.title || false;
 		},
 
 		getTitleIcon: function() {
-			var html = '';
+			var html = '',
+				title = this.getTitle();
 			if(this.section.options.icon) {
 				html += '<img src="' + require.toUrl('./images/' + this.section.options.icon + '.png') + '" />';
 			}
-			html += '<div>' + this.getTitle() + '</div>';
+
+			if( title ) {
+				html += '<div>' + title + '</div>';
+			}
 			return html;
 		},
 
@@ -300,23 +304,12 @@ define(['require', 'jquery'], function(require, $) {
 						this.section.form.sectionLvl1Buttons.append('<div data-section-name="' + this.section.getName() + '" class="form-section-select">' + this.getTitleIcon( ) + '</div>');	
 						dom.hide();
 					} else {
-						h = $('<h' + (this.section.sectionLevel) + '>' + this.getTitle( ) + '</h' + (this.section.sectionLevel) + '>')
-						if( this.section.options.multiple ) {
-							var spanDupl = $('<div class="form-duplicator-wrapper"><span class="form-duplicator form-duplicator-add">duplicate</span> - <span class="form-duplicator form-duplicator-remove">remove</span></div>').on('click', 'span', function() {
-								var dupl = $(this).hasClass('form-duplicator-add');
-								// Call parent
-								self.sectionElement[ dupl ? 'duplicateSectionElement' : 'removeSectionElement']( self );
-							});
-							h.append(spanDupl);
-						}
-
-						dom.append(h);
+						this.stdTitle( dom );
 					}
-					
 				break;
 
 				default:
-					dom.append('<h' + (this.section.sectionLevel) + '>' + this.getTitle( ) + '</h' + (this.section.sectionLevel) + '>');
+					this.stdTitle( dom );
 				break;
 
 			}
@@ -337,6 +330,34 @@ define(['require', 'jquery'], function(require, $) {
 			
 	
 			return (this.dom = dom);
+		},
+
+		stdTitle: function( dom ) {
+
+			var title = this.getTitle(),
+				lvl = this.section.sectionLevel;
+
+			if( title || this.section.options.multiple ) { // If no title and no duplicate, no reason to add the title I think
+
+				h = $('<h' + lvl + '>' + title + '</h' + lvl + '>');
+
+				if( this.section.options.multiple ) {
+					h.append( this.makeDuplicator( ) );
+				}
+
+				dom.append(h);
+			}
+		},
+
+		makeDuplicator: function( ) {
+
+			var self = this;
+
+			return $('<div class="form-duplicator-wrapper"><span class="form-duplicator form-duplicator-add">duplicate</span> - <span class="form-duplicator form-duplicator-remove">remove</span></div>').on('click', 'span', function() {
+				var dupl = $(this).hasClass('form-duplicator-add');
+				// Duplicate function as to be called on the parent with self as a parameter
+				self.sectionElement[ dupl ? 'duplicateSectionElement' : 'removeSectionElement']( self );
+			});
 		},
 
 		show: function() {

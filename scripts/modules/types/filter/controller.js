@@ -32,12 +32,11 @@ define(['modules/defaultcontroller'], function(Default) {
 
 						options: {
 							multiple: true,
-							label: "Salut",
-							title: "Hello"
+							title: "Filtering field"
 						},
 
 						groups: {
-							group: {
+							general: {
 								options: {
 									type: 'list'
 								},
@@ -49,13 +48,13 @@ define(['modules/defaultcontroller'], function(Default) {
 										title: 'Field label'
 									},
 
-									font: {
+									type: {
 										type: 'combo',
 										title: 'Field type',
 										options: [
-											{title: 'Text', key: 'text'},
-											{title: 'Combo', key: 'combo'},
-											{title: 'Slider', key: 'slider'}
+											{ title: 'Text', key: 'text' },
+											{ title: 'Combo', key: 'combo' },
+											{ title: 'Slider', key: 'slider' }
 										],
 
 										displaySource:  {
@@ -98,7 +97,7 @@ define(['modules/defaultcontroller'], function(Default) {
 								options: {
 									type: 'table',
 									multiple: true,
-									displayTarget: ['combo', 'checkbox']
+									displayTarget: [ 'combo', 'checkbox' ]
 								},
 
 								fields: {
@@ -121,7 +120,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 		configAliases: {
-			
+			filters: [ 'sections', 'filterElement' ],
 		}
 	});
 
