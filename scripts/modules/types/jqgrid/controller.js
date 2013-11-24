@@ -24,17 +24,17 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			}
 		},
 
-		lineClick: function(element, row) {
+		lineClick: function( element ) {
 			this.setVarFromEvent('onSelect', element);
 			this.sendAction('row', element, 'onSelect');
 		},
 
-		onToggleOn: function(element, row) {
+		onToggleOn: function( element ) {
 			this.sendAction('element', element, 'onToggleOn');
 			this.setVarFromEvent('onToggleOn', element);
 		},
 
-		onToggleOff: function(element, row) {
+		onToggleOff: function( element ) {
 			this.sendAction('element', element, 'onToggleOff');
 			this.setVarFromEvent('onToggleOff', element);
 		},

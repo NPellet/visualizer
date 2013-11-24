@@ -13,19 +13,29 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this.domBody = $( "<tbody />" ).appendTo( this.domTable );
 
 
-	 		this.domTable.on('mouseover', 'tr.jqgrow', function() {
+	 		this.domTable.on('mouseover', 'tr', function() {
 
 	 			if(this !== lastTr) {
-					self.module.controller.lineHover(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
+	 				var el = self.module.data[ parseInt( $(this).attr('data-row-id') ) ];
+	 				self.module.controller.lineHover( el );
 	 			}
 				lastTr = this;
 
-	 		}).on('mouseout', 'tr.jqgrow', function() {
+	 		}).on('mouseout', 'tr', function() {
 
 	 			if(this == lastTr) {
-					self.module.controller.lineOut(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
+
+	 				var el = self.module.data[ parseInt( $(this).attr('data-row-id') ) ];
 					lastTr = this;
+					self.module.controller.lineOut( el );
+					
 	 			}
+
+	 		}).on('click', 'tr', function() {
+
+ 				var el = self.module.data[ parseInt( $(this).attr('data-row-id') ) ];
+ 				self.module.controller.lineClick( el );
+
 	 		});
 
 	 		this.dom = this.domTable;
@@ -123,6 +133,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					if( this.colorjpath ) {
 						html += ' style="background-color: ' + this.colorjpath( moduleValue[ i ] ) + ';"';
 					}
+					html += ' data-row-id="' + i + '"';
 					html += '>';
 					j = 0;
 					for( ; j < k ; j ++ ) {
