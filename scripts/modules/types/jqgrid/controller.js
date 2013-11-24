@@ -218,7 +218,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		},
 
 		configFunctions: {
-			'displaySearch': function(cfg) { return cfg.indexOf('allow')>-1; }
+			'displaySearch': function(cfg) { return cfg.indexOf('allow')>-1; },
+			'colsjPaths': function(cfg) { return cfg || [] }
 		},
 
 		configAliases: {

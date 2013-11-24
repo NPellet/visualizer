@@ -10,7 +10,8 @@ define(['modules/module'], function(Module) {
 				'Displaying information': {
 					'display_value': 'Single value',
 					'jqgrid': 'Table',
-					'2d_list': '2D List',
+					'fasttable': 'Fast table',
+					'2d_list': '2D list',
 					'hashmap': 'Object viewer',
 					'postit': 'Sticky note',
 					'iframe': 'iFrame',
