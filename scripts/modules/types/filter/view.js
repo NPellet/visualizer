@@ -14,7 +14,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 			var self = this,
 				filters = this.module.getConfiguration( 'filters' ),
 				script = this.module.getConfiguration( 'script' ),
-				varsoutCfg = this.module.getConfiguration( 'varsout' ),
+				varsoutCfg = this.module.definition.vars_out,
 				varsout = [],
 				i = 0,
 				l = filters.length,
@@ -36,9 +36,8 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 					}
 				};
 
-
 			for( ; j < k ; j ++ ) {
-				varsout.push( varsoutCfg[ j ].varoutname);
+				varsout.push( varsoutCfg[ j ].name );
 			}
 			
 			for( ; i < l ; i ++ ) {

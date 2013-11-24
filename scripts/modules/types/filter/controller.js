@@ -5,7 +5,9 @@ define(['modules/defaultcontroller'], function(Default) {
 
 		configurationSend: {
 			events: {
-				
+				filter: {
+					label: 'Filtering is done'
+				}
 			},
 			
 			rels: {
@@ -47,7 +49,7 @@ define(['modules/defaultcontroller'], function(Default) {
 								title: 'Filtering script'
 							}
 						}
-					},
+					}/*,
 
 					varsout: {
 						options: {
@@ -62,7 +64,7 @@ define(['modules/defaultcontroller'], function(Default) {
 								title: 'Variable name'
 							}
 						}
-					}
+					}*/
 				},
 
 				sections: {
@@ -164,7 +166,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 		configFunctions: {
-			
+
 			varsout: function( cfg ) {
 				if( ! ( cfg instanceof Array ) ) {
 					return [];
@@ -190,8 +192,8 @@ define(['modules/defaultcontroller'], function(Default) {
 
 		configAliases: {
 			filters: [ 'sections', 'filterElement' ],
-			script: [ 'groups', 'cfg', 0, 'script', 0 ],
-			varsout: [ 'groups', 'varsout', 0 ],
+			script: [ 'groups', 'cfg', 0, 'script', 0 ]//,
+		//	varsout: [ 'groups', 'varsout', 0 ],
 		}
 	});
 
