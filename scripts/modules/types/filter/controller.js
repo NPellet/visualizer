@@ -81,6 +81,12 @@ define(['modules/defaultcontroller'], function(Default) {
 
 								fields: {
 
+
+									name: {
+										type: 'text',
+										title: 'Field name'
+									},
+
 									label: {
 										type: 'text',
 										title: 'Field label'
@@ -159,12 +165,9 @@ define(['modules/defaultcontroller'], function(Default) {
 		
 		configFunctions: {
 			varsout: function( cfg ) {
-
-				console.log(varsout);
 				if( ! ( cfg instanceof Array ) ) {
 					return [];
 				}
-
 				return cfg;
 			},
 
@@ -173,6 +176,14 @@ define(['modules/defaultcontroller'], function(Default) {
 					return '';
 				}
 
+				return cfg;
+			},
+
+
+			filters: function( cfg ) {
+				if( ! ( cfg instanceof Array ) ) {
+					return [];
+				}
 				return cfg;
 			}
 		},

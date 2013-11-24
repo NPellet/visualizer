@@ -47,7 +47,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 					continue;
 				}
 
-				allFields[ i ] = {
+				allFields[ filters[ i ].groups.general[ 0 ].name[ 0 ] ] = {
 					type: filters[ i ].groups.general[ 0 ].type[ 0 ],
 					title: filters[ i ].groups.general[ 0 ].label[ 0 ]
 				};

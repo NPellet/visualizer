@@ -319,8 +319,6 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 			}
 			////////////
 
-						
-
 			this.dom.focus();
 			this.redoTabIndices( );
 		},
@@ -360,11 +358,15 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 
 
 		getExpanderDom: function() {
-			return this.expander.dom || ( this.expander.dom = $("<div />").addClass('form-expander').appendTo(this.dom).on('click', function( event ) {
-				event.stopPropagation();
-				event.preventDefault();
-
-			}) );
+			return this.expander.dom || ( 
+						this.expander.dom = $("<div />")
+												.addClass('form-expander')
+												.appendTo( this.dom )
+												.on('click', function( event ) {
+													event.stopPropagation();
+													event.preventDefault();
+												} ) 
+										);
 		},
 
 		setExpander: function(dom, fieldElement) {
