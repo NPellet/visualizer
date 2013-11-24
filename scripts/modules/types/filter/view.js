@@ -20,7 +20,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				l = filters.length,
 				j = 0,
 				k = varsoutCfg.length,
-				allFields = {},
+				allFields = { },
 				cfg = {
 					sections: {
 						cfg: {
@@ -70,10 +70,6 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				form.setStructure( cfg );
 				form.onStructureLoaded().done(function() {
 					form.fill({ });
-				});
-
-				form.addButton('Filter', { color: 'green' }, function() {
-					
 				});
 
 				form.onLoaded( ).done( function( ) {
@@ -136,7 +132,6 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				break;
 
 				case 'slider':
-				
 					cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
 					cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
 					cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
