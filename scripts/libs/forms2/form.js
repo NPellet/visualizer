@@ -305,6 +305,22 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 				element.inDom( );
 			});
 
+
+			// We make all sections visible at this point
+			// (usefull for tables to resize their own columns)
+			var i,
+				j = 0,
+				l;
+			for( i in this.sectionElements ) {
+				l = this.sectionElements[ i ].length;
+				for( ; j < l ; j++) {
+					this.sectionElements[ i ][ j ].visible( );
+				}
+			}
+			////////////
+
+						
+
 			this.dom.focus();
 			this.redoTabIndices( );
 		},
