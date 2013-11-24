@@ -68,7 +68,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 						for( var i in cfg ) {
 							cfgFinal[ i ] = cfg[ i ][ 0 ];
 						}
-						
+
 						$.extend( self.cfgValue, cfgFinal );
 						self.filter();
 					}
@@ -108,7 +108,11 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 					console.warn( " Variable " + vOut + " has not been selected for variable out" );
 				}
 
-				function doSetVars() {
+				function getConfig() {
+					return _cfg;
+				}
+
+				function _doSetVars() {
 
 					var i;
 					for( i in _varsToSet ) {
@@ -116,11 +120,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 					}
 				}
 
-				function getConfig() {
-					return _cfg;
-				}
-
-				eval("var f = function() { \n" + script + "\n  doSetVars(); \n }");
+				eval("var f = function() { \n" + script + "\n  _doSetVars(); \n }");
 				return f;
 
 			}) ( API, this.cfgValue, this.variables, varsout, script );
