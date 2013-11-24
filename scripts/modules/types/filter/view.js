@@ -104,7 +104,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 						_varsToSet[ vName ] = vValue;
 						return;
 					}
-					console.warn( " Variable " + vOut + " has not been selected for variable out" );
+					console.warn( " Variable " + vName + " has not been selected for variable out" );
 				}
 
 				function getConfig() {
