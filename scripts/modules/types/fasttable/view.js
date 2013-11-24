@@ -9,7 +9,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 			lastTr;
 
 	 		this.domTable = $("<table />").css({width: '100%'});
+	 		this.domHead = $("<thead />").appendTo( this.domTable );
 	 		this.domBody = $("<tbody />").appendTo( this.domTable );
+
 
 	 		this.domTable.on('mouseover', 'tr.jqgrow', function() {
 
@@ -40,10 +42,16 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			this.jpaths = {};
 
+			thead = '<tr>';
 			for( ; j < l ; j ++ ) {
 				var jpath = jpaths[ j ].jpath.replace('element', '')
 				eval('this.jpaths[ jpaths[ j ].jpath ] = function( el ) { return el' + jpath + '; }');
+
+				thead += '<th>' + jpaths[ j ].name + '</th>';
 			}
+			thead += '</tr>';
+
+			this.domHead.html( thead );
 	 	},
 
 	 	unload: function() {
