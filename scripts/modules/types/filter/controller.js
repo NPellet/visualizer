@@ -15,7 +15,13 @@ define(['modules/defaultcontroller'], function(Default) {
 		
 		
 		configurationReceive: {
-			
+
+			"variable": {
+				type: [],
+				label: 'Any variable',
+				description: ''
+			}
+
 		},
 		
 		
@@ -27,6 +33,38 @@ define(['modules/defaultcontroller'], function(Default) {
 		configurationStructure: function(section) {
 			
 			return {
+
+				groups: {
+					cfg: {
+						options: {
+							type: 'list'
+						},
+
+						fields: {
+
+							script: {
+								type: 'jscode',
+								title: 'Filtering script'
+							}
+						}
+					},
+
+					varsout: {
+						options: {
+							type: 'table',
+							multiple: true
+						},
+
+						fields: {
+
+							varoutname: {
+								type: 'text',
+								title: 'Variable name'
+							}
+						}
+					}
+				},
+
 				sections: {
 					filterElement: {
 
@@ -119,8 +157,30 @@ define(['modules/defaultcontroller'], function(Default) {
 			}
 		},
 		
+		configFunctions: {
+			varsout: function( cfg ) {
+
+				console.log(varsout);
+				if( ! ( cfg instanceof Array ) ) {
+					return [];
+				}
+
+				return cfg;
+			},
+
+			script: function( cfg ) {
+				if( ! cfg ) {
+					return '';
+				}
+
+				return cfg;
+			}
+		},
+
 		configAliases: {
 			filters: [ 'sections', 'filterElement' ],
+			script: [ 'groups', 'cfg', 0, 'script', 0 ],
+			varsout: [ 'groups', 'varsout', 0 ],
 		}
 	});
 

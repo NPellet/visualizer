@@ -8,11 +8,18 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 
 			this.dom = $( '<div>' ).css( { } );
 			this.module.getDomContent( ).html( this.dom );
+			this.variables = {};
+			this.cfgValue = {};
 
 			var self = this,
 				filters = this.module.getConfiguration( 'filters' ),
+				script = this.module.getConfiguration( 'script' ),
+				varsoutCfg = this.module.getConfiguration( 'varsout' ),
+				varsout = [],
 				i = 0,
 				l = filters.length,
+				j = 0,
+				k = varsoutCfg.length,
 				allFields = {},
 				cfg = {
 					sections: {
@@ -29,6 +36,11 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 					}
 				};
 
+
+			for( ; j < k ; j ++ ) {
+				varsout.push( varsoutCfg[ j ].varoutname);
+			}
+			
 			for( ; i < l ; i ++ ) {
 
 				if( ! filters[ i ].groups.general ) {
@@ -43,12 +55,16 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				this.makeOptions( allFields[ i ], filters[ i ] );
 			}
 
+
 			require( [ './libs/forms2/form' ], function( Form ) {
 
 				var form = new Form( );
 				
 				form.init( {
-					onValueChanged: function( value ) {	}
+					onValueChanged: function( value ) {
+						$.extend( self.cfgValue, form.getValue().sections.cfg[ 0 ].groups.cfg[ 0 ] );
+						self.filter();
+					}
 				} );
 
 				form.setStructure( cfg );
@@ -65,6 +81,47 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 					form.inDom();
 				});
 			});
+
+
+			this._filter = ( function( API, _cfg, _varsIn, _varsOut, script ) {
+
+				var _varsToSet = [];
+				function getVar( vName ) {
+
+					if( typeof _varsIn[ vName ] !== "undefined" ) {
+						return _varsIn[ vName ];
+					}
+
+					console.warn( " Variable " + vName + " does not exist. Returning null ");
+					return null;
+				}
+
+				function setVar( vName, vValue ) {
+
+					if( _varsOut.indexOf( vName ) > -1 ) {
+						_varsToSet[ vName ] = vValue;
+						return;
+					}
+					console.warn( " Variable " + vOut + " has not been selected for variable out" );
+				}
+
+				function doSetVars() {
+
+					var i;
+					for( i in _varsToSet ) {
+						API.setVar( i, _varsToSet[ i ] );
+					}
+				}
+
+				function getConfig() {
+					return _cfg;
+				}
+
+				eval("var f = function() { \n" + script + "\n  doSetVars(); \n }");
+				return f;
+
+			}) ( API, this.cfgValue, this.variables, varsout, script );
+
 		},
 		
 
@@ -111,14 +168,23 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 			}
 		},
 		
-		inDom: function() {
+		inDom: function() { },
 
+		filter: function() {
+
+			this._filter();
 
 		},
 
 		update: {
-		
+			
+			variable: function( variableValue, variableName ) {
+				
+				variableValue = Traversing.get( variableValue );
 
+				this.variables[ variableName ] = variableValue;
+				this.filter( );
+			}
 		},
 				
 		typeToScreen: {}

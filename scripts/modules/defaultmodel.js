@@ -116,6 +116,11 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 			var dataType = data.getType(),
 				mustRebuild = false;
 
+			// If no in type is defined, the module accepts anything
+			if( sourceTypes.length == 0) {
+				return data;
+			}
+
 			for(var i = 0; i < sourceTypes.length; i++) {
 				if(sourceTypes[i] == dataType) {
 					return data;
