@@ -164,6 +164,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 		configFunctions: {
+			
 			varsout: function( cfg ) {
 				if( ! ( cfg instanceof Array ) ) {
 					return [];
@@ -178,7 +179,6 @@ define(['modules/defaultcontroller'], function(Default) {
 
 				return cfg;
 			},
-
 
 			filters: function( cfg ) {
 				if( ! ( cfg instanceof Array ) ) {

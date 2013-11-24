@@ -62,7 +62,14 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				
 				form.init( {
 					onValueChanged: function( value ) {
-						$.extend( self.cfgValue, form.getValue().sections.cfg[ 0 ].groups.cfg[ 0 ] );
+						var cfg = form.getValue().sections.cfg[ 0 ].groups.cfg[ 0 ],
+							cfgFinal = {};
+
+						for( var i in cfg ) {
+							cfgFinal[ i ] = cfg[ i ][ 0 ];
+						}
+						
+						$.extend( self.cfgValue, cfgFinal );
 						self.filter();
 					}
 				} );
