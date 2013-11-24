@@ -52,7 +52,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 					title: filters[ i ].groups.general[ 0 ].label[ 0 ]
 				};
 
-				this.makeOptions( allFields[ i ], filters[ i ] );
+				this.makeOptions( allFields[ filters[ i ].groups.general[ 0 ].name[ 0 ] ], filters[ i ] );
 			}
 
 
