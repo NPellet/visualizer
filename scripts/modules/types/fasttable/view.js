@@ -8,9 +8,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		var self = this,
 	 			lastTr;
 
-	 		this.domTable = $("<table />").css({width: '100%'});
-	 		this.domHead = $("<thead />").appendTo( this.domTable );
-	 		this.domBody = $("<tbody />").appendTo( this.domTable );
+	 		this.domTable = $( "<table />" , { cellpadding: 0, cellspacing: 0 } ).css( { width: '100%' } );
+	 		this.domHead = $( "<thead />" ).appendTo( this.domTable );
+	 		this.domBody = $( "<tbody />" ).appendTo( this.domTable );
 
 
 	 		this.domTable.on('mouseover', 'tr.jqgrow', function() {
@@ -44,13 +44,16 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			thead = '<tr>';
 			for( ; j < l ; j ++ ) {
-				var jpath = jpaths[ j ].jpath.replace('element', '')
-				eval('this.jpaths[ jpaths[ j ].jpath ] = function( el ) { return el' + jpath + '; }');
-
+				eval('this.jpaths[ jpaths[ j ].jpath ] = function( el ) { return el' + jpaths[ j ].jpath.replace('element', '') + '; }');
 				thead += '<th>' + jpaths[ j ].name + '</th>';
 			}
 			thead += '</tr>';
 
+			var colorjpath = this.module.getConfiguration( 'colorjPath' );
+			if(colorjpath) {
+				eval('this.colorjpath = function( el ) { return el' + colorjpath.replace('element', '') + '; }');	
+			}
+		
 			this.domHead.html( thead );
 	 	},
 
@@ -105,7 +108,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					j = 0,
 					jpaths = this.module.getConfiguration( 'colsjPaths' ),
 					l,
-					nbLines = this.module.getConfiguration( 'nbLines' ) || 20;	
+					nbLines = this.module.getConfiguration( 'nbLines' ) || 20;
+
 
 
 				var html = '',
@@ -115,8 +119,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					k = jpaths.length
 
 				for( ; i < l ; i ++ ) {
-					html += '<tr>';
-
+					html += '<tr';
+					if( this.colorjpath ) {
+						html += ' style="background-color: ' + this.colorjpath( moduleValue[ i ] ) + ';"';
+					}
+					html += '>';
 					j = 0;
 					for( ; j < k ; j ++ ) {
 						html += '<td>';
