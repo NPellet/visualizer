@@ -167,7 +167,7 @@ body, th, td, .forms input, .forms select, .forms textarea {
 	box-sizing: border-box;
 	outline: none;
 	width: 100%;
-	display: inline-block;
+	/*display: inline-block;*/ /* Somebody explains me the use of this */
 }
 
 
