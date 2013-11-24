@@ -23,6 +23,8 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 							if( lastVal !== ui.value && ! isNaN( ui.value ) ) {
 								lastVal = ui.value;
 								valueInput.val( ui.value );
+
+								self.setValueSilent( ui.value );
 							}
 						},
 
@@ -31,6 +33,8 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 							if( !isNaN( ui.value )) {
 								lastVal = ui.value;
 								valueInput.val( ui.value );
+
+								self.setValueSilent( ui.value );
 							}
 						}
 					}),

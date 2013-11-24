@@ -127,7 +127,6 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 
 		makeOptions: function( cfg, form ) {
 
-
 			var type = form.groups.general[ 0 ].type[ 0 ];
 
 			switch( type ) {
