@@ -58,7 +58,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				if( ! jpaths[ j ].jpath ) {
 					continue;
 				}
-				
+
 				eval('this.jpaths[ jpaths[ j ].jpath ] = function( el ) { return el' + jpaths[ j ].jpath.replace('element', '') + '; }');
 				thead += '<th>' + jpaths[ j ].name + '</th>';
 			}
@@ -136,6 +136,10 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					html += '>';
 					j = 0;
 					for( ; j < k ; j ++ ) {
+						if( ! jpaths[ j ].jpath ) {
+							continue;
+						}
+						
 						html += '<td>';
 						html += this.getValue( moduleValue[ i ], jpaths[ j ].jpath );
 						html += '</td>';
