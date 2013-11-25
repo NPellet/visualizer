@@ -1,0 +1,144 @@
+{
+	"_version": "2.2",
+	"modules": [
+		{
+			"type": "graph_function",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 4,
+				"top": 5.000000095367431
+			},
+			"size": {
+				"width": 41,
+				"height": 38
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"function": [
+								"sin(sqrt(0.01*x^2  + 0.01*y^2))*10"
+							],
+							"xMin": [
+								-100
+							],
+							"xMax": [
+								100
+							],
+							"yMin": [
+								-100
+							],
+							"yMax": [
+								100
+							],
+							"zMin": [
+								null
+							],
+							"zMax": [
+								null
+							],
+							"segments": [
+								100
+							]
+						}
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "graph_function",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 55,
+				"top": 11
+			},
+			"size": {
+				"width": 51,
+				"height": 38
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"function": [
+								"sin(sqrt(0.01*x^2  + 0.01*y^2))*25"
+							],
+							"xMin": [
+								-100
+							],
+							"xMax": [
+								100
+							],
+							"yMin": [
+								-100
+							],
+							"yMax": [
+								100
+							],
+							"zMin": [
+								null
+							],
+							"zMax": [
+								null
+							],
+							"segments": [
+								250
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "result",
+			"jpath": "element.result"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	}
+}

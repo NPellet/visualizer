@@ -49,7 +49,8 @@ define(['modules/module'], function(Module) {
 					'jsmol': 'JSMol',
 					'jsmol_script': 'JSMol Script',
 					'ivstability': 'IV stability',
-					'mol2d': '2D Molecule viewer'
+					'mol2d': '2D Molecule viewer',
+					'graph_function': '3D mathematical function'
 				},
 
 				'Statistics': {
