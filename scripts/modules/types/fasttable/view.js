@@ -54,6 +54,11 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			thead = '<tr>';
 			for( ; j < l ; j ++ ) {
+
+				if( ! jpaths[ j ].jpath ) {
+					continue;
+				}
+				
 				eval('this.jpaths[ jpaths[ j ].jpath ] = function( el ) { return el' + jpaths[ j ].jpath.replace('element', '') + '; }');
 				thead += '<th>' + jpaths[ j ].name + '</th>';
 			}
