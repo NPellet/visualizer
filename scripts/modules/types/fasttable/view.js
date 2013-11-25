@@ -28,7 +28,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 				var el = self.module.data[ parseInt( $(this).attr('data-row-id') ) ];
 					lastTr = this;
 					self.module.controller.lineOut( el );
-					
+
 	 			}
 
 	 		}).on('click', 'tr', function() {
@@ -111,22 +111,16 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 				return;
 	 			}
 
-	 			moduleValue = moduleValue.get();
-				this.module.data = moduleValue; // Important for configuration. However, technically it shouldn't.
-
 				var self = this, 
-					j = 0,
 					jpaths = this.module.getConfiguration( 'colsjPaths' ),
-					l,
-					nbLines = this.module.getConfiguration( 'nbLines' ) || 20;
-
-
-
-				var html = '',
+					nbLines = this.module.getConfiguration( 'nbLines' ) || 20,
+					html = '',
 					i = 0,
 					l = moduleValue.length,
 					j,
-					k = jpaths.length
+					k = jpaths.length;
+
+				this.module.data = moduleValue;
 
 				for( ; i < l ; i ++ ) {
 					html += '<tr';
@@ -145,7 +139,34 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				}
 
 				this.domBody.html( html );
+
+				// Debouncing the highlighting
+
+				if( this.timeout ) {
+					window.clearTimeout( this.timeout );
+				}
+
+				this.timeout = window.setTimeout( function( ) {
+
+					API.killHighlight( self.module.id );
+
+					for( i = 0; i < l ; i ++ ) {
+						
+						( function( j ) {
+
+							API.listenHighlight( self.module.data[ j ]._highlight, function( val ) {
+								self.doHighlight( j, val );
+							}, self.module.id )
+						}) ( i );
+						
+					}
+
+				}, 1000); // 1 sec timeout
 			}
+		},
+
+		doHighlight: function( i, val ) {
+			this.domBody.find('tr[data-row-id=' + i + ']')[ val ? 'addClass' : 'removeClass']( 'ci-highlight' );
 		},
 
 		getValue: function( trVal, jpath ) {

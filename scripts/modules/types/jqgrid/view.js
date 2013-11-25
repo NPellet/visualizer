@@ -105,8 +105,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 						sorttype: jpaths[ j ].number[ 0 ] ? 'float' : 'text'
 					});
 				}
-
-
 			}
 
 			var nbLines = this.module.getConfiguration( 'nbLines' ) || 20;	

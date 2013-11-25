@@ -13,6 +13,11 @@
 	border-bottom: 1px solid #777777;
 }
 
+
+.ci-module-fasttable tr.ci-highlight {
+	background-color: #e5be39 !important;
+}
+
 .ci-module-fasttable thead th {
 	border-bottom: 1px solid #777777;
 }

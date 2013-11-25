@@ -18,15 +18,14 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		},
 
 		lineOut: function(element) {
-			
-			if(element && element._highlight !== false) {
-				API.highlight(element._highlight, 0);
+			if( element && element._highlight !== false ) {
+				API.highlight( element._highlight, 0 );
 			}
 		},
 
 		lineClick: function( element ) {
-			this.setVarFromEvent('onSelect', element);
-			this.sendAction('row', element, 'onSelect');
+			this.setVarFromEvent( 'onSelect', element );
+			this.sendAction( 'row', element, 'onSelect' );
 		},
 
 		onToggleOn: function( element ) {
