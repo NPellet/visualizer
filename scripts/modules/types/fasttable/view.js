@@ -59,14 +59,14 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					continue;
 				}
 
-				eval('this.jpaths[ jpaths[ j ].jpath ] = function( el ) { return el' + jpaths[ j ].jpath.replace('element', '') + '; }');
+				eval('this.jpaths[ jpaths[ j ].jpath ] = function( el ) { return el' + jpaths[ j ].jpath.replace(/^element/, '') + '; }');
 				thead += '<th>' + jpaths[ j ].name + '</th>';
 			}
 			thead += '</tr>';
 
 			var colorjpath = this.module.getConfiguration( 'colorjPath' );
 			if(colorjpath) {
-				eval('this.colorjpath = function( el ) { return el' + colorjpath.replace('element', '') + '; }');	
+				eval('this.colorjpath = function( el ) { return el' + colorjpath.replace(/^element/, '') + '; }');	
 			}
 		
 			this.domHead.html( thead );
