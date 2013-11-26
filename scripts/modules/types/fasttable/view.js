@@ -159,13 +159,18 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 					API.killHighlight( self.module.id );
 
-					for( i = 0; i < l ; i ++ ) {
-						
+					for( i = 0; i < l ; i++ ) {
+							
+						if( ! self.module.data[ i ]._highlight ) {
+							continue;
+						}
+
 						( function( j ) {
 
 							API.listenHighlight( self.module.data[ j ]._highlight, function( val ) {
 								self.doHighlight( j, val );
-							}, self.module.id )
+							}, self.module.id );
+
 						}) ( i );
 						
 					}
