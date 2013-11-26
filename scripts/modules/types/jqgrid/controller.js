@@ -12,13 +12,13 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 			}
 
 			this.setVarFromEvent( 'onHover', element );
-			if( element._highlight !== false ) {
+			if( element._highlight instanceof Array ) {
 				API.highlight( element._highlight, 1 );
 			}
 		},
 
 		lineOut: function(element) {
-			if( element && element._highlight !== false ) {
+			if( element && ( element._highlight instanceof Array ) ) {
 				API.highlight( element._highlight, 0 );
 			}
 		},
