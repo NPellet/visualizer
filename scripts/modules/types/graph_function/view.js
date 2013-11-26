@@ -73,8 +73,8 @@ console.log(self.renderer.domElement);
 
 			// This should reduce CPU if the mouse if not over and we can not move the object
 			// this is only valid for non animated graph
-			this.doAnimation=true;
-			/*
+			this.doAnimation=false;
+			
 			this.dom.on("mouseenter",function(){
 				self.doAnimation=true;
 			}) ;
@@ -82,13 +82,12 @@ console.log(self.renderer.domElement);
 			this.dom.on("mouseleave",function(){
 				self.doAnimation=false;
 			}) ;
-*/
+
 
 		},
 
 
 		blank: function() {
-			console.log("EMPTY");
 			this.dom.empty();
 		},
 
@@ -102,7 +101,7 @@ console.log(self.renderer.domElement);
 			var self=this;
 
 			this.onReady.done(function() {
-console.log("RESIZE: "+self.height+" - "+self.width);
+				console.log("RESIZE: "+self.height+" - "+self.width);
 				var cfg = $.proxy(self.module.getConfiguration, self.module);
 				var segments=cfg('segments');
 
@@ -133,7 +132,6 @@ console.log("RESIZE: "+self.height+" - "+self.width);
 				self.setCamera();
 				self.setControls();
 
-				console.log("ANIMATE");
 				self.firstAnimation=60;
 				self.animate();
 				
