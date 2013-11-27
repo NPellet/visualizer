@@ -372,8 +372,8 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 	}
 
 	functions.downloadLink = {};
-	functions.downloadLink.toscreen = function(dev, value) {
-		return def.resolve(value.replace(/^(.*)$/,'<a href="$1">⤵</a>'));
+	functions.downloadLink.toscreen = function(def, value) {
+		return def.resolve(value.value.replace(/^(.*)$/,'<a href="$1">⤵</a>'));
 	}
 
 	functions.boolean = {};
