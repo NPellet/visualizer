@@ -7,7 +7,7 @@ Clazz.superConstructor (this, J.viewer.binding.RasmolBinding, ["selectOrToggle"]
 });
 Clazz.overrideMethod (c$, "setSelectBindings", 
 function () {
-this.bindAction (272, 30);
-this.bindAction (273, 35);
+this.bindAction (33040, 30);
+this.bindAction (33041, 35);
 });
 });

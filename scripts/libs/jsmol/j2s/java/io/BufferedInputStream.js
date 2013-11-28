@@ -19,6 +19,9 @@ var buffer = this.buf;
 if (buffer == null) throw  new java.io.IOException ("Stream closed");
 return buffer;
 }, $fz.isPrivate = true, $fz));
+Clazz.overrideMethod (c$, "resetStream", 
+function () {
+});
 Clazz.makeConstructor (c$, 
 function ($in) {
 Clazz.superConstructor (this, java.io.BufferedInputStream, [$in]);

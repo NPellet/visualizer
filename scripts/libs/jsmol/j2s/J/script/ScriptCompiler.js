@@ -315,10 +315,10 @@ $_M(c$, "lookingAtComment",
 var ch = this.script.charAt (this.ichToken);
 var ichT = this.ichToken;
 var ichFirstSharp = -1;
-if (this.ichToken == this.ichCurrentCommand && ch == '$') {
+if (this.ichToken == this.ichCurrentCommand && ch == '$' && (this.isShowScriptOutput || this.ichToken == 0)) {
 this.isShowScriptOutput = true;
 this.isShowCommand = true;
-while (ch != ']' && !this.eol (ch = this.charAt (ichT))) ++ichT;
+if (this.charAt (++ichT) == '[') while (ch != ']' && !this.eol (ch = this.charAt (ichT))) ++ichT;
 
 this.cchToken = ichT - this.ichToken;
 return 2;
@@ -771,7 +771,10 @@ $_M(c$, "parseKnownToken",
 var token;
 if (this.tokLastMath != 0) this.tokLastMath = this.theTok;
 if (this.flowContext != null && this.flowContext.token.tok == 102410 && this.flowContext.$var != null && this.theTok != 102411 && this.theTok != 102413 && this.lastToken.tok != 102410) return this.ERROR (1, ident);
-switch (this.theTok) {
+if (this.lastToken.tok == 1060866 && this.theTok != 1048586 && this.nTokens != 1) {
+this.addTokenToPrefix (J.script.T.o (4, ident));
+return 2;
+}switch (this.theTok) {
 case 1073741824:
 if (this.nTokens == 0 && !this.checkImpliedScriptCmd) {
 if (ident.charAt (0) == '\'') {
@@ -1307,8 +1310,7 @@ break;
 if (isEnd) {
 this.flowContext.token.intValue = (this.tokCommand == 102412 ? -pt : pt);
 if (this.tokCommand == 364548) this.flowContext = this.flowContext.getParent ();
-if (this.tokCommand == 364558) {
-}} else if (isNew) {
+} else if (isNew) {
 var ct = J.script.ContextToken.newCmd (this.tokCommand, this.tokenCommand.value);
 if (this.tokCommand == 102410) ct.addName ("_var");
 this.setCommand (ct);
@@ -1574,11 +1576,7 @@ if (ptSpace < 0) ptSpace = ichT;
 ptLastChar = ichT;
 }break;
 }
-if (Character.isWhitespace (ch)) {
-if (ptSpace < 0) ptSpace = ichT;
-} else {
-ptLastChar = ichT;
-}++ichT;
+++ichT;
 }
 if (allowSpace) ichT = ptLastChar + 1;
  else if (ptSpace > 0) ichT = ptSpace;

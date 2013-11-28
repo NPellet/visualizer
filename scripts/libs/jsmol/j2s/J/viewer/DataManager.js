@@ -90,16 +90,14 @@ return;
 $_M(c$, "getData", 
 function (type) {
 if (this.dataValues == null || type == null) return null;
-if (type.equalsIgnoreCase ("types")) {
+if (!type.equalsIgnoreCase ("types")) return this.dataValues.get (type);
 var info =  new Array (2);
 info[0] = "types";
 info[1] = "";
 var n = 0;
-var e = this.dataValues.keySet ().iterator ();
-while (e.hasNext ()) info[1] += (n++ > 0 ? "\n" : "") + e.next ();
+for (var name, $name = this.dataValues.keySet ().iterator (); $name.hasNext () && ((name = $name.next ()) || true);) info[1] += (n++ > 0 ? "\n" : "") + name;
 
 return info;
-}return this.dataValues.get (type);
 }, "~S");
 $_M(c$, "getDataFloatA", 
 function (label) {
@@ -134,9 +132,7 @@ return data[1];
 $_M(c$, "deleteModelAtoms", 
 function (firstAtomIndex, nAtoms, bsDeleted) {
 if (this.dataValues == null) return;
-var e = this.dataValues.keySet ().iterator ();
-while (e.hasNext ()) {
-var name = e.next ();
+for (var name, $name = this.dataValues.keySet ().iterator (); $name.hasNext () && ((name = $name.next ()) || true);) {
 if (name.indexOf ("property_") == 0) {
 var obj = this.dataValues.get (name);
 J.util.BSUtil.deleteBits (obj[2], bsDeleted);
@@ -211,5 +207,6 @@ Clazz.defineStatics (c$,
 "DATA_ARRAY_FFF", 3,
 "DATA_VALUE", 1,
 "DATA_SELECTION_MAP", 2,
-"DATA_TYPE", 3);
+"DATA_TYPE", 3,
+"DATA_SAVE_IN_STATE", 4);
 });

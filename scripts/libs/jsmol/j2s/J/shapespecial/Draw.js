@@ -805,10 +805,10 @@ this.viewer.hoverOnPt (x, y, s, this.pickedMesh.thisID, this.pickedPt);
 return true;
 }, "~N,~N,J.util.BS");
 Clazz.overrideMethod (c$, "checkObjectDragged", 
-function (prevX, prevY, x, y, action, bsVisible) {
+function (prevX, prevY, x, y, dragAction, bsVisible) {
 if (this.viewer.getPickingMode () != 4) return false;
-var moveAll = this.viewer.isBound (action, 8);
-var movePoint = this.viewer.isBound (action, 9);
+var moveAll = this.viewer.isBound (dragAction, 8);
+var movePoint = this.viewer.isBound (dragAction, 9);
 if (!moveAll && !movePoint) return false;
 if (prevX == -2147483648) return this.findPickedObject (x, y, true, bsVisible);
 if (prevX == 2147483647) {

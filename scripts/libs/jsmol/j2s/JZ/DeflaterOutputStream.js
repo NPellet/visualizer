@@ -13,9 +13,9 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.buf1 =  Clazz.newByteArray (1, 0);
 });
-Clazz.makeConstructor (c$, 
+$_M(c$, "jzSetDOS", 
 function (out, deflater, size, close_out) {
-Clazz.superConstructor (this, JZ.DeflaterOutputStream, [out]);
+this.jzSetFOS (out);
 if (size == 0) size = 512;
 this.deflater = deflater;
 this.buffer =  Clazz.newByteArray (size, 0);

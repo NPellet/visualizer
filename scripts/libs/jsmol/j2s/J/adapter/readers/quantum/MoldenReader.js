@@ -27,8 +27,7 @@ this.loadGeometries = !this.vibOnly && this.desiredVibrationNumber < 0 && !this.
 this.loadVibrations = !this.optOnly && this.desiredModelNumber < 0 && !this.checkFilterKey ("NOVIB");
 if (this.checkFilterKey ("ALPHA")) this.filter = "alpha";
  else if (this.checkFilterKey ("BETA")) this.filter = "beta";
- else if (this.checkFilterKey ("SYM=")) this.filter = this.filter.substring (this.filter.indexOf ("SYM=") + 4);
- else this.filter = null;
+ else this.filter = this.getFilter ("SYM=");
 });
 Clazz.overrideMethod (c$, "checkLine", 
 function () {
@@ -131,7 +130,9 @@ slater[0] = atomIndex;
 slater[1] = type;
 slater[2] = gaussianPtr;
 slater[3] = nPrimitives;
-this.nCoef += this.getDfCoefMaps ()[type].length;
+var n = this.getDfCoefMaps ()[type].length;
+System.out.println ("adding " + n + " coefficients type " + J.api.JmolAdapter.getQuantumShellTag (type) + " for atom " + atomIndex);
+this.nCoef += n;
 for (var ip = nPrimitives; --ip >= 0; ) {
 var primTokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine ());
 var nTokens = primTokens.length;
@@ -228,7 +229,7 @@ return (line == null && (line = this.readLine ()) == null ? null : J.adapter.sma
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "checkOrbitalType", 
 ($fz = function (line) {
-if (line.length > 3 && "5D 6D 7F 10 9G 15".indexOf (line.substring (1, 3)) >= 0) {
+if (line.length > 3 && "5D 6D 7F 10 9G 15 11 21".indexOf (line.substring (1, 3)) >= 0) {
 if (this.orbitalType.indexOf (line) >= 0) return true;
 this.orbitalType += line;
 J.util.Logger.info ("Orbital type set to " + this.orbitalType);
@@ -242,11 +243,14 @@ if (this.orbitalType.contains ("5D")) {
 this.fixSlaterTypes (J.api.JmolAdapter.SHELL_D_CARTESIAN, J.api.JmolAdapter.SHELL_D_SPHERICAL);
 this.fixSlaterTypes (J.api.JmolAdapter.SHELL_F_CARTESIAN, J.api.JmolAdapter.SHELL_F_SPHERICAL);
 this.fixSlaterTypes (J.api.JmolAdapter.SHELL_G_CARTESIAN, J.api.JmolAdapter.SHELL_G_SPHERICAL);
+this.fixSlaterTypes (J.api.JmolAdapter.SHELL_H_CARTESIAN, J.api.JmolAdapter.SHELL_H_SPHERICAL);
 }if (this.orbitalType.contains ("10F")) {
 this.fixSlaterTypes (J.api.JmolAdapter.SHELL_F_SPHERICAL, J.api.JmolAdapter.SHELL_F_CARTESIAN);
 this.fixSlaterTypes (J.api.JmolAdapter.SHELL_G_SPHERICAL, J.api.JmolAdapter.SHELL_G_CARTESIAN);
+this.fixSlaterTypes (J.api.JmolAdapter.SHELL_H_SPHERICAL, J.api.JmolAdapter.SHELL_H_CARTESIAN);
 }if (this.orbitalType.contains ("15G")) {
 this.fixSlaterTypes (J.api.JmolAdapter.SHELL_G_SPHERICAL, J.api.JmolAdapter.SHELL_G_CARTESIAN);
+this.fixSlaterTypes (J.api.JmolAdapter.SHELL_H_SPHERICAL, J.api.JmolAdapter.SHELL_H_CARTESIAN);
 }}, $fz.isPrivate = true, $fz));
 $_M(c$, "readFreqsAndModes", 
 ($fz = function () {
@@ -287,7 +291,7 @@ var firstModel = (this.optOnly || this.desiredModelNumber >= 0 ? 0 : 1);
 this.modelNumber = firstModel;
 var haveModel = false;
 if (this.desiredModelNumber == 0 || this.desiredModelNumber == nGeom) this.desiredModelNumber = nGeom;
- else this.finalizeMOData (null);
+ else if (this.atomSetCollection.getAtomSetCount () > 0) this.finalizeMOData (null);
 for (var i = 0; i < nGeom; i++) {
 this.readLines (2);
 if (this.doGetModel (++this.modelNumber, null)) {

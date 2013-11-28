@@ -18,6 +18,10 @@ this.useTimeout = true;
 this.junk = 0;
 Clazz.instantialize (this, arguments);
 }, J.thread, "JmolThread", Thread);
+$_M(c$, "setManager", 
+function (manager, viewer, params) {
+return 0;
+}, "~O,J.viewer.Viewer,~O");
 $_M(c$, "setViewer", 
 function (viewer, name) {
 this.setName (name);
@@ -71,7 +75,7 @@ throw e$$;
 $_M(c$, "oops", 
 function (e) {
 J.util.Logger.debug (this.$name + " exception " + e);
-if (!this.viewer.isJS ()) e.printStackTrace ();
+if (!this.viewer.isJS) e.printStackTrace ();
 this.viewer.queueOnHold = false;
 }, "Exception");
 $_M(c$, "runSleep", 

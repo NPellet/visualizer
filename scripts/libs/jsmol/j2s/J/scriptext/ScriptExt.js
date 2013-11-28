@@ -2722,7 +2722,7 @@ for (var i = 0; i < dataY.length; i++) dataY[i] = (dataY[i] - center.y) / factor
 if (propertyZ != 0) for (var i = 0; i < dataZ.length; i++) dataZ[i] = (dataZ[i] - center.z) / factors.z;
 
 parameters = [bs, dataX, dataY, dataZ, minXYZ, maxXYZ, factors, center];
-}if (tokCmd == 135270421) return this.viewer.streamFileData (filename, "PLOT", type, modelIndex, parameters);
+}if (tokCmd == 135270421) return this.viewer.writeFileData (filename, "PLOT_" + type, modelIndex, parameters);
 var data = (type.equals ("data") ? "1 0 H 0 0 0 # Jmol PDB-encoded data" : this.viewer.getPdbData (modelIndex, type, parameters));
 if (tokCmd == 4148) return data;
 if (J.util.Logger.debugging) J.util.Logger.debug (data);

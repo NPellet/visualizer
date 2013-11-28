@@ -167,7 +167,7 @@ var index2;
 var t = J.util.Tensor.getTensorFromAsymmetricTensor (a, type, id);
 if (atomName2 == null) {
 index2 = -1;
-this.atomSetCollection.getAtoms ()[index1].addTensor (t, null);
+this.atomSetCollection.getAtoms ()[index1].addTensor (t, null, false);
 } else {
 index2 = this.atomSetCollection.getAtomIndexFromName (atomName2);
 this.interactionTensors.addLast (t);

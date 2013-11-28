@@ -35,4 +35,5 @@ Clazz.defineEnumConstant (c$, "PICK", 12, []);
 Clazz.defineEnumConstant (c$, "RESIZE", 13, []);
 Clazz.defineEnumConstant (c$, "SCRIPT", 14, []);
 Clazz.defineEnumConstant (c$, "SYNC", 15, []);
+Clazz.defineEnumConstant (c$, "STRUCTUREMODIFIED", 16, []);
 });

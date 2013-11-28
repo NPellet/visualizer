@@ -352,9 +352,7 @@ J.modelsetbio.AminoPolymer.createLadders (bridgesA, htBridges, htLadders, true);
 J.modelsetbio.AminoPolymer.createLadders (bridgesP, htBridges, htLadders, false);
 var bsEEE =  new J.util.BS ();
 var bsB =  new J.util.BS ();
-var e = htLadders.keySet ().iterator ();
-while (e.hasNext ()) {
-var ladder = e.next ();
+for (var ladder, $ladder = htLadders.keySet ().iterator (); $ladder.hasNext () && ((ladder = $ladder.next ()) || true);) {
 if (ladder[0][0] == ladder[0][1] && ladder[1][0] == ladder[1][1]) {
 bsB.set (ladder[0][0]);
 bsB.set (ladder[1][0]);

@@ -7,10 +7,9 @@ this.atomCount = 0;
 this.atoms = null;
 this.bsAtoms = null;
 Clazz.instantialize (this, arguments);
-}, J.adapter.smarter, "AtomIterator", J.api.JmolAdapterAtomIterator);
+}, J.adapter.smarter, "AtomIterator", null, J.api.JmolAdapterAtomIterator);
 Clazz.makeConstructor (c$, 
 function (atomSetCollection) {
-Clazz.superConstructor (this, J.adapter.smarter.AtomIterator, []);
 this.atomCount = atomSetCollection.getAtomCount ();
 this.atoms = atomSetCollection.getAtoms ();
 this.bsAtoms = atomSetCollection.bsAtoms;
@@ -64,29 +63,9 @@ Clazz.overrideMethod (c$, "getRadius",
 function () {
 return this.atom.radius;
 });
-Clazz.overrideMethod (c$, "getX", 
+Clazz.overrideMethod (c$, "getVib", 
 function () {
-return this.atom.x;
-});
-Clazz.overrideMethod (c$, "getY", 
-function () {
-return this.atom.y;
-});
-Clazz.overrideMethod (c$, "getZ", 
-function () {
-return this.atom.z;
-});
-Clazz.overrideMethod (c$, "getVectorX", 
-function () {
-return this.atom.vectorX;
-});
-Clazz.overrideMethod (c$, "getVectorY", 
-function () {
-return this.atom.vectorY;
-});
-Clazz.overrideMethod (c$, "getVectorZ", 
-function () {
-return this.atom.vectorZ;
+return (this.atom.vib == null || Float.isNaN (this.atom.vib.z) ? null : this.atom.vib);
 });
 Clazz.overrideMethod (c$, "getBfactor", 
 function () {
@@ -94,7 +73,7 @@ return Float.isNaN (this.atom.bfactor) && this.atom.anisoBorU != null ? this.ato
 });
 Clazz.overrideMethod (c$, "getOccupancy", 
 function () {
-return this.atom.occupancy;
+return Clazz.floatToInt (this.atom.foccupancy * 100);
 });
 Clazz.overrideMethod (c$, "getIsHetero", 
 function () {

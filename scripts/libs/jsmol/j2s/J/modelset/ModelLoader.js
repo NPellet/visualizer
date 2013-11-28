@@ -208,10 +208,10 @@ for (var i = this.baseAtomIndex; i < atomCount; i++) atoms[i].setMadAtom (this.v
 var models = this.modelSet.models;
 for (var i = models[this.baseModelIndex].firstAtomIndex; i < atomCount; i++) models[atoms[i].modelIndex].bsAtoms.set (i);
 
-this.setAtomProperties ();
 this.freeze ();
 this.finalizeShapes ();
 this.viewer.setModelSet (this.modelSet);
+this.setAtomProperties ();
 if (adapter != null) adapter.finish (atomSetCollection);
 if (this.mergeModelSet != null) {
 this.mergeModelSet.releaseModelSet ();
@@ -249,7 +249,7 @@ var bs = this.modelSet.getModelAtomBitSetIncludingDeleted (i, true);
 if (this.doAddHydrogens) value = this.jbr.fixPropertyValue (bs, value);
 key = "property_" + key.toLowerCase ();
 J.util.Logger.info ("creating " + key + " for model " + this.modelSet.getModelName (i));
-this.viewer.setData (key, [key, value, bs, Integer.$valueOf (0)], this.modelSet.atomCount, 0, 0, 2147483647, 0);
+this.viewer.setData (key, [key, value, bs, Integer.$valueOf (0), Boolean.FALSE], this.modelSet.atomCount, 0, 0, 2147483647, 0);
 }
 }
 }, $fz.isPrivate = true, $fz));
@@ -405,6 +405,7 @@ for (var i = baseModelCount; i < modelCount; i++) modelNumbers[i] += filenumber;
 
 }var models = this.modelSet.models;
 for (var i = baseModelCount; i < modelCount; ++i) {
+this.modelSet.setModelAuxiliaryInfo (i, "fileType", this.modelSet.modelSetTypeName);
 if (this.fileHeader != null) this.modelSet.setModelAuxiliaryInfo (i, "fileHeader", this.fileHeader);
 var filenumber = Clazz.doubleToInt (modelNumbers[i] / 1000000);
 if (filenumber != lastfilenumber) {
@@ -463,7 +464,7 @@ var isotope = iterAtom.getElementNumber ();
 if (addH && J.util.Elements.getElementNumber (isotope) == 1) this.jbr.setHaveHsAlready (true);
 var name = iterAtom.getAtomName ();
 var charge = (addH ? this.getPdbCharge (group3, name) : iterAtom.getFormalCharge ());
-this.addAtom (isPdbThisModel, iterAtom.getAtomSymmetry (), iterAtom.getAtomSite (), iterAtom.getUniqueID (), isotope, name, charge, iterAtom.getPartialCharge (), iterAtom.getTensors (), iterAtom.getOccupancy (), iterAtom.getBfactor (), iterAtom.getX (), iterAtom.getY (), iterAtom.getZ (), iterAtom.getIsHetero (), iterAtom.getAtomSerial (), group3, iterAtom.getVectorX (), iterAtom.getVectorY (), iterAtom.getVectorZ (), iterAtom.getAlternateLocationID (), iterAtom.getRadius ());
+this.addAtom (isPdbThisModel, iterAtom.getAtomSymmetry (), iterAtom.getAtomSite (), iterAtom.getUniqueID (), isotope, name, charge, iterAtom.getPartialCharge (), iterAtom.getTensors (), iterAtom.getOccupancy (), iterAtom.getBfactor (), iterAtom.getXYZ (), iterAtom.getIsHetero (), iterAtom.getAtomSerial (), group3, iterAtom.getVib (), iterAtom.getAlternateLocationID (), iterAtom.getRadius ());
 }
 if (this.groupCount > 0 && addH) {
 this.jbr.addImplicitHydrogenAtoms (adapter, this.groupCount - 1, this.isNewChain && !isLegacyHAddition ? 1 : 0);
@@ -486,16 +487,16 @@ $_M(c$, "getPdbCharge",
 return (group3.equals ("ARG") && name.equals ("NH1") || group3.equals ("LYS") && name.equals ("NZ") || group3.equals ("HIS") && name.equals ("ND1") ? 1 : 0);
 }, $fz.isPrivate = true, $fz), "~S,~S");
 $_M(c$, "addAtom", 
-($fz = function (isPDB, atomSymmetry, atomSite, atomUid, atomicAndIsotopeNumber, atomName, formalCharge, partialCharge, tensors, occupancy, bfactor, x, y, z, isHetero, atomSerial, group3, vectorX, vectorY, vectorZ, alternateLocationID, radius) {
+($fz = function (isPDB, atomSymmetry, atomSite, atomUid, atomicAndIsotopeNumber, atomName, formalCharge, partialCharge, tensors, occupancy, bfactor, xyz, isHetero, atomSerial, group3, vib, alternateLocationID, radius) {
 var specialAtomID = 0;
 if (atomName != null) {
 if (isPDB && atomName.indexOf ('*') >= 0) atomName = atomName.$replace ('*', '\'');
 specialAtomID = J.viewer.JC.lookupSpecialAtomID (atomName);
 if (isPDB && specialAtomID == 2 && "CA".equalsIgnoreCase (group3)) specialAtomID = 0;
-}var atom = this.modelSet.addAtom (this.currentModelIndex, this.nullGroup, atomicAndIsotopeNumber, atomName, atomSerial, atomSite, x, y, z, radius, vectorX, vectorY, vectorZ, formalCharge, partialCharge, occupancy, bfactor, tensors, isHetero, specialAtomID, atomSymmetry);
+}var atom = this.modelSet.addAtom (this.currentModelIndex, this.nullGroup, atomicAndIsotopeNumber, atomName, atomSerial, atomSite, xyz, radius, vib, formalCharge, partialCharge, occupancy, bfactor, tensors, isHetero, specialAtomID, atomSymmetry);
 atom.setAltLoc (alternateLocationID);
 this.htAtomMap.put (atomUid, atom);
-}, $fz.isPrivate = true, $fz), "~B,J.util.BS,~N,~O,~N,~S,~N,~N,J.util.JmolList,~N,~N,~N,~N,~N,~B,~N,~S,~N,~N,~N,~S,~N");
+}, $fz.isPrivate = true, $fz), "~B,J.util.BS,~N,~O,~N,~S,~N,~N,J.util.JmolList,~N,~N,J.util.P3,~B,~N,~S,J.util.V3,~S,~N");
 $_M(c$, "checkNewGroup", 
 ($fz = function (adapter, chainID, group3, groupSequenceNumber, groupInsertionCode, addH, isLegacyHAddition) {
 var group3i = (group3 == null ? null : group3.intern ());
@@ -868,7 +869,6 @@ function (viewer, modelSet, tokType, atomSetCollection, bsSelected) {
 if (atomSetCollection == null) return;
 var adapter = viewer.getModelAdapter ();
 var pt =  new J.util.P3 ();
-var v =  new J.util.P3 ();
 var atoms = modelSet.atoms;
 var tolerance = viewer.getFloat (570425363);
 if (modelSet.unitCells != null) for (var i = bsSelected.nextSetBit (0); i >= 0; i = bsSelected.nextSetBit (i + 1)) if (atoms[i].getAtomSymmetry () != null) {
@@ -879,18 +879,16 @@ var i = -1;
 var n = 0;
 var loadAllData = (J.util.BSUtil.cardinalityOf (bsSelected) == viewer.getAtomCount ());
 for (var iterAtom = adapter.getAtomIterator (atomSetCollection); iterAtom.hasNext (); ) {
-var x = iterAtom.getX ();
-var y = iterAtom.getY ();
-var z = iterAtom.getZ ();
-if (Float.isNaN (x + y + z)) continue;
+var xyz = iterAtom.getXYZ ();
+if (Float.isNaN (xyz.x + xyz.y + xyz.z)) continue;
 if (tokType == 1146095626) {
 i = bsSelected.nextSetBit (i + 1);
 if (i < 0) break;
 n++;
-if (J.util.Logger.debugging) J.util.Logger.debug ("atomIndex = " + i + ": " + atoms[i] + " --> (" + x + "," + y + "," + z);
-modelSet.setAtomCoord (i, x, y, z);
+if (J.util.Logger.debugging) J.util.Logger.debug ("atomIndex = " + i + ": " + atoms[i] + " --> (" + xyz.x + "," + xyz.y + "," + xyz.z);
+modelSet.setAtomCoord (i, xyz.x, xyz.y, xyz.z);
 continue;
-}pt.set (x, y, z);
+}pt.setT (xyz);
 var bs = J.util.BSUtil.newBitSet (modelSet.atomCount);
 modelSet.getAtomsWithin (tolerance, pt, bs, -1);
 bs.and (bsSelected);
@@ -903,13 +901,10 @@ continue;
 J.util.Logger.debug ("createAtomDataSet: " + n + " atoms found at position " + pt);
 }}switch (tokType) {
 case 1146095631:
-var vx = iterAtom.getVectorX ();
-var vy = iterAtom.getVectorY ();
-var vz = iterAtom.getVectorZ ();
-if (Float.isNaN (vx + vy + vz)) continue;
-v.set (vx, vy, vz);
-if (J.util.Logger.debugging) J.util.Logger.debug ("xyz: " + pt + " vib: " + v);
-modelSet.setAtomCoords (bs, 1146095631, v);
+var vib = iterAtom.getVib ();
+if (vib == null) continue;
+if (J.util.Logger.debugging) J.util.Logger.debug ("xyz: " + pt + " vib: " + vib);
+modelSet.setAtomCoords (bs, 1146095631, vib);
 break;
 case 1129318401:
 modelSet.setAtomProperty (bs, tokType, iterAtom.getOccupancy (), 0, null, null, null);

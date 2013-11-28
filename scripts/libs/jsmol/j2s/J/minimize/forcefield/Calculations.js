@@ -36,7 +36,7 @@ this.v3 = null;
 Clazz.instantialize (this, arguments);
 }, J.minimize.forcefield, "Calculations");
 Clazz.prepareFields (c$, function () {
-this.calculations = J.util.ArrayUtil.createArrayOfArrayList (8);
+this.calculations = J.util.ArrayUtil.createArrayOfArrayList (7);
 this.logData =  new J.util.SB ();
 this.da =  new J.util.Vector3d ();
 this.db =  new J.util.Vector3d ();
@@ -139,10 +139,6 @@ return this.calc (2, gradients);
 $_M(c$, "energyOOP", 
 function (gradients) {
 return this.calc (4, gradients);
-}, "~B");
-$_M(c$, "energyPos", 
-function (gradients) {
-return this.calc (7, gradients);
 }, "~B");
 $_M(c$, "energyVDW", 
 function (gradients) {
@@ -272,8 +268,6 @@ function (iType) {
 switch (iType) {
 case -1:
 break;
-case 7:
-return "\nA T O M   P O S I T I O N\n\n  ATOM  TYPE  POSITION                    FORCE\n              X        Y        Z        CONSTANT   DELTA   ENERGY\n----------------------------------------------------------------";
 case 0:
 return "\nB O N D   S T R E T C H I N G (" + this.bondCount + " bonds)\n\n" + "  ATOMS  ATOM TYPES   BOND    BOND       IDEAL      FORCE\n" + "  I   J   I     J     TYPE   LENGTH     LENGTH    CONSTANT      DELTA     ENERGY\n" + "--------------------------------------------------------------------------------";
 case 1:
@@ -299,8 +293,6 @@ $_M(c$, "getDebugLineC",
 function (iType, c) {
 var energy = this.ff.toUserUnits (c.energy);
 switch (iType) {
-case 7:
-return J.util.TextFormat.sprintf ("%3d  %-5s %8.3f    %8.3f    %8.3f    %8.3f    %8.3f", "sFI", [this.minAtoms[c.ia].sType, [c.dData[0], c.dData[1], c.dData[2], c.dData[3], c.delta, energy], [this.minAtoms[c.ia].atom.getAtomNumber ()]]);
 case 0:
 return J.util.TextFormat.sprintf ("%3d %3d  %-5s %-5s  %4.2f%8.3f   %8.3f     %8.3f   %8.3f   %8.3f", "ssFI", [this.minAtoms[c.ia].sType, this.minAtoms[c.ib].sType, [0, c.rab, c.dData[1], c.dData[0], c.delta, energy], [this.minAtoms[c.ia].atom.getAtomNumber (), this.minAtoms[c.ib].atom.getAtomNumber ()]]);
 case 1:
@@ -426,8 +418,7 @@ Clazz.defineStatics (c$,
 "CALC_OOP", 4,
 "CALC_VDW", 5,
 "CALC_ES", 6,
-"CALC_POSITION", 7,
-"CALC_MAX", 8,
+"CALC_MAX", 7,
 "PI_OVER_2", 1.5707963267948966,
 "TWO_PI", 6.283185307179586);
 });

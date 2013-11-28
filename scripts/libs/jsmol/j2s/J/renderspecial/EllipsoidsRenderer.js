@@ -92,7 +92,7 @@ this.bGlobals[2] = this.viewer.getBooleanProperty ("ellipsoidAxes");
 this.bGlobals[4] = this.viewer.getBooleanProperty ("ellipsoidBall");
 this.bGlobals[0] = this.viewer.getBooleanProperty ("ellipsoidDots");
 this.bGlobals[3] = this.viewer.getBooleanProperty ("ellipsoidFill");
-this.bGlobals[6] = (this.viewer.getBoolean (603979976) && this.viewer.getInMotion (true));
+this.bGlobals[6] = !this.isExport && !this.viewer.checkMotionRendering (1113198596);
 this.diameter0 = Math.round ((this.viewer.getParameter ("ellipsoidAxisDiameter")).floatValue () * 1000);
 var m4 = this.viewer.getMatrixtransform ();
 this.mat.setRow (0, m4.m00, m4.m01, m4.m02);
@@ -133,10 +133,8 @@ if (this.coords == null || this.coords.length != this.dotCount * 3) this.coords 
 $_M(c$, "renderEllipsoids", 
 ($fz = function (ht, isSimple) {
 var needTranslucent = false;
-var e = ht.values ().iterator ();
 var atom = null;
-while (e.hasNext ()) {
-var ellipsoid = e.next ();
+for (var ellipsoid, $ellipsoid = ht.values ().iterator (); $ellipsoid.hasNext () && ((ellipsoid = $ellipsoid.next ()) || true);) {
 if (!ellipsoid.visible) continue;
 if (isSimple) {
 this.colix = ellipsoid.colix;

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.Parser", ["java.lang.Float", "J.util.ArrayUtil", "$.Logger", "$.TextFormat"], function () {
+Clazz.load (null, "J.util.Parser", ["java.lang.Character", "$.Float", "J.util.ArrayUtil", "$.Logger", "$.TextFormat"], function () {
 c$ = Clazz.declareType (J.util, "Parser");
 c$.parseStringInfestedFloatArray = $_M(c$, "parseStringInfestedFloatArray", 
 function (str, bs, data) {
@@ -220,28 +220,28 @@ var negative = false;
 if (ich < ichMax && str.charAt (ich) == '-') {
 ++ich;
 negative = true;
-}var ch = String.fromCharCode (0);
+}var ch = 0;
 var ival = 0;
-while (ich < ichMax && (ch = str.charAt (ich)) >= '0' && ch <= '9') {
-ival = (ival << 3) + (ival << 1) + (ch.charCodeAt (0) - 48);
+var ival2 = 0;
+while (ich < ichMax && (ch = str.charCodeAt (ich)) >= 48 && ch <= 57) {
+ival = (ival * 10) + (ch - 48) * 1;
 ++ich;
 digitSeen = true;
 }
 var isDecimal = false;
-var ival2 = 0;
 var iscale = 0;
 var nzero = (ival == 0 ? -1 : 0);
-if (ch == '.') {
+if (ch == 46) {
 isDecimal = true;
-while (++ich < ichMax && (ch = str.charAt (ich)) >= '0' && ch <= '9') {
+while (++ich < ichMax && (ch = str.charCodeAt (ich)) >= 48 && ch <= 57) {
 digitSeen = true;
 if (nzero < 0) {
-if (ch == '0') {
+if (ch == 48) {
 nzero--;
 continue;
 }nzero = -nzero;
 }if (iscale < J.util.Parser.decimalScale.length) {
-ival2 = (ival2 << 3) + (ival2 << 1) + (ch.charCodeAt (0) - 48);
+ival2 = (ival2 * 10) + (ch - 48) * 1;
 iscale++;
 }}
 }var value;
@@ -259,12 +259,11 @@ value += ival;
 }} else {
 value = ival;
 }var isExponent = false;
-if (!digitSeen) value = NaN;
-if (ich < ichMax && (ch == 'E' || ch == 'e' || ch == 'D')) {
+if (ich < ichMax && (ch == 69 || ch == 101 || ch == 68)) {
 isExponent = true;
 if (++ich >= ichMax) return NaN;
-ch = str.charAt (ich);
-if ((ch == '+') && (++ich >= ichMax)) return NaN;
+ch = str.charCodeAt (ich);
+if ((ch == 43) && (++ich >= ichMax)) return NaN;
 next[0] = ich;
 var exponent = J.util.Parser.parseIntChecked (str, ichMax, next);
 if (exponent == -2147483648) return NaN;
@@ -280,7 +279,7 @@ return (!isStrict || (!isExponent || isDecimal) && J.util.Parser.checkTrailingTe
 c$.checkTrailingText = $_M(c$, "checkTrailingText", 
 ($fz = function (str, ich, ichMax) {
 var ch;
-while (ich < ichMax && ((ch = str.charAt (ich)) == ' ' || ch == '\t' || ch == '\n' || ch == ';')) ++ich;
+while (ich < ichMax && (Character.isWhitespace (ch = str.charAt (ich)) || ch == ';')) ++ich;
 
 return (ich == ichMax);
 }, $fz.isPrivate = true, $fz), "~S,~N,~N");
@@ -307,11 +306,11 @@ var ch;
 while (ich < ichMax && J.util.Parser.isWhiteSpace (str, ich)) ++ich;
 
 var negative = false;
-if (ich < ichMax && str.charAt (ich) == '-') {
+if (ich < ichMax && str.charCodeAt (ich) == 45) {
 negative = true;
 ++ich;
-}while (ich < ichMax && (ch = str.charAt (ich)) >= '0' && ch <= '9') {
-value = value * 10 + (ch.charCodeAt (0) - 48);
+}while (ich < ichMax && (ch = str.charCodeAt (ich)) >= 48 && ch <= 57) {
+value = value * 10 + (ch - 48);
 digitSeen = true;
 ++ich;
 }

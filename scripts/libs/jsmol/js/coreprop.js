@@ -125,15 +125,12 @@ if (Clazz.instanceOf (property, java.util.Map)) {
 var h = property;
 if (key.equalsIgnoreCase ("keys")) {
 var keys =  new J.util.JmolList ();
-var e = h.keySet ().iterator ();
-while (e.hasNext ()) keys.addLast (e.next ());
+for (var k, $k = h.keySet ().iterator (); $k.hasNext () && ((k = $k.next ()) || true);) keys.addLast (k);
 
 return this.extractProperty (keys, args, ptr);
 }if (!h.containsKey (key)) {
-var e = h.keySet ().iterator ();
-var newKey = "";
-while (e.hasNext ()) if ((newKey = e.next ()).equalsIgnoreCase (key)) {
-key = newKey;
+for (var k, $k = h.keySet ().iterator (); $k.hasNext () && ((k = $k.next ()) || true);) if (k.equalsIgnoreCase (key)) {
+key = k;
 break;
 }
 }if (h.containsKey (key)) return this.extractProperty (h.get (key), args, ptr);
@@ -364,7 +361,7 @@ s = m.getModelFileName (i);
 if (s != null) model.put ("file", s);
 s = m.getModelAuxiliaryInfoValue (i, "modelID");
 if (s != null) model.put ("id", s);
-model.put ("vibrationVectors", Boolean.$valueOf (m.modelHasVibrationVectors (i)));
+model.put ("vibrationVectors", Boolean.$valueOf (this.viewer.modelHasVibrationVectors (i)));
 var mi = m.models[i];
 model.put ("atomCount", Integer.$valueOf (mi.atomCount));
 model.put ("bondCount", Integer.$valueOf (mi.getBondCount ()));
@@ -744,6 +741,7 @@ var id = ms.getModelAuxiliaryInfoValue (i, "modelID");
 if (id != null) sb.append ("\nid").append (s).append (J.util.Escape.eS (id));
 sb.append ("\ntitle").append (s).append (J.util.Escape.eS (ms.getModelTitle (i)));
 sb.append ("\nname").append (s).append (J.util.Escape.eS (ms.getModelName (i)));
+sb.append ("\ntype").append (s).append (J.util.Escape.eS (ms.getModelFileType (i)));
 }
 return sb.toString ();
 }, "J.util.BS");
@@ -796,7 +794,7 @@ info.put ("name", ms.getAtomName (i));
 info.put ("chain", atom.getChainIDStr ());
 info.put ("atomID", Integer.$valueOf (atom.atomID));
 info.put ("groupID", Integer.$valueOf (atom.getGroupID ()));
-if (atom.alternateLocationID != '\0') info.put ("altLocation", "" + atom.alternateLocationID);
+if (atom.altloc != '\0') info.put ("altLocation", "" + atom.altloc);
 info.put ("structure", Integer.$valueOf (atom.getProteinStructureType ().getId ()));
 info.put ("polymerLength", Integer.$valueOf (atom.getPolymerLength ()));
 info.put ("occupancy", Integer.$valueOf (atom.getOccupancy100 ()));

@@ -1,4 +1,4 @@
-
+// BH 9/17/2013 10:18:40 AM  file transfer functions moved to JSmolCore 
 // BH 3/5/2013 9:54:16 PM added support for a cover image: Info.coverImage, coverScript, coverTitle, deferApplet, deferUncover
  
 // BH 1/3/2013 4:54:01 AM mouse binding should return false -- see d.bind(...), and d.bind("contextmenu") is not necessary
@@ -7,13 +7,13 @@
 // author: Bob Hanson, hansonr@stolaf.edu	4/16/2012
 // author: Takanori Nakane biochem_fan 6/12/2012
 
-// This library requires
+// This library requires jQuery and 
 //
-//	JSmoljQuery.js
+//	JSmoljQueryExt.js
 //	JSmolCore.js
 //  JSmolApplet.js
 //  JSmolApi.js
-//  j2s/j2sjmol.js    (Clazz and associated classes)
+//  j2sjmol.js    (Clazz and associated classes)
 // prior to JSmol.js
 
 // these two:
@@ -446,50 +446,6 @@
 		}
 		Jmol.__nextExecution();
 	};
-
-	Jmol._doAjax = function(url, postOut, bytesOut) {
-    url = url.toString();
-    
-    if (bytesOut != null) {
-    	bytesOut = J.io.Base64.getBase64(bytesOut).toString();
-    	var filename = url.substring(url.lastIndexOf("/") + 1);
-    	var mimetype = (filename.indexOf(".png") >= 0 ? "image/png" : filename.indexOf(".jpg") >= 0 ? "image/jpg" : "");
-    	Jmol._saveFile(filename, mimetype, bytesOut, "base64");
-    	return "OK";
-    }
-    if (postOut)
-      url += "?POST?" + postOut;
-    var data = Jmol._getFileData(url)
-    return Jmol._processData(data, Jmol._isBinaryUrl(url));
-	}
-
-  Jmol._processData = function(data, isBinary) {
-    if (typeof data == "undefined") {
-      data = "";
-      isBinary = false;
-    }
-    isBinary &= Jmol._canSyncBinary();
-    if (!isBinary)
-  		return J.util.SB.newS(data);
-  	var b;
-		if (Clazz.instanceOf(data, self.ArrayBuffer)) {
-			data = new Uint8Array(data);
-    	b = Clazz.newByteArray(data.length, 0);
-	    for (var i = data.length; --i >= 0;)
-  	    b[i] = data[i];
-    // alert("Jmol._processData len=" + b.length + " b[0-5]=" + b[0] + " " +
-	// b[1]+ " " + b[2] + " " + b[3]+ " " + b[4] + " " + b[5])
-    	return b;
-						
-		}
-    b = Clazz.newByteArray(data.length, 0);
-    for (var i = data.length; --i >= 0;)
-      b[i] = data.charCodeAt(i) & 0xFF;
-    // alert("Jmol._processData len=" + b.length + " b[0-5]=" + b[0] + " " +
-	// b[1]+ " " + b[2] + " " + b[3]+ " " + b[4] + " " + b[5])
-    return b;
-  };
-
 
   Jmol._loadImage = function(platform, echoNameAndPath, bytes, fOnload, image) {
   // bytes would be from a ZIP file -- will have to reflect those back from

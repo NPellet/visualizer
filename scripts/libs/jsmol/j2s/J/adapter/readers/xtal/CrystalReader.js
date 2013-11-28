@@ -7,7 +7,6 @@ this.isPolymer = false;
 this.isSlab = false;
 this.isMolecular = false;
 this.haveCharges = false;
-this.isFreqCalc = false;
 this.inputOnly = false;
 this.isLongMode = false;
 this.getLastConventional = false;
@@ -18,12 +17,15 @@ this.atomIndexLast = 0;
 this.atomFrag = null;
 this.primitiveToIndex = null;
 this.nuclearCharges = null;
-this.vInputCoords = null;
+this.vCoords = null;
 this.energy = null;
 this.ptOriginShift = null;
 this.primitiveToCryst = null;
 this.directLatticeVectors = null;
 this.spaceGroupName = null;
+this.primitiveVolume = 0;
+this.primitiveDensity = 0;
+this.vPrimitiveMapping = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "CrystalReader", J.adapter.smarter.AtomSetCollectionReader);
 Clazz.prepareFields (c$, function () {
@@ -34,9 +36,10 @@ function () {
 this.doProcessLines = false;
 this.inputOnly = this.checkFilterKey ("INPUT");
 this.isPrimitive = !this.inputOnly && !this.checkFilterKey ("CONV");
-this.addVibrations = new Boolean (this.addVibrations & (!this.inputOnly && this.isPrimitive)).valueOf ();
+this.addVibrations = new Boolean (this.addVibrations & !this.inputOnly).valueOf ();
 this.getLastConventional = (!this.isPrimitive && this.desiredModelNumber == 0);
 this.setFractionalCoordinates (this.readHeader ());
+this.atomSetCollection.setLatticeOnly (true);
 });
 Clazz.overrideMethod (c$, "checkLine", 
 function () {
@@ -44,31 +47,30 @@ if (this.line.startsWith (" LATTICE PARAMETER")) {
 var isConvLattice = (this.line.indexOf ("- CONVENTIONAL") >= 0);
 if (isConvLattice) {
 if (this.isPrimitive) return true;
-this.readCellParams (true);
+this.readLatticeParams (true);
 } else if (!this.isPrimitive && !this.havePrimitiveMapping && !this.getLastConventional) {
-if (this.readPrimitiveMapping ()) return true;
-}this.readCellParams (true);
+this.readLines (3);
+this.readPrimitiveMapping ();
+if (this.setPrimitiveMapping ()) return true;
+}this.readLatticeParams (true);
 if (!this.isPrimitive) {
 this.discardLinesUntilContains (" TRANSFORMATION");
 this.readTransformationMatrix ();
 this.discardLinesUntilContains (" CRYSTALLOGRAPHIC");
-this.readCellParams (false);
+this.readLatticeParams (false);
 this.discardLinesUntilContains (" CRYSTALLOGRAPHIC");
-this.readCrystallographicCoords ();
-if (this.modelNumber == 1) {
-} else if (!this.isFreqCalc) {
-}if (!this.getLastConventional) {
-if (!this.doGetModel (++this.modelNumber, null)) {
-this.vInputCoords = null;
-this.checkLastModel ();
-}this.processInputCoords ();
-}}return true;
-}if (this.isPrimitive) {
-if (this.line.indexOf ("VOLUME=") >= 0 && this.line.indexOf ("- DENSITY") >= 0) return this.readVolumePrimCell ();
+this.readCoordLines ();
+if (!this.getLastConventional) {
+if (this.doGetModel (++this.modelNumber, null)) {
+this.createAtomsFromCoordLines ();
 } else {
+this.vCoords = null;
+this.checkLastModel ();
+}}}return true;
+}if (!this.isPrimitive) {
 if (this.line.startsWith (" SHIFT OF THE ORIGIN")) return this.readShift ();
 if (this.line.startsWith (" INPUT COORDINATES")) {
-this.readCrystallographicCoords ();
+this.readCoordLines ();
 if (this.inputOnly) this.continuing = false;
 return true;
 }}if (this.line.startsWith (" DIRECT LATTICE VECTOR")) return this.setDirect ();
@@ -76,10 +78,7 @@ if (this.line.indexOf ("DIMENSIONALITY OF THE SYSTEM") >= 0) {
 if (this.line.indexOf ("2") >= 0) this.isSlab = true;
 if (this.line.indexOf ("1") >= 0) this.isPolymer = true;
 return true;
-}if (this.line.indexOf ("FRQFRQ") >= 0) {
-this.isFreqCalc = true;
-return true;
-}if (this.line.startsWith (" FREQUENCIES COMPUTED ON A FRAGMENT")) return this.readFragments ();
+}if (this.addVibrations && this.line.startsWith (" FREQUENCIES COMPUTED ON A FRAGMENT")) return this.readFreqFragments ();
 if (this.line.indexOf ("CONSTRUCTION OF A NANOTUBE FROM A SLAB") >= 0) {
 this.isPolymer = true;
 this.isSlab = false;
@@ -89,9 +88,12 @@ this.isMolecular = true;
 this.isSlab = false;
 this.isPolymer = false;
 return true;
-}if ((this.isPrimitive && this.line.startsWith (" ATOMS IN THE ASYMMETRIC UNIT")) || this.isProperties && this.line.startsWith ("   ATOM N.AT.")) {
+}if (((this.isPrimitive || this.isMolecular) && this.line.startsWith (" ATOMS IN THE ASYMMETRIC UNIT")) || this.isProperties && this.line.startsWith ("   ATOM N.AT.")) {
 if (!this.doGetModel (++this.modelNumber, null)) return this.checkLastModel ();
 return this.readAtoms ();
+}if (this.line.startsWith (" * SUPERCELL OPTION")) {
+this.discardLinesUntilContains ("GENERATED");
+return true;
 }if (!this.doProcessLines) return true;
 if (this.line.startsWith (" TOTAL ENERGY")) {
 this.readEnergy ();
@@ -105,14 +107,15 @@ return true;
 }if (this.line.startsWith (" MULLIKEN POPULATION ANALYSIS")) return this.readPartialCharges ();
 if (this.line.startsWith (" TOTAL ATOMIC CHARGES")) return this.readTotalAtomicCharges ();
 if (this.addVibrations && this.line.contains (this.isVersion3 ? "EIGENVALUES (EV) OF THE MASS" : "EIGENVALUES (EIGV) OF THE MASS") || this.line.indexOf ("LONGITUDINAL OPTICAL (LO)") >= 0) {
-if (this.vInputCoords != null) this.processInputCoords ();
+this.createAtomsFromCoordLines ();
 this.isLongMode = (this.line.indexOf ("LONGITUDINAL OPTICAL (LO)") >= 0);
 return this.readFrequencies ();
 }if (this.line.startsWith (" MAX GRADIENT")) return this.readGradient ();
-if (this.line.startsWith (" ATOMIC SPINS SET")) return this.readSpins ();
-if (this.line.startsWith (" TOTAL ATOMIC SPINS  :")) return this.readMagneticMoments ();
+if (this.line.startsWith (" ATOMIC SPINS SET")) return this.readData ("spin", 3);
+if (this.line.startsWith (" TOTAL ATOMIC SPINS  :")) return this.readData ("magneticMoment", 1);
+if (this.line.startsWith (" BORN CHARGE TENSOR.")) return this.readBornChargeTensors ();
 if (!this.isProperties) return true;
-if (this.line.startsWith (" DEFINITION OF TRACELESS")) return this.getPropertyTensors ();
+if (this.line.startsWith (" DEFINITION OF TRACELESS")) return this.getQuadrupoleTensors ();
 if (this.line.startsWith (" MULTIPOLE ANALYSIS BY ATOMS")) {
 this.appendLoadNote ("Multipole Analysis");
 return true;
@@ -120,7 +123,7 @@ return true;
 });
 Clazz.overrideMethod (c$, "finalizeReader", 
 function () {
-if (this.vInputCoords != null) this.processInputCoords ();
+this.createAtomsFromCoordLines ();
 if (this.energy != null) this.setEnergy ();
 this.finalizeReaderASCR ();
 });
@@ -164,63 +167,11 @@ $_M(c$, "fraction",
 var ab = J.util.TextFormat.split (f, '/');
 return (ab.length == 2 ? this.parseFloatStr (ab[0]) / this.parseFloatStr (ab[1]) : 0);
 }, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "readGradient", 
+$_M(c$, "setPrimitiveVolumeAndDensity", 
 ($fz = function () {
-var key = null;
-while (this.line != null) {
-var tokens = this.getTokens ();
-if (this.line.indexOf ("MAX GRAD") >= 0) key = "maxGradient";
- else if (this.line.indexOf ("RMS GRAD") >= 0) key = "rmsGradient";
- else if (this.line.indexOf ("MAX DISP") >= 0) key = "maxDisplacement";
- else if (this.line.indexOf ("RMS DISP") >= 0) key = "rmsDisplacement";
- else break;
-if (this.atomSetCollection.getAtomCount () > 0) this.atomSetCollection.setAtomSetModelProperty (key, tokens[2]);
-this.readLine ();
-}
-return true;
+if (this.primitiveVolume != 0) this.atomSetCollection.setAtomSetModelProperty ("volumePrimitive", J.util.TextFormat.formatDecimal (this.primitiveVolume, 3));
+if (this.primitiveDensity != 0) this.atomSetCollection.setAtomSetModelProperty ("densityPrimitive", J.util.TextFormat.formatDecimal (this.primitiveDensity, 3));
 }, $fz.isPrivate = true, $fz));
-$_M(c$, "readVolumePrimCell", 
-($fz = function () {
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line);
-var volumePrim = tokens[7];
-if (tokens[9].length > 7) {
-this.line = J.util.TextFormat.simpleReplace (this.line, "DENSITY", "DENSITY ");
-}var densityPrim = tokens[10];
-this.atomSetCollection.setAtomSetModelProperty ("volumePrimitive", J.util.TextFormat.formatDecimal (this.parseFloatStr (volumePrim), 3));
-this.atomSetCollection.setAtomSetModelProperty ("densityPrimitive", J.util.TextFormat.formatDecimal (this.parseFloatStr (densityPrim), 3));
-return true;
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "readSpins", 
-($fz = function () {
-var data = "";
-while (this.readLine () != null && this.line.indexOf ("ALPHA") < 0) data += this.line;
-
-data = J.util.TextFormat.simpleReplace (data, "-", " -");
-this.setData ("spin", data, 2, 3);
-return true;
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "readMagneticMoments", 
-($fz = function () {
-var data = "";
-while (this.readLine () != null && this.line.indexOf ("TTTTTT") < 0) data += this.line;
-
-this.setData ("magneticMoment", data, 0, 1);
-return true;
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "setData", 
-($fz = function (name, data, pt, dp) {
-if (this.vInputCoords != null) this.processInputCoords ();
-var s =  new Array (this.atomCount);
-for (var i = 0; i < this.atomCount; i++) s[i] = "0";
-
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (data);
-for (var i = 0; i < this.atomCount; i++, pt += dp) {
-var iConv = this.getAtomIndexFromPrimitiveIndex (i);
-if (iConv >= 0) s[iConv] = tokens[pt];
-}
-data = J.util.TextFormat.join (s, '\n', 0);
-this.atomSetCollection.setAtomSetAtomProperty (name, data, -1);
-}, $fz.isPrivate = true, $fz), "~S,~S,~N,~N");
 $_M(c$, "readHeader", 
 ($fz = function () {
 this.discardLinesUntilContains ("*                                CRYSTAL");
@@ -257,20 +208,23 @@ this.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("molecularCalculationP
 return false;
 }this.spaceGroupName = "P1";
 if (!this.isPrimitive) {
-this.readLines (5);
+this.discardLinesUntilContains2 ("SPACE GROUP", "****");
 pt = this.line.indexOf (":");
 if (pt >= 0) this.spaceGroupName = this.line.substring (pt + 1).trim ();
 }this.doApplySymmetry = this.isProperties;
 return !this.isProperties;
 }, $fz.isPrivate = true, $fz));
-$_M(c$, "readCellParams", 
+$_M(c$, "readLatticeParams", 
 ($fz = function (isNewSet) {
 var f = (this.line.indexOf ("(BOHR") >= 0 ? 0.5291772 : 1);
 if (isNewSet) this.newAtomSet ();
 if (this.isPolymer && !this.isPrimitive) {
 this.setUnitCell (this.parseFloatStr (this.line.substring (this.line.indexOf ("CELL") + 4)) * f, -1, -1, 90, 90, 90);
 } else {
-this.discardLinesUntilContains ("GAMMA");
+while (this.readLine ().indexOf ("GAMMA") < 0) if (this.line.indexOf ("VOLUME=") >= 0) {
+this.primitiveVolume = this.parseFloatStr (this.line.substring (43));
+this.primitiveDensity = this.parseFloatStr (this.line.substring (66));
+}
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine ());
 if (this.isSlab) {
 if (this.isPrimitive) this.setUnitCell (this.parseFloatStr (tokens[0]) * f, this.parseFloatStr (tokens[1]) * f, -1, this.parseFloatStr (tokens[3]), this.parseFloatStr (tokens[4]), this.parseFloatStr (tokens[5]));
@@ -282,45 +236,52 @@ this.setUnitCell (this.parseFloatStr (tokens[0]) * f, this.parseFloatStr (tokens
 }}}, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "readPrimitiveMapping", 
 ($fz = function () {
-if (this.vInputCoords == null) return false;
+if (this.havePrimitiveMapping) return;
+this.vPrimitiveMapping =  new J.util.JmolList ();
+while (this.readLine () != null && this.line.indexOf ("NUMBER") < 0) this.vPrimitiveMapping.addLast (this.line);
+
+}, $fz.isPrivate = true, $fz));
+$_M(c$, "setPrimitiveMapping", 
+($fz = function () {
+if (this.vCoords == null || this.vPrimitiveMapping == null || this.havePrimitiveMapping) return false;
 this.havePrimitiveMapping = true;
 var bsInputAtomsIgnore =  new J.util.BS ();
-var n = this.vInputCoords.size ();
+var n = this.vCoords.size ();
 var indexToPrimitive =  Clazz.newIntArray (n, 0);
 this.primitiveToIndex =  Clazz.newIntArray (n, 0);
 for (var i = 0; i < n; i++) indexToPrimitive[i] = -1;
 
-this.readLines (3);
-while (this.readLine () != null && this.line.indexOf (" NOT IRREDUCIBLE") >= 0) {
-bsInputAtomsIgnore.set (this.parseIntRange (this.line, 21, 25) - 1);
-this.readLine ();
-}
-this.readLines (3);
-var iPrim = 0;
 var nPrim = 0;
-while (this.readLine () != null && this.line.indexOf ("NUMBER") < 0) {
-if (this.line.length == 0) continue;
-nPrim++;
+for (var iLine = 0; iLine < this.vPrimitiveMapping.size (); iLine++) {
+this.line = this.vPrimitiveMapping.get (iLine);
+if (this.line.indexOf (" NOT IRREDUCIBLE") >= 0) {
+bsInputAtomsIgnore.set (this.parseIntRange (this.line, 21, 25) - 1);
+continue;
+}while (this.readLine () != null && this.line.indexOf ("NUMBER") < 0) {
+if (this.line.length < 2 || this.line.indexOf ("ATOM") >= 0) continue;
 var iAtom = this.parseIntRange (this.line, 4, 8) - 1;
 if (indexToPrimitive[iAtom] < 0) {
-indexToPrimitive[iAtom] = iPrim++;
+indexToPrimitive[iAtom] = nPrim++;
 }}
-if (bsInputAtomsIgnore.nextSetBit (0) >= 0) for (var i = n; --i >= 0; ) if (bsInputAtomsIgnore.get (i)) this.vInputCoords.remove (i);
+}
+if (bsInputAtomsIgnore.nextSetBit (0) >= 0) for (var i = n; --i >= 0; ) if (bsInputAtomsIgnore.get (i)) this.vCoords.remove (i);
 
-this.atomCount = this.vInputCoords.size ();
+this.atomCount = this.vCoords.size ();
 J.util.Logger.info (nPrim + " primitive atoms and " + this.atomCount + " conventionalAtoms");
 this.primitiveToIndex =  Clazz.newIntArray (nPrim, 0);
 for (var i = 0; i < nPrim; i++) this.primitiveToIndex[i] = -1;
 
 for (var i = this.atomCount; --i >= 0; ) {
-iPrim = indexToPrimitive[this.parseIntStr (this.vInputCoords.get (i).substring (0, 4)) - 1];
+var iPrim = indexToPrimitive[this.parseIntStr (this.vCoords.get (i).substring (0, 4)) - 1];
 if (iPrim >= 0) this.primitiveToIndex[iPrim] = i;
 }
+this.vPrimitiveMapping = null;
 return true;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readAtoms", 
 ($fz = function () {
 if (this.isMolecular) this.newAtomSet ();
+this.vCoords = null;
 while (this.readLine () != null && this.line.indexOf ("*") < 0) {
 if (this.line.indexOf ("X(ANGSTROM") >= 0) {
 this.setFractionalCoordinates (false);
@@ -334,7 +295,7 @@ var atom = this.atomSetCollection.addNewAtom ();
 var tokens = this.getTokens ();
 var pt = (this.isProperties ? 1 : 2);
 atom.elementSymbol = J.adapter.smarter.AtomSetCollectionReader.getElementSymbol (this.getAtomicNumber (tokens[pt++]));
-atom.atomName = this.getAtomName (tokens[pt++]);
+atom.atomName = J.adapter.readers.xtal.CrystalReader.fixAtomName (tokens[pt++]);
 if (this.isProperties) pt++;
 var x = this.parseFloatStr (tokens[pt++]);
 var y = this.parseFloatStr (tokens[pt++]);
@@ -349,33 +310,30 @@ if (z < 0 && doNormalizePrimitive) z += 1;
 this.atomCount = this.atomSetCollection.getAtomCount () - this.atomIndexLast;
 return true;
 }, $fz.isPrivate = true, $fz));
-$_M(c$, "getAtomName", 
+c$.fixAtomName = $_M(c$, "fixAtomName", 
 ($fz = function (s) {
-var atomName = s;
-if (atomName.length > 1 && Character.isLetter (atomName.charAt (1))) atomName = atomName.substring (0, 1) + Character.toLowerCase (atomName.charAt (1)) + atomName.substring (2);
-return atomName;
+return (s.length > 1 && Character.isLetter (s.charAt (1)) ? s.substring (0, 1) + Character.toLowerCase (s.charAt (1)) + s.substring (2) : s);
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "getAtomicNumber", 
 ($fz = function (token) {
-var atomicNumber = this.parseIntStr (token);
-while (atomicNumber >= 100) atomicNumber -= 100;
-
-return atomicNumber;
+return this.parseIntStr (token) % 100;
 }, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "readCrystallographicCoords", 
+$_M(c$, "readCoordLines", 
 ($fz = function () {
 this.readLine ();
 this.readLine ();
-this.vInputCoords =  new J.util.JmolList ();
-while (this.readLine () != null && this.line.length > 0) this.vInputCoords.addLast (this.line);
+this.vCoords =  new J.util.JmolList ();
+while (this.readLine () != null && this.line.length > 0) this.vCoords.addLast (this.line);
 
 }, $fz.isPrivate = true, $fz));
-$_M(c$, "processInputCoords", 
+$_M(c$, "createAtomsFromCoordLines", 
 ($fz = function () {
-this.atomCount = this.vInputCoords.size ();
+if (this.vCoords == null) return;
+this.atomCount = this.vCoords.size ();
 for (var i = 0; i < this.atomCount; i++) {
 var atom = this.atomSetCollection.addNewAtom ();
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.vInputCoords.get (i));
+var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.vCoords.get (i));
+atom.atomSerial = this.parseIntStr (tokens[0]);
 var atomicNumber;
 var offset;
 if (tokens.length == 7) {
@@ -390,14 +348,16 @@ var z = this.parseFloatStr (tokens[4 + offset]) + this.ptOriginShift.z;
 this.setAtomCoordXYZ (atom, x, y, z);
 atom.elementSymbol = J.adapter.smarter.AtomSetCollectionReader.getElementSymbol (atomicNumber);
 }
-this.vInputCoords = null;
+this.vCoords = null;
+this.setPrimitiveVolumeAndDensity ();
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "newAtomSet", 
 ($fz = function () {
-if (this.atomSetCollection.getAtomCount () > 0) {
+if (this.atomCount > 0 && this.atomSetCollection.getAtomCount () > 0) {
 this.applySymmetryAndSetTrajectory ();
 this.atomSetCollection.newAtomSet ();
 }if (this.spaceGroupName != null) this.setSpaceGroupName (this.spaceGroupName);
+this.atomCount = 0;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readEnergy", 
 ($fz = function () {
@@ -451,7 +411,7 @@ $_M(c$, "getAtomIndexFromPrimitiveIndex",
 ($fz = function (iPrim) {
 return (this.primitiveToIndex == null ? iPrim : this.primitiveToIndex[iPrim]);
 }, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "readFragments", 
+$_M(c$, "readFreqFragments", 
 ($fz = function () {
 var numAtomsFrag = this.parseIntRange (this.line, 39, 44);
 if (numAtomsFrag < 0) return true;
@@ -525,7 +485,41 @@ this.atomSetCollection.setAtomSetModelProperty ("IRactivity", data[2]);
 this.atomSetCollection.setAtomSetModelProperty ("Ramanactivity", data[3]);
 this.atomSetCollection.setAtomSetName ((this.isLongMode ? "LO " : "") + data[0] + " " + J.util.TextFormat.formatDecimal (freq, 2) + " cm-1 (" + J.util.TextFormat.formatDecimal (J.util.Parser.fVal (data[1]), 0) + " km/Mole), " + activity);
 }, $fz.isPrivate = true, $fz), "~N,~A");
-$_M(c$, "getPropertyTensors", 
+$_M(c$, "readGradient", 
+($fz = function () {
+var key = null;
+while (this.line != null) {
+var tokens = this.getTokens ();
+if (this.line.indexOf ("MAX GRAD") >= 0) key = "maxGradient";
+ else if (this.line.indexOf ("RMS GRAD") >= 0) key = "rmsGradient";
+ else if (this.line.indexOf ("MAX DISP") >= 0) key = "maxDisplacement";
+ else if (this.line.indexOf ("RMS DISP") >= 0) key = "rmsDisplacement";
+ else break;
+if (this.atomSetCollection.getAtomCount () > 0) this.atomSetCollection.setAtomSetModelProperty (key, tokens[2]);
+this.readLine ();
+}
+return true;
+}, $fz.isPrivate = true, $fz));
+$_M(c$, "readData", 
+($fz = function (name, nfields) {
+this.createAtomsFromCoordLines ();
+var s =  new Array (this.atomCount);
+for (var i = 0; i < this.atomCount; i++) s[i] = "0";
+
+var data = "";
+while (this.readLine () != null && (this.line.length < 4 || Character.isDigit (this.line.charAt (3)))) data += this.line;
+
+data = J.util.TextFormat.simpleReplace (data, "-", " -");
+var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (data);
+for (var i = 0, pt = nfields - 1; i < this.atomCount; i++, pt += nfields) {
+var iConv = this.getAtomIndexFromPrimitiveIndex (i);
+if (iConv >= 0) s[iConv] = tokens[pt];
+}
+data = J.util.TextFormat.join (s, '\n', 0);
+this.atomSetCollection.setAtomSetAtomProperty (name, data, -1);
+return true;
+}, $fz.isPrivate = true, $fz), "~S,~N");
+$_M(c$, "getQuadrupoleTensors", 
 ($fz = function () {
 this.readLines (6);
 var atoms = this.atomSetCollection.getAtoms ();
@@ -533,9 +527,31 @@ while (this.readLine () != null && this.line.startsWith (" *** ATOM")) {
 var tokens = this.getTokens ();
 var index = this.parseIntStr (tokens[3]) - 1;
 tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLines (3));
-atoms[index].addTensor (J.util.Tensor.getTensorFromEigenVectors (this.directLatticeVectors, [this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[3]), this.parseFloatStr (tokens[5])], "unknown", atoms[index].atomName), null);
+atoms[index].addTensor (J.util.Tensor.getTensorFromEigenVectors (this.directLatticeVectors, [this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[3]), this.parseFloatStr (tokens[5])], "quadrupole", atoms[index].atomName), null, false);
 this.readLine ();
 }
+this.appendLoadNote ("Ellipsoids set \"quadrupole\": Quadrupole tensors");
 return true;
+}, $fz.isPrivate = true, $fz));
+$_M(c$, "readBornChargeTensors", 
+($fz = function () {
+this.createAtomsFromCoordLines ();
+this.readLine ();
+var atoms = this.atomSetCollection.getAtoms ();
+while (this.readLine ().startsWith (" ATOM")) {
+var index = this.parseIntStr (this.line.substring (5)) - 1;
+var atom = atoms[index];
+this.readLines (2);
+var a =  Clazz.newDoubleArray (3, 3, 0);
+for (var i = 0; i < 3; i++) {
+var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine ());
+for (var j = 0; j < 3; j++) a[i][j] = this.parseFloatStr (tokens[j + 1]);
+
+}
+atom.addTensor (J.util.Tensor.getTensorFromAsymmetricTensor (a, "charge", atom.elementSymbol + (index + 1)), null, false);
+this.readLine ();
+}
+this.appendLoadNote ("Ellipsoids set \"charge\": Born charge tensors");
+return false;
 }, $fz.isPrivate = true, $fz));
 });

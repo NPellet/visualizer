@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.ArrayUtil", ["java.util.Arrays"], function () {
+Clazz.load (null, "J.util.ArrayUtil", ["java.util.Arrays", "J.util.JmolList"], function () {
 c$ = Clazz.declareType (J.util, "ArrayUtil");
 c$.ensureLength = $_M(c$, "ensureLength", 
 function (array, minimumLength) {
@@ -269,4 +269,13 @@ function (n) {
 {
 return Clazz.newArray(n, null);
 }}, "~N");
+c$.removeMapKeys = $_M(c$, "removeMapKeys", 
+function (map, root) {
+var list =  new J.util.JmolList ();
+for (var key, $key = map.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) if (key.startsWith (root)) list.addLast (key);
+
+for (var i = list.size (); --i >= 0; ) map.remove (list.get (i));
+
+return list.size ();
+}, "java.util.Map,~S");
 });

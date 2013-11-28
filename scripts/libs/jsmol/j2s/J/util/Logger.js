@@ -19,6 +19,7 @@ c$.setLogger = $_M(c$, "setLogger",
 function (logger) {
 ($t$ = J.util.Logger._logger = logger, J.util.Logger.prototype._logger = J.util.Logger._logger, $t$);
 ($t$ = J.util.Logger.debugging = J.util.Logger.isActiveLevel (5) || J.util.Logger.isActiveLevel (6), J.util.Logger.prototype.debugging = J.util.Logger.debugging, $t$);
+($t$ = J.util.Logger.debuggingHigh = (J.util.Logger.debugging && J.util.Logger._activeLevels[6]), J.util.Logger.prototype.debuggingHigh = J.util.Logger.debuggingHigh, $t$);
 }, "J.util.LoggerInterface");
 c$.isActiveLevel = $_M(c$, "isActiveLevel", 
 function (level) {

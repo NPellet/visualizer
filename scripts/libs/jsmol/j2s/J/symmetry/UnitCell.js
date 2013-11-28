@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.symmetry");
-Clazz.load (["J.util.SimpleUnitCell", "$.P3", "J.viewer.JC"], "J.symmetry.UnitCell", ["J.util.BoxInfo", "$.Escape", "$.Matrix4f", "$.Tensor"], function () {
+Clazz.load (["J.util.SimpleUnitCell", "$.P3", "J.viewer.JC"], "J.symmetry.UnitCell", ["java.lang.Float", "J.util.BoxInfo", "$.Escape", "$.Matrix4f", "$.Tensor"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vertices = null;
 this.cartesianOffset = null;
@@ -47,17 +47,16 @@ function (pt, offset) {
 if (this.matrixCartesianToFractional == null) return;
 if (offset == null) {
 this.matrixCartesianToFractional.transform (pt);
-switch (this.dimension) {
-case 3:
-pt.z = J.symmetry.UnitCell.toFractionalX (pt.z);
-case 2:
-pt.y = J.symmetry.UnitCell.toFractionalX (pt.y);
-case 1:
-pt.x = J.symmetry.UnitCell.toFractionalX (pt.x);
-}
+this.unitize (pt);
 this.matrixFractionalToCartesian.transform (pt);
 } else {
 this.matrixCtoFAbsolute.transform (pt);
+this.unitize (pt);
+pt.add (offset);
+this.matrixFtoCAbsolute.transform (pt);
+}}, "J.util.P3,J.util.P3");
+$_M(c$, "unitize", 
+function (pt) {
 switch (this.dimension) {
 case 3:
 pt.z = J.symmetry.UnitCell.toFractionalX (pt.z);
@@ -66,9 +65,7 @@ pt.y = J.symmetry.UnitCell.toFractionalX (pt.y);
 case 1:
 pt.x = J.symmetry.UnitCell.toFractionalX (pt.x);
 }
-pt.add (offset);
-this.matrixFtoCAbsolute.transform (pt);
-}}, "J.util.P3,J.util.P3");
+}, "J.util.P3");
 $_M(c$, "setAllFractionalRelative", 
 function (TF) {
 this.allFractionalRelative = TF;
@@ -238,6 +235,14 @@ function () {
 var m = this.matrixFractionalToCartesian;
 return [J.util.P3.newP (this.cartesianOffset), J.util.P3.new3 (m.m00, m.m10, m.m20), J.util.P3.new3 (m.m01, m.m11, m.m21), J.util.P3.new3 (m.m02, m.m12, m.m22)];
 });
+$_M(c$, "isSameAs", 
+function (uc) {
+if (uc.notionalUnitcell.length != this.notionalUnitcell.length) return false;
+for (var i = this.notionalUnitcell.length; --i >= 0; ) if (this.notionalUnitcell[i] != uc.notionalUnitcell[i] && !(Float.isNaN (this.notionalUnitcell[i]) && Float.isNaN (uc.notionalUnitcell[i]))) return false;
+
+if (this.fractionalOffset.distanceSquared (uc.fractionalOffset) != 0) return false;
+return true;
+}, "J.symmetry.UnitCell");
 Clazz.defineStatics (c$,
 "twoP2", 19.739208802178716);
 c$.unitVectors = c$.prototype.unitVectors = [J.viewer.JC.axisX, J.viewer.JC.axisY, J.viewer.JC.axisZ];

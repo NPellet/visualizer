@@ -21,7 +21,7 @@ canvas.buf8 = canvas.imgdata.data;
 java.net.URL.setURLStreamHandlerFactory ( new J.awtjs2d.AjaxURLStreamHandlerFactory ());
 } catch (e) {
 }
-}, "J.api.JmolViewer,~O");
+}, "J.viewer.Viewer,~O");
 Clazz.overrideMethod (c$, "isSingleThreaded", 
 function () {
 return true;
@@ -82,9 +82,9 @@ function (label, data, list, asButtons) {
 return J.awtjs2d.Display.prompt (label, data, list, asButtons);
 }, "~S,~S,~A,~B");
 Clazz.overrideMethod (c$, "renderScreenImage", 
-function (viewer, context, size) {
-J.awtjs2d.Display.renderScreenImage (viewer, context, size);
-}, "J.api.JmolViewer,~O,~O");
+function (context, size) {
+J.awtjs2d.Display.renderScreenImage (this.viewer, context, size);
+}, "~O,~O");
 Clazz.overrideMethod (c$, "drawImage", 
 function (context, canvas, x, y, width, height) {
 J.awtjs2d.Image.drawImage (context, canvas, x, y, width, height);

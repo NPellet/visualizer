@@ -1,8 +1,9 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["J.api.JmolMeasurementClient"], "J.modelset.MeasurementData", ["J.modelset.Measurement", "J.util.BSUtil", "$.JmolList"], function () {
+Clazz.load (["J.api.JmolMeasurementClient"], "J.modelset.MeasurementData", ["java.lang.Float", "J.modelset.Measurement", "J.util.BSUtil", "$.JmolList"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.client = null;
 this.measurementStrings = null;
+this.measurements = null;
 this.points = null;
 this.mustBeConnected = false;
 this.mustNotBeConnected = false;
@@ -62,26 +63,31 @@ $_M(c$, "processNextMeasure",
 function (m) {
 var value = m.getMeasurement ();
 if (this.htMin != null && !m.isMin (this.htMin) || this.radiusData != null && !m.isInRange (this.radiusData, value)) return;
-if (this.measurementStrings == null) {
+if (this.measurementStrings == null && this.measurements == null) {
 var f = this.minArray[this.iFirstAtom];
 m.value = value;
 value = m.fixValue (this.units, false);
 this.minArray[this.iFirstAtom] = (1 / f == -Infinity ? value : Math.min (f, value));
 return;
-}this.measurementStrings.addLast (m.getStringUsing (this.viewer, this.strFormat, this.units));
+}if (this.measurementStrings != null) this.measurementStrings.addLast (m.getStringUsing (this.viewer, this.strFormat, this.units));
+ else this.measurements.addLast (Float.$valueOf (m.getMeasurement ()));
 }, "J.modelset.Measurement");
 $_M(c$, "getMeasurements", 
-function (asMinArray) {
+function (asArray, asMinArray) {
 if (asMinArray) {
 this.minArray =  Clazz.newFloatArray ((this.points.get (0)).cardinality (), 0);
 for (var i = 0; i < this.minArray.length; i++) this.minArray[i] = -0.0;
 
 this.define (null, this.modelSet);
 return this.minArray;
+}if (asArray) {
+this.measurements =  new J.util.JmolList ();
+this.define (null, this.modelSet);
+return this.measurements;
 }this.measurementStrings =  new J.util.JmolList ();
 this.define (null, this.modelSet);
 return this.measurementStrings;
-}, "~B");
+}, "~B,~B");
 $_M(c$, "define", 
 function (client, modelSet) {
 this.client = (client == null ? this : client);

@@ -1,11 +1,13 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.api.JmolStateCreator", "java.util.Hashtable"], "J.viewer.StateCreator", ["java.io.BufferedOutputStream", "$.BufferedWriter", "$.FileWriter", "java.lang.Boolean", "$.Float", "java.util.Arrays", "$.Date", "J.constant.EnumAxesMode", "$.EnumPalette", "$.EnumStereoMode", "$.EnumStructure", "$.EnumVdw", "J.io.Base64", "$.JmolBinary", "$.OutputStringBuilder", "J.modelset.AtomCollection", "$.Bond", "$.Object2d", "J.shape.Shape", "J.util.BSUtil", "$.C", "$.ColorEncoder", "$.Escape", "$.JmolEdge", "$.JmolFont", "$.JmolList", "$.Logger", "$.P3", "$.Parser", "$.SB", "$.TextFormat", "$.V3", "J.viewer.DataManager", "$.FileManager", "$.JC", "$.StateManager", "$.Viewer"], function () {
+Clazz.load (["J.api.JmolStateCreator", "java.util.Hashtable"], "J.viewer.StateCreator", ["java.lang.Boolean", "$.Float", "java.util.Arrays", "$.Date", "J.constant.EnumAxesMode", "$.EnumPalette", "$.EnumStereoMode", "$.EnumStructure", "$.EnumVdw", "J.i18n.GT", "J.io.Base64", "$.JmolBinary", "$.OutputStringBuilder", "J.modelset.AtomCollection", "$.Bond", "$.Object2d", "J.shape.Shape", "J.util.BSUtil", "$.C", "$.ColorEncoder", "$.Escape", "$.JmolEdge", "$.JmolFont", "$.JmolList", "$.Logger", "$.P3", "$.Parser", "$.SB", "$.TextFormat", "$.V3", "J.viewer.DataManager", "$.FileManager", "$.JC", "$.StateManager", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
+this.privateKey = 0;
 this.temp = null;
 this.temp2 = null;
 this.temp3 = null;
 this.undoWorking = false;
+this.logFileName = null;
 Clazz.instantialize (this, arguments);
 }, J.viewer, "StateCreator", null, J.api.JmolStateCreator);
 Clazz.prepareFields (c$, function () {
@@ -17,16 +19,17 @@ Clazz.makeConstructor (c$,
 function () {
 });
 Clazz.overrideMethod (c$, "setViewer", 
-function (viewer) {
+function (viewer, privateKey) {
 this.viewer = viewer;
-}, "J.viewer.Viewer");
+this.privateKey = privateKey;
+}, "J.viewer.Viewer,~N");
 Clazz.overrideMethod (c$, "getWrappedState", 
 function (fileName, scripts, isImage, asJmolZip, width, height) {
 if (isImage && !this.viewer.global.imageState && !asJmolZip || !this.viewer.global.preserveState) return "";
 var s = this.viewer.getStateInfo3 (null, width, height);
 if (asJmolZip) {
 if (fileName != null) this.viewer.fileManager.clearPngjCache (fileName);
-return J.io.JmolBinary.createZipSet (this.viewer.fileManager, this.viewer, null, s, scripts, true);
+return J.io.JmolBinary.createZipSet (this.privateKey, this.viewer.fileManager, this.viewer, null, s, scripts, true);
 }try {
 s = J.viewer.JC.embedScript (J.viewer.FileManager.setScriptFileReferences (s, ".", null, null));
 } catch (e) {
@@ -144,6 +147,7 @@ commands.append (fcmd).append ("; unitcell ").append (J.util.Escape.eAP (models[
 this.getShapeState (commands, isAll, 33);
 }}
 if (ms.unitCells != null) {
+var haveModulation = false;
 for (var i = 0; i < modelCount; i++) {
 var symmetry = ms.getUnitCell (i);
 if (symmetry == null) continue;
@@ -153,9 +157,22 @@ if (pt != null) commands.append ("; set unitcell ").append (J.util.Escape.eP (pt
 pt = symmetry.getUnitCellMultiplier ();
 if (pt != null) commands.append ("; set unitcell ").append (J.util.Escape.eP (pt));
 commands.append (";\n");
+haveModulation = new Boolean (haveModulation | (this.viewer.modelGetLastVibrationIndex (i, 135270424) >= 0)).valueOf ();
 }
 this.getShapeState (commands, isAll, 33);
-}commands.append ("  set fontScaling " + this.viewer.getBoolean (603979845) + ";\n");
+if (haveModulation) {
+var temp =  new java.util.Hashtable ();
+var ivib;
+for (var i = modelCount; --i >= 0; ) {
+if ((ivib = this.viewer.modelGetLastVibrationIndex (i, 135270424)) >= 0) for (var j = models[i].firstAtomIndex; j <= ivib; j++) {
+var mset = this.viewer.getVibration (j);
+if (mset != null && mset.enabled) {
+J.util.BSUtil.setMapBitSet (temp, j, j, mset.getState ());
+}}
+}
+var s = this.getCommands (temp, null, "select");
+commands.append (s);
+}}commands.append ("  set fontScaling " + this.viewer.getBoolean (603979845) + ";\n");
 if (this.viewer.getBoolean (603979883)) commands.append ("  set modelKitMode true;\n");
 }if (sfunc != null) commands.append ("\n}\n\n");
 return commands.toString ();
@@ -227,17 +244,16 @@ return commands.toString ();
 $_M(c$, "getDataState", 
 ($fz = function (dm, state, sfunc, atomProps) {
 if (dm.dataValues == null) return;
-var e = dm.dataValues.keySet ().iterator ();
 var sb =  new J.util.SB ();
 var haveData = false;
 if (atomProps.length > 0) {
 haveData = true;
 sb.append (atomProps);
-}while (e.hasNext ()) {
-var name = e.next ();
+}for (var name, $name = dm.dataValues.keySet ().iterator (); $name.hasNext () && ((name = $name.next ()) || true);) {
 if (name.indexOf ("property_") == 0) {
-haveData = true;
 var obj = dm.dataValues.get (name);
+if (obj.length > 4 && obj[4] === Boolean.FALSE) continue;
+haveData = true;
 var data = obj[1];
 if (data != null && (obj[3]).intValue () == 1) {
 this.getAtomicPropertyStateBuffer (sb, 14, obj[2], name, data);
@@ -326,17 +342,9 @@ if (isState) {
 sfunc.append ("  _setVariableState;\n");
 commands.append ("function _setVariableState() {\n\n");
 }var n = 0;
-var e;
-var key;
-e = global.htBooleanParameterFlags.keySet ().iterator ();
-while (e.hasNext ()) {
-key = e.next ();
-if (J.viewer.StateManager.doReportProperty (key)) list[n++] = "set " + key + " " + global.htBooleanParameterFlags.get (key);
-}
-e = global.htNonbooleanParameterValues.keySet ().iterator ();
-while (e.hasNext ()) {
-key = e.next ();
-if (J.viewer.StateManager.doReportProperty (key)) {
+for (var key, $key = global.htBooleanParameterFlags.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) if (J.viewer.StateManager.doReportProperty (key)) list[n++] = "set " + key + " " + global.htBooleanParameterFlags.get (key);
+
+for (var key, $key = global.htNonbooleanParameterValues.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) if (J.viewer.StateManager.doReportProperty (key)) {
 var value = global.htNonbooleanParameterValues.get (key);
 if (key.charAt (0) == '=') {
 key = key.substring (1);
@@ -345,7 +353,7 @@ if (key.indexOf ("default") == 0) key = " set " + key;
  else key = "set " + key;
 value = J.util.Escape.e (value);
 }list[n++] = key + " " + value;
-}}
+}
 switch (global.axesMode) {
 case J.constant.EnumAxesMode.UNITCELL:
 list[n++] = "set axes unitcell";
@@ -442,7 +450,7 @@ var navigating = (tm.mode == 1);
 if (navigating) J.viewer.StateCreator.appendCmd (commands, "set navigationMode true");
 J.viewer.StateCreator.appendCmd (commands, this.viewer.getBoundBoxCommand (false));
 J.viewer.StateCreator.appendCmd (commands, "center " + J.util.Escape.eP (tm.fixedRotationCenter));
-commands.append (this.viewer.getOrientationText (1073742158, null));
+commands.append (this.viewer.getOrientationText (1073742035, null));
 J.viewer.StateCreator.appendCmd (commands, moveToText);
 if (tm.stereoMode !== J.constant.EnumStereoMode.NONE) J.viewer.StateCreator.appendCmd (commands, "stereo " + (tm.stereoColors == null ? tm.stereoMode.getName () : J.util.Escape.escapeColor (tm.stereoColors[0]) + " " + J.util.Escape.escapeColor (tm.stereoColors[1])) + " " + tm.stereoDegrees);
 if (!navigating && !tm.zoomEnabled) J.viewer.StateCreator.appendCmd (commands, "zoom off");
@@ -695,9 +703,7 @@ case 30:
 var es = shape;
 var sb =  new J.util.SB ();
 sb.append ("\n  set echo off;\n");
-var e = es.objects.values ().iterator ();
-while (e.hasNext ()) {
-var t = e.next ();
+for (var t, $t = es.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) {
 sb.append (this.getTextState (t));
 if (t.hidden) sb.append ("  set echo ID ").append (J.util.Escape.eS (t.target)).append (" hidden;\n");
 }
@@ -793,7 +799,7 @@ s.append ("  ").append (echoCmd).append (" ").append (strOff);
 if (t.align != 1) s.append (";  ").append (echoCmd).append (" ").append (J.modelset.Object2d.hAlignNames[t.align]);
 break;
 default:
-s.append ("  set echo ").append (J.modelset.Object2d.vAlignNames[t.align]).append (" ").append (J.modelset.Object2d.hAlignNames[t.align]);
+s.append ("  set echo ").append (J.modelset.Object2d.vAlignNames[t.valign]).append (" ").append (J.modelset.Object2d.hAlignNames[t.align]);
 }
 if (t.valign == 0 && t.movableZPercent != 2147483647) s.append (";  ").append (echoCmd).append (" depth ").appendI (t.movableZPercent);
 if (isImage) s.append ("; ").append (echoCmd).append (" IMAGE /*file*/");
@@ -866,27 +872,19 @@ Clazz.overrideMethod (c$, "getAllSettings",
 function (prefix) {
 var g = this.viewer.global;
 var commands =  new J.util.SB ();
-var e;
-var key;
 var list =  new Array (g.htBooleanParameterFlags.size () + g.htNonbooleanParameterValues.size () + g.htUserVariables.size ());
 var n = 0;
 var _prefix = "_" + prefix;
-e = g.htBooleanParameterFlags.keySet ().iterator ();
-while (e.hasNext ()) {
-key = e.next ();
+for (var key, $key = g.htBooleanParameterFlags.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
 if (prefix == null || key.indexOf (prefix) == 0 || key.indexOf (_prefix) == 0) list[n++] = (key.indexOf ("_") == 0 ? key + " = " : "set " + key + " ") + g.htBooleanParameterFlags.get (key);
 }
-e = g.htNonbooleanParameterValues.keySet ().iterator ();
-while (e.hasNext ()) {
-key = e.next ();
+for (var key, $key = g.htNonbooleanParameterValues.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
 if (key.charAt (0) != '@' && (prefix == null || key.indexOf (prefix) == 0 || key.indexOf (_prefix) == 0)) {
 var value = g.htNonbooleanParameterValues.get (key);
 if (Clazz.instanceOf (value, String)) value = J.viewer.StateCreator.chop (J.util.Escape.eS (value));
 list[n++] = (key.indexOf ("_") == 0 ? key + " = " : "set " + key + " ") + value;
 }}
-e = g.htUserVariables.keySet ().iterator ();
-while (e.hasNext ()) {
-key = e.next ();
+for (var key, $key = g.htUserVariables.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
 if (prefix == null || key.indexOf (prefix) == 0) {
 var value = g.htUserVariables.get (key);
 var s = value.asString ();
@@ -938,12 +936,9 @@ if (isGeneric) selectedFunction = selectedFunction.substring (0, pt);
 selectedFunction = selectedFunction.toLowerCase ();
 var ht = (isStatic ? J.viewer.Viewer.staticFunctions : this.viewer.localFunctions);
 var names =  new Array (ht.size ());
-var e = ht.keySet ().iterator ();
 var n = 0;
-while (e.hasNext ()) {
-var name = e.next ();
-if (selectedFunction.length == 0 && !name.startsWith ("_") || name.equalsIgnoreCase (selectedFunction) || isGeneric && name.toLowerCase ().indexOf (selectedFunction) == 0) names[n++] = name;
-}
+for (var name, $name = ht.keySet ().iterator (); $name.hasNext () && ((name = $name.next ()) || true);) if (selectedFunction.length == 0 && !name.startsWith ("_") || name.equalsIgnoreCase (selectedFunction) || isGeneric && name.toLowerCase ().indexOf (selectedFunction) == 0) names[n++] = name;
+
 java.util.Arrays.sort (names, 0, n);
 for (var i = 0; i < n; i++) {
 var f = ht.get (names[i]);
@@ -1125,6 +1120,8 @@ if (ligandModelSet != null) {
 for (var key, $key = ligandModelSet.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
 var data = this.viewer.ligandModels.get (key + "_data");
 if (data != null) cmds.append ("  ").append (J.util.Escape.encapsulateData ("ligand_" + key, data.trim () + "\n", 0));
+data = this.viewer.ligandModels.get (key + "_file");
+if (data != null) cmds.append ("  ").append (J.util.Escape.encapsulateData ("file_" + key, data.trim () + "\n", 0));
 }
 }var commands =  new J.util.SB ();
 var ms = this.viewer.modelSet;
@@ -1180,11 +1177,11 @@ if (iScene <= iSceneLast) continue;
 iSceneLast = iScene;
 str[2] = "all";
 var fileName = fileRoot + "_scene_" + iScene + ".all." + fileExt;
-var msg = this.createImagePathCheck (fileName, "PNGJ", null, null, str, null, -1, width, height, null, false);
+var msg = this.createImagePathCheck (fileName, "PNGJ", null, null, str, -1, width, height, null, false);
 str[0] = null;
 str[2] = "min";
 fileName = fileRoot + "_scene_" + iScene + ".min." + fileExt;
-msg += "\n" + this.createImagePathCheck (fileName, "PNGJ", null, null, str, null, -1, Math.min (width, 200), Math.min (height, 200), null, false);
+msg += "\n" + this.createImagePathCheck (fileName, "PNGJ", null, null, str, -1, Math.min (width, 200), Math.min (height, 200), null, false);
 this.viewer.showString (msg, false);
 nFiles += 2;
 } catch (e) {
@@ -1207,7 +1204,7 @@ return "OK " + nFiles + " files created";
 }, $fz.isPrivate = true, $fz), "~S,~S,~N,~N");
 Clazz.overrideMethod (c$, "createImageSet", 
 function (fileName, type, text, bytes, scripts, quality, width, height, bsFrames, nVibes, fullPath) {
-if (bsFrames == null && nVibes == 0) return this.createImagePathCheck (fileName, type, text, bytes, scripts, null, quality, width, height, fullPath, true);
+if (bsFrames == null && nVibes == 0) return this.createImagePathCheck (fileName, type, text, bytes, scripts, quality, width, height, fullPath, true);
 var info = "";
 var n = 0;
 fileName = this.getOutputFileNameFromDialog (fileName, quality);
@@ -1241,22 +1238,27 @@ $_M(c$, "writeFrame",
 var fileName = "0000" + n;
 fileName = froot + fileName.substring (fileName.length - 4) + fext;
 if (fullPath != null) fullPath[0] = fileName;
-var msg = this.createImagePathCheck (fileName, type, null, null, null, "", quality, width, height, null, false);
+var msg = this.createImagePathCheck (fileName, type, null, null, null, quality, width, height, null, false);
 this.viewer.scriptEcho (msg);
 sb.append (msg).append ("\n");
 return msg.startsWith ("OK");
 }, $fz.isPrivate = true, $fz), "~N,~S,~S,~A,~S,~N,~N,~N,J.util.SB");
-Clazz.overrideMethod (c$, "createImagePathCheck", 
-function (fileName, type, text, bytes, scripts, appendix, quality, width, height, fullPath, doCheck) {
+Clazz.overrideMethod (c$, "createImage", 
+function (fileName, type, text, bytes, scripts, quality, width, height) {
+return this.createImagePathCheck (fileName, type, text, bytes, scripts, quality, width, height, null, true);
+}, "~S,~S,~S,~A,~A,~N,~N,~N");
+$_M(c$, "createImagePathCheck", 
+($fz = function (fileName, type, text, bytes, scripts, quality, width, height, fullPath, doCheck) {
 var ret = null;
-var localName = null;
 var isClip = (fileName == null);
+var localName = null;
 if (!isClip) {
 if (doCheck) fileName = this.getOutputFileNameFromDialog (fileName, quality);
 if (fileName == null) return null;
-if (!this.viewer.$isJS && J.viewer.FileManager.isLocal (fileName)) localName = fileName;
+if (J.viewer.FileManager.isLocal (fileName)) localName = fileName;
 if (fullPath != null) fullPath[0] = fileName;
-}var saveWidth = this.viewer.dimScreen.width;
+}if (!isClip && fullPath != null && (fileName = fullPath[0]) == null) return null;
+var saveWidth = this.viewer.dimScreen.width;
 var saveHeight = this.viewer.dimScreen.height;
 this.viewer.creatingImage = true;
 if (quality != -2147483648) {
@@ -1270,14 +1272,14 @@ ret = this.viewer.clipImage (text);
 if (type.equals ("JMOL")) type = "ZIPALL";
 if (type.equals ("ZIP") || type.equals ("ZIPALL")) {
 if (scripts != null && type.equals ("ZIP")) type = "ZIPALL";
-ret = J.io.JmolBinary.createZipSet (this.viewer.fileManager, this.viewer, localName, text, scripts, type.equals ("ZIPALL"));
+ret = J.io.JmolBinary.createZipSet (this.privateKey, this.viewer.fileManager, this.viewer, localName, text, scripts, type.equals ("ZIPALL"));
 } else if (type.equals ("SCENE")) {
-ret = (this.viewer.$isJS ? "ERROR: Not Available" : this.createSceneSet (fileName, text, width, height));
+ret = (this.viewer.isJS ? "ERROR: Not Available" : this.createSceneSet (fileName, text, width, height));
 } else {
-if (!type.equals ("OutputStream")) ret = this.viewer.statusManager.createImage (fileName, type, text, bytes, quality);
+ret = this.viewer.statusManager.createImage (fileName, type, text, bytes, quality);
 if (ret == null) {
 var c = this.viewer.getImageCreator ();
-ret = c.createImage (localName, type, text, bytes, scripts, null, quality);
+ret = c.createImage (localName, type, text, bytes, scripts, quality);
 if (Clazz.instanceOf (ret, String)) this.viewer.statusManager.createImage (ret, type, null, null, quality);
 }}if (Clazz.instanceOf (ret, Array)) ret = "OK " + J.io.JmolBinary.postByteArray (this.viewer.fileManager, fileName, ret);
 }} catch (er) {
@@ -1287,7 +1289,7 @@ this.viewer.creatingImage = false;
 if (quality != -2147483648) {
 this.viewer.resizeImage (saveWidth, saveHeight, true, false, true);
 }return ret;
-}, "~S,~S,~S,~A,~A,~O,~N,~N,~N,~A,~B");
+}, $fz.isPrivate = true, $fz), "~S,~S,~S,~A,~A,~N,~N,~N,~A,~B");
 Clazz.overrideMethod (c$, "syncScript", 
 function (script, applet, port) {
 var sm = this.viewer.statusManager;
@@ -1319,20 +1321,29 @@ if (syncMode != 1) disableSend = false;
 if (J.util.Logger.debugging) J.util.Logger.debug (this.viewer.htmlName + " syncing with script: " + script);
 if (disableSend) sm.setSyncDriver (3);
 if (script.indexOf ("Mouse: ") != 0) {
-if (script.startsWith ("Select: ")) {
+if (script.startsWith ("Peaks: [")) {
+var list = J.util.Escape.unescapeStringArray (script.substring (7));
+var peaks =  new J.util.JmolList ();
+for (var i = 0; i < list.length; i++) peaks.addLast (list[i]);
+
+this.viewer.getModelSet ().setModelAuxiliaryInfo (this.viewer.getCurrentModelIndex (), "jdxAtomSelect_1HNMR", peaks);
+return;
+}if (script.startsWith ("Select: ")) {
 var filename = J.util.Parser.getQuotedAttribute (script, "file");
+if (filename.startsWith (J.viewer.StateCreator.SIMULATION_PROTOCOL + "MOL=")) filename = null;
 var modelID = J.util.Parser.getQuotedAttribute (script, "model");
 var baseModel = J.util.Parser.getQuotedAttribute (script, "baseModel");
 var atoms = J.util.Parser.getQuotedAttribute (script, "atoms");
 var select = J.util.Parser.getQuotedAttribute (script, "select");
 var script2 = J.util.Parser.getQuotedAttribute (script, "script");
 var isNIH = (modelID != null && modelID.startsWith ("$"));
-if (isNIH) filename = (modelID.substring (1).equals (this.viewer.getParameter ("_smilesstring")) ? null : modelID);
-var id = (isNIH || modelID == null ? null : (filename == null ? "" : filename + "#") + modelID);
+if (isNIH) filename = this.viewer.setLoadFormat (modelID, '$', false);
+var id = (modelID == null ? null : (filename == null ? "" : filename + "#") + modelID);
 if ("".equals (baseModel)) id += ".baseModel";
 var modelIndex = (id == null ? -3 : this.viewer.getModelIndexFromId (id));
 if (modelIndex == -2) return;
 script = (modelIndex == -1 && filename != null ? script = "load " + J.util.Escape.eS (filename) : "");
+script = J.util.TextFormat.simpleReplace (script, J.viewer.StateCreator.SIMULATION_PROTOCOL, "");
 if (id != null) script += ";model " + J.util.Escape.eS (id);
 if (atoms != null) script += ";select visible & (@" + J.util.TextFormat.simpleReplace (atoms, ",", " or @") + ")";
  else if (select != null) script += ";select visible & (" + select + ")";
@@ -1342,34 +1353,62 @@ if (!disableSend) sm.syncSend (this.viewer.fullName + "JSpecView" + script.subst
 return;
 }this.viewer.evalStringQuietSync (script, true, false);
 return;
-}this.quickScript (script);
+}this.mouseScript (script);
 if (disableSend) this.viewer.setSyncDriver (4);
 }, "~S,~S,~N");
-Clazz.overrideMethod (c$, "quickScript", 
+Clazz.overrideMethod (c$, "mouseScript", 
 function (script) {
 var tokens = J.util.Parser.getTokens (script);
 var key = tokens[1];
+try {
+key = (key.toLowerCase () + "...............").substring (0, 15);
+switch (("zoombyfactor...zoomby.........rotatezby......rotatexyby.....translatexyby..rotatemolecule.spinxyby.......rotatearcball..").indexOf (key)) {
+case 0:
 switch (tokens.length) {
 case 3:
-if (key.equals ("zoomByFactor")) this.viewer.zoomByFactor (J.util.Parser.parseFloatStr (tokens[2]), 2147483647, 2147483647);
- else if (key.equals ("zoomBy")) this.viewer.zoomBy (J.util.Parser.parseInt (tokens[2]));
- else if (key.equals ("rotateZBy")) this.viewer.rotateZBy (J.util.Parser.parseInt (tokens[2]), 2147483647, 2147483647);
-break;
-case 4:
-if (key.equals ("rotateXYBy")) this.viewer.rotateXYBy (J.util.Parser.parseFloatStr (tokens[2]), J.util.Parser.parseFloatStr (tokens[3]));
- else if (key.equals ("translateXYBy")) this.viewer.translateXYBy (J.util.Parser.parseInt (tokens[2]), J.util.Parser.parseInt (tokens[3]));
- else if (key.equals ("rotateMolecule")) this.viewer.rotateSelected (J.util.Parser.parseFloatStr (tokens[2]), J.util.Parser.parseFloatStr (tokens[3]), null);
-break;
+this.viewer.zoomByFactor (J.util.Parser.parseFloatStr (tokens[2]), 2147483647, 2147483647);
+return;
 case 5:
-if (key.equals ("spinXYBy")) this.viewer.spinXYBy (J.util.Parser.parseInt (tokens[2]), J.util.Parser.parseInt (tokens[3]), J.util.Parser.parseFloatStr (tokens[4]));
- else if (key.equals ("zoomByFactor")) this.viewer.zoomByFactor (J.util.Parser.parseFloatStr (tokens[2]), J.util.Parser.parseInt (tokens[3]), J.util.Parser.parseInt (tokens[4]));
- else if (key.equals ("rotateZBy")) this.viewer.rotateZBy (J.util.Parser.parseInt (tokens[2]), J.util.Parser.parseInt (tokens[3]), J.util.Parser.parseInt (tokens[4]));
- else if (key.equals ("rotateArcBall")) this.viewer.rotateArcBall (J.util.Parser.parseInt (tokens[2]), J.util.Parser.parseInt (tokens[3]), J.util.Parser.parseFloatStr (tokens[4]));
-break;
-case 7:
-if (key.equals ("centerAt")) this.viewer.centerAt (J.util.Parser.parseInt (tokens[2]), J.util.Parser.parseInt (tokens[3]), J.util.P3.new3 (J.util.Parser.parseFloatStr (tokens[4]), J.util.Parser.parseFloatStr (tokens[5]), J.util.Parser.parseFloatStr (tokens[6])));
-break;
+this.viewer.zoomByFactor (J.util.Parser.parseFloatStr (tokens[2]), J.util.Parser.parseInt (tokens[3]), J.util.Parser.parseInt (tokens[4]));
+return;
 }
+break;
+case 15:
+switch (tokens.length) {
+case 3:
+this.viewer.zoomBy (J.util.Parser.parseInt (tokens[2]));
+return;
+}
+break;
+case 30:
+switch (tokens.length) {
+case 3:
+this.viewer.rotateZBy (J.util.Parser.parseInt (tokens[2]), 2147483647, 2147483647);
+return;
+case 5:
+this.viewer.rotateZBy (J.util.Parser.parseInt (tokens[2]), J.util.Parser.parseInt (tokens[3]), J.util.Parser.parseInt (tokens[4]));
+}
+break;
+case 45:
+this.viewer.rotateXYBy (J.util.Parser.parseFloatStr (tokens[2]), J.util.Parser.parseFloatStr (tokens[3]));
+return;
+case 60:
+this.viewer.translateXYBy (J.util.Parser.parseInt (tokens[2]), J.util.Parser.parseInt (tokens[3]));
+return;
+case 75:
+this.viewer.spinXYBy (J.util.Parser.parseInt (tokens[2]), J.util.Parser.parseInt (tokens[3]), J.util.Parser.parseFloatStr (tokens[4]));
+return;
+case 90:
+this.viewer.rotateArcBall (J.util.Parser.parseInt (tokens[2]), J.util.Parser.parseInt (tokens[3]), J.util.Parser.parseFloatStr (tokens[4]));
+return;
+}
+} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
+this.viewer.showString ("error reading SYNC command: " + script, false);
 }, "~S");
 Clazz.overrideMethod (c$, "generateOutputForExport", 
 function (type, fileName, width, height) {
@@ -1392,9 +1431,9 @@ $_M(c$, "getOutputFileNameFromDialog",
 if (fileName == null || this.viewer.$isKiosk) return null;
 var useDialog = (fileName.indexOf ("?") == 0);
 if (useDialog) fileName = fileName.substring (1);
-useDialog = new Boolean (useDialog | (this.viewer.$isApplet && (fileName.indexOf ("http:") < 0))).valueOf ();
+useDialog = new Boolean (useDialog | (this.viewer.isApplet () && (fileName.indexOf ("http:") < 0))).valueOf ();
 fileName = J.viewer.FileManager.getLocalPathForWritingFile (this.viewer, fileName);
-if (useDialog) fileName = this.viewer.dialogAsk (quality == -2147483648 ? "save" : "saveImage", fileName);
+if (useDialog) fileName = this.viewer.dialogAsk (quality == -2147483648 ? "Save" : "Save Image", fileName);
 return fileName;
 }, $fz.isPrivate = true, $fz), "~S,~N");
 Clazz.overrideMethod (c$, "getImageAsWithComment", 
@@ -1432,7 +1471,7 @@ throw er;
 }
 } else {
 try {
-bytes = c.getImageBytes (type, quality, fileName, scripts, null, null, os);
+bytes = c.getImageBytes (type, quality, fileName, scripts, null, os);
 } catch (e$$) {
 if (Clazz.exceptionOf (e$$, java.io.IOException)) {
 var e = e$$;
@@ -1455,23 +1494,25 @@ throw e$$;
 this.viewer.resizeImage (saveWidth, saveHeight, true, false, true);
 return bytes;
 }, "~S,~N,~N,~N,~S,~A,java.io.OutputStream,~S");
-Clazz.overrideMethod (c$, "streamFileData", 
-function (fileName, type, type2, modelIndex, parameters) {
-var msg = null;
+Clazz.overrideMethod (c$, "writeFileData", 
+function (fileName, type, modelIndex, parameters) {
 var fullPath =  new Array (1);
 var os = this.getOutputStream (fileName, fullPath);
 if (os == null) return "";
-var sb;
-if (type.equals ("PDB") || type.equals ("PQR")) {
-sb =  new J.io.OutputStringBuilder ( new java.io.BufferedOutputStream (os));
-sb.type = type;
-msg = this.viewer.getPdbData (null, sb);
-} else if (type.equals ("FILE")) {
-msg = this.writeCurrentFile (os);
-} else if (type.equals ("PLOT")) {
-sb =  new J.io.OutputStringBuilder ( new java.io.BufferedOutputStream (os));
-msg = this.viewer.modelSet.getPdbData (modelIndex, type2, this.viewer.getSelectionSet (false), parameters, sb);
-}if (msg != null) msg = "OK " + msg + " " + fullPath[0];
+fileName = fullPath[0];
+var pathName = (type.equals ("FILE") ? this.viewer.getFullPathName () : null);
+var getCurrentFile = (pathName != null && (pathName.equals ("string") || pathName.indexOf ("[]") >= 0 || pathName.equals ("JSNode")));
+var asBytes = (pathName != null && !getCurrentFile);
+if (asBytes) {
+pathName = this.viewer.getModelSetPathName ();
+if (pathName == null) return null;
+}var bos;
+{
+bos = os;
+}var osb =  new J.io.OutputStringBuilder (bos, asBytes);
+osb.type = type;
+var msg = (type.equals ("PDB") || type.equals ("PQR") ? this.viewer.getPdbAtomData (null, osb) : type.startsWith ("PLOT") ? this.viewer.modelSet.getPdbData (modelIndex, type.substring (5), this.viewer.getSelectionSet (false), parameters, osb) : getCurrentFile ? osb.append (this.viewer.getCurrentFileAsString ()).toString () : this.viewer.getFileAsBytes (pathName, osb));
+if (msg != null) msg = "OK " + msg + " " + fileName;
 try {
 os.flush ();
 os.close ();
@@ -1482,27 +1523,24 @@ throw e;
 }
 }
 return msg;
-}, "~S,~S,~S,~N,~A");
-$_M(c$, "writeCurrentFile", 
-($fz = function (os) {
-var filename = this.viewer.getFullPathName ();
-if (filename.equals ("string") || filename.indexOf ("[]") >= 0 || filename.equals ("JSNode")) {
-var str = this.viewer.getCurrentFileAsString ();
-var bos =  new java.io.BufferedOutputStream (os);
-var sb =  new J.io.OutputStringBuilder (bos);
-sb.append (str);
-return sb.toString ();
-}var pathName = this.viewer.getModelSetPathName ();
-return (pathName == null ? "" : this.viewer.getFileAsBytes (pathName, os));
-}, $fz.isPrivate = true, $fz), "java.io.OutputStream");
+}, "~S,~S,~N,~A");
 Clazz.overrideMethod (c$, "getOutputStream", 
-function (localName, fullPath) {
+function (fileName, fullPath) {
 if (!this.viewer.isRestricted (J.viewer.Viewer.ACCESS.ALL)) return null;
-var ret = this.createImagePathCheck (localName, "OutputStream", null, null, null, null, -2147483648, 0, 0, fullPath, true);
-if (Clazz.instanceOf (ret, String)) {
-J.util.Logger.error (ret);
+fileName = this.getOutputFileNameFromDialog (fileName, -2147483648);
+if (fileName == null) return null;
+if (fullPath != null) fullPath[0] = fileName;
+var localName = (J.viewer.FileManager.isLocal (fileName) ? fileName : null);
+try {
+return this.viewer.openOutputChannel (this.privateKey, localName, false);
+} catch (e) {
+if (Clazz.exceptionOf (e, java.io.IOException)) {
+J.util.Logger.info (e.toString ());
 return null;
-}return ret;
+} else {
+throw e;
+}
+}
 }, "~S,~A");
 Clazz.overrideMethod (c$, "openFileAsync", 
 function (fileName, pdbCartoons) {
@@ -1510,9 +1548,10 @@ fileName = fileName.trim ();
 var allowScript = (!fileName.startsWith ("\t"));
 if (!allowScript) fileName = fileName.substring (1);
 fileName = fileName.$replace ('\\', '/');
-if (this.viewer.$isApplet && fileName.indexOf ("://") < 0) fileName = "file://" + (fileName.startsWith ("/") ? "" : "/") + fileName;
+var isCached = fileName.startsWith ("cache://");
+if (this.viewer.isApplet () && fileName.indexOf ("://") < 0) fileName = "file://" + (fileName.startsWith ("/") ? "" : "/") + fileName;
 if (fileName.endsWith (".pse")) {
-this.viewer.evalString ("zap;load SYNC " + J.util.Escape.eS (fileName) + " filter 'DORESIZE'");
+this.viewer.evalString ((isCached ? "" : "zap;") + "load SYNC " + J.util.Escape.eS (fileName) + " filter 'DORESIZE'");
 return;
 }var cmd = null;
 if (fileName.endsWith ("jvxl")) {
@@ -1525,13 +1564,14 @@ if (type != null) {
 this.viewer.evalString ("if (_filetype == 'Pdb') { isosurface sigma 1.0 within 2.0 {*} " + J.util.Escape.eS (fileName) + " mesh nofill }; else; { isosurface " + J.util.Escape.eS (fileName) + "}");
 return;
 }} else if (type.equals ("Jmol")) {
-cmd = "load ";
+cmd = "script ";
 } else if (type.equals ("Cube")) {
 cmd = "isosurface sign red blue ";
 } else if (!type.equals ("spt")) {
 cmd = this.viewer.global.defaultDropScript;
 cmd = J.util.TextFormat.simpleReplace (cmd, "%FILE", fileName);
 cmd = J.util.TextFormat.simpleReplace (cmd, "%ALLOWCARTOONS", "" + pdbCartoons);
+if (cmd.toLowerCase ().startsWith ("zap") && isCached) cmd = cmd.substring (3);
 this.viewer.evalString (cmd);
 return;
 }}if (allowScript && this.viewer.scriptEditorVisible && cmd == null) this.showEditor ([fileName, this.viewer.getFileAsString (fileName)]);
@@ -1550,21 +1590,43 @@ scriptEditor.setFilename (filename);
 scriptEditor.output (J.io.JmolBinary.getEmbeddedScript (msg));
 }scriptEditor.setVisible (true);
 }, "~A");
+Clazz.overrideMethod (c$, "getLogFileName", 
+function () {
+return (this.logFileName == null ? "" : this.logFileName);
+});
+Clazz.overrideMethod (c$, "setLogFile", 
+function (value) {
+var path = null;
+var logFilePath = this.viewer.getLogFilePath ();
+if (logFilePath == null || value.indexOf ("\\") >= 0 || value.indexOf ("/") >= 0) {
+value = null;
+} else if (value.length > 0) {
+if (!value.startsWith ("JmolLog_")) value = "JmolLog_" + value;
+path = this.viewer.getAbsolutePath (this.privateKey, logFilePath + value);
+}if (path == null) value = null;
+ else J.util.Logger.info (J.i18n.GT._ ("Setting log file to {0}", path));
+if (value == null || !this.viewer.isRestricted (J.viewer.Viewer.ACCESS.ALL)) {
+J.util.Logger.info (J.i18n.GT._ ("Cannot set log file path."));
+value = null;
+} else {
+this.logFileName = path;
+this.viewer.global.setS ("_logFile", this.viewer.isApplet () ? value : path);
+}return value;
+}, "~S");
 Clazz.overrideMethod (c$, "logToFile", 
 function (data) {
 try {
 var doClear = (data.equals ("$CLEAR$"));
 if (data.indexOf ("$NOW$") >= 0) data = J.util.TextFormat.simpleReplace (data, "$NOW$", ( new java.util.Date ()).toString ());
-if (this.viewer.logFile == null) {
+if (this.logFileName == null) {
 System.out.println (data);
 return;
-}var fstream =  new java.io.FileWriter (this.viewer.logFile, !doClear);
-var out =  new java.io.BufferedWriter (fstream);
+}var out = this.viewer.openLogFile (this.privateKey, this.logFileName, !doClear);
 if (!doClear) {
 var ptEnd = data.indexOf ('\0');
 if (ptEnd >= 0) data = data.substring (0, ptEnd);
 out.write (data);
-if (ptEnd < 0) out.write (10);
+if (ptEnd < 0) out.write ("\n");
 }out.close ();
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
@@ -1583,5 +1645,6 @@ if (Clazz.instanceOf (e.getValue (), J.util.BS)) sb.append ("{" + e.getKey () + 
 return sb.append ("\n").toString ();
 }, "java.util.Map");
 Clazz.defineStatics (c$,
+"SIMULATION_PROTOCOL", "http://SIMULATION/",
 "MAX_ACTION_UNDO", 100);
 });

@@ -264,8 +264,7 @@ var ok2;
 var ok3;
 this.mapT.clearAll ();
 for (var i = 0; i < 12; i++) {
-this.vertexTest[i].setT (J.util.Geodesic.getVertexVector (i));
-this.vertexTest[i].scaleAdd (combinedRadii, this.centerI);
+this.vertexTest[i].scaleAdd2 (combinedRadii, J.util.Geodesic.getVertexVector (i), this.centerI);
 }
 for (var f = 0; f < 20; f++) {
 faceTest = 0;
@@ -298,8 +297,7 @@ case 0:
 for (var j = 0; j < this.neighborCount; j++) {
 var maxDist = this.neighborPlusProbeRadii2[j];
 this.centerT = this.neighborCenters[j];
-this.pointT.setT (J.util.Geodesic.getVertexVector (vect));
-this.pointT.scaleAdd (combinedRadii, this.centerI);
+this.pointT.scaleAdd2 (combinedRadii, J.util.Geodesic.getVertexVector (vect), this.centerI);
 if (this.pointT.distanceSquared (this.centerT) < maxDist) this.geodesicMap.clear (vect);
 }
 break;

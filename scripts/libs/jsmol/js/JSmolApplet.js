@@ -302,10 +302,38 @@
 			me._script('load "' + me._src + '"');
 		me._showInfo(true);
 		me._showInfo(false);
+    me._setDragDrop();
 		me._readyFunction && me._readyFunction(me);
 		Jmol._setReady(this);
 	}
-	
+
+  japroto._setDragDrop = function() {
+    var me = this;
+    Jmol.$appEvent(me, "appletdiv", "dragover", function(e) {
+      e = e.originalEvent;
+      e.stopPropagation();
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    });
+    Jmol.$appEvent(me, "appletdiv", "drop", function(e) {
+      var e = e.originalEvent;
+      e.stopPropagation();
+      e.preventDefault();
+      var file = e.dataTransfer.files[0];
+      var reader = new FileReader();
+      reader.onloadend = function(evt) {
+    		if (evt.target.readyState == FileReader.DONE) {
+          var cacheName = "cache://DROP_" + file.name;
+          var bytes = Jmol._toBytes(evt.target.result);
+          me._applet.viewer.cacheFileByName("cache://DROP_*",false);
+          me._applet.viewer.cachePut(cacheName, bytes);
+          me._applet.viewer.openFileAsyncPDB(cacheName, true);
+          //Jmol.script(me, "load '" + cacheName + "'");
+    		}
+    	};
+    	reader.readAsArrayBuffer(file);
+    });
+  }	
 	japroto._showInfo = function(tf) {
 		Jmol._getElement(this, "infoheaderspan").innerHTML = this._infoHeader;
 		if (this._info)

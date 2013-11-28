@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.renderbio");
-Clazz.load (["J.renderbio.MeshRibbonRenderer", "J.util.P3", "$.V3"], "J.renderbio.RocketsRenderer", ["J.constant.EnumStructure"], function () {
+Clazz.load (["J.renderbio.StrandsRenderer", "J.util.P3", "$.V3"], "J.renderbio.RocketsRenderer", ["J.constant.EnumStructure"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.newRockets = false;
 this.renderArrowHeads = false;
@@ -20,7 +20,7 @@ this.scaledHeightVector = null;
 this.lengthVector = null;
 this.pointCorner = null;
 Clazz.instantialize (this, arguments);
-}, J.renderbio, "RocketsRenderer", J.renderbio.MeshRibbonRenderer);
+}, J.renderbio, "RocketsRenderer", J.renderbio.StrandsRenderer);
 Clazz.prepareFields (c$, function () {
 this.screenA =  new J.util.P3 ();
 this.screenB =  new J.util.P3 ();
@@ -42,8 +42,8 @@ this.pointCorner =  new J.util.P3 ();
 Clazz.overrideMethod (c$, "renderBioShape", 
 function (bioShape) {
 if (!(Clazz.instanceOf (bioShape.bioPolymer, J.modelsetbio.AlphaPolymer))) return;
-if (this.$wireframeOnly) {
-this.renderMeshRibbon ();
+if (this.wireframeOnly) {
+this.renderStrands ();
 return;
 }var val = !this.viewer.getBoolean (603979900);
 if (this.renderArrowHeads != val) {

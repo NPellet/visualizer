@@ -10,11 +10,12 @@ this.viewer = viewer;
 }, "J.viewer.Viewer");
 Clazz.overrideMethod (c$, "atomPicked", 
 function (atomIndex) {
+if (atomIndex < 0) return;
 var peak = this.getPeakAtomRecord (atomIndex);
 if (peak != null) this.sendJSpecView (peak + " src=\"JmolAtomSelect\"");
 }, "~N");
 $_M(c$, "getPeakAtomRecord", 
-function (atomIndex) {
+($fz = function (atomIndex) {
 var atoms = this.viewer.modelSet.atoms;
 var iModel = atoms[atomIndex].modelIndex;
 var type = null;
@@ -34,19 +35,24 @@ this.viewer.modelSet.htPeaks =  new java.util.Hashtable ();
 var htPeaks = this.viewer.modelSet.htPeaks;
 for (var i = 0; i < peaks.size (); i++) {
 var peak = peaks.get (i);
+System.out.println ("Jmol JSpecView.java peak=" + peak);
 var bsPeak = htPeaks.get (peak);
+System.out.println ("Jmol JSpecView.java bspeak=" + bsPeak);
 if (bsPeak == null) {
 htPeaks.put (peak, bsPeak =  new J.util.BS ());
 var satoms = J.util.Parser.getQuotedAttribute (peak, "atoms");
 var select = J.util.Parser.getQuotedAttribute (peak, "select");
+System.out.println ("Jmol JSpecView.java satoms select " + satoms + " " + select);
 var script = "";
 if (satoms != null) script += "visible & (atomno=" + J.util.TextFormat.simpleReplace (satoms, ",", " or atomno=") + ")";
  else if (select != null) script += "visible & (" + select + ")";
+System.out.println ("Jmol JSpecView.java script : " + script);
 bsPeak.or (this.viewer.getAtomBitSet (script));
-}if (bsPeak.get (atomIndex)) return peak;
+}System.out.println ("Jmol JSpecView bsPeak now : " + bsPeak + " " + atomIndex);
+if (bsPeak.get (atomIndex)) return peak;
 }
 return null;
-}, "~N");
+}, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "sendJSpecView", 
 ($fz = function (peak) {
 var msg = J.util.Parser.getQuotedAttribute (peak, "title");

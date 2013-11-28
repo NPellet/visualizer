@@ -25,8 +25,8 @@ c$.getType = $_M(c$, "getType",
 ($fz = function (type) {
 var pt = type.indexOf ("_");
 if (pt >= 0) type = type.substring (0, pt);
-pt = ";iso....;adp....;tls-u..;tls-r..;ms.....;efg....;isc....;charge.;".indexOf (";" + type.toLowerCase () + ".");
-return (pt < 0 ? -1 : Clazz.doubleToInt (pt / 8));
+pt = ";iso........;adp........;tls-u......;tls-r......;ms.........;efg........;isc........;charge.....;quadrupole.".indexOf (";" + type.toLowerCase () + ".");
+return (pt < 0 ? -1 : Clazz.doubleToInt (pt / 11));
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "getInfo", 
 function (infoType) {
@@ -276,20 +276,19 @@ this.typeFactor = 0.01;
 break;
 case 5:
 this.sortIso = true;
-this.typeFactor = 1.0;
 break;
 case 6:
 this.sortIso = true;
 this.typeFactor = 0.04;
-break;
-case 7:
-this.typeFactor = 1.0;
 break;
 case 3:
 this.altType = "2";
 break;
 case 2:
 this.altType = "3";
+break;
+case 7:
+case 8:
 break;
 }
 }, $fz.isPrivate = true, $fz));
@@ -331,11 +330,9 @@ return (this.type + " " + this.modelIndex + " " + this.atomIndex1 + " " + this.a
 c$.ADP_FACTOR = c$.prototype.ADP_FACTOR = (Math.sqrt (0.5) / 3.141592653589793);
 Clazz.defineStatics (c$,
 "MAGNETIC_SUSCEPTIBILITY_FACTOR", 0.01,
-"ELECTRIC_FIELD_GRADIENT_FACTOR", 1,
-"BORN_EFFECTIVE_CHARGE_FACTOR", 1,
 "INTERACTION_FACTOR", 0.04,
 "tSort", null,
-"KNOWN_TYPES", ";iso....;adp....;tls-u..;tls-r..;ms.....;efg....;isc....;charge.;",
+"KNOWN_TYPES", ";iso........;adp........;tls-u......;tls-r......;ms.........;efg........;isc........;charge.....;quadrupole.",
 "TYPE_OTHER", -1,
 "TYPE_ISO", 0,
 "TYPE_ADP", 1,
@@ -345,5 +342,6 @@ Clazz.defineStatics (c$,
 "TYPE_EFG", 5,
 "TYPE_ISC", 6,
 "TYPE_CHARGE", 7,
+"TYPE_QUADRUPOLE", 8,
 "infoList", ";.............;eigenvalues..;eigenvectors.;asymmatrix...;symmatrix....;value........;isotropy.....;anisotropy...;asymmetry....;eulerzyz.....;eulerzxz.....;quaternion...;indices......;string.......;type.........;id...........;span.........;skew.........");
 });

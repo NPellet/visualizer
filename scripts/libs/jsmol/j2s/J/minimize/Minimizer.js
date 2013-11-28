@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.minimize");
-Clazz.load (["J.api.MinimizerInterface"], "J.minimize.Minimizer", ["java.util.Hashtable", "J.i18n.GT", "J.minimize.MinAngle", "$.MinAtom", "$.MinBond", "$.MinTorsion", "J.minimize.forcefield.ForceFieldMMFF", "$.ForceFieldUFF", "J.thread.MinimizationThread", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.JmolList", "$.Logger"], function () {
+Clazz.load (["J.api.MinimizerInterface"], "J.minimize.Minimizer", ["java.util.Hashtable", "J.i18n.GT", "J.minimize.MinAngle", "$.MinAtom", "$.MinBond", "$.MinTorsion", "$.MinimizationThread", "J.minimize.forcefield.ForceFieldMMFF", "$.ForceFieldUFF", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.JmolList", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.atoms = null;
@@ -325,6 +325,7 @@ J.util.Logger.info (this.minTorsions.length + " torsions");
 });
 $_M(c$, "getForceField", 
 function (ff) {
+if (ff.startsWith ("MMFF")) ff = "MMFF";
 if (this.pFF == null || !ff.equals (this.ff)) {
 if (ff.equals ("UFF")) {
 this.pFF =  new J.minimize.forcefield.ForceFieldUFF (this);
@@ -349,7 +350,8 @@ if (this.minimizationThread != null) {
 this.minimizationThread = null;
 }return;
 }if (this.minimizationThread == null) {
-this.minimizationThread =  new J.thread.MinimizationThread (this, this.viewer);
+this.minimizationThread =  new J.minimize.MinimizationThread ();
+this.minimizationThread.setManager (this, this.viewer, null);
 this.minimizationThread.start ();
 }}, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "getEnergyOnly", 

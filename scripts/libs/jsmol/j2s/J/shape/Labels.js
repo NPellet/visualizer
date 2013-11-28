@@ -391,7 +391,7 @@ if (!this.isActive || this.bsSizeSet == null) return "";
 return this.viewer.getShapeState (this);
 });
 Clazz.overrideMethod (c$, "checkObjectDragged", 
-function (prevX, prevY, x, y, modifiers, bsVisible) {
+function (prevX, prevY, x, y, dragAction, bsVisible) {
 if (this.viewer.getPickingMode () != 2 || this.labelBoxes == null) return false;
 if (prevX == -2147483648) {
 var iAtom = this.findNearestLabel (x, y);

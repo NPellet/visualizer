@@ -1,5 +1,7 @@
 /* 
 
+BH 9/23/2013 10:07:16 PM adds set of loadInline functions
+ 
 Jmol2.js   (JSmol version)
 author: Bob Hanson hansonr@stolaf.edu 5/24/2013 12:06:25 PM
 
@@ -28,6 +30,7 @@ Presumes prior loading of JSmol.min.js
 
 You can change the parameters below to override what your pages already use:
 
+BH  9/19/2013 7:09:41 AM  fixed jmolSetTarget() to accept "0" as a suffix; use of undefined --> null
 
 */
 
@@ -47,7 +50,6 @@ Jmol.Info = {
 // Legacy Scripting infrastruture
 ////////////////////////////////////////////////////////////////
 
-
 function jmolSetParameter(key,value) {
   (self.Info || Jmol.Info)[key] = value;
 }
@@ -59,9 +61,6 @@ function jmolSetXHTML(id) {
 function jmolSetTranslation(TF) {
   // n/a
 }
-
-
-var undefined; // for IE 5 ... wherein undefined is undefined
 
 function jmolInitialize(codebaseDirectory, fileNameOrUseSignedApplet) {
   if (_jmol.initialized)
@@ -106,8 +105,6 @@ function jmolApplet(size, script, nameSuffix) {
 ////////////////////////////////////////////////////////////////
 // Basic controls
 ////////////////////////////////////////////////////////////////
-
-// undefined means it wasn't there; null means it was explicitly listed as null (so as to skip it)
 
 function jmolButton(script, label, id, title) {
   return Jmol.jmolButton(_jmol.target, script, label, id, title);
@@ -156,12 +153,36 @@ function jmolDebugAlert(enableAlerts) {
   // n/a
 }
 
+
+function jmolLoadInline(model, targetSuffix) {
+  return jmolLoadInlineScript(model, null, targetSuffix, false)
+}
+
+function jmolLoadInlineArray(ModelArray, script, targetSuffix) {
+  return jmolLoadInlineScript(ModelArray.join("\n"), script, targetSuffix, false)
+}
+
+function jmolAppendInlineArray(ModelArray, script, targetSuffix) {
+  return jmolLoadInlineScript(ModelArray.join("\n"), script, targetSuffix, true)
+}
+
+function jmolAppendInlineScript(model, script, targetSuffix) {
+  return jmolLoadInlineScript(model, script, targetSuffix, true)
+}
+
+function jmolLoadInlineScript(model, script, targetSuffix, isAppend) {
+  Jmol.script(jmolFindTarget(targetSuffix),
+     "load " 
+     + (isAppend ? "APPEND " : "") 
+     + "DATA 'mydata'\n" + model.replace(/\"/g,'\\"') + "\nEND 'mydata'\n")
+}
+
 function jmolAppletInline(size, inlineModel, script, nameSuffix) {
  alert("jmolAppletInline not implemented")
 }
 
 function jmolSetTarget(targetSuffix) {
-  if (targetSuffix)_jmol.targetSuffix = targetSuffix;
+  targetSuffix == null || (_jmol.targetSuffix = targetSuffix);
   return _jmol.target = "jmolApplet" + _jmol.targetSuffix;
 }
 
@@ -171,28 +192,6 @@ function jmolFindTarget(targetSuffix) {
 
 function jmolScript(script, targetSuffix) {
   Jmol.script(jmolFindTarget(targetSuffix), script)
-}
-
-function jmolLoadInline(model, targetSuffix) {
-  alert("jmolLoadInline not implemented")
-}
-
-
-function jmolLoadInlineScript(model, script, targetSuffix) {
-  alert("jmolLoadInlineScript not implemented - use DATA command")
-}
-
-
-function jmolLoadInlineArray(ModelArray, script, targetSuffix) {
-  alert("jmolLoadInlineArray not implemented - use DATA command")
-}
-
-function jmolAppendInlineArray(ModelArray, script, targetSuffix) {
-  alert("jmolAppendInlineArray not implemented - use DATA command")
-}
-
-function jmolAppendInlineScript(model, script, targetSuffix) {
-  alert("jmolAppendInlineScript not implemented - use DATA command")
 }
 
 function jmolCheckBrowser(action, urlOrMessage, nowOrLater) {
@@ -367,7 +366,7 @@ var _jmol = {
 
 
 function _jmolApplet(size, inlineModel, script, nameSuffix) {
-    nameSuffix == undefined && (nameSuffix = _jmol.appletCount);
+    nameSuffix == null && (nameSuffix = _jmol.appletCount);
     var id = "jmolApplet" + nameSuffix;
     jmolSetTarget(nameSuffix);
     ++_jmol.appletCount;
@@ -377,6 +376,7 @@ function _jmolApplet(size, inlineModel, script, nameSuffix) {
     for (var i in self.Info)
       Info[i] = self.Info[i]
     if (_jmol.initialized) {
+      // intentionally not allowing "" here. "this directory" is ".", not ""
       Info.jarPath || (Info.jarPath = _jmol.codebase);
       Info.jarFile || (Info.jarFile = _jmol.archivePath);
       Info.j2sPath || (Info.j2sPath = Info.jarPath + "/j2s");    
@@ -387,7 +387,7 @@ function _jmolApplet(size, inlineModel, script, nameSuffix) {
     Info.width || (Info.width = sz[0]);
     Info.height || (Info.height = sz[1]);  
     Info.script || (Info.script = script);
-    Info.isSigned == undefined && (Info.isSigned = (Info.jarFile.indexOf("Signed") >= 0));
+    Info.isSigned == null && (Info.isSigned = (Info.jarFile.indexOf("Signed") >= 0));
     for (var i in _jmol.params)
       if(_jmol.params[i]!="")
         Info[i] || (Info[i] = _jmol.params[i]);

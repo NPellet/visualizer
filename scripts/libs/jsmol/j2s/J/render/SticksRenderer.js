@@ -24,7 +24,7 @@ this.dx = 0;
 this.dy = 0;
 this.mag2d = 0;
 this.bondOrder = 0;
-this.renderWireframe = false;
+this.wireframeOnly = false;
 this.isAntialiased = false;
 this.slabbing = false;
 this.slabByAtom = false;
@@ -53,6 +53,8 @@ this.bsForPass2 = J.util.BS.newN (64);
 });
 Clazz.overrideMethod (c$, "render", 
 function () {
+var bonds = this.modelSet.bonds;
+if (bonds == null) return false;
 this.isPass2 = this.g3d.isPass2 ();
 if (!this.isPass2) this.bsForPass2.clearAll ();
 this.slabbing = this.viewer.getSlabEnabled ();
@@ -65,13 +67,12 @@ if (this.multipleBondSpacing == 0 && this.isCartesianExport) this.multipleBondSp
 this.multipleBondRadiusFactor = this.viewer.getFloat (570425368);
 this.modeMultipleBond = this.viewer.getModeMultipleBond ();
 this.showMultipleBonds = (this.multipleBondSpacing != 0 && this.modeMultipleBond != 0 && this.viewer.getBoolean (603979928));
-this.renderWireframe = this.viewer.getInMotion (true) && this.viewer.getBoolean (603979976);
+this.wireframeOnly = !this.viewer.checkMotionRendering (1678770178);
 this.ssbondsBackbone = this.viewer.getBoolean (603979952);
 this.hbondsBackbone = this.viewer.getBoolean (603979852);
 this.bondsBackbone =  new Boolean (this.hbondsBackbone | this.ssbondsBackbone).valueOf ();
 this.hbondsSolid = this.viewer.getBoolean (603979854);
 this.isAntialiased = this.g3d.isAntialiased ();
-var bonds = this.modelSet.bonds;
 var needTranslucent = false;
 if (!this.isExport && this.isPass2) for (var i = this.bsForPass2.nextSetBit (0); i >= 0; i = this.bsForPass2.nextSetBit (i + 1)) {
 this.bond = bonds[i];
@@ -166,7 +167,7 @@ if (this.multipleBondRadiusFactor > 0 && this.bondOrder > 1) this.mad *= this.mu
 this.dx = this.xB - this.xA;
 this.dy = this.yB - this.yA;
 this.width = Clazz.floatToInt (this.viewer.scaleToScreen (Clazz.doubleToInt ((this.zA + this.zB) / 2), this.mad));
-if (this.renderWireframe && this.width > 0) this.width = 1;
+if (this.wireframeOnly && this.width > 0) this.width = 1;
 if (!this.isCartesianExport) {
 this.asLineOnly = (this.width <= 1);
 if (this.asLineOnly && (this.isAntialiased)) {

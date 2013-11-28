@@ -27,7 +27,7 @@ this.cross1 =  new J.util.P3 ();
 Clazz.overrideMethod (c$, "render", 
 function () {
 var dipoles = this.shape;
-this.dipoleVectorScale = this.viewer.getFloat (570425356);
+this.dipoleVectorScale = this.viewer.getFloat (570425355);
 var needTranslucent = false;
 for (var i = dipoles.dipoleCount; --i >= 0; ) {
 var dipole = dipoles.dipoles[i];

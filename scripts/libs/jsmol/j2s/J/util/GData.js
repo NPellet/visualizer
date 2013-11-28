@@ -338,8 +338,8 @@ this.displayMaxY = this.height - this.displayMinY;
 this.bufferSize = this.width * this.height;
 }, "~B");
 $_M(c$, "beginRendering", 
-function (stereoRotationMatrix, translucentMode, isImageWrite) {
-}, "J.util.Matrix3f,~B,~B");
+function (stereoRotationMatrix, translucentMode, isImageWrite, renderLow) {
+}, "J.util.Matrix3f,~B,~B,~B");
 $_M(c$, "endRendering", 
 function () {
 });

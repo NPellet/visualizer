@@ -2052,14 +2052,7 @@ Clazz.exceptionOf=function(e, clazz) {
 	}
   if(clazz == Error) {
     if (("" + e).indexOf("Error") >= 0) {
-      var c = arguments.callee
-      // attempt at a sort of stack trace
-      for (var i = 0; i < 50; i++) {
-        c = c.caller
-        if (!c)break;
-        System.out.println(i + " " + (c.exName ? (c.claxxOwner ? c.claxxOwner.__CLASS_NAME__ + "."  : "") + c.exName 
-        : (c.toString ? c.toString().substring(0, c.toString().indexOf("{")) : "<native method>")))
-      }
+    	System.out.println(Clazz.getStackTrace());
     }
     return (("" + e).indexOf("Error") >= 0);
     // everything here is a Java Exception, not a Java Error
@@ -2067,6 +2060,18 @@ Clazz.exceptionOf=function(e, clazz) {
   return (clazz == Exception || clazz == Throwable
     || clazz == NullPointerException && Clazz._isNPEExceptionPredicate(e));
 };
+
+Clazz.getStackTrace = function() {
+	var s = "";
+  var c = arguments.callee.caller;
+    for (var i = 0; i < 50; i++) {
+      if (!c)break;
+      s += (i + " " + (c.exName ? (c.claxxOwner ? c.claxxOwner.__CLASS_NAME__ + "."  : "") + c.exName 
+      : (c.toString ? c.toString().substring(0, c.toString().indexOf("{")) : "<native method>"))) + "\n";
+      c = c.caller
+    }
+    return s;
+}
 
 /* sgurin: preserve Number.prototype.toString */
 Number.prototype._numberToString=Number.prototype.toString;

@@ -14,7 +14,7 @@ this.facePt3 =  new J.util.P3i ();
 Clazz.overrideMethod (c$, "render", 
 function () {
 var gs = this.shape;
-this.iShowSolid = !(this.viewer.getInMotion (true) && gs.ec.getDotsConvexMax () > 100);
+this.iShowSolid = !(!this.viewer.checkMotionRendering (1113198597) && gs.ec.getDotsConvexMax () > 100);
 if (!this.iShowSolid) return false;
 if (!this.g3d.setColix (4)) return true;
 if (this.iShowSolid && this.faceMap == null) this.faceMap =  Clazz.newIntArray (this.screenDotCount, 0);

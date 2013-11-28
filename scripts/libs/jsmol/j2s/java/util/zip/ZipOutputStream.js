@@ -35,8 +35,13 @@ if (this.$closed) {
 throw  new java.io.IOException ("Stream closed");
 }}, $fz.isPrivate = true, $fz));
 Clazz.makeConstructor (c$, 
+function () {
+Clazz.superConstructor (this, java.util.zip.ZipOutputStream, []);
+});
+$_M(c$, "setZOS", 
 function (out) {
-Clazz.superConstructor (this, java.util.zip.ZipOutputStream, [out, java.util.zip.ZipOutputStream.newDeflater ()]);
+this.setDOS (out, java.util.zip.ZipOutputStream.newDeflater ());
+return this;
 }, "java.io.OutputStream");
 c$.newDeflater = $_M(c$, "newDeflater", 
 ($fz = function () {
@@ -138,7 +143,7 @@ case 0:
 this.written += len;
 if (this.written - this.locoff > entry.size) {
 throw  new java.util.zip.ZipException ("attempt to write past end of STORED entry");
-}this.out.write (b, off, len);
+}this.out.write (this.buffer, 0, len);
 break;
 default:
 throw  new java.util.zip.ZipException ("invalid compression method");

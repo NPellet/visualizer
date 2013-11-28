@@ -1,11 +1,11 @@
 Clazz.declarePackage ("J.renderbio");
-Clazz.load (["J.renderbio.TraceRenderer"], "J.renderbio.StrandsRenderer", null, function () {
+Clazz.load (["J.renderbio.BioShapeRenderer"], "J.renderbio.StrandsRenderer", null, function () {
 c$ = Clazz.decorateAsClass (function () {
-this.strandCount = 0;
+this.strandCount = 1;
 this.strandSeparation = 0;
 this.baseStrandOffset = 0;
 Clazz.instantialize (this, arguments);
-}, J.renderbio, "StrandsRenderer", J.renderbio.TraceRenderer);
+}, J.renderbio, "StrandsRenderer", J.renderbio.BioShapeRenderer);
 Clazz.overrideMethod (c$, "renderBioShape", 
 function (bioShape) {
 this.renderStrandShape ();

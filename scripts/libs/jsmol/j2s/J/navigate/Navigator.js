@@ -149,7 +149,7 @@ if (this.stopped || this.iStep >= this.totalSteps) {
 mode = -2;
 break;
 }this.doNavStep (this.iStep++);
-this.viewer.requestRepaintAndWait ("navigator");
+this.viewer.requestRepaintAndWait ("navigatorThread");
 var sleepTime = (this.targetTime - System.currentTimeMillis ());
 if (!this.runSleep (sleepTime, 0)) return;
 mode = 0;
@@ -258,8 +258,7 @@ var pt1s =  new J.util.P3 ();
 var m = this.tm.getMatrixRotate ();
 m.transform2 (pt0, pt0s);
 m.transform2 (pt1, pt1s);
-var vPath = J.util.V3.newV (pt0s);
-vPath.sub (pt1s);
+var vPath = J.util.V3.newVsub (pt0s, pt1s);
 var v = J.util.V3.new3 (0, 0, 1);
 var angle = vPath.angle (v);
 v.cross (vPath, v);

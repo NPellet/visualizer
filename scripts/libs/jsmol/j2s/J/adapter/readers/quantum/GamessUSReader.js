@@ -11,6 +11,7 @@ Clazz.superCall (this, J.adapter.readers.quantum.GamessUSReader, "initializeRead
 });
 Clazz.overrideMethod (c$, "checkLine", 
 function () {
+if (this.line.indexOf ("***************") >= 0) J.util.Logger.info (this.readLine ());
 var isBohr;
 if (this.line.indexOf ("FINAL ENERGY IS") >= 0 || this.line.indexOf ("TOTAL ENERGY = ") >= 0 || this.line.indexOf ("FINAL RHF ENERGY IS") >= 0) this.readEnergy ();
 if (this.line.indexOf ("BASIS OPTIONS") >= 0) {

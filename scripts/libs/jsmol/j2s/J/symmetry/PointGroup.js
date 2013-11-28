@@ -232,8 +232,7 @@ var e1 = this.elements[i];
 if (q != null) {
 pt.setT (a1);
 pt.sub (center);
-q.transformP2 (pt, pt);
-pt.add (center);
+q.transformP2 (pt, pt).add (center);
 } else {
 pt.setT (a1);
 }if (isInversion) {

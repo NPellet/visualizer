@@ -212,7 +212,7 @@ this.popupMenu = this.menuCreatePopup (title);
 this.thisPopup = this.popupMenu;
 this.menuSetListeners ();
 this.htMenus.put (title, this.popupMenu);
-this.isJS = viewer.$isJS;
+this.isJS = viewer.isJS;
 this.allowSignedFeatures = (!viewer.isApplet () || viewer.getBooleanProperty ("_signedApplet"));
 this.addMenuItems ("", title, this.popupMenu, bundle);
 try {
@@ -268,7 +268,7 @@ if (this.modelInfo == null) this.modelInfo =  new java.util.Hashtable ();
 this.isPDB = J.popup.GenericPopup.checkBoolean (this.modelSetInfo, "isPDB");
 this.isMultiFrame = (this.modelCount > 1);
 this.isSymmetry = J.popup.GenericPopup.checkBoolean (this.modelInfo, "hasSymmetry");
-this.isUnitCell = J.popup.GenericPopup.checkBoolean (this.modelInfo, "notionalUnitcell");
+this.isUnitCell = this.modelInfo.containsKey ("notionalUnitcell");
 this.fileHasUnitCell = (this.isPDB && this.isUnitCell || J.popup.GenericPopup.checkBoolean (this.modelInfo, "fileHasUnitCell"));
 this.isLastFrame = (this.modelIndex == this.modelCount - 1);
 this.altlocs = this.viewer.getAltLocListInModel (this.modelIndex);
@@ -682,7 +682,9 @@ subMenu = this.menuNewSubMenu ((i + 1) + "..." + Math.min (i + this.itemMax, inf
 this.menuAddSubMenu (menu, subMenu);
 this.htMenus.put (id, subMenu);
 pt = 1;
-}var entryName = (i + 1) + " " + infolist[i][2] + " (" + infolist[i][0] + ")";
+}var sym = infolist[i][1];
+if (sym.indexOf ("x1") < 0) sym = infolist[i][0];
+var entryName = (i + 1) + " " + infolist[i][2] + " (" + sym + ")";
 this.menuEnableItem (this.menuCreateItem (subMenu, entryName, "draw SYMOP " + (i + 1), null), true);
 }
 this.menuEnable (menu, true);

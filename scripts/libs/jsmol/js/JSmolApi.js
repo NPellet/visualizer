@@ -1,5 +1,6 @@
 // JmolApi.js -- Jmol user functions  Bob Hanson hansonr@stolaf.edu
 
+// BH 9/3/2013 5:48:03 PM simplification of Jmol.getAppletHTML()
 // BH 5/16/2013 9:01:41 AM checkbox group fix
 // BH 1/15/2013 10:55:06 AM updated to default to HTML5 not JAVA
  
@@ -143,8 +144,13 @@
 	Jmol.evaluate = function(applet,molecularMath) {
 		return applet._evaluate(molecularMath);
 	}
-	
-  Jmol.getAppletHtml = function(applet) {
+
+  // optional Info here	
+  Jmol.getAppletHtml = function(applet, Info) {
+    if (Info) {
+      Jmol.setDocument(0);
+      applet = Jmol.getApplet(applet, Info);
+    }  
     return applet._code;
 	}
 		

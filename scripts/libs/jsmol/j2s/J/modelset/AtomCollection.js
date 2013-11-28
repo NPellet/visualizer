@@ -37,6 +37,7 @@ this.aaRet = null;
 if (!Clazz.isClassDefined ("J.modelset.AtomCollection.AtomSorter")) {
 J.modelset.AtomCollection.$AtomCollection$AtomSorter$ ();
 }
+this.bsModulated = null;
 Clazz.instantialize (this, arguments);
 }, J.modelset, "AtomCollection");
 Clazz.prepareFields (c$, function () {
@@ -80,6 +81,7 @@ this.ionicRadii = mergeModelSet.ionicRadii;
 this.partialCharges = mergeModelSet.partialCharges;
 this.atomTensors = mergeModelSet.atomTensors;
 this.atomTensorList = mergeModelSet.atomTensorList;
+this.bsModulated = mergeModelSet.bsModulated;
 this.setHaveStraightness (false);
 this.surfaceDistance100s = null;
 }, "J.modelset.AtomCollection");
@@ -365,16 +367,16 @@ this.atoms[i].setFractionalCoordTo (xyz, false);
 this.taintAtom (i, 2);
 break;
 case 1146095631:
-this.setAtomVibrationVector (i, xyz.x, xyz.y, xyz.z);
+this.setAtomVibrationVector (i, xyz);
 break;
 }
 }
 }, "J.util.BS,~N,~O");
 $_M(c$, "setAtomVibrationVector", 
-($fz = function (atomIndex, x, y, z) {
-this.setVibrationVector (atomIndex, x, y, z);
+($fz = function (atomIndex, vib) {
+this.setVibrationVector (atomIndex, vib);
 this.taintAtom (atomIndex, 12);
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N");
+}, $fz.isPrivate = true, $fz), "~N,J.util.Tuple3f");
 $_M(c$, "setAtomCoord", 
 function (atomIndex, x, y, z) {
 if (atomIndex < 0 || atomIndex >= this.atomCount) return;
@@ -543,13 +545,16 @@ var v = (this.vibrations == null ? null : this.vibrations[atomIndex]);
 return (v == null && forceNew ?  new J.util.Vibration () : v);
 }, "~N,~B");
 $_M(c$, "setVibrationVector", 
-function (atomIndex, x, y, z) {
-if (Float.isNaN (x) || Float.isNaN (y) || Float.isNaN (z)) return;
+function (atomIndex, vib) {
+if (Float.isNaN (vib.x) || Float.isNaN (vib.y) || Float.isNaN (vib.z)) return;
 if (this.vibrations == null || this.vibrations.length < atomIndex) this.vibrations =  new Array (this.atoms.length);
+if (Clazz.instanceOf (vib, J.util.Vibration)) {
+this.vibrations[atomIndex] = vib;
+} else {
 if (this.vibrations[atomIndex] == null) this.vibrations[atomIndex] =  new J.util.Vibration ();
-this.vibrations[atomIndex].set (x, y, z);
-this.atoms[atomIndex].setVibrationVector ();
-}, "~N,~N,~N,~N");
+this.vibrations[atomIndex].setT (vib);
+}this.atoms[atomIndex].setVibrationVector ();
+}, "~N,J.util.Tuple3f");
 $_M(c$, "setVibrationVector2", 
 ($fz = function (atomIndex, tok, fValue) {
 var v = this.getVibration (atomIndex, true);
@@ -564,7 +569,7 @@ case 1112541204:
 v.z = fValue;
 break;
 }
-this.setAtomVibrationVector (atomIndex, v.x, v.y, v.z);
+this.setAtomVibrationVector (atomIndex, v);
 }, $fz.isPrivate = true, $fz), "~N,~N,~N");
 $_M(c$, "setAtomName", 
 function (atomIndex, name) {
@@ -715,6 +720,7 @@ throw e;
 $_M(c$, "loadCoordinates", 
 ($fz = function (data, isVibrationVectors, doTaint) {
 var lines = J.util.Parser.markLines (data, ';');
+var v = (isVibrationVectors ?  new J.util.V3 () : null);
 try {
 var nData = J.util.Parser.parseInt (data.substring (0, lines[0] - 1));
 for (var i = 1; i <= nData; i++) {
@@ -724,7 +730,8 @@ var x = J.util.Parser.parseFloatStr (tokens[3]);
 var y = J.util.Parser.parseFloatStr (tokens[4]);
 var z = J.util.Parser.parseFloatStr (tokens[5]);
 if (isVibrationVectors) {
-this.setAtomVibrationVector (atomIndex, x, y, z);
+v.set (x, y, z);
+this.setAtomVibrationVector (atomIndex, v);
 } else {
 this.setAtomCoord (atomIndex, x, y, z);
 if (!doTaint) this.untaint (atomIndex, 2);
@@ -1064,8 +1071,7 @@ z.set (0, 0, 0);
 x.set (0, 0, 0);
 var v =  new Array (4);
 for (var i = 0; i < nAttached; i++) {
-v[i] = J.util.V3.newV (atom);
-v[i].sub (attached[i]);
+v[i] = J.util.V3.newVsub (atom, attached[i]);
 v[i].normalize ();
 z.add (v[i]);
 }
@@ -1683,10 +1689,9 @@ if (bsInsert == null) return null;
 pt++;
 }bs.and (bsInsert);
 if (pt >= len) return bs;
-var chainID = identifier.charAt (pt++);
-bs.and (this.getChainBits (chainID.charCodeAt (0)));
-if (pt == len) return bs;
-return null;
+if (pt != len - 1) return null;
+bs.and (this.getChainBits (identifier.charCodeAt (pt)));
+return bs;
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "getSpecName", 
 ($fz = function (name) {
@@ -1747,13 +1752,14 @@ return (!isEmpty || returnEmpty ? bs : null);
 }, "~N,~B");
 $_M(c$, "getChainBits", 
 function (chainID) {
-var caseSensitive = this.viewer.getBoolean (603979822);
-if (!caseSensitive) chainID = Character.toUpperCase (chainID);
+var caseSensitive = chainID < 256 && this.viewer.getBoolean (603979822);
+if (!caseSensitive) chainID = J.modelset.AtomCollection.chainToUpper (chainID);
 var bs =  new J.util.BS ();
 var bsDone = J.util.BSUtil.newBitSet (this.atomCount);
+var id;
 for (var i = bsDone.nextClearBit (0); i < this.atomCount; i = bsDone.nextClearBit (i + 1)) {
 var chain = this.atoms[i].getChain ();
-if (chainID == (caseSensitive ? chain.chainID : Character.toUpperCase (chain.chainID))) {
+if (chainID == (id = chain.chainID) || !caseSensitive && chainID == J.modelset.AtomCollection.chainToUpper (id)) {
 chain.setAtomBitSet (bs);
 bsDone.or (bs);
 } else {
@@ -1761,6 +1767,11 @@ chain.setAtomBitSet (bsDone);
 }}
 return bs;
 }, "~N");
+c$.chainToUpper = $_M(c$, "chainToUpper", 
+function (chainID) {
+{
+return String.fromCharCode(chainID).toUpperCase().charCodeAt(0);
+}}, "~N");
 $_M(c$, "getAtomIndices", 
 function (bs) {
 var n = 0;
@@ -1807,6 +1818,10 @@ for (var i = this.atomCount; --i >= 0; ) if (this.atoms[i].isClickable ()) bs.se
 
 return bs;
 });
+$_M(c$, "isModulated", 
+function (i) {
+return this.bsModulated != null && this.bsModulated.get (i);
+}, "~N");
 $_M(c$, "deleteModelAtoms", 
 function (firstAtomIndex, nAtoms, bsAtoms) {
 this.atoms = J.util.ArrayUtil.deleteElements (this.atoms, firstAtomIndex, nAtoms);
@@ -1815,6 +1830,7 @@ for (var j = firstAtomIndex; j < this.atomCount; j++) {
 this.atoms[j].index = j;
 this.atoms[j].modelIndex--;
 }
+if (this.bsModulated != null) J.util.BSUtil.deleteBits (this.bsModulated, bsAtoms);
 this.deleteAtomTensors (bsAtoms);
 this.atomNames = J.util.ArrayUtil.deleteElements (this.atomNames, firstAtomIndex, nAtoms);
 this.atomTypes = J.util.ArrayUtil.deleteElements (this.atomTypes, firstAtomIndex, nAtoms);
@@ -1903,11 +1919,13 @@ for (var i = 0; i < n; i++) a[i] = list.get (i);
 $_M(c$, "getAtomTensor", 
 function (i, type) {
 var tensors = this.getAtomTensorList (i);
-if (tensors == null || type == null) return null;
+if (tensors != null && type != null) {
 type = type.toLowerCase ();
-for (var j = 0; j < tensors.length; j++) if (tensors[j] != null && type.equals (tensors[j].type)) return tensors[j];
-
-return null;
+for (var j = 0; j < tensors.length; j++) {
+var t = tensors[j];
+if (t != null && (type.equals (t.type) || type.equals (t.altType))) return t;
+}
+}return null;
 }, "~N,~S");
 $_M(c$, "addTensor", 
 function (t, type) {

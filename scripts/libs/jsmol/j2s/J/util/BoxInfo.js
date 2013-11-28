@@ -7,6 +7,7 @@ this.bbCenter = null;
 this.bbVector = null;
 this.bbVertices = null;
 this.isScaleSet = false;
+this.margin = 0;
 Clazz.instantialize (this, arguments);
 }, J.util, "BoxInfo");
 Clazz.prepareFields (c$, function () {
@@ -111,7 +112,7 @@ function (isAll) {
 if (!this.isScaleSet) this.setBbcage (1);
 return (isAll ? [this.bbCenter, J.util.P3.newP (this.bbVector), this.bbCorner0, this.bbCorner1] : [this.bbCorner0, this.bbCorner1]);
 }, "~B");
-$_M(c$, "getBboxVertices", 
+$_M(c$, "getBoundBoxVertices", 
 function () {
 if (!this.isScaleSet) this.setBbcage (1);
 return this.bbVertices;
@@ -146,10 +147,14 @@ this.isScaleSet = false;
 this.bbCorner0.set (3.4028235E38, 3.4028235E38, 3.4028235E38);
 this.bbCorner1.set (-3.4028235E38, -3.4028235E38, -3.4028235E38);
 });
+$_M(c$, "setMargin", 
+function (m) {
+this.margin = m;
+}, "~N");
 $_M(c$, "addBoundBoxPoint", 
 function (pt) {
 this.isScaleSet = false;
-J.util.BoxInfo.addPoint (pt, this.bbCorner0, this.bbCorner1, 0);
+J.util.BoxInfo.addPoint (pt, this.bbCorner0, this.bbCorner1, this.margin);
 }, "J.util.P3");
 c$.addPoint = $_M(c$, "addPoint", 
 function (pt, xyzMin, xyzMax, margin) {

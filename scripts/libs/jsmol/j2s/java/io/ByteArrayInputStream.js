@@ -54,6 +54,9 @@ Clazz.overrideMethod (c$, "mark",
 function (readAheadLimit) {
 this.$mark = this.pos;
 }, "~N");
+Clazz.overrideMethod (c$, "resetStream", 
+function () {
+});
 Clazz.overrideMethod (c$, "reset", 
 function () {
 this.pos = this.$mark;

@@ -30,12 +30,11 @@ this.abc =  new Array (3);
 Clazz.overrideMethod (c$, "initializeReader", 
 function () {
 if (this.filter != null) {
-if (this.checkFilterKey ("CHARGE=")) {
-this.chargeType = this.filter.substring (this.filter.indexOf ("CHARGE=") + 7);
-if (this.chargeType.length > 4) this.chargeType = this.chargeType.substring (0, 4);
-}this.filter = this.filter.$replace ('(', '{').$replace (')', '}');
+this.chargeType = this.getFilter ("CHARGE=");
+if (this.chargeType != null && this.chargeType.length > 4) this.chargeType = this.chargeType.substring (0, 4);
+this.filter = this.filter.$replace ('(', '{').$replace (')', '}');
 this.filter = J.util.TextFormat.simpleReplace (this.filter, "  ", " ");
-this.isAllQ = (this.filter.indexOf ("Q=ALL") >= 0);
+this.isAllQ = this.checkFilterKey ("Q=ALL");
 if (!this.isAllQ && this.filter.indexOf ("{") >= 0) this.setDesiredQpt (this.filter.substring (this.filter.indexOf ("{")));
 this.filter = J.util.TextFormat.simpleReplace (this.filter, "-PT", "");
 }this.continuing = this.readFileData ();
@@ -361,7 +360,7 @@ J.util.Logger.info ("tensor " + atom.atomName + "\t" + J.util.Escape.eAF (data))
 for (var p = 0, i = 0; i < 3; i++) for (var j = 0; j < 3; j++) a[i][j] = data[p++];
 
 
-atom.addTensor (J.util.Tensor.getTensorFromAsymmetricTensor (a, "charge", atom.atomName + " " + line0), null);
+atom.addTensor (J.util.Tensor.getTensorFromAsymmetricTensor (a, "charge", atom.atomName + " " + line0), null, false);
 if (!this.haveCharges) this.appendLoadNote ("Ellipsoids set \"charge\": Born Effective Charges");
 this.haveCharges = true;
 }, $fz.isPrivate = true, $fz), "J.adapter.smarter.Atom,~S");
@@ -421,7 +420,7 @@ var isOK = this.isAllQ;
 var isSecond = (this.tokens[1].equals (this.lastQPt));
 this.qpt2 = (isSecond ? this.qpt2 + 1 : 1);
 this.lastQPt = this.tokens[1];
-if (!isOK && this.filter != null && this.checkFilterKey ("Q=")) {
+if (!isOK && this.checkFilterKey ("Q=")) {
 if (this.desiredQpt != null) {
 v.sub2 (this.desiredQpt, qvec);
 if (v.length () < 0.001) fcoord = this.desiredQ;

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["J.modelset.Model"], "J.modelsetbio.BioModel", ["java.lang.Character", "$.Float", "java.util.Hashtable", "J.constant.EnumStructure", "J.modelsetbio.Resolver", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.JmolList", "$.SB", "$.TextFormat", "J.viewer.Viewer"], function () {
+Clazz.load (["J.modelset.Model"], "J.modelsetbio.BioModel", ["java.lang.Float", "java.util.Hashtable", "J.constant.EnumStructure", "J.modelset.AtomCollection", "J.modelsetbio.Resolver", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.JmolList", "$.SB", "$.TextFormat", "J.viewer.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bioPolymerCount = 0;
 this.bioPolymers = null;
@@ -167,9 +167,11 @@ while ((j = sequence.indexOf (specInfo, ++j)) >= 0) this.bioPolymers[ip].getPoly
 Clazz.overrideMethod (c$, "selectSeqcodeRange", 
 function (seqcodeA, seqcodeB, chainID, bs, caseSensitive) {
 var id;
-for (var i = this.chainCount; --i >= 0; ) if (chainID == -1 || chainID == (id = this.chains[i].chainID) || !caseSensitive && chainID == Character.toUpperCase (id)) for (var index = 0; index >= 0; ) index = this.chains[i].selectSeqcodeRange (index, seqcodeA, seqcodeB, bs);
+for (var i = this.chainCount; --i >= 0; ) {
+var chain = this.chains[i];
+if (chainID == -1 || chainID == (id = chain.chainID) || !caseSensitive && id < 256 && chainID == J.modelset.AtomCollection.chainToUpper (id)) for (var index = 0; index >= 0; ) index = this.chains[i].selectSeqcodeRange (index, seqcodeA, seqcodeB, bs);
 
-
+}
 }, "~N,~N,~N,J.util.BS,~B");
 Clazz.overrideMethod (c$, "getRasmolHydrogenBonds", 
 function (bsA, bsB, vHBonds, nucleicOnly, nMax, dsspIgnoreHydrogens, bsHBonds) {

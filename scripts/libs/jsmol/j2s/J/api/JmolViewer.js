@@ -54,7 +54,7 @@ return (this.fileAdapter == null ? this.fileAdapter = this.apiPlatform.getFileAd
 });
 $_M(c$, "renderScreenImage", 
 function (g, currentSize, rectClip) {
-this.apiPlatform.renderScreenImage (this, g, currentSize);
+this.apiPlatform.renderScreenImage (g, currentSize);
 }, "~O,~O,~O");
 $_M(c$, "getJsObjectInfo", 
 function (jsObject, method, args) {

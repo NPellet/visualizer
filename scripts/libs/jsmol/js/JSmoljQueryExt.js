@@ -1,4 +1,6 @@
 // JSmoljQueryExt.js
+// 9/2/2013 7:43:12 AM BH Opera/Safari fix for binary file reading
+
 ;(function($) {
 
   // adds support for synchronous binary file reading
@@ -33,12 +35,15 @@
     });
   } else {
     $.ajaxSetup({
-      accepts: { binary: "text/plain; charset=x-user-defined" }
-    })
+      accepts: { binary: "text/plain; charset=x-user-defined" },
+      responseFields: { binary: "response" }
+		})
+
     $.ajaxTransport('binary', function(s) {
+			var callback;
       return {
         // synchronous binary transfer only
-    		send: function( headers, complete ) {
+    		send: function( headers, complete ) {        
     			var xhr = s.xhr();
     			xhr.open( s.type, s.url, false ); // not asynchronous
           if (xhr.hasOwnProperty("responseType")) {
@@ -53,24 +58,68 @@
     				for (var i in headers )
     					xhr.setRequestHeader( i, headers[ i ] );
     			} catch(_) {}
+          
     			xhr.send( ( s.hasContent && s.data ) || null );
+          
+ 					// Listener
+					callback = function( _, isAbort ) {
+
+					var 
+  				  status = xhr.status,
+						statusText = "",
+  				  responseHeaders = xhr.getAllResponseHeaders(),
+						responses = {},
+						xml;
+          
     			try {
-    				var responses = {},
-    				  status = xhr.status,
-    			    statusText = "",
-    				  responseHeaders = xhr.getAllResponseHeaders(),
-              responses = {};
-              responses.text = (typeof xhr.responseText === "string" ? xhr.responseText : null);
-						try { statusText = xhr.statusText; } catch( _ ) {}
-						if ( !status && s.isLocal && !s.crossDomain ) {
-							status = responses.text ? 200 : 404;
-						} else if ( status === 1223 ) {
-							status = 204;
+
+						// Firefox throws exceptions when accessing properties
+						// of an xhr when a network error occured
+						// http://helpful.knobs-dials.com/index.php/Component_returned_failure_code:_0x80040111_(NS_ERROR_NOT_AVAILABLE)
+						// Was never called and is aborted or complete
+						if ( callback && ( xhr.readyState === 4 ) ) {
+
+							// Only called once
+							callback = undefined;
+
+							// When requesting binary data, IE6-9 will throw an exception
+							// on any attempt to access responseText (#11426)
+							try {
+                responses.text = (typeof xhr.responseText === "string" ? xhr.responseText : null);
+          		} catch( _ ) {
+							}
+							try {
+								responses.binary = xhr.response;
+							} catch( _ ) {
+							}
+              
+							// Firefox throws an exception when accessing
+							// statusText for faulty cross-domain requests
+							try {
+								statusText = xhr.statusText;
+							} catch( _ ) {
+								// We normalize with Webkit giving an empty statusText
+								statusText = "";
+							}
+							// Filter status for non standard behaviors
+
+							// If the request is local and we have data: assume a success
+							// (success with no data won't get notified, that's the best we
+							// can do given current implementations)
+							if ( !status && s.isLocal && !s.crossDomain ) {
+								status = (responses.text ? 200 : 404);
+							// IE - #1450: sometimes returns 1223 when it should be 204
+							} else if ( status === 1223 ) {
+								status = 204;
+							}
+      				complete( status, statusText, responses, responseHeaders );
 						}
-    				complete( status, statusText, responses, responseHeaders );
-  				} catch( firefoxAccessException ) {
-  					complete( -1, firefoxAccessException );
+  				} catch( e ) {
+            alert(e)
+  					complete( -1, e );
   				}
+          };
+          callback();          
     		},
     		abort: function() {}
     	};

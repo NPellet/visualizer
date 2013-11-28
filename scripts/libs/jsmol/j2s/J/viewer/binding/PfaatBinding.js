@@ -7,10 +7,10 @@ Clazz.superConstructor (this, J.viewer.binding.PfaatBinding, ["extendedSelect"])
 });
 Clazz.overrideMethod (c$, "setSelectBindings", 
 function () {
-this.bindAction (272, 30);
-this.bindAction (272, 33);
-this.bindAction (273, 35);
-this.bindAction (281, 32);
-this.bindAction (280, 34);
+this.bindAction (33040, 30);
+this.bindAction (33040, 33);
+this.bindAction (33041, 35);
+this.bindAction (33049, 32);
+this.bindAction (33048, 34);
 });
 });

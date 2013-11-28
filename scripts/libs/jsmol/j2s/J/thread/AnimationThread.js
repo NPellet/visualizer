@@ -9,15 +9,20 @@ this.isFirst = false;
 Clazz.instantialize (this, arguments);
 }, J.thread, "AnimationThread", J.thread.JmolThread);
 Clazz.makeConstructor (c$, 
-function (animationManager, viewer, framePointer1, framePointer2, intAnimThread) {
-Clazz.superConstructor (this, J.thread.AnimationThread);
+function () {
+Clazz.superConstructor (this, J.thread.AnimationThread, []);
+});
+Clazz.overrideMethod (c$, "setManager", 
+function (manager, viewer, params) {
+var options = params;
+this.framePointer1 = options[0];
+this.framePointer2 = options[1];
+this.intThread = options[2];
+this.animationManager = manager;
 this.setViewer (viewer, "AnimationThread");
-this.animationManager = animationManager;
-this.framePointer1 = framePointer1;
-this.framePointer2 = framePointer2;
-this.intThread = intAnimThread;
 viewer.startHoverWatcher (false);
-}, "J.viewer.AnimationManager,J.viewer.Viewer,~N,~N,~N");
+return 0;
+}, "~O,J.viewer.Viewer,~O");
 $_M(c$, "interrupt", 
 function () {
 if (this.stopped) return;
@@ -39,7 +44,7 @@ while (true) {
 switch (mode) {
 case -1:
 if (J.util.Logger.debugging) J.util.Logger.debug ("animation thread " + this.intThread + " running");
-this.viewer.requestRepaintAndWait ("animation thread");
+this.viewer.requestRepaintAndWait ("animationThread");
 this.viewer.startHoverWatcher (false);
 this.isFirst = true;
 mode = 0;

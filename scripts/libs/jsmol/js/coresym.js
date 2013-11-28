@@ -98,10 +98,10 @@ this.spaceGroup.operations[i].newPoint (atom1, atom2, transX, transY, transZ);
 return;
 }this.spaceGroup.finalOperations[i].newPoint (atom1, atom2, transX, transY, transZ);
 }, "~N,J.util.P3,J.util.P3,~N,~N,~N");
-Clazz.overrideMethod (c$, "rotateEllipsoid", 
-function (i, ptTemp, axes, ptTemp1, ptTemp2) {
-return this.spaceGroup.finalOperations[i].rotateEllipsoid (ptTemp, axes, this.unitCell, ptTemp1, ptTemp2);
-}, "~N,J.util.P3,~A,J.util.P3,J.util.P3");
+Clazz.overrideMethod (c$, "rotateAxes", 
+function (iop, axes, ptTemp, mTemp) {
+return (iop == 0 ? axes : this.spaceGroup.finalOperations[iop].rotateAxes (axes, this.unitCell, ptTemp, mTemp));
+}, "~N,~A,J.util.P3,J.util.Matrix3f");
 $_M(c$, "getSymmetryOperationDescription", 
 function (isym, cellInfo, pt1, pt2, id) {
 return this.spaceGroup.operations[isym].getDescription (cellInfo, pt1, pt2, id);
@@ -112,7 +112,7 @@ return J.symmetry.SymmetryOperation.fcoord (p);
 }, "J.util.Tuple3f");
 Clazz.overrideMethod (c$, "getMatrixFromString", 
 function (xyz, rotTransMatrix, allowScaling) {
-return J.symmetry.SymmetryOperation.getMatrixFromString (xyz, rotTransMatrix, null, false, allowScaling);
+return J.symmetry.SymmetryOperation.getMatrixFromString (null, xyz, rotTransMatrix, allowScaling);
 }, "~S,~A,~B");
 Clazz.overrideMethod (c$, "ijkToPoint3f", 
 function (nnn) {
@@ -169,6 +169,10 @@ Clazz.overrideMethod (c$, "setUnitCellOrientation",
 function (matUnitCellOrientation) {
 this.unitCell.setOrientation (matUnitCellOrientation);
 }, "J.util.Matrix3f");
+Clazz.overrideMethod (c$, "unitize", 
+function (ptFrac) {
+this.unitCell.unitize (ptFrac);
+}, "J.util.P3");
 Clazz.overrideMethod (c$, "toUnitCell", 
 function (pt, offset) {
 this.unitCell.toUnitCell (pt, offset);
@@ -176,7 +180,7 @@ this.unitCell.toUnitCell (pt, offset);
 $_M(c$, "toCartesian", 
 function (fpt, isAbsolute) {
 this.unitCell.toCartesian (fpt, isAbsolute);
-}, "J.util.P3,~B");
+}, "J.util.Tuple3f,~B");
 Clazz.overrideMethod (c$, "toSupercell", 
 function (fpt) {
 return this.unitCell.toSupercell (fpt);
@@ -184,7 +188,7 @@ return this.unitCell.toSupercell (fpt);
 $_M(c$, "toFractional", 
 function (pt, isAbsolute) {
 this.unitCell.toFractional (pt, isAbsolute);
-}, "J.util.P3,~B");
+}, "J.util.Tuple3f,~B");
 $_M(c$, "getNotionalUnitCell", 
 function () {
 return this.unitCell.getNotionalUnitCell ();
@@ -311,6 +315,7 @@ info =  new java.util.Hashtable ();
 if (pt1 == null && drawID == null && symOp == 0) modelSet.setModelAuxiliaryInfo (modelIndex, "spaceGroupInfo", info);
 spaceGroup = cellInfo.getSpaceGroupName ();
 var list = cellInfo.getSymmetryOperations ();
+var jf = "";
 if (list == null) {
 strOperations = "\n no symmetry operations employed";
 } else {
@@ -320,17 +325,20 @@ infolist =  new Array (list.length);
 for (var i = 0; i < list.length; i++) {
 var iSym = this.addSpaceGroupOperation ("=" + list[i], i + 1);
 if (iSym < 0) continue;
+jf += ";" + list[i];
 infolist[i] = (symOp > 0 && symOp - 1 != iSym ? null : this.getSymmetryOperationDescription (iSym, cellInfo, pt1, pt2, drawID));
 if (infolist[i] != null) strOperations += "\n" + (i + 1) + "\t" + infolist[i][0] + "\t" + infolist[i][2];
 }
-}} else {
+}jf = jf.substring (jf.indexOf (";") + 1);
+if (spaceGroup.indexOf ("[--]") >= 0) spaceGroup = jf;
+} else {
 info =  new java.util.Hashtable ();
 }info.put ("spaceGroupName", spaceGroup);
 var data = this.getSpaceGroupInfo (spaceGroup, cellInfo);
 if (infolist != null) {
 info.put ("operations", infolist);
 info.put ("symmetryInfo", strOperations);
-}if (data == null) data = "could not identify space group from name: " + spaceGroup + "\nformat: show spacegroup \"2\" or \"P 2c\" " + "or \"C m m m\" or \"x, y, z;-x ,-y, -z\"";
+}if (data == null || data.equals ("?")) data = "could not identify space group from name: " + spaceGroup + "\nformat: show spacegroup \"2\" or \"P 2c\" " + "or \"C m m m\" or \"x, y, z;-x ,-y, -z\"";
 info.put ("spaceGroupInfo", data);
 return info;
 }, "J.modelset.ModelSet,~N,~S,~N,J.util.P3,J.util.P3,~S");
@@ -440,6 +448,26 @@ uc.toFractional (ptTemp, isAbsolute);
 var slop = 0.02;
 return (ptTemp.x >= cell.x - 1 - slop && ptTemp.x <= cell.x + slop && ptTemp.y >= cell.y - 1 - slop && ptTemp.y <= cell.y + slop && ptTemp.z >= cell.z - 1 - slop && ptTemp.z <= cell.z + slop);
 }, "J.api.SymmetryInterface,J.util.P3,J.util.P3,~B");
+Clazz.overrideMethod (c$, "unitCellEquals", 
+function (uc2) {
+return ((uc2)).unitCell.isSameAs (this.unitCell);
+}, "J.api.SymmetryInterface");
+Clazz.overrideMethod (c$, "addLatticeVectors", 
+function (lattvecs) {
+this.spaceGroup.addLatticeVectors (lattvecs);
+}, "J.util.JmolList");
+Clazz.overrideMethod (c$, "getLatticeOp", 
+function () {
+return this.spaceGroup.latticeOp;
+});
+Clazz.overrideMethod (c$, "getOperationGammaIS", 
+function (iop) {
+return this.spaceGroup.finalOperations[iop].gammaIS;
+}, "~N");
+Clazz.overrideMethod (c$, "getSiteMultiplicity", 
+function (pt) {
+return this.spaceGroup.getSiteMultiplicity (pt, this.unitCell);
+}, "J.util.P3");
 });
 Clazz.declarePackage ("J.symmetry");
 Clazz.load (["J.util.P3", "$.V3"], "J.symmetry.PointGroup", ["java.lang.Float", "java.util.Hashtable", "J.util.BSUtil", "$.Escape", "$.JmolList", "$.Logger", "$.Quaternion", "$.SB", "$.TextFormat"], function () {
@@ -675,8 +703,7 @@ var e1 = this.elements[i];
 if (q != null) {
 pt.setT (a1);
 pt.sub (center);
-q.transformP2 (pt, pt);
-pt.add (center);
+q.transformP2 (pt, pt).add (center);
 } else {
 pt.setT (a1);
 }if (isInversion) {
@@ -1169,7 +1196,7 @@ Clazz.defineStatics (c$,
 "typeNames", ["plane", "proper axis", "improper axis", "center of inversion"]);
 });
 Clazz.declarePackage ("J.symmetry");
-Clazz.load (["java.util.Hashtable"], "J.symmetry.SpaceGroup", ["java.lang.Character", "java.util.Arrays", "J.symmetry.HallInfo", "$.HallTranslation", "$.SymmetryOperation", "J.util.ArrayUtil", "$.Logger", "$.Matrix4f", "$.P3", "$.Parser", "$.SB", "$.TextFormat"], function () {
+Clazz.load (["java.util.Hashtable"], "J.symmetry.SpaceGroup", ["java.lang.Character", "java.util.Arrays", "J.symmetry.HallInfo", "$.HallTranslation", "$.SymmetryOperation", "J.util.ArrayUtil", "$.JmolList", "$.Logger", "$.Matrix4f", "$.P3", "$.Parser", "$.SB", "$.TextFormat"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.index = 0;
 this.name = "unknown!";
@@ -1190,11 +1217,12 @@ this.hallInfo = null;
 this.latticeParameter = 0;
 this.latticeCode = '\0';
 this.operations = null;
-this.operationCount = 0;
-this.doNormalize = true;
 this.finalOperations = null;
+this.operationCount = 0;
+this.latticeOp = -1;
 this.xyzList = null;
 this.modulationDimension = 0;
+this.doNormalize = true;
 Clazz.instantialize (this, arguments);
 }, J.symmetry, "SpaceGroup");
 Clazz.prepareFields (c$, function () {
@@ -1240,7 +1268,8 @@ function (atoms, atomIndex, count, doNormalize) {
 if (this.hallInfo == null && this.latticeParameter != 0) {
 var h =  new J.symmetry.HallInfo (J.symmetry.HallTranslation.getHallLatticeEquivalent (this.latticeParameter));
 this.generateAllOperators (h);
-}if (this.index >= J.symmetry.SpaceGroup.getSpaceGroups ().length) {
+}this.finalOperations = null;
+if (this.index >= J.symmetry.SpaceGroup.getSpaceGroups ().length) {
 var sg = this.getDerivedSpaceGroup ();
 if (sg != null) this.name = sg.getName ();
 }this.finalOperations =  new Array (this.operationCount);
@@ -1411,30 +1440,33 @@ $_M(c$, "addOperation",
 if (xyz0 == null || xyz0.length < 3) {
 this.xyzList =  new java.util.Hashtable ();
 return -1;
-}if (xyz0.startsWith ("x1,x2,x3,x4")) {
-this.xyzList.clear ();
-this.operationCount = 0;
-this.modulationDimension = J.util.Parser.parseInt (xyz0.substring (xyz0.lastIndexOf ("x") + 1)) - 1;
 }var isSpecial = (xyz0.charAt (0) == '=');
 if (isSpecial) xyz0 = xyz0.substring (1);
 if (this.xyzList.containsKey (xyz0)) return this.xyzList.get (xyz0).intValue ();
-var symmetryOperation =  new J.symmetry.SymmetryOperation (null, null, 0, opId, this.doNormalize);
-if (!symmetryOperation.setMatrixFromXYZ (xyz0, this.modulationDimension)) {
+if (xyz0.startsWith ("x1,x2,x3,x4") && this.modulationDimension == 0) {
+this.xyzList.clear ();
+this.operationCount = 0;
+this.modulationDimension = J.util.Parser.parseInt (xyz0.substring (xyz0.lastIndexOf ("x") + 1)) - 3;
+}var op =  new J.symmetry.SymmetryOperation (null, null, 0, opId, this.doNormalize);
+if (!op.setMatrixFromXYZ (xyz0, this.modulationDimension)) {
 J.util.Logger.error ("couldn't interpret symmetry operation: " + xyz0);
 return -1;
-}var xyz = symmetryOperation.xyz;
+}return this.addOp (op, xyz0, isSpecial);
+}, $fz.isPrivate = true, $fz), "~S,~N");
+$_M(c$, "addOp", 
+($fz = function (op, xyz0, isSpecial) {
+var xyz = op.xyz;
 if (!isSpecial) {
 if (this.xyzList.containsKey (xyz)) return this.xyzList.get (xyz).intValue ();
+if (this.latticeOp < 0 && this.xyzList.containsKey (J.util.TextFormat.simpleReplace (J.util.TextFormat.simpleReplace (xyz, "+1/2", ""), "+1/2", ""))) this.latticeOp = this.operationCount;
 this.xyzList.put (xyz, Integer.$valueOf (this.operationCount));
-}if (!xyz.equals (xyz0)) this.xyzList.put (xyz0, Integer.$valueOf (this.operationCount));
-if (this.operations == null) {
-this.operations =  new Array (4);
-this.operationCount = 0;
-}if (this.operationCount == this.operations.length) this.operations = J.util.ArrayUtil.arrayCopyObject (this.operations, this.operationCount * 2);
-this.operations[this.operationCount++] = symmetryOperation;
-if (J.util.Logger.debugging) J.util.Logger.debug ("\naddOperation " + this.operationCount + symmetryOperation.dumpInfo ());
+}if (xyz != null && !xyz.equals (xyz0)) this.xyzList.put (xyz0, Integer.$valueOf (this.operationCount));
+if (this.operations == null) this.operations =  new Array (4);
+if (this.operationCount == this.operations.length) this.operations = J.util.ArrayUtil.arrayCopyObject (this.operations, this.operationCount * 2);
+this.operations[this.operationCount++] = op;
+if (J.util.Logger.debugging) J.util.Logger.debug ("\naddOperation " + this.operationCount + op.dumpInfo ());
 return this.operationCount - 1;
-}, $fz.isPrivate = true, $fz), "~S,~N");
+}, $fz.isPrivate = true, $fz), "J.symmetry.SymmetryOperation,~S,~B");
 $_M(c$, "generateOperatorsFromXyzInfo", 
 ($fz = function (xyzInfo) {
 this.addOperation (null, 0);
@@ -1449,7 +1481,6 @@ if (h == null) {
 h = this.hallInfo;
 if (this.operationCount > 0) return;
 this.operations =  new Array (4);
-this.operationCount = 0;
 if (this.hallInfo == null || this.hallInfo.nRotations == 0) h = this.hallInfo =  new J.symmetry.HallInfo (this.hallSymbol);
 this.setLattice (this.hallInfo.latticeCode, this.hallInfo.isCentrosymmetric);
 this.addOperation (null, 0);
@@ -1633,6 +1664,43 @@ c$.getSpaceGroups = $_M(c$, "getSpaceGroups",
 ($fz = function () {
 return (J.symmetry.SpaceGroup.spaceGroupDefinitions == null ? ($t$ = J.symmetry.SpaceGroup.spaceGroupDefinitions = [ new J.symmetry.SpaceGroup ("1;c1^1;p 1;p 1"),  new J.symmetry.SpaceGroup ("2;ci^1;p -1;-p 1"),  new J.symmetry.SpaceGroup ("3:b;c2^1;p 1 2 1;p 2y"),  new J.symmetry.SpaceGroup ("3:b;c2^1;p 2;p 2y"),  new J.symmetry.SpaceGroup ("3:c;c2^1;p 1 1 2;p 2"),  new J.symmetry.SpaceGroup ("3:a;c2^1;p 2 1 1;p 2x"),  new J.symmetry.SpaceGroup ("4:b;c2^2;p 1 21 1;p 2yb"),  new J.symmetry.SpaceGroup ("4:b;c2^2;p 21;p 2yb"),  new J.symmetry.SpaceGroup ("4:b*;c2^2;p 1 21 1*;p 2y1"),  new J.symmetry.SpaceGroup ("4:c;c2^2;p 1 1 21;p 2c"),  new J.symmetry.SpaceGroup ("4:c*;c2^2;p 1 1 21*;p 21"),  new J.symmetry.SpaceGroup ("4:a;c2^2;p 21 1 1;p 2xa"),  new J.symmetry.SpaceGroup ("4:a*;c2^2;p 21 1 1*;p 2x1"),  new J.symmetry.SpaceGroup ("5:b1;c2^3;c 1 2 1;c 2y"),  new J.symmetry.SpaceGroup ("5:b1;c2^3;c 2;c 2y"),  new J.symmetry.SpaceGroup ("5:b2;c2^3;a 1 2 1;a 2y"),  new J.symmetry.SpaceGroup ("5:b3;c2^3;i 1 2 1;i 2y"),  new J.symmetry.SpaceGroup ("5:c1;c2^3;a 1 1 2;a 2"),  new J.symmetry.SpaceGroup ("5:c2;c2^3;b 1 1 2;b 2"),  new J.symmetry.SpaceGroup ("5:c3;c2^3;i 1 1 2;i 2"),  new J.symmetry.SpaceGroup ("5:a1;c2^3;b 2 1 1;b 2x"),  new J.symmetry.SpaceGroup ("5:a2;c2^3;c 2 1 1;c 2x"),  new J.symmetry.SpaceGroup ("5:a3;c2^3;i 2 1 1;i 2x"),  new J.symmetry.SpaceGroup ("6:b;cs^1;p 1 m 1;p -2y"),  new J.symmetry.SpaceGroup ("6:b;cs^1;p m;p -2y"),  new J.symmetry.SpaceGroup ("6:c;cs^1;p 1 1 m;p -2"),  new J.symmetry.SpaceGroup ("6:a;cs^1;p m 1 1;p -2x"),  new J.symmetry.SpaceGroup ("7:b1;cs^2;p 1 c 1;p -2yc"),  new J.symmetry.SpaceGroup ("7:b1;cs^2;p c;p -2yc"),  new J.symmetry.SpaceGroup ("7:b2;cs^2;p 1 n 1;p -2yac"),  new J.symmetry.SpaceGroup ("7:b2;cs^2;p n;p -2yac"),  new J.symmetry.SpaceGroup ("7:b3;cs^2;p 1 a 1;p -2ya"),  new J.symmetry.SpaceGroup ("7:b3;cs^2;p a;p -2ya"),  new J.symmetry.SpaceGroup ("7:c1;cs^2;p 1 1 a;p -2a"),  new J.symmetry.SpaceGroup ("7:c2;cs^2;p 1 1 n;p -2ab"),  new J.symmetry.SpaceGroup ("7:c3;cs^2;p 1 1 b;p -2b"),  new J.symmetry.SpaceGroup ("7:a1;cs^2;p b 1 1;p -2xb"),  new J.symmetry.SpaceGroup ("7:a2;cs^2;p n 1 1;p -2xbc"),  new J.symmetry.SpaceGroup ("7:a3;cs^2;p c 1 1;p -2xc"),  new J.symmetry.SpaceGroup ("8:b1;cs^3;c 1 m 1;c -2y"),  new J.symmetry.SpaceGroup ("8:b1;cs^3;c m;c -2y"),  new J.symmetry.SpaceGroup ("8:b2;cs^3;a 1 m 1;a -2y"),  new J.symmetry.SpaceGroup ("8:b3;cs^3;i 1 m 1;i -2y"),  new J.symmetry.SpaceGroup ("8:b3;cs^3;i m;i -2y"),  new J.symmetry.SpaceGroup ("8:c1;cs^3;a 1 1 m;a -2"),  new J.symmetry.SpaceGroup ("8:c2;cs^3;b 1 1 m;b -2"),  new J.symmetry.SpaceGroup ("8:c3;cs^3;i 1 1 m;i -2"),  new J.symmetry.SpaceGroup ("8:a1;cs^3;b m 1 1;b -2x"),  new J.symmetry.SpaceGroup ("8:a2;cs^3;c m 1 1;c -2x"),  new J.symmetry.SpaceGroup ("8:a3;cs^3;i m 1 1;i -2x"),  new J.symmetry.SpaceGroup ("9:b1;cs^4;c 1 c 1;c -2yc"),  new J.symmetry.SpaceGroup ("9:b1;cs^4;c c;c -2yc"),  new J.symmetry.SpaceGroup ("9:b2;cs^4;a 1 n 1;a -2yab"),  new J.symmetry.SpaceGroup ("9:b3;cs^4;i 1 a 1;i -2ya"),  new J.symmetry.SpaceGroup ("9:-b1;cs^4;a 1 a 1;a -2ya"),  new J.symmetry.SpaceGroup ("9:-b2;cs^4;c 1 n 1;c -2yac"),  new J.symmetry.SpaceGroup ("9:-b3;cs^4;i 1 c 1;i -2yc"),  new J.symmetry.SpaceGroup ("9:c1;cs^4;a 1 1 a;a -2a"),  new J.symmetry.SpaceGroup ("9:c2;cs^4;b 1 1 n;b -2ab"),  new J.symmetry.SpaceGroup ("9:c3;cs^4;i 1 1 b;i -2b"),  new J.symmetry.SpaceGroup ("9:-c1;cs^4;b 1 1 b;b -2b"),  new J.symmetry.SpaceGroup ("9:-c2;cs^4;a 1 1 n;a -2ab"),  new J.symmetry.SpaceGroup ("9:-c3;cs^4;i 1 1 a;i -2a"),  new J.symmetry.SpaceGroup ("9:a1;cs^4;b b 1 1;b -2xb"),  new J.symmetry.SpaceGroup ("9:a2;cs^4;c n 1 1;c -2xac"),  new J.symmetry.SpaceGroup ("9:a3;cs^4;i c 1 1;i -2xc"),  new J.symmetry.SpaceGroup ("9:-a1;cs^4;c c 1 1;c -2xc"),  new J.symmetry.SpaceGroup ("9:-a2;cs^4;b n 1 1;b -2xab"),  new J.symmetry.SpaceGroup ("9:-a3;cs^4;i b 1 1;i -2xb"),  new J.symmetry.SpaceGroup ("10:b;c2h^1;p 1 2/m 1;-p 2y"),  new J.symmetry.SpaceGroup ("10:b;c2h^1;p 2/m;-p 2y"),  new J.symmetry.SpaceGroup ("10:c;c2h^1;p 1 1 2/m;-p 2"),  new J.symmetry.SpaceGroup ("10:a;c2h^1;p 2/m 1 1;-p 2x"),  new J.symmetry.SpaceGroup ("11:b;c2h^2;p 1 21/m 1;-p 2yb"),  new J.symmetry.SpaceGroup ("11:b;c2h^2;p 21/m;-p 2yb"),  new J.symmetry.SpaceGroup ("11:b*;c2h^2;p 1 21/m 1*;-p 2y1"),  new J.symmetry.SpaceGroup ("11:c;c2h^2;p 1 1 21/m;-p 2c"),  new J.symmetry.SpaceGroup ("11:c*;c2h^2;p 1 1 21/m*;-p 21"),  new J.symmetry.SpaceGroup ("11:a;c2h^2;p 21/m 1 1;-p 2xa"),  new J.symmetry.SpaceGroup ("11:a*;c2h^2;p 21/m 1 1*;-p 2x1"),  new J.symmetry.SpaceGroup ("12:b1;c2h^3;c 1 2/m 1;-c 2y"),  new J.symmetry.SpaceGroup ("12:b1;c2h^3;c 2/m;-c 2y"),  new J.symmetry.SpaceGroup ("12:b2;c2h^3;a 1 2/m 1;-a 2y"),  new J.symmetry.SpaceGroup ("12:b3;c2h^3;i 1 2/m 1;-i 2y"),  new J.symmetry.SpaceGroup ("12:b3;c2h^3;i 2/m;-i 2y"),  new J.symmetry.SpaceGroup ("12:c1;c2h^3;a 1 1 2/m;-a 2"),  new J.symmetry.SpaceGroup ("12:c2;c2h^3;b 1 1 2/m;-b 2"),  new J.symmetry.SpaceGroup ("12:c3;c2h^3;i 1 1 2/m;-i 2"),  new J.symmetry.SpaceGroup ("12:a1;c2h^3;b 2/m 1 1;-b 2x"),  new J.symmetry.SpaceGroup ("12:a2;c2h^3;c 2/m 1 1;-c 2x"),  new J.symmetry.SpaceGroup ("12:a3;c2h^3;i 2/m 1 1;-i 2x"),  new J.symmetry.SpaceGroup ("13:b1;c2h^4;p 1 2/c 1;-p 2yc"),  new J.symmetry.SpaceGroup ("13:b1;c2h^4;p 2/c;-p 2yc"),  new J.symmetry.SpaceGroup ("13:b2;c2h^4;p 1 2/n 1;-p 2yac"),  new J.symmetry.SpaceGroup ("13:b2;c2h^4;p 2/n;-p 2yac"),  new J.symmetry.SpaceGroup ("13:b3;c2h^4;p 1 2/a 1;-p 2ya"),  new J.symmetry.SpaceGroup ("13:b3;c2h^4;p 2/a;-p 2ya"),  new J.symmetry.SpaceGroup ("13:c1;c2h^4;p 1 1 2/a;-p 2a"),  new J.symmetry.SpaceGroup ("13:c2;c2h^4;p 1 1 2/n;-p 2ab"),  new J.symmetry.SpaceGroup ("13:c3;c2h^4;p 1 1 2/b;-p 2b"),  new J.symmetry.SpaceGroup ("13:a1;c2h^4;p 2/b 1 1;-p 2xb"),  new J.symmetry.SpaceGroup ("13:a2;c2h^4;p 2/n 1 1;-p 2xbc"),  new J.symmetry.SpaceGroup ("13:a3;c2h^4;p 2/c 1 1;-p 2xc"),  new J.symmetry.SpaceGroup ("14:b1;c2h^5;p 1 21/c 1;-p 2ybc"),  new J.symmetry.SpaceGroup ("14:b1;c2h^5;p 21/c;-p 2ybc"),  new J.symmetry.SpaceGroup ("14:b2;c2h^5;p 1 21/n 1;-p 2yn"),  new J.symmetry.SpaceGroup ("14:b2;c2h^5;p 21/n;-p 2yn"),  new J.symmetry.SpaceGroup ("14:b3;c2h^5;p 1 21/a 1;-p 2yab"),  new J.symmetry.SpaceGroup ("14:b3;c2h^5;p 21/a;-p 2yab"),  new J.symmetry.SpaceGroup ("14:c1;c2h^5;p 1 1 21/a;-p 2ac"),  new J.symmetry.SpaceGroup ("14:c2;c2h^5;p 1 1 21/n;-p 2n"),  new J.symmetry.SpaceGroup ("14:c3;c2h^5;p 1 1 21/b;-p 2bc"),  new J.symmetry.SpaceGroup ("14:a1;c2h^5;p 21/b 1 1;-p 2xab"),  new J.symmetry.SpaceGroup ("14:a2;c2h^5;p 21/n 1 1;-p 2xn"),  new J.symmetry.SpaceGroup ("14:a3;c2h^5;p 21/c 1 1;-p 2xac"),  new J.symmetry.SpaceGroup ("15:b1;c2h^6;c 1 2/c 1;-c 2yc"),  new J.symmetry.SpaceGroup ("15:b1;c2h^6;c 2/c;-c 2yc"),  new J.symmetry.SpaceGroup ("15:b2;c2h^6;a 1 2/n 1;-a 2yab"),  new J.symmetry.SpaceGroup ("15:b3;c2h^6;i 1 2/a 1;-i 2ya"),  new J.symmetry.SpaceGroup ("15:b3;c2h^6;i 2/a;-i 2ya"),  new J.symmetry.SpaceGroup ("15:-b1;c2h^6;a 1 2/a 1;-a 2ya"),  new J.symmetry.SpaceGroup ("15:-b2;c2h^6;c 1 2/n 1;-c 2yac"),  new J.symmetry.SpaceGroup ("15:-b2;c2h^6;c 2/n;-c 2yac"),  new J.symmetry.SpaceGroup ("15:-b3;c2h^6;i 1 2/c 1;-i 2yc"),  new J.symmetry.SpaceGroup ("15:-b3;c2h^6;i 2/c;-i 2yc"),  new J.symmetry.SpaceGroup ("15:c1;c2h^6;a 1 1 2/a;-a 2a"),  new J.symmetry.SpaceGroup ("15:c2;c2h^6;b 1 1 2/n;-b 2ab"),  new J.symmetry.SpaceGroup ("15:c3;c2h^6;i 1 1 2/b;-i 2b"),  new J.symmetry.SpaceGroup ("15:-c1;c2h^6;b 1 1 2/b;-b 2b"),  new J.symmetry.SpaceGroup ("15:-c2;c2h^6;a 1 1 2/n;-a 2ab"),  new J.symmetry.SpaceGroup ("15:-c3;c2h^6;i 1 1 2/a;-i 2a"),  new J.symmetry.SpaceGroup ("15:a1;c2h^6;b 2/b 1 1;-b 2xb"),  new J.symmetry.SpaceGroup ("15:a2;c2h^6;c 2/n 1 1;-c 2xac"),  new J.symmetry.SpaceGroup ("15:a3;c2h^6;i 2/c 1 1;-i 2xc"),  new J.symmetry.SpaceGroup ("15:-a1;c2h^6;c 2/c 1 1;-c 2xc"),  new J.symmetry.SpaceGroup ("15:-a2;c2h^6;b 2/n 1 1;-b 2xab"),  new J.symmetry.SpaceGroup ("15:-a3;c2h^6;i 2/b 1 1;-i 2xb"),  new J.symmetry.SpaceGroup ("16;d2^1;p 2 2 2;p 2 2"),  new J.symmetry.SpaceGroup ("17;d2^2;p 2 2 21;p 2c 2"),  new J.symmetry.SpaceGroup ("17*;d2^2;p 2 2 21*;p 21 2"),  new J.symmetry.SpaceGroup ("17:cab;d2^2;p 21 2 2;p 2a 2a"),  new J.symmetry.SpaceGroup ("17:bca;d2^2;p 2 21 2;p 2 2b"),  new J.symmetry.SpaceGroup ("18;d2^3;p 21 21 2;p 2 2ab"),  new J.symmetry.SpaceGroup ("18:cab;d2^3;p 2 21 21;p 2bc 2"),  new J.symmetry.SpaceGroup ("18:bca;d2^3;p 21 2 21;p 2ac 2ac"),  new J.symmetry.SpaceGroup ("19;d2^4;p 21 21 21;p 2ac 2ab"),  new J.symmetry.SpaceGroup ("20;d2^5;c 2 2 21;c 2c 2"),  new J.symmetry.SpaceGroup ("20*;d2^5;c 2 2 21*;c 21 2"),  new J.symmetry.SpaceGroup ("20:cab;d2^5;a 21 2 2;a 2a 2a"),  new J.symmetry.SpaceGroup ("20:cab*;d2^5;a 21 2 2*;a 2a 21"),  new J.symmetry.SpaceGroup ("20:bca;d2^5;b 2 21 2;b 2 2b"),  new J.symmetry.SpaceGroup ("21;d2^6;c 2 2 2;c 2 2"),  new J.symmetry.SpaceGroup ("21:cab;d2^6;a 2 2 2;a 2 2"),  new J.symmetry.SpaceGroup ("21:bca;d2^6;b 2 2 2;b 2 2"),  new J.symmetry.SpaceGroup ("22;d2^7;f 2 2 2;f 2 2"),  new J.symmetry.SpaceGroup ("23;d2^8;i 2 2 2;i 2 2"),  new J.symmetry.SpaceGroup ("24;d2^9;i 21 21 21;i 2b 2c"),  new J.symmetry.SpaceGroup ("25;c2v^1;p m m 2;p 2 -2"),  new J.symmetry.SpaceGroup ("25:cab;c2v^1;p 2 m m;p -2 2"),  new J.symmetry.SpaceGroup ("25:bca;c2v^1;p m 2 m;p -2 -2"),  new J.symmetry.SpaceGroup ("26;c2v^2;p m c 21;p 2c -2"),  new J.symmetry.SpaceGroup ("26*;c2v^2;p m c 21*;p 21 -2"),  new J.symmetry.SpaceGroup ("26:ba-c;c2v^2;p c m 21;p 2c -2c"),  new J.symmetry.SpaceGroup ("26:ba-c*;c2v^2;p c m 21*;p 21 -2c"),  new J.symmetry.SpaceGroup ("26:cab;c2v^2;p 21 m a;p -2a 2a"),  new J.symmetry.SpaceGroup ("26:-cba;c2v^2;p 21 a m;p -2 2a"),  new J.symmetry.SpaceGroup ("26:bca;c2v^2;p b 21 m;p -2 -2b"),  new J.symmetry.SpaceGroup ("26:a-cb;c2v^2;p m 21 b;p -2b -2"),  new J.symmetry.SpaceGroup ("27;c2v^3;p c c 2;p 2 -2c"),  new J.symmetry.SpaceGroup ("27:cab;c2v^3;p 2 a a;p -2a 2"),  new J.symmetry.SpaceGroup ("27:bca;c2v^3;p b 2 b;p -2b -2b"),  new J.symmetry.SpaceGroup ("28;c2v^4;p m a 2;p 2 -2a"),  new J.symmetry.SpaceGroup ("28*;c2v^4;p m a 2*;p 2 -21"),  new J.symmetry.SpaceGroup ("28:ba-c;c2v^4;p b m 2;p 2 -2b"),  new J.symmetry.SpaceGroup ("28:cab;c2v^4;p 2 m b;p -2b 2"),  new J.symmetry.SpaceGroup ("28:-cba;c2v^4;p 2 c m;p -2c 2"),  new J.symmetry.SpaceGroup ("28:-cba*;c2v^4;p 2 c m*;p -21 2"),  new J.symmetry.SpaceGroup ("28:bca;c2v^4;p c 2 m;p -2c -2c"),  new J.symmetry.SpaceGroup ("28:a-cb;c2v^4;p m 2 a;p -2a -2a"),  new J.symmetry.SpaceGroup ("29;c2v^5;p c a 21;p 2c -2ac"),  new J.symmetry.SpaceGroup ("29:ba-c;c2v^5;p b c 21;p 2c -2b"),  new J.symmetry.SpaceGroup ("29:cab;c2v^5;p 21 a b;p -2b 2a"),  new J.symmetry.SpaceGroup ("29:-cba;c2v^5;p 21 c a;p -2ac 2a"),  new J.symmetry.SpaceGroup ("29:bca;c2v^5;p c 21 b;p -2bc -2c"),  new J.symmetry.SpaceGroup ("29:a-cb;c2v^5;p b 21 a;p -2a -2ab"),  new J.symmetry.SpaceGroup ("30;c2v^6;p n c 2;p 2 -2bc"),  new J.symmetry.SpaceGroup ("30:ba-c;c2v^6;p c n 2;p 2 -2ac"),  new J.symmetry.SpaceGroup ("30:cab;c2v^6;p 2 n a;p -2ac 2"),  new J.symmetry.SpaceGroup ("30:-cba;c2v^6;p 2 a n;p -2ab 2"),  new J.symmetry.SpaceGroup ("30:bca;c2v^6;p b 2 n;p -2ab -2ab"),  new J.symmetry.SpaceGroup ("30:a-cb;c2v^6;p n 2 b;p -2bc -2bc"),  new J.symmetry.SpaceGroup ("31;c2v^7;p m n 21;p 2ac -2"),  new J.symmetry.SpaceGroup ("31:ba-c;c2v^7;p n m 21;p 2bc -2bc"),  new J.symmetry.SpaceGroup ("31:cab;c2v^7;p 21 m n;p -2ab 2ab"),  new J.symmetry.SpaceGroup ("31:-cba;c2v^7;p 21 n m;p -2 2ac"),  new J.symmetry.SpaceGroup ("31:bca;c2v^7;p n 21 m;p -2 -2bc"),  new J.symmetry.SpaceGroup ("31:a-cb;c2v^7;p m 21 n;p -2ab -2"),  new J.symmetry.SpaceGroup ("32;c2v^8;p b a 2;p 2 -2ab"),  new J.symmetry.SpaceGroup ("32:cab;c2v^8;p 2 c b;p -2bc 2"),  new J.symmetry.SpaceGroup ("32:bca;c2v^8;p c 2 a;p -2ac -2ac"),  new J.symmetry.SpaceGroup ("33;c2v^9;p n a 21;p 2c -2n"),  new J.symmetry.SpaceGroup ("33*;c2v^9;p n a 21*;p 21 -2n"),  new J.symmetry.SpaceGroup ("33:ba-c;c2v^9;p b n 21;p 2c -2ab"),  new J.symmetry.SpaceGroup ("33:ba-c*;c2v^9;p b n 21*;p 21 -2ab"),  new J.symmetry.SpaceGroup ("33:cab;c2v^9;p 21 n b;p -2bc 2a"),  new J.symmetry.SpaceGroup ("33:cab*;c2v^9;p 21 n b*;p -2bc 21"),  new J.symmetry.SpaceGroup ("33:-cba;c2v^9;p 21 c n;p -2n 2a"),  new J.symmetry.SpaceGroup ("33:-cba*;c2v^9;p 21 c n*;p -2n 21"),  new J.symmetry.SpaceGroup ("33:bca;c2v^9;p c 21 n;p -2n -2ac"),  new J.symmetry.SpaceGroup ("33:a-cb;c2v^9;p n 21 a;p -2ac -2n"),  new J.symmetry.SpaceGroup ("34;c2v^10;p n n 2;p 2 -2n"),  new J.symmetry.SpaceGroup ("34:cab;c2v^10;p 2 n n;p -2n 2"),  new J.symmetry.SpaceGroup ("34:bca;c2v^10;p n 2 n;p -2n -2n"),  new J.symmetry.SpaceGroup ("35;c2v^11;c m m 2;c 2 -2"),  new J.symmetry.SpaceGroup ("35:cab;c2v^11;a 2 m m;a -2 2"),  new J.symmetry.SpaceGroup ("35:bca;c2v^11;b m 2 m;b -2 -2"),  new J.symmetry.SpaceGroup ("36;c2v^12;c m c 21;c 2c -2"),  new J.symmetry.SpaceGroup ("36*;c2v^12;c m c 21*;c 21 -2"),  new J.symmetry.SpaceGroup ("36:ba-c;c2v^12;c c m 21;c 2c -2c"),  new J.symmetry.SpaceGroup ("36:ba-c*;c2v^12;c c m 21*;c 21 -2c"),  new J.symmetry.SpaceGroup ("36:cab;c2v^12;a 21 m a;a -2a 2a"),  new J.symmetry.SpaceGroup ("36:cab*;c2v^12;a 21 m a*;a -2a 21"),  new J.symmetry.SpaceGroup ("36:-cba;c2v^12;a 21 a m;a -2 2a"),  new J.symmetry.SpaceGroup ("36:-cba*;c2v^12;a 21 a m*;a -2 21"),  new J.symmetry.SpaceGroup ("36:bca;c2v^12;b b 21 m;b -2 -2b"),  new J.symmetry.SpaceGroup ("36:a-cb;c2v^12;b m 21 b;b -2b -2"),  new J.symmetry.SpaceGroup ("37;c2v^13;c c c 2;c 2 -2c"),  new J.symmetry.SpaceGroup ("37:cab;c2v^13;a 2 a a;a -2a 2"),  new J.symmetry.SpaceGroup ("37:bca;c2v^13;b b 2 b;b -2b -2b"),  new J.symmetry.SpaceGroup ("38;c2v^14;a m m 2;a 2 -2"),  new J.symmetry.SpaceGroup ("38:ba-c;c2v^14;b m m 2;b 2 -2"),  new J.symmetry.SpaceGroup ("38:cab;c2v^14;b 2 m m;b -2 2"),  new J.symmetry.SpaceGroup ("38:-cba;c2v^14;c 2 m m;c -2 2"),  new J.symmetry.SpaceGroup ("38:bca;c2v^14;c m 2 m;c -2 -2"),  new J.symmetry.SpaceGroup ("38:a-cb;c2v^14;a m 2 m;a -2 -2"),  new J.symmetry.SpaceGroup ("39;c2v^15;a b m 2;a 2 -2b"),  new J.symmetry.SpaceGroup ("39:ba-c;c2v^15;b m a 2;b 2 -2a"),  new J.symmetry.SpaceGroup ("39:cab;c2v^15;b 2 c m;b -2a 2"),  new J.symmetry.SpaceGroup ("39:-cba;c2v^15;c 2 m b;c -2a 2"),  new J.symmetry.SpaceGroup ("39:bca;c2v^15;c m 2 a;c -2a -2a"),  new J.symmetry.SpaceGroup ("39:a-cb;c2v^15;a c 2 m;a -2b -2b"),  new J.symmetry.SpaceGroup ("40;c2v^16;a m a 2;a 2 -2a"),  new J.symmetry.SpaceGroup ("40:ba-c;c2v^16;b b m 2;b 2 -2b"),  new J.symmetry.SpaceGroup ("40:cab;c2v^16;b 2 m b;b -2b 2"),  new J.symmetry.SpaceGroup ("40:-cba;c2v^16;c 2 c m;c -2c 2"),  new J.symmetry.SpaceGroup ("40:bca;c2v^16;c c 2 m;c -2c -2c"),  new J.symmetry.SpaceGroup ("40:a-cb;c2v^16;a m 2 a;a -2a -2a"),  new J.symmetry.SpaceGroup ("41;c2v^17;a b a 2;a 2 -2ab"),  new J.symmetry.SpaceGroup ("41:ba-c;c2v^17;b b a 2;b 2 -2ab"),  new J.symmetry.SpaceGroup ("41:cab;c2v^17;b 2 c b;b -2ab 2"),  new J.symmetry.SpaceGroup ("41:-cba;c2v^17;c 2 c b;c -2ac 2"),  new J.symmetry.SpaceGroup ("41:bca;c2v^17;c c 2 a;c -2ac -2ac"),  new J.symmetry.SpaceGroup ("41:a-cb;c2v^17;a c 2 a;a -2ab -2ab"),  new J.symmetry.SpaceGroup ("42;c2v^18;f m m 2;f 2 -2"),  new J.symmetry.SpaceGroup ("42:cab;c2v^18;f 2 m m;f -2 2"),  new J.symmetry.SpaceGroup ("42:bca;c2v^18;f m 2 m;f -2 -2"),  new J.symmetry.SpaceGroup ("43;c2v^19;f d d 2;f 2 -2d"),  new J.symmetry.SpaceGroup ("43:cab;c2v^19;f 2 d d;f -2d 2"),  new J.symmetry.SpaceGroup ("43:bca;c2v^19;f d 2 d;f -2d -2d"),  new J.symmetry.SpaceGroup ("44;c2v^20;i m m 2;i 2 -2"),  new J.symmetry.SpaceGroup ("44:cab;c2v^20;i 2 m m;i -2 2"),  new J.symmetry.SpaceGroup ("44:bca;c2v^20;i m 2 m;i -2 -2"),  new J.symmetry.SpaceGroup ("45;c2v^21;i b a 2;i 2 -2c"),  new J.symmetry.SpaceGroup ("45:cab;c2v^21;i 2 c b;i -2a 2"),  new J.symmetry.SpaceGroup ("45:bca;c2v^21;i c 2 a;i -2b -2b"),  new J.symmetry.SpaceGroup ("46;c2v^22;i m a 2;i 2 -2a"),  new J.symmetry.SpaceGroup ("46:ba-c;c2v^22;i b m 2;i 2 -2b"),  new J.symmetry.SpaceGroup ("46:cab;c2v^22;i 2 m b;i -2b 2"),  new J.symmetry.SpaceGroup ("46:-cba;c2v^22;i 2 c m;i -2c 2"),  new J.symmetry.SpaceGroup ("46:bca;c2v^22;i c 2 m;i -2c -2c"),  new J.symmetry.SpaceGroup ("46:a-cb;c2v^22;i m 2 a;i -2a -2a"),  new J.symmetry.SpaceGroup ("47;d2h^1;p m m m;-p 2 2"),  new J.symmetry.SpaceGroup ("48:1;d2h^2;p n n n:1;p 2 2 -1n"),  new J.symmetry.SpaceGroup ("48:2;d2h^2;p n n n:2;-p 2ab 2bc"),  new J.symmetry.SpaceGroup ("49;d2h^3;p c c m;-p 2 2c"),  new J.symmetry.SpaceGroup ("49:cab;d2h^3;p m a a;-p 2a 2"),  new J.symmetry.SpaceGroup ("49:bca;d2h^3;p b m b;-p 2b 2b"),  new J.symmetry.SpaceGroup ("50:1;d2h^4;p b a n:1;p 2 2 -1ab"),  new J.symmetry.SpaceGroup ("50:2;d2h^4;p b a n:2;-p 2ab 2b"),  new J.symmetry.SpaceGroup ("50:1cab;d2h^4;p n c b:1;p 2 2 -1bc"),  new J.symmetry.SpaceGroup ("50:2cab;d2h^4;p n c b:2;-p 2b 2bc"),  new J.symmetry.SpaceGroup ("50:1bca;d2h^4;p c n a:1;p 2 2 -1ac"),  new J.symmetry.SpaceGroup ("50:2bca;d2h^4;p c n a:2;-p 2a 2c"),  new J.symmetry.SpaceGroup ("51;d2h^5;p m m a;-p 2a 2a"),  new J.symmetry.SpaceGroup ("51:ba-c;d2h^5;p m m b;-p 2b 2"),  new J.symmetry.SpaceGroup ("51:cab;d2h^5;p b m m;-p 2 2b"),  new J.symmetry.SpaceGroup ("51:-cba;d2h^5;p c m m;-p 2c 2c"),  new J.symmetry.SpaceGroup ("51:bca;d2h^5;p m c m;-p 2c 2"),  new J.symmetry.SpaceGroup ("51:a-cb;d2h^5;p m a m;-p 2 2a"),  new J.symmetry.SpaceGroup ("52;d2h^6;p n n a;-p 2a 2bc"),  new J.symmetry.SpaceGroup ("52:ba-c;d2h^6;p n n b;-p 2b 2n"),  new J.symmetry.SpaceGroup ("52:cab;d2h^6;p b n n;-p 2n 2b"),  new J.symmetry.SpaceGroup ("52:-cba;d2h^6;p c n n;-p 2ab 2c"),  new J.symmetry.SpaceGroup ("52:bca;d2h^6;p n c n;-p 2ab 2n"),  new J.symmetry.SpaceGroup ("52:a-cb;d2h^6;p n a n;-p 2n 2bc"),  new J.symmetry.SpaceGroup ("53;d2h^7;p m n a;-p 2ac 2"),  new J.symmetry.SpaceGroup ("53:ba-c;d2h^7;p n m b;-p 2bc 2bc"),  new J.symmetry.SpaceGroup ("53:cab;d2h^7;p b m n;-p 2ab 2ab"),  new J.symmetry.SpaceGroup ("53:-cba;d2h^7;p c n m;-p 2 2ac"),  new J.symmetry.SpaceGroup ("53:bca;d2h^7;p n c m;-p 2 2bc"),  new J.symmetry.SpaceGroup ("53:a-cb;d2h^7;p m a n;-p 2ab 2"),  new J.symmetry.SpaceGroup ("54;d2h^8;p c c a;-p 2a 2ac"),  new J.symmetry.SpaceGroup ("54:ba-c;d2h^8;p c c b;-p 2b 2c"),  new J.symmetry.SpaceGroup ("54:cab;d2h^8;p b a a;-p 2a 2b"),  new J.symmetry.SpaceGroup ("54:-cba;d2h^8;p c a a;-p 2ac 2c"),  new J.symmetry.SpaceGroup ("54:bca;d2h^8;p b c b;-p 2bc 2b"),  new J.symmetry.SpaceGroup ("54:a-cb;d2h^8;p b a b;-p 2b 2ab"),  new J.symmetry.SpaceGroup ("55;d2h^9;p b a m;-p 2 2ab"),  new J.symmetry.SpaceGroup ("55:cab;d2h^9;p m c b;-p 2bc 2"),  new J.symmetry.SpaceGroup ("55:bca;d2h^9;p c m a;-p 2ac 2ac"),  new J.symmetry.SpaceGroup ("56;d2h^10;p c c n;-p 2ab 2ac"),  new J.symmetry.SpaceGroup ("56:cab;d2h^10;p n a a;-p 2ac 2bc"),  new J.symmetry.SpaceGroup ("56:bca;d2h^10;p b n b;-p 2bc 2ab"),  new J.symmetry.SpaceGroup ("57;d2h^11;p b c m;-p 2c 2b"),  new J.symmetry.SpaceGroup ("57:ba-c;d2h^11;p c a m;-p 2c 2ac"),  new J.symmetry.SpaceGroup ("57:cab;d2h^11;p m c a;-p 2ac 2a"),  new J.symmetry.SpaceGroup ("57:-cba;d2h^11;p m a b;-p 2b 2a"),  new J.symmetry.SpaceGroup ("57:bca;d2h^11;p b m a;-p 2a 2ab"),  new J.symmetry.SpaceGroup ("57:a-cb;d2h^11;p c m b;-p 2bc 2c"),  new J.symmetry.SpaceGroup ("58;d2h^12;p n n m;-p 2 2n"),  new J.symmetry.SpaceGroup ("58:cab;d2h^12;p m n n;-p 2n 2"),  new J.symmetry.SpaceGroup ("58:bca;d2h^12;p n m n;-p 2n 2n"),  new J.symmetry.SpaceGroup ("59:1;d2h^13;p m m n:1;p 2 2ab -1ab"),  new J.symmetry.SpaceGroup ("59:2;d2h^13;p m m n:2;-p 2ab 2a"),  new J.symmetry.SpaceGroup ("59:1cab;d2h^13;p n m m:1;p 2bc 2 -1bc"),  new J.symmetry.SpaceGroup ("59:2cab;d2h^13;p n m m:2;-p 2c 2bc"),  new J.symmetry.SpaceGroup ("59:1bca;d2h^13;p m n m:1;p 2ac 2ac -1ac"),  new J.symmetry.SpaceGroup ("59:2bca;d2h^13;p m n m:2;-p 2c 2a"),  new J.symmetry.SpaceGroup ("60;d2h^14;p b c n;-p 2n 2ab"),  new J.symmetry.SpaceGroup ("60:ba-c;d2h^14;p c a n;-p 2n 2c"),  new J.symmetry.SpaceGroup ("60:cab;d2h^14;p n c a;-p 2a 2n"),  new J.symmetry.SpaceGroup ("60:-cba;d2h^14;p n a b;-p 2bc 2n"),  new J.symmetry.SpaceGroup ("60:bca;d2h^14;p b n a;-p 2ac 2b"),  new J.symmetry.SpaceGroup ("60:a-cb;d2h^14;p c n b;-p 2b 2ac"),  new J.symmetry.SpaceGroup ("61;d2h^15;p b c a;-p 2ac 2ab"),  new J.symmetry.SpaceGroup ("61:ba-c;d2h^15;p c a b;-p 2bc 2ac"),  new J.symmetry.SpaceGroup ("62;d2h^16;p n m a;-p 2ac 2n"),  new J.symmetry.SpaceGroup ("62:ba-c;d2h^16;p m n b;-p 2bc 2a"),  new J.symmetry.SpaceGroup ("62:cab;d2h^16;p b n m;-p 2c 2ab"),  new J.symmetry.SpaceGroup ("62:-cba;d2h^16;p c m n;-p 2n 2ac"),  new J.symmetry.SpaceGroup ("62:bca;d2h^16;p m c n;-p 2n 2a"),  new J.symmetry.SpaceGroup ("62:a-cb;d2h^16;p n a m;-p 2c 2n"),  new J.symmetry.SpaceGroup ("63;d2h^17;c m c m;-c 2c 2"),  new J.symmetry.SpaceGroup ("63:ba-c;d2h^17;c c m m;-c 2c 2c"),  new J.symmetry.SpaceGroup ("63:cab;d2h^17;a m m a;-a 2a 2a"),  new J.symmetry.SpaceGroup ("63:-cba;d2h^17;a m a m;-a 2 2a"),  new J.symmetry.SpaceGroup ("63:bca;d2h^17;b b m m;-b 2 2b"),  new J.symmetry.SpaceGroup ("63:a-cb;d2h^17;b m m b;-b 2b 2"),  new J.symmetry.SpaceGroup ("64;d2h^18;c m c a;-c 2ac 2"),  new J.symmetry.SpaceGroup ("64:ba-c;d2h^18;c c m b;-c 2ac 2ac"),  new J.symmetry.SpaceGroup ("64:cab;d2h^18;a b m a;-a 2ab 2ab"),  new J.symmetry.SpaceGroup ("64:-cba;d2h^18;a c a m;-a 2 2ab"),  new J.symmetry.SpaceGroup ("64:bca;d2h^18;b b c m;-b 2 2ab"),  new J.symmetry.SpaceGroup ("64:a-cb;d2h^18;b m a b;-b 2ab 2"),  new J.symmetry.SpaceGroup ("65;d2h^19;c m m m;-c 2 2"),  new J.symmetry.SpaceGroup ("65:cab;d2h^19;a m m m;-a 2 2"),  new J.symmetry.SpaceGroup ("65:bca;d2h^19;b m m m;-b 2 2"),  new J.symmetry.SpaceGroup ("66;d2h^20;c c c m;-c 2 2c"),  new J.symmetry.SpaceGroup ("66:cab;d2h^20;a m a a;-a 2a 2"),  new J.symmetry.SpaceGroup ("66:bca;d2h^20;b b m b;-b 2b 2b"),  new J.symmetry.SpaceGroup ("67;d2h^21;c m m a;-c 2a 2"),  new J.symmetry.SpaceGroup ("67:ba-c;d2h^21;c m m b;-c 2a 2a"),  new J.symmetry.SpaceGroup ("67:cab;d2h^21;a b m m;-a 2b 2b"),  new J.symmetry.SpaceGroup ("67:-cba;d2h^21;a c m m;-a 2 2b"),  new J.symmetry.SpaceGroup ("67:bca;d2h^21;b m c m;-b 2 2a"),  new J.symmetry.SpaceGroup ("67:a-cb;d2h^21;b m a m;-b 2a 2"),  new J.symmetry.SpaceGroup ("68:1;d2h^22;c c c a:1;c 2 2 -1ac"),  new J.symmetry.SpaceGroup ("68:2;d2h^22;c c c a:2;-c 2a 2ac"),  new J.symmetry.SpaceGroup ("68:1ba-c;d2h^22;c c c b:1;c 2 2 -1ac"),  new J.symmetry.SpaceGroup ("68:2ba-c;d2h^22;c c c b:2;-c 2a 2c"),  new J.symmetry.SpaceGroup ("68:1cab;d2h^22;a b a a:1;a 2 2 -1ab"),  new J.symmetry.SpaceGroup ("68:2cab;d2h^22;a b a a:2;-a 2a 2b"),  new J.symmetry.SpaceGroup ("68:1-cba;d2h^22;a c a a:1;a 2 2 -1ab"),  new J.symmetry.SpaceGroup ("68:2-cba;d2h^22;a c a a:2;-a 2ab 2b"),  new J.symmetry.SpaceGroup ("68:1bca;d2h^22;b b c b:1;b 2 2 -1ab"),  new J.symmetry.SpaceGroup ("68:2bca;d2h^22;b b c b:2;-b 2ab 2b"),  new J.symmetry.SpaceGroup ("68:1a-cb;d2h^22;b b a b:1;b 2 2 -1ab"),  new J.symmetry.SpaceGroup ("68:2a-cb;d2h^22;b b a b:2;-b 2b 2ab"),  new J.symmetry.SpaceGroup ("69;d2h^23;f m m m;-f 2 2"),  new J.symmetry.SpaceGroup ("70:1;d2h^24;f d d d:1;f 2 2 -1d"),  new J.symmetry.SpaceGroup ("70:2;d2h^24;f d d d:2;-f 2uv 2vw"),  new J.symmetry.SpaceGroup ("71;d2h^25;i m m m;-i 2 2"),  new J.symmetry.SpaceGroup ("72;d2h^26;i b a m;-i 2 2c"),  new J.symmetry.SpaceGroup ("72:cab;d2h^26;i m c b;-i 2a 2"),  new J.symmetry.SpaceGroup ("72:bca;d2h^26;i c m a;-i 2b 2b"),  new J.symmetry.SpaceGroup ("73;d2h^27;i b c a;-i 2b 2c"),  new J.symmetry.SpaceGroup ("73:ba-c;d2h^27;i c a b;-i 2a 2b"),  new J.symmetry.SpaceGroup ("74;d2h^28;i m m a;-i 2b 2"),  new J.symmetry.SpaceGroup ("74:ba-c;d2h^28;i m m b;-i 2a 2a"),  new J.symmetry.SpaceGroup ("74:cab;d2h^28;i b m m;-i 2c 2c"),  new J.symmetry.SpaceGroup ("74:-cba;d2h^28;i c m m;-i 2 2b"),  new J.symmetry.SpaceGroup ("74:bca;d2h^28;i m c m;-i 2 2a"),  new J.symmetry.SpaceGroup ("74:a-cb;d2h^28;i m a m;-i 2c 2"),  new J.symmetry.SpaceGroup ("75;c4^1;p 4;p 4"),  new J.symmetry.SpaceGroup ("76;c4^2;p 41;p 4w"),  new J.symmetry.SpaceGroup ("76*;c4^2;p 41*;p 41"),  new J.symmetry.SpaceGroup ("77;c4^3;p 42;p 4c"),  new J.symmetry.SpaceGroup ("77*;c4^3;p 42*;p 42"),  new J.symmetry.SpaceGroup ("78;c4^4;p 43;p 4cw"),  new J.symmetry.SpaceGroup ("78*;c4^4;p 43*;p 43"),  new J.symmetry.SpaceGroup ("79;c4^5;i 4;i 4"),  new J.symmetry.SpaceGroup ("80;c4^6;i 41;i 4bw"),  new J.symmetry.SpaceGroup ("81;s4^1;p -4;p -4"),  new J.symmetry.SpaceGroup ("82;s4^2;i -4;i -4"),  new J.symmetry.SpaceGroup ("83;c4h^1;p 4/m;-p 4"),  new J.symmetry.SpaceGroup ("84;c4h^2;p 42/m;-p 4c"),  new J.symmetry.SpaceGroup ("84*;c4h^2;p 42/m*;-p 42"),  new J.symmetry.SpaceGroup ("85:1;c4h^3;p 4/n:1;p 4ab -1ab"),  new J.symmetry.SpaceGroup ("85:2;c4h^3;p 4/n:2;-p 4a"),  new J.symmetry.SpaceGroup ("86:1;c4h^4;p 42/n:1;p 4n -1n"),  new J.symmetry.SpaceGroup ("86:2;c4h^4;p 42/n:2;-p 4bc"),  new J.symmetry.SpaceGroup ("87;c4h^5;i 4/m;-i 4"),  new J.symmetry.SpaceGroup ("88:1;c4h^6;i 41/a:1;i 4bw -1bw"),  new J.symmetry.SpaceGroup ("88:2;c4h^6;i 41/a:2;-i 4ad"),  new J.symmetry.SpaceGroup ("89;d4^1;p 4 2 2;p 4 2"),  new J.symmetry.SpaceGroup ("90;d4^2;p 4 21 2;p 4ab 2ab"),  new J.symmetry.SpaceGroup ("91;d4^3;p 41 2 2;p 4w 2c"),  new J.symmetry.SpaceGroup ("91*;d4^3;p 41 2 2*;p 41 2c"),  new J.symmetry.SpaceGroup ("92;d4^4;p 41 21 2;p 4abw 2nw"),  new J.symmetry.SpaceGroup ("93;d4^5;p 42 2 2;p 4c 2"),  new J.symmetry.SpaceGroup ("93*;d4^5;p 42 2 2*;p 42 2"),  new J.symmetry.SpaceGroup ("94;d4^6;p 42 21 2;p 4n 2n"),  new J.symmetry.SpaceGroup ("95;d4^7;p 43 2 2;p 4cw 2c"),  new J.symmetry.SpaceGroup ("95*;d4^7;p 43 2 2*;p 43 2c"),  new J.symmetry.SpaceGroup ("96;d4^8;p 43 21 2;p 4nw 2abw"),  new J.symmetry.SpaceGroup ("97;d4^9;i 4 2 2;i 4 2"),  new J.symmetry.SpaceGroup ("98;d4^10;i 41 2 2;i 4bw 2bw"),  new J.symmetry.SpaceGroup ("99;c4v^1;p 4 m m;p 4 -2"),  new J.symmetry.SpaceGroup ("100;c4v^2;p 4 b m;p 4 -2ab"),  new J.symmetry.SpaceGroup ("101;c4v^3;p 42 c m;p 4c -2c"),  new J.symmetry.SpaceGroup ("101*;c4v^3;p 42 c m*;p 42 -2c"),  new J.symmetry.SpaceGroup ("102;c4v^4;p 42 n m;p 4n -2n"),  new J.symmetry.SpaceGroup ("103;c4v^5;p 4 c c;p 4 -2c"),  new J.symmetry.SpaceGroup ("104;c4v^6;p 4 n c;p 4 -2n"),  new J.symmetry.SpaceGroup ("105;c4v^7;p 42 m c;p 4c -2"),  new J.symmetry.SpaceGroup ("105*;c4v^7;p 42 m c*;p 42 -2"),  new J.symmetry.SpaceGroup ("106;c4v^8;p 42 b c;p 4c -2ab"),  new J.symmetry.SpaceGroup ("106*;c4v^8;p 42 b c*;p 42 -2ab"),  new J.symmetry.SpaceGroup ("107;c4v^9;i 4 m m;i 4 -2"),  new J.symmetry.SpaceGroup ("108;c4v^10;i 4 c m;i 4 -2c"),  new J.symmetry.SpaceGroup ("109;c4v^11;i 41 m d;i 4bw -2"),  new J.symmetry.SpaceGroup ("110;c4v^12;i 41 c d;i 4bw -2c"),  new J.symmetry.SpaceGroup ("111;d2d^1;p -4 2 m;p -4 2"),  new J.symmetry.SpaceGroup ("112;d2d^2;p -4 2 c;p -4 2c"),  new J.symmetry.SpaceGroup ("113;d2d^3;p -4 21 m;p -4 2ab"),  new J.symmetry.SpaceGroup ("114;d2d^4;p -4 21 c;p -4 2n"),  new J.symmetry.SpaceGroup ("115;d2d^5;p -4 m 2;p -4 -2"),  new J.symmetry.SpaceGroup ("116;d2d^6;p -4 c 2;p -4 -2c"),  new J.symmetry.SpaceGroup ("117;d2d^7;p -4 b 2;p -4 -2ab"),  new J.symmetry.SpaceGroup ("118;d2d^8;p -4 n 2;p -4 -2n"),  new J.symmetry.SpaceGroup ("119;d2d^9;i -4 m 2;i -4 -2"),  new J.symmetry.SpaceGroup ("120;d2d^10;i -4 c 2;i -4 -2c"),  new J.symmetry.SpaceGroup ("121;d2d^11;i -4 2 m;i -4 2"),  new J.symmetry.SpaceGroup ("122;d2d^12;i -4 2 d;i -4 2bw"),  new J.symmetry.SpaceGroup ("123;d4h^1;p 4/m m m;-p 4 2"),  new J.symmetry.SpaceGroup ("124;d4h^2;p 4/m c c;-p 4 2c"),  new J.symmetry.SpaceGroup ("125:1;d4h^3;p 4/n b m:1;p 4 2 -1ab"),  new J.symmetry.SpaceGroup ("125:2;d4h^3;p 4/n b m:2;-p 4a 2b"),  new J.symmetry.SpaceGroup ("126:1;d4h^4;p 4/n n c:1;p 4 2 -1n"),  new J.symmetry.SpaceGroup ("126:2;d4h^4;p 4/n n c:2;-p 4a 2bc"),  new J.symmetry.SpaceGroup ("127;d4h^5;p 4/m b m;-p 4 2ab"),  new J.symmetry.SpaceGroup ("128;d4h^6;p 4/m n c;-p 4 2n"),  new J.symmetry.SpaceGroup ("129:1;d4h^7;p 4/n m m:1;p 4ab 2ab -1ab"),  new J.symmetry.SpaceGroup ("129:2;d4h^7;p 4/n m m:2;-p 4a 2a"),  new J.symmetry.SpaceGroup ("130:1;d4h^8;p 4/n c c:1;p 4ab 2n -1ab"),  new J.symmetry.SpaceGroup ("130:2;d4h^8;p 4/n c c:2;-p 4a 2ac"),  new J.symmetry.SpaceGroup ("131;d4h^9;p 42/m m c;-p 4c 2"),  new J.symmetry.SpaceGroup ("132;d4h^10;p 42/m c m;-p 4c 2c"),  new J.symmetry.SpaceGroup ("133:1;d4h^11;p 42/n b c:1;p 4n 2c -1n"),  new J.symmetry.SpaceGroup ("133:2;d4h^11;p 42/n b c:2;-p 4ac 2b"),  new J.symmetry.SpaceGroup ("134:1;d4h^12;p 42/n n m:1;p 4n 2 -1n"),  new J.symmetry.SpaceGroup ("134:2;d4h^12;p 42/n n m:2;-p 4ac 2bc"),  new J.symmetry.SpaceGroup ("135;d4h^13;p 42/m b c;-p 4c 2ab"),  new J.symmetry.SpaceGroup ("135*;d4h^13;p 42/m b c*;-p 42 2ab"),  new J.symmetry.SpaceGroup ("136;d4h^14;p 42/m n m;-p 4n 2n"),  new J.symmetry.SpaceGroup ("137:1;d4h^15;p 42/n m c:1;p 4n 2n -1n"),  new J.symmetry.SpaceGroup ("137:2;d4h^15;p 42/n m c:2;-p 4ac 2a"),  new J.symmetry.SpaceGroup ("138:1;d4h^16;p 42/n c m:1;p 4n 2ab -1n"),  new J.symmetry.SpaceGroup ("138:2;d4h^16;p 42/n c m:2;-p 4ac 2ac"),  new J.symmetry.SpaceGroup ("139;d4h^17;i 4/m m m;-i 4 2"),  new J.symmetry.SpaceGroup ("140;d4h^18;i 4/m c m;-i 4 2c"),  new J.symmetry.SpaceGroup ("141:1;d4h^19;i 41/a m d:1;i 4bw 2bw -1bw"),  new J.symmetry.SpaceGroup ("141:2;d4h^19;i 41/a m d:2;-i 4bd 2"),  new J.symmetry.SpaceGroup ("142:1;d4h^20;i 41/a c d:1;i 4bw 2aw -1bw"),  new J.symmetry.SpaceGroup ("142:2;d4h^20;i 41/a c d:2;-i 4bd 2c"),  new J.symmetry.SpaceGroup ("143;c3^1;p 3;p 3"),  new J.symmetry.SpaceGroup ("144;c3^2;p 31;p 31"),  new J.symmetry.SpaceGroup ("145;c3^3;p 32;p 32"),  new J.symmetry.SpaceGroup ("146:h;c3^4;r 3:h;r 3"),  new J.symmetry.SpaceGroup ("146:r;c3^4;r 3:r;p 3*"),  new J.symmetry.SpaceGroup ("147;c3i^1;p -3;-p 3"),  new J.symmetry.SpaceGroup ("148:h;c3i^2;r -3:h;-r 3"),  new J.symmetry.SpaceGroup ("148:r;c3i^2;r -3:r;-p 3*"),  new J.symmetry.SpaceGroup ("149;d3^1;p 3 1 2;p 3 2"),  new J.symmetry.SpaceGroup ("150;d3^2;p 3 2 1;p 3 2\""),  new J.symmetry.SpaceGroup ("151;d3^3;p 31 1 2;p 31 2 (0 0 4)"),  new J.symmetry.SpaceGroup ("152;d3^4;p 31 2 1;p 31 2\""),  new J.symmetry.SpaceGroup ("153;d3^5;p 32 1 2;p 32 2 (0 0 2)"),  new J.symmetry.SpaceGroup ("154;d3^6;p 32 2 1;p 32 2\""),  new J.symmetry.SpaceGroup ("155:h;d3^7;r 3 2:h;r 3 2\""),  new J.symmetry.SpaceGroup ("155:r;d3^7;r 3 2:r;p 3* 2"),  new J.symmetry.SpaceGroup ("156;c3v^1;p 3 m 1;p 3 -2\""),  new J.symmetry.SpaceGroup ("157;c3v^2;p 3 1 m;p 3 -2"),  new J.symmetry.SpaceGroup ("158;c3v^3;p 3 c 1;p 3 -2\"c"),  new J.symmetry.SpaceGroup ("159;c3v^4;p 3 1 c;p 3 -2c"),  new J.symmetry.SpaceGroup ("160:h;c3v^5;r 3 m:h;r 3 -2\""),  new J.symmetry.SpaceGroup ("160:r;c3v^5;r 3 m:r;p 3* -2"),  new J.symmetry.SpaceGroup ("161:h;c3v^6;r 3 c:h;r 3 -2\"c"),  new J.symmetry.SpaceGroup ("161:r;c3v^6;r 3 c:r;p 3* -2n"),  new J.symmetry.SpaceGroup ("162;d3d^1;p -3 1 m;-p 3 2"),  new J.symmetry.SpaceGroup ("163;d3d^2;p -3 1 c;-p 3 2c"),  new J.symmetry.SpaceGroup ("164;d3d^3;p -3 m 1;-p 3 2\""),  new J.symmetry.SpaceGroup ("165;d3d^4;p -3 c 1;-p 3 2\"c"),  new J.symmetry.SpaceGroup ("166:h;d3d^5;r -3 m:h;-r 3 2\""),  new J.symmetry.SpaceGroup ("166:r;d3d^5;r -3 m:r;-p 3* 2"),  new J.symmetry.SpaceGroup ("167:h;d3d^6;r -3 c:h;-r 3 2\"c"),  new J.symmetry.SpaceGroup ("167:r;d3d^6;r -3 c:r;-p 3* 2n"),  new J.symmetry.SpaceGroup ("168;c6^1;p 6;p 6"),  new J.symmetry.SpaceGroup ("169;c6^2;p 61;p 61"),  new J.symmetry.SpaceGroup ("170;c6^3;p 65;p 65"),  new J.symmetry.SpaceGroup ("171;c6^4;p 62;p 62"),  new J.symmetry.SpaceGroup ("172;c6^5;p 64;p 64"),  new J.symmetry.SpaceGroup ("173;c6^6;p 63;p 6c"),  new J.symmetry.SpaceGroup ("173*;c6^6;p 63*;p 63 "),  new J.symmetry.SpaceGroup ("174;c3h^1;p -6;p -6"),  new J.symmetry.SpaceGroup ("175;c6h^1;p 6/m;-p 6"),  new J.symmetry.SpaceGroup ("176;c6h^2;p 63/m;-p 6c"),  new J.symmetry.SpaceGroup ("176*;c6h^2;p 63/m*;-p 63"),  new J.symmetry.SpaceGroup ("177;d6^1;p 6 2 2;p 6 2"),  new J.symmetry.SpaceGroup ("178;d6^2;p 61 2 2;p 61 2 (0 0 5)"),  new J.symmetry.SpaceGroup ("179;d6^3;p 65 2 2;p 65 2 (0 0 1)"),  new J.symmetry.SpaceGroup ("180;d6^4;p 62 2 2;p 62 2 (0 0 4)"),  new J.symmetry.SpaceGroup ("181;d6^5;p 64 2 2;p 64 2 (0 0 2)"),  new J.symmetry.SpaceGroup ("182;d6^6;p 63 2 2;p 6c 2c"),  new J.symmetry.SpaceGroup ("182*;d6^6;p 63 2 2*;p 63 2c"),  new J.symmetry.SpaceGroup ("183;c6v^1;p 6 m m;p 6 -2"),  new J.symmetry.SpaceGroup ("184;c6v^2;p 6 c c;p 6 -2c"),  new J.symmetry.SpaceGroup ("185;c6v^3;p 63 c m;p 6c -2"),  new J.symmetry.SpaceGroup ("185*;c6v^3;p 63 c m*;p 63 -2"),  new J.symmetry.SpaceGroup ("186;c6v^4;p 63 m c;p 6c -2c"),  new J.symmetry.SpaceGroup ("186*;c6v^4;p 63 m c*;p 63 -2c"),  new J.symmetry.SpaceGroup ("187;d3h^1;p -6 m 2;p -6 2"),  new J.symmetry.SpaceGroup ("188;d3h^2;p -6 c 2;p -6c 2"),  new J.symmetry.SpaceGroup ("189;d3h^3;p -6 2 m;p -6 -2"),  new J.symmetry.SpaceGroup ("190;d3h^4;p -6 2 c;p -6c -2c"),  new J.symmetry.SpaceGroup ("191;d6h^1;p 6/m m m;-p 6 2"),  new J.symmetry.SpaceGroup ("192;d6h^2;p 6/m c c;-p 6 2c"),  new J.symmetry.SpaceGroup ("193;d6h^3;p 63/m c m;-p 6c 2"),  new J.symmetry.SpaceGroup ("193*;d6h^3;p 63/m c m*;-p 63 2"),  new J.symmetry.SpaceGroup ("194;d6h^4;p 63/m m c;-p 6c 2c"),  new J.symmetry.SpaceGroup ("194*;d6h^4;p 63/m m c*;-p 63 2c"),  new J.symmetry.SpaceGroup ("195;t^1;p 2 3;p 2 2 3"),  new J.symmetry.SpaceGroup ("196;t^2;f 2 3;f 2 2 3"),  new J.symmetry.SpaceGroup ("197;t^3;i 2 3;i 2 2 3"),  new J.symmetry.SpaceGroup ("198;t^4;p 21 3;p 2ac 2ab 3"),  new J.symmetry.SpaceGroup ("199;t^5;i 21 3;i 2b 2c 3"),  new J.symmetry.SpaceGroup ("200;th^1;p m -3;-p 2 2 3"),  new J.symmetry.SpaceGroup ("201:1;th^2;p n -3:1;p 2 2 3 -1n"),  new J.symmetry.SpaceGroup ("201:2;th^2;p n -3:2;-p 2ab 2bc 3"),  new J.symmetry.SpaceGroup ("202;th^3;f m -3;-f 2 2 3"),  new J.symmetry.SpaceGroup ("203:1;th^4;f d -3:1;f 2 2 3 -1d"),  new J.symmetry.SpaceGroup ("203:2;th^4;f d -3:2;-f 2uv 2vw 3"),  new J.symmetry.SpaceGroup ("204;th^5;i m -3;-i 2 2 3"),  new J.symmetry.SpaceGroup ("205;th^6;p a -3;-p 2ac 2ab 3"),  new J.symmetry.SpaceGroup ("206;th^7;i a -3;-i 2b 2c 3"),  new J.symmetry.SpaceGroup ("207;o^1;p 4 3 2;p 4 2 3"),  new J.symmetry.SpaceGroup ("208;o^2;p 42 3 2;p 4n 2 3"),  new J.symmetry.SpaceGroup ("209;o^3;f 4 3 2;f 4 2 3"),  new J.symmetry.SpaceGroup ("210;o^4;f 41 3 2;f 4d 2 3"),  new J.symmetry.SpaceGroup ("211;o^5;i 4 3 2;i 4 2 3"),  new J.symmetry.SpaceGroup ("212;o^6;p 43 3 2;p 4acd 2ab 3"),  new J.symmetry.SpaceGroup ("213;o^7;p 41 3 2;p 4bd 2ab 3"),  new J.symmetry.SpaceGroup ("214;o^8;i 41 3 2;i 4bd 2c 3"),  new J.symmetry.SpaceGroup ("215;td^1;p -4 3 m;p -4 2 3"),  new J.symmetry.SpaceGroup ("216;td^2;f -4 3 m;f -4 2 3"),  new J.symmetry.SpaceGroup ("217;td^3;i -4 3 m;i -4 2 3"),  new J.symmetry.SpaceGroup ("218;td^4;p -4 3 n;p -4n 2 3"),  new J.symmetry.SpaceGroup ("219;td^5;f -4 3 c;f -4a 2 3"),  new J.symmetry.SpaceGroup ("220;td^6;i -4 3 d;i -4bd 2c 3"),  new J.symmetry.SpaceGroup ("221;oh^1;p m -3 m;-p 4 2 3"),  new J.symmetry.SpaceGroup ("222:1;oh^2;p n -3 n:1;p 4 2 3 -1n"),  new J.symmetry.SpaceGroup ("222:2;oh^2;p n -3 n:2;-p 4a 2bc 3"),  new J.symmetry.SpaceGroup ("223;oh^3;p m -3 n;-p 4n 2 3"),  new J.symmetry.SpaceGroup ("224:1;oh^4;p n -3 m:1;p 4n 2 3 -1n"),  new J.symmetry.SpaceGroup ("224:2;oh^4;p n -3 m:2;-p 4bc 2bc 3"),  new J.symmetry.SpaceGroup ("225;oh^5;f m -3 m;-f 4 2 3"),  new J.symmetry.SpaceGroup ("226;oh^6;f m -3 c;-f 4a 2 3"),  new J.symmetry.SpaceGroup ("227:1;oh^7;f d -3 m:1;f 4d 2 3 -1d"),  new J.symmetry.SpaceGroup ("227:2;oh^7;f d -3 m:2;-f 4vw 2vw 3"),  new J.symmetry.SpaceGroup ("228:1;oh^8;f d -3 c:1;f 4d 2 3 -1ad"),  new J.symmetry.SpaceGroup ("228:2;oh^8;f d -3 c:2;-f 4ud 2vw 3"),  new J.symmetry.SpaceGroup ("229;oh^9;i m -3 m;-i 4 2 3"),  new J.symmetry.SpaceGroup ("230;oh^10;i a -3 d;-i 4bd 2c 3")], J.symmetry.SpaceGroup.prototype.spaceGroupDefinitions = J.symmetry.SpaceGroup.spaceGroupDefinitions, $t$) : J.symmetry.SpaceGroup.spaceGroupDefinitions);
 }, $fz.isPrivate = true, $fz));
+$_M(c$, "addLatticeVectors", 
+function (lattvecs) {
+var nOps = this.latticeOp = this.operationCount;
+for (var j = 0; j < lattvecs.size (); j++) {
+var data = lattvecs.get (j);
+if (data.length > this.modulationDimension + 3) return;
+for (var i = 0; i < nOps; i++) {
+var op = this.operations[i];
+var rotTrans = op.rotTransMatrix;
+var newOp =  new J.symmetry.SymmetryOperation (null, null, 0, 0, this.doNormalize);
+newOp.modDim = this.modulationDimension;
+newOp.rotTransMatrix = J.util.ArrayUtil.arrayCopyF (rotTrans, -1);
+newOp.setFromMatrix (data, false);
+newOp.xyzOriginal = newOp.xyz;
+this.addOp (newOp, newOp.xyz, true);
+}
+}
+}, "J.util.JmolList");
+$_M(c$, "getSiteMultiplicity", 
+function (pt, unitCell) {
+var n = this.finalOperations.length;
+var pts =  new J.util.JmolList ();
+for (var i = n; --i >= 0; ) {
+var pt1 = J.util.P3.newP (pt);
+this.finalOperations[i].transform (pt1);
+unitCell.unitize (pt1);
+for (var j = pts.size (); --j >= 0; ) {
+var pt0 = pts.get (j);
+if (pt1.distanceSquared (pt0) < 0.000001) {
+pt1 = null;
+break;
+}}
+if (pt1 != null) {
+pts.addLast (pt1);
+}}
+return Clazz.doubleToInt (n / pts.size ());
+}, "J.util.P3,J.symmetry.UnitCell");
 Clazz.defineStatics (c$,
 "canonicalSeitzList", null,
 "NAME_HALL", 5,
@@ -1923,8 +1991,8 @@ data[ipt] = value;
 dataInv[ipt] = -value;
 ipt++;
 }
-this.seitzMatrix.setA (data);
-this.seitzMatrixInv.setA (dataInv);
+this.seitzMatrix.setA (data, 0);
+this.seitzMatrixInv.setA (dataInv, 0);
 }, $fz.isPrivate = true, $fz), "~S,~S");
 c$.lookup = $_M(c$, "lookup", 
 function (code) {
@@ -2032,6 +2100,9 @@ this.opId = 0;
 this.atomTest = null;
 this.temp3 = null;
 this.myLabels = null;
+this.modDim = 0;
+this.rotTransMatrix = null;
+this.gammaIS = null;
 Clazz.instantialize (this, arguments);
 }, J.symmetry, "SymmetryOperation", J.util.Matrix4f);
 Clazz.overrideConstructor (c$, 
@@ -2043,20 +2114,32 @@ return;
 }this.xyzOriginal = op.xyzOriginal;
 this.xyz = op.xyz;
 this.opId = op.opId;
+this.modDim = op.modDim;
+this.myLabels = op.myLabels;
+this.rotTransMatrix = op.rotTransMatrix;
 this.setM (op);
+if (op.rotTransMatrix.length == 32) this.setMod456 ();
 this.doFinalize ();
 if (doNormalize) this.setOffset (atoms, atomIndex, countOrId);
 }, "J.symmetry.SymmetryOperation,~A,~N,~N,~B");
+$_M(c$, "setMod456", 
+($fz = function () {
+(this.gammaIS =  new J.util.Matrix4f ()).setA (this.rotTransMatrix, 16);
+}, $fz.isPrivate = true, $fz));
 $_M(c$, "doFinalize", 
 function () {
 this.m03 /= 12;
 this.m13 /= 12;
 this.m23 /= 12;
-this.isFinalized = true;
+if (this.modDim > 0) {
+this.gammaIS.m03 /= 12;
+this.gammaIS.m13 /= 12;
+this.gammaIS.m23 /= 12;
+}this.isFinalized = true;
 });
 $_M(c$, "getXyz", 
 function (normalized) {
-return (normalized || this.xyzOriginal == null ? this.xyz : this.xyzOriginal);
+return (normalized && this.modDim == 0 || this.xyzOriginal == null ? this.xyz : this.xyzOriginal);
 }, "~B");
 $_M(c$, "newPoint", 
 function (atom1, atom2, transX, transY, transZ) {
@@ -2078,59 +2161,39 @@ function (s) {
 return  new J.util.SB ().append ("{\t").appendI (Clazz.floatToInt (s.m00)).append ("\t").appendI (Clazz.floatToInt (s.m01)).append ("\t").appendI (Clazz.floatToInt (s.m02)).append ("\t").append (J.symmetry.SymmetryOperation.twelfthsOf ((s.m03 + 12) % 12)).append ("\t}\n").append ("{\t").appendI (Clazz.floatToInt (s.m10)).append ("\t").appendI (Clazz.floatToInt (s.m11)).append ("\t").appendI (Clazz.floatToInt (s.m12)).append ("\t").append (J.symmetry.SymmetryOperation.twelfthsOf ((s.m13 + 12) % 12)).append ("\t}\n").append ("{\t").appendI (Clazz.floatToInt (s.m20)).append ("\t").appendI (Clazz.floatToInt (s.m21)).append ("\t").appendI (Clazz.floatToInt (s.m22)).append ("\t").append (J.symmetry.SymmetryOperation.twelfthsOf ((s.m23 + 12) % 12)).append ("\t}\n").append ("{\t0\t0\t0\t1\t}\n").toString ();
 }, "J.util.Matrix4f");
 $_M(c$, "setMatrixFromXYZ", 
-function (xyz, modulationDimension) {
+function (xyz, modDim) {
 if (xyz == null) return false;
 this.xyzOriginal = xyz;
 xyz = xyz.toLowerCase ();
 var n = 16;
-if (modulationDimension > 0) {
-n += 2 * modulationDimension;
-if (modulationDimension == 1) {
-this.myLabels = J.symmetry.SymmetryOperation.labelsX1234;
-} else {
-this.myLabels =  new Array (modulationDimension + 3);
-for (var i = modulationDimension + 3; --i >= 0; ) this.myLabels[i] = "x" + i;
-
-}}var rotTransMatrix =  Clazz.newFloatArray (n, 0);
-switch (modulationDimension) {
-case 0:
-break;
-case 1:
-break;
-default:
-}
+this.modDim = modDim;
+if (modDim > 0) {
+n = 32;
+this.myLabels = J.symmetry.SymmetryOperation.labelsX1_6;
+}this.rotTransMatrix =  Clazz.newFloatArray (n, 0);
 var isReverse = (xyz.startsWith ("!"));
 if (isReverse) xyz = xyz.substring (1);
 if (xyz.indexOf ("xyz matrix:") == 0) {
 this.xyz = xyz;
-J.util.Parser.parseStringInfestedFloatArray (xyz, null, rotTransMatrix);
-for (var i = 0; i < 16; i++) {
-if (Float.isNaN (rotTransMatrix[i])) return false;
-var v = rotTransMatrix[i];
-if (Math.abs (v) < 0.00001) v = 0;
-if (i % 4 == 3) v = J.symmetry.SymmetryOperation.normalizeTwelfths ((v < 0 ? -1 : 1) * Math.round (Math.abs (v * 12)), this.doNormalize);
-rotTransMatrix[i] = v;
-}
-rotTransMatrix[15] = 1;
-this.setA (rotTransMatrix);
-this.isFinalized = true;
-if (isReverse) this.invertM (this);
-this.xyz = J.symmetry.SymmetryOperation.getXYZFromMatrix (this, true, false, false);
-return true;
+J.util.Parser.parseStringInfestedFloatArray (xyz, null, this.rotTransMatrix);
+return this.setFromMatrix (null, isReverse);
 }if (xyz.indexOf ("[[") == 0) {
 xyz = xyz.$replace ('[', ' ').$replace (']', ' ').$replace (',', ' ');
-J.util.Parser.parseStringInfestedFloatArray (xyz, null, rotTransMatrix);
-for (var i = 0; i < 16; i++) {
-if (Float.isNaN (rotTransMatrix[i])) return false;
+J.util.Parser.parseStringInfestedFloatArray (xyz, null, this.rotTransMatrix);
+for (var i = 0; i < n; i++) {
+var v = this.rotTransMatrix[i];
+if (Float.isNaN (v)) return false;
 }
-this.setA (rotTransMatrix);
+this.setA (this.rotTransMatrix, 0);
+if (n == 32) this.setMod456 ();
 this.isFinalized = true;
 if (isReverse) this.invertM (this);
 this.xyz = J.symmetry.SymmetryOperation.getXYZFromMatrix (this, false, false, false);
 return true;
-}var strOut = J.symmetry.SymmetryOperation.getMatrixFromString (xyz, rotTransMatrix, this.myLabels, this.doNormalize, false);
+}var strOut = J.symmetry.SymmetryOperation.getMatrixFromString (this, xyz, this.rotTransMatrix, false);
 if (strOut == null) return false;
-this.setA (rotTransMatrix);
+this.setA (this.rotTransMatrix, 0);
+if (n == 32) this.setMod456 ();
 if (isReverse) {
 this.invertM (this);
 this.xyz = J.symmetry.SymmetryOperation.getXYZFromMatrix (this, true, false, false);
@@ -2139,19 +2202,52 @@ this.xyz = strOut;
 }if (J.util.Logger.debugging) J.util.Logger.debug ("" + this);
 return true;
 }, "~S,~N");
+$_M(c$, "setFromMatrix", 
+function (offset, isReverse) {
+var v = 0;
+var pt = 0;
+this.myLabels = (this.modDim == 0 ? J.symmetry.SymmetryOperation.labelsXYZ : J.symmetry.SymmetryOperation.labelsX1_6);
+for (var i = 0; i < this.rotTransMatrix.length; i++) {
+if (Float.isNaN (this.rotTransMatrix[i])) return false;
+v = this.rotTransMatrix[i];
+if (Math.abs (v) < 0.00001) v = 0;
+if (i % 4 == 3) {
+if (offset != null) {
+v /= 12;
+if (pt < offset.length) v += offset[pt++];
+}v = J.symmetry.SymmetryOperation.normalizeTwelfths ((v < 0 ? -1 : 1) * Math.round (Math.abs (v * 12)) / 12, this.doNormalize);
+}this.rotTransMatrix[i] = v;
+if (i == 11 || i == 27) i += 4;
+}
+this.rotTransMatrix[15] = 1;
+this.setA (this.rotTransMatrix, 0);
+if (this.rotTransMatrix.length == 32) {
+this.rotTransMatrix[31] = 1;
+(this.gammaIS =  new J.util.Matrix4f ()).setA (this.rotTransMatrix, 16);
+}this.isFinalized = true;
+if (isReverse) this.invertM (this);
+this.xyz = J.symmetry.SymmetryOperation.getXYZFromMatrix (this, true, false, false);
+return true;
+}, "~A,~B");
 c$.getMatrixFromString = $_M(c$, "getMatrixFromString", 
-function (xyz, rotTransMatrix, myLabels, doNormalize, allowScaling) {
+function (op, xyz, rotTransMatrix, allowScaling) {
 var isDenominator = false;
 var isDecimal = false;
 var isNegative = false;
-var incommensurate = (rotTransMatrix.length > 16);
+var incommensurate = (op != null && op.modDim > 0);
+var nRows = (incommensurate ? 4 + op.modDim : 4);
+var doNormalize = (op != null && op.doNormalize);
 rotTransMatrix[15] = 1;
+if (incommensurate) {
+for (var i = nRows, pt = nRows * 5 - 4; i < 7; i++, pt += 5) rotTransMatrix[pt] = 1;
+
+rotTransMatrix[31] = 1;
+}var myLabels = (op == null || !incommensurate ? null : op.myLabels);
 if (myLabels == null) myLabels = J.symmetry.SymmetryOperation.labelsXYZ;
 var ch;
 var x = 0;
 var y = 0;
 var z = 0;
-var w = 0;
 var iValue = 0;
 var strOut = "";
 var strT;
@@ -2162,6 +2258,9 @@ if (incommensurate) {
 xyz = J.util.TextFormat.simpleReplace (xyz, "x1", "x");
 xyz = J.util.TextFormat.simpleReplace (xyz, "x2", "y");
 xyz = J.util.TextFormat.simpleReplace (xyz, "x3", "z");
+xyz = J.util.TextFormat.simpleReplace (xyz, "x4", "x");
+xyz = J.util.TextFormat.simpleReplace (xyz, "x5", "y");
+xyz = J.util.TextFormat.simpleReplace (xyz, "x6", "z");
 }for (var i = 0; i < xyz.length; i++) {
 ch = xyz.charAt (i);
 switch (ch) {
@@ -2186,11 +2285,8 @@ var val = (isNegative ? -1 : 1);
 if (allowScaling && iValue != 0) {
 val *= iValue;
 iValue = 0;
-}if (incommensurate && rowPt > 0) {
-w = val;
-} else {
-x = val;
-}break;
+}x = val;
+break;
 case 'Y':
 case 'y':
 y = (isNegative ? -1 : 1);
@@ -2210,26 +2306,20 @@ if (++rowPt > 2 && !incommensurate) {
 J.util.Logger.warn ("Symmetry Operation? " + xyz);
 return null;
 }iValue = J.symmetry.SymmetryOperation.normalizeTwelfths (iValue, doNormalize);
-var tpt;
-if (rowPt > 2 && incommensurate) {
-tpt = 16 + 2 * (rowPt + -2);
-rotTransMatrix[tpt++] = w;
-rotTransMatrix[tpt] = iValue;
-} else {
-tpt = rowPt * 4;
+var tpt = rowPt * 4 + (rowPt > 2 ? 4 : 0);
 rotTransMatrix[tpt++] = x;
 rotTransMatrix[tpt++] = y;
 rotTransMatrix[tpt++] = z;
 rotTransMatrix[tpt] = iValue;
 strT = "";
-strT += J.symmetry.SymmetryOperation.plusMinus (strT, x, "x");
-strT += J.symmetry.SymmetryOperation.plusMinus (strT, y, "y");
-strT += J.symmetry.SymmetryOperation.plusMinus (strT, z, "z");
+var pt = (rowPt < 3 ? 0 : 3);
+strT += J.symmetry.SymmetryOperation.plusMinus (strT, x, myLabels[pt++]);
+strT += J.symmetry.SymmetryOperation.plusMinus (strT, y, myLabels[pt++]);
+strT += J.symmetry.SymmetryOperation.plusMinus (strT, z, myLabels[pt++]);
 strT += J.symmetry.SymmetryOperation.xyzFraction (iValue, false, true);
 strOut += (strOut === "" ? "" : ",") + strT;
-if (rowPt == 2) {
-return strOut;
-}}x = y = z = 0;
+if (rowPt == nRows - 2) return strOut;
+x = y = z = 0;
 iValue = 0;
 break;
 case '.':
@@ -2257,7 +2347,7 @@ J.util.Logger.warn ("symmetry character?" + ch);
 isDecimal = isDenominator = isNegative = false;
 }
 return null;
-}, "~S,~A,~A,~B,~B");
+}, "J.symmetry.SymmetryOperation,~S,~A,~B");
 c$.plusMinus = $_M(c$, "plusMinus", 
 ($fz = function (strT, x, sx) {
 return (x == 0 ? "" : (x < 0 ? "-" : strT.length == 0 ? "" : "+") + sx);
@@ -2275,13 +2365,18 @@ while (iValue <= -6) iValue += 12;
 c$.getXYZFromMatrix = $_M(c$, "getXYZFromMatrix", 
 function (mat, is12ths, allPositive, halfOrLess) {
 var str = "";
-var thisLabels = (Clazz.instanceOf (mat, J.symmetry.SymmetryOperation) ? (mat).myLabels : null);
+var op = (Clazz.instanceOf (mat, J.symmetry.SymmetryOperation) ? mat : null);
+var thisLabels = (op == null ? null : op.myLabels);
 if (thisLabels == null) thisLabels = J.symmetry.SymmetryOperation.labelsXYZ;
 var row =  Clazz.newFloatArray (4, 0);
-for (var i = 0; i < 3; i++) {
-mat.getRow (i, row);
+var n = (op == null ? 3 : op.modDim + 3);
+for (var i = 0; i < n; i++) {
+var lpt = (i < 3 ? 0 : 3);
+if (i < 3) mat.getRow (i, row);
+ else for (var j = 0, pt = i * 4 + 4; j < 4; j++, pt++) row[j] = op.rotTransMatrix[pt];
+
 var term = "";
-for (var j = 0; j < 3; j++) if (row[j] != 0) term += J.symmetry.SymmetryOperation.plusMinus (term, row[j], thisLabels[j]);
+for (var j = 0; j < 3; j++) if (row[j] != 0) term += J.symmetry.SymmetryOperation.plusMinus (term, row[j], thisLabels[j + lpt]);
 
 term += J.symmetry.SymmetryOperation.xyzFraction ((is12ths ? row[3] : row[3] * 12), allPositive, halfOrLess);
 str += "," + term;
@@ -2365,26 +2460,19 @@ this.m23 += (z < 0 ? 1 : -1);
 z += (z < 0 ? count : -count);
 }
 }, $fz.isPrivate = true, $fz), "~A,~N,~N");
-$_M(c$, "transformCartesian", 
-($fz = function (unitcell, pt) {
-unitcell.toFractional (pt, false);
-this.transform (pt);
-unitcell.toCartesian (pt, false);
-}, $fz.isPrivate = true, $fz), "J.symmetry.UnitCell,J.util.P3");
-$_M(c$, "rotateEllipsoid", 
-function (cartCenter, vectors, unitcell, ptTemp1, ptTemp2) {
+$_M(c$, "rotateAxes", 
+function (vectors, unitcell, ptTemp, mTemp) {
 var vRot =  new Array (3);
-ptTemp2.setT (cartCenter);
-this.transformCartesian (unitcell, ptTemp2);
+this.getRotationScale (mTemp);
 for (var i = vectors.length; --i >= 0; ) {
-ptTemp1.setT (cartCenter);
-ptTemp1.add (vectors[i]);
-this.transformCartesian (unitcell, ptTemp1);
-vRot[i] = J.util.V3.newV (ptTemp1);
-vRot[i].sub (ptTemp2);
+ptTemp.setT (vectors[i]);
+unitcell.toFractional (ptTemp, true);
+mTemp.transform (ptTemp);
+unitcell.toCartesian (ptTemp, true);
+vRot[i] = J.util.V3.newV (ptTemp);
 }
 return vRot;
-}, "J.util.P3,~A,J.symmetry.UnitCell,J.util.P3,J.util.P3");
+}, "~A,J.symmetry.UnitCell,J.util.P3,J.util.Matrix3f");
 $_M(c$, "getDescription", 
 function (uc, pt00, ptTarget, id) {
 if (!this.isFinalized) this.doFinalize ();
@@ -2467,8 +2555,7 @@ if (haveinversion) {
 p1.scaleAdd2 (2, v01, p1);
 p2.scaleAdd2 (2, v02, p2);
 p3.scaleAdd2 (2, v03, p3);
-}var trans = J.util.V3.newV (p0);
-trans.sub (pt00);
+}var trans = J.util.V3.newVsub (p0, pt00);
 if (trans.length () < 0.1) trans = null;
 var ptinv = null;
 var ipt = null;
@@ -2503,8 +2590,7 @@ pt0.setT (pt00);
 pt0.add (d);
 pa1.scaleAdd2 (0.5, d, pt00);
 if (pt0.distance (p0) > 0.1) {
-trans = J.util.V3.newV (p0);
-trans.sub (pt0);
+trans = J.util.V3.newVsub (p0, pt0);
 ptemp.setT (trans);
 uc.toFractional (ptemp, false);
 ftrans.setT (ptemp);
@@ -2807,7 +2893,7 @@ operation.m13 = (Clazz.floatToInt (operation.m13) + 12) % 12;
 operation.m23 = (Clazz.floatToInt (operation.m23) + 12) % 12;
 }, "J.util.Matrix4f");
 c$.labelsXYZ = c$.prototype.labelsXYZ = ["x", "y", "z"];
-c$.labelsX1234 = c$.prototype.labelsX1234 = ["x1", "x2", "x3", "x4"];
+c$.labelsX1_6 = c$.prototype.labelsX1_6 = ["x1", "x2", "x3", "x4", "x5", "x6"];
 Clazz.defineStatics (c$,
 "twelfths", ["0", "1/12", "1/6", "1/4", "1/3", "5/12", "1/2", "7/12", "2/3", "3/4", "5/6", "11/12"]);
 });
@@ -2854,7 +2940,7 @@ return notionalUnitcell;
 }, "java.util.Map");
 });
 Clazz.declarePackage ("J.symmetry");
-Clazz.load (["J.util.SimpleUnitCell", "$.P3", "J.viewer.JC"], "J.symmetry.UnitCell", ["J.util.BoxInfo", "$.Escape", "$.Matrix4f", "$.Tensor"], function () {
+Clazz.load (["J.util.SimpleUnitCell", "$.P3", "J.viewer.JC"], "J.symmetry.UnitCell", ["java.lang.Float", "J.util.BoxInfo", "$.Escape", "$.Matrix4f", "$.Tensor"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vertices = null;
 this.cartesianOffset = null;
@@ -2902,17 +2988,16 @@ function (pt, offset) {
 if (this.matrixCartesianToFractional == null) return;
 if (offset == null) {
 this.matrixCartesianToFractional.transform (pt);
-switch (this.dimension) {
-case 3:
-pt.z = J.symmetry.UnitCell.toFractionalX (pt.z);
-case 2:
-pt.y = J.symmetry.UnitCell.toFractionalX (pt.y);
-case 1:
-pt.x = J.symmetry.UnitCell.toFractionalX (pt.x);
-}
+this.unitize (pt);
 this.matrixFractionalToCartesian.transform (pt);
 } else {
 this.matrixCtoFAbsolute.transform (pt);
+this.unitize (pt);
+pt.add (offset);
+this.matrixFtoCAbsolute.transform (pt);
+}}, "J.util.P3,J.util.P3");
+$_M(c$, "unitize", 
+function (pt) {
 switch (this.dimension) {
 case 3:
 pt.z = J.symmetry.UnitCell.toFractionalX (pt.z);
@@ -2921,9 +3006,7 @@ pt.y = J.symmetry.UnitCell.toFractionalX (pt.y);
 case 1:
 pt.x = J.symmetry.UnitCell.toFractionalX (pt.x);
 }
-pt.add (offset);
-this.matrixFtoCAbsolute.transform (pt);
-}}, "J.util.P3,J.util.P3");
+}, "J.util.P3");
 $_M(c$, "setAllFractionalRelative", 
 function (TF) {
 this.allFractionalRelative = TF;
@@ -3093,6 +3176,14 @@ function () {
 var m = this.matrixFractionalToCartesian;
 return [J.util.P3.newP (this.cartesianOffset), J.util.P3.new3 (m.m00, m.m10, m.m20), J.util.P3.new3 (m.m01, m.m11, m.m21), J.util.P3.new3 (m.m02, m.m12, m.m22)];
 });
+$_M(c$, "isSameAs", 
+function (uc) {
+if (uc.notionalUnitcell.length != this.notionalUnitcell.length) return false;
+for (var i = this.notionalUnitcell.length; --i >= 0; ) if (this.notionalUnitcell[i] != uc.notionalUnitcell[i] && !(Float.isNaN (this.notionalUnitcell[i]) && Float.isNaN (uc.notionalUnitcell[i]))) return false;
+
+if (this.fractionalOffset.distanceSquared (uc.fractionalOffset) != 0) return false;
+return true;
+}, "J.symmetry.UnitCell");
 Clazz.defineStatics (c$,
 "twoP2", 19.739208802178716);
 c$.unitVectors = c$.prototype.unitVectors = [J.viewer.JC.axisX, J.viewer.JC.axisY, J.viewer.JC.axisZ];

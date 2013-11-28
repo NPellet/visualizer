@@ -1852,8 +1852,8 @@ return String.valueOf(buf);
 c$.toString=$_V(c$,"toString",
 function(c){
 {
-if(this===Charater){
-return"class java.lang.Charater";
+if(this===Character){
+return"class java.lang.Character";
 }
 }return String.valueOf(c);
 },"~N");

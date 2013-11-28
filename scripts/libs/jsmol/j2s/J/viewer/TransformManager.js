@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.constant.EnumStereoMode", "J.util.AxisAngle4f", "$.Matrix3f", "$.Matrix4f", "$.P3", "$.P3i", "$.V3"], "J.viewer.TransformManager", ["java.lang.Float", "java.util.Hashtable", "J.api.Interface", "J.thread.MoveThread", "$.MoveToThread", "$.SpinThread", "$.VibrationThread", "J.util.Escape", "$.Logger", "$.P4", "$.Quaternion", "$.SB"], function () {
+Clazz.load (["J.constant.EnumStereoMode", "J.util.AxisAngle4f", "$.Matrix3f", "$.Matrix4f", "$.P3", "$.P3i", "$.V3"], "J.viewer.TransformManager", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "J.api.Interface", "J.util.Escape", "$.Logger", "$.P4", "$.Quaternion", "$.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.perspectiveModel = 11;
@@ -115,6 +115,7 @@ this.motion = null;
 this.spinOn = false;
 this.navOn = false;
 this.spinThread = null;
+this.spinIsGesture = false;
 this.vibrationOn = false;
 this.vibrationPeriod = 0;
 this.vibrationPeriodMs = 0;
@@ -244,7 +245,7 @@ this.fixedTranslation.set (newCenterScreen.x, newCenterScreen.y, 0);
 $_M(c$, "spinXYBy", 
 function (xDelta, yDelta, speed) {
 if (xDelta == 0 && yDelta == 0) {
-if (this.spinThread != null && this.spinThread.isGesture ()) this.clearSpin ();
+if (this.spinThread != null && this.spinIsGesture) this.clearSpin ();
 return;
 }this.clearSpin ();
 var pt1 = J.util.P3.newP (this.fixedRotationCenter);
@@ -376,8 +377,7 @@ if (this.viewer.isHeadless ()) {
 if (isSpin && endDegrees == 3.4028235E38) return false;
 isSpin = false;
 }if (dihedralList == null && (translation == null || translation.length () < 0.001) && (!isSpin || endDegrees == 0 || Float.isNaN (degreesPerSecond) || degreesPerSecond == 0) && (isSpin || endDegrees == 0)) return false;
-var axis = J.util.V3.newV (point2);
-axis.sub (point1);
+var axis = J.util.V3.newVsub (point2, point1);
 if (isClockwise) axis.scale (-1.0);
 this.internalRotationCenter.setT (point1);
 this.rotationAxis.setT (axis);
@@ -1011,8 +1011,8 @@ this.matrixTransform.transformV2 (vectorAngstroms, vectorTransformed);
 }, "J.util.V3,J.util.V3");
 $_M(c$, "move", 
 function (eval, dRot, dZoom, dTrans, dSlab, floatSecondsTotal, fps) {
-var motion =  new J.thread.MoveThread (this, this.viewer);
-motion.set (dRot, dZoom, dTrans, dSlab, floatSecondsTotal, fps);
+var motion = J.api.Interface.getOptionInterface ("thread.MoveThread");
+motion.setManager (this, this.viewer, [dRot, dTrans, [dZoom, dSlab, floatSecondsTotal, fps]]);
 if (floatSecondsTotal > 0) motion.setEval (eval);
 motion.run ();
 }, "J.api.JmolScriptEvaluator,J.util.V3,~N,J.util.V3,~N,~N,~N");
@@ -1085,9 +1085,15 @@ if (cameraY == this.cameraSetting.y) cameraY = NaN;
 if (cameraDepth == this.cameraDepth) cameraDepth = NaN;
 if (!Float.isNaN (cameraX)) xTrans = cameraX * 50 / newRotationRadius / this.width * this.screenPixelCount;
 if (!Float.isNaN (cameraY)) yTrans = cameraY * 50 / newRotationRadius / this.height * this.screenPixelCount;
-try {
-if (this.motion == null) this.motion =  new J.thread.MoveToThread (this, this.viewer);
-var nSteps = this.motion.set (floatSecondsTotal, center, matrixEnd, zoom, xTrans, yTrans, newRotationRadius, navCenter, xNav, yNav, navDepth, cameraDepth, cameraX, cameraY);
+var pixelScale = (center == null ? this.scaleDefaultPixelsPerAngstrom : this.defaultScaleToScreen (newRotationRadius));
+if (floatSecondsTotal <= 0) {
+this.setAll (center, matrixEnd, navCenter, zoom, xTrans, yTrans, newRotationRadius, pixelScale, navDepth, xNav, yNav, cameraDepth, cameraX, cameraY);
+this.viewer.moveUpdate (floatSecondsTotal);
+this.viewer.finalizeTransformParameters ();
+return;
+}try {
+if (this.motion == null) this.motion = J.api.Interface.getOptionInterface ("thread.MoveToThread");
+var nSteps = this.motion.setManager (this, this.viewer, [center, matrixEnd, navCenter, [floatSecondsTotal, zoom, xTrans, yTrans, newRotationRadius, pixelScale, navDepth, xNav, yNav, cameraDepth, cameraX, cameraY]]);
 if (nSteps <= 0 || this.viewer.global.waitForMoveTo) {
 if (nSteps > 0) this.motion.setEval (eval);
 this.motion.run ();
@@ -1307,7 +1313,9 @@ this.spinOn = spinOn;
 this.viewer.getGlobalSettings ().setB ("_spinning", spinOn);
 if (spinOn) {
 if (this.spinThread == null) {
-this.spinThread =  new J.thread.SpinThread (this, this.viewer, endDegrees, endPositions, dihedralList, bsAtoms, false, isGesture);
+this.spinThread = J.api.Interface.getOptionInterface ("thread.SpinThread");
+this.spinThread.setManager (this, this.viewer, [Float.$valueOf (endDegrees), endPositions, dihedralList, bsAtoms, isGesture ? Boolean.TRUE : null]);
+this.spinIsGesture = isGesture;
 if (bsAtoms == null && dihedralList == null) {
 this.spinThread.start ();
 } else {
@@ -1329,7 +1337,8 @@ if (navOn) {
 if (this.navX == 0 && this.navY == 0 && this.navZ == 0) this.navZ = 1;
 if (this.navFps == 0) this.navFps = 10;
 if (this.spinThread == null) {
-this.spinThread =  new J.thread.SpinThread (this, this.viewer, 0, null, null, null, true, false);
+this.spinThread = J.api.Interface.getOptionInterface ("thread.SpinThread");
+this.spinThread.setManager (this, this.viewer, null);
 this.spinThread.start ();
 }} else if (wasOn) {
 if (this.spinThread != null) {
@@ -1352,7 +1361,7 @@ this.vibrationPeriod = Math.abs (period);
 this.vibrationPeriodMs = Clazz.floatToInt (this.vibrationPeriod * 1000);
 if (period > 0) return;
 period = -period;
-}this.setVibrationOn (period > 0 && this.viewer.modelHasVibrationVectors (this.viewer.getCurrentModelIndex ()));
+}this.setVibrationOn (period > 0 && this.viewer.modelGetLastVibrationIndex (this.viewer.getCurrentModelIndex (), 0) >= 0);
 }, "~N");
 $_M(c$, "setVibrationT", 
 function (t) {
@@ -1375,7 +1384,8 @@ return;
 this.vibrationOn = false;
 return;
 }if (this.vibrationThread == null) {
-this.vibrationThread =  new J.thread.VibrationThread (this, this.viewer);
+this.vibrationThread = J.api.Interface.getOptionInterface ("thread.VibrationThread");
+this.vibrationThread.setManager (this, this.viewer, null);
 this.vibrationThread.start ();
 }this.vibrationOn = true;
 }, $fz.isPrivate = true, $fz), "~B");
@@ -1747,6 +1757,22 @@ function (zoomHeight, zoomLarge) {
 this.zoomHeight = zoomHeight;
 this.scaleFitToScreen (false, zoomLarge, false, true);
 }, "~B,~B");
+$_M(c$, "setAll", 
+function (center, m, navCenter, zoom, xTrans, yTrans, rotationRadius, pixelScale, navDepth, xNav, yNav, cameraDepth, cameraX, cameraY) {
+this.setRotation (m);
+if (center != null) this.moveRotationCenter (center, !this.windowCentered);
+if (navCenter != null && this.mode == 1) this.navigationCenter.setT (navCenter);
+if (!Float.isNaN (cameraDepth)) this.setCameraDepthPercent (cameraDepth, false);
+if (!Float.isNaN (cameraX) && !Float.isNaN (cameraY)) this.setCamera (cameraX, cameraY);
+if (!Float.isNaN (zoom)) this.zoomToPercent (zoom);
+if (!Float.isNaN (rotationRadius)) this.modelRadius = rotationRadius;
+if (!Float.isNaN (pixelScale)) this.scaleDefaultPixelsPerAngstrom = pixelScale;
+if (!Float.isNaN (xTrans) && !Float.isNaN (yTrans)) {
+this.translateToPercent ('x', xTrans);
+this.translateToPercent ('y', yTrans);
+}if (!Float.isNaN (xNav) && !Float.isNaN (yNav)) this.navTranslatePercentOrTo (0, xNav, yNav);
+if (!Float.isNaN (navDepth)) this.setNavigationDepthPercent (navDepth);
+}, "J.util.P3,J.util.Matrix3f,J.util.P3,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N");
 Clazz.defineStatics (c$,
 "degreesPerRadian", 57.29577951308232,
 "DEFAULT_NAV_FPS", 10,

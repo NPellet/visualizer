@@ -327,7 +327,9 @@ $_M(c$, "renderInfo",
 ($fz = function () {
 if (this.mesh.title == null || this.viewer.getDrawHover () || !this.g3d.setColix (this.viewer.getColixBackgroundContrast ())) return;
 for (var i = this.dmesh.polygonCount; --i >= 0; ) if (this.isPolygonDisplayable (i)) {
-var fid = this.g3d.getFontFid (14 * this.imageFontScaling);
+var size = this.viewer.getFloat (570425356);
+if (size <= 0) size = 14;
+var fid = this.g3d.getFontFid (size * this.imageFontScaling);
 this.g3d.setFontFid (fid);
 var s = this.mesh.title[i < this.mesh.title.length ? i : this.mesh.title.length - 1];
 var pt = 0;

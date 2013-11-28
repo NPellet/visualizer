@@ -102,7 +102,7 @@ plane.set (vNorm.x, vNorm.y, vNorm.z, w);
 }, "J.util.P3,J.util.P3,J.util.P3,J.util.V3,J.util.V3,J.util.V3,J.util.P4");
 c$.getPlaneThroughPoint = $_M(c$, "getPlaneThroughPoint", 
 function (pt, normal, plane) {
-plane.set (normal.x, normal.y, normal.z, -normal.dot (J.util.V3.newV (pt)));
+plane.set (normal.x, normal.y, normal.z, -normal.dot (pt));
 }, "J.util.P3,J.util.V3,J.util.P4");
 c$.distanceToPlane = $_M(c$, "distanceToPlane", 
 function (plane, pt) {
@@ -331,8 +331,7 @@ var ptAnew =  new J.util.P3 ();
 for (var i = n + 1; --i >= 1; ) {
 ptAnew.setT (ptsA[i]);
 ptAnew.sub (cA);
-q.transformP2 (ptAnew, ptAnew);
-ptAnew.add (cB);
+q.transformP2 (ptAnew, ptAnew).add (cB);
 sum2 += ptAnew.distanceSquared (ptsB[i]);
 }
 return Math.sqrt (sum2 / n);

@@ -8,6 +8,6 @@ Clazz.makeConstructor (c$,
 function (eval, why, millis) {
 Clazz.superConstructor (this, J.script.ScriptInterruption, [eval, why, "!", eval.viewer.autoExit]);
 this.willResume = (millis != 2147483647);
-if (why.equals ("delay")) eval.viewer.delayScript (eval, millis);
+if (why.equals ("delay")) eval.delayScript (millis);
 }, "J.script.ScriptEvaluator,~S,~N");
 });

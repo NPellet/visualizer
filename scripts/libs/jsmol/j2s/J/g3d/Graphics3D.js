@@ -21,6 +21,7 @@ this.pbufT = null;
 this.zbuf = null;
 this.zbufT = null;
 this.translucencyMask = 0;
+this.renderLow = false;
 this.shadesCurrent = null;
 this.anaglyphLength = 0;
 this.isScreened = false;
@@ -105,8 +106,9 @@ if (isAlphaTranslucent) this.$haveTranslucentObjects = true;
 return (!this.twoPass || this.twoPass && (this.$isPass2 == isAlphaTranslucent));
 }, "~B");
 Clazz.overrideMethod (c$, "beginRendering", 
-function (rotationMatrix, translucentMode, isImageWrite) {
+function (rotationMatrix, translucentMode, isImageWrite, renderLow) {
 if (this.$currentlyRendering) this.endRendering ();
+this.renderLow = renderLow;
 if (this.windowWidth != this.newWindowWidth || this.windowHeight != this.newWindowHeight || this.newAntialiasing != this.isFullSceneAntialiasingEnabled) {
 this.windowWidth = this.newWindowWidth;
 this.windowHeight = this.newWindowHeight;
@@ -131,7 +133,7 @@ this.zbuf = this.platform.zBuffer;
 }this.setWidthHeight (this.antialiasThisFrame);
 this.platform.clearBuffer ();
 if (this.backgroundImage != null) this.plotImage (-2147483648, 0, -2147483648, this.backgroundImage, null, 0, 0, 0);
-}, "J.util.Matrix3f,~B,~B");
+}, "J.util.Matrix3f,~B,~B,~B");
 Clazz.overrideMethod (c$, "setBackgroundTransparent", 
 function (TF) {
 if (this.platform != null) this.platform.setBackgroundTransparent (TF);
@@ -355,7 +357,8 @@ var isLast = J.util.C.isColixLastAvailable (colix);
 if (!isLast && colix == this.colixCurrent && this.currentShadeIndex == -1) return true;
 var mask = colix & 30720;
 if (mask == 16384) return false;
-var isTranslucent = mask != 0;
+if (this.renderLow) mask = 0;
+var isTranslucent = (mask != 0);
 this.isScreened = isTranslucent && mask == 30720;
 if (!this.checkTranslucent (isTranslucent && !this.isScreened)) return false;
 this.addAllPixels = this.$isPass2 || !isTranslucent;

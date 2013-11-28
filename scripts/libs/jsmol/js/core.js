@@ -1,6 +1,6 @@
-___JmolDate="$Date: 2013-08-22 00:37:22 -0500 (Thu, 22 Aug 2013) $"
+___JmolDate="$Date: 2013-10-01 11:35:15 -0500 (Tue, 01 Oct 2013) $"
 ___fullJmolProperties="src/org/jmol/viewer/Jmol.properties"
-___JmolVersion="13.2.4"
+___JmolVersion="13.2.7"
 // core.z.js
 //
 // BH 7/23/2013 7:24:01 AM fixing Number.shortValue() and Number.byteValue() for negative values
@@ -1855,8 +1855,8 @@ return String.valueOf(buf);
 c$.toString=$_V(c$,"toString",
 function(c){
 {
-if(this===Charater){
-return"class java.lang.Charater";
+if(this===Character){
+return"class java.lang.Character";
 }
 }return String.valueOf(c);
 },"~N");
@@ -9223,7 +9223,7 @@ return this.removeObject(v);
 }}, "~O");
 });
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.ArrayUtil", ["java.util.Arrays"], function () {
+Clazz.load (null, "J.util.ArrayUtil", ["java.util.Arrays", "J.util.JmolList"], function () {
 c$ = Clazz.declareType (J.util, "ArrayUtil");
 c$.ensureLength = $_M(c$, "ensureLength", 
 function (array, minimumLength) {
@@ -9493,6 +9493,15 @@ function (n) {
 {
 return Clazz.newArray(n, null);
 }}, "~N");
+c$.removeMapKeys = $_M(c$, "removeMapKeys", 
+function (map, root) {
+var list =  new J.util.JmolList ();
+for (var key, $key = map.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) if (key.startsWith (root)) list.addLast (key);
+
+for (var i = list.size (); --i >= 0; ) map.remove (list.get (i));
+
+return list.size ();
+}, "java.util.Map,~S");
 });
 Clazz.declarePackage ("J.util");
 Clazz.declareInterface (J.util, "LoggerInterface");
@@ -9567,6 +9576,7 @@ c$.setLogger = $_M(c$, "setLogger",
 function (logger) {
 ($t$ = J.util.Logger._logger = logger, J.util.Logger.prototype._logger = J.util.Logger._logger, $t$);
 ($t$ = J.util.Logger.debugging = J.util.Logger.isActiveLevel (5) || J.util.Logger.isActiveLevel (6), J.util.Logger.prototype.debugging = J.util.Logger.debugging, $t$);
+($t$ = J.util.Logger.debuggingHigh = (J.util.Logger.debugging && J.util.Logger._activeLevels[6]), J.util.Logger.prototype.debuggingHigh = J.util.Logger.debuggingHigh, $t$);
 }, "J.util.LoggerInterface");
 c$.isActiveLevel = $_M(c$, "isActiveLevel", 
 function (level) {
@@ -9739,12 +9749,14 @@ Clazz.declarePackage ("J.i18n");
 Clazz.load (null, "J.i18n.Resource", ["J.util.TextFormat"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.resource = null;
+this.className = null;
 Clazz.instantialize (this, arguments);
 }, J.i18n, "Resource");
 Clazz.makeConstructor (c$, 
-($fz = function (resource) {
+($fz = function (resource, className) {
 this.resource = resource;
-}, $fz.isPrivate = true, $fz), "~O");
+this.className = className;
+}, $fz.isPrivate = true, $fz), "~O,~S");
 c$.getResource = $_M(c$, "getResource", 
 function (className, name) {
 var poData = null;
@@ -9999,13 +10011,12 @@ var trans = null;
 if (this.doTranslate) {
 for (var bundle = this.resourceCount; --bundle >= 0; ) {
 trans = this.resources[bundle].getString (string);
-break;
-}
-if (trans == null) {
-if (this.resourceCount > 0 && J.i18n.GT.allowDebug && J.util.Logger.debugging) J.util.Logger.debug ("No trans, using default: " + string);
-} else {
+if (trans != null) {
 string = trans;
-}}if (trans == null) {
+break;
+}}
+if (this.resourceCount > 0 && trans == null && J.i18n.GT.allowDebug && J.util.Logger.debugging) J.util.Logger.debug ("No trans, using default: " + string);
+}if (trans == null) {
 if (string.startsWith ("[")) string = string.substring (string.indexOf ("]") + 1);
  else if (string.endsWith ("]")) string = string.substring (0, string.indexOf ("["));
 }return (objects == null ? string : java.text.MessageFormat.format (string, objects));
@@ -10356,6 +10367,7 @@ case J.constant.EnumCallback.LOADSTRUCT:
 case J.constant.EnumCallback.MEASURE:
 case J.constant.EnumCallback.MESSAGE:
 case J.constant.EnumCallback.PICK:
+case J.constant.EnumCallback.STRUCTUREMODIFIED:
 case J.constant.EnumCallback.SYNC:
 case J.constant.EnumCallback.SCRIPT:
 return true;
@@ -10446,6 +10458,9 @@ d = ((c = this.b$["J.appletjs.Jmol"].b$.get ((a = J.constant.EnumCallback.MESSAG
 }this.output (f);
 this.showStatus (f);
 break;
+case J.constant.EnumCallback.STRUCTUREMODIFIED:
+this.notifyStructureModified ((b[1]).intValue (), (b[2]).intValue ());
+break;
 case J.constant.EnumCallback.SYNC:
 this.sendScript (f, b[2], true, d);
 return;
@@ -10469,6 +10484,9 @@ throw e;
 }
 }
 }, "J.constant.EnumCallback,~A");
+$_M(c$, "notifyStructureModified", 
+($fz = function (a, b) {
+}, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "output", 
 ($fz = function (a) {
 if (this.b$["J.appletjs.Jmol"].outputBuffer != null && a != null) this.b$["J.appletjs.Jmol"].outputBuffer.append (a).appendC ('\n');
@@ -10836,6 +10854,7 @@ Clazz.defineEnumConstant (c$, "PICK", 12, []);
 Clazz.defineEnumConstant (c$, "RESIZE", 13, []);
 Clazz.defineEnumConstant (c$, "SCRIPT", 14, []);
 Clazz.defineEnumConstant (c$, "SYNC", 15, []);
+Clazz.defineEnumConstant (c$, "STRUCTUREMODIFIED", 16, []);
 });
 Clazz.declarePackage ("J.util");
 Clazz.load (null, "J.util.Escape", ["java.lang.Character", "$.Float", "J.script.SV", "J.util.BSUtil", "$.JmolList", "$.Matrix3f", "$.Matrix4f", "$.P3", "$.P4", "$.Parser", "$.SB", "$.TextFormat"], function () {
@@ -11184,7 +11203,7 @@ break;
 default:
 if (Character.isDigit (ch)) {
 if (iThis < 0) iThis = 0;
-iThis = (iThis << 3) + (iThis << 1) + (ch.charCodeAt (0) - 48);
+iThis = (iThis * 10) + (ch.charCodeAt (0) - 48);
 }}
 }
 return (iPrev >= 0 ? null : bs);
@@ -11389,9 +11408,7 @@ sb.append ("[").appendF ((info).x).append (",").appendF ((info).y).append (",").
 return J.util.Escape.packageJSONSb (infoType, sb);
 }if (Clazz.instanceOf (info, java.util.Map)) {
 sb.append ("{ ");
-var e = (info).keySet ().iterator ();
-while (e.hasNext ()) {
-var key = e.next ();
+for (var key, $key = (info).keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
 sb.append (sep).append (J.util.Escape.packageJSON (key, J.util.Escape.toJSON (null, (info).get (key))));
 sep = ",";
 }
@@ -11546,9 +11563,9 @@ return sb.toString ();
 }, "~S");
 c$.getHexitValue = $_M(c$, "getHexitValue", 
 function (ch) {
-if (ch >= '0' && ch <= '9') return ch.charCodeAt (0) - 48;
- else if (ch >= 'a' && ch <= 'f') return 10 + ch.charCodeAt (0) - 97;
- else if (ch >= 'A' && ch <= 'F') return 10 + ch.charCodeAt (0) - 65;
+if (ch.charCodeAt (0) >= 48 && ch.charCodeAt (0) <= 57) return ch.charCodeAt (0) - 48;
+ else if (ch.charCodeAt (0) >= 97 && ch.charCodeAt (0) <= 102) return 10 + ch.charCodeAt (0) - 97;
+ else if (ch.charCodeAt (0) >= 65 && ch.charCodeAt (0) <= 70) return 10 + ch.charCodeAt (0) - 65;
  else return -1;
 }, "~S");
 c$.unescapeStringArray = $_M(c$, "unescapeStringArray", 
@@ -11560,7 +11577,7 @@ next[0] = 1;
 while (next[0] < data.length) {
 var s = J.util.Parser.getQuotedStringNext (data, next);
 if (s == null) return null;
-v.addLast (s);
+v.addLast (J.util.TextFormat.simpleReplace (s, "\\\"", "\""));
 while (next[0] < data.length && data.charAt (next[0]) != '"') next[0]++;
 
 }
@@ -11579,7 +11596,7 @@ Clazz.defineStatics (c$,
 "escapable", "\\\\\tt\rr\nn\"\"");
 });
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.Parser", ["java.lang.Float", "J.util.ArrayUtil", "$.Logger", "$.TextFormat"], function () {
+Clazz.load (null, "J.util.Parser", ["java.lang.Character", "$.Float", "J.util.ArrayUtil", "$.Logger", "$.TextFormat"], function () {
 c$ = Clazz.declareType (J.util, "Parser");
 c$.parseStringInfestedFloatArray = $_M(c$, "parseStringInfestedFloatArray", 
 function (str, bs, data) {
@@ -11800,28 +11817,28 @@ var negative = false;
 if (ich < ichMax && str.charAt (ich) == '-') {
 ++ich;
 negative = true;
-}var ch = String.fromCharCode (0);
+}var ch = 0;
 var ival = 0;
-while (ich < ichMax && (ch = str.charAt (ich)) >= '0' && ch <= '9') {
-ival = (ival << 3) + (ival << 1) + (ch.charCodeAt (0) - 48);
+var ival2 = 0;
+while (ich < ichMax && (ch = str.charCodeAt (ich)) >= 48 && ch <= 57) {
+ival = (ival * 10) + (ch - 48) * 1;
 ++ich;
 digitSeen = true;
 }
 var isDecimal = false;
-var ival2 = 0;
 var iscale = 0;
 var nzero = (ival == 0 ? -1 : 0);
-if (ch == '.') {
+if (ch == 46) {
 isDecimal = true;
-while (++ich < ichMax && (ch = str.charAt (ich)) >= '0' && ch <= '9') {
+while (++ich < ichMax && (ch = str.charCodeAt (ich)) >= 48 && ch <= 57) {
 digitSeen = true;
 if (nzero < 0) {
-if (ch == '0') {
+if (ch == 48) {
 nzero--;
 continue;
 }nzero = -nzero;
 }if (iscale < J.util.Parser.decimalScale.length) {
-ival2 = (ival2 << 3) + (ival2 << 1) + (ch.charCodeAt (0) - 48);
+ival2 = (ival2 * 10) + (ch - 48) * 1;
 iscale++;
 }}
 }var value;
@@ -11839,12 +11856,11 @@ value += ival;
 }} else {
 value = ival;
 }var isExponent = false;
-if (!digitSeen) value = NaN;
-if (ich < ichMax && (ch == 'E' || ch == 'e' || ch == 'D')) {
+if (ich < ichMax && (ch == 69 || ch == 101 || ch == 68)) {
 isExponent = true;
 if (++ich >= ichMax) return NaN;
-ch = str.charAt (ich);
-if ((ch == '+') && (++ich >= ichMax)) return NaN;
+ch = str.charCodeAt (ich);
+if ((ch == 43) && (++ich >= ichMax)) return NaN;
 next[0] = ich;
 var exponent = J.util.Parser.parseIntChecked (str, ichMax, next);
 if (exponent == -2147483648) return NaN;
@@ -11860,7 +11876,7 @@ return (!isStrict || (!isExponent || isDecimal) && J.util.Parser.checkTrailingTe
 c$.checkTrailingText = $_M(c$, "checkTrailingText", 
 ($fz = function (str, ich, ichMax) {
 var ch;
-while (ich < ichMax && ((ch = str.charAt (ich)) == ' ' || ch == '\t' || ch == '\n' || ch == ';')) ++ich;
+while (ich < ichMax && (Character.isWhitespace (ch = str.charAt (ich)) || ch == ';')) ++ich;
 
 return (ich == ichMax);
 }, $fz.isPrivate = true, $fz), "~S,~N,~N");
@@ -11887,11 +11903,11 @@ var ch;
 while (ich < ichMax && J.util.Parser.isWhiteSpace (str, ich)) ++ich;
 
 var negative = false;
-if (ich < ichMax && str.charAt (ich) == '-') {
+if (ich < ichMax && str.charCodeAt (ich) == 45) {
 negative = true;
 ++ich;
-}while (ich < ichMax && (ch = str.charAt (ich)) >= '0' && ch <= '9') {
-value = value * 10 + (ch.charCodeAt (0) - 48);
+}while (ich < ichMax && (ch = str.charCodeAt (ich)) >= 48 && ch <= 57) {
+value = value * 10 + (ch - 48);
 digitSeen = true;
 ++ich;
 }
@@ -13177,6 +13193,7 @@ Clazz.defineStatics (c$,
 "write", 135270421,
 "cache", 135270422,
 "tensor", 1276117015,
+"modulation", 135270424,
 "acos", 135266819,
 "sin", 135266820,
 "cos", 135266821,
@@ -13262,8 +13279,9 @@ Clazz.defineStatics (c$,
 "loadligandformat", 545259566,
 "logfile", 545259567,
 "measurementunits", 545259568,
-"nmrurlformat", 545259569,
-"pathforallfiles", 545259570,
+"nmrpredictformat", 545259569,
+"nmrurlformat", 545259570,
+"pathforallfiles", 545259571,
 "picking", 545259572,
 "pickingstyle", 545259574,
 "picklabel", 545259576,
@@ -13277,7 +13295,8 @@ Clazz.defineStatics (c$,
 "cameradepth", 570425350,
 "defaultdrawarrowscale", 570425352,
 "defaulttranslucent", 570425354,
-"dipolescale", 570425356,
+"dipolescale", 570425355,
+"drawfontsize", 570425356,
 "ellipsoidaxisdiameter", 570425357,
 "exportscale", 570425358,
 "gestureswipefactor", 570425359,
@@ -13336,7 +13355,8 @@ Clazz.defineStatics (c$,
 "percentvdwatom", 553648154,
 "perspectivemodel", 553648155,
 "phongexponent", 553648156,
-"pickingspinrate", 553648158,
+"pickingspinrate", 553648157,
+"platformspeed", 553648158,
 "propertyatomnumberfield", 553648159,
 "propertyatomnumbercolumncount", 553648160,
 "propertydatacolumncount", 553648162,
@@ -13511,6 +13531,7 @@ Clazz.defineStatics (c$,
 "balls", 1073741860,
 "barb", 1073741861,
 "backlit", 1073741862,
+"best", 1073741863,
 "basepair", 1073741864,
 "binary", 1073741866,
 "blockdata", 1073741868,
@@ -13751,7 +13772,7 @@ c$.tokenScript = c$.prototype.tokenScript = J.script.T.o (135271429, "script");
 c$.tokenSwitch = c$.prototype.tokenSwitch = J.script.T.o (102410, "switch");
 c$.tokenMap = c$.prototype.tokenMap =  new java.util.Hashtable ();
 {
-var arrayPairs = ["(", J.script.T.tokenLeftParen, ")", J.script.T.tokenRightParen, "and", J.script.T.tokenAnd, "&", null, "&&", null, "or", J.script.T.tokenOr, "|", null, "||", null, "?", J.script.T.tokenOpIf, ",", J.script.T.tokenComma, "+=", J.script.T.t (269484242), "-=", null, "*=", null, "/=", null, "\\=", null, "&=", null, "|=", null, "not", J.script.T.t (269484144), "!", null, "xor", J.script.T.t (269484113), "tog", J.script.T.t (269484114), "<", J.script.T.t (269484435), "<=", J.script.T.t (269484434), ">=", J.script.T.t (269484433), ">", J.script.T.t (269484432), "=", J.script.T.tokenEquals, "==", null, "!=", J.script.T.t (269484438), "<>", null, "within", J.script.T.t (135266324), ".", J.script.T.t (1048584), "[", J.script.T.t (269484096), "]", J.script.T.t (269484097), "{", J.script.T.t (1048586), "}", J.script.T.t (1048590), "$", J.script.T.t (1048583), "%", J.script.T.t (269484210), ":", J.script.T.tokenColon, ";", J.script.T.t (1048591), "++", J.script.T.t (269484226), "--", J.script.T.t (269484225), "**", J.script.T.t (269484227), "+", J.script.T.tokenPlus, "-", J.script.T.tokenMinus, "*", J.script.T.tokenTimes, "/", J.script.T.tokenDivide, "\\", J.script.T.t (269484211), "animation", J.script.T.t (4097), "anim", null, "assign", J.script.T.t (4098), "axes", J.script.T.t (1611272194), "backbone", J.script.T.t (1115297793), "background", J.script.T.t (1610616835), "bind", J.script.T.t (4100), "bondorder", J.script.T.t (4101), "boundbox", J.script.T.t (1679429641), "boundingBox", null, "break", J.script.T.t (102407), "calculate", J.script.T.t (4102), "cartoon", J.script.T.t (1113200642), "cartoons", null, "case", J.script.T.t (102411), "catch", J.script.T.t (102412), "cd", J.script.T.t (1069064), "center", J.script.T.t (12289), "centre", null, "centerat", J.script.T.t (4105), "cgo", J.script.T.t (135174), "color", J.script.T.t (1766856708), "colour", null, "compare", J.script.T.t (135270405), "configuration", J.script.T.t (1095766022), "conformation", null, "config", null, "connect", J.script.T.t (4106), "console", J.script.T.t (528395), "contact", J.script.T.t (135402505), "contacts", null, "continue", J.script.T.t (102408), "data", J.script.T.t (135270407), "default", J.script.T.t (102413), "define", J.script.T.t (1060866), "@", null, "delay", J.script.T.t (528397), "delete", J.script.T.t (12291), "density", J.script.T.t (1073741914), "depth", J.script.T.t (554176526), "dipole", J.script.T.t (135175), "dipoles", null, "display", J.script.T.t (1610625028), "dot", J.script.T.t (1276117505), "dots", J.script.T.t (1113198595), "draw", J.script.T.t (135176), "echo", J.script.T.t (537022465), "ellipsoid", J.script.T.t (1113198596), "ellipsoids", null, "else", J.script.T.t (364547), "elseif", J.script.T.t (102402), "end", J.script.T.t (1150985), "endif", J.script.T.t (364548), "exit", J.script.T.t (266255), "file", J.script.T.t (1229984263), "files", null, "font", J.script.T.t (4114), "for", J.script.T.t (135369224), "format", J.script.T.t (1288701960), "frame", J.script.T.t (4115), "frames", null, "frank", J.script.T.t (1611272202), "function", J.script.T.t (135368713), "functions", null, "geosurface", J.script.T.t (1113198597), "getProperty", J.script.T.t (135270410), "goto", J.script.T.t (20500), "halo", J.script.T.t (1113200646), "halos", null, "helix", J.script.T.t (137363468), "helixalpha", J.script.T.t (3145735), "helix310", J.script.T.t (3145736), "helixpi", J.script.T.t (3145738), "hbond", J.script.T.t (1612189718), "hbonds", null, "help", J.script.T.t (20482), "hide", J.script.T.t (12294), "history", J.script.T.t (1610616855), "hover", J.script.T.t (544771), "if", J.script.T.t (135369225), "in", J.script.T.t (1073741980), "initialize", J.script.T.t (266264), "invertSelected", J.script.T.t (4121), "isosurface", J.script.T.t (135180), "javascript", J.script.T.t (135287308), "label", J.script.T.t (1826248715), "labels", null, "lcaoCartoon", J.script.T.t (135182), "lcaoCartoons", null, "load", J.script.T.t (135271426), "log", J.script.T.t (36869), "loop", J.script.T.t (528410), "measure", J.script.T.t (1746538509), "measures", null, "monitor", null, "monitors", null, "meshribbon", J.script.T.t (1113200647), "meshribbons", null, "message", J.script.T.t (20485), "minimize", J.script.T.t (4126), "minimization", null, "mo", J.script.T.t (1183762), "model", J.script.T.t (1095766028), "models", null, "move", J.script.T.t (4128), "moveTo", J.script.T.t (4130), "navigate", J.script.T.t (4131), "navigation", null, "origin", J.script.T.t (1073742078), "out", J.script.T.t (1073742079), "parallel", J.script.T.t (102436), "pause", J.script.T.t (20487), "wait", null, "plot", J.script.T.t (4133), "plot3d", J.script.T.t (135190), "pmesh", J.script.T.t (135188), "polygon", J.script.T.t (1073742106), "polyhedra", J.script.T.t (135192), "print", J.script.T.t (36865), "process", J.script.T.t (102439), "prompt", J.script.T.t (135304707), "quaternion", J.script.T.t (135270417), "quaternions", null, "quit", J.script.T.t (266281), "ramachandran", J.script.T.t (1052714), "rama", null, "refresh", J.script.T.t (266284), "reset", J.script.T.t (4141), "unset", null, "restore", J.script.T.t (4142), "restrict", J.script.T.t (12295), "return", J.script.T.t (36866), "ribbon", J.script.T.t (1113200649), "ribbons", null, "rocket", J.script.T.t (1113200650), "rockets", null, "rotate", J.script.T.t (528432), "rotateSelected", J.script.T.t (4145), "save", J.script.T.t (4146), "script", J.script.T.tokenScript, "source", null, "select", J.script.T.t (135280132), "selectionHalos", J.script.T.t (1611141171), "selectionHalo", null, "showSelections", null, "set", J.script.T.tokenSetCmd, "sheet", J.script.T.t (3145760), "show", J.script.T.t (4148), "slab", J.script.T.t (554176565), "spacefill", J.script.T.t (1113200651), "cpk", null, "spin", J.script.T.t (1611141175), "ssbond", J.script.T.t (1611141176), "ssbonds", null, "star", J.script.T.t (1113200652), "stars", null, "step", J.script.T.t (266298), "steps", null, "stereo", J.script.T.t (528443), "strand", J.script.T.t (1650071565), "strands", null, "structure", J.script.T.t (1641025539), "_structure", null, "strucNo", J.script.T.t (1095761939), "struts", J.script.T.t (1708058), "strut", null, "subset", J.script.T.t (3158024), "switch", J.script.T.tokenSwitch, "synchronize", J.script.T.t (4156), "sync", null, "trace", J.script.T.t (1113200654), "translate", J.script.T.t (4160), "translateSelected", J.script.T.t (4162), "try", J.script.T.t (364558), "unbind", J.script.T.t (4164), "unitcell", J.script.T.t (1614417948), "var", J.script.T.t (36868), "vector", J.script.T.t (135198), "vectors", null, "vibration", J.script.T.t (4166), "while", J.script.T.t (102406), "wireframe", J.script.T.t (659488), "write", J.script.T.t (135270421), "zap", J.script.T.t (1060873), "zoom", J.script.T.t (4168), "zoomTo", J.script.T.t (4170), "atom", J.script.T.t (1141899265), "atoms", null, "axis", J.script.T.t (1073741854), "axisangle", J.script.T.t (135266307), "basepair", J.script.T.t (1073741864), "basepairs", null, "orientation", J.script.T.t (1073742077), "orientations", null, "pdbheader", J.script.T.t (1073742088), "polymer", J.script.T.t (1095761935), "polymers", null, "residue", J.script.T.t (1073742120), "residues", null, "rotation", J.script.T.t (1073742132), "row", J.script.T.t (1276117513), "sequence", J.script.T.t (1087373320), "shape", J.script.T.t (1087373323), "state", J.script.T.t (1073742158), "symbol", J.script.T.t (1087375373), "symmetry", J.script.T.t (1089470478), "spaceGroup", J.script.T.t (1073742152), "transform", J.script.T.t (1073742176), "translation", J.script.T.t (1073742178), "url", J.script.T.t (1074790760), "abs", J.script.T.t (135266826), "absolute", J.script.T.t (1073741826), "acos", J.script.T.t (135266819), "add", J.script.T.t (1276118017), "adpmax", J.script.T.t (1112539137), "adpmin", J.script.T.t (1112539138), "align", J.script.T.t (1073741832), "all", J.script.T.tokenAll, "altloc", J.script.T.t (1087373315), "altlocs", null, "amino", J.script.T.t (3145730), "angle", J.script.T.t (135266305), "array", J.script.T.t (135266306), "as", J.script.T.t (1073741848), "atomID", J.script.T.t (1095761922), "_atomID", null, "_a", null, "atomIndex", J.script.T.t (1095761923), "atomName", J.script.T.t (1087375362), "atomno", J.script.T.t (1095763969), "atomType", J.script.T.t (1087375361), "atomX", J.script.T.t (1112541185), "atomY", J.script.T.t (1112541186), "atomZ", J.script.T.t (1112541187), "average", J.script.T.t (96), "babel", J.script.T.t (1073741856), "babel21", J.script.T.t (1073741858), "back", J.script.T.t (1073741859), "backlit", J.script.T.t (1073741862), "balls", J.script.T.t (1073741860), "baseModel", J.script.T.t (3145776), "bin", J.script.T.t (1276118529), "bondCount", J.script.T.t (1095761924), "bottom", J.script.T.t (1073741871), "branch", J.script.T.t (1048580), "brillouin", J.script.T.t (1073741872), "bzone", null, "wignerSeitz", null, "cache", J.script.T.t (135270422), "carbohydrate", J.script.T.t (3145764), "cell", J.script.T.t (1095761925), "chain", J.script.T.t (1087373316), "chains", null, "chemicalShift", J.script.T.t (1112539139), "cs", null, "clash", J.script.T.t (1073741881), "clear", J.script.T.t (1073741882), "clickable", J.script.T.t (3145766), "clipboard", J.script.T.t (1073741884), "connected", J.script.T.t (135266310), "constraint", J.script.T.t (1073741894), "contourLines", J.script.T.t (1073741898), "coord", J.script.T.t (1048582), "coordinates", null, "coords", null, "cos", J.script.T.t (135266821), "cross", J.script.T.t (135267329), "covalent", J.script.T.t (1112539140), "direction", J.script.T.t (1073741918), "displacement", J.script.T.t (1073741922), "displayed", J.script.T.t (3145768), "distance", J.script.T.t (1276118018), "div", J.script.T.t (1276117504), "DNA", J.script.T.t (3145732), "dotted", J.script.T.t (1073741926), "DSSP", J.script.T.t (1073741915), "element", J.script.T.t (1087375365), "elemno", J.script.T.t (1095763976), "_e", J.script.T.t (1095761927), "error", J.script.T.t (1073741935), "exportScale", J.script.T.t (570425358), "fill", J.script.T.t (1073741938), "find", J.script.T.t (1276118531), "fixedTemperature", J.script.T.t (1073741946), "forcefield", J.script.T.t (545259560), "formalCharge", J.script.T.t (1632634889), "charge", null, "eta", J.script.T.t (1112539141), "front", J.script.T.t (1073741954), "frontlit", J.script.T.t (1073741958), "frontOnly", J.script.T.t (1073741960), "fullylit", J.script.T.t (1073741964), "fx", J.script.T.t (1112541188), "fy", J.script.T.t (1112541189), "fz", J.script.T.t (1112541190), "fxyz", J.script.T.t (1146095627), "fux", J.script.T.t (1112541191), "fuy", J.script.T.t (1112541192), "fuz", J.script.T.t (1112541193), "fuxyz", J.script.T.t (1146095629), "group", J.script.T.t (1087373318), "groups", null, "group1", J.script.T.t (1087373319), "groupID", J.script.T.t (1095761930), "_groupID", null, "_g", null, "groupIndex", J.script.T.t (1095761931), "hidden", J.script.T.t (3145770), "highlight", J.script.T.t (536870920), "hkl", J.script.T.t (135267841), "hydrophobic", J.script.T.t (1114638362), "hydrophobicity", null, "hydro", null, "id", J.script.T.t (1074790550), "identify", J.script.T.t (1087373321), "ident", null, "image", J.script.T.t (1073741979), "info", J.script.T.t (1073741982), "inline", J.script.T.t (1073741983), "insertion", J.script.T.t (1087373322), "insertions", null, "intramolecular", J.script.T.t (1073741989), "intra", null, "intermolecular", J.script.T.t (1073741990), "inter", null, "ionic", J.script.T.t (1112541195), "ionicRadius", null, "isAromatic", J.script.T.t (1048585), "Jmol", J.script.T.t (1073741992), "join", J.script.T.t (1276117506), "keys", J.script.T.t (1141899281), "last", J.script.T.t (1073741993), "left", J.script.T.t (1073741996), "length", J.script.T.t (1141899267), "lines", J.script.T.t (1141899268), "list", J.script.T.t (1073742001), "magneticShielding", J.script.T.t (1112539142), "ms", null, "mass", J.script.T.t (1112539143), "max", J.script.T.t (64), "mep", J.script.T.t (1073742016), "mesh", J.script.T.t (1073742018), "middle", J.script.T.t (1073742019), "min", J.script.T.t (32), "mlp", J.script.T.t (1073742022), "mode", J.script.T.t (1073742024), "modify", J.script.T.t (1073742025), "modifyOrCreate", J.script.T.t (1073742026), "molecule", J.script.T.t (1095761934), "molecules", null, "modelIndex", J.script.T.t (1095761933), "monomer", J.script.T.t (1073742030), "morph", J.script.T.t (1073742031), "movie", J.script.T.t (1073742032), "mul", J.script.T.t (1276117507), "nci", J.script.T.t (1073742036), "next", J.script.T.t (1073742037), "noDots", J.script.T.t (1073742042), "noFill", J.script.T.t (1073742046), "noMesh", J.script.T.t (1073742052), "none", J.script.T.t (1048587), "null", null, "inherit", null, "normal", J.script.T.t (1073742056), "noContourLines", J.script.T.t (1073742039), "nonequivalent", J.script.T.t (3145778), "notFrontOnly", J.script.T.t (1073742058), "noTriangles", J.script.T.t (1073742060), "now", J.script.T.t (135266318), "nucleic", J.script.T.t (3145742), "occupancy", J.script.T.t (1129318401), "off", J.script.T.tokenOff, "false", null, "on", J.script.T.tokenOn, "true", null, "omega", J.script.T.t (1112539144), "only", J.script.T.t (1073742072), "opaque", J.script.T.t (1073742074), "options", J.script.T.t (1073742075), "partialCharge", J.script.T.t (1112541196), "phi", J.script.T.t (1112539145), "plane", J.script.T.t (135266319), "planar", null, "play", J.script.T.t (1073742096), "playRev", J.script.T.t (1073742098), "point", J.script.T.t (135266320), "points", null, "pointGroup", J.script.T.t (1073742102), "polymerLength", J.script.T.t (1095761936), "previous", J.script.T.t (1073742108), "prev", null, "probe", J.script.T.t (1073742109), "property", J.script.T.t (1716520985), "properties", null, "protein", J.script.T.t (3145744), "psi", J.script.T.t (1112539146), "purine", J.script.T.t (3145746), "PyMOL", J.script.T.t (1073742110), "pyrimidine", J.script.T.t (3145748), "random", J.script.T.t (135267332), "range", J.script.T.t (1073742114), "rasmol", J.script.T.t (1073742116), "replace", J.script.T.t (1276118019), "resno", J.script.T.t (1095761937), "resume", J.script.T.t (266287), "rewind", J.script.T.t (1073742126), "reverse", J.script.T.t (1141899269), "right", J.script.T.t (1073742128), "RNA", J.script.T.t (3145750), "rubberband", J.script.T.t (1073742134), "saSurface", J.script.T.t (1073742136), "scale", J.script.T.t (1073742138), "scene", J.script.T.t (1073742139), "search", J.script.T.t (135267335), "smarts", null, "selected", J.script.T.t (1114638363), "shapely", J.script.T.t (1073742144), "sidechain", J.script.T.t (3145754), "sin", J.script.T.t (135266820), "site", J.script.T.t (1095761938), "size", J.script.T.t (1141899270), "smiles", J.script.T.t (135267336), "substructure", J.script.T.t (1238369286), "solid", J.script.T.t (1073742150), "sort", J.script.T.t (1276117010), "specialPosition", J.script.T.t (3145772), "sqrt", J.script.T.t (135266822), "split", J.script.T.t (1276117508), "starScale", J.script.T.t (570425403), "stddev", J.script.T.t (192), "straightness", J.script.T.t (1112539150), "structureId", J.script.T.t (1087373324), "supercell", J.script.T.t (1073742163), "sub", J.script.T.t (1276117509), "sum", J.script.T.t (128), "sum2", J.script.T.t (160), "surface", J.script.T.t (3145756), "surfaceDistance", J.script.T.t (1112539151), "symop", J.script.T.t (1297090050), "sx", J.script.T.t (1112539147), "sy", J.script.T.t (1112539148), "sz", J.script.T.t (1112539149), "sxyz", J.script.T.t (1146095628), "temperature", J.script.T.t (1112541199), "relativeTemperature", null, "tensor", J.script.T.t (1276117015), "theta", J.script.T.t (1112539152), "thisModel", J.script.T.t (3145758), "ticks", J.script.T.t (1073742164), "top", J.script.T.t (1074790748), "torsion", J.script.T.t (1073742174), "trajectory", J.script.T.t (536870926), "trajectories", null, "translucent", J.script.T.t (603979967), "triangles", J.script.T.t (1073742182), "trim", J.script.T.t (1276117510), "type", J.script.T.t (1141899272), "ux", J.script.T.t (1112539153), "uy", J.script.T.t (1112539154), "uz", J.script.T.t (1112539155), "uxyz", J.script.T.t (1146093582), "user", J.script.T.t (1073742186), "valence", J.script.T.t (1095763988), "vanderWaals", J.script.T.t (1649412120), "vdw", null, "vdwRadius", null, "visible", J.script.T.t (3145774), "volume", J.script.T.t (1313866247), "vx", J.script.T.t (1112541202), "vy", J.script.T.t (1112541203), "vz", J.script.T.t (1112541204), "vxyz", J.script.T.t (1146095631), "xyz", J.script.T.t (1146095626), "w", J.script.T.t (1141899280), "x", J.script.T.t (1112541205), "y", J.script.T.t (1112541206), "z", J.script.T.t (1112541207), "addHydrogens", J.script.T.t (1073741828), "allConnected", J.script.T.t (1073741834), "angstroms", J.script.T.t (1073741836), "anisotropy", J.script.T.t (1073741838), "append", J.script.T.t (1073741839), "arc", J.script.T.t (1074790416), "area", J.script.T.t (1073741842), "aromatic", J.script.T.t (1076887572), "arrow", J.script.T.t (1073741846), "auto", J.script.T.t (1073741852), "barb", J.script.T.t (1073741861), "binary", J.script.T.t (1073741866), "blockData", J.script.T.t (1073741868), "cancel", J.script.T.t (1073741874), "cap", J.script.T.t (1074790451), "cavity", J.script.T.t (1073741876), "centroid", J.script.T.t (1095761926), "check", J.script.T.t (1073741878), "chemical", J.script.T.t (1073741879), "circle", J.script.T.t (1073741880), "collapsed", J.script.T.t (1073741886), "col", J.script.T.t (1276117512), "colorScheme", J.script.T.t (1073741888), "command", J.script.T.t (1073741890), "commands", J.script.T.t (1073741892), "contour", J.script.T.t (1073741896), "contours", J.script.T.t (1073741900), "corners", J.script.T.t (1073741902), "count", J.script.T.t (1276117011), "criterion", J.script.T.t (1073741905), "create", J.script.T.t (1073741904), "crossed", J.script.T.t (1073741906), "curve", J.script.T.t (1073741908), "cutoff", J.script.T.t (1073741910), "cylinder", J.script.T.t (1073741912), "diameter", J.script.T.t (1073741916), "discrete", J.script.T.t (1073741920), "distanceFactor", J.script.T.t (1073741924), "downsample", J.script.T.t (1073741928), "drawing", J.script.T.t (1073741929), "eccentricity", J.script.T.t (1073741930), "ed", J.script.T.t (1074790508), "edges", J.script.T.t (1073741933), "energy", J.script.T.t (1073741934), "exitJmol", J.script.T.t (266256), "faceCenterOffset", J.script.T.t (1073741937), "filter", J.script.T.t (1073741940), "first", J.script.T.t (1073741942), "fixed", J.script.T.t (1060869), "fix", null, "flat", J.script.T.t (1073741948), "fps", J.script.T.t (1074790526), "from", J.script.T.t (1073741952), "frontEdges", J.script.T.t (1073741956), "full", J.script.T.t (1073741961), "fullPlane", J.script.T.t (1073741962), "functionXY", J.script.T.t (1073741966), "functionXYZ", J.script.T.t (1073741968), "gridPoints", J.script.T.t (1073741970), "homo", J.script.T.t (1073741973), "ignore", J.script.T.t (1073741976), "InChI", J.script.T.t (1073741977), "InChIKey", J.script.T.t (1073741978), "increment", J.script.T.t (1073741981), "insideout", J.script.T.t (1073741984), "interior", J.script.T.t (1073741986), "intersection", J.script.T.t (135267842), "intersect", null, "internal", J.script.T.t (1073741988), "lattice", J.script.T.t (1073741994), "line", J.script.T.t (1073741998), "lineData", J.script.T.t (1073742000), "link", J.script.T.t (1073741999), "lobe", J.script.T.t (1073742002), "lonePair", J.script.T.t (1073742004), "lp", J.script.T.t (1073742006), "lumo", J.script.T.t (1073742008), "manifest", J.script.T.t (1073742010), "mapProperty", J.script.T.t (1052700), "map", null, "maxSet", J.script.T.t (1073742014), "menu", J.script.T.t (1073742015), "minSet", J.script.T.t (1073742020), "modelBased", J.script.T.t (1073742028), "molecular", J.script.T.t (1073742029), "mrc", J.script.T.t (1073742033), "msms", J.script.T.t (1073742034), "name", J.script.T.t (1073742035), "nmr", J.script.T.t (1073742038), "noCross", J.script.T.t (1073742040), "noDebug", J.script.T.t (1073742041), "noEdges", J.script.T.t (1073742044), "noHead", J.script.T.t (1073742048), "noLoad", J.script.T.t (1073742050), "noPlane", J.script.T.t (1073742054), "object", J.script.T.t (1073742064), "obj", J.script.T.t (1073742062), "offset", J.script.T.t (1073742066), "offsetSide", J.script.T.t (1073742068), "once", J.script.T.t (1073742070), "orbital", J.script.T.t (1073742076), "atomicOrbital", J.script.T.t (1073741850), "packed", J.script.T.t (1073742080), "palindrome", J.script.T.t (1073742082), "parameters", J.script.T.t (1073742083), "path", J.script.T.t (1073742084), "pdb", J.script.T.t (1074790662), "period", J.script.T.t (1073742090), "periodic", null, "perpendicular", J.script.T.t (1073742092), "perp", null, "phase", J.script.T.t (1073742094), "pocket", J.script.T.t (1073742100), "pointsPerAngstrom", J.script.T.t (1073742104), "radical", J.script.T.t (1073742112), "rad", J.script.T.t (1073742111), "reference", J.script.T.t (1073742118), "remove", J.script.T.t (1073742119), "resolution", J.script.T.t (1073742122), "reverseColor", J.script.T.t (1073742124), "rotate45", J.script.T.t (1073742130), "selection", J.script.T.t (1073742140), "sigma", J.script.T.t (1073742146), "sign", J.script.T.t (1073742147), "silent", J.script.T.t (1073742148), "sphere", J.script.T.t (1073742154), "squared", J.script.T.t (1073742156), "stop", J.script.T.t (1073742162), "title", J.script.T.t (1073742166), "titleFormat", J.script.T.t (1073742168), "to", J.script.T.t (1074790746), "value", J.script.T.t (1073742188), "variable", J.script.T.t (1073742190), "variables", J.script.T.t (1073742192), "vertices", J.script.T.t (1073742194), "width", J.script.T.t (1073742196), "backgroundModel", J.script.T.t (536870914), "celShading", J.script.T.t (603979821), "debug", J.script.T.t (536870916), "defaultLattice", J.script.T.t (536870918), "measurements", J.script.T.t (537006096), "measurement", null, "scale3D", J.script.T.t (1610612740), "toggleLabel", J.script.T.t (1610612741), "userColorScheme", J.script.T.t (536870930), "timeout", J.script.T.t (536875070), "timeouts", null, "appletProxy", J.script.T.t (545259522), "atomTypes", J.script.T.t (545259524), "axesColor", J.script.T.t (545259526), "axis1Color", J.script.T.t (545259528), "axis2Color", J.script.T.t (545259530), "axis3Color", J.script.T.t (545259532), "backgroundColor", J.script.T.t (545259534), "bondmode", J.script.T.t (1610612737), "boundBoxColor", J.script.T.t (545259536), "boundingBoxColor", null, "currentLocalPath", J.script.T.t (545259538), "dataSeparator", J.script.T.t (545259540), "defaultAngleLabel", J.script.T.t (545259542), "defaultColorScheme", J.script.T.t (545259545), "defaultColors", null, "defaultDirectory", J.script.T.t (545259546), "defaultDistanceLabel", J.script.T.t (545259547), "defaultDropScript", J.script.T.t (545259548), "defaultLabelPDB", J.script.T.t (545259543), "defaultLabelXYZ", J.script.T.t (545259544), "defaultLoadFilter", J.script.T.t (545259549), "defaultLoadScript", J.script.T.t (545259550), "defaults", J.script.T.t (545259552), "defaultTorsionLabel", J.script.T.t (545259554), "defaultVDW", J.script.T.t (545259555), "edsUrlCutoff", J.script.T.t (545259556), "edsUrlFormat", J.script.T.t (545259557), "energyUnits", J.script.T.t (545259558), "fileCacheDirectory", J.script.T.t (545259559), "fontsize", J.script.T.t (1610612738), "helpPath", J.script.T.t (545259561), "hoverLabel", J.script.T.t (545259562), "language", J.script.T.t (545259564), "loadFormat", J.script.T.t (545259565), "loadLigandFormat", J.script.T.t (545259566), "logFile", J.script.T.t (545259567), "measurementUnits", J.script.T.t (545259568), "nmrUrlFormat", J.script.T.t (545259569), "pathForAllFiles", J.script.T.t (545259570), "picking", J.script.T.t (545259572), "pickingStyle", J.script.T.t (545259574), "pickLabel", J.script.T.t (545259576), "propertyColorScheme", J.script.T.t (545259578), "quaternionFrame", J.script.T.t (545259580), "smilesUrlFormat", J.script.T.t (545259582), "smiles2dImageFormat", J.script.T.t (545259584), "unitCellColor", J.script.T.t (545259586), "axesScale", J.script.T.t (570425346), "axisScale", null, "bondTolerance", J.script.T.t (570425348), "cameraDepth", J.script.T.t (570425350), "defaultDrawArrowScale", J.script.T.t (570425352), "defaultTranslucent", J.script.T.t (570425354), "dipoleScale", J.script.T.t (570425356), "ellipsoidAxisDiameter", J.script.T.t (570425357), "gestureSwipeFactor", J.script.T.t (570425359), "hbondsAngleMinimum", J.script.T.t (570425360), "hbondsDistanceMaximum", J.script.T.t (570425361), "hoverDelay", J.script.T.t (570425362), "loadAtomDataTolerance", J.script.T.t (570425363), "minBondDistance", J.script.T.t (570425364), "minimizationCriterion", J.script.T.t (570425365), "mouseDragFactor", J.script.T.t (570425366), "mouseWheelFactor", J.script.T.t (570425367), "navFPS", J.script.T.t (570425370), "navigationDepth", J.script.T.t (570425371), "navigationSlab", J.script.T.t (570425372), "navigationSpeed", J.script.T.t (570425374), "navX", J.script.T.t (570425376), "navY", J.script.T.t (570425378), "navZ", J.script.T.t (570425380), "pointGroupDistanceTolerance", J.script.T.t (570425382), "pointGroupLinearTolerance", J.script.T.t (570425384), "radius", J.script.T.t (1666189314), "rotationRadius", J.script.T.t (570425388), "scaleAngstromsPerInch", J.script.T.t (570425390), "sheetSmoothing", J.script.T.t (570425392), "slabRange", J.script.T.t (570425393), "solventProbeRadius", J.script.T.t (570425394), "spinFPS", J.script.T.t (570425396), "spinX", J.script.T.t (570425398), "spinY", J.script.T.t (570425400), "spinZ", J.script.T.t (570425402), "stereoDegrees", J.script.T.t (570425404), "strutDefaultRadius", J.script.T.t (570425406), "strutLengthMaximum", J.script.T.t (570425408), "vectorScale", J.script.T.t (1649410049), "vectorSymmetry", J.script.T.t (603979973), "vibrationPeriod", J.script.T.t (570425412), "vibrationScale", J.script.T.t (570425414), "visualRange", J.script.T.t (570425416), "ambientPercent", J.script.T.t (553648130), "ambient", null, "animationFps", J.script.T.t (553648132), "axesMode", J.script.T.t (553648134), "bondRadiusMilliAngstroms", J.script.T.t (553648136), "delayMaximumMs", J.script.T.t (553648138), "diffusePercent", J.script.T.t (553648142), "diffuse", null, "dotDensity", J.script.T.t (553648143), "dotScale", J.script.T.t (553648144), "ellipsoidDotCount", J.script.T.t (553648145), "helixStep", J.script.T.t (553648146), "hermiteLevel", J.script.T.t (553648147), "historyLevel", J.script.T.t (553648148), "lighting", J.script.T.t (1073741995), "logLevel", J.script.T.t (553648150), "meshScale", J.script.T.t (553648151), "minimizationSteps", J.script.T.t (553648152), "minPixelSelRadius", J.script.T.t (553648153), "percentVdwAtom", J.script.T.t (553648154), "perspectiveModel", J.script.T.t (553648155), "phongExponent", J.script.T.t (553648156), "pickingSpinRate", J.script.T.t (553648158), "propertyAtomNumberField", J.script.T.t (553648159), "propertyAtomNumberColumnCount", J.script.T.t (553648160), "propertyDataColumnCount", J.script.T.t (553648162), "propertyDataField", J.script.T.t (553648164), "repaintWaitMs", J.script.T.t (553648165), "ribbonAspectRatio", J.script.T.t (553648166), "scriptReportingLevel", J.script.T.t (553648168), "showScript", J.script.T.t (536870922), "smallMoleculeMaxAtoms", J.script.T.t (553648170), "specular", J.script.T.t (536870924), "specularExponent", J.script.T.t (553648172), "specularPercent", J.script.T.t (553648174), "specPercent", null, "specularPower", J.script.T.t (553648176), "specpower", null, "strandCount", J.script.T.t (553648178), "strandCountForMeshRibbon", J.script.T.t (553648180), "strandCountForStrands", J.script.T.t (553648182), "strutSpacing", J.script.T.t (553648184), "zDepth", J.script.T.t (553648186), "zSlab", J.script.T.t (553648188), "zshadePower", J.script.T.t (553648190), "allowEmbeddedScripts", J.script.T.t (603979778), "allowGestures", J.script.T.t (603979780), "allowKeyStrokes", J.script.T.t (603979781), "allowModelKit", J.script.T.t (603979782), "allowMoveAtoms", J.script.T.t (603979783), "allowMultiTouch", J.script.T.t (603979784), "allowRotateSelected", J.script.T.t (603979785), "antialiasDisplay", J.script.T.t (603979786), "antialiasImages", J.script.T.t (603979788), "antialiasTranslucent", J.script.T.t (603979790), "appendNew", J.script.T.t (603979792), "applySymmetryToBonds", J.script.T.t (603979794), "atomPicking", J.script.T.t (603979796), "autobond", J.script.T.t (603979798), "autoFPS", J.script.T.t (603979800), "axesMolecular", J.script.T.t (603979804), "axesOrientationRasmol", J.script.T.t (603979806), "axesUnitCell", J.script.T.t (603979808), "axesWindow", J.script.T.t (603979810), "bondModeOr", J.script.T.t (603979812), "bondPicking", J.script.T.t (603979814), "bonds", J.script.T.t (1678770178), "bond", null, "cartoonBaseEdges", J.script.T.t (603979817), "cartoonsFancy", J.script.T.t (603979819), "cartoonFancy", null, "cartoonLadders", J.script.T.t (603979820), "cartoonRockets", J.script.T.t (603979818), "chainCaseSensitive", J.script.T.t (603979822), "colorRasmol", J.script.T.t (603979823), "debugScript", J.script.T.t (603979824), "defaultStructureDssp", J.script.T.t (603979825), "disablePopupMenu", J.script.T.t (603979826), "displayCellParameters", J.script.T.t (603979828), "dotsSelectedOnly", J.script.T.t (603979829), "dotSurface", J.script.T.t (603979830), "dragSelected", J.script.T.t (603979831), "drawHover", J.script.T.t (603979832), "drawPicking", J.script.T.t (603979833), "dsspCalculateHydrogenAlways", J.script.T.t (603979834), "dynamicMeasurements", J.script.T.t (603979835), "ellipsoidArcs", J.script.T.t (603979836), "ellipsoidArrows", J.script.T.t (603979837), "ellipsoidAxes", J.script.T.t (603979838), "ellipsoidBall", J.script.T.t (603979839), "ellipsoidDots", J.script.T.t (603979840), "ellipsoidFill", J.script.T.t (603979841), "fileCaching", J.script.T.t (603979842), "fontCaching", J.script.T.t (603979844), "fontScaling", J.script.T.t (603979845), "forceAutoBond", J.script.T.t (603979846), "fractionalRelative", J.script.T.t (603979848), "greyscaleRendering", J.script.T.t (603979850), "hbondsBackbone", J.script.T.t (603979852), "hbondsRasmol", J.script.T.t (603979853), "hbondsSolid", J.script.T.t (603979854), "hetero", J.script.T.t (1613758470), "hideNameInPopup", J.script.T.t (603979858), "hideNavigationPoint", J.script.T.t (603979860), "hideNotSelected", J.script.T.t (603979862), "highResolution", J.script.T.t (603979864), "hydrogen", J.script.T.t (1613758476), "hydrogens", null, "imageState", J.script.T.t (603979868), "isKiosk", J.script.T.t (603979869), "isosurfaceKey", J.script.T.t (603979870), "isosurfacePropertySmoothing", J.script.T.t (603979871), "isosurfacePropertySmoothingPower", J.script.T.t (553648149), "justifyMeasurements", J.script.T.t (603979872), "languageTranslation", J.script.T.t (603979873), "legacyAutoBonding", J.script.T.t (603979874), "legacyHAddition", J.script.T.t (603979875), "logCommands", J.script.T.t (603979876), "logGestures", J.script.T.t (603979877), "measureAllModels", J.script.T.t (603979878), "measurementLabels", J.script.T.t (603979879), "measurementNumbers", J.script.T.t (1610612739), "messageStyleChime", J.script.T.t (603979880), "minimizationRefresh", J.script.T.t (603979881), "minimizationSilent", J.script.T.t (603979882), "modelkitMode", J.script.T.t (603979883), "monitorEnergy", J.script.T.t (603979884), "multipleBondRadiusFactor", J.script.T.t (570425368), "multipleBondSpacing", J.script.T.t (570425369), "multiProcessor", J.script.T.t (603979885), "navigateSurface", J.script.T.t (603979886), "navigationMode", J.script.T.t (603979887), "navigationPeriodic", J.script.T.t (603979888), "partialDots", J.script.T.t (603979889), "pdbAddHydrogens", J.script.T.t (603979890), "pdbGetHeader", J.script.T.t (603979891), "pdbSequential", J.script.T.t (603979892), "perspectiveDepth", J.script.T.t (603979893), "preserveState", J.script.T.t (603979894), "rangeSelected", J.script.T.t (603979895), "redoMove", J.script.T.t (4139), "refreshing", J.script.T.t (603979896), "ribbonBorder", J.script.T.t (603979898), "rocketBarrels", J.script.T.t (603979900), "saveProteinStructureState", J.script.T.t (603979902), "scriptQueue", J.script.T.t (603979904), "selectAllModels", J.script.T.t (603979906), "selectHetero", J.script.T.t (603979908), "selectHydrogen", J.script.T.t (603979910), "showAxes", J.script.T.t (603979914), "showBoundBox", J.script.T.t (603979916), "showBoundingBox", null, "showFrank", J.script.T.t (603979918), "showHiddenSelectionHalos", J.script.T.t (603979920), "showHydrogens", J.script.T.t (603979922), "showKeyStrokes", J.script.T.t (603979924), "showMeasurements", J.script.T.t (603979926), "showMultipleBonds", J.script.T.t (603979928), "showNavigationPointAlways", J.script.T.t (603979930), "showTiming", J.script.T.t (603979934), "showUnitcell", J.script.T.t (603979936), "slabByAtom", J.script.T.t (603979938), "slabByMolecule", J.script.T.t (603979940), "slabEnabled", J.script.T.t (603979942), "smartAromatic", J.script.T.t (603979944), "solvent", J.script.T.t (1613758488), "solventProbe", J.script.T.t (603979948), "ssBondsBackbone", J.script.T.t (603979952), "statusReporting", J.script.T.t (603979954), "strutsMultiple", J.script.T.t (603979955), "syncMouse", J.script.T.t (603979956), "syncScript", J.script.T.t (603979958), "testFlag1", J.script.T.t (603979960), "testFlag2", J.script.T.t (603979962), "testFlag3", J.script.T.t (603979964), "testFlag4", J.script.T.t (603979965), "traceAlpha", J.script.T.t (603979966), "twistedSheets", J.script.T.t (603979968), "undo", J.script.T.t (536870928), "undoMove", J.script.T.t (4165), "useArcBall", J.script.T.t (603979969), "useMinimizationThread", J.script.T.t (603979970), "useNumberLocalization", J.script.T.t (603979972), "waitForMoveTo", J.script.T.t (603979974), "windowCentered", J.script.T.t (603979975), "wireframeRotation", J.script.T.t (603979976), "zeroBasedXyzRasmol", J.script.T.t (603979978), "zoomEnabled", J.script.T.t (603979980), "zoomHeight", J.script.T.t (603979982), "zoomLarge", J.script.T.t (603979983), "zShade", J.script.T.t (603979984)];
+var arrayPairs = ["(", J.script.T.tokenLeftParen, ")", J.script.T.tokenRightParen, "and", J.script.T.tokenAnd, "&", null, "&&", null, "or", J.script.T.tokenOr, "|", null, "||", null, "?", J.script.T.tokenOpIf, ",", J.script.T.tokenComma, "+=", J.script.T.t (269484242), "-=", null, "*=", null, "/=", null, "\\=", null, "&=", null, "|=", null, "not", J.script.T.t (269484144), "!", null, "xor", J.script.T.t (269484113), "tog", J.script.T.t (269484114), "<", J.script.T.t (269484435), "<=", J.script.T.t (269484434), ">=", J.script.T.t (269484433), ">", J.script.T.t (269484432), "=", J.script.T.tokenEquals, "==", null, "!=", J.script.T.t (269484438), "<>", null, "within", J.script.T.t (135266324), ".", J.script.T.t (1048584), "[", J.script.T.t (269484096), "]", J.script.T.t (269484097), "{", J.script.T.t (1048586), "}", J.script.T.t (1048590), "$", J.script.T.t (1048583), "%", J.script.T.t (269484210), ":", J.script.T.tokenColon, ";", J.script.T.t (1048591), "++", J.script.T.t (269484226), "--", J.script.T.t (269484225), "**", J.script.T.t (269484227), "+", J.script.T.tokenPlus, "-", J.script.T.tokenMinus, "*", J.script.T.tokenTimes, "/", J.script.T.tokenDivide, "\\", J.script.T.t (269484211), "animation", J.script.T.t (4097), "anim", null, "assign", J.script.T.t (4098), "axes", J.script.T.t (1611272194), "backbone", J.script.T.t (1115297793), "background", J.script.T.t (1610616835), "bind", J.script.T.t (4100), "bondorder", J.script.T.t (4101), "boundbox", J.script.T.t (1679429641), "boundingBox", null, "break", J.script.T.t (102407), "calculate", J.script.T.t (4102), "cartoon", J.script.T.t (1113200642), "cartoons", null, "case", J.script.T.t (102411), "catch", J.script.T.t (102412), "cd", J.script.T.t (1069064), "center", J.script.T.t (12289), "centre", null, "centerat", J.script.T.t (4105), "cgo", J.script.T.t (135174), "color", J.script.T.t (1766856708), "colour", null, "compare", J.script.T.t (135270405), "configuration", J.script.T.t (1095766022), "conformation", null, "config", null, "connect", J.script.T.t (4106), "console", J.script.T.t (528395), "contact", J.script.T.t (135402505), "contacts", null, "continue", J.script.T.t (102408), "data", J.script.T.t (135270407), "default", J.script.T.t (102413), "define", J.script.T.t (1060866), "@", null, "delay", J.script.T.t (528397), "delete", J.script.T.t (12291), "density", J.script.T.t (1073741914), "depth", J.script.T.t (554176526), "dipole", J.script.T.t (135175), "dipoles", null, "display", J.script.T.t (1610625028), "dot", J.script.T.t (1276117505), "dots", J.script.T.t (1113198595), "draw", J.script.T.t (135176), "echo", J.script.T.t (537022465), "ellipsoid", J.script.T.t (1113198596), "ellipsoids", null, "else", J.script.T.t (364547), "elseif", J.script.T.t (102402), "end", J.script.T.t (1150985), "endif", J.script.T.t (364548), "exit", J.script.T.t (266255), "file", J.script.T.t (1229984263), "files", null, "font", J.script.T.t (4114), "for", J.script.T.t (135369224), "format", J.script.T.t (1288701960), "frame", J.script.T.t (4115), "frames", null, "frank", J.script.T.t (1611272202), "function", J.script.T.t (135368713), "functions", null, "geosurface", J.script.T.t (1113198597), "getProperty", J.script.T.t (135270410), "goto", J.script.T.t (20500), "halo", J.script.T.t (1113200646), "halos", null, "helix", J.script.T.t (137363468), "helixalpha", J.script.T.t (3145735), "helix310", J.script.T.t (3145736), "helixpi", J.script.T.t (3145738), "hbond", J.script.T.t (1612189718), "hbonds", null, "help", J.script.T.t (20482), "hide", J.script.T.t (12294), "history", J.script.T.t (1610616855), "hover", J.script.T.t (544771), "if", J.script.T.t (135369225), "in", J.script.T.t (1073741980), "initialize", J.script.T.t (266264), "invertSelected", J.script.T.t (4121), "isosurface", J.script.T.t (135180), "javascript", J.script.T.t (135287308), "label", J.script.T.t (1826248715), "labels", null, "lcaoCartoon", J.script.T.t (135182), "lcaoCartoons", null, "load", J.script.T.t (135271426), "log", J.script.T.t (36869), "loop", J.script.T.t (528410), "measure", J.script.T.t (1746538509), "measures", null, "monitor", null, "monitors", null, "meshribbon", J.script.T.t (1113200647), "meshribbons", null, "message", J.script.T.t (20485), "minimize", J.script.T.t (4126), "minimization", null, "mo", J.script.T.t (1183762), "model", J.script.T.t (1095766028), "models", null, "modulation", J.script.T.t (135270424), "move", J.script.T.t (4128), "moveTo", J.script.T.t (4130), "navigate", J.script.T.t (4131), "navigation", null, "origin", J.script.T.t (1073742078), "out", J.script.T.t (1073742079), "parallel", J.script.T.t (102436), "pause", J.script.T.t (20487), "wait", null, "plot", J.script.T.t (4133), "plot3d", J.script.T.t (135190), "pmesh", J.script.T.t (135188), "polygon", J.script.T.t (1073742106), "polyhedra", J.script.T.t (135192), "print", J.script.T.t (36865), "process", J.script.T.t (102439), "prompt", J.script.T.t (135304707), "quaternion", J.script.T.t (135270417), "quaternions", null, "quit", J.script.T.t (266281), "ramachandran", J.script.T.t (1052714), "rama", null, "refresh", J.script.T.t (266284), "reset", J.script.T.t (4141), "unset", null, "restore", J.script.T.t (4142), "restrict", J.script.T.t (12295), "return", J.script.T.t (36866), "ribbon", J.script.T.t (1113200649), "ribbons", null, "rocket", J.script.T.t (1113200650), "rockets", null, "rotate", J.script.T.t (528432), "rotateSelected", J.script.T.t (4145), "save", J.script.T.t (4146), "script", J.script.T.tokenScript, "source", null, "select", J.script.T.t (135280132), "selectionHalos", J.script.T.t (1611141171), "selectionHalo", null, "showSelections", null, "set", J.script.T.tokenSetCmd, "sheet", J.script.T.t (3145760), "show", J.script.T.t (4148), "slab", J.script.T.t (554176565), "spacefill", J.script.T.t (1113200651), "cpk", null, "spin", J.script.T.t (1611141175), "ssbond", J.script.T.t (1611141176), "ssbonds", null, "star", J.script.T.t (1113200652), "stars", null, "step", J.script.T.t (266298), "steps", null, "stereo", J.script.T.t (528443), "strand", J.script.T.t (1650071565), "strands", null, "structure", J.script.T.t (1641025539), "_structure", null, "strucNo", J.script.T.t (1095761939), "struts", J.script.T.t (1708058), "strut", null, "subset", J.script.T.t (3158024), "switch", J.script.T.tokenSwitch, "synchronize", J.script.T.t (4156), "sync", null, "trace", J.script.T.t (1113200654), "translate", J.script.T.t (4160), "translateSelected", J.script.T.t (4162), "try", J.script.T.t (364558), "unbind", J.script.T.t (4164), "unitcell", J.script.T.t (1614417948), "var", J.script.T.t (36868), "vector", J.script.T.t (135198), "vectors", null, "vibration", J.script.T.t (4166), "while", J.script.T.t (102406), "wireframe", J.script.T.t (659488), "write", J.script.T.t (135270421), "zap", J.script.T.t (1060873), "zoom", J.script.T.t (4168), "zoomTo", J.script.T.t (4170), "atom", J.script.T.t (1141899265), "atoms", null, "axis", J.script.T.t (1073741854), "axisangle", J.script.T.t (135266307), "basepair", J.script.T.t (1073741864), "basepairs", null, "orientation", J.script.T.t (1073742077), "orientations", null, "pdbheader", J.script.T.t (1073742088), "polymer", J.script.T.t (1095761935), "polymers", null, "residue", J.script.T.t (1073742120), "residues", null, "rotation", J.script.T.t (1073742132), "row", J.script.T.t (1276117513), "sequence", J.script.T.t (1087373320), "shape", J.script.T.t (1087373323), "state", J.script.T.t (1073742158), "symbol", J.script.T.t (1087375373), "symmetry", J.script.T.t (1089470478), "spaceGroup", J.script.T.t (1073742152), "transform", J.script.T.t (1073742176), "translation", J.script.T.t (1073742178), "url", J.script.T.t (1074790760), "abs", J.script.T.t (135266826), "absolute", J.script.T.t (1073741826), "acos", J.script.T.t (135266819), "add", J.script.T.t (1276118017), "adpmax", J.script.T.t (1112539137), "adpmin", J.script.T.t (1112539138), "align", J.script.T.t (1073741832), "all", J.script.T.tokenAll, "altloc", J.script.T.t (1087373315), "altlocs", null, "amino", J.script.T.t (3145730), "angle", J.script.T.t (135266305), "array", J.script.T.t (135266306), "as", J.script.T.t (1073741848), "atomID", J.script.T.t (1095761922), "_atomID", null, "_a", null, "atomIndex", J.script.T.t (1095761923), "atomName", J.script.T.t (1087375362), "atomno", J.script.T.t (1095763969), "atomType", J.script.T.t (1087375361), "atomX", J.script.T.t (1112541185), "atomY", J.script.T.t (1112541186), "atomZ", J.script.T.t (1112541187), "average", J.script.T.t (96), "babel", J.script.T.t (1073741856), "babel21", J.script.T.t (1073741858), "back", J.script.T.t (1073741859), "backlit", J.script.T.t (1073741862), "balls", J.script.T.t (1073741860), "baseModel", J.script.T.t (3145776), "best", J.script.T.t (1073741863), "bin", J.script.T.t (1276118529), "bondCount", J.script.T.t (1095761924), "bottom", J.script.T.t (1073741871), "branch", J.script.T.t (1048580), "brillouin", J.script.T.t (1073741872), "bzone", null, "wignerSeitz", null, "cache", J.script.T.t (135270422), "carbohydrate", J.script.T.t (3145764), "cell", J.script.T.t (1095761925), "chain", J.script.T.t (1087373316), "chains", null, "chemicalShift", J.script.T.t (1112539139), "cs", null, "clash", J.script.T.t (1073741881), "clear", J.script.T.t (1073741882), "clickable", J.script.T.t (3145766), "clipboard", J.script.T.t (1073741884), "connected", J.script.T.t (135266310), "constraint", J.script.T.t (1073741894), "contourLines", J.script.T.t (1073741898), "coord", J.script.T.t (1048582), "coordinates", null, "coords", null, "cos", J.script.T.t (135266821), "cross", J.script.T.t (135267329), "covalent", J.script.T.t (1112539140), "direction", J.script.T.t (1073741918), "displacement", J.script.T.t (1073741922), "displayed", J.script.T.t (3145768), "distance", J.script.T.t (1276118018), "div", J.script.T.t (1276117504), "DNA", J.script.T.t (3145732), "dotted", J.script.T.t (1073741926), "DSSP", J.script.T.t (1073741915), "element", J.script.T.t (1087375365), "elemno", J.script.T.t (1095763976), "_e", J.script.T.t (1095761927), "error", J.script.T.t (1073741935), "exportScale", J.script.T.t (570425358), "fill", J.script.T.t (1073741938), "find", J.script.T.t (1276118531), "fixedTemperature", J.script.T.t (1073741946), "forcefield", J.script.T.t (545259560), "formalCharge", J.script.T.t (1632634889), "charge", null, "eta", J.script.T.t (1112539141), "front", J.script.T.t (1073741954), "frontlit", J.script.T.t (1073741958), "frontOnly", J.script.T.t (1073741960), "fullylit", J.script.T.t (1073741964), "fx", J.script.T.t (1112541188), "fy", J.script.T.t (1112541189), "fz", J.script.T.t (1112541190), "fxyz", J.script.T.t (1146095627), "fux", J.script.T.t (1112541191), "fuy", J.script.T.t (1112541192), "fuz", J.script.T.t (1112541193), "fuxyz", J.script.T.t (1146095629), "group", J.script.T.t (1087373318), "groups", null, "group1", J.script.T.t (1087373319), "groupID", J.script.T.t (1095761930), "_groupID", null, "_g", null, "groupIndex", J.script.T.t (1095761931), "hidden", J.script.T.t (3145770), "highlight", J.script.T.t (536870920), "hkl", J.script.T.t (135267841), "hydrophobic", J.script.T.t (1114638362), "hydrophobicity", null, "hydro", null, "id", J.script.T.t (1074790550), "identify", J.script.T.t (1087373321), "ident", null, "image", J.script.T.t (1073741979), "info", J.script.T.t (1073741982), "inline", J.script.T.t (1073741983), "insertion", J.script.T.t (1087373322), "insertions", null, "intramolecular", J.script.T.t (1073741989), "intra", null, "intermolecular", J.script.T.t (1073741990), "inter", null, "ionic", J.script.T.t (1112541195), "ionicRadius", null, "isAromatic", J.script.T.t (1048585), "Jmol", J.script.T.t (1073741992), "join", J.script.T.t (1276117506), "keys", J.script.T.t (1141899281), "last", J.script.T.t (1073741993), "left", J.script.T.t (1073741996), "length", J.script.T.t (1141899267), "lines", J.script.T.t (1141899268), "list", J.script.T.t (1073742001), "magneticShielding", J.script.T.t (1112539142), "ms", null, "mass", J.script.T.t (1112539143), "max", J.script.T.t (64), "mep", J.script.T.t (1073742016), "mesh", J.script.T.t (1073742018), "middle", J.script.T.t (1073742019), "min", J.script.T.t (32), "mlp", J.script.T.t (1073742022), "mode", J.script.T.t (1073742024), "modify", J.script.T.t (1073742025), "modifyOrCreate", J.script.T.t (1073742026), "molecule", J.script.T.t (1095761934), "molecules", null, "modelIndex", J.script.T.t (1095761933), "monomer", J.script.T.t (1073742030), "morph", J.script.T.t (1073742031), "movie", J.script.T.t (1073742032), "mul", J.script.T.t (1276117507), "nci", J.script.T.t (1073742036), "next", J.script.T.t (1073742037), "noDots", J.script.T.t (1073742042), "noFill", J.script.T.t (1073742046), "noMesh", J.script.T.t (1073742052), "none", J.script.T.t (1048587), "null", null, "inherit", null, "normal", J.script.T.t (1073742056), "noContourLines", J.script.T.t (1073742039), "nonequivalent", J.script.T.t (3145778), "notFrontOnly", J.script.T.t (1073742058), "noTriangles", J.script.T.t (1073742060), "now", J.script.T.t (135266318), "nucleic", J.script.T.t (3145742), "occupancy", J.script.T.t (1129318401), "off", J.script.T.tokenOff, "false", null, "on", J.script.T.tokenOn, "true", null, "omega", J.script.T.t (1112539144), "only", J.script.T.t (1073742072), "opaque", J.script.T.t (1073742074), "options", J.script.T.t (1073742075), "partialCharge", J.script.T.t (1112541196), "phi", J.script.T.t (1112539145), "plane", J.script.T.t (135266319), "planar", null, "play", J.script.T.t (1073742096), "playRev", J.script.T.t (1073742098), "point", J.script.T.t (135266320), "points", null, "pointGroup", J.script.T.t (1073742102), "polymerLength", J.script.T.t (1095761936), "previous", J.script.T.t (1073742108), "prev", null, "probe", J.script.T.t (1073742109), "property", J.script.T.t (1716520985), "properties", null, "protein", J.script.T.t (3145744), "psi", J.script.T.t (1112539146), "purine", J.script.T.t (3145746), "PyMOL", J.script.T.t (1073742110), "pyrimidine", J.script.T.t (3145748), "random", J.script.T.t (135267332), "range", J.script.T.t (1073742114), "rasmol", J.script.T.t (1073742116), "replace", J.script.T.t (1276118019), "resno", J.script.T.t (1095761937), "resume", J.script.T.t (266287), "rewind", J.script.T.t (1073742126), "reverse", J.script.T.t (1141899269), "right", J.script.T.t (1073742128), "RNA", J.script.T.t (3145750), "rubberband", J.script.T.t (1073742134), "saSurface", J.script.T.t (1073742136), "scale", J.script.T.t (1073742138), "scene", J.script.T.t (1073742139), "search", J.script.T.t (135267335), "smarts", null, "selected", J.script.T.t (1114638363), "shapely", J.script.T.t (1073742144), "sidechain", J.script.T.t (3145754), "sin", J.script.T.t (135266820), "site", J.script.T.t (1095761938), "size", J.script.T.t (1141899270), "smiles", J.script.T.t (135267336), "substructure", J.script.T.t (1238369286), "solid", J.script.T.t (1073742150), "sort", J.script.T.t (1276117010), "specialPosition", J.script.T.t (3145772), "sqrt", J.script.T.t (135266822), "split", J.script.T.t (1276117508), "starScale", J.script.T.t (570425403), "stddev", J.script.T.t (192), "straightness", J.script.T.t (1112539150), "structureId", J.script.T.t (1087373324), "supercell", J.script.T.t (1073742163), "sub", J.script.T.t (1276117509), "sum", J.script.T.t (128), "sum2", J.script.T.t (160), "surface", J.script.T.t (3145756), "surfaceDistance", J.script.T.t (1112539151), "symop", J.script.T.t (1297090050), "sx", J.script.T.t (1112539147), "sy", J.script.T.t (1112539148), "sz", J.script.T.t (1112539149), "sxyz", J.script.T.t (1146095628), "temperature", J.script.T.t (1112541199), "relativeTemperature", null, "tensor", J.script.T.t (1276117015), "theta", J.script.T.t (1112539152), "thisModel", J.script.T.t (3145758), "ticks", J.script.T.t (1073742164), "top", J.script.T.t (1074790748), "torsion", J.script.T.t (1073742174), "trajectory", J.script.T.t (536870926), "trajectories", null, "translucent", J.script.T.t (603979967), "triangles", J.script.T.t (1073742182), "trim", J.script.T.t (1276117510), "type", J.script.T.t (1141899272), "ux", J.script.T.t (1112539153), "uy", J.script.T.t (1112539154), "uz", J.script.T.t (1112539155), "uxyz", J.script.T.t (1146093582), "user", J.script.T.t (1073742186), "valence", J.script.T.t (1095763988), "vanderWaals", J.script.T.t (1649412120), "vdw", null, "vdwRadius", null, "visible", J.script.T.t (3145774), "volume", J.script.T.t (1313866247), "vx", J.script.T.t (1112541202), "vy", J.script.T.t (1112541203), "vz", J.script.T.t (1112541204), "vxyz", J.script.T.t (1146095631), "xyz", J.script.T.t (1146095626), "w", J.script.T.t (1141899280), "x", J.script.T.t (1112541205), "y", J.script.T.t (1112541206), "z", J.script.T.t (1112541207), "addHydrogens", J.script.T.t (1073741828), "allConnected", J.script.T.t (1073741834), "angstroms", J.script.T.t (1073741836), "anisotropy", J.script.T.t (1073741838), "append", J.script.T.t (1073741839), "arc", J.script.T.t (1074790416), "area", J.script.T.t (1073741842), "aromatic", J.script.T.t (1076887572), "arrow", J.script.T.t (1073741846), "auto", J.script.T.t (1073741852), "barb", J.script.T.t (1073741861), "binary", J.script.T.t (1073741866), "blockData", J.script.T.t (1073741868), "cancel", J.script.T.t (1073741874), "cap", J.script.T.t (1074790451), "cavity", J.script.T.t (1073741876), "centroid", J.script.T.t (1095761926), "check", J.script.T.t (1073741878), "chemical", J.script.T.t (1073741879), "circle", J.script.T.t (1073741880), "collapsed", J.script.T.t (1073741886), "col", J.script.T.t (1276117512), "colorScheme", J.script.T.t (1073741888), "command", J.script.T.t (1073741890), "commands", J.script.T.t (1073741892), "contour", J.script.T.t (1073741896), "contours", J.script.T.t (1073741900), "corners", J.script.T.t (1073741902), "count", J.script.T.t (1276117011), "criterion", J.script.T.t (1073741905), "create", J.script.T.t (1073741904), "crossed", J.script.T.t (1073741906), "curve", J.script.T.t (1073741908), "cutoff", J.script.T.t (1073741910), "cylinder", J.script.T.t (1073741912), "diameter", J.script.T.t (1073741916), "discrete", J.script.T.t (1073741920), "distanceFactor", J.script.T.t (1073741924), "downsample", J.script.T.t (1073741928), "drawing", J.script.T.t (1073741929), "eccentricity", J.script.T.t (1073741930), "ed", J.script.T.t (1074790508), "edges", J.script.T.t (1073741933), "energy", J.script.T.t (1073741934), "exitJmol", J.script.T.t (266256), "faceCenterOffset", J.script.T.t (1073741937), "filter", J.script.T.t (1073741940), "first", J.script.T.t (1073741942), "fixed", J.script.T.t (1060869), "fix", null, "flat", J.script.T.t (1073741948), "fps", J.script.T.t (1074790526), "from", J.script.T.t (1073741952), "frontEdges", J.script.T.t (1073741956), "full", J.script.T.t (1073741961), "fullPlane", J.script.T.t (1073741962), "functionXY", J.script.T.t (1073741966), "functionXYZ", J.script.T.t (1073741968), "gridPoints", J.script.T.t (1073741970), "homo", J.script.T.t (1073741973), "ignore", J.script.T.t (1073741976), "InChI", J.script.T.t (1073741977), "InChIKey", J.script.T.t (1073741978), "increment", J.script.T.t (1073741981), "insideout", J.script.T.t (1073741984), "interior", J.script.T.t (1073741986), "intersection", J.script.T.t (135267842), "intersect", null, "internal", J.script.T.t (1073741988), "lattice", J.script.T.t (1073741994), "line", J.script.T.t (1073741998), "lineData", J.script.T.t (1073742000), "link", J.script.T.t (1073741999), "lobe", J.script.T.t (1073742002), "lonePair", J.script.T.t (1073742004), "lp", J.script.T.t (1073742006), "lumo", J.script.T.t (1073742008), "manifest", J.script.T.t (1073742010), "mapProperty", J.script.T.t (1052700), "map", null, "maxSet", J.script.T.t (1073742014), "menu", J.script.T.t (1073742015), "minSet", J.script.T.t (1073742020), "modelBased", J.script.T.t (1073742028), "molecular", J.script.T.t (1073742029), "mrc", J.script.T.t (1073742033), "msms", J.script.T.t (1073742034), "name", J.script.T.t (1073742035), "nmr", J.script.T.t (1073742038), "noCross", J.script.T.t (1073742040), "noDebug", J.script.T.t (1073742041), "noEdges", J.script.T.t (1073742044), "noHead", J.script.T.t (1073742048), "noLoad", J.script.T.t (1073742050), "noPlane", J.script.T.t (1073742054), "object", J.script.T.t (1073742064), "obj", J.script.T.t (1073742062), "offset", J.script.T.t (1073742066), "offsetSide", J.script.T.t (1073742068), "once", J.script.T.t (1073742070), "orbital", J.script.T.t (1073742076), "atomicOrbital", J.script.T.t (1073741850), "packed", J.script.T.t (1073742080), "palindrome", J.script.T.t (1073742082), "parameters", J.script.T.t (1073742083), "path", J.script.T.t (1073742084), "pdb", J.script.T.t (1074790662), "period", J.script.T.t (1073742090), "periodic", null, "perpendicular", J.script.T.t (1073742092), "perp", null, "phase", J.script.T.t (1073742094), "pocket", J.script.T.t (1073742100), "pointsPerAngstrom", J.script.T.t (1073742104), "radical", J.script.T.t (1073742112), "rad", J.script.T.t (1073742111), "reference", J.script.T.t (1073742118), "remove", J.script.T.t (1073742119), "resolution", J.script.T.t (1073742122), "reverseColor", J.script.T.t (1073742124), "rotate45", J.script.T.t (1073742130), "selection", J.script.T.t (1073742140), "sigma", J.script.T.t (1073742146), "sign", J.script.T.t (1073742147), "silent", J.script.T.t (1073742148), "sphere", J.script.T.t (1073742154), "squared", J.script.T.t (1073742156), "stop", J.script.T.t (1073742162), "title", J.script.T.t (1073742166), "titleFormat", J.script.T.t (1073742168), "to", J.script.T.t (1074790746), "value", J.script.T.t (1073742188), "variable", J.script.T.t (1073742190), "variables", J.script.T.t (1073742192), "vertices", J.script.T.t (1073742194), "width", J.script.T.t (1073742196), "backgroundModel", J.script.T.t (536870914), "celShading", J.script.T.t (603979821), "debug", J.script.T.t (536870916), "defaultLattice", J.script.T.t (536870918), "measurements", J.script.T.t (537006096), "measurement", null, "scale3D", J.script.T.t (1610612740), "toggleLabel", J.script.T.t (1610612741), "userColorScheme", J.script.T.t (536870930), "timeout", J.script.T.t (536875070), "timeouts", null, "appletProxy", J.script.T.t (545259522), "atomTypes", J.script.T.t (545259524), "axesColor", J.script.T.t (545259526), "axis1Color", J.script.T.t (545259528), "axis2Color", J.script.T.t (545259530), "axis3Color", J.script.T.t (545259532), "backgroundColor", J.script.T.t (545259534), "bondmode", J.script.T.t (1610612737), "boundBoxColor", J.script.T.t (545259536), "boundingBoxColor", null, "currentLocalPath", J.script.T.t (545259538), "dataSeparator", J.script.T.t (545259540), "defaultAngleLabel", J.script.T.t (545259542), "defaultColorScheme", J.script.T.t (545259545), "defaultColors", null, "defaultDirectory", J.script.T.t (545259546), "defaultDistanceLabel", J.script.T.t (545259547), "defaultDropScript", J.script.T.t (545259548), "defaultLabelPDB", J.script.T.t (545259543), "defaultLabelXYZ", J.script.T.t (545259544), "defaultLoadFilter", J.script.T.t (545259549), "defaultLoadScript", J.script.T.t (545259550), "defaults", J.script.T.t (545259552), "defaultTorsionLabel", J.script.T.t (545259554), "defaultVDW", J.script.T.t (545259555), "drawFontSize", J.script.T.t (570425356), "edsUrlCutoff", J.script.T.t (545259556), "edsUrlFormat", J.script.T.t (545259557), "energyUnits", J.script.T.t (545259558), "fileCacheDirectory", J.script.T.t (545259559), "fontsize", J.script.T.t (1610612738), "helpPath", J.script.T.t (545259561), "hoverLabel", J.script.T.t (545259562), "language", J.script.T.t (545259564), "loadFormat", J.script.T.t (545259565), "loadLigandFormat", J.script.T.t (545259566), "logFile", J.script.T.t (545259567), "measurementUnits", J.script.T.t (545259568), "nmrPredictFormat", J.script.T.t (545259569), "nmrUrlFormat", J.script.T.t (545259570), "pathForAllFiles", J.script.T.t (545259571), "picking", J.script.T.t (545259572), "pickingStyle", J.script.T.t (545259574), "pickLabel", J.script.T.t (545259576), "platformSpeed", J.script.T.t (553648158), "propertyColorScheme", J.script.T.t (545259578), "quaternionFrame", J.script.T.t (545259580), "smilesUrlFormat", J.script.T.t (545259582), "smiles2dImageFormat", J.script.T.t (545259584), "unitCellColor", J.script.T.t (545259586), "axesScale", J.script.T.t (570425346), "axisScale", null, "bondTolerance", J.script.T.t (570425348), "cameraDepth", J.script.T.t (570425350), "defaultDrawArrowScale", J.script.T.t (570425352), "defaultTranslucent", J.script.T.t (570425354), "dipoleScale", J.script.T.t (570425355), "ellipsoidAxisDiameter", J.script.T.t (570425357), "gestureSwipeFactor", J.script.T.t (570425359), "hbondsAngleMinimum", J.script.T.t (570425360), "hbondsDistanceMaximum", J.script.T.t (570425361), "hoverDelay", J.script.T.t (570425362), "loadAtomDataTolerance", J.script.T.t (570425363), "minBondDistance", J.script.T.t (570425364), "minimizationCriterion", J.script.T.t (570425365), "mouseDragFactor", J.script.T.t (570425366), "mouseWheelFactor", J.script.T.t (570425367), "navFPS", J.script.T.t (570425370), "navigationDepth", J.script.T.t (570425371), "navigationSlab", J.script.T.t (570425372), "navigationSpeed", J.script.T.t (570425374), "navX", J.script.T.t (570425376), "navY", J.script.T.t (570425378), "navZ", J.script.T.t (570425380), "pointGroupDistanceTolerance", J.script.T.t (570425382), "pointGroupLinearTolerance", J.script.T.t (570425384), "radius", J.script.T.t (1666189314), "rotationRadius", J.script.T.t (570425388), "scaleAngstromsPerInch", J.script.T.t (570425390), "sheetSmoothing", J.script.T.t (570425392), "slabRange", J.script.T.t (570425393), "solventProbeRadius", J.script.T.t (570425394), "spinFPS", J.script.T.t (570425396), "spinX", J.script.T.t (570425398), "spinY", J.script.T.t (570425400), "spinZ", J.script.T.t (570425402), "stereoDegrees", J.script.T.t (570425404), "strutDefaultRadius", J.script.T.t (570425406), "strutLengthMaximum", J.script.T.t (570425408), "vectorScale", J.script.T.t (1649410049), "vectorSymmetry", J.script.T.t (603979973), "vibrationPeriod", J.script.T.t (570425412), "vibrationScale", J.script.T.t (570425414), "visualRange", J.script.T.t (570425416), "ambientPercent", J.script.T.t (553648130), "ambient", null, "animationFps", J.script.T.t (553648132), "axesMode", J.script.T.t (553648134), "bondRadiusMilliAngstroms", J.script.T.t (553648136), "delayMaximumMs", J.script.T.t (553648138), "diffusePercent", J.script.T.t (553648142), "diffuse", null, "dotDensity", J.script.T.t (553648143), "dotScale", J.script.T.t (553648144), "ellipsoidDotCount", J.script.T.t (553648145), "helixStep", J.script.T.t (553648146), "hermiteLevel", J.script.T.t (553648147), "historyLevel", J.script.T.t (553648148), "lighting", J.script.T.t (1073741995), "logLevel", J.script.T.t (553648150), "meshScale", J.script.T.t (553648151), "minimizationSteps", J.script.T.t (553648152), "minPixelSelRadius", J.script.T.t (553648153), "percentVdwAtom", J.script.T.t (553648154), "perspectiveModel", J.script.T.t (553648155), "phongExponent", J.script.T.t (553648156), "pickingSpinRate", J.script.T.t (553648157), "propertyAtomNumberField", J.script.T.t (553648159), "propertyAtomNumberColumnCount", J.script.T.t (553648160), "propertyDataColumnCount", J.script.T.t (553648162), "propertyDataField", J.script.T.t (553648164), "repaintWaitMs", J.script.T.t (553648165), "ribbonAspectRatio", J.script.T.t (553648166), "scriptReportingLevel", J.script.T.t (553648168), "showScript", J.script.T.t (536870922), "smallMoleculeMaxAtoms", J.script.T.t (553648170), "specular", J.script.T.t (536870924), "specularExponent", J.script.T.t (553648172), "specularPercent", J.script.T.t (553648174), "specPercent", null, "specularPower", J.script.T.t (553648176), "specpower", null, "strandCount", J.script.T.t (553648178), "strandCountForMeshRibbon", J.script.T.t (553648180), "strandCountForStrands", J.script.T.t (553648182), "strutSpacing", J.script.T.t (553648184), "zDepth", J.script.T.t (553648186), "zSlab", J.script.T.t (553648188), "zshadePower", J.script.T.t (553648190), "allowEmbeddedScripts", J.script.T.t (603979778), "allowGestures", J.script.T.t (603979780), "allowKeyStrokes", J.script.T.t (603979781), "allowModelKit", J.script.T.t (603979782), "allowMoveAtoms", J.script.T.t (603979783), "allowMultiTouch", J.script.T.t (603979784), "allowRotateSelected", J.script.T.t (603979785), "antialiasDisplay", J.script.T.t (603979786), "antialiasImages", J.script.T.t (603979788), "antialiasTranslucent", J.script.T.t (603979790), "appendNew", J.script.T.t (603979792), "applySymmetryToBonds", J.script.T.t (603979794), "atomPicking", J.script.T.t (603979796), "autobond", J.script.T.t (603979798), "autoFPS", J.script.T.t (603979800), "axesMolecular", J.script.T.t (603979804), "axesOrientationRasmol", J.script.T.t (603979806), "axesUnitCell", J.script.T.t (603979808), "axesWindow", J.script.T.t (603979810), "bondModeOr", J.script.T.t (603979812), "bondPicking", J.script.T.t (603979814), "bonds", J.script.T.t (1678770178), "bond", null, "cartoonBaseEdges", J.script.T.t (603979817), "cartoonsFancy", J.script.T.t (603979819), "cartoonFancy", null, "cartoonLadders", J.script.T.t (603979820), "cartoonRockets", J.script.T.t (603979818), "chainCaseSensitive", J.script.T.t (603979822), "colorRasmol", J.script.T.t (603979823), "debugScript", J.script.T.t (603979824), "defaultStructureDssp", J.script.T.t (603979825), "disablePopupMenu", J.script.T.t (603979826), "displayCellParameters", J.script.T.t (603979828), "dotsSelectedOnly", J.script.T.t (603979829), "dotSurface", J.script.T.t (603979830), "dragSelected", J.script.T.t (603979831), "drawHover", J.script.T.t (603979832), "drawPicking", J.script.T.t (603979833), "dsspCalculateHydrogenAlways", J.script.T.t (603979834), "dynamicMeasurements", J.script.T.t (603979835), "ellipsoidArcs", J.script.T.t (603979836), "ellipsoidArrows", J.script.T.t (603979837), "ellipsoidAxes", J.script.T.t (603979838), "ellipsoidBall", J.script.T.t (603979839), "ellipsoidDots", J.script.T.t (603979840), "ellipsoidFill", J.script.T.t (603979841), "fileCaching", J.script.T.t (603979842), "fontCaching", J.script.T.t (603979844), "fontScaling", J.script.T.t (603979845), "forceAutoBond", J.script.T.t (603979846), "fractionalRelative", J.script.T.t (603979848), "greyscaleRendering", J.script.T.t (603979850), "hbondsBackbone", J.script.T.t (603979852), "hbondsRasmol", J.script.T.t (603979853), "hbondsSolid", J.script.T.t (603979854), "hetero", J.script.T.t (1613758470), "hideNameInPopup", J.script.T.t (603979858), "hideNavigationPoint", J.script.T.t (603979860), "hideNotSelected", J.script.T.t (603979862), "highResolution", J.script.T.t (603979864), "hydrogen", J.script.T.t (1613758476), "hydrogens", null, "imageState", J.script.T.t (603979868), "isKiosk", J.script.T.t (603979869), "isosurfaceKey", J.script.T.t (603979870), "isosurfacePropertySmoothing", J.script.T.t (603979871), "isosurfacePropertySmoothingPower", J.script.T.t (553648149), "justifyMeasurements", J.script.T.t (603979872), "languageTranslation", J.script.T.t (603979873), "legacyAutoBonding", J.script.T.t (603979874), "legacyHAddition", J.script.T.t (603979875), "logCommands", J.script.T.t (603979876), "logGestures", J.script.T.t (603979877), "measureAllModels", J.script.T.t (603979878), "measurementLabels", J.script.T.t (603979879), "measurementNumbers", J.script.T.t (1610612739), "messageStyleChime", J.script.T.t (603979880), "minimizationRefresh", J.script.T.t (603979881), "minimizationSilent", J.script.T.t (603979882), "modelkitMode", J.script.T.t (603979883), "monitorEnergy", J.script.T.t (603979884), "multipleBondRadiusFactor", J.script.T.t (570425368), "multipleBondSpacing", J.script.T.t (570425369), "multiProcessor", J.script.T.t (603979885), "navigateSurface", J.script.T.t (603979886), "navigationMode", J.script.T.t (603979887), "navigationPeriodic", J.script.T.t (603979888), "partialDots", J.script.T.t (603979889), "pdbAddHydrogens", J.script.T.t (603979890), "pdbGetHeader", J.script.T.t (603979891), "pdbSequential", J.script.T.t (603979892), "perspectiveDepth", J.script.T.t (603979893), "preserveState", J.script.T.t (603979894), "rangeSelected", J.script.T.t (603979895), "redoMove", J.script.T.t (4139), "refreshing", J.script.T.t (603979896), "ribbonBorder", J.script.T.t (603979898), "rocketBarrels", J.script.T.t (603979900), "saveProteinStructureState", J.script.T.t (603979902), "scriptQueue", J.script.T.t (603979904), "selectAllModels", J.script.T.t (603979906), "selectHetero", J.script.T.t (603979908), "selectHydrogen", J.script.T.t (603979910), "showAxes", J.script.T.t (603979914), "showBoundBox", J.script.T.t (603979916), "showBoundingBox", null, "showFrank", J.script.T.t (603979918), "showHiddenSelectionHalos", J.script.T.t (603979920), "showHydrogens", J.script.T.t (603979922), "showKeyStrokes", J.script.T.t (603979924), "showMeasurements", J.script.T.t (603979926), "showMultipleBonds", J.script.T.t (603979928), "showNavigationPointAlways", J.script.T.t (603979930), "showTiming", J.script.T.t (603979934), "showUnitcell", J.script.T.t (603979936), "slabByAtom", J.script.T.t (603979938), "slabByMolecule", J.script.T.t (603979940), "slabEnabled", J.script.T.t (603979942), "smartAromatic", J.script.T.t (603979944), "solvent", J.script.T.t (1613758488), "solventProbe", J.script.T.t (603979948), "ssBondsBackbone", J.script.T.t (603979952), "statusReporting", J.script.T.t (603979954), "strutsMultiple", J.script.T.t (603979955), "syncMouse", J.script.T.t (603979956), "syncScript", J.script.T.t (603979958), "testFlag1", J.script.T.t (603979960), "testFlag2", J.script.T.t (603979962), "testFlag3", J.script.T.t (603979964), "testFlag4", J.script.T.t (603979965), "traceAlpha", J.script.T.t (603979966), "twistedSheets", J.script.T.t (603979968), "undo", J.script.T.t (536870928), "undoMove", J.script.T.t (4165), "useArcBall", J.script.T.t (603979969), "useMinimizationThread", J.script.T.t (603979970), "useNumberLocalization", J.script.T.t (603979972), "waitForMoveTo", J.script.T.t (603979974), "windowCentered", J.script.T.t (603979975), "wireframeRotation", J.script.T.t (603979976), "zeroBasedXyzRasmol", J.script.T.t (603979978), "zoomEnabled", J.script.T.t (603979980), "zoomHeight", J.script.T.t (603979982), "zoomLarge", J.script.T.t (603979983), "zShade", J.script.T.t (603979984)];
 var tokenLast = null;
 var stringThis;
 var tokenThis;
@@ -13953,6 +13974,25 @@ this.x = s * this.x + t1.x;
 this.y = s * this.y + t1.y;
 this.z = s * this.z + t1.z;
 }, "~N,J.util.Tuple3f");
+$_M(c$, "dot", 
+function (v) {
+return this.x * v.x + this.y * v.y + this.z * v.z;
+}, "J.util.Tuple3f");
+$_M(c$, "lengthSquared", 
+function () {
+return this.x * this.x + this.y * this.y + this.z * this.z;
+});
+$_M(c$, "length", 
+function () {
+return Math.sqrt (this.lengthSquared ());
+});
+$_M(c$, "normalize", 
+function () {
+var d = this.length ();
+this.x /= d;
+this.y /= d;
+this.z /= d;
+});
 Clazz.overrideMethod (c$, "hashCode", 
 function () {
 var bits = 1;
@@ -14026,29 +14066,10 @@ v.y = y;
 v.z = z;
 return v;
 }, "~N,~N,~N");
-$_M(c$, "lengthSquared", 
-function () {
-return this.x * this.x + this.y * this.y + this.z * this.z;
-});
-$_M(c$, "length", 
-function () {
-return Math.sqrt (this.lengthSquared ());
-});
 $_M(c$, "cross", 
 function (v1, v2) {
 this.set (v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
 }, "J.util.V3,J.util.V3");
-$_M(c$, "dot", 
-function (v) {
-return this.x * v.x + this.y * v.y + this.z * v.z;
-}, "J.util.V3");
-$_M(c$, "normalize", 
-function () {
-var d = this.length ();
-this.x /= d;
-this.y /= d;
-this.z /= d;
-});
 $_M(c$, "angle", 
 function (v1) {
 var xx = this.y * v1.z - this.z * v1.y;
@@ -14558,7 +14579,7 @@ this.m21 = v.y;
 this.m22 = v.z;
 } else {
 throw  new ArrayIndexOutOfBoundsException ("row must be 0 to 2 and is " + row);
-}}, "~N,J.util.V3");
+}}, "~N,J.util.Tuple3f");
 $_M(c$, "getRow", 
 function (row, v) {
 if (row == 0) {
@@ -15333,24 +15354,24 @@ this.m32 = 0.0;
 this.m33 = 1.0;
 }, "J.util.Matrix3f");
 $_M(c$, "setA", 
-function (m) {
-this.m00 = m[0];
-this.m01 = m[1];
-this.m02 = m[2];
-this.m03 = m[3];
-this.m10 = m[4];
-this.m11 = m[5];
-this.m12 = m[6];
-this.m13 = m[7];
-this.m20 = m[8];
-this.m21 = m[9];
-this.m22 = m[10];
-this.m23 = m[11];
-this.m30 = m[12];
-this.m31 = m[13];
-this.m32 = m[14];
-this.m33 = m[15];
-}, "~A");
+function (m, i) {
+this.m00 = m[i++];
+this.m01 = m[i++];
+this.m02 = m[i++];
+this.m03 = m[i++];
+this.m10 = m[i++];
+this.m11 = m[i++];
+this.m12 = m[i++];
+this.m13 = m[i++];
+this.m20 = m[i++];
+this.m21 = m[i++];
+this.m22 = m[i++];
+this.m23 = m[i++];
+this.m30 = m[i++];
+this.m31 = m[i++];
+this.m32 = m[i++];
+this.m33 = m[i++];
+}, "~A,~N");
 $_M(c$, "setTranslation", 
 function (trans) {
 this.m03 = trans.x;
@@ -15475,11 +15496,11 @@ if (Clazz.exceptionOf (e, NullPointerException)) {
 throw e;
 }
 }
-}, "J.util.P3,J.util.P3");
+}, "J.util.Tuple3f,J.util.Tuple3f");
 $_M(c$, "transform", 
 function (point) {
 this.transform2 (point, point);
-}, "J.util.P3");
+}, "J.util.Tuple3f");
 $_M(c$, "transformV2", 
 function (normal, normalOut) {
 normalOut.set (this.m00 * normal.x + this.m01 * normal.y + this.m02 * normal.z, this.m10 * normal.x + this.m11 * normal.y + this.m12 * normal.z, this.m20 * normal.x + this.m21 * normal.y + this.m22 * normal.z);
@@ -16010,7 +16031,7 @@ plane.set (vNorm.x, vNorm.y, vNorm.z, w);
 }, "J.util.P3,J.util.P3,J.util.P3,J.util.V3,J.util.V3,J.util.V3,J.util.P4");
 c$.getPlaneThroughPoint = $_M(c$, "getPlaneThroughPoint", 
 function (pt, normal, plane) {
-plane.set (normal.x, normal.y, normal.z, -normal.dot (J.util.V3.newV (pt)));
+plane.set (normal.x, normal.y, normal.z, -normal.dot (pt));
 }, "J.util.P3,J.util.V3,J.util.P4");
 c$.distanceToPlane = $_M(c$, "distanceToPlane", 
 function (plane, pt) {
@@ -16239,8 +16260,7 @@ var ptAnew =  new J.util.P3 ();
 for (var i = n + 1; --i >= 1; ) {
 ptAnew.setT (ptsA[i]);
 ptAnew.sub (cA);
-q.transformP2 (ptAnew, ptAnew);
-ptAnew.add (cB);
+q.transformP2 (ptAnew, ptAnew).add (cB);
 sum2 += ptAnew.distanceSquared (ptsB[i]);
 }
 return Math.sqrt (sum2 / n);
@@ -16517,20 +16537,20 @@ return Clazz.instanceOf(x, Array);
 c$.getVariableMap = $_M(c$, "getVariableMap", 
 function (x) {
 var ht = x;
-var e = ht.keySet ().iterator ();
-while (e.hasNext ()) {
-if (!(Clazz.instanceOf (ht.get (e.next ()), J.script.SV))) {
+var o = null;
+for (var oo, $oo = ht.values ().iterator (); $oo.hasNext () && ((oo = $oo.next ()) || true);) {
+o = oo;
+break;
+}
+if (!(Clazz.instanceOf (o, J.script.SV))) {
 var x2 =  new java.util.Hashtable ();
 for (var entry, $entry = ht.entrySet ().iterator (); $entry.hasNext () && ((entry = $entry.next ()) || true);) {
 var key = entry.getKey ();
-var o = entry.getValue ();
-if (J.script.SV.isVariableType (o)) x2.put (key, J.script.SV.getVariable (o));
- else x2.put (key, J.script.SV.newVariable (4, J.util.Escape.toReadable (null, o)));
+o = entry.getValue ();
+x2.put (key, J.script.SV.isVariableType (o) ? J.script.SV.getVariable (o) : J.script.SV.newVariable (4, J.util.Escape.toReadable (null, o)));
 }
 x = x2;
-}break;
-}
-return J.script.SV.newVariable (6, x);
+}return J.script.SV.newVariable (6, x);
 }, "java.util.Map");
 c$.getVariableList = $_M(c$, "getVariableList", 
 function (v) {
@@ -16771,17 +16791,17 @@ return J.script.SV.toFloat (J.script.SV.sValue (x));
 case 10:
 return J.script.SV.iValue (x);
 case 8:
-return (x.value).distance (J.script.SV.pt0);
+return (x.value).length ();
 case 9:
 return J.util.Measure.distanceToPlane (x.value, J.script.SV.pt0);
 case 11:
 var pt =  new J.util.P3 ();
 (x.value).transform (pt);
-return pt.distance (J.script.SV.pt0);
+return pt.length ();
 case 12:
 var pt1 =  new J.util.P3 ();
 (x.value).transform (pt1);
-return pt1.distance (J.script.SV.pt0);
+return pt1.length ();
 default:
 return 0;
 }
@@ -17466,6 +17486,9 @@ var buffer = this.buf;
 if (buffer == null) throw  new java.io.IOException ("Stream closed");
 return buffer;
 }, $fz.isPrivate = true, $fz));
+Clazz.overrideMethod (c$, "resetStream", 
+function () {
+});
 Clazz.makeConstructor (c$, 
 function ($in) {
 Clazz.superConstructor (this, java.io.BufferedInputStream, [$in]);
@@ -17964,31 +17987,103 @@ Clazz.defineStatics (c$,
 "twoPI", 6.283185307179586);
 });
 Clazz.declarePackage ("J.util");
-Clazz.load (["J.util.V3"], "J.util.Modulation", ["J.util.P3"], function () {
+Clazz.load (null, "J.util.Modulation", ["java.lang.Float", "J.util.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
-this.ccos = 0;
-this.csin = 0;
-this.f = 0;
-this.wv = null;
-this.twoPIx4 = 0;
+this.qCoefs = null;
+this.a1 = 0;
+this.a2 = 0;
+this.center = 0;
+this.left = 0;
+this.right = 0;
+this.axis = '\0';
+this.type = 0;
+this.utens = null;
 Clazz.instantialize (this, arguments);
-}, J.util, "Modulation", J.util.V3);
-c$.getPointAndOffset = $_M(c$, "getPointAndOffset", 
-function (mods, pt, t, scale) {
-var pt0 = J.util.P3.newP (pt);
-for (var i = mods.length; --i >= 0; ) {
-mods[i].addTo (pt, t, scale);
+}, J.util, "Modulation");
+Clazz.makeConstructor (c$, 
+function (axis, type, params, utens, qCoefs) {
+if (J.util.Logger.debuggingHigh) J.util.Logger.debug ("MOD create " + J.util.Escape.eP (qCoefs) + " axis=" + axis + " type=" + type + " params=" + params + " utens=" + utens);
+this.axis = axis;
+this.type = type;
+this.utens = utens;
+this.qCoefs = qCoefs;
+switch (type) {
+case 0:
+case 2:
+case 4:
+this.a1 = params.x;
+this.a2 = params.y;
+break;
+case 1:
+case 3:
+this.center = params.x;
+var width = params.y;
+if (width > 1) width = 1;
+this.left = this.center - width / 2;
+this.right = this.center + width / 2;
+if (this.left < 0) this.left += 1;
+if (this.right > 1) this.right -= 1;
+if (this.left >= this.right && this.left - this.right < 0.01) this.left = this.right + 0.01;
+this.a1 = 2 * params.z / params.y;
+break;
 }
-return pt.distance (pt0);
-}, "~A,J.util.P3,~N,~N");
-$_M(c$, "addTo", 
-($fz = function (pt, t, scale) {
-var theta = t * this.twoPIx4 * this.f;
+}, "~S,~N,J.util.P3,~S,J.util.P3");
+$_M(c$, "apply", 
+function (ms, offset) {
+var x = this.qCoefs.dot (ms.x456) + this.qCoefs.x * offset;
 var v = 0;
-if (this.ccos != 0) v += this.ccos * Math.cos (theta);
-if (this.csin != 0) v += this.csin * Math.sin (theta);
-pt.scaleAdd2 ((v * scale), this.wv, pt);
-}, $fz.isPrivate = true, $fz), "J.util.P3,~N,~N");
+switch (this.type) {
+case 0:
+case 2:
+case 4:
+var theta = 6.283185307179586 * x;
+if (this.a1 != 0) v += this.a1 * Math.cos (theta);
+if (this.a2 != 0) v += this.a2 * Math.sin (theta);
+if (J.util.Logger.debuggingHigh) J.util.Logger.debug ("MOD " + ms.id + " " + J.util.Escape.eP (this.qCoefs) + " axis=" + this.axis + " v=" + v + " ccos,csin=" + this.a1 + "," + this.a2 + " / theta=" + theta);
+break;
+case 3:
+x -= Math.floor (x);
+ms.vOcc = (this.range (x) ? 1 : 0);
+ms.vOcc0 = NaN;
+return;
+case 1:
+x -= Math.floor (x);
+if (!this.range (x)) return;
+if (this.left > this.right) {
+if (x < this.left && this.left < this.center) x += 1;
+ else if (x > this.right && this.right > this.center) x -= 1;
+}v = this.a1 * (x - this.center);
+break;
+}
+switch (this.axis) {
+case 'x':
+ms.x += v;
+break;
+case 'y':
+ms.y += v;
+break;
+case 'z':
+ms.z += v;
+break;
+case 'U':
+ms.addUTens (this.utens, v);
+break;
+default:
+if (Float.isNaN (ms.vOcc)) ms.vOcc = 0;
+ms.vOcc += v;
+}
+}, "J.util.ModulationSet,~N");
+$_M(c$, "range", 
+($fz = function (x4) {
+return (this.left < this.right ? this.left <= x4 && x4 <= this.right : this.left <= x4 || x4 <= this.right);
+}, $fz.isPrivate = true, $fz), "~N");
+Clazz.defineStatics (c$,
+"TWOPI", 6.283185307179586,
+"TYPE_DISP_FOURIER", 0,
+"TYPE_DISP_SAWTOOTH", 1,
+"TYPE_OCC_FOURIER", 2,
+"TYPE_OCC_CRENEL", 3,
+"TYPE_U_FOURIER", 4);
 });
 Clazz.declarePackage ("J.viewer");
 Clazz.load (["java.io.BufferedInputStream", "java.util.Properties", "J.util.Elements", "$.SB", "$.V3"], "J.viewer.JC", ["java.lang.NullPointerException", "java.util.Hashtable", "J.util.Logger", "$.Parser"], function () {
@@ -18422,7 +18517,7 @@ Clazz.defineStatics (c$,
 "predefinedGroup1Names", ['\0', 'A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'A', 'G', '?', 'G', 'C', 'A', 'T', 'U', 'I', 'G', 'C', 'A', 'T', 'U', 'I', 'G', 'C', 'A', 'T', 'U', 'I', 'I'],
 "predefinedVariable", ["@_1H _H & !(_2H,_3H)", "@_12C _C & !(_13C,_14C)", "@_14N _N & !(_15N)", "@water _g>=42 & _g<45, oxygen & connected(2) & connected(2, hydrogen), (hydrogen) & connected(oxygen & connected(2) & connected(2, hydrogen))", "@solvent water, (_g>=45 & _g<48)", "@ligand _g=0|!(_g<46,protein,nucleic,water)", "@turn structure=1", "@sheet structure=2", "@helix structure=3", "@helix310 substructure=7", "@helixalpha substructure=8", "@helixpi substructure=9", "@bonded bondcount>0"],
 "predefinedStatic", ["@amino _g>0 & _g<=23", "@acidic asp,glu", "@basic arg,his,lys", "@charged acidic,basic", "@negative acidic", "@positive basic", "@neutral amino&!(acidic,basic)", "@polar amino&!hydrophobic", "@cyclic his,phe,pro,trp,tyr", "@acyclic amino&!cyclic", "@aliphatic ala,gly,ile,leu,val", "@aromatic his,phe,trp,tyr", "@cystine within(group, (cys.sg or cyx.sg) and connected(cys.sg or cyx.sg))", "@buried ala,cys,ile,leu,met,phe,trp,val", "@surface amino&!buried", "@hydrophobic ala,gly,ile,leu,met,phe,pro,trp,tyr,val", "@mainchain backbone", "@small ala,gly,ser", "@medium asn,asp,cys,pro,thr,val", "@large arg,glu,gln,his,ile,leu,lys,met,phe,trp,tyr", "@c nucleic & ([C] or [DC] or within(group,_a=42))", "@g nucleic & ([G] or [DG] or within(group,_a=43))", "@cg c,g", "@a nucleic & ([A] or [DA] or within(group,_a=44))", "@t nucleic & ([T] or [DT] or within(group,_a=45 | _a=49))", "@at a,t", "@i nucleic & ([I] or [DI] or within(group,_a=46) & !g)", "@u nucleic & ([U] or [DU] or within(group,_a=47) & !t)", "@tu nucleic & within(group,_a=48)", "@ions _g>=46&_g<48", "@alpha _a=2", "@backbone protein&(_a>=1&_a<6|_a>=64&_a<72)|nucleic&(_a>=6&_a<14|_a>=72)", "@spine protein&_a>=1&_a<4|nucleic&_a>=6&_a<14&_a!=12", "@sidechain (protein,nucleic) & !backbone", "@base nucleic & !backbone", "@dynamic_flatring search('[a]')"],
-"databases", ["ligand", "http://www.rcsb.org/pdb/files/ligand/%FILE.cif", "mp", "http://www.materialsproject.org/materials/%FILE/cif", "nci", "http://cactus.nci.nih.gov/chemical/structure/%FILE", "nmr", "http://www.nmrdb.org/predictor?smiles=", "pdb", "http://www.rcsb.org/pdb/files/%FILE.pdb.gz", "pubchem", "http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/%FILE/SDF?record_type=3d"],
+"databases", ["ligand", "http://www.rcsb.org/pdb/files/ligand/%FILE.cif", "mp", "http://www.materialsproject.org/materials/%FILE/cif", "nci", "http://cactus.nci.nih.gov/chemical/structure/%FILE", "nmr", "http://www.nmrdb.org/predictor?POST?molfile=", "nmrdb", "http://www.nmrdb.org/service/predictor?POST?molfile=", "pdb", "http://www.rcsb.org/pdb/files/%FILE.pdb.gz", "pubchem", "http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/%FILE/SDF?record_type=3d"],
 "MODELKIT_ZAP_STRING", "5\n\nC 0 0 0\nH .63 .63 .63\nH -.63 -.63 .63\nH -.63 .63 -.63\nH .63 -.63 -.63",
 "MODELKIT_ZAP_TITLE", "Jmol Model Kit",
 "ADD_HYDROGEN_TITLE", "Viewer.AddHydrogens",
@@ -19388,6 +19483,7 @@ $_M(c$, "transformP2",
 function (pt, ptNew) {
 if (this.mat == null) this.setMatrix ();
 this.mat.transform2 (pt, ptNew);
+return ptNew;
 }, "J.util.Tuple3f,J.util.Tuple3f");
 $_M(c$, "transform", 
 function (v) {
@@ -20102,7 +20198,7 @@ return (this.fileAdapter == null ? this.fileAdapter = this.apiPlatform.getFileAd
 });
 $_M(c$, "renderScreenImage", 
 function (g, currentSize, rectClip) {
-this.apiPlatform.renderScreenImage (this, g, currentSize);
+this.apiPlatform.renderScreenImage (g, currentSize);
 }, "~O,~O,~O");
 $_M(c$, "getJsObjectInfo", 
 function (jsObject, method, args) {
@@ -20358,11 +20454,11 @@ this.height = h;
 return this;
 }, "~N,~N");
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["java.lang.Enum", "J.api.JmolViewer", "J.atomdata.AtomDataServer", "java.util.Hashtable", "J.atomdata.RadiusData", "J.i18n.GT", "J.util.CommandHistory", "$.Dimension", "$.JmolList"], "J.viewer.Viewer", ["java.io.BufferedReader", "$.File", "$.StringReader", "java.lang.Boolean", "$.Character", "$.Double", "$.Float", "J.adapter.smarter.SmarterJmolAdapter", "J.api.Interface", "J.constant.EnumAxesMode", "$.EnumFileStatus", "$.EnumStereoMode", "$.EnumVdw", "J.io.CifDataReader", "$.JmolBinary", "J.modelset.Group", "J.script.SV", "$.T", "J.thread.ScriptDelayThread", "$.TimeoutThread", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.C", "$.ColorUtil", "$.Elements", "$.Escape", "$.GData", "$.JmolMolecule", "$.Logger", "$.Measure", "$.P3", "$.P3i", "$.Parser", "$.SB", "$.TempArray", "$.TextFormat", "$.V3", "J.viewer.ActionManager", "$.AnimationManager", "$.ColorManager", "$.DataManager", "$.FileManager", "$.JC", "$.ModelManager", "$.SelectionManager", "$.ShapeManager", "$.StateManager", "$.StatusManager", "$.TransformManager", "J.viewer.binding.Binding"], function () {
+Clazz.load (["java.lang.Enum", "J.api.JmolViewer", "J.atomdata.AtomDataServer", "java.util.Hashtable", "J.atomdata.RadiusData", "J.i18n.GT", "J.util.CommandHistory", "$.Dimension", "$.JmolList"], "J.viewer.Viewer", ["java.io.BufferedReader", "$.StringReader", "java.lang.Boolean", "$.Character", "$.Double", "$.Float", "J.adapter.smarter.SmarterJmolAdapter", "J.api.Interface", "J.constant.EnumAxesMode", "$.EnumFileStatus", "$.EnumStereoMode", "$.EnumVdw", "J.io.CifDataReader", "$.JmolBinary", "J.modelset.Group", "J.script.SV", "$.T", "J.thread.TimeoutThread", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.C", "$.ColorUtil", "$.Elements", "$.Escape", "$.GData", "$.JmolMolecule", "$.Logger", "$.Measure", "$.P3", "$.P3i", "$.Parser", "$.SB", "$.TempArray", "$.TextFormat", "$.V3", "J.viewer.ActionManager", "$.AnimationManager", "$.ColorManager", "$.DataManager", "$.FileManager", "$.JC", "$.ModelManager", "$.SelectionManager", "$.ShapeManager", "$.StateManager", "$.StatusManager", "$.TransformManager", "J.viewer.binding.Binding"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.autoExit = false;
 this.haveDisplay = false;
-this.$isJS = false;
+this.isJS = false;
 this.isWebGL = false;
 this.isSingleThreaded = false;
 this.queueOnHold = false;
@@ -20424,8 +20520,8 @@ this.ligandModelSet = null;
 this.sc = null;
 this.bsFrameOffsets = null;
 this.frameOffsets = null;
-this.inMotion = false;
 this.motionEventNumber = 0;
+this.inMotion = false;
 this.refreshing = true;
 this.axesAreTainted = false;
 this.dimScreen = null;
@@ -20463,7 +20559,6 @@ this.currentShapeID = -1;
 this.currentShapeState = null;
 this.localFunctions = null;
 this.privateKey = 0;
-this.logFile = null;
 this.$isKiosk = false;
 this.minimizer = null;
 this.executor = null;
@@ -20475,7 +20570,6 @@ this.stateScriptVersionInt = 0;
 this.jsExporter3D = null;
 this.htPdbBondInfo = null;
 this.timeouts = null;
-this.scriptDelayThread = null;
 this.chainMap = null;
 this.chainList = null;
 this.nmrCalculation = null;
@@ -20497,6 +20591,22 @@ $_M(c$, "finalize",
 function () {
 if (J.util.Logger.debugging) J.util.Logger.debug ("viewer finalize " + this);
 Clazz.superCall (this, J.viewer.Viewer, "finalize", []);
+});
+Clazz.overrideMethod (c$, "isApplet", 
+function () {
+return this.$isApplet;
+});
+$_M(c$, "setInsertedCommand", 
+function (strScript) {
+this.insertedCommand = strScript;
+}, "~S");
+$_M(c$, "getLogFilePath", 
+function () {
+return this.logFilePath;
+});
+$_M(c$, "isSignedApplet", 
+function () {
+return this.$isSignedApplet;
 });
 c$.getJmolVersion = Clazz.overrideMethod (c$, "getJmolVersion", 
 function () {
@@ -20527,14 +20637,6 @@ return this.global;
 $_M(c$, "getStatusManager", 
 function () {
 return this.statusManager;
-});
-Clazz.overrideMethod (c$, "isApplet", 
-function () {
-return this.$isApplet;
-});
-$_M(c$, "isJS", 
-function () {
-return this.$isJS;
 });
 $_M(c$, "isRestricted", 
 function (a) {
@@ -20607,7 +20709,7 @@ o = (this.commandOptions.contains ("platform=") ? this.commandOptions.substring 
 }if (Clazz.instanceOf (o, String)) {
 platform = o;
 this.isWebGL = (platform.indexOf (".awtjs.") >= 0);
-this.$isJS = this.isWebGL || (platform.indexOf (".awtjs2d.") >= 0);
+this.isJS = this.isWebGL || (platform.indexOf (".awtjs2d.") >= 0);
 o = J.api.Interface.getInterface (platform);
 }this.apiPlatform = o;
 this.display = info.get ("display");
@@ -20702,7 +20804,7 @@ this.apiPlatform.setViewer (this, canvas);
 $_M(c$, "getScriptManager", 
 ($fz = function () {
 if (this.allowScripting && this.scriptManager == null) {
-this.scriptManager = J.api.Interface.getOptionInterface ("viewer.ScriptManager");
+this.scriptManager = J.api.Interface.getOptionInterface ("script.ScriptManager");
 this.scriptManager.setViewer (this);
 this.eval = this.scriptManager.getEval ();
 if (this.useCommandThread) this.scriptManager.startCommandWatcher (true);
@@ -20766,7 +20868,7 @@ this.transformManager.homePosition (includingSpin);
 if (this.modelSet.setCrystallographicDefaults ()) this.stateManager.setCrystallographicDefaults ();
  else this.setAxesModeMolecular (false);
 this.prevFrame = -2147483648;
-if (!this.getSpinOn ()) this.refresh (1, "Viewer:homePosition()");
+if (!this.getSpinOn ()) this.refresh (-1, "Viewer:homePosition()");
 }, "~B");
 Clazz.overrideMethod (c$, "homePosition", 
 function () {
@@ -20785,7 +20887,7 @@ info.put ("registry", this.statusManager.getRegistryInfo ());
 }info.put ("version", J.viewer.JC.version);
 info.put ("date", J.viewer.JC.date);
 info.put ("javaVendor", J.viewer.Viewer.strJavaVendor);
-info.put ("javaVersion", J.viewer.Viewer.strJavaVersion + (!this.$isJS ? "" : this.isWebGL ? "(WebGL)" : "(HTML5)"));
+info.put ("javaVersion", J.viewer.Viewer.strJavaVersion + (!this.isJS ? "" : this.isWebGL ? "(WebGL)" : "(HTML5)"));
 info.put ("operatingSystem", J.viewer.Viewer.strOSName);
 return info;
 });
@@ -20796,7 +20898,7 @@ this.setStartupBooleans ();
 this.global.setI ("_width", this.dimScreen.width);
 this.global.setI ("_height", this.dimScreen.height);
 if (this.haveDisplay) {
-this.global.setB ("_is2D", this.$isJS && !this.isWebGL);
+this.global.setB ("_is2D", this.isJS && !this.isWebGL);
 this.global.setB ("_multiTouchClient", this.actionManager.isMTClient ());
 this.global.setB ("_multiTouchServer", this.actionManager.isMTServer ());
 }this.colorManager.resetElementColors ();
@@ -21022,9 +21124,9 @@ $_M(c$, "setMouseEnabled",
 function (TF) {
 this.mouseEnabled = TF;
 }, "~B");
-Clazz.overrideMethod (c$, "processEvent", 
+Clazz.overrideMethod (c$, "processMultitouchEvent", 
 function (groupID, eventType, touchID, iData, pt, time) {
-this.actionManager.processEvent (groupID, eventType, touchID, iData, pt, time);
+this.actionManager.processMultitouchEvent (groupID, eventType, touchID, iData, pt, time);
 }, "~N,~N,~N,~N,J.util.P3,~N");
 $_M(c$, "zoomBy", 
 function (pixels) {
@@ -21073,11 +21175,6 @@ function (xDelta, yDelta) {
 if (this.mouseEnabled) this.transformManager.translateXYBy (xDelta, yDelta);
 this.refresh (2, this.statusManager.syncingMouse ? "Mouse: translateXYBy " + xDelta + " " + yDelta : "");
 }, "~N,~N");
-$_M(c$, "centerAt", 
-function (x, y, pt) {
-if (this.mouseEnabled) this.transformManager.centerAt (x, y, pt);
-this.refresh (2, this.statusManager.syncingMouse ? "Mouse: centerAt " + x + " " + y + " " + pt.x + " " + pt.y + " " + pt.z : "");
-}, "~N,~N,J.util.P3");
 Clazz.overrideMethod (c$, "rotateFront", 
 function () {
 this.transformManager.rotateFront ();
@@ -21342,7 +21439,19 @@ this.transformManager.setNavXYZ (Clazz.floatToInt (x), Clazz.floatToInt (y), Cla
 }, "~N,~N,~N");
 $_M(c$, "getOrientationText", 
 function (type, name) {
-return (name == null && type != 1073742158 ? this.transformManager.getOrientationText (type) : this.stateManager.getSavedOrientationText (name));
+switch (type) {
+case 1313866247:
+case 1073741863:
+case 1112541205:
+case 1112541206:
+case 1112541207:
+case 135270417:
+return this.modelSet.getBoundBoxOrientation (type, this.getSelectionSet (false));
+case 1073742035:
+return this.stateManager.getSavedOrientationText (name);
+default:
+return this.transformManager.getOrientationText (type);
+}
 }, "~N,~S");
 $_M(c$, "getOrientationInfo", 
 function () {
@@ -21805,13 +21914,12 @@ htParams.put ("loadScript", loadScript =  new J.util.SB ().append (J.util.TextFo
 }return this.createModelSetAndReturnError (atomSetCollection, isAppend, loadScript, htParams);
 }, "~S,~S,~A,~O,~B,java.util.Map,J.util.SB,~N");
 $_M(c$, "setLigandModel", 
-function (id, data) {
-id = id.toUpperCase ();
+function (key, data) {
 if (this.ligandModels == null) this.ligandModels =  new java.util.Hashtable ();
-this.ligandModels.put (id + "_data", data);
+this.ligandModels.put (key, data);
 }, "~S,~S");
 $_M(c$, "getLigandModel", 
-function (id) {
+function (id, prefix, suffix, terminator) {
 if (id == null) {
 if (this.ligandModelSet != null) {
 var e = this.ligandModels.entrySet ().iterator ();
@@ -21820,7 +21928,8 @@ var entry = e.next ();
 if (Clazz.instanceOf (entry.getValue (), Boolean)) e.remove ();
 }
 }return null;
-}id = id.toUpperCase ();
+}var isLigand = prefix.equals ("ligand_");
+if (isLigand) id = id.toUpperCase ();
 if (this.ligandModelSet == null) this.ligandModelSet =  new java.util.Hashtable ();
 this.ligandModelSet.put (id, Boolean.TRUE);
 if (this.ligandModels == null) this.ligandModels =  new java.util.Hashtable ();
@@ -21828,16 +21937,24 @@ var model = this.ligandModels.get (id);
 var data;
 var fname = null;
 if (Clazz.instanceOf (model, Boolean)) return null;
-if (model == null) model = this.ligandModels.get (id + "_data");
+if (model == null) model = this.ligandModels.get (id + suffix);
 var isError = false;
 if (model == null) {
+var s;
+if (isLigand) {
 fname = this.setLoadFormat ("#" + id, '#', false);
 if (fname.length == 0) return null;
 this.scriptEcho ("fetching " + fname);
-model = this.getFileAsString (fname);
-isError = ((model).indexOf ("java.") == 0);
-if (!isError) this.ligandModels.put (id + "_data", model);
-}if (!isError && Clazz.instanceOf (model, String)) {
+s = this.getFileAsString (fname);
+} else {
+s = this.getFileAsString (prefix);
+var pt = (terminator == null ? -1 : s.indexOf (terminator));
+if (pt >= 0) s = s.substring (0, pt);
+}isError = (s.indexOf ("java.") == 0);
+model = s;
+if (!isError) this.ligandModels.put (id + suffix, model);
+}if (!isLigand) return model;
+if (!isError && Clazz.instanceOf (model, String)) {
 data = model;
 if (data.length != 0) {
 var htParams =  new java.util.Hashtable ();
@@ -21853,7 +21970,7 @@ this.scriptEcho (model.toString ());
 this.ligandModels.put (id, Boolean.FALSE);
 return null;
 }return model;
-}, "~S");
+}, "~S,~S,~S,~S");
 $_M(c$, "openFileFull", 
 ($fz = function (fileName, isAppend, htParams, loadScript) {
 if (fileName == null) return null;
@@ -21871,7 +21988,7 @@ var strModel = null;
 if (haveFileData) {
 strModel = htParams.get ("fileData");
 if (htParams.containsKey ("isData")) {
-return this.loadInlineScript (strModel, '\0', isAppend, htParams, false);
+return this.loadInlineScript (strModel, '\0', isAppend, htParams);
 }} else if (isString) {
 strModel = this.modelSet.getInlineData (-1);
 if (strModel == null) if (this.global.modelKitMode) strModel = "5\n\nC 0 0 0\nH .63 .63 .63\nH -.63 -.63 .63\nH -.63 .63 -.63\nH .63 -.63 -.63";
@@ -21887,20 +22004,28 @@ return atomSetCollection;
 }, $fz.isPrivate = true, $fz), "~S,~B,java.util.Map,J.util.SB");
 Clazz.overrideMethod (c$, "openStringInline", 
 function (strModel) {
-return this.openStringInlineParamsAppend (strModel, null, false);
+var ret = this.openStringInlineParamsAppend (strModel, null, false);
+this.refresh (1, "openStringInline");
+return ret;
 }, "~S");
 $_M(c$, "loadInline", 
 function (strModel) {
-return this.loadInlineScript (strModel, this.global.inlineNewlineChar, false, null, true);
+return this.loadInlineScriptRepaint (strModel, this.global.inlineNewlineChar, false);
 }, "~S");
 $_M(c$, "loadInline", 
 function (strModel, newLine) {
-return this.loadInlineScript (strModel, newLine, false, null, true);
+return this.loadInlineScriptRepaint (strModel, newLine, false);
 }, "~S,~S");
 $_M(c$, "loadInline", 
 function (strModel, isAppend) {
-return this.loadInlineScript (strModel, '\0', isAppend, null, true);
+return this.loadInlineScriptRepaint (strModel, '\0', isAppend);
 }, "~S,~B");
+$_M(c$, "loadInlineScriptRepaint", 
+($fz = function (strModel, newLine, isAppend) {
+var ret = this.loadInlineScript (strModel, newLine, isAppend, null);
+this.refresh (1, "loadInlineScript");
+return ret;
+}, $fz.isPrivate = true, $fz), "~S,~S,~B");
 $_M(c$, "loadInline", 
 function (arrayModels) {
 return this.loadInline (arrayModels, false);
@@ -21917,17 +22042,18 @@ function (arrayData, isAppend) {
 if (arrayData == null || arrayData.size () == 0) return null;
 if (!isAppend) this.zap (true, false, false);
 var atomSetCollection = this.fileManager.createAtomSeCollectionFromArrayData (arrayData, this.setLoadParameters (null, isAppend), isAppend);
-return this.createModelSetAndReturnError (atomSetCollection, isAppend, null, null);
+var ret = this.createModelSetAndReturnError (atomSetCollection, isAppend, null, null);
+this.refresh (1, "loadInline");
+return ret;
 }, "java.util.List,~B");
 $_M(c$, "loadInlineScript", 
-function (strModel, newLine, isAppend, htParams, andRepaint) {
+($fz = function (strModel, newLine, isAppend, htParams) {
 if (strModel == null || strModel.length == 0) return null;
 strModel = J.viewer.Viewer.fixInlineString (strModel, newLine);
 if (newLine.charCodeAt (0) != 0) J.util.Logger.info ("loading model inline, " + strModel.length + " bytes, with newLine character " + (newLine).charCodeAt (0) + " isAppend=" + isAppend);
 if (J.util.Logger.debugging) J.util.Logger.debug (strModel);
 var datasep = this.getDataSeparator ();
 var i;
-var ret;
 if (datasep != null && datasep !== "" && (i = strModel.indexOf (datasep)) >= 0 && strModel.indexOf ("# Jmol state") < 0) {
 var n = 2;
 while ((i = strModel.indexOf (datasep, i + 1)) >= 0) n++;
@@ -21941,12 +22067,9 @@ if (pt < 0) pt = strModel.length;
 strModels[i] = strModel.substring (pt0, pt);
 pt0 = pt + datasep.length;
 }
-ret = this.openStringsInlineParamsAppend (strModels, htParams, isAppend);
-} else {
-ret = this.openStringInlineParamsAppend (strModel, htParams, isAppend);
-}if (andRepaint) this.refresh (1, "loadInlineScript");
-return ret;
-}, "~S,~S,~B,java.util.Map,~B");
+return this.openStringsInlineParamsAppend (strModels, htParams, isAppend);
+}return this.openStringInlineParamsAppend (strModel, htParams, isAppend);
+}, $fz.isPrivate = true, $fz), "~S,~S,~B,java.util.Map");
 c$.fixInlineString = $_M(c$, "fixInlineString", 
 function (strModel, newLine) {
 var i;
@@ -22010,7 +22133,7 @@ return errMsg;
 }if (isAppend) this.clearAtomSets ();
  else if (this.global.modelKitMode && !fileName.equals ("Jmol Model Kit")) this.setModelKitMode (false);
 this.setFileLoadStatus (J.constant.EnumFileStatus.CREATING_MODELSET, fullPathName, fileName, null, null, null);
-this.pushHoldRepaintWhy ("createModelSet");
+this.pushHoldRepaint ("createModelSet");
 this.setErrorMessage (null, null);
 try {
 var bsNew =  new J.util.BS ();
@@ -22032,7 +22155,7 @@ this.setErrorMessage (errMsg, null);
 throw er;
 }
 }
-this.popHoldRepaint ("createModelSet\u0001## REPAINT_IGNORE ##");
+this.popHoldRepaint ("createModelSet \u0001## REPAINT_IGNORE ##");
 errMsg = this.getErrorMessage ();
 this.setFileLoadStatus (J.constant.EnumFileStatus.CREATED, fullPathName, fileName, this.getModelSetName (), errMsg, htParams == null ? null : htParams.get ("async"));
 if (isAppend) {
@@ -22076,9 +22199,9 @@ function (filename) {
 return this.fileManager.getEmbeddedFileState (filename);
 }, "~S");
 Clazz.overrideMethod (c$, "getFileAsBytes", 
-function (pathName, os) {
-return this.fileManager.getFileAsBytes (pathName, os, true);
-}, "~S,java.io.OutputStream");
+function (pathName, osb) {
+return this.fileManager.getFileAsBytes (pathName, osb, true);
+}, "~S,J.io.OutputStringBuilder");
 $_M(c$, "getCurrentFileAsString", 
 function () {
 var filename = this.getFullPathName ();
@@ -22087,7 +22210,7 @@ if (filename.indexOf ("[]") >= 0) return filename;
 if (filename === "JSNode") return "<DOM NODE>";
 var pathName = this.modelManager.getModelSetPathName ();
 if (pathName == null) return null;
-return this.getFileAsString4 (pathName, 2147483647, true, false);
+return this.getFileAsString4 (pathName, -1, true, false);
 });
 $_M(c$, "getFullPathName", 
 function () {
@@ -22103,24 +22226,20 @@ return this.fileManager.getFullPathNameOrError (filename);
 }, "~S");
 Clazz.overrideMethod (c$, "getFileAsString", 
 function (name) {
-return this.getFileAsString4 (name, 2147483647, false, false);
+return this.getFileAsString4 (name, -1, false, false);
 }, "~S");
 $_M(c$, "getFileAsString4", 
 function (name, nBytesMax, doSpecialLoad, allowBinary) {
 if (name == null) return this.getCurrentFileAsString ();
 var data =  new Array (2);
 data[0] = name;
-this.getFileAsStringFM (data, nBytesMax, doSpecialLoad, allowBinary);
+this.fileManager.getFileDataOrErrorAsString (data, nBytesMax, doSpecialLoad, allowBinary);
 return data[1];
 }, "~S,~N,~B,~B");
-Clazz.overrideMethod (c$, "getFileAsStringBin", 
-function (data, nBytesMax, doSpecialLoad) {
-return this.getFileAsStringFM (data, nBytesMax, doSpecialLoad, true);
-}, "~A,~N,~B");
-$_M(c$, "getFileAsStringFM", 
-($fz = function (data, nBytesMax, doSpecialLoad, allowBinary) {
-return this.fileManager.getFileDataOrErrorAsString (data, nBytesMax, doSpecialLoad, allowBinary);
-}, $fz.isPrivate = true, $fz), "~A,~N,~B,~B");
+$_M(c$, "getFileAsStringBin", 
+function (data) {
+return this.fileManager.getFileDataOrErrorAsString (data, -1, false, true);
+}, "~A");
 $_M(c$, "getFilePath", 
 function (name, asShortName) {
 return this.fileManager.getFilePath (name, false, asShortName);
@@ -22476,13 +22595,11 @@ return this.modelSet.getModelSetAuxiliaryInfo ();
 });
 Clazz.overrideMethod (c$, "getModelNumber", 
 function (modelIndex) {
-if (modelIndex < 0) return modelIndex;
-return this.modelSet.getModelNumber (modelIndex);
+return (modelIndex < 0 ? modelIndex : this.modelSet.getModelNumber (modelIndex));
 }, "~N");
 $_M(c$, "getModelFileNumber", 
 function (modelIndex) {
-if (modelIndex < 0) return 0;
-return this.modelSet.getModelFileNumber (modelIndex);
+return (modelIndex < 0 ? 0 : this.modelSet.getModelFileNumber (modelIndex));
 }, "~N");
 Clazz.overrideMethod (c$, "getModelNumberDotted", 
 function (modelIndex) {
@@ -22524,9 +22641,13 @@ $_M(c$, "modelSetHasVibrationVectors",
 function () {
 return this.modelSet.modelSetHasVibrationVectors ();
 });
+Clazz.overrideMethod (c$, "modelGetLastVibrationIndex", 
+function (modelIndex, tok) {
+return this.modelSet.getLastVibrationVector (modelIndex, tok);
+}, "~N,~N");
 Clazz.overrideMethod (c$, "modelHasVibrationVectors", 
 function (modelIndex) {
-return this.modelSet.modelHasVibrationVectors (modelIndex);
+return (this.modelSet.getLastVibrationVector (modelIndex, 4166) >= 0);
 }, "~N");
 Clazz.overrideMethod (c$, "getChainCount", 
 function () {
@@ -22759,7 +22880,7 @@ return this.getPropertyManager ().getChimeInfo (tok, this.getSelectionSet (false
 }, "~N");
 $_M(c$, "getStateCreator", 
 function () {
-if (this.sc == null) (this.sc = J.api.Interface.getOptionInterface ("viewer.StateCreator")).setViewer (this);
+if (this.sc == null) (this.sc = J.api.Interface.getOptionInterface ("viewer.StateCreator")).setViewer (this, this.privateKey);
 return this.sc;
 });
 $_M(c$, "getWrappedState", 
@@ -22848,7 +22969,18 @@ return this.modelSet.getPartialCharges () != null;
 });
 $_M(c$, "getCurrentUnitCell", 
 function () {
-return this.modelSet.getUnitCell (this.animationManager.currentModelIndex);
+if (this.animationManager.currentModelIndex >= 0) return this.modelSet.getUnitCell (this.animationManager.currentModelIndex);
+var models = this.getVisibleFramesBitSet ();
+var ucLast = null;
+for (var i = models.nextSetBit (0); i >= 0; i = models.nextSetBit (i + 1)) {
+var uc = this.modelSet.getUnitCell (i);
+if (uc == null) continue;
+if (ucLast == null) {
+ucLast = uc;
+continue;
+}if (!ucLast.unitCellEquals (uc)) return null;
+}
+return ucLast;
 });
 $_M(c$, "getModelUnitCell", 
 function (modelIndex) {
@@ -23074,24 +23206,25 @@ this.global.setS ("_lastFrame", this.animationManager.getModelSpecial (1));
 this.global.setF ("_animTimeSec", this.animationManager.getAnimRunTimeSeconds ());
 this.global.setB ("_animMovie", this.animationManager.isMovie);
 });
-Clazz.overrideMethod (c$, "getMotionEventNumber", 
-function () {
-return this.motionEventNumber;
-});
 $_M(c$, "getInMotion", 
 function (includeAnim) {
 return (this.inMotion || includeAnim && this.animationManager.animationOn);
 }, "~B");
+Clazz.overrideMethod (c$, "getMotionEventNumber", 
+function () {
+return this.motionEventNumber;
+});
 Clazz.overrideMethod (c$, "setInMotion", 
 function (inMotion) {
 if ( new Boolean (this.inMotion ^ inMotion).valueOf ()) {
 this.inMotion = inMotion;
+this.resizeImage (0, 0, false, false, true);
 if (inMotion) {
 this.startHoverWatcher (false);
 ++this.motionEventNumber;
 } else {
 this.startHoverWatcher (true);
-this.refresh (3, "viewer stInMotion " + inMotion);
+this.refresh (3, "viewer setInMotion " + inMotion);
 }}}, "~B");
 $_M(c$, "setRefreshing", 
 ($fz = function (TF) {
@@ -23101,15 +23234,14 @@ $_M(c$, "getRefreshing",
 function () {
 return this.refreshing;
 });
-Clazz.overrideMethod (c$, "pushHoldRepaint", 
+$_M(c$, "pushHoldRepaint", 
 function () {
-this.pushHoldRepaintWhy (null);
+this.pushHoldRepaint (null);
 });
-$_M(c$, "pushHoldRepaintWhy", 
+$_M(c$, "pushHoldRepaint", 
 function (why) {
-if (this.repaintManager != null) {
-this.repaintManager.pushHoldRepaint (why);
-}}, "~S");
+if (this.repaintManager != null) this.repaintManager.pushHoldRepaint (why);
+}, "~S");
 Clazz.overrideMethod (c$, "popHoldRepaint", 
 function (why) {
 if (this.repaintManager != null) {
@@ -23180,7 +23312,7 @@ $_M(c$, "resizeImage",
 function (width, height, isImageWrite, isExport, isReset) {
 if (!isImageWrite && this.creatingImage) return;
 if (!isExport && !isImageWrite) this.setShapeProperty (5, "clearBoxes", null);
-this.antialiasDisplay = (isReset ? this.global.antialiasDisplay : isImageWrite && !isExport ? this.global.antialiasImages : false);
+this.antialiasDisplay = (isReset ? this.global.antialiasDisplay && this.checkMotionRendering (603979786) : isImageWrite && !isExport ? this.global.antialiasImages : false);
 this.imageFontScaling = (isReset || width <= 0 ? 1 : Clazz.doubleToInt ((this.global.zoomLarge == (height > width) ? height : width) / this.getScreenDim ())) * (this.antialiasDisplay ? 2 : 1);
 if (width > 0) {
 this.dimScreen.width = width;
@@ -23270,7 +23402,7 @@ return image;
 }, $fz.isPrivate = true, $fz), "~B,~B");
 $_M(c$, "beginRendering", 
 ($fz = function (isDouble, isImageWrite) {
-this.gdata.beginRendering (this.transformManager.getStereoRotationMatrix (isDouble), this.global.translucent, isImageWrite);
+this.gdata.beginRendering (this.transformManager.getStereoRotationMatrix (isDouble), this.global.translucent, isImageWrite, !this.checkMotionRendering (603979967));
 }, $fz.isPrivate = true, $fz), "~B,~B");
 $_M(c$, "isAntialiased", 
 function () {
@@ -23411,9 +23543,7 @@ $_M(c$, "evalStringWaitStatusQueued",
 function (returnType, strScript, statusList, isScriptFile, isQuiet, isQueued) {
 {
 if (strScript.indexOf("JSCONSOLE") == 0) {
-this.applet._showInfo(true);
-return null;
-}
+this.applet._showInfo(true); return null; }
 }if (this.getScriptManager () == null) return null;
 return this.scriptManager.evalStringWaitStatusQueued (returnType, strScript, statusList, isScriptFile, isQuiet, isQueued);
 }, "~S,~S,~S,~B,~B,~B");
@@ -23450,9 +23580,10 @@ return (this.eval != null && this.eval.isExecuting ());
 });
 Clazz.overrideMethod (c$, "haltScriptExecution", 
 function () {
-if (this.eval != null) this.eval.haltExecution ();
-this.stopScriptDelayThread ();
-this.setStringPropertyTok ("pathForAllFiles", 545259570, "");
+if (this.eval != null) {
+this.eval.haltExecution ();
+this.eval.stopScriptThreads ();
+}this.setStringPropertyTok ("pathForAllFiles", 545259571, "");
 this.clearTimeouts ();
 });
 $_M(c$, "pauseScriptExecution", 
@@ -23611,7 +23742,7 @@ this.hoverEnabled = (strLabel != null);
 if (!this.hoverEnabled) this.startHoverWatcher (false);
 }, "~S");
 $_M(c$, "hoverOn", 
-function (atomIndex, action) {
+function (atomIndex, isLabel) {
 this.setStatusAtomHovered (atomIndex, this.getAtomInfoXYZ (atomIndex, false));
 if (!this.hoverEnabled) return;
 if (this.global.modelKitMode) {
@@ -23621,14 +23752,14 @@ return;
 }if (this.eval != null && this.isScriptExecuting () || atomIndex == this.hoverAtomIndex || this.global.hoverDelayMs == 0) return;
 if (!this.isInSelectionSubset (atomIndex)) return;
 this.loadShape (34);
-if (this.isBound (action, 10) && this.getPickingMode () == 2 && this.modelSet.atoms[atomIndex].isShapeVisible (J.viewer.JC.getShapeVisibilityFlag (5))) {
+if (isLabel && this.modelSet.atoms[atomIndex].isShapeVisible (J.viewer.JC.getShapeVisibilityFlag (5))) {
 this.setShapeProperty (34, "specialLabel", J.i18n.GT._ ("Drag to move label"));
 }this.setShapeProperty (34, "text", null);
 this.setShapeProperty (34, "target", Integer.$valueOf (atomIndex));
 this.hoverText = null;
 this.hoverAtomIndex = atomIndex;
 this.refresh (3, "hover on atom");
-}, "~N,~N");
+}, "~N,~B");
 $_M(c$, "hoverOnPt", 
 function (x, y, text, id, pt) {
 if (!this.hoverEnabled) return;
@@ -23645,6 +23776,7 @@ this.refresh (3, "hover on point");
 }, "~N,~N,~S,~S,J.util.P3");
 $_M(c$, "hoverOff", 
 function () {
+try {
 if (this.global.modelKitMode) this.highlight (null);
 if (!this.hoverEnabled) return;
 var isHover = (this.hoverText != null || this.hoverAtomIndex >= 0);
@@ -23656,6 +23788,12 @@ this.setShapeProperty (34, "text", null);
 this.hoverText = null;
 }this.setShapeProperty (34, "specialLabel", null);
 if (isHover) this.refresh (3, "hover off");
+} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
 });
 $_M(c$, "getBfactor100Hi", 
 function () {
@@ -23841,7 +23979,8 @@ this.global.setI ("_frameID", frameID);
 this.global.setS ("_modelNumber", strModelNo);
 this.global.setS ("_modelName", (modelIndex < 0 ? "" : this.getModelName (modelIndex)));
 this.global.setS ("_modelTitle", (modelIndex < 0 ? "" : this.getModelTitle (modelIndex)));
-this.global.setS ("_modelFile", (modelIndex < 0 ? "" : this.getModelFileName (modelIndex)));
+this.global.setS ("_modelFile", (modelIndex < 0 ? "" : this.modelSet.getModelFileName (modelIndex)));
+this.global.setS ("_modelType", (modelIndex < 0 ? "" : this.modelSet.getModelFileType (modelIndex)));
 if (currentFrame == this.prevFrame) return;
 this.prevFrame = currentFrame;
 var entryName;
@@ -24077,8 +24216,10 @@ case 553648153:
 return this.global.minPixelSelRadius;
 case 553648154:
 return this.global.percentVdwAtom;
-case 553648158:
+case 553648157:
 return this.global.pickingSpinRate;
+case 553648158:
+return this.global.platformSpeed;
 case 553648166:
 return this.global.ribbonAspectRatio;
 case 536870922:
@@ -24106,6 +24247,8 @@ return (this.global.modelKitMode ? 20 : this.global.hoverDelayMs);
 Clazz.overrideMethod (c$, "getBoolean", 
 function (tok) {
 switch (tok) {
+case 1074790662:
+return this.modelSet.getModelSetAuxiliaryInfoBoolean ("isPDB");
 case 603979780:
 return this.global.allowGestures;
 case 603979784:
@@ -24202,6 +24345,8 @@ case 603979889:
 return this.global.partialDots;
 case 603979892:
 return this.global.pdbSequential;
+case 603979894:
+return this.global.preserveState;
 case 603979898:
 return this.global.ribbonBorder;
 case 603979900:
@@ -24240,8 +24385,6 @@ case 603979973:
 return this.global.vectorSymmetry;
 case 603979974:
 return this.global.waitForMoveTo;
-case 603979976:
-return this.global.wireframeRotation;
 case 603979978:
 return this.global.zeroBasedXyzRasmol;
 }
@@ -24275,8 +24418,10 @@ case 570425354:
 return this.global.defaultTranslucent;
 case 570425352:
 return this.global.defaultDrawArrowScale;
-case 570425356:
+case 570425355:
 return this.global.dipoleScale;
+case 570425356:
+return this.global.drawFontSize;
 case 570425358:
 return this.global.exportScale;
 case 570425360:
@@ -24341,10 +24486,13 @@ this.setStringPropertyTok (key, tok, value);
 $_M(c$, "setStringPropertyTok", 
 ($fz = function (key, tok, value) {
 switch (tok) {
+case 545259569:
+this.global.nmrPredictFormat = value;
+break;
 case 545259548:
 this.global.defaultDropScript = value;
 break;
-case 545259570:
+case 545259571:
 value = this.fileManager.setPathForAllFiles (value);
 break;
 case 545259558:
@@ -24354,7 +24502,7 @@ case 545259560:
 this.global.forceField = value = ("UFF".equalsIgnoreCase (value) ? "UFF" : "MMFF");
 this.minimizer = null;
 break;
-case 545259569:
+case 545259570:
 this.global.nmrUrlFormat = value;
 break;
 case 545259568:
@@ -24373,7 +24521,7 @@ case 545259549:
 this.global.defaultLoadFilter = value;
 break;
 case 545259567:
-value = this.setLogFile (value);
+value = this.getStateCreator ().setLogFile (value);
 if (value == null) return;
 break;
 case 545259559:
@@ -24506,6 +24654,9 @@ this.setFloatPropertyTok (key, tok, value);
 $_M(c$, "setFloatPropertyTok", 
 ($fz = function (key, tok, value) {
 switch (tok) {
+case 570425356:
+this.global.drawFontSize = value;
+break;
 case 570425358:
 this.global.exportScale = value;
 break;
@@ -24617,7 +24768,7 @@ break;
 case 570425392:
 this.global.sheetSmoothing = value;
 break;
-case 570425356:
+case 570425355:
 value = J.viewer.Viewer.checkFloatRange (value, -10, 10);
 this.global.dipoleScale = value;
 break;
@@ -24677,6 +24828,9 @@ this.setIntPropertyTok (key, tok, value);
 $_M(c$, "setIntPropertyTok", 
 ($fz = function (key, tok, value) {
 switch (tok) {
+case 553648158:
+this.global.platformSpeed = Math.min (Math.max (value, 0), 10);
+break;
 case 553648151:
 this.global.meshScale = value;
 break;
@@ -24793,7 +24947,7 @@ break;
 case 553648166:
 this.global.ribbonAspectRatio = value;
 break;
-case 553648158:
+case 553648157:
 this.global.pickingSpinRate = (value < 1 ? 1 : value);
 break;
 case 553648132:
@@ -25034,13 +25188,9 @@ case 603979833:
 this.global.drawPicking = value;
 break;
 case 603979786:
-this.setAntialias (0, value);
-break;
 case 603979790:
-this.setAntialias (1, value);
-break;
 case 603979788:
-this.setAntialias (2, value);
+this.setAntialias (tok, value);
 break;
 case 603979944:
 this.global.smartAromatic = value;
@@ -25354,7 +25504,7 @@ if (ifNotSet || sv.indexOf ("<not defined>") < 0) this.showString (key + " = " +
 }, "~S,~B,~N");
 $_M(c$, "showString", 
 function (str, isPrint) {
-if (this.isScriptQueued () && (!this.isSilent || isPrint) && !this.$isJS) J.util.Logger.warn (str);
+if (this.isScriptQueued () && (!this.isSilent || isPrint) && !this.isJS) J.util.Logger.warn (str);
 this.scriptEcho (str);
 }, "~S,~B");
 $_M(c$, "getAllSettings", 
@@ -25612,11 +25762,7 @@ this.setObjectMad (35, "frank", (TF ? 1 : 0));
 $_M(c$, "getShowFrank", 
 function () {
 if (this.$isPreviewOnly || this.$isApplet && this.creatingImage) return false;
-return (!this.$isJS && this.$isSignedApplet && !this.isSignedAppletLocal || this.frankOn);
-});
-$_M(c$, "isSignedApplet", 
-function () {
-return this.$isSignedApplet;
+return (!this.isJS && this.$isSignedApplet && !this.isSignedAppletLocal || this.frankOn);
 });
 Clazz.overrideMethod (c$, "setShowMeasurements", 
 function (TF) {
@@ -25666,15 +25812,15 @@ $_M(c$, "setDefaults",
 this.setShapeSizeRD (0, this.rd, this.getModelUndeletedAtomsBitSet (-1));
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "setAntialias", 
-($fz = function (mode, TF) {
-switch (mode) {
-case 0:
+($fz = function (tok, TF) {
+switch (tok) {
+case 603979786:
 this.global.antialiasDisplay = TF;
 break;
-case 1:
+case 603979790:
 this.global.antialiasTranslucent = TF;
 break;
-case 2:
+case 603979788:
 this.global.antialiasImages = TF;
 return;
 }
@@ -25826,7 +25972,7 @@ return this.transformManager.stereoMode === J.constant.EnumStereoMode.DOUBLE;
 });
 Clazz.overrideMethod (c$, "getOperatingSystemName", 
 function () {
-return J.viewer.Viewer.strOSName + (!this.$isJS ? "" : this.isWebGL ? "(WebGL)" : "(HTML5)");
+return J.viewer.Viewer.strOSName + (!this.isJS ? "" : this.isWebGL ? "(WebGL)" : "(HTML5)");
 });
 Clazz.overrideMethod (c$, "getJavaVendor", 
 function () {
@@ -25910,7 +26056,7 @@ this.isTainted = this.axesAreTainted = (TF && (this.refreshing || this.creatingI
 }, "~B");
 $_M(c$, "notifyMouseClicked", 
 function (x, y, action, mode) {
-var modifiers = J.viewer.binding.Binding.getModifiers (action);
+var modifiers = J.viewer.binding.Binding.getButtonMods (action);
 var clickCount = J.viewer.binding.Binding.getClickCount (action);
 this.global.setI ("_mouseX", x);
 this.global.setI ("_mouseY", this.dimScreen.height - y);
@@ -26012,10 +26158,9 @@ $_M(c$, "getHelixData",
 function (bs, tokType) {
 return this.modelSet.getHelixData (bs, tokType);
 }, "J.util.BS,~N");
-$_M(c$, "getPdbData", 
+$_M(c$, "getPdbAtomData", 
 function (bs, sb) {
-if (bs == null) bs = this.getSelectionSet (true);
-return this.modelSet.getPdbAtomData (bs, sb);
+return this.modelSet.getPdbAtomData (bs == null ? this.getSelectionSet (true) : bs, sb);
 }, "J.util.BS,J.io.OutputStringBuilder");
 $_M(c$, "isJmolDataFrameForModel", 
 function (modelIndex) {
@@ -26291,10 +26436,29 @@ for (var i = 0, n = 0; i < nX; i++) for (var j = 0; j < nY; j++) for (var k = 0;
 
 return xyzdata;
 }, "~S,~N,~N,~N");
-$_M(c$, "showNMR", 
-function (smiles) {
-this.showUrl (this.global.nmrUrlFormat + J.util.Escape.escapeUrl (this.getChemicalInfo (smiles, '/', "smiles")));
+Clazz.overrideMethod (c$, "extractMolData", 
+function (what) {
+if (what == null) {
+var i = this.getCurrentModelIndex ();
+if (i < 0) return null;
+what = this.getModelNumberDotted (i);
+}return this.getModelExtract (what, true, false, "V2000");
 }, "~S");
+$_M(c$, "getNMRPredict", 
+function (openURL) {
+var molFile = this.getModelExtract ("selected", true, false, "V2000");
+var pt = molFile.indexOf ("\n");
+molFile = "Jmol " + J.viewer.Viewer.version_date + molFile.substring (pt);
+if (openURL) {
+if (this.$isApplet) {
+this.showUrl (this.global.nmrUrlFormat + molFile);
+} else {
+this.syncScript ("true", "*", 0);
+this.syncScript ("JSpecView:", ".", 0);
+}return null;
+}var url = this.global.nmrPredictFormat + molFile;
+return this.getFileAsString (url);
+}, "~B");
 $_M(c$, "getHelp", 
 function (what) {
 if (this.global.helpPath.indexOf ("?") < 0) {
@@ -26312,7 +26476,7 @@ $_M(c$, "getChemicalInfo",
 function (smiles, type, info) {
 var s = this.setLoadFormat ("_" + smiles, type, false);
 if (type == '/') s += J.util.TextFormat.simpleReplace (info, " ", "%20");
-return this.getFileAsString4 (s, 2147483647, false, false);
+return this.getFileAsString4 (s, -1, false, false);
 }, "~S,~S,~S");
 $_M(c$, "addCommand", 
 function (command) {
@@ -26356,21 +26520,21 @@ return this.getStateCreator ().createImageSet (fileName, type, text, bytes, scri
 }, "~S,~S,~S,~A,~A,~N,~N,~N,J.util.BS,~N,~A");
 $_M(c$, "createZip", 
 function (fileName, type, stateInfo, scripts) {
-return this.getStateCreator ().createImagePathCheck (fileName, type, stateInfo, null, scripts, null, -2147483648, -1, -1, null, true);
+return this.getStateCreator ().createImage (fileName, type, stateInfo, null, scripts, -2147483648, -1, -1);
 }, "~S,~S,~S,~A");
 $_M(c$, "createImage", 
 function (fileName, type, text_or_bytes, quality, width, height) {
 var text = (Clazz.instanceOf (text_or_bytes, String) ? text_or_bytes : null);
 var bytes = (Clazz.instanceOf (text_or_bytes, Array) ? text_or_bytes : null);
-return this.getStateCreator ().createImagePathCheck (fileName, type, text, bytes, null, null, quality, width, height, null, true);
+return this.getStateCreator ().createImage (fileName, type, text, bytes, null, quality, width, height);
 }, "~S,~S,~O,~N,~N,~N");
 $_M(c$, "createImage", 
 function (fileName, type, text, bytes, quality, width, height) {
-return this.getStateCreator ().createImagePathCheck (fileName, type, text, bytes, null, null, quality, width, height, null, true);
+return this.getStateCreator ().createImage (fileName, type, text, bytes, null, quality, width, height);
 }, "~S,~S,~S,~A,~N,~N,~N");
 $_M(c$, "getImageCreator", 
 function () {
-return (J.api.Interface.getOptionInterface (this.$isJS && !this.isWebGL ? "exportjs.JSImageCreator" : "export.image.AwtImageCreator")).setViewer (this, this.privateKey);
+return (J.api.Interface.getOptionInterface (this.isJS && !this.isWebGL ? "exportjs.JSImageCreator" : "export.image.AwtImageCreator")).setViewer (this, this.privateKey);
 });
 $_M(c$, "setSyncTarget", 
 ($fz = function (mode, TF) {
@@ -26465,13 +26629,17 @@ return this.dataManager.getDefaultVdwNameOrData (iMode, vType, null);
 }, "~N,J.constant.EnumVdw");
 $_M(c$, "deleteAtoms", 
 function (bs, fullModels) {
+var atomIndex = (bs == null ? -1 : bs.nextSetBit (0));
+if (atomIndex < 0) return 0;
 this.clearModelDependentObjects ();
 if (!fullModels) {
+this.statusManager.modifySend (atomIndex, this.modelSet.atoms[atomIndex].modelIndex, 4);
 this.modelSet.deleteAtoms (bs);
 var n = this.selectionManager.deleteAtoms (bs);
 this.setTainted (true);
+this.statusManager.modifySend (atomIndex, this.modelSet.atoms[atomIndex].modelIndex, -4);
 return n;
-}if (bs.cardinality () == 0) return 0;
+}this.statusManager.modifySend (-1, this.modelSet.atoms[atomIndex].modelIndex, 5);
 this.setCurrentModelIndexClear (0, false);
 this.animationManager.setAnimationOn (false);
 var bsD0 = J.util.BSUtil.copy (this.getDeletedAtoms ());
@@ -26487,6 +26655,7 @@ this.hoverAtomIndex = -1;
 this.setFileLoadStatus (J.constant.EnumFileStatus.DELETED, null, null, null, null, null);
 this.refreshMeasures (true);
 if (bsD0 != null) bsDeleted.andNot (bsD0);
+this.statusManager.modifySend (-1, this.modelSet.atoms[atomIndex].modelIndex, -5);
 return J.util.BSUtil.cardinalityOf (bsDeleted);
 }, "J.util.BS,~B");
 $_M(c$, "deleteBonds", 
@@ -26552,6 +26721,7 @@ return dir;
 $_M(c$, "setErrorMessage", 
 function (errMsg, errMsgUntranslated) {
 this.errorMessageUntranslated = errMsgUntranslated;
+if (errMsg != null) this.eval.stopScriptThreads ();
 return (this.errorMessage = errMsg);
 }, "~S,~S");
 Clazz.overrideMethod (c$, "getErrorMessage", 
@@ -26584,7 +26754,7 @@ this.setCursor (0);
 this.setBooleanProperty ("refreshing", true);
 this.fileManager.setPathForAllFiles ("");
 J.util.Logger.error ("viewer handling error condition: " + er + "  ");
-if (!this.$isJS) er.printStackTrace ();
+if (!this.isJS) er.printStackTrace ();
 this.notifyError ("Error", "doClear=" + doClear + "; " + er, "" + er);
 } catch (e1) {
 try {
@@ -26649,9 +26819,9 @@ function (privateKey) {
 return privateKey == this.privateKey;
 }, "~N");
 $_M(c$, "bindAction", 
-function (desc, name, range1, range2) {
-if (this.haveDisplay) this.actionManager.bindAction (desc, name, range1, range2);
-}, "~S,~S,J.util.P3,J.util.P3");
+function (desc, name) {
+if (this.haveDisplay) this.actionManager.bindAction (desc, name);
+}, "~S,~S");
 $_M(c$, "unBindAction", 
 function (desc, name) {
 if (this.haveDisplay) this.actionManager.unbindAction (desc, name);
@@ -26676,38 +26846,6 @@ $_M(c$, "getPreserveState",
 function () {
 return (this.global.preserveState && this.scriptManager != null);
 });
-$_M(c$, "getLogFile", 
-function () {
-return (this.logFile == null ? "" : this.logFile);
-});
-$_M(c$, "setLogFile", 
-($fz = function (value) {
-var path = null;
-if (this.logFilePath == null || value.indexOf ("\\") >= 0 || value.indexOf ("/") >= 0) {
-value = null;
-} else if (value.length > 0) {
-if (!value.startsWith ("JmolLog_")) value = "JmolLog_" + value;
-try {
-path = (this.$isApplet ? this.logFilePath + value : ( new java.io.File (this.logFilePath + value).getAbsolutePath ()));
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-value = null;
-} else {
-throw e;
-}
-}
-}if (value == null || !this.isRestricted (J.viewer.Viewer.ACCESS.ALL)) {
-J.util.Logger.info (J.i18n.GT._ ("Cannot set log file path."));
-value = null;
-} else {
-if (path != null) J.util.Logger.info (J.i18n.GT._ ("Setting log file to {0}", path));
-this.logFile = path;
-}return value;
-}, $fz.isPrivate = true, $fz), "~S");
-Clazz.overrideMethod (c$, "log", 
-function (data) {
-if (data != null) this.getStateCreator ().logToFile (data);
-}, "~S");
 $_M(c$, "isKiosk", 
 function () {
 return this.$isKiosk;
@@ -26774,6 +26912,7 @@ this.getMinimizer (true).minimize (steps, crit, bsSelected, bsMotionFixed, haveF
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
 J.util.Logger.error ("Minimization error: " + e.toString ());
+if (!this.isJS) e.printStackTrace ();
 } else {
 throw e;
 }
@@ -26800,10 +26939,10 @@ $_M(c$, "getCenterAndPoints",
 function (atomSets, addCenter) {
 return this.modelSet.getCenterAndPoints (atomSets, addCenter);
 }, "J.util.JmolList,~B");
-$_M(c$, "streamFileData", 
-function (fileName, type, type2, modelIndex, parameters) {
-return this.getStateCreator ().streamFileData (fileName, type, type2, modelIndex, parameters);
-}, "~S,~S,~S,~N,~A");
+$_M(c$, "writeFileData", 
+function (fileName, type, modelIndex, parameters) {
+return this.getStateCreator ().writeFileData (fileName, type, modelIndex, parameters);
+}, "~S,~S,~N,~A");
 $_M(c$, "getPdbData", 
 function (modelIndex, type, parameters) {
 return this.modelSet.getPdbData (modelIndex, type, this.getSelectionSet (false), parameters, null);
@@ -26970,9 +27109,11 @@ if (type.equals ("X")) this.setRotateBondIndex (-1);
 if (this.modelSet.atoms[atomIndex].modelIndex != this.modelSet.modelCount - 1) return;
 this.clearModelDependentObjects ();
 if (pt == null) {
+this.statusManager.modifySend (atomIndex, this.modelSet.atoms[atomIndex].modelIndex, 1);
 var atomCount = this.modelSet.getAtomCount ();
 this.modelSet.assignAtom (atomIndex, type, true);
 if (!J.util.Parser.isOneOf (type, ";Mi;Pl;X;")) this.modelSet.setAtomNamesAndNumbers (atomIndex, -atomCount, null);
+this.statusManager.modifySend (atomIndex, this.modelSet.atoms[atomIndex].modelIndex, -1);
 this.refresh (3, "assignAtom");
 return;
 }var atom = this.modelSet.atoms[atomIndex];
@@ -26980,6 +27121,8 @@ var bs = J.util.BSUtil.newAndSetBit (atomIndex);
 var pts = [pt];
 var vConnections =  new J.util.JmolList ();
 vConnections.addLast (atom);
+var modelIndex = atom.modelIndex;
+this.statusManager.modifySend (atomIndex, modelIndex, 3);
 try {
 bs = this.addHydrogensInline (bs, vConnections, pts);
 atomIndex = bs.nextSetBit (0);
@@ -26991,15 +27134,19 @@ throw e;
 }
 }
 this.modelSet.setAtomNamesAndNumbers (atomIndex, -1, null);
+this.statusManager.modifySend (atomIndex, modelIndex, -3);
 }, "~N,J.util.P3,~S");
 $_M(c$, "assignConnect", 
 function (index, index2) {
 this.clearModelDependentObjects ();
 var connections = J.util.ArrayUtil.newFloat2 (1);
 connections[0] = [index, index2];
+var modelIndex = this.modelSet.atoms[index].modelIndex;
+this.statusManager.modifySend (index, modelIndex, 2);
 this.modelSet.connect (connections);
 this.modelSet.assignAtom (index, ".", true);
 this.modelSet.assignAtom (index2, ".", true);
+this.statusManager.modifySend (index, modelIndex, -2);
 this.refresh (3, "assignConnect");
 }, "~N,~N");
 $_M(c$, "moveAtomWithHydrogens", 
@@ -27239,19 +27386,6 @@ function (bsSelected) {
 if (bsSelected == null || bsSelected.cardinality () == 0) bsSelected = this.getModelUndeletedAtomsBitSetBs (this.getVisibleFramesBitSet ());
 this.getMinimizer (true).calculatePartialCharges (this.modelSet.bonds, this.modelSet.bondCount, this.modelSet.atoms, bsSelected);
 }, "J.util.BS");
-$_M(c$, "cachePut", 
-function (key, data) {
-J.util.Logger.info ("Viewer cachePut " + key);
-this.fileManager.cachePut (key, data);
-}, "~S,~O");
-$_M(c$, "cacheGet", 
-function (key) {
-return this.fileManager.cacheGet (key, false);
-}, "~S");
-$_M(c$, "cacheClear", 
-function () {
-this.fileManager.cacheClear ();
-});
 $_M(c$, "setCurrentModelID", 
 function (id) {
 var modelIndex = this.getCurrentModelIndex ();
@@ -27265,11 +27399,20 @@ $_M(c$, "getPathForAllFiles",
 function () {
 return this.fileManager.getPathForAllFiles ();
 });
-Clazz.overrideMethod (c$, "cacheFile", 
-function (fileName, bytes) {
-this.fileManager.cachePut (fileName, bytes);
-}, "~S,~A");
-$_M(c$, "cacheFileByName", 
+$_M(c$, "cacheGet", 
+function (key) {
+return this.fileManager.cacheGet (key, false);
+}, "~S");
+$_M(c$, "cacheClear", 
+function () {
+this.fileManager.cacheClear ();
+});
+Clazz.overrideMethod (c$, "cachePut", 
+function (key, data) {
+J.util.Logger.info ("Viewer cachePut " + key);
+this.fileManager.cachePut (key, data);
+}, "~S,~O");
+Clazz.overrideMethod (c$, "cacheFileByName", 
 function (fileName, isAdd) {
 return this.fileManager.cacheFileByNameAdd (fileName, isAdd);
 }, "~S,~B");
@@ -27277,22 +27420,9 @@ $_M(c$, "cacheList",
 function () {
 return this.fileManager.cacheList ();
 });
-$_M(c$, "stopScriptDelayThread", 
-($fz = function () {
-if (this.scriptDelayThread != null) {
-this.scriptDelayThread.interrupt ();
-this.scriptDelayThread = null;
-}}, $fz.isPrivate = true, $fz));
-$_M(c$, "delayScript", 
-function (eval, millis) {
-if (this.autoExit) return;
-this.stopScriptDelayThread ();
-this.scriptDelayThread =  new J.thread.ScriptDelayThread (eval, this, millis);
-this.scriptDelayThread.run ();
-}, "J.api.JmolScriptEvaluator,~N");
 $_M(c$, "clearThreads", 
 function () {
-this.stopScriptDelayThread ();
+if (this.eval != null) this.eval.stopScriptThreads ();
 this.stopMinimization ();
 this.setVibrationOff ();
 this.setSpinOn (false);
@@ -27301,8 +27431,8 @@ this.setAnimationOn (false);
 });
 $_M(c$, "getEvalContextAndHoldQueue", 
 function (jse) {
-if (jse == null || !this.$isJS) return null;
-jse.pushContextDown ();
+if (jse == null || !this.isJS) return null;
+jse.pushContextDown ("getEvalContextAndHoldQueue");
 var sc = jse.getThisContext ();
 var sc0 = sc;
 while (sc0 != null) {
@@ -27438,9 +27568,9 @@ if (this.getScriptManager () == null) return null;
 return this.eval.getContextVariables ();
 });
 $_M(c$, "getScriptContext", 
-function () {
-return (this.getScriptManager () == null ? null : this.eval.getScriptContext ());
-});
+function (why) {
+return (this.getScriptManager () == null ? null : this.eval.getScriptContext (why));
+}, "~S");
 Clazz.overrideMethod (c$, "getAtomDefs", 
 function (names) {
 return this.getStateCreator ().getAtomDefs (names);
@@ -27545,6 +27675,21 @@ $_M(c$, "cachePngFiles",
 function () {
 return (!this.getTestFlag (1));
 });
+$_M(c$, "setModulation", 
+function (isOn, t1, t2, isThread) {
+var t = (t1 == null ? 2147483647 : t1[0]);
+if (t2 == 2147483647) {
+if (!isThread) this.animationManager.setModulationPlay (2147483647, 0);
+if (t1 != null) this.global.setI ("_modt", t1[0]);
+this.modelSet.setModulation (this.getSelectionSet (false), isOn, t);
+} else {
+this.animationManager.setModulationPlay (t, t2);
+}this.refreshMeasures (true);
+}, "~B,~A,~N,~B");
+$_M(c$, "setModulationFps", 
+function (fps) {
+this.animationManager.setModulationFps (fps);
+}, "~N");
 $_M(c$, "checkInMotion", 
 function (state) {
 switch (state) {
@@ -27552,7 +27697,7 @@ case 0:
 this.setTimeout ("_SET_IN_MOTION_", 0, null);
 break;
 case 1:
-if (this.getBoolean (603979976) && !this.inMotion) this.setTimeout ("_SET_IN_MOTION_", this.global.hoverDelayMs * 2, "!setInMotion");
+if (!this.inMotion) this.setTimeout ("_SET_IN_MOTION_", this.global.hoverDelayMs * 2, "!setInMotion");
 break;
 case 2:
 this.setInMotion (true);
@@ -27560,6 +27705,65 @@ this.refresh (3, "timeoutThread set in motion");
 break;
 }
 }, "~N");
+$_M(c$, "checkMotionRendering", 
+function (tok) {
+if (!this.getInMotion (true) && !this.transformManager.spinOn && !this.transformManager.vibrationOn && !this.animationManager.animationOn) return true;
+if (this.global.wireframeRotation) return false;
+var n = 0;
+switch (tok) {
+case 1678770178:
+case 1141899265:
+n = 2;
+break;
+case 1113198596:
+n = 3;
+break;
+case 1113198597:
+n = 4;
+break;
+case 1113200642:
+n = 5;
+break;
+case 1073742018:
+n = 6;
+break;
+case 603979967:
+n = 7;
+break;
+case 603979786:
+n = 8;
+break;
+}
+return this.global.platformSpeed >= n;
+}, "~N");
+$_M(c$, "openOutputChannel", 
+function (privateKey, fileName, asWriter) {
+return (!this.isRestricted (J.viewer.Viewer.ACCESS.ALL) ? null : this.getFileAdapter ().openOutputChannel (privateKey, this.fileManager, fileName, asWriter));
+}, "~N,~S,~B");
+$_M(c$, "openFileInputStream", 
+function (privateKey, fileName) {
+return this.getFileAdapter ().openFileInputStream (privateKey, fileName);
+}, "~N,~S");
+$_M(c$, "getAbsolutePath", 
+function (privateKey, fileName) {
+return this.getFileAdapter ().getAbsolutePath (privateKey, fileName);
+}, "~N,~S");
+$_M(c$, "getFileLength", 
+function (privateKey, fileName) {
+return this.getFileAdapter ().getFileLength (privateKey, fileName);
+}, "~N,~S");
+$_M(c$, "openLogFile", 
+function (privateKey, logFileName, asAppend) {
+return this.getFileAdapter ().openLogFile (privateKey, logFileName, asAppend);
+}, "~N,~S,~B");
+Clazz.overrideMethod (c$, "log", 
+function (data) {
+if (data != null) this.getStateCreator ().logToFile (data);
+}, "~S");
+$_M(c$, "getLogFileName", 
+function () {
+return this.getStateCreator ().getLogFileName ();
+});
 Clazz.pu$h ();
 c$ = Clazz.declareType (J.viewer.Viewer, "ACCESS", Enum);
 Clazz.defineEnumConstant (c$, "NONE", 0, []);
@@ -27645,6 +27849,9 @@ $_M(c$, "markSupported",
 function () {
 return false;
 });
+$_M(c$, "resetStream", 
+function () {
+});
 Clazz.defineStatics (c$,
 "SKIP_BUFFER_SIZE", 2048,
 "skipBuffer", null);
@@ -27675,9 +27882,8 @@ c$ = Clazz.decorateAsClass (function () {
 this.out = null;
 Clazz.instantialize (this, arguments);
 }, java.io, "FilterOutputStream", java.io.OutputStream);
-Clazz.makeConstructor (c$, 
+$_M(c$, "jzSetFOS", 
 function (out) {
-Clazz.superConstructor (this, java.io.FilterOutputStream, []);
 this.out = out;
 }, "java.io.OutputStream");
 $_M(c$, "writeByteAsInt", 
@@ -28535,6 +28741,10 @@ c$.isHetero = $_M(c$, "isHetero",
 function (group3) {
 return J.viewer.JC.isHetero (group3);
 }, "~S");
+c$.getQuantumShellTag = $_M(c$, "getQuantumShellTag", 
+function (id) {
+return J.constant.EnumQuantumShell.getQuantumShellTag (id);
+}, "~N");
 c$.getQuantumShellTagID = $_M(c$, "getQuantumShellTagID", 
 function (tag) {
 return J.constant.EnumQuantumShell.getQuantumShellTagID (tag);
@@ -28617,6 +28827,8 @@ c$.SHELL_F_SPHERICAL = c$.prototype.SHELL_F_SPHERICAL = J.constant.EnumQuantumSh
 c$.SHELL_F_CARTESIAN = c$.prototype.SHELL_F_CARTESIAN = J.constant.EnumQuantumShell.F_CARTESIAN.id;
 c$.SHELL_G_SPHERICAL = c$.prototype.SHELL_G_SPHERICAL = J.constant.EnumQuantumShell.G_SPHERICAL.id;
 c$.SHELL_G_CARTESIAN = c$.prototype.SHELL_G_CARTESIAN = J.constant.EnumQuantumShell.G_CARTESIAN.id;
+c$.SHELL_H_SPHERICAL = c$.prototype.SHELL_H_SPHERICAL = J.constant.EnumQuantumShell.H_SPHERICAL.id;
+c$.SHELL_H_CARTESIAN = c$.prototype.SHELL_H_CARTESIAN = J.constant.EnumQuantumShell.H_CARTESIAN.id;
 c$.SUPPORTED_BASIS_FUNCTIONS = c$.prototype.SUPPORTED_BASIS_FUNCTIONS = "SPLDF";
 c$.NOTE_SCRIPT_FILE = c$.prototype.NOTE_SCRIPT_FILE = "NOTE: file recognized as a script file: ";
 Clazz.defineStatics (c$,
@@ -28743,7 +28955,7 @@ atomsets[i] = ret;
 if (atomsets[i].errorMessage != null) return atomsets[i].errorMessage;
 }} catch (e) {
 J.util.Logger.error ("" + e);
-if (!viewer.isJS ()) e.printStackTrace ();
+if (!viewer.isJS) e.printStackTrace ();
 return "" + e;
 }
 }
@@ -29002,91 +29214,7 @@ Clazz.defineEnumConstant (c$, "ZAPPED", 3, [0]);
 Clazz.defineEnumConstant (c$, "NOT_LOADED", 4, [-1]);
 });
 Clazz.declarePackage ("J.api");
-c$ = Clazz.declareType (J.api, "JmolAdapterAtomIterator");
-$_M(c$, "getAtomSetIndex", 
-function () {
-return 0;
-});
-$_M(c$, "getAtomSymmetry", 
-function () {
-return null;
-});
-$_M(c$, "getAtomSite", 
-function () {
-return -2147483648;
-});
-$_M(c$, "getElementNumber", 
-function () {
-return -1;
-});
-$_M(c$, "getAtomName", 
-function () {
-return null;
-});
-$_M(c$, "getFormalCharge", 
-function () {
-return 0;
-});
-$_M(c$, "getPartialCharge", 
-function () {
-return NaN;
-});
-$_M(c$, "getTensors", 
-function () {
-return null;
-});
-$_M(c$, "getRadius", 
-function () {
-return NaN;
-});
-$_M(c$, "getVectorX", 
-function () {
-return NaN;
-});
-$_M(c$, "getVectorY", 
-function () {
-return NaN;
-});
-$_M(c$, "getVectorZ", 
-function () {
-return NaN;
-});
-$_M(c$, "getBfactor", 
-function () {
-return NaN;
-});
-$_M(c$, "getOccupancy", 
-function () {
-return 100;
-});
-$_M(c$, "getIsHetero", 
-function () {
-return false;
-});
-$_M(c$, "getAtomSerial", 
-function () {
-return -2147483648;
-});
-$_M(c$, "getChainID", 
-function () {
-return 0;
-});
-$_M(c$, "getAlternateLocationID", 
-function () {
-return '\0';
-});
-$_M(c$, "getGroup3", 
-function () {
-return null;
-});
-$_M(c$, "getSequenceNumber", 
-function () {
-return -2147483648;
-});
-$_M(c$, "getInsertionCode", 
-function () {
-return '\0';
-});
+Clazz.declareInterface (J.api, "JmolAdapterAtomIterator");
 Clazz.declarePackage ("J.adapter.smarter");
 Clazz.load (["J.api.JmolAdapterAtomIterator"], "J.adapter.smarter.AtomIterator", ["java.lang.Float", "J.api.JmolAdapter"], function () {
 c$ = Clazz.decorateAsClass (function () {
@@ -29096,10 +29224,9 @@ this.atomCount = 0;
 this.atoms = null;
 this.bsAtoms = null;
 Clazz.instantialize (this, arguments);
-}, J.adapter.smarter, "AtomIterator", J.api.JmolAdapterAtomIterator);
+}, J.adapter.smarter, "AtomIterator", null, J.api.JmolAdapterAtomIterator);
 Clazz.makeConstructor (c$, 
 function (atomSetCollection) {
-Clazz.superConstructor (this, J.adapter.smarter.AtomIterator, []);
 this.atomCount = atomSetCollection.getAtomCount ();
 this.atoms = atomSetCollection.getAtoms ();
 this.bsAtoms = atomSetCollection.bsAtoms;
@@ -29153,29 +29280,9 @@ Clazz.overrideMethod (c$, "getRadius",
 function () {
 return this.atom.radius;
 });
-Clazz.overrideMethod (c$, "getX", 
+Clazz.overrideMethod (c$, "getVib", 
 function () {
-return this.atom.x;
-});
-Clazz.overrideMethod (c$, "getY", 
-function () {
-return this.atom.y;
-});
-Clazz.overrideMethod (c$, "getZ", 
-function () {
-return this.atom.z;
-});
-Clazz.overrideMethod (c$, "getVectorX", 
-function () {
-return this.atom.vectorX;
-});
-Clazz.overrideMethod (c$, "getVectorY", 
-function () {
-return this.atom.vectorY;
-});
-Clazz.overrideMethod (c$, "getVectorZ", 
-function () {
-return this.atom.vectorZ;
+return (this.atom.vib == null || Float.isNaN (this.atom.vib.z) ? null : this.atom.vib);
 });
 Clazz.overrideMethod (c$, "getBfactor", 
 function () {
@@ -29183,7 +29290,7 @@ return Float.isNaN (this.atom.bfactor) && this.atom.anisoBorU != null ? this.ato
 });
 Clazz.overrideMethod (c$, "getOccupancy", 
 function () {
-return this.atom.occupancy;
+return Clazz.floatToInt (this.atom.foccupancy * 100);
 });
 Clazz.overrideMethod (c$, "getIsHetero", 
 function () {
@@ -29219,12 +29326,12 @@ return this.atom;
 });
 });
 Clazz.declarePackage ("J.adapter.smarter");
-Clazz.load (["java.util.Hashtable", "J.util.P3"], "J.adapter.smarter.AtomSetCollection", ["java.lang.Boolean", "$.Float", "java.util.Collections", "$.Properties", "J.adapter.smarter.Atom", "$.Bond", "$.SmarterJmolAdapter", "J.api.Interface", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.JmolList", "$.Logger", "$.Matrix4f", "$.P3i", "$.Parser", "$.SB", "$.Tensor", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["java.util.Hashtable", "J.util.P3"], "J.adapter.smarter.AtomSetCollection", ["java.lang.Boolean", "$.Float", "java.util.Collections", "$.Properties", "J.adapter.smarter.Atom", "$.Bond", "$.SmarterJmolAdapter", "J.api.Interface", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.JmolList", "$.Logger", "$.Matrix3f", "$.Matrix4f", "$.P3i", "$.Parser", "$.SB", "$.Tensor", "$.TextFormat", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
+this.bsAtoms = null;
 this.fileTypeName = null;
 this.collectionName = null;
 this.atomSetCollectionAuxiliaryInfo = null;
-this.bsAtoms = null;
 this.atomCount = 0;
 this.atoms = null;
 this.bondCount = 0;
@@ -29281,14 +29388,16 @@ this.haveAnisou = false;
 this.dtype = 3;
 this.unitCellTranslations = null;
 this.baseSymmetryAtomCount = 0;
-this.cartesians = null;
+this.checkLatticeOnly = false;
+this.latticeOp = 0;
+this.latticeOnly = false;
 this.bondCount0 = 0;
 this.bondIndex0 = 0;
 this.applySymmetryToBonds = false;
 this.checkSpecial = true;
+this.checkAll = false;
 this.ptTemp = null;
-this.ptTemp1 = null;
-this.ptTemp2 = null;
+this.mTemp = null;
 this.atomSymbolicMap = null;
 this.haveMappedSerials = false;
 Clazz.instantialize (this, arguments);
@@ -29305,9 +29414,6 @@ this.atomSetBondCounts =  Clazz.newIntArray (16, 0);
 this.atomSetAuxiliaryInfo =  new Array (16);
 this.notionalUnitCell =  Clazz.newFloatArray (6, 0);
 this.ptOffset =  new J.util.P3 ();
-this.ptTemp =  new J.util.P3 ();
-this.ptTemp1 =  new J.util.P3 ();
-this.ptTemp2 =  new J.util.P3 ();
 this.atomSymbolicMap =  new java.util.Hashtable ();
 });
 $_M(c$, "getFileTypeName", 
@@ -29604,7 +29710,6 @@ this.atomSetCount = 0;
 this.atomSetNumbers =  Clazz.newIntArray (16, 0);
 this.atomSymbolicMap =  new java.util.Hashtable ();
 this.bonds = null;
-this.cartesians = null;
 this.connectLast = null;
 this.currentAtomSetIndex = -1;
 this.latticeCells = null;
@@ -29859,20 +29964,17 @@ if (this.atoms[i].atomSite == atomSite) this.addVibrationVector (i, vx, vy, vz);
 $_M(c$, "addVibrationVector", 
 function (iatom, x, y, z) {
 if (!this.allowMultiple) iatom = iatom % this.atomCount;
-var atom = this.atoms[iatom];
-atom.vectorX = x;
-atom.vectorY = y;
-atom.vectorZ = z;
+this.atoms[iatom].vib = J.util.V3.new3 (x, y, z);
 }, "~N,~N,~N,~N");
 $_M(c$, "setAtomSetSpaceGroupName", 
 function (spaceGroupName) {
 this.setAtomSetAuxiliaryInfo ("spaceGroup", spaceGroupName + "");
 }, "~S");
 $_M(c$, "setCoordinatesAreFractional", 
-function (coordinatesAreFractional) {
-this.coordinatesAreFractional = coordinatesAreFractional;
-this.setAtomSetAuxiliaryInfo ("coordinatesAreFractional", Boolean.$valueOf (coordinatesAreFractional));
-if (coordinatesAreFractional) this.setGlobalBoolean (0);
+function (tf) {
+this.coordinatesAreFractional = tf;
+this.setAtomSetAuxiliaryInfo ("coordinatesAreFractional", Boolean.$valueOf (tf));
+if (tf) this.setGlobalBoolean (0);
 }, "~B");
 $_M(c$, "setSymmetryRange", 
 function (factor) {
@@ -29930,7 +30032,7 @@ this.setAtomSetAuxiliaryInfo ("matUnitCellOrientation", matUnitCellOrientation);
 $_M(c$, "addSpaceGroupOperation", 
 function (xyz) {
 this.getSymmetry ().setSpaceGroup (this.doNormalize);
-return (this.symmetry.addSpaceGroupOperation (xyz, 0) >= 0);
+return this.symmetry.addSpaceGroupOperation (xyz, 0);
 }, "~S");
 $_M(c$, "setLatticeParameter", 
 function (latt) {
@@ -29938,12 +30040,8 @@ this.getSymmetry ().setSpaceGroup (this.doNormalize);
 this.symmetry.setLattice (latt);
 }, "~N");
 $_M(c$, "applySymmetry", 
-function () {
-this.applySymmetryLattice (this.latticeCells[0], this.latticeCells[1], Math.abs (this.latticeCells[2]));
-});
-$_M(c$, "applySymmetryUsing", 
 function (symmetry) {
-this.getSymmetry ().setSpaceGroupS (symmetry);
+if (symmetry != null) this.getSymmetry ().setSpaceGroupS (symmetry);
 this.applySymmetryLattice (this.latticeCells[0], this.latticeCells[1], Math.abs (this.latticeCells[2]));
 }, "J.api.SymmetryInterface");
 $_M(c$, "applySymmetryLattice", 
@@ -29966,7 +30064,7 @@ var iAtomFirst = this.getLastAtomSetAtomIndex ();
 for (var i = iAtomFirst; i < this.atomCount; i++) this.symmetry.toCartesian (this.atoms[i], true);
 
 this.symmetry = null;
-this.setNotionalUnitCell ([0, 0, 0, 0, 0, 0, ptx.x, ptx.y, ptx.z, pty.x, pty.y, pty.z, ptz.x, ptz.y, ptz.z], null, this.getAtomSetAuxiliaryInfoValue (this.currentAtomSetIndex, "unitCellOffset"));
+this.setNotionalUnitCell ([0, 0, 0, 0, 0, 0, ptx.x, ptx.y, ptx.z, pty.x, pty.y, pty.z, ptz.x, ptz.y, ptz.z], null, this.getAtomSetAuxiliaryInfoValue (-1, "unitCellOffset"));
 this.setAtomSetSpaceGroupName ("P1");
 this.getSymmetry ().setSpaceGroup (this.doNormalize);
 this.symmetry.addSpaceGroupOperation ("x,y,z", 0);
@@ -30020,9 +30118,13 @@ $_M(c$, "setTensors",
 function () {
 if (!this.haveAnisou) return;
 this.getSymmetry ();
-for (var i = this.getLastAtomSetAtomIndex (); i < this.atomCount; i++) this.atoms[i].addTensor (this.symmetry.getTensor (this.atoms[i].anisoBorU), null);
+for (var i = this.getLastAtomSetAtomIndex (); i < this.atomCount; i++) this.atoms[i].addTensor (this.symmetry.getTensor (this.atoms[i].anisoBorU), null, false);
 
 });
+$_M(c$, "setLatticeOnly", 
+function (b) {
+this.checkLatticeOnly = b;
+}, "~B");
 $_M(c$, "setBaseSymmetryAtomCount", 
 function (n) {
 this.baseSymmetryAtomCount = n;
@@ -30067,7 +30169,7 @@ this.maxXYZ.x++;
 }
 }var nCells = (this.maxXYZ.x - this.minXYZ.x) * (this.maxXYZ.y - this.minXYZ.y) * (this.maxXYZ.z - this.minXYZ.z);
 var cartesianCount = (this.checkSpecial ? noSymmetryCount * operationCount * nCells : this.symmetryRange > 0 ? noSymmetryCount * operationCount : this.symmetryRange < 0 ? 1 : 1);
-this.cartesians =  new Array (cartesianCount);
+var cartesians =  new Array (cartesianCount);
 for (var i = 0; i < noSymmetryCount; i++) this.atoms[i + iAtomFirst].bsSymmetry = J.util.BSUtil.newBitSet (operationCount * (nCells + 1));
 
 var pt = 0;
@@ -30086,12 +30188,15 @@ this.rminz = 3.4028235E38;
 this.rmaxx = -3.4028235E38;
 this.rmaxy = -3.4028235E38;
 this.rmaxz = -3.4028235E38;
-}var op = this.symmetry.getSpaceGroupOperation (0);
+}this.latticeOp = this.symmetry.getLatticeOp ();
+this.checkAll = (this.atomSetCount == 1 && this.checkSpecial && this.latticeOp >= 0);
+this.latticeOnly = (this.checkLatticeOnly && this.latticeOp >= 0);
+var op = this.symmetry.getSpaceGroupOperation (0);
 if (this.doPackUnitCell) this.ptOffset.set (0, 0, 0);
 for (var tx = this.minXYZ.x; tx < this.maxXYZ.x; tx++) for (var ty = this.minXYZ.y; ty < this.maxXYZ.y; ty++) for (var tz = this.minXYZ.z; tz < this.maxXYZ.z; tz++) {
 this.unitCellTranslations[iCell] = J.util.V3.new3 (tx, ty, tz);
 unitCells[iCell++] = 555 + tx * 100 + ty * 10 + tz;
-if (tx != 0 || ty != 0 || tz != 0 || this.cartesians.length == 0) continue;
+if (tx != 0 || ty != 0 || tz != 0 || cartesians.length == 0) continue;
 for (pt = 0; pt < noSymmetryCount; pt++) {
 var atom = this.atoms[iAtomFirst + pt];
 var c = J.util.P3.newP (atom);
@@ -30104,7 +30209,7 @@ this.symmetry.toFractional (atom, false);
 }atom.bsSymmetry.set (iCell * operationCount);
 atom.bsSymmetry.set (0);
 if (checkSymmetryRange) this.setSymmetryMinMax (c);
-if (pt < cartesianCount) this.cartesians[pt] = c;
+if (pt < cartesianCount) cartesians[pt] = c;
 }
 if (checkRangeNoSymmetry) {
 this.rminx -= absRange;
@@ -30113,7 +30218,7 @@ this.rminz -= absRange;
 this.rmaxx += absRange;
 this.rmaxy += absRange;
 this.rmaxz += absRange;
-}cell555Count = pt = this.symmetryAddAtoms (iAtomFirst, noSymmetryCount, 0, 0, 0, 0, pt, iCell * operationCount);
+}cell555Count = pt = this.symmetryAddAtoms (iAtomFirst, noSymmetryCount, 0, 0, 0, 0, pt, iCell * operationCount, cartesians);
 }
 
 
@@ -30127,7 +30232,7 @@ this.rmaxz += absRange;
 }iCell = 0;
 for (var tx = this.minXYZ.x; tx < this.maxXYZ.x; tx++) for (var ty = this.minXYZ.y; ty < this.maxXYZ.y; ty++) for (var tz = this.minXYZ.z; tz < this.maxXYZ.z; tz++) {
 iCell++;
-if (tx != 0 || ty != 0 || tz != 0) pt = this.symmetryAddAtoms (iAtomFirst, noSymmetryCount, tx, ty, tz, cell555Count, pt, iCell * operationCount);
+if (tx != 0 || ty != 0 || tz != 0) pt = this.symmetryAddAtoms (iAtomFirst, noSymmetryCount, tx, ty, tz, cell555Count, pt, iCell * operationCount, cartesians);
 }
 
 
@@ -30138,7 +30243,6 @@ this.setAtomSetAuxiliaryInfo ("presymmetryAtomCount", Integer.$valueOf (noSymmet
 this.setAtomSetAuxiliaryInfo ("latticeDesignation", this.symmetry.getLatticeDesignation ());
 this.setAtomSetAuxiliaryInfo ("unitCellRange", unitCells);
 this.setAtomSetAuxiliaryInfo ("unitCellTranslations", this.unitCellTranslations);
-this.symmetry.setSpaceGroupS (null);
 this.notionalUnitCell =  Clazz.newFloatArray (6, 0);
 this.coordinatesAreFractional = false;
 this.setAtomSetAuxiliaryInfo ("hasSymmetry", Boolean.TRUE);
@@ -30147,7 +30251,7 @@ this.setGlobalBoolean (1);
 $_M(c$, "finalizeSymmetry", 
 ($fz = function (iAtomFirst, noSymmetryCount) {
 this.symmetry.setFinalOperations (this.atoms, iAtomFirst, noSymmetryCount, this.doNormalize);
-var name = this.getAtomSetAuxiliaryInfoValue (this.currentAtomSetIndex, "spaceGroup");
+var name = this.getAtomSetAuxiliaryInfoValue (-1, "spaceGroup");
 if (name == null || name.equals ("unspecified!")) this.setAtomSetSpaceGroupName (this.symmetry.getSpaceGroupName ());
 }, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "setSymmetryOps", 
@@ -30165,7 +30269,7 @@ function (TF) {
 this.checkSpecial = TF;
 }, "~B");
 $_M(c$, "symmetryAddAtoms", 
-($fz = function (iAtomFirst, noSymmetryCount, transX, transY, transZ, baseCount, pt, iCellOpPt) {
+($fz = function (iAtomFirst, noSymmetryCount, transX, transY, transZ, baseCount, pt, iCellOpPt, cartesians) {
 var isBaseCell = (baseCount == 0);
 var addBonds = (this.bondCount0 > this.bondIndex0 && this.applySymmetryToBonds);
 var atomMap = (addBonds ?  Clazz.newIntArray (noSymmetryCount, 0) : null);
@@ -30184,7 +30288,7 @@ if (checkRangeNoSymmetry) baseCount = noSymmetryCount;
 var atomMax = iAtomFirst + noSymmetryCount;
 var ptAtom =  new J.util.P3 ();
 for (var iSym = 0; iSym < nOperations; iSym++) {
-if (isBaseCell && this.symmetry.getSpaceGroupXyz (iSym, true).equals ("x,y,z")) continue;
+if (isBaseCell && iSym == 0 || this.latticeOnly && iSym > 0 && iSym != this.latticeOp) continue;
 var pt0 = (this.checkSpecial ? pt : checkRange111 ? baseCount : 0);
 for (var i = iAtomFirst; i < atomMax; i++) {
 if (this.atoms[i].ignoreSymmetry) continue;
@@ -30202,8 +30306,9 @@ if (!J.adapter.smarter.AtomSetCollection.isWithinCell (this.dtype, ptAtom, this.
 if (checkDistances) {
 var minDist2 = 3.4028235E38;
 if (checkSymmetryRange && !this.isInSymmetryRange (cartesian)) continue;
-for (var j = pt0; --j >= 0; ) {
-var d2 = cartesian.distanceSquared (this.cartesians[j]);
+var j0 = (this.checkAll ? this.atomCount : pt0);
+for (var j = j0; --j >= 0; ) {
+var d2 = cartesian.distanceSquared (cartesians[j]);
 if (this.checkSpecial && d2 < 0.0001) {
 special = this.atoms[iAtomFirst + j];
 if (special.atomName == null || special.atomName.equals (this.atoms[i].atomName)) break;
@@ -30223,23 +30328,14 @@ atom1.setT (ptAtom);
 atom1.atomSite = atomSite;
 atom1.bsSymmetry = J.util.BSUtil.newAndSetBit (iCellOpPt + iSym);
 atom1.bsSymmetry.set (iSym);
-if (addCartesian) this.cartesians[pt++] = cartesian;
+if (addCartesian) cartesians[pt++] = cartesian;
 if (this.atoms[i].tensors != null) {
 atom1.tensors = null;
 for (var j = this.atoms[i].tensors.size (); --j >= 0; ) {
 var t = this.atoms[i].tensors.get (j);
 if (t == null) continue;
-if (nOperations == 1) {
-atom1.addTensor (J.util.Tensor.copyTensor (t), null);
-continue;
-}var eigenVectors = t.eigenVectors;
-if (addCartesian) {
-this.ptTemp.setT (this.cartesians[i - iAtomFirst]);
-} else {
-this.ptTemp.setT (this.atoms[i]);
-this.symmetry.toCartesian (this.ptTemp, false);
-}eigenVectors = this.symmetry.rotateEllipsoid (iSym, this.ptTemp, eigenVectors, this.ptTemp1, this.ptTemp2);
-atom1.addTensor (J.util.Tensor.getTensorFromEigenVectors (eigenVectors, t.eigenValues, t.isIsotropic ? "iso" : t.type, t.id), null);
+if (nOperations == 1) atom1.addTensor (J.util.Tensor.copyTensor (t), null, false);
+ else this.addRotatedTensor (atom1, t, iSym, false);
 }
 }}}
 if (addBonds) {
@@ -30254,7 +30350,14 @@ if (iAtom1 >= atomMax || iAtom2 >= atomMax) this.addNewBondWithOrder (iAtom1, iA
 }
 }}
 return pt;
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N,~N");
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N,~N,~A");
+$_M(c$, "addRotatedTensor", 
+function (a, t, iSym, reset) {
+if (this.ptTemp == null) {
+this.ptTemp =  new J.util.P3 ();
+this.mTemp =  new J.util.Matrix3f ();
+}return a.addTensor (J.util.Tensor.getTensorFromEigenVectors (this.symmetry.rotateAxes (iSym, t.eigenVectors, this.ptTemp, this.mTemp), t.eigenValues, t.isIsotropic ? "iso" : t.type, t.id), null, reset);
+}, "J.adapter.smarter.Atom,J.util.Tensor,~N,~B");
 $_M(c$, "applySymmetryBio", 
 function (biomts, notionalUnitCell, applySymmetryToBonds, filter) {
 if (this.latticeCells != null && this.latticeCells[0] != 0) {
@@ -30396,14 +30499,14 @@ return this.atomSetCollectionAuxiliaryInfo.get (key);
 $_M(c$, "addTrajectoryStep", 
 ($fz = function () {
 var trajectoryStep =  new Array (this.atomCount);
-var haveVibrations = (this.atomCount > 0 && !Float.isNaN (this.atoms[0].vectorX));
+var haveVibrations = (this.atomCount > 0 && this.atoms[0] != null && !Float.isNaN (this.atoms[0].z));
 var vibrationStep = (haveVibrations ?  new Array (this.atomCount) : null);
 var prevSteps = (this.trajectoryStepCount == 0 ? null : this.trajectorySteps.get (this.trajectoryStepCount - 1));
 for (var i = 0; i < this.atomCount; i++) {
 var pt = J.util.P3.newP (this.atoms[i]);
 if (this.doFixPeriodic && prevSteps != null) pt = J.adapter.smarter.AtomSetCollection.fixPeriodic (pt, prevSteps[i]);
 trajectoryStep[i] = pt;
-if (haveVibrations) vibrationStep[i] = J.util.V3.new3 (this.atoms[i].vectorX, this.atoms[i].vectorY, this.atoms[i].vectorZ);
+if (haveVibrations) vibrationStep[i] = this.atoms[i].vib;
 }
 if (haveVibrations) {
 if (this.vibrationSteps == null) {
@@ -30448,12 +30551,8 @@ if (this.vibrationSteps != null && vibrations != null && vibrations.length < thi
 this.errorMessage = "File cannot be loaded as a trajectory";
 return;
 }for (var i = 0; i < this.atomCount; i++) {
-if (this.vibrationSteps != null) {
-if (vibrations != null) v = vibrations[i];
-this.atoms[i].vectorX = v.x;
-this.atoms[i].vectorY = v.y;
-this.atoms[i].vectorZ = v.z;
-}if (trajectory[i] != null) this.atoms[i].setT (trajectory[i]);
+if (this.vibrationSteps != null) this.atoms[i].vib = (vibrations == null ? v : vibrations[i]);
+if (trajectory[i] != null) this.atoms[i].setT (trajectory[i]);
 }
 this.setAtomSetCollectionAuxiliaryInfo ("trajectorySteps", this.trajectorySteps);
 if (this.vibrationSteps != null) this.setAtomSetCollectionAuxiliaryInfo ("vibrationSteps", this.vibrationSteps);
@@ -30546,7 +30645,7 @@ p.put (key, data);
 }, "~S,~S,~N");
 $_M(c$, "appendAtomProperties", 
 ($fz = function (nTimes) {
-var p = this.getAtomSetAuxiliaryInfoValue (this.currentAtomSetIndex, "atomProperties");
+var p = this.getAtomSetAuxiliaryInfoValue (-1, "atomProperties");
 if (p == null) {
 return;
 }for (var entry, $entry = p.entrySet ().iterator (); $entry.hasNext () && ((entry = $entry.next ()) || true);) {
@@ -30570,7 +30669,7 @@ return true;
 }, "~S");
 $_M(c$, "getAtomSetAuxiliaryInfoValue", 
 function (index, key) {
-return this.atomSetAuxiliaryInfo[index].get (key);
+return this.atomSetAuxiliaryInfo[index >= 0 ? index : this.currentAtomSetIndex].get (key);
 }, "~N,~S");
 $_M(c$, "setAtomSetAuxiliaryInfo", 
 function (key, value) {
@@ -30622,6 +30721,7 @@ return null;
 $_M(c$, "setAtomSetEnergy", 
 function (energyString, value) {
 if (this.currentAtomSetIndex < 0) return;
+J.util.Logger.info ("Energy for model " + (this.currentAtomSetIndex + 1) + " = " + energyString);
 this.setAtomSetAuxiliaryInfo ("EnergyString", energyString);
 this.setAtomSetAuxiliaryInfo ("Energy", Float.$valueOf (value));
 this.setAtomSetModelProperty ("Energy", "" + value);
@@ -30837,8 +30937,10 @@ throw e;
 }
 }, "~O,java.util.Map");
 c$.determineAtomSetCollectionReader = $_M(c$, "determineAtomSetCollectionReader", 
-($fz = function (bufferedReader, returnLines) {
-var llr =  new J.io.LimitedLineReader (bufferedReader, 16384);
+($fz = function (readerOrDocument, returnLines) {
+if (Clazz.instanceOf (readerOrDocument, J.api.JmolDocument)) {
+return "PyMOL";
+}var llr =  new J.io.LimitedLineReader (readerOrDocument, 16384);
 var leader = llr.getHeader (64).trim ();
 for (var i = 0; i < J.adapter.smarter.Resolver.fileStartsWithRecords.length; ++i) {
 var recordTags = J.adapter.smarter.Resolver.fileStartsWithRecords[i];
@@ -30864,7 +30966,7 @@ return readerName;
 }if ((readerName = J.adapter.smarter.Resolver.checkHeaderContains (llr.getHeader (0))) != null) return readerName;
 if ((readerName = J.adapter.smarter.Resolver.checkSpecial (nLines, lines, true)) != null) return readerName;
 return (returnLines ? "\n" + lines[0] + "\n" + lines[1] + "\n" + lines[2] + "\n" : null);
-}, $fz.isPrivate = true, $fz), "java.io.BufferedReader,~B");
+}, $fz.isPrivate = true, $fz), "~O,~B");
 c$.checkHeaderContains = $_M(c$, "checkHeaderContains", 
 ($fz = function (header) {
 for (var i = 0; i < J.adapter.smarter.Resolver.headerContainsRecords.length; ++i) {
@@ -31119,7 +31221,7 @@ return false;
 }, $fz.isPrivate = true, $fz), "~A");
 Clazz.defineStatics (c$,
 "classBase", "J.adapter.readers.");
-c$.readerSets = c$.prototype.readerSets = ["cifpdb.", ";Cif;Pdb;MMCIF_PDBX;", "molxyz.", ";Mol3D;Mol;Xyz;", "more.", ";BinaryDcd;Gromacs;Jcampdx;MdCrd;MdTop;Mol2;Pqr;P2n;TlsDataOnly;", "quantum.", ";Adf;Csf;Dgrid;GamessUK;GamessUS;Gaussian;GausianWfn;Jaguar;Molden;MopacGraphf;GenNBO;NWChem;Odyssey;Psi;Qchem;Spartan;SpartanSmol;WebMO;", "pymol.", ";PyMOL;", "simple.", ";Alchemy;Ampac;Cube;FoldingXyz;GhemicalMM;HyperChem;Jme;Mopac;MopacArchive;ZMatrix;", "xtal.", ";Aims;Castep;Crystal;Dmol;Espresso;Gulp;Magres;Shelx;Siesta;VaspOutcar;VaspPoscar;Wien2k;Xcrysden;"];
+c$.readerSets = c$.prototype.readerSets = ["cif.", ";Cif;MMCIF_PDBX;", "molxyz.", ";Mol3D;Mol;Xyz;", "more.", ";BinaryDcd;Gromacs;Jcampdx;MdCrd;MdTop;Mol2;Pqr;P2n;TlsDataOnly;", "quantum.", ";Adf;Csf;Dgrid;GamessUK;GamessUS;Gaussian;GausianWfn;Jaguar;Molden;MopacGraphf;GenNBO;NWChem;Odyssey;Psi;Qchem;Spartan;SpartanSmol;WebMO;", "pdb.", ";Pdb;", "pymol.", ";PyMOL;", "simple.", ";Alchemy;Ampac;Cube;FoldingXyz;GhemicalMM;HyperChem;Jme;Mopac;MopacArchive;ZMatrix;", "xtal.", ";Abinit;Aims;Castep;Crystal;Dmol;Espresso;Gulp;Jana;Magres;Shelx;Siesta;VaspOutcar;VaspPoscar;Wien2k;Xcrysden;"];
 Clazz.defineStatics (c$,
 "CML_NAMESPACE_URI", "http://www.xml-cml.org/schema",
 "SPECIAL_JME", 0,
@@ -31163,8 +31265,9 @@ Clazz.defineStatics (c$,
 "tlsDataOnlyFileStartRecords", ["TlsDataOnly", "REFMAC\n\nTL", "REFMAC\r\n\r\n", "REFMAC\r\rTL"],
 "zMatrixFileStartRecords", ["ZMatrix", "#ZMATRIX"],
 "magresFileStartRecords", ["Magres", "#$magres", "# magres"],
-"pymolStartRecords", ["PyMOL", "}q"]);
-c$.fileStartsWithRecords = c$.prototype.fileStartsWithRecords = [J.adapter.smarter.Resolver.sptContainsRecords, J.adapter.smarter.Resolver.cubeFileStartRecords, J.adapter.smarter.Resolver.mol2Records, J.adapter.smarter.Resolver.webmoFileStartRecords, J.adapter.smarter.Resolver.moldenFileStartRecords, J.adapter.smarter.Resolver.dcdFileStartRecords, J.adapter.smarter.Resolver.tlsDataOnlyFileStartRecords, J.adapter.smarter.Resolver.zMatrixFileStartRecords, J.adapter.smarter.Resolver.magresFileStartRecords, J.adapter.smarter.Resolver.pymolStartRecords];
+"pymolStartRecords", ["PyMOL", "}q"],
+"janaStartRecords", ["Jana", "Version Jana"]);
+c$.fileStartsWithRecords = c$.prototype.fileStartsWithRecords = [J.adapter.smarter.Resolver.sptContainsRecords, J.adapter.smarter.Resolver.cubeFileStartRecords, J.adapter.smarter.Resolver.mol2Records, J.adapter.smarter.Resolver.webmoFileStartRecords, J.adapter.smarter.Resolver.moldenFileStartRecords, J.adapter.smarter.Resolver.dcdFileStartRecords, J.adapter.smarter.Resolver.tlsDataOnlyFileStartRecords, J.adapter.smarter.Resolver.zMatrixFileStartRecords, J.adapter.smarter.Resolver.magresFileStartRecords, J.adapter.smarter.Resolver.pymolStartRecords, J.adapter.smarter.Resolver.janaStartRecords];
 Clazz.defineStatics (c$,
 "pqrLineStartRecords", ["Pqr", "REMARK   1 PQR"],
 "p2nLineStartRecords", ["P2n", "REMARK   1 P2N"],
@@ -31201,8 +31304,9 @@ Clazz.defineStatics (c$,
 "espressoContainsRecords", ["Espresso", "Program PWSCF", "Program PHONON"],
 "siestaContainsRecords", ["Siesta", "MD.TypeOfRun", "SolutionMethod", "MeshCutoff", "WELCOME TO SIESTA"],
 "xcrysDenContainsRecords", ["Xcrysden", "PRIMVEC", "CONVVEC", "PRIMCOORD"],
-"mopacArchiveContainsRecords", ["MopacArchive", "SUMMARY OF PM"]);
-c$.headerContainsRecords = c$.prototype.headerContainsRecords = [J.adapter.smarter.Resolver.sptContainsRecords, J.adapter.smarter.Resolver.xmlContainsRecords, J.adapter.smarter.Resolver.gaussianContainsRecords, J.adapter.smarter.Resolver.ampacContainsRecords, J.adapter.smarter.Resolver.mopacContainsRecords, J.adapter.smarter.Resolver.qchemContainsRecords, J.adapter.smarter.Resolver.gamessUKContainsRecords, J.adapter.smarter.Resolver.gamessUSContainsRecords, J.adapter.smarter.Resolver.spartanBinaryContainsRecords, J.adapter.smarter.Resolver.spartanContainsRecords, J.adapter.smarter.Resolver.mol2Records, J.adapter.smarter.Resolver.adfContainsRecords, J.adapter.smarter.Resolver.psiContainsRecords, J.adapter.smarter.Resolver.nwchemContainsRecords, J.adapter.smarter.Resolver.uicrcifContainsRecords, J.adapter.smarter.Resolver.dgridContainsRecords, J.adapter.smarter.Resolver.crystalContainsRecords, J.adapter.smarter.Resolver.dmolContainsRecords, J.adapter.smarter.Resolver.gulpContainsRecords, J.adapter.smarter.Resolver.espressoContainsRecords, J.adapter.smarter.Resolver.siestaContainsRecords, J.adapter.smarter.Resolver.xcrysDenContainsRecords, J.adapter.smarter.Resolver.mopacArchiveContainsRecords];
+"mopacArchiveContainsRecords", ["MopacArchive", "SUMMARY OF PM"],
+"abinitContainsRecords", ["Abinit", "http://www.abinit.org", "Catholique", "Louvain"]);
+c$.headerContainsRecords = c$.prototype.headerContainsRecords = [J.adapter.smarter.Resolver.sptContainsRecords, J.adapter.smarter.Resolver.xmlContainsRecords, J.adapter.smarter.Resolver.gaussianContainsRecords, J.adapter.smarter.Resolver.ampacContainsRecords, J.adapter.smarter.Resolver.mopacContainsRecords, J.adapter.smarter.Resolver.qchemContainsRecords, J.adapter.smarter.Resolver.gamessUKContainsRecords, J.adapter.smarter.Resolver.gamessUSContainsRecords, J.adapter.smarter.Resolver.spartanBinaryContainsRecords, J.adapter.smarter.Resolver.spartanContainsRecords, J.adapter.smarter.Resolver.mol2Records, J.adapter.smarter.Resolver.adfContainsRecords, J.adapter.smarter.Resolver.psiContainsRecords, J.adapter.smarter.Resolver.nwchemContainsRecords, J.adapter.smarter.Resolver.uicrcifContainsRecords, J.adapter.smarter.Resolver.dgridContainsRecords, J.adapter.smarter.Resolver.crystalContainsRecords, J.adapter.smarter.Resolver.dmolContainsRecords, J.adapter.smarter.Resolver.gulpContainsRecords, J.adapter.smarter.Resolver.espressoContainsRecords, J.adapter.smarter.Resolver.siestaContainsRecords, J.adapter.smarter.Resolver.xcrysDenContainsRecords, J.adapter.smarter.Resolver.mopacArchiveContainsRecords, J.adapter.smarter.Resolver.abinitContainsRecords];
 });
 Clazz.declarePackage ("J.api");
 c$ = Clazz.declareType (J.api, "JmolAdapterStructureIterator");
@@ -31723,7 +31827,7 @@ J.modelset.Group.addGroup3Name (J.viewer.JC.predefinedGroup3Names[i]);
 }
 }});
 Clazz.declarePackage ("J.adapter.smarter");
-Clazz.load (["J.util.P3"], "J.adapter.smarter.Atom", ["java.lang.Float", "J.util.JmolList"], function () {
+Clazz.load (["J.util.P3"], "J.adapter.smarter.Atom", ["java.lang.Float", "J.util.ArrayUtil", "$.JmolList", "$.Tensor", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomSetIndex = 0;
 this.index = 0;
@@ -31734,11 +31838,9 @@ this.elementNumber = -1;
 this.atomName = null;
 this.formalCharge = -2147483648;
 this.partialCharge = NaN;
-this.vectorX = NaN;
-this.vectorY = NaN;
-this.vectorZ = NaN;
+this.vib = null;
 this.bfactor = NaN;
-this.occupancy = 100;
+this.foccupancy = 1;
 this.radius = NaN;
 this.isHetero = false;
 this.atomSerial = -2147483648;
@@ -31753,19 +31855,27 @@ this.ignoreSymmetry = false;
 Clazz.instantialize (this, arguments);
 }, J.adapter.smarter, "Atom", J.util.P3, Cloneable);
 $_M(c$, "addTensor", 
-function (tensor, type) {
-if (tensor == null) return;
-if (this.tensors == null) this.tensors =  new J.util.JmolList ();
+function (tensor, type, reset) {
+if (tensor == null) return null;
+if (reset || this.tensors == null) this.tensors =  new J.util.JmolList ();
 this.tensors.addLast (tensor);
 if (type != null) tensor.setType (type);
-}, "J.util.Tensor,~S");
+return tensor;
+}, "J.util.Tensor,~S,~B");
 Clazz.overrideConstructor (c$, 
 function () {
 this.set (NaN, NaN, NaN);
 });
 $_M(c$, "getClone", 
 function () {
-return this.clone ();
+var a = this.clone ();
+if (this.vib != null) a.vib = J.util.V3.newV (a.vib);
+if (this.anisoBorU != null) a.anisoBorU = J.util.ArrayUtil.arrayCopyF (this.anisoBorU, -1);
+if (this.tensors != null) {
+a.tensors =  new J.util.JmolList ();
+for (var i = this.tensors.size (); --i >= 0; ) a.tensors.addLast (J.util.Tensor.copyTensor (this.tensors.get (i)));
+
+}return a;
 });
 $_M(c$, "getElementSymbol", 
 function () {
@@ -31821,10 +31931,8 @@ return J.adapter.smarter.Atom.isValidElementSymbolNoCaseSecondChar2 (chFirst, ch
 }, "~S");
 $_M(c$, "scaleVector", 
 function (vibScale) {
-if (Float.isNaN (this.vectorX)) return;
-this.vectorX *= vibScale;
-this.vectorY *= vibScale;
-this.vectorZ *= vibScale;
+if (this.vib == null || Float.isNaN (this.vib.z)) return;
+this.vib.scale (vibScale);
 }, "~N");
 Clazz.defineStatics (c$,
 "elementCharMasks", [1972292, -2147351151, -2146019271, -2130706430, 1441792, -2147348464, 25, -2147205008, -2147344384, 0, -2147352576, 1179905, 548936, -2147434213, -2147221504, -2145759221, 0, 1056947, -2147339946, -2147477097, -2147483648, -2147483648, -2147483648, 8388624, -2147483646, 139264]);
@@ -32088,6 +32196,7 @@ this.doPackUnitCell = false;
 this.strSupercell = null;
 this.ptSupercell = null;
 this.mustFinalizeModelSet = false;
+this.forcePacked = false;
 this.loadNote = null;
 this.doConvertToFractional = false;
 this.fileCoordinatesAreFractional = false;
@@ -32118,6 +32227,7 @@ this.filterChain = false;
 this.filterAtomName = false;
 this.filterAtomType = false;
 this.filterAtomTypeStr = null;
+this.filterAtomNameTerminator = ";";
 this.filterElement = false;
 this.filterHetero = false;
 this.filterEveryNth = false;
@@ -32172,7 +32282,7 @@ this.processBinaryDocument (this.doc);
 }this.finalizeReader ();
 } catch (e) {
 J.util.Logger.info ("Reader error: " + e);
-if (!this.viewer.isJS ()) e.printStackTrace ();
+if (!this.viewer.isJS) e.printStackTrace ();
 this.setError (e);
 }
 if (this.reader != null) this.reader.close ();
@@ -32296,7 +32406,7 @@ else
 s = e.toString();
 }if (this.line == null) this.atomSetCollection.errorMessage = "Error reading file at end of file \n" + s;
  else this.atomSetCollection.errorMessage = "Error reading file at line " + this.ptLine + ":\n" + this.line + "\n" + s;
-if (!this.viewer.isJS ()) e.printStackTrace ();
+if (!this.viewer.isJS) e.printStackTrace ();
 }, $fz.isPrivate = true, $fz), "Throwable");
 $_M(c$, "initialize", 
 ($fz = function () {
@@ -32340,22 +32450,8 @@ for (var i = this.firstLastStep[0]; i <= this.firstLastStep[1]; i += this.firstL
 
 }}if (this.bsModels != null && (this.firstLastStep == null || this.firstLastStep[1] != -1)) this.lastModelNumber = this.bsModels.length ();
 this.symmetryRange = (this.htParams.containsKey ("symmetryRange") ? (this.htParams.get ("symmetryRange")).floatValue () : 0);
-this.latticeCells =  Clazz.newIntArray (3, 0);
-if (this.htParams.containsKey ("lattice")) {
-var pt = (this.htParams.get ("lattice"));
-this.latticeCells[0] = Clazz.floatToInt (pt.x);
-this.latticeCells[1] = Clazz.floatToInt (pt.y);
-this.latticeCells[2] = Clazz.floatToInt (pt.z);
-this.doCentroidUnitCell = (this.htParams.containsKey ("centroid"));
-if (this.doCentroidUnitCell && (this.latticeCells[2] == -1 || this.latticeCells[2] == 0)) this.latticeCells[2] = 1;
-this.centroidPacked = this.doCentroidUnitCell && this.htParams.containsKey ("packed");
-this.doPackUnitCell = !this.doCentroidUnitCell && (this.htParams.containsKey ("packed") || this.latticeCells[2] < 0);
-}this.doApplySymmetry = (this.latticeCells[0] > 0 && this.latticeCells[1] > 0);
-if (!this.doApplySymmetry) {
-this.latticeCells[0] = 0;
-this.latticeCells[1] = 0;
-this.latticeCells[2] = 0;
-}if (this.htParams.containsKey ("spaceGroupIndex")) {
+this.initializeSymmetryOptions ();
+if (this.htParams.containsKey ("spaceGroupIndex")) {
 this.desiredSpaceGroupIndex = (this.htParams.get ("spaceGroupIndex")).intValue ();
 if (this.desiredSpaceGroupIndex == -2) this.spaceGroup = this.htParams.get ("spaceGroupName");
 this.ignoreFileSpaceGroupName = (this.desiredSpaceGroupIndex == -2 || this.desiredSpaceGroupIndex >= 0);
@@ -32377,6 +32473,26 @@ this.setUnitCell (fParams[0], fParams[1], fParams[2], fParams[3], fParams[4], fP
 }this.ignoreFileUnitCell = this.iHaveUnitCell;
 if (this.merging && !this.iHaveUnitCell) this.setFractionalCoordinates (false);
 }}, $fz.isPrivate = true, $fz));
+$_M(c$, "initializeSymmetryOptions", 
+function () {
+this.latticeCells =  Clazz.newIntArray (3, 0);
+var pt = (this.htParams.get ("lattice"));
+if (this.forcePacked && pt == null) pt = J.util.P3.new3 (1, 1, 1);
+if (pt != null) {
+this.latticeCells[0] = Clazz.floatToInt (pt.x);
+this.latticeCells[1] = Clazz.floatToInt (pt.y);
+this.latticeCells[2] = Clazz.floatToInt (pt.z);
+this.doCentroidUnitCell = (this.htParams.containsKey ("centroid"));
+if (this.doCentroidUnitCell && (this.latticeCells[2] == -1 || this.latticeCells[2] == 0)) this.latticeCells[2] = 1;
+var isPacked = this.forcePacked || this.htParams.containsKey ("packed");
+this.centroidPacked = this.doCentroidUnitCell && isPacked;
+this.doPackUnitCell = !this.doCentroidUnitCell && (isPacked || this.latticeCells[2] < 0);
+}this.doApplySymmetry = (this.latticeCells[0] > 0 && this.latticeCells[1] > 0);
+if (!this.doApplySymmetry) {
+this.latticeCells[0] = 0;
+this.latticeCells[1] = 0;
+this.latticeCells[2] = 0;
+}});
 $_M(c$, "doGetModel", 
 function (modelNumber, title) {
 if (title != null && this.nameRequired != null && this.nameRequired.length > 0 && title.toUpperCase ().indexOf (this.nameRequired) < 0) return false;
@@ -32431,10 +32547,12 @@ J.util.Logger.info ("Setting space group name to " + this.spaceGroup);
 }, "~S");
 $_M(c$, "setSymmetryOperator", 
 function (xyz) {
-if (this.ignoreFileSymmetryOperators) return;
-this.atomSetCollection.setLatticeCells (this.latticeCells, this.applySymmetryToBonds, this.doPackUnitCell, this.doCentroidUnitCell, this.centroidPacked, this.strSupercell, this.ptSupercell);
-if (!this.atomSetCollection.addSpaceGroupOperation (xyz)) J.util.Logger.warn ("Skipping symmetry operation " + xyz);
+if (this.ignoreFileSymmetryOperators) return -1;
+this.setLatticeCells (false);
+var isym = this.atomSetCollection.addSpaceGroupOperation (xyz);
+if (isym < 0) J.util.Logger.warn ("Skipping symmetry operation " + xyz);
 this.iHaveSymmetryOperators = true;
+return isym;
 }, "~S");
 $_M(c$, "initializeCartesianToFractional", 
 ($fz = function () {
@@ -32515,6 +32633,11 @@ function (TF) {
 this.iHaveFractionalCoordinates = this.fileCoordinatesAreFractional = TF;
 this.checkUnitCellOffset ();
 }, "~B");
+$_M(c$, "setFilterAtomTypeStr", 
+function (s) {
+this.filterAtomTypeStr = s;
+this.filterAtomNameTerminator = "\0";
+}, "~S");
 $_M(c$, "setFilter", 
 function (filter0) {
 if (filter0 == null) {
@@ -32559,6 +32682,11 @@ if ((ipt = this.filter.indexOf ("|")) >= 0) {
 this.filter1 = this.filter.substring (0, ipt).trim () + ";";
 this.filter2 = ";" + this.filter.substring (ipt).trim ();
 }}}}, "~S");
+$_M(c$, "getFilter", 
+function (key) {
+var pt = (this.filter == null ? -1 : this.filter.indexOf (key));
+return (pt < 0 ? null : this.filter.substring (pt + key.length, this.filter.indexOf (";", pt)));
+}, "~S");
 $_M(c$, "checkFilterKey", 
 function (key) {
 return (this.filter != null && this.filter.indexOf (key) >= 0);
@@ -32574,8 +32702,16 @@ return isOK;
 }, "J.adapter.smarter.Atom,~N");
 $_M(c$, "checkFilter", 
 ($fz = function (atom, f) {
-return (!this.filterGroup3 || atom.group3 == null || !this.filterReject (f, "[", atom.group3.toUpperCase () + "]")) && (!this.filterAtomName || atom.atomName == null || !this.filterReject (f, ".", atom.atomName.toUpperCase () + (this.filterAtomTypeStr == null ? ";" : "\0"))) && (this.filterAtomTypeStr == null || atom.atomName == null || atom.atomName.toUpperCase ().indexOf ("\0" + this.filterAtomTypeStr) >= 0) && (!this.filterElement || atom.elementSymbol == null || !this.filterReject (f, "_", atom.elementSymbol.toUpperCase () + ";")) && (!this.filterChain || atom.chainID == 0 || !this.filterReject (f, ":", "" + this.viewer.getChainIDStr (atom.chainID))) && (!this.filterAltLoc || atom.alternateLocationID == '\0' || !this.filterReject (f, "%", "" + atom.alternateLocationID)) && (!this.filterHetero || !this.filterReject (f, "HETATM", atom.isHetero ? "HETATM" : "ATOM"));
+return (!this.filterGroup3 || atom.group3 == null || !this.filterReject (f, "[", atom.group3.toUpperCase () + "]")) && (!this.filterAtomName || this.allowAtomName (atom.atomName, f)) && (this.filterAtomTypeStr == null || atom.atomName == null || atom.atomName.toUpperCase ().indexOf ("\0" + this.filterAtomTypeStr) >= 0) && (!this.filterElement || atom.elementSymbol == null || !this.filterReject (f, "_", atom.elementSymbol.toUpperCase () + ";")) && (!this.filterChain || atom.chainID == 0 || !this.filterReject (f, ":", "" + this.viewer.getChainIDStr (atom.chainID))) && (!this.filterAltLoc || atom.alternateLocationID == '\0' || !this.filterReject (f, "%", "" + atom.alternateLocationID)) && (!this.filterHetero || !this.filterReject (f, "HETATM", atom.isHetero ? "HETATM" : "ATOM"));
 }, $fz.isPrivate = true, $fz), "J.adapter.smarter.Atom,~S");
+$_M(c$, "rejectAtomName", 
+function (name) {
+return this.filterAtomName && !this.allowAtomName (name, this.filter);
+}, "~S");
+$_M(c$, "allowAtomName", 
+($fz = function (atomName, f) {
+return (atomName == null || !this.filterReject (f, ".", atomName.toUpperCase () + this.filterAtomNameTerminator));
+}, $fz.isPrivate = true, $fz), "~S,~S");
 $_M(c$, "filterReject", 
 function (f, code, atomCode) {
 return (f.indexOf (code) >= 0 && (f.indexOf ("!" + code) >= 0 ? f.indexOf (code + atomCode) >= 0 : f.indexOf (code + atomCode) < 0));
@@ -32649,26 +32785,30 @@ this.applySymTrajASCR ();
 });
 $_M(c$, "applySymTrajASCR", 
 function () {
+if (this.forcePacked) this.initializeSymmetryOptions ();
+var sym = null;
 if (this.iHaveUnitCell && this.doCheckUnitCell) {
 this.atomSetCollection.setCoordinatesAreFractional (this.iHaveFractionalCoordinates);
 this.atomSetCollection.setNotionalUnitCell (this.notionalUnitCell, this.matUnitCellOrientation, this.unitCellOffset);
+sym = this.atomSetCollection.symmetry;
 this.atomSetCollection.setAtomSetSpaceGroupName (this.spaceGroup);
 this.atomSetCollection.setSymmetryRange (this.symmetryRange);
 if (this.doConvertToFractional || this.fileCoordinatesAreFractional) {
-this.atomSetCollection.setLatticeCells (this.latticeCells, this.applySymmetryToBonds, this.doPackUnitCell, this.doCentroidUnitCell, this.centroidPacked, this.strSupercell, this.ptSupercell);
+this.setLatticeCells (false);
 if (this.ignoreFileSpaceGroupName || !this.iHaveSymmetryOperators) {
 if (!this.merging || this.symmetry == null) this.getSymmetry ();
 if (this.symmetry.createSpaceGroup (this.desiredSpaceGroupIndex, (this.spaceGroup.indexOf ("!") >= 0 ? "P1" : this.spaceGroup), this.notionalUnitCell)) {
+this.atomSetCollection.applySymmetry (this.symmetry);
 this.atomSetCollection.setAtomSetSpaceGroupName (this.symmetry.getSpaceGroupName ());
-this.atomSetCollection.applySymmetryUsing (this.symmetry);
 }} else {
-this.atomSetCollection.applySymmetry ();
+this.atomSetCollection.applySymmetry (null);
 }}if (this.iHaveFractionalCoordinates && this.merging && this.symmetry != null) {
 this.atomSetCollection.toCartesian (this.symmetry);
 this.atomSetCollection.setCoordinatesAreFractional (false);
 this.addVibrations = false;
 }}if (this.isTrajectory) this.atomSetCollection.setTrajectory ();
 this.initializeSymmetry ();
+return sym;
 });
 $_M(c$, "finalizeMOData", 
 function (moData) {
@@ -32814,7 +32954,7 @@ if (this.fileScaling.y == 0) this.fileScaling.y = 1;
 if (this.fileScaling.z == 0) this.fileScaling.z = 1;
 this.setFractionalCoordinates (true);
 this.latticeCells =  Clazz.newIntArray (3, 0);
-this.atomSetCollection.setLatticeCells (this.latticeCells, true, false, false, false, null, null);
+this.setLatticeCells (true);
 this.setUnitCell (plotScale.x * 2 / (maxXYZ.x - minXYZ.x), plotScale.y * 2 / (maxXYZ.y - minXYZ.y), plotScale.z * 2 / (maxXYZ.z == minXYZ.z ? 1 : maxXYZ.z - minXYZ.z), 90, 90, 90);
 this.unitCellOffset = J.util.P3.newP (plotScale);
 this.unitCellOffset.scale (-1);
@@ -32833,6 +32973,11 @@ script = script.substring (0, script.indexOf ("#"));
 }this.addJmolScript (script);
 this.line = this.line.substring (0, pt).trim ();
 }});
+$_M(c$, "setLatticeCells", 
+($fz = function (isReset) {
+if (isReset) this.atomSetCollection.setLatticeCells (this.latticeCells, true, false, false, false, null, null);
+ else this.atomSetCollection.setLatticeCells (this.latticeCells, this.applySymmetryToBonds, this.doPackUnitCell, this.doCentroidUnitCell, this.centroidPacked, this.strSupercell, this.ptSupercell);
+}, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "addJmolScript", 
 function (script) {
 J.util.Logger.info ("#jmolScript: " + script);
@@ -33051,6 +33196,10 @@ this.useTimeout = true;
 this.junk = 0;
 Clazz.instantialize (this, arguments);
 }, J.thread, "JmolThread", Thread);
+$_M(c$, "setManager", 
+function (manager, viewer, params) {
+return 0;
+}, "~O,J.viewer.Viewer,~O");
 $_M(c$, "setViewer", 
 function (viewer, name) {
 this.setName (name);
@@ -33104,7 +33253,7 @@ throw e$$;
 $_M(c$, "oops", 
 function (e) {
 J.util.Logger.debug (this.$name + " exception " + e);
-if (!this.viewer.isJS ()) e.printStackTrace ();
+if (!this.viewer.isJS) e.printStackTrace ();
 this.viewer.queueOnHold = false;
 }, "Exception");
 $_M(c$, "runSleep", 
@@ -33150,7 +33299,7 @@ Clazz.instantialize (this, arguments);
 }, J.io, "LimitedLineReader");
 Clazz.makeConstructor (c$, 
 function (bufferedReader, readLimit) {
-bufferedReader.mark (readLimit);
+bufferedReader.mark (readLimit + 1);
 this.buf =  Clazz.newCharArray (readLimit, '\0');
 this.cchBuf = Math.max (bufferedReader.read (this.buf, 0, readLimit), 0);
 this.ichCurrent = 0;
@@ -33389,8 +33538,11 @@ this.ich = 0;
 $_M(c$, "setStringNextLine", 
 ($fz = function () {
 this.setString (this.readLine ());
-if (this.line == null || this.line.length == 0 || this.line.charAt (0) != ';') return this.line;
-this.ich = 1;
+if (this.line == null || this.line.length == 0) return this.line;
+if (this.line.charAt (0) != ';') {
+if (this.str.startsWith ("###non-st#")) this.ich = 10;
+return this.line;
+}this.ich = 1;
 var str = '\1' + this.line.substring (1) + '\n';
 while (this.readLine () != null) {
 if (this.line.startsWith (";")) {
@@ -33419,7 +33571,8 @@ this.wasUnQuoted = true;
 while (this.ich < this.cch && (ch = this.str.charAt (this.ich)) != ' ' && ch != '\t') ++this.ich;
 
 if (this.ich == ichStart + 1) if (this.str.charAt (ichStart) == '.' || this.str.charAt (ichStart) == '?') return "\0";
-return this.str.substring (ichStart, this.ich);
+var s = this.str.substring (ichStart, this.ich);
+return s;
 }this.wasUnQuoted = false;
 var chOpeningQuote = ch;
 var previousCharacterWasQuote = false;
@@ -33486,7 +33639,7 @@ for (var i = 0; i < this.fieldCount; i++) {
 }, $fz.isPrivate = true, $fz));
 });
 Clazz.declarePackage ("J.io");
-Clazz.load (null, "J.io.JmolBinary", ["java.io.BufferedInputStream", "$.BufferedReader", "$.ByteArrayInputStream", "$.InputStreamReader", "$.StringReader", "J.api.Interface", "J.io.Base64", "$.Encoding", "$.LimitedLineReader", "J.util.ArrayUtil", "$.Logger", "$.Parser", "$.TextFormat", "J.viewer.FileManager"], function () {
+Clazz.load (null, "J.io.JmolBinary", ["java.io.BufferedInputStream", "$.BufferedReader", "$.ByteArrayInputStream", "$.InputStreamReader", "$.StringReader", "J.api.Interface", "J.io.Base64", "$.Encoding", "$.LimitedLineReader", "J.util.ArrayUtil", "$.Logger", "$.Parser", "$.SB", "$.TextFormat", "J.viewer.FileManager"], function () {
 c$ = Clazz.declareType (J.io, "JmolBinary");
 c$.determineSurfaceTypeIs = $_M(c$, "determineSurfaceTypeIs", 
 function (is) {
@@ -33570,7 +33723,9 @@ return (nSurfaces < 0 ? "Jvxl" : "Cube");
 }, "java.io.BufferedReader");
 c$.getUTFEncodingForStream = $_M(c$, "getUTFEncodingForStream", 
 ($fz = function (is) {
-var abMagic =  Clazz.newByteArray (4, 0);
+{
+is.resetStream();
+}var abMagic =  Clazz.newByteArray (4, 0);
 abMagic[3] = 1;
 try {
 is.mark (5);
@@ -33618,28 +33773,21 @@ if (bytes.length >= 2 && bytes[0] == 0xFF && bytes[1] == 0xFE) return J.io.Encod
 if (bytes.length >= 2 && bytes[0] == 0xFE && bytes[1] == 0xFF) return J.io.Encoding.UTF_16BE;
 return J.io.Encoding.NONE;
 }, $fz.isPrivate = true, $fz), "~A");
-c$.isCompoundDocumentStream = $_M(c$, "isCompoundDocumentStream", 
-function (is) {
-var abMagic =  Clazz.newByteArray (8, 0);
-is.mark (9);
-var countRead = is.read (abMagic, 0, 8);
-is.reset ();
-return (countRead == 8 && abMagic[0] == 0xD0 && abMagic[1] == 0xCF && abMagic[2] == 0x11 && abMagic[3] == 0xE0 && abMagic[4] == 0xA1 && abMagic[5] == 0xB1 && abMagic[6] == 0x1A && abMagic[7] == 0xE1);
-}, "java.io.InputStream");
-c$.isCompoundDocumentArray = $_M(c$, "isCompoundDocumentArray", 
-function (bytes) {
-return (bytes.length >= 8 && bytes[0] == 0xD0 && bytes[1] == 0xCF && bytes[2] == 0x11 && bytes[3] == 0xE0 && bytes[4] == 0xA1 && bytes[5] == 0xB1 && bytes[6] == 0x1A && bytes[7] == 0xE1);
-}, "~A");
-c$.isGzipB = $_M(c$, "isGzipB", 
-function (bytes) {
-return (bytes != null && bytes.length > 2 && bytes[0] == 0x1F && bytes[1] == 0x8B);
-}, "~A");
-c$.isGzipS = $_M(c$, "isGzipS", 
-function (is) {
-var abMagic =  Clazz.newByteArray (4, 0);
+c$.getMagic = $_M(c$, "getMagic", 
+($fz = function (is, n) {
+var abMagic =  Clazz.newByteArray (n, 0);
+{
+is.resetStream();
+}try {
+is.mark (n + 1);
+is.read (abMagic, 0, n);
+} catch (e) {
+if (Clazz.exceptionOf (e, java.io.IOException)) {
+} else {
+throw e;
+}
+}
 try {
-is.mark (5);
-is.read (abMagic, 0, 4);
 is.reset ();
 } catch (e) {
 if (Clazz.exceptionOf (e, java.io.IOException)) {
@@ -33647,42 +33795,45 @@ if (Clazz.exceptionOf (e, java.io.IOException)) {
 throw e;
 }
 }
-return J.io.JmolBinary.isGzipB (abMagic);
-}, "java.io.InputStream");
-c$.isZipStream = $_M(c$, "isZipStream", 
+return abMagic;
+}, $fz.isPrivate = true, $fz), "java.io.InputStream,~N");
+c$.isCompoundDocumentS = $_M(c$, "isCompoundDocumentS", 
 function (is) {
-var abMagic =  Clazz.newByteArray (4, 0);
-try {
-is.mark (5);
-is.read (abMagic, 0, 4);
-is.reset ();
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-} else {
-throw e;
-}
-}
-return J.io.JmolBinary.isZipFile (abMagic);
+return J.io.JmolBinary.isCompoundDocumentB (J.io.JmolBinary.getMagic (is, 8));
 }, "java.io.InputStream");
-c$.isZipFile = $_M(c$, "isZipFile", 
+c$.isCompoundDocumentB = $_M(c$, "isCompoundDocumentB", 
 function (bytes) {
-return (bytes.length >= 4 && bytes[0] == 80 && bytes[1] == 75 && bytes[2] == 3 && bytes[3] == 4);
+return (bytes.length >= 8 && bytes[0] == 0xD0 && bytes[1] == 0xCF && bytes[2] == 0x11 && bytes[3] == 0xE0 && bytes[4] == 0xA1 && bytes[5] == 0xB1 && bytes[6] == 0x1A && bytes[7] == 0xE1);
+}, "~A");
+c$.isGzipS = $_M(c$, "isGzipS", 
+function (is) {
+return J.io.JmolBinary.isGzipB (J.io.JmolBinary.getMagic (is, 2));
+}, "java.io.InputStream");
+c$.isGzipB = $_M(c$, "isGzipB", 
+function (bytes) {
+return (bytes != null && bytes.length >= 2 && bytes[0] == 0x1F && bytes[1] == 0x8B);
+}, "~A");
+c$.isPickleS = $_M(c$, "isPickleS", 
+function (is) {
+return J.io.JmolBinary.isPickleB (J.io.JmolBinary.getMagic (is, 2));
+}, "java.io.InputStream");
+c$.isPickleB = $_M(c$, "isPickleB", 
+function (bytes) {
+return (bytes != null && bytes.length >= 2 && bytes[0] == 0x7D && bytes[1] == 0x71);
+}, "~A");
+c$.isZipS = $_M(c$, "isZipS", 
+function (is) {
+return J.io.JmolBinary.isZipB (J.io.JmolBinary.getMagic (is, 4));
+}, "java.io.InputStream");
+c$.isZipB = $_M(c$, "isZipB", 
+function (bytes) {
+return (bytes.length >= 4 && bytes[0] == 0x50 && bytes[1] == 0x4B && bytes[2] == 0x03 && bytes[3] == 0x04);
 }, "~A");
 c$.isPngZipStream = $_M(c$, "isPngZipStream", 
 function (is) {
-if (J.io.JmolBinary.isZipStream (is)) return false;
-try {
-is.mark (56);
-var abMagic = J.io.JmolBinary.getStreamBytes (is, 55);
-is.reset ();
-return (abMagic[51] == 80 && abMagic[52] == 78 && abMagic[53] == 71 && abMagic[54] == 74);
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-} else {
-throw e;
-}
-}
-return false;
+if (J.io.JmolBinary.isZipS (is)) return false;
+var abMagic = J.io.JmolBinary.getMagic (is, 55);
+return (abMagic[51] == 0x50 && abMagic[52] == 0x4E && abMagic[53] == 0x47 && abMagic[54] == 0x4A);
 }, "java.io.InputStream");
 c$.getZipRoot = $_M(c$, "getZipRoot", 
 function (fileName) {
@@ -33756,32 +33907,32 @@ function (bis, subFileList, i) {
 return J.io.JmolBinary.getJzu ().getZipFileContentsAsBytes (bis, subFileList, i);
 }, "java.io.BufferedInputStream,~A,~N");
 c$.createZipSet = $_M(c$, "createZipSet", 
-function (fm, viewer, fileName, script, scripts, includeRemoteFiles) {
-return J.io.JmolBinary.getJzu ().createZipSet (fm, viewer, fileName, script, scripts, includeRemoteFiles);
-}, "J.viewer.FileManager,J.viewer.Viewer,~S,~S,~A,~B");
+function (privateKey, fm, viewer, fileName, script, scripts, includeRemoteFiles) {
+return J.io.JmolBinary.getJzu ().createZipSet (privateKey, fm, viewer, fileName, script, scripts, includeRemoteFiles);
+}, "~N,J.viewer.FileManager,J.viewer.Viewer,~S,~S,~A,~B");
 c$.getStreamAsBytes = $_M(c$, "getStreamAsBytes", 
-function (bis, os) {
+function (bis, osb) {
 var buf =  Clazz.newByteArray (1024, 0);
-var bytes = (os == null ?  Clazz.newByteArray (4096, 0) : null);
+var bytes = (osb == null ?  Clazz.newByteArray (4096, 0) : null);
 var len = 0;
 var totalLen = 0;
 while ((len = bis.read (buf, 0, 1024)) > 0) {
 totalLen += len;
-if (os == null) {
+if (osb == null) {
 if (totalLen >= bytes.length) bytes = J.util.ArrayUtil.ensureLengthByte (bytes, totalLen * 2);
 System.arraycopy (buf, 0, bytes, totalLen - len, len);
 } else {
-os.write (buf, 0, len);
+osb.write (buf, 0, len);
 }}
 bis.close ();
-if (os == null) {
+if (osb == null) {
 return J.util.ArrayUtil.arrayCopyByte (bytes, totalLen);
 }return totalLen + " bytes";
-}, "java.io.BufferedInputStream,java.io.OutputStream");
+}, "java.io.BufferedInputStream,J.io.OutputStringBuilder");
 c$.writeZipFile = $_M(c$, "writeZipFile", 
-function (fm, viewer, outFileName, fileNamesAndByteArrays, msg) {
-return J.io.JmolBinary.getJzu ().writeZipFile (fm, viewer, outFileName, fileNamesAndByteArrays, msg);
-}, "J.viewer.FileManager,J.viewer.Viewer,~S,J.util.JmolList,~S");
+function (privateKey, fm, viewer, outFileName, fileNamesAndByteArrays, msg) {
+return J.io.JmolBinary.getJzu ().writeZipFile (privateKey, fm, viewer, outFileName, fileNamesAndByteArrays, msg);
+}, "~N,J.viewer.FileManager,J.viewer.Viewer,~S,J.util.JmolList,~S");
 c$.postByteArray = $_M(c$, "postByteArray", 
 function (fm, outFileName, bytes) {
 var ret = fm.getBufferedInputStreamOrErrorMessageFromName (outFileName, null, false, false, bytes, false);
@@ -33833,9 +33984,9 @@ function (fm, data) {
 return J.io.JmolBinary.getJzu ().cachePngjFile (fm, data);
 }, "J.viewer.FileManager,~A");
 c$.getAtomSetCollectionOrBufferedReaderFromZip = $_M(c$, "getAtomSetCollectionOrBufferedReaderFromZip", 
-function (adapter, is, fileName, zipDirectory, htParams, asBufferedReader, asBufferedInputStream) {
-return J.io.JmolBinary.getJzu ().getAtomSetCollectionOrBufferedReaderFromZip (adapter, is, fileName, zipDirectory, htParams, 1, asBufferedReader, asBufferedInputStream);
-}, "J.api.JmolAdapter,java.io.InputStream,~S,~A,java.util.Map,~B,~B");
+function (adapter, is, fileName, zipDirectory, htParams, asBufferedReader) {
+return J.io.JmolBinary.getJzu ().getAtomSetCollectionOrBufferedReaderFromZip (adapter, is, fileName, zipDirectory, htParams, 1, asBufferedReader);
+}, "J.api.JmolAdapter,java.io.InputStream,~S,~A,java.util.Map,~B");
 c$.spartanFileList = $_M(c$, "spartanFileList", 
 function (name, zipDirectory) {
 return J.io.JmolBinary.getJzu ().spartanFileList (name, zipDirectory);
@@ -33906,6 +34057,50 @@ c$.checkBinaryType = $_M(c$, "checkBinaryType",
 function (fileTypeIn) {
 return (";pse=PyMOL;".indexOf ("=" + fileTypeIn + ";") >= 0);
 }, "~S");
+c$.StreamToString = $_M(c$, "StreamToString", 
+function (bis) {
+var data =  new Array (1);
+try {
+J.io.JmolBinary.readAll (J.io.JmolBinary.getBufferedReader (bis, "UTF-8"), -1, true, data, 0);
+} catch (e) {
+if (Clazz.exceptionOf (e, java.io.IOException)) {
+} else {
+throw e;
+}
+}
+return data[0];
+}, "java.io.BufferedInputStream");
+c$.readAll = $_M(c$, "readAll", 
+function (br, nBytesMax, allowBinary, data, i) {
+try {
+var sb = J.util.SB.newN (8192);
+var line;
+if (nBytesMax < 0) {
+line = br.readLine ();
+if (allowBinary || line != null && line.indexOf ('\0') < 0 && (line.length != 4 || line.charCodeAt (0) != 65533 || line.indexOf ("PNG") != 1)) {
+sb.append (line).appendC ('\n');
+while ((line = br.readLine ()) != null) sb.append (line).appendC ('\n');
+
+}} else {
+var n = 0;
+var len;
+while (n < nBytesMax && (line = br.readLine ()) != null) {
+if (nBytesMax - n < (len = line.length) + 1) line = line.substring (0, nBytesMax - n - 1);
+sb.append (line).appendC ('\n');
+n += len + 1;
+}
+}br.close ();
+data[i] = sb.toString ();
+return true;
+} catch (ioe) {
+if (Clazz.exceptionOf (ioe, Exception)) {
+data[i] = ioe.toString ();
+return false;
+} else {
+throw ioe;
+}
+}
+}, "java.io.BufferedReader,~N,~B,~A,~N");
 Clazz.defineStatics (c$,
 "JPEG_CONTINUE_STRING", " #Jmol...\0",
 "PMESH_BINARY_MAGIC_NUMBER", "PM\1\0",
@@ -33913,41 +34108,65 @@ Clazz.defineStatics (c$,
 "jzu", null);
 });
 Clazz.declarePackage ("J.io");
-Clazz.load (null, "J.io.OutputStringBuilder", ["java.io.BufferedWriter", "$.OutputStreamWriter", "J.util.SB"], function () {
+Clazz.load (null, "J.io.OutputStringBuilder", ["J.util.ArrayUtil", "$.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.type = null;
 this.sb = null;
 this.bw = null;
 this.nBytes = 0;
+this.bos = null;
+this.buf = null;
 Clazz.instantialize (this, arguments);
 }, J.io, "OutputStringBuilder");
 Clazz.makeConstructor (c$, 
-function (os) {
-if (os == null) {
-this.sb =  new J.util.SB ();
+function (bos, asBytes) {
+if (bos != null) {
+if (asBytes) {
+this.bos = bos;
 } else {
-var osw =  new java.io.OutputStreamWriter (os);
-this.bw =  new java.io.BufferedWriter (osw, 8192);
-}}, "java.io.BufferedOutputStream");
+{
+this.bw = bos;
+}}} else if (asBytes) {
+this.buf =  Clazz.newByteArray (8092, 0);
+} else {
+this.sb =  new J.util.SB ();
+}}, "java.io.BufferedOutputStream,~B");
 $_M(c$, "append", 
 function (s) {
-if (this.bw == null) {
-this.sb.append (s);
-} else {
-this.nBytes += s.length;
 try {
+if (this.bw != null) {
 this.bw.write (s);
+} else if (this.bos != null) {
+var buf = s.getBytes ();
+this.bos.write (buf, 0, buf.length);
+return this;
+} else {
+this.sb.append (s);
+}this.nBytes += s.length;
 } catch (e) {
 if (Clazz.exceptionOf (e, java.io.IOException)) {
 } else {
 throw e;
 }
 }
-}return this;
+return this;
 }, "~S");
+$_M(c$, "write", 
+function (buf, offset, len) {
+if (this.bos == null) {
+if (this.buf.length < this.nBytes + len) this.buf = J.util.ArrayUtil.ensureLengthByte (this.buf, this.nBytes * 2 + len);
+System.arraycopy (buf, offset, this.buf, this.nBytes, len);
+} else {
+this.bos.write (buf, offset, len);
+}this.nBytes += buf.length;
+}, "~A,~N,~N");
 $_M(c$, "length", 
 function () {
-return (this.bw == null ? this.sb.length () : this.nBytes);
+return this.nBytes;
+});
+$_M(c$, "getBytes", 
+function () {
+return (this.buf != null ? this.buf : this.sb != null ? this.sb.toBytes (0, -1) : null);
 });
 Clazz.overrideMethod (c$, "toString", 
 function () {
@@ -34074,7 +34293,7 @@ function (x, y, bsVisible) {
 return false;
 }, "~N,~N,J.util.BS");
 $_M(c$, "checkObjectDragged", 
-function (prevX, prevY, x, y, modifiers, bsVisible) {
+function (prevX, prevY, x, y, dragAction, bsVisible) {
 return false;
 }, "~N,~N,~N,~N,~N,J.util.BS");
 $_M(c$, "coordinateInRange", 
@@ -34137,6 +34356,75 @@ s.append ("  ").append (cmd).append (";\n");
 Clazz.defineStatics (c$,
 "RADIUS_MAX", 4);
 });
+Clazz.load (["java.io.OutputStream"], "java.io.ByteArrayOutputStream", ["java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.OutOfMemoryError", "J.util.ArrayUtil"], function () {
+c$ = Clazz.decorateAsClass (function () {
+this.buf = null;
+this.count = 0;
+Clazz.instantialize (this, arguments);
+}, java.io, "ByteArrayOutputStream", java.io.OutputStream);
+Clazz.makeConstructor (c$, 
+function () {
+this.construct (32);
+});
+Clazz.makeConstructor (c$, 
+function (size) {
+Clazz.superConstructor (this, java.io.ByteArrayOutputStream, []);
+if (size < 0) {
+throw  new IllegalArgumentException ("Negative initial size: " + size);
+}this.buf =  Clazz.newByteArray (size, 0);
+}, "~N");
+$_M(c$, "ensureCapacity", 
+($fz = function (minCapacity) {
+if (minCapacity - this.buf.length > 0) this.grow (minCapacity);
+}, $fz.isPrivate = true, $fz), "~N");
+$_M(c$, "grow", 
+($fz = function (minCapacity) {
+var oldCapacity = this.buf.length;
+var newCapacity = oldCapacity << 1;
+if (newCapacity - minCapacity < 0) newCapacity = minCapacity;
+if (newCapacity < 0) {
+if (minCapacity < 0) throw  new OutOfMemoryError ();
+newCapacity = 2147483647;
+}this.buf = J.util.ArrayUtil.arrayCopyByte (this.buf, newCapacity);
+}, $fz.isPrivate = true, $fz), "~N");
+Clazz.overrideMethod (c$, "writeByteAsInt", 
+function (b) {
+this.ensureCapacity (this.count + 1);
+this.buf[this.count] = b;
+this.count += 1;
+}, "~N");
+$_M(c$, "write", 
+function (b, off, len) {
+if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) - b.length > 0)) {
+throw  new IndexOutOfBoundsException ();
+}this.ensureCapacity (this.count + len);
+System.arraycopy (b, off, this.buf, this.count, len);
+this.count += len;
+}, "~A,~N,~N");
+$_M(c$, "writeTo", 
+function (out) {
+out.write (this.buf, 0, this.count);
+}, "java.io.OutputStream");
+$_M(c$, "reset", 
+function () {
+this.count = 0;
+});
+$_M(c$, "toByteArray", 
+function () {
+return (this.count == this.buf.length ? this.buf : J.util.ArrayUtil.arrayCopyByte (this.buf, this.count));
+});
+$_M(c$, "size", 
+function () {
+return this.count;
+});
+Clazz.overrideMethod (c$, "toString", 
+function () {
+return  String.instantialize (this.buf, 0, this.count);
+});
+Clazz.overrideMethod (c$, "close", 
+function () {
+});
+});
 Clazz.load (["java.io.InputStream"], "java.io.ByteArrayInputStream", ["java.lang.IndexOutOfBoundsException", "$.NullPointerException"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.buf = null;
@@ -34193,6 +34481,9 @@ Clazz.overrideMethod (c$, "mark",
 function (readAheadLimit) {
 this.$mark = this.pos;
 }, "~N");
+Clazz.overrideMethod (c$, "resetStream", 
+function () {
+});
 Clazz.overrideMethod (c$, "reset", 
 function () {
 this.pos = this.$mark;
@@ -34228,43 +34519,47 @@ if (this.bytearr == null || this.bytearr.length < length) this.bytearr =  Clazz.
 var c;
 var char2;
 var char3;
-var count = 0;
-var chararr_count = 0;
-var len = this.$in.read (this.bytearr, this.pos, length - this.pos);
-if (len < 0) return -1;
-this.pos = 0;
-while (count < len) {
-c = this.bytearr[count] & 0xff;
+var byteCount = 0;
+var charCount = offset;
+var byteLen = this.$in.read (this.bytearr, this.pos, length - this.pos);
+var nAvail = this.$in.available ();
+if (byteLen < 0) return -1;
+var nMax = byteLen;
+while (byteCount < nMax) {
+c = this.bytearr[byteCount] & 0xff;
 if (this.isUTF8) switch (c >> 4) {
 case 0xC:
 case 0xD:
-if (count > len - 2) continue;
-count += 2;
-char2 = this.bytearr[count - 1];
-if ((char2 & 0xC0) != 0x80) {
-count -= 2;
-break;
-}cbuf[chararr_count++] = String.fromCharCode (((c & 0x1F) << 6) | (char2 & 0x3F));
+if (byteCount + 1 >= byteLen) {
+if (nAvail >= 1) {
+nMax = byteCount;
 continue;
+}} else if (((char2 = this.bytearr[byteCount + 1]) & 0xC0) == 0x80) {
+cbuf[charCount++] = String.fromCharCode (((c & 0x1F) << 6) | (char2 & 0x3F));
+byteCount += 2;
+continue;
+}this.isUTF8 = false;
+break;
 case 0xE:
-if (count > len - 3) continue;
-count += 3;
-char2 = this.bytearr[count - 2];
-char3 = this.bytearr[count - 1];
-if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80)) {
-count -= 3;
-break;
-}cbuf[chararr_count++] = String.fromCharCode (((c & 0x0F) << 12) | ((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
+if (byteCount + 2 >= byteLen) {
+if (nAvail >= 2) {
+nMax = byteCount;
 continue;
+}} else if (((char2 = this.bytearr[byteCount + 1]) & 0xC0) == 0x80 && ((char3 = this.bytearr[byteCount + 2]) & 0xC0) == 0x80) {
+cbuf[charCount++] = String.fromCharCode (((c & 0x0F) << 12) | ((char2 & 0x3F) << 6) | (char3 & 0x3F));
+byteCount += 3;
+continue;
+}this.isUTF8 = false;
+break;
 }
-count++;
-cbuf[chararr_count++] = String.fromCharCode (c);
+byteCount++;
+cbuf[charCount++] = String.fromCharCode (c);
 }
-this.pos = len - count;
+this.pos = byteLen - byteCount;
 for (var i = 0; i < this.pos; i++) {
-this.bytearr[i] = this.bytearr[count++];
+this.bytearr[i] = this.bytearr[byteCount++];
 }
-return len - this.pos;
+return charCount - offset;
 }, "~A,~N,~N");
 Clazz.overrideMethod (c$, "ready", 
 function () {
@@ -34277,7 +34572,7 @@ this.isOpen = false;
 });
 });
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["java.util.Hashtable"], "J.viewer.FileManager", ["java.io.BufferedInputStream", "$.ByteArrayInputStream", "java.lang.Boolean", "java.net.URL", "$.URLEncoder", "J.api.Interface", "J.io.Base64", "$.FileReader", "$.JmolBinary", "J.util.Escape", "$.JmolList", "$.Logger", "$.SB", "$.TextFormat", "J.viewer.DataManager", "$.Viewer"], function () {
+Clazz.load (["java.util.Hashtable"], "J.viewer.FileManager", ["java.io.BufferedInputStream", "$.ByteArrayInputStream", "java.lang.Boolean", "java.net.URL", "$.URLEncoder", "J.api.Interface", "J.io.Base64", "$.FileReader", "$.JmolBinary", "J.util.ArrayUtil", "$.Escape", "$.JmolList", "$.Logger", "$.SB", "$.TextFormat", "J.viewer.DataManager", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.pathForAllFiles = "";
@@ -34360,7 +34655,7 @@ function (fileName) {
 var pt = fileName.indexOf ("::");
 if (pt >= 0) return fileName.substring (0, pt);
 if (fileName.startsWith ("=")) return "pdb";
-var br = this.getUnzippedBufferedReaderOrErrorMessageFromName (fileName, null, true, false, true, true, null);
+var br = this.getUnzippedReaderOrStreamFromName (fileName, null, true, false, true, true, null);
 if (Clazz.instanceOf (br, java.io.BufferedReader)) return this.viewer.getModelAdapter ().getFileTypeName (br);
 if (Clazz.instanceOf (br, J.api.ZInputStream)) {
 var zipDirectory = this.getZipDirectoryAsString (fileName);
@@ -34503,9 +34798,11 @@ return (Clazz.instanceOf (ret, java.io.BufferedInputStream) ? ret : null);
 }, "~S");
 $_M(c$, "getBufferedInputStreamOrErrorMessageFromName", 
 function (name, fullName, showMsg, checkOnly, outputBytes, allowReader) {
-var cacheBytes = (fullName == null || this.pngjCache == null ? null : J.io.JmolBinary.getCachedPngjBytes (this, fullName));
+var cacheBytes = null;
+if (outputBytes == null) {
+cacheBytes = (fullName == null || this.pngjCache == null ? null : J.io.JmolBinary.getCachedPngjBytes (this, fullName));
 if (cacheBytes == null) cacheBytes = this.cacheGet (name, true);
-var bis = null;
+}var bis = null;
 var ret = null;
 var errorMessage = null;
 try {
@@ -34581,6 +34878,20 @@ throw e;
 }
 }
 }, $fz.isPrivate = true, $fz), "~S");
+$_M(c$, "getEmbeddedFileState", 
+function (fileName) {
+var dir = null;
+dir = this.getZipDirectory (fileName, false);
+if (dir.length == 0) {
+var state = this.viewer.getFileAsString4 (fileName, -1, false, true);
+return (state.indexOf ("**** Jmol Embedded Script ****") < 0 ? "" : J.io.JmolBinary.getEmbeddedScript (state));
+}for (var i = 0; i < dir.length; i++) if (dir[i].indexOf (".spt") >= 0) {
+var data = [fileName + "|" + dir[i], null];
+this.getFileDataOrErrorAsString (data, -1, false, false);
+return data[1];
+}
+return "";
+}, "~S");
 $_M(c$, "getFullPathNameOrError", 
 function (filename) {
 var names = this.classifyName (filename, true);
@@ -34605,24 +34916,10 @@ return J.io.JmolBinary.getBufferedReaderForString (data);
 }}var names = this.classifyName (name, true);
 if (names == null) return "cannot read file name: " + name;
 if (fullPathNameReturn != null) fullPathNameReturn[0] = names[0].$replace ('\\', '/');
-return this.getUnzippedBufferedReaderOrErrorMessageFromName (names[0], bytes, false, isBinary, false, doSpecialLoad, null);
+return this.getUnzippedReaderOrStreamFromName (names[0], bytes, false, isBinary, false, doSpecialLoad, null);
 }, "~S,~A,~B,~B");
-$_M(c$, "getEmbeddedFileState", 
-function (fileName) {
-var dir = null;
-dir = this.getZipDirectory (fileName, false);
-if (dir.length == 0) {
-var state = this.viewer.getFileAsString4 (fileName, 2147483647, false, true);
-return (state.indexOf ("**** Jmol Embedded Script ****") < 0 ? "" : J.io.JmolBinary.getEmbeddedScript (state));
-}for (var i = 0; i < dir.length; i++) if (dir[i].indexOf (".spt") >= 0) {
-var data = [fileName + "|" + dir[i], null];
-this.getFileDataOrErrorAsString (data, 2147483647, false, false);
-return data[1];
-}
-return "";
-}, "~S");
-$_M(c$, "getUnzippedBufferedReaderOrErrorMessageFromName", 
-function (name, bytes, allowZipStream, asInputStream, isTypeCheckOnly, doSpecialLoad, htParams) {
+$_M(c$, "getUnzippedReaderOrStreamFromName", 
+function (name, bytes, allowZipStream, forceInputStream, isTypeCheckOnly, doSpecialLoad, htParams) {
 var subFileList = null;
 var info = (bytes == null && doSpecialLoad ? this.getSpartanFileList (name) : null);
 var name00 = name;
@@ -34661,7 +34958,7 @@ if (name.indexOf ("|") >= 0) {
 subFileList = J.util.TextFormat.splitChars (name, "|");
 if (bytes == null) J.util.Logger.info ("FileManager opening 3 " + name);
 name = subFileList[0];
-}var t = (bytes == null ? this.getBufferedInputStreamOrErrorMessageFromName (name, fullName, true, false, null, !asInputStream) :  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes)));
+}var t = (bytes == null ? this.getBufferedInputStreamOrErrorMessageFromName (name, fullName, true, false, null, !forceInputStream) :  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes)));
 try {
 if (Clazz.instanceOf (t, String)) return t;
 if (Clazz.instanceOf (t, java.io.BufferedReader)) return t;
@@ -34670,18 +34967,19 @@ if (J.io.JmolBinary.isGzipS (bis)) {
 do {
 bis =  new java.io.BufferedInputStream (J.io.JmolBinary.newGZIPInputStream (bis));
 } while (J.io.JmolBinary.isGzipS (bis));
-}if (J.io.JmolBinary.isCompoundDocumentStream (bis)) {
+}if (J.io.JmolBinary.isCompoundDocumentS (bis)) {
 var doc = J.api.Interface.getOptionInterface ("io2.CompoundDocument");
 doc.setStream (bis, true);
 return J.io.JmolBinary.getBufferedReaderForString (doc.getAllDataFiles ("Molecule", "Input").toString ());
-}bis = J.io.JmolBinary.checkPngZipStream (bis);
-if (J.io.JmolBinary.isZipStream (bis)) {
+}if (J.io.JmolBinary.isPickleS (bis)) return bis;
+bis = J.io.JmolBinary.checkPngZipStream (bis);
+if (J.io.JmolBinary.isZipS (bis)) {
 if (allowZipStream) return J.io.JmolBinary.newZipInputStream (bis);
-if (asInputStream) return J.io.JmolBinary.getZipFileContents (bis, subFileList, 1, true);
+if (forceInputStream) return J.io.JmolBinary.getZipFileContents (bis, subFileList, 1, true);
 var s = J.io.JmolBinary.getZipFileContents (bis, subFileList, 1, false);
 bis.close ();
 return J.io.JmolBinary.getBufferedReaderForString (s);
-}return (asInputStream ? bis : J.io.JmolBinary.getBufferedReader (bis, null));
+}return (forceInputStream ? bis : J.io.JmolBinary.getBufferedReader (bis, null));
 } catch (ioe) {
 if (Clazz.exceptionOf (ioe, Exception)) {
 return ioe.toString ();
@@ -34727,11 +35025,11 @@ if (Clazz.instanceOf (t, String)) {
 fileData.put (name0, t + "\n");
 return name0;
 }bis = t;
-if (J.io.JmolBinary.isCompoundDocumentStream (bis)) {
+if (J.io.JmolBinary.isCompoundDocumentS (bis)) {
 var doc = J.api.Interface.getOptionInterface ("io2.CompoundDocument");
 doc.setStream (bis, true);
 doc.getAllDataMapped (name.$replace ('\\', '/'), "Molecule", fileData);
-} else if (J.io.JmolBinary.isZipStream (bis)) {
+} else if (J.io.JmolBinary.isZipS (bis)) {
 J.io.JmolBinary.getAllZipData (bis, subFileList, name.$replace ('\\', '/'), "Molecule", fileData);
 } else if (asBinaryString) {
 var bd = J.api.Interface.getOptionInterface ("io2.BinaryDocument");
@@ -34786,7 +35084,7 @@ var t = this.getBufferedInputStreamOrErrorMessageFromName (fileName, fileName, f
 return J.io.JmolBinary.getZipDirectoryAndClose (t, addManifest);
 }, "~S,~B");
 $_M(c$, "getFileAsBytes", 
-function (name, os, allowZip) {
+function (name, osb, allowZip) {
 if (name == null) return null;
 var fullName = name;
 var subFileList = null;
@@ -34798,7 +35096,7 @@ allowZip = true;
 if (Clazz.instanceOf (t, String)) return "Error:" + t;
 try {
 var bis = t;
-var bytes = (os != null || subFileList == null || subFileList.length <= 1 || !allowZip || !J.io.JmolBinary.isZipStream (bis) && !J.io.JmolBinary.isPngZipStream (bis) ? J.io.JmolBinary.getStreamAsBytes (bis, os) : J.io.JmolBinary.getZipFileContentsAsBytes (bis, subFileList, 1));
+var bytes = (osb != null || !allowZip || subFileList == null || subFileList.length <= 1 || !J.io.JmolBinary.isZipS (bis) && !J.io.JmolBinary.isPngZipStream (bis) ? J.io.JmolBinary.getStreamAsBytes (bis, osb) : J.io.JmolBinary.getZipFileContentsAsBytes (bis, subFileList, 1));
 bis.close ();
 return bytes;
 } catch (ioe) {
@@ -34808,7 +35106,7 @@ return ioe.toString ();
 throw ioe;
 }
 }
-}, "~S,java.io.OutputStream,~B");
+}, "~S,J.io.OutputStringBuilder,~B");
 $_M(c$, "getFileDataOrErrorAsString", 
 function (data, nBytesMax, doSpecialLoad, allowBinary) {
 data[1] = "";
@@ -34818,35 +35116,7 @@ var t = this.getBufferedReaderOrErrorMessageFromName (name, data, false, doSpeci
 if (Clazz.instanceOf (t, String)) {
 data[1] = t;
 return false;
-}try {
-var br = t;
-var sb = J.util.SB.newN (8192);
-var line;
-if (nBytesMax == 2147483647) {
-line = br.readLine ();
-if (allowBinary || line != null && line.indexOf ('\0') < 0 && (line.length != 4 || line.charCodeAt (0) != 65533 || line.indexOf ("PNG") != 1)) {
-sb.append (line).appendC ('\n');
-while ((line = br.readLine ()) != null) sb.append (line).appendC ('\n');
-
-}} else {
-var n = 0;
-var len;
-while (n < nBytesMax && (line = br.readLine ()) != null) {
-if (nBytesMax - n < (len = line.length) + 1) line = line.substring (0, nBytesMax - n - 1);
-sb.append (line).appendC ('\n');
-n += len + 1;
-}
-}br.close ();
-data[1] = sb.toString ();
-return true;
-} catch (ioe) {
-if (Clazz.exceptionOf (ioe, Exception)) {
-data[1] = ioe.toString ();
-return false;
-} else {
-throw ioe;
-}
-}
+}return J.io.JmolBinary.readAll (t, nBytesMax, allowBinary, data, 1);
 }, "~A,~N,~B,~B");
 $_M(c$, "loadImage", 
 function (name, echoName) {
@@ -34866,8 +35136,8 @@ var ret = this.getFileAsBytes (fullPathName, null, true);
 if (!J.util.Escape.isAB (ret)) {
 fullPathName = "" + ret;
 break;
-}image = (this.viewer.$isJS ? ret : apiPlatform.createImage (ret));
-} else if (this.viewer.$isJS) {
+}image = (this.viewer.isJS ? ret : apiPlatform.createImage (ret));
+} else if (this.viewer.isJS) {
 } else if (J.viewer.FileManager.urlTypeIndex (fullPathName) >= 0) {
 try {
 image = apiPlatform.createImage ( new java.net.URL (Clazz.castNullAs ("java.net.URL"), fullPathName, null));
@@ -34926,7 +35196,7 @@ function (name, isFullLoad) {
 if (name == null) return [null];
 var doSetPathForAllFiles = (this.pathForAllFiles.length > 0);
 if (name.startsWith ("?")) {
-if ((name = this.viewer.dialogAsk ("load", name.substring (1))) == null) return [isFullLoad ? "#CANCELED#" : null];
+if ((name = this.viewer.dialogAsk ("Load", name.substring (1))) == null) return [isFullLoad ? "#CANCELED#" : null];
 doSetPathForAllFiles = false;
 }var file = null;
 var url = null;
@@ -35115,12 +35385,17 @@ $_M(c$, "cachePut",
 function (key, data) {
 key = key.$replace ('\\', '/');
 if (J.util.Logger.debugging) J.util.Logger.debug ("cachePut " + key);
-if ("".equals (data)) this.cache.remove (key);
- else this.cache.put (key, data);
+if (data == null || "".equals (data)) {
+this.cache.remove (key);
+return;
+}this.cache.put (key, data);
+J.io.JmolBinary.getCachedPngjBytes (this, key);
 }, "~S,~O");
 $_M(c$, "cacheGet", 
 function (key, bytesOnly) {
 key = key.$replace ('\\', '/');
+var pt = key.indexOf ("|");
+if (pt >= 0) key = key.substring (0, pt);
 if (J.util.Logger.debugging) J.util.Logger.debug ("cacheGet " + key + " " + this.cache.containsKey (key));
 var data = this.cache.get (key);
 return (bytesOnly && (Clazz.instanceOf (data, String)) ? null : data);
@@ -35143,6 +35418,7 @@ data = this.getFileAsBytes (fileName, null, true);
 if (Clazz.instanceOf (data, String)) return 0;
 this.cachePut (fileName, data);
 } else {
+if (fileName.endsWith ("*")) return J.util.ArrayUtil.removeMapKeys (this.cache, fileName.substring (0, fileName.length - 1));
 data = this.cache.remove (fileName.$replace ('\\', '/'));
 }return (data == null ? 0 : Clazz.instanceOf (data, String) ? (data).length : (data).length);
 }, "~S,~B");
@@ -35226,6 +35502,7 @@ this.scriptExtensions = null;
 this.scriptFileName = null;
 this.scriptLevel = 0;
 this.statement = null;
+this.htFileCache = null;
 this.statementLength = 0;
 this.token = null;
 this.tryPt = 0;
@@ -35279,9 +35556,7 @@ if (!this.isAppend && this.viewer.displayLoadErrors) this.viewer.zap (false, tru
 var errorMessage = null;
 var t = null;
 if (this.reader == null) {
-if (this.fileTypeIn == null) this.fileTypeIn = J.io.JmolBinary.getBinaryType (this.fullPathNameIn);
-var isBinary = J.io.JmolBinary.checkBinaryType (this.fileTypeIn);
-t = this.fm.getUnzippedBufferedReaderOrErrorMessageFromName (this.fullPathNameIn, this.bytes, true, isBinary, false, true, this.htParams);
+t = this.fm.getUnzippedReaderOrStreamFromName (this.fullPathNameIn, this.bytes, true, false, false, true, this.htParams);
 if (t == null || Clazz.instanceOf (t, String)) {
 errorMessage = (t == null ? "error opening:" + this.nameAsGivenIn : t);
 if (!errorMessage.startsWith ("NOTE:")) J.util.Logger.error ("file ERROR: " + this.fullPathNameIn + "\n" + errorMessage);
@@ -35291,7 +35566,6 @@ return;
 this.reader = t;
 } else if (Clazz.instanceOf (t, J.api.ZInputStream)) {
 var name = this.fullPathNameIn;
-isBinary = (J.io.JmolBinary.getBinaryType (name) != null);
 var subFileList = null;
 if (name.indexOf ("|") >= 0 && !name.endsWith (".zip")) {
 subFileList = J.util.TextFormat.splitChars (name, "|");
@@ -35299,7 +35573,7 @@ name = subFileList[0];
 }if (subFileList != null) this.htParams.put ("subFileList", subFileList);
 var zis = t;
 var zipDirectory = this.fm.getZipDirectory (name, true);
-this.atomSetCollection = t = J.io.JmolBinary.getAtomSetCollectionOrBufferedReaderFromZip (this.viewer.getModelAdapter (), zis, name, zipDirectory, this.htParams, false, isBinary);
+this.atomSetCollection = t = J.io.JmolBinary.getAtomSetCollectionOrBufferedReaderFromZip (this.viewer.getModelAdapter (), zis, name, zipDirectory, this.htParams, false);
 try {
 zis.close ();
 } catch (e) {
@@ -35427,16 +35701,14 @@ return;
 $_M(c$, "getData", 
 function (type) {
 if (this.dataValues == null || type == null) return null;
-if (type.equalsIgnoreCase ("types")) {
+if (!type.equalsIgnoreCase ("types")) return this.dataValues.get (type);
 var info =  new Array (2);
 info[0] = "types";
 info[1] = "";
 var n = 0;
-var e = this.dataValues.keySet ().iterator ();
-while (e.hasNext ()) info[1] += (n++ > 0 ? "\n" : "") + e.next ();
+for (var name, $name = this.dataValues.keySet ().iterator (); $name.hasNext () && ((name = $name.next ()) || true);) info[1] += (n++ > 0 ? "\n" : "") + name;
 
 return info;
-}return this.dataValues.get (type);
 }, "~S");
 $_M(c$, "getDataFloatA", 
 function (label) {
@@ -35471,9 +35743,7 @@ return data[1];
 $_M(c$, "deleteModelAtoms", 
 function (firstAtomIndex, nAtoms, bsDeleted) {
 if (this.dataValues == null) return;
-var e = this.dataValues.keySet ().iterator ();
-while (e.hasNext ()) {
-var name = e.next ();
+for (var name, $name = this.dataValues.keySet ().iterator (); $name.hasNext () && ((name = $name.next ()) || true);) {
 if (name.indexOf ("property_") == 0) {
 var obj = this.dataValues.get (name);
 J.util.BSUtil.deleteBits (obj[2], bsDeleted);
@@ -35548,7 +35818,8 @@ Clazz.defineStatics (c$,
 "DATA_ARRAY_FFF", 3,
 "DATA_VALUE", 1,
 "DATA_SELECTION_MAP", 2,
-"DATA_TYPE", 3);
+"DATA_TYPE", 3,
+"DATA_SAVE_IN_STATE", 4);
 });
 Clazz.declarePackage ("J.util");
 Clazz.declareInterface (J.util, "JmolNode");
@@ -35573,7 +35844,7 @@ p3f.z = p3i.z;
 Clazz.declarePackage ("J.modelset");
 Clazz.load (["J.util.JmolNode", "$.Point3fi", "J.constant.EnumPalette", "J.viewer.JC"], "J.modelset.Atom", ["java.lang.Float", "J.atomdata.RadiusData", "J.constant.EnumVdw", "J.util.C", "$.ColorUtil", "$.Elements", "$.Escape", "$.P3", "$.SB", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
-this.alternateLocationID = '\0';
+this.altloc = '\0';
 this.atomID = 0;
 this.atomSite = 0;
 this.group = null;
@@ -35612,7 +35883,7 @@ function () {
 return this.nBackbonesDisplayed;
 });
 Clazz.overrideConstructor (c$, 
-function (modelIndex, atomIndex, x, y, z, radius, atomSymmetry, atomSite, atomicAndIsotopeNumber, formalCharge, isHetero) {
+function (modelIndex, atomIndex, xyz, radius, atomSymmetry, atomSite, atomicAndIsotopeNumber, formalCharge, isHetero) {
 this.modelIndex = modelIndex;
 this.atomSymmetry = atomSymmetry;
 this.atomSite = atomSite;
@@ -35621,11 +35892,11 @@ this.atomicAndIsotopeNumber = atomicAndIsotopeNumber;
 if (isHetero) this.formalChargeAndFlags = 2;
 if (formalCharge != 0 && formalCharge != -2147483648) this.setFormalCharge (formalCharge);
 this.userDefinedVanDerWaalRadius = radius;
-this.set (x, y, z);
-}, "~N,~N,~N,~N,~N,~N,J.util.BS,~N,~N,~N,~B");
+this.setT (xyz);
+}, "~N,~N,J.util.P3,~N,J.util.BS,~N,~N,~N,~B");
 $_M(c$, "setAltLoc", 
 function (altLoc) {
-this.alternateLocationID = altLoc;
+this.altloc = altLoc;
 }, "~S");
 $_M(c$, "setShapeVisibilityFlags", 
 function (flag) {
@@ -35741,8 +36012,11 @@ return mad;
 $_M(c$, "getADPMinMax", 
 function (isMax) {
 var tensors = this.getTensors ();
-var t;
-return (tensors == null || (t = tensors[0]) == null || t.iType != 1 ? 0 : t.getFactoredValue (isMax ? 2 : 1));
+if (tensors == null) return 0;
+var t = tensors[0];
+if (t == null || t.iType != 1) return 0;
+if (this.group.chain.model.modelSet.isModulated (this.index) && t.isUnmodulated) t = tensors[1];
+return t.getFactoredValue (isMax ? 2 : 1);
 }, "~B");
 $_M(c$, "getTensors", 
 function () {
@@ -35819,14 +36093,14 @@ return this.getElementSymbolIso (true);
 });
 $_M(c$, "getAlternateLocationID", 
 function () {
-return this.alternateLocationID;
+return this.altloc;
 });
 $_M(c$, "isAlternateLocationMatch", 
 function (strPattern) {
-if (strPattern == null) return (this.alternateLocationID == '\0');
+if (strPattern == null) return (this.altloc == '\0');
 if (strPattern.length != 1) return false;
 var ch = strPattern.charAt (0);
-return (ch == '*' || ch == '?' && this.alternateLocationID != '\0' || this.alternateLocationID == ch);
+return (ch == '*' || ch == '?' && this.altloc != '\0' || this.altloc == ch);
 }, "~S");
 $_M(c$, "isHetero", 
 function () {
@@ -36225,9 +36499,9 @@ if (info.length () == 0) {
 info.append (this.getElementSymbolIso (false));
 info.append (" ");
 info.appendI (this.getAtomNumber ());
-}if (this.alternateLocationID.charCodeAt (0) != 0) {
+}if (this.altloc.charCodeAt (0) != 0) {
 info.append ("%");
-info.appendC (this.alternateLocationID);
+info.appendC (this.altloc);
 }if (this.group.chain.model.modelSet.modelCount > 1) {
 info.append ("/");
 info.append (this.getModelNumberForLabel ());
@@ -36762,6 +37036,7 @@ this.aaRet = null;
 if (!Clazz.isClassDefined ("J.modelset.AtomCollection.AtomSorter")) {
 J.modelset.AtomCollection.$AtomCollection$AtomSorter$ ();
 }
+this.bsModulated = null;
 Clazz.instantialize (this, arguments);
 }, J.modelset, "AtomCollection");
 Clazz.prepareFields (c$, function () {
@@ -36805,6 +37080,7 @@ this.ionicRadii = mergeModelSet.ionicRadii;
 this.partialCharges = mergeModelSet.partialCharges;
 this.atomTensors = mergeModelSet.atomTensors;
 this.atomTensorList = mergeModelSet.atomTensorList;
+this.bsModulated = mergeModelSet.bsModulated;
 this.setHaveStraightness (false);
 this.surfaceDistance100s = null;
 }, "J.modelset.AtomCollection");
@@ -37090,16 +37366,16 @@ this.atoms[i].setFractionalCoordTo (xyz, false);
 this.taintAtom (i, 2);
 break;
 case 1146095631:
-this.setAtomVibrationVector (i, xyz.x, xyz.y, xyz.z);
+this.setAtomVibrationVector (i, xyz);
 break;
 }
 }
 }, "J.util.BS,~N,~O");
 $_M(c$, "setAtomVibrationVector", 
-($fz = function (atomIndex, x, y, z) {
-this.setVibrationVector (atomIndex, x, y, z);
+($fz = function (atomIndex, vib) {
+this.setVibrationVector (atomIndex, vib);
 this.taintAtom (atomIndex, 12);
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N");
+}, $fz.isPrivate = true, $fz), "~N,J.util.Tuple3f");
 $_M(c$, "setAtomCoord", 
 function (atomIndex, x, y, z) {
 if (atomIndex < 0 || atomIndex >= this.atomCount) return;
@@ -37268,13 +37544,16 @@ var v = (this.vibrations == null ? null : this.vibrations[atomIndex]);
 return (v == null && forceNew ?  new J.util.Vibration () : v);
 }, "~N,~B");
 $_M(c$, "setVibrationVector", 
-function (atomIndex, x, y, z) {
-if (Float.isNaN (x) || Float.isNaN (y) || Float.isNaN (z)) return;
+function (atomIndex, vib) {
+if (Float.isNaN (vib.x) || Float.isNaN (vib.y) || Float.isNaN (vib.z)) return;
 if (this.vibrations == null || this.vibrations.length < atomIndex) this.vibrations =  new Array (this.atoms.length);
+if (Clazz.instanceOf (vib, J.util.Vibration)) {
+this.vibrations[atomIndex] = vib;
+} else {
 if (this.vibrations[atomIndex] == null) this.vibrations[atomIndex] =  new J.util.Vibration ();
-this.vibrations[atomIndex].set (x, y, z);
-this.atoms[atomIndex].setVibrationVector ();
-}, "~N,~N,~N,~N");
+this.vibrations[atomIndex].setT (vib);
+}this.atoms[atomIndex].setVibrationVector ();
+}, "~N,J.util.Tuple3f");
 $_M(c$, "setVibrationVector2", 
 ($fz = function (atomIndex, tok, fValue) {
 var v = this.getVibration (atomIndex, true);
@@ -37289,7 +37568,7 @@ case 1112541204:
 v.z = fValue;
 break;
 }
-this.setAtomVibrationVector (atomIndex, v.x, v.y, v.z);
+this.setAtomVibrationVector (atomIndex, v);
 }, $fz.isPrivate = true, $fz), "~N,~N,~N");
 $_M(c$, "setAtomName", 
 function (atomIndex, name) {
@@ -37440,6 +37719,7 @@ throw e;
 $_M(c$, "loadCoordinates", 
 ($fz = function (data, isVibrationVectors, doTaint) {
 var lines = J.util.Parser.markLines (data, ';');
+var v = (isVibrationVectors ?  new J.util.V3 () : null);
 try {
 var nData = J.util.Parser.parseInt (data.substring (0, lines[0] - 1));
 for (var i = 1; i <= nData; i++) {
@@ -37449,7 +37729,8 @@ var x = J.util.Parser.parseFloatStr (tokens[3]);
 var y = J.util.Parser.parseFloatStr (tokens[4]);
 var z = J.util.Parser.parseFloatStr (tokens[5]);
 if (isVibrationVectors) {
-this.setAtomVibrationVector (atomIndex, x, y, z);
+v.set (x, y, z);
+this.setAtomVibrationVector (atomIndex, v);
 } else {
 this.setAtomCoord (atomIndex, x, y, z);
 if (!doTaint) this.untaint (atomIndex, 2);
@@ -37789,8 +38070,7 @@ z.set (0, 0, 0);
 x.set (0, 0, 0);
 var v =  new Array (4);
 for (var i = 0; i < nAttached; i++) {
-v[i] = J.util.V3.newV (atom);
-v[i].sub (attached[i]);
+v[i] = J.util.V3.newVsub (atom, attached[i]);
 v[i].normalize ();
 z.add (v[i]);
 }
@@ -38408,10 +38688,9 @@ if (bsInsert == null) return null;
 pt++;
 }bs.and (bsInsert);
 if (pt >= len) return bs;
-var chainID = identifier.charAt (pt++);
-bs.and (this.getChainBits (chainID.charCodeAt (0)));
-if (pt == len) return bs;
-return null;
+if (pt != len - 1) return null;
+bs.and (this.getChainBits (identifier.charCodeAt (pt)));
+return bs;
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "getSpecName", 
 ($fz = function (name) {
@@ -38472,13 +38751,14 @@ return (!isEmpty || returnEmpty ? bs : null);
 }, "~N,~B");
 $_M(c$, "getChainBits", 
 function (chainID) {
-var caseSensitive = this.viewer.getBoolean (603979822);
-if (!caseSensitive) chainID = Character.toUpperCase (chainID);
+var caseSensitive = chainID < 256 && this.viewer.getBoolean (603979822);
+if (!caseSensitive) chainID = J.modelset.AtomCollection.chainToUpper (chainID);
 var bs =  new J.util.BS ();
 var bsDone = J.util.BSUtil.newBitSet (this.atomCount);
+var id;
 for (var i = bsDone.nextClearBit (0); i < this.atomCount; i = bsDone.nextClearBit (i + 1)) {
 var chain = this.atoms[i].getChain ();
-if (chainID == (caseSensitive ? chain.chainID : Character.toUpperCase (chain.chainID))) {
+if (chainID == (id = chain.chainID) || !caseSensitive && chainID == J.modelset.AtomCollection.chainToUpper (id)) {
 chain.setAtomBitSet (bs);
 bsDone.or (bs);
 } else {
@@ -38486,6 +38766,11 @@ chain.setAtomBitSet (bsDone);
 }}
 return bs;
 }, "~N");
+c$.chainToUpper = $_M(c$, "chainToUpper", 
+function (chainID) {
+{
+return String.fromCharCode(chainID).toUpperCase().charCodeAt(0);
+}}, "~N");
 $_M(c$, "getAtomIndices", 
 function (bs) {
 var n = 0;
@@ -38532,6 +38817,10 @@ for (var i = this.atomCount; --i >= 0; ) if (this.atoms[i].isClickable ()) bs.se
 
 return bs;
 });
+$_M(c$, "isModulated", 
+function (i) {
+return this.bsModulated != null && this.bsModulated.get (i);
+}, "~N");
 $_M(c$, "deleteModelAtoms", 
 function (firstAtomIndex, nAtoms, bsAtoms) {
 this.atoms = J.util.ArrayUtil.deleteElements (this.atoms, firstAtomIndex, nAtoms);
@@ -38540,6 +38829,7 @@ for (var j = firstAtomIndex; j < this.atomCount; j++) {
 this.atoms[j].index = j;
 this.atoms[j].modelIndex--;
 }
+if (this.bsModulated != null) J.util.BSUtil.deleteBits (this.bsModulated, bsAtoms);
 this.deleteAtomTensors (bsAtoms);
 this.atomNames = J.util.ArrayUtil.deleteElements (this.atomNames, firstAtomIndex, nAtoms);
 this.atomTypes = J.util.ArrayUtil.deleteElements (this.atomTypes, firstAtomIndex, nAtoms);
@@ -38628,11 +38918,13 @@ for (var i = 0; i < n; i++) a[i] = list.get (i);
 $_M(c$, "getAtomTensor", 
 function (i, type) {
 var tensors = this.getAtomTensorList (i);
-if (tensors == null || type == null) return null;
+if (tensors != null && type != null) {
 type = type.toLowerCase ();
-for (var j = 0; j < tensors.length; j++) if (tensors[j] != null && type.equals (tensors[j].type)) return tensors[j];
-
-return null;
+for (var j = 0; j < tensors.length; j++) {
+var t = tensors[j];
+if (t != null && (type.equals (t.type) || type.equals (t.altType))) return t;
+}
+}return null;
 }, "~N,~S");
 $_M(c$, "addTensor", 
 function (t, type) {
@@ -38842,15 +39134,9 @@ isNegative = true;
 lt.precision = ch.charCodeAt (0) - 48;
 if (isNegative) lt.precision = -1 - lt.precision;
 ++ich;
-}}if (ich < cch && htValues != null) {
-var keys = htValues.keySet ().iterator ();
-while (keys.hasNext ()) {
-var key = keys.next ();
-if (strFormat.indexOf (key) == ich) {
-lt.key = key;
-return ich + key.length;
-}}
-}if (ich < cch) switch (ch = strFormat.charAt (ich++)) {
+}}if (ich < cch && htValues != null) for (var key, $key = htValues.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) if (strFormat.indexOf (key) == ich) return ich + (lt.key = key).length;
+
+if (ich < cch) switch (ch = strFormat.charAt (ich++)) {
 case '%':
 lt.text = "%";
 return ich;
@@ -39025,10 +39311,11 @@ Clazz.defineStatics (c$,
 Clazz.declarePackage ("J.api");
 Clazz.declareInterface (J.api, "JmolMeasurementClient");
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["J.api.JmolMeasurementClient"], "J.modelset.MeasurementData", ["J.modelset.Measurement", "J.util.BSUtil", "$.JmolList"], function () {
+Clazz.load (["J.api.JmolMeasurementClient"], "J.modelset.MeasurementData", ["java.lang.Float", "J.modelset.Measurement", "J.util.BSUtil", "$.JmolList"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.client = null;
 this.measurementStrings = null;
+this.measurements = null;
 this.points = null;
 this.mustBeConnected = false;
 this.mustNotBeConnected = false;
@@ -39088,26 +39375,31 @@ $_M(c$, "processNextMeasure",
 function (m) {
 var value = m.getMeasurement ();
 if (this.htMin != null && !m.isMin (this.htMin) || this.radiusData != null && !m.isInRange (this.radiusData, value)) return;
-if (this.measurementStrings == null) {
+if (this.measurementStrings == null && this.measurements == null) {
 var f = this.minArray[this.iFirstAtom];
 m.value = value;
 value = m.fixValue (this.units, false);
 this.minArray[this.iFirstAtom] = (1 / f == -Infinity ? value : Math.min (f, value));
 return;
-}this.measurementStrings.addLast (m.getStringUsing (this.viewer, this.strFormat, this.units));
+}if (this.measurementStrings != null) this.measurementStrings.addLast (m.getStringUsing (this.viewer, this.strFormat, this.units));
+ else this.measurements.addLast (Float.$valueOf (m.getMeasurement ()));
 }, "J.modelset.Measurement");
 $_M(c$, "getMeasurements", 
-function (asMinArray) {
+function (asArray, asMinArray) {
 if (asMinArray) {
 this.minArray =  Clazz.newFloatArray ((this.points.get (0)).cardinality (), 0);
 for (var i = 0; i < this.minArray.length; i++) this.minArray[i] = -0.0;
 
 this.define (null, this.modelSet);
 return this.minArray;
+}if (asArray) {
+this.measurements =  new J.util.JmolList ();
+this.define (null, this.modelSet);
+return this.measurements;
 }this.measurementStrings =  new J.util.JmolList ();
 this.define (null, this.modelSet);
 return this.measurementStrings;
-}, "~B");
+}, "~B,~B");
 $_M(c$, "define", 
 function (client, modelSet) {
 this.client = (client == null ? this : client);
@@ -39171,6 +39463,7 @@ this.bbCenter = null;
 this.bbVector = null;
 this.bbVertices = null;
 this.isScaleSet = false;
+this.margin = 0;
 Clazz.instantialize (this, arguments);
 }, J.util, "BoxInfo");
 Clazz.prepareFields (c$, function () {
@@ -39275,7 +39568,7 @@ function (isAll) {
 if (!this.isScaleSet) this.setBbcage (1);
 return (isAll ? [this.bbCenter, J.util.P3.newP (this.bbVector), this.bbCorner0, this.bbCorner1] : [this.bbCorner0, this.bbCorner1]);
 }, "~B");
-$_M(c$, "getBboxVertices", 
+$_M(c$, "getBoundBoxVertices", 
 function () {
 if (!this.isScaleSet) this.setBbcage (1);
 return this.bbVertices;
@@ -39310,10 +39603,14 @@ this.isScaleSet = false;
 this.bbCorner0.set (3.4028235E38, 3.4028235E38, 3.4028235E38);
 this.bbCorner1.set (-3.4028235E38, -3.4028235E38, -3.4028235E38);
 });
+$_M(c$, "setMargin", 
+function (m) {
+this.margin = m;
+}, "~N");
 $_M(c$, "addBoundBoxPoint", 
 function (pt) {
 this.isScaleSet = false;
-J.util.BoxInfo.addPoint (pt, this.bbCorner0, this.bbCorner1, 0);
+J.util.BoxInfo.addPoint (pt, this.bbCorner0, this.bbCorner1, this.margin);
 }, "J.util.P3");
 c$.addPoint = $_M(c$, "addPoint", 
 function (pt, xyzMin, xyzMax, margin) {
@@ -39559,7 +39856,7 @@ return false;
 if (formalChargeA != 0) {
 var formalChargeB = atomB.getFormalCharge ();
 if ((formalChargeA < 0 && formalChargeB < 0) || (formalChargeA > 0 && formalChargeB > 0)) return false;
-}if (atomA.alternateLocationID != atomB.alternateLocationID && atomA.alternateLocationID != '\0' && atomB.alternateLocationID != '\0') return false;
+}if (atomA.altloc != atomB.altloc && atomA.altloc != '\0' && atomB.altloc != '\0') return false;
 this.getOrAddBond (atomA, atomB, order, mad, bsBonds, 0, false);
 return true;
 }, "J.modelset.Atom,J.modelset.Atom,~N,~N,J.util.BS");
@@ -39926,7 +40223,7 @@ Clazz.defineStatics (c$,
 "MAX_NUM_TO_CACHE", 200);
 });
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["J.modelset.BondCollection", "J.util.BS", "$.BoxInfo", "$.JmolList", "$.P3"], "J.modelset.ModelCollection", ["java.lang.Character", "$.Float", "java.util.Date", "$.Hashtable", "J.api.Interface", "J.bspt.Bspf", "J.constant.EnumPalette", "$.EnumVdw", "J.io.OutputStringBuilder", "$.XmlUtil", "J.modelset.Atom", "$.AtomIteratorWithinModel", "$.AtomIteratorWithinModelSet", "$.Bond", "$.HBond", "$.LabelToken", "$.Model", "J.util.ArrayUtil", "$.BSUtil", "$.Elements", "$.Escape", "$.JmolEdge", "$.JmolMolecule", "$.Logger", "$.Parser", "$.SB", "$.TextFormat", "$.TriangleData", "$.V3", "J.viewer.Viewer"], function () {
+Clazz.load (["J.modelset.BondCollection", "J.util.BS", "$.BoxInfo", "$.JmolList", "$.P3"], "J.modelset.ModelCollection", ["java.lang.Character", "$.Float", "java.util.Date", "$.Hashtable", "J.api.Interface", "J.bspt.Bspf", "J.constant.EnumPalette", "$.EnumVdw", "J.io.OutputStringBuilder", "$.XmlUtil", "J.modelset.Atom", "$.AtomIteratorWithinModel", "$.AtomIteratorWithinModelSet", "$.Bond", "$.HBond", "$.LabelToken", "$.Model", "J.util.ArrayUtil", "$.BSUtil", "$.Elements", "$.Escape", "$.JmolEdge", "$.JmolMolecule", "$.Logger", "$.P4", "$.Parser", "$.Quaternion", "$.SB", "$.TextFormat", "$.TriangleData", "$.V3", "J.viewer.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bsSymmetry = null;
 this.modelSetName = null;
@@ -39967,6 +40264,7 @@ this.ptTemp2 = null;
 this.proteinStructureTainted = false;
 this.symTemp = null;
 this.htPeaks = null;
+this.vOrientations = null;
 Clazz.instantialize (this, arguments);
 }, J.modelset, "ModelCollection", J.modelset.BondCollection);
 Clazz.prepareFields (c$, function () {
@@ -40051,6 +40349,10 @@ $_M(c$, "getModelFileName",
 function (modelIndex) {
 return this.getModelAuxiliaryInfoValue (modelIndex, "fileName");
 }, "~N");
+$_M(c$, "getModelFileType", 
+function (modelIndex) {
+return this.getModelAuxiliaryInfoValue (modelIndex, "fileType");
+}, "~N");
 $_M(c$, "setFrameTitle", 
 function (bsFrames, title) {
 if (Clazz.instanceOf (title, String)) {
@@ -40117,7 +40419,7 @@ return this.boxInfo.getBoundBoxCornerVector ();
 });
 $_M(c$, "getBboxVertices", 
 function () {
-return this.boxInfo.getBboxVertices ();
+return this.boxInfo.getBoundBoxVertices ();
 });
 $_M(c$, "getBoundBoxInfo", 
 function () {
@@ -40237,9 +40539,12 @@ var n = (addCenters ? 1 : 0);
 for (var ii = vAtomSets.size (); --ii >= 0; ) {
 var bss = vAtomSets.get (ii);
 bsAtoms1 = bss[0];
+if (Clazz.instanceOf (bss[1], J.util.BS)) {
 bsAtoms2 = bss[1];
 n += Math.min (bsAtoms1.cardinality (), bsAtoms2.cardinality ());
-}
+} else {
+n += Math.min (bsAtoms1.cardinality (), (bss[1]).length);
+}}
 var points =  Clazz.newArray (2, n, null);
 if (addCenters) {
 points[0][0] =  new J.util.P3 ();
@@ -40247,6 +40552,7 @@ points[1][0] =  new J.util.P3 ();
 }for (var ii = vAtomSets.size (); --ii >= 0; ) {
 var bss = vAtomSets.get (ii);
 bsAtoms1 = bss[0];
+if (Clazz.instanceOf (bss[1], J.util.BS)) {
 bsAtoms2 = bss[1];
 for (var i = bsAtoms1.nextSetBit (0), j = bsAtoms2.nextSetBit (0); i >= 0 && j >= 0; i = bsAtoms1.nextSetBit (i + 1), j = bsAtoms2.nextSetBit (j + 1)) {
 points[0][--n] = this.atoms[i];
@@ -40255,7 +40561,16 @@ if (addCenters) {
 points[0][0].add (this.atoms[i]);
 points[1][0].add (this.atoms[j]);
 }}
-}
+} else {
+var coords = bss[1];
+for (var i = bsAtoms1.nextSetBit (0), j = 0; i >= 0 && j < coords.length; i = bsAtoms1.nextSetBit (i + 1), j++) {
+points[0][--n] = this.atoms[i];
+points[1][n] = coords[j];
+if (addCenters) {
+points[0][0].add (this.atoms[i]);
+points[1][0].add (coords[j]);
+}}
+}}
 if (addCenters) {
 points[0][0].scale (1 / (points[0].length - 1));
 points[1][0].scale (1 / (points[1].length - 1));
@@ -40566,10 +40881,6 @@ $_M(c$, "getInsertionCountInModel",
 function (modelIndex) {
 return this.models[modelIndex].nInsertions;
 }, "~N");
-$_M(c$, "getModelFileType", 
-function (modelIndex) {
-return this.getModelAuxiliaryInfoValue (modelIndex, "fileType");
-}, "~N");
 c$.modelFileNumberFromFloat = $_M(c$, "modelFileNumberFromFloat", 
 function (fDotM) {
 var file = Clazz.doubleToInt (Math.floor (fDotM));
@@ -40683,7 +40994,7 @@ return v.toArray ( new Array (v.size ()));
 $_M(c$, "getPdbAtomData", 
 function (bs, sb) {
 if (this.atomCount == 0 || bs.nextSetBit (0) < 0) return "";
-if (sb == null) sb =  new J.io.OutputStringBuilder (null);
+if (sb == null) sb =  new J.io.OutputStringBuilder (null, false);
 var iModel = this.atoms[bs.nextSetBit (0)].modelIndex;
 var iModelLast = -1;
 var isPQR = "PQR".equals (sb.type);
@@ -40747,7 +41058,7 @@ if (modelIndex < 0) return "";
 var isPDB = this.models[modelIndex].isBioModel;
 if (parameters == null && !isPDB) return null;
 var model = this.models[modelIndex];
-if (sb == null) sb =  new J.io.OutputStringBuilder (null);
+if (sb == null) sb =  new J.io.OutputStringBuilder (null, false);
 var pdbCONECT =  new J.util.SB ();
 var isDraw = (type.indexOf ("draw") >= 0);
 var bsAtoms = null;
@@ -40905,12 +41216,12 @@ function (modelIndex) {
 if (this.unitCells == null) return null;
 return this.unitCells[modelIndex].getCellRange ();
 }, "~N");
-$_M(c$, "modelHasVibrationVectors", 
-function (modelIndex) {
-if (this.vibrations != null) for (var i = this.atomCount; --i >= 0; ) if ((modelIndex < 0 || this.atoms[i].modelIndex == modelIndex) && this.vibrations[i] != null && this.vibrations[i].length () > 0) return true;
+$_M(c$, "getLastVibrationVector", 
+function (modelIndex, tok) {
+if (this.vibrations != null) for (var i = this.atomCount; --i >= 0; ) if ((modelIndex < 0 || this.atoms[i].modelIndex == modelIndex) && this.vibrations[i] != null && this.vibrations[i].length () > 0 && (tok == 0 || (tok == 135270424) == (Clazz.instanceOf (this.vibrations[i], J.util.ModulationSet)))) return i;
 
-return false;
-}, "~N");
+return -1;
+}, "~N,~N");
 $_M(c$, "getElementsPresentBitSet", 
 function (modelIndex) {
 if (modelIndex >= 0) return this.elementsPresent[modelIndex];
@@ -41189,11 +41500,11 @@ case 1048615:
 info = specInfo;
 var seqcodeA = info[0];
 var seqcodeB = info[1];
-var chainID = String.fromCharCode (info[2]);
+var chainID = info[2];
 bs =  new J.util.BS ();
 var caseSensitive = this.viewer.getBoolean (603979822);
-if (!caseSensitive) chainID = Character.toUpperCase (chainID);
-for (var i = this.modelCount; --i >= 0; ) if (this.models[i].isBioModel) this.models[i].selectSeqcodeRange (seqcodeA, seqcodeB, chainID.charCodeAt (0), bs, caseSensitive);
+if (chainID >= 0 && chainID < 256 && !caseSensitive) chainID = J.modelset.AtomCollection.chainToUpper (chainID);
+for (var i = this.modelCount; --i >= 0; ) if (this.models[i].isBioModel) this.models[i].selectSeqcodeRange (seqcodeA, seqcodeB, chainID, bs, caseSensitive);
 
 return bs;
 case 3145772:
@@ -41404,7 +41715,7 @@ if (!isBonds) {
 if (iB == iA) continue;
 atomB = this.atoms[iB];
 if (atomA.modelIndex != atomB.modelIndex || atomB.isDeleted ()) continue;
-if (atomA.alternateLocationID != atomB.alternateLocationID && atomA.alternateLocationID != '\0' && atomB.alternateLocationID != '\0') continue;
+if (atomA.altloc != atomB.altloc && atomA.altloc != '\0' && atomB.altloc != '\0') continue;
 bondAB = atomA.getBond (atomB);
 }if (bondAB == null && (identifyOnly || modifyOnly) || bondAB != null && createOnly) continue;
 var distanceSquared = atomA.distanceSquared (atomB);
@@ -41706,7 +42017,7 @@ sb.append ("\n</properties>");
 sb.append ("\n<model index=\"").appendI (i).append ("\" n=\"").append (this.getModelNumberDotted (i)).append ("\" id=").append (J.util.Escape.eS ("" + this.getModelAuxiliaryInfoValue (i, "modelID")));
 var ib = this.viewer.getJDXBaseModelIndex (i);
 if (ib != i) sb.append (" baseModelId=").append (J.util.Escape.eS (this.getModelAuxiliaryInfoValue (ib, "jdxModelID")));
-sb.append (" name=").append (J.util.Escape.eS (this.getModelName (i))).append (" title=").append (J.util.Escape.eS (this.getModelTitle (i))).append (" hasVibrationVectors=\"").appendB (this.modelHasVibrationVectors (i)).append ("\" />");
+sb.append (" name=").append (J.util.Escape.eS (this.getModelName (i))).append (" title=").append (J.util.Escape.eS (this.getModelTitle (i))).append (" hasVibrationVectors=\"").appendB (this.viewer.modelHasVibrationVectors (i)).append ("\" />");
 }
 sb.append ("\n</models>");
 return sb.toString ();
@@ -41884,8 +42195,7 @@ dx = 1.50;
 } else if (!wasH && atomicNumber == 1) {
 dx = 1.0;
 }if (dx != 0) {
-var v = J.util.V3.newV (atom);
-v.sub (this.atoms[atom.getBondedAtomIndex (0)]);
+var v = J.util.V3.newVsub (atom, this.atoms[atom.getBondedAtomIndex (0)]);
 var d = v.length ();
 v.normalize ();
 v.scale (dx - d);
@@ -41991,8 +42301,8 @@ if (this.atomTypes != null) this.atomTypes = J.util.ArrayUtil.arrayCopyS (this.a
 if (this.atomSerials != null) this.atomSerials = J.util.ArrayUtil.arrayCopyI (this.atomSerials, newLength);
 }, "~N");
 $_M(c$, "addAtom", 
-function (modelIndex, group, atomicAndIsotopeNumber, atomName, atomSerial, atomSite, x, y, z, radius, vectorX, vectorY, vectorZ, formalCharge, partialCharge, occupancy, bfactor, tensors, isHetero, specialAtomID, atomSymmetry) {
-var atom =  new J.modelset.Atom (modelIndex, this.atomCount, x, y, z, radius, atomSymmetry, atomSite, atomicAndIsotopeNumber, formalCharge, isHetero);
+function (modelIndex, group, atomicAndIsotopeNumber, atomName, atomSerial, atomSite, xyz, radius, vib, formalCharge, partialCharge, occupancy, bfactor, tensors, isHetero, specialAtomID, atomSymmetry) {
+var atom =  new J.modelset.Atom (modelIndex, this.atomCount, xyz, radius, atomSymmetry, atomSite, atomicAndIsotopeNumber, formalCharge, isHetero);
 this.models[modelIndex].atomCount++;
 this.models[modelIndex].bsAtoms.set (this.atomCount);
 if (J.util.Elements.isElement (atomicAndIsotopeNumber, 1)) this.models[modelIndex].hydrogenCount++;
@@ -42017,10 +42327,10 @@ this.atomNames[this.atomCount] = atomName.intern ();
 }}if (atomSerial != -2147483648) {
 if (this.atomSerials == null) this.atomSerials =  Clazz.newIntArray (this.atoms.length, 0);
 this.atomSerials[this.atomCount] = atomSerial;
-}if (!Float.isNaN (vectorZ)) this.setVibrationVector (this.atomCount, vectorX, vectorY, vectorZ);
+}if (vib != null) this.setVibrationVector (this.atomCount, vib);
 this.atomCount++;
 return atom;
-}, "~N,J.modelset.Group,~N,~S,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,J.util.JmolList,~B,~N,J.util.BS");
+}, "~N,J.modelset.Group,~N,~S,~N,~N,J.util.P3,~N,J.util.V3,~N,~N,~N,~N,J.util.JmolList,~B,~N,J.util.BS");
 $_M(c$, "getInlineData", 
 function (modelIndex) {
 var data = null;
@@ -42145,11 +42455,12 @@ var errCode = -1;
 var fname = null;
 for (var i = 0; i < this.modelCount; i++) {
 var mid = this.getModelAuxiliaryInfoValue (i, "modelID");
-if (mid == null && (mid = this.getModelTitle (i)) == null) continue;
+var mnum = (id.startsWith ("~") ? "~" + this.getModelNumberDotted (i) : null);
+if (mnum == null && mid == null && (mid = this.getModelTitle (i)) == null) continue;
 if (haveFile) {
 fname = this.getModelFileName (i) + "#";
 mid = fname + mid;
-}if (id.equalsIgnoreCase (mid)) return (isBaseModel ? this.viewer.getJDXBaseModelIndex (i) : i);
+}if (id.equalsIgnoreCase (mid) || id.equalsIgnoreCase (mnum)) return (isBaseModel ? this.viewer.getJDXBaseModelIndex (i) : i);
 if (fname != null && id.startsWith (fname)) errCode = -2;
 }
 return (fname == null && !haveFile ? -2 : errCode);
@@ -42197,6 +42508,114 @@ for (var i = n; --i >= 0; ) ilist[n - i - 1] = list.get (i);
 
 return ilist;
 }, "~A");
+$_M(c$, "setModulation", 
+function (bs, isOn, t) {
+if (this.bsModulated == null) this.bsModulated =  new J.util.BS ();
+for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
+var v = this.getVibration (i, false);
+if (!(Clazz.instanceOf (v, J.util.ModulationSet))) continue;
+var ms = v;
+var a = this.atoms[i];
+var wasEnabled = ms.enabled;
+switch (ms.setModT (isOn, t)) {
+case 0:
+continue;
+case 1:
+case 2:
+a.sub (ms);
+break;
+case 3:
+this.getUnitCell (a.modelIndex).toCartesian (ms, true);
+if (wasEnabled) a.add (ms.prevSetting);
+ms.setModT (true, 2147483647);
+a.sub (ms);
+break;
+case 4:
+ms.setModT (true, 2147483647);
+if (!wasEnabled) a.sub (ms);
+break;
+}
+this.bsModulated.setBitTo (i, ms.enabled);
+}
+}, "J.util.BS,~B,~N");
+$_M(c$, "getBoundBoxOrientation", 
+function (type, bsAtoms) {
+var j0 = bsAtoms.nextSetBit (0);
+if (j0 < 0) return "{0 0 0 1}";
+var n = (this.vOrientations == null ? 0 : this.vOrientations.length);
+if (n == 0) {
+var av =  new Array (3375);
+n = 0;
+var p4 =  new J.util.P4 ();
+for (var i = -7; i <= 7; i++) for (var j = -7; j <= 7; j++) for (var k = 0; k <= 14; k++, n++) if ((av[n] = J.util.V3.new3 (i / 7, j / 7, k / 14)).length () > 1) --n;
+
+
+
+this.vOrientations =  new Array (n);
+for (var i = n; --i >= 0; ) {
+var cos = Math.sqrt (1 - av[i].lengthSquared ());
+if (Float.isNaN (cos)) cos = 0;
+p4.set (av[i].x, av[i].y, av[i].z, cos);
+this.vOrientations[i] = J.util.Quaternion.newP4 (p4);
+}
+}var pt =  new J.util.P3 ();
+var vMin = 3.4028235E38;
+var q;
+var qBest = null;
+var bBest = null;
+var v;
+for (var i = 0; i < n; i++) {
+q = this.vOrientations[i];
+var b =  new J.util.BoxInfo ();
+b.setMargin (0);
+for (var j = j0; j >= 0; j = bsAtoms.nextSetBit (j + 1)) b.addBoundBoxPoint (q.transformP2 (this.atoms[j], pt));
+
+switch (type) {
+default:
+case 1313866247:
+case 1073741863:
+v = (b.bbCorner1.x - b.bbCorner0.x) * (b.bbCorner1.y - b.bbCorner0.y) * (b.bbCorner1.z - b.bbCorner0.z);
+break;
+case 1112541205:
+v = b.bbCorner1.x - b.bbCorner0.x;
+break;
+case 1112541206:
+v = b.bbCorner1.y - b.bbCorner0.y;
+break;
+case 1112541207:
+v = b.bbCorner1.z - b.bbCorner0.z;
+break;
+}
+if (v < vMin) {
+qBest = q;
+bBest = b;
+vMin = v;
+}}
+if (type != 1313866247 && type != 1073741863) return qBest.toString ();
+q = J.util.Quaternion.newQ (qBest);
+var dx = bBest.bbCorner1.x - bBest.bbCorner0.x;
+var dy = bBest.bbCorner1.y - bBest.bbCorner0.y;
+var dz = bBest.bbCorner1.z - bBest.bbCorner0.z;
+if (dx < dy) {
+pt.set (0, 0, 1);
+q = J.util.Quaternion.newVA (pt, 90).mulQ (q);
+var f = dx;
+dx = dy;
+dy = f;
+}if (dy < dz) {
+if (dz > dx) {
+pt.set (0, 1, 0);
+q = J.util.Quaternion.newVA (pt, 90).mulQ (q);
+var f = dx;
+dx = dz;
+dz = f;
+}pt.set (1, 0, 0);
+q = J.util.Quaternion.newVA (pt, 90).mulQ (q);
+var f = dy;
+dy = dz;
+dz = f;
+}return (type == 1313866247 ? vMin + "\t{" + dx + " " + dy + " " + dz + "}" : q.getTheta () == 0 ? "{0 0 0 1}" : q.toString ());
+}, "~N,J.util.BS");
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
 this.modelIndex = 0;
@@ -42556,8 +42975,7 @@ var ok2;
 var ok3;
 this.mapT.clearAll ();
 for (var i = 0; i < 12; i++) {
-this.vertexTest[i].setT (J.util.Geodesic.getVertexVector (i));
-this.vertexTest[i].scaleAdd (combinedRadii, this.centerI);
+this.vertexTest[i].scaleAdd2 (combinedRadii, J.util.Geodesic.getVertexVector (i), this.centerI);
 }
 for (var f = 0; f < 20; f++) {
 faceTest = 0;
@@ -42590,8 +43008,7 @@ case 0:
 for (var j = 0; j < this.neighborCount; j++) {
 var maxDist = this.neighborPlusProbeRadii2[j];
 this.centerT = this.neighborCenters[j];
-this.pointT.setT (J.util.Geodesic.getVertexVector (vect));
-this.pointT.scaleAdd (combinedRadii, this.centerI);
+this.pointT.scaleAdd2 (combinedRadii, J.util.Geodesic.getVertexVector (vect), this.centerI);
 if (this.pointT.distanceSquared (this.centerT) < maxDist) this.geodesicMap.clear (vect);
 }
 break;
@@ -45305,8 +45722,8 @@ this.displayMaxY = this.height - this.displayMinY;
 this.bufferSize = this.width * this.height;
 }, "~B");
 $_M(c$, "beginRendering", 
-function (stereoRotationMatrix, translucentMode, isImageWrite) {
-}, "J.util.Matrix3f,~B,~B");
+function (stereoRotationMatrix, translucentMode, isImageWrite, renderLow) {
+}, "J.util.Matrix3f,~B,~B,~B");
 $_M(c$, "endRendering", 
 function () {
 });
@@ -46306,17 +46723,35 @@ return (current.x == this.x && current.y == this.y && current.time == this.time)
 Clazz.defineStatics (c$,
 "MIN_DELAY_MS", 20);
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.util.Rectangle", "J.viewer.MouseState"], "J.viewer.ActionManager", ["java.lang.Character", "$.Float", "java.util.Hashtable", "J.i18n.GT", "J.modelset.MeasurementPending", "J.thread.HoverWatcherThread", "J.util.BSUtil", "$.Escape", "$.JmolList", "$.P3", "$.Point3fi", "$.TextFormat", "J.viewer.binding.Binding", "$.JmolBinding"], function () {
+Clazz.load (["J.util.Rectangle", "J.viewer.MouseState"], "J.viewer.ActionManager", ["java.lang.Character", "$.Float", "java.util.Hashtable", "J.i18n.GT", "J.modelset.MeasurementPending", "J.thread.HoverWatcherThread", "J.util.BSUtil", "$.Escape", "$.JmolList", "$.Logger", "$.P3", "$.Point3fi", "$.TextFormat", "J.viewer.binding.Binding", "$.JmolBinding"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
+this.haveMultiTouchInput = false;
 this.binding = null;
 this.jmolBinding = null;
 this.pfaatBinding = null;
 this.dragBinding = null;
 this.rasmolBinding = null;
 this.predragBinding = null;
+this.LEFT_CLICKED = 0;
+this.LEFT_DRAGGED = 0;
 this.hoverWatcherThread = null;
-this.haveMultiTouchInput = false;
+if (!Clazz.isClassDefined ("J.viewer.ActionManager.MotionPoint")) {
+J.viewer.ActionManager.$ActionManager$MotionPoint$ ();
+}
+this.dragGesture = null;
+if (!Clazz.isClassDefined ("J.viewer.ActionManager.Gesture")) {
+J.viewer.ActionManager.$ActionManager$Gesture$ ();
+}
+this.atomPickingMode = 1;
+this.bondPickingMode = 0;
+this.pickingStyle = 0;
+this.pickingStyleSelect = 0;
+this.pickingStyleMeasure = 5;
+this.rootPickingStyle = 0;
+this.pickAtomAssignType = "C";
+this.pickBondAssignType = 'p';
+this.isPickAtomAssignCharge = false;
 this.xyRange = 0;
 this.gestureSwipeFactor = 1.0;
 this.mouseDragFactor = 1.0;
@@ -46327,12 +46762,12 @@ this.clicked = null;
 this.pressed = null;
 this.dragged = null;
 this.pressedCount = 0;
-this.pressedAtomIndex = 0;
 this.clickedCount = 0;
 this.drawMode = false;
 this.labelMode = false;
 this.dragSelectedMode = false;
 this.measuresEnabled = true;
+this.haveSelection = false;
 this.hoverActive = false;
 this.measurementPending = null;
 this.dragAtomIndex = -1;
@@ -46342,36 +46777,72 @@ this.isAltKeyReleased = true;
 this.keyProcessing = false;
 this.isMultiTouchClient = false;
 this.isMultiTouchServer = false;
-this.haveSelection = false;
+this.pressAction = 0;
+this.dragAction = 0;
+this.clickAction = 0;
 this.measurementQueued = null;
-this.pickingStyle = 0;
-this.atomPickingMode = 1;
-this.pickingStyleSelect = 0;
-this.pickingStyleMeasure = 5;
-this.rootPickingStyle = 0;
-this.pickAtomAssignType = "C";
-this.pickBondAssignType = 'p';
-this.bondPickingMode = 0;
-this.isPickAtomAssignCharge = false;
-if (!Clazz.isClassDefined ("J.viewer.ActionManager.MotionPoint")) {
-J.viewer.ActionManager.$ActionManager$MotionPoint$ ();
-}
-this.dragGesture = null;
-if (!Clazz.isClassDefined ("J.viewer.ActionManager.Gesture")) {
-J.viewer.ActionManager.$ActionManager$Gesture$ ();
-}
 this.selectionWorking = false;
 Clazz.instantialize (this, arguments);
 }, J.viewer, "ActionManager");
 Clazz.prepareFields (c$, function () {
+this.dragGesture = Clazz.innerTypeInstance (J.viewer.ActionManager.Gesture, this, null, 20);
 this.current =  new J.viewer.MouseState ("current");
 this.moved =  new J.viewer.MouseState ("moved");
 this.clicked =  new J.viewer.MouseState ("clicked");
 this.pressed =  new J.viewer.MouseState ("pressed");
 this.dragged =  new J.viewer.MouseState ("dragged");
 this.rectRubber =  new J.util.Rectangle ();
-this.dragGesture = Clazz.innerTypeInstance (J.viewer.ActionManager.Gesture, this, null, 20);
 });
+$_M(c$, "setViewer", 
+function (viewer, commandOptions) {
+this.viewer = viewer;
+this.setBinding (this.jmolBinding =  new J.viewer.binding.JmolBinding ("toggle"));
+this.LEFT_CLICKED = J.viewer.binding.Binding.getMouseAction (1, 16, 2);
+this.LEFT_DRAGGED = J.viewer.binding.Binding.getMouseAction (1, 16, 1);
+}, "J.viewer.Viewer,~S");
+$_M(c$, "checkHover", 
+function () {
+if (!this.viewer.getInMotion (true) && !this.viewer.getSpinOn () && !this.viewer.getNavOn () && !this.viewer.checkObjectHovered (this.current.x, this.current.y)) {
+var atomIndex = this.viewer.findNearestAtomIndex (this.current.x, this.current.y);
+if (atomIndex < 0) return;
+var isLabel = (this.getAtomPickingMode () == 2 && this.isBound (J.viewer.binding.Binding.getMouseAction (this.clickedCount, this.moved.modifiers, 1), 10));
+this.viewer.hoverOn (atomIndex, isLabel);
+}});
+$_M(c$, "processMultitouchEvent", 
+function (groupID, eventType, touchID, iData, pt, time) {
+}, "~N,~N,~N,~N,J.util.P3,~N");
+$_M(c$, "isBound", 
+function (mouseAction, jmolAction) {
+return this.binding.isBound (mouseAction, jmolAction);
+}, "~N,~N");
+$_M(c$, "bindAction", 
+function (desc, name) {
+var jmolAction = J.viewer.ActionManager.getActionFromName (name);
+var mouseAction = J.viewer.binding.Binding.getMouseActionStr (desc);
+if (mouseAction == 0) return;
+if (jmolAction >= 0) {
+this.binding.bindAction (mouseAction, jmolAction);
+} else {
+this.binding.bindName (mouseAction, name);
+}}, "~S,~S");
+$_M(c$, "clearBindings", 
+function () {
+this.setBinding (this.jmolBinding =  new J.viewer.binding.JmolBinding ("toggle"));
+this.pfaatBinding = null;
+this.dragBinding = null;
+this.rasmolBinding = null;
+});
+$_M(c$, "unbindAction", 
+function (desc, name) {
+if (desc == null && name == null) {
+this.clearBindings ();
+return;
+}var jmolAction = J.viewer.ActionManager.getActionFromName (name);
+var mouseAction = J.viewer.binding.Binding.getMouseActionStr (desc);
+if (jmolAction >= 0) this.binding.unbindAction (mouseAction, jmolAction);
+ else if (mouseAction != 0) this.binding.unbindName (mouseAction, name);
+if (name == null) this.binding.unbindUserAction (desc);
+}, "~S,~S");
 c$.newAction = $_M(c$, "newAction", 
 function (i, name, info) {
 J.viewer.ActionManager.actionInfo[i] = info;
@@ -46391,6 +46862,10 @@ $_M(c$, "getBindingInfo",
 function (qualifiers) {
 return this.binding.getBindingInfo (J.viewer.ActionManager.actionInfo, J.viewer.ActionManager.actionNames, qualifiers);
 }, "~S");
+$_M(c$, "setBinding", 
+function (newBinding) {
+this.binding = newBinding;
+}, "J.viewer.binding.Binding");
 c$.getPickingModeName = $_M(c$, "getPickingModeName", 
 function (pickingMode) {
 return (pickingMode < 0 || pickingMode >= J.viewer.ActionManager.pickingModeNames.length ? "off" : J.viewer.ActionManager.pickingModeNames[pickingMode]);
@@ -46400,6 +46875,52 @@ function (str) {
 for (var i = J.viewer.ActionManager.pickingModeNames.length; --i >= 0; ) if (str.equalsIgnoreCase (J.viewer.ActionManager.pickingModeNames[i])) return i;
 
 return -1;
+}, "~S");
+$_M(c$, "getAtomPickingMode", 
+function () {
+return this.atomPickingMode;
+});
+$_M(c$, "setPickingMode", 
+function (pickingMode) {
+var isNew = false;
+switch (pickingMode) {
+case -1:
+isNew = true;
+this.bondPickingMode = 35;
+pickingMode = 1;
+break;
+case 35:
+case 34:
+case 33:
+this.viewer.setBooleanProperty ("bondPicking", true);
+this.bondPickingMode = pickingMode;
+return;
+case 8:
+this.bondPickingMode = pickingMode;
+if (this.viewer.getBondPicking ()) return;
+isNew = true;
+break;
+}
+isNew = new Boolean (isNew | (this.atomPickingMode != pickingMode)).valueOf ();
+this.atomPickingMode = pickingMode;
+if (isNew) this.resetMeasurement ();
+}, "~N");
+$_M(c$, "setAtomPickingOption", 
+function (option) {
+switch (this.atomPickingMode) {
+case 32:
+this.pickAtomAssignType = option;
+this.isPickAtomAssignCharge = (this.pickAtomAssignType.equals ("Pl") || this.pickAtomAssignType.equals ("Mi"));
+break;
+}
+}, "~S");
+$_M(c$, "setBondPickingOption", 
+function (option) {
+switch (this.bondPickingMode) {
+case 33:
+this.pickBondAssignType = Character.toLowerCase (option.charAt (0));
+break;
+}
 }, "~S");
 c$.getPickingStyleName = $_M(c$, "getPickingStyleName", 
 function (pickingStyle) {
@@ -46411,6 +46932,46 @@ for (var i = J.viewer.ActionManager.pickingStyleNames.length; --i >= 0; ) if (st
 
 return -1;
 }, "~S");
+$_M(c$, "getPickingState", 
+function () {
+var script = ";set modelkitMode " + this.viewer.getBoolean (603979883) + ";set picking " + J.viewer.ActionManager.getPickingModeName (this.atomPickingMode);
+if (this.atomPickingMode == 32) script += "_" + this.pickAtomAssignType;
+script += ";";
+if (this.bondPickingMode != 0) script += "set picking " + J.viewer.ActionManager.getPickingModeName (this.bondPickingMode);
+if (this.bondPickingMode == 33) script += "_" + this.pickBondAssignType;
+script += ";";
+return script;
+});
+$_M(c$, "getPickingStyle", 
+function () {
+return this.pickingStyle;
+});
+$_M(c$, "setPickingStyle", 
+function (pickingStyle) {
+this.pickingStyle = pickingStyle;
+if (pickingStyle >= 4) {
+this.pickingStyleMeasure = pickingStyle;
+this.resetMeasurement ();
+} else {
+if (pickingStyle < 3) this.rootPickingStyle = pickingStyle;
+this.pickingStyleSelect = pickingStyle;
+}this.rubberbandSelectionMode = false;
+switch (this.pickingStyleSelect) {
+case 2:
+if (!this.binding.getName ().equals ("extendedSelect")) this.setBinding (this.pfaatBinding == null ? this.pfaatBinding = J.viewer.binding.Binding.newBinding ("Pfaat") : this.pfaatBinding);
+break;
+case 3:
+if (!this.binding.getName ().equals ("drag")) this.setBinding (this.dragBinding == null ? this.dragBinding = J.viewer.binding.Binding.newBinding ("Drag") : this.dragBinding);
+this.rubberbandSelectionMode = true;
+break;
+case 1:
+if (!this.binding.getName ().equals ("selectOrToggle")) this.setBinding (this.rasmolBinding == null ? this.rasmolBinding = J.viewer.binding.Binding.newBinding ("Rasmol") : this.rasmolBinding);
+break;
+default:
+if (this.binding !== this.jmolBinding) this.setBinding (this.jmolBinding);
+}
+if (!this.binding.getName ().equals ("drag")) this.predragBinding = this.binding;
+}, "~N");
 $_M(c$, "getMouseInfo", 
 function () {
 var info =  new java.util.Hashtable ();
@@ -46429,46 +46990,6 @@ info.put ("actionInfo", J.viewer.ActionManager.actionInfo);
 info.put ("bindingInfo", J.util.TextFormat.split (this.getBindingInfo (null), '\n'));
 return info;
 });
-$_M(c$, "setViewer", 
-function (viewer, commandOptions) {
-this.viewer = viewer;
-this.setBinding (this.jmolBinding =  new J.viewer.binding.JmolBinding ("toggle"));
-}, "J.viewer.Viewer,~S");
-$_M(c$, "processEvent", 
-function (groupID, eventType, touchID, iData, pt, time) {
-}, "~N,~N,~N,~N,J.util.P3,~N");
-$_M(c$, "isBound", 
-function (gesture, action) {
-return this.binding.isBound (gesture, action);
-}, "~N,~N");
-$_M(c$, "bindAction", 
-function (desc, name, range1, range2) {
-var jmolAction = J.viewer.ActionManager.getActionFromName (name);
-var mouseAction = J.viewer.binding.Binding.getMouseActionStr (desc);
-if (mouseAction == 0) return;
-if (jmolAction >= 0) {
-this.binding.bindAction (mouseAction, jmolAction);
-} else {
-this.binding.bindName (mouseAction, name);
-}}, "~S,~S,J.util.P3,J.util.P3");
-$_M(c$, "clearBindings", 
-function () {
-this.setBinding (this.jmolBinding =  new J.viewer.binding.JmolBinding ("toggle"));
-this.pfaatBinding = null;
-this.dragBinding = null;
-this.rasmolBinding = null;
-});
-$_M(c$, "unbindAction", 
-function (desc, name) {
-if (desc == null && name == null) {
-this.clearBindings ();
-return;
-}var jmolAction = J.viewer.ActionManager.getActionFromName (name);
-var mouseAction = J.viewer.binding.Binding.getMouseActionStr (desc);
-if (jmolAction >= 0) this.binding.unbindAction (mouseAction, jmolAction);
- else if (mouseAction != 0) this.binding.unbindName (mouseAction, name);
-if (name == null) this.binding.unbindUserAction (desc);
-}, "~S,~S");
 $_M(c$, "setGestureSwipeFactor", 
 function (factor) {
 this.gestureSwipeFactor = factor;
@@ -46483,7 +47004,7 @@ this.mouseWheelFactor = factor;
 }, "~N");
 $_M(c$, "setCurrent", 
 function (time, x, y, mods) {
-this.hoverOff ();
+this.viewer.hoverOff ();
 this.current.set (time, x, y, mods);
 }, "~N,~N,~N,~N");
 $_M(c$, "getCurrentX", 
@@ -46579,7 +47100,7 @@ this.startHoverWatcher (false);
 $_M(c$, "keyPressed", 
 function (key, modifiers) {
 if (this.keyProcessing) return;
-this.hoverOff ();
+this.viewer.hoverOff ();
 this.keyProcessing = true;
 switch (key) {
 case 18:
@@ -46594,8 +47115,8 @@ break;
 case 17:
 this.moved.modifiers |= 2;
 }
-var action = 16 + 256 + this.moved.modifiers;
-if (!this.labelMode && !this.binding.isUserAction (action) && !this.isSelectAction (action)) this.checkMotionRotateZoom (action, this.current.x, 0, 0, false);
+var action = 16 | 256 | 8192 | this.moved.modifiers;
+if (!this.labelMode && !this.binding.isUserAction (action)) this.checkMotionRotateZoom (action, this.current.x, 0, 0, false);
 if (this.viewer.getBoolean (603979887)) {
 switch (key) {
 case 38:
@@ -46645,18 +47166,407 @@ if (this.measurementPending != null) {
 this.exitMeasurementMode ();
 this.viewer.refresh (3, "mouseExit");
 }}, "~N,~N,~N");
-$_M(c$, "minimize", 
-($fz = function (dragDone) {
-this.viewer.stopMinimization ();
-var iAtom = this.dragAtomIndex;
-if (dragDone) this.dragAtomIndex = -1;
-var bs = (this.viewer.getMotionFixedAtoms ().cardinality () == 0 ? this.viewer.getAtomBits ((this.viewer.isAtomPDB (iAtom) ? 1087373318 : 1095761934), J.util.BSUtil.newAndSetBit (iAtom)) : J.util.BSUtil.setAll (this.viewer.getAtomCount ()));
-this.viewer.minimize (2147483647, 0, bs, null, 0, false, false, false);
-}, $fz.isPrivate = true, $fz), "~B");
+$_M(c$, "setMouseActions", 
+($fz = function (count, buttonMods, isRelease) {
+this.pressAction = J.viewer.binding.Binding.getMouseAction (count, buttonMods, isRelease ? 5 : 4);
+this.dragAction = J.viewer.binding.Binding.getMouseAction (count, buttonMods, 1);
+this.clickAction = J.viewer.binding.Binding.getMouseAction (count, buttonMods, 2);
+}, $fz.isPrivate = true, $fz), "~N,~N,~B");
+$_M(c$, "mouseAction", 
+function (mode, time, x, y, count, buttonMods) {
+if (!this.viewer.getMouseEnabled ()) return;
+switch (mode) {
+case 0:
+this.setCurrent (time, x, y, buttonMods);
+this.moved.setCurrent (this.current, 0);
+if (this.measurementPending != null || this.hoverActive) {
+this.clickAction = J.viewer.binding.Binding.getMouseAction (this.clickedCount, buttonMods, 0);
+this.checkClickAction (x, y, time, 0);
+return;
+}if (this.isZoomArea (x)) {
+this.checkMotionRotateZoom (this.LEFT_DRAGGED, 0, 0, 0, false);
+return;
+}if (this.viewer.getCursor () == 5) this.viewer.setCursor (0);
+return;
+case 4:
+this.setMouseMode ();
+this.pressedCount = (this.pressed.check (0, 0, 0, buttonMods, time, 700) ? this.pressedCount + 1 : 1);
+if (this.pressedCount == 1) {
+this.viewer.checkInMotion (1);
+this.setCurrent (time, x, y, buttonMods);
+}this.pressAction = J.viewer.binding.Binding.getMouseAction (this.pressedCount, buttonMods, 4);
+this.viewer.setCursor (1);
+this.pressed.setCurrent (this.current, 1);
+this.dragged.setCurrent (this.current, 1);
+this.viewer.setFocus ();
+this.dragGesture.setAction (this.dragAction, time);
+this.checkPressedAction (x, y, time);
+return;
+case 1:
+this.setMouseMode ();
+this.setMouseActions (this.pressedCount, buttonMods, false);
+var deltaX = x - this.dragged.x;
+var deltaY = y - this.dragged.y;
+this.setCurrent (time, x, y, buttonMods);
+this.dragged.setCurrent (this.current, -1);
+if (this.atomPickingMode != 32) this.exitMeasurementMode ();
+this.dragGesture.add (this.dragAction, x, y, time);
+this.checkDragWheelAction (this.dragAction, x, y, deltaX, deltaY, time, 1);
+return;
+case 5:
+this.setMouseActions (this.pressedCount, buttonMods, true);
+this.setCurrent (time, x, y, buttonMods);
+this.viewer.spinXYBy (0, 0, 0);
+var dragRelease = !this.pressed.check (this.xyRange, x, y, buttonMods, time, 9223372036854775807);
+this.checkReleaseAction (x, y, time, dragRelease);
+return;
+case 2:
+this.setMouseMode ();
+this.clickedCount = (count > 1 ? count : this.clicked.check (0, 0, 0, buttonMods, time, 700) ? this.clickedCount + 1 : 1);
+if (this.clickedCount == 1) {
+this.setCurrent (time, x, y, buttonMods);
+}this.setMouseActions (this.clickedCount, buttonMods, false);
+this.clicked.setCurrent (this.current, this.clickedCount);
+this.viewer.setFocus ();
+if (this.atomPickingMode != 9 && this.isBound (J.viewer.binding.Binding.getMouseAction (1, buttonMods, 4), 31)) return;
+this.clickAction = J.viewer.binding.Binding.getMouseAction (this.clickedCount, buttonMods, 2);
+this.checkClickAction (x, y, time, this.clickedCount);
+return;
+case 3:
+if (this.viewer.isApplet () && !this.viewer.hasFocus ()) return;
+this.setCurrent (time, this.current.x, this.current.y, buttonMods);
+this.checkDragWheelAction (J.viewer.binding.Binding.getMouseAction (0, buttonMods, 3), this.current.x, this.current.y, 0, y, time, 3);
+return;
+}
+}, "~N,~N,~N,~N,~N,~N");
+$_M(c$, "checkPressedAction", 
+($fz = function (x, y, time) {
+var buttonMods = J.viewer.binding.Binding.getButtonMods (this.pressAction);
+var isSelectAndDrag = this.isBound (J.viewer.binding.Binding.getMouseAction (1, buttonMods, 4), 31);
+if (buttonMods != 0) {
+this.pressAction = this.viewer.notifyMouseClicked (x, y, this.pressAction, 4);
+if (this.pressAction == 0) return;
+buttonMods = J.viewer.binding.Binding.getButtonMods (this.pressAction);
+}this.setMouseActions (this.pressedCount, buttonMods, false);
+if (J.util.Logger.debugging) J.util.Logger.debug (J.viewer.binding.Binding.getMouseActionName (this.pressAction, false));
+if (this.drawMode && (this.isBound (this.dragAction, 8) || this.isBound (this.dragAction, 9)) || this.labelMode && this.isBound (this.dragAction, 10)) {
+this.viewer.checkObjectDragged (-2147483648, 0, x, y, this.dragAction);
+return;
+}this.checkUserAction (this.pressAction, x, y, 0, 0, time, 4);
+var isBound = false;
+switch (this.atomPickingMode) {
+case 32:
+isBound = this.isBound (this.clickAction, 0);
+break;
+case 28:
+isBound = this.isBound (this.dragAction, 7) || this.isBound (this.dragAction, 14);
+break;
+case 26:
+case 36:
+case 27:
+isBound = this.isBound (this.dragAction, 7) || this.isBound (this.dragAction, 27) || this.isBound (this.dragAction, 14);
+break;
+case 29:
+isBound = this.isBound (this.dragAction, 11) || this.isBound (this.dragAction, 14);
+break;
+case 30:
+isBound = this.isBound (this.dragAction, 12) || this.isBound (this.dragAction, 27) || this.isBound (this.dragAction, 14);
+break;
+}
+if (isBound) {
+this.dragAtomIndex = this.viewer.findNearestAtomIndexMovable (x, y, true);
+if (this.dragAtomIndex >= 0 && (this.atomPickingMode == 32 || this.atomPickingMode == 31) && this.viewer.isAtomAssignable (this.dragAtomIndex)) {
+this.enterMeasurementMode (this.dragAtomIndex);
+this.measurementPending.addPoint (this.dragAtomIndex, null, false);
+}return;
+}if (this.isBound (this.pressAction, 23)) {
+var type = 'j';
+if (this.viewer.getBoolean (603979883)) {
+var t = this.viewer.checkObjectClicked (x, y, this.LEFT_CLICKED);
+type = (t != null && "bond".equals (t.get ("type")) ? 'b' : this.viewer.findNearestAtomIndex (x, y) >= 0 ? 'a' : 'm');
+}this.viewer.popupMenu (x, y, type);
+return;
+}if (this.dragSelectedMode) {
+this.haveSelection = true;
+if (isSelectAndDrag) {
+this.haveSelection = (this.viewer.findNearestAtomIndexMovable (x, y, true) >= 0);
+}if (!this.haveSelection) return;
+if (this.isBound (this.dragAction, 13) || this.isBound (this.dragAction, 14)) this.viewer.moveSelected (-2147483648, 0, -2147483648, -2147483648, -2147483648, null, false, false);
+return;
+}if (this.viewer.global.useArcBall) this.viewer.rotateArcBall (x, y, 0);
+this.checkMotionRotateZoom (this.dragAction, x, 0, 0, true);
+}, $fz.isPrivate = true, $fz), "~N,~N,~N");
+$_M(c$, "checkDragWheelAction", 
+($fz = function (dragWheelAction, x, y, deltaX, deltaY, time, mode) {
+var buttonmods = J.viewer.binding.Binding.getButtonMods (dragWheelAction);
+if (buttonmods != 0) {
+var newAction = this.viewer.notifyMouseClicked (x, y, J.viewer.binding.Binding.getMouseAction (this.pressedCount, buttonmods, mode), mode);
+if (newAction == 0) return;
+if (newAction > 0) dragWheelAction = newAction;
+}if (this.isRubberBandSelect (dragWheelAction)) {
+this.calcRectRubberBand ();
+this.viewer.refresh (3, "rubberBand selection");
+return;
+}if (this.checkUserAction (dragWheelAction, x, y, deltaX, deltaY, time, mode)) return;
+if (this.viewer.getRotateBondIndex () >= 0) {
+if (this.isBound (dragWheelAction, 26)) {
+this.viewer.moveSelected (deltaX, deltaY, -2147483648, x, y, null, false, false);
+return;
+}if (!this.isBound (dragWheelAction, 25)) this.viewer.setRotateBondIndex (-1);
+}var bs = null;
+if (this.dragAtomIndex >= 0) {
+switch (this.atomPickingMode) {
+case 26:
+this.setMotion (3, true);
+if (this.isBound (dragWheelAction, 27) && this.viewer.getBoolean (603979785)) {
+this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), null);
+} else {
+this.viewer.moveSelected (deltaX, deltaY, (this.isBound (dragWheelAction, 14) ? -deltaY : -2147483648), -2147483648, -2147483648, null, true, false);
+}return;
+case 36:
+case 27:
+case 30:
+bs = this.viewer.getAtomBits (1095761934, J.util.BSUtil.newAndSetBit (this.dragAtomIndex));
+if (this.atomPickingMode == 36) bs.and (this.viewer.getAtomBitSet ("ligand"));
+case 28:
+case 29:
+if (this.dragGesture.getPointCount () == 1) this.viewer.undoMoveActionClear (this.dragAtomIndex, 2, true);
+this.setMotion (3, true);
+if (this.isBound (dragWheelAction, 27)) {
+this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), bs);
+} else {
+switch (this.atomPickingMode) {
+case 36:
+case 27:
+case 30:
+this.viewer.select (bs, false, 0, true);
+break;
+}
+this.viewer.moveAtomWithHydrogens (this.dragAtomIndex, deltaX, deltaY, (this.isBound (dragWheelAction, 14) ? -deltaY : -2147483648), bs);
+}return;
+}
+}if (this.dragAtomIndex >= 0 && mode == 1 && this.isBound (this.clickAction, 0) && this.atomPickingMode == 32) {
+var nearestAtomIndex = this.viewer.findNearestAtomIndexMovable (x, y, false);
+if (nearestAtomIndex >= 0) {
+if (this.measurementPending != null) {
+this.measurementPending.setCount (1);
+} else if (this.measuresEnabled) {
+this.enterMeasurementMode (nearestAtomIndex);
+}this.addToMeasurement (nearestAtomIndex, null, true);
+this.measurementPending.colix = 20;
+} else if (this.measurementPending != null) {
+this.measurementPending.setCount (1);
+this.measurementPending.colix = 23;
+}if (this.measurementPending == null) return;
+this.measurementPending.traceX = x;
+this.measurementPending.traceY = y;
+this.viewer.refresh (3, "assignNew");
+return;
+}if (!this.drawMode && !this.labelMode && this.isBound (dragWheelAction, 45)) {
+this.viewer.translateXYBy (deltaX, deltaY);
+return;
+}if (this.dragSelectedMode && this.haveSelection && (this.isBound (dragWheelAction, 13) || this.isBound (dragWheelAction, 27))) {
+var iatom = this.viewer.getSelectionSet (false).nextSetBit (0);
+if (iatom < 0) return;
+if (this.dragGesture.getPointCount () == 1) this.viewer.undoMoveActionClear (iatom, 2, true);
+ else this.viewer.moveSelected (2147483647, 0, -2147483648, -2147483648, -2147483648, null, false, false);
+this.setMotion (3, true);
+if (this.isBound (dragWheelAction, 27) && this.viewer.getBoolean (603979785)) this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), null);
+ else this.viewer.moveSelected (deltaX, deltaY, -2147483648, -2147483648, -2147483648, null, true, false);
+return;
+}if (this.drawMode && (this.isBound (dragWheelAction, 8) || this.isBound (dragWheelAction, 9)) || this.labelMode && this.isBound (dragWheelAction, 10)) {
+this.setMotion (3, true);
+this.viewer.checkObjectDragged (this.dragged.x, this.dragged.y, x, y, dragWheelAction);
+return;
+}if (this.checkMotionRotateZoom (dragWheelAction, x, deltaX, deltaY, true)) {
+if (this.viewer.getSlabEnabled () && this.checkSlideZoom (dragWheelAction)) this.viewer.slabDepthByPixels (deltaY);
+ else this.viewer.zoomBy (deltaY);
+return;
+}if (this.isBound (dragWheelAction, 25)) {
+var degX = this.getDegrees (deltaX, 0);
+var degY = this.getDegrees (deltaY, 1);
+if (this.viewer.global.useArcBall) this.viewer.rotateArcBall (x, y, this.mouseDragFactor);
+ else this.viewer.rotateXYBy (degX, degY);
+return;
+}if (this.isBound (dragWheelAction, 29)) {
+if (deltaX == 0 && Math.abs (deltaY) > 1) {
+this.setMotion (5, true);
+this.viewer.zoomBy (deltaY + (deltaY > 0 ? -1 : 1));
+} else if (deltaY == 0 && Math.abs (deltaX) > 1) {
+this.setMotion (3, true);
+this.viewer.rotateZBy (-deltaX + (deltaX > 0 ? 1 : -1), 2147483647, 2147483647);
+}return;
+} else if (this.isBound (dragWheelAction, 46)) {
+this.zoomByFactor (deltaY, 2147483647, 2147483647);
+return;
+} else if (this.isBound (dragWheelAction, 28)) {
+this.setMotion (3, true);
+this.viewer.rotateZBy (-deltaX, 2147483647, 2147483647);
+return;
+}if (this.viewer.getSlabEnabled ()) {
+if (this.isBound (dragWheelAction, 6)) {
+this.viewer.depthByPixels (deltaY);
+return;
+}if (this.isBound (dragWheelAction, 38)) {
+this.viewer.slabByPixels (deltaY);
+return;
+}if (this.isBound (dragWheelAction, 39)) {
+this.viewer.slabDepthByPixels (deltaY);
+return;
+}}}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N");
+$_M(c$, "checkReleaseAction", 
+($fz = function (x, y, time, dragRelease) {
+if (J.util.Logger.debugging) J.util.Logger.debug (J.viewer.binding.Binding.getMouseActionName (this.pressAction, false));
+this.viewer.checkInMotion (0);
+this.viewer.setInMotion (false);
+this.viewer.setCursor (0);
+this.dragGesture.add (this.dragAction, x, y, time);
+if (dragRelease) this.viewer.setRotateBondIndex (-2147483648);
+if (this.dragAtomIndex >= 0) {
+if (this.atomPickingMode == 29 || this.atomPickingMode == 30) this.minimize (true);
+}if (this.atomPickingMode == 32 && this.isBound (this.clickAction, 0)) {
+if (this.measurementPending == null || this.dragAtomIndex < 0) return;
+this.assignNew (x, y);
+return;
+}this.dragAtomIndex = -1;
+var isRbAction = this.isRubberBandSelect (this.clickAction);
+if (isRbAction) this.selectRb (this.clickAction);
+this.rubberbandSelectionMode = (this.binding.getName ().equals ("drag"));
+this.rectRubber.x = 2147483647;
+if (dragRelease) {
+this.viewer.notifyMouseClicked (x, y, J.viewer.binding.Binding.getMouseAction (this.pressedCount, 0, 5), 5);
+}if (this.drawMode && (this.isBound (this.dragAction, 8) || this.isBound (this.dragAction, 9)) || this.labelMode && this.isBound (this.dragAction, 10)) {
+this.viewer.checkObjectDragged (2147483647, 0, x, y, this.dragAction);
+return;
+}if (this.dragSelectedMode && this.isBound (this.dragAction, 13) && this.haveSelection) this.viewer.moveSelected (2147483647, 0, -2147483648, -2147483648, -2147483648, null, false, false);
+if (dragRelease && this.checkUserAction (this.pressAction, x, y, 0, 0, time, 5)) return;
+if (this.viewer.getBoolean (603979780)) {
+if (this.isBound (this.dragAction, 44)) {
+var speed = this.getExitRate ();
+if (speed > 0) this.viewer.spinXYBy (this.dragGesture.getDX (4, 2), this.dragGesture.getDY (4, 2), speed * 30 * this.gestureSwipeFactor);
+if (this.viewer.global.logGestures) this.viewer.log ("$NOW$ swipe " + this.dragGesture + " " + speed);
+return;
+}}}, $fz.isPrivate = true, $fz), "~N,~N,~N,~B");
+$_M(c$, "checkClickAction", 
+($fz = function (x, y, time, clickedCount) {
+if (!this.viewer.haveModelSet ()) return;
+if (clickedCount > 0) {
+if (this.checkUserAction (this.clickAction, x, y, 0, 0, time, 32768)) return;
+this.clickAction = this.viewer.notifyMouseClicked (x, y, this.clickAction, 32768);
+if (this.clickAction == 0) return;
+}if (J.util.Logger.debugging) J.util.Logger.debug (J.viewer.binding.Binding.getMouseActionName (this.clickAction, false));
+if (this.isBound (this.clickAction, 2) && this.viewer.frankClicked (x, y)) {
+this.viewer.popupMenu (-x, y, 'j');
+return;
+}if (this.isBound (this.clickAction, 2) && this.viewer.frankClickedModelKit (x, y)) {
+this.viewer.popupMenu (0, 0, 'm');
+return;
+}var nearestPoint = null;
+var isBond = false;
+var isIsosurface = false;
+var t = null;
+if (!this.drawMode) {
+t = this.viewer.checkObjectClicked (x, y, this.clickAction);
+if (t != null) {
+isBond = "bond".equals (t.get ("type"));
+isIsosurface = "isosurface".equals (t.get ("type"));
+nearestPoint = this.getPoint (t);
+}}if (isBond) clickedCount = 1;
+if (nearestPoint != null && Float.isNaN (nearestPoint.x)) return;
+var nearestAtomIndex = this.findNearestAtom (x, y, nearestPoint, clickedCount > 0);
+if (clickedCount == 0 && this.atomPickingMode != 32) {
+if (this.measurementPending == null) return;
+if (nearestPoint != null || this.measurementPending.getIndexOf (nearestAtomIndex) == 0) this.measurementPending.addPoint (nearestAtomIndex, nearestPoint, false);
+if (this.measurementPending.haveModified ()) this.viewer.setPendingMeasurement (this.measurementPending);
+this.viewer.refresh (3, "measurementPending");
+return;
+}this.setMouseMode ();
+if (this.isBound (this.clickAction, 43)) {
+this.viewer.stopMotion ();
+}if (this.viewer.getBoolean (603979887) && this.atomPickingMode == 23 && this.isBound (this.clickAction, 21)) {
+this.viewer.navTranslatePercent (x * 100 / this.viewer.getScreenWidth () - 50, y * 100 / this.viewer.getScreenHeight () - 50);
+return;
+}if (isBond) {
+if (this.isBound (this.clickAction, this.bondPickingMode == 34 || this.bondPickingMode == 33 ? 0 : 5)) {
+this.bondPicked ((t.get ("index")).intValue ());
+return;
+}} else if (isIsosurface) {
+return;
+} else {
+if (this.atomPickingMode != 32 && this.measurementPending != null && this.isBound (this.clickAction, 20)) {
+this.atomOrPointPicked (nearestAtomIndex, nearestPoint);
+if (this.addToMeasurement (nearestAtomIndex, nearestPoint, false) == 4) this.toggleMeasurement ();
+return;
+}if (this.isBound (this.clickAction, 37)) {
+if (this.measurementPending != null) {
+this.addToMeasurement (nearestAtomIndex, nearestPoint, true);
+this.toggleMeasurement ();
+} else if (!this.drawMode && !this.labelMode && !this.dragSelectedMode && this.measuresEnabled) {
+this.enterMeasurementMode (nearestAtomIndex);
+this.addToMeasurement (nearestAtomIndex, nearestPoint, true);
+}this.atomOrPointPicked (nearestAtomIndex, nearestPoint);
+return;
+}}if (this.isSelectAction (this.clickAction)) {
+if (!isIsosurface) this.atomOrPointPicked (nearestAtomIndex, nearestPoint);
+return;
+}if (this.isBound (this.clickAction, 24)) {
+if (nearestAtomIndex < 0) this.reset ();
+return;
+}}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N");
+$_M(c$, "checkUserAction", 
+($fz = function (mouseAction, x, y, deltaX, deltaY, time, mode) {
+if (!this.binding.isUserAction (mouseAction)) return false;
+var passThrough = false;
+var obj;
+var ht = this.binding.getBindings ();
+var mkey = mouseAction + "\t";
+for (var key, $key = ht.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
+if (key.indexOf (mkey) != 0 || !J.util.Escape.isAS (obj = ht.get (key))) continue;
+var script = (obj)[1];
+var nearestPoint = null;
+if (script.indexOf ("_ATOM") >= 0) {
+var iatom = this.findNearestAtom (x, y, null, true);
+script = J.util.TextFormat.simpleReplace (script, "_ATOM", "({" + (iatom >= 0 ? "" + iatom : "") + "})");
+if (iatom >= 0) script = J.util.TextFormat.simpleReplace (script, "_POINT", J.util.Escape.eP (this.viewer.getModelSet ().atoms[iatom]));
+}if (!this.drawMode && (script.indexOf ("_POINT") >= 0 || script.indexOf ("_OBJECT") >= 0 || script.indexOf ("_BOND") >= 0)) {
+var t = this.viewer.checkObjectClicked (x, y, mouseAction);
+if (t != null && (nearestPoint = t.get ("pt")) != null) {
+var isBond = t.get ("type").equals ("bond");
+if (isBond) script = J.util.TextFormat.simpleReplace (script, "_BOND", "[{" + t.get ("index") + "}]");
+script = J.util.TextFormat.simpleReplace (script, "_POINT", J.util.Escape.eP (nearestPoint));
+script = J.util.TextFormat.simpleReplace (script, "_OBJECT", J.util.Escape.escapeMap (t));
+}script = J.util.TextFormat.simpleReplace (script, "_BOND", "[{}]");
+script = J.util.TextFormat.simpleReplace (script, "_OBJECT", "{}");
+}script = J.util.TextFormat.simpleReplace (script, "_POINT", "{}");
+script = J.util.TextFormat.simpleReplace (script, "_ACTION", "" + mouseAction);
+script = J.util.TextFormat.simpleReplace (script, "_X", "" + x);
+script = J.util.TextFormat.simpleReplace (script, "_Y", "" + (this.viewer.getScreenHeight () - y));
+script = J.util.TextFormat.simpleReplace (script, "_DELTAX", "" + deltaX);
+script = J.util.TextFormat.simpleReplace (script, "_DELTAY", "" + deltaY);
+script = J.util.TextFormat.simpleReplace (script, "_TIME", "" + time);
+script = J.util.TextFormat.simpleReplace (script, "_MODE", "" + mode);
+if (script.startsWith ("+:")) {
+passThrough = true;
+script = script.substring (2);
+}this.viewer.evalStringQuiet (script);
+}
+return !passThrough;
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N");
+$_M(c$, "checkMotionRotateZoom", 
+($fz = function (mouseAction, x, deltaX, deltaY, isDrag) {
+var isSlideZoom = this.checkSlideZoom (mouseAction);
+var isRotateXY = this.isBound (mouseAction, 25);
+var isRotateZorZoom = this.isBound (mouseAction, 29);
+if (!isSlideZoom && !isRotateXY && !isRotateZorZoom) return false;
+var isZoom = (isRotateZorZoom && (deltaX == 0 || Math.abs (deltaY) > 5 * Math.abs (deltaX)));
+var cursor = (isZoom || this.isZoomArea (this.moved.x) || this.isBound (mouseAction, 46) ? 5 : isRotateXY || isRotateZorZoom ? 3 : this.isBound (mouseAction, 1) ? 1 : 0);
+this.setMotion (cursor, isDrag);
+return (isZoom || isSlideZoom);
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~B");
 $_M(c$, "getExitRate", 
 function () {
 var dt = this.dragGesture.getTimeDifference (2);
-return (dt > 5 ? 0 : this.dragGesture.getSpeedPixelsPerMillisecond (4, 2));
+return (dt > 10 ? 0 : this.dragGesture.getSpeedPixelsPerMillisecond (4, 2));
 });
 $_M(c$, "isRubberBandSelect", 
 ($fz = function (action) {
@@ -46683,197 +47593,12 @@ this.rectRubber.height = (this.pressed.y - this.current.y) * factor;
 this.rectRubber.y = this.pressed.y * factor;
 this.rectRubber.height = (this.current.y - this.pressed.y) * factor;
 }}, $fz.isPrivate = true, $fz));
-$_M(c$, "checkAction", 
-($fz = function (action, x, y, deltaX, deltaY, time, mode) {
-var mods = J.viewer.binding.Binding.getModifiers (action);
-if (mods != 0) {
-var newAction = this.viewer.notifyMouseClicked (x, y, J.viewer.binding.Binding.getMouseAction (-this.pressedCount, mods), mode);
-if (newAction == 0) return;
-if (newAction > 0) action = newAction;
-}if (this.isRubberBandSelect (action)) {
-this.calcRectRubberBand ();
-this.viewer.refresh (3, "rubberBand selection");
-return;
-}if (this.checkUserAction (action, x, y, deltaX, deltaY, time, mode)) return;
-if (this.viewer.getRotateBondIndex () >= 0) {
-if (this.isBound (action, 26)) {
-this.viewer.moveSelected (deltaX, deltaY, -2147483648, x, y, null, false, false);
-return;
-}if (!this.isBound (action, 25)) this.viewer.setRotateBondIndex (-1);
-}var bs = null;
-if (this.dragAtomIndex >= 0) {
-switch (this.atomPickingMode) {
-case 26:
-this.checkMotion (3, true);
-if (this.isBound (action, 27) && this.viewer.getBoolean (603979785)) {
-this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), null);
-} else {
-this.viewer.moveSelected (deltaX, deltaY, (this.isBound (action, 14) ? -deltaY : -2147483648), -2147483648, -2147483648, null, true, false);
-}return;
-case 36:
-case 27:
-case 30:
-bs = this.viewer.getAtomBits (1095761934, J.util.BSUtil.newAndSetBit (this.dragAtomIndex));
-if (this.atomPickingMode == 36) bs.and (this.viewer.getAtomBitSet ("ligand"));
-case 28:
-case 29:
-if (this.dragGesture.getPointCount () == 1) this.viewer.undoMoveActionClear (this.dragAtomIndex, 2, true);
-this.checkMotion (3, true);
-if (this.isBound (action, 27)) {
-this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), bs);
-} else {
-switch (this.atomPickingMode) {
-case 36:
-case 27:
-case 30:
-this.viewer.select (bs, false, 0, true);
-break;
-}
-this.viewer.moveAtomWithHydrogens (this.dragAtomIndex, deltaX, deltaY, (this.isBound (action, 14) ? -deltaY : -2147483648), bs);
-}return;
-}
-}if (this.dragAtomIndex >= 0 && this.isBound (action, 0) && this.atomPickingMode == 32) {
-var nearestAtomIndex = this.viewer.findNearestAtomIndexMovable (x, y, false);
-if (nearestAtomIndex >= 0) {
-if (this.measurementPending != null) {
-this.measurementPending.setCount (1);
-} else if (this.measuresEnabled) {
-this.enterMeasurementMode (nearestAtomIndex);
-}this.addToMeasurement (nearestAtomIndex, null, true);
-this.measurementPending.colix = 20;
-} else if (this.measurementPending != null) {
-this.measurementPending.setCount (1);
-this.measurementPending.colix = 23;
-}if (this.measurementPending == null) return;
-this.measurementPending.traceX = x;
-this.measurementPending.traceY = y;
-this.viewer.refresh (3, "assignNew");
-return;
-}if (!this.drawMode && !this.labelMode) {
-if (this.isBound (action, 45)) {
-this.viewer.translateXYBy (deltaX, deltaY);
-return;
-}if (this.isBound (action, 1)) {
-if (this.pressedAtomIndex == 2147483647) this.pressedAtomIndex = this.viewer.findNearestAtomIndex (this.pressed.x, this.pressed.y);
-var pt = (this.pressedAtomIndex < 0 ? null : this.viewer.getAtomPoint3f (this.pressedAtomIndex));
-if (pt == null) this.viewer.translateXYBy (deltaX, deltaY);
- else this.viewer.centerAt (x, y, pt);
-return;
-}}if (this.dragSelectedMode && this.haveSelection && (this.isBound (action, 13) || this.isBound (action, 27))) {
-var iatom = this.viewer.getSelectionSet (false).nextSetBit (0);
-if (iatom < 0) return;
-if (this.dragGesture.getPointCount () == 1) this.viewer.undoMoveActionClear (iatom, 2, true);
- else this.viewer.moveSelected (2147483647, 0, -2147483648, -2147483648, -2147483648, null, false, false);
-this.checkMotion (3, true);
-if (this.isBound (action, 27) && this.viewer.getBoolean (603979785)) this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), null);
- else this.viewer.moveSelected (deltaX, deltaY, -2147483648, -2147483648, -2147483648, null, true, false);
-return;
-}if (this.drawMode && (this.isBound (action, 8) || this.isBound (action, 9)) || this.labelMode && this.isBound (action, 10)) {
-this.checkMotion (3, true);
-this.viewer.checkObjectDragged (this.dragged.x, this.dragged.y, x, y, action);
-return;
-}if (this.checkMotionRotateZoom (action, x, deltaX, deltaY, true)) {
-if (this.viewer.getSlabEnabled () && this.checkSlideZoom (action)) this.viewer.slabDepthByPixels (deltaY);
- else this.viewer.zoomBy (deltaY);
-return;
-}if (this.isBound (action, 25)) {
-var degX = this.getDegrees (deltaX, 0);
-var degY = this.getDegrees (deltaY, 1);
-if (this.viewer.global.useArcBall) this.viewer.rotateArcBall (x, y, this.mouseDragFactor);
- else this.viewer.rotateXYBy (degX, degY);
-return;
-}if (this.isBound (action, 29)) {
-if (Math.abs (deltaY) > 5 * Math.abs (deltaX)) {
-this.checkMotion (5, true);
-this.viewer.zoomBy (deltaY);
-} else if (Math.abs (deltaX) > 5 * Math.abs (deltaY)) {
-this.checkMotion (3, true);
-this.viewer.rotateZBy (-deltaX, 2147483647, 2147483647);
-}return;
-} else if (this.isBound (action, 46)) {
-this.zoomByFactor (deltaY, 2147483647, 2147483647);
-return;
-} else if (this.isBound (action, 28)) {
-this.checkMotion (3, true);
-this.viewer.rotateZBy (-deltaX, 2147483647, 2147483647);
-return;
-}if (this.viewer.getSlabEnabled ()) {
-if (this.isBound (action, 6)) {
-this.viewer.depthByPixels (deltaY);
-return;
-}if (this.isBound (action, 38)) {
-this.viewer.slabByPixels (deltaY);
-return;
-}if (this.isBound (action, 39)) {
-this.viewer.slabDepthByPixels (deltaY);
-return;
-}}}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N");
 $_M(c$, "getDegrees", 
 function (delta, i) {
 var dim = (i == 0 ? this.viewer.getScreenWidth () : this.viewer.getScreenHeight ());
 if (dim > 500) dim = 500;
 return (delta) / dim * 180 * this.mouseDragFactor;
 }, "~N,~N");
-$_M(c$, "zoomByFactor", 
-function (dz, x, y) {
-if (dz == 0) return;
-this.checkMotion (5, true);
-this.viewer.zoomByFactor (Math.pow (this.mouseWheelFactor, dz), x, y);
-this.viewer.setInMotion (false);
-}, "~N,~N,~N");
-$_M(c$, "checkUserAction", 
-($fz = function (action, x, y, deltaX, deltaY, time, mode) {
-if (mode == 4) {
-if (J.viewer.binding.Binding.getClickCount (action) == 1) action = (action & -1793) + 1024;
-} else if (mode == 1 || mode == 6) {
-if (J.viewer.binding.Binding.getClickCount (action) == 1) action = (action & -1793);
-}if (!this.binding.isUserAction (action)) return false;
-var passThrough = false;
-var obj;
-var ht = this.binding.getBindings ();
-for (var key, $key = ht.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
-if (key.indexOf (action + "\t") != 0 || !J.util.Escape.isAS (obj = ht.get (key))) continue;
-var script = (obj)[1];
-var nearestPoint = null;
-if (script.indexOf ("_ATOM") >= 0) {
-var iatom = this.findNearestAtom (x, y, null, true);
-script = J.util.TextFormat.simpleReplace (script, "_ATOM", "({" + (iatom >= 0 ? "" + iatom : "") + "})");
-if (iatom >= 0) script = J.util.TextFormat.simpleReplace (script, "_POINT", J.util.Escape.eP (this.viewer.getModelSet ().atoms[iatom]));
-}if (!this.drawMode && (script.indexOf ("_POINT") >= 0 || script.indexOf ("_OBJECT") >= 0 || script.indexOf ("_BOND") >= 0)) {
-var t = this.viewer.checkObjectClicked (x, y, action);
-if (t != null && (nearestPoint = t.get ("pt")) != null) {
-var isBond = t.get ("type").equals ("bond");
-if (isBond) script = J.util.TextFormat.simpleReplace (script, "_BOND", "[{" + t.get ("index") + "}]");
-script = J.util.TextFormat.simpleReplace (script, "_POINT", J.util.Escape.eP (nearestPoint));
-script = J.util.TextFormat.simpleReplace (script, "_OBJECT", J.util.Escape.escapeMap (t));
-}script = J.util.TextFormat.simpleReplace (script, "_BOND", "[{}]");
-script = J.util.TextFormat.simpleReplace (script, "_OBJECT", "{}");
-}script = J.util.TextFormat.simpleReplace (script, "_POINT", "{}");
-script = J.util.TextFormat.simpleReplace (script, "_ACTION", "" + action);
-script = J.util.TextFormat.simpleReplace (script, "_X", "" + x);
-script = J.util.TextFormat.simpleReplace (script, "_Y", "" + (this.viewer.getScreenHeight () - y));
-script = J.util.TextFormat.simpleReplace (script, "_DELTAX", "" + deltaX);
-script = J.util.TextFormat.simpleReplace (script, "_DELTAY", "" + deltaY);
-script = J.util.TextFormat.simpleReplace (script, "_TIME", "" + time);
-script = J.util.TextFormat.simpleReplace (script, "_MODE", "" + mode);
-if (script.startsWith ("+:")) {
-passThrough = true;
-script = script.substring (2);
-}this.viewer.evalStringQuiet (script);
-}
-return !passThrough;
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N");
-$_M(c$, "checkMotionRotateZoom", 
-($fz = function (action, x, deltaX, deltaY, inMotion) {
-var isSlideZoom = this.checkSlideZoom (action);
-var isRotateXY = this.isBound (action, 25);
-var isRotateZorZoom = this.isBound (action, 29);
-if (!isSlideZoom && !isRotateXY && !isRotateZorZoom) return false;
-var isZoom = (isRotateZorZoom && (deltaX == 0 || Math.abs (deltaY) > 5 * Math.abs (deltaX)));
-var cursor = (isZoom || this.isZoomArea (this.moved.x) || this.isBound (action, 46) ? 5 : isRotateXY || isRotateZorZoom ? 3 : this.isBound (action, 1) ? 1 : 0);
-this.checkMotion (cursor, inMotion);
-return (isZoom || isSlideZoom);
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~B");
 $_M(c$, "checkSlideZoom", 
 ($fz = function (action) {
 return this.isBound (action, 40) && this.isZoomArea (this.pressed.x);
@@ -46896,18 +47621,16 @@ return (index >= 0 && (isClicked || this.measurementPending == null) && !this.vi
 }, $fz.isPrivate = true, $fz), "~N,~N,J.util.Point3fi,~B");
 $_M(c$, "isSelectAction", 
 ($fz = function (action) {
-return (this.isBound (action, 17) || this.isBound (action, 22) || this.isBound (action, 35) || this.isBound (action, 32) || this.isBound (action, 34) || this.isBound (action, 36) || this.isBound (action, 30));
+return (this.isBound (action, 17) || !this.drawMode && !this.labelMode && this.atomPickingMode == 1 && this.isBound (action, 1) || this.dragSelectedMode && (this.isBound (this.dragAction, 27) || this.isBound (this.dragAction, 13)) || this.isBound (action, 22) || this.isBound (action, 35) || this.isBound (action, 32) || this.isBound (action, 34) || this.isBound (action, 36) || this.isBound (action, 30));
 }, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "checkMotion", 
-function (cursor, inMotion) {
-switch (this.viewer.getCursor ()) {
-case 4:
-break;
-default:
-this.viewer.setCursor (cursor);
-}
-if (inMotion) this.viewer.setInMotion (true);
-}, "~N,~B");
+$_M(c$, "enterMeasurementMode", 
+($fz = function (iAtom) {
+this.viewer.setPicked (-1);
+this.viewer.setPicked (iAtom);
+this.viewer.setCursor (2);
+this.viewer.setPendingMeasurement (this.measurementPending = J.modelset.MeasurementPending.getMP (this.viewer.getModelSet ()));
+this.measurementQueued = this.measurementPending;
+}, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "addToMeasurement", 
 ($fz = function (atomIndex, nearestPoint, dblClick) {
 if (atomIndex == -1 && nearestPoint == null || this.measurementPending == null) {
@@ -46917,132 +47640,17 @@ return 0;
 if (this.measurementPending.traceX != -2147483648 && measurementCount == 2) this.measurementPending.setCount (measurementCount = 1);
 return (measurementCount == 4 && !dblClick ? measurementCount : this.measurementPending.addPoint (atomIndex, nearestPoint, true));
 }, $fz.isPrivate = true, $fz), "~N,J.util.Point3fi,~B");
-$_M(c$, "enterMeasurementMode", 
-($fz = function (iAtom) {
-this.viewer.setPicked (-1);
-this.viewer.setPicked (iAtom);
-this.viewer.setCursor (2);
-this.viewer.setPendingMeasurement (this.measurementPending = J.modelset.MeasurementPending.getMP (this.viewer.getModelSet ()));
-this.measurementQueued = this.measurementPending;
-}, $fz.isPrivate = true, $fz), "~N");
+$_M(c$, "resetMeasurement", 
+($fz = function () {
+this.exitMeasurementMode ();
+this.measurementQueued = J.modelset.MeasurementPending.getMP (this.viewer.getModelSet ());
+}, $fz.isPrivate = true, $fz));
 $_M(c$, "exitMeasurementMode", 
 ($fz = function () {
 if (this.measurementPending == null) return;
 this.viewer.setPendingMeasurement (this.measurementPending = null);
 this.viewer.setCursor (0);
 }, $fz.isPrivate = true, $fz));
-$_M(c$, "checkHover", 
-function () {
-if (!this.viewer.getInMotion (true) && !this.viewer.getSpinOn () && !this.viewer.getNavOn () && !this.viewer.checkObjectHovered (this.current.x, this.current.y)) {
-var atomIndex = this.viewer.findNearestAtomIndex (this.current.x, this.current.y);
-if (atomIndex >= 0) this.viewer.hoverOn (atomIndex, J.viewer.binding.Binding.getMouseAction (this.clickedCount, this.moved.modifiers));
-}});
-$_M(c$, "hoverOff", 
-function () {
-try {
-this.viewer.hoverOff ();
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-} else {
-throw e;
-}
-}
-});
-$_M(c$, "resetMeasurement", 
-($fz = function () {
-this.exitMeasurementMode ();
-this.measurementQueued = J.modelset.MeasurementPending.getMP (this.viewer.getModelSet ());
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "getPickingState", 
-function () {
-var script = ";set modelkitMode " + this.viewer.getBoolean (603979883) + ";set picking " + J.viewer.ActionManager.getPickingModeName (this.atomPickingMode);
-if (this.atomPickingMode == 32) script += "_" + this.pickAtomAssignType;
-script += ";";
-if (this.bondPickingMode != 0) script += "set picking " + J.viewer.ActionManager.getPickingModeName (this.bondPickingMode);
-if (this.bondPickingMode == 33) script += "_" + this.pickBondAssignType;
-script += ";";
-return script;
-});
-$_M(c$, "getAtomPickingMode", 
-function () {
-return this.atomPickingMode;
-});
-$_M(c$, "setPickingMode", 
-function (pickingMode) {
-var isNew = false;
-switch (pickingMode) {
-case -1:
-isNew = true;
-this.bondPickingMode = 35;
-pickingMode = 1;
-break;
-case 35:
-case 34:
-case 33:
-this.viewer.setBooleanProperty ("bondPicking", true);
-this.bondPickingMode = pickingMode;
-return;
-case 8:
-this.bondPickingMode = pickingMode;
-if (this.viewer.getBondPicking ()) return;
-isNew = true;
-break;
-}
-isNew = new Boolean (isNew | (this.atomPickingMode != pickingMode)).valueOf ();
-this.atomPickingMode = pickingMode;
-if (isNew) this.resetMeasurement ();
-}, "~N");
-$_M(c$, "setAtomPickingOption", 
-function (option) {
-switch (this.atomPickingMode) {
-case 32:
-this.pickAtomAssignType = option;
-this.isPickAtomAssignCharge = (this.pickAtomAssignType.equals ("Pl") || this.pickAtomAssignType.equals ("Mi"));
-break;
-}
-}, "~S");
-$_M(c$, "setBondPickingOption", 
-function (option) {
-switch (this.bondPickingMode) {
-case 33:
-this.pickBondAssignType = Character.toLowerCase (option.charAt (0));
-break;
-}
-}, "~S");
-$_M(c$, "getPickingStyle", 
-function () {
-return this.pickingStyle;
-});
-$_M(c$, "setPickingStyle", 
-function (pickingStyle) {
-this.pickingStyle = pickingStyle;
-if (pickingStyle >= 4) {
-this.pickingStyleMeasure = pickingStyle;
-this.resetMeasurement ();
-} else {
-if (pickingStyle < 3) this.rootPickingStyle = pickingStyle;
-this.pickingStyleSelect = pickingStyle;
-}this.rubberbandSelectionMode = false;
-switch (this.pickingStyleSelect) {
-case 2:
-if (!this.binding.getName ().equals ("extendedSelect")) this.setBinding (this.pfaatBinding == null ? this.pfaatBinding = J.viewer.binding.Binding.newBinding ("Pfaat") : this.pfaatBinding);
-break;
-case 3:
-if (!this.binding.getName ().equals ("drag")) this.setBinding (this.dragBinding == null ? this.dragBinding = J.viewer.binding.Binding.newBinding ("Drag") : this.dragBinding);
-this.rubberbandSelectionMode = true;
-break;
-case 1:
-if (!this.binding.getName ().equals ("selectOrToggle")) this.setBinding (this.rasmolBinding == null ? this.rasmolBinding = J.viewer.binding.Binding.newBinding ("Rasmol") : this.rasmolBinding);
-break;
-default:
-if (this.binding !== this.jmolBinding) this.setBinding (this.jmolBinding);
-}
-if (!this.binding.getName ().equals ("drag")) this.predragBinding = this.binding;
-}, "~N");
-$_M(c$, "setBinding", 
-function (newBinding) {
-this.binding = newBinding;
-}, "J.viewer.binding.Binding");
 $_M(c$, "getSequence", 
 ($fz = function () {
 var a1 = this.measurementQueued.getAtomIndex (1);
@@ -47051,298 +47659,46 @@ if (a1 < 0 || a2 < 0) return;
 var sequence = this.viewer.getSmiles (a1, a2, null, true, false, false, false);
 this.viewer.setStatusMeasuring ("measureSequence", -2, sequence, 0);
 }, $fz.isPrivate = true, $fz));
+$_M(c$, "minimize", 
+($fz = function (dragDone) {
+this.viewer.stopMinimization ();
+var iAtom = this.dragAtomIndex;
+if (dragDone) this.dragAtomIndex = -1;
+var bs = (this.viewer.getMotionFixedAtoms ().cardinality () == 0 ? this.viewer.getAtomBits ((this.viewer.isAtomPDB (iAtom) ? 1087373318 : 1095761934), J.util.BSUtil.newAndSetBit (iAtom)) : J.util.BSUtil.setAll (this.viewer.getAtomCount ()));
+this.viewer.minimize (2147483647, 0, bs, null, 0, false, false, false);
+}, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "queueAtom", 
 ($fz = function (atomIndex, ptClicked) {
 var n = this.measurementQueued.addPoint (atomIndex, ptClicked, true);
 if (atomIndex >= 0) this.viewer.setStatusAtomPicked (atomIndex, "Atom #" + n + ":" + this.viewer.getAtomInfo (atomIndex));
 return n;
 }, $fz.isPrivate = true, $fz), "~N,J.util.Point3fi");
-$_M(c$, "mouseAction", 
-function (action, time, x, y, count, modifiers) {
-if (!this.viewer.getMouseEnabled ()) return;
-switch (action) {
-case 0:
-this.setCurrent (time, x, y, modifiers);
-this.moved.setCurrent (this.current, 0);
-if (this.measurementPending != null || this.hoverActive) this.checkPointOrAtomClicked (x, y, 0, 0, time, false, 0);
- else if (this.isZoomArea (x)) this.checkMotionRotateZoom (J.viewer.binding.Binding.getMouseAction (1, 16), 0, 0, 0, false);
- else if (this.viewer.getCursor () == 5) this.viewer.setCursor (0);
-return;
-case 3:
-if (this.viewer.isApplet () && !this.viewer.hasFocus ()) return;
-this.setCurrent (time, this.current.x, this.current.y, modifiers);
-this.checkAction (J.viewer.binding.Binding.getMouseAction (0, modifiers), this.current.x, this.current.y, 0, y, time, 3);
-return;
-case 2:
-this.setMouseMode ();
-this.clickedCount = (count > 1 ? count : this.clicked.check (0, 0, 0, modifiers, time, 700) ? this.clickedCount + 1 : 1);
-if (this.clickedCount == 1) {
-this.setCurrent (time, x, y, modifiers);
-} else {
-}this.clicked.setCurrent (this.current, this.clickedCount);
-this.viewer.setFocus ();
-if (this.atomPickingMode != 9 && this.isBound (J.viewer.binding.Binding.getMouseAction (-2147483648, modifiers), 31)) return;
-this.checkPointOrAtomClicked (x, y, modifiers, this.clickedCount, time, false, 2);
-return;
+$_M(c$, "setMotion", 
+function (cursor, inMotion) {
+switch (this.viewer.getCursor ()) {
 case 4:
-this.setMouseMode ();
-this.pressedCount = (this.pressed.check (0, 0, 0, modifiers, time, 700) ? this.pressedCount + 1 : 1);
-if (this.pressedCount == 1) {
-this.viewer.checkInMotion (1);
-this.setCurrent (time, x, y, modifiers);
-}this.viewer.setCursor (1);
-this.pressed.setCurrent (this.current, 1);
-this.dragged.setCurrent (this.current, 1);
-this.viewer.setFocus ();
-var isSelectAndDrag = this.isBound (J.viewer.binding.Binding.getMouseAction (-2147483648, modifiers), 31);
-action = J.viewer.binding.Binding.getMouseAction (this.pressedCount, modifiers);
-this.dragGesture.setAction (action, time);
-if (J.viewer.binding.Binding.getModifiers (action) != 0) {
-action = this.viewer.notifyMouseClicked (x, y, action, 4);
-if (action == 0) return;
-}this.pressedAtomIndex = 2147483647;
-if (this.drawMode && (this.isBound (action, 8) || this.isBound (action, 9)) || this.labelMode && this.isBound (action, 10)) {
-this.viewer.checkObjectDragged (-2147483648, 0, x, y, action);
-return;
-}this.checkUserAction (action, x, y, 0, 0, time, 4);
-var isBound = false;
-switch (this.atomPickingMode) {
-case 32:
-isBound = this.isBound (action, 0);
 break;
-case 28:
-isBound = this.isBound (action, 7) || this.isBound (action, 14);
-break;
-case 26:
-case 36:
-case 27:
-isBound = this.isBound (action, 7) || this.isBound (action, 27) || this.isBound (action, 14);
-break;
-case 29:
-isBound = this.isBound (action, 11) || this.isBound (action, 14);
-break;
-case 30:
-isBound = this.isBound (action, 12) || this.isBound (action, 27) || this.isBound (action, 14);
-break;
+default:
+this.viewer.setCursor (cursor);
 }
-if (isBound) {
-this.dragAtomIndex = this.viewer.findNearestAtomIndexMovable (x, y, true);
-if (this.dragAtomIndex >= 0 && (this.atomPickingMode == 32 || this.atomPickingMode == 31) && this.viewer.isAtomAssignable (this.dragAtomIndex)) {
-this.enterMeasurementMode (this.dragAtomIndex);
-this.measurementPending.addPoint (this.dragAtomIndex, null, false);
-}return;
-}if (this.isBound (action, 23)) {
-var type = 'j';
-if (this.viewer.getBoolean (603979883)) {
-var t = this.viewer.checkObjectClicked (x, y, J.viewer.binding.Binding.getMouseAction (1, 16));
-type = (t != null && "bond".equals (t.get ("type")) ? 'b' : this.viewer.findNearestAtomIndex (x, y) >= 0 ? 'a' : 'm');
-}this.viewer.popupMenu (x, y, type);
-return;
-}if (this.dragSelectedMode) {
-this.haveSelection = true;
-if (isSelectAndDrag) {
-this.haveSelection = (this.viewer.findNearestAtomIndexMovable (x, y, true) >= 0);
-}if (!this.haveSelection) return;
-if (this.isBound (action, 13) || this.isBound (action, 14)) this.viewer.moveSelected (-2147483648, 0, -2147483648, -2147483648, -2147483648, null, false, false);
-return;
-}if (this.viewer.global.useArcBall) this.viewer.rotateArcBall (x, y, 0);
-this.checkMotionRotateZoom (action, x, 0, 0, true);
-return;
-case 6:
-return;
-case 1:
-this.setMouseMode ();
-var deltaX = x - this.dragged.x;
-var deltaY = y - this.dragged.y;
-this.setCurrent (time, x, y, modifiers);
-this.dragged.setCurrent (this.current, -1);
-if (this.atomPickingMode != 32) this.exitMeasurementMode ();
-action = J.viewer.binding.Binding.getMouseAction (this.pressedCount, modifiers);
-this.dragGesture.add (action, x, y, time);
-this.checkAction (action, x, y, deltaX, deltaY, time, 1);
-return;
-case 5:
-this.setCurrent (time, x, y, modifiers);
-this.viewer.spinXYBy (0, 0, 0);
-var dragRelease = !this.pressed.check (this.xyRange, x, y, modifiers, time, 9223372036854775807);
-this.viewer.checkInMotion (0);
+if (inMotion) this.viewer.setInMotion (true);
+}, "~N,~B");
+$_M(c$, "zoomByFactor", 
+function (dz, x, y) {
+if (dz == 0) return;
+this.setMotion (5, true);
+this.viewer.zoomByFactor (Math.pow (this.mouseWheelFactor, dz), x, y);
 this.viewer.setInMotion (false);
-this.viewer.setCursor (0);
-action = J.viewer.binding.Binding.getMouseAction (this.pressedCount, modifiers);
-this.dragGesture.add (action, x, y, time);
-if (dragRelease) this.viewer.setRotateBondIndex (-2147483648);
-if (this.dragAtomIndex >= 0) {
-if (this.atomPickingMode == 29 || this.atomPickingMode == 30) this.minimize (true);
-}if (this.atomPickingMode == 32 && this.isBound (action, 0)) {
-if (this.measurementPending == null || this.dragAtomIndex < 0) return;
-this.assignNew (x, y);
-return;
-}this.dragAtomIndex = -1;
-var isRbAction = this.isRubberBandSelect (action);
-if (isRbAction) this.selectRb (action);
-this.rubberbandSelectionMode = (this.binding.getName ().equals ("drag"));
-this.rectRubber.x = 2147483647;
-if (dragRelease) {
-this.viewer.notifyMouseClicked (x, y, J.viewer.binding.Binding.getMouseAction (this.pressedCount, 0), 5);
-}if (this.drawMode && (this.isBound (action, 8) || this.isBound (action, 9)) || this.labelMode && this.isBound (action, 10)) {
-this.viewer.checkObjectDragged (2147483647, 0, x, y, action);
-return;
-}if (this.dragSelectedMode && this.isBound (action, 13) && this.haveSelection) this.viewer.moveSelected (2147483647, 0, -2147483648, -2147483648, -2147483648, null, false, false);
-if (dragRelease && this.checkUserAction (action, x, y, 0, 0, time, 5)) return;
-if (this.viewer.getBoolean (603979780)) {
-if (this.isBound (action, 44)) {
-var speed = this.getExitRate ();
-if (speed > 0) this.viewer.spinXYBy (this.dragGesture.getDX (4, 2), this.dragGesture.getDY (4, 2), speed * 30 * this.gestureSwipeFactor);
-if (this.viewer.global.logGestures) this.viewer.log ("$NOW$ swipe " + this.dragGesture + " " + speed);
-return;
-}}return;
-}
-}, "~N,~N,~N,~N,~N,~N");
+}, "~N,~N,~N");
 $_M(c$, "runScript", 
 ($fz = function (script) {
 this.viewer.script (script);
 }, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "getSelectionSet", 
-($fz = function (script) {
-try {
-return this.viewer.getAtomBitSetEval (null, script);
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-} else {
-throw e;
-}
-}
-return null;
-}, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "selectRb", 
-($fz = function (action) {
-var bs = this.viewer.findAtomsInRectangle (this.rectRubber);
-if (bs.length () > 0) {
-var s = J.util.Escape.eBS (bs);
-if (this.isBound (action, 34)) this.runScript ("selectionHalos on;select selected or " + s);
- else if (this.isBound (action, 32)) this.runScript ("selectionHalos on;select selected and not " + s);
- else this.runScript ("selectionHalos on;select selected tog " + s);
-}this.viewer.refresh (3, "mouseReleased");
-}, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "assignNew", 
-($fz = function (x, y) {
-if (this.measurementPending.getCount () == 2) {
-this.viewer.undoMoveActionClear (-1, 4146, true);
-this.runScript ("assign connect " + this.measurementPending.getMeasurementScript (" ", false));
-} else if (this.pickAtomAssignType.equals ("Xx")) {
-this.exitMeasurementMode ();
-this.viewer.refresh (3, "bond dropped");
-} else {
-if (this.pressed.inRange (this.xyRange, this.dragged.x, this.dragged.y)) {
-var s = "assign atom ({" + this.dragAtomIndex + "}) \"" + this.pickAtomAssignType + "\"";
-if (this.isPickAtomAssignCharge) {
-s += ";{atomindex=" + this.dragAtomIndex + "}.label='%C'; ";
-this.viewer.undoMoveActionClear (this.dragAtomIndex, 4, true);
-} else {
-this.viewer.undoMoveActionClear (-1, 4146, true);
-}this.runScript (s);
-} else if (!this.isPickAtomAssignCharge) {
-this.viewer.undoMoveActionClear (-1, 4146, true);
-var a = this.viewer.getModelSet ().atoms[this.dragAtomIndex];
-if (a.getElementNumber () == 1) {
-this.runScript ("assign atom ({" + this.dragAtomIndex + "}) \"X\"");
-} else {
-var ptNew = J.util.P3.new3 (x, y, a.screenZ);
-this.viewer.unTransformPoint (ptNew, ptNew);
-this.runScript ("assign atom ({" + this.dragAtomIndex + "}) \"" + this.pickAtomAssignType + "\" " + J.util.Escape.eP (ptNew));
-}}}this.exitMeasurementMode ();
-}, $fz.isPrivate = true, $fz), "~N,~N");
-$_M(c$, "checkPointOrAtomClicked", 
-($fz = function (x, y, mods, clickedCount, time, atomOnly, mode) {
-if (!this.viewer.haveModelSet ()) return false;
-var action = J.viewer.binding.Binding.getMouseAction (clickedCount, mods);
-if (action != 0) {
-this.checkUserAction (action, x, y, 0, 0, time, mode);
-action = this.viewer.notifyMouseClicked (x, y, action, mode);
-if (action == 0) return false;
-}if (this.isBound (action, 2) && this.viewer.frankClicked (x, y)) {
-this.viewer.popupMenu (-x, y, 'j');
-return false;
-}if (this.isBound (action, 2) && this.viewer.frankClickedModelKit (x, y)) {
-this.viewer.popupMenu (0, 0, 'm');
-return false;
-}var nearestPoint = null;
-var isBond = false;
-var isIsosurface = false;
-var t = null;
-if (!this.drawMode && !atomOnly) {
-t = this.viewer.checkObjectClicked (x, y, action);
-if (t != null) {
-isBond = "bond".equals (t.get ("type"));
-isIsosurface = "isosurface".equals (t.get ("type"));
-nearestPoint = this.getPoint (t);
-}}if (isBond) clickedCount = 1;
-if (nearestPoint != null && Float.isNaN (nearestPoint.x)) return false;
-var nearestAtomIndex = this.findNearestAtom (x, y, nearestPoint, clickedCount > 0);
-if (clickedCount == 0 && this.atomPickingMode != 32) {
-if (this.measurementPending == null) return (nearestAtomIndex >= 0);
-if (nearestPoint != null || this.measurementPending.getIndexOf (nearestAtomIndex) == 0) this.measurementPending.addPoint (nearestAtomIndex, nearestPoint, false);
-if (this.measurementPending.haveModified ()) this.viewer.setPendingMeasurement (this.measurementPending);
-this.viewer.refresh (3, "measurementPending");
-return (nearestAtomIndex >= 0);
-}this.setMouseMode ();
-if (this.isBound (action, 43)) {
-this.viewer.stopMotion ();
-}if (this.viewer.getBoolean (603979887) && this.atomPickingMode == 23 && this.isBound (action, 21)) {
-this.viewer.navTranslatePercent (x * 100 / this.viewer.getScreenWidth () - 50, y * 100 / this.viewer.getScreenHeight () - 50);
-return false;
-}if (isBond) {
-if (this.isBound (action, this.bondPickingMode == 34 || this.bondPickingMode == 33 ? 0 : 5)) {
-if (this.bondPickingMode == 33) this.viewer.undoMoveActionClear (-1, 4146, true);
-var index = (t.get ("index")).intValue ();
-switch (this.bondPickingMode) {
-case 33:
-this.runScript ("assign bond [{" + index + "}] \"" + this.pickBondAssignType + "\"");
-break;
-case 34:
-this.viewer.setRotateBondIndex (index);
-break;
-case 8:
-this.viewer.deleteBonds (J.util.BSUtil.newAndSetBit (index));
-}
-return false;
-}} else if (isIsosurface) {
-return false;
-} else {
-if (this.atomPickingMode != 32 && this.measurementPending != null && this.isBound (action, 20)) {
-this.atomOrPointPicked (nearestAtomIndex, nearestPoint, action);
-if (this.addToMeasurement (nearestAtomIndex, nearestPoint, false) == 4) this.toggleMeasurement ();
-return false;
-}if (this.isBound (action, 37)) {
-if (this.measurementPending != null) {
-this.addToMeasurement (nearestAtomIndex, nearestPoint, true);
-this.toggleMeasurement ();
-} else if (!this.drawMode && !this.labelMode && !this.dragSelectedMode && this.measuresEnabled) {
-this.enterMeasurementMode (nearestAtomIndex);
-this.addToMeasurement (nearestAtomIndex, nearestPoint, true);
-}this.atomOrPointPicked (nearestAtomIndex, nearestPoint, action);
-return false;
-}}var isDragSelected = (this.dragSelectedMode && (this.isBound (action, 27) || this.isBound (action, 13)));
-if (isDragSelected || this.isSelectAction (action)) {
-if (!isIsosurface) this.atomOrPointPicked (nearestAtomIndex, nearestPoint, isDragSelected ? 0 : action);
-return (nearestAtomIndex >= 0);
-}if (this.isBound (action, 24)) {
-if (nearestAtomIndex < 0) this.runScript ("!reset");
-return false;
-}return (nearestAtomIndex >= 0);
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~B,~N");
-$_M(c$, "toggleMeasurement", 
-($fz = function () {
-if (this.measurementPending == null) return;
-var measurementCount = this.measurementPending.getCount ();
-if (measurementCount >= 2 && measurementCount <= 4) this.runScript ("!measure " + this.measurementPending.getMeasurementScript (" ", true));
-this.exitMeasurementMode ();
-}, $fz.isPrivate = true, $fz));
 $_M(c$, "atomOrPointPicked", 
-($fz = function (atomIndex, ptClicked, action) {
+($fz = function (atomIndex, ptClicked) {
 if (atomIndex < 0) {
 this.resetMeasurement ();
-if (this.isBound (action, 33)) {
+if (this.isBound (this.clickAction, 33)) {
 this.runScript ("select none");
 return;
 }if (this.atomPickingMode != 5 && this.atomPickingMode != 6) return;
@@ -47358,7 +47714,7 @@ case 24:
 case 8:
 var isDelete = (this.atomPickingMode == 8);
 var isStruts = (this.atomPickingMode == 25);
-if (!this.isBound (action, (isDelete ? 5 : 3))) return;
+if (!this.isBound (this.clickAction, (isDelete ? 5 : 3))) return;
 if (this.measurementQueued == null || this.measurementQueued.getCount () == 0 || this.measurementQueued.getCount () > 2) {
 this.resetMeasurement ();
 this.enterMeasurementMode (atomIndex);
@@ -47375,7 +47731,7 @@ n++;
 case 18:
 case 19:
 case 22:
-if (!this.isBound (action, 20)) return;
+if (!this.isBound (this.clickAction, 20)) return;
 if (this.measurementQueued == null || this.measurementQueued.getCount () == 0 || this.measurementQueued.getCount () > n) {
 this.resetMeasurement ();
 this.enterMeasurementMode (atomIndex);
@@ -47398,30 +47754,30 @@ return;
 var mode = (this.measurementPending != null && this.atomPickingMode != 1 ? 1 : this.atomPickingMode);
 switch (mode) {
 case 3:
-if (!this.isBound (action, 17)) return;
+if (!this.isBound (this.clickAction, 17)) return;
 if (ptClicked == null) {
-this.runScript ("zoomTo (atomindex=" + atomIndex + ")");
-this.viewer.setStatusAtomPicked (atomIndex, null);
+this.zoomTo (atomIndex);
 } else {
 this.runScript ("zoomTo " + J.util.Escape.eP (ptClicked));
 }return;
 case 5:
 case 6:
-this.checkTwoAtomAction (action, ptClicked, atomIndex);
+if (this.isBound (this.clickAction, 17)) this.checkTwoAtomAction (ptClicked, atomIndex);
 }
 if (ptClicked != null) return;
 var bs;
 switch (mode) {
 case 1:
-if (this.isBound (action, 17)) this.viewer.setStatusAtomPicked (atomIndex, null);
+if (!this.drawMode && !this.labelMode && this.isBound (this.clickAction, 1)) this.zoomTo (atomIndex);
+ else if (this.isBound (this.clickAction, 17)) this.viewer.setStatusAtomPicked (atomIndex, null);
 return;
 case 2:
-if (this.isBound (action, 19)) {
+if (this.isBound (this.clickAction, 19)) {
 this.runScript ("set labeltoggle {atomindex=" + atomIndex + "}");
 this.viewer.setStatusAtomPicked (atomIndex, null);
 }return;
 case 31:
-if (this.isBound (action, 0)) {
+if (this.isBound (this.clickAction, 0)) {
 bs = this.viewer.getAtomBitSet ("connected(atomIndex=" + atomIndex + ") and !within(SMARTS,'[r50,R]')");
 var nb = bs.cardinality ();
 switch (nb) {
@@ -47454,7 +47810,7 @@ this.viewer.invertSelected (null, null, atomIndex, bs);
 this.viewer.setStatusAtomPicked (atomIndex, "inverted: " + J.util.Escape.eBS (bs));
 }return;
 case 7:
-if (this.isBound (action, 4)) {
+if (this.isBound (this.clickAction, 4)) {
 bs = J.util.BSUtil.newAndSetBit (atomIndex);
 this.viewer.deleteAtoms (bs, false);
 this.viewer.setStatusAtomPicked (atomIndex, "deleted: " + J.util.Escape.eBS (bs));
@@ -47465,39 +47821,80 @@ switch (this.atomPickingMode) {
 default:
 return;
 case 9:
-this.applySelectStyle (spec, action);
+this.selectAtoms (spec);
 break;
 case 10:
-this.applySelectStyle ("within(group, " + spec + ")", action);
+this.selectAtoms ("within(group, " + spec + ")");
 break;
 case 11:
-this.applySelectStyle ("within(chain, " + spec + ")", action);
+this.selectAtoms ("within(chain, " + spec + ")");
 break;
 case 13:
-this.applySelectStyle ("within(polymer, " + spec + ")", action);
+this.selectAtoms ("within(polymer, " + spec + ")");
 break;
 case 14:
-this.applySelectStyle ("within(structure, " + spec + ")", action);
+this.selectAtoms ("within(structure, " + spec + ")");
 break;
 case 12:
-this.applySelectStyle ("within(molecule, " + spec + ")", action);
+this.selectAtoms ("within(molecule, " + spec + ")");
 break;
 case 16:
-this.applySelectStyle ("within(model, " + spec + ")", action);
+this.selectAtoms ("within(model, " + spec + ")");
 break;
 case 17:
-this.applySelectStyle ("visible and within(element, " + spec + ")", action);
+this.selectAtoms ("visible and within(element, " + spec + ")");
 break;
 case 15:
-this.applySelectStyle ("visible and within(site, " + spec + ")", action);
+this.selectAtoms ("visible and within(site, " + spec + ")");
 break;
 }
 this.viewer.clearClickCount ();
 this.viewer.setStatusAtomPicked (atomIndex, null);
-}, $fz.isPrivate = true, $fz), "~N,J.util.Point3fi,~N");
+}, $fz.isPrivate = true, $fz), "~N,J.util.Point3fi");
+$_M(c$, "assignNew", 
+($fz = function (x, y) {
+if (this.measurementPending.getCount () == 2) {
+this.viewer.undoMoveActionClear (-1, 4146, true);
+this.runScript ("assign connect " + this.measurementPending.getMeasurementScript (" ", false));
+} else if (this.pickAtomAssignType.equals ("Xx")) {
+this.exitMeasurementMode ();
+this.viewer.refresh (3, "bond dropped");
+} else {
+if (this.pressed.inRange (this.xyRange, this.dragged.x, this.dragged.y)) {
+var s = "assign atom ({" + this.dragAtomIndex + "}) \"" + this.pickAtomAssignType + "\"";
+if (this.isPickAtomAssignCharge) {
+s += ";{atomindex=" + this.dragAtomIndex + "}.label='%C'; ";
+this.viewer.undoMoveActionClear (this.dragAtomIndex, 4, true);
+} else {
+this.viewer.undoMoveActionClear (-1, 4146, true);
+}this.runScript (s);
+} else if (!this.isPickAtomAssignCharge) {
+this.viewer.undoMoveActionClear (-1, 4146, true);
+var a = this.viewer.getModelSet ().atoms[this.dragAtomIndex];
+if (a.getElementNumber () == 1) {
+this.runScript ("assign atom ({" + this.dragAtomIndex + "}) \"X\"");
+} else {
+var ptNew = J.util.P3.new3 (x, y, a.screenZ);
+this.viewer.unTransformPoint (ptNew, ptNew);
+this.runScript ("assign atom ({" + this.dragAtomIndex + "}) \"" + this.pickAtomAssignType + "\" " + J.util.Escape.eP (ptNew));
+}}}this.exitMeasurementMode ();
+}, $fz.isPrivate = true, $fz), "~N,~N");
+$_M(c$, "bondPicked", 
+($fz = function (index) {
+if (this.bondPickingMode == 33) this.viewer.undoMoveActionClear (-1, 4146, true);
+switch (this.bondPickingMode) {
+case 33:
+this.runScript ("assign bond [{" + index + "}] \"" + this.pickBondAssignType + "\"");
+break;
+case 34:
+this.viewer.setRotateBondIndex (index);
+break;
+case 8:
+this.viewer.deleteBonds (J.util.BSUtil.newAndSetBit (index));
+}
+}, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "checkTwoAtomAction", 
-($fz = function (action, ptClicked, atomIndex) {
-if (!this.isBound (action, 17)) return;
+($fz = function (ptClicked, atomIndex) {
 var isSpin = (this.atomPickingMode == 5);
 if (this.viewer.getSpinOn () || this.viewer.getNavOn () || this.viewer.getPendingMeasurement () != null) {
 this.resetMeasurement ();
@@ -47516,22 +47913,54 @@ if (isSpin) this.viewer.scriptStatus (queuedAtomCount == 1 ? J.i18n.GT._ ("pick 
  else this.viewer.scriptStatus (queuedAtomCount == 1 ? J.i18n.GT._ ("pick one more atom in order to display the symmetry relationship") : J.i18n.GT._ ("pick two atoms in order to display the symmetry relationship between them"));
 return;
 }var s = this.measurementQueued.getMeasurementScript (" ", false);
-if (isSpin) this.runScript ("spin" + s + " " + this.viewer.getInt (553648158));
+if (isSpin) this.runScript ("spin" + s + " " + this.viewer.getInt (553648157));
  else this.runScript ("draw symop" + s + ";show symop" + s);
-}, $fz.isPrivate = true, $fz), "~N,J.util.Point3fi,~N");
-$_M(c$, "applySelectStyle", 
-($fz = function (item, action) {
+}, $fz.isPrivate = true, $fz), "J.util.Point3fi,~N");
+$_M(c$, "reset", 
+($fz = function () {
+this.runScript ("!reset");
+}, $fz.isPrivate = true, $fz));
+$_M(c$, "selectAtoms", 
+($fz = function (item) {
 if (this.measurementPending != null || this.selectionWorking) return;
 this.selectionWorking = true;
-var s = (this.rubberbandSelectionMode || this.isBound (action, 35) ? "selected and not (" + item + ") or (not selected) and " : this.isBound (action, 32) ? "selected and not " : this.isBound (action, 34) ? "selected or " : action == 0 || this.isBound (action, 36) ? "selected tog " : this.isBound (action, 30) ? "" : null);
+var s = (this.rubberbandSelectionMode || this.isBound (this.clickAction, 35) ? "selected and not (" + item + ") or (not selected) and " : this.isBound (this.clickAction, 32) ? "selected and not " : this.isBound (this.clickAction, 34) ? "selected or " : this.clickAction == 0 || this.isBound (this.clickAction, 36) ? "selected tog " : this.isBound (this.clickAction, 30) ? "" : null);
 if (s != null) {
 s += "(" + item + ")";
-var bs = this.getSelectionSet (s);
-if (bs != null) {
+try {
+var bs = this.viewer.getAtomBitSetEval (null, s);
 this.viewer.select (bs, false, 0, false);
 this.viewer.refresh (3, "selections set");
-}}this.selectionWorking = false;
-}, $fz.isPrivate = true, $fz), "~S,~N");
+} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
+}this.selectionWorking = false;
+}, $fz.isPrivate = true, $fz), "~S");
+$_M(c$, "selectRb", 
+($fz = function (action) {
+var bs = this.viewer.findAtomsInRectangle (this.rectRubber);
+if (bs.length () > 0) {
+var s = J.util.Escape.eBS (bs);
+if (this.isBound (action, 34)) this.runScript ("selectionHalos on;select selected or " + s);
+ else if (this.isBound (action, 32)) this.runScript ("selectionHalos on;select selected and not " + s);
+ else this.runScript ("selectionHalos on;select selected tog " + s);
+}this.viewer.refresh (3, "mouseReleased");
+}, $fz.isPrivate = true, $fz), "~N");
+$_M(c$, "toggleMeasurement", 
+($fz = function () {
+if (this.measurementPending == null) return;
+var measurementCount = this.measurementPending.getCount ();
+if (measurementCount >= 2 && measurementCount <= 4) this.runScript ("!measure " + this.measurementPending.getMeasurementScript (" ", true));
+this.exitMeasurementMode ();
+}, $fz.isPrivate = true, $fz));
+$_M(c$, "zoomTo", 
+($fz = function (atomIndex) {
+this.runScript ("zoomTo (atomindex=" + atomIndex + ")");
+this.viewer.setStatusAtomPicked (atomIndex, null);
+}, $fz.isPrivate = true, $fz), "~N");
 c$.$ActionManager$MotionPoint$ = function () {
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
@@ -47629,13 +48058,13 @@ function () {
 return this.ptNext;
 });
 $_M(c$, "getPointCount2", 
-function (a, b) {
+($fz = function (a, b) {
 if (a > this.nodes.length - b) a = this.nodes.length - b;
 var c = a + 1;
 for (; --c >= 0; ) if (this.getNode (this.ptNext - c - b).index >= 0) break;
 
 return c;
-}, "~N,~N");
+}, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "getNode", 
 function (a) {
 return this.nodes[(a + this.nodes.length + this.nodes.length) % this.nodes.length];
@@ -47794,7 +48223,7 @@ J.viewer.ActionManager.newAction (46, "_wheelZoom", J.i18n.GT._ ("zoom"));
 "PICKINGSTYLE_MEASURE_OFF", 5,
 "pickingStyleNames", ["toggle", "selectOrToggle", "extendedSelect", "drag", "measure", "measureoff"],
 "MAX_DOUBLE_CLICK_MILLIS", 700,
-"MININUM_GESTURE_DELAY_MILLISECONDS", 5,
+"MININUM_GESTURE_DELAY_MILLISECONDS", 10,
 "SLIDE_ZOOM_X_PERCENT", 98,
 "DEFAULT_MOUSE_DRAG_FACTOR", 1,
 "DEFAULT_MOUSE_WHEEL_FACTOR", 1.15,
@@ -47921,8 +48350,7 @@ return null;
 $_M(c$, "listSavedStates", 
 function () {
 var names = "";
-var e = this.saved.keySet ().iterator ();
-while (e.hasNext ()) names += "\n" + e.next ();
+for (var name, $name = this.saved.keySet ().iterator (); $name.hasNext () && ((name = $name.next ()) || true);) names += "\n" + name;
 
 return names;
 });
@@ -48289,6 +48717,7 @@ this.inlineNewlineChar = '|';
 this.loadFormat = null;
 this.loadLigandFormat = null;
 this.nmrUrlFormat = null;
+this.nmrPredictFormat = null;
 this.smilesUrlFormat = null;
 this.nihResolverFormat = null;
 this.pubChemFormat = null;
@@ -48335,6 +48764,7 @@ this.greyscaleRendering = false;
 this.isosurfaceKey = false;
 this.isosurfacePropertySmoothing = true;
 this.isosurfacePropertySmoothingPower = 7;
+this.platformSpeed = 10;
 this.repaintWaitMs = 1000;
 this.showHiddenSelectionHalos = false;
 this.showKeyStrokes = true;
@@ -48394,6 +48824,7 @@ this.defaultLabelPDB = "%m%r";
 this.defaultTranslucent = 0.5;
 this.delayMaximumMs = 0;
 this.dipoleScale = 1;
+this.drawFontSize = 14;
 this.disablePopupMenu = false;
 this.dragSelected = false;
 this.drawHover = false;
@@ -48521,10 +48952,12 @@ this.allowMultiTouch = a.allowMultiTouch;
 this.allowKeyStrokes = a.allowKeyStrokes;
 this.legacyAutoBonding = a.legacyAutoBonding;
 this.legacyHAddition = a.legacyHAddition;
+this.platformSpeed = a.platformSpeed;
 this.useScriptQueue = a.useScriptQueue;
 this.useArcBall = a.useArcBall;
 this.databases = a.databases;
 this.showTiming = a.showTiming;
+this.wireframeRotation = a.wireframeRotation;
 }if (this.databases == null) {
 this.databases =  new java.util.Hashtable ();
 this.getDataBaseList (J.viewer.JC.databases);
@@ -48532,6 +48965,7 @@ this.getDataBaseList (this.userDatabases);
 }this.loadFormat = this.databases.get ("pdb");
 this.loadLigandFormat = this.databases.get ("ligand");
 this.nmrUrlFormat = this.databases.get ("nmr");
+this.nmrPredictFormat = this.databases.get ("nmrdb");
 this.smilesUrlFormat = this.databases.get ("nci") + "/file?format=sdf&get3d=True";
 this.nihResolverFormat = this.databases.get ("nci");
 this.pubChemFormat = this.databases.get ("pubchem");
@@ -48543,7 +48977,7 @@ this.setF ("gestureSwipeFactor", 1.0);
 this.setB ("hideNotSelected", false);
 this.setS ("hoverLabel", "");
 this.setB ("isKiosk", this.b$["J.viewer.StateManager"].viewer.isKiosk ());
-this.setS ("logFile", this.b$["J.viewer.StateManager"].viewer.getLogFile ());
+this.setS ("logFile", this.b$["J.viewer.StateManager"].viewer.getLogFileName ());
 this.setI ("logLevel", J.util.Logger.getLogLevel ());
 this.setF ("mouseWheelFactor", 1.15);
 this.setF ("mouseDragFactor", 1.0);
@@ -48660,6 +49094,7 @@ this.setB ("dotsSelectedOnly", this.dotsSelectedOnly);
 this.setB ("dotSurface", this.dotSurface);
 this.setB ("dragSelected", this.dragSelected);
 this.setB ("drawHover", this.drawHover);
+this.setF ("drawFontSize", this.drawFontSize);
 this.setB ("drawPicking", this.drawPicking);
 this.setB ("dsspCalculateHydrogenAlways", this.dsspCalcHydrogen);
 this.setB ("dynamicMeasurements", this.dynamicMeasurements);
@@ -48724,6 +49159,7 @@ this.setB ("multiProcessor", this.multiProcessor && (J.viewer.Viewer.nProcessors
 this.setB ("navigationMode", this.navigationMode);
 this.setB ("navigationPeriodic", this.navigationPeriodic);
 this.setF ("navigationSpeed", this.navigationSpeed);
+this.setS ("nmrPredictFormat", this.nmrPredictFormat);
 this.setS ("nmrUrlFormat", this.nmrUrlFormat);
 this.setB ("partialDots", this.partialDots);
 this.setB ("pdbAddHydrogens", this.pdbAddHydrogens);
@@ -48734,6 +49170,7 @@ this.setI ("percentVdwAtom", this.percentVdwAtom);
 this.setI ("phongExponent", this.phongExponent);
 this.setI ("pickingSpinRate", this.pickingSpinRate);
 this.setS ("pickLabel", this.pickLabel);
+this.setI ("platformSpeed", this.platformSpeed);
 this.setF ("pointGroupLinearTolerance", this.pointGroupLinearTolerance);
 this.setF ("pointGroupDistanceTolerance", this.pointGroupDistanceTolerance);
 this.setB ("preserveState", this.preserveState);
@@ -49008,7 +49445,7 @@ Clazz.defineStatics (c$,
 "OBJ_FRANK", 6,
 "OBJ_MAX", 8,
 "objectNameList", "background axis1      axis2      axis3      boundbox   unitcell   frank      ");
-c$.unreportedProperties = c$.prototype.unreportedProperties = (";ambientpercent;animationfps;antialiasdisplay;antialiasimages;antialiastranslucent;appendnew;axescolor;axesposition;axesmolecular;axesorientationrasmol;axesunitcell;axeswindow;axis1color;axis2color;axis3color;backgroundcolor;backgroundmodel;bondsymmetryatoms;boundboxcolor;cameradepth;debug;debugscript;defaultlatttice;defaults;defaultdropscript;diffusepercent;;exportdrivers;exportscale;_filecaching;_filecache;fontcaching;fontscaling;forcefield;language;legacyautobonding;legacyhaddition;loglevel;logfile;loggestures;logcommands;measurestylechime;loadformat;loadligandformat;smilesurlformat;pubchemformat;nihresolverformat;edsurlformat;edsurlcutoff;multiprocessor;navigationmode;;pathforallfiles;perspectivedepth;phongexponent;perspectivemodel;preservestate;refreshing;repaintwaitms;rotationradius;showaxes;showaxis1;showaxis2;showaxis3;showboundbox;showfrank;showtiming;showunitcell;slabenabled;slab;slabrange;depth;zshade;zshadepower;specular;specularexponent;specularpercent;celshading;specularpower;stateversion;statusreporting;stereo;stereostate;vibrationperiod;unitcellcolor;visualrange;windowcentered;zerobasedxyzrasmol;zoomenabled;mousedragfactor;mousewheelfactor;scriptqueue;scriptreportinglevel;syncscript;syncmouse;syncstereo;;defaultdirectory;currentlocalpath;defaultdirectorylocal;ambient;bonds;colorrasmol;diffuse;frank;hetero;hidenotselected;hoverlabel;hydrogen;languagetranslation;measurementunits;navigationdepth;navigationslab;picking;pickingstyle;propertycolorschemeoverload;radius;rgbblue;rgbgreen;rgbred;scaleangstromsperinch;selectionhalos;showscript;showselections;solvent;strandcount;spinx;spiny;spinz;spinfps;navx;navy;navz;navfps;" + J.constant.EnumCallback.getNameList () + ";undo;bondpicking;modelkitmode;allowgestures;allowkeystrokes;allowmultitouch;allowmodelkit" + ";").toLowerCase ();
+c$.unreportedProperties = c$.prototype.unreportedProperties = (";ambientpercent;animationfps;antialiasdisplay;antialiasimages;antialiastranslucent;appendnew;axescolor;axesposition;axesmolecular;axesorientationrasmol;axesunitcell;axeswindow;axis1color;axis2color;axis3color;backgroundcolor;backgroundmodel;bondsymmetryatoms;boundboxcolor;cameradepth;debug;debugscript;defaultlatttice;defaults;defaultdropscript;diffusepercent;;exportdrivers;exportscale;_filecaching;_filecache;fontcaching;fontscaling;forcefield;language;legacyautobonding;legacyhaddition;loglevel;logfile;loggestures;logcommands;measurestylechime;loadformat;loadligandformat;smilesurlformat;pubchemformat;nihresolverformat;edsurlformat;edsurlcutoff;multiprocessor;navigationmode;;pathforallfiles;perspectivedepth;phongexponent;perspectivemodel;platformspeed;preservestate;refreshing;repaintwaitms;rotationradius;showaxes;showaxis1;showaxis2;showaxis3;showboundbox;showfrank;showtiming;showunitcell;slabenabled;slab;slabrange;depth;zshade;zshadepower;specular;specularexponent;specularpercent;celshading;specularpower;stateversion;statusreporting;stereo;stereostate;vibrationperiod;unitcellcolor;visualrange;windowcentered;zerobasedxyzrasmol;zoomenabled;mousedragfactor;mousewheelfactor;scriptqueue;scriptreportinglevel;syncscript;syncmouse;syncstereo;;defaultdirectory;currentlocalpath;defaultdirectorylocal;ambient;bonds;colorrasmol;diffuse;frank;hetero;hidenotselected;hoverlabel;hydrogen;languagetranslation;measurementunits;navigationdepth;navigationslab;picking;pickingstyle;propertycolorschemeoverload;radius;rgbblue;rgbgreen;rgbred;scaleangstromsperinch;selectionhalos;showscript;showselections;solvent;strandcount;spinx;spiny;spinz;spinfps;navx;navy;navz;navfps;" + J.constant.EnumCallback.getNameList () + ";undo;bondpicking;modelkitmode;allowgestures;allowkeystrokes;allowmultitouch;allowmodelkit" + ";").toLowerCase ();
 });
 Clazz.declarePackage ("J.modelset");
 Clazz.load (["J.modelset.Measurement"], "J.modelset.MeasurementPending", null, function () {
@@ -49076,6 +49513,7 @@ this.countPlusIndices[this.count] = -2 - pt;
 }this.countPlusIndices[0] = this.count;
 if (doSet) this.numSet = this.count;
 this.value = this.getMeasurement ();
+this.strFormat = null;
 this.formatMeasurement (null);
 return this.count;
 }, "~N,J.util.Point3fi,~B");
@@ -49123,7 +49561,7 @@ break;
 }, "~N");
 });
 Clazz.declarePackage ("J.viewer.binding");
-Clazz.load (["java.util.Hashtable"], "J.viewer.binding.Binding", ["java.lang.Boolean", "java.util.Arrays", "J.api.Interface", "J.util.Escape", "$.JmolList", "$.Logger", "$.SB"], function () {
+Clazz.load (["java.util.Hashtable"], "J.viewer.binding.Binding", ["java.lang.Boolean", "java.util.Arrays", "J.api.Interface", "J.util.Escape", "$.JmolList", "$.Logger", "$.SB", "$.TextFormat"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.name = null;
 this.bindings = null;
@@ -49132,6 +49570,109 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.bindings =  new java.util.Hashtable ();
 });
+c$.getMouseAction = $_M(c$, "getMouseAction", 
+function (clickCount, modifiers, mode) {
+if (clickCount > 2) clickCount = 2;
+switch (clickCount) {
+case 0:
+break;
+case 1:
+clickCount = 256;
+break;
+default:
+clickCount = 512;
+}
+switch (mode) {
+case 4:
+mode = 4096;
+break;
+case 1:
+mode = 8192;
+break;
+case 5:
+mode = 16384;
+break;
+case 2:
+mode = 32768;
+break;
+case 3:
+mode = 32;
+}
+return (modifiers & 63) | clickCount | mode;
+}, "~N,~N,~N");
+c$.getMouseActionStr = $_M(c$, "getMouseActionStr", 
+function (desc) {
+if (desc == null) return 0;
+var mouseAction = 0;
+desc = desc.toUpperCase ();
+if (desc.indexOf ("MIDDLE") >= 0) mouseAction = 8;
+ else if (desc.indexOf ("RIGHT") >= 0) mouseAction = 4;
+ else if (desc.indexOf ("WHEEL") >= 0) mouseAction = 32;
+ else mouseAction = 16;
+if (desc.indexOf ("DOWN") >= 0) mouseAction |= 4096;
+ else if (desc.indexOf ("DRAG") >= 0) mouseAction |= 8192;
+ else if (desc.indexOf ("UP") >= 0) mouseAction |= 16384;
+ else mouseAction |= 32768;
+if (mouseAction != 32) {
+if (desc.indexOf ("DOUBLE") >= 0) mouseAction |= 512;
+ else if (mouseAction > 0) mouseAction |= 256;
+if (desc.indexOf ("ALT") >= 0) mouseAction |= 8;
+}if (desc.indexOf ("CTRL") >= 0) mouseAction |= 2;
+if (desc.indexOf ("SHIFT") >= 0) mouseAction |= 1;
+return mouseAction;
+}, "~S");
+c$.getButtonMods = $_M(c$, "getButtonMods", 
+function (mouseAction) {
+return mouseAction & 63;
+}, "~N");
+c$.getClickCount = $_M(c$, "getClickCount", 
+function (mouseAction) {
+return (mouseAction & 768) >> 8;
+}, "~N");
+c$.getMouseActionName = $_M(c$, "getMouseActionName", 
+function (mouseAction, addSortCode) {
+var sb =  new J.util.SB ();
+if (mouseAction == 0) return "";
+var isMiddle = (J.viewer.binding.Binding.includes (mouseAction, 8) && !J.viewer.binding.Binding.includes (mouseAction, 16) && !J.viewer.binding.Binding.includes (mouseAction, 4));
+var code = "      ".toCharArray ();
+if (J.viewer.binding.Binding.includes (mouseAction, 2)) {
+sb.append ("CTRL+");
+code[5] = 'C';
+}if (!isMiddle && J.viewer.binding.Binding.includes (mouseAction, 8)) {
+sb.append ("ALT+");
+code[4] = 'A';
+}if (J.viewer.binding.Binding.includes (mouseAction, 1)) {
+sb.append ("SHIFT+");
+code[3] = 'S';
+}if (J.viewer.binding.Binding.includes (mouseAction, 16)) {
+code[2] = 'L';
+sb.append ("LEFT");
+} else if (J.viewer.binding.Binding.includes (mouseAction, 4)) {
+code[2] = 'R';
+sb.append ("RIGHT");
+} else if (isMiddle) {
+code[2] = 'M';
+sb.append ("MIDDLE");
+} else if (J.viewer.binding.Binding.includes (mouseAction, 32)) {
+code[2] = 'W';
+sb.append ("WHEEL");
+}if (J.viewer.binding.Binding.includes (mouseAction, 512)) {
+sb.append ("+double");
+code[1] = '2';
+}if (J.viewer.binding.Binding.includes (mouseAction, 4096)) {
+sb.append ("+down");
+code[0] = '1';
+} else if (J.viewer.binding.Binding.includes (mouseAction, 8192)) {
+sb.append ("+drag");
+code[0] = '2';
+} else if (J.viewer.binding.Binding.includes (mouseAction, 16384)) {
+sb.append ("+up");
+code[0] = '3';
+} else if (J.viewer.binding.Binding.includes (mouseAction, 32768)) {
+sb.append ("+click");
+code[0] = '4';
+}return (addSortCode ?  String.instantialize (code) + ":" + sb.toString () : sb.toString ());
+}, "~N,~B");
 $_M(c$, "getBindings", 
 function () {
 return this.bindings;
@@ -49202,146 +49743,92 @@ if (key.startsWith (skey)) this.removeBinding (e, key);
 }
 }, "~N");
 $_M(c$, "isBound", 
-function (mouseAction, action) {
-if (mouseAction == 1040 && action == 2) System.out.println ("left-down-2" + this.bindings.containsKey (mouseAction + "\t" + action));
-return this.bindings.containsKey (mouseAction + "\t" + action);
+function (mouseAction, jmolAction) {
+return this.bindings.containsKey (mouseAction + "\t" + jmolAction);
 }, "~N,~N");
 $_M(c$, "isUserAction", 
 function (mouseAction) {
 return this.bindings.containsKey (mouseAction + "\t");
-}, "~N");
-c$.getMouseAction = $_M(c$, "getMouseAction", 
-function (clickCount, modifiers) {
-if (clickCount > 2) clickCount = 2;
-return (modifiers & 63) | (clickCount == -2147483648 ? 1024 : (clickCount << 8));
-}, "~N,~N");
-c$.getMouseActionStr = $_M(c$, "getMouseActionStr", 
-function (desc) {
-if (desc == null) return 0;
-var action = 0;
-desc = desc.toUpperCase ();
-if (desc.indexOf ("MIDDLE") >= 0) action |= 8;
- else if (desc.indexOf ("RIGHT") >= 0) action |= 4;
- else if (desc.indexOf ("WHEEL") >= 0) action |= 32;
- else if (desc.indexOf ("LEFT") >= 0) action |= 16;
-var isDefaultButton = (action == 0);
-var isDown = (desc.indexOf ("DOWN") >= 0);
-if (desc.indexOf ("DOUBLE") >= 0) action |= 512;
- else if (action > 0 && (action & 32) == 0 && !isDown || desc.indexOf ("SINGLE") >= 0) action |= 256;
- else if (isDown) action |= 1024;
-if (desc.indexOf ("CTRL") >= 0) action |= 2;
-if (desc.indexOf ("ALT") >= 0) action |= 8;
-if (desc.indexOf ("SHIFT") >= 0) action |= 1;
-if (isDefaultButton && action != 0) action |= 16;
-return action;
-}, "~S");
-c$.getModifiers = $_M(c$, "getModifiers", 
-function (mouseAction) {
-return mouseAction & 63;
-}, "~N");
-c$.getClickCount = $_M(c$, "getClickCount", 
-function (mouseAction) {
-return mouseAction >> 8;
 }, "~N");
 $_M(c$, "getBindingInfo", 
 function (actionInfo, actionNames, qualifiers) {
 var sb =  new J.util.SB ();
 var qlow = (qualifiers == null || qualifiers.equalsIgnoreCase ("all") ? null : qualifiers.toLowerCase ());
 var names =  new Array (actionInfo.length);
-for (var i = 0; i < actionInfo.length; i++) names[i] = (qlow == null || actionInfo[i].toLowerCase ().indexOf (qlow) >= 0 ?  new J.util.JmolList () : null);
-
+var user =  new J.util.JmolList ();
 for (var obj, $obj = this.bindings.values ().iterator (); $obj.hasNext () && ((obj = $obj.next ()) || true);) {
-if (!J.util.Escape.isAI (obj)) continue;
+if (J.util.Escape.isAI (obj)) {
 var info = obj;
 var i = info[1];
-if (names[i] == null) continue;
-names[i].addLast (J.viewer.binding.Binding.getMouseActionName (info[0], true));
-}
+if (names[i] == null) names[i] =  new J.util.JmolList ();
+var name = J.viewer.binding.Binding.getMouseActionName (info[0], true);
+if (qlow == null || (actionNames[i] + ";" + actionInfo[i] + ";" + name).toLowerCase ().indexOf (qlow) >= 0) names[i].addLast (name);
+} else if (J.util.Escape.isAS (obj)) {
+var action = (obj)[0];
+var script = (obj)[1];
+if (qlow == null || qlow.indexOf ("user") >= 0 || action.indexOf (qlow) >= 0 || script.indexOf (qlow) >= 0) user.addLast (obj);
+}}
 for (var i = 0; i < actionInfo.length; i++) {
 var n;
 if (names[i] == null || (n = names[i].size ()) == 0) continue;
-var list = names[i].toArray ( new Array (n));
+this.addInfo (sb, names[i].toArray ( new Array (n)), actionNames[i], actionInfo[i]);
+}
+for (var i = 0; i < user.size (); i++) {
+var info = user.get (i);
+this.addInfo (sb, ["USER:::" + info[0]], "user-defined", info[1]);
+}
+return sb.toString ();
+}, "~A,~A,~S");
+$_M(c$, "addInfo", 
+($fz = function (sb, list, name, info) {
 java.util.Arrays.sort (list);
-sb.append ((actionNames[i] + "                  ").substring (0, 22)).append ("\t");
+J.util.TextFormat.lFill (sb, "                      ", name);
+sb.append ("\t");
 var sep = "";
 var len = sb.length ();
-for (var j = 0; j < n; j++) {
+for (var j = 0; j < list.length; j++) {
 sb.append (sep).append (list[j].substring (7));
 sep = ", ";
 }
 len = sb.length () - len;
 if (len < 20) sb.append ("                 ".substring (0, 20 - len));
-sb.append ("\t").append (actionInfo[i]).appendC ('\n');
-}
-return sb.toString ();
-}, "~A,~A,~S");
+sb.append ("\t").append (info).appendC ('\n');
+}, $fz.isPrivate = true, $fz), "J.util.SB,~A,~S,~S");
 c$.includes = $_M(c$, "includes", 
 ($fz = function (mouseAction, mod) {
 return ((mouseAction & mod) == mod);
 }, $fz.isPrivate = true, $fz), "~N,~N");
-c$.getMouseActionName = $_M(c$, "getMouseActionName", 
-function (mouseAction, addSortCode) {
-var sb =  new J.util.SB ();
-if (mouseAction == 0) return "";
-var isMiddle = (J.viewer.binding.Binding.includes (mouseAction, 8) && !J.viewer.binding.Binding.includes (mouseAction, 16) && !J.viewer.binding.Binding.includes (mouseAction, 4));
-var code = "      ".toCharArray ();
-if (J.viewer.binding.Binding.includes (mouseAction, 2)) {
-sb.append ("CTRL+");
-code[4] = 'C';
-}if (!isMiddle && J.viewer.binding.Binding.includes (mouseAction, 8)) {
-sb.append ("ALT+");
-code[3] = 'A';
-}if (J.viewer.binding.Binding.includes (mouseAction, 1)) {
-sb.append ("SHIFT+");
-code[2] = 'S';
-}if (J.viewer.binding.Binding.includes (mouseAction, 16)) {
-code[1] = 'L';
-sb.append ("LEFT");
-} else if (J.viewer.binding.Binding.includes (mouseAction, 4)) {
-code[1] = 'R';
-sb.append ("RIGHT");
-} else if (isMiddle) {
-code[1] = 'W';
-sb.append ("MIDDLE");
-} else if (J.viewer.binding.Binding.includes (mouseAction, 32)) {
-code[1] = 'W';
-sb.append ("WHEEL");
-}if (J.viewer.binding.Binding.includes (mouseAction, 512)) {
-sb.append ("+double-click");
-code[0] = '2';
-} else if (J.viewer.binding.Binding.includes (mouseAction, 1024)) {
-sb.append ("+down");
-code[0] = '4';
-}return (addSortCode ?  String.instantialize (code) + ":" + sb.toString () : sb.toString ());
-}, "~N,~B");
 c$.newBinding = $_M(c$, "newBinding", 
 function (name) {
 return J.api.Interface.getOptionInterface ("viewer.binding." + name + "Binding");
 }, "~S");
 Clazz.defineStatics (c$,
-"WHEEL", 32,
 "LEFT", 16,
 "MIDDLE", 8,
 "RIGHT", 4,
+"WHEEL", 32,
 "ALT", 8,
 "CTRL", 2,
 "SHIFT", 1,
 "CTRL_ALT", 10,
 "CTRL_SHIFT", 3,
-"LEFT_MIDDLE_RIGHT", 28,
 "MAC_COMMAND", 20,
-"DOUBLE_CLICK", 512,
-"SINGLE_CLICK", 256,
-"DOWN", 1024,
-"CLICK_MASK", 1792,
+"BUTTON_MASK", 28,
+"BUTTON_MODIFIER_MASK", 63,
+"SINGLE", 256,
+"DOUBLE", 512,
+"COUNT_MASK", 768,
+"DOWN", 4096,
+"DRAG", 8192,
+"UP", 16384,
+"CLICK", 32768,
+"MODE_MASK", 61440,
 "MOVED", 0,
 "DRAGGED", 1,
 "CLICKED", 2,
 "WHEELED", 3,
 "PRESSED", 4,
-"RELEASED", 5,
-"DRAGGED2", 6,
-"BUTTON_MODIFIER_MASK", 63);
+"RELEASED", 5);
 });
 Clazz.declarePackage ("J.viewer.binding");
 Clazz.load (["J.viewer.binding.JmolBinding"], "J.viewer.binding.DragBinding", null, function () {
@@ -49352,13 +49839,13 @@ Clazz.superConstructor (this, J.viewer.binding.DragBinding, ["drag"]);
 });
 Clazz.overrideMethod (c$, "setSelectBindings", 
 function () {
-this.bindAction (272, 30);
-this.bindAction (273, 35);
-this.bindAction (280, 34);
-this.bindAction (281, 32);
-this.bindAction (1040, 31);
-this.bindAction (272, 13);
-this.bindAction (272, 17);
+this.bindAction (33040, 30);
+this.bindAction (33041, 35);
+this.bindAction (33048, 34);
+this.bindAction (33049, 32);
+this.bindAction (4368, 31);
+this.bindAction (41232, 13);
+this.bindAction (33040, 17);
 });
 });
 Clazz.declarePackage ("J.viewer.binding");
@@ -49372,57 +49859,57 @@ this.setSelectBindings ();
 }, "~S");
 $_M(c$, "setSelectBindings", 
 function () {
-this.bindAction (528, 30);
-this.bindAction (272, 36);
+this.bindAction (33296, 30);
+this.bindAction (33040, 36);
 });
 $_M(c$, "setGeneralBindings", 
 ($fz = function () {
-this.bindAction (528, 1);
-this.bindAction (282, 45);
-this.bindAction (262, 45);
-this.bindAction (529, 45);
-this.bindAction (520, 45);
-this.bindAction (272, 25);
-this.bindAction (280, 28);
-this.bindAction (261, 28);
-this.bindAction (273, 29);
-this.bindAction (264, 29);
-this.bindAction (32, 46);
-this.bindAction (272, 40);
-this.bindAction (272, 16);
-this.bindAction (274, 23);
-this.bindAction (260, 23);
-this.bindAction (272, 2);
-this.bindAction (275, 38);
-this.bindAction (531, 6);
-this.bindAction (283, 39);
-this.bindAction (272, 44);
-this.bindAction (272, 41);
-this.bindAction (273, 42);
-this.bindAction (281, 13);
-this.bindAction (273, 14);
-this.bindAction (280, 27);
-this.bindAction (273, 26);
-this.bindAction (273, 10);
-this.bindAction (280, 9);
-this.bindAction (273, 8);
-this.bindAction (529, 24);
-this.bindAction (520, 24);
-this.bindAction (528, 43);
-this.bindAction (272, 7);
-this.bindAction (272, 11);
-this.bindAction (272, 12);
-this.bindAction (272, 17);
-this.bindAction (272, 22);
-this.bindAction (272, 19);
-this.bindAction (272, 20);
-this.bindAction (528, 37);
-this.bindAction (272, 18);
-this.bindAction (275, 21);
-this.bindAction (272, 4);
-this.bindAction (272, 5);
-this.bindAction (272, 3);
-this.bindAction (272, 0);
+this.bindAction (8474, 45);
+this.bindAction (8454, 45);
+this.bindAction (8721, 45);
+this.bindAction (8712, 45);
+this.bindAction (8464, 25);
+this.bindAction (8472, 28);
+this.bindAction (8453, 28);
+this.bindAction (8465, 29);
+this.bindAction (8456, 29);
+this.bindAction (288, 46);
+this.bindAction (8464, 40);
+this.bindAction (8464, 16);
+this.bindAction (4370, 23);
+this.bindAction (4356, 23);
+this.bindAction (33040, 2);
+this.bindAction (8467, 38);
+this.bindAction (8723, 6);
+this.bindAction (8475, 39);
+this.bindAction (8464, 44);
+this.bindAction (8464, 41);
+this.bindAction (8465, 42);
+this.bindAction (8473, 13);
+this.bindAction (8465, 14);
+this.bindAction (8472, 27);
+this.bindAction (8465, 26);
+this.bindAction (8465, 10);
+this.bindAction (8472, 9);
+this.bindAction (8465, 8);
+this.bindAction (33297, 24);
+this.bindAction (33288, 24);
+this.bindAction (33296, 43);
+this.bindAction (8464, 7);
+this.bindAction (8464, 11);
+this.bindAction (8464, 12);
+this.bindAction (33040, 17);
+this.bindAction (33040, 22);
+this.bindAction (33040, 19);
+this.bindAction (33040, 20);
+this.bindAction (33296, 37);
+this.bindAction (33040, 18);
+this.bindAction (33043, 21);
+this.bindAction (33040, 4);
+this.bindAction (33040, 5);
+this.bindAction (33040, 3);
+this.bindAction (33040, 0);
+this.bindAction (33043, 1);
 }, $fz.isPrivate = true, $fz));
 });
 Clazz.declarePackage ("J.thread");
@@ -49436,7 +49923,7 @@ Clazz.instantialize (this, arguments);
 }, J.thread, "TimeoutThread", J.thread.JmolThread);
 Clazz.makeConstructor (c$, 
 function (viewer, name, ms, script) {
-Clazz.superConstructor (this, J.thread.TimeoutThread);
+Clazz.superConstructor (this, J.thread.TimeoutThread, []);
 this.setViewer (viewer, name);
 this.$name = name;
 this.set (ms, script);
@@ -49666,9 +50153,10 @@ Clazz.defineStatics (c$,
 "freeEnumSize", 2);
 });
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.constant.EnumAnimationMode", "J.util.BS"], "J.viewer.AnimationManager", ["J.thread.AnimationThread", "J.util.BSUtil"], function () {
+Clazz.load (["J.constant.EnumAnimationMode", "J.util.BS"], "J.viewer.AnimationManager", ["J.api.Interface", "J.util.BSUtil"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.animationThread = null;
+this.modulationThread = null;
 this.viewer = null;
 this.animationOn = false;
 this.animationFps = 0;
@@ -49680,7 +50168,6 @@ this.bsDisplay = null;
 this.animationFrames = null;
 this.isMovie = false;
 this.animationPaused = false;
-this.inMotion = false;
 this.currentModelIndex = 0;
 this.currentAnimationFrame = 0;
 this.morphCount = 0;
@@ -49696,6 +50183,9 @@ this.lastFrameDelay = 1;
 this.lastFramePainted = 0;
 this.lastModelPainted = 0;
 this.intAnimThread = 0;
+this.modulationPlay = false;
+this.modulationFps = 1;
+this.bsModulating = null;
 Clazz.instantialize (this, arguments);
 }, J.viewer, "AnimationManager");
 Clazz.prepareFields (c$, function () {
@@ -49708,21 +50198,25 @@ this.viewer = viewer;
 }, "J.viewer.Viewer");
 $_M(c$, "setAnimationOn", 
 function (animationOn) {
+if (animationOn == this.animationOn) return;
 if (!animationOn || !this.viewer.haveModelSet () || this.viewer.isHeadless ()) {
 this.stopThread (false);
 return;
-}if (!this.viewer.getSpinOn ()) this.viewer.refresh (3, "Viewer:setAnimationOn");
+}if (!this.viewer.getSpinOn ()) this.viewer.refresh (3, "Anim:setAnimationOn");
 this.setAnimationRange (-1, -1);
 this.resumeAnimation ();
 }, "~B");
 $_M(c$, "stopThread", 
 function (isPaused) {
+var stopped = false;
 if (this.animationThread != null) {
 this.animationThread.interrupt ();
 this.animationThread = null;
+stopped = true;
 }this.animationPaused = isPaused;
-if (!this.viewer.getSpinOn ()) this.viewer.refresh (3, "Viewer:setAnimationOff");
+if (stopped && !this.viewer.getSpinOn ()) this.viewer.refresh (3, "Viewer:setAnimationOff");
 this.animation (false);
+this.stopModulationThread ();
 this.viewer.setStatusFrameChanged (false);
 }, "~B");
 $_M(c$, "setAnimationNext", 
@@ -49882,6 +50376,17 @@ function () {
 this.lastModelPainted = this.currentModelIndex;
 this.lastFramePainted = this.currentAnimationFrame;
 });
+$_M(c$, "setModulationPlay", 
+function (modT1, modT2) {
+if (modT1 == 2147483647 || !this.viewer.haveModelSet () || this.viewer.isHeadless ()) {
+this.stopThread (false);
+return;
+}if (this.modulationThread == null) {
+this.modulationPlay = true;
+this.modulationThread = J.api.Interface.getOptionInterface ("thread.ModulationThread");
+this.modulationThread.setManager (this, this.viewer, [modT1, modT2]);
+this.modulationThread.start ();
+}}, "~N,~N");
 $_M(c$, "resumeAnimation", 
 function () {
 if (this.currentModelIndex < 0) this.setAnimationRange (this.firstFrameIndex, this.lastFrameIndex);
@@ -49892,7 +50397,8 @@ return;
 this.animationPaused = false;
 if (this.animationThread == null) {
 this.intAnimThread++;
-this.animationThread =  new J.thread.AnimationThread (this, this.viewer, this.firstFrameIndex, this.lastFrameIndex, this.intAnimThread);
+this.animationThread = J.api.Interface.getOptionInterface ("thread.AnimationThread");
+this.animationThread.setManager (this, this.viewer, [this.firstFrameIndex, this.lastFrameIndex, this.intAnimThread]);
 this.animationThread.start ();
 }});
 $_M(c$, "setAnimationLast", 
@@ -49969,6 +50475,11 @@ if (Clazz.exceptionOf (e, Exception)) {
 throw e;
 }
 }
+}, "~N");
+$_M(c$, "setModulationFps", 
+function (fps) {
+if (fps > 0) this.modulationFps = fps;
+ else this.stopModulationThread ();
 }, "~N");
 $_M(c$, "setViewer", 
 ($fz = function (clearBackgroundModel) {
@@ -50051,6 +50562,13 @@ $_M(c$, "getFrameStep",
 ($fz = function (direction) {
 return this.frameStep * direction * this.currentDirection;
 }, $fz.isPrivate = true, $fz), "~N");
+$_M(c$, "stopModulationThread", 
+function () {
+if (this.modulationThread != null) {
+this.modulationThread.interrupt ();
+this.modulationThread = null;
+}this.modulationPlay = false;
+});
 Clazz.defineStatics (c$,
 "FRAME_FIRST", -1,
 "FRAME_LAST", 1,
@@ -51225,7 +51743,7 @@ this.viewer.scriptEditor.notifyScriptTermination ();
 } else if (msWalltime < 0) {
 if (msWalltime == -2) this.viewer.scriptEditor.notifyScriptStart ();
 } else if (this.viewer.scriptEditor.isVisible () && (data[2]).length > 0) {
-this.viewer.scriptEditor.notifyContext (this.viewer.getScriptContext (), data);
+this.viewer.scriptEditor.notifyContext (this.viewer.getScriptContext ("SE notify"), data);
 }}if (this.viewer.appConsole != null) {
 if (msWalltime == 0) {
 var strInfo = (data[1] == null ? null : data[1].toString ());
@@ -51278,6 +51796,10 @@ $_M(c$, "syncSend",
 function (script, appletName, port) {
 if (port != 0 || this.notifyEnabled (J.constant.EnumCallback.SYNC)) this.jmolCallbackListener.notifyCallback (J.constant.EnumCallback.SYNC, [null, script, appletName, Integer.$valueOf (port)]);
 }, "~S,~S,~N");
+$_M(c$, "modifySend", 
+function (atomIndex, modelIndex, mode) {
+if (this.notifyEnabled (J.constant.EnumCallback.STRUCTUREMODIFIED)) this.jmolCallbackListener.notifyCallback (J.constant.EnumCallback.STRUCTUREMODIFIED, [null, Integer.$valueOf (mode), Integer.$valueOf (atomIndex), Integer.$valueOf (modelIndex)]);
+}, "~N,~N,~N");
 $_M(c$, "getSyncMode", 
 function () {
 return (!this.isSynced ? 0 : this.drivingSync ? 1 : 2);
@@ -51314,7 +51836,7 @@ return (this.jmolStatusListener == null ? null : this.jmolStatusListener.getRegi
 });
 $_M(c$, "dialogAsk", 
 function (type, fileName) {
-var isImage = (type.startsWith ("saveImage"));
+var isImage = type.equals ("Save Image");
 var sd = J.api.Interface.getOptionInterface ("export.dialog.Dialog");
 if (sd == null) return null;
 sd.setupUI (false);
@@ -51345,7 +51867,7 @@ Clazz.defineStatics (c$,
 "SYNC_STEREO", 5);
 });
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.constant.EnumStereoMode", "J.util.AxisAngle4f", "$.Matrix3f", "$.Matrix4f", "$.P3", "$.P3i", "$.V3"], "J.viewer.TransformManager", ["java.lang.Float", "java.util.Hashtable", "J.api.Interface", "J.thread.MoveThread", "$.MoveToThread", "$.SpinThread", "$.VibrationThread", "J.util.Escape", "$.Logger", "$.P4", "$.Quaternion", "$.SB"], function () {
+Clazz.load (["J.constant.EnumStereoMode", "J.util.AxisAngle4f", "$.Matrix3f", "$.Matrix4f", "$.P3", "$.P3i", "$.V3"], "J.viewer.TransformManager", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "J.api.Interface", "J.util.Escape", "$.Logger", "$.P4", "$.Quaternion", "$.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.perspectiveModel = 11;
@@ -51461,6 +51983,7 @@ this.motion = null;
 this.spinOn = false;
 this.navOn = false;
 this.spinThread = null;
+this.spinIsGesture = false;
 this.vibrationOn = false;
 this.vibrationPeriod = 0;
 this.vibrationPeriodMs = 0;
@@ -51590,7 +52113,7 @@ this.fixedTranslation.set (newCenterScreen.x, newCenterScreen.y, 0);
 $_M(c$, "spinXYBy", 
 function (xDelta, yDelta, speed) {
 if (xDelta == 0 && yDelta == 0) {
-if (this.spinThread != null && this.spinThread.isGesture ()) this.clearSpin ();
+if (this.spinThread != null && this.spinIsGesture) this.clearSpin ();
 return;
 }this.clearSpin ();
 var pt1 = J.util.P3.newP (this.fixedRotationCenter);
@@ -51722,8 +52245,7 @@ if (this.viewer.isHeadless ()) {
 if (isSpin && endDegrees == 3.4028235E38) return false;
 isSpin = false;
 }if (dihedralList == null && (translation == null || translation.length () < 0.001) && (!isSpin || endDegrees == 0 || Float.isNaN (degreesPerSecond) || degreesPerSecond == 0) && (isSpin || endDegrees == 0)) return false;
-var axis = J.util.V3.newV (point2);
-axis.sub (point1);
+var axis = J.util.V3.newVsub (point2, point1);
 if (isClockwise) axis.scale (-1.0);
 this.internalRotationCenter.setT (point1);
 this.rotationAxis.setT (axis);
@@ -52357,8 +52879,8 @@ this.matrixTransform.transformV2 (vectorAngstroms, vectorTransformed);
 }, "J.util.V3,J.util.V3");
 $_M(c$, "move", 
 function (eval, dRot, dZoom, dTrans, dSlab, floatSecondsTotal, fps) {
-var motion =  new J.thread.MoveThread (this, this.viewer);
-motion.set (dRot, dZoom, dTrans, dSlab, floatSecondsTotal, fps);
+var motion = J.api.Interface.getOptionInterface ("thread.MoveThread");
+motion.setManager (this, this.viewer, [dRot, dTrans, [dZoom, dSlab, floatSecondsTotal, fps]]);
 if (floatSecondsTotal > 0) motion.setEval (eval);
 motion.run ();
 }, "J.api.JmolScriptEvaluator,J.util.V3,~N,J.util.V3,~N,~N,~N");
@@ -52431,9 +52953,15 @@ if (cameraY == this.cameraSetting.y) cameraY = NaN;
 if (cameraDepth == this.cameraDepth) cameraDepth = NaN;
 if (!Float.isNaN (cameraX)) xTrans = cameraX * 50 / newRotationRadius / this.width * this.screenPixelCount;
 if (!Float.isNaN (cameraY)) yTrans = cameraY * 50 / newRotationRadius / this.height * this.screenPixelCount;
-try {
-if (this.motion == null) this.motion =  new J.thread.MoveToThread (this, this.viewer);
-var nSteps = this.motion.set (floatSecondsTotal, center, matrixEnd, zoom, xTrans, yTrans, newRotationRadius, navCenter, xNav, yNav, navDepth, cameraDepth, cameraX, cameraY);
+var pixelScale = (center == null ? this.scaleDefaultPixelsPerAngstrom : this.defaultScaleToScreen (newRotationRadius));
+if (floatSecondsTotal <= 0) {
+this.setAll (center, matrixEnd, navCenter, zoom, xTrans, yTrans, newRotationRadius, pixelScale, navDepth, xNav, yNav, cameraDepth, cameraX, cameraY);
+this.viewer.moveUpdate (floatSecondsTotal);
+this.viewer.finalizeTransformParameters ();
+return;
+}try {
+if (this.motion == null) this.motion = J.api.Interface.getOptionInterface ("thread.MoveToThread");
+var nSteps = this.motion.setManager (this, this.viewer, [center, matrixEnd, navCenter, [floatSecondsTotal, zoom, xTrans, yTrans, newRotationRadius, pixelScale, navDepth, xNav, yNav, cameraDepth, cameraX, cameraY]]);
 if (nSteps <= 0 || this.viewer.global.waitForMoveTo) {
 if (nSteps > 0) this.motion.setEval (eval);
 this.motion.run ();
@@ -52653,7 +53181,9 @@ this.spinOn = spinOn;
 this.viewer.getGlobalSettings ().setB ("_spinning", spinOn);
 if (spinOn) {
 if (this.spinThread == null) {
-this.spinThread =  new J.thread.SpinThread (this, this.viewer, endDegrees, endPositions, dihedralList, bsAtoms, false, isGesture);
+this.spinThread = J.api.Interface.getOptionInterface ("thread.SpinThread");
+this.spinThread.setManager (this, this.viewer, [Float.$valueOf (endDegrees), endPositions, dihedralList, bsAtoms, isGesture ? Boolean.TRUE : null]);
+this.spinIsGesture = isGesture;
 if (bsAtoms == null && dihedralList == null) {
 this.spinThread.start ();
 } else {
@@ -52675,7 +53205,8 @@ if (navOn) {
 if (this.navX == 0 && this.navY == 0 && this.navZ == 0) this.navZ = 1;
 if (this.navFps == 0) this.navFps = 10;
 if (this.spinThread == null) {
-this.spinThread =  new J.thread.SpinThread (this, this.viewer, 0, null, null, null, true, false);
+this.spinThread = J.api.Interface.getOptionInterface ("thread.SpinThread");
+this.spinThread.setManager (this, this.viewer, null);
 this.spinThread.start ();
 }} else if (wasOn) {
 if (this.spinThread != null) {
@@ -52698,7 +53229,7 @@ this.vibrationPeriod = Math.abs (period);
 this.vibrationPeriodMs = Clazz.floatToInt (this.vibrationPeriod * 1000);
 if (period > 0) return;
 period = -period;
-}this.setVibrationOn (period > 0 && this.viewer.modelHasVibrationVectors (this.viewer.getCurrentModelIndex ()));
+}this.setVibrationOn (period > 0 && this.viewer.modelGetLastVibrationIndex (this.viewer.getCurrentModelIndex (), 0) >= 0);
 }, "~N");
 $_M(c$, "setVibrationT", 
 function (t) {
@@ -52721,7 +53252,8 @@ return;
 this.vibrationOn = false;
 return;
 }if (this.vibrationThread == null) {
-this.vibrationThread =  new J.thread.VibrationThread (this, this.viewer);
+this.vibrationThread = J.api.Interface.getOptionInterface ("thread.VibrationThread");
+this.vibrationThread.setManager (this, this.viewer, null);
 this.vibrationThread.start ();
 }this.vibrationOn = true;
 }, $fz.isPrivate = true, $fz), "~B");
@@ -53093,6 +53625,22 @@ function (zoomHeight, zoomLarge) {
 this.zoomHeight = zoomHeight;
 this.scaleFitToScreen (false, zoomLarge, false, true);
 }, "~B,~B");
+$_M(c$, "setAll", 
+function (center, m, navCenter, zoom, xTrans, yTrans, rotationRadius, pixelScale, navDepth, xNav, yNav, cameraDepth, cameraX, cameraY) {
+this.setRotation (m);
+if (center != null) this.moveRotationCenter (center, !this.windowCentered);
+if (navCenter != null && this.mode == 1) this.navigationCenter.setT (navCenter);
+if (!Float.isNaN (cameraDepth)) this.setCameraDepthPercent (cameraDepth, false);
+if (!Float.isNaN (cameraX) && !Float.isNaN (cameraY)) this.setCamera (cameraX, cameraY);
+if (!Float.isNaN (zoom)) this.zoomToPercent (zoom);
+if (!Float.isNaN (rotationRadius)) this.modelRadius = rotationRadius;
+if (!Float.isNaN (pixelScale)) this.scaleDefaultPixelsPerAngstrom = pixelScale;
+if (!Float.isNaN (xTrans) && !Float.isNaN (yTrans)) {
+this.translateToPercent ('x', xTrans);
+this.translateToPercent ('y', yTrans);
+}if (!Float.isNaN (xNav) && !Float.isNaN (yNav)) this.navTranslatePercentOrTo (0, xNav, yNav);
+if (!Float.isNaN (navDepth)) this.setNavigationDepthPercent (navDepth);
+}, "J.util.P3,J.util.Matrix3f,J.util.P3,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N");
 Clazz.defineStatics (c$,
 "degreesPerRadian", 57.29577951308232,
 "DEFAULT_NAV_FPS", 10,
@@ -53322,10 +53870,10 @@ for (var i = this.baseAtomIndex; i < atomCount; i++) atoms[i].setMadAtom (this.v
 var models = this.modelSet.models;
 for (var i = models[this.baseModelIndex].firstAtomIndex; i < atomCount; i++) models[atoms[i].modelIndex].bsAtoms.set (i);
 
-this.setAtomProperties ();
 this.freeze ();
 this.finalizeShapes ();
 this.viewer.setModelSet (this.modelSet);
+this.setAtomProperties ();
 if (adapter != null) adapter.finish (atomSetCollection);
 if (this.mergeModelSet != null) {
 this.mergeModelSet.releaseModelSet ();
@@ -53363,7 +53911,7 @@ var bs = this.modelSet.getModelAtomBitSetIncludingDeleted (i, true);
 if (this.doAddHydrogens) value = this.jbr.fixPropertyValue (bs, value);
 key = "property_" + key.toLowerCase ();
 J.util.Logger.info ("creating " + key + " for model " + this.modelSet.getModelName (i));
-this.viewer.setData (key, [key, value, bs, Integer.$valueOf (0)], this.modelSet.atomCount, 0, 0, 2147483647, 0);
+this.viewer.setData (key, [key, value, bs, Integer.$valueOf (0), Boolean.FALSE], this.modelSet.atomCount, 0, 0, 2147483647, 0);
 }
 }
 }, $fz.isPrivate = true, $fz));
@@ -53519,6 +54067,7 @@ for (var i = baseModelCount; i < modelCount; i++) modelNumbers[i] += filenumber;
 
 }var models = this.modelSet.models;
 for (var i = baseModelCount; i < modelCount; ++i) {
+this.modelSet.setModelAuxiliaryInfo (i, "fileType", this.modelSet.modelSetTypeName);
 if (this.fileHeader != null) this.modelSet.setModelAuxiliaryInfo (i, "fileHeader", this.fileHeader);
 var filenumber = Clazz.doubleToInt (modelNumbers[i] / 1000000);
 if (filenumber != lastfilenumber) {
@@ -53577,7 +54126,7 @@ var isotope = iterAtom.getElementNumber ();
 if (addH && J.util.Elements.getElementNumber (isotope) == 1) this.jbr.setHaveHsAlready (true);
 var name = iterAtom.getAtomName ();
 var charge = (addH ? this.getPdbCharge (group3, name) : iterAtom.getFormalCharge ());
-this.addAtom (isPdbThisModel, iterAtom.getAtomSymmetry (), iterAtom.getAtomSite (), iterAtom.getUniqueID (), isotope, name, charge, iterAtom.getPartialCharge (), iterAtom.getTensors (), iterAtom.getOccupancy (), iterAtom.getBfactor (), iterAtom.getX (), iterAtom.getY (), iterAtom.getZ (), iterAtom.getIsHetero (), iterAtom.getAtomSerial (), group3, iterAtom.getVectorX (), iterAtom.getVectorY (), iterAtom.getVectorZ (), iterAtom.getAlternateLocationID (), iterAtom.getRadius ());
+this.addAtom (isPdbThisModel, iterAtom.getAtomSymmetry (), iterAtom.getAtomSite (), iterAtom.getUniqueID (), isotope, name, charge, iterAtom.getPartialCharge (), iterAtom.getTensors (), iterAtom.getOccupancy (), iterAtom.getBfactor (), iterAtom.getXYZ (), iterAtom.getIsHetero (), iterAtom.getAtomSerial (), group3, iterAtom.getVib (), iterAtom.getAlternateLocationID (), iterAtom.getRadius ());
 }
 if (this.groupCount > 0 && addH) {
 this.jbr.addImplicitHydrogenAtoms (adapter, this.groupCount - 1, this.isNewChain && !isLegacyHAddition ? 1 : 0);
@@ -53600,16 +54149,16 @@ $_M(c$, "getPdbCharge",
 return (group3.equals ("ARG") && name.equals ("NH1") || group3.equals ("LYS") && name.equals ("NZ") || group3.equals ("HIS") && name.equals ("ND1") ? 1 : 0);
 }, $fz.isPrivate = true, $fz), "~S,~S");
 $_M(c$, "addAtom", 
-($fz = function (isPDB, atomSymmetry, atomSite, atomUid, atomicAndIsotopeNumber, atomName, formalCharge, partialCharge, tensors, occupancy, bfactor, x, y, z, isHetero, atomSerial, group3, vectorX, vectorY, vectorZ, alternateLocationID, radius) {
+($fz = function (isPDB, atomSymmetry, atomSite, atomUid, atomicAndIsotopeNumber, atomName, formalCharge, partialCharge, tensors, occupancy, bfactor, xyz, isHetero, atomSerial, group3, vib, alternateLocationID, radius) {
 var specialAtomID = 0;
 if (atomName != null) {
 if (isPDB && atomName.indexOf ('*') >= 0) atomName = atomName.$replace ('*', '\'');
 specialAtomID = J.viewer.JC.lookupSpecialAtomID (atomName);
 if (isPDB && specialAtomID == 2 && "CA".equalsIgnoreCase (group3)) specialAtomID = 0;
-}var atom = this.modelSet.addAtom (this.currentModelIndex, this.nullGroup, atomicAndIsotopeNumber, atomName, atomSerial, atomSite, x, y, z, radius, vectorX, vectorY, vectorZ, formalCharge, partialCharge, occupancy, bfactor, tensors, isHetero, specialAtomID, atomSymmetry);
+}var atom = this.modelSet.addAtom (this.currentModelIndex, this.nullGroup, atomicAndIsotopeNumber, atomName, atomSerial, atomSite, xyz, radius, vib, formalCharge, partialCharge, occupancy, bfactor, tensors, isHetero, specialAtomID, atomSymmetry);
 atom.setAltLoc (alternateLocationID);
 this.htAtomMap.put (atomUid, atom);
-}, $fz.isPrivate = true, $fz), "~B,J.util.BS,~N,~O,~N,~S,~N,~N,J.util.JmolList,~N,~N,~N,~N,~N,~B,~N,~S,~N,~N,~N,~S,~N");
+}, $fz.isPrivate = true, $fz), "~B,J.util.BS,~N,~O,~N,~S,~N,~N,J.util.JmolList,~N,~N,J.util.P3,~B,~N,~S,J.util.V3,~S,~N");
 $_M(c$, "checkNewGroup", 
 ($fz = function (adapter, chainID, group3, groupSequenceNumber, groupInsertionCode, addH, isLegacyHAddition) {
 var group3i = (group3 == null ? null : group3.intern ());
@@ -53982,7 +54531,6 @@ function (viewer, modelSet, tokType, atomSetCollection, bsSelected) {
 if (atomSetCollection == null) return;
 var adapter = viewer.getModelAdapter ();
 var pt =  new J.util.P3 ();
-var v =  new J.util.P3 ();
 var atoms = modelSet.atoms;
 var tolerance = viewer.getFloat (570425363);
 if (modelSet.unitCells != null) for (var i = bsSelected.nextSetBit (0); i >= 0; i = bsSelected.nextSetBit (i + 1)) if (atoms[i].getAtomSymmetry () != null) {
@@ -53993,18 +54541,16 @@ var i = -1;
 var n = 0;
 var loadAllData = (J.util.BSUtil.cardinalityOf (bsSelected) == viewer.getAtomCount ());
 for (var iterAtom = adapter.getAtomIterator (atomSetCollection); iterAtom.hasNext (); ) {
-var x = iterAtom.getX ();
-var y = iterAtom.getY ();
-var z = iterAtom.getZ ();
-if (Float.isNaN (x + y + z)) continue;
+var xyz = iterAtom.getXYZ ();
+if (Float.isNaN (xyz.x + xyz.y + xyz.z)) continue;
 if (tokType == 1146095626) {
 i = bsSelected.nextSetBit (i + 1);
 if (i < 0) break;
 n++;
-if (J.util.Logger.debugging) J.util.Logger.debug ("atomIndex = " + i + ": " + atoms[i] + " --> (" + x + "," + y + "," + z);
-modelSet.setAtomCoord (i, x, y, z);
+if (J.util.Logger.debugging) J.util.Logger.debug ("atomIndex = " + i + ": " + atoms[i] + " --> (" + xyz.x + "," + xyz.y + "," + xyz.z);
+modelSet.setAtomCoord (i, xyz.x, xyz.y, xyz.z);
 continue;
-}pt.set (x, y, z);
+}pt.setT (xyz);
 var bs = J.util.BSUtil.newBitSet (modelSet.atomCount);
 modelSet.getAtomsWithin (tolerance, pt, bs, -1);
 bs.and (bsSelected);
@@ -54017,13 +54563,10 @@ continue;
 J.util.Logger.debug ("createAtomDataSet: " + n + " atoms found at position " + pt);
 }}switch (tokType) {
 case 1146095631:
-var vx = iterAtom.getVectorX ();
-var vy = iterAtom.getVectorY ();
-var vz = iterAtom.getVectorZ ();
-if (Float.isNaN (vx + vy + vz)) continue;
-v.set (vx, vy, vz);
-if (J.util.Logger.debugging) J.util.Logger.debug ("xyz: " + pt + " vib: " + v);
-modelSet.setAtomCoords (bs, 1146095631, v);
+var vib = iterAtom.getVib ();
+if (vib == null) continue;
+if (J.util.Logger.debugging) J.util.Logger.debug ("xyz: " + pt + " vib: " + vib);
+modelSet.setAtomCoords (bs, 1146095631, vib);
 break;
 case 1129318401:
 modelSet.setAtomProperty (bs, tokType, iterAtom.getOccupancy (), 0, null, null, null);
@@ -54548,7 +55091,7 @@ if (isFractional) this.atoms[i].setFractionalCoordTo (t1[pt], true);
  else this.atoms[i].setT (t1[pt]);
 if (this.vibrationSteps != null) {
 if (vibs != null && vibs[pt] != null) vib = vibs[pt];
-this.setVibrationVector (i, vib.x, vib.y, vib.z);
+this.setVibrationVector (i, vib);
 }bs.set (i);
 }
 } else {
@@ -54868,7 +55411,7 @@ var rd = this.viewer.getDefaultRadiusData ();
 var mad = this.getDefaultMadFromOrder (1);
 for (var i = 0, n = this.models[modelIndex].atomCount + 1; i < vConnections.size (); i++, n++) {
 var atom1 = vConnections.get (i);
-var atom2 = this.addAtom (modelIndex, atom1.group, 1, "H" + n, n, n, pts[i].x, pts[i].y, pts[i].z, NaN, NaN, NaN, NaN, 0, 0, 100, NaN, null, false, 0, null);
+var atom2 = this.addAtom (modelIndex, atom1.group, 1, "H" + n, n, n, pts[i], NaN, null, 0, 0, 100, NaN, null, false, 0, null);
 atom2.setMadAtom (this.viewer, rd);
 bs.set (atom2.index);
 this.bondAtoms (atom1, atom2, 1, mad, null, 0, false, false);
@@ -54935,21 +55478,19 @@ vNot.addLast (a);
 }}
 if (vNot.size () == 0) return;
 pt = J.util.Measure.getCenterAndPoints (vNot)[0];
-var v = J.util.V3.newV (thisAtom);
-v.sub (pt);
+var v = J.util.V3.newVsub (thisAtom, pt);
 var q = J.util.Quaternion.newVA (v, 180);
 this.moveAtoms (null, q.getMatrix (), null, bsAtoms, thisAtom, true);
 }}, "J.util.P3,J.util.P4,~N,J.util.BS,J.util.BS");
 $_M(c$, "setDihedrals", 
 function (dihedralList, bsBranches, f) {
 var n = Clazz.doubleToInt (dihedralList.length / 6);
+if (f > 1) f = 1;
 for (var j = 0, pt = 0; j < n; j++, pt += 6) {
 var bs = bsBranches[j];
 if (bs == null || bs.isEmpty ()) continue;
 var a1 = this.atoms[Clazz.floatToInt (dihedralList[pt + 1])];
-var a2 = this.atoms[Clazz.floatToInt (dihedralList[pt + 2])];
-var v = J.util.V3.newV (a2);
-v.sub (a1);
+var v = J.util.V3.newVsub (this.atoms[Clazz.floatToInt (dihedralList[pt + 2])], a1);
 var angle = (dihedralList[pt + 5] - dihedralList[pt + 4]) * f;
 var aa = J.util.AxisAngle4f.newVA (v, (-angle / 57.29577951308232));
 this.matTemp.setAA (aa);
@@ -55121,7 +55662,7 @@ canvas.buf8 = canvas.imgdata.data;
 java.net.URL.setURLStreamHandlerFactory ( new J.awtjs2d.AjaxURLStreamHandlerFactory ());
 } catch (e) {
 }
-}, "J.api.JmolViewer,~O");
+}, "J.viewer.Viewer,~O");
 Clazz.overrideMethod (c$, "isSingleThreaded", 
 function () {
 return true;
@@ -55182,9 +55723,9 @@ function (label, data, list, asButtons) {
 return J.awtjs2d.Display.prompt (label, data, list, asButtons);
 }, "~S,~S,~A,~B");
 Clazz.overrideMethod (c$, "renderScreenImage", 
-function (viewer, context, size) {
-J.awtjs2d.Display.renderScreenImage (viewer, context, size);
-}, "J.api.JmolViewer,~O,~O");
+function (context, size) {
+J.awtjs2d.Display.renderScreenImage (this.viewer, context, size);
+}, "~O,~O");
 Clazz.overrideMethod (c$, "drawImage", 
 function (context, canvas, x, y, width, height) {
 J.awtjs2d.Image.drawImage (context, canvas, x, y, width, height);
@@ -55559,7 +56100,7 @@ return 0;
 Clazz.declarePackage ("J.api");
 Clazz.declareInterface (J.api, "JmolFileAdapterInterface");
 Clazz.declarePackage ("J.awtjs2d");
-Clazz.load (["J.api.JmolFileAdapterInterface"], "J.awtjs2d.JmolFileAdapter", ["java.net.UnknownServiceException"], function () {
+Clazz.load (["J.api.JmolFileAdapterInterface"], "J.awtjs2d.JmolFileAdapter", ["java.net.UnknownServiceException", "J.awtjs2d.WebOutputChannel"], function () {
 c$ = Clazz.declareType (J.awtjs2d, "JmolFileAdapter", null, J.api.JmolFileAdapterInterface);
 Clazz.overrideMethod (c$, "getBufferedFileInputStream", 
 function (name) {
@@ -55588,6 +56129,26 @@ throw e;
 }
 }
 }, "java.net.URL,~A,~S");
+Clazz.overrideMethod (c$, "openOutputChannel", 
+function (privateKey, fm, fileName, asWriter) {
+return  new J.awtjs2d.WebOutputChannel (fileName);
+}, "~N,J.viewer.FileManager,~S,~B");
+Clazz.overrideMethod (c$, "openFileInputStream", 
+function (privateKey, fileName) {
+return null;
+}, "~N,~S");
+Clazz.overrideMethod (c$, "getAbsolutePath", 
+function (privateKey, fileName) {
+return fileName;
+}, "~N,~S");
+Clazz.overrideMethod (c$, "getFileLength", 
+function (privateKey, fileName) {
+return 0;
+}, "~N,~S");
+Clazz.overrideMethod (c$, "openLogFile", 
+function (privateKey, logFileName, asAppend) {
+return null;
+}, "~N,~S,~B");
 });
 Clazz.declarePackage ("J.api");
 Clazz.declareInterface (J.api, "JmolMouseInterface");
@@ -55681,37 +56242,37 @@ function (touches) {
 if (touches[0].length < 2) return;
 var t1 = touches[0];
 var t2 = touches[1];
-var t10 = t1[0];
-var t11 = t1[t2.length - 1];
-var x10 = t10[0];
-var x11 = t11[0];
-var dx1 = x11 - x10;
-var y10 = t10[1];
-var y11 = t11[1];
-var dy1 = y11 - y10;
+var t1first = t1[0];
+var t1last = t1[t2.length - 1];
+var x1first = t1first[0];
+var x1last = t1last[0];
+var dx1 = x1last - x1first;
+var y1first = t1first[1];
+var y1last = t1last[1];
+var dy1 = y1last - y1first;
 var v1 = J.util.V3.new3 (dx1, dy1, 0);
 var d1 = v1.length ();
-var t20 = t2[0];
-var t21 = t2[t2.length - 1];
-var x20 = t20[0];
-var x21 = t21[0];
-var dx2 = x21 - x20;
-var y20 = t20[1];
-var y21 = t21[1];
-var dy2 = y21 - y20;
+var t2first = t2[0];
+var t2last = t2[t2.length - 1];
+var x2first = t2first[0];
+var x2last = t2last[0];
+var dx2 = x2last - x2first;
+var y2first = t2first[1];
+var y2last = t2last[1];
+var dy2 = y2last - y2first;
 var v2 = J.util.V3.new3 (dx2, dy2, 0);
 var d2 = v2.length ();
-if (d1 < 3 || d2 < 3) return;
+if (d1 < 1 || d2 < 1) return;
 v1.normalize ();
 v2.normalize ();
 var cos12 = (v1.dot (v2));
 if (cos12 > 0.8) {
-var deltaX = Clazz.floatToInt (x11 - t1[t1.length - 2][0]);
-var deltaY = Clazz.floatToInt (y11 - t1[t1.length - 2][1]);
+var deltaX = Clazz.floatToInt (x1last - t1[t1.length - 2][0]);
+var deltaY = Clazz.floatToInt (y1last - t1[t1.length - 2][1]);
 this.viewer.translateXYBy (deltaX, deltaY);
 } else if (cos12 < -0.8) {
-v1 = J.util.V3.new3 (x20 - x10, y20 - y10, 0);
-v2 = J.util.V3.new3 (x21 - x11, y21 - y11, 0);
+v1 = J.util.V3.new3 (x2first - x1first, y2first - y1first, 0);
+v2 = J.util.V3.new3 (x2last - x1last, y2last - y1last, 0);
 var dx = v2.length () - v1.length ();
 this.wheeled (System.currentTimeMillis (), dx < 0 ? -1 : 1, 32);
 }}, "~A");
@@ -55913,6 +56474,7 @@ this.pbufT = null;
 this.zbuf = null;
 this.zbufT = null;
 this.translucencyMask = 0;
+this.renderLow = false;
 this.shadesCurrent = null;
 this.anaglyphLength = 0;
 this.isScreened = false;
@@ -55997,8 +56559,9 @@ if (isAlphaTranslucent) this.$haveTranslucentObjects = true;
 return (!this.twoPass || this.twoPass && (this.$isPass2 == isAlphaTranslucent));
 }, "~B");
 Clazz.overrideMethod (c$, "beginRendering", 
-function (rotationMatrix, translucentMode, isImageWrite) {
+function (rotationMatrix, translucentMode, isImageWrite, renderLow) {
 if (this.$currentlyRendering) this.endRendering ();
+this.renderLow = renderLow;
 if (this.windowWidth != this.newWindowWidth || this.windowHeight != this.newWindowHeight || this.newAntialiasing != this.isFullSceneAntialiasingEnabled) {
 this.windowWidth = this.newWindowWidth;
 this.windowHeight = this.newWindowHeight;
@@ -56023,7 +56586,7 @@ this.zbuf = this.platform.zBuffer;
 }this.setWidthHeight (this.antialiasThisFrame);
 this.platform.clearBuffer ();
 if (this.backgroundImage != null) this.plotImage (-2147483648, 0, -2147483648, this.backgroundImage, null, 0, 0, 0);
-}, "J.util.Matrix3f,~B,~B");
+}, "J.util.Matrix3f,~B,~B,~B");
 Clazz.overrideMethod (c$, "setBackgroundTransparent", 
 function (TF) {
 if (this.platform != null) this.platform.setBackgroundTransparent (TF);
@@ -56247,7 +56810,8 @@ var isLast = J.util.C.isColixLastAvailable (colix);
 if (!isLast && colix == this.colixCurrent && this.currentShadeIndex == -1) return true;
 var mask = colix & 30720;
 if (mask == 16384) return false;
-var isTranslucent = mask != 0;
+if (this.renderLow) mask = 0;
+var isTranslucent = (mask != 0);
 this.isScreened = isTranslucent && mask == 30720;
 if (!this.checkTranslucent (isTranslucent && !this.isScreened)) return false;
 this.addAllPixels = this.$isPass2 || !isTranslucent;
@@ -59853,9 +60417,8 @@ Clazz.overrideMethod (c$, "repaintIfReady",
 function (why) {
 if (this.repaintPending) return false;
 this.repaintPending = true;
-if (this.holdRepaint == 0) {
-this.repaintNow (why);
-}return true;
+if (this.holdRepaint == 0) this.repaintNow (why);
+return true;
 }, "~S");
 $_M(c$, "repaintNow", 
 ($fz = function (why) {
@@ -59919,7 +60482,7 @@ if (logTime) J.util.Logger.checkTimer (msg, false);
 g3d.renderAllStrings (null);
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
-if (!this.viewer.isJS ()) e.printStackTrace ();
+if (!this.viewer.isJS) e.printStackTrace ();
 J.util.Logger.error ("rendering error? " + e);
 } else {
 throw e;
@@ -60995,7 +61558,7 @@ return true;
 }, "~N,~N,J.util.BS");
 $_M(c$, "calcMetrics", 
 function () {
-if (this.viewer.$isJS) this.frankString = "JSmol";
+if (this.viewer.isJS) this.frankString = "JSmol";
  else if (this.viewer.isSignedApplet ()) this.frankString = "Jmol_S";
 if (this.font3d === this.currentMetricsFont3d) return;
 this.currentMetricsFont3d = this.font3d;
@@ -61065,7 +61628,7 @@ c$ = Clazz.declareType (J.render, "BallsRenderer", J.render.ShapeRenderer);
 Clazz.overrideMethod (c$, "render", 
 function () {
 var needTranslucent = false;
-if (!this.viewer.getBoolean (603979976) || !this.viewer.getInMotion (true)) {
+if (this.isExport || this.viewer.checkMotionRendering (1141899265)) {
 var atoms = this.modelSet.atoms;
 var colixes = (this.shape).colixes;
 var bsOK = this.viewer.getRenderableBitSet ();
@@ -61106,7 +61669,7 @@ this.dx = 0;
 this.dy = 0;
 this.mag2d = 0;
 this.bondOrder = 0;
-this.renderWireframe = false;
+this.wireframeOnly = false;
 this.isAntialiased = false;
 this.slabbing = false;
 this.slabByAtom = false;
@@ -61135,6 +61698,8 @@ this.bsForPass2 = J.util.BS.newN (64);
 });
 Clazz.overrideMethod (c$, "render", 
 function () {
+var bonds = this.modelSet.bonds;
+if (bonds == null) return false;
 this.isPass2 = this.g3d.isPass2 ();
 if (!this.isPass2) this.bsForPass2.clearAll ();
 this.slabbing = this.viewer.getSlabEnabled ();
@@ -61147,13 +61712,12 @@ if (this.multipleBondSpacing == 0 && this.isCartesianExport) this.multipleBondSp
 this.multipleBondRadiusFactor = this.viewer.getFloat (570425368);
 this.modeMultipleBond = this.viewer.getModeMultipleBond ();
 this.showMultipleBonds = (this.multipleBondSpacing != 0 && this.modeMultipleBond != 0 && this.viewer.getBoolean (603979928));
-this.renderWireframe = this.viewer.getInMotion (true) && this.viewer.getBoolean (603979976);
+this.wireframeOnly = !this.viewer.checkMotionRendering (1678770178);
 this.ssbondsBackbone = this.viewer.getBoolean (603979952);
 this.hbondsBackbone = this.viewer.getBoolean (603979852);
 this.bondsBackbone =  new Boolean (this.hbondsBackbone | this.ssbondsBackbone).valueOf ();
 this.hbondsSolid = this.viewer.getBoolean (603979854);
 this.isAntialiased = this.g3d.isAntialiased ();
-var bonds = this.modelSet.bonds;
 var needTranslucent = false;
 if (!this.isExport && this.isPass2) for (var i = this.bsForPass2.nextSetBit (0); i >= 0; i = this.bsForPass2.nextSetBit (i + 1)) {
 this.bond = bonds[i];
@@ -61248,7 +61812,7 @@ if (this.multipleBondRadiusFactor > 0 && this.bondOrder > 1) this.mad *= this.mu
 this.dx = this.xB - this.xA;
 this.dy = this.yB - this.yA;
 this.width = Clazz.floatToInt (this.viewer.scaleToScreen (Clazz.doubleToInt ((this.zA + this.zB) / 2), this.mad));
-if (this.renderWireframe && this.width > 0) this.width = 1;
+if (this.wireframeOnly && this.width > 0) this.width = 1;
 if (!this.isCartesianExport) {
 this.asLineOnly = (this.width <= 1);
 if (this.asLineOnly && (this.isAntialiased)) {
@@ -61800,7 +62364,7 @@ $_M(c$, "renderPendingMeasurement",
 if (this.isExport || measurementPending == null) return;
 var count = measurementPending.getCount ();
 if (count == 0) return;
-this.g3d.setColix (measurementPending.traceX == -2147483648 ? this.viewer.getColixRubberband () : count == 2 ? 20 : 23);
+this.g3d.setColix (this.labelColix = (measurementPending.traceX == -2147483648 ? this.viewer.getColixRubberband () : count == 2 ? 20 : 23));
 measurementPending.refresh ();
 if (measurementPending.haveTarget ()) this.renderMeasurement (count, measurementPending, measurementPending.traceX == -2147483648);
  else this.renderPendingWithCursor (count, measurementPending);
@@ -61994,12 +62558,12 @@ return fpt;
 $_M(c$, "toCartesian", 
 function (pt, isAbsolute) {
 if (this.matrixFractionalToCartesian != null) (isAbsolute ? this.matrixFtoCAbsolute : this.matrixFractionalToCartesian).transform (pt);
-}, "J.util.P3,~B");
+}, "J.util.Tuple3f,~B");
 $_M(c$, "toFractional", 
 function (pt, isAbsolute) {
 if (this.matrixCartesianToFractional == null) return;
 (isAbsolute ? this.matrixCtoFAbsolute : this.matrixCartesianToFractional).transform (pt);
-}, "J.util.P3,~B");
+}, "J.util.Tuple3f,~B");
 $_M(c$, "isPolymer", 
 function () {
 return (this.dimension == 1);
@@ -62272,7 +62836,7 @@ function () {
 var frank = this.shape;
 var allowKeys = this.viewer.getBooleanProperty ("allowKeyStrokes");
 var modelKitMode = this.viewer.getBoolean (603979883);
-this.colix = (modelKitMode ? 20 : this.viewer.isSignedApplet () ? (allowKeys || this.viewer.$isJS && !this.viewer.isWebGL ? 5 : 10) : allowKeys ? 7 : 12);
+this.colix = (modelKitMode ? 20 : this.viewer.isSignedApplet () ? (allowKeys || this.viewer.isJS && !this.viewer.isWebGL ? 5 : 10) : allowKeys ? 7 : 12);
 if (this.isExport || !this.viewer.getShowFrank ()) return false;
 if (!this.g3d.setColix (J.util.C.getColixTranslucent3 (this.colix, this.g3d.haveTranslucentObjects (), 0.5))) return true;
 var imageFontScaling = this.viewer.getImageFontScaling ();
@@ -62665,23 +63229,17 @@ return;
 }if ("model" === propertyName) {
 var modelIndex = (value).intValue ();
 if (this.currentObject == null) {
-if (this.isAll) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-e.next ().setModel (modelIndex);
-}
-}return;
+if (this.isAll) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setModel (modelIndex);
+
+return;
 }this.currentObject.setModel (modelIndex);
 return;
 }if ("align" === propertyName) {
 var align = value;
 if (this.currentObject == null) {
-if (this.isAll) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-e.next ().setAlignmentLCR (align);
-}
-}return;
+if (this.isAll) for (var obj, $obj = this.objects.values ().iterator (); $obj.hasNext () && ((obj = $obj.next ()) || true);) obj.setAlignmentLCR (align);
+
+return;
 }if (!this.currentObject.setAlignmentLCR (align)) J.util.Logger.error ("unrecognized align:" + align);
 return;
 }if ("bgcolor" === propertyName) {
@@ -62748,21 +63306,14 @@ this.isAll = false;
 });
 Clazz.overrideMethod (c$, "setVisibilityFlags", 
 function (bs) {
-if (this.isHover) {
-return;
-}var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-var t = e.next ();
-t.setVisibility (t.modelIndex < 0 || bs.get (t.modelIndex));
-}
+if (!this.isHover) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setVisibility (t.modelIndex < 0 || bs.get (t.modelIndex));
+
 }, "J.util.BS");
 Clazz.overrideMethod (c$, "checkObjectClicked", 
 function (x, y, modifiers, bsVisible, drawPicking) {
 if (this.isHover || modifiers == 0) return null;
 var isAntialiased = this.viewer.isAntialiased ();
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-var obj = e.next ();
+for (var obj, $obj = this.objects.values ().iterator (); $obj.hasNext () && ((obj = $obj.next ()) || true);) {
 if (obj.checkObjectClicked (isAntialiased, x, y, bsVisible)) {
 var s = obj.getScript ();
 if (s != null) {
@@ -62784,9 +63335,7 @@ function (x, y, bsVisible) {
 if (this.isHover) return false;
 var haveScripts = false;
 var isAntialiased = this.viewer.isAntialiased ();
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-var obj = e.next ();
+for (var obj, $obj = this.objects.values ().iterator (); $obj.hasNext () && ((obj = $obj.next ()) || true);) {
 var s = obj.getScript ();
 if (s != null) {
 haveScripts = true;
@@ -62810,23 +63359,17 @@ function (propertyName, value, bsSelected) {
 if ("text" === propertyName) {
 var text = value;
 if (this.currentObject == null) {
-if (this.isAll) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-e.next ().setText (text);
-}
-}return;
+if (this.isAll) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setText (text);
+
+return;
 }(this.currentObject).setText (text);
 return;
 }if ("font" === propertyName) {
 this.currentFont = value;
 if (this.currentObject == null) {
-if (this.isAll) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-e.next ().setFont (this.currentFont, true);
-}
-}return;
+if (this.isAll) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setFont (this.currentFont, true);
+
+return;
 }(this.currentObject).setFont (this.currentFont, true);
 (this.currentObject).setFontScale (0);
 return;
@@ -62984,22 +63527,16 @@ return;
 if (this.currentObject != null && this.viewer.getBoolean (603979845)) this.currentObject.setScalePixelsPerMicron (this.viewer.getScalePixelsPerAngstrom (false) * 10000);
 }if ("scale" === propertyName) {
 if (this.currentObject == null) {
-if (this.isAll) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-e.next ().setScale ((value).floatValue ());
-}
-}return;
+if (this.isAll) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setScale ((value).floatValue ());
+
+return;
 }(this.currentObject).setScale ((value).floatValue ());
 return;
 }if ("image" === propertyName) {
 if (this.currentObject == null) {
-if (this.isAll) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-e.next ().setImage (value);
-}
-}return;
+if (this.isAll) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setImage (value);
+
+return;
 }(this.currentObject).setImage (value);
 return;
 }if ("thisID" === propertyName) {
@@ -63010,13 +63547,9 @@ return;
 }if ("hidden" === propertyName) {
 var isHidden = (value).booleanValue ();
 if (this.currentObject == null) {
-if (this.isAll || this.thisID != null) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-var text = e.next ();
-if (this.isAll || J.util.TextFormat.isMatch (text.target.toUpperCase (), this.thisID, true, true)) text.hidden = isHidden;
-}
-}return;
+if (this.isAll || this.thisID != null) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) if (this.isAll || J.util.TextFormat.isMatch (t.target.toUpperCase (), this.thisID, true, true)) t.hidden = isHidden;
+
+return;
 }(this.currentObject).hidden = isHidden;
 return;
 }if (J.modelset.Object2d.setProperty (propertyName, value, this.currentObject)) return;
@@ -63057,9 +63590,8 @@ return (this.currentObject != null && (data[0] = this.currentObject.target) != n
 }if (property === "checkID") {
 var key = (data[0]).toUpperCase ();
 var isWild = J.util.TextFormat.isWild (key);
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-var id = e.next ().target;
+for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) {
+var id = t.target;
 if (id.equalsIgnoreCase (key) || isWild && J.util.TextFormat.isMatch (id.toUpperCase (), key, true, true)) {
 data[1] = id;
 return true;
@@ -63822,7 +64354,7 @@ if (!this.isActive || this.bsSizeSet == null) return "";
 return this.viewer.getShapeState (this);
 });
 Clazz.overrideMethod (c$, "checkObjectDragged", 
-function (prevX, prevY, x, y, modifiers, bsVisible) {
+function (prevX, prevY, x, y, dragAction, bsVisible) {
 if (this.viewer.getPickingMode () != 2 || this.labelBoxes == null) return false;
 if (prevX == -2147483648) {
 var iAtom = this.findNearestLabel (x, y);
@@ -64780,13 +65312,14 @@ var f = axes.font3d;
 axes.initShape ();
 if (f != null) axes.font3d = f;
 }this.font3d = this.g3d.getFont3DScaled (axes.font3d, this.imageFontScaling);
-var cellInfos = this.modelSet.unitCells;
 var modelIndex = this.viewer.getCurrentModelIndex ();
 var isUnitCell = (axesMode === J.constant.EnumAxesMode.UNITCELL);
-if (this.viewer.isJmolDataFrameForModel (modelIndex) && !this.viewer.getModelSet ().getJmolFrameType (modelIndex).equals ("plot data") || isUnitCell && modelIndex < 0) return false;
-var nPoints = 6;
+if (this.viewer.isJmolDataFrameForModel (modelIndex) && !this.viewer.getModelSet ().getJmolFrameType (modelIndex).equals ("plot data")) return false;
+if (isUnitCell && modelIndex < 0) {
+if (this.viewer.getCurrentUnitCell () == null) return false;
+}var nPoints = 6;
 var labelPtr = 0;
-if (isUnitCell && cellInfos != null) {
+if (isUnitCell && this.modelSet.unitCells != null) {
 nPoints = 3;
 labelPtr = 6;
 } else if (isXY) {
@@ -64885,12 +65418,10 @@ Clazz.overrideMethod (c$, "render",
 function () {
 if (this.viewer.isPreviewOnly ()) return false;
 var echo = this.shape;
-var e = echo.objects.values ().iterator ();
 var scalePixelsPerMicron = (this.viewer.getBoolean (603979845) ? this.viewer.getScalePixelsPerAngstrom (true) * 10000 : 0);
 this.imageFontScaling = this.viewer.getImageFontScaling ();
 var haveTranslucent = false;
-while (e.hasNext ()) {
-var t = e.next ();
+for (var t, $t = echo.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) {
 if (!t.visible || t.hidden) {
 continue;
 }if (Clazz.instanceOf (t.pointerPt, J.modelset.Atom)) {
@@ -65274,7 +65805,7 @@ this.doRender = false;
 this.volumeRender = false;
 this.bsPolygons = null;
 this.isTranslucentInherit = false;
-this.wireframeOnly = false;
+this.renderLow = false;
 this.bsPolygonsToExport = null;
 Clazz.instantialize (this, arguments);
 }, J.render, "MeshRenderer", J.render.ShapeRenderer);
@@ -65354,8 +65885,8 @@ if (this.normixes == null || this.vertices == null) return false;
 this.haveBsDisplay = (this.mesh.bsDisplay != null);
 this.selectedPolyOnly = (this.isGhostPass || this.mesh.bsSlabDisplay != null);
 this.bsPolygons = (this.isGhostPass ? this.mesh.bsSlabGhost : this.selectedPolyOnly ? this.mesh.bsSlabDisplay : null);
-this.wireframeOnly = (!this.isExport && this.viewer.getBoolean (603979976) && this.viewer.getInMotion (true));
-this.frontOnly = this.wireframeOnly || !this.viewer.getSlabEnabled () && this.mesh.frontOnly && !this.mesh.isTwoSided && !this.selectedPolyOnly;
+this.renderLow = (!this.isExport && !this.viewer.checkMotionRendering (1073742018));
+this.frontOnly = this.renderLow || !this.viewer.getSlabEnabled () && this.mesh.frontOnly && !this.mesh.isTwoSided && !this.selectedPolyOnly;
 this.screens = this.viewer.allocTempScreens (this.vertexCount);
 if (this.frontOnly) this.transformedVectors = this.g3d.getTransformedVertexVectors ();
 if (this.transformedVectors == null) this.frontOnly = false;
@@ -65380,9 +65911,9 @@ this.render2b (generateSet);
 $_M(c$, "render2b", 
 function (generateSet) {
 if (!this.g3d.setColix (this.isGhostPass ? this.mesh.slabColix : this.colix)) return;
-if (this.mesh.showPoints || this.mesh.polygonCount == 0) this.renderPoints ();
-if (this.wireframeOnly || (this.isGhostPass ? this.mesh.slabMeshType == 1073742018 : this.mesh.drawTriangles)) this.renderTriangles (false, this.mesh.showTriangles, false);
-if (!this.wireframeOnly && (this.isGhostPass ? this.mesh.slabMeshType == 1073741938 : this.mesh.fillTriangles)) this.renderTriangles (true, this.mesh.showTriangles, generateSet);
+if (this.renderLow || this.mesh.showPoints || this.mesh.polygonCount == 0) this.renderPoints ();
+if (!this.renderLow && (this.isGhostPass ? this.mesh.slabMeshType == 1073742018 : this.mesh.drawTriangles)) this.renderTriangles (false, this.mesh.showTriangles, false);
+if (!this.renderLow && (this.isGhostPass ? this.mesh.slabMeshType == 1073741938 : this.mesh.fillTriangles)) this.renderTriangles (true, this.mesh.showTriangles, generateSet);
 }, "~B");
 $_M(c$, "renderPoints", 
 function () {
@@ -65400,8 +65931,12 @@ for (var j = p.length - 1; --j >= 0; ) {
 var pt = p[j];
 if (bsPoints.get (pt)) continue;
 bsPoints.set (pt);
+if (this.renderLow) {
+var s = this.screens[pt];
+this.g3d.drawPixel (s.x, s.y, s.z);
+} else {
 this.g3d.fillSphereI (4, this.screens[pt]);
-}
+}}
 }
 return;
 }for (var i = this.vertexCount; --i >= 0; ) if (!this.frontOnly || this.transformedVectors[this.normixes[i]].z >= 0) this.g3d.fillSphereI (4, this.screens[i]);
@@ -65477,7 +66012,7 @@ if (generateSet) this.exportSurface (this.colix);
 }, "~B,~B,~B");
 $_M(c$, "drawTriangle", 
 function (screenA, colixA, screenB, colixB, screenC, colixC, check, diam) {
-if (this.wireframeOnly || !this.antialias && diam == 1) {
+if (!this.antialias && diam == 1) {
 this.g3d.drawTriangle3C (screenA, colixA, screenB, colixB, screenC, colixC, check);
 return;
 }if (this.antialias) diam <<= 1;
@@ -66014,14 +66549,13 @@ return this.g3d.getTranslucentCoverOnly ();
 });
 });
 Clazz.declarePackage ("J.exportjs");
-Clazz.load (["J.util.AxisAngle4f", "$.P3", "$.V3"], "J.exportjs.Exporter", ["java.io.BufferedWriter", "$.File", "$.FileOutputStream", "$.OutputStreamWriter", "java.lang.Float", "J.util.TextFormat"], function () {
+Clazz.load (["J.util.AxisAngle4f", "$.P3", "$.V3"], "J.exportjs.Exporter", ["java.lang.Float", "J.util.TextFormat"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.privateKey = 0;
 this.jmolRenderer = null;
 this.$output = null;
 this.bw = null;
-this.os = null;
 this.fileName = null;
 this.commandLineOptions = null;
 this.isToFile = false;
@@ -66096,12 +66630,10 @@ if (pt > 0) {
 this.commandLineOptions = this.fileName.substring (pt + 3);
 this.fileName = this.fileName.substring (0, pt);
 }try {
-var f =  new java.io.File (this.fileName);
-System.out.println ("__Exporter writing to " + f.getAbsolutePath ());
-this.os =  new java.io.FileOutputStream (this.fileName);
-this.bw =  new java.io.BufferedWriter ( new java.io.OutputStreamWriter (this.os));
+System.out.println ("__Exporter writing to " + viewer.getAbsolutePath (privateKey, this.fileName));
+this.bw = viewer.openOutputChannel (privateKey, this.fileName, true);
 } catch (e) {
-if (Clazz.exceptionOf (e, java.io.FileNotFoundException)) {
+if (Clazz.exceptionOf (e, java.io.IOException)) {
 return false;
 } else {
 throw e;
@@ -66153,7 +66685,6 @@ if (!this.isToFile) return (this.$output == null ? "" : this.$output.toString ()
 try {
 this.bw.flush ();
 this.bw.close ();
-this.os = null;
 } catch (e) {
 if (Clazz.exceptionOf (e, java.io.IOException)) {
 System.out.println (e.toString ());
@@ -66749,8 +67280,8 @@ c$.getType = $_M(c$, "getType",
 ($fz = function (type) {
 var pt = type.indexOf ("_");
 if (pt >= 0) type = type.substring (0, pt);
-pt = ";iso....;adp....;tls-u..;tls-r..;ms.....;efg....;isc....;charge.;".indexOf (";" + type.toLowerCase () + ".");
-return (pt < 0 ? -1 : Clazz.doubleToInt (pt / 8));
+pt = ";iso........;adp........;tls-u......;tls-r......;ms.........;efg........;isc........;charge.....;quadrupole.".indexOf (";" + type.toLowerCase () + ".");
+return (pt < 0 ? -1 : Clazz.doubleToInt (pt / 11));
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "getInfo", 
 function (infoType) {
@@ -67000,20 +67531,19 @@ this.typeFactor = 0.01;
 break;
 case 5:
 this.sortIso = true;
-this.typeFactor = 1.0;
 break;
 case 6:
 this.sortIso = true;
 this.typeFactor = 0.04;
-break;
-case 7:
-this.typeFactor = 1.0;
 break;
 case 3:
 this.altType = "2";
 break;
 case 2:
 this.altType = "3";
+break;
+case 7:
+case 8:
 break;
 }
 }, $fz.isPrivate = true, $fz));
@@ -67055,11 +67585,9 @@ return (this.type + " " + this.modelIndex + " " + this.atomIndex1 + " " + this.a
 c$.ADP_FACTOR = c$.prototype.ADP_FACTOR = (Math.sqrt (0.5) / 3.141592653589793);
 Clazz.defineStatics (c$,
 "MAGNETIC_SUSCEPTIBILITY_FACTOR", 0.01,
-"ELECTRIC_FIELD_GRADIENT_FACTOR", 1,
-"BORN_EFFECTIVE_CHARGE_FACTOR", 1,
 "INTERACTION_FACTOR", 0.04,
 "tSort", null,
-"KNOWN_TYPES", ";iso....;adp....;tls-u..;tls-r..;ms.....;efg....;isc....;charge.;",
+"KNOWN_TYPES", ";iso........;adp........;tls-u......;tls-r......;ms.........;efg........;isc........;charge.....;quadrupole.",
 "TYPE_OTHER", -1,
 "TYPE_ISO", 0,
 "TYPE_ADP", 1,
@@ -67069,6 +67597,7 @@ Clazz.defineStatics (c$,
 "TYPE_EFG", 5,
 "TYPE_ISC", 6,
 "TYPE_CHARGE", 7,
+"TYPE_QUADRUPOLE", 8,
 "infoList", ";.............;eigenvalues..;eigenvectors.;asymmatrix...;symmatrix....;value........;isotropy.....;anisotropy...;asymmetry....;eulerzyz.....;eulerzxz.....;quaternion...;indices......;string.......;type.........;id...........;span.........;skew.........");
 });
 

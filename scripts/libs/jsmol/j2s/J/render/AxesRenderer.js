@@ -33,13 +33,14 @@ var f = axes.font3d;
 axes.initShape ();
 if (f != null) axes.font3d = f;
 }this.font3d = this.g3d.getFont3DScaled (axes.font3d, this.imageFontScaling);
-var cellInfos = this.modelSet.unitCells;
 var modelIndex = this.viewer.getCurrentModelIndex ();
 var isUnitCell = (axesMode === J.constant.EnumAxesMode.UNITCELL);
-if (this.viewer.isJmolDataFrameForModel (modelIndex) && !this.viewer.getModelSet ().getJmolFrameType (modelIndex).equals ("plot data") || isUnitCell && modelIndex < 0) return false;
-var nPoints = 6;
+if (this.viewer.isJmolDataFrameForModel (modelIndex) && !this.viewer.getModelSet ().getJmolFrameType (modelIndex).equals ("plot data")) return false;
+if (isUnitCell && modelIndex < 0) {
+if (this.viewer.getCurrentUnitCell () == null) return false;
+}var nPoints = 6;
 var labelPtr = 0;
-if (isUnitCell && cellInfos != null) {
+if (isUnitCell && this.modelSet.unitCells != null) {
 nPoints = 3;
 labelPtr = 6;
 } else if (isXY) {

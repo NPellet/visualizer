@@ -41,20 +41,20 @@ return;
 this.fm.fullPathName = this.fm.fileName = this.fm.nameAsGiven = (this.dataReaders == null ? "file[]" : "String[]");
 });
 Clazz.overrideMethod (c$, "getBufferedReaderOrBinaryDocument", 
-function (i, isBinary) {
-if (this.dataReaders != null) return (isBinary ? null : this.dataReaders[i].getBufferedReader ());
+function (i, forceBinary) {
+if (this.dataReaders != null) return (forceBinary ? null : this.dataReaders[i].getBufferedReader ());
 var name = this.fullPathNamesIn[i];
 var subFileList = null;
 this.htParams.remove ("subFileList");
 if (name.indexOf ("|") >= 0) {
 subFileList = J.util.TextFormat.splitChars (name, "|");
 name = subFileList[0];
-}var t = this.fm.getUnzippedBufferedReaderOrErrorMessageFromName (name, null, true, isBinary, false, true, this.htParams);
+}var t = this.fm.getUnzippedReaderOrStreamFromName (name, null, true, forceBinary, false, true, this.htParams);
 if (Clazz.instanceOf (t, java.util.zip.ZipInputStream)) {
 if (subFileList != null) this.htParams.put ("subFileList", subFileList);
 var zipDirectory = this.fm.getZipDirectory (name, true);
 t = this.fm.getBufferedInputStreamOrErrorMessageFromName (name, this.fullPathNamesIn[i], false, false, null, false);
-t = J.io.JmolBinary.getAtomSetCollectionOrBufferedReaderFromZip (this.viewer.getModelAdapter (), t, name, zipDirectory, this.htParams, true, isBinary);
+t = J.io.JmolBinary.getAtomSetCollectionOrBufferedReaderFromZip (this.viewer.getModelAdapter (), t, name, zipDirectory, this.htParams, true);
 }if (Clazz.instanceOf (t, java.io.BufferedInputStream)) {
 var jd = J.api.Interface.getOptionInterface ("io2.BinaryDocument");
 jd.setStream (t, true);

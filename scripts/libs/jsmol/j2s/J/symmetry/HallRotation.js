@@ -34,8 +34,8 @@ data[ipt] = value;
 dataInv[ipt] = -value;
 ipt++;
 }
-this.seitzMatrix.setA (data);
-this.seitzMatrixInv.setA (dataInv);
+this.seitzMatrix.setA (data, 0);
+this.seitzMatrixInv.setA (dataInv, 0);
 }, $fz.isPrivate = true, $fz), "~S,~S");
 c$.lookup = $_M(c$, "lookup", 
 function (code) {

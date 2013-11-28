@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.export.image");
-Clazz.load (["J.api.JmolImageCreatorInterface"], "J.export.image.GenericImageCreator", ["java.io.BufferedWriter", "$.File", "$.FileOutputStream", "$.IOException", "$.OutputStreamWriter", "java.lang.Error", "J.export.image.GenericPngEncoder", "J.io.Base64", "J.io2.JpegEncoder", "J.util.Escape", "$.Logger", "J.viewer.Viewer"], function () {
+Clazz.load (["J.api.JmolImageCreatorInterface"], "J.export.image.GenericImageCreator", ["java.io.IOException", "java.lang.Error", "J.export.image.GenericPngEncoder", "J.io.Base64", "J.io2.JpegEncoder", "J.util.Escape", "$.Logger", "J.viewer.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.privateKey = 0;
@@ -15,41 +15,39 @@ this.privateKey = privateKey;
 return this;
 }, "J.api.JmolViewer,~N");
 Clazz.overrideMethod (c$, "createImage", 
-function (fileName, type, text, bytes_or_image, scripts, appendix, quality) {
+function (fileName, type, text, bytes_or_image, scripts, quality) {
 var isBytes = (bytes_or_image != null);
 var isText = (!isBytes && quality == -2147483648);
 var os = null;
 var len = -1;
 try {
 if (!this.viewer.checkPrivateKey (this.privateKey)) return "NO SECURITY";
-if ("OutputStream".equals (type)) return  new java.io.FileOutputStream (fileName);
+if ("OutputStream".equals (type)) return this.viewer.openOutputChannel (this.privateKey, fileName, false);
 if (isBytes) {
 if (Clazz.instanceOf (bytes_or_image, Array)) {
 len = (bytes_or_image).length;
-os =  new java.io.FileOutputStream (fileName);
+os = this.viewer.openOutputChannel (this.privateKey, fileName, false);
 var b = bytes_or_image;
 os.write (b, 0, b.length);
 os.flush ();
 os.close ();
+os = null;
 } else {
-this.getImageBytes (type, quality, fileName, scripts, bytes_or_image, null, null);
+this.getImageBytes (type, quality, fileName, scripts, bytes_or_image, null);
 return fileName;
 }} else if (isText) {
 if (text == null) return "NO DATA";
-os =  new java.io.FileOutputStream (fileName);
-var osw =  new java.io.OutputStreamWriter (os);
-var bw =  new java.io.BufferedWriter (osw, 8192);
+var bw = this.viewer.openOutputChannel (this.privateKey, fileName, true);
 len = text.length;
 bw.write (text);
 bw.close ();
-os = null;
 } else {
 len = 1;
-var bytesOrError = this.getImageBytes (type, quality, fileName, scripts, null, appendix, null);
+var bytesOrError = this.getImageBytes (type, quality, fileName, scripts, null, null);
 if (Clazz.instanceOf (bytesOrError, String)) return bytesOrError;
 var bytes = bytesOrError;
 if (bytes != null) return (fileName == null ? bytes :  String.instantialize (bytes));
-len = ( new java.io.File (fileName)).length ();
+len = this.viewer.getFileLength (this.privateKey, fileName);
 }} catch (exc) {
 if (Clazz.exceptionOf (exc, java.io.IOException)) {
 J.util.Logger.errorEx ("IO Exception", exc);
@@ -68,10 +66,10 @@ throw e;
 }
 }
 }}
-return (len < 0 ? "Creation of " + fileName + " failed: " + this.viewer.getErrorMessageUn () : "OK " + type + " " + len + " " + fileName + (quality == -2147483648 ? "" : "; quality=" + quality));
-}, "~S,~S,~S,~O,~A,~O,~N");
+return (len < 0 ? "Creation of " + fileName + " failed: " + this.viewer.getErrorMessageUn () : "OK " + type + " " + (len > 0 ? len + " " : "") + fileName + (quality == -2147483648 ? "" : "; quality=" + quality));
+}, "~S,~S,~S,~O,~A,~N");
 Clazz.overrideMethod (c$, "getImageBytes", 
-function (type, quality, fileName, scripts, objImage, appendix, os) {
+function (type, quality, fileName, scripts, objImage, os) {
 var bytes = null;
 var errMsg = null;
 type = type.toUpperCase ();
@@ -85,9 +83,9 @@ if (image == null) {
 errMsg = this.viewer.getErrorMessage ();
 } else {
 var ret = null;
-var includeState = (asBytes && type.equals ("PNGJ") || !asBytes && appendix == null);
+var includeState = (type.equals ("PNGJ") || !asBytes);
 if (type.equals ("PNGJ") && includeState) ret = this.viewer.getWrappedState (fileName, scripts, true, true, this.viewer.apiPlatform.getImageWidth (image), this.viewer.apiPlatform.getImageHeight (image));
-if (isOsTemp) os =  new java.io.FileOutputStream (fileName);
+if (isOsTemp) os = this.viewer.openOutputChannel (this.privateKey, fileName, false);
 if (type.equals ("JPEG") || type.equals ("JPG")) {
 if (quality <= 0) quality = 100;
 if (asBytes) {
@@ -131,9 +129,6 @@ b = bt = null;
 var errRet =  new Array (1);
 bytes = this.getOtherBytes (fileName, image, type, asBytes, os, errRet);
 errMsg = errRet[0];
-}if (appendix != null && os != null) {
-var b = (J.util.Escape.isAB (appendix) ? appendix : Clazz.instanceOf (appendix, String) ? (appendix).getBytes () : null);
-if (b != null && b.length > 0) os.write (b, 0, b.length);
 }if (os != null) os.flush ();
 if (isOsTemp) os.close ();
 }} catch (e$$) {
@@ -156,7 +151,7 @@ throw e$$;
 if (!isImage) this.viewer.releaseScreenImage ();
 if (errMsg != null) return errMsg;
 return bytes;
-}, "~S,~N,~S,~A,~O,~O,java.io.OutputStream");
+}, "~S,~N,~S,~A,~O,java.io.OutputStream");
 $_M(c$, "getOtherBytes", 
 function (fileName, objImage, type, asBytes, os, errRet) {
 errRet[0] = "file type " + type + " not available on this platform";

@@ -96,10 +96,10 @@ this.spaceGroup.operations[i].newPoint (atom1, atom2, transX, transY, transZ);
 return;
 }this.spaceGroup.finalOperations[i].newPoint (atom1, atom2, transX, transY, transZ);
 }, "~N,J.util.P3,J.util.P3,~N,~N,~N");
-Clazz.overrideMethod (c$, "rotateEllipsoid", 
-function (i, ptTemp, axes, ptTemp1, ptTemp2) {
-return this.spaceGroup.finalOperations[i].rotateEllipsoid (ptTemp, axes, this.unitCell, ptTemp1, ptTemp2);
-}, "~N,J.util.P3,~A,J.util.P3,J.util.P3");
+Clazz.overrideMethod (c$, "rotateAxes", 
+function (iop, axes, ptTemp, mTemp) {
+return (iop == 0 ? axes : this.spaceGroup.finalOperations[iop].rotateAxes (axes, this.unitCell, ptTemp, mTemp));
+}, "~N,~A,J.util.P3,J.util.Matrix3f");
 $_M(c$, "getSymmetryOperationDescription", 
 function (isym, cellInfo, pt1, pt2, id) {
 return this.spaceGroup.operations[isym].getDescription (cellInfo, pt1, pt2, id);
@@ -110,7 +110,7 @@ return J.symmetry.SymmetryOperation.fcoord (p);
 }, "J.util.Tuple3f");
 Clazz.overrideMethod (c$, "getMatrixFromString", 
 function (xyz, rotTransMatrix, allowScaling) {
-return J.symmetry.SymmetryOperation.getMatrixFromString (xyz, rotTransMatrix, null, false, allowScaling);
+return J.symmetry.SymmetryOperation.getMatrixFromString (null, xyz, rotTransMatrix, allowScaling);
 }, "~S,~A,~B");
 Clazz.overrideMethod (c$, "ijkToPoint3f", 
 function (nnn) {
@@ -167,6 +167,10 @@ Clazz.overrideMethod (c$, "setUnitCellOrientation",
 function (matUnitCellOrientation) {
 this.unitCell.setOrientation (matUnitCellOrientation);
 }, "J.util.Matrix3f");
+Clazz.overrideMethod (c$, "unitize", 
+function (ptFrac) {
+this.unitCell.unitize (ptFrac);
+}, "J.util.P3");
 Clazz.overrideMethod (c$, "toUnitCell", 
 function (pt, offset) {
 this.unitCell.toUnitCell (pt, offset);
@@ -174,7 +178,7 @@ this.unitCell.toUnitCell (pt, offset);
 $_M(c$, "toCartesian", 
 function (fpt, isAbsolute) {
 this.unitCell.toCartesian (fpt, isAbsolute);
-}, "J.util.P3,~B");
+}, "J.util.Tuple3f,~B");
 Clazz.overrideMethod (c$, "toSupercell", 
 function (fpt) {
 return this.unitCell.toSupercell (fpt);
@@ -182,7 +186,7 @@ return this.unitCell.toSupercell (fpt);
 $_M(c$, "toFractional", 
 function (pt, isAbsolute) {
 this.unitCell.toFractional (pt, isAbsolute);
-}, "J.util.P3,~B");
+}, "J.util.Tuple3f,~B");
 $_M(c$, "getNotionalUnitCell", 
 function () {
 return this.unitCell.getNotionalUnitCell ();
@@ -309,6 +313,7 @@ info =  new java.util.Hashtable ();
 if (pt1 == null && drawID == null && symOp == 0) modelSet.setModelAuxiliaryInfo (modelIndex, "spaceGroupInfo", info);
 spaceGroup = cellInfo.getSpaceGroupName ();
 var list = cellInfo.getSymmetryOperations ();
+var jf = "";
 if (list == null) {
 strOperations = "\n no symmetry operations employed";
 } else {
@@ -318,17 +323,20 @@ infolist =  new Array (list.length);
 for (var i = 0; i < list.length; i++) {
 var iSym = this.addSpaceGroupOperation ("=" + list[i], i + 1);
 if (iSym < 0) continue;
+jf += ";" + list[i];
 infolist[i] = (symOp > 0 && symOp - 1 != iSym ? null : this.getSymmetryOperationDescription (iSym, cellInfo, pt1, pt2, drawID));
 if (infolist[i] != null) strOperations += "\n" + (i + 1) + "\t" + infolist[i][0] + "\t" + infolist[i][2];
 }
-}} else {
+}jf = jf.substring (jf.indexOf (";") + 1);
+if (spaceGroup.indexOf ("[--]") >= 0) spaceGroup = jf;
+} else {
 info =  new java.util.Hashtable ();
 }info.put ("spaceGroupName", spaceGroup);
 var data = this.getSpaceGroupInfo (spaceGroup, cellInfo);
 if (infolist != null) {
 info.put ("operations", infolist);
 info.put ("symmetryInfo", strOperations);
-}if (data == null) data = "could not identify space group from name: " + spaceGroup + "\nformat: show spacegroup \"2\" or \"P 2c\" " + "or \"C m m m\" or \"x, y, z;-x ,-y, -z\"";
+}if (data == null || data.equals ("?")) data = "could not identify space group from name: " + spaceGroup + "\nformat: show spacegroup \"2\" or \"P 2c\" " + "or \"C m m m\" or \"x, y, z;-x ,-y, -z\"";
 info.put ("spaceGroupInfo", data);
 return info;
 }, "J.modelset.ModelSet,~N,~S,~N,J.util.P3,J.util.P3,~S");
@@ -438,4 +446,24 @@ uc.toFractional (ptTemp, isAbsolute);
 var slop = 0.02;
 return (ptTemp.x >= cell.x - 1 - slop && ptTemp.x <= cell.x + slop && ptTemp.y >= cell.y - 1 - slop && ptTemp.y <= cell.y + slop && ptTemp.z >= cell.z - 1 - slop && ptTemp.z <= cell.z + slop);
 }, "J.api.SymmetryInterface,J.util.P3,J.util.P3,~B");
+Clazz.overrideMethod (c$, "unitCellEquals", 
+function (uc2) {
+return ((uc2)).unitCell.isSameAs (this.unitCell);
+}, "J.api.SymmetryInterface");
+Clazz.overrideMethod (c$, "addLatticeVectors", 
+function (lattvecs) {
+this.spaceGroup.addLatticeVectors (lattvecs);
+}, "J.util.JmolList");
+Clazz.overrideMethod (c$, "getLatticeOp", 
+function () {
+return this.spaceGroup.latticeOp;
+});
+Clazz.overrideMethod (c$, "getOperationGammaIS", 
+function (iop) {
+return this.spaceGroup.finalOperations[iop].gammaIS;
+}, "~N");
+Clazz.overrideMethod (c$, "getSiteMultiplicity", 
+function (pt) {
+return this.spaceGroup.getSiteMultiplicity (pt, this.unitCell);
+}, "J.util.P3");
 });

@@ -121,7 +121,7 @@ if (isFractional) this.atoms[i].setFractionalCoordTo (t1[pt], true);
  else this.atoms[i].setT (t1[pt]);
 if (this.vibrationSteps != null) {
 if (vibs != null && vibs[pt] != null) vib = vibs[pt];
-this.setVibrationVector (i, vib.x, vib.y, vib.z);
+this.setVibrationVector (i, vib);
 }bs.set (i);
 }
 } else {
@@ -441,7 +441,7 @@ var rd = this.viewer.getDefaultRadiusData ();
 var mad = this.getDefaultMadFromOrder (1);
 for (var i = 0, n = this.models[modelIndex].atomCount + 1; i < vConnections.size (); i++, n++) {
 var atom1 = vConnections.get (i);
-var atom2 = this.addAtom (modelIndex, atom1.group, 1, "H" + n, n, n, pts[i].x, pts[i].y, pts[i].z, NaN, NaN, NaN, NaN, 0, 0, 100, NaN, null, false, 0, null);
+var atom2 = this.addAtom (modelIndex, atom1.group, 1, "H" + n, n, n, pts[i], NaN, null, 0, 0, 100, NaN, null, false, 0, null);
 atom2.setMadAtom (this.viewer, rd);
 bs.set (atom2.index);
 this.bondAtoms (atom1, atom2, 1, mad, null, 0, false, false);
@@ -508,21 +508,19 @@ vNot.addLast (a);
 }}
 if (vNot.size () == 0) return;
 pt = J.util.Measure.getCenterAndPoints (vNot)[0];
-var v = J.util.V3.newV (thisAtom);
-v.sub (pt);
+var v = J.util.V3.newVsub (thisAtom, pt);
 var q = J.util.Quaternion.newVA (v, 180);
 this.moveAtoms (null, q.getMatrix (), null, bsAtoms, thisAtom, true);
 }}, "J.util.P3,J.util.P4,~N,J.util.BS,J.util.BS");
 $_M(c$, "setDihedrals", 
 function (dihedralList, bsBranches, f) {
 var n = Clazz.doubleToInt (dihedralList.length / 6);
+if (f > 1) f = 1;
 for (var j = 0, pt = 0; j < n; j++, pt += 6) {
 var bs = bsBranches[j];
 if (bs == null || bs.isEmpty ()) continue;
 var a1 = this.atoms[Clazz.floatToInt (dihedralList[pt + 1])];
-var a2 = this.atoms[Clazz.floatToInt (dihedralList[pt + 2])];
-var v = J.util.V3.newV (a2);
-v.sub (a1);
+var v = J.util.V3.newVsub (this.atoms[Clazz.floatToInt (dihedralList[pt + 2])], a1);
 var angle = (dihedralList[pt + 5] - dihedralList[pt + 4]) * f;
 var aa = J.util.AxisAngle4f.newVA (v, (-angle / 57.29577951308232));
 this.matTemp.setAA (aa);

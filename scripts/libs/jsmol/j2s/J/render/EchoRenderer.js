@@ -5,12 +5,10 @@ Clazz.overrideMethod (c$, "render",
 function () {
 if (this.viewer.isPreviewOnly ()) return false;
 var echo = this.shape;
-var e = echo.objects.values ().iterator ();
 var scalePixelsPerMicron = (this.viewer.getBoolean (603979845) ? this.viewer.getScalePixelsPerAngstrom (true) * 10000 : 0);
 this.imageFontScaling = this.viewer.getImageFontScaling ();
 var haveTranslucent = false;
-while (e.hasNext ()) {
-var t = e.next ();
+for (var t, $t = echo.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) {
 if (!t.visible || t.hidden) {
 continue;
 }if (Clazz.instanceOf (t.pointerPt, J.modelset.Atom)) {

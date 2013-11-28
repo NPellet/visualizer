@@ -30,7 +30,7 @@ this.colixes = null;
 this.colixesBack = null;
 this.structureTypes = null;
 this.isPass2 = false;
-this.$wireframeOnly = false;
+this.wireframeOnly = false;
 this.pointT = null;
 this.iPrev = 0;
 this.iNext = 0;
@@ -95,25 +95,25 @@ $_M(c$, "setGlobals",
 this.isPass2 = this.g3d.isPass2 ();
 this.invalidateMesh = false;
 this.needTranslucent = false;
-var TF = (!this.isExport && this.viewer.getBoolean (603979976) && this.viewer.getInMotion (true));
-if (TF != this.$wireframeOnly) this.invalidateMesh = true;
-this.$wireframeOnly = TF;
-TF = (this.isExport || !this.$wireframeOnly && this.viewer.getBoolean (603979864));
+var TF = (!this.isExport && !this.viewer.checkMotionRendering (1113200642));
+if (TF != this.wireframeOnly) this.invalidateMesh = true;
+this.wireframeOnly = TF;
+TF = (this.isExport || !this.wireframeOnly && this.viewer.getBoolean (603979864));
 if (TF != this.isHighRes) this.invalidateMesh = true;
 this.isHighRes = TF;
-TF = !this.$wireframeOnly && this.viewer.getBoolean (603979819);
+TF = !this.wireframeOnly && this.viewer.getBoolean (603979819);
 if (this.cartoonsFancy != TF) {
 this.invalidateMesh = true;
 this.cartoonsFancy = TF;
 }var val1 = this.viewer.getHermiteLevel ();
 val1 = (val1 <= 0 ? -val1 : this.viewer.getInMotion (true) ? 0 : val1);
-if (this.cartoonsFancy && !this.$wireframeOnly) val1 = Math.max (val1, 3);
+if (this.cartoonsFancy && !this.wireframeOnly) val1 = Math.max (val1, 3);
 if (val1 != this.hermiteLevel) this.invalidateMesh = true;
 this.hermiteLevel = Math.min (val1, 8);
 var val = this.viewer.getInt (553648166);
 val = Math.min (Math.max (0, val), 20);
 if (this.cartoonsFancy && val >= 16) val = 4;
-if (this.$wireframeOnly || this.hermiteLevel == 0) val = 0;
+if (this.wireframeOnly || this.hermiteLevel == 0) val = 0;
 if (val != this.aspectRatio && val != 0 && val1 != 0) this.invalidateMesh = true;
 this.aspectRatio = val;
 TF = this.viewer.getBoolean (603979966);
@@ -300,7 +300,7 @@ J.util.Logger.error ("render mesh error hermiteConic: " + e.toString ());
 throw e;
 }
 }
-}if (this.diameterBeg == 0 && this.diameterEnd == 0 || this.$wireframeOnly) this.g3d.drawLineAB (this.controlPointScreens[i], this.controlPointScreens[this.iNext]);
+}if (this.diameterBeg == 0 && this.diameterEnd == 0 || this.wireframeOnly) this.g3d.drawLineAB (this.controlPointScreens[i], this.controlPointScreens[this.iNext]);
  else this.g3d.fillHermite (this.isNucleic ? 4 : 7, this.diameterBeg, this.diameterMid, this.diameterEnd, this.controlPointScreens[this.iPrev], this.controlPointScreens[i], this.controlPointScreens[this.iNext], this.controlPointScreens[this.iNext2]);
 }, "~N,~B");
 $_M(c$, "renderHermiteRibbon", 

@@ -119,7 +119,7 @@ atomsets[i] = ret;
 if (atomsets[i].errorMessage != null) return atomsets[i].errorMessage;
 }} catch (e) {
 J.util.Logger.error ("" + e);
-if (!viewer.isJS ()) e.printStackTrace ();
+if (!viewer.isJS) e.printStackTrace ();
 return "" + e;
 }
 }

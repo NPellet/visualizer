@@ -153,15 +153,9 @@ isNegative = true;
 lt.precision = ch.charCodeAt (0) - 48;
 if (isNegative) lt.precision = -1 - lt.precision;
 ++ich;
-}}if (ich < cch && htValues != null) {
-var keys = htValues.keySet ().iterator ();
-while (keys.hasNext ()) {
-var key = keys.next ();
-if (strFormat.indexOf (key) == ich) {
-lt.key = key;
-return ich + key.length;
-}}
-}if (ich < cch) switch (ch = strFormat.charAt (ich++)) {
+}}if (ich < cch && htValues != null) for (var key, $key = htValues.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) if (strFormat.indexOf (key) == ich) return ich + (lt.key = key).length;
+
+if (ich < cch) switch (ch = strFormat.charAt (ich++)) {
 case '%':
 lt.text = "%";
 return ich;

@@ -1,15 +1,33 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.util.Rectangle", "J.viewer.MouseState"], "J.viewer.ActionManager", ["java.lang.Character", "$.Float", "java.util.Hashtable", "J.i18n.GT", "J.modelset.MeasurementPending", "J.thread.HoverWatcherThread", "J.util.BSUtil", "$.Escape", "$.JmolList", "$.P3", "$.Point3fi", "$.TextFormat", "J.viewer.binding.Binding", "$.JmolBinding"], function () {
+Clazz.load (["J.util.Rectangle", "J.viewer.MouseState"], "J.viewer.ActionManager", ["java.lang.Character", "$.Float", "java.util.Hashtable", "J.i18n.GT", "J.modelset.MeasurementPending", "J.thread.HoverWatcherThread", "J.util.BSUtil", "$.Escape", "$.JmolList", "$.Logger", "$.P3", "$.Point3fi", "$.TextFormat", "J.viewer.binding.Binding", "$.JmolBinding"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
+this.haveMultiTouchInput = false;
 this.binding = null;
 this.jmolBinding = null;
 this.pfaatBinding = null;
 this.dragBinding = null;
 this.rasmolBinding = null;
 this.predragBinding = null;
+this.LEFT_CLICKED = 0;
+this.LEFT_DRAGGED = 0;
 this.hoverWatcherThread = null;
-this.haveMultiTouchInput = false;
+if (!Clazz.isClassDefined ("J.viewer.ActionManager.MotionPoint")) {
+J.viewer.ActionManager.$ActionManager$MotionPoint$ ();
+}
+this.dragGesture = null;
+if (!Clazz.isClassDefined ("J.viewer.ActionManager.Gesture")) {
+J.viewer.ActionManager.$ActionManager$Gesture$ ();
+}
+this.atomPickingMode = 1;
+this.bondPickingMode = 0;
+this.pickingStyle = 0;
+this.pickingStyleSelect = 0;
+this.pickingStyleMeasure = 5;
+this.rootPickingStyle = 0;
+this.pickAtomAssignType = "C";
+this.pickBondAssignType = 'p';
+this.isPickAtomAssignCharge = false;
 this.xyRange = 0;
 this.gestureSwipeFactor = 1.0;
 this.mouseDragFactor = 1.0;
@@ -20,12 +38,12 @@ this.clicked = null;
 this.pressed = null;
 this.dragged = null;
 this.pressedCount = 0;
-this.pressedAtomIndex = 0;
 this.clickedCount = 0;
 this.drawMode = false;
 this.labelMode = false;
 this.dragSelectedMode = false;
 this.measuresEnabled = true;
+this.haveSelection = false;
 this.hoverActive = false;
 this.measurementPending = null;
 this.dragAtomIndex = -1;
@@ -35,36 +53,72 @@ this.isAltKeyReleased = true;
 this.keyProcessing = false;
 this.isMultiTouchClient = false;
 this.isMultiTouchServer = false;
-this.haveSelection = false;
+this.pressAction = 0;
+this.dragAction = 0;
+this.clickAction = 0;
 this.measurementQueued = null;
-this.pickingStyle = 0;
-this.atomPickingMode = 1;
-this.pickingStyleSelect = 0;
-this.pickingStyleMeasure = 5;
-this.rootPickingStyle = 0;
-this.pickAtomAssignType = "C";
-this.pickBondAssignType = 'p';
-this.bondPickingMode = 0;
-this.isPickAtomAssignCharge = false;
-if (!Clazz.isClassDefined ("J.viewer.ActionManager.MotionPoint")) {
-J.viewer.ActionManager.$ActionManager$MotionPoint$ ();
-}
-this.dragGesture = null;
-if (!Clazz.isClassDefined ("J.viewer.ActionManager.Gesture")) {
-J.viewer.ActionManager.$ActionManager$Gesture$ ();
-}
 this.selectionWorking = false;
 Clazz.instantialize (this, arguments);
 }, J.viewer, "ActionManager");
 Clazz.prepareFields (c$, function () {
+this.dragGesture = Clazz.innerTypeInstance (J.viewer.ActionManager.Gesture, this, null, 20);
 this.current =  new J.viewer.MouseState ("current");
 this.moved =  new J.viewer.MouseState ("moved");
 this.clicked =  new J.viewer.MouseState ("clicked");
 this.pressed =  new J.viewer.MouseState ("pressed");
 this.dragged =  new J.viewer.MouseState ("dragged");
 this.rectRubber =  new J.util.Rectangle ();
-this.dragGesture = Clazz.innerTypeInstance (J.viewer.ActionManager.Gesture, this, null, 20);
 });
+$_M(c$, "setViewer", 
+function (viewer, commandOptions) {
+this.viewer = viewer;
+this.setBinding (this.jmolBinding =  new J.viewer.binding.JmolBinding ("toggle"));
+this.LEFT_CLICKED = J.viewer.binding.Binding.getMouseAction (1, 16, 2);
+this.LEFT_DRAGGED = J.viewer.binding.Binding.getMouseAction (1, 16, 1);
+}, "J.viewer.Viewer,~S");
+$_M(c$, "checkHover", 
+function () {
+if (!this.viewer.getInMotion (true) && !this.viewer.getSpinOn () && !this.viewer.getNavOn () && !this.viewer.checkObjectHovered (this.current.x, this.current.y)) {
+var atomIndex = this.viewer.findNearestAtomIndex (this.current.x, this.current.y);
+if (atomIndex < 0) return;
+var isLabel = (this.getAtomPickingMode () == 2 && this.isBound (J.viewer.binding.Binding.getMouseAction (this.clickedCount, this.moved.modifiers, 1), 10));
+this.viewer.hoverOn (atomIndex, isLabel);
+}});
+$_M(c$, "processMultitouchEvent", 
+function (groupID, eventType, touchID, iData, pt, time) {
+}, "~N,~N,~N,~N,J.util.P3,~N");
+$_M(c$, "isBound", 
+function (mouseAction, jmolAction) {
+return this.binding.isBound (mouseAction, jmolAction);
+}, "~N,~N");
+$_M(c$, "bindAction", 
+function (desc, name) {
+var jmolAction = J.viewer.ActionManager.getActionFromName (name);
+var mouseAction = J.viewer.binding.Binding.getMouseActionStr (desc);
+if (mouseAction == 0) return;
+if (jmolAction >= 0) {
+this.binding.bindAction (mouseAction, jmolAction);
+} else {
+this.binding.bindName (mouseAction, name);
+}}, "~S,~S");
+$_M(c$, "clearBindings", 
+function () {
+this.setBinding (this.jmolBinding =  new J.viewer.binding.JmolBinding ("toggle"));
+this.pfaatBinding = null;
+this.dragBinding = null;
+this.rasmolBinding = null;
+});
+$_M(c$, "unbindAction", 
+function (desc, name) {
+if (desc == null && name == null) {
+this.clearBindings ();
+return;
+}var jmolAction = J.viewer.ActionManager.getActionFromName (name);
+var mouseAction = J.viewer.binding.Binding.getMouseActionStr (desc);
+if (jmolAction >= 0) this.binding.unbindAction (mouseAction, jmolAction);
+ else if (mouseAction != 0) this.binding.unbindName (mouseAction, name);
+if (name == null) this.binding.unbindUserAction (desc);
+}, "~S,~S");
 c$.newAction = $_M(c$, "newAction", 
 function (i, name, info) {
 J.viewer.ActionManager.actionInfo[i] = info;
@@ -84,6 +138,10 @@ $_M(c$, "getBindingInfo",
 function (qualifiers) {
 return this.binding.getBindingInfo (J.viewer.ActionManager.actionInfo, J.viewer.ActionManager.actionNames, qualifiers);
 }, "~S");
+$_M(c$, "setBinding", 
+function (newBinding) {
+this.binding = newBinding;
+}, "J.viewer.binding.Binding");
 c$.getPickingModeName = $_M(c$, "getPickingModeName", 
 function (pickingMode) {
 return (pickingMode < 0 || pickingMode >= J.viewer.ActionManager.pickingModeNames.length ? "off" : J.viewer.ActionManager.pickingModeNames[pickingMode]);
@@ -93,6 +151,52 @@ function (str) {
 for (var i = J.viewer.ActionManager.pickingModeNames.length; --i >= 0; ) if (str.equalsIgnoreCase (J.viewer.ActionManager.pickingModeNames[i])) return i;
 
 return -1;
+}, "~S");
+$_M(c$, "getAtomPickingMode", 
+function () {
+return this.atomPickingMode;
+});
+$_M(c$, "setPickingMode", 
+function (pickingMode) {
+var isNew = false;
+switch (pickingMode) {
+case -1:
+isNew = true;
+this.bondPickingMode = 35;
+pickingMode = 1;
+break;
+case 35:
+case 34:
+case 33:
+this.viewer.setBooleanProperty ("bondPicking", true);
+this.bondPickingMode = pickingMode;
+return;
+case 8:
+this.bondPickingMode = pickingMode;
+if (this.viewer.getBondPicking ()) return;
+isNew = true;
+break;
+}
+isNew = new Boolean (isNew | (this.atomPickingMode != pickingMode)).valueOf ();
+this.atomPickingMode = pickingMode;
+if (isNew) this.resetMeasurement ();
+}, "~N");
+$_M(c$, "setAtomPickingOption", 
+function (option) {
+switch (this.atomPickingMode) {
+case 32:
+this.pickAtomAssignType = option;
+this.isPickAtomAssignCharge = (this.pickAtomAssignType.equals ("Pl") || this.pickAtomAssignType.equals ("Mi"));
+break;
+}
+}, "~S");
+$_M(c$, "setBondPickingOption", 
+function (option) {
+switch (this.bondPickingMode) {
+case 33:
+this.pickBondAssignType = Character.toLowerCase (option.charAt (0));
+break;
+}
 }, "~S");
 c$.getPickingStyleName = $_M(c$, "getPickingStyleName", 
 function (pickingStyle) {
@@ -104,6 +208,46 @@ for (var i = J.viewer.ActionManager.pickingStyleNames.length; --i >= 0; ) if (st
 
 return -1;
 }, "~S");
+$_M(c$, "getPickingState", 
+function () {
+var script = ";set modelkitMode " + this.viewer.getBoolean (603979883) + ";set picking " + J.viewer.ActionManager.getPickingModeName (this.atomPickingMode);
+if (this.atomPickingMode == 32) script += "_" + this.pickAtomAssignType;
+script += ";";
+if (this.bondPickingMode != 0) script += "set picking " + J.viewer.ActionManager.getPickingModeName (this.bondPickingMode);
+if (this.bondPickingMode == 33) script += "_" + this.pickBondAssignType;
+script += ";";
+return script;
+});
+$_M(c$, "getPickingStyle", 
+function () {
+return this.pickingStyle;
+});
+$_M(c$, "setPickingStyle", 
+function (pickingStyle) {
+this.pickingStyle = pickingStyle;
+if (pickingStyle >= 4) {
+this.pickingStyleMeasure = pickingStyle;
+this.resetMeasurement ();
+} else {
+if (pickingStyle < 3) this.rootPickingStyle = pickingStyle;
+this.pickingStyleSelect = pickingStyle;
+}this.rubberbandSelectionMode = false;
+switch (this.pickingStyleSelect) {
+case 2:
+if (!this.binding.getName ().equals ("extendedSelect")) this.setBinding (this.pfaatBinding == null ? this.pfaatBinding = J.viewer.binding.Binding.newBinding ("Pfaat") : this.pfaatBinding);
+break;
+case 3:
+if (!this.binding.getName ().equals ("drag")) this.setBinding (this.dragBinding == null ? this.dragBinding = J.viewer.binding.Binding.newBinding ("Drag") : this.dragBinding);
+this.rubberbandSelectionMode = true;
+break;
+case 1:
+if (!this.binding.getName ().equals ("selectOrToggle")) this.setBinding (this.rasmolBinding == null ? this.rasmolBinding = J.viewer.binding.Binding.newBinding ("Rasmol") : this.rasmolBinding);
+break;
+default:
+if (this.binding !== this.jmolBinding) this.setBinding (this.jmolBinding);
+}
+if (!this.binding.getName ().equals ("drag")) this.predragBinding = this.binding;
+}, "~N");
 $_M(c$, "getMouseInfo", 
 function () {
 var info =  new java.util.Hashtable ();
@@ -122,46 +266,6 @@ info.put ("actionInfo", J.viewer.ActionManager.actionInfo);
 info.put ("bindingInfo", J.util.TextFormat.split (this.getBindingInfo (null), '\n'));
 return info;
 });
-$_M(c$, "setViewer", 
-function (viewer, commandOptions) {
-this.viewer = viewer;
-this.setBinding (this.jmolBinding =  new J.viewer.binding.JmolBinding ("toggle"));
-}, "J.viewer.Viewer,~S");
-$_M(c$, "processEvent", 
-function (groupID, eventType, touchID, iData, pt, time) {
-}, "~N,~N,~N,~N,J.util.P3,~N");
-$_M(c$, "isBound", 
-function (gesture, action) {
-return this.binding.isBound (gesture, action);
-}, "~N,~N");
-$_M(c$, "bindAction", 
-function (desc, name, range1, range2) {
-var jmolAction = J.viewer.ActionManager.getActionFromName (name);
-var mouseAction = J.viewer.binding.Binding.getMouseActionStr (desc);
-if (mouseAction == 0) return;
-if (jmolAction >= 0) {
-this.binding.bindAction (mouseAction, jmolAction);
-} else {
-this.binding.bindName (mouseAction, name);
-}}, "~S,~S,J.util.P3,J.util.P3");
-$_M(c$, "clearBindings", 
-function () {
-this.setBinding (this.jmolBinding =  new J.viewer.binding.JmolBinding ("toggle"));
-this.pfaatBinding = null;
-this.dragBinding = null;
-this.rasmolBinding = null;
-});
-$_M(c$, "unbindAction", 
-function (desc, name) {
-if (desc == null && name == null) {
-this.clearBindings ();
-return;
-}var jmolAction = J.viewer.ActionManager.getActionFromName (name);
-var mouseAction = J.viewer.binding.Binding.getMouseActionStr (desc);
-if (jmolAction >= 0) this.binding.unbindAction (mouseAction, jmolAction);
- else if (mouseAction != 0) this.binding.unbindName (mouseAction, name);
-if (name == null) this.binding.unbindUserAction (desc);
-}, "~S,~S");
 $_M(c$, "setGestureSwipeFactor", 
 function (factor) {
 this.gestureSwipeFactor = factor;
@@ -176,7 +280,7 @@ this.mouseWheelFactor = factor;
 }, "~N");
 $_M(c$, "setCurrent", 
 function (time, x, y, mods) {
-this.hoverOff ();
+this.viewer.hoverOff ();
 this.current.set (time, x, y, mods);
 }, "~N,~N,~N,~N");
 $_M(c$, "getCurrentX", 
@@ -272,7 +376,7 @@ this.startHoverWatcher (false);
 $_M(c$, "keyPressed", 
 function (key, modifiers) {
 if (this.keyProcessing) return;
-this.hoverOff ();
+this.viewer.hoverOff ();
 this.keyProcessing = true;
 switch (key) {
 case 18:
@@ -287,8 +391,8 @@ break;
 case 17:
 this.moved.modifiers |= 2;
 }
-var action = 16 + 256 + this.moved.modifiers;
-if (!this.labelMode && !this.binding.isUserAction (action) && !this.isSelectAction (action)) this.checkMotionRotateZoom (action, this.current.x, 0, 0, false);
+var action = 16 | 256 | 8192 | this.moved.modifiers;
+if (!this.labelMode && !this.binding.isUserAction (action)) this.checkMotionRotateZoom (action, this.current.x, 0, 0, false);
 if (this.viewer.getBoolean (603979887)) {
 switch (key) {
 case 38:
@@ -338,18 +442,407 @@ if (this.measurementPending != null) {
 this.exitMeasurementMode ();
 this.viewer.refresh (3, "mouseExit");
 }}, "~N,~N,~N");
-$_M(c$, "minimize", 
-($fz = function (dragDone) {
-this.viewer.stopMinimization ();
-var iAtom = this.dragAtomIndex;
-if (dragDone) this.dragAtomIndex = -1;
-var bs = (this.viewer.getMotionFixedAtoms ().cardinality () == 0 ? this.viewer.getAtomBits ((this.viewer.isAtomPDB (iAtom) ? 1087373318 : 1095761934), J.util.BSUtil.newAndSetBit (iAtom)) : J.util.BSUtil.setAll (this.viewer.getAtomCount ()));
-this.viewer.minimize (2147483647, 0, bs, null, 0, false, false, false);
-}, $fz.isPrivate = true, $fz), "~B");
+$_M(c$, "setMouseActions", 
+($fz = function (count, buttonMods, isRelease) {
+this.pressAction = J.viewer.binding.Binding.getMouseAction (count, buttonMods, isRelease ? 5 : 4);
+this.dragAction = J.viewer.binding.Binding.getMouseAction (count, buttonMods, 1);
+this.clickAction = J.viewer.binding.Binding.getMouseAction (count, buttonMods, 2);
+}, $fz.isPrivate = true, $fz), "~N,~N,~B");
+$_M(c$, "mouseAction", 
+function (mode, time, x, y, count, buttonMods) {
+if (!this.viewer.getMouseEnabled ()) return;
+switch (mode) {
+case 0:
+this.setCurrent (time, x, y, buttonMods);
+this.moved.setCurrent (this.current, 0);
+if (this.measurementPending != null || this.hoverActive) {
+this.clickAction = J.viewer.binding.Binding.getMouseAction (this.clickedCount, buttonMods, 0);
+this.checkClickAction (x, y, time, 0);
+return;
+}if (this.isZoomArea (x)) {
+this.checkMotionRotateZoom (this.LEFT_DRAGGED, 0, 0, 0, false);
+return;
+}if (this.viewer.getCursor () == 5) this.viewer.setCursor (0);
+return;
+case 4:
+this.setMouseMode ();
+this.pressedCount = (this.pressed.check (0, 0, 0, buttonMods, time, 700) ? this.pressedCount + 1 : 1);
+if (this.pressedCount == 1) {
+this.viewer.checkInMotion (1);
+this.setCurrent (time, x, y, buttonMods);
+}this.pressAction = J.viewer.binding.Binding.getMouseAction (this.pressedCount, buttonMods, 4);
+this.viewer.setCursor (1);
+this.pressed.setCurrent (this.current, 1);
+this.dragged.setCurrent (this.current, 1);
+this.viewer.setFocus ();
+this.dragGesture.setAction (this.dragAction, time);
+this.checkPressedAction (x, y, time);
+return;
+case 1:
+this.setMouseMode ();
+this.setMouseActions (this.pressedCount, buttonMods, false);
+var deltaX = x - this.dragged.x;
+var deltaY = y - this.dragged.y;
+this.setCurrent (time, x, y, buttonMods);
+this.dragged.setCurrent (this.current, -1);
+if (this.atomPickingMode != 32) this.exitMeasurementMode ();
+this.dragGesture.add (this.dragAction, x, y, time);
+this.checkDragWheelAction (this.dragAction, x, y, deltaX, deltaY, time, 1);
+return;
+case 5:
+this.setMouseActions (this.pressedCount, buttonMods, true);
+this.setCurrent (time, x, y, buttonMods);
+this.viewer.spinXYBy (0, 0, 0);
+var dragRelease = !this.pressed.check (this.xyRange, x, y, buttonMods, time, 9223372036854775807);
+this.checkReleaseAction (x, y, time, dragRelease);
+return;
+case 2:
+this.setMouseMode ();
+this.clickedCount = (count > 1 ? count : this.clicked.check (0, 0, 0, buttonMods, time, 700) ? this.clickedCount + 1 : 1);
+if (this.clickedCount == 1) {
+this.setCurrent (time, x, y, buttonMods);
+}this.setMouseActions (this.clickedCount, buttonMods, false);
+this.clicked.setCurrent (this.current, this.clickedCount);
+this.viewer.setFocus ();
+if (this.atomPickingMode != 9 && this.isBound (J.viewer.binding.Binding.getMouseAction (1, buttonMods, 4), 31)) return;
+this.clickAction = J.viewer.binding.Binding.getMouseAction (this.clickedCount, buttonMods, 2);
+this.checkClickAction (x, y, time, this.clickedCount);
+return;
+case 3:
+if (this.viewer.isApplet () && !this.viewer.hasFocus ()) return;
+this.setCurrent (time, this.current.x, this.current.y, buttonMods);
+this.checkDragWheelAction (J.viewer.binding.Binding.getMouseAction (0, buttonMods, 3), this.current.x, this.current.y, 0, y, time, 3);
+return;
+}
+}, "~N,~N,~N,~N,~N,~N");
+$_M(c$, "checkPressedAction", 
+($fz = function (x, y, time) {
+var buttonMods = J.viewer.binding.Binding.getButtonMods (this.pressAction);
+var isSelectAndDrag = this.isBound (J.viewer.binding.Binding.getMouseAction (1, buttonMods, 4), 31);
+if (buttonMods != 0) {
+this.pressAction = this.viewer.notifyMouseClicked (x, y, this.pressAction, 4);
+if (this.pressAction == 0) return;
+buttonMods = J.viewer.binding.Binding.getButtonMods (this.pressAction);
+}this.setMouseActions (this.pressedCount, buttonMods, false);
+if (J.util.Logger.debugging) J.util.Logger.debug (J.viewer.binding.Binding.getMouseActionName (this.pressAction, false));
+if (this.drawMode && (this.isBound (this.dragAction, 8) || this.isBound (this.dragAction, 9)) || this.labelMode && this.isBound (this.dragAction, 10)) {
+this.viewer.checkObjectDragged (-2147483648, 0, x, y, this.dragAction);
+return;
+}this.checkUserAction (this.pressAction, x, y, 0, 0, time, 4);
+var isBound = false;
+switch (this.atomPickingMode) {
+case 32:
+isBound = this.isBound (this.clickAction, 0);
+break;
+case 28:
+isBound = this.isBound (this.dragAction, 7) || this.isBound (this.dragAction, 14);
+break;
+case 26:
+case 36:
+case 27:
+isBound = this.isBound (this.dragAction, 7) || this.isBound (this.dragAction, 27) || this.isBound (this.dragAction, 14);
+break;
+case 29:
+isBound = this.isBound (this.dragAction, 11) || this.isBound (this.dragAction, 14);
+break;
+case 30:
+isBound = this.isBound (this.dragAction, 12) || this.isBound (this.dragAction, 27) || this.isBound (this.dragAction, 14);
+break;
+}
+if (isBound) {
+this.dragAtomIndex = this.viewer.findNearestAtomIndexMovable (x, y, true);
+if (this.dragAtomIndex >= 0 && (this.atomPickingMode == 32 || this.atomPickingMode == 31) && this.viewer.isAtomAssignable (this.dragAtomIndex)) {
+this.enterMeasurementMode (this.dragAtomIndex);
+this.measurementPending.addPoint (this.dragAtomIndex, null, false);
+}return;
+}if (this.isBound (this.pressAction, 23)) {
+var type = 'j';
+if (this.viewer.getBoolean (603979883)) {
+var t = this.viewer.checkObjectClicked (x, y, this.LEFT_CLICKED);
+type = (t != null && "bond".equals (t.get ("type")) ? 'b' : this.viewer.findNearestAtomIndex (x, y) >= 0 ? 'a' : 'm');
+}this.viewer.popupMenu (x, y, type);
+return;
+}if (this.dragSelectedMode) {
+this.haveSelection = true;
+if (isSelectAndDrag) {
+this.haveSelection = (this.viewer.findNearestAtomIndexMovable (x, y, true) >= 0);
+}if (!this.haveSelection) return;
+if (this.isBound (this.dragAction, 13) || this.isBound (this.dragAction, 14)) this.viewer.moveSelected (-2147483648, 0, -2147483648, -2147483648, -2147483648, null, false, false);
+return;
+}if (this.viewer.global.useArcBall) this.viewer.rotateArcBall (x, y, 0);
+this.checkMotionRotateZoom (this.dragAction, x, 0, 0, true);
+}, $fz.isPrivate = true, $fz), "~N,~N,~N");
+$_M(c$, "checkDragWheelAction", 
+($fz = function (dragWheelAction, x, y, deltaX, deltaY, time, mode) {
+var buttonmods = J.viewer.binding.Binding.getButtonMods (dragWheelAction);
+if (buttonmods != 0) {
+var newAction = this.viewer.notifyMouseClicked (x, y, J.viewer.binding.Binding.getMouseAction (this.pressedCount, buttonmods, mode), mode);
+if (newAction == 0) return;
+if (newAction > 0) dragWheelAction = newAction;
+}if (this.isRubberBandSelect (dragWheelAction)) {
+this.calcRectRubberBand ();
+this.viewer.refresh (3, "rubberBand selection");
+return;
+}if (this.checkUserAction (dragWheelAction, x, y, deltaX, deltaY, time, mode)) return;
+if (this.viewer.getRotateBondIndex () >= 0) {
+if (this.isBound (dragWheelAction, 26)) {
+this.viewer.moveSelected (deltaX, deltaY, -2147483648, x, y, null, false, false);
+return;
+}if (!this.isBound (dragWheelAction, 25)) this.viewer.setRotateBondIndex (-1);
+}var bs = null;
+if (this.dragAtomIndex >= 0) {
+switch (this.atomPickingMode) {
+case 26:
+this.setMotion (3, true);
+if (this.isBound (dragWheelAction, 27) && this.viewer.getBoolean (603979785)) {
+this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), null);
+} else {
+this.viewer.moveSelected (deltaX, deltaY, (this.isBound (dragWheelAction, 14) ? -deltaY : -2147483648), -2147483648, -2147483648, null, true, false);
+}return;
+case 36:
+case 27:
+case 30:
+bs = this.viewer.getAtomBits (1095761934, J.util.BSUtil.newAndSetBit (this.dragAtomIndex));
+if (this.atomPickingMode == 36) bs.and (this.viewer.getAtomBitSet ("ligand"));
+case 28:
+case 29:
+if (this.dragGesture.getPointCount () == 1) this.viewer.undoMoveActionClear (this.dragAtomIndex, 2, true);
+this.setMotion (3, true);
+if (this.isBound (dragWheelAction, 27)) {
+this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), bs);
+} else {
+switch (this.atomPickingMode) {
+case 36:
+case 27:
+case 30:
+this.viewer.select (bs, false, 0, true);
+break;
+}
+this.viewer.moveAtomWithHydrogens (this.dragAtomIndex, deltaX, deltaY, (this.isBound (dragWheelAction, 14) ? -deltaY : -2147483648), bs);
+}return;
+}
+}if (this.dragAtomIndex >= 0 && mode == 1 && this.isBound (this.clickAction, 0) && this.atomPickingMode == 32) {
+var nearestAtomIndex = this.viewer.findNearestAtomIndexMovable (x, y, false);
+if (nearestAtomIndex >= 0) {
+if (this.measurementPending != null) {
+this.measurementPending.setCount (1);
+} else if (this.measuresEnabled) {
+this.enterMeasurementMode (nearestAtomIndex);
+}this.addToMeasurement (nearestAtomIndex, null, true);
+this.measurementPending.colix = 20;
+} else if (this.measurementPending != null) {
+this.measurementPending.setCount (1);
+this.measurementPending.colix = 23;
+}if (this.measurementPending == null) return;
+this.measurementPending.traceX = x;
+this.measurementPending.traceY = y;
+this.viewer.refresh (3, "assignNew");
+return;
+}if (!this.drawMode && !this.labelMode && this.isBound (dragWheelAction, 45)) {
+this.viewer.translateXYBy (deltaX, deltaY);
+return;
+}if (this.dragSelectedMode && this.haveSelection && (this.isBound (dragWheelAction, 13) || this.isBound (dragWheelAction, 27))) {
+var iatom = this.viewer.getSelectionSet (false).nextSetBit (0);
+if (iatom < 0) return;
+if (this.dragGesture.getPointCount () == 1) this.viewer.undoMoveActionClear (iatom, 2, true);
+ else this.viewer.moveSelected (2147483647, 0, -2147483648, -2147483648, -2147483648, null, false, false);
+this.setMotion (3, true);
+if (this.isBound (dragWheelAction, 27) && this.viewer.getBoolean (603979785)) this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), null);
+ else this.viewer.moveSelected (deltaX, deltaY, -2147483648, -2147483648, -2147483648, null, true, false);
+return;
+}if (this.drawMode && (this.isBound (dragWheelAction, 8) || this.isBound (dragWheelAction, 9)) || this.labelMode && this.isBound (dragWheelAction, 10)) {
+this.setMotion (3, true);
+this.viewer.checkObjectDragged (this.dragged.x, this.dragged.y, x, y, dragWheelAction);
+return;
+}if (this.checkMotionRotateZoom (dragWheelAction, x, deltaX, deltaY, true)) {
+if (this.viewer.getSlabEnabled () && this.checkSlideZoom (dragWheelAction)) this.viewer.slabDepthByPixels (deltaY);
+ else this.viewer.zoomBy (deltaY);
+return;
+}if (this.isBound (dragWheelAction, 25)) {
+var degX = this.getDegrees (deltaX, 0);
+var degY = this.getDegrees (deltaY, 1);
+if (this.viewer.global.useArcBall) this.viewer.rotateArcBall (x, y, this.mouseDragFactor);
+ else this.viewer.rotateXYBy (degX, degY);
+return;
+}if (this.isBound (dragWheelAction, 29)) {
+if (deltaX == 0 && Math.abs (deltaY) > 1) {
+this.setMotion (5, true);
+this.viewer.zoomBy (deltaY + (deltaY > 0 ? -1 : 1));
+} else if (deltaY == 0 && Math.abs (deltaX) > 1) {
+this.setMotion (3, true);
+this.viewer.rotateZBy (-deltaX + (deltaX > 0 ? 1 : -1), 2147483647, 2147483647);
+}return;
+} else if (this.isBound (dragWheelAction, 46)) {
+this.zoomByFactor (deltaY, 2147483647, 2147483647);
+return;
+} else if (this.isBound (dragWheelAction, 28)) {
+this.setMotion (3, true);
+this.viewer.rotateZBy (-deltaX, 2147483647, 2147483647);
+return;
+}if (this.viewer.getSlabEnabled ()) {
+if (this.isBound (dragWheelAction, 6)) {
+this.viewer.depthByPixels (deltaY);
+return;
+}if (this.isBound (dragWheelAction, 38)) {
+this.viewer.slabByPixels (deltaY);
+return;
+}if (this.isBound (dragWheelAction, 39)) {
+this.viewer.slabDepthByPixels (deltaY);
+return;
+}}}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N");
+$_M(c$, "checkReleaseAction", 
+($fz = function (x, y, time, dragRelease) {
+if (J.util.Logger.debugging) J.util.Logger.debug (J.viewer.binding.Binding.getMouseActionName (this.pressAction, false));
+this.viewer.checkInMotion (0);
+this.viewer.setInMotion (false);
+this.viewer.setCursor (0);
+this.dragGesture.add (this.dragAction, x, y, time);
+if (dragRelease) this.viewer.setRotateBondIndex (-2147483648);
+if (this.dragAtomIndex >= 0) {
+if (this.atomPickingMode == 29 || this.atomPickingMode == 30) this.minimize (true);
+}if (this.atomPickingMode == 32 && this.isBound (this.clickAction, 0)) {
+if (this.measurementPending == null || this.dragAtomIndex < 0) return;
+this.assignNew (x, y);
+return;
+}this.dragAtomIndex = -1;
+var isRbAction = this.isRubberBandSelect (this.clickAction);
+if (isRbAction) this.selectRb (this.clickAction);
+this.rubberbandSelectionMode = (this.binding.getName ().equals ("drag"));
+this.rectRubber.x = 2147483647;
+if (dragRelease) {
+this.viewer.notifyMouseClicked (x, y, J.viewer.binding.Binding.getMouseAction (this.pressedCount, 0, 5), 5);
+}if (this.drawMode && (this.isBound (this.dragAction, 8) || this.isBound (this.dragAction, 9)) || this.labelMode && this.isBound (this.dragAction, 10)) {
+this.viewer.checkObjectDragged (2147483647, 0, x, y, this.dragAction);
+return;
+}if (this.dragSelectedMode && this.isBound (this.dragAction, 13) && this.haveSelection) this.viewer.moveSelected (2147483647, 0, -2147483648, -2147483648, -2147483648, null, false, false);
+if (dragRelease && this.checkUserAction (this.pressAction, x, y, 0, 0, time, 5)) return;
+if (this.viewer.getBoolean (603979780)) {
+if (this.isBound (this.dragAction, 44)) {
+var speed = this.getExitRate ();
+if (speed > 0) this.viewer.spinXYBy (this.dragGesture.getDX (4, 2), this.dragGesture.getDY (4, 2), speed * 30 * this.gestureSwipeFactor);
+if (this.viewer.global.logGestures) this.viewer.log ("$NOW$ swipe " + this.dragGesture + " " + speed);
+return;
+}}}, $fz.isPrivate = true, $fz), "~N,~N,~N,~B");
+$_M(c$, "checkClickAction", 
+($fz = function (x, y, time, clickedCount) {
+if (!this.viewer.haveModelSet ()) return;
+if (clickedCount > 0) {
+if (this.checkUserAction (this.clickAction, x, y, 0, 0, time, 32768)) return;
+this.clickAction = this.viewer.notifyMouseClicked (x, y, this.clickAction, 32768);
+if (this.clickAction == 0) return;
+}if (J.util.Logger.debugging) J.util.Logger.debug (J.viewer.binding.Binding.getMouseActionName (this.clickAction, false));
+if (this.isBound (this.clickAction, 2) && this.viewer.frankClicked (x, y)) {
+this.viewer.popupMenu (-x, y, 'j');
+return;
+}if (this.isBound (this.clickAction, 2) && this.viewer.frankClickedModelKit (x, y)) {
+this.viewer.popupMenu (0, 0, 'm');
+return;
+}var nearestPoint = null;
+var isBond = false;
+var isIsosurface = false;
+var t = null;
+if (!this.drawMode) {
+t = this.viewer.checkObjectClicked (x, y, this.clickAction);
+if (t != null) {
+isBond = "bond".equals (t.get ("type"));
+isIsosurface = "isosurface".equals (t.get ("type"));
+nearestPoint = this.getPoint (t);
+}}if (isBond) clickedCount = 1;
+if (nearestPoint != null && Float.isNaN (nearestPoint.x)) return;
+var nearestAtomIndex = this.findNearestAtom (x, y, nearestPoint, clickedCount > 0);
+if (clickedCount == 0 && this.atomPickingMode != 32) {
+if (this.measurementPending == null) return;
+if (nearestPoint != null || this.measurementPending.getIndexOf (nearestAtomIndex) == 0) this.measurementPending.addPoint (nearestAtomIndex, nearestPoint, false);
+if (this.measurementPending.haveModified ()) this.viewer.setPendingMeasurement (this.measurementPending);
+this.viewer.refresh (3, "measurementPending");
+return;
+}this.setMouseMode ();
+if (this.isBound (this.clickAction, 43)) {
+this.viewer.stopMotion ();
+}if (this.viewer.getBoolean (603979887) && this.atomPickingMode == 23 && this.isBound (this.clickAction, 21)) {
+this.viewer.navTranslatePercent (x * 100 / this.viewer.getScreenWidth () - 50, y * 100 / this.viewer.getScreenHeight () - 50);
+return;
+}if (isBond) {
+if (this.isBound (this.clickAction, this.bondPickingMode == 34 || this.bondPickingMode == 33 ? 0 : 5)) {
+this.bondPicked ((t.get ("index")).intValue ());
+return;
+}} else if (isIsosurface) {
+return;
+} else {
+if (this.atomPickingMode != 32 && this.measurementPending != null && this.isBound (this.clickAction, 20)) {
+this.atomOrPointPicked (nearestAtomIndex, nearestPoint);
+if (this.addToMeasurement (nearestAtomIndex, nearestPoint, false) == 4) this.toggleMeasurement ();
+return;
+}if (this.isBound (this.clickAction, 37)) {
+if (this.measurementPending != null) {
+this.addToMeasurement (nearestAtomIndex, nearestPoint, true);
+this.toggleMeasurement ();
+} else if (!this.drawMode && !this.labelMode && !this.dragSelectedMode && this.measuresEnabled) {
+this.enterMeasurementMode (nearestAtomIndex);
+this.addToMeasurement (nearestAtomIndex, nearestPoint, true);
+}this.atomOrPointPicked (nearestAtomIndex, nearestPoint);
+return;
+}}if (this.isSelectAction (this.clickAction)) {
+if (!isIsosurface) this.atomOrPointPicked (nearestAtomIndex, nearestPoint);
+return;
+}if (this.isBound (this.clickAction, 24)) {
+if (nearestAtomIndex < 0) this.reset ();
+return;
+}}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N");
+$_M(c$, "checkUserAction", 
+($fz = function (mouseAction, x, y, deltaX, deltaY, time, mode) {
+if (!this.binding.isUserAction (mouseAction)) return false;
+var passThrough = false;
+var obj;
+var ht = this.binding.getBindings ();
+var mkey = mouseAction + "\t";
+for (var key, $key = ht.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
+if (key.indexOf (mkey) != 0 || !J.util.Escape.isAS (obj = ht.get (key))) continue;
+var script = (obj)[1];
+var nearestPoint = null;
+if (script.indexOf ("_ATOM") >= 0) {
+var iatom = this.findNearestAtom (x, y, null, true);
+script = J.util.TextFormat.simpleReplace (script, "_ATOM", "({" + (iatom >= 0 ? "" + iatom : "") + "})");
+if (iatom >= 0) script = J.util.TextFormat.simpleReplace (script, "_POINT", J.util.Escape.eP (this.viewer.getModelSet ().atoms[iatom]));
+}if (!this.drawMode && (script.indexOf ("_POINT") >= 0 || script.indexOf ("_OBJECT") >= 0 || script.indexOf ("_BOND") >= 0)) {
+var t = this.viewer.checkObjectClicked (x, y, mouseAction);
+if (t != null && (nearestPoint = t.get ("pt")) != null) {
+var isBond = t.get ("type").equals ("bond");
+if (isBond) script = J.util.TextFormat.simpleReplace (script, "_BOND", "[{" + t.get ("index") + "}]");
+script = J.util.TextFormat.simpleReplace (script, "_POINT", J.util.Escape.eP (nearestPoint));
+script = J.util.TextFormat.simpleReplace (script, "_OBJECT", J.util.Escape.escapeMap (t));
+}script = J.util.TextFormat.simpleReplace (script, "_BOND", "[{}]");
+script = J.util.TextFormat.simpleReplace (script, "_OBJECT", "{}");
+}script = J.util.TextFormat.simpleReplace (script, "_POINT", "{}");
+script = J.util.TextFormat.simpleReplace (script, "_ACTION", "" + mouseAction);
+script = J.util.TextFormat.simpleReplace (script, "_X", "" + x);
+script = J.util.TextFormat.simpleReplace (script, "_Y", "" + (this.viewer.getScreenHeight () - y));
+script = J.util.TextFormat.simpleReplace (script, "_DELTAX", "" + deltaX);
+script = J.util.TextFormat.simpleReplace (script, "_DELTAY", "" + deltaY);
+script = J.util.TextFormat.simpleReplace (script, "_TIME", "" + time);
+script = J.util.TextFormat.simpleReplace (script, "_MODE", "" + mode);
+if (script.startsWith ("+:")) {
+passThrough = true;
+script = script.substring (2);
+}this.viewer.evalStringQuiet (script);
+}
+return !passThrough;
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N");
+$_M(c$, "checkMotionRotateZoom", 
+($fz = function (mouseAction, x, deltaX, deltaY, isDrag) {
+var isSlideZoom = this.checkSlideZoom (mouseAction);
+var isRotateXY = this.isBound (mouseAction, 25);
+var isRotateZorZoom = this.isBound (mouseAction, 29);
+if (!isSlideZoom && !isRotateXY && !isRotateZorZoom) return false;
+var isZoom = (isRotateZorZoom && (deltaX == 0 || Math.abs (deltaY) > 5 * Math.abs (deltaX)));
+var cursor = (isZoom || this.isZoomArea (this.moved.x) || this.isBound (mouseAction, 46) ? 5 : isRotateXY || isRotateZorZoom ? 3 : this.isBound (mouseAction, 1) ? 1 : 0);
+this.setMotion (cursor, isDrag);
+return (isZoom || isSlideZoom);
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~B");
 $_M(c$, "getExitRate", 
 function () {
 var dt = this.dragGesture.getTimeDifference (2);
-return (dt > 5 ? 0 : this.dragGesture.getSpeedPixelsPerMillisecond (4, 2));
+return (dt > 10 ? 0 : this.dragGesture.getSpeedPixelsPerMillisecond (4, 2));
 });
 $_M(c$, "isRubberBandSelect", 
 ($fz = function (action) {
@@ -376,197 +869,12 @@ this.rectRubber.height = (this.pressed.y - this.current.y) * factor;
 this.rectRubber.y = this.pressed.y * factor;
 this.rectRubber.height = (this.current.y - this.pressed.y) * factor;
 }}, $fz.isPrivate = true, $fz));
-$_M(c$, "checkAction", 
-($fz = function (action, x, y, deltaX, deltaY, time, mode) {
-var mods = J.viewer.binding.Binding.getModifiers (action);
-if (mods != 0) {
-var newAction = this.viewer.notifyMouseClicked (x, y, J.viewer.binding.Binding.getMouseAction (-this.pressedCount, mods), mode);
-if (newAction == 0) return;
-if (newAction > 0) action = newAction;
-}if (this.isRubberBandSelect (action)) {
-this.calcRectRubberBand ();
-this.viewer.refresh (3, "rubberBand selection");
-return;
-}if (this.checkUserAction (action, x, y, deltaX, deltaY, time, mode)) return;
-if (this.viewer.getRotateBondIndex () >= 0) {
-if (this.isBound (action, 26)) {
-this.viewer.moveSelected (deltaX, deltaY, -2147483648, x, y, null, false, false);
-return;
-}if (!this.isBound (action, 25)) this.viewer.setRotateBondIndex (-1);
-}var bs = null;
-if (this.dragAtomIndex >= 0) {
-switch (this.atomPickingMode) {
-case 26:
-this.checkMotion (3, true);
-if (this.isBound (action, 27) && this.viewer.getBoolean (603979785)) {
-this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), null);
-} else {
-this.viewer.moveSelected (deltaX, deltaY, (this.isBound (action, 14) ? -deltaY : -2147483648), -2147483648, -2147483648, null, true, false);
-}return;
-case 36:
-case 27:
-case 30:
-bs = this.viewer.getAtomBits (1095761934, J.util.BSUtil.newAndSetBit (this.dragAtomIndex));
-if (this.atomPickingMode == 36) bs.and (this.viewer.getAtomBitSet ("ligand"));
-case 28:
-case 29:
-if (this.dragGesture.getPointCount () == 1) this.viewer.undoMoveActionClear (this.dragAtomIndex, 2, true);
-this.checkMotion (3, true);
-if (this.isBound (action, 27)) {
-this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), bs);
-} else {
-switch (this.atomPickingMode) {
-case 36:
-case 27:
-case 30:
-this.viewer.select (bs, false, 0, true);
-break;
-}
-this.viewer.moveAtomWithHydrogens (this.dragAtomIndex, deltaX, deltaY, (this.isBound (action, 14) ? -deltaY : -2147483648), bs);
-}return;
-}
-}if (this.dragAtomIndex >= 0 && this.isBound (action, 0) && this.atomPickingMode == 32) {
-var nearestAtomIndex = this.viewer.findNearestAtomIndexMovable (x, y, false);
-if (nearestAtomIndex >= 0) {
-if (this.measurementPending != null) {
-this.measurementPending.setCount (1);
-} else if (this.measuresEnabled) {
-this.enterMeasurementMode (nearestAtomIndex);
-}this.addToMeasurement (nearestAtomIndex, null, true);
-this.measurementPending.colix = 20;
-} else if (this.measurementPending != null) {
-this.measurementPending.setCount (1);
-this.measurementPending.colix = 23;
-}if (this.measurementPending == null) return;
-this.measurementPending.traceX = x;
-this.measurementPending.traceY = y;
-this.viewer.refresh (3, "assignNew");
-return;
-}if (!this.drawMode && !this.labelMode) {
-if (this.isBound (action, 45)) {
-this.viewer.translateXYBy (deltaX, deltaY);
-return;
-}if (this.isBound (action, 1)) {
-if (this.pressedAtomIndex == 2147483647) this.pressedAtomIndex = this.viewer.findNearestAtomIndex (this.pressed.x, this.pressed.y);
-var pt = (this.pressedAtomIndex < 0 ? null : this.viewer.getAtomPoint3f (this.pressedAtomIndex));
-if (pt == null) this.viewer.translateXYBy (deltaX, deltaY);
- else this.viewer.centerAt (x, y, pt);
-return;
-}}if (this.dragSelectedMode && this.haveSelection && (this.isBound (action, 13) || this.isBound (action, 27))) {
-var iatom = this.viewer.getSelectionSet (false).nextSetBit (0);
-if (iatom < 0) return;
-if (this.dragGesture.getPointCount () == 1) this.viewer.undoMoveActionClear (iatom, 2, true);
- else this.viewer.moveSelected (2147483647, 0, -2147483648, -2147483648, -2147483648, null, false, false);
-this.checkMotion (3, true);
-if (this.isBound (action, 27) && this.viewer.getBoolean (603979785)) this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), null);
- else this.viewer.moveSelected (deltaX, deltaY, -2147483648, -2147483648, -2147483648, null, true, false);
-return;
-}if (this.drawMode && (this.isBound (action, 8) || this.isBound (action, 9)) || this.labelMode && this.isBound (action, 10)) {
-this.checkMotion (3, true);
-this.viewer.checkObjectDragged (this.dragged.x, this.dragged.y, x, y, action);
-return;
-}if (this.checkMotionRotateZoom (action, x, deltaX, deltaY, true)) {
-if (this.viewer.getSlabEnabled () && this.checkSlideZoom (action)) this.viewer.slabDepthByPixels (deltaY);
- else this.viewer.zoomBy (deltaY);
-return;
-}if (this.isBound (action, 25)) {
-var degX = this.getDegrees (deltaX, 0);
-var degY = this.getDegrees (deltaY, 1);
-if (this.viewer.global.useArcBall) this.viewer.rotateArcBall (x, y, this.mouseDragFactor);
- else this.viewer.rotateXYBy (degX, degY);
-return;
-}if (this.isBound (action, 29)) {
-if (Math.abs (deltaY) > 5 * Math.abs (deltaX)) {
-this.checkMotion (5, true);
-this.viewer.zoomBy (deltaY);
-} else if (Math.abs (deltaX) > 5 * Math.abs (deltaY)) {
-this.checkMotion (3, true);
-this.viewer.rotateZBy (-deltaX, 2147483647, 2147483647);
-}return;
-} else if (this.isBound (action, 46)) {
-this.zoomByFactor (deltaY, 2147483647, 2147483647);
-return;
-} else if (this.isBound (action, 28)) {
-this.checkMotion (3, true);
-this.viewer.rotateZBy (-deltaX, 2147483647, 2147483647);
-return;
-}if (this.viewer.getSlabEnabled ()) {
-if (this.isBound (action, 6)) {
-this.viewer.depthByPixels (deltaY);
-return;
-}if (this.isBound (action, 38)) {
-this.viewer.slabByPixels (deltaY);
-return;
-}if (this.isBound (action, 39)) {
-this.viewer.slabDepthByPixels (deltaY);
-return;
-}}}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N");
 $_M(c$, "getDegrees", 
 function (delta, i) {
 var dim = (i == 0 ? this.viewer.getScreenWidth () : this.viewer.getScreenHeight ());
 if (dim > 500) dim = 500;
 return (delta) / dim * 180 * this.mouseDragFactor;
 }, "~N,~N");
-$_M(c$, "zoomByFactor", 
-function (dz, x, y) {
-if (dz == 0) return;
-this.checkMotion (5, true);
-this.viewer.zoomByFactor (Math.pow (this.mouseWheelFactor, dz), x, y);
-this.viewer.setInMotion (false);
-}, "~N,~N,~N");
-$_M(c$, "checkUserAction", 
-($fz = function (action, x, y, deltaX, deltaY, time, mode) {
-if (mode == 4) {
-if (J.viewer.binding.Binding.getClickCount (action) == 1) action = (action & -1793) + 1024;
-} else if (mode == 1 || mode == 6) {
-if (J.viewer.binding.Binding.getClickCount (action) == 1) action = (action & -1793);
-}if (!this.binding.isUserAction (action)) return false;
-var passThrough = false;
-var obj;
-var ht = this.binding.getBindings ();
-for (var key, $key = ht.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
-if (key.indexOf (action + "\t") != 0 || !J.util.Escape.isAS (obj = ht.get (key))) continue;
-var script = (obj)[1];
-var nearestPoint = null;
-if (script.indexOf ("_ATOM") >= 0) {
-var iatom = this.findNearestAtom (x, y, null, true);
-script = J.util.TextFormat.simpleReplace (script, "_ATOM", "({" + (iatom >= 0 ? "" + iatom : "") + "})");
-if (iatom >= 0) script = J.util.TextFormat.simpleReplace (script, "_POINT", J.util.Escape.eP (this.viewer.getModelSet ().atoms[iatom]));
-}if (!this.drawMode && (script.indexOf ("_POINT") >= 0 || script.indexOf ("_OBJECT") >= 0 || script.indexOf ("_BOND") >= 0)) {
-var t = this.viewer.checkObjectClicked (x, y, action);
-if (t != null && (nearestPoint = t.get ("pt")) != null) {
-var isBond = t.get ("type").equals ("bond");
-if (isBond) script = J.util.TextFormat.simpleReplace (script, "_BOND", "[{" + t.get ("index") + "}]");
-script = J.util.TextFormat.simpleReplace (script, "_POINT", J.util.Escape.eP (nearestPoint));
-script = J.util.TextFormat.simpleReplace (script, "_OBJECT", J.util.Escape.escapeMap (t));
-}script = J.util.TextFormat.simpleReplace (script, "_BOND", "[{}]");
-script = J.util.TextFormat.simpleReplace (script, "_OBJECT", "{}");
-}script = J.util.TextFormat.simpleReplace (script, "_POINT", "{}");
-script = J.util.TextFormat.simpleReplace (script, "_ACTION", "" + action);
-script = J.util.TextFormat.simpleReplace (script, "_X", "" + x);
-script = J.util.TextFormat.simpleReplace (script, "_Y", "" + (this.viewer.getScreenHeight () - y));
-script = J.util.TextFormat.simpleReplace (script, "_DELTAX", "" + deltaX);
-script = J.util.TextFormat.simpleReplace (script, "_DELTAY", "" + deltaY);
-script = J.util.TextFormat.simpleReplace (script, "_TIME", "" + time);
-script = J.util.TextFormat.simpleReplace (script, "_MODE", "" + mode);
-if (script.startsWith ("+:")) {
-passThrough = true;
-script = script.substring (2);
-}this.viewer.evalStringQuiet (script);
-}
-return !passThrough;
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N");
-$_M(c$, "checkMotionRotateZoom", 
-($fz = function (action, x, deltaX, deltaY, inMotion) {
-var isSlideZoom = this.checkSlideZoom (action);
-var isRotateXY = this.isBound (action, 25);
-var isRotateZorZoom = this.isBound (action, 29);
-if (!isSlideZoom && !isRotateXY && !isRotateZorZoom) return false;
-var isZoom = (isRotateZorZoom && (deltaX == 0 || Math.abs (deltaY) > 5 * Math.abs (deltaX)));
-var cursor = (isZoom || this.isZoomArea (this.moved.x) || this.isBound (action, 46) ? 5 : isRotateXY || isRotateZorZoom ? 3 : this.isBound (action, 1) ? 1 : 0);
-this.checkMotion (cursor, inMotion);
-return (isZoom || isSlideZoom);
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~B");
 $_M(c$, "checkSlideZoom", 
 ($fz = function (action) {
 return this.isBound (action, 40) && this.isZoomArea (this.pressed.x);
@@ -589,18 +897,16 @@ return (index >= 0 && (isClicked || this.measurementPending == null) && !this.vi
 }, $fz.isPrivate = true, $fz), "~N,~N,J.util.Point3fi,~B");
 $_M(c$, "isSelectAction", 
 ($fz = function (action) {
-return (this.isBound (action, 17) || this.isBound (action, 22) || this.isBound (action, 35) || this.isBound (action, 32) || this.isBound (action, 34) || this.isBound (action, 36) || this.isBound (action, 30));
+return (this.isBound (action, 17) || !this.drawMode && !this.labelMode && this.atomPickingMode == 1 && this.isBound (action, 1) || this.dragSelectedMode && (this.isBound (this.dragAction, 27) || this.isBound (this.dragAction, 13)) || this.isBound (action, 22) || this.isBound (action, 35) || this.isBound (action, 32) || this.isBound (action, 34) || this.isBound (action, 36) || this.isBound (action, 30));
 }, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "checkMotion", 
-function (cursor, inMotion) {
-switch (this.viewer.getCursor ()) {
-case 4:
-break;
-default:
-this.viewer.setCursor (cursor);
-}
-if (inMotion) this.viewer.setInMotion (true);
-}, "~N,~B");
+$_M(c$, "enterMeasurementMode", 
+($fz = function (iAtom) {
+this.viewer.setPicked (-1);
+this.viewer.setPicked (iAtom);
+this.viewer.setCursor (2);
+this.viewer.setPendingMeasurement (this.measurementPending = J.modelset.MeasurementPending.getMP (this.viewer.getModelSet ()));
+this.measurementQueued = this.measurementPending;
+}, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "addToMeasurement", 
 ($fz = function (atomIndex, nearestPoint, dblClick) {
 if (atomIndex == -1 && nearestPoint == null || this.measurementPending == null) {
@@ -610,132 +916,17 @@ return 0;
 if (this.measurementPending.traceX != -2147483648 && measurementCount == 2) this.measurementPending.setCount (measurementCount = 1);
 return (measurementCount == 4 && !dblClick ? measurementCount : this.measurementPending.addPoint (atomIndex, nearestPoint, true));
 }, $fz.isPrivate = true, $fz), "~N,J.util.Point3fi,~B");
-$_M(c$, "enterMeasurementMode", 
-($fz = function (iAtom) {
-this.viewer.setPicked (-1);
-this.viewer.setPicked (iAtom);
-this.viewer.setCursor (2);
-this.viewer.setPendingMeasurement (this.measurementPending = J.modelset.MeasurementPending.getMP (this.viewer.getModelSet ()));
-this.measurementQueued = this.measurementPending;
-}, $fz.isPrivate = true, $fz), "~N");
+$_M(c$, "resetMeasurement", 
+($fz = function () {
+this.exitMeasurementMode ();
+this.measurementQueued = J.modelset.MeasurementPending.getMP (this.viewer.getModelSet ());
+}, $fz.isPrivate = true, $fz));
 $_M(c$, "exitMeasurementMode", 
 ($fz = function () {
 if (this.measurementPending == null) return;
 this.viewer.setPendingMeasurement (this.measurementPending = null);
 this.viewer.setCursor (0);
 }, $fz.isPrivate = true, $fz));
-$_M(c$, "checkHover", 
-function () {
-if (!this.viewer.getInMotion (true) && !this.viewer.getSpinOn () && !this.viewer.getNavOn () && !this.viewer.checkObjectHovered (this.current.x, this.current.y)) {
-var atomIndex = this.viewer.findNearestAtomIndex (this.current.x, this.current.y);
-if (atomIndex >= 0) this.viewer.hoverOn (atomIndex, J.viewer.binding.Binding.getMouseAction (this.clickedCount, this.moved.modifiers));
-}});
-$_M(c$, "hoverOff", 
-function () {
-try {
-this.viewer.hoverOff ();
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-} else {
-throw e;
-}
-}
-});
-$_M(c$, "resetMeasurement", 
-($fz = function () {
-this.exitMeasurementMode ();
-this.measurementQueued = J.modelset.MeasurementPending.getMP (this.viewer.getModelSet ());
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "getPickingState", 
-function () {
-var script = ";set modelkitMode " + this.viewer.getBoolean (603979883) + ";set picking " + J.viewer.ActionManager.getPickingModeName (this.atomPickingMode);
-if (this.atomPickingMode == 32) script += "_" + this.pickAtomAssignType;
-script += ";";
-if (this.bondPickingMode != 0) script += "set picking " + J.viewer.ActionManager.getPickingModeName (this.bondPickingMode);
-if (this.bondPickingMode == 33) script += "_" + this.pickBondAssignType;
-script += ";";
-return script;
-});
-$_M(c$, "getAtomPickingMode", 
-function () {
-return this.atomPickingMode;
-});
-$_M(c$, "setPickingMode", 
-function (pickingMode) {
-var isNew = false;
-switch (pickingMode) {
-case -1:
-isNew = true;
-this.bondPickingMode = 35;
-pickingMode = 1;
-break;
-case 35:
-case 34:
-case 33:
-this.viewer.setBooleanProperty ("bondPicking", true);
-this.bondPickingMode = pickingMode;
-return;
-case 8:
-this.bondPickingMode = pickingMode;
-if (this.viewer.getBondPicking ()) return;
-isNew = true;
-break;
-}
-isNew = new Boolean (isNew | (this.atomPickingMode != pickingMode)).valueOf ();
-this.atomPickingMode = pickingMode;
-if (isNew) this.resetMeasurement ();
-}, "~N");
-$_M(c$, "setAtomPickingOption", 
-function (option) {
-switch (this.atomPickingMode) {
-case 32:
-this.pickAtomAssignType = option;
-this.isPickAtomAssignCharge = (this.pickAtomAssignType.equals ("Pl") || this.pickAtomAssignType.equals ("Mi"));
-break;
-}
-}, "~S");
-$_M(c$, "setBondPickingOption", 
-function (option) {
-switch (this.bondPickingMode) {
-case 33:
-this.pickBondAssignType = Character.toLowerCase (option.charAt (0));
-break;
-}
-}, "~S");
-$_M(c$, "getPickingStyle", 
-function () {
-return this.pickingStyle;
-});
-$_M(c$, "setPickingStyle", 
-function (pickingStyle) {
-this.pickingStyle = pickingStyle;
-if (pickingStyle >= 4) {
-this.pickingStyleMeasure = pickingStyle;
-this.resetMeasurement ();
-} else {
-if (pickingStyle < 3) this.rootPickingStyle = pickingStyle;
-this.pickingStyleSelect = pickingStyle;
-}this.rubberbandSelectionMode = false;
-switch (this.pickingStyleSelect) {
-case 2:
-if (!this.binding.getName ().equals ("extendedSelect")) this.setBinding (this.pfaatBinding == null ? this.pfaatBinding = J.viewer.binding.Binding.newBinding ("Pfaat") : this.pfaatBinding);
-break;
-case 3:
-if (!this.binding.getName ().equals ("drag")) this.setBinding (this.dragBinding == null ? this.dragBinding = J.viewer.binding.Binding.newBinding ("Drag") : this.dragBinding);
-this.rubberbandSelectionMode = true;
-break;
-case 1:
-if (!this.binding.getName ().equals ("selectOrToggle")) this.setBinding (this.rasmolBinding == null ? this.rasmolBinding = J.viewer.binding.Binding.newBinding ("Rasmol") : this.rasmolBinding);
-break;
-default:
-if (this.binding !== this.jmolBinding) this.setBinding (this.jmolBinding);
-}
-if (!this.binding.getName ().equals ("drag")) this.predragBinding = this.binding;
-}, "~N");
-$_M(c$, "setBinding", 
-function (newBinding) {
-this.binding = newBinding;
-}, "J.viewer.binding.Binding");
 $_M(c$, "getSequence", 
 ($fz = function () {
 var a1 = this.measurementQueued.getAtomIndex (1);
@@ -744,298 +935,46 @@ if (a1 < 0 || a2 < 0) return;
 var sequence = this.viewer.getSmiles (a1, a2, null, true, false, false, false);
 this.viewer.setStatusMeasuring ("measureSequence", -2, sequence, 0);
 }, $fz.isPrivate = true, $fz));
+$_M(c$, "minimize", 
+($fz = function (dragDone) {
+this.viewer.stopMinimization ();
+var iAtom = this.dragAtomIndex;
+if (dragDone) this.dragAtomIndex = -1;
+var bs = (this.viewer.getMotionFixedAtoms ().cardinality () == 0 ? this.viewer.getAtomBits ((this.viewer.isAtomPDB (iAtom) ? 1087373318 : 1095761934), J.util.BSUtil.newAndSetBit (iAtom)) : J.util.BSUtil.setAll (this.viewer.getAtomCount ()));
+this.viewer.minimize (2147483647, 0, bs, null, 0, false, false, false);
+}, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "queueAtom", 
 ($fz = function (atomIndex, ptClicked) {
 var n = this.measurementQueued.addPoint (atomIndex, ptClicked, true);
 if (atomIndex >= 0) this.viewer.setStatusAtomPicked (atomIndex, "Atom #" + n + ":" + this.viewer.getAtomInfo (atomIndex));
 return n;
 }, $fz.isPrivate = true, $fz), "~N,J.util.Point3fi");
-$_M(c$, "mouseAction", 
-function (action, time, x, y, count, modifiers) {
-if (!this.viewer.getMouseEnabled ()) return;
-switch (action) {
-case 0:
-this.setCurrent (time, x, y, modifiers);
-this.moved.setCurrent (this.current, 0);
-if (this.measurementPending != null || this.hoverActive) this.checkPointOrAtomClicked (x, y, 0, 0, time, false, 0);
- else if (this.isZoomArea (x)) this.checkMotionRotateZoom (J.viewer.binding.Binding.getMouseAction (1, 16), 0, 0, 0, false);
- else if (this.viewer.getCursor () == 5) this.viewer.setCursor (0);
-return;
-case 3:
-if (this.viewer.isApplet () && !this.viewer.hasFocus ()) return;
-this.setCurrent (time, this.current.x, this.current.y, modifiers);
-this.checkAction (J.viewer.binding.Binding.getMouseAction (0, modifiers), this.current.x, this.current.y, 0, y, time, 3);
-return;
-case 2:
-this.setMouseMode ();
-this.clickedCount = (count > 1 ? count : this.clicked.check (0, 0, 0, modifiers, time, 700) ? this.clickedCount + 1 : 1);
-if (this.clickedCount == 1) {
-this.setCurrent (time, x, y, modifiers);
-} else {
-}this.clicked.setCurrent (this.current, this.clickedCount);
-this.viewer.setFocus ();
-if (this.atomPickingMode != 9 && this.isBound (J.viewer.binding.Binding.getMouseAction (-2147483648, modifiers), 31)) return;
-this.checkPointOrAtomClicked (x, y, modifiers, this.clickedCount, time, false, 2);
-return;
+$_M(c$, "setMotion", 
+function (cursor, inMotion) {
+switch (this.viewer.getCursor ()) {
 case 4:
-this.setMouseMode ();
-this.pressedCount = (this.pressed.check (0, 0, 0, modifiers, time, 700) ? this.pressedCount + 1 : 1);
-if (this.pressedCount == 1) {
-this.viewer.checkInMotion (1);
-this.setCurrent (time, x, y, modifiers);
-}this.viewer.setCursor (1);
-this.pressed.setCurrent (this.current, 1);
-this.dragged.setCurrent (this.current, 1);
-this.viewer.setFocus ();
-var isSelectAndDrag = this.isBound (J.viewer.binding.Binding.getMouseAction (-2147483648, modifiers), 31);
-action = J.viewer.binding.Binding.getMouseAction (this.pressedCount, modifiers);
-this.dragGesture.setAction (action, time);
-if (J.viewer.binding.Binding.getModifiers (action) != 0) {
-action = this.viewer.notifyMouseClicked (x, y, action, 4);
-if (action == 0) return;
-}this.pressedAtomIndex = 2147483647;
-if (this.drawMode && (this.isBound (action, 8) || this.isBound (action, 9)) || this.labelMode && this.isBound (action, 10)) {
-this.viewer.checkObjectDragged (-2147483648, 0, x, y, action);
-return;
-}this.checkUserAction (action, x, y, 0, 0, time, 4);
-var isBound = false;
-switch (this.atomPickingMode) {
-case 32:
-isBound = this.isBound (action, 0);
 break;
-case 28:
-isBound = this.isBound (action, 7) || this.isBound (action, 14);
-break;
-case 26:
-case 36:
-case 27:
-isBound = this.isBound (action, 7) || this.isBound (action, 27) || this.isBound (action, 14);
-break;
-case 29:
-isBound = this.isBound (action, 11) || this.isBound (action, 14);
-break;
-case 30:
-isBound = this.isBound (action, 12) || this.isBound (action, 27) || this.isBound (action, 14);
-break;
+default:
+this.viewer.setCursor (cursor);
 }
-if (isBound) {
-this.dragAtomIndex = this.viewer.findNearestAtomIndexMovable (x, y, true);
-if (this.dragAtomIndex >= 0 && (this.atomPickingMode == 32 || this.atomPickingMode == 31) && this.viewer.isAtomAssignable (this.dragAtomIndex)) {
-this.enterMeasurementMode (this.dragAtomIndex);
-this.measurementPending.addPoint (this.dragAtomIndex, null, false);
-}return;
-}if (this.isBound (action, 23)) {
-var type = 'j';
-if (this.viewer.getBoolean (603979883)) {
-var t = this.viewer.checkObjectClicked (x, y, J.viewer.binding.Binding.getMouseAction (1, 16));
-type = (t != null && "bond".equals (t.get ("type")) ? 'b' : this.viewer.findNearestAtomIndex (x, y) >= 0 ? 'a' : 'm');
-}this.viewer.popupMenu (x, y, type);
-return;
-}if (this.dragSelectedMode) {
-this.haveSelection = true;
-if (isSelectAndDrag) {
-this.haveSelection = (this.viewer.findNearestAtomIndexMovable (x, y, true) >= 0);
-}if (!this.haveSelection) return;
-if (this.isBound (action, 13) || this.isBound (action, 14)) this.viewer.moveSelected (-2147483648, 0, -2147483648, -2147483648, -2147483648, null, false, false);
-return;
-}if (this.viewer.global.useArcBall) this.viewer.rotateArcBall (x, y, 0);
-this.checkMotionRotateZoom (action, x, 0, 0, true);
-return;
-case 6:
-return;
-case 1:
-this.setMouseMode ();
-var deltaX = x - this.dragged.x;
-var deltaY = y - this.dragged.y;
-this.setCurrent (time, x, y, modifiers);
-this.dragged.setCurrent (this.current, -1);
-if (this.atomPickingMode != 32) this.exitMeasurementMode ();
-action = J.viewer.binding.Binding.getMouseAction (this.pressedCount, modifiers);
-this.dragGesture.add (action, x, y, time);
-this.checkAction (action, x, y, deltaX, deltaY, time, 1);
-return;
-case 5:
-this.setCurrent (time, x, y, modifiers);
-this.viewer.spinXYBy (0, 0, 0);
-var dragRelease = !this.pressed.check (this.xyRange, x, y, modifiers, time, 9223372036854775807);
-this.viewer.checkInMotion (0);
+if (inMotion) this.viewer.setInMotion (true);
+}, "~N,~B");
+$_M(c$, "zoomByFactor", 
+function (dz, x, y) {
+if (dz == 0) return;
+this.setMotion (5, true);
+this.viewer.zoomByFactor (Math.pow (this.mouseWheelFactor, dz), x, y);
 this.viewer.setInMotion (false);
-this.viewer.setCursor (0);
-action = J.viewer.binding.Binding.getMouseAction (this.pressedCount, modifiers);
-this.dragGesture.add (action, x, y, time);
-if (dragRelease) this.viewer.setRotateBondIndex (-2147483648);
-if (this.dragAtomIndex >= 0) {
-if (this.atomPickingMode == 29 || this.atomPickingMode == 30) this.minimize (true);
-}if (this.atomPickingMode == 32 && this.isBound (action, 0)) {
-if (this.measurementPending == null || this.dragAtomIndex < 0) return;
-this.assignNew (x, y);
-return;
-}this.dragAtomIndex = -1;
-var isRbAction = this.isRubberBandSelect (action);
-if (isRbAction) this.selectRb (action);
-this.rubberbandSelectionMode = (this.binding.getName ().equals ("drag"));
-this.rectRubber.x = 2147483647;
-if (dragRelease) {
-this.viewer.notifyMouseClicked (x, y, J.viewer.binding.Binding.getMouseAction (this.pressedCount, 0), 5);
-}if (this.drawMode && (this.isBound (action, 8) || this.isBound (action, 9)) || this.labelMode && this.isBound (action, 10)) {
-this.viewer.checkObjectDragged (2147483647, 0, x, y, action);
-return;
-}if (this.dragSelectedMode && this.isBound (action, 13) && this.haveSelection) this.viewer.moveSelected (2147483647, 0, -2147483648, -2147483648, -2147483648, null, false, false);
-if (dragRelease && this.checkUserAction (action, x, y, 0, 0, time, 5)) return;
-if (this.viewer.getBoolean (603979780)) {
-if (this.isBound (action, 44)) {
-var speed = this.getExitRate ();
-if (speed > 0) this.viewer.spinXYBy (this.dragGesture.getDX (4, 2), this.dragGesture.getDY (4, 2), speed * 30 * this.gestureSwipeFactor);
-if (this.viewer.global.logGestures) this.viewer.log ("$NOW$ swipe " + this.dragGesture + " " + speed);
-return;
-}}return;
-}
-}, "~N,~N,~N,~N,~N,~N");
+}, "~N,~N,~N");
 $_M(c$, "runScript", 
 ($fz = function (script) {
 this.viewer.script (script);
 }, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "getSelectionSet", 
-($fz = function (script) {
-try {
-return this.viewer.getAtomBitSetEval (null, script);
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-} else {
-throw e;
-}
-}
-return null;
-}, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "selectRb", 
-($fz = function (action) {
-var bs = this.viewer.findAtomsInRectangle (this.rectRubber);
-if (bs.length () > 0) {
-var s = J.util.Escape.eBS (bs);
-if (this.isBound (action, 34)) this.runScript ("selectionHalos on;select selected or " + s);
- else if (this.isBound (action, 32)) this.runScript ("selectionHalos on;select selected and not " + s);
- else this.runScript ("selectionHalos on;select selected tog " + s);
-}this.viewer.refresh (3, "mouseReleased");
-}, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "assignNew", 
-($fz = function (x, y) {
-if (this.measurementPending.getCount () == 2) {
-this.viewer.undoMoveActionClear (-1, 4146, true);
-this.runScript ("assign connect " + this.measurementPending.getMeasurementScript (" ", false));
-} else if (this.pickAtomAssignType.equals ("Xx")) {
-this.exitMeasurementMode ();
-this.viewer.refresh (3, "bond dropped");
-} else {
-if (this.pressed.inRange (this.xyRange, this.dragged.x, this.dragged.y)) {
-var s = "assign atom ({" + this.dragAtomIndex + "}) \"" + this.pickAtomAssignType + "\"";
-if (this.isPickAtomAssignCharge) {
-s += ";{atomindex=" + this.dragAtomIndex + "}.label='%C'; ";
-this.viewer.undoMoveActionClear (this.dragAtomIndex, 4, true);
-} else {
-this.viewer.undoMoveActionClear (-1, 4146, true);
-}this.runScript (s);
-} else if (!this.isPickAtomAssignCharge) {
-this.viewer.undoMoveActionClear (-1, 4146, true);
-var a = this.viewer.getModelSet ().atoms[this.dragAtomIndex];
-if (a.getElementNumber () == 1) {
-this.runScript ("assign atom ({" + this.dragAtomIndex + "}) \"X\"");
-} else {
-var ptNew = J.util.P3.new3 (x, y, a.screenZ);
-this.viewer.unTransformPoint (ptNew, ptNew);
-this.runScript ("assign atom ({" + this.dragAtomIndex + "}) \"" + this.pickAtomAssignType + "\" " + J.util.Escape.eP (ptNew));
-}}}this.exitMeasurementMode ();
-}, $fz.isPrivate = true, $fz), "~N,~N");
-$_M(c$, "checkPointOrAtomClicked", 
-($fz = function (x, y, mods, clickedCount, time, atomOnly, mode) {
-if (!this.viewer.haveModelSet ()) return false;
-var action = J.viewer.binding.Binding.getMouseAction (clickedCount, mods);
-if (action != 0) {
-this.checkUserAction (action, x, y, 0, 0, time, mode);
-action = this.viewer.notifyMouseClicked (x, y, action, mode);
-if (action == 0) return false;
-}if (this.isBound (action, 2) && this.viewer.frankClicked (x, y)) {
-this.viewer.popupMenu (-x, y, 'j');
-return false;
-}if (this.isBound (action, 2) && this.viewer.frankClickedModelKit (x, y)) {
-this.viewer.popupMenu (0, 0, 'm');
-return false;
-}var nearestPoint = null;
-var isBond = false;
-var isIsosurface = false;
-var t = null;
-if (!this.drawMode && !atomOnly) {
-t = this.viewer.checkObjectClicked (x, y, action);
-if (t != null) {
-isBond = "bond".equals (t.get ("type"));
-isIsosurface = "isosurface".equals (t.get ("type"));
-nearestPoint = this.getPoint (t);
-}}if (isBond) clickedCount = 1;
-if (nearestPoint != null && Float.isNaN (nearestPoint.x)) return false;
-var nearestAtomIndex = this.findNearestAtom (x, y, nearestPoint, clickedCount > 0);
-if (clickedCount == 0 && this.atomPickingMode != 32) {
-if (this.measurementPending == null) return (nearestAtomIndex >= 0);
-if (nearestPoint != null || this.measurementPending.getIndexOf (nearestAtomIndex) == 0) this.measurementPending.addPoint (nearestAtomIndex, nearestPoint, false);
-if (this.measurementPending.haveModified ()) this.viewer.setPendingMeasurement (this.measurementPending);
-this.viewer.refresh (3, "measurementPending");
-return (nearestAtomIndex >= 0);
-}this.setMouseMode ();
-if (this.isBound (action, 43)) {
-this.viewer.stopMotion ();
-}if (this.viewer.getBoolean (603979887) && this.atomPickingMode == 23 && this.isBound (action, 21)) {
-this.viewer.navTranslatePercent (x * 100 / this.viewer.getScreenWidth () - 50, y * 100 / this.viewer.getScreenHeight () - 50);
-return false;
-}if (isBond) {
-if (this.isBound (action, this.bondPickingMode == 34 || this.bondPickingMode == 33 ? 0 : 5)) {
-if (this.bondPickingMode == 33) this.viewer.undoMoveActionClear (-1, 4146, true);
-var index = (t.get ("index")).intValue ();
-switch (this.bondPickingMode) {
-case 33:
-this.runScript ("assign bond [{" + index + "}] \"" + this.pickBondAssignType + "\"");
-break;
-case 34:
-this.viewer.setRotateBondIndex (index);
-break;
-case 8:
-this.viewer.deleteBonds (J.util.BSUtil.newAndSetBit (index));
-}
-return false;
-}} else if (isIsosurface) {
-return false;
-} else {
-if (this.atomPickingMode != 32 && this.measurementPending != null && this.isBound (action, 20)) {
-this.atomOrPointPicked (nearestAtomIndex, nearestPoint, action);
-if (this.addToMeasurement (nearestAtomIndex, nearestPoint, false) == 4) this.toggleMeasurement ();
-return false;
-}if (this.isBound (action, 37)) {
-if (this.measurementPending != null) {
-this.addToMeasurement (nearestAtomIndex, nearestPoint, true);
-this.toggleMeasurement ();
-} else if (!this.drawMode && !this.labelMode && !this.dragSelectedMode && this.measuresEnabled) {
-this.enterMeasurementMode (nearestAtomIndex);
-this.addToMeasurement (nearestAtomIndex, nearestPoint, true);
-}this.atomOrPointPicked (nearestAtomIndex, nearestPoint, action);
-return false;
-}}var isDragSelected = (this.dragSelectedMode && (this.isBound (action, 27) || this.isBound (action, 13)));
-if (isDragSelected || this.isSelectAction (action)) {
-if (!isIsosurface) this.atomOrPointPicked (nearestAtomIndex, nearestPoint, isDragSelected ? 0 : action);
-return (nearestAtomIndex >= 0);
-}if (this.isBound (action, 24)) {
-if (nearestAtomIndex < 0) this.runScript ("!reset");
-return false;
-}return (nearestAtomIndex >= 0);
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~B,~N");
-$_M(c$, "toggleMeasurement", 
-($fz = function () {
-if (this.measurementPending == null) return;
-var measurementCount = this.measurementPending.getCount ();
-if (measurementCount >= 2 && measurementCount <= 4) this.runScript ("!measure " + this.measurementPending.getMeasurementScript (" ", true));
-this.exitMeasurementMode ();
-}, $fz.isPrivate = true, $fz));
 $_M(c$, "atomOrPointPicked", 
-($fz = function (atomIndex, ptClicked, action) {
+($fz = function (atomIndex, ptClicked) {
 if (atomIndex < 0) {
 this.resetMeasurement ();
-if (this.isBound (action, 33)) {
+if (this.isBound (this.clickAction, 33)) {
 this.runScript ("select none");
 return;
 }if (this.atomPickingMode != 5 && this.atomPickingMode != 6) return;
@@ -1051,7 +990,7 @@ case 24:
 case 8:
 var isDelete = (this.atomPickingMode == 8);
 var isStruts = (this.atomPickingMode == 25);
-if (!this.isBound (action, (isDelete ? 5 : 3))) return;
+if (!this.isBound (this.clickAction, (isDelete ? 5 : 3))) return;
 if (this.measurementQueued == null || this.measurementQueued.getCount () == 0 || this.measurementQueued.getCount () > 2) {
 this.resetMeasurement ();
 this.enterMeasurementMode (atomIndex);
@@ -1068,7 +1007,7 @@ n++;
 case 18:
 case 19:
 case 22:
-if (!this.isBound (action, 20)) return;
+if (!this.isBound (this.clickAction, 20)) return;
 if (this.measurementQueued == null || this.measurementQueued.getCount () == 0 || this.measurementQueued.getCount () > n) {
 this.resetMeasurement ();
 this.enterMeasurementMode (atomIndex);
@@ -1091,30 +1030,30 @@ return;
 var mode = (this.measurementPending != null && this.atomPickingMode != 1 ? 1 : this.atomPickingMode);
 switch (mode) {
 case 3:
-if (!this.isBound (action, 17)) return;
+if (!this.isBound (this.clickAction, 17)) return;
 if (ptClicked == null) {
-this.runScript ("zoomTo (atomindex=" + atomIndex + ")");
-this.viewer.setStatusAtomPicked (atomIndex, null);
+this.zoomTo (atomIndex);
 } else {
 this.runScript ("zoomTo " + J.util.Escape.eP (ptClicked));
 }return;
 case 5:
 case 6:
-this.checkTwoAtomAction (action, ptClicked, atomIndex);
+if (this.isBound (this.clickAction, 17)) this.checkTwoAtomAction (ptClicked, atomIndex);
 }
 if (ptClicked != null) return;
 var bs;
 switch (mode) {
 case 1:
-if (this.isBound (action, 17)) this.viewer.setStatusAtomPicked (atomIndex, null);
+if (!this.drawMode && !this.labelMode && this.isBound (this.clickAction, 1)) this.zoomTo (atomIndex);
+ else if (this.isBound (this.clickAction, 17)) this.viewer.setStatusAtomPicked (atomIndex, null);
 return;
 case 2:
-if (this.isBound (action, 19)) {
+if (this.isBound (this.clickAction, 19)) {
 this.runScript ("set labeltoggle {atomindex=" + atomIndex + "}");
 this.viewer.setStatusAtomPicked (atomIndex, null);
 }return;
 case 31:
-if (this.isBound (action, 0)) {
+if (this.isBound (this.clickAction, 0)) {
 bs = this.viewer.getAtomBitSet ("connected(atomIndex=" + atomIndex + ") and !within(SMARTS,'[r50,R]')");
 var nb = bs.cardinality ();
 switch (nb) {
@@ -1147,7 +1086,7 @@ this.viewer.invertSelected (null, null, atomIndex, bs);
 this.viewer.setStatusAtomPicked (atomIndex, "inverted: " + J.util.Escape.eBS (bs));
 }return;
 case 7:
-if (this.isBound (action, 4)) {
+if (this.isBound (this.clickAction, 4)) {
 bs = J.util.BSUtil.newAndSetBit (atomIndex);
 this.viewer.deleteAtoms (bs, false);
 this.viewer.setStatusAtomPicked (atomIndex, "deleted: " + J.util.Escape.eBS (bs));
@@ -1158,39 +1097,80 @@ switch (this.atomPickingMode) {
 default:
 return;
 case 9:
-this.applySelectStyle (spec, action);
+this.selectAtoms (spec);
 break;
 case 10:
-this.applySelectStyle ("within(group, " + spec + ")", action);
+this.selectAtoms ("within(group, " + spec + ")");
 break;
 case 11:
-this.applySelectStyle ("within(chain, " + spec + ")", action);
+this.selectAtoms ("within(chain, " + spec + ")");
 break;
 case 13:
-this.applySelectStyle ("within(polymer, " + spec + ")", action);
+this.selectAtoms ("within(polymer, " + spec + ")");
 break;
 case 14:
-this.applySelectStyle ("within(structure, " + spec + ")", action);
+this.selectAtoms ("within(structure, " + spec + ")");
 break;
 case 12:
-this.applySelectStyle ("within(molecule, " + spec + ")", action);
+this.selectAtoms ("within(molecule, " + spec + ")");
 break;
 case 16:
-this.applySelectStyle ("within(model, " + spec + ")", action);
+this.selectAtoms ("within(model, " + spec + ")");
 break;
 case 17:
-this.applySelectStyle ("visible and within(element, " + spec + ")", action);
+this.selectAtoms ("visible and within(element, " + spec + ")");
 break;
 case 15:
-this.applySelectStyle ("visible and within(site, " + spec + ")", action);
+this.selectAtoms ("visible and within(site, " + spec + ")");
 break;
 }
 this.viewer.clearClickCount ();
 this.viewer.setStatusAtomPicked (atomIndex, null);
-}, $fz.isPrivate = true, $fz), "~N,J.util.Point3fi,~N");
+}, $fz.isPrivate = true, $fz), "~N,J.util.Point3fi");
+$_M(c$, "assignNew", 
+($fz = function (x, y) {
+if (this.measurementPending.getCount () == 2) {
+this.viewer.undoMoveActionClear (-1, 4146, true);
+this.runScript ("assign connect " + this.measurementPending.getMeasurementScript (" ", false));
+} else if (this.pickAtomAssignType.equals ("Xx")) {
+this.exitMeasurementMode ();
+this.viewer.refresh (3, "bond dropped");
+} else {
+if (this.pressed.inRange (this.xyRange, this.dragged.x, this.dragged.y)) {
+var s = "assign atom ({" + this.dragAtomIndex + "}) \"" + this.pickAtomAssignType + "\"";
+if (this.isPickAtomAssignCharge) {
+s += ";{atomindex=" + this.dragAtomIndex + "}.label='%C'; ";
+this.viewer.undoMoveActionClear (this.dragAtomIndex, 4, true);
+} else {
+this.viewer.undoMoveActionClear (-1, 4146, true);
+}this.runScript (s);
+} else if (!this.isPickAtomAssignCharge) {
+this.viewer.undoMoveActionClear (-1, 4146, true);
+var a = this.viewer.getModelSet ().atoms[this.dragAtomIndex];
+if (a.getElementNumber () == 1) {
+this.runScript ("assign atom ({" + this.dragAtomIndex + "}) \"X\"");
+} else {
+var ptNew = J.util.P3.new3 (x, y, a.screenZ);
+this.viewer.unTransformPoint (ptNew, ptNew);
+this.runScript ("assign atom ({" + this.dragAtomIndex + "}) \"" + this.pickAtomAssignType + "\" " + J.util.Escape.eP (ptNew));
+}}}this.exitMeasurementMode ();
+}, $fz.isPrivate = true, $fz), "~N,~N");
+$_M(c$, "bondPicked", 
+($fz = function (index) {
+if (this.bondPickingMode == 33) this.viewer.undoMoveActionClear (-1, 4146, true);
+switch (this.bondPickingMode) {
+case 33:
+this.runScript ("assign bond [{" + index + "}] \"" + this.pickBondAssignType + "\"");
+break;
+case 34:
+this.viewer.setRotateBondIndex (index);
+break;
+case 8:
+this.viewer.deleteBonds (J.util.BSUtil.newAndSetBit (index));
+}
+}, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "checkTwoAtomAction", 
-($fz = function (action, ptClicked, atomIndex) {
-if (!this.isBound (action, 17)) return;
+($fz = function (ptClicked, atomIndex) {
 var isSpin = (this.atomPickingMode == 5);
 if (this.viewer.getSpinOn () || this.viewer.getNavOn () || this.viewer.getPendingMeasurement () != null) {
 this.resetMeasurement ();
@@ -1209,22 +1189,54 @@ if (isSpin) this.viewer.scriptStatus (queuedAtomCount == 1 ? J.i18n.GT._ ("pick 
  else this.viewer.scriptStatus (queuedAtomCount == 1 ? J.i18n.GT._ ("pick one more atom in order to display the symmetry relationship") : J.i18n.GT._ ("pick two atoms in order to display the symmetry relationship between them"));
 return;
 }var s = this.measurementQueued.getMeasurementScript (" ", false);
-if (isSpin) this.runScript ("spin" + s + " " + this.viewer.getInt (553648158));
+if (isSpin) this.runScript ("spin" + s + " " + this.viewer.getInt (553648157));
  else this.runScript ("draw symop" + s + ";show symop" + s);
-}, $fz.isPrivate = true, $fz), "~N,J.util.Point3fi,~N");
-$_M(c$, "applySelectStyle", 
-($fz = function (item, action) {
+}, $fz.isPrivate = true, $fz), "J.util.Point3fi,~N");
+$_M(c$, "reset", 
+($fz = function () {
+this.runScript ("!reset");
+}, $fz.isPrivate = true, $fz));
+$_M(c$, "selectAtoms", 
+($fz = function (item) {
 if (this.measurementPending != null || this.selectionWorking) return;
 this.selectionWorking = true;
-var s = (this.rubberbandSelectionMode || this.isBound (action, 35) ? "selected and not (" + item + ") or (not selected) and " : this.isBound (action, 32) ? "selected and not " : this.isBound (action, 34) ? "selected or " : action == 0 || this.isBound (action, 36) ? "selected tog " : this.isBound (action, 30) ? "" : null);
+var s = (this.rubberbandSelectionMode || this.isBound (this.clickAction, 35) ? "selected and not (" + item + ") or (not selected) and " : this.isBound (this.clickAction, 32) ? "selected and not " : this.isBound (this.clickAction, 34) ? "selected or " : this.clickAction == 0 || this.isBound (this.clickAction, 36) ? "selected tog " : this.isBound (this.clickAction, 30) ? "" : null);
 if (s != null) {
 s += "(" + item + ")";
-var bs = this.getSelectionSet (s);
-if (bs != null) {
+try {
+var bs = this.viewer.getAtomBitSetEval (null, s);
 this.viewer.select (bs, false, 0, false);
 this.viewer.refresh (3, "selections set");
-}}this.selectionWorking = false;
-}, $fz.isPrivate = true, $fz), "~S,~N");
+} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
+}this.selectionWorking = false;
+}, $fz.isPrivate = true, $fz), "~S");
+$_M(c$, "selectRb", 
+($fz = function (action) {
+var bs = this.viewer.findAtomsInRectangle (this.rectRubber);
+if (bs.length () > 0) {
+var s = J.util.Escape.eBS (bs);
+if (this.isBound (action, 34)) this.runScript ("selectionHalos on;select selected or " + s);
+ else if (this.isBound (action, 32)) this.runScript ("selectionHalos on;select selected and not " + s);
+ else this.runScript ("selectionHalos on;select selected tog " + s);
+}this.viewer.refresh (3, "mouseReleased");
+}, $fz.isPrivate = true, $fz), "~N");
+$_M(c$, "toggleMeasurement", 
+($fz = function () {
+if (this.measurementPending == null) return;
+var measurementCount = this.measurementPending.getCount ();
+if (measurementCount >= 2 && measurementCount <= 4) this.runScript ("!measure " + this.measurementPending.getMeasurementScript (" ", true));
+this.exitMeasurementMode ();
+}, $fz.isPrivate = true, $fz));
+$_M(c$, "zoomTo", 
+($fz = function (atomIndex) {
+this.runScript ("zoomTo (atomindex=" + atomIndex + ")");
+this.viewer.setStatusAtomPicked (atomIndex, null);
+}, $fz.isPrivate = true, $fz), "~N");
 c$.$ActionManager$MotionPoint$ = function () {
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
@@ -1322,13 +1334,13 @@ function () {
 return this.ptNext;
 });
 $_M(c$, "getPointCount2", 
-function (a, b) {
+($fz = function (a, b) {
 if (a > this.nodes.length - b) a = this.nodes.length - b;
 var c = a + 1;
 for (; --c >= 0; ) if (this.getNode (this.ptNext - c - b).index >= 0) break;
 
 return c;
-}, "~N,~N");
+}, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "getNode", 
 function (a) {
 return this.nodes[(a + this.nodes.length + this.nodes.length) % this.nodes.length];
@@ -1487,7 +1499,7 @@ J.viewer.ActionManager.newAction (46, "_wheelZoom", J.i18n.GT._ ("zoom"));
 "PICKINGSTYLE_MEASURE_OFF", 5,
 "pickingStyleNames", ["toggle", "selectOrToggle", "extendedSelect", "drag", "measure", "measureoff"],
 "MAX_DOUBLE_CLICK_MILLIS", 700,
-"MININUM_GESTURE_DELAY_MILLISECONDS", 5,
+"MININUM_GESTURE_DELAY_MILLISECONDS", 10,
 "SLIDE_ZOOM_X_PERCENT", 98,
 "DEFAULT_MOUSE_DRAG_FACTOR", 1,
 "DEFAULT_MOUSE_WHEEL_FACTOR", 1.15,

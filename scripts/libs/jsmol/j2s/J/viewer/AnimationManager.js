@@ -1,7 +1,8 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.constant.EnumAnimationMode", "J.util.BS"], "J.viewer.AnimationManager", ["J.thread.AnimationThread", "J.util.BSUtil"], function () {
+Clazz.load (["J.constant.EnumAnimationMode", "J.util.BS"], "J.viewer.AnimationManager", ["J.api.Interface", "J.util.BSUtil"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.animationThread = null;
+this.modulationThread = null;
 this.viewer = null;
 this.animationOn = false;
 this.animationFps = 0;
@@ -13,7 +14,6 @@ this.bsDisplay = null;
 this.animationFrames = null;
 this.isMovie = false;
 this.animationPaused = false;
-this.inMotion = false;
 this.currentModelIndex = 0;
 this.currentAnimationFrame = 0;
 this.morphCount = 0;
@@ -29,6 +29,9 @@ this.lastFrameDelay = 1;
 this.lastFramePainted = 0;
 this.lastModelPainted = 0;
 this.intAnimThread = 0;
+this.modulationPlay = false;
+this.modulationFps = 1;
+this.bsModulating = null;
 Clazz.instantialize (this, arguments);
 }, J.viewer, "AnimationManager");
 Clazz.prepareFields (c$, function () {
@@ -41,21 +44,25 @@ this.viewer = viewer;
 }, "J.viewer.Viewer");
 $_M(c$, "setAnimationOn", 
 function (animationOn) {
+if (animationOn == this.animationOn) return;
 if (!animationOn || !this.viewer.haveModelSet () || this.viewer.isHeadless ()) {
 this.stopThread (false);
 return;
-}if (!this.viewer.getSpinOn ()) this.viewer.refresh (3, "Viewer:setAnimationOn");
+}if (!this.viewer.getSpinOn ()) this.viewer.refresh (3, "Anim:setAnimationOn");
 this.setAnimationRange (-1, -1);
 this.resumeAnimation ();
 }, "~B");
 $_M(c$, "stopThread", 
 function (isPaused) {
+var stopped = false;
 if (this.animationThread != null) {
 this.animationThread.interrupt ();
 this.animationThread = null;
+stopped = true;
 }this.animationPaused = isPaused;
-if (!this.viewer.getSpinOn ()) this.viewer.refresh (3, "Viewer:setAnimationOff");
+if (stopped && !this.viewer.getSpinOn ()) this.viewer.refresh (3, "Viewer:setAnimationOff");
 this.animation (false);
+this.stopModulationThread ();
 this.viewer.setStatusFrameChanged (false);
 }, "~B");
 $_M(c$, "setAnimationNext", 
@@ -215,6 +222,17 @@ function () {
 this.lastModelPainted = this.currentModelIndex;
 this.lastFramePainted = this.currentAnimationFrame;
 });
+$_M(c$, "setModulationPlay", 
+function (modT1, modT2) {
+if (modT1 == 2147483647 || !this.viewer.haveModelSet () || this.viewer.isHeadless ()) {
+this.stopThread (false);
+return;
+}if (this.modulationThread == null) {
+this.modulationPlay = true;
+this.modulationThread = J.api.Interface.getOptionInterface ("thread.ModulationThread");
+this.modulationThread.setManager (this, this.viewer, [modT1, modT2]);
+this.modulationThread.start ();
+}}, "~N,~N");
 $_M(c$, "resumeAnimation", 
 function () {
 if (this.currentModelIndex < 0) this.setAnimationRange (this.firstFrameIndex, this.lastFrameIndex);
@@ -225,7 +243,8 @@ return;
 this.animationPaused = false;
 if (this.animationThread == null) {
 this.intAnimThread++;
-this.animationThread =  new J.thread.AnimationThread (this, this.viewer, this.firstFrameIndex, this.lastFrameIndex, this.intAnimThread);
+this.animationThread = J.api.Interface.getOptionInterface ("thread.AnimationThread");
+this.animationThread.setManager (this, this.viewer, [this.firstFrameIndex, this.lastFrameIndex, this.intAnimThread]);
 this.animationThread.start ();
 }});
 $_M(c$, "setAnimationLast", 
@@ -302,6 +321,11 @@ if (Clazz.exceptionOf (e, Exception)) {
 throw e;
 }
 }
+}, "~N");
+$_M(c$, "setModulationFps", 
+function (fps) {
+if (fps > 0) this.modulationFps = fps;
+ else this.stopModulationThread ();
 }, "~N");
 $_M(c$, "setViewer", 
 ($fz = function (clearBackgroundModel) {
@@ -384,6 +408,13 @@ $_M(c$, "getFrameStep",
 ($fz = function (direction) {
 return this.frameStep * direction * this.currentDirection;
 }, $fz.isPrivate = true, $fz), "~N");
+$_M(c$, "stopModulationThread", 
+function () {
+if (this.modulationThread != null) {
+this.modulationThread.interrupt ();
+this.modulationThread = null;
+}this.modulationPlay = false;
+});
 Clazz.defineStatics (c$,
 "FRAME_FIRST", -1,
 "FRAME_LAST", 1,

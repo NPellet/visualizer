@@ -345,7 +345,7 @@ break;
 default:
 if (Character.isDigit (ch)) {
 if (iThis < 0) iThis = 0;
-iThis = (iThis << 3) + (iThis << 1) + (ch.charCodeAt (0) - 48);
+iThis = (iThis * 10) + (ch.charCodeAt (0) - 48);
 }}
 }
 return (iPrev >= 0 ? null : bs);
@@ -550,9 +550,7 @@ sb.append ("[").appendF ((info).x).append (",").appendF ((info).y).append (",").
 return J.util.Escape.packageJSONSb (infoType, sb);
 }if (Clazz.instanceOf (info, java.util.Map)) {
 sb.append ("{ ");
-var e = (info).keySet ().iterator ();
-while (e.hasNext ()) {
-var key = e.next ();
+for (var key, $key = (info).keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
 sb.append (sep).append (J.util.Escape.packageJSON (key, J.util.Escape.toJSON (null, (info).get (key))));
 sep = ",";
 }
@@ -707,9 +705,9 @@ return sb.toString ();
 }, "~S");
 c$.getHexitValue = $_M(c$, "getHexitValue", 
 function (ch) {
-if (ch >= '0' && ch <= '9') return ch.charCodeAt (0) - 48;
- else if (ch >= 'a' && ch <= 'f') return 10 + ch.charCodeAt (0) - 97;
- else if (ch >= 'A' && ch <= 'F') return 10 + ch.charCodeAt (0) - 65;
+if (ch.charCodeAt (0) >= 48 && ch.charCodeAt (0) <= 57) return ch.charCodeAt (0) - 48;
+ else if (ch.charCodeAt (0) >= 97 && ch.charCodeAt (0) <= 102) return 10 + ch.charCodeAt (0) - 97;
+ else if (ch.charCodeAt (0) >= 65 && ch.charCodeAt (0) <= 70) return 10 + ch.charCodeAt (0) - 65;
  else return -1;
 }, "~S");
 c$.unescapeStringArray = $_M(c$, "unescapeStringArray", 
@@ -721,7 +719,7 @@ next[0] = 1;
 while (next[0] < data.length) {
 var s = J.util.Parser.getQuotedStringNext (data, next);
 if (s == null) return null;
-v.addLast (s);
+v.addLast (J.util.TextFormat.simpleReplace (s, "\\\"", "\""));
 while (next[0] < data.length && data.charAt (next[0]) != '"') next[0]++;
 
 }

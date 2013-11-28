@@ -9,7 +9,7 @@ Clazz.instantialize (this, arguments);
 }, J.thread, "TimeoutThread", J.thread.JmolThread);
 Clazz.makeConstructor (c$, 
 function (viewer, name, ms, script) {
-Clazz.superConstructor (this, J.thread.TimeoutThread);
+Clazz.superConstructor (this, J.thread.TimeoutThread, []);
 this.setViewer (viewer, name);
 this.$name = name;
 this.set (ms, script);

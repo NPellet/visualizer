@@ -312,6 +312,7 @@ $_M(c$, "transformP2",
 function (pt, ptNew) {
 if (this.mat == null) this.setMatrix ();
 this.mat.transform2 (pt, ptNew);
+return ptNew;
 }, "J.util.Tuple3f,J.util.Tuple3f");
 $_M(c$, "transform", 
 function (v) {

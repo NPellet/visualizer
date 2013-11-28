@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["J.api.JmolBioResolver"], "J.modelsetbio.Resolver", ["java.lang.Boolean", "$.NullPointerException", "java.util.Arrays", "$.Hashtable", "J.constant.EnumStructure", "J.modelset.Group", "J.modelsetbio.AlphaMonomer", "$.AlphaPolymer", "$.AminoMonomer", "$.AminoPolymer", "$.BioModel", "$.CarbohydrateMonomer", "$.CarbohydratePolymer", "$.NucleicMonomer", "$.NucleicPolymer", "$.PhosphorusMonomer", "$.PhosphorusPolymer", "J.util.BS", "$.BSUtil", "$.Logger", "$.Measure", "$.P4", "$.Parser", "$.SB", "$.TextFormat", "$.V3", "J.viewer.JC"], function () {
+Clazz.load (["J.api.JmolBioResolver"], "J.modelsetbio.Resolver", ["java.lang.Boolean", "$.NullPointerException", "java.util.Arrays", "$.Hashtable", "J.constant.EnumStructure", "J.modelset.Group", "J.modelsetbio.AlphaMonomer", "$.AlphaPolymer", "$.AminoMonomer", "$.AminoPolymer", "$.BioModel", "$.CarbohydrateMonomer", "$.CarbohydratePolymer", "$.NucleicMonomer", "$.NucleicPolymer", "$.PhosphorusMonomer", "$.PhosphorusPolymer", "J.util.BS", "$.BSUtil", "$.Logger", "$.Measure", "$.P3", "$.P4", "$.Parser", "$.SB", "$.TextFormat", "$.V3", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.modelLoader = null;
 this.modelSet = null;
@@ -84,7 +84,7 @@ var iFirst = this.modelLoader.getFirstAtomIndex (iGroup);
 var atomCount = this.modelSet.getAtomCount ();
 if (nH < 0) {
 if (atomCount - iFirst == 1) return;
-model = this.modelSet.viewer.getLigandModel (group3);
+model = this.modelSet.viewer.getLigandModel (group3, "ligand_", "_data", null);
 if (model == null) return;
 nH = adapter.getHydrogenAtomCount (model);
 if (nH < 1) return;
@@ -93,7 +93,8 @@ this.modelSet.models[this.modelSet.atoms[iFirst].modelIndex].isPdbWithMultipleBo
 this.bsAtomsForHs.setBits (iFirst, atomCount);
 this.bsAddedHydrogens.setBits (atomCount, atomCount + nH);
 var isHetero = this.modelSet.atoms[iFirst].isHetero ();
-for (var i = 0; i < nH; i++) this.modelSet.addAtom (this.modelSet.atoms[iFirst].modelIndex, this.modelSet.atoms[iFirst].getGroup (), 1, "H", 0, 0, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 0, 0, 1, 0, null, isHetero, 0, null).deleteBonds (null);
+var xyz = J.util.P3.new3 (NaN, NaN, NaN);
+for (var i = 0; i < nH; i++) this.modelSet.addAtom (this.modelSet.atoms[iFirst].modelIndex, this.modelSet.atoms[iFirst].getGroup (), 1, "H", 0, 0, xyz, NaN, null, 0, 0, 1, 0, null, isHetero, 0, null).deleteBonds (null);
 
 }, "J.api.JmolAdapter,~N,~N");
 $_M(c$, "getBondInfo", 
@@ -171,7 +172,7 @@ return bondInfo;
 }, $fz.isPrivate = true, $fz), "J.api.JmolAdapter,~O,~S");
 Clazz.overrideMethod (c$, "finalizeHydrogens", 
 function () {
-this.modelSet.viewer.getLigandModel (null);
+this.modelSet.viewer.getLigandModel (null, null, null, null);
 this.finalizePdbMultipleBonds ();
 this.addHydrogens ();
 });

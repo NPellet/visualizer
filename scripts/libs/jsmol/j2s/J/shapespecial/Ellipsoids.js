@@ -110,8 +110,11 @@ this.setSize (50, bs);
 var isOn = (value).booleanValue ();
 if (this.selectedAtoms != null) bs = this.selectedAtoms;
 if (isOn) this.setSize (2147483647, bs);
-for (var e, $e = this.atomEllipsoids.values ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) if (e.tensor.type.equals (this.typeSelected) && e.tensor.isSelected (bs, -1)) e.isOn = isOn;
-
+for (var e, $e = this.atomEllipsoids.values ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) {
+var t = e.tensor;
+if ((t.type.equals (this.typeSelected) || this.typeSelected.equals (t.altType)) && t.isSelected (bs, -1)) {
+e.isOn = isOn;
+}}
 return;
 }if ("options" === propertyName) {
 var options = (value).toLowerCase ().trim ();
@@ -158,10 +161,8 @@ return sb.toString ();
 });
 $_M(c$, "getStateID", 
 ($fz = function (sb) {
-var e = this.simpleEllipsoids.values ().iterator ();
 var v1 =  new J.util.V3 ();
-while (e.hasNext ()) {
-var ellipsoid = e.next ();
+for (var ellipsoid, $ellipsoid = this.simpleEllipsoids.values ().iterator (); $ellipsoid.hasNext () && ((ellipsoid = $ellipsoid.next ()) || true);) {
 var t = ellipsoid.tensor;
 if (!ellipsoid.isValid || t == null) continue;
 sb.append ("  Ellipsoid ID ").append (ellipsoid.id).append (" modelIndex ").appendI (t.modelIndex).append (" center ").append (J.util.Escape.eP (ellipsoid.center)).append (" axes");
@@ -207,20 +208,24 @@ this.setVis (this.atomEllipsoids, bs, atoms);
 }, "J.util.BS");
 $_M(c$, "setVis", 
 ($fz = function (ellipsoids, bs, atoms) {
-var e = ellipsoids.values ().iterator ();
-while (e.hasNext ()) {
-var ellipsoid = e.next ();
-ellipsoid.visible = ellipsoid.isValid && ellipsoid.isOn && (ellipsoid.modelIndex < 0 || bs.get (ellipsoid.modelIndex));
-if (ellipsoid.tensor.atomIndex1 >= 0) atoms[ellipsoid.tensor.atomIndex1].setShapeVisibility (this.myVisibilityFlag, true);
+for (var e, $e = ellipsoids.values ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) {
+var t = e.tensor;
+var isOK = true;
+if (t.atomIndex1 >= 0) {
+if (t.iType == 1) {
+var isModTensor = t.isModulated;
+var isUnmodTensor = t.isUnmodulated;
+var isModAtom = this.modelSet.isModulated (t.atomIndex1);
+isOK = (!isModTensor && !isUnmodTensor || isModTensor == isModAtom);
+}atoms[t.atomIndex1].setShapeVisibility (this.myVisibilityFlag, true);
+}e.visible = isOK && e.isValid && e.isOn && (e.modelIndex < 0 || bs.get (e.modelIndex));
 }
 }, $fz.isPrivate = true, $fz), "java.util.Map,J.util.BS,~A");
 Clazz.overrideMethod (c$, "setModelClickability", 
 function () {
 if (this.atomEllipsoids.isEmpty ()) return;
-var e = this.atomEllipsoids.values ().iterator ();
-while (e.hasNext ()) {
-var ellipsoid = e.next ();
-var i = ellipsoid.tensor.atomIndex1;
+for (var e, $e = this.atomEllipsoids.values ().iterator (); $e.hasNext () && ((e = $e.next ()) || true);) {
+var i = e.tensor.atomIndex1;
 var atom = this.modelSet.atoms[i];
 if ((atom.getShapeVisibilityFlags () & this.myVisibilityFlag) == 0 || this.modelSet.isAtomHidden (i)) continue;
 atom.setClickable (this.myVisibilityFlag);

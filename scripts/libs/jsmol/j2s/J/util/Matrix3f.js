@@ -116,7 +116,7 @@ this.m21 = v.y;
 this.m22 = v.z;
 } else {
 throw  new ArrayIndexOutOfBoundsException ("row must be 0 to 2 and is " + row);
-}}, "~N,J.util.V3");
+}}, "~N,J.util.Tuple3f");
 $_M(c$, "getRow", 
 function (row, v) {
 if (row == 0) {

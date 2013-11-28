@@ -1,12 +1,11 @@
 Clazz.declarePackage ("J.exportjs");
-Clazz.load (["J.util.AxisAngle4f", "$.P3", "$.V3"], "J.exportjs.Exporter", ["java.io.BufferedWriter", "$.File", "$.FileOutputStream", "$.OutputStreamWriter", "java.lang.Float", "J.util.TextFormat"], function () {
+Clazz.load (["J.util.AxisAngle4f", "$.P3", "$.V3"], "J.exportjs.Exporter", ["java.lang.Float", "J.util.TextFormat"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.privateKey = 0;
 this.jmolRenderer = null;
 this.$output = null;
 this.bw = null;
-this.os = null;
 this.fileName = null;
 this.commandLineOptions = null;
 this.isToFile = false;
@@ -81,12 +80,10 @@ if (pt > 0) {
 this.commandLineOptions = this.fileName.substring (pt + 3);
 this.fileName = this.fileName.substring (0, pt);
 }try {
-var f =  new java.io.File (this.fileName);
-System.out.println ("__Exporter writing to " + f.getAbsolutePath ());
-this.os =  new java.io.FileOutputStream (this.fileName);
-this.bw =  new java.io.BufferedWriter ( new java.io.OutputStreamWriter (this.os));
+System.out.println ("__Exporter writing to " + viewer.getAbsolutePath (privateKey, this.fileName));
+this.bw = viewer.openOutputChannel (privateKey, this.fileName, true);
 } catch (e) {
-if (Clazz.exceptionOf (e, java.io.FileNotFoundException)) {
+if (Clazz.exceptionOf (e, java.io.IOException)) {
 return false;
 } else {
 throw e;
@@ -138,7 +135,6 @@ if (!this.isToFile) return (this.$output == null ? "" : this.$output.toString ()
 try {
 this.bw.flush ();
 this.bw.close ();
-this.os = null;
 } catch (e) {
 if (Clazz.exceptionOf (e, java.io.IOException)) {
 System.out.println (e.toString ());

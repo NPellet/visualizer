@@ -2,12 +2,14 @@ Clazz.declarePackage ("J.i18n");
 Clazz.load (null, "J.i18n.Resource", ["J.util.TextFormat"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.resource = null;
+this.className = null;
 Clazz.instantialize (this, arguments);
 }, J.i18n, "Resource");
 Clazz.makeConstructor (c$, 
-($fz = function (resource) {
+($fz = function (resource, className) {
 this.resource = resource;
-}, $fz.isPrivate = true, $fz), "~O");
+this.className = className;
+}, $fz.isPrivate = true, $fz), "~O,~S");
 c$.getResource = $_M(c$, "getResource", 
 function (className, name) {
 var poData = null;

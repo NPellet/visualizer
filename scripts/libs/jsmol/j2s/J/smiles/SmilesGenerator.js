@@ -517,10 +517,8 @@ if (J.util.Logger.debugging) J.util.Logger.debug ("using ring key " + key);
 $_M(c$, "dumpRingKeys", 
 ($fz = function (sb, ht) {
 J.util.Logger.info (sb.toString () + "\n\n");
-var e = ht.keySet ().iterator ();
-while (e.hasNext ()) {
-J.util.Logger.info ("unmatched ring key: " + e.next ());
-}
+for (var key, $key = ht.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) J.util.Logger.info ("unmatched ring key: " + key);
+
 }, $fz.isPrivate = true, $fz), "J.util.SB,java.util.Map");
 c$.getRingKey = $_M(c$, "getRingKey", 
 function (i0, i1) {

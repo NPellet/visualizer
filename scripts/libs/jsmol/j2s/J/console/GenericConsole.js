@@ -159,9 +159,7 @@ if (this.viewer.isApplet ()) this.viewer.getProperty ("DATA_API", "getAppConsole
 });
 c$.setAbstractButtonLabels = $_M(c$, "setAbstractButtonLabels", 
 function (menuMap, labels) {
-var e = menuMap.keySet ().iterator ();
-while (e.hasNext ()) {
-var key = e.next ();
+for (var key, $key = menuMap.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
 var m = menuMap.get (key);
 var label = labels.get (key);
 if (key.indexOf ("Tip") == key.length - 3) {
@@ -217,6 +215,7 @@ case J.constant.EnumCallback.MINIMIZATION:
 case J.constant.EnumCallback.RESIZE:
 case J.constant.EnumCallback.SCRIPT:
 case J.constant.EnumCallback.SYNC:
+case J.constant.EnumCallback.STRUCTUREMODIFIED:
 break;
 }
 return false;

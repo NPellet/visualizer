@@ -424,24 +424,24 @@ this.m32 = 0.0;
 this.m33 = 1.0;
 }, "J.util.Matrix3f");
 $_M(c$, "setA", 
-function (m) {
-this.m00 = m[0];
-this.m01 = m[1];
-this.m02 = m[2];
-this.m03 = m[3];
-this.m10 = m[4];
-this.m11 = m[5];
-this.m12 = m[6];
-this.m13 = m[7];
-this.m20 = m[8];
-this.m21 = m[9];
-this.m22 = m[10];
-this.m23 = m[11];
-this.m30 = m[12];
-this.m31 = m[13];
-this.m32 = m[14];
-this.m33 = m[15];
-}, "~A");
+function (m, i) {
+this.m00 = m[i++];
+this.m01 = m[i++];
+this.m02 = m[i++];
+this.m03 = m[i++];
+this.m10 = m[i++];
+this.m11 = m[i++];
+this.m12 = m[i++];
+this.m13 = m[i++];
+this.m20 = m[i++];
+this.m21 = m[i++];
+this.m22 = m[i++];
+this.m23 = m[i++];
+this.m30 = m[i++];
+this.m31 = m[i++];
+this.m32 = m[i++];
+this.m33 = m[i++];
+}, "~A,~N");
 $_M(c$, "setTranslation", 
 function (trans) {
 this.m03 = trans.x;
@@ -566,11 +566,11 @@ if (Clazz.exceptionOf (e, NullPointerException)) {
 throw e;
 }
 }
-}, "J.util.P3,J.util.P3");
+}, "J.util.Tuple3f,J.util.Tuple3f");
 $_M(c$, "transform", 
 function (point) {
 this.transform2 (point, point);
-}, "J.util.P3");
+}, "J.util.Tuple3f");
 $_M(c$, "transformV2", 
 function (normal, normalOut) {
 normalOut.set (this.m00 * normal.x + this.m01 * normal.y + this.m02 * normal.z, this.m10 * normal.x + this.m11 * normal.y + this.m12 * normal.z, this.m20 * normal.x + this.m21 * normal.y + this.m22 * normal.z);

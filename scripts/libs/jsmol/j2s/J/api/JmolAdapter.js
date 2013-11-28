@@ -28,6 +28,10 @@ c$.isHetero = $_M(c$, "isHetero",
 function (group3) {
 return J.viewer.JC.isHetero (group3);
 }, "~S");
+c$.getQuantumShellTag = $_M(c$, "getQuantumShellTag", 
+function (id) {
+return J.constant.EnumQuantumShell.getQuantumShellTag (id);
+}, "~N");
 c$.getQuantumShellTagID = $_M(c$, "getQuantumShellTagID", 
 function (tag) {
 return J.constant.EnumQuantumShell.getQuantumShellTagID (tag);
@@ -110,6 +114,8 @@ c$.SHELL_F_SPHERICAL = c$.prototype.SHELL_F_SPHERICAL = J.constant.EnumQuantumSh
 c$.SHELL_F_CARTESIAN = c$.prototype.SHELL_F_CARTESIAN = J.constant.EnumQuantumShell.F_CARTESIAN.id;
 c$.SHELL_G_SPHERICAL = c$.prototype.SHELL_G_SPHERICAL = J.constant.EnumQuantumShell.G_SPHERICAL.id;
 c$.SHELL_G_CARTESIAN = c$.prototype.SHELL_G_CARTESIAN = J.constant.EnumQuantumShell.G_CARTESIAN.id;
+c$.SHELL_H_SPHERICAL = c$.prototype.SHELL_H_SPHERICAL = J.constant.EnumQuantumShell.H_SPHERICAL.id;
+c$.SHELL_H_CARTESIAN = c$.prototype.SHELL_H_CARTESIAN = J.constant.EnumQuantumShell.H_CARTESIAN.id;
 c$.SUPPORTED_BASIS_FUNCTIONS = c$.prototype.SUPPORTED_BASIS_FUNCTIONS = "SPLDF";
 c$.NOTE_SCRIPT_FILE = c$.prototype.NOTE_SCRIPT_FILE = "NOTE: file recognized as a script file: ";
 Clazz.defineStatics (c$,

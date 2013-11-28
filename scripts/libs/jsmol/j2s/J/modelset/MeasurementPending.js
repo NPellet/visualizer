@@ -64,6 +64,7 @@ this.countPlusIndices[this.count] = -2 - pt;
 }this.countPlusIndices[0] = this.count;
 if (doSet) this.numSet = this.count;
 this.value = this.getMeasurement ();
+this.strFormat = null;
 this.formatMeasurement (null);
 return this.count;
 }, "~N,J.util.Point3fi,~B");

@@ -48,9 +48,8 @@ Clazz.overrideMethod (c$, "repaintIfReady",
 function (why) {
 if (this.repaintPending) return false;
 this.repaintPending = true;
-if (this.holdRepaint == 0) {
-this.repaintNow (why);
-}return true;
+if (this.holdRepaint == 0) this.repaintNow (why);
+return true;
 }, "~S");
 $_M(c$, "repaintNow", 
 ($fz = function (why) {
@@ -114,7 +113,7 @@ if (logTime) J.util.Logger.checkTimer (msg, false);
 g3d.renderAllStrings (null);
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
-if (!this.viewer.isJS ()) e.printStackTrace ();
+if (!this.viewer.isJS) e.printStackTrace ();
 J.util.Logger.error ("rendering error? " + e);
 } else {
 throw e;

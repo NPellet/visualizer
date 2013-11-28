@@ -163,13 +163,12 @@ var trans = null;
 if (this.doTranslate) {
 for (var bundle = this.resourceCount; --bundle >= 0; ) {
 trans = this.resources[bundle].getString (string);
-break;
-}
-if (trans == null) {
-if (this.resourceCount > 0 && J.i18n.GT.allowDebug && J.util.Logger.debugging) J.util.Logger.debug ("No trans, using default: " + string);
-} else {
+if (trans != null) {
 string = trans;
-}}if (trans == null) {
+break;
+}}
+if (this.resourceCount > 0 && trans == null && J.i18n.GT.allowDebug && J.util.Logger.debugging) J.util.Logger.debug ("No trans, using default: " + string);
+}if (trans == null) {
 if (string.startsWith ("[")) string = string.substring (string.indexOf ("]") + 1);
  else if (string.endsWith ("]")) string = string.substring (0, string.indexOf ("["));
 }return (objects == null ? string : java.text.MessageFormat.format (string, objects));

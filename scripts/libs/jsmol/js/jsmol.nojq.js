@@ -1,4 +1,6 @@
 // JSmoljQueryExt.js
+// 9/2/2013 7:43:12 AM BH Opera/Safari fix for binary file reading
+
 ;(function($) {
 
   // adds support for synchronous binary file reading
@@ -33,12 +35,15 @@
     });
   } else {
     $.ajaxSetup({
-      accepts: { binary: "text/plain; charset=x-user-defined" }
-    })
+      accepts: { binary: "text/plain; charset=x-user-defined" },
+      responseFields: { binary: "response" }
+		})
+
     $.ajaxTransport('binary', function(s) {
+			var callback;
       return {
         // synchronous binary transfer only
-    		send: function( headers, complete ) {
+    		send: function( headers, complete ) {        
     			var xhr = s.xhr();
     			xhr.open( s.type, s.url, false ); // not asynchronous
           if (xhr.hasOwnProperty("responseType")) {
@@ -53,24 +58,68 @@
     				for (var i in headers )
     					xhr.setRequestHeader( i, headers[ i ] );
     			} catch(_) {}
+          
     			xhr.send( ( s.hasContent && s.data ) || null );
+          
+ 					// Listener
+					callback = function( _, isAbort ) {
+
+					var 
+  				  status = xhr.status,
+						statusText = "",
+  				  responseHeaders = xhr.getAllResponseHeaders(),
+						responses = {},
+						xml;
+          
     			try {
-    				var responses = {},
-    				  status = xhr.status,
-    			    statusText = "",
-    				  responseHeaders = xhr.getAllResponseHeaders(),
-              responses = {};
-              responses.text = (typeof xhr.responseText === "string" ? xhr.responseText : null);
-						try { statusText = xhr.statusText; } catch( _ ) {}
-						if ( !status && s.isLocal && !s.crossDomain ) {
-							status = responses.text ? 200 : 404;
-						} else if ( status === 1223 ) {
-							status = 204;
+
+						// Firefox throws exceptions when accessing properties
+						// of an xhr when a network error occured
+						// http://helpful.knobs-dials.com/index.php/Component_returned_failure_code:_0x80040111_(NS_ERROR_NOT_AVAILABLE)
+						// Was never called and is aborted or complete
+						if ( callback && ( xhr.readyState === 4 ) ) {
+
+							// Only called once
+							callback = undefined;
+
+							// When requesting binary data, IE6-9 will throw an exception
+							// on any attempt to access responseText (#11426)
+							try {
+                responses.text = (typeof xhr.responseText === "string" ? xhr.responseText : null);
+          		} catch( _ ) {
+							}
+							try {
+								responses.binary = xhr.response;
+							} catch( _ ) {
+							}
+              
+							// Firefox throws an exception when accessing
+							// statusText for faulty cross-domain requests
+							try {
+								statusText = xhr.statusText;
+							} catch( _ ) {
+								// We normalize with Webkit giving an empty statusText
+								statusText = "";
+							}
+							// Filter status for non standard behaviors
+
+							// If the request is local and we have data: assume a success
+							// (success with no data won't get notified, that's the best we
+							// can do given current implementations)
+							if ( !status && s.isLocal && !s.crossDomain ) {
+								status = (responses.text ? 200 : 404);
+							// IE - #1450: sometimes returns 1223 when it should be 204
+							} else if ( status === 1223 ) {
+								status = 204;
+							}
+      				complete( status, statusText, responses, responseHeaders );
 						}
-    				complete( status, statusText, responses, responseHeaders );
-  				} catch( firefoxAccessException ) {
-  					complete( -1, firefoxAccessException );
+  				} catch( e ) {
+            alert(e)
+  					complete( -1, e );
   				}
+          };
+          callback();          
     		},
     		abort: function() {}
     	};
@@ -137,10 +186,12 @@
 })(jQuery,document,"click mousemove mouseup touchmove touchend", "outjsmol");
   
 
-// JSmolCore.js -- Jmol core capability  8/16/2013 12:03:14 PM
+// JSmolCore.js -- Jmol core capability  9/30/2013 6:43:14 PM
 
 // see JSmolApi.js for public user-interface. All these are private functions
 
+// BH 9/30/2013 6:42:24 PM: pdb.gz switch  pdb should only be for www.rcsb.org
+// BH 9/17/2013 10:17:51 AM: asynchronous file reading and saving
 // BH 8/16/2013 12:02:20 PM: JSmoljQueryExt.js pulled out
 // BH 8/16/2013 12:02:20 PM: Jmol._touching used properly
 
@@ -174,7 +225,8 @@
 
 // required/optional libraries (preferably in the following order):
 
-//		JSmoljQuery.js      -- required for binary file transfer; otherwise standard jQuery should be OK
+//    jQuery            -- at least jQuery.1.9
+//		JSmoljQueryext.js -- required for binary file transfer; otherwise standard jQuery should be OK
 //		JSmolCore.js      -- required;
 //		JSmolApplet.js    -- required; internal functions for _Applet and _Image; must be after JmolCore
 //		JSmolControls.js  -- optional; internal functions for buttons, links, menus, etc.; must be after JmolCore
@@ -285,6 +337,16 @@ Jmol = (function(document) {
 	  return (f ? $(what).bind(list, f) : $(what).unbind(list));
   }
 
+  Jmol.$appStyle = function(app, div, style) {
+	  return Jmol.$(app, div).css(style);
+  }
+	 
+  Jmol.$appEvent = function(app, div, evt, f) {
+	Jmol.$(app, div).off(evt);
+	if (f)
+  	  Jmol.$(app, div).on(evt, f);
+  }	  
+
   Jmol.$focus = function(id) {
 	  return $("#" + id).focus();
   }
@@ -300,7 +362,7 @@ Jmol = (function(document) {
   Jmol.$offset = function(id) {
     return $("#" + id).offset();
   }
-  
+
   Jmol.$documentOff = function(evt, id) {
 	$(document).off(evt, "#" + id);
   }
@@ -401,91 +463,92 @@ Jmol = (function(document) {
 		features.os = function(){
 			var osList = ["linux","unix","mac","win"]
 			var i = osList.length;
-			
+
 			while (i--){
 				if (features.ua.indexOf(osList[i])!=-1) return osList[i]
 			}
 			return "unknown";
 		}
-		
+
 		features.browser = function(){
 			var ua = features.ua;
 			var browserList = ["konqueror","webkit","omniweb","opera","webtv","icab","msie","mozilla"];
 			for (var i = 0; i < browserList.length; i++)
-				if (ua.indexOf(browserList[i])>=0) 
-					return browserList[i];
+			if (ua.indexOf(browserList[i])>=0) 
+				return browserList[i];
 			return "unknown";
 		}
 		features.browserName = features.browser();
-	  features.browserVersion= parseFloat(features.ua.substring(features.ua.indexOf(features.browserName)+features.browserName.length+1));
-	  
+		features.browserVersion= parseFloat(features.ua.substring(features.ua.indexOf(features.browserName)+features.browserName.length+1));
 		features.supportsXhr2 = function() {return ($.support.cors || $.support.iecors)}
-    features.allowDestroy = (features.browserName != "msie");
-    features.allowHTML5 = (features.browserName != "msie" || navigator.appVersion.indexOf("MSIE 8") < 0);
-    
-    //alert(features.allowHTML5 + " " + features.browserName + " " +  navigator.appVersion)
-    
-    features.getDefaultLanguage = function() {
-      return navigator.language || navigator.userLanguage || "en-US";
-    };
-    
-		features._webGLtest = 0;
-		
-		features.supportsWebGL = function() {
-			if (!Jmol.featureDetection._webGLtest) { 
-				var canvas;
-				Jmol.featureDetection._webGLtest = ( 
-					window.WebGLRenderingContext 
-						&& ((canvas = document.createElement("canvas")).getContext("webgl") 
-							|| canvas.getContext("experimental-webgl")) ? 1 : -1);
-			}
-			return (Jmol.featureDetection._webGLtest > 0);
+		features.allowDestroy = (features.browserName != "msie");
+		features.allowHTML5 = (features.browserName != "msie" || navigator.appVersion.indexOf("MSIE 8") < 0);
+
+//alert(features.allowHTML5 + " " + features.browserName + " " +  navigator.appVersion)
+
+		features.getDefaultLanguage = function() {
+			return navigator.language || navigator.userLanguage || "en-US";
 		};
-		
-    features.supportsLocalization = function() {
-     //<meta charset="utf-8">                                     
-      var metas = document.getElementsByTagName('meta'); 
-      for (var i= metas.length; --i >= 0;) 
-        if (metas[i].outerHTML.toLowerCase().indexOf("utf-8") >= 0) return true;
-      return false;
+
+		features._webGLtest = 0;
+	
+		features.supportsWebGL = function() {
+		if (!Jmol.featureDetection._webGLtest) { 
+			var canvas;
+			Jmol.featureDetection._webGLtest = ( 
+				window.WebGLRenderingContext 
+					&& ((canvas = document.createElement("canvas")).getContext("webgl") 
+				|| canvas.getContext("experimental-webgl")) ? 1 : -1);
+		}
+		return (Jmol.featureDetection._webGLtest > 0);
+	};
+	
+	features.supportsLocalization = function() {
+		//<meta charset="utf-8">                                     
+		var metas = document.getElementsByTagName('meta'); 
+		for (var i= metas.length; --i >= 0;) 
+			if (metas[i].outerHTML.toLowerCase().indexOf("utf-8") >= 0) return true;
+		return false;
     };
-   
-		features.supportsJava = function() {
-			if (!Jmol.featureDetection._javaEnabled) {
-				if (Jmol._isMsie) {
-				  return true;
+    
+	features.supportsJava = function() {
+		if (!Jmol.featureDetection._javaEnabled) {
+			if (Jmol._isMsie) {
+			  return true;
 				  // sorry just can't deal with intentionally turning off Java in MSIE
-				} else {
-				  Jmol.featureDetection._javaEnabled = (navigator.javaEnabled() ? 1 : -1);
-				}
+			} else {
+			  Jmol.featureDetection._javaEnabled = (navigator.javaEnabled() ? 1 : -1);
 			}
-			return (Jmol.featureDetection._javaEnabled > 0);
-    };
-			
-		features.compliantBrowser = function() {
-			var a = !!document.getElementById;
-			var os = features.os()
-			// known exceptions (old browsers):
-	  		if (features.browserName == "opera" && features.browserVersion <= 7.54 && os == "mac"
-			      || features.browserName == "webkit" && features.browserVersion < 125.12
-			      || features.browserName == "msie" && os == "mac"
-			      || features.browserName == "konqueror" && features.browserVersion <= 3.3
-			    ) a = false;
-			return a;
 		}
+		return (Jmol.featureDetection._javaEnabled > 0);
+	};
 		
-		features.isFullyCompliant = function() {
-			return features.compliantBrowser() && features.supportsJava();
-		}
-	  	
-	  features.useIEObject = (features.os() == "win" && features.browserName == "msie" && features.browserVersion >= 5.5);
-	  features.useHtml4Object = (features.browserName == "mozilla" && features.browserVersion >= 5) ||
-	   		(features.browserName == "opera" && features.browserVersion >= 8) ||
-	   		(features.browserName == "webkit" && features.browserVersion >= 412.2);
-        
-		return features;
-		
-	})(document, window);
+	features.compliantBrowser = function() {
+		var a = !!document.getElementById;
+		var os = features.os()
+		// known exceptions (old browsers):
+		if (features.browserName == "opera" && features.browserVersion <= 7.54 && os == "mac"
+			|| features.browserName == "webkit" && features.browserVersion < 125.12
+			|| features.browserName == "msie" && os == "mac"
+			|| features.browserName == "konqueror" && features.browserVersion <= 3.3
+		) a = false;
+		return a;
+	}
+	
+	features.isFullyCompliant = function() {
+		return features.compliantBrowser() && features.supportsJava();
+	}
+  	
+	features.useIEObject = (features.os() == "win" && features.browserName == "msie" && features.browserVersion >= 5.5);
+	features.useHtml4Object = (features.browserName == "mozilla" && features.browserVersion >= 5) ||
+		(features.browserName == "opera" && features.browserVersion >= 8) ||
+		(features.browserName == "webkit" && features.browserVersion >= 412.2);
+	
+	features.hasFileReader = (window.File && window.FileReader);
+	
+	return features;
+	
+})(document, window);
 
     
   	////////////// AJAX-related core functionality //////////////
@@ -530,34 +593,6 @@ Jmol = (function(document) {
 		return '<br />' + s;
 	}
 
-	Jmol._saveFile = function(filename, mimetype, data, encoding) {
-		var url = Jmol._serverUrl;
-		if (!url) {
-			// do something local here;
-			return;
-		}
-		if (!Jmol._formdiv) {
-	      var sform = '<div id="__jsmolformdiv__" style="display:none">\
-	 				<form id="__jsmolform__" method="post" target="_blank" action="">\
-	 				<input name="call" value="saveFile"/>\
-	 				<input id="__jsmolmimetype__" name="mimetype" value=""/>\
-	 				<input id="__jsmolencoding__" name="encoding" value=""/>\
-	 				<input id="__jsmolfilename__" name="filename" value=""/>\
-	 				<input id="__jsmoldata__" name="data" value=""/>\
-	 				</form>\
-	 				</div>'
-	 	  Jmol.$after("body", sform);
-	 	  Jmol._formdiv = "__jsmolform__";
-		}
-		Jmol.$attr(Jmol._formdiv, "action", url + "?" + (new Date()).getMilliseconds());
-		Jmol.$val("__jsmoldata__", data);
-		Jmol.$val("__jsmolfilename__", filename);
-		Jmol.$val("__jsmolmimetype__", mimetype);
-		Jmol.$val("__jsmolencoding__", encoding);
-		Jmol.$submit("__jsmolform__");
-		Jmol.$val("__jsmoldata__", "");
-	}
-	
 	Jmol._getScriptForDatabase = function(database) {
 		return (database == "$" ? Jmol.db._nciLoadScript : database == ":" ? Jmol.db._pubChemLoadScript : Jmol.db._fileLoadScript);
 	}
@@ -821,6 +856,12 @@ Jmol = (function(document) {
   	// use host-server PHP relay if not from this host
     var type = (Jmol._isBinaryUrl(fileName) ? "binary" : "text");
     var asBase64 = ((type == "binary") && !Jmol._canSyncBinary());
+    if (asBase64 && fileName.indexOf("pdb.gz") >= 0 && fileName.indexOf("http://www.rcsb.org/pdb/files/") == 0) {
+      // avoid unnecessary binary transfer
+      fileName = fileName.replace(/pdb\.gz/,"pdb");
+      asBase64 = false;
+      type = "text";
+    }
     var isPost = (fileName.indexOf("?POST?") >= 0);
     if (fileName.indexOf("file:/") == 0 && fileName.indexOf("file:///") != 0)
       fileName = "file://" + fileName.substring(5);      /// fixes IE problem
@@ -838,8 +879,8 @@ Jmol = (function(document) {
 		} else {
 			info.url = fileName;
 		}
-		var xhr = Jmol.$ajax(info);
-		if (self.Clazz && Clazz.instanceOf(xhr.response, self.ArrayBuffer)) {
+		var xhr = Jmol.$ajax(info); 
+		if (!xhr.responseText || self.Clazz && Clazz.instanceOf(xhr.response, self.ArrayBuffer)) {
 		  // Safari
 		  return xhr.response;
 		} 
@@ -888,6 +929,115 @@ Jmol = (function(document) {
     app._checkDeferred("");
     return true;
   }
+
+  Jmol._loadFileAsynchronously = function(fileLoadThread, applet, fileName) {
+	  // we actually cannot suggest a fileName, I believe.
+  	if (!Jmol.featureDetection.hasFileReader)
+  		  return fileLoadThread.setData("Local file reading is not enabled in your browser");
+  	if (!applet._localReader) {
+  		var div = '<div id="ID" style="z-index:30000;position:absolute;background:#E0E0E0;left:10px;top:10px"><div style="margin:5px 5px 5px 5px;"><input type="file" id="ID_files" /><button id="ID_loadfile">load</button><button id="ID_cancel">cancel</button></div><div>'
+  		Jmol.$after("#" + applet._id + "_appletdiv", div.replace(/ID/g, applet._id + "_localReader"));
+  		applet._localReader = Jmol.$(applet, "localReader");
+  	}
+  	Jmol.$appEvent(applet, "localReader_loadfile", "click");
+  	Jmol.$appEvent(applet, "localReader_loadfile", "click", function(evt) {
+  		var file = Jmol.$(applet, "localReader_files")[0].files[0];	  
+  		var reader = new FileReader();
+  		reader.onloadend = function(evt) {
+  			if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+  			  Jmol.$appStyle(applet, "localReader", {display : "none"});
+  			  fileLoadThread.setData(file.name, Jmol._toBytes(evt.target.result));
+  			}
+  		};
+  		reader.readAsArrayBuffer(file);
+  	});
+  	Jmol.$appEvent(applet, "localReader_cancel", "click");
+  	Jmol.$appEvent(applet, "localReader_cancel", "click", function(evt) {
+      Jmol.$appStyle(applet, "localReader", {display: "none"});
+  		fileLoadThread.setData(null, "#CANCELED#");
+  	});  	     
+    Jmol.$appStyle(applet, "localReader", {display : "block"});
+  }
+
+  Jmol._toBytes = function(data) {
+	data = new Uint8Array(data);
+	var b = Clazz.newByteArray(data.length, 0);
+    for (var i = data.length; --i >= 0;)
+	    b[i] = data[i];
+	return b;
+  }
+					
+	Jmol._doAjax = function(url, postOut, dataOut) {
+    // called by org.jmol.awtjs2d.JmolURLConnection.doAjax()
+    url = url.toString();
+    
+    if (dataOut != null) 
+      return Jmol._saveFile(url, dataOut);
+    if (postOut)
+      url += "?POST?" + postOut;
+    var data = Jmol._getFileData(url)
+    return Jmol._processData(data, Jmol._isBinaryUrl(url));
+	}
+
+  // Jmol._localFileSaveFunction --  // do something local here; Maybe try the FileSave interface? return true if successful
+   
+	Jmol._saveFile = function(filename, data) {
+		var url = Jmol._serverUrl;
+		if (Jmol._localFileSaveFunction && Jmol._localFileSaveFunction(filename, data))
+      return "OK";
+		if (!url)
+			return "Jmol._serverUrl is not defined";
+      
+    var isString = (typeof data == "string");
+    var encoding = (isString ? "" : "base64");
+    if (!isString)
+    	data = J.io.Base64.getBase64(data).toString();
+  	var filename = filename.substring(filename.lastIndexOf("/") + 1);
+  	var mimetype = (filename.indexOf(".png") >= 0 ? "image/png" : filename.indexOf(".jpg") >= 0 ? "image/jpg" : "");
+    // Asynchronous output - to be reflected as a download
+		if (!Jmol._formdiv) {
+	      var sform = '<div id="__jsmolformdiv__" style="display:none">\
+	 				<form id="__jsmolform__" method="post" target="_blank" action="">\
+	 				<input name="call" value="saveFile"/>\
+	 				<input id="__jsmolmimetype__" name="mimetype" value=""/>\
+	 				<input id="__jsmolencoding__" name="encoding" value=""/>\
+	 				<input id="__jsmolfilename__" name="filename" value=""/>\
+	 				<textarea id="__jsmoldata__" name="data"></textarea>\
+	 				</form>\
+	 				</div>'
+	 	  Jmol.$after("body", sform);
+	 	  Jmol._formdiv = "__jsmolform__";
+		}
+		Jmol.$attr(Jmol._formdiv, "action", url + "?" + (new Date()).getMilliseconds());
+		Jmol.$val("__jsmoldata__", data);
+		Jmol.$val("__jsmolfilename__", filename);
+		Jmol.$val("__jsmolmimetype__", mimetype);
+		Jmol.$val("__jsmolencoding__", encoding);
+		Jmol.$submit("__jsmolform__");
+		Jmol.$val("__jsmoldata__", "");
+		Jmol.$val("__jsmolfilename__", "");
+    return "OK";
+	}
+	
+  Jmol._processData = function(data, isBinary) {
+    if (typeof data == "undefined") {
+      data = "";
+      isBinary = false;
+    }
+    isBinary &= Jmol._canSyncBinary();
+    if (!isBinary)
+  		return J.util.SB.newS(data);
+  	var b;
+	if (Clazz.instanceOf(data, self.ArrayBuffer))
+		return Jmol._toBytes(data);
+    b = Clazz.newByteArray(data.length, 0);
+    for (var i = data.length; --i >= 0;)
+      b[i] = data.charCodeAt(i) & 0xFF;
+    // alert("Jmol._processData len=" + b.length + " b[0-5]=" + b[0] + " " +
+	// b[1]+ " " + b[2] + " " + b[3]+ " " + b[4] + " " + b[5])
+    return b;
+  };
+
 
 	////////////// applet start-up functionality //////////////
 
@@ -1477,7 +1627,7 @@ Jmol._setDraggable = function(Obj) {
 }
 
 })(Jmol, jQuery);
-
+// BH 9/17/2013 10:18:40 AM  file transfer functions moved to JSmolCore 
 // BH 3/5/2013 9:54:16 PM added support for a cover image: Info.coverImage, coverScript, coverTitle, deferApplet, deferUncover
  
 // BH 1/3/2013 4:54:01 AM mouse binding should return false -- see d.bind(...), and d.bind("contextmenu") is not necessary
@@ -1486,13 +1636,13 @@ Jmol._setDraggable = function(Obj) {
 // author: Bob Hanson, hansonr@stolaf.edu	4/16/2012
 // author: Takanori Nakane biochem_fan 6/12/2012
 
-// This library requires
+// This library requires jQuery and 
 //
-//	JSmoljQuery.js
+//	JSmoljQueryExt.js
 //	JSmolCore.js
 //  JSmolApplet.js
 //  JSmolApi.js
-//  j2s/j2sjmol.js    (Clazz and associated classes)
+//  j2sjmol.js    (Clazz and associated classes)
 // prior to JSmol.js
 
 // these two:
@@ -1926,50 +2076,6 @@ Jmol._setDraggable = function(Obj) {
 		Jmol.__nextExecution();
 	};
 
-	Jmol._doAjax = function(url, postOut, bytesOut) {
-    url = url.toString();
-    
-    if (bytesOut != null) {
-    	bytesOut = J.io.Base64.getBase64(bytesOut).toString();
-    	var filename = url.substring(url.lastIndexOf("/") + 1);
-    	var mimetype = (filename.indexOf(".png") >= 0 ? "image/png" : filename.indexOf(".jpg") >= 0 ? "image/jpg" : "");
-    	Jmol._saveFile(filename, mimetype, bytesOut, "base64");
-    	return "OK";
-    }
-    if (postOut)
-      url += "?POST?" + postOut;
-    var data = Jmol._getFileData(url)
-    return Jmol._processData(data, Jmol._isBinaryUrl(url));
-	}
-
-  Jmol._processData = function(data, isBinary) {
-    if (typeof data == "undefined") {
-      data = "";
-      isBinary = false;
-    }
-    isBinary &= Jmol._canSyncBinary();
-    if (!isBinary)
-  		return J.util.SB.newS(data);
-  	var b;
-		if (Clazz.instanceOf(data, self.ArrayBuffer)) {
-			data = new Uint8Array(data);
-    	b = Clazz.newByteArray(data.length, 0);
-	    for (var i = data.length; --i >= 0;)
-  	    b[i] = data[i];
-    // alert("Jmol._processData len=" + b.length + " b[0-5]=" + b[0] + " " +
-	// b[1]+ " " + b[2] + " " + b[3]+ " " + b[4] + " " + b[5])
-    	return b;
-						
-		}
-    b = Clazz.newByteArray(data.length, 0);
-    for (var i = data.length; --i >= 0;)
-      b[i] = data.charCodeAt(i) & 0xFF;
-    // alert("Jmol._processData len=" + b.length + " b[0-5]=" + b[0] + " " +
-	// b[1]+ " " + b[2] + " " + b[3]+ " " + b[4] + " " + b[5])
-    return b;
-  };
-
-
   Jmol._loadImage = function(platform, echoNameAndPath, bytes, fOnload, image) {
   // bytes would be from a ZIP file -- will have to reflect those back from
 	// server as an image after conversion to base64
@@ -2319,10 +2425,38 @@ Jmol._setDraggable = function(Obj) {
 			me._script('load "' + me._src + '"');
 		me._showInfo(true);
 		me._showInfo(false);
+    me._setDragDrop();
 		me._readyFunction && me._readyFunction(me);
 		Jmol._setReady(this);
 	}
-	
+
+  japroto._setDragDrop = function() {
+    var me = this;
+    Jmol.$appEvent(me, "appletdiv", "dragover", function(e) {
+      e = e.originalEvent;
+      e.stopPropagation();
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    });
+    Jmol.$appEvent(me, "appletdiv", "drop", function(e) {
+      var e = e.originalEvent;
+      e.stopPropagation();
+      e.preventDefault();
+      var file = e.dataTransfer.files[0];
+      var reader = new FileReader();
+      reader.onloadend = function(evt) {
+    		if (evt.target.readyState == FileReader.DONE) {
+          var cacheName = "cache://DROP_" + file.name;
+          var bytes = Jmol._toBytes(evt.target.result);
+          me._applet.viewer.cacheFileByName("cache://DROP_*",false);
+          me._applet.viewer.cachePut(cacheName, bytes);
+          me._applet.viewer.openFileAsyncPDB(cacheName, true);
+          //Jmol.script(me, "load '" + cacheName + "'");
+    		}
+    	};
+    	reader.readAsArrayBuffer(file);
+    });
+  }	
 	japroto._showInfo = function(tf) {
 		Jmol._getElement(this, "infoheaderspan").innerHTML = this._infoHeader;
 		if (this._info)
@@ -3168,6 +3302,7 @@ Jmol._setDraggable = function(Obj) {
 })(Jmol);
 // JmolApi.js -- Jmol user functions  Bob Hanson hansonr@stolaf.edu
 
+// BH 9/3/2013 5:48:03 PM simplification of Jmol.getAppletHTML()
 // BH 5/16/2013 9:01:41 AM checkbox group fix
 // BH 1/15/2013 10:55:06 AM updated to default to HTML5 not JAVA
  
@@ -3311,8 +3446,13 @@ Jmol._setDraggable = function(Obj) {
 	Jmol.evaluate = function(applet,molecularMath) {
 		return applet._evaluate(molecularMath);
 	}
-	
-  Jmol.getAppletHtml = function(applet) {
+
+  // optional Info here	
+  Jmol.getAppletHtml = function(applet, Info) {
+    if (Info) {
+      Jmol.setDocument(0);
+      applet = Jmol.getApplet(applet, Info);
+    }  
     return applet._code;
 	}
 		
@@ -5586,14 +5726,7 @@ Clazz.exceptionOf=function(e, clazz) {
 	}
   if(clazz == Error) {
     if (("" + e).indexOf("Error") >= 0) {
-      var c = arguments.callee
-      // attempt at a sort of stack trace
-      for (var i = 0; i < 50; i++) {
-        c = c.caller
-        if (!c)break;
-        System.out.println(i + " " + (c.exName ? (c.claxxOwner ? c.claxxOwner.__CLASS_NAME__ + "."  : "") + c.exName 
-        : (c.toString ? c.toString().substring(0, c.toString().indexOf("{")) : "<native method>")))
-      }
+    	System.out.println(Clazz.getStackTrace());
     }
     return (("" + e).indexOf("Error") >= 0);
     // everything here is a Java Exception, not a Java Error
@@ -5601,6 +5734,18 @@ Clazz.exceptionOf=function(e, clazz) {
   return (clazz == Exception || clazz == Throwable
     || clazz == NullPointerException && Clazz._isNPEExceptionPredicate(e));
 };
+
+Clazz.getStackTrace = function() {
+	var s = "";
+  var c = arguments.callee.caller;
+    for (var i = 0; i < 50; i++) {
+      if (!c)break;
+      s += (i + " " + (c.exName ? (c.claxxOwner ? c.claxxOwner.__CLASS_NAME__ + "."  : "") + c.exName 
+      : (c.toString ? c.toString().substring(0, c.toString().indexOf("{")) : "<native method>"))) + "\n";
+      c = c.caller
+    }
+    return s;
+}
 
 /* sgurin: preserve Number.prototype.toString */
 Number.prototype._numberToString=Number.prototype.toString;

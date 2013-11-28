@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Jmol\n"
 "Report-Msgid-Bugs-To: jmol-developers@lists.sourceforge.net\n"
 "POT-Creation-Date: 2013-08-17 09:29+0200\n"
-"PO-Revision-Date: 2012-09-15 20:24+0000\n"
+"PO-Revision-Date: 2013-08-30 12:49+0100\n"
 "Last-Translator: Angel Herráez <aherraez@users.sourceforge.net>\n"
 "Language-Team: Spanish <Jmol-developers@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,8 @@ msgstr "Cargando Jmol..."
 msgid "  {0} seconds"
 msgstr "  {0} segundos"
 
-#: org/jmol/applet/Jmol.java:711 org/jmol/appletjs/Jmol.java:366
+#: org/jmol/applet/Jmol.java:711
+#: org/jmol/appletjs/Jmol.java:366
 #, java-format
 msgid ""
 "Jmol Applet version {0} {1}.\n"
@@ -39,7 +40,8 @@ msgstr ""
 "\n"
 "Para más información, visita http://www.jmol.org"
 
-#: org/jmol/applet/Jmol.java:984 org/jmol/appletjs/Jmol.java:602
+#: org/jmol/applet/Jmol.java:984
+#: org/jmol/appletjs/Jmol.java:602
 msgid "File Error:"
 msgstr "Error de archivo:"
 
@@ -104,19 +106,11 @@ msgstr "Cargar"
 
 #: org/jmol/console/GenericConsole.java:93
 msgid "press CTRL-ENTER for new line or paste model data and press Load"
-msgstr ""
-"pulsa Ctrl+Intro para una línea nueva o pega datos de un modelo y luego "
-"pulsa Cargar"
+msgstr "pulsa Ctrl+Intro para una línea nueva o pega datos de un modelo y luego pulsa Cargar"
 
 #: org/jmol/console/GenericConsole.java:95
-msgid ""
-"Messages will appear here. Enter commands in the box below. Click the "
-"console Help menu item for on-line help, which will appear in a new browser "
-"window."
-msgstr ""
-"Aquí aparecerán los mensajes. Escribe las instrucciones en el recuadro de "
-"abajo. Puedes solicitar ayuda en línea usando el menú situado aquí encima; "
-"la ayuda se mostrará en una ventana nueva del navegador."
+msgid "Messages will appear here. Enter commands in the box below. Click the console Help menu item for on-line help, which will appear in a new browser window."
+msgstr "Aquí aparecerán los mensajes. Escribe las instrucciones en el recuadro de abajo. Puedes solicitar ayuda en línea usando el menú situado aquí encima; la ayuda se mostrará en una ventana nueva del navegador."
 
 #: org/jmol/console/GenericConsole.java:128
 msgid "Jmol Script Console"
@@ -629,9 +623,8 @@ msgid "drag atom (and minimize)"
 msgstr "arrastrar el átomo (y minimizar)"
 
 #: org/jmol/modelkit/ModelKitPopupResourceBundle.java:99
-#, fuzzy
 msgid "drag molecule (ALT to rotate)"
-msgstr "arrastrar la molécula (May. para rotarla)"
+msgstr "arrastrar la molécula (`Alt´ para rotarla)"
 
 #: org/jmol/modelkit/ModelKitPopupResourceBundle.java:100
 msgid "drag and minimize molecule (docking)"
@@ -680,28 +673,22 @@ msgstr "salir del modelado"
 #: org/jmol/modelsetbio/AminoPolymer.java:579
 #, java-format
 msgid ""
-"NOTE: Backbone amide hydrogen positions are present and will be ignored. "
-"Their positions will be approximated, as in standard DSSP analysis.\n"
+"NOTE: Backbone amide hydrogen positions are present and will be ignored. Their positions will be approximated, as in standard DSSP analysis.\n"
 "Use {0} to not use this approximation.\n"
 "\n"
 msgstr ""
-"NOTA: Existen posiciones para los hidrógenos amida del esqueleto, pero se "
-"ignorarán. Sus posiciones se aproximarán, tal como se hace en un análisis "
-"DSSP típico.\n"
+"NOTA: Existen posiciones para los hidrógenos amida del esqueleto, pero se ignorarán. Sus posiciones se aproximarán, tal como se hace en un análisis DSSP típico.\n"
 "Utiliza {0} si no quieres emplear este método.\n"
 "\n"
 
 #: org/jmol/modelsetbio/AminoPolymer.java:585
 #, java-format
 msgid ""
-"NOTE: Backbone amide hydrogen positions are present and will be used. "
-"Results may differ significantly from standard DSSP analysis.\n"
+"NOTE: Backbone amide hydrogen positions are present and will be used. Results may differ significantly from standard DSSP analysis.\n"
 "Use {0} to ignore these hydrogen positions.\n"
 "\n"
 msgstr ""
-"NOTA: Existen posiciones para los hidrógenos amida del esqueleto, y se "
-"utilizarán. Los resultados pueden diferir de modo significativo de los de un "
-"análisis DSSP típico.\n"
+"NOTA: Existen posiciones para los hidrógenos amida del esqueleto, y se utilizarán. Los resultados pueden diferir de modo significativo de los de un análisis DSSP típico.\n"
 "Utiliza {0} para ignorar dichas posiciones de los hidrógenos.\n"
 "\n"
 
@@ -715,7 +702,8 @@ msgstr "Ningún átomo cargado"
 msgid "Space Group"
 msgstr "Grupo espacial"
 
-#: org/jmol/popup/GenericPopup.java:979 org/jmol/popup/GenericPopup.java:1029
+#: org/jmol/popup/GenericPopup.java:979
+#: org/jmol/popup/GenericPopup.java:1029
 #: org/jmol/popup/MainPopupResourceBundle.java:589
 #: org/jmol/popup/MainPopupResourceBundle.java:605
 #: org/jmol/popup/MainPopupResourceBundle.java:614
@@ -926,9 +914,7 @@ msgid "Right"
 msgstr "Derecha"
 
 #: org/jmol/popup/MainPopupResourceBundle.java:598
-msgid ""
-"Top[as in \"view from the top, from above\" - (translators: remove this "
-"bracketed part]"
+msgid "Top[as in \"view from the top, from above\" - (translators: remove this bracketed part]"
 msgstr "Desde arriba"
 
 #: org/jmol/popup/MainPopupResourceBundle.java:599
@@ -940,9 +926,8 @@ msgid "Back"
 msgstr "Desde atrás"
 
 #: org/jmol/popup/MainPopupResourceBundle.java:602
-#, fuzzy
 msgid "Scenes"
-msgstr "Patrón"
+msgstr "Escenas"
 
 #: org/jmol/popup/MainPopupResourceBundle.java:604
 msgid "Protein"
@@ -1779,14 +1764,12 @@ msgid "Solvent-Accessible Surface (VDW + {0} Angstrom)"
 msgstr "accesible al disolvente (vdW + {0} &)"
 
 #: org/jmol/popup/MainPopupResourceBundle.java:927
-#, fuzzy
 msgid "Molecular Electrostatic Potential (range ALL)"
-msgstr "potencial electrostático molecular"
+msgstr "potencial electrostático molecular (intervalo completo)"
 
 #: org/jmol/popup/MainPopupResourceBundle.java:928
-#, fuzzy
 msgid "Molecular Electrostatic Potential (range -0.1 0.1)"
-msgstr "potencial electrostático molecular"
+msgstr "potencial electrostático molecular (intervalo -0.1 a 0.1)"
 
 #: org/jmol/popup/MainPopupResourceBundle.java:934
 #: org/jmol/popup/MainPopupResourceBundle.java:935
@@ -2060,9 +2043,7 @@ msgstr "Se requiere un índice de orbitales moleculares entre 1 y {0}"
 
 #: org/jmol/script/ScriptEvaluator.java:3144
 msgid "no MO basis/coefficient data available for this frame"
-msgstr ""
-"en este modelo no hay datos disponibles de base o coeficientes de orbitales "
-"moleculares"
+msgstr "en este modelo no hay datos disponibles de base o coeficientes de orbitales moleculares"
 
 #: org/jmol/script/ScriptEvaluator.java:3147
 msgid "no MO occupancy data available"
@@ -2087,12 +2068,8 @@ msgid "No data available"
 msgstr "no hay datos disponibles"
 
 #: org/jmol/script/ScriptEvaluator.java:3163
-msgid ""
-"No partial charges were read from the file; Jmol needs these to render the "
-"MEP data."
-msgstr ""
-"No se han podido leer las cargas parciales en el archivo; Jmol las necesita "
-"para trazar los datos de MEP"
+msgid "No partial charges were read from the file; Jmol needs these to render the MEP data."
+msgstr "No se han podido leer las cargas parciales en el archivo; Jmol las necesita para trazar los datos de MEP"
 
 #: org/jmol/script/ScriptEvaluator.java:3166
 msgid "No unit cell"
@@ -2114,12 +2091,8 @@ msgstr "se esperaba un nombre de objeto tras el '$'"
 
 #: org/jmol/script/ScriptEvaluator.java:3182
 #, java-format
-msgid ""
-"plane expected -- either three points or atom expressions or {0} or {1} or "
-"{2}"
-msgstr ""
-"se esperaba un plano, bien en forma de tres puntos, o bien de expresiones "
-"atómicas, o {0}, o {1}, o {2}"
+msgid "plane expected -- either three points or atom expressions or {0} or {1} or {2}"
+msgstr "se esperaba un plano, bien en forma de tres puntos, o bien de expresiones atómicas, o {0}, o {1}, o {2}"
 
 #: org/jmol/script/ScriptEvaluator.java:3185
 msgid "property name expected"
@@ -2169,9 +2142,7 @@ msgstr "no se reconoce el objeto"
 #: org/jmol/script/ScriptEvaluator.java:3222
 #, java-format
 msgid "unrecognized {0} parameter in Jmol state script (set anyway)"
-msgstr ""
-"no se reconoce el parámetro {0} en el guión de estado (defínase de todos "
-"modos)"
+msgstr "no se reconoce el parámetro {0} en el guión de estado (defínase de todos modos)"
 
 #: org/jmol/script/ScriptEvaluator.java:3225
 #, java-format
@@ -2211,9 +2182,9 @@ msgid "{0} hydrogen bonds"
 msgstr "{0} enlaces de hidrógeno"
 
 #: org/jmol/script/ScriptEvaluator.java:11735
-#, fuzzy, java-format
+#, java-format
 msgid "{0} charges modified"
-msgstr "se han añadido {0} hidrógenos"
+msgstr "se han modificado {0} cargas"
 
 #: org/jmol/script/ScriptEvaluator.java:11816
 #, java-format
@@ -2322,12 +2293,8 @@ msgstr "elige una etiqueta para cambiar su visibilidad (requiere {0})"
 
 #: org/jmol/viewer/ActionManager.java:130
 #, java-format
-msgid ""
-"pick an atom to include it in a measurement (after starting a measurement or "
-"after {0})"
-msgstr ""
-"elige un átomo para incluirlo en una medición (tras haber comenzado una "
-"medición o tras {0})"
+msgid "pick an atom to include it in a measurement (after starting a measurement or after {0})"
+msgstr "elige un átomo para incluirlo en una medición (tras haber comenzado una medición o tras {0})"
 
 #: org/jmol/viewer/ActionManager.java:131
 #, java-format
@@ -2366,11 +2333,8 @@ msgid "rotate Z"
 msgstr "rotar en Z"
 
 #: org/jmol/viewer/ActionManager.java:139
-msgid ""
-"rotate Z (horizontal motion of mouse) or zoom (vertical motion of mouse)"
-msgstr ""
-"rotación alrededor de Z (desplazamiento horizontal del ratón) o tamaño "
-"(desplazamiento vertical del ratón)"
+msgid "rotate Z (horizontal motion of mouse) or zoom (vertical motion of mouse)"
+msgstr "rotación alrededor de Z (desplazamiento horizontal del ratón) o tamaño (desplazamiento vertical del ratón)"
 
 #: org/jmol/viewer/ActionManager.java:140
 #, java-format
@@ -2404,12 +2368,8 @@ msgstr "(des)activar la selección (requiere {0})"
 
 #: org/jmol/viewer/ActionManager.java:146
 #, java-format
-msgid ""
-"if all are selected, unselect all, otherwise add this group of atoms to the "
-"set of selected atoms (requires {0})"
-msgstr ""
-"si están todos seleccionados, eliminar la selección; si no, añadir este "
-"grupo de átomos a la selección (requiere {0})"
+msgid "if all are selected, unselect all, otherwise add this group of atoms to the set of selected atoms (requires {0})"
+msgstr "si están todos seleccionados, eliminar la selección; si no, añadir este grupo de átomos a la selección (requiere {0})"
 
 #: org/jmol/viewer/ActionManager.java:147
 msgid "pick an atom to initiate or conclude a measurement"
@@ -2432,8 +2392,7 @@ msgstr "tamaño (a lo largo del borde derecho de la ventana)"
 #: org/jmol/viewer/ActionManager.java:151
 #, java-format
 msgid "click on two points to spin around axis counterclockwise (requires {0})"
-msgstr ""
-"pulsa en dos puntos para definir un eje de giro antihorario (requiere {0})"
+msgstr "pulsa en dos puntos para definir un eje de giro antihorario (requiere {0})"
 
 #: org/jmol/viewer/ActionManager.java:152
 #, java-format
@@ -2447,9 +2406,7 @@ msgstr "detener movimiento (requiere {0})"
 
 #: org/jmol/viewer/ActionManager.java:154
 msgid "spin model (swipe and release button and stop motion simultaneously)"
-msgstr ""
-"girar el modelo (deslizar, deteniendo el movimiento al tiempo que se suelta "
-"el botón)"
+msgstr "girar el modelo (deslizar, deteniendo el movimiento al tiempo que se suelta el botón)"
 
 #: org/jmol/viewer/ActionManager.java:155
 msgid "translate"
@@ -2472,10 +2429,8 @@ msgid "pick one more atom in order to display the symmetry relationship"
 msgstr "elige un átomo más para mostrar la relación de simetría"
 
 #: org/jmol/viewer/ActionManager.java:1986
-msgid ""
-"pick two atoms in order to display the symmetry relationship between them"
-msgstr ""
-"elige en orden dos átomos para mostrar la relación de simetría entre ambos"
+msgid "pick two atoms in order to display the symmetry relationship between them"
+msgstr "elige en orden dos átomos para mostrar la relación de simetría entre ambos"
 
 #: org/jmol/viewer/SelectionManager.java:95
 #: org/jmol/viewer/SelectionManager.java:104
@@ -2494,9 +2449,7 @@ msgstr "Arrastra para mover la etiqueta"
 
 #: org/jmol/viewer/Viewer.java:8668
 msgid "clipboard is not accessible -- use signed applet"
-msgstr ""
-"no es posible acceder al portapapeles; para ello debe utilizarse la "
-"miniaplicación firmada"
+msgstr "no es posible acceder al portapapeles; para ello debe utilizarse la miniaplicación firmada"
 
 #: org/jmol/viewer/Viewer.java:9183
 msgid "Cannot set log file path."

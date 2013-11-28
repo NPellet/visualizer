@@ -112,20 +112,20 @@ return Clazz.instanceOf(x, Array);
 c$.getVariableMap = $_M(c$, "getVariableMap", 
 function (x) {
 var ht = x;
-var e = ht.keySet ().iterator ();
-while (e.hasNext ()) {
-if (!(Clazz.instanceOf (ht.get (e.next ()), J.script.SV))) {
+var o = null;
+for (var oo, $oo = ht.values ().iterator (); $oo.hasNext () && ((oo = $oo.next ()) || true);) {
+o = oo;
+break;
+}
+if (!(Clazz.instanceOf (o, J.script.SV))) {
 var x2 =  new java.util.Hashtable ();
 for (var entry, $entry = ht.entrySet ().iterator (); $entry.hasNext () && ((entry = $entry.next ()) || true);) {
 var key = entry.getKey ();
-var o = entry.getValue ();
-if (J.script.SV.isVariableType (o)) x2.put (key, J.script.SV.getVariable (o));
- else x2.put (key, J.script.SV.newVariable (4, J.util.Escape.toReadable (null, o)));
+o = entry.getValue ();
+x2.put (key, J.script.SV.isVariableType (o) ? J.script.SV.getVariable (o) : J.script.SV.newVariable (4, J.util.Escape.toReadable (null, o)));
 }
 x = x2;
-}break;
-}
-return J.script.SV.newVariable (6, x);
+}return J.script.SV.newVariable (6, x);
 }, "java.util.Map");
 c$.getVariableList = $_M(c$, "getVariableList", 
 function (v) {
@@ -366,17 +366,17 @@ return J.script.SV.toFloat (J.script.SV.sValue (x));
 case 10:
 return J.script.SV.iValue (x);
 case 8:
-return (x.value).distance (J.script.SV.pt0);
+return (x.value).length ();
 case 9:
 return J.util.Measure.distanceToPlane (x.value, J.script.SV.pt0);
 case 11:
 var pt =  new J.util.P3 ();
 (x.value).transform (pt);
-return pt.distance (J.script.SV.pt0);
+return pt.length ();
 case 12:
 var pt1 =  new J.util.P3 ();
 (x.value).transform (pt1);
-return pt1.distance (J.script.SV.pt0);
+return pt1.length ();
 default:
 return 0;
 }

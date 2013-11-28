@@ -69,6 +69,25 @@ this.x = s * this.x + t1.x;
 this.y = s * this.y + t1.y;
 this.z = s * this.z + t1.z;
 }, "~N,J.util.Tuple3f");
+$_M(c$, "dot", 
+function (v) {
+return this.x * v.x + this.y * v.y + this.z * v.z;
+}, "J.util.Tuple3f");
+$_M(c$, "lengthSquared", 
+function () {
+return this.x * this.x + this.y * this.y + this.z * this.z;
+});
+$_M(c$, "length", 
+function () {
+return Math.sqrt (this.lengthSquared ());
+});
+$_M(c$, "normalize", 
+function () {
+var d = this.length ();
+this.x /= d;
+this.y /= d;
+this.z /= d;
+});
 Clazz.overrideMethod (c$, "hashCode", 
 function () {
 var bits = 1;

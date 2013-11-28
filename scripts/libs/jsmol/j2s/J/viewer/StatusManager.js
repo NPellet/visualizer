@@ -236,7 +236,7 @@ this.viewer.scriptEditor.notifyScriptTermination ();
 } else if (msWalltime < 0) {
 if (msWalltime == -2) this.viewer.scriptEditor.notifyScriptStart ();
 } else if (this.viewer.scriptEditor.isVisible () && (data[2]).length > 0) {
-this.viewer.scriptEditor.notifyContext (this.viewer.getScriptContext (), data);
+this.viewer.scriptEditor.notifyContext (this.viewer.getScriptContext ("SE notify"), data);
 }}if (this.viewer.appConsole != null) {
 if (msWalltime == 0) {
 var strInfo = (data[1] == null ? null : data[1].toString ());
@@ -289,6 +289,10 @@ $_M(c$, "syncSend",
 function (script, appletName, port) {
 if (port != 0 || this.notifyEnabled (J.constant.EnumCallback.SYNC)) this.jmolCallbackListener.notifyCallback (J.constant.EnumCallback.SYNC, [null, script, appletName, Integer.$valueOf (port)]);
 }, "~S,~S,~N");
+$_M(c$, "modifySend", 
+function (atomIndex, modelIndex, mode) {
+if (this.notifyEnabled (J.constant.EnumCallback.STRUCTUREMODIFIED)) this.jmolCallbackListener.notifyCallback (J.constant.EnumCallback.STRUCTUREMODIFIED, [null, Integer.$valueOf (mode), Integer.$valueOf (atomIndex), Integer.$valueOf (modelIndex)]);
+}, "~N,~N,~N");
 $_M(c$, "getSyncMode", 
 function () {
 return (!this.isSynced ? 0 : this.drivingSync ? 1 : 2);
@@ -325,7 +329,7 @@ return (this.jmolStatusListener == null ? null : this.jmolStatusListener.getRegi
 });
 $_M(c$, "dialogAsk", 
 function (type, fileName) {
-var isImage = (type.startsWith ("saveImage"));
+var isImage = type.equals ("Save Image");
 var sd = J.api.Interface.getOptionInterface ("export.dialog.Dialog");
 if (sd == null) return null;
 sd.setupUI (false);

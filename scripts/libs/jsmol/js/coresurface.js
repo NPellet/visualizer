@@ -6545,8 +6545,7 @@ this.setBBox (J.util.P3.new3 (-10, -10, -10), 0);
 }for (var i = 0; i < this.myAtomCount; i++) this.setBBox (this.atomXyz[i], getRadii ? this.atomRadius[i] + 0.5 : 0);
 
 if (!Float.isNaN (this.params.scale)) {
-var v = J.util.V3.newV (this.xyzMax);
-v.sub (this.xyzMin);
+var v = J.util.V3.newVsub (this.xyzMax, this.xyzMin);
 v.scale (0.5);
 this.xyzMin.add (v);
 v.scale (this.params.scale);
@@ -7891,9 +7890,9 @@ this.isScaledAlready = true;
 if (this.isAnisotropic) this.setVolumetricAnisotropy ();
 if (Float.isNaN (scale)) return;
 J.util.Logger.info ("applying scaling factor of " + scale);
-this.volumetricOrigin.scaleAdd ((1 - scale) / 2, this.volumetricVectors[0]);
-this.volumetricOrigin.scaleAdd ((1 - scale) / 2, this.volumetricVectors[1]);
-this.volumetricOrigin.scaleAdd ((1 - scale) / 2, this.volumetricVectors[2]);
+this.volumetricOrigin.scaleAdd2 ((1 - scale) / 2, this.volumetricVectors[0], this.volumetricOrigin);
+this.volumetricOrigin.scaleAdd2 ((1 - scale) / 2, this.volumetricVectors[1], this.volumetricOrigin);
+this.volumetricOrigin.scaleAdd2 ((1 - scale) / 2, this.volumetricVectors[2], this.volumetricOrigin);
 this.volumetricVectors[0].scale (scale);
 this.volumetricVectors[1].scale (scale);
 this.volumetricVectors[2].scale (scale);

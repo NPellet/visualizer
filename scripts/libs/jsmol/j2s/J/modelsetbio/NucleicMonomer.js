@@ -245,10 +245,8 @@ ptB = this.getAtomFromOffsetIndex (1);
 }break;
 }
 if (ptA == null || ptB == null) return null;
-var vA = J.util.V3.newV (ptA);
-vA.sub (ptNorP);
-var vB = J.util.V3.newV (ptB);
-vB.sub (ptNorP);
+var vA = J.util.V3.newVsub (ptA, ptNorP);
+var vB = J.util.V3.newVsub (ptB, ptNorP);
 if (reverseY) vB.scale (-1);
 return J.util.Quaternion.getQuaternionFrameV (vA, vB, null, yBased);
 }, "~S");

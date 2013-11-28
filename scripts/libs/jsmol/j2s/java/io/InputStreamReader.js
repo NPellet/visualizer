@@ -25,43 +25,47 @@ if (this.bytearr == null || this.bytearr.length < length) this.bytearr =  Clazz.
 var c;
 var char2;
 var char3;
-var count = 0;
-var chararr_count = 0;
-var len = this.$in.read (this.bytearr, this.pos, length - this.pos);
-if (len < 0) return -1;
-this.pos = 0;
-while (count < len) {
-c = this.bytearr[count] & 0xff;
+var byteCount = 0;
+var charCount = offset;
+var byteLen = this.$in.read (this.bytearr, this.pos, length - this.pos);
+var nAvail = this.$in.available ();
+if (byteLen < 0) return -1;
+var nMax = byteLen;
+while (byteCount < nMax) {
+c = this.bytearr[byteCount] & 0xff;
 if (this.isUTF8) switch (c >> 4) {
 case 0xC:
 case 0xD:
-if (count > len - 2) continue;
-count += 2;
-char2 = this.bytearr[count - 1];
-if ((char2 & 0xC0) != 0x80) {
-count -= 2;
-break;
-}cbuf[chararr_count++] = String.fromCharCode (((c & 0x1F) << 6) | (char2 & 0x3F));
+if (byteCount + 1 >= byteLen) {
+if (nAvail >= 1) {
+nMax = byteCount;
 continue;
+}} else if (((char2 = this.bytearr[byteCount + 1]) & 0xC0) == 0x80) {
+cbuf[charCount++] = String.fromCharCode (((c & 0x1F) << 6) | (char2 & 0x3F));
+byteCount += 2;
+continue;
+}this.isUTF8 = false;
+break;
 case 0xE:
-if (count > len - 3) continue;
-count += 3;
-char2 = this.bytearr[count - 2];
-char3 = this.bytearr[count - 1];
-if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80)) {
-count -= 3;
-break;
-}cbuf[chararr_count++] = String.fromCharCode (((c & 0x0F) << 12) | ((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
+if (byteCount + 2 >= byteLen) {
+if (nAvail >= 2) {
+nMax = byteCount;
 continue;
+}} else if (((char2 = this.bytearr[byteCount + 1]) & 0xC0) == 0x80 && ((char3 = this.bytearr[byteCount + 2]) & 0xC0) == 0x80) {
+cbuf[charCount++] = String.fromCharCode (((c & 0x0F) << 12) | ((char2 & 0x3F) << 6) | (char3 & 0x3F));
+byteCount += 3;
+continue;
+}this.isUTF8 = false;
+break;
 }
-count++;
-cbuf[chararr_count++] = String.fromCharCode (c);
+byteCount++;
+cbuf[charCount++] = String.fromCharCode (c);
 }
-this.pos = len - count;
+this.pos = byteLen - byteCount;
 for (var i = 0; i < this.pos; i++) {
-this.bytearr[i] = this.bytearr[count++];
+this.bytearr[i] = this.bytearr[byteCount++];
 }
-return len - this.pos;
+return charCount - offset;
 }, "~A,~N,~N");
 Clazz.overrideMethod (c$, "ready", 
 function () {

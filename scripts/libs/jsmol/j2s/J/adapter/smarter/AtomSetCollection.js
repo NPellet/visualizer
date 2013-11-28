@@ -1,10 +1,10 @@
 Clazz.declarePackage ("J.adapter.smarter");
-Clazz.load (["java.util.Hashtable", "J.util.P3"], "J.adapter.smarter.AtomSetCollection", ["java.lang.Boolean", "$.Float", "java.util.Collections", "$.Properties", "J.adapter.smarter.Atom", "$.Bond", "$.SmarterJmolAdapter", "J.api.Interface", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.JmolList", "$.Logger", "$.Matrix4f", "$.P3i", "$.Parser", "$.SB", "$.Tensor", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["java.util.Hashtable", "J.util.P3"], "J.adapter.smarter.AtomSetCollection", ["java.lang.Boolean", "$.Float", "java.util.Collections", "$.Properties", "J.adapter.smarter.Atom", "$.Bond", "$.SmarterJmolAdapter", "J.api.Interface", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.JmolList", "$.Logger", "$.Matrix3f", "$.Matrix4f", "$.P3i", "$.Parser", "$.SB", "$.Tensor", "$.TextFormat", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
+this.bsAtoms = null;
 this.fileTypeName = null;
 this.collectionName = null;
 this.atomSetCollectionAuxiliaryInfo = null;
-this.bsAtoms = null;
 this.atomCount = 0;
 this.atoms = null;
 this.bondCount = 0;
@@ -61,14 +61,16 @@ this.haveAnisou = false;
 this.dtype = 3;
 this.unitCellTranslations = null;
 this.baseSymmetryAtomCount = 0;
-this.cartesians = null;
+this.checkLatticeOnly = false;
+this.latticeOp = 0;
+this.latticeOnly = false;
 this.bondCount0 = 0;
 this.bondIndex0 = 0;
 this.applySymmetryToBonds = false;
 this.checkSpecial = true;
+this.checkAll = false;
 this.ptTemp = null;
-this.ptTemp1 = null;
-this.ptTemp2 = null;
+this.mTemp = null;
 this.atomSymbolicMap = null;
 this.haveMappedSerials = false;
 Clazz.instantialize (this, arguments);
@@ -85,9 +87,6 @@ this.atomSetBondCounts =  Clazz.newIntArray (16, 0);
 this.atomSetAuxiliaryInfo =  new Array (16);
 this.notionalUnitCell =  Clazz.newFloatArray (6, 0);
 this.ptOffset =  new J.util.P3 ();
-this.ptTemp =  new J.util.P3 ();
-this.ptTemp1 =  new J.util.P3 ();
-this.ptTemp2 =  new J.util.P3 ();
 this.atomSymbolicMap =  new java.util.Hashtable ();
 });
 $_M(c$, "getFileTypeName", 
@@ -384,7 +383,6 @@ this.atomSetCount = 0;
 this.atomSetNumbers =  Clazz.newIntArray (16, 0);
 this.atomSymbolicMap =  new java.util.Hashtable ();
 this.bonds = null;
-this.cartesians = null;
 this.connectLast = null;
 this.currentAtomSetIndex = -1;
 this.latticeCells = null;
@@ -639,20 +637,17 @@ if (this.atoms[i].atomSite == atomSite) this.addVibrationVector (i, vx, vy, vz);
 $_M(c$, "addVibrationVector", 
 function (iatom, x, y, z) {
 if (!this.allowMultiple) iatom = iatom % this.atomCount;
-var atom = this.atoms[iatom];
-atom.vectorX = x;
-atom.vectorY = y;
-atom.vectorZ = z;
+this.atoms[iatom].vib = J.util.V3.new3 (x, y, z);
 }, "~N,~N,~N,~N");
 $_M(c$, "setAtomSetSpaceGroupName", 
 function (spaceGroupName) {
 this.setAtomSetAuxiliaryInfo ("spaceGroup", spaceGroupName + "");
 }, "~S");
 $_M(c$, "setCoordinatesAreFractional", 
-function (coordinatesAreFractional) {
-this.coordinatesAreFractional = coordinatesAreFractional;
-this.setAtomSetAuxiliaryInfo ("coordinatesAreFractional", Boolean.$valueOf (coordinatesAreFractional));
-if (coordinatesAreFractional) this.setGlobalBoolean (0);
+function (tf) {
+this.coordinatesAreFractional = tf;
+this.setAtomSetAuxiliaryInfo ("coordinatesAreFractional", Boolean.$valueOf (tf));
+if (tf) this.setGlobalBoolean (0);
 }, "~B");
 $_M(c$, "setSymmetryRange", 
 function (factor) {
@@ -710,7 +705,7 @@ this.setAtomSetAuxiliaryInfo ("matUnitCellOrientation", matUnitCellOrientation);
 $_M(c$, "addSpaceGroupOperation", 
 function (xyz) {
 this.getSymmetry ().setSpaceGroup (this.doNormalize);
-return (this.symmetry.addSpaceGroupOperation (xyz, 0) >= 0);
+return this.symmetry.addSpaceGroupOperation (xyz, 0);
 }, "~S");
 $_M(c$, "setLatticeParameter", 
 function (latt) {
@@ -718,12 +713,8 @@ this.getSymmetry ().setSpaceGroup (this.doNormalize);
 this.symmetry.setLattice (latt);
 }, "~N");
 $_M(c$, "applySymmetry", 
-function () {
-this.applySymmetryLattice (this.latticeCells[0], this.latticeCells[1], Math.abs (this.latticeCells[2]));
-});
-$_M(c$, "applySymmetryUsing", 
 function (symmetry) {
-this.getSymmetry ().setSpaceGroupS (symmetry);
+if (symmetry != null) this.getSymmetry ().setSpaceGroupS (symmetry);
 this.applySymmetryLattice (this.latticeCells[0], this.latticeCells[1], Math.abs (this.latticeCells[2]));
 }, "J.api.SymmetryInterface");
 $_M(c$, "applySymmetryLattice", 
@@ -746,7 +737,7 @@ var iAtomFirst = this.getLastAtomSetAtomIndex ();
 for (var i = iAtomFirst; i < this.atomCount; i++) this.symmetry.toCartesian (this.atoms[i], true);
 
 this.symmetry = null;
-this.setNotionalUnitCell ([0, 0, 0, 0, 0, 0, ptx.x, ptx.y, ptx.z, pty.x, pty.y, pty.z, ptz.x, ptz.y, ptz.z], null, this.getAtomSetAuxiliaryInfoValue (this.currentAtomSetIndex, "unitCellOffset"));
+this.setNotionalUnitCell ([0, 0, 0, 0, 0, 0, ptx.x, ptx.y, ptx.z, pty.x, pty.y, pty.z, ptz.x, ptz.y, ptz.z], null, this.getAtomSetAuxiliaryInfoValue (-1, "unitCellOffset"));
 this.setAtomSetSpaceGroupName ("P1");
 this.getSymmetry ().setSpaceGroup (this.doNormalize);
 this.symmetry.addSpaceGroupOperation ("x,y,z", 0);
@@ -800,9 +791,13 @@ $_M(c$, "setTensors",
 function () {
 if (!this.haveAnisou) return;
 this.getSymmetry ();
-for (var i = this.getLastAtomSetAtomIndex (); i < this.atomCount; i++) this.atoms[i].addTensor (this.symmetry.getTensor (this.atoms[i].anisoBorU), null);
+for (var i = this.getLastAtomSetAtomIndex (); i < this.atomCount; i++) this.atoms[i].addTensor (this.symmetry.getTensor (this.atoms[i].anisoBorU), null, false);
 
 });
+$_M(c$, "setLatticeOnly", 
+function (b) {
+this.checkLatticeOnly = b;
+}, "~B");
 $_M(c$, "setBaseSymmetryAtomCount", 
 function (n) {
 this.baseSymmetryAtomCount = n;
@@ -847,7 +842,7 @@ this.maxXYZ.x++;
 }
 }var nCells = (this.maxXYZ.x - this.minXYZ.x) * (this.maxXYZ.y - this.minXYZ.y) * (this.maxXYZ.z - this.minXYZ.z);
 var cartesianCount = (this.checkSpecial ? noSymmetryCount * operationCount * nCells : this.symmetryRange > 0 ? noSymmetryCount * operationCount : this.symmetryRange < 0 ? 1 : 1);
-this.cartesians =  new Array (cartesianCount);
+var cartesians =  new Array (cartesianCount);
 for (var i = 0; i < noSymmetryCount; i++) this.atoms[i + iAtomFirst].bsSymmetry = J.util.BSUtil.newBitSet (operationCount * (nCells + 1));
 
 var pt = 0;
@@ -866,12 +861,15 @@ this.rminz = 3.4028235E38;
 this.rmaxx = -3.4028235E38;
 this.rmaxy = -3.4028235E38;
 this.rmaxz = -3.4028235E38;
-}var op = this.symmetry.getSpaceGroupOperation (0);
+}this.latticeOp = this.symmetry.getLatticeOp ();
+this.checkAll = (this.atomSetCount == 1 && this.checkSpecial && this.latticeOp >= 0);
+this.latticeOnly = (this.checkLatticeOnly && this.latticeOp >= 0);
+var op = this.symmetry.getSpaceGroupOperation (0);
 if (this.doPackUnitCell) this.ptOffset.set (0, 0, 0);
 for (var tx = this.minXYZ.x; tx < this.maxXYZ.x; tx++) for (var ty = this.minXYZ.y; ty < this.maxXYZ.y; ty++) for (var tz = this.minXYZ.z; tz < this.maxXYZ.z; tz++) {
 this.unitCellTranslations[iCell] = J.util.V3.new3 (tx, ty, tz);
 unitCells[iCell++] = 555 + tx * 100 + ty * 10 + tz;
-if (tx != 0 || ty != 0 || tz != 0 || this.cartesians.length == 0) continue;
+if (tx != 0 || ty != 0 || tz != 0 || cartesians.length == 0) continue;
 for (pt = 0; pt < noSymmetryCount; pt++) {
 var atom = this.atoms[iAtomFirst + pt];
 var c = J.util.P3.newP (atom);
@@ -884,7 +882,7 @@ this.symmetry.toFractional (atom, false);
 }atom.bsSymmetry.set (iCell * operationCount);
 atom.bsSymmetry.set (0);
 if (checkSymmetryRange) this.setSymmetryMinMax (c);
-if (pt < cartesianCount) this.cartesians[pt] = c;
+if (pt < cartesianCount) cartesians[pt] = c;
 }
 if (checkRangeNoSymmetry) {
 this.rminx -= absRange;
@@ -893,7 +891,7 @@ this.rminz -= absRange;
 this.rmaxx += absRange;
 this.rmaxy += absRange;
 this.rmaxz += absRange;
-}cell555Count = pt = this.symmetryAddAtoms (iAtomFirst, noSymmetryCount, 0, 0, 0, 0, pt, iCell * operationCount);
+}cell555Count = pt = this.symmetryAddAtoms (iAtomFirst, noSymmetryCount, 0, 0, 0, 0, pt, iCell * operationCount, cartesians);
 }
 
 
@@ -907,7 +905,7 @@ this.rmaxz += absRange;
 }iCell = 0;
 for (var tx = this.minXYZ.x; tx < this.maxXYZ.x; tx++) for (var ty = this.minXYZ.y; ty < this.maxXYZ.y; ty++) for (var tz = this.minXYZ.z; tz < this.maxXYZ.z; tz++) {
 iCell++;
-if (tx != 0 || ty != 0 || tz != 0) pt = this.symmetryAddAtoms (iAtomFirst, noSymmetryCount, tx, ty, tz, cell555Count, pt, iCell * operationCount);
+if (tx != 0 || ty != 0 || tz != 0) pt = this.symmetryAddAtoms (iAtomFirst, noSymmetryCount, tx, ty, tz, cell555Count, pt, iCell * operationCount, cartesians);
 }
 
 
@@ -918,7 +916,6 @@ this.setAtomSetAuxiliaryInfo ("presymmetryAtomCount", Integer.$valueOf (noSymmet
 this.setAtomSetAuxiliaryInfo ("latticeDesignation", this.symmetry.getLatticeDesignation ());
 this.setAtomSetAuxiliaryInfo ("unitCellRange", unitCells);
 this.setAtomSetAuxiliaryInfo ("unitCellTranslations", this.unitCellTranslations);
-this.symmetry.setSpaceGroupS (null);
 this.notionalUnitCell =  Clazz.newFloatArray (6, 0);
 this.coordinatesAreFractional = false;
 this.setAtomSetAuxiliaryInfo ("hasSymmetry", Boolean.TRUE);
@@ -927,7 +924,7 @@ this.setGlobalBoolean (1);
 $_M(c$, "finalizeSymmetry", 
 ($fz = function (iAtomFirst, noSymmetryCount) {
 this.symmetry.setFinalOperations (this.atoms, iAtomFirst, noSymmetryCount, this.doNormalize);
-var name = this.getAtomSetAuxiliaryInfoValue (this.currentAtomSetIndex, "spaceGroup");
+var name = this.getAtomSetAuxiliaryInfoValue (-1, "spaceGroup");
 if (name == null || name.equals ("unspecified!")) this.setAtomSetSpaceGroupName (this.symmetry.getSpaceGroupName ());
 }, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "setSymmetryOps", 
@@ -945,7 +942,7 @@ function (TF) {
 this.checkSpecial = TF;
 }, "~B");
 $_M(c$, "symmetryAddAtoms", 
-($fz = function (iAtomFirst, noSymmetryCount, transX, transY, transZ, baseCount, pt, iCellOpPt) {
+($fz = function (iAtomFirst, noSymmetryCount, transX, transY, transZ, baseCount, pt, iCellOpPt, cartesians) {
 var isBaseCell = (baseCount == 0);
 var addBonds = (this.bondCount0 > this.bondIndex0 && this.applySymmetryToBonds);
 var atomMap = (addBonds ?  Clazz.newIntArray (noSymmetryCount, 0) : null);
@@ -964,7 +961,7 @@ if (checkRangeNoSymmetry) baseCount = noSymmetryCount;
 var atomMax = iAtomFirst + noSymmetryCount;
 var ptAtom =  new J.util.P3 ();
 for (var iSym = 0; iSym < nOperations; iSym++) {
-if (isBaseCell && this.symmetry.getSpaceGroupXyz (iSym, true).equals ("x,y,z")) continue;
+if (isBaseCell && iSym == 0 || this.latticeOnly && iSym > 0 && iSym != this.latticeOp) continue;
 var pt0 = (this.checkSpecial ? pt : checkRange111 ? baseCount : 0);
 for (var i = iAtomFirst; i < atomMax; i++) {
 if (this.atoms[i].ignoreSymmetry) continue;
@@ -982,8 +979,9 @@ if (!J.adapter.smarter.AtomSetCollection.isWithinCell (this.dtype, ptAtom, this.
 if (checkDistances) {
 var minDist2 = 3.4028235E38;
 if (checkSymmetryRange && !this.isInSymmetryRange (cartesian)) continue;
-for (var j = pt0; --j >= 0; ) {
-var d2 = cartesian.distanceSquared (this.cartesians[j]);
+var j0 = (this.checkAll ? this.atomCount : pt0);
+for (var j = j0; --j >= 0; ) {
+var d2 = cartesian.distanceSquared (cartesians[j]);
 if (this.checkSpecial && d2 < 0.0001) {
 special = this.atoms[iAtomFirst + j];
 if (special.atomName == null || special.atomName.equals (this.atoms[i].atomName)) break;
@@ -1003,23 +1001,14 @@ atom1.setT (ptAtom);
 atom1.atomSite = atomSite;
 atom1.bsSymmetry = J.util.BSUtil.newAndSetBit (iCellOpPt + iSym);
 atom1.bsSymmetry.set (iSym);
-if (addCartesian) this.cartesians[pt++] = cartesian;
+if (addCartesian) cartesians[pt++] = cartesian;
 if (this.atoms[i].tensors != null) {
 atom1.tensors = null;
 for (var j = this.atoms[i].tensors.size (); --j >= 0; ) {
 var t = this.atoms[i].tensors.get (j);
 if (t == null) continue;
-if (nOperations == 1) {
-atom1.addTensor (J.util.Tensor.copyTensor (t), null);
-continue;
-}var eigenVectors = t.eigenVectors;
-if (addCartesian) {
-this.ptTemp.setT (this.cartesians[i - iAtomFirst]);
-} else {
-this.ptTemp.setT (this.atoms[i]);
-this.symmetry.toCartesian (this.ptTemp, false);
-}eigenVectors = this.symmetry.rotateEllipsoid (iSym, this.ptTemp, eigenVectors, this.ptTemp1, this.ptTemp2);
-atom1.addTensor (J.util.Tensor.getTensorFromEigenVectors (eigenVectors, t.eigenValues, t.isIsotropic ? "iso" : t.type, t.id), null);
+if (nOperations == 1) atom1.addTensor (J.util.Tensor.copyTensor (t), null, false);
+ else this.addRotatedTensor (atom1, t, iSym, false);
 }
 }}}
 if (addBonds) {
@@ -1034,7 +1023,14 @@ if (iAtom1 >= atomMax || iAtom2 >= atomMax) this.addNewBondWithOrder (iAtom1, iA
 }
 }}
 return pt;
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N,~N");
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,~N,~N,~A");
+$_M(c$, "addRotatedTensor", 
+function (a, t, iSym, reset) {
+if (this.ptTemp == null) {
+this.ptTemp =  new J.util.P3 ();
+this.mTemp =  new J.util.Matrix3f ();
+}return a.addTensor (J.util.Tensor.getTensorFromEigenVectors (this.symmetry.rotateAxes (iSym, t.eigenVectors, this.ptTemp, this.mTemp), t.eigenValues, t.isIsotropic ? "iso" : t.type, t.id), null, reset);
+}, "J.adapter.smarter.Atom,J.util.Tensor,~N,~B");
 $_M(c$, "applySymmetryBio", 
 function (biomts, notionalUnitCell, applySymmetryToBonds, filter) {
 if (this.latticeCells != null && this.latticeCells[0] != 0) {
@@ -1176,14 +1172,14 @@ return this.atomSetCollectionAuxiliaryInfo.get (key);
 $_M(c$, "addTrajectoryStep", 
 ($fz = function () {
 var trajectoryStep =  new Array (this.atomCount);
-var haveVibrations = (this.atomCount > 0 && !Float.isNaN (this.atoms[0].vectorX));
+var haveVibrations = (this.atomCount > 0 && this.atoms[0] != null && !Float.isNaN (this.atoms[0].z));
 var vibrationStep = (haveVibrations ?  new Array (this.atomCount) : null);
 var prevSteps = (this.trajectoryStepCount == 0 ? null : this.trajectorySteps.get (this.trajectoryStepCount - 1));
 for (var i = 0; i < this.atomCount; i++) {
 var pt = J.util.P3.newP (this.atoms[i]);
 if (this.doFixPeriodic && prevSteps != null) pt = J.adapter.smarter.AtomSetCollection.fixPeriodic (pt, prevSteps[i]);
 trajectoryStep[i] = pt;
-if (haveVibrations) vibrationStep[i] = J.util.V3.new3 (this.atoms[i].vectorX, this.atoms[i].vectorY, this.atoms[i].vectorZ);
+if (haveVibrations) vibrationStep[i] = this.atoms[i].vib;
 }
 if (haveVibrations) {
 if (this.vibrationSteps == null) {
@@ -1228,12 +1224,8 @@ if (this.vibrationSteps != null && vibrations != null && vibrations.length < thi
 this.errorMessage = "File cannot be loaded as a trajectory";
 return;
 }for (var i = 0; i < this.atomCount; i++) {
-if (this.vibrationSteps != null) {
-if (vibrations != null) v = vibrations[i];
-this.atoms[i].vectorX = v.x;
-this.atoms[i].vectorY = v.y;
-this.atoms[i].vectorZ = v.z;
-}if (trajectory[i] != null) this.atoms[i].setT (trajectory[i]);
+if (this.vibrationSteps != null) this.atoms[i].vib = (vibrations == null ? v : vibrations[i]);
+if (trajectory[i] != null) this.atoms[i].setT (trajectory[i]);
 }
 this.setAtomSetCollectionAuxiliaryInfo ("trajectorySteps", this.trajectorySteps);
 if (this.vibrationSteps != null) this.setAtomSetCollectionAuxiliaryInfo ("vibrationSteps", this.vibrationSteps);
@@ -1326,7 +1318,7 @@ p.put (key, data);
 }, "~S,~S,~N");
 $_M(c$, "appendAtomProperties", 
 ($fz = function (nTimes) {
-var p = this.getAtomSetAuxiliaryInfoValue (this.currentAtomSetIndex, "atomProperties");
+var p = this.getAtomSetAuxiliaryInfoValue (-1, "atomProperties");
 if (p == null) {
 return;
 }for (var entry, $entry = p.entrySet ().iterator (); $entry.hasNext () && ((entry = $entry.next ()) || true);) {
@@ -1350,7 +1342,7 @@ return true;
 }, "~S");
 $_M(c$, "getAtomSetAuxiliaryInfoValue", 
 function (index, key) {
-return this.atomSetAuxiliaryInfo[index].get (key);
+return this.atomSetAuxiliaryInfo[index >= 0 ? index : this.currentAtomSetIndex].get (key);
 }, "~N,~S");
 $_M(c$, "setAtomSetAuxiliaryInfo", 
 function (key, value) {
@@ -1402,6 +1394,7 @@ return null;
 $_M(c$, "setAtomSetEnergy", 
 function (energyString, value) {
 if (this.currentAtomSetIndex < 0) return;
+J.util.Logger.info ("Energy for model " + (this.currentAtomSetIndex + 1) + " = " + energyString);
 this.setAtomSetAuxiliaryInfo ("EnergyString", energyString);
 this.setAtomSetAuxiliaryInfo ("Energy", Float.$valueOf (value));
 this.setAtomSetModelProperty ("Energy", "" + value);

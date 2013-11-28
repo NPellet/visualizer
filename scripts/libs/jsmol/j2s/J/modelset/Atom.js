@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.modelset");
 Clazz.load (["J.util.JmolNode", "$.Point3fi", "J.constant.EnumPalette", "J.viewer.JC"], "J.modelset.Atom", ["java.lang.Float", "J.atomdata.RadiusData", "J.constant.EnumVdw", "J.util.C", "$.ColorUtil", "$.Elements", "$.Escape", "$.P3", "$.SB", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
-this.alternateLocationID = '\0';
+this.altloc = '\0';
 this.atomID = 0;
 this.atomSite = 0;
 this.group = null;
@@ -40,7 +40,7 @@ function () {
 return this.nBackbonesDisplayed;
 });
 Clazz.overrideConstructor (c$, 
-function (modelIndex, atomIndex, x, y, z, radius, atomSymmetry, atomSite, atomicAndIsotopeNumber, formalCharge, isHetero) {
+function (modelIndex, atomIndex, xyz, radius, atomSymmetry, atomSite, atomicAndIsotopeNumber, formalCharge, isHetero) {
 this.modelIndex = modelIndex;
 this.atomSymmetry = atomSymmetry;
 this.atomSite = atomSite;
@@ -49,11 +49,11 @@ this.atomicAndIsotopeNumber = atomicAndIsotopeNumber;
 if (isHetero) this.formalChargeAndFlags = 2;
 if (formalCharge != 0 && formalCharge != -2147483648) this.setFormalCharge (formalCharge);
 this.userDefinedVanDerWaalRadius = radius;
-this.set (x, y, z);
-}, "~N,~N,~N,~N,~N,~N,J.util.BS,~N,~N,~N,~B");
+this.setT (xyz);
+}, "~N,~N,J.util.P3,~N,J.util.BS,~N,~N,~N,~B");
 $_M(c$, "setAltLoc", 
 function (altLoc) {
-this.alternateLocationID = altLoc;
+this.altloc = altLoc;
 }, "~S");
 $_M(c$, "setShapeVisibilityFlags", 
 function (flag) {
@@ -169,8 +169,11 @@ return mad;
 $_M(c$, "getADPMinMax", 
 function (isMax) {
 var tensors = this.getTensors ();
-var t;
-return (tensors == null || (t = tensors[0]) == null || t.iType != 1 ? 0 : t.getFactoredValue (isMax ? 2 : 1));
+if (tensors == null) return 0;
+var t = tensors[0];
+if (t == null || t.iType != 1) return 0;
+if (this.group.chain.model.modelSet.isModulated (this.index) && t.isUnmodulated) t = tensors[1];
+return t.getFactoredValue (isMax ? 2 : 1);
 }, "~B");
 $_M(c$, "getTensors", 
 function () {
@@ -247,14 +250,14 @@ return this.getElementSymbolIso (true);
 });
 $_M(c$, "getAlternateLocationID", 
 function () {
-return this.alternateLocationID;
+return this.altloc;
 });
 $_M(c$, "isAlternateLocationMatch", 
 function (strPattern) {
-if (strPattern == null) return (this.alternateLocationID == '\0');
+if (strPattern == null) return (this.altloc == '\0');
 if (strPattern.length != 1) return false;
 var ch = strPattern.charAt (0);
-return (ch == '*' || ch == '?' && this.alternateLocationID != '\0' || this.alternateLocationID == ch);
+return (ch == '*' || ch == '?' && this.altloc != '\0' || this.altloc == ch);
 }, "~S");
 $_M(c$, "isHetero", 
 function () {
@@ -653,9 +656,9 @@ if (info.length () == 0) {
 info.append (this.getElementSymbolIso (false));
 info.append (" ");
 info.appendI (this.getAtomNumber ());
-}if (this.alternateLocationID.charCodeAt (0) != 0) {
+}if (this.altloc.charCodeAt (0) != 0) {
 info.append ("%");
-info.appendC (this.alternateLocationID);
+info.appendC (this.altloc);
 }if (this.group.chain.model.modelSet.modelCount > 1) {
 info.append ("/");
 info.append (this.getModelNumberForLabel ());

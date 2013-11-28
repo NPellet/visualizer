@@ -7,7 +7,7 @@ Clazz.instantialize (this, arguments);
 }, J.io, "LimitedLineReader");
 Clazz.makeConstructor (c$, 
 function (bufferedReader, readLimit) {
-bufferedReader.mark (readLimit);
+bufferedReader.mark (readLimit + 1);
 this.buf =  Clazz.newCharArray (readLimit, '\0');
 this.cchBuf = Math.max (bufferedReader.read (this.buf, 0, readLimit), 0);
 this.ichCurrent = 0;

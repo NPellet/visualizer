@@ -8,7 +8,7 @@ this.dihedralList = null;
 this.nDegrees = 0;
 this.bsAtoms = null;
 this.isNav = false;
-this.$isGesture = false;
+this.isGesture = false;
 this.myFps = 0;
 this.angle = 0;
 this.haveNotified = false;
@@ -17,23 +17,26 @@ this.bsBranches = null;
 this.isDone = false;
 Clazz.instantialize (this, arguments);
 }, J.thread, "SpinThread", J.thread.JmolThread);
-$_M(c$, "isGesture", 
-function () {
-return this.$isGesture;
-});
 Clazz.makeConstructor (c$, 
-function (transformManager, viewer, endDegrees, endPositions, dihedralList, bsAtoms, isNav, isGesture) {
-Clazz.superConstructor (this, J.thread.SpinThread);
+function () {
+Clazz.superConstructor (this, J.thread.SpinThread, []);
+});
+Clazz.overrideMethod (c$, "setManager", 
+function (manager, viewer, params) {
+this.transformManager = manager;
 this.setViewer (viewer, "SpinThread");
-this.transformManager = transformManager;
-this.endDegrees = endDegrees;
-this.dihedralList = dihedralList;
-if (dihedralList != null) this.bsBranches = viewer.getBsBranches (dihedralList);
-this.endPositions = endPositions;
-this.bsAtoms = bsAtoms;
-this.isNav = isNav;
-this.$isGesture = isGesture;
-}, "J.viewer.TransformManager,J.viewer.Viewer,~N,J.util.JmolList,~A,J.util.BS,~B,~B");
+var options = params;
+if (options == null) {
+this.isNav = true;
+} else {
+this.endDegrees = (options[0]).floatValue ();
+this.endPositions = options[1];
+this.dihedralList = options[2];
+if (this.dihedralList != null) this.bsBranches = viewer.getBsBranches (this.dihedralList);
+this.bsAtoms = options[3];
+this.isGesture = (options[4] != null);
+}return 0;
+}, "~O,J.viewer.Viewer,~O");
 Clazz.overrideMethod (c$, "run1", 
 function (mode) {
 while (true) switch (mode) {
@@ -69,7 +72,7 @@ this.startTime -= this.sleepTime;
 this.sleepTime = 0;
 }var isInMotion = (this.bsAtoms == null && this.viewer.getInMotion (false));
 if (isInMotion) {
-if (this.$isGesture) {
+if (this.isGesture) {
 mode = -2;
 break;
 }this.sleepTime += 1000;
@@ -81,7 +84,7 @@ while (!this.checkInterrupted () && !this.viewer.getRefreshing ()) if (!this.run
 
 if (this.bsAtoms == null) this.viewer.refresh (1, "SpinThread:run()");
  else this.viewer.requestRepaintAndWait ("spin thread");
-if (!this.isNav && this.nDegrees >= this.endDegrees - 0.001) {
+if (!this.isNav && this.endDegrees >= 0 ? this.nDegrees >= this.endDegrees - 0.001 : -this.nDegrees <= this.endDegrees + 0.001) {
 this.isDone = true;
 this.transformManager.setSpinOff ();
 }if (!this.runSleep (this.sleepTime, 0)) return;

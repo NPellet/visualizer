@@ -3,9 +3,8 @@ c$ = Clazz.decorateAsClass (function () {
 this.out = null;
 Clazz.instantialize (this, arguments);
 }, java.io, "FilterOutputStream", java.io.OutputStream);
-Clazz.makeConstructor (c$, 
+$_M(c$, "jzSetFOS", 
 function (out) {
-Clazz.superConstructor (this, java.io.FilterOutputStream, []);
 this.out = out;
 }, "java.io.OutputStream");
 $_M(c$, "writeByteAsInt", 

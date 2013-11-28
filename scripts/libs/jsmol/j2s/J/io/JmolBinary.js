@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.io");
-Clazz.load (null, "J.io.JmolBinary", ["java.io.BufferedInputStream", "$.BufferedReader", "$.ByteArrayInputStream", "$.InputStreamReader", "$.StringReader", "J.api.Interface", "J.io.Base64", "$.Encoding", "$.LimitedLineReader", "J.util.ArrayUtil", "$.Logger", "$.Parser", "$.TextFormat", "J.viewer.FileManager"], function () {
+Clazz.load (null, "J.io.JmolBinary", ["java.io.BufferedInputStream", "$.BufferedReader", "$.ByteArrayInputStream", "$.InputStreamReader", "$.StringReader", "J.api.Interface", "J.io.Base64", "$.Encoding", "$.LimitedLineReader", "J.util.ArrayUtil", "$.Logger", "$.Parser", "$.SB", "$.TextFormat", "J.viewer.FileManager"], function () {
 c$ = Clazz.declareType (J.io, "JmolBinary");
 c$.determineSurfaceTypeIs = $_M(c$, "determineSurfaceTypeIs", 
 function (is) {
@@ -83,7 +83,9 @@ return (nSurfaces < 0 ? "Jvxl" : "Cube");
 }, "java.io.BufferedReader");
 c$.getUTFEncodingForStream = $_M(c$, "getUTFEncodingForStream", 
 ($fz = function (is) {
-var abMagic =  Clazz.newByteArray (4, 0);
+{
+is.resetStream();
+}var abMagic =  Clazz.newByteArray (4, 0);
 abMagic[3] = 1;
 try {
 is.mark (5);
@@ -131,28 +133,21 @@ if (bytes.length >= 2 && bytes[0] == 0xFF && bytes[1] == 0xFE) return J.io.Encod
 if (bytes.length >= 2 && bytes[0] == 0xFE && bytes[1] == 0xFF) return J.io.Encoding.UTF_16BE;
 return J.io.Encoding.NONE;
 }, $fz.isPrivate = true, $fz), "~A");
-c$.isCompoundDocumentStream = $_M(c$, "isCompoundDocumentStream", 
-function (is) {
-var abMagic =  Clazz.newByteArray (8, 0);
-is.mark (9);
-var countRead = is.read (abMagic, 0, 8);
-is.reset ();
-return (countRead == 8 && abMagic[0] == 0xD0 && abMagic[1] == 0xCF && abMagic[2] == 0x11 && abMagic[3] == 0xE0 && abMagic[4] == 0xA1 && abMagic[5] == 0xB1 && abMagic[6] == 0x1A && abMagic[7] == 0xE1);
-}, "java.io.InputStream");
-c$.isCompoundDocumentArray = $_M(c$, "isCompoundDocumentArray", 
-function (bytes) {
-return (bytes.length >= 8 && bytes[0] == 0xD0 && bytes[1] == 0xCF && bytes[2] == 0x11 && bytes[3] == 0xE0 && bytes[4] == 0xA1 && bytes[5] == 0xB1 && bytes[6] == 0x1A && bytes[7] == 0xE1);
-}, "~A");
-c$.isGzipB = $_M(c$, "isGzipB", 
-function (bytes) {
-return (bytes != null && bytes.length > 2 && bytes[0] == 0x1F && bytes[1] == 0x8B);
-}, "~A");
-c$.isGzipS = $_M(c$, "isGzipS", 
-function (is) {
-var abMagic =  Clazz.newByteArray (4, 0);
+c$.getMagic = $_M(c$, "getMagic", 
+($fz = function (is, n) {
+var abMagic =  Clazz.newByteArray (n, 0);
+{
+is.resetStream();
+}try {
+is.mark (n + 1);
+is.read (abMagic, 0, n);
+} catch (e) {
+if (Clazz.exceptionOf (e, java.io.IOException)) {
+} else {
+throw e;
+}
+}
 try {
-is.mark (5);
-is.read (abMagic, 0, 4);
 is.reset ();
 } catch (e) {
 if (Clazz.exceptionOf (e, java.io.IOException)) {
@@ -160,42 +155,45 @@ if (Clazz.exceptionOf (e, java.io.IOException)) {
 throw e;
 }
 }
-return J.io.JmolBinary.isGzipB (abMagic);
-}, "java.io.InputStream");
-c$.isZipStream = $_M(c$, "isZipStream", 
+return abMagic;
+}, $fz.isPrivate = true, $fz), "java.io.InputStream,~N");
+c$.isCompoundDocumentS = $_M(c$, "isCompoundDocumentS", 
 function (is) {
-var abMagic =  Clazz.newByteArray (4, 0);
-try {
-is.mark (5);
-is.read (abMagic, 0, 4);
-is.reset ();
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-} else {
-throw e;
-}
-}
-return J.io.JmolBinary.isZipFile (abMagic);
+return J.io.JmolBinary.isCompoundDocumentB (J.io.JmolBinary.getMagic (is, 8));
 }, "java.io.InputStream");
-c$.isZipFile = $_M(c$, "isZipFile", 
+c$.isCompoundDocumentB = $_M(c$, "isCompoundDocumentB", 
 function (bytes) {
-return (bytes.length >= 4 && bytes[0] == 80 && bytes[1] == 75 && bytes[2] == 3 && bytes[3] == 4);
+return (bytes.length >= 8 && bytes[0] == 0xD0 && bytes[1] == 0xCF && bytes[2] == 0x11 && bytes[3] == 0xE0 && bytes[4] == 0xA1 && bytes[5] == 0xB1 && bytes[6] == 0x1A && bytes[7] == 0xE1);
+}, "~A");
+c$.isGzipS = $_M(c$, "isGzipS", 
+function (is) {
+return J.io.JmolBinary.isGzipB (J.io.JmolBinary.getMagic (is, 2));
+}, "java.io.InputStream");
+c$.isGzipB = $_M(c$, "isGzipB", 
+function (bytes) {
+return (bytes != null && bytes.length >= 2 && bytes[0] == 0x1F && bytes[1] == 0x8B);
+}, "~A");
+c$.isPickleS = $_M(c$, "isPickleS", 
+function (is) {
+return J.io.JmolBinary.isPickleB (J.io.JmolBinary.getMagic (is, 2));
+}, "java.io.InputStream");
+c$.isPickleB = $_M(c$, "isPickleB", 
+function (bytes) {
+return (bytes != null && bytes.length >= 2 && bytes[0] == 0x7D && bytes[1] == 0x71);
+}, "~A");
+c$.isZipS = $_M(c$, "isZipS", 
+function (is) {
+return J.io.JmolBinary.isZipB (J.io.JmolBinary.getMagic (is, 4));
+}, "java.io.InputStream");
+c$.isZipB = $_M(c$, "isZipB", 
+function (bytes) {
+return (bytes.length >= 4 && bytes[0] == 0x50 && bytes[1] == 0x4B && bytes[2] == 0x03 && bytes[3] == 0x04);
 }, "~A");
 c$.isPngZipStream = $_M(c$, "isPngZipStream", 
 function (is) {
-if (J.io.JmolBinary.isZipStream (is)) return false;
-try {
-is.mark (56);
-var abMagic = J.io.JmolBinary.getStreamBytes (is, 55);
-is.reset ();
-return (abMagic[51] == 80 && abMagic[52] == 78 && abMagic[53] == 71 && abMagic[54] == 74);
-} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-} else {
-throw e;
-}
-}
-return false;
+if (J.io.JmolBinary.isZipS (is)) return false;
+var abMagic = J.io.JmolBinary.getMagic (is, 55);
+return (abMagic[51] == 0x50 && abMagic[52] == 0x4E && abMagic[53] == 0x47 && abMagic[54] == 0x4A);
 }, "java.io.InputStream");
 c$.getZipRoot = $_M(c$, "getZipRoot", 
 function (fileName) {
@@ -269,32 +267,32 @@ function (bis, subFileList, i) {
 return J.io.JmolBinary.getJzu ().getZipFileContentsAsBytes (bis, subFileList, i);
 }, "java.io.BufferedInputStream,~A,~N");
 c$.createZipSet = $_M(c$, "createZipSet", 
-function (fm, viewer, fileName, script, scripts, includeRemoteFiles) {
-return J.io.JmolBinary.getJzu ().createZipSet (fm, viewer, fileName, script, scripts, includeRemoteFiles);
-}, "J.viewer.FileManager,J.viewer.Viewer,~S,~S,~A,~B");
+function (privateKey, fm, viewer, fileName, script, scripts, includeRemoteFiles) {
+return J.io.JmolBinary.getJzu ().createZipSet (privateKey, fm, viewer, fileName, script, scripts, includeRemoteFiles);
+}, "~N,J.viewer.FileManager,J.viewer.Viewer,~S,~S,~A,~B");
 c$.getStreamAsBytes = $_M(c$, "getStreamAsBytes", 
-function (bis, os) {
+function (bis, osb) {
 var buf =  Clazz.newByteArray (1024, 0);
-var bytes = (os == null ?  Clazz.newByteArray (4096, 0) : null);
+var bytes = (osb == null ?  Clazz.newByteArray (4096, 0) : null);
 var len = 0;
 var totalLen = 0;
 while ((len = bis.read (buf, 0, 1024)) > 0) {
 totalLen += len;
-if (os == null) {
+if (osb == null) {
 if (totalLen >= bytes.length) bytes = J.util.ArrayUtil.ensureLengthByte (bytes, totalLen * 2);
 System.arraycopy (buf, 0, bytes, totalLen - len, len);
 } else {
-os.write (buf, 0, len);
+osb.write (buf, 0, len);
 }}
 bis.close ();
-if (os == null) {
+if (osb == null) {
 return J.util.ArrayUtil.arrayCopyByte (bytes, totalLen);
 }return totalLen + " bytes";
-}, "java.io.BufferedInputStream,java.io.OutputStream");
+}, "java.io.BufferedInputStream,J.io.OutputStringBuilder");
 c$.writeZipFile = $_M(c$, "writeZipFile", 
-function (fm, viewer, outFileName, fileNamesAndByteArrays, msg) {
-return J.io.JmolBinary.getJzu ().writeZipFile (fm, viewer, outFileName, fileNamesAndByteArrays, msg);
-}, "J.viewer.FileManager,J.viewer.Viewer,~S,J.util.JmolList,~S");
+function (privateKey, fm, viewer, outFileName, fileNamesAndByteArrays, msg) {
+return J.io.JmolBinary.getJzu ().writeZipFile (privateKey, fm, viewer, outFileName, fileNamesAndByteArrays, msg);
+}, "~N,J.viewer.FileManager,J.viewer.Viewer,~S,J.util.JmolList,~S");
 c$.postByteArray = $_M(c$, "postByteArray", 
 function (fm, outFileName, bytes) {
 var ret = fm.getBufferedInputStreamOrErrorMessageFromName (outFileName, null, false, false, bytes, false);
@@ -346,9 +344,9 @@ function (fm, data) {
 return J.io.JmolBinary.getJzu ().cachePngjFile (fm, data);
 }, "J.viewer.FileManager,~A");
 c$.getAtomSetCollectionOrBufferedReaderFromZip = $_M(c$, "getAtomSetCollectionOrBufferedReaderFromZip", 
-function (adapter, is, fileName, zipDirectory, htParams, asBufferedReader, asBufferedInputStream) {
-return J.io.JmolBinary.getJzu ().getAtomSetCollectionOrBufferedReaderFromZip (adapter, is, fileName, zipDirectory, htParams, 1, asBufferedReader, asBufferedInputStream);
-}, "J.api.JmolAdapter,java.io.InputStream,~S,~A,java.util.Map,~B,~B");
+function (adapter, is, fileName, zipDirectory, htParams, asBufferedReader) {
+return J.io.JmolBinary.getJzu ().getAtomSetCollectionOrBufferedReaderFromZip (adapter, is, fileName, zipDirectory, htParams, 1, asBufferedReader);
+}, "J.api.JmolAdapter,java.io.InputStream,~S,~A,java.util.Map,~B");
 c$.spartanFileList = $_M(c$, "spartanFileList", 
 function (name, zipDirectory) {
 return J.io.JmolBinary.getJzu ().spartanFileList (name, zipDirectory);
@@ -419,6 +417,50 @@ c$.checkBinaryType = $_M(c$, "checkBinaryType",
 function (fileTypeIn) {
 return (";pse=PyMOL;".indexOf ("=" + fileTypeIn + ";") >= 0);
 }, "~S");
+c$.StreamToString = $_M(c$, "StreamToString", 
+function (bis) {
+var data =  new Array (1);
+try {
+J.io.JmolBinary.readAll (J.io.JmolBinary.getBufferedReader (bis, "UTF-8"), -1, true, data, 0);
+} catch (e) {
+if (Clazz.exceptionOf (e, java.io.IOException)) {
+} else {
+throw e;
+}
+}
+return data[0];
+}, "java.io.BufferedInputStream");
+c$.readAll = $_M(c$, "readAll", 
+function (br, nBytesMax, allowBinary, data, i) {
+try {
+var sb = J.util.SB.newN (8192);
+var line;
+if (nBytesMax < 0) {
+line = br.readLine ();
+if (allowBinary || line != null && line.indexOf ('\0') < 0 && (line.length != 4 || line.charCodeAt (0) != 65533 || line.indexOf ("PNG") != 1)) {
+sb.append (line).appendC ('\n');
+while ((line = br.readLine ()) != null) sb.append (line).appendC ('\n');
+
+}} else {
+var n = 0;
+var len;
+while (n < nBytesMax && (line = br.readLine ()) != null) {
+if (nBytesMax - n < (len = line.length) + 1) line = line.substring (0, nBytesMax - n - 1);
+sb.append (line).appendC ('\n');
+n += len + 1;
+}
+}br.close ();
+data[i] = sb.toString ();
+return true;
+} catch (ioe) {
+if (Clazz.exceptionOf (ioe, Exception)) {
+data[i] = ioe.toString ();
+return false;
+} else {
+throw ioe;
+}
+}
+}, "java.io.BufferedReader,~N,~B,~A,~N");
 Clazz.defineStatics (c$,
 "JPEG_CONTINUE_STRING", " #Jmol...\0",
 "PMESH_BINARY_MAGIC_NUMBER", "PM\1\0",

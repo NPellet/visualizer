@@ -167,12 +167,12 @@ return fpt;
 $_M(c$, "toCartesian", 
 function (pt, isAbsolute) {
 if (this.matrixFractionalToCartesian != null) (isAbsolute ? this.matrixFtoCAbsolute : this.matrixFractionalToCartesian).transform (pt);
-}, "J.util.P3,~B");
+}, "J.util.Tuple3f,~B");
 $_M(c$, "toFractional", 
 function (pt, isAbsolute) {
 if (this.matrixCartesianToFractional == null) return;
 (isAbsolute ? this.matrixCtoFAbsolute : this.matrixCartesianToFractional).transform (pt);
-}, "J.util.P3,~B");
+}, "J.util.Tuple3f,~B");
 $_M(c$, "isPolymer", 
 function () {
 return (this.dimension == 1);

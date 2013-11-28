@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["J.modelset.BondCollection", "J.util.BS", "$.BoxInfo", "$.JmolList", "$.P3"], "J.modelset.ModelCollection", ["java.lang.Character", "$.Float", "java.util.Date", "$.Hashtable", "J.api.Interface", "J.bspt.Bspf", "J.constant.EnumPalette", "$.EnumVdw", "J.io.OutputStringBuilder", "$.XmlUtil", "J.modelset.Atom", "$.AtomIteratorWithinModel", "$.AtomIteratorWithinModelSet", "$.Bond", "$.HBond", "$.LabelToken", "$.Model", "J.util.ArrayUtil", "$.BSUtil", "$.Elements", "$.Escape", "$.JmolEdge", "$.JmolMolecule", "$.Logger", "$.Parser", "$.SB", "$.TextFormat", "$.TriangleData", "$.V3", "J.viewer.Viewer"], function () {
+Clazz.load (["J.modelset.BondCollection", "J.util.BS", "$.BoxInfo", "$.JmolList", "$.P3"], "J.modelset.ModelCollection", ["java.lang.Character", "$.Float", "java.util.Date", "$.Hashtable", "J.api.Interface", "J.bspt.Bspf", "J.constant.EnumPalette", "$.EnumVdw", "J.io.OutputStringBuilder", "$.XmlUtil", "J.modelset.Atom", "$.AtomIteratorWithinModel", "$.AtomIteratorWithinModelSet", "$.Bond", "$.HBond", "$.LabelToken", "$.Model", "J.util.ArrayUtil", "$.BSUtil", "$.Elements", "$.Escape", "$.JmolEdge", "$.JmolMolecule", "$.Logger", "$.P4", "$.Parser", "$.Quaternion", "$.SB", "$.TextFormat", "$.TriangleData", "$.V3", "J.viewer.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bsSymmetry = null;
 this.modelSetName = null;
@@ -40,6 +40,7 @@ this.ptTemp2 = null;
 this.proteinStructureTainted = false;
 this.symTemp = null;
 this.htPeaks = null;
+this.vOrientations = null;
 Clazz.instantialize (this, arguments);
 }, J.modelset, "ModelCollection", J.modelset.BondCollection);
 Clazz.prepareFields (c$, function () {
@@ -124,6 +125,10 @@ $_M(c$, "getModelFileName",
 function (modelIndex) {
 return this.getModelAuxiliaryInfoValue (modelIndex, "fileName");
 }, "~N");
+$_M(c$, "getModelFileType", 
+function (modelIndex) {
+return this.getModelAuxiliaryInfoValue (modelIndex, "fileType");
+}, "~N");
 $_M(c$, "setFrameTitle", 
 function (bsFrames, title) {
 if (Clazz.instanceOf (title, String)) {
@@ -190,7 +195,7 @@ return this.boxInfo.getBoundBoxCornerVector ();
 });
 $_M(c$, "getBboxVertices", 
 function () {
-return this.boxInfo.getBboxVertices ();
+return this.boxInfo.getBoundBoxVertices ();
 });
 $_M(c$, "getBoundBoxInfo", 
 function () {
@@ -310,9 +315,12 @@ var n = (addCenters ? 1 : 0);
 for (var ii = vAtomSets.size (); --ii >= 0; ) {
 var bss = vAtomSets.get (ii);
 bsAtoms1 = bss[0];
+if (Clazz.instanceOf (bss[1], J.util.BS)) {
 bsAtoms2 = bss[1];
 n += Math.min (bsAtoms1.cardinality (), bsAtoms2.cardinality ());
-}
+} else {
+n += Math.min (bsAtoms1.cardinality (), (bss[1]).length);
+}}
 var points =  Clazz.newArray (2, n, null);
 if (addCenters) {
 points[0][0] =  new J.util.P3 ();
@@ -320,6 +328,7 @@ points[1][0] =  new J.util.P3 ();
 }for (var ii = vAtomSets.size (); --ii >= 0; ) {
 var bss = vAtomSets.get (ii);
 bsAtoms1 = bss[0];
+if (Clazz.instanceOf (bss[1], J.util.BS)) {
 bsAtoms2 = bss[1];
 for (var i = bsAtoms1.nextSetBit (0), j = bsAtoms2.nextSetBit (0); i >= 0 && j >= 0; i = bsAtoms1.nextSetBit (i + 1), j = bsAtoms2.nextSetBit (j + 1)) {
 points[0][--n] = this.atoms[i];
@@ -328,7 +337,16 @@ if (addCenters) {
 points[0][0].add (this.atoms[i]);
 points[1][0].add (this.atoms[j]);
 }}
-}
+} else {
+var coords = bss[1];
+for (var i = bsAtoms1.nextSetBit (0), j = 0; i >= 0 && j < coords.length; i = bsAtoms1.nextSetBit (i + 1), j++) {
+points[0][--n] = this.atoms[i];
+points[1][n] = coords[j];
+if (addCenters) {
+points[0][0].add (this.atoms[i]);
+points[1][0].add (coords[j]);
+}}
+}}
 if (addCenters) {
 points[0][0].scale (1 / (points[0].length - 1));
 points[1][0].scale (1 / (points[1].length - 1));
@@ -639,10 +657,6 @@ $_M(c$, "getInsertionCountInModel",
 function (modelIndex) {
 return this.models[modelIndex].nInsertions;
 }, "~N");
-$_M(c$, "getModelFileType", 
-function (modelIndex) {
-return this.getModelAuxiliaryInfoValue (modelIndex, "fileType");
-}, "~N");
 c$.modelFileNumberFromFloat = $_M(c$, "modelFileNumberFromFloat", 
 function (fDotM) {
 var file = Clazz.doubleToInt (Math.floor (fDotM));
@@ -756,7 +770,7 @@ return v.toArray ( new Array (v.size ()));
 $_M(c$, "getPdbAtomData", 
 function (bs, sb) {
 if (this.atomCount == 0 || bs.nextSetBit (0) < 0) return "";
-if (sb == null) sb =  new J.io.OutputStringBuilder (null);
+if (sb == null) sb =  new J.io.OutputStringBuilder (null, false);
 var iModel = this.atoms[bs.nextSetBit (0)].modelIndex;
 var iModelLast = -1;
 var isPQR = "PQR".equals (sb.type);
@@ -820,7 +834,7 @@ if (modelIndex < 0) return "";
 var isPDB = this.models[modelIndex].isBioModel;
 if (parameters == null && !isPDB) return null;
 var model = this.models[modelIndex];
-if (sb == null) sb =  new J.io.OutputStringBuilder (null);
+if (sb == null) sb =  new J.io.OutputStringBuilder (null, false);
 var pdbCONECT =  new J.util.SB ();
 var isDraw = (type.indexOf ("draw") >= 0);
 var bsAtoms = null;
@@ -978,12 +992,12 @@ function (modelIndex) {
 if (this.unitCells == null) return null;
 return this.unitCells[modelIndex].getCellRange ();
 }, "~N");
-$_M(c$, "modelHasVibrationVectors", 
-function (modelIndex) {
-if (this.vibrations != null) for (var i = this.atomCount; --i >= 0; ) if ((modelIndex < 0 || this.atoms[i].modelIndex == modelIndex) && this.vibrations[i] != null && this.vibrations[i].length () > 0) return true;
+$_M(c$, "getLastVibrationVector", 
+function (modelIndex, tok) {
+if (this.vibrations != null) for (var i = this.atomCount; --i >= 0; ) if ((modelIndex < 0 || this.atoms[i].modelIndex == modelIndex) && this.vibrations[i] != null && this.vibrations[i].length () > 0 && (tok == 0 || (tok == 135270424) == (Clazz.instanceOf (this.vibrations[i], J.util.ModulationSet)))) return i;
 
-return false;
-}, "~N");
+return -1;
+}, "~N,~N");
 $_M(c$, "getElementsPresentBitSet", 
 function (modelIndex) {
 if (modelIndex >= 0) return this.elementsPresent[modelIndex];
@@ -1262,11 +1276,11 @@ case 1048615:
 info = specInfo;
 var seqcodeA = info[0];
 var seqcodeB = info[1];
-var chainID = String.fromCharCode (info[2]);
+var chainID = info[2];
 bs =  new J.util.BS ();
 var caseSensitive = this.viewer.getBoolean (603979822);
-if (!caseSensitive) chainID = Character.toUpperCase (chainID);
-for (var i = this.modelCount; --i >= 0; ) if (this.models[i].isBioModel) this.models[i].selectSeqcodeRange (seqcodeA, seqcodeB, chainID.charCodeAt (0), bs, caseSensitive);
+if (chainID >= 0 && chainID < 256 && !caseSensitive) chainID = J.modelset.AtomCollection.chainToUpper (chainID);
+for (var i = this.modelCount; --i >= 0; ) if (this.models[i].isBioModel) this.models[i].selectSeqcodeRange (seqcodeA, seqcodeB, chainID, bs, caseSensitive);
 
 return bs;
 case 3145772:
@@ -1477,7 +1491,7 @@ if (!isBonds) {
 if (iB == iA) continue;
 atomB = this.atoms[iB];
 if (atomA.modelIndex != atomB.modelIndex || atomB.isDeleted ()) continue;
-if (atomA.alternateLocationID != atomB.alternateLocationID && atomA.alternateLocationID != '\0' && atomB.alternateLocationID != '\0') continue;
+if (atomA.altloc != atomB.altloc && atomA.altloc != '\0' && atomB.altloc != '\0') continue;
 bondAB = atomA.getBond (atomB);
 }if (bondAB == null && (identifyOnly || modifyOnly) || bondAB != null && createOnly) continue;
 var distanceSquared = atomA.distanceSquared (atomB);
@@ -1779,7 +1793,7 @@ sb.append ("\n</properties>");
 sb.append ("\n<model index=\"").appendI (i).append ("\" n=\"").append (this.getModelNumberDotted (i)).append ("\" id=").append (J.util.Escape.eS ("" + this.getModelAuxiliaryInfoValue (i, "modelID")));
 var ib = this.viewer.getJDXBaseModelIndex (i);
 if (ib != i) sb.append (" baseModelId=").append (J.util.Escape.eS (this.getModelAuxiliaryInfoValue (ib, "jdxModelID")));
-sb.append (" name=").append (J.util.Escape.eS (this.getModelName (i))).append (" title=").append (J.util.Escape.eS (this.getModelTitle (i))).append (" hasVibrationVectors=\"").appendB (this.modelHasVibrationVectors (i)).append ("\" />");
+sb.append (" name=").append (J.util.Escape.eS (this.getModelName (i))).append (" title=").append (J.util.Escape.eS (this.getModelTitle (i))).append (" hasVibrationVectors=\"").appendB (this.viewer.modelHasVibrationVectors (i)).append ("\" />");
 }
 sb.append ("\n</models>");
 return sb.toString ();
@@ -1957,8 +1971,7 @@ dx = 1.50;
 } else if (!wasH && atomicNumber == 1) {
 dx = 1.0;
 }if (dx != 0) {
-var v = J.util.V3.newV (atom);
-v.sub (this.atoms[atom.getBondedAtomIndex (0)]);
+var v = J.util.V3.newVsub (atom, this.atoms[atom.getBondedAtomIndex (0)]);
 var d = v.length ();
 v.normalize ();
 v.scale (dx - d);
@@ -2064,8 +2077,8 @@ if (this.atomTypes != null) this.atomTypes = J.util.ArrayUtil.arrayCopyS (this.a
 if (this.atomSerials != null) this.atomSerials = J.util.ArrayUtil.arrayCopyI (this.atomSerials, newLength);
 }, "~N");
 $_M(c$, "addAtom", 
-function (modelIndex, group, atomicAndIsotopeNumber, atomName, atomSerial, atomSite, x, y, z, radius, vectorX, vectorY, vectorZ, formalCharge, partialCharge, occupancy, bfactor, tensors, isHetero, specialAtomID, atomSymmetry) {
-var atom =  new J.modelset.Atom (modelIndex, this.atomCount, x, y, z, radius, atomSymmetry, atomSite, atomicAndIsotopeNumber, formalCharge, isHetero);
+function (modelIndex, group, atomicAndIsotopeNumber, atomName, atomSerial, atomSite, xyz, radius, vib, formalCharge, partialCharge, occupancy, bfactor, tensors, isHetero, specialAtomID, atomSymmetry) {
+var atom =  new J.modelset.Atom (modelIndex, this.atomCount, xyz, radius, atomSymmetry, atomSite, atomicAndIsotopeNumber, formalCharge, isHetero);
 this.models[modelIndex].atomCount++;
 this.models[modelIndex].bsAtoms.set (this.atomCount);
 if (J.util.Elements.isElement (atomicAndIsotopeNumber, 1)) this.models[modelIndex].hydrogenCount++;
@@ -2090,10 +2103,10 @@ this.atomNames[this.atomCount] = atomName.intern ();
 }}if (atomSerial != -2147483648) {
 if (this.atomSerials == null) this.atomSerials =  Clazz.newIntArray (this.atoms.length, 0);
 this.atomSerials[this.atomCount] = atomSerial;
-}if (!Float.isNaN (vectorZ)) this.setVibrationVector (this.atomCount, vectorX, vectorY, vectorZ);
+}if (vib != null) this.setVibrationVector (this.atomCount, vib);
 this.atomCount++;
 return atom;
-}, "~N,J.modelset.Group,~N,~S,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,~N,J.util.JmolList,~B,~N,J.util.BS");
+}, "~N,J.modelset.Group,~N,~S,~N,~N,J.util.P3,~N,J.util.V3,~N,~N,~N,~N,J.util.JmolList,~B,~N,J.util.BS");
 $_M(c$, "getInlineData", 
 function (modelIndex) {
 var data = null;
@@ -2218,11 +2231,12 @@ var errCode = -1;
 var fname = null;
 for (var i = 0; i < this.modelCount; i++) {
 var mid = this.getModelAuxiliaryInfoValue (i, "modelID");
-if (mid == null && (mid = this.getModelTitle (i)) == null) continue;
+var mnum = (id.startsWith ("~") ? "~" + this.getModelNumberDotted (i) : null);
+if (mnum == null && mid == null && (mid = this.getModelTitle (i)) == null) continue;
 if (haveFile) {
 fname = this.getModelFileName (i) + "#";
 mid = fname + mid;
-}if (id.equalsIgnoreCase (mid)) return (isBaseModel ? this.viewer.getJDXBaseModelIndex (i) : i);
+}if (id.equalsIgnoreCase (mid) || id.equalsIgnoreCase (mnum)) return (isBaseModel ? this.viewer.getJDXBaseModelIndex (i) : i);
 if (fname != null && id.startsWith (fname)) errCode = -2;
 }
 return (fname == null && !haveFile ? -2 : errCode);
@@ -2270,6 +2284,114 @@ for (var i = n; --i >= 0; ) ilist[n - i - 1] = list.get (i);
 
 return ilist;
 }, "~A");
+$_M(c$, "setModulation", 
+function (bs, isOn, t) {
+if (this.bsModulated == null) this.bsModulated =  new J.util.BS ();
+for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
+var v = this.getVibration (i, false);
+if (!(Clazz.instanceOf (v, J.util.ModulationSet))) continue;
+var ms = v;
+var a = this.atoms[i];
+var wasEnabled = ms.enabled;
+switch (ms.setModT (isOn, t)) {
+case 0:
+continue;
+case 1:
+case 2:
+a.sub (ms);
+break;
+case 3:
+this.getUnitCell (a.modelIndex).toCartesian (ms, true);
+if (wasEnabled) a.add (ms.prevSetting);
+ms.setModT (true, 2147483647);
+a.sub (ms);
+break;
+case 4:
+ms.setModT (true, 2147483647);
+if (!wasEnabled) a.sub (ms);
+break;
+}
+this.bsModulated.setBitTo (i, ms.enabled);
+}
+}, "J.util.BS,~B,~N");
+$_M(c$, "getBoundBoxOrientation", 
+function (type, bsAtoms) {
+var j0 = bsAtoms.nextSetBit (0);
+if (j0 < 0) return "{0 0 0 1}";
+var n = (this.vOrientations == null ? 0 : this.vOrientations.length);
+if (n == 0) {
+var av =  new Array (3375);
+n = 0;
+var p4 =  new J.util.P4 ();
+for (var i = -7; i <= 7; i++) for (var j = -7; j <= 7; j++) for (var k = 0; k <= 14; k++, n++) if ((av[n] = J.util.V3.new3 (i / 7, j / 7, k / 14)).length () > 1) --n;
+
+
+
+this.vOrientations =  new Array (n);
+for (var i = n; --i >= 0; ) {
+var cos = Math.sqrt (1 - av[i].lengthSquared ());
+if (Float.isNaN (cos)) cos = 0;
+p4.set (av[i].x, av[i].y, av[i].z, cos);
+this.vOrientations[i] = J.util.Quaternion.newP4 (p4);
+}
+}var pt =  new J.util.P3 ();
+var vMin = 3.4028235E38;
+var q;
+var qBest = null;
+var bBest = null;
+var v;
+for (var i = 0; i < n; i++) {
+q = this.vOrientations[i];
+var b =  new J.util.BoxInfo ();
+b.setMargin (0);
+for (var j = j0; j >= 0; j = bsAtoms.nextSetBit (j + 1)) b.addBoundBoxPoint (q.transformP2 (this.atoms[j], pt));
+
+switch (type) {
+default:
+case 1313866247:
+case 1073741863:
+v = (b.bbCorner1.x - b.bbCorner0.x) * (b.bbCorner1.y - b.bbCorner0.y) * (b.bbCorner1.z - b.bbCorner0.z);
+break;
+case 1112541205:
+v = b.bbCorner1.x - b.bbCorner0.x;
+break;
+case 1112541206:
+v = b.bbCorner1.y - b.bbCorner0.y;
+break;
+case 1112541207:
+v = b.bbCorner1.z - b.bbCorner0.z;
+break;
+}
+if (v < vMin) {
+qBest = q;
+bBest = b;
+vMin = v;
+}}
+if (type != 1313866247 && type != 1073741863) return qBest.toString ();
+q = J.util.Quaternion.newQ (qBest);
+var dx = bBest.bbCorner1.x - bBest.bbCorner0.x;
+var dy = bBest.bbCorner1.y - bBest.bbCorner0.y;
+var dz = bBest.bbCorner1.z - bBest.bbCorner0.z;
+if (dx < dy) {
+pt.set (0, 0, 1);
+q = J.util.Quaternion.newVA (pt, 90).mulQ (q);
+var f = dx;
+dx = dy;
+dy = f;
+}if (dy < dz) {
+if (dz > dx) {
+pt.set (0, 1, 0);
+q = J.util.Quaternion.newVA (pt, 90).mulQ (q);
+var f = dx;
+dx = dz;
+dz = f;
+}pt.set (1, 0, 0);
+q = J.util.Quaternion.newVA (pt, 90).mulQ (q);
+var f = dy;
+dy = dz;
+dz = f;
+}return (type == 1313866247 ? vMin + "\t{" + dx + " " + dy + " " + dz + "}" : q.getTheta () == 0 ? "{0 0 0 1}" : q.toString ());
+}, "~N,J.util.BS");
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
 this.modelIndex = 0;

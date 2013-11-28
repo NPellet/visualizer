@@ -6,7 +6,7 @@ function () {
 var frank = this.shape;
 var allowKeys = this.viewer.getBooleanProperty ("allowKeyStrokes");
 var modelKitMode = this.viewer.getBoolean (603979883);
-this.colix = (modelKitMode ? 20 : this.viewer.isSignedApplet () ? (allowKeys || this.viewer.$isJS && !this.viewer.isWebGL ? 5 : 10) : allowKeys ? 7 : 12);
+this.colix = (modelKitMode ? 20 : this.viewer.isSignedApplet () ? (allowKeys || this.viewer.isJS && !this.viewer.isWebGL ? 5 : 10) : allowKeys ? 7 : 12);
 if (this.isExport || !this.viewer.getShowFrank ()) return false;
 if (!this.g3d.setColix (J.util.C.getColixTranslucent3 (this.colix, this.g3d.haveTranslucentObjects (), 0.5))) return true;
 var imageFontScaling = this.viewer.getImageFontScaling ();

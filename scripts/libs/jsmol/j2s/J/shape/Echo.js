@@ -23,22 +23,16 @@ return;
 if (this.currentObject != null && this.viewer.getBoolean (603979845)) this.currentObject.setScalePixelsPerMicron (this.viewer.getScalePixelsPerAngstrom (false) * 10000);
 }if ("scale" === propertyName) {
 if (this.currentObject == null) {
-if (this.isAll) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-e.next ().setScale ((value).floatValue ());
-}
-}return;
+if (this.isAll) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setScale ((value).floatValue ());
+
+return;
 }(this.currentObject).setScale ((value).floatValue ());
 return;
 }if ("image" === propertyName) {
 if (this.currentObject == null) {
-if (this.isAll) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-e.next ().setImage (value);
-}
-}return;
+if (this.isAll) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setImage (value);
+
+return;
 }(this.currentObject).setImage (value);
 return;
 }if ("thisID" === propertyName) {
@@ -49,13 +43,9 @@ return;
 }if ("hidden" === propertyName) {
 var isHidden = (value).booleanValue ();
 if (this.currentObject == null) {
-if (this.isAll || this.thisID != null) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-var text = e.next ();
-if (this.isAll || J.util.TextFormat.isMatch (text.target.toUpperCase (), this.thisID, true, true)) text.hidden = isHidden;
-}
-}return;
+if (this.isAll || this.thisID != null) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) if (this.isAll || J.util.TextFormat.isMatch (t.target.toUpperCase (), this.thisID, true, true)) t.hidden = isHidden;
+
+return;
 }(this.currentObject).hidden = isHidden;
 return;
 }if (J.modelset.Object2d.setProperty (propertyName, value, this.currentObject)) return;
@@ -96,9 +86,8 @@ return (this.currentObject != null && (data[0] = this.currentObject.target) != n
 }if (property === "checkID") {
 var key = (data[0]).toUpperCase ();
 var isWild = J.util.TextFormat.isWild (key);
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-var id = e.next ().target;
+for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) {
+var id = t.target;
 if (id.equalsIgnoreCase (key) || isWild && J.util.TextFormat.isMatch (id.toUpperCase (), key, true, true)) {
 data[1] = id;
 return true;

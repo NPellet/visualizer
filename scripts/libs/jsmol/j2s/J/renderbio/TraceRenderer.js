@@ -1,9 +1,10 @@
 Clazz.declarePackage ("J.renderbio");
-Clazz.load (["J.renderbio.BioShapeRenderer"], "J.renderbio.TraceRenderer", null, function () {
-c$ = Clazz.declareType (J.renderbio, "TraceRenderer", J.renderbio.BioShapeRenderer);
+Clazz.load (["J.renderbio.StrandsRenderer"], "J.renderbio.TraceRenderer", null, function () {
+c$ = Clazz.declareType (J.renderbio, "TraceRenderer", J.renderbio.StrandsRenderer);
 Clazz.overrideMethod (c$, "renderBioShape", 
 function (bioShape) {
-this.renderTrace ();
+if (this.wireframeOnly) this.renderStrands ();
+ else this.renderTrace ();
 }, "J.shapebio.BioShape");
 $_M(c$, "renderTrace", 
 function () {

@@ -110,7 +110,7 @@ function (x, y, bsVisible) {
 return false;
 }, "~N,~N,J.util.BS");
 $_M(c$, "checkObjectDragged", 
-function (prevX, prevY, x, y, modifiers, bsVisible) {
+function (prevX, prevY, x, y, dragAction, bsVisible) {
 return false;
 }, "~N,~N,~N,~N,~N,J.util.BS");
 $_M(c$, "coordinateInRange", 

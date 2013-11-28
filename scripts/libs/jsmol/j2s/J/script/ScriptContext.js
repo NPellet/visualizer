@@ -34,6 +34,7 @@ this.scriptExtensions = null;
 this.scriptFileName = null;
 this.scriptLevel = 0;
 this.statement = null;
+this.htFileCache = null;
 this.statementLength = 0;
 this.token = null;
 this.tryPt = 0;

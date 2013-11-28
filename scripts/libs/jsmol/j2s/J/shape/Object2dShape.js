@@ -49,23 +49,17 @@ return;
 }if ("model" === propertyName) {
 var modelIndex = (value).intValue ();
 if (this.currentObject == null) {
-if (this.isAll) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-e.next ().setModel (modelIndex);
-}
-}return;
+if (this.isAll) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setModel (modelIndex);
+
+return;
 }this.currentObject.setModel (modelIndex);
 return;
 }if ("align" === propertyName) {
 var align = value;
 if (this.currentObject == null) {
-if (this.isAll) {
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-e.next ().setAlignmentLCR (align);
-}
-}return;
+if (this.isAll) for (var obj, $obj = this.objects.values ().iterator (); $obj.hasNext () && ((obj = $obj.next ()) || true);) obj.setAlignmentLCR (align);
+
+return;
 }if (!this.currentObject.setAlignmentLCR (align)) J.util.Logger.error ("unrecognized align:" + align);
 return;
 }if ("bgcolor" === propertyName) {
@@ -132,21 +126,14 @@ this.isAll = false;
 });
 Clazz.overrideMethod (c$, "setVisibilityFlags", 
 function (bs) {
-if (this.isHover) {
-return;
-}var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-var t = e.next ();
-t.setVisibility (t.modelIndex < 0 || bs.get (t.modelIndex));
-}
+if (!this.isHover) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) t.setVisibility (t.modelIndex < 0 || bs.get (t.modelIndex));
+
 }, "J.util.BS");
 Clazz.overrideMethod (c$, "checkObjectClicked", 
 function (x, y, modifiers, bsVisible, drawPicking) {
 if (this.isHover || modifiers == 0) return null;
 var isAntialiased = this.viewer.isAntialiased ();
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-var obj = e.next ();
+for (var obj, $obj = this.objects.values ().iterator (); $obj.hasNext () && ((obj = $obj.next ()) || true);) {
 if (obj.checkObjectClicked (isAntialiased, x, y, bsVisible)) {
 var s = obj.getScript ();
 if (s != null) {
@@ -168,9 +155,7 @@ function (x, y, bsVisible) {
 if (this.isHover) return false;
 var haveScripts = false;
 var isAntialiased = this.viewer.isAntialiased ();
-var e = this.objects.values ().iterator ();
-while (e.hasNext ()) {
-var obj = e.next ();
+for (var obj, $obj = this.objects.values ().iterator (); $obj.hasNext () && ((obj = $obj.next ()) || true);) {
 var s = obj.getScript ();
 if (s != null) {
 haveScripts = true;

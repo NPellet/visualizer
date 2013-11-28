@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.readers.molxyz.MolReader", "J.util.JmolList"], "J.adapter.readers.more.JcampdxReader", ["java.io.BufferedReader", "$.StringReader", "java.lang.Float", "J.adapter.smarter.SmarterJmolAdapter", "J.util.BS", "$.Escape", "$.Logger", "$.Parser", "$.SB", "$.TextFormat"], function () {
+Clazz.load (["J.adapter.readers.molxyz.MolReader", "J.util.JmolList"], "J.adapter.readers.more.JcampdxReader", ["java.io.BufferedReader", "$.StringReader", "java.lang.Float", "java.util.ArrayList", "$.Hashtable", "J.adapter.smarter.SmarterJmolAdapter", "J.util.BS", "$.Escape", "$.Logger", "$.Parser", "$.SB", "$.TextFormat"], function () {
 c$ = Clazz.decorateAsClass (function () {
-this.modelID = null;
+this.thisModelID = null;
 this.models = null;
 this.modelIdList = "";
 this.peakData = null;
@@ -9,6 +9,8 @@ this.lastModel = "";
 this.selectedModel = 0;
 this.peakIndex = null;
 this.peakFilePath = null;
+this.piUnitsX = null;
+this.piUnitsY = null;
 this.allTypes = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.more, "JcampdxReader", J.adapter.readers.molxyz.MolReader);
@@ -44,7 +46,8 @@ var i = this.line.indexOf ("=");
 if (i < 0 || !this.line.startsWith ("##")) return true;
 var label = this.line.substring (0, i).trim ();
 if (label.equals ("##$MODELS")) return this.readModels ();
-if (label.equals ("##$PEAKS")) return this.readPeaks ();
+if (label.equals ("##$PEAKS")) return (this.readPeaks (false) > 0);
+if (label.equals ("##$SIGNALS")) return (this.readPeaks (true) > 0);
 return true;
 });
 Clazz.overrideMethod (c$, "finalizeReader", 
@@ -65,7 +68,7 @@ this.discardLinesUntilContains2 ("<Models", "##");
 if (this.line.indexOf ("<Models") < 0) return false;
 }this.models = null;
 this.line = "";
-this.modelID = "";
+this.thisModelID = "";
 var isFirst = true;
 while (true) {
 var model0 = this.atomSetCollection.getCurrentAtomSetIndex ();
@@ -83,10 +86,10 @@ $_M(c$, "updateModelIDs",
 ($fz = function (model0, isFirst) {
 var n = this.atomSetCollection.getAtomSetCount ();
 if (isFirst && n == model0 + 2) {
-this.atomSetCollection.setAtomSetAuxiliaryInfo ("modelID", this.modelID);
+this.atomSetCollection.setAtomSetAuxiliaryInfo ("modelID", this.thisModelID);
 return;
 }for (var pt = 0, i = model0; ++i < n; ) {
-this.atomSetCollection.setAtomSetAuxiliaryInfoForSet ("modelID", this.modelID + "." + (++pt), i);
+this.atomSetCollection.setAtomSetAuxiliaryInfoForSet ("modelID", this.thisModelID + "." + (++pt), i);
 }
 }, $fz.isPrivate = true, $fz), "~N,~B");
 c$.getAttribute = $_M(c$, "getAttribute", 
@@ -96,9 +99,9 @@ return (attr == null ? "" : attr);
 }, $fz.isPrivate = true, $fz), "~S,~S");
 $_M(c$, "getModelAtomSetCollection", 
 ($fz = function () {
-this.lastModel = this.modelID;
-this.modelID = J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "id");
-var key = ";" + this.modelID + ";";
+this.lastModel = this.thisModelID;
+this.thisModelID = J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "id");
+var key = ";" + this.thisModelID + ";";
 if (this.modelIdList.indexOf (key) >= 0) {
 this.discardLinesUntilContains ("</ModelData>");
 return null;
@@ -134,7 +137,7 @@ J.util.Logger.info ("jdx applying vibrationScale of " + vibScale + " to " + a.ge
 var atoms = a.getAtoms ();
 for (var i = a.getAtomCount (); --i >= 0; ) atoms[i].scaleVector (vibScale);
 
-}J.util.Logger.info ("jdx model=" + this.modelID + " type=" + a.getFileTypeName ());
+}J.util.Logger.info ("jdx model=" + this.thisModelID + " type=" + a.getFileTypeName ());
 return a;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "setBonding", 
@@ -161,15 +164,117 @@ return;
 }
 }, $fz.isPrivate = true, $fz), "J.adapter.smarter.AtomSetCollection,~N");
 $_M(c$, "readPeaks", 
-($fz = function () {
-if (this.line.indexOf ("<Peaks") < 0) this.discardLinesUntilContains2 ("<Peaks", "##");
-if (this.line.indexOf ("<Peaks") < 0) return false;
-var type = J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "type").toUpperCase ();
-if (type.equals ("HNMR")) type = "1HNMR";
- else if (type.equals ("CNMR")) type = "13CNMR";
-while (this.readLine () != null && !(this.line = this.line.trim ()).startsWith ("</Peaks>")) if (this.line.startsWith ("<PeakData")) this.peakData.addLast ("<PeakData file=" + this.peakFilePath + " index=\"" + (++this.peakIndex[0]) + "\"" + " type=\"" + type + "\" " + this.line.substring (9).trim ());
+($fz = function (isSignals) {
+var reader = this;
+var spectrum = null;
+try {
+var offset = (isSignals ? 1 : 0);
+var tag1 = (isSignals ? "Signals" : "Peaks");
+var tag2 = (isSignals ? "<Signal" : "<PeakData");
+var line = this.discardUntil (reader, tag1);
+if (line.indexOf ("<" + tag1) < 0) line = this.discardUntil (reader, "<" + tag1);
+if (line.indexOf ("<" + tag1) < 0) return 0;
+var file = this.getPeakFilePath ();
+var model = this.getQuotedAttribute (line, "model");
+model = " model=" + this.escape (model == null ? this.thisModelID : model);
+var type = this.getQuotedAttribute (line, "type");
+if ("HNMR".equals (type)) type = "1HNMR";
+ else if ("CNMR".equals (type)) type = "13CNMR";
+type = (type == null ? "" : " type=" + this.escape (type));
+this.piUnitsX = this.getQuotedAttribute (line, "xLabel");
+this.piUnitsY = this.getQuotedAttribute (line, "yLabel");
+var htSets =  new java.util.Hashtable ();
+var list =  new java.util.ArrayList ();
+while ((line = reader.readLine ()) != null && !(line = line.trim ()).startsWith ("</" + tag1)) {
+if (line.startsWith (tag2)) {
+this.info (line);
+var title = this.getQuotedAttribute (line, "title");
+if (title == null) {
+title = (type === "1HNMR" ? "atom%S%: %ATOMS%; integration: %NATOMS%" : "");
+title = " title=" + this.escape (title);
+} else {
+title = "";
+}var stringInfo = "<PeakData " + file + " index=\"%INDEX%\"" + title + type + (this.getQuotedAttribute (line, "model") == null ? model : "") + " " + line.substring (tag2.length).trim ();
+var atoms = this.getQuotedAttribute (stringInfo, "atoms");
+if (atoms != null) stringInfo = this.simpleReplace (stringInfo, "atoms=\"" + atoms + "\"", "atoms=\"%ATOMS%\"");
+var key = (Clazz.floatToInt (this.parseFloatStr (this.getQuotedAttribute (line, "xMin")) * 100)) + "_" + (Clazz.floatToInt (this.parseFloatStr (this.getQuotedAttribute (line, "xMax")) * 100));
+var o = htSets.get (key);
+if (o == null) {
+o = [stringInfo, (atoms == null ? null :  new J.util.BS ())];
+htSets.put (key, o);
+list.add (o);
+}var bs = o[1];
+if (bs != null) {
+atoms = atoms.$replace (',', ' ');
+bs.or (this.unescapeBitSet ("({" + atoms + "})"));
+}}}
+var nH = 0;
+var n = list.size ();
+for (var i = 0; i < n; i++) {
+var o = list.get (i);
+var stringInfo = o[0];
+stringInfo = this.simpleReplace (stringInfo, "%INDEX%", "" + this.getPeakIndex ());
+var bs = o[1];
+if (bs != null) {
+var s = "";
+for (var j = bs.nextSetBit (0); j >= 0; j = bs.nextSetBit (j + 1)) s += "," + (j + offset);
 
-return true;
+var na = bs.cardinality ();
+nH += na;
+stringInfo = this.simpleReplace (stringInfo, "%ATOMS%", s.substring (1));
+stringInfo = this.simpleReplace (stringInfo, "%S%", (na == 1 ? "" : "s"));
+stringInfo = this.simpleReplace (stringInfo, "%NATOMS%", "" + na);
+}this.info ("Jmol using " + stringInfo);
+this.add (this.peakData, stringInfo);
+}
+this.setSpectrumPeaks (spectrum, this.peakData, nH);
+return n;
+} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+return 0;
+} else {
+throw e;
+}
+}
+}, $fz.isPrivate = true, $fz), "~B");
+$_M(c$, "info", 
+($fz = function (s) {
+J.util.Logger.info (s);
+}, $fz.isPrivate = true, $fz), "~S");
+$_M(c$, "unescapeBitSet", 
+($fz = function (s) {
+return J.util.Escape.uB (s);
+}, $fz.isPrivate = true, $fz), "~S");
+$_M(c$, "simpleReplace", 
+($fz = function (s, sfrom, sto) {
+return J.util.TextFormat.simpleReplace (s, sfrom, sto);
+}, $fz.isPrivate = true, $fz), "~S,~S,~S");
+$_M(c$, "escape", 
+($fz = function (s) {
+return J.util.Escape.eS (s);
+}, $fz.isPrivate = true, $fz), "~S");
+$_M(c$, "getQuotedAttribute", 
+($fz = function (s, attr) {
+return J.util.Parser.getQuotedAttribute (s, attr);
+}, $fz.isPrivate = true, $fz), "~S,~S");
+$_M(c$, "setSpectrumPeaks", 
+($fz = function (o1, o2, nH) {
+}, $fz.isPrivate = true, $fz), "~O,~O,~N");
+$_M(c$, "add", 
+($fz = function (peakData, info) {
+peakData.addLast (info);
+}, $fz.isPrivate = true, $fz), "J.util.JmolList,~S");
+$_M(c$, "getPeakFilePath", 
+($fz = function () {
+return " file=" + J.util.Escape.eS (this.peakFilePath);
+}, $fz.isPrivate = true, $fz));
+$_M(c$, "discardUntil", 
+($fz = function (ignored, tag) {
+return this.discardLinesUntilContains2 ("<" + tag, "##");
+}, $fz.isPrivate = true, $fz), "~O,~S");
+$_M(c$, "getPeakIndex", 
+($fz = function () {
+return ++this.peakIndex[0];
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "processPeakData", 
 ($fz = function () {
@@ -180,10 +285,10 @@ var havePeaks = (n > 0);
 for (var p = 0; p < n; p++) {
 this.line = this.peakData.get (p);
 var type = J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "type");
-this.modelID = J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "model");
-var i = this.findModelById (this.modelID);
+this.thisModelID = J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "model");
+var i = this.findModelById (this.thisModelID);
 if (i < 0) {
-J.util.Logger.warn ("cannot find model " + this.modelID + " required for " + this.line);
+J.util.Logger.warn ("cannot find model " + this.thisModelID + " required for " + this.line);
 continue;
 }this.addType (i, type);
 var title = type + ": " + J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "title");
@@ -205,8 +310,8 @@ s = "ignored: ";
 }
 n = this.atomSetCollection.getAtomSetCount ();
 for (var i = n; --i >= 0; ) {
-this.modelID = this.atomSetCollection.getAtomSetAuxiliaryInfoValue (i, "modelID");
-if (havePeaks && !bsModels.get (i) && this.modelID.indexOf (".") >= 0) {
+this.thisModelID = this.atomSetCollection.getAtomSetAuxiliaryInfoValue (i, "modelID");
+if (havePeaks && !bsModels.get (i) && this.thisModelID.indexOf (".") >= 0) {
 this.atomSetCollection.removeAtomSet (i);
 n--;
 }}

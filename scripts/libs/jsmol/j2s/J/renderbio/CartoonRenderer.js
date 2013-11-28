@@ -28,9 +28,8 @@ this.ring6Screens[i] =  new J.util.P3i ();
 }});
 Clazz.overrideMethod (c$, "renderBioShape", 
 function (bioShape) {
-if (this.$wireframeOnly) {
-if (this.wingVectors == null || this.isCarbohydrate) this.renderTrace ();
- else this.renderMeshRibbon ();
+if (this.wireframeOnly) {
+this.renderStrands ();
 return;
 }this.newRockets = true;
 if (this.wingVectors == null || this.isCarbohydrate) return;

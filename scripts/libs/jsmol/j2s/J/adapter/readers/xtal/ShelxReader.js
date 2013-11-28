@@ -68,9 +68,7 @@ break;
 }, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "parseLattRecord", 
 ($fz = function () {
-this.parseTokenStr (this.line);
-var latt = this.parseInt ();
-this.atomSetCollection.setLatticeParameter (latt);
+this.atomSetCollection.setLatticeParameter (this.parseIntStr (this.tokens[1]));
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "parseSymmRecord", 
 ($fz = function () {

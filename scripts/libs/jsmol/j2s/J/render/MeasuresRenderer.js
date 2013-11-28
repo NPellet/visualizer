@@ -196,7 +196,7 @@ $_M(c$, "renderPendingMeasurement",
 if (this.isExport || measurementPending == null) return;
 var count = measurementPending.getCount ();
 if (count == 0) return;
-this.g3d.setColix (measurementPending.traceX == -2147483648 ? this.viewer.getColixRubberband () : count == 2 ? 20 : 23);
+this.g3d.setColix (this.labelColix = (measurementPending.traceX == -2147483648 ? this.viewer.getColixRubberband () : count == 2 ? 20 : 23));
 measurementPending.refresh ();
 if (measurementPending.haveTarget ()) this.renderMeasurement (count, measurementPending, measurementPending.traceX == -2147483648);
  else this.renderPendingWithCursor (count, measurementPending);

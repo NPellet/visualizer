@@ -117,8 +117,11 @@ this.ich = 0;
 $_M(c$, "setStringNextLine", 
 ($fz = function () {
 this.setString (this.readLine ());
-if (this.line == null || this.line.length == 0 || this.line.charAt (0) != ';') return this.line;
-this.ich = 1;
+if (this.line == null || this.line.length == 0) return this.line;
+if (this.line.charAt (0) != ';') {
+if (this.str.startsWith ("###non-st#")) this.ich = 10;
+return this.line;
+}this.ich = 1;
 var str = '\1' + this.line.substring (1) + '\n';
 while (this.readLine () != null) {
 if (this.line.startsWith (";")) {
@@ -147,7 +150,8 @@ this.wasUnQuoted = true;
 while (this.ich < this.cch && (ch = this.str.charAt (this.ich)) != ' ' && ch != '\t') ++this.ich;
 
 if (this.ich == ichStart + 1) if (this.str.charAt (ichStart) == '.' || this.str.charAt (ichStart) == '?') return "\0";
-return this.str.substring (ichStart, this.ich);
+var s = this.str.substring (ichStart, this.ich);
+return s;
 }this.wasUnQuoted = false;
 var chOpeningQuote = ch;
 var previousCharacterWasQuote = false;

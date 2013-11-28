@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.awtjs2d");
-Clazz.load (["J.api.JmolFileAdapterInterface"], "J.awtjs2d.JmolFileAdapter", ["java.net.UnknownServiceException"], function () {
+Clazz.load (["J.api.JmolFileAdapterInterface"], "J.awtjs2d.JmolFileAdapter", ["java.net.UnknownServiceException", "J.awtjs2d.WebOutputChannel"], function () {
 c$ = Clazz.declareType (J.awtjs2d, "JmolFileAdapter", null, J.api.JmolFileAdapterInterface);
 Clazz.overrideMethod (c$, "getBufferedFileInputStream", 
 function (name) {
@@ -28,4 +28,24 @@ throw e;
 }
 }
 }, "java.net.URL,~A,~S");
+Clazz.overrideMethod (c$, "openOutputChannel", 
+function (privateKey, fm, fileName, asWriter) {
+return  new J.awtjs2d.WebOutputChannel (fileName);
+}, "~N,J.viewer.FileManager,~S,~B");
+Clazz.overrideMethod (c$, "openFileInputStream", 
+function (privateKey, fileName) {
+return null;
+}, "~N,~S");
+Clazz.overrideMethod (c$, "getAbsolutePath", 
+function (privateKey, fileName) {
+return fileName;
+}, "~N,~S");
+Clazz.overrideMethod (c$, "getFileLength", 
+function (privateKey, fileName) {
+return 0;
+}, "~N,~S");
+Clazz.overrideMethod (c$, "openLogFile", 
+function (privateKey, logFileName, asAppend) {
+return null;
+}, "~N,~S,~B");
 });

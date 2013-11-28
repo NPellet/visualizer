@@ -62,6 +62,9 @@ $_M(c$, "markSupported",
 function () {
 return false;
 });
+$_M(c$, "resetStream", 
+function () {
+});
 Clazz.defineStatics (c$,
 "SKIP_BUFFER_SIZE", 2048,
 "skipBuffer", null);

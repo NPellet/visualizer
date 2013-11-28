@@ -564,9 +564,9 @@ $_M(c$, "evaluateTensor",
 if (args.length > 2) return false;
 var bs = J.script.SV.getBitSet (this.getX (), false);
 var tensorType = (args.length == 0 ? null : J.script.SV.sValue (args[0]).toLowerCase ());
-var infoType = (args.length < 2 ? "all" : J.script.SV.sValue (args[1]).toLowerCase ());
 var calc = this.viewer.getNMRCalculation ();
 if ("unique".equals (tensorType)) return this.addXBs (calc.getUniqueTensorSet (bs));
+var infoType = (args.length < 2 ? null : J.script.SV.sValue (args[1]).toLowerCase ());
 return this.addXList (calc.getTensorInfo (tensorType, infoType, bs));
 }, $fz.isPrivate = true, $fz), "~A");
 $_M(c$, "evaluateCache", 
@@ -946,6 +946,7 @@ var isNull = false;
 var rd = null;
 var nBitSets = 0;
 var vdw = 3.4028235E38;
+var asMinArray = false;
 var asArray = false;
 for (var i = 0; i < args.length; i++) {
 switch (args[i].tok) {
@@ -971,7 +972,8 @@ var s = J.script.SV.sValue (args[i]);
 if (s.equalsIgnoreCase ("vdw") || s.equalsIgnoreCase ("vanderwaals")) vdw = (i + 1 < args.length && args[i + 1].tok == 2 ? args[++i].asInt () : 100) / 100;
  else if (s.equalsIgnoreCase ("notConnected")) isNotConnected = true;
  else if (s.equalsIgnoreCase ("connected")) isAllConnected = true;
- else if (s.equalsIgnoreCase ("minArray")) asArray = (nBitSets >= 1);
+ else if (s.equalsIgnoreCase ("minArray")) asMinArray = (nBitSets >= 1);
+ else if (s.equalsIgnoreCase ("asArray")) asArray = (nBitSets >= 1);
  else if (J.util.Parser.isOneOf (s.toLowerCase (), ";nm;nanometers;pm;picometers;angstroms;ang;au;") || s.endsWith ("hz")) units = s.toLowerCase ();
  else strFormat = nPoints + ":" + s;
 break;
@@ -983,7 +985,7 @@ if (nPoints < 2 || nPoints > 4 || rPt > 2 || isNotConnected && isAllConnected) r
 if (isNull) return this.addXStr ("");
 if (vdw != 3.4028235E38 && (nBitSets != 2 || nPoints != 2)) return this.addXStr ("");
 rd = (vdw == 3.4028235E38 ?  new J.atomdata.RadiusData (rangeMinMax, 0, null, null) :  new J.atomdata.RadiusData (null, vdw, J.atomdata.RadiusData.EnumType.FACTOR, J.constant.EnumVdw.AUTO));
-return this.addXObj (( new J.modelset.MeasurementData (null, this.viewer, points)).set (0, null, rd, strFormat, units, null, isAllConnected, isNotConnected, null, true, 0, 0, null).getMeasurements (asArray));
+return this.addXObj (( new J.modelset.MeasurementData (null, this.viewer, points)).set (0, null, rd, strFormat, units, null, isAllConnected, isNotConnected, null, true, 0, 0, null).getMeasurements (asArray, asMinArray));
 case 135266305:
 if ((nPoints = args.length) != 3 && nPoints != 4) return false;
 break;
@@ -1268,7 +1270,7 @@ var label = J.script.SV.sValue (args[0]);
 var buttonArray = (args.length > 1 && args[1].tok == 7 ? J.script.SV.listValue (args[1]) : null);
 var asButtons = (buttonArray != null || args.length == 1 || args.length == 3 && args[2].asBoolean ());
 var input = (buttonArray != null ? null : args.length >= 2 ? J.script.SV.sValue (args[1]) : "OK");
-var s = this.viewer.prompt (label, input, buttonArray, asButtons);
+var s = "" + this.viewer.prompt (label, input, buttonArray, asButtons);
 return (asButtons && buttonArray != null ? this.addXInt (Integer.parseInt (s) + 1) : this.addXStr (s));
 }, $fz.isPrivate = true, $fz), "~A");
 $_M(c$, "evaluateReplace", 
@@ -1560,7 +1562,8 @@ q = J.util.Quaternion.newM (args[0].value);
 } else if (args[0].tok == 9) {
 p4 = args[0].value;
 } else {
-var v = J.util.Escape.uP (J.script.SV.sValue (args[0]));
+var s = J.script.SV.sValue (args[0]);
+var v = J.util.Escape.uP (s.equalsIgnoreCase ("best") ? this.viewer.getOrientationText (1073741863, null) : s);
 if (!(Clazz.instanceOf (v, J.util.P4))) return false;
 p4 = v;
 }if (tok == 135266307) q = J.util.Quaternion.newVA (J.util.P3.new3 (p4.x, p4.y, p4.z), p4.w);
@@ -1628,8 +1631,11 @@ $_M(c$, "evaluateLoad",
 ($fz = function (args, tok) {
 if (args.length > 2 || args.length < 1) return false;
 var file = J.script.SV.sValue (args[0]);
-var nBytesMax = (args.length == 2 ? args[1].asInt () : 2147483647);
-return this.addXStr (tok == 135271426 ? this.viewer.getFileAsString4 (file, nBytesMax, false, false) : this.viewer.getFilePath (file, false));
+var nBytesMax = (args.length == 2 ? args[1].asInt () : -1);
+if (this.viewer.isJS && file.startsWith ("?")) {
+if (tok == 1229984263) return this.addXStr ("");
+file = this.eval.loadFileAsync ("load()_", file, this.oPt, true);
+}return this.addXStr (tok == 135271426 ? this.viewer.getFileAsString4 (file, nBytesMax, false, false) : this.viewer.getFilePath (file, false));
 }, $fz.isPrivate = true, $fz), "~A,~N");
 $_M(c$, "evaluateWrite", 
 ($fz = function (args) {
