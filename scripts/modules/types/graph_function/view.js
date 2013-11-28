@@ -37,12 +37,21 @@ define(['modules/defaultview','util/util','util/api','libs/three/three.min'], fu
 			this.yRange=this.yMax-this.yMin;
 
 			
+			
+			if (this.scene) {
+				console.log(this.scene.__webglObjects);
+			//	this.scene.remove
+
+				this.scene.remove(this.graphGeometry);
+				this.scene.remove(this.graphMesh);
+				this.scene.remove(this.floor);
+				delete this.graphGeometry;
+				delete this.graphMesh;
+				delete this.floor;
+				console.log(this.scene.__webglObjects);
+			}
 			this.graphGeometry;
 			this.graphMesh;
-			if (this.scene) {
-				delete this.scene;
-			}	
-
 
 			this.onReady = $.Deferred();
 			require(['libs/three/js/controls/TrackballControls','libs/parser/Parser'], function() {
@@ -51,6 +60,7 @@ define(['modules/defaultview','util/util','util/api','libs/three/three.min'], fu
 
 
 				self.scene = new THREE.Scene();
+				console.log(self.scene.__webglObjects);
 
 				if (! self.renderer) {
 					if (self.webgl) {
@@ -140,13 +150,13 @@ console.log(self.renderer.domElement);
 		},
 
 		addFloor: function(scene) {
-			scene.add( new THREE.AxisHelper() );
+		//	scene.add( new THREE.AxisHelper() );
 			var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x000088, wireframe: true, side:THREE.DoubleSide } ); 
 			var floorGeometry = new THREE.PlaneGeometry(1000,1000,10,10);
-			var floor = new THREE.Mesh(floorGeometry, wireframeMaterial);
-			floor.position.z = 0; // required, otherwise from time to time it is NaN !!!???
+			self.floor = new THREE.Mesh(floorGeometry, wireframeMaterial);
+			//floor.position.z = 0; // required, otherwise from time to time it is NaN !!!???
 			// floor.rotation.x = Math.PI / 2;
-			scene.add(floor);
+			scene.add(self.floor);
 		},
 
 
@@ -161,10 +171,6 @@ console.log(self.renderer.domElement);
 		    requestAnimationFrame( self.animate.bind(self) );
 		    if (self.doAnimation || self.firstAnimation>0) {
 		    	if (self.firstAnimation>0) self.firstAnimation--;
-		    	if (self.firstAnimation==10) {
-		    		console.log(self.scene);
-		    		console.log(self.camera);
-		    	}
 		    	self.renderer.render( self.scene, self.camera );		
 				self.controls.update();	
 		    }
