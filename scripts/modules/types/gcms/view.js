@@ -74,6 +74,9 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 			_gcms.onMSSelect = function(ms, annot) {
 				self.module.controller.setVarFromEvent('onIntegralSelect', new DataArray(ms), 'msSelected');
+			}
+
+			_gcms.onIntegralSelect = function(annot) {
 				self.module.controller.setVarFromEvent('onIntegralSelect', annot, 'annotation');
 			}
 

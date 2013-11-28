@@ -57,6 +57,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 						case 'surfaceUnderCurve': 
 
 							self.selectAnnot( annot );
+							self.onIntegralSelect( annot );
 
 						break;
 					}
@@ -280,7 +281,7 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 		},
 
-		selectAnnot: function( annot ) {
+		selectAnnot: function( annot ) { // Creating an averaged MS on the fly
 
 			var self = this;
 			var xStart = annot.pos.x;
@@ -291,8 +292,9 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 			var indexMin = Math.min(indexStart, indexEnd);
 			var indexMax = Math.max(indexStart, indexEnd);
 
-			if(indexMax == indexMin)
+			if(indexMax == indexMin) {
 				return;
+			}
 			
 
 			var obj = [], allMs = [], i, j, floor;
