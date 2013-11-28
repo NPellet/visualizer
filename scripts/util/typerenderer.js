@@ -367,8 +367,8 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 	}
 
 	functions.pdb = {};
-	functions.pdb.toscreen = function(dev, value) {
-		return def.resolve(value);
+	functions.pdb.toscreen = function(def, value) {
+		return def.resolve("<pre>"+value.value+"</pre>");
 	}
 
 	functions.downloadLink = {};

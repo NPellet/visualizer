@@ -36,7 +36,6 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 			},
 
 			'value': function(moduleValue) {
-
 				var view = this,
 					sprintfVal = this.module.getConfiguration('sprintf');
 
@@ -47,7 +46,6 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				} else {
 
 					Renderer.toScreen( moduleValue, this.module ).always(function(val) {
-
 						if ( sprintfVal && sprintfVal != "" ) {
 
 							try {
