@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapebio");
-Clazz.load (["J.shapebio.BioShapeCollection"], "J.shapebio.Backbone", ["java.lang.Float", "J.util.BS"], function () {
+Clazz.load (["J.shapebio.BioShapeCollection"], "J.shapebio.Backbone", ["java.lang.Float", "JU.BS"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bsSelected = null;
 Clazz.instantialize (this, arguments);
@@ -13,14 +13,14 @@ this.madTurnRandom = 500;
 this.madDnaRna = 2000;
 this.isActive = true;
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bsSelected) {
 if ("bitset" === propertyName) {
 this.bsSelected = value;
 return;
 }this.setPropBSC (propertyName, value, bsSelected);
-}, "~S,~O,J.util.BS");
-Clazz.overrideMethod (c$, "setShapeSizeRD", 
+}, "~S,~O,JU.BS");
+$_V(c$, "setShapeSizeRD", 
 function (size, rd, bsSelected) {
 var mad = size;
 this.initialize ();
@@ -32,7 +32,7 @@ if (bioShape.monomerCount == 0) continue;
 var bondSelectionModeOr = this.viewer.getBoolean (603979812);
 var atomIndices = bioShape.bioPolymer.getLeadAtomIndices ();
 var isVisible = (mad != 0);
-if (bioShape.bsSizeSet == null) bioShape.bsSizeSet =  new J.util.BS ();
+if (bioShape.bsSizeSet == null) bioShape.bsSizeSet =  new JU.BS ();
 bioShape.isActive = true;
 for (var i = bioShape.monomerCount - 1; --i >= 0; ) {
 var index1 = atomIndices[i];
@@ -57,8 +57,8 @@ bioShape.bsSizeDefault.setBitTo (i, mad == -1);
 }}
 }
 if (useThisBsSelected) this.bsSelected = null;
-}, "~N,J.atomdata.RadiusData,J.util.BS");
-Clazz.overrideMethod (c$, "setModelClickability", 
+}, "~N,J.atomdata.RadiusData,JU.BS");
+$_V(c$, "setModelClickability", 
 function () {
 if (this.bioShapes == null) return;
 for (var iShape = this.bioShapes.length; --iShape >= 0; ) {

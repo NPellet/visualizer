@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.renderbio");
 Clazz.load (["J.renderbio.StrandsRenderer"], "J.renderbio.TraceRenderer", null, function () {
 c$ = Clazz.declareType (J.renderbio, "TraceRenderer", J.renderbio.StrandsRenderer);
-Clazz.overrideMethod (c$, "renderBioShape", 
+$_V(c$, "renderBioShape", 
 function (bioShape) {
 if (this.wireframeOnly) this.renderStrands ();
  else this.renderTrace ();

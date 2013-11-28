@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.util.Rectangle", "J.viewer.MouseState"], "J.viewer.ActionManager", ["java.lang.Character", "$.Float", "java.util.Hashtable", "J.i18n.GT", "J.modelset.MeasurementPending", "J.thread.HoverWatcherThread", "J.util.BSUtil", "$.Escape", "$.JmolList", "$.Logger", "$.P3", "$.Point3fi", "$.TextFormat", "J.viewer.binding.Binding", "$.JmolBinding"], function () {
+Clazz.load (["javajs.api.EventManager", "J.util.Rectangle", "J.viewer.MouseState"], "J.viewer.ActionManager", ["java.lang.Boolean", "$.Character", "$.Float", "java.util.Hashtable", "JU.List", "$.P3", "$.PT", "J.i18n.GT", "J.thread.HoverWatcherThread", "J.util.BSUtil", "$.Escape", "$.Logger", "$.Point3fi", "J.viewer.binding.Binding", "$.JmolBinding"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.haveMultiTouchInput = false;
@@ -59,7 +59,7 @@ this.clickAction = 0;
 this.measurementQueued = null;
 this.selectionWorking = false;
 Clazz.instantialize (this, arguments);
-}, J.viewer, "ActionManager");
+}, J.viewer, "ActionManager", null, javajs.api.EventManager);
 Clazz.prepareFields (c$, function () {
 this.dragGesture = Clazz.innerTypeInstance (J.viewer.ActionManager.Gesture, this, null, 20);
 this.current =  new J.viewer.MouseState ("current");
@@ -86,7 +86,7 @@ this.viewer.hoverOn (atomIndex, isLabel);
 }});
 $_M(c$, "processMultitouchEvent", 
 function (groupID, eventType, touchID, iData, pt, time) {
-}, "~N,~N,~N,~N,J.util.P3,~N");
+}, "~N,~N,~N,~N,JU.P3,~N");
 $_M(c$, "isBound", 
 function (mouseAction, jmolAction) {
 return this.binding.isBound (mouseAction, jmolAction);
@@ -251,10 +251,10 @@ if (!this.binding.getName ().equals ("drag")) this.predragBinding = this.binding
 $_M(c$, "getMouseInfo", 
 function () {
 var info =  new java.util.Hashtable ();
-var vb =  new J.util.JmolList ();
+var vb =  new JU.List ();
 for (var obj, $obj = this.binding.getBindings ().values ().iterator (); $obj.hasNext () && ((obj = $obj.next ()) || true);) {
 if (Clazz.instanceOf (obj, Boolean)) continue;
-if (J.util.Escape.isAI (obj)) {
+if (JU.PT.isAI (obj)) {
 var binding = obj;
 obj = [J.viewer.binding.Binding.getMouseActionName (binding[0], false), J.viewer.ActionManager.getActionName (binding[1])];
 }vb.addLast (obj);
@@ -263,7 +263,7 @@ info.put ("bindings", vb);
 info.put ("bindingName", this.binding.getName ());
 info.put ("actionNames", J.viewer.ActionManager.actionNames);
 info.put ("actionInfo", J.viewer.ActionManager.actionInfo);
-info.put ("bindingInfo", J.util.TextFormat.split (this.getBindingInfo (null), '\n'));
+info.put ("bindingInfo", JU.PT.split (this.getBindingInfo (null), "\n"));
 return info;
 });
 $_M(c$, "setGestureSwipeFactor", 
@@ -373,9 +373,9 @@ function (modeMouse) {
 if (modeMouse == -1) {
 this.startHoverWatcher (false);
 }}, "~N");
-$_M(c$, "keyPressed", 
+$_V(c$, "keyPressed", 
 function (key, modifiers) {
-if (this.keyProcessing) return;
+if (this.keyProcessing) return false;
 this.viewer.hoverOff ();
 this.keyProcessing = true;
 switch (key) {
@@ -405,8 +405,9 @@ this.viewer.navigate (key, modifiers);
 break;
 }
 }this.keyProcessing = false;
+return true;
 }, "~N,~N");
-$_M(c$, "keyReleased", 
+$_V(c$, "keyReleased", 
 function (key) {
 switch (key) {
 case 18:
@@ -431,26 +432,23 @@ this.viewer.navigate (0, 0);
 break;
 }
 }, "~N");
-$_M(c$, "mouseEntered", 
-function (time, x, y) {
+$_V(c$, "mouseEnterExit", 
+function (time, x, y, isExit) {
 this.setCurrent (time, x, y, 0);
-}, "~N,~N,~N");
-$_M(c$, "mouseExited", 
-function (time, x, y) {
-this.setCurrent (time, x, y, 0);
-if (this.measurementPending != null) {
+if (isExit && this.measurementPending != null) {
 this.exitMeasurementMode ();
 this.viewer.refresh (3, "mouseExit");
-}}, "~N,~N,~N");
+}}, "~N,~N,~N,~B");
 $_M(c$, "setMouseActions", 
 ($fz = function (count, buttonMods, isRelease) {
 this.pressAction = J.viewer.binding.Binding.getMouseAction (count, buttonMods, isRelease ? 5 : 4);
 this.dragAction = J.viewer.binding.Binding.getMouseAction (count, buttonMods, 1);
 this.clickAction = J.viewer.binding.Binding.getMouseAction (count, buttonMods, 2);
 }, $fz.isPrivate = true, $fz), "~N,~N,~B");
-$_M(c$, "mouseAction", 
+$_V(c$, "mouseAction", 
 function (mode, time, x, y, count, buttonMods) {
 if (!this.viewer.getMouseEnabled ()) return;
+if (J.util.Logger.debuggingHigh && mode != 0) this.viewer.showString ("mouse action: " + mode + " " + buttonMods + " " + J.viewer.binding.Binding.getMouseActionName (J.viewer.binding.Binding.getMouseAction (count, buttonMods, mode), false), false);
 switch (mode) {
 case 0:
 this.setCurrent (time, x, y, buttonMods);
@@ -462,7 +460,7 @@ return;
 }if (this.isZoomArea (x)) {
 this.checkMotionRotateZoom (this.LEFT_DRAGGED, 0, 0, 0, false);
 return;
-}if (this.viewer.getCursor () == 5) this.viewer.setCursor (0);
+}if (this.viewer.getCursor () == 8) this.viewer.setCursor (0);
 return;
 case 4:
 this.setMouseMode ();
@@ -471,7 +469,7 @@ if (this.pressedCount == 1) {
 this.viewer.checkInMotion (1);
 this.setCurrent (time, x, y, buttonMods);
 }this.pressAction = J.viewer.binding.Binding.getMouseAction (this.pressedCount, buttonMods, 4);
-this.viewer.setCursor (1);
+this.viewer.setCursor (12);
 this.pressed.setCurrent (this.current, 1);
 this.dragged.setCurrent (this.current, 1);
 this.viewer.setFocus ();
@@ -496,6 +494,11 @@ this.viewer.spinXYBy (0, 0, 0);
 var dragRelease = !this.pressed.check (this.xyRange, x, y, buttonMods, time, 9223372036854775807);
 this.checkReleaseAction (x, y, time, dragRelease);
 return;
+case 3:
+if (this.viewer.isApplet () && !this.viewer.hasFocus ()) return;
+this.setCurrent (time, this.current.x, this.current.y, buttonMods);
+this.checkDragWheelAction (J.viewer.binding.Binding.getMouseAction (0, buttonMods, 3), this.current.x, this.current.y, 0, y, time, 3);
+return;
 case 2:
 this.setMouseMode ();
 this.clickedCount = (count > 1 ? count : this.clicked.check (0, 0, 0, buttonMods, time, 700) ? this.clickedCount + 1 : 1);
@@ -507,11 +510,6 @@ this.viewer.setFocus ();
 if (this.atomPickingMode != 9 && this.isBound (J.viewer.binding.Binding.getMouseAction (1, buttonMods, 4), 31)) return;
 this.clickAction = J.viewer.binding.Binding.getMouseAction (this.clickedCount, buttonMods, 2);
 this.checkClickAction (x, y, time, this.clickedCount);
-return;
-case 3:
-if (this.viewer.isApplet () && !this.viewer.hasFocus ()) return;
-this.setCurrent (time, this.current.x, this.current.y, buttonMods);
-this.checkDragWheelAction (J.viewer.binding.Binding.getMouseAction (0, buttonMods, 3), this.current.x, this.current.y, 0, y, time, 3);
 return;
 }
 }, "~N,~N,~N,~N,~N,~N");
@@ -593,7 +591,7 @@ return;
 if (this.dragAtomIndex >= 0) {
 switch (this.atomPickingMode) {
 case 26:
-this.setMotion (3, true);
+this.setMotion (13, true);
 if (this.isBound (dragWheelAction, 27) && this.viewer.getBoolean (603979785)) {
 this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), null);
 } else {
@@ -602,12 +600,12 @@ this.viewer.moveSelected (deltaX, deltaY, (this.isBound (dragWheelAction, 14) ? 
 case 36:
 case 27:
 case 30:
-bs = this.viewer.getAtomBits (1095761934, J.util.BSUtil.newAndSetBit (this.dragAtomIndex));
+bs = this.viewer.getAtomBits (1095761936, J.util.BSUtil.newAndSetBit (this.dragAtomIndex));
 if (this.atomPickingMode == 36) bs.and (this.viewer.getAtomBitSet ("ligand"));
 case 28:
 case 29:
 if (this.dragGesture.getPointCount () == 1) this.viewer.undoMoveActionClear (this.dragAtomIndex, 2, true);
-this.setMotion (3, true);
+this.setMotion (13, true);
 if (this.isBound (dragWheelAction, 27)) {
 this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), bs);
 } else {
@@ -646,12 +644,12 @@ var iatom = this.viewer.getSelectionSet (false).nextSetBit (0);
 if (iatom < 0) return;
 if (this.dragGesture.getPointCount () == 1) this.viewer.undoMoveActionClear (iatom, 2, true);
  else this.viewer.moveSelected (2147483647, 0, -2147483648, -2147483648, -2147483648, null, false, false);
-this.setMotion (3, true);
+this.setMotion (13, true);
 if (this.isBound (dragWheelAction, 27) && this.viewer.getBoolean (603979785)) this.viewer.rotateSelected (this.getDegrees (deltaX, 0), this.getDegrees (deltaY, 1), null);
  else this.viewer.moveSelected (deltaX, deltaY, -2147483648, -2147483648, -2147483648, null, true, false);
 return;
 }if (this.drawMode && (this.isBound (dragWheelAction, 8) || this.isBound (dragWheelAction, 9)) || this.labelMode && this.isBound (dragWheelAction, 10)) {
-this.setMotion (3, true);
+this.setMotion (13, true);
 this.viewer.checkObjectDragged (this.dragged.x, this.dragged.y, x, y, dragWheelAction);
 return;
 }if (this.checkMotionRotateZoom (dragWheelAction, x, deltaX, deltaY, true)) {
@@ -666,17 +664,17 @@ if (this.viewer.global.useArcBall) this.viewer.rotateArcBall (x, y, this.mouseDr
 return;
 }if (this.isBound (dragWheelAction, 29)) {
 if (deltaX == 0 && Math.abs (deltaY) > 1) {
-this.setMotion (5, true);
+this.setMotion (8, true);
 this.viewer.zoomBy (deltaY + (deltaY > 0 ? -1 : 1));
 } else if (deltaY == 0 && Math.abs (deltaX) > 1) {
-this.setMotion (3, true);
+this.setMotion (13, true);
 this.viewer.rotateZBy (-deltaX + (deltaX > 0 ? 1 : -1), 2147483647, 2147483647);
 }return;
 } else if (this.isBound (dragWheelAction, 46)) {
 this.zoomByFactor (deltaY, 2147483647, 2147483647);
 return;
 } else if (this.isBound (dragWheelAction, 28)) {
-this.setMotion (3, true);
+this.setMotion (13, true);
 this.viewer.rotateZBy (-deltaX, 2147483647, 2147483647);
 return;
 }if (this.viewer.getSlabEnabled ()) {
@@ -797,30 +795,30 @@ var obj;
 var ht = this.binding.getBindings ();
 var mkey = mouseAction + "\t";
 for (var key, $key = ht.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
-if (key.indexOf (mkey) != 0 || !J.util.Escape.isAS (obj = ht.get (key))) continue;
+if (key.indexOf (mkey) != 0 || !JU.PT.isAS (obj = ht.get (key))) continue;
 var script = (obj)[1];
 var nearestPoint = null;
 if (script.indexOf ("_ATOM") >= 0) {
 var iatom = this.findNearestAtom (x, y, null, true);
-script = J.util.TextFormat.simpleReplace (script, "_ATOM", "({" + (iatom >= 0 ? "" + iatom : "") + "})");
-if (iatom >= 0) script = J.util.TextFormat.simpleReplace (script, "_POINT", J.util.Escape.eP (this.viewer.getModelSet ().atoms[iatom]));
+script = JU.PT.simpleReplace (script, "_ATOM", "({" + (iatom >= 0 ? "" + iatom : "") + "})");
+if (iatom >= 0) script = JU.PT.simpleReplace (script, "_POINT", J.util.Escape.eP (this.viewer.getModelSet ().atoms[iatom]));
 }if (!this.drawMode && (script.indexOf ("_POINT") >= 0 || script.indexOf ("_OBJECT") >= 0 || script.indexOf ("_BOND") >= 0)) {
 var t = this.viewer.checkObjectClicked (x, y, mouseAction);
 if (t != null && (nearestPoint = t.get ("pt")) != null) {
 var isBond = t.get ("type").equals ("bond");
-if (isBond) script = J.util.TextFormat.simpleReplace (script, "_BOND", "[{" + t.get ("index") + "}]");
-script = J.util.TextFormat.simpleReplace (script, "_POINT", J.util.Escape.eP (nearestPoint));
-script = J.util.TextFormat.simpleReplace (script, "_OBJECT", J.util.Escape.escapeMap (t));
-}script = J.util.TextFormat.simpleReplace (script, "_BOND", "[{}]");
-script = J.util.TextFormat.simpleReplace (script, "_OBJECT", "{}");
-}script = J.util.TextFormat.simpleReplace (script, "_POINT", "{}");
-script = J.util.TextFormat.simpleReplace (script, "_ACTION", "" + mouseAction);
-script = J.util.TextFormat.simpleReplace (script, "_X", "" + x);
-script = J.util.TextFormat.simpleReplace (script, "_Y", "" + (this.viewer.getScreenHeight () - y));
-script = J.util.TextFormat.simpleReplace (script, "_DELTAX", "" + deltaX);
-script = J.util.TextFormat.simpleReplace (script, "_DELTAY", "" + deltaY);
-script = J.util.TextFormat.simpleReplace (script, "_TIME", "" + time);
-script = J.util.TextFormat.simpleReplace (script, "_MODE", "" + mode);
+if (isBond) script = JU.PT.simpleReplace (script, "_BOND", "[{" + t.get ("index") + "}]");
+script = JU.PT.simpleReplace (script, "_POINT", J.util.Escape.eP (nearestPoint));
+script = JU.PT.simpleReplace (script, "_OBJECT", J.util.Escape.escapeMap (t));
+}script = JU.PT.simpleReplace (script, "_BOND", "[{}]");
+script = JU.PT.simpleReplace (script, "_OBJECT", "{}");
+}script = JU.PT.simpleReplace (script, "_POINT", "{}");
+script = JU.PT.simpleReplace (script, "_ACTION", "" + mouseAction);
+script = JU.PT.simpleReplace (script, "_X", "" + x);
+script = JU.PT.simpleReplace (script, "_Y", "" + (this.viewer.getScreenHeight () - y));
+script = JU.PT.simpleReplace (script, "_DELTAX", "" + deltaX);
+script = JU.PT.simpleReplace (script, "_DELTAY", "" + deltaY);
+script = JU.PT.simpleReplace (script, "_TIME", "" + time);
+script = JU.PT.simpleReplace (script, "_MODE", "" + mode);
 if (script.startsWith ("+:")) {
 passThrough = true;
 script = script.substring (2);
@@ -835,7 +833,7 @@ var isRotateXY = this.isBound (mouseAction, 25);
 var isRotateZorZoom = this.isBound (mouseAction, 29);
 if (!isSlideZoom && !isRotateXY && !isRotateZorZoom) return false;
 var isZoom = (isRotateZorZoom && (deltaX == 0 || Math.abs (deltaY) > 5 * Math.abs (deltaX)));
-var cursor = (isZoom || this.isZoomArea (this.moved.x) || this.isBound (mouseAction, 46) ? 5 : isRotateXY || isRotateZorZoom ? 3 : this.isBound (mouseAction, 1) ? 1 : 0);
+var cursor = (isZoom || this.isZoomArea (this.moved.x) || this.isBound (mouseAction, 46) ? 8 : isRotateXY || isRotateZorZoom ? 13 : this.isBound (mouseAction, 1) ? 12 : 0);
 this.setMotion (cursor, isDrag);
 return (isZoom || isSlideZoom);
 }, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~B");
@@ -903,8 +901,8 @@ $_M(c$, "enterMeasurementMode",
 ($fz = function (iAtom) {
 this.viewer.setPicked (-1);
 this.viewer.setPicked (iAtom);
-this.viewer.setCursor (2);
-this.viewer.setPendingMeasurement (this.measurementPending = J.modelset.MeasurementPending.getMP (this.viewer.getModelSet ()));
+this.viewer.setCursor (1);
+this.viewer.setPendingMeasurement (this.measurementPending = this.viewer.getMP ());
 this.measurementQueued = this.measurementPending;
 }, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "addToMeasurement", 
@@ -919,7 +917,7 @@ return (measurementCount == 4 && !dblClick ? measurementCount : this.measurement
 $_M(c$, "resetMeasurement", 
 ($fz = function () {
 this.exitMeasurementMode ();
-this.measurementQueued = J.modelset.MeasurementPending.getMP (this.viewer.getModelSet ());
+this.measurementQueued = this.viewer.getMP ();
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "exitMeasurementMode", 
 ($fz = function () {
@@ -940,8 +938,8 @@ $_M(c$, "minimize",
 this.viewer.stopMinimization ();
 var iAtom = this.dragAtomIndex;
 if (dragDone) this.dragAtomIndex = -1;
-var bs = (this.viewer.getMotionFixedAtoms ().cardinality () == 0 ? this.viewer.getAtomBits ((this.viewer.isAtomPDB (iAtom) ? 1087373318 : 1095761934), J.util.BSUtil.newAndSetBit (iAtom)) : J.util.BSUtil.setAll (this.viewer.getAtomCount ()));
-this.viewer.minimize (2147483647, 0, bs, null, 0, false, false, false);
+var bs = (this.viewer.getMotionFixedAtoms ().cardinality () == 0 ? this.viewer.getAtomBits ((this.viewer.isAtomPDB (iAtom) ? 1087373318 : 1095761936), J.util.BSUtil.newAndSetBit (iAtom)) : J.util.BSUtil.setAll (this.viewer.getAtomCount ()));
+this.viewer.minimize (2147483647, 0, bs, null, 0, false, false, false, false);
 }, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "queueAtom", 
 ($fz = function (atomIndex, ptClicked) {
@@ -952,7 +950,7 @@ return n;
 $_M(c$, "setMotion", 
 function (cursor, inMotion) {
 switch (this.viewer.getCursor ()) {
-case 4:
+case 3:
 break;
 default:
 this.viewer.setCursor (cursor);
@@ -962,7 +960,7 @@ if (inMotion) this.viewer.setInMotion (true);
 $_M(c$, "zoomByFactor", 
 function (dz, x, y) {
 if (dz == 0) return;
-this.setMotion (5, true);
+this.setMotion (8, true);
 this.viewer.zoomByFactor (Math.pow (this.mouseWheelFactor, dz), x, y);
 this.viewer.setInMotion (false);
 }, "~N,~N,~N");
@@ -1150,7 +1148,7 @@ var a = this.viewer.getModelSet ().atoms[this.dragAtomIndex];
 if (a.getElementNumber () == 1) {
 this.runScript ("assign atom ({" + this.dragAtomIndex + "}) \"X\"");
 } else {
-var ptNew = J.util.P3.new3 (x, y, a.screenZ);
+var ptNew = JU.P3.new3 (x, y, a.screenZ);
 this.viewer.unTransformPoint (ptNew, ptNew);
 this.runScript ("assign atom ({" + this.dragAtomIndex + "}) \"" + this.pickAtomAssignType + "\" " + J.util.Escape.eP (ptNew));
 }}}this.exitMeasurementMode ();
@@ -1237,6 +1235,10 @@ $_M(c$, "zoomTo",
 this.runScript ("zoomTo (atomindex=" + atomIndex + ")");
 this.viewer.setStatusAtomPicked (atomIndex, null);
 }, $fz.isPrivate = true, $fz), "~N");
+$_V(c$, "keyTyped", 
+function (keyChar, modifiers) {
+return false;
+}, "~N,~N");
 c$.$ActionManager$MotionPoint$ = function () {
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
@@ -1254,7 +1256,7 @@ this.x = b;
 this.y = c;
 this.time = d;
 }, "~N,~N,~N,~N");
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return "[x = " + this.x + " y = " + this.y + " time = " + this.time + " ]";
 });
@@ -1284,10 +1286,6 @@ this.time0 = b;
 for (var c = 0; c < this.nodes.length; c++) this.nodes[c].index = -1;
 
 }, "~N,~N");
-$_M(c$, "getAction", 
-function () {
-return this.action;
-});
 $_M(c$, "add", 
 function (a, b, c, d) {
 this.action = a;
@@ -1345,7 +1343,7 @@ $_M(c$, "getNode",
 function (a) {
 return this.nodes[(a + this.nodes.length + this.nodes.length) % this.nodes.length];
 }, "~N");
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 if (this.nodes.length == 0) return "" + this;
 return J.viewer.binding.Binding.getMouseActionName (this.action, false) + " nPoints = " + this.ptNext + " " + this.nodes[0];

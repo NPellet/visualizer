@@ -9,7 +9,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.adapter.readers.xml.XmlHandler, []);
 });
-Clazz.overrideMethod (c$, "parseXML", 
+$_V(c$, "parseXML", 
 function (xmlReader, saxReaderObj, reader) {
 this.xmlReader = xmlReader;
 var saxReader = saxReaderObj;
@@ -22,13 +22,13 @@ var is =  new org.xml.sax.InputSource (reader);
 is.setSystemId ("foo");
 saxReader.parse (is);
 }, "J.adapter.readers.xml.XmlReader,~O,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "startDocument", 
+$_V(c$, "startDocument", 
 function () {
 });
-Clazz.overrideMethod (c$, "endDocument", 
+$_V(c$, "endDocument", 
 function () {
 });
-Clazz.overrideMethod (c$, "startElement", 
+$_V(c$, "startElement", 
 function (namespaceURI, localName, qName, attributes) {
 this.xmlReader.atts.clear ();
 for (var i = attributes.getLength (); --i >= 0; ) this.xmlReader.atts.put (attributes.getLocalName (i), attributes.getValue (i));
@@ -38,14 +38,14 @@ this.debugContext += " " + localName;
 J.util.Logger.debug (this.debugContext);
 }this.xmlReader.processStartElement (localName);
 }, "~S,~S,~S,org.xml.sax.Attributes");
-Clazz.overrideMethod (c$, "endElement", 
+$_V(c$, "endElement", 
 function (uri, localName, qName) {
 if (J.util.Logger.debugging) {
 J.util.Logger.debug ("");
 this.debugContext = this.debugContext.substring (0, this.debugContext.lastIndexOf (" "));
 }this.xmlReader.processEndElement (localName);
 }, "~S,~S,~S");
-Clazz.overrideMethod (c$, "characters", 
+$_V(c$, "characters", 
 function (ch, start, length) {
 if (this.xmlReader.keepChars) {
 if (this.xmlReader.chars == null) {
@@ -65,15 +65,15 @@ if (J.util.Logger.debugging) {
 J.util.Logger.debug ("Jmol SAX EntityResolver not resolving:\n  publicID: " + publicID + "\n  systemID: " + systemID);
 }return null;
 }, "~S,~S");
-Clazz.overrideMethod (c$, "error", 
+$_V(c$, "error", 
 function (exception) {
 J.util.Logger.error ("SAX ERROR:" + exception.getMessage ());
 }, "org.xml.sax.SAXParseException");
-Clazz.overrideMethod (c$, "fatalError", 
+$_V(c$, "fatalError", 
 function (exception) {
 J.util.Logger.error ("SAX FATAL:" + exception.getMessage ());
 }, "org.xml.sax.SAXParseException");
-Clazz.overrideMethod (c$, "warning", 
+$_V(c$, "warning", 
 function (exception) {
 J.util.Logger.warn ("SAX WARNING:" + exception.getMessage ());
 }, "org.xml.sax.SAXParseException");

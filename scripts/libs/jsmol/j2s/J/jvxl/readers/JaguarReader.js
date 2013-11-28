@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.JaguarReader", ["J.util.Parser", "$.SB"], function () {
+Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.JaguarReader", ["JU.PT", "$.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.extents = null;
 Clazz.instantialize (this, arguments);
@@ -11,20 +11,20 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.JaguarReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
 this.init2VFR (sg, br);
 this.nSurfaces = 1;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "readParameters", 
+$_V(c$, "readParameters", 
 function () {
-this.jvxlFileHeaderBuffer =  new J.util.SB ();
+this.jvxlFileHeaderBuffer =  new JU.SB ();
 this.jvxlFileHeaderBuffer.append ("Jaguar data\n");
 this.jvxlFileHeaderBuffer.append ("\n");
 var atomLine;
 while ((atomLine = this.readLine ()) != null && atomLine.indexOf ("origin=") < 0) {
 }
-var tokens = J.util.Parser.getTokensAt (atomLine, 0);
+var tokens = JU.PT.getTokensAt (atomLine, 0);
 if (tokens.length == 4 && tokens[0].equals ("origin=")) {
 this.volumetricOrigin.set (this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[2]), this.parseFloatStr (tokens[3]));
 J.jvxl.readers.VolumeFileReader.checkAtomLine (this.isXLowToHigh, this.isAngstroms, "0", "0 " + tokens[1] + " " + tokens[2] + " " + tokens[3], this.jvxlFileHeaderBuffer);
@@ -32,7 +32,7 @@ if (!this.isAngstroms) this.volumetricOrigin.scale (0.5291772);
 }this.readExtents (0);
 this.readExtents (1);
 this.readExtents (2);
-tokens = J.util.Parser.getTokens (this.readLine ());
+tokens = JU.PT.getTokens (this.readLine ());
 this.voxelCounts[0] = this.parseIntStr (tokens[1]);
 this.voxelCounts[1] = this.parseIntStr (tokens[2]);
 this.voxelCounts[2] = this.parseIntStr (tokens[3]);
@@ -50,7 +50,7 @@ this.readLine ();
 });
 $_M(c$, "readExtents", 
 ($fz = function (voxelVectorIndex) {
-var tokens = J.util.Parser.getTokens (this.readLine ());
+var tokens = JU.PT.getTokens (this.readLine ());
 this.extents[voxelVectorIndex] = this.parseFloatStr (tokens[voxelVectorIndex + 1]);
 }, $fz.isPrivate = true, $fz), "~N");
 });

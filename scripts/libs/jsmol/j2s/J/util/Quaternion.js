@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (["J.util.P4"], "J.util.Quaternion", ["java.lang.Float", "J.util.AxisAngle4f", "$.Escape", "$.Logger", "$.Matrix3f", "$.P3", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["JU.P4"], "J.util.Quaternion", ["java.lang.Float", "JU.A4", "$.M3", "$.P3", "$.V3", "J.util.Escape", "$.Logger", "$.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.q0 = 0;
 this.q1 = 0;
@@ -23,25 +23,25 @@ function (pt, theta) {
 var q =  new J.util.Quaternion ();
 q.setTA (pt, theta);
 return q;
-}, "J.util.Tuple3f,~N");
+}, "JU.T3,~N");
 c$.newM = $_M(c$, "newM", 
 function (mat) {
 var q =  new J.util.Quaternion ();
 q.setM (mat);
 return q;
-}, "J.util.Matrix3f");
+}, "JU.M3");
 c$.newAA = $_M(c$, "newAA", 
 function (a) {
 var q =  new J.util.Quaternion ();
 q.setAA (a);
 return q;
-}, "J.util.AxisAngle4f");
+}, "JU.A4");
 c$.newP4 = $_M(c$, "newP4", 
 function (pt) {
 var q =  new J.util.Quaternion ();
 q.setP4 (pt);
 return q;
-}, "J.util.P4");
+}, "JU.P4");
 c$.new4 = $_M(c$, "new4", 
 function (q0, q1, q2, q3) {
 var q =  new J.util.Quaternion ();
@@ -74,7 +74,7 @@ return;
 this.q1 = pt.x / factor;
 this.q2 = pt.y / factor;
 this.q3 = pt.z / factor;
-}, $fz.isPrivate = true, $fz), "J.util.P4");
+}, $fz.isPrivate = true, $fz), "JU.P4");
 $_M(c$, "setTA", 
 function (pt, theta) {
 if (pt.x == 0 && pt.y == 0 && pt.z == 0) {
@@ -85,15 +85,15 @@ this.q0 = (Math.cos (theta / 2 * 0.017453292519943295));
 this.q1 = (pt.x * fact);
 this.q2 = (pt.y * fact);
 this.q3 = (pt.z * fact);
-}, "J.util.Tuple3f,~N");
+}, "JU.T3,~N");
 $_M(c$, "setAA", 
 function (a) {
-var aa = J.util.AxisAngle4f.newAA (a);
+var aa = JU.A4.newAA (a);
 if (aa.angle == 0) aa.y = 1;
-var m3 =  new J.util.Matrix3f ();
+var m3 =  new JU.M3 ();
 m3.setAA (aa);
 this.setM (m3);
-}, "J.util.AxisAngle4f");
+}, "JU.A4");
 $_M(c$, "setM", 
 function (mat) {
 this.mat = mat;
@@ -127,7 +127,7 @@ y = (mat.m21 + mat.m12) / z;
 this.q1 = (x * 0.5);
 this.q2 = (y * 0.5);
 this.q3 = (z * 0.5);
-}, "J.util.Matrix3f");
+}, "JU.M3");
 $_M(c$, "setRef", 
 function (qref) {
 if (qref == null) {
@@ -141,31 +141,31 @@ this.q3 *= -1;
 }, "J.util.Quaternion");
 c$.getQuaternionFrame = $_M(c$, "getQuaternionFrame", 
 function (center, x, xy) {
-var vA = J.util.V3.newV (x);
-var vB = J.util.V3.newV (xy);
+var vA = JU.V3.newV (x);
+var vB = JU.V3.newV (xy);
 if (center != null) {
 vA.sub (center);
 vB.sub (center);
 }return J.util.Quaternion.getQuaternionFrameV (vA, vB, null, false);
-}, "J.util.P3,J.util.Tuple3f,J.util.Tuple3f");
+}, "JU.P3,JU.T3,JU.T3");
 c$.getQuaternionFrameV = $_M(c$, "getQuaternionFrameV", 
 function (vA, vB, vC, yBased) {
 if (vC == null) {
-vC =  new J.util.V3 ();
+vC =  new JU.V3 ();
 vC.cross (vA, vB);
 if (yBased) vA.cross (vB, vC);
-}var vBprime =  new J.util.V3 ();
+}var vBprime =  new JU.V3 ();
 vBprime.cross (vC, vA);
 vA.normalize ();
 vBprime.normalize ();
 vC.normalize ();
-var mat =  new J.util.Matrix3f ();
+var mat =  new JU.M3 ();
 mat.setColumnV (0, vA);
 mat.setColumnV (1, vBprime);
 mat.setColumnV (2, vC);
 var q = J.util.Quaternion.newM (mat);
 return q;
-}, "J.util.V3,J.util.V3,J.util.V3,~B");
+}, "JU.V3,JU.V3,JU.V3,~B");
 $_M(c$, "getMatrix", 
 function () {
 if (this.mat == null) this.setMatrix ();
@@ -173,7 +173,7 @@ return this.mat;
 });
 $_M(c$, "setMatrix", 
 ($fz = function () {
-this.mat =  new J.util.Matrix3f ();
+this.mat =  new JU.M3 ();
 this.mat.m00 = this.q0 * this.q0 + this.q1 * this.q1 - this.q2 * this.q2 - this.q3 * this.q3;
 this.mat.m01 = 2 * this.q1 * this.q2 - 2 * this.q0 * this.q3;
 this.mat.m02 = 2 * this.q1 * this.q3 + 2 * this.q0 * this.q2;
@@ -228,9 +228,9 @@ $_M(c$, "getVectorS",
 ($fz = function (i, scale) {
 if (i == -1) {
 scale *= this.getFixFactor ();
-return J.util.V3.new3 (this.q1 * scale, this.q2 * scale, this.q3 * scale);
+return JU.V3.new3 (this.q1 * scale, this.q2 * scale, this.q3 * scale);
 }if (this.mat == null) this.setMatrix ();
-var v =  new J.util.V3 ();
+var v =  new JU.V3 ();
 this.mat.getColumnV (i, v);
 if (scale != 1) v.scale (scale);
 return v;
@@ -243,8 +243,8 @@ return v;
 });
 c$.getRawNormal = $_M(c$, "getRawNormal", 
 ($fz = function (q) {
-var v = J.util.V3.new3 (q.q1, q.q2, q.q3);
-if (v.length () == 0) return J.util.V3.new3 (0, 0, 1);
+var v = JU.V3.new3 (q.q1, q.q2, q.q3);
+if (v.length () == 0) return JU.V3.new3 (0, 0, 1);
 v.normalize ();
 return v;
 }, $fz.isPrivate = true, $fz), "J.util.Quaternion");
@@ -262,12 +262,12 @@ var v = this.getNormal ();
 if (v.x * v0.x + v.y * v0.y + v.z * v0.z < 0) {
 v.scale (-1);
 }return v;
-}, "J.util.V3");
+}, "JU.V3");
 $_M(c$, "get3dProjection", 
 function (v3d) {
 v3d.set (this.q1, this.q2, this.q3);
 return v3d;
-}, "J.util.V3");
+}, "JU.V3");
 $_M(c$, "getThetaDirected", 
 function (axisAngle) {
 var theta = this.getTheta ();
@@ -277,7 +277,7 @@ v.scale (-1);
 theta = -theta;
 }axisAngle.set (v.x, v.y, v.z, theta);
 return axisAngle;
-}, "J.util.P4");
+}, "JU.P4");
 $_M(c$, "getThetaDirectedV", 
 function (vector) {
 var theta = this.getTheta ();
@@ -286,10 +286,10 @@ if (vector.x * this.q1 + vector.y * this.q2 + vector.z * this.q3 < 0) {
 v.scale (-1);
 theta = -theta;
 }return theta;
-}, "J.util.V3");
+}, "JU.V3");
 $_M(c$, "toPoint4f", 
 function () {
-return J.util.P4.new4 (this.q1, this.q2, this.q3, this.q0);
+return JU.P4.new4 (this.q1, this.q2, this.q3, this.q0);
 });
 $_M(c$, "toAxisAngle4f", 
 function () {
@@ -299,28 +299,28 @@ var v = this.getNormal ();
 if (sinTheta2 < 0) {
 v.scale (-1);
 theta = 3.141592653589793 - theta;
-}return J.util.AxisAngle4f.newVA (v, theta);
+}return JU.A4.newVA (v, theta);
 });
 $_M(c$, "transformPt", 
 function (pt) {
 if (this.mat == null) this.setMatrix ();
-var ptNew = J.util.P3.newP (pt);
+var ptNew = JU.P3.newP (pt);
 this.mat.transform (ptNew);
 return ptNew;
-}, "J.util.P3");
+}, "JU.P3");
 $_M(c$, "transformP2", 
 function (pt, ptNew) {
 if (this.mat == null) this.setMatrix ();
 this.mat.transform2 (pt, ptNew);
 return ptNew;
-}, "J.util.Tuple3f,J.util.Tuple3f");
+}, "JU.T3,JU.T3");
 $_M(c$, "transform", 
 function (v) {
 if (this.mat == null) this.setMatrix ();
-var vNew = J.util.V3.newV (v);
+var vNew = JU.V3.newV (v);
 this.mat.transform (vNew);
 return vNew;
-}, "J.util.V3");
+}, "JU.V3");
 $_M(c$, "leftDifference", 
 function (q2) {
 var q2adjusted = (this.dot (q2) < 0 ? q2.negate () : q2);
@@ -334,15 +334,15 @@ return this.mulQ (q2adjusted.inv ());
 $_M(c$, "getInfo", 
 function () {
 var axis = this.toAxisAngle4f ();
-return J.util.TextFormat.sprintf ("%10.6f%10.6f%10.6f%10.6f  %6.2f  %10.5f %10.5f %10.5f", "F", [[this.q0, this.q1, this.q2, this.q3, (axis.angle * 180 / 3.141592653589793), axis.x, axis.y, axis.z]]);
+return J.util.Txt.sprintf ("%10.6f%10.6f%10.6f%10.6f  %6.2f  %10.5f %10.5f %10.5f", "F", [[this.q0, this.q1, this.q2, this.q3, (axis.angle * 180 / 3.141592653589793), axis.x, axis.y, axis.z]]);
 });
 $_M(c$, "draw", 
 function (prefix, id, ptCenter, scale) {
 var strV = " VECTOR " + J.util.Escape.eP (ptCenter) + " ";
 if (scale == 0) scale = 1;
 return "draw " + prefix + "x" + id + strV + J.util.Escape.eP (this.getVectorS (0, scale)) + " color red\n" + "draw " + prefix + "y" + id + strV + J.util.Escape.eP (this.getVectorS (1, scale)) + " color green\n" + "draw " + prefix + "z" + id + strV + J.util.Escape.eP (this.getVectorS (2, scale)) + " color blue\n";
-}, "~S,~S,J.util.P3,~N");
-Clazz.overrideMethod (c$, "toString", 
+}, "~S,~S,JU.P3,~N");
+$_V(c$, "toString", 
 function () {
 return "{" + this.q1 + " " + this.q2 + " " + this.q3 + " " + this.q0 + "}";
 });
@@ -381,7 +381,7 @@ return qMean;
 }, "~A,~A,~N");
 c$.simpleAverage = $_M(c$, "simpleAverage", 
 ($fz = function (ndata) {
-var mean = J.util.V3.new3 (0, 0, 1);
+var mean = JU.V3.new3 (0, 0, 1);
 var v = ndata[0].getNormal ();
 mean.add (v);
 for (var i = ndata.length; --i >= 0; ) mean.add (ndata[i].getNormalDirected (mean));
@@ -394,11 +394,11 @@ for (var i = ndata.length; --i >= 0; ) f += Math.abs (ndata[i].get3dProjection (
 if (f != 0) mean.scale (f / ndata.length);
 f = Math.sqrt (1 - mean.lengthSquared ());
 if (Float.isNaN (f)) f = 0;
-return J.util.Quaternion.newP4 (J.util.P4.new4 (mean.x, mean.y, mean.z, f));
+return J.util.Quaternion.newP4 (JU.P4.new4 (mean.x, mean.y, mean.z, f));
 }, $fz.isPrivate = true, $fz), "~A");
 c$.newMean = $_M(c$, "newMean", 
 ($fz = function (data, mean) {
-var sum =  new J.util.V3 ();
+var sum =  new JU.V3 ();
 var v;
 var q;
 var dq;
@@ -415,18 +415,13 @@ return dqMean.mulQ (mean);
 }, $fz.isPrivate = true, $fz), "~A,J.util.Quaternion");
 c$.stdDev = $_M(c$, "stdDev", 
 ($fz = function (data, mean) {
-var sum = 0;
 var sum2 = 0;
 var n = data.length;
 for (var i = n; --i >= 0; ) {
-var dq = data[i].div (mean);
-var theta = dq.getTheta ();
-sum += theta;
+var theta = data[i].div (mean).getTheta ();
 sum2 += theta * theta;
 }
-sum2 = sum2 - sum * sum / n;
-if (sum2 < 0) sum2 = 0;
-return Math.sqrt (sum2 / (n - 1));
+return Math.sqrt (sum2 / n);
 }, $fz.isPrivate = true, $fz), "~A,J.util.Quaternion");
 $_M(c$, "getEulerZYZ", 
 function () {
@@ -448,7 +443,7 @@ rB = Math.acos (this.q3 * this.q3 - this.q2 * this.q2 - this.q1 * this.q1 + this
 rG = Math.atan2 (2 * (this.q1 * this.q3 - this.q0 * this.q2), 2 * (this.q2 * this.q3 + this.q0 * this.q1));
 return [(rA / 0.017453292519943295), (rB / 0.017453292519943295), (rG / 0.017453292519943295)];
 });
-c$.qZero = c$.prototype.qZero =  new J.util.P4 ();
+c$.qZero = c$.prototype.qZero =  new JU.P4 ();
 Clazz.defineStatics (c$,
 "RAD_PER_DEG", 0.017453292519943295);
 });

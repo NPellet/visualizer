@@ -51,7 +51,7 @@ function () {
 this.ptLine = this.compiler.lineCurrent;
 this.ptCommand = this.compiler.iCommand + 1;
 });
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return "ident " + this.ident + " line " + this.lineStart + " command " + this.commandStart;
 });

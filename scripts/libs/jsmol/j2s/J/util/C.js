@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (["J.util.Int2IntHash"], "J.util.C", ["java.lang.Float", "J.constant.EnumPalette", "J.util.ArrayUtil", "$.ColorUtil", "$.Escape", "$.Logger", "$.Parser", "$.SB"], function () {
+Clazz.load (["J.util.Int2IntHash"], "J.util.C", ["java.lang.Byte", "$.Float", "JU.AU", "$.CU", "$.PT", "$.SB", "J.constant.EnumPalette", "J.util.Escape", "$.Logger"], function () {
 c$ = Clazz.declareType (J.util, "C");
 Clazz.makeConstructor (c$, 
 function () {
@@ -23,25 +23,25 @@ if (J.util.C.colixMax == J.util.C.argbs.length) {
 var oldSize = J.util.C.colixMax;
 var newSize = oldSize * 2;
 if (newSize > 2048) newSize = 2048;
-($t$ = J.util.C.argbs = J.util.ArrayUtil.arrayCopyI (J.util.C.argbs, newSize), J.util.C.prototype.argbs = J.util.C.argbs, $t$);
-if (J.util.C.argbsGreyscale != null) ($t$ = J.util.C.argbsGreyscale = J.util.ArrayUtil.arrayCopyI (J.util.C.argbsGreyscale, newSize), J.util.C.prototype.argbsGreyscale = J.util.C.argbsGreyscale, $t$);
+J.util.C.argbs = JU.AU.arrayCopyI (J.util.C.argbs, newSize);
+if (J.util.C.argbsGreyscale != null) J.util.C.argbsGreyscale = JU.AU.arrayCopyI (J.util.C.argbsGreyscale, newSize);
 }J.util.C.argbs[J.util.C.colixMax] = argb;
-if (J.util.C.argbsGreyscale != null) J.util.C.argbsGreyscale[J.util.C.colixMax] = J.util.ColorUtil.calcGreyscaleRgbFromRgb (argb);
+if (J.util.C.argbsGreyscale != null) J.util.C.argbsGreyscale[J.util.C.colixMax] = JU.CU.toFFGGGfromRGB (argb);
 J.util.C.colixHash.put (argb, J.util.C.colixMax);
-return (J.util.C.colixMax < 2047 ? ($t$ = J.util.C.colixMax ++, J.util.C.prototype.colixMax = J.util.C.colixMax, $t$) : J.util.C.colixMax);
+return (J.util.C.colixMax < 2047 ? J.util.C.colixMax++ : J.util.C.colixMax);
 }, "~N");
 c$.setLastGrey = $_M(c$, "setLastGrey", 
 function (argb) {
 J.util.C.calcArgbsGreyscale ();
-J.util.C.argbsGreyscale[2047] = J.util.ColorUtil.calcGreyscaleRgbFromRgb (argb);
+J.util.C.argbsGreyscale[2047] = JU.CU.toFFGGGfromRGB (argb);
 }, "~N");
 c$.calcArgbsGreyscale = $_M(c$, "calcArgbsGreyscale", 
 function () {
 if (J.util.C.argbsGreyscale != null) return;
 var a =  Clazz.newIntArray (J.util.C.argbs.length, 0);
-for (var i = J.util.C.argbs.length; --i >= 4; ) a[i] = J.util.ColorUtil.calcGreyscaleRgbFromRgb (J.util.C.argbs[i]);
+for (var i = J.util.C.argbs.length; --i >= 4; ) a[i] = JU.CU.toFFGGGfromRGB (J.util.C.argbs[i]);
 
-($t$ = J.util.C.argbsGreyscale = a, J.util.C.prototype.argbsGreyscale = J.util.C.argbsGreyscale, $t$);
+J.util.C.argbsGreyscale = a;
 });
 c$.getArgbGreyscale = $_M(c$, "getArgbGreyscale", 
 function (colix) {
@@ -141,7 +141,7 @@ return 255;
 }, "~N");
 c$.getColixS = $_M(c$, "getColixS", 
 function (colorName) {
-var argb = J.util.ColorUtil.getArgbFromString (colorName);
+var argb = JU.CU.getArgbFromString (colorName);
 if (argb != 0) return J.util.C.getColix (argb);
 if ("none".equalsIgnoreCase (colorName)) return 0;
 if ("opaque".equalsIgnoreCase (colorName)) return 1;
@@ -150,10 +150,10 @@ return 2;
 c$.getColixArray = $_M(c$, "getColixArray", 
 function (colorNames) {
 if (colorNames == null || colorNames.length == 0) return null;
-var colors = J.util.Parser.getTokens (colorNames);
+var colors = JU.PT.getTokens (colorNames);
 var colixes =  Clazz.newShortArray (colors.length, 0);
 for (var j = 0; j < colors.length; j++) {
-colixes[j] = J.util.C.getColix (J.util.ColorUtil.getArgbFromString (colors[j]));
+colixes[j] = J.util.C.getColix (JU.CU.getArgbFromString (colors[j]));
 if (colixes[j] == 0) return null;
 }
 return colixes;
@@ -165,7 +165,7 @@ return J.util.Escape.escapeColor (J.util.C.getArgb (colix));
 c$.getHexCodes = $_M(c$, "getHexCodes", 
 function (colixes) {
 if (colixes == null) return null;
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 for (var i = 0; i < colixes.length; i++) s.append (i == 0 ? "" : " ").append (J.util.C.getHexCode (colixes[i]));
 
 return s.toString ();
@@ -174,6 +174,10 @@ c$.getColixTranslucent = $_M(c$, "getColixTranslucent",
 function (argb) {
 var a = (argb >> 24) & 0xFF;
 return (a == 0xFF ? J.util.C.getColix (argb) : J.util.C.getColixTranslucent3 (J.util.C.getColix (argb), true, a / 255));
+}, "~N");
+c$.getBgContrast = $_M(c$, "getBgContrast", 
+function (argb) {
+return ((JU.CU.toFFGGGfromRGB (argb) & 0xFF) < 128 ? 8 : 4);
 }, "~N");
 Clazz.defineStatics (c$,
 "INHERIT_ALL", 0,

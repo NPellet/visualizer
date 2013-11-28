@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.minimize.forcefield");
-Clazz.load (null, "J.minimize.forcefield.ForceField", ["java.lang.Float", "$.NullPointerException", "J.minimize.Util", "J.util.Logger", "$.TextFormat", "J.viewer.Viewer"], function () {
+Clazz.load (null, "J.minimize.forcefield.ForceField", ["java.lang.Float", "J.io.JmolBinary", "J.minimize.Util", "J.util.Logger", "$.Txt", "J.viewer.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.name = null;
 this.calc = null;
@@ -18,7 +18,6 @@ this.minTorsions = null;
 this.minPositions = null;
 this.bsFixed = null;
 this.minimizer = null;
-this.base = null;
 Clazz.instantialize (this, arguments);
 }, J.minimize.forcefield, "ForceField");
 $_M(c$, "setModelFields", 
@@ -53,7 +52,7 @@ if (this.calc.loggingEnabled) this.calc.appendLogData (this.calc.getAtomList ("S
 this.dE = 0;
 this.calc.setPreliminary (stepMax > 0);
 this.e0 = this.energyFull (false, false);
-s = J.util.TextFormat.sprintf (" Initial " + this.name + " E = %10.3f " + this.minimizer.units + " criterion = %8.6f max steps = " + stepMax, "ff", [Float.$valueOf (this.toUserUnits (this.e0)), Float.$valueOf (this.toUserUnits (criterion))]);
+s = J.util.Txt.sprintf (" Initial " + this.name + " E = %10.3f " + this.minimizer.units + " criterion = %8.6f max steps = " + stepMax, "ff", [Float.$valueOf (this.toUserUnits (this.e0)), Float.$valueOf (this.toUserUnits (criterion))]);
 this.minimizer.report (s, false);
 this.calc.appendLogData (s);
 }, "~N,~N");
@@ -78,14 +77,14 @@ var e1 = this.energyFull (false, false);
 this.dE = e1 - this.e0;
 var done = J.minimize.Util.isNear3 (e1, this.e0, this.criterion);
 if (done || this.currentStep % 10 == 0 || this.stepMax <= this.currentStep) {
-var s = J.util.TextFormat.sprintf (this.name + " Step %-4d E = %10.6f    dE = %8.6f ", "Fi", [[e1, (this.dE), this.criterion], Integer.$valueOf (this.currentStep)]);
+var s = J.util.Txt.sprintf (this.name + " Step %-4d E = %10.6f    dE = %8.6f ", "Fi", [[e1, (this.dE), this.criterion], Integer.$valueOf (this.currentStep)]);
 this.minimizer.report (s, false);
 this.calc.appendLogData (s);
 }this.e0 = e1;
 if (done || this.stepMax <= this.currentStep) {
 if (this.calc.loggingEnabled) this.calc.appendLogData (this.calc.getAtomList ("F I N A L  G E O M E T R Y"));
 if (done) {
-var s = J.util.TextFormat.formatStringF ("\n    " + this.name + " STEEPEST DESCENT HAS CONVERGED: E = %8.5f " + this.minimizer.units + " after " + this.currentStep + " steps", "f", this.toUserUnits (e1));
+var s = J.util.Txt.formatStringF ("\n    " + this.name + " STEEPEST DESCENT HAS CONVERGED: E = %8.5f " + this.minimizer.units + " after " + this.currentStep + " steps", "f", this.toUserUnits (e1));
 this.calc.appendLogData (s);
 this.minimizer.report (s, true);
 J.util.Logger.info (s);
@@ -129,7 +128,7 @@ function (gradients, isSilent) {
 var energy;
 if (gradients) this.clearForces ();
 energy = this.energyBond (gradients) + this.energyAngle (gradients) + this.energyTorsion (gradients) + this.energyStretchBend (gradients) + this.energyOOP (gradients) + this.energyVDW (gradients) + this.energyES (gradients);
-if (!isSilent && this.calc.loggingEnabled) this.calc.appendLogData (J.util.TextFormat.sprintf ("\nTOTAL %s ENERGY = %8.3f %s/mol\n", "sfs", [this.name, Float.$valueOf (this.toUserUnits (energy)), this.minimizer.units]));
+if (!isSilent && this.calc.loggingEnabled) this.calc.appendLogData (J.util.Txt.sprintf ("\nTOTAL %s ENERGY = %8.3f %s/mol\n", "sfs", [this.name, Float.$valueOf (this.toUserUnits (energy)), this.minimizer.units]));
 return energy;
 }, "~B,~B");
 $_M(c$, "energyStretchBend", 
@@ -162,7 +161,6 @@ return this.calc.energyES (gradients);
 }, "~B");
 $_M(c$, "linearSearch", 
 ($fz = function () {
-var alpha = 0.0;
 var step = 0.23;
 var trustRadius = 0.3;
 var trustRadius2 = trustRadius * trustRadius;
@@ -193,7 +191,6 @@ step *= 0.1;
 this.restoreCoordinates ();
 } else if (e2 < e1) {
 e1 = e2;
-alpha += step;
 step *= 2.15;
 if (step > 1.0) step = 1.0;
 }}
@@ -261,27 +258,9 @@ function (s) {
 this.calc.appendLogData (s);
 }, "~S");
 $_M(c$, "getBufferedReader", 
-function (fileName) {
-var url = null;
-if ((url = this.getResourceUrl (fileName)) == null) {
-System.err.println ("Couldn't find file: " + fileName);
-throw  new NullPointerException ();
-}return this.getResource (url);
+function (resourceName) {
+return J.io.JmolBinary.getBufferedReaderForResource (this.minimizer.viewer, this, "J/minimize/forcefield/", "data/" + resourceName);
 }, "~S");
-$_M(c$, "getResourceUrl", 
-($fz = function (fileName) {
-fileName = "data/" + fileName;
-{
-if (this.base == null)
-this.base = this.minimizer.viewer.viewerOptions.get("codeBase");
-fileName = this.base + "J/minimize/forcefield/" + fileName;
-return new java.net.URL(null, fileName, null);
-}}, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "getResource", 
-function (url) {
-{
-return this.minimizer.viewer.getBufferedReaderOrErrorMessageFromName(url.toString(),[null,null],false);
-}}, "java.net.URL");
 Clazz.defineStatics (c$,
 "ENERGY", (1),
 "EBOND", (2),

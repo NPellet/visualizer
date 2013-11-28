@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["J.modelsetbio.AlphaMonomer"], "J.modelsetbio.AminoMonomer", ["J.constant.EnumStructure", "J.util.AxisAngle4f", "$.Escape", "$.Logger", "$.Matrix3f", "$.P3", "$.Quaternion", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["J.modelsetbio.AlphaMonomer"], "J.modelsetbio.AminoMonomer", ["JU.A4", "$.M3", "$.P3", "$.V3", "J.constant.EnumStructure", "J.util.Escape", "$.Logger", "$.Quaternion", "$.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nhChecked = false;
 this.ptTemp = null;
@@ -30,7 +30,7 @@ $_M(c$, "isAminoMonomer",
 function () {
 return true;
 });
-Clazz.overrideMethod (c$, "getNitrogenAtom", 
+$_V(c$, "getNitrogenAtom", 
 function () {
 return this.getAtomFromOffsetIndex (2);
 });
@@ -38,15 +38,15 @@ $_M(c$, "getCarbonylCarbonAtom",
 function () {
 return this.getAtomFromOffsetIndex (3);
 });
-Clazz.overrideMethod (c$, "getCarbonylOxygenAtom", 
+$_V(c$, "getCarbonylOxygenAtom", 
 function () {
 return this.getWingAtom ();
 });
-Clazz.overrideMethod (c$, "getInitiatorAtom", 
+$_V(c$, "getInitiatorAtom", 
 function () {
 return this.getNitrogenAtom ();
 });
-Clazz.overrideMethod (c$, "getTerminatorAtom", 
+$_V(c$, "getTerminatorAtom", 
 function () {
 return this.getAtomFromOffsetIndex (J.modelsetbio.Monomer.have (this.offsets, 4) ? 4 : 3);
 });
@@ -54,13 +54,13 @@ $_M(c$, "hasOAtom",
 function () {
 return J.modelsetbio.Monomer.have (this.offsets, 1);
 });
-Clazz.overrideMethod (c$, "isConnectedAfter", 
+$_V(c$, "isConnectedAfter", 
 function (possiblyPreviousMonomer) {
 if (possiblyPreviousMonomer == null) return true;
 var other = possiblyPreviousMonomer;
 return other.getCarbonylCarbonAtom ().isBonded (this.getNitrogenAtom ());
 }, "J.modelsetbio.Monomer");
-Clazz.overrideMethod (c$, "findNearestAtomIndex", 
+$_V(c$, "findNearestAtomIndex", 
 function (x, y, closest, madBegin, madEnd) {
 var competitor = closest[0];
 var nitrogen = this.getNitrogenAtom ();
@@ -112,7 +112,7 @@ return true;
 if (jmolHPoint) {
 vNH.sub2 (nitrogenPoint, this.getLeadAtom ());
 vNH.normalize ();
-var v =  new J.util.V3 ();
+var v =  new JU.V3 ();
 v.sub2 (nitrogenPoint, prev.getCarbonylCarbonAtom ());
 v.normalize ();
 vNH.add (v);
@@ -122,11 +122,11 @@ if (oxygen == null) return false;
 vNH.sub2 (prev.getCarbonylCarbonAtom (), oxygen);
 }vNH.normalize ();
 aminoHydrogenPoint.add2 (nitrogenPoint, vNH);
-this.nitrogenHydrogenPoint = J.util.P3.newP (aminoHydrogenPoint);
+this.nitrogenHydrogenPoint = JU.P3.newP (aminoHydrogenPoint);
 if (J.util.Logger.debugging) J.util.Logger.debug ("draw ID \"pta" + this.monomerIndex + "_" + nitrogenPoint.index + "\" " + J.util.Escape.eP (nitrogenPoint) + J.util.Escape.eP (aminoHydrogenPoint) + " # " + nitrogenPoint);
 return true;
-}, "J.util.P3,J.util.V3,~B,~B");
-Clazz.overrideMethod (c$, "getQuaternionFrameCenter", 
+}, "JU.P3,JU.V3,~B,~B");
+$_V(c$, "getQuaternionFrameCenter", 
 function (qType) {
 switch (qType) {
 default:
@@ -143,30 +143,30 @@ return this.getCarbonylCarbonAtom ();
 case 'q':
 if (this.monomerIndex == this.bioPolymer.monomerCount - 1) return null;
 var mNext = (this.bioPolymer.getGroups ()[this.monomerIndex + 1]);
-var pt = J.util.P3.newP (this.getCarbonylCarbonAtom ());
+var pt = JU.P3.newP (this.getCarbonylCarbonAtom ());
 pt.add (mNext.getNitrogenAtom ());
 pt.scale (0.5);
 return pt;
 }
 }, "~S");
-Clazz.overrideMethod (c$, "getQuaternion", 
+$_V(c$, "getQuaternion", 
 function (qType) {
 var ptC = this.getCarbonylCarbonAtom ();
 var ptCa = this.getLeadAtom ();
-var vA =  new J.util.V3 ();
-var vB =  new J.util.V3 ();
+var vA =  new JU.V3 ();
+var vB =  new JU.V3 ();
 var vC = null;
 switch (qType) {
 case 'a':
 case 'n':
 if (this.monomerIndex == 0 || this.groupID == 15) return null;
-vC =  new J.util.V3 ();
-if (this.ptTemp == null) this.ptTemp =  new J.util.P3 ();
+vC =  new JU.V3 ();
+if (this.ptTemp == null) this.ptTemp =  new JU.P3 ();
 this.getNHPoint (this.ptTemp, vC, true, false);
 vB.sub2 (ptCa, this.getNitrogenAtom ());
 vB.cross (vC, vB);
-var mat =  new J.util.Matrix3f ();
-mat.setAA (J.util.AxisAngle4f.newVA (vB, -0.29670596));
+var mat =  new JU.M3 ();
+mat.setAA (JU.A4.newVA (vB, -0.29670596));
 mat.transform (vC);
 vA.cross (vB, vC);
 break;
@@ -193,23 +193,18 @@ return null;
 }
 return J.util.Quaternion.getQuaternionFrameV (vA, vB, vC, false);
 }, "~S");
-Clazz.overrideMethod (c$, "isWithinStructure", 
-function (type) {
-var s = this.getStructure ();
-return (s != null && s.isWithin (this.monomerIndex) && s.type === type);
-}, "J.constant.EnumStructure");
-Clazz.overrideMethod (c$, "getStructureId", 
+$_V(c$, "getStructureId", 
 function () {
 if (this.proteinStructure == null || this.proteinStructure.structureID == null) return "";
 return this.proteinStructure.structureID;
 });
-Clazz.overrideMethod (c$, "getProteinStructureTag", 
+$_V(c$, "getProteinStructureTag", 
 function () {
 if (this.proteinStructure == null || this.proteinStructure.structureID == null) return null;
 var tag = "%3N %3ID";
-tag = J.util.TextFormat.formatStringI (tag, "N", this.proteinStructure.serialID);
-tag = J.util.TextFormat.formatStringS (tag, "ID", this.proteinStructure.structureID);
-if (this.proteinStructure.type === J.constant.EnumStructure.SHEET) tag += J.util.TextFormat.formatStringI ("%2SC", "SC", this.proteinStructure.strandCount);
+tag = J.util.Txt.formatStringI (tag, "N", this.proteinStructure.serialID);
+tag = J.util.Txt.formatStringS (tag, "ID", this.proteinStructure.structureID);
+if (this.proteinStructure.type === J.constant.EnumStructure.SHEET) tag += J.util.Txt.formatStringI ("%2SC", "SC", this.proteinStructure.strandCount);
 return tag;
 });
 Clazz.defineStatics (c$,

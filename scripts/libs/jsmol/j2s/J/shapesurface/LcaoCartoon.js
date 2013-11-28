@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapesurface");
-Clazz.load (["J.shapesurface.Isosurface"], "J.shapesurface.LcaoCartoon", ["java.lang.Float", "J.util.C", "$.Escape", "$.SB", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["J.shapesurface.Isosurface"], "J.shapesurface.LcaoCartoon", ["java.lang.Float", "JU.PT", "$.SB", "$.V3", "J.util.C", "$.Escape", "$.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.thisType = null;
 this.myColorPt = 0;
@@ -9,7 +9,6 @@ this.isMolecular = false;
 this.rotationAxis = null;
 this.lcaoScale = null;
 this.isTranslucent = false;
-this.$translucentLevel = 0;
 this.lcaoColorPos = null;
 this.lcaoColorNeg = null;
 this.isLonePair = false;
@@ -25,7 +24,7 @@ Clazz.superCall (this, J.shapesurface.LcaoCartoon, "initShape", []);
 this.myType = "lcaoCartoon";
 this.allowMesh = false;
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bs) {
 var setInfo = false;
 if ("init" === propertyName) {
@@ -57,7 +56,7 @@ if (this.myColorPt++ == 0) this.lcaoColorNeg = this.lcaoColorPos;
 }if ("select" === propertyName) {
 this.thisSet = value;
 }if ("translucentLevel" === propertyName) {
-this.$translucentLevel = (value).floatValue ();
+this.translucentLevel = (value).floatValue ();
 }if ("settranslucency" === propertyName) {
 this.isTranslucent = ((value).equals ("translucent"));
 return;
@@ -101,13 +100,13 @@ this.getCapSlabInfo (this.fullCommand);
 }this.setPropI (propertyName, value, bs);
 if (setInfo || "lobe" === propertyName || "sphere" === propertyName) {
 this.setScriptInfo (null);
-}}, "~S,~O,J.util.BS");
+}}, "~S,~O,JU.BS");
 $_M(c$, "setLcaoOn", 
 ($fz = function (TF) {
-if (J.util.TextFormat.isWild (this.lcaoID)) {
+if (J.util.Txt.isWild (this.lcaoID)) {
 var key = this.lcaoID.toLowerCase ();
 for (var i = this.meshCount; --i >= 0; ) {
-if (J.util.TextFormat.isMatch (this.meshes[i].thisID.toLowerCase (), key, true, true)) this.meshes[i].visible = TF;
+if (J.util.Txt.isMatch (this.meshes[i].thisID.toLowerCase (), key, true, true)) this.meshes[i].visible = TF;
 }
 return;
 }var atomCount = this.viewer.getAtomCount ();
@@ -122,7 +121,7 @@ for (var i = this.meshCount; --i >= 0; ) if (this.meshes[i].thisID.indexOf (id) 
 }, $fz.isPrivate = true, $fz), "~N,~B");
 $_M(c$, "deleteLcaoCartoon", 
 ($fz = function () {
-if (J.util.TextFormat.isWild (this.lcaoID)) {
+if (J.util.Txt.isWild (this.lcaoID)) {
 this.deleteMeshKey (this.lcaoID);
 return;
 }var atomCount = this.viewer.getAtomCount ();
@@ -162,7 +161,7 @@ this.setPropI ("colorRGB", this.lcaoColorPos, null);
 if (this.cappingObject != null) this.setPropI ("cap", this.cappingObject, null);
 this.setPropI ("lcaoType", this.thisType, null);
 this.setPropI ("atomIndex", Integer.$valueOf (iAtom), null);
-var axes = [ new J.util.V3 (),  new J.util.V3 (), J.util.V3.newV (this.modelSet.atoms[iAtom]),  new J.util.V3 ()];
+var axes = [ new JU.V3 (),  new JU.V3 (), JU.V3.newV (this.modelSet.atoms[iAtom]),  new JU.V3 ()];
 if (this.rotationAxis != null) axes[3].setT (this.rotationAxis);
 if (this.isMolecular) {
 if (this.thisType.indexOf ("px") >= 0) {
@@ -182,19 +181,19 @@ var colix = this.viewer.getModelSet ().getAtomColix (iAtom);
 if (J.util.C.isColixTranslucent (colix)) {
 this.setPropI ("translucentLevel", Float.$valueOf (J.util.C.getColixTranslucencyLevel (colix)), null);
 this.setPropI ("translucency", "translucent", null);
-}} else if (this.isTranslucent) for (var i = this.meshCount; --i >= 0; ) if (this.meshes[i].thisID.indexOf (id) == 0) this.meshes[i].setTranslucent (true, this.$translucentLevel);
+}} else if (this.isTranslucent) for (var i = this.meshCount; --i >= 0; ) if (this.meshes[i].thisID.indexOf (id) == 0) this.meshes[i].setTranslucent (true, this.translucentLevel);
 
 }, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "getID", 
 ($fz = function (id, i) {
-return (id != null ? id : (this.isLonePair || this.isRadical ? "lp_" : "lcao_") + (i + 1) + "_") + (this.thisType == null ? "" : J.util.TextFormat.simpleReplace (this.thisType, "-", (this.thisType.indexOf ("-p") == 0 ? "" : "_")));
+return (id != null ? id : (this.isLonePair || this.isRadical ? "lp_" : "lcao_") + (i + 1) + "_") + (this.thisType == null ? "" : JU.PT.simpleReplace (this.thisType, "-", (this.thisType.indexOf ("-p") == 0 ? "" : "_")));
 }, $fz.isPrivate = true, $fz), "~S,~N");
 $_M(c$, "getShapeState", 
 function () {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 if (this.lcaoScale != null) J.shape.Shape.appendCmd (sb, "lcaoCartoon scale " + this.lcaoScale.floatValue ());
 if (this.lcaoColorNeg != null) J.shape.Shape.appendCmd (sb, "lcaoCartoon color " + J.util.Escape.escapeColor (this.lcaoColorNeg.intValue ()) + " " + J.util.Escape.escapeColor (this.lcaoColorPos.intValue ()));
-if (this.isTranslucent) J.shape.Shape.appendCmd (sb, "lcaoCartoon translucent " + this.$translucentLevel);
+if (this.isTranslucent) J.shape.Shape.appendCmd (sb, "lcaoCartoon translucent " + this.translucentLevel);
 for (var i = this.meshCount; --i >= 0; ) if (!this.meshes[i].visible) J.shape.Shape.appendCmd (sb, "lcaoCartoon ID " + this.meshes[i].thisID + " off");
 
 return Clazz.superCall (this, J.shapesurface.LcaoCartoon, "getShapeState", []) + sb.toString ();

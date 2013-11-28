@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.SlaterReader", "java.util.Hashtable"], "J.adapter.readers.quantum.DgridReader", ["java.lang.Float", "J.quantum.SlaterData", "J.util.Logger", "$.SB"], function () {
+Clazz.load (["J.adapter.readers.quantum.SlaterReader", "java.util.Hashtable"], "J.adapter.readers.quantum.DgridReader", ["java.lang.Float", "JU.SB", "J.quantum.SlaterData", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.title = null;
 this.htExponents = null;
@@ -9,7 +9,7 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.htExponents =  new java.util.Hashtable ();
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.indexOf (":title") == 0) {
 this.title = this.readLine ().substring (2);
@@ -50,7 +50,7 @@ var code = atomSymbol + xyz;
 if (this.htExponents.get (code) == null) {
 ch = 'a';
 } else {
-code += "_" + (ch = String.fromCharCode (($c$ = ch).charCodeAt (0) + 1), $c$);
+code += "_" + ($c$ = ch, ch = String.fromCharCode (ch.charCodeAt (0) + 1), $c$);
 }var exp = this.line.substring (34);
 this.htExponents.put (code, Float.$valueOf (this.parseFloatStr (exp)));
 }
@@ -63,7 +63,7 @@ while (this.line != null && this.line.indexOf (":") != 0) {
 this.discardLinesUntilContains ("sym: ");
 var symmetry = this.line.substring (4, 10).trim ();
 if (symmetry.indexOf ("_FC") >= 0) break;
-var data =  new J.util.SB ();
+var data =  new JU.SB ();
 data.append (this.line.substring (15));
 while (this.readLine () != null && this.line.length >= 15) data.append (this.line);
 
@@ -88,7 +88,7 @@ this.readLine ();
 while (this.line != null && this.line.length >= 20) {
 var iOrb = this.parseIntRange (this.line, 0, 10);
 var energy = this.parseFloatRange (this.line, 10, 20);
-var cData =  new J.util.SB ();
+var cData =  new JU.SB ();
 cData.append (this.line.substring (20));
 while (this.readLine () != null && this.line.length >= 10) {
 if (this.line.charAt (3) != ' ') break;

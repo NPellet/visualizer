@@ -11,11 +11,11 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.adapter.readers.xml.XmlMolproReader, []);
 });
-Clazz.overrideMethod (c$, "getDOMAttributes", 
+$_V(c$, "getDOMAttributes", 
 function () {
 return this.myAttributes;
 });
-Clazz.overrideMethod (c$, "processStartElement", 
+$_V(c$, "processStartElement", 
 function (localName) {
 if (!this.processing) return;
 this.processStart2 (localName);
@@ -47,7 +47,7 @@ this.keepChars = true;
 this.vibrationNumber = 0;
 return;
 }}, "~S");
-Clazz.overrideMethod (c$, "processEndElement", 
+$_V(c$, "processEndElement", 
 function (localName) {
 if (localName.equalsIgnoreCase ("normalCoordinate")) {
 if (!this.keepChars) return;

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.viewer.binding");
-Clazz.load (["java.util.Hashtable"], "J.viewer.binding.Binding", ["java.lang.Boolean", "java.util.Arrays", "J.api.Interface", "J.util.Escape", "$.JmolList", "$.Logger", "$.SB", "$.TextFormat"], function () {
+Clazz.load (["java.util.Hashtable"], "J.viewer.binding.Binding", ["java.lang.Boolean", "java.util.Arrays", "JU.List", "$.PT", "$.SB", "J.api.Interface", "J.util.Escape", "$.Logger", "$.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.name = null;
 this.bindings = null;
@@ -50,12 +50,11 @@ if (desc.indexOf ("MIDDLE") >= 0) mouseAction = 8;
 if (desc.indexOf ("DOWN") >= 0) mouseAction |= 4096;
  else if (desc.indexOf ("DRAG") >= 0) mouseAction |= 8192;
  else if (desc.indexOf ("UP") >= 0) mouseAction |= 16384;
- else mouseAction |= 32768;
-if (mouseAction != 32) {
-if (desc.indexOf ("DOUBLE") >= 0) mouseAction |= 512;
+ else if (mouseAction != 32) mouseAction |= 32768;
+if (mouseAction != 32 && desc.indexOf ("DOUBLE") >= 0) mouseAction |= 512;
  else if (mouseAction > 0) mouseAction |= 256;
-if (desc.indexOf ("ALT") >= 0) mouseAction |= 8;
-}if (desc.indexOf ("CTRL") >= 0) mouseAction |= 2;
+if (mouseAction != (288) && desc.indexOf ("ALT") >= 0) mouseAction |= 8;
+if (desc.indexOf ("CTRL") >= 0) mouseAction |= 2;
 if (desc.indexOf ("SHIFT") >= 0) mouseAction |= 1;
 return mouseAction;
 }, "~S");
@@ -69,7 +68,7 @@ return (mouseAction & 768) >> 8;
 }, "~N");
 c$.getMouseActionName = $_M(c$, "getMouseActionName", 
 function (mouseAction, addSortCode) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 if (mouseAction == 0) return "";
 var isMiddle = (J.viewer.binding.Binding.includes (mouseAction, 8) && !J.viewer.binding.Binding.includes (mouseAction, 16) && !J.viewer.binding.Binding.includes (mouseAction, 4));
 var code = "      ".toCharArray ();
@@ -190,18 +189,18 @@ return this.bindings.containsKey (mouseAction + "\t");
 }, "~N");
 $_M(c$, "getBindingInfo", 
 function (actionInfo, actionNames, qualifiers) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 var qlow = (qualifiers == null || qualifiers.equalsIgnoreCase ("all") ? null : qualifiers.toLowerCase ());
 var names =  new Array (actionInfo.length);
-var user =  new J.util.JmolList ();
+var user =  new JU.List ();
 for (var obj, $obj = this.bindings.values ().iterator (); $obj.hasNext () && ((obj = $obj.next ()) || true);) {
-if (J.util.Escape.isAI (obj)) {
+if (JU.PT.isAI (obj)) {
 var info = obj;
 var i = info[1];
-if (names[i] == null) names[i] =  new J.util.JmolList ();
+if (names[i] == null) names[i] =  new JU.List ();
 var name = J.viewer.binding.Binding.getMouseActionName (info[0], true);
 if (qlow == null || (actionNames[i] + ";" + actionInfo[i] + ";" + name).toLowerCase ().indexOf (qlow) >= 0) names[i].addLast (name);
-} else if (J.util.Escape.isAS (obj)) {
+} else if (JU.PT.isAS (obj)) {
 var action = (obj)[0];
 var script = (obj)[1];
 if (qlow == null || qlow.indexOf ("user") >= 0 || action.indexOf (qlow) >= 0 || script.indexOf (qlow) >= 0) user.addLast (obj);
@@ -220,7 +219,7 @@ return sb.toString ();
 $_M(c$, "addInfo", 
 ($fz = function (sb, list, name, info) {
 java.util.Arrays.sort (list);
-J.util.TextFormat.lFill (sb, "                      ", name);
+J.util.Txt.leftJustify (sb, "                      ", name);
 sb.append ("\t");
 var sep = "";
 var len = sb.length ();
@@ -231,7 +230,7 @@ sep = ", ";
 len = sb.length () - len;
 if (len < 20) sb.append ("                 ".substring (0, 20 - len));
 sb.append ("\t").append (info).appendC ('\n');
-}, $fz.isPrivate = true, $fz), "J.util.SB,~A,~S,~S");
+}, $fz.isPrivate = true, $fz), "JU.SB,~A,~S,~S");
 c$.includes = $_M(c$, "includes", 
 ($fz = function (mouseAction, mod) {
 return ((mouseAction & mod) == mod);
@@ -260,11 +259,5 @@ Clazz.defineStatics (c$,
 "DRAG", 8192,
 "UP", 16384,
 "CLICK", 32768,
-"MODE_MASK", 61440,
-"MOVED", 0,
-"DRAGGED", 1,
-"CLICKED", 2,
-"WHEELED", 3,
-"PRESSED", 4,
-"RELEASED", 5);
+"MODE_MASK", 61440);
 });

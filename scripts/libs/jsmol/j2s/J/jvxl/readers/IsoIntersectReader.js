@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.AtomDataReader", "J.util.BS"], "J.jvxl.readers.IsoIntersectReader", ["java.lang.Float"], function () {
+Clazz.load (["J.jvxl.readers.AtomDataReader", "JU.BS"], "J.jvxl.readers.IsoIntersectReader", ["java.lang.Float"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.myBsA = null;
 this.myBsB = null;
@@ -11,8 +11,8 @@ this.values = null;
 Clazz.instantialize (this, arguments);
 }, J.jvxl.readers, "IsoIntersectReader", J.jvxl.readers.AtomDataReader);
 Clazz.prepareFields (c$, function () {
-this.myBsA =  new J.util.BS ();
-this.myBsB =  new J.util.BS ();
+this.myBsA =  new JU.BS ();
+this.myBsB =  new JU.BS ();
 this.bsAtomMinMax =  new Array (2);
 this.values =  Clazz.newFloatArray (2, 0);
 });
@@ -20,11 +20,11 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoIntersectReader, []);
 });
-Clazz.overrideMethod (c$, "init", 
+$_V(c$, "init", 
 function (sg) {
 this.initADR (sg);
 }, "J.jvxl.readers.SurfaceGenerator");
-Clazz.overrideMethod (c$, "readVolumeParameters", 
+$_V(c$, "readVolumeParameters", 
 function (isMapData) {
 this.setup (isMapData);
 if (isMapData) return false;
@@ -36,7 +36,7 @@ this.getAtomMinMax (this.myBsA, this.bsAtomMinMax[0] =  new Array (this.nPointsX
 this.getAtomMinMax (this.myBsB, this.bsAtomMinMax[1] =  new Array (this.nPointsX));
 return true;
 }, "~B");
-Clazz.overrideMethod (c$, "setup", 
+$_V(c$, "setup", 
 function (isMapData) {
 this.setup2 ();
 this.params.fullyLit = true;
@@ -50,7 +50,7 @@ this.func = this.params.func;
 }if (this.contactPair == null) {
 var bsA = this.params.intersection[0];
 var bsB = this.params.intersection[1];
-var bsSelected =  new J.util.BS ();
+var bsSelected =  new JU.BS ();
 bsSelected.or (bsA);
 bsSelected.or (bsB);
 this.doUseIterator = true;
@@ -66,7 +66,7 @@ this.margin = 5;
 this.setVolumeData ();
 }this.isProgressive = this.isXLowToHigh = true;
 }, "~B");
-Clazz.overrideMethod (c$, "getPlane", 
+$_V(c$, "getPlane", 
 function (x) {
 if (this.yzCount == 0) {
 this.initPlanes ();
@@ -117,10 +117,10 @@ this.values[1] = vb;
 return this.atomDataServer.evalFunctionFloat (this.func[0], this.func[1], this.values);
 }
 }, $fz.isPrivate = true, $fz), "~N,~N");
-Clazz.overrideMethod (c$, "getValueAtPoint", 
+$_V(c$, "getValueAtPoint", 
 function (pt, getSource) {
 return this.getValueAB (this.getValueAtPoint2 (pt, this.myBsA), this.getValueAtPoint2 (pt, this.myBsB));
-}, "J.util.P3,~B");
+}, "JU.P3,~B");
 $_M(c$, "getValueAtPoint2", 
 ($fz = function (pt, bs) {
 var value = 3.4028235E38;
@@ -129,7 +129,7 @@ var r = pt.distance (this.atomXyz[iAtom]) - this.atomRadius[iAtom];
 if (r < value) value = r;
 }
 return (value == 3.4028235E38 ? NaN : value);
-}, $fz.isPrivate = true, $fz), "J.util.P3,J.util.BS");
+}, $fz.isPrivate = true, $fz), "JU.P3,JU.BS");
 Clazz.defineStatics (c$,
 "TYPE_FUNCTION", 0,
 "TYPE_SUM", 1,

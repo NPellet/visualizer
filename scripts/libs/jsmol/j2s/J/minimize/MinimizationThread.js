@@ -8,13 +8,13 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.minimize.MinimizationThread, []);
 });
-Clazz.overrideMethod (c$, "setManager", 
+$_V(c$, "setManager", 
 function (manager, viewer, options) {
 this.minimizer = manager;
 this.setViewer (viewer, "MinimizationThread");
 return 0;
 }, "~O,J.viewer.Viewer,~O");
-Clazz.overrideMethod (c$, "run1", 
+$_V(c$, "run1", 
 function (mode) {
 while (true) switch (mode) {
 case -1:
@@ -44,7 +44,7 @@ return;
 }
 
 }, "~N");
-Clazz.overrideMethod (c$, "oops", 
+$_V(c$, "oops", 
 function (e) {
 if (this.minimizer.minimizationOn ()) J.util.Logger.error (e.toString ());
 }, "Exception");

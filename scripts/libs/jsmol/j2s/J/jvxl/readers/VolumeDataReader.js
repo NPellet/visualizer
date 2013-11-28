@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.SurfaceReader"], "J.jvxl.readers.VolumeDataReader", ["J.jvxl.data.JvxlCoder", "J.util.ArrayUtil", "$.Logger", "$.SB"], function () {
+Clazz.load (["J.jvxl.readers.SurfaceReader"], "J.jvxl.readers.VolumeDataReader", ["JU.AU", "$.SB", "J.jvxl.data.JvxlCoder", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.dataType = 0;
 this.precalculateVoxelData = false;
@@ -25,16 +25,16 @@ this.allowMapData = true;
 }, "J.jvxl.readers.SurfaceGenerator");
 $_M(c$, "setup", 
 function (isMapData) {
-this.jvxlFileHeaderBuffer =  new J.util.SB ().append ("volume data read from file\n\n");
+this.jvxlFileHeaderBuffer =  new JU.SB ().append ("volume data read from file\n\n");
 J.jvxl.data.JvxlCoder.jvxlCreateHeaderWithoutTitleOrAtoms (this.volumeData, this.jvxlFileHeaderBuffer);
 }, "~B");
-Clazz.overrideMethod (c$, "readVolumeParameters", 
+$_V(c$, "readVolumeParameters", 
 function (isMapData) {
 this.setup (isMapData);
 this.initializeVolumetricData ();
 return true;
 }, "~B");
-Clazz.overrideMethod (c$, "readVolumeData", 
+$_V(c$, "readVolumeData", 
 function (isMapData) {
 try {
 this.readSurfaceData (isMapData);
@@ -56,7 +56,7 @@ this.volumeData.setVoxelDataAsArray (this.voxelData = null);
 return;
 }this.newVoxelDataCube ();
 for (var x = 0; x < this.nPointsX; ++x) {
-var plane = J.util.ArrayUtil.newFloat2 (this.nPointsY);
+var plane = JU.AU.newFloat2 (this.nPointsY);
 this.voxelData[x] = plane;
 var ptyz = 0;
 for (var y = 0; y < this.nPointsY; ++y) {
@@ -146,7 +146,7 @@ if (this.center != null && this.center.x != 3.4028235E38) this.volumetricOrigin.
 if (this.isEccentric) this.eccentricityMatrix.transform (this.volumetricVectors[index]);
 return this.voxelCounts[index];
 }, "~N,~N,~N,~N,~N,~N");
-Clazz.overrideMethod (c$, "readSurfaceData", 
+$_V(c$, "readSurfaceData", 
 function (isMapData) {
 this.readSurfaceDataVDR (isMapData);
 }, "~B");
@@ -167,7 +167,7 @@ for (var i = 0; i < 3; ++i) J.util.Logger.info ("voxel grid vector:" + this.volu
 
 J.util.Logger.info ("Read " + this.nPointsX + " x " + this.nPointsY + " x " + this.nPointsZ + " data points");
 });
-Clazz.overrideMethod (c$, "closeReader", 
+$_V(c$, "closeReader", 
 function () {
 });
 });

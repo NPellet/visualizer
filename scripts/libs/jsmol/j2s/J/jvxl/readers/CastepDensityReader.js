@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.CastepDensityReader", ["java.lang.Character", "J.util.SB"], function () {
+Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.CastepDensityReader", ["java.lang.Character", "JU.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nFilePoints = 0;
 this.nSkip = 0;
@@ -9,15 +9,15 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.CastepDensityReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
 this.init2VFR (sg, br);
 this.canDownsample = this.isProgressive = false;
 this.isAngstroms = true;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "readParameters", 
+$_V(c$, "readParameters", 
 function () {
-this.jvxlFileHeaderBuffer =  new J.util.SB ();
+this.jvxlFileHeaderBuffer =  new JU.SB ();
 while (this.readLine () != null && this.line.indexOf (".") < 0) {
 }
 for (var i = 0; i < 3; ++i) {
@@ -39,11 +39,11 @@ if (this.isAnisotropic) this.setVectorAnisotropy (this.volumetricVectors[i]);
 while (this.readLine ().trim ().length > 0) {
 }
 });
-Clazz.overrideMethod (c$, "gotoData", 
+$_V(c$, "gotoData", 
 function (n, nPoints) {
 this.nSkip = n;
 }, "~N,~N");
-Clazz.overrideMethod (c$, "readSurfaceData", 
+$_V(c$, "readSurfaceData", 
 function (isMapData) {
 this.initializeSurfaceData ();
 this.voxelData =  Clazz.newFloatArray (this.nPointsX, this.nPointsY, this.nPointsZ, 0);

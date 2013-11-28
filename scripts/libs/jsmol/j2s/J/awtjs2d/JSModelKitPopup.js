@@ -5,15 +5,15 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.awtjs2d.JSModelKitPopup, []);
 });
-Clazz.overrideMethod (c$, "jpiInitialize", 
+$_V(c$, "jpiInitialize", 
 function (viewer, menu) {
 this.updateMode = -1;
 var doTranslate = J.i18n.GT.setDoTranslate (true);
 var bundle =  new J.modelkit.ModelKitPopupResourceBundle ();
 this.initialize (viewer, bundle, bundle.getMenuName ());
 J.i18n.GT.setDoTranslate (doTranslate);
-}, "J.viewer.Viewer,~S");
-Clazz.overrideMethod (c$, "checkMenuClick", 
+}, "javajs.api.PlatformViewer,~S");
+$_V(c$, "checkMenuClick", 
 function (source, script) {
 if (script.equals ("clearQ")) {
 for (var o, $o = this.htCheckbox.values ().iterator (); $o.hasNext () && ((o = $o.next ()) || true);) {
@@ -29,7 +29,7 @@ this.viewer.evalStringQuiet ("set picking assignAtom_C");
 return;
 }this.checkMenuClickGP (source, script);
 }, "~O,~S");
-Clazz.overrideMethod (c$, "menuSetCheckBoxOption", 
+$_V(c$, "menuSetCheckBoxOption", 
 function (item, name, what) {
 var element = J.i18n.GT._ ("Element?");
 {
@@ -38,7 +38,7 @@ element = prompt(element, "");
 this.updateButton (item, element, "assignAtom_" + element + "P!:??");
 return "set picking assignAtom_" + element;
 }, "~O,~S,~S");
-Clazz.overrideMethod (c$, "getImageIcon", 
+$_V(c$, "getImageIcon", 
 function (fileName) {
 return "J/modelkit/images/" + fileName;
 }, "~S");

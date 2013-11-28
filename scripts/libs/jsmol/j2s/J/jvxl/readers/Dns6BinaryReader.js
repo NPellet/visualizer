@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.MapFileReader"], "J.jvxl.readers.Dsn6BinaryReader", ["java.io.ByteArrayInputStream", "$.DataInputStream", "J.util.Logger", "$.SB"], function () {
+Clazz.load (["J.jvxl.readers.MapFileReader"], "J.jvxl.readers.Dsn6BinaryReader", ["java.io.ByteArrayInputStream", "$.DataInputStream", "JU.SB", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.byteFactor = 0;
 this.xyCount = 0;
@@ -16,7 +16,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.Dsn6BinaryReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, brNull) {
 this.init2MFR (sg, this.br);
 this.binarydoc = this.newBinaryDocument ();
@@ -28,7 +28,7 @@ if (data == null) this.binarydoc.setStream (sg.getAtomDataServer ().getBufferedI
 if (this.params.thePlane == null) this.params.insideOut = !this.params.insideOut;
 this.nSurfaces = 1;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "readParameters", 
+$_V(c$, "readParameters", 
 function () {
 var header =  Clazz.newShortArray (19, 0);
 for (var i = 0; i < 19; i++) header[i] = this.binarydoc.readShort ();
@@ -86,7 +86,7 @@ this.nBrickY = Clazz.doubleToInt ((this.ny + 7) / 8);
 this.brickRowByteCount = this.nBrickX * 512;
 this.brickLayerByteCount = this.brickRowByteCount * this.nBrickY;
 this.brickLayer =  Clazz.newByteArray (this.brickLayerByteCount, 0);
-this.jvxlFileHeaderBuffer =  new J.util.SB ();
+this.jvxlFileHeaderBuffer =  new JU.SB ();
 this.jvxlFileHeaderBuffer.append ("DNS6/O progressive brick data reader\n");
 this.jvxlFileHeaderBuffer.append ("see http://www.uoxray.uoregon.edu/tnt/manual/node104.html\n");
 });
@@ -112,12 +112,12 @@ if (bPt % 2 == 0) bPt++;
 var value = (this.brickLayer[bPt] + 256) % 256;
 return this.dmin + value * this.byteFactor;
 }, $fz.isPrivate = true, $fz), "~N");
-Clazz.overrideMethod (c$, "nextVoxel", 
+$_V(c$, "nextVoxel", 
 function () {
 if ((this.pt % this.brickLayerVoxelCount) == 0) this.readBrickLayer ();
 return this.getBrickValue (this.pt++);
 });
-Clazz.overrideMethod (c$, "skipData", 
+$_V(c$, "skipData", 
 function (nPoints) {
 for (var i = 0; i < nPoints; i++) this.binarydoc.readByte ();
 

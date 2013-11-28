@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.smiles");
-Clazz.load (null, "J.smiles.SmilesAromatic", ["J.util.BS", "$.V3"], function () {
+Clazz.load (null, "J.smiles.SmilesAromatic", ["JU.BS", "$.V3"], function () {
 c$ = Clazz.declareType (J.smiles, "SmilesAromatic");
 c$.isFlatSp2Ring = $_M(c$, "isFlatSp2Ring", 
 function (atoms, bsSelected, bs, cutoff) {
@@ -11,9 +11,9 @@ if (bonds.length > 3) return false;
 }
 if (cutoff == 3.4028235E38) return true;
 if (cutoff <= 0) cutoff = 0.01;
-var vTemp =  new J.util.V3 ();
-var vA =  new J.util.V3 ();
-var vB =  new J.util.V3 ();
+var vTemp =  new JU.V3 ();
+var vA =  new JU.V3 ();
+var vB =  new JU.V3 ();
 var vMean = null;
 var nPoints = bs.cardinality ();
 var vNorms =  new Array (nPoints * 2);
@@ -33,17 +33,17 @@ if (!bs.get (iAtom)) iSub = iAtom;
  else r2 = iAtom;
 }
 J.smiles.SmilesAromatic.getNormalThroughPoints (atoms[r1], atoms[i], atoms[r2], vTemp, vA, vB);
-if (vMean == null) vMean =  new J.util.V3 ();
+if (vMean == null) vMean =  new JU.V3 ();
 if (!J.smiles.SmilesAromatic.addNormal (vTemp, vMean, maxDev)) return false;
-vNorms[nNorms++] = J.util.V3.newV (vTemp);
+vNorms[nNorms++] = JU.V3.newV (vTemp);
 if (iSub >= 0) {
 J.smiles.SmilesAromatic.getNormalThroughPoints (atoms[r1], atoms[iSub], atoms[r2], vTemp, vA, vB);
 if (!J.smiles.SmilesAromatic.addNormal (vTemp, vMean, maxDev)) return false;
-vNorms[nNorms++] = J.util.V3.newV (vTemp);
+vNorms[nNorms++] = JU.V3.newV (vTemp);
 }}
 var isFlat = J.smiles.SmilesAromatic.checkStandardDeviation (vNorms, vMean, nNorms, cutoff);
 return isFlat;
-}, "~A,J.util.BS,J.util.BS,~N");
+}, "~A,JU.BS,JU.BS,~N");
 c$.addNormal = $_M(c$, "addNormal", 
 ($fz = function (vTemp, vMean, maxDev) {
 var similarity = vMean.dot (vTemp);
@@ -52,7 +52,7 @@ if (similarity < 0) vTemp.scale (-1);
 vMean.add (vTemp);
 vMean.normalize ();
 return true;
-}, $fz.isPrivate = true, $fz), "J.util.V3,J.util.V3,~N");
+}, $fz.isPrivate = true, $fz), "JU.V3,JU.V3,~N");
 c$.checkStandardDeviation = $_M(c$, "checkStandardDeviation", 
 ($fz = function (vNorms, vMean, n, cutoff) {
 var sum = 0;
@@ -64,7 +64,7 @@ sum2 += (v) * v;
 }
 sum = Math.sqrt ((sum2 - sum * sum / n) / (n - 1));
 return (sum < cutoff);
-}, $fz.isPrivate = true, $fz), "~A,J.util.V3,~N,~N");
+}, $fz.isPrivate = true, $fz), "~A,JU.V3,~N,~N");
 c$.getNormalThroughPoints = $_M(c$, "getNormalThroughPoints", 
 function (pointA, pointB, pointC, vNorm, vAB, vAC) {
 vAB.sub2 (pointB, pointA);
@@ -73,10 +73,10 @@ vNorm.cross (vAB, vAC);
 vNorm.normalize ();
 vAB.setT (pointA);
 return -vAB.dot (vNorm);
-}, "J.util.JmolNode,J.util.JmolNode,J.util.JmolNode,J.util.V3,J.util.V3,J.util.V3");
+}, "J.util.JmolNode,J.util.JmolNode,J.util.JmolNode,JU.V3,JU.V3,JU.V3");
 c$.checkAromaticDefined = $_M(c$, "checkAromaticDefined", 
 function (jmolAtoms, bsAtoms) {
-var bsDefined =  new J.util.BS ();
+var bsDefined =  new JU.BS ();
 for (var i = bsAtoms.nextSetBit (0); i >= 0; i = bsAtoms.nextSetBit (i + 1)) {
 var bonds = jmolAtoms[i].getEdges ();
 for (var j = 0; j < bonds.length; j++) {
@@ -90,11 +90,11 @@ bsDefined.set (bonds[j].getAtomIndex2 ());
 }
 }
 return bsDefined;
-}, "~A,J.util.BS");
+}, "~A,JU.BS");
 c$.checkAromaticStrict = $_M(c$, "checkAromaticStrict", 
 function (jmolAtoms, bsAromatic, v5, v6) {
-var bsStrict =  new J.util.BS ();
-var bsTest =  new J.util.BS ();
+var bsStrict =  new JU.BS ();
+var bsTest =  new JU.BS ();
 for (var i = v5.size (); --i >= 0; ) {
 var bs = v5.get (i);
 if (J.smiles.SmilesAromatic.isAromaticRing (bsAromatic, bsTest, bs, 5)) J.smiles.SmilesAromatic.checkAromaticStrict2 (jmolAtoms, bsStrict, v5, v6, bs, true);
@@ -105,14 +105,14 @@ if (J.smiles.SmilesAromatic.isAromaticRing (bsAromatic, bsTest, bs, 6)) J.smiles
 }
 bsAromatic.clearAll ();
 bsAromatic.or (bsStrict);
-}, "~A,J.util.BS,J.util.JmolList,J.util.JmolList");
+}, "~A,JU.BS,JU.List,JU.List");
 c$.isAromaticRing = $_M(c$, "isAromaticRing", 
 ($fz = function (bsAromatic, bsTest, bs, n) {
 bsTest.clearAll ();
 bsTest.or (bs);
 bsTest.and (bsAromatic);
 return (bsTest.cardinality () == n);
-}, $fz.isPrivate = true, $fz), "J.util.BS,J.util.BS,J.util.BS,~N");
+}, $fz.isPrivate = true, $fz), "JU.BS,JU.BS,JU.BS,~N");
 c$.checkAromaticStrict2 = $_M(c$, "checkAromaticStrict2", 
 ($fz = function (jmolAtoms, bsStrict, v5, v6, bsRing, is5) {
 var piElectronCount = J.smiles.SmilesAromatic.countInternalPairs (jmolAtoms, bsRing, is5) << 1;
@@ -141,7 +141,7 @@ piElectronCount++;
 break;
 }
 if (piElectronCount == 6) bsStrict.or (bsRing);
-}, $fz.isPrivate = true, $fz), "~A,J.util.BS,J.util.JmolList,J.util.JmolList,J.util.BS,~B");
+}, $fz.isPrivate = true, $fz), "~A,JU.BS,JU.List,JU.List,JU.BS,~B");
 c$.countInternalPairs = $_M(c$, "countInternalPairs", 
 ($fz = function (jmolAtoms, bsRing, is5) {
 var nDouble = 0;
@@ -175,5 +175,5 @@ break;
 }
 }}
 return (nAromatic == 0 ? Clazz.doubleToInt (nDouble / 2) + nLonePairs : nAromatic == (is5 ? 5 : 6) ? -3 : 0);
-}, $fz.isPrivate = true, $fz), "~A,J.util.BS,~B");
+}, $fz.isPrivate = true, $fz), "~A,JU.BS,~B");
 });

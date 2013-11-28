@@ -64,12 +64,12 @@ while (this.read (this.tmpbuf, 0, this.tmpbuf.length) != -1) {
 }
 this.entryEOF = true;
 });
-Clazz.overrideMethod (c$, "available", 
+$_V(c$, "available", 
 function () {
 this.ensureOpen ();
 return (this.entryEOF ? 0 : 1);
 });
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (b, off, len) {
 this.ensureOpen ();
 if (off < 0 || len < 0 || off > b.length - len) {
@@ -107,7 +107,7 @@ default:
 throw  new java.util.zip.ZipException ("invalid compression method");
 }
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "skip", 
+$_V(c$, "skip", 
 function (n) {
 if (n < 0) {
 throw  new IllegalArgumentException ("negative skip length");

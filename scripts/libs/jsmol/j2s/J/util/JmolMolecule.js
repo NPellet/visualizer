@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (["J.util.Elements"], "J.util.JmolMolecule", ["J.util.ArrayUtil", "$.BS", "$.BSUtil"], function () {
+Clazz.load (["J.util.Elements"], "J.util.JmolMolecule", ["JU.AU", "$.BS", "J.util.BSUtil"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nodes = null;
 this.moleculeIndex = 0;
@@ -26,12 +26,12 @@ function () {
 c$.getMolecules = $_M(c$, "getMolecules", 
 function (atoms, bsModelAtoms, biobranches, bsExclude) {
 var bsToTest = null;
-var bsBranch =  new J.util.BS ();
+var bsBranch =  new JU.BS ();
 var thisModelIndex = -1;
 var indexInModel = 0;
 var moleculeCount = 0;
 var molecules =  new Array (4);
-if (bsExclude == null) bsExclude =  new J.util.BS ();
+if (bsExclude == null) bsExclude =  new JU.BS ();
 for (var i = 0; i < atoms.length; i++) if (!bsExclude.get (i) && !bsBranch.get (i)) {
 if (atoms[i].isDeleted ()) {
 bsExclude.set (i);
@@ -46,28 +46,28 @@ if (bsBranch.nextSetBit (0) >= 0) {
 molecules = J.util.JmolMolecule.addMolecule (molecules, moleculeCount++, atoms, i, bsBranch, modelIndex, indexInModel++, bsExclude);
 }}
 return J.util.JmolMolecule.allocateArray (molecules, moleculeCount);
-}, "~A,~A,J.util.JmolList,J.util.BS");
+}, "~A,~A,JU.List,JU.BS");
 c$.getBranchBitSet = $_M(c$, "getBranchBitSet", 
 function (atoms, atomIndex, bsToTest, biobranches, atomIndexNot, allowCyclic, allowBioResidue) {
 var bs = J.util.BSUtil.newBitSet (atoms.length);
 if (atomIndex < 0) return bs;
 if (atomIndexNot >= 0) bsToTest.clear (atomIndexNot);
-return (J.util.JmolMolecule.getCovalentlyConnectedBitSet (atoms, atoms[atomIndex], bsToTest, allowCyclic, allowBioResidue, biobranches, bs) ? bs :  new J.util.BS ());
-}, "~A,~N,J.util.BS,J.util.JmolList,~N,~B,~B");
+return (J.util.JmolMolecule.getCovalentlyConnectedBitSet (atoms, atoms[atomIndex], bsToTest, allowCyclic, allowBioResidue, biobranches, bs) ? bs :  new JU.BS ());
+}, "~A,~N,JU.BS,JU.List,~N,~B,~B");
 c$.addMolecule = $_M(c$, "addMolecule", 
 function (molecules, iMolecule, atoms, iAtom, bsBranch, modelIndex, indexInModel, bsExclude) {
 bsExclude.or (bsBranch);
 if (iMolecule == molecules.length) molecules = J.util.JmolMolecule.allocateArray (molecules, iMolecule * 2 + 1);
 molecules[iMolecule] = J.util.JmolMolecule.initialize (atoms, iMolecule, iAtom, bsBranch, modelIndex, indexInModel);
 return molecules;
-}, "~A,~N,~A,~N,J.util.BS,~N,~N,J.util.BS");
+}, "~A,~N,~A,~N,JU.BS,~N,~N,JU.BS");
 c$.getMolecularFormula = $_M(c$, "getMolecularFormula", 
 function (atoms, bsSelected, includeMissingHydrogens) {
 var m =  new J.util.JmolMolecule ();
 m.nodes = atoms;
 m.atomList = bsSelected;
 return m.getMolecularFormula (includeMissingHydrogens);
-}, "~A,J.util.BS,~B");
+}, "~A,JU.BS,~B");
 $_M(c$, "getMolecularFormula", 
 function (includeMissingHydrogens) {
 if (this.mf != null) return this.mf;
@@ -100,11 +100,11 @@ jm.moleculeIndex = moleculeIndex;
 jm.modelIndex = modelIndex;
 jm.indexInModel = indexInModel;
 return jm;
-}, $fz.isPrivate = true, $fz), "~A,~N,~N,J.util.BS,~N,~N");
+}, $fz.isPrivate = true, $fz), "~A,~N,~N,JU.BS,~N,~N");
 $_M(c$, "getElementAndAtomCount", 
 ($fz = function (includeMissingHydrogens) {
 if (this.atomList == null) {
-this.atomList =  new J.util.BS ();
+this.atomList =  new JU.BS ();
 this.atomList.setBits (0, this.nodes.length);
 }this.elementCounts =  Clazz.newIntArray (J.util.Elements.elementNumberMax, 0);
 this.altElementCounts =  Clazz.newIntArray (J.util.Elements.altElementMax, 0);
@@ -155,9 +155,9 @@ var bond = bonds[i];
 if (bond.isCovalent () && !J.util.JmolMolecule.getCovalentlyConnectedBitSet (atoms, bond.getOtherAtomNode (atom), bsToTest, allowCyclic, allowBioResidue, biobranches, bsResult)) return false;
 }
 return true;
-}, $fz.isPrivate = true, $fz), "~A,J.util.JmolNode,J.util.BS,~B,~B,J.util.JmolList,J.util.BS");
+}, $fz.isPrivate = true, $fz), "~A,J.util.JmolNode,JU.BS,~B,~B,JU.List,JU.BS");
 c$.allocateArray = $_M(c$, "allocateArray", 
 ($fz = function (molecules, len) {
-return (len == molecules.length ? molecules : J.util.ArrayUtil.arrayCopyObject (molecules, len));
+return (len == molecules.length ? molecules : JU.AU.arrayCopyObject (molecules, len));
 }, $fz.isPrivate = true, $fz), "~A,~N");
 });

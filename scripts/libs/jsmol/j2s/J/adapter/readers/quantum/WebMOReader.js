@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader"], "J.adapter.readers.quantum.WebMOReader", ["java.lang.Boolean", "$.Exception", "$.Float", "java.util.Hashtable", "J.adapter.smarter.Bond", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.JmolList", "$.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader"], "J.adapter.readers.quantum.WebMOReader", ["java.lang.Boolean", "$.Exception", "$.Float", "java.util.Hashtable", "JU.AU", "$.List", "J.adapter.smarter.Bond", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.declareType (J.adapter.readers.quantum, "WebMOReader", J.adapter.readers.quantum.MopacSlaterReader);
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.equals ("[HEADER]")) {
 this.readHeader ();
@@ -28,7 +28,7 @@ this.readMolecularOrbital ();
 return false;
 }return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 this.finalizeReaderASCR ();
 if (this.nOrbitals > 0) this.setMOs ("eV");
@@ -106,8 +106,8 @@ return (this.readLine () != null && (this.line.length == 0 || this.line.charAt (
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readGaussianBasis", 
 function () {
-var sdata =  new J.util.JmolList ();
-var gdata =  new J.util.JmolList ();
+var sdata =  new JU.List ();
+var gdata =  new JU.List ();
 var atomIndex = 0;
 var gaussianPtr = 0;
 while (this.getLine ()) {
@@ -134,7 +134,7 @@ gaussianPtr++;
 }
 sdata.addLast (slater);
 }
-var garray = J.util.ArrayUtil.newFloat2 (gaussianPtr);
+var garray = JU.AU.newFloat2 (gaussianPtr);
 for (var i = 0; i < gaussianPtr; i++) {
 garray[i] = gdata.get (i);
 }
@@ -162,7 +162,7 @@ while (this.getLine ()) {
 }
 return;
 }var mo =  new java.util.Hashtable ();
-var data =  new J.util.JmolList ();
+var data =  new JU.List ();
 var energy = this.parseFloatStr (this.readLine ());
 var occupancy = this.parseFloatStr (this.readLine ());
 while (this.getLine ()) {

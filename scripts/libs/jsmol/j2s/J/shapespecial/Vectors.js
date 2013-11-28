@@ -6,12 +6,12 @@ function () {
 if (!(this.isActive = this.modelSet.modelSetHasVibrationVectors ())) return;
 Clazz.superCall (this, J.shapespecial.Vectors, "initModelSet", []);
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bsSelected) {
 if (!this.isActive) return;
 this.setPropAS (propertyName, value, bsSelected);
-}, "~S,~O,J.util.BS");
-Clazz.overrideMethod (c$, "getProperty", 
+}, "~S,~O,JU.BS");
+$_V(c$, "getProperty", 
 function (propertyName, param) {
 if (propertyName === "mad") return Integer.$valueOf (this.mads == null || param < 0 || this.mads.length <= param ? 0 : this.mads[param]);
 return null;

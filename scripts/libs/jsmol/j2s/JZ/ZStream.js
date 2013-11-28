@@ -36,8 +36,7 @@ function () {
 var len = this.dstate.pending;
 if (len > this.avail_out) len = this.avail_out;
 if (len == 0) return;
-if (this.dstate.pending_buf.length <= this.dstate.pending_out || this.next_out.length <= this.next_out_index || this.dstate.pending_buf.length < (this.dstate.pending_out + len) || this.next_out.length < (this.next_out_index + len)) {
-}System.arraycopy (this.dstate.pending_buf, this.dstate.pending_out, this.next_out, this.next_out_index, len);
+System.arraycopy (this.dstate.pending_buf, this.dstate.pending_out, this.next_out, this.next_out_index, len);
 this.next_out_index += len;
 this.dstate.pending_out += len;
 this.total_out += len;

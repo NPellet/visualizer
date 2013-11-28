@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.constant");
-Clazz.load (["java.lang.Enum"], "J.constant.EnumQuantumShell", ["J.util.SB"], function () {
+Clazz.load (["java.lang.Enum"], "J.constant.EnumQuantumShell", ["JU.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.tag = null;
 this.tag2 = null;
@@ -76,7 +76,7 @@ return "" + id;
 }, "~N");
 c$.getMOString = $_M(c$, "getMOString", 
 function (lc) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 if (lc.length == 2) return "" + Clazz.floatToInt (lc[0] < 0 ? -lc[1] : lc[1]);
 sb.appendC ('[');
 for (var i = 0; i < lc.length; i += 2) {

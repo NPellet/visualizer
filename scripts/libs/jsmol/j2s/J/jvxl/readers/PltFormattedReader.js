@@ -1,19 +1,19 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.PltFormattedReader", ["J.util.SB", "J.viewer.Viewer"], function () {
+Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.PltFormattedReader", ["JU.SB", "J.viewer.Viewer"], function () {
 c$ = Clazz.declareType (J.jvxl.readers, "PltFormattedReader", J.jvxl.readers.VolumeFileReader);
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.PltFormattedReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
 this.init2VFR (sg, br);
 this.isAngstroms = true;
 this.jvxlData.wasCubic = true;
-this.jvxlFileHeaderBuffer =  new J.util.SB ();
+this.jvxlFileHeaderBuffer =  new JU.SB ();
 this.nSurfaces = 1;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "readParameters", 
+$_V(c$, "readParameters", 
 function () {
 var n1 = this.parseIntStr (this.readLine ());
 var n2 = this.parseInt ();

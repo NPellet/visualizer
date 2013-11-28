@@ -9,7 +9,7 @@ function () {
 Clazz.superConstructor (this, J.adapter.readers.more.BinaryReader, []);
 this.isBinary = true;
 });
-Clazz.overrideMethod (c$, "processBinaryDocument", 
+$_V(c$, "processBinaryDocument", 
 function (doc) {
 this.binaryDoc = doc;
 this.readDocument ();

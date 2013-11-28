@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.AmpacReader", ["J.util.P3"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.AmpacReader", ["JU.P3"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomCount = 0;
 this.freqAtom0 = -1;
@@ -7,7 +7,7 @@ this.partialCharges = null;
 this.atomPositions = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.simple, "AmpacReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.indexOf ("CARTESIAN COORDINATES") >= 0) {
 if (!this.doGetModel (++this.modelNumber, null)) return this.checkLastModel ();
@@ -35,7 +35,7 @@ while (this.readLine () != null) {
 var tokens = this.getTokens ();
 if (tokens.length < 5) break;
 if (haveFreq) {
-this.atomPositions[this.atomCount] = J.util.P3.new3 (this.parseFloatStr (tokens[2]), this.parseFloatStr (tokens[3]), this.parseFloatStr (tokens[4]));
+this.atomPositions[this.atomCount] = JU.P3.new3 (this.parseFloatStr (tokens[2]), this.parseFloatStr (tokens[3]), this.parseFloatStr (tokens[4]));
 } else {
 var symbol = tokens[1];
 var atom = this.atomSetCollection.addNewAtom ();

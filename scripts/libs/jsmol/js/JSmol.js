@@ -25,39 +25,32 @@
 
 ;(function (Jmol) {
 
-	Jmol._getCanvas = function(id, Info, checkOnly, checkWebGL, checkHTML5) {
-		// overrides the function in JmolCore.js
-		var canvas = null;
-		if (checkWebGL && Jmol.featureDetection.supportsWebGL()) {
-			Jmol._Canvas3D.prototype = Jmol._jsSetPrototype(new Jmol._Applet(id,Info, "", true));
-			GLmol.setRefresh(Jmol._Canvas3D.prototype);
-			canvas = new Jmol._Canvas3D(id, Info, null, checkOnly);
-		}
-		if (checkHTML5 && canvas == null) {
-			Jmol._Canvas2D.prototype = Jmol._jsSetPrototype(new Jmol._Applet(id,Info, "", true));
-			canvas = new Jmol._Canvas2D(id, Info, null, checkOnly);
-		}
-		return canvas;
-	};
-
-	Jmol._Canvas2D = function(id, Info, caption, checkOnly){
+	Jmol._Canvas2D = function(id, Info, type, checkOnly){
+    // type: Jmol or JSV
 		this._syncId = ("" + Math.random()).substring(3);
 		this._id = id;
 		this._is2D = true;
     this._isJava = false;
-		this._aaScale = 1; // antialias scaling
-		this._jmolType = "Jmol._Canvas2D (JSmol)";
-		this._platform = "J.awtjs2d.Platform";
+		this._jmolType = "Jmol._Canvas2D (" + type + ")";
+    switch (type) {
+    case "Jmol":
+  		this._platform = "J.awtjs2d.Platform";
+      break;
+    case "JSV":
+      this._isJSV = true;
+      this._isLayered = true;
+  		this._platform = "JSV.awtjs2d.Platform";
+      break;
+    }
 		if (checkOnly)
 			return this;
     window[id] = this;
-		this._createCanvas(id, Info, caption, null);
+		this._createCanvas(id, Info);
     if (!Jmol._document || this._deferApplet)
       return this;
     this._init();
 		return this;
 	};
-
 
 	Jmol._jsSetPrototype = function(proto) {
     proto._init = function() {
@@ -67,7 +60,7 @@
 			  this._showInfo(false);
     };
     
-    proto._createCanvas = function(id, Info, caption, glmol) {
+    proto._createCanvas = function(id, Info, glmol) {
 			Jmol._setObject(this, id, Info);
       if (glmol) {
   			this._GLmol = glmol;
@@ -86,7 +79,7 @@
 			}
 			t += Jmol._getWrapper(this, false);
       if (Info.addSelectionOptions)
-				t += Jmol._getGrabberOptions(this, caption);
+				t += Jmol._getGrabberOptions(this);
 			if (Jmol._debugAlert && !Jmol._document)
 				alert(t);
 			this._code = Jmol._documentWrite(t);
@@ -123,9 +116,6 @@
         this._getCanvas(false);      
       if (this._defaultModel)
         Jmol._search(this, this._defaultModel);
-      // if (this._readyScript) {
-        // this._script(this._readyScript);
-      // }
       this._showInfo(false);
     };                      
 
@@ -140,8 +130,14 @@
 		  var canvas = document.createElement( 'canvas' );
       var container = Jmol.$(this, "appletdiv");
       if (doReplace) {
+        try {
         container[0].removeChild(this._canvas);
-        Jmol._jsUnsetMouse(this._canvas);
+        if (this._canvas.topLayer)
+          container[0].removeChild(this._canvas.topLayer);
+        if (this._canvas.imageLayer)
+          container[0].removeChild(this._canvas.imageLayer);
+        Jmol._jsUnsetMouse(this._mouseInterface);
+        } catch (e) {}
       }
       var w = Math.round(container.width());
 	  	var h = Math.round(container.height());
@@ -153,7 +149,28 @@
   		canvas.height = h; // w and h used in setScreenDimension
   		canvas.id = this._id + "_canvas2d";
   		container.append(canvas);
-      Jmol._jsSetMouse(canvas);
+      if (this._isLayered){
+        var img = document.createElement("div");
+        canvas.imageLayer = img;
+    		img.id = this._id + "_imagelayer";
+    		container.append(img);
+        $("#" + img.id).css({zIndex:Jmol._z.image,position:"absolute",left:"0px",top:"0px", width:"0px", height:"0px", overflow:"hidden"});
+  		  var canvas2 = document.createElement("canvas");
+    		canvas.topLayer = canvas2;
+    		canvas2.style.width = "100%";
+    		canvas2.style.height = "100%";
+    		canvas2.id = this._id + "_toplayer";
+  		  canvas2.width = w;
+  		  canvas2.height = h; // w and h used in setScreenDimension
+    		container.append(canvas2);
+        canvas2.applet=this;
+        $("#" + canvas2.id).css({background:"(0,0,0,0.001)", zIndex: Jmol._z.top,position:"absolute",left:"0px",top:"0px",overflow:"hidden"});
+        this._mouseInterface = canvas2;
+        img
+      } else {
+        this._mouseInterface = canvas;
+      }
+      Jmol._jsSetMouse(this._mouseInterface);
 		}
 		
 		proto._setupJS = function() {
@@ -170,40 +187,35 @@
 	   		es.push([this, Jmol.__loadClass, "J.exportjs.JSExporter","load JSExporter"])
 				es.push([this, this.__addExportHook, null, "addExportHook"])
 			}			 			
-			if (Jmol.debugCode) {
-        // es.push([this.__checkLoadStatus, null,"checkLoadStatus"])
-        es.push([this, Jmol.__loadClass, "J.appletjs.Jmol", "load Jmol"])
+			if (Jmol._debugCode) {
+        if (this._isJSV) {
+          es.push([this, Jmol.__loadClass, "JSV.appletjs.JSVApplet", "load JSV"])
+         if (this._isPro) {
+            es.push([this, Jmol.__loadClass, "JSV.appletjs.JSVAppletPro", "load JSV(signed)"])
+          }
+        } else {
+          es.push([this, Jmol.__loadClass, "J.appletjs.Jmol", "load Jmol"])
+        }
       }
-			es.push([this, this.__createApplet, null,"createApplet"])
+			es.push([this, this.__startAppletJS, null, "start applet"])
 
 			this._isSigned = true; // access all files via URL hook
 			this._ready = false; 
 			this._applet = null;
 			this._canScript = function(script) {return true;};
 			this._savedOrientations = [];
-			this._syncKeyword = "Select:";
+			//this._syncKeyword = "Select:";
 			Jmol._execLog += ("execStack loaded by " + this._id + " len=" + Jmol._execStack.length + "\n")
 			if (!doStart)return;
 			Jmol.__nextExecution();
 		};
-
-// proto.__checkLoadStatus = function(applet) {
-// return;
-// if (J.appletjs && J.appletjs.Jmol) {
-// Jmol.__nextExecution();
-// return;
-// }
-// // spin wheels until core.z.js is processed
-// setTimeout(applet._id + ".__checkLoadStatus(" + applet._id + ")",100);
-// }
-
 
 		proto.__addExportHook = function(applet) {
 		  GLmol.addExportHook(applet);
 			Jmol.__nextExecution();
 		};
 
-		proto.__createApplet = function(applet) {
+		proto.__startAppletJS = function(applet) {
 			var viewerOptions =  new java.util.Hashtable ();
       Jmol._setJmolParams(viewerOptions, applet.__Info, true);
 			viewerOptions.put("appletReadyCallback","Jmol._readyCallback");
@@ -214,7 +226,12 @@
         viewerOptions.put("bgcolor", applet._color);
       if (!applet._is2D)  
 			  viewerOptions.put("script", "set multipleBondSpacing 0.35;");
+      else if (applet._startupScript)
+        viewerOptions.put("script", applet._startupScript)
 			
+			if (Jmol._syncedApplets.length) {
+		    viewerOptions.put("synccallback", "Jmol._mySyncCallback");
+      }
 			viewerOptions.put("signedApplet", "true");
 			viewerOptions.put("platform", applet._platform);
 			if (applet._is2D)
@@ -222,20 +239,22 @@
   			
 			// viewerOptions.put("repaintManager", "J.render");
 			viewerOptions.put("documentBase", document.location.href);
-			var base = document.location.href.split("?")[0].split("#")[0].split("/")
-			base[base.length - 1] = window["j2s.lib"].base
-			viewerOptions.put ("codeBase", base.join("/"));
+      var codePath = applet._j2sPath + "/";
+      if (codePath.indexOf("://") < 0) {
+        var base = document.location.href.split("#")[0].split("?")[0].split("/");
+        base[base.length - 1] = codePath;
+        codePath = base.join("/");
+      }
+			viewerOptions.put ("codePath", codePath);
       
 			Jmol._registerApplet(applet._id, applet);
-      applet._applet = new J.appletjs.Jmol(viewerOptions);
+      applet._applet = (!applet._isJSV ? new J.appletjs.Jmol(viewerOptions) 
+        : applet._isPro ? new JSV.appletjs.JSVAppletPro(viewerOptions) 
+        : new JSV.appletjs.JSVApplet(viewerOptions));
       
       if (!applet._is2D)
 				applet._GLmol.applet = applet;
-			applet._jsSetScreenDimensions();
-      
-      
-			if(applet.aaScale && applet.aaScale != 1)
-				applet._applet.viewer.actionManager.setMouseDragFactor(applet.aaScale)
+			applet._jsSetScreenDimensions();      
 			Jmol.__nextExecution();
 		};
 		
@@ -257,18 +276,8 @@
 			this._showInfo(false);
 		};
 	
-/*
- * proto._showInfo = function(tf) { Jmol._getElement(this,
- * "infoheaderspan").innerHTML = this._infoHeader; if (this._info)
- * Jmol._getElement(this, "infodiv").innerHTML = this._info; if
- * ((!this._isInfoVisible) == (!tf)) return; this._isInfoVisible = tf; if
- * (this._infoObject) { this._infoObject._showInfo(tf); } else {
- * Jmol._getElement(this, "infotablediv").style.display = (tf ? "block" :
- * "none"); Jmol._getElement(this, "infoheaderdiv").style.display = (tf ?
- * "block" : "none"); } this._show(!tf); }
- */		
 		proto._show = function(tf) {
-			Jmol._getElement(this,"appletdiv").style.display = (tf ? "block" : "none");
+			Jmol.$setVisible(Jmol.$(this,"appletdiv"), tf);
 			if (tf)
 				Jmol._repaint(this, true);
 		};
@@ -337,7 +346,7 @@
     }
     
     proto._processEvent = function(type, xym) {
-			this._applet.viewer.handleOldJvm10Event(type,xym[0],xym[1],xym[2],System.currentTimeMillis());
+			this._applet.viewer.processMouseEvent(type,xym[0],xym[1],xym[2],System.currentTimeMillis());
     }
     
     proto._resize = function() {
@@ -361,7 +370,7 @@
     //
 		
     // alert("_repaint " + arguments.callee.caller.caller.exName)
-		if (!applet._applet)return;
+		if (!applet || !applet._applet)return;
 
 		// asNewThread = false;
 		var container = Jmol.$(applet, "appletdiv");
@@ -374,7 +383,7 @@
 		applet._applet.viewer.setScreenDimension(w, h);
 
 		if (asNewThread) {
-      setTimeout(function(){ applet._applet.viewer.updateJS(0,0)});
+      setTimeout(function(){ applet._applet && applet._applet.viewer.updateJS(0,0)});
   	} else {
   		applet._applet.viewer.updateJS(0,0);
   	}
@@ -429,7 +438,7 @@
 			ClazzLoader.globalLoaded = function (file) {
        // not really.... just nothing more yet to do yet
       	ClassLoaderProgressMonitor.showStatus ("Application loaded.", true);
-  			if (!Jmol.debugCode || !Jmol.haveCore) {
+  			if (!Jmol._debugCode || !Jmol.haveCore) {
   				Jmol.haveCore = true;
     			Jmol.__nextExecution();
     		}
@@ -441,7 +450,7 @@
 			ClazzLoader.packageClasspath (applet._j2sPath); // where the other
 															// files are to be
 															// found
-  		// if (!Jmol.debugCode)
+  		// if (!Jmol._debugCode)
 			  return;
 		}
 		Jmol.__nextExecution();

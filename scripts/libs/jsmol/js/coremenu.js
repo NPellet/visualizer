@@ -1,4 +1,3 @@
-// coremenu.z.js includes  jquery.ui, Jmol.Menu, and (at least) J.popup.GenericPopup 
 
 /*! jQuery UI - v1.9.2 - 2012-12-17
 * http://jqueryui.com
@@ -38,7 +37,7 @@ try{
  (function(e,t){var n=!1;e.widget("ui.menu",{version:"1.9.2",defaultElement:"<ul>",delay:300,options:{icons:{submenu:"ui-icon-carat-1-e"},menus:"ul",position:{my:"left top",at:"right top"},role:"menu",blur:null,focus:null,select:null},_create:function(){this.activeMenu=this.element,this.element.uniqueId().addClass("ui-menu ui-widget ui-widget-content ui-corner-all").toggleClass("ui-menu-icons",!!this.element.find(".ui-icon").length).attr({role:this.options.role,tabIndex:0}).bind("click"+this.eventNamespace,e.proxy(function(e){this.options.disabled&&e.preventDefault()},this)),this.options.disabled&&this.element.addClass("ui-state-disabled").attr("aria-disabled","true"),this._on({"mousedown .ui-menu-item > a":function(e){e.preventDefault()},"click .ui-state-disabled > a":function(e){e.preventDefault()},"click .ui-menu-item:has(a)":function(t){var r=e(t.target).closest(".ui-menu-item");!n&&r.not(".ui-state-disabled").length&&(n=!0,this.select(t),r.has(".ui-menu").length?this.expand(t):this.element.is(":focus")||(this.element.trigger("focus",[!0]),this.active&&this.active.parents(".ui-menu").length===1&&clearTimeout(this.timer)))},"mouseenter .ui-menu-item":function(t){var n=e(t.currentTarget);n.siblings().children(".ui-state-active").removeClass("ui-state-active"),this.focus(t,n)},mouseleave:"collapseAll","mouseleave .ui-menu":"collapseAll",focus:function(e,t){var n=this.active||this.element.children(".ui-menu-item").eq(0);t||this.focus(e,n)},blur:function(t){this._delay(function(){e.contains(this.element[0],this.document[0].activeElement)||this.collapseAll(t)})},keydown:"_keydown"}),this.refresh(),this._on(this.document,{click:function(t){e(t.target).closest(".ui-menu").length||this.collapseAll(t),n=!1}})},_destroy:function(){this.element.removeAttr("aria-activedescendant").find(".ui-menu").andSelf().removeClass("ui-menu ui-widget ui-widget-content ui-corner-all ui-menu-icons").removeAttr("role").removeAttr("tabIndex").removeAttr("aria-labelledby").removeAttr("aria-expanded").removeAttr("aria-hidden").removeAttr("aria-disabled").removeUniqueId().show(),this.element.find(".ui-menu-item").removeClass("ui-menu-item").removeAttr("role").removeAttr("aria-disabled").children("a").removeUniqueId().removeClass("ui-corner-all ui-state-hover").removeAttr("tabIndex").removeAttr("role").removeAttr("aria-haspopup").children().each(function(){var t=e(this);t.data("ui-menu-submenu-carat")&&t.remove()}),this.element.find(".ui-menu-divider").removeClass("ui-menu-divider ui-widget-content")},_keydown:function(t){function a(e){return e.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g,"\\$&")}var n,r,i,s,o,u=!0;switch(t.keyCode){case e.ui.keyCode.PAGE_UP:this.previousPage(t);break;case e.ui.keyCode.PAGE_DOWN:this.nextPage(t);break;case e.ui.keyCode.HOME:this._move("first","first",t);break;case e.ui.keyCode.END:this._move("last","last",t);break;case e.ui.keyCode.UP:this.previous(t);break;case e.ui.keyCode.DOWN:this.next(t);break;case e.ui.keyCode.LEFT:this.collapse(t);break;case e.ui.keyCode.RIGHT:this.active&&!this.active.is(".ui-state-disabled")&&this.expand(t);break;case e.ui.keyCode.ENTER:case e.ui.keyCode.SPACE:this._activate(t);break;case e.ui.keyCode.ESCAPE:this.collapse(t);break;default:u=!1,r=this.previousFilter||"",i=String.fromCharCode(t.keyCode),s=!1,clearTimeout(this.filterTimer),i===r?s=!0:i=r+i,o=new RegExp("^"+a(i),"i"),n=this.activeMenu.children(".ui-menu-item").filter(function(){return o.test(e(this).children("a").text())}),n=s&&n.index(this.active.next())!==-1?this.active.nextAll(".ui-menu-item"):n,n.length||(i=String.fromCharCode(t.keyCode),o=new RegExp("^"+a(i),"i"),n=this.activeMenu.children(".ui-menu-item").filter(function(){return o.test(e(this).children("a").text())})),n.length?(this.focus(t,n),n.length>1?(this.previousFilter=i,this.filterTimer=this._delay(function(){delete this.previousFilter},1e3)):delete this.previousFilter):delete this.previousFilter}u&&t.preventDefault()},_activate:function(e){this.active.is(".ui-state-disabled")||(this.active.children("a[aria-haspopup='true']").length?this.expand(e):this.select(e))},refresh:function(){var t,n=this.options.icons.submenu,r=this.element.find(this.options.menus);r.filter(":not(.ui-menu)").addClass("ui-menu ui-widget ui-widget-content ui-corner-all").hide().attr({role:this.options.role,"aria-hidden":"true","aria-expanded":"false"}).each(function(){var t=e(this),r=t.prev("a"),i=e("<span>").addClass("ui-menu-icon ui-icon "+n).data("ui-menu-submenu-carat",!0);r.attr("aria-haspopup","true").prepend(i),t.attr("aria-labelledby",r.attr("id"))}),t=r.add(this.element),t.children(":not(.ui-menu-item):has(a)").addClass("ui-menu-item").attr("role","presentation").children("a").uniqueId().addClass("ui-corner-all").attr({tabIndex:-1,role:this._itemRole()}),t.children(":not(.ui-menu-item)").each(function(){var t=e(this);/[^\-â€”â€“\s]/.test(t.text())||t.addClass("ui-widget-content ui-menu-divider")}),t.children(".ui-state-disabled").attr("aria-disabled","true"),this.active&&!e.contains(this.element[0],this.active[0])&&this.blur()},_itemRole:function(){return{menu:"menuitem",listbox:"option"}[this.options.role]},focus:function(e,t){var n,r;this.blur(e,e&&e.type==="focus"),this._scrollIntoView(t),this.active=t.first(),r=this.active.children("a").addClass("ui-state-focus"),this.options.role&&this.element.attr("aria-activedescendant",r.attr("id")),this.active.parent().closest(".ui-menu-item").children("a:first").addClass("ui-state-active"),e&&e.type==="keydown"?this._close():this.timer=this._delay(function(){this._close()},this.delay),n=t.children(".ui-menu"),n.length&&/^mouse/.test(e.type)&&this._startOpening(n),this.activeMenu=t.parent(),this._trigger("focus",e,{item:t})},_scrollIntoView:function(t){var n,r,i,s,o,u;this._hasScroll()&&(n=parseFloat(e.css(this.activeMenu[0],"borderTopWidth"))||0,r=parseFloat(e.css(this.activeMenu[0],"paddingTop"))||0,i=t.offset().top-this.activeMenu.offset().top-n-r,s=this.activeMenu.scrollTop(),o=this.activeMenu.height(),u=t.height(),i<0?this.activeMenu.scrollTop(s+i):i+u>o&&this.activeMenu.scrollTop(s+i-o+u))},blur:function(e,t){t||clearTimeout(this.timer);if(!this.active)return;this.active.children("a").removeClass("ui-state-focus"),this.active=null,this._trigger("blur",e,{item:this.active})},_startOpening:function(e){clearTimeout(this.timer);if(e.attr("aria-hidden")!=="true")return;this.timer=this._delay(function(){this._close(),this._open(e)},this.delay)},_open:function(t){var n=e.extend({of:this.active},this.options.position);clearTimeout(this.timer),this.element.find(".ui-menu").not(t.parents(".ui-menu")).hide().attr("aria-hidden","true"),t.show().removeAttr("aria-hidden").attr("aria-expanded","true").position(n)},collapseAll:function(t,n){clearTimeout(this.timer),this.timer=this._delay(function(){var r=n?this.element:e(t&&t.target).closest(this.element.find(".ui-menu"));r.length||(r=this.element),this._close(r),this.blur(t),this.activeMenu=r},this.delay)},_close:function(e){e||(e=this.active?this.active.parent():this.element),e.find(".ui-menu").hide().attr("aria-hidden","true").attr("aria-expanded","false").end().find("a.ui-state-active").removeClass("ui-state-active")},collapse:function(e){var t=this.active&&this.active.parent().closest(".ui-menu-item",this.element);t&&t.length&&(this._close(),this.focus(e,t))},expand:function(e){var t=this.active&&this.active.children(".ui-menu ").children(".ui-menu-item").first();t&&t.length&&(this._open(t.parent()),this._delay(function(){this.focus(e,t)}))},next:function(e){this._move("next","first",e)},previous:function(e){this._move("prev","last",e)},isFirstItem:function(){return this.active&&!this.active.prevAll(".ui-menu-item").length},isLastItem:function(){return this.active&&!this.active.nextAll(".ui-menu-item").length},_move:function(e,t,n){var r;this.active&&(e==="first"||e==="last"?r=this.active[e==="first"?"prevAll":"nextAll"](".ui-menu-item").eq(-1):r=this.active[e+"All"](".ui-menu-item").eq(0));if(!r||!r.length||!this.active)r=this.activeMenu.children(".ui-menu-item")[t]();this.focus(n,r)},nextPage:function(t){var n,r,i;if(!this.active){this.next(t);return}if(this.isLastItem())return;this._hasScroll()?(r=this.active.offset().top,i=this.element.height(),this.active.nextAll(".ui-menu-item").each(function(){return n=e(this),n.offset().top-r-i<0}),this.focus(t,n)):this.focus(t,this.activeMenu.children(".ui-menu-item")[this.active?"last":"first"]())},previousPage:function(t){var n,r,i;if(!this.active){this.next(t);return}if(this.isFirstItem())return;this._hasScroll()?(r=this.active.offset().top,i=this.element.height(),this.active.prevAll(".ui-menu-item").each(function(){return n=e(this),n.offset().top-r+i>0}),this.focus(t,n)):this.focus(t,this.activeMenu.children(".ui-menu-item").first())},_hasScroll:function(){return this.element.outerHeight()<this.element.prop("scrollHeight")},select:function(t){this.active=this.active||e(t.target).closest(".ui-menu-item");var n={item:this.active};this.active.has(".ui-menu").length||this.collapseAll(t,!0),this._trigger("select",t,n)}})
  })(jQuery);
 }catch (e) {
-  System.out.println("coremenu failed to load jQuery.ui.menu -- jQuery version conflict?");
+  System.out.println("JSmolMenu failed to load jQuery.ui.menu -- jQuery version conflict?");
 }
 
 /*! jQuery UI - v1.9.2 - 2012-12-17
@@ -47,12 +46,22 @@ try{
 * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Lucida%20Grande%2CLucida%20Sans%2CArial%2Csans-serif&fwDefault=bold&fsDefault=1.1em&cornerRadius=5px&bgColorHeader=5c9ccc&bgTextureHeader=12_gloss_wave.png&bgImgOpacityHeader=55&borderColorHeader=4297d7&fcHeader=ffffff&iconColorHeader=d8e7f3&bgColorContent=fcfdfd&bgTextureContent=06_inset_hard.png&bgImgOpacityContent=100&borderColorContent=a6c9e2&fcContent=222222&iconColorContent=469bdd&bgColorDefault=dfeffc&bgTextureDefault=03_highlight_soft.png&bgImgOpacityDefault=85&borderColorDefault=c5dbec&fcDefault=2e6e9e&iconColorDefault=6da8d5&bgColorHover=d0e5f5&bgTextureHover=03_highlight_soft.png&bgImgOpacityHover=75&borderColorHover=79b7e7&fcHover=1d5987&iconColorHover=217bc0&bgColorActive=f5f8f9&bgTextureActive=06_inset_hard.png&bgImgOpacityActive=100&borderColorActive=79b7e7&fcActive=e17009&iconColorActive=f9bd01&bgColorHighlight=fbec88&bgTextureHighlight=01_flat.png&bgImgOpacityHighlight=55&borderColorHighlight=fad42e&fcHighlight=363636&iconColorHighlight=2e83ff&bgColorError=fef1ec&bgTextureError=02_glass.png&bgImgOpacityError=95&borderColorError=cd0a0a&fcError=cd0a0a&iconColorError=cd0a0a&bgColorOverlay=aaaaaa&bgTextureOverlay=01_flat.png&bgImgOpacityOverlay=0&opacityOverlay=30&bgColorShadow=aaaaaa&bgTextureShadow=01_flat.png&bgImgOpacityShadow=0&opacityShadow=30&thicknessShadow=8px&offsetTopShadow=-8px&offsetLeftShadow=-8px&cornerRadiusShadow=8px
 * Copyright (c) 2012 jQuery Foundation and other contributors Licensed MIT */
 
-;(function($){
-	var s = '<style>\
-  .jmolPopupMenu{font-family:Arial,sans-serif;font-size:11px;position:absolute;z-order:10000}\
+
+Jmol.Menu = {
+	_menuCounter: 0
+}
+
+;(function(M) {
+
+M._getID = function(applet, name) {
+	return applet._id + '_' + name + '_' + (++M._menuCounter);
+}
+
+M._style = '\
+  .jmolPopupMenu{font-family:Arial,sans-serif;font-size:11px;position:absolute;z-index:'+Jmol._z.menu+'}\
   .jmolPopupMenu,.jmolPopupMenu .ui-corner-all{border-radius:5px}\
   .jmolPopupMenu,.jmolPopupMenu .ui-widget-content{border:1px solid #a6c9e2;background-color:#fcfdfd;color:#222}\
-  .jmolPopupMenu a{color:#222}\
+  .jmolPopupMenu a{color:#222;font-size:10px;}\
   .jmolPopupMenu input[type="checkbox"]{vertical-align:middle;}\
   .jmolPopupMenu,.jmolPopupMenu .ui-menu{list-style:none;padding:2px;margin:0;display:block;outline:none;box-shadow:1px 1px 5px rgba(50,50,50,0.75)}\
   .jmolPopupMenu .ui-menu{margin-top:-3px;position:absolute}\
@@ -64,7 +73,7 @@ try{
   .jmolPopupMenu .ui-icon{display:block;text-indent:-99999px;overflow:hidden;background-repeat:no-repeat;position:absolute;top:.2em;left:.2em}\
   .jmolPopupMenu .ui-menu-icon{position:static;float:right}\
   .jmolPopupMenu .ui-icon-carat-1-e{min-width:2ex;text-align:right;background-image:none;background-position:0 0}\
-  .jmolPopupMenu .ui-icon-carat-1-e:after{content:">"}\
+  .jmolPopupMenu .ui-icon-carat-1-e:after{content:"\\25B8"}\
   .jmolPopupMenu .ui-state-default{border:1px solid #c5dbec;background:#dfeffc;color:#2e6e9e}\
   .jmolPopupMenu .ui-state-default a{color:#2e6e9e;text-decoration:none}\
   .jmolPopupMenu .ui-state-hover,.jmolPopupMenu .ui-state-focus{border:1px solid #79b7e7;background:#d0e5f5;color:#1d5987}\
@@ -75,34 +84,30 @@ try{
   .jmolPopupMenu .ui-state-highlight a{color:#363636}\
   .jmolPopupMenu .ui-state-disabled *{color:#d6d6d6!important;font-weight:normal;cursor:default}\
   .jmolPopupMenu .ui-state-disabled a:hover{background-color:transparent!important;border-color:transparent!important}\
-  .jmolPopupMenu .ui-state-disabled .ui-icon{filter:Alpha(Opacity=35)}\
-	</style>'
-	Jmol.$after("head", s);
-})(jQuery);
-
-Jmol.Menu = {
-	_menuCounter: 0
-}
-
-;(function(M, $) {
-
-M._getID = function(applet, name) {
-	return applet._id + '_' + name + '_' + (++M._menuCounter);
-}
+  .jmolPopupMenu .ui-state-disabled .ui-icon{filter:Alpha(Opacity=35)}';
 
 M.PopupMenu = function(applet, name) {
-	this.applet = applet;
+	M._style && Jmol.$after("head", '<style>'+M._style+'</style>');  
+  M._style = null; // once onl
+  this.applet = applet;
 	this.id = M._getID(applet, name + "_top");
 	this.name = name;
 	this.items = [];
 	this.enabled = true;
-	this.tainted = true;	
+	this.tainted = true;
+  this.applet = applet;	
 
 	applet._popups || (applet._popups = {});
 	applet._popups[name] = this;
 	Jmol.$after("body",'<ul id="' + this.id + '" class="jmolPopupMenu"></ul>');
 	this.setContainer(Jmol.$('#' + this.id));
 }
+
+M.PopupMenu.prototype.dispose = function() {
+  this.hide();
+  delete this.applet._popups[this.name]
+}
+
 
 M.PopupMenu.prototype.hide = function() {
 	if (!this.visible)return;
@@ -236,7 +241,7 @@ M.setItemProto = function(proto){
 		var s = '<li id="ID" class="' + (this.enabled ? '' : 'ui-state-disabled') + '">';
 		if (this.text) { s += '<a>'; }
 		if (this.isCheckBox) {
-			s += '<input ID="ID-cb" type="checkbox" ' + (this.selected ? 'checked' : '') + ' /><label for="ID-cb">TeXt</label>';
+			s += '<input id="ID-cb" type="checkbox" ' + (this.selected ? 'checked' : '') + ' /><label for="ID-cb">TeXt</label>';
 		} else if (this.isRadio) {
 			s += '<input id="ID-rb" type="radio" name="' + this.htmlName + '" ' 
 				+ (this.selected ? 'checked' : '') + ' /><label for="ID-rb">TeXt</label>';
@@ -321,13 +326,12 @@ M.hidePopups = function(a) {
 		a[i].hide();
 }
 
-})(Jmol.Menu, jQuery);
-Clazz.declarePackage ("J.api");
-Clazz.declareInterface (J.api, "JmolPopupInterface");
+})(Jmol.Menu);
+
 Clazz.declarePackage ("J.popup");
 Clazz.declareInterface (J.popup, "JmolAbstractMenu");
 Clazz.declarePackage ("J.popup");
-Clazz.load (["J.api.JmolPopupInterface", "J.popup.JmolAbstractMenu", "java.util.Hashtable", "$.Properties", "J.util.JmolList"], "J.popup.GenericPopup", ["java.lang.Boolean", "$.Long", "java.util.StringTokenizer", "J.i18n.GT", "J.popup.MainPopupResourceBundle", "J.util.Elements", "$.Escape", "$.Logger", "$.Parser", "$.SB", "$.TextFormat", "J.viewer.JC"], function () {
+Clazz.load (["javajs.api.GenericMenuInterface", "J.popup.JmolAbstractMenu", "java.util.Hashtable", "$.Properties", "JU.List"], "J.popup.GenericPopup", ["java.lang.Boolean", "$.Long", "java.util.StringTokenizer", "JU.PT", "$.SB", "J.i18n.GT", "J.popup.MainPopupResourceBundle", "J.util.Elements", "$.Escape", "$.Logger", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.htCheckbox = null;
@@ -369,6 +373,7 @@ this.SignedOnly = null;
 this.AppletOnly = null;
 this.ChargesOnly = null;
 this.TemperatureOnly = null;
+this.Special = null;
 this.allowSignedFeatures = false;
 this.isJS = false;
 this.fileHasUnitCell = false;
@@ -393,40 +398,41 @@ this.group3Counts = null;
 this.cnmrPeaks = null;
 this.hnmrPeaks = null;
 Clazz.instantialize (this, arguments);
-}, J.popup, "GenericPopup", null, [J.api.JmolPopupInterface, J.popup.JmolAbstractMenu]);
+}, J.popup, "GenericPopup", null, [javajs.api.GenericMenuInterface, J.popup.JmolAbstractMenu]);
 Clazz.prepareFields (c$, function () {
 this.htCheckbox =  new java.util.Hashtable ();
 this.menuText =  new java.util.Properties ();
 this.frankList =  new Array (10);
 this.htMenus =  new java.util.Hashtable ();
-this.NotPDB =  new J.util.JmolList ();
-this.PDBOnly =  new J.util.JmolList ();
-this.FileUnitOnly =  new J.util.JmolList ();
-this.FileMolOnly =  new J.util.JmolList ();
-this.UnitcellOnly =  new J.util.JmolList ();
-this.SingleModelOnly =  new J.util.JmolList ();
-this.FramesOnly =  new J.util.JmolList ();
-this.VibrationOnly =  new J.util.JmolList ();
-this.SymmetryOnly =  new J.util.JmolList ();
-this.SignedOnly =  new J.util.JmolList ();
-this.AppletOnly =  new J.util.JmolList ();
-this.ChargesOnly =  new J.util.JmolList ();
-this.TemperatureOnly =  new J.util.JmolList ();
+this.NotPDB =  new JU.List ();
+this.PDBOnly =  new JU.List ();
+this.FileUnitOnly =  new JU.List ();
+this.FileMolOnly =  new JU.List ();
+this.UnitcellOnly =  new JU.List ();
+this.SingleModelOnly =  new JU.List ();
+this.FramesOnly =  new JU.List ();
+this.VibrationOnly =  new JU.List ();
+this.SymmetryOnly =  new JU.List ();
+this.SignedOnly =  new JU.List ();
+this.AppletOnly =  new JU.List ();
+this.ChargesOnly =  new JU.List ();
+this.TemperatureOnly =  new JU.List ();
+this.Special =  new JU.List ();
 });
 Clazz.makeConstructor (c$, 
 function () {
 });
-Clazz.overrideMethod (c$, "jpiDispose", 
+$_V(c$, "jpiDispose", 
 function () {
 this.menuClearListeners (this.popupMenu);
 this.menuClearListeners (this.frankPopup);
 this.popupMenu = this.frankPopup = this.thisPopup = null;
 });
-Clazz.overrideMethod (c$, "jpiGetMenuAsObject", 
+$_V(c$, "jpiGetMenuAsObject", 
 function () {
 return this.popupMenu;
 });
-Clazz.overrideMethod (c$, "jpiGetMenuAsString", 
+$_V(c$, "jpiGetMenuAsString", 
 function (title) {
 this.updateForShow ();
 var pt = title.indexOf ("|");
@@ -434,13 +440,13 @@ if (pt >= 0) {
 var type = title.substring (pt);
 title = title.substring (0, pt);
 if (type.indexOf ("current") >= 0) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 var menu = this.htMenus.get (this.menuName);
 this.menuGetAsText (sb, 0, menu, "PopupMenu");
 return sb.toString ();
 }}return ( new J.popup.MainPopupResourceBundle (this.strMenuStructure, null)).getMenuAsText (title);
 }, "~S");
-Clazz.overrideMethod (c$, "jpiShow", 
+$_V(c$, "jpiShow", 
 function (x, y) {
 if (!this.viewer.haveDisplay) return;
 this.show (x, y, false);
@@ -455,7 +461,7 @@ return;
 }}this.restorePopupMenu ();
 this.menuShowPopup (this.popupMenu, this.thisx, this.thisy);
 }, "~N,~N");
-Clazz.overrideMethod (c$, "jpiUpdateComputedMenus", 
+$_V(c$, "jpiUpdateComputedMenus", 
 function () {
 if (this.updateMode == -1) return;
 this.updateMode = 0;
@@ -511,7 +517,7 @@ if (label == null) {
 sb.append (".\n");
 return;
 }sb.append ("\t").append (label).append ("\t").append (script == null || script.length == 0 ? "-" : script).append ("\t").append (flags).append ("\n");
-}, "J.util.SB,~S,~N,~S,~S,~S,~S");
+}, "JU.SB,~S,~N,~S,~S,~S,~S");
 $_M(c$, "fixScript", 
 function (id, script) {
 var pt;
@@ -523,13 +529,13 @@ id = id.substring (pt + 1);
 if ((pt = id.indexOf ("]")) >= 0) id = id.substring (0, pt);
 id = id.$replace ('_', ' ');
 if (script.indexOf ("[]") < 0) script = "[] " + script;
-return J.util.TextFormat.simpleReplace (script, "[]", id);
+return JU.PT.simpleReplace (script, "[]", id);
 } else if (script.indexOf ("?FILEROOT?") >= 0) {
-script = J.util.TextFormat.simpleReplace (script, "FILEROOT?", this.modelSetRoot);
+script = JU.PT.simpleReplace (script, "FILEROOT?", this.modelSetRoot);
 } else if (script.indexOf ("?FILE?") >= 0) {
-script = J.util.TextFormat.simpleReplace (script, "FILE?", this.modelSetFileName);
+script = JU.PT.simpleReplace (script, "FILE?", this.modelSetFileName);
 } else if (script.indexOf ("?PdbId?") >= 0) {
-script = J.util.TextFormat.simpleReplace (script, "PdbId?", "=xxxx");
+script = JU.PT.simpleReplace (script, "PdbId?", "=xxxx");
 }return script;
 }, "~S,~S");
 $_M(c$, "initialize", 
@@ -609,31 +615,31 @@ this.hnmrPeaks = this.modelInfo.get ("jdxAtomSelect_1HNMR");
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "updateFileTypeDependentMenus", 
 ($fz = function () {
-for (var i = 0; i < this.NotPDB.size (); i++) this.menuEnable (this.NotPDB.get (i), !this.isPDB);
+for (var i = this.NotPDB.size (); --i >= 0; ) this.menuEnable (this.NotPDB.get (i), !this.isPDB);
 
-for (var i = 0; i < this.PDBOnly.size (); i++) this.menuEnable (this.PDBOnly.get (i), this.isPDB);
+for (var i = this.PDBOnly.size (); --i >= 0; ) this.menuEnable (this.PDBOnly.get (i), this.isPDB);
 
-for (var i = 0; i < this.UnitcellOnly.size (); i++) this.menuEnable (this.UnitcellOnly.get (i), this.isUnitCell);
+for (var i = this.UnitcellOnly.size (); --i >= 0; ) this.menuEnable (this.UnitcellOnly.get (i), this.isUnitCell);
 
-for (var i = 0; i < this.FileUnitOnly.size (); i++) this.menuEnable (this.FileUnitOnly.get (i), this.isUnitCell || this.fileHasUnitCell);
+for (var i = this.FileUnitOnly.size (); --i >= 0; ) this.menuEnable (this.FileUnitOnly.get (i), this.isUnitCell || this.fileHasUnitCell);
 
-for (var i = 0; i < this.FileMolOnly.size (); i++) this.menuEnable (this.FileMolOnly.get (i), this.isUnitCell || this.fileHasUnitCell);
+for (var i = this.FileMolOnly.size (); --i >= 0; ) this.menuEnable (this.FileMolOnly.get (i), this.isUnitCell || this.fileHasUnitCell);
 
-for (var i = 0; i < this.SingleModelOnly.size (); i++) this.menuEnable (this.SingleModelOnly.get (i), this.isLastFrame);
+for (var i = this.SingleModelOnly.size (); --i >= 0; ) this.menuEnable (this.SingleModelOnly.get (i), this.isLastFrame);
 
-for (var i = 0; i < this.FramesOnly.size (); i++) this.menuEnable (this.FramesOnly.get (i), this.isMultiFrame);
+for (var i = this.FramesOnly.size (); --i >= 0; ) this.menuEnable (this.FramesOnly.get (i), this.isMultiFrame);
 
-for (var i = 0; i < this.VibrationOnly.size (); i++) this.menuEnable (this.VibrationOnly.get (i), this.isVibration);
+for (var i = this.VibrationOnly.size (); --i >= 0; ) this.menuEnable (this.VibrationOnly.get (i), this.isVibration);
 
-for (var i = 0; i < this.SymmetryOnly.size (); i++) this.menuEnable (this.SymmetryOnly.get (i), this.isSymmetry && this.isUnitCell);
+for (var i = this.SymmetryOnly.size (); --i >= 0; ) this.menuEnable (this.SymmetryOnly.get (i), this.isSymmetry && this.isUnitCell);
 
-for (var i = 0; i < this.SignedOnly.size (); i++) this.menuEnable (this.SignedOnly.get (i), this.isSigned || !this.isApplet);
+for (var i = this.SignedOnly.size (); --i >= 0; ) this.menuEnable (this.SignedOnly.get (i), this.isSigned || !this.isApplet);
 
-for (var i = 0; i < this.AppletOnly.size (); i++) this.menuEnable (this.AppletOnly.get (i), this.isApplet);
+for (var i = this.AppletOnly.size (); --i >= 0; ) this.menuEnable (this.AppletOnly.get (i), this.isApplet);
 
-for (var i = 0; i < this.ChargesOnly.size (); i++) this.menuEnable (this.ChargesOnly.get (i), this.haveCharges);
+for (var i = this.ChargesOnly.size (); --i >= 0; ) this.menuEnable (this.ChargesOnly.get (i), this.haveCharges);
 
-for (var i = 0; i < this.TemperatureOnly.size (); i++) this.menuEnable (this.TemperatureOnly.get (i), this.haveBFactors);
+for (var i = this.TemperatureOnly.size (); --i >= 0; ) this.menuEnable (this.TemperatureOnly.get (i), this.haveBFactors);
 
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "addMenuItems", 
@@ -713,11 +719,8 @@ this.VibrationOnly.addLast (newMenu);
 } else if (item.indexOf ("SYMMETRY") >= 0) {
 this.SymmetryOnly.addLast (newMenu);
 }if (item.startsWith ("SIGNED")) this.SignedOnly.addLast (newMenu);
-if (false) {
-var str = item.endsWith ("Menu") ? "----" : id + "." + item + "\t" + label + "\t" + this.fixScript (id + "." + item, script);
-str = "addMenuItem('\t" + str + "\t')";
-J.util.Logger.info (str);
-}}
+if (item.indexOf ("SPECIAL") >= 0) this.Special.addLast (newMenu);
+}
 }, $fz.isPrivate = true, $fz), "~S,~S,~O,J.popup.PopupResource");
 $_M(c$, "checkKey", 
 ($fz = function (key) {
@@ -747,10 +750,10 @@ what = "set picking " + basename.substring (0, basename.length - 2);
 }} else {
 what = what.substring (pt + 1);
 if ((pt = what.indexOf ("|")) >= 0) what = (TF ? what.substring (0, pt) : what.substring (pt + 1)).trim ();
-what = J.util.TextFormat.simpleReplace (what, "T/F", (TF ? " TRUE" : " FALSE"));
+what = JU.PT.simpleReplace (what, "T/F", (TF ? " TRUE" : " FALSE"));
 }}this.viewer.evalStringQuiet (what);
 }, $fz.isPrivate = true, $fz), "~O,~S,~B");
-Clazz.overrideMethod (c$, "checkMenuClick", 
+$_V(c$, "checkMenuClick", 
 function (source, script) {
 this.checkMenuClickGP (source, script);
 }, "~O,~S");
@@ -827,7 +830,7 @@ var entryName = elementSymbol + " - " + elementName;
 this.menuCreateItem (menu, entryName, "SELECT " + elementName, null);
 }}
 this.menuEnable (menu, true);
-}, $fz.isPrivate = true, $fz), "J.util.BS");
+}, $fz.isPrivate = true, $fz), "JU.BS");
 $_M(c$, "updateSpectraMenu", 
 ($fz = function () {
 var menuh = this.htMenus.get ("hnmrMenu");
@@ -851,13 +854,13 @@ var n = (peaks == null ? 0 : peaks.size ());
 if (n == 0) return false;
 for (var i = 0; i < n; i++) {
 var peak = peaks.get (i);
-var title = J.util.Parser.getQuotedAttribute (peak, "title");
-var atoms = J.util.Parser.getQuotedAttribute (peak, "atoms");
-if (atoms != null) this.menuCreateItem (menu, title, "select visible & (@" + J.util.TextFormat.simpleReplace (atoms, ",", " or @") + ")", "Focus" + i);
+var title = JU.PT.getQuotedAttribute (peak, "title");
+var atoms = JU.PT.getQuotedAttribute (peak, "atoms");
+if (atoms != null) this.menuCreateItem (menu, title, "select visible & (@" + JU.PT.simpleReplace (atoms, ",", " or @") + ")", "Focus" + i);
 }
 this.menuEnable (menu, true);
 return true;
-}, $fz.isPrivate = true, $fz), "~O,J.util.JmolList");
+}, $fz.isPrivate = true, $fz), "~O,JU.List");
 $_M(c$, "updateHeteroComputedMenu", 
 ($fz = function (htHetero) {
 var menu = this.htMenus.get ("PDBheteroComputedMenu");
@@ -1155,7 +1158,7 @@ var subMenu = this.menuNewSubMenu ("About molecule", "modelSetMenu");
 this.menuAddSubMenu (menu, subMenu);
 this.htMenus.put ("modelSetMenu", subMenu);
 this.updateModelSetComputedMenu ();
-subMenu = this.menuNewSubMenu ("Jmol " + J.viewer.JC.version + (this.isSigned ? " (signed)" : ""), "aboutJmolMenu");
+subMenu = this.menuNewSubMenu ("Jmol " + J.viewer.JC.version + (this.viewer.isWebGL ? " (WebGL)" : this.viewer.isJS ? " (HTML5)" : this.isSigned ? " (signed)" : ""), "aboutJmolMenu");
 this.menuAddSubMenu (menu, subMenu);
 this.htMenus.put ("aboutJmolMenu", subMenu);
 this.addMenuItem (subMenu, J.viewer.JC.date);
@@ -1222,6 +1225,8 @@ this.updateFRAMESbyModelComputedMenu ();
 this.updateSceneComputedMenu ();
 this.updateModelSetComputedMenu ();
 this.updateAboutSubmenu ();
+for (var i = this.Special.size (); --i >= 0; ) this.updateSpecialMenuItem (this.Special.get (i));
+
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "setFrankMenu", 
 ($fz = function (id) {
@@ -1259,8 +1264,17 @@ this.menuSetCheckBoxState (item, b);
 }
 if (doPopup) this.menuShowPopup (this.popupMenu, this.thisx, this.thisy);
 }, $fz.isPrivate = true, $fz), "~N,~N,~B");
+$_M(c$, "getSpecialLabel", 
+function (name, text) {
+var pt = text.indexOf (" (");
+if (pt < 0) pt = text.length;
+var info = null;
+if (name.indexOf ("captureLooping") >= 0) info = (this.viewer.getAnimationReplayMode ().name ().equals ("ONCE") ? "ONCE" : "LOOP");
+ else if (name.indexOf ("captureFps") >= 0) info = "" + this.viewer.getInt (553648132);
+ else if (name.indexOf ("captureMenu") >= 0) info = (this.viewer.captureParams == null ? J.i18n.GT._ ("not capturing") : this.viewer.getFilePath (this.viewer.captureParams.get ("captureFileName"), true) + " " + this.viewer.captureParams.get ("captureCount"));
+return (info == null ? text : text.substring (0, pt) + " (" + info + ")");
+}, "~S,~S");
 Clazz.defineStatics (c$,
-"dumpList", false,
 "UPDATE_NEVER", -1,
 "UPDATE_ALL", 0,
 "UPDATE_CONFIG", 1,
@@ -1295,32 +1309,34 @@ item.setName(id == null ? menu.getName() + "." : id);
 }this.menuAddItem (menu, item);
 return item;
 }, $fz.isPrivate = true, $fz), "~O,~O,~S,~S,~S");
-Clazz.overrideMethod (c$, "menuAddButtonGroup", 
+$_V(c$, "menuAddButtonGroup", 
 function (newMenu) {
 {
 if (this.buttonGroup == null) this.buttonGroup = new
 Jmol.Menu.ButtonGroup(this.thisPopup);
 this.buttonGroup.add(newMenu);
 }}, "~O");
-Clazz.overrideMethod (c$, "menuAddItem", 
+$_V(c$, "menuAddItem", 
 function (menu, item) {
 {
 menu.add(item); this.thisPopup.tainted = true;
 }}, "~O,~O");
-Clazz.overrideMethod (c$, "menuAddSeparator", 
+$_V(c$, "menuAddSeparator", 
 function (menu) {
 {
 menu.add(new Jmol.Menu.MenuItem(this.thisPopup, null, false,
 false)); this.thisPopup.tainted = true;
 }}, "~O");
-Clazz.overrideMethod (c$, "menuAddSubMenu", 
+$_V(c$, "menuAddSubMenu", 
 function (menu, subMenu) {
 this.menuAddItem (menu, subMenu);
 }, "~O,~O");
-Clazz.overrideMethod (c$, "menuClearListeners", 
+$_V(c$, "menuClearListeners", 
 function (menu) {
-}, "~O");
-Clazz.overrideMethod (c$, "menuCreateCheckboxItem", 
+{
+if (menu)menu.dispose();
+}}, "~O");
+$_V(c$, "menuCreateCheckboxItem", 
 function (menu, entry, basename, id, state, isRadio) {
 var item = null;
 {
@@ -1328,7 +1344,7 @@ item = new Jmol.Menu.MenuItem(this.thisPopup, entry, !isRadio,
 isRadio); item.setSelected(state); item.addItemListener(this);
 }return this.newMenuItem (menu, item, entry, basename, id);
 }, "~O,~S,~S,~S,~B,~B");
-Clazz.overrideMethod (c$, "menuCreateItem", 
+$_V(c$, "menuCreateItem", 
 function (menu, entry, script, id) {
 var item = null;
 {
@@ -1336,12 +1352,12 @@ item = new Jmol.Menu.MenuItem(this.thisPopup, entry);
 item.addActionListener(this);
 }return this.newMenuItem (menu, item, entry, script, id);
 }, "~O,~S,~S,~S");
-Clazz.overrideMethod (c$, "menuCreatePopup", 
+$_V(c$, "menuCreatePopup", 
 function (name) {
 {
 return new Jmol.Menu.PopupMenu(this.viewer.applet, name);
 }}, "~S");
-Clazz.overrideMethod (c$, "menuEnable", 
+$_V(c$, "menuEnable", 
 function (menu, enable) {
 {
 if (menu.isItem) { this.menuEnableItem(menu, enable); return;
@@ -1349,13 +1365,13 @@ if (menu.isItem) { this.menuEnableItem(menu, enable); return;
 }
 this.thisPopup.tainted = true;
 }}, "~O,~B");
-Clazz.overrideMethod (c$, "menuEnableItem", 
+$_V(c$, "menuEnableItem", 
 function (item, enable) {
 {
 try { item.setEnabled(enable); } catch (e) { }
 this.thisPopup.tainted = true;
 }}, "~O,~B");
-Clazz.overrideMethod (c$, "menuGetAsText", 
+$_V(c$, "menuGetAsText", 
 function (sb, level, menu, menuName) {
 {
 var name = menuName; var subMenus = menu.getComponents(); for
@@ -1370,78 +1386,83 @@ this.fixScript(m.getName(), m.getActionCommand());
 this.addItemText(sb, 'I', level, m.getName(), m.getText(),
 script, flags); } else { this.addItemText(sb, 'S', level,
 name, null, null, null); } }
-}}, "J.util.SB,~N,~O,~S");
-Clazz.overrideMethod (c$, "menuGetId", 
+}}, "JU.SB,~N,~O,~S");
+$_V(c$, "menuGetId", 
 function (menu) {
 {
 return menu.getName();
 }}, "~O");
-Clazz.overrideMethod (c$, "menuGetItemCount", 
+$_V(c$, "menuGetItemCount", 
 function (menu) {
 {
 return menu.getItemCount();
 }}, "~O");
-Clazz.overrideMethod (c$, "menuGetParent", 
+$_V(c$, "menuGetParent", 
 function (menu) {
 {
 return menu.getParent();
 }}, "~O");
-Clazz.overrideMethod (c$, "menuGetPosition", 
+$_V(c$, "menuGetPosition", 
 function (menu) {
 {
 var p = menuGetParent(menu); if (p != null) for (var i =
-p.getItemCount(); --i >= 0;) if (p.getItem(i) == menu) return
-i;
+p.getItemCount(); --i >= 0;) if (p.getItem(i) == menu) {
+return i;}
 }return -1;
 }, "~O");
-Clazz.overrideMethod (c$, "menuInsertSubMenu", 
+$_V(c$, "menuInsertSubMenu", 
 function (menu, subMenu, index) {
 }, "~O,~O,~N");
-Clazz.overrideMethod (c$, "menuNewSubMenu", 
+$_V(c$, "menuNewSubMenu", 
 function (entry, id) {
 {
 var menu = new Jmol.Menu.SubMenu(this.thisPopup, entry);
 this.updateButton(menu, entry, null); menu.setName(id);
 menu.setAutoscrolls(true); return menu;
 }}, "~S,~S");
-Clazz.overrideMethod (c$, "menuRemoveAll", 
+$_V(c$, "menuRemoveAll", 
 function (menu, indexFrom) {
 {
 menu.removeAll(indexFrom); this.thisPopup.tainted = true;
 }}, "~O,~N");
-Clazz.overrideMethod (c$, "menuSetAutoscrolls", 
+$_V(c$, "menuSetAutoscrolls", 
 function (menu) {
 {
 menu.setAutoscrolls(true); this.thisPopup.tainted = true;
 }}, "~O");
-Clazz.overrideMethod (c$, "menuSetCheckBoxState", 
+$_V(c$, "menuSetCheckBoxState", 
 function (item, state) {
 {
 item.setSelected(state); this.thisPopup.tainted = true;
 }}, "~O,~B");
-Clazz.overrideMethod (c$, "menuSetCheckBoxOption", 
+$_V(c$, "menuSetCheckBoxOption", 
 function (item, name, what) {
 return null;
 }, "~O,~S,~S");
-Clazz.overrideMethod (c$, "menuSetCheckBoxValue", 
+$_V(c$, "menuSetCheckBoxValue", 
 function (source) {
 {
 this.setCheckBoxValue(source, source.getActionCommand(),
-source.isSelected()); this.thisPopup.tainted = true;
+source.isSelected()); if(this.thisPopup)this.thisPopup.tainted = true;
 }}, "~O");
-Clazz.overrideMethod (c$, "menuSetLabel", 
+$_V(c$, "menuSetLabel", 
 function (menu, entry) {
 {
 menu.setText(entry); this.thisPopup.tainted = true;
 }}, "~O,~S");
-Clazz.overrideMethod (c$, "menuSetListeners", 
+$_V(c$, "menuSetListeners", 
 function () {
 });
-Clazz.overrideMethod (c$, "menuShowPopup", 
+$_V(c$, "menuShowPopup", 
 function (popup, x, y) {
 {
 popup.menuShowPopup(x, y);
 }}, "~O,~N,~N");
+$_V(c$, "updateSpecialMenuItem", 
+function (m) {
+{
+m.setText(this.getSpecialLabel(m.getName(), m.getText()));
+}}, "~O");
 });
 Clazz.declarePackage ("J.awtjs2d");
 Clazz.load (["J.awtjs2d.JSPopup"], "J.awtjs2d.JSmolPopup", ["J.i18n.GT", "J.popup.MainPopupResourceBundle"], function () {
@@ -1450,13 +1471,13 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.awtjs2d.JSmolPopup, []);
 });
-Clazz.overrideMethod (c$, "jpiInitialize", 
+$_V(c$, "jpiInitialize", 
 function (viewer, menu) {
 var doTranslate = J.i18n.GT.setDoTranslate (true);
 var bundle =  new J.popup.MainPopupResourceBundle (this.strMenuStructure = menu, this.menuText);
 this.initialize (viewer, bundle, bundle.getMenuName ());
 J.i18n.GT.setDoTranslate (doTranslate);
-}, "J.viewer.Viewer,~S");
+}, "javajs.api.PlatformViewer,~S");
 });
 Clazz.declarePackage ("J.popup");
 Clazz.load (null, "J.popup.PopupResource", ["java.io.BufferedReader", "$.StringReader", "java.util.Properties", "J.i18n.GT"], function () {
@@ -1546,13 +1567,13 @@ if (menuText != null && item.indexOf ("Text") >= 0) menuText.setProperty (item, 
 }, $fz.isPrivate = true, $fz), "~B,java.util.Properties");
 });
 Clazz.declarePackage ("J.popup");
-Clazz.load (["J.popup.PopupResource"], "J.popup.MainPopupResourceBundle", ["J.i18n.GT", "J.util.SB", "$.TextFormat"], function () {
+Clazz.load (["J.popup.PopupResource"], "J.popup.MainPopupResourceBundle", ["JU.PT", "$.SB", "J.i18n.GT"], function () {
 c$ = Clazz.declareType (J.popup, "MainPopupResourceBundle", J.popup.PopupResource);
-Clazz.overrideMethod (c$, "getMenuName", 
+$_V(c$, "getMenuName", 
 function () {
 return "popupMenu";
 });
-Clazz.overrideMethod (c$, "buildStructure", 
+$_V(c$, "buildStructure", 
 function (menuStructure) {
 this.addItems (J.popup.MainPopupResourceBundle.menuContents);
 this.addItems (J.popup.MainPopupResourceBundle.structureContents);
@@ -1562,21 +1583,21 @@ c$.Box = $_M(c$, "Box",
 ($fz = function (cmd) {
 return "if (showBoundBox or showUnitcell) {" + cmd + "} else {boundbox on;" + cmd + ";boundbox off}";
 }, $fz.isPrivate = true, $fz), "~S");
-Clazz.overrideMethod (c$, "getWordContents", 
+$_V(c$, "getWordContents", 
 function () {
 var wasTranslating = J.i18n.GT.setDoTranslate (true);
-var words = ["modelSetMenu", J.i18n.GT._ ("No atoms loaded"), "configurationComputedMenu", J.i18n.GT._ ("Configurations"), "elementsComputedMenu", J.i18n.GT._ ("Element"), "FRAMESbyModelComputedMenu", J.i18n.GT._ ("Model/Frame"), "languageComputedMenu", J.i18n.GT._ ("Language"), "PDBaaResiduesComputedMenu", J.i18n.GT._ ("By Residue Name"), "PDBnucleicResiduesComputedMenu", J.i18n.GT._ ("By Residue Name"), "PDBcarboResiduesComputedMenu", J.i18n.GT._ ("By Residue Name"), "PDBheteroComputedMenu", J.i18n.GT._ ("By HETATM"), "surfMoComputedMenuText", J.i18n.GT._ ("Molecular Orbitals ({0})"), "SYMMETRYSelectComputedMenu", J.i18n.GT._ ("Symmetry"), "SYMMETRYShowComputedMenu", J.i18n.GT._ ("Space Group"), "SYMMETRYhide", J.i18n.GT._ ("Hide Symmetry"), "hiddenModelSetText", J.i18n.GT._ ("Model information"), "selectMenuText", J.i18n.GT._ ("Select ({0})"), "allModelsText", J.i18n.GT._ ("All {0} models"), "configurationMenuText", J.i18n.GT._ ("Configurations ({0})"), "modelSetCollectionText", J.i18n.GT._ ("Collection of {0} models"), "atomsText", J.i18n.GT._ ("atoms: {0}"), "bondsText", J.i18n.GT._ ("bonds: {0}"), "groupsText", J.i18n.GT._ ("groups: {0}"), "chainsText", J.i18n.GT._ ("chains: {0}"), "polymersText", J.i18n.GT._ ("polymers: {0}"), "modelMenuText", J.i18n.GT._ ("model {0}"), "viewMenuText", J.i18n.GT._ ("View {0}"), "mainMenuText", J.i18n.GT._ ("Main Menu"), "biomoleculesMenuText", J.i18n.GT._ ("Biomolecules"), "biomoleculeText", J.i18n.GT._ ("biomolecule {0} ({1} atoms)"), "loadBiomoleculeText", J.i18n.GT._ ("load biomolecule {0} ({1} atoms)"), "selectAll", J.i18n.GT._ ("All"), "selectNone", J.i18n.GT._ ("None"), "hideNotSelectedCB", J.i18n.GT._ ("Display Selected Only"), "invertSelection", J.i18n.GT._ ("Invert Selection"), "viewMenu", J.i18n.GT._ ("View"), "best", J.i18n.GT._ ("Best"), "front", J.i18n.GT._ ("Front"), "left", J.i18n.GT._ ("Left"), "right", J.i18n.GT._ ("Right"), "top", J.util.TextFormat.split (J.i18n.GT._ ("Top[as in \"view from the top, from above\" - (translators: remove this bracketed part]"), '[')[0], "bottom", J.i18n.GT._ ("Bottom"), "back", J.i18n.GT._ ("Back"), "sceneComputedMenu", J.i18n.GT._ ("Scenes"), "PDBproteinMenu", J.i18n.GT._ ("Protein"), "allProtein", J.i18n.GT._ ("All"), "proteinBackbone", J.i18n.GT._ ("Backbone"), "proteinSideChains", J.i18n.GT._ ("Side Chains"), "polar", J.i18n.GT._ ("Polar Residues"), "nonpolar", J.i18n.GT._ ("Nonpolar Residues"), "positiveCharge", J.i18n.GT._ ("Basic Residues (+)"), "negativeCharge", J.i18n.GT._ ("Acidic Residues (-)"), "noCharge", J.i18n.GT._ ("Uncharged Residues"), "PDBnucleicMenu", J.i18n.GT._ ("Nucleic"), "allNucleic", J.i18n.GT._ ("All"), "DNA", J.i18n.GT._ ("DNA"), "RNA", J.i18n.GT._ ("RNA"), "nucleicBackbone", J.i18n.GT._ ("Backbone"), "nucleicBases", J.i18n.GT._ ("Bases"), "atPairs", J.i18n.GT._ ("AT pairs"), "gcPairs", J.i18n.GT._ ("GC pairs"), "auPairs", J.i18n.GT._ ("AU pairs"), "PDBheteroMenu", J.i18n.GT._ ("Hetero"), "allHetero", J.i18n.GT._ ("All PDB \"HETATM\""), "Solvent", J.i18n.GT._ ("All Solvent"), "Water", J.i18n.GT._ ("All Water"), "nonWaterSolvent", J.i18n.GT._ ("Nonaqueous Solvent") + " (solvent and not water)", "exceptWater", J.i18n.GT._ ("Nonaqueous HETATM") + " (hetero and not water)", "Ligand", J.i18n.GT._ ("Ligand"), "allCarbo", J.i18n.GT._ ("All"), "PDBcarboMenu", J.i18n.GT._ ("Carbohydrate"), "PDBnoneOfTheAbove", J.i18n.GT._ ("None of the above"), "renderMenu", J.i18n.GT._ ("Style"), "renderSchemeMenu", J.i18n.GT._ ("Scheme"), "renderCpkSpacefill", J.i18n.GT._ ("CPK Spacefill"), "renderBallAndStick", J.i18n.GT._ ("Ball and Stick"), "renderSticks", J.i18n.GT._ ("Sticks"), "renderWireframe", J.i18n.GT._ ("Wireframe"), "PDBrenderCartoonsOnly", J.i18n.GT._ ("Cartoon"), "PDBrenderTraceOnly", J.i18n.GT._ ("Trace"), "atomMenu", J.i18n.GT._ ("Atoms"), "atomNone", J.i18n.GT._ ("Off"), "atom15", J.i18n.GT._ ("{0}% van der Waals", "15"), "atom20", J.i18n.GT._ ("{0}% van der Waals", "20"), "atom25", J.i18n.GT._ ("{0}% van der Waals", "25"), "atom50", J.i18n.GT._ ("{0}% van der Waals", "50"), "atom75", J.i18n.GT._ ("{0}% van der Waals", "75"), "atom100", J.i18n.GT._ ("{0}% van der Waals", "100"), "bondMenu", J.i18n.GT._ ("Bonds"), "bondNone", J.i18n.GT._ ("Off"), "bondWireframe", J.i18n.GT._ ("On"), "bond100", J.i18n.GT._ ("{0} \u00C5", "0.10"), "bond150", J.i18n.GT._ ("{0} \u00C5", "0.15"), "bond200", J.i18n.GT._ ("{0} \u00C5", "0.20"), "bond250", J.i18n.GT._ ("{0} \u00C5", "0.25"), "bond300", J.i18n.GT._ ("{0} \u00C5", "0.30"), "hbondMenu", J.i18n.GT._ ("Hydrogen Bonds"), "hbondNone", J.i18n.GT._ ("Off"), "hbondCalc", J.i18n.GT._ ("Calculate"), "hbondWireframe", J.i18n.GT._ ("On"), "PDBhbondSidechain", J.i18n.GT._ ("Set H-Bonds Side Chain"), "PDBhbondBackbone", J.i18n.GT._ ("Set H-Bonds Backbone"), "hbond100", J.i18n.GT._ ("{0} \u00C5", "0.10"), "hbond150", J.i18n.GT._ ("{0} \u00C5", "0.15"), "hbond200", J.i18n.GT._ ("{0} \u00C5", "0.20"), "hbond250", J.i18n.GT._ ("{0} \u00C5", "0.25"), "hbond300", J.i18n.GT._ ("{0} \u00C5", "0.30"), "ssbondMenu", J.i18n.GT._ ("Disulfide Bonds"), "ssbondNone", J.i18n.GT._ ("Off"), "ssbondWireframe", J.i18n.GT._ ("On"), "PDBssbondSidechain", J.i18n.GT._ ("Set SS-Bonds Side Chain"), "PDBssbondBackbone", J.i18n.GT._ ("Set SS-Bonds Backbone"), "ssbond100", J.i18n.GT._ ("{0} \u00C5", "0.10"), "ssbond150", J.i18n.GT._ ("{0} \u00C5", "0.15"), "ssbond200", J.i18n.GT._ ("{0} \u00C5", "0.20"), "ssbond250", J.i18n.GT._ ("{0} \u00C5", "0.25"), "ssbond300", J.i18n.GT._ ("{0} \u00C5", "0.30"), "PDBstructureMenu", J.i18n.GT._ ("Structures"), "structureNone", J.i18n.GT._ ("Off"), "backbone", J.i18n.GT._ ("Backbone"), "cartoon", J.i18n.GT._ ("Cartoon"), "cartoonRockets", J.i18n.GT._ ("Cartoon Rockets"), "ribbons", J.i18n.GT._ ("Ribbons"), "rockets", J.i18n.GT._ ("Rockets"), "strands", J.i18n.GT._ ("Strands"), "trace", J.i18n.GT._ ("Trace"), "VIBRATIONMenu", J.i18n.GT._ ("Vibration"), "vibrationOff", J.i18n.GT._ ("Off"), "vibrationOn", J.i18n.GT._ ("On"), "vibration20", "*2", "vibration05", "/2", "VIBRATIONvectorMenu", J.i18n.GT._ ("Vectors"), "spectraMenu", J.i18n.GT._ ("Spectra"), "hnmrMenu", J.i18n.GT._ ("1H-NMR"), "cnmrMenu", J.i18n.GT._ ("13C-NMR"), "vectorOff", J.i18n.GT._ ("Off"), "vectorOn", J.i18n.GT._ ("On"), "vector3", J.i18n.GT._ ("{0} pixels", "3"), "vector005", J.i18n.GT._ ("{0} \u00C5", "0.05"), "vector01", J.i18n.GT._ ("{0} \u00C5", "0.10"), "vectorScale02", J.i18n.GT._ ("Scale {0}", "0.2"), "vectorScale05", J.i18n.GT._ ("Scale {0}", "0.5"), "vectorScale1", J.i18n.GT._ ("Scale {0}", "1"), "vectorScale2", J.i18n.GT._ ("Scale {0}", "2"), "vectorScale5", J.i18n.GT._ ("Scale {0}", "5"), "stereoMenu", J.i18n.GT._ ("Stereographic"), "stereoNone", J.i18n.GT._ ("None"), "stereoRedCyan", J.i18n.GT._ ("Red+Cyan glasses"), "stereoRedBlue", J.i18n.GT._ ("Red+Blue glasses"), "stereoRedGreen", J.i18n.GT._ ("Red+Green glasses"), "stereoCrossEyed", J.i18n.GT._ ("Cross-eyed viewing"), "stereoWallEyed", J.i18n.GT._ ("Wall-eyed viewing"), "labelMenu", J.i18n.GT._ ("Labels"), "labelNone", J.i18n.GT._ ("None"), "labelSymbol", J.i18n.GT._ ("With Element Symbol"), "labelName", J.i18n.GT._ ("With Atom Name"), "labelNumber", J.i18n.GT._ ("With Atom Number"), "labelPositionMenu", J.i18n.GT._ ("Position Label on Atom"), "labelCentered", J.i18n.GT._ ("Centered"), "labelUpperRight", J.i18n.GT._ ("Upper Right"), "labelLowerRight", J.i18n.GT._ ("Lower Right"), "labelUpperLeft", J.i18n.GT._ ("Upper Left"), "labelLowerLeft", J.i18n.GT._ ("Lower Left"), "colorMenu", J.i18n.GT._ ("Color"), "[color_atoms]Menu", J.i18n.GT._ ("Atoms"), "schemeMenu", J.i18n.GT._ ("By Scheme"), "cpk", J.i18n.GT._ ("Element (CPK)"), "altloc#PDB", J.i18n.GT._ ("Alternative Location"), "molecule", J.i18n.GT._ ("Molecule"), "formalcharge", J.i18n.GT._ ("Formal Charge"), "partialcharge#CHARGE", J.i18n.GT._ ("Partial Charge"), "relativeTemperature#BFACTORS", J.i18n.GT._ ("Temperature (Relative)"), "fixedTemperature#BFACTORS", J.i18n.GT._ ("Temperature (Fixed)"), "amino#PDB", J.i18n.GT._ ("Amino Acid"), "structure#PDB", J.i18n.GT._ ("Secondary Structure"), "chain#PDB", J.i18n.GT._ ("Chain"), "group#PDB", J.i18n.GT._ ("Group"), "monomer#PDB", J.i18n.GT._ ("Monomer"), "shapely#PDB", J.i18n.GT._ ("Shapely"), "none", J.i18n.GT._ ("Inherit"), "black", J.i18n.GT._ ("Black"), "white", J.i18n.GT._ ("White"), "cyan", J.i18n.GT._ ("Cyan"), "red", J.i18n.GT._ ("Red"), "orange", J.i18n.GT._ ("Orange"), "yellow", J.i18n.GT._ ("Yellow"), "green", J.i18n.GT._ ("Green"), "blue", J.i18n.GT._ ("Blue"), "indigo", J.i18n.GT._ ("Indigo"), "violet", J.i18n.GT._ ("Violet"), "salmon", J.i18n.GT._ ("Salmon"), "olive", J.i18n.GT._ ("Olive"), "maroon", J.i18n.GT._ ("Maroon"), "gray", J.i18n.GT._ ("Gray"), "slateblue", J.i18n.GT._ ("Slate Blue"), "gold", J.i18n.GT._ ("Gold"), "orchid", J.i18n.GT._ ("Orchid"), "opaque", J.i18n.GT._ ("Make Opaque"), "translucent", J.i18n.GT._ ("Make Translucent"), "[color_bonds]Menu", J.i18n.GT._ ("Bonds"), "[color_hbonds]Menu", J.i18n.GT._ ("Hydrogen Bonds"), "[color_ssbonds]Menu", J.i18n.GT._ ("Disulfide Bonds"), "colorPDBStructuresMenu", J.i18n.GT._ ("Structures"), "[color_backbone]Menu", J.i18n.GT._ ("Backbone"), "[color_trace]Menu", J.i18n.GT._ ("Trace"), "[color_cartoon]sMenu", J.i18n.GT._ ("Cartoon"), "[color_ribbon]sMenu", J.i18n.GT._ ("Ribbons"), "[color_rockets]Menu", J.i18n.GT._ ("Rockets"), "[color_strands]Menu", J.i18n.GT._ ("Strands"), "[color_labels]Menu", J.i18n.GT._ ("Labels"), "[color_background]Menu", J.i18n.GT._ ("Background"), "[color_isosurface]Menu", J.i18n.GT._ ("Surfaces"), "[color_vectors]Menu", J.i18n.GT._ ("Vectors"), "[color_axes]Menu", J.i18n.GT._ ("Axes"), "[color_boundbox]Menu", J.i18n.GT._ ("Boundbox"), "[color_UNITCELL]Menu", J.i18n.GT._ ("Unit cell"), "zoomMenu", J.i18n.GT._ ("Zoom"), "zoom50", "50%", "zoom100", "100%", "zoom150", "150%", "zoom200", "200%", "zoom400", "400%", "zoom800", "800%", "zoomIn", J.i18n.GT._ ("Zoom In"), "zoomOut", J.i18n.GT._ ("Zoom Out"), "spinMenu", J.i18n.GT._ ("Spin"), "spinOn", J.i18n.GT._ ("On"), "spinOff", J.i18n.GT._ ("Off"), "[set_spin_X]Menu", J.i18n.GT._ ("Set X Rate"), "[set_spin_Y]Menu", J.i18n.GT._ ("Set Y Rate"), "[set_spin_Z]Menu", J.i18n.GT._ ("Set Z Rate"), "[set_spin_FPS]Menu", J.i18n.GT._ ("Set FPS"), "s0", "0", "s5", "5", "s10", "10", "s20", "20", "s30", "30", "s40", "40", "s50", "50", "FRAMESanimateMenu", J.i18n.GT._ ("Animation"), "animModeMenu", J.i18n.GT._ ("Animation Mode"), "onceThrough", J.i18n.GT._ ("Play Once"), "palindrome", J.i18n.GT._ ("Palindrome"), "loop", J.i18n.GT._ ("Loop"), "play", J.i18n.GT._ ("Play"), "pause", J.i18n.GT._ ("Pause"), "resume", J.i18n.GT._ ("Resume"), "stop", J.i18n.GT._ ("Stop"), "nextframe", J.i18n.GT._ ("Next Frame"), "prevframe", J.i18n.GT._ ("Previous Frame"), "rewind", J.i18n.GT._ ("Rewind"), "playrev", J.i18n.GT._ ("Reverse"), "restart", J.i18n.GT._ ("Restart"), "FRAMESanimFpsMenu", J.i18n.GT._ ("Set FPS"), "animfps5", "5", "animfps10", "10", "animfps20", "20", "animfps30", "30", "animfps50", "50", "measureMenu", J.i18n.GT._ ("Measurements"), "measureOff", J.i18n.GT._ ("Double-Click begins and ends all measurements"), "measureDistance", J.i18n.GT._ ("Click for distance measurement"), "measureAngle", J.i18n.GT._ ("Click for angle measurement"), "measureTorsion", J.i18n.GT._ ("Click for torsion (dihedral) measurement"), "PDBmeasureSequence", J.i18n.GT._ ("Click two atoms to display a sequence in the console"), "measureDelete", J.i18n.GT._ ("Delete measurements"), "measureList", J.i18n.GT._ ("List measurements"), "distanceNanometers", J.i18n.GT._ ("Distance units nanometers"), "distanceAngstroms", J.i18n.GT._ ("Distance units Angstroms"), "distancePicometers", J.i18n.GT._ ("Distance units picometers"), "pickingMenu", J.i18n.GT._ ("Set picking"), "pickOff", J.i18n.GT._ ("Off"), "pickCenter", J.i18n.GT._ ("Center"), "pickIdent", J.i18n.GT._ ("Identity"), "pickLabel", J.i18n.GT._ ("Label"), "pickAtom", J.i18n.GT._ ("Select atom"), "PDBpickChain", J.i18n.GT._ ("Select chain"), "pickElement", J.i18n.GT._ ("Select element"), "PDBpickGroup", J.i18n.GT._ ("Select group"), "pickMolecule", J.i18n.GT._ ("Select molecule"), "SYMMETRYpickSite", J.i18n.GT._ ("Select site"), "SYMMETRYpickSymmetry", J.i18n.GT._ ("Show symmetry operation"), "pickSpin", J.i18n.GT._ ("Spin"), "showMenu", J.i18n.GT._ ("Show"), "showConsole", J.i18n.GT._ ("Console"), "JSConsole", "JavaScript Console", "showFile", J.i18n.GT._ ("File Contents"), "showFileHeader", J.i18n.GT._ ("File Header"), "showHistory", J.i18n.GT._ ("History"), "showIsosurface", J.i18n.GT._ ("Isosurface JVXL data"), "showMeasure", J.i18n.GT._ ("Measurements"), "showMo", J.i18n.GT._ ("Molecular orbital JVXL data"), "showModel", J.i18n.GT._ ("Model"), "showOrient", J.i18n.GT._ ("Orientation"), "showSpacegroup", J.i18n.GT._ ("Space group"), "SYMMETRYshowSymmetry", J.i18n.GT._ ("Symmetry"), "showState", J.i18n.GT._ ("Current state"), "fileMenu", J.i18n.GT._ ("File"), "reload", J.i18n.GT._ ("Reload"), "SIGNEDloadPdb", J.i18n.GT._ ("Open from PDB"), "SIGNEDloadFileOrUrl", J.i18n.GT._ ("Open file or URL"), "SIGNEDloadFileUnitCell", J.i18n.GT._ ("Load full unit cell"), "SIGNEDloadScript", J.i18n.GT._ ("Open script"), "writeFileTextVARIABLE", J.i18n.GT._ ("Save a copy of {0}"), "writeState", J.i18n.GT._ ("Save script with state"), "writeHistory", J.i18n.GT._ ("Save script with history"), "SIGNEDNOGLwriteJpg", J.i18n.GT._ ("Export {0} image", "JPG"), "SIGNEDNOGLwritePng", J.i18n.GT._ ("Export {0} image", "PNG"), "SIGNEDNOGLwritePngJmol", J.i18n.GT._ ("Export {0} image", "PNG+JMOL"), "SIGNEDJAVAwriteGif", J.i18n.GT._ ("Export {0} image", "GIF"), "SIGNEDJAVAwritePovray", J.i18n.GT._ ("Export {0} image", "POV-Ray"), "SIGNEDwriteJmol", J.i18n.GT._ ("Save all as JMOL file (zip)"), "SIGNEDwriteIsosurface", J.i18n.GT._ ("Save JVXL isosurface"), "SIGNEDJAVAwriteVrml", J.i18n.GT._ ("Export {0} 3D model", "VRML"), "SIGNEDJAVAwriteX3d", J.i18n.GT._ ("Export {0} 3D model", "X3D"), "SIGNEDJAVAwriteIdtf", J.i18n.GT._ ("Export {0} 3D model", "IDTF"), "SIGNEDJAVAwriteMaya", J.i18n.GT._ ("Export {0} 3D model", "Maya"), "computationMenu", J.i18n.GT._ ("Computation"), "minimize", J.i18n.GT._ ("Optimize structure"), "modelkit", J.i18n.GT._ ("Model kit"), "UNITCELLshow", J.i18n.GT._ ("Unit cell"), "extractMOL", J.i18n.GT._ ("Extract MOL data"), "surfaceMenu", J.i18n.GT._ ("Surfaces"), "surfDots", J.i18n.GT._ ("Dot Surface"), "surfVDW", J.i18n.GT._ ("van der Waals Surface"), "surfMolecular", J.i18n.GT._ ("Molecular Surface"), "surfSolvent14", J.i18n.GT._ ("Solvent Surface ({0}-Angstrom probe)", "1.4"), "surfSolventAccessible14", J.i18n.GT._ ("Solvent-Accessible Surface (VDW + {0} Angstrom)", "1.4"), "CHARGEsurfMEP", J.i18n.GT._ ("Molecular Electrostatic Potential (range ALL)"), "CHARGEsurf2MEP", J.i18n.GT._ ("Molecular Electrostatic Potential (range -0.1 0.1)"), "surfOpaque", J.i18n.GT._ ("Make Opaque"), "surfTranslucent", J.i18n.GT._ ("Make Translucent"), "surfOff", J.i18n.GT._ ("Off"), "FILEUNITMenu", J.i18n.GT._ ("Symmetry"), "FILEMOLload", J.i18n.GT._ ("Reload {0}", "(molecular)"), "FILEUNITone", J.i18n.GT._ ("Reload {0}", "{1 1 1}"), "FILEUNITnine", J.i18n.GT._ ("Reload {0}", "{444 666 1}"), "FILEUNITnineRestricted", J.i18n.GT._ ("Reload {0} + Display {1}", ["{444 666 1}", "555"]), "FILEUNITninePoly", J.i18n.GT._ ("Reload + Polyhedra"), "[set_axes]Menu", J.i18n.GT._ ("Axes"), "[set_boundbox]Menu", J.i18n.GT._ ("Boundbox"), "[set_UNITCELL]Menu", J.i18n.GT._ ("Unit cell"), "off#axes", J.i18n.GT._ ("Hide"), "dotted", J.i18n.GT._ ("Dotted"), "byPixelMenu", J.i18n.GT._ ("Pixel Width"), "1p", J.i18n.GT._ ("{0} px", "1"), "3p", J.i18n.GT._ ("{0} px", "3"), "5p", J.i18n.GT._ ("{0} px", "5"), "10p", J.i18n.GT._ ("{0} px", "10"), "byAngstromMenu", J.i18n.GT._ ("Angstrom Width"), "10a", J.i18n.GT._ ("{0} \u00C5", "0.10"), "20a", J.i18n.GT._ ("{0} \u00C5", "0.20"), "25a", J.i18n.GT._ ("{0} \u00C5", "0.25"), "50a", J.i18n.GT._ ("{0} \u00C5", "0.50"), "100a", J.i18n.GT._ ("{0} \u00C5", "1.0"), "showSelectionsCB", J.i18n.GT._ ("Selection Halos"), "showHydrogensCB", J.i18n.GT._ ("Show Hydrogens"), "showMeasurementsCB", J.i18n.GT._ ("Show Measurements"), "perspectiveDepthCB", J.i18n.GT._ ("Perspective Depth"), "showBoundBoxCB", J.i18n.GT._ ("Boundbox"), "showAxesCB", J.i18n.GT._ ("Axes"), "showUNITCELLCB", J.i18n.GT._ ("Unit cell"), "colorrasmolCB", J.i18n.GT._ ("RasMol Colors"), "aboutComputedMenu", J.i18n.GT._ ("About..."), "APPLETjmolUrl", "http://www.jmol.org", "APPLETmouseManualUrl", J.i18n.GT._ ("Mouse Manual"), "APPLETtranslationUrl", J.i18n.GT._ ("Translations")];
+var words = ["modelSetMenu", J.i18n.GT._ ("No atoms loaded"), "configurationComputedMenu", J.i18n.GT._ ("Configurations"), "elementsComputedMenu", J.i18n.GT._ ("Element"), "FRAMESbyModelComputedMenu", J.i18n.GT._ ("Model/Frame"), "languageComputedMenu", J.i18n.GT._ ("Language"), "PDBaaResiduesComputedMenu", J.i18n.GT._ ("By Residue Name"), "PDBnucleicResiduesComputedMenu", J.i18n.GT._ ("By Residue Name"), "PDBcarboResiduesComputedMenu", J.i18n.GT._ ("By Residue Name"), "PDBheteroComputedMenu", J.i18n.GT._ ("By HETATM"), "surfMoComputedMenuText", J.i18n.GT._ ("Molecular Orbitals ({0})"), "SYMMETRYSelectComputedMenu", J.i18n.GT._ ("Symmetry"), "SYMMETRYShowComputedMenu", J.i18n.GT._ ("Space Group"), "SYMMETRYhide", J.i18n.GT._ ("Hide Symmetry"), "hiddenModelSetText", J.i18n.GT._ ("Model information"), "selectMenuText", J.i18n.GT._ ("Select ({0})"), "allModelsText", J.i18n.GT._ ("All {0} models"), "configurationMenuText", J.i18n.GT._ ("Configurations ({0})"), "modelSetCollectionText", J.i18n.GT._ ("Collection of {0} models"), "atomsText", J.i18n.GT._ ("atoms: {0}"), "bondsText", J.i18n.GT._ ("bonds: {0}"), "groupsText", J.i18n.GT._ ("groups: {0}"), "chainsText", J.i18n.GT._ ("chains: {0}"), "polymersText", J.i18n.GT._ ("polymers: {0}"), "modelMenuText", J.i18n.GT._ ("model {0}"), "viewMenuText", J.i18n.GT._ ("View {0}"), "mainMenuText", J.i18n.GT._ ("Main Menu"), "biomoleculesMenuText", J.i18n.GT._ ("Biomolecules"), "biomoleculeText", J.i18n.GT._ ("biomolecule {0} ({1} atoms)"), "loadBiomoleculeText", J.i18n.GT._ ("load biomolecule {0} ({1} atoms)"), "selectAll", J.i18n.GT._ ("All"), "selectNone", J.i18n.GT._ ("None"), "hideNotSelectedCB", J.i18n.GT._ ("Display Selected Only"), "invertSelection", J.i18n.GT._ ("Invert Selection"), "viewMenu", J.i18n.GT._ ("View"), "best", J.i18n.GT._ ("Best"), "front", J.i18n.GT._ ("Front"), "left", J.i18n.GT._ ("Left"), "right", J.i18n.GT._ ("Right"), "top", JU.PT.split (J.i18n.GT._ ("Top[as in \"view from the top, from above\" - (translators: remove this bracketed part]"), "[")[0], "bottom", J.i18n.GT._ ("Bottom"), "back", J.i18n.GT._ ("Back"), "sceneComputedMenu", J.i18n.GT._ ("Scenes"), "PDBproteinMenu", J.i18n.GT._ ("Protein"), "allProtein", J.i18n.GT._ ("All"), "proteinBackbone", J.i18n.GT._ ("Backbone"), "proteinSideChains", J.i18n.GT._ ("Side Chains"), "polar", J.i18n.GT._ ("Polar Residues"), "nonpolar", J.i18n.GT._ ("Nonpolar Residues"), "positiveCharge", J.i18n.GT._ ("Basic Residues (+)"), "negativeCharge", J.i18n.GT._ ("Acidic Residues (-)"), "noCharge", J.i18n.GT._ ("Uncharged Residues"), "PDBnucleicMenu", J.i18n.GT._ ("Nucleic"), "allNucleic", J.i18n.GT._ ("All"), "DNA", J.i18n.GT._ ("DNA"), "RNA", J.i18n.GT._ ("RNA"), "nucleicBackbone", J.i18n.GT._ ("Backbone"), "nucleicBases", J.i18n.GT._ ("Bases"), "atPairs", J.i18n.GT._ ("AT pairs"), "gcPairs", J.i18n.GT._ ("GC pairs"), "auPairs", J.i18n.GT._ ("AU pairs"), "PDBheteroMenu", J.i18n.GT._ ("Hetero"), "allHetero", J.i18n.GT._ ("All PDB \"HETATM\""), "Solvent", J.i18n.GT._ ("All Solvent"), "Water", J.i18n.GT._ ("All Water"), "nonWaterSolvent", J.i18n.GT._ ("Nonaqueous Solvent") + " (solvent and not water)", "exceptWater", J.i18n.GT._ ("Nonaqueous HETATM") + " (hetero and not water)", "Ligand", J.i18n.GT._ ("Ligand"), "allCarbo", J.i18n.GT._ ("All"), "PDBcarboMenu", J.i18n.GT._ ("Carbohydrate"), "PDBnoneOfTheAbove", J.i18n.GT._ ("None of the above"), "renderMenu", J.i18n.GT._ ("Style"), "renderSchemeMenu", J.i18n.GT._ ("Scheme"), "renderCpkSpacefill", J.i18n.GT._ ("CPK Spacefill"), "renderBallAndStick", J.i18n.GT._ ("Ball and Stick"), "renderSticks", J.i18n.GT._ ("Sticks"), "renderWireframe", J.i18n.GT._ ("Wireframe"), "PDBrenderCartoonsOnly", J.i18n.GT._ ("Cartoon"), "PDBrenderTraceOnly", J.i18n.GT._ ("Trace"), "atomMenu", J.i18n.GT._ ("Atoms"), "atomNone", J.i18n.GT._ ("Off"), "atom15", J.i18n.GT._ ("{0}% van der Waals", "15"), "atom20", J.i18n.GT._ ("{0}% van der Waals", "20"), "atom25", J.i18n.GT._ ("{0}% van der Waals", "25"), "atom50", J.i18n.GT._ ("{0}% van der Waals", "50"), "atom75", J.i18n.GT._ ("{0}% van der Waals", "75"), "atom100", J.i18n.GT._ ("{0}% van der Waals", "100"), "bondMenu", J.i18n.GT._ ("Bonds"), "bondNone", J.i18n.GT._ ("Off"), "bondWireframe", J.i18n.GT._ ("On"), "bond100", J.i18n.GT._ ("{0} \u00C5", "0.10"), "bond150", J.i18n.GT._ ("{0} \u00C5", "0.15"), "bond200", J.i18n.GT._ ("{0} \u00C5", "0.20"), "bond250", J.i18n.GT._ ("{0} \u00C5", "0.25"), "bond300", J.i18n.GT._ ("{0} \u00C5", "0.30"), "hbondMenu", J.i18n.GT._ ("Hydrogen Bonds"), "hbondNone", J.i18n.GT._ ("Off"), "hbondCalc", J.i18n.GT._ ("Calculate"), "hbondWireframe", J.i18n.GT._ ("On"), "PDBhbondSidechain", J.i18n.GT._ ("Set H-Bonds Side Chain"), "PDBhbondBackbone", J.i18n.GT._ ("Set H-Bonds Backbone"), "hbond100", J.i18n.GT._ ("{0} \u00C5", "0.10"), "hbond150", J.i18n.GT._ ("{0} \u00C5", "0.15"), "hbond200", J.i18n.GT._ ("{0} \u00C5", "0.20"), "hbond250", J.i18n.GT._ ("{0} \u00C5", "0.25"), "hbond300", J.i18n.GT._ ("{0} \u00C5", "0.30"), "ssbondMenu", J.i18n.GT._ ("Disulfide Bonds"), "ssbondNone", J.i18n.GT._ ("Off"), "ssbondWireframe", J.i18n.GT._ ("On"), "PDBssbondSidechain", J.i18n.GT._ ("Set SS-Bonds Side Chain"), "PDBssbondBackbone", J.i18n.GT._ ("Set SS-Bonds Backbone"), "ssbond100", J.i18n.GT._ ("{0} \u00C5", "0.10"), "ssbond150", J.i18n.GT._ ("{0} \u00C5", "0.15"), "ssbond200", J.i18n.GT._ ("{0} \u00C5", "0.20"), "ssbond250", J.i18n.GT._ ("{0} \u00C5", "0.25"), "ssbond300", J.i18n.GT._ ("{0} \u00C5", "0.30"), "PDBstructureMenu", J.i18n.GT._ ("Structures"), "structureNone", J.i18n.GT._ ("Off"), "backbone", J.i18n.GT._ ("Backbone"), "cartoon", J.i18n.GT._ ("Cartoon"), "cartoonRockets", J.i18n.GT._ ("Cartoon Rockets"), "ribbons", J.i18n.GT._ ("Ribbons"), "rockets", J.i18n.GT._ ("Rockets"), "strands", J.i18n.GT._ ("Strands"), "trace", J.i18n.GT._ ("Trace"), "VIBRATIONMenu", J.i18n.GT._ ("Vibration"), "vibrationOff", J.i18n.GT._ ("Off"), "vibrationOn", J.i18n.GT._ ("On"), "vibration20", "*2", "vibration05", "/2", "VIBRATIONvectorMenu", J.i18n.GT._ ("Vectors"), "spectraMenu", J.i18n.GT._ ("Spectra"), "hnmrMenu", J.i18n.GT._ ("1H-NMR"), "cnmrMenu", J.i18n.GT._ ("13C-NMR"), "vectorOff", J.i18n.GT._ ("Off"), "vectorOn", J.i18n.GT._ ("On"), "vector3", J.i18n.GT._ ("{0} pixels", "3"), "vector005", J.i18n.GT._ ("{0} \u00C5", "0.05"), "vector01", J.i18n.GT._ ("{0} \u00C5", "0.10"), "vectorScale02", J.i18n.GT._ ("Scale {0}", "0.2"), "vectorScale05", J.i18n.GT._ ("Scale {0}", "0.5"), "vectorScale1", J.i18n.GT._ ("Scale {0}", "1"), "vectorScale2", J.i18n.GT._ ("Scale {0}", "2"), "vectorScale5", J.i18n.GT._ ("Scale {0}", "5"), "stereoMenu", J.i18n.GT._ ("Stereographic"), "stereoNone", J.i18n.GT._ ("None"), "stereoRedCyan", J.i18n.GT._ ("Red+Cyan glasses"), "stereoRedBlue", J.i18n.GT._ ("Red+Blue glasses"), "stereoRedGreen", J.i18n.GT._ ("Red+Green glasses"), "stereoCrossEyed", J.i18n.GT._ ("Cross-eyed viewing"), "stereoWallEyed", J.i18n.GT._ ("Wall-eyed viewing"), "labelMenu", J.i18n.GT._ ("Labels"), "labelNone", J.i18n.GT._ ("None"), "labelSymbol", J.i18n.GT._ ("With Element Symbol"), "labelName", J.i18n.GT._ ("With Atom Name"), "labelNumber", J.i18n.GT._ ("With Atom Number"), "labelPositionMenu", J.i18n.GT._ ("Position Label on Atom"), "labelCentered", J.i18n.GT._ ("Centered"), "labelUpperRight", J.i18n.GT._ ("Upper Right"), "labelLowerRight", J.i18n.GT._ ("Lower Right"), "labelUpperLeft", J.i18n.GT._ ("Upper Left"), "labelLowerLeft", J.i18n.GT._ ("Lower Left"), "colorMenu", J.i18n.GT._ ("Color"), "[color_atoms]Menu", J.i18n.GT._ ("Atoms"), "schemeMenu", J.i18n.GT._ ("By Scheme"), "cpk", J.i18n.GT._ ("Element (CPK)"), "altloc#PDB", J.i18n.GT._ ("Alternative Location"), "molecule", J.i18n.GT._ ("Molecule"), "formalcharge", J.i18n.GT._ ("Formal Charge"), "partialcharge#CHARGE", J.i18n.GT._ ("Partial Charge"), "relativeTemperature#BFACTORS", J.i18n.GT._ ("Temperature (Relative)"), "fixedTemperature#BFACTORS", J.i18n.GT._ ("Temperature (Fixed)"), "amino#PDB", J.i18n.GT._ ("Amino Acid"), "structure#PDB", J.i18n.GT._ ("Secondary Structure"), "chain#PDB", J.i18n.GT._ ("Chain"), "group#PDB", J.i18n.GT._ ("Group"), "monomer#PDB", J.i18n.GT._ ("Monomer"), "shapely#PDB", J.i18n.GT._ ("Shapely"), "none", J.i18n.GT._ ("Inherit"), "black", J.i18n.GT._ ("Black"), "white", J.i18n.GT._ ("White"), "cyan", J.i18n.GT._ ("Cyan"), "red", J.i18n.GT._ ("Red"), "orange", J.i18n.GT._ ("Orange"), "yellow", J.i18n.GT._ ("Yellow"), "green", J.i18n.GT._ ("Green"), "blue", J.i18n.GT._ ("Blue"), "indigo", J.i18n.GT._ ("Indigo"), "violet", J.i18n.GT._ ("Violet"), "salmon", J.i18n.GT._ ("Salmon"), "olive", J.i18n.GT._ ("Olive"), "maroon", J.i18n.GT._ ("Maroon"), "gray", J.i18n.GT._ ("Gray"), "slateblue", J.i18n.GT._ ("Slate Blue"), "gold", J.i18n.GT._ ("Gold"), "orchid", J.i18n.GT._ ("Orchid"), "opaque", J.i18n.GT._ ("Make Opaque"), "translucent", J.i18n.GT._ ("Make Translucent"), "[color_bonds]Menu", J.i18n.GT._ ("Bonds"), "[color_hbonds]Menu", J.i18n.GT._ ("Hydrogen Bonds"), "[color_ssbonds]Menu", J.i18n.GT._ ("Disulfide Bonds"), "colorPDBStructuresMenu", J.i18n.GT._ ("Structures"), "[color_backbone]Menu", J.i18n.GT._ ("Backbone"), "[color_trace]Menu", J.i18n.GT._ ("Trace"), "[color_cartoon]sMenu", J.i18n.GT._ ("Cartoon"), "[color_ribbon]sMenu", J.i18n.GT._ ("Ribbons"), "[color_rockets]Menu", J.i18n.GT._ ("Rockets"), "[color_strands]Menu", J.i18n.GT._ ("Strands"), "[color_labels]Menu", J.i18n.GT._ ("Labels"), "[color_background]Menu", J.i18n.GT._ ("Background"), "[color_isosurface]Menu", J.i18n.GT._ ("Surfaces"), "[color_vectors]Menu", J.i18n.GT._ ("Vectors"), "[color_axes]Menu", J.i18n.GT._ ("Axes"), "[color_boundbox]Menu", J.i18n.GT._ ("Boundbox"), "[color_UNITCELL]Menu", J.i18n.GT._ ("Unit cell"), "zoomMenu", J.i18n.GT._ ("Zoom"), "zoom50", "50%", "zoom100", "100%", "zoom150", "150%", "zoom200", "200%", "zoom400", "400%", "zoom800", "800%", "zoomIn", J.i18n.GT._ ("Zoom In"), "zoomOut", J.i18n.GT._ ("Zoom Out"), "spinMenu", J.i18n.GT._ ("Spin"), "spinOn", J.i18n.GT._ ("On"), "spinOff", J.i18n.GT._ ("Off"), "[set_spin_X]Menu", J.i18n.GT._ ("Set X Rate"), "[set_spin_Y]Menu", J.i18n.GT._ ("Set Y Rate"), "[set_spin_Z]Menu", J.i18n.GT._ ("Set Z Rate"), "[set_spin_FPS]Menu", J.i18n.GT._ ("Set FPS"), "s0", "0", "s5", "5", "s10", "10", "s20", "20", "s30", "30", "s40", "40", "s50", "50", "FRAMESanimateMenu", J.i18n.GT._ ("Animation"), "animModeMenu", J.i18n.GT._ ("Animation Mode"), "onceThrough", J.i18n.GT._ ("Play Once"), "palindrome", J.i18n.GT._ ("Palindrome"), "loop", J.i18n.GT._ ("Loop"), "play", J.i18n.GT._ ("Play"), "pause", J.i18n.GT._ ("Pause"), "resume", J.i18n.GT._ ("Resume"), "stop", J.i18n.GT._ ("Stop"), "nextframe", J.i18n.GT._ ("Next Frame"), "prevframe", J.i18n.GT._ ("Previous Frame"), "rewind", J.i18n.GT._ ("Rewind"), "playrev", J.i18n.GT._ ("Reverse"), "restart", J.i18n.GT._ ("Restart"), "FRAMESanimFpsMenu", J.i18n.GT._ ("Set FPS"), "animfps5", "5", "animfps10", "10", "animfps20", "20", "animfps30", "30", "animfps50", "50", "measureMenu", J.i18n.GT._ ("Measurements"), "measureOff", J.i18n.GT._ ("Double-Click begins and ends all measurements"), "measureDistance", J.i18n.GT._ ("Click for distance measurement"), "measureAngle", J.i18n.GT._ ("Click for angle measurement"), "measureTorsion", J.i18n.GT._ ("Click for torsion (dihedral) measurement"), "PDBmeasureSequence", J.i18n.GT._ ("Click two atoms to display a sequence in the console"), "measureDelete", J.i18n.GT._ ("Delete measurements"), "measureList", J.i18n.GT._ ("List measurements"), "distanceNanometers", J.i18n.GT._ ("Distance units nanometers"), "distanceAngstroms", J.i18n.GT._ ("Distance units Angstroms"), "distancePicometers", J.i18n.GT._ ("Distance units picometers"), "pickingMenu", J.i18n.GT._ ("Set picking"), "pickOff", J.i18n.GT._ ("Off"), "pickCenter", J.i18n.GT._ ("Center"), "pickIdent", J.i18n.GT._ ("Identity"), "pickLabel", J.i18n.GT._ ("Label"), "pickAtom", J.i18n.GT._ ("Select atom"), "PDBpickChain", J.i18n.GT._ ("Select chain"), "pickElement", J.i18n.GT._ ("Select element"), "PDBpickGroup", J.i18n.GT._ ("Select group"), "pickMolecule", J.i18n.GT._ ("Select molecule"), "SYMMETRYpickSite", J.i18n.GT._ ("Select site"), "SYMMETRYpickSymmetry", J.i18n.GT._ ("Show symmetry operation"), "pickSpin", J.i18n.GT._ ("Spin"), "showMenu", J.i18n.GT._ ("Show"), "showConsole", J.i18n.GT._ ("Console"), "JSConsole", "JavaScript Console", "showFile", J.i18n.GT._ ("File Contents"), "showFileHeader", J.i18n.GT._ ("File Header"), "showHistory", J.i18n.GT._ ("History"), "showIsosurface", J.i18n.GT._ ("Isosurface JVXL data"), "showMeasure", J.i18n.GT._ ("Measurements"), "showMo", J.i18n.GT._ ("Molecular orbital JVXL data"), "showModel", J.i18n.GT._ ("Model"), "showOrient", J.i18n.GT._ ("Orientation"), "showSpacegroup", J.i18n.GT._ ("Space group"), "SYMMETRYshowSymmetry", J.i18n.GT._ ("Symmetry"), "showState", J.i18n.GT._ ("Current state"), "fileMenu", J.i18n.GT._ ("File"), "reload", J.i18n.GT._ ("Reload"), "SIGNEDloadPdb", J.i18n.GT._ ("Open from PDB"), "SIGNEDloadFileOrUrl", J.i18n.GT._ ("Open file or URL"), "SIGNEDloadFileUnitCell", J.i18n.GT._ ("Load full unit cell"), "SIGNEDloadScript", J.i18n.GT._ ("Open script"), "SIGNEDJAVAcaptureMenuSPECIAL", J.i18n.GT._ ("Capture"), "SIGNEDJAVAcaptureRock", J.i18n.GT._ ("Capture rock"), "SIGNEDJAVAcaptureSpin", J.i18n.GT._ ("Capture spin"), "SIGNEDJAVAcaptureBegin", J.i18n.GT._ ("Start capturing"), "SIGNEDJAVAcaptureEnd", J.i18n.GT._ ("End capturing"), "SIGNEDJAVAcaptureOff", J.i18n.GT._ ("Disable capturing"), "SIGNEDJAVAcaptureOn", J.i18n.GT._ ("Re-enable capturing"), "SIGNEDJAVAcaptureFpsSPECIAL", J.i18n.GT._ ("Set capture replay rate"), "SIGNEDJAVAcaptureLoopingSPECIAL", J.i18n.GT._ ("Toggle capture looping"), "writeFileTextVARIABLE", J.i18n.GT._ ("Save a copy of {0}"), "writeState", J.i18n.GT._ ("Save script with state"), "writeHistory", J.i18n.GT._ ("Save script with history"), "SIGNEDNOGLwriteJpg", J.i18n.GT._ ("Export {0} image", "JPG"), "SIGNEDNOGLwritePng", J.i18n.GT._ ("Export {0} image", "PNG"), "SIGNEDNOGLwritePngJmol", J.i18n.GT._ ("Export {0} image", "PNG+JMOL"), "SIGNEDJAVAwriteGif", J.i18n.GT._ ("Export {0} image", "GIF"), "SIGNEDJAVAwritePovray", J.i18n.GT._ ("Export {0} image", "POV-Ray"), "SIGNEDwriteJmol", J.i18n.GT._ ("Save all as JMOL file (zip)"), "SIGNEDwriteIsosurface", J.i18n.GT._ ("Save JVXL isosurface"), "SIGNEDJAVAwriteVrml", J.i18n.GT._ ("Export {0} 3D model", "VRML"), "SIGNEDJAVAwriteX3d", J.i18n.GT._ ("Export {0} 3D model", "X3D"), "SIGNEDJAVAwriteIdtf", J.i18n.GT._ ("Export {0} 3D model", "IDTF"), "SIGNEDJAVAwriteMaya", J.i18n.GT._ ("Export {0} 3D model", "Maya"), "computationMenu", J.i18n.GT._ ("Computation"), "minimize", J.i18n.GT._ ("Optimize structure"), "modelkit", J.i18n.GT._ ("Model kit"), "UNITCELLshow", J.i18n.GT._ ("Unit cell"), "extractMOL", J.i18n.GT._ ("Extract MOL data"), "surfaceMenu", J.i18n.GT._ ("Surfaces"), "surfDots", J.i18n.GT._ ("Dot Surface"), "surfVDW", J.i18n.GT._ ("van der Waals Surface"), "surfMolecular", J.i18n.GT._ ("Molecular Surface"), "surfSolvent14", J.i18n.GT._ ("Solvent Surface ({0}-Angstrom probe)", "1.4"), "surfSolventAccessible14", J.i18n.GT._ ("Solvent-Accessible Surface (VDW + {0} Angstrom)", "1.4"), "CHARGEsurfMEP", J.i18n.GT._ ("Molecular Electrostatic Potential (range ALL)"), "CHARGEsurf2MEP", J.i18n.GT._ ("Molecular Electrostatic Potential (range -0.1 0.1)"), "surfOpaque", J.i18n.GT._ ("Make Opaque"), "surfTranslucent", J.i18n.GT._ ("Make Translucent"), "surfOff", J.i18n.GT._ ("Off"), "FILEUNITMenu", J.i18n.GT._ ("Symmetry"), "FILEMOLload", J.i18n.GT._ ("Reload {0}", "(molecular)"), "FILEUNITone", J.i18n.GT._ ("Reload {0}", "{1 1 1}"), "FILEUNITnine", J.i18n.GT._ ("Reload {0}", "{444 666 1}"), "FILEUNITnineRestricted", J.i18n.GT._ ("Reload {0} + Display {1}", ["{444 666 1}", "555"]), "FILEUNITninePoly", J.i18n.GT._ ("Reload + Polyhedra"), "[set_axes]Menu", J.i18n.GT._ ("Axes"), "[set_boundbox]Menu", J.i18n.GT._ ("Boundbox"), "[set_UNITCELL]Menu", J.i18n.GT._ ("Unit cell"), "off#axes", J.i18n.GT._ ("Hide"), "dotted", J.i18n.GT._ ("Dotted"), "byPixelMenu", J.i18n.GT._ ("Pixel Width"), "1p", J.i18n.GT._ ("{0} px", "1"), "3p", J.i18n.GT._ ("{0} px", "3"), "5p", J.i18n.GT._ ("{0} px", "5"), "10p", J.i18n.GT._ ("{0} px", "10"), "byAngstromMenu", J.i18n.GT._ ("Angstrom Width"), "10a", J.i18n.GT._ ("{0} \u00C5", "0.10"), "20a", J.i18n.GT._ ("{0} \u00C5", "0.20"), "25a", J.i18n.GT._ ("{0} \u00C5", "0.25"), "50a", J.i18n.GT._ ("{0} \u00C5", "0.50"), "100a", J.i18n.GT._ ("{0} \u00C5", "1.0"), "showSelectionsCB", J.i18n.GT._ ("Selection Halos"), "showHydrogensCB", J.i18n.GT._ ("Show Hydrogens"), "showMeasurementsCB", J.i18n.GT._ ("Show Measurements"), "perspectiveDepthCB", J.i18n.GT._ ("Perspective Depth"), "showBoundBoxCB", J.i18n.GT._ ("Boundbox"), "showAxesCB", J.i18n.GT._ ("Axes"), "showUNITCELLCB", J.i18n.GT._ ("Unit cell"), "colorrasmolCB", J.i18n.GT._ ("RasMol Colors"), "aboutComputedMenu", J.i18n.GT._ ("About..."), "APPLETjmolUrl", "http://www.jmol.org", "APPLETmouseManualUrl", J.i18n.GT._ ("Mouse Manual"), "APPLETtranslationUrl", J.i18n.GT._ ("Translations")];
 J.i18n.GT.setDoTranslate (wasTranslating);
 return words;
 });
-Clazz.overrideMethod (c$, "getMenuAsText", 
+$_V(c$, "getMenuAsText", 
 function (title) {
 return "# Jmol.mnu " + title + "\n\n" + "# Part I -- Menu Structure\n" + "# ------------------------\n\n" + this.dumpStructure (J.popup.MainPopupResourceBundle.menuContents) + "\n\n" + "# Part II -- Key Definitions\n" + "# --------------------------\n\n" + this.dumpStructure (J.popup.MainPopupResourceBundle.structureContents) + "\n\n" + "# Part III -- Word Translations\n" + "# -----------------------------\n\n" + this.dumpWords ();
 }, "~S");
 $_M(c$, "dumpWords", 
 ($fz = function () {
 var wordContents = this.getWordContents ();
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 for (var i = 0; i < wordContents.length; i++) {
 var key = wordContents[i++];
 if (this.structure.getProperty (key) == null) s.append (key).append (" | ").append (wordContents[i]).appendC ('\n');
@@ -1586,7 +1607,7 @@ return s.toString ();
 $_M(c$, "dumpStructure", 
 ($fz = function (items) {
 var previous = "";
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 for (var i = 0; i < items.length; i++) {
 var key = items[i][0];
 var label = this.words.getProperty (key);
@@ -1597,6 +1618,6 @@ return s.toString ();
 }, $fz.isPrivate = true, $fz), "~A");
 Clazz.defineStatics (c$,
 "MENU_NAME", "popupMenu");
-c$.menuContents = c$.prototype.menuContents = [["@COLOR", "black white red orange yellow green cyan blue indigo violet"], ["@AXESCOLOR", "gray salmon maroon olive slateblue gold orchid"], ["popupMenu", "FRAMESbyModelComputedMenu configurationComputedMenu - selectMenuText viewMenu renderMenu colorMenu - surfaceMenu FILEUNITMenu - sceneComputedMenu zoomMenu spinMenu VIBRATIONMenu spectraMenu FRAMESanimateMenu - measureMenu pickingMenu - showConsole JSConsole showMenu fileMenu computationMenu - languageComputedMenu aboutComputedMenu"], ["selectMenuText", "hideNotSelectedCB showSelectionsCB - selectAll selectNone invertSelection - elementsComputedMenu SYMMETRYSelectComputedMenu - PDBproteinMenu PDBnucleicMenu PDBheteroMenu PDBcarboMenu PDBnoneOfTheAbove"], ["PDBproteinMenu", "PDBaaResiduesComputedMenu - allProtein proteinBackbone proteinSideChains - polar nonpolar - positiveCharge negativeCharge noCharge"], ["PDBcarboMenu", "PDBcarboResiduesComputedMenu - allCarbo"], ["PDBnucleicMenu", "PDBnucleicResiduesComputedMenu - allNucleic nucleicBackbone nucleicBases - DNA RNA - atPairs auPairs gcPairs"], ["PDBheteroMenu", "PDBheteroComputedMenu - allHetero Solvent Water - Ligand exceptWater nonWaterSolvent"], ["viewMenu", "best front left right top bottom back"], ["renderMenu", "perspectiveDepthCB showBoundBoxCB showUNITCELLCB showAxesCB stereoMenu - renderSchemeMenu - atomMenu labelMenu bondMenu hbondMenu ssbondMenu - PDBstructureMenu [set_axes]Menu [set_boundbox]Menu [set_UNITCELL]Menu"], ["renderSchemeMenu", "renderCpkSpacefill renderBallAndStick renderSticks renderWireframe PDBrenderCartoonsOnly PDBrenderTraceOnly"], ["atomMenu", "showHydrogensCB - atomNone - atom15 atom20 atom25 atom50 atom75 atom100"], ["bondMenu", "bondNone bondWireframe - bond100 bond150 bond200 bond250 bond300"], ["hbondMenu", "hbondCalc hbondNone hbondWireframe - PDBhbondSidechain PDBhbondBackbone - hbond100 hbond150 hbond200 hbond250 hbond300"], ["ssbondMenu", "ssbondNone ssbondWireframe - PDBssbondSidechain PDBssbondBackbone - ssbond100 ssbond150 ssbond200 ssbond250 ssbond300"], ["PDBstructureMenu", "structureNone - backbone cartoon cartoonRockets ribbons rockets strands trace"], ["VIBRATIONvectorMenu", "vectorOff vectorOn vibScale20 vibScale05 vector3 vector005 vector01 - vectorScale02 vectorScale05 vectorScale1 vectorScale2 vectorScale5"], ["stereoMenu", "stereoNone stereoRedCyan stereoRedBlue stereoRedGreen stereoCrossEyed stereoWallEyed"], ["labelMenu", "labelNone - labelSymbol labelName labelNumber - labelPositionMenu"], ["labelPositionMenu", "labelCentered labelUpperRight labelLowerRight labelUpperLeft labelLowerLeft"], ["colorMenu", "colorrasmolCB - [color_atoms]Menu [color_bonds]Menu [color_hbonds]Menu [color_ssbonds]Menu colorPDBStructuresMenu [color_isosurface]Menu - [color_labels]Menu [color_vectors]Menu - [color_axes]Menu [color_boundbox]Menu [color_UNITCELL]Menu [color_background]Menu"], ["[color_atoms]Menu", "schemeMenu - @COLOR - opaque translucent"], ["[color_bonds]Menu", "none - @COLOR - opaque translucent"], ["[color_hbonds]Menu", null], ["[color_ssbonds]Menu", null], ["[color_labels]Menu", null], ["[color_vectors]Menu", null], ["[color_backbone]Menu", "none - schemeMenu - @COLOR - opaque translucent"], ["[color_cartoon]sMenu", null], ["[color_ribbon]sMenu", null], ["[color_rockets]Menu", null], ["[color_strands]Menu", null], ["[color_trace]Menu", null], ["[color_background]Menu", "@COLOR"], ["[color_isosurface]Menu", "@COLOR - opaque translucent"], ["[color_axes]Menu", "@AXESCOLOR"], ["[color_boundbox]Menu", null], ["[color_UNITCELL]Menu", null], ["colorPDBStructuresMenu", "[color_backbone]Menu [color_cartoon]sMenu [color_ribbon]sMenu [color_rockets]Menu [color_strands]Menu [color_trace]Menu"], ["schemeMenu", "cpk - formalcharge partialcharge#CHARGE - altloc#PDB amino#PDB chain#PDB group#PDB molecule monomer#PDB shapely#PDB structure#PDB relativeTemperature#BFACTORS fixedTemperature#BFACTORS"], ["zoomMenu", "zoom50 zoom100 zoom150 zoom200 zoom400 zoom800 - zoomIn zoomOut"], ["spinMenu", "spinOn spinOff - [set_spin_X]Menu [set_spin_Y]Menu [set_spin_Z]Menu - [set_spin_FPS]Menu"], ["VIBRATIONMenu", "vibrationOff vibrationOn vibration20 vibration05 VIBRATIONvectorMenu"], ["spectraMenu", "hnmrMenu cnmrMenu"], ["FRAMESanimateMenu", "animModeMenu - play pause resume stop - nextframe prevframe rewind - playrev restart - FRAMESanimFpsMenu"], ["FRAMESanimFpsMenu", "animfps5 animfps10 animfps20 animfps30 animfps50"], ["measureMenu", "showMeasurementsCB - measureOff measureDistance measureAngle measureTorsion PDBmeasureSequence - measureDelete measureList - distanceNanometers distanceAngstroms distancePicometers"], ["pickingMenu", "pickOff pickCenter pickIdent pickLabel pickAtom pickMolecule pickElement PDBpickChain PDBpickGroup SYMMETRYpickSite pickSpin"], ["computationMenu", "minimize modelkit"], ["showMenu", "showHistory showFile showFileHeader - showOrient showMeasure - showSpacegroup showState SYMMETRYshowSymmetry UNITCELLshow - showIsosurface showMo - extractMOL"], ["fileMenu", "SIGNEDloadFileOrUrl SIGNEDloadPdb SIGNEDloadScript - reload SIGNEDloadFileUnitCell - writeFileTextVARIABLE writeState writeHistory SIGNEDwriteJmol SIGNEDwriteIsosurface - SIGNEDJAVAwriteGif SIGNEDNOGLwriteJpg SIGNEDNOGLwritePng SIGNEDNOGLwritePngJmol SIGNEDJAVAwritePovray - SIGNEDJAVAwriteVrml SIGNEDJAVAwriteX3d SIGNEDJAVAwriteIdtf SIGNEDJAVAwriteMaya"], ["[set_spin_X]Menu", "s0 s5 s10 s20 s30 s40 s50"], ["[set_spin_Y]Menu", null], ["[set_spin_Z]Menu", null], ["[set_spin_FPS]Menu", null], ["animModeMenu", "onceThrough palindrome loop"], ["surfaceMenu", "surfDots surfVDW surfSolventAccessible14 surfSolvent14 surfMolecular CHARGEsurf2MEP CHARGEsurfMEP surfMoComputedMenuText - surfOpaque surfTranslucent surfOff"], ["FILEUNITMenu", "SYMMETRYShowComputedMenu SYMMETRYhide FILEMOLload FILEUNITone FILEUNITnine FILEUNITnineRestricted FILEUNITninePoly"], ["[set_axes]Menu", "off#axes dotted - byPixelMenu byAngstromMenu"], ["[set_boundbox]Menu", null], ["[set_UNITCELL]Menu", null], ["byPixelMenu", "1p 3p 5p 10p"], ["byAngstromMenu", "10a 20a 25a 50a 100a"], ["aboutComputedMenu", "- "]];
-c$.structureContents = c$.prototype.structureContents = [["colorrasmolCB", ""], ["hideNotSelectedCB", "set hideNotSelected true | set hideNotSelected false; hide(none)"], ["perspectiveDepthCB", ""], ["showAxesCB", "set showAxes true | set showAxes false;set axesMolecular"], ["showBoundBoxCB", ""], ["showHydrogensCB", ""], ["showMeasurementsCB", ""], ["showSelectionsCB", ""], ["showUNITCELLCB", ""], ["selectAll", "SELECT all"], ["selectNone", "SELECT none"], ["invertSelection", "SELECT not selected"], ["allProtein", "SELECT protein"], ["proteinBackbone", "SELECT protein and backbone"], ["proteinSideChains", "SELECT protein and not backbone"], ["polar", "SELECT protein and polar"], ["nonpolar", "SELECT protein and not polar"], ["positiveCharge", "SELECT protein and basic"], ["negativeCharge", "SELECT protein and acidic"], ["noCharge", "SELECT protein and not (acidic,basic)"], ["allCarbo", "SELECT carbohydrate"], ["allNucleic", "SELECT nucleic"], ["DNA", "SELECT dna"], ["RNA", "SELECT rna"], ["nucleicBackbone", "SELECT nucleic and backbone"], ["nucleicBases", "SELECT nucleic and not backbone"], ["atPairs", "SELECT a,t"], ["gcPairs", "SELECT g,c"], ["auPairs", "SELECT a,u"], ["A", "SELECT a"], ["C", "SELECT c"], ["G", "SELECT g"], ["T", "SELECT t"], ["U", "SELECT u"], ["allHetero", "SELECT hetero"], ["Solvent", "SELECT solvent"], ["Water", "SELECT water"], ["nonWaterSolvent", "SELECT solvent and not water"], ["exceptWater", "SELECT hetero and not water"], ["Ligand", "SELECT ligand"], ["PDBnoneOfTheAbove", "SELECT not(hetero,protein,nucleic,carbohydrate)"], ["best", "rotate best -1.0"], ["front", J.popup.MainPopupResourceBundle.Box ("moveto 2.0 front;delay 1")], ["left", J.popup.MainPopupResourceBundle.Box ("moveto 1.0 front;moveto 2.0 left;delay 1")], ["right", J.popup.MainPopupResourceBundle.Box ("moveto 1.0 front;moveto 2.0 right;delay 1")], ["top", J.popup.MainPopupResourceBundle.Box ("moveto 1.0 front;moveto 2.0 top;delay 1")], ["bottom", J.popup.MainPopupResourceBundle.Box ("moveto 1.0 front;moveto 2.0 bottom;delay 1")], ["back", J.popup.MainPopupResourceBundle.Box ("moveto 1.0 front;moveto 2.0 back;delay 1")], ["renderCpkSpacefill", "restrict bonds not selected;select not selected;spacefill 100%;color cpk"], ["renderBallAndStick", "restrict bonds not selected;select not selected;spacefill 23%AUTO;wireframe 0.15;color cpk"], ["renderSticks", "restrict bonds not selected;select not selected;wireframe 0.3;color cpk"], ["renderWireframe", "restrict bonds not selected;select not selected;wireframe on;color cpk"], ["PDBrenderCartoonsOnly", "restrict bonds not selected;select not selected;cartoons on;color structure"], ["PDBrenderTraceOnly", "restrict bonds not selected;select not selected;trace on;color structure"], ["atomNone", "cpk off"], ["atom15", "cpk 15%"], ["atom20", "cpk 20%"], ["atom25", "cpk 25%"], ["atom50", "cpk 50%"], ["atom75", "cpk 75%"], ["atom100", "cpk on"], ["bondNone", "wireframe off"], ["bondWireframe", "wireframe on"], ["bond100", "wireframe .1"], ["bond150", "wireframe .15"], ["bond200", "wireframe .2"], ["bond250", "wireframe .25"], ["bond300", "wireframe .3"], ["hbondCalc", "hbonds calculate"], ["hbondNone", "hbonds off"], ["hbondWireframe", "hbonds on"], ["PDBhbondSidechain", "set hbonds sidechain"], ["PDBhbondBackbone", "set hbonds backbone"], ["hbond100", "hbonds .1"], ["hbond150", "hbonds .15"], ["hbond200", "hbonds .2"], ["hbond250", "hbonds .25"], ["hbond300", "hbonds .3"], ["ssbondNone", "ssbonds off"], ["ssbondWireframe", "ssbonds on"], ["PDBssbondSidechain", "set ssbonds sidechain"], ["PDBssbondBackbone", "set ssbonds backbone"], ["ssbond100", "ssbonds .1"], ["ssbond150", "ssbonds .15"], ["ssbond200", "ssbonds .2"], ["ssbond250", "ssbonds .25"], ["ssbond300", "ssbonds .3"], ["structureNone", "backbone off;cartoons off;ribbons off;rockets off;strands off;trace off;"], ["backbone", "restrict not selected;select not selected;backbone 0.3"], ["cartoon", "restrict not selected;select not selected;set cartoonRockets false;cartoons on"], ["cartoonRockets", "restrict not selected;select not selected;set cartoonRockets;cartoons on"], ["ribbons", "restrict not selected;select not selected;ribbons on"], ["rockets", "restrict not selected;select not selected;rockets on"], ["strands", "restrict not selected;select not selected;strands on"], ["trace", "restrict not selected;select not selected;trace 0.3"], ["vibrationOff", "vibration off"], ["vibrationOn", "vibration on"], ["vibration20", "vibrationScale *= 2"], ["vibration05", "vibrationScale /= 2"], ["vectorOff", "vectors off"], ["vectorOn", "vectors on"], ["vector3", "vectors 3"], ["vector005", "vectors 0.05"], ["vector01", "vectors 0.1"], ["vectorScale02", "vector scale 0.2"], ["vectorScale05", "vector scale 0.5"], ["vectorScale1", "vector scale 1"], ["vectorScale2", "vector scale 2"], ["vectorScale5", "vector scale 5"], ["stereoNone", "stereo off"], ["stereoRedCyan", "stereo redcyan 3"], ["stereoRedBlue", "stereo redblue 3"], ["stereoRedGreen", "stereo redgreen 3"], ["stereoCrossEyed", "stereo -5"], ["stereoWallEyed", "stereo 5"], ["labelNone", "label off"], ["labelSymbol", "label %e"], ["labelName", "label %a"], ["labelNumber", "label %i"], ["labelCentered", "set labeloffset 0 0"], ["labelUpperRight", "set labeloffset 4 4"], ["labelLowerRight", "set labeloffset 4 -4"], ["labelUpperLeft", "set labeloffset -4 4"], ["labelLowerLeft", "set labeloffset -4 -4"], ["zoom50", "zoom 50"], ["zoom100", "zoom 100"], ["zoom150", "zoom 150"], ["zoom200", "zoom 200"], ["zoom400", "zoom 400"], ["zoom800", "zoom 800"], ["zoomIn", "move 0 0 0 40 0 0 0 0 1"], ["zoomOut", "move 0 0 0 -40 0 0 0 0 1"], ["spinOn", "spin on"], ["spinOff", "spin off"], ["s0", "0"], ["s5", "5"], ["s10", "10"], ["s20", "20"], ["s30", "30"], ["s40", "40"], ["s50", "50"], ["onceThrough", "anim mode once#"], ["palindrome", "anim mode palindrome#"], ["loop", "anim mode loop#"], ["play", "anim play#"], ["pause", "anim pause#"], ["resume", "anim resume#"], ["stop", "anim off#"], ["nextframe", "frame next#"], ["prevframe", "frame prev#"], ["playrev", "anim playrev#"], ["rewind", "anim rewind#"], ["restart", "anim on#"], ["animfps5", "anim fps 5#"], ["animfps10", "anim fps 10#"], ["animfps20", "anim fps 20#"], ["animfps30", "anim fps 30#"], ["animfps50", "anim fps 50#"], ["measureOff", "set pickingstyle MEASURE OFF; set picking OFF"], ["measureDistance", "set pickingstyle MEASURE; set picking MEASURE DISTANCE"], ["measureAngle", "set pickingstyle MEASURE; set picking MEASURE ANGLE"], ["measureTorsion", "set pickingstyle MEASURE; set picking MEASURE TORSION"], ["PDBmeasureSequence", "set pickingstyle MEASURE; set picking MEASURE SEQUENCE"], ["measureDelete", "measure delete"], ["measureList", "console on;show measurements"], ["distanceNanometers", "select *; set measure nanometers"], ["distanceAngstroms", "select *; set measure angstroms"], ["distancePicometers", "select *; set measure picometers"], ["pickOff", "set picking off"], ["pickCenter", "set picking center"], ["pickIdent", "set picking ident"], ["pickLabel", "set picking label"], ["pickAtom", "set picking atom"], ["PDBpickChain", "set picking chain"], ["pickElement", "set picking element"], ["PDBpickGroup", "set picking group"], ["pickMolecule", "set picking molecule"], ["SYMMETRYpickSite", "set picking site"], ["pickSpin", "set picking spin"], ["SYMMETRYpickSymmetry", "set picking symmetry"], ["showConsole", "console"], ["JSConsole", "JSCONSOLE"], ["showFile", "console on;show file"], ["showFileHeader", "console on;getProperty FileHeader"], ["showHistory", "console on;show history"], ["showIsosurface", "console on;show isosurface"], ["showMeasure", "console on;show measure"], ["showMo", "console on;show mo"], ["showModel", "console on;show model"], ["showOrient", "console on;show orientation"], ["showSpacegroup", "console on;show spacegroup"], ["showState", "console on;show state"], ["reload", "load \"\""], ["SIGNEDloadPdb", "load ?PdbId?"], ["SIGNEDloadFileOrUrl", "load ?"], ["SIGNEDloadFileUnitCell", "load ? {1 1 1}"], ["SIGNEDloadScript", "script ?.spt"], ["writeFileTextVARIABLE", "if (_applet && !_signedApplet) { console;show file } else { write file \"?FILE?\"}"], ["writeState", "if (_applet && !_signedApplet) { console;show state } else { write state \"?FILEROOT?.spt\"}"], ["writeHistory", "if (_applet && !_signedApplet) { console;show history } else { write history \"?FILEROOT?.his\"}"], ["SIGNEDwriteJmol", "write \"?FILEROOT?.jmol\""], ["SIGNEDwriteIsosurface", "write isosurface \"?FILEROOT?.jvxl\""], ["SIGNEDJAVAwriteGif", "write image \"?FILEROOT?.gif\""], ["SIGNEDNOGLwriteJpg", "write image \"?FILEROOT?.jpg\""], ["SIGNEDNOGLwritePng", "write image \"?FILEROOT?.png\""], ["SIGNEDNOGLwritePngJmol", "write PNGJ \"?FILEROOT?.png\""], ["SIGNEDJAVAwritePovray", "write POVRAY \"?FILEROOT?.pov\""], ["SIGNEDJAVAwriteVrml", "write VRML \"?FILEROOT?.wrl\""], ["SIGNEDJAVAwriteX3d", "write X3D \"?FILEROOT?.x3d\""], ["SIGNEDJAVAwriteIdtf", "write IDTF \"?FILEROOT?.idtf\""], ["SIGNEDJAVAwriteMaya", "write MAYA \"?FILEROOT?.ma\""], ["SYMMETRYshowSymmetry", "console on;show symmetry"], ["UNITCELLshow", "console on;show unitcell"], ["extractMOL", "console on;getproperty extractModel \"visible\" "], ["minimize", "minimize"], ["modelkit", "set modelkitmode"], ["surfDots", "dots on"], ["surfVDW", "isosurface delete resolution 0 solvent 0 translucent"], ["surfMolecular", "isosurface delete resolution 0 molecular translucent"], ["surfSolvent14", "isosurface delete resolution 0 solvent 1.4 translucent"], ["surfSolventAccessible14", "isosurface delete resolution 0 sasurface 1.4 translucent"], ["CHARGEsurfMEP", "isosurface delete resolution 0 vdw color range all map MEP translucent"], ["CHARGEsurf2MEP", "isosurface delete resolution 0 vdw color range -0.1 0.1 map MEP translucent"], ["surfOpaque", "mo opaque;isosurface opaque"], ["surfTranslucent", "mo translucent;isosurface translucent"], ["surfOff", "mo delete;isosurface delete;select *;dots off"], ["SYMMETRYhide", "draw sym_* delete"], ["FILEMOLload", "save orientation;load \"\";restore orientation;center"], ["FILEUNITone", "save orientation;load \"\" {1 1 1} ;restore orientation;center"], ["FILEUNITnine", "save orientation;load \"\" {444 666 1} ;restore orientation;center"], ["FILEUNITnineRestricted", "save orientation;load \"\" {444 666 1} ;restore orientation; unitcell on; display cell=555;center visible;zoom 200"], ["FILEUNITninePoly", "save orientation;load \"\" {444 666 1} ;restore orientation; unitcell on; display cell=555; polyhedra 4,6 (displayed);center (visible);zoom 200"], ["1p", "on"], ["3p", "3"], ["5p", "5"], ["10p", "10"], ["10a", "0.1"], ["20a", "0.20"], ["25a", "0.25"], ["50a", "0.50"], ["100a", "1.0"]];
+c$.menuContents = c$.prototype.menuContents = [["@COLOR", "black white red orange yellow green cyan blue indigo violet"], ["@AXESCOLOR", "gray salmon maroon olive slateblue gold orchid"], ["popupMenu", "FRAMESbyModelComputedMenu configurationComputedMenu - selectMenuText viewMenu renderMenu colorMenu - surfaceMenu FILEUNITMenu - sceneComputedMenu zoomMenu spinMenu VIBRATIONMenu spectraMenu FRAMESanimateMenu - measureMenu pickingMenu - showConsole JSConsole showMenu fileMenu computationMenu - languageComputedMenu aboutComputedMenu"], ["selectMenuText", "hideNotSelectedCB showSelectionsCB - selectAll selectNone invertSelection - elementsComputedMenu SYMMETRYSelectComputedMenu - PDBproteinMenu PDBnucleicMenu PDBheteroMenu PDBcarboMenu PDBnoneOfTheAbove"], ["PDBproteinMenu", "PDBaaResiduesComputedMenu - allProtein proteinBackbone proteinSideChains - polar nonpolar - positiveCharge negativeCharge noCharge"], ["PDBcarboMenu", "PDBcarboResiduesComputedMenu - allCarbo"], ["PDBnucleicMenu", "PDBnucleicResiduesComputedMenu - allNucleic nucleicBackbone nucleicBases - DNA RNA - atPairs auPairs gcPairs"], ["PDBheteroMenu", "PDBheteroComputedMenu - allHetero Solvent Water - Ligand exceptWater nonWaterSolvent"], ["viewMenu", "best front left right top bottom back"], ["renderMenu", "perspectiveDepthCB showBoundBoxCB showUNITCELLCB showAxesCB stereoMenu - renderSchemeMenu - atomMenu labelMenu bondMenu hbondMenu ssbondMenu - PDBstructureMenu [set_axes]Menu [set_boundbox]Menu [set_UNITCELL]Menu"], ["renderSchemeMenu", "renderCpkSpacefill renderBallAndStick renderSticks renderWireframe PDBrenderCartoonsOnly PDBrenderTraceOnly"], ["atomMenu", "showHydrogensCB - atomNone - atom15 atom20 atom25 atom50 atom75 atom100"], ["bondMenu", "bondNone bondWireframe - bond100 bond150 bond200 bond250 bond300"], ["hbondMenu", "hbondCalc hbondNone hbondWireframe - PDBhbondSidechain PDBhbondBackbone - hbond100 hbond150 hbond200 hbond250 hbond300"], ["ssbondMenu", "ssbondNone ssbondWireframe - PDBssbondSidechain PDBssbondBackbone - ssbond100 ssbond150 ssbond200 ssbond250 ssbond300"], ["PDBstructureMenu", "structureNone - backbone cartoon cartoonRockets ribbons rockets strands trace"], ["VIBRATIONvectorMenu", "vectorOff vectorOn vibScale20 vibScale05 vector3 vector005 vector01 - vectorScale02 vectorScale05 vectorScale1 vectorScale2 vectorScale5"], ["stereoMenu", "stereoNone stereoRedCyan stereoRedBlue stereoRedGreen stereoCrossEyed stereoWallEyed"], ["labelMenu", "labelNone - labelSymbol labelName labelNumber - labelPositionMenu"], ["labelPositionMenu", "labelCentered labelUpperRight labelLowerRight labelUpperLeft labelLowerLeft"], ["colorMenu", "colorrasmolCB - [color_atoms]Menu [color_bonds]Menu [color_hbonds]Menu [color_ssbonds]Menu colorPDBStructuresMenu [color_isosurface]Menu - [color_labels]Menu [color_vectors]Menu - [color_axes]Menu [color_boundbox]Menu [color_UNITCELL]Menu [color_background]Menu"], ["[color_atoms]Menu", "schemeMenu - @COLOR - opaque translucent"], ["[color_bonds]Menu", "none - @COLOR - opaque translucent"], ["[color_hbonds]Menu", null], ["[color_ssbonds]Menu", null], ["[color_labels]Menu", null], ["[color_vectors]Menu", null], ["[color_backbone]Menu", "none - schemeMenu - @COLOR - opaque translucent"], ["[color_cartoon]sMenu", null], ["[color_ribbon]sMenu", null], ["[color_rockets]Menu", null], ["[color_strands]Menu", null], ["[color_trace]Menu", null], ["[color_background]Menu", "@COLOR"], ["[color_isosurface]Menu", "@COLOR - opaque translucent"], ["[color_axes]Menu", "@AXESCOLOR"], ["[color_boundbox]Menu", null], ["[color_UNITCELL]Menu", null], ["colorPDBStructuresMenu", "[color_backbone]Menu [color_cartoon]sMenu [color_ribbon]sMenu [color_rockets]Menu [color_strands]Menu [color_trace]Menu"], ["schemeMenu", "cpk - formalcharge partialcharge#CHARGE - altloc#PDB amino#PDB chain#PDB group#PDB molecule monomer#PDB shapely#PDB structure#PDB relativeTemperature#BFACTORS fixedTemperature#BFACTORS"], ["zoomMenu", "zoom50 zoom100 zoom150 zoom200 zoom400 zoom800 - zoomIn zoomOut"], ["spinMenu", "spinOn spinOff - [set_spin_X]Menu [set_spin_Y]Menu [set_spin_Z]Menu - [set_spin_FPS]Menu"], ["VIBRATIONMenu", "vibrationOff vibrationOn vibration20 vibration05 VIBRATIONvectorMenu"], ["spectraMenu", "hnmrMenu cnmrMenu"], ["FRAMESanimateMenu", "animModeMenu - play pause resume stop - nextframe prevframe rewind - playrev restart - FRAMESanimFpsMenu"], ["FRAMESanimFpsMenu", "animfps5 animfps10 animfps20 animfps30 animfps50"], ["measureMenu", "showMeasurementsCB - measureOff measureDistance measureAngle measureTorsion PDBmeasureSequence - measureDelete measureList - distanceNanometers distanceAngstroms distancePicometers"], ["pickingMenu", "pickOff pickCenter pickIdent pickLabel pickAtom pickMolecule pickElement PDBpickChain PDBpickGroup SYMMETRYpickSite pickSpin"], ["computationMenu", "minimize modelkit"], ["showMenu", "showHistory showFile showFileHeader - showOrient showMeasure - showSpacegroup showState SYMMETRYshowSymmetry UNITCELLshow - showIsosurface showMo - extractMOL"], ["fileMenu", "SIGNEDloadFileOrUrl SIGNEDloadPdb SIGNEDloadScript - reload SIGNEDloadFileUnitCell - writeFileTextVARIABLE writeState writeHistory SIGNEDwriteJmol SIGNEDwriteIsosurface - SIGNEDJAVAcaptureMenuSPECIAL - SIGNEDJAVAwriteGif SIGNEDNOGLwriteJpg SIGNEDNOGLwritePng SIGNEDNOGLwritePngJmol SIGNEDJAVAwritePovray - SIGNEDJAVAwriteVrml SIGNEDJAVAwriteX3d SIGNEDJAVAwriteIdtf SIGNEDJAVAwriteMaya"], ["SIGNEDJAVAcaptureMenuSPECIAL", "SIGNEDJAVAcaptureRock SIGNEDJAVAcaptureSpin - SIGNEDJAVAcaptureBegin SIGNEDJAVAcaptureEnd SIGNEDJAVAcaptureOff SIGNEDJAVAcaptureOn SIGNEDJAVAcaptureFpsSPECIAL SIGNEDJAVAcaptureLoopingSPECIAL"], ["[set_spin_X]Menu", "s0 s5 s10 s20 s30 s40 s50"], ["[set_spin_Y]Menu", null], ["[set_spin_Z]Menu", null], ["[set_spin_FPS]Menu", null], ["animModeMenu", "onceThrough palindrome loop"], ["surfaceMenu", "surfDots surfVDW surfSolventAccessible14 surfSolvent14 surfMolecular CHARGEsurf2MEP CHARGEsurfMEP surfMoComputedMenuText - surfOpaque surfTranslucent surfOff"], ["FILEUNITMenu", "SYMMETRYShowComputedMenu SYMMETRYhide FILEMOLload FILEUNITone FILEUNITnine FILEUNITnineRestricted FILEUNITninePoly"], ["[set_axes]Menu", "off#axes dotted - byPixelMenu byAngstromMenu"], ["[set_boundbox]Menu", null], ["[set_UNITCELL]Menu", null], ["byPixelMenu", "1p 3p 5p 10p"], ["byAngstromMenu", "10a 20a 25a 50a 100a"], ["aboutComputedMenu", "- "]];
+c$.structureContents = c$.prototype.structureContents = [["colorrasmolCB", ""], ["hideNotSelectedCB", "set hideNotSelected true | set hideNotSelected false; hide(none)"], ["perspectiveDepthCB", ""], ["showAxesCB", "set showAxes true | set showAxes false;set axesMolecular"], ["showBoundBoxCB", ""], ["showHydrogensCB", ""], ["showMeasurementsCB", ""], ["showSelectionsCB", ""], ["showUNITCELLCB", ""], ["selectAll", "SELECT all"], ["selectNone", "SELECT none"], ["invertSelection", "SELECT not selected"], ["allProtein", "SELECT protein"], ["proteinBackbone", "SELECT protein and backbone"], ["proteinSideChains", "SELECT protein and not backbone"], ["polar", "SELECT protein and polar"], ["nonpolar", "SELECT protein and not polar"], ["positiveCharge", "SELECT protein and basic"], ["negativeCharge", "SELECT protein and acidic"], ["noCharge", "SELECT protein and not (acidic,basic)"], ["allCarbo", "SELECT carbohydrate"], ["allNucleic", "SELECT nucleic"], ["DNA", "SELECT dna"], ["RNA", "SELECT rna"], ["nucleicBackbone", "SELECT nucleic and backbone"], ["nucleicBases", "SELECT nucleic and not backbone"], ["atPairs", "SELECT a,t"], ["gcPairs", "SELECT g,c"], ["auPairs", "SELECT a,u"], ["A", "SELECT a"], ["C", "SELECT c"], ["G", "SELECT g"], ["T", "SELECT t"], ["U", "SELECT u"], ["allHetero", "SELECT hetero"], ["Solvent", "SELECT solvent"], ["Water", "SELECT water"], ["nonWaterSolvent", "SELECT solvent and not water"], ["exceptWater", "SELECT hetero and not water"], ["Ligand", "SELECT ligand"], ["PDBnoneOfTheAbove", "SELECT not(hetero,protein,nucleic,carbohydrate)"], ["best", "rotate best -1.0"], ["front", J.popup.MainPopupResourceBundle.Box ("moveto 2.0 front;delay 1")], ["left", J.popup.MainPopupResourceBundle.Box ("moveto 1.0 front;moveto 2.0 left;delay 1")], ["right", J.popup.MainPopupResourceBundle.Box ("moveto 1.0 front;moveto 2.0 right;delay 1")], ["top", J.popup.MainPopupResourceBundle.Box ("moveto 1.0 front;moveto 2.0 top;delay 1")], ["bottom", J.popup.MainPopupResourceBundle.Box ("moveto 1.0 front;moveto 2.0 bottom;delay 1")], ["back", J.popup.MainPopupResourceBundle.Box ("moveto 1.0 front;moveto 2.0 back;delay 1")], ["renderCpkSpacefill", "restrict bonds not selected;select not selected;spacefill 100%;color cpk"], ["renderBallAndStick", "restrict bonds not selected;select not selected;spacefill 23%AUTO;wireframe 0.15;color cpk"], ["renderSticks", "restrict bonds not selected;select not selected;wireframe 0.3;color cpk"], ["renderWireframe", "restrict bonds not selected;select not selected;wireframe on;color cpk"], ["PDBrenderCartoonsOnly", "restrict bonds not selected;select not selected;cartoons on;color structure"], ["PDBrenderTraceOnly", "restrict bonds not selected;select not selected;trace on;color structure"], ["atomNone", "cpk off"], ["atom15", "cpk 15%"], ["atom20", "cpk 20%"], ["atom25", "cpk 25%"], ["atom50", "cpk 50%"], ["atom75", "cpk 75%"], ["atom100", "cpk on"], ["bondNone", "wireframe off"], ["bondWireframe", "wireframe on"], ["bond100", "wireframe .1"], ["bond150", "wireframe .15"], ["bond200", "wireframe .2"], ["bond250", "wireframe .25"], ["bond300", "wireframe .3"], ["hbondCalc", "hbonds calculate"], ["hbondNone", "hbonds off"], ["hbondWireframe", "hbonds on"], ["PDBhbondSidechain", "set hbonds sidechain"], ["PDBhbondBackbone", "set hbonds backbone"], ["hbond100", "hbonds .1"], ["hbond150", "hbonds .15"], ["hbond200", "hbonds .2"], ["hbond250", "hbonds .25"], ["hbond300", "hbonds .3"], ["ssbondNone", "ssbonds off"], ["ssbondWireframe", "ssbonds on"], ["PDBssbondSidechain", "set ssbonds sidechain"], ["PDBssbondBackbone", "set ssbonds backbone"], ["ssbond100", "ssbonds .1"], ["ssbond150", "ssbonds .15"], ["ssbond200", "ssbonds .2"], ["ssbond250", "ssbonds .25"], ["ssbond300", "ssbonds .3"], ["structureNone", "backbone off;cartoons off;ribbons off;rockets off;strands off;trace off;"], ["backbone", "restrict not selected;select not selected;backbone 0.3"], ["cartoon", "restrict not selected;select not selected;set cartoonRockets false;cartoons on"], ["cartoonRockets", "restrict not selected;select not selected;set cartoonRockets;cartoons on"], ["ribbons", "restrict not selected;select not selected;ribbons on"], ["rockets", "restrict not selected;select not selected;rockets on"], ["strands", "restrict not selected;select not selected;strands on"], ["trace", "restrict not selected;select not selected;trace 0.3"], ["vibrationOff", "vibration off"], ["vibrationOn", "vibration on"], ["vibration20", "vibrationScale *= 2"], ["vibration05", "vibrationScale /= 2"], ["vectorOff", "vectors off"], ["vectorOn", "vectors on"], ["vector3", "vectors 3"], ["vector005", "vectors 0.05"], ["vector01", "vectors 0.1"], ["vectorScale02", "vector scale 0.2"], ["vectorScale05", "vector scale 0.5"], ["vectorScale1", "vector scale 1"], ["vectorScale2", "vector scale 2"], ["vectorScale5", "vector scale 5"], ["stereoNone", "stereo off"], ["stereoRedCyan", "stereo redcyan 3"], ["stereoRedBlue", "stereo redblue 3"], ["stereoRedGreen", "stereo redgreen 3"], ["stereoCrossEyed", "stereo -5"], ["stereoWallEyed", "stereo 5"], ["labelNone", "label off"], ["labelSymbol", "label %e"], ["labelName", "label %a"], ["labelNumber", "label %i"], ["labelCentered", "set labeloffset 0 0"], ["labelUpperRight", "set labeloffset 4 4"], ["labelLowerRight", "set labeloffset 4 -4"], ["labelUpperLeft", "set labeloffset -4 4"], ["labelLowerLeft", "set labeloffset -4 -4"], ["zoom50", "zoom 50"], ["zoom100", "zoom 100"], ["zoom150", "zoom 150"], ["zoom200", "zoom 200"], ["zoom400", "zoom 400"], ["zoom800", "zoom 800"], ["zoomIn", "move 0 0 0 40 0 0 0 0 1"], ["zoomOut", "move 0 0 0 -40 0 0 0 0 1"], ["spinOn", "spin on"], ["spinOff", "spin off"], ["s0", "0"], ["s5", "5"], ["s10", "10"], ["s20", "20"], ["s30", "30"], ["s40", "40"], ["s50", "50"], ["onceThrough", "anim mode once#"], ["palindrome", "anim mode palindrome#"], ["loop", "anim mode loop#"], ["play", "anim play#"], ["pause", "anim pause#"], ["resume", "anim resume#"], ["stop", "anim off#"], ["nextframe", "frame next#"], ["prevframe", "frame prev#"], ["playrev", "anim playrev#"], ["rewind", "anim rewind#"], ["restart", "anim on#"], ["animfps5", "anim fps 5#"], ["animfps10", "anim fps 10#"], ["animfps20", "anim fps 20#"], ["animfps30", "anim fps 30#"], ["animfps50", "anim fps 50#"], ["measureOff", "set pickingstyle MEASURE OFF; set picking OFF"], ["measureDistance", "set pickingstyle MEASURE; set picking MEASURE DISTANCE"], ["measureAngle", "set pickingstyle MEASURE; set picking MEASURE ANGLE"], ["measureTorsion", "set pickingstyle MEASURE; set picking MEASURE TORSION"], ["PDBmeasureSequence", "set pickingstyle MEASURE; set picking MEASURE SEQUENCE"], ["measureDelete", "measure delete"], ["measureList", "console on;show measurements"], ["distanceNanometers", "select *; set measure nanometers"], ["distanceAngstroms", "select *; set measure angstroms"], ["distancePicometers", "select *; set measure picometers"], ["pickOff", "set picking off"], ["pickCenter", "set picking center"], ["pickIdent", "set picking ident"], ["pickLabel", "set picking label"], ["pickAtom", "set picking atom"], ["PDBpickChain", "set picking chain"], ["pickElement", "set picking element"], ["PDBpickGroup", "set picking group"], ["pickMolecule", "set picking molecule"], ["SYMMETRYpickSite", "set picking site"], ["pickSpin", "set picking spin"], ["SYMMETRYpickSymmetry", "set picking symmetry"], ["showConsole", "console"], ["JSConsole", "JSCONSOLE"], ["showFile", "console on;show file"], ["showFileHeader", "console on;getProperty FileHeader"], ["showHistory", "console on;show history"], ["showIsosurface", "console on;show isosurface"], ["showMeasure", "console on;show measure"], ["showMo", "console on;show mo"], ["showModel", "console on;show model"], ["showOrient", "console on;show orientation"], ["showSpacegroup", "console on;show spacegroup"], ["showState", "console on;show state"], ["reload", "load \"\""], ["SIGNEDloadPdb", "load ?PdbId?"], ["SIGNEDloadFileOrUrl", "load ?"], ["SIGNEDloadFileUnitCell", "load ? {1 1 1}"], ["SIGNEDloadScript", "script ?.spt"], ["SIGNEDJAVAcaptureRock", "animation mode loop;capture '?Jmol.gif' rock y 10"], ["SIGNEDJAVAcaptureSpin", "animation mode loop;capture '?Jmol.gif' spin y"], ["SIGNEDJAVAcaptureBegin", "capture '?Jmol.gif'"], ["SIGNEDJAVAcaptureEnd", "capture ''"], ["SIGNEDJAVAcaptureOff", "capture off"], ["SIGNEDJAVAcaptureOn", "capture on"], ["SIGNEDJAVAcaptureFpsSPECIAL", "animation fps @{0+prompt('Capture replay frames per second?', animationFPS)};prompt 'animation FPS ' + animationFPS"], ["SIGNEDJAVAcaptureLoopingSPECIAL", "animation mode @{(animationMode=='ONCE' ? 'LOOP':'ONCE')};prompt 'animation MODE ' + animationMode"], ["writeFileTextVARIABLE", "if (_applet && !_signedApplet) { console;show file } else { write file \"?FILE?\"}"], ["writeState", "if (_applet && !_signedApplet) { console;show state } else { write state \"?FILEROOT?.spt\"}"], ["writeHistory", "if (_applet && !_signedApplet) { console;show history } else { write history \"?FILEROOT?.his\"}"], ["SIGNEDwriteJmol", "write \"?FILEROOT?.jmol\""], ["SIGNEDwriteIsosurface", "write isosurface \"?FILEROOT?.jvxl\""], ["SIGNEDJAVAwriteGif", "write image \"?FILEROOT?.gif\""], ["SIGNEDNOGLwriteJpg", "write image \"?FILEROOT?.jpg\""], ["SIGNEDNOGLwritePng", "write image \"?FILEROOT?.png\""], ["SIGNEDNOGLwritePngJmol", "write PNGJ \"?FILEROOT?.png\""], ["SIGNEDJAVAwritePovray", "write POVRAY \"?FILEROOT?.pov\""], ["SIGNEDJAVAwriteVrml", "write VRML \"?FILEROOT?.wrl\""], ["SIGNEDJAVAwriteX3d", "write X3D \"?FILEROOT?.x3d\""], ["SIGNEDJAVAwriteIdtf", "write IDTF \"?FILEROOT?.idtf\""], ["SIGNEDJAVAwriteMaya", "write MAYA \"?FILEROOT?.ma\""], ["SYMMETRYshowSymmetry", "console on;show symmetry"], ["UNITCELLshow", "console on;show unitcell"], ["extractMOL", "console on;getproperty extractModel \"visible\" "], ["minimize", "minimize"], ["modelkit", "set modelkitmode"], ["surfDots", "dots on"], ["surfVDW", "isosurface delete resolution 0 solvent 0 translucent"], ["surfMolecular", "isosurface delete resolution 0 molecular translucent"], ["surfSolvent14", "isosurface delete resolution 0 solvent 1.4 translucent"], ["surfSolventAccessible14", "isosurface delete resolution 0 sasurface 1.4 translucent"], ["CHARGEsurfMEP", "isosurface delete resolution 0 vdw color range all map MEP translucent"], ["CHARGEsurf2MEP", "isosurface delete resolution 0 vdw color range -0.1 0.1 map MEP translucent"], ["surfOpaque", "mo opaque;isosurface opaque"], ["surfTranslucent", "mo translucent;isosurface translucent"], ["surfOff", "mo delete;isosurface delete;select *;dots off"], ["SYMMETRYhide", "draw sym_* delete"], ["FILEMOLload", "save orientation;load \"\";restore orientation;center"], ["FILEUNITone", "save orientation;load \"\" {1 1 1} ;restore orientation;center"], ["FILEUNITnine", "save orientation;load \"\" {444 666 1} ;restore orientation;center"], ["FILEUNITnineRestricted", "save orientation;load \"\" {444 666 1} ;restore orientation; unitcell on; display cell=555;center visible;zoom 200"], ["FILEUNITninePoly", "save orientation;load \"\" {444 666 1} ;restore orientation; unitcell on; display cell=555; polyhedra 4,6 (displayed);center (visible);zoom 200"], ["1p", "on"], ["3p", "3"], ["5p", "5"], ["10p", "10"], ["10a", "0.1"], ["20a", "0.20"], ["25a", "0.25"], ["50a", "0.50"], ["100a", "1.0"]];
 });

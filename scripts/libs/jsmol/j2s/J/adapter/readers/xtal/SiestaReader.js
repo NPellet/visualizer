@@ -8,11 +8,11 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.unitCellData =  Clazz.newFloatArray (9, 0);
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.doApplySymmetry = true;
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.contains ("%block LatticeVectors")) {
 if (this.doGetModel (++this.modelNumber, null)) this.readCellThenAtomsCartesian ();

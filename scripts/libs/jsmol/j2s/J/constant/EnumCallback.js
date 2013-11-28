@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.constant");
-Clazz.load (["java.lang.Enum"], "J.constant.EnumCallback", ["J.util.SB"], function () {
+Clazz.load (["java.lang.Enum"], "J.constant.EnumCallback", ["JU.SB"], function () {
 c$ = Clazz.declareType (J.constant, "EnumCallback", Enum);
 c$.getCallback = $_M(c$, "getCallback", 
 function (name) {
@@ -12,10 +12,10 @@ return null;
 c$.getNameList = $_M(c$, "getNameList", 
 function () {
 if (J.constant.EnumCallback.nameList == null) {
-var names =  new J.util.SB ();
+var names =  new JU.SB ();
 for (var item, $item = 0, $$item = J.constant.EnumCallback.values (); $item < $$item.length && ((item = $$item[$item]) || true); $item++) names.append (item.name ().toLowerCase ()).append ("Callback;");
 
-($t$ = J.constant.EnumCallback.nameList = names.toString (), J.constant.EnumCallback.prototype.nameList = J.constant.EnumCallback.nameList, $t$);
+J.constant.EnumCallback.nameList = names.toString ();
 }return J.constant.EnumCallback.nameList;
 });
 c$.nameList = null;

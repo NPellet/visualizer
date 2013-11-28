@@ -8,13 +8,13 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.script.CommandWatcherThread, []);
 });
-Clazz.overrideMethod (c$, "setManager", 
+$_V(c$, "setManager", 
 function (manager, viewer, params) {
 this.scriptManager = manager;
 this.setViewer (viewer, "CommmandWatcherThread");
 return 0;
 }, "~O,J.viewer.Viewer,~O");
-Clazz.overrideMethod (c$, "run", 
+$_V(c$, "run", 
 function () {
 Thread.currentThread ().setPriority (1);
 while (!this.stopped) {
@@ -45,7 +45,7 @@ throw e$$;
 }
 }
 });
-Clazz.overrideMethod (c$, "run1", 
+$_V(c$, "run1", 
 function (mode) {
 }, "~N");
 Clazz.defineStatics (c$,

@@ -6,17 +6,17 @@ this.pt = 0;
 this.len = 0;
 Clazz.instantialize (this, arguments);
 }, J.io2, "ListDataReader", J.io.DataReader);
-Clazz.overrideMethod (c$, "setData", 
+$_V(c$, "setData", 
 function (data) {
 this.data = data;
 this.len = this.data.size ();
 return this;
 }, "~O");
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (buf, off, len) {
 return this.readBuf (buf, off, len);
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "readLine", 
+$_V(c$, "readLine", 
 function () {
 return (this.pt < this.len ? this.data.get (this.pt++) : null);
 });
@@ -24,7 +24,7 @@ $_M(c$, "mark",
 function (ptr) {
 this.ptMark = this.pt;
 }, "~N");
-Clazz.overrideMethod (c$, "reset", 
+$_V(c$, "reset", 
 function () {
 this.pt = this.ptMark;
 });

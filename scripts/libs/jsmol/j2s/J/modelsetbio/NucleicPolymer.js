@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["J.modelsetbio.BioPolymer"], "J.modelsetbio.NucleicPolymer", ["J.modelset.HBond", "J.util.Measure", "$.P4", "$.V3"], function () {
+Clazz.load (["J.modelsetbio.BioPolymer"], "J.modelsetbio.NucleicPolymer", ["JU.P4", "$.V3", "J.modelset.HBond", "J.util.Measure"], function () {
 c$ = Clazz.declareType (J.modelsetbio, "NucleicPolymer", J.modelsetbio.BioPolymer);
 Clazz.makeConstructor (c$, 
 function (monomers) {
@@ -11,7 +11,7 @@ $_M(c$, "getNucleicPhosphorusAtom",
 function (monomerIndex) {
 return this.monomers[monomerIndex].getLeadAtom ();
 }, "~N");
-Clazz.overrideMethod (c$, "calcEtaThetaAngles", 
+$_V(c$, "calcEtaThetaAngles", 
 function () {
 var eta = NaN;
 for (var i = 0; i < this.monomerCount - 2; ++i) {
@@ -33,12 +33,12 @@ m1.setGroupParameter (1112539152, theta);
 }
 return true;
 });
-Clazz.overrideMethod (c$, "calcRasmolHydrogenBonds", 
+$_V(c$, "calcRasmolHydrogenBonds", 
 function (polymer, bsA, bsB, vAtoms, nMaxPerResidue, min, checkDistances, dsspIgnoreHydrogens) {
 var other = polymer;
-var vNorm =  new J.util.V3 ();
-var vAB =  new J.util.V3 ();
-var vAC =  new J.util.V3 ();
+var vNorm =  new JU.V3 ();
+var vAB =  new JU.V3 ();
+var vAC =  new JU.V3 ();
 for (var i = this.monomerCount; --i >= 0; ) {
 var myNucleotide = this.monomers[i];
 if (!myNucleotide.isPurine ()) continue;
@@ -47,7 +47,7 @@ var isInA = bsA.get (myN3.index);
 if (!isInA && !bsB.get (myN3.index)) continue;
 var myN1 = myNucleotide.getN1 ();
 var myN9 = myNucleotide.getN0 ();
-var plane =  new J.util.P4 ();
+var plane =  new JU.P4 ();
 J.util.Measure.getPlaneThroughPoints (myN3, myN1, myN9, vNorm, vAB, vAC, plane);
 var bestN3 = null;
 var minDist2 = 25;
@@ -76,15 +76,15 @@ if (n >= nMaxPerResidue) continue;
 } else {
 n += J.modelsetbio.NucleicPolymer.addHydrogenBond (vAtoms, myNucleotide.getN6 (), bestNucleotide.getO4 ());
 }}}
-}, "J.modelsetbio.BioPolymer,J.util.BS,J.util.BS,J.util.JmolList,~N,~A,~B,~B");
+}, "J.modelsetbio.BioPolymer,JU.BS,JU.BS,JU.List,~N,~A,~B,~B");
 c$.addHydrogenBond = $_M(c$, "addHydrogenBond", 
 function (vAtoms, atom1, atom2) {
 if (atom1 == null || atom2 == null) return 0;
 vAtoms.addLast ( new J.modelset.HBond (atom1, atom2, 18432, 1, 0, 0));
 return 1;
-}, "J.util.JmolList,J.modelset.Atom,J.modelset.Atom");
+}, "JU.List,J.modelset.Atom,J.modelset.Atom");
 $_M(c$, "getPdbData", 
 function (viewer, ctype, qtype, mStep, derivType, bsAtoms, bsSelected, bothEnds, isDraw, addHeader, tokens, pdbATOM, pdbCONECT, bsWritten) {
 J.modelsetbio.BioPolymer.getPdbData (viewer, this, ctype, qtype, mStep, derivType, bsAtoms, bsSelected, bothEnds, isDraw, addHeader, tokens, pdbATOM, pdbCONECT, bsWritten);
-}, "J.viewer.Viewer,~S,~S,~N,~N,J.util.BS,J.util.BS,~B,~B,~B,~A,J.io.OutputStringBuilder,J.util.SB,J.util.BS");
+}, "J.viewer.Viewer,~S,~S,~N,~N,JU.BS,JU.BS,~B,~B,~B,~A,JU.OC,JU.SB,JU.BS");
 });

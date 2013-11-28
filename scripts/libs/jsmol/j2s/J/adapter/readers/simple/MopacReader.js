@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.MopacReader", ["java.lang.Exception", "$.Float", "J.util.BS", "$.Logger", "$.Parser"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.MopacReader", ["java.lang.Exception", "$.Float", "JU.BS", "$.PT", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.baseAtomIndex = 0;
 this.chargesFound = false;
@@ -7,7 +7,7 @@ this.haveHeader = false;
 this.mopacVersion = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.simple, "MopacReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 while (this.mopacVersion == 0) {
 this.discardLinesUntilContains ("MOPAC");
@@ -16,11 +16,11 @@ if (this.line.indexOf ("2009") >= 0) this.mopacVersion = 2009;
  else if (this.line.indexOf ("7.") >= 0) this.mopacVersion = 7;
  else if (this.line.indexOf ("93") >= 0) this.mopacVersion = 93;
  else if (this.line.indexOf ("2002") >= 0) this.mopacVersion = 2002;
- else if (this.line.indexOf ("MOPAC2") >= 0) this.mopacVersion = J.util.Parser.parseInt (this.line.substring (this.line.indexOf ("MOPAC2") + 5));
+ else if (this.line.indexOf ("MOPAC2") >= 0) this.mopacVersion = JU.PT.parseInt (this.line.substring (this.line.indexOf ("MOPAC2") + 5));
 }
 J.util.Logger.info ("MOPAC version " + this.mopacVersion);
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (!this.haveHeader) {
 if (this.line.trim ().equals ("CARTESIAN COORDINATES")) {
@@ -95,14 +95,14 @@ atom.elementSymbol = elementSymbol;
 });
 $_M(c$, "readFrequencies", 
 ($fz = function () {
-var bsOK =  new J.util.BS ();
+var bsOK =  new JU.BS ();
 var n0 = this.atomSetCollection.getCurrentAtomSetIndex () + 1;
 var tokens;
 var done = false;
 while (!done && this.readLine () != null && this.line.indexOf ("DESCRIPTION") < 0 && this.line.indexOf ("MASS-WEIGHTED") < 0) if (this.line.toUpperCase ().indexOf ("ROOT") >= 0) {
 this.discardLinesUntilNonBlank ();
 tokens = this.getTokens ();
-if (Float.isNaN (J.util.Parser.parseFloatStrict (tokens[tokens.length - 1]))) {
+if (Float.isNaN (JU.PT.parseFloatStrict (tokens[tokens.length - 1]))) {
 this.discardLinesUntilNonBlank ();
 tokens = this.getTokens ();
 }var frequencyCount = tokens.length;
@@ -110,10 +110,10 @@ this.readLine ();
 var iAtom0 = this.atomSetCollection.getAtomCount ();
 var atomCount = this.atomSetCollection.getLastAtomSetAtomCount ();
 var ignore =  Clazz.newBooleanArray (frequencyCount, false);
-var freq1 = J.util.Parser.parseFloatStrict (tokens[0]);
+var freq1 = JU.PT.parseFloatStrict (tokens[0]);
 var ignoreNegative = (freq1 < 0);
 for (var i = 0; i < frequencyCount; ++i) {
-ignore[i] = done || (done = (!ignoreNegative && J.util.Parser.parseFloatStrict (tokens[i]) < 1)) || !this.doGetVibration (++this.vibrationNumber);
+ignore[i] = done || (done = (!ignoreNegative && JU.PT.parseFloatStrict (tokens[i]) < 1)) || !this.doGetVibration (++this.vibrationNumber);
 if (ignore[i]) continue;
 bsOK.set (this.vibrationNumber - 1);
 this.atomSetCollection.cloneLastAtomSet ();

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (["J.api.JmolGraphicsInterface"], "J.util.GData", ["J.util.ArrayUtil", "$.C", "$.JmolFont", "$.Shader"], function () {
+Clazz.load (["J.api.JmolGraphicsInterface"], "J.util.GData", ["javajs.awt.Font", "JU.AU", "J.util.C", "$.Shader"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.apiPlatform = null;
 this.translucentCoverOnly = false;
@@ -36,6 +36,7 @@ this.zShadeG = 0;
 this.zShadeB = 0;
 this.graphicsForMetrics = null;
 this.$isPass2 = false;
+this.ambientOcclusion = 0;
 Clazz.instantialize (this, arguments);
 }, J.util, "GData", null, J.api.JmolGraphicsInterface);
 Clazz.prepareFields (c$, function () {
@@ -56,12 +57,12 @@ this.shader =  new J.util.Shader ();
 $_M(c$, "initialize", 
 function (apiPlatform) {
 this.apiPlatform = apiPlatform;
-}, "J.api.ApiPlatform");
-Clazz.overrideMethod (c$, "setDepth", 
+}, "javajs.api.GenericPlatform");
+$_V(c$, "setDepth", 
 function (depthValue) {
 this.depth = depthValue < 0 ? 0 : depthValue;
 }, "~N");
-Clazz.overrideMethod (c$, "setSlab", 
+$_V(c$, "setSlab", 
 function (slabValue) {
 this.slab = slabValue < 0 ? 0 : slabValue;
 }, "~N");
@@ -78,19 +79,23 @@ this.zSlab = zSlab < 0 ? 0 : zSlab;
 this.zDepth = zDepth < 0 ? 0 : zDepth;
 this.zShadePower = zPower;
 }, "~N,~N,~N");
-Clazz.overrideMethod (c$, "getRenderWidth", 
+$_V(c$, "setAmbientOcclusion", 
+function (value) {
+this.ambientOcclusion = value;
+}, "~N");
+$_V(c$, "getRenderWidth", 
 function () {
 return this.width;
 });
-Clazz.overrideMethod (c$, "getRenderHeight", 
+$_V(c$, "getRenderHeight", 
 function () {
 return this.height;
 });
-Clazz.overrideMethod (c$, "getSlab", 
+$_V(c$, "getSlab", 
 function () {
 return this.slab;
 });
-Clazz.overrideMethod (c$, "getDepth", 
+$_V(c$, "getDepth", 
 function () {
 return this.depth;
 });
@@ -98,13 +103,13 @@ $_M(c$, "isDisplayAntialiased",
 function () {
 return this.antialiasEnabled;
 });
-Clazz.overrideMethod (c$, "isAntialiased", 
+$_V(c$, "isAntialiased", 
 function () {
 return this.antialiasThisFrame;
 });
 $_M(c$, "getChangeableColix", 
 function (id, argb) {
-if (id >= this.changeableColixMap.length) this.changeableColixMap = J.util.ArrayUtil.arrayCopyShort (this.changeableColixMap, id + 16);
+if (id >= this.changeableColixMap.length) this.changeableColixMap = JU.AU.arrayCopyShort (this.changeableColixMap, id + 16);
 if (this.changeableColixMap[id] == 0) this.changeableColixMap[id] = J.util.C.getColix (argb);
 return (id | -32768);
 }, "~N,~N");
@@ -116,7 +121,7 @@ $_M(c$, "getBgColixes",
 function (bgcolixes) {
 return bgcolixes;
 }, "~A");
-Clazz.overrideMethod (c$, "getColorArgbOrGray", 
+$_V(c$, "getColorArgbOrGray", 
 function (colix) {
 if (colix < 0) colix = this.changeableColixMap[colix & 2047];
 return (this.inGreyscaleMode ? J.util.C.getArgbGreyscale (colix) : J.util.C.getArgb (colix));
@@ -214,12 +219,20 @@ this.shader.flushCaches ();
 }, "~B");
 $_M(c$, "setCel", 
 function (val) {
-this.shader.setCel (val, this.bgcolor);
+this.shader.setCel (val, this.shader.celPower, this.bgcolor);
 }, "~B");
 $_M(c$, "getCel", 
 function () {
-return this.shader.getCelOn ();
+return this.shader.celOn;
 });
+$_M(c$, "getCelPower", 
+function () {
+return this.shader.celPower;
+});
+$_M(c$, "setCelPower", 
+function (celPower) {
+this.shader.setCel (this.shader.celOn || this.shader.celPower == 0, celPower, this.bgcolor);
+}, "~N");
 $_M(c$, "getLightSource", 
 function () {
 return this.shader.lightSource;
@@ -232,16 +245,16 @@ $_M(c$, "isClipped",
 function (x, y) {
 return (x < 0 || x >= this.width || y < 0 || y >= this.height);
 }, "~N,~N");
-Clazz.overrideMethod (c$, "isInDisplayRange", 
+$_V(c$, "isInDisplayRange", 
 function (x, y) {
 return (x >= this.displayMinX && x < this.displayMaxX && y >= this.displayMinY && y < this.displayMaxY);
 }, "~N,~N");
-Clazz.overrideMethod (c$, "isClippedXY", 
+$_V(c$, "isClippedXY", 
 function (diameter, x, y) {
 var r = (diameter + 1) >> 1;
 return (x < -r || x >= this.width + r || y < -r || y >= this.height + r);
 }, "~N,~N,~N");
-Clazz.overrideMethod (c$, "isClippedZ", 
+$_V(c$, "isClippedZ", 
 function (z) {
 return (z != -2147483648 && (z < this.slab || z > this.depth));
 }, "~N");
@@ -265,11 +278,11 @@ return code;
 }, "~N");
 $_M(c$, "getFont3D", 
 function (fontSize) {
-return J.util.JmolFont.createFont3D (0, 0, fontSize, fontSize, this.apiPlatform, this.graphicsForMetrics);
+return javajs.awt.Font.createFont3D (0, 0, fontSize, fontSize, this.apiPlatform, this.graphicsForMetrics);
 }, "~N");
 $_M(c$, "getFont3DFS", 
 function (fontFace, fontSize) {
-return J.util.JmolFont.createFont3D (J.util.JmolFont.getFontFaceID (fontFace), 0, fontSize, fontSize, this.apiPlatform, this.graphicsForMetrics);
+return javajs.awt.Font.createFont3D (javajs.awt.Font.getFontFaceID (fontFace), 0, fontSize, fontSize, this.apiPlatform, this.graphicsForMetrics);
 }, "~S,~N");
 $_M(c$, "getFontFidFS", 
 function (fontFace, fontSize) {
@@ -277,22 +290,22 @@ return this.getFont3DFSS (fontFace, "Bold", fontSize).fid;
 }, "~S,~N");
 $_M(c$, "getFont3DFSS", 
 function (fontFace, fontStyle, fontSize) {
-var iStyle = J.util.JmolFont.getFontStyleID (fontStyle);
+var iStyle = javajs.awt.Font.getFontStyleID (fontStyle);
 if (iStyle < 0) iStyle = 0;
-return J.util.JmolFont.createFont3D (J.util.JmolFont.getFontFaceID (fontFace), iStyle, fontSize, fontSize, this.apiPlatform, this.graphicsForMetrics);
+return javajs.awt.Font.createFont3D (javajs.awt.Font.getFontFaceID (fontFace), iStyle, fontSize, fontSize, this.apiPlatform, this.graphicsForMetrics);
 }, "~S,~S,~N");
-Clazz.overrideMethod (c$, "getFont3DScaled", 
+$_V(c$, "getFont3DScaled", 
 function (font, scale) {
 var newScale = font.fontSizeNominal * scale;
-return (newScale == font.fontSize ? font : J.util.JmolFont.createFont3D (font.idFontFace, font.idFontStyle, newScale, font.fontSizeNominal, this.apiPlatform, this.graphicsForMetrics));
-}, "J.util.JmolFont,~N");
-Clazz.overrideMethod (c$, "getFontFid", 
+return (newScale == font.fontSize ? font : javajs.awt.Font.createFont3D (font.idFontFace, font.idFontStyle, newScale, font.fontSizeNominal, this.apiPlatform, this.graphicsForMetrics));
+}, "javajs.awt.Font,~N");
+$_V(c$, "getFontFid", 
 function (fontSize) {
 return this.getFont3D (fontSize).fid;
 }, "~N");
 c$.getFontStyleID = $_M(c$, "getFontStyleID", 
 function (fontStyle) {
-return J.util.JmolFont.getFontStyleID (fontStyle);
+return javajs.awt.Font.getFontStyleID (fontStyle);
 }, "~S");
 $_M(c$, "setBackgroundTransparent", 
 function (TF) {
@@ -300,7 +313,7 @@ function (TF) {
 $_M(c$, "setBackgroundArgb", 
 function (argb) {
 this.bgcolor = argb;
-this.setCel (this.getCel ());
+this.setCel (this.shader.celOn);
 }, "~N");
 $_M(c$, "setBackgroundImage", 
 function (image) {
@@ -339,7 +352,7 @@ this.bufferSize = this.width * this.height;
 }, "~B");
 $_M(c$, "beginRendering", 
 function (stereoRotationMatrix, translucentMode, isImageWrite, renderLow) {
-}, "J.util.Matrix3f,~B,~B,~B");
+}, "JU.M3,~B,~B,~B");
 $_M(c$, "endRendering", 
 function () {
 });
@@ -371,7 +384,7 @@ function (x, y, z, image, jmolRenderer, bgcolix, width, height) {
 }, "~N,~N,~N,java.awt.Image,J.api.JmolRendererInterface,~N,~N,~N");
 $_M(c$, "plotText", 
 function (x, y, z, colorArgbOrGray, bgColor, text, font3d, jmolRenderer) {
-}, "~N,~N,~N,~N,~N,~S,J.util.JmolFont,J.api.JmolRendererInterface");
+}, "~N,~N,~N,~N,~N,~S,javajs.awt.Font,J.api.JmolRendererInterface");
 $_M(c$, "renderBackground", 
 function (jmolRenderer) {
 }, "J.api.JmolRendererInterface");
@@ -381,7 +394,7 @@ return null;
 });
 $_M(c$, "setFont", 
 function (font3d) {
-}, "J.util.JmolFont");
+}, "javajs.awt.Font");
 $_M(c$, "setFontFid", 
 function (fid) {
 }, "~N");
@@ -407,7 +420,7 @@ return null;
 });
 $_M(c$, "setNoisySurfaceShade", 
 function (pointA, pointB, pointC) {
-}, "J.util.P3i,J.util.P3i,J.util.P3i");
+}, "JU.P3i,JU.P3i,JU.P3i");
 c$.roundInt = $_M(c$, "roundInt", 
 function (a) {
 {
@@ -416,7 +429,7 @@ return a;
 $_M(c$, "clear", 
 function () {
 });
-Clazz.overrideMethod (c$, "renderAllStrings", 
+$_V(c$, "renderAllStrings", 
 function (jmolRenderer) {
 }, "~O");
 c$.getScreenOctant = $_M(c$, "getScreenOctant", 
@@ -426,7 +439,10 @@ if (pt.x < 0) i |= 1;
 if (pt.y < 0) i |= 2;
 if (pt.z < 0) i |= 4;
 return i;
-}, "J.util.P3");
+}, "JU.P3");
+$_M(c$, "addRenderer", 
+function (tok) {
+}, "~N");
 Clazz.defineStatics (c$,
 "ENDCAPS_NONE", 0,
 "ENDCAPS_OPEN", 1,

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["J.api.JmolBioResolver"], "J.modelsetbio.Resolver", ["java.lang.Boolean", "$.NullPointerException", "java.util.Arrays", "$.Hashtable", "J.constant.EnumStructure", "J.modelset.Group", "J.modelsetbio.AlphaMonomer", "$.AlphaPolymer", "$.AminoMonomer", "$.AminoPolymer", "$.BioModel", "$.CarbohydrateMonomer", "$.CarbohydratePolymer", "$.NucleicMonomer", "$.NucleicPolymer", "$.PhosphorusMonomer", "$.PhosphorusPolymer", "J.util.BS", "$.BSUtil", "$.Logger", "$.Measure", "$.P3", "$.P4", "$.Parser", "$.SB", "$.TextFormat", "$.V3", "J.viewer.JC"], function () {
+Clazz.load (["J.api.JmolBioResolver"], "J.modelsetbio.Resolver", ["java.lang.Boolean", "$.NullPointerException", "java.util.Arrays", "$.Hashtable", "JU.BS", "$.P3", "$.P4", "$.PT", "$.SB", "$.V3", "J.constant.EnumStructure", "J.modelset.Group", "J.modelsetbio.AlphaMonomer", "$.AlphaPolymer", "$.AminoMonomer", "$.AminoPolymer", "$.BioModel", "$.CarbohydrateMonomer", "$.CarbohydratePolymer", "$.Monomer", "$.NucleicMonomer", "$.NucleicPolymer", "$.PhosphorusMonomer", "$.PhosphorusPolymer", "J.util.BSUtil", "$.Logger", "$.Measure", "$.Txt", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.modelLoader = null;
 this.modelSet = null;
@@ -25,11 +25,11 @@ Clazz.instantialize (this, arguments);
 Clazz.makeConstructor (c$, 
 function () {
 });
-Clazz.overrideMethod (c$, "getBioModel", 
+$_V(c$, "getBioModel", 
 function (modelIndex, trajectoryBaseIndex, jmolData, modelProperties, modelAuxiliaryInfo) {
 return  new J.modelsetbio.BioModel (this.modelSet, modelIndex, trajectoryBaseIndex, jmolData, modelProperties, modelAuxiliaryInfo);
 }, "~N,~N,~S,java.util.Properties,java.util.Map");
-Clazz.overrideMethod (c$, "distinguishAndPropagateGroup", 
+$_V(c$, "distinguishAndPropagateGroup", 
 function (chain, group3, seqcode, firstAtomIndex, maxAtomIndex, modelIndex, specialAtomIndexes, atoms) {
 var lastAtomIndex = maxAtomIndex - 1;
 var distinguishingBits = 0;
@@ -51,29 +51,29 @@ if ((distinguishingBits & 14) == 14) m = J.modelsetbio.AminoMonomer.validateAndA
  else if (J.viewer.JC.checkCarbohydrate (group3)) m = J.modelsetbio.CarbohydrateMonomer.validateAndAllocate (chain, group3, seqcode, firstAtomIndex, lastAtomIndex);
 return (m != null && m.leadAtomIndex >= 0 ? m : null);
 }, "J.modelset.Chain,~S,~N,~N,~N,~N,~A,~A");
-Clazz.overrideMethod (c$, "setHaveHsAlready", 
+$_V(c$, "setHaveHsAlready", 
 function (b) {
 this.haveHsAlready = b;
 }, "~B");
-Clazz.overrideMethod (c$, "initialize", 
+$_V(c$, "initialize", 
 function (modelLoader) {
 this.modelLoader = modelLoader;
 this.modelSet = modelLoader.modelSet;
 }, "J.modelset.ModelLoader");
-Clazz.overrideMethod (c$, "initializeHydrogenAddition", 
+$_V(c$, "initializeHydrogenAddition", 
 function () {
 this.baseBondIndex = this.modelLoader.modelSet.bondCount;
-this.bsAddedHydrogens =  new J.util.BS ();
-this.bsAtomsForHs =  new J.util.BS ();
+this.bsAddedHydrogens =  new JU.BS ();
+this.bsAtomsForHs =  new JU.BS ();
 this.htBondMap =  new java.util.Hashtable ();
 this.htGroupBonds =  new java.util.Hashtable ();
 this.hNames =  new Array (3);
-this.vAB =  new J.util.V3 ();
-this.vAC =  new J.util.V3 ();
-this.vNorm =  new J.util.V3 ();
-this.plane =  new J.util.P4 ();
+this.vAB =  new JU.V3 ();
+this.vAC =  new JU.V3 ();
+this.vNorm =  new JU.V3 ();
+this.plane =  new JU.P4 ();
 });
-Clazz.overrideMethod (c$, "addImplicitHydrogenAtoms", 
+$_V(c$, "addImplicitHydrogenAtoms", 
 function (adapter, iGroup, nH) {
 var group3 = this.modelLoader.getGroup3 (iGroup);
 var nH1;
@@ -93,7 +93,7 @@ this.modelSet.models[this.modelSet.atoms[iFirst].modelIndex].isPdbWithMultipleBo
 this.bsAtomsForHs.setBits (iFirst, atomCount);
 this.bsAddedHydrogens.setBits (atomCount, atomCount + nH);
 var isHetero = this.modelSet.atoms[iFirst].isHetero ();
-var xyz = J.util.P3.new3 (NaN, NaN, NaN);
+var xyz = JU.P3.new3 (NaN, NaN, NaN);
 for (var i = 0; i < nH; i++) this.modelSet.addAtom (this.modelSet.atoms[iFirst].modelIndex, this.modelSet.atoms[iFirst].getGroup (), 1, "H", 0, 0, xyz, NaN, null, 0, 0, 1, 0, null, isHetero, 0, null).deleteBonds (null);
 
 }, "J.api.JmolAdapter,~N,~N");
@@ -170,7 +170,7 @@ continue;
 }
 return bondInfo;
 }, $fz.isPrivate = true, $fz), "J.api.JmolAdapter,~O,~S");
-Clazz.overrideMethod (c$, "finalizeHydrogens", 
+$_V(c$, "finalizeHydrogens", 
 function () {
 this.modelSet.viewer.getLigandModel (null, null, null, null);
 this.finalizePdbMultipleBonds ();
@@ -261,7 +261,7 @@ this.modelSet.fixFormalCharges (J.util.BSUtil.newBitSet2 (this.modelLoader.baseA
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "deleteUnneededAtoms", 
 ($fz = function () {
-var bsBondsDeleted =  new J.util.BS ();
+var bsBondsDeleted =  new JU.BS ();
 for (var i = this.bsAtomsForHs.nextSetBit (0); i >= 0; i = this.bsAtomsForHs.nextSetBit (i + 1)) {
 var atom = this.modelSet.atoms[i];
 if (!atom.isHetero () || atom.getElementNumber () != 8 || atom.getFormalCharge () != 0 || atom.getCovalentBondCount () != 2) continue;
@@ -305,7 +305,7 @@ var a1 = bonds[i].getAtom1 ();
 var a2 = bonds[i].getAtom2 ();
 var g = a1.getGroup ();
 if (g !== a2.getGroup ()) continue;
-var key =  new J.util.SB ().append (g.getGroup3 ());
+var key =  new JU.SB ().append (g.getGroup3 ());
 key.append (":");
 var n1 = a1.getAtomName ();
 var n2 = a2.getAtomName ();
@@ -315,7 +315,7 @@ var skey = key.toString ();
 var type = this.htBondMap.get (skey);
 if (type == null) continue;
 htKeysUsed.put (skey, Boolean.TRUE);
-bonds[i].setOrder (J.util.Parser.parseInt (type));
+bonds[i].setOrder (JU.PT.parseInt (type));
 }
 for (var key, $key = this.htBondMap.keySet ().iterator (); $key.hasNext () && ((key = $key.next ()) || true);) {
 if (htKeysUsed.get (key) != null) continue;
@@ -340,7 +340,7 @@ var a2 = bonds[i].getAtom2 ();
 if (a1.getGroup () === a2.getGroup ()) continue;
 var value;
 if ((value = htKeysBad.get (a1.getGroup3 (false) + ":" + a1.getAtomName ())) == null && ((value = htKeysBad.get (a2.getGroup3 (false) + ":" + a2.getAtomName ())) == null)) continue;
-bonds[i].setOrder (J.util.Parser.parseInt (value));
+bonds[i].setOrder (JU.PT.parseInt (value));
 J.util.Logger.info ("assigning order " + bonds[i].order + " to bond " + bonds[i]);
 }
 }, $fz.isPrivate = true, $fz));
@@ -356,10 +356,10 @@ this.modelSet.setAtomNumber (iAtom, ++this.maxSerial);
 atoms[iAtom].setAtomSymmetry (atoms[iTo].getAtomSymmetry ());
 this.modelLoader.undeleteAtom (iAtom);
 this.modelSet.bondAtoms (atoms[iTo], atoms[iAtom], 1, this.modelSet.getDefaultMadFromOrder (1), null, 0, true, false);
-}, $fz.isPrivate = true, $fz), "~N,~N,~S,J.util.P3");
-Clazz.overrideMethod (c$, "fixPropertyValue", 
+}, $fz.isPrivate = true, $fz), "~N,~N,~S,JU.P3");
+$_V(c$, "fixPropertyValue", 
 function (bsAtoms, data) {
-var aData = J.util.TextFormat.split (data, '\n');
+var aData = JU.PT.split (data, "\n");
 var atoms = this.modelSet.atoms;
 var newData =  new Array (bsAtoms.cardinality ());
 var lastData = "";
@@ -367,8 +367,8 @@ for (var pt = 0, iAtom = 0, i = bsAtoms.nextSetBit (0); i >= 0; i = bsAtoms.next
 if (atoms[i].getElementNumber () != 1) lastData = aData[pt++];
 newData[iAtom] = lastData;
 }
-return J.util.TextFormat.join (newData, '\n', 0);
-}, "J.util.BS,~S");
+return J.util.Txt.join (newData, '\n', 0);
+}, "JU.BS,~S");
 c$.allocateBioPolymer = $_M(c$, "allocateBioPolymer", 
 function (groups, firstGroupIndex, checkConnections) {
 var previous = null;
@@ -392,7 +392,7 @@ if (Clazz.instanceOf (previous, J.modelsetbio.CarbohydrateMonomer)) return  new 
 J.util.Logger.error ("Polymer.allocatePolymer() ... no matching polymer for monomor " + previous);
 throw  new NullPointerException ();
 }, "~A,~N,~B");
-Clazz.overrideMethod (c$, "iterateOverAllNewStructures", 
+$_V(c$, "iterateOverAllNewStructures", 
 function (adapter, atomSetCollection) {
 var iterStructure = adapter.getStructureIterator (atomSetCollection);
 if (iterStructure == null) return;
@@ -413,7 +413,7 @@ var serID = iterStructure.getSerialID ();
 var count = iterStructure.getStrandCount ();
 var atomRange = iterStructure.getAtomIndices ();
 var modelRange = iterStructure.getModelIndices ();
-if (this.bsAssigned == null) this.bsAssigned =  new J.util.BS ();
+if (this.bsAssigned == null) this.bsAssigned =  new JU.BS ();
 this.defineStructure (t, id, serID, count, iterStructure.getStartChainID (), iterStructure.getStartSequenceNumber (), iterStructure.getStartInsertionCode (), iterStructure.getEndChainID (), iterStructure.getEndSequenceNumber (), iterStructure.getEndInsertionCode (), atomRange, modelRange, this.bsAssigned);
 }, $fz.isPrivate = true, $fz), "J.api.JmolAdapterStructureIterator");
 $_M(c$, "defineStructure", 
@@ -432,14 +432,14 @@ for (var i = modelRange[0]; i <= modelRange[1]; i++) {
 var i0 = models[i].firstAtomIndex;
 if (Clazz.instanceOf (models[i], J.modelsetbio.BioModel)) (models[i]).addSecondaryStructure (type, structureID, serialID, strandCount, startChainID, startSeqCode, endChainID, endSeqCode, i0 + atomRange[0], i0 + atomRange[1], bsAssigned);
 }
-}, $fz.isPrivate = true, $fz), "J.constant.EnumStructure,~S,~N,~N,~N,~N,~S,~N,~N,~S,~A,~A,J.util.BS");
+}, $fz.isPrivate = true, $fz), "J.constant.EnumStructure,~S,~N,~N,~N,~N,~S,~N,~N,~S,~A,~A,JU.BS");
 c$.$Resolver$BondSorter$ = function () {
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
 Clazz.prepareCallback (this, arguments);
 Clazz.instantialize (this, arguments);
 }, J.modelsetbio.Resolver, "BondSorter", null, java.util.Comparator);
-Clazz.overrideMethod (c$, "compare", 
+$_V(c$, "compare", 
 function (a, b) {
 return (b == null ? (a == null ? 0 : -1) : a == null ? 1 : a[0].compareTo (b[0]) < 0 ? -1 : a[0].compareTo (b[0]) > 0 ? 1 : a[3].compareTo (b[3]) < 0 ? -1 : a[3].compareTo (b[3]) > 0 ? 1 : a[1].compareTo (b[1]) < 0 ? -1 : a[1].compareTo (b[1]) > 0 ? 1 : 0);
 }, "~A,~A");

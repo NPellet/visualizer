@@ -905,7 +905,7 @@ Clazz.defineStatics (c$,
 "SLOW", 2,
 "config_table", null);
 {
-($t$ = JZ.Deflate.config_table =  new Array (10), JZ.Deflate.prototype.config_table = JZ.Deflate.config_table, $t$);
+JZ.Deflate.config_table =  new Array (10);
 JZ.Deflate.config_table[0] =  new JZ.Deflate.Config (0, 0, 0, 0, 0);
 JZ.Deflate.config_table[1] =  new JZ.Deflate.Config (4, 4, 8, 4, 1);
 JZ.Deflate.config_table[2] =  new JZ.Deflate.Config (4, 5, 16, 8, 1);

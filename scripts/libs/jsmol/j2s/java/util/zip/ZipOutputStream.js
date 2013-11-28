@@ -1,5 +1,5 @@
 Clazz.declarePackage ("java.util.zip");
-Clazz.load (["java.util.zip.DeflaterOutputStream", "$.ZipConstants", "java.util.Hashtable", "java.util.zip.CRC32", "J.util.JmolList"], "java.util.zip.ZipOutputStream", ["JZ.ZStream", "java.io.IOException", "java.lang.Boolean", "$.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.Long", "java.util.zip.Deflater", "$.ZipException"], function () {
+Clazz.load (["java.util.zip.DeflaterOutputStream", "$.ZipConstants", "java.util.Hashtable", "java.util.zip.CRC32", "JU.List"], "java.util.zip.ZipOutputStream", ["JZ.ZStream", "java.io.IOException", "java.lang.Boolean", "$.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.Long", "java.util.zip.Deflater", "$.ZipException"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.current = null;
 this.xentries = null;
@@ -14,7 +14,7 @@ this.$closed = false;
 Clazz.instantialize (this, arguments);
 }, java.util.zip, "ZipOutputStream", java.util.zip.DeflaterOutputStream, java.util.zip.ZipConstants);
 Clazz.prepareFields (c$, function () {
-this.xentries =  new J.util.JmolList ();
+this.xentries =  new JU.List ();
 this.names =  new java.util.Hashtable ();
 this.crc =  new java.util.zip.CRC32 ();
 });

@@ -366,9 +366,10 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 		return def.resolve(value.value.replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
 	}
 
+
 	functions.pdb = {};
 	functions.pdb.toscreen = function(def, value) {
-		return def.resolve("<pre>"+value.value+"</pre>");
+		return def.resolve(value.value);
 	}
 
 	functions.downloadLink = {};

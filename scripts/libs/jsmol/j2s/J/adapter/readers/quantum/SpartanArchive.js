@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (null, "J.adapter.readers.quantum.SpartanArchive", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "J.adapter.smarter.AtomSetCollectionReader", "$.Bond", "J.api.JmolAdapter", "J.constant.EnumQuantumShell", "J.util.ArrayUtil", "$.JmolList", "$.Logger", "$.V3"], function () {
+Clazz.load (null, "J.adapter.readers.quantum.SpartanArchive", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.List", "$.V3", "J.adapter.readers.quantum.SpartanSmolReader", "J.adapter.smarter.AtomSetCollectionReader", "$.Bond", "J.api.JmolAdapter", "J.constant.EnumQuantumShell", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomCount = 0;
 this.bondData = null;
@@ -107,8 +107,8 @@ J.util.Logger.debug (bondCount + " bonds read");
 }}, "~S,~N");
 $_M(c$, "readBasis", 
 function () {
-var shells =  new J.util.JmolList ();
-var gaussians = J.util.ArrayUtil.newFloat2 (this.gaussianCount);
+var shells =  new JU.List ();
+var gaussians = JU.AU.newFloat2 (this.gaussianCount);
 var typeArray =  Clazz.newIntArray (this.gaussianCount, 0);
 for (var i = 0; i < this.shellCount; i++) {
 var tokens = this.getTokens (this.readLine ());
@@ -214,7 +214,7 @@ J.util.Logger.debug (gaussians.length + " gaussian primitives read");
 $_M(c$, "readMolecularOrbital", 
 function () {
 var tokenPt = 0;
-this.r.orbitals =  new J.util.JmolList ();
+this.r.orbitals =  new JU.List ();
 var tokens = this.getTokens ("");
 var energies =  Clazz.newFloatArray (this.moCount, 0);
 var coefficients =  Clazz.newFloatArray (this.moCount, this.coefCount, 0);
@@ -259,7 +259,7 @@ this.setDipole (this.getTokens (this.readLine ()));
 $_M(c$, "setDipole", 
 ($fz = function (tokens) {
 if (tokens.length != 3) return;
-var dipole = J.util.V3.new3 (this.parseFloat (tokens[0]), this.parseFloat (tokens[1]), this.parseFloat (tokens[2]));
+var dipole = JU.V3.new3 (this.parseFloat (tokens[0]), this.parseFloat (tokens[1]), this.parseFloat (tokens[2]));
 this.r.atomSetCollection.setAtomSetAuxiliaryInfo ("dipole", dipole);
 }, $fz.isPrivate = true, $fz), "~A");
 $_M(c$, "readProperty", 
@@ -270,7 +270,7 @@ var isString = (tokens[1].startsWith ("STRING"));
 var keyName = tokens[2];
 var isDipole = (keyName.equals ("DIPOLE_VEC"));
 var value =  new JavaObject ();
-var vector =  new J.util.JmolList ();
+var vector =  new JU.List ();
 if (tokens[3].equals ("=")) {
 if (isString) {
 value = this.getQuotedString (tokens[4].substring (0, 1));
@@ -280,7 +280,7 @@ value = Float.$valueOf (this.parseFloat (tokens[4]));
 var nValues = this.parseInt (tokens[tokens.length - 2]);
 if (nValues == 0) nValues = 1;
 var isArray = (tokens.length == 6);
-var atomInfo =  new J.util.JmolList ();
+var atomInfo =  new JU.List ();
 var ipt = 0;
 while (this.readLine () != null && !this.line.substring (0, 3).equals ("END")) {
 if (isString) {
@@ -294,7 +294,7 @@ if (isArray) {
 atomInfo.addLast (Float.$valueOf (this.parseFloat (tokens2[i])));
 if ((ipt + 1) % nValues == 0) {
 vector.addLast (atomInfo);
-atomInfo =  new J.util.JmolList ();
+atomInfo =  new JU.List ();
 }} else {
 value = Float.$valueOf (this.parseFloat (tokens2[i]));
 vector.addLast (value);
@@ -312,8 +312,8 @@ function () {
 this.readLine ();
 var label = "";
 var frequencyCount = this.parseInt (this.line);
-var vibrations =  new J.util.JmolList ();
-var freqs =  new J.util.JmolList ();
+var vibrations =  new JU.List ();
+var freqs =  new JU.List ();
 if (J.util.Logger.debugging) {
 J.util.Logger.debug ("reading VIBFREQ vibration records: frequencyCount = " + frequencyCount);
 }var ignore =  Clazz.newBooleanArray (frequencyCount, false);
@@ -334,8 +334,8 @@ this.r.atomSetCollection.setAtomSetFrequency (null, label, "" + freq, null);
 }}
 this.r.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("VibFreqs", freqs);
 var atomCount = this.r.atomSetCollection.getFirstAtomSetAtomCount ();
-var vib =  new J.util.JmolList ();
-var vibatom =  new J.util.JmolList ();
+var vib =  new JU.List ();
+var vibatom =  new JU.List ();
 var ifreq = 0;
 var iatom = atomCount;
 var nValues = 3;
@@ -350,13 +350,13 @@ if ((i + 1) % nValues == 0) {
 if (!ignore[ifreq]) {
 this.r.atomSetCollection.addVibrationVector (iatom, atomInfo[0], atomInfo[1], atomInfo[2]);
 vib.addLast (vibatom);
-vibatom =  new J.util.JmolList ();
+vibatom =  new JU.List ();
 }++iatom;
 }}
 if (iatom % atomCount == 0) {
 if (!ignore[ifreq]) {
 vibrations.addLast (vib);
-}vib =  new J.util.JmolList ();
+}vib =  new JU.List ();
 if (++ifreq == frequencyCount) {
 break;
 }}}
@@ -370,8 +370,8 @@ return;
 }var freq_lab = this.r.atomSetCollection.getAtomSetCollectionAuxiliaryInfo ("FREQ_LAB");
 var freq_val = this.r.atomSetCollection.getAtomSetCollectionAuxiliaryInfo ("FREQ_VAL");
 var frequencyCount = freq_val.size ();
-var vibrations =  new J.util.JmolList ();
-var freqs =  new J.util.JmolList ();
+var vibrations =  new JU.List ();
+var freqs =  new JU.List ();
 if (J.util.Logger.debugging) {
 J.util.Logger.debug ("reading PROP VALUE:VIB FREQ_MODE vibration records: frequencyCount = " + frequencyCount);
 }var v;
@@ -396,10 +396,10 @@ var iatom = atomCount;
 for (var i = 0; i < frequencyCount; i++) {
 if (!this.r.doGetVibration (i + 1)) continue;
 var ipt = 0;
-var vib =  new J.util.JmolList ();
+var vib =  new JU.List ();
 var mode = freq_modes.get (i);
 for (var ia = 0; ia < atomCount; ia++, iatom++) {
-var vibatom =  new J.util.JmolList ();
+var vibatom =  new JU.List ();
 var vx = (v = mode.get (ipt++)).floatValue ();
 vibatom.addLast (v);
 var vy = (v = mode.get (ipt++)).floatValue ();

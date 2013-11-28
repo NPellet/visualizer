@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
 Clazz.load (["J.adapter.readers.quantum.BasisFunctionReader"], "J.adapter.readers.quantum.SpartanReader", ["java.lang.Float", "java.util.Hashtable", "J.adapter.readers.quantum.SpartanArchive"], function () {
 c$ = Clazz.declareType (J.adapter.readers.quantum, "SpartanReader", J.adapter.readers.quantum.BasisFunctionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 var cartesianHeader = "Cartesian Coordinates (Ang";
 if (this.isSpartanArchive (cartesianHeader)) {

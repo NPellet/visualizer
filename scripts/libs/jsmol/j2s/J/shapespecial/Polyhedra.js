@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapespecial");
-Clazz.load (["J.shape.AtomShape", "J.util.P3", "$.V3"], "J.shapespecial.Polyhedra", ["java.lang.Boolean", "J.constant.EnumPalette", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.Logger", "$.Measure", "$.Normix", "$.P3i", "$.SB"], function () {
+Clazz.load (["J.shape.AtomShape", "JU.P3", "$.V3"], "J.shapespecial.Polyhedra", ["java.lang.Boolean", "JU.AU", "$.BS", "$.P3i", "$.SB", "J.constant.EnumPalette", "J.shapespecial.Polyhedron", "J.util.BSUtil", "$.Logger", "$.Measure", "$.Normix"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.otherAtoms = null;
 this.polyhedronCount = 0;
@@ -23,9 +23,6 @@ this.align1 = null;
 this.align2 = null;
 this.vAB = null;
 this.vAC = null;
-if (!Clazz.isClassDefined ("J.shapespecial.Polyhedra.Polyhedron")) {
-J.shapespecial.Polyhedra.$Polyhedra$Polyhedron$ ();
-}
 Clazz.instantialize (this, arguments);
 }, J.shapespecial, "Polyhedra", J.shape.AtomShape);
 Clazz.prepareFields (c$, function () {
@@ -33,12 +30,12 @@ this.otherAtoms =  new Array (151);
 this.polyhedrons =  new Array (32);
 this.normixesT =  Clazz.newShortArray (150, 0);
 this.planesT =  Clazz.newByteArray (450, 0);
-this.align1 =  new J.util.V3 ();
-this.align2 =  new J.util.V3 ();
-this.vAB =  new J.util.V3 ();
-this.vAC =  new J.util.V3 ();
+this.align1 =  new JU.V3 ();
+this.align2 =  new JU.V3 ();
+this.vAB =  new JU.V3 ();
+this.vAC =  new JU.V3 ();
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bs) {
 if ("init" === propertyName) {
 this.faceCenterOffset = 0.25;
@@ -47,7 +44,7 @@ this.radius = 0.0;
 this.nVertices = 0;
 this.bsVertices = null;
 this.centers = null;
-this.bsVertexCount =  new J.util.BS ();
+this.bsVertexCount =  new JU.BS ();
 this.bondedOnly = this.isCollapsed = this.iHaveCenterBitSet = false;
 this.haveBitSetVertices = false;
 if (Boolean.TRUE === value) this.drawEdges = 0;
@@ -124,12 +121,12 @@ var modelIndex = ((value)[2])[0];
 for (var i = this.polyhedronCount; --i >= 0; ) {
 if (this.polyhedrons[i].modelIndex == modelIndex) {
 this.polyhedronCount--;
-this.polyhedrons = J.util.ArrayUtil.deleteElements (this.polyhedrons, i, 1);
+this.polyhedrons = JU.AU.deleteElements (this.polyhedrons, i, 1);
 } else if (this.polyhedrons[i].modelIndex > modelIndex) {
 this.polyhedrons[i].modelIndex--;
 }}
 }this.setPropAS (propertyName, value, bs);
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 $_M(c$, "setLighting", 
 ($fz = function (isFullyLit, bs) {
 for (var i = this.polyhedronCount; --i >= 0; ) if (bs.get (this.polyhedrons[i].centralAtom.getIndex ())) {
@@ -139,15 +136,15 @@ for (var j = normixes.length; --j >= 0; ) {
 if (normixes[j] < 0 != isFullyLit) normixes[j] = ~normixes[j];
 }
 }
-}, $fz.isPrivate = true, $fz), "~B,J.util.BS");
+}, $fz.isPrivate = true, $fz), "~B,JU.BS");
 $_M(c$, "andBitSet", 
 ($fz = function (bs) {
-var bsCenters =  new J.util.BS ();
+var bsCenters =  new JU.BS ();
 for (var i = this.polyhedronCount; --i >= 0; ) bsCenters.set (this.polyhedrons[i].centralAtom.getIndex ());
 
 bsCenters.and (bs);
 return bsCenters;
-}, $fz.isPrivate = true, $fz), "J.util.BS");
+}, $fz.isPrivate = true, $fz), "JU.BS");
 $_M(c$, "deletePolyhedra", 
 ($fz = function () {
 var newCount = 0;
@@ -176,7 +173,7 @@ var iter = this.modelSet.getSelectedAtomIterator (null, false, false, false, fal
 for (var i = this.centers.nextSetBit (0); i >= 0; i = this.centers.nextSetBit (i + 1)) {
 var p = (this.haveBitSetVertices ? this.constructBitSetPolyhedron (i) : useBondAlgorithm ? this.constructBondsPolyhedron (i) : this.constructRadiusPolyhedron (i, iter));
 if (p != null) {
-if (this.polyhedronCount == this.polyhedrons.length) this.polyhedrons = J.util.ArrayUtil.doubleLength (this.polyhedrons);
+if (this.polyhedronCount == this.polyhedrons.length) this.polyhedrons = JU.AU.doubleLength (this.polyhedrons);
 this.polyhedrons[this.polyhedronCount++] = p;
 }if (this.haveBitSetVertices) break;
 }
@@ -223,7 +220,7 @@ return this.validatePolyhedronNew (atom, otherAtomCount, this.otherAtoms);
 }, $fz.isPrivate = true, $fz), "~N,J.api.AtomIndexIterator");
 $_M(c$, "validatePolyhedronNew", 
 ($fz = function (centralAtom, vertexCount, otherAtoms) {
-var normal =  new J.util.V3 ();
+var normal =  new JU.V3 ();
 var planeCount = 0;
 var ipt = 0;
 var ptCenter = vertexCount;
@@ -272,7 +269,7 @@ for (var j = 0; j < ptCenter - 1; j++) for (var k = j + 1; k < ptCenter; k++) {
 if (this.isAligned (points[j], points[k], points[ptCenter])) facetCatalog += this.faceId (j, k, -1);
 }
 
-var ptRef =  new J.util.P3 ();
+var ptRef =  new JU.P3 ();
 if (this.bsTemp == null) this.bsTemp = J.util.Normix.newVertexBitSet ();
 for (var i = 0; i < ptCenter - 2; i++) for (var j = i + 1; j < ptCenter - 1; j++) {
 if (points[i].distance (points[j]) > distMax) continue;
@@ -293,7 +290,7 @@ normal.scale (this.isCollapsed && !isFlat ? this.faceCenterOffset : 0.001);
 var nRef = nPoints;
 ptRef.setT (points[ptCenter]);
 if (this.isCollapsed && !isFlat) {
-points[nPoints] = J.util.P3.newP (points[ptCenter]);
+points[nPoints] = JU.P3.newP (points[ptCenter]);
 points[nPoints].add (normal);
 otherAtoms[nPoints] = points[nPoints];
 } else if (isFlat) {
@@ -335,11 +332,11 @@ this.normixesT[planeCount++] = J.util.Normix.getNormixV (normal, this.bsTemp);
 }}}
 }
 
-return Clazz.innerTypeInstance (J.shapespecial.Polyhedra.Polyhedron, this, null, centralAtom, ptCenter, nPoints, planeCount, otherAtoms, this.normixesT, this.planesT);
+return  new J.shapespecial.Polyhedron (centralAtom, ptCenter, nPoints, planeCount, otherAtoms, this.normixesT, this.planesT, this.isCollapsed, this.faceCenterOffset, this.distanceFactor);
 }, $fz.isPrivate = true, $fz), "J.modelset.Atom,~N,~A");
 $_M(c$, "faceId", 
 ($fz = function (i, j, k) {
-return (J.util.P3i.new3 (i, j, k)).toString ();
+return (JU.P3i.new3 (i, j, k)).toString ();
 }, $fz.isPrivate = true, $fz), "~N,~N,~N");
 $_M(c$, "isAligned", 
 ($fz = function (pt1, pt2, pt3) {
@@ -347,25 +344,25 @@ this.align1.sub2 (pt1, pt3);
 this.align2.sub2 (pt2, pt3);
 var angle = this.align1.angle (this.align2);
 return (angle < 0.01 || angle > 3.13);
-}, $fz.isPrivate = true, $fz), "J.util.P3,J.util.P3,J.util.P3");
+}, $fz.isPrivate = true, $fz), "JU.P3,JU.P3,JU.P3");
 $_M(c$, "isPlanar", 
 ($fz = function (pt1, pt2, pt3, ptX) {
-var norm =  new J.util.V3 ();
+var norm =  new JU.V3 ();
 var w = J.util.Measure.getNormalThroughPoints (pt1, pt2, pt3, norm, this.vAB, this.vAC);
 var d = J.util.Measure.distanceToPlaneV (norm, w, ptX);
 return (Math.abs (d) < J.shapespecial.Polyhedra.minDistanceForPlanarity);
-}, $fz.isPrivate = true, $fz), "J.util.P3,J.util.P3,J.util.P3,J.util.P3");
-Clazz.overrideMethod (c$, "setVisibilityFlags", 
+}, $fz.isPrivate = true, $fz), "JU.P3,JU.P3,JU.P3,JU.P3");
+$_V(c$, "setVisibilityFlags", 
 function (bs) {
 for (var i = this.polyhedronCount; --i >= 0; ) {
 var p = this.polyhedrons[i];
 p.visibilityFlags = (p.visible && bs.get (p.modelIndex) && !this.modelSet.isAtomHidden (p.centralAtom.getIndex ()) ? this.myVisibilityFlag : 0);
 }
-}, "J.util.BS");
-Clazz.overrideMethod (c$, "getShapeState", 
+}, "JU.BS");
+$_V(c$, "getShapeState", 
 function () {
 if (this.polyhedronCount == 0) return "";
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 for (var i = 0; i < this.polyhedronCount; i++) s.append (this.polyhedrons[i].getState ());
 
 if (this.drawEdges == 2) J.shape.Shape.appendCmd (s, "polyhedra frontedges");
@@ -373,52 +370,6 @@ if (this.drawEdges == 2) J.shape.Shape.appendCmd (s, "polyhedra frontedges");
 s.append (this.viewer.getAtomShapeState (this));
 return s.toString ();
 });
-c$.$Polyhedra$Polyhedron$ = function () {
-Clazz.pu$h ();
-c$ = Clazz.decorateAsClass (function () {
-Clazz.prepareCallback (this, arguments);
-this.modelIndex = 0;
-this.centralAtom = null;
-this.vertices = null;
-this.ptCenter = 0;
-this.visible = false;
-this.normixes = null;
-this.planes = null;
-this.visibilityFlags = 0;
-this.collapsed = false;
-this.myFaceCenterOffset = 0;
-this.myDistanceFactor = 0;
-this.isFullyLit = false;
-Clazz.instantialize (this, arguments);
-}, J.shapespecial.Polyhedra, "Polyhedron");
-Clazz.makeConstructor (c$, 
-function (a, b, c, d, e, f, g) {
-this.collapsed = this.b$["J.shapespecial.Polyhedra"].isCollapsed;
-this.centralAtom = a;
-this.modelIndex = a.getModelIndex ();
-this.ptCenter = b;
-this.vertices =  new Array (c);
-this.visible = true;
-this.normixes =  Clazz.newShortArray (d, 0);
-this.planes =  Clazz.newByteArray (d * 3, 0);
-this.myFaceCenterOffset = this.b$["J.shapespecial.Polyhedra"].faceCenterOffset;
-this.myDistanceFactor = this.b$["J.shapespecial.Polyhedra"].distanceFactor;
-for (var h = c; --h >= 0; ) this.vertices[h] = e[h];
-
-for (var i = d; --i >= 0; ) this.normixes[i] = f[i];
-
-for (var j = d * 3; --j >= 0; ) this.planes[j] = g[j];
-
-}, "J.modelset.Atom,~N,~N,~N,~A,~A,~A");
-$_M(c$, "getState", 
-function () {
-var a =  new J.util.BS ();
-for (var b = 0; b < this.ptCenter; b++) a.set ((this.vertices[b]).getIndex ());
-
-return "  polyhedra ({" + this.centralAtom.getIndex () + "}) to " + J.util.Escape.eBS (a) + (this.collapsed ? " collapsed" : "") + " distanceFactor " + this.myDistanceFactor + " faceCenterOffset " + this.myFaceCenterOffset + (this.isFullyLit ? " fullyLit" : "") + ";" + (this.visible ? "" : "polyhedra off;") + "\n";
-});
-c$ = Clazz.p0p ();
-};
 Clazz.defineStatics (c$,
 "DEFAULT_DISTANCE_FACTOR", 1.85,
 "DEFAULT_FACECENTEROFFSET", 0.25,
@@ -427,7 +378,7 @@ Clazz.defineStatics (c$,
 "EDGES_FRONT", 2,
 "MAX_VERTICES", 150,
 "FACE_COUNT_MAX", 147);
-c$.randomPoint = c$.prototype.randomPoint = J.util.P3.new3 (3141, 2718, 1414);
+c$.randomPoint = c$.prototype.randomPoint = JU.P3.new3 (3141, 2718, 1414);
 Clazz.defineStatics (c$,
 "minDistanceForPlanarity", 0.1);
 });

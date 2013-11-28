@@ -16,7 +16,7 @@ $_M(c$, "ensureOpen",
 ($fz = function () {
 if (this.str == null) throw  new java.io.IOException ("Stream closed");
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (cbuf, off, len) {
 {
 this.ensureOpen ();
@@ -30,7 +30,7 @@ this.str.getChars (this.next, this.next + n, cbuf, off);
 this.next += n;
 return n;
 }}, "~A,~N,~N");
-Clazz.overrideMethod (c$, "skip", 
+$_V(c$, "skip", 
 function (ns) {
 {
 this.ensureOpen ();
@@ -40,17 +40,17 @@ n = Math.max (-this.next, n);
 this.next += n;
 return n;
 }}, "~N");
-Clazz.overrideMethod (c$, "ready", 
+$_V(c$, "ready", 
 function () {
 {
 this.ensureOpen ();
 return true;
 }});
-Clazz.overrideMethod (c$, "markSupported", 
+$_V(c$, "markSupported", 
 function () {
 return true;
 });
-Clazz.overrideMethod (c$, "mark", 
+$_V(c$, "mark", 
 function (readAheadLimit) {
 if (readAheadLimit < 0) {
 throw  new IllegalArgumentException ("Read-ahead limit < 0");
@@ -58,13 +58,13 @@ throw  new IllegalArgumentException ("Read-ahead limit < 0");
 this.ensureOpen ();
 this.$mark = this.next;
 }}, "~N");
-Clazz.overrideMethod (c$, "reset", 
+$_V(c$, "reset", 
 function () {
 {
 this.ensureOpen ();
 this.next = this.$mark;
 }});
-Clazz.overrideMethod (c$, "close", 
+$_V(c$, "close", 
 function () {
 this.str = null;
 });

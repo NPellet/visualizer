@@ -1,4 +1,4 @@
-Clazz.load (["java.io.OutputStream"], "java.io.ByteArrayOutputStream", ["java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.OutOfMemoryError", "J.util.ArrayUtil"], function () {
+Clazz.load (["java.io.OutputStream"], "java.io.ByteArrayOutputStream", ["java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.OutOfMemoryError"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.buf = null;
 this.count = 0;
@@ -26,10 +26,16 @@ var newCapacity = oldCapacity << 1;
 if (newCapacity - minCapacity < 0) newCapacity = minCapacity;
 if (newCapacity < 0) {
 if (minCapacity < 0) throw  new OutOfMemoryError ();
-newCapacity = 2147483647;
-}this.buf = J.util.ArrayUtil.arrayCopyByte (this.buf, newCapacity);
+newCapacity = minCapacity;
+}this.buf = java.io.ByteArrayOutputStream.arrayCopyByte (this.buf, newCapacity);
 }, $fz.isPrivate = true, $fz), "~N");
-Clazz.overrideMethod (c$, "writeByteAsInt", 
+c$.arrayCopyByte = $_M(c$, "arrayCopyByte", 
+($fz = function (array, newLength) {
+var t =  Clazz.newByteArray (newLength, 0);
+System.arraycopy (array, 0, t, 0, array.length < newLength ? array.length : newLength);
+return t;
+}, $fz.isPrivate = true, $fz), "~A,~N");
+$_V(c$, "writeByteAsInt", 
 function (b) {
 this.ensureCapacity (this.count + 1);
 this.buf[this.count] = b;
@@ -53,17 +59,17 @@ this.count = 0;
 });
 $_M(c$, "toByteArray", 
 function () {
-return (this.count == this.buf.length ? this.buf : J.util.ArrayUtil.arrayCopyByte (this.buf, this.count));
+return (this.count == this.buf.length ? this.buf : java.io.ByteArrayOutputStream.arrayCopyByte (this.buf, this.count));
 });
 $_M(c$, "size", 
 function () {
 return this.count;
 });
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return  String.instantialize (this.buf, 0, this.count);
 });
-Clazz.overrideMethod (c$, "close", 
+$_V(c$, "close", 
 function () {
 });
 });

@@ -5,7 +5,7 @@ this.mar = 0;
 this.width = 0;
 Clazz.instantialize (this, arguments);
 }, J.render, "StarsRenderer", J.render.ShapeRenderer);
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 var stars = this.shape;
 if (stars.mads == null) return false;

@@ -1,5 +1,4 @@
 Clazz.declarePackage ("J.g3d");
-Clazz.load (["java.lang.Thread"], "J.g3d.Platform3D", null, function () {
 c$ = Clazz.decorateAsClass (function () {
 this.windowWidth = 0;
 this.windowHeight = 0;
@@ -17,30 +16,17 @@ this.widthOffscreen = 0;
 this.heightOffscreen = 0;
 this.offscreenImage = null;
 this.graphicsForTextOrImage = null;
-this.useClearingThread = false;
-this.clearingThread = null;
 this.apiPlatform = null;
-if (!Clazz.isClassDefined ("J.g3d.Platform3D.ClearingThread")) {
-J.g3d.Platform3D.$Platform3D$ClearingThread$ ();
-}
 Clazz.instantialize (this, arguments);
 }, J.g3d, "Platform3D");
 Clazz.makeConstructor (c$, 
 function (apiPlatform) {
-this.initialize (false);
 this.apiPlatform = apiPlatform;
-}, "J.api.ApiPlatform");
+}, "javajs.api.GenericPlatform");
 $_M(c$, "getGraphicsForMetrics", 
 function () {
 return this.apiPlatform.getGraphics (this.allocateOffscreenImage (1, 1));
 });
-$_M(c$, "initialize", 
-function (useClearingThread) {
-this.useClearingThread = useClearingThread;
-if (useClearingThread) {
-this.clearingThread = Clazz.innerTypeInstance (J.g3d.Platform3D.ClearingThread, this, null);
-this.clearingThread.start ();
-}}, "~B");
 $_M(c$, "allocateTBuffers", 
 function (antialiasTranslucent) {
 this.bufferSizeT = (antialiasTranslucent ? this.bufferSize : this.windowSize);
@@ -101,14 +87,10 @@ this.pBufferT[i] = 0;
 });
 $_M(c$, "clearBuffer", 
 function () {
-if (this.useClearingThread) {
-this.clearingThread.clearClientBuffer ();
-} else {
 this.clearScreenBuffer ();
-}});
+});
 $_M(c$, "clearScreenBufferThreaded", 
 function () {
-if (this.useClearingThread) this.clearingThread.releaseBufferForClearing ();
 });
 $_M(c$, "notifyEndOfRendering", 
 function () {
@@ -132,68 +114,7 @@ return this.apiPlatform.newOffScreenImage (width, height);
 }, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "setBackgroundTransparent", 
 function (tf) {
-($t$ = J.g3d.Platform3D.backgroundTransparent = tf, J.g3d.Platform3D.prototype.backgroundTransparent = J.g3d.Platform3D.backgroundTransparent, $t$);
+J.g3d.Platform3D.backgroundTransparent = tf;
 }, "~B");
-c$.$Platform3D$ClearingThread$ = function () {
-Clazz.pu$h ();
-c$ = Clazz.decorateAsClass (function () {
-Clazz.prepareCallback (this, arguments);
-this.bufferHasBeenCleared = false;
-this.clientHasBuffer = false;
-Clazz.instantialize (this, arguments);
-}, J.g3d.Platform3D, "ClearingThread", Thread);
-$_M(c$, "notifyBackgroundChange", 
-function (a) {
-this.bufferHasBeenCleared = false;
-this.notify ();
-}, "~N");
-$_M(c$, "clearClientBuffer", 
-function () {
-while (!this.bufferHasBeenCleared) try {
-this.wait ();
-} catch (ie) {
-if (Clazz.exceptionOf (ie, InterruptedException)) {
-} else {
-throw ie;
-}
-}
-
-this.clientHasBuffer = true;
-});
-$_M(c$, "releaseBufferForClearing", 
-function () {
-this.clientHasBuffer = false;
-this.bufferHasBeenCleared = false;
-this.notify ();
-});
-$_M(c$, "waitForClientRelease", 
-function () {
-while (this.clientHasBuffer || this.bufferHasBeenCleared) try {
-this.wait ();
-} catch (ie) {
-if (Clazz.exceptionOf (ie, InterruptedException)) {
-} else {
-throw ie;
-}
-}
-
-});
-$_M(c$, "notifyBufferReady", 
-function () {
-this.bufferHasBeenCleared = true;
-this.notify ();
-});
-Clazz.overrideMethod (c$, "run", 
-function () {
-while (true) {
-this.waitForClientRelease ();
-this.b$["J.g3d.Platform3D"].clearScreenBuffer ();
-this.notifyBufferReady ();
-}
-});
-c$ = Clazz.p0p ();
-};
 Clazz.defineStatics (c$,
-"desireClearingThread", false,
 "backgroundTransparent", false);
-});

@@ -8,11 +8,11 @@ this.lastSequenceNumber = 2147483647;
 this.chainID = 64;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.more, "Mol2Reader", J.adapter.readers.more.ForceFieldReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.setUserAtomTypes ();
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.equals ("@<TRIPOS>MOLECULE")) {
 if (!this.processMolecule ()) {

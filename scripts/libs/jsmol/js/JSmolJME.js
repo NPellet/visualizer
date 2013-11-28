@@ -31,33 +31,30 @@
     window[id] = this;
     Jmol._setObject(this, id, Info);
     this._options = Info.options;
-		this._linkedApplet = linkedApplet;
+    if (this._options.indexOf("autoez") < 0)
+      this._options += ",autoez";
+		var jmol = this._linkedApplet = linkedApplet;
 		this._readyFunction = Info.readyFunction;
 		this._ready = false; 
  		this._jarPath = Info.jarPath;
 		this._jarFile = Info.jarFile;
-    if (linkedApplet)
-      this._console = linkedApplet._console;
+    if (jmol)
+      this._console = jmol._console;
 		Jmol._setConsoleDiv(this._console);
-    this._divId = this._id + "_jmeappletdiv";
-    this._isEmbedded = true;
-    if (Info.divId) {
-      this._isEmbedded = false;
-      this._divId = Info.divId;
-    }
+    this._isEmbedded = !Info.divId;
+    this._divId = Info.divId || this._id + "_jmeappletdiv";
  		if (Jmol._document) {
-			if (this._linkedApplet) {
-				this._linkedApplet._infoObject = this;
-				this._linkedApplet._info = null;
-				var d = Jmol._getElement(this._linkedApplet, "infotablediv");
-				d.style.display = "block";
-				var d = Jmol._getElement(this._linkedApplet, "infodiv");
+			if (jmol) {
+				jmol._2dapplet = this;
+        var id = jmol._id + "_2dappletdiv";
         if (this._isEmbedded)
-          this._divid = d.id;
+          this._divId = id;
+        var d = Jmol._document;
 			  Jmol._document = null;
-			  d.innerHTML = this.create();
-			  Jmol._document = document;
-				this._showContainer(false, false);
+        var s = this.create();
+			  Jmol.$html(this._divId, s);
+			  Jmol._document = d;
+				this.__showContainer(false, false);
 			} else {
 				this.create();
 			}
@@ -65,7 +62,7 @@
 		return this;
   }
 
-  Jmol._JMEApplet._getApplet = function(id, Info, linkedApplet, checkOnly) {
+  Jmol._JMEApplet._get = function(id, Info, linkedApplet, checkOnly) {
 	
 	// requires JmolJME.js and JME.jar
 	// note that the variable name the return is assigned to MUST match the first parameter in quotes
@@ -77,6 +74,7 @@
 			height: 300,
 			jarPath: "jme",
 			jarFile: "JME.jar",
+      use: "HTML5",
 			options: "autoez"
 			// see http://www2.chemie.uni-erlangen.de/services/fragment/editor/jme_functions.html
 			// rbutton, norbutton - show / hide R button
@@ -99,11 +97,12 @@
   Jmol._JMEApplet.onload = function() {
     for (var i in Jmol._applets) {
       var app = Jmol._applets[i]
-   	  if (app._isJME && !app._isJava && !app._ready) {
-       app._applet = new JSApplet.JSME(app._divId, app.__Info);
-       app._ready = true;
-       if (app._readyFunction)
-         app._readyFunction();
+      if (app._isJME && !app._isJava && !app._ready) {
+        app._applet = new JSApplet.JSME(app._divId, app.__Info);
+        app._ready = true;
+        if (app._isEmbedded && app._linkedApplet._ready && app.__Info.visible)
+          app._linkedApplet.show2d(true);
+    		Jmol._setReady(app);
       }
     }
   }   
@@ -113,7 +112,7 @@
 ;(function(proto){
 
   proto.create = function() {
-    var s;
+    var s = "";
     if (this._isJava) {
   		var w = (this._linkedApplet ? "2px" : this._containerWidth);
   		var h = (this._linkedApplet ? "2px" : this._containerHeight);
@@ -122,7 +121,7 @@
   			+ '<param name="options" value="' + this._options + '" />'	
   			+ '</applet>';
     } else if (this._isEmbedded) {
-      s = "<div id=\"" + this._divId + "\" style=\"width:100%;height:100%;position:absolute;top:0px;left:0px;\"></div>" 
+      s = ""; 
     }
   	return this._code = Jmol._documentWrite(s);
 	}
@@ -133,34 +132,50 @@
   
 	proto._searchDatabase = function(query, database){
 		this._showInfo(false);
-		if (database == "$")
+		if (database == "$") {
 			query = "$" + query; // 2D variant
+    }
 		var dm = database + query;
 		if (Jmol.db._DirectDatabaseCalls[database]) {
-			this._loadFile(dm, script);
+			this._loadFile(dm);
 			return;
 		}
-		var self=this;
+		var me=this;
 		Jmol._getRawDataFromServer(
 			database,
 			query,
-			function(data){self._loadModel(data)}
+			function(data){me._loadModel(data)},
+      null, 
+      false,// not base64
+      true  // noScript
 		);
 	}
 	
-	proto._loadFile = function(fileName){
+ 	proto._loadFile = function(fileName){
 		this._showInfo(false);
 		this._thisJmolModel = "" + Math.random();
-		var self = this;
-		Jmol._loadFileData(this, fileName, function(data){self._loadModel(data)});
+		var me = this;
+		Jmol._loadFileData(this, fileName, function(data){me._loadModel(data)});
 	}
 	
 	proto._loadModel = function(jmeOrMolData) {
 		Jmol.jmeReadMolecule(this, jmeOrMolData);
 	}
 	
-	proto._showInfo = function(tf) {
-	  // from applet, so here is where we do the SMILES transfer
+	proto._showInfo = Jmol._Applet.prototype._showInfo;
+	proto._show = Jmol._Applet.prototype._show;
+  
+	proto._show = function(tf) {
+		var x = (!tf ? 2 : "100%");
+    Jmol.$setSize(Jmol.$(this, "object"), x, x);
+    if (!this._isJava) {
+      Jmol.$setVisible(Jmol.$(this, "appletdiv"), tf);
+      if (this._isEmbedded && !tf)
+        Jmol.$setVisible(Jmol.$(this._linkedApplet, "2dappletdiv"), false);
+    }
+	}
+
+	proto._show2d = function(tf) {
 	  var jmol = this._linkedApplet;
 	  if (jmol) {
 		  var jme = this._applet;
@@ -169,14 +184,15 @@
       var isOK = true;
       if (jme != null) {
   		  var jmeSMILES = jme.smiles();
-  		  var jmolAtoms = jmeSMILES ? Jmol.evaluate(jmol, "{*}.find('SMILES', '" + jmeSMILES + "')") : "({})";
+  		  var jmolAtoms = (jmeSMILES ? Jmol.evaluate(jmol, "{*}.find('SMILES', '" + jmeSMILES.replace(/\\/g,"\\\\")+ "')") : "({})");
 		    var isOK = (jmolAtoms != "({})");
       }
 		  if (!isOK) {
 			  if (tf) {
 			    // toJME
-          this._molData = Jmol.evaluate(jmol, "write('mol')")//Jmol.evaluate(jmol, "script('show chemical sdf')");//
-          var cmd  = this._id + "._readMolData()";
+          this._molData = //Jmol.evaluate(jmol, "write('mol')")
+          Jmol.evaluate(jmol, "script('show chemical sdf')");
+          var cmd  = this._id + ".__readMolData()";
 			    setTimeout(cmd,100);
 			  } else {
 			    // toJmol
@@ -184,41 +200,33 @@
 				    Jmol.script(jmol, "load \"$" + jmeSMILES + "\"");
 			  }
 			}
- 		  this._showContainer(tf, true);
+ 		  this.__showContainer(tf, true);
 		}
+    this._showInfo(!tf);
 	}
 
-  proto._readMolData = function() {
+  proto.__readMolData = function() {
     if (!this._applet)return;
-    this._applet.readMolFile(this._molData);
+    if (this._molData) {
+      this._applet.readMolFile(this._molData);
+    } else {
+      this._applet.reset();
+    }
+      
   }
   
-  proto._showContainer = function(tf, andShow) {
-		Jmol._getElement(this._linkedApplet, "infoheaderdiv").style.display = "none";
-  	var d = Jmol._getElement(this._linkedApplet, "infotablediv");
+  proto.__showContainer = function(tf, andShow) {
+	  var jmol = this._linkedApplet;
+  	var mydiv = Jmol.$(jmol, "2dappletdiv");
     if (this._isJava) {
-    	var w = (!tf ? "2px" : "100%");
-  		var h = (!tf ? "2px" : "100%");
-  		d.style.width = w;
-  		d.style.height = h;
-  		d = Jmol._getElement(this._linkedApplet, "infodiv");
-  		d.style.overflow = "hidden";
-  		if (andShow) {
-  			d = Jmol._getElement(this, "object");
-  			d.style.width = w; 
-  			d.style.height = h; 
-  			Jmol._getElement(this._linkedApplet, "infoheaderspan").innerHTML = (tf ? this : this._linkedApplet)._infoHeader;	
-  		}
+    	var w = (tf ? "100%" : 2);
+  		var h = (tf ? "100%" : 2);
+      Jmol.$setSize(mydiv, w, h);
+  		if (andShow)
+        Jmol.$setSize(Jmol.$(this, "object"), w, h);
     } else {
-      d.style.display = (tf ? "block" : "none");
-  		d = Jmol._getElement(this._linkedApplet, "infodiv");
-  		d.style.overflow = "hidden";
-  		if (andShow) {
-  			Jmol._getElement(this._linkedApplet, "infoheaderspan").innerHTML = (tf ? this : this._linkedApplet)._infoHeader;	
-  		}
+      Jmol.$setVisible(mydiv, tf);
     }
-		if (tf)
-			Jmol._getElement(this._linkedApplet, "infoheaderdiv").style.display = "block";		
 	}
 })(Jmol._JMEApplet.prototype);
 
@@ -248,5 +256,17 @@
   Jmol.jmeOptions = function(jme, options) {
   	jme._applet.options(options);
   }
+
+    // optional Info here	
+  Jmol.getJSVAppletHtml = function(applet, Info, linkedApplet) {
+    if (Info) {
+      var d = Jmol._document;
+      Jmol._document = null;
+      applet = Jmol.getJMEApplet(applet, Info, linkedApplet);
+      Jmol._document = d;
+    }  
+    return applet._code;
+	}
+		
 	
 })(Jmol, document);

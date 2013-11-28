@@ -1,8 +1,7 @@
 Clazz.declarePackage ("J.g3d");
-Clazz.load (["J.util.Rgb16"], "J.g3d.TriangleRenderer", ["J.util.GData"], function () {
+Clazz.load (["J.g3d.G3DRenderer", "J.util.Rgb16"], "J.g3d.TriangleRenderer", ["J.util.GData"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.g3d = null;
-this.line3d = null;
 this.ax = null;
 this.ay = null;
 this.az = null;
@@ -16,7 +15,7 @@ this.rgb16sGouraud = null;
 this.rgb16t1 = null;
 this.rgb16t2 = null;
 Clazz.instantialize (this, arguments);
-}, J.g3d, "TriangleRenderer");
+}, J.g3d, "TriangleRenderer", null, J.g3d.G3DRenderer);
 Clazz.prepareFields (c$, function () {
 this.ax =  Clazz.newIntArray (3, 0);
 this.ay =  Clazz.newIntArray (3, 0);
@@ -29,7 +28,11 @@ this.rgb16t1 =  new J.util.Rgb16 ();
 this.rgb16t2 =  new J.util.Rgb16 ();
 });
 Clazz.makeConstructor (c$, 
+function () {
+});
+$_V(c$, "set", 
 function (g3d) {
+try {
 this.rgb16sW =  new Array (64);
 this.rgb16sE =  new Array (64);
 for (var i = 64; --i >= 0; ) {
@@ -37,11 +40,17 @@ this.rgb16sW[i] =  new J.util.Rgb16 ();
 this.rgb16sE[i] =  new J.util.Rgb16 ();
 }
 this.g3d = g3d;
-this.line3d = g3d.line3d;
 this.rgb16sGouraud =  new Array (3);
 for (var i = 3; --i >= 0; ) this.rgb16sGouraud[i] =  new J.util.Rgb16 ();
 
-}, "J.g3d.Graphics3D");
+} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
+return this;
+}, "J.api.JmolRendererInterface");
 $_M(c$, "reallocRgb16s", 
 function (rgb16s, n) {
 var t =  new Array (n);
@@ -94,7 +103,7 @@ this.az[0] = screenA.z;
 this.az[1] = screenB.z;
 this.az[2] = screenC.z;
 this.fillTriangleB (useGouraud);
-}, "J.util.P3i,J.util.P3i,J.util.P3i,~B");
+}, "JU.P3i,JU.P3i,JU.P3i,~B");
 $_M(c$, "fillTriangleP3f", 
 function (screenA, screenB, screenC, useGouraud) {
 this.ax[0] = Math.round (screenA.x);
@@ -107,7 +116,7 @@ this.az[0] = Math.round (screenA.z);
 this.az[1] = Math.round (screenB.z);
 this.az[2] = Math.round (screenC.z);
 this.fillTriangleB (useGouraud);
-}, "J.util.P3,J.util.P3,J.util.P3,~B");
+}, "JU.P3,JU.P3,JU.P3,~B");
 $_M(c$, "fillTriangleP3if", 
 function (screenA, screenB, screenC, factor, useGouraud) {
 this.ax[0] = screenA.x;
@@ -123,7 +132,7 @@ J.g3d.TriangleRenderer.adjustVertex (this.ax, factor);
 J.g3d.TriangleRenderer.adjustVertex (this.ay, factor);
 J.g3d.TriangleRenderer.adjustVertex (this.az, factor);
 this.fillTriangleB (useGouraud);
-}, "J.util.P3i,J.util.P3i,J.util.P3i,~N,~B");
+}, "JU.P3i,JU.P3i,JU.P3i,~N,~B");
 c$.adjustVertex = $_M(c$, "adjustVertex", 
 ($fz = function (t, factor) {
 var av = (t[0] + t[1] + t[2]) / 3;

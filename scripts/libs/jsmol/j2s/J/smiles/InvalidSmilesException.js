@@ -7,22 +7,22 @@ return J.smiles.InvalidSmilesException.lastError;
 });
 c$.setLastError = $_M(c$, "setLastError", 
 function (message) {
-($t$ = J.smiles.InvalidSmilesException.lastError = message, J.smiles.InvalidSmilesException.prototype.lastError = J.smiles.InvalidSmilesException.lastError, $t$);
+J.smiles.InvalidSmilesException.lastError = message;
 }, "~S");
 Clazz.makeConstructor (c$, 
 function (message) {
 Clazz.superConstructor (this, J.smiles.InvalidSmilesException, [message]);
-($t$ = J.smiles.InvalidSmilesException.lastError = message, J.smiles.InvalidSmilesException.prototype.lastError = J.smiles.InvalidSmilesException.lastError, $t$);
+J.smiles.InvalidSmilesException.lastError = message;
 }, "~S");
 Clazz.makeConstructor (c$, 
 function (cause) {
 Clazz.superConstructor (this, J.smiles.InvalidSmilesException, [cause]);
-($t$ = J.smiles.InvalidSmilesException.lastError = cause.toString (), J.smiles.InvalidSmilesException.prototype.lastError = J.smiles.InvalidSmilesException.lastError, $t$);
+J.smiles.InvalidSmilesException.lastError = cause.toString ();
 }, "Throwable");
 Clazz.makeConstructor (c$, 
 function (message, cause) {
 Clazz.superConstructor (this, J.smiles.InvalidSmilesException, [message, cause]);
-($t$ = J.smiles.InvalidSmilesException.lastError = message + "\n" + cause.getCause (), J.smiles.InvalidSmilesException.prototype.lastError = J.smiles.InvalidSmilesException.lastError, $t$);
+J.smiles.InvalidSmilesException.lastError = message + "\n" + cause.getCause ();
 }, "~S,Throwable");
 Clazz.defineStatics (c$,
 "lastError", null);

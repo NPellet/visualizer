@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapesurface");
-Clazz.load (["J.shapesurface.Isosurface", "J.atomdata.RadiusData", "J.constant.EnumVdw", "J.util.P3", "$.V3"], "J.shapesurface.Contact", ["java.lang.Boolean", "$.Double", "$.Float", "java.util.Hashtable", "J.atomdata.AtomData", "J.constant.EnumHBondType", "J.jvxl.data.MeshData", "$.VolumeData", "J.script.T", "J.util.BS", "$.BSUtil", "$.ColorUtil", "$.ContactPair", "$.Escape", "$.JmolList", "$.Logger", "$.Measure", "$.MeshSurface"], function () {
+Clazz.load (["J.shapesurface.Isosurface", "JU.P3", "$.V3", "J.atomdata.RadiusData", "J.constant.EnumVdw"], "J.shapesurface.Contact", ["java.lang.Boolean", "$.Double", "$.Float", "java.util.Hashtable", "JU.BS", "$.CU", "$.List", "J.atomdata.AtomData", "J.constant.EnumHBondType", "J.jvxl.data.MeshData", "$.VolumeData", "J.script.T", "J.util.BSUtil", "$.ContactPair", "$.Escape", "$.Logger", "$.Measure", "$.TempArray"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atoms = null;
 this.atomCount = 0;
@@ -13,18 +13,18 @@ this.pt2 = null;
 Clazz.instantialize (this, arguments);
 }, J.shapesurface, "Contact", J.shapesurface.Isosurface);
 Clazz.prepareFields (c$, function () {
-this.vZ =  new J.util.V3 ();
-this.vY =  new J.util.V3 ();
-this.vX =  new J.util.V3 ();
-this.pt1 =  new J.util.P3 ();
-this.pt2 =  new J.util.P3 ();
+this.vZ =  new JU.V3 ();
+this.vY =  new JU.V3 ();
+this.vX =  new JU.V3 ();
+this.pt1 =  new JU.P3 ();
+this.pt2 =  new JU.P3 ();
 });
 $_M(c$, "initShape", 
 function () {
 Clazz.superCall (this, J.shapesurface.Contact, "initShape", []);
 this.myType = "contact";
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bs) {
 if ("set" === propertyName) {
 this.setContacts (value, !this.viewer.getTestFlag (4));
@@ -32,7 +32,7 @@ return;
 }if ("init" === propertyName) {
 this.translucentLevel = 0;
 }this.setPropI (propertyName, value, bs);
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 $_M(c$, "setContacts", 
 ($fz = function (value, doEditCpList) {
 var contactType = (value[0]).intValue ();
@@ -146,7 +146,7 @@ this.thisMesh.setMerged (false);
 this.thisMesh.jvxlData.vertexDataOnly = true;
 this.thisMesh.reinitializeLightingAndColor (this.viewer);
 if (contactType != 1073742036) {
-this.thisMesh.bsVdw =  new J.util.BS ();
+this.thisMesh.bsVdw =  new JU.BS ();
 this.thisMesh.bsVdw.or (bsA);
 this.thisMesh.bsVdw.or (bsB);
 }this.setPropI ("finalize", command, null);
@@ -175,7 +175,7 @@ if (colorByType) {
 ce = this.viewer.getColorEncoder ("rwb");
 ce.setRange (-0.5, 0.5, false);
 } else if (defaultColor != null) {
-this.setPropI ("color", Integer.$valueOf (J.util.ColorUtil.getArgbFromString (defaultColor)), null);
+this.setPropI ("color", Integer.$valueOf (JU.CU.getArgbFromString (defaultColor)), null);
 } else if (displayType == 1073742036) {
 ce = this.viewer.getColorEncoder ("bgr");
 ce.setRange (-0.03, 0.03, false);
@@ -229,7 +229,7 @@ J.util.Logger.setLogLevel (0);
 }
 J.util.Logger.setLogLevel (logLevel);
 return volume;
-}, $fz.isPrivate = true, $fz), "J.util.JmolList,~N,~N,~A,~O,~B,~B");
+}, $fz.isPrivate = true, $fz), "JU.List,~N,~N,~A,~O,~B,~B");
 $_M(c$, "setColorByScore", 
 ($fz = function (score, nV) {
 for (var iv = this.thisMesh.vertexCount; --iv >= nV; ) this.thisMesh.vertexValues[iv] = score;
@@ -238,7 +238,7 @@ return this.thisMesh.vertexCount;
 }, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "getPairs", 
 ($fz = function (bsA, bsB, rd, intramolecularMode, doEditCpList) {
-var list =  new J.util.JmolList ();
+var list =  new JU.List ();
 var ad =  new J.atomdata.AtomData ();
 ad.radiusData = rd;
 var bs = J.util.BSUtil.copy (bsA);
@@ -290,7 +290,7 @@ iter.release ();
 iter = null;
 if (!doEditCpList) return list;
 var n = list.size () - 1;
-var bsBad =  new J.util.BS ();
+var bsBad =  new JU.BS ();
 for (var i = 0; i < n; i++) {
 var cp1 = list.get (i);
 for (var j = i + 1; j <= n; j++) {
@@ -316,7 +316,7 @@ if (J.util.Logger.debugging) for (var i = 0; i < list.size (); i++) J.util.Logge
 
 J.util.Logger.info ("Contact pairs: " + list.size ());
 return list;
-}, $fz.isPrivate = true, $fz), "J.util.BS,J.util.BS,J.atomdata.RadiusData,~N,~B");
+}, $fz.isPrivate = true, $fz), "JU.BS,JU.BS,J.atomdata.RadiusData,~N,~B");
 c$.checkCp = $_M(c$, "checkCp", 
 ($fz = function (cp1, cp2, i1, i2) {
 if (cp1.myAtoms[i1] !== cp2.myAtoms[i2]) return 0;
@@ -397,9 +397,9 @@ params.volumeData = volumeData;
 this.setPropI ("sasurface", Float.$valueOf (0), null);
 if (displayType != 4106) iSlab0 = -100;
 }
-if (iSlab0 != iSlab1) this.thisMesh.slabPolygons (J.util.MeshSurface.getSlabWithinRange (iSlab0, iSlab1), false);
+if (iSlab0 != iSlab1) this.thisMesh.slabPolygons (J.util.TempArray.getSlabWithinRange (iSlab0, iSlab1), false);
 if (displayType != 3145756) this.thisMesh.setMerged (true);
-}, $fz.isPrivate = true, $fz), "~N,J.util.ContactPair,J.util.BS,J.util.BS,J.atomdata.RadiusData,~A,~O,~B,J.jvxl.data.VolumeData,~N");
+}, $fz.isPrivate = true, $fz), "~N,J.util.ContactPair,JU.BS,JU.BS,J.atomdata.RadiusData,~A,~O,~B,J.jvxl.data.VolumeData,~N");
 $_M(c$, "setVolumeData", 
 ($fz = function (type, volumeData, cp, resolution, nPairs) {
 this.pt1.setT (cp.myAtoms[0]);
@@ -449,10 +449,10 @@ this.maxData = this.jvxlData.mappedDataMax;
 this.jvxlData.valueMappedToBlue = this.minData;
 this.jvxlData.valueMappedToRed = this.maxData;
 }, $fz.isPrivate = true, $fz), "J.jvxl.data.MeshData");
-Clazz.overrideMethod (c$, "addMeshInfo", 
+$_V(c$, "addMeshInfo", 
 function (mesh, info) {
 if (mesh.info == null) return;
-var pairInfo =  new J.util.JmolList ();
+var pairInfo =  new JU.List ();
 info.put ("pairInfo", pairInfo);
 var list = mesh.info;
 for (var i = 0; i < list.size (); i++) {

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["J.util.BS", "$.JmolEdge", "J.viewer.JC"], "J.modelset.Bond", ["J.util.BSUtil", "$.C"], function () {
+Clazz.load (["J.util.JmolEdge", "J.viewer.JC"], "J.modelset.Bond", ["J.util.C"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atom1 = null;
 this.atom2 = null;
@@ -43,11 +43,11 @@ $_M(c$, "getIdentity",
 function () {
 return (this.index + 1) + " " + this.getOrderNumberAsString () + " " + this.atom1.getInfo () + " -- " + this.atom2.getInfo () + " " + this.atom1.distance (this.atom2);
 });
-Clazz.overrideMethod (c$, "isCovalent", 
+$_V(c$, "isCovalent", 
 function () {
 return (this.order & 1023) != 0;
 });
-Clazz.overrideMethod (c$, "isHydrogen", 
+$_V(c$, "isHydrogen", 
 function () {
 return J.modelset.Bond.isOrderH (this.order);
 });
@@ -106,11 +106,11 @@ $_M(c$, "getAtom2",
 function () {
 return this.atom2;
 });
-Clazz.overrideMethod (c$, "getAtomIndex1", 
+$_V(c$, "getAtomIndex1", 
 function () {
 return this.atom1.index;
 });
-Clazz.overrideMethod (c$, "getAtomIndex2", 
+$_V(c$, "getAtomIndex2", 
 function () {
 return this.atom2.index;
 });
@@ -118,7 +118,7 @@ $_M(c$, "getRadius",
 function () {
 return this.mad / 2000;
 });
-Clazz.overrideMethod (c$, "getCovalentOrder", 
+$_V(c$, "getCovalentOrder", 
 function () {
 return J.util.JmolEdge.getCovalentBondOrder (this.order);
 });
@@ -150,37 +150,13 @@ $_M(c$, "is",
 function (bondType) {
 return (this.order & -131073) == bondType;
 }, "~N");
-Clazz.overrideMethod (c$, "getOtherAtomNode", 
+$_V(c$, "getOtherAtomNode", 
 function (thisAtom) {
 return (this.atom1 === thisAtom ? this.atom2 : this.atom2 === thisAtom ? this.atom1 : null);
 }, "J.util.JmolNode");
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return this.atom1 + " - " + this.atom2;
 });
-Clazz.pu$h ();
-c$ = Clazz.decorateAsClass (function () {
-this.associatedAtoms = null;
-Clazz.instantialize (this, arguments);
-}, J.modelset.Bond, "BondSet", J.util.BS);
-Clazz.makeConstructor (c$, 
-function () {
-Clazz.superConstructor (this, J.modelset.Bond.BondSet, []);
-});
-$_M(c$, "getAssociatedAtoms", 
-function () {
-return this.associatedAtoms;
-});
-Clazz.makeConstructor (c$, 
-function (a) {
-Clazz.superConstructor (this, J.modelset.Bond.BondSet, []);
-J.util.BSUtil.copy2 (a, this);
-}, "J.util.BS");
-Clazz.makeConstructor (c$, 
-function (a, b) {
-this.construct (a);
-this.associatedAtoms = b;
-}, "J.util.BS,~A");
-c$ = Clazz.p0p ();
 c$.myVisibilityFlag = c$.prototype.myVisibilityFlag = J.viewer.JC.getShapeVisibilityFlag (1);
 });

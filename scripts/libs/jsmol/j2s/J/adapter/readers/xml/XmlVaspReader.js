@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xml");
-Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlVaspReader", ["java.lang.Double", "J.util.Logger", "$.Parser", "$.SB", "$.V3"], function () {
+Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlVaspReader", ["java.lang.Double", "JU.PT", "$.SB", "$.V3", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.data = null;
 this.name = null;
@@ -30,16 +30,16 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.adapter.readers.xml.XmlVaspReader, []);
 });
-Clazz.overrideMethod (c$, "getDOMAttributes", 
+$_V(c$, "getDOMAttributes", 
 function () {
 return this.myAttributes;
 });
-Clazz.overrideMethod (c$, "processXml", 
+$_V(c$, "processXml", 
 function (parent, saxReader) {
 parent.doProcessLines = true;
 this.PX (parent, saxReader);
 }, "J.adapter.readers.xml.XmlReader,~O");
-Clazz.overrideMethod (c$, "processStartElement", 
+$_V(c$, "processStartElement", 
 function (localName) {
 if (J.util.Logger.debugging) J.util.Logger.debug ("xmlvasp: start " + localName);
 if (!this.parent.continuing) return;
@@ -62,10 +62,10 @@ return;
 this.atomSetCollection.setDoFixPeriodic ();
 this.atomSetCollection.newAtomSet ();
 if (this.enthalpy != null) {
-this.atomSetCollection.setAtomSetAuxiliaryInfo ("enthalpy", Double.$valueOf (J.util.Parser.dVal (this.enthalpy)));
+this.atomSetCollection.setAtomSetAuxiliaryInfo ("enthalpy", Double.$valueOf (JU.PT.dVal (this.enthalpy)));
 }if (this.gibbsEnergy != null) {
 this.atomSetCollection.setAtomSetEnergy ("" + this.gibbsEnergy, this.parseFloatStr (this.gibbsEnergy));
-this.atomSetCollection.setAtomSetAuxiliaryInfo ("gibbsEnergy", Double.$valueOf (J.util.Parser.dVal (this.gibbsEnergy)));
+this.atomSetCollection.setAtomSetAuxiliaryInfo ("gibbsEnergy", Double.$valueOf (JU.PT.dVal (this.gibbsEnergy)));
 }if (this.enthalpy != null && this.gibbsEnergy != null) this.atomSetCollection.setAtomSetName ("Enthalpy = " + this.enthalpy + " eV Gibbs Energy = " + this.gibbsEnergy + " eV");
 return;
 }if (!this.parent.doProcessLines) return;
@@ -77,13 +77,13 @@ this.keepChars = (this.iAtom < this.atomCount);
 return;
 }if ("varray".equals (localName)) {
 this.name = this.atts.get ("name");
-if (this.name != null && J.util.Parser.isOneOf (this.name, ";basis;positions;forces;")) this.data =  new J.util.SB ();
+if (this.name != null && JU.PT.isOneOf (this.name, ";basis;positions;forces;")) this.data =  new JU.SB ();
 return;
 }if ("atoms".equals (localName)) {
 this.keepChars = true;
 return;
 }}, "~S");
-Clazz.overrideMethod (c$, "processEndElement", 
+$_V(c$, "processEndElement", 
 function (localName) {
 if (J.util.Logger.debugging) J.util.Logger.debug ("xmlvasp: end " + localName);
 while (true) {
@@ -118,9 +118,9 @@ if (this.name == null) {
 } else if ("basis".equals (this.name) && !this.haveUnitCell) {
 this.haveUnitCell = true;
 var ijk = J.adapter.smarter.AtomSetCollectionReader.getTokensFloat (this.data.toString (), null, 9);
-var va = J.util.V3.new3 (ijk[0], ijk[1], ijk[2]);
-var vb = J.util.V3.new3 (ijk[3], ijk[4], ijk[5]);
-var vc = J.util.V3.new3 (ijk[6], ijk[7], ijk[8]);
+var va = JU.V3.new3 (ijk[0], ijk[1], ijk[2]);
+var vb = JU.V3.new3 (ijk[3], ijk[4], ijk[5]);
+var vc = JU.V3.new3 (ijk[6], ijk[7], ijk[8]);
 this.a = va.length ();
 this.b = vb.length ();
 this.c = vc.length ();

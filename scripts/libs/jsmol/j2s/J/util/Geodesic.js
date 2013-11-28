@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (["J.util.ArrayUtil"], "J.util.Geodesic", ["java.lang.NullPointerException", "$.Short", "java.util.Hashtable", "J.util.V3"], function () {
+Clazz.load (["JU.AU"], "J.util.Geodesic", ["java.lang.NullPointerException", "$.Short", "java.util.Hashtable", "JU.V3"], function () {
 c$ = Clazz.declareType (J.util, "Geodesic");
 c$.getNeighborVertexesArrays = $_M(c$, "getNeighborVertexesArrays", 
 function () {
@@ -27,17 +27,17 @@ return J.util.Geodesic.faceVertexesArrays[level];
 c$.createGeodesic = $_M(c$, "createGeodesic", 
 function (lvl) {
 if (lvl < J.util.Geodesic.currentLevel) return;
-($t$ = J.util.Geodesic.currentLevel = lvl, J.util.Geodesic.prototype.currentLevel = J.util.Geodesic.currentLevel, $t$);
+J.util.Geodesic.currentLevel = lvl;
 var v =  Clazz.newShortArray (lvl + 1, 0);
-($t$ = J.util.Geodesic.neighborVertexesArrays = J.util.ArrayUtil.newShort2 (lvl + 1), J.util.Geodesic.prototype.neighborVertexesArrays = J.util.Geodesic.neighborVertexesArrays, $t$);
-($t$ = J.util.Geodesic.faceVertexesArrays = J.util.ArrayUtil.newShort2 (lvl + 1), J.util.Geodesic.prototype.faceVertexesArrays = J.util.Geodesic.faceVertexesArrays, $t$);
-($t$ = J.util.Geodesic.vertexVectors =  new Array (12), J.util.Geodesic.prototype.vertexVectors = J.util.Geodesic.vertexVectors, $t$);
-J.util.Geodesic.vertexVectors[0] = J.util.V3.new3 (0, 0, J.util.Geodesic.halfRoot5);
+J.util.Geodesic.neighborVertexesArrays = JU.AU.newShort2 (lvl + 1);
+J.util.Geodesic.faceVertexesArrays = JU.AU.newShort2 (lvl + 1);
+J.util.Geodesic.vertexVectors =  new Array (12);
+J.util.Geodesic.vertexVectors[0] = JU.V3.new3 (0, 0, J.util.Geodesic.halfRoot5);
 for (var i = 0; i < 5; ++i) {
-J.util.Geodesic.vertexVectors[i + 1] = J.util.V3.new3 (Math.cos (i * 1.2566371), Math.sin (i * 1.2566371), 0.5);
-J.util.Geodesic.vertexVectors[i + 6] = J.util.V3.new3 (Math.cos (i * 1.2566371 + 0.62831855), Math.sin (i * 1.2566371 + 0.62831855), -0.5);
+J.util.Geodesic.vertexVectors[i + 1] = JU.V3.new3 (Math.cos (i * 1.2566371), Math.sin (i * 1.2566371), 0.5);
+J.util.Geodesic.vertexVectors[i + 6] = JU.V3.new3 (Math.cos (i * 1.2566371 + 0.62831855), Math.sin (i * 1.2566371 + 0.62831855), -0.5);
 }
-J.util.Geodesic.vertexVectors[11] = J.util.V3.new3 (0, 0, ($t$ = - J.util.Geodesic.halfRoot5, J.util.Geodesic.prototype.halfRoot5 = J.util.Geodesic.halfRoot5, $t$));
+J.util.Geodesic.vertexVectors[11] = JU.V3.new3 (0, 0, -J.util.Geodesic.halfRoot5);
 for (var i = 12; --i >= 0; ) J.util.Geodesic.vertexVectors[i].normalize ();
 
 J.util.Geodesic.faceVertexesArrays[0] = J.util.Geodesic.faceVertexesIcosahedron;
@@ -45,11 +45,11 @@ J.util.Geodesic.neighborVertexesArrays[0] = J.util.Geodesic.neighborVertexesIcos
 v[0] = 12;
 for (var i = 0; i < lvl; ++i) J.util.Geodesic.quadruple (i, v);
 
-($t$ = J.util.Geodesic.vertexCounts = v, J.util.Geodesic.prototype.vertexCounts = J.util.Geodesic.vertexCounts, $t$);
+J.util.Geodesic.vertexCounts = v;
 }, "~N");
 c$.quadruple = $_M(c$, "quadruple", 
 ($fz = function (level, counts) {
-($t$ = J.util.Geodesic.htVertex =  new java.util.Hashtable (), J.util.Geodesic.prototype.htVertex = J.util.Geodesic.htVertex, $t$);
+J.util.Geodesic.htVertex =  new java.util.Hashtable ();
 var oldVertexCount = J.util.Geodesic.vertexVectors.length;
 var oldFaceVertexes = J.util.Geodesic.faceVertexesArrays[level];
 var oldFaceVertexesLength = oldFaceVertexes.length;
@@ -57,7 +57,7 @@ var oldFaceCount = Clazz.doubleToInt (oldFaceVertexesLength / 3);
 var oldEdgesCount = oldVertexCount + oldFaceCount - 2;
 var newVertexCount = oldVertexCount + oldEdgesCount;
 var newFaceCount = 4 * oldFaceCount;
-($t$ = J.util.Geodesic.vertexVectors = J.util.ArrayUtil.arrayCopyObject (J.util.Geodesic.vertexVectors, newVertexCount), J.util.Geodesic.prototype.vertexVectors = J.util.Geodesic.vertexVectors, $t$);
+J.util.Geodesic.vertexVectors = JU.AU.arrayCopyObject (J.util.Geodesic.vertexVectors, newVertexCount);
 var newFacesVertexes =  Clazz.newShortArray (3 * newFaceCount, 0);
 J.util.Geodesic.faceVertexesArrays[level + 1] = newFacesVertexes;
 var neighborVertexes =  Clazz.newShortArray (6 * newVertexCount, 0);
@@ -65,7 +65,7 @@ J.util.Geodesic.neighborVertexesArrays[level + 1] = neighborVertexes;
 for (var i = neighborVertexes.length; --i >= 0; ) neighborVertexes[i] = -1;
 
 counts[level + 1] = newVertexCount;
-($t$ = J.util.Geodesic.vertexNext = oldVertexCount, J.util.Geodesic.prototype.vertexNext = J.util.Geodesic.vertexNext, $t$);
+J.util.Geodesic.vertexNext = oldVertexCount;
 var iFaceNew = 0;
 for (var i = 0; i < oldFaceVertexesLength; ) {
 var iA = oldFaceVertexes[i++];
@@ -123,7 +123,7 @@ for (var j = newFacesVertexes.length; --j >= 0; ) if (newFacesVertexes[j] == i) 
 
 if ((i < 12 && faceCount != 5) || (i >= 12 && faceCount != 6)) throw  new NullPointerException ();
 }
-}($t$ = J.util.Geodesic.htVertex = null, J.util.Geodesic.prototype.htVertex = J.util.Geodesic.htVertex, $t$);
+}J.util.Geodesic.htVertex = null;
 }, $fz.isPrivate = true, $fz), "~N,~A");
 c$.addNeighboringVertexes = $_M(c$, "addNeighboringVertexes", 
 ($fz = function (neighborVertexes, v1, v2) {
@@ -150,13 +150,13 @@ v2 = t;
 var iv = J.util.Geodesic.htVertex.get (hashKey);
 if (iv != null) {
 return iv.shortValue ();
-}var newVertexVector = J.util.V3.newV (J.util.Geodesic.vertexVectors[v1]);
+}var newVertexVector = JU.V3.newV (J.util.Geodesic.vertexVectors[v1]);
 J.util.Geodesic.vertexVectors[J.util.Geodesic.vertexNext] = newVertexVector;
 newVertexVector.add (J.util.Geodesic.vertexVectors[v2]);
 newVertexVector.scale (0.5);
 newVertexVector.normalize ();
 J.util.Geodesic.htVertex.put (hashKey, Short.$valueOf (J.util.Geodesic.vertexNext));
-return ($t$ = J.util.Geodesic.vertexNext ++, J.util.Geodesic.prototype.vertexNext = J.util.Geodesic.vertexNext, $t$);
+return J.util.Geodesic.vertexNext++;
 }, $fz.isPrivate = true, $fz), "~N,~N");
 c$.halfRoot5 = c$.prototype.halfRoot5 = (0.5 * Math.sqrt (5));
 Clazz.defineStatics (c$,

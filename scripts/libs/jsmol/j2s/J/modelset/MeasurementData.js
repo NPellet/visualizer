@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["J.api.JmolMeasurementClient"], "J.modelset.MeasurementData", ["java.lang.Float", "J.modelset.Measurement", "J.util.BSUtil", "$.JmolList"], function () {
+Clazz.load (["J.api.JmolMeasurementClient"], "J.modelset.MeasurementData", ["java.lang.Float", "JU.BS", "$.List", "J.modelset.Measurement", "J.util.BSUtil"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.client = null;
 this.measurementStrings = null;
@@ -29,11 +29,15 @@ this.htMin = null;
 Clazz.instantialize (this, arguments);
 }, J.modelset, "MeasurementData", null, J.api.JmolMeasurementClient);
 Clazz.makeConstructor (c$, 
+function () {
+});
+$_M(c$, "init", 
 function (id, viewer, points) {
 this.viewer = viewer;
 this.points = points;
 this.thisID = id;
-}, "~S,J.viewer.Viewer,J.util.JmolList");
+return this;
+}, "~S,J.viewer.Viewer,JU.List");
 $_M(c$, "setModelSet", 
 function (m) {
 this.modelSet = m;
@@ -43,7 +47,7 @@ $_M(c$, "set",
 function (tokAction, htMin, radiusData, strFormat, units, tickInfo, mustBeConnected, mustNotBeConnected, intramolecular, isAll, mad, colix, text) {
 this.modelSet = this.viewer.getModelSet ();
 this.tokAction = tokAction;
-if (this.points.size () >= 2 && Clazz.instanceOf (this.points.get (0), J.util.BS) && Clazz.instanceOf (this.points.get (1), J.util.BS)) {
+if (this.points.size () >= 2 && Clazz.instanceOf (this.points.get (0), JU.BS) && Clazz.instanceOf (this.points.get (1), JU.BS)) {
 this.justOneModel = J.util.BSUtil.haveCommon (this.viewer.getModelBitSet (this.points.get (0), false), this.viewer.getModelBitSet (this.points.get (1), false));
 }this.htMin = htMin;
 this.radiusData = radiusData;
@@ -81,10 +85,10 @@ for (var i = 0; i < this.minArray.length; i++) this.minArray[i] = -0.0;
 this.define (null, this.modelSet);
 return this.minArray;
 }if (asArray) {
-this.measurements =  new J.util.JmolList ();
+this.measurements =  new JU.List ();
 this.define (null, this.modelSet);
 return this.measurements;
-}this.measurementStrings =  new J.util.JmolList ();
+}this.measurementStrings =  new JU.List ();
 this.define (null, this.modelSet);
 return this.measurementStrings;
 }, "~B,~B");
@@ -102,7 +106,7 @@ m.setCount (nPoints);
 var ptLastAtom = -1;
 for (var i = 0; i < nPoints; i++) {
 var obj = this.points.get (i);
-if (Clazz.instanceOf (obj, J.util.BS)) {
+if (Clazz.instanceOf (obj, JU.BS)) {
 var bs = obj;
 var nAtoms = bs.cardinality ();
 if (nAtoms == 0) return;

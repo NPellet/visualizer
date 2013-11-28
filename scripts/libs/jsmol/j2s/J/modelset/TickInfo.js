@@ -13,4 +13,4 @@ Clazz.instantialize (this, arguments);
 Clazz.makeConstructor (c$, 
 function (ticks) {
 this.ticks = ticks;
-}, "J.util.P3");
+}, "JU.P3");

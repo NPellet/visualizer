@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader"], "J.adapter.readers.quantum.GenNBOReader", ["java.io.BufferedReader", "$.StringReader", "java.lang.Boolean", "$.Character", "$.Exception", "$.Float", "java.util.Hashtable", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.JmolList", "$.Logger", "$.SB"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader"], "J.adapter.readers.quantum.GenNBOReader", ["java.io.BufferedReader", "$.StringReader", "java.lang.Boolean", "$.Character", "$.Exception", "$.Float", "java.util.Hashtable", "JU.AU", "$.List", "$.SB", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isOutputFile = false;
 this.moType = "";
@@ -38,7 +38,7 @@ this.readOrbitalData (!this.moType.equals ("AO"));
 this.setMOData (false);
 this.moData.put ("isNormalized", Boolean.TRUE);
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.indexOf ("SECOND ORDER PERTURBATION THEORY ANALYSIS") >= 0 && !this.orbitalsRead) {
 this.moType = "NBO";
@@ -104,8 +104,8 @@ var atom = this.atomSetCollection.addNewAtom ();
 atom.elementNumber = z;
 this.setAtomCoordXYZ (atom, this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[2]), this.parseFloatStr (tokens[3]));
 }
-this.shells =  new J.util.JmolList ();
-this.gaussians = J.util.ArrayUtil.newFloat2 (this.gaussianCount);
+this.shells =  new JU.List ();
+this.gaussians = JU.AU.newFloat2 (this.gaussianCount);
 for (var i = 0; i < this.gaussianCount; i++) this.gaussians[i] =  Clazz.newFloatArray (6, 0);
 
 this.readLine ();
@@ -191,13 +191,13 @@ if (ntype == null) {
 J.util.Logger.error ("uninterpretable type " + this.moType);
 return false;
 }if (!ntype.equals ("AO")) this.discardLinesUntilContains (ntype.equals ("MO") ? "NBO" : ntype);
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 while (this.readLine () != null && this.line.indexOf ("O    ") < 0 && this.line.indexOf ("ALPHA") < 0 && this.line.indexOf ("BETA") < 0) sb.append (this.line);
 
 sb.appendC (' ');
 var data = sb.toString ();
 var n = data.length - 1;
-sb =  new J.util.SB ();
+sb =  new JU.SB ();
 for (var i = 0; i < n; i++) {
 var c = data.charAt (i);
 switch (c) {

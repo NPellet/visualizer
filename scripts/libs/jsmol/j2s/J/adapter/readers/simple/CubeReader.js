@@ -5,7 +5,7 @@ this.atomCount = 0;
 this.isAngstroms = false;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.simple, "CubeReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.atomSetCollection.newAtomSet ();
 this.readTitleLines ();

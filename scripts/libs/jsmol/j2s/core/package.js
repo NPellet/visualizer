@@ -48,13 +48,24 @@ var	basefile = base + "core.z.js";
 	
 	ClazzLoader.loadZJar (basefile, ClazzLoader.runtimeKeyClass);
 
-  if (Jmol.debugCode)
+  if (Jmol._debugCode)
     return;
 
+	ClazzLoader.jarClasspath (base + "coretext.z.js",	[    
+	"J.modelset.Object2d",
+	"$.Text",
+	"J.shape.Object2dShape",
+	"$.TextShape",
+	"$.Labels",
+	"$.Echo",
+	"$.Hover",
+	"J.render.TextRenderer",
+	"$.LabelsRenderer",
+	"$.EchoRenderer",
+	"$.HoverRenderer"
+	]);
+
 	ClazzLoader.jarClasspath (base + "corescript.z.js",	[  
-    "java.util.regex.Pattern", 
-    "$.Matcher", 
-    "$.MatchResult",     
     "J.api.JmolScriptManager", 
     "$.JmolScriptEvaluator",
     "$.JmolScriptFunction",
@@ -68,9 +79,15 @@ var	basefile = base + "core.z.js";
     "$.CommandWatcherThread", 
     "$.ScriptQueueThread", 
     "$.ScriptDelayThread", 
-    "$.ScriptManager" 
+    "$.ScriptManager",
+    "$.FileLoadThread"
 	]);
 	
+	ClazzLoader.jarClasspath (base + "corescript2.z.js",	[  
+	"J.script.JmolScriptExtension", 
+	"J.scriptext.ScriptExt"
+	]);
+	                                                 	
 	ClazzLoader.jarClasspath (base + "corestate.z.js",	[  
     "J.api.JmolStateCreator", 
     "J.viewer.StateCreator" 
@@ -89,7 +106,6 @@ var	basefile = base + "core.z.js";
 	]);
 
 	ClazzLoader.jarClasspath (base + "coremenu.z.js",	[
-		"J.api.JmolPopupInterface",
 		"J.awtjs2d.JSmolPopup",		
 		"$.JSPopup",
 		"$.JSmolPopup",
@@ -101,6 +117,8 @@ var	basefile = base + "core.z.js";
 
 	ClazzLoader.jarClasspath (base + "corebinary.z.js",	[
     "java.io.DataInputStream",
+    "$.PushbackInputStream",
+    "JU.BC",
     "J.api.JmolDocument",
     "J.io2.BinaryDocument"
 	]);
@@ -145,7 +163,6 @@ var	basefile = base + "core.z.js";
 		"$.Inflater",
 		"$.Adler32",
 		"$.Tree",
-		"$.Deflate",
 		"$.GZIPHeader",
 		"$.StaticTree",
 		"$.Inflate",
@@ -155,10 +172,6 @@ var	basefile = base + "core.z.js";
 		"$.Inflater",
 		"$.InflaterInputStream",
 		"$.GZIPInputStream",
-		"$.Deflater",
-		"$.DeflaterOutputStream",
-
-		"java.io.ByteArrayOutputStream",
 		"$.PushbackInputStream",
 		"java.util.zip.CRC32",
 		"$.CheckedInputStream",
@@ -170,25 +183,17 @@ var	basefile = base + "core.z.js";
 		"$.ZipEntry",
 		"$.ZipConstants64",
 		"$.ZipInputStream",
-		"$.Deflater",
-		"$.DeflaterOutputStream",
-		"$.ZipOutputStream",
-
 		"J.api.JmolZipUtility",
 		"$.ZInputStream",
-		"$.JmolImageCreatorInterface",
-		"J.export.image.GenericCRCEncoder",
-		"$.GenericPngEncoder",
-		"$.GenericImageCreator",
-		"J.exportjs.JSImageCreator",
 		"J.io2.ZipUtil",
-		"$.JpegEncoder",
-		"$.JmolZipInputStream"		
+		"$.JmolZipInputStream"
 	]);
 	
 	ClazzLoader.jarClasspath (base + "corebio.z.js",	[
 		"J.adapter.readers.pdb.PdbReader",
 		"J.adapter.smarter.Structure",
+		"J.dssx.Bridge",
+		"J.dssx.DSSP",		
 		"J.api.JmolBioResolver",
 		"J.modelsetbio.Resolver",
 		"$.Monomer",
@@ -201,7 +206,6 @@ var	basefile = base + "core.z.js";
 		"$.AlphaPolymer",
 		"$.AminoMonomer",
 		"$.AminoPolymer",
-		"$.APBridge",
 		"$.BioModel",
 		"$.CarbohydrateMonomer",
 		"$.CarbohydratePolymer",
@@ -239,16 +243,16 @@ var	basefile = base + "core.z.js";
 		"$.VolumeData",
 		"$.JvxlData",
 		"$.MeshData",
-    "J.io.XmlReader",
 		"J.jvxl.readers.SurfaceGenerator",
 		"$.Parameters",
 		"$.SurfaceReader",
 		"$.VolumeDataReader",
 		"$.AtomDataReader",
 		"$.IsoSolventReader",
-    "$.SurfaceFileReader",
-    "$.VolumeFileReader",
-    "$.JvxlXmlReader",
+   		"$.SurfaceFileReader",
+    	"$.VolumeFileReader",
+    	"$.XmlReader",
+	    "$.JvxlXmlReader",
 		"J.shapesurface.Isosurface",
 		"$.IsosurfaceMesh",
 		"J.rendersurface.IsosurfaceRenderer"
@@ -270,7 +274,8 @@ var	basefile = base + "core.z.js";
 
 	ClazzLoader.jarClasspath (base + "coresmiles.z.js",	[
     "J.api.SmilesMatcherInterface",
-    "J.smiles.SmilesMatcher",
+    "J.smiles.VTemp",
+    "$.SmilesMatcher",
     "$.InvalidSmilesException",
     "$.SmilesSearch",
     "$.SmilesGenerator",

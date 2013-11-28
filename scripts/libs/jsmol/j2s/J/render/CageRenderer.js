@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.FontLineShapeRenderer", "J.util.P3"], "J.render.CageRenderer", ["J.util.BoxInfo", "$.Point3fi"], function () {
+Clazz.load (["J.render.FontLineShapeRenderer", "JU.P3"], "J.render.CageRenderer", ["J.shape.Bbcage", "J.util.BoxInfo", "$.Point3fi"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.screens = null;
 this.tickEdges = null;
@@ -11,9 +11,9 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.screens =  new Array (8);
 {
-for (var i = 8; --i >= 0; ) this.screens[i] =  new J.util.P3 ();
+for (var i = 8; --i >= 0; ) this.screens[i] =  new JU.P3 ();
 
-}this.pt =  new J.util.P3 ();
+}this.pt =  new JU.P3 ();
 });
 $_M(c$, "renderCage", 
 function (mad, vertices, axisPoints, firstLine, allowedEdges0, allowedEdges1, scale) {
@@ -40,7 +40,7 @@ var edge0 = J.util.BoxInfo.edges[i];
 var edge1 = J.util.BoxInfo.edges[i + 1];
 if (axisPoints != null && edge0 == 0) this.viewer.transformPtNoClip (axisPoints[axisPt--], this.screens[0]);
 if ((allowedEdges0 & (1 << edge0)) == 0 || (allowedEdges1 & (1 << edge1)) == 0) continue;
-var drawTicks = (fls.tickInfos != null && ((edge = this.tickEdges[i >> 1])).charCodeAt (0) != 0);
+var drawTicks = (fls.tickInfos != null && (edge = this.tickEdges[i >> 1]).charCodeAt (0) != 0);
 if (drawTicks) {
 if (this.atomA == null) {
 this.atomA =  new J.util.Point3fi ();

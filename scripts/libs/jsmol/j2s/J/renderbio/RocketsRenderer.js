@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.renderbio");
-Clazz.load (["J.renderbio.StrandsRenderer", "J.util.P3", "$.V3"], "J.renderbio.RocketsRenderer", ["J.constant.EnumStructure"], function () {
+Clazz.load (["J.renderbio.StrandsRenderer", "JU.P3", "$.V3"], "J.renderbio.RocketsRenderer", ["J.constant.EnumStructure", "J.modelsetbio.AlphaPolymer", "$.Helix", "$.Sheet"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.newRockets = false;
 this.renderArrowHeads = false;
@@ -22,24 +22,24 @@ this.pointCorner = null;
 Clazz.instantialize (this, arguments);
 }, J.renderbio, "RocketsRenderer", J.renderbio.StrandsRenderer);
 Clazz.prepareFields (c$, function () {
-this.screenA =  new J.util.P3 ();
-this.screenB =  new J.util.P3 ();
-this.screenC =  new J.util.P3 ();
-this.vtemp =  new J.util.V3 ();
+this.screenA =  new JU.P3 ();
+this.screenB =  new JU.P3 ();
+this.screenC =  new JU.P3 ();
+this.vtemp =  new JU.V3 ();
 this.corners =  new Array (8);
 this.screenCorners =  new Array (8);
 {
 for (var i = 8; --i >= 0; ) {
-this.screenCorners[i] =  new J.util.P3 ();
-this.corners[i] =  new J.util.P3 ();
+this.screenCorners[i] =  new JU.P3 ();
+this.corners[i] =  new JU.P3 ();
 }
-}this.pointTipOffset =  new J.util.P3 ();
-this.scaledWidthVector =  new J.util.V3 ();
-this.scaledHeightVector =  new J.util.V3 ();
-this.lengthVector =  new J.util.V3 ();
-this.pointCorner =  new J.util.P3 ();
+}this.pointTipOffset =  new JU.P3 ();
+this.scaledWidthVector =  new JU.V3 ();
+this.scaledHeightVector =  new JU.V3 ();
+this.lengthVector =  new JU.V3 ();
+this.pointCorner =  new JU.P3 ();
 });
-Clazz.overrideMethod (c$, "renderBioShape", 
+$_V(c$, "renderBioShape", 
 function (bioShape) {
 if (!(Clazz.instanceOf (bioShape.bioPolymer, J.modelsetbio.AlphaPolymer))) return;
 if (this.wireframeOnly) {
@@ -139,13 +139,13 @@ this.renderCone (i, pointEnd, this.screenA, this.screenB, this.screenC);
 var t = this.screenB;
 this.screenB = this.screenC;
 this.screenC = t;
-}}, $fz.isPrivate = true, $fz), "~N,J.util.P3,J.util.P3,J.util.P3,~B");
+}}, $fz.isPrivate = true, $fz), "~N,JU.P3,JU.P3,JU.P3,~B");
 $_M(c$, "renderCone", 
 function (i, pointBegin, pointEnd, screenPtBegin, screenPtEnd) {
 var coneDiameter = (this.mad << 1) - (this.mad >> 1);
 coneDiameter = Clazz.floatToInt (this.viewer.scaleToScreen (Clazz.doubleToInt (Math.floor (screenPtBegin.z)), coneDiameter));
 this.g3d.fillConeSceen3f (2, coneDiameter, screenPtBegin, screenPtEnd);
-}, "~N,J.util.P3,J.util.P3,J.util.P3,J.util.P3");
+}, "~N,JU.P3,JU.P3,JU.P3,JU.P3");
 $_M(c$, "renderPendingSheet", 
 ($fz = function (pointStart, pointBeforeEnd, pointEnd, tEnd) {
 if (!this.g3d.setColix (this.colix)) return;
@@ -154,7 +154,7 @@ this.drawArrowHeadBox (pointBeforeEnd, pointEnd);
 this.drawBox (pointStart, pointBeforeEnd);
 } else {
 this.drawBox (pointStart, pointEnd);
-}}, $fz.isPrivate = true, $fz), "J.util.P3,J.util.P3,J.util.P3,~B");
+}}, $fz.isPrivate = true, $fz), "JU.P3,JU.P3,JU.P3,~B");
 $_M(c$, "buildBox", 
 function (pointCorner, scaledWidthVector, scaledHeightVector, lengthVector) {
 for (var i = 8; --i >= 0; ) {
@@ -165,7 +165,7 @@ if ((i & 2) != 0) corner.add (scaledHeightVector);
 if ((i & 4) != 0) corner.add (lengthVector);
 this.viewer.transformPt3f (corner, this.screenCorners[i]);
 }
-}, "J.util.P3,J.util.V3,J.util.V3,J.util.V3");
+}, "JU.P3,JU.V3,JU.V3,JU.V3");
 $_M(c$, "buildArrowHeadBox", 
 function (pointCorner, scaledWidthVector, scaledHeightVector, pointTip) {
 for (var i = 4; --i >= 0; ) {
@@ -179,7 +179,7 @@ this.corners[4].setT (pointTip);
 this.viewer.transformPt3f (pointTip, this.screenCorners[4]);
 this.corners[5].add2 (pointTip, scaledHeightVector);
 this.viewer.transformPt3f (this.corners[5], this.screenCorners[5]);
-}, "J.util.P3,J.util.V3,J.util.V3,J.util.P3");
+}, "JU.P3,JU.V3,JU.V3,JU.P3");
 $_M(c$, "drawBox", 
 function (pointA, pointB) {
 var sheet = this.proteinstructurePending;
@@ -199,7 +199,7 @@ var i2 = J.renderbio.RocketsRenderer.boxFaces[i * 4 + 2];
 var i3 = J.renderbio.RocketsRenderer.boxFaces[i * 4 + 3];
 this.g3d.fillQuadrilateral (this.screenCorners[i0], this.screenCorners[i1], this.screenCorners[i2], this.screenCorners[i3]);
 }
-}, "J.util.P3,J.util.P3");
+}, "JU.P3,JU.P3");
 $_M(c$, "drawArrowHeadBox", 
 function (base, tip) {
 var sheet = this.proteinstructurePending;
@@ -222,7 +222,7 @@ var i2 = J.renderbio.RocketsRenderer.arrowHeadFaces[i + 2];
 var i3 = J.renderbio.RocketsRenderer.arrowHeadFaces[i + 3];
 this.g3d.fillQuadrilateral (this.screenCorners[i0], this.screenCorners[i1], this.screenCorners[i2], this.screenCorners[i3]);
 }
-}, "J.util.P3,J.util.P3");
+}, "JU.P3,JU.P3");
 Clazz.defineStatics (c$,
 "boxFaces", [0, 1, 3, 2, 0, 2, 6, 4, 0, 4, 5, 1, 7, 5, 4, 6, 7, 6, 2, 3, 7, 3, 1, 5]);
 Clazz.defineStatics (c$,

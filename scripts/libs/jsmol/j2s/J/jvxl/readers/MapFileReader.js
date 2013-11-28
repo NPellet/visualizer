@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeFileReader", "J.util.P3"], "J.jvxl.readers.MapFileReader", ["J.util.Logger", "$.SimpleUnitCell"], function () {
+Clazz.load (["J.jvxl.readers.VolumeFileReader", "JU.P3"], "J.jvxl.readers.MapFileReader", ["J.util.Logger", "$.SimpleUnitCell"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.dmin = 3.4028235E38;
 this.dmax = 0;
@@ -29,15 +29,15 @@ Clazz.instantialize (this, arguments);
 }, J.jvxl.readers, "MapFileReader", J.jvxl.readers.VolumeFileReader);
 Clazz.prepareFields (c$, function () {
 this.nxyzStart =  Clazz.newIntArray (3, 0);
-this.origin =  new J.util.P3 ();
-this.adjustment =  new J.util.P3 ();
+this.origin =  new JU.P3 ();
+this.adjustment =  new JU.P3 ();
 this.vectors =  new Array (3);
 });
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.MapFileReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
 this.init2MFR (sg, br);
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
@@ -46,7 +46,7 @@ function (sg, br) {
 this.init2VFR (sg, br);
 this.isAngstroms = true;
 this.adjustment = sg.getParams ().center;
-if (this.adjustment == null || this.adjustment.x == 3.4028235E38) this.adjustment =  new J.util.P3 ();
+if (this.adjustment == null || this.adjustment.x == 3.4028235E38) this.adjustment =  new JU.P3 ();
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
 $_M(c$, "getVectorsAndOrigin", 
 function () {
@@ -57,9 +57,9 @@ J.util.Logger.info ("grid parameters: a,b,c,alpha,beta,gamma: " + this.a + "," +
 J.util.Logger.info ("grid parameters: mapc,mapr,maps: " + this.mapc + "," + this.mapr + "," + this.maps);
 J.util.Logger.info ("grid parameters: originX,Y,Z: " + this.origin);
 var unitCell = J.util.SimpleUnitCell.newA ([this.a / this.na, this.b / this.nb, this.c / this.nc, this.alpha, this.beta, this.gamma]);
-this.vectors[0] = J.util.P3.new3 (1, 0, 0);
-this.vectors[1] = J.util.P3.new3 (0, 1, 0);
-this.vectors[2] = J.util.P3.new3 (0, 0, 1);
+this.vectors[0] = JU.P3.new3 (1, 0, 0);
+this.vectors[1] = JU.P3.new3 (0, 1, 0);
+this.vectors[2] = JU.P3.new3 (0, 0, 1);
 unitCell.toCartesian (this.vectors[0], false);
 unitCell.toCartesian (this.vectors[1], false);
 unitCell.toCartesian (this.vectors[2], false);

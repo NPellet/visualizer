@@ -138,7 +138,13 @@ define(['modules/defaultcontroller'], function(Default) {
 							sprintf: {
 								type: 'text',
 								title: 'Sprintf'
-							}
+							},
+
+							preformatted: {
+								default: 'false',
+								type: 'checkbox',
+								title: 'Preformatted'
+							},
 						}
 					},
 
@@ -171,7 +177,8 @@ define(['modules/defaultcontroller'], function(Default) {
 			'align': [ 'groups', 'group', 0, 'align', 0 ],
 			'valign': [ 'groups', 'group', 0, 'valign', 0 ],
 			'defaultvalue': [ 'groups', 'group', 0, 'defaultvalue', 0 ],
-			'sprintf': [ 'groups', 'group', 0, 'sprintf', 0 ]
+			'sprintf': [ 'groups', 'group', 0, 'sprintf', 0 ],
+			'preformatted': [ 'groups', 'group', 0, 'preformatted', 0, 0 ],
 		}
 	});
 

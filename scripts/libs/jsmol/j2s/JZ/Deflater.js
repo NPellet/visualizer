@@ -13,7 +13,7 @@ this.dstate =  new JZ.Deflate (this);
 this.dstate.deflateInit2 (level, nowrap ? -bits : bits);
 return this;
 }, "~N,~N,~B");
-Clazz.overrideMethod (c$, "deflate", 
+$_V(c$, "deflate", 
 function (flush) {
 if (this.dstate == null) {
 return -2;
@@ -21,7 +21,7 @@ return -2;
 if (ret == 1) this.$finished = true;
 return ret;
 }, "~N");
-Clazz.overrideMethod (c$, "end", 
+$_V(c$, "end", 
 function () {
 this.$finished = true;
 if (this.dstate == null) return -2;
@@ -40,7 +40,7 @@ function (dictionary, dictLength) {
 if (this.dstate == null) return -2;
 return this.dstate.deflateSetDictionary (dictionary, dictLength);
 }, "~A,~N");
-Clazz.overrideMethod (c$, "finished", 
+$_V(c$, "finished", 
 function () {
 return this.$finished;
 });

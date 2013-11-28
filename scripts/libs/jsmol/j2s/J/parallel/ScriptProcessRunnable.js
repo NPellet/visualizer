@@ -14,7 +14,7 @@ this.process = process;
 this.processLock = lock;
 this.shapeManager = shapeManager;
 }, "J.parallel.ScriptParallelProcessor,J.parallel.ScriptProcess,~O,J.viewer.ShapeManager");
-Clazz.overrideMethod (c$, "run", 
+$_V(c$, "run", 
 function () {
 try {
 if (this.parallelProcessor.error == null) {

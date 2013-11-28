@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["J.util.BS", "$.SB"], "J.modelset.Model", ["java.util.Hashtable", "J.util.ArrayUtil", "$.BSUtil"], function () {
+Clazz.load (["JU.BS", "$.SB"], "J.modelset.Model", ["java.util.Hashtable", "JU.AU", "J.util.BSUtil"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.modelSet = null;
 this.modelIndex = 0;
@@ -35,6 +35,7 @@ this.auxiliaryInfo = null;
 this.properties = null;
 this.defaultRotationRadius = 0;
 this.defaultStructure = null;
+this.biosymmetry = null;
 this.orientation = null;
 this.structureTainted = false;
 this.isJmolDataFrame = false;
@@ -43,9 +44,9 @@ this.simpleCage = null;
 Clazz.instantialize (this, arguments);
 }, J.modelset, "Model");
 Clazz.prepareFields (c$, function () {
-this.loadScript =  new J.util.SB ();
-this.bsAtoms =  new J.util.BS ();
-this.bsAtomsDeleted =  new J.util.BS ();
+this.loadScript =  new JU.SB ();
+this.bsAtoms =  new JU.BS ();
+this.bsAtomsDeleted =  new JU.BS ();
 this.chains =  new Array (8);
 });
 $_M(c$, "getModelSet", 
@@ -90,8 +91,10 @@ this.trajectoryBaseIndex = (this.isTrajectory ? trajectoryBaseIndex : modelIndex
 if (auxiliaryInfo == null) {
 auxiliaryInfo =  new java.util.Hashtable ();
 }this.auxiliaryInfo = auxiliaryInfo;
-if (auxiliaryInfo.containsKey ("biosymmetryCount")) this.biosymmetryCount = (auxiliaryInfo.get ("biosymmetryCount")).intValue ();
-this.properties = properties;
+if (auxiliaryInfo.containsKey ("biosymmetryCount")) {
+this.biosymmetryCount = (auxiliaryInfo.get ("biosymmetryCount")).intValue ();
+this.biosymmetry = auxiliaryInfo.get ("biosymmetry");
+}this.properties = properties;
 if (jmolData == null) {
 this.jmolFrameType = "modelSet";
 } else {
@@ -143,7 +146,7 @@ $_M(c$, "calcSelectedGroupsCount",
 function (bsSelected) {
 for (var i = this.chainCount; --i >= 0; ) this.chains[i].calcSelectedGroupsCount (bsSelected);
 
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "getGroupCount", 
 function () {
 if (this.groupCount < 0) {
@@ -167,7 +170,7 @@ return null;
 $_M(c$, "fixIndices", 
 function (modelIndex, nAtomsDeleted, bsDeleted) {
 this.fixIndicesM (modelIndex, nAtomsDeleted, bsDeleted);
-}, "~N,~N,J.util.BS");
+}, "~N,~N,JU.BS");
 $_M(c$, "fixIndicesM", 
 function (modelIndex, nAtomsDeleted, bsDeleted) {
 if (this.dataSourceFrame > modelIndex) this.dataSourceFrame--;
@@ -177,60 +180,60 @@ for (var i = 0; i < this.chainCount; i++) this.chains[i].fixIndices (nAtomsDelet
 
 J.util.BSUtil.deleteBits (this.bsAtoms, bsDeleted);
 J.util.BSUtil.deleteBits (this.bsAtomsDeleted, bsDeleted);
-}, "~N,~N,J.util.BS");
+}, "~N,~N,JU.BS");
 $_M(c$, "freeze", 
 function () {
 this.freezeM ();
 });
 $_M(c$, "freezeM", 
 function () {
-this.chains = J.util.ArrayUtil.arrayCopyObject (this.chains, this.chainCount);
+this.chains = JU.AU.arrayCopyObject (this.chains, this.chainCount);
 this.groupCount = -1;
 this.getGroupCount ();
-for (var i = 0; i < this.chainCount; ++i) this.chains[i].groups = J.util.ArrayUtil.arrayCopyObject (this.chains[i].groups, this.chains[i].groupCount);
+for (var i = 0; i < this.chainCount; ++i) this.chains[i].groups = JU.AU.arrayCopyObject (this.chains[i].groups, this.chains[i].groupCount);
 
 });
 $_M(c$, "getPdbData", 
-function (viewer, type, ctype, isDraw, bsSelected, sb, tokens, pdbCONECT, bsWritten) {
-}, "J.viewer.Viewer,~S,~S,~B,J.util.BS,J.io.OutputStringBuilder,~A,J.util.SB,J.util.BS");
+function (viewer, type, ctype, isDraw, bsSelected, out, tokens, pdbCONECT, bsWritten) {
+}, "J.viewer.Viewer,~S,~S,~B,JU.BS,JU.OC,~A,JU.SB,JU.BS");
 $_M(c$, "getDefaultLargePDBRendering", 
 function (sb, maxAtoms) {
-}, "J.util.SB,~N");
+}, "JU.SB,~N");
 $_M(c$, "getBioBranches", 
 function (bioBranches) {
 return bioBranches;
-}, "J.util.JmolList");
+}, "JU.List");
 $_M(c$, "getGroupsWithin", 
 function (nResidues, bs, bsResult) {
-}, "~N,J.util.BS,J.util.BS");
+}, "~N,JU.BS,JU.BS");
 $_M(c$, "getSequenceBits", 
 function (specInfo, bs, bsResult) {
-}, "~S,J.util.BS,J.util.BS");
+}, "~S,JU.BS,JU.BS");
 $_M(c$, "getRasmolHydrogenBonds", 
 function (bsA, bsB, vHBonds, nucleicOnly, nMax, dsspIgnoreHydrogens, bsHBonds) {
-}, "J.util.BS,J.util.BS,J.util.JmolList,~B,~N,~B,J.util.BS");
+}, "JU.BS,JU.BS,JU.List,~B,~N,~B,JU.BS");
 $_M(c$, "clearRasmolHydrogenBonds", 
 function (bsAtoms) {
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "clearBioPolymers", 
 function () {
 });
 $_M(c$, "calcSelectedMonomersCount", 
 function (bsSelected) {
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "calculatePolymers", 
 function (groups, groupCount, baseGroupIndex, modelsExcluded, checkConnections) {
-}, "~A,~N,~N,J.util.BS,~B");
+}, "~A,~N,~N,JU.BS,~B");
 $_M(c$, "getAllPolymerInfo", 
 function (bs, finalInfo, modelVector) {
-}, "J.util.BS,java.util.Map,J.util.JmolList");
+}, "JU.BS,java.util.Map,JU.List");
 $_M(c$, "getBioPolymerCount", 
 function () {
 return 0;
 });
 $_M(c$, "getPolymerPointsAndVectors", 
 function (bs, vList, isTraceAlpha, sheetSmoothing) {
-}, "J.util.BS,J.util.JmolList,~B,~N");
+}, "JU.BS,JU.List,~B,~N");
 $_M(c$, "getPolymerLeadMidPoints", 
 function (iPolymer) {
 return null;
@@ -248,35 +251,35 @@ function (structureList) {
 $_M(c$, "getChimeInfo", 
 function (sb, nHetero) {
 this.getChimeInfoM (sb, nHetero);
-}, "J.util.SB,~N");
+}, "JU.SB,~N");
 $_M(c$, "getChimeInfoM", 
 function (sb, nHetero) {
 sb.append ("\nNumber of Atoms ..... " + (this.modelSet.atomCount - nHetero));
 if (nHetero > 0) sb.append (" (" + nHetero + ")");
 sb.append ("\nNumber of Bonds ..... " + this.modelSet.bondCount);
 sb.append ("\nNumber of Models ...... " + this.modelSet.modelCount);
-}, "J.util.SB,~N");
+}, "JU.SB,~N");
 $_M(c$, "calculateStruts", 
 function (modelSet, bs1, bs2) {
 return 0;
-}, "J.modelset.ModelSet,J.util.BS,J.util.BS");
+}, "J.modelset.ModelSet,JU.BS,JU.BS");
 $_M(c$, "calculateStraightness", 
 function (viewer, ctype, qtype, mStep) {
 }, "J.viewer.Viewer,~S,~S,~N");
 $_M(c$, "selectSeqcodeRange", 
 function (seqcodeA, seqcodeB, chainID, bs, caseSensitive) {
-}, "~N,~N,~N,J.util.BS,~B");
+}, "~N,~N,~N,JU.BS,~B");
 $_M(c$, "setConformation", 
 function (bsConformation) {
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "getPdbConformation", 
 function (bsConformation, conformationIndex) {
 return false;
-}, "J.util.BS,~N");
+}, "JU.BS,~N");
 $_M(c$, "getProteinStructureState", 
 function (bsAtoms, taintedOnly, needPhiPsi, mode) {
 return null;
-}, "J.util.BS,~B,~B,~N");
+}, "JU.BS,~B,~B,~N");
 $_M(c$, "getFullPDBHeader", 
 function () {
 return null;

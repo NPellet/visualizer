@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.g3d");
 Clazz.load (["J.g3d.Pixelator"], "J.g3d.PixelatorShaded", null, function () {
 c$ = Clazz.declareType (J.g3d, "PixelatorShaded", J.g3d.Pixelator);
-Clazz.overrideMethod (c$, "addPixel", 
+$_V(c$, "addPixel", 
 function (offset, z, p) {
 if (z > this.g.zDepth) return;
 if (z <= this.g.zDepth && z >= this.g.zSlab) {

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.XsfReader", ["J.util.Logger", "$.SB"], function () {
+Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.XsfReader", ["JU.SB", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isBXSF = false;
 Clazz.instantialize (this, arguments);
@@ -8,15 +8,15 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.XsfReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
 this.init2VFR (sg, br);
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "readParameters", 
+$_V(c$, "readParameters", 
 function () {
 this.isAngstroms = false;
 this.params.blockCubeData = true;
-this.jvxlFileHeaderBuffer =  new J.util.SB ();
+this.jvxlFileHeaderBuffer =  new JU.SB ();
 this.jvxlFileHeaderBuffer.append ("XsfReader file\n");
 var needCutoff = this.params.cutoffAutomatic;
 this.isAngstroms = true;
@@ -52,7 +52,7 @@ this.voxelCounts[0] = this.voxelCounts[2];
 this.voxelCounts[2] = n;
 this.params.insideOut = !this.params.insideOut;
 }});
-Clazz.overrideMethod (c$, "gotoData", 
+$_V(c$, "gotoData", 
 function (n, nPoints) {
 if (!this.params.blockCubeData) return;
 if (n > 0) J.util.Logger.info ("skipping " + n + " data sets, " + nPoints + " points each");
@@ -60,7 +60,7 @@ if (this.isBXSF) J.util.Logger.info (this.readLine ());
 for (var i = 0; i < n; i++) this.skipData (nPoints);
 
 }, "~N,~N");
-Clazz.overrideMethod (c$, "skipData", 
+$_V(c$, "skipData", 
 function (nPoints) {
 this.skipDataVFR (nPoints);
 if (this.isBXSF) J.util.Logger.info (this.readLine ());

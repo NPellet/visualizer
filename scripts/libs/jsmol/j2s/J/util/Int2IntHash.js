@@ -2,6 +2,9 @@ Clazz.declarePackage ("J.util");
 c$ = Clazz.decorateAsClass (function () {
 this.entryCount = 0;
 this.entries = null;
+if (!Clazz.isClassDefined ("J.util.Int2IntHash.Entry")) {
+J.util.Int2IntHash.$Int2IntHash$Entry$ ();
+}
 Clazz.instantialize (this, arguments);
 }, J.util, "Int2IntHash");
 Clazz.makeConstructor (c$, 
@@ -27,7 +30,7 @@ return;
 if (this.entryCount > entries.length) this.rehash ();
 entries = this.entries;
 hash = (key & 0x7FFFFFFF) % entries.length;
-entries[hash] =  new J.util.Int2IntHash.Entry (key, value, entries[hash]);
+entries[hash] = Clazz.innerTypeInstance (J.util.Int2IntHash.Entry, this, null, key, value, entries[hash]);
 ++this.entryCount;
 }, "~N,~N");
 $_M(c$, "rehash", 
@@ -47,8 +50,10 @@ newEntries[hash] = t;
 }
 this.entries = newEntries;
 }, $fz.isPrivate = true, $fz));
+c$.$Int2IntHash$Entry$ = function () {
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
+Clazz.prepareCallback (this, arguments);
 this.key = 0;
 this.value = 0;
 this.next = null;
@@ -61,3 +66,4 @@ this.value = b;
 this.next = c;
 }, "~N,~N,J.util.Int2IntHash.Entry");
 c$ = Clazz.p0p ();
+};

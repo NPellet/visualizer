@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.util.MeshSurface", "$.P3", "$.V3"], "J.shape.Mesh", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "J.script.T", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.C", "$.Escape", "$.Matrix3f", "$.Matrix4f", "$.Measure", "$.Normix", "$.SB"], function () {
+Clazz.load (["J.util.MeshSurface", "JU.P3", "$.V3"], "J.shape.Mesh", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.M3", "$.M4", "$.SB", "J.script.T", "J.util.BSUtil", "$.C", "$.Escape", "$.Measure", "$.Normix"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.title = null;
 this.meshColix = 0;
@@ -10,8 +10,11 @@ this.isValid = true;
 this.scriptCommand = null;
 this.colorCommand = null;
 this.lattice = null;
+this.symops = null;
+this.symopNormixes = null;
 this.visible = true;
 this.lighting = 1073741958;
+this.colorType = 0;
 this.haveXyPoints = false;
 this.diameter = 0;
 this.width = 0;
@@ -46,13 +49,14 @@ this.slabbingObject = null;
 this.volumeRenderPointSize = 0.15;
 this.connections = null;
 this.recalcAltVertices = false;
+this.symopColixes = null;
 Clazz.instantialize (this, arguments);
 }, J.shape, "Mesh", J.util.MeshSurface);
 Clazz.prepareFields (c$, function () {
-this.ptCenter = J.util.P3.new3 (0, 0, 0);
-this.vAB =  new J.util.V3 ();
-this.vAC =  new J.util.V3 ();
-this.vTemp =  new J.util.V3 ();
+this.ptCenter = JU.P3.new3 (0, 0, 0);
+this.vAB =  new JU.V3 ();
+this.vAC =  new JU.V3 ();
+this.vTemp =  new JU.V3 ();
 });
 $_M(c$, "setVisibilityFlags", 
 function (n) {
@@ -80,6 +84,8 @@ this.altVertices = null;
 this.bsDisplay = null;
 this.bsSlabDisplay = null;
 this.bsSlabGhost = null;
+this.symops = null;
+this.symopColixes = null;
 this.bsTransPolygons = null;
 this.cappingObject = null;
 this.colix = 23;
@@ -105,6 +111,7 @@ this.showTriangles = false;
 this.slabbingObject = null;
 this.slabOptions = null;
 this.spanningVectors = null;
+this.symopNormixes = null;
 this.title = null;
 this.unitCell = null;
 this.useColix = true;
@@ -121,7 +128,7 @@ this.setNormixes (normals);
 this.lighting = 1073741958;
 if (this.insideOut) this.invertNormixes ();
 this.setLighting (lighting);
-}, "~N,~A,J.util.P4");
+}, "~N,~A,JU.P4");
 $_M(c$, "setNormixes", 
 function (normals) {
 this.normixes =  Clazz.newShortArray (this.normixCount, 0);
@@ -130,24 +137,25 @@ if (this.haveXyPoints) for (var i = this.normixCount; --i >= 0; ) this.normixes[
 
  else for (var i = this.normixCount; --i >= 0; ) this.normixes[i] = J.util.Normix.getNormixV (normals[i], this.bsTemp);
 
+return this.normixes;
 }, "~A");
 $_M(c$, "getNormals", 
 function (vertices, plane) {
 this.normixCount = (this.isTriangleSet ? this.polygonCount : this.vertexCount);
 var normals =  new Array (this.normixCount);
-for (var i = this.normixCount; --i >= 0; ) normals[i] =  new J.util.V3 ();
+for (var i = this.normixCount; --i >= 0; ) normals[i] =  new JU.V3 ();
 
 if (plane == null) {
 this.sumVertexNormals (vertices, normals);
 } else {
-var normal = J.util.V3.new3 (plane.x, plane.y, plane.z);
+var normal = JU.V3.new3 (plane.x, plane.y, plane.z);
 for (var i = this.normixCount; --i >= 0; ) normals[i] = normal;
 
 }if (!this.isTriangleSet) for (var i = this.normixCount; --i >= 0; ) {
 normals[i].normalize ();
 }
 return normals;
-}, "~A,J.util.P4");
+}, "~A,JU.P4");
 $_M(c$, "setLighting", 
 function (lighting) {
 this.isTwoSided = (lighting == 1073741964);
@@ -210,7 +218,7 @@ return 1e-8;
 });
 $_M(c$, "getState", 
 function (type) {
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 s.append (type);
 if (!type.equals ("mo")) s.append (" ID ").append (J.util.Escape.eS (this.thisID));
 if (this.lattice != null) s.append (" lattice ").append (J.util.Escape.eP (this.lattice));
@@ -225,7 +233,7 @@ s.append (" display " + J.util.Escape.eBS (this.bsDisplay));
 }, "~S");
 $_M(c$, "getRendering", 
 function () {
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 s.append (this.fillTriangles ? " fill" : " noFill");
 s.append (this.drawTriangles ? " mesh" : " noMesh");
 s.append (this.showPoints ? " dots" : " noDots");
@@ -239,16 +247,16 @@ $_M(c$, "getOffsetVertices",
 function (thePlane) {
 if (this.altVertices != null && !this.recalcAltVertices) return this.altVertices;
 this.altVertices =  new Array (this.vertexCount);
-for (var i = 0; i < this.vertexCount; i++) this.altVertices[i] = J.util.P3.newP (this.vertices[i]);
+for (var i = 0; i < this.vertexCount; i++) this.altVertices[i] = JU.P3.newP (this.vertices[i]);
 
 var normal = null;
 var val = 0;
 if (this.scale3d != 0 && this.vertexValues != null && thePlane != null) {
-normal = J.util.V3.new3 (thePlane.x, thePlane.y, thePlane.z);
+normal = JU.V3.new3 (thePlane.x, thePlane.y, thePlane.z);
 normal.normalize ();
 normal.scale (this.scale3d);
 if (this.mat4 != null) {
-var m3 =  new J.util.Matrix3f ();
+var m3 =  new JU.M3 ();
 this.mat4.getRotationScale (m3);
 m3.transform (normal);
 }}for (var i = 0; i < this.vertexCount; i++) {
@@ -260,22 +268,22 @@ if (normal != null && val != 0) pt.scaleAdd2 (val, normal, pt);
 this.initialize (this.lighting, this.altVertices, null);
 this.recalcAltVertices = false;
 return this.altVertices;
-}, "J.util.P4");
+}, "JU.P4");
 $_M(c$, "setShowWithin", 
 function (showWithinPoints, showWithinDistance2, isWithinNot) {
 if (showWithinPoints.size () == 0) {
 this.bsDisplay = (isWithinNot ? J.util.BSUtil.newBitSet2 (0, this.vertexCount) : null);
 return;
-}this.bsDisplay =  new J.util.BS ();
+}this.bsDisplay =  new JU.BS ();
 for (var i = 0; i < this.vertexCount; i++) if (J.shape.Mesh.checkWithin (this.vertices[i], showWithinPoints, showWithinDistance2, isWithinNot)) this.bsDisplay.set (i);
 
-}, "J.util.JmolList,~N,~B");
+}, "JU.List,~N,~B");
 c$.checkWithin = $_M(c$, "checkWithin", 
 function (pti, withinPoints, withinDistance2, isWithinNot) {
 if (withinPoints.size () != 0) for (var i = withinPoints.size (); --i >= 0; ) if (pti.distanceSquared (withinPoints.get (i)) <= withinDistance2) return !isWithinNot;
 
 return isWithinNot;
-}, "J.util.P3,J.util.JmolList,~N,~B");
+}, "JU.P3,JU.List,~N,~B");
 $_M(c$, "getVertexIndexFromNumber", 
 function (vertexIndex) {
 if (--vertexIndex < 0) vertexIndex = this.vertexCount + vertexIndex;
@@ -287,7 +295,7 @@ return this.getVisibleVBS ();
 });
 $_M(c$, "getVisibleVBS", 
 function () {
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 if (this.polygonCount == 0 && this.bsSlabDisplay != null) J.util.BSUtil.copy2 (this.bsSlabDisplay, bs);
  else for (var i = this.polygonCount; --i >= 0; ) if (this.bsSlabDisplay == null || this.bsSlabDisplay.get (i)) {
 var vertexIndexes = this.polygonIndexes[i];
@@ -340,9 +348,9 @@ info.put ("vertexCount", Integer.$valueOf (this.vertexCount));
 info.put ("polygonCount", Integer.$valueOf (this.polygonCount));
 info.put ("haveQuads", Boolean.$valueOf (this.haveQuads));
 info.put ("haveValues", Boolean.$valueOf (this.vertexValues != null));
-if (this.vertexCount > 0 && isAll) info.put ("vertices", J.util.ArrayUtil.arrayCopyPt (this.vertices, this.vertexCount));
-if (this.vertexValues != null && isAll) info.put ("vertexValues", J.util.ArrayUtil.arrayCopyF (this.vertexValues, this.vertexCount));
-if (this.polygonCount > 0 && isAll) info.put ("polygons", J.util.ArrayUtil.arrayCopyII (this.polygonIndexes, this.polygonCount));
+if (this.vertexCount > 0 && isAll) info.put ("vertices", JU.AU.arrayCopyPt (this.vertices, this.vertexCount));
+if (this.vertexValues != null && isAll) info.put ("vertexValues", JU.AU.arrayCopyF (this.vertexValues, this.vertexCount));
+if (this.polygonCount > 0 && isAll) info.put ("polygons", JU.AU.arrayCopyII (this.polygonIndexes, this.polygonCount));
 return info;
 }, "~B");
 $_M(c$, "getBoundingBox", 
@@ -358,21 +366,19 @@ function (q, offset, isAbsolute) {
 if (q == null && offset == null) {
 this.mat4 = null;
 return;
-}var m3 =  new J.util.Matrix3f ();
-var v =  new J.util.V3 ();
-if (this.mat4 == null) {
-this.mat4 =  new J.util.Matrix4f ();
-this.mat4.setIdentity ();
-}this.mat4.getRotationScale (m3);
+}var m3 =  new JU.M3 ();
+var v =  new JU.V3 ();
+if (this.mat4 == null) this.mat4 = JU.M4.newM (null);
+this.mat4.getRotationScale (m3);
 this.mat4.get (v);
 if (q == null) {
 if (isAbsolute) v.setT (offset);
  else v.add (offset);
 } else {
 m3.mul (q.getMatrix ());
-}this.mat4 = J.util.Matrix4f.newMV (m3, v);
+}this.mat4 = JU.M4.newMV (m3, v);
 this.recalcAltVertices = true;
-}, "J.util.Quaternion,J.util.Tuple3f,~B");
+}, "J.util.Quaternion,JU.T3,~B");
 $_M(c$, "getNormalsTemp", 
 function () {
 return (this.normalsTemp == null ? (this.normalsTemp = this.getNormals (this.vertices, null)) : this.normalsTemp);

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.MapFileReader"], "J.jvxl.readers.MrcBinaryReader", ["java.lang.Exception", "$.Float", "J.util.Logger", "$.SB"], function () {
+Clazz.load (["J.jvxl.readers.MapFileReader"], "J.jvxl.readers.MrcBinaryReader", ["java.lang.Exception", "$.Float", "JU.SB", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.labels = null;
 Clazz.instantialize (this, arguments);
@@ -8,7 +8,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.MrcBinaryReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, brNull) {
 var fileName = (sg.getReaderData ())[0];
 this.init2MFR (sg, this.br);
@@ -18,7 +18,7 @@ this.nSurfaces = 1;
 if (this.params.thePlane == null) this.params.insideOut = !this.params.insideOut;
 this.allowSigma = true;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "readParameters", 
+$_V(c$, "readParameters", 
 function () {
 var ispg;
 var nsymbt;
@@ -110,11 +110,11 @@ if (this.params.thePlane == null && (this.params.cutoffAutomatic || !Float.isNaN
 var sigma = (this.params.sigma < 0 || Float.isNaN (this.params.sigma) ? 1 : this.params.sigma);
 this.params.cutoff = rmsDeviation * sigma + this.dmean;
 J.util.Logger.info ("Cutoff set to (mean + rmsDeviation*" + sigma + " = " + this.params.cutoff + ")\n");
-}this.jvxlFileHeaderBuffer =  new J.util.SB ();
+}this.jvxlFileHeaderBuffer =  new JU.SB ();
 this.jvxlFileHeaderBuffer.append ("MRC DATA ").append (nlabel > 0 ? this.labels[0] : "").append ("\n");
 this.jvxlFileHeaderBuffer.append ("see http://ami.scripps.edu/software/mrctools/mrc_specification.php\n");
 });
-Clazz.overrideMethod (c$, "nextVoxel", 
+$_V(c$, "nextVoxel", 
 function () {
 var voxelValue;
 switch (this.mode) {
@@ -143,7 +143,7 @@ break;
 this.nBytes = this.binarydoc.getPosition ();
 return voxelValue;
 });
-Clazz.overrideMethod (c$, "skipData", 
+$_V(c$, "skipData", 
 function (nPoints) {
 for (var i = 0; i < nPoints; i++) switch (this.mode) {
 case 0:

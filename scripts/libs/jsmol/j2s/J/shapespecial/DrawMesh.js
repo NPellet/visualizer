@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapespecial");
-Clazz.load (["J.shape.Mesh", "J.shapespecial.Draw", "J.util.BS", "$.V3"], "J.shapespecial.DrawMesh", ["J.util.ArrayUtil", "$.BSUtil", "$.P3"], function () {
+Clazz.load (["J.shape.Mesh", "JU.BS", "$.V3", "J.shapespecial.Draw"], "J.shapespecial.DrawMesh", ["JU.AU", "$.P3", "J.util.BSUtil"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.modelFlags = null;
 this.drawType = null;
@@ -21,15 +21,15 @@ Clazz.instantialize (this, arguments);
 }, J.shapespecial, "DrawMesh", J.shape.Mesh);
 Clazz.prepareFields (c$, function () {
 this.drawType = J.shapespecial.Draw.EnumDrawType.NONE;
-this.axis = J.util.V3.new3 (1, 0, 0);
-this.bsMeshesVisible =  new J.util.BS ();
+this.axis = JU.V3.new3 (1, 0, 0);
+this.bsMeshesVisible =  new JU.BS ();
 });
 Clazz.makeConstructor (c$, 
 function (thisID, colix, index) {
 Clazz.superConstructor (this, J.shapespecial.DrawMesh, []);
 this.mesh1 (thisID, colix, index);
 }, "~S,~N,~N");
-Clazz.overrideMethod (c$, "clear", 
+$_V(c$, "clear", 
 function (meshType) {
 this.clearMesh (meshType);
 this.scale = 1;
@@ -43,7 +43,7 @@ if (this.ptCenters == null) this.setCenter (-1);
 });
 $_M(c$, "setCenter", 
 function (iModel) {
-var center = J.util.P3.new3 (0, 0, 0);
+var center = JU.P3.new3 (0, 0, 0);
 var iptlast = -1;
 var ipt = 0;
 var n = 0;
@@ -71,16 +71,16 @@ $_M(c$, "offset",
 function (offset) {
 this.rotateTranslate (null, offset, false);
 this.setCenters ();
-}, "J.util.V3");
+}, "JU.V3");
 $_M(c$, "deleteAtoms", 
 function (modelIndex) {
 if (modelIndex >= this.polygonCount) return;
 this.polygonCount--;
-this.polygonIndexes = J.util.ArrayUtil.deleteElements (this.polygonIndexes, modelIndex, 1);
-this.drawTypes = J.util.ArrayUtil.deleteElements (this.drawTypes, modelIndex, 1);
-this.drawVertexCounts = J.util.ArrayUtil.deleteElements (this.drawVertexCounts, modelIndex, 1);
-this.ptCenters = J.util.ArrayUtil.deleteElements (this.ptCenters, modelIndex, 1);
-this.axes = J.util.ArrayUtil.deleteElements (this.axes, modelIndex, 1);
+this.polygonIndexes = JU.AU.deleteElements (this.polygonIndexes, modelIndex, 1);
+this.drawTypes = JU.AU.deleteElements (this.drawTypes, modelIndex, 1);
+this.drawVertexCounts = JU.AU.deleteElements (this.drawVertexCounts, modelIndex, 1);
+this.ptCenters = JU.AU.deleteElements (this.ptCenters, modelIndex, 1);
+this.axes = JU.AU.deleteElements (this.axes, modelIndex, 1);
 var bs = J.util.BSUtil.newAndSetBit (modelIndex);
 J.util.BSUtil.deleteBits (this.modelFlags, bs);
 }, "~N");

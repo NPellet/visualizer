@@ -19,9 +19,9 @@ $_M(c$, "getNumSet",
 function () {
 return this.numSet;
 });
-c$.getMP = $_M(c$, "getMP", 
+$_M(c$, "set", 
 function (modelSet) {
-return  new J.modelset.MeasurementPending ().setM (modelSet, null, NaN, 0, null, 0);
+return this.setM (modelSet, null, NaN, 0, null, 0);
 }, "J.modelset.ModelSet");
 $_M(c$, "checkPoint", 
 ($fz = function (ptClicked) {
@@ -35,7 +35,7 @@ for (var i = 1; i <= this.numSet; i++) if (this.countPlusIndices[i] == atomIndex
 
 return 0;
 }, "~N");
-Clazz.overrideMethod (c$, "setCount", 
+$_V(c$, "setCount", 
 function (count) {
 this.setCountM (count);
 this.numSet = count;

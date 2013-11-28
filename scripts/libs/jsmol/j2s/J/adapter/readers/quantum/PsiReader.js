@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader", "java.util.Hashtable", "J.util.JmolList"], "J.adapter.readers.quantum.PsiReader", ["java.lang.Float", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.Logger", "$.Parser"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader", "java.util.Hashtable", "JU.List"], "J.adapter.readers.quantum.PsiReader", ["java.lang.Float", "JU.AU", "$.PT", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomNames = null;
 this.shellsByUniqueAtom = null;
@@ -7,11 +7,11 @@ this.uniqueAtomMap = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "PsiReader", J.adapter.readers.quantum.MOReader);
 Clazz.prepareFields (c$, function () {
-this.atomNames =  new J.util.JmolList ();
-this.shellsByUniqueAtom =  new J.util.JmolList ();
+this.atomNames =  new JU.List ();
+this.shellsByUniqueAtom =  new JU.List ();
 this.uniqueAtomMap =  new java.util.Hashtable ();
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.indexOf ("-Geometry after Center-of-Mass shift and reorientation (a.u.):") >= 0) {
 this.readAtoms (true);
@@ -70,7 +70,7 @@ this.setAtomCoordXYZ (atom, this.parseFloatStr (tokens[1]) * 0.5291772, this.par
 }, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "readBasis", 
 function () {
-var gdata =  new J.util.JmolList ();
+var gdata =  new JU.List ();
 this.gaussianCount = 0;
 this.shellCount = 0;
 var tokens;
@@ -78,7 +78,7 @@ var slater = null;
 var slatersByUniqueAtom = null;
 this.readLine ();
 while (this.readLine () != null && this.line.startsWith ("   -Basis set on")) {
-slatersByUniqueAtom =  new J.util.JmolList ();
+slatersByUniqueAtom =  new JU.List ();
 var nGaussians = 0;
 while (this.readLine () != null && !this.line.startsWith ("       )")) {
 this.line = this.line.$replace ('(', ' ').$replace (')', ' ');
@@ -107,7 +107,7 @@ slatersByUniqueAtom.addLast (slater);
 this.gaussianCount += nGaussians;
 this.readLine ();
 }
-var garray = J.util.ArrayUtil.newFloat2 (this.gaussianCount);
+var garray = JU.AU.newFloat2 (this.gaussianCount);
 for (var i = 0; i < this.gaussianCount; i++) {
 tokens = gdata.get (i);
 garray[i] =  Clazz.newFloatArray (tokens.length, 0);
@@ -121,7 +121,7 @@ J.util.Logger.debug (this.gaussianCount + " gaussian primitives read");
 }});
 $_M(c$, "readUniqueAtoms", 
 ($fz = function () {
-var sdata =  new J.util.JmolList ();
+var sdata =  new JU.List ();
 this.discardLinesUntilContains ("----");
 var n = 0;
 while (this.readLine () != null && this.line.length > 0) {
@@ -145,8 +145,8 @@ this.moData.put ("shells", sdata);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readPsiMolecularOrbitals", 
 function () {
-var mos = J.util.ArrayUtil.createArrayOfHashtable (5);
-var data = J.util.ArrayUtil.createArrayOfArrayList (5);
+var mos = JU.AU.createArrayOfHashtable (5);
+var data = JU.AU.createArrayOfArrayList (5);
 var nThisLine = 0;
 while (this.readLine () != null && this.line.toUpperCase ().indexOf ("DENS") < 0) {
 var tokens = this.getTokens ();
@@ -157,12 +157,12 @@ nThisLine = tokens.length;
 tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine ());
 for (var i = 0; i < nThisLine; i++) {
 mos[i] =  new java.util.Hashtable ();
-data[i] =  new J.util.JmolList ();
+data[i] =  new JU.List ();
 mos[i].put ("symmetry", tokens[i]);
 }
 tokens = J.adapter.smarter.AtomSetCollectionReader.getStrings (this.readLine ().substring (21), nThisLine, 10);
 for (var i = 0; i < nThisLine; i++) {
-mos[i].put ("energy", Float.$valueOf (J.util.Parser.fVal (tokens[i])));
+mos[i].put ("energy", Float.$valueOf (JU.PT.fVal (tokens[i])));
 }
 continue;
 }try {

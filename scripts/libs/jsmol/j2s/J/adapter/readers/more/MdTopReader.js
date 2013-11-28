@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.readers.more.ForceFieldReader"], "J.adapter.readers.more.MdTopReader", ["java.lang.Boolean", "J.adapter.smarter.Atom", "J.api.JmolAdapter", "J.util.JmolList", "$.Logger"], function () {
+Clazz.load (["J.adapter.readers.more.ForceFieldReader"], "J.adapter.readers.more.MdTopReader", ["java.lang.Boolean", "JU.List", "J.adapter.smarter.Atom", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nAtoms = 0;
 this.atomCount = 0;
@@ -7,11 +7,11 @@ this.$atomTypes = null;
 this.group3s = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.more, "MdTopReader", J.adapter.readers.more.ForceFieldReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.setUserAtomTypes ();
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.indexOf ("%FLAG ") != 0) return true;
 this.line = this.line.substring (6).trim ();
@@ -24,7 +24,7 @@ if (this.line.equals ("POINTERS")) this.getPointers ();
  else if (this.line.equals ("MASS")) this.getMasses ();
 return false;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 this.finalizeReaderASCR ();
 var atoms = this.atomSetCollection.getAtoms ();
@@ -58,7 +58,7 @@ this.htParams.put ("defaultType", "mdcrd");
 });
 $_M(c$, "getDataBlock", 
 ($fz = function () {
-var vdata =  new J.util.JmolList ();
+var vdata =  new JU.List ();
 this.discardLinesUntilContains ("FORMAT");
 var n = J.adapter.smarter.AtomSetCollectionReader.getFortranFormatLengths (this.line.substring (this.line.indexOf ("("))).get (0).intValue ();
 var i = 0;

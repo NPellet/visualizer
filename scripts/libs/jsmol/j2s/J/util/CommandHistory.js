@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.CommandHistory", ["J.util.JmolList"], function () {
+Clazz.load (null, "J.util.CommandHistory", ["JU.List"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.commandList = null;
 this.maxSize = 100;
@@ -23,7 +23,7 @@ this.reset (this.maxSize);
 $_M(c$, "reset", 
 function (maxSize) {
 this.maxSize = maxSize;
-this.commandList =  new J.util.JmolList ();
+this.commandList =  new JU.List ();
 this.nextCommand = 0;
 this.commandList.addLast ("");
 this.cursorPos = 0;

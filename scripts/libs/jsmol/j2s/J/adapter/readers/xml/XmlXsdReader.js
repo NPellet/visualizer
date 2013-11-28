@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xml");
-Clazz.load (["J.adapter.readers.xml.XmlReader", "J.util.BS"], "J.adapter.readers.xml.XmlXsdReader", ["java.lang.Float", "J.adapter.smarter.Atom", "J.util.TextFormat"], function () {
+Clazz.load (["J.adapter.readers.xml.XmlReader", "JU.BS"], "J.adapter.readers.xml.XmlXsdReader", ["java.lang.Float", "JU.PT", "J.adapter.smarter.Atom"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bsBackbone = null;
 this.iChain = -1;
@@ -8,23 +8,23 @@ this.iAtom = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xml, "XmlXsdReader", J.adapter.readers.xml.XmlReader);
 Clazz.prepareFields (c$, function () {
-this.bsBackbone =  new J.util.BS ();
+this.bsBackbone =  new JU.BS ();
 });
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.adapter.readers.xml.XmlXsdReader, []);
 });
-Clazz.overrideMethod (c$, "getDOMAttributes", 
+$_V(c$, "getDOMAttributes", 
 function () {
 return ["ID", "XYZ", "Connections", "Components", "IsBackboneAtom", "Connects", "Type", "Name"];
 });
-Clazz.overrideMethod (c$, "processXml", 
+$_V(c$, "processXml", 
 function (parent, saxReader) {
 parent.htParams.put ("backboneAtoms", this.bsBackbone);
 this.PX (parent, saxReader);
 this.atomSetCollection.clearSymbolicMap ();
 }, "J.adapter.readers.xml.XmlReader,~O");
-Clazz.overrideMethod (c$, "processStartElement", 
+$_V(c$, "processStartElement", 
 function (localName) {
 var tokens;
 System.out.println (" " + localName + " " + this.atts);
@@ -55,7 +55,7 @@ this.atom.set (this.parseFloatStr (tokens[0]), this.parseFloatStr (tokens[1]), t
 if (isBackbone) this.bsBackbone.set (this.iAtom);
 return;
 }if ("Bond".equalsIgnoreCase (localName)) {
-var atoms = J.util.TextFormat.split (this.atts.get ("Connects"), ',');
+var atoms = JU.PT.split (this.atts.get ("Connects"), ",");
 var order = 1;
 if (this.atts.containsKey ("Type")) {
 var type = this.atts.get ("Type");
@@ -64,7 +64,7 @@ if (type.equals ("Double")) order = 2;
 }this.atomSetCollection.addNewBondFromNames (atoms[0], atoms[1], order);
 return;
 }}, "~S");
-Clazz.overrideMethod (c$, "processEndElement", 
+$_V(c$, "processEndElement", 
 function (localName) {
 if ("Atom3d".equalsIgnoreCase (localName)) {
 if (this.atom.elementSymbol != null && !Float.isNaN (this.atom.z)) {

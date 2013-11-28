@@ -6,7 +6,7 @@ function () {
 Clazz.superConstructor (this, J.quantum.MlpCalculation);
 this.distanceMode = 3;
 });
-Clazz.overrideMethod (c$, "assignPotentials", 
+$_V(c$, "assignPotentials", 
 function (atoms, potentials, bsAromatic, bsCarbonyl, bsIgnore, data) {
 this.getAtomicPotentials (data, "atomicLipophilicity.txt");
 for (var i = 0; i < atoms.length; i++) {
@@ -32,5 +32,5 @@ f = NaN;
 }}if (J.util.Logger.debugging) J.util.Logger.debug (atoms[i].getInfo () + " " + f);
 potentials[i] = f;
 }
-}, "~A,~A,J.util.BS,J.util.BS,J.util.BS,~S");
+}, "~A,~A,JU.BS,JU.BS,JU.BS,~S");
 });

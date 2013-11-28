@@ -8,15 +8,15 @@ c$.validateAndAllocate = $_M(c$, "validateAndAllocate",
 function (chain, group3, seqcode, firstIndex, lastIndex) {
 return  new J.modelsetbio.CarbohydrateMonomer ().set2 (chain, group3, seqcode, firstIndex, lastIndex, J.modelsetbio.CarbohydrateMonomer.alphaOffsets);
 }, "J.modelset.Chain,~S,~N,~N,~N");
-Clazz.overrideMethod (c$, "isCarbohydrate", 
+$_V(c$, "isCarbohydrate", 
 function () {
 return true;
 });
-Clazz.overrideMethod (c$, "getProteinStructureType", 
+$_V(c$, "getProteinStructureType", 
 function () {
 return J.constant.EnumStructure.CARBOHYDRATE;
 });
-Clazz.overrideMethod (c$, "isConnectedAfter", 
+$_V(c$, "isConnectedAfter", 
 function (possiblyPreviousMonomer) {
 if (possiblyPreviousMonomer == null) return true;
 for (var i = this.firstAtomIndex; i <= this.lastAtomIndex; i++) for (var j = possiblyPreviousMonomer.firstAtomIndex; j <= possiblyPreviousMonomer.lastAtomIndex; j++) {
@@ -27,7 +27,7 @@ if (a.getElementNumber () + b.getElementNumber () == 14 && a.distanceSquared (b)
 
 return false;
 }, "J.modelsetbio.Monomer");
-Clazz.overrideMethod (c$, "findNearestAtomIndex", 
+$_V(c$, "findNearestAtomIndex", 
 function (x, y, closest, madBegin, madEnd) {
 var competitor = closest[0];
 var anomericO = this.getLeadAtom ();
@@ -38,7 +38,7 @@ var radiusBegin = Clazz.floatToInt (this.scaleToScreen (anomericO.screenZ, marBe
 if (radiusBegin < 4) radiusBegin = 4;
 if (this.isCursorOnTopOf (anomericO, x, y, radiusBegin, competitor)) closest[0] = anomericO;
 }, "~N,~N,~A,~N,~N");
-Clazz.overrideMethod (c$, "isConnectedPrevious", 
+$_V(c$, "isConnectedPrevious", 
 function () {
 if (this.monomerIndex <= 0) return false;
 for (var i = this.firstAtomIndex; i <= this.lastAtomIndex; i++) {

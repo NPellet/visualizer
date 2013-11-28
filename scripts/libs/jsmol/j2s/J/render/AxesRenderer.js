@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.FontLineShapeRenderer", "J.util.P3"], "J.render.AxesRenderer", ["J.constant.EnumAxesMode", "J.util.Point3fi"], function () {
+Clazz.load (["J.render.FontLineShapeRenderer", "JU.P3"], "J.render.AxesRenderer", ["J.constant.EnumAxesMode", "J.util.Point3fi"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.screens = null;
 this.originScreen = null;
@@ -9,17 +9,17 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.screens =  new Array (6);
 {
-for (var i = 6; --i >= 0; ) this.screens[i] =  new J.util.P3 ();
+for (var i = 6; --i >= 0; ) this.screens[i] =  new JU.P3 ();
 
-}this.originScreen =  new J.util.P3 ();
+}this.originScreen =  new JU.P3 ();
 this.colixes =  Clazz.newShortArray (3, 0);
 });
-Clazz.overrideMethod (c$, "initRenderer", 
+$_V(c$, "initRenderer", 
 function () {
 this.endcap = 2;
 this.draw000 = false;
 });
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 var axes = this.shape;
 var mad = this.viewer.getObjectMad (1);

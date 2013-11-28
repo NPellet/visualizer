@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.ContactPair", ["java.lang.Float", "J.script.T", "J.util.P3", "$.V3"], function () {
+Clazz.load (null, "J.util.ContactPair", ["java.lang.Float", "JU.P3", "$.V3", "J.script.T"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.radii = null;
 this.vdws = null;
@@ -28,10 +28,10 @@ this.vdws[0] = vdwA;
 this.vdws[1] = vdwB;
 this.myAtoms[0] = atoms[i1];
 this.myAtoms[1] = atoms[i2];
-var v = J.util.V3.newVsub (this.myAtoms[1], this.myAtoms[0]);
+var v = JU.V3.newVsub (this.myAtoms[1], this.myAtoms[0]);
 this.d = v.length ();
 var f = (R - r + this.d) / (2 * this.d);
-this.pt =  new J.util.P3 ();
+this.pt =  new JU.P3 ();
 this.pt.scaleAdd2 (f, v, this.myAtoms[0]);
 this.score = this.d - vdwA - vdwB;
 this.contactType = (this.score < 0 ? 1073741881 : 1649412120);
@@ -77,7 +77,7 @@ r = this.vdws[0];
 this.vdws[0] = this.vdws[1];
 this.vdws[1] = r;
 });
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return "type=" + J.script.T.nameOf (this.contactType) + " " + this.myAtoms[0] + " " + this.myAtoms[1] + " dAB=" + this.d + " score=" + this.score + " chord=" + this.chord + " volume=" + this.volume;
 });

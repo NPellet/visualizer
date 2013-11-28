@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.g3d");
-Clazz.load (["J.util.P3", "$.V3"], "J.g3d.HermiteRenderer", ["J.util.JmolList", "$.P3i", "$.Point3fi"], function () {
+Clazz.load (["J.g3d.G3DRenderer", "JU.P3", "$.V3"], "J.g3d.HermiteRenderer", ["JU.List", "$.P3i", "J.util.Point3fi"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.g3d = null;
 this.pLeft = null;
@@ -23,7 +23,7 @@ this.needToFill = null;
 this.T1 = null;
 this.T2 = null;
 Clazz.instantialize (this, arguments);
-}, J.g3d, "HermiteRenderer");
+}, J.g3d, "HermiteRenderer", null, J.g3d.G3DRenderer);
 Clazz.prepareFields (c$, function () {
 this.pLeft =  new Array (16);
 this.pRight =  new Array (16);
@@ -35,29 +35,33 @@ this.pBotLeft =  new Array (16);
 this.pBotRight =  new Array (16);
 {
 for (var i = 16; --i >= 0; ) {
-this.pLeft[i] =  new J.util.P3i ();
-this.pRight[i] =  new J.util.P3i ();
-this.pTopLeft[i] =  new J.util.P3 ();
-this.pTopRight[i] =  new J.util.P3 ();
-this.pBotLeft[i] =  new J.util.P3 ();
-this.pBotRight[i] =  new J.util.P3 ();
+this.pLeft[i] =  new JU.P3i ();
+this.pRight[i] =  new JU.P3i ();
+this.pTopLeft[i] =  new JU.P3 ();
+this.pTopRight[i] =  new JU.P3 ();
+this.pBotLeft[i] =  new JU.P3 ();
+this.pBotRight[i] =  new JU.P3 ();
 }
-}this.a1 =  new J.util.P3 ();
-this.a2 =  new J.util.P3 ();
-this.b1 =  new J.util.P3 ();
-this.b2 =  new J.util.P3 ();
-this.c1 =  new J.util.P3 ();
-this.c2 =  new J.util.P3 ();
-this.d1 =  new J.util.P3 ();
-this.d2 =  new J.util.P3 ();
-this.depth1 =  new J.util.V3 ();
+}this.a1 =  new JU.P3 ();
+this.a2 =  new JU.P3 ();
+this.b1 =  new JU.P3 ();
+this.b2 =  new JU.P3 ();
+this.c1 =  new JU.P3 ();
+this.c2 =  new JU.P3 ();
+this.d1 =  new JU.P3 ();
+this.d2 =  new JU.P3 ();
+this.depth1 =  new JU.V3 ();
 this.needToFill =  Clazz.newBooleanArray (16, false);
-this.T1 =  new J.util.V3 ();
-this.T2 =  new J.util.V3 ();
+this.T1 =  new JU.V3 ();
+this.T2 =  new JU.V3 ();
 });
 Clazz.makeConstructor (c$, 
+function () {
+});
+$_V(c$, "set", 
 function (g3d) {
 this.g3d = g3d;
+return this;
 }, "J.api.JmolRendererInterface");
 $_M(c$, "renderHermiteRope", 
 function (fill, tension, diameterBeg, diameterMid, diameterEnd, p0, p1, p2, p3) {
@@ -80,7 +84,6 @@ this.pLeft[0].setT (p1);
 this.sRight[0] = 1;
 this.pRight[0].setT (p2);
 var sp = 0;
-var n = 0;
 var dDiameterFirstHalf = 0;
 var dDiameterSecondHalf = 0;
 if (fill) {
@@ -93,7 +96,6 @@ var dx = b.x - a.x;
 if (dx >= -1 && dx <= 1) {
 var dy = b.y - a.y;
 if (dy >= -1 && dy <= 1) {
-n++;
 var s = this.sLeft[sp];
 if (fill) {
 var d = (s < 0.5 ? diameterBeg + Clazz.floatToInt (dDiameterFirstHalf * s) : diameterMid + Clazz.floatToInt (dDiameterSecondHalf * (s - 0.5)));
@@ -122,7 +124,7 @@ this.sRight[sp] = s;
 this.pLeft[sp].setT (pMid);
 this.sLeft[sp] = s;
 } while (sp >= 0);
-}, "~B,~N,~N,~N,~N,J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i");
+}, "~B,~N,~N,~N,~N,JU.P3i,JU.P3i,JU.P3i,JU.P3i");
 $_M(c$, "renderHermiteRibbon", 
 function (fill, border, tension, p0, p1, p2, p3, p4, p5, p6, p7, aspectRatio, fillType) {
 if (p0.z == 1 || p1.z == 1 || p2.z == 1 || p3.z == 1 || p4.z == 1 || p5.z == 1 || p6.z == 1 || p7.z == 1) return;
@@ -252,18 +254,18 @@ this.c1.z += 1;
 this.c2.z += 1;
 this.a2.z += 1;
 this.g3d.fillQuadrilateral (this.a1, this.c1, this.c2, this.a2);
-}}, "~B,~B,~N,J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i,~N,~N");
+}}, "~B,~B,~N,JU.P3i,JU.P3i,JU.P3i,JU.P3i,JU.P3i,JU.P3i,JU.P3i,JU.P3i,~N,~N");
 c$.isFront = $_M(c$, "isFront", 
 ($fz = function (a, b, c) {
 J.g3d.HermiteRenderer.vAB.sub2 (b, a);
 J.g3d.HermiteRenderer.vAC.sub2 (c, a);
 J.g3d.HermiteRenderer.vAB.cross (J.g3d.HermiteRenderer.vAB, J.g3d.HermiteRenderer.vAC);
 return (J.g3d.HermiteRenderer.vAB.z < 0 ? -1 : 1);
-}, $fz.isPrivate = true, $fz), "J.util.P3,J.util.P3,J.util.P3");
+}, $fz.isPrivate = true, $fz), "JU.P3,JU.P3,JU.P3");
 $_M(c$, "renderParallelPair", 
 ($fz = function (fill, tension, p0, p1, p2, p3, p4, p5, p6, p7) {
 var endPoints = [p2, p1, p6, p5];
-var points =  new J.util.JmolList ();
+var points =  new JU.List ();
 var whichPoint = 0;
 var numTopStrandPoints = 2;
 var numPointsPerSegment = 5.0;
@@ -317,7 +319,7 @@ if (dist2 <= 2) {
 var s = this.sLeft[sp];
 this.g3d.fillSphereI (3, a);
 if (s < 1.0 - currentInt) {
-var temp =  new J.util.P3i ();
+var temp =  new JU.P3i ();
 temp.setT (a);
 points.addLast (temp);
 currentInt += interval;
@@ -350,7 +352,7 @@ points.addLast (endPoints[whichPoint++]);
 var size = points.size ();
 for (var top = 0; top < numTopStrandPoints && (top + numTopStrandPoints) < size; top++) this.g3d.drawLineAB (points.get (top), points.get (top + numTopStrandPoints));
 
-}, $fz.isPrivate = true, $fz), "~B,~N,J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i");
+}, $fz.isPrivate = true, $fz), "~B,~N,JU.P3i,JU.P3i,JU.P3i,JU.P3i,JU.P3i,JU.P3i,JU.P3i,JU.P3i");
 $_M(c$, "setDepth", 
 ($fz = function (depth, c, a, b, ratio) {
 this.T1.sub2 (a, c);
@@ -358,13 +360,13 @@ this.T1.scale (ratio);
 this.T2.sub2 (a, b);
 depth.cross (this.T1, this.T2);
 depth.scale (this.T1.length () / depth.length ());
-}, $fz.isPrivate = true, $fz), "J.util.V3,J.util.P3,J.util.P3,J.util.P3,~N");
+}, $fz.isPrivate = true, $fz), "JU.V3,JU.P3,JU.P3,JU.P3,~N");
 c$.setPoint = $_M(c$, "setPoint", 
 ($fz = function (a1, a, depth, direction) {
 a1.setT (a);
 if (direction == 1) a1.add (depth);
  else a1.sub (depth);
-}, $fz.isPrivate = true, $fz), "J.util.P3,J.util.P3,J.util.V3,~N");
-c$.vAB = c$.prototype.vAB =  new J.util.V3 ();
-c$.vAC = c$.prototype.vAC =  new J.util.V3 ();
+}, $fz.isPrivate = true, $fz), "JU.P3,JU.P3,JU.V3,~N");
+c$.vAB = c$.prototype.vAB =  new JU.V3 ();
+c$.vAC = c$.prototype.vAC =  new JU.V3 ();
 });

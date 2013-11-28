@@ -1,30 +1,30 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.more.TlsDataOnlyReader", ["java.lang.Float", "java.util.Hashtable", "J.util.Escape", "$.JmolList", "$.Logger", "$.P3", "$.Parser", "$.SB"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.more.TlsDataOnlyReader", ["java.lang.Float", "java.util.Hashtable", "JU.List", "$.P3", "$.PT", "$.SB", "J.util.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vTlsModels = null;
 this.sbTlsErrors = null;
 this.tlsGroupID = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.more, "TlsDataOnlyReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.readTlsData ();
 this.continuing = false;
 });
 $_M(c$, "readTlsData", 
 ($fz = function () {
-this.vTlsModels =  new J.util.JmolList ();
+this.vTlsModels =  new JU.List ();
 var tlsGroups;
 var tlsGroup = null;
 var ranges = null;
 var range = null;
-tlsGroups =  new J.util.JmolList ();
+tlsGroups =  new JU.List ();
 while (this.readLine () != null) {
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.$replace ('\'', ' '));
 if (tokens.length == 0) continue;
 if (tokens[0].equals ("TLS")) {
 tlsGroup =  new java.util.Hashtable ();
-ranges =  new J.util.JmolList ();
+ranges =  new JU.List ();
 tlsGroup.put ("ranges", ranges);
 tlsGroups.addLast (tlsGroup);
 tlsGroup.put ("id", Integer.$valueOf (++this.tlsGroupID));
@@ -32,8 +32,8 @@ tlsGroup.put ("id", Integer.$valueOf (++this.tlsGroupID));
 range =  new java.util.Hashtable ();
 var chain1 = tokens[1].charAt (0);
 var chain2 = tokens[3].charAt (0);
-var res1 = J.util.Parser.parseInt (tokens[2]);
-var res2 = J.util.Parser.parseInt (tokens[4]);
+var res1 = JU.PT.parseInt (tokens[2]);
+var res2 = JU.PT.parseInt (tokens[4]);
 if (chain1 == chain2) {
 range.put ("chains", "" + chain1 + chain2);
 if (res1 <= res2) {
@@ -44,7 +44,7 @@ this.tlsAddError (" TLS group residues are not in order (range ignored)");
 }} else {
 this.tlsAddError (" TLS group chains are different (range ignored)");
 }} else if (tokens[0].equals ("ORIGIN")) {
-var origin =  new J.util.P3 ();
+var origin =  new JU.P3 ();
 tlsGroup.put ("origin", origin);
 origin.set (this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[2]), this.parseFloatStr (tokens[3]));
 if (Float.isNaN (origin.x) || Float.isNaN (origin.y) || Float.isNaN (origin.z)) {
@@ -76,7 +76,7 @@ this.htParams.put ("vTlsModels", this.vTlsModels);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "tlsAddError", 
 ($fz = function (error) {
-if (this.sbTlsErrors == null) this.sbTlsErrors =  new J.util.SB ();
+if (this.sbTlsErrors == null) this.sbTlsErrors =  new JU.SB ();
 this.sbTlsErrors.append (this.fileName).appendC ('\t').append ("TLS group ").appendI (this.tlsGroupID).appendC ('\t').append (error).appendC ('\n');
 }, $fz.isPrivate = true, $fz), "~S");
 c$.TLnn = c$.prototype.TLnn = ["11", "22", "33", "12", "13", "23"];

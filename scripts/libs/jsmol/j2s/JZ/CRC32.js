@@ -8,26 +8,26 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.b1 =  Clazz.newByteArray (1, 0);
 });
-Clazz.overrideMethod (c$, "update", 
+$_V(c$, "update", 
 function (buf, index, len) {
 var c = ~this.crc;
 while (--len >= 0) c = JZ.CRC32.crc_table[(c ^ buf[index++]) & 0xff] ^ (c >>> 8);
 
 this.crc = ~c;
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "reset", 
+$_V(c$, "reset", 
 function () {
 this.crc = 0;
 });
-Clazz.overrideMethod (c$, "resetLong", 
+$_V(c$, "resetLong", 
 function (vv) {
 this.crc = (vv & 0xffffffff);
 }, "~N");
-Clazz.overrideMethod (c$, "getValue", 
+$_V(c$, "getValue", 
 function () {
 return this.crc & 0xffffffff;
 });
-Clazz.overrideMethod (c$, "updateByteAsInt", 
+$_V(c$, "updateByteAsInt", 
 function (b) {
 this.b1[0] = b;
 this.update (this.b1, 0, 1);

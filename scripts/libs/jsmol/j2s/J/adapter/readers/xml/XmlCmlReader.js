@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xml");
-Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlCmlReader", ["java.lang.Float", "$.IndexOutOfBoundsException", "java.util.Properties", "$.StringTokenizer", "J.adapter.smarter.Atom", "$.AtomSetCollection", "$.Bond", "J.api.JmolAdapter", "J.util.Logger", "$.Parser"], function () {
+Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlCmlReader", ["java.lang.Float", "$.IndexOutOfBoundsException", "java.util.Properties", "$.StringTokenizer", "JU.PT", "J.adapter.smarter.Atom", "$.AtomSetCollection", "$.Bond", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.scalarDictRef = null;
 this.scalarDictValue = null;
@@ -17,7 +17,6 @@ this.atomArray = null;
 this.bondCount = 0;
 this.bondArray = null;
 this.tokenCount = 0;
-this.nModules = 0;
 this.moduleNestingLevel = 0;
 this.haveMolecule = false;
 this.localSpaceGroupName = null;
@@ -34,11 +33,11 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.adapter.readers.xml.XmlCmlReader, []);
 });
-Clazz.overrideMethod (c$, "getDOMAttributes", 
+$_V(c$, "getDOMAttributes", 
 function () {
 return ["id", "title", "label", "name", "x3", "y3", "z3", "x2", "y2", "isotope", "elementType", "formalCharge", "atomId", "atomRefs2", "order", "atomRef1", "atomRef2", "dictRef", "spaceGroup"];
 });
-Clazz.overrideMethod (c$, "processStartElement", 
+$_V(c$, "processStartElement", 
 function (name) {
 if (!this.processing) return;
 this.processStart2 (name);
@@ -64,7 +63,6 @@ this.localSpaceGroupName = "P1";
 this.parent.clearUnitCell ();
 }} else if (name.equals ("module")) {
 this.moduleNestingLevel++;
-this.nModules++;
 } else if (name.equalsIgnoreCase ("latticeVector")) {
 this.state = 18;
 this.setKeepChars (true);
@@ -183,9 +181,9 @@ if (this.atts.containsKey ("name")) this.atom.atomName = this.atts.get ("name");
  else if (this.atts.containsKey ("label")) this.atom.atomName = this.atts.get ("label");
  else this.atom.atomName = id;
 if (!this.checkedSerial) {
-this.isSerial = (id != null && id.length > 1 && id.startsWith ("a") && J.util.Parser.parseInt (id.substring (1)) != -2147483648);
+this.isSerial = (id != null && id.length > 1 && id.startsWith ("a") && JU.PT.parseInt (id.substring (1)) != -2147483648);
 this.checkedSerial = true;
-}if (this.isSerial) this.atom.atomSerial = J.util.Parser.parseInt (id.substring (1));
+}if (this.isSerial) this.atom.atomSerial = JU.PT.parseInt (id.substring (1));
 if (this.atts.containsKey ("xFract") && (this.parent.iHaveUnitCell || !this.atts.containsKey ("x3"))) {
 this.parent.setFractionalCoordinates (true);
 this.atom.set (this.parseFloatStr (this.atts.get ("xFract")), this.parseFloatStr (this.atts.get ("yFract")), this.parseFloatStr (this.atts.get ("zFract")));
@@ -226,7 +224,7 @@ case 14:
 break;
 }
 }, "~S");
-Clazz.overrideMethod (c$, "processEndElement", 
+$_V(c$, "processEndElement", 
 function (name) {
 if (!this.processing) return;
 this.processEnd2 (name);
@@ -358,7 +356,7 @@ break;
 $_M(c$, "addNewBond", 
 ($fz = function (a1, a2, order) {
 this.parent.applySymmetryToBonds = true;
-if (this.isSerial) this.atomSetCollection.addNewBondWithMappedSerialNumbers (J.util.Parser.parseInt (a1.substring (1)), J.util.Parser.parseInt (a2.substring (1)), order);
+if (this.isSerial) this.atomSetCollection.addNewBondWithMappedSerialNumbers (JU.PT.parseInt (a1.substring (1)), JU.PT.parseInt (a2.substring (1)), order);
  else this.atomSetCollection.addNewBondFromNames (a1, a2, order);
 }, $fz.isPrivate = true, $fz), "~S,~S,~N");
 $_M(c$, "getDictRefValue", 

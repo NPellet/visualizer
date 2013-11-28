@@ -1,12 +1,12 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.TextShape"], "J.shape.Echo", ["J.modelset.Object2d", "$.Text", "J.util.TextFormat"], function () {
+Clazz.load (["J.shape.TextShape"], "J.shape.Echo", ["J.modelset.Object2d", "$.Text", "J.util.Txt"], function () {
 c$ = Clazz.declareType (J.shape, "Echo", J.shape.TextShape);
 $_M(c$, "initShape", 
 function () {
 Clazz.superCall (this, J.shape.Echo, "initShape", []);
 this.setProperty ("target", "top", null);
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bs) {
 if ("scalereference" === propertyName) {
 if (this.currentObject != null) {
@@ -38,12 +38,12 @@ return;
 }if ("thisID" === propertyName) {
 var target = value;
 this.currentObject = this.objects.get (target);
-if (this.currentObject == null && J.util.TextFormat.isWild (target)) this.thisID = target.toUpperCase ();
+if (this.currentObject == null && J.util.Txt.isWild (target)) this.thisID = target.toUpperCase ();
 return;
 }if ("hidden" === propertyName) {
 var isHidden = (value).booleanValue ();
 if (this.currentObject == null) {
-if (this.isAll || this.thisID != null) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) if (this.isAll || J.util.TextFormat.isMatch (t.target.toUpperCase (), this.thisID, true, true)) t.hidden = isHidden;
+if (this.isAll || this.thisID != null) for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) if (this.isAll || J.util.Txt.isMatch (t.target.toUpperCase (), this.thisID, true, true)) t.hidden = isHidden;
 
 return;
 }(this.currentObject).hidden = isHidden;
@@ -78,24 +78,24 @@ if (this.currentBgTranslucentLevel != 0) text.setTranslucent (this.currentBgTran
 }this.currentObject = text;
 return;
 }}this.setPropTS (propertyName, value, null);
-}, "~S,~O,J.util.BS");
-Clazz.overrideMethod (c$, "getPropertyData", 
+}, "~S,~O,JU.BS");
+$_V(c$, "getPropertyData", 
 function (property, data) {
 if ("currentTarget" === property) {
 return (this.currentObject != null && (data[0] = this.currentObject.target) != null);
 }if (property === "checkID") {
 var key = (data[0]).toUpperCase ();
-var isWild = J.util.TextFormat.isWild (key);
+var isWild = J.util.Txt.isWild (key);
 for (var t, $t = this.objects.values ().iterator (); $t.hasNext () && ((t = $t.next ()) || true);) {
 var id = t.target;
-if (id.equalsIgnoreCase (key) || isWild && J.util.TextFormat.isMatch (id.toUpperCase (), key, true, true)) {
+if (id.equalsIgnoreCase (key) || isWild && J.util.Txt.isMatch (id.toUpperCase (), key, true, true)) {
 data[1] = id;
 return true;
 }}
 return false;
 }return false;
 }, "~S,~A");
-Clazz.overrideMethod (c$, "getShapeState", 
+$_V(c$, "getShapeState", 
 function () {
 return this.viewer.getShapeState (this);
 });

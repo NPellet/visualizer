@@ -1,18 +1,18 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (["J.util.Geodesic"], "J.util.Normix", ["J.util.BS"], function () {
+Clazz.load (["J.util.Geodesic"], "J.util.Normix", ["JU.BS"], function () {
 c$ = Clazz.declareType (J.util, "Normix");
 c$.getNormixCount = $_M(c$, "getNormixCount", 
 function () {
-if (J.util.Normix.normixCount == 0) ($t$ = J.util.Normix.normixCount = J.util.Geodesic.getVertexCount (3), J.util.Normix.prototype.normixCount = J.util.Normix.normixCount, $t$);
+if (J.util.Normix.normixCount == 0) J.util.Normix.normixCount = J.util.Geodesic.getVertexCount (3);
 return J.util.Normix.normixCount;
 });
 c$.newVertexBitSet = $_M(c$, "newVertexBitSet", 
 function () {
-return J.util.BS.newN (J.util.Normix.getNormixCount ());
+return JU.BS.newN (J.util.Normix.getNormixCount ());
 });
 c$.getVertexVectors = $_M(c$, "getVertexVectors", 
 function () {
-if (J.util.Normix.vertexVectors == null) ($t$ = J.util.Normix.vertexVectors = J.util.Geodesic.getVertexVectors (), J.util.Normix.prototype.vertexVectors = J.util.Normix.vertexVectors, $t$);
+if (J.util.Normix.vertexVectors == null) J.util.Normix.vertexVectors = J.util.Geodesic.getVertexVectors ();
 return J.util.Normix.vertexVectors;
 });
 c$.setInverseNormixes = $_M(c$, "setInverseNormixes", 
@@ -20,8 +20,8 @@ function () {
 if (J.util.Normix.inverseNormixes != null) return;
 J.util.Normix.getNormixCount ();
 J.util.Normix.getVertexVectors ();
-($t$ = J.util.Normix.inverseNormixes =  Clazz.newShortArray (J.util.Normix.normixCount, 0), J.util.Normix.prototype.inverseNormixes = J.util.Normix.inverseNormixes, $t$);
-var bsTemp =  new J.util.BS ();
+J.util.Normix.inverseNormixes =  Clazz.newShortArray (J.util.Normix.normixCount, 0);
+var bsTemp =  new JU.BS ();
 for (var n = J.util.Normix.normixCount; --n >= 0; ) {
 var v = J.util.Normix.vertexVectors[n];
 J.util.Normix.inverseNormixes[n] = J.util.Normix.getNormix (-v.x, -v.y, -v.z, 3, bsTemp);
@@ -34,17 +34,17 @@ return J.util.Normix.inverseNormixes[normix];
 c$.getNeighborVertexArrays = $_M(c$, "getNeighborVertexArrays", 
 ($fz = function () {
 if (J.util.Normix.neighborVertexesArrays == null) {
-($t$ = J.util.Normix.neighborVertexesArrays = J.util.Geodesic.getNeighborVertexesArrays (), J.util.Normix.prototype.neighborVertexesArrays = J.util.Normix.neighborVertexesArrays, $t$);
+J.util.Normix.neighborVertexesArrays = J.util.Geodesic.getNeighborVertexesArrays ();
 }return J.util.Normix.neighborVertexesArrays;
 }, $fz.isPrivate = true, $fz));
 c$.getNormixV = $_M(c$, "getNormixV", 
 function (v, bsTemp) {
 return J.util.Normix.getNormix (v.x, v.y, v.z, 3, bsTemp);
-}, "J.util.V3,J.util.BS");
+}, "JU.V3,JU.BS");
 c$.get2SidedNormix = $_M(c$, "get2SidedNormix", 
 function (v, bsTemp) {
 return ~J.util.Normix.getNormixV (v, bsTemp);
-}, "J.util.V3,J.util.BS");
+}, "JU.V3,JU.BS");
 c$.getNormix = $_M(c$, "getNormix", 
 ($fz = function (x, y, z, geodesicLevel, bsConsidered) {
 var champion;
@@ -82,7 +82,7 @@ championDist2 = d2;
 }
 }
 return champion;
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,J.util.BS");
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,JU.BS");
 Clazz.defineStatics (c$,
 "NORMIX_GEODESIC_LEVEL", 3,
 "normixCount", 0,

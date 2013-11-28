@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader", "J.util.BS"], "J.adapter.readers.quantum.GaussianReader", ["java.lang.Character", "$.Exception", "$.Float", "java.util.Hashtable", "J.adapter.smarter.SmarterJmolAdapter", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.Escape", "$.JmolList", "$.Logger", "$.Parser", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader", "JU.BS"], "J.adapter.readers.quantum.GaussianReader", ["java.lang.Character", "$.Exception", "$.Float", "java.util.Hashtable", "JU.AU", "$.List", "$.PT", "$.V3", "J.adapter.smarter.SmarterJmolAdapter", "J.api.JmolAdapter", "J.util.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.energyString = "";
 this.energyKey = "";
@@ -12,9 +12,9 @@ this.namedSets = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "GaussianReader", J.adapter.readers.quantum.MOReader);
 Clazz.prepareFields (c$, function () {
-this.namedSets =  new J.util.BS ();
+this.namedSets =  new JU.BS ();
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.startsWith (" Step number")) {
 this.equivalentAtomSets = 0;
@@ -112,8 +112,8 @@ this.atomSetCollection.setAtomSetModelProperty (".PATH", "Calculation " + this.c
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readBasis", 
 ($fz = function () {
-this.shells =  new J.util.JmolList ();
-var gdata =  new J.util.JmolList ();
+this.shells =  new JU.List ();
+var gdata =  new JU.List ();
 var atomCount = 0;
 this.gaussianCount = 0;
 this.shellCount = 0;
@@ -142,7 +142,7 @@ this.shells.addLast (slater);
 this.gaussianCount += nGaussians;
 for (var i = 0; i < nGaussians; i++) {
 this.readLine ();
-this.line = J.util.TextFormat.simpleReplace (this.line, "D ", "D+");
+this.line = JU.PT.simpleReplace (this.line, "D ", "D+");
 tokens = this.getTokens ();
 if (J.util.Logger.debugging) J.util.Logger.debug ("Gaussians " + (i + 1) + " " + J.util.Escape.eAS (tokens, true));
 gdata.addLast (tokens);
@@ -170,7 +170,7 @@ gdata.addLast (J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.read
 }
 }
 }if (atomCount == 0) atomCount = 1;
-this.gaussians = J.util.ArrayUtil.newFloat2 (this.gaussianCount);
+this.gaussians = JU.AU.newFloat2 (this.gaussianCount);
 for (var i = 0; i < this.gaussianCount; i++) {
 tokens = gdata.get (i);
 this.gaussians[i] =  Clazz.newFloatArray (tokens.length, 0);
@@ -183,8 +183,8 @@ J.util.Logger.info (this.gaussianCount + " gaussian primitives read");
 $_M(c$, "readMolecularOrbitals", 
 ($fz = function () {
 if (this.shells == null) return;
-var mos = J.util.ArrayUtil.createArrayOfHashtable (5);
-var data = J.util.ArrayUtil.createArrayOfArrayList (5);
+var mos = JU.AU.createArrayOfHashtable (5);
+var data = JU.AU.createArrayOfArrayList (5);
 var nThisLine = 0;
 var isNOtype = this.line.contains ("Natural Orbital");
 while (this.readLine () != null && this.line.toUpperCase ().indexOf ("DENS") < 0) {
@@ -200,10 +200,10 @@ tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine (
 nThisLine = tokens.length;
 }for (var i = 0; i < nThisLine; i++) {
 mos[i] =  new java.util.Hashtable ();
-data[i] =  new J.util.JmolList ();
+data[i] =  new JU.List ();
 var sym;
 if (isNOtype) {
-mos[i].put ("occupancy", Float.$valueOf (J.util.Parser.parseFloatStr (tokens[i + 2])));
+mos[i].put ("occupancy", Float.$valueOf (JU.PT.parseFloat (tokens[i + 2])));
 } else {
 sym = tokens[i];
 mos[i].put ("symmetry", sym);
@@ -215,14 +215,14 @@ this.line = this.readLine ().substring (21);
 tokens = this.getTokens ();
 if (tokens.length != nThisLine) tokens = J.adapter.smarter.AtomSetCollectionReader.getStrings (this.line, nThisLine, 10);
 for (var i = 0; i < nThisLine; i++) {
-mos[i].put ("energy", Float.$valueOf (J.util.Parser.fVal (tokens[i])));
+mos[i].put ("energy", Float.$valueOf (JU.PT.fVal (tokens[i])));
 System.out.println (i + " gaussian energy " + mos[i].get ("energy"));
 }
 continue;
 } else if (this.line.length < 21 || (this.line.charAt (5) != ' ' && !Character.isDigit (this.line.charAt (5)))) {
 continue;
 }try {
-this.line = J.util.TextFormat.simpleReplace (this.line, " 0 ", "0  ");
+this.line = JU.PT.simpleReplace (this.line, " 0 ", "0  ");
 tokens = this.getTokens ();
 var type = tokens[tokens.length - nThisLine - 1].substring (1);
 if (Character.isDigit (type.charAt (0))) type = type.substring (1);
@@ -277,7 +277,7 @@ $_M(c$, "readDipoleMoment",
 function () {
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine ());
 if (tokens.length != 8) return;
-var dipole = J.util.V3.new3 (this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[3]), this.parseFloatStr (tokens[5]));
+var dipole = JU.V3.new3 (this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[3]), this.parseFloatStr (tokens[5]));
 J.util.Logger.info ("Molecular dipole for model " + this.atomSetCollection.getAtomSetCount () + " = " + dipole);
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("dipole", dipole);
 });

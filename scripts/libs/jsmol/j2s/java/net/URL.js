@@ -180,13 +180,13 @@ $_M(c$, "getRef",
 function () {
 return this.ref;
 });
-Clazz.overrideMethod (c$, "equals", 
+$_V(c$, "equals", 
 function (obj) {
 if (!(Clazz.instanceOf (obj, java.net.URL))) return false;
 var u2 = obj;
 return this.handler.equals2 (this, u2);
 }, "~O");
-Clazz.overrideMethod (c$, "hashCode", 
+$_V(c$, "hashCode", 
 function () {
 if (this.$hashCode != -1) return this.$hashCode;
 this.$hashCode = this.handler.hashCode (this);
@@ -196,7 +196,7 @@ $_M(c$, "sameFile",
 function (other) {
 return this.handler.sameFile (this, other);
 }, "java.net.URL");
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return this.toExternalForm ();
 });
@@ -225,7 +225,7 @@ throw  new Error ("factory already defined");
 if (security != null) {
 security.checkSetFactory ();
 }java.net.URL.handlers.clear ();
-($t$ = java.net.URL.factory = fac, java.net.URL.prototype.factory = java.net.URL.factory, $t$);
+java.net.URL.factory = fac;
 }}, "java.net.URLStreamHandlerFactory");
 c$.getURLStreamHandler = $_M(c$, "getURLStreamHandler", 
 function (protocol) {

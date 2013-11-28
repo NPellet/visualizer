@@ -7,12 +7,12 @@ this.endFlag = false;
 this.aPar = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "EspressoReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.setSpaceGroupName ("P1");
 this.doApplySymmetry = true;
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.contains ("lattice parameter (a_0)") || this.line.contains ("lattice parameter (alat)")) {
 this.readAparam ();

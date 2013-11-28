@@ -5,7 +5,7 @@ this.atomCount = 0;
 this.bondCount = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.simple, "AlchemyReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.atomSetCollection.newAtomSet ();
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine ());

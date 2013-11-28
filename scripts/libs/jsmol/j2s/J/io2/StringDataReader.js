@@ -5,7 +5,7 @@ Clazz.makeConstructor (c$,
 function (data) {
 Clazz.superConstructor (this, J.io2.StringDataReader, [ new java.io.StringReader (data)]);
 }, "~S");
-Clazz.overrideMethod (c$, "setData", 
+$_V(c$, "setData", 
 function (data) {
 return  new J.io2.StringDataReader (data);
 }, "~O");

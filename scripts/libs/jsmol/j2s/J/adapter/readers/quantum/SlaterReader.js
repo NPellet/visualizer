@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.BasisFunctionReader", "J.util.JmolList"], "J.adapter.readers.quantum.SlaterReader", ["java.util.Arrays", "J.quantum.SlaterData", "J.util.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.BasisFunctionReader", "JU.List"], "J.adapter.readers.quantum.SlaterReader", ["java.util.Arrays", "J.quantum.SlaterData", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.slaters = null;
 this.slaterArray = null;
@@ -12,10 +12,11 @@ J.adapter.readers.quantum.SlaterReader.$SlaterReader$OrbitalSorter$ ();
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "SlaterReader", J.adapter.readers.quantum.BasisFunctionReader);
 Clazz.prepareFields (c$, function () {
-this.slaters =  new J.util.JmolList ();
+this.slaters =  new JU.List ();
 });
 $_M(c$, "addSlater", 
 function (iAtom, a, b, c, d, zeta, coef) {
+System.out.println ("SlaterReader " + this.slaters.size () + ": " + iAtom + " " + a + " " + b + " " + c + " " + d + " " + zeta + " " + coef);
 this.slaters.addLast ( new J.quantum.SlaterData (iAtom, a, b, c, d, zeta, coef));
 }, "~N,~N,~N,~N,~N,~N,~N");
 $_M(c$, "addSlater", 
@@ -101,7 +102,7 @@ c$ = Clazz.decorateAsClass (function () {
 Clazz.prepareCallback (this, arguments);
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum.SlaterReader, "SlaterSorter", null, java.util.Comparator);
-Clazz.overrideMethod (c$, "compare", 
+$_V(c$, "compare", 
 function (a, b) {
 return (a.iAtom < b.iAtom ? -1 : a.iAtom > b.iAtom ? 1 : 0);
 }, "J.quantum.SlaterData,J.quantum.SlaterData");
@@ -113,7 +114,7 @@ c$ = Clazz.decorateAsClass (function () {
 Clazz.prepareCallback (this, arguments);
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum.SlaterReader, "OrbitalSorter", null, java.util.Comparator);
-Clazz.overrideMethod (c$, "compare", 
+$_V(c$, "compare", 
 function (a, b) {
 var c = (a.get ("energy")).floatValue ();
 var d = (b.get ("energy")).floatValue ();

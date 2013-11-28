@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.data");
-Clazz.load (null, "J.jvxl.data.JvxlData", ["java.lang.Float", "J.jvxl.data.JvxlCoder", "J.util.SB"], function () {
+Clazz.load (null, "J.jvxl.data.JvxlData", ["java.lang.Float", "JU.SB", "J.jvxl.data.JvxlCoder"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.wasJvxl = false;
 this.wasCubic = false;
@@ -123,17 +123,17 @@ if (this.jvxlSurfaceData.indexOf ("--") == 0) this.jvxlSurfaceData = this.jvxlSu
 this.jvxlPlane = thePlane;
 this.mapLattice = mapLattice;
 this.nSurfaceInts = nSurfaceInts;
-}, "J.util.P4,J.util.P3,~N,~S");
+}, "JU.P4,JU.P3,~N,~S");
 $_M(c$, "setSurfaceInfoFromBitSet", 
 function (bs, thePlane) {
 this.setSurfaceInfoFromBitSetPts (bs, thePlane, null);
-}, "J.util.BS,J.util.P4");
+}, "JU.BS,JU.P4");
 $_M(c$, "setSurfaceInfoFromBitSetPts", 
 function (bs, thePlane, mapLattice) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 var nSurfaceInts = (thePlane != null ? 0 : J.jvxl.data.JvxlCoder.jvxlEncodeBitSetBuffer (bs, this.nPointsX * this.nPointsY * this.nPointsZ, sb));
 this.setSurfaceInfo (thePlane, mapLattice, nSurfaceInts, sb.toString ());
-}, "J.util.BS,J.util.P4,J.util.P3");
+}, "JU.BS,JU.P4,JU.P3");
 $_M(c$, "jvxlUpdateInfo", 
 function (title, nBytes) {
 this.title = title;

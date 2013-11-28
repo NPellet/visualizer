@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.CastepReader", ["java.lang.Double", "$.Float", "J.adapter.smarter.Atom", "J.util.Escape", "$.JmolList", "$.Logger", "$.P3", "$.Tensor", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.CastepReader", ["java.lang.Double", "$.Float", "JU.DF", "$.List", "$.P3", "$.PT", "$.V3", "J.adapter.smarter.Atom", "J.util.Escape", "$.Logger", "$.Tensor", "$.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.tokens = null;
 this.isPhonon = false;
@@ -27,21 +27,21 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.abc =  new Array (3);
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 if (this.filter != null) {
 this.chargeType = this.getFilter ("CHARGE=");
 if (this.chargeType != null && this.chargeType.length > 4) this.chargeType = this.chargeType.substring (0, 4);
 this.filter = this.filter.$replace ('(', '{').$replace (')', '}');
-this.filter = J.util.TextFormat.simpleReplace (this.filter, "  ", " ");
+this.filter = JU.PT.simpleReplace (this.filter, "  ", " ");
 this.isAllQ = this.checkFilterKey ("Q=ALL");
 if (!this.isAllQ && this.filter.indexOf ("{") >= 0) this.setDesiredQpt (this.filter.substring (this.filter.indexOf ("{")));
-this.filter = J.util.TextFormat.simpleReplace (this.filter, "-PT", "");
+this.filter = JU.PT.simpleReplace (this.filter, "-PT", "");
 }this.continuing = this.readFileData ();
 });
 $_M(c$, "setDesiredQpt", 
 ($fz = function (s) {
-this.desiredQpt =  new J.util.V3 ();
+this.desiredQpt =  new JU.V3 ();
 this.desiredQ = "";
 var num = 1;
 var denom = 1;
@@ -116,7 +116,7 @@ this.atomSetCollection.allowMultiple = false;
 }return true;
 }return false;
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.isOutput) {
 if (this.line.contains ("Real Lattice(A)")) {
@@ -210,7 +210,7 @@ this.applySymmetryAndSetTrajectory ();
 this.discardLinesUntilContains ("<-- E");
 }
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 if (this.isPhonon || this.isOutput) {
 this.isTrajectory = false;
@@ -266,7 +266,7 @@ if (this.tokens.length >= 3) {
 x = this.parseFloatStr (this.tokens[0]) * factor;
 y = this.parseFloatStr (this.tokens[1]) * factor;
 z = this.parseFloatStr (this.tokens[2]) * factor;
-this.abc[i] = J.util.V3.new3 (x, y, z);
+this.abc[i] = JU.V3.new3 (x, y, z);
 } else {
 J.util.Logger.warn ("error reading coordinates of lattice vector " + Integer.toString (i + 1) + " in %BLOCK LATTICE_CART in CASTEP .cell file");
 return;
@@ -360,7 +360,7 @@ J.util.Logger.info ("tensor " + atom.atomName + "\t" + J.util.Escape.eAF (data))
 for (var p = 0, i = 0; i < 3; i++) for (var j = 0; j < 3; j++) a[i][j] = data[p++];
 
 
-atom.addTensor (J.util.Tensor.getTensorFromAsymmetricTensor (a, "charge", atom.atomName + " " + line0), null, false);
+atom.addTensor (( new J.util.Tensor ()).setFromAsymmetricTensor (a, "charge", atom.atomName + " " + line0), null, false);
 if (!this.haveCharges) this.appendLoadNote ("Ellipsoids set \"charge\": Born Effective Charges");
 this.haveCharges = true;
 }, $fz.isPrivate = true, $fz), "J.adapter.smarter.Atom,~S");
@@ -382,7 +382,7 @@ atoms[index].partialCharge = charge;
 if (haveSpin) spins[index] = this.tokens[this.tokens.length - 1];
 }
 if (haveSpin) {
-var data = J.util.TextFormat.join (spins, '\n', 0);
+var data = J.util.Txt.join (spins, '\n', 0);
 this.atomSetCollection.setAtomSetAtomProperty ("spin", data, -1);
 }}, $fz.isPrivate = true, $fz));
 $_M(c$, "readPhononUnitCell", 
@@ -404,14 +404,14 @@ atom.bfactor = this.parseFloatStr (this.tokens[5]);
 this.atomCount = this.atomSetCollection.getAtomCount ();
 this.atomPts =  new Array (this.atomCount);
 var atoms = this.atomSetCollection.getAtoms ();
-for (var i = 0; i < this.atomCount; i++) this.atomPts[i] = J.util.P3.newP (atoms[i]);
+for (var i = 0; i < this.atomCount; i++) this.atomPts[i] = JU.P3.newP (atoms[i]);
 
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readPhononFrequencies", 
 ($fz = function () {
 this.tokens = this.getTokens ();
-var v =  new J.util.V3 ();
-var qvec = J.util.V3.new3 (this.parseFloatStr (this.tokens[2]), this.parseFloatStr (this.tokens[3]), this.parseFloatStr (this.tokens[4]));
+var v =  new JU.V3 ();
+var qvec = JU.V3.new3 (this.parseFloatStr (this.tokens[2]), this.parseFloatStr (this.tokens[3]), this.parseFloatStr (this.tokens[4]));
 var fcoord = this.getFractionalCoord (qvec);
 var qtoks = "{" + this.tokens[2] + " " + this.tokens[3] + " " + this.tokens[4] + "}";
 if (fcoord == null) fcoord = qtoks;
@@ -448,7 +448,7 @@ this.havePhonons = true;
 var qname = "q=" + this.lastQPt + " " + fcoord;
 this.applySymmetryAndSetTrajectory ();
 if (isGammaPoint) qvec = null;
-var freqs =  new J.util.JmolList ();
+var freqs =  new JU.List ();
 while (this.readLine () != null && this.line.indexOf ("Phonon") < 0) {
 this.tokens = this.getTokens ();
 freqs.addLast (Float.$valueOf (this.parseFloatStr (this.tokens[1])));
@@ -456,7 +456,7 @@ freqs.addLast (Float.$valueOf (this.parseFloatStr (this.tokens[1])));
 this.readLine ();
 var frequencyCount = freqs.size ();
 var data =  Clazz.newFloatArray (8, 0);
-var t =  new J.util.V3 ();
+var t =  new JU.V3 ();
 this.atomSetCollection.setCollectionName (qname);
 for (var i = 0; i < frequencyCount; i++) {
 if (!this.doGetVibration (++this.vibrationNumber)) {
@@ -485,13 +485,13 @@ this.atomSetCollection.addVibrationVectorWithSymmetry (k, v.x, v.y, v.z, true);
 }
 if (this.isTrajectory) this.atomSetCollection.setTrajectory ();
 this.atomSetCollection.setAtomSetFrequency (null, null, "" + freq, null);
-this.atomSetCollection.setAtomSetName (J.util.TextFormat.formatDecimal (freq, 2) + " cm-1 " + qname);
+this.atomSetCollection.setAtomSetName (JU.DF.formatDecimal (freq, 2) + " cm-1 " + qname);
 }
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getFractionalCoord", 
 ($fz = function (qvec) {
 return (J.adapter.readers.xtal.CastepReader.isInt (qvec.x * 12) && J.adapter.readers.xtal.CastepReader.isInt (qvec.y * 12) && J.adapter.readers.xtal.CastepReader.isInt (qvec.z * 12) ? this.getSymmetry ().fcoord (qvec) : null);
-}, $fz.isPrivate = true, $fz), "J.util.V3");
+}, $fz.isPrivate = true, $fz), "JU.V3");
 c$.isInt = $_M(c$, "isInt", 
 ($fz = function (f) {
 return (Math.abs (f - Math.round (f)) < 0.001);
@@ -508,7 +508,7 @@ v.x = (cosph * data[2] - sinph * data[3]);
 v.y = (cosph * data[4] - sinph * data[5]);
 v.z = (cosph * data[6] - sinph * data[7]);
 }v.scale (Math.sqrt (1 / atom.bfactor));
-}, $fz.isPrivate = true, $fz), "~A,J.adapter.smarter.Atom,J.util.V3,J.util.V3,J.util.V3");
+}, $fz.isPrivate = true, $fz), "~A,J.adapter.smarter.Atom,JU.V3,JU.V3,JU.V3");
 Clazz.defineStatics (c$,
 "RAD_TO_DEG", (57.29577951308232),
 "lengthUnitIds", ["bohr", "m", "cm", "nm", "ang", "a0"],

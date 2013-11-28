@@ -1,10 +1,10 @@
 Clazz.declarePackage ("J.shape");
 Clazz.load (["J.shape.Object2dShape"], "J.shape.TextShape", null, function () {
 c$ = Clazz.declareType (J.shape, "TextShape", J.shape.Object2dShape);
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bsSelected) {
 this.setPropTS (propertyName, value, bsSelected);
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 $_M(c$, "setPropTS", 
 function (propertyName, value, bsSelected) {
 if ("text" === propertyName) {
@@ -25,5 +25,5 @@ return;
 (this.currentObject).setFontScale (0);
 return;
 }this.setPropOS (propertyName, value, bsSelected);
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 });

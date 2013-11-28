@@ -1,7 +1,6 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "$.AtomSetCollection"], "J.adapter.readers.xtal.GulpReader", ["java.lang.Double", "$.Float", "java.util.Hashtable", "J.util.V3"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "$.AtomSetCollection"], "J.adapter.readers.xtal.GulpReader", ["java.lang.Double", "$.Float", "java.util.Hashtable", "JU.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
-this.$spaceGroup = null;
 this.isSlab = false;
 this.isPolymer = false;
 this.isMolecular = false;
@@ -21,13 +20,13 @@ this.totEnergy = null;
 this.energyUnits = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "GulpReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.isPrimitive = !this.checkFilterKey ("CONV");
 this.coordinatesArePrimitive = true;
 this.setFractionalCoordinates (this.readDimensionality ());
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 if (this.atomCharges == null) return;
 var atoms = this.atomSetCollection.getAtoms ();
@@ -35,7 +34,7 @@ var f;
 for (var i = this.atomSetCollection.getAtomCount (); --i >= 0; ) if ((f = this.atomCharges.get (atoms[i].atomName)) != null || (f = this.atomCharges.get (atoms[i].getElementSymbol ())) != null) atoms[i].partialCharge = f.floatValue ();
 
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.contains ("Space group ")) {
 this.readSpaceGroup ();
@@ -80,7 +79,7 @@ return true;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readSpaceGroup", 
 ($fz = function () {
-this.$spaceGroup = this.line.substring (this.line.indexOf (":") + 1).trim ();
+this.spaceGroup = this.line.substring (this.line.indexOf (":") + 1).trim ();
 }, $fz.isPrivate = true, $fz));
 c$.parameterIndex = $_M(c$, "parameterIndex", 
 ($fz = function (key) {
@@ -120,7 +119,7 @@ if (this.totEnergy != null) this.setEnergy ();
 }}, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "setModelParameters", 
 ($fz = function (isPrimitive) {
-if (this.$spaceGroup != null) this.setSpaceGroupName (isPrimitive ? "P1" : this.$spaceGroup);
+if (this.spaceGroup != null) this.setSpaceGroupName (isPrimitive ? "P1" : this.spaceGroup);
 if (isPrimitive && this.primitiveData != null) {
 this.addPrimitiveLatticeVector (0, this.primitiveData, 0);
 this.addPrimitiveLatticeVector (1, this.primitiveData, 3);
@@ -176,14 +175,14 @@ if (this.totEnergy != null) this.setEnergy ();
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "scalePrimitiveData", 
 ($fz = function (i, value) {
-var v = J.util.V3.new3 (this.primitiveData[i], this.primitiveData[i + 1], this.primitiveData[i + 2]);
+var v = JU.V3.new3 (this.primitiveData[i], this.primitiveData[i + 1], this.primitiveData[i + 2]);
 v.normalize ();
 v.scale (value);
 this.primitiveData[i++] = v.x;
 this.primitiveData[i++] = v.y;
 this.primitiveData[i++] = v.z;
 }, $fz.isPrivate = true, $fz), "~N,~N");
-Clazz.overrideMethod (c$, "applySymmetryAndSetTrajectory", 
+$_V(c$, "applySymmetryAndSetTrajectory", 
 function () {
 if (this.coordinatesArePrimitive && this.iHaveUnitCell && this.doCheckUnitCell && this.primitiveData != null && !this.isPrimitive) {
 this.setModelParameters (false);

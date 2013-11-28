@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.smiles");
-Clazz.load (["java.util.Hashtable"], "J.smiles.SmilesParser", ["java.lang.Character", "J.smiles.InvalidSmilesException", "$.SmilesAtom", "$.SmilesBond", "$.SmilesMeasure", "$.SmilesSearch", "J.util.Elements", "$.JmolList", "$.Logger", "$.Parser", "$.SB", "$.TextFormat"], function () {
+Clazz.load (["java.util.Hashtable"], "J.smiles.SmilesParser", ["java.lang.Character", "JU.List", "$.PT", "$.SB", "J.smiles.InvalidSmilesException", "$.SmilesAtom", "$.SmilesBond", "$.SmilesMeasure", "$.SmilesSearch", "J.util.Elements", "$.Logger", "$.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isSmarts = false;
 this.isBioSequence = false;
@@ -47,7 +47,7 @@ if (strFlags.indexOf ("NOSTEREO") >= 0) this.flags |= 2;
 if (pattern.indexOf ("$") >= 0) pattern = this.parseVariables (pattern);
 if (this.isSmarts && pattern.indexOf ("[$") >= 0) pattern = this.parseVariableLength (pattern);
 if (pattern.indexOf ("||") >= 0) {
-var patterns = J.util.TextFormat.splitChars (pattern, "||");
+var patterns = JU.PT.split (pattern, "||");
 var toDo = "";
 search.subSearches =  new Array (patterns.length);
 for (var i = 0; i < patterns.length; i++) {
@@ -62,7 +62,7 @@ return search;
 }, "~S");
 $_M(c$, "parseVariableLength", 
 ($fz = function (pattern) {
-var sout =  new J.util.SB ();
+var sout =  new JU.SB ();
 var len = pattern.length - 1;
 var nParen = 0;
 var haveInternalOr = false;
@@ -84,7 +84,7 @@ len--;
 }
 }
 if (pattern.indexOf ("||") >= 0) {
-var patterns = J.util.TextFormat.splitChars (pattern, "||");
+var patterns = JU.PT.split (pattern, "||");
 for (var i = 0; i < patterns.length; i++) sout.append ("||").append (this.parseVariableLength (patterns[i]));
 
 } else {
@@ -140,7 +140,7 @@ continue;
 }if (max == -2147483648) max = min;
 if (repeat.indexOf ("|") >= 0) repeat = "[$(" + repeat + ")]";
 for (var i = min; i <= max; i++) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 sb.append ("||").append (pattern.substring (0, pt0));
 for (var j = 0; j < i; j++) sb.append (repeat);
 
@@ -354,9 +354,9 @@ var s = strMeasure.substring (pt + 1, pt2);
 if (s.startsWith ("!")) {
 isNot = true;
 s = s.substring (1);
-}var min = (pt + 1 == pt2 ? 0 : J.util.Parser.fVal (s));
+}var min = (pt + 1 == pt2 ? 0 : JU.PT.fVal (s));
 s = strMeasure.substring (pt2 + 1);
-var max = (s.length == 0 ? 3.4028235E38 : J.util.Parser.fVal (s));
+var max = (s.length == 0 ? 3.4028235E38 : JU.PT.fVal (s));
 m =  new J.smiles.SmilesMeasure (molecule, index, type, min, max, isNot);
 molecule.measures.addLast (m);
 if (index > 0) this.htMeasures.put (id, m);
@@ -411,8 +411,8 @@ return pattern;
 }, $fz.isPrivate = true, $fz), "J.smiles.SmilesSearch,~S,~S");
 $_M(c$, "parseVariables", 
 ($fz = function (pattern) {
-var keys =  new J.util.JmolList ();
-var values =  new J.util.JmolList ();
+var keys =  new JU.List ();
+var values =  new JU.List ();
 var index;
 var ipt = 0;
 var iptLast = -1;
@@ -430,7 +430,7 @@ ipt = J.smiles.SmilesParser.skipTo (pattern, ipt, ';');
 iptLast = ++ipt;
 }
 if (iptLast < 0) return pattern;
-return J.util.TextFormat.replaceStrings (pattern.substring (iptLast), keys, values);
+return J.util.Txt.replaceStrings (pattern.substring (iptLast), keys, values);
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "parseAtom", 
 ($fz = function (molecule, atomSet, pattern, currentAtom, bond, isBracketed, isPrimitive, isBranchAtom) {
@@ -476,7 +476,7 @@ mass = -mass;
 } else {
 switch (ch) {
 case '"':
-var type = J.util.Parser.getQuotedStringAt (pattern, index);
+var type = JU.PT.getQuotedStringAt (pattern, index);
 index += type.length + 2;
 newAtom.setAtomType (type);
 break;
@@ -759,7 +759,7 @@ index = pt + 1;
 if (!this.isSmarts || pt == 0) break;
 if (bond != null && pt < 0) {
 if (len > 1) {
-var sNew =  new J.util.SB ();
+var sNew =  new JU.SB ();
 for (var i = 0; i < len; ) {
 var ch = pattern.charAt (i++);
 sNew.appendC (ch);
@@ -847,13 +847,13 @@ return (i < 10 ? "" + i : i < 100 ? "%" + i : "%(" + i + ")");
 }, "~N");
 c$.cleanPattern = $_M(c$, "cleanPattern", 
 function (pattern) {
-pattern = J.util.TextFormat.replaceAllCharacters (pattern, " \t\n\r", "");
-pattern = J.util.TextFormat.simpleReplace (pattern, "^^", "'");
+pattern = JU.PT.replaceAllCharacters (pattern, " \t\n\r", "");
+pattern = JU.PT.simpleReplace (pattern, "^^", "'");
 var i = 0;
 var i2 = 0;
 while ((i = pattern.indexOf ("//*")) >= 0 && (i2 = pattern.indexOf ("*//")) >= i) pattern = pattern.substring (0, i) + pattern.substring (i2 + 3);
 
-pattern = J.util.TextFormat.simpleReplace (pattern, "//", "");
+pattern = JU.PT.simpleReplace (pattern, "//", "");
 return pattern;
 }, "~S");
 });

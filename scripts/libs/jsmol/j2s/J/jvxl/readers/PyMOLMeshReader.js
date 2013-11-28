@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.MapFileReader"], "J.jvxl.readers.PyMOLMeshReader", ["java.lang.Float", "J.util.Logger", "$.SB"], function () {
+Clazz.load (["J.jvxl.readers.MapFileReader"], "J.jvxl.readers.PyMOLMeshReader", ["java.lang.Float", "JU.SB", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.data = null;
 this.voxelList = null;
@@ -13,7 +13,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.PyMOLMeshReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, brNull) {
 this.init2MFR (sg, null);
 this.allowSigma = true;
@@ -36,11 +36,11 @@ J.util.Logger.info ("PyMOLMeshReader: Number of grid points = " + this.voxelList
 c$.getList = $_M(c$, "getList", 
 ($fz = function (list, i) {
 return list.get (i);
-}, $fz.isPrivate = true, $fz), "J.util.JmolList,~N");
-Clazz.overrideMethod (c$, "readParameters", 
+}, $fz.isPrivate = true, $fz), "JU.List,~N");
+$_V(c$, "readParameters", 
 function () {
 var t;
-this.jvxlFileHeaderBuffer =  new J.util.SB ();
+this.jvxlFileHeaderBuffer =  new JU.SB ();
 this.jvxlFileHeaderBuffer.append ("PyMOL surface reader\n");
 this.jvxlFileHeaderBuffer.append (this.surfaceName + " (" + this.params.calculationType + ")\n");
 var s = J.jvxl.readers.PyMOLMeshReader.getList (this.data, 1);
@@ -86,18 +86,18 @@ this.maps = 1;
 this.getVectorsAndOrigin ();
 this.setCutoffAutomatic ();
 });
-Clazz.overrideMethod (c$, "nextVoxel", 
+$_V(c$, "nextVoxel", 
 function () {
 return this.getFloat (this.voxelList, this.pt++);
 });
 $_M(c$, "getFloat", 
 ($fz = function (list, i) {
 return (list.get (i)).floatValue ();
-}, $fz.isPrivate = true, $fz), "J.util.JmolList,~N");
-Clazz.overrideMethod (c$, "skipData", 
+}, $fz.isPrivate = true, $fz), "JU.List,~N");
+$_V(c$, "skipData", 
 function (nPoints) {
 }, "~N");
-Clazz.overrideMethod (c$, "setCutoffAutomatic", 
+$_V(c$, "setCutoffAutomatic", 
 function () {
 if (this.params.thePlane != null) return;
 if (Float.isNaN (this.params.sigma)) {

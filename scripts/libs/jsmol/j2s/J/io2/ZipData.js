@@ -26,5 +26,5 @@ return nBytesRemaining - nToAdd;
 $_M(c$, "addTo", 
 function (data) {
 data.append (J.io2.ZipUtil.staticGetGzippedBytesAsString (this.buf));
-}, "J.util.SB");
+}, "JU.SB");
 });

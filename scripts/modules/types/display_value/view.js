@@ -73,10 +73,10 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				align = this.module.getConfiguration('align'),
 				fontcolor = this.module.getConfiguration('fontcolor'),
 				fontsize = this.module.getConfiguration('fontsize'),
-				font = this.module.getConfiguration('font');
+				font = this.module.getConfiguration('font'),
+				preformatted = this.module.getConfiguration('preformatted');
 			
 			var div = $("<div />").css( {
-
 				fontFamily: font || 'Arial',
 				fontSize: fontsize || '10pt',
 				color: fontcolor || '#000000',
@@ -84,9 +84,11 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				'vertical-align': valign || 'top',
 				textAlign: align || 'center',
 				width: '100%',
-				height: '100%'
-
+				height: '100%',
+				'white-space': 'pre'
 			} ).html( val );
+
+//			if (preformatted) div.html("<pre />").html( val );
 
 			this.dom.html( div );
 			DomDeferred.notify( div );

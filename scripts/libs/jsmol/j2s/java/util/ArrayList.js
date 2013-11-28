@@ -334,7 +334,12 @@ throw new IndexOutOfBoundsException();
 return result;
 },"~N"); 
 
-//$_M(c$, "removeObject")
+$_M(c$, "removeObject", function(o) {
+	var i = this.indexOf(o);
+	if (i < 0)return null;
+	return this.remove(i);
+}, "~O");
+
 $_V(c$,"removeRange",
 function(start,end){
 if(start>=0&&start<=end&&end<=this.size()){
@@ -381,10 +386,9 @@ return result;
 $_V(c$,"toArray",
 function(contents){
 var size=this.size();
-if(size>contents.length){
-var ct=contents.getClass().getComponentType();
-contents=java.lang.reflect.Array.newInstance(ct,size);
-}System.arraycopy(this.array,this.firstIndex,contents,0,size);
+if(!contents || size>contents.length)
+	contents= new Array(size);
+System.arraycopy(this.array,this.firstIndex,contents,0,size);
 if(size<contents.length){
 contents[size]=null;
 }return contents;

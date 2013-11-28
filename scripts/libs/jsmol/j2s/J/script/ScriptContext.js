@@ -38,11 +38,13 @@ this.htFileCache = null;
 this.statementLength = 0;
 this.token = null;
 this.tryPt = 0;
+this.theToken = null;
+this.theTok = 0;
 Clazz.instantialize (this, arguments);
 }, J.script, "ScriptContext");
 Clazz.makeConstructor (c$, 
 function () {
-this.id = ($t$ = ++ J.script.ScriptContext.contextCount, J.script.ScriptContext.prototype.contextCount = J.script.ScriptContext.contextCount, $t$);
+this.id = ++J.script.ScriptContext.contextCount;
 });
 Clazz.defineStatics (c$,
 "contextCount", 0);

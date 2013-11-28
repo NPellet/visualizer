@@ -26,32 +26,34 @@ item.setName(id == null ? menu.getName() + "." : id);
 }this.menuAddItem (menu, item);
 return item;
 }, $fz.isPrivate = true, $fz), "~O,~O,~S,~S,~S");
-Clazz.overrideMethod (c$, "menuAddButtonGroup", 
+$_V(c$, "menuAddButtonGroup", 
 function (newMenu) {
 {
 if (this.buttonGroup == null) this.buttonGroup = new
 Jmol.Menu.ButtonGroup(this.thisPopup);
 this.buttonGroup.add(newMenu);
 }}, "~O");
-Clazz.overrideMethod (c$, "menuAddItem", 
+$_V(c$, "menuAddItem", 
 function (menu, item) {
 {
 menu.add(item); this.thisPopup.tainted = true;
 }}, "~O,~O");
-Clazz.overrideMethod (c$, "menuAddSeparator", 
+$_V(c$, "menuAddSeparator", 
 function (menu) {
 {
 menu.add(new Jmol.Menu.MenuItem(this.thisPopup, null, false,
 false)); this.thisPopup.tainted = true;
 }}, "~O");
-Clazz.overrideMethod (c$, "menuAddSubMenu", 
+$_V(c$, "menuAddSubMenu", 
 function (menu, subMenu) {
 this.menuAddItem (menu, subMenu);
 }, "~O,~O");
-Clazz.overrideMethod (c$, "menuClearListeners", 
+$_V(c$, "menuClearListeners", 
 function (menu) {
-}, "~O");
-Clazz.overrideMethod (c$, "menuCreateCheckboxItem", 
+{
+if (menu)menu.dispose();
+}}, "~O");
+$_V(c$, "menuCreateCheckboxItem", 
 function (menu, entry, basename, id, state, isRadio) {
 var item = null;
 {
@@ -59,7 +61,7 @@ item = new Jmol.Menu.MenuItem(this.thisPopup, entry, !isRadio,
 isRadio); item.setSelected(state); item.addItemListener(this);
 }return this.newMenuItem (menu, item, entry, basename, id);
 }, "~O,~S,~S,~S,~B,~B");
-Clazz.overrideMethod (c$, "menuCreateItem", 
+$_V(c$, "menuCreateItem", 
 function (menu, entry, script, id) {
 var item = null;
 {
@@ -67,12 +69,12 @@ item = new Jmol.Menu.MenuItem(this.thisPopup, entry);
 item.addActionListener(this);
 }return this.newMenuItem (menu, item, entry, script, id);
 }, "~O,~S,~S,~S");
-Clazz.overrideMethod (c$, "menuCreatePopup", 
+$_V(c$, "menuCreatePopup", 
 function (name) {
 {
 return new Jmol.Menu.PopupMenu(this.viewer.applet, name);
 }}, "~S");
-Clazz.overrideMethod (c$, "menuEnable", 
+$_V(c$, "menuEnable", 
 function (menu, enable) {
 {
 if (menu.isItem) { this.menuEnableItem(menu, enable); return;
@@ -80,13 +82,13 @@ if (menu.isItem) { this.menuEnableItem(menu, enable); return;
 }
 this.thisPopup.tainted = true;
 }}, "~O,~B");
-Clazz.overrideMethod (c$, "menuEnableItem", 
+$_V(c$, "menuEnableItem", 
 function (item, enable) {
 {
 try { item.setEnabled(enable); } catch (e) { }
 this.thisPopup.tainted = true;
 }}, "~O,~B");
-Clazz.overrideMethod (c$, "menuGetAsText", 
+$_V(c$, "menuGetAsText", 
 function (sb, level, menu, menuName) {
 {
 var name = menuName; var subMenus = menu.getComponents(); for
@@ -101,76 +103,81 @@ this.fixScript(m.getName(), m.getActionCommand());
 this.addItemText(sb, 'I', level, m.getName(), m.getText(),
 script, flags); } else { this.addItemText(sb, 'S', level,
 name, null, null, null); } }
-}}, "J.util.SB,~N,~O,~S");
-Clazz.overrideMethod (c$, "menuGetId", 
+}}, "JU.SB,~N,~O,~S");
+$_V(c$, "menuGetId", 
 function (menu) {
 {
 return menu.getName();
 }}, "~O");
-Clazz.overrideMethod (c$, "menuGetItemCount", 
+$_V(c$, "menuGetItemCount", 
 function (menu) {
 {
 return menu.getItemCount();
 }}, "~O");
-Clazz.overrideMethod (c$, "menuGetParent", 
+$_V(c$, "menuGetParent", 
 function (menu) {
 {
 return menu.getParent();
 }}, "~O");
-Clazz.overrideMethod (c$, "menuGetPosition", 
+$_V(c$, "menuGetPosition", 
 function (menu) {
 {
 var p = menuGetParent(menu); if (p != null) for (var i =
-p.getItemCount(); --i >= 0;) if (p.getItem(i) == menu) return
-i;
+p.getItemCount(); --i >= 0;) if (p.getItem(i) == menu) {
+return i;}
 }return -1;
 }, "~O");
-Clazz.overrideMethod (c$, "menuInsertSubMenu", 
+$_V(c$, "menuInsertSubMenu", 
 function (menu, subMenu, index) {
 }, "~O,~O,~N");
-Clazz.overrideMethod (c$, "menuNewSubMenu", 
+$_V(c$, "menuNewSubMenu", 
 function (entry, id) {
 {
 var menu = new Jmol.Menu.SubMenu(this.thisPopup, entry);
 this.updateButton(menu, entry, null); menu.setName(id);
 menu.setAutoscrolls(true); return menu;
 }}, "~S,~S");
-Clazz.overrideMethod (c$, "menuRemoveAll", 
+$_V(c$, "menuRemoveAll", 
 function (menu, indexFrom) {
 {
 menu.removeAll(indexFrom); this.thisPopup.tainted = true;
 }}, "~O,~N");
-Clazz.overrideMethod (c$, "menuSetAutoscrolls", 
+$_V(c$, "menuSetAutoscrolls", 
 function (menu) {
 {
 menu.setAutoscrolls(true); this.thisPopup.tainted = true;
 }}, "~O");
-Clazz.overrideMethod (c$, "menuSetCheckBoxState", 
+$_V(c$, "menuSetCheckBoxState", 
 function (item, state) {
 {
 item.setSelected(state); this.thisPopup.tainted = true;
 }}, "~O,~B");
-Clazz.overrideMethod (c$, "menuSetCheckBoxOption", 
+$_V(c$, "menuSetCheckBoxOption", 
 function (item, name, what) {
 return null;
 }, "~O,~S,~S");
-Clazz.overrideMethod (c$, "menuSetCheckBoxValue", 
+$_V(c$, "menuSetCheckBoxValue", 
 function (source) {
 {
 this.setCheckBoxValue(source, source.getActionCommand(),
-source.isSelected()); this.thisPopup.tainted = true;
+source.isSelected()); if(this.thisPopup)this.thisPopup.tainted = true;
 }}, "~O");
-Clazz.overrideMethod (c$, "menuSetLabel", 
+$_V(c$, "menuSetLabel", 
 function (menu, entry) {
 {
 menu.setText(entry); this.thisPopup.tainted = true;
 }}, "~O,~S");
-Clazz.overrideMethod (c$, "menuSetListeners", 
+$_V(c$, "menuSetListeners", 
 function () {
 });
-Clazz.overrideMethod (c$, "menuShowPopup", 
+$_V(c$, "menuShowPopup", 
 function (popup, x, y) {
 {
 popup.menuShowPopup(x, y);
 }}, "~O,~N,~N");
+$_V(c$, "updateSpecialMenuItem", 
+function (m) {
+{
+m.setText(this.getSpecialLabel(m.getName(), m.getText()));
+}}, "~O");
 });

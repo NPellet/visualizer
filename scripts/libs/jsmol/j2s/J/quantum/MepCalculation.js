@@ -1,10 +1,11 @@
 Clazz.declarePackage ("J.quantum");
-Clazz.load (["J.api.MepCalculationInterface", "J.quantum.QuantumCalculation"], "J.quantum.MepCalculation", ["java.io.BufferedInputStream", "$.ByteArrayInputStream", "java.lang.Float", "java.util.Hashtable", "J.io.JmolBinary", "J.util.Logger", "$.Parser"], function () {
+Clazz.load (["J.api.MepCalculationInterface", "J.quantum.QuantumCalculation"], "J.quantum.MepCalculation", ["java.lang.Float", "java.util.Hashtable", "JU.PT", "J.io.JmolBinary", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.distanceMode = 0;
 this.potentials = null;
 this.atomCoordAngstroms = null;
 this.bsSelected = null;
+this.viewer = null;
 this.htAtomicPotentials = null;
 this.resourceName = null;
 Clazz.instantialize (this, arguments);
@@ -16,7 +17,11 @@ this.rangeBohrOrAngstroms = 8;
 this.distanceMode = 0;
 this.unitFactor = 1;
 });
-Clazz.overrideMethod (c$, "assignPotentials", 
+$_V(c$, "set", 
+function (viewer) {
+this.viewer = viewer;
+}, "J.viewer.Viewer");
+$_V(c$, "assignPotentials", 
 function (atoms, potentials, bsAromatic, bsCarbonyl, bsIgnore, data) {
 this.getAtomicPotentials (data, null);
 for (var i = 0; i < atoms.length; i++) {
@@ -29,15 +34,15 @@ if (Float.isNaN (f)) f = 0;
 }if (J.util.Logger.debugging) J.util.Logger.debug (atoms[i].getInfo () + " " + f);
 potentials[i] = f;
 }
-}, "~A,~A,J.util.BS,J.util.BS,J.util.BS,~S");
+}, "~A,~A,JU.BS,JU.BS,JU.BS,~S");
 $_M(c$, "setup", 
 function (calcType, potentials, atomCoordAngstroms, bsSelected) {
 if (calcType >= 0) this.distanceMode = calcType;
 this.potentials = potentials;
 this.atomCoordAngstroms = atomCoordAngstroms;
 this.bsSelected = bsSelected;
-}, "~N,~A,~A,J.util.BS");
-Clazz.overrideMethod (c$, "calculate", 
+}, "~N,~A,~A,JU.BS");
+$_V(c$, "calculate", 
 function (volumeData, bsSelected, atomCoordAngstroms, potentials, calcType) {
 this.setup (calcType, potentials, atomCoordAngstroms, bsSelected);
 this.voxelData = volumeData.getVoxelData ();
@@ -46,7 +51,7 @@ this.initialize (this.countsXYZ[0], this.countsXYZ[1], this.countsXYZ[2], null);
 this.setupCoordinates (volumeData.getOriginFloat (), volumeData.getVolumetricVectorLengths (), bsSelected, atomCoordAngstroms, null, false);
 this.setXYZBohr (this.points);
 this.process ();
-}, "J.api.VolumeDataInterface,J.util.BS,~A,~A,~N");
+}, "J.api.VolumeDataInterface,JU.BS,~A,~A,~N");
 $_M(c$, "getValueAtPoint", 
 function (pt) {
 var value = 0;
@@ -56,8 +61,8 @@ var d2 = pt.distanceSquared (this.atomCoordAngstroms[i]);
 value += this.valueFor (x, d2, this.distanceMode);
 }
 return value;
-}, "J.util.P3");
-Clazz.overrideMethod (c$, "process", 
+}, "JU.P3");
+$_V(c$, "process", 
 function () {
 for (var atomIndex = this.qmAtoms.length; --atomIndex >= 0; ) {
 if ((this.thisAtom = this.qmAtoms[atomIndex]) == null) continue;
@@ -75,7 +80,7 @@ this.voxelData[ix][iy][iz] += this.valueFor (x0, dXY + this.Z2[iz], this.distanc
 }
 }
 });
-Clazz.overrideMethod (c$, "valueFor", 
+$_V(c$, "valueFor", 
 function (x0, d2, distanceMode) {
 switch (distanceMode) {
 case 0:
@@ -107,23 +112,14 @@ function (data, resourceName) {
 var br = null;
 this.htAtomicPotentials =  new java.util.Hashtable ();
 try {
-var is;
-if (data == null) {
-var url = null;
-if ((url = this.getClass ().getResource (resourceName)) == null) {
-J.util.Logger.error ("Couldn't find file: " + resourceName);
-return;
-}is = url.getContent ();
-} else {
-is =  new java.io.ByteArrayInputStream (data.getBytes ());
-}br = J.io.JmolBinary.getBufferedReader ( new java.io.BufferedInputStream (is), null);
+br = (data == null ? J.io.JmolBinary.getBufferedReaderForResource (this.viewer, this, "J/quantum/", resourceName) : J.io.JmolBinary.getBufferedReaderForString (data));
 var line;
 while ((line = br.readLine ()) != null) {
 if (line.startsWith ("#")) continue;
-var vs = J.util.Parser.getTokens (line);
+var vs = JU.PT.getTokens (line);
 if (vs.length < 2) continue;
 if (J.util.Logger.debugging) J.util.Logger.debug (line);
-this.htAtomicPotentials.put (vs[0], Float.$valueOf (J.util.Parser.parseFloatStr (vs[1])));
+this.htAtomicPotentials.put (vs[0], Float.$valueOf (JU.PT.parseFloat (vs[1])));
 }
 br.close ();
 } catch (e) {

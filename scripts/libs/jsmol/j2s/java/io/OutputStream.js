@@ -12,10 +12,10 @@ return;
 this.writeByteAsInt (b[off + i]);
 }
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "flush", 
+$_V(c$, "flush", 
 function () {
 });
-Clazz.overrideMethod (c$, "close", 
+$_V(c$, "close", 
 function () {
 });
 });

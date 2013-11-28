@@ -23,13 +23,13 @@ this.inflater = inflater;
 this.buf =  Clazz.newByteArray (size, 0);
 this.close_in = close_in;
 }, "java.io.InputStream,JZ.Inflater,~N,~B");
-Clazz.overrideMethod (c$, "readByteAsInt", 
+$_V(c$, "readByteAsInt", 
 function () {
 if (this.closed) {
 throw  new java.io.IOException ("Stream closed");
 }return this.read (this.byte1, 0, 1) == -1 ? -1 : this.byte1[0] & 0xff;
 });
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (b, off, len) {
 return this.readInf (b, off, len);
 }, "~A,~N,~N");
@@ -66,13 +66,13 @@ if (this.inflater.avail_out == 0) break;
 }
 return n;
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "available", 
+$_V(c$, "available", 
 function () {
 if (this.closed) {
 throw  new java.io.IOException ("Stream closed");
 }return (this.eof ? 0 : 1);
 });
-Clazz.overrideMethod (c$, "skip", 
+$_V(c$, "skip", 
 function (n) {
 if (n < 0) {
 throw  new IllegalArgumentException ("negative skip length");
@@ -92,7 +92,7 @@ break;
 }
 return total;
 }, "~N");
-Clazz.overrideMethod (c$, "close", 
+$_V(c$, "close", 
 function () {
 if (!this.closed) {
 if (this.myinflater) this.inflater.end ();
@@ -114,14 +114,14 @@ throw  new java.io.IOException ("footer is not found");
 throw  new java.io.EOFException ("Unexpected end of ZLIB input stream");
 }}this.inflater.setInput (this.buf, 0, this.len, true);
 });
-Clazz.overrideMethod (c$, "markSupported", 
+$_V(c$, "markSupported", 
 function () {
 return false;
 });
-Clazz.overrideMethod (c$, "mark", 
+$_V(c$, "mark", 
 function (readlimit) {
 }, "~N");
-Clazz.overrideMethod (c$, "reset", 
+$_V(c$, "reset", 
 function () {
 throw  new java.io.IOException ("mark/reset not supported");
 });

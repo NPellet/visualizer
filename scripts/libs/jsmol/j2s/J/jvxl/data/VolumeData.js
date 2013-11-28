@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.data");
-Clazz.load (["J.api.VolumeDataInterface", "J.util.Matrix3f", "$.P3", "$.V3"], "J.jvxl.data.VolumeData", ["java.lang.Float", "java.util.Hashtable", "J.io.XmlUtil", "J.util.Escape", "$.Logger", "$.SB"], function () {
+Clazz.load (["J.api.VolumeDataInterface", "JU.M3", "$.P3", "$.V3"], "J.jvxl.data.VolumeData", ["java.lang.Float", "java.util.Hashtable", "JU.SB", "J.io.XmlUtil", "J.util.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.sr = null;
 this.doIterate = true;
@@ -34,23 +34,23 @@ this.ptTemp = null;
 Clazz.instantialize (this, arguments);
 }, J.jvxl.data, "VolumeData", null, J.api.VolumeDataInterface);
 Clazz.prepareFields (c$, function () {
-this.volumetricOrigin =  new J.util.P3 ();
+this.volumetricOrigin =  new JU.P3 ();
 this.origin =  Clazz.newFloatArray (3, 0);
 this.volumetricVectors =  new Array (3);
 this.voxelCounts =  Clazz.newIntArray (3, 0);
 this.volumetricVectorLengths =  Clazz.newFloatArray (3, 0);
 this.unitVolumetricVectors =  new Array (3);
-this.volumetricMatrix =  new J.util.Matrix3f ();
-this.inverseMatrix =  new J.util.Matrix3f ();
-this.ptXyzTemp =  new J.util.P3 ();
-this.edgeVector =  new J.util.V3 ();
-this.ptTemp =  new J.util.P3 ();
+this.volumetricMatrix =  new JU.M3 ();
+this.inverseMatrix =  new JU.M3 ();
+this.ptXyzTemp =  new JU.P3 ();
+this.edgeVector =  new JU.V3 ();
+this.ptTemp =  new JU.P3 ();
 });
-Clazz.overrideMethod (c$, "getVoxelData", 
+$_V(c$, "getVoxelData", 
 function () {
 return this.voxelData;
 });
-Clazz.overrideMethod (c$, "setVoxelDataAsArray", 
+$_V(c$, "setVoxelDataAsArray", 
 function (voxelData) {
 this.voxelData = voxelData;
 if (voxelData != null) this.sr = null;
@@ -61,28 +61,28 @@ return (this.thePlane != null);
 });
 Clazz.makeConstructor (c$, 
 function () {
-this.volumetricVectors[0] =  new J.util.V3 ();
-this.volumetricVectors[1] =  new J.util.V3 ();
-this.volumetricVectors[2] =  new J.util.V3 ();
-this.unitVolumetricVectors[0] =  new J.util.V3 ();
-this.unitVolumetricVectors[1] =  new J.util.V3 ();
-this.unitVolumetricVectors[2] =  new J.util.V3 ();
+this.volumetricVectors[0] =  new JU.V3 ();
+this.volumetricVectors[1] =  new JU.V3 ();
+this.volumetricVectors[2] =  new JU.V3 ();
+this.unitVolumetricVectors[0] =  new JU.V3 ();
+this.unitVolumetricVectors[1] =  new JU.V3 ();
+this.unitVolumetricVectors[2] =  new JU.V3 ();
 });
 $_M(c$, "setMappingPlane", 
 function (plane) {
 this.mappingPlane = plane;
 if (plane == null) return;
 this.mappingPlaneNormalMag = Math.sqrt (plane.x * plane.x + plane.y * plane.y + plane.z * plane.z);
-}, "J.util.P4");
+}, "JU.P4");
 $_M(c$, "distanceToMappingPlane", 
 function (pt) {
 return (this.mappingPlane.x * pt.x + this.mappingPlane.y * pt.y + this.mappingPlane.z * pt.z + this.mappingPlane.w) / this.mappingPlaneNormalMag;
-}, "J.util.P3");
-Clazz.overrideMethod (c$, "setVolumetricOrigin", 
+}, "JU.P3");
+$_V(c$, "setVolumetricOrigin", 
 function (x, y, z) {
 this.volumetricOrigin.set (x, y, z);
 }, "~N,~N,~N");
-Clazz.overrideMethod (c$, "getOriginFloat", 
+$_V(c$, "getOriginFloat", 
 function () {
 return this.origin;
 });
@@ -101,22 +101,22 @@ this.maxGrid = Math.max (this.maxGrid, this.volumetricVectors[2].length ());
 this.nPoints = this.voxelCounts[0] * this.voxelCounts[1] * this.voxelCounts[2];
 return this.yzCount = this.voxelCounts[1] * this.voxelCounts[2];
 });
-Clazz.overrideMethod (c$, "getVolumetricVectorLengths", 
+$_V(c$, "getVolumetricVectorLengths", 
 function () {
 return this.volumetricVectorLengths;
 });
-Clazz.overrideMethod (c$, "setVolumetricVector", 
+$_V(c$, "setVolumetricVector", 
 function (i, x, y, z) {
 this.volumetricVectors[i].x = x;
 this.volumetricVectors[i].y = y;
 this.volumetricVectors[i].z = z;
 this.setUnitVectors ();
 }, "~N,~N,~N,~N");
-Clazz.overrideMethod (c$, "getVoxelCounts", 
+$_V(c$, "getVoxelCounts", 
 function () {
 return this.voxelCounts;
 });
-Clazz.overrideMethod (c$, "setVoxelCounts", 
+$_V(c$, "setVoxelCounts", 
 function (nPointsX, nPointsY, nPointsZ) {
 this.voxelCounts[0] = nPointsX;
 this.voxelCounts[1] = nPointsY;
@@ -142,7 +142,7 @@ ipt -= ix * this.yzCount;
 var iy = Clazz.doubleToInt (ipt / this.voxelCounts[2]);
 var iz = ipt - iy * this.voxelCounts[2];
 this.voxelPtToXYZ (ix, iy, iz, pt);
-}, "~N,J.util.P3");
+}, "~N,JU.P3");
 $_M(c$, "setVoxelData", 
 function (pt, value) {
 var ix = Clazz.doubleToInt (pt / this.yzCount);
@@ -172,16 +172,16 @@ throw e;
 }
 return true;
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "transform", 
+$_V(c$, "transform", 
 function (v1, v2) {
 this.volumetricMatrix.transform2 (v1, v2);
-}, "J.util.V3,J.util.V3");
-Clazz.overrideMethod (c$, "setPlaneParameters", 
+}, "JU.V3,JU.V3");
+$_V(c$, "setPlaneParameters", 
 function (plane) {
 this.thePlane = plane;
 this.thePlaneNormalMag = Math.sqrt (plane.x * plane.x + plane.y * plane.y + plane.z * plane.z);
-}, "J.util.P4");
-Clazz.overrideMethod (c$, "calcVoxelPlaneDistance", 
+}, "JU.P4");
+$_V(c$, "calcVoxelPlaneDistance", 
 function (x, y, z) {
 this.voxelPtToXYZ (x, y, z, this.ptXyzTemp);
 return this.distancePointToPlane (this.ptXyzTemp);
@@ -195,16 +195,16 @@ function (x, y, z, toPlaneParameter) {
 this.voxelPtToXYZ (x, y, z, this.ptXyzTemp);
 return ((this.thePlane.x * this.ptXyzTemp.x + this.thePlane.y * this.ptXyzTemp.y + this.thePlane.z * this.ptXyzTemp.z + this.thePlane.w) < toPlaneParameter);
 }, "~N,~N,~N,~N");
-Clazz.overrideMethod (c$, "distancePointToPlane", 
+$_V(c$, "distancePointToPlane", 
 function (pt) {
 return (this.thePlane.x * pt.x + this.thePlane.y * pt.y + this.thePlane.z * pt.z + this.thePlane.w) / this.thePlaneNormalMag;
-}, "J.util.P3");
-Clazz.overrideMethod (c$, "voxelPtToXYZ", 
+}, "JU.P3");
+$_V(c$, "voxelPtToXYZ", 
 function (x, y, z, pt) {
 pt.scaleAdd2 (x, this.volumetricVectors[0], this.volumetricOrigin);
 pt.scaleAdd2 (y, this.volumetricVectors[1], pt);
 pt.scaleAdd2 (z, this.volumetricVectors[2], pt);
-}, "~N,~N,~N,J.util.P3");
+}, "~N,~N,~N,JU.P3");
 $_M(c$, "setUnitVectors", 
 function () {
 this.maxVectorLength = 0;
@@ -222,21 +222,21 @@ this.origin[0] = this.volumetricOrigin.x;
 this.origin[1] = this.volumetricOrigin.y;
 this.origin[2] = this.volumetricOrigin.z;
 this.spanningVectors =  new Array (4);
-this.spanningVectors[0] = J.util.V3.newV (this.volumetricOrigin);
+this.spanningVectors[0] = JU.V3.newV (this.volumetricOrigin);
 for (var i = 0; i < 3; i++) {
-var v = this.spanningVectors[i + 1] =  new J.util.V3 ();
+var v = this.spanningVectors[i + 1] =  new JU.V3 ();
 v.scaleAdd2 (this.voxelCounts[i] - 1, this.volumetricVectors[i], v);
 }
 return this.setMatrix ();
 });
-Clazz.overrideMethod (c$, "xyzToVoxelPt", 
+$_V(c$, "xyzToVoxelPt", 
 function (x, y, z, pt3i) {
 this.ptXyzTemp.set (x, y, z);
 this.ptXyzTemp.sub (this.volumetricOrigin);
 this.inverseMatrix.transform (this.ptXyzTemp);
 pt3i.set (Math.round (this.ptXyzTemp.x), Math.round (this.ptXyzTemp.y), Math.round (this.ptXyzTemp.z));
-}, "~N,~N,~N,J.util.P3i");
-Clazz.overrideMethod (c$, "lookupInterpolatedVoxelValue", 
+}, "~N,~N,~N,JU.P3i");
+$_V(c$, "lookupInterpolatedVoxelValue", 
 function (point, getSource) {
 if (this.mappingPlane != null) return this.distanceToMappingPlane (point);
 if (this.sr != null) {
@@ -254,7 +254,7 @@ var zUpper = this.indexUpper (this.ptXyzTemp.z, zLower, iMax);
 var v1 = J.jvxl.data.VolumeData.getFractional2DValue (this.mantissa (this.ptXyzTemp.x - xLower), this.mantissa (this.ptXyzTemp.y - yLower), this.getVoxelValue (xLower, yLower, zLower), this.getVoxelValue (xUpper, yLower, zLower), this.getVoxelValue (xLower, yUpper, zLower), this.getVoxelValue (xUpper, yUpper, zLower));
 var v2 = J.jvxl.data.VolumeData.getFractional2DValue (this.mantissa (this.ptXyzTemp.x - xLower), this.mantissa (this.ptXyzTemp.y - yLower), this.getVoxelValue (xLower, yLower, zUpper), this.getVoxelValue (xUpper, yLower, zUpper), this.getVoxelValue (xLower, yUpper, zUpper), this.getVoxelValue (xUpper, yUpper, zUpper));
 return v1 + this.mantissa (this.ptXyzTemp.z - zLower) * (v2 - v1);
-}, "J.util.P3,~B");
+}, "JU.P3,~B");
 $_M(c$, "mantissa", 
 ($fz = function (f) {
 return (this.isPeriodic ? f - Math.floor (f) : f);
@@ -289,13 +289,13 @@ return (!this.isPeriodic && x < 0 || xLower == xMax ? xLower : xLower + 1);
 }, $fz.isPrivate = true, $fz), "~N,~N,~N");
 $_M(c$, "offsetCenter", 
 function (center) {
-var pt =  new J.util.P3 ();
+var pt =  new JU.P3 ();
 pt.scaleAdd2 ((this.voxelCounts[0] - 1) / 2, this.volumetricVectors[0], pt);
 pt.scaleAdd2 ((this.voxelCounts[1] - 1) / 2, this.volumetricVectors[1], pt);
 pt.scaleAdd2 ((this.voxelCounts[2] - 1) / 2, this.volumetricVectors[2], pt);
 this.volumetricOrigin.sub2 (center, pt);
-}, "J.util.P3");
-Clazz.overrideMethod (c$, "setDataDistanceToPlane", 
+}, "JU.P3");
+$_V(c$, "setDataDistanceToPlane", 
 function (plane) {
 this.setPlaneParameters (plane);
 var nx = this.voxelCounts[0];
@@ -306,8 +306,8 @@ for (var x = 0; x < nx; x++) for (var y = 0; y < ny; y++) for (var z = 0; z < nz
 
 
 
-}, "J.util.P4");
-Clazz.overrideMethod (c$, "filterData", 
+}, "JU.P4");
+$_V(c$, "filterData", 
 function (isSquared, invertCutoff) {
 var doInvert = (!Float.isNaN (invertCutoff));
 if (this.sr != null) {
@@ -325,13 +325,13 @@ if (doInvert) for (var x = 0; x < nx; x++) for (var y = 0; y < ny; y++) for (var
 
 
 }, "~B,~N");
-Clazz.overrideMethod (c$, "capData", 
+$_V(c$, "capData", 
 function (plane, cutoff) {
 if (this.voxelData == null) return;
 var nx = this.voxelCounts[0];
 var ny = this.voxelCounts[1];
 var nz = this.voxelCounts[2];
-var normal = J.util.V3.new3 (plane.x, plane.y, plane.z);
+var normal = JU.V3.new3 (plane.x, plane.y, plane.z);
 normal.normalize ();
 var f = 1;
 for (var x = 0; x < nx; x++) for (var y = 0; y < ny; y++) for (var z = 0; z < nz; z++) {
@@ -342,10 +342,10 @@ if (d >= 0 || d > value) this.voxelData[x][y][z] = d;
 }
 
 
-}, "J.util.P4,~N");
+}, "JU.P4,~N");
 $_M(c$, "setVolumetricXml", 
 function () {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 if (this.voxelCounts[0] == 0) {
 J.io.XmlUtil.appendTag (sb, "jvxlVolumeData", null);
 } else {
@@ -384,5 +384,5 @@ this.ptTemp.scaleAdd2 (diff, this.edgeVector, pt);
 v = this.lookupInterpolatedVoxelValue (this.ptTemp, false);
 }
 return v0;
-}, "~N,J.util.P3,J.util.P3,~N,~N,J.util.P3");
+}, "~N,JU.P3,JU.P3,~N,~N,JU.P3");
 });

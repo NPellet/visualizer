@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapebio");
-Clazz.load (["J.shape.AtomShape", "J.modelset.Atom", "J.modelsetbio.NucleicMonomer", "J.viewer.JC"], "J.shapebio.BioShape", ["java.lang.Float", "J.constant.EnumPalette", "$.EnumStructure", "J.util.ArrayUtil", "$.BS", "$.C", "$.Logger"], function () {
+Clazz.load (["J.shape.AtomShape", "J.modelset.Atom", "J.modelsetbio.NucleicMonomer", "J.viewer.JC"], "J.shapebio.BioShape", ["java.lang.Float", "JU.AU", "$.BS", "J.constant.EnumPalette", "$.EnumStructure", "J.modelsetbio.NucleicPolymer", "J.util.C", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.modelIndex = 0;
 this.modelVisibilityFlags = 0;
@@ -18,11 +18,11 @@ this.range = 0;
 this.floatRange = 0;
 Clazz.instantialize (this, arguments);
 }, J.shapebio, "BioShape", J.shape.AtomShape);
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bsSelected) {
 this.setPropAS (propertyName, value, bsSelected);
-}, "~S,~O,J.util.BS");
-Clazz.overrideMethod (c$, "getMonomers", 
+}, "~S,~O,JU.BS");
+$_V(c$, "getMonomers", 
 function () {
 return this.monomers;
 });
@@ -33,7 +33,7 @@ this.shape = shape;
 this.modelIndex = modelIndex;
 this.bioPolymer = bioPolymer;
 this.isActive = shape.isActive;
-this.bsSizeDefault =  new J.util.BS ();
+this.bsSizeDefault =  new JU.BS ();
 this.monomerCount = bioPolymer.monomerCount;
 if (this.monomerCount > 0) {
 this.colixes =  Clazz.newShortArray (this.monomerCount, 0);
@@ -61,15 +61,15 @@ $_M(c$, "calcMeanPositionalDisplacement",
 function (bFactor100) {
 return Clazz.doubleToShort (Math.sqrt (bFactor100 / 7895.6835208714865) * 1000);
 }, "~N");
-Clazz.overrideMethod (c$, "findNearestAtomIndex", 
+$_V(c$, "findNearestAtomIndex", 
 function (xMouse, yMouse, closest, bsNot) {
 this.bioPolymer.findNearestAtomIndex (xMouse, yMouse, closest, this.mads, this.shape.myVisibilityFlag, bsNot);
-}, "~N,~N,~A,J.util.BS");
+}, "~N,~N,~A,JU.BS");
 $_M(c$, "setMad", 
 function (mad, bsSelected, values) {
 if (this.monomerCount < 2) return;
 this.isActive = true;
-if (this.bsSizeSet == null) this.bsSizeSet =  new J.util.BS ();
+if (this.bsSizeSet == null) this.bsSizeSet =  new JU.BS ();
 var flag = this.shape.myVisibilityFlag;
 for (var i = this.monomerCount; --i >= 0; ) {
 var leadAtomIndex = this.leadAtomIndices[i];
@@ -84,7 +84,7 @@ this.shape.atoms[leadAtomIndex].setShapeVisibility (flag, isVisible);
 this.falsifyNearbyMesh (i);
 }}
 if (this.monomerCount > 1) this.mads[this.monomerCount] = this.mads[this.monomerCount - 1];
-}, "~N,J.util.BS,~A");
+}, "~N,JU.BS,~A");
 $_M(c$, "getMad", 
 ($fz = function (groupIndex, mad) {
 this.bsSizeDefault.setBitTo (groupIndex, mad == -1 || mad == -2);
@@ -137,7 +137,7 @@ if (index < this.monomerCount - 1) this.meshReady[index + 1] = false;
 $_M(c$, "setColixBS", 
 function (colix, pid, bsSelected) {
 this.isActive = true;
-if (this.bsColixSet == null) this.bsColixSet =  new J.util.BS ();
+if (this.bsColixSet == null) this.bsColixSet =  new JU.BS ();
 for (var i = this.monomerCount; --i >= 0; ) {
 var atomIndex = this.leadAtomIndices[i];
 if (bsSelected.get (atomIndex)) {
@@ -146,11 +146,11 @@ if (this.colixesBack != null && this.colixesBack.length > i) this.colixesBack[i]
 this.paletteIDs[i] = pid;
 this.bsColixSet.setBitTo (i, this.colixes[i] != 0);
 }}
-}, "~N,~N,J.util.BS");
+}, "~N,~N,JU.BS");
 $_M(c$, "setColixes", 
 function (atomColixes, bsSelected) {
 this.isActive = true;
-if (this.bsColixSet == null) this.bsColixSet =  new J.util.BS ();
+if (this.bsColixSet == null) this.bsColixSet =  new JU.BS ();
 for (var i = this.monomerCount; --i >= 0; ) {
 var atomIndex = this.leadAtomIndices[i];
 if (bsSelected.get (atomIndex) && i < this.colixes.length && atomIndex < atomColixes.length) {
@@ -159,14 +159,14 @@ if (this.colixesBack != null && i < this.colixesBack.length) this.colixesBack[i]
 this.paletteIDs[i] = J.constant.EnumPalette.UNKNOWN.id;
 this.bsColixSet.set (i);
 }}
-}, "~A,J.util.BS");
+}, "~A,JU.BS");
 $_M(c$, "setParams", 
 function (data, atomMap, bsSelected) {
 if (this.monomerCount == 0) return;
 var c = data[0];
 var atrans = data[1];
 this.isActive = true;
-if (this.bsColixSet == null) this.bsColixSet =  new J.util.BS ();
+if (this.bsColixSet == null) this.bsColixSet =  new JU.BS ();
 var n = atomMap.length;
 for (var i = this.monomerCount; --i >= 0; ) {
 var atomIndex = this.leadAtomIndices[i];
@@ -180,28 +180,28 @@ if (this.colixesBack != null && i < this.colixesBack.length) this.colixesBack[i]
 this.paletteIDs[i] = J.constant.EnumPalette.UNKNOWN.id;
 this.bsColixSet.set (i);
 }}
-}, "~A,~A,J.util.BS");
+}, "~A,~A,JU.BS");
 $_M(c$, "setColixBack", 
 function (colix, bsSelected) {
 for (var i = this.monomerCount; --i >= 0; ) {
 var atomIndex = this.leadAtomIndices[i];
 if (bsSelected.get (atomIndex)) {
 if (this.colixesBack == null) this.colixesBack =  Clazz.newShortArray (this.colixes.length, 0);
-if (this.colixesBack.length < this.colixes.length) this.colixesBack = J.util.ArrayUtil.ensureLengthShort (this.colixesBack, this.colixes.length);
+if (this.colixesBack.length < this.colixes.length) this.colixesBack = JU.AU.ensureLengthShort (this.colixesBack, this.colixes.length);
 this.colixesBack[i] = colix;
 }}
-}, "~N,J.util.BS");
+}, "~N,JU.BS");
 $_M(c$, "setTranslucent", 
 function (isTranslucent, bsSelected, translucentLevel) {
 this.isActive = true;
-if (this.bsColixSet == null) this.bsColixSet =  new J.util.BS ();
+if (this.bsColixSet == null) this.bsColixSet =  new JU.BS ();
 for (var i = this.monomerCount; --i >= 0; ) if (bsSelected.get (this.leadAtomIndices[i])) {
 this.colixes[i] = J.util.C.getColixTranslucent3 (this.colixes[i], isTranslucent, translucentLevel);
 if (this.colixesBack != null && this.colixesBack.length > i) this.colixesBack[i] = J.util.C.getColixTranslucent3 (this.colixesBack[i], isTranslucent, translucentLevel);
 this.bsColixSet.setBitTo (i, this.colixes[i] != 0);
 }
-}, "~B,J.util.BS,~N");
-Clazz.overrideMethod (c$, "setModelClickability", 
+}, "~B,JU.BS,~N");
+$_V(c$, "setModelClickability", 
 function () {
 if (!this.isActive || this.wingVectors == null) return;
 var isNucleicPolymer = Clazz.instanceOf (this.bioPolymer, J.modelsetbio.NucleicPolymer);

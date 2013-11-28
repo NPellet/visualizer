@@ -1,11 +1,11 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["J.modelsetbio.Monomer"], "J.modelsetbio.PhosphorusMonomer", ["J.constant.EnumStructure", "J.util.Quaternion", "$.V3"], function () {
+Clazz.load (["J.modelsetbio.Monomer"], "J.modelsetbio.PhosphorusMonomer", ["JU.V3", "J.constant.EnumStructure", "J.util.Quaternion"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.$isPurine = false;
 this.$isPyrimidine = false;
 Clazz.instantialize (this, arguments);
 }, J.modelsetbio, "PhosphorusMonomer", J.modelsetbio.Monomer);
-Clazz.overrideMethod (c$, "isNucleic", 
+$_V(c$, "isNucleic", 
 function () {
 return true;
 });
@@ -33,31 +33,31 @@ $_M(c$, "isPhosphorusMonomer",
 function () {
 return true;
 });
-Clazz.overrideMethod (c$, "isDna", 
+$_V(c$, "isDna", 
 function () {
 return this.chain.isDna;
 });
-Clazz.overrideMethod (c$, "isRna", 
+$_V(c$, "isRna", 
 function () {
 return this.chain.isRna;
 });
-Clazz.overrideMethod (c$, "isPurine", 
+$_V(c$, "isPurine", 
 function () {
 return this.$isPurine;
 });
-Clazz.overrideMethod (c$, "isPyrimidine", 
+$_V(c$, "isPyrimidine", 
 function () {
 return this.$isPyrimidine;
 });
-Clazz.overrideMethod (c$, "getStructure", 
+$_V(c$, "getStructure", 
 function () {
 return this.chain;
 });
-Clazz.overrideMethod (c$, "getProteinStructureType", 
+$_V(c$, "getProteinStructureType", 
 function () {
 return J.constant.EnumStructure.NONE;
 });
-Clazz.overrideMethod (c$, "isConnectedAfter", 
+$_V(c$, "isConnectedAfter", 
 function (possiblyPreviousMonomer) {
 return this.isCA2 (possiblyPreviousMonomer);
 }, "J.modelsetbio.Monomer");
@@ -67,7 +67,7 @@ if (possiblyPreviousMonomer == null) return true;
 var distance = this.getLeadAtom ().distance (possiblyPreviousMonomer.getLeadAtom ());
 return distance <= J.modelsetbio.PhosphorusMonomer.MAX_ADJACENT_PHOSPHORUS_DISTANCE;
 }, "J.modelsetbio.Monomer");
-Clazz.overrideMethod (c$, "getQuaternion", 
+$_V(c$, "getQuaternion", 
 function (qType) {
 return this.getQuaternionP ();
 }, "~S");
@@ -81,17 +81,17 @@ var ptB;
 ptA = this.bioPolymer.monomers[i + 1].getAtomFromOffsetIndex (0);
 ptB = this.bioPolymer.monomers[i - 1].getAtomFromOffsetIndex (0);
 if (ptP == null || ptA == null || ptB == null) return null;
-var vA =  new J.util.V3 ();
-var vB =  new J.util.V3 ();
+var vA =  new JU.V3 ();
+var vB =  new JU.V3 ();
 vA.sub2 (ptA, ptP);
 vB.sub2 (ptB, ptP);
 return J.util.Quaternion.getQuaternionFrameV (vA, vB, null, false);
 });
-Clazz.overrideMethod (c$, "getQuaternionFrameCenter", 
+$_V(c$, "getQuaternionFrameCenter", 
 function (qType) {
 return this.getAtomFromOffsetIndex (0);
 }, "~S");
-Clazz.overrideMethod (c$, "getHelixData", 
+$_V(c$, "getHelixData", 
 function (tokType, qType, mStep) {
 return this.getHelixData2 (tokType, qType, mStep);
 }, "~N,~S,~N");

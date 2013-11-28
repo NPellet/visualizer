@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.Tensor", ["java.lang.Float", "java.util.Arrays", "$.Hashtable", "J.util.Eigen", "$.EigenSort", "$.Escape", "$.Matrix3f", "$.P3", "$.Parser", "$.Quaternion", "$.TextFormat", "$.V3"], function () {
+Clazz.load (null, "J.util.Tensor", ["java.lang.Float", "java.util.Arrays", "$.Hashtable", "JU.M3", "$.P3", "$.PT", "$.V3", "J.util.Eigen", "$.EigenSort", "$.Escape", "$.Quaternion"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.id = null;
 this.type = null;
@@ -34,7 +34,7 @@ if (infoType.charAt (0) != ';') infoType = ";" + infoType + ".";
 switch (Clazz.doubleToInt (";.............;eigenvalues..;eigenvectors.;asymmatrix...;symmatrix....;value........;isotropy.....;anisotropy...;asymmetry....;eulerzyz.....;eulerzxz.....;quaternion...;indices......;string.......;type.........;id...........;span.........;skew.........".indexOf (infoType) / 14)) {
 default:
 var info =  new java.util.Hashtable ();
-var s = J.util.Parser.getTokens (J.util.TextFormat.replaceAllCharacter (";.............;eigenvalues..;eigenvectors.;asymmatrix...;symmatrix....;value........;isotropy.....;anisotropy...;asymmetry....;eulerzyz.....;eulerzxz.....;quaternion...;indices......;string.......;type.........;id...........;span.........;skew.........", ";.", ' ').trim ());
+var s = JU.PT.getTokens (JU.PT.replaceAllCharacter (";.............;eigenvalues..;eigenvectors.;asymmatrix...;symmatrix....;value........;isotropy.....;anisotropy...;asymmetry....;eulerzyz.....;eulerzxz.....;quaternion...;indices......;string.......;type.........;id...........;span.........;skew.........", ";.", ' ').trim ());
 java.util.Arrays.sort (s);
 for (var i = 0; i < s.length; i++) {
 var o = this.getInfo (s[i]);
@@ -45,7 +45,7 @@ case 1:
 return this.eigenValues;
 case 2:
 var list =  new Array (3);
-for (var i = 0; i < 3; i++) list[i] = J.util.P3.newP (this.eigenVectors[i]);
+for (var i = 0; i < 3; i++) list[i] = JU.P3.newP (this.eigenVectors[i]);
 
 return list;
 case 3:
@@ -55,7 +55,7 @@ var pt = 0;
 for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) a[pt++] = this.asymMatrix[i][j];
 
 
-return J.util.Matrix3f.newA (a);
+return JU.M3.newA (a);
 case 4:
 if (this.symMatrix == null) return null;
 var b =  Clazz.newFloatArray (9, 0);
@@ -63,7 +63,7 @@ var p2 = 0;
 for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) b[p2++] = this.symMatrix[i][j];
 
 
-return J.util.Matrix3f.newA (b);
+return JU.M3.newA (b);
 case 5:
 return Float.$valueOf (this.eigenValues[2]);
 case 6:
@@ -116,25 +116,25 @@ $_M(c$, "asymmetry",
 function () {
 return this.span () == 0 ? 0 : (this.eigenValues[1] - this.eigenValues[0]) / this.reducedAnisotropy ();
 });
-c$.copyTensor = $_M(c$, "copyTensor", 
-function (t0) {
+$_M(c$, "copyTensor", 
+function () {
 var t =  new J.util.Tensor ();
-t.setType (t0.type);
-t.eigenValues = t0.eigenValues;
-t.eigenVectors = t0.eigenVectors;
-t.asymMatrix = t0.asymMatrix;
-t.symMatrix = t0.symMatrix;
-t.eigenSignMask = t0.eigenSignMask;
-t.modelIndex = t0.modelIndex;
-t.atomIndex1 = t0.atomIndex1;
-t.atomIndex2 = t0.atomIndex2;
-t.id = t0.id;
+t.setType (this.type);
+t.eigenValues = this.eigenValues;
+t.eigenVectors = this.eigenVectors;
+t.asymMatrix = this.asymMatrix;
+t.symMatrix = this.symMatrix;
+t.eigenSignMask = this.eigenSignMask;
+t.modelIndex = this.modelIndex;
+t.atomIndex1 = this.atomIndex1;
+t.atomIndex2 = this.atomIndex2;
+t.id = this.id;
 return t;
-}, "J.util.Tensor");
+});
 Clazz.makeConstructor (c$, 
-($fz = function () {
-}, $fz.isPrivate = true, $fz));
-c$.getTensorFromAsymmetricTensor = $_M(c$, "getTensorFromAsymmetricTensor", 
+function () {
+});
+$_M(c$, "setFromAsymmetricTensor", 
 function (asymmetricTensor, type, id) {
 var a =  Clazz.newDoubleArray (3, 3, 0);
 for (var i = 3; --i >= 0; ) for (var j = 3; --j >= 0; ) a[i][j] = asymmetricTensor[i][j];
@@ -146,17 +146,17 @@ a[0][1] = a[1][0] = (a[0][1] + a[1][0]) / 2;
 a[1][2] = a[2][1] = (a[1][2] + a[2][1]) / 2;
 }if (a[0][2] != a[2][0]) {
 a[0][2] = a[2][0] = (a[0][2] + a[2][0]) / 2;
-}var eigen =  new J.util.Eigen (3);
+}var eigen =  new J.util.Eigen ().set (3);
 eigen.calc (a);
-var m =  new J.util.Matrix3f ();
+var m =  new JU.M3 ();
 var mm =  Clazz.newFloatArray (9, 0);
 for (var i = 0, p = 0; i < 3; i++) for (var j = 0; j < 3; j++) mm[p++] = a[i][j];
 
 
 m.setA (mm);
 var evec = eigen.getEigenVectors3 ();
-var n =  new J.util.V3 ();
-var cross =  new J.util.V3 ();
+var n =  new JU.V3 ();
+var cross =  new JU.V3 ();
 for (var i = 0; i < 3; i++) {
 n.setT (evec[i]);
 m.transform (n);
@@ -168,44 +168,43 @@ cross.cross (evec[i], evec[(i + 1) % 3]);
 var vectors =  new Array (3);
 var values =  Clazz.newFloatArray (3, 0);
 eigen.fillArrays (vectors, values);
-var t = J.util.Tensor.newTensorType (vectors, values, type, id);
-t.asymMatrix = asymmetricTensor;
-t.symMatrix = a;
-t.id = id;
-return t;
+this.newTensorType (vectors, values, type, id);
+this.asymMatrix = asymmetricTensor;
+this.symMatrix = a;
+this.id = id;
+return this;
 }, "~A,~S,~S");
-c$.getTensorFromEigenVectors = $_M(c$, "getTensorFromEigenVectors", 
+$_M(c$, "setFromEigenVectors", 
 function (eigenVectors, eigenValues, type, id) {
 var values =  Clazz.newFloatArray (3, 0);
 var vectors =  new Array (3);
 for (var i = 0; i < 3; i++) {
-vectors[i] = J.util.V3.newV (eigenVectors[i]);
+vectors[i] = JU.V3.newV (eigenVectors[i]);
 values[i] = eigenValues[i];
 }
-return J.util.Tensor.newTensorType (vectors, values, type, id);
+this.newTensorType (vectors, values, type, id);
+return this;
 }, "~A,~A,~S,~S");
-c$.getTensorFromAxes = $_M(c$, "getTensorFromAxes", 
+$_M(c$, "setFromAxes", 
 function (axes) {
-var t =  new J.util.Tensor ();
-t.eigenValues =  Clazz.newFloatArray (3, 0);
-t.eigenVectors =  new Array (3);
+this.eigenValues =  Clazz.newFloatArray (3, 0);
+this.eigenVectors =  new Array (3);
 for (var i = 0; i < 3; i++) {
-t.eigenVectors[i] = J.util.V3.newV (axes[i]);
-t.eigenValues[i] = axes[i].length ();
-if (t.eigenValues[i] == 0) return null;
-t.eigenVectors[i].normalize ();
+this.eigenVectors[i] = JU.V3.newV (axes[i]);
+this.eigenValues[i] = axes[i].length ();
+if (this.eigenValues[i] == 0) return null;
+this.eigenVectors[i].normalize ();
 }
-if (Math.abs (t.eigenVectors[0].dot (t.eigenVectors[1])) > 0.0001 || Math.abs (t.eigenVectors[1].dot (t.eigenVectors[2])) > 0.0001 || Math.abs (t.eigenVectors[2].dot (t.eigenVectors[0])) > 0.0001) return null;
-t.setType ("other");
-t.sortAndNormalize ();
-return t;
+if (Math.abs (this.eigenVectors[0].dot (this.eigenVectors[1])) > 0.0001 || Math.abs (this.eigenVectors[1].dot (this.eigenVectors[2])) > 0.0001 || Math.abs (this.eigenVectors[2].dot (this.eigenVectors[0])) > 0.0001) return null;
+this.setType ("other");
+this.sortAndNormalize ();
+return this;
 }, "~A");
-c$.getTensorFromThermalEquation = $_M(c$, "getTensorFromThermalEquation", 
+$_M(c$, "setFromThermalEquation", 
 function (coefs, id) {
-var t =  new J.util.Tensor ();
-t.eigenValues =  Clazz.newFloatArray (3, 0);
-t.eigenVectors =  new Array (3);
-t.id = (id == null ? "coefs=" + J.util.Escape.eAD (coefs) : id);
+this.eigenValues =  Clazz.newFloatArray (3, 0);
+this.eigenVectors =  new Array (3);
+this.id = (id == null ? "coefs=" + J.util.Escape.eAD (coefs) : id);
 var mat =  Clazz.newDoubleArray (3, 3, 0);
 mat[0][0] = coefs[0];
 mat[1][1] = coefs[1];
@@ -213,10 +212,10 @@ mat[2][2] = coefs[2];
 mat[0][1] = mat[1][0] = coefs[3] / 2;
 mat[0][2] = mat[2][0] = coefs[4] / 2;
 mat[1][2] = mat[2][1] = coefs[5] / 2;
-J.util.Eigen.getUnitVectors (mat, t.eigenVectors, t.eigenValues);
-t.setType ("adp");
-t.sortAndNormalize ();
-return t;
+J.util.Eigen.getUnitVectors (mat, this.eigenVectors, this.eigenValues);
+this.setType ("adp");
+this.sortAndNormalize ();
+return this;
 }, "~A,~S");
 $_M(c$, "setType", 
 function (type) {
@@ -237,19 +236,17 @@ this.atomIndex2 = index2;
 $_M(c$, "isSelected", 
 function (bsSelected, iAtom) {
 return (iAtom >= 0 ? (this.atomIndex1 == iAtom || this.atomIndex2 == iAtom) : bsSelected.get (this.atomIndex1) && (this.atomIndex2 < 0 || bsSelected.get (this.atomIndex2)));
-}, "J.util.BS,~N");
-c$.newTensorType = $_M(c$, "newTensorType", 
+}, "JU.BS,~N");
+$_M(c$, "newTensorType", 
 ($fz = function (vectors, values, type, id) {
-var t =  new J.util.Tensor ();
-t.eigenValues = values;
-t.eigenVectors = vectors;
-for (var i = 0; i < 3; i++) t.eigenVectors[i].normalize ();
+this.eigenValues = values;
+this.eigenVectors = vectors;
+for (var i = 0; i < 3; i++) this.eigenVectors[i].normalize ();
 
-t.setType (type);
-t.id = id;
-t.sortAndNormalize ();
-t.eigenSignMask = (t.eigenValues[0] >= 0 ? 1 : 0) + (t.eigenValues[1] >= 0 ? 2 : 0) + (t.eigenValues[2] >= 0 ? 4 : 0);
-return t;
+this.setType (type);
+this.id = id;
+this.sortAndNormalize ();
+this.eigenSignMask = (this.eigenValues[0] >= 0 ? 1 : 0) + (this.eigenValues[1] >= 0 ? 2 : 0) + (this.eigenValues[2] >= 0 ? 4 : 0);
 }, $fz.isPrivate = true, $fz), "~A,~A,~S,~S");
 $_M(c$, "processType", 
 ($fz = function () {
@@ -294,7 +291,7 @@ break;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "sortAndNormalize", 
 ($fz = function () {
-var o = [[J.util.V3.newV (this.eigenVectors[0]), Float.$valueOf (this.eigenValues[0])], [J.util.V3.newV (this.eigenVectors[1]), Float.$valueOf (this.eigenValues[1])], [J.util.V3.newV (this.eigenVectors[2]), Float.$valueOf (this.eigenValues[2])]];
+var o = [[JU.V3.newV (this.eigenVectors[0]), Float.$valueOf (this.eigenValues[0])], [JU.V3.newV (this.eigenVectors[1]), Float.$valueOf (this.eigenValues[1])], [JU.V3.newV (this.eigenVectors[2]), Float.$valueOf (this.eigenValues[2])]];
 java.util.Arrays.sort (o, J.util.Tensor.getEigenSort ());
 for (var i = 0; i < 3; i++) {
 var pt = i;
@@ -321,9 +318,9 @@ return true;
 }, "J.util.Tensor");
 c$.getEigenSort = $_M(c$, "getEigenSort", 
 ($fz = function () {
-return (J.util.Tensor.tSort == null ? (($t$ = J.util.Tensor.tSort =  new J.util.EigenSort (), J.util.Tensor.prototype.tSort = J.util.Tensor.tSort, $t$)) : J.util.Tensor.tSort);
+return (J.util.Tensor.tSort == null ? (J.util.Tensor.tSort =  new J.util.EigenSort ()) : J.util.Tensor.tSort);
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return (this.type + " " + this.modelIndex + " " + this.atomIndex1 + " " + this.atomIndex2 + "\n" + (this.eigenVectors == null ? "" + this.eigenValues[0] : this.eigenVectors[0] + "\t" + this.eigenValues[0] + "\t" + "\n" + this.eigenVectors[1] + "\t" + this.eigenValues[1] + "\t" + "\n" + this.eigenVectors[2] + "\t" + this.eigenValues[2] + "\t" + "\n"));
 });

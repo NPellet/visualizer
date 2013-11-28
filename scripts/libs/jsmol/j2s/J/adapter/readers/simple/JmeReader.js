@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.JmeReader", ["J.adapter.smarter.Bond", "J.util.TextFormat"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.JmeReader", ["JU.PT", "J.adapter.smarter.Bond"], function () {
 c$ = Clazz.declareType (J.adapter.readers.simple, "JmeReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.atomSetCollection.setCollectionName ("JME");
 this.atomSetCollection.newAtomSet ();
@@ -24,10 +24,10 @@ this.setAtomCoordXYZ (atom, this.parseFloat (), this.parseFloat (), 0);
 var indexColon = strAtom.indexOf (':');
 var elementSymbol = (indexColon > 0 ? strAtom.substring (0, indexColon) : strAtom);
 if (elementSymbol.indexOf ("+") >= 0) {
-elementSymbol = J.util.TextFormat.trim (elementSymbol, "+");
+elementSymbol = JU.PT.trim (elementSymbol, "+");
 atom.formalCharge = 1;
 } else if (elementSymbol.indexOf ("-") >= 0) {
-elementSymbol = J.util.TextFormat.trim (elementSymbol, "-");
+elementSymbol = JU.PT.trim (elementSymbol, "-");
 atom.formalCharge = -1;
 }atom.elementSymbol = elementSymbol;
 }

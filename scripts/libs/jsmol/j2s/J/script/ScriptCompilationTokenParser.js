@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.script");
-Clazz.load (null, "J.script.ScriptCompilationTokenParser", ["java.lang.Float", "J.i18n.GT", "J.script.ScriptEvaluator", "$.T", "J.util.JmolList", "$.Logger", "$.P3", "$.TextFormat", "J.viewer.JC"], function () {
+Clazz.load (null, "J.script.ScriptCompilationTokenParser", ["java.lang.Float", "JU.List", "$.P3", "$.PT", "J.i18n.GT", "J.script.ScriptEvaluator", "$.T", "J.util.Logger", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.script = null;
@@ -63,7 +63,7 @@ return (size == 1 || !J.script.T.tokAttr (this.tokCommand, 262144) ? true : this
 $_M(c$, "compileExpression", 
 function () {
 var firstToken = (this.isSetOrDefine && !this.isSetBrace ? 2 : 1);
-this.ltokenPostfix =  new J.util.JmolList ();
+this.ltokenPostfix =  new JU.List ();
 this.itokenInfix = 0;
 var tokenBegin = null;
 var tok = this.tokAt (1);
@@ -469,14 +469,14 @@ case 1048582:
 case 1087375365:
 case 1087373318:
 case 137363468:
-case 1095766028:
-case 1095761934:
+case 1095766030:
+case 1095761936:
 case 135266319:
 case 135267841:
-case 1095761935:
+case 1095761937:
 case 1087373320:
 case 3145760:
-case 1095761938:
+case 1095761940:
 case 1641025539:
 case 4:
 case 1649412120:
@@ -645,7 +645,7 @@ return true;
 }, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "clauseCell", 
 ($fz = function (tok) {
-var cell =  new J.util.P3 ();
+var cell =  new JU.P3 ();
 this.tokenNext ();
 if (!this.tokenNextTok (269484436)) return this.errorStr (15, "=");
 if (this.getToken () == null) return this.error (3);
@@ -979,8 +979,8 @@ break;
 if (msg.indexOf ("{0}") < 0) {
 if (value != null) msg += ": " + value;
 } else {
-msg = J.util.TextFormat.simpleReplace (msg, "{0}", value);
-if (msg.indexOf ("{1}") >= 0) msg = J.util.TextFormat.simpleReplace (msg, "{1}", more);
+msg = JU.PT.simpleReplace (msg, "{0}", value);
+if (msg.indexOf ("{1}") >= 0) msg = JU.PT.simpleReplace (msg, "{1}", more);
  else if (more != null) msg += ": " + more;
 }if (!translated) J.i18n.GT.setDoTranslate (doTranslate);
 return msg;

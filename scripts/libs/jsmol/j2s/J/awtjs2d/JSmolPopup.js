@@ -5,11 +5,11 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.awtjs2d.JSmolPopup, []);
 });
-Clazz.overrideMethod (c$, "jpiInitialize", 
+$_V(c$, "jpiInitialize", 
 function (viewer, menu) {
 var doTranslate = J.i18n.GT.setDoTranslate (true);
 var bundle =  new J.popup.MainPopupResourceBundle (this.strMenuStructure = menu, this.menuText);
 this.initialize (viewer, bundle, bundle.getMenuName ());
 J.i18n.GT.setDoTranslate (doTranslate);
-}, "J.viewer.Viewer,~S");
+}, "javajs.api.PlatformViewer,~S");
 });

@@ -16,7 +16,7 @@ this.cacheName = cacheName;
 this.setEval (eval);
 this.sc.pc--;
 }, "J.api.JmolScriptEvaluator,J.viewer.Viewer,~S,~S,~S");
-Clazz.overrideMethod (c$, "run1", 
+$_V(c$, "run1", 
 function (mode) {
 while (true) switch (mode) {
 case -1:

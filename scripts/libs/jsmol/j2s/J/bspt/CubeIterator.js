@@ -1,4 +1,5 @@
 Clazz.declarePackage ("J.bspt");
+Clazz.load (null, "J.bspt.CubeIterator", ["J.bspt.Node"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bspt = null;
 this.stack = null;
@@ -36,7 +37,7 @@ this.stack[0] = this.bspt.eleRoot;
 this.sp = 1;
 this.findLeftLeaf ();
 this.tHemisphere = hemisphereOnly;
-}, "J.util.P3,~N,~B");
+}, "JU.P3,~N,~B");
 $_M(c$, "release", 
 function () {
 this.set (this.bspt);
@@ -97,4 +98,5 @@ $_M(c$, "isWithinRadius",
 ($fz = function (t) {
 this.dx = t.x - this.cx;
 return ((!this.tHemisphere || this.dx >= 0) && (this.dx = Math.abs (this.dx)) <= this.radius && (this.dy = Math.abs (t.y - this.cy)) <= this.radius && (this.dz = Math.abs (t.z - this.cz)) <= this.radius);
-}, $fz.isPrivate = true, $fz), "J.util.P3");
+}, $fz.isPrivate = true, $fz), "JU.P3");
+});

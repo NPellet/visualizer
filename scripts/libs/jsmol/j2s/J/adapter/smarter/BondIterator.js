@@ -16,30 +16,30 @@ this.bonds = atomSetCollection.getBonds ();
 this.bondCount = atomSetCollection.getBondCount ();
 this.ibond = 0;
 }, "J.adapter.smarter.AtomSetCollection");
-Clazz.overrideMethod (c$, "hasNext", 
+$_V(c$, "hasNext", 
 function () {
 if (this.ibond == this.bondCount) return false;
 while ((this.bond = this.bonds[this.ibond++]) == null || (this.bsAtoms != null && (!this.bsAtoms.get (this.bond.atomIndex1) || !this.bsAtoms.get (this.bond.atomIndex2)))) if (this.ibond == this.bondCount) return false;
 
 return true;
 });
-Clazz.overrideMethod (c$, "getAtomUniqueID1", 
+$_V(c$, "getAtomUniqueID1", 
 function () {
 return Integer.$valueOf (this.bond.atomIndex1);
 });
-Clazz.overrideMethod (c$, "getAtomUniqueID2", 
+$_V(c$, "getAtomUniqueID2", 
 function () {
 return Integer.$valueOf (this.bond.atomIndex2);
 });
-Clazz.overrideMethod (c$, "getEncodedOrder", 
+$_V(c$, "getEncodedOrder", 
 function () {
 return this.bond.order;
 });
-Clazz.overrideMethod (c$, "getRadius", 
+$_V(c$, "getRadius", 
 function () {
 return this.bond.radius;
 });
-Clazz.overrideMethod (c$, "getColix", 
+$_V(c$, "getColix", 
 function () {
 return this.bond.colix;
 });

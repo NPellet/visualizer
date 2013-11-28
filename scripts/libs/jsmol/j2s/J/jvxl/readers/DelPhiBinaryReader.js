@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.DelPhiBinaryReader", ["J.util.Logger", "$.SB", "$.V3"], function () {
+Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.DelPhiBinaryReader", ["JU.SB", "$.V3", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.data = null;
 this.pt = 0;
@@ -9,7 +9,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.DelPhiBinaryReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, brNull) {
 var fileName = (sg.getReaderData ())[0];
 this.init2VFR (sg, this.br);
@@ -20,7 +20,7 @@ if (this.params.thePlane == null) this.params.insideOut = !this.params.insideOut
 this.allowSigma = false;
 this.isAngstroms = true;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "readParameters", 
+$_V(c$, "readParameters", 
 function () {
 var uplbl = this.readString ();
 J.util.Logger.info (uplbl);
@@ -34,9 +34,9 @@ var scalemid = this.readFloatArray ();
 var scale = scalemid[0];
 J.util.Logger.info ("DelPhi scale: " + scale);
 var dx = (scale == 1 ? 0.84375 : 1 / scale);
-this.volumetricVectors[0] = J.util.V3.new3 (0, 0, dx);
-this.volumetricVectors[1] = J.util.V3.new3 (0, dx, 0);
-this.volumetricVectors[2] = J.util.V3.new3 (dx, 0, 0);
+this.volumetricVectors[0] = JU.V3.new3 (0, 0, dx);
+this.volumetricVectors[1] = JU.V3.new3 (0, dx, 0);
+this.volumetricVectors[2] = JU.V3.new3 (dx, 0, 0);
 J.util.Logger.info ("DelPhi resolution (pts/angstrom) set to: " + dx);
 var nx = 65;
 this.voxelCounts[0] = this.voxelCounts[1] = this.voxelCounts[2] = nx;
@@ -47,7 +47,7 @@ J.util.Logger.info ("DelPhi center " + this.volumetricOrigin);
 this.volumetricOrigin.x -= dx;
 this.volumetricOrigin.y -= dx;
 this.volumetricOrigin.z -= dx;
-this.jvxlFileHeaderBuffer =  new J.util.SB ();
+this.jvxlFileHeaderBuffer =  new JU.SB ();
 this.jvxlFileHeaderBuffer.append ("DelPhi DATA ").append (nxttoplbl.$replace ('\n', ' ').trim ()).append ("\n\n");
 });
 $_M(c$, "readString", 
@@ -67,12 +67,12 @@ for (var i = 0; i < n; i++) a[i] = this.binarydoc.readFloat ();
 this.binarydoc.readInt ();
 return a;
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "nextVoxel", 
+$_V(c$, "nextVoxel", 
 function () {
 this.nBytes += 4;
 return this.data[this.pt++];
 });
-Clazz.overrideMethod (c$, "skipData", 
+$_V(c$, "skipData", 
 function (nPoints) {
 this.pt += nPoints;
 }, "~N");

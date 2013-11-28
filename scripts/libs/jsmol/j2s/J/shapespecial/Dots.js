@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapespecial");
-Clazz.load (["J.shape.AtomShape", "J.atomdata.RadiusData", "J.util.BS"], "J.shapespecial.Dots", ["java.util.Hashtable", "J.constant.EnumVdw", "J.geodesic.EnvelopeCalculation", "J.util.BSUtil", "$.C", "$.Escape", "$.Matrix3f", "$.SB"], function () {
+Clazz.load (["J.shape.AtomShape", "JU.BS", "J.atomdata.RadiusData"], "J.shapespecial.Dots", ["java.util.Hashtable", "JU.M3", "$.SB", "J.constant.EnumVdw", "J.geodesic.EnvelopeCalculation", "J.util.BSUtil", "$.C", "$.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.ec = null;
 this.isSurface = false;
@@ -13,20 +13,20 @@ this.rdLast = null;
 Clazz.instantialize (this, arguments);
 }, J.shapespecial, "Dots", J.shape.AtomShape);
 Clazz.prepareFields (c$, function () {
-this.bsOn =  new J.util.BS ();
+this.bsOn =  new JU.BS ();
 this.rdLast =  new J.atomdata.RadiusData (null, 0, null, null);
 });
 $_M(c$, "initShape", 
 function () {
 Clazz.superCall (this, J.shapespecial.Dots, "initShape", []);
 this.translucentAllowed = false;
-this.ec =  new J.geodesic.EnvelopeCalculation (this.viewer, this.atomCount, this.mads);
+this.ec =  new J.geodesic.EnvelopeCalculation ().set (this.viewer, this.atomCount, this.mads);
 });
-Clazz.overrideMethod (c$, "getSize", 
+$_V(c$, "getSize", 
 function (atomIndex) {
 return (this.mads != null ? this.mads[atomIndex] * 2 : this.bsOn.get (atomIndex) ? Clazz.doubleToInt (Math.floor (this.ec.getRadius (atomIndex) * 2000)) : 0);
 }, "~N");
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bs) {
 if ("init" === propertyName) {
 this.initialize ();
@@ -41,7 +41,7 @@ this.bsSelected = value;
 return;
 }if ("radius" === propertyName) {
 this.thisRadius = (value).floatValue ();
-if (this.thisRadius > 16) this.thisRadius = 16;
+if (this.thisRadius > 16) this.thisRadius = 16.1;
 return;
 }if ("colorRGB" === propertyName) {
 this.thisArgb = (value).intValue ();
@@ -81,7 +81,7 @@ return;
 bs = (value)[1];
 var m4 = (value)[2];
 if (m4 == null) return;
-var m =  new J.util.Matrix3f ();
+var m =  new JU.M3 ();
 m4.getRotationScale (m);
 this.ec.reCalculate (bs, m);
 return;
@@ -91,15 +91,15 @@ var nAtomsDeleted = ((value)[2])[2];
 J.util.BSUtil.deleteBits (this.bsOn, bs);
 this.ec.deleteAtoms (firstAtomDeleted, nAtomsDeleted);
 }this.setPropAS (propertyName, value, bs);
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 $_M(c$, "initialize", 
 function () {
 this.bsSelected = null;
 this.bsIgnore = null;
 this.isActive = false;
-if (this.ec == null) this.ec =  new J.geodesic.EnvelopeCalculation (this.viewer, this.atomCount, this.mads);
+if (this.ec == null) this.ec =  new J.geodesic.EnvelopeCalculation ().set (this.viewer, this.atomCount, this.mads);
 });
-Clazz.overrideMethod (c$, "setSizeRD", 
+$_V(c$, "setSizeRD", 
 function (rd, bsSelected) {
 if (rd == null) rd =  new J.atomdata.RadiusData (null, 0, J.atomdata.RadiusData.EnumType.ABSOLUTE, null);
 if (this.bsSelected != null) bsSelected = this.bsSelected;
@@ -157,8 +157,8 @@ this.colixes =  Clazz.newShortArray (this.atomCount, 0);
 this.paletteIDs =  Clazz.newByteArray (this.atomCount, 0);
 }this.ec.calculate (rd, maxRadius, this.bsOn, this.bsIgnore, !this.viewer.getBoolean (603979830), this.viewer.getBoolean (603979829), this.isSurface, true);
 this.rdLast = rd;
-}, "J.atomdata.RadiusData,J.util.BS");
-Clazz.overrideMethod (c$, "setModelClickability", 
+}, "J.atomdata.RadiusData,JU.BS");
+$_V(c$, "setModelClickability", 
 function () {
 for (var i = this.atomCount; --i >= 0; ) {
 var atom = this.atoms[i];
@@ -166,13 +166,11 @@ if ((atom.getShapeVisibilityFlags () & this.myVisibilityFlag) == 0 || this.model
 atom.setClickable (this.myVisibilityFlag);
 }
 });
-Clazz.overrideMethod (c$, "getShapeState", 
+$_V(c$, "getShapeState", 
 function () {
 var dotsConvexMaps = this.ec.getDotsConvexMaps ();
 if (dotsConvexMaps == null || this.ec.getDotsConvexMax () == 0) return "";
-var sc = this.viewer.getStateCreator ();
-if (sc == null) return "";
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 var temp =  new java.util.Hashtable ();
 var atomCount = this.viewer.getAtomCount ();
 var type = (this.isSurface ? "geoSurface " : "dots ");
@@ -184,7 +182,7 @@ if (!bs.isEmpty ()) {
 var r = this.ec.getAppropriateRadius (i);
 J.shape.Shape.appendCmd (s, type + i + " radius " + r + " " + J.util.Escape.eBS (bs));
 }}
-return s.append (sc.getCommands (temp, null, "select")).toString ();
+return s.append (this.viewer.getCommands (temp, null, "select")).toString ();
 });
 Clazz.defineStatics (c$,
 "SURFACE_DISTANCE_FOR_CALCULATION", 10,

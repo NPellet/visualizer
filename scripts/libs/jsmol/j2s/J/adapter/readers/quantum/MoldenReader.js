@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader", "J.util.BS"], "J.adapter.readers.quantum.MoldenReader", ["java.lang.Exception", "$.Float", "java.util.Arrays", "$.Hashtable", "J.adapter.readers.quantum.BasisFunctionReader", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.JmolList", "$.Logger", "$.Parser"], function () {
+Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader", "JU.BS"], "J.adapter.readers.quantum.MoldenReader", ["java.lang.Exception", "$.Float", "java.util.Arrays", "$.Hashtable", "JU.AU", "$.List", "$.PT", "J.adapter.readers.quantum.BasisFunctionReader", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.loadGeometries = false;
 this.loadVibrations = false;
@@ -15,10 +15,10 @@ this.haveEnergy = true;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "MoldenReader", J.adapter.readers.quantum.MopacSlaterReader);
 Clazz.prepareFields (c$, function () {
-this.bsAtomOK =  new J.util.BS ();
-this.bsBadIndex =  new J.util.BS ();
+this.bsAtomOK =  new JU.BS ();
+this.bsBadIndex =  new JU.BS ();
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.vibOnly = this.checkFilterKey ("VIBONLY");
 this.optOnly = this.checkFilterKey ("OPTONLY");
@@ -29,7 +29,7 @@ if (this.checkFilterKey ("ALPHA")) this.filter = "alpha";
  else if (this.checkFilterKey ("BETA")) this.filter = "beta";
  else this.filter = this.getFilter ("SYM=");
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (!this.line.contains ("[")) return true;
 this.line = this.line.toUpperCase ().trim ();
@@ -41,13 +41,14 @@ this.modelAtomCount = this.atomSetCollection.getFirstAtomSetAtomCount ();
 if (this.atomSetCollection.getAtomSetCount () == 1 && this.moData != null) this.finalizeMOData (this.moData);
 return false;
 }if (this.line.indexOf ("[GTO]") == 0) return this.readGaussianBasis ();
+if (this.line.indexOf ("[STO]") == 0) return this.readSlaterBasis ();
 if (this.line.indexOf ("[MO]") == 0) return (!this.doReadMolecularOrbitals || this.readMolecularOrbitals ());
 if (this.line.indexOf ("[FREQ]") == 0) return (!this.loadVibrations || this.readFreqsAndModes ());
 if (this.line.indexOf ("[GEOCONV]") == 0) return (!this.loadGeometries || this.readGeometryOptimization ());
 this.checkOrbitalType (this.line);
 return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 if (this.bsBadIndex.isEmpty ()) return;
 try {
@@ -103,10 +104,20 @@ atom.elementNumber = this.parseIntStr (tokens[2]);
 this.setAtomCoordXYZ (atom, this.parseFloatStr (tokens[3]) * f, this.parseFloatStr (tokens[4]) * f, this.parseFloatStr (tokens[5]) * f);
 }
 }, $fz.isPrivate = true, $fz));
+$_M(c$, "readSlaterBasis", 
+function () {
+while (this.readLine () != null && this.line.indexOf ("[") < 0) {
+var tokens = this.getTokens ();
+if (tokens.length < 7) continue;
+this.addSlater (this.parseIntStr (tokens[0]) - 1, this.parseIntStr (tokens[1]), this.parseIntStr (tokens[2]), this.parseIntStr (tokens[3]), this.parseIntStr (tokens[4]), this.parseFloatStr (tokens[5]), this.parseFloatStr (tokens[6]));
+}
+this.setSlaters (false, false);
+return false;
+});
 $_M(c$, "readGaussianBasis", 
 ($fz = function () {
-this.shells =  new J.util.JmolList ();
-var gdata =  new J.util.JmolList ();
+this.shells =  new JU.List ();
+var gdata =  new JU.List ();
 var atomIndex = 0;
 var gaussianPtr = 0;
 this.nCoef = 0;
@@ -147,7 +158,7 @@ this.shells.addLast (slater);
 if (this.line.length > 0 && this.line.charAt (0) == '[') break;
 this.readLine ();
 }
-var garray = J.util.ArrayUtil.newFloat2 (gaussianPtr);
+var garray = JU.AU.newFloat2 (gaussianPtr);
 for (var i = 0; i < gaussianPtr; i++) {
 garray[i] = gdata.get (i);
 }
@@ -167,7 +178,7 @@ this.fixOrbitalType ();
 var tokens = this.getMoTokens (this.line);
 while (tokens != null && tokens.length > 0 && tokens[0].indexOf ('[') < 0) {
 var mo =  new java.util.Hashtable ();
-var data =  new J.util.JmolList ();
+var data =  new JU.List ();
 var energy = NaN;
 var occupancy = NaN;
 var symmetry = null;
@@ -217,7 +228,7 @@ return false;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "sortMOs", 
 ($fz = function () {
-var list = this.orbitals.toArray ();
+var list = this.orbitals.toArray ( new Array (this.orbitals.size ()));
 java.util.Arrays.sort (list, Clazz.innerTypeInstance (J.adapter.readers.quantum.BasisFunctionReader.MOEnergySorter, this, null));
 this.orbitals.clear ();
 for (var i = 0; i < list.length; i++) this.orbitals.addLast (list[i]);
@@ -255,7 +266,7 @@ this.fixSlaterTypes (J.api.JmolAdapter.SHELL_H_SPHERICAL, J.api.JmolAdapter.SHEL
 $_M(c$, "readFreqsAndModes", 
 ($fz = function () {
 var tokens;
-var frequencies =  new J.util.JmolList ();
+var frequencies =  new JU.List ();
 while (this.readLine () != null && this.line.indexOf ('[') < 0) {
 var f = this.getTokens ()[0];
 frequencies.addLast (f);
@@ -270,7 +281,7 @@ this.skipTo ("vibration");
 this.doGetVibration (++this.vibrationNumber);
 if (haveVib) this.atomSetCollection.cloneLastAtomSet ();
 haveVib = true;
-this.atomSetCollection.setAtomSetFrequency (null, null, "" + J.util.Parser.dVal (frequencies.get (nFreq)), null);
+this.atomSetCollection.setAtomSetFrequency (null, null, "" + JU.PT.dVal (frequencies.get (nFreq)), null);
 var i0 = this.atomSetCollection.getLastAtomSetAtomIndex ();
 for (var i = 0; i < this.modelAtomCount; i++) {
 tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine ());
@@ -281,9 +292,9 @@ return true;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readGeometryOptimization", 
 ($fz = function () {
-var energies =  new J.util.JmolList ();
+var energies =  new JU.List ();
 this.readLine ();
-while (this.readLine () != null && this.line.indexOf ("force") < 0) energies.addLast ("" + J.util.Parser.dVal (this.line.trim ()));
+while (this.readLine () != null && this.line.indexOf ("force") < 0) energies.addLast ("" + JU.PT.dVal (this.line.trim ()));
 
 this.skipTo ("[GEOMETRIES] XYZ");
 var nGeom = energies.size ();

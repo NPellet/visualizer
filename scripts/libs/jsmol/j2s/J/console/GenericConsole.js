@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.console");
-Clazz.load (["J.api.JmolAppConsoleInterface", "$.JmolCallbackListener", "java.util.Hashtable"], "J.console.GenericConsole", ["java.lang.Boolean", "J.constant.EnumCallback", "J.i18n.GT", "J.script.T", "J.util.TextFormat", "J.viewer.Viewer"], function () {
+Clazz.load (["J.api.JmolAppConsoleInterface", "$.JmolCallbackListener", "java.util.Hashtable"], "J.console.GenericConsole", ["java.lang.Boolean", "JU.PT", "J.constant.EnumCallback", "J.i18n.GT", "J.script.T", "J.viewer.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.input = null;
 this.output = null;
@@ -108,8 +108,8 @@ splitCmd = J.console.GenericConsole.splitCommandLine (strCommand);
 var cmd = null;
 if (!asCommand && (notThis.charAt (0) == '"' || notThis.charAt (0) == '\'')) {
 var q = notThis.charAt (0);
-notThis = J.util.TextFormat.trim (notThis, "\"\'");
-var stub = J.util.TextFormat.trim (splitCmd[2], "\"\'");
+notThis = JU.PT.trim (notThis, "\"\'");
+var stub = JU.PT.trim (splitCmd[2], "\"\'");
 cmd = this.nextFileName (stub, this.nTab);
 if (cmd != null) cmd = splitCmd[0] + splitCmd[1] + q + cmd + q;
 } else {
@@ -140,7 +140,7 @@ return;
 this.output.setText ("");
 return;
 }if (source === this.loadButton) {
-this.viewer.loadInline (this.input.getText (), false);
+this.viewer.loadInlineAppend (this.input.getText (), false);
 return;
 }if (this.isMenuItem (source)) {
 this.execute ((source).getName ());
@@ -195,7 +195,7 @@ var mnemonic = J.console.GenericConsole.getMnemonic (label);
 if (mnemonic != ' ') (button).setMnemonic (mnemonic);
 menuMap.put (key, button);
 }, "~O,~S,~S,java.util.Map");
-Clazz.overrideMethod (c$, "notifyEnabled", 
+$_V(c$, "notifyEnabled", 
 function (type) {
 switch (type) {
 case J.constant.EnumCallback.ECHO:
@@ -220,11 +220,11 @@ break;
 }
 return false;
 }, "J.constant.EnumCallback");
-Clazz.overrideMethod (c$, "getText", 
+$_V(c$, "getText", 
 function () {
 return this.output.getText ();
 });
-Clazz.overrideMethod (c$, "sendConsoleEcho", 
+$_V(c$, "sendConsoleEcho", 
 function (strEcho) {
 if (strEcho == null) {
 this.updateLabels ();
@@ -244,12 +244,12 @@ $_M(c$, "clearContent",
 function (text) {
 this.output.setText (text);
 }, "~S");
-Clazz.overrideMethod (c$, "sendConsoleMessage", 
+$_V(c$, "sendConsoleMessage", 
 function (strInfo) {
 if (strInfo != null && this.output.getText ().startsWith (this.defaultMessage)) this.outputMsg (null);
 this.outputMsg (strInfo);
 }, "~S");
-Clazz.overrideMethod (c$, "notifyCallback", 
+$_V(c$, "notifyCallback", 
 function (type, data) {
 var strInfo = (data == null || data[1] == null ? null : data[1].toString ());
 switch (type) {
@@ -269,10 +269,10 @@ this.sendConsoleMessage (strInfo);
 break;
 }
 }, "J.constant.EnumCallback,~A");
-Clazz.overrideMethod (c$, "setCallbackFunction", 
+$_V(c$, "setCallbackFunction", 
 function (callbackType, callbackFunction) {
 }, "~S,~S");
-Clazz.overrideMethod (c$, "zap", 
+$_V(c$, "zap", 
 function () {
 });
 $_M(c$, "recallCommand", 

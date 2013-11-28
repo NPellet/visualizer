@@ -4,13 +4,13 @@ c$ = Clazz.declareType (J.minimize, "Util");
 c$.sub = $_M(c$, "sub", 
 function (a, b, result) {
 result.set (a[0] - b[0], a[1] - b[1], a[2] - b[2]);
-}, "~A,~A,J.util.Vector3d");
+}, "~A,~A,JU.V3d");
 c$.putCoord = $_M(c$, "putCoord", 
 function (v, c) {
 c[0] = v.x;
 c[1] = v.y;
 c[2] = v.z;
-}, "J.util.Vector3d,~A");
+}, "JU.V3d,~A");
 c$.distance2 = $_M(c$, "distance2", 
 function (a, b) {
 var dx = a[0] - b[0];
@@ -24,7 +24,7 @@ var dx = a.x - b.x;
 var dy = a.y - b.y;
 var dz = a.z - b.z;
 return (dx * dx + dy * dy + dz * dz);
-}, "J.util.Vector3d,J.util.Vector3d");
+}, "JU.V3d,JU.V3d");
 c$.getAngleRadiansABC = $_M(c$, "getAngleRadiansABC", 
 function (a, b, c) {
 var ab2 = J.minimize.Util.distance2 (a, b);
@@ -35,7 +35,7 @@ return (J.minimize.Util.isNearZero2 (ab2, 1e-3) || J.minimize.Util.isNearZero2 (
 c$.isApprox = $_M(c$, "isApprox", 
 function (a, b, precision) {
 return (J.minimize.Util.distance2V (a, b) <= precision * precision * Math.min (a.lengthSquared (), b.lengthSquared ()));
-}, "J.util.Vector3d,J.util.Vector3d,~N");
+}, "JU.V3d,JU.V3d,~N");
 c$.canBeSquared = $_M(c$, "canBeSquared", 
 function (x) {
 if (x == 0) return true;
@@ -73,7 +73,7 @@ c$.canBeNormalized = $_M(c$, "canBeNormalized",
 function (a) {
 if (a.x == 0.0 && a.y == 0.0 && a.z == 0.0) return false;
 return (J.minimize.Util.canBeSquared (a.x) && J.minimize.Util.canBeSquared (a.y) && J.minimize.Util.canBeSquared (a.z));
-}, "J.util.Vector3d");
+}, "JU.V3d");
 c$.pointPlaneAngleRadians = $_M(c$, "pointPlaneAngleRadians", 
 function (a, b, c, d, v1, v2, norm, fixTheta) {
 v1.sub2 (b, c);
@@ -86,13 +86,13 @@ var angleNorm = J.minimize.Util.vectorAngleRadians (norm, v1);
 if (angleNorm > 1.5707963267948966) angleNorm = 3.141592653589793 - angleNorm;
 var val = 1.5707963267948966 + (angleA_CD > 1.5707963267948966 ? -angleNorm : angleNorm);
 return val;
-}, "J.util.Vector3d,J.util.Vector3d,J.util.Vector3d,J.util.Vector3d,J.util.Vector3d,J.util.Vector3d,J.util.Vector3d,~B");
+}, "JU.V3d,JU.V3d,JU.V3d,JU.V3d,JU.V3d,JU.V3d,JU.V3d,~B");
 c$.vectorAngleRadians = $_M(c$, "vectorAngleRadians", 
 ($fz = function (v1, v2) {
 var l1 = v1.length ();
 var l2 = v2.length ();
 return (J.minimize.Util.isNearZero (l1) || J.minimize.Util.isNearZero (l2) ? 0 : Math.acos (v1.dot (v2) / (l1 * l2)));
-}, $fz.isPrivate = true, $fz), "J.util.Vector3d,J.util.Vector3d");
+}, $fz.isPrivate = true, $fz), "JU.V3d,JU.V3d");
 c$.getTorsionAngleRadians = $_M(c$, "getTorsionAngleRadians", 
 function (a, b, c, d, r1, r2, r3) {
 J.minimize.Util.sub (b, a, r1);
@@ -105,7 +105,7 @@ var p1dotp2 = r1.dot (r3);
 r1.cross (r3, r1);
 var theta = Math.atan2 (-r2.dot (r1), p1dotp2);
 return theta;
-}, "~A,~A,~A,~A,J.util.Vector3d,J.util.Vector3d,J.util.Vector3d");
+}, "~A,~A,~A,~A,JU.V3d,JU.V3d,JU.V3d");
 c$.restorativeForceAndDistance = $_M(c$, "restorativeForceAndDistance", 
 function (a, b, vab) {
 vab.sub2 (a, b);
@@ -118,7 +118,7 @@ a.setT (vab);
 a.scale (-1);
 b.setT (vab);
 return rab;
-}, "J.util.Vector3d,J.util.Vector3d,J.util.Vector3d");
+}, "JU.V3d,JU.V3d,JU.V3d");
 c$.randomizeUnitVector = $_M(c$, "randomizeUnitVector", 
 ($fz = function (v) {
 var ptr =  new java.util.Random ();
@@ -128,7 +128,7 @@ v.set (ptr.nextFloat () - 0.5, ptr.nextFloat () - 0.5, ptr.nextFloat () - 0.5);
 l = v.lengthSquared ();
 } while ((l > 1.0) || (l < 1e-4));
 v.normalize ();
-}, $fz.isPrivate = true, $fz), "J.util.Vector3d");
+}, $fz.isPrivate = true, $fz), "JU.V3d");
 c$.restorativeForceAndAngleRadians = $_M(c$, "restorativeForceAndAngleRadians", 
 function (i, j, k) {
 i.sub (j);
@@ -172,7 +172,7 @@ k.setT (j);
 j.add (i);
 j.scale (-1);
 return theta;
-}, "J.util.Vector3d,J.util.Vector3d,J.util.Vector3d");
+}, "JU.V3d,JU.V3d,JU.V3d");
 c$.restorativeForceAndOutOfPlaneAngleRadians = $_M(c$, "restorativeForceAndOutOfPlaneAngleRadians", 
 function (i, j, k, l, an, bn, cn) {
 i.sub2 (i, j);
@@ -225,7 +225,7 @@ j.add (k);
 j.add (l);
 j.scale (-1);
 return dl;
-}, "J.util.Vector3d,J.util.Vector3d,J.util.Vector3d,J.util.Vector3d,J.util.Vector3d,J.util.Vector3d,J.util.Vector3d");
+}, "JU.V3d,JU.V3d,JU.V3d,JU.V3d,JU.V3d,JU.V3d,JU.V3d");
 c$.restorativeForceAndTorsionAngleRadians = $_M(c$, "restorativeForceAndTorsionAngleRadians", 
 function (i, j, k, l) {
 i.sub2 (j, i);
@@ -265,7 +265,7 @@ k.add (j);
 k.add (l);
 k.scale (-1);
 return theta;
-}, "J.util.Vector3d,J.util.Vector3d,J.util.Vector3d,J.util.Vector3d");
+}, "JU.V3d,JU.V3d,JU.V3d,JU.V3d");
 Clazz.defineStatics (c$,
 "RAD_TO_DEG", (57.29577951308232),
 "DEG_TO_RAD", (0.017453292519943295),

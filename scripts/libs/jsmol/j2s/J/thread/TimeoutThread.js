@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.thread");
-Clazz.load (["J.thread.JmolThread"], "J.thread.TimeoutThread", ["java.lang.Thread", "J.util.SB"], function () {
+Clazz.load (["J.thread.JmolThread"], "J.thread.TimeoutThread", ["java.lang.Thread", "JU.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.script = null;
 this.status = 0;
@@ -19,11 +19,11 @@ $_M(c$, "set",
 this.sleepTime = ms;
 if (script != null) this.script = script;
 }, $fz.isPrivate = true, $fz), "~N,~S");
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return "timeout name=" + this.$name + " executions=" + this.status + " mSec=" + this.sleepTime + " secRemaining=" + (this.targetTime - System.currentTimeMillis ()) / 1000 + " script=" + this.script;
 });
-Clazz.overrideMethod (c$, "run1", 
+$_V(c$, "run1", 
 function (mode) {
 while (true) {
 switch (mode) {
@@ -92,7 +92,7 @@ if (t != null) t.triggered = (t.sleepTime < 0);
 }, "java.util.Map,~S");
 c$.showTimeout = $_M(c$, "showTimeout", 
 function (timeouts, name) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 if (timeouts != null) {
 for (var o, $o = timeouts.values ().iterator (); $o.hasNext () && ((o = $o.next ()) || true);) {
 var t = o;

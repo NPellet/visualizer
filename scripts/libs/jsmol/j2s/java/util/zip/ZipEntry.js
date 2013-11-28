@@ -93,7 +93,7 @@ $_M(c$, "isDirectory",
 function () {
 return this.name.endsWith ("/");
 });
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return this.getName ();
 });
@@ -110,7 +110,7 @@ if (year < 1980) {
 return 2162688;
 }return (year - 1980) << 25 | (d.getMonth () + 1) << 21 | d.getDate () << 16 | d.getHours () << 11 | d.getMinutes () << 5 | d.getSeconds () >> 1;
 }, $fz.isPrivate = true, $fz), "~N");
-Clazz.overrideMethod (c$, "hashCode", 
+$_V(c$, "hashCode", 
 function () {
 return this.name.hashCode ();
 });

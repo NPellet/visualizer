@@ -1,10 +1,10 @@
 Clazz.declarePackage ("J.shape");
 Clazz.load (["J.shape.FontLineShape"], "J.shape.Uccage", null, function () {
 c$ = Clazz.declareType (J.shape, "Uccage", J.shape.FontLineShape);
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bs) {
 this.setPropFLS (propertyName, value);
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 $_M(c$, "getShapeState", 
 function () {
 return (this.modelSet.haveUnitCells ? Clazz.superCall (this, J.shape.Uccage, "getShapeState", []) : "");

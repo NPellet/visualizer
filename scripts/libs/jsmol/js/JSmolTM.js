@@ -50,7 +50,7 @@ Jmol._TMApplet._getApplet = function(id, Info, checkOnly) {
  		width: 300,
 		height: 300,
 		addSelectionOptions: false,
-		serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
+		serverURL: "http://your.server.here/jsmol.php",
 		defaultModel: "",
 		readyFunction: null,
 		use: "HTML5",
@@ -262,23 +262,19 @@ proto._loadModel = function(mol) {
 };
   
 proto._showInfo = function(tf) {
-	Jmol._getElement(this, "infoheaderspan").innerHTML = this._infoHeader;
+  Jmol.$html(Jmol.$(this, "infoheaderspan"), this._infoHeader);
 	if (this._info)
-		Jmol._getElement(this, "infodiv").innerHTML = this._info;
+		Jmol.$html(Jmol.$(this, "infodiv"), this._info);
 	if ((!this._isInfoVisible) == (!tf))
 		return;
 	this._isInfoVisible = tf;
-	if (this._infoObject) {
-		this._infoObject._showInfo(tf);
-	} else {
-		Jmol._getElement(this, "infotablediv").style.display = (tf ? "block" : "none");
-		Jmol._getElement(this, "infoheaderdiv").style.display = (tf ? "block" : "none");
-	}
+	Jmol.$setVisible(Jmol.$(this, "infotablediv"), tf);
+	Jmol.$setVisible(Jmol.$(this, "infoheaderdiv"), tf);
 	this._show(!tf);
 }
 
 proto._show = function(tf) {
-	Jmol._getElement(this,"appletdiv").style.display = (tf ? "block" : "none");
+	Jmol.$setVisible(Jmol.$(this, "appletdiv"), tf);
 	if (tf)
 		this._draw();
 }

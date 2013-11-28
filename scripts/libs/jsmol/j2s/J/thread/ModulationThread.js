@@ -10,7 +10,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.thread.ModulationThread, []);
 });
-Clazz.overrideMethod (c$, "setManager", 
+$_V(c$, "setManager", 
 function (manager, viewer, params) {
 var options = params;
 this.modT = options[0];
@@ -35,7 +35,7 @@ throw e;
 }
 Clazz.superCall (this, J.thread.ModulationThread, "interrupt", []);
 });
-Clazz.overrideMethod (c$, "run1", 
+$_V(c$, "run1", 
 function (mode) {
 while (true) {
 switch (mode) {

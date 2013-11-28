@@ -1,11 +1,11 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.GamessReader"], "J.adapter.readers.quantum.GamessUKReader", ["java.lang.Float", "J.adapter.smarter.AtomSetCollectionReader", "J.util.JmolList"], function () {
+Clazz.load (["J.adapter.readers.quantum.GamessReader"], "J.adapter.readers.quantum.GamessUKReader", ["java.lang.Float", "JU.List", "J.adapter.smarter.AtomSetCollectionReader"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.symmetries = null;
 this.occupancies = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "GamessUKReader", J.adapter.readers.quantum.GamessReader);
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.indexOf ("BASIS OPTIONS") >= 0) {
 this.readBasisInfo ();
@@ -18,7 +18,7 @@ this.readGaussianBasis ("======================================================"
 return false;
 }if (this.line.indexOf ("molecular geometry") >= 0) {
 if (!this.doGetModel (++this.modelNumber, null)) return this.checkLastModel ();
-this.atomNames =  new J.util.JmolList ();
+this.atomNames =  new JU.List ();
 this.readAtomsInBohrCoordinates ();
 return true;
 }if (!this.doProcessLines) return true;
@@ -35,7 +35,7 @@ this.setOrbitalSymmetryAndOccupancy ();
 return false;
 }return this.checkNboLine ();
 });
-Clazz.overrideMethod (c$, "readAtomsInBohrCoordinates", 
+$_V(c$, "readAtomsInBohrCoordinates", 
 function () {
 this.discardLinesUntilContains ("*****");
 this.discardLinesUntilContains ("atom");
@@ -57,15 +57,15 @@ atom.elementSymbol = J.adapter.smarter.AtomSetCollectionReader.getElementSymbol 
 this.atomNames.addLast (atomName);
 }
 });
-Clazz.overrideMethod (c$, "fixShellTag", 
+$_V(c$, "fixShellTag", 
 function (tag) {
 return tag.substring (1).toUpperCase ();
 }, "~S");
 $_M(c$, "readOrbitalSymmetryAndOccupancy", 
 ($fz = function () {
 this.readLines (4);
-this.symmetries =  new J.util.JmolList ();
-this.occupancies =  new J.util.JmolList ();
+this.symmetries =  new JU.List ();
+this.occupancies =  new JU.List ();
 while (this.readLine () != null && this.line.indexOf ("====") < 0) {
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.line.substring (20));
 this.symmetries.addLast (tokens[0] + " " + tokens[1]);

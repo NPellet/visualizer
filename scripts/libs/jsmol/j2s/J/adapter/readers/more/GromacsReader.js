@@ -1,12 +1,12 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.more.GromacsReader", ["java.lang.Float", "J.adapter.smarter.Atom", "J.api.JmolAdapter", "J.util.Logger", "$.P3"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.more.GromacsReader", ["java.lang.Float", "JU.P3", "J.adapter.smarter.Atom", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.declareType (J.adapter.readers.more, "GromacsReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.atomSetCollection.newAtomSet ();
 this.setIsPDB ();
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 this.checkCurrentLineForScript ();
 this.atomSetCollection.setAtomSetName (this.line.trim ());
@@ -75,7 +75,7 @@ var c = 10 * this.parseFloatStr (tokens[2]);
 this.setUnitCell (a, b, c, 90, 90, 90);
 this.setSpaceGroupName ("P1");
 var atoms = this.atomSetCollection.getAtoms ();
-var pt = J.util.P3.new3 (0.5, 0.5, 0.5);
+var pt = JU.P3.new3 (0.5, 0.5, 0.5);
 for (var i = this.atomSetCollection.getAtomCount (); --i >= 0; ) {
 this.setAtomCoord (atoms[i]);
 atoms[i].add (pt);

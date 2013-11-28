@@ -16,8 +16,8 @@ this.bondCount = bondCount;
 this.bondType = bondType;
 this.bsSelected = bsSelected;
 this.bondSelectionModeOr = bondSelectionModeOr;
-}, "~A,~N,~N,J.util.BS,~B");
-Clazz.overrideMethod (c$, "hasNext", 
+}, "~A,~N,~N,JU.BS,~B");
+$_V(c$, "hasNext", 
 function () {
 if (this.bondType == 131071) {
 this.iBond = this.bsSelected.nextSetBit (this.iBond);
@@ -33,11 +33,11 @@ if ((!this.bondSelectionModeOr && isSelected1 && isSelected2) || (this.bondSelec
 }
 return false;
 });
-Clazz.overrideMethod (c$, "nextIndex", 
+$_V(c$, "nextIndex", 
 function () {
 return this.iBond;
 });
-Clazz.overrideMethod (c$, "next", 
+$_V(c$, "next", 
 function () {
 return this.bonds[this.iBond++];
 });

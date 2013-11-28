@@ -165,6 +165,12 @@ return new java.util.Collections.SynchronizedSet((($_D("java.util.Hashtable$3")?
 $_V(c$,"put",
 function(key,value){
 if(key!=null&&value!=null){
+	// BH added ability to use a non-Java key for HTML elements, for example.
+	if(!key.hashCode) {
+		  var hc = Math.floor(Math.random()*10000000);
+		  key.hashCode = function(){return hc};
+		  key.equals = function(a){return this.hashCode() == a.hashCode()};
+	}
 var hash=key.hashCode();
 var index=(hash&0x7FFFFFFF)%this.elementData.length;
 var entry=this.elementData[index];

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.atomdata");
-Clazz.load (["java.lang.Enum", "J.constant.EnumVdw"], "J.atomdata.RadiusData", ["java.lang.Float", "J.util.SB"], function () {
+Clazz.load (["java.lang.Enum", "J.constant.EnumVdw"], "J.atomdata.RadiusData", ["java.lang.Float", "JU.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.info = null;
 this.factorType = null;
@@ -24,10 +24,10 @@ this.factorType = factorType;
 this.value = value;
 if (vdwType != null) this.vdwType = vdwType;
 }, "~A,~N,J.atomdata.RadiusData.EnumType,J.constant.EnumVdw");
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 if (Float.isNaN (this.value)) return "";
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 switch (this.factorType) {
 case J.atomdata.RadiusData.EnumType.ABSOLUTE:
 sb.appendF (this.value);

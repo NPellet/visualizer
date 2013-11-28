@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.api.JmolRepaintManager", "J.util.BS"], "J.render.RepaintManager", ["J.util.Logger", "J.viewer.JC"], function () {
+Clazz.load (["J.api.JmolRepaintManager", "JU.BS"], "J.render.RepaintManager", ["J.util.Logger", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.shapeManager = null;
@@ -10,25 +10,25 @@ this.repaintPending = false;
 Clazz.instantialize (this, arguments);
 }, J.render, "RepaintManager", null, J.api.JmolRepaintManager);
 Clazz.prepareFields (c$, function () {
-this.bsTranslucent = J.util.BS.newN (36);
+this.bsTranslucent = JU.BS.newN (36);
 });
 Clazz.makeConstructor (c$, 
 function () {
 });
-Clazz.overrideMethod (c$, "set", 
+$_V(c$, "set", 
 function (viewer, shapeManager) {
 this.viewer = viewer;
 this.shapeManager = shapeManager;
 }, "J.viewer.Viewer,J.viewer.ShapeManager");
-Clazz.overrideMethod (c$, "isRepaintPending", 
+$_V(c$, "isRepaintPending", 
 function () {
 return this.repaintPending;
 });
-Clazz.overrideMethod (c$, "pushHoldRepaint", 
+$_V(c$, "pushHoldRepaint", 
 function (why) {
 ++this.holdRepaint;
 }, "~S");
-Clazz.overrideMethod (c$, "popHoldRepaint", 
+$_V(c$, "popHoldRepaint", 
 function (andRepaint, why) {
 --this.holdRepaint;
 if (this.holdRepaint <= 0) {
@@ -37,14 +37,14 @@ if (andRepaint) {
 this.repaintPending = true;
 this.repaintNow (why);
 }}}, "~B,~S");
-Clazz.overrideMethod (c$, "requestRepaintAndWait", 
+$_V(c$, "requestRepaintAndWait", 
 function (why) {
 {
 if (typeof Jmol != "undefined" && Jmol._repaint)
 Jmol._repaint(this.viewer.applet, false);
 this.repaintDone();
 }}, "~S");
-Clazz.overrideMethod (c$, "repaintIfReady", 
+$_V(c$, "repaintIfReady", 
 function (why) {
 if (this.repaintPending) return false;
 this.repaintPending = true;
@@ -58,12 +58,12 @@ if (!this.viewer.haveDisplay) return;
 if (typeof Jmol != "undefined" && Jmol._repaint)
 Jmol._repaint(this.viewer.applet,true);
 }}, $fz.isPrivate = true, $fz), "~S");
-Clazz.overrideMethod (c$, "repaintDone", 
+$_V(c$, "repaintDone", 
 function () {
 this.repaintPending = false;
 {
 }});
-Clazz.overrideMethod (c$, "clear", 
+$_V(c$, "clear", 
 function (iShape) {
 if (this.renderers == null) return;
 if (iShape >= 0) this.renderers[iShape] = null;
@@ -88,7 +88,7 @@ throw e;
 }
 }
 }, $fz.isPrivate = true, $fz), "~N");
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function (gdata, modelSet, isFirstPass, minMax) {
 var logTime = this.viewer.getBoolean (603979934);
 try {
@@ -120,17 +120,17 @@ throw e;
 }
 }
 }, "J.util.GData,J.modelset.ModelSet,~B,~A");
-Clazz.overrideMethod (c$, "renderExport", 
-function (type, gdata, modelSet, fileName) {
+$_V(c$, "renderExport", 
+function (gdata, modelSet, params) {
 var isOK;
 var logTime = this.viewer.getBoolean (603979934);
 this.viewer.finalizeTransformParameters ();
 this.shapeManager.finalizeAtoms (null, null);
 this.shapeManager.transformAtoms ();
-var g3dExport = this.viewer.initializeExporter (type, fileName);
+var g3dExport = this.viewer.initializeExporter (params);
 isOK = (g3dExport != null);
 if (!isOK) {
-J.util.Logger.error ("Cannot export " + type);
+J.util.Logger.error ("Cannot export " + params.get ("type"));
 return null;
 }g3dExport.renderBackground (g3dExport);
 if (this.renderers == null) this.renderers =  new Array (36);
@@ -146,5 +146,5 @@ if (logTime) J.util.Logger.checkTimer (msg, false);
 }
 g3dExport.renderAllStrings (g3dExport);
 return g3dExport.finalizeOutput ();
-}, "~S,J.util.GData,J.modelset.ModelSet,~S");
+}, "J.util.GData,J.modelset.ModelSet,java.util.Map");
 });

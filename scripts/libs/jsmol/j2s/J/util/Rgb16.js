@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.Rgb16", ["J.util.SB"], function () {
+Clazz.load (null, "J.util.Rgb16", ["JU.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.rScaled = 0;
 this.gScaled = 0;
@@ -46,8 +46,8 @@ $_M(c$, "getArgb",
 function () {
 return (0xFF000000 | ((this.rScaled << 8) & 0x00FF0000) | (this.gScaled & 0x0000FF00) | (this.bScaled >> 8));
 });
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
-return  new J.util.SB ().append ("Rgb16(").appendI (this.rScaled).appendC (',').appendI (this.gScaled).appendC (',').appendI (this.bScaled).append (" -> ").appendI ((this.rScaled >> 8) & 0xFF).appendC (',').appendI ((this.gScaled >> 8) & 0xFF).appendC (',').appendI ((this.bScaled >> 8) & 0xFF).appendC (')').toString ();
+return  new JU.SB ().append ("Rgb16(").appendI (this.rScaled).appendC (',').appendI (this.gScaled).appendC (',').appendI (this.bScaled).append (" -> ").appendI ((this.rScaled >> 8) & 0xFF).appendC (',').appendI ((this.gScaled >> 8) & 0xFF).appendC (',').appendI ((this.bScaled >> 8) & 0xFF).appendC (')').toString ();
 });
 });

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (null, "J.modelset.LabelToken", ["java.lang.Character", "$.Float", "java.util.Hashtable", "J.modelset.Atom", "J.script.T", "J.util.Escape", "$.SB", "$.TextFormat"], function () {
+Clazz.load (null, "J.modelset.LabelToken", ["java.lang.Character", "$.Float", "java.util.Hashtable", "JU.PT", "$.SB", "J.modelset.Atom", "J.script.T"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.text = null;
 this.key = null;
@@ -14,21 +14,25 @@ this.zeroPad = false;
 this.intAsFloat = false;
 Clazz.instantialize (this, arguments);
 }, J.modelset, "LabelToken");
+Clazz.makeConstructor (c$, 
+function () {
+});
+$_M(c$, "set", 
+($fz = function (text, pt) {
+this.text = text;
+this.pt = pt;
+return this;
+}, $fz.isPrivate = true, $fz), "~S,~N");
 c$.isLabelPropertyTok = $_M(c$, "isLabelPropertyTok", 
 ($fz = function (tok) {
 for (var i = J.modelset.LabelToken.labelTokenIds.length; --i >= 0; ) if (J.modelset.LabelToken.labelTokenIds[i] == tok) return true;
 
 return false;
 }, $fz.isPrivate = true, $fz), "~N");
-Clazz.makeConstructor (c$, 
-($fz = function (text, pt) {
-this.text = text;
-this.pt = pt;
-}, $fz.isPrivate = true, $fz), "~S,~N");
 c$.compile = $_M(c$, "compile", 
 function (viewer, strFormat, chAtom, htValues) {
 if (strFormat == null || strFormat.length == 0) return null;
-if (strFormat.indexOf ("%") < 0 || strFormat.length < 2) return [ new J.modelset.LabelToken (strFormat, -1)];
+if (strFormat.indexOf ("%") < 0 || strFormat.length < 2) return [ new J.modelset.LabelToken ().set (strFormat, -1)];
 var n = 0;
 var ich = -1;
 var cch = strFormat.length;
@@ -38,12 +42,12 @@ var tokens =  new Array (n * 2 + 1);
 var ichPercent;
 var i = 0;
 for (ich = 0; (ichPercent = strFormat.indexOf ('%', ich)) >= 0; ) {
-if (ich != ichPercent) tokens[i++] =  new J.modelset.LabelToken (strFormat.substring (ich, ichPercent), -1);
-var lt = tokens[i++] =  new J.modelset.LabelToken (null, ichPercent);
+if (ich != ichPercent) tokens[i++] =  new J.modelset.LabelToken ().set (strFormat.substring (ich, ichPercent), -1);
+var lt = tokens[i++] =  new J.modelset.LabelToken ().set (null, ichPercent);
 viewer.autoCalculate (lt.tok);
 ich = J.modelset.LabelToken.setToken (viewer, strFormat, lt, cch, chAtom.charCodeAt (0), htValues);
 }
-if (ich < cch) tokens[i++] =  new J.modelset.LabelToken (strFormat.substring (ich), -1);
+if (ich < cch) tokens[i++] =  new J.modelset.LabelToken ().set (strFormat.substring (ich), -1);
 return tokens;
 }, "J.viewer.Viewer,~S,~S,java.util.Map");
 c$.formatLabel = $_M(c$, "formatLabel", 
@@ -55,7 +59,7 @@ return J.modelset.LabelToken.formatLabelAtomArray (viewer, atom, tokens, '\0', n
 c$.formatLabelAtomArray = $_M(c$, "formatLabelAtomArray", 
 function (viewer, atom, tokens, chAtom, indices) {
 if (atom == null) return null;
-var strLabel = (chAtom > '0' ? null :  new J.util.SB ());
+var strLabel = (chAtom > '0' ? null :  new JU.SB ());
 if (tokens != null) for (var i = 0; i < tokens.length; i++) {
 var t = tokens[i];
 if (t == null) break;
@@ -119,7 +123,7 @@ lt.text = (Clazz.instanceOf (value, Float) ? lt.format ((value).floatValue (), n
 }, "~A,java.util.Map");
 c$.getLabel = $_M(c$, "getLabel", 
 function (tokens) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 for (var i = 0; i < tokens.length; i++) {
 var lt = tokens[i];
 if (lt == null) break;
@@ -185,8 +189,8 @@ if (lt.data == null) {
 lt.data = viewer.getData (lt.text);
 if (Clazz.instanceOf (lt.data, Array)) {
 lt.data = (lt.data)[1];
-if (Clazz.instanceOf (lt.data, String)) lt.data = J.util.TextFormat.split (lt.data, '\n');
-if (!(J.util.Escape.isAS (lt.data))) lt.data = null;
+if (Clazz.instanceOf (lt.data, String)) lt.data = JU.PT.split (lt.data, "\n");
+if (!(JU.PT.isAS (lt.data))) lt.data = null;
 }lt.tok = (lt.data == null ? 4 : 135266306);
 } else {
 lt.tok = 135270407;
@@ -230,7 +234,7 @@ if (t.data != null) {
 var sdata = t.data;
 strT = (atom.index < sdata.length ? sdata[atom.index] : "");
 }break;
-case 1632634889:
+case 1632634891:
 var formalCharge = atom.getFormalCharge ();
 if (formalCharge > 0) strT = "" + formalCharge + "+";
  else if (formalCharge < 0) strT = "" + -formalCharge + "-";
@@ -239,7 +243,7 @@ break;
 case 'g':
 strT = "" + atom.getSelectedGroupIndexWithinChain ();
 break;
-case 1095766028:
+case 1095766030:
 strT = atom.getModelNumberForLabel ();
 break;
 case 1129318401:
@@ -257,7 +261,7 @@ break;
 case 1087373324:
 strT = atom.getStructureId ();
 break;
-case 1095761939:
+case 1095761941:
 var id = atom.getStrucNo ();
 strT = (id <= 0 ? "" : "" + id);
 break;
@@ -305,24 +309,24 @@ throw ioobe;
 strT = t.format (floatT, strT, ptT);
 if (strLabel == null) t.text = strT;
  else strLabel.append (strT);
-}, $fz.isPrivate = true, $fz), "J.viewer.Viewer,J.modelset.Atom,J.modelset.LabelToken,J.util.SB,~A");
+}, $fz.isPrivate = true, $fz), "J.viewer.Viewer,J.modelset.Atom,J.modelset.LabelToken,JU.SB,~A");
 $_M(c$, "format", 
 ($fz = function (floatT, strT, ptT) {
 if (!Float.isNaN (floatT)) {
-return J.util.TextFormat.formatF (floatT, this.width, this.precision, this.alignLeft, this.zeroPad);
+return JU.PT.formatF (floatT, this.width, this.precision, this.alignLeft, this.zeroPad);
 } else if (strT != null) {
-return J.util.TextFormat.formatS (strT, this.width, this.precision, this.alignLeft, this.zeroPad);
+return JU.PT.formatS (strT, this.width, this.precision, this.alignLeft, this.zeroPad);
 } else if (ptT != null) {
 if (this.width == 0 && this.precision == 2147483647) {
 this.width = 6;
 this.precision = 2;
-}return J.util.TextFormat.formatF (ptT.x, this.width, this.precision, false, false) + J.util.TextFormat.formatF (ptT.y, this.width, this.precision, false, false) + J.util.TextFormat.formatF (ptT.z, this.width, this.precision, false, false);
+}return JU.PT.formatF (ptT.x, this.width, this.precision, false, false) + JU.PT.formatF (ptT.y, this.width, this.precision, false, false) + JU.PT.formatF (ptT.z, this.width, this.precision, false, false);
 } else {
 return this.text;
-}}, $fz.isPrivate = true, $fz), "~N,~S,J.util.Tuple3f");
+}}, $fz.isPrivate = true, $fz), "~N,~S,JU.T3");
 Clazz.defineStatics (c$,
 "labelTokenParams", "AaBbCcDEefGgIiLlMmNnoPpQqRrSsTtUuVvWXxYyZz%%%gqW",
-"labelTokenIds", [1087373315, 1087375362, 1087375361, 1112541199, 1632634889, 1087373316, 1095761923, 1087373322, 1087375365, 1112539145, 1095761931, 'g', 1112541195, 1095763969, 1095761936, 1095763976, 1095766028, 1087373319, 1095761934, 1087373318, 1089470478, 1112541196, 1112539146, 'Q', 1129318401, 1095761937, 'r', 1095761938, 1087373316, 1112539150, 1112541199, 1087373321, 1112539151, 1649412120, 1146095631, 'W', 1112541188, 1112541185, 1112541189, 1112541186, 1112541190, 1112541187, 1115297793, 1113200642, 1113198595, 1113198596, 1113198597, 1113200646, 1113200647, 1113200649, 1113200650, 1113200652, 1650071565, 1113200654, 1112539137, 1112539138, 1095761922, 1095761924, 1766856708, 1095761930, 1112539140, 1229984263, 1288701960, 1826248715, 1112539143, 1095761933, 1112539141, 1112539144, 1095761935, 1716520985, 1666189314, 1114638363, 1087373323, 1087373320, 1113200651, 1641025539, 1238369286, 1095761939, 1087373324, 1087375373, 1112539152, 1112539153, 1112539154, 1112539155, 1095763988, 1649410049, 1112541202, 1112541203, 1112541204, 1313866247, 1146093582, 1146095627, 1146095626, 1146095629, 1112541191, 1112541192, 1112541193, 1114638362, 1112539147, 1112539148, 1112539149, 1146095628, 1112539142, 1112539139],
+"labelTokenIds", [1087373315, 1087375362, 1087375361, 1112541199, 1632634891, 1087373316, 1095761923, 1087373322, 1087375365, 1112539145, 1095761933, 'g', 1112541195, 1095763969, 1095761938, 1095763978, 1095766030, 1087373319, 1095761936, 1087373318, 1089470478, 1112541196, 1112539146, 'Q', 1129318401, 1095761939, 'r', 1095761940, 1087373316, 1112539150, 1112541199, 1087373321, 1112539151, 1649412120, 1146095631, 'W', 1112541188, 1112541185, 1112541189, 1112541186, 1112541190, 1112541187, 1115297793, 1113200642, 1113198595, 1113198596, 1113198597, 1113200646, 1113200647, 1113200649, 1113200650, 1113200652, 1650071565, 1113200654, 1112539137, 1112539138, 1095761922, 1095761924, 1766856708, 1095761932, 1112539140, 1229984263, 1288701960, 1826248715, 1112539143, 1095761935, 1112539141, 1112539144, 1095761937, 1716520985, 1666189314, 1114638363, 1087373323, 1087373320, 1113200651, 1641025539, 1238369286, 1095761941, 1087373324, 1087375373, 1112539152, 1112539153, 1112539154, 1112539155, 1095763990, 1649410049, 1112541202, 1112541203, 1112541204, 1313866247, 1146093582, 1146095627, 1146095626, 1146095629, 1112541191, 1112541192, 1112541193, 1114638362, 1112539147, 1112539148, 1112539149, 1146095628, 1112539142, 1112539139, 1095761927],
 "STANDARD_LABEL", "%[identify]",
 "twoCharLabelTokenParams", "fuv",
 "twoCharLabelTokenIds", [1112541188, 1112541189, 1112541190, 1112539153, 1112539154, 1112539155, 1112541202, 1112541203, 1112541204]);

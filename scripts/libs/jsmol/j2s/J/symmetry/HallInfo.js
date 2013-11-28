@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.symmetry");
-Clazz.load (null, "J.symmetry.HallInfo", ["J.symmetry.HallRotationTerm", "$.HallTranslation", "J.util.Logger", "$.P3i", "$.SB"], function () {
+Clazz.load (null, "J.symmetry.HallInfo", ["JU.P3i", "$.SB", "J.symmetry.HallRotationTerm", "$.HallTranslation", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.hallSymbol = null;
 this.primitiveHallSymbol = null;
@@ -46,7 +46,7 @@ throw e;
 }, "~S");
 $_M(c$, "dumpInfo", 
 function () {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 sb.append ("\nHall symbol: ").append (this.hallSymbol).append ("\nprimitive Hall symbol: ").append (this.primitiveHallSymbol).append ("\nlattice type: ").append (this.getLatticeDesignation ());
 for (var i = 0; i < this.nRotations; i++) {
 sb.append ("\n\nrotation term ").appendI (i + 1).append (this.rotationTerms[i].dumpInfo (this.vectorCode));
@@ -70,7 +70,7 @@ this.latticeCode = term.charAt (1);
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "extractVectorInfo", 
 ($fz = function (name) {
-this.vector12ths =  new J.util.P3i ();
+this.vector12ths =  new JU.P3i ();
 this.vectorCode = "";
 var i = name.indexOf ("(");
 var j = name.indexOf (")", i);

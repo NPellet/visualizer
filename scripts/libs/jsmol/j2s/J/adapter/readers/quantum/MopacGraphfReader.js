@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader"], "J.adapter.readers.quantum.MopacGraphfReader", ["java.lang.Float", "java.util.Hashtable", "J.adapter.smarter.AtomSetCollectionReader", "J.util.ArrayUtil", "$.JmolList"], function () {
+Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader"], "J.adapter.readers.quantum.MopacGraphfReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.List", "J.adapter.smarter.AtomSetCollectionReader"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomCount = 0;
 this.nCoefficients = 0;
@@ -9,11 +9,11 @@ this.orbitalData = null;
 this.orbitalInfo = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "MopacGraphfReader", J.adapter.readers.quantum.MopacSlaterReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.alphaBeta = "alpha";
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 this.readAtoms ();
 if (this.doReadMolecularOrbitals) {
@@ -68,8 +68,8 @@ var list = null;
 if (this.readLine () == null) return;
 this.isNewFormat = (this.line.indexOf ("ORBITAL") >= 0);
 if (this.isNewFormat) {
-this.orbitalData =  new J.util.JmolList ();
-if (this.line.length > 10) this.orbitalInfo =  new J.util.JmolList ();
+this.orbitalData =  new JU.List ();
+if (this.line.length > 10) this.orbitalInfo =  new JU.List ();
 } else {
 list =  Clazz.newFloatArray (this.nCoefficients, this.nCoefficients, 0);
 }for (var iMo = 0; iMo < this.nCoefficients; iMo++) {
@@ -86,12 +86,12 @@ data = list[iMo];
 }
 if (this.invMatrix == null) {
 if (this.isNewFormat && this.line.indexOf ("MATRIX") < 0) this.readLine ();
-this.invMatrix = J.util.ArrayUtil.newFloat2 (this.nCoefficients);
+this.invMatrix = JU.AU.newFloat2 (this.nCoefficients);
 for (var iMo = 0; iMo < this.nCoefficients; iMo++) this.fillFloatArray (null, 15, this.invMatrix[iMo] =  Clazz.newFloatArray (iMo + 1, 0));
 
 }this.nOrbitals = (this.orbitalData == null ? this.nCoefficients : this.orbitalData.size ());
 if (this.orbitalData != null) {
-list = J.util.ArrayUtil.newFloat2 (this.nOrbitals);
+list = JU.AU.newFloat2 (this.nOrbitals);
 for (var i = this.nOrbitals; --i >= 0; ) list[i] = this.orbitalData.get (i);
 
 }var list2 =  Clazz.newFloatArray (this.nOrbitals, this.nCoefficients, 0);

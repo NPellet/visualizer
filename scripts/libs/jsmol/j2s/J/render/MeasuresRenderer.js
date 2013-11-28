@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.LabelsRenderer", "J.util.AxisAngle4f", "$.Matrix3f"], "J.render.MeasuresRenderer", ["J.render.FontLineShapeRenderer", "J.util.Point3fi"], function () {
+Clazz.load (["J.render.LabelsRenderer", "JU.A4", "$.M3"], "J.render.MeasuresRenderer", ["J.render.FontLineShapeRenderer", "J.util.Point3fi"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.measurement = null;
 this.doJustify = false;
@@ -9,10 +9,10 @@ this.matrixT = null;
 Clazz.instantialize (this, arguments);
 }, J.render, "MeasuresRenderer", J.render.LabelsRenderer);
 Clazz.prepareFields (c$, function () {
-this.aaT =  new J.util.AxisAngle4f ();
-this.matrixT =  new J.util.Matrix3f ();
+this.aaT =  new JU.A4 ();
+this.matrixT =  new JU.M3 ();
 });
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 if (!this.g3d.checkTranslucent (false)) return false;
 if (this.atomPt == null) this.atomPt =  new J.util.Point3fi ();
@@ -214,7 +214,7 @@ x <<= 1;
 y <<= 1;
 }this.drawLine (atomLast.screenX, atomLast.screenY, lastZ, x, y, 0, this.mad);
 }, $fz.isPrivate = true, $fz), "~N,J.modelset.MeasurementPending");
-Clazz.overrideMethod (c$, "drawLine", 
+$_V(c$, "drawLine", 
 function (x1, y1, z1, x2, y2, z2, mad) {
 var diameter = Clazz.floatToInt (mad >= 20 && this.exportType != 1 ? this.viewer.scaleToScreen (Clazz.doubleToInt ((z1 + z2) / 2), mad) : mad);
 if (this.dotsOrDashes && (this.dashDots == null || this.dashDots === J.render.FontLineShapeRenderer.ndots)) this.width = diameter;

@@ -21,7 +21,7 @@ this.deflater = deflater;
 this.buffer =  Clazz.newByteArray (size, 0);
 this.close_out = close_out;
 }, "java.io.OutputStream,JZ.Deflater,~N,~B");
-Clazz.overrideMethod (c$, "writeByteAsInt", 
+$_V(c$, "writeByteAsInt", 
 function (b) {
 this.buf1[0] = (b & 0xff);
 this.write (this.buf1, 0, 1);
@@ -44,7 +44,7 @@ while (!this.deflater.finished ()) {
 this.deflate (4);
 }
 });
-Clazz.overrideMethod (c$, "close", 
+$_V(c$, "close", 
 function () {
 if (!this.closed) {
 this.finish ();
@@ -72,7 +72,7 @@ if (len > 0) {
 this.out.write (this.buffer, 0, len);
 }return err;
 }, "~N");
-Clazz.overrideMethod (c$, "flush", 
+$_V(c$, "flush", 
 function () {
 if (this.syncFlush && !this.deflater.finished ()) {
 while (true) {

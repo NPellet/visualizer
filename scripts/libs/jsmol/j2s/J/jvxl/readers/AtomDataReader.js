@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeDataReader", "J.atomdata.AtomData", "J.util.BS", "$.P3", "$.P3i"], "J.jvxl.readers.AtomDataReader", ["java.lang.Float", "java.util.Date", "J.atomdata.RadiusData", "J.constant.EnumVdw", "J.jvxl.data.JvxlCoder", "J.util.ArrayUtil", "$.BSUtil", "$.Logger", "$.SB", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["J.jvxl.readers.VolumeDataReader", "JU.BS", "$.P3", "$.P3i", "J.atomdata.AtomData"], "J.jvxl.readers.AtomDataReader", ["java.lang.Float", "java.util.Date", "JU.AU", "$.SB", "$.V3", "J.atomdata.RadiusData", "J.constant.EnumVdw", "J.jvxl.data.JvxlCoder", "J.util.BSUtil", "$.Logger", "$.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.maxDistance = 0;
 this.contactPair = null;
@@ -43,13 +43,13 @@ Clazz.instantialize (this, arguments);
 }, J.jvxl.readers, "AtomDataReader", J.jvxl.readers.VolumeDataReader);
 Clazz.prepareFields (c$, function () {
 this.atomData =  new J.atomdata.AtomData ();
-this.bsMySelected =  new J.util.BS ();
-this.bsMyIgnored =  new J.util.BS ();
-this.ptY0 =  new J.util.P3 ();
-this.ptZ0 =  new J.util.P3 ();
-this.pt0 =  new J.util.P3i ();
-this.pt1 =  new J.util.P3i ();
-this.ptXyzTemp =  new J.util.P3 ();
+this.bsMySelected =  new JU.BS ();
+this.bsMyIgnored =  new JU.BS ();
+this.ptY0 =  new JU.P3 ();
+this.ptZ0 =  new JU.P3 ();
+this.pt0 =  new JU.P3i ();
+this.pt1 =  new JU.P3i ();
+this.ptXyzTemp =  new JU.P3 ();
 });
 Clazz.makeConstructor (c$, 
 function () {
@@ -61,7 +61,7 @@ this.initVDR (sg);
 this.precalculateVoxelData = true;
 this.atomDataServer = sg.getAtomDataServer ();
 }, "J.jvxl.readers.SurfaceGenerator");
-Clazz.overrideMethod (c$, "setup", 
+$_V(c$, "setup", 
 function (isMapData) {
 this.setup2 ();
 }, "~B");
@@ -87,23 +87,23 @@ for (var i = 0, pt = this.thisX * this.yzCount, pt1 = pt + this.yzCount; pt < pt
 this.volumeData.getPoint (pt, this.ptXyzTemp);
 this.thisPlane[i] = this.ptXyzTemp.distance (p) - r;
 }
-}, "J.util.P3,~N");
+}, "JU.P3,~N");
 $_M(c$, "setVolumeForPlane", 
 function () {
 if (this.useOriginStepsPoints) {
-this.xyzMin = J.util.P3.newP (this.params.origin);
-this.xyzMax = J.util.P3.newP (this.params.origin);
+this.xyzMin = JU.P3.newP (this.params.origin);
+this.xyzMax = JU.P3.newP (this.params.origin);
 this.xyzMax.x += (this.params.points.x - 1) * this.params.steps.x;
 this.xyzMax.y += (this.params.points.y - 1) * this.params.steps.y;
 this.xyzMax.z += (this.params.points.z - 1) * this.params.steps.z;
 } else if (this.params.boundingBox == null) {
 this.getAtoms (this.params.bsSelected, false, true, false, false, false, false, this.params.mep_marginAngstroms);
 if (this.xyzMin == null) {
-this.xyzMin = J.util.P3.new3 (-10, -10, -10);
-this.xyzMax = J.util.P3.new3 (10, 10, 10);
+this.xyzMin = JU.P3.new3 (-10, -10, -10);
+this.xyzMax = JU.P3.new3 (10, 10, 10);
 }} else {
-this.xyzMin = J.util.P3.newP (this.params.boundingBox[0]);
-this.xyzMax = J.util.P3.newP (this.params.boundingBox[1]);
+this.xyzMin = JU.P3.newP (this.params.boundingBox[0]);
+this.xyzMax = JU.P3.newP (this.params.boundingBox[1]);
 }this.setRanges (this.params.plane_ptsPerAngstrom, this.params.plane_gridMax, 0);
 });
 $_M(c$, "getAtoms", 
@@ -121,13 +121,11 @@ this.sg.fillAtomData (this.atomData, 1 | (getAllModels ? 16 : 0) | (getMolecules
 if (this.doUseIterator) this.atomData.bsSelected = null;
 this.atomCount = this.atomData.atomCount;
 this.modelIndex = this.atomData.firstModelIndex;
-var nSelected = 0;
 var needRadius = false;
 for (var i = 0; i < this.atomCount; i++) {
 if ((bsSelected == null || bsSelected.get (i)) && (!this.bsMyIgnored.get (i))) {
 if (this.havePlane && Math.abs (this.volumeData.distancePointToPlane (this.atomData.atomXyz[i])) > 2 * (this.atomData.atomRadius[i] = this.getWorkingRadius (i, marginAtoms))) continue;
 this.bsMySelected.set (i);
-nSelected++;
 needRadius = !this.havePlane;
 }if (getRadii && (addNearbyAtoms || needRadius)) this.atomData.atomRadius[i] = this.getWorkingRadius (i, marginAtoms);
 }
@@ -176,12 +174,12 @@ this.myAtomCount++;
 }this.firstNearbyAtom = this.myAtomCount;
 J.util.Logger.info (this.myAtomCount + " atoms will be used in the surface calculation");
 if (this.myAtomCount == 0) {
-this.setBBox (J.util.P3.new3 (10, 10, 10), 0);
-this.setBBox (J.util.P3.new3 (-10, -10, -10), 0);
+this.setBBox (JU.P3.new3 (10, 10, 10), 0);
+this.setBBox (JU.P3.new3 (-10, -10, -10), 0);
 }for (var i = 0; i < this.myAtomCount; i++) this.setBBox (this.atomXyz[i], getRadii ? this.atomRadius[i] + 0.5 : 0);
 
 if (!Float.isNaN (this.params.scale)) {
-var v = J.util.V3.newVsub (this.xyzMax, this.xyzMin);
+var v = JU.V3.newVsub (this.xyzMax, this.xyzMin);
 v.scale (0.5);
 this.xyzMin.add (v);
 v.scale (this.params.scale);
@@ -189,8 +187,8 @@ this.xyzMax.setT (this.xyzMin);
 this.xyzMax.add (v);
 this.xyzMin.sub (v);
 }if (!addNearbyAtoms || this.myAtomCount == 0) return;
-var pt =  new J.util.P3 ();
-this.bsNearby =  new J.util.BS ();
+var pt =  new JU.P3 ();
+this.bsNearby =  new JU.BS ();
 for (var i = 0; i < this.atomCount; i++) {
 if (atomSet.get (i) || this.bsMyIgnored.get (i)) continue;
 var rA = this.atomData.atomRadius[i];
@@ -204,10 +202,10 @@ this.nearbyAtomCount++;
 var nAtoms = this.myAtomCount;
 if (this.nearbyAtomCount != 0) {
 nAtoms += this.nearbyAtomCount;
-this.atomRadius = J.util.ArrayUtil.arrayCopyF (this.atomRadius, nAtoms);
-this.atomXyz = J.util.ArrayUtil.arrayCopyObject (this.atomXyz, nAtoms);
-if (this.atomIndex != null) this.atomIndex = J.util.ArrayUtil.arrayCopyI (this.atomIndex, nAtoms);
-if (props != null) this.atomProp = J.util.ArrayUtil.arrayCopyF (this.atomProp, nAtoms);
+this.atomRadius = JU.AU.arrayCopyF (this.atomRadius, nAtoms);
+this.atomXyz = JU.AU.arrayCopyObject (this.atomXyz, nAtoms);
+if (this.atomIndex != null) this.atomIndex = JU.AU.arrayCopyI (this.atomIndex, nAtoms);
+if (props != null) this.atomProp = JU.AU.arrayCopyF (this.atomProp, nAtoms);
 for (var i = this.bsNearby.nextSetBit (0); i >= 0; i = this.bsNearby.nextSetBit (i + 1)) {
 if (props != null) this.addAtomProp (this.myAtomCount, props[i]);
 this.myIndex[i] = this.myAtomCount;
@@ -216,7 +214,7 @@ this.atomXyz[this.myAtomCount] = this.atomData.atomXyz[i];
 this.atomRadius[this.myAtomCount++] = this.atomData.atomRadius[i];
 }
 }this.haveOneProperty = (!Float.isNaN (this.theProperty));
-}, "J.util.BS,~B,~B,~B,~B,~B,~B,~N");
+}, "JU.BS,~B,~B,~B,~B,~B,~B,~N");
 $_M(c$, "addAtomProp", 
 ($fz = function (i, f) {
 this.atomProp[i] = f;
@@ -229,7 +227,7 @@ return (Float.isNaN (marginAtoms) ? Math.max (r, 0.1) : r + marginAtoms);
 }, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "setHeader", 
 function (calcType, line2) {
-this.jvxlFileHeaderBuffer =  new J.util.SB ();
+this.jvxlFileHeaderBuffer =  new JU.SB ();
 if (this.atomData.programInfo != null) this.jvxlFileHeaderBuffer.append ("#created by ").append (this.atomData.programInfo).append (" on ").append ("" +  new java.util.Date ()).append ("\n");
 this.jvxlFileHeaderBuffer.append (calcType).append ("\n").append (line2).append ("\n");
 }, "~S,~S");
@@ -242,7 +240,7 @@ this.minPtsPerAng = minPtsPerAng;
 this.setVolumeData ();
 J.jvxl.data.JvxlCoder.jvxlCreateHeader (this.volumeData, this.jvxlFileHeaderBuffer);
 }, "~N,~N,~N");
-Clazz.overrideMethod (c$, "setVolumeData", 
+$_V(c$, "setVolumeData", 
 function () {
 this.setVolumeDataADR ();
 });
@@ -257,15 +255,15 @@ $_M(c$, "fixTitleLine",
 function (iLine) {
 if (this.params.title == null) return false;
 var line = this.params.title[iLine];
-if (line.indexOf ("%F") > 0) line = this.params.title[iLine] = J.util.TextFormat.formatStringS (line, "F", this.atomData.fileName);
-if (line.indexOf ("%M") > 0) this.params.title[iLine] = J.util.TextFormat.formatStringS (line, "M", this.atomData.modelName);
+if (line.indexOf ("%F") > 0) line = this.params.title[iLine] = J.util.Txt.formatStringS (line, "F", this.atomData.fileName);
+if (line.indexOf ("%M") > 0) this.params.title[iLine] = J.util.Txt.formatStringS (line, "M", this.atomData.modelName);
 return true;
 }, "~N");
 $_M(c$, "setVertexSource", 
 function () {
 if (this.meshDataServer != null) this.meshDataServer.fillMeshData (this.meshData, 1, null);
 if (this.params.vertexSource != null) {
-this.params.vertexSource = J.util.ArrayUtil.arrayCopyI (this.params.vertexSource, this.meshData.vertexCount);
+this.params.vertexSource = JU.AU.arrayCopyI (this.params.vertexSource, this.meshData.vertexCount);
 for (var i = 0; i < this.meshData.vertexCount; i++) this.params.vertexSource[i] = Math.abs (this.params.vertexSource[i]) - 1;
 
 }});
@@ -314,10 +312,10 @@ pt0.z = Math.max (pt0.z - 1, 0);
 pt1.x = Math.min (pt1.x + 1, this.nPointsX);
 pt1.y = Math.min (pt1.y + 1, this.nPointsY);
 pt1.z = Math.min (pt1.z + 1, this.nPointsZ);
-}, "J.util.P3,~N,J.util.P3i,J.util.P3i");
+}, "JU.P3,~N,JU.P3i,JU.P3i");
 $_M(c$, "getAtomMinMax", 
 function (bs, bsAtomMinMax) {
-for (var i = 0; i < this.nPointsX; i++) bsAtomMinMax[i] =  new J.util.BS ();
+for (var i = 0; i < this.nPointsX; i++) bsAtomMinMax[i] =  new JU.BS ();
 
 for (var iAtom = this.myAtomCount; --iAtom >= 0; ) {
 if (bs != null && !bs.get (iAtom)) continue;
@@ -325,7 +323,7 @@ this.setGridLimitsForAtom (this.atomXyz[iAtom], this.atomRadius[iAtom], this.pt0
 for (var i = this.pt0.x; i < this.pt1.x; i++) bsAtomMinMax[i].set (iAtom);
 
 }
-}, "J.util.BS,~A");
+}, "JU.BS,~A");
 $_M(c$, "markSphereVoxels", 
 function (r0, distance) {
 var isWithin = (distance != 3.4028235E38 && this.point != null);

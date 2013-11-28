@@ -9,7 +9,7 @@ $_Z(this,arguments);
 c$.currentThread=$_M(c$,"currentThread",
 function(){
 if(Thread.J2S_THREAD==null){
-($t$=Thread.J2S_THREAD=new Thread(),Thread.prototype.J2S_THREAD=Thread.J2S_THREAD,$t$);
+(Thread.J2S_THREAD=new Thread(),Thread.prototype.J2S_THREAD=Thread.J2S_THREAD);
 }return Thread.J2S_THREAD;
 });
 c$.sleep=$_M(c$,"sleep",

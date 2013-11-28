@@ -1,30 +1,122 @@
-Clazz.declarePackage ("J.api");
-Clazz.declareInterface (J.api, "JmolZipUtility");
-Clazz.declarePackage ("J.io2");
-Clazz.load (["J.api.JmolZipUtility"], "J.io2.ZipUtil", ["java.io.BufferedInputStream", "$.BufferedReader", "$.ByteArrayInputStream", "$.ByteArrayOutputStream", "$.StringReader", "java.lang.Character", "$.Long", "java.util.Date", "$.Hashtable", "$.StringTokenizer", "java.util.zip.CRC32", "$.GZIPInputStream", "$.ZipEntry", "$.ZipInputStream", "J.adapter.smarter.AtomSetCollection", "J.api.Interface", "J.io.JmolBinary", "J.io2.JmolZipInputStream", "J.util.Escape", "$.JmolList", "$.Logger", "$.Parser", "$.SB", "$.TextFormat", "J.viewer.FileManager", "$.JC", "$.Viewer"], function () {
-c$ = Clazz.declareType (J.io2, "ZipUtil", null, J.api.JmolZipUtility);
-Clazz.makeConstructor (c$, 
+(function(Clazz
+,Clazz_doubleToInt
+,Clazz_declarePackage
+,Clazz_instanceOf
+,Clazz_load
+,Clazz_instantialize
+,Clazz_decorateAsClass
+,Clazz_floatToInt
+,Clazz_makeConstructor
+,Clazz_defineEnumConstant
+,Clazz_exceptionOf
+,Clazz_newIntArray
+,Clazz_defineStatics
+,Clazz_newFloatArray
+,Clazz_declareType
+,Clazz_prepareFields
+,Clazz_superConstructor
+,Clazz_newByteArray
+,Clazz_declareInterface
+,Clazz_p0p
+,Clazz_pu$h
+,Clazz_newShortArray
+,Clazz_innerTypeInstance
+,Clazz_isClassDefined
+,Clazz_prepareCallback
+,Clazz_newArray
+,Clazz_castNullAs
+,Clazz_floatToShort
+,Clazz_superCall
+,Clazz_decorateAsType
+,Clazz_newBooleanArray
+,Clazz_newCharArray
+,Clazz_implementOf
+,Clazz_newDoubleArray
+,Clazz_overrideConstructor
+,Clazz_supportsNativeObject
+,Clazz_extendedObjectMethods
+,Clazz_callingStackTraces
+,Clazz_clone
+,Clazz_doubleToShort
+,Clazz_innerFunctions
+,Clazz_getInheritedLevel
+,Clazz_getParamsType
+,Clazz_isAF
+,Clazz_isAI
+,Clazz_isAS
+,Clazz_isASS
+,Clazz_isAP
+,Clazz_isAFloat
+,Clazz_isAII
+,Clazz_isAFF
+,Clazz_isAFFF
+,Clazz_tryToSearchAndExecute
+,$_A
+,$_Ab
+,$_AB
+,$_AC
+,$_AD
+,$_AF
+,$_AI
+,$_AL
+,$_AS
+,$_B
+,$_C
+,$_D
+,$_E
+,$_F
+,$_G
+,$_H
+,$_I
+,$_J
+,$_K
+,$_k
+,$_L
+,$_M
+,$_N
+,$_O
+,$_P
+,$_Q
+,$_R
+,$_S
+,$_s
+,$_T
+,$_U
+,$_V
+,$_W
+,$_X
+,$_Y
+,$_Z
+){
+var $t$;
+//var c$;
+Clazz_declarePackage ("J.api");
+Clazz_declareInterface (J.api, "JmolZipUtility");
+Clazz_declarePackage ("J.io2");
+Clazz_load (["J.api.JmolZipUtility"], "J.io2.ZipUtil", ["java.io.BufferedInputStream", "$.BufferedReader", "$.ByteArrayInputStream", "$.StringReader", "java.lang.Character", "java.util.Hashtable", "$.StringTokenizer", "java.util.zip.CRC32", "$.GZIPInputStream", "$.ZipEntry", "$.ZipInputStream", "javajs.api.ZInputStream", "JU.List", "$.PT", "$.SB", "J.adapter.smarter.AtomSetCollection", "J.api.Interface", "J.io.JmolBinary", "J.io2.JmolZipInputStream", "J.util.Escape", "$.Logger", "$.Txt"], function () {
+c$ = Clazz_declareType (J.io2, "ZipUtil", null, J.api.JmolZipUtility);
+Clazz_makeConstructor (c$, 
 function () {
 });
-Clazz.overrideMethod (c$, "newZipInputStream", 
+$_V(c$, "newZipInputStream", 
 function (is) {
 return J.io2.ZipUtil.newZIS (is);
 }, "java.io.InputStream");
 c$.newZIS = $_M(c$, "newZIS", 
-($fz = function (is) {
-return (Clazz.instanceOf (is, J.api.ZInputStream) ? is : Clazz.instanceOf (is, java.io.BufferedInputStream) ?  new J.io2.JmolZipInputStream (is) :  new J.io2.JmolZipInputStream ( new java.io.BufferedInputStream (is)));
-}, $fz.isPrivate = true, $fz), "java.io.InputStream");
-Clazz.overrideMethod (c$, "getAllZipData", 
+function (is) {
+return (Clazz_instanceOf (is, javajs.api.ZInputStream) ? is : Clazz_instanceOf (is, java.io.BufferedInputStream) ?  new J.io2.JmolZipInputStream (is) :  new J.io2.JmolZipInputStream ( new java.io.BufferedInputStream (is)));
+}, "java.io.InputStream");
+$_V(c$, "getAllZipData", 
 function (is, subfileList, name0, binaryFileList, fileData) {
 J.io2.ZipUtil.getAllZipDataStatic (is, subfileList, name0, binaryFileList, fileData);
 }, "java.io.InputStream,~A,~S,~S,java.util.Map");
 c$.getAllZipDataStatic = $_M(c$, "getAllZipDataStatic", 
-($fz = function (is, subfileList, name0, binaryFileList, fileData) {
+function (is, subfileList, name0, binaryFileList, fileData) {
 var zis = J.io2.ZipUtil.newZIS (is);
 var ze;
-var listing =  new J.util.SB ();
+var listing =  new JU.SB ();
 binaryFileList = "|" + binaryFileList + "|";
-var prefix = J.util.TextFormat.join (subfileList, '/', 1);
+var prefix = J.util.Txt.join (subfileList, '/', 1);
 var prefixd = null;
 if (prefix != null) {
 prefixd = prefix.substring (0, prefix.indexOf ("/") + 1);
@@ -47,21 +139,21 @@ str = J.io.JmolBinary.fixUTF (bytes);
 fileData.put (name0 + "|" + name, str);
 }
 } catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+if (Clazz_exceptionOf (e, Exception)) {
 } else {
 throw e;
 }
 }
 fileData.put ("#Directory_Listing", listing.toString ());
-}, $fz.isPrivate = true, $fz), "java.io.InputStream,~A,~S,~S,java.util.Map");
+}, "java.io.InputStream,~A,~S,~S,java.util.Map");
 c$.getBinaryStringForBytes = $_M(c$, "getBinaryStringForBytes", 
-($fz = function (bytes) {
-var ret =  new J.util.SB ();
+function (bytes) {
+var ret =  new JU.SB ();
 for (var i = 0; i < bytes.length; i++) ret.append (Integer.toHexString (bytes[i] & 0xFF)).appendC (' ');
 
 return ret.toString ();
-}, $fz.isPrivate = true, $fz), "~A");
-Clazz.overrideMethod (c$, "getZipFileContents", 
+}, "~A");
+$_V(c$, "getZipFileContents", 
 function (bis, list, listPtr, asBufferedInputStream) {
 var ret;
 if (list == null || listPtr >= list.length) return this.getZipDirectoryAsStringAndClose (bis);
@@ -71,7 +163,7 @@ var ze;
 try {
 var isAll = (fileName.equals ("."));
 if (isAll || fileName.lastIndexOf ("/") == fileName.length - 1) {
-ret =  new J.util.SB ();
+ret =  new JU.SB ();
 while ((ze = zis.getNextEntry ()) != null) {
 var name = ze.getName ();
 if (isAll || name.startsWith (fileName)) ret.append (name).appendC ('\n');
@@ -79,33 +171,34 @@ if (isAll || name.startsWith (fileName)) ret.append (name).appendC ('\n');
 var str = ret.toString ();
 if (asBufferedInputStream) return  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (str.getBytes ()));
 return str;
-}var asBinaryString = false;
-if (fileName.indexOf (":asBinaryString") > 0) {
-fileName = fileName.substring (0, fileName.indexOf (":asBinaryString"));
-asBinaryString = true;
-}while ((ze = zis.getNextEntry ()) != null) {
-if (!fileName.equals (ze.getName ())) continue;
-var bytes = J.io.JmolBinary.getStreamBytes (zis, ze.getSize ());
+}var pt = fileName.indexOf (":asBinaryString");
+var asBinaryString = (pt > 0);
+if (asBinaryString) fileName = fileName.substring (0, pt);
+while ((ze = zis.getNextEntry ()) != null && !fileName.equals (ze.getName ())) {
+}
+var bytes = (ze == null ? null : J.io.JmolBinary.getStreamBytes (zis, ze.getSize ()));
+ze = null;
+zis.close ();
+if (bytes == null) return "";
 if (J.io.JmolBinary.isZipB (bytes)) return this.getZipFileContents ( new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes)), list, ++listPtr, asBufferedInputStream);
 if (asBufferedInputStream) return  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes));
 if (asBinaryString) {
-ret =  new J.util.SB ();
+ret =  new JU.SB ();
 for (var i = 0; i < bytes.length; i++) ret.append (Integer.toHexString (bytes[i] & 0xFF)).appendC (' ');
 
 return ret.toString ();
 }return J.io.JmolBinary.fixUTF (bytes);
-}
 } catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+if (Clazz_exceptionOf (e, Exception)) {
+return "";
 } else {
 throw e;
 }
 }
-return "";
 }, "java.io.BufferedInputStream,~A,~N,~B");
-Clazz.overrideMethod (c$, "getZipFileContentsAsBytes", 
+$_V(c$, "getZipFileContentsAsBytes", 
 function (bis, list, listPtr) {
-var ret =  Clazz.newByteArray (0, 0);
+var ret =  Clazz_newByteArray (0, 0);
 var fileName = list[listPtr];
 if (fileName.lastIndexOf ("/") == fileName.length - 1) return ret;
 try {
@@ -119,22 +212,22 @@ if (J.io.JmolBinary.isZipB (bytes) && ++listPtr < list.length) return this.getZi
 return bytes;
 }
 } catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+if (Clazz_exceptionOf (e, Exception)) {
 } else {
 throw e;
 }
 }
 return ret;
 }, "java.io.BufferedInputStream,~A,~N");
-Clazz.overrideMethod (c$, "getZipDirectoryAsStringAndClose", 
+$_V(c$, "getZipDirectoryAsStringAndClose", 
 function (bis) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 var s =  new Array (0);
 try {
 s = this.getZipDirectoryOrErrorAndClose (bis, false);
 bis.close ();
 } catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+if (Clazz_exceptionOf (e, Exception)) {
 J.util.Logger.error (e.toString ());
 } else {
 throw e;
@@ -144,14 +237,14 @@ for (var i = 0; i < s.length; i++) sb.append (s[i]).appendC ('\n');
 
 return sb.toString ();
 }, "java.io.BufferedInputStream");
-Clazz.overrideMethod (c$, "getZipDirectoryAndClose", 
+$_V(c$, "getZipDirectoryAndClose", 
 function (bis, addManifest) {
 var s =  new Array (0);
 try {
 s = this.getZipDirectoryOrErrorAndClose (bis, addManifest);
 bis.close ();
 } catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+if (Clazz_exceptionOf (e, Exception)) {
 J.util.Logger.error (e.toString ());
 } else {
 throw e;
@@ -160,9 +253,9 @@ throw e;
 return s;
 }, "java.io.BufferedInputStream,~B");
 $_M(c$, "getZipDirectoryOrErrorAndClose", 
-($fz = function (bis, addManifest) {
+function (bis, addManifest) {
 bis = J.io.JmolBinary.checkPngZipStream (bis);
-var v =  new J.util.JmolList ();
+var v =  new JU.List ();
 var zis =  new java.util.zip.ZipInputStream (bis);
 var ze;
 var manifest = null;
@@ -174,20 +267,20 @@ if (addManifest && J.io2.ZipUtil.isJmolManifest (fileName)) manifest = J.io2.Zip
 zis.close ();
 if (addManifest) v.add (0, manifest == null ? "" : manifest + "\n############\n");
 return v.toArray ( new Array (v.size ()));
-}, $fz.isPrivate = true, $fz), "java.io.BufferedInputStream,~B");
+}, "java.io.BufferedInputStream,~B");
 c$.getZipEntryAsString = $_M(c$, "getZipEntryAsString", 
-($fz = function (is) {
+function (is) {
 return J.io.JmolBinary.fixUTF (J.io.JmolBinary.getStreamBytes (is, -1));
-}, $fz.isPrivate = true, $fz), "java.io.InputStream");
+}, "java.io.InputStream");
 c$.isJmolManifest = $_M(c$, "isJmolManifest", 
-($fz = function (thisEntry) {
+function (thisEntry) {
 return thisEntry.startsWith ("JmolManifest");
-}, $fz.isPrivate = true, $fz), "~S");
-Clazz.overrideMethod (c$, "cacheZipContents", 
+}, "~S");
+$_V(c$, "cacheZipContents", 
 function (bis, fileName, cache) {
 var zis = this.newZipInputStream (bis);
 var ze;
-var listing =  new J.util.SB ();
+var listing =  new JU.SB ();
 var n = 0;
 try {
 while ((ze = zis.getNextEntry ()) != null) {
@@ -200,11 +293,11 @@ cache.put (fileName + "|" + name, bytes);
 }
 zis.close ();
 } catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+if (Clazz_exceptionOf (e, Exception)) {
 try {
 zis.close ();
 } catch (e1) {
-if (Clazz.exceptionOf (e1, java.io.IOException)) {
+if (Clazz_exceptionOf (e1, java.io.IOException)) {
 } else {
 throw e1;
 }
@@ -218,7 +311,7 @@ if (n == 0) return null;
 J.util.Logger.info ("ZipUtil cached " + n + " bytes from " + fileName);
 return listing.toString ();
 }, "java.io.BufferedInputStream,~S,java.util.Map");
-Clazz.overrideMethod (c$, "getGzippedBytesAsString", 
+$_V(c$, "getGzippedBytesAsString", 
 function (bytes) {
 return J.io2.ZipUtil.staticGetGzippedBytesAsString (bytes);
 }, "~A");
@@ -233,7 +326,7 @@ var s = J.io2.ZipUtil.getZipEntryAsString (is);
 is.close ();
 return s;
 } catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+if (Clazz_exceptionOf (e, Exception)) {
 return "";
 } else {
 throw e;
@@ -249,211 +342,18 @@ is =  new java.io.BufferedInputStream ( new java.util.zip.GZIPInputStream (is, 5
 } while (J.io.JmolBinary.isGzipS (is));
 return is;
 } catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+if (Clazz_exceptionOf (e, Exception)) {
 return null;
 } else {
 throw e;
 }
 }
 }, "~A");
-Clazz.overrideMethod (c$, "newGZIPInputStream", 
+$_V(c$, "newGZIPInputStream", 
 function (bis) {
 return  new java.util.zip.GZIPInputStream (bis, 512);
 }, "java.io.BufferedInputStream");
-$_M(c$, "addPngFileBytes", 
-($fz = function (name, ret, iFile, crcMap, isSparDir, newName, ptSlash, v) {
-var crc =  new java.util.zip.CRC32 ();
-crc.update (ret, 0, ret.length);
-var crcValue = Long.$valueOf (crc.getValue ());
-if (crcMap.containsKey (crcValue)) {
-newName = crcMap.get (crcValue);
-} else {
-if (isSparDir) newName = newName.$replace ('.', '_');
-if (crcMap.containsKey (newName)) {
-var pt = newName.lastIndexOf (".");
-if (pt > ptSlash) newName = newName.substring (0, pt) + "[" + iFile + "]" + newName.substring (pt);
- else newName = newName + "[" + iFile + "]";
-}v.addLast (name);
-v.addLast (newName);
-v.addLast (ret);
-crcMap.put (crcValue, newName);
-}return newName;
-}, $fz.isPrivate = true, $fz), "~S,~A,~N,java.util.Hashtable,~B,~S,~N,J.util.JmolList");
-Clazz.overrideMethod (c$, "writeZipFile", 
-function (privateKey, fm, viewer, outFileName, fileNamesAndByteArrays, msg) {
-var buf =  Clazz.newByteArray (1024, 0);
-var nBytesOut = 0;
-var nBytes = 0;
-J.util.Logger.info ("creating zip file " + (outFileName == null ? "" : outFileName) + "...");
-var fullFilePath = null;
-var fileList = "";
-try {
-var bos = (outFileName == null || outFileName.startsWith ("http://") ?  new java.io.ByteArrayOutputStream () : null);
-var os1 = (bos == null ? viewer.openOutputChannel (privateKey, outFileName, false) : bos);
-var os;
-{
-os = J.api.Interface.getInterface("java.util.zip.ZipOutputStream").setZOS(os1);
-}for (var i = 0; i < fileNamesAndByteArrays.size (); i += 3) {
-var fname = fileNamesAndByteArrays.get (i);
-var bytes = null;
-var data = fm.cacheGet (fname, false);
-if (Clazz.instanceOf (data, java.util.Map)) continue;
-if (fname.indexOf ("file:/") == 0) {
-fname = fname.substring (5);
-if (fname.length > 2 && fname.charAt (2) == ':') fname = fname.substring (1);
-} else if (fname.indexOf ("cache://") == 0) {
-fname = fname.substring (8);
-}var fnameShort = fileNamesAndByteArrays.get (i + 1);
-if (fnameShort == null) fnameShort = fname;
-if (data != null) bytes = (J.util.Escape.isAB (data) ? data : (data).getBytes ());
-if (bytes == null) bytes = fileNamesAndByteArrays.get (i + 2);
-var key = ";" + fnameShort + ";";
-if (fileList.indexOf (key) >= 0) {
-J.util.Logger.info ("duplicate entry");
-continue;
-}fileList += key;
-os.putNextEntry ( new java.util.zip.ZipEntry (fnameShort));
-var nOut = 0;
-if (bytes == null) {
-var $in = viewer.openFileInputStream (privateKey, fname);
-var len;
-while ((len = $in.read (buf, 0, 1024)) > 0) {
-os.write (buf, 0, len);
-nOut += len;
-}
-$in.close ();
-} else {
-os.write (bytes, 0, bytes.length);
-nOut += bytes.length;
-}nBytesOut += nOut;
-os.closeEntry ();
-J.util.Logger.info ("...added " + fname + " (" + nOut + " bytes)");
-}
-os.close ();
-J.util.Logger.info (nBytesOut + " bytes prior to compression");
-if (bos == null) {
-fullFilePath = viewer.getAbsolutePath (privateKey, outFileName).$replace ('\\', '/');
-nBytes = viewer.getFileLength (privateKey, outFileName);
-} else {
-var bytes = bos.toByteArray ();
-if (outFileName == null) return bytes;
-fullFilePath = outFileName;
-nBytes = bytes.length;
-var ret = J.io.JmolBinary.postByteArray (fm, outFileName, bytes);
-if (ret.indexOf ("Exception") >= 0) return ret;
-msg += " " + ret;
-}} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-J.util.Logger.info (e.toString ());
-return e.toString ();
-} else {
-throw e;
-}
-}
-return msg + " " + nBytes + " " + fullFilePath;
-}, "~N,J.viewer.FileManager,J.viewer.Viewer,~S,J.util.JmolList,~S");
-Clazz.overrideMethod (c$, "getSceneScript", 
-function (scenes, htScenes, list) {
-var iSceneLast = 0;
-var iScene = 0;
-var sceneScript =  new J.util.SB ().append ("###scene.spt###").append (" Jmol ").append (J.viewer.Viewer.getJmolVersion ()).append ("\n{\nsceneScripts={");
-for (var i = 1; i < scenes.length; i++) {
-scenes[i - 1] = J.util.TextFormat.trim (scenes[i - 1], "\t\n\r ");
-var pt =  Clazz.newIntArray (1, 0);
-iScene = J.util.Parser.parseIntNext (scenes[i], pt);
-if (iScene == -2147483648) return "bad scene ID: " + iScene;
-scenes[i] = scenes[i].substring (pt[0]);
-list.addLast (Integer.$valueOf (iScene));
-var key = iSceneLast + "-" + iScene;
-htScenes.put (key, scenes[i - 1]);
-if (i > 1) sceneScript.append (",");
-sceneScript.appendC ('\n').append (J.util.Escape.eS (key)).append (": ").append (J.util.Escape.eS (scenes[i - 1]));
-iSceneLast = iScene;
-}
-sceneScript.append ("\n}\n");
-if (list.size () == 0) return "no lines 'pause scene n'";
-sceneScript.append ("\nthisSceneRoot = '$SCRIPT_PATH$'.split('_scene_')[1];\n").append ("thisSceneID = 0 + ('$SCRIPT_PATH$'.split('_scene_')[2]).split('.')[1];\n").append ("var thisSceneState = '$SCRIPT_PATH$'.replace('.min.png','.all.png') + 'state.spt';\n").append ("var spath = ''+currentSceneID+'-'+thisSceneID;\n").append ("print thisSceneRoot + ' ' + spath;\n").append ("var sscript = sceneScripts[spath];\n").append ("var isOK = true;\n").append ("try{\n").append ("if (thisSceneRoot != currentSceneRoot){\n").append (" isOK = false;\n").append ("} else if (sscript != '') {\n").append (" isOK = true;\n").append ("} else if (thisSceneID <= currentSceneID){\n").append (" isOK = false;\n").append ("} else {\n").append (" sscript = '';\n").append (" for (var i = currentSceneID; i < thisSceneID; i++){\n").append ("  var key = ''+i+'-'+(i + 1); var script = sceneScripts[key];\n").append ("  if (script = '') {isOK = false;break;}\n").append ("  sscript += ';'+script;\n").append (" }\n").append ("}\n}catch(e){print e;isOK = false}\n").append ("if (isOK) {" + J.io2.ZipUtil.wrapPathForAllFiles ("script inline @sscript", "print e;isOK = false") + "}\n").append ("if (!isOK){script @thisSceneState}\n").append ("currentSceneRoot = thisSceneRoot; currentSceneID = thisSceneID;\n}\n");
-return sceneScript.toString ();
-}, "~A,java.util.Map,J.util.JmolList");
-c$.wrapPathForAllFiles = $_M(c$, "wrapPathForAllFiles", 
-($fz = function (cmd, strCatch) {
-var vname = "v__" + ("" + Math.random ()).substring (3);
-return "# Jmol script\n{\n\tVar " + vname + " = pathForAllFiles\n\tpathForAllFiles=\"$SCRIPT_PATH$\"\n\ttry{\n\t\t" + cmd + "\n\t}catch(e){" + strCatch + "}\n\tpathForAllFiles = " + vname + "\n}\n";
-}, $fz.isPrivate = true, $fz), "~S,~S");
-Clazz.overrideMethod (c$, "createZipSet", 
-function (privateKey, fm, viewer, fileName, script, scripts, includeRemoteFiles) {
-var v =  new J.util.JmolList ();
-var fileNames =  new J.util.JmolList ();
-var crcMap =  new java.util.Hashtable ();
-var haveSceneScript = (scripts != null && scripts.length == 3 && scripts[1].startsWith ("###scene.spt###"));
-var sceneScriptOnly = (haveSceneScript && scripts[2].equals ("min"));
-if (!sceneScriptOnly) {
-J.io.JmolBinary.getFileReferences (script, fileNames);
-if (haveSceneScript) J.io.JmolBinary.getFileReferences (scripts[1], fileNames);
-}var haveScripts = (!haveSceneScript && scripts != null && scripts.length > 0);
-if (haveScripts) {
-script = J.io2.ZipUtil.wrapPathForAllFiles ("script " + J.util.Escape.eS (scripts[0]), "");
-for (var i = 0; i < scripts.length; i++) fileNames.addLast (scripts[i]);
-
-}var nFiles = fileNames.size ();
-if (fileName != null) fileName = fileName.$replace ('\\', '/');
-var fileRoot = fileName;
-if (fileRoot != null) {
-fileRoot = fileName.substring (fileName.lastIndexOf ("/") + 1);
-if (fileRoot.indexOf (".") >= 0) fileRoot = fileRoot.substring (0, fileRoot.indexOf ("."));
-}var newFileNames =  new J.util.JmolList ();
-for (var iFile = 0; iFile < nFiles; iFile++) {
-var name = fileNames.get (iFile);
-var isLocal = !viewer.isJS && J.viewer.FileManager.isLocal (name);
-var newName = name;
-if (isLocal || includeRemoteFiles) {
-var ptSlash = name.lastIndexOf ("/");
-newName = (name.indexOf ("?") > 0 && name.indexOf ("|") < 0 ? J.util.TextFormat.replaceAllCharacters (name, "/:?\"'=&", "_") : J.viewer.FileManager.stripPath (name));
-newName = J.util.TextFormat.replaceAllCharacters (newName, "[]", "_");
-var isSparDir = (fm.spardirCache != null && fm.spardirCache.containsKey (name));
-if (isLocal && name.indexOf ("|") < 0 && !isSparDir) {
-v.addLast (name);
-v.addLast (newName);
-v.addLast (null);
-} else {
-var ret = (isSparDir ? fm.spardirCache.get (name) : fm.getFileAsBytes (name, null, true));
-if (!J.util.Escape.isAB (ret)) return ret;
-newName = this.addPngFileBytes (name, ret, iFile, crcMap, isSparDir, newName, ptSlash, v);
-}name = "$SCRIPT_PATH$" + newName;
-}crcMap.put (newName, newName);
-newFileNames.addLast (name);
-}
-if (!sceneScriptOnly) {
-script = J.util.TextFormat.replaceQuotedStrings (script, fileNames, newFileNames);
-v.addLast ("state.spt");
-v.addLast (null);
-v.addLast (script.getBytes ());
-}if (haveSceneScript) {
-if (scripts[0] != null) {
-v.addLast ("animate.spt");
-v.addLast (null);
-v.addLast (scripts[0].getBytes ());
-}v.addLast ("scene.spt");
-v.addLast (null);
-script = J.util.TextFormat.replaceQuotedStrings (scripts[1], fileNames, newFileNames);
-v.addLast (script.getBytes ());
-}var sname = (haveSceneScript ? "scene.spt" : "state.spt");
-v.addLast ("JmolManifest.txt");
-v.addLast (null);
-var sinfo = "# Jmol Manifest Zip Format 1.1\n# Created " + ( new java.util.Date ()) + "\n" + "# JmolVersion " + J.viewer.Viewer.getJmolVersion () + "\n" + sname;
-v.addLast (sinfo.getBytes ());
-v.addLast ("Jmol_version_" + J.viewer.Viewer.getJmolVersion ().$replace (' ', '_').$replace (':', '.'));
-v.addLast (null);
-v.addLast ( Clazz.newByteArray (0, 0));
-if (fileRoot != null) {
-var bytes = viewer.getImageAsWithComment ("PNG", -1, -1, -1, null, null, null, J.viewer.JC.embedScript (script));
-if (J.util.Escape.isAB (bytes)) {
-v.addLast ("preview.png");
-v.addLast (null);
-v.addLast (bytes);
-}}return J.io.JmolBinary.writeZipFile (privateKey, fm, viewer, fileName, v, "OK JMOL");
-}, "~N,J.viewer.FileManager,J.viewer.Viewer,~S,~S,~A,~B");
-Clazz.overrideMethod (c$, "getAtomSetCollectionOrBufferedReaderFromZip", 
+$_V(c$, "getAtomSetCollectionOrBufferedReaderFromZip", 
 function (adapter, is, fileName, zipDirectory, htParams, subFilePtr, asBufferedReader) {
 var doCombine = (subFilePtr == 1);
 htParams.put ("zipSet", fileName);
@@ -478,11 +378,11 @@ if (selectAll || subFileName != null) haveManifest = false;
 if (useFileManifest && haveManifest) {
 var path = J.io.JmolBinary.getManifestScriptPath (manifest);
 if (path != null) return "NOTE: file recognized as a script file: " + fileName + path + "\n";
-}var vCollections =  new J.util.JmolList ();
+}var vCollections =  new JU.List ();
 var htCollections = (haveManifest ?  new java.util.Hashtable () : null);
 var nFiles = 0;
 var ret = J.io2.ZipUtil.checkSpecialData (is, zipDirectory);
-if (Clazz.instanceOf (ret, String)) return ret;
+if (Clazz_instanceOf (ret, String)) return ret;
 var data = ret;
 try {
 if (data != null) {
@@ -490,8 +390,8 @@ var reader =  new java.io.BufferedReader ( new java.io.StringReader (data.toStri
 if (asBufferedReader) {
 return reader;
 }ret = adapter.getAtomSetCollectionFromReader (fileName, reader, htParams);
-if (Clazz.instanceOf (ret, String)) return ret;
-if (Clazz.instanceOf (ret, J.adapter.smarter.AtomSetCollection)) {
+if (Clazz_instanceOf (ret, String)) return ret;
+if (Clazz_instanceOf (ret, J.adapter.smarter.AtomSetCollection)) {
 var atomSetCollection = ret;
 if (atomSetCollection.errorMessage != null) {
 if (ignoreErrors) return null;
@@ -499,7 +399,7 @@ return atomSetCollection.errorMessage;
 }return atomSetCollection;
 }if (ignoreErrors) return null;
 return "unknown reader error";
-}if (Clazz.instanceOf (is, java.io.BufferedInputStream)) is = J.io.JmolBinary.checkPngZipStream (is);
+}if (Clazz_instanceOf (is, java.io.BufferedInputStream)) is = J.io.JmolBinary.checkPngZipStream (is);
 var zis = J.io.JmolBinary.newZipInputStream (is);
 var ze;
 if (haveManifest) manifest = '|' + manifest.$replace ('\r', '|').$replace ('\n', '|') + '|';
@@ -515,13 +415,13 @@ var bis =  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (b
 var zipDir2 = J.io.JmolBinary.getZipDirectoryAndClose (bis, true);
 bis =  new java.io.BufferedInputStream ( new java.io.ByteArrayInputStream (bytes));
 var atomSetCollections = this.getAtomSetCollectionOrBufferedReaderFromZip (adapter, bis, fileName + "|" + thisEntry, zipDir2, htParams, ++subFilePtr, asBufferedReader);
-if (Clazz.instanceOf (atomSetCollections, String)) {
+if (Clazz_instanceOf (atomSetCollections, String)) {
 if (ignoreErrors) continue;
 return atomSetCollections;
-} else if (Clazz.instanceOf (atomSetCollections, J.adapter.smarter.AtomSetCollection) || Clazz.instanceOf (atomSetCollections, J.util.JmolList)) {
+} else if (Clazz_instanceOf (atomSetCollections, J.adapter.smarter.AtomSetCollection) || Clazz_instanceOf (atomSetCollections, JU.List)) {
 if (haveManifest && !exceptFiles) htCollections.put (thisEntry, atomSetCollections);
  else vCollections.addLast (atomSetCollections);
-} else if (Clazz.instanceOf (atomSetCollections, java.io.BufferedReader)) {
+} else if (Clazz_instanceOf (atomSetCollections, java.io.BufferedReader)) {
 if (doCombine) zis.close ();
 return atomSetCollections;
 } else {
@@ -550,7 +450,7 @@ if (doCombine) zis.close ();
 return reader;
 }var fname = fileName + "|" + ze.getName ();
 ret = adapter.getAtomSetCollectionFromReader (fname, reader, htParams);
-if (!(Clazz.instanceOf (ret, J.adapter.smarter.AtomSetCollection))) {
+if (!(Clazz_instanceOf (ret, J.adapter.smarter.AtomSetCollection))) {
 if (ignoreErrors) continue;
 zis.close ();
 return "" + ret;
@@ -564,7 +464,7 @@ return a.errorMessage;
 }}}
 if (doCombine) zis.close ();
 if (haveManifest && !exceptFiles) {
-var list = J.util.TextFormat.split (manifest, '|');
+var list = JU.PT.split (manifest, "|");
 for (var i = 0; i < list.length; i++) {
 var file = list[i];
 if (file.length == 0 || file.indexOf ("#") == 0) continue;
@@ -580,14 +480,14 @@ return result.errorMessage;
 if (selectedFile > 0 && selectedFile <= vCollections.size ()) return vCollections.get (selectedFile - 1);
 return result;
 } catch (e$$) {
-if (Clazz.exceptionOf (e$$, Exception)) {
+if (Clazz_exceptionOf (e$$, Exception)) {
 var e = e$$;
 {
 if (ignoreErrors) return null;
 J.util.Logger.error ("" + e);
 return "" + e;
 }
-} else if (Clazz.exceptionOf (e$$, Error)) {
+} else if (Clazz_exceptionOf (e$$, Error)) {
 var er = e$$;
 {
 J.util.Logger.errorEx (null, er);
@@ -599,7 +499,7 @@ throw e$$;
 }
 }, "J.api.JmolAdapter,java.io.InputStream,~S,~A,java.util.Map,~N,~B");
 c$.checkSpecialData = $_M(c$, "checkSpecialData", 
-($fz = function (is, zipDirectory) {
+function (is, zipDirectory) {
 var isSpartan = false;
 for (var i = 1; i < zipDirectory.length; i++) {
 if (zipDirectory[i].endsWith (".spardir/") || zipDirectory[i].indexOf ("_spartandir") >= 0) {
@@ -607,7 +507,7 @@ isSpartan = true;
 break;
 }}
 if (!isSpartan) return null;
-var data =  new J.util.SB ();
+var data =  new JU.SB ();
 data.append ("Zip File Directory: ").append ("\n").append (J.util.Escape.eAS (zipDirectory, true)).append ("\n");
 var fileData =  new java.util.Hashtable ();
 J.io2.ZipUtil.getAllZipDataStatic (is, [], "", "Molecule", fileData);
@@ -622,8 +522,8 @@ if (fileData.containsKey (name)) data.append (fileData.get (name));
  else data.append (name + "\n");
 }
 return data;
-}, $fz.isPrivate = true, $fz), "java.io.InputStream,~A");
-Clazz.overrideMethod (c$, "spartanFileList", 
+}, "java.io.InputStream,~A");
+$_V(c$, "spartanFileList", 
 function (name, type) {
 var dirNums = J.io2.ZipUtil.getSpartanDirs (type);
 if (dirNums.length == 0 && name.endsWith (".spardir.zip") && type.indexOf (".zip|output") >= 0) {
@@ -635,29 +535,29 @@ return ["SpartanSmol", sname, sname + "/output"];
 }return J.io2.ZipUtil.getSpartanFileList (name, dirNums);
 }, "~S,~S");
 c$.getSpartanDirs = $_M(c$, "getSpartanDirs", 
-($fz = function (outputFileData) {
+function (outputFileData) {
 if (outputFileData == null) return [];
 if (outputFileData.startsWith ("java.io.FileNotFoundException") || outputFileData.startsWith ("FILE NOT FOUND") || outputFileData.indexOf ("<html") >= 0) return ["M0001"];
-var v =  new J.util.JmolList ();
+var v =  new JU.List ();
 var token;
 var lasttoken = "";
 try {
 var tokens =  new java.util.StringTokenizer (outputFileData, " \t\r\n");
 while (tokens.hasMoreTokens ()) {
 if ((token = tokens.nextToken ()).equals (")")) v.addLast (lasttoken);
- else if (token.equals ("Start-") && tokens.nextToken ().equals ("Molecule")) v.addLast (J.util.TextFormat.split (tokens.nextToken (), '"')[1]);
+ else if (token.equals ("Start-") && tokens.nextToken ().equals ("Molecule")) v.addLast (JU.PT.split (tokens.nextToken (), "\"")[1]);
 lasttoken = token;
 }
 } catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+if (Clazz_exceptionOf (e, Exception)) {
 } else {
 throw e;
 }
 }
 return v.toArray ( new Array (v.size ()));
-}, $fz.isPrivate = true, $fz), "~S");
+}, "~S");
 c$.getSpartanFileList = $_M(c$, "getSpartanFileList", 
-($fz = function (name, dirNums) {
+function (name, dirNums) {
 var files =  new Array (2 + dirNums.length * 5);
 files[0] = "SpartanSmol";
 files[1] = "Directory Entry ";
@@ -673,13 +573,13 @@ files[pt++] = path + "/Molecule:asBinaryString";
 files[pt++] = path + "/proparc";
 }
 return files;
-}, $fz.isPrivate = true, $fz), "~S,~A");
+}, "~S,~A");
 c$.checkSpecialInZip = $_M(c$, "checkSpecialInZip", 
 function (zipDirectory) {
 var name;
 return (zipDirectory.length < 2 ? null : (name = zipDirectory[1]).endsWith (".spardir/") || zipDirectory.length == 2 ? ["", (name.endsWith ("/") ? name.substring (0, name.length - 1) : name)] : null);
 }, "~A");
-Clazz.overrideMethod (c$, "getCachedPngjBytes", 
+$_V(c$, "getCachedPngjBytes", 
 function (fm, pathName) {
 if (pathName.indexOf (".png") < 0) return null;
 J.util.Logger.info ("FileManager checking PNGJ cache for " + pathName);
@@ -698,7 +598,7 @@ return pngjCache.get (shortName);
 J.util.Logger.info ("FileManager using memory cache " + shortName);
 return pngjCache.get (shortName);
 }, "J.viewer.FileManager,~S");
-Clazz.overrideMethod (c$, "cachePngjFile", 
+$_V(c$, "cachePngjFile", 
 function (fm, data) {
 var pngjCache = fm.pngjCache =  new java.util.Hashtable ();
 if (data == null) return false;
@@ -709,7 +609,7 @@ var shortName = J.io2.ZipUtil.shortSceneFilename (data[0]);
 try {
 data[1] = this.cacheZipContents (J.io.JmolBinary.checkPngZipStream (fm.getBufferedInputStreamOrErrorMessageFromName (data[0], null, false, false, null, false)), shortName, fm.pngjCache);
 } catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
+if (Clazz_exceptionOf (e, Exception)) {
 return false;
 } else {
 throw e;
@@ -727,7 +627,7 @@ if (bytes != null) pngjCache.put (J.io2.ZipUtil.shortSceneFilename (data[0] + "|
 return true;
 }, "J.viewer.FileManager,~A");
 c$.shortSceneFilename = $_M(c$, "shortSceneFilename", 
-($fz = function (pathName) {
+function (pathName) {
 var pt = pathName.indexOf ("_scene_") + 7;
 if (pt < 7) return pathName;
 var s = "";
@@ -737,9 +637,26 @@ if (pt1 < 0) return pathName;
 s = pathName.substring (pt, pt1);
 }var pt2 = pathName.lastIndexOf ("|");
 return pathName.substring (0, pt) + s + (pt2 > 0 ? pathName.substring (pt2) : "");
-}, $fz.isPrivate = true, $fz), "~S");
-Clazz.defineStatics (c$,
-"SCENE_TAG", "###scene.spt###");
+}, "~S");
+$_V(c$, "addZipEntry", 
+function (zos, fileName) {
+(zos).putNextEntry ( new java.util.zip.ZipEntry (fileName));
+}, "~O,~S");
+$_V(c$, "closeZipEntry", 
+function (zos) {
+(zos).closeEntry ();
+}, "~O");
+$_V(c$, "getZipOutputStream", 
+function (bos) {
+{
+return J.api.Interface.getInterface("java.util.zip.ZipOutputStream").setZOS(bos);
+}}, "~O");
+$_V(c$, "getCrcValue", 
+function (bytes) {
+var crc =  new java.util.zip.CRC32 ();
+crc.update (bytes, 0, bytes.length);
+return crc.getValue ();
+}, "~A");
 });
 $_L(["java.io.Closeable","$.InputStream"],"java.io.FileInputStream",["java.lang.IndexOutOfBoundsException","$.NullPointerException"],function(){
 c$=$_C(function(){
@@ -801,52 +718,52 @@ function(count){
 return 0;
 },"~N");
 });
-Clazz.declarePackage ("JZ");
-Clazz.declareInterface (JZ, "Checksum");
-Clazz.declarePackage ("JZ");
-Clazz.load (["JZ.Checksum"], "JZ.CRC32", null, function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("JZ");
+Clazz_declareInterface (JZ, "Checksum");
+Clazz_declarePackage ("JZ");
+Clazz_load (["JZ.Checksum"], "JZ.CRC32", null, function () {
+c$ = Clazz_decorateAsClass (function () {
 this.crc = 0;
 this.b1 = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ, "CRC32", null, JZ.Checksum);
-Clazz.prepareFields (c$, function () {
-this.b1 =  Clazz.newByteArray (1, 0);
+Clazz_prepareFields (c$, function () {
+this.b1 =  Clazz_newByteArray (1, 0);
 });
-Clazz.overrideMethod (c$, "update", 
+$_V(c$, "update", 
 function (buf, index, len) {
 var c = ~this.crc;
 while (--len >= 0) c = JZ.CRC32.crc_table[(c ^ buf[index++]) & 0xff] ^ (c >>> 8);
 
 this.crc = ~c;
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "reset", 
+$_V(c$, "reset", 
 function () {
 this.crc = 0;
 });
-Clazz.overrideMethod (c$, "resetLong", 
+$_V(c$, "resetLong", 
 function (vv) {
 this.crc = (vv & 0xffffffff);
 }, "~N");
-Clazz.overrideMethod (c$, "getValue", 
+$_V(c$, "getValue", 
 function () {
 return this.crc & 0xffffffff;
 });
-Clazz.overrideMethod (c$, "updateByteAsInt", 
+$_V(c$, "updateByteAsInt", 
 function (b) {
 this.b1[0] = b;
 this.update (this.b1, 0, 1);
 }, "~N");
-Clazz.defineStatics (c$,
+Clazz_defineStatics (c$,
 "crc_table", [0, 1996959894, -301047508, -1727442502, 124634137, 1886057615, -379345611, -1637575261, 249268274, 2044508324, -522852066, -1747789432, 162941995, 2125561021, -407360249, -1866523247, 498536548, 1789927666, -205950648, -2067906082, 450548861, 1843258603, -187386543, -2083289657, 325883990, 1684777152, -43845254, -1973040660, 335633487, 1661365465, -99664541, -1928851979, 997073096, 1281953886, -715111964, -1570279054, 1006888145, 1258607687, -770865667, -1526024853, 901097722, 1119000684, -608450090, -1396901568, 853044451, 1172266101, -589951537, -1412350631, 651767980, 1373503546, -925412992, -1076862698, 565507253, 1454621731, -809855591, -1195530993, 671266974, 1594198024, -972236366, -1324619484, 795835527, 1483230225, -1050600021, -1234817731, 1994146192, 31158534, -1731059524, -271249366, 1907459465, 112637215, -1614814043, -390540237, 2013776290, 251722036, -1777751922, -519137256, 2137656763, 141376813, -1855689577, -429695999, 1802195444, 476864866, -2056965928, -228458418, 1812370925, 453092731, -2113342271, -183516073, 1706088902, 314042704, -1950435094, -54949764, 1658658271, 366619977, -1932296973, -69972891, 1303535960, 984961486, -1547960204, -725929758, 1256170817, 1037604311, -1529756563, -740887301, 1131014506, 879679996, -1385723834, -631195440, 1141124467, 855842277, -1442165665, -586318647, 1342533948, 654459306, -1106571248, -921952122, 1466479909, 544179635, -1184443383, -832445281, 1591671054, 702138776, -1328506846, -942167884, 1504918807, 783551873, -1212326853, -1061524307, -306674912, -1698712650, 62317068, 1957810842, -355121351, -1647151185, 81470997, 1943803523, -480048366, -1805370492, 225274430, 2053790376, -468791541, -1828061283, 167816743, 2097651377, -267414716, -2029476910, 503444072, 1762050814, -144550051, -2140837941, 426522225, 1852507879, -19653770, -1982649376, 282753626, 1742555852, -105259153, -1900089351, 397917763, 1622183637, -690576408, -1580100738, 953729732, 1340076626, -776247311, -1497606297, 1068828381, 1219638859, -670225446, -1358292148, 906185462, 1090812512, -547295293, -1469587627, 829329135, 1181335161, -882789492, -1134132454, 628085408, 1382605366, -871598187, -1156888829, 570562233, 1426400815, -977650754, -1296233688, 733239954, 1555261956, -1026031705, -1244606671, 752459403, 1541320221, -1687895376, -328994266, 1969922972, 40735498, -1677130071, -351390145, 1913087877, 83908371, -1782625662, -491226604, 2075208622, 213261112, -1831694693, -438977011, 2094854071, 198958881, -2032938284, -237706686, 1759359992, 534414190, -2118248755, -155638181, 1873836001, 414664567, -2012718362, -15766928, 1711684554, 285281116, -1889165569, -127750551, 1634467795, 376229701, -1609899400, -686959890, 1308918612, 956543938, -1486412191, -799009033, 1231636301, 1047427035, -1362007478, -640263460, 1088359270, 936918000, -1447252397, -558129467, 1202900863, 817233897, -1111625188, -893730166, 1404277552, 615818150, -1160759803, -841546093, 1423857449, 601450431, -1285129682, -1000256840, 1567103746, 711928724, -1274298825, -1022587231, 1510334235, 755167117]);
 });
-Clazz.declarePackage ("java.util.zip");
-Clazz.load (["JZ.CRC32"], "java.util.zip.CRC32", null, function () {
-c$ = Clazz.declareType (java.util.zip, "CRC32", JZ.CRC32);
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["JZ.CRC32"], "java.util.zip.CRC32", null, function () {
+c$ = Clazz_declareType (java.util.zip, "CRC32", JZ.CRC32);
 });
-Clazz.declarePackage ("JZ");
-Clazz.load (["java.io.FilterInputStream"], "JZ.InflaterInputStream", ["java.io.EOFException", "$.IOException", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.NullPointerException"], function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("JZ");
+Clazz_load (["java.io.FilterInputStream"], "JZ.InflaterInputStream", ["java.io.EOFException", "$.IOException", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.NullPointerException"], function () {
+c$ = Clazz_decorateAsClass (function () {
 this.inflater = null;
 this.buf = null;
 this.len = 0;
@@ -856,26 +773,26 @@ this.close_in = true;
 this.myinflater = false;
 this.byte1 = null;
 this.b = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ, "InflaterInputStream", java.io.FilterInputStream);
-Clazz.prepareFields (c$, function () {
-this.byte1 =  Clazz.newByteArray (1, 0);
-this.b =  Clazz.newByteArray (512, 0);
+Clazz_prepareFields (c$, function () {
+this.byte1 =  Clazz_newByteArray (1, 0);
+this.b =  Clazz_newByteArray (512, 0);
 });
-Clazz.makeConstructor (c$, 
+Clazz_makeConstructor (c$, 
 function ($in, inflater, size, close_in) {
-Clazz.superConstructor (this, JZ.InflaterInputStream, [$in]);
+Clazz_superConstructor (this, JZ.InflaterInputStream, [$in]);
 this.inflater = inflater;
-this.buf =  Clazz.newByteArray (size, 0);
+this.buf =  Clazz_newByteArray (size, 0);
 this.close_in = close_in;
 }, "java.io.InputStream,JZ.Inflater,~N,~B");
-Clazz.overrideMethod (c$, "readByteAsInt", 
+$_V(c$, "readByteAsInt", 
 function () {
 if (this.closed) {
 throw  new java.io.IOException ("Stream closed");
 }return this.read (this.byte1, 0, 1) == -1 ? -1 : this.byte1[0] & 0xff;
 });
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (b, off, len) {
 return this.readInf (b, off, len);
 }, "~A,~N,~N");
@@ -912,13 +829,13 @@ if (this.inflater.avail_out == 0) break;
 }
 return n;
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "available", 
+$_V(c$, "available", 
 function () {
 if (this.closed) {
 throw  new java.io.IOException ("Stream closed");
 }return (this.eof ? 0 : 1);
 });
-Clazz.overrideMethod (c$, "skip", 
+$_V(c$, "skip", 
 function (n) {
 if (n < 0) {
 throw  new IllegalArgumentException ("negative skip length");
@@ -938,7 +855,7 @@ break;
 }
 return total;
 }, "~N");
-Clazz.overrideMethod (c$, "close", 
+$_V(c$, "close", 
 function () {
 if (!this.closed) {
 if (this.myinflater) this.inflater.end ();
@@ -960,14 +877,14 @@ throw  new java.io.IOException ("footer is not found");
 throw  new java.io.EOFException ("Unexpected end of ZLIB input stream");
 }}this.inflater.setInput (this.buf, 0, this.len, true);
 });
-Clazz.overrideMethod (c$, "markSupported", 
+$_V(c$, "markSupported", 
 function () {
 return false;
 });
-Clazz.overrideMethod (c$, "mark", 
+$_V(c$, "mark", 
 function (readlimit) {
 }, "~N");
-Clazz.overrideMethod (c$, "reset", 
+$_V(c$, "reset", 
 function () {
 throw  new java.io.IOException ("mark/reset not supported");
 });
@@ -982,7 +899,7 @@ return this.inflater.getTotalOut ();
 $_M(c$, "getAvailIn", 
 function () {
 if (this.inflater.avail_in <= 0) return null;
-var tmp =  Clazz.newByteArray (this.inflater.avail_in, 0);
+var tmp =  Clazz_newByteArray (this.inflater.avail_in, 0);
 System.arraycopy (this.inflater.next_in, this.inflater.next_in_index, tmp, 0, this.inflater.avail_in);
 return tmp;
 });
@@ -994,7 +911,7 @@ this.inflater.setOutput (empty, 0, 0);
 var err = this.inflater.inflate (0);
 if (!this.inflater.istate.inParsingHeader ()) {
 return;
-}var b1 =  Clazz.newByteArray (1, 0);
+}var b1 =  Clazz_newByteArray (1, 0);
 do {
 var i = this.$in.read (b1, 0, 1);
 if (i <= 0) throw  new java.io.IOException ("no input");
@@ -1007,45 +924,45 @@ $_M(c$, "getInflater",
 function () {
 return this.inflater;
 });
-Clazz.defineStatics (c$,
+Clazz_defineStatics (c$,
 "DEFAULT_BUFSIZE", 512);
 });
-Clazz.declarePackage ("java.util.zip");
-Clazz.load (["JZ.InflaterInputStream"], "java.util.zip.InflaterInputStream", null, function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["JZ.InflaterInputStream"], "java.util.zip.InflaterInputStream", null, function () {
+c$ = Clazz_decorateAsClass (function () {
 this.inf = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, java.util.zip, "InflaterInputStream", JZ.InflaterInputStream);
-Clazz.makeConstructor (c$, 
+Clazz_makeConstructor (c$, 
 function ($in, inflater, size) {
-Clazz.superConstructor (this, java.util.zip.InflaterInputStream, [$in, inflater, size, true]);
+Clazz_superConstructor (this, java.util.zip.InflaterInputStream, [$in, inflater, size, true]);
 this.inf = inflater;
 }, "java.io.InputStream,java.util.zip.Inflater,~N");
 });
-Clazz.declarePackage ("java.util.zip");
-Clazz.load (["java.util.zip.InflaterInputStream", "$.CRC32"], "java.util.zip.GZIPInputStream", ["java.io.EOFException", "$.IOException", "java.util.zip.CheckedInputStream", "$.Inflater", "$.ZipException"], function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["java.util.zip.InflaterInputStream", "$.CRC32"], "java.util.zip.GZIPInputStream", ["java.io.EOFException", "$.IOException", "java.util.zip.CheckedInputStream", "$.Inflater", "$.ZipException"], function () {
+c$ = Clazz_decorateAsClass (function () {
 this.crc = null;
 this.eos = false;
 this.$closed = false;
 this.tmpbuf = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, java.util.zip, "GZIPInputStream", java.util.zip.InflaterInputStream);
-Clazz.prepareFields (c$, function () {
+Clazz_prepareFields (c$, function () {
 this.crc =  new java.util.zip.CRC32 ();
-this.tmpbuf =  Clazz.newByteArray (128, 0);
+this.tmpbuf =  Clazz_newByteArray (128, 0);
 });
 $_M(c$, "ensureOpen", 
-($fz = function () {
+function () {
 if (this.$closed) {
 throw  new java.io.IOException ("Stream closed");
-}}, $fz.isPrivate = true, $fz));
-Clazz.makeConstructor (c$, 
+}});
+Clazz_makeConstructor (c$, 
 function ($in, size) {
-Clazz.superConstructor (this, java.util.zip.GZIPInputStream, [$in,  new java.util.zip.Inflater ().init (0, true), size]);
+Clazz_superConstructor (this, java.util.zip.GZIPInputStream, [$in,  new java.util.zip.Inflater ().init (0, true), size]);
 this.readHeader ($in);
 }, "java.io.InputStream,~N");
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (buf, off, len) {
 this.ensureOpen ();
 if (this.eos) {
@@ -1061,12 +978,12 @@ this.crc.update (buf, off, n);
 $_M(c$, "close", 
 function () {
 if (!this.$closed) {
-Clazz.superCall (this, java.util.zip.GZIPInputStream, "close", []);
+Clazz_superCall (this, java.util.zip.GZIPInputStream, "close", []);
 this.eos = true;
 this.$closed = true;
 }});
 $_M(c$, "readHeader", 
-($fz = function (this_in) {
+function (this_in) {
 var $in =  new java.util.zip.CheckedInputStream (this_in, this.crc);
 this.crc.reset ();
 if (this.readUShort ($in) != 35615) {
@@ -1095,44 +1012,44 @@ throw  new java.util.zip.ZipException ("Corrupt GZIP header");
 }n += 2;
 }this.crc.reset ();
 return n;
-}, $fz.isPrivate = true, $fz), "java.io.InputStream");
+}, "java.io.InputStream");
 $_M(c$, "readTrailer", 
-($fz = function () {
+function () {
 return true;
-}, $fz.isPrivate = true, $fz));
+});
 $_M(c$, "readUShort", 
-($fz = function ($in) {
+function ($in) {
 var b = this.readUByte ($in);
 return (this.readUByte ($in) << 8) | b;
-}, $fz.isPrivate = true, $fz), "java.io.InputStream");
+}, "java.io.InputStream");
 $_M(c$, "readUByte", 
-($fz = function ($in) {
+function ($in) {
 var b = $in.readByteAsInt ();
 if (b == -1) {
 throw  new java.io.EOFException ();
 }if (b < -1 || b > 255) {
 throw  new java.io.IOException (this.$in.getClass ().getName () + ".read() returned value out of range -1..255: " + b);
 }return b;
-}, $fz.isPrivate = true, $fz), "java.io.InputStream");
+}, "java.io.InputStream");
 $_M(c$, "skipBytes", 
-($fz = function ($in, n) {
+function ($in, n) {
 while (n > 0) {
 var len = $in.read (this.tmpbuf, 0, n < this.tmpbuf.length ? n : this.tmpbuf.length);
 if (len == -1) {
 throw  new java.io.EOFException ();
 }n -= len;
 }
-}, $fz.isPrivate = true, $fz), "java.io.InputStream,~N");
-Clazz.defineStatics (c$,
+}, "java.io.InputStream,~N");
+Clazz_defineStatics (c$,
 "GZIP_MAGIC", 0x8b1f,
 "FHCRC", 2,
 "FEXTRA", 4,
 "FNAME", 8,
 "FCOMMENT", 16);
 });
-Clazz.declarePackage ("JZ");
-Clazz.load (null, "JZ.ZStream", ["JZ.Adler32"], function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("JZ");
+Clazz_load (null, "JZ.ZStream", ["JZ.Adler32"], function () {
+c$ = Clazz_decorateAsClass (function () {
 this.next_in = null;
 this.next_in_index = 0;
 this.avail_in = 0;
@@ -1146,7 +1063,7 @@ this.dstate = null;
 this.istate = null;
 this.data_type = 0;
 this.checksum = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ, "ZStream");
 $_M(c$, "setAdler32", 
 function () {
@@ -1168,8 +1085,7 @@ function () {
 var len = this.dstate.pending;
 if (len > this.avail_out) len = this.avail_out;
 if (len == 0) return;
-if (this.dstate.pending_buf.length <= this.dstate.pending_out || this.next_out.length <= this.next_out_index || this.dstate.pending_buf.length < (this.dstate.pending_out + len) || this.next_out.length < (this.next_out_index + len)) {
-}System.arraycopy (this.dstate.pending_buf, this.dstate.pending_out, this.next_out, this.next_out_index, len);
+System.arraycopy (this.dstate.pending_buf, this.dstate.pending_out, this.next_out, this.next_out_index, len);
 this.next_out_index += len;
 this.dstate.pending_out += len;
 this.total_out += len;
@@ -1211,7 +1127,7 @@ $_M(c$, "setInput",
 function (buf, off, len, append) {
 if (len <= 0 && append && this.next_in != null) return;
 if (this.avail_in > 0 && append) {
-var tmp =  Clazz.newByteArray (this.avail_in + len, 0);
+var tmp =  Clazz_newByteArray (this.avail_in + len, 0);
 System.arraycopy (this.next_in, this.next_in_index, tmp, 0, this.avail_in);
 System.arraycopy (buf, off, tmp, this.avail_in, len);
 this.next_in = tmp;
@@ -1255,12 +1171,12 @@ x.push(0x3F); // '?'
 }
 return (Int32Array != Array ? new Int32Array(x) : x);
 }}, "~S");
-Clazz.defineStatics (c$,
+Clazz_defineStatics (c$,
 "Z_STREAM_ERROR", -2);
 });
-Clazz.declarePackage ("JZ");
-Clazz.load (["JZ.ZStream"], "JZ.Inflater", ["JZ.Inflate"], function () {
-c$ = Clazz.declareType (JZ, "Inflater", JZ.ZStream);
+Clazz_declarePackage ("JZ");
+Clazz_load (["JZ.ZStream"], "JZ.Inflater", ["JZ.Inflate"], function () {
+c$ = Clazz_declareType (JZ, "Inflater", JZ.ZStream);
 $_M(c$, "init", 
 function (w, nowrap) {
 this.setAdler32 ();
@@ -1269,13 +1185,13 @@ this.istate =  new JZ.Inflate (this);
 this.istate.inflateInit (nowrap ? -w : w);
 return this;
 }, "~N,~B");
-Clazz.overrideMethod (c$, "inflate", 
+$_V(c$, "inflate", 
 function (f) {
 if (this.istate == null) return -2;
 var ret = this.istate.inflate (f);
 return ret;
 }, "~N");
-Clazz.overrideMethod (c$, "end", 
+$_V(c$, "end", 
 function () {
 if (this.istate == null) return -2;
 var ret = this.istate.inflateEnd ();
@@ -1296,7 +1212,7 @@ function (dictionary, dictLength) {
 if (this.istate == null) return -2;
 return this.istate.inflateSetDictionary (dictionary, dictLength);
 }, "~A,~N");
-Clazz.overrideMethod (c$, "finished", 
+$_V(c$, "finished", 
 function () {
 return this.istate.mode == 12;
 });
@@ -1305,37 +1221,37 @@ function () {
 this.avail_in = 0;
 if (this.istate != null) this.istate.reset ();
 });
-Clazz.defineStatics (c$,
+Clazz_defineStatics (c$,
 "MAX_WBITS", 15,
 "DEF_WBITS", 15,
 "$Z_STREAM_ERROR", -2);
 });
-Clazz.declarePackage ("JZ");
-Clazz.load (["JZ.Checksum"], "JZ.Adler32", null, function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("JZ");
+Clazz_load (["JZ.Checksum"], "JZ.Adler32", null, function () {
+c$ = Clazz_decorateAsClass (function () {
 this.s1 = 1;
 this.s2 = 0;
 this.b1 = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ, "Adler32", null, JZ.Checksum);
-Clazz.prepareFields (c$, function () {
-this.b1 =  Clazz.newByteArray (1, 0);
+Clazz_prepareFields (c$, function () {
+this.b1 =  Clazz_newByteArray (1, 0);
 });
-Clazz.overrideMethod (c$, "resetLong", 
+$_V(c$, "resetLong", 
 function (init) {
 this.s1 = init & 0xffff;
 this.s2 = (init >> 16) & 0xffff;
 }, "~N");
-Clazz.overrideMethod (c$, "reset", 
+$_V(c$, "reset", 
 function () {
 this.s1 = 1;
 this.s2 = 0;
 });
-Clazz.overrideMethod (c$, "getValue", 
+$_V(c$, "getValue", 
 function () {
 return ((this.s2 << 16) | this.s1);
 });
-Clazz.overrideMethod (c$, "update", 
+$_V(c$, "update", 
 function (buf, index, len) {
 if (len == 1) {
 this.s1 += buf[index++] & 0xff;
@@ -1343,7 +1259,7 @@ this.s2 += this.s1;
 this.s1 %= 65521;
 this.s2 %= 65521;
 return;
-}var len1 = Clazz.doubleToInt (len / 5552);
+}var len1 = Clazz_doubleToInt (len / 5552);
 var len2 = len % 5552;
 while (len1-- > 0) {
 var k = 5552;
@@ -1364,21 +1280,21 @@ this.s2 += this.s1;
 this.s1 %= 65521;
 this.s2 %= 65521;
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "updateByteAsInt", 
+$_V(c$, "updateByteAsInt", 
 function (b) {
 this.b1[0] = b;
 this.update (this.b1, 0, 1);
 }, "~N");
-Clazz.defineStatics (c$,
+Clazz_defineStatics (c$,
 "BASE", 65521,
 "NMAX", 5552);
 });
-Clazz.declarePackage ("JZ");
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("JZ");
+c$ = Clazz_decorateAsClass (function () {
 this.dyn_tree = null;
 this.max_code = 0;
 this.stat_desc = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ, "Tree");
 c$.d_code = $_M(c$, "d_code", 
 function (dist) {
@@ -1464,7 +1380,7 @@ s.opt_len--;
 if (stree != null) s.static_len -= stree[node * 2 + 1];
 }
 this.max_code = max_code;
-for (n = Clazz.doubleToInt (s.heap_len / 2); n >= 1; n--) s.pqdownheap (tree, n);
+for (n = Clazz_doubleToInt (s.heap_len / 2); n >= 1; n--) s.pqdownheap (tree, n);
 
 node = elems;
 do {
@@ -1509,7 +1425,7 @@ res <<= 1;
 } while (--len > 0);
 return res >>> 1;
 }, "~N,~N");
-Clazz.defineStatics (c$,
+Clazz_defineStatics (c$,
 "MAX_BITS", 15,
 "LITERALS", 256,
 "LENGTH_CODES", 29,
@@ -1530,26 +1446,26 @@ Clazz.defineStatics (c$,
 "_length_code", [0, 1, 2, 3, 4, 5, 6, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 16, 16, 16, 16, 17, 17, 17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 28],
 "base_length", [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 0],
 "base_dist", [0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 6144, 8192, 12288, 16384, 24576],
-"next_code",  Clazz.newShortArray (16, 0));
-Clazz.declarePackage ("JZ");
-Clazz.load (["JZ.Tree"], "JZ.StaticTree", null, function () {
-c$ = Clazz.decorateAsClass (function () {
+"next_code",  Clazz_newShortArray (16, 0));
+Clazz_declarePackage ("JZ");
+Clazz_load (["JZ.Tree"], "JZ.StaticTree", null, function () {
+c$ = Clazz_decorateAsClass (function () {
 this.static_tree = null;
 this.extra_bits = null;
 this.extra_base = 0;
 this.elems = 0;
 this.max_length = 0;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ, "StaticTree");
-Clazz.makeConstructor (c$, 
-($fz = function (static_tree, extra_bits, extra_base, elems, max_length) {
+Clazz_makeConstructor (c$, 
+function (static_tree, extra_bits, extra_base, elems, max_length) {
 this.static_tree = static_tree;
 this.extra_bits = extra_bits;
 this.extra_base = extra_base;
 this.elems = elems;
 this.max_length = max_length;
-}, $fz.isPrivate = true, $fz), "~A,~A,~N,~N,~N");
-Clazz.defineStatics (c$,
+}, "~A,~A,~N,~N,~N");
+Clazz_defineStatics (c$,
 "MAX_BITS", 15,
 "BL_CODES", 19,
 "D_CODES", 30,
@@ -1563,1035 +1479,9 @@ c$.static_l_desc = c$.prototype.static_l_desc =  new JZ.StaticTree (JZ.StaticTre
 c$.static_d_desc = c$.prototype.static_d_desc =  new JZ.StaticTree (JZ.StaticTree.static_dtree, JZ.Tree.extra_dbits, 0, 30, 15);
 c$.static_bl_desc = c$.prototype.static_bl_desc =  new JZ.StaticTree (null, JZ.Tree.extra_blbits, 0, 19, 7);
 });
-Clazz.declarePackage ("JZ");
-Clazz.load (["JZ.Tree"], "JZ.Deflate", ["JZ.CRC32", "$.GZIPHeader", "$.StaticTree"], function () {
-c$ = Clazz.decorateAsClass (function () {
-this.strm = null;
-this.status = 0;
-this.pending_buf = null;
-this.pending_buf_size = 0;
-this.pending_out = 0;
-this.pending = 0;
-this.wrap = 1;
-this.data_type = 0;
-this.method = 0;
-this.last_flush = 0;
-this.w_size = 0;
-this.w_bits = 0;
-this.w_mask = 0;
-this.window = null;
-this.window_size = 0;
-this.prev = null;
-this.head = null;
-this.ins_h = 0;
-this.hash_size = 0;
-this.hash_bits = 0;
-this.hash_mask = 0;
-this.hash_shift = 0;
-this.block_start = 0;
-this.match_length = 0;
-this.prev_match = 0;
-this.match_available = 0;
-this.strstart = 0;
-this.match_start = 0;
-this.lookahead = 0;
-this.prev_length = 0;
-this.max_chain_length = 0;
-this.max_lazy_match = 0;
-this.level = 0;
-this.strategy = 0;
-this.good_match = 0;
-this.nice_match = 0;
-this.dyn_ltree = null;
-this.dyn_dtree = null;
-this.bl_tree = null;
-this.l_desc = null;
-this.d_desc = null;
-this.bl_desc = null;
-this.bl_count = null;
-this.heap = null;
-this.heap_len = 0;
-this.heap_max = 0;
-this.depth = null;
-this.l_buf = 0;
-this.lit_bufsize = 0;
-this.last_lit = 0;
-this.d_buf = 0;
-this.opt_len = 0;
-this.static_len = 0;
-this.matches = 0;
-this.last_eob_len = 0;
-this.bi_buf = 0;
-this.bi_valid = 0;
-this.gheader = null;
-Clazz.instantialize (this, arguments);
-}, JZ, "Deflate");
-Clazz.prepareFields (c$, function () {
-this.l_desc =  new JZ.Tree ();
-this.d_desc =  new JZ.Tree ();
-this.bl_desc =  new JZ.Tree ();
-this.bl_count =  Clazz.newShortArray (16, 0);
-this.heap =  Clazz.newIntArray (573, 0);
-this.depth =  Clazz.newByteArray (573, 0);
-});
-Clazz.makeConstructor (c$, 
-function (strm) {
-this.strm = strm;
-this.dyn_ltree =  Clazz.newShortArray (1146, 0);
-this.dyn_dtree =  Clazz.newShortArray (122, 0);
-this.bl_tree =  Clazz.newShortArray (78, 0);
-}, "JZ.ZStream");
-$_M(c$, "deflateInit", 
-function (level) {
-return this.deflateInit2 (level, 15);
-}, "~N");
-$_M(c$, "deflateInit2", 
-function (level, bits) {
-return this.deflateInit5 (level, 8, bits, 8, 0);
-}, "~N,~N");
-$_M(c$, "deflateInit3", 
-function (level, bits, memlevel) {
-return this.deflateInit5 (level, 8, bits, memlevel, 0);
-}, "~N,~N,~N");
-$_M(c$, "lm_init", 
-function () {
-this.window_size = 2 * this.w_size;
-this.head[this.hash_size - 1] = 0;
-for (var i = 0; i < this.hash_size - 1; i++) {
-this.head[i] = 0;
-}
-this.max_lazy_match = JZ.Deflate.config_table[this.level].max_lazy;
-this.good_match = JZ.Deflate.config_table[this.level].good_length;
-this.nice_match = JZ.Deflate.config_table[this.level].nice_length;
-this.max_chain_length = JZ.Deflate.config_table[this.level].max_chain;
-this.strstart = 0;
-this.block_start = 0;
-this.lookahead = 0;
-this.match_length = this.prev_length = 2;
-this.match_available = 0;
-this.ins_h = 0;
-});
-$_M(c$, "tr_init", 
-function () {
-this.l_desc.dyn_tree = this.dyn_ltree;
-this.l_desc.stat_desc = JZ.StaticTree.static_l_desc;
-this.d_desc.dyn_tree = this.dyn_dtree;
-this.d_desc.stat_desc = JZ.StaticTree.static_d_desc;
-this.bl_desc.dyn_tree = this.bl_tree;
-this.bl_desc.stat_desc = JZ.StaticTree.static_bl_desc;
-this.bi_buf = 0;
-this.bi_valid = 0;
-this.last_eob_len = 8;
-this.init_block ();
-});
-$_M(c$, "init_block", 
-function () {
-for (var i = 0; i < 286; i++) this.dyn_ltree[i * 2] = 0;
-
-for (var i = 0; i < 30; i++) this.dyn_dtree[i * 2] = 0;
-
-for (var i = 0; i < 19; i++) this.bl_tree[i * 2] = 0;
-
-this.dyn_ltree[512] = 1;
-this.opt_len = this.static_len = 0;
-this.last_lit = this.matches = 0;
-});
-$_M(c$, "pqdownheap", 
-function (tree, k) {
-var v = this.heap[k];
-var j = k << 1;
-while (j <= this.heap_len) {
-if (j < this.heap_len && JZ.Deflate.smaller (tree, this.heap[j + 1], this.heap[j], this.depth)) {
-j++;
-}if (JZ.Deflate.smaller (tree, v, this.heap[j], this.depth)) break;
-this.heap[k] = this.heap[j];
-k = j;
-j <<= 1;
-}
-this.heap[k] = v;
-}, "~A,~N");
-c$.smaller = $_M(c$, "smaller", 
-function (tree, n, m, depth) {
-var tn2 = tree[n * 2];
-var tm2 = tree[m * 2];
-return (tn2 < tm2 || (tn2 == tm2 && depth[n] <= depth[m]));
-}, "~A,~N,~N,~A");
-$_M(c$, "scan_tree", 
-function (tree, max_code) {
-var n;
-var prevlen = -1;
-var curlen;
-var nextlen = tree[1];
-var count = 0;
-var max_count = 7;
-var min_count = 4;
-if (nextlen == 0) {
-max_count = 138;
-min_count = 3;
-}tree[(max_code + 1) * 2 + 1] = 0xffff;
-for (n = 0; n <= max_code; n++) {
-curlen = nextlen;
-nextlen = tree[(n + 1) * 2 + 1];
-if (++count < max_count && curlen == nextlen) {
-continue;
-} else if (count < min_count) {
-this.bl_tree[curlen * 2] += count;
-} else if (curlen != 0) {
-if (curlen != prevlen) this.bl_tree[curlen * 2]++;
-this.bl_tree[32]++;
-} else if (count <= 10) {
-this.bl_tree[34]++;
-} else {
-this.bl_tree[36]++;
-}count = 0;
-prevlen = curlen;
-if (nextlen == 0) {
-max_count = 138;
-min_count = 3;
-} else if (curlen == nextlen) {
-max_count = 6;
-min_count = 3;
-} else {
-max_count = 7;
-min_count = 4;
-}}
-}, "~A,~N");
-$_M(c$, "build_bl_tree", 
-function () {
-var max_blindex;
-this.scan_tree (this.dyn_ltree, this.l_desc.max_code);
-this.scan_tree (this.dyn_dtree, this.d_desc.max_code);
-this.bl_desc.build_tree (this);
-for (max_blindex = 18; max_blindex >= 3; max_blindex--) {
-if (this.bl_tree[JZ.Tree.bl_order[max_blindex] * 2 + 1] != 0) break;
-}
-this.opt_len += 3 * (max_blindex + 1) + 5 + 5 + 4;
-return max_blindex;
-});
-$_M(c$, "send_all_trees", 
-function (lcodes, dcodes, blcodes) {
-var rank;
-this.send_bits (lcodes - 257, 5);
-this.send_bits (dcodes - 1, 5);
-this.send_bits (blcodes - 4, 4);
-for (rank = 0; rank < blcodes; rank++) {
-this.send_bits (this.bl_tree[JZ.Tree.bl_order[rank] * 2 + 1], 3);
-}
-this.send_tree (this.dyn_ltree, lcodes - 1);
-this.send_tree (this.dyn_dtree, dcodes - 1);
-}, "~N,~N,~N");
-$_M(c$, "send_tree", 
-function (tree, max_code) {
-var n;
-var prevlen = -1;
-var curlen;
-var nextlen = tree[1];
-var count = 0;
-var max_count = 7;
-var min_count = 4;
-if (nextlen == 0) {
-max_count = 138;
-min_count = 3;
-}for (n = 0; n <= max_code; n++) {
-curlen = nextlen;
-nextlen = tree[(n + 1) * 2 + 1];
-if (++count < max_count && curlen == nextlen) {
-continue;
-} else if (count < min_count) {
-do {
-this.send_code (curlen, this.bl_tree);
-} while (--count != 0);
-} else if (curlen != 0) {
-if (curlen != prevlen) {
-this.send_code (curlen, this.bl_tree);
-count--;
-}this.send_code (16, this.bl_tree);
-this.send_bits (count - 3, 2);
-} else if (count <= 10) {
-this.send_code (17, this.bl_tree);
-this.send_bits (count - 3, 3);
-} else {
-this.send_code (18, this.bl_tree);
-this.send_bits (count - 11, 7);
-}count = 0;
-prevlen = curlen;
-if (nextlen == 0) {
-max_count = 138;
-min_count = 3;
-} else if (curlen == nextlen) {
-max_count = 6;
-min_count = 3;
-} else {
-max_count = 7;
-min_count = 4;
-}}
-}, "~A,~N");
-$_M(c$, "put_byte", 
-function (p, start, len) {
-System.arraycopy (p, start, this.pending_buf, this.pending, len);
-this.pending += len;
-}, "~A,~N,~N");
-$_M(c$, "put_byteB", 
-function (c) {
-{
-this.pending_buf[this.pending++] = c&0xff;
-}}, "~N");
-$_M(c$, "put_short", 
-function (w) {
-this.put_byteB ((w));
-this.put_byteB ((w >>> 8));
-}, "~N");
-$_M(c$, "putShortMSB", 
-function (b) {
-this.put_byteB ((b >> 8));
-this.put_byteB ((b));
-}, "~N");
-$_M(c$, "send_code", 
-function (c, tree) {
-var c2 = c * 2;
-this.send_bits ((tree[c2] & 0xffff), (tree[c2 + 1] & 0xffff));
-}, "~N,~A");
-$_M(c$, "send_bits", 
-function (value, length) {
-var len = length;
-if (this.bi_valid > 16 - len) {
-var val = value;
-this.bi_buf |= ((val << this.bi_valid) & 0xffff);
-this.put_short (this.bi_buf);
-this.bi_buf = ((val >>> (16 - this.bi_valid)) & 0xffff);
-this.bi_valid += len - 16;
-} else {
-this.bi_buf |= (((value) << this.bi_valid) & 0xffff);
-this.bi_valid += len;
-}}, "~N,~N");
-$_M(c$, "_tr_align", 
-function () {
-this.send_bits (2, 3);
-this.send_code (256, JZ.StaticTree.static_ltree);
-this.bi_flush ();
-if (1 + this.last_eob_len + 10 - this.bi_valid < 9) {
-this.send_bits (2, 3);
-this.send_code (256, JZ.StaticTree.static_ltree);
-this.bi_flush ();
-}this.last_eob_len = 7;
-});
-$_M(c$, "_tr_tally", 
-function (dist, lc) {
-this.pending_buf[this.d_buf + this.last_lit * 2] = (dist >>> 8);
-this.pending_buf[this.d_buf + this.last_lit * 2 + 1] = dist;
-this.pending_buf[this.l_buf + this.last_lit] = lc;
-this.last_lit++;
-if (dist == 0) {
-this.dyn_ltree[lc * 2]++;
-} else {
-this.matches++;
-dist--;
-this.dyn_ltree[(JZ.Tree._length_code[lc] + 256 + 1) * 2]++;
-this.dyn_dtree[JZ.Tree.d_code (dist) * 2]++;
-}if ((this.last_lit & 0x1fff) == 0 && this.level > 2) {
-var out_length = this.last_lit * 8;
-var in_length = this.strstart - this.block_start;
-var dcode;
-for (dcode = 0; dcode < 30; dcode++) {
-out_length += this.dyn_dtree[dcode * 2] * (5 + JZ.Tree.extra_dbits[dcode]);
-}
-out_length >>>= 3;
-if ((this.matches < (Clazz.doubleToInt (this.last_lit / 2))) && out_length < Clazz.doubleToInt (in_length / 2)) return true;
-}return (this.last_lit == this.lit_bufsize - 1);
-}, "~N,~N");
-$_M(c$, "compress_block", 
-function (ltree, dtree) {
-var dist;
-var lc;
-var lx = 0;
-var code;
-var extra;
-if (this.last_lit != 0) {
-do {
-dist = ((this.pending_buf[this.d_buf + lx * 2] << 8) & 0xff00) | (this.pending_buf[this.d_buf + lx * 2 + 1] & 0xff);
-lc = (this.pending_buf[this.l_buf + lx]) & 0xff;
-lx++;
-if (dist == 0) {
-this.send_code (lc, ltree);
-} else {
-code = JZ.Tree._length_code[lc];
-this.send_code (code + 256 + 1, ltree);
-extra = JZ.Tree.extra_lbits[code];
-if (extra != 0) {
-lc -= JZ.Tree.base_length[code];
-this.send_bits (lc, extra);
-}dist--;
-code = JZ.Tree.d_code (dist);
-this.send_code (code, dtree);
-extra = JZ.Tree.extra_dbits[code];
-if (extra != 0) {
-dist -= JZ.Tree.base_dist[code];
-this.send_bits (dist, extra);
-}}} while (lx < this.last_lit);
-}this.send_code (256, ltree);
-this.last_eob_len = ltree[513];
-}, "~A,~A");
-$_M(c$, "set_data_type", 
-function () {
-var n = 0;
-var ascii_freq = 0;
-var bin_freq = 0;
-while (n < 7) {
-bin_freq += this.dyn_ltree[n * 2];
-n++;
-}
-while (n < 128) {
-ascii_freq += this.dyn_ltree[n * 2];
-n++;
-}
-while (n < 256) {
-bin_freq += this.dyn_ltree[n * 2];
-n++;
-}
-this.data_type = (bin_freq > (ascii_freq >>> 2) ? 0 : 1);
-});
-$_M(c$, "bi_flush", 
-function () {
-if (this.bi_valid == 16) {
-this.put_short (this.bi_buf);
-this.bi_buf = 0;
-this.bi_valid = 0;
-} else if (this.bi_valid >= 8) {
-this.put_byteB (this.bi_buf);
-this.bi_buf >>>= 8;
-this.bi_valid -= 8;
-}});
-$_M(c$, "bi_windup", 
-function () {
-if (this.bi_valid > 8) {
-this.put_short (this.bi_buf);
-} else if (this.bi_valid > 0) {
-this.put_byteB (this.bi_buf);
-}this.bi_buf = 0;
-this.bi_valid = 0;
-});
-$_M(c$, "copy_block", 
-function (buf, len, header) {
-this.bi_windup ();
-this.last_eob_len = 8;
-if (header) {
-this.put_short (len);
-this.put_short (~len);
-}this.put_byte (this.window, buf, len);
-}, "~N,~N,~B");
-$_M(c$, "flush_block_only", 
-function (eof) {
-this._tr_flush_block (this.block_start >= 0 ? this.block_start : -1, this.strstart - this.block_start, eof);
-this.block_start = this.strstart;
-this.strm.flush_pending ();
-}, "~B");
-$_M(c$, "deflate_stored", 
-function (flush) {
-var max_block_size = 0xffff;
-var max_start;
-if (max_block_size > this.pending_buf_size - 5) {
-max_block_size = this.pending_buf_size - 5;
-}while (true) {
-if (this.lookahead <= 1) {
-this.fill_window ();
-if (this.lookahead == 0 && flush == 0) return 0;
-if (this.lookahead == 0) break;
-}this.strstart += this.lookahead;
-this.lookahead = 0;
-max_start = this.block_start + max_block_size;
-if (this.strstart == 0 || this.strstart >= max_start) {
-this.lookahead = (this.strstart - max_start);
-this.strstart = max_start;
-this.flush_block_only (false);
-if (this.strm.avail_out == 0) return 0;
-}if (this.strstart - this.block_start >= this.w_size - 262) {
-this.flush_block_only (false);
-if (this.strm.avail_out == 0) return 0;
-}}
-this.flush_block_only (flush == 4);
-if (this.strm.avail_out == 0) return (flush == 4) ? 2 : 0;
-return flush == 4 ? 3 : 1;
-}, "~N");
-$_M(c$, "_tr_stored_block", 
-function (buf, stored_len, eof) {
-this.send_bits ((0) + (eof ? 1 : 0), 3);
-this.copy_block (buf, stored_len, true);
-}, "~N,~N,~B");
-$_M(c$, "_tr_flush_block", 
-function (buf, stored_len, eof) {
-var opt_lenb;
-var static_lenb;
-var max_blindex = 0;
-if (this.level > 0) {
-if (this.data_type == 2) this.set_data_type ();
-this.l_desc.build_tree (this);
-this.d_desc.build_tree (this);
-max_blindex = this.build_bl_tree ();
-opt_lenb = (this.opt_len + 3 + 7) >>> 3;
-static_lenb = (this.static_len + 3 + 7) >>> 3;
-if (static_lenb <= opt_lenb) opt_lenb = static_lenb;
-} else {
-opt_lenb = static_lenb = stored_len + 5;
-}if (stored_len + 4 <= opt_lenb && buf != -1) {
-this._tr_stored_block (buf, stored_len, eof);
-} else if (static_lenb == opt_lenb) {
-this.send_bits ((2) + (eof ? 1 : 0), 3);
-this.compress_block (JZ.StaticTree.static_ltree, JZ.StaticTree.static_dtree);
-} else {
-this.send_bits ((4) + (eof ? 1 : 0), 3);
-this.send_all_trees (this.l_desc.max_code + 1, this.d_desc.max_code + 1, max_blindex + 1);
-this.compress_block (this.dyn_ltree, this.dyn_dtree);
-}this.init_block ();
-if (eof) {
-this.bi_windup ();
-}}, "~N,~N,~B");
-$_M(c$, "fill_window", 
-function () {
-var n;
-var m;
-var p;
-var more;
-do {
-more = (this.window_size - this.lookahead - this.strstart);
-if (more == 0 && this.strstart == 0 && this.lookahead == 0) {
-more = this.w_size;
-} else if (more == -1) {
-more--;
-} else if (this.strstart >= this.w_size + this.w_size - 262) {
-System.arraycopy (this.window, this.w_size, this.window, 0, this.w_size);
-this.match_start -= this.w_size;
-this.strstart -= this.w_size;
-this.block_start -= this.w_size;
-n = this.hash_size;
-p = n;
-do {
-m = (this.head[--p] & 0xffff);
-this.head[p] = (m >= this.w_size ? (m - this.w_size) : 0);
-} while (--n != 0);
-n = this.w_size;
-p = n;
-do {
-m = (this.prev[--p] & 0xffff);
-this.prev[p] = (m >= this.w_size ? (m - this.w_size) : 0);
-} while (--n != 0);
-more += this.w_size;
-}if (this.strm.avail_in == 0) return;
-n = this.strm.read_buf (this.window, this.strstart + this.lookahead, more);
-this.lookahead += n;
-if (this.lookahead >= 3) {
-this.ins_h = this.window[this.strstart] & 0xff;
-this.ins_h = (((this.ins_h) << this.hash_shift) ^ (this.window[this.strstart + 1] & 0xff)) & this.hash_mask;
-}} while (this.lookahead < 262 && this.strm.avail_in != 0);
-});
-$_M(c$, "deflate_fast", 
-function (flush) {
-var hash_head = 0;
-var bflush;
-while (true) {
-if (this.lookahead < 262) {
-this.fill_window ();
-if (this.lookahead < 262 && flush == 0) {
-return 0;
-}if (this.lookahead == 0) break;
-}if (this.lookahead >= 3) {
-this.ins_h = (((this.ins_h) << this.hash_shift) ^ (this.window[(this.strstart) + (2)] & 0xff)) & this.hash_mask;
-hash_head = (this.head[this.ins_h] & 0xffff);
-this.prev[this.strstart & this.w_mask] = this.head[this.ins_h];
-this.head[this.ins_h] = this.strstart;
-}if (hash_head != 0 && ((this.strstart - hash_head) & 0xffff) <= this.w_size - 262) {
-if (this.strategy != 2) {
-this.match_length = this.longest_match (hash_head);
-}}if (this.match_length >= 3) {
-bflush = this._tr_tally (this.strstart - this.match_start, this.match_length - 3);
-this.lookahead -= this.match_length;
-if (this.match_length <= this.max_lazy_match && this.lookahead >= 3) {
-this.match_length--;
-do {
-this.strstart++;
-this.ins_h = ((this.ins_h << this.hash_shift) ^ (this.window[(this.strstart) + (2)] & 0xff)) & this.hash_mask;
-hash_head = (this.head[this.ins_h] & 0xffff);
-this.prev[this.strstart & this.w_mask] = this.head[this.ins_h];
-this.head[this.ins_h] = this.strstart;
-} while (--this.match_length != 0);
-this.strstart++;
-} else {
-this.strstart += this.match_length;
-this.match_length = 0;
-this.ins_h = this.window[this.strstart] & 0xff;
-this.ins_h = (((this.ins_h) << this.hash_shift) ^ (this.window[this.strstart + 1] & 0xff)) & this.hash_mask;
-}} else {
-bflush = this._tr_tally (0, this.window[this.strstart] & 0xff);
-this.lookahead--;
-this.strstart++;
-}if (bflush) {
-this.flush_block_only (false);
-if (this.strm.avail_out == 0) return 0;
-}}
-this.flush_block_only (flush == 4);
-if (this.strm.avail_out == 0) {
-if (flush == 4) return 2;
-return 0;
-}return flush == 4 ? 3 : 1;
-}, "~N");
-$_M(c$, "deflate_slow", 
-function (flush) {
-var hash_head = 0;
-var bflush;
-while (true) {
-if (this.lookahead < 262) {
-this.fill_window ();
-if (this.lookahead < 262 && flush == 0) {
-return 0;
-}if (this.lookahead == 0) break;
-}if (this.lookahead >= 3) {
-this.ins_h = (((this.ins_h) << this.hash_shift) ^ (this.window[(this.strstart) + (2)] & 0xff)) & this.hash_mask;
-hash_head = (this.head[this.ins_h] & 0xffff);
-this.prev[this.strstart & this.w_mask] = this.head[this.ins_h];
-this.head[this.ins_h] = this.strstart;
-}this.prev_length = this.match_length;
-this.prev_match = this.match_start;
-this.match_length = 2;
-if (hash_head != 0 && this.prev_length < this.max_lazy_match && ((this.strstart - hash_head) & 0xffff) <= this.w_size - 262) {
-if (this.strategy != 2) {
-this.match_length = this.longest_match (hash_head);
-}if (this.match_length <= 5 && (this.strategy == 1 || (this.match_length == 3 && this.strstart - this.match_start > 4096))) {
-this.match_length = 2;
-}}if (this.prev_length >= 3 && this.match_length <= this.prev_length) {
-var max_insert = this.strstart + this.lookahead - 3;
-bflush = this._tr_tally (this.strstart - 1 - this.prev_match, this.prev_length - 3);
-this.lookahead -= this.prev_length - 1;
-this.prev_length -= 2;
-do {
-if (++this.strstart <= max_insert) {
-this.ins_h = (((this.ins_h) << this.hash_shift) ^ (this.window[(this.strstart) + (2)] & 0xff)) & this.hash_mask;
-hash_head = (this.head[this.ins_h] & 0xffff);
-this.prev[this.strstart & this.w_mask] = this.head[this.ins_h];
-this.head[this.ins_h] = this.strstart;
-}} while (--this.prev_length != 0);
-this.match_available = 0;
-this.match_length = 2;
-this.strstart++;
-if (bflush) {
-this.flush_block_only (false);
-if (this.strm.avail_out == 0) return 0;
-}} else if (this.match_available != 0) {
-bflush = this._tr_tally (0, this.window[this.strstart - 1] & 0xff);
-if (bflush) {
-this.flush_block_only (false);
-}this.strstart++;
-this.lookahead--;
-if (this.strm.avail_out == 0) return 0;
-} else {
-this.match_available = 1;
-this.strstart++;
-this.lookahead--;
-}}
-if (this.match_available != 0) {
-bflush = this._tr_tally (0, this.window[this.strstart - 1] & 0xff);
-this.match_available = 0;
-}this.flush_block_only (flush == 4);
-if (this.strm.avail_out == 0) {
-if (flush == 4) return 2;
-return 0;
-}return flush == 4 ? 3 : 1;
-}, "~N");
-$_M(c$, "longest_match", 
-function (cur_match) {
-var chain_length = this.max_chain_length;
-var scan = this.strstart;
-var match;
-var len;
-var best_len = this.prev_length;
-var limit = this.strstart > (this.w_size - 262) ? this.strstart - (this.w_size - 262) : 0;
-var nice_match = this.nice_match;
-var wmask = this.w_mask;
-var strend = this.strstart + 258;
-var scan_end1 = this.window[scan + best_len - 1];
-var scan_end = this.window[scan + best_len];
-if (this.prev_length >= this.good_match) {
-chain_length >>= 2;
-}if (nice_match > this.lookahead) nice_match = this.lookahead;
-do {
-match = cur_match;
-if (this.window[match + best_len] != scan_end || this.window[match + best_len - 1] != scan_end1 || this.window[match] != this.window[scan] || this.window[++match] != this.window[scan + 1]) continue;
-scan += 2;
-match++;
-do {
-} while (this.window[++scan] == this.window[++match] && this.window[++scan] == this.window[++match] && this.window[++scan] == this.window[++match] && this.window[++scan] == this.window[++match] && this.window[++scan] == this.window[++match] && this.window[++scan] == this.window[++match] && this.window[++scan] == this.window[++match] && this.window[++scan] == this.window[++match] && scan < strend);
-len = 258 - (strend - scan);
-scan = strend - 258;
-if (len > best_len) {
-this.match_start = cur_match;
-best_len = len;
-if (len >= nice_match) break;
-scan_end1 = this.window[scan + best_len - 1];
-scan_end = this.window[scan + best_len];
-}} while ((cur_match = (this.prev[cur_match & wmask] & 0xffff)) > limit && --chain_length != 0);
-if (best_len <= this.lookahead) return best_len;
-return this.lookahead;
-}, "~N");
-$_M(c$, "deflateInit5", 
-($fz = function (level, method, windowBits, memLevel, strategy) {
-var wrap = 1;
-this.strm.msg = null;
-if (level == -1) level = 6;
-if (windowBits < 0) {
-wrap = 0;
-windowBits = -windowBits;
-} else if (windowBits > 15) {
-wrap = 2;
-windowBits -= 16;
-this.strm.checksum =  new JZ.CRC32 ();
-}if (memLevel < 1 || memLevel > 9 || method != 8 || windowBits < 9 || windowBits > 15 || level < 0 || level > 9 || strategy < 0 || strategy > 2) {
-return -2;
-}this.strm.dstate = this;
-this.wrap = wrap;
-this.w_bits = windowBits;
-this.w_size = 1 << this.w_bits;
-this.w_mask = this.w_size - 1;
-this.hash_bits = memLevel + 7;
-this.hash_size = 1 << this.hash_bits;
-this.hash_mask = this.hash_size - 1;
-this.hash_shift = (Clazz.doubleToInt ((this.hash_bits + 3 - 1) / 3));
-this.window =  Clazz.newByteArray (this.w_size * 2, 0);
-this.prev =  Clazz.newShortArray (this.w_size, 0);
-this.head =  Clazz.newShortArray (this.hash_size, 0);
-this.lit_bufsize = 1 << (memLevel + 6);
-this.pending_buf =  Clazz.newByteArray (this.lit_bufsize * 4, 0);
-this.pending_buf_size = this.lit_bufsize * 4;
-this.d_buf = Clazz.doubleToInt (this.lit_bufsize / 2);
-this.l_buf = (3) * this.lit_bufsize;
-this.level = level;
-this.strategy = strategy;
-this.method = method;
-return this.deflateReset ();
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N");
-$_M(c$, "deflateReset", 
-function () {
-this.strm.total_in = this.strm.total_out = 0;
-this.strm.msg = null;
-this.strm.data_type = 2;
-this.pending = 0;
-this.pending_out = 0;
-if (this.wrap < 0) {
-this.wrap = -this.wrap;
-}this.status = (this.wrap == 0) ? 113 : 42;
-this.strm.checksum.reset ();
-this.last_flush = 0;
-this.tr_init ();
-this.lm_init ();
-return 0;
-});
-$_M(c$, "deflateEnd", 
-function () {
-if (this.status != 42 && this.status != 113 && this.status != 666) {
-return -2;
-}this.pending_buf = null;
-this.head = null;
-this.prev = null;
-this.window = null;
-return this.status == 113 ? -3 : 0;
-});
-$_M(c$, "deflateParams", 
-function (_level, _strategy) {
-var err = 0;
-if (_level == -1) {
-_level = 6;
-}if (_level < 0 || _level > 9 || _strategy < 0 || _strategy > 2) {
-return -2;
-}if (JZ.Deflate.config_table[this.level].func != JZ.Deflate.config_table[_level].func && this.strm.total_in != 0) {
-err = this.strm.deflate (1);
-}if (this.level != _level) {
-this.level = _level;
-this.max_lazy_match = JZ.Deflate.config_table[this.level].max_lazy;
-this.good_match = JZ.Deflate.config_table[this.level].good_length;
-this.nice_match = JZ.Deflate.config_table[this.level].nice_length;
-this.max_chain_length = JZ.Deflate.config_table[this.level].max_chain;
-}this.strategy = _strategy;
-return err;
-}, "~N,~N");
-$_M(c$, "deflateSetDictionary", 
-function (dictionary, dictLength) {
-var length = dictLength;
-var index = 0;
-if (dictionary == null || this.status != 42) return -2;
-this.strm.checksum.update (dictionary, 0, dictLength);
-if (length < 3) return 0;
-if (length > this.w_size - 262) {
-length = this.w_size - 262;
-index = dictLength - length;
-}System.arraycopy (dictionary, index, this.window, 0, length);
-this.strstart = length;
-this.block_start = length;
-this.ins_h = this.window[0] & 0xff;
-this.ins_h = (((this.ins_h) << this.hash_shift) ^ (this.window[1] & 0xff)) & this.hash_mask;
-for (var n = 0; n <= length - 3; n++) {
-this.ins_h = (((this.ins_h) << this.hash_shift) ^ (this.window[(n) + (2)] & 0xff)) & this.hash_mask;
-this.prev[n & this.w_mask] = this.head[this.ins_h];
-this.head[this.ins_h] = n;
-}
-return 0;
-}, "~A,~N");
-$_M(c$, "deflate", 
-function (flush) {
-var old_flush;
-if (flush > 4 || flush < 0) {
-return -2;
-}if (this.strm.next_out == null || (this.strm.next_in == null && this.strm.avail_in != 0) || (this.status == 666 && flush != 4)) {
-this.strm.msg = JZ.Deflate.z_errmsg[4];
-return -2;
-}if (this.strm.avail_out == 0) {
-this.strm.msg = JZ.Deflate.z_errmsg[7];
-return -5;
-}old_flush = this.last_flush;
-this.last_flush = flush;
-if (this.status == 42) {
-if (this.wrap == 2) {
-this.getGZIPHeader ().put (this);
-this.status = 113;
-this.strm.checksum.reset ();
-} else {
-var header = (8 + ((this.w_bits - 8) << 4)) << 8;
-var level_flags = ((this.level - 1) & 0xff) >> 1;
-if (level_flags > 3) level_flags = 3;
-header |= (level_flags << 6);
-if (this.strstart != 0) header |= 32;
-header += 31 - (header % 31);
-this.status = 113;
-this.putShortMSB (header);
-if (this.strstart != 0) {
-var adler = this.strm.checksum.getValue ();
-this.putShortMSB ((adler >>> 16));
-this.putShortMSB ((adler & 0xffff));
-}this.strm.checksum.reset ();
-}}if (this.pending != 0) {
-this.strm.flush_pending ();
-if (this.strm.avail_out == 0) {
-this.last_flush = -1;
-return 0;
-}} else if (this.strm.avail_in == 0 && flush <= old_flush && flush != 4) {
-this.strm.msg = JZ.Deflate.z_errmsg[7];
-return -5;
-}if (this.status == 666 && this.strm.avail_in != 0) {
-this.strm.msg = JZ.Deflate.z_errmsg[7];
-return -5;
-}if (this.strm.avail_in != 0 || this.lookahead != 0 || (flush != 0 && this.status != 666)) {
-var bstate = -1;
-switch (JZ.Deflate.config_table[this.level].func) {
-case 0:
-bstate = this.deflate_stored (flush);
-break;
-case 1:
-bstate = this.deflate_fast (flush);
-break;
-case 2:
-bstate = this.deflate_slow (flush);
-break;
-default:
-}
-if (bstate == 2 || bstate == 3) {
-this.status = 666;
-}if (bstate == 0 || bstate == 2) {
-if (this.strm.avail_out == 0) {
-this.last_flush = -1;
-}return 0;
-}if (bstate == 1) {
-if (flush == 1) {
-this._tr_align ();
-} else {
-this._tr_stored_block (0, 0, false);
-if (flush == 3) {
-for (var i = 0; i < this.hash_size; i++) this.head[i] = 0;
-
-}}this.strm.flush_pending ();
-if (this.strm.avail_out == 0) {
-this.last_flush = -1;
-return 0;
-}}}if (flush != 4) return 0;
-if (this.wrap <= 0) return 1;
-if (this.wrap == 2) {
-var adler = this.strm.checksum.getValue ();
-this.put_byteB ((adler & 0xff));
-this.put_byteB (((adler >> 8) & 0xff));
-this.put_byteB (((adler >> 16) & 0xff));
-this.put_byteB (((adler >> 24) & 0xff));
-this.put_byteB ((this.strm.total_in & 0xff));
-this.put_byteB (((this.strm.total_in >> 8) & 0xff));
-this.put_byteB (((this.strm.total_in >> 16) & 0xff));
-this.put_byteB (((this.strm.total_in >> 24) & 0xff));
-this.getGZIPHeader ().setCRC (adler);
-} else {
-var adler = this.strm.checksum.getValue ();
-this.putShortMSB ((adler >>> 16));
-this.putShortMSB ((adler & 0xffff));
-}this.strm.flush_pending ();
-if (this.wrap > 0) this.wrap = -this.wrap;
-return this.pending != 0 ? 0 : 1;
-}, "~N");
-$_M(c$, "getGZIPHeader", 
-function () {
-if (this.gheader == null) {
-this.gheader =  new JZ.GZIPHeader ();
-}return this.gheader;
-});
-$_M(c$, "getBytesRead", 
-function () {
-return this.strm.total_in;
-});
-$_M(c$, "getBytesWritten", 
-function () {
-return this.strm.total_out;
-});
-Clazz.pu$h ();
-c$ = Clazz.decorateAsClass (function () {
-this.good_length = 0;
-this.max_lazy = 0;
-this.nice_length = 0;
-this.max_chain = 0;
-this.func = 0;
-Clazz.instantialize (this, arguments);
-}, JZ.Deflate, "Config");
-Clazz.makeConstructor (c$, 
-function (a, b, c, d, e) {
-this.good_length = a;
-this.max_lazy = b;
-this.nice_length = c;
-this.max_chain = d;
-this.func = e;
-}, "~N,~N,~N,~N,~N");
-c$ = Clazz.p0p ();
-Clazz.defineStatics (c$,
-"MAX_MEM_LEVEL", 9,
-"Z_DEFAULT_COMPRESSION", -1,
-"MAX_WBITS", 15,
-"DEF_MEM_LEVEL", 8,
-"STORED", 0,
-"FAST", 1,
-"SLOW", 2,
-"config_table", null);
-{
-($t$ = JZ.Deflate.config_table =  new Array (10), JZ.Deflate.prototype.config_table = JZ.Deflate.config_table, $t$);
-JZ.Deflate.config_table[0] =  new JZ.Deflate.Config (0, 0, 0, 0, 0);
-JZ.Deflate.config_table[1] =  new JZ.Deflate.Config (4, 4, 8, 4, 1);
-JZ.Deflate.config_table[2] =  new JZ.Deflate.Config (4, 5, 16, 8, 1);
-JZ.Deflate.config_table[3] =  new JZ.Deflate.Config (4, 6, 32, 32, 1);
-JZ.Deflate.config_table[4] =  new JZ.Deflate.Config (4, 4, 16, 16, 2);
-JZ.Deflate.config_table[5] =  new JZ.Deflate.Config (8, 16, 32, 32, 2);
-JZ.Deflate.config_table[6] =  new JZ.Deflate.Config (8, 16, 128, 128, 2);
-JZ.Deflate.config_table[7] =  new JZ.Deflate.Config (8, 32, 128, 256, 2);
-JZ.Deflate.config_table[8] =  new JZ.Deflate.Config (32, 128, 258, 1024, 2);
-JZ.Deflate.config_table[9] =  new JZ.Deflate.Config (32, 258, 258, 4096, 2);
-}Clazz.defineStatics (c$,
-"z_errmsg", ["need dictionary", "stream end", "", "file error", "stream error", "data error", "insufficient memory", "buffer error", "incompatible version", ""],
-"NeedMore", 0,
-"BlockDone", 1,
-"FinishStarted", 2,
-"FinishDone", 3,
-"PRESET_DICT", 0x20,
-"Z_FILTERED", 1,
-"Z_HUFFMAN_ONLY", 2,
-"Z_DEFAULT_STRATEGY", 0,
-"Z_NO_FLUSH", 0,
-"Z_PARTIAL_FLUSH", 1,
-"Z_FULL_FLUSH", 3,
-"Z_FINISH", 4,
-"Z_OK", 0,
-"Z_STREAM_END", 1,
-"Z_NEED_DICT", 2,
-"Z_STREAM_ERROR", -2,
-"Z_DATA_ERROR", -3,
-"Z_BUF_ERROR", -5,
-"INIT_STATE", 42,
-"BUSY_STATE", 113,
-"FINISH_STATE", 666,
-"Z_DEFLATED", 8,
-"STORED_BLOCK", 0,
-"STATIC_TREES", 1,
-"DYN_TREES", 2,
-"Z_BINARY", 0,
-"Z_ASCII", 1,
-"Z_UNKNOWN", 2,
-"Buf_size", 16,
-"REP_3_6", 16,
-"REPZ_3_10", 17,
-"REPZ_11_138", 18,
-"MIN_MATCH", 3,
-"MAX_MATCH", 258,
-"MIN_LOOKAHEAD", (262),
-"MAX_BITS", 15,
-"D_CODES", 30,
-"BL_CODES", 19,
-"LENGTH_CODES", 29,
-"LITERALS", 256,
-"L_CODES", (286),
-"HEAP_SIZE", (573),
-"END_BLOCK", 256);
-});
-Clazz.declarePackage ("JZ");
-Clazz.load (["JZ.ZStream"], "JZ.Deflater", ["JZ.Deflate"], function () {
-c$ = Clazz.decorateAsClass (function () {
-this.$finished = false;
-Clazz.instantialize (this, arguments);
-}, JZ, "Deflater", JZ.ZStream);
-$_M(c$, "init", 
-function (level, bits, nowrap) {
-if (bits == 0) bits = 15;
-this.$finished = false;
-this.setAdler32 ();
-this.dstate =  new JZ.Deflate (this);
-this.dstate.deflateInit2 (level, nowrap ? -bits : bits);
-return this;
-}, "~N,~N,~B");
-Clazz.overrideMethod (c$, "deflate", 
-function (flush) {
-if (this.dstate == null) {
-return -2;
-}var ret = this.dstate.deflate (flush);
-if (ret == 1) this.$finished = true;
-return ret;
-}, "~N");
-Clazz.overrideMethod (c$, "end", 
-function () {
-this.$finished = true;
-if (this.dstate == null) return -2;
-var ret = this.dstate.deflateEnd ();
-this.dstate = null;
-this.free ();
-return ret;
-});
-$_M(c$, "params", 
-function (level, strategy) {
-if (this.dstate == null) return -2;
-return this.dstate.deflateParams (level, strategy);
-}, "~N,~N");
-$_M(c$, "setDictionary", 
-function (dictionary, dictLength) {
-if (this.dstate == null) return -2;
-return this.dstate.deflateSetDictionary (dictionary, dictLength);
-}, "~A,~N");
-Clazz.overrideMethod (c$, "finished", 
-function () {
-return this.$finished;
-});
-$_M(c$, "finish", 
-function () {
-});
-$_M(c$, "getBytesRead", 
-function () {
-return this.dstate.getBytesRead ();
-});
-$_M(c$, "getBytesWritten", 
-function () {
-return this.dstate.getBytesWritten ();
-});
-Clazz.defineStatics (c$,
-"MAX_WBITS", 15,
-"Z_STREAM_END", 1,
-"$Z_STREAM_ERROR", -2);
-});
-Clazz.declarePackage ("JZ");
-Clazz.load (null, "JZ.GZIPHeader", ["JZ.ZStream", "java.lang.IllegalArgumentException", "$.InternalError"], function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("JZ");
+Clazz_load (null, "JZ.GZIPHeader", ["JZ.ZStream", "java.lang.IllegalArgumentException", "$.InternalError"], function () {
+c$ = Clazz_decorateAsClass (function () {
 this.text = false;
 this.fhcrc = false;
 this.time = 0;
@@ -2604,7 +1494,7 @@ this.hcrc = 0;
 this.crc = 0;
 this.done = false;
 this.mtime = 0;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ, "GZIPHeader", null, Cloneable);
 $_M(c$, "setModifiedTime", 
 function (mtime) {
@@ -2633,7 +1523,7 @@ if (this.name == null) return "";
 try {
 return  String.instantialize (this.name, "ISO-8859-1");
 } catch (e) {
-if (Clazz.exceptionOf (e, java.io.UnsupportedEncodingException)) {
+if (Clazz_exceptionOf (e, java.io.UnsupportedEncodingException)) {
 throw  new InternalError (e.toString ());
 } else {
 throw e;
@@ -2650,7 +1540,7 @@ if (this.comment == null) return "";
 try {
 return  String.instantialize (this.comment, "ISO-8859-1");
 } catch (e) {
-if (Clazz.exceptionOf (e, java.io.UnsupportedEncodingException)) {
+if (Clazz_exceptionOf (e, java.io.UnsupportedEncodingException)) {
 throw  new InternalError (e.toString ());
 } else {
 throw e;
@@ -2705,23 +1595,23 @@ d.put_byteB (0);
 }}, "JZ.Deflate");
 $_M(c$, "clone", 
 function () {
-var gheader = Clazz.superCall (this, JZ.GZIPHeader, "clone", []);
+var gheader = Clazz_superCall (this, JZ.GZIPHeader, "clone", []);
 var tmp;
 if (gheader.extra != null) {
-tmp =  Clazz.newByteArray (gheader.extra.length, 0);
+tmp =  Clazz_newByteArray (gheader.extra.length, 0);
 System.arraycopy (gheader.extra, 0, tmp, 0, tmp.length);
 gheader.extra = tmp;
 }if (gheader.name != null) {
-tmp =  Clazz.newByteArray (gheader.name.length, 0);
+tmp =  Clazz_newByteArray (gheader.name.length, 0);
 System.arraycopy (gheader.name, 0, tmp, 0, tmp.length);
 gheader.name = tmp;
 }if (gheader.comment != null) {
-tmp =  Clazz.newByteArray (gheader.comment.length, 0);
+tmp =  Clazz_newByteArray (gheader.comment.length, 0);
 System.arraycopy (gheader.comment, 0, tmp, 0, tmp.length);
 gheader.comment = tmp;
 }return gheader;
 });
-Clazz.defineStatics (c$,
+Clazz_defineStatics (c$,
 "OS_MSDOS", 0x00,
 "OS_AMIGA", 0x01,
 "OS_VMS", 0x02,
@@ -2738,9 +1628,9 @@ Clazz.defineStatics (c$,
 "OS_RISCOS", 0x0d,
 "OS_UNKNOWN", 0xff);
 });
-Clazz.declarePackage ("JZ");
-Clazz.load (["java.lang.Exception"], "JZ.Inflate", ["JZ.Adler32", "$.CRC32", "$.GZIPHeader", "$.InfBlocks", "java.io.ByteArrayOutputStream"], function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("JZ");
+Clazz_load (["java.lang.Exception"], "JZ.Inflate", ["JZ.Adler32", "$.CRC32", "$.GZIPHeader", "$.InfBlocks", "java.io.ByteArrayOutputStream"], function () {
+c$ = Clazz_decorateAsClass (function () {
 this.mode = 0;
 this.method = 0;
 this.was = -1;
@@ -2754,14 +1644,14 @@ this.flags = 0;
 this.need_bytes = -1;
 this.crcbuf = null;
 this.gheader = null;
-if (!Clazz.isClassDefined ("JZ.Inflate.Return")) {
+if (!Clazz_isClassDefined ("JZ.Inflate.Return")) {
 JZ.Inflate.$Inflate$Return$ ();
 }
 this.tmp_string = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ, "Inflate");
-Clazz.prepareFields (c$, function () {
-this.crcbuf =  Clazz.newByteArray (4, 0);
+Clazz_prepareFields (c$, function () {
+this.crcbuf =  Clazz_newByteArray (4, 0);
 });
 $_M(c$, "reset", 
 function () {
@@ -2783,7 +1673,7 @@ if (this.blocks != null) {
 this.blocks.free ();
 }return 0;
 });
-Clazz.makeConstructor (c$, 
+Clazz_makeConstructor (c$, 
 function (z) {
 this.z = z;
 }, "JZ.ZStream");
@@ -2826,7 +1716,7 @@ break;
 }try {
 r = this.readBytes (2, r, f);
 } catch (e) {
-if (Clazz.exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -2949,7 +1839,7 @@ if (this.wrap != 0 && this.flags != 0) {
 try {
 r = this.readBytes (4, r, f);
 } catch (e) {
-if (Clazz.exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -2978,7 +1868,7 @@ case 23:
 try {
 r = this.readBytes (2, r, f);
 } catch (e) {
-if (Clazz.exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -3000,7 +1890,7 @@ case 16:
 try {
 r = this.readBytes (4, r, f);
 } catch (e) {
-if (Clazz.exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -3014,7 +1904,7 @@ case 17:
 try {
 r = this.readBytes (2, r, f);
 } catch (e) {
-if (Clazz.exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -3031,14 +1921,14 @@ if ((this.flags & 0x0400) != 0) {
 try {
 r = this.readBytes (2, r, f);
 } catch (e) {
-if (Clazz.exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
 }
 }
 if (this.gheader != null) {
-this.gheader.extra =  Clazz.newByteArray ((this.need) & 0xffff, 0);
+this.gheader.extra =  Clazz_newByteArray ((this.need) & 0xffff, 0);
 }if ((this.flags & 0x0200) != 0) {
 this.checksum (2, this.need);
 }} else if (this.gheader != null) {
@@ -3058,7 +1948,7 @@ this.z.msg = "bad extra field length";
 this.mode = 13;
 break;
 }}} catch (e) {
-if (Clazz.exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -3075,7 +1965,7 @@ if (this.gheader != null) {
 this.gheader.name = this.tmp_string.toByteArray ();
 }this.tmp_string = null;
 } catch (e) {
-if (Clazz.exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -3092,7 +1982,7 @@ if (this.gheader != null) {
 this.gheader.comment = this.tmp_string.toByteArray ();
 }this.tmp_string = null;
 } catch (e) {
-if (Clazz.exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -3106,7 +1996,7 @@ if ((this.flags & 0x0200) != 0) {
 try {
 r = this.readBytes (2, r, f);
 } catch (e) {
-if (Clazz.exceptionOf (e, JZ.Inflate.Return)) {
+if (Clazz_exceptionOf (e, JZ.Inflate.Return)) {
 return e.r;
 } else {
 throw e;
@@ -3191,13 +2081,13 @@ if (this.z == null || this.blocks == null) return -2;
 return this.blocks.sync_point ();
 });
 $_M(c$, "readBytes", 
-($fz = function (n, r, f) {
+function (n, r, f) {
 if (this.need_bytes == -1) {
 this.need_bytes = n;
 this.need = 0;
 }while (this.need_bytes > 0) {
 if (this.z.avail_in == 0) {
-throw Clazz.innerTypeInstance (JZ.Inflate.Return, this, null, r);
+throw Clazz_innerTypeInstance (JZ.Inflate.Return, this, null, r);
 }r = f;
 this.z.avail_in--;
 this.z.total_in++;
@@ -3210,15 +2100,15 @@ this.need &= 0xffff;
 this.need &= 0xffffffff;
 }this.need_bytes = -1;
 return r;
-}, $fz.isPrivate = true, $fz), "~N,~N,~N");
+}, "~N,~N,~N");
 $_M(c$, "readString", 
-($fz = function (r, f) {
+function (r, f) {
 if (this.tmp_string == null) {
 this.tmp_string =  new java.io.ByteArrayOutputStream ();
 }var b = 0;
 do {
 if (this.z.avail_in == 0) {
-throw Clazz.innerTypeInstance (JZ.Inflate.Return, this, null, r);
+throw Clazz_innerTypeInstance (JZ.Inflate.Return, this, null, r);
 }r = f;
 this.z.avail_in--;
 this.z.total_in++;
@@ -3228,14 +2118,14 @@ this.z.checksum.update (this.z.next_in, this.z.next_in_index, 1);
 this.z.next_in_index++;
 } while (b != 0);
 return r;
-}, $fz.isPrivate = true, $fz), "~N,~N");
+}, "~N,~N");
 $_M(c$, "readBytes", 
-($fz = function (r, f) {
+function (r, f) {
 if (this.tmp_string == null) {
 this.tmp_string =  new java.io.ByteArrayOutputStream ();
 }while (this.need > 0) {
 if (this.z.avail_in == 0) {
-throw Clazz.innerTypeInstance (JZ.Inflate.Return, this, null, r);
+throw Clazz_innerTypeInstance (JZ.Inflate.Return, this, null, r);
 }r = f;
 this.z.avail_in--;
 this.z.total_in++;
@@ -3245,15 +2135,15 @@ this.z.next_in_index++;
 this.need--;
 }
 return r;
-}, $fz.isPrivate = true, $fz), "~N,~N");
+}, "~N,~N");
 $_M(c$, "checksum", 
-($fz = function (n, v) {
+function (n, v) {
 for (var i = 0; i < n; i++) {
 this.crcbuf[i] = (v & 0xff);
 v >>= 8;
 }
 this.z.checksum.update (this.crcbuf, 0, n);
-}, $fz.isPrivate = true, $fz), "~N,~N");
+}, "~N,~N");
 $_M(c$, "getGZIPHeader", 
 function () {
 return this.gheader;
@@ -3280,20 +2170,20 @@ return false;
 }
 });
 c$.$Inflate$Return$ = function () {
-Clazz.pu$h ();
-c$ = Clazz.decorateAsClass (function () {
-Clazz.prepareCallback (this, arguments);
+Clazz_pu$h ();
+c$ = Clazz_decorateAsClass (function () {
+Clazz_prepareCallback (this, arguments);
 this.r = 0;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ.Inflate, "Return", Exception);
-Clazz.makeConstructor (c$, 
+Clazz_makeConstructor (c$, 
 function (a) {
-Clazz.superConstructor (this, JZ.Inflate.Return, []);
+Clazz_superConstructor (this, JZ.Inflate.Return, []);
 this.r = a;
 }, "~N");
-c$ = Clazz.p0p ();
+c$ = Clazz_p0p ();
 };
-Clazz.defineStatics (c$,
+Clazz_defineStatics (c$,
 "PRESET_DICT", 0x20,
 "Z_NO_FLUSH", 0,
 "Z_PARTIAL_FLUSH", 1,
@@ -3331,18 +2221,18 @@ Clazz.defineStatics (c$,
 "FLAGS", 23,
 "mark", [0, 0, 0xff, 0xff]);
 });
-Clazz.declarePackage ("JZ");
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("JZ");
+c$ = Clazz_decorateAsClass (function () {
 this.hn = null;
 this.v = null;
 this.c = null;
 this.r = null;
 this.u = null;
 this.x = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ, "InfTree");
 $_M(c$, "huft_build", 
-($fz = function (b, bindex, n, s, d, e, t, m, hp, hn, v) {
+function (b, bindex, n, s, d, e, t, m, hp, hn, v) {
 var a;
 var f;
 var g;
@@ -3469,7 +2359,7 @@ mask = (1 << w) - 1;
 }
 }
 return y != 0 && g != 1 ? -5 : 0;
-}, $fz.isPrivate = true, $fz), "~A,~N,~N,~N,~A,~A,~A,~A,~A,~A,~A");
+}, "~A,~N,~N,~N,~A,~A,~A,~A,~A,~A,~A");
 $_M(c$, "inflate_trees_bits", 
 function (c, bb, tb, hp, z) {
 var result;
@@ -3519,16 +2409,16 @@ td[0] = JZ.InfTree.fixed_td;
 return 0;
 }, "~A,~A,~A,~A,JZ.ZStream");
 $_M(c$, "initWorkArea", 
-($fz = function (vsize) {
+function (vsize) {
 if (this.hn == null) {
-this.hn =  Clazz.newIntArray (1, 0);
-this.v =  Clazz.newIntArray (vsize, 0);
-this.c =  Clazz.newIntArray (16, 0);
-this.r =  Clazz.newIntArray (3, 0);
-this.u =  Clazz.newIntArray (15, 0);
-this.x =  Clazz.newIntArray (16, 0);
+this.hn =  Clazz_newIntArray (1, 0);
+this.v =  Clazz_newIntArray (vsize, 0);
+this.c =  Clazz_newIntArray (16, 0);
+this.r =  Clazz_newIntArray (3, 0);
+this.u =  Clazz_newIntArray (15, 0);
+this.x =  Clazz_newIntArray (16, 0);
 }if (this.v.length < vsize) {
-this.v =  Clazz.newIntArray (vsize, 0);
+this.v =  Clazz_newIntArray (vsize, 0);
 }for (var i = 0; i < vsize; i++) {
 this.v[i] = 0;
 }
@@ -3540,8 +2430,8 @@ this.r[i] = 0;
 }
 System.arraycopy (this.c, 0, this.u, 0, 15);
 System.arraycopy (this.c, 0, this.x, 0, 16);
-}, $fz.isPrivate = true, $fz), "~N");
-Clazz.defineStatics (c$,
+}, "~N");
+Clazz_defineStatics (c$,
 "MANY", 1440,
 "Z_OK", 0,
 "Z_DATA_ERROR", -3,
@@ -3556,9 +2446,9 @@ Clazz.defineStatics (c$,
 "cpdist", [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577],
 "cpdext", [0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13],
 "BMAX", 15);
-Clazz.declarePackage ("JZ");
-Clazz.load (["JZ.InfTree"], "JZ.InfBlocks", ["JZ.InfCodes"], function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("JZ");
+Clazz_load (["JZ.InfTree"], "JZ.InfBlocks", ["JZ.InfCodes"], function () {
+c$ = Clazz_decorateAsClass (function () {
 this.mode = 0;
 this.left = 0;
 this.table = 0;
@@ -3584,35 +2474,34 @@ this.write = 0;
 this.check = false;
 this.inftree = null;
 this.z = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ, "InfBlocks");
-Clazz.prepareFields (c$, function () {
-this.bb =  Clazz.newIntArray (1, 0);
-this.tb =  Clazz.newIntArray (1, 0);
-this.bl =  Clazz.newIntArray (1, 0);
-this.bd =  Clazz.newIntArray (1, 0);
-this.tli =  Clazz.newIntArray (1, 0);
-this.tdi =  Clazz.newIntArray (1, 0);
+Clazz_prepareFields (c$, function () {
+this.bb =  Clazz_newIntArray (1, 0);
+this.tb =  Clazz_newIntArray (1, 0);
+this.bl =  Clazz_newIntArray (1, 0);
+this.bd =  Clazz_newIntArray (1, 0);
+this.tli =  Clazz_newIntArray (1, 0);
+this.tdi =  Clazz_newIntArray (1, 0);
 this.inftree =  new JZ.InfTree ();
 });
-Clazz.makeConstructor (c$, 
+Clazz_makeConstructor (c$, 
 function (z, w) {
 this.z = z;
 this.codes =  new JZ.InfCodes (this.z, this);
-this.hufts =  Clazz.newIntArray (4320, 0);
-this.window =  Clazz.newByteArray (w, 0);
+this.hufts =  Clazz_newIntArray (4320, 0);
+this.window =  Clazz_newByteArray (w, 0);
 this.end = w;
 this.check = (z.istate.wrap == 0) ? false : true;
 this.mode = 0;
 {
-this.tl = Clazz.newArray(1, null);
-this.td = Clazz.newArray(1, null);
+this.tl = Clazz_newArray(1, null);
+this.td = Clazz_newArray(1, null);
 }this.reset ();
 }, "JZ.ZStream,~N");
 $_M(c$, "reset", 
 function () {
-if (this.mode == 4 || this.mode == 5) {
-}if (this.mode == 6) {
+if (this.mode == 6) {
 this.codes.free (this.z);
 }this.mode = 0;
 this.bitk = 0;
@@ -3801,7 +2690,7 @@ this.write = q;
 return this.inflate_flush (r);
 }t = 258 + (t & 0x1f) + ((t >> 5) & 0x1f);
 if (this.blens == null || this.blens.length < t) {
-this.blens =  Clazz.newIntArray (t, 0);
+this.blens =  Clazz_newIntArray (t, 0);
 } else {
 for (var i = 0; i < t; i++) {
 this.blens[i] = 0;
@@ -3876,8 +2765,7 @@ return this.inflate_flush (r);
 b |= (this.z.next_in[p++] & 0xff) << k;
 k += 8;
 }
-if (this.tb[0] == -1) {
-}t = this.hufts[(this.tb[0] + (b & JZ.InfBlocks.inflate_mask[t])) * 3 + 1];
+t = this.hufts[(this.tb[0] + (b & JZ.InfBlocks.inflate_mask[t])) * 3 + 1];
 c = this.hufts[(this.tb[0] + (b & JZ.InfBlocks.inflate_mask[t])) * 3 + 2];
 if (c < 16) {
 b >>>= (t);
@@ -4060,7 +2948,7 @@ q += n;
 this.read = q;
 return r;
 }, "~N");
-Clazz.defineStatics (c$,
+Clazz_defineStatics (c$,
 "MANY", 1440,
 "inflate_mask", [0x00000000, 0x00000001, 0x00000003, 0x00000007, 0x0000000f, 0x0000001f, 0x0000003f, 0x0000007f, 0x000000ff, 0x000001ff, 0x000003ff, 0x000007ff, 0x00000fff, 0x00001fff, 0x00003fff, 0x00007fff, 0x0000ffff],
 "border", [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15],
@@ -4080,8 +2968,8 @@ Clazz.defineStatics (c$,
 "DONE", 8,
 "BAD", 9);
 });
-Clazz.declarePackage ("JZ");
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("JZ");
+c$ = Clazz_decorateAsClass (function () {
 this.mode = 0;
 this.len = 0;
 this.tree = null;
@@ -4098,9 +2986,9 @@ this.dtree = null;
 this.dtree_index = 0;
 this.z = null;
 this.s = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, JZ, "InfCodes");
-Clazz.makeConstructor (c$, 
+Clazz_makeConstructor (c$, 
 function (z, s) {
 this.z = z;
 this.s = s;
@@ -4189,7 +3077,7 @@ this.mode = 2;
 break;
 }if ((e & 64) == 0) {
 this.need = e;
-this.tree_index = Clazz.doubleToInt (tindex / 3) + this.tree[tindex + 2];
+this.tree_index = Clazz_doubleToInt (tindex / 3) + this.tree[tindex + 2];
 break;
 }if ((e & 32) != 0) {
 this.mode = 7;
@@ -4254,7 +3142,7 @@ this.mode = 4;
 break;
 }if ((e & 64) == 0) {
 this.need = e;
-this.tree_index = Clazz.doubleToInt (tindex / 3) + this.tree[tindex + 2];
+this.tree_index = Clazz_doubleToInt (tindex / 3) + this.tree[tindex + 2];
 break;
 }this.mode = 9;
 this.z.msg = "invalid distance code";
@@ -4582,7 +3470,7 @@ z.next_in_index = p;
 s.write = q;
 return 0;
 }, "~N,~N,~A,~N,~A,~N,JZ.InfBlocks,JZ.ZStream");
-Clazz.defineStatics (c$,
+Clazz_defineStatics (c$,
 "inflate_mask", [0x00000000, 0x00000001, 0x00000003, 0x00000007, 0x0000000f, 0x0000001f, 0x0000003f, 0x0000007f, 0x000000ff, 0x000001ff, 0x000003ff, 0x000007ff, 0x00000fff, 0x00001fff, 0x00003fff, 0x00007fff, 0x0000ffff],
 "Z_OK", 0,
 "Z_STREAM_END", 1,
@@ -4598,34 +3486,34 @@ Clazz.defineStatics (c$,
 "WASH", 7,
 "END", 8,
 "BADCODE", 9);
-Clazz.declarePackage ("java.util.zip");
-Clazz.load (["java.io.FilterInputStream"], "java.util.zip.CheckedInputStream", null, function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["java.io.FilterInputStream"], "java.util.zip.CheckedInputStream", null, function () {
+c$ = Clazz_decorateAsClass (function () {
 this.cksum = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, java.util.zip, "CheckedInputStream", java.io.FilterInputStream);
-Clazz.makeConstructor (c$, 
+Clazz_makeConstructor (c$, 
 function ($in, cksum) {
-Clazz.superConstructor (this, java.util.zip.CheckedInputStream, [$in]);
+Clazz_superConstructor (this, java.util.zip.CheckedInputStream, [$in]);
 this.cksum = cksum;
 }, "java.io.InputStream,JZ.Checksum");
-Clazz.overrideMethod (c$, "readByteAsInt", 
+$_V(c$, "readByteAsInt", 
 function () {
 var b = this.$in.readByteAsInt ();
 if (b != -1) {
 this.cksum.updateByteAsInt (b);
 }return b;
 });
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (buf, off, len) {
 len = this.$in.read (buf, off, len);
 if (len != -1) {
 this.cksum.update (buf, off, len);
 }return len;
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "skip", 
+$_V(c$, "skip", 
 function (n) {
-var buf =  Clazz.newByteArray (512, 0);
+var buf =  Clazz_newByteArray (512, 0);
 var total = 0;
 while (total < n) {
 var len = n - total;
@@ -4641,21 +3529,21 @@ function () {
 return this.cksum;
 });
 });
-Clazz.declarePackage ("java.util.zip");
-Clazz.load (["JZ.Inflater"], "java.util.zip.Inflater", null, function () {
-c$ = Clazz.declareType (java.util.zip, "Inflater", JZ.Inflater);
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["JZ.Inflater"], "java.util.zip.Inflater", null, function () {
+c$ = Clazz_declareType (java.util.zip, "Inflater", JZ.Inflater);
 $_M(c$, "initialize", 
 function (nowrap) {
 return this.init (0, nowrap);
 }, "~B");
 });
-Clazz.declarePackage ("java.util.zip");
-Clazz.load (["java.io.IOException"], "java.util.zip.ZipException", null, function () {
-c$ = Clazz.declareType (java.util.zip, "ZipException", java.io.IOException);
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["java.io.IOException"], "java.util.zip.ZipException", null, function () {
+c$ = Clazz_declareType (java.util.zip, "ZipException", java.io.IOException);
 });
-Clazz.declarePackage ("java.util.zip");
-c$ = Clazz.declareInterface (java.util.zip, "ZipConstants");
-Clazz.defineStatics (c$,
+Clazz_declarePackage ("java.util.zip");
+c$ = Clazz_declareInterface (java.util.zip, "ZipConstants");
+Clazz_defineStatics (c$,
 "LOCSIG", 0x04034b50,
 "EXTSIG", 0x08074b50,
 "CENSIG", 0x02014b50,
@@ -4696,9 +3584,9 @@ Clazz.defineStatics (c$,
 "ENDSIZ", 12,
 "ENDOFF", 16,
 "ENDCOM", 20);
-Clazz.declarePackage ("java.util.zip");
-Clazz.load (["java.util.zip.ZipConstants"], "java.util.zip.ZipEntry", ["java.lang.IllegalArgumentException", "$.InternalError", "$.NullPointerException", "java.util.Date"], function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["java.util.zip.ZipConstants"], "java.util.zip.ZipEntry", ["java.lang.IllegalArgumentException", "$.InternalError", "$.NullPointerException", "java.util.Date"], function () {
+c$ = Clazz_decorateAsClass (function () {
 this.offset = 0;
 this.name = null;
 this.time = -1;
@@ -4709,9 +3597,9 @@ this.method = -1;
 this.flag = 0;
 this.extra = null;
 this.comment = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, java.util.zip, "ZipEntry", null, [java.util.zip.ZipConstants, Cloneable]);
-Clazz.makeConstructor (c$, 
+Clazz_makeConstructor (c$, 
 function (name) {
 if (name == null) {
 throw  new NullPointerException ();
@@ -4791,50 +3679,50 @@ $_M(c$, "isDirectory",
 function () {
 return this.name.endsWith ("/");
 });
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return this.getName ();
 });
 c$.dosToJavaTime = $_M(c$, "dosToJavaTime", 
-($fz = function (dtime) {
+function (dtime) {
 var d =  new java.util.Date ((((dtime >> 25) & 0x7f) + 80), (((dtime >> 21) & 0x0f) - 1), ((dtime >> 16) & 0x1f), ((dtime >> 11) & 0x1f), ((dtime >> 5) & 0x3f), ((dtime << 1) & 0x3e));
 return d.getTime ();
-}, $fz.isPrivate = true, $fz), "~N");
+}, "~N");
 c$.javaToDosTime = $_M(c$, "javaToDosTime", 
-($fz = function (time) {
+function (time) {
 var d =  new java.util.Date (time);
 var year = d.getYear () + 1900;
 if (year < 1980) {
 return 2162688;
 }return (year - 1980) << 25 | (d.getMonth () + 1) << 21 | d.getDate () << 16 | d.getHours () << 11 | d.getMinutes () << 5 | d.getSeconds () >> 1;
-}, $fz.isPrivate = true, $fz), "~N");
-Clazz.overrideMethod (c$, "hashCode", 
+}, "~N");
+$_V(c$, "hashCode", 
 function () {
 return this.name.hashCode ();
 });
 $_M(c$, "clone", 
 function () {
 try {
-var e = Clazz.superCall (this, java.util.zip.ZipEntry, "clone", []);
+var e = Clazz_superCall (this, java.util.zip.ZipEntry, "clone", []);
 if (this.extra != null) {
-e.extra =  Clazz.newByteArray (this.extra.length, 0);
+e.extra =  Clazz_newByteArray (this.extra.length, 0);
 System.arraycopy (this.extra, 0, e.extra, 0, this.extra.length);
 }return e;
 } catch (e) {
-if (Clazz.exceptionOf (e, CloneNotSupportedException)) {
+if (Clazz_exceptionOf (e, CloneNotSupportedException)) {
 throw  new InternalError ();
 } else {
 throw e;
 }
 }
 });
-Clazz.defineStatics (c$,
+Clazz_defineStatics (c$,
 "STORED", 0,
 "DEFLATED", 8);
 });
-Clazz.declarePackage ("java.util.zip");
-c$ = Clazz.declareType (java.util.zip, "ZipConstants64");
-Clazz.defineStatics (c$,
+Clazz_declarePackage ("java.util.zip");
+c$ = Clazz_declareType (java.util.zip, "ZipConstants64");
+Clazz_defineStatics (c$,
 "ZIP64_ENDSIG", 0x06064b50,
 "ZIP64_LOCSIG", 0x07064b50,
 "ZIP64_ENDHDR", 56,
@@ -4860,9 +3748,9 @@ Clazz.defineStatics (c$,
 "ZIP64_EXTSIZ", 8,
 "ZIP64_EXTLEN", 16,
 "EFS", 0x800);
-Clazz.declarePackage ("java.util.zip");
-Clazz.load (["java.util.zip.InflaterInputStream", "$.ZipConstants", "$.CRC32"], "java.util.zip.ZipInputStream", ["java.io.EOFException", "$.IOException", "$.PushbackInputStream", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.Long", "$.NullPointerException", "java.util.zip.Inflater", "$.ZipEntry", "$.ZipException"], function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_declarePackage ("java.util.zip");
+Clazz_load (["java.util.zip.InflaterInputStream", "$.ZipConstants", "$.CRC32"], "java.util.zip.ZipInputStream", ["java.io.EOFException", "$.IOException", "$.PushbackInputStream", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.Long", "$.NullPointerException", "java.util.zip.Inflater", "$.ZipEntry", "$.ZipException"], function () {
+c$ = Clazz_decorateAsClass (function () {
 this.entry = null;
 this.flag = 0;
 this.crc = null;
@@ -4873,27 +3761,27 @@ this.entryEOF = false;
 this.zc = null;
 this.byteTest = null;
 this.$b = null;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, java.util.zip, "ZipInputStream", java.util.zip.InflaterInputStream, java.util.zip.ZipConstants);
-Clazz.prepareFields (c$, function () {
+Clazz_prepareFields (c$, function () {
 this.crc =  new java.util.zip.CRC32 ();
-this.tmpbuf =  Clazz.newByteArray (512, 0);
+this.tmpbuf =  Clazz_newByteArray (512, 0);
 this.byteTest = [0x20];
-this.$b =  Clazz.newByteArray (256, 0);
+this.$b =  Clazz_newByteArray (256, 0);
 });
 $_M(c$, "ensureOpen", 
-($fz = function () {
+function () {
 if (this.$closed) {
 throw  new java.io.IOException ("Stream closed");
-}}, $fz.isPrivate = true, $fz));
-Clazz.makeConstructor (c$, 
+}});
+Clazz_makeConstructor (c$, 
 function ($in) {
-Clazz.superConstructor (this, java.util.zip.ZipInputStream, [ new java.io.PushbackInputStream ($in, 1024), java.util.zip.ZipInputStream.newInflater (), 512]);
+Clazz_superConstructor (this, java.util.zip.ZipInputStream, [ new java.io.PushbackInputStream ($in, 1024), java.util.zip.ZipInputStream.newInflater (), 512]);
 var charset = "UTF-8";
 try {
  String.instantialize (this.byteTest, charset);
 } catch (e) {
-if (Clazz.exceptionOf (e, java.io.UnsupportedEncodingException)) {
+if (Clazz_exceptionOf (e, java.io.UnsupportedEncodingException)) {
 throw  new NullPointerException ("charset is invalid");
 } else {
 throw e;
@@ -4902,9 +3790,9 @@ throw e;
 this.zc = charset;
 }, "java.io.InputStream");
 c$.newInflater = $_M(c$, "newInflater", 
-($fz = function () {
+function () {
 return  new java.util.zip.Inflater ().init (0, true);
-}, $fz.isPrivate = true, $fz));
+});
 $_M(c$, "getNextEntry", 
 function () {
 this.ensureOpen ();
@@ -4926,12 +3814,12 @@ while (this.read (this.tmpbuf, 0, this.tmpbuf.length) != -1) {
 }
 this.entryEOF = true;
 });
-Clazz.overrideMethod (c$, "available", 
+$_V(c$, "available", 
 function () {
 this.ensureOpen ();
 return (this.entryEOF ? 0 : 1);
 });
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (b, off, len) {
 this.ensureOpen ();
 if (off < 0 || len < 0 || off > b.length - len) {
@@ -4969,7 +3857,7 @@ default:
 throw  new java.util.zip.ZipException ("invalid compression method");
 }
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "skip", 
+$_V(c$, "skip", 
 function (n) {
 if (n < 0) {
 throw  new IllegalArgumentException ("negative skip length");
@@ -4991,15 +3879,15 @@ return total;
 $_M(c$, "close", 
 function () {
 if (!this.$closed) {
-Clazz.superCall (this, java.util.zip.ZipInputStream, "close", []);
+Clazz_superCall (this, java.util.zip.ZipInputStream, "close", []);
 this.$closed = true;
 }});
 $_M(c$, "readLOC", 
-($fz = function () {
+function () {
 try {
 this.readFully (this.tmpbuf, 0, 30);
 } catch (e) {
-if (Clazz.exceptionOf (e, java.io.EOFException)) {
+if (Clazz_exceptionOf (e, java.io.EOFException)) {
 return null;
 } else {
 throw e;
@@ -5013,7 +3901,7 @@ var blen = this.$b.length;
 if (len > blen) {
 do blen = blen * 2;
  while (len > blen);
-this.$b =  Clazz.newByteArray (blen, 0);
+this.$b =  Clazz_newByteArray (blen, 0);
 }this.readFully (this.$b, 0, len);
 var e = this.createZipEntry (((this.flag & 2048) != 0) ? this.toStringUTF8 (this.$b, len) : this.toStringb2 (this.$b, len));
 if ((this.flag & 1) == 1) {
@@ -5029,7 +3917,7 @@ e.csize = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 18);
 e.size = java.util.zip.ZipInputStream.get32 (this.tmpbuf, 22);
 }len = java.util.zip.ZipInputStream.get16 (this.tmpbuf, 28);
 if (len > 0) {
-var bb =  Clazz.newByteArray (len, 0);
+var bb =  Clazz_newByteArray (len, 0);
 this.readFully (bb, 0, len);
 e.setExtra (bb);
 if (e.csize == 4294967295 || e.size == 4294967295) {
@@ -5046,29 +3934,29 @@ break;
 }off += (sz + 4);
 }
 }}return e;
-}, $fz.isPrivate = true, $fz));
+});
 $_M(c$, "toStringUTF8", 
-($fz = function (b2, len) {
+function (b2, len) {
 try {
 return  String.instantialize (b2, 0, len, this.zc);
 } catch (e) {
-if (Clazz.exceptionOf (e, java.io.UnsupportedEncodingException)) {
+if (Clazz_exceptionOf (e, java.io.UnsupportedEncodingException)) {
 return this.toStringb2 (b2, len);
 } else {
 throw e;
 }
 }
-}, $fz.isPrivate = true, $fz), "~A,~N");
+}, "~A,~N");
 $_M(c$, "toStringb2", 
-($fz = function (b2, len) {
+function (b2, len) {
 return  String.instantialize (b2, 0, len);
-}, $fz.isPrivate = true, $fz), "~A,~N");
+}, "~A,~N");
 $_M(c$, "createZipEntry", 
 function (name) {
 return  new java.util.zip.ZipEntry (name);
 }, "~S");
 $_M(c$, "readEnd", 
-($fz = function (e) {
+function (e) {
 var n = this.inf.getAvailIn ();
 if (n > 0) {
 (this.$in).unread (this.buf, this.len - n, n);
@@ -5104,9 +3992,9 @@ throw  new java.util.zip.ZipException ("invalid entry size (expected " + e.size 
 throw  new java.util.zip.ZipException ("invalid entry compressed size (expected " + e.csize + " but got " + this.inf.getTotalIn () + " bytes)");
 }if (e.crc != this.crc.getValue ()) {
 throw  new java.util.zip.ZipException ("invalid entry CRC (expected 0x" + Long.toHexString (e.crc) + " but got 0x" + Long.toHexString (this.crc.getValue ()) + ")");
-}}, $fz.isPrivate = true, $fz), "java.util.zip.ZipEntry");
+}}, "java.util.zip.ZipEntry");
 $_M(c$, "readFully", 
-($fz = function (b, off, len) {
+function (b, off, len) {
 while (len > 0) {
 var n = this.$in.read (b, off, len);
 if (n == -1) {
@@ -5114,49 +4002,49 @@ throw  new java.io.EOFException ();
 }off += n;
 len -= n;
 }
-}, $fz.isPrivate = true, $fz), "~A,~N,~N");
+}, "~A,~N,~N");
 c$.get16 = $_M(c$, "get16", 
-($fz = function (b, off) {
+function (b, off) {
 return (b[off] & 0xff) | ((b[off + 1] & 0xff) << 8);
-}, $fz.isPrivate = true, $fz), "~A,~N");
+}, "~A,~N");
 c$.get32 = $_M(c$, "get32", 
-($fz = function (b, off) {
+function (b, off) {
 return (java.util.zip.ZipInputStream.get16 (b, off) | (java.util.zip.ZipInputStream.get16 (b, off + 2) << 16)) & 0xffffffff;
-}, $fz.isPrivate = true, $fz), "~A,~N");
+}, "~A,~N");
 c$.get64 = $_M(c$, "get64", 
-($fz = function (b, off) {
+function (b, off) {
 return java.util.zip.ZipInputStream.get32 (b, off) | (java.util.zip.ZipInputStream.get32 (b, off + 4) << 32);
-}, $fz.isPrivate = true, $fz), "~A,~N");
-Clazz.defineStatics (c$,
+}, "~A,~N");
+Clazz_defineStatics (c$,
 "STORED", 0,
 "DEFLATED", 8);
 });
-Clazz.load (["java.io.FilterInputStream"], "java.io.PushbackInputStream", ["java.io.IOException", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.NullPointerException"], function () {
-c$ = Clazz.decorateAsClass (function () {
+Clazz_load (["java.io.FilterInputStream"], "java.io.PushbackInputStream", ["java.io.IOException", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.NullPointerException"], function () {
+c$ = Clazz_decorateAsClass (function () {
 this.buf = null;
 this.pos = 0;
-Clazz.instantialize (this, arguments);
+Clazz_instantialize (this, arguments);
 }, java.io, "PushbackInputStream", java.io.FilterInputStream);
 $_M(c$, "ensureOpen", 
-($fz = function () {
+function () {
 if (this.$in == null) throw  new java.io.IOException ("Stream closed");
-}, $fz.isPrivate = true, $fz));
-Clazz.makeConstructor (c$, 
+});
+Clazz_makeConstructor (c$, 
 function ($in, size) {
-Clazz.superConstructor (this, java.io.PushbackInputStream, [$in]);
+Clazz_superConstructor (this, java.io.PushbackInputStream, [$in]);
 if (size <= 0) {
 throw  new IllegalArgumentException ("size <= 0");
-}this.buf =  Clazz.newByteArray (size, 0);
+}this.buf =  Clazz_newByteArray (size, 0);
 this.pos = size;
 }, "java.io.InputStream,~N");
-Clazz.overrideMethod (c$, "readByteAsInt", 
+$_V(c$, "readByteAsInt", 
 function () {
 this.ensureOpen ();
 if (this.pos < this.buf.length) {
 return this.buf[this.pos++] & 0xff;
 }return this.$in.readByteAsInt ();
 });
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (b, off, len) {
 this.ensureOpen ();
 if (b == null) {
@@ -5195,14 +4083,14 @@ throw  new java.io.IOException ("Push back buffer is full");
 }this.pos -= len;
 System.arraycopy (b, off, this.buf, this.pos, len);
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "available", 
+$_V(c$, "available", 
 function () {
 this.ensureOpen ();
 var n = this.buf.length - this.pos;
 var avail = this.$in.available ();
 return n > (2147483647 - avail) ? 2147483647 : n + avail;
 });
-Clazz.overrideMethod (c$, "skip", 
+$_V(c$, "skip", 
 function (n) {
 this.ensureOpen ();
 if (n <= 0) {
@@ -5217,18 +4105,18 @@ n -= pskip;
 pskip += this.$in.skip (n);
 }return pskip;
 }, "~N");
-Clazz.overrideMethod (c$, "markSupported", 
+$_V(c$, "markSupported", 
 function () {
 return false;
 });
-Clazz.overrideMethod (c$, "mark", 
+$_V(c$, "mark", 
 function (readlimit) {
 }, "~N");
-Clazz.overrideMethod (c$, "reset", 
+$_V(c$, "reset", 
 function () {
 throw  new java.io.IOException ("mark/reset not supported");
 });
-Clazz.overrideMethod (c$, "close", 
+$_V(c$, "close", 
 function () {
 if (this.$in == null) return;
 this.$in.close ();
@@ -5236,1790 +4124,97 @@ this.$in = null;
 this.buf = null;
 });
 });
-Clazz.declarePackage ("J.api");
-Clazz.declareInterface (J.api, "ZInputStream");
-Clazz.declarePackage ("J.io2");
-Clazz.load (["java.util.zip.ZipInputStream", "J.api.ZInputStream"], "J.io2.JmolZipInputStream", null, function () {
-c$ = Clazz.declareType (J.io2, "JmolZipInputStream", java.util.zip.ZipInputStream, J.api.ZInputStream);
+Clazz_declarePackage ("J.io2");
+Clazz_load (["java.util.zip.ZipInputStream", "javajs.api.ZInputStream"], "J.io2.JmolZipInputStream", null, function () {
+c$ = Clazz_declareType (J.io2, "JmolZipInputStream", java.util.zip.ZipInputStream, javajs.api.ZInputStream);
 });
-Clazz.declarePackage ("JZ");
-Clazz.load (["java.io.FilterOutputStream"], "JZ.DeflaterOutputStream", ["java.io.IOException", "java.lang.IndexOutOfBoundsException"], function () {
-c$ = Clazz.decorateAsClass (function () {
-this.deflater = null;
-this.buffer = null;
-this.closed = false;
-this.syncFlush = false;
-this.buf1 = null;
-this.mydeflater = false;
-this.close_out = true;
-Clazz.instantialize (this, arguments);
-}, JZ, "DeflaterOutputStream", java.io.FilterOutputStream);
-Clazz.prepareFields (c$, function () {
-this.buf1 =  Clazz.newByteArray (1, 0);
-});
-$_M(c$, "jzSetDOS", 
-function (out, deflater, size, close_out) {
-this.jzSetFOS (out);
-if (size == 0) size = 512;
-this.deflater = deflater;
-this.buffer =  Clazz.newByteArray (size, 0);
-this.close_out = close_out;
-}, "java.io.OutputStream,JZ.Deflater,~N,~B");
-Clazz.overrideMethod (c$, "writeByteAsInt", 
-function (b) {
-this.buf1[0] = (b & 0xff);
-this.write (this.buf1, 0, 1);
-}, "~N");
-$_M(c$, "write", 
-function (b, off, len) {
-if (this.deflater.finished ()) throw  new java.io.IOException ("finished");
-if ( new Boolean ( new Boolean (off < 0 | len < 0).valueOf () | off + len > b.length).valueOf ()) throw  new IndexOutOfBoundsException ();
-if (len == 0) return;
-var flush = this.syncFlush ? 2 : 0;
-this.deflater.setInput (b, off, len, true);
-while (this.deflater.avail_in > 0) {
-var err = this.deflate (flush);
-if (err == 1) break;
-}
-}, "~A,~N,~N");
-$_M(c$, "finish", 
-function () {
-while (!this.deflater.finished ()) {
-this.deflate (4);
-}
-});
-Clazz.overrideMethod (c$, "close", 
-function () {
-if (!this.closed) {
-this.finish ();
-if (this.mydeflater) {
-this.deflater.end ();
-}if (this.close_out) this.out.close ();
-this.closed = true;
-}});
-$_M(c$, "deflate", 
-function (flush) {
-this.deflater.setOutput (this.buffer, 0, this.buffer.length);
-var err = this.deflater.deflate (flush);
-switch (err) {
-case 0:
-case 1:
-break;
-case -5:
-if (this.deflater.avail_in <= 0 && flush != 4) {
-break;
-}default:
-throw  new java.io.IOException ("failed to deflate");
-}
-var len = this.deflater.next_out_index;
-if (len > 0) {
-this.out.write (this.buffer, 0, len);
-}return err;
-}, "~N");
-Clazz.overrideMethod (c$, "flush", 
-function () {
-if (this.syncFlush && !this.deflater.finished ()) {
-while (true) {
-var err = this.deflate (2);
-if (this.deflater.next_out_index < this.buffer.length) break;
-if (err == 1) break;
-}
-}this.out.flush ();
-});
-$_M(c$, "getTotalIn", 
-function () {
-return this.deflater.getTotalIn ();
-});
-$_M(c$, "getTotalOut", 
-function () {
-return this.deflater.getTotalOut ();
-});
-$_M(c$, "setSyncFlush", 
-function (syncFlush) {
-this.syncFlush = syncFlush;
-}, "~B");
-$_M(c$, "getSyncFlush", 
-function () {
-return this.syncFlush;
-});
-$_M(c$, "getDeflater", 
-function () {
-return this.deflater;
-});
-Clazz.defineStatics (c$,
-"DEFAULT_BUFSIZE", 512);
-});
-Clazz.declarePackage ("java.util.zip");
-Clazz.load (["JZ.Deflater"], "java.util.zip.Deflater", null, function () {
-c$ = Clazz.declareType (java.util.zip, "Deflater", JZ.Deflater);
-Clazz.makeConstructor (c$, 
-function (compressionLevel) {
-if (compressionLevel != 2147483647) this.init (compressionLevel, 0, false);
-}, "~N");
-Clazz.defineStatics (c$,
-"DEFAULT_COMPRESSION", -1);
-});
-Clazz.declarePackage ("java.util.zip");
-Clazz.load (["JZ.DeflaterOutputStream"], "java.util.zip.DeflaterOutputStream", null, function () {
-c$ = Clazz.declareType (java.util.zip, "DeflaterOutputStream", JZ.DeflaterOutputStream);
-Clazz.makeConstructor (c$, 
-function () {
-Clazz.superConstructor (this, java.util.zip.DeflaterOutputStream, []);
-});
-Clazz.makeConstructor (c$, 
-function (bos, deflater) {
-Clazz.superConstructor (this, java.util.zip.DeflaterOutputStream, []);
-this.setDOS (bos, deflater);
-}, "java.io.ByteArrayOutputStream,java.util.zip.Deflater");
-$_M(c$, "setDOS", 
-function (out, deflater) {
-this.jzSetDOS (out, deflater, 0, true);
-}, "java.io.OutputStream,java.util.zip.Deflater");
-});
-Clazz.declarePackage ("java.util.zip");
-Clazz.load (["java.util.zip.DeflaterOutputStream", "$.ZipConstants", "java.util.Hashtable", "java.util.zip.CRC32", "J.util.JmolList"], "java.util.zip.ZipOutputStream", ["JZ.ZStream", "java.io.IOException", "java.lang.Boolean", "$.IllegalArgumentException", "$.IndexOutOfBoundsException", "$.Long", "java.util.zip.Deflater", "$.ZipException"], function () {
-c$ = Clazz.decorateAsClass (function () {
-this.current = null;
-this.xentries = null;
-this.names = null;
-this.crc = null;
-this.written = 0;
-this.locoff = 0;
-this.comment = null;
-this.method = 8;
-this.finished = false;
-this.$closed = false;
-Clazz.instantialize (this, arguments);
-}, java.util.zip, "ZipOutputStream", java.util.zip.DeflaterOutputStream, java.util.zip.ZipConstants);
-Clazz.prepareFields (c$, function () {
-this.xentries =  new J.util.JmolList ();
-this.names =  new java.util.Hashtable ();
-this.crc =  new java.util.zip.CRC32 ();
-});
-c$.version = $_M(c$, "version", 
-($fz = function (e) {
-switch (e.method) {
-case 8:
-return 20;
-case 0:
-return 10;
-default:
-throw  new java.util.zip.ZipException ("unsupported compression method");
-}
-}, $fz.isPrivate = true, $fz), "java.util.zip.ZipEntry");
-$_M(c$, "ensureOpen", 
-($fz = function () {
-if (this.$closed) {
-throw  new java.io.IOException ("Stream closed");
-}}, $fz.isPrivate = true, $fz));
-Clazz.makeConstructor (c$, 
-function () {
-Clazz.superConstructor (this, java.util.zip.ZipOutputStream, []);
-});
-$_M(c$, "setZOS", 
-function (out) {
-this.setDOS (out, java.util.zip.ZipOutputStream.newDeflater ());
-return this;
-}, "java.io.OutputStream");
-c$.newDeflater = $_M(c$, "newDeflater", 
-($fz = function () {
-return ( new java.util.zip.Deflater (2147483647)).init (-1, 0, true);
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "setComment", 
-function (comment) {
-if (comment != null) {
-this.comment = JZ.ZStream.getBytes (comment);
-if (this.comment.length > 0xffff) throw  new IllegalArgumentException ("ZIP file comment too long.");
-}}, "~S");
-$_M(c$, "putNextEntry", 
-function (e) {
-this.ensureOpen ();
-if (this.current != null) {
-this.closeEntry ();
-}if (e.time == -1) {
-e.setTime (System.currentTimeMillis ());
-}if (e.method == -1) {
-e.method = this.method;
-}e.flag = 0;
-switch (e.method) {
-case 8:
-if (e.size == -1 || e.csize == -1 || e.crc == -1) e.flag = 8;
-break;
-case 0:
-if (e.size == -1) {
-e.size = e.csize;
-} else if (e.csize == -1) {
-e.csize = e.size;
-} else if (e.size != e.csize) {
-throw  new java.util.zip.ZipException ("STORED entry where compressed != uncompressed size");
-}if (e.size == -1 || e.crc == -1) {
-throw  new java.util.zip.ZipException ("STORED entry missing size, compressed size, or crc-32");
-}break;
-default:
-throw  new java.util.zip.ZipException ("unsupported compression method");
-}
-if (this.names.containsKey (e.name)) {
-throw  new java.util.zip.ZipException ("duplicate entry: " + e.name);
-}this.names.put (e.name, Boolean.TRUE);
-e.flag |= 2048;
-this.current = e;
-this.current.offset = this.written;
-this.xentries.addLast (this.current);
-this.writeLOC (this.current);
-}, "java.util.zip.ZipEntry");
-$_M(c$, "closeEntry", 
-function () {
-this.ensureOpen ();
-if (this.current != null) {
-var e = this.current;
-switch (e.method) {
-case 8:
-this.deflater.finish ();
-Clazz.superCall (this, java.util.zip.ZipOutputStream, "finish", []);
-if ((e.flag & 8) == 0) {
-if (e.size != this.deflater.getBytesRead ()) {
-throw  new java.util.zip.ZipException ("invalid entry size (expected " + e.size + " but got " + this.deflater.getBytesRead () + " bytes)");
-}if (e.csize != this.deflater.getBytesWritten ()) {
-throw  new java.util.zip.ZipException ("invalid entry compressed size (expected " + e.csize + " but got " + this.deflater.getBytesWritten () + " bytes)");
-}if (e.crc != this.crc.getValue ()) {
-throw  new java.util.zip.ZipException ("invalid entry CRC-32 (expected 0x" + Long.toHexString (e.crc) + " but got 0x" + Long.toHexString (this.crc.getValue ()) + ")");
-}} else {
-e.size = this.deflater.getBytesRead ();
-e.csize = this.deflater.getBytesWritten ();
-e.crc = this.crc.getValue ();
-this.writeEXT (e);
-}this.deflater = java.util.zip.ZipOutputStream.newDeflater ();
-this.written += e.csize;
-break;
-case 0:
-if (e.size != this.written - this.locoff) {
-throw  new java.util.zip.ZipException ("invalid entry size (expected " + e.size + " but got " + (this.written - this.locoff) + " bytes)");
-}if (e.crc != this.crc.getValue ()) {
-throw  new java.util.zip.ZipException ("invalid entry crc-32 (expected 0x" + Long.toHexString (e.crc) + " but got 0x" + Long.toHexString (this.crc.getValue ()) + ")");
-}break;
-default:
-throw  new java.util.zip.ZipException ("invalid compression method");
-}
-this.crc.reset ();
-this.current = null;
-}});
-$_M(c$, "write", 
-function (b, off, len) {
-this.ensureOpen ();
-if (off < 0 || len < 0 || off > b.length - len) {
-throw  new IndexOutOfBoundsException ();
-} else if (len == 0) {
-return;
-}if (this.current == null) {
-throw  new java.util.zip.ZipException ("no current ZIP entry");
-}var entry = this.current;
-switch (entry.method) {
-case 8:
-Clazz.superCall (this, java.util.zip.ZipOutputStream, "write", [b, off, len]);
-break;
-case 0:
-this.written += len;
-if (this.written - this.locoff > entry.size) {
-throw  new java.util.zip.ZipException ("attempt to write past end of STORED entry");
-}this.out.write (this.buffer, 0, len);
-break;
-default:
-throw  new java.util.zip.ZipException ("invalid compression method");
-}
-this.crc.update (b, off, len);
-}, "~A,~N,~N");
-$_M(c$, "finish", 
-function () {
-this.ensureOpen ();
-if (this.finished) {
-return;
-}if (this.current != null) {
-this.closeEntry ();
-}var off = this.written;
-for (var xentry, $xentry = this.xentries.iterator (); $xentry.hasNext () && ((xentry = $xentry.next ()) || true);) this.writeCEN (xentry);
-
-this.writeEND (off, this.written - off);
-this.finished = true;
-});
-$_M(c$, "close", 
-function () {
-if (!this.$closed) {
-Clazz.superCall (this, java.util.zip.ZipOutputStream, "close", []);
-this.$closed = true;
-}});
-$_M(c$, "writeLOC", 
-($fz = function (entry) {
-var e = entry;
-var flag = e.flag;
-var elen = (e.extra != null) ? e.extra.length : 0;
-var hasZip64 = false;
-this.writeInt (67324752);
-if ((flag & 8) == 8) {
-this.writeShort (java.util.zip.ZipOutputStream.version (e));
-this.writeShort (flag);
-this.writeShort (e.method);
-this.writeInt (e.time);
-this.writeInt (0);
-this.writeInt (0);
-this.writeInt (0);
-} else {
-if (e.csize >= 4294967295 || e.size >= 4294967295) {
-hasZip64 = true;
-this.writeShort (45);
-} else {
-this.writeShort (java.util.zip.ZipOutputStream.version (e));
-}this.writeShort (flag);
-this.writeShort (e.method);
-this.writeInt (e.time);
-this.writeInt (e.crc);
-if (hasZip64) {
-this.writeInt (4294967295);
-this.writeInt (4294967295);
-elen += 20;
-} else {
-this.writeInt (e.csize);
-this.writeInt (e.size);
-}}var nameBytes = JZ.ZStream.getBytes (e.name);
-this.writeShort (nameBytes.length);
-this.writeShort (elen);
-this.writeBytes (nameBytes, 0, nameBytes.length);
-if (hasZip64) {
-this.writeShort (1);
-this.writeShort (16);
-this.writeLong (e.size);
-this.writeLong (e.csize);
-}if (e.extra != null) {
-this.writeBytes (e.extra, 0, e.extra.length);
-}this.locoff = this.written;
-}, $fz.isPrivate = true, $fz), "java.util.zip.ZipEntry");
-$_M(c$, "writeEXT", 
-($fz = function (e) {
-this.writeInt (134695760);
-this.writeInt (e.crc);
-if (e.csize >= 4294967295 || e.size >= 4294967295) {
-this.writeLong (e.csize);
-this.writeLong (e.size);
-} else {
-this.writeInt (e.csize);
-this.writeInt (e.size);
-}}, $fz.isPrivate = true, $fz), "java.util.zip.ZipEntry");
-$_M(c$, "writeCEN", 
-($fz = function (entry) {
-var e = entry;
-var flag = e.flag;
-var version = java.util.zip.ZipOutputStream.version (e);
-var csize = e.csize;
-var size = e.size;
-var offset = entry.offset;
-var e64len = 0;
-var hasZip64 = false;
-if (e.csize >= 4294967295) {
-csize = 4294967295;
-e64len += 8;
-hasZip64 = true;
-}if (e.size >= 4294967295) {
-size = 4294967295;
-e64len += 8;
-hasZip64 = true;
-}if (entry.offset >= 4294967295) {
-offset = 4294967295;
-e64len += 8;
-hasZip64 = true;
-}this.writeInt (33639248);
-if (hasZip64) {
-this.writeShort (45);
-this.writeShort (45);
-} else {
-this.writeShort (version);
-this.writeShort (version);
-}this.writeShort (flag);
-this.writeShort (e.method);
-this.writeInt (e.time);
-this.writeInt (e.crc);
-this.writeInt (csize);
-this.writeInt (size);
-var nameBytes = JZ.ZStream.getBytes (e.name);
-this.writeShort (nameBytes.length);
-if (hasZip64) {
-this.writeShort (e64len + 4 + (e.extra != null ? e.extra.length : 0));
-} else {
-this.writeShort (e.extra != null ? e.extra.length : 0);
-}var commentBytes;
-if (e.comment != null) {
-commentBytes = JZ.ZStream.getBytes (e.comment);
-this.writeShort (Math.min (commentBytes.length, 0xffff));
-} else {
-commentBytes = null;
-this.writeShort (0);
-}this.writeShort (0);
-this.writeShort (0);
-this.writeInt (0);
-this.writeInt (offset);
-this.writeBytes (nameBytes, 0, nameBytes.length);
-if (hasZip64) {
-this.writeShort (1);
-this.writeShort (e64len);
-if (size == 4294967295) this.writeLong (e.size);
-if (csize == 4294967295) this.writeLong (e.csize);
-if (offset == 4294967295) this.writeLong (entry.offset);
-}if (e.extra != null) {
-this.writeBytes (e.extra, 0, e.extra.length);
-}if (commentBytes != null) {
-this.writeBytes (commentBytes, 0, Math.min (commentBytes.length, 0xffff));
-}}, $fz.isPrivate = true, $fz), "java.util.zip.ZipEntry");
-$_M(c$, "writeEND", 
-($fz = function (off, len) {
-var hasZip64 = false;
-var xlen = len;
-var xoff = off;
-if (xlen >= 4294967295) {
-xlen = 4294967295;
-hasZip64 = true;
-}if (xoff >= 4294967295) {
-xoff = 4294967295;
-hasZip64 = true;
-}var count = this.xentries.size ();
-if (count >= 65535) {
-count = 65535;
-hasZip64 = true;
-}if (hasZip64) {
-var off64 = this.written;
-this.writeInt (101075792);
-this.writeLong (44);
-this.writeShort (45);
-this.writeShort (45);
-this.writeInt (0);
-this.writeInt (0);
-this.writeLong (this.xentries.size ());
-this.writeLong (this.xentries.size ());
-this.writeLong (len);
-this.writeLong (off);
-this.writeInt (117853008);
-this.writeInt (0);
-this.writeLong (off64);
-this.writeInt (1);
-}this.writeInt (101010256);
-this.writeShort (0);
-this.writeShort (0);
-this.writeShort (count);
-this.writeShort (count);
-this.writeInt (xlen);
-this.writeInt (xoff);
-if (this.comment != null) {
-this.writeShort (this.comment.length);
-this.writeBytes (this.comment, 0, this.comment.length);
-} else {
-this.writeShort (0);
-}}, $fz.isPrivate = true, $fz), "~N,~N");
-$_M(c$, "writeShort", 
-($fz = function (v) {
-var out = this.out;
-{
-out.writeByteAsInt((v >>> 0) & 0xff);
-out.writeByteAsInt((v >>> 8) & 0xff);
-}this.written += 2;
-}, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "writeInt", 
-($fz = function (v) {
-var out = this.out;
-{
-out.writeByteAsInt((v >>> 0) & 0xff);
-out.writeByteAsInt((v >>> 8) & 0xff);
-out.writeByteAsInt((v >>> 16) & 0xff);
-out.writeByteAsInt((v >>> 24) & 0xff);
-}this.written += 4;
-}, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "writeLong", 
-($fz = function (v) {
-var out = this.out;
-{
-out.writeByteAsInt((v >>> 0) & 0xff);
-out.writeByteAsInt((v >>> 8) & 0xff);
-out.writeByteAsInt((v >>> 16) & 0xff);
-out.writeByteAsInt((v >>> 24) & 0xff);
-out.writeByteAsInt(0);
-out.writeByteAsInt(0);
-out.writeByteAsInt(0);
-out.writeByteAsInt(0);
-}this.written += 8;
-}, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "writeBytes", 
-($fz = function (b, off, len) {
-this.out.write (b, off, len);
-this.written += len;
-}, $fz.isPrivate = true, $fz), "~A,~N,~N");
-Clazz.defineStatics (c$,
-"STORED", 0,
-"DEFLATED", 8);
-});
-Clazz.declarePackage ("J.io2");
-Clazz.load (["J.util.ArrayUtil"], ["J.io2.Huffman", "$.JpegEncoder", "$.JpegObj", "$.DCT"], ["java.io.BufferedOutputStream", "$.ByteArrayOutputStream", "J.util.Logger"], function () {
-c$ = Clazz.decorateAsClass (function () {
-this.outStream = null;
-this.jpegObj = null;
-this.huf = null;
-this.dct = null;
-this.jpegQuality = 0;
-Clazz.instantialize (this, arguments);
-}, J.io2, "JpegEncoder");
-Clazz.makeConstructor (c$, 
-function (apiPlatform, image, quality, out, comment) {
-this.jpegQuality = quality;
-this.jpegObj =  new J.io2.JpegObj (apiPlatform, image, comment);
-this.outStream =  new java.io.BufferedOutputStream (out);
-this.dct =  new J.io2.DCT (this.jpegQuality);
-this.huf =  new J.io2.Huffman (this.jpegObj.imageWidth, this.jpegObj.imageHeight);
-}, "J.api.ApiPlatform,~O,~N,java.io.OutputStream,~S");
-c$.getBytes = $_M(c$, "getBytes", 
-function (apiPlatform, image, quality, comment) {
-var os =  new java.io.ByteArrayOutputStream ();
-J.io2.JpegEncoder.write (apiPlatform, image, quality, os, comment);
-try {
-os.flush ();
-os.close ();
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-} else {
-throw e;
-}
-}
-return os.toByteArray ();
-}, "J.api.ApiPlatform,~O,~N,~S");
-c$.write = $_M(c$, "write", 
-function (apiPlatform, image, quality, os, comment) {
-( new J.io2.JpegEncoder (apiPlatform, image, quality, os, comment)).Compress ();
-}, "J.api.ApiPlatform,~O,~N,java.io.OutputStream,~S");
-$_M(c$, "Compress", 
-function () {
-if (this.jpegObj == null) return;
-var longState = J.io2.JpegEncoder.WriteHeaders (this.outStream, this.jpegObj, this.dct);
-J.io2.JpegEncoder.WriteCompressedData (this.outStream, this.jpegObj, this.dct, this.huf);
-J.io2.JpegEncoder.WriteEOI (this.outStream);
-if (longState != null) try {
-var b = longState.getBytes ();
-this.outStream.write (b, 0, b.length);
-} catch (e1) {
-if (Clazz.exceptionOf (e1, java.io.IOException)) {
-System.out.println ("ERROR WRITING COMMENT");
-} else {
-throw e1;
-}
-}
-try {
-this.outStream.flush ();
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-J.util.Logger.errorEx ("IO Error", e);
-} else {
-throw e;
-}
-}
-});
-c$.WriteCompressedData = $_M(c$, "WriteCompressedData", 
-($fz = function (outStream, jpegObj, dct, huf) {
-var i;
-var j;
-var r;
-var c;
-var a;
-var b;
-var comp;
-var xpos;
-var ypos;
-var xblockoffset;
-var yblockoffset;
-var inputArray;
-var dctArray1 =  Clazz.newFloatArray (8, 8, 0);
-var dctArray2 =  Clazz.newDoubleArray (8, 8, 0);
-var dctArray3 =  Clazz.newIntArray (64, 0);
-var lastDCvalue =  Clazz.newIntArray (jpegObj.numberOfComponents, 0);
-var minBlockWidth;
-var minBlockHeight;
-minBlockWidth = ((huf.imageWidth % 8 != 0) ? Clazz.doubleToInt (Math.floor (huf.imageWidth / 8.0) + 1) * 8 : huf.imageWidth);
-minBlockHeight = ((huf.imageHeight % 8 != 0) ? Clazz.doubleToInt (Math.floor (huf.imageHeight / 8.0) + 1) * 8 : huf.imageHeight);
-for (comp = 0; comp < jpegObj.numberOfComponents; comp++) {
-minBlockWidth = Math.min (minBlockWidth, jpegObj.blockWidth[comp]);
-minBlockHeight = Math.min (minBlockHeight, jpegObj.blockHeight[comp]);
-}
-xpos = 0;
-for (r = 0; r < minBlockHeight; r++) {
-for (c = 0; c < minBlockWidth; c++) {
-xpos = c * 8;
-ypos = r * 8;
-for (comp = 0; comp < jpegObj.numberOfComponents; comp++) {
-inputArray = jpegObj.components[comp];
-var vsampF = jpegObj.vsampFactor[comp];
-var hsampF = jpegObj.hsampFactor[comp];
-var qNumber = jpegObj.qtableNumber[comp];
-var dcNumber = jpegObj.dctableNumber[comp];
-var acNumber = jpegObj.actableNumber[comp];
-for (i = 0; i < vsampF; i++) {
-for (j = 0; j < hsampF; j++) {
-xblockoffset = j * 8;
-yblockoffset = i * 8;
-for (a = 0; a < 8; a++) {
-for (b = 0; b < 8; b++) {
-dctArray1[a][b] = inputArray[ypos + yblockoffset + a][xpos + xblockoffset + b];
-}
-}
-dctArray2 = J.io2.DCT.forwardDCT (dctArray1);
-dctArray3 = J.io2.DCT.quantizeBlock (dctArray2, dct.divisors[qNumber]);
-huf.HuffmanBlockEncoder (outStream, dctArray3, lastDCvalue[comp], dcNumber, acNumber);
-lastDCvalue[comp] = dctArray3[0];
-}
-}
-}
-}
-}
-huf.flushBuffer (outStream);
-}, $fz.isPrivate = true, $fz), "java.io.BufferedOutputStream,J.io2.JpegObj,J.io2.DCT,J.io2.Huffman");
-c$.WriteEOI = $_M(c$, "WriteEOI", 
-($fz = function (out) {
-J.io2.JpegEncoder.WriteMarker (J.io2.JpegEncoder.eoi, out);
-}, $fz.isPrivate = true, $fz), "java.io.BufferedOutputStream");
-c$.WriteHeaders = $_M(c$, "WriteHeaders", 
-($fz = function (out, jpegObj, dct) {
-var i;
-var j;
-var index;
-var offset;
-var tempArray;
-J.io2.JpegEncoder.WriteMarker (J.io2.JpegEncoder.soi, out);
-J.io2.JpegEncoder.writeArray (J.io2.JpegEncoder.jfif, out);
-var comment = null;
-if (jpegObj.comment.length > 0) J.io2.JpegEncoder.writeString (jpegObj.comment, 0xE1, out);
-J.io2.JpegEncoder.writeString ("JPEG Encoder Copyright 1998, James R. Weeks and BioElectroMech.\n\n", 0xFE, out);
-var dqt =  Clazz.newByteArray (134, 0);
-dqt[0] = 0xFF;
-dqt[1] = 0xDB;
-dqt[2] = 0;
-dqt[3] = 132;
-offset = 4;
-for (i = 0; i < 2; i++) {
-dqt[offset++] = ((0) + i);
-tempArray = dct.quantum[i];
-for (j = 0; j < 64; j++) {
-dqt[offset++] = tempArray[J.io2.Huffman.jpegNaturalOrder[j]];
-}
-}
-J.io2.JpegEncoder.writeArray (dqt, out);
-var sof =  Clazz.newByteArray (19, 0);
-sof[0] = 0xFF;
-sof[1] = 0xC0;
-sof[2] = 0;
-sof[3] = 17;
-sof[4] = jpegObj.precision;
-sof[5] = ((jpegObj.imageHeight >> 8) & 0xFF);
-sof[6] = ((jpegObj.imageHeight) & 0xFF);
-sof[7] = ((jpegObj.imageWidth >> 8) & 0xFF);
-sof[8] = ((jpegObj.imageWidth) & 0xFF);
-sof[9] = jpegObj.numberOfComponents;
-index = 10;
-for (i = 0; i < sof[9]; i++) {
-sof[index++] = jpegObj.compID[i];
-sof[index++] = ((jpegObj.hsampFactor[i] << 4) + jpegObj.vsampFactor[i]);
-sof[index++] = jpegObj.qtableNumber[i];
-}
-J.io2.JpegEncoder.writeArray (sof, out);
-J.io2.JpegEncoder.WriteDHTHeader (J.io2.Huffman.bitsDCluminance, J.io2.Huffman.valDCluminance, out);
-J.io2.JpegEncoder.WriteDHTHeader (J.io2.Huffman.bitsACluminance, J.io2.Huffman.valACluminance, out);
-J.io2.JpegEncoder.WriteDHTHeader (J.io2.Huffman.bitsDCchrominance, J.io2.Huffman.valDCchrominance, out);
-J.io2.JpegEncoder.WriteDHTHeader (J.io2.Huffman.bitsACchrominance, J.io2.Huffman.valACchrominance, out);
-var sos =  Clazz.newByteArray (14, 0);
-sos[0] = 0xFF;
-sos[1] = 0xDA;
-sos[2] = 0;
-sos[3] = 12;
-sos[4] = jpegObj.numberOfComponents;
-index = 5;
-for (i = 0; i < sos[4]; i++) {
-sos[index++] = jpegObj.compID[i];
-sos[index++] = ((jpegObj.dctableNumber[i] << 4) + jpegObj.actableNumber[i]);
-}
-sos[index++] = jpegObj.ss;
-sos[index++] = jpegObj.se;
-sos[index++] = ((jpegObj.ah << 4) + jpegObj.al);
-J.io2.JpegEncoder.writeArray (sos, out);
-return comment;
-}, $fz.isPrivate = true, $fz), "java.io.BufferedOutputStream,J.io2.JpegObj,J.io2.DCT");
-c$.writeString = $_M(c$, "writeString", 
-($fz = function (s, id, out) {
-var len = s.length;
-var i0 = 0;
-var suffix = " #Jmol...\u0000";
-while (i0 < len) {
-var nBytes = len - i0;
-if (nBytes > 65510) {
-nBytes = 65500;
-var pt = s.lastIndexOf ('\n', i0 + nBytes);
-if (pt > i0 + 1) nBytes = pt - i0;
-}if (i0 + nBytes == len) suffix = "";
-J.io2.JpegEncoder.writeTag (nBytes + suffix.length, id, out);
-J.io2.JpegEncoder.writeArray (s.substring (i0, i0 + nBytes).getBytes (), out);
-if (suffix.length > 0) J.io2.JpegEncoder.writeArray (suffix.getBytes (), out);
-i0 += nBytes;
-}
-}, $fz.isPrivate = true, $fz), "~S,~N,java.io.BufferedOutputStream");
-c$.writeTag = $_M(c$, "writeTag", 
-($fz = function (length, id, out) {
-length += 2;
-var com =  Clazz.newByteArray (4, 0);
-com[0] = 0xFF;
-com[1] = id;
-com[2] = ((length >> 8) & 0xFF);
-com[3] = (length & 0xFF);
-J.io2.JpegEncoder.writeArray (com, out);
-}, $fz.isPrivate = true, $fz), "~N,~N,java.io.BufferedOutputStream");
-c$.WriteDHTHeader = $_M(c$, "WriteDHTHeader", 
-function (bits, val, out) {
-var dht;
-var bytes = 0;
-for (var j = 1; j < 17; j++) bytes += bits[j];
-
-dht =  Clazz.newByteArray (21 + bytes, 0);
-dht[0] = 0xFF;
-dht[1] = 0xC4;
-var index = 4;
-for (var j = 0; j < 17; j++) dht[index++] = bits[j];
-
-for (var j = 0; j < bytes; j++) dht[index++] = val[j];
-
-dht[2] = (((index - 2) >> 8) & 0xFF);
-dht[3] = ((index - 2) & 0xFF);
-J.io2.JpegEncoder.writeArray (dht, out);
-}, "~A,~A,java.io.BufferedOutputStream");
-c$.WriteMarker = $_M(c$, "WriteMarker", 
-function (data, out) {
-try {
-out.write (data, 0, 2);
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-J.util.Logger.errorEx ("IO Error", e);
-} else {
-throw e;
-}
-}
-}, "~A,java.io.BufferedOutputStream");
-c$.writeArray = $_M(c$, "writeArray", 
-function (data, out) {
-try {
-out.write (data, 0, data.length);
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-J.util.Logger.errorEx ("IO Error", e);
-} else {
-throw e;
-}
-}
-}, "~A,java.io.BufferedOutputStream");
-Clazz.defineStatics (c$,
-"CONTINUE_MAX", 65500,
-"CONTINUE_MAX_BUFFER", 65510,
-"eoi", [0xFF, 0xD9],
-"jfif", [0xff, 0xe0, 0, 16, 0x4a, 0x46, 0x49, 0x46, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0],
-"soi", [0xFF, 0xD8]);
-c$ = Clazz.decorateAsClass (function () {
-this.quantum = null;
-this.divisors = null;
-this.quantum_luminance = null;
-this.DivisorsLuminance = null;
-this.quantum_chrominance = null;
-this.DivisorsChrominance = null;
-Clazz.instantialize (this, arguments);
-}, J.io2, "DCT");
-Clazz.prepareFields (c$, function () {
-this.quantum = J.util.ArrayUtil.newInt2 (2);
-this.divisors = J.util.ArrayUtil.newDouble2 (2);
-this.quantum_luminance =  Clazz.newIntArray (64, 0);
-this.DivisorsLuminance =  Clazz.newDoubleArray (64, 0);
-this.quantum_chrominance =  Clazz.newIntArray (64, 0);
-this.DivisorsChrominance =  Clazz.newDoubleArray (64, 0);
-});
-Clazz.makeConstructor (c$, 
-function (quality) {
-this.initMatrix (quality);
-}, "~N");
-$_M(c$, "initMatrix", 
-($fz = function (quality) {
-quality = (quality < 1 ? 1 : quality > 100 ? 100 : quality);
-quality = (quality < 50 ? Clazz.doubleToInt (5000 / quality) : 200 - quality * 2);
-this.quantum_luminance[0] = 16;
-this.quantum_luminance[1] = 11;
-this.quantum_luminance[2] = 10;
-this.quantum_luminance[3] = 16;
-this.quantum_luminance[4] = 24;
-this.quantum_luminance[5] = 40;
-this.quantum_luminance[6] = 51;
-this.quantum_luminance[7] = 61;
-this.quantum_luminance[8] = 12;
-this.quantum_luminance[9] = 12;
-this.quantum_luminance[10] = 14;
-this.quantum_luminance[11] = 19;
-this.quantum_luminance[12] = 26;
-this.quantum_luminance[13] = 58;
-this.quantum_luminance[14] = 60;
-this.quantum_luminance[15] = 55;
-this.quantum_luminance[16] = 14;
-this.quantum_luminance[17] = 13;
-this.quantum_luminance[18] = 16;
-this.quantum_luminance[19] = 24;
-this.quantum_luminance[20] = 40;
-this.quantum_luminance[21] = 57;
-this.quantum_luminance[22] = 69;
-this.quantum_luminance[23] = 56;
-this.quantum_luminance[24] = 14;
-this.quantum_luminance[25] = 17;
-this.quantum_luminance[26] = 22;
-this.quantum_luminance[27] = 29;
-this.quantum_luminance[28] = 51;
-this.quantum_luminance[29] = 87;
-this.quantum_luminance[30] = 80;
-this.quantum_luminance[31] = 62;
-this.quantum_luminance[32] = 18;
-this.quantum_luminance[33] = 22;
-this.quantum_luminance[34] = 37;
-this.quantum_luminance[35] = 56;
-this.quantum_luminance[36] = 68;
-this.quantum_luminance[37] = 109;
-this.quantum_luminance[38] = 103;
-this.quantum_luminance[39] = 77;
-this.quantum_luminance[40] = 24;
-this.quantum_luminance[41] = 35;
-this.quantum_luminance[42] = 55;
-this.quantum_luminance[43] = 64;
-this.quantum_luminance[44] = 81;
-this.quantum_luminance[45] = 104;
-this.quantum_luminance[46] = 113;
-this.quantum_luminance[47] = 92;
-this.quantum_luminance[48] = 49;
-this.quantum_luminance[49] = 64;
-this.quantum_luminance[50] = 78;
-this.quantum_luminance[51] = 87;
-this.quantum_luminance[52] = 103;
-this.quantum_luminance[53] = 121;
-this.quantum_luminance[54] = 120;
-this.quantum_luminance[55] = 101;
-this.quantum_luminance[56] = 72;
-this.quantum_luminance[57] = 92;
-this.quantum_luminance[58] = 95;
-this.quantum_luminance[59] = 98;
-this.quantum_luminance[60] = 112;
-this.quantum_luminance[61] = 100;
-this.quantum_luminance[62] = 103;
-this.quantum_luminance[63] = 99;
-J.io2.DCT.AANscale (this.DivisorsLuminance, this.quantum_luminance, quality);
-for (var i = 4; i < 64; i++) this.quantum_chrominance[i] = 99;
-
-this.quantum_chrominance[0] = 17;
-this.quantum_chrominance[1] = 18;
-this.quantum_chrominance[2] = 24;
-this.quantum_chrominance[3] = 47;
-this.quantum_chrominance[8] = 18;
-this.quantum_chrominance[9] = 21;
-this.quantum_chrominance[10] = 26;
-this.quantum_chrominance[11] = 66;
-this.quantum_chrominance[16] = 24;
-this.quantum_chrominance[17] = 26;
-this.quantum_chrominance[18] = 56;
-this.quantum_chrominance[24] = 47;
-this.quantum_chrominance[25] = 66;
-J.io2.DCT.AANscale (this.DivisorsChrominance, this.quantum_chrominance, quality);
-this.quantum[0] = this.quantum_luminance;
-this.quantum[1] = this.quantum_chrominance;
-this.divisors[0] = this.DivisorsLuminance;
-this.divisors[1] = this.DivisorsChrominance;
-}, $fz.isPrivate = true, $fz), "~N");
-c$.AANscale = $_M(c$, "AANscale", 
-($fz = function (divisors, values, quality) {
-for (var j = 0; j < 64; j++) {
-var temp = Clazz.doubleToInt ((values[j] * quality + 50) / 100);
-values[j] = (temp < 1 ? 1 : temp > 255 ? 255 : temp);
-}
-for (var i = 0, index = 0; i < 8; i++) for (var j = 0; j < 8; j++, index++) divisors[index] = (0.125 / (values[index] * J.io2.DCT.AANscaleFactor[i] * J.io2.DCT.AANscaleFactor[j]));
-
-
-}, $fz.isPrivate = true, $fz), "~A,~A,~N");
-c$.forwardDCT = $_M(c$, "forwardDCT", 
-function (input) {
-var output =  Clazz.newDoubleArray (8, 8, 0);
-var tmp0;
-var tmp1;
-var tmp2;
-var tmp3;
-var tmp4;
-var tmp5;
-var tmp6;
-var tmp7;
-var tmp10;
-var tmp11;
-var tmp12;
-var tmp13;
-var z1;
-var z2;
-var z3;
-var z4;
-var z5;
-var z11;
-var z13;
-for (var i = 0; i < 8; i++) for (var j = 0; j < 8; j++) output[i][j] = (input[i][j] - 128.0);
-
-
-for (var i = 0; i < 8; i++) {
-tmp0 = output[i][0] + output[i][7];
-tmp7 = output[i][0] - output[i][7];
-tmp1 = output[i][1] + output[i][6];
-tmp6 = output[i][1] - output[i][6];
-tmp2 = output[i][2] + output[i][5];
-tmp5 = output[i][2] - output[i][5];
-tmp3 = output[i][3] + output[i][4];
-tmp4 = output[i][3] - output[i][4];
-tmp10 = tmp0 + tmp3;
-tmp13 = tmp0 - tmp3;
-tmp11 = tmp1 + tmp2;
-tmp12 = tmp1 - tmp2;
-output[i][0] = tmp10 + tmp11;
-output[i][4] = tmp10 - tmp11;
-z1 = (tmp12 + tmp13) * 0.707106781;
-output[i][2] = tmp13 + z1;
-output[i][6] = tmp13 - z1;
-tmp10 = tmp4 + tmp5;
-tmp11 = tmp5 + tmp6;
-tmp12 = tmp6 + tmp7;
-z5 = (tmp10 - tmp12) * 0.382683433;
-z2 = 0.541196100 * tmp10 + z5;
-z4 = 1.306562965 * tmp12 + z5;
-z3 = tmp11 * 0.707106781;
-z11 = tmp7 + z3;
-z13 = tmp7 - z3;
-output[i][5] = z13 + z2;
-output[i][3] = z13 - z2;
-output[i][1] = z11 + z4;
-output[i][7] = z11 - z4;
-}
-for (var i = 0; i < 8; i++) {
-tmp0 = output[0][i] + output[7][i];
-tmp7 = output[0][i] - output[7][i];
-tmp1 = output[1][i] + output[6][i];
-tmp6 = output[1][i] - output[6][i];
-tmp2 = output[2][i] + output[5][i];
-tmp5 = output[2][i] - output[5][i];
-tmp3 = output[3][i] + output[4][i];
-tmp4 = output[3][i] - output[4][i];
-tmp10 = tmp0 + tmp3;
-tmp13 = tmp0 - tmp3;
-tmp11 = tmp1 + tmp2;
-tmp12 = tmp1 - tmp2;
-output[0][i] = tmp10 + tmp11;
-output[4][i] = tmp10 - tmp11;
-z1 = (tmp12 + tmp13) * 0.707106781;
-output[2][i] = tmp13 + z1;
-output[6][i] = tmp13 - z1;
-tmp10 = tmp4 + tmp5;
-tmp11 = tmp5 + tmp6;
-tmp12 = tmp6 + tmp7;
-z5 = (tmp10 - tmp12) * 0.382683433;
-z2 = 0.541196100 * tmp10 + z5;
-z4 = 1.306562965 * tmp12 + z5;
-z3 = tmp11 * 0.707106781;
-z11 = tmp7 + z3;
-z13 = tmp7 - z3;
-output[5][i] = z13 + z2;
-output[3][i] = z13 - z2;
-output[1][i] = z11 + z4;
-output[7][i] = z11 - z4;
-}
-return output;
-}, "~A");
-c$.quantizeBlock = $_M(c$, "quantizeBlock", 
-function (inputData, divisorsCode) {
-var outputData =  Clazz.newIntArray (64, 0);
-for (var i = 0, index = 0; i < 8; i++) for (var j = 0; j < 8; j++, index++) outputData[index] = (Math.round (inputData[i][j] * divisorsCode[index]));
-
-
-return outputData;
-}, "~A,~A");
-Clazz.defineStatics (c$,
-"N", 8,
-"NN", 64,
-"AANscaleFactor", [1.0, 1.387039845, 1.306562965, 1.175875602, 1.0, 0.785694958, 0.541196100, 0.275899379]);
-c$ = Clazz.decorateAsClass (function () {
-this.bufferPutBits = 0;
-this.bufferPutBuffer = 0;
-this.imageHeight = 0;
-this.imageWidth = 0;
-this.dc_matrix0 = null;
-this.ac_matrix0 = null;
-this.dc_matrix1 = null;
-this.ac_matrix1 = null;
-this.dc_matrix = null;
-this.ac_matrix = null;
-this.numOfDCTables = 0;
-this.numOfACTables = 0;
-Clazz.instantialize (this, arguments);
-}, J.io2, "Huffman");
-Clazz.makeConstructor (c$, 
-function (width, height) {
-this.initHuf ();
-this.imageWidth = width;
-this.imageHeight = height;
-}, "~N,~N");
-$_M(c$, "HuffmanBlockEncoder", 
-function (outStream, zigzag, prec, dcCode, acCode) {
-var temp;
-var temp2;
-var nbits;
-var k;
-var r;
-var i;
-this.numOfDCTables = 2;
-this.numOfACTables = 2;
-var matrixDC = this.dc_matrix[dcCode];
-var matrixAC = this.ac_matrix[acCode];
-temp = temp2 = zigzag[0] - prec;
-if (temp < 0) {
-temp = -temp;
-temp2--;
-}nbits = 0;
-while (temp != 0) {
-nbits++;
-temp >>= 1;
-}
-this.bufferIt (outStream, matrixDC[nbits][0], matrixDC[nbits][1]);
-if (nbits != 0) {
-this.bufferIt (outStream, temp2, nbits);
-}r = 0;
-for (k = 1; k < 64; k++) {
-if ((temp = zigzag[J.io2.Huffman.jpegNaturalOrder[k]]) == 0) {
-r++;
-} else {
-while (r > 15) {
-this.bufferIt (outStream, matrixAC[0xF0][0], matrixAC[0xF0][1]);
-r -= 16;
-}
-temp2 = temp;
-if (temp < 0) {
-temp = -temp;
-temp2--;
-}nbits = 1;
-while ((temp >>= 1) != 0) {
-nbits++;
-}
-i = (r << 4) + nbits;
-this.bufferIt (outStream, matrixAC[i][0], matrixAC[i][1]);
-this.bufferIt (outStream, temp2, nbits);
-r = 0;
-}}
-if (r > 0) {
-this.bufferIt (outStream, matrixAC[0][0], matrixAC[0][1]);
-}}, "java.io.BufferedOutputStream,~A,~N,~N,~N");
-$_M(c$, "bufferIt", 
-function (outStream, code, size) {
-var putBuffer = code;
-var putBits = this.bufferPutBits;
-putBuffer &= (1 << size) - 1;
-putBits += size;
-putBuffer <<= 24 - putBits;
-putBuffer |= this.bufferPutBuffer;
-while (putBits >= 8) {
-var c = ((putBuffer >> 16) & 0xFF);
-try {
-outStream.write (c);
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-J.util.Logger.errorEx ("IO Error", e);
-} else {
-throw e;
-}
-}
-if (c == 0xFF) {
-try {
-outStream.write (0);
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-J.util.Logger.errorEx ("IO Error", e);
-} else {
-throw e;
-}
-}
-}putBuffer <<= 8;
-putBits -= 8;
-}
-this.bufferPutBuffer = putBuffer;
-this.bufferPutBits = putBits;
-}, "java.io.BufferedOutputStream,~N,~N");
-$_M(c$, "flushBuffer", 
-function (outStream) {
-var putBuffer = this.bufferPutBuffer;
-var putBits = this.bufferPutBits;
-while (putBits >= 8) {
-var c = ((putBuffer >> 16) & 0xFF);
-try {
-outStream.write (c);
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-J.util.Logger.errorEx ("IO Error", e);
-} else {
-throw e;
-}
-}
-if (c == 0xFF) {
-try {
-outStream.write (0);
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-J.util.Logger.errorEx ("IO Error", e);
-} else {
-throw e;
-}
-}
-}putBuffer <<= 8;
-putBits -= 8;
-}
-if (putBits > 0) {
-var c = ((putBuffer >> 16) & 0xFF);
-try {
-outStream.write (c);
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-J.util.Logger.errorEx ("IO Error", e);
-} else {
-throw e;
-}
-}
-}}, "java.io.BufferedOutputStream");
-$_M(c$, "initHuf", 
-($fz = function () {
-this.dc_matrix0 =  Clazz.newIntArray (12, 2, 0);
-this.dc_matrix1 =  Clazz.newIntArray (12, 2, 0);
-this.ac_matrix0 =  Clazz.newIntArray (255, 2, 0);
-this.ac_matrix1 =  Clazz.newIntArray (255, 2, 0);
-this.dc_matrix = J.util.ArrayUtil.newInt3 (2, -1);
-this.ac_matrix = J.util.ArrayUtil.newInt3 (2, -1);
-var p;
-var l;
-var i;
-var lastp;
-var si;
-var code;
-var huffsize =  Clazz.newIntArray (257, 0);
-var huffcode =  Clazz.newIntArray (257, 0);
-p = 0;
-for (l = 1; l <= 16; l++) {
-for (i = J.io2.Huffman.bitsDCchrominance[l]; --i >= 0; ) {
-huffsize[p++] = l;
-}
-}
-huffsize[p] = 0;
-lastp = p;
-code = 0;
-si = huffsize[0];
-p = 0;
-while (huffsize[p] != 0) {
-while (huffsize[p] == si) {
-huffcode[p++] = code;
-code++;
-}
-code <<= 1;
-si++;
-}
-for (p = 0; p < lastp; p++) {
-this.dc_matrix1[J.io2.Huffman.valDCchrominance[p]][0] = huffcode[p];
-this.dc_matrix1[J.io2.Huffman.valDCchrominance[p]][1] = huffsize[p];
-}
-p = 0;
-for (l = 1; l <= 16; l++) {
-for (i = J.io2.Huffman.bitsACchrominance[l]; --i >= 0; ) {
-huffsize[p++] = l;
-}
-}
-huffsize[p] = 0;
-lastp = p;
-code = 0;
-si = huffsize[0];
-p = 0;
-while (huffsize[p] != 0) {
-while (huffsize[p] == si) {
-huffcode[p++] = code;
-code++;
-}
-code <<= 1;
-si++;
-}
-for (p = 0; p < lastp; p++) {
-this.ac_matrix1[J.io2.Huffman.valACchrominance[p]][0] = huffcode[p];
-this.ac_matrix1[J.io2.Huffman.valACchrominance[p]][1] = huffsize[p];
-}
-p = 0;
-for (l = 1; l <= 16; l++) {
-for (i = J.io2.Huffman.bitsDCluminance[l]; --i >= 0; ) {
-huffsize[p++] = l;
-}
-}
-huffsize[p] = 0;
-lastp = p;
-code = 0;
-si = huffsize[0];
-p = 0;
-while (huffsize[p] != 0) {
-while (huffsize[p] == si) {
-huffcode[p++] = code;
-code++;
-}
-code <<= 1;
-si++;
-}
-for (p = 0; p < lastp; p++) {
-this.dc_matrix0[J.io2.Huffman.valDCluminance[p]][0] = huffcode[p];
-this.dc_matrix0[J.io2.Huffman.valDCluminance[p]][1] = huffsize[p];
-}
-p = 0;
-for (l = 1; l <= 16; l++) {
-for (i = J.io2.Huffman.bitsACluminance[l]; --i >= 0; ) {
-huffsize[p++] = l;
-}
-}
-huffsize[p] = 0;
-lastp = p;
-code = 0;
-si = huffsize[0];
-p = 0;
-while (huffsize[p] != 0) {
-while (huffsize[p] == si) {
-huffcode[p++] = code;
-code++;
-}
-code <<= 1;
-si++;
-}
-for (var q = 0; q < lastp; q++) {
-this.ac_matrix0[J.io2.Huffman.valACluminance[q]][0] = huffcode[q];
-this.ac_matrix0[J.io2.Huffman.valACluminance[q]][1] = huffsize[q];
-}
-this.dc_matrix[0] = this.dc_matrix0;
-this.dc_matrix[1] = this.dc_matrix1;
-this.ac_matrix[0] = this.ac_matrix0;
-this.ac_matrix[1] = this.ac_matrix1;
-}, $fz.isPrivate = true, $fz));
-Clazz.defineStatics (c$,
-"bitsDCluminance", [0x00, 0, 1, 5, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-"valDCluminance", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-"bitsDCchrominance", [0x01, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-"valDCchrominance", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-"bitsACluminance", [0x10, 0, 2, 1, 3, 3, 2, 4, 3, 5, 5, 4, 4, 0, 0, 1, 0x7d],
-"valACluminance", [0x01, 0x02, 0x03, 0x00, 0x04, 0x11, 0x05, 0x12, 0x21, 0x31, 0x41, 0x06, 0x13, 0x51, 0x61, 0x07, 0x22, 0x71, 0x14, 0x32, 0x81, 0x91, 0xa1, 0x08, 0x23, 0x42, 0xb1, 0xc1, 0x15, 0x52, 0xd1, 0xf0, 0x24, 0x33, 0x62, 0x72, 0x82, 0x09, 0x0a, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9a, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0xaa, 0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0xb9, 0xba, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xe1, 0xe2, 0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9, 0xea, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa],
-"bitsACchrominance", [0x11, 0, 2, 1, 2, 4, 4, 3, 4, 7, 5, 4, 4, 0, 1, 2, 0x77],
-"valACchrominance", [0x00, 0x01, 0x02, 0x03, 0x11, 0x04, 0x05, 0x21, 0x31, 0x06, 0x12, 0x41, 0x51, 0x07, 0x61, 0x71, 0x13, 0x22, 0x32, 0x81, 0x08, 0x14, 0x42, 0x91, 0xa1, 0xb1, 0xc1, 0x09, 0x23, 0x33, 0x52, 0xf0, 0x15, 0x62, 0x72, 0xd1, 0x0a, 0x16, 0x24, 0x34, 0xe1, 0x25, 0xf1, 0x17, 0x18, 0x19, 0x1a, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9a, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0xaa, 0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0xb9, 0xba, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xe2, 0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9, 0xea, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa],
-"jpegNaturalOrder", [0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5, 12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13, 6, 7, 14, 21, 28, 35, 42, 49, 56, 57, 50, 43, 36, 29, 22, 15, 23, 30, 37, 44, 51, 58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63]);
-c$ = Clazz.decorateAsClass (function () {
-this.comment = null;
-this.imageobj = null;
-this.imageHeight = 0;
-this.imageWidth = 0;
-this.blockWidth = null;
-this.blockHeight = null;
-this.precision = 8;
-this.numberOfComponents = 3;
-this.components = null;
-this.compID = null;
-this.hsampFactor = null;
-this.vsampFactor = null;
-this.qtableNumber = null;
-this.dctableNumber = null;
-this.actableNumber = null;
-this.lastColumnIsDummy = null;
-this.lastRowIsDummy = null;
-this.ss = 0;
-this.se = 63;
-this.ah = 0;
-this.al = 0;
-this.compWidth = null;
-this.compHeight = null;
-this.maxHsampFactor = 0;
-this.maxVsampFactor = 0;
-Clazz.instantialize (this, arguments);
-}, J.io2, "JpegObj");
-Clazz.prepareFields (c$, function () {
-this.compID = [1, 2, 3];
-this.hsampFactor = [1, 1, 1];
-this.vsampFactor = [1, 1, 1];
-this.qtableNumber = [0, 1, 1];
-this.dctableNumber = [0, 1, 1];
-this.actableNumber = [0, 1, 1];
-this.lastColumnIsDummy = [false, false, false];
-this.lastRowIsDummy = [false, false, false];
-});
-Clazz.makeConstructor (c$, 
-function (apiPlatform, image, comment) {
-this.components = J.util.ArrayUtil.newFloat3 (this.numberOfComponents, -1);
-this.compWidth =  Clazz.newIntArray (this.numberOfComponents, 0);
-this.compHeight =  Clazz.newIntArray (this.numberOfComponents, 0);
-this.blockWidth =  Clazz.newIntArray (this.numberOfComponents, 0);
-this.blockHeight =  Clazz.newIntArray (this.numberOfComponents, 0);
-this.imageobj = image;
-this.imageWidth = apiPlatform.getImageWidth (image);
-this.imageHeight = apiPlatform.getImageHeight (image);
-this.comment = comment;
-this.getYCCArray (apiPlatform);
-}, "J.api.ApiPlatform,~O,~S");
-$_M(c$, "getYCCArray", 
-($fz = function (apiPlatform) {
-var r;
-var g;
-var b;
-var y;
-var x;
-this.maxHsampFactor = 1;
-this.maxVsampFactor = 1;
-for (y = 0; y < this.numberOfComponents; y++) {
-this.maxHsampFactor = Math.max (this.maxHsampFactor, this.hsampFactor[y]);
-this.maxVsampFactor = Math.max (this.maxVsampFactor, this.vsampFactor[y]);
-}
-for (y = 0; y < this.numberOfComponents; y++) {
-this.compWidth[y] = (Clazz.doubleToInt (((this.imageWidth % 8 != 0) ? (Clazz.doubleToInt (Math.ceil (this.imageWidth / 8.0))) * 8 : this.imageWidth) / this.maxHsampFactor)) * this.hsampFactor[y];
-if (this.compWidth[y] != ((Clazz.doubleToInt (this.imageWidth / this.maxHsampFactor)) * this.hsampFactor[y])) {
-this.lastColumnIsDummy[y] = true;
-}this.blockWidth[y] = Clazz.doubleToInt (Math.ceil (this.compWidth[y] / 8.0));
-this.compHeight[y] = (Clazz.doubleToInt (((this.imageHeight % 8 != 0) ? (Clazz.doubleToInt (Math.ceil (this.imageHeight / 8.0))) * 8 : this.imageHeight) / this.maxVsampFactor)) * this.vsampFactor[y];
-if (this.compHeight[y] != ((Clazz.doubleToInt (this.imageHeight / this.maxVsampFactor)) * this.vsampFactor[y])) {
-this.lastRowIsDummy[y] = true;
-}this.blockHeight[y] = Clazz.doubleToInt (Math.ceil (this.compHeight[y] / 8.0));
-}
-var pixels;
-{
-pixels = null;
-}pixels = apiPlatform.grabPixels (this.imageobj, this.imageWidth, this.imageHeight, pixels, 0, this.imageHeight);
-var Y =  Clazz.newFloatArray (this.compHeight[0], this.compWidth[0], 0);
-var Cr1 =  Clazz.newFloatArray (this.compHeight[0], this.compWidth[0], 0);
-var Cb1 =  Clazz.newFloatArray (this.compHeight[0], this.compWidth[0], 0);
-var index = 0;
-for (y = 0; y < this.imageHeight; ++y) {
-for (x = 0; x < this.imageWidth; ++x) {
-r = ((pixels[index] >> 16) & 0xff);
-g = ((pixels[index] >> 8) & 0xff);
-b = (pixels[index] & 0xff);
-Y[y][x] = ((0.299 * r + 0.587 * g + 0.114 * b));
-Cb1[y][x] = 128 + ((-0.16874 * r - 0.33126 * g + 0.5 * b));
-Cr1[y][x] = 128 + ((0.5 * r - 0.41869 * g - 0.08131 * b));
-index++;
-}
-}
-this.components[0] = Y;
-this.components[1] = Cb1;
-this.components[2] = Cr1;
-}, $fz.isPrivate = true, $fz), "J.api.ApiPlatform");
-});
-Clazz.declarePackage ("J.export.image");
-Clazz.load (null, "J.export.image.GenericCRCEncoder", ["java.util.zip.CRC32", "J.util.ArrayUtil"], function () {
-c$ = Clazz.decorateAsClass (function () {
-this.startPos = 0;
-this.bytePos = 0;
-this.crc = null;
-this.pngBytes = null;
-this.dataLen = 0;
-this.int2 = null;
-this.int4 = null;
-Clazz.instantialize (this, arguments);
-}, J["export"].image, "GenericCRCEncoder");
-Clazz.prepareFields (c$, function () {
-this.int2 =  Clazz.newByteArray (2, 0);
-this.int4 =  Clazz.newByteArray (4, 0);
-});
-Clazz.makeConstructor (c$, 
-function () {
-this.pngBytes =  Clazz.newByteArray (250, 0);
-this.crc =  new java.util.zip.CRC32 ();
-});
-$_M(c$, "setData", 
-function (b, pt) {
-this.pngBytes = b;
-this.dataLen = b.length;
-this.startPos = this.bytePos = pt;
-}, "~A,~N");
-$_M(c$, "getBytes", 
-function () {
-return (this.dataLen == this.pngBytes.length ? this.pngBytes : J.util.ArrayUtil.arrayCopyByte (this.pngBytes, this.dataLen));
-});
-$_M(c$, "writeCRC", 
-function () {
-this.crc.reset ();
-this.crc.update (this.pngBytes, this.startPos, this.bytePos - this.startPos);
-this.writeInt4 (this.crc.getValue ());
-});
-$_M(c$, "writeInt2", 
-function (n) {
-this.int2[0] = ((n >> 8) & 0xff);
-this.int2[1] = (n & 0xff);
-this.writeBytes (this.int2);
-}, "~N");
-$_M(c$, "writeInt4", 
-function (n) {
-J["export"].image.GenericCRCEncoder.getInt4 (n, this.int4);
-this.writeBytes (this.int4);
-}, "~N");
-c$.getInt4 = $_M(c$, "getInt4", 
-function (n, int4) {
-int4[0] = ((n >> 24) & 0xff);
-int4[1] = ((n >> 16) & 0xff);
-int4[2] = ((n >> 8) & 0xff);
-int4[3] = (n & 0xff);
-}, "~N,~A");
-$_M(c$, "writeByte", 
-function (b) {
-var temp = [b];
-this.writeBytes (temp);
-}, "~N");
-$_M(c$, "writeString", 
-function (s) {
-this.writeBytes (s.getBytes ());
-}, "~S");
-$_M(c$, "writeBytes", 
-function (data) {
-var newPos = this.bytePos + data.length;
-this.dataLen = Math.max (this.dataLen, newPos);
-if (newPos > this.pngBytes.length) this.pngBytes = J.util.ArrayUtil.arrayCopyByte (this.pngBytes, newPos + 16);
-System.arraycopy (data, 0, this.pngBytes, this.bytePos, data.length);
-this.bytePos = newPos;
-}, "~A");
-});
-Clazz.declarePackage ("J.export.image");
-Clazz.load (["J.export.image.GenericCRCEncoder"], "J.export.image.GenericPngEncoder", ["java.io.ByteArrayOutputStream", "java.util.zip.Deflater", "$.DeflaterOutputStream", "J.viewer.Viewer"], function () {
-c$ = Clazz.decorateAsClass (function () {
-this.image = null;
-this.width = 0;
-this.height = 0;
-this.encodeAlpha = false;
-this.filter = 0;
-this.bytesPerPixel = 0;
-this.compressionLevel = 0;
-this.type = null;
-this.transparentColor = null;
-this.apiPlatform = null;
-this.scanLines = null;
-this.byteWidth = 0;
-Clazz.instantialize (this, arguments);
-}, J["export"].image, "GenericPngEncoder", J["export"].image.GenericCRCEncoder);
-c$.getBytesType = $_M(c$, "getBytesType", 
-function (apiPlatform, image, quality, bgcolor, type, ptJmol) {
-var pg =  new J["export"].image.GenericPngEncoder (apiPlatform, image, false, 0, quality);
-pg.type = (type + "0000").substring (0, 4);
-if (bgcolor != 0) pg.transparentColor = Integer.$valueOf (bgcolor);
-return pg.pngEncode (ptJmol);
-}, "J.api.ApiPlatform,~O,~N,~N,~S,~A");
-Clazz.makeConstructor (c$, 
-function (apiPlatform, image, encodeAlpha, whichFilter, compLevel) {
-Clazz.superConstructor (this, J["export"].image.GenericPngEncoder);
-this.apiPlatform = apiPlatform;
-this.image = image;
-this.compressionLevel = (compLevel >= 0 && compLevel <= 9 ? compLevel : 0);
-}, "J.api.ApiPlatform,~O,~B,~N,~N");
-$_M(c$, "pngEncode", 
-($fz = function (ptJmol) {
-var pngIdBytes = [-119, 80, 78, 71, 13, 10, 26, 10];
-if (this.image == null) {
-return null;
-}this.width = this.apiPlatform.getImageWidth (this.image);
-this.height = this.apiPlatform.getImageHeight (this.image);
-this.writeBytes (pngIdBytes);
-this.writeHeader ();
-ptJmol[0] = this.bytePos + 4;
-this.writeText (J["export"].image.GenericPngEncoder.getJmolTypeText (this.type, 0, 0));
-this.writeText ("Software\0Jmol " + J.viewer.Viewer.getJmolVersion ());
-this.writeText ("Creation Time\0" + this.apiPlatform.getDateFormat ());
-if (!this.encodeAlpha && this.transparentColor != null) this.writeTransparentColor (this.transparentColor.intValue ());
-return (!this.writeImageData () ? null : this.getBytes ());
-}, $fz.isPrivate = true, $fz), "~A");
-c$.setJmolTypeText = $_M(c$, "setJmolTypeText", 
-function (ptJmolByteText, b, nPNG, nState, type) {
-var s = "iTXt" + J["export"].image.GenericPngEncoder.getJmolTypeText (type, nPNG, nState);
-var encoder =  new J["export"].image.GenericCRCEncoder ();
-encoder.setData (b, ptJmolByteText);
-encoder.writeString (s);
-encoder.writeCRC ();
-}, "~N,~A,~N,~N,~S");
-c$.getJmolTypeText = $_M(c$, "getJmolTypeText", 
-($fz = function (type, nPNG, nState) {
-var sPNG = "000000000" + nPNG;
-sPNG = sPNG.substring (sPNG.length - 9);
-var sState = "000000000" + nState;
-sState = sState.substring (sState.length - 9);
-return "Jmol Type\0" + type + (type.equals ("PNG") ? "0" : "") + sPNG + "+" + sState;
-}, $fz.isPrivate = true, $fz), "~S,~N,~N");
-$_M(c$, "writeHeader", 
-($fz = function () {
-this.writeInt4 (13);
-this.startPos = this.bytePos;
-this.writeString ("IHDR");
-this.writeInt4 (this.width);
-this.writeInt4 (this.height);
-this.writeByte (8);
-this.writeByte ((this.encodeAlpha) ? 6 : 2);
-this.writeByte (0);
-this.writeByte (0);
-this.writeByte (0);
-this.writeCRC ();
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "writeText", 
-($fz = function (msg) {
-this.writeInt4 (msg.length);
-this.startPos = this.bytePos;
-this.writeString ("iTXt" + msg);
-this.writeCRC ();
-}, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "writeTransparentColor", 
-($fz = function (icolor) {
-this.writeInt4 (6);
-this.startPos = this.bytePos;
-this.writeString ("tRNS");
-this.writeInt2 ((icolor >> 16) & 0xFF);
-this.writeInt2 ((icolor >> 8) & 0xFF);
-this.writeInt2 (icolor & 0xFF);
-this.writeCRC ();
-}, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "writeImageData", 
-($fz = function () {
-this.bytesPerPixel = (this.encodeAlpha ? 4 : 3);
-this.byteWidth = this.width * this.bytesPerPixel;
-var scanWidth = this.byteWidth + 1;
-var rowsLeft = this.height;
-var startRow = 0;
-var nRows;
-var scanPos;
-var compressedLines;
-var deflater =  new java.util.zip.Deflater (this.compressionLevel);
-var outBytes =  new java.io.ByteArrayOutputStream (1024);
-var compBytes =  new java.util.zip.DeflaterOutputStream (outBytes, deflater);
-try {
-while (rowsLeft > 0) {
-{
-nRows = rowsLeft;
-}this.scanLines =  Clazz.newByteArray (scanWidth * nRows, 0);
-var pixels;
-var nPixels = this.width * nRows;
-{
-pixels = null;
-}pixels = this.apiPlatform.grabPixels (this.image, this.width, this.height, pixels, startRow, nRows);
-if (pixels == null) return false;
-scanPos = 0;
-for (var i = 0; i < nPixels; i++) {
-if (i % this.width == 0) {
-this.scanLines[scanPos++] = this.filter;
-}this.scanLines[scanPos++] = ((pixels[i] >> 16) & 0xff);
-this.scanLines[scanPos++] = ((pixels[i] >> 8) & 0xff);
-this.scanLines[scanPos++] = ((pixels[i]) & 0xff);
-if (this.encodeAlpha) {
-this.scanLines[scanPos++] = ((pixels[i] >> 24) & 0xff);
-}}
-compBytes.write (this.scanLines, 0, scanPos);
-startRow += nRows;
-rowsLeft -= nRows;
-}
-compBytes.close ();
-compressedLines = outBytes.toByteArray ();
-this.writeInt4 (compressedLines.length);
-this.startPos = this.bytePos;
-this.writeString ("IDAT");
-this.writeBytes (compressedLines);
-this.writeCRC ();
-this.writeEnd ();
-deflater.finish ();
-return true;
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-System.err.println (e.toString ());
-return false;
-} else {
-throw e;
-}
-}
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "writeEnd", 
-($fz = function () {
-this.writeInt4 (0);
-this.startPos = this.bytePos;
-this.writeString ("IEND");
-this.writeCRC ();
-}, $fz.isPrivate = true, $fz));
-Clazz.defineStatics (c$,
-"FILTER_NONE", 0,
-"FILTER_SUB", 1,
-"FILTER_UP", 2,
-"FILTER_LAST", 2);
-});
-Clazz.declarePackage ("J.api");
-Clazz.declareInterface (J.api, "JmolImageCreatorInterface");
-Clazz.declarePackage ("J.export.image");
-Clazz.load (["J.api.JmolImageCreatorInterface"], "J.export.image.GenericImageCreator", ["java.io.IOException", "java.lang.Error", "J.export.image.GenericPngEncoder", "J.io.Base64", "J.io2.JpegEncoder", "J.util.Escape", "$.Logger", "J.viewer.Viewer"], function () {
-c$ = Clazz.decorateAsClass (function () {
-this.viewer = null;
-this.privateKey = 0;
-Clazz.instantialize (this, arguments);
-}, J["export"].image, "GenericImageCreator", null, J.api.JmolImageCreatorInterface);
-Clazz.makeConstructor (c$, 
-function () {
-});
-Clazz.overrideMethod (c$, "setViewer", 
-function (viewer, privateKey) {
-this.viewer = viewer;
-this.privateKey = privateKey;
-return this;
-}, "J.api.JmolViewer,~N");
-Clazz.overrideMethod (c$, "createImage", 
-function (fileName, type, text, bytes_or_image, scripts, quality) {
-var isBytes = (bytes_or_image != null);
-var isText = (!isBytes && quality == -2147483648);
-var os = null;
-var len = -1;
-try {
-if (!this.viewer.checkPrivateKey (this.privateKey)) return "NO SECURITY";
-if ("OutputStream".equals (type)) return this.viewer.openOutputChannel (this.privateKey, fileName, false);
-if (isBytes) {
-if (Clazz.instanceOf (bytes_or_image, Array)) {
-len = (bytes_or_image).length;
-os = this.viewer.openOutputChannel (this.privateKey, fileName, false);
-var b = bytes_or_image;
-os.write (b, 0, b.length);
-os.flush ();
-os.close ();
-os = null;
-} else {
-this.getImageBytes (type, quality, fileName, scripts, bytes_or_image, null);
-return fileName;
-}} else if (isText) {
-if (text == null) return "NO DATA";
-var bw = this.viewer.openOutputChannel (this.privateKey, fileName, true);
-len = text.length;
-bw.write (text);
-bw.close ();
-} else {
-len = 1;
-var bytesOrError = this.getImageBytes (type, quality, fileName, scripts, null, null);
-if (Clazz.instanceOf (bytesOrError, String)) return bytesOrError;
-var bytes = bytesOrError;
-if (bytes != null) return (fileName == null ? bytes :  String.instantialize (bytes));
-len = this.viewer.getFileLength (this.privateKey, fileName);
-}} catch (exc) {
-if (Clazz.exceptionOf (exc, java.io.IOException)) {
-J.util.Logger.errorEx ("IO Exception", exc);
-return exc.toString ();
-} else {
-throw exc;
-}
-} finally {
-if (os != null) {
-try {
-os.close ();
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-} else {
-throw e;
-}
-}
-}}
-return (len < 0 ? "Creation of " + fileName + " failed: " + this.viewer.getErrorMessageUn () : "OK " + type + " " + (len > 0 ? len + " " : "") + fileName + (quality == -2147483648 ? "" : "; quality=" + quality));
-}, "~S,~S,~S,~O,~A,~N");
-Clazz.overrideMethod (c$, "getImageBytes", 
-function (type, quality, fileName, scripts, objImage, os) {
-var bytes = null;
-var errMsg = null;
-type = type.toUpperCase ();
-var isPDF = type.equals ("PDF");
-var isOsTemp = (os == null && fileName != null && !isPDF);
-var asBytes = (os == null && fileName == null && !isPDF);
-var isImage = (objImage != null);
-var image = (isImage ? objImage : this.viewer.getScreenImageBuffer (null, true));
-try {
-if (image == null) {
-errMsg = this.viewer.getErrorMessage ();
-} else {
-var ret = null;
-var includeState = (type.equals ("PNGJ") || !asBytes);
-if (type.equals ("PNGJ") && includeState) ret = this.viewer.getWrappedState (fileName, scripts, true, true, this.viewer.apiPlatform.getImageWidth (image), this.viewer.apiPlatform.getImageHeight (image));
-if (isOsTemp) os = this.viewer.openOutputChannel (this.privateKey, fileName, false);
-if (type.equals ("JPEG") || type.equals ("JPG")) {
-if (quality <= 0) quality = 100;
-if (asBytes) {
-bytes = J.io2.JpegEncoder.getBytes (this.viewer.apiPlatform, image, quality, J.viewer.Viewer.getJmolVersion ());
-} else {
-var caption = (includeState ? this.viewer.getWrappedState (null, null, true, false, this.viewer.apiPlatform.getImageWidth (image), this.viewer.apiPlatform.getImageHeight (image)) : J.viewer.Viewer.getJmolVersion ());
-J.io2.JpegEncoder.write (this.viewer.apiPlatform, image, quality, os, caption);
-}} else if (type.equals ("JPG64") || type.equals ("JPEG64")) {
-if (quality <= 0) quality = 75;
-bytes = J.io2.JpegEncoder.getBytes (this.viewer.apiPlatform, image, quality, J.viewer.Viewer.getJmolVersion ());
-if (asBytes) {
-bytes = J.io.Base64.getBytes64 (bytes);
-} else {
-J.io.Base64.write (bytes, os);
-bytes = null;
-}} else if (type.startsWith ("PNG")) {
-if (quality < 0) quality = 2;
- else if (quality > 9) quality = 9;
-var bgcolor = (type.equals ("PNGT") ? this.viewer.getBackgroundArgb () : 0);
-var ptJmol =  Clazz.newIntArray (1, 0);
-bytes = J["export"].image.GenericPngEncoder.getBytesType (this.viewer.apiPlatform, image, quality, bgcolor, type, ptJmol);
-var b = null;
-if (includeState) {
-var nPNG = bytes.length;
-b = bytes;
-if (ret == null) ret = this.viewer.getWrappedState (null, scripts, true, false, this.viewer.apiPlatform.getImageWidth (image), this.viewer.apiPlatform.getImageHeight (image));
-bytes = (J.util.Escape.isAB (ret) ? ret : (ret).getBytes ());
-var nState = bytes.length;
-J["export"].image.GenericPngEncoder.setJmolTypeText (ptJmol[0], b, nPNG, nState, type);
-}if (!asBytes) {
-if (b != null) os.write (b, 0, b.length);
-os.write (bytes, 0, bytes.length);
-b = bytes = null;
-} else if (b != null) {
-var bt =  Clazz.newByteArray (b.length + bytes.length, 0);
-System.arraycopy (b, 0, bt, 0, b.length);
-System.arraycopy (bytes, 0, bt, b.length, bytes.length);
-bytes = bt;
-b = bt = null;
-}} else {
-var errRet =  new Array (1);
-bytes = this.getOtherBytes (fileName, image, type, asBytes, os, errRet);
-errMsg = errRet[0];
-}if (os != null) os.flush ();
-if (isOsTemp) os.close ();
-}} catch (e$$) {
-if (Clazz.exceptionOf (e$$, java.io.IOException)) {
-var e = e$$;
-{
-if (!isImage) this.viewer.releaseScreenImage ();
-throw  new java.io.IOException ("" + e);
-}
-} else if (Clazz.exceptionOf (e$$, Error)) {
-var er = e$$;
-{
-if (!isImage) this.viewer.releaseScreenImage ();
-throw  new Error (er);
-}
-} else {
-throw e$$;
-}
-}
-if (!isImage) this.viewer.releaseScreenImage ();
-if (errMsg != null) return errMsg;
-return bytes;
-}, "~S,~N,~S,~A,~O,java.io.OutputStream");
-$_M(c$, "getOtherBytes", 
-function (fileName, objImage, type, asBytes, os, errRet) {
-errRet[0] = "file type " + type + " not available on this platform";
-return null;
-}, "~S,~O,~S,~B,java.io.OutputStream,~A");
-Clazz.overrideMethod (c$, "clipImage", 
-function (viewer, text) {
-return null;
-}, "J.api.JmolViewer,~S");
-Clazz.overrideMethod (c$, "getClipboardText", 
-function () {
-return null;
-});
-});
-Clazz.declarePackage ("J.exportjs");
-Clazz.load (["J.export.image.GenericImageCreator"], "J.exportjs.JSImageCreator", null, function () {
-c$ = Clazz.declareType (J.exportjs, "JSImageCreator", J["export"].image.GenericImageCreator);
-Clazz.makeConstructor (c$, 
-function () {
-Clazz.superConstructor (this, J.exportjs.JSImageCreator, []);
-});
-});
+})(Clazz
+,Clazz.doubleToInt
+,Clazz.declarePackage
+,Clazz.instanceOf
+,Clazz.load
+,Clazz.instantialize
+,Clazz.decorateAsClass
+,Clazz.floatToInt
+,Clazz.makeConstructor
+,Clazz.defineEnumConstant
+,Clazz.exceptionOf
+,Clazz.newIntArray
+,Clazz.defineStatics
+,Clazz.newFloatArray
+,Clazz.declareType
+,Clazz.prepareFields
+,Clazz.superConstructor
+,Clazz.newByteArray
+,Clazz.declareInterface
+,Clazz.p0p
+,Clazz.pu$h
+,Clazz.newShortArray
+,Clazz.innerTypeInstance
+,Clazz.isClassDefined
+,Clazz.prepareCallback
+,Clazz.newArray
+,Clazz.castNullAs
+,Clazz.floatToShort
+,Clazz.superCall
+,Clazz.decorateAsType
+,Clazz.newBooleanArray
+,Clazz.newCharArray
+,Clazz.implementOf
+,Clazz.newDoubleArray
+,Clazz.overrideConstructor
+,Clazz.supportsNativeObject
+,Clazz.extendedObjectMethods
+,Clazz.callingStackTraces
+,Clazz.clone
+,Clazz.doubleToShort
+,Clazz.innerFunctions
+,Clazz.getInheritedLevel
+,Clazz.getParamsType
+,Clazz.isAF
+,Clazz.isAI
+,Clazz.isAS
+,Clazz.isASS
+,Clazz.isAP
+,Clazz.isAFloat
+,Clazz.isAII
+,Clazz.isAFF
+,Clazz.isAFFF
+,Clazz.tryToSearchAndExecute
+,Clazz.newArray
+,Clazz.newBooleanArray
+,Clazz.newByteArray
+,Clazz.newCharArray
+,Clazz.newDoubleArray
+,Clazz.newFloatArray
+,Clazz.newIntArray
+,Clazz.newLongArray
+,Clazz.newShortArray
+,Clazz.prepareCallback
+,Clazz.decorateAsClass
+,Clazz.isClassDefined
+,Clazz.defineEnumConstant
+,Clazz.cloneFinals
+,Clazz.inheritArgs
+,Clazz.pu$h
+,Clazz.declareInterface
+,Clazz.declarePackage
+,Clazz.makeConstructor
+,Clazz.overrideConstructor
+,Clazz.load
+,Clazz.defineMethod
+,Clazz.innerTypeInstance
+,Clazz.instanceOf
+,Clazz.p0p
+,Clazz.makeFunction
+,Clazz.superConstructor
+,Clazz.defineStatics
+,Clazz.registerSerializableFields
+,Clazz.declareType
+,Clazz.superCall
+,Clazz.overrideMethod
+,Clazz.declareAnonymous
+,Clazz.checkPrivateMethod
+,Clazz.prepareFields
+,Clazz.instantialize
+);

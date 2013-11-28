@@ -8,7 +8,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoFxyzReader, []);
 });
-Clazz.overrideMethod (c$, "setup", 
+$_V(c$, "setup", 
 function (isMapData) {
 if (this.params.functionInfo.size () > 5) this.$data = this.params.functionInfo.get (5);
 this.setupType ("functionXYZ");

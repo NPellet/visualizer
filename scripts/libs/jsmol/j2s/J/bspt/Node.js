@@ -57,7 +57,7 @@ if (dimValue < this.minRight) this.minRight = dimValue;
  else if (dimValue > this.maxRight) this.maxRight = dimValue;
 this.eleRight = this.eleRight.addTuple (level + 1, tuple);
 }return this;
-}, "~N,J.util.P3");
+}, "~N,JU.P3");
 $_M(c$, "dump", 
 function (level, sb) {
 sb.append ("\nnode LEFT" + level);
@@ -66,7 +66,7 @@ for (var i = 0; i < level; ++i) sb.append ("->");
 
 sb.append (" RIGHT" + level);
 this.eleRight.dump (level + 1, sb);
-}, "~N,J.util.SB");
+}, "~N,JU.SB");
 $_M(c$, "toString", 
 function () {
 return this.eleLeft.toString () + this.dim + ":" + "\n" + this.eleRight.toString ();
@@ -74,5 +74,5 @@ return this.eleLeft.toString () + this.dim + ":" + "\n" + this.eleRight.toString
 c$.getDimensionValue = $_M(c$, "getDimensionValue", 
 function (pt, dim) {
 return (dim == 0 ? pt.x : dim == 1 ? pt.y : pt.z);
-}, "J.util.P3,~N");
+}, "JU.P3,~N");
 });

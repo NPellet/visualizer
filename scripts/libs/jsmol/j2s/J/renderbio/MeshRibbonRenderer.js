@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.renderbio");
 Clazz.load (["J.renderbio.StrandsRenderer"], "J.renderbio.MeshRibbonRenderer", null, function () {
 c$ = Clazz.declareType (J.renderbio, "MeshRibbonRenderer", J.renderbio.StrandsRenderer);
-Clazz.overrideMethod (c$, "renderBioShape", 
+$_V(c$, "renderBioShape", 
 function (bioShape) {
 if (this.wireframeOnly) this.renderStrands ();
  else this.renderMeshRibbon ();

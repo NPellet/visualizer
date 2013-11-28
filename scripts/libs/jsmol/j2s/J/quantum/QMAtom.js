@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.quantum");
-Clazz.load (["J.util.P3"], "J.quantum.QMAtom", ["J.util.Logger"], function () {
+Clazz.load (["JU.P3"], "J.quantum.QMAtom", ["J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.myX = null;
 this.myY = null;
@@ -12,7 +12,7 @@ this.index = 0;
 this.znuc = 0;
 this.iMolecule = 0;
 Clazz.instantialize (this, arguments);
-}, J.quantum, "QMAtom", J.util.P3);
+}, J.quantum, "QMAtom", JU.P3);
 Clazz.overrideConstructor (c$, 
 function (i, atom, X, Y, Z, X2, Y2, Z2, unitFactor) {
 this.index = i;

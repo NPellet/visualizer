@@ -11,7 +11,7 @@ return null;
 c$.getTextPixels = $_M(c$, "getTextPixels", 
 function (text, font3d, gObj, image, width, height, ascent) {
 return null;
-}, "~S,J.util.JmolFont,~O,~O,~N,~N,~N");
+}, "~S,javajs.awt.Font,~O,~O,~N,~N,~N");
 c$.newBufferedImage = $_M(c$, "newBufferedImage", 
 function (image, w, h) {
 return null;

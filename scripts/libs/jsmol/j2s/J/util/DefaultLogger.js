@@ -15,35 +15,35 @@ out.println (elements[i].getClassName () + " - " + elements[i].getLineNumber () 
 }
 }}}if (out === System.err) System.err.flush ();
 }, "java.io.PrintStream,~N,~S,Throwable");
-Clazz.overrideMethod (c$, "debug", 
+$_V(c$, "debug", 
 function (txt) {
 this.log (System.out, 5, txt, null);
 }, "~S");
-Clazz.overrideMethod (c$, "info", 
+$_V(c$, "info", 
 function (txt) {
 this.log (System.out, 4, txt, null);
 }, "~S");
-Clazz.overrideMethod (c$, "warn", 
+$_V(c$, "warn", 
 function (txt) {
 this.log (System.out, 3, txt, null);
 }, "~S");
-Clazz.overrideMethod (c$, "warnEx", 
+$_V(c$, "warnEx", 
 function (txt, e) {
 this.log (System.out, 3, txt, e);
 }, "~S,Throwable");
-Clazz.overrideMethod (c$, "error", 
+$_V(c$, "error", 
 function (txt) {
 this.log (System.err, 2, txt, null);
 }, "~S");
-Clazz.overrideMethod (c$, "errorEx", 
+$_V(c$, "errorEx", 
 function (txt, e) {
 this.log (System.err, 2, txt, e);
 }, "~S,Throwable");
-Clazz.overrideMethod (c$, "fatal", 
+$_V(c$, "fatal", 
 function (txt) {
 this.log (System.err, 1, txt, null);
 }, "~S");
-Clazz.overrideMethod (c$, "fatalEx", 
+$_V(c$, "fatalEx", 
 function (txt, e) {
 this.log (System.err, 1, txt, e);
 }, "~S,Throwable");

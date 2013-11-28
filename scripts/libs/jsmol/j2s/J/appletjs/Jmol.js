@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.appletjs");
-Clazz.load (["J.api.JmolStatusListener", "$.JmolSyncInterface", "java.util.Hashtable"], "J.appletjs.Jmol", ["java.lang.Boolean", "java.net.URL", "J.appletjs.JmolAppletRegistry", "J.constant.EnumCallback", "J.i18n.GT", "J.util.Dimension", "$.Escape", "$.JmolList", "$.Logger", "$.Parser", "$.SB", "$.TextFormat", "J.viewer.JC", "$.Viewer"], function () {
+Clazz.load (["J.api.JmolStatusListener", "$.JmolSyncInterface", "java.util.Hashtable"], "J.appletjs.Jmol", ["java.lang.Boolean", "java.net.URL", "javajs.awt.Dimension", "JU.List", "$.PT", "$.SB", "J.appletjs.JmolAppletRegistry", "J.constant.EnumCallback", "J.i18n.GT", "J.util.Escape", "$.Logger", "$.Parser", "J.viewer.JC", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.language = null;
 this.doTranslate = true;
@@ -17,6 +17,7 @@ this.b$ = null;
 this.viewerOptions = null;
 this.htParams = null;
 this.jmol = null;
+this.haveNotifiedError = false;
 if (!Clazz.isClassDefined ("J.appletjs.Jmol.MyStatusListener")) {
 J.appletjs.Jmol.$Jmol$MyStatusListener$ ();
 }
@@ -88,10 +89,9 @@ this.setValue (item.name () + "Callback", null);
 }
 this.loading = false;
 this.language = this.getParameter ("language");
-if (this.language != null) {
-System.out.println ("requested language=" + this.language);
- new J.i18n.GT (this.language);
-}this.doTranslate = (!"none".equals (this.language) && this.getBooleanValue ("doTranslate", true));
+ new J.i18n.GT (this.viewer, this.language);
+if (this.language != null) System.out.print ("requested language=" + this.language + "; ");
+this.doTranslate = (!"none".equals (this.language) && this.getBooleanValue ("doTranslate", true));
 this.language = J.i18n.GT.getLanguage ();
 System.out.println ("language=" + this.language);
 if (this.b$.get (J.constant.EnumCallback.SCRIPT) == null && this.b$.get (J.constant.EnumCallback.ERROR) == null) if (this.b$.get (J.constant.EnumCallback.MESSAGE) != null) {
@@ -160,7 +160,7 @@ System.out.println (message);
 $_M(c$, "handleEvent", 
 function (e) {
 if (this.viewer == null) return false;
-return this.viewer.handleOldJvm10Event (e.id, e.x, e.y, e.modifiers, e.when);
+return this.viewer.processMouseEvent (e.id, e.x, e.y, e.modifiers, e.when);
 }, "java.awt.Event");
 $_M(c$, "scriptProcessor", 
 ($fz = function (script, statusParams, processType) {
@@ -204,7 +204,7 @@ return this.scriptProcessor (script, statusParams, 1);
 $_M(c$, "scriptWaitOutput", 
 function (script) {
 if (script == null || script.length == 0) return "";
-this.outputBuffer =  new J.util.SB ();
+this.outputBuffer =  new JU.SB ();
 this.viewer.scriptWaitStatus (script, "");
 var str = (this.outputBuffer == null ? "" : this.outputBuffer.toString ());
 this.outputBuffer = null;
@@ -216,21 +216,21 @@ this.viewer.syncScript (script, "~", 0);
 }, "~S");
 $_M(c$, "getAppletInfo", 
 function () {
-return J.i18n.GT._ ("Jmol Applet version {0} {1}.\n\nAn OpenScience project.\n\nSee http://www.jmol.org for more information", [J.viewer.JC.version, J.viewer.JC.date]) + "\nhtmlName = " + J.util.Escape.eS (this.htmlName) + "\nsyncId = " + J.util.Escape.eS (this.syncId) + "\ndocumentBase = " + J.util.Escape.eS ("" + this.getProperty ("documentBase")) + "\ncodeBase = " + J.util.Escape.eS ("" + this.getProperty ("codeBase"));
+return J.i18n.GT._ ("Jmol Applet version {0} {1}.\n\nAn OpenScience project.\n\nSee http://www.jmol.org for more information", [J.viewer.JC.version, J.viewer.JC.date]) + "\nhtmlName = " + J.util.Escape.eS (this.htmlName) + "\nsyncId = " + J.util.Escape.eS (this.syncId) + "\ndocumentBase = " + J.util.Escape.eS ("" + this.viewerOptions.get ("documentBase")) + "\ncodeBase = " + J.util.Escape.eS ("" + this.viewerOptions.get ("codePath"));
 });
-Clazz.overrideMethod (c$, "getProperty", 
+$_V(c$, "getProperty", 
 function (infoType, paramInfo) {
 {
 paramInfo || (paramInfo = "");
 }return this.viewer.getProperty (null, infoType, paramInfo);
 }, "~S,~S");
-Clazz.overrideMethod (c$, "getPropertyAsString", 
+$_V(c$, "getPropertyAsString", 
 function (infoType, paramInfo) {
 {
 paramInfo || (paramInfo = "");
 }return this.viewer.getProperty ("readable", infoType, paramInfo).toString ();
 }, "~S,~S");
-Clazz.overrideMethod (c$, "getPropertyAsJSON", 
+$_V(c$, "getPropertyAsJSON", 
 function (infoType, paramInfo) {
 {
 paramInfo || (paramInfo = "");
@@ -238,7 +238,7 @@ paramInfo || (paramInfo = "");
 }, "~S,~S");
 $_M(c$, "loadInlineString", 
 function (strModel, script, isAppend) {
-var errMsg = this.viewer.loadInline (strModel, isAppend);
+var errMsg = this.viewer.loadInlineAppend (strModel, isAppend);
 if (errMsg == null) this.script (script);
 return errMsg;
 }, "~S,~S,~B");
@@ -249,18 +249,126 @@ var errMsg = this.viewer.loadInline (strModels, isAppend);
 if (errMsg == null) this.script (script);
 return errMsg;
 }, "~A,~S,~B");
-c$.sendCallback = $_M(c$, "sendCallback", 
+$_V(c$, "register", 
+function (id, jsi) {
+J.appletjs.JmolAppletRegistry.checkIn (id, jsi);
+}, "~S,J.api.JmolSyncInterface");
+$_M(c$, "doNotifySync", 
+function (info, appletName) {
+var syncCallback = this.b$.get (J.constant.EnumCallback.SYNC);
+if (!this.mayScript || syncCallback == null || !this.haveDocumentAccess && !syncCallback.startsWith ("Jmol.")) return info;
+J.util.Logger.info ("Jmol.notifySync " + appletName + " >> " + info);
+try {
+{
+if (syncCallback=="Jmol._mySyncCallback")
+return Jmol._mySyncCallback(this.htmlName, info, appletName);
+var f = eval(syncCallback);
+return f(this.htmlName, info, appletName);
+}} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+if (!this.haveNotifiedError) if (J.util.Logger.debugging) {
+J.util.Logger.debug ("syncCallback call error to " + syncCallback + ": " + e);
+}this.haveNotifiedError = true;
+} else {
+throw e;
+}
+}
+return info;
+}, "~S,~S");
+$_M(c$, "doEval", 
+function (strEval) {
+try {
+{
+return "" + eval(strEval);
+}} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+J.util.Logger.error ("# error evaluating " + strEval + ":" + e.toString ());
+} else {
+throw e;
+}
+}
+return "";
+}, "~S");
+$_M(c$, "doFunctionXY", 
+function (functionName, nX, nY) {
+var fxy =  Clazz.newFloatArray (Math.abs (nX), Math.abs (nY), 0);
+if (!this.mayScript || !this.haveDocumentAccess || nX == 0 || nY == 0) return fxy;
+try {
+if (nX > 0 && nY > 0) {
+for (var i = 0; i < nX; i++) for (var j = 0; j < nY; j++) {
+{
+fxy[i][j] = eval(functionName)(this.htmlName, i, j);
+}}
+
+} else if (nY > 0) {
+var data;
+{
+data = eval(functionName)(this.htmlName, nX, nY);
+}nX = Math.abs (nX);
+var fdata =  Clazz.newFloatArray (nX * nY, 0);
+J.util.Parser.parseStringInfestedFloatArray (data, null, fdata);
+for (var i = 0, ipt = 0; i < nX; i++) {
+for (var j = 0; j < nY; j++, ipt++) {
+fxy[i][j] = fdata[ipt];
+}
+}
+} else {
+{
+data = eval(functionName)(htmlName, nX, nY, fxy);
+}}} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+J.util.Logger.error ("Exception " + e + " with nX, nY: " + nX + " " + nY);
+} else {
+throw e;
+}
+}
+return fxy;
+}, "~S,~N,~N");
+$_M(c$, "doFunctionXYZ", 
+function (functionName, nX, nY, nZ) {
+var fxyz =  Clazz.newFloatArray (Math.abs (nX), Math.abs (nY), Math.abs (nZ), 0);
+if (!this.mayScript || !this.haveDocumentAccess || nX == 0 || nY == 0 || nZ == 0) return fxyz;
+try {
+{
+eval(functionName)(this.htmlName, nX, nY, nZ, fxyz);
+}} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+J.util.Logger.error ("Exception " + e + " for " + functionName + " with nX, nY, nZ: " + nX + " " + nY + " " + nZ);
+} else {
+throw e;
+}
+}
+return fxyz;
+}, "~S,~N,~N,~N");
+$_M(c$, "doShowUrl", 
+function (urlString) {
+if (J.util.Logger.debugging) {
+J.util.Logger.debug ("showUrl(" + urlString + ")");
+}if (urlString != null && urlString.length > 0) {
+try {
+var url =  new java.net.URL (Clazz.castNullAs ("java.net.URL"), urlString, null);
+{
+window.open(url);
+}} catch (mue) {
+if (Clazz.exceptionOf (mue, java.net.MalformedURLException)) {
+return false;
+} else {
+throw mue;
+}
+}
+}return true;
+}, "~S");
+c$.doSendCallback = $_M(c$, "doSendCallback", 
 function (strInfo, callback, data) {
 if (callback == null || callback.length == 0) {
 } else if (callback.equals ("alert")) {
 {
-alert(strInfo);
-return "";
+alert(strInfo); return "";
 }} else {
-var tokens = J.util.TextFormat.split (callback, '.');
+var tokens = JU.PT.split (callback, ".");
 {
 try{
-var o = window[tokens[0]]
+var o = window[tokens[0]];
 for (i = 1; i < tokens.length; i++){
 o = o[tokens[i]]
 }
@@ -270,27 +378,22 @@ System.out.println(callback + " failed " + e);
 }
 }}return "";
 }, "~S,~S,~A");
-Clazz.overrideMethod (c$, "register", 
-function (id, jsi) {
-J.appletjs.JmolAppletRegistry.checkIn (id, jsi);
-}, "~S,J.api.JmolSyncInterface");
 c$.$Jmol$MyStatusListener$ = function () {
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
 Clazz.prepareCallback (this, arguments);
-this.haveNotifiedError = false;
 Clazz.instantialize (this, arguments);
 }, J.appletjs.Jmol, "MyStatusListener", null, J.api.JmolStatusListener);
-Clazz.overrideMethod (c$, "getRegistryInfo", 
+$_V(c$, "getRegistryInfo", 
 function () {
 J.appletjs.JmolAppletRegistry.checkIn (null, null);
 return J.appletjs.JmolAppletRegistry.htRegistry;
 });
-Clazz.overrideMethod (c$, "resizeInnerPanel", 
+$_V(c$, "resizeInnerPanel", 
 function (a) {
-return  new J.util.Dimension ().set (0, 0);
+return  new javajs.awt.Dimension (0, 0);
 }, "~S");
-Clazz.overrideMethod (c$, "notifyEnabled", 
+$_V(c$, "notifyEnabled", 
 function (a) {
 switch (a) {
 case J.constant.EnumCallback.ANIMFRAME:
@@ -407,12 +510,12 @@ this.output (f);
 this.b$["J.appletjs.Jmol"].sendJsTextareaStatus (f);
 }}if (!d || !this.b$["J.appletjs.Jmol"].mayScript || c == null || !this.b$["J.appletjs.Jmol"].haveDocumentAccess && !c.startsWith ("Jmol.")) return;
 try {
-J.appletjs.Jmol.sendCallback (f, c, b);
+J.appletjs.Jmol.doSendCallback (f, c, b);
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
-if (!this.haveNotifiedError) if (J.util.Logger.debugging) {
+if (!this.b$["J.appletjs.Jmol"].haveNotifiedError) if (J.util.Logger.debugging) {
 J.util.Logger.debug (a.name () + "Callback call error to " + c + ": " + e);
-}this.haveNotifiedError = true;
+}this.b$["J.appletjs.Jmol"].haveNotifiedError = true;
 } else {
 throw e;
 }
@@ -428,25 +531,7 @@ if (this.b$["J.appletjs.Jmol"].outputBuffer != null && a != null) this.b$["J.app
 $_M(c$, "notifyScriptTermination", 
 ($fz = function () {
 }, $fz.isPrivate = true, $fz));
-$_M(c$, "notifySync", 
-($fz = function (a, b) {
-var c = this.b$["J.appletjs.Jmol"].b$.get (J.constant.EnumCallback.SYNC);
-if (!this.b$["J.appletjs.Jmol"].mayScript || c == null || !this.b$["J.appletjs.Jmol"].haveDocumentAccess && !c.startsWith ("Jmol.")) return a;
-try {
-{
-return eval(syncCallback)(this.htmlName, info, appletName);
-}} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-if (!this.haveNotifiedError) if (J.util.Logger.debugging) {
-J.util.Logger.debug ("syncCallback call error to " + c + ": " + e);
-}this.haveNotifiedError = true;
-} else {
-throw e;
-}
-}
-return a;
-}, $fz.isPrivate = true, $fz), "~S,~S");
-Clazz.overrideMethod (c$, "setCallbackFunction", 
+$_V(c$, "setCallbackFunction", 
 function (a, b) {
 if (a.equalsIgnoreCase ("modelkit")) return;
 if (a.equalsIgnoreCase ("language")) {
@@ -460,7 +545,7 @@ if (b == null) this.b$["J.appletjs.Jmol"].b$.remove (c);
 return;
 }this.consoleMessage ("Available callbacks include: " + J.constant.EnumCallback.getNameList ().$replace (';', ' ').trim ());
 }, "~S,~S");
-Clazz.overrideMethod (c$, "eval", 
+$_V(c$, "eval", 
 function (a) {
 var b = a.indexOf ("\1");
 if (b >= 0) return this.sendScript (a.substring (b + 1), a.substring (0, b), false, false);
@@ -468,90 +553,24 @@ if (!this.b$["J.appletjs.Jmol"].haveDocumentAccess) return "NO EVAL ALLOWED";
 if (this.b$["J.appletjs.Jmol"].b$.get (J.constant.EnumCallback.EVAL) != null) {
 this.notifyCallback (J.constant.EnumCallback.EVAL, [null, a]);
 return "";
-}try {
-{
-return "" + eval(a);// strEval -- Java2Script is compressing this file for some reason
-}} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-J.util.Logger.error ("# error evaluating " + a + ":" + e.toString ());
-} else {
-throw e;
-}
-}
-return "";
+}return this.b$["J.appletjs.Jmol"].doEval (a);
 }, "~S");
-Clazz.overrideMethod (c$, "createImage", 
+$_V(c$, "createImage", 
 function (a, b, c, d) {
 return null;
 }, "~S,~S,~O,~N");
-Clazz.overrideMethod (c$, "functionXY", 
+$_V(c$, "functionXY", 
 function (a, b, c) {
-var d =  Clazz.newFloatArray (Math.abs (b), Math.abs (c), 0);
-if (!this.b$["J.appletjs.Jmol"].mayScript || !this.b$["J.appletjs.Jmol"].haveDocumentAccess || b == 0 || c == 0) return d;
-try {
-if (b > 0 && c > 0) {
-for (var e = 0; e < b; e++) for (var f = 0; f < c; f++) {
-{
-fxy[i][j] = eval(functionName)(this.htmlName, i, j);
-}}
-
-} else if (c > 0) {
-var e;
-{
-data = eval(functionName)(this.htmlName, nX, nY);
-}b = Math.abs (b);
-var f =  Clazz.newFloatArray (b * c, 0);
-J.util.Parser.parseStringInfestedFloatArray (e, null, f);
-for (var g = 0, h = 0; g < b; g++) {
-for (var i = 0; i < c; i++, h++) {
-d[g][i] = f[h];
-}
-}
-} else {
-{
-data = eval(functionName)(htmlName, nX, nY, fxy);
-}}} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-J.util.Logger.error ("Exception " + e + " with nX, nY: " + b + " " + c);
-} else {
-throw e;
-}
-}
-return d;
+return this.b$["J.appletjs.Jmol"].doFunctionXY (a, b, c);
 }, "~S,~N,~N");
-Clazz.overrideMethod (c$, "functionXYZ", 
+$_V(c$, "functionXYZ", 
 function (a, b, c, d) {
-var e =  Clazz.newFloatArray (Math.abs (b), Math.abs (c), Math.abs (d), 0);
-if (!this.b$["J.appletjs.Jmol"].mayScript || !this.b$["J.appletjs.Jmol"].haveDocumentAccess || b == 0 || c == 0 || d == 0) return e;
-try {
-{
-eval(functionName)(this.htmlName, nX, nY, nZ, fxyz);
-}} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-J.util.Logger.error ("Exception " + e + " for " + a + " with nX, nY, nZ: " + b + " " + c + " " + d);
-} else {
-throw e;
-}
-}
-return e;
+return this.b$["J.appletjs.Jmol"].doFunctionXYZ (a, b, c, d);
 }, "~S,~N,~N,~N");
-Clazz.overrideMethod (c$, "showUrl", 
+$_V(c$, "showUrl", 
 function (a) {
-if (J.util.Logger.debugging) {
-J.util.Logger.debug ("showUrl(" + a + ")");
-}if (a != null && a.length > 0) {
-try {
-var b =  new java.net.URL (Clazz.castNullAs ("java.net.URL"), a, null);
-{
-window.open(url);
-}} catch (mue) {
-if (Clazz.exceptionOf (mue, java.net.MalformedURLException)) {
-this.consoleMessage ("Malformed URL:" + a);
-} else {
-throw mue;
-}
-}
-}}, "~S");
+if (!this.b$["J.appletjs.Jmol"].doShowUrl (a)) this.consoleMessage ("Malformed URL:" + a);
+}, "~S");
 $_M(c$, "finalize", 
 function () {
 if (J.util.Logger.debugging) J.util.Logger.debug ("MyStatusListener finalize " + this);
@@ -575,15 +594,15 @@ this.notifyCallback (J.constant.EnumCallback.ECHO, ["", a]);
 $_M(c$, "sendScript", 
 ($fz = function (a, b, c, d) {
 if (d) {
-a = this.notifySync (a, b);
+a = this.b$["J.appletjs.Jmol"].doNotifySync (a, b);
 if (a == null || a.length == 0 || a.equals ("0")) return "";
-}var e =  new J.util.JmolList ();
+}var e =  new JU.List ();
 J.appletjs.JmolAppletRegistry.findApplets (b, this.b$["J.appletjs.Jmol"].syncId, this.b$["J.appletjs.Jmol"].fullName, e);
 var f = e.size ();
 if (f == 0) {
 if (!d && !b.equals ("*")) J.util.Logger.error (this.b$["J.appletjs.Jmol"].fullName + " couldn't find applet " + b);
 return "";
-}var g = (c ? null :  new J.util.SB ());
+}var g = (c ? null :  new JU.SB ());
 var h = (c && a.equals ("GET_GRAPHICS"));
 var i = (c && a.equals ("SET_GRAPHICS_OFF"));
 if (h) this.b$["J.appletjs.Jmol"].gRight = null;
@@ -610,7 +629,7 @@ throw e;
 }
 return (c ? "" : g.toString ());
 }, $fz.isPrivate = true, $fz), "~S,~S,~B,~B");
-Clazz.overrideMethod (c$, "getProperty", 
+$_V(c$, "getProperty", 
 function (a) {
 return null;
 }, "~S");

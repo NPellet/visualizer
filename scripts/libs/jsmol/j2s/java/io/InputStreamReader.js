@@ -19,7 +19,7 @@ $_M(c$, "getEncoding",
 function () {
 return this.charsetName;
 });
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (cbuf, offset, length) {
 if (this.bytearr == null || this.bytearr.length < length) this.bytearr =  Clazz.newByteArray (length, 0);
 var c;
@@ -67,11 +67,11 @@ this.bytearr[i] = this.bytearr[byteCount++];
 }
 return charCount - offset;
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "ready", 
+$_V(c$, "ready", 
 function () {
 return this.isOpen;
 });
-Clazz.overrideMethod (c$, "close", 
+$_V(c$, "close", 
 function () {
 this.$in.close ();
 this.isOpen = false;

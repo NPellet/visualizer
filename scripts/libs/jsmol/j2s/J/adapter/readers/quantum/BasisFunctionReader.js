@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable", "J.util.JmolList"], "J.adapter.readers.quantum.BasisFunctionReader", ["java.lang.Character", "java.util.Arrays", "J.api.JmolAdapter", "J.util.Logger"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable", "JU.List"], "J.adapter.readers.quantum.BasisFunctionReader", ["java.lang.Character", "java.util.Arrays", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.shells = null;
 this.moData = null;
@@ -18,7 +18,7 @@ Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "BasisFunctionReader", J.adapter.smarter.AtomSetCollectionReader);
 Clazz.prepareFields (c$, function () {
 this.moData =  new java.util.Hashtable ();
-this.orbitals =  new J.util.JmolList ();
+this.orbitals =  new JU.List ();
 });
 $_M(c$, "filterMO", 
 function () {
@@ -105,7 +105,7 @@ c$ = Clazz.decorateAsClass (function () {
 Clazz.prepareCallback (this, arguments);
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum.BasisFunctionReader, "MOEnergySorter", null, java.util.Comparator);
-Clazz.overrideMethod (c$, "compare", 
+$_V(c$, "compare", 
 function (a, b) {
 var c = ((a).get ("energy")).floatValue ();
 var d = ((b).get ("energy")).floatValue ();

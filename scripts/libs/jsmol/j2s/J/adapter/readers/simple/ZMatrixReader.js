@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable", "J.util.JmolList", "$.P3", "$.P4", "$.V3"], "J.adapter.readers.simple.ZMatrixReader", ["java.lang.Character", "$.Exception", "$.Float", "J.adapter.smarter.Atom", "$.Bond", "J.api.JmolAdapter", "J.util.Logger", "$.Measure", "$.Quaternion"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable", "JU.List", "$.P3", "$.P4", "$.V3"], "J.adapter.readers.simple.ZMatrixReader", ["java.lang.Character", "$.Exception", "$.Float", "J.adapter.smarter.Atom", "$.Bond", "J.api.JmolAdapter", "J.util.Logger", "$.Measure", "$.Quaternion"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomCount = 0;
 this.vAtoms = null;
@@ -18,17 +18,17 @@ this.plane2 = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.simple, "ZMatrixReader", J.adapter.smarter.AtomSetCollectionReader);
 Clazz.prepareFields (c$, function () {
-this.vAtoms =  new J.util.JmolList ();
+this.vAtoms =  new JU.List ();
 this.atomMap =  new java.util.Hashtable ();
-this.lineBuffer =  new J.util.JmolList ();
+this.lineBuffer =  new JU.List ();
 this.symbolicMap =  new java.util.Hashtable ();
-this.pt0 =  new J.util.P3 ();
-this.v1 =  new J.util.V3 ();
-this.v2 =  new J.util.V3 ();
-this.plane1 =  new J.util.P4 ();
-this.plane2 =  new J.util.P4 ();
+this.pt0 =  new JU.P3 ();
+this.v1 =  new JU.V3 ();
+this.v2 =  new JU.V3 ();
+this.plane1 =  new JU.P4 ();
+this.plane2 =  new JU.P4 ();
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 this.cleanLine ();
 if (this.line.length <= 2) this.isHeader = false;
@@ -54,7 +54,7 @@ while ((pt1 = this.line.indexOf ('(')) >= 0 && (pt2 = this.line.indexOf ('(', pt
 
 this.line = this.line.trim ();
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 var firstLine = 0;
 for (var i = firstLine; i < this.lineBuffer.size (); i++) if ((this.tokens = this.lineBuffer.get (i)).length > 0) this.getAtom ();

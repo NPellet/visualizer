@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.popup");
-Clazz.load (["J.api.JmolPopupInterface", "J.popup.JmolAbstractMenu", "java.util.Hashtable", "$.Properties", "J.util.JmolList"], "J.popup.GenericPopup", ["java.lang.Boolean", "$.Long", "java.util.StringTokenizer", "J.i18n.GT", "J.popup.MainPopupResourceBundle", "J.util.Elements", "$.Escape", "$.Logger", "$.Parser", "$.SB", "$.TextFormat", "J.viewer.JC"], function () {
+Clazz.load (["javajs.api.GenericMenuInterface", "J.popup.JmolAbstractMenu", "java.util.Hashtable", "$.Properties", "JU.List"], "J.popup.GenericPopup", ["java.lang.Boolean", "$.Long", "java.util.StringTokenizer", "JU.PT", "$.SB", "J.i18n.GT", "J.popup.MainPopupResourceBundle", "J.util.Elements", "$.Escape", "$.Logger", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.htCheckbox = null;
@@ -41,6 +41,7 @@ this.SignedOnly = null;
 this.AppletOnly = null;
 this.ChargesOnly = null;
 this.TemperatureOnly = null;
+this.Special = null;
 this.allowSignedFeatures = false;
 this.isJS = false;
 this.fileHasUnitCell = false;
@@ -65,40 +66,41 @@ this.group3Counts = null;
 this.cnmrPeaks = null;
 this.hnmrPeaks = null;
 Clazz.instantialize (this, arguments);
-}, J.popup, "GenericPopup", null, [J.api.JmolPopupInterface, J.popup.JmolAbstractMenu]);
+}, J.popup, "GenericPopup", null, [javajs.api.GenericMenuInterface, J.popup.JmolAbstractMenu]);
 Clazz.prepareFields (c$, function () {
 this.htCheckbox =  new java.util.Hashtable ();
 this.menuText =  new java.util.Properties ();
 this.frankList =  new Array (10);
 this.htMenus =  new java.util.Hashtable ();
-this.NotPDB =  new J.util.JmolList ();
-this.PDBOnly =  new J.util.JmolList ();
-this.FileUnitOnly =  new J.util.JmolList ();
-this.FileMolOnly =  new J.util.JmolList ();
-this.UnitcellOnly =  new J.util.JmolList ();
-this.SingleModelOnly =  new J.util.JmolList ();
-this.FramesOnly =  new J.util.JmolList ();
-this.VibrationOnly =  new J.util.JmolList ();
-this.SymmetryOnly =  new J.util.JmolList ();
-this.SignedOnly =  new J.util.JmolList ();
-this.AppletOnly =  new J.util.JmolList ();
-this.ChargesOnly =  new J.util.JmolList ();
-this.TemperatureOnly =  new J.util.JmolList ();
+this.NotPDB =  new JU.List ();
+this.PDBOnly =  new JU.List ();
+this.FileUnitOnly =  new JU.List ();
+this.FileMolOnly =  new JU.List ();
+this.UnitcellOnly =  new JU.List ();
+this.SingleModelOnly =  new JU.List ();
+this.FramesOnly =  new JU.List ();
+this.VibrationOnly =  new JU.List ();
+this.SymmetryOnly =  new JU.List ();
+this.SignedOnly =  new JU.List ();
+this.AppletOnly =  new JU.List ();
+this.ChargesOnly =  new JU.List ();
+this.TemperatureOnly =  new JU.List ();
+this.Special =  new JU.List ();
 });
 Clazz.makeConstructor (c$, 
 function () {
 });
-Clazz.overrideMethod (c$, "jpiDispose", 
+$_V(c$, "jpiDispose", 
 function () {
 this.menuClearListeners (this.popupMenu);
 this.menuClearListeners (this.frankPopup);
 this.popupMenu = this.frankPopup = this.thisPopup = null;
 });
-Clazz.overrideMethod (c$, "jpiGetMenuAsObject", 
+$_V(c$, "jpiGetMenuAsObject", 
 function () {
 return this.popupMenu;
 });
-Clazz.overrideMethod (c$, "jpiGetMenuAsString", 
+$_V(c$, "jpiGetMenuAsString", 
 function (title) {
 this.updateForShow ();
 var pt = title.indexOf ("|");
@@ -106,13 +108,13 @@ if (pt >= 0) {
 var type = title.substring (pt);
 title = title.substring (0, pt);
 if (type.indexOf ("current") >= 0) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 var menu = this.htMenus.get (this.menuName);
 this.menuGetAsText (sb, 0, menu, "PopupMenu");
 return sb.toString ();
 }}return ( new J.popup.MainPopupResourceBundle (this.strMenuStructure, null)).getMenuAsText (title);
 }, "~S");
-Clazz.overrideMethod (c$, "jpiShow", 
+$_V(c$, "jpiShow", 
 function (x, y) {
 if (!this.viewer.haveDisplay) return;
 this.show (x, y, false);
@@ -127,7 +129,7 @@ return;
 }}this.restorePopupMenu ();
 this.menuShowPopup (this.popupMenu, this.thisx, this.thisy);
 }, "~N,~N");
-Clazz.overrideMethod (c$, "jpiUpdateComputedMenus", 
+$_V(c$, "jpiUpdateComputedMenus", 
 function () {
 if (this.updateMode == -1) return;
 this.updateMode = 0;
@@ -183,7 +185,7 @@ if (label == null) {
 sb.append (".\n");
 return;
 }sb.append ("\t").append (label).append ("\t").append (script == null || script.length == 0 ? "-" : script).append ("\t").append (flags).append ("\n");
-}, "J.util.SB,~S,~N,~S,~S,~S,~S");
+}, "JU.SB,~S,~N,~S,~S,~S,~S");
 $_M(c$, "fixScript", 
 function (id, script) {
 var pt;
@@ -195,13 +197,13 @@ id = id.substring (pt + 1);
 if ((pt = id.indexOf ("]")) >= 0) id = id.substring (0, pt);
 id = id.$replace ('_', ' ');
 if (script.indexOf ("[]") < 0) script = "[] " + script;
-return J.util.TextFormat.simpleReplace (script, "[]", id);
+return JU.PT.simpleReplace (script, "[]", id);
 } else if (script.indexOf ("?FILEROOT?") >= 0) {
-script = J.util.TextFormat.simpleReplace (script, "FILEROOT?", this.modelSetRoot);
+script = JU.PT.simpleReplace (script, "FILEROOT?", this.modelSetRoot);
 } else if (script.indexOf ("?FILE?") >= 0) {
-script = J.util.TextFormat.simpleReplace (script, "FILE?", this.modelSetFileName);
+script = JU.PT.simpleReplace (script, "FILE?", this.modelSetFileName);
 } else if (script.indexOf ("?PdbId?") >= 0) {
-script = J.util.TextFormat.simpleReplace (script, "PdbId?", "=xxxx");
+script = JU.PT.simpleReplace (script, "PdbId?", "=xxxx");
 }return script;
 }, "~S,~S");
 $_M(c$, "initialize", 
@@ -281,31 +283,31 @@ this.hnmrPeaks = this.modelInfo.get ("jdxAtomSelect_1HNMR");
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "updateFileTypeDependentMenus", 
 ($fz = function () {
-for (var i = 0; i < this.NotPDB.size (); i++) this.menuEnable (this.NotPDB.get (i), !this.isPDB);
+for (var i = this.NotPDB.size (); --i >= 0; ) this.menuEnable (this.NotPDB.get (i), !this.isPDB);
 
-for (var i = 0; i < this.PDBOnly.size (); i++) this.menuEnable (this.PDBOnly.get (i), this.isPDB);
+for (var i = this.PDBOnly.size (); --i >= 0; ) this.menuEnable (this.PDBOnly.get (i), this.isPDB);
 
-for (var i = 0; i < this.UnitcellOnly.size (); i++) this.menuEnable (this.UnitcellOnly.get (i), this.isUnitCell);
+for (var i = this.UnitcellOnly.size (); --i >= 0; ) this.menuEnable (this.UnitcellOnly.get (i), this.isUnitCell);
 
-for (var i = 0; i < this.FileUnitOnly.size (); i++) this.menuEnable (this.FileUnitOnly.get (i), this.isUnitCell || this.fileHasUnitCell);
+for (var i = this.FileUnitOnly.size (); --i >= 0; ) this.menuEnable (this.FileUnitOnly.get (i), this.isUnitCell || this.fileHasUnitCell);
 
-for (var i = 0; i < this.FileMolOnly.size (); i++) this.menuEnable (this.FileMolOnly.get (i), this.isUnitCell || this.fileHasUnitCell);
+for (var i = this.FileMolOnly.size (); --i >= 0; ) this.menuEnable (this.FileMolOnly.get (i), this.isUnitCell || this.fileHasUnitCell);
 
-for (var i = 0; i < this.SingleModelOnly.size (); i++) this.menuEnable (this.SingleModelOnly.get (i), this.isLastFrame);
+for (var i = this.SingleModelOnly.size (); --i >= 0; ) this.menuEnable (this.SingleModelOnly.get (i), this.isLastFrame);
 
-for (var i = 0; i < this.FramesOnly.size (); i++) this.menuEnable (this.FramesOnly.get (i), this.isMultiFrame);
+for (var i = this.FramesOnly.size (); --i >= 0; ) this.menuEnable (this.FramesOnly.get (i), this.isMultiFrame);
 
-for (var i = 0; i < this.VibrationOnly.size (); i++) this.menuEnable (this.VibrationOnly.get (i), this.isVibration);
+for (var i = this.VibrationOnly.size (); --i >= 0; ) this.menuEnable (this.VibrationOnly.get (i), this.isVibration);
 
-for (var i = 0; i < this.SymmetryOnly.size (); i++) this.menuEnable (this.SymmetryOnly.get (i), this.isSymmetry && this.isUnitCell);
+for (var i = this.SymmetryOnly.size (); --i >= 0; ) this.menuEnable (this.SymmetryOnly.get (i), this.isSymmetry && this.isUnitCell);
 
-for (var i = 0; i < this.SignedOnly.size (); i++) this.menuEnable (this.SignedOnly.get (i), this.isSigned || !this.isApplet);
+for (var i = this.SignedOnly.size (); --i >= 0; ) this.menuEnable (this.SignedOnly.get (i), this.isSigned || !this.isApplet);
 
-for (var i = 0; i < this.AppletOnly.size (); i++) this.menuEnable (this.AppletOnly.get (i), this.isApplet);
+for (var i = this.AppletOnly.size (); --i >= 0; ) this.menuEnable (this.AppletOnly.get (i), this.isApplet);
 
-for (var i = 0; i < this.ChargesOnly.size (); i++) this.menuEnable (this.ChargesOnly.get (i), this.haveCharges);
+for (var i = this.ChargesOnly.size (); --i >= 0; ) this.menuEnable (this.ChargesOnly.get (i), this.haveCharges);
 
-for (var i = 0; i < this.TemperatureOnly.size (); i++) this.menuEnable (this.TemperatureOnly.get (i), this.haveBFactors);
+for (var i = this.TemperatureOnly.size (); --i >= 0; ) this.menuEnable (this.TemperatureOnly.get (i), this.haveBFactors);
 
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "addMenuItems", 
@@ -385,11 +387,8 @@ this.VibrationOnly.addLast (newMenu);
 } else if (item.indexOf ("SYMMETRY") >= 0) {
 this.SymmetryOnly.addLast (newMenu);
 }if (item.startsWith ("SIGNED")) this.SignedOnly.addLast (newMenu);
-if (false) {
-var str = item.endsWith ("Menu") ? "----" : id + "." + item + "\t" + label + "\t" + this.fixScript (id + "." + item, script);
-str = "addMenuItem('\t" + str + "\t')";
-J.util.Logger.info (str);
-}}
+if (item.indexOf ("SPECIAL") >= 0) this.Special.addLast (newMenu);
+}
 }, $fz.isPrivate = true, $fz), "~S,~S,~O,J.popup.PopupResource");
 $_M(c$, "checkKey", 
 ($fz = function (key) {
@@ -419,10 +418,10 @@ what = "set picking " + basename.substring (0, basename.length - 2);
 }} else {
 what = what.substring (pt + 1);
 if ((pt = what.indexOf ("|")) >= 0) what = (TF ? what.substring (0, pt) : what.substring (pt + 1)).trim ();
-what = J.util.TextFormat.simpleReplace (what, "T/F", (TF ? " TRUE" : " FALSE"));
+what = JU.PT.simpleReplace (what, "T/F", (TF ? " TRUE" : " FALSE"));
 }}this.viewer.evalStringQuiet (what);
 }, $fz.isPrivate = true, $fz), "~O,~S,~B");
-Clazz.overrideMethod (c$, "checkMenuClick", 
+$_V(c$, "checkMenuClick", 
 function (source, script) {
 this.checkMenuClickGP (source, script);
 }, "~O,~S");
@@ -499,7 +498,7 @@ var entryName = elementSymbol + " - " + elementName;
 this.menuCreateItem (menu, entryName, "SELECT " + elementName, null);
 }}
 this.menuEnable (menu, true);
-}, $fz.isPrivate = true, $fz), "J.util.BS");
+}, $fz.isPrivate = true, $fz), "JU.BS");
 $_M(c$, "updateSpectraMenu", 
 ($fz = function () {
 var menuh = this.htMenus.get ("hnmrMenu");
@@ -523,13 +522,13 @@ var n = (peaks == null ? 0 : peaks.size ());
 if (n == 0) return false;
 for (var i = 0; i < n; i++) {
 var peak = peaks.get (i);
-var title = J.util.Parser.getQuotedAttribute (peak, "title");
-var atoms = J.util.Parser.getQuotedAttribute (peak, "atoms");
-if (atoms != null) this.menuCreateItem (menu, title, "select visible & (@" + J.util.TextFormat.simpleReplace (atoms, ",", " or @") + ")", "Focus" + i);
+var title = JU.PT.getQuotedAttribute (peak, "title");
+var atoms = JU.PT.getQuotedAttribute (peak, "atoms");
+if (atoms != null) this.menuCreateItem (menu, title, "select visible & (@" + JU.PT.simpleReplace (atoms, ",", " or @") + ")", "Focus" + i);
 }
 this.menuEnable (menu, true);
 return true;
-}, $fz.isPrivate = true, $fz), "~O,J.util.JmolList");
+}, $fz.isPrivate = true, $fz), "~O,JU.List");
 $_M(c$, "updateHeteroComputedMenu", 
 ($fz = function (htHetero) {
 var menu = this.htMenus.get ("PDBheteroComputedMenu");
@@ -827,7 +826,7 @@ var subMenu = this.menuNewSubMenu ("About molecule", "modelSetMenu");
 this.menuAddSubMenu (menu, subMenu);
 this.htMenus.put ("modelSetMenu", subMenu);
 this.updateModelSetComputedMenu ();
-subMenu = this.menuNewSubMenu ("Jmol " + J.viewer.JC.version + (this.isSigned ? " (signed)" : ""), "aboutJmolMenu");
+subMenu = this.menuNewSubMenu ("Jmol " + J.viewer.JC.version + (this.viewer.isWebGL ? " (WebGL)" : this.viewer.isJS ? " (HTML5)" : this.isSigned ? " (signed)" : ""), "aboutJmolMenu");
 this.menuAddSubMenu (menu, subMenu);
 this.htMenus.put ("aboutJmolMenu", subMenu);
 this.addMenuItem (subMenu, J.viewer.JC.date);
@@ -894,6 +893,8 @@ this.updateFRAMESbyModelComputedMenu ();
 this.updateSceneComputedMenu ();
 this.updateModelSetComputedMenu ();
 this.updateAboutSubmenu ();
+for (var i = this.Special.size (); --i >= 0; ) this.updateSpecialMenuItem (this.Special.get (i));
+
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "setFrankMenu", 
 ($fz = function (id) {
@@ -931,8 +932,17 @@ this.menuSetCheckBoxState (item, b);
 }
 if (doPopup) this.menuShowPopup (this.popupMenu, this.thisx, this.thisy);
 }, $fz.isPrivate = true, $fz), "~N,~N,~B");
+$_M(c$, "getSpecialLabel", 
+function (name, text) {
+var pt = text.indexOf (" (");
+if (pt < 0) pt = text.length;
+var info = null;
+if (name.indexOf ("captureLooping") >= 0) info = (this.viewer.getAnimationReplayMode ().name ().equals ("ONCE") ? "ONCE" : "LOOP");
+ else if (name.indexOf ("captureFps") >= 0) info = "" + this.viewer.getInt (553648132);
+ else if (name.indexOf ("captureMenu") >= 0) info = (this.viewer.captureParams == null ? J.i18n.GT._ ("not capturing") : this.viewer.getFilePath (this.viewer.captureParams.get ("captureFileName"), true) + " " + this.viewer.captureParams.get ("captureCount"));
+return (info == null ? text : text.substring (0, pt) + " (" + info + ")");
+}, "~S,~S");
 Clazz.defineStatics (c$,
-"dumpList", false,
 "UPDATE_NEVER", -1,
 "UPDATE_ALL", 0,
 "UPDATE_CONFIG", 1,

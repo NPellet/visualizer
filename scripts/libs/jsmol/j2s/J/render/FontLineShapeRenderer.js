@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.ShapeRenderer", "J.util.P3", "$.P3i", "$.V3"], "J.render.FontLineShapeRenderer", ["java.lang.Float", "J.constant.EnumAxesMode", "J.util.TextFormat"], function () {
+Clazz.load (["J.render.ShapeRenderer", "JU.P3", "$.P3i", "$.V3"], "J.render.FontLineShapeRenderer", ["java.lang.Float", "J.constant.EnumAxesMode", "J.util.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.imageFontScaling = 0;
 this.atomA = null;
@@ -30,17 +30,17 @@ this.asLineOnly = false;
 Clazz.instantialize (this, arguments);
 }, J.render, "FontLineShapeRenderer", J.render.ShapeRenderer);
 Clazz.prepareFields (c$, function () {
-this.pt0i =  new J.util.P3i ();
-this.pt1i =  new J.util.P3i ();
-this.pt2i =  new J.util.P3i ();
-this.s1 =  new J.util.P3i ();
-this.s2 =  new J.util.P3i ();
-this.pointT =  new J.util.P3 ();
-this.pointT2 =  new J.util.P3 ();
-this.pointT3 =  new J.util.P3 ();
-this.vectorT =  new J.util.V3 ();
-this.vectorT2 =  new J.util.V3 ();
-this.vectorT3 =  new J.util.V3 ();
+this.pt0i =  new JU.P3i ();
+this.pt1i =  new JU.P3i ();
+this.pt2i =  new JU.P3i ();
+this.s1 =  new JU.P3i ();
+this.s2 =  new JU.P3i ();
+this.pointT =  new JU.P3 ();
+this.pointT2 =  new JU.P3 ();
+this.pointT3 =  new JU.P3 ();
+this.vectorT =  new JU.V3 ();
+this.vectorT2 =  new JU.V3 ();
+this.vectorT3 =  new JU.V3 ();
 });
 $_M(c$, "getDiameter", 
 function (z, madOrPixels) {
@@ -73,7 +73,7 @@ this.atomB.screenX = pt1.x;
 this.atomB.screenY = pt1.y;
 this.atomB.screenZ = pt1.z;
 this.drawTicks (this.atomA, this.atomB, diameter, true);
-}, "J.util.P3,J.util.P3,~N,J.util.P3i,J.util.P3i,~B");
+}, "JU.P3,JU.P3,~N,JU.P3i,JU.P3i,~B");
 $_M(c$, "drawTicks", 
 function (pt1, pt2, diameter, withLabels) {
 if (Float.isNaN (this.tickInfo.first)) this.tickInfo.first = 0;
@@ -138,7 +138,7 @@ this.viewer.transformPt3f (this.pointT2, this.pointT2);
 this.drawLine (Clazz.doubleToInt (Math.floor (this.pointT2.x)), Clazz.doubleToInt (Math.floor (this.pointT2.y)), Clazz.floatToInt (z), (x = Clazz.doubleToInt (Math.floor (this.pointT2.x + this.vectorT2.x))), (y = Clazz.doubleToInt (Math.floor (this.pointT2.y + this.vectorT2.y))), Clazz.floatToInt (z), diameter);
 if (drawLabel && (this.draw000 || p != 0)) {
 val[0] = Float.$valueOf ((p == 0 ? 0 : p * signFactor));
-var s = J.util.TextFormat.sprintf (formats[i % formats.length], "f", val);
+var s = J.util.Txt.sprintf (formats[i % formats.length], "f", val);
 this.drawString (x, y, Clazz.floatToInt (z), 4, rightJustify, centerX, centerY, Clazz.doubleToInt (Math.floor (this.pointT2.y)), s);
 }}this.pointT.add (this.vectorT);
 p += dx;

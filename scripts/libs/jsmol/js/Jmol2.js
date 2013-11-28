@@ -1,5 +1,6 @@
 /* 
 
+BH 11/12/2013 6:34:22 AM adds jmolAppletInline()
 BH 9/23/2013 10:07:16 PM adds set of loadInline functions
  
 Jmol2.js   (JSmol version)
@@ -102,6 +103,12 @@ function jmolApplet(size, script, nameSuffix) {
   return _jmolApplet(size, null, script, nameSuffix);
 }
 
+function jmolAppletInline(size, inlineModel, script, nameSuffix) {
+  return _jmolApplet(size, inlineModel, script, nameSuffix);
+}
+
+
+
 ////////////////////////////////////////////////////////////////
 // Basic controls
 ////////////////////////////////////////////////////////////////
@@ -175,10 +182,6 @@ function jmolLoadInlineScript(model, script, targetSuffix, isAppend) {
      "load " 
      + (isAppend ? "APPEND " : "") 
      + "DATA 'mydata'\n" + model.replace(/\"/g,'\\"') + "\nEND 'mydata'\n")
-}
-
-function jmolAppletInline(size, inlineModel, script, nameSuffix) {
- alert("jmolAppletInline not implemented")
 }
 
 function jmolSetTarget(targetSuffix) {
@@ -371,6 +374,7 @@ function _jmolApplet(size, inlineModel, script, nameSuffix) {
     jmolSetTarget(nameSuffix);
     ++_jmol.appletCount;
     script || (script = "select *");
+    inlineModel && (script = 'load DATA "inline"\n' + inlineModel + '\nEND "inline";' + script); 
     self.Info || (self.Info = Jmol.Info);
     var Info = {}
     for (var i in self.Info)

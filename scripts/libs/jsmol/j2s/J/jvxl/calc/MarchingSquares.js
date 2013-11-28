@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.calc");
-Clazz.load (["J.util.P3", "java.util.Hashtable"], "J.jvxl.calc.MarchingSquares", ["java.lang.Float", "J.util.ArrayUtil", "$.Logger"], function () {
+Clazz.load (["JU.P3", "java.util.Hashtable"], "J.jvxl.calc.MarchingSquares", ["java.lang.Float", "JU.AU", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.surfaceReader = null;
 this.volumeData = null;
@@ -14,6 +14,9 @@ this.contourFromZero = true;
 this.contoursDiscrete = null;
 this.contourVertexCount = 0;
 this.contourVertexes = null;
+if (!Clazz.isClassDefined ("J.jvxl.calc.MarchingSquares.ContourVertex")) {
+J.jvxl.calc.MarchingSquares.$MarchingSquares$ContourVertex$ ();
+}
 this.contourPlaneMinimumValue = 0;
 this.contourPlaneMaximumValue = 0;
 this.contourValuesUsed = null;
@@ -27,10 +30,10 @@ J.jvxl.calc.MarchingSquares.$MarchingSquares$Triangle$ ();
 Clazz.instantialize (this, arguments);
 }, J.jvxl.calc, "MarchingSquares");
 Clazz.prepareFields (c$, function () {
-this.pointA =  new J.util.P3 ();
-this.pointB =  new J.util.P3 ();
+this.pointA =  new JU.P3 ();
+this.pointB =  new JU.P3 ();
 this.contourVertexes =  new Array (1000);
-this.ptTemp =  new J.util.P3 ();
+this.ptTemp =  new JU.P3 ();
 this.triangles =  new Array (1000);
 this.htPts =  new java.util.Hashtable ();
 });
@@ -49,7 +52,7 @@ if (this.nContourSegments > 100) this.nContourSegments = 100;
 nContours = contoursDiscrete.length;
 this.nContourSegments = nContours;
 this.contourFromZero = false;
-}}, "J.jvxl.api.VertexDataServer,J.jvxl.data.VolumeData,J.util.P4,~A,~N,~N,~B");
+}}, "J.jvxl.api.VertexDataServer,J.jvxl.data.VolumeData,JU.P4,~A,~N,~N,~B");
 $_M(c$, "getContourType", 
 function () {
 return this.contourType;
@@ -61,11 +64,11 @@ this.valueMax = valueMax;
 }, "~N,~N");
 $_M(c$, "addContourVertex", 
 function (vertexXYZ, value) {
-if (this.contourVertexCount == this.contourVertexes.length) this.contourVertexes = J.util.ArrayUtil.doubleLength (this.contourVertexes);
+if (this.contourVertexCount == this.contourVertexes.length) this.contourVertexes = JU.AU.doubleLength (this.contourVertexes);
 var vPt = this.surfaceReader.addVertexCopy (vertexXYZ, value, -2);
-this.contourVertexes[this.contourVertexCount++] =  new J.jvxl.calc.MarchingSquares.ContourVertex (vertexXYZ);
+this.contourVertexes[this.contourVertexCount++] = Clazz.innerTypeInstance (J.jvxl.calc.MarchingSquares.ContourVertex, this, null, vertexXYZ);
 return vPt;
-}, "J.util.P3,~N");
+}, "JU.P3,~N");
 $_M(c$, "setContourData", 
 function (i, value) {
 this.contourVertexes[i].setValue (value);
@@ -77,10 +80,10 @@ return this.contourValuesUsed;
 $_M(c$, "calcContourPoint", 
 function (cutoff, valueA, valueB, pt) {
 return this.volumeData.calculateFractionalPoint (cutoff, this.pointA, this.pointB, valueA, valueB, pt);
-}, "~N,~N,~N,J.util.P3");
+}, "~N,~N,~N,JU.P3");
 $_M(c$, "addTriangle", 
 function (iA, iB, iC, check, check2) {
-if (this.triangleCount == this.triangles.length) this.triangles = J.util.ArrayUtil.doubleLength (this.triangles);
+if (this.triangleCount == this.triangles.length) this.triangles = JU.AU.doubleLength (this.triangles);
 this.triangles[this.triangleCount++] = Clazz.innerTypeInstance (J.jvxl.calc.MarchingSquares.Triangle, this, null, iA, iB, iC, check, check2);
 return 0;
 }, "~N,~N,~N,~N,~N");
@@ -121,12 +124,9 @@ cutoff = (this.contoursDiscrete != null ? this.contoursDiscrete[i] : this.contou
 if (this.contoursDiscrete == null && Math.abs (cutoff) < zeroOffset) cutoff = (cutoff < 0 ? -zeroOffset : zeroOffset);
 this.contourValuesUsed[i] = cutoff;
 J.util.Logger.info ("#contour " + (i + 1) + " " + cutoff);
-var n = 0;
 this.htPts.clear ();
-for (var ii = this.triangleCount; --ii >= 0; ) {
-if (this.triangles[ii].isValid) this.triangles[ii].checkContour (i, cutoff);
- else n++;
-}
+for (var ii = this.triangleCount; --ii >= 0; ) if (this.triangles[ii].isValid) this.triangles[ii].checkContour (i, cutoff);
+
 if (this.thisContour > 0) {
 if (i + 1 == this.thisContour) minCutoff = cutoff;
 } else {
@@ -148,6 +148,24 @@ var t = this.triangles[i];
 this.surfaceReader.addTriangleCheck (t.pts[0], t.pts[1], t.pts[2], t.check, t.contourIndex, false, -1);
 }
 }, $fz.isPrivate = true, $fz));
+c$.$MarchingSquares$ContourVertex$ = function () {
+Clazz.pu$h ();
+c$ = Clazz.decorateAsClass (function () {
+Clazz.prepareCallback (this, arguments);
+this.value = 0;
+Clazz.instantialize (this, arguments);
+}, J.jvxl.calc.MarchingSquares, "ContourVertex", JU.P3);
+Clazz.makeConstructor (c$, 
+function (a) {
+Clazz.superConstructor (this, J.jvxl.calc.MarchingSquares.ContourVertex, []);
+this.setT (a);
+}, "JU.P3");
+$_M(c$, "setValue", 
+function (a) {
+this.value = a;
+}, "~N");
+c$ = Clazz.p0p ();
+};
 c$.$MarchingSquares$Triangle$ = function () {
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
@@ -223,21 +241,6 @@ this.isValid = false;
 }, "~N,~N");
 c$ = Clazz.p0p ();
 };
-Clazz.pu$h ();
-c$ = Clazz.decorateAsClass (function () {
-this.value = 0;
-Clazz.instantialize (this, arguments);
-}, J.jvxl.calc.MarchingSquares, "ContourVertex", J.util.P3);
-Clazz.makeConstructor (c$, 
-function (a) {
-Clazz.superConstructor (this, J.jvxl.calc.MarchingSquares.ContourVertex, []);
-this.setT (a);
-}, "J.util.P3");
-$_M(c$, "setValue", 
-function (a) {
-this.value = a;
-}, "~N");
-c$ = Clazz.p0p ();
 Clazz.defineStatics (c$,
 "CONTOUR_POINT", -1,
 "VERTEX_POINT", -2,

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.api.VertexDataServer", "J.util.P3"], "J.jvxl.readers.SurfaceReader", ["java.lang.Float", "J.jvxl.calc.MarchingCubes", "$.MarchingSquares", "J.jvxl.data.JvxlCoder", "$.MeshData", "J.util.ArrayUtil", "$.BS", "$.BoxInfo", "$.C", "$.ColorEncoder", "$.Escape", "$.Logger"], function () {
+Clazz.load (["J.jvxl.api.VertexDataServer", "JU.P3"], "J.jvxl.readers.SurfaceReader", ["java.lang.Float", "JU.AU", "$.BS", "J.jvxl.calc.MarchingCubes", "$.MarchingSquares", "J.jvxl.data.JvxlCoder", "$.MeshData", "J.util.BoxInfo", "$.C", "$.ColorEncoder", "$.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.sg = null;
 this.meshDataServer = null;
@@ -68,7 +68,7 @@ this.haveSetAnisotropy = false;
 Clazz.instantialize (this, arguments);
 }, J.jvxl.readers, "SurfaceReader", null, J.jvxl.api.VertexDataServer);
 Clazz.prepareFields (c$, function () {
-this.ptTemp =  new J.util.P3 ();
+this.ptTemp =  new JU.P3 ();
 });
 Clazz.makeConstructor (c$, 
 function () {
@@ -94,9 +94,9 @@ this.setVolumeDataV (sg.getVolumeData ());
 this.meshDataServer = sg.getMeshDataServer ();
 this.cJvxlEdgeNaN = String.fromCharCode (125);
 }, "J.jvxl.readers.SurfaceGenerator");
-$_M(c$, "setOutputStream", 
-function (os) {
-}, "java.io.OutputStream");
+$_M(c$, "setOutputChannel", 
+function (out) {
+}, "JU.OC");
 $_M(c$, "newVoxelDataCube", 
 function () {
 this.volumeData.setVoxelDataAsArray (this.voxelData =  Clazz.newFloatArray (this.nPointsX, this.nPointsY, this.nPointsZ, 0));
@@ -260,7 +260,7 @@ for (var i = 0; i < vertexCount; i++) colixes[i] = J.util.C.getColix (this.jvxlD
 
 return "-";
 });
-Clazz.overrideMethod (c$, "getPlane", 
+$_V(c$, "getPlane", 
 function (x) {
 return this.getPlane2 (x);
 }, "~N");
@@ -274,11 +274,11 @@ $_M(c$, "initPlanes",
 function () {
 this.yzCount = this.nPointsY * this.nPointsZ;
 if (!this.isQuiet) J.util.Logger.info ("reading data progressively -- yzCount = " + this.yzCount);
-this.yzPlanes = J.util.ArrayUtil.newFloat2 (2);
+this.yzPlanes = JU.AU.newFloat2 (2);
 this.yzPlanes[0] =  Clazz.newFloatArray (this.yzCount, 0);
 this.yzPlanes[1] =  Clazz.newFloatArray (this.yzCount, 0);
 });
-Clazz.overrideMethod (c$, "getValue", 
+$_V(c$, "getValue", 
 function (x, y, z, ptyz) {
 return this.getValue2 (x, y, z, ptyz);
 }, "~N,~N,~N,~N");
@@ -321,7 +321,7 @@ this.postProcessVertices ();
 $_M(c$, "postProcessVertices", 
 function () {
 });
-Clazz.overrideMethod (c$, "getSurfacePointIndexAndFraction", 
+$_V(c$, "getSurfacePointIndexAndFraction", 
 function (cutoff, isCutoffAbsolute, x, y, z, offset, vA, vB, valueA, valueB, pointA, edgeVector, isContourType, fReturn) {
 var thisValue = this.getSurfacePointAndFraction (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z, vA, vB, fReturn, this.ptTemp);
 if (this.marchingSquares != null && this.params.isContoured) return this.marchingSquares.addContourVertex (this.ptTemp, cutoff);
@@ -333,11 +333,11 @@ this.marchingCubes.calcVertexPoint (x, y, z, vB, this.ptTemp);
 this.addVertexCopy (valueA < valueB ? pointA : this.ptTemp, Math.min (valueA, valueB), -3);
 this.addVertexCopy (valueA < valueB ? this.ptTemp : pointA, Math.max (valueA, valueB), -3);
 }return n;
-}, "~N,~B,~N,~N,~N,J.util.P3i,~N,~N,~N,~N,J.util.P3,J.util.V3,~B,~A");
+}, "~N,~B,~N,~N,~N,JU.P3i,~N,~N,~N,~N,JU.P3,JU.V3,~B,~A");
 $_M(c$, "getSurfacePointAndFraction", 
 function (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z, vA, vB, fReturn, ptReturn) {
 return this.getSPF (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z, vA, vB, fReturn, ptReturn);
-}, "~N,~B,~N,~N,J.util.P3,J.util.V3,~N,~N,~N,~N,~N,~A,J.util.P3");
+}, "~N,~B,~N,~N,JU.P3,JU.V3,~N,~N,~N,~N,~N,~A,JU.P3");
 $_M(c$, "getSPF", 
 function (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z, vA, vB, fReturn, ptReturn) {
 var diff = valueB - valueA;
@@ -348,17 +348,17 @@ fraction = NaN;
 }fReturn[0] = fraction;
 ptReturn.scaleAdd2 (fraction, edgeVector, pointA);
 return valueA + fraction * diff;
-}, "~N,~B,~N,~N,J.util.P3,J.util.V3,~N,~N,~N,~N,~N,~A,J.util.P3");
+}, "~N,~B,~N,~N,JU.P3,JU.V3,~N,~N,~N,~N,~N,~A,JU.P3");
 $_M(c$, "addVertexCopy", 
 function (vertexXYZ, value, assocVertex) {
 return this.addVC (vertexXYZ, value, assocVertex);
-}, "J.util.P3,~N,~N");
+}, "JU.P3,~N,~N");
 $_M(c$, "addVC", 
 function (vertexXYZ, value, assocVertex) {
 if (Float.isNaN (value) && assocVertex != -3) return -1;
 if (this.meshDataServer == null) return this.meshData.addVertexCopy (vertexXYZ, value, assocVertex);
 return this.meshDataServer.addVertexCopy (vertexXYZ, value, assocVertex);
-}, "J.util.P3,~N,~N");
+}, "JU.P3,~N,~N");
 $_M(c$, "addTriangleCheck", 
 function (iA, iB, iC, check, check2, isAbsolute, color) {
 if (this.marchingSquares != null && this.params.isContoured) {
@@ -508,7 +508,7 @@ case 8:
 return (pt.z * pt.z * 2 - pt.x * pt.x - pt.y * pt.y > 0 ? 1 : -1);
 }
 return 1;
-}, $fz.isPrivate = true, $fz), "J.util.P3");
+}, $fz.isPrivate = true, $fz), "JU.P3");
 $_M(c$, "getMinMaxMappedValues", 
 function (haveData) {
 if (this.minMax != null && this.minMax[0] != 3.4028235E38) return this.minMax;
@@ -547,7 +547,7 @@ $_M(c$, "updateSurfaceData",
 function () {
 this.meshData.setVertexSets (true);
 this.updateTriangles ();
-if (this.params.bsExcluded[1] == null) this.params.bsExcluded[1] =  new J.util.BS ();
+if (this.params.bsExcluded[1] == null) this.params.bsExcluded[1] =  new JU.BS ();
 this.meshData.updateInvalidatedVertices (this.params.bsExcluded[1]);
 });
 $_M(c$, "selectPocket", 
@@ -578,21 +578,21 @@ function (slabInfo) {
 if (this.meshDataServer != null) this.meshDataServer.fillMeshData (this.meshData, 1, null);
 this.meshData.slabPolygonsList (slabInfo, true);
 if (this.meshDataServer != null) this.meshDataServer.fillMeshData (this.meshData, 4, null);
-}, "J.util.JmolList");
+}, "JU.List");
 $_M(c$, "setVertexAnisotropy", 
 function (pt) {
 pt.x *= this.anisotropy[0];
 pt.y *= this.anisotropy[1];
 pt.z *= this.anisotropy[2];
 pt.add (this.center);
-}, "J.util.P3");
+}, "JU.P3");
 $_M(c$, "setVectorAnisotropy", 
 function (v) {
 this.haveSetAnisotropy = true;
 v.x *= this.anisotropy[0];
 v.y *= this.anisotropy[1];
 v.z *= this.anisotropy[2];
-}, "J.util.V3");
+}, "JU.V3");
 $_M(c$, "setVolumetricAnisotropy", 
 function () {
 if (this.haveSetAnisotropy) return;
@@ -617,14 +617,14 @@ if (!Float.isNaN (p.x)) this.setBBox (p, 0);
 $_M(c$, "setBBox", 
 function (pt, margin) {
 if (this.xyzMin == null) {
-this.xyzMin = J.util.P3.new3 (3.4028235E38, 3.4028235E38, 3.4028235E38);
-this.xyzMax = J.util.P3.new3 (-3.4028235E38, -3.4028235E38, -3.4028235E38);
+this.xyzMin = JU.P3.new3 (3.4028235E38, 3.4028235E38, 3.4028235E38);
+this.xyzMax = JU.P3.new3 (-3.4028235E38, -3.4028235E38, -3.4028235E38);
 }J.util.BoxInfo.addPoint (pt, this.xyzMin, this.xyzMax, margin);
-}, "J.util.P3,~N");
+}, "JU.P3,~N");
 $_M(c$, "getValueAtPoint", 
 function (pt, getSource) {
 return 0;
-}, "J.util.P3,~B");
+}, "JU.P3,~B");
 $_M(c$, "initializeMapping", 
 function () {
 });

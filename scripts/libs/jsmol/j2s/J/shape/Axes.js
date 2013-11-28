@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.FontLineShape", "J.util.P3", "$.V3"], "J.shape.Axes", ["java.lang.Boolean", "J.constant.EnumAxesMode", "J.util.Escape", "$.SB", "J.viewer.JC"], function () {
+Clazz.load (["J.shape.FontLineShape", "JU.P3", "$.V3"], "J.shape.Axes", ["java.lang.Boolean", "JU.SB", "J.constant.EnumAxesMode", "J.util.Escape", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.axisXY = null;
 this.scale = 0;
@@ -12,14 +12,14 @@ this.corner = null;
 Clazz.instantialize (this, arguments);
 }, J.shape, "Axes", J.shape.FontLineShape);
 Clazz.prepareFields (c$, function () {
-this.axisXY =  new J.util.P3 ();
-this.originPoint =  new J.util.P3 ();
+this.axisXY =  new JU.P3 ();
+this.originPoint =  new JU.P3 ();
 this.axisPoints =  new Array (6);
 {
-for (var i = 6; --i >= 0; ) this.axisPoints[i] =  new J.util.P3 ();
+for (var i = 6; --i >= 0; ) this.axisPoints[i] =  new JU.P3 ();
 
-}this.ptTemp =  new J.util.P3 ();
-this.corner =  new J.util.V3 ();
+}this.ptTemp =  new JU.P3 ();
+this.corner =  new JU.V3 ();
 });
 $_M(c$, "getOriginPoint", 
 function (isDataFrame) {
@@ -33,7 +33,7 @@ this.ptTemp.sub (this.originPoint);
 this.ptTemp.scale (0.5);
 return this.ptTemp;
 }, "~N,~B");
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bs) {
 if ("position" === propertyName) {
 this.axisXY = value;
@@ -42,7 +42,7 @@ return;
 if (value == null) {
 this.fixedOrigin = null;
 } else {
-if (this.fixedOrigin == null) this.fixedOrigin =  new J.util.P3 ();
+if (this.fixedOrigin == null) this.fixedOrigin =  new JU.P3 ();
 this.fixedOrigin.setT (value);
 }this.initShape ();
 return;
@@ -56,7 +56,7 @@ return;
 this.labels = ["", "", ""];
 return;
 }this.setPropFLS (propertyName, value);
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 $_M(c$, "initShape", 
 function () {
 Clazz.superCall (this, J.shape.Axes, "initShape", []);
@@ -68,22 +68,23 @@ if (this.fixedOrigin == null) this.originPoint.set (0, 0, 0);
 if (axesMode === J.constant.EnumAxesMode.UNITCELL && this.modelSet.unitCells != null) {
 var unitcell = this.viewer.getCurrentUnitCell ();
 if (unitcell != null) {
-var vectors = unitcell.getUnitCellVertices ();
+var vertices = unitcell.getUnitCellVertices ();
 var offset = unitcell.getCartesianOffset ();
 if (this.fixedOrigin == null) {
 this.originPoint.setT (offset);
+this.originPoint.add (vertices[0]);
 } else {
 offset = this.fixedOrigin;
 }this.scale = this.viewer.getFloat (570425346) / 2;
-this.axisPoints[0].scaleAdd2 (this.scale, vectors[4], offset);
-this.axisPoints[1].scaleAdd2 (this.scale, vectors[2], offset);
-this.axisPoints[2].scaleAdd2 (this.scale, vectors[1], offset);
+this.axisPoints[0].scaleAdd2 (this.scale, vertices[4], offset);
+this.axisPoints[1].scaleAdd2 (this.scale, vertices[2], offset);
+this.axisPoints[2].scaleAdd2 (this.scale, vertices[1], offset);
 return;
 }} else if (axesMode === J.constant.EnumAxesMode.BOUNDBOX) {
 if (this.fixedOrigin == null) this.originPoint.setT (this.viewer.getBoundBoxCenter ());
 }this.setScale (this.viewer.getFloat (570425346) / 2);
 });
-Clazz.overrideMethod (c$, "getProperty", 
+$_V(c$, "getProperty", 
 function (property, index) {
 if (property === "axisPoints") return this.axisPoints;
 if (property === "origin") return this.fixedOrigin;
@@ -109,7 +110,7 @@ axisPoint.z *= this.corner.z * scale;
 }, "~N");
 $_M(c$, "getShapeState", 
 function () {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 sb.append ("  axes scale ").appendF (this.viewer.getFloat (570425346)).append (";\n");
 if (this.fixedOrigin != null) sb.append ("  axes center ").append (J.util.Escape.eP (this.fixedOrigin)).append (";\n");
 if (this.axisXY.z != 0) sb.append ("  axes position [").appendI (Clazz.floatToInt (this.axisXY.x)).append (" ").appendI (Clazz.floatToInt (this.axisXY.y)).append (" ").append (this.axisXY.z < 0 ? " %" : "").append ("];\n");
@@ -120,7 +121,7 @@ for (var i = 0; i < this.labels.length; i++) if (this.labels[i] != null) sb.appe
 sb.append (";\n");
 }return Clazz.superCall (this, J.shape.Axes, "getShapeState", []) + sb;
 });
-c$.pt0 = c$.prototype.pt0 =  new J.util.P3 ();
+c$.pt0 = c$.prototype.pt0 =  new JU.P3 ();
 Clazz.defineStatics (c$,
 "MIN_AXIS_LEN", 1.5);
 });

@@ -1,5 +1,6 @@
 // JmolApi.js -- Jmol user functions  Bob Hanson hansonr@stolaf.edu
 
+// BH 11/25/2013 6:55:53 AM adds URL flags _USE=, _JAR=, _J2S=
 // BH 9/3/2013 5:48:03 PM simplification of Jmol.getAppletHTML()
 // BH 5/16/2013 9:01:41 AM checkbox group fix
 // BH 1/15/2013 10:55:06 AM updated to default to HTML5 not JAVA
@@ -24,18 +25,33 @@
 // BH 8/12/2012 5:15:11 PM added Jmol.getAppletHtml()
 
 (function (Jmol) {
-
+  var getField = function(key) {
+    key = "&" + key + "=";
+    return decodeURI(("&" + document.location.search.substring(1) + key).split(key)[1].split("&")[0]);
+  }
+  Jmol._j2sPath = getField("_J2S");
+    // allows URL-line setting of Info.j2sPath
+  Jmol._jarFile = getField("_JAR");
+    // allows URL-line setting of Info.jarPath and Info.jarFile
+  Jmol._use = getField("_USE");
+    // allows URL-line setting of Info.use
+    // defaults to "HTML5"
+    // looking for "_USE=xxxx" 
+    // _USE=SIGNED implies JAVA, sets Info.isSigned, and adds "Signed" to applet jar name if necessary
+    
 	Jmol.getVersion = function(){return Jmol._jmolInfo.version};
 
 	Jmol.getApplet = function(id, Info, checkOnly) {
-  	// requires JmolApplet.js and java/JmolApplet*.jar
+  	// requires JmolApplet.js and, if JAVA, java/JmolApplet*.jar
+    // or if HTML5, then j2s/ subdirectory (core, java, JZ, J)
     /*
 		var DefaultInfo = {
 			color: "#FFFFFF", // applet object background color, as for older jmolSetBackgroundColor(s)
 			width: 300,
 			height: 300,
 			addSelectionOptions: false,
-			serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
+			serverURL: "http://your.server.here/jsmol.php",
+	 console: null,  // div for where the JavaScript console will be.
 			defaultModel: "",
 			script: null,
 			src: null,
@@ -56,17 +72,19 @@
 		};	 
     
     */
-    return Jmol._Applet._getApplet(id, Info, checkOnly);
+    return Jmol._Applet._get(id, Info, checkOnly);
 	}
 
 	Jmol.getJMEApplet = function(id, Info, linkedApplet, checkOnly) {
-  	// requires JmolJME.js and jme/JME.jar
+    // Java Molecular Editor
+  	// requires JmolJME.js and jme/ subdirectory
     /*
 		var DefaultInfo = {
 			width: 300,
 			height: 300,
 			jarPath: "jme",
 			jarFile: "JME.jar",
+      use: "HTML", // or JAVA
 			options: "autoez"
 			// see http://www2.chemie.uni-erlangen.de/services/fragment/editor/jme_functions.html
 			// rbutton, norbutton - show / hide R button
@@ -81,25 +99,28 @@
 			// depict - the applet will appear without editing butons,this is used for structure display only
 		};		    
     */
-    return Jmol._JMEApplet._getApplet(id, Info, linkedApplet, checkOnly);
+    return Jmol._JMEApplet._get(id, Info, linkedApplet, checkOnly);
   }
   	
 	Jmol.getJSVApplet = function(id, Info, checkOnly) {
-	  // requires JmolJSV.js and either JSpecViewApplet.jar or JSpecViewAppletSigned.jar  
+    // JSpecView
+	  // requires JmolJSV.js and, if JAVA, either JSpecViewApplet.jar or JSpecViewAppletSigned.jar
+    // or if HTML5, then j2s/ subdirectory (core, java, JZ, J, JSV)
     /*
   	var DefaultInfo = {
 			width: 500,
 			height: 300,
 			debug: false,
 			jarPath: ".",
-			jarFile: "JSpecViewApplet.jar",
+			jarFile: "JSpecViewApplet.jar", // or "JSpecViewAppletSigned.jar"
+      uee: "HTML5", // or JAVA
 			isSigned: false,
 			initParams: null,
 			readyFunction: null,
 			script: null
 		};
     */
-    return Jmol._JSVApplet._getApplet(id, Info, checkOnly);
+    return Jmol._JSVApplet._get(id, Info, checkOnly);
   }	
 
 
@@ -148,8 +169,10 @@
   // optional Info here	
   Jmol.getAppletHtml = function(applet, Info) {
     if (Info) {
-      Jmol.setDocument(0);
+      var d = Jmol._document;
+      Jmol._document = null;
       applet = Jmol.getApplet(applet, Info);
+      Jmol._document = d;
     }  
     return applet._code;
 	}
@@ -215,6 +238,11 @@
 
 	Jmol.showInfo = function(applet, tf) {
 		applet._showInfo(tf);
+	}
+
+	Jmol.show2d = function(applet, tf) {
+    // only when JME or JSME is synced with Jmol
+		applet._show2d(tf);
 	}
 
 

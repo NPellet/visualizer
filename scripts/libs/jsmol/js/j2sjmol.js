@@ -1,6 +1,6 @@
 // j2sjmol.js 
 
-// Java programming notes:
+// Java programming notes by Bob Hanson:
 //   
 //   There are a few motifs to avoid when optimizing Java code to work smoothly
 //   with the J2S compiler:
@@ -24,12 +24,18 @@
 //   general:
 //
 // 1. j2sRequireImport xxxx is needed if xxxx is a method used in a static function
+// 2. URL.getContent() is not supported. Use other means based on URL.toString()
+// 3. 
 
  // NOTES by Bob Hanson: 
 
-  
+
  // J2S class changes:
- 
+
+ // BH 11/10/2013 9:02:20 AM fixing fading in MSIE  
+ // BH 11/3/2013 7:21:39 AM additional wrapping functions for better compressibility
+ // BH 10/30/2013 8:10:58 AM added getClass().getResource() -- returning a relative string, not a URL
+ // BH 10/30/2013 6:43:00 AM removed second System def and added System.$props and default System.property "line.separator" 
  // BH 6/15/2013 8:02:07 AM corrections to Class.isAS to return true if first element is null
  // BH 6/14/2013 4:41:09 PM corrections to Clazz.isAI and related methods to include check for null object
  // BH 3/17/2013 11:54:28 AM adds stackTrace for ERROR 
@@ -170,8 +176,6 @@ JavaObject = (Clazz.supportsNativeObject ? function () {} : Object);
 ClazzLoaderProgressMonitor = ClassLoaderProgressMonitor = {};
 Clazz.Console = {};
 Clazz.dateToString = Date.prototype.toString;
-
-System = new JavaObject ();
 
 Clazz.debuggingBH = false;
 
@@ -1673,7 +1677,7 @@ Clazz.instantialize = function (objThis, args) {
 /* protected */
 /*-# innerFunctionNames -> iFN #-*/
 Clazz.innerFunctionNames = [
-	"equals", "hashCode", /*"toString",*/ "getName", "getClassLoader", "getResourceAsStream" /*# {$no.javascript.support} >>x #*/, "defineMethod", "defineStaticMethod",
+	"equals", "hashCode", /*"toString",*/ "getName", "getClassLoader", "getResource", "getResourceAsStream" /*# {$no.javascript.support} >>x #*/, "defineMethod", "defineStaticMethod",
 	"makeConstructor" /*# x<< #*/
 ];
 
@@ -1714,9 +1718,14 @@ Clazz.innerFunctions = {
 		}
 		var loader = ClassLoader.requireLoaderByBase (baseFolder);
 		loader.getResourceAsStream = Clazz.innerFunctions.getResourceAsStream;
+    loader.getResource = Clazz.innerFunctions.getResource; // BH
 		return loader;
 	},
 
+  getResource : function(name) {
+    return this.getResourceAsStream(name).url;
+  },
+  
 	getResourceAsStream : function (name) {
 		var is = null;
 		if (name == null) {
@@ -2061,10 +2070,11 @@ Clazz.exceptionOf=function(e, clazz) {
     || clazz == NullPointerException && Clazz._isNPEExceptionPredicate(e));
 };
 
-Clazz.getStackTrace = function() {
+Clazz.getStackTrace = function(n) {
 	var s = "";
+  n || (n = 25);
   var c = arguments.callee.caller;
-    for (var i = 0; i < 50; i++) {
+    for (var i = 0; i < n; i++) {
       if (!c)break;
       s += (i + " " + (c.exName ? (c.claxxOwner ? c.claxxOwner.__CLASS_NAME__ + "."  : "") + c.exName 
       : (c.toString ? c.toString().substring(0, c.toString().indexOf("{")) : "<native method>"))) + "\n";
@@ -2943,35 +2953,11 @@ JavaObject.getName = Clazz.innerFunctions.getName;
 
 w$ = window; // Short for browser's window object
 d$ = document; // Short for browser's document object
+
+
 System = {
-	currentTimeMillis : function () {
-		return new Date ().getTime ();
-	},
 	props : null, //new java.util.Properties (),
-	getProperties : function () {
-		return System.props;
-	},
-	setProperties : function (props) {
-		System.props = props;
-	},
-	getProperty : function (key, def) {
-		if (System.props != null) {
-			return System.props.getProperty (key, def);
-		}
-		if (def != null) {
-			return def;
-		}
-		return key;
-	},
-	setProperty : function (key, val) {
-		if (System.props == null) {
-			return ;
-		}
-		System.props.setProperty (key, val);
-	},
-	currentTimeMillis : function () {
-		return new Date ().getTime ();
-	},
+  $props : {},
 	arraycopy : function (src, srcPos, dest, destPos, length) {
 		if (src !== dest) {
 			for (var i = 0; i < length; i++) {
@@ -2986,8 +2972,33 @@ System = {
 				dest[destPos + i] = swap[i];
 			}
 		}
+	},
+	currentTimeMillis : function () {
+		return new Date ().getTime ();
+	},
+  gc : function() {}, // bh
+	getProperties : function () {
+		return System.props;
+	},
+	getProperty : function (key, def) {
+		if (System.props)
+			return System.props.getProperty (key, def);
+    var v = System.$props[key];
+    return (v != null ? v : arguments.length == 1 ? null : def != null ? def : key); // BH
+	},
+  getSecurityManager : function() { return null },  // bh
+	setProperties : function (props) {
+		System.props = props;
+	},
+	setProperty : function (key, val) {
+		if (System.props == null)
+      return System.$props[key] = val; // BH
+		System.props.setProperty (key, val);
 	}
 };
+
+System.setProperty("line.separator", navigator.userAgent.indexOf("Windows")>=0?"\r\n" : "\n") //BH
+
 System.out = new JavaObject ();
 System.out.__CLASS_NAME__ = "java.io.PrintStream";
 System.out.print = function () {};
@@ -3547,32 +3558,16 @@ Clazz.fixEvent.stopPropagation = function() {
  */
 ClazzLoader = function () {};
 
+
 /**
  * Class dependency tree node
  */
 /* private */
 ClazzNode = function () {
-	this.parents = new Array ();
-	this.musts = new Array ();
-	this.optionals = new Array ();
-	this.declaration = null;
-	this.name = null; // id
-	this.path = null;
-	this.status = 0;
-	this.random = 0.13412;
-	this.optionalsLoaded = null;
-	this.toString = function () {
-		if (this.name != null) {
-			return this.name;
-		} else if (this.path != null) {
-			return this.path;
-		} else {
-			return "ClazzNode";
-		}
-	};
+  ClazzLoader.initNode(this);
 };
 
-;(function(ClazzLoader, ClazzNode) {
+;(function(Clazz, ClazzLoader, ClazzNode) {
 /*-#
  # ClazzNode.STATUS_UNKNOWN = 0
  # ClazzNode.STATUS_KNOWN -> 1
@@ -3582,6 +3577,23 @@ ClazzNode = function () {
  # ClazzNode.STATUS_OPTIONALS_LOADED -> 5
  #-*/
 /*# >>x #*/
+
+ClazzLoader.initNode = function(node) {
+	node.parents = new Array ();
+	node.musts = new Array ();
+	node.optionals = new Array ();
+	node.declaration = null;
+	node.name = null; // id
+	node.path = null;
+	node.status = 0;
+	node.random = 0.13412;
+	node.optionalsLoaded = null;
+}
+
+ClazzNode.prototype.toString = function () {
+	return this.name || this.path || "ClazzNode";
+}
+
 ClazzNode.STATUS_UNKNOWN = 0;
 ClazzNode.STATUS_KNOWN = 1;
 ClazzNode.STATUS_CONTENT_LOADED = 2;
@@ -4565,9 +4577,7 @@ ClazzLoader.loadScript = function (file, why) {
 		}
 	}
   
-  System.out.println("call loadScript "
-    + file.replace(/\//g,"\\")
-      .replace(/j2s[\\\.]/g,"") + (why ? " -- required by " + why : ""))
+  System.out.println("loading... " + file + (why ? " -- required by " + why : ""))
 
 
 	if (ClazzLoader.isUsingXMLHttpRequest) {
@@ -4576,9 +4586,15 @@ ClazzLoader.loadScript = function (file, why) {
 
     if (!ClazzLoader.isAsynchronousLoading) {
       // works in MSIE locally :)
-    	var info = {dataType:"text",async:false,url:file};
-		  var xhr = Jmol.$ajax(info);
-      var data = xhr.responseText;
+     if (self.Jmol) {
+       var data = Jmol._getFileData(file);
+      } else {
+    	  var info = {dataType:"text",async:false,url:file};
+		    var xhr = Jmol.$ajax(info);
+        var data = xhr.responseText;
+        if (data == null && xhr.state)
+          data = "alert('error loading file " + file + " state=" + xhr.state() + "')";
+      }
       ClazzLoader.evaluate(file, data); 
       return;
     }
@@ -6263,7 +6279,7 @@ ClazzLoader.assureInnerClass = function (clzz, fun) {
 
 ClassLoader = ClazzLoader;
 
-})(ClazzLoader, ClazzNode);
+})(Clazz, ClazzLoader, ClazzNode);
 
 //}
 /******************************************************************************
@@ -6287,7 +6303,7 @@ clpm.fadeAlpha = 0;
 clpm.monitorEl = null;
 clpm.lastScrollTop = 0;
 clpm.bindingParent = null;
-clpm.DEFAULT_OPACITY = 55;
+clpm.DEFAULT_OPACITY = (self.Jmol && Jmol._j2sLoadMonitorOpacity ? Jmol._j2sLoadMonitorOpacity : 55);
 /* private static */ clpm.clearChildren = function (el) {
 	if (el == null) return;
 	for (var i = el.childNodes.length - 1; i >= 0; i--) {
@@ -6308,11 +6324,8 @@ clpm.DEFAULT_OPACITY = 55;
 	}
 	this.fadeAlpha = alpha;
 	var ua = navigator.userAgent.toLowerCase ();
-	if (ua.indexOf ("msie") != -1 && ua.indexOf ("opera") == -1) {
-		this.monitorEl.style.filter = "Alpha(Opacity=" + alpha + ")";
-	} else {
-		this.monitorEl.style.opacity = alpha / 100.0;
-	}
+	this.monitorEl.style.filter = "Alpha(Opacity=" + alpha + ")";
+	this.monitorEl.style.opacity = alpha / 100.0;
 };
 /* private */ clpm.hiddingOnMouseOver = function () {
 	this.style.display = "none";
@@ -6356,7 +6369,9 @@ clpm.DEFAULT_OPACITY = 55;
 		this.fadeOutTimer = window.setTimeout (function () {
 					ClassLoaderProgressMonitor.fadeOut ();
 				}, 40);
-	}
+	} else {
+  	this.monitorEl.style.display = "none";
+  }
 };
 /* private */ clpm.getFixedOffsetTop = function (){
 	if (this.bindingParent != null) {
@@ -6781,55 +6796,7 @@ Clazz.alert = function (s) {
 
 	Console.c160 = String.fromCharCode (160); //nbsp;
 	Console.c160 += Console.c160+Console.c160+Console.c160;
-	
-	System.currentTimeMillis = function () {
-		return new Date ().getTime ();
-	};
 
-	/* public */
-	System.arraycopy = function (src, srcPos, dest, destPos, length) {
-		if (src != dest) {
-			for (var i = 0; i < length; i++) {
-				dest[destPos + i] = src[srcPos + i];
-			}
-		} else {
-			var swap = [];
-			for (var i = 0; i < length; i++) {
-				swap[i] = src[srcPos + i];
-			}
-			for (var i = 0; i < length; i++) {
-				dest[destPos + i] = swap[i];
-			}
-		}
-	};
-	
-	System.props = null; //new java.util.Properties ();
-	System.getProperties = function () {
-		return System.props;
-	};
-	System.getProperty = function (key, def) {
-		if (System.props != null) {
-			return System.props.getProperty (key, def);
-		}
-		if (arguments.length == 1) return null;// BH
-		if (def != null) {
-			return def;
-		}
-		return key;
-	};
-	System.setProperties = function (props) {
-		System.props = props;
-	};
-	System.setProperty = function (key, val) {
-		if (System.props == null) {
-			return ;
-		}
-		System.props.setProperty (key, val);
-	};
-
-	/* public */
-	System.out = new JavaObject ();
-	System.out.__CLASS_NAME__ = "java.io.PrintStream";
 	
 	/* public */
 	System.out.print = function (s) { 
@@ -6849,7 +6816,6 @@ Clazz.alert = function (s) {
 	};
 	
 	/* public */
-	System.err = new JavaObject ();
 	System.err.__CLASS_NAME__ = "java.io.PrintStream";
 	
 	/* public */
@@ -6869,10 +6835,8 @@ Clazz.alert = function (s) {
 		Console.consoleOutput (s, "red");
 	};
 	
-  System.gc = function() {}; // bh added
-  System.getSecurityManager = function() { return null };  // bh added
-  String.prototype.contains = function(a) {return this.indexOf(a) >= 0}  // bh added
-  String.prototype.compareTo = function(a){return this > a ? 1 : this < a ? -1 : 0} // bh added
+
+
 })(Clazz.Console, System);
 
 Clazz.setConsoleDiv = function(d) {
@@ -6881,6 +6845,9 @@ Clazz.setConsoleDiv = function(d) {
 
 })(Clazz);
 
+String.prototype.contains = function(a) {return this.indexOf(a) >= 0}  // bh added
+String.prototype.compareTo = function(a){return this > a ? 1 : this < a ? -1 : 0} // bh added
+  
 // moved here from package.js
 
 	ClazzLoader.registerPackages ("java", [

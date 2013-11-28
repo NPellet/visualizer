@@ -1,19 +1,19 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.FoldingXyzReader", ["java.lang.Character", "java.util.StringTokenizer", "J.adapter.smarter.Atom", "J.util.ArrayUtil", "$.Parser"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.simple.FoldingXyzReader", ["java.lang.Character", "java.util.StringTokenizer", "JU.AU", "$.PT", "J.adapter.smarter.Atom"], function () {
 c$ = Clazz.declareType (J.adapter.readers.simple, "FoldingXyzReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 var tokens =  new java.util.StringTokenizer (this.line, " \t");
 if (tokens.hasMoreTokens ()) {
 this.atomSetCollection.newAtomSet ();
-var modelAtomCount = J.util.Parser.parseIntRadix (tokens.nextToken (), 10);
+var modelAtomCount = JU.PT.parseIntRadix (tokens.nextToken (), 10);
 if (tokens.hasMoreTokens ()) this.atomSetCollection.setAtomSetName ("Protein " + tokens.nextToken ());
 this.readAtoms (modelAtomCount);
 }return true;
 });
 $_M(c$, "readAtoms", 
 function (modelAtomCount) {
-var bonds = J.util.ArrayUtil.newInt2 (modelAtomCount + 1);
+var bonds = JU.AU.newInt2 (modelAtomCount + 1);
 for (var i = 0; i <= modelAtomCount; ++i) {
 bonds[i] = null;
 }
@@ -41,11 +41,11 @@ bonds[i] =  Clazz.newIntArray (5, 0);
 var bondNum = -2147483648;
 while ((bondNum = this.parseInt ()) > 0) {
 if (bondCount == bonds[i].length) {
-bonds[i] = J.util.ArrayUtil.arrayCopyI (bonds[i], bondCount + 1);
+bonds[i] = JU.AU.arrayCopyI (bonds[i], bondCount + 1);
 }bonds[i][bondCount++] = bondNum - 1;
 }
 if (bondCount < bonds[i].length) {
-bonds[i] = J.util.ArrayUtil.arrayCopyI (bonds[i], bondCount);
+bonds[i] = JU.AU.arrayCopyI (bonds[i], bondCount);
 }}}
 if (true) {
 var incorrectBonds = 0;

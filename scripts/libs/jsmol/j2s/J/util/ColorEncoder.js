@@ -1,8 +1,9 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.ColorEncoder", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "J.constant.EnumPalette", "J.util.ArrayUtil", "$.C", "$.ColorUtil", "$.Escape", "$.JmolList", "$.Logger", "$.TextFormat", "J.viewer.JC"], function () {
+Clazz.load (null, "J.util.ColorEncoder", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.CU", "$.List", "$.PT", "J.constant.EnumPalette", "J.util.C", "$.Escape", "$.Logger", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.paletteBW = null;
 this.paletteWB = null;
+this.paletteFriendly = null;
 this.argbsCpk = null;
 this.argbsRoygb = null;
 this.argbsRwb = null;
@@ -44,7 +45,7 @@ this.schemes = propertyColorEncoder.schemes;
 }}, "J.util.ColorEncoder");
 c$.getSchemeIndex = $_M(c$, "getSchemeIndex", 
 ($fz = function (colorScheme) {
-for (var i = 0; i < J.util.ColorEncoder.colorSchemes.length; i++) if (J.util.ColorEncoder.colorSchemes[i].equalsIgnoreCase (colorScheme)) return (i >= 15 ? i - 15 : i < 12 ? i : -i);
+for (var i = 0; i < J.util.ColorEncoder.colorSchemes.length; i++) if (J.util.ColorEncoder.colorSchemes[i].equalsIgnoreCase (colorScheme)) return (i >= 16 ? i - 16 : i < 13 ? i : -i);
 
 return -1;
 }, $fz.isPrivate = true, $fz), "~S");
@@ -61,6 +62,9 @@ if (scale == null) {
 this.schemes.remove (name);
 var iScheme = this.createColorScheme (name, false, isOverloaded);
 if (isOverloaded) switch (iScheme) {
+case 12:
+this.paletteFriendly = this.getPaletteAC ();
+break;
 case 10:
 this.paletteBW = this.getPaletteBW ();
 break;
@@ -125,17 +129,17 @@ return -1;
 $_M(c$, "createColorScheme", 
 function (colorScheme, defaultToRoygb, isOverloaded) {
 colorScheme = colorScheme.toLowerCase ();
-if (colorScheme.equals ("inherit")) return 14;
+if (colorScheme.equals ("inherit")) return 15;
 var pt = Math.max (colorScheme.indexOf ("="), colorScheme.indexOf ("["));
 if (pt >= 0) {
-var name = J.util.TextFormat.replaceAllCharacters (colorScheme.substring (0, pt), " =", "");
+var name = JU.PT.replaceAllCharacters (colorScheme.substring (0, pt), " =", "");
 if (name.length > 0) isOverloaded = true;
 var n = 0;
 if (colorScheme.length > pt + 1 && !colorScheme.contains ("[")) {
 colorScheme = "[" + colorScheme.substring (pt + 1).trim () + "]";
-colorScheme = J.util.TextFormat.simpleReplace (colorScheme.$replace ('\n', ' '), "  ", " ");
-colorScheme = J.util.TextFormat.simpleReplace (colorScheme, ", ", ",").$replace (' ', ',');
-colorScheme = J.util.TextFormat.simpleReplace (colorScheme, ",", "][");
+colorScheme = JU.PT.simpleReplace (colorScheme.$replace ('\n', ' '), "  ", " ");
+colorScheme = JU.PT.simpleReplace (colorScheme, ", ", ",").$replace (' ', ',');
+colorScheme = JU.PT.simpleReplace (colorScheme, ",", "][");
 }pt = -1;
 while ((pt = colorScheme.indexOf ("[", pt + 1)) >= 0) n++;
 
@@ -145,8 +149,8 @@ n = 0;
 while ((pt = colorScheme.indexOf ("[", pt + 1)) >= 0) {
 var pt2 = colorScheme.indexOf ("]", pt);
 if (pt2 < 0) pt2 = colorScheme.length - 1;
-var c = J.util.ColorUtil.getArgbFromString (colorScheme.substring (pt, pt2 + 1));
-if (c == 0) c = J.util.ColorUtil.getArgbFromString (colorScheme.substring (pt + 1, pt2).trim ());
+var c = JU.CU.getArgbFromString (colorScheme.substring (pt, pt2 + 1));
+if (c == 0) c = JU.CU.getArgbFromString (colorScheme.substring (pt + 1, pt2).trim ());
 if (c == 0) {
 J.util.Logger.error ("error in color value: " + colorScheme.substring (pt, pt2 + 1));
 return 0;
@@ -154,7 +158,7 @@ return 0;
 }
 if (name.equals ("user")) {
 this.setUserScale (scale);
-return -12;
+return -13;
 }return this.makeColorScheme (name, scale, isOverloaded);
 }colorScheme = J.util.ColorEncoder.fixName (colorScheme);
 var ipt = J.util.ColorEncoder.getSchemeIndex (colorScheme);
@@ -177,15 +181,17 @@ return this.thisScale;
 case 0:
 return this.propertyColorEncoder.argbsRoygb;
 case 1:
-return J.util.ArrayUtil.arrayCopyRangeRevI (this.propertyColorEncoder.argbsRoygb, 0, -1);
+return JU.AU.arrayCopyRangeRevI (this.propertyColorEncoder.argbsRoygb, 0, -1);
 case 8:
-return J.util.ArrayUtil.arrayCopyRangeI (this.propertyColorEncoder.argbsRoygb, 0, this.propertyColorEncoder.ihalf);
+return JU.AU.arrayCopyRangeI (this.propertyColorEncoder.argbsRoygb, 0, this.propertyColorEncoder.ihalf);
 case 9:
-var a = J.util.ArrayUtil.arrayCopyRangeI (this.propertyColorEncoder.argbsRoygb, this.propertyColorEncoder.argbsRoygb.length - 2 * this.propertyColorEncoder.ihalf, -1);
+var a = JU.AU.arrayCopyRangeI (this.propertyColorEncoder.argbsRoygb, this.propertyColorEncoder.argbsRoygb.length - 2 * this.propertyColorEncoder.ihalf, -1);
 b =  Clazz.newIntArray (this.propertyColorEncoder.ihalf, 0);
 for (var i = b.length, j = a.length; --i >= 0 && --j >= 0; ) b[i] = a[j--];
 
 return b;
+case 12:
+return this.getPaletteAC ();
 case 10:
 return this.getPaletteBW ();
 case 11:
@@ -193,7 +199,7 @@ return this.getPaletteWB ();
 case 6:
 return this.propertyColorEncoder.argbsRwb;
 case 7:
-return J.util.ArrayUtil.arrayCopyRangeRevI (this.propertyColorEncoder.argbsRwb, 0, -1);
+return JU.AU.arrayCopyRangeRevI (this.propertyColorEncoder.argbsRwb, 0, -1);
 case 2:
 return this.propertyColorEncoder.argbsCpk;
 case 3:
@@ -202,10 +208,10 @@ case 4:
 return this.propertyColorEncoder.argbsShapely;
 case 5:
 return this.propertyColorEncoder.argbsAmino;
-case -12:
-return this.propertyColorEncoder.userScale;
 case -13:
-return J.util.ArrayUtil.arrayCopyRangeRevI (this.propertyColorEncoder.userScale, 0, -1);
+return this.propertyColorEncoder.userScale;
+case -14:
+return JU.AU.arrayCopyRangeRevI (this.propertyColorEncoder.userScale, 0, -1);
 default:
 return null;
 }
@@ -227,8 +233,7 @@ case -1:
 return this.thisScale.length;
 case 10:
 case 11:
-this.getPaletteBW ();
-return this.propertyColorEncoder.paletteBW.length;
+return this.getPaletteBW ().length;
 case 0:
 case 1:
 return this.propertyColorEncoder.argbsRoygb.length;
@@ -238,8 +243,8 @@ return this.propertyColorEncoder.ihalf;
 case 6:
 case 7:
 return this.propertyColorEncoder.argbsRwb.length;
-case -12:
 case -13:
+case -14:
 return this.propertyColorEncoder.userScale.length;
 case 2:
 return this.argbsCpk.length;
@@ -249,6 +254,8 @@ case 4:
 return this.propertyColorEncoder.argbsShapely.length;
 case 5:
 return this.propertyColorEncoder.argbsAmino.length;
+case 12:
+return this.getPaletteAC ().length;
 default:
 return 0;
 }
@@ -279,9 +286,9 @@ case 6:
 return this.propertyColorEncoder.argbsRwb[J.util.ColorEncoder.quantize (val, lo, hi, n)];
 case 7:
 return this.propertyColorEncoder.argbsRwb[J.util.ColorEncoder.quantize (-val, -hi, -lo, n)];
-case -12:
-return (this.propertyColorEncoder.userScale.length == 0 ? -8355712 : this.propertyColorEncoder.userScale[J.util.ColorEncoder.quantize (val, lo, hi, n)]);
 case -13:
+return (this.propertyColorEncoder.userScale.length == 0 ? -8355712 : this.propertyColorEncoder.userScale[J.util.ColorEncoder.quantize (val, lo, hi, n)]);
+case -14:
 return (this.propertyColorEncoder.userScale.length == 0 ? -8355712 : this.propertyColorEncoder.userScale[J.util.ColorEncoder.quantize (-val, -hi, -lo, n)]);
 case 2:
 return this.propertyColorEncoder.argbsCpk[J.util.ColorEncoder.colorIndex (val, n)];
@@ -291,6 +298,8 @@ case 4:
 return this.propertyColorEncoder.argbsShapely[J.util.ColorEncoder.colorIndex (val, n)];
 case 5:
 return this.propertyColorEncoder.argbsAmino[J.util.ColorEncoder.colorIndex (val, n)];
+case 12:
+return this.getPaletteAC ()[J.util.ColorEncoder.colorIndexRepeat (val, n)];
 default:
 return -8355712;
 }
@@ -306,6 +315,10 @@ $_M(c$, "getArgb",
 function (val) {
 return (this.isReversed ? this.getArgbFromPalette (-val, -this.hi, -this.lo, this.currentPalette) : this.getArgbFromPalette (val, this.lo, this.hi, this.currentPalette));
 }, "~N");
+$_M(c$, "getArgbMinMax", 
+function (val, min, max) {
+return (this.isReversed ? this.getArgbFromPalette (-val, -max, -min, this.currentPalette) : this.getArgbFromPalette (val, min, max, this.currentPalette));
+}, "~N,~N,~N");
 $_M(c$, "getColorIndex", 
 function (val) {
 return (this.isReversed ? this.getColorIndexFromPalette (-val, -this.hi, -this.lo, this.currentPalette, this.isTranslucent) : this.getColorIndexFromPalette (val, this.lo, this.hi, this.currentPalette, this.isTranslucent));
@@ -314,13 +327,13 @@ $_M(c$, "getColorKey",
 function () {
 var info =  new java.util.Hashtable ();
 var segmentCount = this.getPaletteColorCount (this.currentPalette);
-var colors =  new J.util.JmolList ();
+var colors =  new JU.List ();
 var values =  Clazz.newFloatArray (segmentCount + 1, 0);
 var quantum = (this.hi - this.lo) / segmentCount;
 var f = quantum * (this.isReversed ? -0.5 : 0.5);
 for (var i = 0; i < segmentCount; i++) {
 values[i] = (this.isReversed ? this.hi - i * quantum : this.lo + i * quantum);
-colors.addLast (J.util.ColorUtil.colorPointFromInt2 (this.getArgb (values[i] + f)));
+colors.addLast (JU.CU.colorPtFromInt2 (this.getArgb (values[i] + f)));
 }
 values[segmentCount] = (this.isReversed ? this.lo : this.hi);
 info.put ("values", values);
@@ -365,7 +378,7 @@ return colors;
 c$.getRasmolScale = $_M(c$, "getRasmolScale", 
 function () {
 if (J.util.ColorEncoder.rasmolScale != null) return J.util.ColorEncoder.rasmolScale;
-($t$ = J.util.ColorEncoder.rasmolScale =  Clazz.newIntArray (J.constant.EnumPalette.argbsCpk.length, 0), J.util.ColorEncoder.prototype.rasmolScale = J.util.ColorEncoder.rasmolScale, $t$);
+J.util.ColorEncoder.rasmolScale =  Clazz.newIntArray (J.constant.EnumPalette.argbsCpk.length, 0);
 var argb = J.constant.EnumPalette.argbsCpkRasmol[0] | 0xFF000000;
 for (var i = J.util.ColorEncoder.rasmolScale.length; --i >= 0; ) J.util.ColorEncoder.rasmolScale[i] = argb;
 
@@ -375,13 +388,17 @@ J.util.ColorEncoder.rasmolScale[argb >> 24] = argb | 0xFF000000;
 }
 return J.util.ColorEncoder.rasmolScale;
 });
+$_M(c$, "getPaletteAC", 
+($fz = function () {
+return (this.propertyColorEncoder.paletteFriendly == null ? this.propertyColorEncoder.paletteFriendly = [0x808080, 0x104BA9, 0xAA00A2, 0xC9F600, 0xFFA200, 0x284A7E, 0x7F207B, 0x9FB82E, 0xBF8B30, 0x052D6E, 0x6E0069, 0x83A000, 0xA66A00, 0x447BD4, 0xD435CD, 0xD8FA3F, 0xFFBA40, 0x6A93D4, 0xD460CF, 0xE1FA71, 0xFFCC73] : this.propertyColorEncoder.paletteFriendly);
+}, $fz.isPrivate = true, $fz));
 $_M(c$, "getPaletteWB", 
 ($fz = function () {
 if (this.propertyColorEncoder.paletteWB != null) return this.propertyColorEncoder.paletteWB;
 var b =  Clazz.newIntArray (J.viewer.JC.argbsRoygbScale.length, 0);
 for (var i = 0; i < b.length; i++) {
 var xff = (1 / b.length * (b.length - i));
-b[i] = J.util.ColorUtil.colorTriadToInt (xff, xff, xff);
+b[i] = JU.CU.colorTriadToFFRGB (xff, xff, xff);
 }
 return this.propertyColorEncoder.paletteWB = b;
 }, $fz.isPrivate = true, $fz));
@@ -389,16 +406,14 @@ c$.getPaletteAtoB = $_M(c$, "getPaletteAtoB",
 function (color1, color2, n) {
 if (n < 2) n = J.viewer.JC.argbsRoygbScale.length;
 var b =  Clazz.newIntArray (n, 0);
-var red1 = (((color1 & 0xFF0000) >> 16) & 0xFF) / 255;
-var green1 = (((color1 & 0xFF00) >> 8) & 0xFF) / 255;
-var blue1 = (color1 & 0xFF) / 255;
-var red2 = (((color2 & 0xFF0000) >> 16) & 0xFF) / 255;
-var green2 = (((color2 & 0xFF00) >> 8) & 0xFF) / 255;
-var blue2 = (color2 & 0xFF) / 255;
-var dr = (red2 - red1) / (n - 1);
-var dg = (green2 - green1) / (n - 1);
-var db = (blue2 - blue1) / (n - 1);
-for (var i = 0; i < n; i++) b[i] = J.util.ColorUtil.colorTriadToInt (red1 + dr * i, green1 + dg * i, blue1 + db * i);
+var rgb1 =  Clazz.newFloatArray (3, 0);
+var rgb2 =  Clazz.newFloatArray (3, 0);
+JU.CU.toRGB3f (color1, rgb1);
+JU.CU.toRGB3f (color2, rgb2);
+var dr = (rgb2[0] - rgb1[0]) / (n - 1);
+var dg = (rgb2[1] - rgb1[1]) / (n - 1);
+var db = (rgb2[2] - rgb1[2]) / (n - 1);
+for (var i = 0; i < n; i++) b[i] = JU.CU.colorTriadToFFRGB (rgb1[0] + dr * i, rgb1[1] + dg * i, rgb1[2] + db * i);
 
 return b;
 }, "~N,~N,~N");
@@ -408,7 +423,7 @@ if (this.propertyColorEncoder.paletteBW != null) return this.propertyColorEncode
 var b =  Clazz.newIntArray (J.viewer.JC.argbsRoygbScale.length, 0);
 for (var i = 0; i < b.length; i++) {
 var xff = (1 / b.length * i);
-b[i] = J.util.ColorUtil.colorTriadToInt (xff, xff, xff);
+b[i] = JU.CU.colorTriadToFFRGB (xff, xff, xff);
 }
 return this.propertyColorEncoder.paletteBW = b;
 }, $fz.isPrivate = true, $fz));
@@ -431,7 +446,12 @@ return q;
 }, "~N,~N,~N,~N");
 c$.colorIndex = $_M(c$, "colorIndex", 
 ($fz = function (q, segmentCount) {
-return Clazz.doubleToInt (Math.floor ( new Boolean (q <= 0 | q >= segmentCount).valueOf () ? 0 : q));
+return Clazz.doubleToInt (Math.floor (q <= 0 || q >= segmentCount ? 0 : q));
+}, $fz.isPrivate = true, $fz), "~N,~N");
+c$.colorIndexRepeat = $_M(c$, "colorIndexRepeat", 
+($fz = function (q, segmentCount) {
+var i = Clazz.doubleToInt (Math.floor (q <= 0 ? 0 : q));
+return i % segmentCount;
 }, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "getColorScheme", 
 function () {
@@ -483,11 +503,12 @@ Clazz.defineStatics (c$,
 "HIGH", 9,
 "BW", 10,
 "WB", 11,
-"USER", -12,
-"RESU", -13,
-"INHERIT", 14,
-"ALT", 15);
-c$.colorSchemes = c$.prototype.colorSchemes = ["roygb", "bgyor", "byelement_jmol", "byelement_rasmol", "byresidue_shapely", "byresidue_amino", "rwb", "bwr", "low", "high", "bw", "wb", "user", "resu", "inherit", "rgb", "bgr", "jmol", "rasmol", "byresidue"];
+"FRIENDLY", 12,
+"USER", -13,
+"RESU", -14,
+"INHERIT", 15,
+"ALT", 16);
+c$.colorSchemes = c$.prototype.colorSchemes = ["roygb", "bgyor", "byelement_jmol", "byelement_rasmol", "byresidue_shapely", "byresidue_amino", "rwb", "bwr", "low", "high", "bw", "wb", "friendly", "user", "resu", "inherit", "rgb", "bgr", "jmol", "rasmol", "byresidue"];
 Clazz.defineStatics (c$,
 "rasmolScale", null);
 });

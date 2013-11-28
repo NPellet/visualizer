@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.FontLineShapeRenderer", "J.util.P3", "$.P3i"], "J.render.LabelsRenderer", ["J.modelset.Object2d", "$.Text", "J.render.TextRenderer", "J.shape.Labels"], function () {
+Clazz.load (["J.render.FontLineShapeRenderer", "JU.P3", "$.P3i"], "J.render.LabelsRenderer", ["J.modelset.Text", "J.render.TextRenderer", "J.shape.Labels", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.minZ = null;
 this.ascent = 0;
@@ -28,10 +28,10 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.minZ =  Clazz.newIntArray (1, 0);
 this.xy =  Clazz.newFloatArray (3, 0);
-this.screen =  new J.util.P3i ();
-this.pTemp =  new J.util.P3 ();
+this.screen =  new JU.P3i ();
+this.pTemp =  new JU.P3 ();
 });
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 this.fidPrevious = 0;
 this.zCutoff = this.viewer.getZShadeStart ();
@@ -129,7 +129,7 @@ var doPointer = ((this.pointer & 1) != 0);
 var pointerColix = ((this.pointer & 2) != 0 && this.bgcolix != 0 ? this.bgcolix : this.labelColix);
 this.boxXY[0] = this.atomPt.screenX;
 this.boxXY[1] = this.atomPt.screenY;
-J.render.TextRenderer.renderSimpleLabel (this.g3d, this.font3d, label, this.labelColix, this.bgcolix, this.boxXY, this.zBox, this.zSlab, J.modelset.Object2d.getXOffset (this.offset), J.modelset.Object2d.getYOffset (this.offset), this.ascent, this.descent, doPointer, pointerColix, this.isExact);
+J.render.TextRenderer.renderSimpleLabel (this.g3d, this.font3d, label, this.labelColix, this.bgcolix, this.boxXY, this.zBox, this.zSlab, J.viewer.JC.getXOffset (this.offset), J.viewer.JC.getYOffset (this.offset), this.ascent, this.descent, doPointer, pointerColix, this.isExact);
 this.atomPt = null;
 } else {
 text = J.modelset.Text.newLabel (this.g3d.getGData (), this.font3d, label, this.labelColix, this.bgcolix, this.textAlign, 0, null);

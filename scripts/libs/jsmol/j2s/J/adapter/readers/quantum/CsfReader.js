@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader", "java.util.Hashtable"], "J.adapter.readers.quantum.CsfReader", ["java.lang.Float", "J.adapter.smarter.Atom", "$.Bond", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.JmolList", "$.Logger", "$.Parser"], function () {
+Clazz.load (["J.adapter.readers.quantum.MopacSlaterReader", "java.util.Hashtable"], "J.adapter.readers.quantum.CsfReader", ["java.lang.Float", "JU.AU", "$.List", "$.PT", "J.adapter.smarter.Atom", "$.Bond", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nAtoms = 0;
 this.strAtomicNumbers = "";
@@ -18,7 +18,7 @@ Clazz.prepareFields (c$, function () {
 this.propertyItemCounts =  new java.util.Hashtable ();
 this.fieldTypes =  Clazz.newIntArray (100, 0);
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.equals ("local_transform")) {
 this.processLocalTransform ();
@@ -122,7 +122,7 @@ if (field.equals ("sto_basis_fxn")) this.nSlaters++;
  else if (!field.equals ("bond")) continue out;
 break;
 case 2:
-thisAtomID = J.util.Parser.parseInt (field);
+thisAtomID = JU.PT.parseInt (field);
 break;
 case 4:
 thisBondID = field2 + field;
@@ -165,7 +165,7 @@ var field = tokens[i];
 if (field == null) J.util.Logger.warn ("field == null in " + this.line);
 switch (this.fieldTypes[i]) {
 case -1:
-atom.atomSerial = J.util.Parser.parseInt (field);
+atom.atomSerial = JU.PT.parseInt (field);
 break;
 case 1:
 atom.elementSymbol = field;
@@ -329,7 +329,7 @@ for (var i = 0; i < this.atomicNumbers.length; i++) this.atomicNumbers[i] = this
 
 this.nOrbitals = (this.nSlaters + this.nGaussians);
 var isGaussian = (sto_gto.equals ("gto"));
-var zetas = J.util.ArrayUtil.newFloat2 (this.nOrbitals);
+var zetas = JU.AU.newFloat2 (this.nOrbitals);
 var contractionCoefs = null;
 var types =  new Array (this.nOrbitals);
 var shells =  Clazz.newIntArray (this.nOrbitals, 0);
@@ -365,8 +365,8 @@ this.fillCsfArray ("contractions", tokens, i, contractionCoefs[ipt], false);
 }
 }
 if (isGaussian) {
-var sdata =  new J.util.JmolList ();
-var gdata =  new J.util.JmolList ();
+var sdata =  new JU.List ();
+var gdata =  new JU.List ();
 var iShell = 0;
 var gaussianCount = 0;
 for (var ipt = 0; ipt < this.nGaussians; ipt++) {
@@ -386,7 +386,7 @@ gaussianCount += nZ;
 for (var i = 0; i < nZ; i++) gdata.addLast ([zetas[ipt][i], contractionCoefs[ipt][i]]);
 
 }}
-var garray = J.util.ArrayUtil.newFloat2 (gaussianCount);
+var garray = JU.AU.newFloat2 (gaussianCount);
 for (var i = 0; i < gaussianCount; i++) garray[i] = gdata.get (i);
 
 this.moData.put ("shells", sdata);

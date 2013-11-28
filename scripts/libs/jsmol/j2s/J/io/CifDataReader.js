@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.io");
-Clazz.load (["J.util.SB"], "J.io.CifDataReader", ["java.util.Hashtable", "J.util.JmolList", "$.Logger"], function () {
+Clazz.load (["JU.SB"], "J.io.CifDataReader", ["java.util.Hashtable", "JU.List", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.reader = null;
 this.br = null;
@@ -19,7 +19,7 @@ this.allData = null;
 Clazz.instantialize (this, arguments);
 }, J.io, "CifDataReader");
 Clazz.prepareFields (c$, function () {
-this.fileHeader =  new J.util.SB ();
+this.fileHeader =  new JU.SB ();
 });
 Clazz.makeConstructor (c$, 
 function (reader) {
@@ -43,7 +43,7 @@ $_M(c$, "getAllCifData",
 this.line = "";
 var key;
 this.allData =  new java.util.Hashtable ();
-var models =  new J.util.JmolList ();
+var models =  new JU.List ();
 this.allData.put ("models", models);
 try {
 while ((key = this.getNextToken ()) != null) {
@@ -201,11 +201,11 @@ return str.substring (pt0, pt1);
 $_M(c$, "getCifLoopData", 
 ($fz = function () {
 var str;
-var keyWords =  new J.util.JmolList ();
+var keyWords =  new JU.List ();
 while ((str = this.peekToken ()) != null && str.charAt (0) == '_') {
 str = this.getTokenPeeked ();
 keyWords.addLast (str);
-this.data.put (str,  new J.util.JmolList ());
+this.data.put (str,  new JU.List ());
 }
 this.fieldCount = keyWords.size ();
 if (this.fieldCount == 0) return;
@@ -216,4 +216,24 @@ for (var i = 0; i < this.fieldCount; i++) {
 }
 }
 }, $fz.isPrivate = true, $fz));
+$_M(c$, "toUnicode", 
+function (data) {
+var pt;
+try {
+while ((pt = data.indexOf ('\\')) >= 0) {
+var c = data.charCodeAt (pt + 1);
+var ch = (c >= 65 && c <= 90 ? "ABX\u0394E\u03a6\u0393HI_K\u039bMNO\u03a0\u0398P\u03a3TY_\u03a9\u039e\u03a5Z".substring (c - 65, c - 64) : c >= 97 && c <= 122 ? "\u03b1\u03b2\u03c7\u03a4\u03a5\u03c6\u03b3\u03b7\u03b9_\u03ba\u03bb\u03bc\u03bd\u03bf\u03c0\u03b8\u03c1\u03c3\u03c4\u03c5_\u03c9\u03be\u03c5\u03b6".substring (c - 97, c - 96) : "_");
+data = data.substring (0, pt) + ch + data.substring (pt + 2);
+}
+} catch (e) {
+if (Clazz.exceptionOf (e, Exception)) {
+} else {
+throw e;
+}
+}
+return data;
+}, "~S");
+Clazz.defineStatics (c$,
+"grABC", "ABX\u0394E\u03a6\u0393HI_K\u039bMNO\u03a0\u0398P\u03a3TY_\u03a9\u039e\u03a5Z",
+"grabc", "\u03b1\u03b2\u03c7\u03a4\u03a5\u03c6\u03b3\u03b7\u03b9_\u03ba\u03bb\u03bc\u03bd\u03bf\u03c0\u03b8\u03c1\u03c3\u03c4\u03c5_\u03c9\u03be\u03c5\u03b6");
 });

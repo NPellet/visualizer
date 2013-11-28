@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["J.modelset.AtomCollection", "J.util.BS"], "J.modelset.BondCollection", ["java.lang.Float", "J.modelset.Bond", "$.BondIteratorSelected", "$.HBond", "J.util.ArrayUtil", "$.BSUtil", "$.C", "$.JmolEdge", "$.Logger"], function () {
+Clazz.load (["J.modelset.AtomCollection", "JU.BS"], "J.modelset.BondCollection", ["java.lang.Float", "JU.AU", "J.modelset.Bond", "$.BondIteratorSelected", "$.HBond", "J.util.BSUtil", "$.C", "$.JmolEdge", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.molecules = null;
 this.moleculeCount = 0;
@@ -21,9 +21,9 @@ this.freeBonds =  new Array (5);
 {
 for (var i = 5; --i > 0; ) this.freeBonds[i] =  new Array (200);
 
-}this.bsAromatic =  new J.util.BS ();
+}this.bsAromatic =  new JU.BS ();
 });
-Clazz.overrideMethod (c$, "releaseModelSet", 
+$_V(c$, "releaseModelSet", 
 function () {
 this.releaseModelSetBC ();
 });
@@ -45,11 +45,11 @@ return this.bonds[bondIndex];
 $_M(c$, "getBondIteratorForType", 
 function (bondType, bsAtoms) {
 return  new J.modelset.BondIteratorSelected (this.bonds, this.bondCount, bondType, bsAtoms, this.viewer.getBoolean (603979812));
-}, "~N,J.util.BS");
+}, "~N,JU.BS");
 $_M(c$, "getBondIterator", 
 function (bsBonds) {
 return  new J.modelset.BondIteratorSelected (this.bonds, this.bondCount, 131071, bsBonds, false);
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "getBondAtom1", 
 function (i) {
 return this.bonds[i].atom1;
@@ -87,7 +87,7 @@ return n;
 }, "~N");
 $_M(c$, "getBondsForSelectedAtoms", 
 function (bsAtoms, bondSelectionModeOr) {
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 for (var iBond = 0; iBond < this.bondCount; ++iBond) {
 var bond = this.bonds[iBond];
 var isSelected1 = bsAtoms.get (bond.atom1.index);
@@ -95,7 +95,7 @@ var isSelected2 = bsAtoms.get (bond.atom2.index);
 if (( new Boolean (!bondSelectionModeOr & isSelected1 & isSelected2).valueOf ()) || ( new Boolean (bondSelectionModeOr & ( new Boolean (isSelected1 | isSelected2).valueOf ())).valueOf ())) bs.set (iBond);
 }
 return bs;
-}, "J.util.BS,~B");
+}, "JU.BS,~B");
 $_M(c$, "bondAtoms", 
 function (atom1, atom2, order, mad, bsBonds, energy, addGroup, isNew) {
 var bond = this.getOrAddBond (atom1, atom2, order, mad, bsBonds, energy, true);
@@ -105,7 +105,7 @@ if (addGroup) {
 atom1.group = atom2.group;
 atom1.group.addAtoms (atom1.index);
 }}return bond;
-}, "J.modelset.Atom,J.modelset.Atom,~N,~N,J.util.BS,~N,~B,~B");
+}, "J.modelset.Atom,J.modelset.Atom,~N,~N,JU.BS,~N,~B,~B");
 $_M(c$, "getOrAddBond", 
 ($fz = function (atom, atomOther, order, mad, bsBonds, energy, overrideBonding) {
 var i;
@@ -117,11 +117,11 @@ this.bonds[i].setOrder (order);
 this.bonds[i].setMad (mad);
 if (Clazz.instanceOf (this.bonds[i], J.modelset.HBond)) (this.bonds[i]).energy = energy;
 }} else {
-if (this.bondCount == this.bonds.length) this.bonds = J.util.ArrayUtil.arrayCopyObject (this.bonds, this.bondCount + 250);
+if (this.bondCount == this.bonds.length) this.bonds = JU.AU.arrayCopyObject (this.bonds, this.bondCount + 250);
 i = this.setBond (this.bondCount++, this.bondMutually (atom, atomOther, order, mad, energy)).index;
 }if (bsBonds != null) bsBonds.set (i);
 return this.bonds[i];
-}, $fz.isPrivate = true, $fz), "J.modelset.Atom,J.modelset.Atom,~N,~N,J.util.BS,~N,~B");
+}, $fz.isPrivate = true, $fz), "J.modelset.Atom,J.modelset.Atom,~N,~N,JU.BS,~N,~B");
 $_M(c$, "setBond", 
 function (index, bond) {
 return this.bonds[bond.index = index] = bond;
@@ -165,7 +165,7 @@ if (oldLength < 5 && this.numCached[oldLength] < 200) this.freeBonds[oldLength][
 }, $fz.isPrivate = true, $fz), "J.modelset.Bond,~A");
 $_M(c$, "addHBond", 
 function (atom1, atom2, order, energy) {
-if (this.bondCount == this.bonds.length) this.bonds = J.util.ArrayUtil.arrayCopyObject (this.bonds, this.bondCount + 250);
+if (this.bondCount == this.bonds.length) this.bonds = JU.AU.arrayCopyObject (this.bonds, this.bondCount + 250);
 return this.setBond (this.bondCount++, this.bondMutually (atom1, atom2, order, 1, energy)).index;
 }, "J.modelset.Atom,J.modelset.Atom,~N,~N");
 c$.getBondOrderFull = $_M(c$, "getBondOrderFull", 
@@ -188,7 +188,7 @@ if ((formalChargeA < 0 && formalChargeB < 0) || (formalChargeA > 0 && formalChar
 }if (atomA.altloc != atomB.altloc && atomA.altloc != '\0' && atomB.altloc != '\0') return false;
 this.getOrAddBond (atomA, atomB, order, mad, bsBonds, 0, false);
 return true;
-}, "J.modelset.Atom,J.modelset.Atom,~N,~N,J.util.BS");
+}, "J.modelset.Atom,J.modelset.Atom,~N,~N,JU.BS");
 $_M(c$, "deleteAllBonds2", 
 function () {
 this.viewer.setShapeProperty (1, "reset", null);
@@ -210,7 +210,7 @@ var dAB = 0;
 var dABcalc = 0;
 if (minDistanceIsFractionRadius) minDistance = -minDistance;
 if (maxDistanceIsFractionRadius) maxDistance = -maxDistance;
-var bsDelete =  new J.util.BS ();
+var bsDelete =  new JU.BS ();
 var nDeleted = 0;
 var newOrder = order |= 131072;
 if (!matchNull && J.modelset.Bond.isOrderH (order)) order = 30720;
@@ -218,7 +218,7 @@ var bsBonds;
 if (isBonds) {
 bsBonds = bsA;
 } else {
-bsBonds =  new J.util.BS ();
+bsBonds =  new JU.BS ();
 for (var i = bsA.nextSetBit (0); i >= 0; i = bsA.nextSetBit (i + 1)) {
 var a = this.atoms[i];
 if (a.bonds != null) for (var j = a.bonds.length; --j >= 0; ) if (bsB.get (a.getBondedAtomIndex (j))) bsBonds.set (a.bonds[j].index);
@@ -239,11 +239,11 @@ nDeleted++;
 }}
 if (nDeleted > 0) this.dBm (bsDelete, false);
 return [0, nDeleted];
-}, "~N,~N,~N,J.util.BS,J.util.BS,~B,~B,~N,~N");
+}, "~N,~N,~N,JU.BS,JU.BS,~B,~B,~N,~N");
 $_M(c$, "dBm", 
 function (bsBonds, isFullModel) {
 (this).deleteBonds (bsBonds, isFullModel);
-}, "J.util.BS,~B");
+}, "JU.BS,~B");
 $_M(c$, "dBb", 
 function (bsBond, isFullModel) {
 var iDst = bsBond.nextSetBit (0);
@@ -269,7 +269,7 @@ var sets = this.viewer.getShapeProperty (1, "sets");
 if (sets != null) for (var i = 0; i < sets.length; i++) J.util.BSUtil.deleteBits (sets[i], bsBond);
 
 J.util.BSUtil.deleteBits (this.bsAromatic, bsBond);
-}, "J.util.BS,~B");
+}, "JU.BS,~B");
 $_M(c$, "resetAromatic", 
 function () {
 for (var i = this.bondCount; --i >= 0; ) {
@@ -283,9 +283,9 @@ this.assignAromaticBondsBs (true, null);
 });
 $_M(c$, "assignAromaticBondsBs", 
 function (isUserCalculation, bsBonds) {
-if (!isUserCalculation) this.bsAromatic =  new J.util.BS ();
-this.bsAromaticSingle =  new J.util.BS ();
-this.bsAromaticDouble =  new J.util.BS ();
+if (!isUserCalculation) this.bsAromatic =  new JU.BS ();
+this.bsAromaticSingle =  new JU.BS ();
+this.bsAromaticDouble =  new JU.BS ();
 var isAll = (bsBonds == null);
 var i0 = (isAll ? this.bondCount - 1 : bsBonds.nextSetBit (0));
 for (var i = i0; i >= 0; i = (isAll ? i - 1 : bsBonds.nextSetBit (i + 1))) {
@@ -325,7 +325,7 @@ bond.setOrder (513);
 this.assignAromaticNandO (bsBonds);
 this.bsAromaticSingle = null;
 this.bsAromaticDouble = null;
-}, "~B,J.util.BS");
+}, "~B,JU.BS");
 $_M(c$, "assignAromaticDouble", 
 ($fz = function (bond) {
 var bondIndex = bond.index;
@@ -439,7 +439,7 @@ if (valence == 1 && charge == 0 && (n2 == 14 || n2 == 16)) bond.setOrder (514);
 break;
 }
 }
-}, $fz.isPrivate = true, $fz), "J.util.BS");
+}, $fz.isPrivate = true, $fz), "JU.BS");
 $_M(c$, "getAtomBitsMDb", 
 function (tokType, specInfo) {
 var bs;
@@ -447,7 +447,7 @@ switch (tokType) {
 default:
 return this.getAtomBitsMDa (tokType, specInfo);
 case 1678770178:
-bs =  new J.util.BS ();
+bs =  new JU.BS ();
 var bsBonds = specInfo;
 for (var i = bsBonds.nextSetBit (0); i >= 0; i = bsBonds.nextSetBit (i + 1)) {
 bs.set (this.bonds[i].atom1.index);
@@ -455,7 +455,7 @@ bs.set (this.bonds[i].atom2.index);
 }
 return bs;
 case 1048585:
-bs =  new J.util.BS ();
+bs =  new JU.BS ();
 for (var i = this.bondCount; --i >= 0; ) if (this.bonds[i].isAromatic ()) {
 bs.set (this.bonds[i].atom1.index);
 bs.set (this.bonds[i].atom2.index);
@@ -482,10 +482,10 @@ break;
 default:
 return null;
 }
-var bsAtoms =  new J.util.BS ();
+var bsAtoms =  new JU.BS ();
 try {
 if (bondOrder == 0) {
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 bs.set (bond.index);
 bsAtoms.set (bond.getAtomIndex1 ());
 bsAtoms.set (bond.getAtomIndex2 ());
@@ -507,8 +507,8 @@ return bsAtoms;
 }, "~N,~S");
 $_M(c$, "removeUnnecessaryBonds", 
 function (atom, deleteAtom) {
-var bs =  new J.util.BS ();
-var bsBonds =  new J.util.BS ();
+var bs =  new JU.BS ();
+var bsBonds =  new JU.BS ();
 var bonds = atom.bonds;
 if (bonds == null) return;
 for (var i = 0; i < bonds.length; i++) if (bonds[i].isCovalent ()) {
@@ -526,13 +526,13 @@ function (bs, isDisplay) {
 if (!isDisplay) this.haveHiddenBonds = true;
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) if (i < this.bondCount && this.bonds[i].mad != 0) this.bonds[i].setShapeVisibility (isDisplay);
 
-}, "J.modelset.Bond.BondSet,~B");
+}, "J.modelset.BondSet,~B");
 $_M(c$, "setBondParametersBS", 
 function (modelIndex, iBond, bsBonds, rad, pymolValence, argb, trans) {
 if (bsBonds == null) this.setBondParameters (modelIndex, iBond, rad, pymolValence, argb, trans);
  else for (var i = bsBonds.nextSetBit (0); i >= 0; i = bsBonds.nextSetBit (i + 1)) this.setBondParameters (modelIndex, i, rad, pymolValence, argb, trans);
 
-}, "~N,~N,J.util.BS,~N,~N,~N,~N");
+}, "~N,~N,JU.BS,~N,~N,~N,~N");
 $_M(c$, "setBondParameters", 
 function (modelIndex, i, rad, pymolValence, argb, trans) {
 if (i < 0 || i >= this.bondCount) return;

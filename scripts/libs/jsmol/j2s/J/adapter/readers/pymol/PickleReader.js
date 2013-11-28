@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.pymol");
-Clazz.load (["java.util.Hashtable", "J.util.JmolList"], "J.adapter.readers.pymol.PickleReader", ["java.lang.Double", "$.Long", "J.util.Logger", "$.SB"], function () {
+Clazz.load (["java.util.Hashtable", "JU.List"], "J.adapter.readers.pymol.PickleReader", ["java.lang.Double", "$.Long", "JU.SB", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.binaryDoc = null;
@@ -21,9 +21,9 @@ this.retrieveCount = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.pymol, "PickleReader");
 Clazz.prepareFields (c$, function () {
-this.stack =  new J.util.JmolList ();
-this.marks =  new J.util.JmolList ();
-this.build =  new J.util.JmolList ();
+this.stack =  new JU.List ();
+this.marks =  new JU.List ();
+this.build =  new JU.List ();
 this.memo =  new java.util.Hashtable ();
 });
 Clazz.makeConstructor (c$, 
@@ -63,7 +63,7 @@ l = this.getObjects (this.getMark ());
 if (this.inNames && this.markCount == 2) {
 var pt = this.binaryDoc.getPosition ();
 System.out.println (" " + this.thisName + " " + this.filePt + " " + (pt - this.filePt));
-var l2 =  new J.util.JmolList ();
+var l2 =  new JU.List ();
 l2.addLast (Integer.$valueOf (this.filePt));
 l2.addLast (Integer.$valueOf (pt - this.filePt));
 l.addLast (l2);
@@ -133,10 +133,10 @@ this.push (s);
 break;
 case 93:
 this.emptyListPt = this.binaryDoc.getPosition () - 1;
-this.push ( new J.util.JmolList ());
+this.push ( new JU.List ());
 break;
 case 99:
-l =  new J.util.JmolList ();
+l =  new JU.List ();
 l.addLast ("global");
 l.addLast (this.readString ());
 l.addLast (this.readString ());
@@ -165,7 +165,7 @@ case 117:
 mark = this.getMark ();
 l = this.getObjects (mark);
 o = this.peek ();
-if (Clazz.instanceOf (o, J.util.JmolList)) {
+if (Clazz.instanceOf (o, JU.List)) {
 for (i = 0; i < l.size (); i++) (o).addLast (l.get (i));
 
 } else {
@@ -228,7 +228,7 @@ return o;
 $_M(c$, "getObjects", 
 ($fz = function (mark) {
 var n = this.stack.size () - mark;
-var args =  new J.util.JmolList ();
+var args =  new JU.List ();
 for (var j = 0; j < n; j++) args.addLast (null);
 
 for (var j = n, i = this.stack.size (); --i >= mark; ) args.set (--j, this.stack.remove (i));
@@ -237,7 +237,7 @@ return args;
 }, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "readString", 
 ($fz = function () {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 while (true) {
 var b = this.binaryDoc.readByte ();
 if (b == 0xA) break;

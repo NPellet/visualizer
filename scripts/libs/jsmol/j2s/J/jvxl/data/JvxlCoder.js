@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.data");
-Clazz.load (null, "J.jvxl.data.JvxlCoder", ["java.lang.Character", "$.Float", "J.io.XmlUtil", "J.jvxl.data.VolumeData", "J.util.BS", "$.BSUtil", "$.C", "$.Escape", "$.JmolList", "$.Logger", "$.P3", "$.Parser", "$.SB", "$.TextFormat"], function () {
+Clazz.load (null, "J.jvxl.data.JvxlCoder", ["java.lang.Character", "$.Float", "JU.BS", "$.List", "$.P3", "$.PT", "$.SB", "J.io.XmlUtil", "J.jvxl.data.VolumeData", "J.util.BSUtil", "$.C", "$.Escape", "$.Logger"], function () {
 c$ = Clazz.declareType (J.jvxl.data, "JvxlCoder");
 c$.jvxlGetFile = $_M(c$, "jvxlGetFile", 
 function (volumeData, jvxlData, title) {
@@ -16,7 +16,7 @@ return J.jvxl.data.JvxlCoder.jvxlGetFileXml (jvxlData, meshData, title, msg, inc
 }, "J.jvxl.data.JvxlData,J.jvxl.data.MeshData,~A,~S,~B,~N,~S,~S");
 c$.jvxlGetFileXml = $_M(c$, "jvxlGetFileXml", 
 ($fz = function (jvxlData, meshData, title, msg, includeHeader, nSurfaces, state, comment) {
-var data =  new J.util.SB ();
+var data =  new JU.SB ();
 if ("TRAILERONLY".equals (msg)) {
 J.io.XmlUtil.closeTag (data, "jvxlSurfaceSet");
 J.io.XmlUtil.closeTag (data, "jvxl");
@@ -40,12 +40,12 @@ J.io.XmlUtil.openTagAttr (data, "jvxlSurface", ["type", type]);
 data.append (J.jvxl.data.JvxlCoder.jvxlGetInfoData (jvxlData, vertexDataOnly));
 J.jvxl.data.JvxlCoder.jvxlAppendCommandState (data, comment, state);
 if (title != null || msg != null && msg.length > 0) {
-sb =  new J.util.SB ();
+sb =  new JU.SB ();
 if (msg != null && msg.length > 0) sb.append (msg).append ("\n");
 if (title != null) for (var i = 0; i < title.length; i++) sb.append (title[i]).appendC ('\n');
 
 J.io.XmlUtil.appendCdata (data, "jvxlSurfaceTitle", null, sb.toString ());
-}sb =  new J.util.SB ();
+}sb =  new JU.SB ();
 J.io.XmlUtil.openTagAttr (sb, "jvxlSurfaceData", (vertexDataOnly || jvxlData.jvxlPlane == null ? null : jvxlData.mapLattice == null ? ["plane", J.util.Escape.eP4 (jvxlData.jvxlPlane)] : ["plane", J.util.Escape.eP4 (jvxlData.jvxlPlane), "maplattice", J.util.Escape.eP (jvxlData.mapLattice)]));
 if (vertexDataOnly) {
 J.jvxl.data.JvxlCoder.appendXmlVertexOnlyData (sb, jvxlData, meshData, true);
@@ -82,38 +82,38 @@ c$.appendEncodedBitSetTag = $_M(c$, "appendEncodedBitSetTag",
 ($fz = function (sb, name, bs, count, attribs) {
 if (count < 0) count = J.util.BSUtil.cardinalityOf (bs);
 if (count == 0) return;
-var sb1 =  new J.util.SB ();
+var sb1 =  new JU.SB ();
 sb1.append ("\n ");
 J.jvxl.data.JvxlCoder.jvxlEncodeBitSetBuffer (bs, -1, sb1);
 J.io.XmlUtil.appendTagObj (sb, name, [attribs, "bsEncoding", "base90+35", "count", "" + count, "len", "" + bs.length ()], J.jvxl.data.JvxlCoder.jvxlCompressString (sb1.toString (), true));
-}, $fz.isPrivate = true, $fz), "J.util.SB,~S,J.util.BS,~N,~A");
+}, $fz.isPrivate = true, $fz), "JU.SB,~S,JU.BS,~N,~A");
 c$.jvxlSetCompressionRatio = $_M(c$, "jvxlSetCompressionRatio", 
 ($fz = function (data, jvxlData, len) {
 var s = data.toString ();
 var r = Clazz.floatToInt (jvxlData.nBytes > 0 ? (jvxlData.nBytes) / len : ((jvxlData.nPointsX * jvxlData.nPointsY * jvxlData.nPointsZ * 13)) / len);
-return J.util.TextFormat.simpleReplace (s, "\"not calculated\"", (r > 0 ? "\"" + r + ":1\"" : "\"?\""));
-}, $fz.isPrivate = true, $fz), "J.util.SB,J.jvxl.data.JvxlData,~N");
+return JU.PT.simpleReplace (s, "\"not calculated\"", (r > 0 ? "\"" + r + ":1\"" : "\"?\""));
+}, $fz.isPrivate = true, $fz), "JU.SB,J.jvxl.data.JvxlData,~N");
 c$.appendXmlEdgeData = $_M(c$, "appendXmlEdgeData", 
 ($fz = function (sb, jvxlData) {
 J.io.XmlUtil.appendTagObj (sb, "jvxlEdgeData", ["count", "" + (jvxlData.jvxlEdgeData.length - 1), "encoding", "base90f1", "bsEncoding", "base90+35c", "isXLowToHigh", "" + jvxlData.isXLowToHigh, "data", J.jvxl.data.JvxlCoder.jvxlCompressString (jvxlData.jvxlEdgeData, true)], "\n" + J.jvxl.data.JvxlCoder.jvxlCompressString (jvxlData.jvxlSurfaceData, true));
-}, $fz.isPrivate = true, $fz), "J.util.SB,J.jvxl.data.JvxlData");
+}, $fz.isPrivate = true, $fz), "JU.SB,J.jvxl.data.JvxlData");
 c$.jvxlAppendCommandState = $_M(c$, "jvxlAppendCommandState", 
 ($fz = function (data, cmd, state) {
 if (cmd != null) J.io.XmlUtil.appendCdata (data, "jvxlIsosurfaceCommand", null, "\n" + (cmd.indexOf ("#") < 0 ? cmd : cmd.substring (0, cmd.indexOf ("#"))) + "\n");
 if (state != null) {
 if (state.indexOf ("** XML ** ") >= 0) {
-state = J.util.TextFormat.splitChars (state, "** XML **")[1].trim ();
+state = JU.PT.split (state, "** XML **")[1].trim ();
 J.io.XmlUtil.appendTag (data, "jvxlIsosurfaceState", "\n" + state + "\n");
 } else {
 J.io.XmlUtil.appendCdata (data, "jvxlIsosurfaceState", null, "\n" + state);
-}}}, $fz.isPrivate = true, $fz), "J.util.SB,~S,~S");
+}}}, $fz.isPrivate = true, $fz), "JU.SB,~S,~S");
 c$.appendXmlColorData = $_M(c$, "appendXmlColorData", 
 ($fz = function (sb, data, isEncoded, isPrecisionColor, value1, value2) {
 var n;
 if (data == null || (n = data.length - 1) < 0) return;
 if (isPrecisionColor) n /= 2;
 J.io.XmlUtil.appendTagObj (sb, "jvxlColorData", ["count", "" + n, "encoding", (isEncoded ? "base90f" + (isPrecisionColor ? "2" : "1") : "none"), "min", "" + value1, "max", "" + value2, "data", J.jvxl.data.JvxlCoder.jvxlCompressString (data, true)], null);
-}, $fz.isPrivate = true, $fz), "J.util.SB,~S,~B,~B,~N,~N");
+}, $fz.isPrivate = true, $fz), "JU.SB,~S,~B,~B,~N,~N");
 c$.jvxlGetInfo = $_M(c$, "jvxlGetInfo", 
 function (jvxlData) {
 return J.jvxl.data.JvxlCoder.jvxlGetInfoData (jvxlData, jvxlData.vertexDataOnly);
@@ -121,7 +121,7 @@ return J.jvxl.data.JvxlCoder.jvxlGetInfoData (jvxlData, jvxlData.vertexDataOnly)
 c$.jvxlGetInfoData = $_M(c$, "jvxlGetInfoData", 
 function (jvxlData, vertexDataOnly) {
 if (jvxlData.jvxlSurfaceData == null) return "";
-var attribs =  new J.util.JmolList ();
+var attribs =  new JU.List ();
 var nSurfaceInts = jvxlData.nSurfaceInts;
 var bytesUncompressedEdgeData = (vertexDataOnly ? 0 : jvxlData.jvxlEdgeData.length - 1);
 var nColorData = (jvxlData.jvxlColorData == null ? -1 : (jvxlData.jvxlColorData.length - 1));
@@ -196,7 +196,7 @@ J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  xyzMin", J.util.Escape.eP (jvxlDa
 J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  xyzMax", J.util.Escape.eP (jvxlData.boundingBox[1]));
 J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  approximateCompressionRatio", "not calculated");
 J.jvxl.data.JvxlCoder.addAttrib (attribs, "\n  jmolVersion", jvxlData.version);
-var info =  new J.util.SB ();
+var info =  new JU.SB ();
 J.io.XmlUtil.openTagAttr (info, "jvxlSurfaceInfo", attribs.toArray ( new Array (attribs.size ())));
 J.io.XmlUtil.closeTag (info, "jvxlSurfaceInfo");
 return info.toString ();
@@ -204,7 +204,7 @@ return info.toString ();
 c$.addAttrib = $_M(c$, "addAttrib", 
 ($fz = function (attribs, name, value) {
 attribs.addLast ([name, value]);
-}, $fz.isPrivate = true, $fz), "J.util.JmolList,~S,~S");
+}, $fz.isPrivate = true, $fz), "JU.List,~S,~S");
 c$.jvxlEncodeContourData = $_M(c$, "jvxlEncodeContourData", 
 ($fz = function (contours, sb) {
 J.io.XmlUtil.openTagAttr (sb, "jvxlContourData", ["count", "" + contours.length]);
@@ -212,14 +212,14 @@ for (var i = 0; i < contours.length; i++) {
 if (contours[i].size () < 6) {
 continue;
 }var nPolygons = (contours[i].get (0)).intValue ();
-var sb1 =  new J.util.SB ();
+var sb1 =  new JU.SB ();
 sb1.append ("\n");
 var bs = contours[i].get (1);
 J.jvxl.data.JvxlCoder.jvxlEncodeBitSetBuffer (bs, nPolygons, sb1);
 J.io.XmlUtil.appendTagObj (sb, "jvxlContour", ["index", "" + i, "value", "" + contours[i].get (2), "color", J.util.Escape.escapeColor ((contours[i].get (4))[0]), "count", "" + bs.length (), "encoding", "base90iff1", "bsEncoding", "base90+35c", "data", J.jvxl.data.JvxlCoder.jvxlCompressString (contours[i].get (5).toString (), true)], J.jvxl.data.JvxlCoder.jvxlCompressString (sb1.toString (), true));
 }
 J.io.XmlUtil.closeTag (sb, "jvxlContourData");
-}, $fz.isPrivate = true, $fz), "~A,J.util.SB");
+}, $fz.isPrivate = true, $fz), "~A,JU.SB");
 c$.set3dContourVector = $_M(c$, "set3dContourVector", 
 function (v, polygonIndexes, vertices) {
 if (v.size () < 6) return;
@@ -261,10 +261,10 @@ i4 = i1;
 }}v.addLast (J.jvxl.data.JvxlCoder.getContourPoint (vertices, i1, i2, f1));
 v.addLast (J.jvxl.data.JvxlCoder.getContourPoint (vertices, i3, i4, f2));
 }
-}, "J.util.JmolList,~A,~A");
+}, "JU.List,~A,~A");
 c$.getContourPoint = $_M(c$, "getContourPoint", 
 ($fz = function (vertices, i, j, f) {
-var pt =  new J.util.P3 ();
+var pt =  new JU.P3 ();
 pt.setT (vertices[j]);
 pt.sub (vertices[i]);
 pt.scale (f);
@@ -276,7 +276,7 @@ function (type, f1, f2, fData) {
 fData.appendI (type);
 fData.appendC (J.jvxl.data.JvxlCoder.jvxlFractionAsCharacter (f1));
 fData.appendC (J.jvxl.data.JvxlCoder.jvxlFractionAsCharacter (f2));
-}, "~N,~N,~N,J.util.SB");
+}, "~N,~N,~N,JU.SB");
 c$.jvxlCreateColorData = $_M(c$, "jvxlCreateColorData", 
 function (jvxlData, vertexValues) {
 if (vertexValues == null) {
@@ -292,8 +292,8 @@ var vertexCount = (jvxlData.saveVertexCount > 0 ? jvxlData.saveVertexCount : jvx
 if (vertexCount > vertexValues.length) System.out.println ("JVXLCODER ERROR");
 var min = jvxlData.mappedDataMin;
 var max = jvxlData.mappedDataMax;
-var list1 =  new J.util.SB ();
-var list2 =  new J.util.SB ();
+var list1 =  new JU.SB ();
+var list2 =  new JU.SB ();
 if (vertexValues.length < vertexCount) System.out.println ("JVXLCOLOR OHOHO");
 for (var i = 0; i < vertexCount; i++) {
 var value = vertexValues[i];
@@ -308,11 +308,11 @@ c$.appendXmlVertexOnlyData = $_M(c$, "appendXmlVertexOnlyData",
 ($fz = function (sb, jvxlData, meshData, escapeXml) {
 var vertexIdNew =  Clazz.newIntArray (meshData.vertexCount, 0);
 if (J.jvxl.data.JvxlCoder.appendXmlTriangleData (sb, meshData.polygonIndexes, meshData.polygonCount, meshData.bsSlabDisplay, vertexIdNew, escapeXml)) J.jvxl.data.JvxlCoder.appendXmlVertexData (sb, jvxlData, vertexIdNew, meshData.vertices, meshData.vertexValues, meshData.vertexCount, meshData.polygonColorData, meshData.polygonCount, meshData.bsSlabDisplay, jvxlData.vertexColors, jvxlData.jvxlColorData.length > 0, escapeXml);
-}, $fz.isPrivate = true, $fz), "J.util.SB,J.jvxl.data.JvxlData,J.jvxl.data.MeshData,~B");
+}, $fz.isPrivate = true, $fz), "JU.SB,J.jvxl.data.JvxlData,J.jvxl.data.MeshData,~B");
 c$.appendXmlTriangleData = $_M(c$, "appendXmlTriangleData", 
 ($fz = function (sb, triangles, nData, bsSlabDisplay, vertexIdNew, escapeXml) {
-var list1 =  new J.util.SB ();
-var list2 =  new J.util.SB ();
+var list1 =  new JU.SB ();
+var list2 =  new JU.SB ();
 var ilast = 1;
 var p = 0;
 var inew = 0;
@@ -353,7 +353,7 @@ if (list1.length () == 0) return true;
 J.io.XmlUtil.appendTagObj (sb, "jvxlTriangleData", ["count", "" + nTri, "encoding", "jvxltdiff", "data", J.jvxl.data.JvxlCoder.jvxlCompressString (list1.toString (), escapeXml)], null);
 J.io.XmlUtil.appendTagObj (sb, "jvxlTriangleEdgeData", ["count", "" + nTri, "encoding", "jvxlsc", "data", J.jvxl.data.JvxlCoder.jvxlCompressString (list2.toString (), escapeXml)], null);
 return true;
-}, $fz.isPrivate = true, $fz), "J.util.SB,~A,~N,J.util.BS,~A,~B");
+}, $fz.isPrivate = true, $fz), "JU.SB,~A,~N,JU.BS,~A,~B");
 c$.appendXmlVertexData = $_M(c$, "appendXmlVertexData", 
 ($fz = function (sb, jvxlData, vertexIdNew, vertices, vertexValues, vertexCount, polygonColorData, polygonCount, bsSlabDisplay, vertexColors, addColorData, escapeXml) {
 var colorFractionBase = jvxlData.colorFractionBase;
@@ -361,8 +361,8 @@ var colorFractionRange = jvxlData.colorFractionRange;
 var p;
 var min = jvxlData.boundingBox[0];
 var max = jvxlData.boundingBox[1];
-var list1 =  new J.util.SB ();
-var list2 =  new J.util.SB ();
+var list1 =  new JU.SB ();
+var list2 =  new JU.SB ();
 var vertexIdOld = null;
 var removeSlabbed = (bsSlabDisplay != null);
 if (polygonCount > 0) {
@@ -383,8 +383,8 @@ list1.appendSB (list2);
 J.io.XmlUtil.appendTagObj (sb, "jvxlVertexData", ["count", "" + n, "min", J.util.Escape.eP (min), "max", J.util.Escape.eP (max), "encoding", "base90xyz2", "data", J.jvxl.data.JvxlCoder.jvxlCompressString (list1.toString (), escapeXml)], null);
 if (polygonColorData != null) J.io.XmlUtil.appendTagObj (sb, "jvxlPolygonColorData", ["encoding", "jvxlnc", "count", "" + polygonCount], "\n" + polygonColorData);
 if (!addColorData) return;
-list1 =  new J.util.SB ();
-list2 =  new J.util.SB ();
+list1 =  new JU.SB ();
+list2 =  new JU.SB ();
 if (vertexColors == null) {
 for (var i = 0; i < vertexCount; i++) if (!removeSlabbed || bsSlabDisplay.get (i)) {
 var value = vertexValues[polygonCount == 0 ? i : vertexIdOld[i]];
@@ -401,7 +401,7 @@ list1.appendI (c);
 list1.append (" ");
 }
 }J.jvxl.data.JvxlCoder.appendXmlColorData (sb, list1.appendSB (list2).append ("\n").toString (), (vertexColors == null), true, jvxlData.valueMappedToRed, jvxlData.valueMappedToBlue);
-}, $fz.isPrivate = true, $fz), "J.util.SB,J.jvxl.data.JvxlData,~A,~A,~A,~N,~S,~N,J.util.BS,~A,~B,~B");
+}, $fz.isPrivate = true, $fz), "JU.SB,J.jvxl.data.JvxlData,~A,~A,~A,~N,~S,~N,JU.BS,~A,~B,~B");
 c$.jvxlFractionAsCharacter = $_M(c$, "jvxlFractionAsCharacter", 
 function (fraction) {
 return J.jvxl.data.JvxlCoder.jvxlFractionAsCharacterRange (fraction, 35, 90);
@@ -422,7 +422,7 @@ var ch1 = J.jvxl.data.JvxlCoder.jvxlFractionAsCharacterRange (fraction, base, ra
 list1.appendC (ch1);
 fraction -= J.jvxl.data.JvxlCoder.jvxlFractionFromCharacter (ch1.charCodeAt (0), base, range, 0);
 list2.appendC (J.jvxl.data.JvxlCoder.jvxlFractionAsCharacterRange (fraction * range, base, range));
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,J.util.SB,J.util.SB");
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,JU.SB,JU.SB");
 c$.jvxlFractionFromCharacter = $_M(c$, "jvxlFractionFromCharacter", 
 function (ich, base, range, fracOffset) {
 if (ich == base + range) return NaN;
@@ -476,13 +476,13 @@ isset = !isset;
 }}
 sb.appendC (' ').appendI (dataCount).appendC ('\n');
 return n;
-}, "J.util.BS,~N,J.util.SB");
+}, "JU.BS,~N,JU.SB");
 c$.jvxlEncodeBitSet = $_M(c$, "jvxlEncodeBitSet", 
 function (bs) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 J.jvxl.data.JvxlCoder.jvxlEncodeBitSetBuffer (bs, -1, sb);
 return sb.toString ();
-}, "J.util.BS");
+}, "JU.BS");
 c$.jvxlEncodeBitSetBuffer = $_M(c$, "jvxlEncodeBitSetBuffer", 
 function (bs, nPoints, sb) {
 var dataCount = 0;
@@ -503,7 +503,7 @@ isset = !isset;
 J.jvxl.data.JvxlCoder.jvxlAppendEncodedNumber (sb, dataCount, 35, 90);
 sb.appendC ('\n');
 return n;
-}, "J.util.BS,~N,J.util.SB");
+}, "JU.BS,~N,JU.SB");
 c$.jvxlAppendEncodedNumber = $_M(c$, "jvxlAppendEncodedNumber", 
 function (sb, n, base, range) {
 var isInRange = (n < range);
@@ -517,10 +517,10 @@ sb.appendC (String.fromCharCode (x));
 n = n1;
 }
 if (!isInRange) sb.append (" ");
-}, "J.util.SB,~N,~N,~N");
+}, "JU.SB,~N,~N,~N");
 c$.jvxlDecodeBitSetRange = $_M(c$, "jvxlDecodeBitSetRange", 
 function (data, base, range) {
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 var dataCount = 0;
 var ptr = 0;
 var isset = false;
@@ -561,7 +561,7 @@ return value;
 c$.jvxlDecodeBitSet = $_M(c$, "jvxlDecodeBitSet", 
 function (data) {
 if (data.startsWith ("-")) return J.jvxl.data.JvxlCoder.jvxlDecodeBitSetRange (J.jvxl.data.JvxlCoder.jvxlDecompressString (data.substring (1)), 35, 90);
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 var dataCount = 0;
 var lastCount = 0;
 var nPrev = 0;
@@ -569,7 +569,7 @@ var ptr = 0;
 var isset = false;
 var next =  Clazz.newIntArray (1, 0);
 while (true) {
-dataCount = (nPrev++ < 0 ? dataCount : J.util.Parser.parseIntNext (data, next));
+dataCount = (nPrev++ < 0 ? dataCount : JU.PT.parseIntNext (data, next));
 if (dataCount == -2147483648) break;
 if (dataCount < 0) {
 nPrev = dataCount;
@@ -585,7 +585,7 @@ return bs;
 c$.jvxlCompressString = $_M(c$, "jvxlCompressString", 
 function (data, escapeXml) {
 if (data.indexOf ("~") >= 0) return data;
-var dataOut =  new J.util.SB ();
+var dataOut =  new JU.SB ();
 var chLast = '\u0000';
 var escaped = false;
 var lastEscaped = false;
@@ -623,7 +623,7 @@ lastEscaped = true;
 escaped = false;
 dataOut.appendC ('~');
 chLast = ch;
-(ch = String.fromCharCode (ch.charCodeAt (0) - 1));
+ch = String.fromCharCode (ch.charCodeAt (0) - 1);
 } else {
 chLast = ch;
 }dataOut.appendC (ch);
@@ -633,7 +633,7 @@ return dataOut.toString ();
 c$.jvxlDecompressString = $_M(c$, "jvxlDecompressString", 
 function (data) {
 if (data.indexOf ("~") < 0) return data;
-var dataOut =  new J.util.SB ();
+var dataOut =  new JU.SB ();
 var chLast = '\u0000';
 var next =  Clazz.newIntArray (1, 0);
 for (var i = 0; i < data.length; i++) {
@@ -654,7 +654,7 @@ case '6':
 case '7':
 case '8':
 case '9':
-var nChar = J.util.Parser.parseIntNext (data, next);
+var nChar = JU.PT.parseIntNext (data, next);
 for (var c = 0; c < nChar; c++) dataOut.appendC (chLast);
 
 i = next[0];
@@ -673,12 +673,12 @@ return dataOut.toString ();
 c$.jvxlCreateHeaderWithoutTitleOrAtoms = $_M(c$, "jvxlCreateHeaderWithoutTitleOrAtoms", 
 function (v, bs) {
 J.jvxl.data.JvxlCoder.jvxlCreateHeader (v, bs);
-}, "J.jvxl.data.VolumeData,J.util.SB");
+}, "J.jvxl.data.VolumeData,JU.SB");
 c$.jvxlCreateHeader = $_M(c$, "jvxlCreateHeader", 
 function (v, sb) {
 v.setVolumetricXml ();
 if (sb.length () == 0) sb.append ("Line 1\nLine 2\n");
-}, "J.jvxl.data.VolumeData,J.util.SB");
+}, "J.jvxl.data.VolumeData,JU.SB");
 Clazz.defineStatics (c$,
 "JVXL_VERSION1", "2.0",
 "JVXL_VERSION_XML", "2.3",

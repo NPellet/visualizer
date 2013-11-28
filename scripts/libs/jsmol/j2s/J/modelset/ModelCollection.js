@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (["J.modelset.BondCollection", "J.util.BS", "$.BoxInfo", "$.JmolList", "$.P3"], "J.modelset.ModelCollection", ["java.lang.Character", "$.Float", "java.util.Date", "$.Hashtable", "J.api.Interface", "J.bspt.Bspf", "J.constant.EnumPalette", "$.EnumVdw", "J.io.OutputStringBuilder", "$.XmlUtil", "J.modelset.Atom", "$.AtomIteratorWithinModel", "$.AtomIteratorWithinModelSet", "$.Bond", "$.HBond", "$.LabelToken", "$.Model", "J.util.ArrayUtil", "$.BSUtil", "$.Elements", "$.Escape", "$.JmolEdge", "$.JmolMolecule", "$.Logger", "$.P4", "$.Parser", "$.Quaternion", "$.SB", "$.TextFormat", "$.TriangleData", "$.V3", "J.viewer.Viewer"], function () {
+Clazz.load (["J.modelset.BondCollection", "JU.BS", "$.List", "$.P3", "J.util.BoxInfo"], "J.modelset.ModelCollection", ["java.lang.Boolean", "$.Character", "$.Float", "java.util.Date", "$.Hashtable", "JU.AU", "$.P4", "$.PT", "$.SB", "$.V3", "J.api.Interface", "$.JmolModulationSet", "J.bspt.Bspf", "J.constant.EnumPalette", "$.EnumVdw", "J.io.XmlUtil", "J.modelset.Atom", "$.AtomIteratorWithinModel", "$.AtomIteratorWithinModelSet", "$.Bond", "$.HBond", "$.LabelToken", "$.Model", "$.StateScript", "J.util.BSUtil", "$.Elements", "$.Escape", "$.JmolEdge", "$.JmolMolecule", "$.Logger", "$.Quaternion", "$.Txt", "J.viewer.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bsSymmetry = null;
 this.modelSetName = null;
@@ -31,7 +31,6 @@ this.thisStateModel = 0;
 this.trajectorySteps = null;
 this.vibrationSteps = null;
 this.selectedMolecules = null;
-this.selectedMoleculeCount = 0;
 this.showRebondTimes = true;
 this.bsAll = null;
 this.shapeManager = null;
@@ -41,6 +40,7 @@ this.proteinStructureTainted = false;
 this.symTemp = null;
 this.htPeaks = null;
 this.vOrientations = null;
+this.triangulator = null;
 Clazz.instantialize (this, arguments);
 }, J.modelset, "ModelCollection", J.modelset.BondCollection);
 Clazz.prepareFields (c$, function () {
@@ -50,16 +50,16 @@ this.modelFileNumbers =  Clazz.newIntArray (1, 0);
 this.modelNumbersForAtomLabel =  new Array (1);
 this.modelNames =  new Array (1);
 this.frameTitles =  new Array (1);
-this.ptTemp =  new J.util.P3 ();
-this.averageAtomPoint =  new J.util.P3 ();
+this.ptTemp =  new JU.P3 ();
+this.averageAtomPoint =  new JU.P3 ();
 this.boxInfo =  new J.util.BoxInfo ();
 {
-this.boxInfo.addBoundBoxPoint (J.util.P3.new3 (-10, -10, -10));
-this.boxInfo.addBoundBoxPoint (J.util.P3.new3 (10, 10, 10));
-}this.stateScripts =  new J.util.JmolList ();
-this.selectedMolecules =  new J.util.BS ();
-this.ptTemp1 =  new J.util.P3 ();
-this.ptTemp2 =  new J.util.P3 ();
+this.boxInfo.addBoundBoxPoint (JU.P3.new3 (-10, -10, -10));
+this.boxInfo.addBoundBoxPoint (JU.P3.new3 (10, 10, 10));
+}this.stateScripts =  new JU.List ();
+this.selectedMolecules =  new JU.BS ();
+this.ptTemp1 =  new JU.P3 ();
+this.ptTemp2 =  new JU.P3 ();
 });
 $_M(c$, "mergeModelArrays", 
 function (mergeModelSet) {
@@ -76,7 +76,7 @@ this.modelNumbers = mergeModelSet.modelNumbers;
 this.frameTitles = mergeModelSet.frameTitles;
 this.mergeAtomArrays (mergeModelSet);
 }, "J.modelset.ModelSet");
-Clazz.overrideMethod (c$, "releaseModelSet", 
+$_V(c$, "releaseModelSet", 
 function () {
 this.models = null;
 this.bsSymmetry = null;
@@ -109,10 +109,10 @@ case 1679429641:
 pts = this.boxInfo.getCanonicalCopy (scale);
 break;
 }
-var v =  new J.util.JmolList ();
+var v =  new JU.List ();
 v.addLast (pts);
-return J.util.TriangleData.intersectPlane (plane, v, flags);
-}, "~N,J.util.P4,~N,~N,~N");
+return this.intersectPlane (plane, v, flags);
+}, "~N,JU.P4,~N,~N,~N");
 $_M(c$, "getModelName", 
 function (modelIndex) {
 return this.modelCount < 1 ? "" : modelIndex >= 0 ? this.modelNames[modelIndex] : this.modelNumbersForAtomLabel[-1 - modelIndex];
@@ -138,7 +138,7 @@ for (var i = bsFrames.nextSetBit (0); i >= 0; i = bsFrames.nextSetBit (i + 1)) t
 var list = title;
 for (var i = bsFrames.nextSetBit (0), n = 0; i >= 0; i = bsFrames.nextSetBit (i + 1)) if (n < list.length) this.frameTitles[i] = list[n++];
 
-}}, "J.util.BS,~O");
+}}, "JU.BS,~O");
 $_M(c$, "getFrameTitle", 
 function (modelIndex) {
 return (modelIndex >= 0 && modelIndex < this.modelCount ? this.frameTitles[modelIndex] : "");
@@ -155,7 +155,7 @@ for (var i = 0; i < this.modelCount; i++) if ((modelsExcluded == null || !models
 this.models[i].calculatePolymers (groups, groupCount, baseGroupIndex, modelsExcluded, checkConnections);
 return;
 }
-}, "~A,~N,~N,J.util.BS");
+}, "~A,~N,~N,JU.BS");
 $_M(c$, "getGroups", 
 function () {
 var n = 0;
@@ -186,7 +186,7 @@ return this.averageAtomPoint;
 });
 $_M(c$, "getBoundBoxCenter", 
 function (modelIndex) {
-if (this.isJmolDataFrameForModel (modelIndex)) return  new J.util.P3 ();
+if (this.isJmolDataFrameForModel (modelIndex)) return  new JU.P3 ();
 return this.boxInfo.getBoundBoxCenter ();
 }, "~N");
 $_M(c$, "getBoundBoxCornerVector", 
@@ -211,7 +211,7 @@ this.isBbcageDefault = false;
 this.bboxModels = null;
 this.bboxAtoms = null;
 this.boxInfo.setBoundBox (pt1, pt2, byCorner, scale);
-}, "J.util.P3,J.util.P3,~B,~N");
+}, "JU.P3,JU.P3,~B,~N");
 $_M(c$, "getBoundBoxCommand", 
 function (withOptions) {
 if (!withOptions && this.bboxAtoms != null) return "boundbox " + J.util.Escape.eBS (this.bboxAtoms);
@@ -254,7 +254,7 @@ var outerVdw = distAtom + this.getRadiusVdwJmol (atom);
 if (outerVdw > maxRadius) maxRadius = outerVdw;
 }
 return (maxRadius == 0 ? 10 : maxRadius);
-}, "~N,J.util.P3");
+}, "~N,JU.P3");
 $_M(c$, "calcBoundBoxDimensions", 
 function (bs, scale) {
 if (bs != null && bs.nextSetBit (0) < 0) bs = null;
@@ -265,7 +265,7 @@ if (bs == null) {
 this.averageAtomPoint.setT (this.getAtomSetCenter (null));
 if (this.unitCells != null) this.calcUnitCellMinMax ();
 }this.boxInfo.setBbcage (scale);
-}, "J.util.BS,~N");
+}, "JU.BS,~N");
 $_M(c$, "getBoxInfo", 
 function (bs, scale) {
 if (bs == null) return this.boxInfo;
@@ -273,7 +273,7 @@ var bi =  new J.util.BoxInfo ();
 this.calcAtomsMinMax (bs, bi);
 bi.setBbcage (scale);
 return bi;
-}, "J.util.BS,~N");
+}, "JU.BS,~N");
 $_M(c$, "calcAtomsMinMax", 
 function (bs, boxInfo) {
 boxInfo.reset ();
@@ -285,7 +285,7 @@ nAtoms++;
 if (!this.isJmolDataFrameForAtom (this.atoms[i])) boxInfo.addBoundBoxPoint (this.atoms[i]);
 }
 return nAtoms;
-}, "J.util.BS,J.util.BoxInfo");
+}, "JU.BS,J.util.BoxInfo");
 $_M(c$, "calcUnitCellMinMax", 
 ($fz = function () {
 for (var i = 0; i < this.modelCount; i++) {
@@ -306,7 +306,7 @@ var outerVdw = distAtom + this.getRadiusVdwJmol (atom);
 if (outerVdw > maxRadius) maxRadius = outerVdw;
 }
 return (maxRadius == 0 ? 10 : maxRadius);
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "getCenterAndPoints", 
 function (vAtomSets, addCenters) {
 var bsAtoms1;
@@ -315,7 +315,7 @@ var n = (addCenters ? 1 : 0);
 for (var ii = vAtomSets.size (); --ii >= 0; ) {
 var bss = vAtomSets.get (ii);
 bsAtoms1 = bss[0];
-if (Clazz.instanceOf (bss[1], J.util.BS)) {
+if (Clazz.instanceOf (bss[1], JU.BS)) {
 bsAtoms2 = bss[1];
 n += Math.min (bsAtoms1.cardinality (), bsAtoms2.cardinality ());
 } else {
@@ -323,12 +323,12 @@ n += Math.min (bsAtoms1.cardinality (), (bss[1]).length);
 }}
 var points =  Clazz.newArray (2, n, null);
 if (addCenters) {
-points[0][0] =  new J.util.P3 ();
-points[1][0] =  new J.util.P3 ();
+points[0][0] =  new JU.P3 ();
+points[1][0] =  new JU.P3 ();
 }for (var ii = vAtomSets.size (); --ii >= 0; ) {
 var bss = vAtomSets.get (ii);
 bsAtoms1 = bss[0];
-if (Clazz.instanceOf (bss[1], J.util.BS)) {
+if (Clazz.instanceOf (bss[1], JU.BS)) {
 bsAtoms2 = bss[1];
 for (var i = bsAtoms1.nextSetBit (0), j = bsAtoms2.nextSetBit (0); i >= 0 && j >= 0; i = bsAtoms1.nextSetBit (i + 1), j = bsAtoms2.nextSetBit (j + 1)) {
 points[0][--n] = this.atoms[i];
@@ -351,10 +351,10 @@ if (addCenters) {
 points[0][0].scale (1 / (points[0].length - 1));
 points[1][0].scale (1 / (points[1].length - 1));
 }return points;
-}, "J.util.JmolList,~B");
+}, "JU.List,~B");
 $_M(c$, "getAtomSetCenter", 
 function (bs) {
-var ptCenter = J.util.P3.new3 (0, 0, 0);
+var ptCenter = JU.P3.new3 (0, 0, 0);
 var nPoints = 0;
 if (bs != null) for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
 if (!this.isJmolDataFrameForAtom (this.atoms[i])) {
@@ -363,17 +363,17 @@ ptCenter.add (this.atoms[i]);
 }}
 if (nPoints > 0) ptCenter.scale (1.0 / nPoints);
 return ptCenter;
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "setAPm", 
 function (bs, tok, iValue, fValue, sValue, values, list) {
 this.setAPa (bs, tok, iValue, fValue, sValue, values, list);
 switch (tok) {
-case 1095763988:
-case 1632634889:
+case 1095763990:
+case 1632634891:
 if (this.viewer.getBoolean (603979944)) this.assignAromaticBonds ();
 break;
 }
-}, "J.util.BS,~N,~N,~N,~S,~A,~A");
+}, "JU.BS,~N,~N,~N,~S,~A,~A");
 $_M(c$, "addStateScript", 
 function (script1, bsBonds, bsAtoms1, bsAtoms2, script2, addFrameNumber, postDefinitions) {
 var iModel = this.viewer.getCurrentModelIndex ();
@@ -382,11 +382,11 @@ if (this.thisStateModel != iModel) script1 = "frame " + (iModel < 0 ? "all #" + 
 this.thisStateModel = iModel;
 } else {
 this.thisStateModel = -1;
-}var stateScript =  new J.modelset.ModelCollection.StateScript (this.thisStateModel, script1, bsBonds, bsAtoms1, bsAtoms2, script2, postDefinitions);
+}var stateScript =  new J.modelset.StateScript (this.thisStateModel, script1, bsBonds, bsAtoms1, bsAtoms2, script2, postDefinitions);
 if (stateScript.isValid ()) {
 this.stateScripts.addLast (stateScript);
 }return stateScript;
-}, "~S,J.util.BS,J.util.BS,J.util.BS,~S,~B,~B");
+}, "~S,JU.BS,JU.BS,JU.BS,~S,~B,~B");
 $_M(c$, "calculateStructuresAllExcept", 
 function (alreadyDefined, asDSSP, doReport, dsspIgnoreHydrogen, setStructure, includeAlpha) {
 this.freezeModels ();
@@ -399,12 +399,12 @@ ret += this.models[i].calculateStructures (asDSSP, doReport, dsspIgnoreHydrogen,
 if (setStructure) {
 this.setStructureIndexes ();
 }return ret;
-}, "J.util.BS,~B,~B,~B,~B,~B");
+}, "JU.BS,~B,~B,~B,~B,~B");
 $_M(c$, "setDefaultStructure", 
 function (bsModels) {
 for (var i = bsModels.nextSetBit (0); i >= 0; i = bsModels.nextSetBit (i + 1)) if (this.models[i].isBioModel && this.models[i].defaultStructure == null) this.models[i].defaultStructure = this.getProteinStructureState (this.models[i].bsAtoms, false, false, 0);
 
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "setProteinType", 
 function (bs, type) {
 var monomerIndexCurrent = -1;
@@ -436,7 +436,7 @@ continue;
 }if (this.atoms[i].getStrucNo () > 1000) this.atoms[i].group.setStrucNo (++lastStrucNo[modelIndex]);
 i = this.atoms[i].group.lastAtomIndex + 1;
 }
-}, "J.util.BS,J.constant.EnumStructure");
+}, "JU.BS,J.constant.EnumStructure");
 $_M(c$, "freezeModels", 
 function () {
 for (var iModel = this.modelCount; --iModel >= 0; ) this.models[iModel].freeze ();
@@ -457,10 +457,10 @@ var bsModels = this.getModelBitSet (bsAtoms, false);
 for (var i = bsModels.nextSetBit (0); i >= 0; i = bsModels.nextSetBit (i + 1)) this.models[i].setConformation (bsAtoms);
 
 return bsAtoms;
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "getConformation", 
 function (modelIndex, conformationIndex, doSet) {
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 for (var i = this.modelCount; --i >= 0; ) if (i == modelIndex || modelIndex < 0) {
 var altLocs = this.getAltLocListInModel (i);
 var nAltLocs = this.getAltLocCountInModel (i);
@@ -515,7 +515,7 @@ $_M(c$, "mergeTrajectories",
 function (isTrajectory) {
 if (this.trajectorySteps == null) {
 if (!isTrajectory) return 0;
-this.trajectorySteps =  new J.util.JmolList ();
+this.trajectorySteps =  new JU.List ();
 }for (var i = this.trajectorySteps.size (); i < this.modelCount; i++) this.trajectorySteps.addLast (null);
 
 return this.modelCount;
@@ -539,7 +539,7 @@ return false;
 }, "~A");
 $_M(c$, "getModelBitSet", 
 function (atomList, allTrajectories) {
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 var modelIndex = 0;
 var isAll = (atomList == null);
 var i0 = (isAll ? 0 : atomList.nextSetBit (0));
@@ -552,10 +552,10 @@ for (var j = 0; j < this.modelCount; j++) if (this.models[j].trajectoryBaseIndex
 }i = this.models[modelIndex].firstAtomIndex + this.models[modelIndex].atomCount - 1;
 }
 return bs;
-}, "J.util.BS,~B");
+}, "JU.BS,~B");
 $_M(c$, "getIterativeModels", 
 function (allowJmolData) {
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 for (var i = 0; i < this.modelCount; i++) {
 if (!allowJmolData && this.isJmolDataFrameForModel (i)) continue;
 if (this.models[i].trajectoryBaseIndex == i) bs.set (i);
@@ -572,7 +572,7 @@ for (var i = 0; i < this.modelCount; i++) {
 if (this.models[i].isTrajectory && this.atoms[this.models[i].firstAtomIndex].modelIndex != i) bs.clear (i);
 }
 return bs;
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "fillAtomData", 
 function (atomData, mode) {
 if ((mode & 4) != 0) {
@@ -691,7 +691,7 @@ $_M(c$, "getPolymerPointsAndVectors",
 function (bs, vList, isTraceAlpha, sheetSmoothing) {
 for (var i = 0; i < this.modelCount; ++i) this.models[i].getPolymerPointsAndVectors (bs, vList, isTraceAlpha, sheetSmoothing);
 
-}, "J.util.BS,J.util.JmolList,~B,~N");
+}, "JU.BS,JU.List,~B,~N");
 $_M(c$, "recalculateLeadMidpointsAndWingVectors", 
 function (modelIndex) {
 if (modelIndex < 0) {
@@ -725,12 +725,12 @@ $_M(c$, "calcSelectedGroupsCount",
 function (bsSelected) {
 for (var i = this.modelCount; --i >= 0; ) this.models[i].calcSelectedGroupsCount (bsSelected);
 
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "calcSelectedMonomersCount", 
 function (bsSelected) {
 for (var i = this.modelCount; --i >= 0; ) this.models[i].calcSelectedMonomersCount (bsSelected);
 
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "calcRasmolHydrogenBonds", 
 function (bsA, bsB, vHBonds, nucleicOnly, nMax, dsspIgnoreHydrogens, bsHBonds) {
 var isSame = (bsB == null || bsA.equals (bsB));
@@ -740,7 +740,7 @@ this.models[i].clearRasmolHydrogenBonds (bsA);
 if (!isSame) this.models[i].clearRasmolHydrogenBonds (bsB);
 }this.models[i].getRasmolHydrogenBonds (bsA, bsB, vHBonds, nucleicOnly, nMax, dsspIgnoreHydrogens, bsHBonds);
 }
-}, "J.util.BS,J.util.BS,J.util.JmolList,~B,~N,~B,J.util.BS");
+}, "JU.BS,JU.BS,JU.List,~B,~N,~B,JU.BS");
 $_M(c$, "calculateStraightness", 
 function () {
 if (this.getHaveStraightness ()) return;
@@ -754,7 +754,7 @@ this.setHaveStraightness (true);
 $_M(c$, "getAtomGroupQuaternions", 
 function (bsAtoms, nMax, qtype) {
 var n = 0;
-var v =  new J.util.JmolList ();
+var v =  new JU.List ();
 for (var i = bsAtoms.nextSetBit (0); i >= 0 && n < nMax; i = bsAtoms.nextSetBit (i + 1)) {
 var g = this.atoms[i].group;
 var q = g.getQuaternion (qtype);
@@ -766,32 +766,32 @@ v.addLast (q);
 i = g.lastAtomIndex;
 }
 return v.toArray ( new Array (v.size ()));
-}, "J.util.BS,~N,~S");
+}, "JU.BS,~N,~S");
 $_M(c$, "getPdbAtomData", 
-function (bs, sb) {
+function (bs, out) {
 if (this.atomCount == 0 || bs.nextSetBit (0) < 0) return "";
-if (sb == null) sb =  new J.io.OutputStringBuilder (null, false);
+if (out == null) out = this.viewer.getOutputChannel (null, null);
 var iModel = this.atoms[bs.nextSetBit (0)].modelIndex;
 var iModelLast = -1;
-var isPQR = "PQR".equals (sb.type);
+var isPQR = "PQR".equals (out.getType ());
 var occTemp = "%6.2Q%6.2b          ";
 if (isPQR) {
 occTemp = "%8.4P%7.4V       ";
 var charge = 0;
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) charge += this.atoms[i].getPartialCharge ();
 
-sb.append ("REMARK   1 PQR file generated by Jmol " + J.viewer.Viewer.getJmolVersion ()).append ("\nREMARK   1 " + "created " + ( new java.util.Date ())).append ("\nREMARK   1 Forcefield Used: unknown\nREMARK   1").append ("\nREMARK   5").append ("\nREMARK   6 Total charge on this protein: " + charge + " e\nREMARK   6\n");
+out.append ("REMARK   1 PQR file generated by Jmol " + J.viewer.Viewer.getJmolVersion ()).append ("\nREMARK   1 " + "created " + ( new java.util.Date ())).append ("\nREMARK   1 Forcefield Used: unknown\nREMARK   1").append ("\nREMARK   5").append ("\nREMARK   6 Total charge on this protein: " + charge + " e\nREMARK   6\n");
 }var lastAtomIndex = bs.length () - 1;
 var showModels = (iModel != this.atoms[lastAtomIndex].modelIndex);
-var sbCONECT = (showModels ? null :  new J.util.SB ());
+var sbCONECT = (showModels ? null :  new JU.SB ());
 var isMultipleBondPDB = this.models[iModel].isPdbWithMultipleBonds;
 var tokens;
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
 var a = this.atoms[i];
 if (showModels && a.modelIndex != iModelLast) {
-if (iModelLast != -1) sb.append ("ENDMDL\n");
+if (iModelLast != -1) out.append ("ENDMDL\n");
 iModelLast = a.modelIndex;
-sb.append ("MODEL     " + (iModelLast + 1) + "\n");
+out.append ("MODEL     " + (iModelLast + 1) + "\n");
 }var sa = a.getAtomName ();
 var leftJustify = (a.getElementSymbol ().length == 2 || sa.length >= 4 || Character.isDigit (sa.charAt (0)));
 var isBiomodel = this.models[a.modelIndex].isBioModel;
@@ -800,7 +800,7 @@ if (!isBiomodel) tokens = (leftJustify ? J.modelset.LabelToken.compile (this.vie
  else if (isHetero) tokens = (leftJustify ? J.modelset.LabelToken.compile (this.viewer, "HETATM%5.-5i %-4.4a%1A%3.-3n %1c%4.-4R%1E   %8.3x%8.3y%8.3z" + occTemp, '\0', null) : J.modelset.LabelToken.compile (this.viewer, "HETATM%5.-5i  %-3.3a%1A%3.-3n %1c%4.-4R%1E   %8.3x%8.3y%8.3z" + occTemp, '\0', null));
  else tokens = (leftJustify ? J.modelset.LabelToken.compile (this.viewer, "ATOM  %5.-5i %-4.4a%1A%3.-3n %1c%4.-4R%1E   %8.3x%8.3y%8.3z" + occTemp, '\0', null) : J.modelset.LabelToken.compile (this.viewer, "ATOM  %5.-5i  %-3.3a%1A%3.-3n %1c%4.-4R%1E   %8.3x%8.3y%8.3z" + occTemp, '\0', null));
 var XX = a.getElementSymbolIso (false).toUpperCase ();
-sb.append (J.modelset.LabelToken.formatLabelAtomArray (this.viewer, a, tokens, '\0', null)).append (XX.length == 1 ? " " + XX : XX.substring (0, 2)).append ("  \n");
+out.append (J.modelset.LabelToken.formatLabelAtomArray (this.viewer, a, tokens, '\0', null)).append (XX.length == 1 ? " " + XX : XX.substring (0, 2)).append ("  \n");
 if (!showModels && (!isBiomodel || isHetero || isMultipleBondPDB)) {
 var bonds = a.getBonds ();
 if (bonds != null) for (var j = 0; j < bonds.length; j++) {
@@ -815,35 +815,35 @@ case 2:
 case 3:
 if (iOther < iThis) continue;
 case 1:
-sbCONECT.append ("CONECT").append (J.util.TextFormat.formatStringI ("%5i", "i", iThis));
-for (var k = 0; k < n; k++) sbCONECT.append (J.util.TextFormat.formatStringI ("%5i", "i", iOther));
+sbCONECT.append ("CONECT").append (J.util.Txt.formatStringI ("%5i", "i", iThis));
+for (var k = 0; k < n; k++) sbCONECT.append (J.util.Txt.formatStringI ("%5i", "i", iOther));
 
 sbCONECT.appendC ('\n');
 break;
 }
 }
 }}
-if (showModels) sb.append ("ENDMDL\n");
- else sb.append (sbCONECT.toString ());
-return sb.toString ();
-}, "J.util.BS,J.io.OutputStringBuilder");
+if (showModels) out.append ("ENDMDL\n");
+ else out.append (sbCONECT.toString ());
+return out.toString ();
+}, "JU.BS,JU.OC");
 $_M(c$, "getPdbData", 
-function (modelIndex, type, bsSelected, parameters, sb) {
+function (modelIndex, type, bsSelected, parameters, out) {
 if (this.isJmolDataFrameForModel (modelIndex)) modelIndex = this.getJmolDataSourceFrame (modelIndex);
 if (modelIndex < 0) return "";
 var isPDB = this.models[modelIndex].isBioModel;
 if (parameters == null && !isPDB) return null;
 var model = this.models[modelIndex];
-if (sb == null) sb =  new J.io.OutputStringBuilder (null, false);
-var pdbCONECT =  new J.util.SB ();
+if (out == null) out = this.viewer.getOutputChannel (null, null);
+var pdbCONECT =  new JU.SB ();
 var isDraw = (type.indexOf ("draw") >= 0);
 var bsAtoms = null;
-var bsWritten =  new J.util.BS ();
+var bsWritten =  new JU.BS ();
 var ctype = '\u0000';
-var tokens = J.modelset.LabelToken.compile (this.viewer, "ATOM  %-6i%4a%1A%3n %1c%4R%1E   ", '\0', null);
+var tokens = this.getLabeler ().compile (this.viewer, "ATOM  %-6i%4a%1A%3n %1c%4R%1E   ", '\0', null);
 if (parameters == null) {
 ctype = (type.length > 11 && type.indexOf ("quaternion ") >= 0 ? type.charAt (11) : 'R');
-model.getPdbData (this.viewer, type, ctype, isDraw, bsSelected, sb, tokens, pdbCONECT, bsWritten);
+model.getPdbData (this.viewer, type, ctype, isDraw, bsSelected, out, tokens, pdbCONECT, bsWritten);
 bsAtoms = this.viewer.getModelUndeletedAtomsBitSet (modelIndex);
 } else {
 bsAtoms = parameters[0];
@@ -855,8 +855,8 @@ var minXYZ = parameters[4];
 var maxXYZ = parameters[5];
 var factors = parameters[6];
 var center = parameters[7];
-sb.append ("REMARK   6 Jmol PDB-encoded data: ").append (type).append (";\n");
-sb.append ("REMARK   6 Jmol data").append (" min = ").append (J.util.Escape.eP (minXYZ)).append (" max = ").append (J.util.Escape.eP (maxXYZ)).append (" unScaledXyz = xyz * ").append (J.util.Escape.eP (factors)).append (" + ").append (J.util.Escape.eP (center)).append (";\n");
+out.append ("REMARK   6 Jmol PDB-encoded data: ").append (type).append (";\n");
+out.append ("REMARK   6 Jmol data").append (" min = ").append (J.util.Escape.eP (minXYZ)).append (" max = ").append (J.util.Escape.eP (maxXYZ)).append (" unScaledXyz = xyz * ").append (J.util.Escape.eP (factors)).append (" + ").append (J.util.Escape.eP (center)).append (";\n");
 var strExtra = "";
 var atomLast = null;
 for (var i = bsAtoms.nextSetBit (0), n = 0; i >= 0; i = bsAtoms.nextSetBit (i + 1), n++) {
@@ -865,18 +865,18 @@ var y = dataY[n];
 var z = (haveZ ? dataZ[n] : 0);
 if (Float.isNaN (x) || Float.isNaN (y) || Float.isNaN (z)) continue;
 var a = this.atoms[i];
-sb.append (J.modelset.LabelToken.formatLabelAtomArray (this.viewer, a, tokens, '\0', null));
+out.append (J.modelset.LabelToken.formatLabelAtomArray (this.viewer, a, tokens, '\0', null));
 if (isPDB) bsWritten.set (i);
-sb.append (J.util.TextFormat.sprintf ("%-8.2f%-8.2f%-10.2f    %6.3f          %2s    %s\n", "ssF", [a.getElementSymbolIso (false).toUpperCase (), strExtra, [x, y, z, 0]]));
-if (atomLast != null && atomLast.getPolymerIndexInModel () == a.getPolymerIndexInModel ()) pdbCONECT.append ("CONECT").append (J.util.TextFormat.formatStringI ("%5i", "i", atomLast.getAtomNumber ())).append (J.util.TextFormat.formatStringI ("%5i", "i", a.getAtomNumber ())).appendC ('\n');
+out.append (J.util.Txt.sprintf ("%-8.2f%-8.2f%-10.2f    %6.3f          %2s    %s\n", "ssF", [a.getElementSymbolIso (false).toUpperCase (), strExtra, [x, y, z, 0]]));
+if (atomLast != null && atomLast.getPolymerIndexInModel () == a.getPolymerIndexInModel ()) pdbCONECT.append ("CONECT").append (J.util.Txt.formatStringI ("%5i", "i", atomLast.getAtomNumber ())).append (J.util.Txt.formatStringI ("%5i", "i", a.getAtomNumber ())).appendC ('\n');
 atomLast = a;
 }
-}sb.append (pdbCONECT.toString ());
-if (isDraw) return sb.toString ();
+}out.append (pdbCONECT.toString ());
+if (isDraw) return out.toString ();
 bsSelected.and (bsAtoms);
-if (isPDB) sb.append ("\n\n" + this.getProteinStructureState (bsWritten, false, ctype == 'R', 1));
-return sb.toString ();
-}, "~N,~S,J.util.BS,~A,J.io.OutputStringBuilder");
+if (isPDB) out.append ("\n\n" + this.getProteinStructureState (bsWritten, false, ctype == 'R', 1));
+return out.toString ();
+}, "~N,~S,JU.BS,~A,JU.OC");
 $_M(c$, "isJmolDataFrameForModel", 
 function (modelIndex) {
 return (modelIndex >= 0 && modelIndex < this.modelCount && this.models[modelIndex].isJmolDataFrame);
@@ -931,7 +931,7 @@ return (modelIndex >= 0 && modelIndex < this.modelCount ? this.models[modelIndex
 $_M(c$, "saveModelOrientation", 
 function (modelIndex, orientation) {
 this.models[modelIndex].orientation = orientation;
-}, "~N,J.viewer.StateManager.Orientation");
+}, "~N,J.modelset.Orientation");
 $_M(c$, "getModelOrientation", 
 function (modelIndex) {
 return this.models[modelIndex].orientation;
@@ -978,15 +978,14 @@ return (str == null ? "" : str);
 }, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "getModelSymmetryCount", 
 function (modelIndex) {
-var operations;
-return (this.models[modelIndex].biosymmetryCount > 0 || this.unitCells == null || this.unitCells[modelIndex] == null || (operations = this.unitCells[modelIndex].getSymmetryOperations ()) == null ? this.models[modelIndex].biosymmetryCount : operations.length);
+return (this.models[modelIndex].biosymmetryCount > 0 ? this.models[modelIndex].biosymmetryCount : this.unitCells == null || this.unitCells[modelIndex] == null ? 0 : this.unitCells[modelIndex].getSpaceGroupOperationCount ());
 }, "~N");
-$_M(c$, "getSymmetryOperation", 
+$_M(c$, "getSymmetryInfoString", 
 function (modelIndex, spaceGroup, symOp, pt1, pt2, drawID, labelOnly) {
 var sginfo = this.getSymTemp (true).getSpaceGroupInfo (this, modelIndex, spaceGroup, symOp, pt1, pt2, drawID);
 if (sginfo == null) return "";
-return this.symTemp.getSymmetryOperationInfo (sginfo, symOp, drawID, labelOnly);
-}, "~N,~S,~N,J.util.P3,J.util.P3,~S,~B");
+return this.symTemp.getSymmetryInfoString (sginfo, symOp, drawID, labelOnly);
+}, "~N,~S,~N,JU.P3,JU.P3,~S,~B");
 $_M(c$, "getModelCellRange", 
 function (modelIndex) {
 if (this.unitCells == null) return null;
@@ -994,14 +993,14 @@ return this.unitCells[modelIndex].getCellRange ();
 }, "~N");
 $_M(c$, "getLastVibrationVector", 
 function (modelIndex, tok) {
-if (this.vibrations != null) for (var i = this.atomCount; --i >= 0; ) if ((modelIndex < 0 || this.atoms[i].modelIndex == modelIndex) && this.vibrations[i] != null && this.vibrations[i].length () > 0 && (tok == 0 || (tok == 135270424) == (Clazz.instanceOf (this.vibrations[i], J.util.ModulationSet)))) return i;
+if (this.vibrations != null) for (var i = this.atomCount; --i >= 0; ) if ((modelIndex < 0 || this.atoms[i].modelIndex == modelIndex) && this.vibrations[i] != null && this.vibrations[i].length () > 0 && (tok == 0 || (tok == 135270424) == (Clazz.instanceOf (this.vibrations[i], J.api.JmolModulationSet)))) return i;
 
 return -1;
 }, "~N,~N");
 $_M(c$, "getElementsPresentBitSet", 
 function (modelIndex) {
 if (modelIndex >= 0) return this.elementsPresent[modelIndex];
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 for (var i = 0; i < this.modelCount; i++) bs.or (this.elementsPresent[i]);
 
 return bs;
@@ -1025,7 +1024,7 @@ if (this.moleculeCount == 0) this.getMolecules ();
 var bsResult = J.util.BSUtil.copy (bs);
 var bsInitial = J.util.BSUtil.copy (bs);
 var i = 0;
-var bsTemp =  new J.util.BS ();
+var bsTemp =  new JU.BS ();
 while ((i = bsInitial.length () - 1) >= 0) {
 bsTemp = this.getMoleculeBitSetForAtom (i);
 if (bsTemp == null) {
@@ -1036,7 +1035,7 @@ continue;
 bsResult.or (bsTemp);
 }
 return bsResult;
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "getMoleculeBitSetForAtom", 
 function (atomIndex) {
 if (this.moleculeCount == 0) this.getMolecules ();
@@ -1058,8 +1057,8 @@ var nPos = 0;
 var nNeg = 0;
 var cPos = 0;
 var cNeg = 0;
-var pos =  new J.util.V3 ();
-var neg =  new J.util.V3 ();
+var pos =  new JU.V3 ();
+var neg =  new JU.V3 ();
 for (var i = 0; i < this.atomCount; i++) {
 if (this.atoms[i].modelIndex != modelIndex) continue;
 var c = this.partialCharges[i];
@@ -1094,28 +1093,26 @@ $_M(c$, "calcSelectedMoleculesCount",
 function (bsSelected) {
 if (this.moleculeCount == 0) this.getMolecules ();
 this.selectedMolecules.xor (this.selectedMolecules);
-this.selectedMoleculeCount = 0;
-var bsTemp =  new J.util.BS ();
+var bsTemp =  new JU.BS ();
 for (var i = 0; i < this.moleculeCount; i++) {
 J.util.BSUtil.copy2 (bsSelected, bsTemp);
 bsTemp.and (this.molecules[i].atomList);
 if (bsTemp.length () > 0) {
 this.selectedMolecules.set (i);
-this.selectedMoleculeCount++;
 }}
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "setCentroid", 
 function (bs, minmax) {
 var bsDelete = this.getNotInCentroid (bs, minmax);
 if (bsDelete != null && bsDelete.nextSetBit (0) >= 0) this.viewer.deleteAtoms (bsDelete, false);
-}, "J.util.BS,~A");
+}, "JU.BS,~A");
 $_M(c$, "getNotInCentroid", 
 ($fz = function (bs, minmax) {
 var iAtom0 = bs.nextSetBit (0);
 if (iAtom0 < 0) return null;
 var uc = this.getUnitCell (this.atoms[iAtom0].modelIndex);
 return (uc == null ? null : uc.notInCentroid (this, bs, minmax));
-}, $fz.isPrivate = true, $fz), "J.util.BS,~A");
+}, $fz.isPrivate = true, $fz), "JU.BS,~A");
 $_M(c$, "getMolecules", 
 function () {
 if (this.moleculeCount > 0) return this.molecules;
@@ -1173,7 +1170,7 @@ iterator.setCenter (pt, distance);
 return;
 }this.initializeBspt (modelIndex);
 iterator.setModel (this, modelIndex, this.models[modelIndex].firstAtomIndex, 2147483647, pt, distance, null);
-}, "J.api.AtomIndexIterator,~N,J.util.P3,~N");
+}, "J.api.AtomIndexIterator,~N,JU.P3,~N");
 $_M(c$, "setIteratorForAtom", 
 function (iterator, modelIndex, atomIndex, distance, rd) {
 if (modelIndex < 0) modelIndex = this.atoms[atomIndex].modelIndex;
@@ -1194,15 +1191,15 @@ iter =  new J.modelset.AtomIteratorWithinModelSet (bsModels);
 iter =  new J.modelset.AtomIteratorWithinModel ();
 }iter.initialize (this.bspf, bsSelected, isGreaterOnly, modelZeroBased, hemisphereOnly, this.viewer.isParallel ());
 return iter;
-}, "J.util.BS,~B,~B,~B,~B");
-Clazz.overrideMethod (c$, "getBondCountInModel", 
+}, "JU.BS,~B,~B,~B,~B");
+$_V(c$, "getBondCountInModel", 
 function (modelIndex) {
 return (modelIndex < 0 ? this.bondCount : this.models[modelIndex].getBondCount ());
 }, "~N");
 $_M(c$, "calculateStruts", 
 function (bs1, bs2) {
 return this.calculateStrutsMC (bs1, bs2);
-}, "J.util.BS,J.util.BS");
+}, "JU.BS,JU.BS");
 $_M(c$, "calculateStrutsMC", 
 function (bs1, bs2) {
 this.makeConnections2 (0, 3.4028235E38, 32768, 12291, bs1, bs2, null, false, false, 0);
@@ -1210,20 +1207,20 @@ var iAtom = bs1.nextSetBit (0);
 if (iAtom < 0) return 0;
 var model = this.models[this.atoms[iAtom].modelIndex];
 return (model.isBioModel ? model.calculateStruts (this, bs1, bs2) : 0);
-}, "J.util.BS,J.util.BS");
+}, "JU.BS,JU.BS");
 $_M(c$, "getAtomCountInModel", 
 function (modelIndex) {
 return (modelIndex < 0 ? this.atomCount : this.models[modelIndex].atomCount);
 }, "~N");
 $_M(c$, "getModelAtomBitSetIncludingDeletedBs", 
 function (bsModels) {
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 if (bsModels == null && this.bsAll == null) this.bsAll = J.util.BSUtil.setAll (this.atomCount);
 if (bsModels == null) bs.or (this.bsAll);
  else for (var i = bsModels.nextSetBit (0); i >= 0; i = bsModels.nextSetBit (i + 1)) bs.or (this.getModelAtomBitSetIncludingDeleted (i, false));
 
 return bs;
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "getModelAtomBitSetIncludingDeleted", 
 function (modelIndex, asCopy) {
 var bs = (modelIndex < 0 ? this.bsAll : this.models[modelIndex].bsAtoms);
@@ -1249,7 +1246,7 @@ for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) if (!boxInfo.
 
 return bs;
 case 1095761925:
-bs =  new J.util.BS ();
+bs =  new JU.BS ();
 info = specInfo;
 this.ptTemp1.set (info[0] / 1000, info[1] / 1000, info[2] / 1000);
 var isAbsolute = !this.viewer.getBoolean (603979848);
@@ -1268,7 +1265,7 @@ continue;
 }bs.andNot (uc.notInCentroid (this, this.models[i].bsAtoms, minmax));
 }
 return bs;
-case 1095761934:
+case 1095761936:
 return this.getMoleculeBitSet (specInfo);
 case 1087373320:
 return this.getSequenceBits (specInfo, null);
@@ -1277,7 +1274,7 @@ info = specInfo;
 var seqcodeA = info[0];
 var seqcodeB = info[1];
 var chainID = info[2];
-bs =  new J.util.BS ();
+bs =  new JU.BS ();
 var caseSensitive = this.viewer.getBoolean (603979822);
 if (chainID >= 0 && chainID < 256 && !caseSensitive) chainID = J.modelset.AtomCollection.chainToUpper (chainID);
 for (var i = this.modelCount; --i >= 0; ) if (this.models[i].isBioModel) this.models[i].selectSeqcodeRange (seqcodeA, seqcodeB, chainID, bs, caseSensitive);
@@ -1305,7 +1302,7 @@ return bs;
 case 1089470478:
 return J.util.BSUtil.copy (this.bsSymmetry == null ? this.bsSymmetry = J.util.BSUtil.newBitSet (this.atomCount) : this.bsSymmetry);
 case 1614417948:
-bs =  new J.util.BS ();
+bs =  new JU.BS ();
 var unitcell = this.viewer.getCurrentUnitCell ();
 if (unitcell == null) return bs;
 this.ptTemp1.set (1, 1, 1);
@@ -1320,10 +1317,10 @@ var iModel = this.atoms[i].modelIndex;
 var uc = this.getUnitCell (iModel);
 ptTemp.setT (this.atoms[i]);
 return (uc != null && uc.checkUnitCell (uc, cell, ptTemp, isAbsolute));
-}, $fz.isPrivate = true, $fz), "~N,J.util.P3,J.util.P3,~B");
+}, $fz.isPrivate = true, $fz), "~N,JU.P3,JU.P3,~B");
 $_M(c$, "getAtomsWithinRD", 
 function (distance, bs, withinAllModels, rd) {
-var bsResult =  new J.util.BS ();
+var bsResult =  new JU.BS ();
 var bsCheck = this.getIterativeModels (false);
 bs = J.util.BSUtil.andNot (bs, this.viewer.getDeletedAtoms ());
 var iter = this.getSelectedAtomIterator (null, false, false, false, false);
@@ -1348,20 +1345,20 @@ iter.addAtoms (bsResult);
 }
 }iter.release ();
 return bsResult;
-}, "~N,J.util.BS,~B,J.atomdata.RadiusData");
+}, "~N,JU.BS,~B,J.atomdata.RadiusData");
 $_M(c$, "getGroupsWithin", 
 function (nResidues, bs) {
 var bsCheck = this.getIterativeModels (false);
-var bsResult =  new J.util.BS ();
+var bsResult =  new JU.BS ();
 for (var iModel = this.modelCount; --iModel >= 0; ) {
 if (!bsCheck.get (iModel) || !this.models[iModel].isBioModel) continue;
 this.models[iModel].getGroupsWithin (nResidues, bs, bsResult);
 }
 return bsResult;
-}, "~N,J.util.BS");
+}, "~N,JU.BS");
 $_M(c$, "getAtomsWithin", 
 function (distance, coord, bsResult, modelIndex) {
-if (bsResult == null) bsResult =  new J.util.BS ();
+if (bsResult == null) bsResult =  new JU.BS ();
 if (distance < 0) {
 distance = -distance;
 for (var i = this.atomCount; --i >= 0; ) {
@@ -1380,14 +1377,14 @@ iter.addAtoms (bsResult);
 }
 iter.release ();
 return bsResult;
-}, "~N,J.util.P3,J.util.BS,~N");
+}, "~N,JU.P3,JU.BS,~N");
 $_M(c$, "getBasePairBits", 
 ($fz = function (specInfo) {
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 if (specInfo.length % 2 != 0) return bs;
 var bsA = null;
 var bsB = null;
-var vHBonds =  new J.util.JmolList ();
+var vHBonds =  new JU.List ();
 if (specInfo.length == 0) {
 bsA = bsB = this.viewer.getModelUndeletedAtomsBitSet (-1);
 this.calcRasmolHydrogenBonds (bsA, bsB, vHBonds, true, 1, false, null);
@@ -1399,7 +1396,7 @@ bsB = this.getSequenceBits (specInfo.substring (i, ++i), null);
 if (bsB.cardinality () == 0) continue;
 this.calcRasmolHydrogenBonds (bsA, bsB, vHBonds, true, 1, false, null);
 }
-}var bsAtoms =  new J.util.BS ();
+}var bsAtoms =  new JU.BS ();
 for (var i = vHBonds.size (); --i >= 0; ) {
 var b = vHBonds.get (i);
 bsAtoms.set (b.atom1.index);
@@ -1410,16 +1407,16 @@ return this.getAtomBitsMDb (1087373318, bsAtoms);
 $_M(c$, "getSequenceBits", 
 function (specInfo, bs) {
 if (bs == null) bs = this.viewer.getModelUndeletedAtomsBitSet (-1);
-var bsResult =  new J.util.BS ();
+var bsResult =  new JU.BS ();
 if (specInfo.length > 0) for (var i = 0; i < this.modelCount; ++i) if (this.models[i].isBioModel) this.models[i].getSequenceBits (specInfo, bs, bsResult);
 
 return bsResult;
-}, "~S,J.util.BS");
+}, "~S,JU.BS");
 $_M(c$, "deleteBonds", 
 function (bsBonds, isFullModel) {
 if (!isFullModel) {
-var bsA =  new J.util.BS ();
-var bsB =  new J.util.BS ();
+var bsA =  new JU.BS ();
+var bsB =  new JU.BS ();
 for (var i = bsBonds.nextSetBit (0); i >= 0; i = bsBonds.nextSetBit (i + 1)) {
 var atom1 = this.bonds[i].atom1;
 if (this.models[atom1.modelIndex].isModelKit) continue;
@@ -1430,10 +1427,10 @@ bsB.set (this.bonds[i].getAtomIndex2 ());
 this.addStateScript ("connect ", null, bsA, bsB, "delete", false, true);
 }
 }this.dBb (bsBonds, isFullModel);
-}, "J.util.BS,~B");
+}, "JU.BS,~B");
 $_M(c$, "makeConnections2", 
 function (minDistance, maxDistance, order, connectOperation, bsA, bsB, bsBonds, isBonds, addGroup, energy) {
-if (bsBonds == null) bsBonds =  new J.util.BS ();
+if (bsBonds == null) bsBonds =  new JU.BS ();
 var matchAny = (order == 65535);
 var matchNull = (order == 131071);
 if (matchNull) order = 1;
@@ -1514,7 +1511,7 @@ nNew++;
 if (autoAromatize) this.assignAromaticBondsBs (true, bsBonds);
 if (!identifyOnly) this.shapeManager.setShapeSizeBs (1, -2147483648, null, bsBonds);
 return [nNew, nModified];
-}, "~N,~N,~N,~N,J.util.BS,J.util.BS,J.util.BS,~B,~B,~N");
+}, "~N,~N,~N,~N,JU.BS,JU.BS,JU.BS,~B,~B,~N");
 $_M(c$, "autoBondBs4", 
 function (bsA, bsB, bsExclude, bsBonds, mad, preJmol11_9_24) {
 if (preJmol11_9_24) return this.autoBond_Pre_11_9_24 (bsA, bsB, bsExclude, bsBonds, mad);
@@ -1571,7 +1568,7 @@ iter.release ();
 }
 if (this.showRebondTimes) J.util.Logger.checkTimer ("autoBond", false);
 return nNew;
-}, "J.util.BS,J.util.BS,J.util.BS,J.util.BS,~N,~B");
+}, "JU.BS,JU.BS,JU.BS,JU.BS,~N,~B");
 $_M(c$, "autoBond_Pre_11_9_24", 
 ($fz = function (bsA, bsB, bsExclude, bsBonds, mad) {
 if (this.atomCount == 0) return 0;
@@ -1618,19 +1615,19 @@ if (this.checkValencesAndBond (atom, atomNear, order, mad, bsBonds)) nNew++;
 iter.release ();
 }
 return nNew;
-}, $fz.isPrivate = true, $fz), "J.util.BS,J.util.BS,J.util.BS,J.util.BS,~N");
+}, $fz.isPrivate = true, $fz), "JU.BS,JU.BS,JU.BS,JU.BS,~N");
 $_M(c$, "autoBond", 
 ($fz = function (bsA, bsB, bsBonds, isBonds, matchHbond, legacyAutoBond) {
 if (isBonds) {
 var bs = bsA;
-bsA =  new J.util.BS ();
-bsB =  new J.util.BS ();
+bsA =  new JU.BS ();
+bsB =  new JU.BS ();
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
 bsA.set (this.bonds[i].atom1.index);
 bsB.set (this.bonds[i].atom2.index);
 }
 }return [matchHbond ? this.autoHbond (bsA, bsB, false) : this.autoBondBs4 (bsA, bsB, null, bsBonds, this.viewer.getMadBond (), legacyAutoBond), 0];
-}, $fz.isPrivate = true, $fz), "J.util.BS,J.util.BS,J.util.BS,~B,~B,~B");
+}, $fz.isPrivate = true, $fz), "JU.BS,JU.BS,JU.BS,~B,~B,~B");
 $_M(c$, "autoHbond", 
 function (bsA, bsB, onlyIfHaveCalculated) {
 if (onlyIfHaveCalculated) {
@@ -1643,7 +1640,7 @@ for (var i = bsA.nextSetBit (0); i >= 0; i = bsA.nextSetBit (i + 1)) if (this.at
 haveHAtoms = true;
 break;
 }
-var bsHBonds =  new J.util.BS ();
+var bsHBonds =  new JU.BS ();
 var useRasMol = this.viewer.getBoolean (603979853);
 if (bsB == null || useRasMol && !haveHAtoms) {
 J.util.Logger.info ((bsB == null ? "DSSP " : "RasMol") + " pseudo-hbond calculation");
@@ -1652,7 +1649,7 @@ return -J.util.BSUtil.cardinalityOf (bsHBonds);
 }J.util.Logger.info (haveHAtoms ? "Standard Hbond calculation" : "Jmol pseudo-hbond calculation");
 var bsCO = null;
 if (!haveHAtoms) {
-bsCO =  new J.util.BS ();
+bsCO =  new JU.BS ();
 for (var i = bsA.nextSetBit (0); i >= 0; i = bsA.nextSetBit (i + 1)) {
 var atomID = this.atoms[i].atomID;
 switch (atomID) {
@@ -1675,8 +1672,8 @@ var hxbondMax2 = (maxXYDistance > J.modelset.ModelCollection.hbondMin ? hbondMin
 var hxbondMax = (maxXYDistance > J.modelset.ModelCollection.hbondMin ? J.modelset.ModelCollection.hbondMin : maxXYDistance);
 var nNew = 0;
 var d2 = 0;
-var v1 =  new J.util.V3 ();
-var v2 =  new J.util.V3 ();
+var v1 =  new JU.V3 ();
+var v2 =  new JU.V3 ();
 if (this.showRebondTimes && J.util.Logger.debugging) J.util.Logger.startTimer ("hbond");
 var C = null;
 var D = null;
@@ -1735,11 +1732,11 @@ iter.release ();
 this.shapeManager.setShapeSizeBs (1, -2147483648, null, bsHBonds);
 if (this.showRebondTimes) J.util.Logger.checkTimer ("hbond", false);
 return (haveHAtoms ? nNew : -nNew);
-}, "J.util.BS,J.util.BS,~B");
+}, "JU.BS,JU.BS,~B");
 c$.checkMinAttachedAngle = $_M(c$, "checkMinAttachedAngle", 
 ($fz = function (atom1, minAngle, v1, v2, haveHAtoms) {
 var bonds = atom1.bonds;
-if (bonds == null || bonds.length == 0) return J.util.P3.new3 (NaN, 0, 0);
+if (bonds == null || bonds.length == 0) return JU.P3.new3 (NaN, 0, 0);
 var X = null;
 var dMin = 3.4028235E38;
 for (var i = bonds.length; --i >= 0; ) if (bonds[i].isCovalent ()) {
@@ -1753,7 +1750,7 @@ X = atomA;
 dMin = d;
 }}
 return X;
-}, $fz.isPrivate = true, $fz), "J.modelset.Atom,~N,J.util.V3,J.util.V3,~B");
+}, $fz.isPrivate = true, $fz), "J.modelset.Atom,~N,JU.V3,JU.V3,~B");
 $_M(c$, "setStructureIndexes", 
 function () {
 var id;
@@ -1777,10 +1774,10 @@ if (!this.isPDB) return "";
 for (var i = 0; i < this.modelCount; i++) if (this.models[i].isBioModel) return this.models[i].getProteinStructureState (bsAtoms, taintedOnly, needPhiPsi, mode);
 
 return "";
-}, "J.util.BS,~B,~B,~N");
+}, "JU.BS,~B,~B,~N");
 $_M(c$, "getModelInfoAsString", 
 function () {
-var sb =  new J.util.SB ().append ("<models count=\"");
+var sb =  new JU.SB ().append ("<models count=\"");
 sb.appendI (this.modelCount).append ("\" modelSetHasVibrationVectors=\"").append (this.modelSetHasVibrationVectors () + "\">\n<properties>");
 if (this.modelSetProperties != null) {
 var e = this.modelSetProperties.propertyNames ();
@@ -1800,14 +1797,14 @@ return sb.toString ();
 });
 $_M(c$, "getSymmetryInfoAsString", 
 function () {
-var sb =  new J.util.SB ().append ("Symmetry Information:");
+var sb =  new JU.SB ().append ("Symmetry Information:");
 for (var i = 0; i < this.modelCount; ++i) sb.append ("\nmodel #").append (this.getModelNumberDotted (i)).append ("; name=").append (this.getModelName (i)).append ("\n").append (this.getSymmetryInfoAsStringForModel (i));
 
 return sb.toString ();
 });
 $_M(c$, "getAtomsConnected", 
 function (min, max, intType, bs) {
-var bsResult =  new J.util.BS ();
+var bsResult =  new JU.BS ();
 var nBonded =  Clazz.newIntArray (this.atomCount, 0);
 var i;
 var ishbond = (intType == 30720);
@@ -1829,7 +1826,7 @@ if (n < min || n > max) bsResult.clear (i);
  else if (nonbonded && n == 0) bsResult.set (i);
 }
 return bsResult;
-}, "~N,~N,~N,J.util.BS");
+}, "~N,~N,~N,JU.BS");
 $_M(c$, "getUnitCellInfoText", 
 function () {
 var modelIndex = this.viewer.getCurrentModelIndex ();
@@ -1845,13 +1842,13 @@ return this.symTemp;
 $_M(c$, "createModels", 
 function (n) {
 var newModelCount = this.modelCount + n;
-var newModels = J.util.ArrayUtil.arrayCopyObject (this.models, newModelCount);
+var newModels = JU.AU.arrayCopyObject (this.models, newModelCount);
 this.validateBspf (false);
-this.modelNumbers = J.util.ArrayUtil.arrayCopyI (this.modelNumbers, newModelCount);
-this.modelFileNumbers = J.util.ArrayUtil.arrayCopyI (this.modelFileNumbers, newModelCount);
-this.modelNumbersForAtomLabel = J.util.ArrayUtil.arrayCopyS (this.modelNumbersForAtomLabel, newModelCount);
-this.modelNames = J.util.ArrayUtil.arrayCopyS (this.modelNames, newModelCount);
-this.frameTitles = J.util.ArrayUtil.arrayCopyS (this.frameTitles, newModelCount);
+this.modelNumbers = JU.AU.arrayCopyI (this.modelNumbers, newModelCount);
+this.modelFileNumbers = JU.AU.arrayCopyI (this.modelFileNumbers, newModelCount);
+this.modelNumbersForAtomLabel = JU.AU.arrayCopyS (this.modelNumbersForAtomLabel, newModelCount);
+this.modelNames = JU.AU.arrayCopyS (this.modelNames, newModelCount);
+this.frameTitles = JU.AU.arrayCopyS (this.frameTitles, newModelCount);
 var f = Clazz.doubleToInt (this.getModelFileNumber (this.modelCount - 1) / 1000000) + 1;
 for (var i = this.modelCount, pt = 0; i < newModelCount; i++) {
 this.modelNumbers[i] = i + this.modelCount;
@@ -1862,11 +1859,11 @@ this.thisStateModel = -1;
 var group3Lists = this.getModelSetAuxiliaryInfoValue ("group3Lists");
 if (group3Lists != null) {
 var group3Counts = this.getModelSetAuxiliaryInfoValue ("group3Counts");
-group3Lists = J.util.ArrayUtil.arrayCopyS (group3Lists, newModelCount);
-group3Counts = J.util.ArrayUtil.arrayCopyII (group3Counts, newModelCount);
+group3Lists = JU.AU.arrayCopyS (group3Lists, newModelCount);
+group3Counts = JU.AU.arrayCopyII (group3Counts, newModelCount);
 this.modelSetAuxiliaryInfo.put ("group3Lists", group3Lists);
 this.modelSetAuxiliaryInfo.put ("group3Counts", group3Counts);
-}this.unitCells = J.util.ArrayUtil.arrayCopyObject (this.unitCells, newModelCount);
+}this.unitCells = JU.AU.arrayCopyObject (this.unitCells, newModelCount);
 for (var i = this.modelCount; i < newModelCount; i++) {
 newModels[i] =  new J.modelset.Model (this, i, -1, null, null, null);
 newModels[i].loadState = " model create #" + i + ";";
@@ -1883,11 +1880,11 @@ this.resetMolecules ();
 this.isBbcageDefault = false;
 this.calcBoundBoxDimensions (null, 1);
 return;
-}this.modelNumbers = J.util.ArrayUtil.deleteElements (this.modelNumbers, modelIndex, 1);
-this.modelFileNumbers = J.util.ArrayUtil.deleteElements (this.modelFileNumbers, modelIndex, 1);
-this.modelNumbersForAtomLabel = J.util.ArrayUtil.deleteElements (this.modelNumbersForAtomLabel, modelIndex, 1);
-this.modelNames = J.util.ArrayUtil.deleteElements (this.modelNames, modelIndex, 1);
-this.frameTitles = J.util.ArrayUtil.deleteElements (this.frameTitles, modelIndex, 1);
+}this.modelNumbers = JU.AU.deleteElements (this.modelNumbers, modelIndex, 1);
+this.modelFileNumbers = JU.AU.deleteElements (this.modelFileNumbers, modelIndex, 1);
+this.modelNumbersForAtomLabel = JU.AU.deleteElements (this.modelNumbersForAtomLabel, modelIndex, 1);
+this.modelNames = JU.AU.deleteElements (this.modelNames, modelIndex, 1);
+this.frameTitles = JU.AU.deleteElements (this.frameTitles, modelIndex, 1);
 this.thisStateModel = -1;
 var group3Lists = this.getModelSetAuxiliaryInfoValue ("group3Lists");
 var group3Counts = this.getModelSetAuxiliaryInfoValue ("group3Counts");
@@ -1898,20 +1895,20 @@ group3Counts[0][i] -= group3Counts[ptm][i];
 if (group3Counts[0][i] == 0) group3Lists[0] = group3Lists[0].substring (0, i * 6) + ",[" + group3Lists[0].substring (i * 6 + 2);
 }
 }if (group3Lists != null) {
-this.modelSetAuxiliaryInfo.put ("group3Lists", J.util.ArrayUtil.deleteElements (group3Lists, modelIndex, 1));
-this.modelSetAuxiliaryInfo.put ("group3Counts", J.util.ArrayUtil.deleteElements (group3Counts, modelIndex, 1));
+this.modelSetAuxiliaryInfo.put ("group3Lists", JU.AU.deleteElements (group3Lists, modelIndex, 1));
+this.modelSetAuxiliaryInfo.put ("group3Counts", JU.AU.deleteElements (group3Counts, modelIndex, 1));
 }if (this.unitCells != null) {
-this.unitCells = J.util.ArrayUtil.deleteElements (this.unitCells, modelIndex, 1);
+this.unitCells = JU.AU.deleteElements (this.unitCells, modelIndex, 1);
 }for (var i = this.stateScripts.size (); --i >= 0; ) {
 if (!this.stateScripts.get (i).deleteAtoms (modelIndex, bsBonds, bsAtoms)) {
 this.stateScripts.remove (i);
 }}
 this.deleteModelAtoms (firstAtomIndex, nAtoms, bsAtoms);
 this.viewer.deleteModelAtoms (firstAtomIndex, nAtoms, bsAtoms);
-}, "~N,~N,~N,J.util.BS,J.util.BS");
+}, "~N,~N,~N,JU.BS,JU.BS");
 $_M(c$, "getMoInfo", 
 function (modelIndex) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 for (var m = 0; m < this.modelCount; m++) {
 if (modelIndex >= 0 && m != modelIndex) {
 continue;
@@ -1937,8 +1934,8 @@ type = "occupancy " + occ.floatValue () + " " + type;
 if (sym != null) {
 type += sym;
 }var energy = "" + mo.get ("energy");
-if (Float.isNaN (J.util.Parser.parseFloatStr (energy))) sb.append (J.util.TextFormat.sprintf ("model %-2s;  mo %-2i # %s\n", "sis", [this.getModelNumberDotted (m), Integer.$valueOf (i + 1), type]));
- else sb.append (J.util.TextFormat.sprintf ("model %-2s;  mo %-2i # energy %-8.3f %s %s\n", "sifss", [this.getModelNumberDotted (m), Integer.$valueOf (i + 1), mo.get ("energy"), units, type]));
+if (Float.isNaN (JU.PT.parseFloat (energy))) sb.append (J.util.Txt.sprintf ("model %-2s;  mo %-2i # %s\n", "sis", [this.getModelNumberDotted (m), Integer.$valueOf (i + 1), type]));
+ else sb.append (J.util.Txt.sprintf ("model %-2s;  mo %-2i # energy %-8.3f %s %s\n", "sifss", [this.getModelNumberDotted (m), Integer.$valueOf (i + 1), mo.get ("energy"), units, type]));
 }
 }
 return sb.toString ();
@@ -1947,7 +1944,7 @@ $_M(c$, "assignAtom",
 function (atomIndex, type, autoBond) {
 if (type == null) type = "C";
 var atom = this.atoms[atomIndex];
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 var wasH = (atom.getElementNumber () == 1);
 var atomicNumber = J.util.Elements.elementNumberFromSymbol (type, true);
 var isDelete = false;
@@ -1971,7 +1968,7 @@ dx = 1.50;
 } else if (!wasH && atomicNumber == 1) {
 dx = 1.0;
 }if (dx != 0) {
-var v = J.util.V3.newVsub (atom, this.atoms[atom.getBondedAtomIndex (0)]);
+var v = JU.V3.newVsub (atom, this.atoms[atom.getBondedAtomIndex (0)]);
 var d = v.length ();
 v.normalize ();
 v.scale (dx - d);
@@ -1990,7 +1987,7 @@ this.makeConnections2 (0.1, 1.8, 1, 1073741904, bsA, bs, null, false, false, 0);
 $_M(c$, "deleteAtoms", 
 function (bs) {
 if (bs == null) return;
-var bsBonds =  new J.util.BS ();
+var bsBonds =  new JU.BS ();
 for (var i = bs.nextSetBit (0); i >= 0 && i < this.atomCount; i = bs.nextSetBit (i + 1)) this.atoms[i].deleteBonds (bsBonds);
 
 for (var i = 0; i < this.modelCount; i++) {
@@ -1998,26 +1995,27 @@ this.models[i].bsAtomsDeleted.or (bs);
 this.models[i].bsAtomsDeleted.and (this.models[i].bsAtoms);
 }
 this.deleteBonds (bsBonds, false);
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "getModelCml", 
 function (bs, atomsMax, addBonds) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 var nAtoms = J.util.BSUtil.cardinalityOf (bs);
 if (nAtoms == 0) return "";
-J.io.XmlUtil.openTag (sb, "molecule");
-J.io.XmlUtil.openTag (sb, "atomArray");
-var bsAtoms =  new J.util.BS ();
+var xmlUtil = J.api.Interface.getOptionInterface ("io.XmlUtil");
+xmlUtil.openTag (sb, "molecule");
+xmlUtil.openTag (sb, "atomArray");
+var bsAtoms =  new JU.BS ();
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
 if (--atomsMax < 0) break;
 var atom = this.atoms[i];
 var name = atom.getAtomName ();
-J.util.TextFormat.simpleReplace (name, "\"", "''");
+JU.PT.simpleReplace (name, "\"", "''");
 bsAtoms.set (atom.index);
-J.io.XmlUtil.appendTag (sb, "atom/", ["id", "a" + (atom.index + 1), "title", atom.getAtomName (), "elementType", atom.getElementSymbol (), "x3", "" + atom.x, "y3", "" + atom.y, "z3", "" + atom.z]);
+xmlUtil.appendTag (sb, "atom/", ["id", "a" + (atom.index + 1), "title", atom.getAtomName (), "elementType", atom.getElementSymbol (), "x3", "" + atom.x, "y3", "" + atom.y, "z3", "" + atom.z]);
 }
-J.io.XmlUtil.closeTag (sb, "atomArray");
+xmlUtil.closeTag (sb, "atomArray");
 if (addBonds) {
-J.io.XmlUtil.openTag (sb, "bondArray");
+xmlUtil.openTag (sb, "bondArray");
 for (var i = 0; i < this.bondCount; i++) {
 var bond = this.bonds[i];
 var a1 = bond.atom1;
@@ -2025,12 +2023,12 @@ var a2 = bond.atom2;
 if (!bsAtoms.get (a1.index) || !bsAtoms.get (a2.index)) continue;
 var order = J.util.JmolEdge.getCmlBondOrder (bond.order);
 if (order == null) continue;
-J.io.XmlUtil.appendTag (sb, "bond/", ["atomRefs2", "a" + (bond.atom1.index + 1) + " a" + (bond.atom2.index + 1), "order", order]);
+xmlUtil.appendTag (sb, "bond/", ["atomRefs2", "a" + (bond.atom1.index + 1) + " a" + (bond.atom2.index + 1), "order", order]);
 }
-J.io.XmlUtil.closeTag (sb, "bondArray");
-}J.io.XmlUtil.closeTag (sb, "molecule");
+xmlUtil.closeTag (sb, "bondArray");
+}xmlUtil.closeTag (sb, "molecule");
 return sb.toString ();
-}, "J.util.BS,~N,~B");
+}, "JU.BS,~N,~B");
 $_M(c$, "adjustAtomArrays", 
 function (map, i0, atomCount) {
 this.atomCount = atomCount;
@@ -2066,15 +2064,15 @@ if (this.atomSerials != null) for (var i = i0; i < atomCount; i++) this.atomSeri
 }, "~A,~N,~N");
 $_M(c$, "growAtomArrays", 
 function (newLength) {
-this.atoms = J.util.ArrayUtil.arrayCopyObject (this.atoms, newLength);
-if (this.vibrations != null) this.vibrations = J.util.ArrayUtil.arrayCopyObject (this.vibrations, newLength);
-if (this.occupancies != null) this.occupancies = J.util.ArrayUtil.arrayCopyByte (this.occupancies, newLength);
-if (this.bfactor100s != null) this.bfactor100s = J.util.ArrayUtil.arrayCopyShort (this.bfactor100s, newLength);
-if (this.partialCharges != null) this.partialCharges = J.util.ArrayUtil.arrayCopyF (this.partialCharges, newLength);
-if (this.atomTensorList != null) this.atomTensorList = J.util.ArrayUtil.arrayCopyObject (this.atomTensorList, newLength);
-if (this.atomNames != null) this.atomNames = J.util.ArrayUtil.arrayCopyS (this.atomNames, newLength);
-if (this.atomTypes != null) this.atomTypes = J.util.ArrayUtil.arrayCopyS (this.atomTypes, newLength);
-if (this.atomSerials != null) this.atomSerials = J.util.ArrayUtil.arrayCopyI (this.atomSerials, newLength);
+this.atoms = JU.AU.arrayCopyObject (this.atoms, newLength);
+if (this.vibrations != null) this.vibrations = JU.AU.arrayCopyObject (this.vibrations, newLength);
+if (this.occupancies != null) this.occupancies = JU.AU.arrayCopyByte (this.occupancies, newLength);
+if (this.bfactor100s != null) this.bfactor100s = JU.AU.arrayCopyShort (this.bfactor100s, newLength);
+if (this.partialCharges != null) this.partialCharges = JU.AU.arrayCopyF (this.partialCharges, newLength);
+if (this.atomTensorList != null) this.atomTensorList = JU.AU.arrayCopyObject (this.atomTensorList, newLength);
+if (this.atomNames != null) this.atomNames = JU.AU.arrayCopyS (this.atomNames, newLength);
+if (this.atomTypes != null) this.atomTypes = JU.AU.arrayCopyS (this.atomTypes, newLength);
+if (this.atomSerials != null) this.atomSerials = JU.AU.arrayCopyI (this.atomSerials, newLength);
 }, "~N");
 $_M(c$, "addAtom", 
 function (modelIndex, group, atomicAndIsotopeNumber, atomName, atomSerial, atomSite, xyz, radius, vib, formalCharge, partialCharge, occupancy, bfactor, tensors, isHetero, specialAtomID, atomSymmetry) {
@@ -2106,7 +2104,7 @@ this.atomSerials[this.atomCount] = atomSerial;
 }if (vib != null) this.setVibrationVector (this.atomCount, vib);
 this.atomCount++;
 return atom;
-}, "~N,J.modelset.Group,~N,~S,~N,~N,J.util.P3,~N,J.util.V3,~N,~N,~N,~N,J.util.JmolList,~B,~N,J.util.BS");
+}, "~N,J.modelset.Group,~N,~S,~N,~N,JU.P3,~N,JU.V3,~N,~N,~N,~N,JU.List,~B,~N,JU.BS");
 $_M(c$, "getInlineData", 
 function (modelIndex) {
 var data = null;
@@ -2155,7 +2153,7 @@ var bs1 = J.util.BSUtil.copy (bsDeleted);
 for (var i = 0; i < this.modelCount; i++) if (!this.models[i].isModelKit) bs1.andNot (this.models[i].bsAtoms);
 
 return J.util.BSUtil.deleteBits (bs, bs1);
-}, "J.util.BS,J.util.BS");
+}, "JU.BS,JU.BS");
 $_M(c$, "setAtomNamesAndNumbers", 
 function (iFirst, baseAtomIndex, mergeSet) {
 if (baseAtomIndex < 0) iFirst = this.models[this.atoms[iFirst].modelIndex].firstAtomIndex;
@@ -2184,11 +2182,11 @@ if (unitCell == null) continue;
 if (pt == null) unitCell.setOffset (ijk);
  else unitCell.setOffsetPt (pt);
 }
-}, "~N,J.util.P3,~N");
+}, "~N,JU.P3,~N");
 $_M(c$, "connect", 
 function (connections) {
 this.resetMolecules ();
-var bsDelete =  new J.util.BS ();
+var bsDelete =  new JU.BS ();
 for (var i = 0; i < connections.length; i++) {
 var f = connections[i];
 if (f == null || f.length < 2) continue;
@@ -2217,7 +2215,7 @@ $_M(c$, "setFrameDelayMs",
 function (millis, bsModels) {
 for (var i = bsModels.nextSetBit (0); i >= 0; i = bsModels.nextSetBit (i + 1)) this.models[this.models[i].trajectoryBaseIndex].frameDelay = millis;
 
-}, "~N,J.util.BS");
+}, "~N,JU.BS");
 $_M(c$, "getFrameDelayMs", 
 function (i) {
 return (i < this.models.length && i >= 0 ? this.models[this.models[i].trajectoryBaseIndex].frameDelay : 0);
@@ -2245,7 +2243,7 @@ $_M(c$, "getAuxiliaryInfo",
 function (bsModels) {
 var info = this.modelSetAuxiliaryInfo;
 if (info == null) return null;
-var models =  new J.util.JmolList ();
+var models =  new JU.List ();
 for (var i = 0; i < this.modelCount; ++i) {
 if (bsModels != null && !bsModels.get (i)) {
 continue;
@@ -2254,10 +2252,10 @@ models.addLast (modelinfo);
 }
 info.put ("models", models);
 return info;
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "getDihedralMap", 
 function (alist) {
-var list =  new J.util.JmolList ();
+var list =  new JU.List ();
 var n = alist.length;
 var ai = null;
 var aj = null;
@@ -2279,20 +2277,20 @@ list.addLast (a);
 }}
 
 n = list.size ();
-var ilist = J.util.ArrayUtil.newInt2 (n);
+var ilist = JU.AU.newInt2 (n);
 for (var i = n; --i >= 0; ) ilist[n - i - 1] = list.get (i);
 
 return ilist;
 }, "~A");
 $_M(c$, "setModulation", 
 function (bs, isOn, t) {
-if (this.bsModulated == null) this.bsModulated =  new J.util.BS ();
+if (this.bsModulated == null) this.bsModulated =  new JU.BS ();
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
 var v = this.getVibration (i, false);
-if (!(Clazz.instanceOf (v, J.util.ModulationSet))) continue;
+if (!(Clazz.instanceOf (v, J.api.JmolModulationSet))) continue;
 var ms = v;
 var a = this.atoms[i];
-var wasEnabled = ms.enabled;
+var wasEnabled = ms.isEnabled ();
 switch (ms.setModT (isOn, t)) {
 case 0:
 continue;
@@ -2302,7 +2300,7 @@ a.sub (ms);
 break;
 case 3:
 this.getUnitCell (a.modelIndex).toCartesian (ms, true);
-if (wasEnabled) a.add (ms.prevSetting);
+if (wasEnabled) a.add (ms.getPrevSetting ());
 ms.setModT (true, 2147483647);
 a.sub (ms);
 break;
@@ -2311,9 +2309,9 @@ ms.setModT (true, 2147483647);
 if (!wasEnabled) a.sub (ms);
 break;
 }
-this.bsModulated.setBitTo (i, ms.enabled);
+this.bsModulated.setBitTo (i, ms.isEnabled ());
 }
-}, "J.util.BS,~B,~N");
+}, "JU.BS,~B,~N");
 $_M(c$, "getBoundBoxOrientation", 
 function (type, bsAtoms) {
 var j0 = bsAtoms.nextSetBit (0);
@@ -2322,8 +2320,8 @@ var n = (this.vOrientations == null ? 0 : this.vOrientations.length);
 if (n == 0) {
 var av =  new Array (3375);
 n = 0;
-var p4 =  new J.util.P4 ();
-for (var i = -7; i <= 7; i++) for (var j = -7; j <= 7; j++) for (var k = 0; k <= 14; k++, n++) if ((av[n] = J.util.V3.new3 (i / 7, j / 7, k / 14)).length () > 1) --n;
+var p4 =  new JU.P4 ();
+for (var i = -7; i <= 7; i++) for (var j = -7; j <= 7; j++) for (var k = 0; k <= 14; k++, n++) if ((av[n] = JU.V3.new3 (i / 7, j / 7, k / 14)).length () > 1) --n;
 
 
 
@@ -2334,7 +2332,7 @@ if (Float.isNaN (cos)) cos = 0;
 p4.set (av[i].x, av[i].y, av[i].z, cos);
 this.vOrientations[i] = J.util.Quaternion.newP4 (p4);
 }
-}var pt =  new J.util.P3 ();
+}var pt =  new JU.P3 ();
 var vMin = 3.4028235E38;
 var q;
 var qBest = null;
@@ -2391,63 +2389,11 @@ var f = dy;
 dy = dz;
 dz = f;
 }return (type == 1313866247 ? vMin + "\t{" + dx + " " + dy + " " + dz + "}" : q.getTheta () == 0 ? "{0 0 0 1}" : q.toString ());
-}, "~N,J.util.BS");
-Clazz.pu$h ();
-c$ = Clazz.decorateAsClass (function () {
-this.modelIndex = 0;
-this.bsBonds = null;
-this.bsAtoms1 = null;
-this.bsAtoms2 = null;
-this.script1 = null;
-this.script2 = null;
-this.inDefinedStateBlock = false;
-Clazz.instantialize (this, arguments);
-}, J.modelset.ModelCollection, "StateScript");
-Clazz.makeConstructor (c$, 
-function (a, b, c, d, e, f, g) {
-this.modelIndex = a;
-this.script1 = b;
-this.bsBonds = J.util.BSUtil.copy (c);
-this.bsAtoms1 = J.util.BSUtil.copy (d);
-this.bsAtoms2 = J.util.BSUtil.copy (e);
-this.script2 = f;
-this.inDefinedStateBlock = g;
-}, "~N,~S,J.util.BS,J.util.BS,J.util.BS,~S,~B");
-$_M(c$, "isValid", 
-function () {
-return this.script1 != null && this.script1.length > 0 && (this.bsBonds == null || this.bsBonds.nextSetBit (0) >= 0) && (this.bsAtoms1 == null || this.bsAtoms1.nextSetBit (0) >= 0) && (this.bsAtoms2 == null || this.bsAtoms2.nextSetBit (0) >= 0);
-});
-Clazz.overrideMethod (c$, "toString", 
-function () {
-if (!this.isValid ()) return "";
-var a = J.util.SB.newS (this.script1);
-if (this.bsBonds != null) a.append (" ").append (J.util.Escape.eBond (this.bsBonds));
-if (this.bsAtoms1 != null) a.append (" ").append (J.util.Escape.eBS (this.bsAtoms1));
-if (this.bsAtoms2 != null) a.append (" ").append (J.util.Escape.eBS (this.bsAtoms2));
-if (this.script2 != null) a.append (" ").append (this.script2);
-var b = a.toString ();
-if (!b.endsWith (";")) b += ";";
-return b;
-});
-$_M(c$, "isConnect", 
-function () {
-return (this.script1.indexOf ("connect") >= 0);
-});
-$_M(c$, "deleteAtoms", 
-function (a, b, c) {
-if (a == this.modelIndex) return false;
-if (a > this.modelIndex) {
-return true;
-}J.util.BSUtil.deleteBits (this.bsBonds, b);
-J.util.BSUtil.deleteBits (this.bsAtoms1, c);
-J.util.BSUtil.deleteBits (this.bsAtoms2, c);
-return this.isValid ();
-}, "~N,J.util.BS,J.util.BS");
-$_M(c$, "setModelIndex", 
-function (a) {
-this.modelIndex = a;
-}, "~N");
-c$ = Clazz.p0p ();
+}, "~N,JU.BS");
+$_M(c$, "intersectPlane", 
+function (plane, v, i) {
+return (this.triangulator == null ? (this.triangulator = J.api.Interface.getOptionInterface ("util.TriangleData")) : this.triangulator).intersectPlane (plane, v, i);
+}, "JU.P4,JU.List,~N");
 Clazz.defineStatics (c$,
 "hbondMin", 2.5);
 });

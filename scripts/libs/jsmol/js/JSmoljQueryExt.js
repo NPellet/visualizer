@@ -160,6 +160,7 @@
         }
       },
       teardown: function(){
+        self.Jmol && Jmol._setMouseOwner(null);
         elems = elems.not( this );
         if ( elems.length === 0 ) {
           $(doc).unbind( event_namespaced );
@@ -175,6 +176,7 @@
     };
     function handle_event( event ) {
       $(elems).each(function(){
+        self.Jmol && (outside_event_name.indexOf("mouseup") >= 0 || outside_event_name.indexOf("touchend") >= 0) && Jmol._setMouseOwner(null);
         var elem = $(this);
         if ( this !== event.target && !elem.has(event.target).length ) {
         	//BH: adds event to pass that along to our handler as well.

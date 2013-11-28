@@ -9,13 +9,13 @@ this.madHelixSheet = 1500;
 this.madTurnRandom = 500;
 this.madDnaRna = 1500;
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bsSelected) {
 if (propertyName === "putty") {
 this.setPutty (value, bsSelected);
 return;
 }this.setPropBSC (propertyName, value, bsSelected);
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 $_M(c$, "setPutty", 
 ($fz = function (info, bsAtoms) {
 var n = bsAtoms.cardinality ();
@@ -50,7 +50,7 @@ case 3:
 nonlinear = true;
 break;
 }
-for (var i = bsAtoms.nextSetBit (0), pt = 0; i >= 0; i = bsAtoms.nextSetBit (i + 1), pt++) {
+for (var i = bsAtoms.nextSetBit (0); i >= 0; i = bsAtoms.nextSetBit (i + 1)) {
 var scale = J.modelset.Atom.atomPropertyFloat (null, this.atoms[i], 1112541199);
 switch (transform) {
 case 3:
@@ -82,7 +82,7 @@ data[i] = scale * rad;
 }
 var rd =  new J.atomdata.RadiusData (data, 0, J.atomdata.RadiusData.EnumType.ABSOLUTE, J.constant.EnumVdw.AUTO);
 this.setShapeSizeRD (0, rd, bsAtoms);
-}, $fz.isPrivate = true, $fz), "~A,J.util.BS");
+}, $fz.isPrivate = true, $fz), "~A,JU.BS");
 Clazz.defineStatics (c$,
 "PUTTY_NormalizedNonlinear", 0,
 "PUTTY_RelativeNonlinear", 1,

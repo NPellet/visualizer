@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.renderbio");
 Clazz.load (["J.renderbio.BioShapeRenderer"], "J.renderbio.BackboneRenderer", ["J.util.C"], function () {
 c$ = Clazz.declareType (J.renderbio, "BackboneRenderer", J.renderbio.BioShapeRenderer);
-Clazz.overrideMethod (c$, "renderBioShape", 
+$_V(c$, "renderBioShape", 
 function (bioShape) {
 var isDataFrame = this.viewer.isJmolDataFrameForModel (bioShape.modelIndex);
 for (var i = this.bsVisible.nextSetBit (0); i >= 0; i = this.bsVisible.nextSetBit (i + 1)) {

@@ -21,7 +21,7 @@ function (canvas) {
 c$.renderScreenImage = $_M(c$, "renderScreenImage", 
 function (viewer, g, size) {
 {
-}}, "J.api.JmolViewer,~O,~O");
+}}, "javajs.api.PlatformViewer,~O,~O");
 c$.setTransparentCursor = $_M(c$, "setTransparentCursor", 
 function (canvas) {
 {
@@ -40,4 +40,4 @@ if (s != null)return s;
 c$.convertPointFromScreen = $_M(c$, "convertPointFromScreen", 
 function (canvas, ptTemp) {
 {
-}}, "~O,J.util.P3");
+}}, "~O,JU.P3");

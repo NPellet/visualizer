@@ -1,21 +1,21 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.CubeReader", ["J.util.Logger", "$.Parser", "$.SB"], function () {
+Clazz.load (["J.jvxl.readers.VolumeFileReader"], "J.jvxl.readers.CubeReader", ["JU.PT", "$.SB", "J.util.Logger"], function () {
 c$ = Clazz.declareType (J.jvxl.readers, "CubeReader", J.jvxl.readers.VolumeFileReader);
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.CubeReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
 this.init2VFR (sg, br);
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "readParameters", 
+$_V(c$, "readParameters", 
 function () {
-this.jvxlFileHeaderBuffer =  new J.util.SB ();
+this.jvxlFileHeaderBuffer =  new JU.SB ();
 this.jvxlFileHeaderBuffer.append (this.readLine ()).appendC ('\n');
 this.jvxlFileHeaderBuffer.append (this.readLine ()).appendC ('\n');
 var atomLine = this.readLine ();
-var tokens = J.util.Parser.getTokensAt (atomLine, 0);
+var tokens = JU.PT.getTokensAt (atomLine, 0);
 this.atomCount = this.parseIntStr (tokens[0]);
 this.negativeAtomCount = (this.atomCount < 0);
 if (this.negativeAtomCount) this.atomCount = -this.atomCount;

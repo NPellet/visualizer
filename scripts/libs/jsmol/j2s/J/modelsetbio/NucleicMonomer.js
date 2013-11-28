@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["J.modelsetbio.PhosphorusMonomer", "J.viewer.JC"], "J.modelsetbio.NucleicMonomer", ["J.constant.EnumStructure", "J.util.P3", "$.Quaternion", "$.V3"], function () {
+Clazz.load (["J.modelsetbio.PhosphorusMonomer", "J.viewer.JC"], "J.modelsetbio.NucleicMonomer", ["JU.P3", "$.V3", "J.constant.EnumStructure", "J.util.Quaternion"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.hasRnaO2Prime = false;
 this.baseCenter = null;
@@ -35,19 +35,19 @@ $_M(c$, "isNucleicMonomer",
 function () {
 return true;
 });
-Clazz.overrideMethod (c$, "isDna", 
+$_V(c$, "isDna", 
 function () {
 return !this.hasRnaO2Prime;
 });
-Clazz.overrideMethod (c$, "isRna", 
+$_V(c$, "isRna", 
 function () {
 return this.hasRnaO2Prime;
 });
-Clazz.overrideMethod (c$, "isPurine", 
+$_V(c$, "isPurine", 
 function () {
 return this.$isPurine;
 });
-Clazz.overrideMethod (c$, "isPyrimidine", 
+$_V(c$, "isPyrimidine", 
 function () {
 return this.$isPyrimidine;
 });
@@ -55,7 +55,7 @@ $_M(c$, "isGuanine",
 function () {
 return J.modelsetbio.Monomer.have (this.offsets, 17);
 });
-Clazz.overrideMethod (c$, "getProteinStructureType", 
+$_V(c$, "getProteinStructureType", 
 function () {
 return (this.hasRnaO2Prime ? J.constant.EnumStructure.RNA : J.constant.EnumStructure.DNA);
 });
@@ -103,7 +103,7 @@ $_M(c$, "getO6",
 function () {
 return this.getAtomFromOffsetIndex (13);
 });
-Clazz.overrideMethod (c$, "getTerminatorAtom", 
+$_V(c$, "getTerminatorAtom", 
 function () {
 return this.getAtomFromOffsetIndex (J.modelsetbio.Monomer.have (this.offsets, 20) ? 20 : 21);
 });
@@ -118,14 +118,14 @@ if (this.$isPurine) for (var i = 5; --i >= 0; ) ring5Points[i] = this.getAtomFro
 
 return this.$isPurine;
 }, "~A");
-Clazz.overrideMethod (c$, "isConnectedAfter", 
+$_V(c$, "isConnectedAfter", 
 function (possiblyPreviousMonomer) {
 if (possiblyPreviousMonomer == null) return true;
 var myPhosphorusAtom = this.getAtomFromOffsetIndex (15);
 if (myPhosphorusAtom == null) return false;
 return ((possiblyPreviousMonomer).getAtomFromOffsetIndex (21).isBonded (myPhosphorusAtom) || this.isCA2 (possiblyPreviousMonomer));
 }, "J.modelsetbio.Monomer");
-Clazz.overrideMethod (c$, "findNearestAtomIndex", 
+$_V(c$, "findNearestAtomIndex", 
 function (x, y, closest, madBegin, madEnd) {
 var competitor = closest[0];
 var lead = this.getLeadAtom ();
@@ -154,11 +154,11 @@ $_M(c$, "getN0",
 function () {
 return (this.getAtomFromOffsetIndex (this.$isPurine ? 11 : 4));
 });
-Clazz.overrideMethod (c$, "getHelixData", 
+$_V(c$, "getHelixData", 
 function (tokType, qType, mStep) {
 return this.getHelixData2 (tokType, qType, mStep);
 }, "~N,~S,~N");
-Clazz.overrideMethod (c$, "getQuaternionFrameCenter", 
+$_V(c$, "getQuaternionFrameCenter", 
 function (qType) {
 switch (qType) {
 case 'x':
@@ -169,7 +169,7 @@ return this.getP ();
 case 'c':
 if (this.baseCenter == null) {
 var n = 0;
-this.baseCenter =  new J.util.P3 ();
+this.baseCenter =  new JU.P3 ();
 for (var i = 0; i < J.modelsetbio.NucleicMonomer.heavyAtomIndexes.length; i++) {
 var a = this.getAtomFromOffsetIndex (J.modelsetbio.NucleicMonomer.heavyAtomIndexes[i]);
 if (a == null) continue;
@@ -183,7 +183,7 @@ default:
 return this.getN0 ();
 }
 }, "~S");
-Clazz.overrideMethod (c$, "getQuaternion", 
+$_V(c$, "getQuaternion", 
 function (qType) {
 var ptA = null;
 var ptB = null;
@@ -245,12 +245,12 @@ ptB = this.getAtomFromOffsetIndex (1);
 }break;
 }
 if (ptA == null || ptB == null) return null;
-var vA = J.util.V3.newVsub (ptA, ptNorP);
-var vB = J.util.V3.newVsub (ptB, ptNorP);
+var vA = JU.V3.newVsub (ptA, ptNorP);
+var vB = JU.V3.newVsub (ptB, ptNorP);
 if (reverseY) vB.scale (-1);
 return J.util.Quaternion.getQuaternionFrameV (vA, vB, null, yBased);
 }, "~S");
-Clazz.overrideMethod (c$, "isCrossLinked", 
+$_V(c$, "isCrossLinked", 
 function (g) {
 if (!(Clazz.instanceOf (g, J.modelsetbio.NucleicMonomer)) || this.$isPurine == g.isPurine ()) return false;
 var otherNucleotide = (this.$isPurine ? g : this);
@@ -259,7 +259,7 @@ var myN1 = myNucleotide.getN1 ();
 var otherN3 = otherNucleotide.getN3 ();
 return (myN1.isBonded (otherN3));
 }, "J.modelset.Group");
-Clazz.overrideMethod (c$, "getCrossLinkLead", 
+$_V(c$, "getCrossLinkLead", 
 function (vReturn) {
 var N = (this.$isPurine ? this.getN1 () : this.getN3 ());
 var bonds = N.getBonds ();
@@ -277,7 +277,7 @@ vReturn.addLast (Integer.$valueOf (m.leadAtomIndex));
 haveCrossLinks = true;
 }}}
 return haveCrossLinks;
-}, "J.util.JmolList");
+}, "JU.List");
 $_M(c$, "getEdgePoints", 
 function (pts) {
 pts[0] = this.getLeadAtom ();

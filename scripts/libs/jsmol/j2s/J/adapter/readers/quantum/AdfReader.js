@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.SlaterReader"], "J.adapter.readers.quantum.AdfReader", ["java.lang.Float", "java.util.Hashtable", "J.api.JmolAdapter", "J.quantum.SlaterData", "J.util.ArrayUtil", "$.JmolList", "$.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.SlaterReader"], "J.adapter.readers.quantum.AdfReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.List", "J.api.JmolAdapter", "J.quantum.SlaterData", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.htSymmetries = null;
 this.vSymmetries = null;
@@ -11,7 +11,7 @@ J.adapter.readers.quantum.AdfReader.$AdfReader$SymmetryData$ ();
 }
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "AdfReader", J.adapter.readers.quantum.SlaterReader);
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.indexOf ("Irreducible Representations, including subspecies") >= 0) {
 this.readSymmetries ();
@@ -88,7 +88,7 @@ this.fillFrequencyData (iAtom0, atomCount, atomCount, ignore, true, 0, 0, null, 
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readSymmetries", 
 ($fz = function () {
-this.vSymmetries =  new J.util.JmolList ();
+this.vSymmetries =  new JU.List ();
 this.htSymmetries =  new java.util.Hashtable ();
 this.readLine ();
 var index = 0;
@@ -130,7 +130,7 @@ sd.basisFunctions[j] = n - 1;
 this.slaterArray =  new Array (nBF);
 this.discardLinesUntilContains ("(power of)");
 this.readLines (2);
-while (this.readLine () != null && this.line.length > 2 && this.line.charAt (2) == ' ') {
+while (this.readLine () != null && this.line.length > 3 && this.line.charAt (3) == ' ') {
 var data = this.line;
 while (this.readLine ().indexOf ("---") < 0) data += this.line;
 
@@ -173,7 +173,7 @@ while (n < sd.nBF) {
 this.readLine ();
 var nLine = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine ()).length;
 this.readLine ();
-sd.mos = J.util.ArrayUtil.createArrayOfHashtable (sd.nSFO);
+sd.mos = JU.AU.createArrayOfHashtable (sd.nSFO);
 var data =  new Array (sd.nSFO);
 this.fillDataBlock (data, 0);
 for (var j = 1; j < nLine; j++) {
@@ -189,24 +189,21 @@ mo.put ("id", sym + " " + (i + 1));
 sd.mos[i] = mo;
 }
 if (!isLast) return;
-this.discardLinesUntilContains ("Orbital Energies, all Irreps");
+var nSym = this.htSymmetries.size ();
+this.discardLinesUntilContains (nSym == 1 ? "Orbital Energies, per Irrep" : "Orbital Energies, all Irreps");
 this.readLines (4);
+var pt = (nSym == 1 ? 0 : 1);
+if (nSym == 1) sym = this.readLine ().trim ();
 while (this.readLine () != null && this.line.length > 10) {
+this.line = this.line.$replace ('(', ' ').$replace (')', ' ');
 var tokens = this.getTokens ();
 var len = tokens.length;
-sym = tokens[0];
-var moPt = this.parseIntStr (tokens[1]);
-var occ = this.parseFloatStr (tokens[len - 3]);
-var energy = this.parseFloatStr (tokens[len - 1]);
-sd = this.htSymmetries.get (sym);
-if (sd == null) {
-for (var entry, $entry = this.htSymmetries.entrySet ().iterator (); $entry.hasNext () && ((entry = $entry.next ()) || true);) {
-var symfull = entry.getKey ();
-if (symfull.startsWith (sym + ":")) this.addMo (entry.getValue (), moPt, (occ > 2 ? 2 : occ), energy);
+if (nSym > 1) sym = tokens[0];
+var moPt = this.parseIntStr (tokens[pt]);
+var occ = this.parseFloatStr (tokens[len - 4 + pt]);
+var energy = this.parseFloatStr (tokens[len - 2 + pt]);
+this.addMo (sym, moPt, occ, energy);
 }
-} else {
-this.addMo (sd, moPt, occ, energy);
-}}
 var iAtom0 = this.atomSetCollection.getLastAtomSetAtomIndex ();
 for (var i = 0; i < nBF; i++) this.slaterArray[i].iAtom += iAtom0;
 
@@ -215,13 +212,20 @@ this.sortOrbitals ();
 this.setMOs ("eV");
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "addMo", 
-($fz = function (sd, moPt, occ, energy) {
-var mo = sd.mos[moPt - 1];
-mo.put ("occupancy", Float.$valueOf (occ));
+($fz = function (sym, moPt, occ, energy) {
+var sd = this.htSymmetries.get (sym);
+if (sd == null) {
+for (var entry, $entry = this.htSymmetries.entrySet ().iterator (); $entry.hasNext () && ((entry = $entry.next ()) || true);) if (entry.getKey ().startsWith (sym + ":")) {
+sd = entry.getValue ();
+break;
+}
+if (sd == null) return;
+}var mo = sd.mos[moPt - 1];
+mo.put ("occupancy", Float.$valueOf (occ > 2 ? 2 : occ));
 mo.put ("energy", Float.$valueOf (energy));
 mo.put ("symmetry", sd.sym + "_" + moPt);
 this.setMO (mo);
-}, $fz.isPrivate = true, $fz), "J.adapter.readers.quantum.AdfReader.SymmetryData,~N,~N,~N");
+}, $fz.isPrivate = true, $fz), "~S,~N,~N,~N");
 c$.$AdfReader$SymmetryData$ = function () {
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {

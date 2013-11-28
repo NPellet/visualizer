@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.constant.EnumAnimationMode", "J.util.BS"], "J.viewer.AnimationManager", ["J.api.Interface", "J.util.BSUtil"], function () {
+Clazz.load (["JU.BS", "J.constant.EnumAnimationMode"], "J.viewer.AnimationManager", ["J.api.Interface", "J.util.BSUtil"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.animationThread = null;
 this.modulationThread = null;
@@ -35,7 +35,7 @@ this.bsModulating = null;
 Clazz.instantialize (this, arguments);
 }, J.viewer, "AnimationManager");
 Clazz.prepareFields (c$, function () {
-this.bsVisibleModels =  new J.util.BS ();
+this.bsVisibleModels =  new JU.BS ();
 this.animationReplayMode = J.constant.EnumAnimationMode.ONCE;
 });
 Clazz.makeConstructor (c$, 
@@ -63,7 +63,7 @@ stopped = true;
 if (stopped && !this.viewer.getSpinOn ()) this.viewer.refresh (3, "Viewer:setAnimationOff");
 this.animation (false);
 this.stopModulationThread ();
-this.viewer.setStatusFrameChanged (false);
+this.viewer.setStatusFrameChanged (false, true);
 }, "~B");
 $_M(c$, "setAnimationNext", 
 function () {
@@ -113,7 +113,7 @@ return this.viewer.getModelNumberDotted (i);
 $_M(c$, "setDisplay", 
 function (bs) {
 this.bsDisplay = (bs == null || bs.cardinality () == 0 ? null : J.util.BSUtil.copy (bs));
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "setMorphCount", 
 function (n) {
 this.morphCount = (this.isMovie ? 0 : n);
@@ -185,6 +185,7 @@ this.animationDirection = animationDirection;
 $_M(c$, "setAnimationFps", 
 function (animationFps) {
 this.animationFps = animationFps;
+this.viewer.setFrameVariables ();
 }, "~N");
 $_M(c$, "setAnimationReplayMode", 
 function (animationReplayMode, firstFrameDelay, lastFrameDelay) {
@@ -334,7 +335,7 @@ this.viewer.setFrameOffset (this.currentModelIndex);
 if (this.currentModelIndex == -1 && clearBackgroundModel) this.setBackgroundModelIndex (-1);
 this.viewer.setTainted (true);
 this.setFrameRangeVisible ();
-this.viewer.setStatusFrameChanged (false);
+this.viewer.setStatusFrameChanged (false, true);
 if (this.viewer.modelSet != null && !this.viewer.global.selectAllModels) this.viewer.setSelectionSubset (this.viewer.getModelUndeletedAtomsBitSet (this.currentModelIndex));
 }, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "setFrameRangeVisible", 

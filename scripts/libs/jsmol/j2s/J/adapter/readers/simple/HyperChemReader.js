@@ -5,7 +5,7 @@ this.atomIndex = 0;
 this.baseAtomIndex = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.simple, "HyperChemReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.length == 0 || this.line.charAt (0) == ';') return true;
 if (this.line.startsWith ("mol ")) {

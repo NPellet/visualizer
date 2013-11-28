@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.readers.molxyz.MolReader", "J.util.JmolList"], "J.adapter.readers.more.JcampdxReader", ["java.io.BufferedReader", "$.StringReader", "java.lang.Float", "java.util.ArrayList", "$.Hashtable", "J.adapter.smarter.SmarterJmolAdapter", "J.util.BS", "$.Escape", "$.Logger", "$.Parser", "$.SB", "$.TextFormat"], function () {
+Clazz.load (["J.adapter.readers.molxyz.MolReader", "JU.List"], "J.adapter.readers.more.JcampdxReader", ["java.io.BufferedReader", "$.StringReader", "java.lang.Float", "java.util.Hashtable", "JU.BS", "$.PT", "$.SB", "J.adapter.smarter.SmarterJmolAdapter", "J.util.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.thisModelID = null;
 this.models = null;
@@ -15,11 +15,11 @@ this.allTypes = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.more, "JcampdxReader", J.adapter.readers.molxyz.MolReader);
 Clazz.prepareFields (c$, function () {
-this.peakData =  new J.util.JmolList ();
+this.peakData =  new JU.List ();
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
-this.viewer.setBooleanProperty ("_jspecview", true);
+this.viewer.setBooleanProperty ("_JSpecView".toLowerCase (), true);
 if (this.isTrajectory) {
 J.util.Logger.warn ("TRAJECTORY keyword ignored");
 this.isTrajectory = false;
@@ -35,12 +35,12 @@ this.peakIndex = this.htParams.get ("peakIndex");
 if (this.peakIndex == null) {
 this.peakIndex =  Clazz.newIntArray (1, 0);
 this.htParams.put ("peakIndex", this.peakIndex);
-}if (!this.htParams.containsKey ("subFileName")) this.peakFilePath = J.util.Escape.eS (J.util.TextFormat.split (this.filePath, '|')[0]);
+}if (!this.htParams.containsKey ("subFileName")) this.peakFilePath = J.util.Escape.eS (JU.PT.split (this.filePath, "|")[0]);
 } else {
 this.peakIndex =  Clazz.newIntArray (1, 0);
 }if (!this.checkFilterKey ("NOSYNC")) this.addJmolScript ("sync on");
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 var i = this.line.indexOf ("=");
 if (i < 0 || !this.line.startsWith ("##")) return true;
@@ -50,7 +50,7 @@ if (label.equals ("##$PEAKS")) return (this.readPeaks (false) > 0);
 if (label.equals ("##$SIGNALS")) return (this.readPeaks (true) > 0);
 return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 this.processPeakData ();
 this.finalizeReaderMR ();
@@ -94,7 +94,7 @@ this.atomSetCollection.setAtomSetAuxiliaryInfoForSet ("modelID", this.thisModelI
 }, $fz.isPrivate = true, $fz), "~N,~B");
 c$.getAttribute = $_M(c$, "getAttribute", 
 ($fz = function (line, tag) {
-var attr = J.util.Parser.getQuotedAttribute (line, tag);
+var attr = JU.PT.getQuotedAttribute (line, tag);
 return (attr == null ? "" : attr);
 }, $fz.isPrivate = true, $fz), "~S,~S");
 $_M(c$, "getModelAtomSetCollection", 
@@ -108,10 +108,10 @@ return null;
 }this.modelIdList += key;
 var baseModel = J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "baseModel");
 var modelType = J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "type").toLowerCase ();
-var vibScale = J.util.Parser.parseFloatStr (J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "vibrationScale"));
+var vibScale = JU.PT.parseFloat (J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "vibrationScale"));
 if (modelType.equals ("xyzvib")) modelType = "xyz";
  else if (modelType.length == 0) modelType = null;
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 while (this.readLine () != null && !this.line.contains ("</ModelData>")) sb.append (this.line).appendC ('\n');
 
 var data = sb.toString ();
@@ -184,7 +184,7 @@ type = (type == null ? "" : " type=" + this.escape (type));
 this.piUnitsX = this.getQuotedAttribute (line, "xLabel");
 this.piUnitsY = this.getQuotedAttribute (line, "yLabel");
 var htSets =  new java.util.Hashtable ();
-var list =  new java.util.ArrayList ();
+var list =  new JU.List ();
 while ((line = reader.readLine ()) != null && !(line = line.trim ()).startsWith ("</" + tag1)) {
 if (line.startsWith (tag2)) {
 this.info (line);
@@ -200,9 +200,9 @@ if (atoms != null) stringInfo = this.simpleReplace (stringInfo, "atoms=\"" + ato
 var key = (Clazz.floatToInt (this.parseFloatStr (this.getQuotedAttribute (line, "xMin")) * 100)) + "_" + (Clazz.floatToInt (this.parseFloatStr (this.getQuotedAttribute (line, "xMax")) * 100));
 var o = htSets.get (key);
 if (o == null) {
-o = [stringInfo, (atoms == null ? null :  new J.util.BS ())];
+o = [stringInfo, (atoms == null ? null :  new JU.BS ())];
 htSets.put (key, o);
-list.add (o);
+list.addLast (o);
 }var bs = o[1];
 if (bs != null) {
 atoms = atoms.$replace (',', ' ');
@@ -247,7 +247,7 @@ return J.util.Escape.uB (s);
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "simpleReplace", 
 ($fz = function (s, sfrom, sto) {
-return J.util.TextFormat.simpleReplace (s, sfrom, sto);
+return JU.PT.simpleReplace (s, sfrom, sto);
 }, $fz.isPrivate = true, $fz), "~S,~S,~S");
 $_M(c$, "escape", 
 ($fz = function (s) {
@@ -255,7 +255,7 @@ return J.util.Escape.eS (s);
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "getQuotedAttribute", 
 ($fz = function (s, attr) {
-return J.util.Parser.getQuotedAttribute (s, attr);
+return JU.PT.getQuotedAttribute (s, attr);
 }, $fz.isPrivate = true, $fz), "~S,~S");
 $_M(c$, "setSpectrumPeaks", 
 ($fz = function (o1, o2, nH) {
@@ -263,7 +263,7 @@ $_M(c$, "setSpectrumPeaks",
 $_M(c$, "add", 
 ($fz = function (peakData, info) {
 peakData.addLast (info);
-}, $fz.isPrivate = true, $fz), "J.util.JmolList,~S");
+}, $fz.isPrivate = true, $fz), "JU.List,~S");
 $_M(c$, "getPeakFilePath", 
 ($fz = function () {
 return " file=" + J.util.Escape.eS (this.peakFilePath);
@@ -279,7 +279,7 @@ return ++this.peakIndex[0];
 $_M(c$, "processPeakData", 
 ($fz = function () {
 if (this.peakData.size () == 0) return;
-var bsModels =  new J.util.BS ();
+var bsModels =  new JU.BS ();
 var n = this.peakData.size ();
 var havePeaks = (n > 0);
 for (var p = 0; p < n; p++) {
@@ -297,7 +297,7 @@ bsModels.set (i);
 var s;
 if (J.adapter.readers.more.JcampdxReader.getAttribute (this.line, "atoms").length != 0) {
 var peaks = this.atomSetCollection.getAtomSetAuxiliaryInfoValue (i, key);
-if (peaks == null) this.atomSetCollection.setAtomSetAuxiliaryInfoForSet (key, peaks =  new J.util.JmolList (), i);
+if (peaks == null) this.atomSetCollection.setAtomSetAuxiliaryInfoForSet (key, peaks =  new JU.List (), i);
 peaks.addLast (this.line);
 s = type + ": ";
 } else if (this.atomSetCollection.getAtomSetAuxiliaryInfoValue (i, "jdxModelSelect") == null) {

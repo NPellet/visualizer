@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelset");
-Clazz.load (null, "J.modelset.Object2d", ["java.lang.Float", "J.util.C"], function () {
+Clazz.load (null, "J.modelset.Object2d", ["java.lang.Float", "J.util.C", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isLabelOrHover = false;
 this.gdata = null;
@@ -65,7 +65,7 @@ if (xyz == null) this.zSlab = -2147483648;
 if (doAdjust) {
 this.valign = (xyz == null ? 0 : 4);
 this.setAdjustForWindow (xyz == null);
-}}, "J.util.P3,~B");
+}}, "JU.P3,~B");
 $_M(c$, "setAdjustForWindow", 
 function (TF) {
 this.adjustForWindow = TF;
@@ -144,32 +144,10 @@ return this.script;
 });
 $_M(c$, "setOffset", 
 function (offset) {
-this.offsetX = J.modelset.Object2d.getXOffset (offset);
-this.offsetY = J.modelset.Object2d.getYOffset (offset);
+this.offsetX = J.viewer.JC.getXOffset (offset);
+this.offsetY = J.viewer.JC.getYOffset (offset);
 this.pymolOffset = null;
 this.valign = 0;
-}, "~N");
-c$.getXOffset = $_M(c$, "getXOffset", 
-function (offset) {
-switch (offset) {
-case 0:
-return 4;
-case 32767:
-return 0;
-default:
-return ((offset << 48) >> 56);
-}
-}, "~N");
-c$.getYOffset = $_M(c$, "getYOffset", 
-function (offset) {
-switch (offset) {
-case 0:
-return -4;
-case 32767:
-return 0;
-default:
-return -((offset << 56) >> 56);
-}
 }, "~N");
 $_M(c$, "setAlignmentLCR", 
 function (align) {
@@ -185,17 +163,9 @@ this.align = align;
 this.recalc ();
 }return true;
 }, "~N");
-c$.getAlignmentName = $_M(c$, "getAlignmentName", 
-function (align) {
-return J.modelset.Object2d.hAlignNames[align & 3];
-}, "~N");
 $_M(c$, "setPointer", 
 function (pointer) {
 this.pointer = pointer;
-}, "~N");
-c$.getPointer = $_M(c$, "getPointer", 
-function (pointer) {
-return ((pointer & 1) == 0 ? "" : (pointer & 2) > 0 ? "background" : "on");
 }, "~N");
 $_M(c$, "setBoxOffsetsInWindow", 
 function (margin, vMargin, vTop) {
@@ -223,7 +193,7 @@ if (isAntialiased) {
 x <<= 1;
 y <<= 1;
 }return (x >= this.boxX && x <= this.boxX + this.boxWidth && y >= this.boxY && y <= this.boxY + this.boxHeight);
-}, "~B,~N,~N,J.util.BS");
+}, "~B,~N,~N,JU.BS");
 c$.setProperty = $_M(c$, "setProperty", 
 function (propertyName, value, currentObject) {
 if ("script" === propertyName) {
@@ -261,25 +231,4 @@ currentObject.setXYZ (value, true);
 }return true;
 }return false;
 }, "~S,~O,J.modelset.Object2d");
-c$.getOffset = $_M(c$, "getOffset", 
-function (xOffset, yOffset) {
-xOffset = Math.min (Math.max (xOffset, -127), 127);
-yOffset = Math.min (Math.max (yOffset, -127), 127);
-return ((xOffset & 0xFF) << 8) | (yOffset & 0xFF);
-}, "~N,~N");
-Clazz.defineStatics (c$,
-"POINTER_NONE", 0,
-"POINTER_ON", 1,
-"POINTER_BACKGROUND", 2,
-"hAlignNames", ["", "left", "center", "right", ""],
-"ALIGN_NONE", 0,
-"ALIGN_LEFT", 1,
-"ALIGN_CENTER", 2,
-"ALIGN_RIGHT", 3,
-"vAlignNames", ["xy", "top", "bottom", "middle"],
-"VALIGN_XY", 0,
-"VALIGN_TOP", 1,
-"VALIGN_BOTTOM", 2,
-"VALIGN_MIDDLE", 3,
-"VALIGN_XYZ", 4);
 });

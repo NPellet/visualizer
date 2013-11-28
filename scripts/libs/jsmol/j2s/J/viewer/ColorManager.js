@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.util.ColorEncoder"], "J.viewer.ColorManager", ["java.lang.Float", "J.constant.EnumPalette", "J.util.ArrayUtil", "$.C", "$.ColorUtil", "$.Elements", "$.Logger", "J.viewer.JC"], function () {
+Clazz.load (["J.util.ColorEncoder"], "J.viewer.ColorManager", ["java.lang.Float", "JU.AU", "J.constant.EnumPalette", "J.util.C", "$.Elements", "$.Logger", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.propertyColorEncoder = null;
 this.viewer = null;
@@ -20,7 +20,7 @@ function (viewer, gdata) {
 this.viewer = viewer;
 this.g3d = gdata;
 this.argbsCpk = J.constant.EnumPalette.argbsCpk;
-this.altArgbsCpk = J.util.ArrayUtil.arrayCopyRangeI (J.viewer.JC.altArgbsCpk, 0, -1);
+this.altArgbsCpk = JU.AU.arrayCopyRangeI (J.viewer.JC.altArgbsCpk, 0, -1);
 }, "J.viewer.Viewer,J.util.GData");
 $_M(c$, "clear", 
 function () {
@@ -37,11 +37,11 @@ $_M(c$, "setDefaultColors",
 function (isRasmol) {
 if (isRasmol) {
 this.isDefaultColorRasmol = true;
-this.argbsCpk = J.util.ArrayUtil.arrayCopyI (J.util.ColorEncoder.getRasmolScale (), -1);
+this.argbsCpk = JU.AU.arrayCopyI (J.util.ColorEncoder.getRasmolScale (), -1);
 } else {
 this.isDefaultColorRasmol = false;
 this.argbsCpk = J.constant.EnumPalette.argbsCpk;
-}this.altArgbsCpk = J.util.ArrayUtil.arrayCopyRangeI (J.viewer.JC.altArgbsCpk, 0, -1);
+}this.altArgbsCpk = JU.AU.arrayCopyRangeI (J.viewer.JC.altArgbsCpk, 0, -1);
 this.propertyColorEncoder.createColorScheme ((isRasmol ? "Rasmol=" : "Jmol="), true, true);
 for (var i = J.constant.EnumPalette.argbsCpk.length; --i >= 0; ) this.g3d.changeColixArgb (i, this.argbsCpk[i]);
 
@@ -54,7 +54,7 @@ this.colixRubberband = (argb == 0 ? 0 : J.util.C.getColix (argb));
 }, "~N");
 $_M(c$, "setColixBackgroundContrast", 
 function (argb) {
-this.colixBackgroundContrast = J.util.ColorUtil.getBgContrast (argb);
+this.colixBackgroundContrast = J.util.C.getBgContrast (argb);
 }, "~N");
 $_M(c$, "getColixBondPalette", 
 function (bond, pid) {
@@ -143,10 +143,7 @@ argb = atom.getProteinStructureSubType ().getColor ();
 break;
 case 10:
 var chain = atom.getChainID ();
-if (chain < 0) chain = 0;
- else if (chain >= 256) chain -= 256;
-chain &= 0x1F;
-chain = chain % J.viewer.JC.argbsChainAtom.length;
+chain = ((chain < 0 ? 0 : chain >= 256 ? chain - 256 : chain) & 0x1F) % J.viewer.JC.argbsChainAtom.length;
 argb = (atom.isHetero () ? J.viewer.JC.argbsChainHetero : J.viewer.JC.argbsChainAtom)[chain];
 break;
 }
@@ -171,8 +168,8 @@ function (id, argb) {
 if (argb == 1073741992 && this.argbsCpk === J.constant.EnumPalette.argbsCpk) return;
 argb = this.getJmolOrRasmolArgb (id, argb);
 if (this.argbsCpk === J.constant.EnumPalette.argbsCpk) {
-this.argbsCpk = J.util.ArrayUtil.arrayCopyRangeI (J.constant.EnumPalette.argbsCpk, 0, -1);
-this.altArgbsCpk = J.util.ArrayUtil.arrayCopyRangeI (J.viewer.JC.altArgbsCpk, 0, -1);
+this.argbsCpk = JU.AU.arrayCopyRangeI (J.constant.EnumPalette.argbsCpk, 0, -1);
+this.altArgbsCpk = JU.AU.arrayCopyRangeI (J.viewer.JC.altArgbsCpk, 0, -1);
 }if (id < J.util.Elements.elementNumberMax) {
 this.argbsCpk[id] = argb;
 this.g3d.changeColixArgb (id, argb);
@@ -190,7 +187,7 @@ $_M(c$, "setPropertyColorRangeData",
 function (data, bs, colorScheme) {
 this.colorData = data;
 this.propertyColorEncoder.currentPalette = this.propertyColorEncoder.createColorScheme (colorScheme, true, false);
-this.propertyColorEncoder.hi = 1.4E-45;
+this.propertyColorEncoder.hi = -3.4028235E38;
 this.propertyColorEncoder.lo = 3.4028235E38;
 if (data == null) return;
 var isAll = (bs == null);
@@ -202,11 +199,11 @@ this.propertyColorEncoder.hi = Math.max (this.propertyColorEncoder.hi, d);
 this.propertyColorEncoder.lo = Math.min (this.propertyColorEncoder.lo, d);
 }
 this.setPropertyColorRange (this.propertyColorEncoder.lo, this.propertyColorEncoder.hi);
-}, "~A,J.util.BS,~S");
+}, "~A,JU.BS,~S");
 $_M(c$, "setPropertyColorRange", 
 function (min, max) {
 this.propertyColorEncoder.setRange (min, max, min > max);
-J.util.Logger.info ("ColorManager: color \"" + this.propertyColorEncoder.getCurrentColorSchemeName () + "\" range " + min + " " + max);
+if (J.util.Logger.debugging) J.util.Logger.debug ("ColorManager: color \"" + this.propertyColorEncoder.getCurrentColorSchemeName () + "\" range " + min + " " + max);
 }, "~N,~N");
 $_M(c$, "setPropertyColorScheme", 
 function (colorScheme, isTranslucent, isOverloaded) {

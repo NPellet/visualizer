@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.SpartanInputReader"], "J.adapter.readers.quantum.SpartanSmolReader", ["java.lang.Boolean", "java.util.Hashtable", "J.adapter.readers.quantum.SpartanArchive", "J.io2.BinaryDocument", "J.util.Logger", "$.Parser", "$.SB"], function () {
+Clazz.load (["J.adapter.readers.quantum.SpartanInputReader"], "J.adapter.readers.quantum.SpartanSmolReader", ["java.lang.Boolean", "java.util.Hashtable", "JU.BC", "$.PT", "$.SB", "J.adapter.readers.quantum.SpartanArchive", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.iHaveModelStatement = false;
 this.isCompoundDocument = false;
@@ -12,14 +12,14 @@ this.titles = null;
 this.haveCharges = false;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "SpartanSmolReader", J.adapter.readers.quantum.SpartanInputReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.modelName = "Spartan file";
 this.isCompoundDocument = (this.readLine ().indexOf ("Compound Document File Directory") >= 0);
 this.inputOnly = this.checkFilterKey ("INPUT");
 this.espCharges = !this.checkFilterKey ("MULLIKEN");
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 var lcline;
 if (this.isCompoundDocument && (lcline = this.line.toLowerCase ()).equals ("begin directory entry molecule") || this.line.indexOf ("JMOL_MODEL") >= 0 && !this.line.startsWith ("END")) {
@@ -76,7 +76,7 @@ return false;
 }if (this.line.indexOf ("5D shell") >= 0) this.moData.put ("calculationType", this.calculationType = this.line);
 return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 this.finalizeReaderASCR ();
 if (this.atomCount > 0 && this.spartanArchive != null && this.atomSetCollection.getBondCount () == 0 && this.bondData != null) this.spartanArchive.addBonds (this.bondData, 0);
@@ -95,17 +95,18 @@ var binaryCodes = this.readLine ();
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (binaryCodes.trim ());
 if (tokens.length < 16) return;
 var bytes =  Clazz.newByteArray (tokens.length, 0);
-for (var i = 0; i < tokens.length; i++) bytes[i] = J.util.Parser.parseIntRadix (tokens[i], 16);
+for (var i = 0; i < tokens.length; i++) bytes[i] = JU.PT.parseIntRadix (tokens[i], 16);
 
 mat =  Clazz.newFloatArray (16, 0);
-for (var i = 16, j = bytes.length - 8; --i >= 0; j -= 8) mat[i] = J.io2.BinaryDocument.bytesToDoubleToFloat (bytes, j, false);
+var bc =  new JU.BC ();
+for (var i = 16, j = bytes.length - 8; --i >= 0; j -= 8) mat[i] = bc.bytesToDoubleToFloat (bytes, j, false);
 
 this.setTransform (mat[0], mat[1], mat[2], mat[4], mat[5], mat[6], mat[8], mat[9], mat[10]);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readOutput", 
 ($fz = function () {
 this.titles =  new java.util.Hashtable ();
-var header =  new J.util.SB ();
+var header =  new JU.SB ();
 var pt;
 while (this.readLine () != null && !this.line.startsWith ("END ")) {
 header.append (this.line).append ("\n");

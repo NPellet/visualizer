@@ -1,11 +1,11 @@
 Clazz.declarePackage ("J.exportjs");
-Clazz.load (["J.util.AxisAngle4f", "$.P3", "$.V3"], "J.exportjs.Exporter", ["java.lang.Float", "J.util.TextFormat"], function () {
+Clazz.load (["JU.A4", "$.P3", "$.V3"], "J.exportjs.Exporter", ["java.lang.Float", "JU.PT", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.privateKey = 0;
 this.jmolRenderer = null;
 this.$output = null;
-this.bw = null;
+this.out = null;
 this.fileName = null;
 this.commandLineOptions = null;
 this.isToFile = false;
@@ -36,14 +36,14 @@ this.lineWidthMad = 0;
 Clazz.instantialize (this, arguments);
 }, J.exportjs, "Exporter");
 Clazz.prepareFields (c$, function () {
-this.tempP1 =  new J.util.P3 ();
-this.tempP2 =  new J.util.P3 ();
-this.tempP3 =  new J.util.P3 ();
-this.center =  new J.util.P3 ();
-this.tempV1 =  new J.util.V3 ();
-this.tempV2 =  new J.util.V3 ();
-this.tempV3 =  new J.util.V3 ();
-this.tempA =  new J.util.AxisAngle4f ();
+this.tempP1 =  new JU.P3 ();
+this.tempP2 =  new JU.P3 ();
+this.tempP3 =  new JU.P3 ();
+this.center =  new JU.P3 ();
+this.tempV1 =  new JU.V3 ();
+this.tempV2 =  new JU.V3 ();
+this.tempV3 =  new JU.V3 ();
+this.tempA =  new JU.A4 ();
 });
 Clazz.makeConstructor (c$, 
 function () {
@@ -55,7 +55,7 @@ this.jmolRenderer = jmolRenderer;
 $_M(c$, "initializeOutput", 
 function (viewer, privateKey, g3d, output) {
 this.viewer = viewer;
-this.appletName = J.util.TextFormat.split (viewer.getHtmlName (), '_')[0];
+this.appletName = JU.PT.split (viewer.getHtmlName (), "_")[0];
 this.g3d = g3d;
 this.privateKey = privateKey;
 this.backgroundColix = viewer.getObjectColix (0);
@@ -80,8 +80,7 @@ if (pt > 0) {
 this.commandLineOptions = this.fileName.substring (pt + 3);
 this.fileName = this.fileName.substring (0, pt);
 }try {
-System.out.println ("__Exporter writing to " + viewer.getAbsolutePath (privateKey, this.fileName));
-this.bw = viewer.openOutputChannel (privateKey, this.fileName, true);
+this.out = viewer.openExportChannel (privateKey, this.fileName, true);
 } catch (e) {
 if (Clazz.exceptionOf (e, java.io.IOException)) {
 return false;
@@ -97,21 +96,14 @@ return true;
 $_M(c$, "output", 
 function (data) {
 this.nBytes += data.length;
-try {
-if (this.bw == null) this.$output.append (data);
- else this.bw.write (data);
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-} else {
-throw e;
-}
-}
+if (this.out == null) this.$output.append (data);
+ else this.out.append (data);
 }, "~S");
 c$.setTempVertex = $_M(c$, "setTempVertex", 
 function (pt, offset, ptTemp) {
 ptTemp.setT (pt);
 if (offset != null) ptTemp.add (offset);
-}, "J.util.P3,J.util.P3,J.util.P3");
+}, "JU.P3,JU.P3,JU.P3");
 $_M(c$, "outputVertices", 
 function (vertices, nVertices, offset) {
 for (var i = 0; i < nVertices; i++) {
@@ -119,12 +111,12 @@ if (Float.isNaN (vertices[i].x)) continue;
 this.outputVertex (vertices[i], offset);
 this.output ("\n");
 }
-}, "~A,~N,J.util.P3");
+}, "~A,~N,JU.P3");
 $_M(c$, "outputVertex", 
 function (pt, offset) {
 J.exportjs.Exporter.setTempVertex (pt, offset, this.tempP1);
 this.output (this.tempP1);
-}, "J.util.P3,J.util.P3");
+}, "JU.P3,JU.P3");
 $_M(c$, "outputFooter", 
 function () {
 });
@@ -132,23 +124,16 @@ $_M(c$, "finalizeOutput",
 function () {
 this.outputFooter ();
 if (!this.isToFile) return (this.$output == null ? "" : this.$output.toString ());
-try {
-this.bw.flush ();
-this.bw.close ();
-} catch (e) {
-if (Clazz.exceptionOf (e, java.io.IOException)) {
-System.out.println (e.toString ());
-return "ERROR EXPORTING FILE";
-} else {
-throw e;
-}
-}
-return "OK " + this.nBytes + " " + this.jmolRenderer.getExportName () + " " + this.fileName;
+var ret = this.out.closeChannel ();
+if (ret != null) {
+J.util.Logger.info (ret);
+return "ERROR EXPORTING FILE:" + ret;
+}return "OK " + this.nBytes + " " + this.jmolRenderer.getExportName () + " " + this.fileName;
 });
 $_M(c$, "getTriad", 
 function (t) {
 return J.exportjs.Exporter.round (t.x) + " " + J.exportjs.Exporter.round (t.y) + " " + J.exportjs.Exporter.round (t.z);
-}, "J.util.Tuple3f");
+}, "JU.T3");
 c$.round = $_M(c$, "round", 
 function (number) {
 var s;
@@ -157,7 +142,7 @@ return (number == 0 ? "0" : number == 1 ? "1" : (s = "" + (Math.round (number * 
 c$.round = $_M(c$, "round", 
 function (pt) {
 return J.exportjs.Exporter.round (pt.x) + " " + J.exportjs.Exporter.round (pt.y) + " " + J.exportjs.Exporter.round (pt.z);
-}, "J.util.Tuple3f");
+}, "JU.T3");
 $_M(c$, "drawSurface", 
 function (meshSurface, colix) {
 var nVertices = meshSurface.vertexCount;
@@ -184,7 +169,7 @@ this.outputSurface (vertices, normals, colixes, indices, polygonColixes, nVertic
 }, "J.util.MeshSurface,~N");
 $_M(c$, "outputSurface", 
 function (vertices, normals, colixes, indices, polygonColixes, nVertices, nPolygons, nFaces, bsPolygons, faceVertexMax, colix, offset) {
-}, "~A,~A,~A,~A,~A,~N,~N,~N,J.util.BS,~N,~N,J.util.P3");
+}, "~A,~A,~A,~A,~A,~N,~N,~N,JU.BS,~N,~N,JU.P3");
 $_M(c$, "drawFilledCircle", 
 function (colixRing, colixFill, diameter, x, y, z) {
 if (colixRing != 0) this.drawCircle (x, y, z, diameter, colixRing, false);
@@ -195,7 +180,7 @@ function (x, y, z, image, bgcolix, width, height) {
 }, "~N,~N,~N,java.awt.Image,~N,~N,~N");
 $_M(c$, "plotText", 
 function (x, y, z, colix, text, font3d) {
-}, "~N,~N,~N,~N,~S,J.util.JmolFont");
+}, "~N,~N,~N,~N,~S,javajs.awt.Font");
 Clazz.defineStatics (c$,
 "degreesPerRadian", (57.29577951308232));
 });

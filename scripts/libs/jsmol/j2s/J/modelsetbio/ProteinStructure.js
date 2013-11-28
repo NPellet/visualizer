@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["J.util.V3"], "J.modelsetbio.ProteinStructure", ["J.util.ArrayUtil", "$.Logger", "$.P3"], function () {
+Clazz.load (["JU.V3"], "J.modelsetbio.ProteinStructure", ["JU.AU", "$.P3", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.type = null;
 this.subtype = null;
@@ -19,11 +19,11 @@ this.segments = null;
 Clazz.instantialize (this, arguments);
 }, J.modelsetbio, "ProteinStructure");
 Clazz.prepareFields (c$, function () {
-this.vectorProjection =  new J.util.V3 ();
+this.vectorProjection =  new JU.V3 ();
 });
 $_M(c$, "setupPS", 
 function (apolymer, type, monomerIndex, monomerCount) {
-this.strucNo = ($t$ = ++ J.modelsetbio.ProteinStructure.globalStrucNo, J.modelsetbio.ProteinStructure.prototype.globalStrucNo = J.modelsetbio.ProteinStructure.globalStrucNo, $t$);
+this.strucNo = ++J.modelsetbio.ProteinStructure.globalStrucNo;
 this.apolymer = apolymer;
 this.type = type;
 this.monomerIndexFirst = monomerIndex;
@@ -54,10 +54,10 @@ this.calcAxis ();
 this.segments =  new Array (this.monomerCount + 1);
 this.segments[this.monomerCount] = this.axisB;
 this.segments[0] = this.axisA;
-var axis = J.util.V3.newV (this.axisUnitVector);
+var axis = JU.V3.newV (this.axisUnitVector);
 axis.scale (this.axisB.distance (this.axisA) / this.monomerCount);
 for (var i = 1; i < this.monomerCount; i++) {
-var point = this.segments[i] =  new J.util.P3 ();
+var point = this.segments[i] =  new JU.P3 ();
 point.setT (this.segments[i - 1]);
 point.add (axis);
 }
@@ -117,7 +117,7 @@ $_M(c$, "getInfo",
 function (info) {
 info.put ("type", this.type.getBioStructureTypeName (false));
 var leadAtomIndices = this.apolymer.getLeadAtomIndices ();
-var iArray = J.util.ArrayUtil.arrayCopyRangeI (leadAtomIndices, this.monomerIndexFirst, this.monomerIndexFirst + this.monomerCount);
+var iArray = JU.AU.arrayCopyRangeI (leadAtomIndices, this.monomerIndexFirst, this.monomerIndexFirst + this.monomerCount);
 info.put ("leadAtomIndices", iArray);
 this.calcAxis ();
 if (this.axisA == null) return;

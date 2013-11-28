@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.constant");
-Clazz.load (["java.lang.Enum"], "J.constant.EnumPalette", null, function () {
+Clazz.load (["java.lang.Enum"], "J.constant.EnumPalette", ["java.lang.Byte"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.$$name = null;
 this.id = 0;

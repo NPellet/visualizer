@@ -57,7 +57,7 @@ this.primitives[this.nPrimitives] = sBond;
 this.nPrimitives++;
 return sBond;
 });
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return this.atom1 + " -" + (this.isNot ? "!" : "") + this.order + "- " + this.atom2;
 });
@@ -141,23 +141,23 @@ $_M(c$, "getOtherAtom",
 function (a) {
 return (this.atom1 === a ? this.atom2 : this.atom1);
 }, "J.smiles.SmilesAtom");
-Clazz.overrideMethod (c$, "getAtomIndex1", 
+$_V(c$, "getAtomIndex1", 
 function () {
 return this.atom1.index;
 });
-Clazz.overrideMethod (c$, "getAtomIndex2", 
+$_V(c$, "getAtomIndex2", 
 function () {
 return this.atom2.index;
 });
-Clazz.overrideMethod (c$, "getCovalentOrder", 
+$_V(c$, "getCovalentOrder", 
 function () {
 return this.order;
 });
-Clazz.overrideMethod (c$, "getOtherAtomNode", 
+$_V(c$, "getOtherAtomNode", 
 function (atom) {
 return (atom === this.atom1 ? this.atom2 : atom === this.atom2 ? this.atom1 : null);
 }, "J.util.JmolNode");
-Clazz.overrideMethod (c$, "isCovalent", 
+$_V(c$, "isCovalent", 
 function () {
 return this.order != 112;
 });
@@ -165,7 +165,7 @@ $_M(c$, "getValence",
 function () {
 return (this.order & 7);
 });
-Clazz.overrideMethod (c$, "isHydrogen", 
+$_V(c$, "isHydrogen", 
 function () {
 return this.order == 112;
 });

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.parallel");
-Clazz.load (["J.api.JmolParallelProcessor", "J.script.ScriptFunction", "J.util.JmolList"], "J.parallel.ScriptParallelProcessor", ["java.util.concurrent.Executors", "J.parallel.ScriptProcess", "$.ScriptProcessRunnable", "J.util.Logger", "J.viewer.ShapeManager", "$.Viewer"], function () {
+Clazz.load (["J.api.JmolParallelProcessor", "J.script.ScriptFunction", "JU.List"], "J.parallel.ScriptParallelProcessor", ["java.util.concurrent.Executors", "J.parallel.ScriptProcess", "$.ScriptProcessRunnable", "J.util.Logger", "J.viewer.ShapeManager", "$.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.counter = 0;
@@ -10,22 +10,22 @@ Clazz.instantialize (this, arguments);
 }, J.parallel, "ScriptParallelProcessor", J.script.ScriptFunction, J.api.JmolParallelProcessor);
 Clazz.prepareFields (c$, function () {
 this.lock =  new JavaObject ();
-this.processes =  new J.util.JmolList ();
+this.processes =  new JU.List ();
 });
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.parallel.ScriptParallelProcessor, []);
 });
-Clazz.overrideMethod (c$, "getExecutor", 
+$_V(c$, "getExecutor", 
 function () {
 return java.util.concurrent.Executors.newCachedThreadPool ();
 });
-Clazz.overrideMethod (c$, "runAllProcesses", 
+$_V(c$, "runAllProcesses", 
 function (viewer) {
 if (this.processes.size () == 0) return;
 this.viewer = viewer;
 var inParallel = !viewer.isParallel () && viewer.setParallel (true);
-var vShapeManagers =  new J.util.JmolList ();
+var vShapeManagers =  new JU.List ();
 this.error = null;
 this.counter = 0;
 if (J.util.Logger.debugging) J.util.Logger.debug ("running " + this.processes.size () + " processes on " + J.viewer.Viewer.nProcessors + " processesors inParallel=" + inParallel);
@@ -67,14 +67,14 @@ throw e;
 this.counter = -1;
 vShapeManagers = null;
 }
-}, "J.util.JmolList");
+}, "JU.List");
 $_M(c$, "clearShapeManager", 
 function (er) {
 {
 this.error = er;
 this.notifyAll ();
 }}, "Error");
-Clazz.overrideMethod (c$, "addProcess", 
+$_V(c$, "addProcess", 
 function (name, context) {
 this.processes.addLast ( new J.parallel.ScriptProcess (name, context));
 }, "~S,J.script.ScriptContext");

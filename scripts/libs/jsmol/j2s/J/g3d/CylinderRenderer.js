@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.g3d");
-Clazz.load (null, "J.g3d.CylinderRenderer", ["J.util.ArrayUtil", "$.Shader"], function () {
+Clazz.load (null, "J.g3d.CylinderRenderer", ["JU.AU", "J.util.Shader"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.g3d = null;
 this.line3d = null;
@@ -369,17 +369,17 @@ this.line3d.plotLineDelta (this.shadesA[fpzBack], this.isScreenedA, this.shadesB
 $_M(c$, "allocRaster", 
 ($fz = function (isPrecision) {
 while (this.rasterCount >= this.xRaster.length) {
-this.xRaster = J.util.ArrayUtil.doubleLengthI (this.xRaster);
-this.yRaster = J.util.ArrayUtil.doubleLengthI (this.yRaster);
-this.zRaster = J.util.ArrayUtil.doubleLengthI (this.zRaster);
-this.tRaster = J.util.ArrayUtil.doubleLengthF (this.tRaster);
+this.xRaster = JU.AU.doubleLengthI (this.xRaster);
+this.yRaster = JU.AU.doubleLengthI (this.yRaster);
+this.zRaster = JU.AU.doubleLengthI (this.zRaster);
+this.tRaster = JU.AU.doubleLengthF (this.tRaster);
 }
-while (this.rasterCount >= this.fp8ShadeIndexUp.length) this.fp8ShadeIndexUp = J.util.ArrayUtil.doubleLengthI (this.fp8ShadeIndexUp);
+while (this.rasterCount >= this.fp8ShadeIndexUp.length) this.fp8ShadeIndexUp = JU.AU.doubleLengthI (this.fp8ShadeIndexUp);
 
 if (isPrecision) while (this.rasterCount >= this.txRaster.length) {
-this.txRaster = J.util.ArrayUtil.doubleLengthF (this.txRaster);
-this.tyRaster = J.util.ArrayUtil.doubleLengthF (this.tyRaster);
-this.tzRaster = J.util.ArrayUtil.doubleLengthF (this.tzRaster);
+this.txRaster = JU.AU.doubleLengthF (this.txRaster);
+this.tyRaster = JU.AU.doubleLengthF (this.tyRaster);
+this.tzRaster = JU.AU.doubleLengthF (this.tzRaster);
 }
 return this.rasterCount++;
 }, $fz.isPrivate = true, $fz), "~B");

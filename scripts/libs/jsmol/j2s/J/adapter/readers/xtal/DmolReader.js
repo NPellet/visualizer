@@ -1,12 +1,12 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.DmolReader", ["java.lang.Double", "J.util.Logger", "$.TextFormat"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.DmolReader", ["java.lang.Double", "JU.DF", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.unitCellData = null;
 this.totE = null;
 this.geomOpt = false;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "DmolReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.contains ("** GEOMETRY OPTIMIZATION IN DELOCALIZED COORDINATES **")) {
 this.geomOpt = true;
@@ -93,7 +93,7 @@ this.applySymmetryAndSetTrajectory ();
 lastAtomCount = this.cloneLastAtomSet (atomCount, null);
 if (i == 0) iAtom0 = this.atomSetCollection.getLastAtomSetAtomIndex ();
 this.atomSetCollection.setAtomSetFrequency (null, null, String.valueOf (frequencies[i]), null);
-this.atomSetCollection.setAtomSetName (J.util.TextFormat.formatDecimal (frequencies[i], 2) + " cm-1");
+this.atomSetCollection.setAtomSetName (JU.DF.formatDecimal (frequencies[i], 2) + " cm-1");
 }
 this.readLine ();
 this.fillFrequencyData (iAtom0, atomCount, lastAtomCount, ignore, false, 5, 13, null, 0);

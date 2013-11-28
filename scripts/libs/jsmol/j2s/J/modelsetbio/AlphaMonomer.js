@@ -1,11 +1,11 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["J.modelsetbio.Monomer"], "J.modelsetbio.AlphaMonomer", ["J.constant.EnumStructure", "J.modelsetbio.Helix", "$.Sheet", "$.Turn", "J.util.Quaternion", "$.V3"], function () {
+Clazz.load (["J.modelsetbio.Monomer"], "J.modelsetbio.AlphaMonomer", ["JU.V3", "J.constant.EnumStructure", "J.modelsetbio.Helix", "$.Sheet", "$.Turn", "J.util.Quaternion"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.proteinStructure = null;
 this.nitrogenHydrogenPoint = null;
 Clazz.instantialize (this, arguments);
 }, J.modelsetbio, "AlphaMonomer", J.modelsetbio.Monomer);
-Clazz.overrideMethod (c$, "isProtein", 
+$_V(c$, "isProtein", 
 function () {
 return true;
 });
@@ -20,44 +20,44 @@ $_M(c$, "isAlphaMonomer",
 function () {
 return true;
 });
-Clazz.overrideMethod (c$, "getProteinStructure", 
+$_V(c$, "getProteinStructure", 
 function () {
 return this.proteinStructure;
 });
-Clazz.overrideMethod (c$, "getStructure", 
+$_V(c$, "getStructure", 
 function () {
 return this.getProteinStructure ();
 });
-Clazz.overrideMethod (c$, "setStructure", 
+$_V(c$, "setStructure", 
 function (proteinStructure) {
 this.proteinStructure = proteinStructure;
 if (proteinStructure == null) this.nitrogenHydrogenPoint = null;
 }, "J.modelsetbio.ProteinStructure");
-Clazz.overrideMethod (c$, "setStrucNo", 
+$_V(c$, "setStrucNo", 
 function (n) {
 if (this.proteinStructure != null) this.proteinStructure.strucNo = n;
 }, "~N");
-Clazz.overrideMethod (c$, "getProteinStructureType", 
+$_V(c$, "getProteinStructureType", 
 function () {
 return this.proteinStructure == null ? J.constant.EnumStructure.NONE : this.proteinStructure.type;
 });
-Clazz.overrideMethod (c$, "getProteinStructureSubType", 
+$_V(c$, "getProteinStructureSubType", 
 function () {
 return this.proteinStructure == null ? J.constant.EnumStructure.NONE : this.proteinStructure.subtype;
 });
-Clazz.overrideMethod (c$, "getStrucNo", 
+$_V(c$, "getStrucNo", 
 function () {
 return this.proteinStructure != null ? this.proteinStructure.strucNo : 0;
 });
-Clazz.overrideMethod (c$, "isHelix", 
+$_V(c$, "isHelix", 
 function () {
 return this.proteinStructure != null && this.proteinStructure.type === J.constant.EnumStructure.HELIX;
 });
-Clazz.overrideMethod (c$, "isSheet", 
+$_V(c$, "isSheet", 
 function () {
 return this.proteinStructure != null && this.proteinStructure.type === J.constant.EnumStructure.SHEET;
 });
-Clazz.overrideMethod (c$, "setProteinStructureType", 
+$_V(c$, "setProteinStructureType", 
 function (type, monomerIndexCurrent) {
 if (monomerIndexCurrent < 0 || monomerIndexCurrent > 0 && this.monomerIndex == 0) {
 if (this.proteinStructure != null) {
@@ -92,17 +92,22 @@ $_M(c$, "getAtomPoint",
 function (specialAtomID) {
 return (specialAtomID == 2 ? this.getLeadAtom () : null);
 }, "~N");
-Clazz.overrideMethod (c$, "isConnectedAfter", 
+$_V(c$, "isConnectedAfter", 
 function (possiblyPreviousMonomer) {
 if (possiblyPreviousMonomer == null) return true;
 var atom1 = this.getLeadAtom ();
 var atom2 = possiblyPreviousMonomer.getLeadAtom ();
 return atom1.isBonded (atom2) || atom1.distance (atom2) <= 4.2;
 }, "J.modelsetbio.Monomer");
-Clazz.overrideMethod (c$, "getQuaternionFrameCenter", 
+$_V(c$, "getQuaternionFrameCenter", 
 function (qType) {
 return this.getQuaternionFrameCenterAlpha (qType);
 }, "~S");
+$_V(c$, "isWithinStructure", 
+function (type) {
+var s = this.getStructure ();
+return (s != null && s.type === type && s.isWithin (this.monomerIndex));
+}, "J.constant.EnumStructure");
 $_M(c$, "getQuaternionFrameCenterAlpha", 
 function (qType) {
 switch (qType) {
@@ -120,18 +125,18 @@ case 'q':
 return null;
 }
 }, "~S");
-Clazz.overrideMethod (c$, "getHelixData", 
+$_V(c$, "getHelixData", 
 function (tokType, qType, mStep) {
 return this.getHelixData2 (tokType, qType, mStep);
 }, "~N,~S,~N");
-Clazz.overrideMethod (c$, "getQuaternion", 
+$_V(c$, "getQuaternion", 
 function (qType) {
 return this.getQuaternionAlpha (qType);
 }, "~S");
 $_M(c$, "getQuaternionAlpha", 
 function (qType) {
-var vA =  new J.util.V3 ();
-var vB =  new J.util.V3 ();
+var vA =  new JU.V3 ();
+var vB =  new JU.V3 ();
 var vC = null;
 switch (qType) {
 default:

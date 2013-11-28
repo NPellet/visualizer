@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.appletjs");
-Clazz.load (["java.util.Hashtable"], "J.appletjs.JmolAppletRegistry", ["J.util.Logger", "$.TextFormat"], function () {
+Clazz.load (["java.util.Hashtable"], "J.appletjs.JmolAppletRegistry", ["JU.PT", "J.util.Logger"], function () {
 c$ = Clazz.declareType (J.appletjs, "JmolAppletRegistry");
 c$.checkIn = $_M(c$, "checkIn", 
 function (name, applet) {
@@ -22,7 +22,7 @@ J.appletjs.JmolAppletRegistry.htRegistry.remove (name);
 c$.findApplets = $_M(c$, "findApplets", 
 function (appletName, mySyncId, excludeName, apps) {
 if (appletName != null && appletName.indexOf (",") >= 0) {
-var names = J.util.TextFormat.split (appletName, ',');
+var names = JU.PT.split (appletName, ",");
 for (var i = 0; i < names.length; i++) J.appletjs.JmolAppletRegistry.findApplets (names[i], mySyncId, excludeName, apps);
 
 return;
@@ -37,7 +37,7 @@ return;
 if (!J.appletjs.JmolAppletRegistry.htRegistry.containsKey (appletName)) appletName = "jmolApplet" + appletName;
 if (!appletName.equals (excludeName) && J.appletjs.JmolAppletRegistry.htRegistry.containsKey (appletName)) {
 apps.addLast (appletName);
-}}, "~S,~S,~S,J.util.JmolList");
+}}, "~S,~S,~S,JU.List");
 c$.cleanRegistry = $_M(c$, "cleanRegistry", 
 ($fz = function () {
 }, $fz.isPrivate = true, $fz));

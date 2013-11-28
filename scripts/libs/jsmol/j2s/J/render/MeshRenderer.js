@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.ShapeRenderer", "J.util.BS", "$.P3", "$.P3i"], "J.render.MeshRenderer", ["J.util.BSUtil", "$.C"], function () {
+Clazz.load (["J.render.ShapeRenderer", "JU.BS", "$.P3", "$.P3i"], "J.render.MeshRenderer", ["JU.AU", "J.util.BSUtil", "$.C"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.mesh = null;
 this.vertices = null;
@@ -31,19 +31,20 @@ this.volumeRender = false;
 this.bsPolygons = null;
 this.isTranslucentInherit = false;
 this.renderLow = false;
+this.meshSlabValue = 100;
 this.bsPolygonsToExport = null;
 Clazz.instantialize (this, arguments);
 }, J.render, "MeshRenderer", J.render.ShapeRenderer);
 Clazz.prepareFields (c$, function () {
-this.latticeOffset =  new J.util.P3 ();
-this.pt1f =  new J.util.P3 ();
-this.pt2f =  new J.util.P3 ();
-this.pt1i =  new J.util.P3i ();
-this.pt2i =  new J.util.P3i ();
-this.pt3i =  new J.util.P3i ();
-this.bsPolygonsToExport =  new J.util.BS ();
+this.latticeOffset =  new JU.P3 ();
+this.pt1f =  new JU.P3 ();
+this.pt2f =  new JU.P3 ();
+this.pt1i =  new JU.P3i ();
+this.pt2i =  new JU.P3i ();
+this.pt3i =  new JU.P3i ();
+this.bsPolygonsToExport =  new JU.BS ();
 });
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 this.needTranslucent = false;
 this.antialias = this.g3d.isAntialiased ();
@@ -62,18 +63,45 @@ this.mesh = mesh;
 if (!this.setVariables ()) return false;
 if (!this.doRender) return mesh.title != null;
 this.latticeOffset.set (0, 0, 0);
+if (mesh.lattice == null && mesh.symops == null || mesh.modelIndex < 0) {
 for (var i = this.vertexCount; --i >= 0; ) if (this.vertices[i] != null) this.viewer.transformPtScr (this.vertices[i], this.screens[i]);
 
-if (mesh.lattice == null || mesh.modelIndex < 0) {
 this.render2 (this.isExport);
 } else {
-var unitcell = mesh.unitCell;
-if (unitcell == null) unitcell = this.viewer.getModelUnitCell (mesh.modelIndex);
-if (unitcell == null) unitcell = mesh.getUnitCell ();
+var vTemp =  new JU.P3 ();
+var unitcell;
+if ((unitcell = mesh.unitCell) == null && (unitcell = this.viewer.modelSet.models[mesh.modelIndex].biosymmetry) == null && (unitcell = this.viewer.getModelUnitCell (mesh.modelIndex)) == null) unitcell = mesh.getUnitCell ();
+if (mesh.symops != null) {
+if (mesh.symopNormixes == null) mesh.symopNormixes = JU.AU.newShort2 (mesh.symops.length);
+var verticesTemp = null;
+var max = mesh.symops.length;
+var c = mesh.colix;
+for (var j = max; --j >= 0; ) {
+var m = mesh.symops[j];
+if (m == null) continue;
+if (mesh.colorType == 1297090050) mesh.colix = mesh.symopColixes[j];
+var normals = mesh.symopNormixes[j];
+var needNormals = (normals == null);
+verticesTemp = (needNormals ?  new Array (this.vertexCount) : null);
+for (var i = this.vertexCount; --i >= 0; ) {
+vTemp.setT (this.vertices[i]);
+unitcell.toFractional (vTemp, true);
+m.transform (vTemp);
+unitcell.toCartesian (vTemp, true);
+this.viewer.transformPtScr (vTemp, this.screens[i]);
+if (needNormals) {
+verticesTemp[i] = vTemp;
+vTemp =  new JU.P3 ();
+}}
+if (needNormals) this.normixes = mesh.symopNormixes[j] = mesh.setNormixes (mesh.getNormals (verticesTemp, null));
+ else this.normixes = mesh.normixes = mesh.symopNormixes[j];
+this.render2 (this.isExport);
+}
+mesh.colix = c;
+} else {
 if (unitcell != null) {
-var vTemp =  new J.util.P3 ();
-var minXYZ =  new J.util.P3i ();
-var maxXYZ = J.util.P3i.new3 (Clazz.floatToInt (mesh.lattice.x), Clazz.floatToInt (mesh.lattice.y), Clazz.floatToInt (mesh.lattice.z));
+var minXYZ =  new JU.P3i ();
+var maxXYZ = JU.P3i.new3 (Clazz.floatToInt (mesh.lattice.x), Clazz.floatToInt (mesh.lattice.y), Clazz.floatToInt (mesh.lattice.z));
 unitcell.setMinMaxLatticeParameters (minXYZ, maxXYZ);
 for (var tx = minXYZ.x; tx < maxXYZ.x; tx++) for (var ty = minXYZ.y; ty < maxXYZ.y; ty++) for (var tz = minXYZ.z; tz < maxXYZ.z; tz++) {
 this.latticeOffset.set (tx, ty, tz);
@@ -87,7 +115,7 @@ this.render2 (this.isExport);
 }
 
 
-}}if (this.screens != null) this.viewer.freeTempScreens (this.screens);
+}}}if (this.screens != null) this.viewer.freeTempScreens (this.screens);
 return true;
 }, "J.shape.Mesh");
 $_M(c$, "setVariables", 
@@ -111,7 +139,7 @@ this.haveBsDisplay = (this.mesh.bsDisplay != null);
 this.selectedPolyOnly = (this.isGhostPass || this.mesh.bsSlabDisplay != null);
 this.bsPolygons = (this.isGhostPass ? this.mesh.bsSlabGhost : this.selectedPolyOnly ? this.mesh.bsSlabDisplay : null);
 this.renderLow = (!this.isExport && !this.viewer.checkMotionRendering (1073742018));
-this.frontOnly = this.renderLow || !this.viewer.getSlabEnabled () && this.mesh.frontOnly && !this.mesh.isTwoSided && !this.selectedPolyOnly;
+this.frontOnly = this.renderLow || !this.viewer.getSlabEnabled () && this.mesh.frontOnly && !this.mesh.isTwoSided && !this.selectedPolyOnly && (this.meshSlabValue == -2147483648 || this.meshSlabValue >= 100);
 this.screens = this.viewer.allocTempScreens (this.vertexCount);
 if (this.frontOnly) this.transformedVectors = this.g3d.getTransformedVertexVectors ();
 if (this.transformedVectors == null) this.frontOnly = false;
@@ -169,6 +197,7 @@ return;
 });
 $_M(c$, "renderTriangles", 
 function (fill, iShowTriangles, generateSet) {
+this.g3d.addRenderer (1073742182);
 var polygonIndexes = this.mesh.polygonIndexes;
 this.colix = (this.isGhostPass ? this.mesh.slabColix : this.mesh.colix);
 if (this.isTranslucentInherit) this.colix = J.util.C.copyColixTranslucency (this.mesh.slabColix, this.mesh.colix);
@@ -244,7 +273,7 @@ return;
 if ((check & 1) == 1) this.g3d.fillCylinderXYZ (colixA, colixB, 1, diam, screenA.x, screenA.y, screenA.z, screenB.x, screenB.y, screenB.z);
 if ((check & 2) == 2) this.g3d.fillCylinderXYZ (colixB, colixC, 1, diam, screenB.x, screenB.y, screenB.z, screenC.x, screenC.y, screenC.z);
 if ((check & 4) == 4) this.g3d.fillCylinderXYZ (colixA, colixC, 1, diam, screenA.x, screenA.y, screenA.z, screenC.x, screenC.y, screenC.z);
-}, "J.util.P3i,~N,J.util.P3i,~N,J.util.P3i,~N,~N,~N");
+}, "JU.P3i,~N,JU.P3i,~N,JU.P3i,~N,~N,~N");
 $_M(c$, "checkNormals", 
 function (nA, nB, nC) {
 var check = 7;
@@ -280,7 +309,7 @@ if (this.diameter == 0) this.diameter = 1;
 this.viewer.transformPt3f (vA, this.pt1f);
 this.viewer.transformPt3f (vB, this.pt2f);
 this.g3d.fillCylinderBits (endCap, this.diameter, this.pt1f, this.pt2f);
-}}, "~N,~N,~B,J.util.P3,J.util.P3,J.util.P3i,J.util.P3i");
+}}, "~N,~N,~B,JU.P3,JU.P3,JU.P3i,JU.P3i");
 $_M(c$, "exportSurface", 
 function (colix) {
 this.mesh.normals = this.mesh.getNormals (this.vertices, null);

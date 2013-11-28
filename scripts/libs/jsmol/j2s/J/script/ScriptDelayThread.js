@@ -14,7 +14,7 @@ this.setViewer (viewer, "ScriptDelayThread");
 this.millis = millis;
 this.setEval (eval);
 }, "J.api.JmolScriptEvaluator,J.viewer.Viewer,~N");
-Clazz.overrideMethod (c$, "run1", 
+$_V(c$, "run1", 
 function (mode) {
 while (true) switch (mode) {
 case -1:

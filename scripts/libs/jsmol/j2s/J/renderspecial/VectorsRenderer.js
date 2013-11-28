@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.renderspecial");
-Clazz.load (["J.render.ShapeRenderer", "J.util.P3", "$.P3i", "$.V3"], "J.renderspecial.VectorsRenderer", ["J.shape.Shape", "J.util.Vibration"], function () {
+Clazz.load (["J.render.ShapeRenderer", "JU.P3", "$.P3i", "$.V3"], "J.renderspecial.VectorsRenderer", ["J.shape.Shape", "J.util.Vibration"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.pointVectorEnd = null;
 this.pointArrowHead = null;
@@ -16,13 +16,13 @@ this.vibTemp = null;
 Clazz.instantialize (this, arguments);
 }, J.renderspecial, "VectorsRenderer", J.render.ShapeRenderer);
 Clazz.prepareFields (c$, function () {
-this.pointVectorEnd =  new J.util.P3 ();
-this.pointArrowHead =  new J.util.P3 ();
-this.screenVectorEnd =  new J.util.P3i ();
-this.screenArrowHead =  new J.util.P3i ();
-this.headOffsetVector =  new J.util.V3 ();
+this.pointVectorEnd =  new JU.P3 ();
+this.pointArrowHead =  new JU.P3 ();
+this.screenVectorEnd =  new JU.P3i ();
+this.screenArrowHead =  new JU.P3i ();
+this.headOffsetVector =  new JU.V3 ();
 });
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 var vectors = this.shape;
 if (!vectors.isActive) return false;

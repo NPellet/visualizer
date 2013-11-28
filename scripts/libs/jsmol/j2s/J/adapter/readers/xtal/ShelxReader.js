@@ -1,16 +1,16 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.ShelxReader", ["java.lang.Float", "J.adapter.smarter.Atom", "J.util.ArrayUtil", "$.Logger"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.ShelxReader", ["java.lang.Float", "JU.AU", "J.adapter.smarter.Atom", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.sfacElementSymbols = null;
 this.isCmdf = false;
 this.tokens = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "ShelxReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.setFractionalCoordinates (true);
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 var lineLength;
 while ((lineLength = (this.line = this.line.trim ()).length) > 0 && this.line.charAt (lineLength - 1) == '=') this.line = this.line.substring (0, lineLength - 1) + this.readLine ();
@@ -99,7 +99,7 @@ this.sfacElementSymbols = sfacTokens;
 } else {
 var oldCount = this.sfacElementSymbols.length;
 var tokenCount = sfacTokens.length;
-this.sfacElementSymbols = J.util.ArrayUtil.arrayCopyS (this.sfacElementSymbols, oldCount + tokenCount);
+this.sfacElementSymbols = JU.AU.arrayCopyS (this.sfacElementSymbols, oldCount + tokenCount);
 for (var i = tokenCount; --i >= 0; ) this.sfacElementSymbols[oldCount + i] = sfacTokens[i];
 
 }}, $fz.isPrivate = true, $fz), "~A");
@@ -117,7 +117,7 @@ if (this.sfacElementSymbols == null) {
 this.sfacElementSymbols =  new Array (1);
 } else {
 oldCount = this.sfacElementSymbols.length;
-this.sfacElementSymbols = J.util.ArrayUtil.arrayCopyS (this.sfacElementSymbols, oldCount + 1);
+this.sfacElementSymbols = JU.AU.arrayCopyS (this.sfacElementSymbols, oldCount + 1);
 this.sfacElementSymbols[oldCount] = elementSymbol;
 }this.sfacElementSymbols[oldCount] = elementSymbol;
 }, $fz.isPrivate = true, $fz), "~A");

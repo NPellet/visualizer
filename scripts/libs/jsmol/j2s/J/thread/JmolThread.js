@@ -25,7 +25,7 @@ return 0;
 $_M(c$, "setViewer", 
 function (viewer, name) {
 this.setName (name);
-this.$name = name + "_" + (($t$ = ++ J.thread.JmolThread.threadIndex, J.thread.JmolThread.prototype.threadIndex = J.thread.JmolThread.threadIndex, $t$));
+this.$name = name + "_" + (++J.thread.JmolThread.threadIndex);
 this.viewer = viewer;
 this.isJS = viewer.isSingleThreaded;
 }, "J.viewer.Viewer,~S");
@@ -51,7 +51,7 @@ this.run ();
 } else {
 Clazz.superCall (this, J.thread.JmolThread, "start", []);
 }});
-Clazz.overrideMethod (c$, "run", 
+$_V(c$, "run", 
 function () {
 this.startTime = System.currentTimeMillis ();
 try {

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.AtomDataReader", "J.util.P3", "$.P4", "$.V3"], "J.jvxl.readers.IsoSolventReader", ["java.lang.Float", "java.util.Hashtable", "J.jvxl.data.MeshData", "J.util.BS", "$.BSUtil", "$.JmolList", "$.Logger", "$.Measure", "$.MeshSurface", "$.P3i"], function () {
+Clazz.load (["J.jvxl.readers.AtomDataReader", "JU.P3", "$.P4", "$.V3"], "J.jvxl.readers.IsoSolventReader", ["java.lang.Float", "java.util.Hashtable", "JU.BS", "$.List", "$.P3i", "J.jvxl.data.MeshData", "J.util.BSUtil", "$.Logger", "$.Measure", "$.MeshSurface", "$.TempArray"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.cavityRadius = 0;
 this.envelopeRadius = 0;
@@ -37,24 +37,24 @@ J.jvxl.readers.IsoSolventReader.$IsoSolventReader$Face$ ();
 Clazz.instantialize (this, arguments);
 }, J.jvxl.readers, "IsoSolventReader", J.jvxl.readers.AtomDataReader);
 Clazz.prepareFields (c$, function () {
-this.vTemp =  new J.util.V3 ();
-this.plane =  new J.util.P4 ();
-this.ptTemp2 =  new J.util.P3 ();
-this.ptS1 =  new J.util.P3 ();
-this.ptS2 =  new J.util.P3 ();
-this.vTemp2 =  new J.util.V3 ();
-this.vTemp3 =  new J.util.V3 ();
-this.p =  new J.util.P3 ();
+this.vTemp =  new JU.V3 ();
+this.plane =  new JU.P4 ();
+this.ptTemp2 =  new JU.P3 ();
+this.ptS1 =  new JU.P3 ();
+this.ptS2 =  new JU.P3 ();
+this.vTemp2 =  new JU.V3 ();
+this.vTemp3 =  new JU.V3 ();
+this.p =  new JU.P3 ();
 });
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoSolventReader, []);
 });
-Clazz.overrideMethod (c$, "init", 
+$_V(c$, "init", 
 function (sg) {
 this.initADR (sg);
 }, "J.jvxl.readers.SurfaceGenerator");
-Clazz.overrideMethod (c$, "readVolumeParameters", 
+$_V(c$, "readVolumeParameters", 
 function (isMapData) {
 this.setup (isMapData);
 this.initializeVolumetricData ();
@@ -66,7 +66,7 @@ this.getAtomMinMax (null, this.bsAtomMinMax);
 this.voxelSource =  Clazz.newIntArray (this.volumeData.nPoints, 0);
 }return true;
 }, "~B");
-Clazz.overrideMethod (c$, "setup", 
+$_V(c$, "setup", 
 function (isMapData) {
 this.setup2 ();
 if (this.contactPair == null) {
@@ -97,7 +97,7 @@ this.volumeData.sr = this;
 this.isProgressive = this.isXLowToHigh = true;
 }}if (this.thisAtomSet == null) this.thisAtomSet = J.util.BSUtil.setAll (this.myAtomCount);
 }, "~B");
-Clazz.overrideMethod (c$, "generateCube", 
+$_V(c$, "generateCube", 
 function () {
 if (this.isCavity && this.params.theProperty != null) return;
 this.getMaxRadius ();
@@ -114,12 +114,12 @@ this.voxelSource =  Clazz.newIntArray (this.volumeData.nPoints, 0);
 this.generateSolventCube ();
 }this.unsetVoxelData ();
 var info = this.params.slabInfo;
-if (info != null) for (var i = 0; i < info.size (); i++) if ((info.get (i)[2]).booleanValue () && Clazz.instanceOf (info.get (i)[0], J.util.P4)) {
+if (info != null) for (var i = 0; i < info.size (); i++) if ((info.get (i)[2]).booleanValue () && Clazz.instanceOf (info.get (i)[0], JU.P4)) {
 this.volumeData.capData (info.get (i)[0], this.params.cutoff);
 info.remove (i--);
 }
 });
-Clazz.overrideMethod (c$, "getSurfacePointAndFraction", 
+$_V(c$, "getSurfacePointAndFraction", 
 function (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z, vA0, vB0, fReturn, ptReturn) {
 var vA = this.marchingCubes.getLinearOffset (x, y, z, vA0);
 var vB = this.marchingCubes.getLinearOffset (x, y, z, vB0);
@@ -131,16 +131,16 @@ var fraction = fReturn[0] = J.util.MeshSurface.getSphericalInterpolationFraction
 ptReturn.scaleAdd2 (fraction, edgeVector, pointA);
 var diff = valueB - valueA;
 return valueA + fraction * diff;
-}, "~N,~B,~N,~N,J.util.P3,J.util.V3,~N,~N,~N,~N,~N,~A,J.util.P3");
-Clazz.overrideMethod (c$, "addVertexCopy", 
+}, "~N,~B,~N,~N,JU.P3,JU.V3,~N,~N,~N,~N,~N,~A,JU.P3");
+$_V(c$, "addVertexCopy", 
 function (vertexXYZ, value, assocVertex) {
 var i = this.addVC (vertexXYZ, value, assocVertex);
 if (i < 0) return i;
 if (this.isSurfacePoint) this.bsSurfacePoints.set (i);
 if (this.params.vertexSource != null) this.params.vertexSource[i] = this.iAtomSurface;
 return i;
-}, "J.util.P3,~N,~N");
-Clazz.overrideMethod (c$, "selectPocket", 
+}, "JU.P3,~N,~N");
+$_V(c$, "selectPocket", 
 function (doExclude) {
 if (this.meshDataServer != null) this.meshDataServer.fillMeshData (this.meshData, 1, null);
 var v = this.meshData.vertices;
@@ -171,11 +171,11 @@ if (this.meshDataServer != null) {
 this.meshDataServer.fillMeshData (this.meshData, 3, null);
 this.meshData =  new J.jvxl.data.MeshData ();
 }}, "~B");
-Clazz.overrideMethod (c$, "postProcessVertices", 
+$_V(c$, "postProcessVertices", 
 function () {
 this.setVertexSource ();
 if (this.doCalculateTroughs && this.bsSurfacePoints != null) {
-var bsAll =  new J.util.BS ();
+var bsAll =  new JU.BS ();
 var bsSurfaces = this.meshData.getSurfaceSet ();
 var bsSources = null;
 var volumes = (this.isPocket ? null : this.meshData.calculateVolumeOrArea (-2147483648, false, false));
@@ -193,7 +193,7 @@ for (var i = 0; i < this.meshData.nSets; i++) {
 var bss = bsSurfaces[i];
 if (bss.intersects (this.bsSurfacePoints)) {
 if (volumes == null || volumes[i] * factor > minVolume) if (this.params.vertexSource != null) {
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 if (bsSources == null) bsSources =  new Array (bsSurfaces.length);
 for (var j = bss.nextSetBit (0); j >= 0; j = bss.nextSetBit (j + 1)) {
 var iatom = this.params.vertexSource[j];
@@ -211,7 +211,7 @@ this.updateSurfaceData ();
 if (this.meshDataServer != null) {
 this.meshDataServer.fillMeshData (this.meshData, 3, null);
 this.meshData =  new J.jvxl.data.MeshData ();
-}}if (this.params.thePlane != null && this.params.slabInfo == null) this.params.addSlabInfo (J.util.MeshSurface.getSlabWithinRange (-100, 0));
+}}if (this.params.thePlane != null && this.params.slabInfo == null) this.params.addSlabInfo (J.util.TempArray.getSlabWithinRange (-100, 0));
 });
 $_M(c$, "generateSolventCavity", 
 ($fz = function () {
@@ -236,7 +236,7 @@ J.util.Logger.info ("cavities include " + n + " voxel points");
 this.atomRadius =  Clazz.newFloatArray (n, 0);
 this.atomXyz =  new Array (n);
 for (var x = 0, ipt = 0, apt = 0; x < this.nPointsX; ++x) for (var y = 0; y < this.nPointsY; ++y) for (var z = 0; z < this.nPointsZ; ++z) if (bs.get (ipt++)) {
-this.volumeData.voxelPtToXYZ (x, y, z, (this.atomXyz[apt] =  new J.util.P3 ()));
+this.volumeData.voxelPtToXYZ (x, y, z, (this.atomXyz[apt] =  new JU.P3 ()));
 this.atomRadius[apt++] = this.voxelData[x][y][z];
 }
 
@@ -248,17 +248,17 @@ $_M(c$, "generateSolventCube",
 ($fz = function () {
 if (this.dataType == 1205) return;
 this.params.vertexSource =  Clazz.newIntArray (this.volumeData.nPoints, 0);
-this.bsSurfaceDone =  new J.util.BS ();
-this.bsSurfaceVoxels =  new J.util.BS ();
-this.bsSurfacePoints =  new J.util.BS ();
+this.bsSurfaceDone =  new JU.BS ();
+this.bsSurfaceVoxels =  new JU.BS ();
+this.bsSurfacePoints =  new JU.BS ();
 if (this.doCalculateTroughs) {
 this.iter = this.atomDataServer.getSelectedAtomIterator (this.bsMySelected, true, false, false);
-this.vEdges =  new J.util.JmolList ();
+this.vEdges =  new JU.List ();
 this.bsLocale =  new Array (this.myAtomCount);
 this.htEdges =  new java.util.Hashtable ();
 this.getEdges ();
 J.util.Logger.info (this.vEdges.size () + " edges");
-this.vFaces =  new J.util.JmolList ();
+this.vFaces =  new JU.List ();
 this.getFaces ();
 J.util.Logger.info (this.vFaces.size () + " faces");
 this.bsLocale = null;
@@ -281,7 +281,7 @@ this.validSpheres = null;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getEdges", 
 ($fz = function () {
-for (var iatomA = 0; iatomA < this.myAtomCount; iatomA++) this.bsLocale[iatomA] =  new J.util.BS ();
+for (var iatomA = 0; iatomA < this.myAtomCount; iatomA++) this.bsLocale[iatomA] =  new JU.BS ();
 
 var dist2 = this.solventRadius + this.maxRadius;
 for (var iatomA = 0; iatomA < this.myAtomCount; iatomA++) {
@@ -310,8 +310,8 @@ return this.htEdges.get (i < j ? i + "_" + j : j + "_" + i);
 }, "~N,~N");
 $_M(c$, "getFaces", 
 ($fz = function () {
-var bs =  new J.util.BS ();
-this.validSpheres =  new J.util.BS ();
+var bs =  new JU.BS ();
+this.validSpheres =  new JU.BS ();
 this.noFaceSpheres = J.util.BSUtil.setAll (this.myAtomCount);
 for (var i = this.vEdges.size (); --i >= 0; ) {
 var edge = this.vEdges.get (i);
@@ -390,7 +390,7 @@ return true;
 }, $fz.isPrivate = true, $fz), "J.jvxl.readers.IsoSolventReader.Face");
 $_M(c$, "markFaceVoxels", 
 ($fz = function (firstPass) {
-var bsThisPass =  new J.util.BS ();
+var bsThisPass =  new JU.BS ();
 for (var fi = this.vFaces.size (); --fi >= 0; ) {
 var f = this.vFaces.get (fi);
 if (!f.isValid) continue;
@@ -423,10 +423,10 @@ this.bsSurfaceVoxels.set (ipt);
 }, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "markToroidVoxels", 
 ($fz = function () {
-var ptA0 =  new J.util.P3i ();
-var ptB0 =  new J.util.P3i ();
-var ptA1 =  new J.util.P3i ();
-var ptB1 =  new J.util.P3i ();
+var ptA0 =  new JU.P3i ();
+var ptB0 =  new JU.P3i ();
+var ptA1 =  new JU.P3i ();
+var ptB1 =  new JU.P3i ();
 for (var ei = this.vEdges.size (); --ei >= 0; ) {
 var edge = this.vEdges.get (ei);
 var ia = edge.ia;
@@ -459,7 +459,7 @@ if (this.voxelSource != null) this.voxelSource[ipt] = -1 - ia;
 }
 this.validSpheres.or (this.noFaceSpheres);
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "unsetVoxelData", 
+$_V(c$, "unsetVoxelData", 
 function () {
 if (!this.havePlane) {
 this.unsetVoxelData2 ();
@@ -494,7 +494,7 @@ pt0.z = Math.min (ptA.z, ptB.z);
 pt1.x = Math.max (ptA.x, ptB.x);
 pt1.y = Math.max (ptA.y, ptB.y);
 pt1.z = Math.max (ptA.z, ptB.z);
-}}, $fz.isPrivate = true, $fz), "J.util.P3i,J.util.P3i,J.util.P3i,J.util.P3i");
+}}, $fz.isPrivate = true, $fz), "JU.P3i,JU.P3i,JU.P3i,JU.P3i");
 $_M(c$, "checkSpecialVoxel", 
 ($fz = function (ptA, rAS, ptB, rBS, dAB, ptV) {
 var dAV = ptA.distance (ptV);
@@ -512,7 +512,7 @@ if (ptA.distance (this.p) >= rAS) return NaN;
 dVS = this.solventDistance (rBS, rAS, dAB, dBV, dAV);
 return (J.jvxl.readers.IsoSolventReader.voxelIsInTrough (dVS, rBS * rBS, rAS, dAB, dBV) ? dVS : NaN);
 }return NaN;
-}, $fz.isPrivate = true, $fz), "J.util.P3,~N,J.util.P3,~N,~N,J.util.P3");
+}, $fz.isPrivate = true, $fz), "JU.P3,~N,JU.P3,~N,~N,JU.P3");
 c$.voxelIsInTrough = $_M(c$, "voxelIsInTrough", 
 ($fz = function (dXC, rAC2, rBC, dAB, dAX) {
 var cosACBf = (rAC2 + rBC * rBC - dAB * dAB) / rBC;
@@ -547,7 +547,7 @@ this.p.scaleAdd2 ((cosAngleBAS * rAS), this.vTemp, ptA);
 J.util.Measure.getPlaneThroughPoint (this.p, this.vTemp, this.plane);
 return Math.sin (angleBAS) * rAS;
 }, "~N,~N");
-Clazz.overrideMethod (c$, "getValueAtPoint", 
+$_V(c$, "getValueAtPoint", 
 function (pt, getSource) {
 if (this.contactPair != null) return pt.distance (this.contactPair.myAtoms[1]) - this.contactPair.radii[1];
 var value = 3.4028235E38;
@@ -556,8 +556,8 @@ var r = pt.distance (this.atomXyz[iAtom]) - this.atomRadius[iAtom] - this.solven
 if (r < value) value = r;
 }
 return (value == 3.4028235E38 ? NaN : value);
-}, "J.util.P3,~B");
-Clazz.overrideMethod (c$, "getPlane", 
+}, "JU.P3,~B");
+$_V(c$, "getPlane", 
 function (x) {
 if (this.yzCount == 0) {
 this.initPlanes ();
@@ -578,8 +578,6 @@ c$ = Clazz.decorateAsClass (function () {
 Clazz.prepareCallback (this, arguments);
 this.ia = 0;
 this.ib = 0;
-this.nFaces = 0;
-this.nInvalid = 0;
 this.aFaces = null;
 Clazz.instantialize (this, arguments);
 }, J.jvxl.readers.IsoSolventReader, "Edge");
@@ -591,13 +589,11 @@ this.ib = Math.max (a, b);
 $_M(c$, "addFace", 
 function (a) {
 if (a == null) {
-this.nInvalid++;
 return;
-}if (this.aFaces == null) this.aFaces =  new J.util.JmolList ();
+}if (this.aFaces == null) this.aFaces =  new JU.List ();
 this.aFaces.addLast (a);
-this.nFaces++;
 }, "J.jvxl.readers.IsoSolventReader.Face");
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return this.ia + "_" + this.ib;
 });
@@ -623,9 +619,9 @@ function (a, b, c, d, e) {
 this.ia = a;
 this.ib = b;
 this.ic = c;
-this.pS = J.util.P3.newP (e);
+this.pS = JU.P3.newP (e);
 this.edges[0] = d;
-}, "~N,~N,~N,J.jvxl.readers.IsoSolventReader.Edge,J.util.P3");
+}, "~N,~N,~N,J.jvxl.readers.IsoSolventReader.Edge,JU.P3");
 $_M(c$, "setEdges", 
 function () {
 if (this.edges[1] == null) {

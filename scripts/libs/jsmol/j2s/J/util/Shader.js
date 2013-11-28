@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (["J.util.ArrayUtil", "$.V3"], "J.util.Shader", ["J.util.C", "$.ColorUtil"], function () {
+Clazz.load (["JU.AU", "$.V3"], "J.util.Shader", ["JU.CU", "J.util.C"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.xLight = 0;
 this.yLight = 0;
@@ -19,26 +19,28 @@ this.intenseFraction = 0;
 this.specularFactor = 0;
 this.ashades = null;
 this.ashadesGreyscale = null;
-this.rgbContrast = 0;
-this.sphereShadingCalculated = false;
+this.celOn = false;
+this.celPower = 10;
+this.celRGB = 0;
+this.celZ = 0;
+this.useLight = false;
 this.sphereShadeIndexes = null;
 this.seed = 0x12345679;
 this.sphereShapeCache = null;
 this.ellipsoidShades = null;
 this.nOut = 0;
 this.nIn = 0;
-this.celOn = false;
 Clazz.instantialize (this, arguments);
 }, J.util, "Shader");
 Clazz.prepareFields (c$, function () {
-this.lightSource =  new J.util.V3 ();
+this.lightSource =  new JU.V3 ();
 this.ambientFraction = this.ambientPercent / 100;
 this.diffuseFactor = this.diffusePercent / 100;
 this.intenseFraction = this.specularPower / 100;
 this.specularFactor = this.specularPercent / 100;
-this.ashades = J.util.ArrayUtil.newInt2 (128);
+this.ashades = JU.AU.newInt2 (128);
 this.sphereShadeIndexes =  Clazz.newByteArray (65536, 0);
-this.sphereShapeCache = J.util.ArrayUtil.newInt2 (128);
+this.sphereShapeCache = JU.AU.newInt2 (128);
 });
 Clazz.makeConstructor (c$, 
 function () {
@@ -53,22 +55,22 @@ this.yLight = this.lightSource.y;
 this.zLight = this.lightSource.z;
 }, $fz.isPrivate = true, $fz), "~N,~N,~N");
 $_M(c$, "setCel", 
-function (celOn, argb) {
-argb = J.util.C.getArgb (J.util.ColorUtil.getBgContrast (argb));
-if (argb == 0xFF000000) argb = 0xFF040404;
-if (this.celOn == celOn && this.rgbContrast == argb) return;
-this.celOn = celOn;
-this.rgbContrast = argb;
+function (celShading, celShadingPower, argb) {
+celShading = celShading && celShadingPower != 0;
+argb = J.util.C.getArgb (J.util.C.getBgContrast (argb));
+argb = (argb == 0xFF000000 ? 0xFF040404 : argb == -1 ? -2 : argb + 1);
+if (this.celOn == celShading && this.celRGB == argb && this.celPower == celShadingPower) return;
+this.celOn = celShading;
+this.celPower = celShadingPower;
+this.useLight = (!this.celOn || celShadingPower > 0);
+this.celZ = 1 - Math.pow (2, -Math.abs (celShadingPower) / 10);
+this.celRGB = argb;
 this.flushCaches ();
-}, "~B,~N");
+}, "~B,~N,~N");
 $_M(c$, "flushCaches", 
 function () {
 this.flushShades ();
 this.flushSphereCache ();
-});
-$_M(c$, "getCelOn", 
-function () {
-return this.celOn;
 });
 $_M(c$, "setLastColix", 
 function (argb, asGrey) {
@@ -89,7 +91,7 @@ $_M(c$, "getShadesG",
 function (colix) {
 this.checkShades ();
 colix &= -30721;
-if (this.ashadesGreyscale == null) this.ashadesGreyscale = J.util.ArrayUtil.newInt2 (this.ashades.length);
+if (this.ashadesGreyscale == null) this.ashadesGreyscale = JU.AU.newInt2 (this.ashades.length);
 var shadesGreyscale = this.ashadesGreyscale[colix];
 if (shadesGreyscale == null) shadesGreyscale = this.ashadesGreyscale[colix] = this.getShades2 (J.util.C.argbs[colix], true);
 return shadesGreyscale;
@@ -97,15 +99,15 @@ return shadesGreyscale;
 $_M(c$, "checkShades", 
 ($fz = function () {
 if (this.ashades != null && this.ashades.length == J.util.C.colixMax) return;
-this.ashades = J.util.ArrayUtil.arrayCopyII (this.ashades, J.util.C.colixMax);
-if (this.ashadesGreyscale != null) this.ashadesGreyscale = J.util.ArrayUtil.arrayCopyII (this.ashadesGreyscale, J.util.C.colixMax);
+this.ashades = JU.AU.arrayCopyII (this.ashades, J.util.C.colixMax);
+if (this.ashadesGreyscale != null) this.ashadesGreyscale = JU.AU.arrayCopyII (this.ashadesGreyscale, J.util.C.colixMax);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "flushShades", 
 function () {
 this.checkShades ();
 for (var i = J.util.C.colixMax; --i >= 0; ) this.ashades[i] = null;
 
-this.sphereShadingCalculated = false;
+this.calcSphereShading ();
 });
 $_M(c$, "getShades2", 
 ($fz = function (rgb, greyScale) {
@@ -127,34 +129,30 @@ red0++;
 grn0++;
 blu0++;
 if (f < 0.1) f += 0.1;
-rgb = J.util.ColorUtil.rgb (Clazz.doubleToInt (Math.floor (red0)), Clazz.doubleToInt (Math.floor (grn0)), Clazz.doubleToInt (Math.floor (blu0)));
+rgb = JU.CU.rgb (Clazz.doubleToInt (Math.floor (red0)), Clazz.doubleToInt (Math.floor (grn0)), Clazz.doubleToInt (Math.floor (blu0)));
 continue;
 }break;
 }
-var i;
-if (this.celOn) {
-var max = Clazz.doubleToInt (J.util.Shader.shadeIndexMax / 2);
+var i = 0;
 f = (1 - f) / J.util.Shader.shadeIndexNormal;
 var redStep = red0 * f;
 var grnStep = grn0 * f;
 var bluStep = blu0 * f;
-var _rgb = J.util.ColorUtil.rgb (Clazz.doubleToInt (Math.floor (red)), Clazz.doubleToInt (Math.floor (grn)), Clazz.doubleToInt (Math.floor (blu)));
-for (i = 0; i < max; ++i) shades[i] = _rgb;
+if (this.celOn) {
+var max = Clazz.doubleToInt (J.util.Shader.shadeIndexMax / 2);
+var _rgb = JU.CU.rgb (Clazz.doubleToInt (Math.floor (red)), Clazz.doubleToInt (Math.floor (grn)), Clazz.doubleToInt (Math.floor (blu)));
+if (this.celPower >= 0) for (; i < max; ++i) shades[i] = _rgb;
 
 red += redStep * max;
 grn += grnStep * max;
 blu += bluStep * max;
-_rgb = J.util.ColorUtil.rgb (Clazz.doubleToInt (Math.floor (red)), Clazz.doubleToInt (Math.floor (grn)), Clazz.doubleToInt (Math.floor (blu)));
+_rgb = JU.CU.rgb (Clazz.doubleToInt (Math.floor (red)), Clazz.doubleToInt (Math.floor (grn)), Clazz.doubleToInt (Math.floor (blu)));
 for (; i < J.util.Shader.shadeIndexMax; i++) shades[i] = _rgb;
 
-shades[0] = shades[1] = this.rgbContrast;
+shades[0] = shades[1] = this.celRGB;
 } else {
-f = (1 - f) / J.util.Shader.shadeIndexNormal;
-var redStep = red0 * f;
-var grnStep = grn0 * f;
-var bluStep = blu0 * f;
-for (i = 0; i < J.util.Shader.shadeIndexNormal; ++i) {
-shades[i] = J.util.ColorUtil.rgb (Clazz.doubleToInt (Math.floor (red)), Clazz.doubleToInt (Math.floor (grn)), Clazz.doubleToInt (Math.floor (blu)));
+for (; i < J.util.Shader.shadeIndexNormal; ++i) {
+shades[i] = JU.CU.rgb (Clazz.doubleToInt (Math.floor (red)), Clazz.doubleToInt (Math.floor (grn)), Clazz.doubleToInt (Math.floor (blu)));
 red += redStep;
 grn += grnStep;
 blu += bluStep;
@@ -168,9 +166,9 @@ for (; i < J.util.Shader.shadeIndexMax; i++) {
 red += redStep;
 grn += grnStep;
 blu += bluStep;
-shades[i] = J.util.ColorUtil.rgb (Clazz.doubleToInt (Math.floor (red)), Clazz.doubleToInt (Math.floor (grn)), Clazz.doubleToInt (Math.floor (blu)));
+shades[i] = JU.CU.rgb (Clazz.doubleToInt (Math.floor (red)), Clazz.doubleToInt (Math.floor (grn)), Clazz.doubleToInt (Math.floor (blu)));
 }
-}if (greyScale) for (; --i >= 0; ) shades[i] = J.util.ColorUtil.calcGreyscaleRgbFromRgb (shades[i]);
+}if (greyScale) for (; --i >= 0; ) shades[i] = JU.CU.toFFGGGfromRGB (shades[i]);
 
 return shades;
 }, $fz.isPrivate = true, $fz), "~N,~B");
@@ -190,7 +188,7 @@ return Clazz.doubleToInt (Math.floor (this.getShadeF ((x / magnitude), (y / magn
 }, "~N,~N,~N");
 $_M(c$, "getShadeF", 
 ($fz = function (x, y, z) {
-var NdotL = x * this.xLight + y * this.yLight + z * this.zLight;
+var NdotL = (this.useLight ? x * this.xLight + y * this.yLight + z * this.zLight : z);
 if (NdotL <= 0) return 0;
 var intensity = NdotL * this.diffuseFactor;
 if (this.specularOn) {
@@ -202,12 +200,13 @@ k_specular = Math.pow (k_specular, this.phongExponent);
 for (var n = this.specularExponent; --n >= 0 && k_specular > .0001; ) k_specular *= k_specular;
 
 }intensity += k_specular * this.specularFactor;
-}}return (this.celOn && z < 0.5 ? 0 : intensity > 1 ? 1 : intensity);
+}}return (this.celOn && z < this.celZ ? 0 : intensity > 1 ? 1 : intensity);
 }, $fz.isPrivate = true, $fz), "~N,~N,~N");
 $_M(c$, "getShadeN", 
 function (x, y, z, r) {
 var fp8ShadeIndex = Clazz.doubleToInt (Math.floor (this.getShadeF (x / r, y / r, z / r) * J.util.Shader.shadeIndexLast * (256)));
 var shadeIndex = fp8ShadeIndex >> 8;
+if (!this.useLight) return shadeIndex;
 if ((fp8ShadeIndex & 0xFF) > this.nextRandom8Bit ()) ++shadeIndex;
 var random16bit = this.seed & 0xFFFF;
 if (random16bit < 21845 && shadeIndex > 0) --shadeIndex;
@@ -215,21 +214,22 @@ if (random16bit < 21845 && shadeIndex > 0) --shadeIndex;
 return shadeIndex;
 }, "~N,~N,~N,~N");
 $_M(c$, "calcSphereShading", 
-function () {
+($fz = function () {
 var xF = -127.5;
+var r2 = 16900;
 for (var i = 0; i < 256; ++xF, ++i) {
 var yF = -127.5;
+var xF2 = xF * xF;
 for (var j = 0; j < 256; ++yF, ++j) {
 var shadeIndex = 0;
-var z2 = 16900 - xF * xF - yF * yF;
+var z2 = r2 - xF2 - yF * yF;
 if (z2 > 0) {
 var z = Math.sqrt (z2);
 shadeIndex = this.getShadeN (xF, yF, z, 130);
 }this.sphereShadeIndexes[(j << 8) + i] = shadeIndex;
 }
 }
-this.sphereShadingCalculated = true;
-});
+}, $fz.isPrivate = true, $fz));
 $_M(c$, "nextRandom8Bit", 
 function () {
 var t = this.seed;
@@ -256,7 +256,7 @@ outside = i < -20 || i >= 20 || j < -20 || j >= 20 || k < 0 || k >= 40;
 }if (outside) this.nOut++;
  else this.nIn++;
 return (outside ? this.getShadeIndex (i, j, k) : this.ellipsoidShades[i + 20][j + 20][k]);
-}, "~N,~N,~N,~N,J.util.Matrix4f");
+}, "~N,~N,~N,~N,JU.M4");
 $_M(c$, "createEllipsoidShades", 
 function () {
 this.ellipsoidShades =  Clazz.newByteArray (40, 40, 40, 0);
@@ -271,6 +271,32 @@ for (var i = 128; --i >= 0; ) this.sphereShapeCache[i] = null;
 
 this.ellipsoidShades = null;
 });
+$_M(c$, "occludePixels", 
+function (pbuf, zbuf, aobuf, width, height, ambientOcclusion) {
+var n = zbuf.length;
+for (var x = 0, y = 0, offset = 0; offset < n; offset++) {
+var z = zbuf[offset];
+var xymax = Math.min (z >> 5, 0);
+if (xymax == 0) continue;
+var r2max = xymax * xymax;
+var pxmax = Math.min (width, x + xymax);
+var pymax = Math.min (height, y + xymax);
+for (var px = Math.max (0, x - xymax); px < pxmax; px++) {
+for (var py = Math.max (0, y - xymax); py < pymax; py++) {
+var dx = px - x;
+var dy = py - y;
+var r2 = dx * dx + dy * dy;
+if (r2 > r2max) continue;
+var pt = offset + width * dy + dx;
+var dz = zbuf[pt] - z;
+if (dz <= z || dz * dz > r2) continue;
+}
+}
+if (++x == width) {
+x = 0;
+y++;
+}}
+}, "~A,~A,~A,~N,~N,~N");
 Clazz.defineStatics (c$,
 "shadeIndexMax", 64);
 c$.shadeIndexLast = c$.prototype.shadeIndexLast = J.util.Shader.shadeIndexMax - 1;

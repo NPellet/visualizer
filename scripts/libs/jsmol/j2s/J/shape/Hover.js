@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.TextShape"], "J.shape.Hover", ["J.modelset.Text", "J.util.ArrayUtil", "$.C"], function () {
+Clazz.load (["J.shape.TextShape"], "J.shape.Hover", ["JU.AU", "J.modelset.Text", "J.util.C"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.hoverText = null;
 this.atomIndex = -1;
@@ -20,7 +20,7 @@ var colix = 4;
 this.currentObject = this.hoverText = J.modelset.Text.newLabel (this.gdata, font3d, null, colix, bgcolix, 1, 0, null);
 this.hoverText.setAdjustForWindow (true);
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bsSelected) {
 if ("target" === propertyName) {
 if (value == null) this.atomIndex = -1;
@@ -53,12 +53,12 @@ return;
 if (this.atomFormats != null) {
 var firstAtomDeleted = ((value)[2])[1];
 var nAtomsDeleted = ((value)[2])[2];
-this.atomFormats = J.util.ArrayUtil.deleteElements (this.atomFormats, firstAtomDeleted, nAtomsDeleted);
+this.atomFormats = JU.AU.deleteElements (this.atomFormats, firstAtomDeleted, nAtomsDeleted);
 }this.atomIndex = -1;
 return;
 }this.setPropTS (propertyName, value, null);
-}, "~S,~O,J.util.BS");
-Clazz.overrideMethod (c$, "getShapeState", 
+}, "~S,~O,JU.BS");
+$_V(c$, "getShapeState", 
 function () {
 return this.viewer.getShapeState (this);
 });

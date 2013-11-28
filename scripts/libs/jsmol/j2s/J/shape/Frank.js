@@ -20,17 +20,17 @@ this.myType = "frank";
 this.baseFont3d = this.font3d = this.gdata.getFont3DFSS ("SansSerif", "Plain", 16);
 this.calcMetrics ();
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bs) {
 this.setPropFS (propertyName, value);
-}, "~S,~O,J.util.BS");
-Clazz.overrideMethod (c$, "wasClicked", 
+}, "~S,~O,JU.BS");
+$_V(c$, "wasClicked", 
 function (x, y) {
 var width = this.viewer.getScreenWidth ();
 var height = this.viewer.getScreenHeight ();
 return (width > 0 && height > 0 && x > width - this.frankWidth - 4 && y > height - this.frankAscent - 4);
 }, "~N,~N");
-Clazz.overrideMethod (c$, "checkObjectHovered", 
+$_V(c$, "checkObjectHovered", 
 function (x, y, bsVisible) {
 if (!this.viewer.getShowFrank () || !this.wasClicked (x, y) || !this.viewer.menuEnabled ()) return false;
 if (this.gdata.isDisplayAntialiased () && !this.viewer.isSingleThreaded) {
@@ -38,7 +38,7 @@ x <<= 1;
 y <<= 1;
 }this.viewer.hoverOnPt (x, y, J.i18n.GT._ ("Click for menu..."), null, null);
 return true;
-}, "~N,~N,J.util.BS");
+}, "~N,~N,JU.BS");
 $_M(c$, "calcMetrics", 
 function () {
 if (this.viewer.isJS) this.frankString = "JSmol";
@@ -54,7 +54,7 @@ function (imageFontScaling) {
 this.font3d = this.gdata.getFont3DScaled (this.baseFont3d, imageFontScaling);
 this.calcMetrics ();
 }, "~N");
-Clazz.overrideMethod (c$, "getShapeState", 
+$_V(c$, "getShapeState", 
 function () {
 return this.viewer.getFontState (this.myType, this.font3d);
 });

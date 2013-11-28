@@ -44,7 +44,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.quantum.MOCalculation, []);
 });
-Clazz.overrideMethod (c$, "setupCalculation", 
+$_V(c$, "setupCalculation", 
 function (volumeData, bsSelected, bsExclude, bsMolecules, calculationType, atomCoordAngstroms, firstAtomOffset, shells, gaussians, dfCoefMaps, slaters, moCoefficients, linearCombination, isSquaredLinear, coefs, partialCharges, doNormalize, points, parameters, testFlags) {
 this.havePoints = (points != null);
 this.calculationType = calculationType;
@@ -66,8 +66,8 @@ this.voxelDataTemp = (isSquaredLinear ?  Clazz.newFloatArray (this.nX, this.nY, 
 this.setupCoordinates (volumeData.getOriginFloat (), volumeData.getVolumetricVectorLengths (), bsSelected, atomCoordAngstroms, points, false);
 this.doDebug = (J.util.Logger.debugging);
 return (slaters != null || this.checkCalculationType ());
-}, "J.api.VolumeDataInterface,J.util.BS,J.util.BS,~A,~S,~A,~N,J.util.JmolList,~A,~A,~O,~A,~A,~B,~A,~A,~B,~A,~A,~N");
-Clazz.overrideMethod (c$, "initialize", 
+}, "J.api.VolumeDataInterface,JU.BS,JU.BS,~A,~S,~A,~N,JU.List,~A,~A,~O,~A,~A,~B,~A,~A,~B,~A,~A,~N");
+$_V(c$, "initialize", 
 function (nX, nY, nZ, points) {
 this.initialize0 (nX, nY, nZ, points);
 this.CX =  Clazz.newDoubleArray (this.nX, 0);
@@ -80,13 +80,13 @@ this.EX =  Clazz.newDoubleArray (this.nX, 0);
 this.EY =  Clazz.newDoubleArray (this.nY, 0);
 this.EZ =  Clazz.newDoubleArray (this.nZ, 0);
 }, "~N,~N,~N,~A");
-Clazz.overrideMethod (c$, "createCube", 
+$_V(c$, "createCube", 
 function () {
 this.setXYZBohr (this.points);
 this.processPoints ();
 if (!this.isSquaredLinear && (this.doDebug || this.testing)) this.calculateElectronDensity ();
 });
-Clazz.overrideMethod (c$, "processPoints", 
+$_V(c$, "processPoints", 
 function () {
 if (this.linearCombination == null) {
 this.process ();
@@ -105,7 +105,7 @@ this.process ();
 if (this.isSquaredLinear) this.addValuesSquared (1);
 }
 }});
-Clazz.overrideMethod (c$, "process", 
+$_V(c$, "process", 
 function () {
 this.atomIndex = this.firstAtomOffset - 1;
 this.moCoeff = 0;

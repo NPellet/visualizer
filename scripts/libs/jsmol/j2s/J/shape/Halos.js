@@ -10,7 +10,7 @@ $_M(c$, "initState",
 function () {
 this.translucentAllowed = false;
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bs) {
 if ("translucency" === propertyName) return;
 if ("argbSelection" === propertyName) {
@@ -25,16 +25,16 @@ return;
 }if (propertyName === "deleteModelAtoms") {
 J.util.BSUtil.deleteBits (this.bsHighlight, bs);
 }this.setPropAS (propertyName, value, bs);
-}, "~S,~O,J.util.BS");
-Clazz.overrideMethod (c$, "setVisibilityFlags", 
+}, "~S,~O,JU.BS");
+$_V(c$, "setVisibilityFlags", 
 function (bs) {
 var bsSelected = (this.viewer.getSelectionHaloEnabled (false) ? this.viewer.getSelectionSet (false) : null);
 for (var i = this.atomCount; --i >= 0; ) {
 var isVisible = bsSelected != null && bsSelected.get (i) || (this.mads != null && this.mads[i] != 0);
 this.atoms[i].setShapeVisibility (this.myVisibilityFlag, isVisible);
 }
-}, "J.util.BS");
-Clazz.overrideMethod (c$, "getShapeState", 
+}, "JU.BS");
+$_V(c$, "getShapeState", 
 function () {
 return this.viewer.getShapeState (this);
 });

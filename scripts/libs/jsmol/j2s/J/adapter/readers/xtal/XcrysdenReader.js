@@ -2,19 +2,23 @@ Clazz.declarePackage ("J.adapter.readers.xtal");
 Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.XcrysdenReader", null, function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nAtoms = 0;
+this.animation = false;
 this.unitCellData = null;
+this.animationStep = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "XcrysdenReader", J.adapter.smarter.AtomSetCollectionReader);
 Clazz.prepareFields (c$, function () {
 this.unitCellData =  Clazz.newFloatArray (9, 0);
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.doApplySymmetry = true;
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
-if (this.line.contains ("CRYSTAL")) {
+if (this.line.contains ("ANIMSTEP")) {
+this.readNostep ();
+} else if (this.line.contains ("CRYSTAL")) {
 this.setFractionalCoordinates (false);
 } else if (this.line.contains ("PRIMVEC")) {
 this.readUnitCell ();
@@ -22,6 +26,10 @@ this.readUnitCell ();
 this.readCoordinates ();
 }return true;
 });
+$_M(c$, "readNostep", 
+($fz = function () {
+this.animation = true;
+}, $fz.isPrivate = true, $fz));
 $_M(c$, "readUnitCell", 
 ($fz = function () {
 this.setSymmetry ();
@@ -57,6 +65,6 @@ var z = this.parseFloatStr (tokens[3]);
 this.setAtomCoordXYZ (atom, x, y, z);
 counter++;
 }
-this.atomSetCollection.setAtomSetName ("Initial Coordinates");
+this.atomSetCollection.setAtomSetName (this.animation ? "Structure " + (this.animationStep++) : "Initial coordinates");
 }, $fz.isPrivate = true, $fz));
 });

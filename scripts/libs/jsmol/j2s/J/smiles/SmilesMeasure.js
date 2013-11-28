@@ -24,7 +24,7 @@ this.min = Math.min (min, max);
 this.max = Math.max (min, max);
 this.isNot = isNot;
 }, "J.smiles.SmilesSearch,~N,~N,~N,~N,~B");
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 var s = "(." + "__dat".charAt (this.type) + this.index + ":" + this.min + "," + this.max + ") for";
 for (var i = 0; i < this.type; i++) s += " " + (i >= this.nPoints ? "?" : "" + this.indices[i]);
@@ -77,7 +77,7 @@ v.vTemp1.normalize ();
 v.vTemp2.cross (v.vTemp2, v.vNorm1);
 v.vTemp2.normalize ();
 v.vNorm2.cross (v.vTemp1, v.vTemp2);
-}, "J.util.P3,J.util.P3,J.util.P3,J.util.P3,J.smiles.SmilesSearch.VTemp,~B");
+}, "JU.P3,JU.P3,JU.P3,JU.P3,J.smiles.VTemp,~B");
 Clazz.defineStatics (c$,
 "TYPES", "__dat",
 "radiansPerDegree", (0.017453292519943295));

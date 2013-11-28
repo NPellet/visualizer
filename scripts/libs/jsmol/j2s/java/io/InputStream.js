@@ -32,7 +32,7 @@ $_M(c$, "skip",
 function (n) {
 var remaining = n;
 var nr;
-if (java.io.InputStream.skipBuffer == null) ($t$ = java.io.InputStream.skipBuffer =  Clazz.newByteArray (2048, 0), java.io.InputStream.prototype.skipBuffer = java.io.InputStream.skipBuffer, $t$);
+if (java.io.InputStream.skipBuffer == null) java.io.InputStream.skipBuffer =  Clazz.newByteArray (2048, 0);
 var localSkipBuffer = java.io.InputStream.skipBuffer;
 if (n <= 0) {
 return 0;

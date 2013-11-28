@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.renderspecial");
-Clazz.load (["J.render.ShapeRenderer"], "J.renderspecial.DotsRenderer", ["J.shapespecial.Dots", "J.util.C", "$.Geodesic", "$.V3"], function () {
+Clazz.load (["J.render.ShapeRenderer"], "J.renderspecial.DotsRenderer", ["JU.V3", "J.shapespecial.Dots", "J.util.C", "$.Geodesic"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.iShowSolid = false;
 this.verticesTransformed = null;
@@ -11,16 +11,16 @@ this.dotScale = 0;
 this.testRadiusAdjust = 0;
 Clazz.instantialize (this, arguments);
 }, J.renderspecial, "DotsRenderer", J.render.ShapeRenderer);
-Clazz.overrideMethod (c$, "initRenderer", 
+$_V(c$, "initRenderer", 
 function () {
 this.screenLevel = J.shapespecial.Dots.MAX_LEVEL;
 this.screenDotCount = J.util.Geodesic.getVertexCount (J.shapespecial.Dots.MAX_LEVEL);
 this.verticesTransformed =  new Array (this.screenDotCount);
-for (var i = this.screenDotCount; --i >= 0; ) this.verticesTransformed[i] =  new J.util.V3 ();
+for (var i = this.screenDotCount; --i >= 0; ) this.verticesTransformed[i] =  new JU.V3 ();
 
 this.screenCoordinates =  Clazz.newIntArray (3 * this.screenDotCount, 0);
 });
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 this.render1 (this.shape);
 return false;
@@ -70,12 +70,12 @@ this.screenCoordinates[i++] = z + Math.round (scaledRadius * vertex.z);
 ++nPoints;
 }
 return nPoints;
-}, $fz.isPrivate = true, $fz), "J.util.BS,~N,~N,~N,~N");
+}, $fz.isPrivate = true, $fz), "JU.BS,~N,~N,~N,~N");
 $_M(c$, "renderConvex", 
 function (colix, map, nPoints) {
 this.colix = J.util.C.getColixTranslucent3 (colix, false, 0);
 this.renderDots (nPoints);
-}, "~N,J.util.BS,~N");
+}, "~N,JU.BS,~N");
 $_M(c$, "renderDots", 
 function (nPoints) {
 this.g3d.setColix (this.colix);

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.MeshSurface", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.BoxInfo", "$.C", "$.Escape", "$.Geodesic", "$.JmolList", "$.Measure", "$.P3", "$.SB", "$.TextFormat"], function () {
+Clazz.load (null, "J.util.MeshSurface", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.List", "$.P3", "$.P4", "$.PT", "$.SB", "J.util.BSUtil", "$.BoxInfo", "$.C", "$.Escape", "$.Geodesic", "$.Measure", "$.TempArray"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.spanningVectors = null;
 this.meshType = null;
@@ -97,10 +97,10 @@ this.colixBack = colix;
 $_M(c$, "addV", 
 function (vertex) {
 if (this.vertexCount == 0) this.vertices =  new Array (25);
- else if (this.vertexCount == this.vertices.length) this.vertices = J.util.ArrayUtil.doubleLength (this.vertices);
-this.vertices[this.vertexCount] = J.util.P3.newP (vertex);
+ else if (this.vertexCount == this.vertices.length) this.vertices = JU.AU.doubleLength (this.vertices);
+this.vertices[this.vertexCount] = JU.P3.newP (vertex);
 return this.vertexCount++;
-}, "J.util.P3");
+}, "JU.P3");
 $_M(c$, "addTriangle", 
 function (vertexA, vertexB, vertexC) {
 this.addPolygon ([vertexA, vertexB, vertexC], null);
@@ -114,15 +114,15 @@ $_M(c$, "setPolygonCount",
 function (polygonCount) {
 this.polygonCount = polygonCount;
 if (polygonCount < 0) return;
-if (this.polygonIndexes == null || polygonCount > this.polygonIndexes.length) this.polygonIndexes = J.util.ArrayUtil.newInt2 (polygonCount);
+if (this.polygonIndexes == null || polygonCount > this.polygonIndexes.length) this.polygonIndexes = JU.AU.newInt2 (polygonCount);
 }, "~N");
 $_M(c$, "addVCVal", 
 function (vertex, value) {
 if (this.vertexCount == 0) this.vertexValues =  Clazz.newFloatArray (25, 0);
- else if (this.vertexCount >= this.vertexValues.length) this.vertexValues = J.util.ArrayUtil.doubleLengthF (this.vertexValues);
+ else if (this.vertexCount >= this.vertexValues.length) this.vertexValues = JU.AU.doubleLengthF (this.vertexValues);
 this.vertexValues[this.vertexCount] = value;
 return this.addV (vertex);
-}, "J.util.P3,~N");
+}, "JU.P3,~N");
 $_M(c$, "addTriangleCheck", 
 function (vertexA, vertexB, vertexC, check, check2, color) {
 return (this.vertices == null || this.vertexValues != null && (Float.isNaN (this.vertexValues[vertexA]) || Float.isNaN (this.vertexValues[vertexB]) || Float.isNaN (this.vertexValues[vertexC])) || Float.isNaN (this.vertices[vertexA].x) || Float.isNaN (this.vertices[vertexB].x) || Float.isNaN (this.vertices[vertexC].x) ? -1 : this.addPolygonV3 (vertexA, vertexB, vertexC, check, check2, color, null));
@@ -130,7 +130,7 @@ return (this.vertices == null || this.vertexValues != null && (Float.isNaN (this
 $_M(c$, "addPolygonV3", 
 ($fz = function (vertexA, vertexB, vertexC, check, check2, color, bs) {
 return (this.checkCount == 2 ? this.addPolygonC ([vertexA, vertexB, vertexC, check, check2], color, bs) : this.addPolygon ([vertexA, vertexB, vertexC, check], bs));
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,J.util.BS");
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~N,~N,JU.BS");
 $_M(c$, "addPolygonC", 
 function (polygon, color, bs) {
 if (color != 0) {
@@ -138,22 +138,22 @@ if (this.polygonColixes == null || this.polygonCount == 0) this.lastColor = 0;
 var colix = (color == this.lastColor ? this.lastColix : (this.lastColix = J.util.C.getColix (this.lastColor = color)));
 this.setPolygonColix (this.polygonCount, colix);
 }return this.addPolygon (polygon, bs);
-}, "~A,~N,J.util.BS");
+}, "~A,~N,JU.BS");
 $_M(c$, "addPolygon", 
 ($fz = function (polygon, bs) {
 var n = this.polygonCount;
-if (this.polygonCount == 0) this.polygonIndexes = J.util.ArrayUtil.newInt2 (25);
- else if (this.polygonCount == this.polygonIndexes.length) this.polygonIndexes = J.util.ArrayUtil.doubleLength (this.polygonIndexes);
+if (this.polygonCount == 0) this.polygonIndexes = JU.AU.newInt2 (25);
+ else if (this.polygonCount == this.polygonIndexes.length) this.polygonIndexes = JU.AU.doubleLength (this.polygonIndexes);
 if (bs != null) bs.set (this.polygonCount);
 this.polygonIndexes[this.polygonCount++] = polygon;
 return n;
-}, $fz.isPrivate = true, $fz), "~A,J.util.BS");
+}, $fz.isPrivate = true, $fz), "~A,JU.BS");
 $_M(c$, "setPolygonColix", 
 ($fz = function (index, colix) {
 if (this.polygonColixes == null) {
 this.polygonColixes =  Clazz.newShortArray (25, 0);
 } else if (index >= this.polygonColixes.length) {
-this.polygonColixes = J.util.ArrayUtil.doubleLengthShort (this.polygonColixes);
+this.polygonColixes = JU.AU.doubleLengthShort (this.polygonColixes);
 }this.polygonColixes[index] = colix;
 }, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "invalidatePolygons", 
@@ -173,14 +173,14 @@ return this.vertexValues == null || !(Float.isNaN (this.vertexValues[this.iA]) |
 }, "~N");
 $_M(c$, "setTranslucentVertices", 
 function (bsVertices) {
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "setSlab", 
 function (bsDisplay, bsGhost, type, color, translucency) {
 this.bsSlabDisplay = bsDisplay;
 this.bsSlabGhost = bsGhost;
 this.slabMeshType = (type.equalsIgnoreCase ("mesh") ? 1073742018 : 1073741938);
 this.slabColix = J.util.C.getColixTranslucent3 (J.util.C.getColixS (color), true, translucency);
-}, "J.util.BS,J.util.BS,~S,~S,~N");
+}, "JU.BS,JU.BS,~S,~S,~N");
 $_M(c$, "getSlabColor", 
 function () {
 return (this.bsSlabGhost == null ? null : J.util.C.getHexCode (this.slabColix));
@@ -193,10 +193,6 @@ $_M(c$, "getSlabType",
 function () {
 return (this.bsSlabGhost != null && this.slabMeshType == 1073742018 ? "mesh" : null);
 });
-c$.getSlabWithinRange = $_M(c$, "getSlabWithinRange", 
-function (min, max) {
-return [Integer.$valueOf (1073742114), [Float.$valueOf (min), Float.$valueOf (max)], Boolean.FALSE, null];
-}, "~N,~N");
 $_M(c$, "resetTransPolygons", 
 function () {
 var isTranslucent = J.util.C.isColixTranslucent (this.colix);
@@ -212,20 +208,16 @@ this.polygonTranslucencies = null;
 });
 $_M(c$, "resetSlab", 
 function () {
-this.slabPolygons (J.util.MeshSurface.getSlabObject (1048587, null, false, null), false);
+this.slabPolygons (J.util.TempArray.getSlabObjectType (1048587, null, false, null), false);
 });
-c$.getSlabObject = $_M(c$, "getSlabObject", 
-function (tok, data, isCap, colorData) {
-return [Integer.$valueOf (tok), data, Boolean.$valueOf (isCap), colorData];
-}, "~N,~O,~B,~O");
 c$.getCapSlabObject = $_M(c$, "getCapSlabObject", 
 function (s, isCap) {
 try {
 if (s.indexOf ("array") == 0) {
-var pts = J.util.TextFormat.splitChars (s.substring (6, s.length - 1), ",");
-return J.util.MeshSurface.getSlabObject (1679429641, [J.util.Escape.uP (pts[0]), J.util.Escape.uP (pts[1]), J.util.Escape.uP (pts[2]), J.util.Escape.uP (pts[3])], isCap, null);
+var pts = JU.PT.split (s.substring (6, s.length - 1), ",");
+return J.util.TempArray.getSlabObjectType (1679429641, [J.util.Escape.uP (pts[0]), J.util.Escape.uP (pts[1]), J.util.Escape.uP (pts[2]), J.util.Escape.uP (pts[3])], isCap, null);
 }var plane = J.util.Escape.uP (s);
-if (Clazz.instanceOf (plane, J.util.P4)) return J.util.MeshSurface.getSlabObject (135266319, plane, isCap, null);
+if (Clazz.instanceOf (plane, JU.P4)) return J.util.TempArray.getSlabObjectType (135266319, plane, isCap, null);
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
 } else {
@@ -238,7 +230,7 @@ $_M(c$, "slabPolygonsList",
 function (slabInfo, allowCap) {
 for (var i = 0; i < slabInfo.size (); i++) if (!this.slabPolygons (slabInfo.get (i), allowCap)) break;
 
-}, "J.util.JmolList,~B");
+}, "JU.List,~B");
 $_M(c$, "slabPolygons", 
 function (slabObject, allowCap) {
 if (this.polygonCount0 < 0) return false;
@@ -250,7 +242,7 @@ this.vertexCount = this.vertexCount0;
 this.polygonCount0 = this.vertexCount0 = 0;
 this.normixCount = (this.isTriangleSet ? this.polygonCount : this.vertexCount);
 this.bsSlabDisplay.setBits (0, (this.polygonCount == 0 ? this.vertexCount : this.polygonCount));
-this.slabOptions =  new J.util.SB ().append (this.meshType + " slab none");
+this.slabOptions =  new JU.SB ().append (this.meshType + " slab none");
 this.bsSlabGhost = null;
 this.slabMeshType = 1048587;
 }if (slabType == 1048587) return false;
@@ -269,12 +261,12 @@ if (this.polygonCount == 0 && this.vertexCount == 0) return false;
 if (this.polygonCount == 0) this.bsSlabDisplay.setBits (this.mergeVertexCount0, this.vertexCount);
  else this.bsSlabDisplay.setBits (this.mergePolygonCount0, this.polygonCount);
 }if (isGhost) {
-if (this.bsSlabGhost == null) this.bsSlabGhost =  new J.util.BS ();
+if (this.bsSlabGhost == null) this.bsSlabGhost =  new JU.BS ();
 this.slabMeshType = (colorData[0]).intValue ();
 this.slabColix = (colorData[1]).shortValue ();
 andCap = false;
 this.colix = J.util.C.getColixTranslucent3 (this.colix, false, 0);
-}var sb =  new J.util.SB ();
+}var sb =  new JU.SB ();
 sb.append (andCap ? " cap " : " slab ");
 if (isGhost) {
 sb.append ("translucent ").appendF (J.util.C.getColixTranslucencyFractional (this.slabColix)).append (" ");
@@ -337,7 +329,7 @@ break;
 break;
 }
 var newOptions = sb.toString ();
-if (this.slabOptions == null) this.slabOptions =  new J.util.SB ();
+if (this.slabOptions == null) this.slabOptions =  new JU.SB ();
 if (this.slabOptions.indexOf (newOptions) < 0) this.slabOptions.append (this.slabOptions.length () > 0 ? "; " : "").append (this.meshType).append (newOptions);
 return true;
 }, "~A,~B");
@@ -353,15 +345,15 @@ var v = mapEdge.get (key);
 if (v != null) {
 return v.intValue ();
 }}if (this.vertexSource != null) {
-if (this.vertexCount >= this.vertexSource.length) this.vertexSource = J.util.ArrayUtil.doubleLengthI (this.vertexSource);
+if (this.vertexCount >= this.vertexSource.length) this.vertexSource = JU.AU.doubleLengthI (this.vertexSource);
 this.vertexSource[this.vertexCount] = source;
 }if (this.vertexSets != null) {
-if (this.vertexCount >= this.vertexSets.length) this.vertexSets = J.util.ArrayUtil.doubleLengthI (this.vertexSets);
+if (this.vertexCount >= this.vertexSets.length) this.vertexSets = JU.AU.doubleLengthI (this.vertexSets);
 this.vertexSets[this.vertexCount] = set;
 }var i = this.addVCVal (vertex, value);
 mapEdge.put (key, Integer.$valueOf (i));
 return i;
-}, "J.util.P3,~N,~N,~N,java.util.Map,~N,~N");
+}, "JU.P3,~N,~N,~N,java.util.Map,~N,~N");
 $_M(c$, "getIntersection", 
 function (distance, plane, ptCenters, vData, fData, bsSource, meshSurface, andCap, doClean, tokType, isGhost) {
 var isSlab = (vData == null);
@@ -388,7 +380,7 @@ var sourceA = 0;
 var sourceB = 0;
 var sourceC = 0;
 var setA = 0;
-var iPts = (andCap ?  new J.util.JmolList () : null);
+var iPts = (andCap ?  new JU.List () : null);
 if (this.polygonCount == 0) {
 for (var i = this.mergeVertexCount0; i < this.vertexCount; i++) {
 if (Float.isNaN (fData[i]) || J.util.MeshSurface.checkSlab (tokType, this.vertices[i], fData[i], distance, plane, ptCenters, bsSource) > 0) this.bsSlabDisplay.clear (i);
@@ -514,7 +506,7 @@ iPts.addLast ([this.iD, this.iE]);
 vData.addLast (pts);
 }}
 if (andCap && iPts.size () > 0) {
-var center =  new J.util.P3 ();
+var center =  new JU.P3 ();
 for (var i = iPts.size (); --i >= 0; ) {
 var ipts = iPts.get (i);
 center.add (this.vertices[ipts[0]]);
@@ -527,8 +519,8 @@ var ipts = iPts.get (i);
 this.addPolygonV3 (ipts[0], v0, ipts[1], 0, 0, 0, this.bsSlabDisplay);
 }
 }if (!doClean) return;
-var bsv =  new J.util.BS ();
-var bsp =  new J.util.BS ();
+var bsv =  new JU.BS ();
+var bsp =  new JU.BS ();
 for (var i = 0; i < this.polygonCount; i++) {
 if (this.polygonIndexes[i] == null) continue;
 bsp.set (i);
@@ -545,7 +537,7 @@ var vTemp =  new Array (n);
 n = 0;
 for (var i = 0; i < this.vertexCount; i++) if (bsv.get (i)) vTemp[n++] = this.vertices[i];
 
-var pTemp = J.util.ArrayUtil.newInt2 (nPoly);
+var pTemp = JU.AU.newInt2 (nPoly);
 nPoly = 0;
 for (var i = 0; i < this.polygonCount; i++) if (this.polygonIndexes[i] != null) {
 for (var j = 0; j < 3; j++) this.polygonIndexes[i][j] = map[this.polygonIndexes[i][j]];
@@ -556,7 +548,7 @@ this.vertices = vTemp;
 this.vertexCount = n;
 this.polygonIndexes = pTemp;
 this.polygonCount = nPoly;
-}}, "~N,J.util.P4,~A,J.util.JmolList,~A,J.util.BS,J.util.MeshSurface,~B,~B,~N,~B");
+}}, "~N,JU.P4,~A,JU.List,~A,JU.BS,J.util.MeshSurface,~B,~B,~N,~B");
 c$.setPoint = $_M(c$, "setPoint", 
 ($fz = function (fracs, i, i0, i1) {
 return (fracs[i] == 0 ? i0 : fracs[i] == 1 ? i1 : -1);
@@ -605,7 +597,7 @@ d = -J.util.MeshSurface.minDist (v, ptCenters) - distance;
 break;
 }
 return (Math.abs (d) < 0.0001 ? 0 : d);
-}, $fz.isPrivate = true, $fz), "~N,J.util.P3,~N,~N,J.util.P4,~A,J.util.BS");
+}, $fz.isPrivate = true, $fz), "~N,JU.P3,~N,~N,JU.P4,~A,JU.BS");
 c$.minDist = $_M(c$, "minDist", 
 ($fz = function (pt, ptCenters) {
 var dmin = 2147483647;
@@ -614,23 +606,23 @@ var d = ptCenters[i].distance (pt);
 if (d < dmin) dmin = d;
 }
 return dmin;
-}, $fz.isPrivate = true, $fz), "J.util.P3,~A");
+}, $fz.isPrivate = true, $fz), "JU.P3,~A");
 $_M(c$, "interpolateSphere", 
 ($fz = function (v1, v2, d1, d2, absD, val1, val2, values, fracs, i) {
 return J.util.MeshSurface.interpolateFraction (v1, v2, J.util.MeshSurface.getSphericalInterpolationFraction (absD, d1, d2, v1.distance (v2)), val1, val2, values, fracs, i);
-}, $fz.isPrivate = true, $fz), "J.util.P3,J.util.P3,~N,~N,~N,~N,~N,~A,~A,~N");
+}, $fz.isPrivate = true, $fz), "JU.P3,JU.P3,~N,~N,~N,~N,~N,~A,~A,~N");
 c$.interpolatePoint = $_M(c$, "interpolatePoint", 
 ($fz = function (v1, v2, d1, d2, val1, val2, values, fracs, i) {
 return J.util.MeshSurface.interpolateFraction (v1, v2, d1 / (d1 + d2), val1, val2, values, fracs, i);
-}, $fz.isPrivate = true, $fz), "J.util.P3,J.util.P3,~N,~N,~N,~N,~A,~A,~N");
+}, $fz.isPrivate = true, $fz), "JU.P3,JU.P3,~N,~N,~N,~N,~A,~A,~N");
 c$.interpolateFraction = $_M(c$, "interpolateFraction", 
 ($fz = function (v1, v2, f, val1, val2, values, fracs, i) {
 if (f < 0.0001) f = 0;
  else if (f > 0.9999) f = 1;
 fracs[i] = f;
 values[i] = (val2 - val1) * f + val1;
-return J.util.P3.new3 (v1.x + (v2.x - v1.x) * f, v1.y + (v2.y - v1.y) * f, v1.z + (v2.z - v1.z) * f);
-}, $fz.isPrivate = true, $fz), "J.util.P3,J.util.P3,~N,~N,~N,~A,~A,~N");
+return JU.P3.new3 (v1.x + (v2.x - v1.x) * f, v1.y + (v2.y - v1.y) * f, v1.z + (v2.z - v1.z) * f);
+}, $fz.isPrivate = true, $fz), "JU.P3,JU.P3,~N,~N,~N,~A,~A,~N");
 c$.getSphericalInterpolationFraction = $_M(c$, "getSphericalInterpolationFraction", 
 function (r, valueA, valueB, d) {
 var ra = Math.abs (r + valueA) / d;
@@ -648,7 +640,7 @@ J.util.Geodesic.createGeodesic (lvl);
 var vertexCount = J.util.Geodesic.getVertexCount (lvl);
 var f = J.util.Geodesic.getFaceVertexes (lvl);
 var nFaces = Clazz.doubleToInt (f.length / 3);
-var faces = J.util.ArrayUtil.newInt2 (nFaces);
+var faces = JU.AU.newInt2 (nFaces);
 for (var i = 0, fpt = 0; i < nFaces; i++) {
 faces[i] = [f[fpt++], f[fpt++], f[fpt++]];
 }

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.io2");
-Clazz.load (["J.io2.BinaryDocument", "$.CompoundDocHeader", "J.util.JmolList"], "J.io2.CompoundDocument", ["java.io.DataInputStream", "J.io2.CompoundDocDirEntry", "$.ZipData", "J.util.Logger", "$.SB"], function () {
+Clazz.load (["J.io2.BinaryDocument", "JU.List", "J.io2.CompoundDocHeader"], "J.io2.CompoundDocument", ["java.io.DataInputStream", "JU.SB", "J.io2.CompoundDocDirEntry", "$.ZipData", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.header = null;
 this.directory = null;
@@ -16,14 +16,14 @@ Clazz.instantialize (this, arguments);
 }, J.io2, "CompoundDocument", J.io2.BinaryDocument);
 Clazz.prepareFields (c$, function () {
 this.header =  new J.io2.CompoundDocHeader (this);
-this.directory =  new J.util.JmolList ();
+this.directory =  new JU.List ();
 });
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.io2.CompoundDocument);
 this.isBigEndian = true;
 });
-Clazz.overrideMethod (c$, "setStream", 
+$_V(c$, "setStream", 
 function (bis, isBigEndian) {
 if (!this.isRandom) {
 this.stream =  new java.io.DataInputStream (bis);
@@ -50,7 +50,7 @@ $_M(c$, "getAllData",
 function () {
 return this.getAllDataFiles (null, null);
 });
-Clazz.overrideMethod (c$, "getAllDataMapped", 
+$_V(c$, "getAllDataMapped", 
 function (prefix, binaryFileList, fileData) {
 fileData.put ("#Directory_Listing", this.getDirectoryListing ("|"));
 binaryFileList = "|" + binaryFileList + "|";
@@ -61,7 +61,7 @@ var name = thisEntry.entryName;
 J.util.Logger.info ("CompoundDocument file " + name);
 var isBinary = (binaryFileList.indexOf ("|" + name + "|") >= 0);
 if (isBinary) name += ":asBinaryString";
-var data =  new J.util.SB ();
+var data =  new JU.SB ();
 data.append ("BEGIN Directory Entry ").append (name).append ("\n");
 data.appendSB (this.getEntryAsString (thisEntry, isBinary));
 data.append ("\nEND Directory Entry ").append (name).append ("\n");
@@ -69,7 +69,7 @@ fileData.put (prefix + "/" + name, data.toString ());
 }}
 this.close ();
 }, "~S,~S,java.util.Map");
-Clazz.overrideMethod (c$, "getAllDataFiles", 
+$_V(c$, "getAllDataFiles", 
 function (binaryFileList, firstFile) {
 if (firstFile != null) {
 for (var i = 0; i < this.directory.size (); i++) {
@@ -79,7 +79,7 @@ this.directory.remove (i);
 this.directory.add (1, thisEntry);
 break;
 }}
-}this.data =  new J.util.SB ();
+}this.data =  new JU.SB ();
 this.data.append ("Compound Document File Directory: ");
 this.data.append (this.getDirectoryListing ("|"));
 this.data.append ("\n");
@@ -104,7 +104,7 @@ for (var i = 0; i < this.directory.size (); i++) {
 var thisEntry = this.directory.get (i);
 if (thisEntry.entryName.equals (entryName)) return this.getEntryAsString (thisEntry, false);
 }
-return  new J.util.SB ();
+return  new JU.SB ();
 }, "~S");
 $_M(c$, "getOffset", 
 ($fz = function (SID) {
@@ -214,12 +214,12 @@ if (J.util.Logger.debugging) J.util.Logger.debug ("CompoundDocument directory en
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getEntryAsString", 
 ($fz = function (thisEntry, asBinaryString) {
-if (thisEntry.isEmpty) return  new J.util.SB ();
+if (thisEntry.isEmpty) return  new JU.SB ();
 return (thisEntry.isStandard ? this.getStandardStringData (thisEntry.SIDfirstSector, thisEntry.lenStream, asBinaryString) : this.getShortStringData (thisEntry.SIDfirstSector, thisEntry.lenStream, asBinaryString));
 }, $fz.isPrivate = true, $fz), "J.io2.CompoundDocDirEntry,~B");
 $_M(c$, "getStandardStringData", 
 ($fz = function (thisSID, nBytes, asBinaryString) {
-var data =  new J.util.SB ();
+var data =  new JU.SB ();
 var byteBuf =  Clazz.newByteArray (this.sectorSize, 0);
 var gzipData =  new J.io2.ZipData (nBytes);
 try {
@@ -228,7 +228,7 @@ this.gotoSector (thisSID);
 nBytes = this.getSectorData (data, byteBuf, this.sectorSize, nBytes, asBinaryString, gzipData);
 thisSID = this.SAT[thisSID];
 }
-if (nBytes == -9999) return  new J.util.SB ();
+if (nBytes == -9999) return  new JU.SB ();
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
 J.util.Logger.errorEx (null, e);
@@ -256,10 +256,10 @@ data.appendC (String.fromCharCode (byteBuf[i]));
 if (--nBytes < 1) break;
 }
 }return nBytes;
-}, $fz.isPrivate = true, $fz), "J.util.SB,~A,~N,~N,~B,J.io2.ZipData");
+}, $fz.isPrivate = true, $fz), "JU.SB,~A,~N,~N,~B,J.io2.ZipData");
 $_M(c$, "getShortStringData", 
 ($fz = function (shortSID, nBytes, asBinaryString) {
-var data =  new J.util.SB ();
+var data =  new JU.SB ();
 if (this.rootEntry == null) return data;
 var thisSID = this.rootEntry.SIDfirstSector;
 var ptShort = 0;

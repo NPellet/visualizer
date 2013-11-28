@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.renderspecial");
-Clazz.load (["J.render.ShapeRenderer", "J.util.P3", "$.V3"], "J.renderspecial.DipolesRenderer", ["J.util.C", "$.P3i"], function () {
+Clazz.load (["J.render.ShapeRenderer", "JU.P3", "$.V3"], "J.renderspecial.DipolesRenderer", ["JU.P3i", "J.util.C"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.dipoleVectorScale = 0;
 this.offset = null;
@@ -13,18 +13,18 @@ this.crossWidthPixels = 0;
 Clazz.instantialize (this, arguments);
 }, J.renderspecial, "DipolesRenderer", J.render.ShapeRenderer);
 Clazz.prepareFields (c$, function () {
-this.offset =  new J.util.V3 ();
+this.offset =  new JU.V3 ();
 this.screens =  new Array (6);
 this.points =  new Array (6);
 {
 for (var i = 0; i < 6; i++) {
-this.screens[i] =  new J.util.P3i ();
-this.points[i] =  new J.util.P3 ();
+this.screens[i] =  new JU.P3i ();
+this.points[i] =  new JU.P3 ();
 }
-}this.cross0 =  new J.util.P3 ();
-this.cross1 =  new J.util.P3 ();
+}this.cross0 =  new JU.P3 ();
+this.cross1 =  new JU.P3 ();
 });
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 var dipoles = this.shape;
 this.dipoleVectorScale = this.viewer.getFloat (570425355);

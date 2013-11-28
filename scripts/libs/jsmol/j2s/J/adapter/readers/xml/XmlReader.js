@@ -17,7 +17,7 @@ Clazz.prepareFields (c$, function () {
 this.domObj =  new Array (1);
 this.nullObj =  new Array (0);
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.atts =  new java.util.Hashtable ();
 this.setMyError (this.parseXML ());
@@ -92,7 +92,7 @@ parent.viewer.applet._createDomNode("xmlReader",null);
 var saxHandler = J.api.Interface.getOptionInterface ("adapter.readers.xml.XmlHandler");
 saxHandler.parseXML (this, saxReader, this.reader);
 }}, "J.adapter.readers.xml.XmlReader,~O");
-Clazz.overrideMethod (c$, "applySymmetryAndSetTrajectory", 
+$_V(c$, "applySymmetryAndSetTrajectory", 
 function () {
 try {
 if (this.parent == null) this.applySymTrajASCR ();
@@ -106,7 +106,7 @@ throw e;
 }
 }
 });
-Clazz.overrideMethod (c$, "processDOM", 
+$_V(c$, "processDOM", 
 function (DOMNode) {
 this.domObj = [DOMNode];
 this.setMyError (this.selectReaderAndGo (null));

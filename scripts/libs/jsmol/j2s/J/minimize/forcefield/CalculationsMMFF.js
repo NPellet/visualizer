@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.minimize.forcefield");
-Clazz.load (["J.minimize.forcefield.Calculation", "$.Calculations"], "J.minimize.forcefield.CalculationsMMFF", ["J.minimize.MinAtom", "$.MinObject", "J.util.JmolList", "$.TextFormat"], function () {
+Clazz.load (["J.minimize.forcefield.Calculation", "$.Calculations"], "J.minimize.forcefield.CalculationsMMFF", ["JU.List", "J.minimize.MinAtom", "$.MinObject", "J.util.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.ffParams = null;
 this.bondCalc = null;
@@ -45,35 +45,35 @@ this.torsionCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMM
 this.oopCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.OOPCalc, this, null);
 this.vdwCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.VDWCalc, this, null);
 this.esCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.ESCalc, this, null);
-}, "J.minimize.forcefield.ForceField,java.util.Map,~A,~A,~A,~A,~A,J.util.JmolList");
-Clazz.overrideMethod (c$, "getUnits", 
+}, "J.minimize.forcefield.ForceField,java.util.Map,~A,~A,~A,~A,~A,JU.List");
+$_V(c$, "getUnits", 
 function () {
 return "kcal";
 });
-Clazz.overrideMethod (c$, "setupCalculations", 
+$_V(c$, "setupCalculations", 
 function () {
 var calc;
 var distanceCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.DistanceCalc, this, null);
-calc = this.calculations[0] =  new J.util.JmolList ();
+calc = this.calculations[0] =  new JU.List ();
 for (var i = 0; i < this.bondCount; i++) distanceCalc.setData (calc, this.minBonds[i]);
 
-calc = this.calculations[1] =  new J.util.JmolList ();
+calc = this.calculations[1] =  new JU.List ();
 var angleCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.AngleCalc, this, null);
 for (var i = 0; i < this.angleCount; i++) angleCalc.setData (calc, this.minAngles[i]);
 
-calc = this.calculations[2] =  new J.util.JmolList ();
+calc = this.calculations[2] =  new JU.List ();
 var sbCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.SBCalc, this, null);
 for (var i = 0; i < this.angleCount; i++) sbCalc.setData (calc, this.minAngles[i]);
 
-calc = this.calculations[3] =  new J.util.JmolList ();
+calc = this.calculations[3] =  new JU.List ();
 var torsionCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.TorsionCalc, this, null);
 for (var i = 0; i < this.torsionCount; i++) torsionCalc.setData (calc, this.minTorsions[i]);
 
-calc = this.calculations[4] =  new J.util.JmolList ();
+calc = this.calculations[4] =  new JU.List ();
 var oopCalc = Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.OOPCalc, this, null);
 for (var i = 0; i < this.atomCount; i++) if (J.minimize.forcefield.CalculationsMMFF.isInvertible (this.minAtoms[i])) oopCalc.setData (calc, i);
 
-this.pairSearch (this.calculations[5] =  new J.util.JmolList (), Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.VDWCalc, this, null), this.calculations[6] =  new J.util.JmolList (), Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.ESCalc, this, null));
+this.pairSearch (this.calculations[5] =  new JU.List (), Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.VDWCalc, this, null), this.calculations[6] =  new JU.List (), Clazz.innerTypeInstance (J.minimize.forcefield.CalculationsMMFF.ESCalc, this, null));
 return true;
 });
 $_M(c$, "isLinear", 
@@ -110,7 +110,7 @@ case 81:
 return true;
 }
 }, $fz.isPrivate = true, $fz), "J.minimize.MinAtom");
-Clazz.overrideMethod (c$, "compute", 
+$_V(c$, "compute", 
 function (iType, dataIn) {
 switch (iType) {
 case 0:
@@ -138,7 +138,7 @@ $_M(c$, "getParameter",
 function (key) {
 return this.ffParams.get (key);
 }, "Integer");
-Clazz.overrideMethod (c$, "getDebugHeader", 
+$_V(c$, "getDebugHeader", 
 function (iType) {
 switch (iType) {
 case -1:
@@ -149,15 +149,15 @@ default:
 return this.getDebugHeader2 (iType);
 }
 }, "~N");
-Clazz.overrideMethod (c$, "getDebugLine", 
+$_V(c$, "getDebugLine", 
 function (iType, c) {
 var energy = this.ff.toUserUnits (c.energy);
 switch (iType) {
 case 1:
 case 2:
-return J.util.TextFormat.sprintf ("%15s  %-5s %-5s %-5s  %8.3f  %8.3f     %8.3f   %8.3f", "ssssFI", [J.minimize.MinObject.decodeKey (c.key), this.minAtoms[c.ia].sType, this.minAtoms[c.ib].sType, this.minAtoms[c.ic].sType, [(c.theta * 57.29577951308232), c.dData[1], c.dData[0], energy], [this.minAtoms[c.ia].atom.getAtomNumber (), this.minAtoms[c.ib].atom.getAtomNumber (), this.minAtoms[c.ic].atom.getAtomNumber ()]]);
+return J.util.Txt.sprintf ("%15s  %-5s %-5s %-5s  %8.3f  %8.3f     %8.3f   %8.3f", "ssssFI", [J.minimize.MinObject.decodeKey (c.key), this.minAtoms[c.ia].sType, this.minAtoms[c.ib].sType, this.minAtoms[c.ic].sType, [(c.theta * 57.29577951308232), c.dData[1], c.dData[0], energy], [this.minAtoms[c.ia].atom.getAtomNumber (), this.minAtoms[c.ib].atom.getAtomNumber (), this.minAtoms[c.ic].atom.getAtomNumber ()]]);
 case 3:
-return J.util.TextFormat.sprintf ("%15s  %-5s %-5s %-5s %-5s  %8.3f %8.3f %8.3f %8.3f %8.3f", "sssssF", [J.minimize.MinObject.decodeKey (c.key), this.minAtoms[c.ia].sType, this.minAtoms[c.ib].sType, this.minAtoms[c.ic].sType, this.minAtoms[c.id].sType, [(c.theta * 57.29577951308232), c.dData[0], c.dData[1], c.dData[2], energy]]);
+return J.util.Txt.sprintf ("%15s  %-5s %-5s %-5s %-5s  %8.3f %8.3f %8.3f %8.3f %8.3f", "sssssF", [J.minimize.MinObject.decodeKey (c.key), this.minAtoms[c.ia].sType, this.minAtoms[c.ib].sType, this.minAtoms[c.ic].sType, this.minAtoms[c.id].sType, [(c.theta * 57.29577951308232), c.dData[0], c.dData[1], c.dData[2], energy]]);
 default:
 return this.getDebugLineC (iType, c);
 }
@@ -178,8 +178,8 @@ this.ib = b.data[1];
 var c = this.b$["J.minimize.forcefield.CalculationsMMFF"].getParameterObj (b);
 if (c == null) return;
 a.addLast ([[this.ia, this.ib], c]);
-}, "J.util.JmolList,J.minimize.MinBond");
-Clazz.overrideMethod (c$, "compute", 
+}, "JU.List,J.minimize.MinBond");
+$_V(c$, "compute", 
 function (a) {
 this.getPointers (a);
 this.kb = this.dData[0];
@@ -211,8 +211,8 @@ function (a, b) {
 var c = this.b$["J.minimize.forcefield.CalculationsMMFF"].getParameterObj (b);
 if (c == null) return;
 a.addLast ([b.data, c, b.key]);
-}, "J.util.JmolList,J.minimize.MinAngle");
-Clazz.overrideMethod (c$, "compute", 
+}, "JU.List,J.minimize.MinAngle");
+$_V(c$, "compute", 
 function (a) {
 this.key = a[2];
 this.getPointers (a);
@@ -253,8 +253,8 @@ var h = e[1];
 var i = f[1];
 a.addLast ([b.data, [c[0], g, h]]);
 a.addLast ([[b.data[2], b.data[1], b.data[0]], [c[1], g, i]]);
-}, "J.util.JmolList,J.minimize.MinAngle");
-Clazz.overrideMethod (c$, "compute", 
+}, "JU.List,J.minimize.MinAngle");
+$_V(c$, "compute", 
 function (a) {
 this.getPointers (a);
 var b = 2.51210 * this.dData[0];
@@ -288,8 +288,8 @@ if (this.b$["J.minimize.forcefield.CalculationsMMFF"].isLinear (b.data[1]) || th
 var c = this.b$["J.minimize.forcefield.CalculationsMMFF"].getParameterObj (b);
 if (c == null) return;
 a.addLast ([b.data, c, b.key]);
-}, "J.util.JmolList,J.minimize.MinTorsion");
-Clazz.overrideMethod (c$, "compute", 
+}, "JU.List,J.minimize.MinTorsion");
+$_V(c$, "compute", 
 function (a) {
 this.key = a[2];
 this.getPointers (a);
@@ -333,8 +333,8 @@ var e = [d];
 a.addLast ([[c[0], b, c[1], c[2]], e]);
 a.addLast ([[c[1], b, c[2], c[0]], e]);
 a.addLast ([[c[2], b, c[0], c[1]], e]);
-}, "J.util.JmolList,~N");
-Clazz.overrideMethod (c$, "compute", 
+}, "JU.List,~N");
+$_V(c$, "compute", 
 function (a) {
 this.getPointers (a);
 this.b$["J.minimize.forcefield.CalculationsMMFF"].setOopVariables (this, false);
@@ -357,7 +357,7 @@ c$ = Clazz.decorateAsClass (function () {
 Clazz.prepareCallback (this, arguments);
 Clazz.instantialize (this, arguments);
 }, J.minimize.forcefield.CalculationsMMFF, "VDWCalc", J.minimize.forcefield.Calculations.PairCalc, null, Clazz.innerTypeInstance (J.minimize.forcefield.Calculations.PairCalc, this, null, Clazz.inheritArgs));
-Clazz.overrideMethod (c$, "setData", 
+$_V(c$, "setData", 
 function (a, b, c) {
 this.a = this.b$["J.minimize.forcefield.CalculationsMMFF"].minAtoms[b];
 this.b = this.b$["J.minimize.forcefield.CalculationsMMFF"].minAtoms[c];
@@ -384,8 +384,8 @@ if (j + o == 133) {
 s *= 0.8;
 t *= 0.5;
 }a.addLast ([[b, c], [s, t]]);
-}, "J.util.JmolList,~N,~N");
-Clazz.overrideMethod (c$, "compute", 
+}, "JU.List,~N,~N");
+$_V(c$, "compute", 
 function (a) {
 this.getPointers (a);
 this.b$["J.minimize.forcefield.CalculationsMMFF"].setPairVariables (this);
@@ -409,12 +409,12 @@ c$ = Clazz.decorateAsClass (function () {
 Clazz.prepareCallback (this, arguments);
 Clazz.instantialize (this, arguments);
 }, J.minimize.forcefield.CalculationsMMFF, "ESCalc", J.minimize.forcefield.Calculations.PairCalc, null, Clazz.innerTypeInstance (J.minimize.forcefield.Calculations.PairCalc, this, null, Clazz.inheritArgs));
-Clazz.overrideMethod (c$, "setData", 
+$_V(c$, "setData", 
 function (a, b, c) {
 if (this.b$["J.minimize.forcefield.CalculationsMMFF"].minAtoms[b].partialCharge == 0 || this.b$["J.minimize.forcefield.CalculationsMMFF"].minAtoms[c].partialCharge == 0) return;
 a.addLast ([[b, c], [this.b$["J.minimize.forcefield.CalculationsMMFF"].minAtoms[b].partialCharge, this.b$["J.minimize.forcefield.CalculationsMMFF"].minAtoms[c].partialCharge, (this.b$["J.minimize.forcefield.CalculationsMMFF"].minAtoms[b].bs14.get (c) ? 249.0537 : 332.0716)]]);
-}, "J.util.JmolList,~N,~N");
-Clazz.overrideMethod (c$, "compute", 
+}, "JU.List,~N,~N");
+$_V(c$, "compute", 
 function (a) {
 this.getPointers (a);
 var b = this.dData[0] * this.dData[1] * this.dData[2];

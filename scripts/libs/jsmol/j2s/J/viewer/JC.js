@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["java.io.BufferedInputStream", "java.util.Properties", "J.util.Elements", "$.SB", "$.V3"], "J.viewer.JC", ["java.lang.NullPointerException", "java.util.Hashtable", "J.util.Logger", "$.Parser"], function () {
+Clazz.load (["JU.SB", "$.V3", "J.util.Elements", "$.Txt"], "J.viewer.JC", ["java.lang.NullPointerException", "java.util.Hashtable", "JU.PT", "J.util.Logger"], function () {
 c$ = Clazz.declareType (J.viewer, "JC");
 c$.embedScript = $_M(c$, "embedScript", 
 function (s) {
@@ -11,7 +11,7 @@ return J.viewer.JC.specialAtomNames[atomID];
 }, "~N");
 c$.getSpecialAtomNames = $_M(c$, "getSpecialAtomNames", 
 ($fz = function () {
-($t$ = J.viewer.JC.htSpecialAtoms =  new java.util.Hashtable (), J.viewer.JC.prototype.htSpecialAtoms = J.viewer.JC.htSpecialAtoms, $t$);
+J.viewer.JC.htSpecialAtoms =  new java.util.Hashtable ();
 for (var i = J.viewer.JC.specialAtomNames.length; --i >= 0; ) {
 var specialAtomName = J.viewer.JC.specialAtomNames[i];
 if (specialAtomName != null) J.viewer.JC.htSpecialAtoms.put (specialAtomName, Integer.$valueOf (i));
@@ -98,7 +98,7 @@ function (pt, isLegacy) {
 if (pt < 0 || pt > J.viewer.JC.pdbBondInfo.length) return null;
 var s = J.viewer.JC.pdbBondInfo[pt];
 if (isLegacy && (pt = s.indexOf ("O3'")) >= 0) s = s.substring (0, pt);
-var temp = J.util.Parser.getTokens (s);
+var temp = JU.PT.getTokens (s);
 var info =  new Array (Clazz.doubleToInt (temp.length / 2));
 for (var i = 0, p = 0; i < info.length; i++) {
 var source = temp[p++];
@@ -138,12 +138,12 @@ return (group3 != null && ",[AHR],[ALL],[AMU],[ARA],[ARB],[BDF],[BDR],[BGC],[BMA
 c$.getGroup3List = $_M(c$, "getGroup3List", 
 function () {
 if (J.viewer.JC.group3List != null) return J.viewer.JC.group3List;
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 for (var i = 1; i < 42; i++) s.append (",[").append ((J.viewer.JC.predefinedGroup3Names[i] + "   ").substring (0, 3) + "]");
 
 s.append (",[AHR],[ALL],[AMU],[ARA],[ARB],[BDF],[BDR],[BGC],[BMA],[FCA],[FCB],[FRU],[FUC],[FUL],[GAL],[GLA],[GLC],[GXL],[GUP],[LXC],[MAN],[RAM],[RIB],[RIP],[XYP],[XYS],[CBI],[CT3],[CTR],[CTT],[LAT],[MAB],[MAL],[MLR],[MTT],[SUC],[TRE],[GCU],[MTL],[NAG],[NDG],[RHA],[SOR],[SOL],[SOE],[XYL],[A2G],[LBT],[NGA],[SIA],[SLB],[AFL],[AGC],[GLB],[NAN],[RAA]");
-($t$ = J.viewer.JC.group3Count = Clazz.doubleToInt (s.length () / 6), J.viewer.JC.prototype.group3Count = J.viewer.JC.group3Count, $t$);
-return ($t$ = J.viewer.JC.group3List = s.toString (), J.viewer.JC.prototype.group3List = J.viewer.JC.group3List, $t$);
+J.viewer.JC.group3Count = Clazz.doubleToInt (s.length () / 6);
+return J.viewer.JC.group3List = s.toString ();
 });
 c$.isHetero = $_M(c$, "isHetero", 
 function (group3) {
@@ -152,7 +152,7 @@ return J.viewer.JC.getGroup3Pt (group3) >= 42;
 c$.getGroup3Pt = $_M(c$, "getGroup3Pt", 
 ($fz = function (group3) {
 J.viewer.JC.getGroup3List ();
-var sb =  new J.util.SB ().append ("[");
+var sb =  new JU.SB ().append ("[");
 sb.append (group3);
 switch (group3.length) {
 case 1:
@@ -169,7 +169,7 @@ c$.getGroup3Count = $_M(c$, "getGroup3Count",
 function () {
 if (J.viewer.JC.group3Count > 0) return J.viewer.JC.group3Count;
 J.viewer.JC.getGroup3List ();
-return ($t$ = J.viewer.JC.group3Count = Clazz.doubleToInt (J.viewer.JC.group3List.length / 6), J.viewer.JC.prototype.group3Count = J.viewer.JC.group3Count, $t$);
+return J.viewer.JC.group3Count = Clazz.doubleToInt (J.viewer.JC.group3List.length / 6);
 });
 c$.isShapeSecondary = $_M(c$, "isShapeSecondary", 
 function (i) {
@@ -265,6 +265,42 @@ c$.getShapeVisibilityFlag = $_M(c$, "getShapeVisibilityFlag",
 function (shapeID) {
 return (4 << shapeID);
 }, "~N");
+c$.getOffset = $_M(c$, "getOffset", 
+function (xOffset, yOffset) {
+xOffset = Math.min (Math.max (xOffset, -127), 127);
+yOffset = Math.min (Math.max (yOffset, -127), 127);
+return ((xOffset & 0xFF) << 8) | (yOffset & 0xFF);
+}, "~N,~N");
+c$.getXOffset = $_M(c$, "getXOffset", 
+function (offset) {
+switch (offset) {
+case 0:
+return 4;
+case 32767:
+return 0;
+default:
+return ((offset << 48) >> 56);
+}
+}, "~N");
+c$.getYOffset = $_M(c$, "getYOffset", 
+function (offset) {
+switch (offset) {
+case 0:
+return -4;
+case 32767:
+return 0;
+default:
+return -((offset << 56) >> 56);
+}
+}, "~N");
+c$.getAlignmentName = $_M(c$, "getAlignmentName", 
+function (align) {
+return J.viewer.JC.hAlignNames[align & 3];
+}, "~N");
+c$.getPointer = $_M(c$, "getPointer", 
+function (pointer) {
+return ((pointer & 1) == 0 ? "" : (pointer & 2) > 0 ? "background" : "on");
+}, "~N");
 Clazz.defineStatics (c$,
 "copyright", "(C) 2012 Jmol Development",
 "version", null,
@@ -272,27 +308,14 @@ Clazz.defineStatics (c$,
 {
 var tmpVersion = null;
 var tmpDate = null;
-var bis = null;
-var is = null;
-try {
 {
 tmpVersion = ___JmolVersion; tmpDate = ___JmolDate;
 }if (tmpDate != null) {
-tmpDate = tmpDate.substring (8, 24);
-tmpVersion = tmpVersion.substring (1, tmpVersion.length - 1);
-}} catch (e) {
-if (Clazz.exceptionOf (e, Exception)) {
-} else {
-throw e;
-}
-} finally {
-tmpVersion = ___JmolVersion; tmpDate = ___JmolDate;
-}
-($t$ = J.viewer.JC.version = (tmpVersion != null ? tmpVersion : "(Unknown version)"), J.viewer.JC.prototype.version = J.viewer.JC.version, $t$);
-($t$ = J.viewer.JC.date = (tmpDate != null ? tmpDate : "(Unknown date)"), J.viewer.JC.prototype.date = J.viewer.JC.date, $t$);
+tmpDate = tmpDate.substring (7, 24);
+}J.viewer.JC.version = (tmpVersion != null ? tmpVersion : "(Unknown version)");
+J.viewer.JC.date = (tmpDate != null ? tmpDate : "(Unknown date)");
 }Clazz.defineStatics (c$,
 "officialRelease", false,
-"CLASSBASE_OPTIONS", "J.",
 "DEFAULT_HELP_PATH", "http://chemapps.stolaf.edu/jmol/docs/index.htm",
 "STATE_VERSION_STAMP", "# Jmol state version ",
 "EMBEDDED_SCRIPT_TAG", "**** Jmol Embedded Script ****",
@@ -303,13 +326,13 @@ tmpVersion = ___JmolVersion; tmpDate = ___JmolDate;
 "radiansPerDegree", (0.017453292519943295),
 "allowedQuaternionFrames", "RC;RP;a;b;c;n;p;q;x;",
 "EXPORT_DRIVER_LIST", "Idtf;Maya;Povray;Vrml;X3d;Tachyon;Obj");
-c$.center = c$.prototype.center = J.util.V3.new3 (0, 0, 0);
-c$.axisX = c$.prototype.axisX = J.util.V3.new3 (1, 0, 0);
-c$.axisY = c$.prototype.axisY = J.util.V3.new3 (0, 1, 0);
-c$.axisZ = c$.prototype.axisZ = J.util.V3.new3 (0, 0, 1);
-c$.axisNX = c$.prototype.axisNX = J.util.V3.new3 (-1, 0, 0);
-c$.axisNY = c$.prototype.axisNY = J.util.V3.new3 (0, -1, 0);
-c$.axisNZ = c$.prototype.axisNZ = J.util.V3.new3 (0, 0, -1);
+c$.center = c$.prototype.center = JU.V3.new3 (0, 0, 0);
+c$.axisX = c$.prototype.axisX = JU.V3.new3 (1, 0, 0);
+c$.axisY = c$.prototype.axisY = JU.V3.new3 (0, 1, 0);
+c$.axisZ = c$.prototype.axisZ = JU.V3.new3 (0, 0, 1);
+c$.axisNX = c$.prototype.axisNX = JU.V3.new3 (-1, 0, 0);
+c$.axisNY = c$.prototype.axisNY = JU.V3.new3 (0, -1, 0);
+c$.axisNZ = c$.prototype.axisNZ = JU.V3.new3 (0, 0, -1);
 c$.unitAxisVectors = c$.prototype.unitAxisVectors = [J.viewer.JC.axisX, J.viewer.JC.axisY, J.viewer.JC.axisZ, J.viewer.JC.axisNX, J.viewer.JC.axisNY, J.viewer.JC.axisNZ];
 Clazz.defineStatics (c$,
 "XY_ZTOP", 100,
@@ -323,6 +346,17 @@ Clazz.defineStatics (c$,
 "DEFAULT_MIN_CONNECT_DISTANCE", 0.1,
 "MINIMIZATION_ATOM_MAX", 200,
 "MINIMIZE_FIXED_RANGE", 5.0,
+"ENC_CALC_MAX_DIST", 3,
+"ENV_CALC_MAX_LEVEL", 3,
+"LABEL_FRONT_FLAG", 0x20,
+"LABEL_GROUP_FLAG", 0x10,
+"LABEL_POINTER_FLAGS", 0x03,
+"LABEL_ALIGN_FLAGS", 0x0C,
+"LABEL_ZPOS_FLAGS", 0x30,
+"LABEL_SCALE_FLAG", 0x40,
+"LABEL_EXACT_OFFSET_FLAG", 0x80,
+"LABEL_FLAGS", 0xFF,
+"LABEL_FLAG_OFFSET", 8,
 "MOUSE_NONE", -1,
 "MULTIBOND_NEVER", 0,
 "MULTIBOND_WIREFRAME", 1,
@@ -494,17 +528,11 @@ Clazz.defineStatics (c$,
 "shapeClassBases", ["Balls", "Sticks", "Hsticks", "Sssticks", "Struts", "Labels", "Measures", "Stars", "Halos", "Backbone", "Trace", "Cartoon", "Strands", "MeshRibbon", "Ribbons", "Rockets", "Dots", "Dipoles", "Vectors", "GeoSurface", "Ellipsoids", "Polyhedra", "Draw", "CGO", "Isosurface", "Contact", "LcaoCartoon", "MolecularOrbital", "Pmesh", "Plot3D", "Echo", "Axes", "Bbcage", "Uccage", "Hover", "Frank"],
 "ATOM_IN_FRAME", 1,
 "ATOM_SLABBED", 2,
-"CURSOR_DEFAULT", 0,
-"CURSOR_HAND", 1,
-"CURSOR_CROSSHAIR", 2,
-"CURSOR_MOVE", 3,
-"CURSOR_WAIT", 4,
-"CURSOR_ZOOM", 5,
 "binaryExtensions", ";pse=PyMOL;",
 "SCRIPT_COMPLETED", "Script completed",
 "JPEG_EXTENSIONS", ";jpg;jpeg;jpg64;jpeg64;");
-c$.IMAGE_TYPES = c$.prototype.IMAGE_TYPES = ";jpg;jpeg;jpg64;jpeg64;gif;ppm;png;pngj;pngt;";
-c$.IMAGE_OR_SCENE = c$.prototype.IMAGE_OR_SCENE = ";jpg;jpeg;jpg64;jpeg64;gif;ppm;png;pngj;pngt;scene;";
+c$.IMAGE_TYPES = c$.prototype.IMAGE_TYPES = ";jpg;jpeg;jpg64;jpeg64;gif;pdf;ppm;png;pngj;pngt;";
+c$.IMAGE_OR_SCENE = c$.prototype.IMAGE_OR_SCENE = ";jpg;jpeg;jpg64;jpeg64;gif;pdf;ppm;png;pngj;pngt;scene;";
 {
 if (J.viewer.JC.argbsFormalCharge.length != 12) {
 J.util.Logger.error ("formal charge color table length");
@@ -524,4 +552,19 @@ throw  new NullPointerException ();
 }if (J.viewer.JC.shapeClassBases.length != 36) {
 J.util.Logger.error ("the shapeClassBases array has the wrong length");
 throw  new NullPointerException ();
-}}});
+}}Clazz.defineStatics (c$,
+"hAlignNames", ["", "left", "center", "right", ""],
+"vAlignNames", ["xy", "top", "bottom", "middle"],
+"POINTER_NONE", 0,
+"POINTER_ON", 1,
+"POINTER_BACKGROUND", 2,
+"VALIGN_XY", 0,
+"VALIGN_TOP", 1,
+"VALIGN_BOTTOM", 2,
+"VALIGN_MIDDLE", 3,
+"VALIGN_XYZ", 4,
+"ALIGN_NONE", 0,
+"ALIGN_LEFT", 1,
+"ALIGN_CENTER", 2,
+"ALIGN_RIGHT", 3);
+});

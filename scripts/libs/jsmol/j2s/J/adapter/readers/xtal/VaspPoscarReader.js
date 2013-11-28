@@ -1,14 +1,14 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "J.util.JmolList"], "J.adapter.readers.xtal.VaspPoscarReader", ["J.util.Logger", "$.SB"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "JU.List"], "J.adapter.readers.xtal.VaspPoscarReader", ["JU.SB", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomLabels = null;
 this.atomCount = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "VaspPoscarReader", J.adapter.smarter.AtomSetCollectionReader);
 Clazz.prepareFields (c$, function () {
-this.atomLabels =  new J.util.JmolList ();
+this.atomLabels =  new JU.List ();
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.readJobTitle ();
 this.readUnitCellVectors ();
@@ -37,7 +37,7 @@ $_M(c$, "readMolecularFormula",
 ($fz = function () {
 var elementLabel = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.discardLinesUntilNonBlank ());
 var elementCounts = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine ());
-var mf =  new J.util.SB ();
+var mf =  new JU.SB ();
 for (var i = 0; i < elementCounts.length; i++) {
 var n = Integer.parseInt (elementCounts[i]);
 this.atomCount += n;

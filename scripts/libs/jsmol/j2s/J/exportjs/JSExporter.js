@@ -17,7 +17,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.exportjs.JSExporter, []);
 });
-Clazz.overrideMethod (c$, "outputHeader", 
+$_V(c$, "outputHeader", 
 function () {
 {
 this.applet = this.viewer.applet
@@ -27,7 +27,7 @@ this.htObjects.clear ();
 {
 this.jsInitExport(this.applet);
 }});
-Clazz.overrideMethod (c$, "outputFooter", 
+$_V(c$, "outputFooter", 
 function () {
 {
 this.jsEndExport(this.applet);
@@ -38,16 +38,16 @@ this.useTable = null;
 $_M(c$, "jsSphere", 
 ($fz = function (applet, id, isNew, pt, o) {
 System.out.println (applet + " " + id + " " + isNew + " " + pt + " " + o);
-}, $fz.isPrivate = true, $fz), "~O,~S,~B,J.util.P3,~A");
+}, $fz.isPrivate = true, $fz), "~O,~S,~B,JU.P3,~A");
 $_M(c$, "jsCylinder", 
 ($fz = function (applet, id, isNew, pt1, pt2, o) {
 System.out.println (applet + " " + id + " " + isNew + " " + pt1 + " " + pt2 + " " + o);
-}, $fz.isPrivate = true, $fz), "~O,~S,~B,J.util.P3,J.util.P3,~A");
+}, $fz.isPrivate = true, $fz), "~O,~S,~B,JU.P3,JU.P3,~A");
 $_M(c$, "jsTriangle", 
 function (applet, color, pt1, pt2, pt3) {
 System.out.println ("jsTriangle ");
-}, "~O,~N,J.util.P3,J.util.P3,J.util.P3");
-Clazz.overrideMethod (c$, "outputSphere", 
+}, "~O,~N,JU.P3,JU.P3,JU.P3");
+$_V(c$, "outputSphere", 
 function (ptCenter, radius, colix, checkRadius) {
 var iRad = Math.round (radius * 100);
 var check = J.exportjs.Exporter.round (ptCenter) + (checkRadius ? " " + iRad : "");
@@ -58,8 +58,8 @@ var o;
 if (found) o = this.htObjects.get (this.ret[0]);
  else this.htObjects.put (this.ret[0], o = [this.getColor (colix), Float.$valueOf (radius)]);
 this.jsSphere (this.applet, this.ret[0], !found, ptCenter, o);
-}, "J.util.P3,~N,~N,~B");
-Clazz.overrideMethod (c$, "outputCylinder", 
+}, "JU.P3,~N,~N,~B");
+$_V(c$, "outputCylinder", 
 function (ptCenter, pt1, pt2, colix, endcaps, radius, ptX, ptY, checkRadius) {
 if (ptX != null) return false;
 var length = pt1.distance (pt2);
@@ -69,33 +69,33 @@ if (found) o = this.htObjects.get (this.ret[0]);
  else this.htObjects.put (this.ret[0], o = [this.getColor (colix), Float.$valueOf (length), Float.$valueOf (radius)]);
 this.jsCylinder (this.applet, this.ret[0], !found, pt1, pt2, o);
 return true;
-}, "J.util.P3,J.util.P3,J.util.P3,~N,~N,~N,J.util.P3,J.util.P3,~B");
-Clazz.overrideMethod (c$, "outputCircle", 
+}, "JU.P3,JU.P3,JU.P3,~N,~N,~N,JU.P3,JU.P3,~B");
+$_V(c$, "outputCircle", 
 function (pt1, pt2, radius, colix, doFill) {
-}, "J.util.P3,J.util.P3,~N,~N,~B");
-Clazz.overrideMethod (c$, "outputEllipsoid", 
+}, "JU.P3,JU.P3,~N,~N,~B");
+$_V(c$, "outputEllipsoid", 
 function (center, points, colix) {
-}, "J.util.P3,~A,~N");
+}, "JU.P3,~A,~N");
 $_M(c$, "output", 
 function (pt) {
-}, "J.util.Tuple3f");
-Clazz.overrideMethod (c$, "outputCone", 
+}, "JU.T3");
+$_V(c$, "outputCone", 
 function (ptBase, ptTip, radius, colix) {
 this.outputCylinder (null, ptBase, ptTip, colix, 0, radius, null, null, false);
-}, "J.util.P3,J.util.P3,~N,~N");
+}, "JU.P3,JU.P3,~N,~N");
 $_M(c$, "getColor", 
 ($fz = function (colix) {
 return Integer.$valueOf (this.g3d.getColorArgbOrGray (colix));
 }, $fz.isPrivate = true, $fz), "~N");
-Clazz.overrideMethod (c$, "outputSurface", 
+$_V(c$, "outputSurface", 
 function (vertices, normals, vertexColixes, indices, polygonColixes, nVertices, nPolygons, nFaces, bsPolygons, faceVertexMax, colix, offset) {
 var vertexColors = this.getColors (vertexColixes);
 var polygonColors = this.getColors (polygonColixes);
 this.jsSurface (this.applet, vertices, normals, indices, nVertices, nPolygons, nFaces, bsPolygons, faceVertexMax, this.g3d.getColorArgbOrGray (colix), vertexColors, polygonColors);
-}, "~A,~A,~A,~A,~A,~N,~N,~N,J.util.BS,~N,~N,J.util.P3");
+}, "~A,~A,~A,~A,~A,~N,~N,~N,JU.BS,~N,~N,JU.P3");
 $_M(c$, "jsSurface", 
 function (applet, vertices, normals, indices, nVertices, nPolygons, nFaces, bsPolygons, faceVertexMax, color, vertexColors, polygonColors) {
-}, "~O,~A,~A,~A,~N,~N,~N,J.util.BS,~N,~N,~A,~A");
+}, "~O,~A,~A,~A,~N,~N,~N,JU.BS,~N,~N,~A,~A");
 $_M(c$, "getColors", 
 ($fz = function (colixes) {
 if (colixes == null) return null;
@@ -105,11 +105,11 @@ colors[i] = this.g3d.getColorArgbOrGray (colixes[i]);
 }
 return colors;
 }, $fz.isPrivate = true, $fz), "~A");
-Clazz.overrideMethod (c$, "outputTriangle", 
+$_V(c$, "outputTriangle", 
 function (pt1, pt2, pt3, colix) {
 this.jsTriangle (this.applet, this.g3d.getColorArgbOrGray (colix), pt1, pt2, pt3);
-}, "J.util.P3,J.util.P3,J.util.P3,~N");
-Clazz.overrideMethod (c$, "plotText", 
+}, "JU.P3,JU.P3,JU.P3,~N");
+$_V(c$, "plotText", 
 function (x, y, z, colix, text, font3d) {
-}, "~N,~N,~N,~N,~S,J.util.JmolFont");
+}, "~N,~N,~N,~N,~S,javajs.awt.Font");
 });

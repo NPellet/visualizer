@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.PolygonFileReader"], "J.jvxl.readers.EfvetReader", ["J.jvxl.data.JvxlCoder", "J.util.ColorUtil", "$.Logger", "$.P3"], function () {
+Clazz.load (["J.jvxl.readers.PolygonFileReader"], "J.jvxl.readers.EfvetReader", ["JU.CU", "$.P3", "J.jvxl.data.JvxlCoder", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.vertexMap = null;
 Clazz.instantialize (this, arguments);
@@ -8,14 +8,14 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.EfvetReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
 this.init2PFR (sg, br);
 this.jvxlFileHeaderBuffer.append ("efvet file format\nvertices and triangles only\n");
 J.jvxl.data.JvxlCoder.jvxlCreateHeaderWithoutTitleOrAtoms (this.volumeData, this.jvxlFileHeaderBuffer);
 this.hasColorData = true;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "getSurfaceData", 
+$_V(c$, "getSurfaceData", 
 function () {
 this.getHeader ();
 this.getVertices ();
@@ -31,7 +31,7 @@ J.util.Logger.info (this.jvxlFileHeaderBuffer.toString ());
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getVertices", 
 ($fz = function () {
-var pt =  new J.util.P3 ();
+var pt =  new JU.P3 ();
 var value = 0;
 this.skipTo ("<vertices", "count");
 this.jvxlData.vertexCount = this.nVertices = this.parseInt ();
@@ -57,7 +57,7 @@ for (var j = 0; j < dataIndex; j++) value = this.parseFloat ();
 if (this.isAnisotropic) this.setVertexAnisotropy (pt);
 var v = this.vertexMap[i + 1] = this.addVC (pt, value, i);
 if (v >= 0 && this.jvxlData.vertexColors != null) {
-this.jvxlData.vertexColors[v] = J.util.ColorUtil.colorTriadToInt (values[6], values[7], values[8]);
+this.jvxlData.vertexColors[v] = JU.CU.colorTriadToFFRGB (values[6], values[7], values[8]);
 this.jvxlData.nVertexColors++;
 }}
 }, $fz.isPrivate = true, $fz));

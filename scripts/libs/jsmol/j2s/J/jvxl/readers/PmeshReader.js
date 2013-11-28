@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.PolygonFileReader"], "J.jvxl.readers.PmeshReader", ["J.jvxl.data.JvxlCoder", "J.util.Logger", "$.P3"], function () {
+Clazz.load (["J.jvxl.readers.PolygonFileReader"], "J.jvxl.readers.PmeshReader", ["JU.P3", "J.jvxl.data.JvxlCoder", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isBinary = false;
 this.nPolygons = 0;
@@ -21,7 +21,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.PmeshReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
 this.init2PR (sg, br);
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
@@ -60,7 +60,7 @@ throw e;
 }
 return false;
 }, "~S");
-Clazz.overrideMethod (c$, "getSurfaceData", 
+$_V(c$, "getSurfaceData", 
 function () {
 if (this.readVerticesAndPolygons ()) J.util.Logger.info ((this.isBinary ? "binary " : "") + this.type + " file contains " + this.nVertices + " vertices and " + this.nPolygons + " polygons for " + this.nTriangles + " triangles");
  else J.util.Logger.error (this.params.fileName + ": " + (this.pmeshError == null ? "Error reading pmesh data " : this.pmeshError));
@@ -113,7 +113,7 @@ if (this.nVertices <= 0) {
 this.pmeshError += " (" + this.nVertices + ")";
 return false;
 }this.pmeshError = this.type + " ERROR: invalid vertex list";
-var pt =  new J.util.P3 ();
+var pt =  new JU.P3 ();
 this.vertexMap =  Clazz.newIntArray (this.nVertices, 0);
 for (var i = 0; i < this.nVertices; i++) {
 pt.set (this.getFloat (), this.getFloat (), this.getFloat ());

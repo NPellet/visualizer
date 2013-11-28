@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.VolumeDataReader", "J.util.P3"], "J.jvxl.readers.IsoShapeReader", ["java.util.Random", "J.jvxl.data.JvxlCoder", "J.util.Logger", "$.Measure", "$.MeshSurface", "$.SB", "$.V3"], function () {
+Clazz.load (["J.jvxl.readers.VolumeDataReader", "JU.P3"], "J.jvxl.readers.IsoShapeReader", ["java.lang.Float", "java.util.Random", "JU.SB", "$.V3", "J.jvxl.data.JvxlCoder", "J.util.Logger", "$.Measure", "$.MeshSurface"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.psi_n = 2;
 this.psi_l = 1;
@@ -29,14 +29,14 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.rfactor =  Clazz.newDoubleArray (10, 0);
 this.pfactor =  Clazz.newDoubleArray (10, 0);
-this.ptPsi =  new J.util.P3 ();
+this.ptPsi =  new JU.P3 ();
 this.psi_normalization = 1 / (2 * Math.sqrt (3.141592653589793));
 });
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoShapeReader, []);
 });
-Clazz.overrideMethod (c$, "init", 
+$_V(c$, "init", 
 function (sg) {
 this.initVDR (sg);
 var o = sg.getReaderData ();
@@ -51,7 +51,7 @@ this.psi_m = Clazz.floatToInt (data[2]);
 this.psi_Znuc = data[3];
 this.monteCarloCount = Clazz.floatToInt (data[4]);
 }}, "J.jvxl.readers.SurfaceGenerator");
-Clazz.overrideMethod (c$, "setup", 
+$_V(c$, "setup", 
 function (isMapData) {
 this.volumeData.sr = this;
 this.precalculateVoxelData = false;
@@ -110,19 +110,19 @@ break;
 if (this.monteCarloCount == 0) this.setVolumeData ();
 this.setHeader (type + "\n");
 }, "~B");
-Clazz.overrideMethod (c$, "setVolumeData", 
+$_V(c$, "setVolumeData", 
 function () {
 this.setVoxelRange (0, -this.radius, this.radius, this.ptsPerAngstrom, this.maxGrid, 0);
 this.setVoxelRange (1, -this.radius, this.radius, this.ptsPerAngstrom, this.maxGrid, 0);
 if (this.allowNegative) this.setVoxelRange (2, -this.radius, this.radius, this.ptsPerAngstrom, this.maxGrid, 0);
  else this.setVoxelRange (2, 0, this.radius / this.eccentricityRatio, this.ptsPerAngstrom, this.maxGrid, 0);
 });
-Clazz.overrideMethod (c$, "getValue", 
+$_V(c$, "getValue", 
 function (x, y, z, ptyz) {
 this.volumeData.voxelPtToXYZ (x, y, z, this.ptPsi);
 return this.getValueAtPoint (this.ptPsi, false);
 }, "~N,~N,~N,~N");
-Clazz.overrideMethod (c$, "getValueAtPoint", 
+$_V(c$, "getValueAtPoint", 
 function (pt, getSource) {
 this.ptTemp.setT (pt);
 this.ptTemp.sub (this.center);
@@ -138,10 +138,10 @@ return this.sphere_radiusAngstroms - Math.sqrt (this.ptTemp.x * this.ptTemp.x + 
 }var value = this.hydrogenAtomPsi (this.ptTemp);
 if (Math.abs (value) < 1.0E-7) value = 0;
 return (this.allowNegative || value >= 0 ? value : 0);
-}, "J.util.P3,~B");
+}, "JU.P3,~B");
 $_M(c$, "setHeader", 
 ($fz = function (line1) {
-this.jvxlFileHeaderBuffer =  new J.util.SB ();
+this.jvxlFileHeaderBuffer =  new JU.SB ();
 this.jvxlFileHeaderBuffer.append (line1);
 if (this.sphere_radiusAngstroms > 0) {
 this.jvxlFileHeaderBuffer.append (" rad=").appendF (this.sphere_radiusAngstroms);
@@ -224,12 +224,12 @@ for (var i = 3; --i >= 0; ) if (this.anisotropy[i] > aMax) aMax = this.anisotrop
 this.radius *= aMax;
 }J.util.Logger.info ("Atomic Orbital radial extent set to " + this.radius + " for cutoff " + this.params.cutoff);
 if (this.params.thePlane != null && this.monteCarloCount > 0) {
-this.planeCenter =  new J.util.P3 ();
-this.planeU =  new J.util.V3 ();
+this.planeCenter =  new JU.P3 ();
+this.planeU =  new JU.V3 ();
 J.util.Measure.getPlaneProjection (this.center, this.params.thePlane, this.planeCenter, this.planeU);
 this.planeU.set (this.params.thePlane.x, this.params.thePlane.y, this.params.thePlane.z);
 this.planeU.normalize ();
-this.planeV = J.util.V3.new3 (1, 0, 0);
+this.planeV = JU.V3.new3 (1, 0, 0);
 if (Math.abs (this.planeU.dot (this.planeV)) > 0.5) this.planeV.set (0, 1, 0);
 this.planeV.cross (this.planeU, this.planeV);
 this.planeU.cross (this.planeU, this.planeV);
@@ -266,7 +266,7 @@ var ph = Math.atan2 (pt.y, pt.x);
 var th = Math.atan2 (Math.sqrt (x2y2), pt.z);
 var theta_lm_phi_m = this.angularPart (th, ph, this.psi_m);
 return this.rnl * theta_lm_phi_m;
-}, $fz.isPrivate = true, $fz), "J.util.P3");
+}, $fz.isPrivate = true, $fz), "JU.P3");
 $_M(c$, "angularPart", 
 ($fz = function (th, ph, m) {
 var cth = Math.cos (th);
@@ -329,7 +329,7 @@ i++;
 }
 if (this.params.distance == 0) J.util.Logger.info ("Atomic Orbital mean radius = " + rave / this.monteCarloCount + " for " + this.monteCarloCount + " points (" + this.nTries + " tries)");
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "readSurfaceData", 
+$_V(c$, "readSurfaceData", 
 function (isMapData) {
 switch (this.params.dataType) {
 case 1294:
@@ -357,7 +357,7 @@ $_M(c$, "createGeodesic",
 var ms = J.util.MeshSurface.getSphereData (4);
 var pts = ms.altVertices;
 for (var i = 0; i < pts.length; i++) {
-var pt = J.util.P3.newP (pts[i]);
+var pt = JU.P3.newP (pts[i]);
 pt.scale (this.params.distance);
 pt.add (this.center);
 this.addVC (pt, 0, i);

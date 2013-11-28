@@ -24,7 +24,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.thread.MoveThread, []);
 });
-Clazz.overrideMethod (c$, "setManager", 
+$_V(c$, "setManager", 
 function (manager, viewer, params) {
 var options = params;
 this.setViewer (viewer, "MoveThread");
@@ -51,7 +51,7 @@ this.zoomPercent0 = this.transformManager.zoomPercent;
 this.iStep = 0;
 return this.totalSteps;
 }, "~O,J.viewer.Viewer,~O");
-Clazz.overrideMethod (c$, "run1", 
+$_V(c$, "run1", 
 function (mode) {
 while (true) switch (mode) {
 case -1:

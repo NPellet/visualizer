@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader", "java.util.Hashtable"], "J.adapter.readers.quantum.NWChemReader", ["java.lang.Character", "$.Float", "J.adapter.readers.quantum.BasisFunctionReader", "J.adapter.smarter.SmarterJmolAdapter", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.JmolList", "$.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader", "java.util.Hashtable"], "J.adapter.readers.quantum.NWChemReader", ["java.lang.Character", "$.Float", "JU.AU", "$.List", "J.adapter.readers.quantum.BasisFunctionReader", "J.adapter.smarter.SmarterJmolAdapter", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.taskNumber = 1;
 this.equivalentAtomSets = 0;
@@ -19,11 +19,11 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.htMOs =  new java.util.Hashtable ();
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.calculationType = "(NWCHEM)";
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.trim ().startsWith ("NWChem")) {
 this.inInput = (this.line.indexOf ("NWChem Input Module") >= 0);
@@ -75,7 +75,7 @@ if (this.equivalentAtomSets != 0) this.readMOs ();
 return true;
 }return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 this.checkMOs ();
 this.finalizeReaderASCR ();
@@ -142,7 +142,7 @@ var tokens;
 this.haveEnergy = false;
 this.atomSetCollection.newAtomSet ();
 this.atomSetCollection.setAtomSetModelProperty (".PATH", "Task " + this.taskNumber + (this.inInput ? J.adapter.smarter.SmarterJmolAdapter.PATH_SEPARATOR + "Input" : J.adapter.smarter.SmarterJmolAdapter.PATH_SEPARATOR + "Geometry"));
-this.atomTypes =  new J.util.JmolList ();
+this.atomTypes =  new JU.List ();
 while (this.readLine () != null && this.line.length > 0) {
 tokens = this.getTokens ();
 if (tokens.length < 6) break;
@@ -264,7 +264,7 @@ this.getDFMap (J.adapter.readers.quantum.NWChemReader.$FC_LIST, J.api.JmolAdapte
 } else {
 this.getDFMap (J.adapter.readers.quantum.NWChemReader.$DS_LIST, J.api.JmolAdapter.SHELL_D_SPHERICAL, J.adapter.readers.quantum.BasisFunctionReader.CANONICAL_DS_LIST, 2);
 this.getDFMap (J.adapter.readers.quantum.NWChemReader.$FS_LIST, J.api.JmolAdapter.SHELL_F_SPHERICAL, J.adapter.readers.quantum.BasisFunctionReader.CANONICAL_FS_LIST, 2);
-}this.shells =  new J.util.JmolList ();
+}this.shells =  new JU.List ();
 var atomInfo =  new java.util.Hashtable ();
 var atomSym = null;
 var atomData = null;
@@ -272,14 +272,14 @@ var shellData = null;
 while (this.line != null) {
 var nBlankLines = 0;
 while (this.line.length < 3 || this.line.charAt (2) == ' ') {
-shellData =  new J.util.JmolList ();
+shellData =  new JU.List ();
 this.readLine ();
 if (this.line.length < 3) nBlankLines++;
 }
 if (nBlankLines >= 2) break;
 if (this.parseIntStr (this.line) == -2147483648) {
 atomSym = this.getTokens ()[0];
-atomData =  new J.util.JmolList ();
+atomData =  new JU.List ();
 atomInfo.put (atomSym, atomData);
 this.readLine ();
 this.readLine ();
@@ -294,7 +294,7 @@ atomData.addLast (shellData);
 }
 var nD = (isD6F10 ? 6 : 5);
 var nF = (isD6F10 ? 10 : 7);
-var gdata =  new J.util.JmolList ();
+var gdata =  new JU.List ();
 for (var i = 0; i < this.atomTypes.size (); i++) {
 atomData = atomInfo.get (this.atomTypes.get (i));
 var nShells = atomData.size ();
@@ -328,7 +328,7 @@ for (var ifunc = 0; ifunc < nGaussians; ifunc++) gdata.addLast (shellData.get (i
 this.gaussianCount += nGaussians;
 }
 }
-this.gaussians = J.util.ArrayUtil.newFloat2 (this.gaussianCount);
+this.gaussians = JU.AU.newFloat2 (this.gaussianCount);
 for (var i = 0; i < this.gaussianCount; i++) this.gaussians[i] = gdata.get (i);
 
 J.util.Logger.info (this.gaussianCount + " Gaussians read");
@@ -336,7 +336,7 @@ return true;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readMOs", 
 ($fz = function () {
-var lines =  new J.util.JmolList ();
+var lines =  new JU.List ();
 this.htMOs.put (this.line, lines);
 lines.addLast (this.line);
 var nblank = 0;
@@ -390,7 +390,7 @@ this.setMOData (true);
 this.shells = null;
 this.htMOs.clear ();
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "readLine", 
+$_V(c$, "readLine", 
 function () {
 this.RL ();
 if (!this.purging && this.line != null && this.line.startsWith ("--")) {

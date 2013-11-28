@@ -17,9 +17,9 @@ return defaultValue;
 }, $fz.isPrivate = true, $fz), "~S,~B");
 c$.setLogger = $_M(c$, "setLogger", 
 function (logger) {
-($t$ = J.util.Logger._logger = logger, J.util.Logger.prototype._logger = J.util.Logger._logger, $t$);
-($t$ = J.util.Logger.debugging = J.util.Logger.isActiveLevel (5) || J.util.Logger.isActiveLevel (6), J.util.Logger.prototype.debugging = J.util.Logger.debugging, $t$);
-($t$ = J.util.Logger.debuggingHigh = (J.util.Logger.debugging && J.util.Logger._activeLevels[6]), J.util.Logger.prototype.debuggingHigh = J.util.Logger.debuggingHigh, $t$);
+J.util.Logger._logger = logger;
+J.util.Logger.debugging = J.util.Logger.isActiveLevel (5) || J.util.Logger.isActiveLevel (6);
+J.util.Logger.debuggingHigh = (J.util.Logger.debugging && J.util.Logger._activeLevels[6]);
 }, "J.util.LoggerInterface");
 c$.isActiveLevel = $_M(c$, "isActiveLevel", 
 function (level) {
@@ -30,8 +30,8 @@ function (level, active) {
 if (level < 0) level = 0;
 if (level >= 7) level = 6;
 J.util.Logger._activeLevels[level] = active;
-($t$ = J.util.Logger.debugging = J.util.Logger.isActiveLevel (5) || J.util.Logger.isActiveLevel (6), J.util.Logger.prototype.debugging = J.util.Logger.debugging, $t$);
-($t$ = J.util.Logger.debuggingHigh = (J.util.Logger.debugging && J.util.Logger._activeLevels[6]), J.util.Logger.prototype.debuggingHigh = J.util.Logger.debuggingHigh, $t$);
+J.util.Logger.debugging = J.util.Logger.isActiveLevel (5) || J.util.Logger.isActiveLevel (6);
+J.util.Logger.debuggingHigh = (J.util.Logger.debugging && J.util.Logger._activeLevels[6]);
 }, "~N,~B");
 c$.setLogLevel = $_M(c$, "setLogLevel", 
 function (level) {
@@ -62,7 +62,7 @@ return J.util.Logger._logLevel;
 });
 c$.doLogLevel = $_M(c$, "doLogLevel", 
 function (log) {
-($t$ = J.util.Logger._logLevel = log, J.util.Logger.prototype._logLevel = J.util.Logger._logLevel, $t$);
+J.util.Logger._logLevel = log;
 }, "~B");
 c$.debug = $_M(c$, "debug", 
 function (txt) {
@@ -183,8 +183,8 @@ J.util.Logger._activeLevels[4] = J.util.Logger.getProperty ("info", true);
 J.util.Logger._activeLevels[3] = J.util.Logger.getProperty ("warn", true);
 J.util.Logger._activeLevels[2] = J.util.Logger.getProperty ("error", true);
 J.util.Logger._activeLevels[1] = J.util.Logger.getProperty ("fatal", true);
-($t$ = J.util.Logger._logLevel = J.util.Logger.getProperty ("logLevel", false), J.util.Logger.prototype._logLevel = J.util.Logger._logLevel, $t$);
-($t$ = J.util.Logger.debugging = (J.util.Logger._logger != null && (J.util.Logger._activeLevels[5] || J.util.Logger._activeLevels[6])), J.util.Logger.prototype.debugging = J.util.Logger.debugging, $t$);
-($t$ = J.util.Logger.debuggingHigh = (J.util.Logger.debugging && J.util.Logger._activeLevels[6]), J.util.Logger.prototype.debuggingHigh = J.util.Logger.debuggingHigh, $t$);
+J.util.Logger._logLevel = J.util.Logger.getProperty ("logLevel", false);
+J.util.Logger.debugging = (J.util.Logger._logger != null && (J.util.Logger._activeLevels[5] || J.util.Logger._activeLevels[6]));
+J.util.Logger.debuggingHigh = (J.util.Logger.debugging && J.util.Logger._activeLevels[6]);
 }c$.htTiming = c$.prototype.htTiming =  new java.util.Hashtable ();
 });

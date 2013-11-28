@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.data");
-Clazz.load (["J.util.MeshSurface"], "J.jvxl.data.MeshData", ["java.lang.Float", "java.util.Arrays", "J.util.ArrayUtil", "$.BS", "$.V3"], function () {
+Clazz.load (["J.util.MeshSurface"], "J.jvxl.data.MeshData", ["java.lang.Float", "java.util.Arrays", "JU.AU", "$.BS", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.setsSuccessful = false;
 this.vertexIncrement = 1;
@@ -16,7 +16,7 @@ $_M(c$, "addVertexCopy",
 function (vertex, value, assocVertex) {
 if (assocVertex < 0) this.vertexIncrement = -assocVertex;
 return this.addVCVal (vertex, value);
-}, "J.util.P3,~N,~N");
+}, "JU.P3,~N,~N");
 $_M(c$, "getSurfaceSet", 
 function () {
 return (this.surfaceSet == null ? this.getSurfaceSetForLevel (0) : this.surfaceSet);
@@ -107,8 +107,8 @@ $_M(c$, "createSet",
 var i;
 for (i = 0; i < this.nSets; i++) if (this.surfaceSet[i] == null) break;
 
-if (i == this.surfaceSet.length) this.surfaceSet = J.util.ArrayUtil.ensureLength (this.surfaceSet, this.surfaceSet.length + 100);
-this.surfaceSet[i] =  new J.util.BS ();
+if (i == this.surfaceSet.length) this.surfaceSet = JU.AU.ensureLength (this.surfaceSet, this.surfaceSet.length + 100);
+this.surfaceSet[i] =  new JU.BS ();
 this.surfaceSet[i].set (v1);
 this.surfaceSet[i].set (v2);
 this.surfaceSet[i].set (v3);
@@ -139,9 +139,9 @@ if (getSets || this.nSets == 0) this.getSurfaceSet ();
 var justOne = (thisSet >= -1);
 var n = (justOne || this.nSets == 0 ? 1 : this.nSets);
 var v =  Clazz.newDoubleArray (n, 0);
-var vAB =  new J.util.V3 ();
-var vAC =  new J.util.V3 ();
-var vTemp =  new J.util.V3 ();
+var vAB =  new JU.V3 ();
+var vAC =  new JU.V3 ();
+var vTemp =  new JU.V3 ();
 for (var i = this.polygonCount; --i >= 0; ) {
 if (!this.setABC (i)) continue;
 var iSet = (this.nSets == 0 ? 0 : this.vertexSets[this.iA]);
@@ -167,14 +167,14 @@ return v;
 $_M(c$, "updateInvalidatedVertices", 
 function (bs) {
 bs.clearAll ();
-for (var i = 0, ipt = 0; i < this.vertexCount; i += this.vertexIncrement, ipt++) if (Float.isNaN (this.vertexValues[i])) bs.set (i);
+for (var i = 0; i < this.vertexCount; i += this.vertexIncrement) if (Float.isNaN (this.vertexValues[i])) bs.set (i);
 
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "invalidateVertices", 
 function (bsInvalid) {
 for (var i = bsInvalid.nextSetBit (0); i >= 0; i = bsInvalid.nextSetBit (i + 1)) this.vertexValues[i] = NaN;
 
-}, "J.util.BS");
+}, "JU.BS");
 c$.$MeshData$SSet$ = function () {
 Clazz.pu$h ();
 c$ = Clazz.decorateAsClass (function () {
@@ -187,7 +187,7 @@ Clazz.makeConstructor (c$,
 function (a) {
 this.bs = a;
 this.n = a.cardinality ();
-}, "J.util.BS");
+}, "JU.BS");
 c$ = Clazz.p0p ();
 };
 c$.$MeshData$SortSet$ = function () {
@@ -196,7 +196,7 @@ c$ = Clazz.decorateAsClass (function () {
 Clazz.prepareCallback (this, arguments);
 Clazz.instantialize (this, arguments);
 }, J.jvxl.data.MeshData, "SortSet", null, java.util.Comparator);
-Clazz.overrideMethod (c$, "compare", 
+$_V(c$, "compare", 
 function (a, b) {
 return (a.n > b.n ? -1 : a.n < b.n ? 1 : 0);
 }, "J.jvxl.data.MeshData.SSet,J.jvxl.data.MeshData.SSet");

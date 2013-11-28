@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.pdb");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable"], "J.adapter.readers.pdb.PdbReader", ["java.lang.Boolean", "$.Character", "$.Float", "J.adapter.smarter.Atom", "$.Structure", "J.api.Interface", "$.JmolAdapter", "J.constant.EnumStructure", "J.util.Escape", "$.JmolList", "$.Logger", "$.Matrix4f", "$.P3", "$.Parser", "$.SB", "$.TextFormat"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable"], "J.adapter.readers.pdb.PdbReader", ["java.lang.Boolean", "$.Character", "$.Float", "JU.List", "$.M4", "$.P3", "$.PT", "$.SB", "J.adapter.smarter.Atom", "$.Structure", "J.api.Interface", "$.JmolAdapter", "J.constant.EnumStructure", "J.util.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.serMode = 0;
 this.seqMode = 0;
@@ -20,7 +20,7 @@ this.htSites = null;
 this.htElementsInCurrentGroup = null;
 this.htMolIds = null;
 this.vCompnds = null;
-this.vBiomts = null;
+this.thisBiomolecule = null;
 this.vBiomolecules = null;
 this.vTlsModels = null;
 this.sbTlsErrors = null;
@@ -52,6 +52,9 @@ this.lastTargetSerial = -2147483648;
 this.tlsGroupID = 0;
 this.atomTypePt0 = 0;
 this.atomTypeLen = 0;
+this.byChain = false;
+this.bySymop = false;
+this.isCourseGrained = false;
 this.haveDoubleBonds = false;
 this.dataT = null;
 this.tlsU = null;
@@ -61,17 +64,21 @@ Clazz.prepareFields (c$, function () {
 this.htFormul =  new java.util.Hashtable ();
 this.dataT =  Clazz.newFloatArray (8, 0);
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.setIsPDB ();
-this.pdbHeader = (this.getHeader ?  new J.util.SB () : null);
+this.pdbHeader = (this.getHeader ?  new JU.SB () : null);
 this.applySymmetry = !this.checkFilterKey ("NOSYMMETRY");
 this.getTlsGroups = this.checkFilterKey ("TLS");
+this.byChain = this.checkFilterKey ("BYCHAIN");
+this.bySymop = this.checkFilterKey ("BYSYMOP");
+this.isCourseGrained = this.byChain || this.bySymop;
+if (this.checkFilterKey ("ASSEMBLY")) this.filter = JU.PT.simpleReplace (this.filter, "ASSEMBLY", "BIOMOLECULE");
 if (this.htParams.containsKey ("vTlsModels")) {
 this.vTlsModels = this.htParams.remove ("vTlsModels");
 }var s = this.getFilter ("TYPE ");
 if (s != null) {
-var tokens = J.util.Parser.getTokens (s.$replace (',', ' '));
+var tokens = JU.PT.getTokens (s.$replace (',', ' '));
 this.atomTypePt0 = Integer.parseInt (tokens[0]) - 1;
 var pt = tokens[1].indexOf ("=");
 if (pt >= 0) {
@@ -82,12 +89,12 @@ pt = tokens[1].length;
 }var conf = this.getFilter ("CONF ");
 if (conf != null) {
 this.configurationPtr = this.parseIntStr (conf);
-this.sbIgnored =  new J.util.SB ();
-this.sbSelected =  new J.util.SB ();
+this.sbIgnored =  new JU.SB ();
+this.sbSelected =  new JU.SB ();
 }this.isLegacyModelType = (this.stateScriptVersionInt < 120000);
 this.isConnectStateBug = (this.stateScriptVersionInt >= 120151 && this.stateScriptVersionInt <= 120220 || this.stateScriptVersionInt >= 120300 && this.stateScriptVersionInt <= 120320);
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 var ptOption = ((this.lineLength = this.line.length) < 6 ? -1 : "ATOM    HETATM  MODEL   CONECT  HELIX   SHEET   TURN    HET     HETNAM  ANISOU  SITE    CRYST1  SCALE1  SCALE2  SCALE3  EXPDTA  FORMUL  REMARK  HEADER  COMPND  SOURCE  TITLE   ".indexOf (this.line.substring (0, 6))) >> 3;
 var isAtom = (ptOption == 0 || ptOption == 1);
@@ -179,7 +186,7 @@ return true;
 }
 return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 this.finalizeReaderPDB ();
 });
@@ -187,14 +194,15 @@ $_M(c$, "finalizeReaderPDB",
 function () {
 this.checkNotPDB ();
 this.atomSetCollection.connectAll (this.maxSerial, this.isConnectStateBug);
+var symmetry;
 if (this.vBiomolecules != null && this.vBiomolecules.size () > 0 && this.atomSetCollection.getAtomCount () > 0) {
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("biomolecules", this.vBiomolecules);
 this.setBiomoleculeAtomCounts ();
-if (this.vBiomts != null && this.applySymmetry) {
-this.atomSetCollection.applySymmetryBio (this.vBiomts, this.notionalUnitCell, this.applySymmetryToBonds, this.filter);
+if (this.thisBiomolecule != null && this.applySymmetry) {
+this.atomSetCollection.applySymmetryBio (this.thisBiomolecule, this.notionalUnitCell, this.applySymmetryToBonds, this.filter);
 this.vTlsModels = null;
 }}if (this.vTlsModels != null) {
-var symmetry = J.api.Interface.getOptionInterface ("symmetry.Symmetry");
+symmetry = J.api.Interface.getOptionInterface ("symmetry.Symmetry");
 var n = this.atomSetCollection.getAtomSetCount ();
 if (n == this.vTlsModels.size ()) {
 for (var i = n; --i >= 0; ) this.setTlsGroups (i, i, symmetry);
@@ -273,7 +281,7 @@ this.$compnd += s.substring (10).trim ();
 this.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("COMPND", this.$compnd);
 }if (this.vCompnds == null) {
 if (isSource) return;
-this.vCompnds =  new J.util.JmolList ();
+this.vCompnds =  new JU.List ();
 this.htMolIds =  new java.util.Hashtable ();
 this.currentCompnd =  new java.util.Hashtable ();
 this.currentCompnd.put ("select", "(*)");
@@ -306,7 +314,7 @@ if (this.vCompnds.size () == 0) this.vCompnds.addLast (this.currentCompnd);
 this.currentKey = key;
 }if (value.endsWith (";")) value = value.substring (0, value.length - 1);
 this.currentCompnd.put (this.currentKey, value);
-if (this.currentKey.equals ("CHAIN")) this.currentCompnd.put ("select", "(:" + J.util.TextFormat.simpleReplace (J.util.TextFormat.simpleReplace (value, ", ", ",:"), " ", "") + ")");
+if (this.currentKey.equals ("CHAIN")) this.currentCompnd.put ("select", "(:" + JU.PT.simpleReplace (JU.PT.simpleReplace (value, ", ", ",:"), " ", "") + ")");
 }, $fz.isPrivate = true, $fz), "~B");
 $_M(c$, "setBiomoleculeAtomCounts", 
 ($fz = function () {
@@ -323,7 +331,7 @@ biomolecule.put ("atomCount", Integer.$valueOf (nAtoms * nTransforms));
 $_M(c$, "remark350", 
 ($fz = function () {
 var biomts = null;
-this.vBiomolecules =  new J.util.JmolList ();
+this.vBiomolecules =  new JU.List ();
 this.chainAtomCounts =  Clazz.newIntArray (255, 0);
 var title = "";
 var chainlist = "";
@@ -331,8 +339,7 @@ var iMolecule = 0;
 var needLine = true;
 var info = null;
 var nBiomt = 0;
-var mIdent =  new J.util.Matrix4f ();
-mIdent.setIdentity ();
+var mIdent = JU.M4.newM (null);
 while (true) {
 if (needLine) this.readLine ();
  else needLine = true;
@@ -341,9 +348,10 @@ try {
 if (this.line.startsWith ("REMARK 350 BIOMOLECULE:")) {
 if (nBiomt > 0) J.util.Logger.info ("biomolecule " + iMolecule + ": number of transforms: " + nBiomt);
 info =  new java.util.Hashtable ();
-biomts =  new J.util.JmolList ();
+biomts =  new JU.List ();
 iMolecule = this.parseIntStr (this.line.substring (this.line.indexOf (":") + 1));
 title = this.line.trim ();
+info.put ("name", "biomolecule " + iMolecule);
 info.put ("molecule", Integer.$valueOf (iMolecule));
 info.put ("title", title);
 info.put ("chains", "");
@@ -355,14 +363,16 @@ if (info == null) {
 needLine = false;
 this.line = "REMARK 350 BIOMOLECULE: 1  APPLY THE FOLLOWING TO CHAINS:";
 continue;
-}chainlist = ":" + this.line.substring (41).trim ().$replace (' ', ':');
+}var list = this.line.substring (41).trim ();
+this.appendLoadNote ("found biomolecule " + iMolecule + ": " + list);
+chainlist = ":" + list.$replace (' ', ':');
 needLine = false;
 while (this.readLine () != null && this.line.indexOf ("BIOMT") < 0 && this.line.indexOf ("350") == 7) chainlist += ":" + this.line.substring (11).trim ().$replace (' ', ':');
 
 if (this.checkFilterKey ("BIOMOLECULE " + iMolecule + ";")) {
 this.setFilter (this.filter.$replace (':', '_') + chainlist);
 J.util.Logger.info ("filter set to \"" + this.filter + "\"");
-this.vBiomts = biomts;
+this.thisBiomolecule = info;
 }info.put ("chains", chainlist);
 continue;
 }if (this.line.startsWith ("REMARK 350   BIOMT1 ")) {
@@ -377,14 +387,14 @@ mat[i++] = this.parseFloatStr (tokens[7]);
 if (i == 4 || i == 8) this.readLine ();
 }
 mat[15] = 1;
-var m4 =  new J.util.Matrix4f ();
+var m4 =  new JU.M4 ();
 m4.setA (mat, 0);
 if (m4.equals (mIdent)) biomts.add (0, m4);
  else biomts.addLast (m4);
 continue;
 }} catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
-this.vBiomts = null;
+this.thisBiomolecule = null;
 this.vBiomolecules = null;
 return;
 } else {
@@ -424,9 +434,9 @@ throw e;
 }
 }
 case 2:
-return (isBase10 || Character.isDigit (c) ? this.parseIntRange (this.line, i, j) : J.util.Parser.parseIntRadix (this.line.substring (i, j), 36) + (Character.isUpperCase (c) ? -16696160 : 26973856));
+return (isBase10 || Character.isDigit (c) ? this.parseIntRange (this.line, i, j) : JU.PT.parseIntRadix (this.line.substring (i, j), 36) + (Character.isUpperCase (c) ? -16696160 : 26973856));
 case 1:
-if (!isBase10) return this.serial = J.util.Parser.parseIntRadix (this.line.substring (i, j), 16);
+if (!isBase10) return this.serial = JU.PT.parseIntRadix (this.line.substring (i, j), 16);
 this.serMode = 0;
 return this.getSerial (i, j);
 }
@@ -450,9 +460,9 @@ throw e;
 }
 }
 case 2:
-return (isBase10 || Character.isDigit (c) ? this.parseIntRange (this.line, i, j) : J.util.Parser.parseIntRadix (this.line.substring (i, j), 36) + (Character.isUpperCase (c) ? -456560 : 756496));
+return (isBase10 || Character.isDigit (c) ? this.parseIntRange (this.line, i, j) : JU.PT.parseIntRadix (this.line.substring (i, j), 36) + (Character.isUpperCase (c) ? -456560 : 756496));
 case 1:
-if (!isBase10) return J.util.Parser.parseIntRadix (this.line.substring (i, j), 16);
+if (!isBase10) return JU.PT.parseIntRadix (this.line.substring (i, j), 16);
 this.seqMode = 0;
 return this.getSeqNo (i, j);
 }
@@ -591,8 +601,8 @@ return "Xx";
 $_M(c$, "conect", 
 ($fz = function () {
 if (this.sbConect == null) {
-this.sbConect =  new J.util.SB ();
-this.sb =  new J.util.SB ();
+this.sbConect =  new JU.SB ();
+this.sb =  new JU.SB ();
 } else {
 this.sb.setLength (0);
 }var sourceSerial = -1;
@@ -688,6 +698,7 @@ this.sbConect = null;
 this.atomSetCollection.newAtomSet ();
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("isPDB", Boolean.TRUE);
 this.atomSetCollection.setCurrentAtomSetNumber (modelNumber);
+if (this.isCourseGrained) this.atomSetCollection.setAtomSetAuxiliaryInfo ("courseGrained", Boolean.TRUE);
 }, "~N");
 $_M(c$, "checkNotPDB", 
 ($fz = function () {
@@ -702,7 +713,7 @@ $_M(c$, "cryst1",
 var a = this.getFloat (6, 9);
 if (a == 1) a = NaN;
 this.setUnitCell (a, this.getFloat (15, 9), this.getFloat (24, 9), this.getFloat (33, 7), this.getFloat (40, 7), this.getFloat (47, 7));
-this.setSpaceGroupName (J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (this.line, 55, 66));
+if (this.spaceGroup == null) this.setSpaceGroupName (J.adapter.smarter.AtomSetCollectionReader.parseTrimmedRange (this.line, 55, 66));
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getFloat", 
 ($fz = function (ich, cch) {
@@ -835,7 +846,7 @@ if (tokens.length < 2) continue;
 J.util.Logger.info (this.line);
 if (tokens[1].equalsIgnoreCase ("GROUP")) {
 tlsGroup =  new java.util.Hashtable ();
-ranges =  new J.util.JmolList ();
+ranges =  new JU.List ();
 tlsGroup.put ("ranges", ranges);
 tlsGroups.addLast (tlsGroup);
 this.tlsGroupID = this.parseIntStr (tokens[tokens.length - 1]);
@@ -845,8 +856,8 @@ if (tokens[2].equalsIgnoreCase ("COMPONENTS")) {
 } else {
 nGroups = this.parseIntStr (tokens[tokens.length - 1]);
 if (nGroups < 1) break;
-if (this.vTlsModels == null) this.vTlsModels =  new J.util.JmolList ();
-tlsGroups =  new J.util.JmolList ();
+if (this.vTlsModels == null) this.vTlsModels =  new JU.List ();
+tlsGroups =  new JU.List ();
 this.appendLoadNote (this.line.substring (11).trim ());
 }} else if (tokens[0].equalsIgnoreCase ("COMPONENTS")) {
 components = this.line;
@@ -891,7 +902,7 @@ if (chain != '\0') range.put ("chains", "" + chain + chain);
 ranges.addLast (range);
 }
 } else if (tokens[0].equalsIgnoreCase ("ORIGIN")) {
-var origin =  new J.util.P3 ();
+var origin =  new JU.P3 ();
 tlsGroup.put ("origin", origin);
 if (tokens.length == 8) {
 origin.set (this.parseFloatStr (tokens[5]), this.parseFloatStr (tokens[6]), this.parseFloatStr (tokens[7]));
@@ -978,7 +989,7 @@ this.setTlsTensor (atom, group, symmetry);
 }}
 }
 }
-var sdata =  new J.util.SB ();
+var sdata =  new JU.SB ();
 for (var i = 0; i < data.length; i++) sdata.appendI (data[i]).appendC ('\n');
 
 this.atomSetCollection.setAtomSetAtomProperty ("tlsGroup", sdata.toString (), iModel);
@@ -1042,7 +1053,7 @@ atom.addTensor (symmetry.getTensor (this.dataT).setType (null), "TLS-U", false);
 }, $fz.isPrivate = true, $fz), "J.adapter.smarter.Atom,java.util.Map,J.api.SymmetryInterface");
 $_M(c$, "tlsAddError", 
 ($fz = function (error) {
-if (this.sbTlsErrors == null) this.sbTlsErrors =  new J.util.SB ();
+if (this.sbTlsErrors == null) this.sbTlsErrors =  new JU.SB ();
 this.sbTlsErrors.append (this.fileName).appendC ('\t').append ("TLS group ").appendI (this.tlsGroupID).appendC ('\t').append (error).appendC ('\n');
 }, $fz.isPrivate = true, $fz), "~S");
 c$.fixRadius = $_M(c$, "fixRadius", 

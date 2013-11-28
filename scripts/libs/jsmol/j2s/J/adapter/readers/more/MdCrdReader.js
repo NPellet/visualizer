@@ -1,15 +1,15 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.more.MdCrdReader", ["java.lang.Float", "J.util.Logger", "$.P3"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.more.MdCrdReader", ["java.lang.Float", "JU.P3", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.ptFloat = 0;
 this.lenLine = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.more, "MdCrdReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.initializeTrajectoryFile ();
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 this.readCoordinates ();
 J.util.Logger.info ("Total number of trajectory steps=" + this.trajectorySteps.size ());
@@ -46,7 +46,7 @@ $_M(c$, "getPoint",
 var x = this.getFloat ();
 var y = this.getFloat ();
 var z = this.getFloat ();
-return (Float.isNaN (z) ? null : J.util.P3.new3 (x, y, z));
+return (Float.isNaN (z) ? null : JU.P3.new3 (x, y, z));
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getTrajectoryStep", 
 ($fz = function (trajectoryStep, isPeriodic) {

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["J.modelset.Group"], "J.modelsetbio.Monomer", ["java.lang.Float", "J.constant.EnumStructure", "J.util.Logger", "$.Measure", "$.P3", "$.Quaternion", "J.viewer.JC"], function () {
+Clazz.load (["J.modelset.Group"], "J.modelsetbio.Monomer", ["java.lang.Float", "JU.P3", "J.constant.EnumStructure", "J.util.Logger", "$.Measure", "$.Quaternion", "J.viewer.JC"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bioPolymer = null;
 this.offsets = null;
@@ -18,7 +18,7 @@ var offset = this.offsets[0] & 0xFF;
 if (offset != 255) this.leadAtomIndex = firstAtomIndex + offset;
 return this;
 }, "J.modelset.Chain,~S,~N,~N,~N,~A");
-Clazz.overrideMethod (c$, "getGroups", 
+$_V(c$, "getGroups", 
 function () {
 return this.bioPolymer.getGroups ();
 });
@@ -27,11 +27,11 @@ function (polymer, index) {
 this.bioPolymer = polymer;
 this.monomerIndex = index;
 }, "J.modelsetbio.BioPolymer,~N");
-Clazz.overrideMethod (c$, "getSelectedMonomerCount", 
+$_V(c$, "getSelectedMonomerCount", 
 function () {
 return this.bioPolymer.getSelectedMonomerCount ();
 });
-Clazz.overrideMethod (c$, "getSelectedMonomerIndex", 
+$_V(c$, "getSelectedMonomerIndex", 
 function () {
 return (this.monomerIndex >= 0 && this.bioPolymer.isMonomerSelected (this.monomerIndex) ? this.monomerIndex : -1);
 });
@@ -39,7 +39,7 @@ $_M(c$, "getBioPolymer",
 function () {
 return this.bioPolymer;
 });
-Clazz.overrideMethod (c$, "getBioPolymerLength", 
+$_V(c$, "getBioPolymerLength", 
 function () {
 return this.bioPolymer == null ? 0 : this.bioPolymer.monomerCount;
 });
@@ -83,7 +83,7 @@ $_M(c$, "getProteinStructure",
 function () {
 return null;
 });
-Clazz.overrideMethod (c$, "getProteinStructureType", 
+$_V(c$, "getProteinStructureType", 
 function () {
 return J.constant.EnumStructure.NONE;
 });
@@ -95,7 +95,7 @@ $_M(c$, "isSheet",
 function () {
 return false;
 });
-Clazz.overrideMethod (c$, "setStrucNo", 
+$_V(c$, "setStrucNo", 
 function (id) {
 }, "~N");
 $_M(c$, "getAtomFromOffsetIndex", 
@@ -129,11 +129,11 @@ return this.chain.getAtom (this.firstAtomIndex + offset);
 }}
 return null;
 }, "~A,~N");
-Clazz.overrideMethod (c$, "isLeadAtom", 
+$_V(c$, "isLeadAtom", 
 function (atomIndex) {
 return atomIndex == this.leadAtomIndex;
 }, "~N");
-Clazz.overrideMethod (c$, "getLeadAtom", 
+$_V(c$, "getLeadAtom", 
 function () {
 return this.getAtomFromOffsetIndex (0);
 });
@@ -152,11 +152,11 @@ return this.getLeadAtom ();
 $_M(c$, "findNearestAtomIndex", 
 function (x, y, closest, madBegin, madEnd) {
 }, "~N,~N,~A,~N,~N");
-Clazz.overrideMethod (c$, "calcBioParameters", 
+$_V(c$, "calcBioParameters", 
 function () {
 return this.bioPolymer.calcParameters ();
 });
-Clazz.overrideMethod (c$, "haveParameters", 
+$_V(c$, "haveParameters", 
 function () {
 return this.bioPolymer.haveParameters;
 });
@@ -183,7 +183,7 @@ info.put ("structureType", structure.type.getBioStructureTypeName (false));
 }info.put ("shapeVisibilityFlags", Integer.$valueOf (this.shapeVisibilityFlags));
 return info;
 });
-Clazz.overrideMethod (c$, "getStructureId", 
+$_V(c$, "getStructureId", 
 function () {
 var structure = this.getProteinStructure ();
 return (structure == null ? "" : structure.type.getBioStructureTypeName (false));
@@ -200,7 +200,7 @@ ch = altloc;
 conformationIndex--;
 }if (conformationIndex < 0 && altloc != ch) bsConformation.clear (i);
 }
-}, "~A,J.util.BS,~N");
+}, "~A,JU.BS,~N");
 $_M(c$, "updateOffsetsForAlternativeLocations", 
 function (atoms, bsSelected) {
 for (var offsetIndex = this.offsets.length; --offsetIndex >= 0; ) {
@@ -223,12 +223,12 @@ this.offsets[offsetIndex] = offsetNew;
 break;
 }
 }
-}, "~A,J.util.BS");
+}, "~A,JU.BS");
 $_M(c$, "getMonomerSequenceAtoms", 
 function (bsInclude, bsResult) {
 this.selectAtoms (bsResult);
 bsResult.and (bsInclude);
-}, "J.util.BS,J.util.BS");
+}, "JU.BS,JU.BS");
 c$.checkOptional = $_M(c$, "checkOptional", 
 function (offsets, atom, firstAtomIndex, index) {
 if (J.modelsetbio.Monomer.have (offsets, atom)) return true;
@@ -247,7 +247,7 @@ var prev = (mStep < 1 || this.monomerIndex <= 0 ? null : this.bioPolymer.monomer
 var q2 = this.getQuaternion (qType);
 var q1 = (mStep < 1 ? J.util.Quaternion.getQuaternionFrameV (J.viewer.JC.axisX, J.viewer.JC.axisY, J.viewer.JC.axisZ, false) : prev == null ? null : prev.getQuaternion (qType));
 if (q1 == null || q2 == null) return this.getHelixData (tokType, qType, mStep);
-var a = (mStep < 1 ? J.util.P3.new3 (0, 0, 0) : prev.getQuaternionFrameCenter (qType));
+var a = (mStep < 1 ? JU.P3.new3 (0, 0, 0) : prev.getQuaternionFrameCenter (qType));
 var b = this.getQuaternionFrameCenter (qType);
 if (a == null || b == null) return this.getHelixData (tokType, qType, mStep);
 return J.util.Measure.computeHelicalAxis (tokType == 135176 ? "helixaxis" + this.getUniqueID () : null, tokType, a, b, q2.div (q1));
@@ -261,22 +261,22 @@ var aid = (a == null ? '\0' : this.getLeadAtom ().getAlternateLocationID ());
 if (aid != '\0') id += "_" + aid;
 return id;
 });
-Clazz.overrideMethod (c$, "isCrossLinked", 
+$_V(c$, "isCrossLinked", 
 function (g) {
 for (var i = this.firstAtomIndex; i <= this.lastAtomIndex; i++) if (this.getCrossLinkGroup (i, null, g)) return true;
 
 return false;
 }, "J.modelset.Group");
-Clazz.overrideMethod (c$, "getCrossLinkLead", 
+$_V(c$, "getCrossLinkLead", 
 function (vReturn) {
 for (var i = this.firstAtomIndex; i <= this.lastAtomIndex; i++) if (this.getCrossLink (i, vReturn) && vReturn == null) return true;
 
 return false;
-}, "J.util.JmolList");
+}, "JU.List");
 $_M(c$, "getCrossLink", 
 function (i, vReturn) {
 return this.getCrossLinkGroup (i, vReturn, null);
-}, "~N,J.util.JmolList");
+}, "~N,JU.List");
 $_M(c$, "getCrossLinkGroup", 
 ($fz = function (i, vReturn, group) {
 var atom = this.chain.getAtom (i);
@@ -299,8 +299,8 @@ if (group != null) break;
 vReturn.addLast (Integer.$valueOf (g.leadAtomIndex));
 }}
 return haveCrossLink;
-}, $fz.isPrivate = true, $fz), "~N,J.util.JmolList,J.modelset.Group");
-Clazz.overrideMethod (c$, "isConnectedPrevious", 
+}, $fz.isPrivate = true, $fz), "~N,JU.List,J.modelset.Group");
+$_V(c$, "isConnectedPrevious", 
 function () {
 return true;
 });

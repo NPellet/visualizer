@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.io2");
-Clazz.load (["J.api.JmolFilesReaderInterface"], "J.io2.FilesReader", ["J.api.Interface", "J.io.JmolBinary", "J.util.Logger", "$.TextFormat"], function () {
+Clazz.load (["J.api.JmolFilesReaderInterface"], "J.io2.FilesReader", ["java.io.BufferedInputStream", "$.BufferedReader", "java.util.zip.ZipInputStream", "JU.PT", "J.api.Interface", "$.JmolDocument", "J.io.JmolBinary", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.fm = null;
 this.viewer = null;
@@ -15,7 +15,7 @@ Clazz.instantialize (this, arguments);
 Clazz.makeConstructor (c$, 
 function () {
 });
-Clazz.overrideMethod (c$, "set", 
+$_V(c$, "set", 
 function (fileManager, viewer, name, nameAsGiven, types, readers, htParams, isAppend) {
 this.fm = fileManager;
 this.viewer = viewer;
@@ -26,7 +26,7 @@ this.dataReaders = readers;
 this.htParams = htParams;
 this.isAppend = isAppend;
 }, "J.viewer.FileManager,J.viewer.Viewer,~A,~A,~A,~A,java.util.Map,~B");
-Clazz.overrideMethod (c$, "run", 
+$_V(c$, "run", 
 function () {
 if (!this.isAppend && this.viewer.displayLoadErrors) this.viewer.zap (false, true, false);
 var getReadersOnly = !this.viewer.displayLoadErrors;
@@ -40,14 +40,14 @@ return;
 }if (!this.isAppend && !this.viewer.displayLoadErrors) this.viewer.zap (false, true, false);
 this.fm.fullPathName = this.fm.fileName = this.fm.nameAsGiven = (this.dataReaders == null ? "file[]" : "String[]");
 });
-Clazz.overrideMethod (c$, "getBufferedReaderOrBinaryDocument", 
+$_V(c$, "getBufferedReaderOrBinaryDocument", 
 function (i, forceBinary) {
 if (this.dataReaders != null) return (forceBinary ? null : this.dataReaders[i].getBufferedReader ());
 var name = this.fullPathNamesIn[i];
 var subFileList = null;
 this.htParams.remove ("subFileList");
 if (name.indexOf ("|") >= 0) {
-subFileList = J.util.TextFormat.splitChars (name, "|");
+subFileList = JU.PT.split (name, "|");
 name = subFileList[0];
 }var t = this.fm.getUnzippedReaderOrStreamFromName (name, null, true, forceBinary, false, true, this.htParams);
 if (Clazz.instanceOf (t, java.util.zip.ZipInputStream)) {
@@ -61,7 +61,7 @@ jd.setStream (t, true);
 return jd;
 }return (Clazz.instanceOf (t, java.io.BufferedReader) || Clazz.instanceOf (t, J.api.JmolDocument) ? t : t == null ? "error opening:" + this.namesAsGivenIn[i] : t);
 }, "~N,~B");
-Clazz.overrideMethod (c$, "getAtomSetCollection", 
+$_V(c$, "getAtomSetCollection", 
 function () {
 return this.atomSetCollection;
 });

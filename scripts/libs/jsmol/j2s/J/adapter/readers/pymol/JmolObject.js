@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.pymol");
-Clazz.load (null, "J.adapter.readers.pymol.JmolObject", ["java.lang.Float", "J.adapter.readers.pymol.PyMOLScene", "J.util.BSUtil", "$.Escape", "$.P3", "$.Parser", "$.SB"], function () {
+Clazz.load (null, "J.adapter.readers.pymol.JmolObject", ["java.lang.Float", "JU.P3", "$.PT", "$.SB", "J.adapter.readers.pymol.PyMOLScene", "J.util.BSUtil", "$.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.id = 0;
 this.bsAtoms = null;
@@ -21,7 +21,7 @@ this.id = id;
 this.bsAtoms = bsAtoms;
 this.info = info;
 this.jmolName = branchNameID;
-}, "~N,~S,J.util.BS,~O");
+}, "~N,~S,JU.BS,~O");
 $_M(c$, "offset", 
 function (modelOffset, atomOffset) {
 if (modelOffset > 0) {
@@ -163,7 +163,7 @@ sID = (this.bsAtoms == null ? this.info : this.jmolName);
 if (sm.getShapeIdFromObjectName (sID) >= 0) {
 sm.viewer.setObjectProp (sID, 1610625028);
 return;
-}sb =  new J.util.SB ();
+}sb =  new JU.SB ();
 sb.append ("isosurface ID ").append (J.util.Escape.eS (sID));
 if (this.modelIndex < 0) this.modelIndex = sm.viewer.getCurrentModelIndex ();
 if (this.bsAtoms == null) {
@@ -179,7 +179,7 @@ var resolution = "";
 if (lighting == null) {
 lighting = "mesh nofill";
 resolution = " resolution 1.5";
-}var haveMep = J.util.Parser.isOneOf (sID, mepList);
+}var haveMep = JU.PT.isOneOf (sID, mepList);
 var model = m.models[this.modelIndex].getModelNumberDotted ();
 var ignore = "";
 var type = (this.size < 0 ? " sasurface " : " solvent ");
@@ -198,7 +198,7 @@ sID = mep.get (mep.size () - 2).toString ();
 var mapID = mep.get (mep.size () - 1).toString ();
 var min = J.adapter.readers.pymol.PyMOLScene.floatAt (J.adapter.readers.pymol.PyMOLScene.listAt (mep, 3), 0);
 var max = J.adapter.readers.pymol.PyMOLScene.floatAt (J.adapter.readers.pymol.PyMOLScene.listAt (mep, 3), 2);
-sb =  new J.util.SB ();
+sb =  new JU.SB ();
 sb.append (";isosurface ID ").append (J.util.Escape.eS (sID)).append (" map ").append (J.util.Escape.eS (this.cacheID)).append (" ").append (J.util.Escape.eS (mapID)).append (";color isosurface range " + min + " " + max + ";isosurface colorscheme rwb;set isosurfacekey true");
 if (this.translucency > 0) sb.append (";color isosurface translucent " + this.translucency);
 if (doCache) sb.append (";isosurface cache");
@@ -207,19 +207,19 @@ case 1073742018:
 this.modelIndex = sm.viewer.getCurrentModelIndex ();
 var mesh = this.info;
 sID = mesh.get (mesh.size () - 2).toString ();
-sb =  new J.util.SB ();
+sb =  new JU.SB ();
 sb.append ("isosurface ID ").append (J.util.Escape.eS (sID)).append (" model ").append (m.models[this.modelIndex].getModelNumberDotted ()).append (" color ").append (J.util.Escape.escapeColor (this.argb)).append ("  ").append (J.util.Escape.eS (this.cacheID)).append (" ").append (J.util.Escape.eS (sID)).append (" mesh nofill frontonly");
 var within = J.adapter.readers.pymol.PyMOLScene.floatAt (J.adapter.readers.pymol.PyMOLScene.listAt (J.adapter.readers.pymol.PyMOLScene.listAt (mesh, 2), 0), 11);
 var list = J.adapter.readers.pymol.PyMOLScene.listAt (J.adapter.readers.pymol.PyMOLScene.listAt (J.adapter.readers.pymol.PyMOLScene.listAt (mesh, 2), 0), 12);
 if (within > 0) {
-var pt =  new J.util.P3 ();
+var pt =  new JU.P3 ();
 sb.append (";isosurface slab within ").appendF (within).append (" [ ");
 for (var j = list.size () - 3; j >= 0; j -= 3) {
 J.adapter.readers.pymol.PyMOLScene.pointAt (list, j, pt);
 sb.append (J.util.Escape.eP (pt));
 }
 sb.append (" ]");
-}if (doCache && !J.util.Parser.isOneOf (sID, mepList)) sb.append (";isosurface cache");
+}if (doCache && !JU.PT.isOneOf (sID, mepList)) sb.append (";isosurface cache");
 sb.append (";set meshScale ").appendI (Clazz.doubleToInt (this.size / 500));
 break;
 case 135271429:

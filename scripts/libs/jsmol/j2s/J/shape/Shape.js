@@ -52,13 +52,13 @@ $_M(c$, "setShapeSizeRD",
 function (size, rd, bsSelected) {
 if (rd == null) this.setSize (size, bsSelected);
  else this.setSizeRD (rd, bsSelected);
-}, "~N,J.atomdata.RadiusData,J.util.BS");
+}, "~N,J.atomdata.RadiusData,JU.BS");
 $_M(c$, "setSize", 
 function (size, bsSelected) {
-}, "~N,J.util.BS");
+}, "~N,JU.BS");
 $_M(c$, "setSizeRD", 
 function (rd, bsSelected) {
-}, "J.atomdata.RadiusData,J.util.BS");
+}, "J.atomdata.RadiusData,JU.BS");
 $_M(c$, "getPropertyData", 
 function (property, data) {
 return false;
@@ -79,7 +79,7 @@ return;
 }if (propertyName === "refreshTrajectories") {
 return;
 }J.util.Logger.warn ("unassigned " + J.viewer.JC.shapeClassBases[this.shapeID] + " + shape setProperty:" + propertyName + ":" + value);
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 $_M(c$, "getProperty", 
 function (property, index) {
 return null;
@@ -94,31 +94,31 @@ return false;
 }, "~N,~N");
 $_M(c$, "findNearestAtomIndex", 
 function (xMouse, yMouse, closest, bsNot) {
-}, "~N,~N,~A,J.util.BS");
+}, "~N,~N,~A,JU.BS");
 $_M(c$, "checkBoundsMinMax", 
 function (pointMin, pointMax) {
-}, "J.util.P3,J.util.P3");
+}, "JU.P3,JU.P3");
 $_M(c$, "setModelClickability", 
 function () {
 });
 $_M(c$, "checkObjectClicked", 
 function (x, y, modifiers, bsVisible, drawPicking) {
 return null;
-}, "~N,~N,~N,J.util.BS,~B");
+}, "~N,~N,~N,JU.BS,~B");
 $_M(c$, "checkObjectHovered", 
 function (x, y, bsVisible) {
 return false;
-}, "~N,~N,J.util.BS");
+}, "~N,~N,JU.BS");
 $_M(c$, "checkObjectDragged", 
 function (prevX, prevY, x, y, dragAction, bsVisible) {
 return false;
-}, "~N,~N,~N,~N,~N,J.util.BS");
+}, "~N,~N,~N,~N,~N,JU.BS");
 $_M(c$, "coordinateInRange", 
 function (x, y, vertex, dmin2, ptXY) {
 this.viewer.transformPtScr (vertex, ptXY);
 var d2 = (x - ptXY.x) * (x - ptXY.x) + (y - ptXY.y) * (y - ptXY.y);
 return (d2 < dmin2 ? d2 : -1);
-}, "~N,~N,J.util.P3,~N,J.util.P3i");
+}, "~N,~N,JU.P3,~N,JU.P3i");
 $_M(c$, "getColixI", 
 function (colix, paletteID, atomIndex) {
 return this.getColixA (colix, paletteID, this.modelSet.atoms[atomIndex]);
@@ -137,7 +137,7 @@ return null;
 });
 $_M(c$, "setVisibilityFlags", 
 function (bs) {
-}, "J.util.BS");
+}, "JU.BS");
 c$.getColix = $_M(c$, "getColix", 
 function (colixes, i, atom) {
 return J.util.C.getColixInherited ((colixes == null || i >= colixes.length ? 0 : colixes[i]), atom.getColix ());
@@ -146,7 +146,7 @@ c$.getFontCommand = $_M(c$, "getFontCommand",
 function (type, font) {
 if (font == null) return "";
 return "font " + type + " " + font.getInfo ();
-}, "~S,J.util.JmolFont");
+}, "~S,javajs.awt.Font");
 c$.getColorCommandUnk = $_M(c$, "getColorCommandUnk", 
 function (type, colix, translucentAllowed) {
 return J.shape.Shape.getColorCommand (type, J.constant.EnumPalette.UNKNOWN.id, colix, translucentAllowed);
@@ -169,7 +169,7 @@ c$.appendCmd = $_M(c$, "appendCmd",
 function (s, cmd) {
 if (cmd.length == 0) return;
 s.append ("  ").append (cmd).append (";\n");
-}, "J.util.SB,~S");
+}, "JU.SB,~S");
 Clazz.defineStatics (c$,
 "RADIUS_MAX", 4);
 });

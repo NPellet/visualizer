@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.MapFileReader"], "J.jvxl.readers.XplorReader", ["J.util.Logger", "$.SB", "J.viewer.Viewer"], function () {
+Clazz.load (["J.jvxl.readers.MapFileReader"], "J.jvxl.readers.XplorReader", ["JU.SB", "J.util.Logger", "J.viewer.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nBlock = 0;
 this.linePt = 2147483647;
@@ -10,15 +10,15 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.XplorReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
 this.init2MFR (sg, br);
 if (this.params.thePlane == null) this.params.insideOut = !this.params.insideOut;
 this.nSurfaces = 1;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "readParameters", 
+$_V(c$, "readParameters", 
 function () {
-this.jvxlFileHeaderBuffer =  new J.util.SB ();
+this.jvxlFileHeaderBuffer =  new JU.SB ();
 var nLines = this.parseIntStr (this.getLine ());
 for (var i = nLines; --i >= 0; ) {
 this.line = this.br.readLine ().trim ();
@@ -56,7 +56,7 @@ while (this.line != null && (this.line.length == 0 || this.line.indexOf ("REMARK
 
 return this.line;
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "nextVoxel", 
+$_V(c$, "nextVoxel", 
 function () {
 if (this.linePt >= this.line.length) {
 this.readLine ();

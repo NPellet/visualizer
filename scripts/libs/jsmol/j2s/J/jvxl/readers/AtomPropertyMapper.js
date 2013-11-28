@@ -14,12 +14,12 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.AtomPropertyMapper, []);
 });
-Clazz.overrideMethod (c$, "init", 
+$_V(c$, "init", 
 function (sg) {
 this.initADR (sg);
 this.mepType = sg.getReaderData ();
 }, "J.jvxl.readers.SurfaceGenerator");
-Clazz.overrideMethod (c$, "setup", 
+$_V(c$, "setup", 
 function (isMapData) {
 this.setup2 ();
 this.haveSurfaceAtoms = true;
@@ -56,30 +56,30 @@ break;
 this.setRanges (this.params.solvent_ptsPerAngstrom, this.params.solvent_gridMax, 0);
 this.params.cutoff = 0;
 }, "~B");
-Clazz.overrideMethod (c$, "setVolumeData", 
+$_V(c$, "setVolumeData", 
 function () {
 if (this.params.thePlane != null) this.setVolumeDataADR ();
 });
-Clazz.overrideMethod (c$, "initializeMapping", 
+$_V(c$, "initializeMapping", 
 function () {
 if (this.params.showTiming) J.util.Logger.startTimer ("property mapping");
 if (this.bsNearby != null) this.bsMySelected.or (this.bsNearby);
 this.iter = this.atomDataServer.getSelectedAtomIterator (this.bsMySelected, false, false, false);
 });
-Clazz.overrideMethod (c$, "finalizeMapping", 
+$_V(c$, "finalizeMapping", 
 function () {
 this.iter.release ();
 this.iter = null;
 if (this.params.showTiming) J.util.Logger.checkTimer ("property mapping", false);
 });
-Clazz.overrideMethod (c$, "generateCube", 
+$_V(c$, "generateCube", 
 function () {
 });
-Clazz.overrideMethod (c$, "getSurfaceAtomIndex", 
+$_V(c$, "getSurfaceAtomIndex", 
 function () {
 return this.iAtomSurface;
 });
-Clazz.overrideMethod (c$, "getValueAtPoint", 
+$_V(c$, "getValueAtPoint", 
 function (pt, getSource) {
 if (this.haveOneProperty && !getSource) return this.theProperty;
 var dmin = 3.4028235E38;
@@ -114,5 +114,5 @@ vdiv += d2;
 value += d2 * p;
 }}
 return (this.mepCalc != null ? value : this.doSmoothProperty ? (vdiv == 0 || dminNearby < dmin ? NaN : value / vdiv) : value);
-}, "J.util.P3,~B");
+}, "JU.P3,~B");
 });

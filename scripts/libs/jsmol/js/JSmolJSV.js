@@ -9,24 +9,31 @@
 * 
 */
 
+// 10/10/2013 1:25:28 PM BH JSV HTML5 option
 /*
 	Inserts the JSpecView applet in any compatible User Agent using the <object> tag
 	uses IE conditional comments to distinguish between IE and Mozilla
 	see http://msdn.microsoft.com/workshop/author/dhtml/overview/ccomment_ovw.asp
 */
 
-(function (Jmol, document) {
+;(function (Jmol, document) {
 	
-	Jmol._JSVVersion="2.0";
-
-	Jmol._JSVApplet = function(id, Info, caption, checkOnly){
+	Jmol._JSVApplet = function(id, Info, checkOnly){
+    this._version="2.0";
 		this._jmolType = "Jmol._JSVApplet" + (Info.isSigned ? " (signed)" : "");
 		this._id = id;
+	  this._syncId = ("" + Math.random()).substring(3);
+    this._isJava = true;
+		Jmol._setObject(this, id, Info);
+    this._startupScript = Jmol._JSVApplet.getStartupScript(this, Info);
+		this._syncKeyword = "JSpecView:"
     if (checkOnly)
       return this;
 		this._width = Info.width;
 		this._height = Info.height;
 		this._isSigned = Info.isSigned;
+    this._isJava = true;
+    this._isPro = this._isSigned;
 		this._dataMultiplier=1;
 		this._hasOptions = Info.addSelectionOptions;
 		this._info = "";
@@ -36,81 +43,121 @@
 		this._ready = false; 
 		this._applet = null;
 		this._jarFile = Info.jarFile || (Info.isSigned ? "JSpecViewAppletSigned.jar" : "JSpecViewApplet.jar"); 
-		this._jarPath =	Info.jarPath || "."; 
+		this._jarPath =	Info.jarPath || "java"; 
 		this._memoryLimit = Info.memoryLimit || 512;
 		this._canScript = function(script) {return true;};
 		this._containerWidth = this._width + ((this._width==parseFloat(this._width))? "px":"");
 		this._containerHeight = this._height + ((this._height==parseFloat(this._height))? "px":"");
-		this._syncKeyword = "JSpecView:"
-
 		this._initialize = function(codebaseDirectory, fileNameOrUseSignedApplet) {
 			Jmol.controls == undefined || Jmol.controls._onloadResetForms();		
-		}
-				
-		this._create(id, Info, caption);
+		}		
+		this._create(id, Info);
 		return this;
 	}
 
-  Jmol._JSVApplet._getApplet = function(id, Info) {
+  Jmol._JSVApplet._get = function(id, Info, checkOnly) {
 	// note that the variable name the return is assigned to MUST match the first parameter in quotes
 	// applet = Jmol.getJSVApplet("applet", Info)
 
 		Info || (Info = {});
 		var DefaultInfo = {
-			width: 500,
+			width: 800,
 			height: 300,
 			debug: false,
-			jarPath: ".",
+      color: "#A0A0A0",
+			jarPath: "java",
 			jarFile: "JSpecViewApplet.jar",
+      j2sPath: "j2s",
+      use: "HTML5",
 			isSigned: false,
 			initParams: null,
 			readyFunction: null,
 			script: null
 		};
 		Jmol._addDefaultInfo(Info, DefaultInfo);
-		return Jmol._registerApplet(id, new Jmol._JSVApplet(id, Info, null));
+    
+		Info.serverURL && (Jmol._serverUrl = Info.serverURL);
+
+		var javaAllowed = false;
+		var applet = null;		
+  	var List = Info.use.toUpperCase().split("#")[0].split(" ");    
+	  for (var i = 0; i < List.length; i++) {
+	    switch (List[i]) {
+	    case "JAVA":
+	    	javaAllowed = true;
+	    	if (Jmol.featureDetection.supportsJava())
+					applet = new Jmol._JSVApplet(id, Info, checkOnly);
+				break;
+	    case "WEBGL":
+	    case "HTML5":
+    		Jmol._Canvas2D.prototype = Jmol._jsSetPrototype(new Jmol._JSVApplet(id,Info, true));
+       	applet = new Jmol._Canvas2D(id, Info, "JSV", checkOnly);
+	      break;
+	    }
+	    if (applet != null)
+	    	break;		  
+	  }
+	  if (applet == null) {
+	  	if (checkOnly || !javaAllowed)
+	  		applet = {_jmolType : "none" };
+	  	else if (javaAllowed)
+				applet = new Jmol._JSVApplet(id, Info);
+		}
+    return (checkOnly ? applet : Jmol._registerApplet(id, applet));  
 	}
+
+  Jmol._JSVApplet.getStartupScript = function(applet, Info) {
+    return (Info.initParams ? Info.initParams : "") 
+        + ';appletID ' + applet._id + ';syncID '+ applet._syncId
+        + ';backgroundcolor ' + applet._color
+        + ';appletReadyCallbackFunctionName Jmol._readyCallback'// + applet._id + '._readyCallback'
+        + ';syncCallbackFunctionName Jmol._mySyncCallback;';	
+  }
   
-	Jmol._JSVApplet.prototype._create = function(id, Info, caption){
+  var jsvproto = Jmol._JSVApplet.prototype;
+
+	jsvproto._create = function(id, Info){
 
 		Jmol._setObject(this, id, Info);
+    this._startupScript = Jmol._JSVApplet.getStartupScript(this, Info);
 
 		var params = {
-			syncId: ("" + Math.random()).substring(3),
-			progressbar: "true",
-			progresscolor: "blue",
-			boxbgcolor: Info.color || "black",
+			boxbgcolor: this._color,
 			boxfgcolor: "white",
-			boxmessage: "Downloading JSpecViewApplet ..."
-		};
-		
-		var myClass = "jspecview.applet.JSVApplet" + (this._isSigned ? "Pro" : "");
-		var script = (Info.initParams ? Info.initParams : "") + ';appletID ' + this._id + ';syncID '+ params.syncId
-		+ ';appletReadyCallbackFunctionName ' + this._id + '._readyCallback'
-		+ ';syncCallbackFunctionName Jmol._mySyncCallback;';
-		
-    Jmol._Applet._createApplet(this, Info, params, myClass, script);
+			syncId: this._syncId,
+      code:"jspecview.applet.JSVApplet" + (this._isSigned ? "Pro" : "")
+  		};
+
+    Jmol._Applet._createApplet(this, Info, params);
 	}
 	
-	Jmol._JSVApplet.prototype._readyCallback = function(id, fullid, isReady, applet) {
-		if (!isReady)
+	jsvproto._readyCallback = function(id, fullid, isReady, applet) {
+   if (!isReady)
 			return; // ignore -- page is closing
-		this._ready = true;
-		this._applet = applet;
-		this._readyScript && setTimeout(this._id + "._script(" + this._id  + "._readyScript)",50);
-		this._readyFunction && this._readyFunction(this);
-    Jmol._setReady(this);
-	}
-	
-  Jmol._JSVApplet.prototype._checkDeferred = function(script) {
+    var o = self[id];
+		o._ready = true;
+		o._applet = applet;
+		o._readyScript && setTimeout(id + "._script(" + id  + "._readyScript)",50);
+		o._showInfo(true);
+		o._showInfo(false);
+		o._readyFunction && o._readyFunction(o);
+	    //o._setDragDrop();
+    Jmol._setReady(o);
+  }	
+  
+  jsvproto._checkDeferred = function(script) {
     return false;
   }	
   
-	Jmol._JSVApplet.prototype._showInfo = function(){"showinfo"};//Jmol._Applet.prototype._showInfo;
+	jsvproto._search = Jmol._Applet.prototype._search;  
+	jsvproto._showInfo = Jmol._Applet.prototype._showInfo;
+	jsvproto._show = Jmol._Applet.prototype._show;
 	
-	Jmol._JSVApplet.prototype._show = Jmol._Applet.prototype._show;
-	
-	Jmol._JSVApplet.prototype._script = function(script) {
+	jsvproto._searchDatabase = function(query, database) {
+    return this._applet.script("load " + database + query)
+  }
+  
+	jsvproto._script = function(script) {
 		if (!this._ready) {
 			this._readyScript || (this._readyScript = ";");
 			this._readyScript += ";" + script;
@@ -119,25 +166,25 @@
 		this._applet.runScript(script);
 	}
 	
-	Jmol._JSVApplet.prototype._syncScript = function(script) {
+	jsvproto._syncScript = function(script) {
 		this._applet.syncScript(script);
 	}
 	
-	Jmol._JSVApplet.prototype._getPropertyAsJSON = function(sKey) {
+	jsvproto._getPropertyAsJSON = function(sKey) {
 		return this._applet.getPropertyAsJSON(sKey) + "";
 	}
 
-	Jmol._JSVApplet.prototype._getPropertyAsJavaObject = function(sKey) {		
+	jsvproto._getPropertyAsJavaObject = function(sKey) {		
 		return this._applet.getPropertyAsJavaObject(sKey);
 	}
 
-	Jmol._JSVApplet.prototype._getPropertyAsArray = function(sKey,sValue) {
+	jsvproto._getPropertyAsArray = function(sKey,sValue) {
 		return Jmol._evalJSON(this._getPropertyAsJSON(sKey,sValue),sKey);
 	}
 
-	Jmol._JSVApplet.prototype._resizeApplet = Jmol._Applet.prototype._resizeApplet;
+	jsvproto._resizeApplet = Jmol._Applet.prototype._resizeApplet;
 
-	Jmol._JSVApplet.prototype._loadFile = function(fileName, params){
+	jsvproto._loadFile = function(fileName, params){
 		this._showInfo(false);
 		params || (params = "");
 		this._thisJSVModel = "" + Math.random();
@@ -350,6 +397,18 @@
   Jmol.jsvSetVisible = function(jsvApplet, TF) {
     jsvApplet._applet.setVisible(TF);    
   }
+
+    // optional Info here	
+  Jmol.getJSVAppletHtml = function(applet, Info) {
+    if (Info) {
+      var d = Jmol._document;
+      Jmol._document = null;
+      applet = Jmol.getJSVApplet(applet, Info);
+      Jmol._document = d;
+    }  
+    return applet._code;
+	}
+		
 
 
 })(Jmol, document);

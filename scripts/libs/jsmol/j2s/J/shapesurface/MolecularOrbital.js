@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapesurface");
-Clazz.load (["J.shapesurface.Isosurface"], "J.shapesurface.MolecularOrbital", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "J.constant.EnumQuantumShell", "J.jvxl.data.JvxlCoder", "J.util.ArrayUtil", "$.Escape", "$.JmolList", "$.SB"], function () {
+Clazz.load (["J.shapesurface.Isosurface"], "J.shapesurface.MolecularOrbital", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.List", "$.SB", "J.constant.EnumQuantumShell", "J.jvxl.data.JvxlCoder", "J.util.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.moTranslucency = null;
 this.moTranslucentLevel = null;
@@ -36,7 +36,7 @@ Clazz.superCall (this, J.shapesurface.MolecularOrbital, "initShape", []);
 this.myType = "mo";
 this.setPropI ("thisID", "mo", null);
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value, bs) {
 if ("init" === propertyName) {
 this.myColorPt = 0;
@@ -59,7 +59,7 @@ this.thisModel.put ("slabValue", value);
 var slabInfo = value;
 var tok = (slabInfo[0]).intValue ();
 this.moSlab = this.thisModel.get ("slab");
-if (this.moSlab == null) this.thisModel.put ("slab", this.moSlab =  new J.util.JmolList ());
+if (this.moSlab == null) this.thisModel.put ("slab", this.moSlab =  new JU.List ());
 if (tok == 1048587) {
 this.moSlab = null;
 this.thisModel.remove ("slab");
@@ -175,7 +175,7 @@ this.meshCount--;
 if (this.meshes[i] === this.currentMesh) {
 this.currentMesh = null;
 this.thisModel = null;
-}this.meshes = J.util.ArrayUtil.deleteElements (this.meshes, i, 1);
+}this.meshes = JU.AU.deleteElements (this.meshes, i, 1);
 continue;
 }var htModel = this.htModels.get (this.meshes[i].thisID);
 if (this.meshes[i].modelIndex > modelIndex) {
@@ -186,12 +186,12 @@ this.meshes[i].thisID = this.getId (this.meshes[i].modelIndex);
 this.htModels = htModelsNew;
 return;
 }this.setPropI (propertyName, value, bs);
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 $_M(c$, "getId", 
 ($fz = function (modelIndex) {
 return "mo_model" + this.viewer.getModelNumberDotted (modelIndex);
 }, $fz.isPrivate = true, $fz), "~N");
-Clazz.overrideMethod (c$, "getProperty", 
+$_V(c$, "getProperty", 
 function (propertyName, param) {
 if (propertyName.equals ("list")) {
 var s = this.getPropI ("list");
@@ -200,7 +200,7 @@ return this.viewer.getMoInfo (-1) + "\n" + s;
 }if (propertyName === "moNumber") return Integer.$valueOf (this.$moNumber);
 if (propertyName === "moLinearCombination") return this.$moLinearCombination;
 if (propertyName === "showMO") {
-var str =  new J.util.SB ();
+var str =  new JU.SB ();
 var mos = (this.sg.getMoData ().get ("mos"));
 var nOrb = (mos == null ? 0 : mos.size ());
 var thisMO = param;
@@ -231,7 +231,7 @@ str.append (J.jvxl.data.JvxlCoder.jvxlGetFile (this.jvxlData, null, null, "TRAIL
 return str.toString ();
 }return this.getPropI (propertyName);
 }, "~S,~N");
-Clazz.overrideMethod (c$, "clearSg", 
+$_V(c$, "clearSg", 
 function () {
 });
 $_M(c$, "getSettings", 
@@ -302,10 +302,10 @@ this.setPropI ("token", Integer.$valueOf (this.moFrontOnly), null);
 this.thisModel.put ("mesh", this.currentMesh);
 return;
 }, $fz.isPrivate = true, $fz), "~N,~A");
-Clazz.overrideMethod (c$, "getShapeState", 
+$_V(c$, "getShapeState", 
 function () {
 if (this.htModels == null) return "";
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 var modelCount = this.viewer.getModelCount ();
 for (var i = 0; i < modelCount; i++) s.append (this.getMoState (i));
 
@@ -315,7 +315,7 @@ $_M(c$, "getMoState",
 ($fz = function (modelIndex) {
 this.strID = this.getId (modelIndex);
 if (!this.getSettings (this.strID)) return "";
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 var modelCount = this.viewer.getModelCount ();
 if (modelCount > 1) J.shape.Shape.appendCmd (s, "frame " + this.viewer.getModelNumberDotted (modelIndex));
 if (this.moCutoff != null) J.shape.Shape.appendCmd (s, "mo cutoff " + (this.sg.getIsPositiveOnly () ? "+" : "") + this.moCutoff);

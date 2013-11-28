@@ -21,7 +21,7 @@ function ($in, size) {
 Clazz.superConstructor (this, java.util.zip.GZIPInputStream, [$in,  new java.util.zip.Inflater ().init (0, true), size]);
 this.readHeader ($in);
 }, "java.io.InputStream,~N");
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (buf, off, len) {
 this.ensureOpen ();
 if (this.eos) {

@@ -9,13 +9,13 @@ this.istate =  new JZ.Inflate (this);
 this.istate.inflateInit (nowrap ? -w : w);
 return this;
 }, "~N,~B");
-Clazz.overrideMethod (c$, "inflate", 
+$_V(c$, "inflate", 
 function (f) {
 if (this.istate == null) return -2;
 var ret = this.istate.inflate (f);
 return ret;
 }, "~N");
-Clazz.overrideMethod (c$, "end", 
+$_V(c$, "end", 
 function () {
 if (this.istate == null) return -2;
 var ret = this.istate.inflateEnd ();
@@ -36,7 +36,7 @@ function (dictionary, dictLength) {
 if (this.istate == null) return -2;
 return this.istate.inflateSetDictionary (dictionary, dictLength);
 }, "~A,~N");
-Clazz.overrideMethod (c$, "finished", 
+$_V(c$, "finished", 
 function () {
 return this.istate.mode == 12;
 });

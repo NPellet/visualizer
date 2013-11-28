@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.render");
 Clazz.load (["J.render.ShapeRenderer"], "J.render.FrankRenderer", ["J.util.C"], function () {
 c$ = Clazz.declareType (J.render, "FrankRenderer", J.render.ShapeRenderer);
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 var frank = this.shape;
 var allowKeys = this.viewer.getBooleanProperty ("allowKeyStrokes");

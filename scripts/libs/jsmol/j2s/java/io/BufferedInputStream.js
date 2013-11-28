@@ -19,7 +19,7 @@ var buffer = this.buf;
 if (buffer == null) throw  new java.io.IOException ("Stream closed");
 return buffer;
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "resetStream", 
+$_V(c$, "resetStream", 
 function () {
 });
 Clazz.makeConstructor (c$, 
@@ -49,7 +49,7 @@ buffer = this.buf = nbuf;
 var n = this.getInIfOpen ().read (buffer, this.pos, buffer.length - this.pos);
 if (n > 0) this.count = n + this.pos;
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "readByteAsInt", 
+$_V(c$, "readByteAsInt", 
 function () {
 if (this.pos >= this.count) {
 this.fill ();
@@ -70,7 +70,7 @@ System.arraycopy (this.getBufIfOpen (), this.pos, b, off, cnt);
 this.pos += cnt;
 return cnt;
 }, $fz.isPrivate = true, $fz), "~A,~N,~N");
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (b, off, len) {
 this.getBufIfOpen ();
 if ((off | len | (off + len) | (b.length - (off + len))) < 0) {
@@ -87,7 +87,7 @@ var input = this.$in;
 if (input != null && input.available () <= 0) return n;
 }
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "skip", 
+$_V(c$, "skip", 
 function (n) {
 this.getBufIfOpen ();
 if (n <= 0) {
@@ -102,28 +102,28 @@ if (avail <= 0) return 0;
 this.pos += skipped;
 return skipped;
 }, "~N");
-Clazz.overrideMethod (c$, "available", 
+$_V(c$, "available", 
 function () {
 var n = this.count - this.pos;
 var avail = this.getInIfOpen ().available ();
 return n > (2147483647 - avail) ? 2147483647 : n + avail;
 });
-Clazz.overrideMethod (c$, "mark", 
+$_V(c$, "mark", 
 function (readlimit) {
 this.marklimit = readlimit;
 this.markpos = this.pos;
 }, "~N");
-Clazz.overrideMethod (c$, "reset", 
+$_V(c$, "reset", 
 function () {
 this.getBufIfOpen ();
 if (this.markpos < 0) throw  new java.io.IOException ("Resetting to invalid mark");
 this.pos = this.markpos;
 });
-Clazz.overrideMethod (c$, "markSupported", 
+$_V(c$, "markSupported", 
 function () {
 return true;
 });
-Clazz.overrideMethod (c$, "close", 
+$_V(c$, "close", 
 function () {
 var input = this.$in;
 this.$in = null;

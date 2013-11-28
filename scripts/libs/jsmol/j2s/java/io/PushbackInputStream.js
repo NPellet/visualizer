@@ -16,14 +16,14 @@ throw  new IllegalArgumentException ("size <= 0");
 }this.buf =  Clazz.newByteArray (size, 0);
 this.pos = size;
 }, "java.io.InputStream,~N");
-Clazz.overrideMethod (c$, "readByteAsInt", 
+$_V(c$, "readByteAsInt", 
 function () {
 this.ensureOpen ();
 if (this.pos < this.buf.length) {
 return this.buf[this.pos++] & 0xff;
 }return this.$in.readByteAsInt ();
 });
-Clazz.overrideMethod (c$, "read", 
+$_V(c$, "read", 
 function (b, off, len) {
 this.ensureOpen ();
 if (b == null) {
@@ -62,14 +62,14 @@ throw  new java.io.IOException ("Push back buffer is full");
 }this.pos -= len;
 System.arraycopy (b, off, this.buf, this.pos, len);
 }, "~A,~N,~N");
-Clazz.overrideMethod (c$, "available", 
+$_V(c$, "available", 
 function () {
 this.ensureOpen ();
 var n = this.buf.length - this.pos;
 var avail = this.$in.available ();
 return n > (2147483647 - avail) ? 2147483647 : n + avail;
 });
-Clazz.overrideMethod (c$, "skip", 
+$_V(c$, "skip", 
 function (n) {
 this.ensureOpen ();
 if (n <= 0) {
@@ -84,18 +84,18 @@ n -= pskip;
 pskip += this.$in.skip (n);
 }return pskip;
 }, "~N");
-Clazz.overrideMethod (c$, "markSupported", 
+$_V(c$, "markSupported", 
 function () {
 return false;
 });
-Clazz.overrideMethod (c$, "mark", 
+$_V(c$, "mark", 
 function (readlimit) {
 }, "~N");
-Clazz.overrideMethod (c$, "reset", 
+$_V(c$, "reset", 
 function () {
 throw  new java.io.IOException ("mark/reset not supported");
 });
-Clazz.overrideMethod (c$, "close", 
+$_V(c$, "close", 
 function () {
 if (this.$in == null) return;
 this.$in.close ();

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.TempArray", ["J.util.P3", "$.P3i"], function () {
+Clazz.load (null, "J.util.TempArray", ["java.lang.Boolean", "$.Float", "JU.P3", "$.P3i"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.lengthsFreePoints = null;
 this.freePoints = null;
@@ -70,7 +70,7 @@ if (iFit > 0) {
 tempPoints = this.freePoints[iFit];
 } else {
 tempPoints =  new Array (size);
-for (var i = size; --i >= 0; ) tempPoints[i] =  new J.util.P3 ();
+for (var i = size; --i >= 0; ) tempPoints[i] =  new JU.P3 ();
 
 }return tempPoints;
 }, "~N");
@@ -98,7 +98,7 @@ if (iFit > 0) {
 tempScreens = this.freeScreens[iFit];
 } else {
 tempScreens =  new Array (size);
-for (var i = size; --i >= 0; ) tempScreens[i] =  new J.util.P3i ();
+for (var i = size; --i >= 0; ) tempScreens[i] =  new JU.P3i ();
 
 }return tempScreens;
 }, "~N");
@@ -130,6 +130,14 @@ return;
 var iFree = J.util.TempArray.findShorter (tempEnum.length, this.lengthsFreeEnum);
 if (iFree >= 0) this.freeEnum[iFree] = tempEnum;
 }, "~A");
+c$.getSlabWithinRange = $_M(c$, "getSlabWithinRange", 
+function (min, max) {
+return [Integer.$valueOf (1073742114), [Float.$valueOf (min), Float.$valueOf (max)], Boolean.FALSE, null];
+}, "~N,~N");
+c$.getSlabObjectType = $_M(c$, "getSlabObjectType", 
+function (tok, data, isCap, colorData) {
+return [Integer.$valueOf (tok), data, Boolean.$valueOf (isCap), colorData];
+}, "~N,~O,~B,~O");
 Clazz.defineStatics (c$,
 "freePointsSize", 6,
 "freeScreensSize", 6,

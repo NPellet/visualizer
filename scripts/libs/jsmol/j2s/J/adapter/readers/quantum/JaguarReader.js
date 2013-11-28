@@ -1,12 +1,12 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader"], "J.adapter.readers.quantum.JaguarReader", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.JmolList", "$.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader"], "J.adapter.readers.quantum.JaguarReader", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "JU.AU", "$.List", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.moCount = 0;
 this.lumoEnergy = 3.4028235E38;
 this.haveLine = false;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "JaguarReader", J.adapter.readers.quantum.MOReader);
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.startsWith (" Input geometry:") || this.line.startsWith (" Symmetrized geometry:") || this.line.startsWith ("  final geometry:")) {
 this.readAtoms ();
@@ -43,7 +43,6 @@ $_M(c$, "readAtoms",
 ($fz = function () {
 this.atomSetCollection.discardPreviousAtoms ();
 this.readLines (2);
-var atomCount = 0;
 while (this.readLine () != null && this.line.length >= 60 && this.line.charAt (2) != ' ') {
 var tokens = this.getTokens ();
 var atomName = tokens[0];
@@ -59,7 +58,6 @@ var atom = this.atomSetCollection.addNewAtom ();
 atom.elementSymbol = elementSymbol;
 atom.atomName = atomName;
 this.setAtomCoordXYZ (atom, x, y, z);
-atomCount++;
 }
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readCharges", 
@@ -77,7 +75,7 @@ $_M(c$, "readUnnormalizedBasis",
 var lastAtom = "";
 var iAtom = -1;
 var sdata =  Clazz.newIntArray (this.moCount, 4, 0);
-var sgdata = J.util.ArrayUtil.createArrayOfArrayList (this.moCount);
+var sgdata = JU.AU.createArrayOfArrayList (this.moCount);
 var tokens;
 this.gaussianCount = 0;
 this.discardLinesUntilContains ("--------");
@@ -94,7 +92,7 @@ sdata[iFunc][0] = iAtom;
 sdata[iFunc][1] = iType;
 sdata[iFunc][2] = 0;
 sdata[iFunc][3] = 0;
-sgdata[iFunc] =  new J.util.JmolList ();
+sgdata[iFunc] =  new JU.List ();
 }var factor = 1;
 sgdata[iFunc].addLast ([this.parseFloatStr (tokens[6]), this.parseFloatStr (tokens[8]) * factor]);
 this.gaussianCount += jCont;
@@ -103,8 +101,8 @@ tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine (
 sgdata[iFunc].addLast ([this.parseFloatStr (tokens[6]), this.parseFloatStr (tokens[8]) * factor]);
 }
 }}
-var garray = J.util.ArrayUtil.newFloat2 (this.gaussianCount);
-var sarray =  new J.util.JmolList ();
+var garray = JU.AU.newFloat2 (this.gaussianCount);
+var sarray =  new JU.List ();
 this.gaussianCount = 0;
 for (var i = 0; i < this.moCount; i++) if (sgdata[i] != null) {
 var n = sgdata[i].size ();
@@ -128,8 +126,8 @@ var iAtom = -1;
 var id;
 var iFunc = 0;
 var iFuncLast = -1;
-var sarray =  new J.util.JmolList ();
-var gdata =  new J.util.JmolList ();
+var sarray =  new JU.List ();
+var gdata =  new JU.List ();
 this.gaussianCount = 0;
 var sdata = null;
 this.discardLinesUntilContains ("--------");
@@ -155,7 +153,7 @@ var rCoef = this.parseFloatStr (tokens[5]);
 if (id.equals ("XX")) rCoef *= 1.7320508;
 gdata.addLast ([z, rCoef]);
 }
-var garray = J.util.ArrayUtil.newFloat2 (this.gaussianCount);
+var garray = JU.AU.newFloat2 (this.gaussianCount);
 for (var i = gdata.size (); --i >= 0; ) garray[i] = gdata.get (i);
 
 this.moData.put ("shells", sarray);

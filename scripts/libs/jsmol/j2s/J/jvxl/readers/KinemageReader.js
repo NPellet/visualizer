@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.PmeshReader"], "J.jvxl.readers.KinemageReader", ["java.lang.Float", "J.util.ColorUtil", "$.Logger", "$.P3", "$.Parser"], function () {
+Clazz.load (["J.jvxl.readers.PmeshReader"], "J.jvxl.readers.KinemageReader", ["java.lang.Float", "JU.CU", "$.P3", "$.PT", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nDots = 0;
 this.vMin = -3.4028235E38;
@@ -13,13 +13,13 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.KinemageReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
 this.init2PR (sg, br);
 this.type = "kinemage";
 this.setHeader ();
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "readVolumeParameters", 
+$_V(c$, "readVolumeParameters", 
 function (isMapData) {
 if (this.params.parameters != null && this.params.parameters.length >= 2) {
 this.vMin = this.params.parameters[1];
@@ -28,7 +28,7 @@ this.pointType = (this.params.parameters.length >= 4 ? Clazz.floatToInt (this.pa
 this.findString = this.params.calculationType;
 }return true;
 }, "~B");
-Clazz.overrideMethod (c$, "readVertices", 
+$_V(c$, "readVertices", 
 function () {
 this.readLine ();
 var n0;
@@ -78,7 +78,7 @@ var atom = line.substring (0, line.indexOf ("}") + 1);
 if (atom.length < 4) atom = this.lastAtom;
  else this.lastAtom = atom;
 if (atom.indexOf (this.findString) < 0) return -1;
-}var tokens = J.util.Parser.getTokens (line.substring (line.indexOf ("}") + 1));
+}var tokens = JU.PT.getTokens (line.substring (line.indexOf ("}") + 1));
 var value = this.assignValueFromGapColorForKin (tokens[0]);
 if (Float.isNaN (value)) return -1;
 if (checkType && this.pointType != 0) {
@@ -99,8 +99,8 @@ default:
 return -1;
 }
 }retColor[0] = this.getColor (tokens[0]);
-tokens = J.util.Parser.getTokens (tokens[i].$replace (',', ' '));
-var pt = J.util.P3.new3 (J.util.Parser.parseFloatStr (tokens[0]), J.util.Parser.parseFloatStr (tokens[1]), J.util.Parser.parseFloatStr (tokens[2]));
+tokens = JU.PT.getTokens (tokens[i].$replace (',', ' '));
+var pt = JU.P3.new3 (JU.PT.parseFloat (tokens[0]), JU.PT.parseFloat (tokens[1]), JU.PT.parseFloat (tokens[2]));
 if (this.isAnisotropic) this.setVertexAnisotropy (pt);
 return this.addVertexCopy (pt, value, this.nVertices++);
 }, $fz.isPrivate = true, $fz), "~S,~N,~A,~B");
@@ -108,14 +108,14 @@ $_M(c$, "getColor",
 ($fz = function (color) {
 if (color.equals ("sky")) color = "skyblue";
  else if (color.equals ("sea")) color = "seagreen";
-return J.util.ColorUtil.getArgbFromString (color);
+return JU.CU.getArgbFromString (color);
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "assignValueFromGapColorForKin", 
 ($fz = function (color) {
 var value = (color.equals ("greentint") ? 4 : color.equals ("blue") ? 0.35 : color.equals ("sky") ? 0.25 : color.equals ("sea") ? 0.15 : color.equals ("green") ? 0.0 : color.equals ("yellowtint") ? -0.1 : color.equals ("yellow") ? -0.2 : color.equals ("orange") ? -0.3 : color.equals ("red") ? -0.4 : -0.5);
 return (value >= this.vMin && value <= this.vMax ? value : NaN);
 }, $fz.isPrivate = true, $fz), "~S");
-Clazz.overrideMethod (c$, "readPolygons", 
+$_V(c$, "readPolygons", 
 function () {
 return true;
 });

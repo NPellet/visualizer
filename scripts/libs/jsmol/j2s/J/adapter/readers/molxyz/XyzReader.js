@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.adapter.readers.molxyz");
 Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.molxyz.XyzReader", ["java.lang.Float", "J.util.Logger"], function () {
 c$ = Clazz.declareType (J.adapter.readers.molxyz, "XyzReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 var modelAtomCount = this.parseIntStr (this.line);
 if (modelAtomCount == -2147483648) {
@@ -24,7 +24,7 @@ this.skipAtomSet (modelAtomCount);
 }this.discardLinesUntilNonBlank ();
 return false;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 this.isTrajectory = false;
 this.finalizeReaderASCR ();

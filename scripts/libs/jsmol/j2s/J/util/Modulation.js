@@ -39,7 +39,7 @@ if (this.left >= this.right && this.left - this.right < 0.01) this.left = this.r
 this.a1 = 2 * params.z / params.y;
 break;
 }
-}, "~S,~N,J.util.P3,~S,J.util.P3");
+}, "~S,~N,JU.P3,~S,JU.P3");
 $_M(c$, "apply", 
 function (ms, offset) {
 var x = this.qCoefs.dot (ms.x456) + this.qCoefs.x * offset;

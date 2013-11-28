@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.util.P3", "$.V3"], "J.jvxl.readers.SurfaceGenerator", ["java.io.BufferedReader", "$.StringReader", "java.lang.Float", "J.io.JmolBinary", "J.jvxl.data.JvxlCoder", "$.JvxlData", "$.MeshData", "$.VolumeData", "J.jvxl.readers.Parameters", "$.SurfaceReader", "J.util.ArrayUtil", "$.BS", "$.Escape", "$.Logger", "$.Measure", "$.P4", "$.Parser", "$.TextFormat"], function () {
+Clazz.load (["JU.P3", "$.V3"], "J.jvxl.readers.SurfaceGenerator", ["java.io.BufferedReader", "$.StringReader", "java.lang.Float", "java.util.Map", "JU.AU", "$.BS", "$.P4", "$.PT", "J.io.JmolBinary", "J.jvxl.data.JvxlCoder", "$.JvxlData", "$.MeshData", "$.VolumeData", "J.jvxl.readers.Parameters", "$.SurfaceReader", "J.util.Logger", "$.Measure"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.jvxlData = null;
 this.meshData = null;
@@ -11,7 +11,7 @@ this.marchingSquares = null;
 this.version = null;
 this.$isValid = true;
 this.fileType = null;
-this.os = null;
+this.out = null;
 this.surfaceReader = null;
 this.colorPtr = 0;
 this.readerData = null;
@@ -23,10 +23,10 @@ this.bsVdw = null;
 Clazz.instantialize (this, arguments);
 }, J.jvxl.readers, "SurfaceGenerator");
 Clazz.prepareFields (c$, function () {
-this.vAC =  new J.util.V3 ();
-this.vAB =  new J.util.V3 ();
-this.vNorm =  new J.util.V3 ();
-this.ptRef = J.util.P3.new3 (0, 0, 1e15);
+this.vAC =  new JU.V3 ();
+this.vAB =  new JU.V3 ();
+this.vNorm =  new JU.V3 ();
+this.ptRef = JU.P3.new3 (0, 0, 1e15);
 });
 $_M(c$, "isValid", 
 function () {
@@ -179,7 +179,7 @@ this.params = value;
 } else {
 this.params.script = value;
 if (this.params.script != null && this.params.script.indexOf (";#") >= 0) {
-this.params.script = J.util.TextFormat.simpleReplace (this.params.script, ";#", "; #");
+this.params.script = JU.PT.simpleReplace (this.params.script, ";#", "; #");
 }}return false;
 }if ("map" === propertyName) {
 this.params.resetForMapping ((value).booleanValue ());
@@ -204,7 +204,7 @@ this.params.boundingBox = (value)[1];
 return true;
 }if ("boundingBox" === propertyName) {
 var pts = value;
-this.params.boundingBox = [J.util.P3.newP (pts[0]), J.util.P3.newP (pts[pts.length - 1])];
+this.params.boundingBox = [JU.P3.newP (pts[0]), JU.P3.newP (pts[pts.length - 1])];
 return true;
 }if ("func" === propertyName) {
 this.params.func = value;
@@ -234,7 +234,7 @@ return true;
 if (value == null) {
 this.params.title = null;
 return true;
-} else if (J.util.Escape.isAS (value)) {
+} else if (JU.PT.isAS (value)) {
 this.params.title = value;
 for (var i = 0; i < this.params.title.length; i++) if (this.params.title[i].length > 0) J.util.Logger.info (this.params.title[i]);
 
@@ -250,7 +250,7 @@ this.params.isPositiveOnly = false;
 this.params.cutoffAutomatic = false;
 return true;
 }if ("parameters" === propertyName) {
-this.params.parameters = J.util.ArrayUtil.ensureLengthA (value, 2);
+this.params.parameters = JU.AU.ensureLengthA (value, 2);
 if (this.params.parameters.length > 0 && this.params.parameters[0] != 0) this.params.cutoff = this.params.parameters[0];
 return true;
 }if ("cutoffPositive" === propertyName) {
@@ -416,10 +416,10 @@ return true;
 }if ("contour" === propertyName) {
 this.params.isContoured = true;
 var n;
-if (J.util.Escape.isAF (value)) {
+if (JU.PT.isAF (value)) {
 this.params.contoursDiscrete = value;
 this.params.nContours = this.params.contoursDiscrete.length;
-} else if (Clazz.instanceOf (value, J.util.P3)) {
+} else if (Clazz.instanceOf (value, JU.P3)) {
 var pt = this.params.contourIncrements = value;
 var from = pt.x;
 var to = pt.y;
@@ -471,8 +471,8 @@ this.surfaceReader = this.newReader ("IsoShapeReader");
 this.generateSurface ();
 return true;
 }if ("ellipsoid" === propertyName) {
-if (Clazz.instanceOf (value, J.util.P4)) this.params.setEllipsoidP4 (value);
- else if (J.util.Escape.isAF (value)) this.params.setEllipsoidAF (value);
+if (Clazz.instanceOf (value, JU.P4)) this.params.setEllipsoidP4 (value);
+ else if (JU.PT.isAF (value)) this.params.setEllipsoidAF (value);
  else return true;
 this.readerData = Float.$valueOf (this.params.distance);
 this.surfaceReader = this.newReader ("IsoShapeReader");
@@ -512,7 +512,7 @@ this.processState ();
 return true;
 }if ("functionXY" === propertyName) {
 this.params.setFunctionXY (value);
-if (this.params.isContoured) this.volumeData.setPlaneParameters (J.util.P4.new4 (0, 0, 1, 0));
+if (this.params.isContoured) this.volumeData.setPlaneParameters (JU.P4.new4 (0, 0, 1, 0));
 if ((this.params.functionInfo.get (0)).indexOf ("_xyz") >= 0) this.getFunctionZfromXY ();
 this.processState ();
 return true;
@@ -577,14 +577,14 @@ return true;
 }if ("fileName" === propertyName) {
 this.params.fileName = value;
 return true;
-}if ("outputStream" === propertyName) {
-this.os = value;
+}if ("outputChannel" === propertyName) {
+this.out = value;
 return true;
 }if ("readFile" === propertyName) {
 if ((this.surfaceReader = this.setFileData (value)) == null) {
 J.util.Logger.error ("Could not set the surface data");
 return true;
-}this.surfaceReader.setOutputStream (this.os);
+}this.surfaceReader.setOutputChannel (this.out);
 this.generateSurface ();
 return true;
 }if ("getSurfaceSets" === propertyName) {
@@ -594,13 +594,13 @@ return true;
 if ((this.surfaceReader = this.setFileData (value)) == null) {
 J.util.Logger.error ("Could not set the mapping data");
 return true;
-}this.surfaceReader.setOutputStream (this.os);
+}this.surfaceReader.setOutputChannel (this.out);
 this.mapSurface ();
 return true;
 }if ("periodic" === propertyName) {
 this.params.isPeriodic = true;
 }return false;
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 $_M(c$, "newReader", 
 ($fz = function (name) {
 var sr = J.jvxl.readers.SurfaceGenerator.getInterface (name);
@@ -796,7 +796,7 @@ if (fileType == null) fileType = J.io.JmolBinary.determineSurfaceFileType (br);
 if (fileType != null && fileType.startsWith ("UPPSALA")) {
 var fname = this.params.fileName;
 fname = fname.substring (0, fname.indexOf ("/", 10));
-fname += J.util.Parser.getQuotedStringAt (fileType, fileType.indexOf ("A HREF") + 1);
+fname += JU.PT.getQuotedStringAt (fileType, fileType.indexOf ("A HREF") + 1);
 this.params.fileName = fname;
 value = this.atomDataServer.getBufferedInputStream (fname);
 if (value == null) {
@@ -862,14 +862,14 @@ var vectors =  new Array (3);
 for (var i = 0; i < 3; i++) {
 var info = this.params.functionInfo.get (i + 2);
 counts[i] = Math.abs (Clazz.floatToInt (info.x));
-vectors[i] = J.util.V3.new3 (info.y, info.z, info.w);
+vectors[i] = JU.V3.new3 (info.y, info.z, info.w);
 }
 var nx = counts[0];
 var ny = counts[1];
-var pt =  new J.util.P3 ();
-var pta =  new J.util.P3 ();
-var ptb =  new J.util.P3 ();
-var ptc =  new J.util.P3 ();
+var pt =  new JU.P3 ();
+var pta =  new JU.P3 ();
+var ptb =  new JU.P3 ();
+var ptc =  new JU.P3 ();
 var data = this.params.functionInfo.get (5);
 var data2 =  Clazz.newFloatArray (nx, ny, 0);
 var d;
@@ -893,7 +893,7 @@ $_M(c$, "distanceVerticalToPlane",
 ($fz = function (x, y, pta, ptb, ptc) {
 var d = J.util.Measure.getDirectedNormalThroughPoints (pta, ptb, ptc, this.ptRef, this.vNorm, this.vAB, this.vAC);
 return (this.vNorm.x * x + this.vNorm.y * y + d) / -this.vNorm.z;
-}, $fz.isPrivate = true, $fz), "~N,~N,J.util.P3,J.util.P3,J.util.P3");
+}, $fz.isPrivate = true, $fz), "~N,~N,JU.P3,JU.P3,JU.P3");
 c$.findNearestThreePoints = $_M(c$, "findNearestThreePoints", 
 ($fz = function (x, y, xyz, result) {
 var d;
@@ -938,11 +938,11 @@ function (msg) {
 if (this.atomDataServer == null) System.out.println (msg);
  else this.atomDataServer.log (msg);
 }, "~S");
-$_M(c$, "setOutputStream", 
-function (binaryDoc, os) {
+$_M(c$, "setOutputChannel", 
+function (binaryDoc, out) {
 if (this.meshDataServer == null) return;
-this.meshDataServer.setOutputStream (binaryDoc, os);
-}, "J.api.JmolDocument,java.io.OutputStream");
+this.meshDataServer.setOutputChannel (binaryDoc, out);
+}, "J.api.JmolDocument,JU.OC");
 $_M(c$, "isFullyLit", 
 function () {
 return (this.params.thePlane != null || this.params.fullyLit);
@@ -954,7 +954,7 @@ return this.bsVdw;
 $_M(c$, "fillAtomData", 
 function (atomData, mode) {
 if ((mode & 2) != 0 && atomData.bsSelected != null) {
-if (this.bsVdw == null) this.bsVdw =  new J.util.BS ();
+if (this.bsVdw == null) this.bsVdw =  new JU.BS ();
 this.bsVdw.or (atomData.bsSelected);
 }this.atomDataServer.fillAtomData (atomData, mode);
 }, "J.atomdata.AtomData,~N");

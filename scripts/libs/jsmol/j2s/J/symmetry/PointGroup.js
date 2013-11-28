@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.symmetry");
-Clazz.load (["J.util.P3", "$.V3"], "J.symmetry.PointGroup", ["java.lang.Float", "java.util.Hashtable", "J.util.BSUtil", "$.Escape", "$.JmolList", "$.Logger", "$.Quaternion", "$.SB", "$.TextFormat"], function () {
+Clazz.load (["JU.P3", "$.V3"], "J.symmetry.PointGroup", ["java.lang.Float", "java.util.Hashtable", "JU.List", "$.SB", "J.util.BSUtil", "$.Escape", "$.Logger", "$.Quaternion", "$.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.drawInfo = null;
 this.info = null;
@@ -36,8 +36,8 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.nAxes =  Clazz.newIntArray (J.symmetry.PointGroup.maxAxis, 0);
 this.axes =  new Array (J.symmetry.PointGroup.maxAxis);
-this.vTemp =  new J.util.V3 ();
-this.center =  new J.util.P3 ();
+this.vTemp =  new JU.V3 ();
+this.center =  new JU.P3 ();
 });
 $_M(c$, "getName", 
 function () {
@@ -47,7 +47,7 @@ c$.getPointGroup = $_M(c$, "getPointGroup",
 function (pgLast, atomset, bsAtoms, haveVibration, distanceTolerance, linearTolerance) {
 var pg =  new J.symmetry.PointGroup ();
 return (pg.set (pgLast, atomset, bsAtoms, haveVibration, distanceTolerance, linearTolerance) ? pg : pgLast);
-}, "J.symmetry.PointGroup,~A,J.util.BS,~B,~N,~N");
+}, "J.symmetry.PointGroup,~A,JU.BS,~B,~N,~N");
 Clazz.makeConstructor (c$, 
 ($fz = function () {
 }, $fz.isPrivate = true, $fz));
@@ -74,7 +74,7 @@ return true;
 if (haveVibration) {
 var atomVibs =  new Array (this.points.length);
 for (var i = this.points.length; --i >= 0; ) {
-atomVibs[i] = J.util.P3.newP (this.points[i]);
+atomVibs[i] = JU.P3.newP (this.points[i]);
 var v = this.atoms[i].getVibrationVector ();
 if (v != null) atomVibs[i].add (v);
 }
@@ -157,7 +157,7 @@ if (n < 14) n /= 2;
  else n -= 14;
 this.name = "C" + n + "h";
 }}return true;
-}, $fz.isPrivate = true, $fz), "J.symmetry.PointGroup,~A,J.util.BS,~B,~N,~N");
+}, $fz.isPrivate = true, $fz), "J.symmetry.PointGroup,~A,JU.BS,~B,~N,~N");
 $_M(c$, "setPrincipalAxis", 
 ($fz = function (n, nPlanes) {
 var principalPlane = this.setPrincipalPlane (n, nPlanes);
@@ -198,7 +198,7 @@ this.elements =  Clazz.newIntArray (atomCount, 0);
 if (atomCount == 0) return true;
 this.nAtoms = 0;
 for (var i = bsAtoms.nextSetBit (0); i >= 0; i = bsAtoms.nextSetBit (i + 1)) {
-this.points[this.nAtoms] = J.util.P3.newP (atomset[i]);
+this.points[this.nAtoms] = JU.P3.newP (atomset[i]);
 this.atoms[this.nAtoms] = atomset[i];
 var bondIndex = 1 + Math.max (3, atomset[i].getCovalentBondCount ());
 this.elements[this.nAtoms] = atomset[i].getElementNumber () * bondIndex;
@@ -211,7 +211,7 @@ if (r < this.distanceTolerance) this.centerAtomIndex = i;
 this.radius = Math.max (this.radius, r);
 }
 return true;
-}, $fz.isPrivate = true, $fz), "~A,J.util.BS");
+}, $fz.isPrivate = true, $fz), "~A,JU.BS");
 $_M(c$, "findInversionCenter", 
 ($fz = function () {
 this.haveInversionCenter = this.checkOperation (null, this.center, -1);
@@ -221,7 +221,7 @@ this.axes[1][0] = Clazz.innerTypeInstance (J.symmetry.PointGroup.Operation, this
 }}, $fz.isPrivate = true, $fz));
 $_M(c$, "checkOperation", 
 ($fz = function (q, center, iOrder) {
-var pt =  new J.util.P3 ();
+var pt =  new JU.P3 ();
 var nFound = 0;
 var isInversion = (iOrder < 14);
 out : for (var i = this.points.length; --i >= 0 && nFound < this.points.length; ) if (i == this.centerAtomIndex) {
@@ -250,7 +250,7 @@ continue out;
 }}
 }
 return nFound == this.points.length;
-}, $fz.isPrivate = true, $fz), "J.util.Quaternion,J.util.P3,~N");
+}, $fz.isPrivate = true, $fz), "J.util.Quaternion,JU.P3,~N");
 $_M(c$, "isLinear", 
 ($fz = function (atoms) {
 var v1 = null;
@@ -258,7 +258,7 @@ if (atoms.length < 2) return false;
 for (var i = atoms.length; --i >= 0; ) {
 if (i == this.centerAtomIndex) continue;
 if (v1 == null) {
-v1 =  new J.util.V3 ();
+v1 =  new JU.V3 ();
 v1.sub2 (atoms[i], this.center);
 v1.normalize ();
 this.vTemp.setT (v1);
@@ -272,11 +272,11 @@ return true;
 $_M(c$, "isParallel", 
 ($fz = function (v1, v2) {
 return (Math.abs (v1.dot (v2)) >= this.cosTolerance);
-}, $fz.isPrivate = true, $fz), "J.util.V3,J.util.V3");
+}, $fz.isPrivate = true, $fz), "JU.V3,JU.V3");
 $_M(c$, "isPerpendicular", 
 ($fz = function (v1, v2) {
 return (Math.abs (v1.dot (v2)) <= 1 - this.cosTolerance);
-}, $fz.isPrivate = true, $fz), "J.util.V3,J.util.V3");
+}, $fz.isPrivate = true, $fz), "JU.V3,JU.V3");
 $_M(c$, "getElementCounts", 
 ($fz = function () {
 for (var i = this.points.length; --i >= 0; ) {
@@ -289,9 +289,9 @@ for (var i = this.points.length; --i >= 0; ) this.eCounts[this.elements[i]]++;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "findCAxes", 
 ($fz = function () {
-var v1 =  new J.util.V3 ();
-var v2 =  new J.util.V3 ();
-var v3 =  new J.util.V3 ();
+var v1 =  new JU.V3 ();
+var v2 =  new JU.V3 ();
+var v3 =  new JU.V3 ();
 for (var i = this.points.length; --i >= 0; ) {
 if (i == this.centerAtomIndex) continue;
 var a1 = this.points[i];
@@ -322,7 +322,7 @@ this.checkAxisOrder (iOrder, v3, this.center);
 }}
 }
 var vs =  new Array (this.nAxes[16] * 2);
-for (var i = 0; i < vs.length; i++) vs[i] =  new J.util.V3 ();
+for (var i = 0; i < vs.length; i++) vs[i] =  new JU.V3 ();
 
 var n = 0;
 for (var i = 0; i < this.nAxes[16]; i++) {
@@ -365,7 +365,7 @@ if (this.nAxes[19] == J.symmetry.PointGroup.axesMaxN[19]) break out;
 vs =  new Array (this.maxElement);
 for (var i = this.points.length; --i >= 0; ) {
 var e1 = this.elements[i];
-if (vs[e1] == null) vs[e1] =  new J.util.V3 ();
+if (vs[e1] == null) vs[e1] =  new JU.V3 ();
  else if (this.haveInversionCenter) continue;
 vs[e1].add (this.points[i]);
 }
@@ -387,7 +387,7 @@ $_M(c$, "getAllAxes",
 ($fz = function (v3) {
 for (var o = 16; o < J.symmetry.PointGroup.maxAxis; o++) if (this.nAxes[o] < J.symmetry.PointGroup.axesMaxN[o]) this.checkAxisOrder (o, v3, this.center);
 
-}, $fz.isPrivate = true, $fz), "J.util.V3");
+}, $fz.isPrivate = true, $fz), "JU.V3");
 $_M(c$, "getHighestOrder", 
 ($fz = function () {
 var n = 0;
@@ -449,13 +449,13 @@ this.addAxis (18, v);
 break;
 }
 return true;
-}, $fz.isPrivate = true, $fz), "~N,J.util.V3,J.util.P3");
+}, $fz.isPrivate = true, $fz), "~N,JU.V3,JU.P3");
 $_M(c$, "addAxis", 
 ($fz = function (iOrder, v) {
 if (this.haveAxis (iOrder, v)) return;
 if (this.axes[iOrder] == null) this.axes[iOrder] =  new Array (J.symmetry.PointGroup.axesMaxN[iOrder]);
 this.axes[iOrder][this.nAxes[iOrder]++] = Clazz.innerTypeInstance (J.symmetry.PointGroup.Operation, this, null, v, iOrder);
-}, $fz.isPrivate = true, $fz), "~N,J.util.V3");
+}, $fz.isPrivate = true, $fz), "~N,JU.V3");
 $_M(c$, "haveAxis", 
 ($fz = function (iOrder, v) {
 if (this.nAxes[iOrder] == J.symmetry.PointGroup.axesMaxN[iOrder]) {
@@ -464,13 +464,13 @@ return true;
 if (this.isParallel (v, this.axes[iOrder][i].normalOrAxis)) return true;
 }
 return false;
-}, $fz.isPrivate = true, $fz), "~N,J.util.V3");
+}, $fz.isPrivate = true, $fz), "~N,JU.V3");
 $_M(c$, "findPlanes", 
 ($fz = function () {
-var pt =  new J.util.P3 ();
-var v1 =  new J.util.V3 ();
-var v2 =  new J.util.V3 ();
-var v3 =  new J.util.V3 ();
+var pt =  new JU.P3 ();
+var v1 =  new JU.V3 ();
+var v2 =  new JU.V3 ();
+var v3 =  new JU.V3 ();
 var nPlanes = 0;
 var haveAxes = (this.getHighestOrder () > 1);
 for (var i = this.points.length; --i >= 0; ) {
@@ -504,7 +504,7 @@ $_M(c$, "getPlane",
 ($fz = function (v3) {
 if (!this.haveAxis (0, v3) && this.checkOperation (J.util.Quaternion.newVA (v3, 180), this.center, -1)) this.axes[0][this.nAxes[0]++] = Clazz.innerTypeInstance (J.symmetry.PointGroup.Operation, this, null, v3);
 return this.nAxes[0];
-}, $fz.isPrivate = true, $fz), "J.util.V3");
+}, $fz.isPrivate = true, $fz), "JU.V3");
 $_M(c$, "findAdditionalAxes", 
 ($fz = function (nPlanes) {
 var planes = this.axes[0];
@@ -525,7 +525,7 @@ this.checkAxisOrder (16, this.vTemp, this.center);
 $_M(c$, "getInfo", 
 function (modelIndex, asDraw, asInfo, type, index, scaleFactor) {
 this.info = (asInfo ?  new java.util.Hashtable () : null);
-var v =  new J.util.V3 ();
+var v =  new JU.V3 ();
 var op;
 if (scaleFactor == 0) scaleFactor = 1;
 this.scale = scaleFactor;
@@ -533,7 +533,7 @@ var nType =  Clazz.newIntArray (4, 2, 0);
 for (var i = 1; i < J.symmetry.PointGroup.maxAxis; i++) for (var j = this.nAxes[i]; --j >= 0; ) nType[this.axes[i][j].type][0]++;
 
 
-var sb =  new J.util.SB ().append ("# ").appendI (this.nAtoms).append (" atoms\n");
+var sb =  new JU.SB ().append ("# ").appendI (this.nAtoms).append (" atoms\n");
 if (asDraw) {
 var haveType = (type != null && type.length > 0);
 this.drawType = type = (haveType ? type : "");
@@ -608,7 +608,7 @@ if (this.info == null) sb.append ("\n\n").append (this.name).append ("\tn").appe
 n *= this.nAxes[i];
 nTotal += n;
 nType[this.axes[i][0].type][1] += n;
-var vinfo = (this.info == null ? null :  new J.util.JmolList ());
+var vinfo = (this.info == null ? null :  new JU.List ());
 for (var j = 0; j < this.nAxes[i]; j++) {
 if (vinfo == null) sb.append ("\n").append (this.name).append ("\t").append (label).append ("_").appendI (j + 1).append ("\t").appendO (this.axes[i][j].normalOrAxis);
  else vinfo.addLast (this.axes[i][j].normalOrAxis);
@@ -622,16 +622,16 @@ sb.append ("\n").append (this.name).append ("\tE\t  1\t  1");
 n = (this.haveInversionCenter ? 1 : 0);
 sb.append ("\n").append (this.name).append ("\tCi\t  ").appendI (n).append ("\t  ").appendI (n);
 sb.append ("\n").append (this.name).append ("\tCs\t");
-J.util.TextFormat.rFill (sb, "    ", this.nAxes[0] + "\t");
-J.util.TextFormat.rFill (sb, "    ", this.nAxes[0] + "\n");
+J.util.Txt.rightJustify (sb, "    ", this.nAxes[0] + "\t");
+J.util.Txt.rightJustify (sb, "    ", this.nAxes[0] + "\n");
 sb.append (this.name).append ("\tCn\t");
-J.util.TextFormat.rFill (sb, "    ", nType[1][0] + "\t");
-J.util.TextFormat.rFill (sb, "    ", nType[1][1] + "\n");
+J.util.Txt.rightJustify (sb, "    ", nType[1][0] + "\t");
+J.util.Txt.rightJustify (sb, "    ", nType[1][1] + "\n");
 sb.append (this.name).append ("\tSn\t");
-J.util.TextFormat.rFill (sb, "    ", nType[2][0] + "\t");
-J.util.TextFormat.rFill (sb, "    ", nType[2][1] + "\n");
+J.util.Txt.rightJustify (sb, "    ", nType[2][0] + "\t");
+J.util.Txt.rightJustify (sb, "    ", nType[2][1] + "\n");
 sb.append (this.name).append ("\t\tTOTAL\t");
-J.util.TextFormat.rFill (sb, "    ", nTotal + "\n");
+J.util.Txt.rightJustify (sb, "    ", nTotal + "\n");
 this.textInfo = sb.toString ();
 return this.textInfo;
 }this.info.put ("name", this.name);
@@ -676,7 +676,7 @@ this.type = (b < 14 ? 2 : 1);
 this.order = b % 14;
 this.normalOrAxis = J.util.Quaternion.newVA (a, 180).getNormal ();
 if (J.util.Logger.debugging) J.util.Logger.debug ("new operation -- " + (this.order == b ? "S" : "C") + this.order + " " + this.normalOrAxis);
-}, "J.util.V3,~N");
+}, "JU.V3,~N");
 Clazz.makeConstructor (c$, 
 function (a) {
 if (a == null) return;
@@ -684,7 +684,7 @@ this.index = ++this.b$["J.symmetry.PointGroup"].nOps;
 this.type = 0;
 this.normalOrAxis = J.util.Quaternion.newVA (a, 180).getNormal ();
 if (J.util.Logger.debugging) J.util.Logger.debug ("new operation -- plane " + this.normalOrAxis);
-}, "J.util.V3");
+}, "JU.V3");
 $_M(c$, "getLabel", 
 function () {
 switch (this.type) {

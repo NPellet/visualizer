@@ -19,7 +19,7 @@ $_M(c$, "getPaletteId",
 function () {
 return this.paletteID;
 });
-Clazz.overrideMethod (c$, "setPaletteID", 
+$_V(c$, "setPaletteID", 
 function (paletteID) {
 this.paletteID = paletteID;
 }, "~N");

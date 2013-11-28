@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "J.util.P3"], "J.adapter.readers.xtal.CrystalReader", ["java.lang.Character", "$.Double", "java.util.Arrays", "J.util.BS", "$.JmolList", "$.Logger", "$.Matrix3f", "$.Parser", "$.Quaternion", "$.SB", "$.Tensor", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "JU.P3"], "J.adapter.readers.xtal.CrystalReader", ["java.lang.Character", "$.Double", "java.util.Arrays", "JU.BS", "$.DF", "$.List", "$.M3", "$.PT", "$.SB", "$.V3", "J.util.Logger", "$.Quaternion", "$.Tensor", "$.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isVersion3 = false;
 this.isPrimitive = false;
@@ -29,9 +29,9 @@ this.vPrimitiveMapping = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "CrystalReader", J.adapter.smarter.AtomSetCollectionReader);
 Clazz.prepareFields (c$, function () {
-this.ptOriginShift =  new J.util.P3 ();
+this.ptOriginShift =  new JU.P3 ();
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.doProcessLines = false;
 this.inputOnly = this.checkFilterKey ("INPUT");
@@ -41,7 +41,7 @@ this.getLastConventional = (!this.isPrimitive && this.desiredModelNumber == 0);
 this.setFractionalCoordinates (this.readHeader ());
 this.atomSetCollection.setLatticeOnly (true);
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.startsWith (" LATTICE PARAMETER")) {
 var isConvLattice = (this.line.indexOf ("- CONVENTIONAL") >= 0);
@@ -121,7 +121,7 @@ this.appendLoadNote ("Multipole Analysis");
 return true;
 }return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 this.createAtomsFromCoordLines ();
 if (this.energy != null) this.setEnergy ();
@@ -131,29 +131,29 @@ $_M(c$, "setDirect",
 ($fz = function () {
 var isBohr = (this.line.indexOf ("(BOHR") >= 0);
 this.directLatticeVectors = this.read3Vectors (isBohr);
-var a =  new J.util.V3 ();
-var b =  new J.util.V3 ();
+var a =  new JU.V3 ();
+var b =  new JU.V3 ();
 if (this.isPrimitive) {
 a = this.directLatticeVectors[0];
 b = this.directLatticeVectors[1];
 } else {
 if (this.primitiveToCryst == null) return true;
-var mp =  new J.util.Matrix3f ();
+var mp =  new JU.M3 ();
 mp.setColumnV (0, this.directLatticeVectors[0]);
 mp.setColumnV (1, this.directLatticeVectors[1]);
 mp.setColumnV (2, this.directLatticeVectors[2]);
 mp.mul (this.primitiveToCryst);
-a =  new J.util.V3 ();
-b =  new J.util.V3 ();
+a =  new JU.V3 ();
+b =  new JU.V3 ();
 mp.getColumnV (0, a);
 mp.getColumnV (1, b);
-}this.matUnitCellOrientation = J.util.Quaternion.getQuaternionFrame ( new J.util.P3 (), a, b).getMatrix ();
+}this.matUnitCellOrientation = J.util.Quaternion.getQuaternionFrame ( new JU.P3 (), a, b).getMatrix ();
 J.util.Logger.info ("oriented unit cell is in model " + this.atomSetCollection.getAtomSetCount ());
 return !this.isProperties;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readTransformationMatrix", 
 ($fz = function () {
-this.primitiveToCryst = J.util.Matrix3f.newA (this.fillFloatArray (null, 0,  Clazz.newFloatArray (9, 0)));
+this.primitiveToCryst = JU.M3.newA (this.fillFloatArray (null, 0,  Clazz.newFloatArray (9, 0)));
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readShift", 
 ($fz = function () {
@@ -164,13 +164,13 @@ return true;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "fraction", 
 ($fz = function (f) {
-var ab = J.util.TextFormat.split (f, '/');
+var ab = JU.PT.split (f, "/");
 return (ab.length == 2 ? this.parseFloatStr (ab[0]) / this.parseFloatStr (ab[1]) : 0);
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "setPrimitiveVolumeAndDensity", 
 ($fz = function () {
-if (this.primitiveVolume != 0) this.atomSetCollection.setAtomSetModelProperty ("volumePrimitive", J.util.TextFormat.formatDecimal (this.primitiveVolume, 3));
-if (this.primitiveDensity != 0) this.atomSetCollection.setAtomSetModelProperty ("densityPrimitive", J.util.TextFormat.formatDecimal (this.primitiveDensity, 3));
+if (this.primitiveVolume != 0) this.atomSetCollection.setAtomSetModelProperty ("volumePrimitive", JU.DF.formatDecimal (this.primitiveVolume, 3));
+if (this.primitiveDensity != 0) this.atomSetCollection.setAtomSetModelProperty ("densityPrimitive", JU.DF.formatDecimal (this.primitiveDensity, 3));
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readHeader", 
 ($fz = function () {
@@ -237,7 +237,7 @@ this.setUnitCell (this.parseFloatStr (tokens[0]) * f, this.parseFloatStr (tokens
 $_M(c$, "readPrimitiveMapping", 
 ($fz = function () {
 if (this.havePrimitiveMapping) return;
-this.vPrimitiveMapping =  new J.util.JmolList ();
+this.vPrimitiveMapping =  new JU.List ();
 while (this.readLine () != null && this.line.indexOf ("NUMBER") < 0) this.vPrimitiveMapping.addLast (this.line);
 
 }, $fz.isPrivate = true, $fz));
@@ -245,7 +245,7 @@ $_M(c$, "setPrimitiveMapping",
 ($fz = function () {
 if (this.vCoords == null || this.vPrimitiveMapping == null || this.havePrimitiveMapping) return false;
 this.havePrimitiveMapping = true;
-var bsInputAtomsIgnore =  new J.util.BS ();
+var bsInputAtomsIgnore =  new JU.BS ();
 var n = this.vCoords.size ();
 var indexToPrimitive =  Clazz.newIntArray (n, 0);
 this.primitiveToIndex =  Clazz.newIntArray (n, 0);
@@ -322,7 +322,7 @@ $_M(c$, "readCoordLines",
 ($fz = function () {
 this.readLine ();
 this.readLine ();
-this.vCoords =  new J.util.JmolList ();
+this.vCoords =  new JU.List ();
 while (this.readLine () != null && this.line.length > 0) this.vCoords.addLast (this.line);
 
 }, $fz.isPrivate = true, $fz));
@@ -361,7 +361,7 @@ this.atomCount = 0;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readEnergy", 
 ($fz = function () {
-this.line = J.util.TextFormat.simpleReplace (this.line, "( ", "(");
+this.line = JU.PT.simpleReplace (this.line, "( ", "(");
 var tokens = this.getTokens ();
 this.energy = Double.$valueOf (Double.parseDouble (tokens[2]));
 this.setEnergy ();
@@ -390,7 +390,7 @@ return true;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readTotalAtomicCharges", 
 ($fz = function () {
-var data =  new J.util.SB ();
+var data =  new JU.SB ();
 while (this.readLine () != null && this.line.indexOf ("T") < 0) data.append (this.line);
 
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (data.toString ());
@@ -419,8 +419,8 @@ this.atomFrag =  Clazz.newIntArray (numAtomsFrag, 0);
 var Sfrag = "";
 while (this.readLine () != null && this.line.indexOf ("(") >= 0) Sfrag += this.line;
 
-Sfrag = J.util.TextFormat.simpleReplace (Sfrag, "(", " ");
-Sfrag = J.util.TextFormat.simpleReplace (Sfrag, ")", " ");
+Sfrag = JU.PT.simpleReplace (Sfrag, "(", " ");
+Sfrag = JU.PT.simpleReplace (Sfrag, ")", " ");
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (Sfrag);
 for (var i = 0, pos = 0; i < numAtomsFrag; i++, pos += 3) this.atomFrag[i] = this.getAtomIndexFromPrimitiveIndex (this.parseIntStr (tokens[pos]) - 1);
 
@@ -433,7 +433,7 @@ this.energy = null;
 this.discardLinesUntilContains ("MODES");
 var haveIntensities = (this.line.indexOf ("INTENS") >= 0);
 this.readLine ();
-var vData =  new J.util.JmolList ();
+var vData =  new JU.List ();
 var freqAtomCount = this.atomCount;
 while (this.readLine () != null && this.line.length > 0) {
 var i0 = this.parseIntRange (this.line, 1, 5);
@@ -483,7 +483,7 @@ this.atomSetCollection.setAtomSetModelProperty ("IRintensity", data[1] + " km/Mo
 this.atomSetCollection.setAtomSetModelProperty ("vibrationalSymmetry", data[0]);
 this.atomSetCollection.setAtomSetModelProperty ("IRactivity", data[2]);
 this.atomSetCollection.setAtomSetModelProperty ("Ramanactivity", data[3]);
-this.atomSetCollection.setAtomSetName ((this.isLongMode ? "LO " : "") + data[0] + " " + J.util.TextFormat.formatDecimal (freq, 2) + " cm-1 (" + J.util.TextFormat.formatDecimal (J.util.Parser.fVal (data[1]), 0) + " km/Mole), " + activity);
+this.atomSetCollection.setAtomSetName ((this.isLongMode ? "LO " : "") + data[0] + " " + JU.DF.formatDecimal (freq, 2) + " cm-1 (" + JU.DF.formatDecimal (JU.PT.fVal (data[1]), 0) + " km/Mole), " + activity);
 }, $fz.isPrivate = true, $fz), "~N,~A");
 $_M(c$, "readGradient", 
 ($fz = function () {
@@ -509,13 +509,13 @@ for (var i = 0; i < this.atomCount; i++) s[i] = "0";
 var data = "";
 while (this.readLine () != null && (this.line.length < 4 || Character.isDigit (this.line.charAt (3)))) data += this.line;
 
-data = J.util.TextFormat.simpleReplace (data, "-", " -");
+data = JU.PT.simpleReplace (data, "-", " -");
 var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (data);
 for (var i = 0, pt = nfields - 1; i < this.atomCount; i++, pt += nfields) {
 var iConv = this.getAtomIndexFromPrimitiveIndex (i);
 if (iConv >= 0) s[iConv] = tokens[pt];
 }
-data = J.util.TextFormat.join (s, '\n', 0);
+data = J.util.Txt.join (s, '\n', 0);
 this.atomSetCollection.setAtomSetAtomProperty (name, data, -1);
 return true;
 }, $fz.isPrivate = true, $fz), "~S,~N");
@@ -527,7 +527,7 @@ while (this.readLine () != null && this.line.startsWith (" *** ATOM")) {
 var tokens = this.getTokens ();
 var index = this.parseIntStr (tokens[3]) - 1;
 tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLines (3));
-atoms[index].addTensor (J.util.Tensor.getTensorFromEigenVectors (this.directLatticeVectors, [this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[3]), this.parseFloatStr (tokens[5])], "quadrupole", atoms[index].atomName), null, false);
+atoms[index].addTensor ( new J.util.Tensor ().setFromEigenVectors (this.directLatticeVectors, [this.parseFloatStr (tokens[1]), this.parseFloatStr (tokens[3]), this.parseFloatStr (tokens[5])], "quadrupole", atoms[index].atomName), null, false);
 this.readLine ();
 }
 this.appendLoadNote ("Ellipsoids set \"quadrupole\": Quadrupole tensors");
@@ -548,7 +548,7 @@ var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLi
 for (var j = 0; j < 3; j++) a[i][j] = this.parseFloatStr (tokens[j + 1]);
 
 }
-atom.addTensor (J.util.Tensor.getTensorFromAsymmetricTensor (a, "charge", atom.elementSymbol + (index + 1)), null, false);
+atom.addTensor ( new J.util.Tensor ().setFromAsymmetricTensor (a, "charge", atom.elementSymbol + (index + 1)), null, false);
 this.readLine ();
 }
 this.appendLoadNote ("Ellipsoids set \"charge\": Born charge tensors");

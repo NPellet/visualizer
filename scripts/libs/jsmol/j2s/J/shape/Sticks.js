@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.Shape", "J.util.P3i"], "J.shape.Sticks", ["java.util.Hashtable", "J.constant.EnumPalette", "J.util.BS", "$.BSUtil", "$.C", "$.Escape", "$.JmolEdge", "$.P3"], function () {
+Clazz.load (["J.shape.Shape", "JU.P3i"], "J.shape.Sticks", ["java.util.Hashtable", "JU.BS", "$.P3", "J.constant.EnumPalette", "J.util.BSUtil", "$.C", "$.Escape", "$.JmolEdge"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.myMask = 0;
 this.reportAll = false;
@@ -9,7 +9,7 @@ this.ptXY = null;
 Clazz.instantialize (this, arguments);
 }, J.shape, "Sticks", J.shape.Shape);
 Clazz.prepareFields (c$, function () {
-this.ptXY =  new J.util.P3i ();
+this.ptXY =  new JU.P3i ();
 });
 $_M(c$, "initShape", 
 function () {
@@ -17,24 +17,24 @@ Clazz.superCall (this, J.shape.Sticks, "initShape", []);
 this.myMask = 1023;
 this.reportAll = false;
 });
-Clazz.overrideMethod (c$, "setSize", 
+$_V(c$, "setSize", 
 function (size, bsSelected) {
 if (size == 2147483647) {
 this.selectedBonds = J.util.BSUtil.copy (bsSelected);
 return;
 }if (size == -2147483648) {
-if (this.bsOrderSet == null) this.bsOrderSet =  new J.util.BS ();
+if (this.bsOrderSet == null) this.bsOrderSet =  new JU.BS ();
 this.bsOrderSet.or (bsSelected);
 return;
-}if (this.bsSizeSet == null) this.bsSizeSet =  new J.util.BS ();
+}if (this.bsSizeSet == null) this.bsSizeSet =  new JU.BS ();
 var iter = (this.selectedBonds != null ? this.modelSet.getBondIterator (this.selectedBonds) : this.modelSet.getBondIteratorForType (this.myMask, bsSelected));
 var mad = size;
 while (iter.hasNext ()) {
 this.bsSizeSet.set (iter.nextIndex ());
 iter.next ().setMad (mad);
 }
-}, "~N,J.util.BS");
-Clazz.overrideMethod (c$, "setProperty", 
+}, "~N,JU.BS");
+$_V(c$, "setProperty", 
 function (propertyName, value, bs) {
 if ("type" === propertyName) {
 this.myMask = (value).intValue ();
@@ -49,7 +49,7 @@ this.bsColixSet = null;
 this.selectedBonds = null;
 return;
 }if ("bondOrder" === propertyName) {
-if (this.bsOrderSet == null) this.bsOrderSet =  new J.util.BS ();
+if (this.bsOrderSet == null) this.bsOrderSet =  new JU.BS ();
 var order = (value).shortValue ();
 var iter = (this.selectedBonds != null ? this.modelSet.getBondIterator (this.selectedBonds) : this.modelSet.getBondIteratorForType (65535, bs));
 while (iter.hasNext ()) {
@@ -58,7 +58,7 @@ iter.next ().setOrder (order);
 }
 return;
 }if ("color" === propertyName) {
-if (this.bsColixSet == null) this.bsColixSet =  new J.util.BS ();
+if (this.bsColixSet == null) this.bsColixSet =  new JU.BS ();
 var colix = J.util.C.getColixO (value);
 var pal = (Clazz.instanceOf (value, J.constant.EnumPalette) ? value : null);
 if (pal === J.constant.EnumPalette.TYPE || pal === J.constant.EnumPalette.ENERGY) {
@@ -84,7 +84,7 @@ this.bsColixSet.setBitTo (iBond, (colix != 0 && colix != 2));
 }
 return;
 }if ("translucency" === propertyName) {
-if (this.bsColixSet == null) this.bsColixSet =  new J.util.BS ();
+if (this.bsColixSet == null) this.bsColixSet =  new JU.BS ();
 var isTranslucent = ((value).equals ("translucent"));
 var iter = (this.selectedBonds != null ? this.modelSet.getBondIterator (this.selectedBonds) : this.modelSet.getBondIteratorForType (this.myMask, bs));
 while (iter.hasNext ()) {
@@ -95,14 +95,14 @@ return;
 }if ("deleteModelAtoms" === propertyName) {
 return;
 }this.setPropS (propertyName, value, bs);
-}, "~S,~O,J.util.BS");
-Clazz.overrideMethod (c$, "getProperty", 
+}, "~S,~O,JU.BS");
+$_V(c$, "getProperty", 
 function (property, index) {
 if (property.equals ("selectionState")) return (this.selectedBonds != null ? "select BONDS " + J.util.Escape.eBS (this.selectedBonds) + "\n" : "");
 if (property.equals ("sets")) return [this.bsOrderSet, this.bsSizeSet, this.bsColixSet];
 return null;
 }, "~S,~N");
-Clazz.overrideMethod (c$, "setModelClickability", 
+$_V(c$, "setModelClickability", 
 function () {
 var bonds = this.modelSet.bonds;
 for (var i = this.modelSet.bondCount; --i >= 0; ) {
@@ -112,21 +112,21 @@ bond.getAtom1 ().setClickable (this.myVisibilityFlag);
 bond.getAtom2 ().setClickable (this.myVisibilityFlag);
 }
 });
-Clazz.overrideMethod (c$, "getShapeState", 
+$_V(c$, "getShapeState", 
 function () {
 return this.viewer.getBondState (this, this.bsOrderSet, this.reportAll);
 });
-Clazz.overrideMethod (c$, "checkObjectHovered", 
+$_V(c$, "checkObjectHovered", 
 function (x, y, bsVisible) {
-var pt =  new J.util.P3 ();
+var pt =  new JU.P3 ();
 var bond = this.findPickedBond (x, y, bsVisible, pt);
 if (bond == null) return false;
 this.viewer.highlightBond (bond.index, true);
 return true;
-}, "~N,~N,J.util.BS");
-Clazz.overrideMethod (c$, "checkObjectClicked", 
+}, "~N,~N,JU.BS");
+$_V(c$, "checkObjectClicked", 
 function (x, y, modifiers, bsVisible, drawPicking) {
-var pt =  new J.util.P3 ();
+var pt =  new JU.P3 ();
 var bond = this.findPickedBond (x, y, bsVisible, pt);
 if (bond == null) return null;
 var modelIndex = bond.getAtom1 ().modelIndex;
@@ -140,7 +140,7 @@ map.put ("type", "bond");
 map.put ("info", info);
 this.viewer.setStatusAtomPicked (-3, "[\"bond\",\"" + bond.getIdentity () + "\"," + pt.x + "," + pt.y + "," + pt.z + "]");
 return map;
-}, "~N,~N,~N,J.util.BS,~B");
+}, "~N,~N,~N,JU.BS,~B");
 $_M(c$, "findPickedBond", 
 ($fz = function (x, y, bsVisible, pt) {
 var dmin2 = 100;
@@ -149,7 +149,7 @@ x <<= 1;
 y <<= 1;
 dmin2 <<= 1;
 }var pickedBond = null;
-var v =  new J.util.P3 ();
+var v =  new JU.P3 ();
 var bonds = this.modelSet.bonds;
 for (var i = this.modelSet.bondCount; --i >= 0; ) {
 var bond = bonds[i];
@@ -169,7 +169,7 @@ pickedBond = bond;
 pt.setT (v);
 }}
 return pickedBond;
-}, $fz.isPrivate = true, $fz), "~N,~N,J.util.BS,J.util.P3");
+}, $fz.isPrivate = true, $fz), "~N,~N,JU.BS,JU.P3");
 Clazz.defineStatics (c$,
 "MAX_BOND_CLICK_DISTANCE_SQUARED", 100);
 });

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.CageRenderer", "J.util.P3"], "J.render.UccageRenderer", ["J.util.BoxInfo", "$.C", "$.SimpleUnitCell", "$.TextFormat"], function () {
+Clazz.load (["J.render.CageRenderer", "JU.P3"], "J.render.UccageRenderer", ["JU.DF", "J.util.BoxInfo", "$.C", "$.SimpleUnitCell"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.fid = 0;
 this.verticesT = null;
@@ -14,20 +14,20 @@ Clazz.prepareFields (c$, function () {
 this.verticesT =  new Array (8);
 {
 for (var i = 8; --i >= 0; ) {
-this.verticesT[i] =  new J.util.P3 ();
+this.verticesT[i] =  new JU.P3 ();
 }
-}this.fset0 = J.util.P3.new3 (555, 555, 1);
-this.cell0 =  new J.util.P3 ();
-this.cell1 =  new J.util.P3 ();
-this.offset =  new J.util.P3 ();
-this.offsetT =  new J.util.P3 ();
+}this.fset0 = JU.P3.new3 (555, 555, 1);
+this.cell0 =  new JU.P3 ();
+this.cell1 =  new JU.P3 ();
+this.offset =  new JU.P3 ();
+this.offsetT =  new JU.P3 ();
 });
-Clazz.overrideMethod (c$, "initRenderer", 
+$_V(c$, "initRenderer", 
 function () {
 this.tickEdges = J.util.BoxInfo.uccageTickEdges;
 this.draw000 = false;
 });
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 this.imageFontScaling = this.viewer.getImageFontScaling ();
 this.font3d = this.g3d.getFont3DScaled ((this.shape).font3d, this.imageFontScaling);
@@ -48,6 +48,9 @@ this.isPolymer = unitcell.isPolymer ();
 this.isSlab = unitcell.isSlab ();
 var vertices = unitcell.getUnitCellVertices ();
 this.offset.setT (unitcell.getCartesianOffset ());
+this.offsetT.set (0, 0, 0);
+unitcell.toCartesian (this.offsetT, true);
+this.offset.sub (this.offsetT);
 var fset = unitcell.getUnitCellMultiplier ();
 var haveMultiple = (fset != null);
 if (!haveMultiple) fset = this.fset0;
@@ -89,7 +92,7 @@ if (this.viewer.getBoolean (603979828) && !this.viewer.isPreviewOnly () && !unit
 }, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "nfformat", 
 ($fz = function (x) {
-return (J.util.TextFormat.formatDecimal (x, 3));
+return (JU.DF.formatDecimal (x, 3));
 }, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "renderInfo", 
 ($fz = function (symmetry) {

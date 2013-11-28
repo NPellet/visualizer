@@ -15,7 +15,7 @@ this.viewer = viewer;
 this.startedByCommandThread = startedByCommandThread;
 this.pt = pt;
 }, "J.api.JmolScriptManager,J.viewer.Viewer,~B,~N");
-Clazz.overrideMethod (c$, "run1", 
+$_V(c$, "run1", 
 function (mode) {
 while (true) switch (mode) {
 case -1:

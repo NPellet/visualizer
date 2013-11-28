@@ -18,7 +18,7 @@ $_M(c$, "getErrorMessageUntranslated",
 function () {
 return this.untranslated;
 });
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return this.message;
 });

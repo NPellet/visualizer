@@ -1,7 +1,7 @@
 Clazz.declarePackage ("J.modelkit");
 Clazz.load (["J.popup.PopupResource"], "J.modelkit.ModelKitPopupResourceBundle", ["J.i18n.GT"], function () {
 c$ = Clazz.declareType (J.modelkit, "ModelKitPopupResourceBundle", J.popup.PopupResource);
-Clazz.overrideMethod (c$, "getMenuName", 
+$_V(c$, "getMenuName", 
 function () {
 return "modelkitMenu";
 });
@@ -9,13 +9,13 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.modelkit.ModelKitPopupResourceBundle, [null, null]);
 });
-Clazz.overrideMethod (c$, "buildStructure", 
+$_V(c$, "buildStructure", 
 function (menuStructure) {
 this.addItems (J.modelkit.ModelKitPopupResourceBundle.menuContents);
 this.addItems (J.modelkit.ModelKitPopupResourceBundle.structureContents);
 this.setStructure (menuStructure);
 }, "~S");
-Clazz.overrideMethod (c$, "getWordContents", 
+$_V(c$, "getWordContents", 
 function () {
 var wasTranslating = J.i18n.GT.setDoTranslate (true);
 var words = ["atomMenu", "<atoms.png>", "moreAtomMenu", "<dotdotdot.png>", "bondMenu", "<bonds.png>", "optionsMenu", "<dotdotdot.png>", "new", J.i18n.GT._ ("new"), "undo", J.i18n.GT._ ("undo (CTRL-Z)"), "redo", J.i18n.GT._ ("redo (CTRL-Y)"), "center", J.i18n.GT._ ("center"), "addh", J.i18n.GT._ ("add hydrogens"), "minimize", J.i18n.GT._ ("minimize"), "hmin", J.i18n.GT._ ("fix hydrogens and minimize"), "clearQ", J.i18n.GT._ ("clear"), "SIGNEDsaveFile", J.i18n.GT._ ("save file"), "SIGNEDsaveState", J.i18n.GT._ ("save state"), "invertStereoP!CB", J.i18n.GT._ ("invert ring stereochemistry"), "assignAtom_XP!CB", J.i18n.GT._ ("delete atom"), "assignAtom_XxP!CB", J.i18n.GT._ ("drag to bond"), "dragAtomP!CB", J.i18n.GT._ ("drag atom"), "dragMinimizeP!CB", J.i18n.GT._ ("drag atom (and minimize)"), "dragMoleculeP!CB", J.i18n.GT._ ("drag molecule (ALT to rotate)"), "dragMinimizeMoleculeP!CB", J.i18n.GT._ ("drag and minimize molecule (docking)"), "assignAtom_CP!CB", "C", "assignAtom_HP!CB", "H", "assignAtom_NP!CB", "N", "assignAtom_OP!CB", "O", "assignAtom_FP!CB", "F", "assignAtom_ClP!CB", "Cl", "assignAtom_BrP!CB", "Br", "_??P!CB", "??", "assignAtom_PlP!CB", J.i18n.GT._ ("increase charge"), "assignAtom_MiP!CB", J.i18n.GT._ ("decrease charge"), "assignBond_0P!CB", J.i18n.GT._ ("delete bond"), "assignBond_1P!CB", J.i18n.GT._ ("single"), "assignBond_2P!CB", J.i18n.GT._ ("double"), "assignBond_3P!CB", J.i18n.GT._ ("triple"), "assignBond_pP!CB", J.i18n.GT._ ("increase order"), "assignBond_mP!CB", J.i18n.GT._ ("decrease order"), "rotateBondP!CB", J.i18n.GT._ ("rotate bond (SHIFT-DRAG)"), "exit", J.i18n.GT._ ("exit modelkit mode")];

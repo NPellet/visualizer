@@ -45,7 +45,7 @@ if (modelSetName.length == 0) modelSetName = null;
 }if (modelSetName == null) modelSetName = J.viewer.ModelManager.reduceFilename (fileName);
 } new J.modelset.ModelLoader (this.viewer, modelSetName, loadScript, atomSetCollection, (isAppend ? this.modelSet : null), bsNew);
 }if (this.modelSet.getAtomCount () == 0 && !this.modelSet.getModelSetAuxiliaryInfoBoolean ("isPyMOL")) this.zap ();
-}, "~S,~S,J.util.SB,~O,J.util.BS,~B");
+}, "~S,~S,JU.SB,~O,JU.BS,~B");
 c$.reduceFilename = $_M(c$, "reduceFilename", 
 ($fz = function (fileName) {
 if (fileName == null) return null;

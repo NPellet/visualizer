@@ -1,14 +1,14 @@
 Clazz.declarePackage ("J.viewer");
-Clazz.load (["J.api.JmolJSpecView"], "J.viewer.JSpecView", ["java.util.Hashtable", "J.util.BS", "$.Logger", "$.Parser", "$.TextFormat"], function () {
+Clazz.load (["J.api.JmolJSpecView"], "J.viewer.JSpecView", ["java.util.Hashtable", "JU.BS", "$.PT", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 Clazz.instantialize (this, arguments);
 }, J.viewer, "JSpecView", null, J.api.JmolJSpecView);
-Clazz.overrideMethod (c$, "setViewer", 
+$_V(c$, "setViewer", 
 function (viewer) {
 this.viewer = viewer;
 }, "J.viewer.Viewer");
-Clazz.overrideMethod (c$, "atomPicked", 
+$_V(c$, "atomPicked", 
 function (atomIndex) {
 if (atomIndex < 0) return;
 var peak = this.getPeakAtomRecord (atomIndex);
@@ -39,12 +39,12 @@ System.out.println ("Jmol JSpecView.java peak=" + peak);
 var bsPeak = htPeaks.get (peak);
 System.out.println ("Jmol JSpecView.java bspeak=" + bsPeak);
 if (bsPeak == null) {
-htPeaks.put (peak, bsPeak =  new J.util.BS ());
-var satoms = J.util.Parser.getQuotedAttribute (peak, "atoms");
-var select = J.util.Parser.getQuotedAttribute (peak, "select");
+htPeaks.put (peak, bsPeak =  new JU.BS ());
+var satoms = JU.PT.getQuotedAttribute (peak, "atoms");
+var select = JU.PT.getQuotedAttribute (peak, "select");
 System.out.println ("Jmol JSpecView.java satoms select " + satoms + " " + select);
 var script = "";
-if (satoms != null) script += "visible & (atomno=" + J.util.TextFormat.simpleReplace (satoms, ",", " or atomno=") + ")";
+if (satoms != null) script += "visible & (atomno=" + JU.PT.simpleReplace (satoms, ",", " or atomno=") + ")";
  else if (select != null) script += "visible & (" + select + ")";
 System.out.println ("Jmol JSpecView.java script : " + script);
 bsPeak.or (this.viewer.getAtomBitSet (script));
@@ -55,20 +55,20 @@ return null;
 }, $fz.isPrivate = true, $fz), "~N");
 $_M(c$, "sendJSpecView", 
 ($fz = function (peak) {
-var msg = J.util.Parser.getQuotedAttribute (peak, "title");
+var msg = JU.PT.getQuotedAttribute (peak, "title");
 if (msg != null) this.viewer.scriptEcho (J.util.Logger.debugging ? peak : msg);
 peak = this.viewer.fullName + "JSpecView: " + peak;
-J.util.Logger.info ("Jmol>JSV " + peak);
+J.util.Logger.info ("Jmol.JSpecView.sendJSpecView Jmol>JSV " + peak);
 this.viewer.statusManager.syncSend (peak, ">", 0);
 }, $fz.isPrivate = true, $fz), "~S");
-Clazz.overrideMethod (c$, "setModel", 
+$_V(c$, "setModel", 
 function (modelIndex) {
 var syncMode = ("sync on".equals (this.viewer.modelSet.getModelSetAuxiliaryInfoValue ("jmolscript")) ? 1 : this.viewer.statusManager.getSyncMode ());
 if (syncMode != 1) return;
 var peak = this.viewer.getModelAuxiliaryInfoValue (modelIndex, "jdxModelSelect");
 if (peak != null) this.sendJSpecView (peak);
 }, "~N");
-Clazz.overrideMethod (c$, "getBaseModelIndex", 
+$_V(c$, "getBaseModelIndex", 
 function (modelIndex) {
 var baseModel = this.viewer.getModelAuxiliaryInfoValue (modelIndex, "jdxBaseModel");
 if (baseModel != null) for (var i = this.viewer.getModelCount (); --i >= 0; ) if (baseModel.equals (this.viewer.getModelAuxiliaryInfoValue (i, "jdxModelID"))) return i;

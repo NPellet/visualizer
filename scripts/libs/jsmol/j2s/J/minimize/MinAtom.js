@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.minimize");
-Clazz.load (["J.util.BS", "$.JmolList"], "J.minimize.MinAtom", null, function () {
+Clazz.load (["JU.BS", "$.List"], "J.minimize.MinAtom", null, function () {
 c$ = Clazz.decorateAsClass (function () {
 this.index = 0;
 this.sType = null;
@@ -21,11 +21,11 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.coord =  Clazz.newDoubleArray (3, 0);
 this.force =  Clazz.newDoubleArray (3, 0);
-this.bonds =  new J.util.JmolList ();
-this.bsVdw =  new J.util.BS ();
-this.bs14 =  new J.util.BS ();
+this.bonds =  new JU.List ();
+this.bsVdw =  new JU.BS ();
+this.bs14 =  new JU.BS ();
 });
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return "#" + this.index + " " + this.sType;
 });

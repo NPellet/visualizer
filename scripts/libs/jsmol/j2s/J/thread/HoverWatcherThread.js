@@ -16,7 +16,7 @@ this.current = current;
 this.moved = moved;
 this.start ();
 }, "J.viewer.ActionManager,J.viewer.MouseState,J.viewer.MouseState,J.viewer.Viewer");
-Clazz.overrideMethod (c$, "run1", 
+$_V(c$, "run1", 
 function (mode) {
 while (true) switch (mode) {
 case -1:

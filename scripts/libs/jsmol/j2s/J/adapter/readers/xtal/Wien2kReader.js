@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.Wien2kReader", ["java.lang.Character", "$.Float", "J.util.TextFormat"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader"], "J.adapter.readers.xtal.Wien2kReader", ["java.lang.Character", "$.Float", "JU.PT"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isrhombohedral = false;
 this.latticeCode = '\0';
@@ -7,7 +7,7 @@ this.doSymmetry = true;
 this.cxyz = " x y z";
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "Wien2kReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.doSymmetry = !this.spaceGroup.equals ("none");
 this.setFractionalCoordinates (true);
@@ -62,7 +62,7 @@ if (!this.doSymmetry) this.addAtom ();
 var atomName = this.line.substring (0, 10);
 var sym = atomName.substring (0, 2).trim ();
 if (sym.length == 2 && Character.isDigit (sym.charAt (1))) sym = sym.substring (0, 1);
-atomName = J.util.TextFormat.simpleReplace (atomName, " ", "");
+atomName = JU.PT.simpleReplace (atomName, " ", "");
 var n = 0;
 for (var i = this.atomSetCollection.getAtomCount (); --i >= thisAtom; ) {
 var atom = this.atomSetCollection.getAtom (i);

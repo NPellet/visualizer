@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.quantum");
-Clazz.load (null, "J.quantum.QuantumCalculation", ["J.quantum.QMAtom", "J.util.Escape", "$.Logger", "$.P3"], function () {
+Clazz.load (null, "J.quantum.QuantumCalculation", ["JU.P3", "J.quantum.QMAtom", "J.util.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.doDebug = false;
 this.bsExcluded = null;
@@ -80,7 +80,7 @@ var isAll = (bsSelected == null);
 var i0 = (isAll ? this.qmAtoms.length - 1 : bsSelected.nextSetBit (0));
 for (var i = i0, j = 0; i >= 0; i = (isAll ? i - 1 : bsSelected.nextSetBit (i + 1))) this.qmAtoms[renumber ? j++ : i] =  new J.quantum.QMAtom (i, atomCoordAngstroms[i], this.X, this.Y, this.Z, this.X2, this.Y2, this.Z2, this.unitFactor);
 
-}}, "~A,~A,J.util.BS,~A,~A,~B");
+}}, "~A,~A,JU.BS,~A,~A,~B");
 $_M(c$, "processPt", 
 function (pt) {
 this.doDebug = false;
@@ -90,7 +90,7 @@ this.voxelDataTemp[0][0][0] = 0;
 this.setXYZBohr (this.points);
 this.processPoints ();
 return this.voxelData[0][0][0];
-}, "J.util.P3");
+}, "JU.P3");
 $_M(c$, "processPoints", 
 function () {
 this.process ();
@@ -102,7 +102,7 @@ this.initializeOnePointQC ();
 $_M(c$, "initializeOnePointQC", 
 function () {
 this.points =  new Array (1);
-this.points[0] =  new J.util.P3 ();
+this.points[0] =  new JU.P3 ();
 if (this.voxelData == null || this.voxelData === this.voxelDataTemp) {
 this.voxelData = this.voxelDataTemp =  Clazz.newFloatArray (1, 1, 1, 0);
 } else {

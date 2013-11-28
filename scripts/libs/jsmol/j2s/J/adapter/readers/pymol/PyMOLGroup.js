@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.pymol");
-Clazz.load (["java.util.Hashtable", "J.util.BS"], "J.adapter.readers.pymol.PyMOLGroup", null, function () {
+Clazz.load (["java.util.Hashtable", "JU.BS"], "J.adapter.readers.pymol.PyMOLGroup", null, function () {
 c$ = Clazz.decorateAsClass (function () {
 this.name = null;
 this.objectNameID = null;
@@ -14,7 +14,7 @@ Clazz.instantialize (this, arguments);
 }, J.adapter.readers.pymol, "PyMOLGroup");
 Clazz.prepareFields (c$, function () {
 this.list =  new java.util.Hashtable ();
-this.bsAtoms =  new J.util.BS ();
+this.bsAtoms =  new JU.BS ();
 });
 Clazz.makeConstructor (c$, 
 function (name) {
@@ -36,8 +36,8 @@ function (bs) {
 this.bsAtoms.or (bs);
 if (this.parent != null) this.parent.addGroupAtoms (this.bsAtoms);
 return this.bsAtoms;
-}, "J.util.BS");
-Clazz.overrideMethod (c$, "toString", 
+}, "JU.BS");
+$_V(c$, "toString", 
 function () {
 return this.name;
 });

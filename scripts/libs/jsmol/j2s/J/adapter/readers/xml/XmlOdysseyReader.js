@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xml");
-Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlOdysseyReader", ["java.lang.Float", "J.adapter.smarter.Atom", "J.util.P3"], function () {
+Clazz.load (["J.adapter.readers.xml.XmlReader"], "J.adapter.readers.xml.XmlOdysseyReader", ["java.lang.Float", "JU.P3", "J.adapter.smarter.Atom"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.modelName = null;
 this.formula = null;
@@ -14,11 +14,11 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.adapter.readers.xml.XmlOdysseyReader, []);
 });
-Clazz.overrideMethod (c$, "getDOMAttributes", 
+$_V(c$, "getDOMAttributes", 
 function () {
 return this.myAttributes;
 });
-Clazz.overrideMethod (c$, "processStartElement", 
+$_V(c$, "processStartElement", 
 function (localName) {
 if ("structure".equals (localName)) {
 this.atomSetCollection.newAtomSet ();
@@ -52,7 +52,7 @@ this.parent.setUnitCellItem (2, z);
 this.parent.setUnitCellItem (3, 90);
 this.parent.setUnitCellItem (4, 90);
 this.parent.setUnitCellItem (5, 90);
-var pt = J.util.P3.new3 (-x / 2, -y / 2, -z / 2);
+var pt = JU.P3.new3 (-x / 2, -y / 2, -z / 2);
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("periodicOriginXyz", pt);
 var atoms = this.atomSetCollection.getAtoms ();
 for (var i = this.atomSetCollection.getAtomCount (); --i >= 0; ) {
@@ -86,7 +86,7 @@ return 515;
 return this.parseIntStr (str);
 }return 1;
 }, $fz.isPrivate = true, $fz), "~S");
-Clazz.overrideMethod (c$, "processEndElement", 
+$_V(c$, "processEndElement", 
 function (localName) {
 if ("atom".equals (localName)) {
 if (this.atom.elementSymbol != null && !Float.isNaN (this.atom.z)) {

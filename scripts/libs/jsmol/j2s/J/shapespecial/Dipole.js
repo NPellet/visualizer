@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapespecial");
-Clazz.load (null, "J.shapespecial.Dipole", ["J.util.C", "$.Escape", "$.P3", "$.SB", "$.V3"], function () {
+Clazz.load (null, "J.shapespecial.Dipole", ["JU.P3", "$.SB", "$.V3", "J.util.C", "$.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.thisID = "";
 this.mad = 0;
@@ -55,8 +55,8 @@ this.mad = mad;
 this.offsetAngstroms = offsetAngstroms;
 this.offsetPercent = offsetPercent;
 this.offsetSide = offsetSide;
-this.vector = J.util.V3.newV (vector);
-this.origin = J.util.P3.newP (origin);
+this.vector = JU.V3.newV (vector);
+this.origin = JU.P3.newP (origin);
 this.haveAtoms = (atoms[0] != null);
 if (this.haveAtoms) {
 this.atoms[0] = atoms[0];
@@ -64,25 +64,25 @@ this.atoms[1] = atoms[1];
 this.centerDipole ();
 } else {
 this.center = null;
-}}, "~S,~S,~A,~N,~N,~N,~N,~N,J.util.P3,J.util.V3");
+}}, "~S,~S,~A,~N,~N,~N,~N,~N,JU.P3,JU.V3");
 $_M(c$, "set", 
 ($fz = function (pt1, pt2) {
-this.coords[0] = J.util.P3.newP (pt1);
-this.coords[1] = J.util.P3.newP (pt2);
+this.coords[0] = JU.P3.newP (pt1);
+this.coords[1] = JU.P3.newP (pt2);
 this.isValid = (this.coords[0].distance (this.coords[1]) > 0.1);
 if (this.dipoleValue < 0) {
-this.origin = J.util.P3.newP (pt2);
-this.vector = J.util.V3.newV (pt1);
+this.origin = JU.P3.newP (pt2);
+this.vector = JU.V3.newV (pt1);
 this.dipoleValue = -this.dipoleValue;
 } else {
-this.origin = J.util.P3.newP (pt1);
-this.vector = J.util.V3.newV (pt2);
+this.origin = JU.P3.newP (pt1);
+this.vector = JU.V3.newV (pt2);
 }this.dipoleInfo = "" + this.origin + this.vector;
 this.vector.sub (this.origin);
 if (this.dipoleValue == 0) this.dipoleValue = this.vector.length ();
  else this.vector.scale (this.dipoleValue / this.vector.length ());
 this.type = 1;
-}, $fz.isPrivate = true, $fz), "J.util.P3,J.util.P3");
+}, $fz.isPrivate = true, $fz), "JU.P3,JU.P3");
 $_M(c$, "set", 
 function (value) {
 var d = this.dipoleValue;
@@ -97,15 +97,15 @@ function (pt1, pt2, value) {
 this.dipoleValue = value;
 this.atoms[0] = null;
 this.set (pt1, pt2);
-}, "J.util.P3,J.util.P3,~N");
+}, "JU.P3,JU.P3,~N");
 $_M(c$, "set", 
 function (pt1, dipole) {
 this.set (dipole.length ());
-var pt2 = J.util.P3.newP (pt1);
+var pt2 = JU.P3.newP (pt1);
 pt2.add (dipole);
 this.set (pt1, pt2);
 this.type = 5;
-}, "J.util.P3,J.util.V3");
+}, "JU.P3,JU.V3");
 $_M(c$, "set", 
 function (atom1, atom2, value) {
 this.set (value);
@@ -123,7 +123,7 @@ this.isValid = (this.atoms[0] !== this.atoms[1] && this.dipoleValue != 0);
 if (!this.isValid) return;
 var f = this.atoms[0].distance (this.atoms[1]) / (2 * this.dipoleValue) - 0.5;
 this.origin.scaleAdd2 (f, this.vector, this.atoms[0]);
-this.center =  new J.util.P3 ();
+this.center =  new JU.P3 ();
 this.center.scaleAdd2 (0.5, this.vector, this.origin);
 this.bond = this.atoms[0].getBond (this.atoms[1]);
 this.type = (this.bond == null ? 2 : 3);
@@ -135,7 +135,7 @@ return (this.type == 2 || this.type == 3);
 $_M(c$, "getShapeState", 
 function () {
 if (!this.isValid) return "";
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 s.append ("dipole ID ").append (this.thisID);
 if (this.haveAtoms) s.append (" ({").appendI (this.atoms[0].getIndex ()).append (" ").appendI (this.atoms[1].getIndex ()).append ("})");
  else if (this.coords[0] == null) return "";

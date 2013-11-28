@@ -1,19 +1,19 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["java.lang.Enum", "J.modelsetbio.BioPolymer"], "J.modelsetbio.AlphaPolymer", ["J.constant.EnumStructure", "J.modelsetbio.Helix", "$.Sheet", "$.Turn", "J.util.BS", "$.JmolList", "$.Logger", "$.Measure", "$.P3"], function () {
+Clazz.load (["java.lang.Enum", "J.modelsetbio.BioPolymer"], "J.modelsetbio.AlphaPolymer", ["JU.BS", "$.List", "$.P3", "J.constant.EnumStructure", "J.modelsetbio.Helix", "$.Sheet", "$.Turn", "J.util.Logger", "$.Measure"], function () {
 c$ = Clazz.declareType (J.modelsetbio, "AlphaPolymer", J.modelsetbio.BioPolymer);
-Clazz.overrideMethod (c$, "getControlPoint", 
+$_V(c$, "getControlPoint", 
 function (i, v) {
 if (!this.monomers[i].isSheet ()) return this.leadPoints[i];
 v.sub2 (this.leadMidpoints[i], this.leadPoints[i]);
 v.scale (this.sheetSmoothing);
-var pt = J.util.P3.newP (this.leadPoints[i]);
+var pt = JU.P3.newP (this.leadPoints[i]);
 pt.add (v);
 return pt;
-}, "~N,J.util.V3");
+}, "~N,JU.V3");
 $_M(c$, "getPdbData", 
 function (viewer, ctype, qtype, mStep, derivType, bsAtoms, bsSelected, bothEnds, isDraw, addHeader, tokens, pdbATOM, pdbCONECT, bsWritten) {
 J.modelsetbio.BioPolymer.getPdbData (viewer, this, ctype, qtype, mStep, derivType, bsAtoms, bsSelected, bothEnds, isDraw, addHeader, tokens, pdbATOM, pdbCONECT, bsWritten);
-}, "J.viewer.Viewer,~S,~S,~N,~N,J.util.BS,J.util.BS,~B,~B,~B,~A,J.io.OutputStringBuilder,J.util.SB,J.util.BS");
+}, "J.viewer.Viewer,~S,~S,~N,~N,JU.BS,JU.BS,~B,~B,~B,~A,JU.OC,JU.SB,JU.BS");
 $_M(c$, "addStructure", 
 function (type, structureID, serialID, strandCount, startChainID, startSeqcode, endChainID, endSeqcode, istart, iend, bsAssigned) {
 var i0 = -1;
@@ -30,7 +30,7 @@ var pt = bsAssigned.nextSetBit (this.monomers[indexStart].firstAtomIndex);
 if (pt >= 0 && pt < this.monomers[indexEnd].lastAtomIndex) return;
 }this.addStructureProtected (type, structureID, serialID, strandCount, indexStart, indexEnd);
 if (istart >= 0) bsAssigned.setBits (istart, iend + 1);
-}, "J.constant.EnumStructure,~S,~N,~N,~N,~N,~N,~N,~N,~N,J.util.BS");
+}, "J.constant.EnumStructure,~S,~N,~N,~N,~N,~N,~N,~N,~N,JU.BS");
 $_M(c$, "addStructureProtected", 
 function (type, structureID, serialID, strandCount, indexStart, indexEnd) {
 if (indexEnd < indexStart) {
@@ -62,19 +62,19 @@ for (var i = indexStart; i <= indexEnd; ++i) {
 this.monomers[i].setStructure (proteinstructure);
 }
 }, "J.constant.EnumStructure,~S,~N,~N,~N,~N");
-Clazz.overrideMethod (c$, "calculateStruts", 
+$_V(c$, "calculateStruts", 
 function (modelSet, bs1, bs2, vCA, thresh, delta, allowMultiple) {
 return this.calculateStrutsStatic (modelSet, bs1, bs2, vCA, thresh, delta, allowMultiple);
-}, "J.modelset.ModelSet,J.util.BS,J.util.BS,J.util.JmolList,~N,~N,~B");
+}, "J.modelset.ModelSet,JU.BS,JU.BS,JU.List,~N,~N,~B");
 $_M(c$, "calculateStrutsStatic", 
 ($fz = function (modelSet, bs1, bs2, vCA, thresh, delta, allowMultiple) {
-var vStruts =  new J.util.JmolList ();
+var vStruts =  new JU.List ();
 var thresh2 = thresh * thresh;
 var n = vCA.size ();
 var nEndMin = 3;
-var bsStruts =  new J.util.BS ();
-var bsNotAvailable =  new J.util.BS ();
-var bsNearbyResidues =  new J.util.BS ();
+var bsStruts =  new JU.BS ();
+var bsNotAvailable =  new JU.BS ();
+var bsNearbyResidues =  new JU.BS ();
 var a1 = vCA.get (0);
 var a2;
 var nBiopolymers = modelSet.getBioPolymerCountInModel (a1.modelIndex);
@@ -154,7 +154,7 @@ if (okN) J.modelsetbio.AlphaPolymer.setStrut (iN, jN, n, vCA, bs1, bs2, vStruts,
 if (okC) J.modelsetbio.AlphaPolymer.setStrut (iC, jC, n, vCA, bs1, bs2, vStruts, bsStruts, bsNotAvailable, bsNearbyResidues, delta);
 }
 return vStruts;
-}, $fz.isPrivate = true, $fz), "J.modelset.ModelSet,J.util.BS,J.util.BS,J.util.JmolList,~N,~N,~B");
+}, $fz.isPrivate = true, $fz), "J.modelset.ModelSet,JU.BS,JU.BS,JU.List,~N,~N,~B");
 c$.strutPoint = $_M(c$, "strutPoint", 
 ($fz = function (i, j, n) {
 return (j < i ? Clazz.doubleToInt (j * (2 * n - j - 1) / 2) + i - j - 1 : Clazz.doubleToInt (i * (2 * n - i - 1) / 2) + j - i - 1);
@@ -176,7 +176,7 @@ if (!bsNearbyResidues.get (ipt)) {
 bsNotAvailable.set (ipt);
 }}
 }
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,J.util.JmolList,J.util.BS,J.util.BS,J.util.JmolList,J.util.BS,J.util.BS,J.util.BS,~N");
+}, $fz.isPrivate = true, $fz), "~N,~N,~N,JU.List,JU.BS,JU.BS,JU.List,JU.BS,JU.BS,JU.BS,~N");
 $_M(c$, "calculateStructures", 
 function (alphaOnly) {
 if (this.monomerCount < 4) return;

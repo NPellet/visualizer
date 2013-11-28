@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.g3d");
-Clazz.load (["J.util.P3", "$.Shader"], "J.g3d.SphereRenderer", ["J.util.GData"], function () {
+Clazz.load (["JU.P3", "J.util.Shader"], "J.g3d.SphereRenderer", ["J.util.GData"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.g3d = null;
 this.shader = null;
@@ -37,7 +37,7 @@ Clazz.instantialize (this, arguments);
 }, J.g3d, "SphereRenderer");
 Clazz.prepareFields (c$, function () {
 this.zroot =  Clazz.newDoubleArray (2, 0);
-this.ptTemp =  new J.util.P3 ();
+this.ptTemp =  new JU.P3 ();
 this.planeShades =  Clazz.newIntArray (3, 0);
 this.dxyz =  Clazz.newFloatArray (3, 3, 0);
 });
@@ -92,7 +92,7 @@ if (this.minX < 0 || this.maxX >= this.width || this.minY < 0 || this.maxY >= th
  else this.renderShapeUnclipped (ss);
 }this.shades = null;
 this.zbuf = null;
-}, "~A,~B,~N,~N,~N,~N,J.util.Matrix3f,~A,J.util.Matrix4f,~N,~A,~B");
+}, "~A,~B,~N,~N,~N,~N,JU.M3,~A,JU.M4,~N,~A,~B");
 $_M(c$, "getSphereShape", 
 ($fz = function (diameter) {
 var ss;
@@ -276,8 +276,7 @@ $_M(c$, "renderLarge",
 if (this.mat != null) {
 if (this.shader.ellipsoidShades == null) this.shader.createEllipsoidShades ();
 if (this.octantPoints != null) this.setPlaneDerivatives ();
-} else if (!this.shader.sphereShadingCalculated) this.shader.calcSphereShading ();
-this.renderQuadrant (-1, -1);
+}this.renderQuadrant (-1, -1);
 this.renderQuadrant (-1, 1);
 this.renderQuadrant (1, -1);
 this.renderQuadrant (1, 1);

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.BasisFunctionReader"], "J.adapter.readers.quantum.MOReader", ["java.lang.Float", "java.util.Hashtable", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.JmolList", "$.Logger", "$.Parser", "$.TextFormat"], function () {
+Clazz.load (["J.adapter.readers.quantum.BasisFunctionReader"], "J.adapter.readers.quantum.MOReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.List", "$.PT", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.shellCount = 0;
 this.gaussianCount = 0;
@@ -20,14 +20,14 @@ this.iMo0 = 1;
 this.lastMoData = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "MOReader", J.adapter.readers.quantum.BasisFunctionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.line = "\nNBOs in the AO basis:";
 this.getNBOs = this.filterMO ();
 this.line = "\nNBOCHARGES";
 this.getNBOCharges = (this.filter != null && this.filterMO ());
 if (this.filter == null) return;
-var f = J.util.TextFormat.simpleReplace (this.filter, "NBOCHARGES", "");
+var f = JU.PT.simpleReplace (this.filter, "NBOCHARGES", "");
 if (f.length < 3) this.filter = null;
 });
 $_M(c$, "checkNboLine", 
@@ -71,7 +71,7 @@ J.util.Logger.info ("Using NBO charges for Model " + this.atomSetCollection.getA
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getNboTypes", 
 function () {
-this.moTypes =  new J.util.JmolList ();
+this.moTypes =  new JU.List ();
 this.iMo0 = (this.orbitals == null ? 0 : this.orbitals.size ()) + 1;
 this.readLine ();
 this.readLine ();
@@ -92,7 +92,7 @@ this.readLine ();
 return;
 }this.dfCoefMaps = null;
 if (this.haveNboOrbitals) {
-this.orbitals =  new J.util.JmolList ();
+this.orbitals =  new JU.List ();
 this.alphaBeta = "";
 }this.haveNboOrbitals = true;
 this.orbitalsRead = true;
@@ -163,11 +163,11 @@ nThisLine--;
 ptOffset = 16;
 fieldSize = 8;
 }if (mos == null || nThisLine > mos.length) {
-mos = J.util.ArrayUtil.createArrayOfHashtable (nThisLine);
-data = J.util.ArrayUtil.createArrayOfArrayList (nThisLine);
+mos = JU.AU.createArrayOfHashtable (nThisLine);
+data = JU.AU.createArrayOfArrayList (nThisLine);
 }for (var i = 0; i < nThisLine; i++) {
 mos[i] =  new java.util.Hashtable ();
-data[i] =  new J.util.JmolList ();
+data[i] =  new JU.List ();
 }
 this.getMOHeader (headerType, tokens, mos, nThisLine);
 continue;
@@ -228,7 +228,7 @@ default:
 case 0:
 return;
 case 3:
-for (var i = 0; i < nThisLine; i++) mos[i].put ("energy", Float.$valueOf (J.util.Parser.fVal (tokens[i])));
+for (var i = 0; i < nThisLine; i++) mos[i].put ("energy", Float.$valueOf (JU.PT.fVal (tokens[i])));
 
 this.readLines (5);
 return;
@@ -236,7 +236,7 @@ case 1:
 tokens = this.getTokens ();
 if (tokens.length == 0) tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.readLine ());
 for (var i = 0; i < nThisLine; i++) {
-mos[i].put ("energy", Float.$valueOf (J.util.Parser.fVal (tokens[i])));
+mos[i].put ("energy", Float.$valueOf (JU.PT.fVal (tokens[i])));
 }
 this.readLine ();
 break;
@@ -273,7 +273,7 @@ this.moData.put ("gaussians", this.gaussians);
 this.moData.put ("mos", this.orbitals);
 this.finalizeMOData (this.lastMoData = this.moData);
 }if (clearOrbitals) {
-this.orbitals =  new J.util.JmolList ();
+this.orbitals =  new JU.List ();
 this.moData =  new java.util.Hashtable ();
 this.alphaBeta = "";
 }}, "~B");
@@ -282,12 +282,12 @@ $_M(c$, "readSecondOrderData",
 this.readLines (5);
 if (this.lastMoData == null || this.moTypes == null) return;
 var ht =  new java.util.Hashtable ();
-for (var i = this.moTypes.size (); --i >= 0; ) ht.put (J.util.TextFormat.simpleReplace (this.moTypes.get (i).substring (10), " ", ""), Integer.$valueOf (i + this.iMo0));
+for (var i = this.moTypes.size (); --i >= 0; ) ht.put (JU.PT.simpleReplace (this.moTypes.get (i).substring (10), " ", ""), Integer.$valueOf (i + this.iMo0));
 
-var strSecondOrderData =  new J.util.JmolList ();
+var strSecondOrderData =  new JU.List ();
 while (this.readLine () != null && this.line.indexOf ("NBO") < 0) {
 if (this.line.length < 5 || this.line.charAt (4) != '.') continue;
-strSecondOrderData.addLast ([J.util.TextFormat.simpleReplace (this.line.substring (5, 27).trim (), " ", ""), J.util.TextFormat.simpleReplace (this.line.substring (32, 54).trim (), " ", ""), this.line.substring (55, 62).trim (), this.line.substring (71).trim ()]);
+strSecondOrderData.addLast ([JU.PT.simpleReplace (this.line.substring (5, 27).trim (), " ", ""), JU.PT.simpleReplace (this.line.substring (32, 54).trim (), " ", ""), this.line.substring (55, 62).trim (), this.line.substring (71).trim ()]);
 }
 var secondOrderData =  Clazz.newFloatArray (strSecondOrderData.size (), 4, 0);
 this.lastMoData.put ("secondOrderData", secondOrderData);

@@ -1,4 +1,4 @@
-Clazz.load (["java.io.Reader"], "java.io.BufferedReader", ["java.io.IOException", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "J.util.SB"], function () {
+Clazz.load (["java.io.Reader"], "java.io.BufferedReader", ["java.io.IOException", "java.lang.IllegalArgumentException", "$.IndexOutOfBoundsException", "JU.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.$in = null;
 this.cb = null;
@@ -129,7 +129,7 @@ str = s.toString ();
 if (c == '\r') {
 this.skipLF = true;
 }return str;
-}if (s == null) s = J.util.SB.newN (java.io.BufferedReader.defaultExpectedLineLength);
+}if (s == null) s = JU.SB.newN (java.io.BufferedReader.defaultExpectedLineLength);
 s.appendCB (this.cb, startChar, i - startChar);
 }
 }}, $fz.isPrivate = true, $fz), "~B");
@@ -137,7 +137,7 @@ $_M(c$, "readLine",
 function () {
 return this.readLine1 (false);
 });
-Clazz.overrideMethod (c$, "skip", 
+$_V(c$, "skip", 
 function (n) {
 if (n < 0) {
 throw  new IllegalArgumentException ("skip value is negative");
@@ -173,11 +173,11 @@ if (this.cb[this.nextChar] == '\n') this.nextChar++;
 this.skipLF = false;
 }}return (this.nextChar < this.nChars) || this.$in.ready ();
 }});
-Clazz.overrideMethod (c$, "markSupported", 
+$_V(c$, "markSupported", 
 function () {
 return true;
 });
-Clazz.overrideMethod (c$, "mark", 
+$_V(c$, "mark", 
 function (readAheadLimit) {
 if (readAheadLimit < 0) {
 throw  new IllegalArgumentException ("Read-ahead limit < 0");
@@ -187,7 +187,7 @@ this.readAheadLimit = readAheadLimit;
 this.markedChar = this.nextChar;
 this.markedSkipLF = this.skipLF;
 }}, "~N");
-Clazz.overrideMethod (c$, "reset", 
+$_V(c$, "reset", 
 function () {
 {
 this.ensureOpen ();

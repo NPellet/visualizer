@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.renderspecial");
-Clazz.load (["J.render.ShapeRenderer", "J.util.BS", "$.Matrix3f", "$.Matrix4f", "$.P3", "$.P3i", "$.V3", "J.viewer.JC"], "J.renderspecial.EllipsoidsRenderer", ["java.lang.Float", "J.shapespecial.Ellipsoid", "J.util.C", "$.GData", "$.Normix", "$.Parser"], function () {
+Clazz.load (["J.render.ShapeRenderer", "JU.BS", "$.M3", "$.M4", "$.P3", "$.P3i", "$.V3", "J.viewer.JC"], "J.renderspecial.EllipsoidsRenderer", ["java.lang.Float", "JU.PT", "J.shapespecial.Ellipsoid", "J.util.C", "$.GData", "$.Normix"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.ellipsoids = null;
 this.bGlobals = null;
@@ -45,33 +45,33 @@ Clazz.prepareFields (c$, function () {
 this.bGlobals =  Clazz.newBooleanArray (7, false);
 this.bOptions =  Clazz.newBooleanArray (7, false);
 this.OPTS = ["dots", "arcs", "axes", "fill", "ball", "arrows", "wireframe"];
-this.bsTemp =  new J.util.BS ();
-this.mat =  new J.util.Matrix3f ();
-this.mTemp =  new J.util.Matrix3f ();
-this.mDeriv =  new J.util.Matrix4f ();
-this.matScreenToCartesian =  new J.util.Matrix3f ();
-this.matScreenToEllipsoid =  new J.util.Matrix3f ();
-this.matEllipsoidToScreen =  new J.util.Matrix3f ();
+this.bsTemp =  new JU.BS ();
+this.mat =  new JU.M3 ();
+this.mTemp =  new JU.M3 ();
+this.mDeriv =  new JU.M4 ();
+this.matScreenToCartesian =  new JU.M3 ();
+this.matScreenToEllipsoid =  new JU.M3 ();
+this.matEllipsoidToScreen =  new JU.M3 ();
 this.coefs =  Clazz.newDoubleArray (10, 0);
 this.factoredLengths =  Clazz.newFloatArray (3, 0);
 this.selectedPoints =  new Array (3);
-this.v1 =  new J.util.V3 ();
-this.v2 =  new J.util.V3 ();
-this.v3 =  new J.util.V3 ();
-this.pt1 =  new J.util.P3 ();
-this.pt2 =  new J.util.P3 ();
-this.s0 =  new J.util.P3i ();
-this.s1 =  new J.util.P3i ();
-this.s2 =  new J.util.P3i ();
+this.v1 =  new JU.V3 ();
+this.v2 =  new JU.V3 ();
+this.v3 =  new JU.V3 ();
+this.pt1 =  new JU.P3 ();
+this.pt2 =  new JU.P3 ();
+this.s0 =  new JU.P3i ();
+this.s1 =  new JU.P3i ();
+this.s2 =  new JU.P3i ();
 this.screens =  new Array (38);
 this.points =  new Array (6);
 {
-for (var i = 0; i < this.points.length; i++) this.points[i] =  new J.util.P3 ();
+for (var i = 0; i < this.points.length; i++) this.points[i] =  new JU.P3 ();
 
-for (var i = 0; i < this.screens.length; i++) this.screens[i] =  new J.util.P3i ();
+for (var i = 0; i < this.screens.length; i++) this.screens[i] =  new JU.P3i ();
 
 }});
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 this.isSet = false;
 this.ellipsoids = this.shape;
@@ -109,8 +109,8 @@ for (var i = 0; i < 7; i++) this.bOptions[i] = this.bGlobals[i];
 if (options != null) {
 options = ";" + options + ";";
 for (var i = 0; i < 7; i++) {
-if (J.util.Parser.isOneOf (this.OPTS[i], options)) this.bOptions[i] = true;
- else if (J.util.Parser.isOneOf ("no" + this.OPTS[i], options)) this.bOptions[i] = false;
+if (JU.PT.isOneOf (this.OPTS[i], options)) this.bOptions[i] = true;
+ else if (JU.PT.isOneOf ("no" + this.OPTS[i], options)) this.bOptions[i] = false;
 }
 }this.setLogic ();
 }, $fz.isPrivate = true, $fz), "~S");
@@ -120,6 +120,7 @@ this.bOptions[0] = new Boolean (this.bOptions[0] & !this.bOptions[6]).valueOf ()
 this.bOptions[4] = new Boolean (this.bOptions[4] & !this.bOptions[6]).valueOf ();
 this.bOptions[3] = new Boolean (this.bOptions[3] & !this.bOptions[6]).valueOf ();
 this.fillArc = this.bOptions[3] && !this.bOptions[4];
+if (this.fillArc) this.g3d.addRenderer (1073742182);
 if (this.bOptions[4]) this.bOptions[0] = false;
 if (!this.bOptions[0] && !this.bOptions[1] && !this.bOptions[4]) this.bOptions[2] = true;
 if (this.bOptions[0]) {
@@ -252,7 +253,7 @@ this.s1.x += Clazz.floatToInt (this.v1.x);
 this.s1.y += Clazz.floatToInt (this.v1.y);
 this.s1.z += Clazz.floatToInt (this.v1.z);
 }this.g3d.fillConeScreen (2, Clazz.floatToInt (diam), this.s1, this.s2, false);
-}, $fz.isPrivate = true, $fz), "J.util.P3i,J.util.P3i,~B");
+}, $fz.isPrivate = true, $fz), "JU.P3i,JU.P3i,~B");
 $_M(c$, "renderAxes", 
 ($fz = function () {
 if (this.bOptions[4] && this.bOptions[3]) {
@@ -327,10 +328,12 @@ if (this.fillArc) this.g3d.fillTriangle3CN (this.s0, this.colix, normix, this.s1
 this.pt1.setT (this.pt2);
 this.s1.setT (this.s2);
 }
-if (!this.fillArc && !this.bOptions[6]) for (var i = 0; i < 18; i++) {
+if (!this.fillArc && !this.bOptions[6]) {
+this.g3d.addRenderer (553648147);
+for (var i = 0; i < 18; i++) {
 this.g3d.fillHermite (5, this.diameter, this.diameter, this.diameter, this.screens[i == 0 ? i + 6 : i + 5], this.screens[i + 6], this.screens[i + 7], this.screens[i == 17 ? i + 7 : i + 8]);
 }
-}, $fz.isPrivate = true, $fz), "~N,~N");
+}}, $fz.isPrivate = true, $fz), "~N,~N");
 $_M(c$, "setSelectedOctant", 
 ($fz = function () {
 var zMin = 2147483647;

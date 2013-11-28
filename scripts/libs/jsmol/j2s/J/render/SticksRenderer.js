@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.FontLineShapeRenderer", "J.util.BS", "$.P3", "$.V3"], "J.render.SticksRenderer", ["java.lang.Float", "J.constant.EnumPalette", "J.modelset.Bond", "J.util.C", "$.JmolEdge"], function () {
+Clazz.load (["J.render.FontLineShapeRenderer", "JU.BS", "$.P3", "$.V3"], "J.render.SticksRenderer", ["java.lang.Float", "J.constant.EnumPalette", "J.modelset.Bond", "J.util.C", "$.JmolEdge"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.showMultipleBonds = false;
 this.multipleBondSpacing = 0;
@@ -44,14 +44,14 @@ this.dyStep = 0;
 Clazz.instantialize (this, arguments);
 }, J.render, "SticksRenderer", J.render.FontLineShapeRenderer);
 Clazz.prepareFields (c$, function () {
-this.x =  new J.util.V3 ();
-this.y =  new J.util.V3 ();
-this.z =  new J.util.V3 ();
-this.p1 =  new J.util.P3 ();
-this.p2 =  new J.util.P3 ();
-this.bsForPass2 = J.util.BS.newN (64);
+this.x =  new JU.V3 ();
+this.y =  new JU.V3 ();
+this.z =  new JU.V3 ();
+this.p1 =  new JU.P3 ();
+this.p2 =  new JU.P3 ();
+this.bsForPass2 = JU.BS.newN (64);
 });
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 var bonds = this.modelSet.bonds;
 if (bonds == null) return false;

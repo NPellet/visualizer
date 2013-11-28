@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.util");
-Clazz.load (null, "J.util.SimpleUnitCell", ["java.lang.Float", "J.util.ArrayUtil", "$.Matrix4f", "$.V3"], function () {
+Clazz.load (null, "J.util.SimpleUnitCell", ["java.lang.Float", "JU.AU", "$.M4", "$.V3"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.notionalUnitcell = null;
 this.matrixCartesianToFractional = null;
@@ -49,8 +49,9 @@ return c;
 }, "~A");
 $_M(c$, "set", 
 function (parameters) {
+if (parameters == null) parameters = [1, 1, 1, 90, 90, 90];
 if (!J.util.SimpleUnitCell.isValid (parameters)) return;
-this.notionalUnitcell = J.util.ArrayUtil.arrayCopyF (parameters, parameters.length);
+this.notionalUnitcell = JU.AU.arrayCopyF (parameters, parameters.length);
 this.a = parameters[0];
 this.b = parameters[1];
 this.c = parameters[2];
@@ -61,9 +62,9 @@ this.na = Math.max (1, parameters.length >= 25 && !Float.isNaN (parameters[22]) 
 this.nb = Math.max (1, parameters.length >= 25 && !Float.isNaN (parameters[23]) ? Clazz.floatToInt (parameters[23]) : 1);
 this.nc = Math.max (1, parameters.length >= 25 && !Float.isNaN (parameters[24]) ? Clazz.floatToInt (parameters[24]) : 1);
 if (this.a <= 0) {
-var va = J.util.V3.new3 (parameters[6], parameters[7], parameters[8]);
-var vb = J.util.V3.new3 (parameters[9], parameters[10], parameters[11]);
-var vc = J.util.V3.new3 (parameters[12], parameters[13], parameters[14]);
+var va = JU.V3.new3 (parameters[6], parameters[7], parameters[8]);
+var vb = JU.V3.new3 (parameters[9], parameters[10], parameters[11]);
+var vc = JU.V3.new3 (parameters[12], parameters[13], parameters[14]);
 this.a = va.length ();
 this.b = vb.length ();
 this.c = vc.length ();
@@ -74,7 +75,7 @@ this.alpha = (this.b < 0 || this.c < 0 ? 90 : vb.angle (vc) / 0.017453292);
 this.beta = (this.c < 0 ? 90 : va.angle (vc) / 0.017453292);
 this.gamma = (this.b < 0 ? 90 : va.angle (vb) / 0.017453292);
 if (this.c < 0) {
-var n = J.util.ArrayUtil.arrayCopyF (parameters, -1);
+var n = JU.AU.arrayCopyF (parameters, -1);
 if (this.b < 0) {
 vb.set (0, 0, 1);
 vb.cross (vb, va);
@@ -135,24 +136,24 @@ break;
 }
 scaleMatrix[i] = parameters[6 + i] * f;
 }
-this.matrixCartesianToFractional = J.util.Matrix4f.newA (scaleMatrix);
-this.matrixFractionalToCartesian =  new J.util.Matrix4f ();
+this.matrixCartesianToFractional = JU.M4.newA (scaleMatrix);
+this.matrixFractionalToCartesian =  new JU.M4 ();
 this.matrixFractionalToCartesian.invertM (this.matrixCartesianToFractional);
 } else if (parameters.length > 14 && !Float.isNaN (parameters[14])) {
-var m = this.matrixFractionalToCartesian =  new J.util.Matrix4f ();
+var m = this.matrixFractionalToCartesian =  new JU.M4 ();
 m.setColumn4 (0, parameters[6] * this.na, parameters[7] * this.na, parameters[8] * this.na, 0);
 m.setColumn4 (1, parameters[9] * this.nb, parameters[10] * this.nb, parameters[11] * this.nb, 0);
 m.setColumn4 (2, parameters[12] * this.nc, parameters[13] * this.nc, parameters[14] * this.nc, 0);
 m.setColumn4 (3, 0, 0, 0, 1);
-this.matrixCartesianToFractional =  new J.util.Matrix4f ();
+this.matrixCartesianToFractional =  new JU.M4 ();
 this.matrixCartesianToFractional.invertM (this.matrixFractionalToCartesian);
 } else {
-var m = this.matrixFractionalToCartesian =  new J.util.Matrix4f ();
+var m = this.matrixFractionalToCartesian =  new JU.M4 ();
 m.setColumn4 (0, this.a, 0, 0, 0);
 m.setColumn4 (1, (this.b * this.cosGamma), (this.b * this.sinGamma), 0, 0);
 m.setColumn4 (2, (this.c * this.cosBeta), (this.c * (this.cosAlpha - this.cosBeta * this.cosGamma) / this.sinGamma), (this.volume / (this.a * this.b * this.sinGamma)), 0);
 m.setColumn4 (3, 0, 0, 0, 1);
-this.matrixCartesianToFractional =  new J.util.Matrix4f ();
+this.matrixCartesianToFractional =  new JU.M4 ();
 this.matrixCartesianToFractional.invertM (this.matrixFractionalToCartesian);
 }this.matrixCtoFAbsolute = this.matrixCartesianToFractional;
 this.matrixFtoCAbsolute = this.matrixFractionalToCartesian;
@@ -163,16 +164,16 @@ fpt.x /= this.na;
 fpt.y /= this.nb;
 fpt.z /= this.nc;
 return fpt;
-}, "J.util.P3");
+}, "JU.P3");
 $_M(c$, "toCartesian", 
 function (pt, isAbsolute) {
 if (this.matrixFractionalToCartesian != null) (isAbsolute ? this.matrixFtoCAbsolute : this.matrixFractionalToCartesian).transform (pt);
-}, "J.util.Tuple3f,~B");
+}, "JU.T3,~B");
 $_M(c$, "toFractional", 
 function (pt, isAbsolute) {
 if (this.matrixCartesianToFractional == null) return;
 (isAbsolute ? this.matrixCtoFAbsolute : this.matrixCartesianToFractional).transform (pt);
-}, "J.util.Tuple3f,~B");
+}, "JU.T3,~B");
 $_M(c$, "isPolymer", 
 function () {
 return (this.dimension == 1);
@@ -216,7 +217,7 @@ c -= 5;
 cell.x = Clazz.doubleToInt (nnn / 100) + c;
 cell.y = Clazz.doubleToInt ((nnn % 100) / 10) + c;
 cell.z = (nnn % 10) + c;
-}, "~N,J.util.P3,~N");
+}, "~N,JU.P3,~N");
 Clazz.defineStatics (c$,
 "toRadians", 0.017453292,
 "INFO_DIMENSIONS", 6,

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.MOReader"], "J.adapter.readers.quantum.GamessReader", ["java.lang.Float", "java.util.Hashtable", "J.api.JmolAdapter", "J.util.ArrayUtil", "$.JmolList", "$.Logger", "$.TextFormat"], function () {
+Clazz.load (["J.adapter.readers.quantum.MOReader"], "J.adapter.readers.quantum.GamessReader", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.List", "$.PT", "J.api.JmolAdapter", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.atomNames = null;
 this.calcOptions = null;
@@ -16,7 +16,7 @@ if (!Float.isNaN (e)) this.atomSetCollection.setAtomSetEnergy (strEnergy, e);
 });
 $_M(c$, "readGaussianBasis", 
 function (initiator, terminator) {
-var gdata =  new J.util.JmolList ();
+var gdata =  new JU.List ();
 this.gaussianCount = 0;
 var nGaussians = 0;
 this.shellCount = 0;
@@ -26,7 +26,7 @@ this.discardLinesUntilContains (initiator);
 this.readLine ();
 var slater = null;
 var shellsByAtomType =  new java.util.Hashtable ();
-var slatersByAtomType =  new J.util.JmolList ();
+var slatersByAtomType =  new JU.List ();
 var atomType = null;
 while (this.readLine () != null && this.line.indexOf (terminator) < 0) {
 if (this.line.indexOf ("(") >= 0) this.line = J.adapter.readers.quantum.GamessReader.fixBasisLine (this.line);
@@ -39,7 +39,7 @@ slater[2] = nGaussians;
 slatersByAtomType.addLast (slater);
 slater = null;
 }shellsByAtomType.put (atomType, slatersByAtomType);
-}slatersByAtomType =  new J.util.JmolList ();
+}slatersByAtomType =  new JU.List ();
 atomType = tokens[0];
 break;
 case 0:
@@ -62,7 +62,7 @@ if (slater != null) {
 slater[2] = nGaussians;
 slatersByAtomType.addLast (slater);
 }if (atomType != null) shellsByAtomType.put (atomType, slatersByAtomType);
-this.gaussians = J.util.ArrayUtil.newFloat2 (this.gaussianCount);
+this.gaussians = JU.AU.newFloat2 (this.gaussianCount);
 for (var i = 0; i < this.gaussianCount; i++) {
 tokens = gdata.get (i);
 this.gaussians[i] =  Clazz.newFloatArray (tokens.length - 3, 0);
@@ -71,7 +71,7 @@ for (var j = 3; j < tokens.length; j++) this.gaussians[i][j - 3] = this.parseFlo
 }
 var atomCount = this.atomNames.size ();
 if (this.shells == null && atomCount > 0) {
-this.shells =  new J.util.JmolList ();
+this.shells =  new JU.List ();
 for (var i = 0; i < atomCount; i++) {
 atomType = this.atomNames.get (i);
 var slaters = shellsByAtomType.get (atomType);
@@ -188,7 +188,7 @@ recognized = true;
 }if (!recognized) this.calculationType += gbasis;
 } else {
 if (this.calculationType.length > 0) this.calculationType += " ";
-this.calculationType += igauss + "-" + J.util.TextFormat.simpleReplace (gbasis, "N", "");
+this.calculationType += igauss + "-" + JU.PT.simpleReplace (gbasis, "N", "");
 if ("T".equals (this.calcOptions.get ("basis_options_DIFFSP"))) {
 if ("T".equals (this.calcOptions.get ("basis_options_DIFFS"))) this.calculationType += "+";
 this.calculationType += "+";
@@ -234,7 +234,7 @@ this.calcOptions =  new java.util.Hashtable ();
 this.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("calculationOptions", this.calcOptions);
 }while (this.readLine () != null && (this.line = this.line.trim ()).length > 0) {
 if (this.line.indexOf ("=") < 0) continue;
-var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (J.util.TextFormat.simpleReplace (this.line, "=", " = ") + " ?");
+var tokens = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (JU.PT.simpleReplace (this.line, "=", " = ") + " ?");
 for (var i = 0; i < tokens.length; i++) {
 if (!tokens[i].equals ("=")) continue;
 try {

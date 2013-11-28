@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.symmetry");
-Clazz.load (null, "J.symmetry.HallTranslation", ["J.util.P3i"], function () {
+Clazz.load (null, "J.symmetry.HallTranslation", ["JU.P3i"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.translationCode = '\0';
 this.rotationOrder = 0;
@@ -16,8 +16,8 @@ this.vectorShift12ths = params;
 return;
 }this.rotationOrder = params.x;
 this.rotationShift12ths = params.y;
-}this.vectorShift12ths =  new J.util.P3i ();
-}, "~S,J.util.P3i");
+}this.vectorShift12ths =  new JU.P3i ();
+}, "~S,JU.P3i");
 c$.getHallLatticeEquivalent = $_M(c$, "getHallLatticeEquivalent", 
 function (latticeParameter) {
 var latticeCode = J.symmetry.HallTranslation.getLatticeCode (latticeParameter);
@@ -57,7 +57,7 @@ return "";
 }, "~S,~B");
 c$.getHallTerms = $_M(c$, "getHallTerms", 
 ($fz = function () {
-return (J.symmetry.HallTranslation.hallTranslationTerms == null ? ($t$ = J.symmetry.HallTranslation.hallTranslationTerms = [ new J.symmetry.HallTranslation ('a', J.util.P3i.new3 (6, 0, 0)),  new J.symmetry.HallTranslation ('b', J.util.P3i.new3 (0, 6, 0)),  new J.symmetry.HallTranslation ('c', J.util.P3i.new3 (0, 0, 6)),  new J.symmetry.HallTranslation ('n', J.util.P3i.new3 (6, 6, 6)),  new J.symmetry.HallTranslation ('u', J.util.P3i.new3 (3, 0, 0)),  new J.symmetry.HallTranslation ('v', J.util.P3i.new3 (0, 3, 0)),  new J.symmetry.HallTranslation ('w', J.util.P3i.new3 (0, 0, 3)),  new J.symmetry.HallTranslation ('d', J.util.P3i.new3 (3, 3, 3)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (2, 6, -1)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (3, 4, -1)),  new J.symmetry.HallTranslation ('2', J.util.P3i.new3 (3, 8, -1)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (4, 3, -1)),  new J.symmetry.HallTranslation ('3', J.util.P3i.new3 (4, 9, -1)),  new J.symmetry.HallTranslation ('1', J.util.P3i.new3 (6, 2, -1)),  new J.symmetry.HallTranslation ('2', J.util.P3i.new3 (6, 4, -1)),  new J.symmetry.HallTranslation ('4', J.util.P3i.new3 (6, 8, -1)),  new J.symmetry.HallTranslation ('5', J.util.P3i.new3 (6, 10, -1)),  new J.symmetry.HallTranslation ('r', J.util.P3i.new3 (4, 8, 8)),  new J.symmetry.HallTranslation ('s', J.util.P3i.new3 (8, 8, 4)),  new J.symmetry.HallTranslation ('t', J.util.P3i.new3 (8, 4, 8))], J.symmetry.HallTranslation.prototype.hallTranslationTerms = J.symmetry.HallTranslation.hallTranslationTerms, $t$) : J.symmetry.HallTranslation.hallTranslationTerms);
+return (J.symmetry.HallTranslation.hallTranslationTerms == null ? J.symmetry.HallTranslation.hallTranslationTerms = [ new J.symmetry.HallTranslation ('a', JU.P3i.new3 (6, 0, 0)),  new J.symmetry.HallTranslation ('b', JU.P3i.new3 (0, 6, 0)),  new J.symmetry.HallTranslation ('c', JU.P3i.new3 (0, 0, 6)),  new J.symmetry.HallTranslation ('n', JU.P3i.new3 (6, 6, 6)),  new J.symmetry.HallTranslation ('u', JU.P3i.new3 (3, 0, 0)),  new J.symmetry.HallTranslation ('v', JU.P3i.new3 (0, 3, 0)),  new J.symmetry.HallTranslation ('w', JU.P3i.new3 (0, 0, 3)),  new J.symmetry.HallTranslation ('d', JU.P3i.new3 (3, 3, 3)),  new J.symmetry.HallTranslation ('1', JU.P3i.new3 (2, 6, -1)),  new J.symmetry.HallTranslation ('1', JU.P3i.new3 (3, 4, -1)),  new J.symmetry.HallTranslation ('2', JU.P3i.new3 (3, 8, -1)),  new J.symmetry.HallTranslation ('1', JU.P3i.new3 (4, 3, -1)),  new J.symmetry.HallTranslation ('3', JU.P3i.new3 (4, 9, -1)),  new J.symmetry.HallTranslation ('1', JU.P3i.new3 (6, 2, -1)),  new J.symmetry.HallTranslation ('2', JU.P3i.new3 (6, 4, -1)),  new J.symmetry.HallTranslation ('4', JU.P3i.new3 (6, 8, -1)),  new J.symmetry.HallTranslation ('5', JU.P3i.new3 (6, 10, -1)),  new J.symmetry.HallTranslation ('r', JU.P3i.new3 (4, 8, 8)),  new J.symmetry.HallTranslation ('s', JU.P3i.new3 (8, 8, 4)),  new J.symmetry.HallTranslation ('t', JU.P3i.new3 (8, 4, 8))] : J.symmetry.HallTranslation.hallTranslationTerms);
 }, $fz.isPrivate = true, $fz));
 c$.getHallTranslation = $_M(c$, "getHallTranslation", 
 function (translationCode, order) {

@@ -10,10 +10,6 @@ function (canvas) {
 {
 return (canvas.imageHeight ? canvas.imageHeight : canvas.height);
 }}, "~O");
-c$.getJpgImage = $_M(c$, "getJpgImage", 
-function (apiPlatform, viewer, quality, comment) {
-return null;
-}, "J.api.ApiPlatform,J.viewer.Viewer,~N,~S");
 c$.grabPixels = $_M(c$, "grabPixels", 
 function (context, width, height) {
 {
@@ -30,16 +26,6 @@ iData[i++] = (imgData[j++] << 16) | (imgData[j++] << 8) | imgData[j++] | 0xFF000
 }
 return iData;
 }, "~A");
-c$.fromIntARGB = $_M(c$, "fromIntARGB", 
-function (buf32, buf8) {
-var n = buf8.length >> 2;
-for (var i = 0, j = 0; i < n; i++) {
-buf8[j++] = (buf32[i] >> 16) & 0xFF;
-buf8[j++] = (buf32[i] >> 8) & 0xFF;
-buf8[j++] = buf32[i] & 0xFF;
-buf8[j++] = 0xFF;
-}
-}, "~A,~A");
 c$.getTextPixels = $_M(c$, "getTextPixels", 
 function (text, font3d, context, width, height, ascent) {
 {
@@ -49,7 +35,7 @@ context.fillStyle = "#FFFFFF";
 context.font = font3d.font;
 context.fillText(text, 0, ascent);
 return this.grabPixels(context, width, height);
-}}, "~S,J.util.JmolFont,~O,~N,~N,~N");
+}}, "~S,javajs.awt.Font,~O,~N,~N,~N");
 c$.allocateRgbImage = $_M(c$, "allocateRgbImage", 
 function (windowWidth, windowHeight, pBuffer, windowSize, backgroundTransparent, canvas) {
 {
@@ -71,6 +57,16 @@ return canvas.getContext("2d");
 c$.drawImage = $_M(c$, "drawImage", 
 function (context, canvas, x, y, width, height) {
 {
-this.fromIntARGB(canvas.buf32, canvas.buf8);
+var buf8 = canvas.buf8;
+var buf32 = canvas.buf32;
+var n = width * height;
+var dw = (canvas.width - width) * 4;
+for (var i = 0, j = x * 4; i < n;) {
+buf8[j++] = (buf32[i] >> 16) & 0xFF;
+buf8[j++] = (buf32[i] >> 8) & 0xFF;
+buf8[j++] = buf32[i] & 0xFF;
+buf8[j++] = 0xFF;
+if (((++i)%width)==0) j += dw;
+}
 context.putImageData(canvas.imgdata,x,y);
 }}, "~O,~O,~N,~N,~N,~N");

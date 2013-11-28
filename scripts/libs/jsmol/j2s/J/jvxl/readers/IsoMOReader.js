@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.AtomDataReader"], "J.jvxl.readers.IsoMOReader", ["java.lang.Float", "java.util.Random", "J.api.Interface", "J.constant.EnumQuantumShell", "J.util.ArrayUtil", "$.Logger", "$.Measure", "$.P3", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["J.jvxl.readers.AtomDataReader"], "J.jvxl.readers.IsoMOReader", ["java.lang.Float", "java.util.Random", "JU.AU", "$.P3", "$.V3", "J.api.Interface", "J.constant.EnumQuantumShell", "J.util.Logger", "$.Measure", "$.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.random = null;
 this.vDist = null;
@@ -23,7 +23,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoMOReader, []);
 });
-Clazz.overrideMethod (c$, "init", 
+$_V(c$, "init", 
 function (sg) {
 this.initADR (sg);
 this.isNci = (this.params.qmOrbitalType == 3);
@@ -32,7 +32,7 @@ this.isXLowToHigh = this.hasColorData = true;
 this.precalculateVoxelData = false;
 this.params.insideOut = !this.params.insideOut;
 }}, "J.jvxl.readers.SurfaceGenerator");
-Clazz.overrideMethod (c$, "setup", 
+$_V(c$, "setup", 
 function (isMapData) {
 this.mos = this.params.moData.get ("mos");
 this.linearCombination = this.params.qm_moLinearCombination;
@@ -59,7 +59,7 @@ for (var i = this.params.title.length; --i >= 0; ) this.fixTitleLine2 (i, mo);
 this.coef = mo.get ("coefficients");
 this.dfCoefMaps = mo.get ("dfCoefMaps");
 } else {
-this.coefs = J.util.ArrayUtil.newFloat2 (this.mos.size ());
+this.coefs = JU.AU.newFloat2 (this.mos.size ());
 for (var i = 1; i < this.linearCombination.length; i += 2) {
 var j = Clazz.floatToInt (this.linearCombination[i]);
 if (j > this.mos.size () || j < 1) return;
@@ -74,13 +74,13 @@ this.volumeData.doIterate = false;
 this.volumeData.setVoxelDataAsArray (this.voxelData =  Clazz.newFloatArray (1, 1, 1, 0));
 this.volumeData.sr = this;
 this.points =  new Array (1);
-this.points[0] =  new J.util.P3 ();
+this.points[0] =  new JU.P3 ();
 if (!this.setupCalculation ()) this.q = null;
 } else if (this.params.psi_monteCarloCount > 0) {
 this.vertexDataOnly = true;
 this.random =  new java.util.Random (this.params.randomSeed);
 }}, "~B");
-Clazz.overrideMethod (c$, "readVolumeParameters", 
+$_V(c$, "readVolumeParameters", 
 function (isMapData) {
 this.setup (isMapData);
 if (this.volumeData.sr == null) this.initializeVolumetricData ();
@@ -93,9 +93,9 @@ var line = this.params.title[iLine];
 var pt = line.indexOf ("%");
 if (line.length == 0 || pt < 0) return;
 var rep = 0;
-if (line.indexOf ("%F") >= 0) line = J.util.TextFormat.formatStringS (line, "F", this.params.fileName);
-if (line.indexOf ("%I") >= 0) line = J.util.TextFormat.formatStringS (line, "I", this.params.qm_moLinearCombination == null ? "" + this.params.qm_moNumber : J.constant.EnumQuantumShell.getMOString (this.params.qm_moLinearCombination));
-if (line.indexOf ("%N") >= 0) line = J.util.TextFormat.formatStringS (line, "N", "" + this.params.qmOrbitalCount);
+if (line.indexOf ("%F") >= 0) line = J.util.Txt.formatStringS (line, "F", this.params.fileName);
+if (line.indexOf ("%I") >= 0) line = J.util.Txt.formatStringS (line, "I", this.params.qm_moLinearCombination == null ? "" + this.params.qm_moNumber : J.constant.EnumQuantumShell.getMOString (this.params.qm_moLinearCombination));
+if (line.indexOf ("%N") >= 0) line = J.util.Txt.formatStringS (line, "N", "" + this.params.qmOrbitalCount);
 var energy = null;
 if (mo == null) {
 for (var i = 0; i < this.linearCombination.length; i += 2) if (this.linearCombination[i] != 0) {
@@ -110,18 +110,18 @@ break;
 }}
 } else {
 if (mo.containsKey ("energy")) energy = mo.get ("energy");
-}if (line.indexOf ("%E") >= 0) line = J.util.TextFormat.formatStringS (line, "E", energy != null && ++rep != 0 ? "" + energy : "");
-if (line.indexOf ("%U") >= 0) line = J.util.TextFormat.formatStringS (line, "U", energy != null && this.params.moData.containsKey ("energyUnits") && ++rep != 0 ? this.params.moData.get ("energyUnits") : "");
-if (line.indexOf ("%S") >= 0) line = J.util.TextFormat.formatStringS (line, "S", mo != null && mo.containsKey ("symmetry") && ++rep != 0 ? "" + mo.get ("symmetry") : "");
-if (line.indexOf ("%O") >= 0) line = J.util.TextFormat.formatStringS (line, "O", mo != null && mo.containsKey ("occupancy") && ++rep != 0 ? "" + mo.get ("occupancy") : "");
-if (line.indexOf ("%T") >= 0) line = J.util.TextFormat.formatStringS (line, "T", mo != null && mo.containsKey ("type") && ++rep != 0 ? "" + mo.get ("type") : "");
+}if (line.indexOf ("%E") >= 0) line = J.util.Txt.formatStringS (line, "E", energy != null && ++rep != 0 ? "" + energy : "");
+if (line.indexOf ("%U") >= 0) line = J.util.Txt.formatStringS (line, "U", energy != null && this.params.moData.containsKey ("energyUnits") && ++rep != 0 ? this.params.moData.get ("energyUnits") : "");
+if (line.indexOf ("%S") >= 0) line = J.util.Txt.formatStringS (line, "S", mo != null && mo.containsKey ("symmetry") && ++rep != 0 ? "" + mo.get ("symmetry") : "");
+if (line.indexOf ("%O") >= 0) line = J.util.Txt.formatStringS (line, "O", mo != null && mo.containsKey ("occupancy") && ++rep != 0 ? "" + mo.get ("occupancy") : "");
+if (line.indexOf ("%T") >= 0) line = J.util.Txt.formatStringS (line, "T", mo != null && mo.containsKey ("type") && ++rep != 0 ? "" + mo.get ("type") : "");
 if (line.equals ("string")) {
 this.params.title[iLine] = "";
 return;
 }var isOptional = (line.indexOf ("?") == 0);
 this.params.title[iLine] = (!isOptional ? line : rep > 0 && !line.trim ().endsWith ("=") ? line.substring (1) : "");
 }, $fz.isPrivate = true, $fz), "~N,java.util.Map");
-Clazz.overrideMethod (c$, "readSurfaceData", 
+$_V(c$, "readSurfaceData", 
 function (isMapData) {
 if (this.volumeData.sr != null) return;
 if (this.params.psi_monteCarloCount <= 0) {
@@ -129,9 +129,9 @@ this.readSurfaceDataVDR (isMapData);
 return;
 }if (this.points != null) return;
 this.points =  new Array (1000);
-for (var j = 0; j < 1000; j++) this.points[j] =  new J.util.P3 ();
+for (var j = 0; j < 1000; j++) this.points[j] =  new JU.P3 ();
 
-if (this.params.thePlane != null) this.vTemp =  new J.util.V3 ();
+if (this.params.thePlane != null) this.vTemp =  new JU.V3 ();
 for (var i = 0; i < 3; i++) this.vDist[i] = this.volumeData.volumetricVectorLengths[i] * this.volumeData.voxelCounts[i];
 
 this.volumeData.setVoxelDataAsArray (this.voxelData =  Clazz.newFloatArray (1000, 1, 1, 0));
@@ -152,7 +152,7 @@ if (++i == this.params.psi_monteCarloCount) break;
 }
 }
 }, "~B");
-Clazz.overrideMethod (c$, "postProcessVertices", 
+$_V(c$, "postProcessVertices", 
 function () {
 });
 $_M(c$, "getValues", 
@@ -164,15 +164,15 @@ if (this.params.thePlane != null) J.util.Measure.getPlaneProjection (this.points
 }
 this.createOrbital ();
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "getValueAtPoint", 
+$_V(c$, "getValueAtPoint", 
 function (pt, getSource) {
 return (this.q == null ? 0 : this.q.processPt (pt));
-}, "J.util.P3,~B");
+}, "JU.P3,~B");
 $_M(c$, "getRnd", 
 ($fz = function (f) {
 return this.random.nextFloat () * f;
 }, $fz.isPrivate = true, $fz), "~N");
-Clazz.overrideMethod (c$, "generateCube", 
+$_V(c$, "generateCube", 
 function () {
 if (this.params.volumeData != null) return;
 this.newVoxelDataCube ();
@@ -196,7 +196,7 @@ if (!isMonteCarlo) J.util.Logger.info ("generating isosurface data for MO using 
 if (!this.setupCalculation ()) return;
 this.q.createCube ();
 }});
-Clazz.overrideMethod (c$, "getPlane", 
+$_V(c$, "getPlane", 
 function (x) {
 if (!this.qSetupDone) this.setupCalculation ();
 return this.getPlane2 (x);
@@ -216,12 +216,12 @@ return this.q.setupCalculation (this.volumeData, this.bsMySelected, this.params.
 }
 return false;
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "getSurfacePointAndFraction", 
+$_V(c$, "getSurfacePointAndFraction", 
 function (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z, vA, vB, fReturn, ptReturn) {
 var zero = this.getSPF (cutoff, isCutoffAbsolute, valueA, valueB, pointA, edgeVector, x, y, z, vA, vB, fReturn, ptReturn);
 if (this.q != null && !Float.isNaN (zero)) {
 zero = this.q.processPt (ptReturn);
 if (this.params.isSquared) zero *= zero;
 }return zero;
-}, "~N,~B,~N,~N,J.util.P3,J.util.V3,~N,~N,~N,~N,~N,~A,J.util.P3");
+}, "~N,~B,~N,~N,JU.P3,JU.V3,~N,~N,~N,~N,~N,~A,JU.P3");
 });

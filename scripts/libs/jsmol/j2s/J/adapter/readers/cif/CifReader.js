@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.cif");
-Clazz.load (["J.adapter.readers.cif.ModulationReader", "J.api.JmolLineReader", "J.io.CifDataReader", "J.util.JmolList", "$.P3"], "J.adapter.readers.cif.CifReader", ["java.io.BufferedReader", "$.StringReader", "java.lang.Boolean", "$.Character", "$.Float", "java.util.Hashtable", "J.adapter.smarter.Atom", "$.Structure", "J.api.JmolAdapter", "J.constant.EnumStructure", "J.util.BS", "$.Logger", "$.Matrix4f", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["J.adapter.readers.cif.ModulationReader", "J.api.JmolLineReader", "JU.List", "$.P3", "J.io.CifDataReader"], "J.adapter.readers.cif.CifReader", ["java.io.BufferedReader", "$.StringReader", "java.lang.Boolean", "$.Character", "$.Float", "java.util.Hashtable", "JU.BS", "$.M4", "$.PT", "$.SB", "$.V3", "J.adapter.smarter.Atom", "$.Structure", "J.api.JmolAdapter", "J.constant.EnumStructure", "J.util.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isPDBX = false;
 this.tokenizer = null;
@@ -18,17 +18,23 @@ this.lastAltLoc = '\0';
 this.haveAromatic = false;
 this.conformationIndex = 0;
 this.nMolecular = 0;
-this.vBiomts = null;
+this.readIdeal = true;
+this.byChain = false;
+this.bySymop = false;
+this.isCourseGrained = false;
+this.chainAtomMap = null;
+this.chainAtomCounts = null;
 this.vBiomolecules = null;
+this.thisBiomolecule = null;
 this.htBiomts = null;
 this.htSites = null;
 this.assemblyIdAtoms = null;
 this.appendedData = null;
 this.skipping = false;
-this.haveChainsLC = false;
 this.nAtoms = 0;
 this.auditBlockCode = null;
 this.lastSpaceGroupName = null;
+this.isBiomolecule = false;
 this.htAudit = null;
 this.symops = null;
 this.key = null;
@@ -43,6 +49,9 @@ this.atomTypes = null;
 this.bondTypes = null;
 this.disorderAssembly = ".";
 this.lastDisorderAssembly = null;
+this.thisChain = -1;
+this.chainSum = null;
+this.chainAtomCount = null;
 this.assem = null;
 this.hetatmData = null;
 this.atomRadius = null;
@@ -59,19 +68,28 @@ Clazz.prepareFields (c$, function () {
 this.tokenizer =  new J.io.CifDataReader (this);
 this.propertyOf =  Clazz.newIntArray (100, 0);
 this.fieldOf =  Clazz.newByteArray (100, 0);
-this.bondTypes =  new J.util.JmolList ();
-this.ptOffset =  new J.util.P3 ();
+this.bondTypes =  new JU.List ();
+this.ptOffset =  new JU.P3 ();
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.initializeReaderCif ();
 });
 $_M(c$, "initializeReaderCif", 
 function () {
 this.appendedData = this.htParams.get ("appendedData");
-var conf = this.getFilter ("CONF ");
+this.byChain = this.checkFilterKey ("BYCHAIN");
+this.bySymop = this.checkFilterKey ("BYSYMOP");
+this.isCourseGrained = this.byChain || this.bySymop;
+if (this.byChain) {
+this.chainAtomMap =  new java.util.Hashtable ();
+this.chainAtomCounts =  new java.util.Hashtable ();
+}var conf = this.getFilter ("CONF ");
 if (conf != null) this.configurationPtr = this.parseIntStr (conf);
+if (this.checkFilterKey ("BIOMOLECULE")) this.filter = JU.PT.simpleReplace (this.filter, "BIOMOLECULE", "ASSEMBLY");
+this.isBiomolecule = this.checkFilterKey ("ASSEMBLY");
 this.isMolecular = this.checkFilterKey ("MOLECUL");
+this.readIdeal = !this.checkFilterKey ("NOIDEAL");
 this.filterAssembly = this.checkFilterKey ("$");
 if (this.isMolecular) {
 if (!this.doApplySymmetry) {
@@ -94,7 +112,7 @@ this.tokenizer =  new J.io.CifDataReader ( new java.io.BufferedReader ( new java
 while ((this.key = this.tokenizer.peekToken ()) != null) if (!this.readAllData ()) break;
 
 }}, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "readNextLine", 
+$_V(c$, "readNextLine", 
 function () {
 if (this.readLine () != null && this.line.indexOf ("#jmolscript:") >= 0) this.checkCurrentLineForScript ();
 return this.line;
@@ -132,6 +150,8 @@ this.processChemicalInfo ("structuralFormula");
 this.processChemicalInfo ("formula");
 } else if (this.key.equals ("_cell_modulation_dimension") && !this.modAverage) {
 this.setModDim (this.parseIntStr (this.data));
+} else if (this.key.equals ("_citation_title")) {
+this.appendLoadNote ("TITLE: " + this.tokenizer.fullTrim (this.data));
 } else if (this.key.startsWith ("_cell_")) {
 this.processCellParameter ();
 } else if (this.key.startsWith ("_symmetry_space_group_name_h-m") || this.key.startsWith ("_symmetry_space_group_name_hall") || this.key.contains ("_ssg_name")) {
@@ -146,7 +166,7 @@ this.processAssemblyGen ();
 this.auditBlockCode = this.tokenizer.fullTrim (this.data).toUpperCase ();
 this.appendLoadNote (this.auditBlockCode);
 if (this.htAudit != null && this.auditBlockCode.contains ("_MOD_")) {
-var key = J.util.TextFormat.simpleReplace (this.auditBlockCode, "_MOD_", "_REFRNCE_");
+var key = JU.PT.simpleReplace (this.auditBlockCode, "_MOD_", "_REFRNCE_");
 if ((this.atomSetCollection.symmetry = this.htAudit.get (key)) != null) {
 this.notionalUnitCell = this.atomSetCollection.symmetry.getNotionalUnitCell ();
 this.iHaveUnitCell = true;
@@ -158,7 +178,7 @@ for (var i = 0; i < this.symops.size (); i++) this.setSymmetryOperator (this.sym
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "fixKey", 
 ($fz = function (key) {
-return J.util.TextFormat.simpleReplace (key, ".", "_").toLowerCase ();
+return JU.PT.simpleReplace (key, ".", "_").toLowerCase ();
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "newModel", 
 function (modelNo) {
@@ -166,60 +186,107 @@ if (this.isPDB) this.setIsPDB ();
 this.skipping = !this.doGetModel (this.modelNumber = modelNo, null);
 if (this.skipping) {
 this.tokenizer.getTokenPeeked ();
-} else {
-this.chemicalName = "";
+return;
+}this.chemicalName = "";
 this.thisStructuralFormula = "";
 this.thisFormula = "";
+if (this.isCourseGrained) this.atomSetCollection.setAtomSetAuxiliaryInfo ("courseGrained", Boolean.TRUE);
 if (this.nAtoms == this.atomSetCollection.getAtomCount ()) this.atomSetCollection.removeCurrentAtomSet ();
  else this.applySymmetryAndSetTrajectory ();
 this.iHaveDesiredModel = this.isLastModel (this.modelNumber);
-}}, "~N");
-Clazz.overrideMethod (c$, "finalizeReader", 
+}, "~N");
+$_V(c$, "finalizeReader", 
 function () {
-if (this.atomSetCollection.getAtomCount () == this.nAtoms) this.atomSetCollection.removeCurrentAtomSet ();
+if (this.byChain && !this.isBiomolecule) for (var id, $id = this.chainAtomMap.keySet ().iterator (); $id.hasNext () && ((id = $id.next ()) || true);) this.createParticle (id);
+
+if (!this.isCourseGrained && this.atomSetCollection.getAtomCount () == this.nAtoms) this.atomSetCollection.removeCurrentAtomSet ();
  else this.applySymmetryAndSetTrajectory ();
 this.finalizeModulation ();
 if (this.htSites != null) this.addSites (this.htSites);
 var n = this.atomSetCollection.getAtomSetCount ();
 if (n > 1) this.atomSetCollection.setCollectionName ("<collection of " + n + " models>");
-if (this.vBiomolecules != null && this.vBiomolecules.size () == 1 && this.atomSetCollection.getAtomCount () > 0) {
+if (this.vBiomolecules != null && this.vBiomolecules.size () == 1 && (this.isCourseGrained || this.atomSetCollection.getAtomCount () > 0)) {
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("biomolecules", this.vBiomolecules);
-this.setBiomolecules ();
-if (this.vBiomts != null && this.vBiomts.size () > 1) {
-this.atomSetCollection.applySymmetryBio (this.vBiomts, this.notionalUnitCell, this.applySymmetryToBonds, this.filter);
-}}this.finalizeReaderASCR ();
+var ht = this.vBiomolecules.get (0);
+this.appendLoadNote ("Constructing " + ht.get ("name"));
+this.setBiomolecules (ht);
+if (this.thisBiomolecule != null) this.atomSetCollection.applySymmetryBio (this.thisBiomolecule, this.notionalUnitCell, this.applySymmetryToBonds, this.filter);
+}this.finalizeReaderASCR ();
 var header = this.tokenizer.getFileHeader ();
 if (header.length > 0) this.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("fileHeader", header);
 if (this.haveAromatic) this.addJmolScript ("calculate aromatic");
 });
 $_M(c$, "setBiomolecules", 
-($fz = function () {
-var mident =  new J.util.Matrix4f ();
-mident.setIdentity ();
-if (this.assemblyIdAtoms == null) return;
-for (var i = this.vBiomolecules.size (); --i >= 0; ) {
-var biomolecule = this.vBiomolecules.get (i);
-var ops = J.util.TextFormat.split (biomolecule.get ("operators"), ',');
+($fz = function (biomolecule) {
+if (!this.isBiomolecule || this.assemblyIdAtoms == null && this.chainAtomCounts == null) return;
+var mident = JU.M4.newM (null);
+var ops = JU.PT.split (biomolecule.get ("operators"), ",");
 var assemblies = biomolecule.get ("assemblies");
-this.vBiomts =  new J.util.JmolList ();
-biomolecule.put ("biomts", this.vBiomts);
-this.vBiomts.addLast (mident);
+var biomts =  new JU.List ();
+biomolecule.put ("biomts", biomts);
+biomts.addLast (mident);
 for (var j = 0; j < ops.length; j++) {
-var m = this.htBiomts.get (ops[j]);
-if (m != null && !m.equals (mident)) this.vBiomts.addLast (m);
+var m = this.getOpMatrix (ops[j]);
+if (m != null && !m.equals (mident)) biomts.addLast (m);
 }
-if (this.vBiomts.size () < 2) return;
-var bsAll =  new J.util.BS ();
-for (var j = assemblies.length - 1; --j >= 0; ) if (assemblies.charAt (j) == '$') {
-var bs = this.assemblyIdAtoms.get ("" + assemblies.charAt (j + 1));
-if (bs != null) bsAll.or (bs);
-}
-var nAtoms = bsAll.cardinality ();
+var bsAll =  new JU.BS ();
+var sum =  new JU.P3 ();
+var count = 0;
+var nAtoms = 0;
+var ids = JU.PT.split (assemblies, "$");
+for (var j = 1; j < ids.length; j++) {
+var id = ids[j];
+if (this.assemblyIdAtoms != null) {
+var bs = this.assemblyIdAtoms.get (id);
+if (bs != null) {
+System.out.println (id + " " + bs.cardinality ());
+bsAll.or (bs);
+}} else if (this.isCourseGrained) {
+var asum = this.chainAtomMap.get (id);
+var c = this.chainAtomCounts.get (id)[0];
+if (asum != null) {
+if (this.bySymop) {
+sum.add (asum);
+count += c;
+} else {
+this.createParticle (id);
+nAtoms++;
+}}}}
+if (this.isCourseGrained) {
+if (this.bySymop) {
+nAtoms = 1;
+var a1 =  new J.adapter.smarter.Atom ();
+a1.setT (sum);
+a1.scale (1 / count);
+a1.radius = 16;
+}} else {
+nAtoms = bsAll.cardinality ();
 if (nAtoms < this.atomSetCollection.getAtomCount ()) this.atomSetCollection.bsAtoms = bsAll;
-biomolecule.put ("atomCount", Integer.$valueOf (nAtoms * ops.length));
-}
-}, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "applySymmetryAndSetTrajectory", 
+}biomolecule.put ("atomCount", Integer.$valueOf (nAtoms * ops.length));
+}, $fz.isPrivate = true, $fz), "java.util.Map");
+$_M(c$, "createParticle", 
+($fz = function (id) {
+var asum = this.chainAtomMap.get (id);
+var c = this.chainAtomCounts.get (id)[0];
+var a =  new J.adapter.smarter.Atom ();
+a.setT (asum);
+a.scale (1 / c);
+a.elementSymbol = "Pt";
+a.chainID = this.parseIntStr (id);
+a.radius = 16;
+this.atomSetCollection.addAtom (a);
+}, $fz.isPrivate = true, $fz), "~S");
+$_M(c$, "getOpMatrix", 
+($fz = function (ops) {
+if (this.htBiomts == null) return JU.M4.newM (null);
+var pt = ops.indexOf ("|");
+if (pt >= 0) {
+var m = JU.M4.newM (this.htBiomts.get (ops.substring (0, pt)));
+m.mulM4 (this.htBiomts.get (ops.substring (pt + 1)));
+return m;
+}return this.htBiomts.get (ops);
+}, $fz.isPrivate = true, $fz), "~S");
+$_V(c$, "applySymmetryAndSetTrajectory", 
 function () {
 if (this.isPDB) this.atomSetCollection.setCheckSpecial (false);
 var doCheck = this.doCheckUnitCell && !this.isPDB;
@@ -266,6 +333,7 @@ $_M(c$, "processSymmetrySpaceGroupName",
 ($fz = function () {
 if (this.key.indexOf ("_ssg_name") >= 0) this.incommensurate = true;
  else if (this.incommensurate) return;
+this.data = this.tokenizer.toUnicode (this.data);
 this.setSpaceGroupName (this.lastSpaceGroupName = (this.key.indexOf ("h-m") > 0 ? "HM:" : this.incommensurate ? "SSG:" : "Hall:") + this.data);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "processCellParameter", 
@@ -313,6 +381,31 @@ this.atomSetCollection.setAtomSetAuxiliaryInfo ("chemicalName", this.chemicalNam
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("structuralFormula", this.thisStructuralFormula);
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("formula", this.thisFormula);
 return;
+}if (str.startsWith ("_symmetry_equiv_pos") || str.startsWith ("_space_group_symop") || str.startsWith ("_symmetry_ssg_equiv")) {
+if (this.ignoreFileSymmetryOperators) {
+J.util.Logger.warn ("ignoring file-based symmetry operators");
+this.skipLoop ();
+} else {
+this.processSymmetryOperationsLoopBlock ();
+}return;
+}if (str.startsWith ("_citation")) {
+this.processCitationListBlock ();
+return;
+}if (str.startsWith ("_pdbx_struct_oper_list")) {
+this.processStructOperListBlock ();
+return;
+}if (str.startsWith ("_pdbx_struct_assembly_gen")) {
+this.processAssemblyGenBlock ();
+return;
+}if (this.isCourseGrained) {
+this.skipLoop ();
+return;
+}if (str.startsWith ("_struct_site_gen")) {
+this.processStructSiteBlock ();
+return;
+}if (str.startsWith ("_chem_comp")) {
+this.processChemCompLoopBlock ();
+return;
 }if (str.startsWith ("_atom_type")) {
 this.processAtomTypeLoopBlock ();
 return;
@@ -322,19 +415,9 @@ return;
 }if (str.equals ("_cell_subsystem_code")) {
 this.processSubsystemLoopBlock ();
 return;
-}if (str.startsWith ("_geom_bond")) {
-if (!this.doApplySymmetry) {
-this.isMolecular = true;
-this.doApplySymmetry = true;
-this.latticeCells[0] = this.latticeCells[1] = this.latticeCells[2] = 1;
-}if (this.isMolecular) this.processGeomBondLoopBlock ();
- else this.skipLoop ();
-return;
-}if (str.startsWith ("_pdbx_entity_nonpoly")) {
+}if (!this.isCourseGrained) {
+if (str.startsWith ("_pdbx_entity_nonpoly")) {
 this.processNonpolyLoopBlock ();
-return;
-}if (str.startsWith ("_chem_comp")) {
-this.processChemCompLoopBlock ();
 return;
 }if (str.startsWith ("_struct_conf") && !str.startsWith ("_struct_conf_type")) {
 this.processStructConfLoopBlock ();
@@ -342,23 +425,15 @@ return;
 }if (str.startsWith ("_struct_sheet_range")) {
 this.processStructSheetRangeLoopBlock ();
 return;
-}if (str.startsWith ("_symmetry_equiv_pos") || str.startsWith ("_space_group_symop") || str.startsWith ("_symmetry_ssg_equiv")) {
-if (this.ignoreFileSymmetryOperators) {
-J.util.Logger.warn ("ignoring file-based symmetry operators");
-this.skipLoop ();
-} else {
-this.processSymmetryOperationsLoopBlock ();
-}return;
-}if (str.startsWith ("_struct_site")) {
-this.processStructSiteBlock ();
+}if (str.startsWith ("_geom_bond")) {
+if (!this.doApplySymmetry) {
+this.isMolecular = true;
+this.doApplySymmetry = true;
+this.latticeCells[0] = this.latticeCells[1] = this.latticeCells[2] = 1;
+}if (this.isMolecular) {
+this.processGeomBondLoopBlock ();
 return;
-}if (str.startsWith ("_pdbx_struct_oper_list")) {
-this.processStructOperListBlock ();
-return;
-}if (str.startsWith ("_pdbx_struct_assembly_gen")) {
-this.processAssemblyGenBlock ();
-return;
-}this.skipLoop ();
+}}}this.skipLoop ();
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "fieldProperty", 
 ($fz = function (i) {
@@ -434,7 +509,7 @@ $_M(c$, "processAtomSiteLoopBlock",
 function (isLigand) {
 var currentModelNO = -1;
 var isAnisoData = false;
-var assemblyId = '\u0000';
+var assemblyId = null;
 this.parseLoopParameters (J.adapter.readers.cif.CifReader.atomFields);
 if (this.fieldOf[55] != -1) {
 this.isPDB = false;
@@ -462,7 +537,7 @@ var subid = null;
 var siteMult = 0;
 while (this.tokenizer.getData ()) {
 var atom =  new J.adapter.smarter.Atom ();
-assemblyId = '\0';
+assemblyId = null;
 if (this.isPDBX) {
 if (modelField == -1) {
 for (var i = 0; i < this.tokenizer.fieldCount; ++i) if (this.fieldProperty (i) == 17) {
@@ -512,15 +587,15 @@ atom.atomName = this.field;
 break;
 case 55:
 var x = this.parseFloatStr (this.field);
-if (!Float.isNaN (x)) atom.x = x;
+if (this.readIdeal && !Float.isNaN (x)) atom.x = x;
 break;
 case 56:
 var y = this.parseFloatStr (this.field);
-if (!Float.isNaN (y)) atom.y = y;
+if (this.readIdeal && !Float.isNaN (y)) atom.y = y;
 break;
 case 57:
 var z = this.parseFloatStr (this.field);
-if (!Float.isNaN (z)) atom.z = z;
+if (this.readIdeal && !Float.isNaN (z)) atom.z = z;
 break;
 case 52:
 case 6:
@@ -552,10 +627,9 @@ case 11:
 atom.group3 = this.field;
 break;
 case 59:
-assemblyId = this.firstChar;
+assemblyId = this.field;
 break;
 case 12:
-if (!this.haveChainsLC && !this.field.toUpperCase ().equals (this.field)) this.haveChainsLC = (this.viewer.getChainID ("lc") != 0);
 atom.chainID = this.viewer.getChainID (this.field);
 break;
 case 13:
@@ -644,24 +718,43 @@ J.util.Logger.warn ("atom " + atom.atomName + " has invalid/unknown coordinates"
 continue;
 }if (!this.filterCIFAtom (atom, iAtom, assemblyId)) continue;
 this.setAtomCoord (atom);
-if (atom.elementSymbol == null && atom.atomName != null) {
+if (this.byChain && !this.isBiomolecule) {
+if (this.thisChain != atom.chainID) {
+this.thisChain = atom.chainID;
+var id = "" + atom.chainID;
+this.chainSum = this.chainAtomMap.get (id);
+if (this.chainSum == null) {
+this.chainAtomMap.put (id, this.chainSum =  new JU.P3 ());
+this.chainAtomCounts.put (id, this.chainAtomCount =  Clazz.newIntArray (1, 0));
+}}this.chainSum.add (atom);
+this.chainAtomCount[0]++;
+continue;
+}if (this.isBiomolecule && this.isCourseGrained) {
+var sum = this.chainAtomMap.get (assemblyId);
+if (sum == null) {
+this.chainAtomMap.put (assemblyId, sum =  new JU.P3 ());
+this.chainAtomCounts.put (assemblyId,  Clazz.newIntArray (1, 0));
+}this.chainAtomCounts.get (assemblyId)[0]++;
+sum.add (atom);
+continue;
+}if (atom.elementSymbol == null && atom.atomName != null) {
 var sym = atom.atomName;
 var pt = 0;
 while (pt < sym.length && Character.isLetter (sym.charAt (pt))) pt++;
 
 atom.elementSymbol = (pt == 0 || pt > 2 ? "Xx" : sym.substring (0, pt));
 }this.atomSetCollection.addAtomWithMappedName (atom);
-if (assemblyId != '\0') {
+if (assemblyId != null) {
 if (this.assemblyIdAtoms == null) this.assemblyIdAtoms =  new java.util.Hashtable ();
-var bs = this.assemblyIdAtoms.get ("" + assemblyId);
-if (bs == null) this.assemblyIdAtoms.put ("" + assemblyId, bs =  new J.util.BS ());
+var bs = this.assemblyIdAtoms.get (assemblyId);
+if (bs == null) this.assemblyIdAtoms.put (assemblyId, bs =  new JU.BS ());
 bs.set (atom.index);
 }if (atom.isHetero && this.htHetero != null) {
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("hetNames", this.htHetero);
 this.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("hetNames", this.htHetero);
 this.htHetero = null;
 }if (subid != null) this.addSubsystem (subid, null, atom.atomName);
-if (siteMult != 0) atom.vib = J.util.V3.new3 (siteMult, 0, NaN);
+if (siteMult != 0) atom.vib = JU.V3.new3 (siteMult, 0, NaN);
 }
 if (this.isPDB) this.setIsPDB ();
 this.atomSetCollection.setAtomSetAuxiliaryInfo ("isCIF", Boolean.TRUE);
@@ -671,7 +764,7 @@ return true;
 $_M(c$, "filterCIFAtom", 
 function (atom, iAtom, assemblyId) {
 if (!this.filterAtom (atom, iAtom)) return false;
-if (this.filterAssembly && this.filterReject (this.filter, "$", "" + assemblyId)) return false;
+if (this.filterAssembly && this.filterReject (this.filter, "$", assemblyId)) return false;
 if (this.configurationPtr > 0) {
 if (!this.disorderAssembly.equals (this.lastDisorderAssembly)) {
 this.lastDisorderAssembly = this.disorderAssembly;
@@ -697,8 +790,8 @@ if (this.assem[0] != null && this.assem[1] != null && this.assem[2] != null) thi
 $_M(c$, "processAssemblyGenBlock", 
 ($fz = function () {
 this.parseLoopParameters (J.adapter.readers.cif.CifReader.assemblyFields);
-this.assem =  new Array (3);
 while (this.tokenizer.getData ()) {
+this.assem =  new Array (3);
 var count = 0;
 var p;
 for (var i = 0; i < this.tokenizer.fieldCount; ++i) {
@@ -718,18 +811,42 @@ this.assem = null;
 $_M(c$, "addAssembly", 
 ($fz = function () {
 var iMolecule = this.parseIntStr (this.assem[0]);
+var list = this.assem[2];
+this.appendLoadNote ("found biomolecule " + iMolecule + ": " + list);
 if (!this.checkFilterKey ("ASSEMBLY " + iMolecule + ";")) return;
 if (this.vBiomolecules == null) {
-this.vBiomolecules =  new J.util.JmolList ();
+this.vBiomolecules =  new JU.List ();
 }var info =  new java.util.Hashtable ();
+info.put ("name", "biomolecule " + iMolecule);
 info.put ("molecule", Integer.$valueOf (iMolecule));
-info.put ("assemblies", "$" + this.assem[2].$replace (',', '$'));
-info.put ("operators", this.assem[1]);
-info.put ("biomts",  new J.util.JmolList ());
+info.put ("assemblies", "$" + list.$replace (',', '$'));
+info.put ("operators", this.decodeAssemblyOperators (this.assem[1]));
+info.put ("biomts",  new JU.List ());
+this.thisBiomolecule = info;
 J.util.Logger.info ("assembly " + iMolecule + " operators " + this.assem[1] + " ASYM_IDs " + this.assem[2]);
 this.vBiomolecules.addLast (info);
 this.assem = null;
 }, $fz.isPrivate = true, $fz));
+$_M(c$, "decodeAssemblyOperators", 
+($fz = function (ops) {
+var pt = ops.indexOf (")(");
+if (pt >= 0) return this.crossBinary (this.decodeAssemblyOperators (ops.substring (0, pt + 1)), this.decodeAssemblyOperators (ops.substring (pt + 1)));
+if (ops.startsWith ("(")) {
+if (ops.indexOf ("-") >= 0) ops = J.util.Escape.uB ("({" + ops.substring (1, ops.length - 1).$replace ('-', ':') + "})").toString ();
+ops = JU.PT.simpleReplace (ops, " ", "");
+ops = ops.substring (1, ops.length - 1);
+}return ops;
+}, $fz.isPrivate = true, $fz), "~S");
+$_M(c$, "crossBinary", 
+($fz = function (ops1, ops2) {
+var sb =  new JU.SB ();
+var opsLeft = JU.PT.split (ops1, ",");
+var opsRight = JU.PT.split (ops2, ",");
+for (var i = 0; i < opsLeft.length; i++) for (var j = 0; j < opsRight.length; j++) sb.append (",").append (opsLeft[i]).append ("|").append (opsRight[j]);
+
+
+return sb.toString ().substring (1);
+}, $fz.isPrivate = true, $fz), "~S,~S");
 $_M(c$, "processStructOperListBlock", 
 ($fz = function () {
 this.parseLoopParameters (J.adapter.readers.cif.CifReader.operFields);
@@ -757,7 +874,7 @@ m[p] = this.parseFloatStr (this.field);
 }
 if (id != null && (count == 12 || xyz != null && this.symmetry != null)) {
 J.util.Logger.info ("assembly operator " + id + " " + xyz);
-var m4 =  new J.util.Matrix4f ();
+var m4 =  new JU.M4 ();
 if (count != 12) {
 this.symmetry.getMatrixFromString (xyz, m, false);
 m[3] *= this.symmetry.getUnitCellInfoType (0) / 12;
@@ -767,6 +884,23 @@ m[11] *= this.symmetry.getUnitCellInfoType (2) / 12;
 if (this.htBiomts == null) this.htBiomts =  new java.util.Hashtable ();
 this.htBiomts.put (id, m4);
 }}
+}, $fz.isPrivate = true, $fz));
+$_M(c$, "processCitationListBlock", 
+($fz = function () {
+this.parseLoopParameters (J.adapter.readers.cif.CifReader.citationFields);
+var m =  Clazz.newFloatArray (16, 0);
+m[15] = 1;
+while (this.tokenizer.getData ()) {
+for (var i = 0; i < this.tokenizer.fieldCount; ++i) {
+switch (this.fieldProperty (i)) {
+case 0:
+break;
+case 1:
+this.appendLoadNote ("TITLE: " + this.tokenizer.toUnicode (this.field));
+break;
+}
+}
+}
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "processNonpolyData", 
 ($fz = function () {
@@ -835,7 +969,7 @@ $_M(c$, "processStructConfLoopBlock",
 ($fz = function () {
 this.parseLoopParameters (J.adapter.readers.cif.CifReader.structConfFields);
 for (var i = this.propertyCount; --i >= 0; ) if (this.fieldOf[i] == -1) {
-J.util.Logger.warn ("?que? missing _struct_conf property:" + i);
+J.util.Logger.warn ("?que? missing property: " + J.adapter.readers.cif.CifReader.structConfFields[i]);
 this.skipLoop ();
 return;
 }
@@ -887,7 +1021,7 @@ $_M(c$, "processStructSheetRangeLoopBlock",
 ($fz = function () {
 this.parseLoopParameters (J.adapter.readers.cif.CifReader.structSheetRangeFields);
 for (var i = this.propertyCount; --i >= 0; ) if (this.fieldOf[i] == -1) {
-J.util.Logger.warn ("?que? missing _struct_conf property:" + i);
+J.util.Logger.warn ("?que? missing property:" + J.adapter.readers.cif.CifReader.structSheetRangeFields[i]);
 this.skipLoop ();
 return;
 }
@@ -929,7 +1063,7 @@ $_M(c$, "processStructSiteBlock",
 ($fz = function () {
 this.parseLoopParameters (J.adapter.readers.cif.CifReader.structSiteRangeFields);
 for (var i = 3; --i >= 0; ) if (this.fieldOf[i] == -1) {
-J.util.Logger.warn ("?que? missing _struct_site property:" + i);
+J.util.Logger.warn ("?que? missing property: " + J.adapter.readers.cif.CifReader.structSiteRangeFields[i]);
 this.skipLoop ();
 return;
 }
@@ -987,7 +1121,7 @@ $_M(c$, "processSymmetryOperationsLoopBlock",
 ($fz = function () {
 this.parseLoopParameters (J.adapter.readers.cif.CifReader.symmetryOperationsFields);
 var nRefs = 0;
-this.symops =  new J.util.JmolList ();
+this.symops =  new JU.List ();
 for (var i = this.propertyCount; --i >= 0; ) if (this.fieldOf[i] != -1) nRefs++;
 
 if (nRefs != 1) {
@@ -1000,7 +1134,7 @@ var ssgop = false;
 for (var i = 0; i < this.tokenizer.fieldCount; ++i) {
 switch (this.fieldProperty (i)) {
 case 2:
-if (this.field.indexOf ('~') >= 0) this.field = J.util.TextFormat.simpleReplace (this.field, "~", "");
+if (this.field.indexOf ('~') >= 0) this.field = JU.PT.simpleReplace (this.field, "~", "");
 case 3:
 this.incommensurate = true;
 ssgop = true;
@@ -1018,7 +1152,7 @@ $_M(c$, "processLigandBondLoopBlock",
 ($fz = function () {
 this.parseLoopParameters (J.adapter.readers.cif.CifReader.chemCompBondFields);
 for (var i = this.propertyCount; --i >= 0; ) if (this.fieldOf[i] == -1) {
-J.util.Logger.warn ("?que? missing _chem_comp_bond property:" + i);
+J.util.Logger.warn ("?que? missing property: " + J.adapter.readers.cif.CifReader.chemCompBondFields[i]);
 this.skipLoop ();
 return;
 }
@@ -1077,7 +1211,7 @@ $_M(c$, "processGeomBondLoopBlock",
 ($fz = function () {
 this.parseLoopParameters (J.adapter.readers.cif.CifReader.geomBondFields);
 for (var i = this.propertyCount; --i >= 0; ) if (this.propertyOf[i] != 3 && this.fieldOf[i] == -1) {
-J.util.Logger.warn ("?que? missing _geom_bond property:" + i);
+J.util.Logger.warn ("?que? missing property: " + J.adapter.readers.cif.CifReader.geomBondFields[i]);
 this.skipLoop ();
 return;
 }
@@ -1137,7 +1271,7 @@ this.bsSets =  new Array (nAtoms);
 this.symmetry = this.atomSetCollection.getSymmetry ();
 for (var i = this.firstAtom; i < this.atomCount; i++) {
 var ipt = this.atomSetCollection.getAtomIndexFromName (this.atoms[i].atomName) - this.firstAtom;
-if (this.bsSets[ipt] == null) this.bsSets[ipt] =  new J.util.BS ();
+if (this.bsSets[ipt] == null) this.bsSets[ipt] =  new JU.BS ();
 this.bsSets[ipt].set (i - this.firstAtom);
 }
 if (this.isMolecular) {
@@ -1149,16 +1283,16 @@ var charge = (this.atoms[i].formalCharge == -2147483648 ? 0 : this.atoms[i].form
 if (elemnoWithIsotope > 0) this.atomRadius[i] = J.api.JmolAdapter.getBondingRadiusFloat (elemnoWithIsotope, charge);
 }
 this.bsConnected =  new Array (this.atomCount);
-for (var i = this.firstAtom; i < this.atomCount; i++) this.bsConnected[i] =  new J.util.BS ();
+for (var i = this.firstAtom; i < this.atomCount; i++) this.bsConnected[i] =  new JU.BS ();
 
-this.bsMolecule =  new J.util.BS ();
-this.bsExclude =  new J.util.BS ();
+this.bsMolecule =  new JU.BS ();
+this.bsExclude =  new JU.BS ();
 }var isFirst = true;
 while (this.createBonds (isFirst)) {
 isFirst = false;
 }
 if (this.isMolecular) {
-if (this.atomSetCollection.bsAtoms == null) this.atomSetCollection.bsAtoms =  new J.util.BS ();
+if (this.atomSetCollection.bsAtoms == null) this.atomSetCollection.bsAtoms =  new JU.BS ();
 this.atomSetCollection.bsAtoms.clearBits (this.firstAtom, this.atomCount);
 this.atomSetCollection.bsAtoms.or (this.bsMolecule);
 this.atomSetCollection.bsAtoms.andNot (this.bsExclude);
@@ -1206,9 +1340,9 @@ if (!this.isMolecular) return false;
 if (doInit) for (var i = this.firstAtom; i < this.atomCount; i++) if (this.atoms[i].atomSite + this.firstAtom == i && !this.bsMolecule.get (i)) this.setBs (this.atoms, i, this.bsConnected, this.bsMolecule);
 
 var bondTolerance = this.viewer.getFloat (570425348);
-var bsBranch =  new J.util.BS ();
-var cart1 =  new J.util.P3 ();
-var cart2 =  new J.util.P3 ();
+var bsBranch =  new JU.BS ();
+var cart1 =  new JU.P3 ();
+var cart2 =  new JU.P3 ();
 var nFactor = 2;
 for (var i = this.firstAtom; i < this.atomCount; i++) if (!this.bsMolecule.get (i) && !this.bsExclude.get (i)) for (var j = this.bsMolecule.nextSetBit (0); j >= 0; j = this.bsMolecule.nextSetBit (j + 1)) if (this.symmetry.checkDistance (this.atoms[j], this.atoms[i], this.atomRadius[i] + this.atomRadius[j] + bondTolerance, 0, nFactor, nFactor, nFactor, this.ptOffset)) {
 this.setBs (this.atoms, i, this.bsConnected, bsBranch);
@@ -1246,7 +1380,7 @@ bs.set (iatom);
 for (var i = bsBond.nextSetBit (0); i >= 0; i = bsBond.nextSetBit (i + 1)) {
 if (!bs.get (i)) this.setBs (atoms, i, bsBonds, bs);
 }
-}, $fz.isPrivate = true, $fz), "~A,~N,~A,J.util.BS");
+}, $fz.isPrivate = true, $fz), "~A,~N,~A,JU.BS");
 $_M(c$, "processModulationLoopBlock", 
 ($fz = function () {
 if (this.atomSetCollection.getCurrentAtomSetIndex () < 0) this.atomSetCollection.newAtomSet ();
@@ -1257,7 +1391,7 @@ var ignore = false;
 var id = null;
 var atomLabel = null;
 var axis = null;
-var pt = J.util.P3.new3 (NaN, NaN, NaN);
+var pt = JU.P3.new3 (NaN, NaN, NaN);
 var c = NaN;
 var w = NaN;
 var fid = null;
@@ -1385,9 +1519,9 @@ case 'J':
 if (atomLabel == null || axis == null) continue;
 if (id.equals ("D_S")) {
 if (Float.isNaN (c) || Float.isNaN (w)) continue;
-if (pt.x != 0) this.addMod ("D_S#x;" + atomLabel, fid, J.util.P3.new3 (c, w, pt.x));
-if (pt.y != 0) this.addMod ("D_S#y;" + atomLabel, fid, J.util.P3.new3 (c, w, pt.y));
-if (pt.z != 0) this.addMod ("D_S#z;" + atomLabel, fid, J.util.P3.new3 (c, w, pt.z));
+if (pt.x != 0) this.addMod ("D_S#x;" + atomLabel, fid, JU.P3.new3 (c, w, pt.x));
+if (pt.y != 0) this.addMod ("D_S#y;" + atomLabel, fid, JU.P3.new3 (c, w, pt.y));
+if (pt.z != 0) this.addMod ("D_S#z;" + atomLabel, fid, JU.P3.new3 (c, w, pt.z));
 continue;
 }id += "#" + axis + ";" + atomLabel;
 break;
@@ -1400,7 +1534,7 @@ $_M(c$, "addMod",
 ($fz = function (id, fid, params) {
 if (fid != null) id += fid;
 this.addModulation (null, id, params, -1);
-}, $fz.isPrivate = true, $fz), "~S,~S,J.util.P3");
+}, $fz.isPrivate = true, $fz), "~S,~S,JU.P3");
 $_M(c$, "processSubsystemLoopBlock", 
 ($fz = function () {
 this.parseLoopParameters (null);
@@ -1411,7 +1545,7 @@ this.addSubsystem (this.field, this.getMatrix4 (1), null);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getMatrix4", 
 ($fz = function (i) {
-var m4 =  new J.util.Matrix4f ();
+var m4 =  new JU.M4 ();
 var a =  Clazz.newFloatArray (16, 0);
 for (; i < this.tokenizer.fieldCount; ++i) {
 var key = this.fields[this.fieldProperty (i)];
@@ -1499,6 +1633,9 @@ Clazz.defineStatics (c$,
 "ASSEM_OPERS", 1,
 "ASSEM_LIST", 2,
 "assemblyFields", ["_pdbx_struct_assembly_gen_assembly_id", "_pdbx_struct_assembly_gen_oper_expression", "_pdbx_struct_assembly_gen_asym_id_list"],
+"CITATION_ID", 0,
+"CITATION_TITLE", 1,
+"citationFields", ["_citation_id", "_citation_title"],
 "NONPOLY_ENTITY_ID", 0,
 "NONPOLY_NAME", 1,
 "NONPOLY_COMP_ID", 2,

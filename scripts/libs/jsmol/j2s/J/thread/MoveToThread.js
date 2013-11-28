@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.thread");
-Clazz.load (["J.thread.JmolThread", "J.util.AxisAngle4f", "$.Matrix3f", "$.V3"], "J.thread.MoveToThread", ["java.lang.Float", "J.util.P3"], function () {
+Clazz.load (["J.thread.JmolThread", "JU.A4", "$.M3", "$.V3"], "J.thread.MoveToThread", ["java.lang.Float", "JU.P3"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.transformManager = null;
 this.aaStepCenter = null;
@@ -37,20 +37,20 @@ J.thread.MoveToThread.$MoveToThread$Slider$ ();
 Clazz.instantialize (this, arguments);
 }, J.thread, "MoveToThread", J.thread.JmolThread);
 Clazz.prepareFields (c$, function () {
-this.aaStepCenter =  new J.util.V3 ();
-this.aaStepNavCenter =  new J.util.V3 ();
-this.aaStep =  new J.util.AxisAngle4f ();
-this.aaTotal =  new J.util.AxisAngle4f ();
-this.matrixStart =  new J.util.Matrix3f ();
-this.matrixStartInv =  new J.util.Matrix3f ();
-this.matrixStep =  new J.util.Matrix3f ();
-this.matrixEnd =  new J.util.Matrix3f ();
+this.aaStepCenter =  new JU.V3 ();
+this.aaStepNavCenter =  new JU.V3 ();
+this.aaStep =  new JU.A4 ();
+this.aaTotal =  new JU.A4 ();
+this.matrixStart =  new JU.M3 ();
+this.matrixStartInv =  new JU.M3 ();
+this.matrixStep =  new JU.M3 ();
+this.matrixEnd =  new JU.M3 ();
 });
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.thread.MoveToThread, []);
 });
-Clazz.overrideMethod (c$, "setManager", 
+$_V(c$, "setManager", 
 function (manager, viewer, params) {
 var options = params;
 this.setViewer (viewer, "MoveToThread");
@@ -94,7 +94,7 @@ $_M(c$, "newSlider",
 ($fz = function (start, value) {
 return (Float.isNaN (value) || value == 3.4028235E38 ? null : Clazz.innerTypeInstance (J.thread.MoveToThread.Slider, this, null, start, value));
 }, $fz.isPrivate = true, $fz), "~N,~N");
-Clazz.overrideMethod (c$, "run1", 
+$_V(c$, "run1", 
 function (mode) {
 while (true) switch (mode) {
 case -1:
@@ -149,7 +149,7 @@ this.matrixStep.mul (this.matrixStart);
 }this.fStep = this.iStep / (this.totalSteps - 1);
 if (this.center != null) this.transformManager.fixedRotationCenter.add (this.aaStepCenter);
 if (this.navCenter != null && this.transformManager.mode == 1) {
-var pt = J.util.P3.newP (this.transformManager.navigationCenter);
+var pt = JU.P3.newP (this.transformManager.navigationCenter);
 pt.add (this.aaStepNavCenter);
 this.transformManager.setNavigatePt (pt);
 }this.setValues (this.matrixStep, null, null);
@@ -162,7 +162,7 @@ this.setValues (this.matrixEnd, this.center, this.navCenter);
 $_M(c$, "setValues", 
 ($fz = function (m, center, navCenter) {
 this.transformManager.setAll (center, m, navCenter, this.getVal (this.zoom), this.getVal (this.xTrans), this.getVal (this.yTrans), this.getVal (this.rotationRadius), this.getVal (this.pixelScale), this.getVal (this.navDepth), this.getVal (this.xNav), this.getVal (this.yNav), this.getVal (this.cameraDepth), this.getVal (this.cameraX), this.getVal (this.cameraY));
-}, $fz.isPrivate = true, $fz), "J.util.Matrix3f,J.util.P3,J.util.P3");
+}, $fz.isPrivate = true, $fz), "JU.M3,JU.P3,JU.P3");
 $_M(c$, "getVal", 
 ($fz = function (s) {
 return (s == null ? NaN : s.getVal (this.fStep));

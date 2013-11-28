@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.more");
-Clazz.load (["J.adapter.readers.more.BinaryReader"], "J.adapter.readers.more.BinaryDcdReader", ["J.util.BSUtil", "$.Escape", "$.Logger", "$.P3", "$.SB"], function () {
+Clazz.load (["J.adapter.readers.more.BinaryReader"], "J.adapter.readers.more.BinaryDcdReader", ["JU.P3", "$.SB", "J.util.BSUtil", "$.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.nModels = 0;
 this.nAtoms = 0;
@@ -10,11 +10,11 @@ this.yAll = null;
 this.zAll = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.more, "BinaryDcdReader", J.adapter.readers.more.BinaryReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.initializeTrajectoryFile ();
 });
-Clazz.overrideMethod (c$, "readDocument", 
+$_V(c$, "readDocument", 
 function () {
 var bytes =  Clazz.newByteArray (40, 0);
 var n = this.binaryDoc.readInt ();
@@ -36,7 +36,7 @@ this.binaryDoc.readInt ();
 n = this.binaryDoc.readInt ();
 n = this.binaryDoc.readInt ();
 n = this.binaryDoc.readInt ();
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 for (var i = 0; i < n; i++) sb.append (this.binaryDoc.readString (80).trim ()).appendC ('\n');
 
 n = this.binaryDoc.readInt ();
@@ -92,7 +92,7 @@ this.xAll = x;
 this.yAll = y;
 this.zAll = z;
 }for (var i = 0, vpt = 0; i < this.nAtoms; i++) {
-var pt =  new J.util.P3 ();
+var pt =  new JU.P3 ();
 if (bs == null || bs.get (i)) {
 pt.set (x[vpt], y[vpt], z[vpt]);
 vpt++;

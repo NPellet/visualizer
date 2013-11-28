@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable", "J.util.JmolList", "$.SB"], "J.adapter.readers.xtal.MagresReader", ["java.lang.Double", "J.adapter.smarter.Atom", "J.util.Escape", "$.Logger", "$.Tensor", "$.TextFormat"], function () {
+Clazz.load (["J.adapter.smarter.AtomSetCollectionReader", "java.util.Hashtable", "JU.List", "$.SB"], "J.adapter.readers.xtal.MagresReader", ["java.lang.Double", "JU.PT", "J.adapter.smarter.Atom", "J.util.Escape", "$.Logger", "$.Tensor"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.currentBlock = -1;
 this.cellParams = null;
@@ -10,21 +10,21 @@ Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "MagresReader", J.adapter.smarter.AtomSetCollectionReader);
 Clazz.prepareFields (c$, function () {
 this.magresUnits =  new java.util.Hashtable ();
-this.interactionTensors =  new J.util.JmolList ();
-this.header =  new J.util.SB ();
+this.interactionTensors =  new JU.List ();
+this.header =  new JU.SB ();
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.setFractionalCoordinates (false);
 this.ignoreFileSpaceGroupName = true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 this.atomSetCollection.setAtomSetCollectionAuxiliaryInfo ("fileHeader", this.header.toString ());
 this.finalizeReaderASCR ();
 if (this.interactionTensors.size () > 0) this.atomSetCollection.setAtomSetAuxiliaryInfo ("interactionTensors", this.interactionTensors);
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (!this.trimLine ()) return true;
 switch (this.checkBlock ()) {
@@ -54,8 +54,8 @@ return (this.line.length > 0);
 $_M(c$, "checkBlock", 
 ($fz = function () {
 if (!(this.line.startsWith ("<") && this.line.endsWith (">")) && !(this.line.startsWith ("[") && this.line.endsWith ("]"))) return this.currentBlock;
-this.line = J.util.TextFormat.simpleReplace (this.line, "<", "[");
-this.line = J.util.TextFormat.simpleReplace (this.line, ">", "]");
+this.line = JU.PT.simpleReplace (this.line, "<", "[");
+this.line = JU.PT.simpleReplace (this.line, ">", "]");
 switch (Clazz.doubleToInt (("...............[calculation]..[/calculation].[atoms]........[/atoms].......[magres].......[/magres]......").indexOf (this.line + ".") / 15)) {
 case 0:
 J.util.Logger.info ("block indicator ignored: " + this.line);
@@ -164,7 +164,7 @@ for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) a[i][j] = Double.$valueO
 
 var index1 = this.atomSetCollection.getAtomIndexFromName (atomName1);
 var index2;
-var t = J.util.Tensor.getTensorFromAsymmetricTensor (a, type, id);
+var t =  new J.util.Tensor ().setFromAsymmetricTensor (a, type, id);
 if (atomName2 == null) {
 index2 = -1;
 this.atomSetCollection.getAtoms ()[index1].addTensor (t, null, false);

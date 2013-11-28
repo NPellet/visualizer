@@ -21,7 +21,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.thread.SpinThread, []);
 });
-Clazz.overrideMethod (c$, "setManager", 
+$_V(c$, "setManager", 
 function (manager, viewer, params) {
 this.transformManager = manager;
 this.setViewer (viewer, "SpinThread");
@@ -37,12 +37,12 @@ this.bsAtoms = options[3];
 this.isGesture = (options[4] != null);
 }return 0;
 }, "~O,J.viewer.Viewer,~O");
-Clazz.overrideMethod (c$, "run1", 
+$_V(c$, "run1", 
 function (mode) {
 while (true) switch (mode) {
 case -1:
 this.myFps = (this.isNav ? this.transformManager.navFps : this.transformManager.spinFps);
-this.viewer.getGlobalSettings ().setB (this.isNav ? "_navigating" : "_spinning", true);
+this.viewer.global.setB (this.isNav ? "_navigating" : "_spinning", true);
 this.viewer.startHoverWatcher (false);
 mode = 0;
 break;

@@ -2,6 +2,7 @@ Clazz.declarePackage ("J.modelset");
 c$ = Clazz.decorateAsClass (function () {
 this.model = null;
 this.chainID = 0;
+this.index = 0;
 this.isDna = false;
 this.isRna = false;
 this.groupCount = 0;
@@ -17,10 +18,11 @@ function (index) {
 return this.model.modelSet.atoms[index];
 }, "~N");
 Clazz.makeConstructor (c$, 
-function (model, chainID) {
+function (model, chainID, index) {
 this.model = model;
 this.chainID = chainID;
-}, "J.modelset.Model,~N");
+this.index = index;
+}, "J.modelset.Model,~N,~N");
 $_M(c$, "getGroup", 
 function (groupIndex) {
 return this.groups[groupIndex];
@@ -34,7 +36,7 @@ function (bsSelected) {
 this.selectedGroupCount = 0;
 for (var i = 0; i < this.groupCount; i++) this.groups[i].selectedIndex = (this.groups[i].isSelected (bsSelected) ? this.selectedGroupCount++ : -1);
 
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "selectSeqcodeRange", 
 function (index0, seqcodeA, seqcodeB, bs) {
 var seqcode;
@@ -71,17 +73,17 @@ if (minDiff == 2147483647) return -1;
 }}for (var i = indexA; i <= indexB; ++i) this.groups[i].selectAtoms (bs);
 
 return (isInexact ? -1 : indexB + 1);
-}, "~N,~N,~N,J.util.BS");
+}, "~N,~N,~N,JU.BS");
 $_M(c$, "fixIndices", 
 function (atomsDeleted, bsDeleted) {
 for (var i = 0; i < this.groupCount; i++) this.groups[i].fixIndices (atomsDeleted, bsDeleted);
 
-}, "~N,J.util.BS");
+}, "~N,JU.BS");
 $_M(c$, "setAtomBitSet", 
 function (bs) {
 for (var i = 0; i < this.groupCount; i++) this.groups[i].selectAtoms (bs);
 
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "getIDStr", 
 function () {
 return (this.chainID == 0 ? "" : this.chainID < 256 ? "" + String.fromCharCode (this.chainID) : this.model.modelSet.viewer.chainMap.get (Integer.$valueOf (this.chainID)));

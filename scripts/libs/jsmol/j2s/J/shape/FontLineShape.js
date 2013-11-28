@@ -20,7 +20,7 @@ return;
 return;
 }this.setPropFS (propertyName, value);
 }, "~S,~O");
-Clazz.overrideMethod (c$, "getShapeState", 
+$_V(c$, "getShapeState", 
 function () {
 var s = this.viewer.getFontState (this.myType, this.font3d);
 return (this.tickInfos == null ? s : this.viewer.getFontLineShapeState (s, this.myType, this.tickInfos));

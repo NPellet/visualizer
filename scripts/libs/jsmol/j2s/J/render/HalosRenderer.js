@@ -4,7 +4,7 @@ c$ = Clazz.decorateAsClass (function () {
 this.isAntialiased = false;
 Clazz.instantialize (this, arguments);
 }, J.render, "HalosRenderer", J.render.ShapeRenderer);
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 var halos = this.shape;
 var selectDisplayTrue = this.viewer.getSelectionHaloEnabled (true);
@@ -14,6 +14,7 @@ this.isAntialiased = this.g3d.isAntialiased ();
 var atoms = this.modelSet.atoms;
 var bsSelected = (selectDisplayTrue ? this.viewer.getSelectionSet (false) : null);
 var needTranslucent = false;
+this.g3d.addRenderer (1073741880);
 for (var i = this.modelSet.getAtomCount (); --i >= 0; ) {
 var atom = atoms[i];
 if ((atom.getShapeVisibilityFlags () & 1) == 0) continue;

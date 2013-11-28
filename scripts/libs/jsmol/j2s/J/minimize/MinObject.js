@@ -6,7 +6,7 @@ this.key = null;
 this.ddata = null;
 Clazz.instantialize (this, arguments);
 }, J.minimize, "MinObject");
-Clazz.overrideMethod (c$, "toString", 
+$_V(c$, "toString", 
 function () {
 return this.type + " " + this.data[0] + "," + this.data[1] + (this.data.length > 2 ? "," + this.data[2] + "," + this.data[3] : "") + " " + J.minimize.MinObject.decodeKey (this.key);
 });

@@ -13,11 +13,11 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.adapter.readers.xml.XmlArgusReader, []);
 });
-Clazz.overrideMethod (c$, "getDOMAttributes", 
+$_V(c$, "getDOMAttributes", 
 function () {
 return ["order"];
 });
-Clazz.overrideMethod (c$, "processStartElement", 
+$_V(c$, "processStartElement", 
 function (localName) {
 for (var i = J.adapter.readers.xml.XmlArgusReader.keepCharsList.length; --i >= 0; ) if (J.adapter.readers.xml.XmlArgusReader.keepCharsList[i].equals (localName)) {
 this.setKeepChars (true);
@@ -62,7 +62,7 @@ if (floatOrder == 2) return 2;
 if (floatOrder == 3) return 3;
 return 1;
 }, $fz.isPrivate = true, $fz), "~S");
-Clazz.overrideMethod (c$, "processEndElement", 
+$_V(c$, "processEndElement", 
 function (localName) {
 if (this.chars != null && this.chars.length > 0 && this.chars.charAt (this.chars.length - 1) == '\n') this.chars = this.chars.substring (0, this.chars.length - 1);
 if ("molecule".equals (localName)) {

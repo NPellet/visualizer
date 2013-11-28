@@ -53,8 +53,7 @@ this.td = Clazz.newArray(1, null);
 }, "JZ.ZStream,~N");
 $_M(c$, "reset", 
 function () {
-if (this.mode == 4 || this.mode == 5) {
-}if (this.mode == 6) {
+if (this.mode == 6) {
 this.codes.free (this.z);
 }this.mode = 0;
 this.bitk = 0;
@@ -318,8 +317,7 @@ return this.inflate_flush (r);
 b |= (this.z.next_in[p++] & 0xff) << k;
 k += 8;
 }
-if (this.tb[0] == -1) {
-}t = this.hufts[(this.tb[0] + (b & JZ.InfBlocks.inflate_mask[t])) * 3 + 1];
+t = this.hufts[(this.tb[0] + (b & JZ.InfBlocks.inflate_mask[t])) * 3 + 1];
 c = this.hufts[(this.tb[0] + (b & JZ.InfBlocks.inflate_mask[t])) * 3 + 2];
 if (c < 16) {
 b >>>= (t);

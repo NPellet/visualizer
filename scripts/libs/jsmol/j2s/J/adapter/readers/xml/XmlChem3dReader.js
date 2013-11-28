@@ -1,27 +1,27 @@
 Clazz.declarePackage ("J.adapter.readers.xml");
-Clazz.load (["J.adapter.readers.xml.XmlReader", "J.util.JmolList"], "J.adapter.readers.xml.XmlChem3dReader", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "J.adapter.smarter.Atom", "J.api.Interface", "J.util.Logger"], function () {
+Clazz.load (["J.adapter.readers.xml.XmlReader", "JU.List"], "J.adapter.readers.xml.XmlChem3dReader", ["java.lang.Boolean", "$.Float", "java.util.Hashtable", "J.adapter.smarter.Atom", "J.api.Interface", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.orbitals = null;
 this.moData = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xml, "XmlChem3dReader", J.adapter.readers.xml.XmlReader);
 Clazz.prepareFields (c$, function () {
-this.orbitals =  new J.util.JmolList ();
+this.orbitals =  new JU.List ();
 });
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.adapter.readers.xml.XmlChem3dReader, []);
 });
-Clazz.overrideMethod (c$, "getDOMAttributes", 
+$_V(c$, "getDOMAttributes", 
 function () {
 return ["id", "symbol", "cartCoords", "bondAtom1", "bondAtom2", "bondOrder", "gridDatXDim", "gridDatYDim", "gridDatZDim", "gridDatXSize", "gridDatYSize", "gridDatZSize", "gridDatOrigin", "gridDatData", "calcPartialCharges", "calcAtoms"];
 });
-Clazz.overrideMethod (c$, "processXml", 
+$_V(c$, "processXml", 
 function (parent, saxReader) {
 this.PX (parent, saxReader);
 this.finalizeMOData (this.moData);
 }, "J.adapter.readers.xml.XmlReader,~O");
-Clazz.overrideMethod (c$, "processStartElement", 
+$_V(c$, "processStartElement", 
 function (localName) {
 var tokens;
 if ("model".equals (localName)) {
@@ -88,7 +88,7 @@ this.moData =  new java.util.Hashtable ();
 this.moData.put ("defaultCutoff", Float.$valueOf (0.01));
 this.moData.put ("haveVolumeData", Boolean.TRUE);
 this.moData.put ("calculationType", "Chem3D");
-this.orbitals =  new J.util.JmolList ();
+this.orbitals =  new JU.List ();
 this.moData.put ("mos", this.orbitals);
 }var mo =  new java.util.Hashtable ();
 mo.put ("volumeData", vd);
@@ -96,7 +96,7 @@ this.orbitals.addLast (mo);
 J.util.Logger.info ("Chem3D molecular orbital data displayable using ISOSURFACE MO " + this.orbitals.size ());
 return;
 }}, "~S");
-Clazz.overrideMethod (c$, "processEndElement", 
+$_V(c$, "processEndElement", 
 function (localName) {
 if ("atom".equals (localName)) {
 if (this.atom.elementSymbol != null && !Float.isNaN (this.atom.z)) {

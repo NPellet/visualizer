@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.minimize");
-Clazz.load (["J.api.MinimizerInterface"], "J.minimize.Minimizer", ["java.util.Hashtable", "J.i18n.GT", "J.minimize.MinAngle", "$.MinAtom", "$.MinBond", "$.MinTorsion", "$.MinimizationThread", "J.minimize.forcefield.ForceFieldMMFF", "$.ForceFieldUFF", "J.util.ArrayUtil", "$.BS", "$.BSUtil", "$.Escape", "$.JmolList", "$.Logger"], function () {
+Clazz.load (["J.api.MinimizerInterface"], "J.minimize.Minimizer", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.BS", "$.List", "J.i18n.GT", "J.minimize.MinAngle", "$.MinAtom", "$.MinBond", "$.MinTorsion", "$.MinimizationThread", "J.minimize.forcefield.ForceFieldMMFF", "$.ForceFieldUFF", "J.util.BSUtil", "$.Escape", "$.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.viewer = null;
 this.atoms = null;
@@ -37,7 +37,7 @@ Clazz.instantialize (this, arguments);
 Clazz.makeConstructor (c$, 
 function () {
 });
-Clazz.overrideMethod (c$, "setProperty", 
+$_V(c$, "setProperty", 
 function (propertyName, value) {
 if (propertyName.equals ("ff")) {
 if (!this.ff.equals (value)) {
@@ -65,7 +65,7 @@ return;
 this.viewer = value;
 return;
 }}, "~S,~O");
-Clazz.overrideMethod (c$, "getProperty", 
+$_V(c$, "getProperty", 
 function (propertyName, param) {
 if (propertyName.equals ("log")) {
 return (this.pFF == null ? "" : this.pFF.getLogData ());
@@ -80,11 +80,11 @@ if (nAtoms == 0) {
 this.constraints = null;
 return;
 }if (this.constraints == null) {
-this.constraints =  new J.util.JmolList ();
+this.constraints =  new JU.List ();
 this.constraintMap =  new java.util.Hashtable ();
 }if (atoms[1] > atoms[nAtoms]) {
-J.util.ArrayUtil.swapInt (atoms, 1, nAtoms);
-if (nAtoms == 4) J.util.ArrayUtil.swapInt (atoms, 2, 3);
+JU.AU.swapInt (atoms, 1, nAtoms);
+if (nAtoms == 4) JU.AU.swapInt (atoms, 2, 3);
 }var id = J.util.Escape.eAI (atoms);
 var c1 = this.constraintMap.get (id);
 if (c1 != null) {
@@ -118,7 +118,7 @@ this.constraints = null;
 this.constraintMap = null;
 this.pFF = null;
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "minimize", 
+$_V(c$, "minimize", 
 function (steps, crit, bsSelected, bsFixed, haveFixed, forceSilent, ff) {
 this.isSilent = (forceSilent || this.viewer.getBooleanProperty ("minimizationSilent"));
 var val;
@@ -144,6 +144,8 @@ J.util.Logger.error (J.i18n.GT._ ("No atoms selected -- nothing to do!"));
 return false;
 }this.atoms = this.viewer.getModelSet ().atoms;
 this.bsAtoms = J.util.BSUtil.copy (bsSelected);
+for (var i = this.bsAtoms.nextSetBit (0); i >= 0; i = this.bsAtoms.nextSetBit (i + 1)) if (this.atoms[i].getElementNumber () == 0) this.bsAtoms.clear (i);
+
 if (bsFixed != null) this.bsAtoms.or (bsFixed);
 this.atomCount = this.bsAtoms.cardinality ();
 var sameAtoms = J.util.BSUtil.areEqual (bsSelected, this.bsSelected);
@@ -177,7 +179,7 @@ if (steps <= 0) this.getEnergyOnly ();
  else if (this.isSilent || !this.viewer.useMinimizationThread ()) this.minimizeWithoutThread ();
  else this.setMinimizationOn (true);
 return true;
-}, "~N,~N,J.util.BS,J.util.BS,~B,~B,~S");
+}, "~N,~N,JU.BS,JU.BS,~B,~B,~S");
 $_M(c$, "setEnergyUnits", 
 ($fz = function () {
 var s = this.viewer.getEnergyUnits ();
@@ -189,7 +191,7 @@ this.coordSaved = null;
 this.atomMap =  Clazz.newIntArray (this.atoms.length, 0);
 this.minAtoms =  new Array (this.atomCount);
 this.elemnoMax = 0;
-var bsElements =  new J.util.BS ();
+var bsElements =  new JU.BS ();
 for (var i = this.bsAtoms.nextSetBit (0), pt = 0; i >= 0; i = this.bsAtoms.nextSetBit (i + 1), pt++) {
 var atom = this.atoms[i];
 this.atomMap[i] = pt;
@@ -219,20 +221,20 @@ this.getForceField ("UFF");
 return this.setModel (bsElements);
 }return false;
 }return true;
-}, $fz.isPrivate = true, $fz), "J.util.BS");
+}, $fz.isPrivate = true, $fz), "JU.BS");
 $_M(c$, "setAtomPositions", 
 ($fz = function () {
 for (var i = 0; i < this.atomCount; i++) this.minAtoms[i].set ();
 
 this.bsMinFixed = null;
 if (this.bsFixed != null) {
-this.bsMinFixed =  new J.util.BS ();
+this.bsMinFixed =  new JU.BS ();
 for (var i = this.bsAtoms.nextSetBit (0), pt = 0; i >= 0; i = this.bsAtoms.nextSetBit (i + 1), pt++) if (this.bsFixed.get (i)) this.bsMinFixed.set (pt);
 
 }}, $fz.isPrivate = true, $fz));
 $_M(c$, "getBonds", 
 ($fz = function () {
-var bondInfo =  new J.util.JmolList ();
+var bondInfo =  new JU.List ();
 this.bondCount = 0;
 var i1;
 var i2;
@@ -270,7 +272,7 @@ for (var i = 0; i < this.atomCount; i++) this.minAtoms[i].getBondedAtomIndexes (
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getAngles", 
 function () {
-var vAngles =  new J.util.JmolList ();
+var vAngles =  new JU.List ();
 var atomList;
 var ic;
 for (var i = 0; i < this.bondCount; i++) {
@@ -295,7 +297,7 @@ J.util.Logger.info (this.minAngles.length + " angles");
 });
 $_M(c$, "getTorsions", 
 function () {
-var vTorsions =  new J.util.JmolList ();
+var vTorsions =  new JU.List ();
 var id;
 for (var i = this.minAngles.length; --i >= 0; ) {
 var angle = this.minAngles[i].data;
@@ -338,7 +340,7 @@ ff = "UFF";
 this.viewer.setStringProperty ("_minimizationForceField", ff);
 }return this.pFF;
 }, "~S");
-Clazz.overrideMethod (c$, "minimizationOn", 
+$_V(c$, "minimizationOn", 
 function () {
 return this.$minimizationOn;
 });
@@ -367,7 +369,7 @@ $_M(c$, "reportEnergy",
 ($fz = function () {
 this.viewer.setFloatProperty ("_minimizationEnergy", this.pFF.toUserUnits (this.pFF.getEnergy ()));
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "startMinimization", 
+$_V(c$, "startMinimization", 
 function () {
 try {
 J.util.Logger.info ("minimizer: startMinimization");
@@ -391,7 +393,7 @@ throw e;
 this.$minimizationOn = true;
 return true;
 });
-Clazz.overrideMethod (c$, "stepMinimization", 
+$_V(c$, "stepMinimization", 
 function () {
 if (!this.$minimizationOn) return false;
 var doRefresh = (!this.isSilent && this.viewer.getBooleanProperty ("minimizationRefresh"));
@@ -407,7 +409,7 @@ this.updateAtomXYZ ();
 this.viewer.refresh (3, "minimization step " + currentStep);
 }return going;
 });
-Clazz.overrideMethod (c$, "endMinimization", 
+$_V(c$, "endMinimization", 
 function () {
 this.updateAtomXYZ ();
 this.setMinimizationOn (false);
@@ -467,11 +469,11 @@ if (this.isSilent) J.util.Logger.info (msg);
  else if (isEcho) this.viewer.showString (msg, false);
  else this.viewer.scriptEcho (msg);
 }, "~S,~B");
-Clazz.overrideMethod (c$, "calculatePartialCharges", 
+$_V(c$, "calculatePartialCharges", 
 function (bonds, bondCount, atoms, bsAtoms) {
 var ff =  new J.minimize.forcefield.ForceFieldMMFF (this);
 ff.setArrays (atoms, bsAtoms, bonds, bondCount, true, true);
 this.viewer.setAtomProperty (bsAtoms, 1087375361, 0, 0, null, null, ff.getAtomTypeDescriptions ());
 this.viewer.setAtomProperty (bsAtoms, 1112541196, 0, 0, null, ff.getPartialCharges (), null);
-}, "~A,~N,~A,J.util.BS");
+}, "~A,~N,~A,JU.BS");
 });

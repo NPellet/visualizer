@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.symmetry");
-Clazz.load (["J.util.Matrix4f"], "J.symmetry.HallRotationTerm", ["J.symmetry.HallRotation", "$.HallTranslation", "$.SymmetryOperation", "J.util.Logger", "$.SB"], function () {
+Clazz.load (["JU.M4"], "J.symmetry.HallRotationTerm", ["JU.SB", "J.symmetry.HallRotation", "$.HallTranslation", "$.SymmetryOperation", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.inputCode = null;
 this.primitiveCode = null;
@@ -16,7 +16,7 @@ this.allPositive = true;
 Clazz.instantialize (this, arguments);
 }, J.symmetry, "HallRotationTerm");
 Clazz.prepareFields (c$, function () {
-this.seitzMatrix12ths =  new J.util.Matrix4f ();
+this.seitzMatrix12ths =  new JU.M4 ();
 });
 Clazz.makeConstructor (c$, 
 function (hallInfo, code, prevOrder, prevAxisType) {
@@ -104,10 +104,8 @@ this.seitzMatrix12ths.m23 += this.translation.rotationShift12ths;
 break;
 }
 if (hallInfo.vectorCode.length > 0) {
-var m1 =  new J.util.Matrix4f ();
-var m2 =  new J.util.Matrix4f ();
-m1.setIdentity ();
-m2.setIdentity ();
+var m1 = JU.M4.newM (null);
+var m2 = JU.M4.newM (null);
 var v = hallInfo.vector12ths;
 m1.m03 = v.x;
 m1.m13 = v.y;
@@ -122,7 +120,7 @@ J.util.Logger.debug ("code = " + code + "; primitive code =" + this.primitiveCod
 }}, "J.symmetry.HallInfo,~S,~N,~S");
 $_M(c$, "dumpInfo", 
 function (vectorCode) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 sb.append ("\ninput code: ").append (this.inputCode).append ("; primitive code: ").append (this.primitiveCode).append ("\norder: ").appendI (this.order).append (this.isImproper ? " (improper axis)" : "");
 if (this.axisType != '_') {
 sb.append ("; axisType: ").appendC (this.axisType);

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapespecial");
-Clazz.load (["J.shape.Shape", "J.util.P3"], "J.shapespecial.Dipoles", ["java.lang.Float", "java.util.Hashtable", "J.script.T", "J.shapespecial.Dipole", "J.util.ArrayUtil", "$.BSUtil", "$.C", "$.JmolList", "$.Logger", "$.SB", "$.TextFormat", "$.V3"], function () {
+Clazz.load (["J.shape.Shape", "JU.P3"], "J.shapespecial.Dipoles", ["java.lang.Float", "java.util.Hashtable", "JU.AU", "$.List", "$.SB", "$.V3", "J.script.T", "J.shapespecial.Dipole", "J.util.BSUtil", "$.C", "$.Logger", "$.Txt"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.dipoleCount = 0;
 this.dipoles = null;
@@ -20,8 +20,8 @@ Clazz.instantialize (this, arguments);
 }, J.shapespecial, "Dipoles", J.shape.Shape);
 Clazz.prepareFields (c$, function () {
 this.dipoles =  new Array (4);
-this.startCoord =  new J.util.P3 ();
-this.endCoord =  new J.util.P3 ();
+this.startCoord =  new JU.P3 ();
+this.endCoord =  new JU.P3 ();
 });
 $_M(c$, "setProperty", 
 function (propertyName, value, bs) {
@@ -42,7 +42,7 @@ return;
 }if ("thisID" === propertyName) {
 this.wildID = null;
 var thisID = value;
-if (thisID == null || J.util.TextFormat.isWild (thisID)) {
+if (thisID == null || J.util.Txt.isWild (thisID)) {
 this.currentDipole = null;
 if (thisID != null) this.wildID = thisID.toUpperCase ();
 return;
@@ -57,8 +57,8 @@ J.util.Logger.info ("file molecular dipole = " + v + " " + (v != null ? "" + v.l
 }if (v == null) this.calculatedDipole = v = this.viewer.calculateMolecularDipole ();
 if (v == null) {
 J.util.Logger.warn ("No molecular dipole found for this model; setting to {0 0 0}");
-v =  new J.util.V3 ();
-}this.tempDipole.set (J.util.P3.new3 (0, 0, 0), J.util.V3.new3 (-v.x, -v.y, -v.z));
+v =  new JU.V3 ();
+}this.tempDipole.set (JU.P3.new3 (0, 0, 0), JU.V3.new3 (-v.x, -v.y, -v.z));
 this.tempDipole.type = 4;
 this.tempDipole.thisID = "molecular";
 this.setDipole ();
@@ -120,7 +120,7 @@ this.clear (true);
 }if ("startSet" === propertyName) {
 var atomset = value;
 this.startCoord = this.viewer.getAtomSetCenter (atomset);
-this.tempDipole.set (this.startCoord, J.util.P3.new3 (0, 0, 0), this.dipoleValue);
+this.tempDipole.set (this.startCoord, JU.P3.new3 (0, 0, 0), this.dipoleValue);
 if (J.util.BSUtil.cardinalityOf (atomset) == 1) this.atomIndex1 = atomset.nextSetBit (0);
 return;
 }if ("atomBitset" === propertyName) {
@@ -145,7 +145,7 @@ this.tempDipole.set (this.startCoord, this.viewer.getAtomSetCenter (atomset), th
 }return;
 }if ("startCoord" === propertyName) {
 this.startCoord.setT (value);
-this.tempDipole.set (this.startCoord, J.util.P3.new3 (0, 0, 0), this.dipoleValue);
+this.tempDipole.set (this.startCoord, JU.P3.new3 (0, 0, 0), this.dipoleValue);
 return;
 }if ("endCoord" === propertyName) {
 this.iHaveTwoEnds = true;
@@ -170,17 +170,17 @@ for (var i = this.dipoleCount; --i >= 0; ) if (this.dipoles[i].modelIndex > mode
 this.dipoles[i].modelIndex--;
 } else if (this.dipoles[i].modelIndex == modelIndex) {
 if (this.dipoles[i] === this.currentDipole) this.currentDipole = null;
-this.dipoles = J.util.ArrayUtil.deleteElements (this.dipoles, i, 1);
+this.dipoles = JU.AU.deleteElements (this.dipoles, i, 1);
 this.dipoleCount--;
 }
 this.currentDipole = null;
 return;
-}}, "~S,~O,J.util.BS");
+}}, "~S,~O,JU.BS");
 $_M(c$, "setProperty", 
 ($fz = function (tok, bondOnly, iValue, fValue) {
 if (this.currentDipole != null) this.setProperty (tok, this.currentDipole, iValue, fValue);
  else {
-for (var i = this.dipoleCount; --i >= 0; ) if (!bondOnly || this.isBondDipole (i)) if (this.wildID == null || J.util.TextFormat.isMatch (this.dipoles[i].thisID.toUpperCase (), this.wildID, true, true)) this.setProperty (tok, this.dipoles[i], iValue, fValue);
+for (var i = this.dipoleCount; --i >= 0; ) if (!bondOnly || this.isBondDipole (i)) if (this.wildID == null || J.util.Txt.isMatch (this.dipoles[i].thisID.toUpperCase (), this.wildID, true, true)) this.setProperty (tok, this.dipoles[i], iValue, fValue);
 
 }}, $fz.isPrivate = true, $fz), "~N,~B,~N,~N");
 $_M(c$, "setProperty", 
@@ -219,22 +219,22 @@ return;
 }
 J.util.Logger.error ("Unkown dipole property! " + J.script.T.nameOf (tok));
 }, $fz.isPrivate = true, $fz), "~N,J.shapespecial.Dipole,~N,~N");
-Clazz.overrideMethod (c$, "getPropertyData", 
+$_V(c$, "getPropertyData", 
 function (property, data) {
 if (property === "getNames") {
 }if (property === "checkID") {
 var key = (data[0]).toUpperCase ();
-var isWild = J.util.TextFormat.isWild (key);
+var isWild = J.util.Txt.isWild (key);
 for (var i = this.dipoleCount; --i >= 0; ) {
 var id = this.dipoles[i].thisID;
-if (id.equalsIgnoreCase (key) || isWild && J.util.TextFormat.isMatch (id.toUpperCase (), key, true, true)) {
+if (id.equalsIgnoreCase (key) || isWild && J.util.Txt.isMatch (id.toUpperCase (), key, true, true)) {
 data[1] = id;
 return true;
 }}
 return false;
 }return false;
 }, "~S,~A");
-Clazz.overrideMethod (c$, "getProperty", 
+$_V(c$, "getProperty", 
 function (property, index) {
 if (property.equals ("list")) {
 return this.getShapeState ();
@@ -267,7 +267,7 @@ while (iter.hasNext ()) {
 var d = this.findBondDipole (iter.next ());
 if (d != null) d.colix = colix;
 }
-}, $fz.isPrivate = true, $fz), "~N,~N,J.util.BS");
+}, $fz.isPrivate = true, $fz), "~N,~N,JU.BS");
 $_M(c$, "setDipole", 
 ($fz = function () {
 if (this.currentDipole == null) this.currentDipole = this.allocDipole ("", "");
@@ -344,7 +344,7 @@ return this.dipoles[dipoleIndex];
 }, $fz.isPrivate = true, $fz), "~S,~S");
 $_M(c$, "allocDipole", 
 ($fz = function (thisID, dipoleInfo) {
-this.dipoles = J.util.ArrayUtil.ensureLength (this.dipoles, this.dipoleCount + 1);
+this.dipoles = JU.AU.ensureLength (this.dipoles, this.dipoleCount + 1);
 if (thisID == null || thisID.length == 0) thisID = "dipole" + (this.dipoleCount + 1);
 var d = this.dipoles[this.dipoleCount++] =  new J.shapespecial.Dipole (this.viewer.getCurrentModelIndex (), thisID, dipoleInfo, this.colix, 5, true);
 return d;
@@ -367,7 +367,7 @@ return;
 }for (var i = this.dipoleCount; --i >= 0; ) if (!this.isBond || this.isBondDipole (i)) this.deleteDipole (this.dipoles[i]);
 
 }, $fz.isPrivate = true, $fz), "~B");
-Clazz.overrideMethod (c$, "getIndexFromName", 
+$_V(c$, "getIndexFromName", 
 function (thisID) {
 if (thisID == null) return -1;
 for (var i = this.dipoleCount; --i >= 0; ) {
@@ -375,9 +375,9 @@ if (this.dipoles[i] != null && thisID.equals (this.dipoles[i].thisID)) return i;
 }
 return -1;
 }, "~S");
-Clazz.overrideMethod (c$, "getShapeDetail", 
+$_V(c$, "getShapeDetail", 
 function () {
-var V =  new J.util.JmolList ();
+var V =  new JU.List ();
 var atomInfo;
 for (var i = 0; i < this.dipoleCount; i++) {
 var info =  new java.util.Hashtable ();
@@ -388,7 +388,7 @@ info.put ("origin", dipole.origin);
 if (dipole.atoms[0] != null) {
 atomInfo =  new java.util.Hashtable ();
 this.viewer.getAtomIdentityInfo (dipole.atoms[0].getIndex (), atomInfo);
-var atoms =  new J.util.JmolList ();
+var atoms =  new JU.List ();
 atoms.addLast (atomInfo);
 atomInfo =  new java.util.Hashtable ();
 this.viewer.getAtomIdentityInfo (dipole.atoms[1].getIndex (), atomInfo);
@@ -405,17 +405,17 @@ if (this.currentDipole == null) return;
 this.currentDipole.visible = true;
 this.currentDipole.modelIndex = this.viewer.getCurrentModelIndex ();
 }, $fz.isPrivate = true, $fz));
-Clazz.overrideMethod (c$, "setVisibilityFlags", 
+$_V(c$, "setVisibilityFlags", 
 function (bs) {
 for (var i = this.dipoleCount; --i >= 0; ) {
 var dipole = this.dipoles[i];
 dipole.visibilityFlags = ((dipole.modelIndex < 0 || bs.get (dipole.modelIndex)) && dipole.mad != 0 && dipole.visible && dipole.origin != null && dipole.vector != null && dipole.vector.length () != 0 && dipole.dipoleValue != 0 ? this.myVisibilityFlag : 0);
 }
-}, "J.util.BS");
-Clazz.overrideMethod (c$, "getShapeState", 
+}, "JU.BS");
+$_V(c$, "getShapeState", 
 function () {
 if (this.dipoleCount == 0) return "";
-var s =  new J.util.SB ();
+var s =  new JU.SB ();
 var thisModel = -1;
 var modelCount = this.viewer.getModelCount ();
 for (var i = 0; i < this.dipoleCount; i++) {

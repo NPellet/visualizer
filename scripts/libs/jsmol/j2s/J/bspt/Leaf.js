@@ -33,15 +33,15 @@ championValue = challengerValue;
 }}
 }
 }, "~N");
-Clazz.overrideMethod (c$, "addTuple", 
+$_V(c$, "addTuple", 
 function (level, tuple) {
 if (this.count < 2) {
 this.tuples[this.count++] = tuple;
 return this;
 }var node =  new J.bspt.Node (this.bspt, level, this);
 return node.addTuple (level, tuple);
-}, "~N,J.util.P3");
-Clazz.overrideMethod (c$, "dump", 
+}, "~N,JU.P3");
+$_V(c$, "dump", 
 function (level, sb) {
 for (var i = 0; i < this.count; ++i) {
 var t = this.tuples[i];
@@ -49,8 +49,8 @@ for (var j = 0; j < level; ++j) sb.append (".");
 
 sb.append (J.util.Escape.eP (t)).append ("Leaf ").appendI (i).append (": ").append ((t).getInfo ());
 }
-}, "~N,J.util.SB");
-Clazz.overrideMethod (c$, "toString", 
+}, "~N,JU.SB");
+$_V(c$, "toString", 
 function () {
 return "leaf:" + this.count + "\n";
 });

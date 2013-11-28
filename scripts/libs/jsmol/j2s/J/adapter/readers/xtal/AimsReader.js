@@ -6,13 +6,13 @@ this.isFractional = false;
 this.nLatticeVectors = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.xtal, "AimsReader", J.adapter.smarter.AtomSetCollectionReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.globalDoApplySymmetry = this.doApplySymmetry;
 this.doApplySymmetry = true;
 this.isFractional = true;
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 var tokens = this.getTokens ();
 if (tokens.length == 0) return true;
@@ -30,7 +30,7 @@ this.readMultipole (tokens);
 return true;
 }return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 this.doApplySymmetry = this.globalDoApplySymmetry;
 if (this.nLatticeVectors == 1 || this.nLatticeVectors == 2) {

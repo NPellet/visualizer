@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.Shape"], "J.shape.MeshCollection", ["java.util.Hashtable", "J.script.T", "J.shape.Mesh", "J.util.ArrayUtil", "$.C", "$.Escape", "$.Logger", "$.P3", "$.SB", "$.TextFormat", "J.viewer.StateManager"], function () {
+Clazz.load (["J.shape.Shape"], "J.shape.MeshCollection", ["java.util.Hashtable", "JU.AU", "$.P3", "$.SB", "J.script.T", "J.shape.Mesh", "J.util.C", "$.Escape", "$.Logger", "$.Txt", "J.viewer.StateManager"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.meshCount = 0;
 this.meshes = null;
@@ -32,7 +32,7 @@ this.meshes =  new Array (4);
 $_M(c$, "setMesh", 
 ($fz = function (thisID) {
 this.linkedMesh = null;
-if (thisID == null || J.util.TextFormat.isWild (thisID)) {
+if (thisID == null || J.util.Txt.isWild (thisID)) {
 if (thisID != null) this.previousMeshID = thisID;
 this.currentMesh = null;
 return null;
@@ -51,14 +51,14 @@ return this.currentMesh;
 $_M(c$, "allocMesh", 
 function (thisID, m) {
 var index = this.meshCount++;
-this.meshes = J.util.ArrayUtil.ensureLength (this.meshes, this.meshCount * 2);
+this.meshes = JU.AU.ensureLength (this.meshes, this.meshCount * 2);
 this.currentMesh = this.meshes[index] = (m == null ?  new J.shape.Mesh ().mesh1 (thisID, this.colix, index) : m);
 this.currentMesh.color = this.color;
 this.currentMesh.index = index;
 if (thisID != null && this.htObjects != null) this.htObjects.put (thisID.toUpperCase (), this.currentMesh);
 this.previousMeshID = null;
 }, "~S,J.shape.Mesh");
-Clazz.overrideMethod (c$, "merge", 
+$_V(c$, "merge", 
 function (shape) {
 var mc = shape;
 for (var i = 0; i < mc.meshCount; i++) {
@@ -91,6 +91,15 @@ return;
 }if ("lattice" === propertyName) {
 if (this.currentMesh != null) this.currentMesh.lattice = value;
 return;
+}if ("symops" === propertyName) {
+if (this.currentMesh != null) {
+this.currentMesh.symops = value;
+if (this.currentMesh.symops == null) return;
+var n = this.currentMesh.symops.length;
+this.currentMesh.symopColixes =  Clazz.newShortArray (n, 0);
+for (var i = n; --i >= 0; ) this.currentMesh.symopColixes[i] = J.util.C.getColix (this.viewer.getArgbMinMax (i + 1, 1, n));
+
+}return;
 }if ("variables" === propertyName) {
 if (this.currentMesh != null && this.currentMesh.scriptCommand != null && !this.currentMesh.scriptCommand.startsWith ("{")) this.currentMesh.scriptCommand = "{\n" + J.viewer.StateManager.getVariableList (value, 0, false, false) + "\n" + this.currentMesh.scriptCommand;
 return;
@@ -198,7 +207,7 @@ this.setTokenProperty (tok, test, false);
 if (tok2 != 0) this.setTokenProperty (tok2, test, true);
 return;
 }this.setPropS (propertyName, value, bs);
-}, "~S,~O,J.util.BS");
+}, "~S,~O,JU.BS");
 $_M(c$, "checkExplicit", 
 function (id) {
 if (this.explicitID) return;
@@ -208,9 +217,9 @@ if (this.explicitID) this.previousMeshID = id;
 $_M(c$, "setTokenProperty", 
 ($fz = function (tokProp, bProp, testD) {
 if (this.currentMesh == null) {
-var key = (this.explicitID && this.previousMeshID != null && J.util.TextFormat.isWild (this.previousMeshID) ? this.previousMeshID.toUpperCase () : null);
+var key = (this.explicitID && this.previousMeshID != null && J.util.Txt.isWild (this.previousMeshID) ? this.previousMeshID.toUpperCase () : null);
 if (key != null && key.length == 0) key = null;
-for (var i = 0; i < this.meshCount; i++) if (key == null || J.util.TextFormat.isMatch (this.meshes[i].thisID.toUpperCase (), key, true, true)) this.setMeshTokenProperty (this.meshes[i], tokProp, bProp, testD);
+for (var i = 0; i < this.meshCount; i++) if (key == null || J.util.Txt.isMatch (this.meshes[i].thisID.toUpperCase (), key, true, true)) this.setMeshTokenProperty (this.meshes[i], tokProp, bProp, testD);
 
 } else {
 this.setMeshTokenProperty (this.currentMesh, tokProp, bProp, testD);
@@ -255,10 +264,10 @@ data[2] = m.getVisibleVertexBitSet ();
 return true;
 }if (property === "checkID") {
 var key = (data[0]).toUpperCase ();
-var isWild = J.util.TextFormat.isWild (key);
+var isWild = J.util.Txt.isWild (key);
 for (var i = this.meshCount; --i >= 0; ) {
 var id = this.meshes[i].thisID;
-if (id.equalsIgnoreCase (key) || isWild && J.util.TextFormat.isMatch (id.toUpperCase (), key, true, true)) {
+if (id.equalsIgnoreCase (key) || isWild && J.util.Txt.isMatch (id.toUpperCase (), key, true, true)) {
 data[1] = id;
 return true;
 }}
@@ -268,7 +277,7 @@ var id = data[0];
 var index = (data[1]).intValue ();
 var m;
 if ((m = this.getMesh (id)) == null || m.vertices == null) return false;
-if (index == 2147483647) data[2] = J.util.P3.new3 (m.index + 1, this.meshCount, m.vertexCount);
+if (index == 2147483647) data[2] = JU.P3.new3 (m.index + 1, this.meshCount, m.vertexCount);
  else data[2] = m.vertices[m.getVertexIndexFromNumber (index)];
 return true;
 }return false;
@@ -284,7 +293,7 @@ return Integer.$valueOf (n);
 }if (property === "ID") return (this.currentMesh == null ? null : this.currentMesh.thisID);
 if (property.startsWith ("list")) {
 this.clean ();
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 var k = 0;
 var id = (property.equals ("list") ? null : property.substring (5));
 for (var i = 0; i < this.meshCount; i++) {
@@ -323,7 +332,7 @@ for (var i = this.meshCount; --i >= 0; ) if (this.meshes[i] == null || this.mesh
 $_M(c$, "deleteMesh", 
 ($fz = function () {
 if (this.explicitID && this.currentMesh != null) this.deleteMeshI (this.currentMesh.index);
- else this.deleteMeshKey (this.explicitID && this.previousMeshID != null && J.util.TextFormat.isWild (this.previousMeshID) ? this.previousMeshID : null);
+ else this.deleteMeshKey (this.explicitID && this.previousMeshID != null && J.util.Txt.isWild (this.previousMeshID) ? this.previousMeshID : null);
 this.currentMesh = null;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "deleteMeshKey", 
@@ -337,7 +346,7 @@ if (this.htObjects != null) this.htObjects.clear ();
 } else {
 key = key.toLowerCase ();
 for (var i = this.meshCount; --i >= 0; ) {
-if (J.util.TextFormat.isMatch (this.meshes[i].thisID.toLowerCase (), key, true, true)) this.deleteMeshI (i);
+if (J.util.Txt.isMatch (this.meshes[i].thisID.toLowerCase (), key, true, true)) this.deleteMeshI (i);
 }
 }}, "~S");
 $_M(c$, "deleteMeshI", 
@@ -352,13 +361,13 @@ function (thisID) {
 var i = this.getIndexFromName (thisID);
 return (i < 0 ? null : this.meshes[i]);
 }, "~S");
-Clazz.overrideMethod (c$, "getIndexFromName", 
+$_V(c$, "getIndexFromName", 
 function (thisID) {
 if ("+PREVIOUS_MESH+".equals (thisID)) return (this.previousMeshID == null ? this.meshCount - 1 : this.getIndexFromName (this.previousMeshID));
-if (J.util.TextFormat.isWild (thisID)) {
+if (J.util.Txt.isWild (thisID)) {
 thisID = thisID.toLowerCase ();
 for (var i = this.meshCount; --i >= 0; ) {
-if (this.meshes[i] != null && J.util.TextFormat.isMatch (this.meshes[i].thisID, thisID, true, true)) return i;
+if (this.meshes[i] != null && J.util.Txt.isMatch (this.meshes[i].thisID, thisID, true, true)) return i;
 }
 } else {
 if (this.htObjects != null) {
@@ -369,18 +378,18 @@ if (this.meshes[i] != null && this.meshes[i].vertexCount != 0 && thisID.equalsIg
 }
 }return -1;
 }, "~S");
-Clazz.overrideMethod (c$, "setVisibilityFlags", 
+$_V(c$, "setVisibilityFlags", 
 function (bs) {
 var bsDeleted = this.viewer.getDeletedAtoms ();
 for (var i = this.meshCount; --i >= 0; ) {
 var mesh = this.meshes[i];
 mesh.visibilityFlags = (mesh.visible && mesh.isValid && (mesh.modelIndex < 0 || bs.get (mesh.modelIndex) && (mesh.atomIndex < 0 || !this.modelSet.isAtomHidden (mesh.atomIndex) && !(bsDeleted != null && bsDeleted.get (mesh.atomIndex)))) ? this.myVisibilityFlag : 0);
 }
-}, "J.util.BS");
+}, "JU.BS");
 $_M(c$, "setStatusPicked", 
 function (flag, v) {
 this.viewer.setStatusAtomPicked (flag, "[\"" + this.myType + "\"," + J.util.Escape.eS (this.pickedMesh.thisID) + "," + +this.pickedModel + "," + this.pickedVertex + "," + v.x + "," + v.y + "," + v.z + "," + (this.pickedMesh.title == null ? "\"\"" : J.util.Escape.eS (this.pickedMesh.title[0])) + "]");
-}, "~N,J.util.P3");
+}, "~N,JU.P3");
 $_M(c$, "getPickedPoint", 
 function (v, modelIndex) {
 var map =  new java.util.Hashtable ();
@@ -392,7 +401,7 @@ map.put ("id", this.pickedMesh.thisID);
 map.put ("vertex", Integer.$valueOf (this.pickedVertex + 1));
 map.put ("type", this.myType);
 }return map;
-}, "J.util.P3,~N");
+}, "JU.P3,~N");
 Clazz.defineStatics (c$,
 "PREVIOUS_MESH_ID", "+PREVIOUS_MESH+");
 });

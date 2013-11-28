@@ -33,8 +33,8 @@ this.isZeroBased = isZeroBased;
 this.hemisphereOnly = hemisphereOnly;
 this.threadSafe = threadSafe;
 this.cubeIterator = null;
-}, "J.bspt.Bspf,J.util.BS,~B,~B,~B,~B");
-Clazz.overrideMethod (c$, "setModel", 
+}, "J.bspt.Bspf,JU.BS,~B,~B,~B,~B");
+$_V(c$, "setModel", 
 function (modelSet, modelIndex, firstModelAtom, atomIndex, center, distance, rd) {
 if (this.threadSafe) modelIndex = -1 - modelIndex;
 if (modelIndex != this.modelIndex || this.cubeIterator == null) {
@@ -52,18 +52,18 @@ distance = (rd.factorType === J.atomdata.RadiusData.EnumType.OFFSET ? 5 + rd.val
 this.vdw1 = this.atoms[atomIndex].getVanderwaalsRadiusFloat (this.viewer, rd.vdwType);
 }this.checkGreater = (this.isGreaterOnly && atomIndex != 2147483647);
 this.setCenter (center, distance);
-}, "J.modelset.ModelCollection,~N,~N,~N,J.util.P3,~N,J.atomdata.RadiusData");
-Clazz.overrideMethod (c$, "setCenter", 
+}, "J.modelset.ModelCollection,~N,~N,~N,JU.P3,~N,J.atomdata.RadiusData");
+$_V(c$, "setCenter", 
 function (center, distance) {
 this.setCenter2 (center, distance);
-}, "J.util.P3,~N");
+}, "JU.P3,~N");
 $_M(c$, "setCenter2", 
 function (center, distance) {
 if (this.cubeIterator == null) return;
 this.cubeIterator.initialize (center, distance, this.hemisphereOnly);
 this.distanceSquared = distance * distance;
-}, "J.util.P3,~N");
-Clazz.overrideMethod (c$, "hasNext", 
+}, "JU.P3,~N");
+$_V(c$, "hasNext", 
 function () {
 return this.hasNext2 ();
 });
@@ -81,15 +81,15 @@ return true;
 }this.iNext = -1;
 return false;
 });
-Clazz.overrideMethod (c$, "next", 
+$_V(c$, "next", 
 function () {
 return this.iNext - this.zeroBase;
 });
-Clazz.overrideMethod (c$, "foundDistance2", 
+$_V(c$, "foundDistance2", 
 function () {
 return (this.cubeIterator == null ? -1 : this.cubeIterator.foundDistance2 ());
 });
-Clazz.overrideMethod (c$, "addAtoms", 
+$_V(c$, "addAtoms", 
 function (bsResult) {
 var iAtom;
 while (this.hasNext ()) if ((iAtom = this.next ()) >= 0) {
@@ -109,8 +109,8 @@ d *= d;
 d = this.distanceSquared;
 }if (this.foundDistance2 () <= d) bsResult.set (iAtom);
 }
-}, "J.util.BS");
-Clazz.overrideMethod (c$, "release", 
+}, "JU.BS");
+$_V(c$, "release", 
 function () {
 if (this.cubeIterator != null) {
 this.cubeIterator.release ();

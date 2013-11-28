@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.modelsetbio");
-Clazz.load (["J.modelsetbio.ProteinStructure"], "J.modelsetbio.Sheet", ["J.constant.EnumStructure", "J.util.Measure", "$.P3", "$.V3"], function () {
+Clazz.load (["J.modelsetbio.ProteinStructure"], "J.modelsetbio.Sheet", ["JU.P3", "$.V3", "J.constant.EnumStructure", "J.modelsetbio.AminoPolymer", "J.util.Measure"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.alphaPolymer = null;
 this.widthUnitVector = null;
@@ -13,26 +13,26 @@ this.setupPS (alphaPolymer, J.constant.EnumStructure.SHEET, monomerIndex, monome
 this.alphaPolymer = alphaPolymer;
 this.subtype = subtype;
 }, "J.modelsetbio.AlphaPolymer,~N,~N,J.constant.EnumStructure");
-Clazz.overrideMethod (c$, "calcAxis", 
+$_V(c$, "calcAxis", 
 function () {
 if (this.axisA != null) return;
 if (this.monomerCount == 2) {
 this.axisA = this.alphaPolymer.getLeadPoint (this.monomerIndexFirst);
 this.axisB = this.alphaPolymer.getLeadPoint (this.monomerIndexFirst + 1);
 } else {
-this.axisA =  new J.util.P3 ();
+this.axisA =  new JU.P3 ();
 this.alphaPolymer.getLeadMidPoint (this.monomerIndexFirst + 1, this.axisA);
-this.axisB =  new J.util.P3 ();
+this.axisB =  new JU.P3 ();
 this.alphaPolymer.getLeadMidPoint (this.monomerIndexFirst + this.monomerCount - 1, this.axisB);
-}this.axisUnitVector =  new J.util.V3 ();
+}this.axisUnitVector =  new JU.V3 ();
 this.axisUnitVector.sub2 (this.axisB, this.axisA);
 this.axisUnitVector.normalize ();
-var tempA =  new J.util.P3 ();
+var tempA =  new JU.P3 ();
 this.alphaPolymer.getLeadMidPoint (this.monomerIndexFirst, tempA);
 if (this.lowerNeighborIsHelixOrSheet ()) {
 } else {
 J.util.Measure.projectOntoAxis (tempA, this.axisA, this.axisUnitVector, this.vectorProjection);
-}var tempB =  new J.util.P3 ();
+}var tempB =  new JU.P3 ();
 this.alphaPolymer.getLeadMidPoint (this.monomerIndexFirst + this.monomerCount, tempB);
 if (this.upperNeighborIsHelixOrSheet ()) {
 } else {
@@ -44,8 +44,8 @@ $_M(c$, "calcSheetUnitVectors",
 function () {
 if (!(Clazz.instanceOf (this.alphaPolymer, J.modelsetbio.AminoPolymer))) return;
 if (this.widthUnitVector == null) {
-var vectorCO =  new J.util.V3 ();
-var vectorCOSum =  new J.util.V3 ();
+var vectorCO =  new JU.V3 ();
+var vectorCOSum =  new JU.V3 ();
 var amino = this.alphaPolymer.monomers[this.monomerIndexFirst];
 vectorCOSum.sub2 (amino.getCarbonylOxygenAtom (), amino.getCarbonylCarbonAtom ());
 for (var i = this.monomerCount; --i > this.monomerIndexFirst; ) {

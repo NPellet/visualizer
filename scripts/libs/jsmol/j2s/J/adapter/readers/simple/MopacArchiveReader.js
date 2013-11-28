@@ -1,15 +1,15 @@
 Clazz.declarePackage ("J.adapter.readers.simple");
-Clazz.load (["J.adapter.readers.simple.ZMatrixReader"], "J.adapter.readers.simple.MopacArchiveReader", ["java.lang.Float", "J.adapter.smarter.Atom", "J.api.JmolAdapter", "J.util.P3"], function () {
+Clazz.load (["J.adapter.readers.simple.ZMatrixReader"], "J.adapter.readers.simple.MopacArchiveReader", ["java.lang.Float", "JU.P3", "J.adapter.smarter.Atom", "J.api.JmolAdapter"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.energyWithUnits = null;
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.simple, "MopacArchiveReader", J.adapter.readers.simple.ZMatrixReader);
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.atomSetCollection.newAtomSet ();
 if (!this.checkFilterKey ("NOCENTER")) this.doCentralize = true;
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.indexOf ("=") == 34) return this.getValue ();
 if (this.line.indexOf ("FINAL GEOMETRY OBTAINED") >= 0) return this.readCoordinates ();
@@ -83,8 +83,8 @@ xyz[j + 2] = atom.z;
 }
 for (var i = this.atomCount; --i >= 0; ) this.setAtomCoord (this.vAtoms.get (i));
 
-var ptMax = J.util.P3.new3 (-3.4028235E38, -3.4028235E38, -3.4028235E38);
-var ptMin = J.util.P3.new3 (3.4028235E38, 3.4028235E38, 3.4028235E38);
+var ptMax = JU.P3.new3 (-3.4028235E38, -3.4028235E38, -3.4028235E38);
+var ptMin = JU.P3.new3 (3.4028235E38, 3.4028235E38, 3.4028235E38);
 if (this.doCentralize) {
 for (var i = this.atomCount; --i >= 0; ) {
 atom = this.vAtoms.get (i);
@@ -95,7 +95,7 @@ ptMin.x = Math.min (ptMin.x, atom.x);
 ptMin.y = Math.min (ptMin.y, atom.y);
 ptMin.z = Math.min (ptMin.z, atom.z);
 }
-var ptCenter =  new J.util.P3 ();
+var ptCenter =  new JU.P3 ();
 switch (nTv) {
 case 3:
 ptCenter.x = 0.5;

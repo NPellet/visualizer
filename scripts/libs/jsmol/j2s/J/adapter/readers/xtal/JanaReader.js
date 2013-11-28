@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.xtal");
-Clazz.load (["J.adapter.readers.cif.ModulationReader"], "J.adapter.readers.xtal.JanaReader", ["java.util.Hashtable", "J.adapter.smarter.Atom", "J.io.JmolBinary", "J.util.BS", "$.JmolList", "$.Logger", "$.Matrix4f", "$.P3", "$.TextFormat"], function () {
+Clazz.load (["J.adapter.readers.cif.ModulationReader"], "J.adapter.readers.xtal.JanaReader", ["java.util.Hashtable", "JU.BS", "$.List", "$.M4", "$.P3", "$.PT", "J.adapter.smarter.Atom", "J.io.JmolBinary", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.lattvecs = null;
 this.thisSub = 0;
@@ -11,13 +11,13 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.floats =  Clazz.newFloatArray (6, 0);
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.setFractionalCoordinates (true);
 this.initializeModulation ();
 this.atomSetCollection.newAtomSet ();
 });
-Clazz.overrideMethod (c$, "checkLine", 
+$_V(c$, "checkLine", 
 function () {
 if (this.line.length < 3) return true;
 J.util.Logger.info (this.line);
@@ -49,12 +49,12 @@ case 35:
 this.continuing = false;
 break;
 case 40:
-var m =  new J.util.Matrix4f ();
+var m =  new JU.M4 ();
 if (this.thisSub++ == 0) {
 m.setIdentity ();
 this.addSubsystem ("1", m, null);
 this.thisSub++;
-m =  new J.util.Matrix4f ();
+m =  new JU.M4 ();
 }var data =  Clazz.newFloatArray (16, 0);
 this.fillFloatArray (null, 0, data);
 m.setA (data, 0);
@@ -62,7 +62,7 @@ this.addSubsystem ("" + this.thisSub, m, null);
 }
 return true;
 });
-Clazz.overrideMethod (c$, "finalizeReader", 
+$_V(c$, "finalizeReader", 
 function () {
 this.readM40Data ();
 if (this.lattvecs != null) this.atomSetCollection.getSymmetry ().addLatticeVectors (this.lattvecs);
@@ -83,9 +83,9 @@ this.setModDim (this.parseIntStr (this.getTokens ()[1]) - 3);
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "qi", 
 ($fz = function () {
-var pt = J.util.P3.new3 (this.parseFloat (), this.parseFloat (), this.parseFloat ());
+var pt = JU.P3.new3 (this.parseFloat (), this.parseFloat (), this.parseFloat ());
 this.addModulation (null, "W_" + (++this.qicount), pt, -1);
-pt =  new J.util.P3 ();
+pt =  new JU.P3 ();
 switch (this.qicount) {
 case 1:
 pt.x = 1;
@@ -127,12 +127,12 @@ default:
 this.appendLoadNote (this.line + " not supported");
 return;
 }
-if (this.lattvecs == null) this.lattvecs =  new J.util.JmolList ();
+if (this.lattvecs == null) this.lattvecs =  new JU.List ();
 this.lattvecs.addLast (a);
 }, $fz.isPrivate = true, $fz), "~S");
 $_M(c$, "symmetry", 
 ($fz = function () {
-this.setSymmetryOperator (J.util.TextFormat.simpleReplace (this.line.substring (9).trim (), " ", ","));
+this.setSymmetryOperator (JU.PT.simpleReplace (this.line.substring (9).trim (), " ", ","));
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "readM40Data", 
 ($fz = function () {
@@ -186,7 +186,7 @@ for (var j = 0; j < 6; j++) this.setU (atom, j, this.floats[j]);
 }var pt;
 var o_0 = (nOcc > 0 && !haveSpecialOcc ? this.parseFloatStr (r.readLine ()) : 1);
 if (o_0 != 1) {
-this.addModulation (null, "J_O#0;" + atom.atomName, J.util.P3.new3 (o_site, o_0, 0), -1);
+this.addModulation (null, "J_O#0;" + atom.atomName, JU.P3.new3 (o_site, o_0, 0), -1);
 }atom.foccupancy = o_0 * o_site;
 var wv = 0;
 var a1;
@@ -202,7 +202,7 @@ this.readM40Floats (r);
 a2 = this.floats[0];
 a1 = this.floats[1];
 }id = "O_" + wv + "#0" + label;
-pt = J.util.P3.new3 (a1, a2, 0);
+pt = JU.P3.new3 (a1, a2, 0);
 if (a1 != 0 || a2 != 0) this.addModulation (null, id, pt, -1);
 }
 for (var j = 0; j < nDisp; j++) {
@@ -210,7 +210,7 @@ if (haveSpecialDisp) {
 this.readM40Floats (r);
 var c = this.floats[3];
 var w = this.floats[4];
-for (var k = 0; k < 3; k++) if (this.floats[k] != 0) this.addModulation (null, "D_S#" + "xyz".charAt (k) + label, J.util.P3.new3 (c, w, this.floats[k]), -1);
+for (var k = 0; k < 3; k++) if (this.floats[k] != 0) this.addModulation (null, "D_S#" + "xyz".charAt (k) + label, JU.P3.new3 (c, w, this.floats[k]), -1);
 
 } else {
 this.addSinCos (j, "D_", label, r);
@@ -224,7 +224,7 @@ if (haveSpecialUij) {
 J.util.Logger.error ("JanaReader -- not interpreting SpecialUij flag: " + this.line);
 } else {
 var data = this.readM40FloatLines (2, 6, r);
-for (var k = 0, p = 0; k < 6; k++, p += 3) this.addModulation (null, "U_" + (j + 1) + "#" + "U11U22U33U12U13U23OTPUISO".substring (p, p + 3) + label, J.util.P3.new3 (data[1][k], data[0][k], 0), -1);
+for (var k = 0, p = 0; k < 6; k++, p += 3) this.addModulation (null, "U_" + (j + 1) + "#" + "U11U22U33U12U13U23OTPUISO".substring (p, p + 3) + label, JU.P3.new3 (data[1][k], data[0][k], 0), -1);
 
 }}}
 }
@@ -233,7 +233,7 @@ r.close ();
 $_M(c$, "getSubSystemList", 
 ($fz = function () {
 if (this.htSubsystems == null) return null;
-var bs =  new J.util.BS ();
+var bs =  new JU.BS ();
 var tokens = this.getTokens ();
 for (var i = 0, n = 0; i < tokens.length; i += 2) {
 var nAtoms = this.parseIntStr (tokens[i]);
@@ -246,7 +246,7 @@ $_M(c$, "readM40WaveVectors",
 ($fz = function (r) {
 while (!this.readM40Floats (r).contains ("end")) if (this.line.startsWith ("wave")) {
 var tokens = this.getTokens ();
-var pt =  new J.util.P3 ();
+var pt =  new JU.P3 ();
 switch (this.modDim) {
 case 3:
 pt.z = this.parseFloatStr (tokens[4]);
@@ -270,7 +270,7 @@ if (csin == 0 && ccos == 0) continue;
 var axis = "" + "xyz".charAt (k % 3);
 if (this.modAxes != null && this.modAxes.indexOf (axis.toUpperCase ()) < 0) continue;
 var id = key + (j + 1) + "#" + axis + label;
-var pt = J.util.P3.new3 (ccos, csin, 0);
+var pt = JU.P3.new3 (ccos, csin, 0);
 this.addModulation (null, id, pt, -1);
 }
 }, $fz.isPrivate = true, $fz), "~N,~S,~S,java.io.BufferedReader");
@@ -278,7 +278,7 @@ $_M(c$, "checkFourier",
 ($fz = function (j) {
 var pt;
 if (j > 0 && this.getModulationVector ("F_" + (j + 1) + "_q_") == null && (pt = this.getModulationVector ("F_1_q_")) != null) {
-pt = J.util.P3.newP (pt);
+pt = JU.P3.newP (pt);
 pt.scale (j + 1);
 this.addModulation (null, "F_" + (j + 1) + "_q_", pt, -1);
 }}, $fz.isPrivate = true, $fz), "~N");

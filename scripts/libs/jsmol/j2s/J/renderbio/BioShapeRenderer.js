@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.renderbio");
-Clazz.load (["J.render.MeshRenderer", "J.util.AxisAngle4f", "$.BS", "$.Matrix3f", "$.P3", "$.P3i", "$.V3"], "J.renderbio.BioShapeRenderer", ["J.constant.EnumStructure", "J.shape.Mesh", "J.util.C", "$.Hermite", "$.Logger", "$.Normix"], function () {
+Clazz.load (["J.render.MeshRenderer", "JU.A4", "$.BS", "$.M3", "$.P3", "$.P3i", "$.V3"], "J.renderbio.BioShapeRenderer", ["J.constant.EnumStructure", "J.modelsetbio.CarbohydratePolymer", "$.NucleicPolymer", "J.shape.Mesh", "J.util.C", "$.Hermite", "$.Logger", "$.Normix"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.invalidateMesh = false;
 this.invalidateSheets = false;
@@ -65,25 +65,25 @@ this.norml = null;
 Clazz.instantialize (this, arguments);
 }, J.renderbio, "BioShapeRenderer", J.render.MeshRenderer);
 Clazz.prepareFields (c$, function () {
-this.bsVisible =  new J.util.BS ();
-this.pointT =  new J.util.P3 ();
-this.screenArrowTop =  new J.util.P3i ();
-this.screenArrowTopPrev =  new J.util.P3i ();
-this.screenArrowBot =  new J.util.P3i ();
-this.screenArrowBotPrev =  new J.util.P3i ();
-this.norm =  new J.util.V3 ();
-this.wing =  new J.util.V3 ();
-this.wing1 =  new J.util.V3 ();
-this.wingT =  new J.util.V3 ();
-this.aa =  new J.util.AxisAngle4f ();
-this.pt =  new J.util.P3 ();
-this.pt1 =  new J.util.P3 ();
-this.ptPrev =  new J.util.P3 ();
-this.ptNext =  new J.util.P3 ();
-this.mat =  new J.util.Matrix3f ();
-this.norml =  new J.util.V3 ();
+this.bsVisible =  new JU.BS ();
+this.pointT =  new JU.P3 ();
+this.screenArrowTop =  new JU.P3i ();
+this.screenArrowTopPrev =  new JU.P3i ();
+this.screenArrowBot =  new JU.P3i ();
+this.screenArrowBotPrev =  new JU.P3i ();
+this.norm =  new JU.V3 ();
+this.wing =  new JU.V3 ();
+this.wing1 =  new JU.V3 ();
+this.wingT =  new JU.V3 ();
+this.aa =  new JU.A4 ();
+this.pt =  new JU.P3 ();
+this.pt1 =  new JU.P3 ();
+this.ptPrev =  new JU.P3 ();
+this.ptNext =  new JU.P3 ();
+this.mat =  new JU.M3 ();
+this.norml =  new JU.V3 ();
 });
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 if (this.shape == null) return false;
 this.setGlobals ();
@@ -95,6 +95,7 @@ $_M(c$, "setGlobals",
 this.isPass2 = this.g3d.isPass2 ();
 this.invalidateMesh = false;
 this.needTranslucent = false;
+this.g3d.addRenderer (553648147);
 var TF = (!this.isExport && !this.viewer.checkMotionRendering (1113200642));
 if (TF != this.wireframeOnly) this.invalidateMesh = true;
 this.wireframeOnly = TF;
@@ -158,7 +159,7 @@ this.controlPoints = bioShape.bioPolymer.getControlPoints (true, 0, false);
 } else {
 this.controlPoints = bioShape.bioPolymer.getControlPoints (this.isTraceAlpha, this.sheetSmoothing, this.invalidateSheets);
 }this.monomerCount = bioShape.monomerCount;
-this.bsRenderMesh = J.util.BS.newN (this.monomerCount);
+this.bsRenderMesh = JU.BS.newN (this.monomerCount);
 this.monomers = bioShape.monomers;
 this.reversed = bioShape.bioPolymer.reversed;
 this.leadAtomIndices = bioShape.bioPolymer.getLeadAtomIndices ();
@@ -231,7 +232,7 @@ this.pointT.setT (vector);
 var scale = mad * offset_1000;
 this.pointT.scaleAdd (scale, center);
 this.viewer.transformPtScr (this.pointT, screen);
-}, $fz.isPrivate = true, $fz), "J.util.P3,J.util.V3,~N,~N,J.util.P3i");
+}, $fz.isPrivate = true, $fz), "JU.P3,JU.V3,~N,~N,JU.P3i");
 $_M(c$, "getLeadColix", 
 function (i) {
 return J.util.C.getColixInherited (this.colixes[i], this.monomers[i].getLeadAtom ().getColix ());
@@ -301,8 +302,9 @@ throw e;
 }
 }
 }if (this.diameterBeg == 0 && this.diameterEnd == 0 || this.wireframeOnly) this.g3d.drawLineAB (this.controlPointScreens[i], this.controlPointScreens[this.iNext]);
- else this.g3d.fillHermite (this.isNucleic ? 4 : 7, this.diameterBeg, this.diameterMid, this.diameterEnd, this.controlPointScreens[this.iPrev], this.controlPointScreens[i], this.controlPointScreens[this.iNext], this.controlPointScreens[this.iNext2]);
-}, "~N,~B");
+ else {
+this.g3d.fillHermite (this.isNucleic ? 4 : 7, this.diameterBeg, this.diameterMid, this.diameterEnd, this.controlPointScreens[this.iPrev], this.controlPointScreens[i], this.controlPointScreens[this.iNext], this.controlPointScreens[this.iNext2]);
+}}, "~N,~B");
 $_M(c$, "renderHermiteRibbon", 
 function (doFill, i, thisTypeOnly) {
 this.setNeighbors (i);

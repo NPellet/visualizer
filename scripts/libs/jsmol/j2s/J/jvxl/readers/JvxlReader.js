@@ -1,26 +1,26 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.JvxlXmlReader"], "J.jvxl.readers.JvxlReader", ["java.lang.NullPointerException", "J.jvxl.data.JvxlCoder", "J.jvxl.readers.VolumeFileReader", "J.util.C", "$.Escape", "$.Logger", "$.P4", "$.Parser", "$.SB"], function () {
+Clazz.load (["J.jvxl.readers.JvxlXmlReader"], "J.jvxl.readers.JvxlReader", ["java.lang.NullPointerException", "JU.P4", "$.PT", "$.SB", "J.jvxl.data.JvxlCoder", "J.jvxl.readers.VolumeFileReader", "J.util.C", "$.Escape", "$.Logger"], function () {
 c$ = Clazz.declareType (J.jvxl.readers, "JvxlReader", J.jvxl.readers.JvxlXmlReader);
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.JvxlReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
 this.init2JXR (sg, br);
 this.isXmlFile = false;
 this.JVXL_VERSION = "2.0";
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-Clazz.overrideMethod (c$, "readParameters", 
+$_V(c$, "readParameters", 
 function () {
-this.jvxlFileHeaderBuffer =  new J.util.SB ().append (this.skipComments (false));
+this.jvxlFileHeaderBuffer =  new JU.SB ().append (this.skipComments (false));
 if (this.line == null || this.line.length == 0) this.line = "Line 1";
 this.jvxlFileHeaderBuffer.append (this.line).appendC ('\n');
 if (this.readLine () == null || this.line.length == 0) this.line = "Line 2";
 this.jvxlFileHeaderBuffer.append (this.line).appendC ('\n');
 this.jvxlFileHeaderBuffer.append (this.skipComments (false));
 var atomLine = this.line;
-var tokens = J.util.Parser.getTokensAt (atomLine, 0);
+var tokens = JU.PT.getTokensAt (atomLine, 0);
 this.isXLowToHigh = false;
 this.negativeAtomCount = true;
 this.atomCount = 0;
@@ -59,7 +59,7 @@ this.colorFractionRange = this.parseInt ();
 }this.cJvxlEdgeNaN = String.fromCharCode (this.edgeFractionBase + this.edgeFractionRange);
 this.vertexDataOnly = this.jvxlData.vertexDataOnly = (this.volumetricVectors[0].length () == 0);
 });
-Clazz.overrideMethod (c$, "jvxlReadFractionData", 
+$_V(c$, "jvxlReadFractionData", 
 function (type, nPoints) {
 var str = "";
 try {
@@ -77,7 +77,7 @@ throw e;
 }
 return str;
 }, "~S,~N");
-Clazz.overrideMethod (c$, "gotoData", 
+$_V(c$, "gotoData", 
 function (n, nPoints) {
 if (n > 0) J.util.Logger.info ("skipping " + n + " data sets, " + nPoints + " points each");
 this.vertexDataOnly = this.jvxlData.vertexDataOnly = (nPoints == 0);
@@ -101,11 +101,11 @@ var param3 = this.parseInt ();
 if (param3 == -2147483648 || param3 == -1) param3 = 0;
 if (param1 == -1) {
 try {
-this.params.thePlane = J.util.P4.new4 (this.parseFloat (), this.parseFloat (), this.parseFloat (), this.parseFloat ());
+this.params.thePlane = JU.P4.new4 (this.parseFloat (), this.parseFloat (), this.parseFloat (), this.parseFloat ());
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
 J.util.Logger.error ("Error reading 4 floats for PLANE definition -- setting to 0 0 1 0  (z=0)");
-this.params.thePlane = J.util.P4.new4 (0, 0, 1, 0);
+this.params.thePlane = JU.P4.new4 (0, 0, 1, 0);
 } else {
 throw e;
 }
@@ -156,12 +156,12 @@ red = this.parseFloat ();
 blue = this.parseFloat ();
 }this.jvxlSetColorRanges (dataMin, dataMax, red, blue, insideOut);
 }, $fz.isPrivate = true, $fz), "~B");
-Clazz.overrideMethod (c$, "readSurfaceData", 
+$_V(c$, "readSurfaceData", 
 function (isMapDataIgnored) {
 this.thisInside = !this.params.isContoured;
 if (!this.readSurfaceDataXML ()) this.readSurfaceDataJXR ();
 }, "~B");
-Clazz.overrideMethod (c$, "jvxlSkipData", 
+$_V(c$, "jvxlSkipData", 
 function (nPoints, doSkipColorData) {
 if (this.surfaceDataCount > 0) this.jvxlSkipDataBlock (nPoints, true);
 if (this.edgeDataCount > 0) this.jvxlSkipDataBlock (this.edgeDataCount, false);
