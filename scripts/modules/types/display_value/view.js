@@ -85,7 +85,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				textAlign: align || 'center',
 				width: '100%',
 				height: '100%',
-				'white-space': 'pre'
+				'white-space': preformatted || 'normal'
 			} ).html( val );
 
 //			if (preformatted) div.html("<pre />").html( val );

@@ -141,9 +141,9 @@ define(['modules/defaultcontroller'], function(Default) {
 							},
 
 							preformatted: {
-								default: 'false',
 								type: 'checkbox',
-								title: 'Preformatted'
+								title: 'Preformatted',
+								options: { 'pre': 'Display as preformatted text'}
 							},
 						}
 					},
@@ -170,6 +170,10 @@ define(['modules/defaultcontroller'], function(Default) {
 			}
 		},
 		
+		configFunctions: {
+			'preformatted': function(cfg) { return cfg.indexOf('pre')==-1?'normal':'pre'; }
+		},
+
 		configAliases: {
 			'fontcolor': [ 'groups', 'group', 0, 'fontcolor', 0 ],
 			'font': [ 'groups', 'group', 0, 'font', 0 ],
@@ -178,7 +182,7 @@ define(['modules/defaultcontroller'], function(Default) {
 			'valign': [ 'groups', 'group', 0, 'valign', 0 ],
 			'defaultvalue': [ 'groups', 'group', 0, 'defaultvalue', 0 ],
 			'sprintf': [ 'groups', 'group', 0, 'sprintf', 0 ],
-			'preformatted': [ 'groups', 'group', 0, 'preformatted', 0, 0 ],
+			'preformatted': [ 'groups', 'group', 0, 'preformatted', 0 ],
 		}
 	});
 
