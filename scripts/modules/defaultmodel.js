@@ -23,12 +23,17 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		},
 
 		getVarNameList: function() {
-			var list = this.module.vars_in(), listFinal = [], keyedMap = {};
-			if(!list)
+			var list = this.module.vars_in( ),
+				listFinal = [],
+				keyedMap = {};
+
+			if( ! list ) {
 				return [];
+			}
+
 			for(var l = list.length, i = l - 1; i >= 0; i--) {
-				listFinal.push(list[i].name)
-				keyedMap[list[i].name] = list[i];
+				listFinal.push( list[ i ].name );
+				keyedMap[ list[i].name ] = list[ i ];
 			}
 
 			this.sourceMap = keyedMap;
@@ -36,14 +41,22 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		},
 
 		getActionNameList: function() {
+
 			var list = this.module.actions_in(), 
-				names = [];
+				names = [],
+				i,
+				l;
 
-			if(!list)
+			if( ! list ) {
 				return names;
+			}
 
-			for(var l = list.length, i = l - 1; i >= 0; i--)
-				names.push(list[i].name);
+			l = list.length,
+			i = l - 1;
+
+			for( ; i >= 0; i--) {
+				names.push( list[ i ].name );
+			}
 
 			return names;
 		},

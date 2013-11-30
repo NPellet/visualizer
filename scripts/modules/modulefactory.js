@@ -40,6 +40,11 @@ define(['modules/module'], function(Module) {
 					//'array_search': 'Data searching'
 				},
 
+
+				'Array searching': {
+					'array_search': 'Configured search'
+				},
+
 				'Science': {
 					'2dnmr': '2D NMR',
 					'spectra_displayer': 'Spectra displayer',

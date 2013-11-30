@@ -758,15 +758,17 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			var cfgEl = this.definition.configuration,
 				alias = this.controller.configAliases[ aliasName ];
 
-			for( var i = 0, l = alias.length ; i < l ; i ++) {
-				cfgEl = cfgEl[ alias[ i ] ];
+			if( alias ) {
 
-				if( typeof cfgEl == 'undefined' ) {
+				for( var i = 0, l = alias.length ; i < l ; i ++) {
+					cfgEl = cfgEl[ alias[ i ] ];
 
-					return this._getConfigurationDefault( alias, aliasName );
+					if( typeof cfgEl == 'undefined' ) {
+
+						return this._getConfigurationDefault( alias, aliasName );
+					}
 				}
 			}
-
 
 			return this._doConfigurationFunction( cfgEl, aliasName );
 		},

@@ -18,22 +18,24 @@ define(['modules/defaultcontroller'], function(Default) {
 		
 		configurationReceive: {
 
-			"variable": {
+			array : {
 				type: [ 'array' ],
 				label: 'An array of data',
 				description: ''
 			}
-
 		},
-		
 		
 		moduleInformations: {
-			moduleName: 'Filter'
+			moduleName: 'Array search'
 		},
-		
-
+	
 		configurationStructure: function(section) {
-			
+
+			var all_jpaths = [],
+				arr = this.module.getDataFromRel('array');
+
+			Traversing.getJPathsFromElement( arr, all_jpaths );
+
 			return {
 
 				groups: {
@@ -86,12 +88,19 @@ define(['modules/defaultcontroller'], function(Default) {
 
 									name: {
 										type: 'text',
-										title: 'Field name'
+										title: 'Search name'
 									},
 
 									label: {
 										type: 'text',
-										title: 'Field label'
+										title: 'Search label'
+									},
+
+									searchOnField: {
+										type: 'combo',
+										multiple: true,
+										title: 'Search label',
+										options: all_jpaths
 									},
 
 									type: {
@@ -167,21 +176,6 @@ define(['modules/defaultcontroller'], function(Default) {
 		
 		configFunctions: {
 
-			varsout: function( cfg ) {
-				if( ! ( cfg instanceof Array ) ) {
-					return [];
-				}
-				return cfg;
-			},
-
-			script: function( cfg ) {
-				if( ! cfg ) {
-					return '';
-				}
-
-				return cfg;
-			},
-
 			filters: function( cfg ) {
 				if( ! ( cfg instanceof Array ) ) {
 					return [];
@@ -191,9 +185,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 
 		configAliases: {
-			filters: [ 'sections', 'filterElement' ],
-			script: [ 'groups', 'cfg', 0, 'script', 0 ]//,
-		//	varsout: [ 'groups', 'varsout', 0 ],
+			filters: [ 'sections', 'filterElement' ]
 		}
 	});
 
