@@ -167,7 +167,9 @@ body, th, td, .forms input, .forms select, .forms textarea {
 	box-sizing: border-box;
 	outline: none;
 	width: 100%;
-	/*display: inline-block;*/ /* Somebody explains me the use of this */
+	display: inline-block; /* Somebody explains me the use of this */
+	/* Norman 30 Nov 2013 : Used in the combo element for duplicating elements */
+	/* We have to find another idea to solve the height issue */
 }
 
 

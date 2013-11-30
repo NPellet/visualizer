@@ -174,14 +174,18 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		 */
 		getAcceptedTypes: function(rel) {
 			var accept = this.controller.configurationReceive;
-			if(accept[rel])
-				return accept[rel];
+			if( accept[ rel ] ) {
+				return accept[ rel ];
+			}
 			return { data: rel, type: [], asObject: false };
 		},
 		
 		
 		getDataFromRel: function(rel) {
-
+			if( ! this.model || ! this.model.data ) {
+				return;
+			}
+			
 			return this.model.data[ this.getNameFromRel( rel ) ] || false;
 		},
 

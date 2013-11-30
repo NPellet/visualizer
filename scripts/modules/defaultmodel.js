@@ -7,15 +7,16 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 		init: function() {
 			var sourceName, sourceAccepts;
 			this.module.model = this;
-			this.data = [];
+			this.data = [ ];
 			this.resetListeners();
 		},
 
 		resetListeners: function() {
 			this.sourceMap = null;
-			if(this._varlisten && this._actionlisten) {
-				API.getRepositoryData().unListen(this.getVarNameList(), this._varlisten);
-				API.getRepositoryActions().unListen(this.getActionNameList(), this._actionlisten);
+
+			if( this._varlisten && this._actionlisten ) {
+				API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
+				API.getRepositoryActions( ).unListen( this.getActionNameList(), this._actionlisten );
 			}
 
 			this._varlisten = API.getRepositoryData().listen(this.getVarNameList(), $.proxy(this.onVarGet, this));

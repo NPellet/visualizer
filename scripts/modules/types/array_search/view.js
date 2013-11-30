@@ -4,20 +4,20 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-				
-
+			
 			this.dom = $( '<div>' ).css( { } );
 			this.module.getDomContent( ).html( this.dom );
 			this.variables = {};
 			this.cfgValue = {};
 
+			this._jpathsFcts = {};
+
 			var self = this,
-				filters = this.module.getConfiguration( 'filters' ),
-				script = this.module.getConfiguration( 'script' ),
+				searchfields = this.module.getConfiguration( 'searchfields' ),
 				varsoutCfg = this.module.definition.vars_out || [],
 				varsout = [],
 				i = 0,
-				l = filters.length,
+				l = searchfields.length,
 				j = 0,
 				k = varsoutCfg.length,
 				allFields = { },
@@ -42,18 +42,24 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 			
 			for( ; i < l ; i ++ ) {
 
-				if( ! filters[ i ].groups.general ) {
+				if( ! searchfields[ i ].groups.general ) {
 					continue;
 				}
 
-				allFields[ filters[ i ].groups.general[ 0 ].name[ 0 ] ] = {
-					type: filters[ i ].groups.general[ 0 ].type[ 0 ],
-					title: filters[ i ].groups.general[ 0 ].label[ 0 ]
+				allFields[ searchfields[ i ].groups.general[ 0 ].name[ 0 ] ] = {
+					type: 	searchfields[ i ].groups.general[ 0 ].type[ 0 ],
+					title: 	searchfields[ i ].groups.general[ 0 ].label[ 0 ]
 				};
 
-				this.makeOptions( allFields[ filters[ i ].groups.general[ 0 ].name[ 0 ] ], filters[ i ] );
-			}
+				for( var k = 0, m = searchfields[ i ].groups.general[ 0 ].searchOnField.length; k < m ; k ++) {
+					console.log( searchfields[ i ].groups.general[ 0 ].searchOnField[ k ].replace(/^element/, '') );
+					eval('this._jpathsFcts[ "' + searchfields[ i ].groups.general[ 0 ].searchOnField[ k ] + '" ] = function( el ) { return el' + searchfields[ i ].groups.general[ 0 ].searchOnField[ k ].replace(/^element/, '') + '; }');
 
+					console.log(this._jpathsFcts);
+				}
+
+				this.makeOptions( allFields[ searchfields[ i ].groups.general[ 0 ].name[ 0 ] ], searchfields[ i ] );
+			}
 
 			require( [ './libs/forms2/form' ], function( Form ) {
 
@@ -69,7 +75,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 						}
 
 						$.extend( self.cfgValue, cfgFinal );
-						self.filter();
+						self.search();
 					}
 				} );
 
@@ -84,46 +90,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				});
 			});
 
-
-			this._filter = ( function( API, _cfg, _varsIn, _varsOut, script ) {
-
-				var _varsToSet = [];
-				function getVar( vName ) {
-
-					if( typeof _varsIn[ vName ] !== "undefined" ) {
-						return _varsIn[ vName ];
-					}
-
-					console.warn( " Variable " + vName + " does not exist. Returning null ");
-					return null;
-				}
-
-				function setVar( vName, vValue ) {
-
-					if( _varsOut.indexOf( vName ) > -1 ) {
-						_varsToSet[ vName ] = vValue;
-						return;
-					}
-					console.warn( " Variable " + vName + " has not been selected for variable out" );
-				}
-
-				function getConfig() {
-					return _cfg;
-				}
-
-				function _doSetVars() {
-
-					var i;
-					for( i in _varsToSet ) {
-						API.setVar( i, _varsToSet[ i ] );
-					}
-				}
-
-				eval("var f = function() { \n" + script + "\n  _doSetVars(); \n }");
-				return f;
-
-			}) ( API, this.cfgValue, this.variables, varsout, script );
-
+			this.makeSearchFilter();
 		},
 		
 
@@ -155,7 +122,12 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				cfg = [];
 
 			for( ; i < l ; i ++ ) {
-				cfg.push({ title: form[ i ].label, key: form[ i ].value });
+
+				cfg.push({ 
+					title: form[ i ].label, 
+					key: form[ i ].value
+				});
+
 			}
 
 			return cfg;
@@ -170,10 +142,140 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 		
 		inDom: function() { },
 
-		filter: function() {
+		search: function() {
 
-			this._filter();
+			var self = this,
+				cfg = this.cfgValue,
+				val = this.module.getDataFromRel( 'array' ),
+				i = 0,
+				l = val.length,
+				target = new DataArray();
 
+			for( ; i < l ; i ++ ) {
+
+				if( this.searchElement( cfg, val[ i ] ) ) {
+					target.push( val[ i ] );
+				}
+			}
+
+			this.module.controller.searchDone( target );		
+		},
+
+		_makeOp: function( op, val ) {
+
+			val = "self.cfgValue[ '" + val + "' ] ";
+			switch( op ) {
+
+				case '=':
+				case 'eq':
+					return " (el + '') == " + val + " ";
+				break;
+
+				case '<>':
+				case '><':
+				case '!=':
+					return " (el + '') !== " + val + " ";
+				break;
+
+				case '>':
+					return " el > " + val + " ";
+				break;
+
+				case '>=':
+					return " el >= " + val + " ";
+				break;
+
+				case '<':
+					return " el > parseFloat( " + val + " ) ";
+				break;
+
+				case '<=':
+					return " el <= parseFloat( " + val + " ) ";
+				break;
+
+				case 'btw':
+					if( val instanceof Array ) {
+						return " ( el > parseFloat( " + val[ 0 ] + " ) && el < parseFloat( " + val[ 1 ] + " ) ";
+					}
+				break;
+			}
+
+		},
+
+		makeSearchFilter: function() {
+
+			
+			var self = this,
+				searchfields = this.module.getConfiguration( 'searchfields' ),
+				i = 0,
+				l = searchfields.length,
+					searchOn;
+
+
+			var toEval = "";
+			toEval += " this._searchFunc = function( cfg, row ) { ";
+			//toEval += " console.log(self); "
+			toEval += " var el; "
+
+
+			toEval += " var a = "
+			for( ; i < l ; i ++ ) {
+
+				searchOn = searchfields[ i ].groups.general[ 0 ].searchOnField || [];
+
+				if( i > 0 ) {
+					toEval += " && ";
+				}
+
+				j = 0,
+				k = searchOn.length;
+
+				/////////
+				var add = "";
+				if( k > 0 ) {
+					toEval += " ( ";
+
+					for( ; j < k ; j ++ ) {
+
+						if( j > 0 ) {
+							toEval += " || ";
+						}
+
+						toEval += " ( ( el = self.getJpath( '" + searchOn[ j ] + "', row ) ) && ( ";
+						/*	
+						add += "console.log(" + this._makeOp( searchfields[ i ].groups.general[ 0 ].operator[ 0 ], searchfields[ i ].groups.general[ 0 ].name[ 0 ] ) + ");";
+						add += "console.log(el);";
+						add += "console.log( self.getJpath( '" + searchOn[ j ] + "', row ), row, ( ( el = self.getJpath( '" + searchOn[ j ] + "', row ) ) && el == 'a'), el );";
+*/
+						toEval += this._makeOp( searchfields[ i ].groups.general[ 0 ].operator[ 0 ], searchfields[ i ].groups.general[ 0 ].name[ 0 ] );
+						toEval += " ) ) ";
+
+					}
+					toEval += " ) ";
+				}
+				/////////
+			}
+
+			toEval += "; ";
+
+			toEval += add;
+			
+					//	toEval += " console.log(a); ";
+			toEval += " return a; ";
+
+			toEval += "};";
+
+			console.log(toEval);
+
+			eval( toEval );
+		},
+
+		searchElement: function( cfg, row ) {
+			return this._searchFunc( cfg, row );
+		},
+
+		getJpath: function( jpathEl, row ) {
+			return this._jpathsFcts[ jpathEl ]( row );
 		},
 
 		update: {
@@ -183,7 +285,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				variableValue = Traversing.get( variableValue );
 
 				this.variables[ variableName ] = variableValue;
-				this.filter( );
+				this.search( );
 			}
 		},
 				
