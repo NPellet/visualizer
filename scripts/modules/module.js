@@ -758,6 +758,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			var cfgEl = this.definition.configuration,
 				alias = this.controller.configAliases[ aliasName ];
 
+
 			if( alias ) {
 
 				for( var i = 0, l = alias.length ; i < l ; i ++) {
@@ -768,7 +769,11 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 						return this._getConfigurationDefault( alias, aliasName );
 					}
 				}
+			} else {
+				console.warn( 'Alias ' + alias + ' not defined ');
+				console.trace();
 			}
+			
 
 			return this._doConfigurationFunction( cfgEl, aliasName );
 		},
