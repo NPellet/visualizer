@@ -278,6 +278,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			},
 
 			chart: function(moduleValue, varname) {
+
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie( varname );
 
@@ -303,11 +304,11 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 					this.setSerieParameters(serie, varname, newSerie._highlight);
 
-					this.normalize(valFinal, varname);
-					serie.setData(valFinal);
+					this.normalize( valFinal, varname );
+					serie.setData( valFinal );
 
-					if(newSerie.infos) {
-						serie.setInfos(newSerie.infos);
+					if( newSerie.infos ) {
+						serie.setInfos( newSerie.infos );
 					}
 					serie.autoAxis();
 					this.series[varname].push(serie);
@@ -317,11 +318,13 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 			},
 
 			xyArray: function(moduleValue, varname) {
+				
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie( varname );
 
-				if(!moduleValue)
+				if( ! moduleValue ) {
 					return;
+				}
 
 				var val = moduleValue.get();
 				
@@ -363,7 +366,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 
 				serie.setData(val2);
 				serie.autoAxis();
-				this.series[varname].push(serie);
+				this.series[ varname ].push( serie );
 				this.redraw();
 			},
 
@@ -450,27 +453,22 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 								if( self.zones[ varname ][ commonKeys[ i ] ] ) {
 
 									self.doZone( varname, self.zones[ varname ][ commonKeys [ i ] ], value, self.series[varname].options.lineColor );
-
 								}
-
 							}
-
 						}, true, self.module.id + varname);
-
 					}
-
-
 					
 					self.redraw( );
-
 					self.resetAnnotations( true );
 				});
 			}
 		},
 
 		resetAnnotations: function(force) {
-			if(!this.annotations)
+
+			if(!this.annotations) {
 				return;
+			}
 
 			if(this.annotationsDone && !force)
 				return this.graph.redrawShapes();

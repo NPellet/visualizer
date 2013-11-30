@@ -2837,35 +2837,43 @@ define(['jquery', 'util/util'], function($, Util) {
 		 */
 		setData: function(data, arg, type) {
 
-			var z = 0;
-			var x, dx, arg = arg || "2D", type = type || 'float', arr, total = 0;
-			if(!data instanceof Array)
+			var z = 0,
+				x,
+				dx, 
+				arg = arg || "2D", 
+				type = type || 'float', 
+				arr, 
+				total = 0;
+
+			if( ! data instanceof Array ) {
 				return;
+			}
 
 			// Single object
 			var datas = [];
-			if(!(data instanceof Array) && typeof data == 'object') {
-				data = [data];
-			} else if(data instanceof Array && !(data[0] instanceof Array)) {// [100, 103, 102, 2143, ...]
-				data = [data];
+			if( ! ( data instanceof Array ) && typeof data == 'object' ) {
+				data = [ data ];
+			} else if( data instanceof Array && ! ( data[ 0 ] instanceof Array ) ) {// [100, 103, 102, 2143, ...]
+				data = [ data ];
 				arg = "1D";
 			}
 
-			var _2d = (arg == "2D");
+			var _2d = ( arg == "2D" );
 
 			// [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-			if( data[ 0 ] instanceof Array && arg == "2D" && !( data[ 0 ][ 0 ] instanceof Array ) ) {
+			if( data[ 0 ] instanceof Array && arg == "2D" && ! ( data[ 0 ][ 0 ] instanceof Array ) ) {
 				data = [ data ];
 			}
 
 
-			if(data[0] instanceof Array) {
+			if(data[ 0 ] instanceof Array) {
 				for(var i = 0, k = data.length; i < k; i++) {
-					arr = this._addData(type, _2d ? data[i].length * 2 : data[i].length);
-					datas.push(arr);
+
+					arr = this._addData( type, _2d ? data[ i ].length * 2 : data[ i ].length );
+					datas.push( arr );
 					z = 0;
 					
-					for(var j = 0, l = data[i].length; j < l; j++) {
+					for(var j = 0, l = data[ i ].length; j < l; j++) {
 
 						if(_2d) {
 							arr[z] = (data[i][j][0]);
@@ -2884,6 +2892,7 @@ define(['jquery', 'util/util'], function($, Util) {
 						}
 					}
 				}
+
 			} else if(typeof data[0] == 'object') {
 				
 				var number = 0, numbers = [], datas = [], k = 0;
@@ -2928,17 +2937,20 @@ define(['jquery', 'util/util'], function($, Util) {
 			var min = this.graph.getDrawingWidth( );
 			var max = total;
 
-
-			while( min < max ) {
-				ws.push( min );
-				min *= 4;
-			}
-
-			this.slots = ws;
 			this.data = datas;
+			
+			if( min > 0 ) {
 
-			if( this.options.useSlots ) {
-				this.calculateSlots();	
+				while( min < max ) {
+					ws.push( min );
+					min *= 4;
+				}
+
+				this.slots = ws;
+			
+				if( this.options.useSlots ) {
+					this.calculateSlots( );
+				}
 			}
 
 		},
@@ -3217,13 +3229,15 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 
 			i = 0;
-			var allY = [ ];
-			if( this.options.useSlots ) {
+			var allY = [ ],
+				slotToUse,
+				y = 0,
+				z;
+
+			if( this.options.useSlots && this.slots ) {
 				
-				var slot = this.graph.getDrawingWidth( ) * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() ),
-					slotToUse;
+				var slot = this.graph.getDrawingWidth( ) * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );
 				
-				console.log(slot, this.slots);
 				for( var y = 0, z = this.slots.length; y < z ; y ++ ) {
 
 					if( slot < this.slots[ y ] ) {
@@ -3234,18 +3248,19 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 
 
-			if(slotToUse) {
+			if( slotToUse ) {
 				if( slotToUse.done ) {
 
 					slotToUse.done( function( data ) {
 						self.drawSlot( data, y );
 					});
+
 				} else {
 					this.drawSlot( slotToUse, y );	
 				}
 				
 			} else {
-
+				console.log(i, l);
 				for(; i < l ; i++) {
 					
 					currentLine = "M ";
@@ -4185,16 +4200,21 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			var z = 0;
 			var x, dx, arg = arg || "2D", type = type || 'float', i, l = data.length, arr, datas = [];
-			if(!data instanceof Array)
+			
+			if( ! data instanceof Array ) {
 				return;
+			}
+
 			for(var i = 0; i < l; i++) {
 				k =  k = data[i].lines.length;
 				arr = this._addData(type, k);
-				for(var j = 0; j < k; j+=2) {
-					arr[j] = data[i].lines[j];
-					this._checkX(arr[j]);
-					arr[j+1] = data[i].lines[j+1];
-					this._checkY(arr[j+1]);
+
+				for( var j = 0; j < k; j+=2 ) {
+
+					arr[ j ] = data[i].lines[ j ];
+					this._checkX( arr[ j ] );
+					arr[ j + 1 ] = data[ i ].lines[ j + 1 ];
+					this._checkY( arr[ j + 1 ] );
 				}
 
 				datas.push({lines: arr, zValue: data[i].zValue});
