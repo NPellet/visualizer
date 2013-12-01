@@ -67,6 +67,13 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 	};
 
 
+
+	GroupTableElement.prototype._makeDomTpl = function() {
+
+
+		return this.makeDom();
+	}
+
 	GroupTableElement.prototype.visible = function() {
 
 		var w = this.domBody.width(), $el, self = this;

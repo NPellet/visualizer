@@ -43,13 +43,17 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 		var self = this;
 
+		self.fieldElementsDom = self.fieldElementsDom || { };
+
 		this.group.eachFields( function( field ) {
 
-			self.fieldElementsDom[ field.getName() ].children().detach(); // Empty the dom
+			if( self.fieldElementsDom[ field.getName() ] ) {
+				self.fieldElementsDom[ field.getName() ].children().detach(); // Empty the dom
 
-			self.eachFieldElements( field.getName(), function(fieldElement) {
-				self.fieldElementsDom[ field.getName() ].append( fieldElement.getDom( ) );
-			});
+				self.eachFieldElements( field.getName(), function(fieldElement) {
+					self.fieldElementsDom[ field.getName() ].append( fieldElement.getDom( ) );
+				});
+			}
 			//self.fieldElementsDom[ field.getName() ] = divFieldElements;
 		});
 
@@ -59,16 +63,55 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 	};
 
 
+	GroupListElement.prototype._makeDomTpl = function() {
+
+		var self = this;
+
+		this.dom = this.group._tplClean.clone();
+		self.fieldElementsDom = self.fieldElementsDom || { };
+		
+		this.dom.find('.form-dyn').each( function( i, el ) {
+
+			el = $( el );
+
+			var content = el.attr( 'data-form-content' ).split(':');
+
+			switch( content[ 0 ] ) {
+
+				case 'field':
+console.log(self.fieldElements);	
+					if( self.fieldElements[ content[ 1 ] ] ) {
+
+						switch( content[ 2 ] ) {
+
+							case 'dom':
+								self.fieldElementsDom[ content[ 1 ] ] = el;
+							break;
+
+							case 'label':
+								el.html( self.group.fields[ content[ 1 ] ].name );
+							break;
+						}
+					}
+				break;
+			}
+			
+		} );
+
+		this.updateDom();
+		return this.dom;
+	}
+
+
+
 	GroupListElement.prototype.condDisplay = function( fieldName, displayOrHide ) {
-console.trace();
 		this.eachFieldElements( fieldName, function( fieldEl ) {
 			if( displayOrHide ) {
 				this.fieldElementsDom[ fieldName ].parent( ).show();
 			} else {
 				this.fieldElementsDom[ fieldName ].parent( ).hide();
 			}
-		});
-		
+		});		
 	}
 
 	GroupListElement.prototype.getFieldIndex = function( fieldElement ) {

@@ -94,6 +94,19 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 			});
 		},
 
+		setTpl: function( tpl ) {
+			console.log(tpl);
+			tpl = $( tpl );
+			console.log( tpl.html() );
+			this._setTpl( tpl );
+		},
+
+		makeDomTpl: function( ) {
+			return this._makeDomTpl( );
+		},
+
+		_makeDomTpl: SectionElement.prototype._makeDomTpl,
+		
 		makeDom: function(tplMode) {
 
 			var self = this,
@@ -103,7 +116,6 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 				l,
 				sections = $("<div />").addClass('form-sections-wrapper');
 			
-
 			this.tplMode = tplMode || 1;
 
 			switch(this.tplMode) {

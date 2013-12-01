@@ -201,6 +201,14 @@ div.selected {
 	background-color: #eeeeee;
 }
 
+
+
+.forms .form-field-list-textarea textarea {
+	width: 100%;
+	height: 100px;
+}
+
+
 .forms .form-field-list-slider .field-list {
 	border: none;
 	height: auto;

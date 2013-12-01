@@ -165,7 +165,7 @@ define(['require', 'jquery'], function(require, $) {
 
 				self.eachGroupElements( group.getName() , function( groupElement ) {
 
-					callback( groupElement, 'group' );					
+					callback( groupElement, 'group', group.getName( ) );					
 				});
 			});
 
@@ -173,7 +173,7 @@ define(['require', 'jquery'], function(require, $) {
 
 				self.eachSectionElements( section.getName() , function( sectionElement ) {
 
-					callback( sectionElement, 'section' );
+					callback( sectionElement, 'section', section.getName( ) );
 				});
 			});
 		},
@@ -451,6 +451,38 @@ define(['require', 'jquery'], function(require, $) {
 
 		ready: function() {
 			return $.when.apply( $.when, this.deferreds );
+		},
+
+
+		makeDomTpl: function( ) {
+
+			return this._makeDomTpl();
+		},
+
+
+		_makeDomTpl: function( ) {
+
+			this.dom = this.section._tplClean.clone();
+
+			for( i in this.sectionElements ) {
+				j  = 0, 
+				l = this.sectionElements[ i ].length;
+
+				for( ; j < l ; j++) {
+					this.dom.find('.form-section-section-container').append( this.sectionElements[ i ][ j ].makeDomTpl( ) );
+				}
+			}
+
+			for( i in this.groupElements ) {
+				j  = 0, 
+				l = this.groupElements[ i ].length;
+				
+				for( ; j < l ; j++) {
+					this.dom.find('.form-section-group-container').append( this.groupElements[ i ][ j ].makeDomTpl( ) );
+				}
+			}
+
+			return this.dom;
 		}
 	});
 

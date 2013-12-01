@@ -52,10 +52,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				};
 
 				for( var k = 0, m = searchfields[ i ].groups.general[ 0 ].searchOnField.length; k < m ; k ++) {
-					console.log( searchfields[ i ].groups.general[ 0 ].searchOnField[ k ].replace(/^element/, '') );
 					eval('this._jpathsFcts[ "' + searchfields[ i ].groups.general[ 0 ].searchOnField[ k ] + '" ] = function( el ) { return el' + searchfields[ i ].groups.general[ 0 ].searchOnField[ k ].replace(/^element/, '') + '; }');
-
-					console.log(this._jpathsFcts);
 				}
 
 				this.makeOptions( allFields[ searchfields[ i ].groups.general[ 0 ].name[ 0 ] ], searchfields[ i ] );
@@ -214,7 +211,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 
 			var toEval = "";
 			toEval += " this._searchFunc = function( cfg, row ) { ";
-			//toEval += " console.log(self); "
+			
 			toEval += " var el; "
 
 
@@ -242,11 +239,6 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 						}
 
 						toEval += " ( ( el = self.getJpath( '" + searchOn[ j ] + "', row ) ) && ( ";
-						/*	
-						add += "console.log(" + this._makeOp( searchfields[ i ].groups.general[ 0 ].operator[ 0 ], searchfields[ i ].groups.general[ 0 ].name[ 0 ] ) + ");";
-						add += "console.log(el);";
-						add += "console.log( self.getJpath( '" + searchOn[ j ] + "', row ), row, ( ( el = self.getJpath( '" + searchOn[ j ] + "', row ) ) && el == 'a'), el );";
-*/
 						toEval += this._makeOp( searchfields[ i ].groups.general[ 0 ].operator[ 0 ], searchfields[ i ].groups.general[ 0 ].name[ 0 ] );
 						toEval += " ) ) ";
 
@@ -257,15 +249,9 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 			}
 
 			toEval += "; ";
-
 			toEval += add;
-			
-					//	toEval += " console.log(a); ";
 			toEval += " return a; ";
-
 			toEval += "};";
-
-			console.log(toEval);
 
 			eval( toEval );
 		},

@@ -160,8 +160,24 @@ define(['jquery', './sectionelement', './group'], function($, SectionElement, Gr
 			this.sub.push( sub );
 
 			return sub;
-		}
+		},
 
+
+		_setTpl: function( tpl ) {
+			this._tpl = tpl;
+
+			this.eachSections( function( section ) {
+				section._setTpl( this._tpl.find( '.form-section[data-form-sectionname="' + section.name + '"]' ) );
+			});
+
+			this.eachGroups( function( group ) {
+				group._setTpl( this._tpl.find( '.form-group[data-form-groupname="' + group.name + '"]' ) );
+			});
+
+			this._tplClean = this._tpl.clone();
+			this._tplClean.find('.form-section-group-container:eq(0)').empty();
+			this._tplClean.find('.form-section-section-container:eq(0)').empty();
+		}
 	});
 	
 

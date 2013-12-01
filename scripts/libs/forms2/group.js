@@ -84,6 +84,11 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 			
 		},
 
+		_setTpl: function( tpl ) {
+			this.tpl = tpl;
+			this._tplClean = tpl;
+		},
+
 		fieldExists: function(fieldName) {
 			return !! this.fields[ fieldName ];
 		},

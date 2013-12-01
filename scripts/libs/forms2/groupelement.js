@@ -173,6 +173,12 @@ define(['jquery'], function($) {
 			for( i = 0, l = els.length; i < l ; i ++ ) {
 				callback.call( this, els[ i ] );
 			}
+		},
+
+
+		makeDomTpl: function( ) {
+
+			return this._makeDomTpl();
 		}
 	});
 
