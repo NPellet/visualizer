@@ -24,17 +24,56 @@ define(['modules/defaultcontroller'], function(Default) {
 		configurationStructure: function() {
 
 			return {
-				groups: {
-					group: {
+				sections: {
+
+					structure: {
+
 						options: {
-							type: 'list'
+							title: 'Form structure'
 						},
 
-						fields: {
+						groups: {
+							group: {
+								options: {
+									type: 'list'
+								},
 
-							json: {
-								type: 'textarea',
-								title: 'Form structure'
+								fields: {
+
+									json: {
+										type: 'textarea',
+										title: 'Form structure'
+									}
+								}
+							}
+						}
+					},
+				
+
+					template: {
+
+						options: {
+							title: 'Template'
+						},
+
+						groups: {
+							template: {
+								options: {
+									type: 'list',
+									multiple: false
+								},
+
+								fields: {
+									file: {
+										type: 'text',
+										title: 'Template file'
+									},
+									
+									html: {
+										type: 'textarea',
+										title: 'HTML template'
+									}
+								}
 							}
 						}
 					}
@@ -47,8 +86,9 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 
 		configAliases: {
-			structure: [ 'groups', 'group', 0, 'json', 0 ]//,
-		//	varsout: [ 'groups', 'varsout', 0 ],
+			structure: [ 'sections', 'structure', 0, 'groups', 'group', 0, 'json', 0 ],
+			tpl_file: [ 'sections', 'template', 0, 'groups', 'template', 0, 'file', 0 ],
+			tpl_html: [ 'sections', 'template', 0, 'groups', 'template', 0, 'html', 0 ]
 		}
 
 	});

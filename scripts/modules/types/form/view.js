@@ -13,22 +13,28 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api'], function(Defa
 		inDom: function() {
 
 			var self = this,
-				cfg = this.module.getConfiguration('structure'),
+				structure = this.module.getConfiguration('structure'),
+				tpl_file = this.module.getConfiguration('tpl_file'),
+				tpl_html = this.module.getConfiguration('tpl_html'),
 				form;
 			
 			try {
+				
+				json = JSON.parse( structure );
 
-				json = JSON.parse(cfg);
 			} catch(e) {
-				console.log(cfg);
-				console.log(e);
 				return;
 			}
 		
-
+			if( tpl_file ) {
+				def = $.get( tpl_file, {} );	
+			} else {
+				def = tpl_html;
+			}
+			
 			require(['./libs/forms2/form'], function(Form) {
 
-				$.get('./tpl.txt', {}, function( tpl ) {
+				$.when( def ).done( function( tpl ) { 
 
 					form = new Form({ });
 					form.init({
@@ -44,18 +50,12 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api'], function(Defa
 					} );
 
 					form.onLoaded( ).done( function( ) {
-					form.setTpl( tpl );
-
-
-
+						form.setTpl( tpl );
 						self.dom.html( form.makeDomTpl() );
 						form.inDom( );
-					} );
-				})
-				
-
+					});
+				});
 			});
-
 			this.form = form;
 		},
 		
