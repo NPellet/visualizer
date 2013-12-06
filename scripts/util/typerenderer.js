@@ -36,7 +36,7 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 
 	functions.doi = {};
 	functions.doi.toscreen = function(def, value) {
-		return def.resolve(value.value.replace(/^(.*)$/,'<a target="_blank" href="http://dx.doi.org/$1"><img width=20 src="../images/logo/doi.jpeg" /></a>'));
+		return def.resolve(value.value.replace(/^(.*)$/,'<a target="_blank" href="http://dx.doi.org/$1"><img src="../images/logo/doi.png" /></a>'));
 	}
 
 	functions.mol2d = {};
