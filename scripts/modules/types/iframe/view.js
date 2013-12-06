@@ -21,6 +21,13 @@ define(['modules/defaultview'], function(Default) {
 					return;
 				
 				this.dom.attr('src', moduleValue);
+			},
+
+			doi: function(moduleValue) {
+				if(!moduleValue)
+					return;
+				console.log(moduleValue);
+				this.dom.attr('src', "http://dx.doi.org/"+moduleValue.get());
 			}
 		},
 
