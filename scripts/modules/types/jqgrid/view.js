@@ -219,6 +219,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	blank: {
 
 	 		list: function() {
+	 			API.killHighlight( this.module.getId() );
 				this.jqGrid( 'clearGridData' );
 				$( this.domTable ).trigger( 'reloadGrid' );
 	 		}
@@ -304,7 +305,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				API.listenHighlight( s._highlight, function( onOff, key ) {
 
 					$( "#" + i )[ onOff ? 'addClass' : 'removeClass' ]( 'ci-highlight' );
-				});
+				}, false, this.module.getId());
 			}
 
 			element._inDom = $.Deferred();
