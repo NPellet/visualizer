@@ -19,7 +19,12 @@ define(['modules/defaultcontroller'], function(Default) {
 				type: ["string"],
 				label: 'URL',
 				description: 'Iframe URL'
-			}		
+			},
+			doi: {
+				type: ["doi"],
+				label: 'DOI',
+				description: 'Publication reference'
+			}	
 		},
 		
 		
