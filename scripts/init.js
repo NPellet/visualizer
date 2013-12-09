@@ -3,7 +3,7 @@ requirejs.config({
 	"baseUrl": "scripts/",
 	"paths": {
 	//	"jquery": 'libs/jquery/jquery',
-		"jquery": "http://code.jquery.com/jquery-migrate-1.2.1",
+		"jquery": "libs/jquery/jquery-migrate",
 		"jqueryui": "libs/jqueryui/jquery-ui.min",
 		"forms": "libs/forms",
 		"ckeditor": "libs/ckeditor/ckeditor",
