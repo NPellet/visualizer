@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/api', 'util/typerenderer'], function(Default, Traversing, DomDeferred, API, Renderer) {
+define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcreator/formcreator'], function(Default, Traversing, API, FormCreator) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -16,11 +16,8 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				searchfields = this.module.getConfiguration( 'searchfields' ),
 				varsoutCfg = this.module.definition.vars_out || [],
 				varsout = [],
-				i = 0,
-				l = searchfields.length,
 				j = 0,
 				k = varsoutCfg.length,
-				allFields = { },
 				cfg = {
 					sections: {
 						cfg: {
@@ -29,7 +26,11 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 									options: {
 										type: 'list'
 									},
-									fields: allFields
+									fields: FormCreator.makeStructure( searchfields, function( field ) {
+										for( var k = 0, m = field.groups.general[ 0 ].searchOnField.length; k < m ; k ++) {
+											eval('this._jpathsFcts[ "' + fields[ i ].groups.general[ 0 ].searchOnField[ k ] + '" ] = function( el ) { return el' + fields[ i ].groups.general[ 0 ].searchOnField[ k ].replace(/^element/, '') + '; }');
+										}
+									} );
 								}
 							}
 						}
@@ -40,96 +41,35 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				varsout.push( varsoutCfg[ j ].name );
 			}
 			
-			for( ; i < l ; i ++ ) {
+			
+			var form = FormCreator.makeForm();
 
-				if( ! searchfields[ i ].groups.general ) {
-					continue;
-				}
+			form.init( {
+				onValueChanged: function( value ) {
+					var cfg = form.getValue().sections.cfg[ 0 ].groups.cfg[ 0 ],
+						cfgFinal = {};
 
-				allFields[ searchfields[ i ].groups.general[ 0 ].name[ 0 ] ] = {
-					type: 	searchfields[ i ].groups.general[ 0 ].type[ 0 ],
-					title: 	searchfields[ i ].groups.general[ 0 ].label[ 0 ]
-				};
-
-				for( var k = 0, m = searchfields[ i ].groups.general[ 0 ].searchOnField.length; k < m ; k ++) {
-					eval('this._jpathsFcts[ "' + searchfields[ i ].groups.general[ 0 ].searchOnField[ k ] + '" ] = function( el ) { return el' + searchfields[ i ].groups.general[ 0 ].searchOnField[ k ].replace(/^element/, '') + '; }');
-				}
-
-				this.makeOptions( allFields[ searchfields[ i ].groups.general[ 0 ].name[ 0 ] ], searchfields[ i ] );
-			}
-
-			require( [ './libs/forms2/form' ], function( Form ) {
-
-				var form = new Form( );
-				
-				form.init( {
-					onValueChanged: function( value ) {
-						var cfg = form.getValue().sections.cfg[ 0 ].groups.cfg[ 0 ],
-							cfgFinal = {};
-
-						for( var i in cfg ) {
-							cfgFinal[ i ] = cfg[ i ][ 0 ];
-						}
-
-						$.extend( self.cfgValue, cfgFinal );
-						self.search();
+					for( var i in cfg ) {
+						cfgFinal[ i ] = cfg[ i ][ 0 ];
 					}
-				} );
 
-				form.setStructure( cfg );
-				form.onStructureLoaded().done(function() {
-					form.fill({ });
-				});
+					$.extend( self.cfgValue, cfgFinal );
+					self.search();
+				}
+			} );
 
-				form.onLoaded( ).done( function( ) {
-					self.dom.html( form.makeDom( 2 ) );
-					form.inDom();
-				});
+			form.setStructure( cfg );
+			form.onStructureLoaded().done(function() {
+				form.fill({ });
 			});
 
+			form.onLoaded( ).done( function( ) {
+				self.dom.html( form.makeDom( 2 ) );
+				form.inDom();
+			});
+			
 			this.makeSearchFilter();
 		},
-		
-
-		makeOptions: function( cfg, form ) {
-
-			var type = form.groups.general[ 0 ].type[ 0 ];
-
-			switch( type ) {
-
-				case 'combo':
-					cfg.options = this.makeComboOptions( form )
-				break;
-
-				case 'slider':
-					cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
-					cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
-					cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
-				break;
-
-			}
-		},
-
-		makeComboOptions: function( form ) {
-			
-			form = form.groups.options[ 0 ];
-
-			var i = 0,
-				l = form.length,
-				cfg = [];
-
-			for( ; i < l ; i ++ ) {
-
-				cfg.push({ 
-					title: form[ i ].label, 
-					key: form[ i ].value
-				});
-
-			}
-
-			return cfg;
-		},
-
 
 		blank: {
 			value: function(varName) {

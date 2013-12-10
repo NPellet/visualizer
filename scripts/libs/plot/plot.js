@@ -95,6 +95,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		this._pluginsInit();
 	}
 
+
 	Graph.extendPrototype = function(toWhat, fromWhat) {
 		$.extend(toWhat, Graph[fromWhat].prototype);
 	};
@@ -1037,7 +1038,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		makeShape: function(annotation, events, notify) {
 			var response;
 			annotation.id = Math.random();
-			
+
 			if(notify) {
 				if(false === (response = this.triggerEvent('onAnnotationMake', annotation))) {
 					return;
@@ -1086,14 +1087,17 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 
 
-			if(!shape)
+			if(!shape) {
 				return;
+			}
 
-			shape.setOriginalData(annotation, events);
-			if(annotation.data)
+			shape.setOriginalData( annotation, events );
+			if( annotation.data ) {
 				annotation.data.id = this.id;
+			}
 
-			shape.setSerie(this.getSerie(0));
+			
+			shape.setSerie( this.getSerie( 0 ) );
 
 			
 			if(annotation.fillColor)	shape.set('fillColor', annotation.fillColor);
@@ -1194,9 +1198,11 @@ define(['jquery', 'util/util'], function($, Util) {
 			var func = arguments[0], 
 				args = Array.prototype.splice.apply(arguments, [0, 1]);
 				
-			if(typeof this.options[func] == "function")
+			if(typeof this.options[func] == "function") {
 				return this.options[func].apply(this, arguments);
-			return true;
+			}
+
+			return;
 		},
 
 		selectAnnotation: function(annot) {
@@ -1387,6 +1393,52 @@ define(['jquery', 'util/util'], function($, Util) {
 		init: function() {},
 		
 		onMouseDown: function(graph, x, y, e, target) {
+			
+			var self = graph;
+			
+			this.count = this.count || 0;
+
+			x -= graph.getPaddingLeft( ),
+			xVal = graph.getXAxis().getVal( x );
+
+			var color = Util.getNextColorRGB(this.count, 100);
+
+			var shape = graph.makeShape({
+				type: 'surfaceUnderCurve', 
+				pos: {
+					x: xVal, 
+					y: 0
+				}, 
+				pos2: {
+					x: xVal,
+					y: 0
+				},
+				fillColor: 'rgba(' + color + ', 0.3)',
+				strokeColor: 'rgba(' + color + ', 0.9)',
+			
+				onChange: function(newData) {
+					self.triggerEvent('onAnnotationChange', newData);
+				}
+			}, {}, true);
+
+			if( ! shape ) {
+				return;
+			}
+
+			this.count ++;
+			shape.handleMouseDown( e, true );
+			shape.draw( );
+		}
+	}
+
+
+
+	Graph.prototype.plugins.nmrintegral = function() { };
+	Graph.prototype.plugins.nmrintegral.prototype = {
+
+		init: function() {},
+		
+		onMouseDown: function(graph, x, y, e, target) {
 			var self = graph;
 			this.count = this.count || 0;
 			x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal(x);
@@ -1410,14 +1462,22 @@ define(['jquery', 'util/util'], function($, Util) {
 					}
 			}, {}, true);
 
-			if(!shape)
+			if(!shape) {
 				return;
+			}
 
 			this.count++;
+
 			shape.handleMouseDown(e, true);
 			shape.draw();
+			console.log(shape);
 		}
 	}
+
+
+
+
+
 
 
 
@@ -1516,6 +1576,9 @@ define(['jquery', 'util/util'], function($, Util) {
 			graph.drawSeries();
 		}
 	}
+
+
+
 
 	/****************************************************/
 	/*** GRAPH AXIS *************************************/
@@ -4390,13 +4453,14 @@ define(['jquery', 'util/util'], function($, Util) {
 */
 		draw: function() {
 
-			if(this.labelNumber == undefined)
-				this.setLabelNumber(1);
+			if( this.labelNumber == undefined ) {
+				this.setLabelNumber( 1 );
+			}
 
-			this.setFillColor();
-			this.setStrokeColor();
-			this.setStrokeWidth();
-			this.setDashArray();
+			this.setFillColor( );
+			this.setStrokeColor( );
+			this.setStrokeWidth( );
+			this.setDashArray( );
 
 			this.everyLabel(function(i) {
 
@@ -4421,6 +4485,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		//	this.kill();
 			var variable;
 			this.position = this.setPosition();
+			console.log( this.position );
 			this.redrawImpl();
 			if(!this.position)
 				return;
@@ -4555,8 +4620,9 @@ define(['jquery', 'util/util'], function($, Util) {
 		},
 
 		_parsePercent: function(percent) {
-			if(percent && percent.indexOf && percent.indexOf('px') > -1)
+			if(percent && percent.indexOf && percent.indexOf('px') > -1) {
 				return percent;
+			}
 			return false;	
 		},
 
@@ -5058,7 +5124,8 @@ define(['jquery', 'util/util'], function($, Util) {
 					this.preventUnselect = true;
 
 				this.coordsI = coords;
-				this.setPosition();
+				this.position = this.setPosition();
+				
 				this.redrawImpl();
 
 			} else if(this.resize) {
@@ -5067,7 +5134,8 @@ define(['jquery', 'util/util'], function($, Util) {
 				if(!value)
 					return;
 
-				this.setPosition();
+				this.position = this.setPosition();
+
 				if(this.resizingPosition.x != value.xMin)
 					this.preventUnselect = true;
 
@@ -5079,7 +5147,9 @@ define(['jquery', 'util/util'], function($, Util) {
 		redrawImpl: function() {
 			//var doDraw = this.setPosition();
 		//	this.setDom('fill', 'url(#' + 'patternFill' + this.graph._creation + ')')
+		console.log( 'Do', this.position, this.doDraw );
 			if(this.position != this.doDraw) {
+				console.log('Pass');
 				this.group.setAttribute("visibility", this.position ? "visible" : 'hidden');
 				this.doDraw = this.position;
 			}
@@ -5098,7 +5168,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				return false;
 			}
 
-
+console.log('pass');
 			var v1 = this.serie.searchClosestValue(this.getFromData(this.reversed ? 'pos2' : 'pos').x),
 				v2 = this.serie.searchClosestValue(this.getFromData(this.reversed ? 'pos' : 'pos2').x),
 				i, 
@@ -5114,13 +5184,16 @@ define(['jquery', 'util/util'], function($, Util) {
 				maxY = 0,
 				minY = Number.MAX_VALUE;
 
-			if(!v1 || !v2)
+			if(!v1 || !v2) {
 				return false;
+			}
+
 			for(i = v1.dataIndex; i <= v2.dataIndex ; i++) {
 				currentLine = "M ";
 				init = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
 				max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[i].length;
 				k = 0;
+				console.log(init, max);
 				for(j = init; j <= max; j+=2) {
 					x = this.serie.getX(this.serie.data[i][j + 0]),
 					y = this.serie.getY(this.serie.data[i][j + 1]);
@@ -5136,8 +5209,10 @@ define(['jquery', 'util/util'], function($, Util) {
 
 				this.lastX = x;
 				this.lastY = y;
-				if(!this.firstX || !this.firstY || !this.lastX || !this.lastY)
+				if(!this.firstX || !this.firstY || !this.lastX || !this.lastY) {
+					console.log(this.firstX, this.firstY, this.lastX, this.lastY);
 					return;
+				}
 
 				currentLine += " V " + this.serie.getYAxis().getPx(0) + " H " + this.firstX + " z";
 				this.setDom('d', currentLine);

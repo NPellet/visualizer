@@ -1,4 +1,4 @@
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller', 'libs/formcreator/formcreator'], function(Default, FormCreator) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
@@ -68,99 +68,7 @@ define(['modules/defaultcontroller'], function(Default) {
 				},
 
 				sections: {
-					filterElement: {
-
-						options: {
-							multiple: true,
-							title: "Filtering field"
-						},
-
-						groups: {
-							general: {
-								options: {
-									type: 'list'
-								},
-
-								fields: {
-
-
-									name: {
-										type: 'text',
-										title: 'Field name'
-									},
-
-									label: {
-										type: 'text',
-										title: 'Field label'
-									},
-
-									type: {
-										type: 'combo',
-										title: 'Field type',
-										options: [
-											{ title: 'Text', key: 'text' },
-											{ title: 'Combo', key: 'combo' },
-											{ title: 'Slider', key: 'slider' }
-										],
-
-										displaySource:  {
-											'text': 'text',
-											'combo': 'combo',
-											'slider': 'slider',
-										}
-									}
-								}
-							},
-
-
-							slider: {
-
-								options: {
-									type: 'list',
-									displayTarget: [ 'slider' ]
-								},
-
-								fields: {
-
-									start: {
-										type: 'text',
-										title: 'Start'
-									},
-
-									end: {
-										type: 'text',
-										title: 'End'
-									},
-
-									step: {
-										type: 'text',
-										title: 'Step'
-									}
-								}
-							},
-
-							options: {
-								options: {
-									type: 'table',
-									multiple: true,
-									displayTarget: [ 'combo', 'checkbox' ]
-								},
-
-								fields: {
-
-									label: {
-										type: 'text',
-										title: 'Label'
-									},
-
-									value: {
-										type: 'text',
-										title: 'Value'
-									}
-								}
-							}
-						}
-					}
+					filterElement: : FormCreator.makeConfig( )
 				}
 			}
 		},

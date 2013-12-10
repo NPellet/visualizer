@@ -59,33 +59,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api'], function(Defa
 			this.form = form;
 		},
 		
-
-		update: {
-			source: function(moduleValue, varName) {
-
-				var self = this;
-
-				if ( ! moduleValue ) {
-					return;
-				}
-
-				this.value = moduleValue;
-
-				form.onLoaded( ).done(function( ) {
-
-					form.eachFieldsElements( function( fieldElement ) {
-
-						var jpath = fieldElement.field.options.jpath;
-
-						self.value.getChild( jpath ).done( function( val ) {
-
-							fieldElement.value = val;
-
-						} );
-					} );
-				} );
-			}
-		},
+		update: { },
 
 		getDom: function() {
 			return this.dom;

@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/api', 'util/typerenderer'], function(Default, Traversing, DomDeferred, API, Renderer) {
+define(['modules/defaultview', 'util/datatraversing', 'util/api', 'util/typerenderer', 'libs/formcreator/formcreator'], function(Default, Traversing, API, Renderer, FormCreator) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -20,7 +20,6 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				l = filters.length,
 				j = 0,
 				k = varsoutCfg.length,
-				allFields = { },
 				cfg = {
 					sections: {
 						cfg: {
@@ -29,7 +28,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 									options: {
 										type: 'list'
 									},
-									fields: allFields
+									fields: FormCreator.makeStructure( filters )
 								}
 							}
 						}
@@ -40,51 +39,32 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 				varsout.push( varsoutCfg[ j ].name );
 			}
 			
-			for( ; i < l ; i ++ ) {
+			var form = FormCreator.makeForm();
+			
+			form.init( {
+				onValueChanged: function( value ) {
+					var cfg = form.getValue().sections.cfg[ 0 ].groups.cfg[ 0 ],
+						cfgFinal = {};
 
-				if( ! filters[ i ].groups.general ) {
-					continue;
-				}
-
-				allFields[ filters[ i ].groups.general[ 0 ].name[ 0 ] ] = {
-					type: filters[ i ].groups.general[ 0 ].type[ 0 ],
-					title: filters[ i ].groups.general[ 0 ].label[ 0 ]
-				};
-
-				this.makeOptions( allFields[ filters[ i ].groups.general[ 0 ].name[ 0 ] ], filters[ i ] );
-			}
-
-
-			require( [ './libs/forms2/form' ], function( Form ) {
-
-				var form = new Form( );
-				
-				form.init( {
-					onValueChanged: function( value ) {
-						var cfg = form.getValue().sections.cfg[ 0 ].groups.cfg[ 0 ],
-							cfgFinal = {};
-
-						for( var i in cfg ) {
-							cfgFinal[ i ] = cfg[ i ][ 0 ];
-						}
-
-						$.extend( self.cfgValue, cfgFinal );
-						self.filter();
+					for( var i in cfg ) {
+						cfgFinal[ i ] = cfg[ i ][ 0 ];
 					}
-				} );
 
-				form.setStructure( cfg );
-				form.onStructureLoaded().done(function() {
-					form.fill({ });
-				});
+					$.extend( self.cfgValue, cfgFinal );
+					self.filter();
+				}
+			} );
 
-				form.onLoaded( ).done( function( ) {
-					self.dom.html( form.makeDom( 2 ) );
-					form.inDom();
-				});
+			form.setStructure( cfg );
+			form.onStructureLoaded().done(function() {
+				form.fill({ });
 			});
 
-
+			form.onLoaded( ).done( function( ) {
+				self.dom.html( form.makeDom( 2 ) );
+				form.inDom();
+			});
+		
 			this._filter = ( function( API, _cfg, _varsIn, _varsOut, script ) {
 
 				var _varsToSet = [];
@@ -125,43 +105,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/domdeferred', 'util/
 			}) ( API, this.cfgValue, this.variables, varsout, script );
 
 		},
-		
-
-		makeOptions: function( cfg, form ) {
-
-			var type = form.groups.general[ 0 ].type[ 0 ];
-
-			switch( type ) {
-
-				case 'combo':
-					cfg.options = this.makeComboOptions( form )
-				break;
-
-				case 'slider':
-					cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
-					cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
-					cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
-				break;
-
-			}
-		},
-
-		makeComboOptions: function( form ) {
-			
-			form = form.groups.options[ 0 ];
-
-			var i = 0,
-				l = form.length,
-				cfg = [];
-
-			for( ; i < l ; i ++ ) {
-				cfg.push({ title: form[ i ].label, key: form[ i ].value });
-			}
-
-			return cfg;
-		},
-
-
+	
 		blank: {
 			value: function(varName) {
 				this.dom.empty();

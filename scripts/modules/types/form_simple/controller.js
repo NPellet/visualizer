@@ -1,5 +1,5 @@
 
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller', 'libs/formcreator/formcreator'], function(Default, FormCreator) {
 	
 	function controller() {};
 	controller.prototype = $.extend(true, {}, Default, {
@@ -14,7 +14,6 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 		
 		configurationReceive: {
-
 		},
 		
 		configurationStructure: function() {
@@ -22,30 +21,8 @@ define(['modules/defaultcontroller'], function(Default) {
 			return {
 				sections: {
 
-					structure: {
-
-						options: {
-							title: 'Form structure'
-						},
-
-						groups: {
-							group: {
-								options: {
-									type: 'list'
-								},
-
-								fields: {
-
-									json: {
-										type: 'textarea',
-										title: 'Form structure'
-									}
-								}
-							}
-						}
-					},
-				
-
+					structure: FormCreator.makeConfig(),
+			
 					template: {
 
 						options: {
@@ -82,7 +59,7 @@ define(['modules/defaultcontroller'], function(Default) {
 		},
 
 		configAliases: {
-			structure: [ 'sections', 'structure', 0, 'groups', 'group', 0, 'json', 0 ],
+			structure: [ 'sections', 'structure' ],
 			tpl_file: [ 'sections', 'template', 0, 'groups', 'template', 0, 'file', 0 ],
 			tpl_html: [ 'sections', 'template', 0, 'groups', 'template', 0, 'html', 0 ]
 		}

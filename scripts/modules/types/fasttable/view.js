@@ -116,6 +116,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 				return;
 	 			}
 
+	 			moduleValue = moduleValue.get();
+	 			
 				var self = this, 
 					jpaths = this.module.getConfiguration( 'colsjPaths' ),
 					nbLines = this.module.getConfiguration( 'nbLines' ) || 20,

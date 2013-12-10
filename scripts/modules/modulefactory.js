@@ -37,6 +37,7 @@ define(['modules/module'], function(Module) {
 					'object_editor': 'Object editor (?)',
 					'filter': 'General filtering',
 					'form': 'Form',
+					'form_simple': 'Simple form',
 					'var_editor': 'Data manipulation'
 					//'array_search': 'Data searching'
 				},
@@ -47,6 +48,7 @@ define(['modules/module'], function(Module) {
 				},
 
 				'Science': {
+					'1dnmr': '1D NMR',
 					'2dnmr': '2D NMR',
 					'spectra_displayer': 'Spectra displayer',
 					'webservice_nmr_spin': 'NMR spin system simulation',

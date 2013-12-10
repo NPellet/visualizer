@@ -95,9 +95,8 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 		},
 
 		setTpl: function( tpl ) {
-			console.log(tpl);
+		
 			tpl = $( tpl );
-			console.log( tpl.html() );
 			this._setTpl( tpl );
 		},
 

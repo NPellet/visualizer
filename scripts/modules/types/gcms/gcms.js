@@ -184,13 +184,19 @@ define(['jquery', 'libs/plot/plot'], function($, Graph) {
 
 				plugins: ['zoom', 'drag', 'verticalLine'],
 
-				onAnnotationMake: function(annot) {
-					annot._msIon = new DataObject({ name: annot.id, data: [], lineColor: annot.fillColor || annot.strokeColor, lineWidth: '2' });
+				onAnnotationMake: function( annot ) {
+					annot._msIon = new DataObject({ 
+						name: annot.id, 
+						data: [], 
+						lineColor: annot.fillColor || annot.strokeColor, 
+						lineWidth: '2'
+					});
+					
 					this.options.onAnnotationChange(annot);
 					self.onAnnotationMake(annot);
 				},
 
-				onAnnotationChange: function(annot) {
+				onAnnotationChange: function( annot ) {
 
 					var annot = new DataObject(annot, true);
 

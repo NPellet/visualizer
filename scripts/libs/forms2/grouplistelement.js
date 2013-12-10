@@ -79,7 +79,6 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			switch( content[ 0 ] ) {
 
 				case 'field':
-console.log(self.fieldElements);	
 					if( self.fieldElements[ content[ 1 ] ] ) {
 
 						switch( content[ 2 ] ) {
