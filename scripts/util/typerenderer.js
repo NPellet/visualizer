@@ -34,6 +34,10 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 	functions.jpg = functions.picture;
 	functions.png = functions.picture;
 
+	functions.doi = {};
+	functions.doi.toscreen = function(def, value) {
+		return def.resolve(value.value.replace(/^(.*)$/,'<a target="_blank" href="http://dx.doi.org/$1"><img src="../images/logo/doi.png" /></a>'));
+	}
 
 	functions.mol2d = {};
 	functions.mol2d.toscreen = function(def, molfile, options, highlights, box) {

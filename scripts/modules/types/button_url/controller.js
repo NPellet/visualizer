@@ -62,7 +62,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 		doConfiguration: function(section) {
 			
 			var jpaths = [], data;
-			if((data = this.module.getDataFromRel('list') && data != null)
+			if(data = this.module.getDataFromRel('list') && data != null)
 				Traversing.getJPathsFromElement(data[0], jpaths);
 			
 			return {

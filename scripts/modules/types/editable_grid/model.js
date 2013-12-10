@@ -37,7 +37,7 @@ define(['modules/defaultmodel','util/datatraversing'], function(Default,Traversi
 		}
 
 
-	}
+	});
 
 	return model;
 });
