@@ -38,7 +38,7 @@ define( [ ], function(  ) {
 			//	this.fieldElement.trigger( 'focus' );
 			//	this.form.hideExpander( true );				
 			} else {
-				this.div.html( 'ad' );
+				this.div.html( '' );
 			}
 		}
 

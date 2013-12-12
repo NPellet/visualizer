@@ -112,8 +112,8 @@
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 101,
-				"top": 9
+				"left": 97,
+				"top": 0
 			},
 			"size": {
 				"width": 19.01818182468414,
@@ -168,6 +168,74 @@
 					"event": "onSelect",
 					"rel": "element",
 					"jpath": "element.pdb",
+					"name": "pdb"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "dragdrop",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 97,
+				"top": 24
+			},
+			"size": {
+				"width": 30.01818182468414,
+				"height": 17.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"label": [
+								"Drop .pdb or .magres file"
+							],
+							"filter": [
+								null
+							]
+						}
+					],
+					"vars": [
+						[
+							{
+								"extension": "magres",
+								"filetype": "text",
+								"type": "magres",
+								"variable": "pdb"
+							},
+							{
+								"extension": "pdb",
+								"filetype": "text",
+								"type": "pdb",
+								"variable": "pdb"
+							}
+						]
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onDropped",
+					"rel": "object",
+					"jpath": "_2",
 					"name": "pdb"
 				}
 			],

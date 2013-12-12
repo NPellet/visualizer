@@ -23,7 +23,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], functio
 		
 		configurationReceive: {
 			data: {
-				type: ['pdb', 'mol3d'],
+				type: ['pdb', 'mol3d', 'magres'],
 				label: 'A molecule/protein data',
 				description: ''
 			}

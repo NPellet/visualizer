@@ -594,6 +594,7 @@ define(function() {
 		},
 
 		"pdb": "string",
+		"magres": "string",
 		"jsmolscript": "string",
 	};
 
