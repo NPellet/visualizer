@@ -110,8 +110,8 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 		},
 
 		_makeOp: function( op, val ) {
-
-			val = "self.cfgValue[ '" + val + "' ] ";
+console.log(op, val);
+			val = "self.cfgValue[ '" + val + "' ]";
 			switch( op ) {
 
 				case '=':
@@ -158,9 +158,9 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 				break;
 
 				case 'btw':
-					if( val instanceof Array ) {
-						return " ( el > parseFloat( " + val[ 0 ] + " ) && el < parseFloat( " + val[ 1 ] + " ) ";
-					}
+					//if( val instanceof Array ) {
+						return " ( el > parseFloat( " + val + "[0] ) && el < parseFloat( " + val + "[1] ) )";
+					//}
 				break;
 			}
 
@@ -219,7 +219,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 			//toEval += add;
 			//toEval += " return a; ";
 			toEval += "};";
-
+console.log( toEval );
 			try {
 				eval( toEval );
 			} catch( e ) {
