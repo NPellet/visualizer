@@ -68,7 +68,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 			var colorjpath = this.module.getConfiguration( 'colorjPath' );
 			if(colorjpath) {
-				eval('this.colorjpath = function( el ) { return el' + colorjpath.replace(/^element/, '').replace(/\.([0-9]+)\./g,"[$1].") + '; }');	
+				Util.addjPathFunction( undefined, jpaths[ j ].jpath, this.colorjpath);
 			}
 		
 			this.domHead.html( thead );

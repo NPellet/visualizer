@@ -154,7 +154,9 @@ define(['util/api'], function(API) {
 			return color;
 		},
 
-		addjPathFunction: function( stack, jpath ) {
+		
+
+		addjPathFunction: function( stack, jpath, el ) {
 
 			var jpaths2 = jpath.replace(/^element\./, ''),
 				splitted = jpaths2.split('.'),
@@ -177,8 +179,11 @@ define(['util/api'], function(API) {
 			}
 
 			ifString = ifString.replace(regNum,"[$1].").replace(regNumEnd, "[$1]");
-console.log('stack[ "' + jpath + '" ] = function( el ) { if(' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1].").replace(regNumEnd, "[$1]") + '; }');
-			eval('stack[ "' + jpath + '" ] = function( el ) { if(' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1].").replace(regNumEnd, "[$1]") + '; }');
+
+			if( stack ) {
+				eval( ( stack ? 'stack[ "' + jpath + '" ] ' : 'el' ) + '= function( el ) { if(' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1].").replace(regNumEnd, "[$1]") + '; }');	
+			}
+			
 		}
 	}
 });
