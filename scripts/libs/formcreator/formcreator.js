@@ -61,12 +61,17 @@ define([ 'libs/forms2/form'], function( Form ) {
 
 							name: {
 								type: 'text',
-								title: 'Search name'
+								title: 'Field name'
 							},
 
 							label: {
 								type: 'text',
-								title: 'Search label'
+								title: 'Field label'
+							},
+
+							defaultVal: {
+								type: 'text',
+								title: 'Default value'
 							},
 
 							type: {
@@ -184,9 +189,12 @@ define([ 'libs/forms2/form'], function( Form ) {
 					continue;
 				}
 
+				var defaultVal = fields[ i ].groups.general[ 0 ].defaultVal ? fields[ i ].groups.general[ 0 ].defaultVal[ 0 ] : ''
+
 				allFields[ fields[ i ].groups.general[ 0 ].name[ 0 ] ] = {
 					type: 	fields[ i ].groups.general[ 0 ].type[ 0 ],
-					title: 	fields[ i ].groups.general[ 0 ].label[ 0 ]
+					title: 	fields[ i ].groups.general[ 0 ].label[ 0 ],
+					default: defaultVal
 				};
 
 				if( callback ) {

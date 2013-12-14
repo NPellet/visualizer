@@ -97,7 +97,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 
 
 			val = val.get();
-			
+				
 			l = val.length;
 
 			for( ; i < l ; i ++ ) {
