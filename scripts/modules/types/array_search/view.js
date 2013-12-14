@@ -86,7 +86,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 
 			var self = this,
 				cfg = this.cfgValue,
-				val = this.module.getDataFromRel( 'array' ).value, // TODO fix so that it works in all cases
+				val = this.module.getDataFromRel( 'array' ).get(),
 				i = 0,
 				l = val.length,
 				target = new DataArray();
