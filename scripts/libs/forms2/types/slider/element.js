@@ -100,9 +100,6 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 
 			valueWrap.append( '<span>Max</span>' ).append( valueInput[ 1 ] );
 		}
-	
-
-
 
 		this.fieldElement = div;
 		this.div = div;

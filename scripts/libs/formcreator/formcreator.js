@@ -15,6 +15,9 @@ define([ 'libs/forms2/form'], function( Form ) {
 				cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
 				cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
 				cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
+				cfg.range = form.groups.slider[ 0 ].range[ 0 ].indexOf( 'range' ) > -1;
+
+				console.log(form.groups.slider[ 0 ].range[ 0 ]);
 			break;
 		}
 	};
