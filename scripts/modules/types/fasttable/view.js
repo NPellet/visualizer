@@ -59,7 +59,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 					continue;
 				}
 
-				eval('this.jpaths[ jpaths[ j ].jpath ] = function( el ) { return el' + jpaths[ j ].jpath.replace(/^element/, '').replace(/\.([0-9]+)\./g,"[$1].") + '; }');
+				Util.addjPathFunction( this.jpaths, jpaths[ j ].jpath );
 				thead += '<th>' + jpaths[ j ].name + '</th>';
 			}
 			thead += '</tr>';
