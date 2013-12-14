@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcreator/formcreator'], function(Default, Traversing, API, FormCreator) {
+define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcreator/formcreator', 'util/util'], function(Default, Traversing, API, FormCreator, Util) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -27,10 +27,9 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 										type: 'list'
 									},
 									fields: FormCreator.makeStructure( searchfields, function( field ) {
-										console.log(field);
+										
 										for( var k = 0, m = field.groups.general[ 0 ].searchOnField.length; k < m, field.groups.general[ 0 ].searchOnField[ k ] ; k ++) {
-
-											eval('self._jpathsFcts[ "' + field.groups.general[ 0 ].searchOnField[ k ] + '" ] = function( el ) { return el' + field.groups.general[ 0 ].searchOnField[ k ].replace(/^element/, '') + '; }');
+											Util.addjPathFunction(self._jpathsFcts, field.groups.general[ 0 ].searchOnField[ k ]);
 										}
 									} )
 								}
@@ -84,12 +83,19 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 
 		search: function() {
 
+
 			var self = this,
 				cfg = this.cfgValue,
-				val = this.module.getDataFromRel( 'array' ).get(),
+				val = this.module.getDataFromRel( 'array' ),
 				i = 0,
 				l = val.length,
 				target = new DataArray();
+
+			if( ! val ) {
+				return;
+			}
+
+			val = val.get();
 
 
 			for( ; i < l ; i ++ ) {

@@ -152,6 +152,33 @@ define(['util/api'], function(API) {
 				}
 			}
 			return color;
+		},
+
+		addjPathFunction: function( stack, jpath ) {
+
+			var jpaths2 = jpath.replace(/^element\./, ''),
+				splitted = jpaths2.split('.'),
+				i = 0,
+				l = splitted.length,
+				ifString = '',
+				ifElement = '',
+				regNum = /\.([0-9]+)\./g,
+				regNumEnd = /\.([0-9]+)/g;
+
+			for( ; i < l ; i ++ ) {
+
+				if( i > 0 ) {
+					ifString += ' && ';
+				}
+
+				ifElement += splitted[ i ];
+				ifString += 'el.' + ifElement + ' !== undefined ';
+				ifElement += '.';
+			}
+
+			ifString = ifString.replace(regNum,"[$1].").replace(regNumEnd, "[$1]");
+console.log('stack[ "' + jpath + '" ] = function( el ) { if(' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1].").replace(regNumEnd, "[$1]") + '; }');
+			eval('stack[ "' + jpath + '" ] = function( el ) { if(' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1].").replace(regNumEnd, "[$1]") + '; }');
 		}
 	}
 });
