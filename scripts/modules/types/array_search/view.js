@@ -88,7 +88,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 				cfg = this.cfgValue,
 				val = this.module.getDataFromRel( 'array' ),
 				i = 0,
-				l = val.length,
+				l,
 				target = new DataArray();
 
 			if( ! val ) {
@@ -96,7 +96,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 			}
 
 			val = val.get();
-
+			l = val.length;
 
 			for( ; i < l ; i ++ ) {
 				if( this.searchElement( cfg, val[ i ] ) ) {
@@ -217,7 +217,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 			//toEval += add;
 			//toEval += " return a; ";
 			toEval += "};";
-
+console.log(toEval);
 			try {
 				eval( toEval );
 			} catch( e ) {

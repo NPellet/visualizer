@@ -16,8 +16,14 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this.domTable.on('mouseover', 'tr', function() {
 
 	 			if(this !== lastTr) {
-	 				var el = self.module.data[ parseInt( $(this).attr('data-row-id') ) ];
-	 				self.module.controller.lineHover( el );
+
+	 				var dataRowId = parseInt( $(this).attr('data-row-id') ),
+	 					el;
+	 					
+	 				if( ! isNaN ( dataRowId ) ) {
+		 				el = self.module.data[ dataRowId ];
+		 				self.module.controller.lineHover( el );
+		 			}
 	 			}
 				lastTr = this;
 
