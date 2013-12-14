@@ -52,7 +52,8 @@ define(['modules/defaultcontroller'], function(Default) {
 								default: 0.4,
 								min: -1,
 								max: 5,
-								step: 0.001
+								step: 0.001,
+								range: false
 							},
 
 							defaultvalue: {

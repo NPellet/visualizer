@@ -116,7 +116,14 @@ define([ 'libs/forms2/form'], function( Form ) {
 							step: {
 								type: 'text',
 								title: 'Step'
+							},
+
+							range: {
+								type: 'checkbox',
+								title: 'Range',
+								options: {'range': ''}
 							}
+
 						}
 					},
 
