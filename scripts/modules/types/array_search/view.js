@@ -95,7 +95,9 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 				return;
 			}
 
+
 			val = val.get();
+			
 			l = val.length;
 
 			for( ; i < l ; i ++ ) {
@@ -217,7 +219,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 			//toEval += add;
 			//toEval += " return a; ";
 			toEval += "};";
-console.log(toEval);
+
 			try {
 				eval( toEval );
 			} catch( e ) {
@@ -236,10 +238,10 @@ console.log(toEval);
 
 		update: {
 			
-			variable: function( variableValue, variableName ) {
-				variableValue = Traversing.get( variableValue );
-
-				this.variables[ variableName ] = variableValue;
+			array: function( variableValue, variableName ) {
+				
+				//variableValue = Traversing.get( variableValue );
+				//this.variables[ variableName ] = variableValue;
 				this.search( );
 			}
 		},
