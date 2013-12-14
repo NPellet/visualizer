@@ -161,7 +161,7 @@ define(['util/api'], function(API) {
 			var jpaths2 = jpath.replace(/^element\./, ''),
 				splitted = jpaths2.split('.'),
 				i = 0,
-				l = splitted.length,
+				l = splitted.length-1,
 				ifArray = [],
 				ifString = '',
 				ifElement = '',
@@ -174,9 +174,10 @@ define(['util/api'], function(API) {
 			}
 
 			ifString = ifArray.join(" && ").replace(regNum,"[$1]$2");
+			if (! ifString) ifString="true";
 
 			if( stack ) {
-				eval( ( stack ? 'stack[ "' + jpath + '" ] ' : 'el' ) + '= function( el ) { return ' + ifString + '? el.' + jpaths2.replace(regNum, "[$1]$2") + ': ""; }');	
+				eval( ( stack ? 'stack[ "' + jpath + '" ] ' : 'el' ) + '= function( el ) { if (' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1]$2") + '; else return "" }');	
 			}
 			
 		}
