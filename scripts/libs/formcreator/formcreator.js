@@ -165,7 +165,7 @@ define([ 'libs/forms2/form'], function( Form ) {
 						{ title: '>', key: '>' },
 						{ title: '<', key: '<' },
 						{ title: 'between', key: 'btw' },
-						{ title: 'starts with', key: 'start' },
+						{ title: 'starts with', key: 'starts' },
 						{ title: 'end with', key: 'end' },
 						{ title: 'contains', key: 'contains' },
 						{ title: 'does not contain', key: 'notcontain' }

@@ -149,7 +149,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 					return " ! el.match(" + val + ") ";
 				break;
 
-				case 'start':
+				case 'starts':
 					return " el.match(new RegExp('^'+" + val + ")) ";
 				break;
 
