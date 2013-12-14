@@ -162,26 +162,21 @@ define(['util/api'], function(API) {
 				splitted = jpaths2.split('.'),
 				i = 0,
 				l = splitted.length,
+				ifArray = [],
 				ifString = '',
 				ifElement = '',
-				regNum = /\.([0-9]+)\./g,
-				regNumEnd = /\.([0-9]+)/g;
+				regNum = /\.([0-9]+)(\.?)/g;
 
 			for( ; i < l ; i ++ ) {
-
-				if( i > 0 ) {
-					ifString += ' && ';
-				}
-
 				ifElement += splitted[ i ];
-				ifString += 'el.' + ifElement + ' !== undefined ';
+				ifArray .push ('el.' + ifElement + ' !== undefined ');
 				ifElement += '.';
 			}
 
-			ifString = ifString.replace(regNum,"[$1].").replace(regNumEnd, "[$1]");
+			ifString = ifArray.join(" && ").replace(regNum,"[$1]$2");
 
 			if( stack ) {
-				eval( ( stack ? 'stack[ "' + jpath + '" ] ' : 'el' ) + '= function( el ) { if(' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1].").replace(regNumEnd, "[$1]") + '; }');	
+				eval( ( stack ? 'stack[ "' + jpath + '" ] ' : 'el' ) + '= function( el ) { return ' + ifString + '? el.' + jpaths2.replace(regNum, "[$1]$2") + ': ""; }');	
 			}
 			
 		}
