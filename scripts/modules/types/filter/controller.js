@@ -68,7 +68,7 @@ define(['modules/defaultcontroller', 'libs/formcreator/formcreator'], function(D
 				},
 
 				sections: {
-					filterElement: : FormCreator.makeConfig( )
+					filterElement: FormCreator.makeConfig( )
 				}
 			}
 		},

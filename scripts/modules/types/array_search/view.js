@@ -27,10 +27,12 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 										type: 'list'
 									},
 									fields: FormCreator.makeStructure( searchfields, function( field ) {
-										for( var k = 0, m = field.groups.general[ 0 ].searchOnField.length; k < m ; k ++) {
-											eval('this._jpathsFcts[ "' + fields[ i ].groups.general[ 0 ].searchOnField[ k ] + '" ] = function( el ) { return el' + fields[ i ].groups.general[ 0 ].searchOnField[ k ].replace(/^element/, '') + '; }');
+										console.log(field);
+										for( var k = 0, m = field.groups.general[ 0 ].searchOnField.length; k < m, field.groups.general[ 0 ].searchOnField[ k ] ; k ++) {
+
+											eval('self._jpathsFcts[ "' + field.groups.general[ 0 ].searchOnField[ k ] + '" ] = function( el ) { return el' + field.groups.general[ 0 ].searchOnField[ k ].replace(/^element/, '') + '; }');
 										}
-									} );
+									} )
 								}
 							}
 						}
@@ -155,7 +157,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 			toEval += " var el; "
 
 
-			toEval += " var a = "
+			toEval += " return "
 			for( ; i < l ; i ++ ) {
 
 				searchOn = searchfields[ i ].groups.general[ 0 ].searchOnField || [];
@@ -189,11 +191,15 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 			}
 
 			toEval += "; ";
-			toEval += add;
-			toEval += " return a; ";
+			//toEval += add;
+			//toEval += " return a; ";
 			toEval += "};";
-
-			eval( toEval );
+			try {
+				eval( toEval );
+			} catch( e ) {
+				console.error("Error while evaluating function.")
+				console.log( toEval );
+			}
 		},
 
 		searchElement: function( cfg, row ) {

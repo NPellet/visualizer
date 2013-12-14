@@ -186,7 +186,7 @@ define([ 'libs/forms2/form'], function( Form ) {
 				};
 
 				if( callback ) {
-					callback.call( fields[ i ] )
+					callback( fields[ i ], allFields[ fields[ i ].groups.general[ 0 ].name[ 0 ] ] );
 				}
 
 				makeOptions( allFields[ fields[ i ].groups.general[ 0 ].name[ 0 ] ], fields[ i ] );
