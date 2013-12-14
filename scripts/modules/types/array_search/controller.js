@@ -37,7 +37,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'libs/formcreator/fo
 		configurationStructure: function(section) {
 
 			var all_jpaths = [],
-				arr = this.module.getDataFromRel('array');
+				arr = this.module.getDataFromRel('array').get();
 
 			if( arr ) {
 				Traversing.getJPathsFromElement( arr[ 0 ], all_jpaths );
