@@ -79,19 +79,20 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 			}
 		},
 		
-		inDom: function() { },
+		inDom: function() { 
+		},
 
 		search: function() {
 
 			var self = this,
 				cfg = this.cfgValue,
-				val = this.module.getDataFromRel( 'array' ),
+				val = this.module.getDataFromRel( 'array' ).value, // TODO fix so that it works in all cases
 				i = 0,
 				l = val.length,
 				target = new DataArray();
 
-			for( ; i < l ; i ++ ) {
 
+			for( ; i < l ; i ++ ) {
 				if( this.searchElement( cfg, val[ i ] ) ) {
 					target.push( val[ i ] );
 				}
@@ -130,6 +131,22 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 
 				case '<=':
 					return " el <= parseFloat( " + val + " ) ";
+				break;
+
+				case 'contains':
+					return " el.match(" + val + ") ";
+				break;
+
+				case 'notcontain':
+					return " ! el.match(" + val + ") ";
+				break;
+
+				case 'start':
+					return " el.match(new RegExp('^'+" + val + ")) ";
+				break;
+
+				case 'end':
+					return " el.match(new RegExp(" + val + "+'$')) ";
 				break;
 
 				case 'btw':
@@ -194,6 +211,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 			//toEval += add;
 			//toEval += " return a; ";
 			toEval += "};";
+
 			try {
 				eval( toEval );
 			} catch( e ) {
@@ -213,7 +231,6 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 		update: {
 			
 			variable: function( variableValue, variableName ) {
-				
 				variableValue = Traversing.get( variableValue );
 
 				this.variables[ variableName ] = variableValue;
