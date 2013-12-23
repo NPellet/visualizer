@@ -110,7 +110,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 		},
 
 		_makeOp: function( op, val ) {
-console.log(op, val);
+
 			val = "self.cfgValue[ '" + val + "' ]";
 			switch( op ) {
 

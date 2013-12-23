@@ -1,0 +1,32 @@
+.ci-module-fasttable .ci-module-content {
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.ci-module-fasttable table {
+	table-layout: fixed;
+}
+
+.ci-module-fasttable td, .ci-module-fasttable th {
+	padding: 3px;
+	border-right: 1px solid #777777;
+	border-bottom: 1px solid #777777;
+}
+
+
+.ci-module-fasttable tr.ci-highlight {
+	background-color: #e5be39 !important;
+}
+
+.ci-module-fasttable thead th {
+	border-bottom: 1px solid #777777;
+}
+
+.ci-module-fasttable th {
+	padding: 3px;
+	background-color: #d3d3d3;
+	padding-top: 4px;
+	height: 19px;
+	font-weight: normal;
+	font-size: 1em;
+}
