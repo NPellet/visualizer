@@ -1,5 +1,5 @@
 
-define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'util/datatraversing', 'util/versioning', 'modules/modulefactory', 'util/viewmigration'], function($, Repository, Grid, API, Context, Traversing, Versioning, ModuleFactory, Migration) {
+define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'util/context', 'util/datatraversing', 'util/versioning', 'modules/modulefactory', 'util/viewmigration'], function($, Header, Repository, Grid, API, Context, Traversing, Versioning, ModuleFactory, Migration) {
 
 	var _viewLoaded, _dataLoaded;
 
@@ -445,6 +445,18 @@ define(['jquery', 'util/repository', 'main/grid', 'util/api', 'util/context', 'u
 			Versioning.setData(urls['results'], urls['resultBranch'], urls['dataURL']);
 			Versioning.setDataLoadCallback(doData);
 			
+			// Sets the header
+			$.getJSON( urls.config, { }, function( cfgJson ) {
+				if( cfgJson.header ) {
+					Header.init( cfgJson.header );
+				}
+
+				if( cfgJson.modules ) {
+					ModuleFactory.setModules( cfgJson.modules );
+				}
+
+			} );
+
 
 			Context.init( document.getElementById( 'modules-grid' ) );
 

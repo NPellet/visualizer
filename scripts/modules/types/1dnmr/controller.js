@@ -5,47 +5,45 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 
 	};
 
-	controller.prototype = $.extend(true, {}, Default, {
+	// Extends the default properties of the default controller
+	controller.prototype = $.extend( true, {}, Default );
 
 
-		configurationSend: {
+	controller.prototype.moduleInformation = {
+		moduleName: '1D NMR',
+		description: 'Displays NMR jcamp files in the style of standard NMRs',
+		author: 'Norman Pellet',
+		date: '24.12.2013',
+		license: 'MIT'
+	};
+	
 
-			events: {
-				
-			},
-			
-			rels: {
-				
-			}
-			
-		},
-		
-		configurationReceive: {
-
-			jcamp: {
-				type: ["jcamp"],
-				label: 'Jcamp'
-			}		
-		},
-		
-		actions: {
-			//rel: {'addSerie': 'Add a serie', 'removeSerie': 'Remove a serie'}
+	controller.prototype.references = {
+		'jcamp': {
+			label: 'The jcamp file',
+			type: 'jcamp'
 		},
 
-
-		actionsReceive: {
-			
-		},
-
-
-		moduleInformations: {
-			
-		},
-		
-		configurationStructure: function(section) {
+		'plot': {
+			label: 'The Plot object',
+			type: 'object'
 		}
+	};
 
-	});
+	controller.prototype.events = {
+
+	};
+	
+	controller.prototype.variablesIn = [ 'jcamp' ];
+		
+
+	controller.prototype.actionsIn = {
+
+	};
+	
+	controller.prototype.configurationStructure = function(section) {
+
+	}
 
 	return controller;
 });

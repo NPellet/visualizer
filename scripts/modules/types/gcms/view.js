@@ -21,7 +21,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 
 			var self = this;
 			var _gcms = new gcms();
-			_gcms.setMSContinuous(this.module.getConfiguration( 'continuous' ));
+			_gcms.setMSContinuous( this.module.getConfiguration( 'continuous' ) );
 			_gcms.inDom(this.dom.find('.gc').get(0), this.dom.find('.ms').get(0));
 			_gcms.onAnnotationChange = function(annot) {
 
@@ -31,13 +31,13 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 					break;
 
 					case 'surfaceUnderCurve':
-						self.module.controller.sendAction('annotation', annot, 'onIntegralChange');
+						self.module.controller.sendAction('GCIntegration', annot, 'onGCIntegralChange');
 					break;
 
 				}
 
 				if(annot) {
-					annot.triggerChange(self.module.getId());
+					annot.triggerChange( self.module.getId( ) );
 				}
 			}
 
@@ -46,15 +46,16 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 				switch( annot.type ) {
 
 					case 'verticalLine':
-
+						// We are on the MS
 						if( annot._msIon ) {
-							self.module.controller.sendAction('msIon', annot._msIon, 'onMSTrackingAdded');	
+							self.module.controller.sendAction('MSIon', annot._msIon, 'onMSTrackingAdded');	
 						}
 
 					break;
 
+					// We are on the GC
 					case 'surfaceUnderCurve':
-						self.module.controller.sendAction('annotation', annot, 'onIntegralAdd');
+						self.module.controller.sendAction('GCIntegration', annot, 'onGCIntegralAdd');
 					break;
 				}
 			}
@@ -67,17 +68,18 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', './gcms'
 					break;
 
 					case 'surfaceUnderCurve':
-						self.module.controller.sendAction('annotation', annot, 'onIntegralRemove');
+						self.module.controller.sendAction('GCIntegration', annot, 'onGCIntegralRemove');
 					break;
 				}
 			}
 
 			_gcms.onMSSelect = function(ms, annot) {
-				self.module.controller.setVarFromEvent('onIntegralSelect', new DataArray(ms), 'msSelected');
+				self.module.controller.setVarFromEvent('onGCIntegralSelect', new DataArray( ms ), 'MSTrace');
+				// Sends out an MS Trace (integrated and averaged MS data over the integral)
 			}
 
 			_gcms.onIntegralSelect = function(annot) {
-				self.module.controller.setVarFromEvent('onIntegralSelect', annot, 'annotation');
+				self.module.controller.setVarFromEvent('onGCIntegralSelect', annot, 'GCIntegration');
 			}
 
 			_gcms.onZoomGC = function(from, to) {

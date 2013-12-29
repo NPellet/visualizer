@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/datatraversing', 'util/api', 'util/util'], function(Default, Graph, JcampConverter, DataTraversing, API, Util) {
+define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/api', 'util/util'], function(Default, Graph, DataTraversing, API, Util) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -61,15 +61,22 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					onMouseMoveData: function(e, val) {
 						var min, max, x1;
 						for(var k in self.zones) {
-							if(!val[k])
+
+							if( ! val[ k ] ) {
 								continue;
-							for(var i in self.zones[k]) {
-								min = Math.min(self.zones[k][i][0], self.zones[k][i][1]);
-								max = Math.max(self.zones[k][i][0], self.zones[k][i][1]);
-								x1 = val[k].trueX;
+							}
+
+							for( var i in self.zones[ k ] ) {
+
+								min = Math.min( self.zones[ k ][ i ][ 0 ], self.zones[ k ][ i ][ 1 ] );
+								max = Math.max( self.zones[ k ][ i ][ 0 ], self.zones[ k ][ i ][ 1 ] );
+
+								x1 = val[ k ].trueX;
+
 								if(min < x1 && max > x1) {
 									//CI.RepoHighlight.set(i, 1);
-									self._currentHighlights[i] = 1;
+									self._currentHighlights[ i ] = 1;
+
 								} else if(self._currentHighlights[i]) {
 									//CI.RepoHighlight.set(i, 0);
 									self._currentHighlights[i] = 0;
@@ -406,60 +413,63 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/jcampconverter', 'util/da
 					self.deferreds[ varname ].reject();
 				}
 
-				self.deferreds[ varname ] = JcampConverter(moduleValue, {lowRes: 1024}).done( function( spectra ) {
+				require( [ 'util/jcampconverter' ], function( JcampConverter ) {
 
-				//	console.log(JSON.stringify(spectra.profiling,true));
+					self.deferreds[ varname ] = JcampConverter( moduleValue, { lowRes: 1024 } ).done( function( spectra ) {
 
-//					self.blank.jcamp( varname );
-					self.series[ varname ] = self.series[ varname ] || [];
-					self.series[ varname ] = [];
+					//	console.log(JSON.stringify(spectra.profiling,true));
 
-					if(spectra.contourLines) {
-						
-//						self.graph.setOption('zoomMode', 'xy');
-					/*	self.graph.setOption('defaultWheelAction', 'toSeries');
-						self.graph.setOption('defaultMouseAction', 'drag');
-*/
-						serie = self.graph.newSerie( varname, { trackMouse: true }, 'contour' );
-						self.setSerieParameters(serie, varname);
-						serie.setData( spectra.contourLines );
-						serie.autoAxis( );
-						self.series[ varname ].push( serie );
+	//					self.blank.jcamp( varname );
+						self.series[ varname ] = self.series[ varname ] || [];
+						self.series[ varname ] = [];
 
-					} else {
-
-			//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
-						/*self.graph.setOption('defaultWheelAction', 'zoomY');
-						self.graph.setOption('defaultMouseAction', 'zoom');
-*/
-						spectra = spectra.spectra;
-						for (var i=0, l = spectra.length; i<l; i++) {
-							serie = self.graph.newSerie(varname, {trackMouse: true});
-
-							var data=spectra[i].data[spectra[i].data.length - 1];
-
+						if(spectra.contourLines) {
+							
+	//						self.graph.setOption('zoomMode', 'xy');
+						/*	self.graph.setOption('defaultWheelAction', 'toSeries');
+							self.graph.setOption('defaultMouseAction', 'drag');
+	*/
+							serie = self.graph.newSerie( varname, { trackMouse: true }, 'contour' );
 							self.setSerieParameters(serie, varname);
-							self.normalize(data, varname);
-							serie.setData(data);
-							serie.autoAxis();
-							self.series[varname].push(serie);
-							break;
-						}
+							serie.setData( spectra.contourLines );
+							serie.autoAxis( );
+							self.series[ varname ].push( serie );
 
-						API.listenHighlight(moduleValue._highlight || [], function(value, commonKeys) {
+						} else {
 
-							for(var i = 0; i < commonKeys.length; i++) {
+				//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
+							/*self.graph.setOption('defaultWheelAction', 'zoomY');
+							self.graph.setOption('defaultMouseAction', 'zoom');
+	*/
+							spectra = spectra.spectra;
+							for (var i=0, l = spectra.length; i<l; i++) {
+								serie = self.graph.newSerie(varname, {trackMouse: true});
 
-								if( self.zones[ varname ][ commonKeys[ i ] ] ) {
+								var data=spectra[i].data[spectra[i].data.length - 1];
 
-									self.doZone( varname, self.zones[ varname ][ commonKeys [ i ] ], value, self.series[varname].options.lineColor );
-								}
+								self.setSerieParameters(serie, varname);
+								self.normalize(data, varname);
+								serie.setData(data);
+								serie.autoAxis();
+								self.series[varname].push(serie);
+								break;
 							}
-						}, true, self.module.id + varname);
-					}
-					
-					self.redraw( );
-					self.resetAnnotations( true );
+
+							API.listenHighlight(moduleValue._highlight || [], function(value, commonKeys) {
+
+								for(var i = 0; i < commonKeys.length; i++) {
+
+									if( self.zones[ varname ][ commonKeys[ i ] ] ) {
+
+										self.doZone( varname, self.zones[ varname ][ commonKeys [ i ] ], value, self.series[varname].options.lineColor );
+									}
+								}
+							}, true, self.module.id + varname);
+						}
+						
+						self.redraw( );
+						self.resetAnnotations( true );
+					});
 				});
 			}
 		},

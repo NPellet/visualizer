@@ -400,9 +400,12 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 
 				$ulModules = $("<ul />").appendTo($li);
 				var allTypes = ModuleFactory.getTypes();
-
-				makeRecursiveMenu( allTypes, $ulModules );
 				
+				allTypes.done( function( json ) {
+					console.log( json );
+					makeRecursiveMenu( json, $ulModules );
+				});
+
 				$(contextDom).append( $li );
 
 				$li.bind( 'click', function( event ) {

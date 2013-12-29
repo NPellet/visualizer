@@ -1,46 +1,78 @@
-define(['modules/defaultcontroller','util/datatraversing'], function(Default,Traversing) {
+define( [ 'modules/defaultcontroller' ], function( Default ) {
 	
-	function controller() {};
-	controller.prototype = $.extend(true, {}, Default, {
+	/**
+	 * Creates a new empty controller
+	 * @class Controller
+	 * @name Controller
+	 * @constructor
+	 */
+	function controller() { };
+
+	// Extends the default properties of the default controller
+	controller.prototype = $.extend( true, {}, Default );
+
+
+	/*
+		Information about the module
+	*/
+	controller.prototype.moduleInformation = {
+		moduleName: 'Sticky note',
+		description: 'Displays a sticky note',
+		author: 'Norman Pellet',
+		date: '24.12.2013',
+		license: 'MIT'
+	};
 	
-		onClick: function(on) {
-			var self = this;
-			this.sendAction('string', this.module.getConfiguration().text, 'onClick');
-			this.sendAction('string', this.module.getConfiguration().text, (on ? 'onToggleOn' : 'onToggleOff'));
-		},
 
-		configurationSend: {
+	/*
+		Configuration of the input/output references of the module
+	*/
+	controller.prototype.references = {
 
-			events: {
-				onChange: {
-					label: 'On value change'
-				}
-			},
-			
-			rels: {
-				
-			}		
-		},
-		
-		actions: {
-			rel: {}
-		},
-
-		actionsReceive: {
-			
-		},
-
-		configurationReceive: {
-				
-		},
-
-		configurationStructure: function() {
-			return {};
-		},
-		
-		"export": function() {
+		value: {
+			label: 'Sticky note value',
+			type: 'string'
 		}
-	});
+	};
 
-	return controller;
+
+	/*
+		Configuration of the module for sending events, as a static object
+	*/
+	controller.prototype.events = {
+		onChange: {
+			label: 'Value is changed',
+			refVariable: [ 'value' ]
+		}
+	};
+	
+
+	/*
+		Configuration of the module for receiving events, as a static object
+		In the form of 
+	*/
+	controller.prototype.variablesIn = [  ];
+
+	/*
+		Received actions
+		In the form of
+
+		{
+			actionRef: 'actionLabel'
+		}
+	*/
+	controller.prototype.actionsIn = {
+		
+	};
+	
+		
+	controller.prototype.configurationStructure = function(section) {
+		return { };
+	};
+
+		
+	controller.prototype.configAliases = { };
+
+ 	return controller;
 });
+

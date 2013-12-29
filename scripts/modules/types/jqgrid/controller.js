@@ -1,240 +1,257 @@
-define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], function(Default, Traversing, API) {
+define( [ 'modules/defaultcontroller', 'util/datatraversing', 'util/api' ], function( Default, Traversing, API ) {
 	
-	function controller() {
+	/**
+	 * Creates a new empty controller
+	 * @class Controller
+	 * @name Controller
+	 * @constructor
+	 */
+	function controller() { };
 
+	// Extends the default properties of the default controller
+	controller.prototype = $.extend( true, {}, Default );
+
+
+	/*
+		Information about the module
+	*/
+	controller.prototype.moduleInformation = {
+		moduleName: 'Complex grid',
+		description: 'Displays a complex (but slower) grid with editable capability. Works async',
+		author: 'Norman Pellet',
+		date: '24.12.2013',
+		license: 'MIT'
+	};
+	
+
+
+	/*
+		Configuration of the input/output references of the module
+	*/
+	controller.prototype.references = {
+
+		'row': {
+			label: 'Row'
+		},
+
+		'list': {
+			label: 'Table'
+		},
+
+		'selectedrows': {
+			label: 'Selected rows'
+		}
 	};
 
-	controller.prototype = $.extend(true, {}, Default, {
 
-		lineHover: function(element) {
-			if( ! element ) {
-				return;
-			}
+	/*
+		Configuration of the module for sending events, as a static object
+	*/
+	controller.prototype.events = {
 
-			this.setVarFromEvent( 'onHover', element );
-			if( element._highlight instanceof Array ) {
-				API.highlight( element._highlight, 1 );
-			}
-		},
+		// List of all possible events
 
-		lineOut: function(element) {
-			if( element && ( element._highlight instanceof Array ) ) {
-				API.highlight( element._highlight, 0 );
-			}
-		},
-
-		lineClick: function( element ) {
-			this.setVarFromEvent( 'onSelect', element );
-			this.sendAction( 'row', element, 'onSelect' );
-		},
-
-		onToggleOn: function( element ) {
-			this.sendAction('element', element, 'onToggleOn');
-			this.setVarFromEvent('onToggleOn', element);
-		},
-
-		onToggleOff: function( element ) {
-			this.sendAction('element', element, 'onToggleOff');
-			this.setVarFromEvent('onToggleOff', element);
+		onSelect: {
+			label: 'A line is selected',
+			refVariable: [ 'row' ],
+			refAction: [ 'row' ]
 		},
 		
-		configurationSend: {
-
-			events: {
-
-				onSelect: {
-					label: 'Select a line',
-					description: 'Click on a line to select it'
-				},
-				
-				onHover: {
-					label: 'Hovers a line',
-					description: 'Pass the mouse over a line to select it'
-				},
-
-				onToggleOn: {
-					label: 'On Toggle On',
-					description: ''
-				},
-
-				onToggleOff: {
-					label: 'On Toggle Off',
-					description: ''
-				}
-			},
-			
-			rels: {
-				'element': {
-					label: 'Row'
-				},
-
-				'table': {
-					label: 'Table'
-				},
-
-				'selectedrows': {
-					label: 'Selected rows'
-				}
-			}
-			
-		},
-		
-		configurationReceive: {
-			list: {
-				type: ["array", "arrayXY"],
-				label: 'List',
-				description: 'Any list of displayable element'
-			}		
-		},
-		
-		
-		moduleInformations: {
-			moduleName: 'Table'
-		},
-		
-		
-		actions: {
-			rel: {'row': 'Row Source'}
+		onHover: {
+			label: 'Hovers a line',
+			refVariable: [ 'row' ],
+			refAction: [ 'row' ]
 		},
 
-		actionsReceive: {
-			'addRow': 'Add a new row',
-			'addColumn': 'Add a new column',
-			'removeColumn': 'Remove a column',
-			'removeRow': 'Remove a row'
+		onToggleOn: {
+			label: 'On Toggle On',
+			refVariables: [ 'selectedrows' ],
+			refAction: [ 'row' ]
 		},
+
+		onToggleOff: {
+			label: 'On Toggle Off',
+			refVariables: [ 'selectedrows' ],
+			refAction: [ 'row' ]
+		}
+	};
+	
+
+	/*
+		Configuration of the module for receiving events, as a static object
+	*/
+	controller.prototype.variablesIn = [ 'list' ];
+
+	/*
+		Received actions
+	*/
+	controller.prototype.actionsIn = {
+		addRow: 'Add a new row',
+		addColumn: 'Add a new column',
+		removeColumn: 'Remove a column',
+		removeRow: 'Remove a row'
+	};
+	
 		
+	controller.prototype.configurationStructure = function(section) {
 		
-		configurationStructure: function(section) {
-			
-			var jpaths = this.module.model.getjPath('element');
+		var jpaths = this.module.model.getjPath('element');
+		return {
+			groups: {
 
-			return {
-				groups: {
-
-					group: {
-						options: {
-							type: 'list',
-							multiple: false
-						},
-
-						fields: {
-
-							nblines: {
-								type: 'text',
-								title: 'Lines per page',
-								default: 20
-							},
-
-							toggle: {
-								type: 'combo',
-								title: 'Line toggling',
-								options: [{key: "0", title: "No"}, {key: "single", title:"Single row"}, {key: "multiple", title:"Multiple rows"}]
-							},
-
-							colorjpath: {
-								type: 'combo',
-								title: 'Color jPath',
-								options: jpaths
-							},
-
-							displaySearch: {
-								type: 'checkbox',
-								options: { 'allow': 'Allow searching' }
-							},
-
-
-							filterRow: {
-								type: 'jscode',
-							}
-
-						}
+				group: {
+					options: {
+						type: 'list',
+						multiple: false
 					},
 
-					cols: {
-						options: {
-							type: 'table',
-							multiple: true,
-							title: 'Columns'
+					fields: {
+
+						nblines: {
+							type: 'text',
+							title: 'Lines per page',
+							default: 20
 						},
 
-						fields: {
+						toggle: {
+							type: 'combo',
+							title: 'Line toggling',
+							options: [{key: "0", title: "No"}, {key: "single", title:"Single row"}, {key: "multiple", title:"Multiple rows"}]
+						},
 
-							name: {
-								type: 'text',
-								title: 'Columns title'
-							},
+						colorjpath: {
+							type: 'combo',
+							title: 'Color jPath',
+							options: jpaths
+						},
 
-							jpath: {
-								type: 'combo',
-								title: 'jPath',
-								options: jpaths
-							},
+						filterRow: {
+							type: 'jscode',
+							title: 'Filter'
+						}
 
-							number: {
-								type: 'checkbox',
-								title: 'Number ?',
-								options: {number: 'Yes'}
-							},
+					}
+				},
 
-							editable: {
-								type: 'combo',
-								title: 'Editable',
-								default: 'none',
-								options: [{key: 'none', title: 'No'}, {key: 'text', title: 'Text'}, {key: 'checkbox', title: 'Checkbox'}, {key: 'select', title: 'Combo'}]
-							},
+				cols: {
+					options: {
+						type: 'table',
+						multiple: true,
+						title: 'Columns'
+					},
 
-							options: {
-								type: 'text',
-								title: 'Options (; separated)'
-							},
+					fields: {
 
-							width: {
-								type: 'text',
-								title: 'Width'
-							}
+						name: {
+							type: 'text',
+							title: 'Columns title'
+						},
+
+						jpath: {
+							type: 'combo',
+							title: 'jPath',
+							options: jpaths
+						},
+
+						number: {
+							type: 'checkbox',
+							title: 'Number ?',
+							options: {number: 'Yes'}
+						},
+
+						editable: {
+							type: 'combo',
+							title: 'Editable',
+							default: 'none',
+							options: [{key: 'none', title: 'No'}, {key: 'text', title: 'Text'}, {key: 'checkbox', title: 'Checkbox'}, {key: 'select', title: 'Combo'}]
+						},
+
+						options: {
+							type: 'text',
+							title: 'Options (; separated)'
+						},
+
+						width: {
+							type: 'text',
+							title: 'Width'
 						}
 					}
 				}
-			}		
-		},
+			}
+		}	
+	};
+
+	
+	controller.prototype.onVarReceiveChange = function(name, rel, confSection) {
+
+		var data = API.getVar( name );
+		var jpaths = [];
+		if(!data)
+			return;
+		
+		if(data.getType() == 'array') 
+			Traversing.getJPathsFromElement(data[0], jpaths);
+		else if(data.getType() == 'arrayXY')
+			Traversing.getJPathsFromElement(data, jpaths);
+
+		if(jpaths.length > 1)
+			confSection.getGroup('cols').getField('coljpath').implementation.setOptions(jpaths);
+	};
 
 
-		onVarReceiveChange: function(name, rel, confSection) {
 
-			var data = API.getVar(name);
-			var jpaths = [];
-			if(!data)
-				return;
-			
-			if(data.getType() == 'array') 
-				Traversing.getJPathsFromElement(data[0], jpaths);
-			else if(data.getType() == 'arrayXY')
-				Traversing.getJPathsFromElement(data, jpaths);
+	controller.prototype.configFunctions = {
+		'colsjPaths': function(cfg) { return cfg || [] }
+	},
 
-			if(jpaths.length > 1)
-				confSection.getGroup('cols').getField('coljpath').implementation.setOptions(jpaths);
-		},
 
-		configFunctions: {
-			'displaySearch': function(cfg) { return cfg.indexOf('allow')>-1; },
-			'colsjPaths': function(cfg) { return cfg || [] }
-		},
 
-		configAliases: {
-			'colsjPaths': [ 'groups', 'cols', 0 ],
-			'nbLines': [ 'groups', 'group', 0, 'nblines', 0 ],
-			'toggle': [ 'groups', 'group', 0, 'toggle', 0 ],
-			'colorjPath': [ 'groups', 'group', 0, 'colorjpath', 0 ],
-			'displaySearch': [ 'groups', 'group', 0, 'displaySearch', 0, 0 ],
-			'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ]
-		},
+	controller.prototype.configAliases = {
+		'colsjPaths': [ 'groups', 'cols', 0 ],
+		'nbLines': [ 'groups', 'group', 0, 'nblines', 0 ],
+		'toggle': [ 'groups', 'group', 0, 'toggle', 0 ],
+		'colorjPath': [ 'groups', 'group', 0, 'colorjpath', 0 ],
+		'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ]
+	};
 
-		"export": function() {
-			return this.module.view.exportToTabDelimited();
+
+	controller.prototype.lineHover = function(element) {
+		
+		if( ! element ) {
+			return;
 		}
 
-	});
+		this.setVarFromEvent( 'onHover', element );
 
-	return controller;
+		API.highlight( element, 1 );
+	},
+
+	controller.prototype.lineOut = function(element) {
+
+		if( ! element ) {
+			return;
+		}
+
+		API.highlight( element, 0 );
+	};
+
+	controller.prototype.lineClick = function( element ) {
+
+		this.setVarFromEvent( 'onSelect', element );
+		this.sendAction( 'row', element, 'onSelect' );
+	};
+
+	controller.prototype.onToggleOn = function( element ) {
+
+		this.sendAction( 'element', element, 'onToggleOn' );
+		this.setVarFromEvent( 'onToggleOn', element );
+	};
+
+	controller.prototype.onToggleOff = function( element ) {
+
+		this.sendAction( 'element', element, 'onToggleOff' );
+		this.setVarFromEvent( 'onToggleOff', element );
+	};
+
+ 	return controller;
 });

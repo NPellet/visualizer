@@ -8,19 +8,25 @@ define(['jquery', 'util/api', 'util/datatraversing'], function($, API, Traversin
 				this.initimpl();
 		},
 
+		inDom: function() {
+
+		},
+
 		sendAction: function(rel, value, event) {
 
-			var actionsOut = this.module.actions_out();
-
-			if(!actionsOut)
-				return;
-
-			var i = actionsOut.length - 1,
+			var actionsOut = this.module.actions_out(),
+				i,
 				jpath;
 
+			if( ! actionsOut ) {
+				return;
+			}
+
+			i = actionsOut.length - 1;
+ 
 			for( ; i >= 0; i-- ) {
 
-				if(actionsOut[i].rel == rel && ((event && event == actionsOut[i].event) || !event)) {
+				if( actionsOut[i].rel == rel && ((event && event == actionsOut[i].event) || !event)) {
 
 					actionname = actionsOut[ i ].name,
 					jpath = actionsOut[ i ].jpath;	
@@ -59,7 +65,6 @@ define(['jquery', 'util/api', 'util/datatraversing'], function($, API, Traversin
 				if( actions[i].event == event  && ( actions[i].rel == rel || !rel ) ) {
 
 					API.setVar( actions[i].name, element, actions[i].jpath );
-
 				}
 			}
 		},

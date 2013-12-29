@@ -36,73 +36,6 @@ define(['jquery', 'modules/defaultcontroller', 'util/api'], function($, Default,
 
 
 	/*
-		Handling mouse events over the table
-	*/
-
-
-	/**
-	 * Called from the view when a line is hovered
-	 *
-	 * @param {Object} element Array element that is hovered
-	 */
-	controller.prototype.onLineHover =  function( element ) {
-		
-		// No corresponding element ?
-		if( ! element ) {
-			return;
-		}
-
-		// Calls parent method that sets any variable corresponding to
-		// the event "onHover"
-		// and the rel "row"
-		this.setVarFromEvent( 'onHover', element, 'row' );
-
-		// We may also want to send out the whole table when a row is hovered, for whatever purpose
-		this.setVarFromEvent( 'onHover', this.model.getDataFromRel( 'table' ), 'table' );
-
-		// We highlight the element through the API
-		API.highlight( element, 1 );	
-	};
-
-
-	/**
-	 * Called from the view when the mouse leaves an element
-	 * No variable is set when this event is triggered
-	 *
-	 * @param {Object} element Array element that the mouse just left
-	 */
-	controller.prototype.onLineOut =  function( element ) {
-		
-		// No corresponding element ?
-		if( ! element ) {
-			return;
-		}
-
-		// We un-highlight the element through the API
-		API.highlight( element, 0 );
-	};
-
-
-	/**
-	 * Called from the view when a line is hovered
-	 *
-	 * @param {Object} element Array element that was clicked
-	 */
-	controller.prototype.onLineClick =  function( element ) {
-		
-		// No corresponding element ?
-		if( ! element ) {
-			return;
-		}
-
-		this.setVarFromEvent( 'onClick', element, 'row' );
-		this.setVarFromEvent( 'onClick', this.model.getDataFromRel( 'table' ), 'table' );
-	};
-
-
-
-
-	/*
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
@@ -177,6 +110,75 @@ define(['jquery', 'modules/defaultcontroller', 'util/api'], function($, Default,
 	};
 	
 	
+	
+
+	/*
+		Handling mouse events over the table
+	*/
+
+
+	/**
+	 * Called from the view when a line is hovered
+	 *
+	 * @param {Object} element Array element that is hovered
+	 */
+	controller.prototype.onLineHover =  function( element ) {
+		
+		// No corresponding element ?
+		if( ! element ) {
+			return;
+		}
+
+		// Calls parent method that sets any variable corresponding to
+		// the event "onHover"
+		// and the rel "row"
+		this.setVarFromEvent( 'onHover', element, 'row' );
+
+		// We may also want to send out the whole table when a row is hovered, for whatever purpose
+		this.setVarFromEvent( 'onHover', this.model.getDataFromRel( 'table' ), 'table' );
+
+		// We highlight the element through the API
+		API.highlight( element, 1 );	
+	};
+
+
+	/**
+	 * Called from the view when the mouse leaves an element
+	 * No variable is set when this event is triggered
+	 *
+	 * @param {Object} element Array element that the mouse just left
+	 */
+	controller.prototype.onLineOut =  function( element ) {
+		
+		// No corresponding element ?
+		if( ! element ) {
+			return;
+		}
+
+		// We un-highlight the element through the API
+		API.highlight( element, 0 );
+	};
+
+
+	/**
+	 * Called from the view when a line is hovered
+	 *
+	 * @param {Object} element Array element that was clicked
+	 */
+	controller.prototype.onLineClick =  function( element ) {
+		
+		// No corresponding element ?
+		if( ! element ) {
+			return;
+		}
+
+		this.setVarFromEvent( 'onClick', element, 'row' );
+		this.setVarFromEvent( 'onClick', this.model.getDataFromRel( 'table' ), 'table' );
+	};
+
+
+
+
 
 	/**
 	 * Configures the module specific configuration form
@@ -287,14 +289,13 @@ define(['jquery', 'modules/defaultcontroller', 'util/api'], function($, Default,
 		It corresponds to an array directing to the specific field of the config form
 	*/
 	controller.prototype.configAliases = {
-			'colsjPaths': [ 'groups', 'cols', 0 ],
-			'nbLines': [ 'groups', 'group', 0, 'nblines', 0 ],
-			'toggle': [ 'groups', 'group', 0, 'toggle', 0 ],
-			'colorjPath': [ 'groups', 'group', 0, 'colorjpath', 0 ],
-			'displaySearch': [ 'groups', 'group', 0, 'displaySearch', 0, 0 ],
-			'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ]
-		},
-
+		'colsjPaths': [ 'groups', 'cols', 0 ],
+		'nbLines': [ 'groups', 'group', 0, 'nblines', 0 ],
+		'toggle': [ 'groups', 'group', 0, 'toggle', 0 ],
+		'colorjPath': [ 'groups', 'group', 0, 'colorjpath', 0 ],
+		'displaySearch': [ 'groups', 'group', 0, 'displaySearch', 0, 0 ],
+		'filterRow': [ 'groups', 'group', 0, 'filterRow', 0 ]
+	};
 
 
 	/*
@@ -303,8 +304,7 @@ define(['jquery', 'modules/defaultcontroller', 'util/api'], function($, Default,
 	*/
 	controller.prototype.configFunctions = {
 		'colsjPaths': function(cfg) { return cfg || [] }
-	},
-
+	};
 
 
 	/**
@@ -313,7 +313,7 @@ define(['jquery', 'modules/defaultcontroller', 'util/api'], function($, Default,
 	 */
 	controller.prototype["export"] = function() {
 			
-	}
+	};
 
 	return controller;
 	

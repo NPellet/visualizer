@@ -1,20 +1,23 @@
 /*!
  * jquery.fancytree.persist.js
- * Persistence extension for jquery.fancytree.js (https://github.com/mar10/fancytree/).
  *
- * Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://code.google.com/p/fancytree/wiki/LicenseInfo
+ * Persist tree status in cookiesRemove or highlight tree nodes, based on a filter.
+ * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
+ *
+ * @depends: jquery.cookie.js
+ *
+ * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ *
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
+ *
+ * @version DEVELOPMENT
+ * @date DEVELOPMENT
  */
+
 ;(function($, window, document, undefined) {
 
 "use strict";
-
-// prevent duplicate loading
-// if ( $.ui.fancytree && $.ui.fancytree.version ) {
-//     $.ui.fancytree.warn("Fancytree: duplicate include");
-//     return;
-// }
 
 
 /*******************************************************************************
@@ -41,7 +44,9 @@ var ACTIVE = "active",
  * @requires jquery.fancytree.persist.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
-	var cookiePrefix = this.persist.cookiePrefix;
+	var inst = this.ext.persist,
+		cookiePrefix = inst.cookiePrefix;
+
 	types = types || "active expanded focus selected";
 	// TODO: optimize
 	if(types.indexOf(ACTIVE) >= 0){
@@ -59,21 +64,36 @@ $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
 };
 
 
-/* TODO:
-DynaTreeStatus._getTreePersistData = function(cookieId, cookieOpts) {
-	// Static member: Return persistence information from cookies
-	var ts = new DynaTreeStatus(cookieId, cookieOpts);
-	ts.read();
-	return ts.toDict();
-};
+/**
+* Return persistence information from cookies
+*
+* Called like
+*     $("#tree").fancytree("getTree").getPersistData();
+*
+* @lends Fancytree.prototype
+* @requires jquery.fancytree.persist.js
 */
+$.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
+	var inst = this.ext.persist,
+		instOpts= this.options.persist,
+		delim = instOpts.cookieDelimiter,
+		res = {};
+
+	res[ACTIVE] = $.cookie(inst.cookiePrefix + ACTIVE);
+	res[EXPANDED] = ($.cookie(inst.cookiePrefix + EXPANDED) || "").split(delim);
+	res[SELECTED] = ($.cookie(inst.cookiePrefix + SELECTED) || "").split(delim);
+	res[FOCUS] = $.cookie(inst.cookiePrefix + FOCUS);
+};
+
 
 /* *****************************************************************************
  * Extension code
  */
 $.ui.fancytree.registerExtension("persist", {
+	version: "0.0.1",
 	// Default options for this extension.
 	options: {
+//		appendRequestInfo: false,
 		cookieDelimiter: "~",
 		cookiePrefix: undefined, // 'fancytree-<treeId>-' by default
 		cookie: {
@@ -89,13 +109,14 @@ $.ui.fancytree.registerExtension("persist", {
 
 	/* Append `key` to a cookie. */
 	_setKey: function(type, key, flag){
-		var instData = this.persist,
+		key = "" + key; // #90
+		var instData = this._local,
 			instOpts = this.options.persist,
 			cookieName = instData.cookiePrefix + type,
 			cookie = $.cookie(cookieName),
-			cookieList = cookie ? cookie.split(instOpts.cookieDelimiter) : [];
+			cookieList = cookie ? cookie.split(instOpts.cookieDelimiter) : [],
+			idx = $.inArray(key, cookieList);
 		// Remove, even if we add a key,  so the key is always the last entry
-		var idx = $.inArray(key, cookieList);
 		if(idx >= 0){
 			cookieList.splice(idx, 1);
 		}
@@ -111,12 +132,12 @@ $.ui.fancytree.registerExtension("persist", {
 	treeInit: function(ctx){
 		var tree = ctx.tree,
 			opts = ctx.options,
-			instData = this.persist,
+			instData = this._local,
 			instOpts = this.options.persist;
 
 		_assert($.cookie, "Missing required plugin for 'persist' extension: jquery.cookie.js");
 
-		instData.cookiePrefix = instOpts.cookiePrefix || "fancytree-" + tree._id + "-";
+		instData.cookiePrefix = instOpts.cookiePrefix || ("fancytree-" + tree._id + "-");
 		instData.storeActive = instOpts.types.indexOf(ACTIVE) >= 0;
 		instData.storeExpanded = instOpts.types.indexOf(EXPANDED) >= 0;
 		instData.storeSelected = instOpts.types.indexOf(SELECTED) >= 0;
@@ -193,9 +214,11 @@ $.ui.fancytree.registerExtension("persist", {
 //		this._super(ctx);
 //	},
 	nodeSetActive: function(ctx, flag) {
-		var instData = this.persist,
+		var instData = this._local,
 			instOpts = this.options.persist;
+
 		this._super(ctx, flag);
+
 		if(instData.storeActive){
 			$.cookie(instData.cookiePrefix + ACTIVE,
 					 this.activeNode ? this.activeNode.key : null,
@@ -204,7 +227,7 @@ $.ui.fancytree.registerExtension("persist", {
 	},
 	nodeSetExpanded: function(ctx, flag) {
 		var node = ctx.node,
-			instData = this.persist;
+			instData = this._local;
 
 		this._super(ctx, flag);
 
@@ -213,7 +236,7 @@ $.ui.fancytree.registerExtension("persist", {
 		}
 	},
 	nodeSetFocus: function(ctx) {
-		var instData = this.persist,
+		var instData = this._local,
 			instOpts = this.options.persist;
 
 		this._super(ctx);
@@ -226,7 +249,7 @@ $.ui.fancytree.registerExtension("persist", {
 	},
 	nodeSetSelected: function(ctx, flag) {
 		var node = ctx.node,
-			instData = this.persist;
+			instData = this._local;
 
 		this._super(ctx, flag);
 

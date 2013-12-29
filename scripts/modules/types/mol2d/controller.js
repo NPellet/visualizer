@@ -1,32 +1,80 @@
-define(['modules/defaultcontroller'], function(Default) {
+define( [ 'modules/defaultcontroller' ], function( Default ) {
 	
-	function controller() {};
-	controller.prototype = $.extend(true, {}, Default, {
+	/**
+	 * Creates a new empty controller
+	 * @class Controller
+	 * @name Controller
+	 * @constructor
+	 */
+	function controller() { };
 
-		configurationSend: {
+	// Extends the default properties of the default controller
+	controller.prototype = $.extend( true, {}, Default );
+
+
+	/*
+		Information about the module
+	*/
+	controller.prototype.moduleInformation = {
+		moduleName: 'CWC molfile displayer',
+		description: 'Display 2D molfiles',
+		author: 'Norman Pellet',
+		date: '24.12.2013',
+		license: 'MIT'
+	};
+	
+
+
+	/*
+		Configuration of the input/output references of the module
+	*/
+	controller.prototype.references = {
+
+		mol2d: {
+			type: ['mol2d', 'molfile2D'],
+			label: 'A mol 2D file',
 		},
+
+		atomLabels: {
+			type: ['array'],
+			label: 'An array containing the labels of the atoms'
+		}
+	};
+
+
+	/*
+		Configuration of the module for sending events, as a static object
+	*/
+	controller.prototype.events = {
+
+	};
+	
+
+	/*
+		Configuration of the module for receiving events, as a static object
+		In the form of 
+	*/
+	controller.prototype.variablesIn = [ 'mol2d', 'atomLabels' ];
+
+	/*
+		Received actions
+		In the form of
+
+		{
+			actionRef: 'actionLabel'
+		}
+	*/
+	controller.prototype.actionsIn = {
 		
-		hoverEvent: function(data) {
-
-		},
+	};
+	
+		
+	controller.prototype.configurationStructure = function(section) {
+		return { };
+	};
 
 		
-		configurationReceive: {
-			"mol2d": {
-				type: ['mol2d', 'molfile2D'],
-				label: 'A mol 2D file',
-				description: ''
-			},
+	controller.prototype.configAliases = { };
 
-			atomLabels: {
-				type: ['array'],
-				label: 'An array containing the labels of the atoms',
-				description: ''	
-			}
-		},
-
-		configurationStructure: function() { return {}; }
-	});
-
-	return controller;
+ 	return controller;
 });

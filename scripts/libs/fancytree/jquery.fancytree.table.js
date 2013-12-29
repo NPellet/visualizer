@@ -1,33 +1,21 @@
-/*************************************************************************
-	jquery.fancytree.table.js
-	Table extension for jquery.fancytree.js.
-
-	Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
-	Dual licensed under the MIT or GPL Version 2 licenses.
-	http://code.google.com/p/fancytree/wiki/LicenseInfo
-
-	A current version and some documentation is available at
-		https://github.com/mar10/fancytree/
-
-	$Version:$
-	$Revision:$
-
-	@depends: jquery.js
-	@depends: jquery.ui.widget.js
-	@depends: jquery.ui.core.js
-	@depends: jquery.fancytree.js
-*************************************************************************/
+/*!
+ * jquery.fancytree.table.js
+ *
+ * Render tree as table (aka 'treegrid', 'tabletree').
+ * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
+ *
+ * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ *
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
+ *
+ * @version DEVELOPMENT
+ * @date DEVELOPMENT
+ */
 
 ;(function($, window, document, undefined) {
 
 "use strict";
-
-// prevent duplicate loading
-// if ( $.ui.fancytree && $.ui.fancytree.version ) {
-//     $.ui.fancytree.warn("Fancytree: duplicate include");
-//     return;
-// }
-
 
 /* *****************************************************************************
  * Private functions and variables
@@ -58,9 +46,9 @@ function setChildRowVisibility(parent, flag) {
 
 /* Find node that is rendered in previous row. */
 function findPrevRowNode(node){
-	var parent = node.parent,
-		siblings = parent ? parent.children : null,
-		prev, i;
+	var i, last, prev,
+		parent = node.parent,
+		siblings = parent ? parent.children : null;
 
 	if(siblings && siblings.length > 1 && siblings[0] !== node){
 		// use the lowest descendant of the preceeding sibling
@@ -69,7 +57,7 @@ function findPrevRowNode(node){
 		_assert(prev.tr);
 		// descend to lowest child (with a <tr> tag)
 		while(prev.children){
-			var last = prev.children[prev.children.length - 1];
+			last = prev.children[prev.children.length - 1];
 			if(!last.tr){
 				break;
 			}
@@ -84,6 +72,7 @@ function findPrevRowNode(node){
 
 
 $.ui.fancytree.registerExtension("table", {
+	version: "0.0.1",
 	// Default options for this extension.
 	options: {
 		indentation: 16,        // indent every node level by 16px
@@ -94,21 +83,23 @@ $.ui.fancytree.registerExtension("table", {
 	// `this`       : is this extension object
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
-		var tree = ctx.tree,
+		var i, $row, tdRole,
+			tree = ctx.tree,
 			$table = tree.widget.element;
+
 		$table.addClass("fancytree-container fancytree-ext-table");
 		tree.tbody = $table.find("> tbody")[0];
 		tree.columnCount = $("thead >tr >th", $table).length;
 		$(tree.tbody).empty();
 
 		tree.rowFragment = document.createDocumentFragment();
-		var $row = $("<tr>"),
-			tdRole = "";
+		$row = $("<tr>");
+		tdRole = "";
 		if(ctx.options.aria){
 			$row.attr("role", "row");
 			tdRole = " role='gridcell'";
 		}
-		for(var i=0; i<tree.columnCount; i++) {
+		for(i=0; i<tree.columnCount; i++) {
 			if(ctx.options.table.nodeColumnIdx === i){
 				$row.append("<td" + tdRole + "><span class='fancytree-node'></span></td>");
 			}else{
@@ -117,21 +108,24 @@ $.ui.fancytree.registerExtension("table", {
 		}
 		tree.rowFragment.appendChild($row.get(0));
 
+		// Make sure that status classes are set on the node's <tr> elements
+		tree.statusClassPropName = "tr";
+		tree.ariaPropName = "tr";
+		this.nodeContainerAttrName = "tr";
+
 		this._super(ctx);
+
 		// standard Fancytree created a root UL
 		$(tree.rootNode.ul).remove();
 		tree.rootNode.ul = null;
 		tree.$container = $table;
 		// Add container to the TAB chain
-		tree.$container.attr("tabindex", "0");
+		this.$container.attr("tabindex", this.options.tabbable ? "0" : "-1");
 		if(this.options.aria){
 			tree.$container
 				.attr("role", "treegrid")
 				.attr("aria-readonly", true);
 		}
-		// Make sure that status classes are set on the node's <tr> elements
-		tree.statusClassPropName = "tr";
-		tree.ariaPropName = "tr";
 	},
 	/* Called by nodeRender to sync node order with tag order.*/
 //    nodeFixOrder: function(ctx) {
@@ -157,7 +151,8 @@ $.ui.fancytree.registerExtension("table", {
 	},
 	/* Override standard render. */
 	nodeRender: function(ctx, force, deep, collapsed, _recursive) {
-		var tree = ctx.tree,
+		var children, firstTr, i, l, newRow, prevNode, prevTr, subCtx,
+			tree = ctx.tree,
 			node = ctx.node,
 			opts = ctx.options,
 			isRootNode = !node.parent;
@@ -168,8 +163,8 @@ $.ui.fancytree.registerExtension("table", {
 		if( !isRootNode ){
 			if(!node.tr){
 				// Create new <tr> after previous row
-				var newRow = tree.rowFragment.firstChild.cloneNode(true),
-					prevNode = findPrevRowNode(node);
+				newRow = tree.rowFragment.firstChild.cloneNode(true);
+				prevNode = findPrevRowNode(node);
 //				firstTime = true;
 //				$.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
 				_assert(prevNode);
@@ -200,32 +195,35 @@ $.ui.fancytree.registerExtension("table", {
 				node.span = $("span.fancytree-node", node.tr).get(0);
 				// Set icon, link, and title (normally this is only required on initial render)
 				this.nodeRenderTitle(ctx);
-				// move checkbox to custom column
-				if(opts.checkbox && opts.table.checkboxColumnIdx != null){
-//					$("span.fancytree-node", node.tr).get(0);
-					var $cb = $("span.fancytree-checkbox", node.span).detach();
-					$(node.tr).find("td:first").append($cb);
-				}
 				// Allow tweaking, binding, after node was created for the first time
-				tree._triggerNodeEvent("createnode", ctx);
+//				tree._triggerNodeEvent("createNode", ctx);
+				if ( opts.createNode ){
+					opts.createNode.call(tree, {type: "createNode"}, ctx);
+				}
+			} else {
+				// Set icon, link, and title (normally this is only required on initial render)
+				this.nodeRenderTitle(ctx);
 			}
 		}
 		 // Allow tweaking after node state was rendered
-		tree._triggerNodeEvent("rendernode", ctx);
+//		tree._triggerNodeEvent("renderNode", ctx);
+		if ( opts.renderNode ){
+			opts.renderNode.call(tree, {type: "renderNode"}, ctx);
+		}
 		// Visit child nodes
 		// Add child markup
-		var children = node.children, i, l;
+		children = node.children;
 		if(children && (isRootNode || deep || node.expanded)){
 			for(i=0, l=children.length; i<l; i++) {
-				var subCtx = $.extend({}, ctx, {node: children[i]});
+				subCtx = $.extend({}, ctx, {node: children[i]});
 				subCtx.hasCollapsedParents = subCtx.hasCollapsedParents || !node.expanded;
 				this.nodeRender(subCtx, force, deep, collapsed, true);
 			}
 		}
 		// Make sure, that <tr> order matches node.children order.
 		if(children && !_recursive){ // we only have to do it once, for the root branch
-			var prevTr = node.tr || null,
-				firstTr = tree.tbody.firstChild;
+			prevTr = node.tr || null;
+			firstTr = tree.tbody.firstChild;
 			// Iterate over all descendants
 			node.visit(function(n){
 				if(n.tr){
@@ -255,31 +253,41 @@ $.ui.fancytree.registerExtension("table", {
 	//            this._super(ctx);
 	},
 	nodeRenderTitle: function(ctx, title) {
-		var node = ctx.node;
+		var $cb,
+			node = ctx.node,
+			opts = ctx.options;
+
 		this._super(ctx);
+				// move checkbox to custom column
+		if(opts.checkbox && opts.table.checkboxColumnIdx != null){
+			$cb = $("span.fancytree-checkbox", node.span).detach();
+			$(node.tr).find("td:first").html($cb);
+		}
 		// let user code write column content
-		ctx.tree._triggerNodeEvent("rendercolumns", node);
+		// ctx.tree._triggerNodeEvent("renderColumns", node);
+		if ( opts.renderColumns ){
+			opts.renderColumns.call(ctx.tree, {type: "renderColumns"}, ctx);
+		}
 	},
-	 nodeRenderStatus: function(ctx) {
-		 var node = ctx.node,
-			 opts = ctx.options;
-		 this._super(ctx);
-		 // indent
-		 var indent = (node.getLevel() - 1) * opts.table.indentation;
-		 if(indent){
-			 $(node.span).css({marginLeft: indent + "px"});
-		 }
+	nodeRenderStatus: function(ctx) {
+		var indent,
+			node = ctx.node,
+			opts = ctx.options;
+
+		this._super(ctx);
+		$(node.tr).removeClass("fancytree-node");
+		// indent
+		indent = (node.getLevel() - 1) * opts.table.indentation;
+		if(indent){
+			$(node.span).css({marginLeft: indent + "px"});
+		}
 	 },
 	/* Expand node, return Deferred.promise. */
 	nodeSetExpanded: function(ctx, flag) {
-		var node = ctx.node,
-			dfd = new $.Deferred();
-		this._super(ctx, flag).done(function(){
+		return this._super(ctx, flag).always(function () {
 			flag = (flag !== false);
 			setChildRowVisibility(ctx.node, flag);
-			dfd.resolveWith(node);
 		});
-		return dfd;
 	},
 	nodeSetStatus: function(ctx, status, message, details) {
 		if(status === "ok"){

@@ -1,14 +1,17 @@
-/*************************************************************************
-	jquery.fancytree.filter.js
-	Table extension for jquery.fancytree.js.
-
-	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
-	Dual licensed under the MIT or GPL Version 2 licenses.
-	http://code.google.com/p/fancytree/wiki/LicenseInfo
-
-	A current version and some documentation is available at
-		https://github.com/mar10/fancytree/
-*************************************************************************/
+/*!
+ * jquery.fancytree.filter.js
+ *
+ * Remove or highlight tree nodes, based on a filter.
+ * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
+ *
+ * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ *
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
+ *
+ * @version DEVELOPMENT
+ * @date DEVELOPMENT
+ */
 
 ;(function($, window, document, undefined) {
 
@@ -34,7 +37,9 @@ function _escapeRegex(str){
  * @requires jquery.fancytree.filter.js
  */
 $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
-	var count = 0;
+	var match, re,
+		count = 0,
+		leavesOnly = this.options.filter.leavesOnly;
 	// Reset current filter
 	this.visit(function(node){
 		delete node.match;
@@ -43,8 +48,8 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 
 	// Default to 'match title substring (not case sensitive)'
 	if(typeof filter === "string"){
-		var match = _escapeRegex(filter), // make sure a '.' is treated literally
-			re = new RegExp(".*" + match + ".*", "i");
+		match = _escapeRegex(filter); // make sure a '.' is treated literally
+		re = new RegExp(".*" + match + ".*", "i");
 		filter = function(node){
 			return !!re.exec(node.title);
 		};
@@ -52,8 +57,11 @@ $.ui.fancytree._FancytreeClass.prototype.applyFilter = function(filter){
 
 	this.enableFilter = true;
 	this.$div.addClass("fancytree-ext-filter");
+	if( this.options.filter.mode === "hide"){
+		this.$div.addClass("fancytree-ext-filter-hide");
+	}
 	this.visit(function(node){
-		if(filter(node)){
+		if ((!leavesOnly || node.children == null) && filter(node)) {
 			count++;
 			node.match = true;
 			node.visitParents(function(p){
@@ -80,7 +88,7 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
 
 	this.enableFilter = false;
 	this.render();
-	this.$div.removeClass("fancytree-ext-filter");
+	this.$div.removeClass("fancytree-ext-filter fancytree-ext-filter-hide");
 };
 
 
@@ -88,9 +96,11 @@ $.ui.fancytree._FancytreeClass.prototype.clearFilter = function(){
  * Extension code
  */
 $.ui.fancytree.registerExtension("filter", {
+	version: "0.0.1",
 	// Default options for this extension.
 	options: {
-		mode: "dimm"
+		mode: "dimm",
+		leavesOnly: false
 	},
 	// Override virtual methods for this extension.
 	// `this`       : is this extension object
@@ -98,14 +108,15 @@ $.ui.fancytree.registerExtension("filter", {
 	// `this._super`: the virtual function that was overriden (member of prev. extension or Fancytree)
 	treeInit: function(ctx){
 		this._super(ctx);
-		ctx.tree.filter = false;
+		// ctx.tree.filter = false;
 	},
 	treeDestroy: function(ctx){
 		this._super(ctx);
 	},
 	nodeRenderStatus: function(ctx) {
 		// Set classes for current status
-		var node = ctx.node,
+		var visible,
+			node = ctx.node,
 			opts = ctx.options,
 			tree = ctx.tree,
 			$span = $(node[tree.statusClassPropName]);
@@ -128,9 +139,15 @@ $.ui.fancytree.registerExtension("filter", {
 			$span.removeClass("fancytree-submatch");
 		}
 		if(opts.filter.mode === "hide"){
-			var visible = !!(node.match || node.subMatch);
+			visible = !!(node.match || node.subMatch);
 			node.debug(node.title + ": visible=" + visible);
 			$(node.li).toggle(visible);
+			// TODO: handle ext-table.
+			// The following is too simple, since we have to hide all TRs that
+			// belong to that parent:
+			// if( node.tr ) {
+			// 	$(node.tr).toggle(visible);
+			// }
 		}
 	}
 });

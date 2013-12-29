@@ -1,70 +1,124 @@
 define(['modules/defaultcontroller', 'util/datatraversing', 'libs/formcreator/formcreator'], function(Default, Traversing, FormCreator) {
+
+
+
+	/**
+	 * Creates a new empty controller
+	 * @class Controller
+	 * @name Controller
+	 * @constructor
+	 */
+	function controller() { };
+
+	// Extends the default properties of the default controller
+	controller.prototype = $.extend( true, {}, Default );
+
+
+	/*
+		Information about the module
+	*/
+	controller.prototype.moduleInformation = {
+		moduleName: 'Array search',
+		description: 'Filters an array with configured UI criterias',
+		author: 'Norman Pellet',
+		date: '24.12.2013',
+		license: 'MIT'
+	};
 	
-	function controller() {};
-	controller.prototype = $.extend(true, {}, Default, {
 
-		configurationSend: {
-			events: {
-				onSearchDone: {
-					label: 'A search has been performed'
-				}
-			},
-			
-			rels: {
-				'array' : { label: 'Array after search' }
-			}
-		},
-		
-		
-		configurationReceive: {
-
-			array : {
-				type: [ 'array' ],
-				label: 'An array of data',
-				description: ''
-			}
-		},
-		
-		moduleInformations: {
-			moduleName: 'Array search'
-		},
-		
-		searchDone: function( arr ) {
-
-			this.setVarFromEvent( 'onSearchDone', arr, 'array' );
+	/*
+		Configuration of the input/output references of the module
+	*/
+	controller.prototype.references = {
+		'array': {
+			label: 'An input array', // The input array is never modified
+			type: 'object'
 		},
 
-		configurationStructure: function(section) {
-
-			var all_jpaths = [],
-				arr = this.module.getDataFromRel('array').get();
-
-			if( arr ) {
-				Traversing.getJPathsFromElement( arr[ 0 ], all_jpaths );
-			}
-
-			return {
-				groups: { },
-				sections: {
-					searchFields: FormCreator.makeConfig( all_jpaths, true ),
-				}
-			}
-		},
-		
-		configFunctions: {
-
-			searchfields: function( cfg ) {
-				if( ! ( cfg instanceof Array ) ) {
-					return [];
-				}
-				return cfg;
-			}
-		},
-
-		configAliases: {
-			searchfields: [ 'sections', 'searchFields' ]
+		'filteredArray': {
+			label: 'Filtered array',
+			type: 'array'
 		}
-	});
+	};
+
+
+	/*
+		Configuration of the module for sending events, as a static object
+	*/
+	controller.prototype.events = {
+
+		// List of all possible events
+		'onSearchDone': {
+			label: 'When a search is performed',
+			refVariable: [ 'filteredArray' ]
+			refAction: [ 'filteredArray' ]
+		}
+	};
+	
+
+	/*
+		Configuration of the module for receiving events, as a static object
+		In the form of 
+	*/
+	controller.prototype.variablesIn = [ 'array' ];
+
+	/*
+		Received actions
+		In the form of
+
+		{
+			actionRef: 'actionLabel'
+		}
+	*/
+	controller.prototype.actionsIn = {
+		
+	};
+	
+		
+	controller.prototype.configurationStructure = function(section) {
+	
+		var all_jpaths = [],
+			arr = this.module.getDataFromRel('array').get();
+
+		if( arr ) {
+			Traversing.getJPathsFromElement( arr[ 0 ], all_jpaths );
+		}
+
+		return {
+			groups: { },
+			sections: {
+				searchFields: FormCreator.makeConfig( all_jpaths, true ),
+			}
+		}
+	};
+
+
+
+	/**
+	 * Called from the view when a search has been performed
+	 *
+	 * @param {Array} arr The ouput array
+	 */
+	controller.prototype.searchDone = function( arr ) {
+
+		// Sets the variable corresponding to the onSearchDone event
+		this.setVarFromEvent( 'onSearchDone', arr, 'filteredArray' );
+	},
+
+		
+	controller.prototype.configFunctions =  {
+
+		searchfields: function( cfg ) {
+			if( ! ( cfg instanceof Array ) ) {
+				return [];
+			}
+			return cfg;
+		}
+	},
+
+	controller.prototype.configAliases = {
+		searchfields: [ 'sections', 'searchFields' ]
+	}
 
 	return controller;
 });

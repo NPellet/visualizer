@@ -1,86 +1,127 @@
 define(['modules/defaultcontroller','util/datatraversing'], function(Default,Traversing) {
 	
-	function controller() {};
-	controller.prototype = $.extend(true, {}, Default, {
+
+	/**
+	 * Creates a new empty controller
+	 * @class Controller
+	 * @name Controller
+	 * @constructor
+	 */
+	function controller() { };
+
+	// Extends the default properties of the default controller
+	controller.prototype = $.extend( true, {}, Default );
+
+
+	/*
+		Information about the module
+	*/
+	controller.prototype.moduleInformation = {
+		moduleName: 'Button action',
+		description: 'Shows a button that will trigger a text action',
+		author: 'Norman Pellet',
+		date: '24.12.2013',
+		license: 'MIT'
+	};
 	
-		onClick: function(on) {
-			
-			var text = this.module.getConfiguration( 'text' );
 
-			this.sendAction('string', text, 'onClick');
-			this.sendAction('string', text, (on ? 'onToggleOn' : 'onToggleOff'));
-		},
 
-		configurationSend: {
-
-			events: {
-				onToggleOn: {
-					label: 'Toggle On'
-				},
-
-				onToggleOff: {
-					label: 'Toggle Off'
-				},
-
-				onClick: {
-					label: 'Click'
-				}
-			},
-			
-			rels: {
-				
-			}		
-		},
+	/*
+		Configuration of the input/output references of the module
+	*/
+	controller.prototype.references = {
 		
-		actions: {
-			rel: {'string': 'Action string'}
+		'actionText': {
+			label: 'The action text to send',
+			type: 'string'
+		}
+	};
+
+
+	/*
+		Configuration of the module for sending events, as a static object
+	*/
+	controller.prototype.events = {
+
+		// List of all possible events
+		'onToggleOn': {
+			label: 'Button is toggled on',
+			refAction: [ 'actionText' ]
+		}
+
+		'onToggleOff': {
+			label: 'Toggle Off',
+			refAction: [ 'actionText' ]
 		},
 
-		actionsReceive: { },
+		'onClick': {
+			label: 'Click',
+			refAction: [ 'actionText' ]
+		}
+	};
+	
 
-		configurationReceive: {
-				
-		},
+	/*
+		Configuration of the module for receiving events, as a static object
+		In the form of 
+	*/
+	controller.prototype.variablesIn = [ ];
+
+
+	/*
+		Received actions
+	*/
+	controller.prototype.actionsIn = {
+	};
+	
 		
-		configurationStructure: function(section) {
+	/**
+	 *	Triggered when the button is clicked
+	 *
+	 *	@param {Boolean} on Button state
+	 */
+	controller.prototype.onClick = function( on ) {
 
-			return {
+		var text = this.module.getConfiguration( 'text' );
+		this.sendAction('string', text, 'onClick');
+		this.sendAction('string', text, (on ? 'onToggleOn' : 'onToggleOff'));
+	};
+		
 
-				groups: {
+	controller.prototype.configurationStructure = function(section) {
+		
+		return {
 
-					group: {
+			groups: {
 
-						options: {
-							type: 'list'
+				group: {
+
+					options: {
+						type: 'list'
+					},
+
+					fields: {
+
+						label: {
+							type: 'text',								
+							title: 'Button label',
+							default: 'Action'
 						},
 
-						fields: {
-
-							label: {
-								type: 'text',								
-								title: 'Button label',
-								default: 'Action'
-							},
-
-							text: {
-								type: 'text',
-								title: 'Action text to send'
-							}
+						text: {
+							type: 'text',
+							title: 'Action text to send'
 						}
 					}
 				}
-			};
-		},
+			}
+		};
+	};
 		
-
-		configAliases: {
-			'label': [ 'groups', 'group', 0, 'label', 0 ],
-			'text': [ 'groups', 'group', 0, 'text', 0 ]
-		},
-
-		"export": function() {
-		}
-	});
+	controller.prototype.configAliases = {
+		'label': [ 'groups', 'group', 0, 'label', 0 ],
+		'text': [ 'groups', 'group', 0, 'text', 0 ]
+	};
 
 	return controller;
 });

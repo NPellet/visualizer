@@ -172,12 +172,13 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		/**
 		 * Returns all accepted types defined in the controller
 		 */
-		getAcceptedTypes: function(rel) {
-			var accept = this.controller.configurationReceive;
-			if( accept[ rel ] ) {
+		getAcceptedTypes: function( rel ) {
+			var accept = this.controller.references;
+			if( accept ) {
 				return accept[ rel ];
 			}
-			return { data: rel, type: [], asObject: false };
+			return false;
+			//return { data: rel, type: [], asObject: false };
 		},
 		
 		
@@ -241,18 +242,10 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 
 		inDom: function() {
 
-			if(this.view.inDom) {
-				this.view.inDom();
-			}
-
-			if(this.controller.inDom) {
-				this.controller.inDom();
-			}
-
-			if(this.model.inDom) {
-				this.model.inDom();
-			}
-
+			this.view.inDom( );
+			this.controller.inDom( );
+			this.model.inDom( );
+			
 			var self = this;
 
 			ContextMenu.listen(this.getDomWrapper().get(0), [
@@ -282,6 +275,13 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			div.prev().remove();
 			div.parent().css('z-index', 1000);
 
+
+			var references = this.controller.references,
+				events = this.controller.events,
+				i = 0,
+				l;
+
+
 			// AUTOCOMPLETE VARIABLES
 			var autoCompleteVariables = [],
 				keys = API.getRepositoryData().getKeys(),
@@ -309,43 +309,92 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 
 			
 			// Receive configuration
-			var availCfg = module.controller.configurationReceive;
-			var allRels2 = [];
-			for(var i in availCfg)
-				allRels2.push({ key: i, title: availCfg[i].label });
+			var varsIn = module.controller.variablesIn,
+				varsInList = [];
+
+			for( i = 0, l = varsIn.length ; i < l ; i ++ ) {
+				
+				varsInList.push( { key: varsIn[ i ], title: references[ varsIn [ i ] ].label } )
+			}
 
 			// Send configuration
 			var temporary = {}, 
-				sendjpaths = [];
+				alljpaths = [];
 
-			var availCfg = module.controller.configurationSend;
+			
+
 			var makeSendJpaths = function() {	
-				sendjpaths = {};
-				for(var i in availCfg.rels)
-					sendjpaths[i] = module.model.getjPath(i, temporary);
+			
+				for( var i in references ) {
+					alljpaths[ i ] = module.model.getjPath( i, temporary );
+				}
 			}
 
-			
 			makeSendJpaths();
-			
-			var allEvents = [];
-			for(var i in availCfg.events)
-				allEvents.push({title: availCfg.events[i].label, key: i});
-			
-			var allRels = [];
-			for(var i in availCfg.rels)
-				allRels.push({ title: availCfg.rels[i].label, key: i})
-		
-			var actionsCfg = module.controller.actions;
-			var allActionsRels = [];
-			if(actionsCfg)
-				for(var i in actionsCfg.rel)
-					allActionsRels.push({ title: actionsCfg.rel[i], key: i});
 
-			var actionsReceive = module.controller.actionsReceive || {};
-			var allActionsReceive = [];	
-			for(var i in actionsReceive)
-				allActionsReceive.push({ title: actionsReceive[i], key: i});
+
+
+			var makeReferences = function( event, type ) {
+
+				var referenceList,
+					i = 0,
+					l,
+					list = [];
+
+				if( ! events[ event ] ) {
+					return {};
+				}
+
+				switch( type ) {
+					case 'event':
+						referenceList = events[ event ].refVariable || [];
+					break;
+
+					case 'action':
+						referenceList = events[ event ].refAction || [];
+					break;
+				}
+
+				for( l = referenceList.length ; i < l ; i ++ ) {
+					list.push( { key: referenceList[ i ], title: references[ referenceList [ i ] ].label } );
+				}
+
+				return list;
+			}
+
+			// VARIABLES OUT
+			// ACTIONS OUT
+			var eventsVariables = [],
+				eventsActions = [];
+
+			for( i in events ) {
+
+				// If this event can send a variable
+				if( events[ i ].refVariable ) {
+
+					eventsVariables.push( { 
+						title: events[i].label, key: i 
+					} );
+				}
+
+
+				// If this event can send an action
+				if( events[ i ].refAction ) {
+
+					eventsActions.push( { 
+						title: events[i].label, key: i 
+					} );
+				}
+			}
+
+
+			// ACTIONS IN
+			var actionsIn = this.controller.actionsIn || {},
+				actionsInList = [];	
+
+			for( i in actionsIn ) {
+				actionsInList.push({ title: actionsIn[ i ], key: i});
+			}
 			
 
 			require(['./libs/forms2/form'], function(Form) {
@@ -429,8 +478,8 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 
 										rel: {
 											type: 'combo',
-											options: allRels2,
-											title: 'Reference'
+											title: 'Reference',
+											options: varsInList
 										},
 
 										name: {
@@ -464,13 +513,12 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 										event: {
 											type: 'combo',
 											title: 'Event',
-											options: allEvents
+											options: eventsVariables
 										},
 
 										rel: {
 											type: 'combo',
-											title: 'Internal ref.',
-											options: allRels
+											title: 'Reference'
 										},
 
 										jpath: {
@@ -510,7 +558,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 										rel: {
 											type: 'combo',
 											title: 'Reference',
-											options: allActionsReceive
+											options: actionsInList
 										},
 
 										name: {
@@ -544,13 +592,12 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 										event: {
 											type: 'combo',
 											title: 'On event',
-											options: allEvents
+											options: eventsActions
 										},
 
 										rel: {
 											type: 'combo',
 											title: 'Reference',
-											options: allActionsRels,
 										},
 
 										jpath: {
@@ -586,6 +633,44 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 					}*/
 
 
+					form.getSection( 'vars_out' ).getGroup( 'group' ).getField( 'event' ).options.onChange = function( fieldElement ) {
+
+						if( ! fieldElement.groupElement ) {
+							return;
+						}
+
+						$.when(fieldElement
+								.groupElement
+								.getFieldElementCorrespondingTo(fieldElement, 'rel')).then( function( el ) {
+
+									if( el ) {
+
+										el.setOptions( makeReferences( fieldElement.value, 'event' ) );
+									}
+								});
+					};
+
+					form.getSection( 'actions_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {						
+
+						if( ! fieldElement.groupElement ) {
+							return;
+						}
+
+
+						$.when(fieldElement
+								.groupElement
+								.getFieldElementCorrespondingTo(fieldElement, 'rel')).then( function( el ) {
+
+									if( el ) {
+										el.setOptions( makeReferences( fieldElement.value, 'action' ) );
+									}
+								});
+
+					};
+
+
+
+
 					form.getSection( 'vars_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {
 
 						if( ! fieldElement.groupElement ) {
@@ -597,37 +682,10 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 								.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function( el ) {
 
 									if( el ) {
-										el.setOptions( sendjpaths[ fieldElement.value ] );
+										el.setOptions( alljpaths[ fieldElement.value ] );
 									}
 								});
 					};
-
-/*
-					form.getSection( 'vars_in' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {
-
-						if( ! fieldElement.groupElement ) {
-							return;
-						}
-
-						varReceiveChanged(
-							fieldElement.groupElement.getFieldElementCorrespondingTo( fieldElement, 'name' ).value,
-							this.value
-						);
-
-					};
-
-					form.getSection( 'vars_in' ).getGroup( 'group' ).getField( 'name' ).options.onChange = function( fieldElement ) {
-
-						if( ! fieldElement.groupElement ) {
-							return;
-						}
-
-						varReceiveChanged(
-							this.value,
-							fieldElement.groupElement.getFieldElementCorrespondingTo( fieldElement, 'rel' ).value
-						);
-					};
-*/
 
 					form.getSection( 'actions_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {						
 
@@ -640,56 +698,10 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 							.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function ( el ) {
 
 								if( el ) {
-									el.setOptions( sendjpaths[ fieldElement.value ] );	
+									el.setOptions( alljpaths[ fieldElement.value ] );	
 								}
 							});
 					};
-
-/*
-					var sentVars = { event: [], rel: [], jpath: [], name: []};	
-					if(module.definition.dataSend) {
-						var currentCfg = module.definition.dataSend;
-						for(var i = 0; i < currentCfg.length; i++) {
-							sentVars.event.push(currentCfg[i].event);
-							sentVars.rel.push(currentCfg[i].rel);
-							sentVars.jpath.push(currentCfg[i].jpath);
-							sentVars.name.push(currentCfg[i].name);
-						}
-					}
-					
-					var receivedVars = { rel: [], name: []};
-					if(module.definition.dataSource) {
-						var currentCfg = module.definition.dataSource;
-						for(var i = 0; i < currentCfg.length; i++) {
-							receivedVars.rel.push(currentCfg[i].rel);
-							receivedVars.name.push(currentCfg[i].name);
-							if(module.controller.fillReceivedVars)
-								module.controller.fillReceivedVars(receivedVars, currentCfg[i], i);
-						}
-					}
-
-					var actionsin = { rel: [], name: []};
-					if(module.definition.actionsIn) {
-						var currentCfg = module.definition.actionsIn;
-						for(var i = 0; i < currentCfg.length; i++) {
-							actionsin.rel.push(currentCfg[i].rel);
-							actionsin.name.push(currentCfg[i].name);
-						}
-					}
-
-
-					var actionsout = { event: [], rel: [], name: [], jpath: []};
-					if(module.definition.actionsOut) {
-						var currentCfg = module.definition.actionsOut;
-						for(var i = 0; i < currentCfg.length; i++) {
-							actionsout.rel.push(currentCfg[i].rel);
-							actionsout.name.push(currentCfg[i].name);
-							actionsout.jpath.push(currentCfg[i].jpath);
-							actionsout.event.push(currentCfg[i].event);
-						}
-					}
-					*/
-
 
 					var fill = {
 						sections: {

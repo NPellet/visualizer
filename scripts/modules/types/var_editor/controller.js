@@ -5,15 +5,17 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 	controller.prototype = $.extend(true, {}, Default, {
 
 		initimpl: function() { 
-			this.searchTerms = {};
+			
+			this.searchTerms = { };
 			var searchparams;
 
 			if( searchparams = this.module.getConfiguration( 'searchparams' ) ) {
-				for(var i in searchparams) {
-					if(!i) {
+
+				for( var i in searchparams ) {
+					if( ! i ) {
 						continue;
 					}
-					this.searchTerms[searchparams[i].name] = searchparams[i].defaultvalue;
+					this.searchTerms[ searchparams[ i ].name ] = searchparams[ i ].defaultvalue;
 				}
 			}
 			

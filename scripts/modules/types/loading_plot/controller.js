@@ -1,135 +1,121 @@
-define(['modules/defaultcontroller','util/datatraversing'], function(Default,Traversing) {
+define( [ 'modules/defaultcontroller' ], function( Default ) {
 	
-	function controller() {};
-	controller.prototype = $.extend(true, {}, Default, {
+	/**
+	 * Creates a new empty controller
+	 * @class Controller
+	 * @name Controller
+	 * @constructor
+	 */
+	function controller() { };
 
-		hover: function(data) {
-			var actions;
-			if(!(actions = this.module.vars_out()))	
-				return;	
-			for(var i = 0; i < actions.length; i++)
-				if(actions[i].event == "onHover") {
-					CI.API.setSharedVarFromJPath(actions[i].name, data, actions[i].jpath);
-				}
+	// Extends the default properties of the default controller
+	controller.prototype = $.extend( true, {}, Default );
+
+
+	/*
+		Information about the module
+	*/
+	controller.prototype.moduleInformation = {
+		moduleName: 'Loading plot',
+		description: 'Display a loading plot',
+		author: 'Norman Pellet',
+		date: '24.12.2013',
+		license: 'MIT'
+	};
+	
+
+
+	/*
+		Configuration of the input/output references of the module
+	*/
+	controller.prototype.references = {
+
+		// Input
+		loading: {
+			label: 'Loading variable',
+			type: "loading"
 		},
 
-		onZoomChange: function(zoom) {
-			var actions;
-			if(!(actions = this.module.vars_out()))	
-				return;	
-			for(var i = 0; i < actions.length; i++)
-				if(actions[i].event == "onZoomChange") {
-					CI.API.setSharedVarFromJPath(actions[i].name, zoom, actions[i].jpath);
-				}
+		preferences: {
+			label: 'Preferences',
+			type: "object"
 		},
 
-		onMove: function(x, y) {
-			var actions;
-			if(!(actions = this.module.vars_out()))	
-				return;	
-			for(var i = 0; i < actions.length; i++)
-				if(actions[i].event == "onMove") {
-					CI.API.setSharedVarFromJPath(actions[i].name, [x,y], actions[i].jpath);
-				}
+		// Output
+		element: {
+			label: 'Selected element',
+			type: 'object'
 		},
 
-
-		onChangeViewport: function(vp) {
-			var actions;
-			if(!(actions = this.module.vars_out()))	
-				return;	
-			for(var i = 0; i < actions.length; i++)
-				if(actions[i].event == "onViewPortChange") {
-					CI.API.setSharedVarFromJPath(actions[i].name, vp, actions[i].jpath);
-				}
+		// Mixed
+		zoom: {
+			label: 'Zoom',
+			type: 'string'
 		},
 
-		configurationSend: {
-
-			events: {
-
-				onHover: {
-					label: 'Hovers an element',
-					description: 'Pass the mouse over a line to select it'
-				},
-
-				onMove: {
-					label: 'Move the map',
-					description: 'Move the map'
-				},
-
-				onZoomChange: {
-					label: 'Change the zoom',
-					description: 'The zoom is changed'
-				},
-
-				onViewPortChange: {
-					label: 'Viewport has changed',
-					description: ''
-				}
-			},
-			
-			rels: {
-				'element': {
-					label: 'Element',
-					description: 'Returns the selected row in the list'
-				},
-
-				'zoom': {
-					label: 'Zoom',
-					description: ''
-				},
-
-				'center': {
-					label: 'Coordinates of the center',
-					description: ''
-				},
-
-				'viewport': {
-					label: 'Viewport',
-					description: ''
-				}
-			}
-			
+		center: {
+			label: 'Coordinates of the center',
+			type: 'array'
 		},
+
+		viewport: {
+			label: 'Viewport',
+			type: 'object'
+		}
+	};
+
+
+	/*
+		Configuration of the module for sending events, as a static object
+	*/
+	controller.prototype.events = {
+
+
+		onHover: {
+			label: 'Hovers an element',
+			refVariable: [ 'element' ]
+		},
+
+		onMove: {
+			label: 'Move the map',
+			refVariable: [ 'center', 'zoom', 'viewport' ]
+		},
+
+		onZoomChange: {
+			label: 'Change the zoom',
+			refVariable: [ 'center', 'zoom', 'viewport' ]
+		},
+
+		onViewPortChange: {
+			label: 'Viewport has changed',
+			refVariable: [ 'center', 'zoom', 'viewport' ]
+		}
+	};
+	
+
+	/*
+		Configuration of the module for receiving events, as a static object
+		In the form of 
+	*/
+	controller.prototype.variablesIn = [ 'list' ];
+
+	/*
+		Received actions
+		In the form of
+
+		{
+			actionRef: 'actionLabel'
+		}
+	*/
+	controller.prototype.actionsIn = {
+		addElement: 'Add an element'
+	};
+	
 		
-		configurationReceive: {
-			loading: {
-				type: ["loading"],
-				label: 'Loading variable',
-				description: 'The main variable'
-			},
-
-			preferences: {
-				type: ["object"],
-				label: 'Preferences',
-				description: 'The preferences'
-			},
-
-			zoom: {
-				type: ["number"],
-				label: 'Zoom',
-				description: ''	
-			},
-
-			center: {
-				type: ["array"],
-				label: 'Coordinates of the center',
-				description: ''	
-			},
-
-			viewport: {
-				type: "array",
-				label: 'Viewport data (x,y,w,h)',
-				description: ''
-			}
-		},
+	controller.prototype.configurationStructure = function(section) {
+/*		
+		var jpaths = this.module.model.getjPath();
 		
-		moduleInformations: {
-			moduleName: 'Loading plot'
-		},
-		
-		doConfiguration: function(section) {
 
 			var groupfield = new BI.Forms.GroupFields.List('general');
 			section.addFieldGroup(groupfield);
@@ -148,7 +134,6 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 			section2.addFieldGroup(groupfield);
 
 
-			/* */
 			var opts = [];
 			var data = this.module.getDataFromRel('loading');
 			var jpaths = [];
@@ -161,7 +146,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 			});
 			field.implementation.setOptions(opts);
 			field.setTitle(new BI.Title('Layer'));
-			/* */
+
 
 
 			var field = groupfield.addField({
@@ -172,20 +157,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 			field.setTitle(new BI.Title('Display as'));
 
 
-			/* */
-			/*var jpaths = [];
 			
-			CI.DataType.getJPathsFromElement(data.value.series[0].data[0], jpaths);
-			var field = groupfield.addField({
-				type: 'Combo',
-				name: 'colorjpath'
-			});
-			field.setTitle(new BI.Title('Color (jPath)'));
-			field.implementation.setOptions(jpaths);*/
-			/* */
-
-
-			/* */
 			if(data.value)
 				Traversing.getJPathsFromElement(data.value.series[0].data[0], jpaths);
 
@@ -194,7 +166,7 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 				name: 'color'
 			});
 			field.setTitle(new BI.Title('Color (default)'));
-			/* */
+			
 
 
 			var sectionLabels = new BI.Forms.Section('_loading_labels', {}, new BI.Title('Labels'));
@@ -239,125 +211,58 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 
 			field.setTitle(new BI.Title('Highlight effects'));
 			field.implementation.setOptions({ 'stroke': 'Thick yellow stroke'});
+*/
+	};
 
-
-
-			return true;
-		},
-		
-		doFillConfiguration: function() {
-			
-			var cfgLayers = this.module.getConfiguration().layers || [];
-			
-			var titles = [];
-			var layers = [];
-			for(var i = 0; i < cfgLayers.length; i++) {
-
-				cfgLayers[i].highlightEffect = cfgLayers[i].highlightEffect || {};
-
-				var cfgLocalLayer = { 
-
-					groups: 
-					{
-						config: [
-						{ 
-							el: [cfgLayers[i].layer], 
-							type: [cfgLayers[i].display], 
-							color: [cfgLayers[i].color]
-						}]
-					},
-
-					sections: {
-						_loading_labels: [{
-							groups: {
-								_loading_labels_grp: [{
-									labelzoomthreshold: [cfgLayers[i].labelzoomthreshold], 
-									labelsize: [cfgLayers[i].labelsize], 
-									labels: [[(cfgLayers[i].displayLabels ? 'display_labels' : null), (cfgLayers[i].forceField ? 'forcefield' : null), (cfgLayers[i].blackstroke ? 'blackstroke' : null), (cfgLayers[i].scalelabel ? 'scalelabel' : null)]] 
-								}]
-							}
-						}],
-
-						_loading_highlight: [{
-							groups: {
-								_loading_highlight_grp: [{
-									highlightmag: [cfgLayers[i].highlightEffect.mag || 1],
-									highlighteffect: [[(cfgLayers[i].highlightEffect.yStroke ? 'stroke' : null)]]
-								}]
-							}
-						}]
-					}
-				};
-				layers.push(cfgLocalLayer)
+	controller.prototype.hover = function(data) {
+		var actions;
+		if(!(actions = this.module.vars_out()))	
+			return;	
+		for(var i = 0; i < actions.length; i++)
+			if(actions[i].event == "onHover") {
+				CI.API.setSharedVarFromJPath(actions[i].name, data, actions[i].jpath);
 			}
+	};
 
-			el = { 
-
-				groups: {
-					general: [{
-						navigation: [[this.module.getConfiguration().navigation ? 'navigation' : '']]
-					}]
-				},
-				sections: {
-				_module_layers: layers
-				}
-			};
-			return el;
-		},
-		
-		doSaveConfiguration: function(confSection) {
-
-			var displayLabels;
-			var group = confSection[0]._module_layers;
-			
-			navigation = !!confSection[0].general[0].navigation[0][0];
-
-			var layers = [];
-			for(var i = 0; i < group.length; i++) {
-				var labels = group[i]._loading_labels[0]._loading_labels_grp[0].labels[0];
-				displayLabels = false, forcefield = false, blackstroke = false, scalelabel = false;
-				for(var j = 0; j < labels.length; j++) {
-					if(labels[j] == 'display_labels')
-						displayLabels = true;
-					if(labels[j] == 'forcefield')
-						forcefield = true;
-					if(labels[j] == 'blackstroke')
-						blackstroke = true;
-					if(labels[j] == 'scalelabel')
-						scalelabel = true;
-				}
-
-				var h = group[i]._loading_highlight[0]._loading_highlight_grp[0].highlighteffect[0];
-				var glow = false, yStroke = false;
-				for(var j = 0; j < h.length; j++) {
-					if(h[j] == 'stroke')
-						yStroke = true;	
-				}
-
-				layers.push({ 
-					layer: group[i].config[0].el[0], 
-					labelsize: group[i]._loading_labels[0]._loading_labels_grp[0].labelsize[0], 
-					display: group[i].config[0].type[0], 
-					color: group[i].config[0].color[0],
-					displayLabels: displayLabels, 
-					forceField: forcefield, 
-					labelzoomthreshold: group[i]._loading_labels[0]._loading_labels_grp[0].labelzoomthreshold[0], 
-					scalelabel: scalelabel, 
-					blackstroke: blackstroke,
-					highlightEffect: {
-						mag: group[i]._loading_highlight[0]._loading_highlight_grp[0].highlightmag[0],
-						yStroke: yStroke
-					}
-				});
+	controller.prototype.onZoomChange = function(zoom) {
+		var actions;
+		if(!(actions = this.module.vars_out()))	
+			return;	
+		for(var i = 0; i < actions.length; i++)
+			if(actions[i].event == "onZoomChange") {
+				CI.API.setSharedVarFromJPath(actions[i].name, zoom, actions[i].jpath);
 			}
-			this.module.getConfiguration().layers = layers;	
-			this.module.getConfiguration().navigation = navigation;	
-		},
+	};
 
-		"export": function() {
-			
-		}		
-	});
+	controller.prototype.onMove = function(x, y) {
+		var actions;
+		if(!(actions = this.module.vars_out()))	
+			return;	
+		for(var i = 0; i < actions.length; i++)
+			if(actions[i].event == "onMove") {
+				CI.API.setSharedVarFromJPath(actions[i].name, [x,y], actions[i].jpath);
+			}
+	};
+
+
+	controller.prototype.onChangeViewport = function(vp) {
+		var actions;
+		if(!(actions = this.module.vars_out()))	
+			return;	
+		for(var i = 0; i < actions.length; i++)
+			if(actions[i].event == "onViewPortChange") {
+				CI.API.setSharedVarFromJPath(actions[i].name, vp, actions[i].jpath);
+			}
+	};
+
+
+		
+	controller.prototype.configAliases = {
+		'colnumber': [ 'groups', 'group', 0, 'colnumber', 0 ],
+		'colorjpath': [ 'groups', 'group', 0, 'colorjPath', 0 ],
+		'valjpath': [ 'groups', 'group', 0, 'valjPath', 0 ]
+	};
+
 
 	return controller;
 });

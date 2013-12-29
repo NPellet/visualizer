@@ -367,10 +367,6 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 
 		var entryPoint = EntryPoint.init(urls);
-
-		if(urls['header'])
-			Header.init(urls);
-
 		//Header.setTitle(title, Versioning.getViewHandler());
 	});
 });

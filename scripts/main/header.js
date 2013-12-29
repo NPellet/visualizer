@@ -3,11 +3,17 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 	var elements = [];
 	return {
 
-		init: function(urls) {
+		init: function( headerConfig ) {
 			var self = this;
+
+			if( headerConfig.elements ) {
+				this.loadHeaderElements( headerConfig.elements );
+			}
+
 			this.dom = $('<div id="header"><div id="title"><div></div></div></div>');
 			$("body").prepend(this.dom);
-			this.load( urls.header );
+
+			self.setHeight( headerConfig.height || "30px" );
 			this.setHeight( "30px" );
 
 			Versioning.getViewHandler( ).versionChange( ).progress( function(el) {
@@ -15,6 +21,7 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 				self.setTitle( el );
 				
 			} );
+
 		},
 
 		setHeight: function(height) {
@@ -41,15 +48,7 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 				});
 		},
 
-		load: function(url) {
-			var self = this;
-			$.getJSON(url, {}, function(data) {
-				if(data.elements)
-					self.loadHeaderElements(data.elements);
-				self.setHeight(data.height || "30px");
-			});
-		},
-
+		
 		loadHeaderElements: function(all) {
 			if(!$.isArray(all))
 				return;

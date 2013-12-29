@@ -1,0 +1,10 @@
+{
+		"display_value": "Single value",
+		"jqgrid": "Table",
+		"fasttable": "Fast table",
+		"2d_list": "2D list",
+		"hashmap": "Object viewer",
+		"postit": "Sticky note",
+		"iframe": "iFrame",
+		"recursive_tree": "Recursive tree (?)"
+	}

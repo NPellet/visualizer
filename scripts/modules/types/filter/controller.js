@@ -1,109 +1,134 @@
-define(['modules/defaultcontroller', 'libs/formcreator/formcreator'], function(Default, FormCreator) {
+define( [ 'modules/defaultcontroller', 'libs/formcreator/formcreator' ], function( Default, FormCreator ) {
 	
-	function controller() {};
-	controller.prototype = $.extend(true, {}, Default, {
+	/**
+	 * Creates a new empty controller
+	 * @class Controller
+	 * @name Controller
+	 * @constructor
+	 */
+	function controller() { };
 
-		configurationSend: {
-			events: {
-				filter: {
-					label: 'Filtering is done'
-				}
-			},
-			
-			rels: {
-				
-			}
-		},
-		
-		
-		configurationReceive: {
+	// Extends the default properties of the default controller
+	controller.prototype = $.extend( true, {}, Default );
 
-			"variable": {
-				type: [],
-				label: 'Any variable',
-				description: ''
-			}
 
-		},
-		
-		
-		moduleInformations: {
-			moduleName: 'Filter'
-		},
-		
+	/*
+		Information about the module
+	*/
+	controller.prototype.moduleInformation = {
+		moduleName: 'Filter',
+		description: 'A filtering module that takes variables in, modifies them, and outputs some other variables',
+		author: 'Norman Pellet',
+		date: '24.12.2013',
+		license: 'MIT'
+	};
+	
 
-		configurationStructure: function(section) {
-			
-			return {
-
-				groups: {
-					cfg: {
-						options: {
-							type: 'list'
-						},
-
-						fields: {
-
-							script: {
-								type: 'jscode',
-								title: 'Filtering script'
-							}
-						}
-					}/*,
-
-					varsout: {
-						options: {
-							type: 'table',
-							multiple: true
-						},
-
-						fields: {
-
-							varoutname: {
-								type: 'text',
-								title: 'Variable name'
-							}
-						}
-					}*/
-				},
-
-				sections: {
-					filterElement: FormCreator.makeConfig( )
-				}
-			}
-		},
-		
-		configFunctions: {
-
-			varsout: function( cfg ) {
-				if( ! ( cfg instanceof Array ) ) {
-					return [];
-				}
-				return cfg;
-			},
-
-			script: function( cfg ) {
-				if( ! cfg ) {
-					return '';
-				}
-
-				return cfg;
-			},
-
-			filters: function( cfg ) {
-				if( ! ( cfg instanceof Array ) ) {
-					return [];
-				}
-				return cfg;
-			}
+	/*
+		Configuration of the input/output references of the module
+	*/
+	controller.prototype.references = {
+		'cell': {
+			label: 'Data of the cell',
+			type: 'object'
 		},
 
-		configAliases: {
-			filters: [ 'sections', 'filterElement' ],
-			script: [ 'groups', 'cfg', 0, 'script', 0 ]//,
-		//	varsout: [ 'groups', 'varsout', 0 ],
+		'list': {
+			label: 'The array of data to display',
+			type: 'array'
 		}
-	});
+	};
 
-	return controller;
+
+	/*
+		Configuration of the module for sending events, as a static object
+	*/
+	controller.prototype.events = {
+
+		// List of all possible events
+		'onFilter': {
+			label: 'Filtering is done'
+		},
+
+		'onBeforeFilter': {
+			label: 'Before filtering script it called'
+		}
+	};
+	
+
+	/*
+		Configuration of the module for receiving events, as a static object
+		In the form of 
+	*/
+	controller.prototype.variablesIn = [ 'list' ];
+
+	/*
+		Received actions
+		In the form of
+
+		{
+			actionRef: 'actionLabel'
+		}
+	*/
+	controller.prototype.actionsIn = {
+		addElement: 'Add an element'
+	};
+	
+		
+	controller.prototype.configurationStructure = function(section) {
+		return {
+
+			groups: {
+				cfg: {
+					options: {
+						type: 'list'
+					},
+
+					fields: {
+
+						script: {
+							type: 'jscode',
+							title: 'Filtering script'
+						}
+					}
+				}
+			},
+
+			sections: {
+				filterElement: FormCreator.makeConfig( )
+			}
+		}
+	};
+
+		
+	controller.prototype.configFunctions = {
+		varsout: function( cfg ) {
+			if( ! ( cfg instanceof Array ) ) {
+				return [];
+			}
+			return cfg;
+		},
+
+		script: function( cfg ) {
+			if( ! cfg ) {
+				return '';
+			}
+
+			return cfg;
+		},
+
+		filters: function( cfg ) {
+			if( ! ( cfg instanceof Array ) ) {
+				return [];
+			}
+			return cfg;
+		}
+	};
+
+	controller.prototype.configAliases = {
+		filters: [ 'sections', 'filterElement' ],
+		script: [ 'groups', 'cfg', 0, 'script', 0 ]
+	};
+
+ 	return controller;
 });

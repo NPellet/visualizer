@@ -11,6 +11,11 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 			this.resetListeners();
 		},
 
+		
+		inDom: function() {
+			
+		},
+
 		resetListeners: function() {
 			this.sourceMap = null;
 

@@ -1,23 +1,17 @@
-/*************************************************************************
-	jquery.fancytree.debug.js
-
-	Misc. debug extensions for jquery.fancytree.js.
-
-	Copyright (c) 2012, Martin Wendt (http://wwWendt.de)
-	Dual licensed under the MIT or GPL Version 2 licenses.
-	http://code.google.com/p/fancytree/wiki/LicenseInfo
-
-	A current version and some documentation is available at
-		https://github.com/mar10/fancytree/
-
-	$Version:$
-	$Revision:$
-
-	@depends: jquery.js
-	@depends: jquery.ui.widget.js
-	@depends: jquery.ui.core.js
-	@depends: jquery.fancytree.js
-*************************************************************************/
+/*!
+ * jquery.fancytree.debug.js
+ *
+ * Miscellaneous debug extensions.
+ * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
+ *
+ * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ *
+ * Released under the MIT license
+ * https://github.com/mar10/fancytree/wiki/LicenseInfo
+ *
+ * @version DEVELOPMENT
+ * @date DEVELOPMENT
+ */
 
 ;(function($, window, document, undefined) {
 
@@ -33,11 +27,11 @@
 /* *****************************************************************************
  * Private functions and variables
  */
-var HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" ");
-var EVENT_NAMES = "activate beforeActivate".split(" ");
-var HOOK_NAME_MAP = {},
-	EVENT_NAME_MAP = {},
-	i;
+var i,
+	HOOK_NAMES = "nodeClick nodeCollapseSiblings".split(" "),
+	EVENT_NAMES = "activate beforeActivate".split(" "),
+	HOOK_NAME_MAP = {},
+	EVENT_NAME_MAP = {};
 
 for(i=0; i<HOOK_NAMES.length; i++){ HOOK_NAME_MAP[HOOK_NAMES[i]] = true; }
 for(i=0; i<EVENT_NAMES.length; i++){ EVENT_NAME_MAP[EVENT_NAMES[i]] = true; }
@@ -46,6 +40,7 @@ for(i=0; i<EVENT_NAMES.length; i++){ EVENT_NAME_MAP[EVENT_NAMES[i]] = true; }
  * Extension code
  */
 $.ui.fancytree.registerExtension("tracecalls", {
+	version: "0.0.1",
 	// Default options for this extension.
 	options: {
 		logTarget: null,   // optional redirect logging to this <div> tag

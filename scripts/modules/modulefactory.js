@@ -1,77 +1,74 @@
-define(['modules/module'], function(Module) {
+define(['jquery', 'modules/module'], function($, Module) {
 
 	var incrementalId = 0;
-	var modules = [], definitions = [];
+
+	var modules = [ ],
+		definitions = [ ];
+
+	var allTypes = { };
+	var modulesLoading = 0;
+	var modulesDeferred = $.Deferred(),
+		url;
+
+	function parseModules( moduleslist ) {
+		var defs = [];
+		for( var i in moduleslist ) {
+			
+			if( typeof moduleslist[ i ] == 'object' ) {
+
+				if( moduleslist[ i ]._url ) {
+
+					url = moduleslist[ i ]._url;
+					moduleslist[ i ] = { };
+					defs.push( getModulesFromURL( url, moduleslist[ i ] ) );
+				}
+			}
+		}
+
+		return $.when.apply( $, defs )
+	}
+
+	function getModulesFromURL( url, root ) {
+
+		var def = $.Deferred( );
+		modulesLoading++;
+		$.getJSON( url, { }, function( modulesList ) {
+
+ 			parseModules( modulesList ).then( function() {
+ 				$.extend( true, root, modulesList );	
+ 				modulesLoading--;
+				def.resolve();
+ 			} );
+		} );
+
+		return def.promise();
+	}
 
 	return {
 		getTypes: function() {
-			return {
+			return modulesDeferred;
+		},
 
-				'Displaying information': {
-					'display_value': 'Single value',
-					'jqgrid': 'Table',
-					'fasttable': 'Fast table',
-					'2d_list': '2D list',
-					'hashmap': 'Object viewer',
-					'postit': 'Sticky note',
-					'iframe': 'iFrame',
-					'recursive_tree': 'Recursive tree (?)'
-				},
+		setModules: function( list ) {
 
-				'Client interaction': {
-					'dragdrop': 'Drag and Drop file',
-					'button_action': 'Button to action',
-					'grid_selector': 'Table Selector (?)',
-					'xyzoomnavigator': 'XY zoom navigator (?)'
-				},
+			var i = 0,
+				l,
+				defs = [];
 
-				'Server interaction': {
-					'button_url': 'Button URL',
-					'webservice_button': 'Webservice button (?)',
-					'webservice_cron': 'Webservice cron (?)',
-					'webservice_search': 'Webservice search',
-					'filelistupload': 'Files upload (?)'
-				},
-
-				'Data edition': {
-					'object_editor': 'Object editor (?)',
-					'filter': 'General filtering',
-					'form': 'Form',
-					'form_simple': 'Simple form',
-					'var_editor': 'Data manipulation'
-					//'array_search': 'Data searching'
-				},
-
-
-				'Array searching': {
-					'array_search': 'Configured search'
-				},
-
-				'Science': {
-					'1dnmr': '1D NMR',
-					'2dnmr': '2D NMR',
-					'spectra_displayer': 'Spectra displayer',
-					'webservice_nmr_spin': 'NMR spin system simulation',
-					'gcms': 'GC-MS',
-					'jsme': 'JSME Molecular Editor',
-					'jsmol': 'JSMol',
-					'jsmol_script': 'JSMol Script',
-					'ivstability': 'IV stability',
-					'mol2d': '2D Molecule viewer',
-					'graph_function': '3D mathematical function'
-				},
-
-				'Statistics': {
-					'dendrogram': 'Dendrogram',
-					'loading_plot': 'Loading plot'
-				},
-
-				'Charting': {
-					'canvas_matrix': 'Matrix',
-					'spectra_displayer': 'Plot',
-					'phylogram': 'Display phylogram'
-				}
+			if( ! ( list instanceof Array ) ) {
+				list = [ list ];
 			}
+
+			l = list.length;
+
+			for( ; i < l ; i ++ ) {
+
+				defs.push( getModulesFromURL( list[ i ], allTypes ) );
+			}
+
+			$.when.apply( $, defs ).then( function() {
+				modulesDeferred.resolve( allTypes );
+			});
 		},
 
 		newModule: function(definition) {

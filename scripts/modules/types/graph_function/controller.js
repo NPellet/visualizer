@@ -1,97 +1,142 @@
-define(['modules/defaultcontroller'], function(Default) {
-	
-	function controller() {};
-	controller.prototype = $.extend(true, {}, Default, {
+define( [ 'modules/defaultcontroller' ], function( Default ) {
+    
+    /**
+     * Creates a new empty controller
+     * @class Controller
+     * @name Controller
+     * @constructor
+     */
+    function controller() { };
 
-        configurationStructure : function(){
-            return {
-                groups: {
-                    group: {
-                        options: {
-                            type: 'list'
+    // Extends the default properties of the default controller
+    controller.prototype = $.extend( true, {}, Default );
+
+
+    /*
+        Information about the module
+    */
+    controller.prototype.moduleInformation = {
+        moduleName: 'Function plotter',
+        description: 'Plots an input function in 3D using Three.js',
+        author: 'Luc Patiny',
+        date: '28.12.2013',
+        license: 'MIT'
+    };
+    
+
+
+    /*
+        Configuration of the input/output references of the module
+    */
+    controller.prototype.references = {
+        'function': {
+            label: 'Mathematical function with x and y parameters',
+            type: 'string'
+        }
+    };
+
+
+    /*
+        Configuration of the module for sending events, as a static object
+    */
+    controller.prototype.events = {
+
+    
+    };
+    
+
+    /*
+        Configuration of the module for receiving events, as a static object
+        In the form of 
+    */
+    controller.prototype.variablesIn = [ 'function' ];
+
+    /*
+        Received actions
+        In the form of
+
+        {
+            actionRef: 'actionLabel'
+        }
+    */
+    controller.prototype.actionsIn = {
+    
+    };
+    
+        
+    controller.prototype.configurationStructure = function(section) {
+        
+        return {
+            groups: {
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+
+                    fields: {
+
+                        'function': {
+                            type: 'text',
+                            default: 'sin(sqrt(0.01*x^2  + 0.01*y^2))*10',
+                            title: 'Mathematical function'
                         },
 
-                        fields: {
+                        xMin: {
+                            type: 'text',
+                            default: -100,
+                            title: 'Min X'
+                        },
 
-                        	'function': {
-                                type: 'text',
-                                default: 'sin(sqrt(0.01*x^2  + 0.01*y^2))*10',
-                                title: 'Mathematical function'
-                            },
+                        xMax: {
+                            type: 'text',
+                            default: 100,
+                            title: 'Max X'
+                        },
 
-                            xMin: {
-                                type: 'text',
-                                default: -100,
-                                title: 'Min X'
-                            },
+                        yMin: {
+                            type: 'text',
+                            default: -100,
+                            title: 'Min Y'
+                        },
 
-                            xMax: {
-                                type: 'text',
-                                default: 100,
-                                title: 'Max X'
-                            },
+                        yMax: {
+                            type: 'text',
+                            default: 100,
+                            title: 'Max Y'
+                        },
 
-                            yMin: {
-                                type: 'text',
-                                default: -100,
-                                title: 'Min Y'
-                            },
+                        zMin: {
+                            type: 'text',
+                            title: 'Min Z'
+                        },
 
-                            yMax: {
-                                type: 'text',
-                                default: 100,
-                                title: 'Max Y'
-                            },
+                        zMax: {
+                            type: 'text',
+                            title: 'Max Z'
+                        },
 
-                            zMin: {
-                                type: 'text',
-                                title: 'Min Z'
-                            },
-
-                            zMax: {
-                                type: 'text',
-                                title: 'Max Z'
-                            },
-
-                            segments: {
-                                type: 'text',
-                                default: 100,
-                                title: 'Number segments'
-                            }
+                        segments: {
+                            type: 'text',
+                            default: 100,
+                            title: 'Number segments'
                         }
                     }
                 }
-            };
-        },
+            }
+        };
+    };
 
-        configAliases: {
-        	'function': [ 'groups', 'group', 0, 'function', 0 ],
-        	'xMin': [ 'groups', 'group', 0, 'xMin', 0 ],
-        	'xMax': [ 'groups', 'group', 0, 'xMax', 0 ],
-        	'yMin': [ 'groups', 'group', 0, 'yMin', 0 ],
-        	'yMax': [ 'groups', 'group', 0, 'yMax', 0 ],
-        	'zMin': [ 'groups', 'group', 0, 'zMin', 0 ],
-            'zMax': [ 'groups', 'group', 0, 'zMax', 0 ],
-			'segments': [ 'groups', 'group', 0, 'segments', 0 ]
-        },
+        
+    controller.prototype.configAliases = {
+        'function': [ 'groups', 'group', 0, 'function', 0 ],
+        'xMin': [ 'groups', 'group', 0, 'xMin', 0 ],
+        'xMax': [ 'groups', 'group', 0, 'xMax', 0 ],
+        'yMin': [ 'groups', 'group', 0, 'yMin', 0 ],
+        'yMax': [ 'groups', 'group', 0, 'yMax', 0 ],
+        'zMin': [ 'groups', 'group', 0, 'zMin', 0 ],
+        'zMax': [ 'groups', 'group', 0, 'zMax', 0 ],
+        'segments': [ 'groups', 'group', 0, 'segments', 0 ]
+    };
 
-		configurationSend: {
-		},
-		
-		configurationReceive: {
-			"function": {
-				type: ['string'],
-				label: 'Mathematical function with x and y',
-				description: ''
-			}
-		},
-
-		moduleInformations: {
-			moduleName: 'WebGL function grapher'
-		}
-
-		
-	});
-
-	return controller;
+    return controller;
 });

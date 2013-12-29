@@ -32,7 +32,7 @@ define( [ ], function(  ) {
 				options = this.field.getOptions( this ),
 				text = this.lookRecursively( val, options );
 
-			if( text !== false ) {
+			if( text !== undefined ) {
 				this.div.html( text.title );
 
 			//	this.fieldElement.trigger( 'focus' );
@@ -46,6 +46,10 @@ define( [ ], function(  ) {
 
 	FieldConstructor.prototype.lookRecursively = function(key, pool) {
 		
+		if( ! pool ) {
+			return;
+		}	
+
 		var found = false,
 			i = 0, l = pool.length;
 
@@ -68,7 +72,7 @@ define( [ ], function(  ) {
 			}
 		}
 
-		return false;
+		return;
 	},
 
 
