@@ -22,21 +22,18 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 			// Replace all variables in the URL
 			var reg = /\<var:([a-zA-Z0-9]+)\>/;
-			while(val = reg.exec(url)) {
-				variable = API.getRepositoryData().get(val[1]) || [''];
-				variable = variable[1];
-				url = url.replace('<var:' + val[1] + '>', encodeURIComponent(variable));
+			while( val = reg.exec( url ) ) {
+				variable = API.getRepositoryData( ).get( val[ 1 ] ) || [ '' ];
+				variable = variable[ 1 ];
+				url = url.replace( '<var:' + val[ 1 ] + '>', encodeURIComponent( variable ) );
 			}
 
-			this.url=url;
-
-			
-			if(this.request && this.request.abort) {
-				this.request.abort();
+			this.url = url;
+			if( this.request && this.request.abort ) {
+				this.request.abort( );
 			}
 
-
-			var data=this.module.view.system.serializeArray();
+			var data = this.module.view.system.serializeArray();
 
 			this.request = URL.post(url, data);	
 
