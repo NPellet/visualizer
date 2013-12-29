@@ -247,7 +247,7 @@ define(['modules/defaultview', 'util/webworker', 'util/util', 'libs/jquery.event
 		// Used to center the canvas on the loading
 		
 		getXYShift: function() {
-			if(this.xyShift)
+			if(this.xyShift && ! isNaN(this.xyShift.x) && !isNaN(this.xyShift.y))
 				return this.xyShift;	
 			var pxPerCell = this.getPxPerCell();
 			var zoneX = pxPerCell * this.canvasNbX;
