@@ -6,7 +6,7 @@ define(['modules/defaultview'], function(Default) {
 		init: function() {	
 			var self = this;
 			this.dom = $('<div></div>');
-			var button = new BI.Buttons.Button(this.module.getConfiguration().label || '', function() {
+		/*	var button = new BI.Buttons.Button(this.module.getConfiguration().label || '', function() {
 				self.module.controller.onClick();
 			}, { 
 				color: self.module.getConfiguration().color || 'Grey',
@@ -15,7 +15,7 @@ define(['modules/defaultview'], function(Default) {
 
 			this.module.getDomContent().html(this.dom);
 			this.dom.html(button.render());
-			this.button = button;
+			this.button = button;*/
 		},
 
 

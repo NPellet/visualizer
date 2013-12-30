@@ -355,6 +355,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 					break;
 				}
 
+
 				for( l = referenceList.length ; i < l ; i ++ ) {
 					list.push( { key: referenceList[ i ], title: references[ referenceList [ i ] ].label } );
 				}
@@ -442,7 +443,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 										modulewrapper: {
 											type: 'checkbox',
 											title: 'Module boundaries',
-											options: {'display': ''}
+											options: { 'display': '' }
 										}
 									}
 								}
@@ -650,7 +651,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 								});
 					};
 
-					form.getSection( 'actions_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {						
+					form.getSection( 'actions_out' ).getGroup( 'group' ).getField( 'event' ).options.onChange = function( fieldElement ) {						
 
 						if( ! fieldElement.groupElement ) {
 							return;
@@ -920,7 +921,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 				delete this.definition.dataSource;
 			}
 
-			return this.definition.vars_in = this.definition.vars_in || {};
+			return this.definition.vars_in = this.definition.vars_in || new ViewArray();
 		},
 
 

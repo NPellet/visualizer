@@ -67,7 +67,10 @@ define(['util/api'], function(API) {
 		    link.type = "text/css";
 		    link.rel = "stylesheet";
 		    link.href = url;
-		    document.getElementsByTagName("head")[0].appendChild(link);
+
+		    try {
+		    	document.getElementsByTagName("head")[0].appendChild(link);
+		    } catch( e ) {}
 		},
 
 		getDistinctColors: function(numColors) {

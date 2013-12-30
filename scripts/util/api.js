@@ -1,10 +1,11 @@
-define(['util/datatraversing'], function(Traversing) {
+define(['util/datatraversing', 'util/actionmanager'], function(Traversing, ActionManager) {
 
 	var allScripts = [];
 	function setVar(name, element, jpath) {
 //console.log('sfgs');
 		var self = this;
 		if( ! jpath || ! element.getChild ) {
+			
 			this.getRepositoryData().set(name, element);
 			return;
 		}
@@ -31,6 +32,7 @@ define(['util/datatraversing'], function(Traversing) {
 		},
 
 		setRepositoryData: function(repo) {
+			console.log(repo);
 			this.repositoryData = repo;
 		},
 
@@ -79,13 +81,9 @@ define(['util/datatraversing'], function(Traversing) {
 			this.repositoryActions.set(key, value);	
 		},
 
-		setEvaluatedScripts: function(allScripts) {
-			this.allScripts = allScripts;
-		},
-
 		executeAction: function(name, value) {
-			if(allScripts[name])
-				allScripts[name](value);
+
+			ActionManager.execute( name, value );
 		}
 	}
 });

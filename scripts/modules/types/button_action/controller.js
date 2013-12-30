@@ -47,15 +47,15 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 		'onToggleOn': {
 			label: 'Button is toggled on',
 			refAction: [ 'actionText' ]
-		}
+		},
 
 		'onToggleOff': {
-			label: 'Toggle Off',
+			label: 'Button is toggled off',
 			refAction: [ 'actionText' ]
 		},
 
 		'onClick': {
-			label: 'Click',
+			label: 'Button is clicked',
 			refAction: [ 'actionText' ]
 		}
 	};
@@ -83,8 +83,8 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 	controller.prototype.onClick = function( on ) {
 
 		var text = this.module.getConfiguration( 'text' );
-		this.sendAction('string', text, 'onClick');
-		this.sendAction('string', text, (on ? 'onToggleOn' : 'onToggleOff'));
+		this.sendAction('actionText', text, 'onClick');
+		this.sendAction('actionText', text, (on ? 'onToggleOn' : 'onToggleOff'));
 	};
 		
 

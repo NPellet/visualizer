@@ -1,5 +1,27 @@
 
-define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'util/context', 'util/datatraversing', 'util/versioning', 'modules/modulefactory', 'util/viewmigration'], function($, Header, Repository, Grid, API, Context, Traversing, Versioning, ModuleFactory, Migration) {
+define([	'jquery',
+			'main/header',
+			'util/repository',
+			'main/grid',
+			'util/api',
+			'util/context',
+			'util/datatraversing',
+			'util/versioning',
+			'modules/modulefactory',
+			'util/viewmigration',
+			'util/actionmanager'
+], function($,
+			Header,
+			Repository,
+			Grid,
+			API,
+			Context,
+			Traversing,
+			Versioning,
+			ModuleFactory,
+			Migration,
+			ActionManager
+) {
 
 	var _viewLoaded, _dataLoaded;
 
@@ -9,9 +31,9 @@ define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'ut
 		RepositoryHighlight = new Repository(),
 		RepositoryActions = new Repository();
 
-	API.setRepositoryData(RepositoryData);
-	API.setRepositoryHighlights(RepositoryHighlight);
-	API.setRepositoryActions(RepositoryActions);
+	API.setRepositoryData( RepositoryData );
+	API.setRepositoryHighlights( RepositoryHighlight );
+	API.setRepositoryActions( RepositoryActions );
 
 	window.onbeforeunload = function() {
 		return;
@@ -44,25 +66,7 @@ define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'ut
 		}
 	}
 
-	function doScripts(data) {
-
-		var scripts = data.actionscripts;
-		if(!scripts)
-			return;
-
-		var evaled = {};
-		if(scripts) {
-			for(var i = 0, l = scripts.length; i < l; i++) {
-				eval("evaled[scripts[i].name] = function(value) { " + scripts[i].script + " }");
-			}
-			
-			this.entryData.actionscripts = scripts;
-			this.evaluatedScripts = evals;
-
-			API.setEvaluatedScripts(evals);
-		}
-	}
-
+	
 	function doView(view, reloading) {
 
 		var i = 0, l;
@@ -113,16 +117,20 @@ define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'ut
 	}
 
 	function doData(data, reloading) {
-		if(reloading)
-			reloadingData();
-		dataLoaded();
+		if( reloading ) {
+			reloadingData( );
+		}
+
+		dataLoaded( );
 	}
 
 	function reloadingData() {
-		RepositoryData.resetVariables();
-		RepositoryActions.resetVariables();
-		RepositoryHighlight.resetCallbacks();
-		RepositoryHighlight.resetVariables();
+
+		RepositoryData.resetVariables( );
+		RepositoryActions.resetVariables( );
+		RepositoryHighlight.resetCallbacks( );
+		RepositoryHighlight.resetVariables( );
+
 	}
 
 	function viewLoaded() {
@@ -143,6 +151,8 @@ define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'ut
 		if( ! _dataLoaded || ! _viewLoaded ) {
 			return;
 		}
+
+		ActionManager.viewHasChanged( view );
 
 		// If no variable is defined in the view, we start browsing the data and add all the first level
 		if(view.variables.length == 0) {
@@ -179,22 +189,12 @@ define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'ut
 		}
 	}
 
-	function getActionScripts() {
-
-		return Versioning.getData().actionscripts || [];
-	}
-
-	function setActionScripts(scripts, evaledScripts) {
-		this.evaluatedScripts = evaluatedScripts;
-		Versioning.getData().actionscripts = scripts;
-	}
 
 	function configureEntryPoint() {
+
 		var now = Date.now(),
 			data = Versioning.getData(),
 			view = Versioning.getView();
-
-
 
 		var div = $('<div></div>').dialog( { modal: true, position: [ 'center', 50 ], width: '80%' } );
 		div.prev( ).remove( );
@@ -246,61 +246,9 @@ define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'ut
 								}
 							}
 						}
-					}
-				}
-			});
+					},
 
-
-			form.onStructureLoaded().done(function() {
-				form.fill({ 
-					sections: {
-						cfg: [{
-							groups: {
-								tablevars: [ view.variables ]
-							}
-						}]
-					}
-				});
-			});
-
-
-			form.addButton('Cancel', { color: 'blue' }, function() {
-				div.dialog( 'close' );
-			});
-
-			form.addButton('Save', { color: 'green' }, function() {
-				div.dialog('close');
-				var data = form.getValue().sections.cfg[ 0 ].groups.tablevars[ 0 ];
-				view.variables = data;
-				_check(true);
-			});
-
-			form.onLoaded().done(function() {
-				div.html(form.makeDom());
-				form.inDom();
-			});
-
-		});
-	}
-
-
-	function configureActions() {
-		
-		var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%' });
-		div.prev().remove();
-		div.parent().css('z-index', 1000);
-
-
-		require(['./libs/forms2/form'], function(Form) {
-
-			var form = new Form();
-			form.init({
-				onValueChanged: function( value ) {	}
-			});
-
-			form.setStructure({
-				sections: {
-					general: {
+					actionscripts: {
 						options: {
 							title: 'Action scripting',
 							icon: 'script_go'
@@ -337,20 +285,176 @@ define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'ut
 								}
 							}
 						}
+					},
+
+
+					actionfiles: {
+						options: {
+							title: 'Action files',
+							icon: 'server_go'
+						},						
+
+						groups: {
+							action: {
+
+								options: {
+									type: 'table',
+									multiple: true
+								},
+
+								fields: {
+
+									name: {
+										type: 'text',
+										title: 'Action name'
+									},
+
+									file: {
+										type: 'text',
+										title: 'File'
+									},
+
+									mode: {
+										type: 'combo',
+										title: 'File type',
+										options: [ { key: 'worker', title: 'WebWorker'}, { key: 'amd', title: 'Asynchronously loaded module'} ]
+									}
+								}
+							}
+						}
+					},
+
+
+
+					webservice: {
+						options: {
+							title: 'Webservice',
+							icon: 'web_disk'
+						},						
+
+						sections: {
+
+							general: {
+								options: {
+									multiple: true,
+									title: 'Webservice instance'
+								},
+
+								groups: {
+
+									general: {
+
+										options: {
+											type: 'list',
+											multiple: true
+										},
+
+										fields: {
+
+											action: {
+												type: 'text',
+												title: 'Triggering action'
+											},
+
+											url: {
+												type: 'text',
+												title: 'URL'
+											},
+
+											method: {
+												type: 'combo',
+												title: 'Method',
+												options: [ {key: 'get', title: 'GET'}, {key: 'post', title: 'POST'} ]
+											}
+										}
+									},
+
+									varsin: {
+
+										options: {
+											type: 'table',
+											multiple: true,
+											title: 'Vars in'
+										},
+
+										fields: {
+
+											action: {
+												type: 'text',
+												title: 'Triggering action'
+											},
+
+											url: {
+												type: 'text',
+												title: 'URL'
+											}
+										}
+									},
+
+									varsout: {
+
+										options: {
+											type: 'table',
+											multiple: true,
+											title: 'Variables out'
+										},
+
+										fields: {
+
+											action: {
+												type: 'combo',
+												title: 'jPath'
+											},
+
+											url: {
+												type: 'text',
+												title: 'Variable name'
+											}
+										}
+									},
+
+									structure: {
+
+										options: {
+											type: 'list',
+											multiple: true,
+											title: 'Response structure'
+										},
+
+										fields: {
+
+											action: {
+												type: 'jscode',
+												title: 'JSON'
+											}
+										}
+									}
+								}
+							}
+
+						}
 					}
 				}
 			});
-
+console.log( ActionManager.getFilesForm() );
 
 			form.onStructureLoaded().done(function() {
-
 				form.fill({ 
 					sections: {
-						general: [{
-							sections: {
-								actions: getActionScripts()
+						cfg: [ {
+							groups: {
+								tablevars: [ view.variables ]
 							}
-						}]
+						} ],
+
+						actionscripts: [ {
+							sections: {
+								actions: ActionManager.getScriptsForm()
+							}
+						} ],
+
+
+						actionfiles: ActionManager.getFilesForm()
 					}
 				});
 			});
@@ -361,19 +465,27 @@ define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'ut
 			});
 
 			form.addButton('Save', { color: 'green' }, function() {
-
-				var data = form.getValue().sections.general[ 0 ].sections.actions,
-					actionScripts = {},
-					i = 0,
-					l = data.length
-
-				for( ; i < l ; i ++ ) {
-					eval( "evalscripted = function(value) { " + data[i].groups.action[ 0 ].script[ 0 ] + " } " );
-					actionScripts[ data[ i ].groups.action[ 0 ].name[ 0 ] ] = evalscripted;
-				}
-
-				setActionScripts(data, actionScripts);
 				div.dialog('close');
+
+				var data;
+
+				/* Entry variables */
+				data = form.getValue().sections.cfg[ 0 ].groups.tablevars[ 0 ];
+				view.variables = data;
+				_check(true);
+
+
+				/* Handle actions scripts */
+				var data = form.getValue().sections.actionscripts[ 0 ].sections.actions;
+				ActionManager.setScriptsFromForm( data );
+				/* */
+
+
+				/* Handle actions files */
+				var data = form.getValue().sections.actionfiles;
+				ActionManager.setFilesFromForm( data );
+				/* */
+
 			});
 
 			form.onLoaded().done(function() {
@@ -382,32 +494,6 @@ define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'ut
 			});
 
 		});
-
-			/*
-				var actions = [];
-				var save = new Button('Save', function() {
-					form.dom.trigger('stopEditing');
-					
-					div.dialog('close');
-				});
-				save.setColor('blue');
-				form.addButtonZone(save);
-				var vars = [], action;
-				var scripts = getActionScripts();
-				for(var i = 0; i < scripts.length; i++) {
-					action = { groups: { action: [{actionname: [ scripts[i].name ], script: [ scripts[i].script ] }]}};
-					vars.push(action);
-				}
-				var fill = { 
-					sections: {
-						general: vars
-					}
-				};
-				form.fillJson(fill);	
-
-			});
-	
-		});*/
 	}
 
 	
@@ -467,14 +553,14 @@ define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'ut
 				}]]
 			);
 
-
+/*
 			Context.listen(Context.getRootDom(), [
 				['<li class="ci-item-configureactions" name="refresh"><a><span class="ui-icon ui-icon-clock"></span>Configure actions</a></li>', 
 				function() {
 					configureActions();
 				}]]
 			);
-
+*/
 
 			Context.listen(Context.getRootDom(), [
 				['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>', 
@@ -500,12 +586,12 @@ define(['jquery', 'main/header', 'util/repository', 'main/grid', 'util/api', 'ut
 			view.variables[varname] = varvalue;
 		},
 
-		getActionScripts: getActionScripts,
-		setActionScripts: setActionScripts,
+		//getActionScripts: getActionScripts,
+		//setActionScripts: setActionScripts,
 
-		getActionScriptsEvaluated: function(name) {
-			return this.evaluatedScripts[name] || undefined;
-		},
+		//getActionScriptsEvaluated: function(name) {
+			//return this.evaluatedScripts[name] || undefined;
+		//},
 
 		getConfiguration: function() {
 			return view.configuration;
