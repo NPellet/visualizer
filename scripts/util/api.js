@@ -5,7 +5,7 @@ define(['util/datatraversing', 'util/actionmanager'], function(Traversing, Actio
 //console.log('sfgs');
 		var self = this;
 		if( ! jpath || ! element.getChild ) {
-			
+
 			this.getRepositoryData().set(name, element);
 			return;
 		}
@@ -32,7 +32,6 @@ define(['util/datatraversing', 'util/actionmanager'], function(Traversing, Actio
 		},
 
 		setRepositoryData: function(repo) {
-			console.log(repo);
 			this.repositoryData = repo;
 		},
 
