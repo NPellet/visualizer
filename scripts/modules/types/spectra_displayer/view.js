@@ -8,24 +8,25 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 			this.colorvars = [];
 			this.dom = $('<div />');
 			this.zones = {};
-			this._currentHighlights = {};
-			this.module.getDomContent().html(this.dom);
-			this.seriesActions = [];
+			this._currentHighlights = { };
+			this.module.getDomContent( ).html( this.dom );
+			this.seriesActions = [ ];
 
 			this.colorId = 0;
-			this.colors = ["red", "blue", "green", "black"];
+			this.colors = [ "red", "blue", "green", "black" ];
 
-			this.deferreds = {};
-			this.onReady = $.Deferred();
+			this.deferreds = { };
+
+			this.onReady = $.Deferred( );
 		},
 		
 		inDom: function() {
 
 			var self = this,
-				cfg = $.proxy(this.module.getConfiguration, this.module),
+				cfg = $.proxy( this.module.getConfiguration, this.module ),
 				graphurl = cfg( 'graphurl' ),
 				graph,
-				def = $.Deferred();
+				def = $.Deferred( );
 
 			if(graphurl) {
 					
@@ -153,7 +154,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 		},
 
 		redraw: function(forceReacalculateAxis) {
-			console.log("REDRAW: ",forceReacalculateAxis);
+			
 			var cfg = $.proxy(this.module.getConfiguration, this.module);
 			if (forceReacalculateAxis) {
 				this.graph.redraw();
@@ -412,7 +413,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 				if( self.deferreds[ varname ] ) {
 					self.deferreds[ varname ].reject();
 				}
-
+				
 				require( [ 'util/jcampconverter' ], function( JcampConverter ) {
 
 					self.deferreds[ varname ] = JcampConverter( moduleValue, { lowRes: 1024 } ).done( function( spectra ) {

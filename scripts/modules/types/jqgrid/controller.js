@@ -221,7 +221,7 @@ define( [ 'modules/defaultcontroller', 'util/datatraversing', 'util/api' ], func
 			return;
 		}
 
-		this.setVarFromEvent( 'onHover', element );
+		this.setVarFromEvent( 'onHover', element, 'row' );
 
 		API.highlight( element, 1 );
 	},
@@ -237,7 +237,7 @@ define( [ 'modules/defaultcontroller', 'util/datatraversing', 'util/api' ], func
 
 	controller.prototype.lineClick = function( element ) {
 
-		this.setVarFromEvent( 'onSelect', element );
+		this.setVarFromEvent( 'onSelect', element, 'row' );
 		this.sendAction( 'row', element, 'onSelect' );
 	};
 

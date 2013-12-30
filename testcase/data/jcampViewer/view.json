@@ -19,7 +19,7 @@
 					"group": [
 						{
 							"nblines": [
-								null
+								20
 							],
 							"toggle": [
 								null
@@ -27,12 +27,10 @@
 							"colorjpath": [
 								null
 							],
-							"displaySearch": [
-								[]
-							],
 							"filterRow": [
 								null
-							]
+							],
+							"displaySearch": []
 						}
 					],
 					"cols": [
@@ -66,7 +64,7 @@
 			"vars_out": [
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.jcamp",
 					"name": "jcamp"
 				}
@@ -149,6 +147,9 @@
 							],
 							"wheelAction": [
 								"zoomY"
+							],
+							"fullOut": [
+								null
 							]
 						}
 					],

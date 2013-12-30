@@ -164,9 +164,9 @@ define(['util/api'], function(API) {
 			var jpaths2 = jpath.replace(/^element\./, ''),
 				splitted = jpaths2.split('.'),
 				i = 0,
-				l = splitted.length-1,
+				l = splitted.length - 1,
 				ifArray = [],
-				ifString = '',
+				ifString,
 				ifElement = '',
 				regNum = /\.([0-9]+)(\.?)/g;
 

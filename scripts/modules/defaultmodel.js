@@ -74,7 +74,6 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				rel;
 
 
-
 			$.when(this.module.ready, this.module.view.onReady).then(function() {
 
 				if( varName instanceof Array ) {
@@ -124,9 +123,10 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
  		},
 
  		buildData: function(data, sourceTypes) {
-
- 			if(!data)
+ 			
+ 			if(!data) {
  				return false;
+ 			}
  			
 			var dataRebuilt = {};
 			if( ! sourceTypes ) { // Accepts everything
@@ -139,10 +139,12 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 			var dataType = data.getType(),
 				mustRebuild = false;
 
+
 			// If no in type is defined, the module accepts anything
 			if( sourceTypes.length == 0) {
 				return data;
 			}
+
 
 			for(var i = 0; i < sourceTypes.length; i++) {
 				if(sourceTypes[i] == dataType) {

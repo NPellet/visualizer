@@ -64,9 +64,8 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 
 		jcamp: {
 			type: ['jcamp', 'string'],
-			label: 'jcamp data'
+			label: 'Jcamp data'
 		},
-
 
 		annotations: {
 			type: ['array'],
@@ -434,12 +433,6 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 		flipX: [ 'groups', 'group', 0, 'flip', 0 ],
 		flipY: [ 'groups', 'group', 0, 'flip', 0 ],
 		plotinfos: [ 'groups', 'plotinfos', 0 ]
-	};
-
-	controller.prototype.configAliases = {
-		'colnumber': [ 'groups', 'group', 0, 'colnumber', 0 ],
-		'colorjpath': [ 'groups', 'group', 0, 'colorjPath', 0 ],
-		'valjpath': [ 'groups', 'group', 0, 'valjPath', 0 ]
 	};
 
 	controller.prototype.zoomChanged = function( min, max ) {

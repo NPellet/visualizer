@@ -76,7 +76,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 
 			var colorjpath = this.module.getConfiguration( 'colorjPath' );
-			if(colorjpath) {
+
+			if( colorjpath ) {
 				Util.addjPathFunction( undefined, jpaths[ j ].jpath, this.colorjpath);
 			}
 		
