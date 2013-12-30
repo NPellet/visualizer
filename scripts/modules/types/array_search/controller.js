@@ -32,7 +32,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'libs/formcreator/fo
 	controller.prototype.references = {
 		'array': {
 			label: 'An input array', // The input array is never modified
-			type: 'object'
+			type: 'array'
 		},
 
 		'filteredArray': {
@@ -50,7 +50,7 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'libs/formcreator/fo
 		// List of all possible events
 		'onSearchDone': {
 			label: 'When a search is performed',
-			refVariable: [ 'filteredArray' ]
+			refVariable: [ 'filteredArray' ],
 			refAction: [ 'filteredArray' ]
 		}
 	};
@@ -78,9 +78,10 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'libs/formcreator/fo
 	controller.prototype.configurationStructure = function(section) {
 	
 		var all_jpaths = [],
-			arr = this.module.getDataFromRel('array').get();
+			arr = this.module.getDataFromRel('array');
 
 		if( arr ) {
+			arr = arr.get();
 			Traversing.getJPathsFromElement( arr[ 0 ], all_jpaths );
 		}
 

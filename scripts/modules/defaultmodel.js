@@ -73,6 +73,8 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 				l,
 				rel;
 
+
+
 			$.when(this.module.ready, this.module.view.onReady).then(function() {
 
 				if( varName instanceof Array ) {
@@ -127,8 +129,10 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
  				return false;
  			
 			var dataRebuilt = {};
-			if(!sourceTypes)
-				return;
+			if( ! sourceTypes ) { // Accepts everything
+				return data;
+			}
+
 			if(!(sourceTypes instanceof Array))
 				sourceTypes = [sourceTypes];
 

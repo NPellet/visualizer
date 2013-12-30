@@ -65,6 +65,10 @@ define(['require'], function( require ) {
 
 		actionsFiles = {};
 
+		if( ! files ) {
+			return;
+		}
+
 		for(var i = 0, l = files[ 0 ].groups.action[ 0 ].length; i < l ; i ++) {
 
 			actionsFiles[ files[ 0 ].groups.action[ 0 ][ i ].name ] = actionsFiles[ files[ 0 ].groups.action[ 0 ][ i ].name ] || [];

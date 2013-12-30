@@ -50,7 +50,7 @@ define( [ 'modules/defaultcontroller', 'util/datatraversing', 'util/api' ], func
 		// List of all possible events
 
 		onStructureChange: {
-			label: 'Molecular structure has changed'
+			label: 'Molecular structure has changed',
 			refVariable: [ 'mol', 'smiles' ]
 		}
 

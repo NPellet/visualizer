@@ -96,6 +96,10 @@ define(['jquery'], function($) {
 
 			return $.when( this.getFieldElement( i , j ) ).then( function( el ) { // When the field element is loaded.
 
+				if( ! el ) {
+					return;
+				}
+				
 				el.setDefaultOr( json ); // The filling adds either the json, which is the data loaded, or the default from the structure (automatic)
 				
 			} );

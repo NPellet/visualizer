@@ -219,7 +219,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 			//toEval += add;
 			//toEval += " return a; ";
 			toEval += "};";
-console.log( toEval );
+
 			try {
 				eval( toEval );
 			} catch( e ) {

@@ -31,10 +31,13 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 			if(this == lastTr) {
 
-	 				var el = self.module.data[ parseInt( $(this).attr('data-row-id') ) ];
-					lastTr = this;
-					self.module.controller.lineOut( el );
+	 				var dataRowId = parseInt( $(this).attr('data-row-id') );
 
+	 				if( ! isNaN ( dataRowId ) ) {
+		 				var el = self.module.data[ dataRowId ];
+						lastTr = this;
+						self.module.controller.lineOut( el );
+					}
 	 			}
 
 	 		}).on('click', 'tr', function() {
