@@ -38,7 +38,7 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 		fromtoMS: {
 			label: 'From - To on MS',
 			type: 'fromTo'
-		}
+		},
 
 		GCIntegration: {
 			label: 'Integration on the GC',
@@ -95,7 +95,7 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 		// List of all possible events
 
 		onZoomGCChange: {
-			label: 'Zoom over GC spectra'
+			label: 'Zoom over GC spectra',
 			refAction: [ 'fromtoGC' ]
 		},
 
@@ -112,19 +112,16 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 
 		onIntegralAdd: {
 			label: 'Integral is added',
-			description: '',
 			refAction: [ 'GCIntegration' ]
 		},
 
 		onIntegralRemove: {
 			label: 'Integral is removed',
-			description: '',
 			refAction: [ 'GCIntegration' ]
 		},
 
 		onIntegralChange: {
 			label: 'Integral is changed',
-			description: '',
 			refAction: [ 'GCIntegration', 'MSTrace' ],
 			refVariable: [ 'GCIntegration', 'MSTrace' ]
 		},
@@ -187,10 +184,10 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 		continuous: function( cfg ) {
 			 return cfg[ 0 ] == "continuous";
 		}
-	},
+	};
 
-	controller.prototype.configAliases =  {
-		'continuous': ['groups', 'group', 0, 'continuous', 0 ];
+	controller.prototype.configAliases = {
+		'continuous': ['groups', 'group', 0, 'continuous', 0 ]
 	};
 
  	return controller;

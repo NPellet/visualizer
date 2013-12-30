@@ -80,7 +80,7 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 					varName = varName[ 0 ];
 				}
 
-				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] ) {
+				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
 					return;
 				}
 

@@ -167,6 +167,9 @@
 										"label": [
 											"aa"
 										],
+										"defaultVal": [
+											null
+										],
 										"type": [
 											"text"
 										],
@@ -188,6 +191,9 @@
 										],
 										"step": [
 											null
+										],
+										"range": [
+											[]
 										]
 									}
 								],
