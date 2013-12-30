@@ -30,3 +30,27 @@
 	font-weight: normal;
 	font-size: 1em;
 }
+
+
+.sort {
+	margin-top: 3px;
+   float: right;
+   width: 0; 
+   height: 0;
+   border-top: 8px solid black;
+   border-left: 4px solid transparent; 
+   border-right: 4px solid transparent; 
+   border-bottom: 0px;
+
+}
+
+.sort.up {
+   width: 0; 
+   height: 0; 
+   border-bottom: 8px solid black; 
+   border-left: 4px solid transparent; 
+   border-right: 4px solid transparent;
+   border-top: 0px; 
+   
+}
+

@@ -6,7 +6,8 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 	init: function() {	
 
 	 		var self = this,
-	 			lastTr;
+	 			lastTr,
+	 			currentColSort;
 
 	 		this.domTable = $( "<table />" , { cellpadding: 0, cellspacing: 0 } ).css( { width: '100%' } );
 	 		this.domHead = $( "<thead />" ).appendTo( this.domTable );
@@ -45,6 +46,34 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
  				var el = self.module.data[ parseInt( $(this).attr('data-row-id') ) ];
  				self.module.controller.lineClick( el );
 
+	 		}).on('click', 'th', function() { // Sorting
+
+	 			var jpathId = $(this).attr('data-jpath-number'),
+	 				data = self.module.getDataFromRel('list');
+
+	 			if( ! currentColSort || currentColSort.col !== jpathId ) {
+
+	 				if( currentColSort ) {
+	 					self.domTable.find('th[data-jpath-number="' + currentColSort.col + '"] .sort').remove();
+	 				}
+
+	 				currentColSort = { asc: true, col: jpathId, span: $('<div class="sort up"></div>') };
+
+					self.domTable.find('th[data-jpath-number="' + currentColSort.col + '"]').append( currentColSort.span );
+
+	 			} else if( currentColSort.col == jpathId ) {
+	 				currentColSort.asc = ! currentColSort.asc;
+	 				currentColSort.span.toggleClass('up');
+	 			}
+
+
+	 			data.sort( function( a, b ) {
+	 				
+	 				return (currentColSort.asc ? 1 : -1) * ( self.jpaths[ jpaths[ jpathId ].jpath ]( a ) > self.jpaths[ jpaths[ jpathId ].jpath ]( b ) ? 1 : -1 );
+	 			} );
+
+	 			self.blank.list.call( self );
+	 			self.update.list.call( self, data );
 	 		});
 
 	 		this.dom = this.domTable;
@@ -69,7 +98,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 				}
 
 				Util.addjPathFunction( this.jpaths, jpaths[ j ].jpath );
-				thead += '<th>' + jpaths[ j ].name + '</th>';
+				thead += '<th data-jpath-number="' + j + '">' + jpaths[ j ].name + '</th>';
 			}
 			thead += '</tr>';
 
