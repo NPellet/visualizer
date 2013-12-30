@@ -5,6 +5,13 @@ define(['require'], function( require ) {
 		Versioning = Vers;
 	});
 
+
+	var API;
+	require([ 'util/api' ], function( A ) {
+		API = A;
+	});
+
+
 	/* RELATED TO SCRIPTING 	*/
 	var evaluatedScripts;
 	function doScripts( ) {
@@ -77,12 +84,50 @@ define(['require'], function( require ) {
 
 			break;
 
-			case 'webworker':
+			case 'worker':
 
 				var worker = new Worker( file.file );
-				worker.postMessage( value );
-				worker.onmessage = function() {
+				
+				worker.postMessage( { method: 'actionValue', value: value } );
+
+				worker.onmessage = function( event ) {
 					// Do something. We need to invent an API here.
+
+					if( ! event.data.method ) {
+						return;
+					}
+
+					switch( event.data.method ) {
+
+						case 'getVar':
+							if( ! ( event.data.variables instanceof Array ) ) {
+								return;
+							}
+
+							var variables = {},
+								i = 0,
+								l = event.data.variables.length;
+
+							for( ; i < l ; i ++ ) {
+								variables[ event.data.variables[ i ] ] = API.getVar( event.data.variables[ i ] );
+							}
+
+							worker.postMessage( { method: 'getVar', variables: variables });
+
+						break;
+
+						case 'setVar':
+
+							if( ! ( event.data.variables ) ) {
+								return;
+							}
+					
+							for( var i in event.data.variables ) {
+								API.setVar( i, event.data.variables[ i ] );
+							}
+
+						break;
+					}
 				}
 
 			break;
