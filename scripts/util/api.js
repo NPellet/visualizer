@@ -2,7 +2,7 @@ define(['util/datatraversing', 'util/actionmanager'], function(Traversing, Actio
 
 	var allScripts = [];
 	function setVar(name, element, jpath) {
-//console.log('sfgs');
+
 		var self = this;
 		if( ! jpath || ! element.getChild ) {
 
@@ -20,7 +20,18 @@ define(['util/datatraversing', 'util/actionmanager'], function(Traversing, Actio
 	}
 
 	function setHighlight(key, value) {
-		this.repositoryHighlights.set(key, value);
+		
+		if( ! ( key._highlight instanceof Array ) ) {
+			return;	
+		}
+
+		this.repositoryHighlights.set(key._highlight, value);
+		
+	}
+
+
+	function setHighlightId(id, value) {
+		this.repositoryHighlights.set(id, value);
 	}
 
 
@@ -74,6 +85,7 @@ define(['util/datatraversing', 'util/actionmanager'], function(Traversing, Actio
 		},
 
 		highlight: setHighlight,
+		highlightId: setHighlightId,
 		setHighlight: setHighlight,
 
 		doAction: function(key, value) {

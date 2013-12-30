@@ -131,6 +131,31 @@ define(['require'], function( require ) {
 							}
 
 						break;
+
+
+						case 'terminate':
+							worker.terminate();
+						break;
+
+						case 'sendAction':
+
+							if( ! event.data.actionName ) {
+								return;
+							}
+
+							API.executeAction( event.data.actionName, event.data.actionValue );
+
+						break;
+
+						case 'highlight':
+							
+							if( ! event.data.highlightId ) {
+								return;
+							}
+
+							API.highlightId( event.data.highlightId, event.data.highlightValue || false );
+							
+						break;
 					}
 				}
 
