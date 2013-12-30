@@ -79,11 +79,11 @@ define(['jquery', 'main/entrypoint', 'util/datatraversing', 'util/api'], functio
 					varName = varName[ 0 ];
 				}
 
-				if( !self.sourceMap ) {
+				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] ) {
 					return;
 				}
 
-				self.data[ varName ] = self.buildData( varValue, self.module.controller.configurationReceive[ self.sourceMap[ varName ].rel ].type );
+				self.data[ varName ] = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
 				rel = self.module.getDataRelFromName( varName );
 
 				i = 0, l = rel.length;

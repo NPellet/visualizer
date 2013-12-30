@@ -18,12 +18,14 @@ define( [ require, '../../field', 'libs/fancytree/jquery.fancytree' ], function(
 					return;
 				}
 
-				self.getElementExpanded( ).value = node.key;
+				if( self.getElementExpanded( ) ) {
+					self.getElementExpanded( ).value = node.key;
+				}
 			},
 
 			click: function(event, node) {
 				node = node.node;
-				console.log( node );
+				
 				if( node && (!node.data.children || (node.data.children && node.data.children.length == 0 ))) {
 					self.form.hideExpander( true );
 				}
