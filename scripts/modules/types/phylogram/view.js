@@ -34,7 +34,7 @@ define(['modules/defaultview','util/util','libs/d3/d3.v2.min','util/api'], funct
 		},
 
 		update: {
-			'array':function(data){
+			'tree':function(data){
 
 				//console.log("UPDATE "+this._id) ;
 

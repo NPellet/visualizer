@@ -1,107 +1,134 @@
 define(['modules/defaultcontroller'], function(Default) {
 	
-	function controller() {};
-	controller.prototype = $.extend(true, {}, Default, {
+	/**
+	 * Creates a new empty controller
+	 * @class Controller
+	 * @name Controller
+	 * @constructor
+	 */
+	function controller() { };
 
-		// Leaves
-		mouseOverLeaf: function(data) { this.sendTreeFromEvent(data,"onLeafHover"); },
-		mouseOutLeaf:function(){},
-		clickLeaf: function(data) { this.sendTreeFromEvent(data,"onLeafSelect"); },
+	// Extends the default properties of the default controller
+	controller.prototype = $.extend( true, {}, Default );
 
-		// BRanches
-		mouseOverBranch: function(data) { this.sendTreeFromEvent(data,"onBranchHover"); },
-		mouseOutBranch:function(){},
-		clickBranch: function(data) { this.sendTreeFromEvent(data,"onBranchSelect"); },
 
-		// Send event + var
-		sendTreeFromEvent : function(data,name){
+	/*
+		Information about the module
+	*/
+	controller.prototype.moduleInformation = {
+		moduleName: 'D3 Phylogram',
+		description: 'Display phylogram using D3 library',
+		author: 'Nathanaêl Khodl, Luc Patiny',
+		date: '30.12.2013',
+		license: 'MIT'
+	};
 
-			var element = new DataObject({'type':'tree',value:data.data}, true);
-			/*console.log(name);
-			console.warn(element);*/
-			//this.setVarFromEvent('leafSelect', element,'tree');
-			this.sendAction('tree', element, name);
-			this.setVarFromEvent(name, element,'tree');
-		},
 
-        configurationStructure : function(){
-            return {
-                groups: {
-                    group: {
-                        options: {
-                            type: 'list'
+	// Leaves
+	controller.prototype.mouseOverLeaf = function(data) {
+		this.sendTreeFromEvent(data,"onLeafHover");
+	}
+	controller.prototype.mouseOutLeaf = function() {
+
+	}
+	controller.prototype.clickLeaf = function(data) {
+		this.sendTreeFromEvent(data,"onLeafSelect");
+	}
+
+	// BRanches
+	controller.prototype.mouseOverBranch = function(data) {
+		this.sendTreeFromEvent(data,"onBranchHover");
+	}
+
+	controller.prototype.mouseOutBranch = function() {
+	}
+
+	controller.prototype.clickBranch = function(data) {
+		this.sendTreeFromEvent(data,"onBranchSelect");
+	}
+
+	controller.prototype.sendTreeFromEvent = function(data,name){
+		var element = new DataObject({'type':'tree',value:data.data}, true);
+		this.sendAction('tree', element, name);
+		this.setVarFromEvent(name, element,'tree');
+	}
+
+    controller.prototype.configurationStructure = function(){
+        return {
+            groups: {
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+
+                    fields: {
+                        branchWidth: {
+                            type: 'text',
+                            default : 4,
+                            title: 'Branch width'
                         },
 
-                        fields: {
-                            branchWidth: {
-                                type: 'text',
-                                default : 4,
-                                title: 'Branch width'
-                            },
-
-                            /*
-                            branchColor: {
-                                type: 'color',
-                                title: 'Branch color'
-                            }
-                            */
+                        /*
+                        branchColor: {
+                            type: 'color',
+                            title: 'Branch color'
                         }
+                        */
                     }
                 }
-            };
-        },
+            }
+        };
+    }
 
-        configAliases: {
-            'branchWidth': [ 'groups', 'group', 0, 'branchWidth', 0 ],
-            //'branchColor': [ 'groups', 'group', 0, 'branchColor', 0 ]
-        },
+    controller.prototype.configAliases = {
+        'branchWidth': [ 'groups', 'group', 0, 'branchWidth', 0 ],
+        //'branchColor': [ 'groups', 'group', 0, 'branchColor', 0 ]
+    }
 
-		configurationSend: {
-			events: {
+	controller.prototype.configurationSend = {
+		events: {
 
-				onLeafSelect: {
-					label: 'Select a leaf',
-					description: 'Click on a leaf to select it'
-				},
-
-				onLeafHover: {
-					label: 'Hovers a leaf',
-					description: 'Pass the mouse over a leaf to select it'
-				},
-
-				onBranchSelect: {
-					label: 'Select a branch',
-					description: 'Click on a branch to select it'
-				},
-
-				onBranchHover: {
-					label: 'Hovers a branch',
-					description: 'Pass the mouse over a branch to select it'
-				}
+			onLeafSelect: {
+				label: 'Select a leaf',
+				description: 'Click on a leaf to select it'
 			},
-			
-			rels: {
-				'tree': {
-					label: 'Tree',
-					description: 'Returns the selected tree'
-				}
+
+			onLeafHover: {
+				label: 'Hovers a leaf',
+				description: 'Pass the mouse over a leaf to select it'
+			},
+
+			onBranchSelect: {
+				label: 'Select a branch',
+				description: 'Click on a branch to select it'
+			},
+
+			onBranchHover: {
+				label: 'Hovers a branch',
+				description: 'Pass the mouse over a branch to select it'
 			}
 		},
 		
-		configurationReceive: {
-			"array": {
-				type: ['tree'],
-				label: 'A tree with children',
-				description: ''
+		rels: {
+			'tree': {
+				label: 'Tree',
+				description: 'Returns the selected tree'
 			}
-		},
-
-		moduleInformations: {
-			moduleName: 'D3 Test'
 		}
+	}
+	
+	/*
+		Configuration of the input/output references of the module
+	*/
+	controller.prototype.references = {
+		tree: {
+			type: ['tree'],
+			label: 'A tree with children'
+		}
+	};
 
-		
-	});
+	controller.prototype.variablesIn = [ 'tree' ];
+
 
 	return controller;
 });

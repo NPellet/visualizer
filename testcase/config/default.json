@@ -1,4 +1,11 @@
 {
+
+
+"modules": [
+	"../scripts/modules/lists/all.json"
+],
+
+"header": {
 	"height": "30px",
 	"elements": 
 
@@ -29,3 +36,7 @@
 		}	
 	]
 }
+
+}
+
+
