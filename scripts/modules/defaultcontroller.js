@@ -72,6 +72,8 @@ define(['jquery', 'util/api', 'util/datatraversing'], function($, API, Traversin
 		"export": function() {},
 		configurationStructure:  {},
 		configFunctions: {},
-		configAliases: {}
+		configAliases: {},
+		events: {},
+		variablesIn: []
 	}
 });

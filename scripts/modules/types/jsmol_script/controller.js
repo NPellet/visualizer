@@ -1,95 +1,101 @@
 define(['modules/defaultcontroller'], function(Default) {
 	
 	function controller() {};
-	controller.prototype = $.extend(true, {}, Default, {
 
-		configurationSend: {
-			events: {
-				onActionSent: {
-					label: 'Send the JSMol script',
-					description: 'On button click'
-				}
-			},
-			
-			rels: {
-				'jsmolscript': {
-					label: 'JSMol Script',
-					description: 'Return the current script'
-				}
-				
+    controller.prototype = $.extend( true, {}, Default );
+
+
+    controller.prototype.moduleInformation = {
+        moduleName: 'Script Action',
+        description: 'Display a JSMol module',
+        author: 'Nathanaêl Khodl, Luc Patiny',
+        date: '30.12.2013',
+        license: 'MIT'
+    };
+
+
+	controller.prototype.configurationSend = {
+		events: {
+			onActionSent: {
+				label: 'Send the JSMol script',
+				description: 'On button click'
 			}
 		},
-
-		actions: {
-			rel: {'jsmolscript': 'Script JSMol'}
-		},
 		
-		// Called by view
-		onButtonClick:function(){
-            var cfg = $.proxy(this.module.getConfiguration, this.module);
-			var obj = new DataObject({type: 'jsmolscript', value:cfg("script")[0]});
-			this.sendAction('jsmolscript', obj);
-		},
-		
-		moduleInformations: {
-			moduleName: 'Script Action'
-		},
-		
-        configurationStructure: function(section) {
+		rels: {
+			'jsmolscript': {
+				label: 'JSMol Script',
+				description: 'Return the current script'
+			}
+			
+		}
+	},
 
-            //var jpaths = this.module.model.getjPath();
+	controller.prototype.actions = {
+		rel: {'jsmolscript': 'Script JSMol'}
+	},
+	
+	// Called by view
+	controller.prototype.onButtonClick = function() {
+        var cfg = $.proxy(this.module.getConfiguration, this.module);
+		var obj = new DataObject({type: 'jsmolscript', value:cfg("script")[0]});
+		this.sendAction('jsmolscript', obj);
+	}
+	
 
-            return {
-                groups: {
-                    'group': {
-                        options: {
-                            type: 'list'
+	
+    controller.prototype.configurationStructure = function(section) {
+        return {
+            groups: {
+                'group': {
+                    options: {
+                        type: 'list'
+                    },
+
+                    fields: {
+
+                        padding :{
+                            type: 'text',
+                            name: 'padding',
+                            title: 'Padding (px)',
+                            default:'6'
                         },
 
-                        fields: {
+                        btnvalue :{
+                            type: 'text',
+                            name: 'btnvalue',
+                            title: 'Button text',
+                            default:'Execute script'
+                        },
 
-                            padding :{
-                                type: 'text',
-                                name: 'padding',
-                                title: 'Padding (px)',
-                                default:'6'
-                            },
+                        iseditable :{
+                            name: 'iseditable',
+                            title: 'Display editor',
+                            default: 'true',
+                            type: 'checkbox',
+                            options: { 'true': 'Show the script editor'}
+                        },
 
-                            btnvalue :{
-                                type: 'text',
-                                name: 'btnvalue',
-                                title: 'Button text',
-                                default:'Execute script'
-                            },
-
-                            iseditable :{
-                                name: 'iseditable',
-                                title: 'Display editor',
-                                default: 'true',
-                                type: 'checkbox',
-                                options: { 'true': 'Show the script editor'}
-                            },
-
-                            script : {
-                                type: 'jscode',
-                                name: 'script',
-                                title: 'Script'
-                            }
+                        script : {
+                            type: 'jscode',
+                            name: 'script',
+                            title: 'Script'
                         }
                     }
                 }
             }
-        },
-
-        configAliases: {
-            'padding': [ 'groups', 'group', 0, 'padding', 0],
-            'btnvalue': [ 'groups', 'group', 0, 'btnvalue', 0],
-            'iseditable': [ 'groups', 'group', 0 , 'iseditable', 0],
-            'script': [ 'groups', 'group', 0, 'script']
         }
+    }
+
+    controller.prototype.configAliases = {
+        'padding': [ 'groups', 'group', 0, 'padding', 0],
+        'btnvalue': [ 'groups', 'group', 0, 'btnvalue', 0],
+        'iseditable': [ 'groups', 'group', 0 , 'iseditable', 0],
+        'script': [ 'groups', 'group', 0, 'script']
+    }
 
 		
-	});
+
 
 	return controller;
 });

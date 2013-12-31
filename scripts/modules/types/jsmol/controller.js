@@ -1,74 +1,79 @@
 define(['modules/defaultcontroller', 'util/datatraversing', 'util/api'], function(Default, Traversing, API) {
 	
-	function controller() {
+	/**
+	 * Creates a new empty controller
+	 * @class Controller
+	 * @name Controller
+	 * @constructor
+	 */
+	function controller() { };
 
+	// Extends the default properties of the default controller
+	controller.prototype = $.extend( true, {}, Default );
+
+	/*
+		Information about the module
+	*/
+	controller.prototype.moduleInformation = {
+		moduleName: 'JSMol module',
+		description: 'Display a JSMol module',
+		author: 'Nathanaêl Khodl, Luc Patiny',
+		date: '30.12.2013',
+		license: 'MIT'
 	};
 
-	controller.prototype = $.extend(true, {}, Default, {
+	/*
+		Configuration of the input/output references of the module
+	*/
+	controller.prototype.references = {
+		data: {
+			type: ['pdb', 'mol3d', 'magres'],
+			label: 'A molecule/protein data'
+		}
+	};
 
-		onJSMolScriptReceive:function(a){
-			this.module.view.executeScript(a.value);
-		},
 
-		configurationSend: {
+	/*
+		Configuration of the module for receiving events, as a static object
+		In the form of 
+	*/
+	controller.prototype.variablesIn = [ 'data' ];
 
-			events: {
 
-			},
+	controller.prototype.onJSMolScriptReceive = function(a) {
+		this.module.view.executeScript(a.value);
+	}
 
-			rels: {
+	
+	
+	controller.prototype.configurationStructure = function(section) {
+		return {
+			groups: {
+				group: {
+					options: {
+						type: 'list'
+					},
 
-			}
-		},
-		
-		configurationReceive: {
-			data: {
-				type: ['pdb', 'mol3d', 'magres'],
-				label: 'A molecule/protein data',
-				description: ''
-			}
-		},
-		
-		
-		moduleInformations: {
-			moduleName: 'JSMol'
-		},
-		
-		configurationStructure: function(section) {
-			
-			// var jpaths = this.module.model.getjPath();
-
-			return {
-				groups: {
-					group: {
-						options: {
-							type: 'list'
-						},
-
-						fields: {
-							script: {
-								type: 'jscode',
-								title: 'After load script'
-							}
+					fields: {
+						script: {
+							type: 'jscode',
+							title: 'After load script'
 						}
 					}
 				}
-			}		
-		},
+			}
+		}		
+	}
 
-		configAliases: {
-			'script': [ 'groups', 'group', 0, 'script', 0 ]
-		},
+	controller.prototype.configAliases = {
+		'script': [ 'groups', 'group', 0, 'script', 0 ]
+	}
 
-		actions: {
-			rel: {}
-		},
 
-		actionsReceive: {
-			'jsmolscript': 'Some JSMol Script recieved'
-		}
+	controller.prototype.actionsIn = {
+		'jsmolscript': 'Some JSMol Script received'
+	}
 
-	});
-
+	
 	return controller;
 });
