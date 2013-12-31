@@ -12,28 +12,36 @@
 				"width": 85,
 				"height": 72
 			},
-			"configuration": {},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"branchWidth": [
+								4
+							]
+						}
+					]
+				}
+			},
 			"id": 1,
-			"bgColor": "",
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
 			"vars_in": [
 				{
-					"rel": "array",
+					"rel": "tree",
 					"name": "tree"
 				}
 			],
 			"actions_in": [
-				{
-					"rel": "",
-					"name": ""
-				}
+				{}
 			],
 			"actions_out": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+				{}
 			],
 			"vars_out": [
 				{
@@ -140,10 +148,35 @@
 				"width": 33,
 				"height": 43
 			},
-			"configuration": {},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"branchWidth": [
+								4
+							]
+						}
+					]
+				}
+			},
 			"id": 3,
-			"bgColor": "",
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"vars_in": [
+				{
+					"rel": "tree",
+					"name": "treeout"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
 				{
 					"event": "onBranchHover",
 					"rel": "tree",
@@ -151,25 +184,8 @@
 					"name": "tree2"
 				}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"vars_in": [
-				{
-					"rel": "array",
-					"name": "treeout"
-				}
-			],
-			"actions_in": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"actions_out": [
+				{}
 			]
 		},
 		{
@@ -184,36 +200,39 @@
 				"width": 36,
 				"height": 43
 			},
-			"configuration": {},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"branchWidth": [
+								4
+							]
+						}
+					]
+				}
+			},
 			"id": 4,
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
 			"vars_in": [
 				{
-					"rel": "array",
+					"rel": "tree",
 					"name": "tree2"
 				}
 			],
 			"actions_in": [
-				{
-					"rel": "",
-					"name": ""
-				}
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
 			]
 		}
 	],
