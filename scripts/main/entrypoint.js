@@ -547,7 +547,7 @@ console.log( ActionManager.getFilesForm() );
 			Context.init( document.getElementById( 'modules-grid' ) );
 
 			Context.listen(Context.getRootDom(), [
-				['<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Configure entry point</a></li>', 
+				['<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>', 
 				function() {
 					configureEntryPoint();
 				}]]
