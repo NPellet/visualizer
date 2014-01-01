@@ -424,6 +424,24 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 
 					sections: {
 
+						module_infos: {
+
+							options: {
+								title: 'Module informations',
+								icon: 'info_rhombus'
+							},
+
+							groups: {
+
+								group: {
+									options: {
+										type: 'text'
+									}
+								}
+							}
+						},
+
+
 						module_config: {
 
 							options: {
@@ -717,9 +735,21 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 							});
 					};
 
+console.log( module, module.controller );
+					var moduleInfosHtml = 
+						"<table>" + 
+						"<tr><td>Module name</td><td>" + module.controller.moduleInformation.moduleName + "</td></tr>" + 
+						"<tr><td></td><td><small>" + module.controller.moduleInformation.description + "</small></td></tr>" + 
+						"<tr><td>Module author</td><td>" + module.controller.moduleInformation.author + "</td></tr>" + 
+						"<tr><td>Creation date</td><td>" + module.controller.moduleInformation.date + "</td></tr>" + 
+						"<tr><td>Released under</td><td>" + module.controller.moduleInformation.license + "</td></tr>" +
+						"</table>"
+					;
+					
 					var fill = {
 						sections: {
 							module_config: [ { groups: { group: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor || [ 255, 255, 255, 0 ] ],  modulewrapper: [[ (module.definition.displayWrapper === true || module.definition.displayWrapper == undefined) ? 'display' : '' ]] }] } } ],
+							module_infos: [ { groups: { group: [ moduleInfosHtml ] } } ],
 							module_specific_config: [ module.definition.configuration || {} ],
 
 							vars_out: [ { groups: { group: [ module.vars_out() ] } } ],

@@ -1,4 +1,4 @@
-define(['require', 'jquery', './field', './grouplistelement', './grouptableelement'], function(require, $, Field, GroupListElement, GroupTableElement) {
+define(['require', 'jquery', './field', './grouplistelement', './grouptableelement', './grouptextelement'], function(require, $, Field, GroupListElement, GroupTableElement, GroupTextElement) {
 
 	var Group = function(name) {
 		this.name = name;
@@ -122,6 +122,10 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 
 					subelement = new GroupTableElement();
 
+				break;
+
+				case 'text':
+					subelement = new GroupTextElement();
 				break;
 
 				case 'list':

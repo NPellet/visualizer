@@ -92,11 +92,11 @@ define( [ ], function(  ) {
 				
 				if( val.indexOf( index ) > -1  ) {
 
-					element.attr( 'checked', 'checked' );
+					element.prop( 'checked', 'checked' );
 
 				} else {
 
-					element.removeAttr( 'checked' );
+					element.removeProp( 'checked' );
 					
 				}
 				
