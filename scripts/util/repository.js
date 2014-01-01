@@ -134,7 +134,7 @@ define(['jquery', 'util/event'], function($, Event) {
 		return callbackId;
 	}
 
-	Repository.prototype.kill = function(killerId) {
+	Repository.prototype.kill = function( killerId ) {
 		if(!this._killers[killerId])
 			return;
 		var callbackIds = this._killers[killerId];

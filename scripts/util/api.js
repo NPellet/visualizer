@@ -19,18 +19,15 @@ define(['util/datatraversing', 'util/actionmanager'], function(Traversing, Actio
 		});
 	}
 
-	function setHighlight(key, value) {
-		
-		if( ! ( key._highlight instanceof Array ) ) {
+	function setHighlight( element, value ) {
+
+		if( ! ( element._highlight instanceof Array ) ) {
 			return;	
 		}
-
-		this.repositoryHighlights.set(key._highlight, value);
-		
+		this.repositoryHighlights.set( element._highlight, value );
 	}
 
-
-	function setHighlightId(id, value) {
+	function setHighlightId( id, value ) {
 		this.repositoryHighlights.set(id, value);
 	}
 
@@ -77,11 +74,17 @@ define(['util/datatraversing', 'util/actionmanager'], function(Traversing, Actio
 		},
 
 		listenHighlight: function() {
+
+			if( ! Array.isArray( arguments[ 0 ]._highlight ) ) {
+				return;
+			}
+
+			arguments[ 0 ] = arguments[ 0 ]._highlight;
 			this.repositoryHighlights.listen.apply(this.repositoryHighlights, arguments);
 		},
 
 		killHighlight: function() {
-			this.repositoryHighlights.kill.apply(this.repositoryHighlights, arguments);
+			this.repositoryHighlights.kill.apply( this.repositoryHighlights, arguments );
 		},
 
 		highlight: setHighlight,
