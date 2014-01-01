@@ -4,12 +4,64 @@
 	"Client interaction": [
 		{
 			"moduleName": "Drag and Drop file",
-			"url": "./modules/types/dragdrop"
+			"url": "./modules/types/dragdrop/"
 		},
 
 		{
 			"moduleName": "Button to action",
-			"url": "./modules/types/button_action"
+			"url": "./modules/types/button_action/"
 		}
+	],
+
+
+	"Server interaction": [
+		{ "moduleName": "Button URL", "url": "./modules/types/button_url/" },
+		{ "moduleName": "Webservice button (?)", "url": "./modules/types/webservice_button/" },
+		{ "moduleName": "Webservice cron (?)", "url": "./modules/types/webservice_cron/" },
+		{ "moduleName": "Webservice search", "url": "./modules/types/webservice_search/" },
+		{ "moduleName": "Files upload (?)", "url": "./modules/types/filelistupload/" }
+	],
+
+	"Data edition": [
+		{ "moduleName": "Object editor (?)", "url": "./modules/types/object_editor/" },
+		{ "moduleName": "General filtering", "url": "./modules/types/filter/" },
+		{ "moduleName": "Form", "url": "./modules/types/form/" },
+		{ "moduleName": "Simple form", "url": "./modules/types/form_simple/" },
+		{ "moduleName": "Data manipulation", "url": "./modules/types/var_editor/" }
+	],
+
+
+	"Array searching": [
+		{ "moduleName": "Configured search", "url": "./modules/types/array_search/" }
+	],
+
+	"Science": [
+		{ "moduleName": "1D NMR", "url": "./modules/types/1dnmr/" },
+		{ "moduleName": "2D NMR", "url": "./modules/types/2dnmr/" },
+		{ "moduleName": "Spectra displayer", "url": "./modules/types/spectra_displayer/" },
+		{ "moduleName": "NMR spin system simulation", "url": "./modules/types/webservice_nmr_spin/" },
+		{ "moduleName": "GC-MS", "url": "./modules/types/gcms/" },
+		{ "moduleName": "JSME Molecular Editor", "url": "./modules/types/jsme/" },
+		{ "moduleName": "JSMol", "url": "./modules/types/jsmol/" },
+		{ "moduleName": "JSMol Script", "url": "./modules/types/jsmol_script/" },
+		{ "moduleName": "IV stability", "url": "./modules/types/ivstability/" },
+		{ "moduleName": "2D Molecule viewer", "url": "./modules/types/mol2d/" },
+		{ "moduleName": "3D mathematical function", "url": "./modules/types/graph_function/" }
+	],
+
+	"Statistics": [
+		{ "moduleName": "Dendrogram", "url": "./modules/types/dendrogram/" },
+		{ "moduleName": "Loading plot", "url": "./modules/types/loading_plot/" }
+	],
+
+	"Charting": [
+		{ "moduleName": "Matrix", "url": "./modules/types/canvas_matrix/" },
+		{ "moduleName": "Plot", "url": "./modules/types/spectra_displayer/" },
+		{ "moduleName": "Display phylogram", "url": "./modules/types/phylogram/" }
+	],
+
+	"Legacy": [
+		{ "moduleName": "Table Selector (?)", "url": "./modules/types/grid_selector/" },
+		{ "moduleName": "XY zoom navigator (?)", "url": "./modules/types/xyzoomnavigator/" }
 	]
 }
