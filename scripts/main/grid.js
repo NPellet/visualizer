@@ -382,15 +382,22 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 			
 			function makeRecursiveMenu( elements, dom ) {
 
-				for( var i in elements ) {
-					if( typeof elements[ i ] == 'object' ) {
+				if( Array.isArray( elements ) ) {
+
+					for( var i = 0, l = elements.length ; i < l ; i ++ ) {
+						dom.append('<li class="ci-item-newnmodule" data-url="' + elements[ i ].url + '"><a>' + elements[ i ].moduleName + '</a></li>');
+					}
+
+				} else if( elements.url ) {
+
+				} else { // List of folders
+
+					for( var i in elements ) {
+
 						el = $('<li><a>' + i + '</a></li>');
 						ul = $("<ul />").appendTo( el );
 						makeRecursiveMenu( elements[ i ], ul  )
 						dom.append( el );
-
-					} else {
-						dom.append('<li class="ci-item-newnmodule" data-name="' + i + '"><a>' + elements[ i ] + '</a></li>');
 					}
 				}
 			}
@@ -402,7 +409,7 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 				var allTypes = ModuleFactory.getTypes();
 				
 				allTypes.done( function( json ) {
-					console.log( json );
+					
 					makeRecursiveMenu( json, $ulModules );
 				});
 

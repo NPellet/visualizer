@@ -12,16 +12,18 @@ define(['jquery', 'modules/module'], function($, Module) {
 
 	function parseModules( moduleslist ) {
 		var defs = [];
+
 		for( var i in moduleslist ) {
-			
-			if( typeof moduleslist[ i ] == 'object' ) {
+				
+			if( Array.isArray( moduleslist[ i ] ) ) { // Is an array of module (a folder)
+				// Actually we do nothing cause we don't NEED to.
+			}
 
-				if( moduleslist[ i ]._url ) {
+			if( typeof moduleslist[ i ] == 'string' ) { // Is a module or a folder
 
-					url = moduleslist[ i ]._url;
-					moduleslist[ i ] = { };
-					defs.push( getModulesFromURL( url, moduleslist[ i ] ) );
-				}
+				url = moduleslist[ i ];
+				moduleslist[ i ] = [];
+				defs.push( getModulesFromURL( url, moduleslist[ i ] ) );
 			}
 		}
 
