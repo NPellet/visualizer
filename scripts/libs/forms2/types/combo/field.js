@@ -26,7 +26,7 @@ define( [ require, '../../field', 'libs/fancytree/jquery.fancytree' ], function(
 			click: function(event, node) {
 				node = node.node;
 				
-				if( node && (!node.data.children || (node.data.children && node.data.children.length == 0 ))) {
+				if( node && (!node.children || (node.children && node.children.length == 0 ))) {
 					self.form.hideExpander( true );
 				}
 			}
