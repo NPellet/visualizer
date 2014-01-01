@@ -2,7 +2,7 @@
 
 
 "modules": [
-	"../scripts/modules/lists/all.json"
+	"./scripts/modules/lists/all.json"
 ],
 
 "header": {

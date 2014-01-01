@@ -68,7 +68,7 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 		It will also be called at the beginning and in this case the value is null !
 		*/
 		update: {
-			'dendrogram': function(moduleValue) {
+			'tree': function(moduleValue) {
 				if (this.DEBUG) console.log("Dendrogram: update");
 
 

@@ -1,58 +1,86 @@
 {
+	"_name": "Master",
+	"_time": 1388578176876,
+	"_saved": 1388578176876,
+	"_local": false,
 	"modules": [
 		{
-			"type": "display_value",
-			"title": [
-				"minMass"
-			],
+			"type": "jqgrid",
+			"title": "Untitled module",
+			"displayWrapper": true,
 			"position": {
-				"left": 91,
-				"right": 1,
+				"left": 0,
 				"top": 0
 			},
 			"size": {
-				"width": 32,
-				"height": 6
+				"width": 22.039999997615816,
+				"height": 60.039999997615816
 			},
 			"configuration": {
-				"frontcolor": "",
-				"font": "arial",
-				"fontsize": "24pt",
-				"align": "center",
-				"valign": "middle",
-				"defaultvalue": "",
-				"sprintf": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
 			},
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 1,
+			"vars_in": [
 				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
+					"rel": "list",
+					"name": "labels"
 				}
 			],
-			"dataSource": [
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
 				{
-					"rel": "value",
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element",
+					"name": "tree"
+				},
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.label",
 					"name": "label"
 				}
 			],
-			"bgColor": "#f95d5d",
-			"displayWrapper": true,
-			"id": 1,
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"actions_out": [
+				{}
 			]
 		},
 		{
@@ -60,83 +88,193 @@
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 2,
+				"left": 28,
 				"top": 0
 			},
 			"size": {
-				"width": 69,
-				"height": 81
+				"width": 66.03999999761581,
+				"height": 60.039999997615816
 			},
 			"configuration": {
-				"nodeType": "",
-				"nodeSize": "",
-				"nodeColor": "",
-				"labelSize": "",
-				"labelColor": "",
-				"edgeWidth": "",
-				"edgeColor": "",
-				"strokeWidth": "",
-				"strokeColor": ""
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nodeType": [
+								"circle"
+							],
+							"nodeSize": [
+								null
+							],
+							"nodeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"labelSize": [
+								null
+							],
+							"labelColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"edgeWidth": [
+								null
+							],
+							"edgeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"strokeWidth": [
+								null
+							],
+							"strokeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							]
+						}
+					]
+				}
 			},
-			"bgColor": "",
-			"dataSend": [
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 2,
+			"vars_in": [
 				{
-					"event": "onHover",
-					"rel": "node",
-					"jpath": "element.data.label",
+					"rel": "dendrogram",
+					"name": "tree"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			]
+		},
+		{
+			"type": "display_value",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 96,
+				"top": 10
+			},
+			"size": {
+				"width": 17.039999997615816,
+				"height": 11.039999997615814
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue1": [
+								0.4
+							],
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					],
+					"group2": [
+						{
+							"defaultvalue1": [
+								0.4
+							]
+						}
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "value",
 					"name": "label"
 				}
 			],
-			"dataSource": [
-				{
-					"rel": "dendrogram",
-					"name": "result"
-				}
+			"actions_in": [
+				{}
 			],
-			"actionsIn": [
-				{
-					"rel": "",
-					"name": ""
-				}
+			"vars_out": [
+				{}
 			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"actions_out": [
+				{}
 			],
-			"id": 2
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
 		}
 	],
 	"configuration": {
-		"showMenuBarOnStart": false,
-		"showModuleHeaderOnHover": false,
-		"title": "ChemCalc demonstration",
-		"moduleBackground": "#ffffff",
-		"variableFilters": {}
+		"variableFilters": {},
+		"title": "No title"
 	},
-	"_name": "Master",
-	"_local": false,
-	"_saved": 1359617535702,
-	"_time": 1359617535702,
 	"variables": [
 		{
 			"varname": "labels",
-			"jpath": "element.labels",
-			"url": ""
+			"jpath": "element.labels"
 		},
 		{
 			"varname": "matrix",
-			"jpath": "element.matrix",
-			"url": ""
+			"jpath": "element.matrix"
 		},
 		{
-			"varname": "result",
-			"jpath": "element.result",
-			"url": ""
+			"varname": "asdf",
+			"jpath": "element.tree.id"
 		}
 	],
-	"_version": "2.1"
+	"_version": "2.2"
 }
