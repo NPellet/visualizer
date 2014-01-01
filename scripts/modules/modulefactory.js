@@ -74,16 +74,25 @@ define(['jquery', 'modules/module'], function($, Module) {
 		},
 
 		newModule: function(definition) {
-			var module = new Module(definition);
+
+			var module = new Module( definition );
 			module.setId( ++ incrementalId );
 			modules.push( module );
 			definitions.push( definition );
+
 			return module;
 		},
 
-		removeModule: function(module) {
-			modules.splice(modules.indexOf(module), 1);
-			definitions.splice(definitions.indexOf(module.definition), 1);
+		/**
+		 * Removes a module.
+		 *
+		 * @param {Module} Module object to remove
+		 */
+		removeModule: function( module ) {
+
+			modules.splice( modules.indexOf( module ), 1 );
+			definitions.splice( definitions.indexOf( module.definition ), 1 );
+			
 		},
 
 		empty: function() {

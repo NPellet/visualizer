@@ -190,7 +190,7 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 		module.view.onResize();
 	}
 
-	function newModule(type) {
+	function newModule( url ) {
 
 		var modulePos = {};
 
@@ -206,7 +206,8 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 			modulePos = {};
 
 			var module = ModuleFactory.newModule(new ViewObject({
-				type: type,
+				//type: type,
+				url: url,
 				title: "Untitled module",
 				displayWrapper: true,
 				position: new ViewObject({
@@ -239,7 +240,8 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 			modulePos.ileft = e.pageX;
 			modulePos.itop = e.pageY;
 
-			modulePos.div = $("<div>").css({
+			modulePos.div = $("<div>").css( {
+
 				border: '1px solid red',
 				backgroundColor: 'rgba(255, 0, 0, 0.2)',
 				width: 0,
@@ -247,7 +249,8 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 				left: modulePos.left,
 				top: modulePos.top,
 				position: 'absolute'
-			}).appendTo($("body"));
+
+			} ).appendTo( $ ( "body" ) );
 		}
 
 		var mouseMoveHandler = function(e) {
@@ -385,7 +388,7 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 				if( Array.isArray( elements ) ) {
 
 					for( var i = 0, l = elements.length ; i < l ; i ++ ) {
-						dom.append('<li class="ci-item-newnmodule" data-url="' + elements[ i ].url + '"><a>' + elements[ i ].moduleName + '</a></li>');
+						dom.append('<li class="ci-item-newnmodule" data-url="' + encodeURIComponent( elements[ i ].url ) + '"><a>' + elements[ i ].moduleName + '</a></li>');
 					}
 
 				} else if( elements.url ) {
@@ -416,7 +419,7 @@ define(['jquery', 'jqueryui', 'util/util', 'modules/modulefactory', 'util/contex
 				$(contextDom).append( $li );
 
 				$li.bind( 'click', function( event ) {
-					newModule($(event.target.parentNode).attr('data-name'));
+					newModule( decodeURIComponent( $( event.target.parentNode ).attr( 'data-url' ) ) );
 				});
 			});
 

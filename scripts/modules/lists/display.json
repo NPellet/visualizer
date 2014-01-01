@@ -1,36 +1,36 @@
 [
 	{
 		"moduleName": "Single value",
-		"url": "./modules/types/dragdrop"
+		"url": "./modules/types/display_value/"
 	},
 
 	{
 		"moduleName": "Table",
-		"url": "./modules/types/jqgrid"
+		"url": "./modules/types/jqgrid/"
 	},
 
 	{
 		"moduleName": "Table (Fast)",
-		"url": "./modules/types/fasttable"
+		"url": "./modules/types/fasttable/"
 	},
 
 	{
 		"moduleName": "2D list",
-		"url": "./modules/types/2d_list"
+		"url": "./modules/types/2d_list/"
 	},
 
 	{
 		"moduleName": "Object viewer",
-		"url": "./modules/types/hashmap"
+		"url": "./modules/types/hashmap/"
 	},
 
 	{
 		"moduleName": "Sticky note",
-		"url": "./modules/types/postit"
+		"url": "./modules/types/postit/"
 	},
 
 	{
 		"moduleName": "IFrame",
-		"url": "./modules/types/iframe"
+		"url": "./modules/types/iframe/"
 	}
 ]

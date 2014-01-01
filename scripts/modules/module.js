@@ -3,7 +3,8 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 	
 	function init(module) {
 		//define object properties
-		var moduleType = module.definition.type, def = $.Deferred();
+		var moduleURL = module.definition.url,
+			def = $.Deferred();
 		
 		//Construct the DOM within the module
 		module.dom = $( module.buildDom( ) );
@@ -12,31 +13,43 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		module.domHeader = module.dom.children( ).children( '.ci-module-header' );
 		module.domWrapper = module.dom;
 	
-		Util.loadCss( require.toUrl( 'modules/types/' + moduleType + '/style.css' ) );
+		Util.loadCss( require.toUrl( moduleURL + "/style.css" ) );
 
-		if( ! moduleType ) {
+		if( ! moduleURL ) {
 			def.reject( );
 			return def;
 		}
 
-		require(['modules/types/' + moduleType + '/model', 'modules/types/' + moduleType + '/view', 'modules/types/' + moduleType + '/controller'], function(M, V, C) {
-
-			module.model = new M();
-			module.view = new V();
-			module.controller = new C();
-
-			module.view.setModule( module );
-			module.controller.setModule( module );
-			module.model.setModule( module );
-
-			module.view.onReady = true;
-
-			module.view.init( );
-			module.controller.init( );
-			module.model.init( );
+		require( [
 			
- 			module.updateAllView( );
-			def.resolve();
+			moduleURL + "model",
+			moduleURL + "view",
+			moduleURL + "controller"
+
+		], function(M, V, C) {
+
+//			$.getJSON( moduleURL + "module.json", {}, function( config ) {
+
+			//	module.config = config;
+				module.model = new M();
+				module.view = new V();
+				module.controller = new C();
+
+				module.view.setModule( module );
+				module.controller.setModule( module );
+				module.model.setModule( module );
+
+				module.view.onReady = true;
+
+				module.view.init( );
+				module.controller.init( );
+				module.model.init( );
+				
+	 			module.updateAllView( );
+				def.resolve();
+
+	//		});
+		
 		});
 
 		return def.promise();
