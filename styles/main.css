@@ -853,3 +853,17 @@ li.ci-spacer {
 	width: auto !important;
 	border-radius: 0px;
 }
+
+
+table.moduleInformation {
+	width: 400px;
+}
+
+table.moduleInformation tr td {
+	padding-bottom: 3px;
+}
+
+table.moduleInformation tr td:first-child {
+	font-weight: bold;
+	width: 120px;
+};

@@ -735,9 +735,8 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 							});
 					};
 
-console.log( module, module.controller );
 					var moduleInfosHtml = 
-						"<table>" + 
+						'<table class="moduleInformation">' + 
 						"<tr><td>Module name</td><td>" + module.controller.moduleInformation.moduleName + "</td></tr>" + 
 						"<tr><td></td><td><small>" + module.controller.moduleInformation.description + "</small></td></tr>" + 
 						"<tr><td>Module author</td><td>" + module.controller.moduleInformation.author + "</td></tr>" + 
