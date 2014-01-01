@@ -16,14 +16,11 @@
 
 	"Server interaction": [
 		{ "moduleName": "Button URL", "url": "./modules/types/button_url/" },
-		{ "moduleName": "Webservice button (?)", "url": "./modules/types/webservice_button/" },
-		{ "moduleName": "Webservice cron (?)", "url": "./modules/types/webservice_cron/" },
 		{ "moduleName": "Webservice search", "url": "./modules/types/webservice_search/" },
 		{ "moduleName": "Files upload (?)", "url": "./modules/types/filelistupload/" }
 	],
 
 	"Data edition": [
-		{ "moduleName": "Object editor (?)", "url": "./modules/types/object_editor/" },
 		{ "moduleName": "General filtering", "url": "./modules/types/filter/" },
 		{ "moduleName": "Form", "url": "./modules/types/form/" },
 		{ "moduleName": "Simple form", "url": "./modules/types/form_simple/" },
@@ -62,6 +59,9 @@
 
 	"Legacy": [
 		{ "moduleName": "Table Selector (?)", "url": "./modules/types/grid_selector/" },
-		{ "moduleName": "XY zoom navigator (?)", "url": "./modules/types/xyzoomnavigator/" }
+		{ "moduleName": "XY zoom navigator (?)", "url": "./modules/types/xyzoomnavigator/" },
+		{ "moduleName": "Object editor (?)", "url": "./modules/types/object_editor/" },
+		{ "moduleName": "Webservice button (?)", "url": "./modules/types/webservice_button/" },
+		{ "moduleName": "Webservice cron (?)", "url": "./modules/types/webservice_cron/" }
 	]
 }
