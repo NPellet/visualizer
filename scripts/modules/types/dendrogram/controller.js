@@ -23,23 +23,29 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default, Tr
 	};
 
 	
-	controller.prototype.configurationSend = {
-		events: {
-			onHover: {
-				label: 'Hovers a node',
-				description: ''
-			}
-		},
 
-		rels: {
-			'node': {
-				label: 'Node',
-				description: 'Returns the selected node element'
-			}
-		}	
+
+	/*
+		Configuration of the module for sending events, as a static object
+	*/
+	controller.prototype.events = {
+
+		// List of all possible events
+
+		onHover: {
+			label: 'Hovers a node',
+			refVariable: [ 'node' ]
+		}
 	};
 	
-	controller.prototype.hoverEvent = function(data) {
+	controller.prototype.onHover = function(element) {
+
+console.log(element);
+
+		if( ! element ) {
+			return;
+		}
+		this.setVarFromEvent( 'onHover', element, 'node' );
 	};
 	
 
@@ -51,8 +57,13 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default, Tr
 		tree: {
 			type: ['tree'],
 			label: 'A hierarchical tree'
+		},
+		row: {
+			label: 'Row'
 		}
 	};
+
+
 
 	/*
 		Configuration of the module for receiving events, as a static object

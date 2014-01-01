@@ -134,7 +134,8 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 	    	var actions=this.module.vars_out();
 	    	if (! actions || actions.length==0) return;
 	    	var hover=hover=function(node) {
-	    		self.module.controller.setVarFromEvent('onHover', new DataObject(self._idHash[node.id]), 'node');
+	    	//	self.module.controller.onHover(new DataObject(self._idHash[node.id]), 'node');
+	    		self.module.controller.onHover(self._idHash[node.id]);
 	    	}
 
 
