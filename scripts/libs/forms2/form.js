@@ -101,6 +101,7 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 		},
 
 		makeDomTpl: function( ) {
+			this.doneDom = true;
 			return this._makeDomTpl( );
 		},
 

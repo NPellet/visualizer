@@ -28,7 +28,10 @@ define( [ 'modules/defaultcontroller', 'libs/formcreator/formcreator' ], functio
 		Configuration of the input/output references of the module
 	*/
 	controller.prototype.references = {
-
+		formValue: {
+			type: 'object',
+			label: 'JSON Value of the form'
+		}
 	};
 
 
@@ -36,7 +39,10 @@ define( [ 'modules/defaultcontroller', 'libs/formcreator/formcreator' ], functio
 		Configuration of the module for sending events, as a static object
 	*/
 	controller.prototype.events = {
-
+		onChange: {
+			label: 'Form has changed',
+			refVariable: [ 'formValue' ]
+		}
 	};
 	
 
@@ -90,7 +96,12 @@ define( [ 'modules/defaultcontroller', 'libs/formcreator/formcreator' ], functio
 		structure: [ 'sections', 'structure' ],
 		tpl_file: [ 'sections', 'template', 0, 'groups', 'template', 0, 'file', 0 ],
 		tpl_html: [ 'sections', 'template', 0, 'groups', 'template', 0, 'html', 0 ]
-	}
+	};
 
+
+	controller.prototype.valueChanged = function( newValue ) {
+		this.setVarFromEvent('onChange', newValue, 'formValue');
+	};
+	
 	return controller;
 });

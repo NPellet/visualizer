@@ -121,7 +121,7 @@ define(['util/datatraversing', 'util/actionmanager'], function(Traversing, Actio
 		},
 
 		getAllFilters: function( ) {
-			
+
 			return variableFilters;
 		},
 

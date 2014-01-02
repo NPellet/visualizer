@@ -34,7 +34,7 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 					}
 				};
 
-		console.log( FormCreator.makeStructure( structure ), structure );
+		
 			if( tpl_file ) {
 				def = $.get( tpl_file, {} );	
 			} else {
@@ -48,7 +48,10 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 
 				form.init({
 					onValueChanged: function( value, fieldElement ) {
-						var jpath = fieldElement.field.options.jpath;
+						var val = new DataObject( this.getValue(), true );
+						//console.log( value );
+						self.formValue = val;
+						self.module.controller.valueChanged( val );
 					//	self.value.setChild( jpath, fieldElement.value );
 					}
 				});

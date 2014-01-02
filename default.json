@@ -4,6 +4,11 @@
 	{
 		"file": "./filters/testFilter.js",
 		"name": "Filter"
+	},
+
+	{
+		"file": "./filters/doitourl.js",
+		"name": "DOI to URL"
 	}
 
 ],
