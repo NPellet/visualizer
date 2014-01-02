@@ -37,8 +37,6 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 				module.domHeader = module.dom.children( ).children( '.ci-module-header' );
 				module.domWrapper = module.dom;
 		
-
-
 				module.view.setModule( module );
 				module.controller.setModule( module );
 				module.model.setModule( module );
@@ -463,7 +461,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 					onValueChanged: function( value ) {	}
 				});
 
-				form.setStructure({
+				var structure = {
 
 					sections: {
 
@@ -522,185 +520,200 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 									}
 								}
 							}
+						}
+					}
+				};
+
+
+				var specificStructure = module.controller.configurationStructure( );
+
+
+				if( specificStructure ) {
+
+					structure.sections.module_specific_config = $.extend( specificStructure , {
+
+						options: {
+							title: 'Module configuration',
+							icon: 'page_white_wrench'
+						}
+					});
+				}
+
+
+				if( varsInList.length > 0 ) {
+
+					structure.sections.vars_in = {
+
+						options: {
+							title: 'Variables in',
+							icon: 'basket_put'
 						},
 
+						groups: {
 
-						module_specific_config: 
-
-							$.extend( module.controller.configurationStructure( ), {
+							group: {
 								options: {
-									title: 'Module configuration',
-									icon: 'page_white_wrench'
-								}
-							}),
+									type: 'table',
+									multiple: true
+								},
 
-						vars_in: {
+								fields: {
 
-							options: {
-								title: 'Variables in',
-								icon: 'basket_put'
-							},
-
-							groups: {
-
-								group: {
-									options: {
-										type: 'table',
-										multiple: true
+									rel: {
+										type: 'combo',
+										title: 'Reference',
+										options: varsInList
 									},
 
-									fields: {
-
-										rel: {
-											type: 'combo',
-											title: 'Reference',
-											options: varsInList
-										},
-
-										name: {
-											type: 'text',
-											title: 'From variable',
-											options: autoCompleteVariables
-										}
-									}
-								}
-							}
-						},
-
-
-						vars_out: {
-
-							options: {
-								title: 'Variables out',
-								icon: 'basket_remove'
-							},
-
-							groups: {
-
-								group: {
-									options: {
-										type: 'table',
-										multiple: true
-									},
-
-									fields: {
-
-										event: {
-											type: 'combo',
-											title: 'Event',
-											options: eventsVariables
-										},
-
-										rel: {
-											type: 'combo',
-											title: 'Reference'
-										},
-
-										jpath: {
-											type: 'combo',
-											title: 'jPath',
-											options: {}
-										},
-
-
-										filter: {
-											type: 'combo',
-											title: 'Filter variable',
-											options: allFilters
-										},
-
-										name: {
-											type: 'text',
-											title: 'To variable'
-										}
-									}
-								}
-							}
-						},
-
-
-						actions_in: {
-
-							options: {
-								title: 'Actions in',
-								icon: 'door_in'
-							},
-
-							groups: {
-
-								group: {
-
-									options: {
-										type: 'table',
-										multiple: true
-									},
-
-									fields: {
-
-										rel: {
-											type: 'combo',
-											title: 'Reference',
-											options: actionsInList
-										},
-
-										name: {
-											type: 'text',
-											title: 'Action name',
-											options: autoCompleteActions
-										}
-									}
-								}
-							}
-						},
-
-
-						actions_out: {
-
-							options: {
-								title: 'Actions out',
-								icon: 'door_out'
-							},
-
-							groups: {
-
-								group: {
-									options: {
-										type: 'table',
-										multiple: true
-									},
-
-									fields: {
-
-										event: {
-											type: 'combo',
-											title: 'On event',
-											options: eventsActions
-										},
-
-										rel: {
-											type: 'combo',
-											title: 'Reference',
-										},
-
-										jpath: {
-											type: 'combo',
-											title: 'jPath',
-											options: {}
-										},
-
-										name: {
-											type: 'text',
-											title: 'Action name'
-										}
+									name: {
+										type: 'text',
+										title: 'From variable',
+										options: autoCompleteVariables
 									}
 								}
 							}
 						}
 					}
-				});
+				}
+						
+				if( eventsVariables.length > 0 ) {
+
+					structure.sections.vars_out = {
+
+						options: {
+							title: 'Variables out',
+							icon: 'basket_remove'
+						},
+
+						groups: {
+
+							group: {
+								options: {
+									type: 'table',
+									multiple: true
+								},
+
+								fields: {
+
+									event: {
+										type: 'combo',
+										title: 'Event',
+										options: eventsVariables
+									},
+
+									rel: {
+										type: 'combo',
+										title: 'Reference'
+									},
+
+									jpath: {
+										type: 'combo',
+										title: 'jPath',
+										options: {}
+									},
 
 
-	
+									filter: {
+										type: 'combo',
+										title: 'Filter variable',
+										options: allFilters
+									},
+
+									name: {
+										type: 'text',
+										title: 'To variable'
+									}
+								}
+							}
+						}
+					}
+				}
+
+				if( actionsInList.length > 0 ) {
+
+					structure.sections.actions_in = {
+
+						options: {
+							title: 'Actions in',
+							icon: 'door_in'
+						},
+
+						groups: {
+
+							group: {
+
+								options: {
+									type: 'table',
+									multiple: true
+								},
+
+								fields: {
+
+									rel: {
+										type: 'combo',
+										title: 'Reference',
+										options: actionsInList
+									},
+
+									name: {
+										type: 'text',
+										title: 'Action name',
+										options: autoCompleteActions
+									}
+								}
+							}
+						}
+					}
+				}
+
+				if( eventsActions.length > 0 ) {
+
+					structure.sections.actions_out = {
+
+						options: {
+							title: 'Actions out',
+							icon: 'door_out'
+						},
+
+						groups: {
+
+							group: {
+								options: {
+									type: 'table',
+									multiple: true
+								},
+
+								fields: {
+
+									event: {
+										type: 'combo',
+										title: 'On event',
+										options: eventsActions
+									},
+
+									rel: {
+										type: 'combo',
+										title: 'Reference',
+									},
+
+									jpath: {
+										type: 'combo',
+										title: 'jPath',
+										options: {}
+									},
+
+									name: {
+										type: 'text',
+										title: 'Action name'
+									}
+								}
+							}
+						}
+					}
+				}
+
+				form.setStructure( structure );
+
 				form.onStructureLoaded().done(function() {
 
 					/*var varReceiveChanged = function(name, rel) {
@@ -714,76 +727,76 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 						}
 					}*/
 
+					if( form.getSection( 'vars_out' ) ) {
+						form.getSection( 'vars_out' ).getGroup( 'group' ).getField( 'event' ).options.onChange = function( fieldElement ) {
 
-					form.getSection( 'vars_out' ).getGroup( 'group' ).getField( 'event' ).options.onChange = function( fieldElement ) {
+							if( ! fieldElement.groupElement ) {
+								return;
+							}
 
-						if( ! fieldElement.groupElement ) {
-							return;
-						}
+							$.when(fieldElement
+									.groupElement
+									.getFieldElementCorrespondingTo(fieldElement, 'rel')).then( function( el ) {
 
-						$.when(fieldElement
+										if( el ) {
+
+											el.setOptions( makeReferences( fieldElement.value, 'event' ) );
+										}
+									});
+						};
+
+
+						form.getSection( 'vars_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {
+
+							if( ! fieldElement.groupElement ) {
+								return;
+							}
+
+							$.when(fieldElement
+									.groupElement
+									.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function( el ) {
+
+										if( el ) {
+											el.setOptions( alljpaths[ fieldElement.value ] );
+										}
+									});
+						};
+					}
+
+					if( form.getSection( 'actions_out' ) ) {
+
+						form.getSection( 'actions_out' ).getGroup( 'group' ).getField( 'event' ).options.onChange = function( fieldElement ) {						
+
+							if( ! fieldElement.groupElement ) {
+								return;
+							}
+
+							$.when(fieldElement
+									.groupElement
+									.getFieldElementCorrespondingTo(fieldElement, 'rel')).then( function( el ) {
+
+										if( el ) {
+											el.setOptions( makeReferences( fieldElement.value, 'action' ) );
+										}
+									});
+						};
+
+						form.getSection( 'actions_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {						
+
+							if( ! fieldElement.groupElement ) {
+								return;
+							}
+
+							$.when(fieldElement
 								.groupElement
-								.getFieldElementCorrespondingTo(fieldElement, 'rel')).then( function( el ) {
+								.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function ( el ) {
 
 									if( el ) {
-
-										el.setOptions( makeReferences( fieldElement.value, 'event' ) );
+										el.setOptions( alljpaths[ fieldElement.value ] );	
 									}
 								});
-					};
-
-					form.getSection( 'actions_out' ).getGroup( 'group' ).getField( 'event' ).options.onChange = function( fieldElement ) {						
-
-						if( ! fieldElement.groupElement ) {
-							return;
-						}
-
-
-						$.when(fieldElement
-								.groupElement
-								.getFieldElementCorrespondingTo(fieldElement, 'rel')).then( function( el ) {
-
-									if( el ) {
-										el.setOptions( makeReferences( fieldElement.value, 'action' ) );
-									}
-								});
-
-					};
-
-
-
-
-					form.getSection( 'vars_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {
-
-						if( ! fieldElement.groupElement ) {
-							return;
-						}
-
-						$.when(fieldElement
-								.groupElement
-								.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function( el ) {
-
-									if( el ) {
-										el.setOptions( alljpaths[ fieldElement.value ] );
-									}
-								});
-					};
-
-					form.getSection( 'actions_out' ).getGroup( 'group' ).getField( 'rel' ).options.onChange = function( fieldElement ) {						
-
-						if( ! fieldElement.groupElement ) {
-							return;
-						}
-
-						$.when(fieldElement
-							.groupElement
-							.getFieldElementCorrespondingTo(fieldElement, 'jpath')).then( function ( el ) {
-
-								if( el ) {
-									el.setOptions( alljpaths[ fieldElement.value ] );	
-								}
-							});
-					};
+						};
+					}
 
 					var moduleInfosHtml = 
 						'<table class="moduleInformation">' + 

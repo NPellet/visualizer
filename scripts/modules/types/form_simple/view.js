@@ -49,23 +49,25 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 				form.init({
 					onValueChanged: function( value, fieldElement ) {
 						var val = new DataObject( this.getValue(), true );
-						//console.log( value );
 						self.formValue = val;
 						self.module.controller.valueChanged( val );
-					//	self.value.setChild( jpath, fieldElement.value );
 					}
 				});
 
 				form.setStructure( formStructure );
 				form.onStructureLoaded( ).done( function( ) {
 					form.fill( { } ); // For now let's keep it empty.
+
 				} );
 
 				form.onLoaded( ).done( function( ) {
+					
 					form.setTpl( tpl );
-					console.log(form.makeDomTpl());
+					
 					self.dom.html( form.makeDomTpl() );
 					form.inDom( );
+
+					self.module.controller.valueChanged( new DataObject( form.getValue(), true ) );
 				});
 			});
 

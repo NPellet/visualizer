@@ -29,7 +29,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 	GroupTextElement.prototype.makeDom = function(forceMake) {
 		this.dom = $("<div />");
-		console.log( this.value );
+		
 		if( this.value ) {
 			this.dom.html( this.value );
 		}
