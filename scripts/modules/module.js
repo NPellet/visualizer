@@ -168,8 +168,11 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		 * Returns the DOM object which corresponds to the module's view
 		 */
 		getDomView: function() {
-			if(typeof this.view.getDom == 'function')
+
+			if( typeof this.view.getDom == 'function' ) {
 				return this.view.getDom();
+			}
+
 			throw "The module's view doest not implement the getDom function";
 		},
 		
@@ -177,8 +180,11 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		 * Returns the DOM object which corresponds to the module's header
 		 */
 		getDomHeader: function() {
-			if(typeof this.domHeader !== 'undefined')
+
+			if( typeof this.domHeader !== 'undefined' ) {
 				return this.domHeader;
+			}
+
 			throw "The module has not been loaded yet";
 		},
 		
@@ -186,6 +192,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		 * Returns all accepted types defined in the controller
 		 */
 		getAcceptedTypes: function( rel ) {
+
 			var accept = this.controller.references;
 			if( accept ) {
 				return accept[ rel ];
@@ -196,6 +203,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 		
 		
 		getDataFromRel: function(rel) {
+
 			if( ! this.model || ! this.model.data ) {
 				return;
 			}
@@ -294,6 +302,36 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 				i = 0,
 				l;
 
+			// Filters
+			var filter = API.getAllFilters(),
+				allFilters;
+
+			function makeFilters( arraySource ) {
+
+				if( ! arraySource ) {
+					return;
+				}
+
+				var i = 0,
+					l = arraySource.length,
+					target = [];
+
+				if( Array.isArray( arraySource ) ) {
+					for( ; i < l ; i ++ ) {
+
+						target.push( {
+							key: arraySource[ i ].file,
+							title: arraySource[ i ].name,
+							children: makeFilters( arraySource[ i ].children )
+						} );		
+					}
+				}
+
+				return target;
+			}
+
+			allFilters = makeFilters( filter );
+			
 
 			// AUTOCOMPLETE VARIABLES
 			var autoCompleteVariables = [],
@@ -557,6 +595,13 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 											type: 'combo',
 											title: 'jPath',
 											options: {}
+										},
+
+
+										filter: {
+											type: 'combo',
+											title: 'Filter variable',
+											options: allFilters
 										},
 
 										name: {

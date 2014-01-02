@@ -541,7 +541,12 @@ console.log( ActionManager.getFilesForm() );
 					ModuleFactory.setModules( cfgJson.modules );
 				}
 
+				// Set the filters
+				API.setAllFilters( cfgJson.filters || [ ] );
+
 			} );
+
+
 
 
 			Context.init( document.getElementById( 'modules-grid' ) );

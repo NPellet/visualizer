@@ -1,21 +1,41 @@
 define(['util/datatraversing', 'util/actionmanager'], function(Traversing, ActionManager) {
 
 	var allScripts = [];
-	function setVar(name, element, jpath) {
+	var variableFilters;
+
+	function setVarFilter( name, element, filter ) {
 
 		var self = this;
+
+		if( ! filter ) {
+			self.getRepositoryData().set( name, element );
+			return;
+		}
+
+		require( [ filter ], function( filterFunction ) {
+
+			self.getRepositoryData( ).set( name, filterFunction( element ) );
+		} );
+	}
+
+	function setVar( name, element, jpath, filter ) {
+
+		var self = this;
+		
+		
 		if( ! jpath || ! element.getChild ) {
 
-			this.getRepositoryData().set(name, element);
+			setVarFilter.call( self, name, element, filter );
+
 			return;
 		}
 
 		self.repositoryData.set(name, null);
 
-		element.getChild(jpath).done(function(returned) {
+		element.getChild( jpath ).done( function( returned ) {
 
-			self.repositoryData.set(name, returned);
-			
+			setVarFilter.call( self, name, returned, filter );
+
 		});
 	}
 
@@ -98,6 +118,15 @@ define(['util/datatraversing', 'util/actionmanager'], function(Traversing, Actio
 		executeAction: function(name, value) {
 
 			ActionManager.execute( name, value );
+		},
+
+		getAllFilters: function( ) {
+			
+			return variableFilters;
+		},
+
+		setAllFilters: function( filters ) {
+			variableFilters = filters;
 		}
 	}
 });

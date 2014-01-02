@@ -1,5 +1,12 @@
 {
 
+"filters": [
+	{
+		"file": "./filters/testFilter.js",
+		"name": "Filter"
+	}
+
+],
 
 "modules": [
 	"./scripts/modules/lists/all.json"
