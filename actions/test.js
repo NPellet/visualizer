@@ -4,4 +4,4 @@ define([ 'util/api' ], function( API ) {
 		API.setVariable('testVar', new Date().toLocaleString());	
 	}
 	
-})
+});

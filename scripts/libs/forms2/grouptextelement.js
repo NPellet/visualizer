@@ -9,7 +9,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 
 	GroupTextElement.prototype.fill = function( json, clearFirst ) {
-console.log( json );
+
 		this.value = json;
 		if( this.dom ) {
 			this.dom.html( this.value );

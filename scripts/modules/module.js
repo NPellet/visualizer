@@ -7,12 +7,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			def = $.Deferred();
 		
 		//Construct the DOM within the module
-		module.dom = $( module.buildDom( ) );
-
-		module.domContent = module.dom.children( ).children( '.ci-module-content' );
-		module.domHeader = module.dom.children( ).children( '.ci-module-header' );
-		module.domWrapper = module.dom;
-	
+		
 		Util.loadCss( require.toUrl( moduleURL + "/style.css" ) );
 
 		if( ! moduleURL ) {
@@ -35,6 +30,15 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 				module.view = new V();
 				module.controller = new C();
 
+
+				module.dom = $( module.buildDom( ) );
+
+				module.domContent = module.dom.children( ).children( '.ci-module-content' );
+				module.domHeader = module.dom.children( ).children( '.ci-module-header' );
+				module.domWrapper = module.dom;
+		
+
+
 				module.view.setModule( module );
 				module.controller.setModule( module );
 				module.model.setModule( module );
@@ -47,6 +51,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 				
 	 			module.updateAllView( );
 				def.resolve();
+
 
 	//		});
 		
@@ -69,7 +74,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			
 			var html = "";
 			html += '<div class="ci-module-wrapper ci-module-';
-			html += this.definition.type;
+			html += this.controller.moduleInformation.csscode;
 
 		
 			html += '" data-module-id="';
