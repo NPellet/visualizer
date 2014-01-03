@@ -1,7 +1,9 @@
 Visualizer
 ==========
 
-The visualizer is a tool developped by the cheminformatics department of the Swiss Federal Institute of Technology. It aims at the visualization of all sort of complex scientific data generated in JSON format. The visualization is started by by passing three URLs in the browser adress bar.
+The visualizer is a tool developped by the cheminformatics department of the Swiss Federal Institute of Technology. We promote the development of open source projects that we use internally for our daily research.
+
+The visualizer aims at the rendering of complex datasets. It is suited to display and interact in a multiple of ways thanks to modules that can be placed on your browser page. The modules display some type of information in some way, and they can interact with each other through a central API. The visualization is started by passing only three URLs in the browser address bar.
 
 The visualizer works by modules which have the task to render one specific kind of information (table, chart, values, ...) to the screen, while being able to send out event and actions to other modules through the user interaction.
 Modules may be added, moved, duplicated, resized and removed. Each module can be configured with built-in options to allow customization of your visualizer page.
