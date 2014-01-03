@@ -7,7 +7,7 @@ The visualizer works by modules which have the task to render one specific kind 
 Modules may be added, moved, duplicated, resized and removed. Each module can be configured with built-in options to allow customization of your visualizer page.
 
 
-Visualizer your data
+Visualize your data
 ==========
 
 To get started, you need three json files located anywhere accessible by XHR requests.
@@ -16,14 +16,46 @@ To get started, you need three json files located anywhere accessible by XHR req
 * data.json
 * config.json
 
+The view file will contain information about the visualization, which modules should be present and how, which mouse interactions should be defined, etc.
+The data fill contains the data to visualize in a JSON format. The user is responsible to generate that file according to a few guidelines.
+
+The strength of this approach is that a view can be used to visualize multiple datasets by only changing the data file.
+
+The config file is typically common to your projects. It will define which modules should be available (built-in or not), which buttons should be displayed in the header, which variable filters and action files should be available to the visualizer.
+
+
 view.json
 ---------
 
-The view.json file contains essentially the configuration of your visualization instance. You will define essentially which modules should be displayed and where. In addition, the entry variables will be defined. The entry variables will define which data from the data.json file will be readily available to the modules.
+The view.json file contains essentially the configuration of your visualization instance and is *independant on the dataset you want to visualize*. In the view file will be defined which modules should be displayed and which initial variables from the dataset should be readily available to the modules.
 
-The view.json file can be empty as the visualizer can be manually configured. You may then copy your view.json file that the visualizer generated and store it manually or through CouchDB.
+The view.json file can be empty as the visualizer can be manually configured. The visualizer will himself generate the view.json file that you may copy or store automatically through CouchDB.
 
-Here's an example of how you may create a module litterally
+
+```Javascript
+{
+	"modules": [ /* List of modules */ ],
+	"configuration": {
+		"title": "Visualizer title"
+	},
+	"variables": [ // List of entry variables
+		{
+			"varname": "Variable name",
+			"jpath": "Variable access path" // ex: element.abc.0.def
+		}
+		// ...
+	],
+	"_version": "2.2" // Latest visualizer version
+}
+```
+
+
+
+
+Defining a module in the view
+-----------------------------
+
+Here's an example of how you may create a module litterally. One should however keep in mind that the visualizer takes care of generating the appropriate JSON for you through the UI.
 
 ```JSON
 {
@@ -89,11 +121,13 @@ A module is defined by the following parameters
 data.json
 ---------
 
-. You may chose your own file structure, however to display certain kind of specific information, your object need to have a type. You will then be responsible that the type matches the data structure.
+Data.json should contain the data you want to visualize.
+
+You may chose your own file structure, however to display certain kind of specific information, your object need to have a type. You will then be responsible that the type matches the data structure.
 
 
 
-Data structure
+Data structure and typing
 ---------
 
 Example
