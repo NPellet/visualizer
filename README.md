@@ -206,7 +206,7 @@ define([], function() {
 
 });
 
-``
+```
 
 The variable is then registered in the VariableHandler and any module that are listening for this variable name will have their function update called.
 
