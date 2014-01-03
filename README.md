@@ -1,12 +1,11 @@
-Visualizer
+Concept
 ==========
 
-The visualizer is a tool developped by the cheminformatics department of the Swiss Federal Institute of Technology. We promote the development of open source projects that we use internally for our daily research.
+The visualizer is a tool developped by the cheminformatics department of the Swiss Federal Institute of Technology. We promote the development of open source projects that we use internally for our daily research. As a consequence, we release the visualizer under the MIT license unless specified otherwise. We try to use only open source third party libraries.
 
-The visualizer aims at the rendering of complex datasets. It is suited to display and interact in a multiple of ways thanks to modules that can be placed on your browser page. The modules display some type of information in some way, and they can interact with each other through a central API. The visualization is started by passing only three URLs in the browser address bar.
+The visualizer aims at the rendering of complex datasets. It is suited to display and interact in a multiple of ways thanks to modules that can be placed on your browser page. The modules display some type of information in some way (table, chart, matrix, 2D list, 1D list), and they can interact with each other through a central API. The visualization is started by passing only three URLs in the browser address bar.
 
-The visualizer works by modules which have the task to render one specific kind of information (table, chart, values, ...) to the screen, while being able to send out event and actions to other modules through the user interaction.
-Modules may be added, moved, duplicated, resized and removed. Each module can be configured with built-in options to allow customization of your visualizer page.
+Modules may be added, moved, duplicated, resized and removed through the UI. Each module can be configured with built-in options to allow their customization. In addition, some modules can interact with the mouse pointer and are able to send variables and actions to other modules through an event-based system.
 
 
 Visualize your data
@@ -18,12 +17,13 @@ To get started, you need three json files located anywhere accessible by XHR req
 * data.json
 * config.json
 
-The view file will contain information about the visualization, which modules should be present and how, which mouse interactions should be defined, etc.
+The view file will contain information about the visualization, which modules should be placed and where, which mouse interactions should be defined, which variables or actions to send or receive, etc.
+
 The data fill contains the data to visualize in a JSON format. The user is responsible to generate that file according to a few guidelines.
 
-The strength of this approach is that a view can be used to visualize multiple datasets by only changing the data file.
+Through this approach, one can use a single view file to visualize multiple datasets of same structure, only by changing the data file itself.
 
-The config file is typically common to your projects. It will define which modules should be available (built-in or not), which buttons should be displayed in the header, which variable filters and action files should be available to the visualizer.
+The config file is typically common to your projects. It defines which modules are available (built-in or not), which buttons should be displayed in the header, which variable filters and action files should be available to the visualizer.
 
 
 view.json
