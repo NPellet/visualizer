@@ -17,7 +17,7 @@ To get started, you need three json files located anywhere accessible by XHR req
 * data.json
 * config.json
 
-The view file will contain information about the visualization, which modules should be placed and where, which mouse interactions should be defined, which variables or actions to send or receive, etc.
+The view file will contain information about the visualization in a JSON format : which modules should be placed and where, which mouse interactions should be defined, which variables or actions to send or receive, etc.
 
 The data fill contains the data to visualize in a JSON format. The user is responsible to generate that file according to a few guidelines.
 
@@ -59,51 +59,51 @@ Defining a module in the view
 
 Here's an example of how you may create a module litterally. One should however keep in mind that the visualizer takes care of generating the appropriate JSON for you through the UI.
 
-```JSON
+```Javascript
 {
-		"url": "./modules/types/canvas_matrix/",
-		"title": "Distance matrix",
-		"position": {
-			"left": 0,
-			"right": 1,
-			"top": 0
-		},
-		"size": { // In grid unit
-			"width": 66,
-			"height": 56
-		},
-		"configuration": {
-			
-		},
-		"bgColor": [
-			255,
-			255,
-			255,
-			0
-		],
-		"displayWrapper": true,
-		"id": 1,
-		"vars_in": [
-			{
-				"rel": "matrix",
-				"name": "distanceMatrix"
-			}
-		],
-		"actions_in": [
-			{}
-		],
-		"vars_out": [
-			{
-				"event": "onPixelHover",
-				"rel": "row",
-				"jpath": "element.jcamp",
-				"name": "row"
-			}
-		],
-		"actions_out": [
-			{}
-		]
-	}
+	"url": "./modules/types/canvas_matrix/",
+	"title": "Distance matrix",
+	"position": {
+		"left": 0,
+		"right": 1,
+		"top": 0
+	},
+	"size": { // In grid unit
+		"width": 66,
+		"height": 56
+	},
+	"configuration": {
+		
+	},
+	"bgColor": [
+		255,
+		255,
+		255,
+		0
+	],
+	"displayWrapper": true,
+	"id": 1,
+	"vars_in": [
+		{
+			"rel": "matrix",
+			"name": "distanceMatrix"
+		}
+	],
+	"actions_in": [
+		{}
+	],
+	"vars_out": [
+		{
+			"event": "onPixelHover",
+			"rel": "row",
+			"jpath": "element.jcamp",
+			"name": "row"
+		}
+	],
+	"actions_out": [
+		{}
+	]
+}
 ```
 	
 A module is defined by the following parameters
