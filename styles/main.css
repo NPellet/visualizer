@@ -6,7 +6,7 @@ html, body {
 body {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
 	font-size: 11px;
-/*	background-image: url('../wp.jpg'); */
+	background-image: url('../wp/wp_newyear.png'); 
 	color: black;
 }
 
