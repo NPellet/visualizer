@@ -1223,8 +1223,8 @@ define(['jquery', 'util/util'], function($, Util) {
 			if(this.selectedAnnotation == annot)
 				return;
 
-			if(this.selectedAnnotation) {
-				this.selectedAnnotation.unselect();
+			if( this.selectedAnnotation ) { // Only one selected annotation at the time
+				this.selectedAnnotation.unselect( );
 			}
 
 			this.selectedAnnotation = annot;
@@ -5097,14 +5097,14 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.resize = resize;
 				this.resizingPosition = ((this.reversed && resize == 2) || (!this.reversed && resize == 1)) ? this.getFromData('pos') : this.getFromData('pos2');
 			}
-			console.log('MOUSE DOWN');
 
 			var self = this;
 			this.graph.annotationMoving(this);
-			if(!this._selected) {
+
+			if( ! this._selected ) {
+
 				self.preventUnselect = true;
 				self.timeoutSelect = window.setTimeout(function() {
-
 					self.select();
 					self.timeoutSelect = false;
 				}, 100);
@@ -5116,9 +5116,12 @@ define(['jquery', 'util/util'], function($, Util) {
 			this.resize = false;
 			this.graph.annotationMoving(false);
 
-			if(this.preventUnselect)
+			if( this.preventUnselect ) {
+
 				this.preventUnselect = false;
-			else if(this._selected) {
+
+			} else if( this._selected ) {
+
 				this.unselect();
 			}
 
@@ -5260,6 +5263,19 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 
 			this._selected = true;
+
+			this.selectHandles();
+			
+			this.group.appendChild(this.handle1);
+			this.group.appendChild(this.handle2);
+
+			this.selectStyle();
+			
+			this.graph.selectAnnotation(this);
+		},
+
+
+		selectHandles: function() {
 			this.handle1.setAttribute('x1', this.firstX);
 			this.handle1.setAttribute('x2', this.firstX);
 
@@ -5271,15 +5287,12 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.handle2.setAttribute('y1', this.serie.getYAxis().getMaxPx());
 			this.handle2.setAttribute('y2', this.serie.getY(0));
+		},
 
-			this.group.appendChild(this.handle1);
-			this.group.appendChild(this.handle2);
-
+		selectStyle: function() {
 			this.setDom('stroke', 'red');
 			this.setDom('stroke-width', '2');
 			this.setDom('stroke-dasharray', '10 10');
-
-			this.graph.selectAnnotation(this);
 		},
 
 		unselect: function() {
@@ -5318,6 +5331,8 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			var baseLine = this.yBaseline || 30;
 				baseLine = this.serie.getYAxis().getPx(0) - baseLine;
+
+			this.computedBaseline = baseLine;
 
 			var posXY = this._getPosition( this.getFromData( 'pos' ) ),
 				posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
@@ -5412,6 +5427,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				currentLine += " L " + points[ i ][ 0 ] + ", " + points[ i ][ 1 ] + " ";
 			}
 
+			this.points = points;
 			this.lastSum = sum;
 
 			var lastY = firstY,
@@ -5442,7 +5458,32 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		setYBaseline: function( y ) {
 			this.yBasline = y;
-		}
+		},
+
+		selectStyle: function() {
+			this.setDom('stroke-width', '2px');
+		},
+
+		selectHandles: function() {
+			this.handle1.setAttribute('x1', this.points[ 0 ][ 0 ]);
+			this.handle1.setAttribute('x2', this.points[ 0 ][ 0 ]);
+
+			this.handle2.setAttribute('x1', this.points[ this.points.length - 1 ][ 0 ] - 1);
+			this.handle2.setAttribute('x2', this.points[ this.points.length - 1 ][ 0 ]);
+
+			this.handle1.setAttribute('y1', this.points[ 0 ][ 1 ]);
+			this.handle1.setAttribute('y2', this.points[ 0 ][ 1 ]);
+
+			this.handle2.setAttribute('y1', this.points[ this.points.length - 1 ][ 1 ] );
+			this.handle2.setAttribute('y2', this.points[ this.points.length - 1 ][ 1 ] );
+
+			this.handle1.setAttribute('stroke-width', '6px');
+			this.handle2.setAttribute('stroke-width', '6px');
+			this.handle1.setAttribute('stroke', 'black');
+			this.handle1.setAttribute('stroke-linecap', 'square');
+			this.handle2.setAttribute('stroke', 'black');
+			this.handle2.setAttribute('stroke-linecap', 'square');
+		},
 
 	});
 
