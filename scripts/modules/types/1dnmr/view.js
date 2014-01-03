@@ -7,12 +7,29 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 
 			var html = [];
 			html.push('<div class="2drmn"></div>');
-			this.namedSeries = {};
+			
+			this.integrals = [];
+
 			this.dom = $(html.join(''));
 			this.module.getDomContent().html(this.dom);
+
 		},
 
-		
+		redrawIntegrals: function() {
+
+			if( typeof this.currentMaxSumAnnot == "undefined" ) {
+				return;
+			}
+
+			for(var i = 0, l = this.integrals.length ; i < l ; i ++ ) {
+//console.log( 100 / ( this.currentMaxSumAnnot.lastSum ) / ( this.currentMaxSumAnnot.lastSum / this.integrals[ i ].lastSum )  );
+				this.integrals[ i ].setScale( 50, this.currentMaxSumAnnot.lastSum );
+				//this.integrals[ i ].setPosition();
+				this.integrals[ i ].redraw();
+
+			}
+		},
+
 		inDom: function() {
 			var self = this;
 			this._instance = new Graph(this.dom.get(0), {
@@ -23,12 +40,43 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 				keyCombinations: {
 					zoom: { shift: false, ctrl: false },
 					nmrintegral: { shift: true, ctrl: false }
+				},
+
+				onAnnotationMake: function( annot, shape ) {
+					
+					self.integrals.push( shape );
+					self.redrawIntegrals();
+				},
+
+				onAnnotationChange: function( annot, shape ) {
+					
+					if( ! self.currentMaxSumAnnot || self.currentMaxSumAnnot == shape || ( self.currentMaxSumAnnot != shape && shape.lastSum > self.currentMaxSumAnnot.lastSum ) ) {
+
+						self.currentMaxSumAnnot = shape;
+						self.redrawIntegrals();
+					} 
 				}
+			},
+			{
+
+				bottom: [{ 
+					primaryGrid: false,
+					secondaryGrid: false,
+					flipped: true
+
+				}],
+
+				left: [{
+					primaryGrid: false,
+					secondaryGrid: false,
+					display: false
+				}]
+
 			});
 
 			this.series = {};
-			this._instance.getBottomAxis(0, { flipped: true }).setLabel('Blahppm');
-			this._instance.getLeftAxis(0, { flipped: true }).setLabel('ppm');
+			
+			this._instance.getLeftAxis(0, { flipped: true } ).setLabel( 'ppm' );
 		},
 
 		onResize: function() {
@@ -53,7 +101,6 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 
 				this.deferred = JcampConverter( moduleValue.get(), {lowRes: 1024}).done( function( spectra ) {
 
-console.log(spectra);
 					self.series[ varname ] = [];
 					spectra = spectra.spectra;
 

@@ -840,12 +840,26 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 					module.definition.displayWrapper 	= value.module_config[ 0 ].groups.group[ 0 ].modulewrapper[ 0 ].indexOf('display') > -1;
 					module.setDisplayWrapper();
 
-					module.setSendVars(		value.vars_out[ 0 ].groups.group[ 0 ]			);
-					module.setSourceVars(	value.vars_in[ 0 ].groups.group[ 0 ]			);
-					module.setActionsIn(	value.actions_in[ 0 ].groups.group[ 0 ]			);
-					module.setActionsOut(	value.actions_out[ 0 ].groups.group[ 0 ]		);
+					if( value.vars_out ) {
+						module.setSendVars(		value.vars_out[ 0 ].groups.group[ 0 ]			);
+					}
 
-					module.definition.configuration =	value.module_specific_config[ 0 ];
+					if( value.vars_in ) {
+						module.setSourceVars(	value.vars_in[ 0 ].groups.group[ 0 ]			);
+					}
+
+					if( value.actions_in ) {
+						module.setActionsIn(	value.actions_in[ 0 ].groups.group[ 0 ]			);
+					}
+
+					if( value.actions_out ) {
+						module.setActionsOut(	value.actions_out[ 0 ].groups.group[ 0 ]		);
+					}
+
+
+					if( value.module_specific_config ) {
+						module.definition.configuration =	value.module_specific_config[ 0 ];
+					}
 
 					if( module.view.unload ) {
 						module.view.unload();

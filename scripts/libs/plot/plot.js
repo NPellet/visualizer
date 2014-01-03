@@ -1040,7 +1040,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			annotation.id = Math.random();
 
 			if(notify) {
-				if(false === (response = this.triggerEvent('onAnnotationMake', annotation))) {
+				if(false === (response = this.triggerEvent('onAnnotationBeforeMake', annotation))) {
 					return;
 				}
 			}
@@ -1076,6 +1076,9 @@ define(['jquery', 'util/util'], function($, Util) {
 					var shape = new GraphPeakInterval(this);
 				break;
 
+				case 'GraphNMRIntegral':
+					var shape = new GraphNMRIntegral(this);
+				break;
 
 				case 'verticalLine':
 					var shape = new GraphShapeVerticalLine(this);
@@ -1087,6 +1090,8 @@ define(['jquery', 'util/util'], function($, Util) {
 			}
 
 
+			shape.setSerie( this.getSerie( 0 ) );
+
 			if(!shape) {
 				return;
 			}
@@ -1095,9 +1100,6 @@ define(['jquery', 'util/util'], function($, Util) {
 			if( annotation.data ) {
 				annotation.data.id = this.id;
 			}
-
-			
-			shape.setSerie( this.getSerie( 0 ) );
 
 			
 			if(annotation.fillColor)	shape.set('fillColor', annotation.fillColor);
@@ -1133,6 +1135,9 @@ define(['jquery', 'util/util'], function($, Util) {
 				break;
 			}*/
 			this.shapes.push(shape);
+
+			this.triggerEvent('onAnnotationMake', annotation, shape);
+
 
 			return shape;
 		},
@@ -1403,7 +1408,7 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			var color = Util.getNextColorRGB(this.count, 100);
 
-			var shape = graph.makeShape({
+			var shape = graph.makeShape( {
 				type: 'surfaceUnderCurve', 
 				pos: {
 					x: xVal, 
@@ -1419,7 +1424,8 @@ define(['jquery', 'util/util'], function($, Util) {
 				onChange: function(newData) {
 					self.triggerEvent('onAnnotationChange', newData);
 				}
-			}, {}, true);
+
+			}, {}, true );
 
 			if( ! shape ) {
 				return;
@@ -1445,7 +1451,7 @@ define(['jquery', 'util/util'], function($, Util) {
 			var color = Util.getNextColorRGB(this.count, 100);
 
 			var shape = graph.makeShape({
-					type: 'surfaceUnderCurve', 
+					type: 'GraphNMRIntegral', 
 					pos: {
 						x: xVal, 
 						y: 0
@@ -1454,7 +1460,7 @@ define(['jquery', 'util/util'], function($, Util) {
 						x: xVal,
 						y: 0
 					},
-					fillColor: 'rgba(' + color + ', 0.3)',
+					fillColor: 'transparent',
 					strokeColor: 'rgba(' + color + ', 0.9)',
 				
 					onChange: function(newData) {
@@ -1470,7 +1476,6 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			shape.handleMouseDown(e, true);
 			shape.draw();
-			console.log(shape);
 		}
 	}
 
@@ -4366,7 +4371,6 @@ define(['jquery', 'util/util'], function($, Util) {
 
 			this.graph = graph;
 			this.properties = {};
-			this.saved = {};
 			this.group = document.createElementNS(this.graph.ns, 'g');
 
 			this._selected = false;
@@ -4485,7 +4489,7 @@ define(['jquery', 'util/util'], function($, Util) {
 		//	this.kill();
 			var variable;
 			this.position = this.setPosition();
-			console.log( this.position );
+			
 			this.redrawImpl();
 			if(!this.position)
 				return;
@@ -5147,9 +5151,8 @@ define(['jquery', 'util/util'], function($, Util) {
 		redrawImpl: function() {
 			//var doDraw = this.setPosition();
 		//	this.setDom('fill', 'url(#' + 'patternFill' + this.graph._creation + ')')
-		console.log( 'Do', this.position, this.doDraw );
+
 			if(this.position != this.doDraw) {
-				console.log('Pass');
 				this.group.setAttribute("visibility", this.position ? "visible" : 'hidden');
 				this.doDraw = this.position;
 			}
@@ -5157,20 +5160,22 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		setPosition: function() {
 			
-			var posXY = this._getPosition(this.getFromData('pos')),
-				posXY2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos')),
+
+			var posXY = this._getPosition( this.getFromData( 'pos' ) ),
+				posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
 				w = Math.abs(posXY.x - posXY2.x),
 				x = Math.min(posXY.x, posXY2.x);
 
 			this.reversed = x == posXY2.x;
 			
-			if(w < 2 || x + w < 0 || x > this.graph.getDrawingWidth()) {
+			if( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth( ) ) {
 				return false;
 			}
 
-console.log('pass');
-			var v1 = this.serie.searchClosestValue(this.getFromData(this.reversed ? 'pos2' : 'pos').x),
-				v2 = this.serie.searchClosestValue(this.getFromData(this.reversed ? 'pos' : 'pos2').x),
+
+			var v1 = this.serie.searchClosestValue( this.getFromData( 'pos' ).x ),
+				v2 = this.serie.searchClosestValue( this.getFromData( 'pos2' ).x ),
+				v3,
 				i, 
 				j, 
 				init, 
@@ -5184,21 +5189,32 @@ console.log('pass');
 				maxY = 0,
 				minY = Number.MAX_VALUE;
 
-			if(!v1 || !v2) {
+			if(! v1 || ! v2) {
 				return false;
 			}
+
+			if( v1.xBeforeIndex > v2.xBeforeIndex ) {
+				v3 = v1;
+				v1 = v2;
+				v2 = v3;
+			}
+
 
 			for(i = v1.dataIndex; i <= v2.dataIndex ; i++) {
 				currentLine = "M ";
 				init = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
 				max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[i].length;
 				k = 0;
-				console.log(init, max);
+				
 				for(j = init; j <= max; j+=2) {
-					x = this.serie.getX(this.serie.data[i][j + 0]),
-					y = this.serie.getY(this.serie.data[i][j + 1]);
+
+					x = this.serie.getX( this.serie.data[ i ][ j + 0 ]),
+					y = this.serie.getY( this.serie.data[ i ][ j + 1 ]);
+
+
 					maxY = Math.max(this.serie.data[i][j + 1], maxY);
 					minY = Math.min(this.serie.data[i][j + 1], minY);
+
 					if(j == init) {
 						this.firstX = x;
 						this.firstY = y;
@@ -5209,8 +5225,8 @@ console.log('pass');
 
 				this.lastX = x;
 				this.lastY = y;
-				if(!this.firstX || !this.firstY || !this.lastX || !this.lastY) {
-					console.log(this.firstX, this.firstY, this.lastX, this.lastY);
+
+				if(! this.firstX || ! this.firstY || ! this.lastX || ! this.lastY) {
 					return;
 				}
 
@@ -5219,8 +5235,9 @@ console.log('pass');
 			}
 
 			this.maxY = this.serie.getY(maxY);
-			if(this._selected)
+			if( this._selected ) {
 				this.select();
+			}
 			
 			return true;
 		},
@@ -5273,6 +5290,141 @@ console.log('pass');
 
 
 			this._setLabelPosition(labelIndex, this._getPosition(this.get('labelPosition', labelIndex), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));			
+		}
+
+	});
+
+
+
+	var GraphNMRIntegral = function(graph) {
+		this.init(graph);
+	}
+	
+	$.extend(GraphNMRIntegral.prototype, GraphSurfaceUnderCurve.prototype, {
+
+		setPosition: function() {
+
+			var baseLine = this.yBaseline || 30;
+				baseLine = this.serie.getYAxis().getPx(0) - baseLine;
+
+			var posXY = this._getPosition( this.getFromData( 'pos' ) ),
+				posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
+				w = Math.abs(posXY.x - posXY2.x),
+				x = Math.min(posXY.x, posXY2.x);
+
+			this.reversed = x == posXY2.x;
+			
+			if( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth( ) ) {
+				return false;
+			}
+
+
+			var v1 = this.serie.searchClosestValue( this.getFromData( 'pos' ).x ),
+				v2 = this.serie.searchClosestValue( this.getFromData( 'pos2' ).x ),
+				v3,
+				i, 
+				j, 
+				init, 
+				max, 
+				k, 
+				x, 
+				y, 
+				firstX, 
+				firstY, 
+				currentLine = "",
+				maxY = 0,
+				minY = Number.MAX_VALUE;
+
+			if(! v1 || ! v2) {
+				return false;
+			}
+
+			if( v1.xBeforeIndex > v2.xBeforeIndex ) {
+				v3 = v1;
+				v1 = v2;
+				v2 = v3;
+			}
+
+			var firstX, firstY, lastX, lastY, sum = 0;
+			var ratio = this.scaling;
+			var points = [];
+
+			for(i = v1.dataIndex; i <= v2.dataIndex ; i++) {
+
+				init = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+				max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[i].length;
+				k = 0;
+				
+				for(j = init; j <= max; j+=2) {
+
+					x = this.serie.getX( this.serie.data[ i ][ j + 0 ]),
+					y = this.serie.getY( this.serie.data[ i ][ j + 1 ]);
+
+					if( ! firstX ) {
+						firstX = x;
+						firstY = y;
+					}
+					
+
+					if( ! lastX ) {
+						lastX = x;
+						lastY = y;
+						continue;
+					}
+
+					sum += Math.abs( ( x - lastX ) * ( y - lastY ) * 0.5 );
+
+					points.push([ x, sum ]);
+					k++;
+				}
+
+				this.lastX = x;
+				this.lastY = y;
+				
+				if(! firstX || ! firstY || ! this.lastX || ! this.lastY) {
+					return;
+				}								
+			}
+
+			if( ! this.maxPx ) {
+				this.maxPx = 50;
+			}
+
+			var integration = this.maxIntegration || sum;
+
+			for( var i = 0, l = points.length ; i < l ; i ++ ) {
+
+				points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] / sum ) * ( this.maxPx ) * ( sum / integration );
+				currentLine += " L " + points[ i ][ 0 ] + ", " + points[ i ][ 1 ] + " ";
+			}
+
+			this.lastSum = sum;
+
+			var lastY = firstY,
+				lastX = this.lastX;	
+
+			var interX = firstX;
+			diff = Math.min( 20, lastX - firstX );
+
+			currentLine = " M " + firstX + ", " + baseLine + " " + currentLine;
+
+			this.setDom('d', currentLine);
+
+			this.maxY = this.serie.getY(maxY);
+			if( this._selected ) {
+				this.select();
+			}
+			
+			return true;
+		},
+
+		setScale: function( maxPx, integration ) {
+			this.maxPx = maxPx;
+			this.maxIntegration = integration;
+		},
+
+		setYBaseline: function( y ) {
+			this.yBasline = y;
 		}
 
 	});
