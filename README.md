@@ -178,3 +178,35 @@ Another, more complex example could be the definition of a distance matrix :
 
 which will be suitable to be displayed by the matrix module.
 
+
+Variables and Actions
+----------------------
+
+The visualizer allows the modules to comminucate via a central repository of variables and actions. When an event is triggered on a module ( mouse click, mouse hover, resize, ... ), a variable or an action is sent towards the repository.
+
+The fundamental difference between variables and actions is that actions are never stored in the memory of the framework, they are merely dispatched to the target modules. You can view the actions as a sort of a messaging system between modules. The variable corresponds rather to a status. The variable called "myVar" contains at all times "myValue" unless it is overridden by a module, in which case the variable is changed. It's a temporary information storage that all modules can access if they want to listen for it.
+
+When the action is passed to the ActionHandler, then three things can happen :
+
+* A web worker is created and launched. You may program your own worker and leave it somewhere accessible on the same domain. In the worker, you may ask for variables, set variables or event trigger actions.
+
+* An AMD module is instanciated. The module should return a function that will be executed directly with the action name and action value as parameters. The module may require the API or the UTIL package to execute complex actions.
+
+* The action is triggered on a target module. For instance, you may have a button which, when clicked, triggers the action named "deleteLastRow". If, for instance, a table is listening for the name "deleteLastRow", you may execute an action of the target module (i.e. remove the last row)
+
+When a variable is set, before it reaches the VariableHandler, a filter can be optionnally used to modify this variable. Say you have a form with a field "number". You may define a function that will take this number and multiply it by 10 for example. The function must, just like the action, be an AMD module. Although technically you may execute any kind of complex actions this way, the filters are only intended as modifiers for the variable. The new variable must be returned in the function. Example
+
+```Javascript
+
+define([], function() {
+
+	return function( variableInput ) {
+		return variableInput * 10; // Returns x * 10
+	}
+
+});
+
+``
+
+The variable is then registered in the VariableHandler and any module that are listening for this variable name will have their function update called.
+
