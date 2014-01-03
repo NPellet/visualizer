@@ -194,7 +194,7 @@ When the action is passed to the ActionHandler, then three things can happen :
 
 * The action is triggered on a target module. For instance, you may have a button which, when clicked, triggers the action named "deleteLastRow". If, for instance, a table is listening for the name "deleteLastRow", you may execute an action of the target module (i.e. remove the last row)
 
-When a variable is set, before it reaches the VariableHandler, a filter can be optionnally used to modify this variable. Say you have a form with a field "number". You may define a function that will take this number and multiply it by 10 for example. The function must, just like the action, be an AMD module. Although technically you may execute any kind of complex actions this way, the filters are only intended as modifiers for the variable. The new variable must be returned in the function. Example
+When a variable is set, before it reaches the VariableHandler, a filter can be optionnally used to modify this variable. Say you have a form with a field "number". You may define a function that will take this number and multiply it by 10 for example. The function must, just like the action, be an AMD module. Although you may technically require and execute anything through variables filters, they are actually solely intended as variable modifiers. The new variable must be returned in the function. For example :
 
 ```Javascript
 
