@@ -284,23 +284,32 @@ define(['jquery', 'util/util'], function($, Util) {
 			});
 
 			this.dom.addEventListener('mousedown', function(e) {
-				e.preventDefault();
-				if(e.which == 3 || e.ctrlKey)
+
+				e.preventDefault( );
+				if( e.which == 3 || e.ctrlKey ) {
 					return;
-				var coords = self.getXY(e);
-				self.handleMouseDown(coords.x,coords.y,e);
+				}
+
+				var coords = self.getXY( e );
+				self.handleMouseDown( coords.x, coords.y, e );
+
 			});
 
 			this.dom.addEventListener('mouseup', function(e) {
-				e.preventDefault();
-				var coords = self.getXY(e);
-				self.handleMouseUp(coords.x,coords.y,e);
+
+				e.preventDefault( );
+				var coords = self.getXY( e );
+				self.handleMouseUp( coords.x, coords.y, e );
+
 			});
 
 			this.dom.addEventListener('dblclick', function(e) {
 				e.preventDefault();
-				if(self.clickTimeout)
-					window.clearTimeout(self.clickTimeout);
+				
+				if( self.clickTimeout ) {
+					window.clearTimeout( self.clickTimeout );
+				}
+
 				var coords = self.getXY(e);
 				self.cancelClick = true;
 				self.handleDblClick(coords.x,coords.y,e);
@@ -3328,7 +3337,7 @@ define(['jquery', 'util/util'], function($, Util) {
 				}
 				
 			} else {
-				console.log(i, l);
+				
 				for(; i < l ; i++) {
 					
 					currentLine = "M ";
@@ -5088,12 +5097,14 @@ define(['jquery', 'util/util'], function($, Util) {
 				this.resize = resize;
 				this.resizingPosition = ((this.reversed && resize == 2) || (!this.reversed && resize == 1)) ? this.getFromData('pos') : this.getFromData('pos2');
 			}
+			console.log('MOUSE DOWN');
 
 			var self = this;
 			this.graph.annotationMoving(this);
 			if(!this._selected) {
 				self.preventUnselect = true;
 				self.timeoutSelect = window.setTimeout(function() {
+
 					self.select();
 					self.timeoutSelect = false;
 				}, 100);
@@ -5244,8 +5255,9 @@ define(['jquery', 'util/util'], function($, Util) {
 
 		select: function() {
 
-			if(!this.firstX || !this.lastX)
+			if( ! this.firstX || ! this.lastX ) {
 				return;
+			}
 
 			this._selected = true;
 			this.handle1.setAttribute('x1', this.firstX);
@@ -5366,14 +5378,16 @@ define(['jquery', 'util/util'], function($, Util) {
 					}
 					
 
-					if( ! lastX ) {
+					if( lastX == undefined ) {
 						lastX = x;
 						lastY = y;
 						continue;
 					}
 
 					sum += Math.abs( ( x - lastX ) * ( y - lastY ) * 0.5 );
-
+					lastX = x;
+					lastY = y;
+	
 					points.push([ x, sum ]);
 					k++;
 				}
@@ -5409,6 +5423,9 @@ define(['jquery', 'util/util'], function($, Util) {
 			currentLine = " M " + firstX + ", " + baseLine + " " + currentLine;
 
 			this.setDom('d', currentLine);
+
+			this.firstX = firstX;
+			this.firstY = firstY;
 
 			this.maxY = this.serie.getY(maxY);
 			if( this._selected ) {

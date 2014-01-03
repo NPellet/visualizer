@@ -114,7 +114,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 						serie.setData( data );
 						serie.autoAxis( );
 						self.series[ varname ].push( serie );
-console.log(data);
+
 						self.redraw();
 
 						break;
