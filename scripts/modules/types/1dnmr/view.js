@@ -23,7 +23,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 
 			for(var i = 0, l = this.integrals.length ; i < l ; i ++ ) {
 //console.log( 100 / ( this.currentMaxSumAnnot.lastSum ) / ( this.currentMaxSumAnnot.lastSum / this.integrals[ i ].lastSum )  );
-				this.integrals[ i ].setScale( 50, this.currentMaxSumAnnot.lastSum );
+				this.integrals[ i ].setScale( this._instance.getDrawingHeight() - 100, this.currentMaxSumAnnot.lastSum );
+
 				//this.integrals[ i ].setPosition();
 				this.integrals[ i ].redraw();
 
@@ -43,6 +44,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 				},
 
 				onAnnotationMake: function( annot, shape ) {
+						
+					if( ! self.currentMaxSumAnnot ) {
+						self.currentMaxSumAnnot = shape;
+					}
 					
 					self.integrals.push( shape );
 					self.redrawIntegrals();
@@ -81,6 +86,8 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 
 		onResize: function() {
 			this._instance.resize(this.width - 20, this.height - 20);
+
+
 		},
 		
 		update: {
