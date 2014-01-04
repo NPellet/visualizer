@@ -23,7 +23,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/jc
 
 			for(var i = 0, l = this.integrals.length ; i < l ; i ++ ) {
 //console.log( 100 / ( this.currentMaxSumAnnot.lastSum ) / ( this.currentMaxSumAnnot.lastSum / this.integrals[ i ].lastSum )  );
-				this.integrals[ i ].setScale( Math.min( 100. this._instance.getDrawingHeight() - 100 ), this.currentMaxSumAnnot.lastSum );
+				this.integrals[ i ].setScale( Math.min( 100, this._instance.getDrawingHeight() - 100 ), this.currentMaxSumAnnot.lastSum );
 
 				//this.integrals[ i ].setPosition();
 				this.integrals[ i ].redraw();
