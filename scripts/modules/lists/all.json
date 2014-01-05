@@ -1,5 +1,5 @@
 {
-	"Displaying information": "./scripts/modules/lists/display.json",
+	"Displaying information": "./scripts/modules/types/display/display.json",
 
 	"Client interaction": [
 		{

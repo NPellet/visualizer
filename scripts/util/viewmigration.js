@@ -49,6 +49,15 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 	return migrate;
 
 	function updateModule(type) {
+		if (type=="display_value") return "./modules/types/display/single_value/";
+		if (type=="jqgrid") return "./modules/types/display/jqgrid/";
+		if (type=="fasttable") return "./modules/types/display/fasttable/";
+		if (type=="2d_list") return "./modules/types/display/2d_list/";
+		if (type=="hashmap") return "./modules/types/display/hashmap/";
+		if (type=="postit") return "./modules/types/display/postit/";
+		if (type=="iframe") return "./modules/types/display/iframe/";
+
+
 		if (type=="dragdrop") return "./modules/types/dragdrop/";
 		if (type=="button_action") return "./modules/types/button_action/";
 		if (type=="webservice_search") return "./modules/types/webservice_search/";
@@ -78,13 +87,7 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 		if (type=="object_editor") return "./modules/types/object_editor/";
 		if (type=="webservice_button") return "./modules/types/webservice_button/";
 		if (type=="webservice_cron") return "./modules/types/webservice_cron/";
-		if (type=="display_value") return "./modules/types/display_value/";
-		if (type=="jqgrid") return "./modules/types/jqgrid/";
-		if (type=="fasttable") return "./modules/types/fasttable/";
-		if (type=="2d_list") return "./modules/types/2d_list/";
-		if (type=="hashmap") return "./modules/types/hashmap/";
-		if (type=="postit") return "./modules/types/postit/";
-		if (type=="iframe") return "./modules/types/iframe/";
+
 
 		console.log("viewmigration problem: "+type+" is unknown");
 	}
