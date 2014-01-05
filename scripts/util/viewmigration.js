@@ -57,8 +57,8 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 		if (type=="postit") return "./modules/types/display/postit/";
 		if (type=="iframe") return "./modules/types/display/iframe/";
 
-		if (type=="webservice_search") return "./modules/types/webservice_search/";
-		if (type=="button_url") return "./modules/types/button_url/";
+		if (type=="webservice_search") return "./modules/types/server_interaction/webservice_search/";
+		if (type=="button_url") return "./modules/types/server_interaction/button_url/";
 		
 		if (type=="filter") return "./modules/types/edition/filter/";
 		if (type=="form") return "./modules/types/edition/form/";
