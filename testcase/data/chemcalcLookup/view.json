@@ -1,7 +1,6 @@
 {
 	"modules": [
 		{
-			"type": "webservice_search",
 			"title": "Enter a monoisotopic mass",
 			"displayWrapper": true,
 			"position": {
@@ -102,10 +101,10 @@
 					"jpath": null,
 					"name": null
 				}
-			]
+			],
+			"url": "./modules/types/server_interaction/webservice_search/"
 		},
 		{
-			"type": "jqgrid",
 			"title": "Possible molecular formula",
 			"displayWrapper": true,
 			"position": {
@@ -122,7 +121,7 @@
 					"group": [
 						{
 							"nblines": [
-								null
+								20
 							],
 							"toggle": [
 								null
@@ -130,12 +129,10 @@
 							"colorjpath": [
 								null
 							],
-							"displaySearch": [
-								[]
-							],
 							"filterRow": [
 								null
-							]
+							],
+							"displaySearch": []
 						}
 					],
 					"cols": [
@@ -144,8 +141,7 @@
 								"name": "Molecular formula",
 								"jpath": "element.mf",
 								"number": [],
-								"editable": "none",
-								"options": null
+								"editable": "none"
 							},
 							{
 								"name": "Monoisotopic mass",
@@ -183,48 +179,40 @@
 				}
 			],
 			"actions_in": [
-				{
-					"rel": null,
-					"name": null
-				}
+				{}
 			],
 			"vars_out": [
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.jcamp",
 					"name": "jcamp"
 				},
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.mf",
 					"name": "hoverMF"
 				},
 				{
 					"event": "onSelect",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.jcamp",
 					"name": "clickedJcamp"
 				},
 				{
 					"event": "onSelect",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.mf",
 					"name": "clickedMF"
 				}
 			],
 			"actions_out": [
-				{
-					"event": null,
-					"rel": null,
-					"jpath": null,
-					"name": null
-				}
-			]
+				{}
+			],
+			"url": "./modules/types/display/jqgrid/"
 		},
 		{
-			"type": "spectra_displayer",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -380,10 +368,10 @@
 			],
 			"actions_out": [
 				{}
-			]
+			],
+			"url": "./modules/types/science/spectra/spectra_displayer/"
 		},
 		{
-			"type": "webservice_search",
 			"title": "Molecular formula",
 			"displayWrapper": true,
 			"position": {
@@ -488,10 +476,10 @@
 					"jpath": null,
 					"name": null
 				}
-			]
+			],
+			"url": "./modules/types/server_interaction/webservice_search/"
 		},
 		{
-			"type": "display_value",
 			"title": "Clicked Molecular Formula",
 			"displayWrapper": true,
 			"position": {
@@ -571,10 +559,10 @@
 					"jpath": null,
 					"name": null
 				}
-			]
+			],
+			"url": "./modules/types/display/single_value/"
 		},
 		{
-			"type": "display_value",
 			"title": "Hover Molecular Formula",
 			"displayWrapper": true,
 			"position": {
@@ -654,10 +642,10 @@
 					"jpath": null,
 					"name": null
 				}
-			]
+			],
+			"url": "./modules/types/display/single_value/"
 		},
 		{
-			"type": "display_value",
 			"title": "Lookup Molecular Formula",
 			"displayWrapper": true,
 			"position": {
@@ -737,7 +725,8 @@
 					"jpath": null,
 					"name": null
 				}
-			]
+			],
+			"url": "./modules/types/display/single_value/"
 		}
 	],
 	"configuration": {
@@ -753,6 +742,6 @@
 			"jpath": "element.Test"
 		}
 	],
-	"_version": "2.2",
+	"_version": "2.2.1",
 	"title": "Analyse molecular formula"
 }
