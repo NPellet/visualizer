@@ -57,10 +57,15 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 		if (type=="postit") return "./modules/types/display/postit/";
 		if (type=="iframe") return "./modules/types/display/iframe/";
 
+		if (type=="webservice_search") return "./modules/types/webservice_search/";
+		if (type=="button_url") return "./modules/types/button_url/";
+
+
+
 
 		if (type=="dragdrop") return "./modules/types/dragdrop/";
 		if (type=="button_action") return "./modules/types/button_action/";
-		if (type=="webservice_search") return "./modules/types/webservice_search/";
+		
 		if (type=="filelistupload") return "./modules/types/filelistupload/";
 		if (type=="filter") return "./modules/types/filter/";
 		if (type=="form") return "./modules/types/form/";

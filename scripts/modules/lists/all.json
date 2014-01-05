@@ -14,11 +14,7 @@
 	],
 
 
-	"Server interaction": [
-		{ "moduleName": "Button URL", "url": "./modules/types/button_url/" },
-		{ "moduleName": "Webservice search", "url": "./modules/types/webservice_search/" },
-		{ "moduleName": "Files upload (?)", "url": "./modules/types/filelistupload/" }
-	],
+	"Server interaction": "./scripts/modules/types/server_interaction/server_interaction.json",
 
 	"Data edition": [
 		{ "moduleName": "General filtering", "url": "./modules/types/filter/" },
