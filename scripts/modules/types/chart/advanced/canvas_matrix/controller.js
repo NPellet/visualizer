@@ -171,23 +171,20 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 
 		onPixelHover: {
 			label: 'mouse hover pixel',
-			description: 'When the mouses moves over a new pixel of the data matrix'
-			refVariable: [ 'matrix' ],
-			refAction: [ 'row', 'col', 'intersect' ]
+			description: 'When the mouses moves over a new pixel of the data matrix',
+			refVariable: [ 'row', 'col', 'intersect' ]
 		},
 		
 		onPixelClick: {
 			label: 'click on a pixel',
-			description: 'When the users click on any pixel'
-			refVariable: [ 'matrix' ],
-			refAction: [ 'row', 'col', 'intersect' ]
+			description: 'When the users click on any pixel',
+			refVariable: [ 'row', 'col', 'intersect' ]
 		},
 
 		onPixelDblClick: {
 			label: 'double click on a pixel',
-			description: 'When the user double clics on any pixel'
-			refVariables: [ 'matrix' ],
-			refAction: [ 'row', 'col', 'intersect' ]
+			description: 'When the user double clics on any pixel',
+			refVariable: [ 'row', 'col', 'intersect' ]
 		}
 	};
 	

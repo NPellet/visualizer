@@ -61,7 +61,7 @@ define( [ 'modules/defaultcontroller', 'util/datatraversing', 'util/api' ], func
 	/*
 		Configuration of the module for receiving events, as a static object
 	*/
-	controller.prototype.variablesIn = [ 'smiles' ];
+	controller.prototype.variablesIn = [ 'smiles', 'mol' ];
 
 	/*
 		Received actions
@@ -113,7 +113,6 @@ define( [ 'modules/defaultcontroller', 'util/datatraversing', 'util/api' ], func
 	}
 
 	controller.prototype.onChange = function(mol, smiles) {
-
 		this.setVarFromEvent('onStructureChange', smiles, 'smiles');
 		this.setVarFromEvent('onStructureChange', new DataObject( { type:"mol2d", value: mol } ), 'mol');
 	};

@@ -1,5 +1,5 @@
 {
-	"_version": "2.2",
+	"_version": "2.2.1",
 	"modules": [
 		{
 			"title": "Untitled module",
@@ -16,7 +16,6 @@
 			"id": 1
 		},
 		{
-			"type": "jqgrid",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -33,7 +32,7 @@
 					"group": [
 						{
 							"nblines": [
-								null
+								20
 							],
 							"toggle": [
 								null
@@ -41,12 +40,10 @@
 							"colorjpath": [
 								null
 							],
-							"displaySearch": [
-								[]
-							],
 							"filterRow": [
 								null
-							]
+							],
+							"displaySearch": []
 						}
 					],
 					"cols": [
@@ -80,17 +77,17 @@
 			"vars_out": [
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.molfile",
 					"name": "mol2d"
 				}
 			],
 			"actions_out": [
 				{}
-			]
+			],
+			"url": "./modules/types/display/jqgrid/"
 		},
 		{
-			"type": "jsme",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -102,23 +99,25 @@
 				"height": 45
 			},
 			"configuration": {
-				"prefs": [
-					"noxbutton",
-					"rbutton",
-					"nohydrogens",
-					"query",
-					"oldlook"
-				]
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[
+									"oldlook"
+								]
+							]
+						}
+					]
+				}
 			},
 			"id": 3,
-			"bgColor": "",
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			],
 			"vars_in": [
 				{
@@ -142,13 +141,20 @@
 				{
 					"event": "onStructureChange",
 					"rel": "smiles",
-					"jpath": "",
 					"name": "smiles"
+				}
+			],
+			"url": "./modules/types/science/chemistry/jsme/",
+			"actions_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
 				}
 			]
 		},
 		{
-			"type": "jsme",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -194,10 +200,10 @@
 					"jpath": "",
 					"name": ""
 				}
-			]
+			],
+			"url": "./modules/types/science/chemistry/jsme/"
 		},
 		{
-			"type": "jsme",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -242,10 +248,10 @@
 					"jpath": "",
 					"name": ""
 				}
-			]
+			],
+			"url": "./modules/types/science/chemistry/jsme/"
 		},
 		{
-			"type": "display_value",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -312,10 +318,10 @@
 			],
 			"actions_out": [
 				{}
-			]
+			],
+			"url": "./modules/types/display/single_value/"
 		},
 		{
-			"type": "mol2d",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -356,7 +362,8 @@
 					"jpath": "",
 					"name": ""
 				}
-			]
+			],
+			"url": "./modules/types/science/chemistry/mol2d/"
 		}
 	],
 	"variables": [

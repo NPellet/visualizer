@@ -5,7 +5,6 @@
 	"_local": false,
 	"modules": [
 		{
-			"type": "display_value",
 			"title": "A single value",
 			"displayWrapper": true,
 			"position": {
@@ -54,10 +53,10 @@
 					"rel": "",
 					"name": ""
 				}
-			]
+			],
+			"url": "./modules/types/display/single_value/"
 		},
 		{
-			"type": "jqgrid",
 			"title": "Simple table V1",
 			"displayWrapper": true,
 			"position": {
@@ -82,12 +81,10 @@
 							"colorjpath": [
 								null
 							],
-							"displaySearch": [
-								[]
-							],
 							"filterRow": [
 								null
-							]
+							],
+							"displaySearch": []
 						}
 					],
 					"cols": [
@@ -131,23 +128,23 @@
 			"vars_out": [
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.theValue",
 					"name": "hoverValue"
 				},
 				{
 					"event": "onSelect",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.theValue",
 					"name": "clickedValue"
 				}
 			],
 			"actions_out": [
 				{}
-			]
+			],
+			"url": "./modules/types/display/jqgrid/"
 		},
 		{
-			"type": "display_value",
 			"title": "Mouse over value",
 			"displayWrapper": true,
 			"position": {
@@ -196,10 +193,10 @@
 					"rel": "",
 					"name": ""
 				}
-			]
+			],
+			"url": "./modules/types/display/single_value/"
 		},
 		{
-			"type": "display_value",
 			"title": "Mouse clicked value",
 			"displayWrapper": true,
 			"position": {
@@ -248,10 +245,10 @@
 					"jpath": "",
 					"name": ""
 				}
-			]
+			],
+			"url": "./modules/types/display/single_value/"
 		},
 		{
-			"type": "postit",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -268,7 +265,8 @@
 			"id": 5,
 			"vars_in": {},
 			"actions_in": {},
-			"text": "<p>A simple table with linked values for mouse over and mouse clicked.</p><p>And a post-it !</p>"
+			"text": "<p>A simple table with linked values for mouse over and mouse clicked.</p><p>And a post-it !</p>",
+			"url": "./modules/types/display/postit/"
 		}
 	],
 	"variables": [
@@ -287,5 +285,5 @@
 		"title": "No title"
 	},
 	"title": "Simple module demonstration",
-	"_version": "2.2"
+	"_version": "2.2.1"
 }

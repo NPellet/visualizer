@@ -1,8 +1,7 @@
 {
-	"_version": "2.2",
+	"_version": "2.2.1",
 	"modules": [
 		{
-			"type": "fasttable",
 			"title": "Full list",
 			"displayWrapper": true,
 			"position": {
@@ -27,12 +26,10 @@
 							"colorjpath": [
 								null
 							],
-							"displaySearch": [
-								[]
-							],
 							"filterRow": [
 								null
-							]
+							],
+							"displaySearch": []
 						}
 					],
 					"cols": [
@@ -78,13 +75,13 @@
 			"vars_out": [
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.mol.0.value",
 					"name": "molfile"
 				},
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.safety",
 					"name": "safeties"
 				}
@@ -97,10 +94,10 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/display/fasttable/"
 		},
 		{
-			"type": "jsme",
 			"title": "Structure",
 			"displayWrapper": true,
 			"position": {
@@ -147,10 +144,10 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/science/chemistry/jsme/"
 		},
 		{
-			"type": "fasttable",
 			"title": "Safety",
 			"displayWrapper": true,
 			"position": {
@@ -222,10 +219,10 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/display/fasttable/"
 		},
 		{
-			"type": "array_search",
 			"title": "Filter",
 			"displayWrapper": true,
 			"position": {
@@ -403,8 +400,8 @@
 			"vars_out": [
 				{
 					"event": "onSearchDone",
-					"rel": "array",
-					"jpath": "_2",
+					"rel": "filteredArray",
+					"jpath": "_1",
 					"name": "filtered"
 				}
 			],
@@ -416,10 +413,10 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/client_interaction/array_search/"
 		},
 		{
-			"type": "fasttable",
 			"title": "Filtered list",
 			"displayWrapper": true,
 			"position": {
@@ -444,12 +441,10 @@
 							"colorjpath": [
 								null
 							],
-							"displaySearch": [
-								[]
-							],
 							"filterRow": [
 								null
-							]
+							],
+							"displaySearch": []
 						}
 					],
 					"cols": [
@@ -483,49 +478,49 @@
 			"vars_out": [
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.iupac",
 					"name": "iupacs"
 				},
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.bp.0.low",
 					"name": "bp"
 				},
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.safety",
 					"name": "safeties"
 				},
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.risk",
 					"name": "risks"
 				},
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.hazard",
 					"name": "hazards"
 				},
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.mp.0.low",
 					"name": "mp"
 				},
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.mol.0.value",
 					"name": "molfile"
 				},
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.mf.0.value",
 					"name": "mf"
 				}
@@ -538,10 +533,10 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/display/fasttable/"
 		},
 		{
-			"type": "fasttable",
 			"title": "Risk",
 			"displayWrapper": true,
 			"position": {
@@ -613,10 +608,10 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/display/fasttable/"
 		},
 		{
-			"type": "fasttable",
 			"title": "Hazard",
 			"displayWrapper": true,
 			"position": {
@@ -688,10 +683,10 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/display/fasttable/"
 		},
 		{
-			"type": "fasttable",
 			"title": "Safety",
 			"displayWrapper": true,
 			"position": {
@@ -763,10 +758,10 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/display/fasttable/"
 		},
 		{
-			"type": "display_value",
 			"title": "bp",
 			"displayWrapper": true,
 			"position": {
@@ -846,10 +841,10 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/display/single_value/"
 		},
 		{
-			"type": "display_value",
 			"title": "mp",
 			"displayWrapper": true,
 			"position": {
@@ -929,7 +924,8 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/display/single_value/"
 		}
 	],
 	"variables": [
