@@ -1,0 +1,15 @@
+
+[
+	{ "moduleName": "JSME Molecular Editor", "url": "./modules/types/science/chemistry/jsme/" },
+	{ "moduleName": "JSMol", "url": "./modules/types/science/chemistry/jsmol/" },
+	{ "moduleName": "JSMol Script", "url": "./modules/types/science/chemistry/jsmol_script/" },
+	{ "moduleName": "2D Molecule viewer", "url": "./modules/types/science/chemistry/mol2d/" },
+
+	{ "moduleName": "1D NMR", "url": "./modules/types/science/spectra/nmr/1dnmr/" },
+	{ "moduleName": "2D NMR", "url": "./modules/types/science/spectra/nmr/2dnmr/" },
+	{ "moduleName": "Spectra displayer", "url": "./modules/types/science/spectra/spectra_displayer/" },
+	{ "moduleName": "NMR spin system simulation", "url": "./modules/types/science/spectra/nmr/webservice_nmr_spin/" },
+	{ "moduleName": "GC-MS", "url": "./modules/types/science/spectra/gcms/" },
+
+	{ "moduleName": "IV stability", "url": "./modules/types/science/spectra/ivstability/" }
+]

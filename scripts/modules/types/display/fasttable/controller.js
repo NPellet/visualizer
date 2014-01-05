@@ -1,4 +1,4 @@
-define(['modules/types/jqgrid/controller'], function(controller) {
+define(['modules/types/display/jqgrid/controller'], function(controller) {
 
 	var controllerExtended = function() {};
 

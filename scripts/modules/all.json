@@ -1,0 +1,35 @@
+{
+	"Displaying information": "./scripts/modules/types/display/display.json",
+
+	"Client interaction": [
+		{
+			"moduleName": "Drag and Drop file",
+			"url": "./modules/types/dragdrop/"
+		},
+
+		{
+			"moduleName": "Button to action",
+			"url": "./modules/types/button_action/"
+		},
+
+		{ "moduleName": "Configured search", "url": "./modules/types/array_search/" }
+	],
+
+
+	"Server interaction": "./scripts/modules/types/server_interaction/server_interaction.json",
+
+	"Data edition": "./scripts/modules/types/edition/edition.json",
+
+
+
+	"Science": "./scripts/modules/types/science/science.json",
+
+	"Statistics": [
+		{ "moduleName": "Dendrogram", "url": "./modules/types/dendrogram/" },
+		{ "moduleName": "Loading plot", "url": "./modules/types/loading_plot/" }
+	],
+
+	"Chart": "./scripts/modules/types/chart/chart.json",
+
+	"Legacy": "./scripts/modules/types/legacy/legacy.json"
+}

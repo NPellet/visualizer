@@ -1,51 +1,15 @@
 {
 	"Displaying information": "./scripts/modules/types/display/display.json",
 
-	"Client interaction": [
-		{
-			"moduleName": "Drag and Drop file",
-			"url": "./modules/types/dragdrop/"
-		},
-
-		{
-			"moduleName": "Button to action",
-			"url": "./modules/types/button_action/"
-		},
-
-		{ "moduleName": "Configured search", "url": "./modules/types/array_search/" }
-	],
-
+	"Client interaction": "./scripts/modules/types/client_interaction/client_interaction.json",
 
 	"Server interaction": "./scripts/modules/types/server_interaction/server_interaction.json",
 
 	"Data edition": "./scripts/modules/types/edition/edition.json",
 
+	"Science": "./scripts/modules/types/science/science.json",
 
-
-	"Science": [
-		{ "moduleName": "1D NMR", "url": "./modules/types/1dnmr/" },
-		{ "moduleName": "2D NMR", "url": "./modules/types/2dnmr/" },
-		{ "moduleName": "Spectra displayer", "url": "./modules/types/spectra_displayer/" },
-		{ "moduleName": "NMR spin system simulation", "url": "./modules/types/webservice_nmr_spin/" },
-		{ "moduleName": "GC-MS", "url": "./modules/types/gcms/" },
-		{ "moduleName": "JSME Molecular Editor", "url": "./modules/types/jsme/" },
-		{ "moduleName": "JSMol", "url": "./modules/types/jsmol/" },
-		{ "moduleName": "JSMol Script", "url": "./modules/types/jsmol_script/" },
-		{ "moduleName": "IV stability", "url": "./modules/types/ivstability/" },
-		{ "moduleName": "2D Molecule viewer", "url": "./modules/types/mol2d/" },
-		{ "moduleName": "3D mathematical function", "url": "./modules/types/graph_function/" }
-	],
-
-	"Statistics": [
-		{ "moduleName": "Dendrogram", "url": "./modules/types/dendrogram/" },
-		{ "moduleName": "Loading plot", "url": "./modules/types/loading_plot/" }
-	],
-
-	"Charting": [
-		{ "moduleName": "Matrix", "url": "./modules/types/canvas_matrix/" },
-		{ "moduleName": "Plot", "url": "./modules/types/spectra_displayer/" },
-		{ "moduleName": "Display phylogram", "url": "./modules/types/phylogram/" }
-	],
+	"Chart": "./scripts/modules/types/chart/chart.json",
 
 	"Legacy": "./scripts/modules/types/legacy/legacy.json"
 }

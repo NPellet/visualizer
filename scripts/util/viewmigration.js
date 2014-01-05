@@ -36,7 +36,7 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 					for (var i=0; i<view.modules.length; i++) {
 						var module=view.modules[i];
 						module.url=updateModule(module.type);
-					//	delete module.type;
+						delete module.type;
 					}
 				}				
 		}
@@ -65,35 +65,33 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 		if (type=="form_simple") return "./modules/types/edition/form_simple/";
 		if (type=="var_editor") return "./modules/types/edition/var_editor/";
 
+		if (type=="graph_function") return "./modules/types/chart/advanced/plot_function/";
+		if (type=="canvas_matrix") return "./modules/types/chart/advanced/canvas_matrix/";
+		if (type=="dendrogram") return "./modules/types/chart/statistics/dendrogram/";
+		if (type=="loading_plot") return "./modules/types/chart/statistics/loading_plot/";
+		if (type=="phylogram") return "./modules/types/chart/statistics/phylogram/";
+
+		if (type=="spectra_displayer") return "./modules/types/science/spectra/spectra_displayer/";
+
+		if (type=="jsme") return "./modules/types/science/chemistry/jsme/";
+		if (type=="jsmol") return "./modules/types/science/chemistry/jsmol/";
+		if (type=="jsmol_script") return "./modules/types/science/chemistry/jsmol_script/";
+		if (type=="mol2d") return "./modules/types/science/chemistry/mol2d/";
+
+		if (type=="1dnmr") return "./modules/types/science/spectra/nmr/1dnmr/";
+		if (type=="2dnmr") return "./modules/types/science/spectra/nmr/2dnmr/";
+		if (type=="webservice_nmr_spin") return "./modules/types/science/spectra/nmr/webservice_nmr_spin/";
+		if (type=="gcms") return "./modules/types/science/spectra/gcms/";
+		if (type=="ivstability") return "./modules/types/science/spectra/ivstability/";
 
 
+		if (type=="array_search") return "./modules/types/client_interaction/array_search/";
+		if (type=="dragdrop") return "./modules/types/client_interaction/dragdrop/";
+		if (type=="button_action") return "./modules/types/client_interaction/button_action/";
 
-
-
-		if (type=="dragdrop") return "./modules/types/dragdrop/";
-		if (type=="button_action") return "./modules/types/button_action/";
 		
-
-		if (type=="array_search") return "./modules/types/array_search/";
-		if (type=="1dnmr") return "./modules/types/1dnmr/";
-		if (type=="2dnmr") return "./modules/types/2dnmr/";
-		if (type=="spectra_displayer") return "./modules/types/spectra_displayer/";
-		if (type=="webservice_nmr_spin") return "./modules/types/webservice_nmr_spin/";
-		if (type=="gcms") return "./modules/types/gcms/";
-		if (type=="jsme") return "./modules/types/jsme/";
-		if (type=="jsmol") return "./modules/types/jsmol/";
-		if (type=="jsmol_script") return "./modules/types/jsmol_script/";
-		if (type=="ivstability") return "./modules/types/ivstability/";
-		if (type=="mol2d") return "./modules/types/mol2d/";
-		if (type=="graph_function") return "./modules/types/graph_function/";
-		if (type=="dendrogram") return "./modules/types/dendrogram/";
-		if (type=="loading_plot") return "./modules/types/loading_plot/";
-		if (type=="canvas_matrix") return "./modules/types/canvas_matrix/";
-		if (type=="phylogram") return "./modules/types/phylogram/";
 		if (type=="grid_selector") return "./modules/types/grid_selector/";
 		if (type=="xyzoomnavigator") return "./modules/types/xyzoomnavigator/";
-		if (type=="object_editor") return "./modules/types/object_editor/";
-		if (type=="webservice_button") return "./modules/types/webservice_button/";
 		if (type=="webservice_cron") return "./modules/types/webservice_cron/";
 
 

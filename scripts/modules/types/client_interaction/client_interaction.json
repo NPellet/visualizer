@@ -1,0 +1,16 @@
+[
+	{
+		"moduleName": "Drag and Drop file",
+		"url": "./modules/types/client_interaction/dragdrop/"
+	},
+
+	{
+		"moduleName": "Button to action",
+		"url": "./modules/types/client_interaction/button_action/"
+	},
+
+	{
+		"moduleName": "Configured search",
+		"url": "./modules/types/client_interaction/array_search/"
+	}
+]
