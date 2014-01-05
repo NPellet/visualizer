@@ -59,6 +59,13 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 
 		if (type=="webservice_search") return "./modules/types/webservice_search/";
 		if (type=="button_url") return "./modules/types/button_url/";
+		
+		if (type=="filter") return "./modules/types/edition/filter/";
+		if (type=="form") return "./modules/types/edition/form/";
+		if (type=="form_simple") return "./modules/types/edition/form_simple/";
+		if (type=="var_editor") return "./modules/types/edition/var_editor/";
+
+
 
 
 
@@ -66,11 +73,7 @@ define(['jquery', 'util/versioning'], function($, Versioning) {
 		if (type=="dragdrop") return "./modules/types/dragdrop/";
 		if (type=="button_action") return "./modules/types/button_action/";
 		
-		if (type=="filelistupload") return "./modules/types/filelistupload/";
-		if (type=="filter") return "./modules/types/filter/";
-		if (type=="form") return "./modules/types/form/";
-		if (type=="form_simple") return "./modules/types/form_simple/";
-		if (type=="var_editor") return "./modules/types/var_editor/";
+
 		if (type=="array_search") return "./modules/types/array_search/";
 		if (type=="1dnmr") return "./modules/types/1dnmr/";
 		if (type=="2dnmr") return "./modules/types/2dnmr/";
