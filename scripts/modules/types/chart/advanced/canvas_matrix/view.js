@@ -280,12 +280,6 @@ define(['modules/defaultview', 'util/webworker', 'util/util', 'libs/jquery.event
 				var self = this;
 
 
-	/*			
-				CI.WebWorker.create('jsonparser', './scripts/webworker/scripts/jsonparser.js');
-				CI.WebWorker.create('getminmaxmatrix', './scripts/webworker/scripts/getminmaxmatrix.js');
-				CI.WebWorker.create('computesprings', './scripts/webworker/scripts/computesprings.js');
-				CI.WebWorker.create('googleVisualizationArrayToDataTable', './scripts/webworker/scripts/googleVisualizationArrayToDataTable.js');
-	*/
 
 				var self = this;
 
@@ -403,7 +397,7 @@ define(['modules/defaultview', 'util/webworker', 'util/util', 'libs/jquery.event
 		
 		initWorker: function(pxPerCell) {
 			
-			var worker = new Worker('./scripts/modules/types/canvas_matrix/worker.js');
+			var worker = new Worker('./scripts/modules/types/chart/advanced/canvas_matrix/worker.js');
 			worker.postMessage({ title: "init", message: { colors: this.getColors(), squareLoading: this.squareLoading, highcontrast: this.getHighContrast() } });
 			
 			var self = this;
