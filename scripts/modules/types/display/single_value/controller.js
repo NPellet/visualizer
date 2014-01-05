@@ -19,7 +19,8 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 		description: 'Display a displayable element',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'single_value'
 	};
 	
 

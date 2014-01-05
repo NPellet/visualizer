@@ -22,7 +22,8 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 		description: 'Display 2D NMRs using the plot library',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: '2dnmr'
 	};
 	
 

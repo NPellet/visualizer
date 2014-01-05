@@ -20,7 +20,8 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 		description: 'Displays a sticky note',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'postit'
 	};
 	
 

@@ -22,7 +22,8 @@ define(['modules/defaultcontroller', 'util/datatraversing', 'libs/formcreator/fo
 		description: 'Filters an array with configured UI criterias',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'array_search'
 	};
 	
 

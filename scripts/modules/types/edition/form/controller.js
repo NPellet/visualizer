@@ -20,7 +20,8 @@ define( [ 'modules/defaultcontroller', 'libs/formcreator/formcreator' ], functio
 		description: 'A complex module allowing one to display a templated form in the module',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'form'
 	};
 	
 

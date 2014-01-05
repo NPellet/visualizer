@@ -13,7 +13,7 @@ define(['modules/types/display/jqgrid/controller'], function(controller) {
 		author: 'Norman Pellet',
 		date: '24.12.2013',
 		license: 'MIT',
-		csscode: 'fasttable'
+		cssClass: 'fasttable'
 	};
 	
 

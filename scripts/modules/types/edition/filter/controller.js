@@ -20,7 +20,8 @@ define( [ 'modules/defaultcontroller', 'libs/formcreator/formcreator' ], functio
 		description: 'A filtering module that takes variables in, modifies them, and outputs some other variables',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'filter'
 	};
 	
 

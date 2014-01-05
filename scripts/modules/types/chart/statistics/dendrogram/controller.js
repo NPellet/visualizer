@@ -19,7 +19,8 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default, Tr
 		description: 'Display a dendrogram based on jit',
 		author: 'Luc Patiny',
 		date: '30.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'dendrogram'
 	};
 
 	

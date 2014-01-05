@@ -20,7 +20,8 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 		description: 'Shows a integrated iframe with URL as an input',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'iframe'
 	};
 	
 

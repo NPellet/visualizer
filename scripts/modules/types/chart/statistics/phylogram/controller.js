@@ -20,7 +20,8 @@ define(['modules/defaultcontroller'], function(Default) {
 		description: 'Display phylogram using D3 library',
 		author: 'Nathanaêl Khodl, Luc Patiny',
 		date: '30.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'phylogram'
 	};
 
 

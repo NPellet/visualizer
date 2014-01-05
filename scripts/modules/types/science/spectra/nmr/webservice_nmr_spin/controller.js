@@ -21,7 +21,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 		description: 'Allows to enter coupling constant',
 		author: 'Luc Patiny',
 		date: '30.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'webservice_nmr_spin'
 	};
 
 

@@ -21,7 +21,8 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default,Tra
 		description: 'Shows a button that will trigger a text action',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'button_action'
 	};
 	
 

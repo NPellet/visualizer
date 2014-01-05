@@ -14,7 +14,8 @@ define(['modules/defaultcontroller', 'util/datatraversing'], function(Default, T
 		description: 'Displays NMR jcamp files in the style of standard NMRs',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: '1dnmr'
 	};
 	
 

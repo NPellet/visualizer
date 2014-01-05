@@ -20,7 +20,8 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 		description: 'Displays a json element in a list',
 		author: 'Norman Pellet',
 		date: '28.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'hashmap'
 	};
 	
 

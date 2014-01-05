@@ -20,7 +20,8 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 		description: 'Display 2D molfiles',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'mol2d'
 	};
 	
 

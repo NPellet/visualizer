@@ -20,7 +20,8 @@ define( [ 'modules/defaultcontroller', 'util/api', 'util/urldata'], function(Def
 		description: 'Performs a server search',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'webservice_search'
 	};
 	
 

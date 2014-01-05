@@ -72,7 +72,7 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			
 			var html = "";
 			html += '<div class="ci-module-wrapper ci-module-';
-			html += this.controller.moduleInformation.csscode;
+			html += this.controller.moduleInformation.cssClass;
 
 		
 			html += '" data-module-id="';

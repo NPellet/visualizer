@@ -43,7 +43,8 @@ define(['jquery', 'modules/defaultcontroller', 'util/api'], function($, Default,
 		description: 'This module shows the basic features that can be implemented',
 		author: 'Norman Pellet',
 		date: '23.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'dummy_module'
 	};
 	
 

@@ -10,7 +10,8 @@ define(['modules/defaultcontroller'], function(Default) {
         description: 'Display a JSMol module',
         author: 'Nathanaêl Khodl, Luc Patiny',
         date: '30.12.2013',
-        license: 'MIT'
+        license: 'MIT',
+        cssClass: 'jsmol_script'
     };
 
 

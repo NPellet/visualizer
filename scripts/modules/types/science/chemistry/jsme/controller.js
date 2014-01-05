@@ -20,7 +20,8 @@ define( [ 'modules/defaultcontroller', 'util/datatraversing', 'util/api' ], func
 		description: 'Displays and interacts with the JSME plugin',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'jsme'
 	};
 	
 

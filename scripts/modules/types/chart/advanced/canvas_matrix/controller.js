@@ -21,7 +21,8 @@ define(['modules/defaultcontroller', 'util/api'], function(Default, API) {
 		description: 'Display an array of array as a colored matrix',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
-		license: 'MIT'
+		license: 'MIT',
+		cssClass: 'canvas_matrix'
 	};
 
 

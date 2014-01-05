@@ -20,7 +20,8 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
         description: 'Plots an input function in 3D using Three.js',
         author: 'Luc Patiny',
         date: '28.12.2013',
-        license: 'MIT'
+        license: 'MIT',
+        cssClass: 'plot_function'
     };
     
 
