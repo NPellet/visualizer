@@ -31,7 +31,7 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 	controller.prototype.references = {
 
 		"value": {
-			type: ['string', 'number', 'mf', 'picture', 'gif', 'jpeg', 'png', 'mol2d', 'jpg', 'pdb', 'downloadLink'],
+			type: ['string', 'number', 'mf', 'picture', 'gif', 'jpeg', 'png', 'mol2d', 'jpg', 'pdb', 'downloadLink', 'doi'],
 			label: 'Any string, number or picture',
 			
 		},

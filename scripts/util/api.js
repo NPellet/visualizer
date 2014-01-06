@@ -17,7 +17,7 @@ define(['util/datatraversing', 'util/actionmanager'], function(Traversing, Actio
 			if( ! ( element instanceof DataObject ) || ( ! element.type ) ) {
 				element = {
 					type: Traversing.getType( element ),
-					value: element;
+					value: element
 				}
 			}
 			
