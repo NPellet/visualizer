@@ -22,10 +22,6 @@ define(['modules/defaultview'], function(Default) {
 		inDom: function() {},
 		
 		
-		blank: function() {
-			this.domTable.empty();
-			this.table = null;
-		},
 
 		update: {
 			url: function(val) {

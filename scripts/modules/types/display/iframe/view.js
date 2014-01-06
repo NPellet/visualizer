@@ -10,12 +10,14 @@ define(['modules/defaultview'], function(Default) {
 		},
 
 		
-		blank: function() {
-			this.dom.attr('src', null);
+		blank: {
+			url: function() {
+				this.dom.attr('src', null);
+			}
+			
 		},
 
 		update: {
-
 			url: function(moduleValue) {
 				if(!moduleValue)
 					return;

@@ -35,9 +35,7 @@ define(['modules/defaultview', 'forms/button', 'util/util', 'main/grid'], functi
 			
 		},
 
-		inDom: function() {
-			
-		},
+		inDom: function() {},
 
 		onResize: function() {},		
 		blank: function() {},
@@ -47,10 +45,6 @@ define(['modules/defaultview', 'forms/button', 'util/util', 'main/grid'], functi
 
 		getDom: function() {
 			return this.dom;
-		},
-		
-		typeToScreen: {
-			
 		}
 	});
 

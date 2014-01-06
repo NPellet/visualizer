@@ -22,9 +22,10 @@ define(['modules/defaultview', 'util/util', 'libs/loadingplot/libs/jquery.mousew
 				this._svg.setSize(this._w, this._h);
 		},
 		
-		blank: function() {
-			
-			this.table = null;
+		blank: {
+			loading: function(varname) {
+				this.table = null;
+			}
 		},
 
 		update: {
