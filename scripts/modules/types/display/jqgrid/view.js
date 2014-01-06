@@ -30,7 +30,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			eval("self.filter = function(jqGrid, source, rowId) { try { \n " + filter + "\n } catch(_) { console.log(_); } }");
 
 	 		this.module.getDomContent( ).html( this.dom );
-	 		this._highlights = this._highlights || [];
 
 	 		this.onReady = $.Deferred();
 	 		this.onResize( );
@@ -300,13 +299,13 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			element[ 'id' ] = String( i );
 			element[ '__source' ] = s;
 
-			if(s._highlight) {
+			
 
-				API.listenHighlight( s._highlight, function( onOff, key ) {
+			API.listenHighlight( s, function( onOff, key ) {
 
-					$( "#" + i )[ onOff ? 'addClass' : 'removeClass' ]( 'ci-highlight' );
-				}, false, this.module.getId());
-			}
+				$( "#" + i )[ onOff ? 'addClass' : 'removeClass' ]( 'ci-highlight' );
+			}, false, this.module.getId());
+			
 
 			element._inDom = $.Deferred();
 			for( ; j < l ; j ++) {

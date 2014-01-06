@@ -1,42 +1,41 @@
 {
+	"modules": [
+		"./scripts/modules/lists/all.json"
+	],
 
+	"header": {
+		"height": "30px",
+		"elements": 
 
-"modules": [
-	"./scripts/modules/lists/all.json"
-],
+		[
+			{
+				"type": "pasteview",
+				"label": "Paste view"
+			},
 
-"header": {
-	"height": "30px",
-	"elements": 
+			{
+				"type": "copyview",
+				"label": "Copy view"
+			},
 
-	[
+	        {
+	            "type": "blankview",
+	            "label": "Blank view"
+	        }
+		]
+	},
+
+	"filters": [
 		{
-			"type": "autosavelocalview",
-			"label": "Autosave view"
+			"file": "./filters/testFilter.js",
+			"name": "Filter"
 		},
 
 		{
-			"type": "copyview",
-			"label": "Copy view"
-		},
-
-        {
-                "type": "blankview",
-                "label": "Blank view"
-        },
-
-		{
-			"type": "pushviewtoserver",
-			"label": "Save to server"
-		},
-
-		{
-			"type": "versioning",
-			"label": "Versioning"
-		}	
+			"file": "./filters/doitourl.js",
+			"name": "DOI to URL"
+		}
 	]
-}
-
 }
 
 

@@ -79,7 +79,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 		this.dom = this.domTable;
 
 	 		this.module.getDomContent( ).html( this.dom );
-	 		this._highlights = this._highlights || [];
 
 	 		this.onReady = $.Deferred();
 	 		this.onResize( );
@@ -204,13 +203,10 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 					for( i = 0; i < l ; i++ ) {
 							
-						if( ! self.module.data[ i ]._highlight ) {
-							continue;
-						}
 
 						( function( j ) {
 
-							API.listenHighlight( self.module.data[ j ]._highlight, function( val ) {
+							API.listenHighlight( self.module.data[ j ], function( val ) {
 								self.doHighlight( j, val );
 							}, self.module.id );
 
