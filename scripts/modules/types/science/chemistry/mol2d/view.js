@@ -38,7 +38,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 		
 		update: {
 			'mol2d': function(moduleValue, canDoAtomLabels) {
-				console.log(moduleValue);
+				
 				if( ! moduleValue ) {
 					return;
 				}
@@ -158,7 +158,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 
 			for(var i in this._lastMol._atoms) {
 				if(this._lastMol._atoms[i].indexOf(id) > -1) {
-					API.highlight(i, val);
+					API.highlightId(i, val);
 				}
 			}
 		},
