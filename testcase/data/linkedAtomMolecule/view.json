@@ -1,7 +1,6 @@
 {
 	"modules": [
 		{
-			"type": "jqgrid",
 			"title": "Elements",
 			"position": {
 				"left": 0,
@@ -18,7 +17,7 @@
 					"group": [
 						{
 							"nblines": [
-								null
+								20
 							],
 							"toggle": [
 								null
@@ -26,12 +25,10 @@
 							"colorjpath": [
 								null
 							],
-							"displaySearch": [
-								[]
-							],
 							"filterRow": [
-								null
-							]
+								""
+							],
+							"displaySearch": []
 						}
 					],
 					"cols": [
@@ -65,7 +62,7 @@
 			"vars_out": [
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element._highlight",
 					"name": "links"
 				}
@@ -73,10 +70,10 @@
 			"actions_out": [
 				{}
 			],
-			"displayWrapper": true
+			"displayWrapper": true,
+			"url": "./modules/types/display/jqgrid/"
 		},
 		{
-			"type": "mol2d",
 			"title": "Molecule display with Hover atom highlight",
 			"position": {
 				"left": 92.00000400543213,
@@ -126,10 +123,10 @@
 				"name": [
 					null
 				]
-			}
+			},
+			"url": "./modules/types/science/chemistry/mol2d/"
 		},
 		{
-			"type": "jqgrid",
 			"title": "List of molecules",
 			"displayWrapper": true,
 			"position": {
@@ -146,7 +143,7 @@
 					"group": [
 						{
 							"nblines": [
-								null
+								20
 							],
 							"toggle": [
 								null
@@ -154,12 +151,10 @@
 							"colorjpath": [
 								null
 							],
-							"displaySearch": [
-								[]
-							],
 							"filterRow": [
 								null
-							]
+							],
+							"displaySearch": []
 						}
 					],
 					"cols": [
@@ -193,17 +188,17 @@
 			"vars_out": [
 				{
 					"event": "onHover",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.molfile",
 					"name": "aMolfile"
 				}
 			],
 			"actions_out": [
 				{}
-			]
+			],
+			"url": "./modules/types/display/jqgrid/"
 		},
 		{
-			"type": "jsme",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -248,7 +243,8 @@
 					"jpath": "",
 					"name": ""
 				}
-			]
+			],
+			"url": "./modules/types/science/chemistry/jsme/"
 		}
 	],
 	"configuration": {
@@ -273,5 +269,5 @@
 			"url": ""
 		}
 	],
-	"_version": "2.2"
+	"_version": "2.2.1"
 }

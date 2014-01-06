@@ -18,7 +18,6 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 			});
 
 			this.onReady = $.Deferred();
-			this._highlights = this._highlights || [];
 		},
 		
 		inDom: function() { },
@@ -67,7 +66,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 				this._currentValue = moduleValue;
 
 				API.killHighlight( this.module.getId() );
-				API.listenHighlight( moduleValue._highlight, function(onOff, highlightId) {
+				API.listenHighlight( moduleValue, function(onOff, highlightId) {
 					var atoms = [];
 					for ( var i = 0, l = highlightId.length ; i < l ; i++ ) {
 						if(!(moduleValue._atoms[highlightId[i]] instanceof Array))
@@ -94,7 +93,7 @@ define(['require', 'modules/defaultview', 'libs/plot/plot', 'util/jcampconverter
 					}
 				} else {
 					if(this._currentValue._atoms[i].indexOf(id-1) > -1) {
-						API.highlight(i, true);
+						API.highlight(i, 1);
 					}						
 				}
 

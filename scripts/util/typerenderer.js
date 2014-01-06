@@ -83,7 +83,7 @@ define(['require', 'jquery', 'util/api', 'util/util', 'util/datatraversing'], fu
 				canvas.loadMolecule(molLoaded);
 
 				
-				API.listenHighlight(molfile._highlight, function(value, commonKeys) {
+				API.listenHighlight(molfile, function(value, commonKeys) {
 
 					if($("#" + id).length == 0)
 						return;

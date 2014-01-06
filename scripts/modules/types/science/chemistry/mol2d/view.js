@@ -38,7 +38,7 @@ define(['modules/defaultview','util/api','util/util','util/datatraversing', 'uti
 		
 		update: {
 			'mol2d': function(moduleValue, canDoAtomLabels) {
-				
+				console.log(moduleValue);
 				if( ! moduleValue ) {
 					return;
 				}

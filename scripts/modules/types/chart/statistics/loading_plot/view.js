@@ -10,7 +10,6 @@ define(['modules/defaultview', 'util/util', 'libs/loadingplot/libs/jquery.mousew
 			this.dom = $('<div class="ci-display-loading-plot"></div>');
 			this.module.getDomContent().html(this.dom);
 			
-			this._highlights = this._highlights || [];
 			var self = this;
 		},
 

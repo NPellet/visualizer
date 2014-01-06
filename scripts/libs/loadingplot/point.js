@@ -169,7 +169,7 @@ LoadingPlot.SVGElement.prototype.mouseover = function() {
 	//this.highlight(true);
 
 	require(['util/api'], function(API) {
-		API.highlight(this._data._highlight, 1);	
+		API.highlight(this._data, 1);	
 	});
 	
 	if(this.hoverCallback)
@@ -180,7 +180,7 @@ LoadingPlot.SVGElement.prototype.mouseout = function() {
 	//this.highlight(false);
 	
 	require(['util/api'], function(API) {
-		API.highlight(this._data._highlight, 0);
+		API.highlight(this._data, 0);
 	});
 }
 
