@@ -299,8 +299,6 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 			element[ 'id' ] = String( i );
 			element[ '__source' ] = s;
 
-console.log(s);
-
 			API.listenHighlight( s, function( onOff, key ) {
 				$( "#" + i )[ onOff ? 'addClass' : 'removeClass' ]( 'ci-highlight' );
 			}, false, this.module.getId());

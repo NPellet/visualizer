@@ -1,1 +1,848 @@
-{"_dataFilename":"/Demo/Chart/spectraDisplayerChart/.results/Master/1384437439576.json","simpleArray":[0.58333,0.72517,0.32368,0.78822,0.22261,0.47575,0.66839,0.12251,0.18462,0.13462,0.17404,0.55932,0.91059,0.90869,0.27086,0.55144,0.88102,0.87448,0.19592,0.4602],"_dataUrl":"http://script-test.epfl.ch/script/HD/Load/VpBd3d4LTI?filename=test%40patiny.com%2F%2FDemo%2FChart%2FspectraDisplayerChart%2F.results%2FMaster%2F1384437439576.json","_saved":1384437439576,"simpleArray3":[0.57575,0.35852,0.43425,0.55426,0.64174,0.12651,0.9725,0.5559,0.25429,0.51496,0.37516,0.20284,0.5589,0.00333,0.77966,0.22187,0.4953,0.66963,0.84533,0.03194],"_viewFilename":"Demo/Chart/spectraDisplayerChart/.views/Master/1384156498621.json","chart":{"infos":[{"id":"ID: 0","_highlight":0},{"id":"ID: 1","_highlight":1},{"id":"ID: 2","_highlight":2},{"id":"ID: 3","_highlight":3},{"id":"ID: 4","_highlight":4},{"id":"ID: 5","_highlight":5},{"id":"ID: 6","_highlight":6},{"id":"ID: 7","_highlight":7},{"id":"ID: 8","_highlight":8},{"id":"ID: 9","_highlight":9},{"id":"ID: 10","_highlight":10},{"id":"ID: 11","_highlight":11},{"id":"ID: 12","_highlight":12},{"id":"ID: 13","_highlight":13},{"id":"ID: 14","_highlight":14},{"id":"ID: 15","_highlight":15},{"id":"ID: 16","_highlight":16},{"id":"ID: 17","_highlight":17},{"id":"ID: 18","_highlight":18},{"id":"ID: 19","_highlight":19}],"y":[0.68917,0.66997,0.36228,0.27821,0.93877,0.86076,0.96278,0.63849,0.2508,0.99566,0.92708,0.46148,0.25481,0.91095,0.30659,0.25391,0.94503,0.8861,0.41708,0.0873],"x":[0.57575,0.35852,0.43425,0.55426,0.64174,0.12651,0.9725,0.5559,0.25429,0.51496,0.37516,0.20284,0.5589,0.00333,0.77966,0.22187,0.4953,0.66963,0.84533,0.03194]},"multiCharts":[{"infos":[{"id":"ID: 0","_highlight":[0]},{"id":"ID: 1","_highlight":[1]},{"id":"ID: 2","_highlight":[2]},{"id":"ID: 3","_highlight":[3]},{"id":"ID: 4","_highlight":[4]},{"id":"ID: 5","_highlight":[5]},{"id":"ID: 6","_highlight":[6]},{"id":"ID: 7","_highlight":[7]},{"id":"ID: 8","_highlight":[8]},{"id":"ID: 9","_highlight":[9]}],"_highlight":[0,1,2,3,4,5,6,7,8,9],"y":[0.10482,0.08109,0.36875,0.28334,0.62128,0.2742,0.49599,0.89316,0.49128,0.28397],"options":{"trackMouseLabelRouding":1,"trackMouse":false,"lineToZero":false,"trackMouseLabel":false,"lineColor":"red","autoPeakPickingNb":4,"markers":{"fillColor":"transparent","zoom":1,"show":false,"type":1,"strokeColor":false,"strokeWidth":1},"lineStyle":1,"autoPeakPickingMinDistance":10,"label":"","autoPeakPicking":false,"flip":false},"x":[0,1,2,3,4,5,6,7,8,9]},{"infos":[{"id":"ID: 0","_highlight":[0]},{"id":"ID: 1","_highlight":[1]},{"id":"ID: 2","_highlight":[2]},{"id":"ID: 3","_highlight":[3]},{"id":"ID: 4","_highlight":[4]},{"id":"ID: 5","_highlight":[5]},{"id":"ID: 6","_highlight":[6]},{"id":"ID: 7","_highlight":[7]},{"id":"ID: 8","_highlight":[8]},{"id":"ID: 9","_highlight":[9]}],"_highlight":[0,1,2,3,4,5,6,7,8,9],"y":[0.54283,0.20293,0.11559,0.55518,0.8686,0.15138,0.58066,0.5647,0.35293,0.47234],"options":{"trackMouseLabelRouding":1,"trackMouse":false,"lineToZero":false,"trackMouseLabel":false,"lineColor":"red","autoPeakPickingNb":4,"markers":{"fillColor":"transparent","zoom":1,"show":false,"type":1,"strokeColor":false,"strokeWidth":1},"lineStyle":1,"autoPeakPickingMinDistance":10,"label":"","autoPeakPicking":false,"flip":false},"x":[0,1,2,3,4,5,6,7,8,9]},{"infos":[{"id":"ID: 0","_highlight":[0]},{"id":"ID: 1","_highlight":[1]},{"id":"ID: 2","_highlight":[2]},{"id":"ID: 3","_highlight":[3]},{"id":"ID: 4","_highlight":[4]},{"id":"ID: 5","_highlight":[5]},{"id":"ID: 6","_highlight":[6]},{"id":"ID: 7","_highlight":[7]},{"id":"ID: 8","_highlight":[8]},{"id":"ID: 9","_highlight":[9]}],"_highlight":[0,1,2,3,4,5,6,7,8,9],"y":[0.14692,0.63885,0.5712,0.59783,0.92539,0.42285,0.8484,0.7611,0.33513,0.49963],"options":{"trackMouseLabelRouding":1,"trackMouse":false,"lineToZero":false,"trackMouseLabel":false,"lineColor":"red","autoPeakPickingNb":4,"markers":{"fillColor":"transparent","zoom":1,"show":false,"type":1,"strokeColor":false,"strokeWidth":1},"lineStyle":1,"autoPeakPickingMinDistance":10,"label":"","autoPeakPicking":false,"flip":false},"x":[0,1,2,3,4,5,6,7,8,9]},{"infos":[{"id":"ID: 0","_highlight":[0]},{"id":"ID: 1","_highlight":[1]},{"id":"ID: 2","_highlight":[2]},{"id":"ID: 3","_highlight":[3]},{"id":"ID: 4","_highlight":[4]},{"id":"ID: 5","_highlight":[5]},{"id":"ID: 6","_highlight":[6]},{"id":"ID: 7","_highlight":[7]},{"id":"ID: 8","_highlight":[8]},{"id":"ID: 9","_highlight":[9]}],"_highlight":[0,1,2,3,4,5,6,7,8,9],"y":[0.2906,0.21325,0.42359,0.52726,0.96031,0.04248,0.02723,0.7926,0.33587,0.81624],"options":{"trackMouseLabelRouding":1,"trackMouse":false,"lineToZero":false,"trackMouseLabel":false,"lineColor":"red","autoPeakPickingNb":4,"markers":{"fillColor":"transparent","zoom":1,"show":false,"type":1,"strokeColor":false,"strokeWidth":1},"lineStyle":1,"autoPeakPickingMinDistance":10,"label":"","autoPeakPicking":false,"flip":false},"x":[0,1,2,3,4,5,6,7,8,9]},{"infos":[{"id":"ID: 0","_highlight":[0]},{"id":"ID: 1","_highlight":[1]},{"id":"ID: 2","_highlight":[2]},{"id":"ID: 3","_highlight":[3]},{"id":"ID: 4","_highlight":[4]},{"id":"ID: 5","_highlight":[5]},{"id":"ID: 6","_highlight":[6]},{"id":"ID: 7","_highlight":[7]},{"id":"ID: 8","_highlight":[8]},{"id":"ID: 9","_highlight":[9]}],"_highlight":[0,1,2,3,4,5,6,7,8,9],"y":[0.0517,0.26339,0.07469,0.15435,0.85872,0.06181,0.88653,0.3852,0.86113,0.77944],"options":{"trackMouseLabelRouding":1,"trackMouse":false,"lineToZero":false,"trackMouseLabel":false,"lineColor":"red","autoPeakPickingNb":4,"markers":{"fillColor":"transparent","zoom":1,"show":false,"type":1,"strokeColor":false,"strokeWidth":1},"lineStyle":1,"autoPeakPickingMinDistance":10,"label":"","autoPeakPicking":false,"flip":false},"x":[0,1,2,3,4,5,6,7,8,9]}],"_logs":[],"simpleArray2":[0.52414,0.72528,0.16621,0.82347,0.64272,0.12749,0.45474,0.27395,0.94133,0.5807,0.57688,0.62714,0.48596,0.92597,0.04385,0.90864,0.17818,0.89701,0.39049,0.34024]}
+{
+  "_dataFilename": "/Demo/Chart/spectraDisplayerChart/.results/Master/1389018742903.json",
+  "simpleArray": [
+    0.09526,
+    0.89213,
+    0.44838,
+    0.6204,
+    0.36818,
+    0.85707,
+    0.53306,
+    0.66415,
+    0.92027,
+    0.09128,
+    0.15861,
+    0.79836,
+    0.42471,
+    0.02137,
+    0.9589,
+    0.47736,
+    0.51201,
+    0.55562,
+    0.55101,
+    0.67418
+  ],
+  "_dataUrl": "http://script.epfl.ch/script/HD/Load/qvCWKQcY5r?filename=test%40patiny.com%2F%2FDemo%2FChart%2FspectraDisplayerChart%2F.results%2FMaster%2F1389018742903.json",
+  "_saved": 1389018742904,
+  "simpleArray3": [
+    0.51847,
+    0.25892,
+    0.66954,
+    0.45821,
+    0.08465,
+    0.10176,
+    0.33193,
+    0.46904,
+    0.99383,
+    0.88653,
+    0.28173,
+    0.71998,
+    0.05509,
+    0.93995,
+    0.4657,
+    0.31371,
+    0.30792,
+    0.65246,
+    0.2972,
+    0.7001
+  ],
+  "_viewFilename": "Demo/Chart/spectraDisplayerChart/.views/Master/1384437481980.json",
+  "chart": {
+    "infos": [
+      {
+        "id": "ID: 0",
+        "_highlight": [
+          0
+        ]
+      },
+      {
+        "id": "ID: 1",
+        "_highlight": [
+          1
+        ]
+      },
+      {
+        "id": "ID: 2",
+        "_highlight": [
+          2
+        ]
+      },
+      {
+        "id": "ID: 3",
+        "_highlight": [
+          3
+        ]
+      },
+      {
+        "id": "ID: 4",
+        "_highlight": [
+          4
+        ]
+      },
+      {
+        "id": "ID: 5",
+        "_highlight": [
+          5
+        ]
+      },
+      {
+        "id": "ID: 6",
+        "_highlight": [
+          6
+        ]
+      },
+      {
+        "id": "ID: 7",
+        "_highlight": [
+          7
+        ]
+      },
+      {
+        "id": "ID: 8",
+        "_highlight": [
+          8
+        ]
+      },
+      {
+        "id": "ID: 9",
+        "_highlight": [
+          9
+        ]
+      },
+      {
+        "id": "ID: 10",
+        "_highlight": [
+          10
+        ]
+      },
+      {
+        "id": "ID: 11",
+        "_highlight": [
+          11
+        ]
+      },
+      {
+        "id": "ID: 12",
+        "_highlight": [
+          12
+        ]
+      },
+      {
+        "id": "ID: 13",
+        "_highlight": [
+          13
+        ]
+      },
+      {
+        "id": "ID: 14",
+        "_highlight": [
+          14
+        ]
+      },
+      {
+        "id": "ID: 15",
+        "_highlight": [
+          15
+        ]
+      },
+      {
+        "id": "ID: 16",
+        "_highlight": [
+          16
+        ]
+      },
+      {
+        "id": "ID: 17",
+        "_highlight": [
+          17
+        ]
+      },
+      {
+        "id": "ID: 18",
+        "_highlight": [
+          18
+        ]
+      },
+      {
+        "id": "ID: 19",
+        "_highlight": [
+          19
+        ]
+      }
+    ],
+    "y": [
+      0.28244,
+      0.59119,
+      0.0618,
+      0.48618,
+      0.6257,
+      0.09178,
+      0.94461,
+      0.02934,
+      0.80161,
+      0.0648,
+      0.25067,
+      0.61742,
+      0.64857,
+      0.5355,
+      0.58292,
+      0.74371,
+      0.96574,
+      0.20329,
+      0.53889,
+      0.99491
+    ],
+    "x": [
+      0.51847,
+      0.25892,
+      0.66954,
+      0.45821,
+      0.08465,
+      0.10176,
+      0.33193,
+      0.46904,
+      0.99383,
+      0.88653,
+      0.28173,
+      0.71998,
+      0.05509,
+      0.93995,
+      0.4657,
+      0.31371,
+      0.30792,
+      0.65246,
+      0.2972,
+      0.7001
+    ]
+  },
+  "multiCharts": [
+    {
+      "infos": [
+        {
+          "id": "ID: 0",
+          "_highlight": [
+            0
+          ]
+        },
+        {
+          "id": "ID: 1",
+          "_highlight": [
+            1
+          ]
+        },
+        {
+          "id": "ID: 2",
+          "_highlight": [
+            2
+          ]
+        },
+        {
+          "id": "ID: 3",
+          "_highlight": [
+            3
+          ]
+        },
+        {
+          "id": "ID: 4",
+          "_highlight": [
+            4
+          ]
+        },
+        {
+          "id": "ID: 5",
+          "_highlight": [
+            5
+          ]
+        },
+        {
+          "id": "ID: 6",
+          "_highlight": [
+            6
+          ]
+        },
+        {
+          "id": "ID: 7",
+          "_highlight": [
+            7
+          ]
+        },
+        {
+          "id": "ID: 8",
+          "_highlight": [
+            8
+          ]
+        },
+        {
+          "id": "ID: 9",
+          "_highlight": [
+            9
+          ]
+        }
+      ],
+      "_highlight": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "y": [
+        0.04695,
+        0.92235,
+        0.23304,
+        0.18811,
+        0.37288,
+        0.22087,
+        0.95161,
+        0.30119,
+        0.00326,
+        0.81202
+      ],
+      "options": {
+        "trackMouseLabelRouding": 1,
+        "trackMouse": false,
+        "lineToZero": false,
+        "trackMouseLabel": false,
+        "lineColor": "red",
+        "autoPeakPickingNb": 4,
+        "markers": {
+          "fillColor": "transparent",
+          "zoom": 1,
+          "show": false,
+          "type": 1,
+          "strokeColor": false,
+          "strokeWidth": 1
+        },
+        "lineStyle": 1,
+        "autoPeakPickingMinDistance": 10,
+        "label": "",
+        "autoPeakPicking": false,
+        "flip": false
+      },
+      "x": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "infos": [
+        {
+          "id": "ID: 0",
+          "_highlight": [
+            0
+          ]
+        },
+        {
+          "id": "ID: 1",
+          "_highlight": [
+            1
+          ]
+        },
+        {
+          "id": "ID: 2",
+          "_highlight": [
+            2
+          ]
+        },
+        {
+          "id": "ID: 3",
+          "_highlight": [
+            3
+          ]
+        },
+        {
+          "id": "ID: 4",
+          "_highlight": [
+            4
+          ]
+        },
+        {
+          "id": "ID: 5",
+          "_highlight": [
+            5
+          ]
+        },
+        {
+          "id": "ID: 6",
+          "_highlight": [
+            6
+          ]
+        },
+        {
+          "id": "ID: 7",
+          "_highlight": [
+            7
+          ]
+        },
+        {
+          "id": "ID: 8",
+          "_highlight": [
+            8
+          ]
+        },
+        {
+          "id": "ID: 9",
+          "_highlight": [
+            9
+          ]
+        }
+      ],
+      "_highlight": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "y": [
+        0.06252,
+        0.29886,
+        0.29234,
+        0.78914,
+        0.98178,
+        0.32066,
+        0.12801,
+        0.62031,
+        0.54239,
+        0.46619
+      ],
+      "options": {
+        "trackMouseLabelRouding": 1,
+        "trackMouse": false,
+        "lineToZero": false,
+        "trackMouseLabel": false,
+        "lineColor": "red",
+        "autoPeakPickingNb": 4,
+        "markers": {
+          "fillColor": "transparent",
+          "zoom": 1,
+          "show": false,
+          "type": 1,
+          "strokeColor": false,
+          "strokeWidth": 1
+        },
+        "lineStyle": 1,
+        "autoPeakPickingMinDistance": 10,
+        "label": "",
+        "autoPeakPicking": false,
+        "flip": false
+      },
+      "x": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "infos": [
+        {
+          "id": "ID: 0",
+          "_highlight": [
+            0
+          ]
+        },
+        {
+          "id": "ID: 1",
+          "_highlight": [
+            1
+          ]
+        },
+        {
+          "id": "ID: 2",
+          "_highlight": [
+            2
+          ]
+        },
+        {
+          "id": "ID: 3",
+          "_highlight": [
+            3
+          ]
+        },
+        {
+          "id": "ID: 4",
+          "_highlight": [
+            4
+          ]
+        },
+        {
+          "id": "ID: 5",
+          "_highlight": [
+            5
+          ]
+        },
+        {
+          "id": "ID: 6",
+          "_highlight": [
+            6
+          ]
+        },
+        {
+          "id": "ID: 7",
+          "_highlight": [
+            7
+          ]
+        },
+        {
+          "id": "ID: 8",
+          "_highlight": [
+            8
+          ]
+        },
+        {
+          "id": "ID: 9",
+          "_highlight": [
+            9
+          ]
+        }
+      ],
+      "_highlight": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "y": [
+        0.76766,
+        0.03561,
+        0.36888,
+        0.08562,
+        0.80847,
+        0.98981,
+        0.97521,
+        0.84257,
+        0.48397,
+        0.18053
+      ],
+      "options": {
+        "trackMouseLabelRouding": 1,
+        "trackMouse": false,
+        "lineToZero": false,
+        "trackMouseLabel": false,
+        "lineColor": "red",
+        "autoPeakPickingNb": 4,
+        "markers": {
+          "fillColor": "transparent",
+          "zoom": 1,
+          "show": false,
+          "type": 1,
+          "strokeColor": false,
+          "strokeWidth": 1
+        },
+        "lineStyle": 1,
+        "autoPeakPickingMinDistance": 10,
+        "label": "",
+        "autoPeakPicking": false,
+        "flip": false
+      },
+      "x": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "infos": [
+        {
+          "id": "ID: 0",
+          "_highlight": [
+            0
+          ]
+        },
+        {
+          "id": "ID: 1",
+          "_highlight": [
+            1
+          ]
+        },
+        {
+          "id": "ID: 2",
+          "_highlight": [
+            2
+          ]
+        },
+        {
+          "id": "ID: 3",
+          "_highlight": [
+            3
+          ]
+        },
+        {
+          "id": "ID: 4",
+          "_highlight": [
+            4
+          ]
+        },
+        {
+          "id": "ID: 5",
+          "_highlight": [
+            5
+          ]
+        },
+        {
+          "id": "ID: 6",
+          "_highlight": [
+            6
+          ]
+        },
+        {
+          "id": "ID: 7",
+          "_highlight": [
+            7
+          ]
+        },
+        {
+          "id": "ID: 8",
+          "_highlight": [
+            8
+          ]
+        },
+        {
+          "id": "ID: 9",
+          "_highlight": [
+            9
+          ]
+        }
+      ],
+      "_highlight": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "y": [
+        0.46591,
+        0.5184,
+        0.73762,
+        0.27515,
+        0.86987,
+        0.71537,
+        0.81409,
+        0.95357,
+        0.81672,
+        0.58588
+      ],
+      "options": {
+        "trackMouseLabelRouding": 1,
+        "trackMouse": false,
+        "lineToZero": false,
+        "trackMouseLabel": false,
+        "lineColor": "red",
+        "autoPeakPickingNb": 4,
+        "markers": {
+          "fillColor": "transparent",
+          "zoom": 1,
+          "show": false,
+          "type": 1,
+          "strokeColor": false,
+          "strokeWidth": 1
+        },
+        "lineStyle": 1,
+        "autoPeakPickingMinDistance": 10,
+        "label": "",
+        "autoPeakPicking": false,
+        "flip": false
+      },
+      "x": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "infos": [
+        {
+          "id": "ID: 0",
+          "_highlight": [
+            0
+          ]
+        },
+        {
+          "id": "ID: 1",
+          "_highlight": [
+            1
+          ]
+        },
+        {
+          "id": "ID: 2",
+          "_highlight": [
+            2
+          ]
+        },
+        {
+          "id": "ID: 3",
+          "_highlight": [
+            3
+          ]
+        },
+        {
+          "id": "ID: 4",
+          "_highlight": [
+            4
+          ]
+        },
+        {
+          "id": "ID: 5",
+          "_highlight": [
+            5
+          ]
+        },
+        {
+          "id": "ID: 6",
+          "_highlight": [
+            6
+          ]
+        },
+        {
+          "id": "ID: 7",
+          "_highlight": [
+            7
+          ]
+        },
+        {
+          "id": "ID: 8",
+          "_highlight": [
+            8
+          ]
+        },
+        {
+          "id": "ID: 9",
+          "_highlight": [
+            9
+          ]
+        }
+      ],
+      "_highlight": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "y": [
+        0.43039,
+        0.10945,
+        0.47771,
+        0.46607,
+        0.94138,
+        0.069,
+        0.43618,
+        0.8241,
+        0.29798,
+        0.48447
+      ],
+      "options": {
+        "trackMouseLabelRouding": 1,
+        "trackMouse": false,
+        "lineToZero": false,
+        "trackMouseLabel": false,
+        "lineColor": "red",
+        "autoPeakPickingNb": 4,
+        "markers": {
+          "fillColor": "transparent",
+          "zoom": 1,
+          "show": false,
+          "type": 1,
+          "strokeColor": false,
+          "strokeWidth": 1
+        },
+        "lineStyle": 1,
+        "autoPeakPickingMinDistance": 10,
+        "label": "",
+        "autoPeakPicking": false,
+        "flip": false
+      },
+      "x": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  ],
+  "_logs": [],
+  "simpleArray2": [
+    0.84915,
+    0.99429,
+    0.1657,
+    0.78025,
+    0.08016,
+    0.56803,
+    0.68815,
+    0.96313,
+    0.78826,
+    0.3269,
+    0.39401,
+    0.82998,
+    0.88968,
+    0.35268,
+    0.91604,
+    0.49436,
+    0.11932,
+    0.51713,
+    0.22633,
+    0.39418
+  ]
+}
