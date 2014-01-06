@@ -11,5 +11,12 @@
 
 	"Chart": "./scripts/modules/types/chart/chart.json",
 
-	"Legacy": "./scripts/modules/types/legacy/legacy.json"
+	"Legacy": "./scripts/modules/types/legacy/legacy.json",
+
+	"Development": [
+		{
+			"moduleName": "Dummy module",
+			"url": "./modules/types/dummy_module/"
+		}
+	]
 }

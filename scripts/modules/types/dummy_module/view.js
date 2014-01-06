@@ -1,4 +1,4 @@
-define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdeferred', 'util/datatraversing', 'util/typerenderer', 'libs/jqgrid/js/jqgrid'], function(require, Default, Util, API, DomDeferred, Traversing, Renderer, JQGrid) {
+define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdeferred', 'util/datatraversing', 'util/typerenderer'], function(require, Default, Util, API, DomDeferred, Traversing, Renderer) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -22,7 +22,7 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 	 					
 	 				if( ! isNaN ( dataRowId ) ) {
 		 				el = self.module.data[ dataRowId ];
-		 				self.module.controller.lineHover( el );
+		 				self.module.controller.onLineHover( el );
 		 			}
 	 			}
 				lastTr = this;
@@ -33,14 +33,14 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 				var el = self.module.data[ parseInt( $(this).attr('data-row-id') ) ];
 					lastTr = this;
-					self.module.controller.lineOut( el );
+					self.module.controller.onLineOut( el );
 
 	 			}
 
 	 		}).on('click', 'tr', function() {
 
  				var el = self.module.data[ parseInt( $(this).attr('data-row-id') ) ];
- 				self.module.controller.lineClick( el );
+ 				self.module.controller.onLineClick( el );
 
 	 		});
 

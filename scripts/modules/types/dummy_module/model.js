@@ -1,4 +1,4 @@
-define(['modules/types/jqgrid/model'], function(model) {
+define(['modules/types/display/jqgrid/model'], function(model) {
 
 	return model;
 });

@@ -53,10 +53,18 @@ define(['jquery', 'modules/defaultcontroller', 'util/api'], function($, Default,
 		Configuration of the input/output references of the module
 	*/
 	controller.prototype.references = {
-		'row': 'Data of the row',
-		'selectedRows': 'Selected rows',
-		'table': 'Data of the table',
-		'tableDom': 'Table HTML element'
+
+		'row': {
+			label: 'Row'
+		},
+
+		'list': {
+			label: 'Data of the table'
+		},
+
+		'selectedrows': {
+			label: 'Selected rows'
+		}
 	};
 
 
@@ -68,31 +76,22 @@ define(['jquery', 'modules/defaultcontroller', 'util/api'], function($, Default,
 		// List of all possible events
 		'onClick': { // When the user clicks on a line of the table
 			label: 'Click on a line',
-			refVariable: [ 'row', 'table' ]
+			refVariable: [ 'row', 'table' ],
 			refAction: [ 'row', 'table' ]
 		},
 		
 		'onHover': {
 			label: 'Hovers a line',
-			refVariable: [ 'row' ]
+			refVariable: [ 'row' ],
 			refAction: [ 'table' ] // For instance, we could decide that through actions, we may only send the whole table
 		}
 	};
 	
 
 	/*
-		Configuration of the module for receiving events, as a static object
-		In the form of 
-
-			relName: {
-				type: [acceptedTypes]
-			}
+		Configuration of the module for receiving variables as a static array of references
 	*/
-	controller.prototype.variablesIn = {
-		table: {
-			type: ["array", "arrayXY"]
-		}		
-	};
+	controller.prototype.variablesIn = ["list"];
 		
 
 	/*
