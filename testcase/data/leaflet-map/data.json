@@ -6,6 +6,38 @@
             "coordinates": [6.566144, 46.522117]
         }
     },
+    "multipleresults" : [
+        {
+            "type":"geojson",
+            "value": {
+                "type": "Point",
+                "coordinates": [-74.05973, 40.714353]
+            },
+            "_highlight" : [0,2]
+        },
+        {
+            "type":"geojson",
+            "value": {
+                "type": "Point",
+                "coordinates": [-74.12973, 40.714353]
+            },
+            "_highlight" : [1]
+        },
+        {
+            "type":"geojson",
+            "value": {
+                "type": "Point",
+                "coordinates": [-74.000973, 40.710353]
+            },
+            "_highlight" : [3]
+        }
+    ],
+    "multiplearray" : [
+        {"value":"Line 1","_highlight":[0]},
+        {"value":"Line 2","_highlight":[1]},
+        {"value":"Line 3","_highlight":[2]},
+        {"value":"Line 4","_highlight":[3]}
+    ],
     "polygons" : {
         "type" : "geojson",
         "value" : {

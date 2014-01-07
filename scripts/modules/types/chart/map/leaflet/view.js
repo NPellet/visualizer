@@ -1,4 +1,4 @@
-define(['modules/defaultview', 'util/util', 'libs/leaflet/leaflet-src'], function(Default, Util) {
+define(['modules/defaultview', 'util/util', 'util/api', 'libs/leaflet/leaflet-src'], function(Default, Util, API) {
 
     function view() {
         this.mapID = Util.getNextUniqueId();
@@ -6,6 +6,13 @@ define(['modules/defaultview', 'util/util', 'libs/leaflet/leaflet-src'], functio
     }
 
     Util.loadCss('scripts/libs/leaflet/leaflet.css');
+    var blueIcon = L.icon({
+        iconUrl: 'scripts/libs/leaflet/images/marker-icon.png'
+    });
+    var redIcon = L.icon({
+        iconUrl: 'scripts/libs/leaflet/images/marker-icon-red.png'
+    });
+            
 
     view.prototype = $.extend(true, {}, Default, {
         init: function() {
@@ -29,15 +36,36 @@ define(['modules/defaultview', 'util/util', 'libs/leaflet/leaflet-src'], functio
             this.onReady.resolve();
         },
         update: {
-            'geo' : function(geo,varname) {
-                if(this.mapLayers.hasOwnProperty(varname))
+            'geo': function(geo, varname) {
+                if (this.mapLayers.hasOwnProperty(varname))
                     this.map.removeLayer(this.mapLayers[varname]);
                 try {
                     var newMarker = L.geoJson(geo.get());
                     newMarker.addTo(this.map);
-                    this.mapLayers[varname]=newMarker;
+                    addHighlight(this, geo, newMarker);
+                    this.mapLayers[varname] = newMarker;
                 } catch (e) {
                     console.error("error creating the marker");
+                }
+            },
+            'geoarray': function(geo, varname) {
+                if (this.mapLayers.hasOwnProperty(varname)) {
+                    this.map.removeLayer(this.mapLayers[varname]);
+                }
+                if (!geo.length)
+                    return;
+                try {
+                    var group = L.layerGroup();
+                    for (var i = 0; i < geo.length; i++) {
+                        var obj = geo[i];
+                        var layer = L.geoJson(obj.get());
+                        group.addLayer(layer);
+                        addHighlight(this, obj, layer);
+                    }
+                    group.addTo(this.map);
+                    this.mapLayers[varname] = group;
+                } catch (e) {
+                    console.error("error creating the group of markers");
                 }
             }
         },
@@ -45,6 +73,32 @@ define(['modules/defaultview', 'util/util', 'libs/leaflet/leaflet-src'], functio
             this.map.invalidateSize();
         }
     });
+
+    function addHighlight(view, element, layer) {
+        var theLayer = layer._layers[layer._leaflet_id-1]; // Layers are encapsulated in a LayerGroup
+        layer.on("mouseover", function() {
+            API.highlight( element, 1 );
+        });
+        layer.on("mouseout", function() {
+            API.highlight( element, 0 );
+        });
+        API.listenHighlight( element, function(onOff) {
+            if(onOff) { // Highlight
+                if(theLayer instanceof L.Marker) {
+                    theLayer.setIcon(redIcon);
+                } else {
+                    layer.setStyle({color:'#ff3300'});
+                }  
+            } else { // disable Highlight
+                if(theLayer instanceof L.Marker) {
+                    theLayer.setIcon(blueIcon);
+                } else {
+                    layer.setStyle({color:'#0033ff'});
+                } 
+            }
+
+        }, false, view.module.getId() );
+    }
 
     return view;
 });

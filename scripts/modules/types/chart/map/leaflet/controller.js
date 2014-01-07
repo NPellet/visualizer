@@ -25,6 +25,10 @@ define(['modules/defaultcontroller'], function(Default) {
         "geo": {
             type: ['geojson'],
             label: 'A GeoJSON object'
+        },
+        "geoarray": {
+            type: ['array'],
+            label: 'Array of GeoJSON objects'
         }
     };
 
@@ -40,7 +44,7 @@ define(['modules/defaultcontroller'], function(Default) {
      Configuration of the module for receiving events, as a static object
      In the form of 
      */
-    controller.prototype.variablesIn = ['geo'];
+    controller.prototype.variablesIn = ['geo','geoarray'];
 
     /*
      Received actions
