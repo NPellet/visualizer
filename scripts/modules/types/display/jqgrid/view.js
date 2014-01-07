@@ -20,9 +20,9 @@ define(['require', 'modules/defaultview', 'util/util', 'util/api', 'util/domdefe
 
 	 		}).on('mouseout', 'tr.jqgrow', function() {
 
-	 			if(this == lastTr) {
+	 			if(this === lastTr) {
 					self.module.controller.lineOut(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
-					lastTr = this;
+					lastTr = null;
 	 			}
 	 		});
 
