@@ -1,0 +1,256 @@
+{
+	"_version": "2.2.1",
+	"modules": [
+		{
+			"url": "./modules/types/chart/map/leaflet/",
+			"title": "Default center",
+			"displayWrapper": true,
+			"position": {
+				"left": 1,
+				"top": 1
+			},
+			"size": {
+				"width": 50,
+				"height": 42
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mapcenter": [
+								"46.522117,6.566144"
+							],
+							"mapzoom": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "geo",
+					"name": "geoHover"
+				},
+				{
+					"rel": "geo",
+					"name": "polygons"
+				}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/chart/map/leaflet/",
+			"title": "Custom center",
+			"displayWrapper": true,
+			"position": {
+				"left": 52,
+				"top": 1
+			},
+			"size": {
+				"width": 53,
+				"height": 42
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mapcenter": [
+								"40.714353,-74.005973"
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/chart/map/leaflet/",
+			"title": "Marker from JSON",
+			"displayWrapper": true,
+			"position": {
+				"left": 106,
+				"top": 1
+			},
+			"size": {
+				"width": 54,
+				"height": 42
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mapcenter": [
+								null
+							],
+							"mapzoom": [
+								"12"
+							]
+						}
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "geo",
+					"name": "result"
+				},
+				{
+					"rel": "geo",
+					"name": "geoHover"
+				}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/display/jqgrid/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 121,
+				"top": 43
+			},
+			"size": {
+				"width": 20,
+				"height": 27
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Value",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "results"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.value",
+					"name": "geoHover"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				1
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "result",
+			"jpath": "element.result"
+		},
+		{
+			"varname": "results",
+			"jpath": "element.results"
+		},
+		{
+			"varname": "polygons",
+			"jpath": "element.polygons"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
+}
