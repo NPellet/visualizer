@@ -126,7 +126,11 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 					data: y[i]
 				}
 				if (highlight instanceof Array && highlight.length>i) {
-					this._data[i]._highlight=[highlight[i]];
+					if (highlight[i] instanceof Array) {
+						this._data[i]._highlight=highlight[i];
+					} else {
+						this._data[i]._highlight=[highlight[i]];
+					}
 				}
 				if (infos instanceof Array && infos.length>i) {
 					// Data can be retrieved async so to fetch an information from the "info" object we need this strange code
@@ -150,7 +154,6 @@ define(['modules/defaultview','util/datatraversing','util/api','util/util','libs
 					}
 				}
 			};
-
 
 
 	 		var cfg = $.proxy( this.module.getConfiguration, this.module );
