@@ -1,4 +1,5 @@
 [
 		{ "moduleName": "Button URL", "url": "./modules/types/server_interaction/button_url/" },
-		{ "moduleName": "Webservice search", "url": "./modules/types/server_interaction/webservice_search/" }
+		{ "moduleName": "Webservice search", "url": "./modules/types/server_interaction/webservice_search/" },
+		{ "moduleName": "Webservice cron", "url": "./modules/types/server_interaction/webservice_cron/" }
 ]

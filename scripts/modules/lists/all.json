@@ -13,5 +13,18 @@
 
 	"Legacy": "./scripts/modules/types/legacy/legacy.json",
 
+
 	"Firmenich": "./scripts/modules/types/firmenich/firmenich.json"
+
+	"Development": [
+		{
+			"moduleName": "Dummy module",
+			"url": "./modules/types/development/dummy_module/"
+		},
+		{
+			"moduleName": "Pie chart",
+			"url": "./modules/types/development/pie_chart/"
+		}
+	]
+
 }

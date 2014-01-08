@@ -89,7 +89,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 				});
 
 				graph.getBottomAxis().options.onZoom = function(from, to) {
-					self.module.controller.sendAction('fromto', new DataObject({type: 'fromTo', value: new DataObject({ from: from, to: to })}), 'onZoomChange');
+					self.module.controller.sendAction('fromTo', new DataObject({type: 'fromTo', value: new DataObject({ from: from, to: to })}), 'onZoomChange');
 				}
 
 				if( cfg( 'shiftxtozero' ) ) {
@@ -202,12 +202,10 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 			}
 		},
 
-
-		setSerieParameters: function(serie, varname, highlight) {
+		// the highlightData contains the highlights
+		setSerieParameters: function(serie, varname, highlightData) {
 			var self = this,
 				plotinfos = this.module.getConfiguration( 'plotinfos' );
-
-			highlight=highlight||[];
 
 			if( plotinfos ) {
 
@@ -235,19 +233,22 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 				}
 			}
 
-			API.listenHighlight(highlight, function(value, commonKeys) {
-				
-				serie.toggleMarker([ highlight.indexOf(commonKeys[0]), 0 ], value, true);
+			if (!highlightData || !highlightData._highlight) return;
+
+			API.listenHighlight(highlightData, function(value, commonKeys) {
+				serie.toggleMarker([ highlightData._highlight.indexOf(commonKeys[0]), 0 ], value, true);
 			});
 
+
 			serie.options.onMouseOverMarker = function(index, infos, xy) {
-				API.highlight(highlight[index[0]], 1);
+				API.highlightId(highlightData._highlight[index[0]], 1);
 				self.module.controller.onMouseOverMarker(xy, infos);
 			};
 			serie.options.onMouseOutMarker = function(index, infos, xy) {
-				API.highlight(highlight[index[0]], 0);
+				API.highlightId(highlightData._highlight[index[0]], 0);
 				self.module.controller.onMouseOutMarker(xy, infos);
 			};
+			
 		},
 
 
@@ -310,7 +311,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 					
 					var serie = this.graph.newSerie(varname, {trackMouse: true});
 
-					this.setSerieParameters(serie, varname, newSerie._highlight);
+					this.setSerieParameters(serie, varname, newSerie);
 
 					this.normalize( valFinal, varname );
 					serie.setData( valFinal );
@@ -456,7 +457,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 								break;
 							}
 
-							API.listenHighlight(moduleValue._highlight || [], function(value, commonKeys) {
+							API.listenHighlight(moduleValue, function(value, commonKeys) {
 
 								for(var i = 0; i < commonKeys.length; i++) {
 
@@ -520,29 +521,28 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 
 			shape.onMouseOver( function ( data ) {
 
-				API.highlight( data._highlight , 1 );
+				API.highlight( data , 1 );
 
 			});
 
 			shape.onMouseOut( function ( data ) {
 
-				API.highlight( data._highlight , 0 );
+				API.highlight( data , 0 );
 
 			});
 
 
 
-			if( annotation._highlight ) {
 
-				API.listenHighlight( annotation._highlight, function(onOff) {
+			API.listenHighlight( annotation, function(onOff) {
 
-					if(onOff) {
-						shape.highlight( );
-					} else {
-						shape.unHighlight( );
-					}
-				} );
-			}
+				if(onOff) {
+					shape.highlight( );
+				} else {
+					shape.unHighlight( );
+				}
+			} );
+			
 
 			shape.draw();
 			shape.redraw();
@@ -592,7 +592,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 
 
 		onActionReceive: {
-			fromto: function(value, name) {
+			fromTo: function(value, name) {
 				this.graph.getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
 
 				this.graph.redraw(true);

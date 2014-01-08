@@ -18,6 +18,7 @@ define(function() {
 		'mf': 'string',
 		'jcamp': "string",
 		"downloadLink": "string",
+                "geojson": "object",
 
 		'boolean': "boolean",
 		'arrayXY': {

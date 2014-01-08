@@ -15,10 +15,10 @@ define(['util/datatraversing', 'util/actionmanager'], function(Traversing, Actio
 		require( [ filter ], function( filterFunction ) {
 
 			if( ! ( element instanceof DataObject ) || ( ! element.type ) ) {
-				element = {
+				element = new DataObject ({
 					type: Traversing.getType( element ),
 					value: element
-				}
+				});
 			}
 			
 			self.getRepositoryData( ).set( name, filterFunction( element ) );

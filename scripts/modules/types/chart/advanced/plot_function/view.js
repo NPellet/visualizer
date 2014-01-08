@@ -71,8 +71,6 @@ define(['modules/defaultview','util/util','util/api','libs/three/three.min'], fu
 					self.renderer.setClearColor( 0xEEEEEE, 1 );
 				}
 
-console.log(self.renderer.domElement);
-
 				self.dom.append(self.renderer.domElement);
 
 				self.addFloor(self.scene);
@@ -97,13 +95,12 @@ console.log(self.renderer.domElement);
 		},
 
 
-		blank: function() {
-			this.dom.empty();
+		blank: {
+			'function' : function(varname) {
+				this.dom.empty();
+			}
 		},
 
-
-		inDom: function() {
-		},
 
 		onResize: function() {
 			

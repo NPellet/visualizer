@@ -32,7 +32,7 @@ define( [ 'modules/defaultcontroller' ], function( Default ) {
 	controller.prototype.references = {
 
 		'url': {
-			type: ["string"],
+			type: ["string", "url"],
 			label: 'URL',
 			description: 'Iframe URL'
 		}

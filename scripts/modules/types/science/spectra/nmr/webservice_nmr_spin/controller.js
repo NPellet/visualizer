@@ -56,6 +56,8 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 
 		this.module.view.lock();
 		
+		this.request = URL.post(url, data);	
+		
 		this.request.done(function(data) {
 			self.request = null;
 
@@ -67,7 +69,7 @@ define(['modules/defaultcontroller', 'util/api', 'util/datatraversing', 'util/ur
 			self.onAnalysisDone(data);
 		});
 
-		this.request = URL.post(url, data);	
+		
 	};
 
 

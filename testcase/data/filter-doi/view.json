@@ -238,10 +238,71 @@
 				"width": 38,
 				"height": 40
 			},
-			"configuration": {},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "DOI",
+								"jpath": "element.doi",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "DOI Link",
+								"jpath": "element.typedDoi",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
 			"id": 4,
-			"vars_in": [],
-			"actions_in": {}
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "results"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.typedDoi",
+					"filter": "./filters/doitourl.js",
+					"name": "typedDoiURL"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
 		},
 		{
 			"url": "./modules/types/display/single_value/",
@@ -364,6 +425,59 @@
 			"vars_in": [
 				{
 					"rel": "value",
+					"name": "typedDoiURL"
+				}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/display/iframe/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 39,
+				"top": 16
+			},
+			"size": {
+				"width": 76,
+				"height": 35
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"colnumber": [
+								5
+							],
+							"valjPath": [
+								null
+							],
+							"colorjPath": [
+								null
+							],
+							"width": [
+								null
+							],
+							"height": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "url",
 					"name": "typedDoiURL"
 				}
 			],

@@ -25,12 +25,6 @@ define(['modules/defaultview','util/datatraversing','util/domdeferred','util/api
 			}
 		},
 		
-		blank: function() {
-			this.dom.empty();
-		},
-		
-		inDom: function() {},
-
 		update: {
 
 			'script': function(script) {

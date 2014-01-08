@@ -17,7 +17,8 @@ requirejs.config({
 		"libs/jqgrid/js/jqgrid": ["jquery", "libs/jqgrid/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"jqueryui": ["jquery"],
-		"ChemDoodle": ["libs/chemdoodle/ChemDoodleWeb-libs"]
+		"ChemDoodle": ["libs/chemdoodle/ChemDoodleWeb-libs"],
+		"libs/flot/jquery.flot.pie": ["libs/flot/jquery.flot"]
 	}
 });
 

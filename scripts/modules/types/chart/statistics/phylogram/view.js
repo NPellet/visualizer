@@ -18,8 +18,10 @@ define(['modules/defaultview','util/util','libs/d3/d3.v2.min','util/api'], funct
 		},
 
 
-		blank: function() {
-			this.dom.empty();
+		blank: {
+			tree: function(varname) {
+				this.dom.empty();
+			}
 		},
 
 		getIdHash: function(currentNode) {

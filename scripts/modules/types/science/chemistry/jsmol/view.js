@@ -29,8 +29,6 @@ function(require,Default, UTIL, DataTraversing) {
             this.onReady = $.Deferred();
 	 	},
 
-	 	inDom: function() {},
-
 	 	onResize: function() {
 
         	this.dom.height(this.height).width(this.width);
@@ -38,9 +36,6 @@ function(require,Default, UTIL, DataTraversing) {
             if( this.dom.get( 0 ).contentWindow.setSize ) {
                 this.dom.get( 0 ).contentWindow.setSize( this.width, this.height );
             }
-	 	},
-
-	 	blank: function() {
 	 	},
 
         update: {
