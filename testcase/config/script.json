@@ -1,0 +1,47 @@
+{
+
+
+"modules": [
+	"./scripts/modules/lists/all.json"
+],
+
+"header": {
+	"height": "30px",
+	"elements": 
+
+	[
+		{
+			"type": "pasteview",
+			"label": "Paste view"
+		},
+
+		{
+			"type": "autosavelocalview",
+			"label": "Autosave view"
+		},
+
+		{
+			"type": "copyview",
+			"label": "Copy view"
+		},
+
+        {
+            "type": "blankview",
+            "label": "Blank view"
+        },
+
+		{
+			"type": "pushviewtoserver",
+			"label": "Save to server"
+		},
+
+		{
+			"type": "versioning",
+			"label": "Versioning"
+		}	
+	]
+}
+
+}
+
+

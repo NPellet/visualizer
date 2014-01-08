@@ -16,7 +16,11 @@
 	"Development": [
 		{
 			"moduleName": "Dummy module",
-			"url": "./modules/types/dummy_module/"
+			"url": "./modules/types/development/dummy_module/"
+		},
+		{
+			"moduleName": "Pie chart",
+			"url": "./modules/types/development/pie_chart/"
 		}
 	]
 }

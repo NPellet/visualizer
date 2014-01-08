@@ -40,9 +40,6 @@ define(['modules/defaultcontroller','util/datatraversing'], function(Default, Tr
 	};
 	
 	controller.prototype.onHover = function(element) {
-
-console.log(element);
-
 		if( ! element ) {
 			return;
 		}
@@ -72,11 +69,6 @@ console.log(element);
 	*/
 	controller.prototype.variablesIn = [ 'tree' ];
 
-	
-	controller.prototype.moduleInformations = {
-		moduleName: 'Dendrogram'
-	};
-	
 
 	controller.prototype.configurationStructure = function() {
 		return {
