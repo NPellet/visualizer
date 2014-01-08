@@ -8,8 +8,8 @@
 				"top": 14
 			},
 			"size": {
-				"width": 61,
-				"height": 48
+				"width": 60.96666666269302,
+				"height": 47.96666666269302
 			},
 			"configuration": {
 				"sections": {},
@@ -105,8 +105,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 64,
-				"height": 32
+				"width": 63.96666666269302,
+				"height": 31.966666662693022
 			},
 			"configuration": {
 				"sections": {},
@@ -158,7 +158,7 @@
 								""
 							],
 							"zoom": [
-								"none"
+								"x"
 							],
 							"shiftxtozero": [
 								[]
@@ -167,7 +167,10 @@
 								[]
 							],
 							"wheelAction": [
-								"none"
+								"zoomY"
+							],
+							"fullOut": [
+								"both"
 							]
 						}
 					],
@@ -209,13 +212,20 @@
 				}
 			],
 			"actions_in": [
-				{}
+				{
+					"rel": "fromTo",
+					"name": "fromTo"
+				}
 			],
 			"vars_out": [
 				{}
 			],
 			"actions_out": [
-				{}
+				{
+					"event": "onZoomChange",
+					"rel": "fromTo",
+					"name": "fromTo"
+				}
 			],
 			"url": "./modules/types/science/spectra/spectra_displayer/"
 		},
@@ -231,8 +241,8 @@
 				"top": 7
 			},
 			"size": {
-				"width": 61,
-				"height": 6
+				"width": 60.96666666269302,
+				"height": 5.966666662693024
 			},
 			"configuration": {
 				"frontcolor": "",
@@ -272,8 +282,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 28,
-				"height": 6
+				"width": 27.966666662693022,
+				"height": 5.966666662693024
 			},
 			"configuration": {
 				"frontcolor": "",
@@ -314,8 +324,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 32,
-				"height": 6
+				"width": 31.966666662693022,
+				"height": 5.966666662693024
 			},
 			"configuration": {
 				"frontcolor": "",
@@ -359,8 +369,8 @@
 				"top": 63
 			},
 			"size": {
-				"width": 126,
-				"height": 28
+				"width": 125.96666666269303,
+				"height": 27.966666662693022
 			},
 			"configuration": {
 				"sections": {},
@@ -481,8 +491,8 @@
 				"top": 33
 			},
 			"size": {
-				"width": 64,
-				"height": 29
+				"width": 63.96666666269302,
+				"height": 28.966666662693022
 			},
 			"configuration": {
 				"sections": {},
@@ -534,7 +544,7 @@
 								""
 							],
 							"zoom": [
-								"none"
+								"x"
 							],
 							"shiftxtozero": [
 								[]
@@ -543,7 +553,10 @@
 								[]
 							],
 							"wheelAction": [
-								"none"
+								"zoomY"
+							],
+							"fullOut": [
+								"both"
 							]
 						}
 					],
@@ -585,13 +598,20 @@
 				}
 			],
 			"actions_in": [
-				{}
+				{
+					"rel": "fromTo",
+					"name": "fromTo"
+				}
 			],
 			"vars_out": [
 				{}
 			],
 			"actions_out": [
-				{}
+				{
+					"event": "onZoomChange",
+					"rel": "fromTo",
+					"name": "fromTo"
+				}
 			],
 			"url": "./modules/types/science/spectra/spectra_displayer/"
 		},
