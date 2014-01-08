@@ -89,7 +89,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 				});
 
 				graph.getBottomAxis().options.onZoom = function(from, to) {
-					self.module.controller.sendAction('fromto', new DataObject({type: 'fromTo', value: new DataObject({ from: from, to: to })}), 'onZoomChange');
+					self.module.controller.sendAction('fromTo', new DataObject({type: 'fromTo', value: new DataObject({ from: from, to: to })}), 'onZoomChange');
 				}
 
 				if( cfg( 'shiftxtozero' ) ) {
@@ -592,7 +592,7 @@ define(['modules/defaultview', 'libs/plot/plot', 'util/datatraversing', 'util/ap
 
 
 		onActionReceive: {
-			fromto: function(value, name) {
+			fromTo: function(value, name) {
 				this.graph.getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
 
 				this.graph.redraw(true);

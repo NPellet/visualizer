@@ -8,5 +8,7 @@
 
 	{ "moduleName": "Dendrogram", "url": "./modules/types/chart/statistics/dendrogram/" },
 	{ "moduleName": "Loading plot", "url": "./modules/types/chart/statistics/loading_plot/" },
-	{ "moduleName": "Display phylogram", "url": "./modules/types/chart/statistics/phylogram/" }
+	{ "moduleName": "Display phylogram", "url": "./modules/types/chart/statistics/phylogram/" },
+        
+        { "moduleName": "Map", "url": "./modules/types/chart/map/leaflet/" }
 ]
