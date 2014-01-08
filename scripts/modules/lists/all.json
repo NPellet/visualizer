@@ -14,7 +14,7 @@
 	"Legacy": "./scripts/modules/types/legacy/legacy.json",
 
 
-	"Firmenich": "./scripts/modules/types/firmenich/firmenich.json"
+	"Firmenich": "./scripts/modules/types/firmenich/firmenich.json",
 
 	"Development": [
 		{
