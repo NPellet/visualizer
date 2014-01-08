@@ -3,7 +3,7 @@
 	"modules": [
 		{
 			"url": "./modules/types/chart/map/leaflet/",
-			"title": "Default center",
+			"title": "Default center - OpenStreetMap",
 			"displayWrapper": true,
 			"position": {
 				"left": 1,
@@ -18,11 +18,14 @@
 				"groups": {
 					"group": [
 						{
+							"maptiles": [
+								"osm"
+							],
 							"mapcenter": [
 								"46.522117,6.566144"
 							],
 							"mapzoom": [
-								null
+								"10"
 							]
 						}
 					]
@@ -39,9 +42,29 @@
 					"name": "polygons"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [
+				{
+					"rel": "position",
+					"name": "move"
+				},
+				{
+					"rel": "zoom",
+					"name": "zoom"
+				}
+			],
 			"vars_out": {},
-			"actions_out": {},
+			"actions_out": [
+				{
+					"event": "onMapMove",
+					"rel": "position",
+					"name": "move"
+				},
+				{
+					"event": "onZoomChange",
+					"rel": "zoom",
+					"name": "zoom"
+				}
+			],
 			"bgColor": [
 				255,
 				255,
@@ -66,11 +89,14 @@
 				"groups": {
 					"group": [
 						{
+							"maptiles": [
+								"osm"
+							],
 							"mapcenter": [
 								"40.714353,-74.005973"
 							],
 							"mapzoom": [
-								null
+								"10"
 							]
 						}
 					]
@@ -83,9 +109,13 @@
 					"name": "multi"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [
+				{}
+			],
 			"vars_out": {},
-			"actions_out": {},
+			"actions_out": [
+				{}
+			],
 			"bgColor": [
 				255,
 				255,
@@ -95,7 +125,7 @@
 		},
 		{
 			"url": "./modules/types/chart/map/leaflet/",
-			"title": "Marker from JSON",
+			"title": "Marker from JSON - HikeBike",
 			"displayWrapper": true,
 			"position": {
 				"left": 106,
@@ -110,6 +140,9 @@
 				"groups": {
 					"group": [
 						{
+							"maptiles": [
+								"hb"
+							],
 							"mapcenter": [
 								null
 							],
@@ -131,9 +164,29 @@
 					"name": "geoHover"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [
+				{
+					"rel": "position",
+					"name": "move"
+				},
+				{
+					"rel": "zoom",
+					"name": "zoom"
+				}
+			],
 			"vars_out": {},
-			"actions_out": {},
+			"actions_out": [
+				{
+					"event": "onMapMove",
+					"rel": "position",
+					"name": "move"
+				},
+				{
+					"event": "onZoomChange",
+					"rel": "zoom",
+					"name": "zoom"
+				}
+			],
 			"bgColor": [
 				255,
 				255,

@@ -29,6 +29,14 @@ define(['modules/defaultcontroller'], function(Default) {
         "geoarray": {
             type: ['array'],
             label: 'Array of GeoJSON objects'
+        },
+        "position": {
+            label : 'Geo coordinates',
+            type: 'array'
+        },
+        "zoom" : {
+            label : 'Zoom level',
+            type : 'number'
         }
     };
 
@@ -37,6 +45,14 @@ define(['modules/defaultcontroller'], function(Default) {
      Configuration of the module for sending events, as a static object
      */
     controller.prototype.events = {
+        onMapMove : {
+            label: 'The map has moved',
+            refAction: [ 'position' ]
+        },
+        onZoomChange : {
+            label : 'The zoom level has changed',
+            refAction: ['zoom']
+        }
     };
 
 
@@ -50,6 +66,8 @@ define(['modules/defaultcontroller'], function(Default) {
      Received actions
      */
     controller.prototype.actionsIn = {
+        position : "Move the map",
+        zoom : "Change zoom"
     };
 
 
@@ -62,6 +80,15 @@ define(['modules/defaultcontroller'], function(Default) {
                         type: 'list'
                     },
                     fields: {
+                        maptiles: {
+                            type: 'combo',
+                            title: 'Base tile source',
+                            options: [
+                                {title: "OpenStreetMap", key: 'osm'},
+                                {title: "HikeBike", key: 'hb'}
+                            ],
+                            default: 'osm'
+                        },
                         mapcenter: {
                             type: 'text',
                             title: 'Map center'
@@ -91,6 +118,7 @@ define(['modules/defaultcontroller'], function(Default) {
                                 {title: '18', key: '18'},
                                 {title: '19', key: '19'}
                             ],
+                            default: '10'
                         },
                     }
                 }
@@ -107,7 +135,8 @@ define(['modules/defaultcontroller'], function(Default) {
 
     controller.prototype.configAliases = {
         'mapcenter': ['groups', 'group', 0, 'mapcenter', 0],
-        'mapzoom' : ['groups', 'group', 0, 'mapzoom', 0]
+        'mapzoom' : ['groups', 'group', 0, 'mapzoom', 0],
+        'maptiles' : ['groups', 'group', 0, 'maptiles', 0]
     };
 
     return controller;

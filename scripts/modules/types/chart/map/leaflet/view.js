@@ -11,8 +11,7 @@ define(['modules/defaultview', 'util/util', 'util/api', 'libs/leaflet/leaflet-sr
     });
     var redIcon = L.icon({
         iconUrl: 'scripts/libs/leaflet/images/marker-icon-red.png'
-    });
-            
+    });            
 
     view.prototype = $.extend(true, {}, Default, {
         init: function() {
@@ -29,10 +28,17 @@ define(['modules/defaultview', 'util/util', 'util/api', 'libs/leaflet/leaflet-sr
         inDom: function() {
             var center = this.module.getConfiguration('mapcenter') || [46.522117, 6.566144];
             var zoom = this.module.getConfiguration('mapzoom') || 10;
-            this.map = L.map(this.mapID).setView(center, zoom);
-            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(this.map);
+            
+            this.map = L.map(this.mapID, {
+                zoomAnimation: false
+            }).setView(center, zoom);
+            
+            this.map._controller = this.module.controller;
+            this.getTileLayer().addTo(this.map);
+
+            this.map.on("move",this.moveAction);
+            this.map.on("zoomend", this.zoomAction);
+            
             this.onReady.resolve();
         },
         update: {
@@ -71,6 +77,42 @@ define(['modules/defaultview', 'util/util', 'util/api', 'libs/leaflet/leaflet-sr
         },
         onResize: function() {
             this.map.invalidateSize();
+        },
+        onActionReceive: {
+            position : function(val) {
+                this.map.off("move",this.moveAction);
+                this.map.setView(new L.LatLng(val[0],val[1]));
+                this.map.on("move",this.moveAction);
+            },
+            zoom : function(val) {
+                var min = this.map.getMinZoom();
+                var max = this.map.getMaxZoom();
+                if(val < min) val = min;
+                else if(val > max) val = max;
+                this.map.setZoom(val);
+            }
+        },
+        moveAction : function(){
+            var center = this.getCenter();
+            this._controller.sendAction('position', [center.lat,center.lng], 'onMapMove');
+        },
+        zoomAction : function() {
+            this._controller.sendAction('zoom', this.getZoom(), 'onZoomChange');
+        },
+        getTileLayer : function() {
+            var baselayer =  this.module.getConfiguration('maptiles') || 'osm';
+            var tileLayer = {parameters:{}};
+            switch(baselayer) {
+                case 'hb':
+                    tileLayer.template = 'http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png';
+                    break;
+                case 'osm':
+                default:
+                    tileLayer.template = "http://{s}.tile.osm.org/{z}/{x}/{y}.png";
+                    tileLayer.parameters.attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+                    break;
+            }
+            return L.tileLayer(tileLayer.template,tileLayer.parameters);
         }
     });
 
