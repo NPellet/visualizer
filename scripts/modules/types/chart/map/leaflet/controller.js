@@ -73,7 +73,7 @@ define(['modules/defaultcontroller','util/api','libs/leaflet/leaflet-src'], func
      Configuration of the module for receiving events, as a static object
      In the form of 
      */
-    controller.prototype.variablesIn = ['geo','geoarray','polygon'];
+    controller.prototype.variablesIn = ['geo','geoarray','polygon','position'];
 
     /*
      Received actions
@@ -168,9 +168,7 @@ define(['modules/defaultcontroller','util/api','libs/leaflet/leaflet-src'], func
         arr[2] = getGeoCoords(bounds.getNorthEast());
         arr[3] = getGeoCoords(bounds.getSouthEast());
 
-        var dataobj = new DataObject({type:"array",value:arr});
-
-        this.setVarFromEvent('onMapMove', dataobj, 'polygon');
+        this.setVarFromEvent('onMapMove', new DataArray(arr), 'polygon');
     };
     
     function getGeoCoords(latLng) {

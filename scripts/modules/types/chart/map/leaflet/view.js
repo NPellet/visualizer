@@ -42,6 +42,11 @@ define(['modules/defaultview', 'util/util', 'util/api', 'libs/leaflet/leaflet-sr
             this.onReady.resolve();
         },
         update: {
+            'position' : function(value) {
+                if(value.length !== 2)
+                    return;
+                this.map.setView(L.latLng(value[0],value[1]));
+            },
             'geo': function(geo, varname) {
                 var geoJson = geo.get();
                 if(!this.module.data)
