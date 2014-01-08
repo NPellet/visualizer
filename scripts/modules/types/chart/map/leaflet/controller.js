@@ -1,6 +1,7 @@
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller','util/api','libs/leaflet/leaflet-src'], function(Default,API) {
 
     function controller() {
+        this.moveActive = true;
     }
 
     controller.prototype = $.extend(true, {}, Default);
@@ -37,6 +38,13 @@ define(['modules/defaultcontroller'], function(Default) {
         "zoom" : {
             label : 'Zoom level',
             type : 'number'
+        },
+        "item" : {
+            label : 'Marker'
+        },
+        "polygon" : {
+            type : 'array',
+            label : 'Map polygon'
         }
     };
 
@@ -47,12 +55,17 @@ define(['modules/defaultcontroller'], function(Default) {
     controller.prototype.events = {
         onMapMove : {
             label: 'The map has moved',
-            refAction: [ 'position' ]
+            refAction: [ 'position' ],
+            refVariable : ['polygon']
         },
         onZoomChange : {
             label : 'The zoom level has changed',
             refAction: ['zoom']
-        }
+        },
+        onHoverMarker : {
+            label : 'Hovers a marker',
+            refVariable : ['item']
+        },
     };
 
 
@@ -60,7 +73,7 @@ define(['modules/defaultcontroller'], function(Default) {
      Configuration of the module for receiving events, as a static object
      In the form of 
      */
-    controller.prototype.variablesIn = ['geo','geoarray'];
+    controller.prototype.variablesIn = ['geo','geoarray','polygon'];
 
     /*
      Received actions
@@ -138,6 +151,31 @@ define(['modules/defaultcontroller'], function(Default) {
         'mapzoom' : ['groups', 'group', 0, 'mapzoom', 0],
         'maptiles' : ['groups', 'group', 0, 'maptiles', 0]
     };
+    
+    controller.prototype.hoverElement = function(element, layer, subLayer) {
+        if(subLayer instanceof L.Marker) {
+            this.setVarFromEvent( 'onHoverMarker', layer.data, 'item' );
+        }
+        API.highlight( element, 1 );
+    };
+    
+    controller.prototype.setBounds = function(bounds) {
+
+        var arr = new Array(4);
+        
+        arr[0] = getGeoCoords(bounds.getSouthWest());
+        arr[1] = getGeoCoords(bounds.getNorthWest());
+        arr[2] = getGeoCoords(bounds.getNorthEast());
+        arr[3] = getGeoCoords(bounds.getSouthEast());
+
+        var dataobj = new DataObject({type:"array",value:arr});
+
+        this.setVarFromEvent('onMapMove', dataobj, 'polygon');
+    };
+    
+    function getGeoCoords(latLng) {
+        return [latLng.lat,latLng.lng];
+    }
 
     return controller;
 });

@@ -40,6 +40,10 @@
 				{
 					"rel": "geo",
 					"name": "polygons"
+				},
+				{
+					"rel": "polygon",
+					"name": "polygon"
 				}
 			],
 			"actions_in": [
@@ -52,7 +56,9 @@
 					"name": "zoom"
 				}
 			],
-			"vars_out": {},
+			"vars_out": [
+				{}
+			],
 			"actions_out": [
 				{
 					"event": "onMapMove",
@@ -112,7 +118,14 @@
 			"actions_in": [
 				{}
 			],
-			"vars_out": {},
+			"vars_out": [
+				{
+					"event": "onHoverMarker",
+					"rel": "item",
+					"jpath": "element.data.value",
+					"name": "value"
+				}
+			],
 			"actions_out": [
 				{}
 			],
@@ -332,69 +345,124 @@
 			]
 		},
 		{
-			"url": "./modules/types/display/jqgrid/",
+			"url": "./modules/types/display/single_value/",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 44,
+				"left": 85,
 				"top": 43
 			},
 			"size": {
-				"width": 18,
-				"height": 20
+				"width": 27,
+				"height": 19
 			},
 			"configuration": {
 				"sections": {},
 				"groups": {
 					"group": [
 						{
-							"nblines": [
-								20
-							],
-							"toggle": [
+							"defaultvalue": [
 								null
 							],
-							"colorjpath": [
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
 								null
 							],
-							"filterRow": [
+							"fontsize": [
 								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							],
+							"preformatted": [
+								[]
 							]
 						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Name",
-								"jpath": "element.value",
-								"number": [],
-								"editable": "none"
-							}
-						]
 					]
 				}
 			},
-			"id": 6,
+			"id": 7,
 			"vars_in": [
 				{
-					"rel": "list",
-					"name": "multia"
+					"rel": "value",
+					"name": "value"
 				}
 			],
-			"actions_in": [
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/chart/map/leaflet/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 16,
+				"top": 45
+			},
+			"size": {
+				"width": 42,
+				"height": 31
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"maptiles": [
+								"osm"
+							],
+							"mapcenter": [
+								null
+							],
+							"mapzoom": [
+								"14"
+							]
+						}
+					]
+				}
+			},
+			"id": 8,
+			"vars_in": [
 				{}
 			],
-			"vars_out": [
+			"actions_in": [
 				{}
 			],
 			"actions_out": [
 				{}
 			],
+			"vars_out": [
+				{
+					"event": "onMapMove",
+					"rel": "polygon",
+					"name": "polygon"
+				}
+			],
 			"bgColor": [
 				255,
 				255,
 				255,
-				1
+				0
 			]
 		}
 	],

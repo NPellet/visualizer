@@ -43,16 +43,18 @@ define(['modules/defaultview', 'util/util', 'util/api', 'libs/leaflet/leaflet-sr
         },
         update: {
             'geo': function(geo, varname) {
+                var geoJson = geo.get();
+                if(!this.module.data)
+                    this.module.data = geoJson;
                 if (this.mapLayers.hasOwnProperty(varname))
                     this.map.removeLayer(this.mapLayers[varname]);
-                try {
-                    var newMarker = L.geoJson(geo.get());
-                    newMarker.addTo(this.map);
-                    addHighlight(this, geo, newMarker);
-                    this.mapLayers[varname] = newMarker;
-                } catch (e) {
-                    console.error("error creating the marker");
-                }
+
+                var newMarker = L.geoJson(geoJson);
+                newMarker.data=geoJson;
+                newMarker.addTo(this.map);
+                addHighlight(this, geo, newMarker);
+                this.mapLayers[varname] = newMarker;
+
             },
             'geoarray': function(geo, varname) {
                 if (this.mapLayers.hasOwnProperty(varname)) {
@@ -60,19 +62,36 @@ define(['modules/defaultview', 'util/util', 'util/api', 'libs/leaflet/leaflet-sr
                 }
                 if (!geo.length)
                     return;
-                try {
-                    var group = L.layerGroup();
-                    for (var i = 0; i < geo.length; i++) {
-                        var obj = geo[i];
-                        var layer = L.geoJson(obj.get());
-                        group.addLayer(layer);
-                        addHighlight(this, obj, layer);
-                    }
-                    group.addTo(this.map);
-                    this.mapLayers[varname] = group;
-                } catch (e) {
-                    console.error("error creating the group of markers");
+                if(!this.module.data)
+                    this.module.data = geo[0].get();
+                var group = L.layerGroup();
+                for (var i = 0; i < geo.length; i++) {
+                    var obj = geo[i];
+                    var geoJson = obj.get();
+                    var layer = L.geoJson(geoJson);
+                    layer.data = geoJson;
+                    group.addLayer(layer);
+                    addHighlight(this, obj, layer);
                 }
+                group.addTo(this.map);
+                this.mapLayers[varname] = group;
+            },
+            'polygon' : function(polygon, varname) {
+                if(!polygon)
+                    return;
+                polygon=polygon.get();
+                if (this.mapLayers.hasOwnProperty(varname)) {
+                    this.map.removeLayer(this.mapLayers[varname]);
+                }
+
+                var l = polygon.length;
+                var latLngA = new Array(l);
+                for(var i = 0; i<l; i++)
+                    latLngA[i] = L.latLng(polygon[i]);
+
+                var poly = L.polygon(latLngA, {stroke: true, color:"#f00", fill:true, fillColor:"#f00", clickable:false});
+                this.map.addLayer(poly);
+                this.mapLayers[varname] = poly;
             }
         },
         onResize: function() {
@@ -80,9 +99,9 @@ define(['modules/defaultview', 'util/util', 'util/api', 'libs/leaflet/leaflet-sr
         },
         onActionReceive: {
             position : function(val) {
-                this.map.off("move",this.moveAction);
-                this.map.setView(new L.LatLng(val[0],val[1]));
-                this.map.on("move",this.moveAction);
+                this.module.controller.moveActive=false;
+                this.map.setView(L.latLng(val[0],val[1]));
+                this.module.controller.moveActive=true;
             },
             zoom : function(val) {
                 var min = this.map.getMinZoom();
@@ -94,7 +113,12 @@ define(['modules/defaultview', 'util/util', 'util/api', 'libs/leaflet/leaflet-sr
         },
         moveAction : function(){
             var center = this.getCenter();
-            this._controller.sendAction('position', [center.lat,center.lng], 'onMapMove');
+            if(this._controller.moveActive)
+                this._controller.sendAction('position', [center.lat,center.lng], 'onMapMove');
+            
+            var bounds = this.getBounds();
+
+            this._controller.setBounds(bounds);
         },
         zoomAction : function() {
             this._controller.sendAction('zoom', this.getZoom(), 'onZoomChange');
@@ -119,7 +143,7 @@ define(['modules/defaultview', 'util/util', 'util/api', 'libs/leaflet/leaflet-sr
     function addHighlight(view, element, layer) {
         var theLayer = layer._layers[layer._leaflet_id-1]; // Layers are encapsulated in a LayerGroup
         layer.on("mouseover", function() {
-            API.highlight( element, 1 );
+            view.module.controller.hoverElement(element,layer,theLayer);
         });
         layer.on("mouseout", function() {
             API.highlight( element, 0 );
