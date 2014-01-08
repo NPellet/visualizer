@@ -126,15 +126,15 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 				break;
 
 				case '>':
-					return " el > " + val + " ";
+					return " el > parseFloat( " + val + " ) ";
 				break;
 
 				case '>=':
-					return " el >= " + val + " ";
+					return " el >= parseFloat( " + val + " ) ";
 				break;
 
 				case '<':
-					return " el > parseFloat( " + val + " ) ";
+					return " el < parseFloat( " + val + " ) ";
 				break;
 
 				case '<=':
