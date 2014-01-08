@@ -101,27 +101,13 @@ define(['modules/defaultcontroller'], function(Default) {
 			dataType: 'json'
 		};
 
-		if(type == 'get') {
-			ajax.success = function(data) {
-				CI.API.setSharedVar(variable, data);
-				self.module.view.log(true, variable);
-			}
-			ajax.method = 'get';
-			ajax.type = 'get';
-
-		} else {
-			ajax.success = function(data) {
-				CI.API.setSharedVar(variable, data);
-				self.module.view.log(true, variable);	
-			}
-			var variable = CI.Repo.get(variable);
-			if(!variable)
-				return;
-
-			ajax.data = {data: variable[1] };
-			ajax.method = 'post';
-			ajax.type = 'post';
+		ajax.success = function(data) {
+			CI.API.setSharedVar(variable, data);
+			self.module.view.log(true, variable);
 		}
+		ajax.method = 'get';
+		ajax.type = 'get';
+
 
 		ajax.complete = function() {
 
