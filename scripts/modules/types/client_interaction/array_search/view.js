@@ -173,7 +173,8 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 				searchfields = this.module.getConfiguration( 'searchfields' ),
 				i = 0,
 				l = searchfields.length,
-					searchOn;
+				firstFilter=true,
+				searchOn;
 
 
 			var toEval = "";
@@ -187,16 +188,18 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 
 				searchOn = searchfields[ i ].groups.general[ 0 ].searchOnField || [];
 
-				if( i > 0 ) {
-					toEval += " && ";
-				}
-
 				j = 0,
 				k = searchOn.length;
 
 				/////////
 				var add = "";
-				if( k > 0 ) {
+				if( k > 0 && searchOn[0]) {
+
+					if ( firstFilter ) {
+						firstFilter=false;
+					} else {
+						toEval += " && ";
+					}
 					toEval += " ( ";
 
 					for( ; j < k ; j ++ ) {
@@ -211,6 +214,8 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 
 					}
 					toEval += " ) ";
+				} else {
+					console.log("Undefined japth of array search");
 				}
 				/////////
 			}
