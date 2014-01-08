@@ -11,5 +11,7 @@
 
 	"Chart": "./scripts/modules/types/chart/chart.json",
 
-	"Legacy": "./scripts/modules/types/legacy/legacy.json"
+	"Legacy": "./scripts/modules/types/legacy/legacy.json",
+
+	"Firmenich": "./scripts/modules/types/firmenich/firmenich.json"
 }

@@ -15,11 +15,17 @@ define(['jquery', 'util/context', 'util/api', 'forms/button', 'util/util'], func
 			return def;
 		}
 
+		var ext = '';
+		
+		if( moduleURL.indexOf('http://') > -1 ) {
+			ext = '.js';
+		}
+
 		require( [
 			
-			moduleURL + "model",
-			moduleURL + "view",
-			moduleURL + "controller"
+			moduleURL + "model" + ext,
+			moduleURL + "view" + ext,
+			moduleURL + "controller" + ext
 
 		], function(M, V, C) {
 
