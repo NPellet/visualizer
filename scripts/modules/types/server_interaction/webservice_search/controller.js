@@ -63,7 +63,7 @@ define( [ 'modules/defaultcontroller', 'util/api', 'util/urldata'], function(Def
 	/*
 		Configuration of the module for receiving events, as a static object
 	*/
-	controller.prototype.variablesIn = [ 'list' ];
+	controller.prototype.variablesIn = [ 'vartrigger' ];
 
 	/*
 		Received actions
@@ -113,7 +113,8 @@ define( [ 'modules/defaultcontroller', 'util/api', 'util/urldata'], function(Def
 
 						resultfilter: {
 							type: 'jscode',
-							title: 'Result data filter'
+							title: 'Result data filter',
+							default: '/*\rreturn data;\r*/'
 						}
 					}
 				},
