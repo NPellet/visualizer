@@ -29,7 +29,7 @@ define(['require'], function( require ) {
 		for( ; i < l ; i ++ ) {
 
 			try {
-			eval("evaled[ data[ i ].groups.action[ 0 ].name[ 0 ] ] = function(value) { " + data[ i ].groups.action[ 0 ].script[ 0 ] + " }");
+				eval("evaled[ data[ i ].groups.action[ 0 ].name[ 0 ] ] = function(value) { " + data[ i ].groups.action[ 0 ].script[ 0 ] + " }");
 			} catch( e ) {
 				console.error('Could not evaluate script ' + data[ i ].groups.action[ 0 ].name[ 0 ] );
 			}

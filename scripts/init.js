@@ -200,6 +200,27 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 		}
 	};
 
+
+	var getChildSync = {
+		value: function(jpath) {
+
+			if(jpath && jpath.split) { // Old version
+				jpath = jpath.split('.');
+				jpath.shift();
+			}
+
+			var el = jpath.shift(); // Gets the current element and removes it from the array
+
+			if(!jpath || jpath.length == 0) {
+				return this;
+			} else if(jpath.length == 0) {// Last element
+				return this.get( el );
+			}
+
+			return this.getChildSync(el);
+		}
+	};
+
 	var setChild = {
 		value: function(jpath, newValue, options) {
 			var self = this;
@@ -331,6 +352,10 @@ require(['jquery', 'main/entrypoint', 'main/header'], function($, EntryPoint, He
 
 	Object.defineProperty(DataObject.prototype, 'getChild', getChild);
 	Object.defineProperty(DataArray.prototype, 'getChild', getChild);
+
+
+	Object.defineProperty(DataObject.prototype, 'getChildSync', getChild);
+	Object.defineProperty(DataArray.prototype, 'getChildSync', getChild);
 
 	Object.defineProperty(DataObject.prototype, 'onChange', listenDataChanged);
 	Object.defineProperty(DataArray.prototype, 'onChange', listenDataChanged);
