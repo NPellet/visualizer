@@ -1,174 +1,168 @@
 
 define(['modules/defaultcontroller'], function(Default) {
-	
-	function controller() { };
 
-	// Extends the default properties of the default controller
-	controller.prototype = $.extend( true, {}, Default );
+    function controller() {
+        this.running = false;
+        this.runners = [];
+        this.variables = new DataObject();
+    }
 
-
-	/*
-		Information about the module
-	*/
-	controller.prototype.moduleInformation = {
-		moduleName: 'Webservice Cron',
-		description: 'Cron service allowing to fetch data from the server',
-		author: 'Norman Pellet, Luc Patiny',
-		date: '08.01.2014',
-		license: 'MIT',
-		cssClass: 'webservice_cron'
-	};
-
-	controller.prototype.initimpl = function() {
-		this.timeout = [];
-		this.doVariables();
-	};
+    // Extends the default properties of the default controller
+    controller.prototype = $.extend(true, {}, Default);
 
 
-	/*
-		Configuration of the input/output references of the module
-	*/
-	controller.prototype.references = {
-	
-		// ouput	
-		result: { 
-			label: 'Global result',
-			type: 'object'
-		}
-	}
+    /*
+     Information about the module
+     */
+    controller.prototype.moduleInformation = {
+        moduleName: 'Webservice Cron',
+        description: 'Cron service allowing to fetch data from the server',
+        author: 'Norman Pellet, Luc Patiny',
+        date: '08.01.2014',
+        license: 'MIT',
+        cssClass: 'webservice_cron'
+    };
+
+    controller.prototype.start = function() {
+        if (this.running)
+            this.stop();
+        this.doVariables();
+    };
+
+    controller.prototype.stop = function() {
+        if (!this.running)
+            return;
+        for (var i = 0, ii = this.runners.length; i < ii; i++) {
+            window.clearInterval(this.runners[i]);
+        }
+        this.runners = [];
+        this.variables = new DataObject();
+        this.running = false;
+    };
 
 
-	/*
-		Configuration of the module for sending events, as a static object
-	*/
-	controller.prototype.events = {
-
-		// List of all possible events
-		onUpdateResult: {
-			label: 'Updated result',
-			refVariable: [ 'result' ] 
-		}
-	};
-
+    /*
+     Configuration of the input/output references of the module
+     */
+    controller.prototype.references = {
+        // ouput	
+        result: {
+            label: 'Global result',
+            type: 'object'
+        }
+    };
 
 
-	controller.prototype.doVariables = function() { 
-
-		this.clearTimeouts();
-		
-		var self = this;
-		var cfg = this.module.getConfiguration().variables, variable, type, time;
-
-		if(!cfg)
-			return;
-
-		for(var i = 0, l = cfg.length; i < l; i++) {
-			variable = cfg[i].variable;
-			type = cfg[i].type;
-			time = cfg[i].repeat;
-			url = cfg[i].url;
-
-			this.setTimeout(type, variable, time, url);
-		}
-	};
-
-	controller.prototype.clearTimeouts = function() {
-
-		for(var i = 0, l = this.timeout.length; i < l; i++) {
-			if(this.timeout[i])
-				window.clearTimeout(this.timeout[i]);
-			this.timeout[i] = false;
-		}
-	};
-
-	controller.prototype.setTimeout = function(type, variable, time, url) {
-		if(this.timeout[variable]) {
-			window.clearTimeout(this.timeout[variable]);
-			this.timeout[variable] = false;
-		}
-
-		var self = this;
-		window.setTimeout(function() {
-			self.doAjax(type, variable, time, url);
-		}, time * 1000);
-	};
-
-	controller.prototype.doAjax = function(type, variable, time, url) {
-		var self = this;
-		var cfg = this.module.getConfiguration().variables
-		var ajax = {
-			url: url,
-			dataType: 'json'
-		};
-
-		ajax.success = function(data) {
-			CI.API.setSharedVar(variable, data);
-			self.module.view.log(true, variable);
-		}
-		ajax.method = 'get';
-		ajax.type = 'get';
-
-
-		ajax.complete = function() {
-
-			self.setTimeout(type, variable, time, url);
-		}
-
-		ajax.error = function() {
-			self.module.view.log(false, variable);
-			
-		}
-
-		$.ajax(ajax);
-	};
+    /*
+     Configuration of the module for sending events, as a static object
+     */
+    controller.prototype.events = {
+        // List of all possible events
+        onUpdateResult: {
+            label: 'Updated result',
+            refVariable: ['result']
+        }
+    };
 
 
 
+    controller.prototype.doVariables = function() {
 
-	
-	controller.prototype.configurationStructure = function(section) {
-		
-		return {
-			groups: {
+        var cfg = this.module.getConfiguration("cronInfos"), variable, time, url, datatype;
 
-				cronInfos: {
+        if (!cfg)
+            return;
 
-					options: {
-						type: 'table',
-						multiple: true
-					},
+        for (var i = 0, l = cfg.length; i < l; i++) {
 
-					fields: {
-						
-						variable: {
-							type: 'text',
-							title: 'Variable',
-							default: ''
-						},
+            variable = cfg[i].variable;
+            time = cfg[i].repeat;
+            url = cfg[i].url;
+            datatype = cfg[i].datatype;
 
-						url: {
-							type: 'text',
-							title: 'URL',
-							default: ''
-						},
+            this.doAjax(this, variable, url, datatype);
+            this.runners[i] = window.setInterval(this.doAjax, time * 1000, this, variable, url, datatype);
+        }
 
-						repeat: {
-							type: 'text',
-							title: 'Repetition time (s)',
-							default: '60'
-						}
-					}
-				}
-			}
-		}
-	};
+        this.running = true;
+    };
 
 
-	controller.prototype.configAliases = {
-		cronInfos: [ 'groups', 'cronInfos', 0 ]
-	};
 
-	return controller;
+    controller.prototype.doAjax = function(self, variable, url, datatype) {
+        var ajax = {
+            url: url,
+            dataType: 'text'
+        };
+
+        ajax.success = function(data) {
+            var dataobj = data;
+            if(datatype==='json') {
+                var json = JSON.parse(data);
+                dataobj = new DataObject(json, true);
+            }
+            
+            self.addVar(variable, dataobj);
+            self.setVarFromEvent('onUpdateResult', self.variables, 'result');
+            self.module.view.log(true, variable);
+        };
+        ajax.method = 'get';
+        ajax.type = 'get';
+
+        ajax.error = function() {
+            self.module.view.log(false, variable);
+        };
+
+        $.ajax(ajax);
+    };
+
+    controller.prototype.addVar = function(variable, data) {
+        this.variables[variable] = data;
+    };
+
+
+
+    controller.prototype.configurationStructure = function() {
+        return {
+            groups: {
+                cronInfos: {
+                    options: {
+                        type: 'table',
+                        multiple: true
+                    },
+                    fields: {
+                        variable: {
+                            type: 'text',
+                            title: 'Variable',
+                            default: ''
+                        },
+                        url: {
+                            type: 'text',
+                            title: 'URL',
+                            default: ''
+                        },
+                        datatype: {
+                            type: "combo",
+                            title: "Data type",
+                            options: [{title: "Text", key: "text"}, {title: "JSON", key: "json"}, {title: "XML", key: "xml"}],
+                            default:"json"
+                        },
+                        repeat: {
+                            type: 'text',
+                            title: 'Repetition time (s)',
+                            default: '60'
+                        }
+                    }
+                }
+            }
+        };
+    };
+
+    controller.prototype.configAliases = {
+        cronInfos: ['groups', 'cronInfos', 0]
+    };
+
+    return controller;
 });
 
 

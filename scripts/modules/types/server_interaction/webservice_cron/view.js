@@ -3,10 +3,10 @@ define(['modules/defaultview'], function(Default) {
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
-		init: function() {	
-			var self = this;
+		init: function() {
 			this.dom = $('<div></div>');
 			this.module.getDomContent().html(this.dom);
+                        this.module.controller.start();
 		},
 
 		log: function(success, variable) {
