@@ -52,10 +52,9 @@ define( [ 'modules/defaultcontroller', 'util/api', 'util/urldata'], function(Def
 	controller.prototype.events = {
 
 		// List of all possible events
-		'onHover': {
-			label: 'Hovers a cell',
-			refVariable: [ 'cell' ],
-			refAction: [ 'cell' ]
+		'onSearchReturn': {
+			label: 'On search complete',
+			refVariable: [ 'results', 'url' ]
 		}
 	};
 	
