@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.html or http://ckeditor.com/license
+ * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
 CKEDITOR.editorConfig = function( config ) {
@@ -32,9 +32,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Se the most common block elements.
 	config.format_tags = 'p;h1;h2;h3;pre';
-	
+
 	// Make dialogs simpler.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 };
-
-CKEDITOR.disableAutoInline = true;

@@ -6,14 +6,14 @@ requirejs.config({
 		"jquery": "libs/jquery/jquery-migrate",
 		"jqueryui": "libs/jqueryui/jquery-ui.min",
 		"forms": "libs/forms",
-		"ckeditor": "libs/ckeditor/ckeditor",
+		"ckeditor": "libs/ckeditor/adapters/jquery",
 
 		'ChemDoodle': 'libs/chemdoodle/ChemDoodleWeb-unpacked'
 	},
 
 	"shim": {
 		"jquery": ['libs/jquery/jquery'],
-		"ckeditor": ["libs/ckeditor/adapters/jquery"],
+		"ckeditor": ["libs/ckeditor/ckeditor"],
 		"libs/jqgrid/js/jqgrid": ["jquery", "libs/jqgrid/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"jqueryui": ["jquery"],
