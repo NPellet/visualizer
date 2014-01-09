@@ -1,10 +1,11 @@
 
-define(['modules/defaultcontroller'], function(Default) {
+define(['modules/defaultcontroller','libs/x2js/xml2json.min'], function(Default,X2JS) {
 
     function controller() {
         this.running = false;
         this.runners = [];
         this.variables = new DataObject();
+        this.converter = new X2JS();
     }
 
     // Extends the default properties of the default controller
@@ -100,6 +101,8 @@ define(['modules/defaultcontroller'], function(Default) {
             if(datatype==='json') {
                 var json = JSON.parse(data);
                 dataobj = new DataObject(json, true);
+            } else if(datatype==='xml') {
+                dataobj = new DataObject(self.converter.xml_str2json(data), true);
             }
             
             self.addVar(variable, dataobj);
