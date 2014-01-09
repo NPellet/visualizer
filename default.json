@@ -9,6 +9,11 @@
 	{
 		"file": "./filters/doitourl.js",
 		"name": "DOI to URL"
+	},
+        
+        {
+		"file": "./filters/flickr.js",
+		"name": "JSON to flickr URL"
 	}
 
 ],
