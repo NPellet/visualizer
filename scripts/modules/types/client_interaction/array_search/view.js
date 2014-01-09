@@ -67,6 +67,9 @@ define(['modules/defaultview', 'util/datatraversing', 'util/api', 'libs/formcrea
 			form.onLoaded( ).done( function( ) {
 				self.dom.html( form.makeDom( 2 ) );
 				form.inDom();
+
+				form.options.onValueChanged();
+				
 			});
 			
 			this.makeSearchFilter();
