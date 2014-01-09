@@ -469,3 +469,7 @@ h2 .form-duplicator-wrapper {
 	padding-left: 8px;
 	padding-right: 20px;
 }
+
+.forms .forms-field-slider-value input {
+	width: 30px;
+}

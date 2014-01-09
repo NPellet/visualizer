@@ -24,7 +24,7 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 						range: this.field.options.range,
 
 						change: function( event, ui ) {
-								
+
 							ui.value = range ? ui.values[ changing ] : ui.value;
 
 							if( valueInput[ changing ] && lastVal[ changing ] !== ui.value && ! isNaN( ui.value ) ) {
@@ -41,17 +41,22 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 
 							if( range ) {
 								changing --;
+							} else {
+								changing = 0;
 							}
 							
-							ui.value = range ? ui.values[ changing ] : ui.value;
+							var val = range ? ui.values[ changing ] : ui.value;
 
 							if( !isNaN( ui.value )) {
-							
-								if( valueInput[ changing ] && lastVal[ changing ] !== ui.value && ! isNaN( ui.value ) ) {
 
-									lastVal[ changing ] = ui.value;
+							
+								if( valueInput[ changing ] !== undefined && lastVal[ changing ] !== ui.value && ! isNaN( ui.value ) ) {
+
+									lastVal[ changing ] = val;
 
 									if( valueInput[ changing ] ) {
+										console.log( lastVal[ changing ] );
+										console.trace();
 										valueInput[ changing ].val( lastVal[ changing ] );	
 										self.setValueSilent( lastVal );
 									}
@@ -82,7 +87,7 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 			}
 		});
 
-		valueWrap.append( this.field.options.range ? '<span>Min</span>' : '<span>Value</span>' ).append( valueInput[ 0 ] );
+		valueWrap.append( this.field.options.range ? '<span>Min&nbsp;:&nbsp;</span>' : '<span>Value&nbsp;:&nbsp;</span>' ).append( valueInput[ 0 ] );
 
 		if( this.field.options.range ) {
 
@@ -105,13 +110,15 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 		this.div = div;
 		this.dom = dom;
 		this.slider = slider;
-		
+		this.valInput = valueInput;
+		this.checkValue();
+
 		return dom;
 	};
 
 	FieldConstructor.prototype.checkValue = function() {
 
-		if( this.slider && !isNaN( this.value ) ) {
+		if( this.valInput && this.slider && !isNaN( this.value ) ) {
 
 			if( this.field.options.range ) {
 
@@ -121,7 +128,10 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 					}
 				}
 			} else {
-				this.slider.slider( 'value', this.value );	
+				
+				this.slider.slider( 'value', parseInt( this.value ) );
+				this.valInput[ 0 ].val( parseInt( this.value ) );
+	//			this.slider.slider('option', 'slide').call( this.slider, {}, { value: this.value } );
 			}
 
 			
