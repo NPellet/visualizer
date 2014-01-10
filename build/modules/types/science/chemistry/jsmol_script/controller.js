@@ -6,7 +6,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
 
     controller.prototype.moduleInformation = {
-        moduleName: 'Script Action',
+        moduleName: 'JSMol Script',
         description: 'Display a JSMol module',
         author: 'Nathanaêl Khodl, Luc Patiny',
         date: '30.12.2013',

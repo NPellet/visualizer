@@ -58,7 +58,9 @@ module.exports = function(grunt) {
               './jquery.threedubmedia/event.drag/jquery.event.drag.js',
               './sprintf/src/sprintf.min.js',
               './requirejs/require.js',
-              './jquery-throttle-debounce/jquery.ba-throttle-debounce.min.js'
+              './jquery-throttle-debounce/jquery.ba-throttle-debounce.min.js',
+              './Aristo-jQuery-UI-Theme/css/Aristo/images/*',
+              './Aristo-jQuery-UI-Theme/css/Aristo/*.css'
             ],
 
             dest: './build/components/'
@@ -100,9 +102,22 @@ module.exports = function(grunt) {
 
         files: [{
           expand: true,
-          cwd: 'src/',
-          src: 'usr/**',
-          dest: 'build'
+          cwd: './src/usr/filters/',
+          src: '**',
+          filter: function( filePath ) {
+            var files = grunt.option('filterFiles');
+//console.log( files , files.length);
+            for( var i = 0, l = files.length ; i < l ; i ++ ) {
+              
+              if( path.relative( 'src/usr/filters/' + files[ i ], filePath) == "" ) {
+                return true;
+              }
+            }
+
+            return false;
+            
+          },
+          dest: './build/filters/'
         }]
       },
 
@@ -111,7 +126,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: './src/',
-          src: './modules/**',
+          src: ['./usr/modules/**', './modules/**' ],
           dest: './build/',
           filter: function(filepath) {
 
@@ -122,7 +137,16 @@ module.exports = function(grunt) {
             }
             return false;
           }
-        }]
+        }, 
+
+        {
+          expand: true,
+          cwd: './src/',
+          src: ['./modules/module.js', './modules/modulefactory.js', './default/**', './modules/default/**' ],
+          dest: './build/',
+        }
+
+        ]
       }
     },
 
@@ -162,7 +186,7 @@ module.exports = function(grunt) {
             "dir": "./build_optimized/",
             "appDir": "./build/",
             "baseUrl": "./",
-            optimizeCss: "none",
+            "optimizeCss": "none",
             "optimize": "none",
             "removeCombined": true,
             "paths": {
@@ -186,39 +210,84 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-text-replace');
 
+  var fs = require('fs');
+  var path = require('path');
+
+
   grunt.registerTask( 'build', 'Build project', function() {
+
+    if( ! fs.existsSync('./build/') ) {
+      fs.mkdirSync( './build/');
+    }
 
     var config = grunt.option('config') || './src/usr/config/default.json';
 
-    var cfg = grunt.file.readJSON( config );
-    var file,
-        modules = {};
+    if( ! fs.existsSync( config ) ) {
+      console.log( 'File config (' + config + ') does not exist');
+      return;
+    }
+
+
+    var cfg = grunt.file.readJSON( config ),
+        file,
+        modules = {},
+        jsonStructure = {};
 
     function loadFile( fileName ) {
   
+      var file,
+          j = 0,
+          i = 0,
+          l,
+          jsonStructure = { modules: [], folders: {} };
+
       if( ! require('fs').existsSync( fileName ) ) {
+        console.log( 'Folder file ' + fileName + ' does not exist');
         return;
       }
 
-      var file = grunt.file.readJSON( fileName );
-      for( var j in file.folders ) {
-         loadFile( './src/' + file.folders[ j ] + 'folder.json');
+      console.log( 'Fetching file ' + fileName);
+      file = grunt.file.readJSON( fileName );
+
+      for( var k in file.folders ) {
+        jsonStructure.folders[ k ] = loadFile( './src/' + file.folders[ k ] + 'folder.json');
       }
 
       if( file.modules ) {
-        for( var j = 0, l = file.modules.length ; j < l ; j ++ ) {
+         
+        for( j = 0, l = file.modules.length ; j < l ; j ++ ) {
           modules[ file.modules[ j ].url ] = true;
+          jsonStructure.modules.push( file.modules[ j ] );
         }
       }
+
+      return jsonStructure;
     }
 
-    for( var i = 0, l = cfg.modules.length ; i < l ; i ++ ) {
-      loadFile( './src/' + cfg.modules[ i ] );
+    for( var i in cfg.modules ) {
+      jsonStructure[ i ] = ( loadFile( './src/' + cfg.modules[ i ] ) );
     }
+
+    /* Find filter files from the config.json and puts them in an option */
+    var filterFiles = [];
+    for( var i in cfg.filters ) {
+      filterFiles.push( cfg.filters[i].file );
+    }
+    grunt.option('filterFiles', filterFiles);
+    /* */
 
     modulesFinal = modules;
+    
+    //fs.writeFileSync( './build/modules.json', JSON.stringify( jsonStructure, false, '\t' ) );
+    cfg.modules = jsonStructure;//'./modules.json';
+    fs.writeFileSync( './build/default.json', JSON.stringify( cfg, false, '\t' ) );
 
     grunt.task.run('copy:buildModules');
+    grunt.task.run('copy:buildUsr');
+    grunt.task.run('copy:build');
+    grunt.task.run('copy:buildLib');
+
+
   });
 /*
   [
@@ -246,17 +315,17 @@ grunt.registerTask( 'require', ['requirejs']);
   grunt.registerTask( 'eraseModuleJsons', [ 'clean:modulesJsonErase' ] );
   grunt.registerTask( 'createJSONModules', 'Create all modules json', function() {
 
-    var fs = require('fs');
-    var basePath = './src/modules/types';
-    var relPath = 'modules/types';
-
+    
+    
     function recurseFolder( basePath, relPath ) {
 
       var folders = fs.readdirSync( basePath ),
           allFolders = [],
           allModules = [],
           containsModule = false,
-          target = {};
+          target = {},
+          subFolder;
+
       for( var i = 0, l = folders.length ; i < l ; i ++ ) {
         if( ! fs.statSync( basePath + "/" + folders[ i ] ).isDirectory( ) || folders[ i ] == 'lib') {
             continue;
@@ -290,8 +359,11 @@ grunt.registerTask( 'require', ['requirejs']);
       target.folders = {};
       for( var i = 0, l = allFolders.length ; i < l ; i ++ ) {
         recurseFolder( basePath + "/" + allFolders[ i ], relPath + "/" + allFolders[ i ] );
-        var subFolder = grunt.file.readJSON( basePath + "/" + allFolders[ i ] + "/folder.json" );
-        target.folders[ subFolder.name ] = relPath + "/" + allFolders[ i ] + "/"
+
+        if( fs.existsSync( basePath + "/" + allFolders[ i ] + "/folder.json" ) ) {
+          subFolder = grunt.file.readJSON( basePath + "/" + allFolders[ i ] + "/folder.json" );
+          target.folders[ subFolder.name ] = relPath + "/" + allFolders[ i ] + "/"
+        }
       }
 
       if( fs.existsSync( basePath + '/folder.json') ) {
@@ -306,9 +378,10 @@ grunt.registerTask( 'require', ['requirejs']);
       }
 
       fs.writeFileSync(basePath + '/folder.json', JSON.stringify( target, null, "\t") );
-
     }
-    recurseFolder( basePath, relPath );
+
+    recurseFolder( './src/modules/types', 'modules/types' );
+    recurseFolder( './src/usr/modules', 'usr/modules' );
   });
 
 };

@@ -84,7 +84,6 @@ define([	'jquery',
 		} else {
 
 			Grid.reset( view.grid );
-
 		}
 
 		ModuleFactory.empty( );
@@ -181,10 +180,11 @@ define([	'jquery',
 
 				// If there is no jpath, we assume the variable is an object and we add it in the data stack
 				// Note: if that's not an object, we will have a problem...
-				data[view.variables[i].varname] = new DataObject();
-				API.setVariable(view.variables[i].varname, data[view.variables[i].varname]);
+				data[ view.variables[ i ].varname ] = new DataObject();
+				API.setVariable( view.variables[ i ].varname, data[ view.variables[ i ].varname ] );
+
 			} else {
-				API.setVariable(view.variables[i].varname, data, view.variables[i].jpath);
+				API.setVariable( view.variables[ i ].varname, data, view.variables[ i ].jpath );
 			}
 		}
 	}
@@ -200,8 +200,8 @@ define([	'jquery',
 		div.prev( ).remove( );
 		div.parent( ).css( 'z-index', 1000 );
 
-		var options = [];
-		Traversing.getJPathsFromElement(data, options);
+		var options = [ ];
+		Traversing.getJPathsFromElement( data, options );
 		require(['./forms/form'], function(Form) {
 
 			var form = new Form();
@@ -436,9 +436,11 @@ define([	'jquery',
 					}
 				}
 			});
-console.log( ActionManager.getFilesForm() );
 
-			form.onStructureLoaded().done(function() {
+
+		//	console.log( ActionManager.getFilesForm() );
+
+			form.onStructureLoaded( ).done(function() {
 				form.fill({ 
 					sections: {
 						cfg: [ {
@@ -532,7 +534,8 @@ console.log( ActionManager.getFilesForm() );
 			Versioning.setDataLoadCallback(doData);
 			
 			// Sets the header
-			$.getJSON( urls.config, { }, function( cfgJson ) {
+			$.getJSON( './default.json', { }, function( cfgJson ) {
+			
 				if( cfgJson.header ) {
 					Header.init( cfgJson.header );
 				}
@@ -543,7 +546,6 @@ console.log( ActionManager.getFilesForm() );
 
 				// Set the filters
 				API.setAllFilters( cfgJson.filters || [ ] );
-
 			} );
 
 

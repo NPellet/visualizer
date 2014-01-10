@@ -42,7 +42,6 @@ define(['jquery', 'modules/module'], function($, Module) {
 		getTypes: function() {
 
 			return $.when.apply( $, modulesDeferred ).pipe( function() {
-				console.log ( allModules );
 				return allModules;
 			});
 		},
@@ -54,7 +53,16 @@ define(['jquery', 'modules/module'], function($, Module) {
 				folders = [];
 
 			if( ! ( list instanceof Array ) ) {
-				list = [ list ];
+				
+				var targetList = {};
+				if( typeof list == "object" ) {
+					for( var i in list ) {
+						$.extend( true, targetList, list[ i ] );
+					}
+				}
+
+				allModules = targetList;
+				return;
 			}
 
 			l = list.length;
@@ -68,13 +76,14 @@ define(['jquery', 'modules/module'], function($, Module) {
 						getSubFoldersFrom( list[ j ] ).then( function( data ) {
 
 							list[ j ] = data;
-									console.log( list[ j ] );
+						
 						} );
 
 					} ) ( i );
 
 					
 				} else { // It's a folder type structure
+
 					list[ i ] = getModules( list[ i ] );
 			
 				}

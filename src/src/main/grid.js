@@ -410,11 +410,18 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 				$ulModules = $("<ul />").appendTo($li);
 				var allTypes = ModuleFactory.getTypes();
-				
-				allTypes.done( function( json ) {
-					
-					for( var i = 0, l = json.length ; i < l ; i ++) {
-						makeRecursiveMenu( json[ i ], $ulModules );	
+				$.when( allTypes ).then( function( json ) {
+
+					if( typeof json == "object" && ! Array.isArray( json ) ) {
+						json = [ json ];
+					}
+
+					if( Array.isArray( json ) ) {					
+						for( var i = 0, l = json.length ; i < l ; i ++) {
+							makeRecursiveMenu( json[ i ], $ulModules );	
+						}
+					} else {
+
 					}
 					
 				});

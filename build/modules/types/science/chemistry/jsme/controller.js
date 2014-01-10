@@ -18,7 +18,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 	controller.prototype.moduleInformation = {
 		moduleName: 'JSME',
 		description: 'Displays and interacts with the JSME plugin',
-		author: 'Norman Pellet',
+		author: 'Norman Pellet, Luc Patiny',
 		date: '24.12.2013',
 		license: 'MIT',
 		cssClass: 'jsme'
