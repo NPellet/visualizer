@@ -1,0 +1,18 @@
+{
+	"modules": [
+		{
+			"moduleName": "Display dendrogram",
+			"url": "modules/types/chart/statistics/dendrogram/"
+		},
+		{
+			"moduleName": "Loading plot",
+			"url": "modules/types/chart/statistics/loading_plot/"
+		},
+		{
+			"moduleName": "D3 Phylogram",
+			"url": "modules/types/chart/statistics/phylogram/"
+		}
+	],
+	"name": "statistics",
+	"folders": {}
+}

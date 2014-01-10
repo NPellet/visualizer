@@ -1,7 +1,0 @@
-[
-	{ "moduleName": "File upload", "url": "./modules/types/legacy/filelistupload/"},
-	{ "moduleName": "Table Selector (?)", "url": "./modules/types/legacy/grid_selector/" },
-	{ "moduleName": "XY zoom navigator (?)", "url": "./modules/types/legacy/xyzoomnavigator/" },
-	{ "moduleName": "Webservice cron (?)", "url": "./modules/types/legacy/webservice_cron/" }
-]
-

@@ -1,0 +1,15 @@
+{
+  "name": "jqgrid",
+  "homepage": "https://github.com/tonytomov/jqGrid",
+  "version": "4.5.4",
+  "_release": "4.5.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v4.5.4",
+    "commit": "4152803d5cfcc404ab13f9f3ef3d67e58565a38a"
+  },
+  "_source": "git://github.com/tonytomov/jqGrid.git",
+  "_target": "~4.5.4",
+  "_originalSource": "jqgrid",
+  "_direct": true
+}

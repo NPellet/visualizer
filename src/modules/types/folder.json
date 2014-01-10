@@ -1,0 +1,13 @@
+{
+	"folders": {
+		"chart": "modules/types/chart/",
+		"client_interaction": "modules/types/client_interaction/",
+		"display": "modules/types/display/",
+		"edition": "modules/types/edition/",
+		"legacy": "modules/types/legacy/",
+		"science": "modules/types/science/",
+		"server_interaction": "modules/types/server_interaction/"
+	},
+	"name": "types",
+	"modules": []
+}

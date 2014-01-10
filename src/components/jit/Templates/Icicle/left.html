@@ -1,0 +1,37 @@
+$def with (model, type, number, max)
+
+<div class="text">
+  $if number > 1:
+      <a href="/testcase/$type/${number -1}/" title="previous">previous</a>
+  $if number < max:
+      <a href="/testcase/$type/${number +1}/" title="next">next</a>
+
+  <h4>
+    $model['Title']
+  </h4>
+  $:model['Description']
+
+  <div>
+    <label for="s-orientation">Orientation: </label>
+    <select name="s-orientation" id="s-orientation">
+      <option value="h" selected>horizontal</option>
+      <option value="v">vertical</option>
+    </select>
+    <br>
+    <div id="max-levels">
+    <label for="i-levels-to-show">Max levels: </label>
+    <select  id="i-levels-to-show" name="i-levels-to-show" style="width: 50px">
+      <option>all</option>
+      <option>1</option>
+      <option>2</option>
+      <option selected="selected">3</option>
+      <option>4</option>
+      <option>5</option>
+    </select>
+    </div>
+  </div>
+</div>
+
+<a id="update" href="#" class="theme button white">Go to Parent</a>
+ 
+<div id="id-list"></div>

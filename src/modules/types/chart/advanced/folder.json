@@ -1,0 +1,14 @@
+{
+	"modules": [
+		{
+			"moduleName": "Matrix display",
+			"url": "modules/types/chart/advanced/canvas_matrix/"
+		},
+		{
+			"moduleName": "Function plotter",
+			"url": "modules/types/chart/advanced/plot_function/"
+		}
+	],
+	"name": "Advanced charting",
+	"folders": {}
+}

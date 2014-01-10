@@ -1,0 +1,130 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title></title>
+
+    <script type="text/javascript" language="javascript" src="../../../../../libs/jquery/jquery.js"></script>
+    <script type="text/javascript" language="javascript" src="../../../../../libs/jsmol/JSmol.min.nojq.js"></script>
+    <!--
+    <script type="text/javascript" language="javascript" src="./libs/jsme/jsme.nocache.js"></script>
+    -->
+
+</head>
+<body style="margin: 0; padding: 0;">
+
+<div id="appletContainer"></div>
+
+<script type="text/javascript">
+
+    console.warn("JSMOL Called");
+
+    var jsmolApplet;
+    var deferred=$.Deferred();
+    var Jmol ;
+    var self=this;
+
+    this.setController = function(controller) {
+        this.controller = controller ;
+    };
+
+
+    this.setInDom = function(inDom,JmolIn){
+        this.inDom = inDom ;
+        Jmol = JmolIn ;
+    }
+
+    this.setInDom = function(a){
+        var useSignedApplet = false, self = this;
+        var info = {
+            width: window.innerWidth,
+            height: window.innerHeight,
+            debug: false,
+            color: "0xF0F0F0",
+            addSelectionOptions: false,
+            // serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/jsmol.php",
+            use: "HTML5",
+            //language: "fr", // NOTE: LOCALIZATION REQUIRES <meta charset="utf-8"> (see JSmolCore Jmol.featureDetection.supportsLocalization)
+            jarPath: "java",
+            j2sPath: "../../../../../../scripts/libs/jsmol/j2s",
+
+            jarFile: (useSignedApplet ? "JmolAppletSigned.jar" : "JmolApplet.jar"),
+            isSigned: useSignedApplet,
+            disableJ2SLoadMonitor: true,
+            disableInitialConsole: true,
+
+            readyFunction: function() {
+                deferred.done(function() {
+                    self.view.onReady.resolve();
+                });
+                
+            },
+            allowjavascript: true,
+            script: "set antialiasDisplay"
+            //,defaultModel: ":dopamine"
+            //,noscript: true
+            //console: "none", // default will be jmolApplet0_infodiv
+            //script: "set antialiasDisplay;background white;load data/caffeine.mol;"
+            //delay 3;background yellow;delay 0.1;background white;for (var i = 0; i < 10; i+=1){rotate y 3;delay 0.01}"
+        };
+
+        Jmol._XhtmlElement = $('#appletContainer').get(0);
+        Jmol._XhtmlAppendChild = true;
+        this.applet = Jmol.getApplet("appletContainer", info);
+
+    }
+
+    this.setView = function(view) {
+        this.view = view;
+        deferred.resolve();
+    }
+
+    this.executeScript = function(actions){
+        if(this.applet)
+            Jmol.script(this.applet, actions.join('\r\n'));
+    };
+
+    this.setMolFile = function(data) {
+        if(!data)
+            return;
+        data = data.get();
+        var actions = [];
+        actions.push("load data 'model'");
+        actions.push(data);
+        actions.push("end 'model';");
+        this.executeScript(actions);
+    }
+
+    this.setSize = function(w, h) {
+        Jmol.resizeApplet(this.applet, [w ,h ]);
+    }
+
+    this.clear = function() {
+        this.applet.reset();
+    }
+
+
+// TODO !!!!
+    this.setHighlight = function(atoms, onOff) { 
+        var molIndex=1;
+        if(!onOff) {
+            jsmeApplet.resetAtomColors(1);
+        } else {
+            var highlight=[];
+            for (var i=0; i<atoms.length; i++) {
+                highlight.push(atoms[i]+1);
+                highlight.push(3);
+            }
+            jsmeApplet.setAtomBackgroundColors(molIndex,highlight.join(","))
+        }
+    }
+// TODO !!!!
+    this.clearHighlight = function(molIndex, atomsIndex) {
+        jsmeApplet.resetAtomColors(molIndex);
+    }
+
+
+</script>
+</body>
+</html>

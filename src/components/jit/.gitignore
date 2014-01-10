@@ -1,0 +1,10 @@
+.project
+.pydevproject
+Examples
+Extras/sh/
+NaturalDocs*
+Docs*
+*.pyc
+*.jar
+*.zip
+*.*~

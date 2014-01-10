@@ -1,0 +1,18 @@
+{
+	"modules": [
+		{
+			"moduleName": "1D NMR",
+			"url": "modules/types/science/spectra/nmr/1dnmr/"
+		},
+		{
+			"moduleName": "2D NMR",
+			"url": "modules/types/science/spectra/nmr/2dnmr/"
+		},
+		{
+			"moduleName": "NMR spin system simulation",
+			"url": "modules/types/science/spectra/nmr/webservice_nmr_spin/"
+		}
+	],
+	"folders": {},
+	"name": "nmr"
+}

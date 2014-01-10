@@ -1,0 +1,14 @@
+{
+  "name": "Aristo-jQuery-UI-Theme",
+  "homepage": "https://github.com/taitems/Aristo-jQuery-UI-Theme",
+  "_release": "4673cef836",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "4673cef83673380e68a0db21c6a60a8b008519c0"
+  },
+  "_source": "git://github.com/taitems/Aristo-jQuery-UI-Theme.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/taitems/Aristo-jQuery-UI-Theme.git",
+  "_direct": true
+}

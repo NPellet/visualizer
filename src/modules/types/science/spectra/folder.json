@@ -1,0 +1,20 @@
+{
+	"modules": [
+		{
+			"moduleName": "GC-MS",
+			"url": "modules/types/science/spectra/gcms/"
+		},
+		{
+			"moduleName": "Iframe",
+			"url": "modules/types/science/spectra/ivstability/"
+		},
+		{
+			"moduleName": "Plotter",
+			"url": "modules/types/science/spectra/spectra_displayer/"
+		}
+	],
+	"name": "Spectra modules",
+	"folders": {
+		"nmr": "modules/types/science/spectra/nmr/"
+	}
+}

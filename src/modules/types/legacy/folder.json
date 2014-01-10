@@ -1,0 +1,22 @@
+{
+	"modules": [
+		{
+			"moduleName": "Two dimensional list",
+			"url": "modules/types/legacy/filelistupload/"
+		},
+		{
+			"moduleName": "Selector",
+			"url": "modules/types/legacy/grid_selector/"
+		},
+		{
+			"moduleName": "Webservice Crontab",
+			"url": "modules/types/legacy/webservice_cron/"
+		},
+		{
+			"moduleName": "Navigator",
+			"url": "modules/types/legacy/xyzoomnavigator/"
+		}
+	],
+	"name": "legacy",
+	"folders": {}
+}

@@ -1,0 +1,14 @@
+* Bug fix in IE with the Background canvas not drawing in the first plot (works when scaling and panning but not in the first plot)
+
+Articles
+* creating background canvases
+* customizing graph Node/Edge styles (in the JSON and with get/setData)
+* making custom animations (get/setData)
+* the event system
+* in Options.Node/Edge/Label we should add some documentation about Styling nodes in the JSON data. and using getters and setters with nodes/edges etc.
+* document the code about the JSON data for the Charts.
+* implementing NodeTypes/EdgeTypes documentation is pretty important!
+
+Bugs
+* IE.x has a strange behavior when morphing with animations in ForceDirected/3. Labels that were removed are still there captured by the event system,
+but not label or value is returned when, once the event fired, I try to retrieve the subject that fired the event. Weird.

@@ -1,0 +1,22 @@
+{
+	"modules": [
+		{
+			"moduleName": "Filter",
+			"url": "modules/types/edition/filter/"
+		},
+		{
+			"moduleName": "Form",
+			"url": "modules/types/edition/form/"
+		},
+		{
+			"moduleName": "Form",
+			"url": "modules/types/edition/form_simple/"
+		},
+		{
+			"moduleName": "Var Editor",
+			"url": "modules/types/edition/var_editor/"
+		}
+	],
+	"name": "edition",
+	"folders": {}
+}

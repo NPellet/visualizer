@@ -1,0 +1,22 @@
+{
+  "name": "forms",
+  "version": "0.0.0",
+  "description": "Advanced form system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Norman Pellet",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-contrib-requirejs": "~0.4.1",
+    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "requirejs": "~2.1.9",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-text-replace": "~0.3.10"
+  }
+}

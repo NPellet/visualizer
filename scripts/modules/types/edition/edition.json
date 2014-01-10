@@ -1,6 +1,0 @@
-[
-	{ "moduleName": "General filtering", "url": "./modules/types/edition/filter/" },
-	{ "moduleName": "Form", "url": "./modules/types/edition/form/" },
-	{ "moduleName": "Simple form", "url": "./modules/types/edition/form_simple/" },
-	{ "moduleName": "Data manipulation", "url": "./modules/types/edition/var_editor/" }
-]

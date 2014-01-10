@@ -1,0 +1,418 @@
+{
+  "Core": {
+    "Core": [],
+    "Fx": [
+      "Core"
+    ],
+    "Canvas": [
+      "Core"
+    ],
+    "Canvas3D": [
+      "Core", "Canvas", "Camera"
+    ]
+  },
+
+  "Geometry": {
+    "Complex": [
+      "Polar"
+    ],
+    "Polar": [
+      "Complex"
+    ],
+    "Matrix4": [],
+    "Vector3": [],
+    "Camera": ["Vector3", "Matrix4"],
+    "O3D": ["Vector3", "Matrix4"],
+    "Geometry": ["Complex"]
+  },
+
+  "Extras": {
+    "Extras": [
+        "Core", "Fx"
+    ]
+  },
+
+  "Graph": {
+    "Graph": [
+        "Core", "Complex", "Polar"
+    ],
+    "Graph.Op": [
+        "Core", "Graph"
+    ],
+    "Graph.Geom": [
+        "Core", "Graph"
+    ],
+    "Graph.Plot": [
+        "Core", "Graph", "Helpers"
+    ],
+    "Graph.Label": [
+        "Core", "Graph"
+    ],
+    "Helpers": [
+     ]
+  },
+
+  "Layouts": {
+    "Layouts": [
+      "Graph"
+    ],
+    "Layouts.Tree": [
+      "Layouts"
+    ],
+    "Layouts.Radial": [
+      "Layouts"
+    ],
+    "Layouts.ForceDirected": [
+      "Layouts"
+    ],
+    "Layouts.ForceDirected3D": [
+      "Layouts"
+    ],
+    "Layouts.TM": [
+      "Layouts"
+    ],
+    "Layouts.Icicle": [
+      "Layouts"
+    ],
+    "Layouts.Grid": [
+      "Layouts"
+    ]
+  },
+
+  "Loader": {
+    "Loader": [
+        "Core", "Graph"
+    ]
+  },
+
+  "Options": {
+    "Options": [
+        "Core", "Fx"
+    ],
+    "Options.Canvas": [
+      "Options"
+    ],
+    "Options.Controller": [
+      "Options"
+    ],
+    "Options.Edge": [
+      "Options"
+    ],
+    "Options.Fx": [
+      "Options"
+    ],
+    "Options.Label": [
+      "Options"
+    ],
+    "Options.Node": [
+      "Options"
+    ],
+    "Options.NodeStyles": [
+      "Options"
+    ],
+    "Options.Tips": [
+      "Options"
+    ],
+    "Options.Margin": [
+      "Options"
+    ],
+    "Options.Events": [
+      "Options"
+    ],
+    "Options.Navigation": [
+      "Options"
+    ],
+    "Options.Tree": [
+      "Options"
+    ],
+    "Options.BarChart": [
+       "Options"
+    ],
+    "Options.PieChart": [
+       "Options"
+    ],
+    "Options.AreaChart": [
+      "Options"
+    ]
+  },
+
+  "Visualizations": {
+    "Hypertree": [
+        "Core",
+        "Options.Canvas",
+        "Options.Node",
+        "Options.Edge",
+        "Options.Fx",
+        "Options.Label",
+        "Options.Tips",
+        "Options.NodeStyles",
+        "Options.Events",
+        "Options.Navigation",
+        "Options.Controller",
+        "Extras",
+        "Canvas",
+        "Complex",
+        "Polar",
+        "Graph.Op",
+        "Graph.Plot",
+        "Graph.Label",
+        "Loader",
+        "Layouts.Radial",
+        "Fx"
+    ],
+
+    "RGraph": [
+        "Core",
+        "Options.Canvas",
+        "Options.Node",
+        "Options.Edge",
+        "Options.Fx",
+        "Options.Label",
+        "Options.Tips",
+        "Options.NodeStyles",
+        "Options.Events",
+        "Options.Navigation",
+        "Options.Controller",
+        "Extras",
+        "Canvas",
+        "Complex",
+        "Polar",
+        "Graph.Op",
+        "Graph.Plot",
+        "Graph.Label",
+        "Loader",
+        "Layouts.Radial",
+        "Fx"
+    ],
+
+    "Sunburst": [
+        "Core",
+        "Options.Canvas",
+        "Options.Node",
+        "Options.Edge",
+        "Options.Fx",
+        "Options.Label",
+        "Options.Tips",
+        "Options.NodeStyles",
+        "Options.Events",
+        "Options.Navigation",
+        "Options.Controller",
+        "Extras",
+        "Canvas",
+        "Complex",
+        "Polar",
+        "Graph.Op",
+        "Graph.Plot",
+        "Graph.Label",
+        "Loader",
+        "Layouts.Radial",
+        "Fx"
+    ],
+
+    "ForceDirected": [
+        "Core",
+        "Options.Canvas",
+        "Options.Node",
+        "Options.Edge",
+        "Options.Fx",
+        "Options.Label",
+        "Options.Tips",
+        "Options.NodeStyles",
+        "Options.Events",
+        "Options.Navigation",
+        "Options.Controller",
+        "Extras",
+        "Canvas",
+        "Complex",
+        "Polar",
+        "Graph.Op",
+        "Graph.Plot",
+        "Graph.Label",
+        "Loader",
+        "Layouts.ForceDirected",
+        "Fx"
+    ],
+
+    "ForceDirected3D": [
+        "Core",
+        "Options.Canvas",
+        "Options.Node",
+        "Options.Edge",
+        "Options.Fx",
+        "Options.Label",
+        "Options.Tips",
+        "Options.NodeStyles",
+        "Options.Events",
+        "Options.Navigation",
+        "Options.Controller",
+        "Extras",
+        "Canvas",
+        "Canvas3D",
+        "O3D",
+        "Graph.Op",
+        "Graph.Plot",
+        "Graph.Label",
+        "Loader",
+        "Layouts.ForceDirected3D",
+        "Fx"
+    ],
+
+    "Spacetree": [
+        "Core",
+        "Options.Canvas",
+        "Options.Tree",
+        "Options.Node",
+        "Options.Edge",
+        "Options.Fx",
+        "Options.Label",
+        "Options.Tips",
+        "Options.NodeStyles",
+        "Options.Events",
+        "Options.Navigation",
+        "Options.Controller",
+        "Extras",
+        "Canvas",
+        "Complex",
+        "Polar",
+        "Graph.Op",
+        "Graph.Plot",
+        "Graph.Label",
+        "Graph.Geom",
+        "Loader",
+        "Layouts.Tree",
+        "Fx"
+    ],
+
+    "Treemap": [
+        "Core",
+        "Options.Canvas",
+        "Options.Tree",
+        "Options.Node",
+        "Options.Edge",
+        "Options.Fx",
+        "Options.Label",
+        "Options.Tips",
+        "Options.NodeStyles",
+        "Options.Events",
+        "Options.Navigation",
+        "Options.Controller",
+        "Extras",
+        "Canvas",
+        "Complex",
+        "Polar",
+        "Graph.Op",
+        "Graph.Plot",
+        "Graph.Label",
+        "Graph.Geom",
+        "Loader",
+        "Layouts.TM",
+        "Fx"
+    ],
+
+    "Icicle": [
+        "Core",
+        "Options.Canvas",
+        "Options.Tree",
+        "Options.Node",
+        "Options.Edge",
+        "Options.Fx",
+        "Options.Label",
+        "Options.Tips",
+        "Options.Navigation",
+        "Options.NodeStyles",
+        "Options.Events",
+        "Options.Controller",
+        "Extras",
+        "Canvas",
+        "Complex",
+        "Polar",
+        "Graph.Op",
+        "Graph.Plot",
+        "Graph.Label",
+        "Loader",
+        "Layouts.TM",
+        "Layouts.Icicle",
+        "Fx"
+    ],
+
+    "TimeGraph": [
+       "Core",
+       "Options.Canvas",
+       "Options.Margin",
+       "Options.Node",
+       "Options.Edge",
+       "Options.Fx",
+       "Options.Label",
+       "Options.Tips",
+       "Options.Navigation",
+       "Options.NodeStyles",
+       "Options.Events",
+       "Options.Controller",
+       "Extras",
+       "Canvas",
+       "Complex",
+       "Polar",
+       "Graph.Plot",
+       "Graph.Label",
+       "Loader",
+       "Layouts.Grid",
+       "Fx"
+   ],
+
+   "HeatMap": [
+       "Core",
+       "Options.Canvas",
+       "Options.Margin",
+       "Options.Node",
+       "Options.Edge",
+       "Options.Fx",
+       "Options.Label",
+       "Options.Tips",
+       "Options.Navigation",
+       "Options.NodeStyles",
+       "Options.Events",
+       "Options.Controller",
+       "Extras",
+       "Canvas",
+       "Complex",
+       "Polar",
+       "Graph.Op",
+       "Graph.Plot",
+       "Graph.Label",
+       "Loader",
+       "Layouts.Grid",
+       "Fx"
+   ],
+
+    "AreaChart": [
+        "Options.AreaChart",
+        "Options.Margin",
+        "Spacetree"
+    ],
+
+    "StreamChart": [
+        "Options.AreaChart",
+        "Options.Margin",
+        "Spacetree"
+    ],
+
+    "PieChart": [
+        "Options.PieChart",
+        "Sunburst"
+    ],
+
+    "BarChart": [
+        "Options.BarChart",
+        "Options.Margin",
+        "Spacetree"
+    ],
+
+    "Voronoi": [
+        "Core",
+        "Canvas",
+        "Extras",
+        "Geometry",
+        "Treemap"
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+	"modules": [
+		{
+			"moduleName": "Two dimensional list",
+			"url": "modules/types/display/2d_list/"
+		},
+		{
+			"moduleName": "Fast grid",
+			"url": "modules/types/display/fasttable/"
+		},
+		{
+			"moduleName": "Hashmap display",
+			"url": "modules/types/display/hashmap/"
+		},
+		{
+			"moduleName": "Iframe",
+			"url": "modules/types/display/iframe/"
+		},
+		{
+			"moduleName": "Complex grid",
+			"url": "modules/types/display/jqgrid/"
+		},
+		{
+			"moduleName": "Sticky note",
+			"url": "modules/types/display/postit/"
+		},
+		{
+			"moduleName": "Display value",
+			"url": "modules/types/display/single_value/"
+		}
+	],
+	"name": "display",
+	"folders": {}
+}
