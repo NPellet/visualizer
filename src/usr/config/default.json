@@ -12,8 +12,7 @@
 ],
 
 "modules": {
-	"Science": "./modules/types/science/folder.json",
-	"Firmenich" : "./usr/modules/folder.json"
+	"Science": "./modules/types/folder.json"
 },
 
 "header": {
@@ -31,13 +30,13 @@
 		},
 
 	    {
-	            "type": "blankview",
-	            "label": "Blank view"
+	        "type": "blankview",
+	        "label": "Blank view"
 	    },
 	    
 	    {
-	            "type": "pasteview",
-	            "label": "Paste view"
+	        "type": "pasteview",
+	        "label": "Paste view"
 	    },
 
 		{
