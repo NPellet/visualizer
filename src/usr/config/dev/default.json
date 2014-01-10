@@ -1,0 +1,56 @@
+{
+
+"filters": [
+	{
+		"file": "./filters/testFilter.js",
+		"name": "Filter"
+	},
+
+	{
+		"file": "./filters/doitourl.js",
+		"name": "DOI to URL"
+	}
+
+],
+
+"modules": [
+	"./modules/types/folder.json"
+],
+
+"header": {
+	"height": "30px",
+	"elements":
+	[
+		{
+			"type": "autosavelocalview",
+			"label": "Autosave view"
+		},
+
+		{
+			"type": "copyview",
+			"label": "Copy view"
+		},
+
+	    {
+	            "type": "blankview",
+	            "label": "Blank view"
+	    },
+	    
+	    {
+	            "type": "pasteview",
+	            "label": "Paste view"
+	    },
+
+		{
+			"type": "pushviewtoserver",
+			"label": "Save to server"
+		},
+
+		{
+			"type": "versioning",
+			"label": "Versioning"
+		}
+	]
+}
+
+}

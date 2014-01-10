@@ -1,0 +1,10 @@
+{
+	"modules": [
+		{
+			"moduleName": "Firmenich perfume creation",
+			"url": "usr/modules/dev/firmenich-perfume/"
+		}
+	],
+	"folders": {},
+	"name": "dev"
+}

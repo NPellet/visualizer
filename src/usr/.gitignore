@@ -1,0 +1,10 @@
+
+modules/dummy_module/view.js
+
+modules/dummy_module/style.css
+
+modules/dummy_module/model.js
+
+modules/dummy_module/controller.js
+
+headers/default.json

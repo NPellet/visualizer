@@ -1,0 +1,114 @@
+div.ci-module-firmenich_perfume_crea .ci-module-content {
+	overflow-x: hidden;
+}
+
+.ci-module-firmenich_perfume_crea table {
+	width: 100%;
+}
+
+.ci-module-firmenich_perfume_crea table tr td {
+	border-bottom: 1px solid #555555;
+	padding-right: 3px;
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.ci-module-firmenich_perfume_crea .triangle-right {
+   width: 0;
+   height: 0;
+   border-left: 8px solid black;
+   border-top: 4px solid transparent;
+   border-bottom: 4px solid transparent;
+   float: left;
+}
+
+.ci-module-firmenich_perfume_crea .triangle-bottom {
+   width: 0; 
+   height: 0;
+   border-top: 8px solid black;
+   border-left: 4px solid transparent; 
+   border-right: 4px solid transparent; 
+   float: left;
+}
+
+.ci-module-firmenich_perfume_crea .triangle-right, .ci-module-firmenich_perfume_crea .triangle-bottom {
+	margin-right: 3px;
+	margin-top: 3px;
+	cursor: pointer;
+}
+
+.ci-module-firmenich_perfume_crea .ui-slider {
+	background: transparent;
+	border-radius: 0px;
+	border: none;
+	box-shadow: none;
+	width: 100%;
+}
+
+
+.ci-module-firmenich_perfume_crea .ui-slider-range {
+	background-color: #93f29e;
+	border-radius: 0px;
+	box-shadow: none;
+}
+
+
+.ci-module-firmenich_perfume_crea .ui-slider-handle {
+	background: transparent;
+	border-radius: 0px;
+	box-shadow: none;
+	cursor: ew-resize;
+	height: 5px;
+	width: 10px;
+	margin-left: -5px;
+	top: 0px;
+}
+
+.perfume-component-parts {
+	float: right;
+	width: 25px;
+	border: none;
+	background: #f0f0f0;
+	text-align: center;
+}
+
+
+.perfumeName {
+	width: 120px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.ci-module-firmenich_perfume_crea table thead tr:last-child th {
+	border-bottom: 1px solid black;
+	padding-bottom: 5px;
+
+}
+
+
+.ci-module-firmenich_perfume_crea table thead tr:first-child th {
+	padding-top: 10px;
+}
+
+.ci-module-firmenich_perfume_crea table col.perfume.selected {
+	background-color: rgba(220, 240, 250, 0.7);
+	opacity: 0.2;
+}
+
+.ci-module-firmenich_perfume_crea table col.perfume {
+	background-color: rgba(250, 240, 250, 0.7);
+	opacity: 0.2;
+}
+
+
+.ci-module-firmenich_perfume_crea table tfoot tr.totalParts {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.ci-module-firmenich_perfume_crea table tfoot tr.totalPrice {
+	font-size: 1.4em;
+	font-weight: bold;
+	background-color: rgba( 100, 100, 100, 0.1 );
+}

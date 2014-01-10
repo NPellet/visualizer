@@ -1,0 +1,12 @@
+{
+	"modules": [
+		{
+			"moduleName": "Demonstration module",
+			"url": "usr/modules/dummy_module/"
+		}
+	],
+	"folders": {
+		"dev": "usr/modules/dev/"
+	},
+	"name": "modules"
+}
