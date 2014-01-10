@@ -1,0 +1,19 @@
+
+.ci-module-array_search .ci-module-content > div {
+	height: 100%;
+}
+
+.ci-module-array_search .forms {
+	border: none;
+	height: 100%;
+}
+
+.ci-module-array_search .form-sections-wrapper {
+	border-radius: 0px;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.ci-module-array_search .form-buttonzone {
+	display: none;
+}

@@ -5,12 +5,25 @@
 
 .ci-module-fasttable table {
 	table-layout: fixed;
+	border-collapse: collapse;
+	border: none;
 }
 
 .ci-module-fasttable td, .ci-module-fasttable th {
 	padding: 3px;
 	border-right: 1px solid #777777;
+	border-left: 1px solid #777777;
 	border-bottom: 1px solid #777777;
+}
+
+
+.ci-module-fasttable td:first-child, .ci-module-fasttable th:first-child {
+	border-left: 0px;
+}
+
+
+.ci-module-fasttable td:last-child, .ci-module-fasttable th:last-child {
+	border-right: 0px;
 }
 
 
