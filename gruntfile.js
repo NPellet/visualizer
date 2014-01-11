@@ -8,26 +8,24 @@ module.exports = function(grunt) {
     
 
     uglify: {
-
-        dynamic_mappings: {
+      build: {
         
-          files: [
-            {
-              expand: true,     // Enable dynamic expansion.
-              cwd: './src/forms/',      // Src matches are relative to this path.
-              src: ['*.js'], // Actual pattern(s) to match.
-              dest: './build/forms/',   // Destination path prefix.
-              ext: '.js',   // Dest filepaths will have this extension.
-            },
 
-            {
-              expand: true,     // Enable dynamic expansion.
-              cwd: './src/forms/',      // Src matches are relative to this path.
-              src: ['**'], // Actual pattern(s) to match.
-              dest: './build/forms/',   // Destination path prefix.
-              ext: '.js',   // Dest filepaths will have this extension.
-            }
-        ]
+        files: [
+          {
+            expand: true,     // Enable dynamic expansion.
+            cwd: './build2/',      // Src matches are relative to this path.
+            src: [
+              'init.js',
+              'modules/**/*.js',
+              'lib/**/*.js',
+              '!lib/jsmol/**/*.js'
+            ], // Actual pattern(s) to match.
+            dest: './build2/',   // Destination path prefix.
+            //overwrite: true,
+            ext: '.js',   // Dest filepaths will have this extension.
+          }
+        ]    
       }
     },
 
@@ -82,7 +80,7 @@ module.exports = function(grunt) {
               './Aristo-jQuery-UI-Theme/css/Aristo/*.css'
             ],
             dest: './build/components/jqueryui/'
-          }
+          },
         ]
       },
 
@@ -160,6 +158,10 @@ module.exports = function(grunt) {
         src: [ 'build' ]
       },
 
+      buildTemp: {
+        src: [ 'build2' ]
+      },
+
       modules: {
          src : [ "build/modules/**/.DS_Store" ]
       },
@@ -179,11 +181,19 @@ module.exports = function(grunt) {
       }
     },
 
+    rename: {
+
+      afterBuild: {
+          src: 'build2',
+          dest: 'build'
+      }
+    },
+
     requirejs: {
         
         compile: {
           options: {
-            "dir": "./build_optimized/",
+            "dir": "./build2/",
             "appDir": "./build/",
             "baseUrl": "./",
             "optimizeCss": "none",
@@ -191,11 +201,24 @@ module.exports = function(grunt) {
             "removeCombined": true,
             "paths": {
               "jquery": "empty:",
-              "require": "empty:"
+              "require": "empty:",
+
+              "ace": "empty:",
+              "d3": "empty:",
+              "fancytree": "empty:",
+              "jqgrid": "empty:",
+              "jquery": "empty:",
+              "jqueryui": "empty:",
+              "threejs": "empty:",
+              "ckeditor": "empty:",
+              "forms": "empty:",
+              "plot": "empty:",
+              'ChemDoodle': 'empty:'
+
             },
             "modules": [
               { 
-                name: 'test'
+                name: 'init'
               }
             ]
           }
@@ -209,16 +232,31 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-text-replace');
+  grunt.loadNpmTasks('grunt-rename');
 
   var fs = require('fs');
   var path = require('path');
 
+  grunt.registerTask( 'build', [
+                        'clean:build',
+                        'buildProject',
+                        'copy:buildModules',
+                        'copy:buildUsr',
+                        'copy:build',
+                        'copy:buildLib',
+                        'requirejs',
+                        'uglify:build',
+                        'clean:build',
+                        'rename:afterBuild'
+                    ] );
+    
+  grunt.registerTask( 'buildProject', 'Build project', function() {
 
-  grunt.registerTask( 'build', 'Build project', function() {
-
+/*
     if( ! fs.existsSync('./build/') ) {
-      fs.mkdirSync( './build/');
-    }
+*/
+      fs.mkdirSync( 'build/');
+  //  }
 
     var config = grunt.option('config') || './src/usr/config/default.json';
 
@@ -281,11 +319,7 @@ module.exports = function(grunt) {
     //fs.writeFileSync( './build/modules.json', JSON.stringify( jsonStructure, false, '\t' ) );
     cfg.modules = jsonStructure;//'./modules.json';
     fs.writeFileSync( './build/default.json', JSON.stringify( cfg, false, '\t' ) );
-
-    grunt.task.run('copy:buildModules');
-    grunt.task.run('copy:buildUsr');
-    grunt.task.run('copy:build');
-    grunt.task.run('copy:buildLib');
+    //grunt.task.run('clean:buildTemp');
 
 
   });
@@ -309,14 +343,9 @@ module.exports = function(grunt) {
     ]
   );
 
-
-grunt.registerTask( 'require', ['requirejs']);
   // Takes care of module jsons
   grunt.registerTask( 'eraseModuleJsons', [ 'clean:modulesJsonErase' ] );
-  grunt.registerTask( 'createJSONModules', 'Create all modules json', function() {
-
-    
-    
+  grunt.registerTask( 'createJSONModules', 'Create all modules json', function() {    
     function recurseFolder( basePath, relPath ) {
 
       var folders = fs.readdirSync( basePath ),
