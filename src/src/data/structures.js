@@ -592,6 +592,38 @@ define(function() {
 				
 			}
 		},
+        
+        "geojson-feature-collection" : {
+            "type": "object",
+            "elements" : {
+                "features" : {
+                    "type" : "array",
+                    "elements" : {
+                        "type" : "geojson-feature"
+                    }
+                }
+            }
+        },
+        
+        "geojson-feature" : {
+            "type" : "object",
+            "elements" : {
+                "type" : "string",
+                "geometry" : "geojson-geometry"
+                "properties" : "object",
+                "bbox" : "array"
+                }
+            }
+        },
+        
+        "geojson-geometry" : {
+            "type" : "object",
+            "elements" : {
+                "type" : "string",
+                "coordinates" : "array"
+                }
+            }
+        }
 
 		"pdb": "string",
 		"magres": "string",
