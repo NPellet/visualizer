@@ -1,7 +1,8 @@
 {
 	"folders": {
 		"Advanced charting": "modules/types/chart/advanced/",
-		"statistics": "modules/types/chart/statistics/"
+		"Statistics": "modules/types/chart/statistics/",
+        "Maps" : "modules/types/chart/maps/"
 	},
 	"name": "chart",
 	"modules": []

@@ -1,0 +1,10 @@
+{
+	"modules": [
+		{
+			"moduleName": "Leaflet",
+			"url": "modules/types/chart/maps/leaflet/"
+		}
+	],
+	"name": "Maps",
+	"folders": {}
+}
