@@ -22,6 +22,12 @@ requirejs.config({
         "threejs": {
             "exports" : "THREE"
         },
+        "components/leaflet/leaflet" : {
+            "exports" : "L",
+            "init" : function() {
+                return this.L.noConflict();
+            }
+        },
 		"ckeditor": ["./components/ckeditor/adapters/jquery"],
 		"jqgrid": ["jquery", "components/jqgrid/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
