@@ -22,6 +22,9 @@ requirejs.config({
         "threejs": {
             "exports" : "THREE"
         },
+        "x2js": {
+            "exports" : "X2JS"
+        },
         "components/leaflet/leaflet" : {
             "exports" : "L",
             "init" : function() {

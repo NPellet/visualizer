@@ -159,7 +159,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 				case 'btw':
 					//if( val instanceof Array ) {
-						return " ( el > parseFloat( " + val + "[0] ) && el < parseFloat( " + val + "[1] ) )";
+						return " ( el >= parseFloat( " + val + "[0] ) && el <= parseFloat( " + val + "[1] ) )";
 					//}
 				break;
 			}
