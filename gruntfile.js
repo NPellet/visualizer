@@ -148,10 +148,7 @@ module.exports = function(grunt) {
       }
     },
 
-    replace: {
-      build: grunt.file.readJSON('./replacements.json')
-    },
-
+  
     clean: {
 
       build: {
@@ -223,7 +220,21 @@ module.exports = function(grunt) {
             ]
           }
         }
-      }
+      },
+
+      ftp: {                                            // Task
+        options: {                                    // Options
+            host: 'cheminfo.epfl.ch',
+            user: 'npellet',
+            pass: 'pass77'
+        },
+        upload: {                                    // Target
+            files: {                 
+                           // Dictionary of files
+                '/usr/local/www/sites/cheminfo.epfl.ch/site/firmenich/build/': 'build/**/*.*'                // remote destination : source
+            }
+        }
+    }
   });
 
   // Load the plugin that provides the "uglify" task.
@@ -233,9 +244,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-text-replace');
   grunt.loadNpmTasks('grunt-rename');
+  grunt.loadNpmTasks('grunt-ftp');
 
   var fs = require('fs');
   var path = require('path');
+
+  grunt.registerTask( 'upload', [ 'ftp' ] );
 
   grunt.registerTask( 'build', [
                         'clean:build',
@@ -320,28 +334,7 @@ module.exports = function(grunt) {
     cfg.modules = jsonStructure;//'./modules.json';
     fs.writeFileSync( './build/default.json', JSON.stringify( cfg, false, '\t' ) );
     //grunt.task.run('clean:buildTemp');
-
-
   });
-/*
-  [
-      'clean:build',
-      'copy:build',
-      'copy:buildLib',
-      'copy:buildUsr',
-      'buildModules',
-      'replace:build'
-  ]);
-*/
-
-  grunt.registerTask( 'buildModules', 
-    [ 
-      'createJSONModules',
-      'copy:buildModules',
-      'clean:modules',
-      'clean:modulesJson'
-    ]
-  );
 
   // Takes care of module jsons
   grunt.registerTask( 'eraseModuleJsons', [ 'clean:modulesJsonErase' ] );
