@@ -22,7 +22,7 @@ requirejs.config({
         "threejs": {
             "exports" : "THREE"
         },
-        "x2js": {
+        "components/x2js/xml2json.min": {
             "exports" : "X2JS"
         },
         "components/leaflet/leaflet" : {
