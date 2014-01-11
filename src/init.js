@@ -2,22 +2,26 @@
 requirejs.config({
 	"baseUrl": "",
 	"paths": {
-
-
 		"ace": "./components/ace/lib/ace/",
 		"d3": "./components/d3/d3.min",
 		"fancytree": "./components/fancytree/src/jquery.fancytree",
 		"jqgrid": "./components/jqgrid/js/jquery.jqGrid",
 		"jquery": "./components/jquery/jquery.min",
 		"jqueryui": "./components/jquery-ui/ui/minified/jquery-ui.min",
-		"threejs": "./components/ckeditor/ckeditor",
-		"ckeditor": "./components/three.js/build/three.min",
+		"ckeditor": "./components/ckeditor/ckeditor",
+		"threejs": "./components/three.js/build/three.min",
 		"forms": "./lib/forms/",
 		"plot": "./lib/plot/plot",
 		'ChemDoodle': 'libs/chemdoodle/ChemDoodleWeb-unpacked'
 	},
 
 	"shim": {
+        "d3": {
+            "exports" : "d3"
+        },
+        "threejs": {
+            "exports" : "THREE"
+        },
 		"ckeditor": ["./components/ckeditor/adapters/jquery"],
 		"jqgrid": ["jquery", "components/jqgrid/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
