@@ -18,12 +18,12 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Array search',
+		moduleName: 'Configured search',
 		description: 'Filters an array with configured UI criterias',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
 		license: 'MIT',
-		cssClass: 'array_search'
+		cssClass: 'configured_search'
 	};
 	
 
