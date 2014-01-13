@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', 'src/util/webworker', 'src/util/util', 'libs/jquery.event.drag/jquery.event.drag-2.2', 'libs/throttle-debounce/jquery.ba-throttle-debounce.min'], function(Default, WorkerHandler, Util) {
+define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util/util', 'components/jquery.threedubmedia/event.drag/jquery.event.drag', 'components/jquery-throttle-debounce/jquery.ba-throttle-debounce.min'], function(require, Default, WorkerHandler, Util) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -284,7 +284,7 @@ define(['modules/default/defaultview', 'src/util/webworker', 'src/util/util', 'l
 				var self = this;
 
 				if(!this.minmaxworker) {
-					this.minmaxworker = new Worker('./scripts/webworker/scripts/getminmaxmatrix.js');
+					this.minmaxworker = new Worker('src/util/workers/getminmaxmatrix.js');
 					this.minmaxworker.addEventListener('message', function(event) {
 							console.log('Get message');
 						var data = event.data.message;
@@ -396,8 +396,7 @@ define(['modules/default/defaultview', 'src/util/webworker', 'src/util/util', 'l
 		},
 		
 		initWorker: function(pxPerCell) {
-			
-			var worker = new Worker('./scripts/modules/types/chart/advanced/canvas_matrix/worker.js');
+			var worker = new Worker(require.toUrl("./worker.js"));
 			worker.postMessage({ title: "init", message: { colors: this.getColors(), squareLoading: this.squareLoading, highcontrast: this.getHighContrast() } });
 			
 			var self = this;
