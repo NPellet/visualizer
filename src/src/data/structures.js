@@ -6,6 +6,7 @@ define(function() {
 		'object': "object",
 		'mol2d': "string",
 		'molfile2D': "string",
+		'jme': "string",
 		'doi': "string",
 		'gif': "string" ,
 		'picture': "string",

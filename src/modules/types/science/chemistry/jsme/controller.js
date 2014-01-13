@@ -37,6 +37,12 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 		},
 
+		'jme': {
+			label: 'JME file format',
+			type: [ 'jme' ]
+
+		},
+
 		'smiles': {
 			label: 'Smiles'
 		}
@@ -52,7 +58,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 		onStructureChange: {
 			label: 'Molecular structure has changed',
-			refVariable: [ 'mol', 'smiles' ]
+			refVariable: [ 'mol', 'smiles', 'jme' ]
 		}
 
 	};
@@ -61,7 +67,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 	/*
 		Configuration of the module for receiving events, as a static object
 	*/
-	controller.prototype.variablesIn = [ 'smiles', 'mol' ];
+	controller.prototype.variablesIn = [ 'smiles', 'mol', 'jme' ];
 
 	/*
 		Received actions
@@ -112,9 +118,10 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 		};
 	}
 
-	controller.prototype.onChange = function(mol, smiles) {
+	controller.prototype.onChange = function(mol, smiles, jme) {
 		this.setVarFromEvent('onStructureChange', smiles, 'smiles');
 		this.setVarFromEvent('onStructureChange', new DataObject( { type:"mol2d", value: mol } ), 'mol');
+		this.setVarFromEvent('onStructureChange', new DataObject( { type:"jme", value: jme } ), 'jme');
 	};
 
 	controller.prototype.configAliases = {
