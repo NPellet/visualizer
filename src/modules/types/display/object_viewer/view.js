@@ -1,15 +1,15 @@
-define(['modules/default/defaultview', "src/util/util" ,"jstree"], function(Default, Util) {
+define(['modules/default/defaultview', "src/util/util","components/jsoneditor/jsoneditor-min"], function(Default, Util, jsoneditor) {
 
     function view() {
         this._id = Util.getNextUniqueId();
     }
     ;
 
-    Util.loadCss('components/jstree/dist/themes/default/style.min.css');
+    Util.loadCss('components/jsoneditor/jsoneditor-min.css');
 
     view.prototype = $.extend(true, {}, Default, {
         init: function() {
-            var html = '<div></div>';
+            var html = '<div id="'+this._id+'"></div>';
 
             this.dom = $(html).css({
                 height: '100%',
@@ -20,9 +20,12 @@ define(['modules/default/defaultview', "src/util/util" ,"jstree"], function(Defa
         },
         blank: {},
         inDom: function() {
+            this.editor = new jsoneditor.JSONEditor(document.getElementById(this._id),{mode:'view'});
         },
         update: {
-
+            value : function(value) {
+                this.editor.set(value);
+            }
         }
       
     });
