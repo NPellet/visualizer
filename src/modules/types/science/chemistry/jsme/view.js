@@ -56,11 +56,13 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 			'mol': function(moduleValue) {
 				if(!moduleValue) return;
 
+console.log(moduleValue.get())
+
 				var contentWindow = this.dom.get(0).contentWindow;
 				contentWindow.setMolFile(moduleValue.get());
 			
 				this._currentValue = moduleValue;
-				this._initHighlight(moduleValue);
+				this._initHighlight(moduleValue, contentWindow);
 			},
 
 			'jme': function(moduleValue) {
@@ -69,7 +71,7 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 				contentWindow.setJmeFile(moduleValue.get());
 			
 				this._currentValue = moduleValue;
-				this._initHighlight(moduleValue);
+				this._initHighlight(moduleValue, contentWindow);
 			},
 
 			'xArray': function(moduleValue, varname) {
@@ -77,7 +79,7 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 			},
 		},
 
-		_initHighlight: function(moduleValue) {
+		_initHighlight: function(moduleValue, contentWindow) {
 			API.killHighlight( this.module.getId() );
 			API.listenHighlight( moduleValue, function(onOff, highlightId) {
 				var atoms = [];
