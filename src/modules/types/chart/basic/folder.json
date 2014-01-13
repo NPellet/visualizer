@@ -1,0 +1,10 @@
+{
+	"modules": [
+		{
+			"moduleName": "Pie chart",
+			"url": "modules/types/chart/basic/pie_chart/"
+		}
+	],
+	"name": "basic",
+	"folders": {}
+}
