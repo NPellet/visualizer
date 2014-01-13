@@ -25,7 +25,7 @@ define(['modules/default/defaultview', "src/util/util","components/jsoneditor/js
         },
         update: {
             value : function(value) {
-                this.editor.set(value);
+                this.editor.set(value.get());
             }
         },
         editorChanged: function() {

@@ -31,9 +31,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
      */
     controller.prototype.references = {
         "value": {
-            type: 'object',
             label: 'A JSON object'
-        },
+        }
     };
 
 
@@ -92,7 +91,12 @@ define(['modules/default/defaultcontroller'], function(Default) {
     };
 
     controller.prototype.editorChanged = function(json) {
-        this.setVarFromEvent( 'onObjectChange', new DataObject(json) );
+        var toSet;
+        if(json instanceof Array)
+            toSet = new DataArray(json);
+        else
+            toSet = new DataObject(json);
+        this.setVarFromEvent( 'onObjectChange', toSet );
     };
 
     return controller;
