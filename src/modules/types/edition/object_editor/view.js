@@ -20,12 +20,16 @@ define(['modules/default/defaultview', "src/util/util","components/jsoneditor/js
         },
         blank: {},
         inDom: function() {
-            this.editor = new jsoneditor.JSONEditor(document.getElementById(this._id),{mode:'view'});
+            var mode = this.module.getConfiguration('editable');
+            this.editor = new jsoneditor.JSONEditor(document.getElementById(this._id),{mode:mode,change:this.editorChanged,module:this.module});
         },
         update: {
             value : function(value) {
                 this.editor.set(value);
             }
+        },
+        editorChanged: function() {
+            this.module.controller.editorChanged(this.module.view.editor.get());
         }
       
     });

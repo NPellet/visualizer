@@ -32,7 +32,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype.references = {
         "value": {
             type: 'object',
-            label: 'Any JSON object'
+            label: 'A JSON object'
         },
     };
 
@@ -41,14 +41,16 @@ define(['modules/default/defaultcontroller'], function(Default) {
      Configuration of the module for sending events, as a static object
      */
     controller.prototype.events = {
+        onObjectChange: {
+            label: 'The object has changed',
+            refVariable: ['value'],
+        }
     };
-
-
     /*
      Configuration of the module for receiving events, as a static object
-     In the form of 
-     */
-    controller.prototype.variablesIn = ['value'];
+             In the form of 
+             */
+            controller.prototype.variablesIn = ['value'];
 
     /*
      Received actions
@@ -59,15 +61,39 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
     controller.prototype.configurationStructure = function(section) {
 
-        return {};
-            
+        return {
+            groups: {
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+                    fields: {
+                        editable: {
+                            type: 'combo',
+                            title: 'Editable ?',
+                            options: [
+                                {title: 'No', key: 'view'},
+                                {title: 'Yes', key: 'tree'},
+                                {title: 'Text', key: 'text'}
+                            ],
+                            default: 'view'
+                        },
+                    }
+                }
+            }
+        };
     };
 
     controller.prototype.configFunctions = {
     };
 
     controller.prototype.configAliases = {
-    }
+        'editable': ['groups', 'group', 0, 'editable', 0]
+    };
+
+    controller.prototype.editorChanged = function(json) {
+        this.setVarFromEvent( 'onObjectChange', new DataObject(json) );
+    };
 
     return controller;
 });

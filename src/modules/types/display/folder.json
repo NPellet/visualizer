@@ -27,10 +27,6 @@
 		{
 			"moduleName": "Display value",
 			"url": "modules/types/display/single_value/"
-		},
-                {
-			"moduleName": "Object viewer",
-			"url": "modules/types/display/object_viewer/"
 		}
 	],
 	"name": "display",
