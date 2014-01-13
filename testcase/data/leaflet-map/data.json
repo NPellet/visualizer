@@ -1,0 +1,705 @@
+{
+    "result": {
+        "type":"geojson",
+        "value": {
+            "type": "Point",
+            "coordinates": [6.566144, 46.522117]
+        }
+    },
+    "multipleresults" : [
+        {
+            "type":"geojson",
+            "value": {
+                "type": "Point",
+                "coordinates": [-74.05973, 40.714353],
+                "data": {"value":"Point 1"}
+            },
+            "_highlight" : [0,2]
+        },
+        {
+            "type":"geojson",
+            "value": {
+                "type": "Point",
+                "coordinates": [-74.12973, 40.714353],
+                "data": {"value":"Point 2"}
+            },
+            "_highlight" : [1]
+        },
+        {
+            "type":"geojson",
+            "value": {
+                "type": "Point",
+                "coordinates": [-74.000973, 40.710353],
+                "data": {"value":"Point 3"}
+            },
+            "_highlight" : [3]
+        }
+    ],
+    "multiplearray" : [
+        {"value":"Line 1","_highlight":[0]},
+        {"value":"Line 2","_highlight":[1]},
+        {"value":"Line 3","_highlight":[2]},
+        {"value":"Line 4","_highlight":[3]}
+    ],
+    "polygons" : {
+        "type" : "geojson",
+        "value" : {
+            "type" : "Polygon",
+            "coordinates" : [
+                [[6.56,46.53],[6.56,46.56],[6.50,46.56]]
+            ]
+        }
+    },
+    "results": [
+    {
+      "name": 0,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.84161,
+            46.76266
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 1,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.90063,
+            46.65177
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 2,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.07233,
+            46.62143
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 3,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.57316,
+            46.49841
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 4,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.30276,
+            46.29076
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 5,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.38405,
+            46.61281
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 6,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.69561,
+            46.15497
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 7,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.32204,
+            46.86602
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 8,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.41491,
+            46.398
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 9,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.81916,
+            46.06657
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 10,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.5647,
+            46.71312
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 11,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.67742,
+            46.5452
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 12,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.84679,
+            46.17038
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 13,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            7.05646,
+            46.53239
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 14,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.99071,
+            46.48116
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 15,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.66132,
+            46.94737
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 16,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.43899,
+            46.60256
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 17,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.34085,
+            46.93647
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 18,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.73325,
+            46.61055
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 19,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.40966,
+            47.00026
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 20,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.53957,
+            46.03662
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 21,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.14062,
+            46.83058
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 22,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.27612,
+            46.41115
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 23,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            7.03954,
+            46.04246
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 24,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.86154,
+            46.58532
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 25,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.71036,
+            46.83053
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 26,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.18962,
+            46.5142
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 27,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.34629,
+            46.20526
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 28,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.55396,
+            46.57483
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 29,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.14171,
+            46.87212
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 30,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.39565,
+            46.16624
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 31,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.20893,
+            47.00457
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 32,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.42775,
+            46.29235
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 33,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.90593,
+            46.13216
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 34,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.40216,
+            46.06407
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 35,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.83321,
+            46.11548
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 36,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.52781,
+            46.57352
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 37,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.14203,
+            46.71225
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 38,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.82328,
+            46.39102
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 39,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.21097,
+            46.55218
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 40,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.49283,
+            47.01497
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 41,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.19457,
+            46.43297
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 42,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.75161,
+            46.9645
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 43,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.42476,
+            46.72585
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 44,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.39407,
+            46.84703
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 45,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.15494,
+            46.33617
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 46,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.79892,
+            46.65517
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 47,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.67669,
+            46.10323
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 48,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.99471,
+            46.75185
+          ]
+        },
+        "type": "geojson"
+      }
+    },
+    {
+      "name": 49,
+      "value": {
+        "value": {
+          "type": "Point",
+          "coordinates": [
+            6.40992,
+            46.74295
+          ]
+        },
+        "type": "geojson"
+      }
+    }
+  ]
+}

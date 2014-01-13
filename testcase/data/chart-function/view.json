@@ -1,0 +1,308 @@
+{
+	"_version": "2.2",
+	"modules": [
+		{
+			"type": "graph_function",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 41,
+				"height": 38
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"function": [
+								"sin(sqrt(0.01*x^2  + 0.01*y^2))*10"
+							],
+							"xMin": [
+								-100
+							],
+							"xMax": [
+								100
+							],
+							"yMin": [
+								-100
+							],
+							"yMax": [
+								100
+							],
+							"zMin": [
+								null
+							],
+							"zMax": [
+								null
+							],
+							"segments": [
+								100
+							]
+						}
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "graph_function",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 42,
+				"top": 0
+			},
+			"size": {
+				"width": 51,
+				"height": 38
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"function": [
+								"sin(sqrt(0.01*x^2  + 0.01*y^2))*25"
+							],
+							"xMin": [
+								-100
+							],
+							"xMax": [
+								100
+							],
+							"yMin": [
+								-100
+							],
+							"yMax": [
+								100
+							],
+							"zMin": [
+								null
+							],
+							"zMax": [
+								null
+							],
+							"segments": [
+								250
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "graph_function",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 94,
+				"top": 0
+			},
+			"size": {
+				"width": 42,
+				"height": 34
+			},
+			"configuration": {},
+			"id": 3,
+			"vars_in": {},
+			"actions_in": {}
+		},
+		{
+			"type": "graph_function",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 94,
+				"top": 35
+			},
+			"size": {
+				"width": 42,
+				"height": 29
+			},
+			"configuration": {},
+			"id": 4,
+			"vars_in": {},
+			"actions_in": {}
+		},
+		{
+			"type": "graph_function",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 43,
+				"top": 39
+			},
+			"size": {
+				"width": 50,
+				"height": 25
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"function": [
+								"sin(sqrt(0.01*1/x^2  + 0.01*1/y^2))*10"
+							],
+							"xMin": [
+								-100
+							],
+							"xMax": [
+								100
+							],
+							"yMin": [
+								-100
+							],
+							"yMax": [
+								100
+							],
+							"zMin": [
+								null
+							],
+							"zMax": [
+								null
+							],
+							"segments": [
+								100
+							]
+						}
+					]
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "graph_function",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 39
+			},
+			"size": {
+				"width": 42,
+				"height": 25
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"function": [
+								"sqrt(0.01*x^2  + 0.01*y^2)*10"
+							],
+							"xMin": [
+								-100
+							],
+							"xMax": [
+								100
+							],
+							"yMin": [
+								-100
+							],
+							"yMax": [
+								100
+							],
+							"zMin": [
+								null
+							],
+							"zMax": [
+								null
+							],
+							"segments": [
+								100
+							]
+						}
+					]
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "result",
+			"jpath": "element.result"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	}
+}

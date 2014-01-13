@@ -1,0 +1,208 @@
+{
+	"modules": [
+		{
+			"type": "display_value",
+			"title": "A kind of post-it",
+			"displayWrapper": true,
+			"position": {
+				"left": 2,
+				"top": 0
+			},
+			"size": {
+				"width": 26,
+				"height": 27
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "",
+				"align": "left",
+				"valign": "top",
+				"defaultvalue": "<strong>Post It</strong><br />\n<br />\nThis is the default value that is based on a text editor",
+				"sprintf": ""
+			},
+			"id": 1,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"zindex": 1,
+			"vars_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "display_value",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 31,
+				"top": 1
+			},
+			"size": {
+				"width": 12,
+				"height": 6
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "",
+				"align": "left",
+				"valign": "top",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"id": 2,
+			"zindex": 2,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "myValue"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			]
+		},
+		{
+			"type": "display_value",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 54,
+				"top": 5
+			},
+			"size": {
+				"width": 18,
+				"height": 10
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue1": [
+								0.4
+							],
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							]
+						}
+					],
+					"group2": [
+						{
+							"defaultvalue1": [
+								0.4
+							]
+						}
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "mylink"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "myValue",
+			"jpath": "element.myValue"
+		},
+		{
+			"varname": "mylink",
+			"jpath": "element.myLink"
+		},
+		{
+			"varname": "visualizerLayoutWriteURL",
+			"jpath": "visualizerLayoutWriteURL"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"_version": "2.2"
+}

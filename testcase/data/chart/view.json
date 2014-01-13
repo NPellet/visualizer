@@ -1,0 +1,962 @@
+{
+	"_version": "2.2",
+	"modules": [
+		{
+			"type": "spectra_displayer",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 43,
+				"top": 0
+			},
+			"size": {
+				"width": 82.01818182468415,
+				"height": 35.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								null
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								null
+							],
+							"yTopSpacing": [
+								null
+							],
+							"yBottomSpacing": [
+								null
+							],
+							"xLeftSpacing": [
+								null
+							],
+							"xRightSpacing": [
+								null
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								null
+							],
+							"maxX": [
+								null
+							],
+							"minY": [
+								null
+							],
+							"maxY": [
+								null
+							],
+							"zoom": [
+								"x"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								null
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "simpleArray",
+								"plotcolor": [
+									25,
+									240,
+									26,
+									0.55
+								],
+								"strokewidth": "10",
+								"plotcontinuous": [],
+								"peakpicking": [],
+								"markers": [
+									"markers"
+								],
+								"normalize": null,
+								"optimizeSlots": [
+									"slots"
+								]
+							},
+							{
+								"variable": "simpleArray2",
+								"plotcolor": [
+									0,
+									0,
+									0,
+									1
+								],
+								"strokewidth": "3",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": null,
+								"optimizeSlots": [
+									"slots"
+								]
+							},
+							{
+								"variable": "simpleArray3",
+								"plotcolor": [
+									247,
+									6,
+									2,
+									0.42
+								],
+								"strokewidth": "10",
+								"plotcontinuous": [],
+								"peakpicking": [],
+								"markers": [
+									"markers"
+								],
+								"normalize": null,
+								"optimizeSlots": [
+									"slots"
+								]
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "xArray",
+					"name": "simpleArray"
+				},
+				{
+					"rel": "xArray",
+					"name": "simpleArray2"
+				},
+				{
+					"rel": "xArray",
+					"name": "simpleArray3"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "jqgrid",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 42.01818182468414,
+				"height": 53.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								null
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "ID",
+								"jpath": "element.id",
+								"number": [],
+								"editable": "none",
+								"options": null,
+								"width": null
+							},
+							{
+								"name": "highlight",
+								"jpath": "element._highlight",
+								"number": []
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "infos"
+				},
+				{}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 43,
+				"top": 36
+			},
+			"size": {
+				"width": 82.01818182468415,
+				"height": 35.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								null
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								null
+							],
+							"yTopSpacing": [
+								null
+							],
+							"yBottomSpacing": [
+								null
+							],
+							"xLeftSpacing": [
+								null
+							],
+							"xRightSpacing": [
+								null
+							],
+							"yLabel": [
+								null
+							],
+							"minX": [
+								null
+							],
+							"maxX": [
+								null
+							],
+							"minY": [
+								null
+							],
+							"maxY": [
+								null
+							],
+							"zoom": [
+								null
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								null
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "chart",
+								"plotcolor": [
+									229,
+									6,
+									6,
+									1
+								],
+								"strokewidth": null,
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [
+									"markers"
+								],
+								"normalize": null,
+								"optimizeSlots": [
+									"slots"
+								]
+							},
+							{
+								"variable": "simpleArray",
+								"plotcolor": [
+									8,
+									217,
+									30,
+									1
+								],
+								"strokewidth": null,
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [
+									"markers"
+								],
+								"normalize": null,
+								"optimizeSlots": [
+									"slots"
+								]
+							}
+						]
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "chart",
+					"name": "chart"
+				},
+				{
+					"rel": "xArray",
+					"name": "simpleArray"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 126,
+				"top": 0
+			},
+			"size": {
+				"width": 59.01818182468414,
+				"height": 40.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								null
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"y",
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								null
+							],
+							"yTopSpacing": [
+								null
+							],
+							"yBottomSpacing": [
+								null
+							],
+							"xLeftSpacing": [
+								null
+							],
+							"xRightSpacing": [
+								null
+							],
+							"yLabel": [
+								null
+							],
+							"minX": [
+								null
+							],
+							"maxX": [
+								null
+							],
+							"minY": [
+								null
+							],
+							"maxY": [
+								null
+							],
+							"zoom": [
+								"xy"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								null
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "multiCharts",
+								"plotcolor": [
+									0,
+									0,
+									0,
+									1
+								],
+								"strokewidth": null,
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [
+									"markers"
+								],
+								"normalize": null,
+								"optimizeSlots": [
+									"slots"
+								]
+							}
+						]
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "chart",
+					"name": "multiCharts"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onMouseOverMarker",
+					"rel": "markerInfos",
+					"jpath": "element.id",
+					"name": "currentID"
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 126,
+				"top": 41
+			},
+			"size": {
+				"width": 59.01818182468414,
+				"height": 30.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								null
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								null
+							],
+							"yTopSpacing": [
+								null
+							],
+							"yBottomSpacing": [
+								null
+							],
+							"xLeftSpacing": [
+								null
+							],
+							"xRightSpacing": [
+								null
+							],
+							"yLabel": [
+								null
+							],
+							"minX": [
+								null
+							],
+							"maxX": [
+								null
+							],
+							"minY": [
+								null
+							],
+							"maxY": [
+								null
+							],
+							"zoom": [
+								null
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								null
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": null,
+								"plotcolor": [
+									0,
+									0,
+									0,
+									1
+								],
+								"strokewidth": null,
+								"plotcontinuous": [],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": null
+							}
+						]
+					]
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "xyArray",
+					"name": "simpleArray"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onMouseOverMarker",
+					"rel": "markerInfos",
+					"jpath": "_2",
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 54
+			},
+			"size": {
+				"width": 42.01818182468414,
+				"height": 17.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								null
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								null
+							],
+							"yTopSpacing": [
+								null
+							],
+							"yBottomSpacing": [
+								null
+							],
+							"xLeftSpacing": [
+								null
+							],
+							"xRightSpacing": [
+								null
+							],
+							"yLabel": [
+								null
+							],
+							"minX": [
+								null
+							],
+							"maxX": [
+								null
+							],
+							"minY": [
+								null
+							],
+							"maxY": [
+								null
+							],
+							"zoom": [
+								null
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								null
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "simpleArray",
+								"plotcolor": [
+									0,
+									0,
+									0,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [
+									"markers"
+								],
+								"normalize": null,
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "xArray",
+					"name": "simpleArray"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "display_value",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 187,
+				"top": 22
+			},
+			"size": {
+				"width": 16.01818182468414,
+				"height": 12.018181824684143
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "currentID"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "chart",
+			"jpath": "element.chart",
+			"url": null
+		},
+		{
+			"varname": "simpleArray",
+			"jpath": "element.simpleArray",
+			"url": null
+		},
+		{
+			"varname": "infos",
+			"jpath": "element.chart.infos",
+			"url": null
+		},
+		{
+			"varname": "multiCharts",
+			"jpath": "element.multiCharts",
+			"url": null
+		},
+		{
+			"varname": "simpleArray2",
+			"jpath": "element.simpleArray2",
+			"url": null
+		},
+		{
+			"varname": "simpleArray3",
+			"jpath": "element.simpleArray3"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"_local": false,
+	"_saved": 1384437481980,
+	"_time": 1384437481980,
+	"_name": "Master",
+	"title": "Chart demonstration"
+}

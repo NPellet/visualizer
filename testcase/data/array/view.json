@@ -1,0 +1,289 @@
+{
+	"_name": "Master",
+	"_time": 1375084553986,
+	"_saved": 1375084553986,
+	"_local": false,
+	"modules": [
+		{
+			"title": "A single value",
+			"displayWrapper": true,
+			"position": {
+				"left": 23,
+				"top": 0
+			},
+			"size": {
+				"width": 15,
+				"height": 10
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "18pt",
+				"align": "center",
+				"valign": "middle",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"id": 1,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "myFirstValue"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"url": "./modules/types/display/single_value/"
+		},
+		{
+			"title": "Simple table V1",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 22,
+				"height": 30
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								""
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							],
+							"displaySearch": []
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "ID",
+								"jpath": "element.id",
+								"number": [
+									"number"
+								],
+								"editable": "none"
+							},
+							{
+								"name": "Value",
+								"jpath": "element.theValue",
+								"number": [
+									"number"
+								],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "results"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.theValue",
+					"name": "hoverValue"
+				},
+				{
+					"event": "onSelect",
+					"rel": "row",
+					"jpath": "element.theValue",
+					"name": "clickedValue"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"url": "./modules/types/display/jqgrid/"
+		},
+		{
+			"title": "Mouse over value",
+			"displayWrapper": true,
+			"position": {
+				"left": 23,
+				"top": 11
+			},
+			"size": {
+				"width": 15,
+				"height": 9
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "14pt",
+				"align": "center",
+				"valign": "middle",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"id": 3,
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "hoverValue"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"url": "./modules/types/display/single_value/"
+		},
+		{
+			"title": "Mouse clicked value",
+			"displayWrapper": true,
+			"position": {
+				"left": 23,
+				"top": 21
+			},
+			"size": {
+				"width": 15,
+				"height": 9
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "",
+				"align": "left",
+				"valign": "top",
+				"defaultvalue": "",
+				"sprintf": ""
+			},
+			"id": 4,
+			"bgColor": "",
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "clickedValue"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"vars_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"actions_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"url": "./modules/types/display/single_value/"
+		},
+		{
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 43,
+				"top": 4
+			},
+			"size": {
+				"width": 33,
+				"height": 19
+			},
+			"configuration": {
+				"text": "<p>Comparison of table V1 and V2 with sorting and searching behaviour.</p><p><br></p>"
+			},
+			"id": 5,
+			"vars_in": {},
+			"actions_in": {},
+			"text": "<p>A simple table with linked values for mouse over and mouse clicked.</p><p>And a post-it !</p>",
+			"url": "./modules/types/display/postit/"
+		}
+	],
+	"variables": [
+		{
+			"varname": "results",
+			"jpath": "element.results",
+			"url": ""
+		},
+		{
+			"varname": "myFirstValue",
+			"jpath": "element.results.0.theValue",
+			"url": ""
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"title": "Simple module demonstration",
+	"_version": "2.2.1"
+}

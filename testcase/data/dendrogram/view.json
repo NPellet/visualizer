@@ -1,0 +1,304 @@
+{
+	"_name": "Master",
+	"_time": 1388578176876,
+	"_saved": 1388578176876,
+	"_local": false,
+	"modules": [
+		{
+			"type": "jqgrid",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 22,
+				"height": 60
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							],
+							"displaySearch": []
+						}
+					],
+					"cols": [
+						[
+							{
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "labels"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element",
+					"name": "tree"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.label",
+					"name": "label"
+				}
+			],
+			"actions_out": [
+				{}
+			]
+		},
+		{
+			"type": "dendrogram",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 28,
+				"top": 1
+			},
+			"size": {
+				"width": 66,
+				"height": 60
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nodeType": [
+								"circle"
+							],
+							"nodeSize": [
+								null
+							],
+							"nodeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"labelSize": [
+								null
+							],
+							"labelColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"edgeWidth": [
+								null
+							],
+							"edgeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"strokeWidth": [
+								null
+							],
+							"strokeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							]
+						}
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "tree",
+					"name": "tree"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			]
+		},
+		{
+			"type": "display_value",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 96,
+				"top": 10
+			},
+			"size": {
+				"width": 17,
+				"height": 11
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue1": [
+								0.4
+							],
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					],
+					"group2": [
+						{
+							"defaultvalue1": [
+								0.4
+							]
+						}
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "label"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"configuration": {
+		"variableFilters": {},
+		"title": "No title"
+	},
+	"variables": [
+		{
+			"varname": "labels",
+			"jpath": "element.labels"
+		},
+		{
+			"varname": "tree",
+			"jpath": "element.tree",
+			"url": ""
+		}
+	],
+	"_version": "2.2",
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
+}

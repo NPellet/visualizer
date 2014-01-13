@@ -1,0 +1,41 @@
+{
+	"modules": [
+		"./scripts/modules/lists/all.json"
+	],
+
+	"header": {
+		"height": "30px",
+		"elements": 
+
+		[
+			{
+				"type": "pasteview",
+				"label": "Paste view"
+			},
+
+			{
+				"type": "copyview",
+				"label": "Copy view"
+			},
+
+	        {
+	            "type": "blankview",
+	            "label": "Blank view"
+	        }
+		]
+	},
+
+	"filters": [
+		{
+			"file": "./filters/testFilter.js",
+			"name": "Filter"
+		},
+
+		{
+			"file": "./filters/doitourl.js",
+			"name": "DOI to URL"
+		}
+	]
+}
+
+

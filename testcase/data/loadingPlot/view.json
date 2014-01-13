@@ -1,0 +1,235 @@
+{
+	"modules": [
+		{
+			"type": "grid",
+			"title": "IR spectra",
+			"position": {
+				"left": 80.00000133514405,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 14,
+				"height": 68
+			},
+			"configuration": {
+				"colsjPaths": {
+					"experiment": {
+						"jpath": "element.l"
+					}
+				},
+				"nbLines": "500",
+				"colorjPath": "",
+				"displaySearch": false
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.jcamp",
+					"name": "jcamp"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "list",
+					"name": "spectra",
+					"type": [
+						null
+					]
+				}
+			],
+			"zindex": 3,
+			"displayWrapper": true,
+			"id": 1
+		},
+		{
+			"type": "grid",
+			"title": "Components",
+			"position": {
+				"left": 96.00000743865967,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 44,
+				"height": 26
+			},
+			"configuration": {
+				"colsjPaths": {
+					"Components": {
+						"jpath": "element.l"
+					}
+				},
+				"nbLines": 20,
+				"colorjPath": "",
+				"displaySearch": false
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "list",
+					"name": "components",
+					"type": [
+						null
+					]
+				}
+			],
+			"zindex": 1,
+			"id": 2
+		},
+		{
+			"type": "loading_plot",
+			"title": "Loading plot",
+			"position": {
+				"left": 0,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 78,
+				"height": 68
+			},
+			"configuration": {
+				"layers": [
+					{
+						"layer": "Components",
+						"labelsize": "30",
+						"display": "ellipse",
+						"color": "",
+						"displayLabels": true,
+						"forceField": false,
+						"labelzoomthreshold": "0",
+						"scalelabel": true,
+						"blackstroke": true,
+						"highlightEffect": {
+							"mag": "1",
+							"yStroke": true
+						}
+					},
+					{
+						"layer": "Spectra",
+						"labelsize": "10",
+						"display": "ellipse",
+						"color": "",
+						"displayLabels": true,
+						"forceField": false,
+						"labelzoomthreshold": "10",
+						"scalelabel": true,
+						"blackstroke": false,
+						"highlightEffect": {
+							"mag": "1",
+							"yStroke": true
+						}
+					}
+				],
+				"navigation": false
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.u",
+					"name": "url"
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "loading",
+					"name": "scatter",
+					"type": [
+						null
+					]
+				},
+				{
+					"rel": "preferences",
+					"name": "test"
+				}
+			],
+			"displayWrapper": true,
+			"zindex": 1,
+			"id": 3
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "IR Spectrum",
+			"displayWrapper": true,
+			"position": {
+				"left": 96,
+				"top": 28
+			},
+			"size": {
+				"width": 44,
+				"height": 40
+			},
+			"configuration": {
+				"flipX": false,
+				"flipY": false,
+				"plotinfos": [
+					{
+						"variable": "jcamp",
+						"plotcolor": "",
+						"plotcontinuous": true
+					}
+				]
+			},
+			"bgColor": "",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"dataSource": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp",
+					"type": [
+						null
+					]
+				}
+			],
+			"id": 4
+		}
+	],
+	"configuration": {
+		"showMenuBarOnStart": false,
+		"showModuleHeaderOnHover": false,
+		"title": "Principal Component Analysis and loading plot",
+		"moduleBackground": "#ffffff",
+		"variableFilters": {}
+	},
+	"_local": false,
+	"_saved": 1359621161694,
+	"_time": 1359621161694,
+	"variables": [
+		{
+			"varname": "scatter",
+			"jpath": "element.scatter",
+			"url": ""
+		},
+		{
+			"varname": "spectra",
+			"jpath": "element.spectra",
+			"url": ""
+		},
+		{
+			"varname": "components",
+			"jpath": "element.components",
+			"url": ""
+		}
+	],
+	"_version": "2.1"
+}
