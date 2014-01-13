@@ -9,7 +9,7 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 			var self = this;
 
 			this.highlightedAtom;
-			this.dom = $('<iframe />').attr('src', require.toUrl('./lib/jsme.html'));
+			this.dom = $('<iframe />').attr('src', require.toUrl('../../../../../lib/jsme/jsme.html'));
 			this.module.getDomContent().html(this.dom);
 			
 			this.dom.bind('load', function() {

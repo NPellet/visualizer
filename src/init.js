@@ -12,7 +12,7 @@ requirejs.config({
 		"threejs": "./components/three.js/build/three.min",
 		"forms": "./lib/forms/",
 		"plot": "./lib/plot/plot",
-		'ChemDoodle': 'libs/chemdoodle/ChemDoodleWeb-unpacked'
+		'ChemDoodle': 'lib/chemdoodle/ChemDoodleWeb-unpacked'
 	},
 
 	"shim": {
@@ -35,7 +35,7 @@ requirejs.config({
 		"jqgrid": ["jquery", "components/jqgrid/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"jqueryui": ["jquery"],
-		"ChemDoodle": ["libs/chemdoodle/ChemDoodleWeb-libs"]
+		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"]
 	}
 });
 
