@@ -17,11 +17,13 @@ define(['modules/default/defaultview', "src/util/util","components/jsoneditor/js
             });
 
             this.module.getDomContent( ).html(this.dom);
+            this.onReady = $.Deferred();
         },
         blank: {},
         inDom: function() {
             var mode = this.module.getConfiguration('editable');
             this.editor = new jsoneditor.JSONEditor(document.getElementById(this._id),{mode:mode,change:this.editorChanged,module:this.module});
+            this.onReady.resolve();
         },
         update: {
             value : function(value) {
