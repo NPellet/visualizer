@@ -52,13 +52,15 @@ module.exports = function(grunt) {
               './ckeditor/lang/en.js',
               './ckeditor/plugins/**',
               './farbtastic/src/farbtastic.js',
-              './jit/Jit/jit.js',
               './jquery.threedubmedia/event.drag/jquery.event.drag.js',
               './sprintf/src/sprintf.min.js',
               './requirejs/require.js',
               './jquery-throttle-debounce/jquery.ba-throttle-debounce.min.js',
               './Aristo-jQuery-UI-Theme/css/Aristo/images/*',
-              './Aristo-jQuery-UI-Theme/css/Aristo/*.css'
+              './Aristo-jQuery-UI-Theme/css/Aristo/*.css',
+              './x2js/xml2json.min.js',
+              './leaflet/**',
+              './jsoneditor/jsoneditor-min*'
             ],
 
             dest: './build/components/'
