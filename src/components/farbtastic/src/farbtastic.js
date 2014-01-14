@@ -98,7 +98,7 @@ $._farbtastic = function (container, options) {
       .find('div>*').css('position', 'absolute');
 
     // IE Fix: Recreate canvas elements with doc.createElement and excanvas.
-  /*  $.browser.msie || false && $('canvas', container).each(function () {
+    $.browser.msie || false && $('canvas', container).each(function () {
       // Fetch info.
       var attr = { 'class': $(this).attr('class'), style: this.getAttribute('style') },
           e = document.createElement('canvas');
@@ -109,7 +109,7 @@ $._farbtastic = function (container, options) {
       // Set explorerCanvas elements dimensions and absolute positioning.
       $(e).attr(dim).css(dim).css('position', 'absolute')
         .find('*').attr(dim).css(dim);
-    });*/
+    });
 
     // Determine layout
     fb.radius = (options.width - options.wheelWidth) / 2 - 1;
@@ -166,7 +166,7 @@ $._farbtastic = function (container, options) {
           // New color
           color2 = fb.pack(fb.HSLToRGB([d2, 1, 0.5]));
       if (i > 0) {
-        if (/*$.browser.msie || */false) {
+        if ($.browser.msie || false) {
           // IE's gradient calculations mess up the colors. Correct along the diagonals.
           var corr = (1 + Math.min(Math.abs(Math.tan(angle1)), Math.abs(Math.tan(Math.PI / 2 - angle1)))) / n;
           color1 = fb.pack(fb.HSLToRGB([d1 - 0.15 * corr, 1, 0.5]));
