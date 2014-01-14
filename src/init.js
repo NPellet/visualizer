@@ -36,7 +36,8 @@ requirejs.config({
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"lib/flot/jquery.flot.pie": ["jquery","lib/flot/jquery.flot"],
 		"jqueryui": ["jquery"],
-		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"]
+		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"],
+                "lib/parallel-coordinates/d3.parcoords": ["d3"]
 	}
 });
 

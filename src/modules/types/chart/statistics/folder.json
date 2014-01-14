@@ -11,6 +11,10 @@
 		{
 			"moduleName": "D3 Phylogram",
 			"url": "modules/types/chart/statistics/phylogram/"
+		},
+                {
+			"moduleName": "Parallel coordinates",
+			"url": "modules/types/chart/statistics/parallel_coordinates/"
 		}
 	],
 	"name": "statistics",
