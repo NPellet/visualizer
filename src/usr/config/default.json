@@ -2,18 +2,24 @@
 
 "filters": [
 	{
-		"file": "./testFilter.js",
+		"file": "./usr/filters/testFilter.js",
 		"name": "Filter"
 	},
 	{
-		"file": "./doitourl.js",
+		"file": "./usr/filters/doitourl.js",
 		"name": "DOI to URL"
+	},
+        {
+		"file": "./usr/filters/flickr.js",
+		"name": "Flickr image"
+	},
+        {
+		"file": "./usr/filters/gcgenerator.js",
+		"name": "Generate GC"
 	}
 ],
 
-"modules": {
-	"Science": "./modules/types/folder.json"
-},
+"modules": ["./modules/types/folder.json"],
 
 "header": {
 	"height": "30px",
