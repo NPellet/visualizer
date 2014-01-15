@@ -9,7 +9,7 @@
 			"url": "modules/types/edition/form/"
 		},
 		{
-			"moduleName": "Form",
+			"moduleName": "Simple form",
 			"url": "modules/types/edition/form_simple/"
 		},
 		{
@@ -21,6 +21,6 @@
 			"url": "modules/types/edition/object_editor/"
 		}
 	],
-	"name": "edition",
+	"name": "Edition",
 	"folders": {}
 }
