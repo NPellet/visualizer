@@ -1284,7 +1284,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			var self = this;
 			self.graph = graph;
 			if(require) {
-				require(['util/context'], function(Context) {
+				require(['src/util/context'], function(Context) {
 					Context.listen(graph._dom, [
 						['<li><a><span class="ui-icon ui-icon-cross"></span> Add vertical line</a></li>', 
 						function(e) {
@@ -1379,7 +1379,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			}, true);
 
 			if(require) {
-				require(['util/context'], function(Context) {
+				require(['src/util/context'], function(Context) {
 					Context.listen(shape._dom, [
 						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove range zone</a></li>', 
 						function(e) {
@@ -5038,7 +5038,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 
 			if(require) {
 				var self = this;
-				require(['util/context'], function(Context) {
+				require(['src/util/context'], function(Context) {
 					Context.listen(self._dom, [
 						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove integral</a></li>', 
 						function(e) {
