@@ -17,6 +17,10 @@ define(function() {
             gaussian[i] = 1 / Math.sqrt(2 * Math.PI) * Math.exp(-1 / 2 * Math.pow((i - (gaussianFactor * gaussianWidth / 2)) * 2 / gaussianWidth * ratio, 2));
         }
     }
+    
+    var getWidth = function(time) {
+        return 1 + 3 * time / 1000;
+    };
 
     function GCGenerator(options) {
         
@@ -25,9 +29,7 @@ define(function() {
         options = options || {};
         this.maxTime = options.maxTime || 3600;
         this.nbPointsPerSecond = options.nbPointsPerSecond || 5;
-        this.getWidth = options.getWidth || function(time) {
-            return 1 + 5 * time / 1000;
-        };
+        this.getWidth = options.getWidth || getWidth;
         this.annotations = [];
         this.spectrum = []; // we will create 10 points per second
         for (var i = this.maxTime * this.nbPointsPerSecond * 2; i >= 0; i = i - 2) {
