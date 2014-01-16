@@ -112,54 +112,6 @@ define(function() {
 			}
 		},
 
-		'chart': {
-
-			"type": "object",
-			"elements": {
-				"serieLabels": {
-					"type": "array",
-					"elements": "string"
-				},
-
-
-				"series": {
-					"type": "array",
-					"elements": {
-						"type": "array",
-						"elements": {
-							"type": "object",
-							"elements": {
-								"value": "number",
-							},
-							"otherElementsPossible": true
-						}
-					}
-				},
-
-				"title": "string",
-				"x": {
-					"type": "array",
-					"elements": "number"
-				},
-
-				"xAxis": {
-					"type": "object",
-					"elements": {
-						"label": "string",
-						"maxValue": "number",
-						"minValue": "number"
-					}
-				},
-
-				"yAxis": {
-					"type": "object",
-					"elements": {
-						"label": "string"
-					}
-				}
-			}
-		},
-
 		'chemical': {/*
 			"type": "object",
 			"elements": {
