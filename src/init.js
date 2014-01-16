@@ -31,6 +31,9 @@ requirejs.config({
                 return this.L.noConflict();
             }
         },
+        "components/jit/Jit/jit" : {
+            "exports" : "$jit"
+        },
 		"ckeditor": ["./components/ckeditor/adapters/jquery"],
 		"jqgrid": ["jquery", "components/jqgrid/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
