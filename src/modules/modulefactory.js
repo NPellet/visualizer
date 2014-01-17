@@ -29,7 +29,7 @@ define(['jquery', 'modules/module'], function($, Module) {
 				if( typeof folderInfo.folders[ j ] == "object" ) {
 					var folder = folderInfo.folders[ j ];
 					delete folderInfo.folders[ j ];
-					folderInfo.folders[ folderInfo.folders[ j ].name || j ] = folder;	
+					folderInfo.folders[ folder.name || j ] = folder;	
 
 				} else {
 					modulesDeferred.push( getSubFoldersFrom( folderInfo.folders[ j ] + "folder.json" ).done( function( folder ) {
