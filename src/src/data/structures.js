@@ -21,6 +21,15 @@ define(function() {
 		"downloadLink": "string",
 
 		'boolean': "boolean",
+                
+                'colorBar': {
+                    'type': 'array',
+                    'elements' : {
+                        'type': 'array',
+                        'elements': ['number','string']
+                    }
+                },
+                
 		'arrayXY': {
 			'type': 'array',
 			'elements': ['number', 'number']
