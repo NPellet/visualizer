@@ -26,11 +26,18 @@ define(['jquery', 'modules/module'], function($, Module) {
 
 			( function( j ) {
 
-				modulesDeferred.push( getSubFoldersFrom( folderInfo.folders[ j ] + "folder.json" ).done( function( folder ) {
+				if( typeof folderInfo.folders[ j ] == "object" ) {
+					var folder = folderInfo.folders[ j ];
 					delete folderInfo.folders[ j ];
-					folderInfo.folders[ folder.name ] = folder;	
-					
-				} ) );
+					folderInfo.folders[ folderInfo.folders[ j ].name || j ] = folder;	
+
+				} else {
+					modulesDeferred.push( getSubFoldersFrom( folderInfo.folders[ j ] + "folder.json" ).done( function( folder ) {
+						delete folderInfo.folders[ j ];
+						folderInfo.folders[ folder.name ] = folder;	
+						
+					} ) );
+				}
 				
 			}) ( i );
 		}
