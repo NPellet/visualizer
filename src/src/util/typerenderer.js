@@ -409,7 +409,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
             gradient += ")";
             
             div.css({height:"100%",width:"100%"})/*.css("background","-webkit-"+gradient).css("background","-moz-"+gradient)*/.css("background",gradient);
-            def.resolve(div);
+            def.resolve(div.get(0));
         };
 
 
