@@ -12,7 +12,8 @@ requirejs.config({
 		"threejs": "./components/three.js/build/three.min",
 		"forms": "./lib/forms/",
 		"plot": "./lib/plot/plot",
-		'ChemDoodle': 'lib/chemdoodle/ChemDoodleWeb-unpacked'
+		'ChemDoodle': 'lib/chemdoodle/ChemDoodleWeb-unpacked',
+        "pouchdb": "./components/pouchdb/dist/pouchdb-nightly.min"
 	},
 
 	"shim": {

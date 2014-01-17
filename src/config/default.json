@@ -18,6 +18,14 @@
 	"elements":
 	[
 		{
+			"type": "pouchsave",
+			"label": "Save view locally"
+		},
+        {
+			"type": "pouchload",
+			"label": "Load view locally"
+		},
+        {
 			"type": "autosavelocalview",
 			"label": "Autosave view"
 		},
