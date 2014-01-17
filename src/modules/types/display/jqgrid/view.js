@@ -232,7 +232,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
-
+console.log( moduleValue );
 	 			var self = this, 
 	 				list = moduleValue.get(),
 	 				jpaths = this.module.getConfiguration( 'colsjPaths' ), 
@@ -299,7 +299,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			element[ 'id' ] = String( i );
 			element[ '__source' ] = s;
 
-console.log(s);
 
 			API.listenHighlight( s, function( onOff, key ) {
 				$( "#" + i )[ onOff ? 'addClass' : 'removeClass' ]( 'ci-highlight' );

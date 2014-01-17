@@ -5,7 +5,7 @@ requirejs.config({
 		"ace": "./components/ace/lib/ace/",
 		"d3": "./components/d3/d3.min",
 		"fancytree": "./components/fancytree/src/jquery.fancytree",
-		"jqgrid": "./components/jqgrid/js/jquery.jqGrid",
+		"jqgrid": "./components/jqgrid_edit/js/jquery.jqGrid",
 		"jquery": "./components/jquery/jquery.min",
 		"jqueryui": "./components/jquery-ui/ui/minified/jquery-ui.min",
 		"ckeditor": "./components/ckeditor/ckeditor",
