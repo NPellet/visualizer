@@ -77,6 +77,11 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             ],
                             default: 'view'
                         },
+                        expanded: {
+                            type: 'checkbox',
+                            title: 'Auto-expand JSON',
+                            options: {expand: 'Yes'}
+                        }
                     }
                 }
             }
@@ -87,7 +92,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
     };
 
     controller.prototype.configAliases = {
-        'editable': ['groups', 'group', 0, 'editable', 0]
+        'editable': ['groups', 'group', 0, 'editable', 0],
+        'expanded': ['groups', 'group', 0, 'expanded', 0]
     };
 
     controller.prototype.editorChanged = function(json) {
