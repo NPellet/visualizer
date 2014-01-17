@@ -30,7 +30,7 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
                     li.bind('click', function(event) {
                         var mode = elements[event.target.text];
                         that.editor.setMode(mode);
-			//that.module.getConfiguration('editable')[0] = mode; NEED TO UPDATE CONFIG
+                        that.module.definition.configuration.groups.group[0].editable[0] = mode; // temporary waiting for API
                     });
                 });
             }
