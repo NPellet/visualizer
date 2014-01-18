@@ -49,7 +49,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 						if ( sprintfVal && sprintfVal != "" ) {
 
 							try {
-								require( [ 'libs/sprintf/sprintf' ], function( ) {
+								require( [ 'components/sprintf/src/sprintf.min' ], function( ) {
 									val = sprintf( sprintfVal, val );
 									view.fillWithVal( val );	
 								});

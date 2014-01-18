@@ -388,6 +388,29 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		else
 			def.resolve('<span style="color: red;">&#10008;</span>');
 	}
+        
+        functions.colorBar = {};
+        functions.colorBar.toscreen = function(def, value) {
+            value = Traversing.get(value);
+            
+            var div = $('<div>');
+            var gradient = "linear-gradient(to right";
+            
+            var total = 0, i = 0, l = value.length;
+            for(i = 0; i < l; total += value[i++][0]);
+            
+            var start = 0, end, color;
+            for(i = 0; i < l; i++) {
+                end = start+value[i][0]/total*100;
+                color = value[i][1];
+                gradient += ", "+color+" "+start+"%, "+color+" "+end+"%";
+                start = end;
+            }
+            gradient += ")";
+            
+            div.css({height:"100%",width:"100%"})/*.css("background","-webkit-"+gradient).css("background","-moz-"+gradient)*/.css("background",gradient);
+            def.resolve(div.get(0));
+        };
 
 
 	function _valueToScreen(deferred, data, box, args) {

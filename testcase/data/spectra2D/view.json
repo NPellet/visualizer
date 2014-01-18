@@ -1,0 +1,429 @@
+{
+	"_name": "Master",
+	"_time": 1369723829578,
+	"_saved": 1369723829578,
+	"_local": false,
+	"modules": [
+		{
+			"type": "spectra_displayer",
+			"title": "1H NMR spectrum",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 54,
+				"height": 26
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[
+									"flipX"
+								]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"x"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"zoomY"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "h1"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "COSY",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 28
+			},
+			"size": {
+				"width": 54,
+				"height": 38
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[
+									"flipX",
+									"flipY"
+								]
+							],
+							"displayAxis": [
+								[
+									"y",
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"xy"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"zoomY"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "cosy"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "HSQC (orange) / HMBC (black)",
+			"displayWrapper": true,
+			"position": {
+				"left": 55,
+				"top": 0
+			},
+			"size": {
+				"width": 68,
+				"height": 66
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[
+									"flipY",
+									"flipX"
+								]
+							],
+							"displayAxis": [
+								[
+									"y",
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"xy"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "hsqc",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							},
+							{
+								"variable": "hmbc",
+								"plotcolor": [
+									235,
+									8,
+									0,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "hsqc"
+				},
+				{
+					"rel": "jcamp",
+					"name": "hmbc"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			]
+		}
+	],
+	"configuration": {
+		"variableFilters": {},
+		"title": "2D spectra Demo"
+	},
+	"variables": [
+		{
+			"varname": "cosy",
+			"jpath": "element.cosy"
+		},
+		{
+			"varname": "hsqc",
+			"jpath": "element.hsqc"
+		},
+		{
+			"varname": "hmbc",
+			"jpath": "element.hmbc"
+		},
+		{
+			"varname": "cosyLabels",
+			"jpath": "element.cosyLabels"
+		},
+		{
+			"varname": "h1",
+			"jpath": "element.h1"
+		}
+	],
+	"_version": "2.2"
+}

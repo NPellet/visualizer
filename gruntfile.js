@@ -8,26 +8,24 @@ module.exports = function(grunt) {
     
 
     uglify: {
-
-        dynamic_mappings: {
+      build: {
         
-          files: [
-            {
-              expand: true,     // Enable dynamic expansion.
-              cwd: './src/forms/',      // Src matches are relative to this path.
-              src: ['*.js'], // Actual pattern(s) to match.
-              dest: './build/forms/',   // Destination path prefix.
-              ext: '.js',   // Dest filepaths will have this extension.
-            },
 
-            {
-              expand: true,     // Enable dynamic expansion.
-              cwd: './src/forms/',      // Src matches are relative to this path.
-              src: ['**'], // Actual pattern(s) to match.
-              dest: './build/forms/',   // Destination path prefix.
-              ext: '.js',   // Dest filepaths will have this extension.
-            }
-        ]
+        files: [
+          {
+            expand: true,     // Enable dynamic expansion.
+            cwd: './build2/',      // Src matches are relative to this path.
+            src: [
+              'init.js',
+              'modules/**/*.js',
+              'lib/**/*.js',
+              '!lib/jsmol/**/*.js'
+            ], // Actual pattern(s) to match.
+            dest: './build2/',   // Destination path prefix.
+            //overwrite: true,
+            ext: '.js',   // Dest filepaths will have this extension.
+          }
+        ]    
       }
     },
 
@@ -54,13 +52,15 @@ module.exports = function(grunt) {
               './ckeditor/lang/en.js',
               './ckeditor/plugins/**',
               './farbtastic/src/farbtastic.js',
-              './jit/Jit/jit.js',
               './jquery.threedubmedia/event.drag/jquery.event.drag.js',
               './sprintf/src/sprintf.min.js',
               './requirejs/require.js',
               './jquery-throttle-debounce/jquery.ba-throttle-debounce.min.js',
               './Aristo-jQuery-UI-Theme/css/Aristo/images/*',
-              './Aristo-jQuery-UI-Theme/css/Aristo/*.css'
+              './Aristo-jQuery-UI-Theme/css/Aristo/*.css',
+              './x2js/xml2json.min.js',
+              './leaflet/**',
+              './jsoneditor/jsoneditor-min*'
             ],
 
             dest: './build/components/'
@@ -82,7 +82,7 @@ module.exports = function(grunt) {
               './Aristo-jQuery-UI-Theme/css/Aristo/*.css'
             ],
             dest: './build/components/jqueryui/'
-          }
+          },
         ]
       },
 
@@ -150,14 +150,15 @@ module.exports = function(grunt) {
       }
     },
 
-    replace: {
-      build: grunt.file.readJSON('./replacements.json')
-    },
-
+  
     clean: {
 
       build: {
         src: [ 'build' ]
+      },
+
+      buildTemp: {
+        src: [ 'build2' ]
       },
 
       modules: {
@@ -179,11 +180,19 @@ module.exports = function(grunt) {
       }
     },
 
+    rename: {
+
+      afterBuild: {
+          src: 'build2',
+          dest: 'build'
+      }
+    },
+
     requirejs: {
         
         compile: {
           options: {
-            "dir": "./build_optimized/",
+            "dir": "./build2/",
             "appDir": "./build/",
             "baseUrl": "./",
             "optimizeCss": "none",
@@ -191,16 +200,43 @@ module.exports = function(grunt) {
             "removeCombined": true,
             "paths": {
               "jquery": "empty:",
-              "require": "empty:"
+              "require": "empty:",
+
+              "ace": "empty:",
+              "d3": "empty:",
+              "fancytree": "empty:",
+              "jqgrid": "empty:",
+              "jquery": "empty:",
+              "jqueryui": "empty:",
+              "threejs": "empty:",
+              "ckeditor": "empty:",
+              "forms": "empty:",
+              "plot": "empty:",
+              'ChemDoodle': 'empty:'
+
             },
             "modules": [
               { 
-                name: 'test'
+                name: 'init'
               }
             ]
           }
         }
-      }
+      },
+
+      ftp: {                                            // Task
+        options: {                                    // Options
+            host: 'cheminfo.epfl.ch',
+            user: 'npellet',
+            pass: 'pass77'
+        },
+        upload: {                                    // Target
+            files: {                 
+                           // Dictionary of files
+                '/usr/local/www/sites/cheminfo.epfl.ch/site/firmenich/build/': 'build/**/*.*'                // remote destination : source
+            }
+        }
+    }
   });
 
   // Load the plugin that provides the "uglify" task.
@@ -209,16 +245,34 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-text-replace');
+  grunt.loadNpmTasks('grunt-rename');
+  grunt.loadNpmTasks('grunt-ftp');
 
   var fs = require('fs');
   var path = require('path');
 
+  grunt.registerTask( 'upload', [ 'ftp' ] );
 
-  grunt.registerTask( 'build', 'Build project', function() {
+  grunt.registerTask( 'build', [
+                        'clean:build',
+                        'buildProject',
+                        'copy:buildModules',
+                        'copy:buildUsr',
+                        'copy:build',
+                        'copy:buildLib',
+                        'requirejs',
+                        'uglify:build',
+                        'clean:build',
+                        'rename:afterBuild'
+                    ] );
+    
+  grunt.registerTask( 'buildProject', 'Build project', function() {
 
+/*
     if( ! fs.existsSync('./build/') ) {
-      fs.mkdirSync( './build/');
-    }
+*/
+      fs.mkdirSync( 'build/');
+  //  }
 
     var config = grunt.option('config') || './src/usr/config/default.json';
 
@@ -281,42 +335,12 @@ module.exports = function(grunt) {
     //fs.writeFileSync( './build/modules.json', JSON.stringify( jsonStructure, false, '\t' ) );
     cfg.modules = jsonStructure;//'./modules.json';
     fs.writeFileSync( './build/default.json', JSON.stringify( cfg, false, '\t' ) );
-
-    grunt.task.run('copy:buildModules');
-    grunt.task.run('copy:buildUsr');
-    grunt.task.run('copy:build');
-    grunt.task.run('copy:buildLib');
-
-
+    //grunt.task.run('clean:buildTemp');
   });
-/*
-  [
-      'clean:build',
-      'copy:build',
-      'copy:buildLib',
-      'copy:buildUsr',
-      'buildModules',
-      'replace:build'
-  ]);
-*/
 
-  grunt.registerTask( 'buildModules', 
-    [ 
-      'createJSONModules',
-      'copy:buildModules',
-      'clean:modules',
-      'clean:modulesJson'
-    ]
-  );
-
-
-grunt.registerTask( 'require', ['requirejs']);
   // Takes care of module jsons
   grunt.registerTask( 'eraseModuleJsons', [ 'clean:modulesJsonErase' ] );
-  grunt.registerTask( 'createJSONModules', 'Create all modules json', function() {
-
-    
-    
+  grunt.registerTask( 'createJSONModules', 'Create all modules json', function() {    
     function recurseFolder( basePath, relPath ) {
 
       var folders = fs.readdirSync( basePath ),

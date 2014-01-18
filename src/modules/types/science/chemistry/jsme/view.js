@@ -9,7 +9,7 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 			var self = this;
 
 			this.highlightedAtom;
-			this.dom = $('<iframe />').attr('src', require.toUrl('./lib/jsme.html'));
+			this.dom = $('<iframe />').attr('src', require.toUrl('../../../../../lib/jsme/jsme.html'));
 			this.module.getDomContent().html(this.dom);
 			
 			this.dom.bind('load', function() {
@@ -54,28 +54,24 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 		update: { 
 
 			'mol': function(moduleValue) {
+				if(!moduleValue) return;
 
-				//console.log(moduleValue);
+console.log(moduleValue.get())
+
 				var contentWindow = this.dom.get(0).contentWindow;
-//console.log(this.dom.get(0));
-				if(!moduleValue)
-					return;
-
 				contentWindow.setMolFile(moduleValue.get());
 			
 				this._currentValue = moduleValue;
+				this._initHighlight(moduleValue, contentWindow);
+			},
 
-				API.killHighlight( this.module.getId() );
-				API.listenHighlight( moduleValue, function(onOff, highlightId) {
-					var atoms = [];
-					for ( var i = 0, l = highlightId.length ; i < l ; i++ ) {
-						if(!(moduleValue._atoms[highlightId[i]] instanceof Array))
-							moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]]];
-						atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
-					}
-					contentWindow.setHighlight(atoms, onOff);
-
-				}, false, this.module.getId());
+			'jme': function(moduleValue) {
+				if(!moduleValue) return;
+				var contentWindow = this.dom.get(0).contentWindow;
+				contentWindow.setJmeFile(moduleValue.get());
+			
+				this._currentValue = moduleValue;
+				this._initHighlight(moduleValue, contentWindow);
 			},
 
 			'xArray': function(moduleValue, varname) {
@@ -83,6 +79,19 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 			},
 		},
 
+		_initHighlight: function(moduleValue, contentWindow) {
+			API.killHighlight( this.module.getId() );
+			API.listenHighlight( moduleValue, function(onOff, highlightId) {
+				var atoms = [];
+				for ( var i = 0, l = highlightId.length ; i < l ; i++ ) {
+					if(!(moduleValue._atoms[highlightId[i]] instanceof Array))
+						moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]]];
+					atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
+				}
+				contentWindow.setHighlight(atoms, onOff);
+
+			}, false, this.module.getId());
+		},
 
 		_doHighlight: function(mol, id) {
 			if (! this._currentValue) return;

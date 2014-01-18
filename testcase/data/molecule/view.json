@@ -1,0 +1,328 @@
+{
+	"modules": [
+		{
+			"type": "2d_list",
+			"title": [
+				[
+					[
+						[
+							[
+								[
+									[
+										[
+											[
+												"2D grid"
+											]
+										]
+									]
+								]
+							]
+						]
+					]
+				]
+			],
+			"position": {
+				"left": 65,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 82,
+				"height": 34
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"colnumber": [
+								"3"
+							],
+							"valjPath": [
+								"element.entry.mol.0.value"
+							],
+							"colorjPath": [
+								"element.color"
+							],
+							"width": [
+								null
+							],
+							"height": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "result"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "cell",
+					"jpath": "element.entry.mol.0.value",
+					"name": "OneChemical"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"displayWrapper": true
+		},
+		{
+			"type": "jqgrid",
+			"title": [
+				[
+					[
+						[
+							[
+								[
+									[
+										[
+											[
+												[
+													[
+														[
+															[
+																[
+																	[
+																		[
+																			[
+																				[
+																					[
+																						"List of chemicals"
+																					]
+																				]
+																			]
+																		]
+																	]
+																]
+															]
+														]
+													]
+												]
+											]
+										]
+									]
+								]
+							]
+						]
+					]
+				]
+			],
+			"position": {
+				"left": 0,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 64,
+				"height": 70
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								null
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								"element.color"
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.entry.iupac.0.value",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Structure",
+								"jpath": "element.entry.mol.0.value",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "MF",
+								"jpath": "element.entry.mf.0.value",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 2,
+			"displayWrapper": true,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "result"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.entry.mol.0.value",
+					"name": "OneChemical"
+				},
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.entry.mol.0.gif",
+					"name": "TheImage"
+				}
+			],
+			"actions_out": [
+				{}
+			]
+		},
+		{
+			"type": "mol2d",
+			"title": "ChemDoodle web component to display molfile",
+			"position": {
+				"left": 65,
+				"right": 1,
+				"top": 35
+			},
+			"size": {
+				"width": 43,
+				"height": 35
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "mol2d",
+					"name": "OneChemical"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"displayWrapper": true
+		},
+		{
+			"type": "jsme",
+			"title": "JSME to display molfile",
+			"displayWrapper": true,
+			"position": {
+				"left": 109,
+				"top": 35
+			},
+			"size": {
+				"width": 38,
+				"height": 35
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[
+									"oldlook",
+									"depict"
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "mol",
+					"name": "OneChemical"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"configuration": {
+		"showMenuBarOnStart": false,
+		"showModuleHeaderOnHover": false,
+		"title": "Example of a ChemExper Chemical Directory result with background color",
+		"moduleBackground": "#ffffff",
+		"variableFilters": {}
+	},
+	"variables": [
+		{
+			"varname": "result",
+			"jpath": "element.result",
+			"url": ""
+		},
+		{
+			"varname": "molecule",
+			"jpath": "element.0.entry.mol.0.gif",
+			"url": ""
+		}
+	],
+	"_version": "2.2"
+}

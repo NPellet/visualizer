@@ -1,0 +1,945 @@
+{
+	"_version": "2.2.1",
+	"modules": [
+		{
+			"title": "Full list",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0.9985797882080079
+			},
+			"size": {
+				"width": 49,
+				"height": 79
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							],
+							"displaySearch": []
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Ref",
+								"jpath": "element.catalogID",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Name",
+								"jpath": "element.iupac.0.value",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "bp",
+								"jpath": "element.bp.0.low",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "mp",
+								"jpath": "element.mp.0.low",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "result"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.mol.0.value",
+					"name": "molfile"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.safety",
+					"name": "safeties"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"url": "./modules/types/display/fasttable/"
+		},
+		{
+			"title": "Structure",
+			"displayWrapper": true,
+			"position": {
+				"left": 110.99999780654908,
+				"top": 13.000000381469727
+			},
+			"size": {
+				"width": 31,
+				"height": 26
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[
+									"oldlook",
+									"depict"
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "mol",
+					"name": "molfile"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"url": "./modules/types/science/chemistry/jsme/"
+		},
+		{
+			"title": "Safety",
+			"displayWrapper": true,
+			"position": {
+				"left": 94.99999780654908,
+				"top": 39.99999885559082
+			},
+			"size": {
+				"width": 47,
+				"height": 13
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Code",
+								"jpath": "element.value",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Description",
+								"jpath": "element.description",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "safeties"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"url": "./modules/types/display/fasttable/"
+		},
+		{
+			"title": "Filter",
+			"displayWrapper": true,
+			"position": {
+				"left": 49.999997806549075,
+				"top": 1
+			},
+			"size": {
+				"width": 44,
+				"height": 30
+			},
+			"configuration": {
+				"sections": {
+					"searchFields": [
+						{
+							"sections": {},
+							"groups": {
+								"general": [
+									{
+										"name": [
+											"Catalog starts with"
+										],
+										"label": [
+											"Catalog starts with"
+										],
+										"defaultVal": [
+											""
+										],
+										"type": [
+											"text"
+										],
+										"searchOnField": [
+											"element.catalogID"
+										],
+										"operator": [
+											"starts"
+										]
+									}
+								],
+								"slider": [
+									{
+										"start": [
+											null
+										],
+										"end": [
+											null
+										],
+										"step": [
+											null
+										],
+										"range": [
+											[]
+										]
+									}
+								],
+								"options": [
+									[
+										{}
+									]
+								]
+							}
+						},
+						{
+							"sections": {},
+							"groups": {
+								"general": [
+									{
+										"name": [
+											"Iupac name contains"
+										],
+										"label": [
+											"Iupac name contains"
+										],
+										"defaultVal": [
+											""
+										],
+										"type": [
+											"text"
+										],
+										"searchOnField": [
+											"element.iupac.0.value",
+											"element.iupac.1.value"
+										],
+										"operator": [
+											"contains"
+										]
+									}
+								],
+								"slider": [
+									{
+										"start": [
+											null
+										],
+										"end": [
+											null
+										],
+										"step": [
+											null
+										],
+										"range": [
+											[]
+										]
+									}
+								],
+								"options": [
+									[
+										{}
+									]
+								]
+							}
+						},
+						{
+							"sections": {},
+							"groups": {
+								"general": [
+									{
+										"name": [
+											"mp between"
+										],
+										"label": [
+											"mp between"
+										],
+										"defaultVal": [
+											"[10,90|"
+										],
+										"type": [
+											"slider"
+										],
+										"searchOnField": [
+											"element.mp.0.low"
+										],
+										"operator": [
+											"btw"
+										]
+									}
+								],
+								"slider": [
+									{
+										"start": [
+											"0"
+										],
+										"end": [
+											"200"
+										],
+										"step": [
+											"10"
+										],
+										"range": [
+											[
+												"range"
+											]
+										]
+									}
+								],
+								"options": [
+									[
+										{}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "array",
+					"name": "result"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onSearchDone",
+					"rel": "filteredArray",
+					"jpath": "_1",
+					"name": "filtered"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"url": "./modules/types/client_interaction/array_search/"
+		},
+		{
+			"title": "Filtered list",
+			"displayWrapper": true,
+			"position": {
+				"left": 49.999997806549075,
+				"top": 31.99999885559082
+			},
+			"size": {
+				"width": 44,
+				"height": 48
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							],
+							"displaySearch": []
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "catalogID",
+								"jpath": "element.catalogID",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "iupac",
+								"jpath": "element.iupac.0.value",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "filtered"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.iupac",
+					"name": "iupacs"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.bp.0.low",
+					"name": "bp"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.safety",
+					"name": "safeties"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.risk",
+					"name": "risks"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.hazard",
+					"name": "hazards"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.mp.0.low",
+					"name": "mp"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.mol.0.value",
+					"name": "molfile"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.mf.0.value",
+					"name": "mf"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"url": "./modules/types/display/fasttable/"
+		},
+		{
+			"title": "Risk",
+			"displayWrapper": true,
+			"position": {
+				"left": 94.99999780654908,
+				"top": 53.998579788208005
+			},
+			"size": {
+				"width": 47,
+				"height": 13
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Value",
+								"jpath": "element.value",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Description",
+								"jpath": "element.description",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "risks"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"url": "./modules/types/display/fasttable/"
+		},
+		{
+			"title": "Hazard",
+			"displayWrapper": true,
+			"position": {
+				"left": 94.99999780654908,
+				"top": 67.999995803833
+			},
+			"size": {
+				"width": 47,
+				"height": 12
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Value",
+								"jpath": "element.value",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Description",
+								"jpath": "element.description",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "hazards"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"url": "./modules/types/display/fasttable/"
+		},
+		{
+			"title": "Safety",
+			"displayWrapper": true,
+			"position": {
+				"left": 94.99999780654908,
+				"top": 0.9985797882080079
+			},
+			"size": {
+				"width": 47,
+				"height": 11
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.value",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Language",
+								"jpath": "element.language",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 8,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "iupacs"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"url": "./modules/types/display/fasttable/"
+		},
+		{
+			"title": "bp",
+			"displayWrapper": true,
+			"position": {
+				"left": 94.99999780654908,
+				"top": 12.998579788208009
+			},
+			"size": {
+				"width": 15,
+				"height": 8
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue1": [
+								0.4
+							],
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								"arial"
+							],
+							"fontsize": [
+								"14pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								""
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					],
+					"group2": [
+						{
+							"defaultvalue1": [
+								0.4
+							]
+						}
+					]
+				}
+			},
+			"id": 9,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "bp"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"url": "./modules/types/display/single_value/"
+		},
+		{
+			"title": "mp",
+			"displayWrapper": true,
+			"position": {
+				"left": 94.99999780654908,
+				"top": 21.99999885559082
+			},
+			"size": {
+				"width": 15,
+				"height": 8
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue1": [
+								0.4
+							],
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								"arial"
+							],
+							"fontsize": [
+								"14pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								""
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					],
+					"group2": [
+						{
+							"defaultvalue1": [
+								0.4
+							]
+						}
+					]
+				}
+			},
+			"id": 10,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "mp"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"url": "./modules/types/display/single_value/"
+		}
+	],
+	"variables": [
+		{
+			"varname": "result",
+			"jpath": "element.chemicals",
+			"url": ""
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"_local": false,
+	"_saved": 1387056449879,
+	"_time": 1387056449879,
+	"_name": "Master"
+}

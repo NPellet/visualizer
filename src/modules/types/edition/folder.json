@@ -9,14 +9,18 @@
 			"url": "modules/types/edition/form/"
 		},
 		{
-			"moduleName": "Form",
+			"moduleName": "Simple form",
 			"url": "modules/types/edition/form_simple/"
 		},
 		{
 			"moduleName": "Var Editor",
 			"url": "modules/types/edition/var_editor/"
+		},
+                {
+			"moduleName": "Object editor",
+			"url": "modules/types/edition/object_editor/"
 		}
 	],
-	"name": "edition",
+	"name": "Edition",
 	"folders": {}
 }

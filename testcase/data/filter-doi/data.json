@@ -1,0 +1,37 @@
+{
+  "_dataFilename": "/Demo/Basic/DOI/.results/Master/1389012814979.json",
+  "_dataUrl": "http://script.epfl.ch/script/HD/Load/LFHU9bCQxZ?filename=test%40patiny.com%2F%2FDemo%2FBasic%2FDOI%2F.results%2FMaster%2F1389012814979.json",
+  "results": [
+    {
+      "typedDoi": {
+        "value": "doi:10.10.1038/nphys1170",
+        "type": "doi"
+      },
+      "doi": "doi:10.10.1038/nphys1170"
+    },
+    {
+      "typedDoi": {
+        "value": "10.1002/0470841559.ch1",
+        "type": "doi"
+      },
+      "doi": "10.1002/0470841559.ch1"
+    },
+    {
+      "typedDoi": {
+        "value": "10.3998/3336451.0004.203",
+        "type": "doi"
+      },
+      "doi": "10.3998/3336451.0004.203"
+    },
+    {
+      "typedDoi": {
+        "value": "10.1021/ja410408c",
+        "type": "doi"
+      },
+      "doi": "10.1021/ja410408c"
+    }
+  ],
+  "_saved": 1389012814980,
+  "_viewFilename": "/Demo/Basic/DOI/.views/Master/1389012814979.json",
+  "_logs": []
+}

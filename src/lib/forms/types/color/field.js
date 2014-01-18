@@ -1,7 +1,5 @@
 
-define( [ require, '../../field', 'src/util/util', 'jqueryui', 'libs/farbtastic/farbtastic' ], function( require, FieldDefaultConstructor, Util, ui ) {
-
-	Util.loadCss('scripts/libs/farbtastic/farbtastic.css');
+define( [ require, '../../field', 'src/util/util', 'jqueryui', 'components/farbtastic/src/farbtastic' ], function( require, FieldDefaultConstructor, Util, ui ) {
 
 	var FieldConstructor = function(name) {
 

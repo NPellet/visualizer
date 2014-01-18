@@ -2,6 +2,7 @@
 	"folders": {
 		"chart": "modules/types/chart/",
 		"client_interaction": "modules/types/client_interaction/",
+		"array_search": "modules/types/array_search/",
 		"display": "modules/types/display/",
 		"edition": "modules/types/edition/",
 		"legacy": "modules/types/legacy/",

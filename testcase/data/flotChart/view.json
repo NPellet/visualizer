@@ -1,0 +1,357 @@
+{
+	"_version": "2.2.1",
+	"modules": [
+		{
+			"url": "./modules/types/chart/basic/pie_chart/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 18,
+				"top": 0
+			},
+			"size": {
+				"width": 51,
+				"height": 41
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nodeType": [
+								"circle"
+							],
+							"nodeSize": [
+								null
+							],
+							"nodeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"labelSize": [
+								null
+							],
+							"labelColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"edgeWidth": [
+								null
+							],
+							"edgeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"strokeWidth": [
+								null
+							],
+							"strokeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "chart",
+					"name": "pieChart"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/chart/basic/pie_chart/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 70,
+				"top": 0
+			},
+			"size": {
+				"width": 43,
+				"height": 41
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nodeType": [
+								"circle"
+							],
+							"nodeSize": [
+								null
+							],
+							"nodeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"labelSize": [
+								null
+							],
+							"labelColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"edgeWidth": [
+								null
+							],
+							"edgeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"strokeWidth": [
+								null
+							],
+							"strokeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "yArray",
+					"name": "simpleArray"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/display/fasttable/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 17,
+				"height": 21
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Label",
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "highlight"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/display/fasttable/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 22
+			},
+			"size": {
+				"width": 17,
+				"height": 19
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Label",
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "highlight"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "pieChart",
+			"jpath": "element.pieChart"
+		},
+		{
+			"varname": "simpleArray",
+			"jpath": "element.simpleArray"
+		},
+		{
+			"varname": "highlight",
+			"jpath": "element.highlight"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
+}

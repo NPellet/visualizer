@@ -56,6 +56,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
 
 		this.module.view.lock();
 		
+		this.request = URL.post(url, data);
+		
 		this.request.done(function(data) {
 			self.request = null;
 
@@ -66,8 +68,6 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
 			}
 			self.onAnalysisDone(data);
 		});
-
-		this.request = URL.post(url, data);	
 	};
 
 
@@ -120,10 +120,6 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
 	controller.prototype.configurationReceive = {
 	};
 	
-	controller.prototype.moduleInformations = {
-		moduleName: 'Webservice for NMR spin simulation'
-	};
-
 	
 	controller.prototype.configurationStructure = function(section) {
 

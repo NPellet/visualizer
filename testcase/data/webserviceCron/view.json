@@ -1,0 +1,115 @@
+{
+	"_version": "2.2.1",
+	"modules": [
+		{
+			"url": "./modules/types/server_interaction/webservice_cron/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 7,
+				"top": 5
+			},
+			"size": {
+				"width": 56,
+				"height": 42
+			},
+			"configuration": {},
+			"id": 1,
+			"vars_in": [],
+			"actions_in": {}
+		},
+		{
+			"url": "./modules/types/server_interaction/webservice_search/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 72,
+				"top": 9
+			},
+			"size": {
+				"width": 62,
+				"height": 33
+			},
+			"configuration": {
+				"sections": {
+					"postvariables": [
+						{
+							"sections": {},
+							"groups": {
+								"postvariables": [
+									[
+										{
+											"variable": "",
+											"name": ""
+										}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {
+					"group": [
+						{
+							"url": [
+								""
+							],
+							"button": [
+								[]
+							],
+							"buttonlabel": [
+								null
+							],
+							"buttonlabel_exec": [
+								null
+							],
+							"onloadsearch": [
+								[]
+							],
+							"resultfilter": [
+								null
+							]
+						}
+					],
+					"searchparams": [
+						[
+							{}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"variables": [
+		{
+			"varname": "myValue",
+			"jpath": "element.myValue"
+		},
+		{
+			"varname": "myLink",
+			"jpath": "element.myLink"
+		}
+	]
+}

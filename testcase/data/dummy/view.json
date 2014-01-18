@@ -1,0 +1,153 @@
+{
+	"_version": "2.2.1",
+	"modules": [
+		{
+			"url": "./modules/types/dummy_module/",
+			"title": "Show table 1",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 19,
+				"height": 34
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name"
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "table1"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/dummy_module/",
+			"title": "Show table 2",
+			"displayWrapper": true,
+			"position": {
+				"left": 20,
+				"top": 0
+			},
+			"size": {
+				"width": 20,
+				"height": 34
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name"
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "table2"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "table1",
+			"jpath": "element.table1"
+		},
+		{
+			"varname": "table2",
+			"jpath": "element.table2"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"title": "Example of implementation of the dummy module"
+}

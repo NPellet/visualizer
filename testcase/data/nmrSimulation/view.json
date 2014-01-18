@@ -1,0 +1,224 @@
+{
+	"_name": "Master",
+	"_time": false,
+	"_saved": 1389025034493,
+	"_local": true,
+	"_version": "2.2",
+	"modules": [
+		{
+			"type": "spectra_displayer",
+			"title": "Simulated spectrum",
+			"displayWrapper": true,
+			"position": {
+				"left": 42,
+				"top": 0
+			},
+			"size": {
+				"width": 74.03999999761581,
+				"height": 48.039999997615816
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[
+									"flipX"
+								]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								"0"
+							],
+							"yBottomSpacing": [
+								"0.05"
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"x"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"zoomY"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "webservice_nmr_spin",
+			"title": "Describe your spin system",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 41.039999997615816,
+				"height": 28.039999997615816
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"url": [
+								"http://script-test.epfl.ch/script/Service/20131119/JGCtqW73qk"
+							],
+							"systemSize": [
+								"2"
+							],
+							"buttonlabel": [
+								"Calculate"
+							],
+							"buttonlabel_exec": [
+								"Calculating"
+							],
+							"onloadanalysis": [
+								[]
+							],
+							"button": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": "element.jcamp",
+					"name": "jcamp"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "postit",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 1,
+				"top": 28
+			},
+			"size": {
+				"width": 40,
+				"height": 21
+			},
+			"configuration": {},
+			"id": 3,
+			"vars_in": {},
+			"actions_in": {},
+			"text": "<p>NMR Simulation</p><p>Just enter the chemical shifts (in PPM) and the coupling constants (in Hz) and simulate exactly any system from AB to ABCDEF.</p>"
+		}
+	],
+	"variables": [
+		{
+			"varname": "jcamp",
+			"jpath": "element.jcamp"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"title": "Simulate NMR spin system"
+}

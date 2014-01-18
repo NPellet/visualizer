@@ -1,0 +1,519 @@
+{
+	"modules": [
+		{
+			"type": "canvas_matrix",
+			"title": "Distance matrix",
+			"position": {
+				"left": 0,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 66,
+				"height": 56
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"highcontrast": [
+								[
+									"true"
+								]
+							],
+							"color": [
+								[
+									255,
+									245,
+									245,
+									1
+								],
+								[
+									255,
+									31,
+									31,
+									1
+								],
+								[
+									17,
+									255,
+									10,
+									1
+								]
+							]
+						}
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"displayWrapper": true,
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "matrix",
+					"name": "distanceMatrix"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onPixelHover",
+					"rel": "row",
+					"jpath": "element.jcamp",
+					"name": "row"
+				},
+				{
+					"event": "onPixelHover",
+					"rel": "col",
+					"jpath": "element.jcamp",
+					"name": "col"
+				},
+				{
+					"event": "onPixelHover",
+					"rel": "intersect",
+					"jpath": "element",
+					"name": "similarity"
+				}
+			],
+			"actions_out": [
+				{}
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Row spetrum",
+			"position": {
+				"left": 68,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 61,
+				"height": 23
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"y",
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"none"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"displayWrapper": true,
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "row"
+				},
+				{
+					"rel": "fromTo",
+					"name": "fromTo"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "fromto",
+					"name": "fromTo"
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onZoomChange",
+					"rel": "fromTo",
+					"name": "fromTo"
+				}
+			],
+			"actions_out": [
+				{
+					"event": "onZoomChange",
+					"rel": "fromto",
+					"jpath": "_2",
+					"name": "fromTo"
+				}
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Column spectrum",
+			"position": {
+				"left": 68,
+				"right": 1,
+				"top": 30
+			},
+			"size": {
+				"width": 60,
+				"height": 26
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"none"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"displayWrapper": true,
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "fromTo",
+					"name": "fromTo"
+				},
+				{
+					"rel": "jcamp",
+					"name": "col"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "fromto",
+					"name": "fromTo"
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onZoomChange",
+					"rel": "fromTo",
+					"name": "fromTo"
+				}
+			],
+			"actions_out": [
+				{
+					"event": "onZoomChange",
+					"rel": "fromto",
+					"jpath": "_2",
+					"name": "fromTo"
+				}
+			]
+		},
+		{
+			"type": "display_value",
+			"title": "Untitled module",
+			"displayWrapper": false,
+			"position": {
+				"left": 130,
+				"top": 0
+			},
+			"size": {
+				"width": 34,
+				"height": 88
+			},
+			"configuration": {
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "",
+				"align": "left",
+				"valign": "top",
+				"defaultvalue": "Fiber analysis<br />\nThis example display the result of a similarity analysis of fibers done using infrared spectroscopy.<br />\n<br />\nThe similarity matrix shows as expected a red line on the diagonal. A IR spectrum is obviously similar to itself.<br />\n<br />\nEach IR spectrum is associated with a keyowrd describing the category to which it belongs. A ROC curve analysis shows a nearly perfect result. The perfect model having a AROC (Area under the ROC curve) of 1.<br />\n<br />\nHistogram for inter and intra similarity shows also a clear separation.<br />\n<br />\n",
+				"sprintf": ""
+			},
+			"bgColor": "#feffa8",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actions_in": {}
+		},
+		{
+			"type": "display_value",
+			"title": "Untitled module",
+			"displayWrapper": false,
+			"position": {
+				"left": 78,
+				"top": 23
+			},
+			"size": {
+				"width": 45,
+				"height": 8
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								"arial black"
+							],
+							"fontsize": [
+								"14pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								"Similarity %.2f"
+							]
+						}
+					]
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "similarity"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"configuration": {
+		"showMenuBarOnStart": false,
+		"showModuleHeaderOnHover": false,
+		"title": "Fiber analysis",
+		"moduleBackground": "#ffffff",
+		"variableFilters": {
+			"rocARUC": [
+				"round3dec"
+			]
+		}
+	},
+	"_local": false,
+	"_saved": 1384340810681,
+	"_time": 1384340810681,
+	"variables": [
+		{
+			"varname": "histogram",
+			"jpath": "element.histogram"
+		},
+		{
+			"varname": "rocChart",
+			"jpath": "element.rocChart"
+		},
+		{
+			"varname": "rocARUC",
+			"jpath": "element.roc.ARUC"
+		},
+		{
+			"varname": "stats",
+			"jpath": "element.stats"
+		},
+		{
+			"varname": "distanceMatrix",
+			"jpath": "element.distanceMatrix"
+		},
+		{
+			"varname": "roc",
+			"jpath": "element.roc"
+		}
+	],
+	"_version": "2.2",
+	"title": "IR spectra similarity"
+}

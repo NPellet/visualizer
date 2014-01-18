@@ -1,0 +1,37 @@
+{"result":{"visualizerLayoutReadURL":"http://script.epfl.ch/script/Run?action=LoadFile&filename=lpatiny/testcase/data/chart-mol//Demo/Chemistry/chart.view","xyChart":{"value":{"series":[[{"value":0.00365,"_highlight":[0],"info":{"bp":46.42277,"mp":-39.52537,"molfile":{"type":"mol2d","url":"testcase/data/chart-mol/molfile2d/01.mol"}
+}
+}
+,{"value":0.03718,"_highlight":[1],"info":{"bp":78.502,"mp":-39.22359,"molfile":{"type":"mol2d","url":"testcase/data/chart-mol/molfile2d/02.mol"}
+}
+}
+,{"value":0.07161,"_highlight":[2],"info":{"bp":92.55608,"mp":-3.5097,"molfile":{"type":"mol2d","url":"testcase/data/chart-mol/molfile2d/03.mol"}
+}
+}
+,{"value":0.03191,"_highlight":[3],"info":{"bp":97.55987,"mp":-72.77957,"molfile":{"type":"mol2d","url":"testcase/data/chart-mol/molfile2d/04.mol"}
+}
+}
+,{"value":0.00529,"_highlight":[4],"info":{"bp":52.86254,"mp":-67.84232,"molfile":{"type":"mol2d","url":"testcase/data/chart-mol/molfile2d/05.mol"}
+}
+}
+,{"value":0.07398,"_highlight":[5],"info":{"bp":72.00681,"mp":-98.50759,"molfile":{"type":"mol2d","url":"testcase/data/chart-mol/molfile2d/06.mol"}
+}
+}
+,{"value":0.06221,"_highlight":[6],"info":{"bp":89.52737,"mp":-15.34845,"molfile":{"type":"mol2d","url":"testcase/data/chart-mol/molfile2d/07.mol"}
+}
+}
+,{"value":0.02275,"_highlight":[7],"info":{"bp":43.53917,"mp":-87.21122,"molfile":{"type":"mol2d","url":"testcase/data/chart-mol/molfile2d/08.mol"}
+}
+}
+,{"value":0.00351,"_highlight":[8],"info":{"bp":22.33649,"mp":-16.04776,"molfile":{"type":"mol2d","url":"testcase/data/chart-mol/molfile2d/09.mol"}
+}
+}
+,{"value":0.00275,"_highlight":[9],"info":{"bp":46.75865,"mp":-32.77418,"molfile":{"type":"mol2d","url":"testcase/data/chart-mol/molfile2d/10.mol"}
+}
+}
+]],"title":"My graph","yAxis":{"label":"My Y axis"}
+,"serieLabels":["Y1 values"],"xAxis":{"minValue":-1,"label":"My X axis","maxValue":11}
+,"x":[0,1,2,3,4,5,6,7,8,9]}
+,"type":"chart"}
+}
+}
+

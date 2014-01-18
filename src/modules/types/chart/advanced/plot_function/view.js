@@ -1,4 +1,4 @@
-define(['modules/default/defaultview','src/util/util','src/util/api','libs/three/three.min'], function(Default, Util, API) {
+define(['require','modules/default/defaultview','src/util/util','src/util/api','components/three.js/build/three.min'], function(require, Default, Util, API) {
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
@@ -54,14 +54,13 @@ define(['modules/default/defaultview','src/util/util','src/util/api','libs/three
 			this.graphMesh;
 
 			this.onReady = $.Deferred();
-			require(['libs/three/js/controls/TrackballControls','libs/parser/Parser'], function() {
+
+			require(['./TrackballControls','lib/parser/Parser'], function() {
 				
 				self.createGraph();
 
 
 				self.scene = new THREE.Scene();
-				console.log(self.scene.__webglObjects);
-
 				if (! self.renderer) {
 					if (self.webgl) {
 						self.renderer = new THREE.WebGLRenderer( {antialias:true});
@@ -70,8 +69,6 @@ define(['modules/default/defaultview','src/util/util','src/util/api','libs/three
 					}
 					self.renderer.setClearColor( 0xEEEEEE, 1 );
 				}
-
-console.log(self.renderer.domElement);
 
 				self.dom.append(self.renderer.domElement);
 
@@ -111,7 +108,6 @@ console.log(self.renderer.domElement);
 			var self=this;
 
 			this.onReady.done(function() {
-				console.log("RESIZE: "+self.height+" - "+self.width);
 				var cfg = $.proxy(self.module.getConfiguration, self.module);
 				var segments=cfg('segments');
 
@@ -125,7 +121,7 @@ console.log(self.renderer.domElement);
 					self.scene.remove( self.graphMesh );
 				}
 
-				var wireTexture = new THREE.ImageUtils.loadTexture( 'scripts/libs/three/images/square.png' );
+				var wireTexture = new THREE.ImageUtils.loadTexture( require.toUrl('./square.png') );
 				wireTexture.wrapS = wireTexture.wrapT = THREE.RepeatWrapping; 
 				wireTexture.repeat.set( 40, 40 );
 				var wireMaterial = new THREE.MeshBasicMaterial( { map: wireTexture, vertexColors: THREE.VertexColors, side:THREE.DoubleSide } );

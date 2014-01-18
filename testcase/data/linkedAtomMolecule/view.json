@@ -1,0 +1,273 @@
+{
+	"modules": [
+		{
+			"title": "Elements",
+			"position": {
+				"left": 0,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 22,
+				"height": 52
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								""
+							],
+							"displaySearch": []
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Label",
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "atomTypes"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element._highlight",
+					"name": "links"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"displayWrapper": true,
+			"url": "./modules/types/display/jqgrid/"
+		},
+		{
+			"title": "Molecule display with Hover atom highlight",
+			"position": {
+				"left": 92.00000400543213,
+				"right": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 58,
+				"height": 52
+			},
+			"configuration": {},
+			"bgColor": "",
+			"displayWrapper": true,
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "mol2d",
+					"name": "aMolfile"
+				}
+			],
+			"actions_in": {
+				"rel": [
+					null
+				],
+				"name": [
+					null
+				]
+			},
+			"vars_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"actions_out": {
+				"event": [
+					null
+				],
+				"rel": [
+					null
+				],
+				"jpath": [
+					null
+				],
+				"name": [
+					null
+				]
+			},
+			"url": "./modules/types/science/chemistry/mol2d/"
+		},
+		{
+			"title": "List of molecules",
+			"displayWrapper": true,
+			"position": {
+				"left": 24,
+				"top": 0
+			},
+			"size": {
+				"width": 67,
+				"height": 52
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							],
+							"displaySearch": []
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Molecules",
+								"jpath": "element.molfile",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 3,
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "mols"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.molfile",
+					"name": "aMolfile"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"url": "./modules/types/display/jqgrid/"
+		},
+		{
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 24,
+				"top": 53
+			},
+			"size": {
+				"width": 67,
+				"height": 32
+			},
+			"configuration": {
+				"prefs": [
+					"oldlook"
+				]
+			},
+			"id": 4,
+			"bgColor": "",
+			"actionsOut": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "mol",
+					"name": "aMolfile"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"vars_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"url": "./modules/types/science/chemistry/jsme/"
+		}
+	],
+	"configuration": {
+		"showMenuBarOnStart": false,
+		"showModuleHeaderOnHover": false,
+		"title": "Example of linked information between modules",
+		"moduleBackground": "#ffffff",
+		"variableFilters": {}
+	},
+	"_local": false,
+	"_saved": 1384437656867,
+	"_time": 1384437656867,
+	"variables": [
+		{
+			"varname": "atomTypes",
+			"jpath": "element.atomTypes",
+			"url": ""
+		},
+		{
+			"varname": "mols",
+			"jpath": "element.mols",
+			"url": ""
+		}
+	],
+	"_version": "2.2.1"
+}

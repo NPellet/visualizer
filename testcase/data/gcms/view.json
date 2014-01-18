@@ -1,0 +1,505 @@
+{
+	"_name": "Master",
+	"_time": 1387032134980,
+	"_saved": 1387032134980,
+	"_local": false,
+	"modules": [
+		{
+			"type": "jqgrid",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 2,
+				"top": 0
+			},
+			"size": {
+				"width": 14,
+				"height": 20
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								null
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "result"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.jcamp",
+					"name": "jcamp"
+				}
+			],
+			"actions_out": [
+				{}
+			]
+		},
+		{
+			"type": "gcms",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 18,
+				"top": 0
+			},
+			"size": {
+				"width": 62,
+				"height": 84
+			},
+			"configuration": {
+				"continuous": false,
+				"nbzones": 1
+			},
+			"id": 2,
+			"bgColor": "",
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp"
+				},
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "",
+					"name": ""
+				}
+			],
+			"actions_out": [
+				{
+					"event": "onMSTrackingAdded",
+					"rel": "msIon",
+					"jpath": "",
+					"name": "msIon"
+				},
+				{
+					"event": "onZoomGCChange",
+					"rel": "fromtoGC",
+					"jpath": "",
+					"name": "setGCFromTo"
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onZoomGCChange",
+					"rel": "",
+					"jpath": "",
+					"name": "sdsdf"
+				},
+				{
+					"event": "onMSSelect",
+					"rel": "msSelected",
+					"jpath": "",
+					"name": "MS"
+				}
+			]
+		},
+		{
+			"type": "array_search",
+			"title": "Array search",
+			"displayWrapper": true,
+			"position": {
+				"left": 81,
+				"top": 0
+			},
+			"size": {
+				"width": 19,
+				"height": 20
+			},
+			"configuration": {
+				"sections": {
+					"searchFields": [
+						{
+							"sections": {},
+							"groups": {
+								"general": [
+									{
+										"name": [
+											"aa"
+										],
+										"label": [
+											"aa"
+										],
+										"defaultVal": [
+											null
+										],
+										"type": [
+											"text"
+										],
+										"searchOnField": [
+											"element.name"
+										],
+										"operator": [
+											"="
+										]
+									}
+								],
+								"slider": [
+									{
+										"start": [
+											null
+										],
+										"end": [
+											null
+										],
+										"step": [
+											null
+										],
+										"range": [
+											[]
+										]
+									}
+								],
+								"options": [
+									[
+										{}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "array",
+					"name": "result"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onSearchDone",
+					"rel": "array",
+					"name": "arr2"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "fasttable",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 101,
+				"top": 0
+			},
+			"size": {
+				"width": 23,
+				"height": 20
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "asasd",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "arr2"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 84,
+				"top": 27
+			},
+			"size": {
+				"width": 29,
+				"height": 15
+			},
+			"configuration": {},
+			"id": 5
+		},
+		{
+			"type": "filter",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 81,
+				"top": 21
+			},
+			"size": {
+				"width": 25,
+				"height": 13
+			},
+			"configuration": {
+				"sections": {
+					"filterElement": [
+						{
+							"sections": {},
+							"groups": {
+								"general": [
+									{
+										"name": [
+											"fieldA"
+										],
+										"label": [
+											"Field A"
+										],
+										"type": [
+											"combo"
+										]
+									}
+								],
+								"slider": [
+									{
+										"start": [
+											null
+										],
+										"end": [
+											null
+										],
+										"step": [
+											null
+										]
+									}
+								],
+								"options": [
+									[
+										{},
+										{
+											"label": "abc",
+											"value": "abc"
+										},
+										{
+											"label": "def",
+											"value": "def"
+										}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {
+					"cfg": [
+						{
+							"script": [
+								"var result = getVar('result'),\n    result2 = new DataArray();\n\nfor(var i = 0, l = result.length; i < l ; i ++) {\n    result2.push(new DataObject({ name: result[ i ].name + getConfig().fieldA }));\n}\n\nsetVar('arr3', result2);"
+							]
+						}
+					]
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "variable",
+					"name": "result"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "filter",
+					"name": "arr3"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "fasttable",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 107,
+				"top": 21
+			},
+			"size": {
+				"width": 20,
+				"height": 17
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Test",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "arr3"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"configuration": {
+		"variableFilters": {},
+		"title": "2D spectra Demo"
+	},
+	"variables": [
+		{
+			"varname": "result",
+			"jpath": "element.result",
+			"url": ""
+		},
+		{
+			"varname": "mol",
+			"jpath": "element.mol.0.MOL",
+			"url": ""
+		}
+	],
+	"_version": "2.2"
+}

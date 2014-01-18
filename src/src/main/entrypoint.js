@@ -534,7 +534,8 @@ define([	'jquery',
 			Versioning.setDataLoadCallback(doData);
 			
 			// Sets the header
-			$.getJSON( './default.json', { }, function( cfgJson ) {
+                        var configJson = urls['config'] || './config/default.json';
+			$.getJSON( configJson, { }, function( cfgJson ) {
 			
 				if( cfgJson.header ) {
 					Header.init( cfgJson.header );

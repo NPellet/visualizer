@@ -5,14 +5,14 @@ requirejs.config({
 		"ace": "./components/ace/lib/ace/",
 		"d3": "./components/d3/d3.min",
 		"fancytree": "./components/fancytree/src/jquery.fancytree",
-		"jqgrid": "./components/jqgrid/js/jquery.jqGrid",
+		"jqgrid": "./components/jqgrid_edit/js/jquery.jqGrid",
 		"jquery": "./components/jquery/jquery.min",
 		"jqueryui": "./components/jquery-ui/ui/minified/jquery-ui.min",
 		"ckeditor": "./components/ckeditor/ckeditor",
 		"threejs": "./components/three.js/build/three.min",
 		"forms": "./lib/forms/",
 		"plot": "./lib/plot/plot",
-		'ChemDoodle': 'libs/chemdoodle/ChemDoodleWeb-unpacked'
+		'ChemDoodle': 'lib/chemdoodle/ChemDoodleWeb-unpacked'
 	},
 
 	"shim": {
@@ -22,17 +22,25 @@ requirejs.config({
         "threejs": {
             "exports" : "THREE"
         },
+        "components/x2js/xml2json.min": {
+            "exports" : "X2JS"
+        },
         "components/leaflet/leaflet" : {
             "exports" : "L",
             "init" : function() {
                 return this.L.noConflict();
             }
         },
+        "components/jit/Jit/jit" : {
+            "exports" : "$jit"
+        },
 		"ckeditor": ["./components/ckeditor/adapters/jquery"],
 		"jqgrid": ["jquery", "components/jqgrid/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
+		"lib/flot/jquery.flot.pie": ["jquery","lib/flot/jquery.flot"],
 		"jqueryui": ["jquery"],
-		"ChemDoodle": ["libs/chemdoodle/ChemDoodleWeb-libs"]
+		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"],
+                "components/farbtastic/src/farbtastic" : ["components/jquery/jquery-migrate.min"]
 	}
 });
 

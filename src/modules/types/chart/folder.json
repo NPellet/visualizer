@@ -2,8 +2,9 @@
 	"folders": {
 		"Advanced charting": "modules/types/chart/advanced/",
 		"Statistics": "modules/types/chart/statistics/",
-        "Maps" : "modules/types/chart/maps/"
+        "Maps" : "modules/types/chart/maps/",
+		"basic": "modules/types/chart/basic/"
 	},
-	"name": "chart",
+	"name": "Chart",
 	"modules": []
 }

@@ -7,8 +7,12 @@
 		{
 			"moduleName": "Webservice search",
 			"url": "modules/types/server_interaction/webservice_search/"
+		},
+        {
+			"moduleName": "Webservice cron",
+			"url": "modules/types/server_interaction/webservice_cron/"
 		}
 	],
-	"name": "server_interaction",
+	"name": "Server interaction",
 	"folders": {}
 }

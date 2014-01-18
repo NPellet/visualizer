@@ -1,0 +1,613 @@
+{
+	"_name": "Master",
+	"_time": false,
+	"_saved": 1384271884968,
+	"_local": true,
+	"modules": [
+		{
+			"type": "webservice_search",
+			"title": "SMILES structure for IR",
+			"displayWrapper": false,
+			"position": {
+				"left": 29,
+				"top": 20
+			},
+			"size": {
+				"width": 13,
+				"height": 8
+			},
+			"configuration": {
+				"sections": {
+					"postvariables": [
+						{
+							"sections": {},
+							"groups": {
+								"postvariables": [
+									[
+										{
+											"variable": null,
+											"name": null
+										}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {
+					"group": [
+						{
+							"url": [
+								"http://www.chemexper.com/search/referenceIR/json2/smiles/<var:smiles>"
+							],
+							"button": [
+								[
+									"button"
+								]
+							],
+							"buttonlabel": [
+								"Search"
+							],
+							"buttonlabel_exec": [
+								"Searching"
+							],
+							"onloadsearch": [
+								[]
+							],
+							"resultfilter": [
+								null
+							]
+						}
+					],
+					"searchparams": [
+						[
+							{
+								"name": "",
+								"label": null,
+								"defaultvalue": null,
+								"fieldtype": null,
+								"fieldoptions": null
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"bgColor": [
+				249,
+				47,
+				47,
+				"0.00"
+			],
+			"zindex": 7,
+			"vars_in": [
+				{
+					"rel": "vartrigger",
+					"name": null
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": "element.entry",
+					"name": "entries"
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Hover IR spectrum",
+			"displayWrapper": true,
+			"position": {
+				"left": 37.999997806549075,
+				"top": 0
+			},
+			"size": {
+				"width": 77,
+				"height": 52
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[
+									"flipX"
+								]
+							],
+							"displayAxis": [
+								[
+									"x",
+									"y"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"x"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "jcampSelected",
+								"plotcolor": [
+									251,
+									19,
+									19,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							},
+							{
+								"variable": "jcampHover",
+								"plotcolor": [
+									0,
+									0,
+									0,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 4,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "jcampSelected"
+				},
+				{
+					"rel": "jcamp",
+					"name": "jcampHover"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "fromto",
+					"name": "fromTo"
+				}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{
+					"event": "onZoomChange",
+					"rel": "fromto",
+					"name": "fromTo"
+				}
+			]
+		},
+		{
+			"type": "display_value",
+			"title": "Molecule hover",
+			"displayWrapper": true,
+			"position": {
+				"left": 37.999997806549075,
+				"top": 52.998579788208005
+			},
+			"size": {
+				"width": 26,
+				"height": 16
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"id": 3,
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 3,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "molHover"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			]
+		},
+		{
+			"type": "display_value",
+			"title": "Molecule clicked",
+			"displayWrapper": true,
+			"position": {
+				"left": 64.99999780654908,
+				"top": 52.998579788208005
+			},
+			"size": {
+				"width": 26,
+				"height": 16
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"id": 4,
+			"bgColor": [
+				255,
+				46,
+				26,
+				"0.20"
+			],
+			"zindex": 2,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "molSelected"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			]
+		},
+		{
+			"type": "jsme",
+			"title": "Draw a fragment to search",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 37,
+				"height": 27
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"id": 5,
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 1,
+			"vars_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onStructureChange",
+					"rel": "smiles",
+					"jpath": null,
+					"name": "smiles"
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			]
+		},
+		{
+			"type": "jqgrid",
+			"title": "Search result",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 27.99999885559082
+			},
+			"size": {
+				"width": 37,
+				"height": 41
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								"100"
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Molecule",
+								"jpath": "element.mol.0.gif",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "entries"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onSelect",
+					"rel": "element",
+					"jpath": "element.mol.0.gif",
+					"name": "molSelected"
+				},
+				{
+					"event": "onSelect",
+					"rel": "element",
+					"jpath": "element.entryDetails.ir.0.jcamp",
+					"name": "jcampSelected"
+				},
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.mol.0.gif",
+					"name": "molHover"
+				},
+				{
+					"event": "onHover",
+					"rel": "element",
+					"jpath": "element.entryDetails.ir.0.jcamp",
+					"name": "jcampHover"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 2
+		},
+		{
+			"type": "postit",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 116,
+				"top": 3
+			},
+			"size": {
+				"width": 33,
+				"height": 24
+			},
+			"configuration": {},
+			"id": 7,
+			"vars_in": {},
+			"actions_in": {},
+			"text": "<p>Check if what you think is correct. You may search by substructure in a database of 10000 IR spectra and compare 2 spectra by clicking in the table.</p><p>Please allow some time to make the query !!!</p>",
+			"zindex": 2
+		}
+	],
+	"variables": [],
+	"configuration": {
+		"title": "No title"
+	},
+	"title": "Search by substructure for IR spectra and compare",
+	"_version": "2.2"
+}

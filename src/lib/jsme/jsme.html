@@ -1,0 +1,94 @@
+
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<title></title>
+		<script type="text/javascript" language="javascript" src="./jsme/jsme.nocache.js"></script>
+		<script type="text/javascript" language="javascript" src="./jquery.min.js"></script>
+		
+		
+	</head>
+	<body style="margin: 0; padding: 0;">
+
+	<div id="appletContainer"></div>
+
+	<script type="text/javascript">
+		var jsmeApplet;
+		var deferred=$.Deferred();
+
+		this.setController = function(controller) {
+			this.controller = controller;
+		}
+
+		this.setView = function(view) {
+			this.view = view;
+			deferred.resolve();
+		}
+
+		this.setMolFile = function(mol) {
+			jsmeApplet.readMolFile(mol);
+		}
+
+		this.setJmeFile = function(mol) {
+			jsmeApplet.readMolecule(mol);
+		}
+
+		this.setSize = function(w, h) {
+			var width=w+"px";
+			var height=h+"px";
+			jsmeApplet.setSize(width, height);
+//			jsmeApplet.repaint();
+		}
+
+		this.clear = function() {
+			jsmeApplet.reset();
+		}
+
+		this.setHighlight = function(atoms, onOff) {
+			var molIndex=1;
+			if(!onOff) {
+				jsmeApplet.resetAtomColors(1);	
+			} else {
+				var highlight=[];
+				for (var i=0; i<atoms.length; i++) {
+					highlight.push(atoms[i]+1);
+					highlight.push(3);
+				}
+				jsmeApplet.setAtomBackgroundColors(molIndex,highlight.join(","))	
+			}
+		}
+		
+		this.clearHighlight = function(molIndex, atomsIndex) {
+			jsmeApplet.resetAtomColors(molIndex);
+		}
+
+		function jsmeOnLoad() {
+			var w = window.innerWidth;
+			var h = window.innerHeight;
+			
+			var self=this;
+
+			//var __self = window;
+			jsmeApplet = new JSApplet.JSME("appletContainer", w + "px", h + "px");
+
+
+			deferred.done(function() {
+				jsmeApplet.options(window.view.getPrefs());
+				self.view.onReady.resolve();
+			})
+
+			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var jme = this.jsmeApplet.jmeFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles, jme); })');
+
+			// The notifyAtomHighLightJSfunction will receive two arguments: the molecule index and the atom index, both start at 1
+			jsmeApplet.setNotifyAtomHighLightChangeJSfunction('(function(mol,atom) {this.view._doHighlight(mol,atom);})');
+
+
+			
+
+		}
+	</script>
+
+
+	</body>
+</html>

@@ -1,0 +1,10 @@
+{
+	"modules": [
+		{
+			"moduleName": "Configured search",
+			"url": "modules/types/array_search/configured_search/"
+		}
+	],
+	"name": "Array search",
+	"folders": {}
+}

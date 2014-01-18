@@ -6,6 +6,7 @@ define(function() {
 		'object': "object",
 		'mol2d': "string",
 		'molfile2D': "string",
+		'jme': "string",
 		'doi': "string",
 		'gif': "string" ,
 		'picture': "string",
@@ -20,6 +21,15 @@ define(function() {
 		"downloadLink": "string",
 
 		'boolean': "boolean",
+                
+                'colorBar': {
+                    'type': 'array',
+                    'elements' : {
+                        'type': 'array',
+                        'elements': ['number','string']
+                    }
+                },
+                
 		'arrayXY': {
 			'type': 'array',
 			'elements': ['number', 'number']
@@ -106,54 +116,6 @@ define(function() {
 							'name': 'string',
 							'label': 'strig'
 						}
-					}
-				}
-			}
-		},
-
-		'chart': {
-
-			"type": "object",
-			"elements": {
-				"serieLabels": {
-					"type": "array",
-					"elements": "string"
-				},
-
-
-				"series": {
-					"type": "array",
-					"elements": {
-						"type": "array",
-						"elements": {
-							"type": "object",
-							"elements": {
-								"value": "number",
-							},
-							"otherElementsPossible": true
-						}
-					}
-				},
-
-				"title": "string",
-				"x": {
-					"type": "array",
-					"elements": "number"
-				},
-
-				"xAxis": {
-					"type": "object",
-					"elements": {
-						"label": "string",
-						"maxValue": "number",
-						"minValue": "number"
-					}
-				},
-
-				"yAxis": {
-					"type": "object",
-					"elements": {
-						"label": "string"
 					}
 				}
 			}

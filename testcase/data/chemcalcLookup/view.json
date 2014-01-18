@@ -1,0 +1,747 @@
+{
+	"modules": [
+		{
+			"title": "Enter a monoisotopic mass",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 42,
+				"height": 14
+			},
+			"configuration": {
+				"sections": {
+					"postvariables": [
+						{
+							"sections": {},
+							"groups": {
+								"postvariables": [
+									[
+										{
+											"variable": null,
+											"name": null
+										}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {
+					"group": [
+						{
+							"url": [
+								"http://www.chemcalc.org/chemcalc?monoisotopicMass=<TERM>&mfRange=C0-30H0-60N0-5O0-10F0-3Cl0-3&action=em2mf&typedResult=true&maxNumberRows=100"
+							],
+							"button": [
+								[]
+							],
+							"buttonlabel": [
+								null
+							],
+							"buttonlabel_exec": [
+								null
+							],
+							"onloadsearch": [
+								[
+									"button"
+								]
+							],
+							"resultfilter": [
+								null
+							]
+						}
+					],
+					"searchparams": [
+						[
+							{
+								"name": "TERM",
+								"label": "Monoisotopic mass",
+								"defaultvalue": "300",
+								"fieldtype": "text",
+								"fieldoptions": null
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": "element.results",
+					"name": "chemcalc"
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"url": "./modules/types/server_interaction/webservice_search/"
+		},
+		{
+			"title": "Possible molecular formula",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 16
+			},
+			"size": {
+				"width": 42,
+				"height": 64
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							],
+							"displaySearch": []
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Molecular formula",
+								"jpath": "element.mf",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Monoisotopic mass",
+								"jpath": "element.em",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Unsaturation",
+								"jpath": "element.unsat",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Error",
+								"jpath": "element.error",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "chemcalc"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.jcamp",
+					"name": "jcamp"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.mf",
+					"name": "hoverMF"
+				},
+				{
+					"event": "onSelect",
+					"rel": "row",
+					"jpath": "element.jcamp",
+					"name": "clickedJcamp"
+				},
+				{
+					"event": "onSelect",
+					"rel": "row",
+					"jpath": "element.mf",
+					"name": "clickedMF"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"url": "./modules/types/display/jqgrid/"
+		},
+		{
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 44,
+				"top": 0
+			},
+			"size": {
+				"width": 94,
+				"height": 36
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"x"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"zoomY"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "jcamp",
+								"plotcolor": [
+									255,
+									32,
+									15,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [],
+								"peakpicking": [
+									"picking"
+								],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							},
+							{
+								"variable": "clickedJcamp",
+								"plotcolor": [
+									10,
+									245,
+									0,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							},
+							{
+								"variable": "jcampFromMF",
+								"plotcolor": [
+									2,
+									33,
+									217,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp"
+				},
+				{
+					"rel": "jcamp",
+					"name": "clickedJcamp"
+				},
+				{
+					"rel": "jcamp",
+					"name": "jcampFromMF"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"url": "./modules/types/science/spectra/spectra_displayer/"
+		},
+		{
+			"title": "Molecular formula",
+			"displayWrapper": true,
+			"position": {
+				"left": 44,
+				"top": 50
+			},
+			"size": {
+				"width": 30,
+				"height": 14
+			},
+			"configuration": {
+				"sections": {
+					"postvariables": [
+						{
+							"sections": {},
+							"groups": {
+								"postvariables": [
+									[
+										{
+											"variable": null,
+											"name": null
+										}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {
+					"group": [
+						{
+							"url": [
+								"http://www.chemcalc.org/service?mf=<MF>&isotopomers=jcamp&typedResult=true"
+							],
+							"button": [
+								[]
+							],
+							"buttonlabel": [
+								null
+							],
+							"buttonlabel_exec": [
+								null
+							],
+							"onloadsearch": [
+								[]
+							],
+							"resultfilter": [
+								null
+							]
+						}
+					],
+					"searchparams": [
+						[
+							{
+								"name": "MF",
+								"label": "Molecular formula",
+								"defaultvalue": null,
+								"fieldtype": "text",
+								"fieldoptions": null
+							}
+						]
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": "element.jcamp",
+					"name": "jcampFromMF"
+				},
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": "element.mf",
+					"name": "mfFromMF"
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"url": "./modules/types/server_interaction/webservice_search/"
+		},
+		{
+			"title": "Clicked Molecular Formula",
+			"displayWrapper": true,
+			"position": {
+				"left": 76,
+				"top": 38
+			},
+			"size": {
+				"width": 30,
+				"height": 10
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									245,
+									8,
+									1
+								]
+							],
+							"font": [
+								"arial"
+							],
+							"fontsize": [
+								"24pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "clickedMF"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"url": "./modules/types/display/single_value/"
+		},
+		{
+			"title": "Hover Molecular Formula",
+			"displayWrapper": true,
+			"position": {
+				"left": 108,
+				"top": 38
+			},
+			"size": {
+				"width": 30,
+				"height": 10
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									255,
+									33,
+									20,
+									1
+								]
+							],
+							"font": [
+								"arial"
+							],
+							"fontsize": [
+								"24pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								""
+							]
+						}
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "hoverMF"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"url": "./modules/types/display/single_value/"
+		},
+		{
+			"title": "Lookup Molecular Formula",
+			"displayWrapper": true,
+			"position": {
+				"left": 44,
+				"top": 38
+			},
+			"size": {
+				"width": 30,
+				"height": 10
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									54,
+									250,
+									1
+								]
+							],
+							"font": [
+								"arial"
+							],
+							"fontsize": [
+								"24pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "mfFromMF"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": null,
+					"name": null
+				}
+			],
+			"vars_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"actions_out": [
+				{
+					"event": null,
+					"rel": null,
+					"jpath": null,
+					"name": null
+				}
+			],
+			"url": "./modules/types/display/single_value/"
+		}
+	],
+	"configuration": {
+		"variableFilters": {},
+		"title": "ChemCalc interactive lookup"
+	},
+	"_local": false,
+	"_saved": 1359620583463,
+	"_time": 1359620583463,
+	"variables": [
+		{
+			"varname": "Test",
+			"jpath": "element.Test"
+		}
+	],
+	"_version": "2.2.1",
+	"title": "Analyse molecular formula"
+}

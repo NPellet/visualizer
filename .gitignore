@@ -2,5 +2,6 @@
 .idea/*
 nbproject/*
 
-
+src/usr/*/dev
 /node_modules
+/build

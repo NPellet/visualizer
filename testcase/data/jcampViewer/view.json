@@ -1,0 +1,215 @@
+{
+	"_version": "2.2",
+	"modules": [
+		{
+			"type": "jqgrid",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 43,
+				"height": 43
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							],
+							"displaySearch": []
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "spectra"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.jcamp",
+					"name": "jcamp"
+				}
+			],
+			"actions_out": [
+				{}
+			]
+		},
+		{
+			"type": "spectra_displayer",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 45,
+				"top": 0
+			},
+			"size": {
+				"width": 73,
+				"height": 43
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[
+									"flipX"
+								]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"x"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"zoomY"
+							],
+							"fullOut": [
+								null
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "jcamp",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": [
+									"slots"
+								]
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "spectra",
+			"jpath": "element.spectra",
+			"url": ""
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	}
+}

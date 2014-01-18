@@ -1,0 +1,270 @@
+{
+	"modules": [
+		{
+			"type": "jsmol_script",
+			"title": "Script editor",
+			"displayWrapper": true,
+			"position": {
+				"left": 55,
+				"top": 0
+			},
+			"size": {
+				"width": 41.01818182468414,
+				"height": 53.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"btnvalue": [
+								"Run script"
+							],
+							"iseditable": [
+								[
+									"true"
+								]
+							],
+							"script": [
+								"cpk 0 ;"
+							]
+						}
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{
+					"event": "onActionSent",
+					"rel": "jsmolscript",
+					"jpath": "_2",
+					"name": "testscript"
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "jsmol",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 54.01818182468414,
+				"height": 53.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"script": [
+								"wireframe 0;\nribbon on;\n"
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "data",
+					"name": "pdb"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "jsmolscript",
+					"name": "testscript"
+				}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "fasttable",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 97,
+				"top": 0
+			},
+			"size": {
+				"width": 19.01818182468414,
+				"height": 23.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"displaySearch": [
+								[]
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "ID",
+								"jpath": "element.id",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "result"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onSelect",
+					"rel": "element",
+					"jpath": "element.pdb",
+					"name": "pdb"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"type": "dragdrop",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 97,
+				"top": 24
+			},
+			"size": {
+				"width": 30.01818182468414,
+				"height": 17.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"label": [
+								"Drop .pdb or .magres file"
+							],
+							"filter": [
+								null
+							]
+						}
+					],
+					"vars": [
+						[
+							{
+								"extension": "magres",
+								"filetype": "text",
+								"type": "magres",
+								"variable": "pdb"
+							},
+							{
+								"extension": "pdb",
+								"filetype": "text",
+								"type": "pdb",
+								"variable": "pdb"
+							}
+						]
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onDropped",
+					"rel": "object",
+					"jpath": "_2",
+					"name": "pdb"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "result",
+			"jpath": "element.result.pdbs",
+			"url": ""
+		},
+		{
+			"varname": "pdb",
+			"jpath": "element.result.pdbs.0.pdb",
+			"url": ""
+		}
+	],
+	"configuration": {
+		"title": "JSMol Scripting"
+	},
+	"title": "Scripting JSMol",
+	"_version": "2.2"
+}
