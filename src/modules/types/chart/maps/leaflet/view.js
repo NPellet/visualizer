@@ -5,27 +5,29 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
         this.mapLayers = {};
     }
 
-    Util.loadCss('scripts/components/leaflet/leaflet.css');
+    Util.loadCss('components/leaflet/leaflet.css');
     var blueIcon = L.icon({
-        iconUrl: 'scripts/components/leaflet/images/marker-icon.png'
+        iconUrl: 'components/leaflet/images/marker-icon.png'
     });
     var redIcon = L.icon({
-        iconUrl: 'scripts/src/modules/types/chart/maps/leaflet/marker-icon-red.png'
+        iconUrl: 'modules/types/chart/maps/leaflet/marker-icon-red.png'
     });            
 
     view.prototype = $.extend(true, {}, Default, {
         init: function() {
-            var html = '<div id="' + this.mapID + '"></div>';
 
-            this.dom = $(html).css({
+            this.dom = $('<div id="' + this.mapID + '"></div>').css({
                 height: '100%',
                 width: '100%'
             });
-
             this.module.getDomContent( ).html(this.dom);
+                
+            
             this.onReady = $.Deferred();
         },
         inDom: function() {
+        
+            this.dom.empty();
             var center = this.module.getConfiguration('mapcenter') || [46.522117, 6.566144];
             var zoom = this.module.getConfiguration('mapzoom') || 10;
             
@@ -47,8 +49,10 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                     return;
                 this.map.setView(L.latLng(value[0],value[1]));
             },
-            'geo': function(geo, varname) {
+            'geojson': function(geo, varname) {
                 var geoJson = geo.get();
+                L.geoJson(geoJson,{}).addTo(map);
+                /*var geoJson = geo.get();
                 if(!this.module.data)
                     this.module.data = geoJson;
                 if (this.mapLayers.hasOwnProperty(varname))
@@ -58,10 +62,10 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                 newMarker.data=geoJson;
                 newMarker.addTo(this.map);
                 addHighlight(this, geo, newMarker);
-                this.mapLayers[varname] = newMarker;
+                this.mapLayers[varname] = newMarker;*/
 
-            },
-            'geoarray': function(geo, varname) {
+            }/*,
+            'geocollection': function(geo, varname) {
                 if (this.mapLayers.hasOwnProperty(varname)) {
                     this.map.removeLayer(this.mapLayers[varname]);
                 }
@@ -80,24 +84,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                 }
                 group.addTo(this.map);
                 this.mapLayers[varname] = group;
-            },
-            'polygon' : function(polygon, varname) {
-                if(!polygon)
-                    return;
-                polygon=polygon.get();
-                if (this.mapLayers.hasOwnProperty(varname)) {
-                    this.map.removeLayer(this.mapLayers[varname]);
-                }
-
-                var l = polygon.length;
-                var latLngA = new Array(l);
-                for(var i = 0; i<l; i++)
-                    latLngA[i] = L.latLng(polygon[i]);
-
-                var poly = L.polygon(latLngA, {stroke: true, color:"#f00", fill:true, fillColor:"#f00", clickable:false});
-                this.map.addLayer(poly);
-                this.mapLayers[varname] = poly;
-            }
+            }*/
         },
         onResize: function() {
             this.map.invalidateSize();

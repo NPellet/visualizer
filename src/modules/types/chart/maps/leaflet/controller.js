@@ -23,13 +23,9 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
      Configuration of the input/output references of the module
      */
     controller.prototype.references = {
-        "geo": {
-            type: ['object'],
+        "geojson": {
+            type: ['geojson-feature-collection','geojson-feature','geojson-geometry'],
             label: 'A GeoJSON object'
-        },
-        "geoarray": {
-            type: ['array'],
-            label: 'Array of GeoJSON objects'
         },
         "position": {
             label : 'Geo coordinates',
@@ -40,11 +36,8 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
             type : 'number'
         },
         "item" : {
-            label : 'Marker'
-        },
-        "polygon" : {
-            type : 'array',
-            label : 'Map polygon'
+            label : "Object on the map",
+            type : "object"
         }
     };
 
@@ -55,15 +48,14 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
     controller.prototype.events = {
         onMapMove : {
             label: 'The map has moved',
-            refAction: [ 'position' ],
-            refVariable : ['polygon']
+            refAction: [ 'position' ]
         },
         onZoomChange : {
             label : 'The zoom level has changed',
             refAction: ['zoom']
         },
         onHoverMarker : {
-            label : 'Hovers a marker',
+            label : 'Hovers an object',
             refVariable : ['item']
         },
     };
@@ -73,7 +65,7 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
      Configuration of the module for receiving events, as a static object
      In the form of 
      */
-    controller.prototype.variablesIn = ['geo','geoarray','polygon','position'];
+    controller.prototype.variablesIn = ['geojson','position'];
 
     /*
      Received actions
@@ -104,33 +96,14 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
                         },
                         mapcenter: {
                             type: 'text',
-                            title: 'Map center'
+                            title: 'Map default center'
                         },
                         mapzoom: {
-                            type: 'combo',
+                            type: 'slider',
                             title: 'Zoom',
-                            options: [
-                                {title: '0', key: '0'},
-                                {title: '1', key: '1'},
-                                {title: '2', key: '2'},
-                                {title: '3', key: '3'},
-                                {title: '4', key: '4'},
-                                {title: '5', key: '5'},
-                                {title: '6', key: '6'},
-                                {title: '7', key: '7'},
-                                {title: '8', key: '8'},
-                                {title: '9', key: '9'},
-                                {title: '10', key: '10'},
-                                {title: '11', key: '11'},
-                                {title: '12', key: '12'},
-                                {title: '13', key: '13'},
-                                {title: '14', key: '14'},
-                                {title: '15', key: '15'},
-                                {title: '16', key: '16'},
-                                {title: '17', key: '17'},
-                                {title: '18', key: '18'},
-                                {title: '19', key: '19'}
-                            ],
+                            min: 0,
+                            max: 19,
+                            step: 1,
                             default: '10'
                         },
                     }
