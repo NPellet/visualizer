@@ -1,13 +1,14 @@
 {
 	"folders": {
-		"chart": "modules/types/chart/",
-		"client_interaction": "modules/types/client_interaction/",
-		"array_search": "modules/types/array_search/",
-		"display": "modules/types/display/",
-		"edition": "modules/types/edition/",
-		"legacy": "modules/types/legacy/",
-		"science": "modules/types/science/",
-		"server_interaction": "modules/types/server_interaction/"
+		"Array search": "modules/types/array_search/",
+		"Chart": "modules/types/chart/",
+		"Client interaction": "modules/types/client_interaction/",
+		"Display": "modules/types/display/",
+		"Edition": "modules/types/edition/",
+		"firmenich": "modules/types/firmenich/",
+		"Legacy": "modules/types/legacy/",
+		"Science": "modules/types/science/",
+		"Server interaction": "modules/types/server_interaction/"
 	},
 	"name": "types",
 	"modules": []

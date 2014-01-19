@@ -1,10 +1,6 @@
 {
 	"modules": [
 		{
-			"moduleName": "Array search",
-			"url": "modules/types/client_interaction/array_search/"
-		},
-		{
 			"moduleName": "Button action",
 			"url": "modules/types/client_interaction/button_action/"
 		},

@@ -9,7 +9,7 @@
 			"url": "modules/types/science/chemistry/jsmol/"
 		},
 		{
-			"moduleName": "Script Action",
+			"moduleName": "JSMol Script",
 			"url": "modules/types/science/chemistry/jsmol_script/"
 		},
 		{

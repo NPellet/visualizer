@@ -1,43 +1,50 @@
 define([ 'lib/forms/form'], function( Form ) {
 
-
-
 	function makeOptions( cfg, form ) {
 
 		var type = form.groups.general[ 0 ].type[ 0 ];
 
 		switch( type ) {
 
-			case 'combo':
-				cfg.options = makeComboOptions( form )
+			case 'checkbox':
+				cfg.options = makeCheckboxOptions( form );
 			break;
+
+			case 'combo':
+				cfg.options = makeComboOptions( form );
+			break;
+
 			case 'slider':
 				cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
 				cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
 				cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
 				cfg.range = form.groups.slider[ 0 ].range[ 0 ].indexOf( 'range' ) > -1;
-
-				console.log(form.groups.slider[ 0 ].range[ 0 ]);
 			break;
 		}
 	};
 
 	function makeComboOptions( form ) {
-		
 		form = form.groups.options[ 0 ];
-
 		var i = 0,
 			l = form.length,
 			cfg = [];
-
 		for( ; i < l ; i ++ ) {
-
 			cfg.push({ 
 				title: form[ i ].label, 
 				key: form[ i ].value
 			});
 
 		}
+		return cfg;
+	};
+
+	function makeCheckboxOptions( form ) {
+		form = form.groups.options[ 0 ];
+		var i = 0,
+			l = form.length,
+			cfg = [];
+
+		for( ; i < l ; cfg[ form[ i ].value ] = form[ i ].label, i ++ );
 
 		return cfg;
 	};
@@ -81,7 +88,8 @@ define([ 'lib/forms/form'], function( Form ) {
 								type: 'combo',
 								title: 'Field type',
 								options: [
-									{ title: 'Text', key: 'text' },
+									{ title: 'Text', key: 'text' },	
+									{ title: 'Number', key: 'float' },
 									{ title: 'Combo', key: 'combo' },
 									{ title: 'Slider', key: 'slider' },
 									{ title: 'Checkbox', key: 'checkbox' }
@@ -89,6 +97,7 @@ define([ 'lib/forms/form'], function( Form ) {
 
 								displaySource:  {
 									'text': 'text',
+									'float': 'float',
 									'combo': 'combo',
 									'checkbox': 'checkbox',
 									'slider': 'slider',
@@ -96,6 +105,24 @@ define([ 'lib/forms/form'], function( Form ) {
 							}
 						}
 					},
+
+					text: {
+
+						options: {
+							type: 'list',
+							displayTarget: [ 'text' ]
+						},
+
+						fields: {
+
+							case_sensitive: {
+								type: 'checkbox',
+								title: 'Case sensitive',
+								options: {'case_sensitive': ''}
+							}
+						}
+					},
+
 
 					slider: {
 
