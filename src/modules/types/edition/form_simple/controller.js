@@ -16,8 +16,8 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator' ], 
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Form',
-		description: 'A complex module allowing one to display a templated form in the module',
+		moduleName: 'Simple Form',
+		description: 'A simple module allowing one to display a form in the module',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
 		license: 'MIT',

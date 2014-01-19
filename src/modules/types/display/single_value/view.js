@@ -13,6 +13,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 				width: '100%'
 			} );
 
+			this.values = {};
 			this.module.getDomContent( ).html( this.dom );
 			this.fillWithVal( this.module.getConfiguration( 'defaultvalue' ) );
 		},
@@ -35,22 +36,36 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 				this.module.getDomContent( ).css( 'backgroundColor', color );
 			},
 
-			'value': function(moduleValue) {
+			'value': function( varValue, varName ) {
 				var view = this,
-					sprintfVal = this.module.getConfiguration('sprintf');
+					sprintfVal = this.module.getConfiguration('sprintf'),
+					sprintfOrder = this.module.getConfiguration('sprintfOrder');
 
-				if( moduleValue == undefined ) {
+				this.values[ varName ] = varValue;
+
+
+
+				if( varValue == undefined ) {
 
 					this.fillWithVal( this.module.getConfiguration('defaultvalue') || '' );
 
 				} else {
 
-					Renderer.toScreen( moduleValue, this.module ).always(function(val) {
+					Renderer.toScreen( varValue, this.module ).always(function(val) {
 						if ( sprintfVal && sprintfVal != "" ) {
 
 							try {
 								require( [ 'components/sprintf/src/sprintf.min' ], function( ) {
-									val = sprintf( sprintfVal, val );
+
+									var args = [ sprintfVal ];
+//									args = args.concat( sprintfOrder );
+
+									for( var i in view.values ) {
+										args.push( view.values[ i ] );	
+									}
+
+									val = sprintf.apply( this, args );
+
 									view.fillWithVal( val );	
 								});
 							} catch( e ) {

@@ -162,6 +162,12 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 							title: 'Sprintf'
 						},
 
+						sprintfOrder: {
+							type: 'text',
+							title: 'Sprintf var order',
+							multiple: true
+						},
+
 						preformatted: {
 							type: 'checkbox',
 							title: 'Preformatted',
@@ -185,6 +191,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		'valign': [ 'groups', 'group', 0, 'valign', 0 ],
 		'defaultvalue': [ 'groups', 'group', 0, 'defaultvalue', 0 ],
 		'sprintf': [ 'groups', 'group', 0, 'sprintf', 0 ],
+		'sprintfOrder': [ 'groups', 'group', 0, 'sprintfOrder' ],
 		'preformatted': [ 'groups', 'group', 0, 'preformatted', 0 ],
 	}
 
