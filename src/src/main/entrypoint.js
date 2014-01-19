@@ -9,7 +9,8 @@ define([	'jquery',
 			'src/util/versioning',
 			'modules/modulefactory',
 			'src/util/viewmigration',
-			'src/util/actionmanager'
+			'src/util/actionmanager',
+			'usr/datastructures/filelist'
 ], function($,
 			Header,
 			Repository,

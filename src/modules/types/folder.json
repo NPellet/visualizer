@@ -5,7 +5,6 @@
 		"Client interaction": "modules/types/client_interaction/",
 		"Display": "modules/types/display/",
 		"Edition": "modules/types/edition/",
-		"firmenich": "modules/types/firmenich/",
 		"Legacy": "modules/types/legacy/",
 		"Science": "modules/types/science/",
 		"Server interaction": "modules/types/server_interaction/"
