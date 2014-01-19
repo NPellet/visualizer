@@ -232,7 +232,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
-console.log( moduleValue );
+
 	 			var self = this, 
 	 				list = moduleValue.get(),
 	 				jpaths = this.module.getConfiguration( 'colsjPaths' ), 
@@ -345,6 +345,7 @@ console.log( moduleValue );
 			$.when(element._inDom, defScreen).then(function(something, value) {
 				element[l] = value;
 				self.done--;
+				console.log( value );
 				self.jqGrid('setCell', element.id, l, value);
 
 				if(defScreen.build)
