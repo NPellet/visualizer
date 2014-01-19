@@ -55,7 +55,7 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 
 		setVarFromEvent: function( event, element, rel, callback ) {
 
-			var actions, i = 0;
+			var actions, i = 0, first;
 
 			if( ! ( actions = this.module.vars_out() ) ) {
 				return;
@@ -64,6 +64,10 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 			for( ; i < actions.length; i++ ) {
 				
 				if( actions[ i ].event == event  && ( actions[ i ].rel == rel || ! rel ) ) {
+
+					if( first && callback ) {
+						callback.call( this );
+					}
 
 					if( typeof element == "function" ) {
 						element = element.call( this, actions[ i ].name, actions[ i ].jpath );
