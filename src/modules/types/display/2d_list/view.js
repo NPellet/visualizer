@@ -18,9 +18,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 				var trIndex = $(this).parent().index();
 				var cols = self.module.getConfiguration('colnumber', 4) || 4;
 				var elementId = trIndex * cols + tdIndex;
-			
 				var value = self.list.get();
-
 				self.module.controller.setVarFromEvent('onHover', value[elementId], 'cell');
 			});
 

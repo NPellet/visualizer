@@ -345,7 +345,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			$.when(element._inDom, defScreen).then(function(something, value) {
 				element[l] = value;
 				self.done--;
-				console.log( value );
+				
 				self.jqGrid('setCell', element.id, l, value);
 
 				if(defScreen.build)

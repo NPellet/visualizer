@@ -96,7 +96,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 
 		listenHighlight: function() {
 
-			if( ! Array.isArray( arguments[ 0 ]._highlight ) ) {
+			if( ! arguments[ 0 ] || typeof arguments[ 0 ]._highlight == "undefined" ) {
 				return;
 			}
 
