@@ -6,7 +6,6 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
 		initImpl: function() {
             var id = Util.getNextUniqueId();
             var db = new PouchDB('localViews');
-            var viewHandler = Versioning.getViewHandler()
             this.dialog = $("<div>").html('<form><label for="name">Name</label><input type="text" name="name" id="'+id+'" class="text ui-widget-content ui-corner-all" />');
             
             this.dialogOptions = {
@@ -16,7 +15,7 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
                         var text = $("#"+id).val();
                         text = text.replace(/[^a-zA-Z0-9-_]*/g,"");
                         db.get(text,function(err,data){
-                            var view = viewHandler._reviver(null,data.view);
+                            var view = new ViewObject(data.view,true);
                             Versioning.setViewJSON( view );
                         });
                         $(this).dialog("close");
