@@ -63,6 +63,15 @@ define(['src/util/api'], function(API) {
 		},
 
 		loadCss: function(url) {
+
+			this.loadedCss = this.loadedCss || {};
+
+			if( this.loadedCss[ url ] ) { // element is already loaded
+				return;
+			}
+
+			this.loadedCss[ url ] = true;
+
 		    var link = document.createElement("link");
 		    link.type = "text/css";
 		    link.rel = "stylesheet";
