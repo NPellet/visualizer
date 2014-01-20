@@ -1,0 +1,31 @@
+{
+  "name": "pouchdb",
+  "version": "1.1.0",
+  "description": "PouchDB is a pocket-sized database.",
+  "homepage": "https://github.com/daleharvey/pouchdb",
+  "author": "Dale Harvey",
+  "main": "dist/pouchdb-nightly.js",
+  "keywords": [
+    "pouch",
+    "couch",
+    "db"
+  ],
+  "license": "Apache",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "1.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.1.0",
+    "commit": "fc6b2a726f3dd4c8bef53dae4b08dcfa32565a6e"
+  },
+  "_source": "git://github.com/daleharvey/pouchdb.git",
+  "_target": "~1.1.0",
+  "_originalSource": "pouchdb",
+  "_direct": true
+}
