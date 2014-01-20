@@ -10,6 +10,7 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
             
             this.dialogOptions = {
                 modal:true,
+                title: "Load view",
                 buttons: {
                     "Load": function() {
                         var text = $("#"+id).val();

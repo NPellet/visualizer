@@ -5,19 +5,20 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
 
 		initImpl: function() {
             var id = Util.getNextUniqueId();
-            var db = new PouchDB('localViews');
+            var db = new PouchDB('localDatas');
             this.dialog = $("<div>").html('<form><label for="name">Name</label><input type="text" name="name" id="'+id+'" class="text ui-widget-content ui-corner-all" />');
             
             this.dialogOptions = {
                 modal:true,
+                title:"Save data",
                 buttons: {
                     "Save": function() {
                         var text = $("#"+id).val();
                         text = text.replace(/[^a-zA-Z0-9-_]*/g,"");
-                        var view = Versioning.getView();
+                        var data = Versioning.getData();
                         db.put({
                             _id:text,
-                            view:view
+                            data:data
                         });
                         $(this).dialog("close");
                     },
