@@ -118,7 +118,6 @@ define(['jquery', 'modules/module'], function($, Module) {
 
 			modules.splice( modules.indexOf( module ), 1 );
 			definitions.splice( definitions.indexOf( module.definition ), 1 );
-			
 		},
 
 		empty: function() {
