@@ -99,9 +99,9 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype.editorChanged = function(json) {
         var toSet;
         if(json instanceof Array)
-            toSet = new DataArray(json);
+            toSet = new DataArray(json,true);
         else
-            toSet = new DataObject(json);
+            toSet = new DataObject(json,true);
         this.setVarFromEvent( 'onObjectChange', toSet );
     };
 

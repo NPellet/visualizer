@@ -30,6 +30,14 @@ define(function() {
                     }
                 },
                 
+                'styledValue' : {
+                    'type' : 'object',
+                    'elements' : {
+                        'css' : 'object',
+                        'value' : 'object'
+                    }
+                },
+                
 		'arrayXY': {
 			'type': 'array',
 			'elements': ['number', 'number']
