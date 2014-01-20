@@ -3,7 +3,7 @@ define(['modules/default/defaultmodel'], function(Default) {
 	function model() {};
 	model.prototype = $.extend(true, {}, Default, {
 
-		getValue: function() {
+		/*getValue: function() {
 			return this.dataValue;
 		},
 		
@@ -22,7 +22,7 @@ define(['modules/default/defaultmodel'], function(Default) {
 				}
 				return jpaths;
 			}
-
+                        var relObj;
 			switch(rel) {
 				case 'element':
 					relObj = 'loading';
@@ -30,7 +30,7 @@ define(['modules/default/defaultmodel'], function(Default) {
 			}
 			var data = this.module.getDataFromRel(relObj);	
 			return getjPath(data);
-		}
+		}*/
 	});
 	
 	return model;
