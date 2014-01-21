@@ -21,22 +21,14 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 	function setVar( name, element, jpath, filter ) {
 
 		var self = this;
-		
-		
-		if( ! jpath || ! element.getChild ) {
-
-			setVarFilter.call( self, name, element, filter );
-
-			return;
-		}
 
 		self.repositoryData.set(name, null);
 
-		element.getChild( jpath ).done( function( returned ) {
+		element.getChild( jpath, true ).done( function( returned ) {
 
 			setVarFilter.call( self, name, returned, filter );
 
-		});
+		} );	
 	}
 
 	function setHighlight( element, value ) {

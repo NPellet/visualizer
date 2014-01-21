@@ -185,8 +185,8 @@ define([ 'lib/forms/form'], function( Form ) {
 				el.groups.general.fields.searchOnField = {
 					type: 'combo',
 					multiple: true,
-					title: 'Search fields',
-					options: jpath
+					title: jpath.name,
+					options: jpath.jpaths
 				};
 			}
 
@@ -195,7 +195,7 @@ define([ 'lib/forms/form'], function( Form ) {
 				el.groups.general.fields.operator = {
 					type: 'combo',
 					multiple: true,
-					title: 'Operator',
+					title: operator.name,
 					options: [
 						{ title: '=', key: '=' },
 						{ title: '!=', key: '!=' },

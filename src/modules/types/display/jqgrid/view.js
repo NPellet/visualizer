@@ -152,8 +152,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			   		}
 
 			   		self.elements[ rowId.replace( self.uniqId, '') ].setChild( colModel[ colNum ]._jpath, value, { moduleid: self.module.getId( ) } );
-
-			   		console.log(self.elements[ rowId.replace( self.uniqId, '') ]);
 			   		self.applyFilterToRow( rowId.replace( self.uniqId, '' ), rowId );
 			   	},
 
@@ -191,6 +189,20 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 					self.module.controller.lineClick( self.elements[ rowid.replace( self.uniqId, '' ) ] );
 			    },
+
+			    onSortCol: function() {
+
+			    	var ids = self.jqGrid( 'getDataIDs' ),
+						i = 0,
+						l = ids.length,
+						id;
+
+					for( ; i < l ; i++ ) {
+						
+						self.tableElements[ id ]._inDom.resolve( );
+					}
+
+			    }
 			});
 
 			this.jqGrid = $.proxy( $( this.domTable ).jqGrid, $( this.domTable ) );
@@ -280,6 +292,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			self.done = 0;
 
 			for( ; i < l ; i++) {
+
+				source[ i ].onChange( function() {
+					console.log( arguments );
+				} );
+
 				arrayToPush.push( this.buildElement( source[ i ], self.uniqId + i, jpaths ) );
 			}
 
@@ -348,13 +365,15 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				
 				self.jqGrid('setCell', element.id, l, value);
 
-				if(defScreen.build)
+				if( defScreen.build ) {
 					defScreen.build();
+				}
 				
 				/* todo In this required ??? */
 				if(self.done == 0) {
 					self.onResize(self.width, self.height);
 				}
+
 			}, function(value) {
 
 				element[l] = value;

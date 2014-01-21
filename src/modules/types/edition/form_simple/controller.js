@@ -1,4 +1,4 @@
-define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator' ], function( Default, FormCreator ) {
+define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'src/util/datatraversing' ], function( Default, FormCreator, Traversing ) {
 	
 	/**
 	 * Creates a new empty controller
@@ -29,9 +29,13 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator' ], 
 		Configuration of the input/output references of the module
 	*/
 	controller.prototype.references = {
+		input_object: {
+			label: 'Input object'
+		},
+
 		formValue: {
 			type: 'object',
-			label: 'JSON Value of the form'
+			label: 'Value of the form'
 		}
 	};
 
@@ -51,15 +55,24 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator' ], 
 		Configuration of the module for receiving events, as a static object
 		In the form of 
 	*/
-	controller.prototype.variablesIn = [ ];
+	controller.prototype.variablesIn = [ 'input_object' ];
 
 
 	controller.prototype.configurationStructure = function() {
 
+		var jpaths = [];
+		arr = this.module.getDataFromRel('input_object');
+
+		if( arr ) {
+			arr = arr.get();
+			Traversing.getJPathsFromElement( arr, jpaths );
+		}
+
+
 		return {
 			sections: {
 
-				structure: FormCreator.makeConfig(),
+				structure: FormCreator.makeConfig({ jpaths: jpaths, name: 'Fill with'}),
 		
 				template: {
 

@@ -16,7 +16,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.number = {};
 	functions.number.toscreen = function(def, val) {
-		def.reject(val);
+		def.reject( Traversing.get( val ) );
 	}
 
 	functions.chemical = {};
@@ -48,13 +48,19 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 			ChemDoodle.ELEMENT.S.jmolColor="#CCCC30";
 
 			var id = Util.getNextUniqueId();
+			var id2 = Util.getNextUniqueId();
 			
+			var div = '<div id="' + id + '" />';
+
 			// Find the dom in here
-			var can = $( '<canvas />', { id: id } ).get(0);
+			var can = $( '<canvas />', { id: id2 } ).get( 0 );
 			
 			def.build = function() {
 	//console.trace();
-				var canvas = new ChemDoodle.ViewerCanvas(id);
+
+				$("#" + id ).html( can );
+
+				var canvas = new ChemDoodle.ViewerCanvas(id2);
 				var parent = $(can).parent();
 				canvas.resize(parent.width(), parent.height());
 				this.canvas = canvas;
@@ -121,8 +127,9 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				return this.canvas;
 			}
 
+			def.id = id;
 			def.canvasdom = can;
-			def.resolve(can);
+			def.resolve(div);
 		});
 	}
 
@@ -388,29 +395,29 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		else
 			def.resolve('<span style="color: red;">&#10008;</span>');
 	}
+    
+    functions.colorBar = {};
+    functions.colorBar.toscreen = function(def, value) {
+        value = Traversing.get(value);
         
-        functions.colorBar = {};
-        functions.colorBar.toscreen = function(def, value) {
-            value = Traversing.get(value);
-            
-            var div = $('<div>');
-            var gradient = "linear-gradient(to right";
-            
-            var total = 0, i = 0, l = value.length;
-            for(i = 0; i < l; total += value[i++][0]);
-            
-            var start = 0, end, color;
-            for(i = 0; i < l; i++) {
-                end = start+value[i][0]/total*100;
-                color = value[i][1];
-                gradient += ", "+color+" "+start+"%, "+color+" "+end+"%";
-                start = end;
-            }
-            gradient += ")";
-            
-            div.css({height:"100%",width:"100%"})/*.css("background","-webkit-"+gradient).css("background","-moz-"+gradient)*/.css("background",gradient);
-            def.resolve(div.get(0));
-        };
+        var div = $('<div>');
+        var gradient = "linear-gradient(to right";
+        
+        var total = 0, i = 0, l = value.length;
+        for(i = 0; i < l; total += value[i++][0]);
+        
+        var start = 0, end, color;
+        for(i = 0; i < l; i++) {
+            end = start+value[i][0]/total*100;
+            color = value[i][1];
+            gradient += ", "+color+" "+start+"%, "+color+" "+end+"%";
+            start = end;
+        }
+        gradient += ")";
+        
+        div.css({height:"100%",width:"100%"})/*.css("background","-webkit-"+gradient).css("background","-moz-"+gradient)*/.css("background",gradient);
+        def.resolve(div.get(0));
+    };
 
 
 	function _valueToScreen(deferred, data, box, args) {

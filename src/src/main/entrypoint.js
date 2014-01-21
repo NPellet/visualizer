@@ -174,15 +174,19 @@ define([	'jquery',
 			if( ! view.variables[i].jpath && view.variables[i].url ) {
 
 				variable.fetch( ).done( function( v ) {
-					API.setVariable( variable.get( 'varname' ), v );
+
+					var varname = variable.get( 'varname' );
+					data[ varname ] = v;
+					API.setVariable( varname , data, [ varname ] );
+					
 				} );
 
-			} else if(!view.variables[i].jpath) {
+			} else if( ! view.variables[ i ].jpath ) {
 
 				// If there is no jpath, we assume the variable is an object and we add it in the data stack
 				// Note: if that's not an object, we will have a problem...
 				data[ view.variables[ i ].varname ] = new DataObject();
-				API.setVariable( view.variables[ i ].varname, data[ view.variables[ i ].varname ] );
+				API.setVariable( view.variables[ i ].varname, data, [ view.variables[ i ].varname ] );
 
 			} else {
 				API.setVariable( view.variables[ i ].varname, data, view.variables[ i ].jpath );
@@ -531,7 +535,7 @@ define([	'jquery',
 			Versioning.setView(urls['views'], urls['viewBranch'], urls['viewURL']);
 			Versioning.setViewLoadCallback(doView);
 
-			Versioning.setData(urls['results'], urls['resultBranch'], urls['dataURL']);
+			Versioning.setData(urls['results'], urls['	resultBranch'], urls['dataURL']);
 			Versioning.setDataLoadCallback(doData);
 			
 			// Sets the header

@@ -89,7 +89,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 		return {
 			groups: { },
 			sections: {
-				searchFields: FormCreator.makeConfig( all_jpaths, true ),
+				searchFields: FormCreator.makeConfig( { name: 'Search on', jpaths: all_jpaths }, { name: "Comparison" } ),
 			}
 		}
 	};

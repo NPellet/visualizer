@@ -51,6 +51,19 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 						var val = new DataObject( this.getValue(), true );
 						self.formValue = val;
 						self.module.controller.valueChanged( val );
+
+						var input = self.module.getDataFromRel('input_object'),
+							structure = self.module.getConfiguration('structure') || [],
+							jpath;
+
+						if( input.setChild ) {
+							for( var i = 0, l = structure.length ; i < l ; i ++ ) {
+								jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
+								input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
+							}
+						}
+
+						console.log( input );
 					}
 				});
 
@@ -76,7 +89,30 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 		
 
 		update: {
+			input_object: function( varValue, varName ) {
 
+				var self = this,
+					structure = this.module.getConfiguration('structure') || [],
+					jpath;
+
+				for( var i = 0, l = structure.length ; i < l ; i ++ ) {
+					jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
+
+					( function( j, jpath ) {
+
+						varValue.getChild( jpath ).done( function( returned ) {
+console.log( self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ] );
+							self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ 
+								structure[ i ].groups.general[ 0 ].name[ 0 ]
+							][0].value = (returned.get());
+
+						});
+					
+
+					}) ( i, jpath )
+					
+				}
+			}
 		},
 
 		getDom: function() {

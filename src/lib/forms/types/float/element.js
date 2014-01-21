@@ -32,10 +32,16 @@ define( [ 'require', '../text/element'], function( require, textElement ) {
 	}
 	
 	FieldConstructor.prototype.showError = function( ) {
+		if( ! this.dom ) {
+			return;
+		}
 		this.dom.addClass('form-field-error');
 	}
 
 	FieldConstructor.prototype.hideError = function( ) {
+		if( ! this.dom ) {
+			return;
+		}
 		this.dom.removeClass('form-field-error');
 	}
 

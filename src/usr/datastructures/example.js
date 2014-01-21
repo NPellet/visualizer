@@ -11,5 +11,4 @@ define(function() {
 			}
 		}
 	}
-
 });
