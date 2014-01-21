@@ -1,4 +1,4 @@
-define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','libs/jit/jit-custom'], function(Default, Traversing, API, Util) {
+define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','components/jit/Jit/jit'], function(Default, Traversing, API, Util, $jit) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {

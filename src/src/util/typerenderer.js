@@ -418,9 +418,24 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         div.css({height:"100%",width:"100%"})/*.css("background","-webkit-"+gradient).css("background","-moz-"+gradient)*/.css("background",gradient);
         def.resolve(div.get(0));
     };
+        
+        
+        functions.styledValue = {};
+        functions.styledValue.toscreen = function(def, value, args, highlights, box, jpath) {
 
+            value = Traversing.get(value);
 
-	function _valueToScreen(deferred, data, box, args) {
+            var div = $('<div>');
+            div.css(value.css);
+            
+            functions.toScreen(value.value, box, args, jpath).always(function(subvalue) {
+                div.append(subvalue);
+                def.resolve(div.get(0));
+            });
+            
+        };
+
+	function _valueToScreen(deferred, data, box, args, jpath) {
 		var type = Traversing.getType(data),
 			highlights = Traversing.getHighlights(data);
 
@@ -429,20 +444,19 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		if( ! functions[ type ] ) {
 			return deferred.resolve('');
 		}
-
-		functions[ type ].toscreen(deferred, data, args, highlights, box);
+		functions[ type ].toscreen(deferred, data, args, highlights, box, jpath);
 	}
 
 	functions.toScreen = function(element, box, opts, jpath) {
-		var deferred = $.Deferred(), self = this;;
+		var deferred = $.Deferred(), self = this;
 		
 		if(!element.getChild || !jpath) {
-			_valueToScreen(deferred, element, box, opts);
+			_valueToScreen(deferred, element, box, opts, jpath);
 			return deferred;
 		}
 		
 		element.getChild(jpath).done(function(element) {
-			_valueToScreen(deferred, element, box, opts); 
+			_valueToScreen(deferred, element, box, opts, jpath); 
 		}).fail(function() { deferred.reject(); });
 		
 		return deferred;

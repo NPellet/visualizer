@@ -98,7 +98,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		Configuration of the module for receiving events, as a static object
 		In the form of 
 	*/
-	controller.prototype.variablesIn = [ 'list' ];
+	controller.prototype.variablesIn = [ 'loading' ];
 
 	/*
 		Received actions
@@ -216,44 +216,51 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 	};
 
 	controller.prototype.hover = function(data) {
-		var actions;
+            this.setVarFromEvent( 'onHover', data );
+		/*var actions;
 		if(!(actions = this.module.vars_out()))	
 			return;	
 		for(var i = 0; i < actions.length; i++)
 			if(actions[i].event == "onHover") {
 				CI.API.setSharedVarFromJPath(actions[i].name, data, actions[i].jpath);
-			}
+			}*/
 	};
 
 	controller.prototype.onZoomChange = function(zoom) {
+            this.setVarFromEvent( 'onZoomChange', zoom, 'zoom' );
+            /*
 		var actions;
 		if(!(actions = this.module.vars_out()))	
 			return;	
 		for(var i = 0; i < actions.length; i++)
 			if(actions[i].event == "onZoomChange") {
 				CI.API.setSharedVarFromJPath(actions[i].name, zoom, actions[i].jpath);
-			}
+			}*/
 	};
 
 	controller.prototype.onMove = function(x, y) {
+            this.setVarFromEvent( 'onMove', [x,y], 'center' );
+            /*
 		var actions;
 		if(!(actions = this.module.vars_out()))	
 			return;	
 		for(var i = 0; i < actions.length; i++)
 			if(actions[i].event == "onMove") {
 				CI.API.setSharedVarFromJPath(actions[i].name, [x,y], actions[i].jpath);
-			}
+			}*/
 	};
 
 
 	controller.prototype.onChangeViewport = function(vp) {
+            this.setVarFromEvent( 'onChangeViewport', vp, 'viewport' );
+            /*
 		var actions;
 		if(!(actions = this.module.vars_out()))	
 			return;	
 		for(var i = 0; i < actions.length; i++)
 			if(actions[i].event == "onViewPortChange") {
 				CI.API.setSharedVarFromJPath(actions[i].name, vp, actions[i].jpath);
-			}
+			}*/
 	};
 
 

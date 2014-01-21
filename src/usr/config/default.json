@@ -16,7 +16,11 @@
         {
 		"file": "./usr/filters/gcgenerator.js",
 		"name": "Generate GC"
-	}
+	},
+        {
+		"file": "./usr/filters/hclust.js",
+		"name": "Hierarchical clustering"
+        }
 ],
 
 "modules": ["./modules/types/folder.json"],
