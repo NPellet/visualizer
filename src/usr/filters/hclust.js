@@ -1,7 +1,8 @@
 define(["lib/datamining/clustering/hclust", "lib/datamining/math/distance"], function(hclust, Distance) {
 
-    function getTree(cluster, infos) {
-        var tree = {children: [], distance: cluster.distance};
+    function getTree(cluster, infos, counter) {
+        if(!counter) counter = {val:0};
+        var tree = {children: [], distance: cluster.distance, id:counter.val++};
         if (cluster.children.length === 0) {
             if(infos) {
                 var info = infos[[cluster.elements[0].index]];
@@ -12,7 +13,7 @@ define(["lib/datamining/clustering/hclust", "lib/datamining/math/distance"], fun
             return tree;
         } else {
             for (var i = 0, ii = cluster.children.length; i < ii; i++) {
-                tree.children[i] = getTree(cluster.children[i], infos);
+                tree.children[i] = getTree(cluster.children[i], infos, counter);
             }
         }
         return tree;
@@ -22,8 +23,8 @@ define(["lib/datamining/clustering/hclust", "lib/datamining/math/distance"], fun
     return function(data) {
 
         var result = hclust.compute(data.get(), hclust.methods.singleLinkage, Distance.euclidean);
-        var tree = new DataObject(getTree(result));
-        return tree;
+        var tree = getTree(result);
+        return new DataObject({type:"tree",value:tree});
 
     };
 
