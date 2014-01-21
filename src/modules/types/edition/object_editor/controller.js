@@ -17,8 +17,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'Object explorer',
-        description: 'Display a JSON object',
+        moduleName: 'Object editor',
+        description: 'Display and/or modify a JSON object',
         author: 'Michaël Zasso',
         date: '13.01.2014',
         license: 'MIT'
