@@ -14,14 +14,14 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 		this.dom.on('mouseover', 'tr.jqgrow', function() {
 
 	 			if(this !== lastTr) {
-					self.module.controller.lineHover(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
+					self.module.controller.lineHover(self.elements, $(this).attr('id').replace(self.uniqId, ''));
 	 			}
 				lastTr = this;
 
 	 		}).on('mouseout', 'tr.jqgrow', function() {
 
 	 			if(this === lastTr) {
-					self.module.controller.lineOut(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
+					self.module.controller.lineOut(self.elements, $(this).attr('id').replace(self.uniqId, ''));
 					lastTr = null;
 	 			}
 	 		});
@@ -179,15 +179,15 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 			    	if ( status ) {
 
-			    		self.module.controller.onToggleOn( self.elements[ rowid.replace( self.uniqId, '' ) ] );
+			    		self.module.controller.onToggleOn( self.elements, rowid.replace( self.uniqId, '' ) );
 
 			    	} else {
 
-			    		self.module.controller.onToggleOff( self.elements[ rowid.replace( self.uniqId, '' ) ] );
+			    		self.module.controller.onToggleOff( self.elements, rowid.replace( self.uniqId, '' ) );
 
 			    	}
 
-					self.module.controller.lineClick( self.elements[ rowid.replace( self.uniqId, '' ) ] );
+					self.module.controller.lineClick( self.elements, rowid.replace( self.uniqId, '' ) );
 			    },
 
 			    onSortCol: function() {
@@ -293,10 +293,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 			for( ; i < l ; i++) {
 
-				source[ i ].onChange( function() {
-					console.log( arguments );
-				} );
-
 				arrayToPush.push( this.buildElement( source[ i ], self.uniqId + i, jpaths ) );
 			}
 
@@ -344,7 +340,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				self.jqGrid( 'setRowData', id, self.buildElement( data, id, jpaths, true ) );
 				var scroll = $( "body" ).scrollTop( );
-				var target = $( "tr#" + id, self.domTable ).effect( 'highlight', {}, 1000 ).get( 0 );
+			//	console.log( 'Do' );
+				var target = $( "tr#" + id, self.domTable ).get(0);//.clearQueue().finish().effect( 'highlight', { queue: true }, 1000 ).get( 0 );
 
 				if(target) {
 					target.scrollIntoView( );

@@ -236,22 +236,28 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 		API.highlight( element, 0 );
 	};
 
-	controller.prototype.lineClick = function( element ) {
+	controller.prototype.lineClick = function( elements, row ) {
 
-		this.setVarFromEvent( 'onSelect', element, 'row' );
-		this.sendAction( 'row', element, 'onSelect' );
+		elements[ row ].linkToParent( elements, row );
+
+		this.setVarFromEvent( 'onSelect', elements[ row ], 'row' );
+		this.sendAction( 'row', elements[ row ], 'onSelect' );
 	};
 
-	controller.prototype.onToggleOn = function( element ) {
+	controller.prototype.onToggleOn = function( elements, row ) {
 
-		this.sendAction( 'element', element, 'onToggleOn' );
-		this.setVarFromEvent( 'onToggleOn', element );
+		elements[ row ].linkToParent( elements, row );
+
+		this.sendAction( 'element', elements[ row ], 'onToggleOn' );
+		this.setVarFromEvent( 'onToggleOn', elements[ row ], 'row' );
 	};
 
-	controller.prototype.onToggleOff = function( element ) {
+	controller.prototype.onToggleOff = function( elements, row ) {
 
-		this.sendAction( 'element', element, 'onToggleOff' );
-		this.setVarFromEvent( 'onToggleOff', element );
+		elements[ row ].linkToParent( elements, row );
+
+		this.sendAction( 'element', element[ row ], 'onToggleOff' );
+		this.setVarFromEvent( 'onToggleOff', elements[ row ], 'row' );
 	};
 
  	return controller;

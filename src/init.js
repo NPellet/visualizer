@@ -225,10 +225,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 						break;
 					}
 
-					self[ el ] = subEl;
-
-					Object.defineProperty( subEl, '__parent', { value: self, writable: false, configurable: false, enumerable: false });
-					Object.defineProperty( subEl, '__name', { value: el, writable: false, configurable: false, enumerable: false });
+					subEl.linkToParent( self, el );
 				}
 
 				if( jpath.length == 0 ) {
@@ -279,6 +276,17 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 		}
 	};
 
+
+	var linkToParent = {
+		value: function( parent, name ) {
+			parent[ name ] = this;
+
+			Object.defineProperty( this, '__parent', { value: parent, writable: false, configurable: false, enumerable: false } );
+			Object.defineProperty( this, '__name', { value: el, writable: false, configurable: false, enumerable: false } );
+		}
+	};
+
+
 	var setChild = {
 		value: function( jpath, newValue, options ) {
 			var self = this;
@@ -321,7 +329,6 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 
 
 				if( this.__parent ) {
-					
 					this.__parent.triggerChange( moduleid );
 				}
 
@@ -439,6 +446,11 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 
 	Object.defineProperty(DataObject.prototype, 'onChange', listenDataChanged);
 	Object.defineProperty(DataArray.prototype, 'onChange', listenDataChanged);
+
+
+	Object.defineProperty(DataObject.prototype, 'linkToParent', linkToParent);
+	Object.defineProperty(DataArray.prototype, 'linkToParent', linkToParent);
+
 
 	Object.defineProperty(DataObject.prototype, 'triggerChange', dataChanged);
 	Object.defineProperty(DataArray.prototype, 'triggerChange', dataChanged);
