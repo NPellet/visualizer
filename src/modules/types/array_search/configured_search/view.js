@@ -109,14 +109,27 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			this.module.controller.searchDone( target );		
 		},
 
-		_makeOp: function( op, val ) {
+		_makeOp: function( op, val, options ) {
 
 			val = "self.cfgValue[ '" + val + "' ]";
+                        var numPrefix = "", numSuffix = "";
+                        if(options.number) {
+                            numPrefix = "parseFloat(";
+                            numSuffix = ")";
+                        }
+                        var textSuffix = ".toLowerCase()";
+                        if(options.caseSensitive) {
+                            textSuffix = "";
+                        }
 			switch( op ) {
 
 				case '=':
 				case 'eq':
-					return " (el + '') == " + val + " ";
+                                    if(options.number) {
+                                        return " el == " + numPrefix + val + numSuffix + " ";
+                                    } else {
+                                        return " ((el+'')"+textSuffix+") == " + val + textSuffix + " ";
+                                    }
 				break;
 
 				case '<>':
@@ -126,35 +139,35 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				break;
 
 				case '>':
-					return " el > " + val + " ";
+					return " el > " + numPrefix + val + numSuffix + " ";
 				break;
 
 				case '>=':
-					return " el >= " + val + " ";
+					return " el >= " + numPrefix + val + numSuffix + " ";
 				break;
 
 				case '<':
-					return " el > parseFloat( " + val + " ) ";
+					return " el <  " + numPrefix + val + numSuffix + "  ";
 				break;
 
 				case '<=':
-					return " el <= parseFloat( " + val + " ) ";
+					return " el <=  " + numPrefix + val + numSuffix + "  ";
 				break;
 
 				case 'contains':
-					return " el.match(" + val + ") ";
+					return " el"+textSuffix+".match(" + val + textSuffix + ") ";
 				break;
 
 				case 'notcontain':
-					return " ! el.match(" + val + ") ";
+					return " ! el"+textSuffix+".match(" + val + textSuffix + ") ";
 				break;
 
 				case 'starts':
-					return " el.match(new RegExp('^'+" + val + ")) ";
+					return " el"+textSuffix+".match(new RegExp('^'+" + val + textSuffix + ")) ";
 				break;
 
 				case 'end':
-					return " el.match(new RegExp(" + val + "+'$')) ";
+					return " el"+ textSuffix +".match(new RegExp(" + val + textSuffix + "+'$')) ";
 				break;
 
 				case 'btw':
@@ -204,9 +217,11 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 						if( j > 0 ) {
 							toEval += " || ";
 						}
-
+                                                var opts = {};console.log(searchfields[ i ])
+                                                if(searchfields[ i ].groups.general[ 0 ].type[ 0 ]==='float') opts.number=true;
+                                                if(searchfields[ i ].groups.text && searchfields[ i ].groups.text[ 0 ].case_sensitive[ 0 ][ 0 ]==='case_sensitive') opts.caseSensitive=true;
 						toEval += " ( ( el = self.getJpath( '" + searchOn[ j ] + "', row ) ) && ( ";
-						toEval += this._makeOp( searchfields[ i ].groups.general[ 0 ].operator[ 0 ], searchfields[ i ].groups.general[ 0 ].name[ 0 ] );
+						toEval += this._makeOp( searchfields[ i ].groups.general[ 0 ].operator[ 0 ], searchfields[ i ].groups.general[ 0 ].name[ 0 ], opts );
 						toEval += " ) ) ";
 
 					}
