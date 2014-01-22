@@ -265,8 +265,12 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 				break;
 			}
 
-			Object.defineProperty( subEl, '__parent', { value: this, writable: false, configurable: false, enumerable: false });
-			Object.defineProperty( subEl, '__name', { value: el, writable: false, configurable: false, enumerable: false });
+			if( ! subEl.__parent ) {
+
+				Object.defineProperty( subEl, '__parent', { value: this, writable: false, configurable: false, enumerable: false });
+				Object.defineProperty( subEl, '__name', { value: el, writable: false, configurable: false, enumerable: false });
+
+			}
 
 			if( jpath.length == 0 ) {
 				return subEl;
@@ -279,6 +283,11 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 
 	var linkToParent = {
 		value: function( parent, name ) {
+
+			if( this.__parent ) {
+				return;
+			}
+			
 			parent[ name ] = this;
 
 			Object.defineProperty( this, '__parent', { value: parent, writable: false, configurable: false, enumerable: false } );
