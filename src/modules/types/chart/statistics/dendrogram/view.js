@@ -1,4 +1,4 @@
-define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','components/jit/Jit/jit'], function(Default, Traversing, API, Util, $jit) {
+define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','components/jit/Jit/jit',"jquery"], function(Default, Traversing, API, Util, $jit,$) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -34,6 +34,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			}
 			this._highlighted = {};
 			this.updateOptions();
+                        
+                        this.onReady = $.Deferred();
+                        var ready = this.onReady;
+                        require(["lib/jit/jit-custom"],function(){
+                            ready.resolve();
+                        });
 
 			if (this.DEBUG) console.log("Dendrogram: ID: "+this._id);
 

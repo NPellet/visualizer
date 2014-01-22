@@ -22,7 +22,7 @@ define(["lib/datamining/clustering/hclust", "lib/datamining/math/distance"], fun
 
     return function(data) {
 
-        var result = hclust.compute(data.get(), hclust.methods.singleLinkage, Distance.euclidean);
+        var result = hclust.compute(data.get(), hclust.methods.completeLinkage, Distance.euclidean);
         var tree = getTree(result);
         return new DataObject({type:"tree",value:tree});
 
