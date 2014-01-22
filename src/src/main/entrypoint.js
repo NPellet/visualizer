@@ -189,6 +189,7 @@ define([	'jquery',
 				API.setVariable( view.variables[ i ].varname, data, [ view.variables[ i ].varname ] );
 
 			} else {
+				
 				API.setVariable( view.variables[ i ].varname, data, view.variables[ i ].jpath );
 			}
 		}

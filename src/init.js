@@ -282,7 +282,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 			parent[ name ] = this;
 
 			Object.defineProperty( this, '__parent', { value: parent, writable: false, configurable: false, enumerable: false } );
-			Object.defineProperty( this, '__name', { value: el, writable: false, configurable: false, enumerable: false } );
+			Object.defineProperty( this, '__name', { value: name, writable: false, configurable: false, enumerable: false } );
 		}
 	};
 

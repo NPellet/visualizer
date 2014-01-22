@@ -21,13 +21,11 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 	function setVar( name, element, jpath, filter ) {
 
 		var self = this;
-
 		self.repositoryData.set(name, null);
 
 		element.getChild( jpath, true ).done( function( returned ) {
 
 			setVarFilter.call( self, name, returned, filter );
-
 		} );	
 	}
 
