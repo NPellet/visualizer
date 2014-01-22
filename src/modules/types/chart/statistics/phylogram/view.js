@@ -89,7 +89,7 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
 
                                     var point = leaf.select("circle");
                                     point.attr("fill", function(a) {
-                                        if (a.data.$color)
+                                        if (a.data && a.data.$color)
                                             return a.data.$color;
                                         if (value)
                                             return "#f5f48d";

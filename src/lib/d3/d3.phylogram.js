@@ -138,7 +138,7 @@ if (!d3) { throw "d3 wasn't included!"};
 			//.attr("r", 4.5)
 			.attr("r", 4.5)
 			.attr('fill', function(a){
-				if(a.data.$color)return a.data.$color;
+				if(a.data && a.data.$color)return a.data.$color;
 				return 'grey';
 			})
 			.attr('stroke',  'grey')
