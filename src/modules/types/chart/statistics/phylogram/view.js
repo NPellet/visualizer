@@ -55,16 +55,11 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
                         // LEAF
                         callbackMouseOverLeaf: function(data) {
                             box.controller.mouseOverLeaf(data);
-                            if (data.data && data.data._highlight) {
-                                API.highlight(data.data._highlight, 1);
-                                view.currentHighlightId = data.data._highlight;
-                            }
+                            API.highlight(data.data, 1);
                         },
                         callbackMouseOutLeaf: function(data) {
                             box.controller.mouseOutLeaf(data);
-
-                            if (view.currentHighlightId)
-                                API.highlight(view.currentHighlightId, 0);
+                            API.highlight(data.data, 0);
                         },
                         callbackClickLeaf: function(data) {
                             box.controller.clickLeaf(data);
@@ -90,7 +85,7 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
 
                             if (dataNode.data && dataNode.data._highlight) {
 
-                                API.listenHighlight(dataNode.data._highlight, function(value, what) {
+                                API.listenHighlight(dataNode.data, function(value, what) {
 
                                     var point = leaf.select("circle");
                                     point.attr("fill", function(a) {
