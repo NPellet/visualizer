@@ -216,7 +216,11 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 	};
 
 
-	controller.prototype.lineHover = function(element) {
+	controller.prototype.lineHover = function(element, row) {
+
+		var element = elements[ row ];
+		elements[ row ].linkToParent( elements, row );
+
 		
 		if( ! element ) {
 			return;
@@ -227,7 +231,10 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 		API.highlight( element, 1 );
 	},
 
-	controller.prototype.lineOut = function(element) {
+	controller.prototype.lineOut = function(element, row) {
+
+		var element = elements[ row ];
+		elements[ row ].linkToParent( elements, row );
 
 		if( ! element ) {
 			return;
@@ -256,7 +263,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 		elements[ row ].linkToParent( elements, row );
 
-		this.sendAction( 'element', element[ row ], 'onToggleOff' );
+		this.sendAction( 'element', elements[ row ], 'onToggleOff' );
 		this.setVarFromEvent( 'onToggleOff', elements[ row ], 'row' );
 	};
 
