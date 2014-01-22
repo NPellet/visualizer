@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], function(Default, Util, D3Lib, API) {
+define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], function(Default, Util, d3, API) {
 
     function view() {
     }
@@ -11,8 +11,13 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
             this.chart = null;
             this.currentHighlightId = null;
 
-            $block = $('<div>', {Id: this._id});
-            $block.css('display', 'table').css('height', '100%').css('width', '100%').css("overflow", "hidden"); //.css("background","#33ccff");
+            $block = $('<div>', {id: this._id});
+            $block.css( {
+                'display' : 'table',
+                'height' : '90%',
+                'width' : '85%',
+                'overflow' : 'hidden'
+            } );
             this.dom = $block;
             this.module.getDomContent().html(this.dom);
 
@@ -41,9 +46,9 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
                 API.killHighlight(box.id);
 
                 // Loading phylogram extension for D3
-                require(['lib/d3/d3.phylogram'], function(d3Phylo) {
+                require(['lib/d3/d3.phylogram'], function() {
 
-                    $(view.selectorId).html("");
+                    view.dom.empty();
                     var skipBranchLengthScaling = true;
                     if (data.value.children && data.value.children.length > 0)
                         skipBranchLengthScaling = (data.value.children[0].length === undefined);
@@ -51,7 +56,11 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
                     this.phylogram = d3.phylogram.build(view.selectorId, data.value, {
                         //height : view._idHash.length*8,
                         skipBranchLengthScaling: skipBranchLengthScaling,
-                        skipTicks: true,
+                        skipTicks: false,
+                        skipLabels: true,
+                        children : function(node) {
+                            return node.children;
+                        },
                         // LEAF
                         callbackMouseOverLeaf: function(data) {
                             box.controller.mouseOverLeaf(data);

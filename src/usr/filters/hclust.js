@@ -1,8 +1,12 @@
 define(["lib/datamining/clustering/hclust", "lib/datamining/math/distance"], function(hclust, Distance) {
 
-    function getTree(cluster, infos, counter) {
-        if(!counter) counter = {val:0};
-        var tree = {children: [], distance: cluster.distance, id:counter.val++};
+    function getTree(cluster, infos, counter, distance) {
+        var clustDist = cluster.distance;
+        if(!counter) {
+            counter = {val:0,root:clustDist};
+            distance = clustDist;
+        }
+        var tree = {children: [], length: distance-clustDist, rootDist:counter.root-clustDist, name:counter.val++};
         if (cluster.children.length === 0) {
             if(infos) {
                 var info = infos[[cluster.elements[0].index]];
@@ -12,8 +16,9 @@ define(["lib/datamining/clustering/hclust", "lib/datamining/math/distance"], fun
             }
             return tree;
         } else {
+            distance = counter.root-tree.rootDist;
             for (var i = 0, ii = cluster.children.length; i < ii; i++) {
-                tree.children[i] = getTree(cluster.children[i], infos, counter);
+                tree.children[i] = getTree(cluster.children[i], infos, counter, distance);
             }
         }
         return tree;
