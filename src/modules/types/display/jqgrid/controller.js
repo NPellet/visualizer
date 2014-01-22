@@ -216,7 +216,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 	};
 
 
-	controller.prototype.lineHover = function(element, row) {
+	controller.prototype.lineHover = function(elements, row) {
 
 		var element = elements[ row ];
 		elements[ row ].linkToParent( elements, row );
@@ -231,7 +231,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 		API.highlight( element, 1 );
 	},
 
-	controller.prototype.lineOut = function(element, row) {
+	controller.prototype.lineOut = function(elements, row) {
 
 		var element = elements[ row ];
 		elements[ row ].linkToParent( elements, row );
