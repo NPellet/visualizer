@@ -1,4 +1,4 @@
-define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','components/jit/Jit/jit',"jquery"], function(Default, Traversing, API, Util, $jit,$) {
+define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','lib/jit/jit-custom'], function(Default, Traversing, API, Util) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -34,12 +34,6 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			}
 			this._highlighted = {};
 			this.updateOptions();
-                        
-                        this.onReady = $.Deferred();
-                        var ready = this.onReady;
-                        require(["lib/jit/jit-custom"],function(){
-                            ready.resolve();
-                        });
 
 			if (this.DEBUG) console.log("Dendrogram: ID: "+this._id);
 
@@ -139,7 +133,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 	    	var actions=this.module.vars_out();
 	    	if (! actions || actions.length==0) return;
-	    	var hover=hover=function(node) {
+	    	var hover=function(node) {
 	    	//	self.module.controller.onHover(new DataObject(self._idHash[node.id]), 'node');
 	    		self.module.controller.onHover(self._idHash[node.id]);
 	    	}
