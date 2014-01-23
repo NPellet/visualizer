@@ -97,7 +97,8 @@ define(['modules/default/defaultcontroller','src/util/datatraversing'], function
 								{title: 'Star', key: 'star'},
 								{title: 'Ellipse', key: 'ellipse'},
 								{title: 'Rectangle', key: 'rectangle'},
-								{title: 'Image', key: 'image'}
+								{title: 'Image', key: 'image'},
+                                                                {title: 'Pie chart', key: 'piechart'}
 							]
 						},
 
