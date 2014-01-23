@@ -7,6 +7,10 @@
 		{
 			"moduleName": "Two dimensional list",
 			"url": "modules/types/client_interaction/dragdrop/"
+		},
+		{
+			"moduleName": "Code editor",
+			"url": "modules/types/client_interaction/code_editor/"
 		}
 	],
 	"name": "Client interaction",
