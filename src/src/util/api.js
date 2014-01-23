@@ -23,6 +23,15 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 		var self = this;
 		self.repositoryData.set(name, null);
 
+		switch( typeof element ) {
+			case 'string':
+				element = new DataObject( { type: "string", value: element } );
+			break;
+			case 'number':
+				element = new DataObject( { type: "number", value: element } );
+			break;
+		}
+
 		element.getChild( jpath, true ).done( function( returned ) {
 
 			setVarFilter.call( self, name, returned, filter );
