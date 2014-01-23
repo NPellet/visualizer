@@ -2,7 +2,7 @@ define(['require',
         'modules/default/defaultview',
 		'src/util/util',
 		'src/util/datatraversing',
-		"libs/jsmol/JSmol.min.nojq"
+		"lib/jsmol/JSmol.min.nojq"
 		], 
 
 
