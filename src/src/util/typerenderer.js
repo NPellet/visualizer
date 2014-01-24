@@ -7,7 +7,13 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	functions.string = {};
 	functions.string.toscreen = function(def, val) {
             val = Traversing.get( val );
-            def.resolve( document.createTextNode(val) );
+            while( true ) {
+                val = val.replace('<', '&lt;' ).replace('>', '&gt;');
+                if( val.indexOf('<') === -1 && val.indexOf('>') === -1) {
+                    break;
+                }
+            }
+            def.resolve( val );
 	}
         
         functions.html = {};
