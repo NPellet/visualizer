@@ -19,6 +19,7 @@ define(function() {
 		'mf': 'string',
 		'jcamp': "string",
 		"downloadLink": "string",
+                "html": "string",
 
 		'boolean': "boolean",
                 

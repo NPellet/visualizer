@@ -1,56 +1,57 @@
-define( [ 'modules/default/defaultcontroller' ], function( Default ) {
-	
-	function controller() { };
+define(['modules/default/defaultcontroller'], function(Default) {
 
-	controller.prototype = $.extend( true, {}, Default );
+    function controller() {
+    }
+    ;
 
-	controller.prototype.moduleInformation = {
-		moduleName: 'Template',
-		description: 'Display parts of an object using a mustache template',
-		author: 'Michaël Zasso',
-		date: '21.01.2014',
-		license: 'MIT',
-		cssClass: 'mustache'
-	};
-	
-	controller.prototype.references = {
+    controller.prototype = $.extend(true, {}, Default);
 
-		"value": {
-			label: 'Any object',
+    controller.prototype.moduleInformation = {
+        moduleName: 'Template',
+        description: 'Display parts of an object using a mustache template',
+        author: 'Michaël Zasso',
+        date: '21.01.2014',
+        license: 'MIT',
+        cssClass: 'mustache'
+    };
+
+    controller.prototype.references = {
+        "value": {
+            label: 'Any object',
             type: 'object'
-		}
-        
-	};
+        },
+        "tpl" : {
+            label: 'Template',
+            type: 'string'
+        }
 
-	controller.prototype.variablesIn = ['value'];
+    };
 
-	controller.prototype.configurationStructure = function(section) {
-		
-		return {
+    controller.prototype.variablesIn = ['value', 'tpl'];
 
-			groups: {
+    controller.prototype.configurationStructure = function(section) {
 
-				group: {
-					options: {
-						type: 'list'
-					},
+        return {
+            groups: {
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+                    fields: {
+                        template: {
+                            type: 'jscode',
+                            title: 'Template'
+                        }
 
-					fields: {
+                    }
+                }
+            }
+        };
+    };
 
-						template: {
-							type: 'jscode',
-							title: 'Template'
-						}
+    controller.prototype.configAliases = {
+        'template': ['groups', 'group', 0, 'template', 0]
+    };
 
-					}
-				}
-			}
-		}
-	};
-
-	controller.prototype.configAliases = {
-		'template': [ 'groups', 'group', 0, 'template', 0 ]
-	}
-
- 	return controller;
+    return controller;
 });
