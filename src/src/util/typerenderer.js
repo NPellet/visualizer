@@ -6,8 +6,15 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.string = {};
 	functions.string.toscreen = function(def, val) {
-		def.reject( Traversing.get( val ) );
+            val = Traversing.get( val );
+            def.resolve( document.createTextNode(val) );
 	}
+        
+        functions.html = {};
+        functions.html.toscreen = function(def, val) {
+            val = Traversing.get(val);
+            def.resolve( val );
+        };
 		
 	functions.matrix = {};
 	functions.matrix.toscreen = function(def, val) {
