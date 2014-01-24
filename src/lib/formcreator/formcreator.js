@@ -18,7 +18,19 @@ define([ 'lib/forms/form'], function( Form ) {
 				cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
 				cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
 				cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
-				cfg.range = form.groups.slider[ 0 ].range[ 0 ].indexOf( 'range' ) > -1;
+			break;
+
+
+			case 'slider_range':
+				cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
+				cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
+				cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
+				cfg.default = [ 
+									form.groups.slider[ 0 ].range[ 0 ].val1[ 0 ],
+									form.groups.slider[ 0 ].range[ 0 ].val2[ 0 ]
+							  ];
+				cfg.range = true;
+				
 			break;
 		}
 	};
@@ -92,6 +104,7 @@ define([ 'lib/forms/form'], function( Form ) {
 									{ title: 'Number', key: 'float' },
 									{ title: 'Combo', key: 'combo' },
 									{ title: 'Slider', key: 'slider' },
+									{ title: 'Range', key: 'slider' },
 									{ title: 'Checkbox', key: 'checkbox' }
 								],
 
@@ -101,6 +114,7 @@ define([ 'lib/forms/form'], function( Form ) {
 									'combo': 'combo',
 									'checkbox': 'checkbox',
 									'slider': 'slider',
+									'range': 'range'
 								}
 							}
 						}
@@ -146,13 +160,44 @@ define([ 'lib/forms/form'], function( Form ) {
 							step: {
 								type: 'text',
 								title: 'Step'
+							}
+						}
+					},
+
+
+					slider: {
+
+						options: {
+							type: 'list',
+							displayTarget: [ 'slider' ]
+						},
+
+						fields: {
+
+							start: {
+								type: 'text',
+								title: 'Start'
 							},
 
-							range: {
-								type: 'checkbox',
-								title: 'Range',
-								options: {'range': ''}
-							}
+							end: {
+								type: 'text',
+								title: 'End'
+							},
+
+							step: {
+								type: 'text',
+								title: 'Step'
+							},
+
+							val1: {
+								type: 'text',
+								title: 'Default min'
+							},
+
+							val2: {
+								type: 'text',
+								title: 'Default max'
+							},
 
 						}
 					},
