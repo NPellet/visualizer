@@ -169,7 +169,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 					for( ; i < l ; i++ ) {
 						id = ids[ i ].replace( self.uniqId, '' );
 						self.applyFilterToRow( id , ids[ i ] );
-						self.tableElements[ id ]._inDom.resolve( );
+						self.tableElements[ id ]._inDom.notify( );
 					}
 			   	},
 
@@ -198,8 +198,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 						id;
 
 					for( ; i < l ; i++ ) {
-						
-						self.tableElements[ id ]._inDom.resolve( );
+console.log( self.tableElements[ i ] );
+
+
+						self.tableElements[ i ]._inDom.notify( );
 					}
 
 			    }
@@ -252,7 +254,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 			this.jpaths = jpaths;
 	 			this.elements = list;
-	 			this.module.data = moduleValue;
+	 
+				this.module.data = moduleValue;
 
 	 			if( ! jpaths ) {
 	 				return;
@@ -353,35 +356,43 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 		renderElement: function(element, source, jpath, l) {
 
-			var self = this, box = self.module;
-			var defScreen = Renderer.toScreen(source, box, {}, jpath);
+			var self = this,
+				box = self.module;
+			
+			var defScreen = Renderer
+				.toScreen(source, box, {}, jpath)
+				.done( function( value ) {
 
-			$.when(element._inDom, defScreen).then(function(something, value) {
-				element[l] = value;
-				self.done--;
-				
-				self.jqGrid('setCell', element.id, l, value);
+					element._inDom.progress(function( ) {
+						
+console.log( 'Prog');
+						element[ l ] = value;
+						self.done --;
+						
 
-				if( defScreen.build ) {
-					defScreen.build();
-				}
-				
-				/* todo In this required ??? */
-				if(self.done == 0) {
-					self.onResize(self.width, self.height);
-				}
+						self.jqGrid('setCell', element.id, l, value);
 
-			}, function(value) {
+						if( defScreen.build ) {
+							defScreen.build();
+						}
+						
+						/* todo In this required ??? */
+						if(self.done == 0) {
+							self.onResize(self.width, self.height);
+						}
 
-				element[l] = value;
-				self.done--;
-				
-				/* todo In this required ??? */
-				if(self.done == 0) {
-					self.onResize(self.width, self.height);
-				}
-				
-			});
+					}, function(value) {
+
+						element[l] = value;
+						self.done--;
+						
+						/* todo In this required ??? */
+						if(self.done == 0) {
+							self.onResize(self.width, self.height);
+						}
+						
+					});
+				});
 		},
 
 		getDom: function() {
