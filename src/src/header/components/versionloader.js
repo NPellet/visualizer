@@ -36,11 +36,11 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 		},
 
 		loadViewWith: function(url, branch) {
-
 			Versioning.setView(url, branch);
 		},
 
 		loadData: function() {
+			
 			if(!this.options.dataURL)
 				return;
 			this.loadDataWith(this.options.dataURL, this.options.dataBranch)
@@ -77,8 +77,14 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 				dom = $("<li />").text(el.label || '');
 			if(el.viewURL || el.dataURL) {
 				dom.addClass('hasEvent').bind('click', function() {
-					self.loadViewWith(el.viewURL, el.viewBranch);
-					self.loadDataWith(el.dataURL, el.dataBranch);
+
+					if( el.viewURL || el.viewBranch ) {
+						self.loadViewWith(el.viewURL, el.viewBranch);
+					}
+
+					if( el.dataURL || el.dataBranch ) {
+						self.loadDataWith(el.dataURL, el.dataBranch);
+					}
 				});
 			}
 
