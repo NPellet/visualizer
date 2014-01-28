@@ -487,6 +487,8 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 
 		var url = window.document.location.search.substring(1).split('&'),
 			urls = {};
+                if(url[0]==="")
+                    url = window.document.location.hash.substring(1).split('&');
 		for(var i = 0; i < url.length; i++) {
 			var args = url[i].split('=');
 			urls[args[0]] = unescape(args[1]);
