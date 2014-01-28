@@ -38,7 +38,7 @@ module.exports = function(grunt) {
             cwd: './src/components/',
             src: [
               './d3/d3.min.js',
-              './fancytree/src/jquery.fancytree.*.js',
+              './fancytree/src/jquery.fancytree*.js',
               './fancytree/src/skin-lion/ui.fancytree.css',
               './jqgrid/js/*.js',
               './jqgrid/css/*.css',
