@@ -60,7 +60,8 @@ module.exports = function(grunt) {
               './Aristo-jQuery-UI-Theme/css/Aristo/*.css',
               './x2js/xml2json.min.js',
               './leaflet/**',
-              './jsoneditor/jsoneditor-min*'
+              './jsoneditor/jsoneditor-min*',
+              './jsoneditor/img/*'
             ],
 
             dest: './build/components/'
