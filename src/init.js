@@ -2,7 +2,7 @@
 requirejs.config({
 	"baseUrl": "",
 	"paths": {
-		"ace": "./components/ace/lib/ace/",
+		"ace": "./components/ace/lib/ace",
 		"d3": "./components/d3/d3.min",
 		"fancytree": "./components/fancytree/src/jquery.fancytree",
 		"jqgrid": "./components/jqgrid_edit/js/jquery.jqGrid",
