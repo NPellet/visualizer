@@ -10,7 +10,7 @@ requirejs.config({
 		"jqueryui": "./components/jquery-ui/ui/minified/jquery-ui.min",
 		"ckeditor": "./components/ckeditor/ckeditor",
 		"threejs": "./components/three.js/build/three.min",
-		"forms": "./lib/forms/",
+		"forms": "./lib/forms",
 		"plot": "./lib/plot/plot",
 		'ChemDoodle': 'lib/chemdoodle/ChemDoodleWeb-unpacked'
 	},
