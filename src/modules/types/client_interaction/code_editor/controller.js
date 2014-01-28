@@ -95,7 +95,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
                         },
                         script: {
                             type: 'jscode',
-                            title: 'Code'
+                            title: 'Code',
+                            mode: 'html'
                         }
                     }
                 }

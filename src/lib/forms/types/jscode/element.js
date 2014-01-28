@@ -40,10 +40,11 @@ define( [ 'require', 'jquery', 'src/util/util', 'ace/ace' ], function( require, 
 
 		var self = this;
 		var editor = ace.edit( self._id );
+                var mode = this.field.options.mode || "javascript";
 
 	    editor.setTheme( "./theme/monokai" );
 	    editor.setPrintMarginColumn( false );
-	    editor.getSession( ).setMode( "./mode/javascript" );
+	    editor.getSession( ).setMode( "./mode/"+mode );
 		
 		editor.getSession( ).on( 'change', function(e) {
 			
