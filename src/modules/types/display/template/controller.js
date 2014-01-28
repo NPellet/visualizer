@@ -40,7 +40,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
                     fields: {
                         template: {
                             type: 'jscode',
-                            title: 'Template'
+                            title: 'Template',
+                            mode: 'html'
                         }
 
                     }
