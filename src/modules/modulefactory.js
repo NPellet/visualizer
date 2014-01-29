@@ -21,6 +21,7 @@ define(['jquery', 'modules/module'], function($, Module) {
 
 	function getModules( folderInfo ) {
 
+		var defs = [];
 
 		for( var i in folderInfo.folders ) {
 
@@ -32,23 +33,25 @@ define(['jquery', 'modules/module'], function($, Module) {
 					folderInfo.folders[ folder.name || j ] = folder;	
 
 				} else {
-					modulesDeferred.push( getSubFoldersFrom( folderInfo.folders[ j ] + "folder.json" ).done( function( folder ) {
+					defs.push( getSubFoldersFrom( folderInfo.folders[ j ] + "folder.json" ).done( function( folder ) {
 						delete folderInfo.folders[ j ];
 						folderInfo.folders[ folder.name ] = folder;	
-						
 					} ) );
 				}
 				
 			}) ( i );
 		}
 
-		return folderInfo;
+		return $.when.apply( $, defs ).pipe( function() {
+			return folderInfo;			
+		});
 	}
 
 	return {
 		getTypes: function() {
 
 			return $.when.apply( $, modulesDeferred ).pipe( function() {
+				console.log( allModules );
 				return allModules;
 			});
 		},
@@ -75,7 +78,7 @@ define(['jquery', 'modules/module'], function($, Module) {
 					( function( j ) {
 
 						getSubFoldersFrom( list[ j ] ).then( function( data ) {
-							console.log( data );
+							
 							$.extend( true, finalList, data );
 							
 						} );
@@ -84,10 +87,15 @@ define(['jquery', 'modules/module'], function($, Module) {
 
 					
 				} else { // It's a folder type structure
-					$.extend( true, finalList, getModules( list[ i ] ) );
+console.log( list[ i ].folders );
+					getModules( list[ i ] ).then( function( data ) {
+						console.log( data );
+						$.extend( true, finalList,  data);	
+					} );
+					
 				}
 			}
-			console.log( finalList );
+			
 			allModules = finalList;
 		},
 
