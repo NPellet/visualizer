@@ -42,7 +42,7 @@ module.exports = function(grunt) {
               './fancytree/src/jquery.fancytree*.js',
               './fancytree/src/skin-lion/ui.fancytree.css',
               './jqgrid/js/*.js',
-              './jqgrid/js/u18n/grid.locale-en.js',
+              './jqgrid/js/i18n/grid.locale-en.js',
               './jqgrid/css/*.css',
               './jquery/jquery.min.js',
               './jquery-ui/ui/minified/jquery-ui.min.js',
