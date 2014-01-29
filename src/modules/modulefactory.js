@@ -66,6 +66,7 @@ define(['jquery', 'modules/module'], function($, Module) {
 			}
 
 			l = list.length;
+			var finalList = {};
 
 			for( ; i < l ; i ++ ) {
 
@@ -74,22 +75,20 @@ define(['jquery', 'modules/module'], function($, Module) {
 					( function( j ) {
 
 						getSubFoldersFrom( list[ j ] ).then( function( data ) {
-
-							list[ j ] = data;
-						
+							console.log( data );
+							$.extend( true, finalList, data );
+							
 						} );
 
 					} ) ( i );
 
 					
 				} else { // It's a folder type structure
-
-					list[ i ] = getModules( list[ i ] );
-			
+					$.extend( true, finalList, getModules( list[ i ] ) );
 				}
 			}
-
-			allModules = list;
+			console.log( finalList );
+			allModules = finalList;
 		},
 
 		newModule: function(definition) {

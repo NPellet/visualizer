@@ -1,6 +1,7 @@
 module.exports = function(grunt) {
 
-  var modulesFinal;
+  var modulesFinal = {};
+  var modulesStack = {};
 
   // Project configuration.
   grunt.initConfig({
@@ -140,7 +141,7 @@ module.exports = function(grunt) {
           dest: './build/',
           filter: function(filepath) {
 
-            for( var i in modulesFinal ) {
+            for( var i in modulesStack ) {
 
               if( filepath.indexOf( i ) > -1 )
                 return true;
@@ -325,6 +326,9 @@ module.exports = function(grunt) {
       if( file.modules ) {
         for( j = 0, l = file.modules.length ; j < l ; j ++ ) {
           modules[ file.modules[ j ].url ] = true;
+          modulesStack[ file.modules[ j ].url ] = true;
+
+
           jsonStructure.modules.push( file.modules[ j ] );
         }
       }
@@ -332,7 +336,7 @@ module.exports = function(grunt) {
       return jsonStructure;
     }
 
-    var modulesFinal = {};
+    
     for( var i = 0, l = cfg.modules.length ; i <l ; i ++ ) {
       console.log( typeof cfg.modules[ i ] );
       console.log( cfg.modules[ i ] );
