@@ -305,7 +305,7 @@ module.exports = function(grunt) {
           i = 0,
           l,
           jsonStructure = { modules: [], folders: {} };
-
+console.log( fileName );
       if( typeof fileName !== "object" ) {
 
         if( ! require('fs').existsSync( fileName ) ) {
@@ -332,17 +332,21 @@ module.exports = function(grunt) {
       return jsonStructure;
     }
 
-    var modules = {};
-    for( var i in cfg.modules ) {
+    var modulesFinal = {};
+    for( var i = 0, l = cfg.modules.length ; i <l ; i ++ ) {
+      console.log( typeof cfg.modules[ i ] );
+      console.log( cfg.modules[ i ] );
       if( typeof cfg.modules[ i ] == "object" ) {
-          $.extend( true, modules, loadFile( cfg.modules[ i ] ) ); 
+        
+          $.extend( true, modulesFinal, loadFile( cfg.modules[ i ] ) ); 
       } else {
-        $.extend( true, modules, loadFile( './src/' + cfg.modules[ i ] ) );
-      }
-
-      cfg.modules = modules;
+        $.extend( true, modulesFinal, loadFile( './src/' + cfg.modules[ i ] ) );
+//        console.log( loadFile( './src/' + cfg.modules[ i ] ) );
+ //       console.log( "___" );
+      } 
     }
-
+    cfg.modules = modulesFinal;
+//console.log( modulesFinal );
     /* Find filter files from the config.json and puts them in an option */
     var filterFiles = [];
     for( var i in cfg.filters ) {

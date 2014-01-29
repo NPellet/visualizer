@@ -23,7 +23,7 @@
         }
 ],
 
-"modules": ["./modules/types/folder.json"],
+"modules": ["./modules/types/folder.json", {"folders": { "Fiermisiudfh": "usr/modules/dev/" } } ] ,
 
 "header": {
 	"height": "30px",
