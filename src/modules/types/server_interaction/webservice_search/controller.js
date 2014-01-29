@@ -52,10 +52,9 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 	controller.prototype.events = {
 
 		// List of all possible events
-		'onHover': {
-			label: 'Hovers a cell',
-			refVariable: [ 'cell' ],
-			refAction: [ 'cell' ]
+		'onSearchReturn': {
+			label: 'On search complete',
+			refVariable: [ 'results', 'url' ]
 		}
 	};
 	
@@ -63,7 +62,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 	/*
 		Configuration of the module for receiving events, as a static object
 	*/
-	controller.prototype.variablesIn = [ 'list' ];
+	controller.prototype.variablesIn = [ 'vartrigger' ];
 
 	/*
 		Received actions
