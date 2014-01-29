@@ -40,11 +40,12 @@ module.exports = function(grunt) {
             src: [
               './d3/d3.min.js',
               './fancytree/src/jquery.fancytree*.js',
-              './fancytree/src/skin-lion/ui.fancytree.css',
+              './fancytree/src/skin-lion/*',
               './jqgrid_edit/js/*.js',
               './jqgrid_edit/js/i18n/grid.locale-en.js',
               './jqgrid_edit/css/*.css',
               './jquery/jquery.min.js',
+              './jquery/jquery-migrate.min.js',
               './jquery-ui/ui/minified/jquery-ui.min.js',
               './three.js/build/three.min.js',
               './ace/lib/ace/**',
