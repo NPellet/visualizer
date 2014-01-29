@@ -60,8 +60,8 @@ define(['jquery', 'modules/module'], function($, Module) {
 				folders = [];
 
 			if( ! ( list instanceof Array ) ) {
-				var targetList = {};
-				allModules = targetList;
+				
+				allModules = list;
 				return;
 			}
 
