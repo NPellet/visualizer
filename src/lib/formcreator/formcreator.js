@@ -25,12 +25,15 @@ define([ 'lib/forms/form'], function( Form ) {
 				cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
 				cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
 				cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
-				cfg.default = [ 
-									form.groups.slider[ 0 ].range[ 0 ].val1[ 0 ],
-									form.groups.slider[ 0 ].range[ 0 ].val2[ 0 ]
-							  ];
-				cfg.range = true;
 				
+				if( form.groups.range ) {
+					cfg.default = [ 
+						form.groups.range[ 0 ].val1[ 0 ],
+						form.groups.range[ 0 ].val2[ 0 ]
+					];
+				}
+
+				cfg.range = true;				
 			break;
 		}
 	};
@@ -104,7 +107,7 @@ define([ 'lib/forms/form'], function( Form ) {
 									{ title: 'Number', key: 'float' },
 									{ title: 'Combo', key: 'combo' },
 									{ title: 'Slider', key: 'slider' },
-									{ title: 'Range', key: 'slider' },
+									{ title: 'Range', key: 'slider_range' },
 									{ title: 'Checkbox', key: 'checkbox' }
 								],
 
@@ -114,7 +117,7 @@ define([ 'lib/forms/form'], function( Form ) {
 									'combo': 'combo',
 									'checkbox': 'checkbox',
 									'slider': 'slider',
-									'range': 'range'
+									'slider_range': 'slider_range'
 								}
 							}
 						}
@@ -148,54 +151,54 @@ define([ 'lib/forms/form'], function( Form ) {
 						fields: {
 
 							start: {
-								type: 'text',
+								type: 'float',
 								title: 'Start'
 							},
 
 							end: {
-								type: 'text',
+								type: 'float',
 								title: 'End'
 							},
 
 							step: {
-								type: 'text',
+								type: 'float',
 								title: 'Step'
 							}
 						}
 					},
 
 
-					slider: {
+					range: {
 
 						options: {
 							type: 'list',
-							displayTarget: [ 'slider' ]
+							displayTarget: [ 'slider_range' ]
 						},
 
 						fields: {
 
 							start: {
-								type: 'text',
+								type: 'float',
 								title: 'Start'
 							},
 
 							end: {
-								type: 'text',
+								type: 'float',
 								title: 'End'
 							},
 
 							step: {
-								type: 'text',
+								type: 'float',
 								title: 'Step'
 							},
 
 							val1: {
-								type: 'text',
+								type: 'float',
 								title: 'Default min'
 							},
 
 							val2: {
-								type: 'text',
+								type: 'float',
 								title: 'Default max'
 							},
 
@@ -273,8 +276,17 @@ define([ 'lib/forms/form'], function( Form ) {
 
 				var defaultVal = fields[ i ].groups.general[ 0 ].defaultVal ? fields[ i ].groups.general[ 0 ].defaultVal[ 0 ] : ''
 
+				type = fields[ i ].groups.general[ 0 ].type[ 0 ];
+
+				switch( type ) {
+
+					case 'slider_range':
+						type = 'slider';
+					break;
+				}
+
 				allFields[ fields[ i ].groups.general[ 0 ].name[ 0 ] ] = {
-					type: 	fields[ i ].groups.general[ 0 ].type[ 0 ],
+					type: 	type,
 					title: 	fields[ i ].groups.general[ 0 ].label[ 0 ],
 					default: defaultVal
 				};

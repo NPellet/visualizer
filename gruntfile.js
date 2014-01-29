@@ -327,7 +327,12 @@ module.exports = function(grunt) {
     }
 
     for( var i in cfg.modules ) {
-      jsonStructure[ i ] = ( loadFile( './src/' + cfg.modules[ i ] ) );
+
+      if( typeof cfg.modules[ i ] == "object" ) {
+        jsonStructure[ i ] = cfg.modules[ i ];
+      } else {
+        jsonStructure[ i ] = ( loadFile( './src/' + cfg.modules[ i ] ) );
+      }
     }
 
     /* Find filter files from the config.json and puts them in an option */
