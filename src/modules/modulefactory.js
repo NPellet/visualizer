@@ -60,14 +60,7 @@ define(['jquery', 'modules/module'], function($, Module) {
 				folders = [];
 
 			if( ! ( list instanceof Array ) ) {
-				
 				var targetList = {};
-				if( typeof list == "object" ) {
-					for( var i in list ) {
-						$.extend( true, targetList, list[ i ] );
-					}
-				}
-
 				allModules = targetList;
 				return;
 			}

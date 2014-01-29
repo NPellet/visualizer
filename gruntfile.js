@@ -305,7 +305,7 @@ module.exports = function(grunt) {
           i = 0,
           l,
           jsonStructure = { modules: [], folders: {} };
-console.log( fileName );
+//console.log( fileName );
       if( typeof fileName !== "object" ) {
 
         if( ! require('fs').existsSync( fileName ) ) {
@@ -345,7 +345,7 @@ console.log( fileName );
  //       console.log( "___" );
       } 
     }
-    cfg.modules = modulesFinal;
+    
 //console.log( modulesFinal );
     /* Find filter files from the config.json and puts them in an option */
     var filterFiles = [];
@@ -355,10 +355,11 @@ console.log( fileName );
     grunt.option('filterFiles', filterFiles);
     /* */
 
-    modulesFinal = modules;
+    //modulesFinal = modules;
+    cfg.modules = modulesFinal;
     
     //fs.writeFileSync( './build/modules.json', JSON.stringify( jsonStructure, false, '\t' ) );
-    cfg.modules = jsonStructure;//'./modules.json';
+    //cfg.modules = jsonStructure;//'./modules.json';
     fs.writeFileSync( './build/default.json', JSON.stringify( cfg, false, '\t' ) );
     //grunt.task.run('clean:buildTemp');
   });
