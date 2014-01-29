@@ -1,4 +1,3 @@
-
 requirejs.config({
 	"baseUrl": "",
 	"paths": {
@@ -35,7 +34,7 @@ requirejs.config({
             "exports" : "$jit"
         },
 		"ckeditor": ["./components/ckeditor/adapters/jquery"],
-		"jqgrid": ["jquery", "components/jqgrid/js/i18n/grid.locale-en"],
+		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"lib/flot/jquery.flot.pie": ["jquery","lib/flot/jquery.flot"],
 		"jqueryui": ["jquery"],
