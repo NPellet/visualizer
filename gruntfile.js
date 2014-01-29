@@ -41,6 +41,7 @@ module.exports = function(grunt) {
               './fancytree/src/jquery.fancytree*.js',
               './fancytree/src/skin-lion/ui.fancytree.css',
               './jqgrid/js/*.js',
+              './jqgrid/js/u18n/grid.locale-en.js',
               './jqgrid/css/*.css',
               './jquery/jquery.min.js',
               './jquery-ui/ui/minified/jquery-ui.min.js',
@@ -61,7 +62,8 @@ module.exports = function(grunt) {
               './x2js/xml2json.min.js',
               './leaflet/**',
               './jsoneditor/jsoneditor-min*',
-              './jsoneditor/img/*'
+              './jsoneditor/img/*',
+              './jit/Jit/**/*'
             ],
 
             dest: './build/components/'
@@ -258,6 +260,7 @@ module.exports = function(grunt) {
 
   var fs = require('fs');
   var path = require('path');
+  var $ = require('jQuery');
 
   grunt.registerTask( 'upload', [ 'ftp' ] );
 
@@ -320,7 +323,6 @@ module.exports = function(grunt) {
       }
 
       if( file.modules ) {
-         
         for( j = 0, l = file.modules.length ; j < l ; j ++ ) {
           modules[ file.modules[ j ].url ] = true;
           jsonStructure.modules.push( file.modules[ j ] );
@@ -330,15 +332,15 @@ module.exports = function(grunt) {
       return jsonStructure;
     }
 
+    var modules = {};
     for( var i in cfg.modules ) {
-
       if( typeof cfg.modules[ i ] == "object" ) {
-
-          jsonStructure[ i ] = loadFile( cfg.modules[ i ][ j ] );  
-        
+          $.extend( true, modules, loadFile( cfg.modules[ i ] ) ); 
       } else {
-        jsonStructure[ i ] = ( loadFile( './src/' + cfg.modules[ i ] ) );
+        $.extend( true, modules, loadFile( './src/' + cfg.modules[ i ] ) );
       }
+
+      cfg.modules = modules;
     }
 
     /* Find filter files from the config.json and puts them in an option */
