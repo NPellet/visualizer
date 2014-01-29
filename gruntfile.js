@@ -303,14 +303,18 @@ module.exports = function(grunt) {
           l,
           jsonStructure = { modules: [], folders: {} };
 
-      if( ! require('fs').existsSync( fileName ) ) {
-        console.log( 'Folder file ' + fileName + ' does not exist');
-        return;
+      if( typeof fileName !== "object" ) {
+
+        if( ! require('fs').existsSync( fileName ) ) {
+          console.log( 'Folder file ' + fileName + ' does not exist');
+          return;
+        }
+        console.log( 'Fetching file ' + fileName);
+        file = grunt.file.readJSON( fileName );
+      } else {
+        file = fileName;
       }
-
-      console.log( 'Fetching file ' + fileName);
-      file = grunt.file.readJSON( fileName );
-
+      
       for( var k in file.folders ) {
         jsonStructure.folders[ k ] = loadFile( './src/' + file.folders[ k ] + 'folder.json');
       }
@@ -329,7 +333,9 @@ module.exports = function(grunt) {
     for( var i in cfg.modules ) {
 
       if( typeof cfg.modules[ i ] == "object" ) {
-        jsonStructure[ i ] = cfg.modules[ i ];
+
+          jsonStructure[ i ] = loadFile( cfg.modules[ i ][ j ] );  
+        
       } else {
         jsonStructure[ i ] = ( loadFile( './src/' + cfg.modules[ i ] ) );
       }
