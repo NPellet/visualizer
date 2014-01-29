@@ -10,6 +10,7 @@ define([	'jquery',
 			'modules/modulefactory',
 			'src/util/viewmigration',
 			'src/util/actionmanager',
+			'src/util/cron',
 			'usr/datastructures/filelist'
 ], function($,
 			Header,
@@ -21,12 +22,14 @@ define([	'jquery',
 			Versioning,
 			ModuleFactory,
 			Migration,
-			ActionManager
+			ActionManager,
+			Cron
 ) {
 
 	var _viewLoaded, _dataLoaded;
 
 	var evaluatedScripts = {};
+	var crons = [];
 	
 	var RepositoryData = new Repository(),
 		RepositoryHighlight = new Repository(),
@@ -439,7 +442,93 @@ define([	'jquery',
 							}
 
 						}
+					},
+
+					webcron: {
+
+						options: {
+							title: 'Webservice crontab',
+							icon: 'world_go'
+						},						
+
+
+						groups: {
+
+							general: {
+
+								options: {
+									type: 'table',
+									multiple: true
+								},
+
+								fields: {
+
+									cronurl: {
+										type: 'text',
+										title: 'Cron URL'
+									},
+
+									crontime: {
+										type: 'float',
+										title: "Repetition (s)"
+									},
+
+									cronvariable: {
+										type: "text",
+										title: "Target variable"
+									}
+								}
+							}
+						}
+					},
+
+
+					script_cron: {
+
+						options: {
+							title: 'Script execution',
+							icon: 'scripts'
+						},						
+
+
+						sections: {
+
+							script_el: {
+
+								options: {
+									multiple: true,
+									title: 'Script element'
+								},
+
+								groups: {
+
+									general: {
+
+										options: {
+											type: 'list',
+											multiple: true
+										},
+
+										fields: {
+
+
+											crontime: {
+												type: 'float',
+												title: "Repetition (s)"
+											},
+
+											script: {
+												type: 'jscode',
+												title: 'Javascript to execute'
+											}
+
+										}
+									}
+								}
+							}
+						}
 					}
+				
 				}
 			});
 
@@ -462,7 +551,14 @@ define([	'jquery',
 						} ],
 
 
-						actionfiles: ActionManager.getFilesForm()
+						actionfiles: ActionManager.getFilesForm(),
+						webcron: [ {
+							groups: {
+								general: [ view.crons || [] ]
+							}
+						}],
+
+						script_cron: view.script_crons
 					}
 				});
 			});
@@ -475,13 +571,17 @@ define([	'jquery',
 			form.addButton('Save', { color: 'green' }, function() {
 				div.dialog('close');
 
-				var data;
+				var data,
+					allcrons;
 
 				/* Entry variables */
 				data = form.getValue().sections.cfg[ 0 ].groups.tablevars[ 0 ];
-				view.variables = data;
-				_check(true);
+				allcrons = form.getValue().sections.webcron[ 0 ].groups.general[ 0 ];
 
+				view.variables = data;
+				view.crons = allcrons;
+
+				_check(true);
 
 				/* Handle actions scripts */
 				var data = form.getValue().sections.actionscripts[ 0 ].sections.actions;
@@ -493,6 +593,8 @@ define([	'jquery',
 				var data = form.getValue().sections.actionfiles;
 				ActionManager.setFilesFromForm( data );
 				/* */
+
+				CronManager.setCronsFromForm( data, view );
 
 			});
 

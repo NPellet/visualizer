@@ -106,11 +106,21 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 					( function( j, jpath ) {
 						self.nb++;
-						varValue.getChild( jpath ).done( function( returned ) {
 
-							self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ 
-								structure[ j ].groups.general[ 0 ].name[ 0 ]
-							][0].value = (returned.get());
+						varValue.getChild( jpath, true ).done( function( returned ) {
+
+							self
+								.form
+								.sectionElements
+								.main[ 0 ]
+								.groupElements
+								.main[ 0 ]
+								.fieldElements[ 
+
+									structure[ j ].groups.general[ 0 ].name[ 0 ]
+
+							][0]
+								.value = ( returned.get( ) );
 
 							self.nb--;
 							if( self.nb == 0 ) {

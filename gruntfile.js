@@ -119,6 +119,13 @@ module.exports = function(grunt) {
             
           },
           dest: './build/filters/'
+        }, 
+
+        {
+          cwd: './src/usr/',
+          expand: true,
+          src: './datastructures/**',
+          dest: './build/usr/'
         }]
       },
 
