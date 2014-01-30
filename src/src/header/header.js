@@ -73,69 +73,11 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 		createElement: function(source) {
 			var def = $.Deferred();
 			
-			switch(source.type) {
-				case 'versioning':
-					require(['./components/versioning'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-				case 'versionloader': 
-					require(['./components/versionloader'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-				case 'autosavelocalview':
-					require(['./components/autosavelocalview'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-				case 'pasteview':
-					require(['./components/pasteview'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-
-				case 'pushviewtoserver':
-					require(['./components/pushviewtoserver'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-
-				case 'copyview':
-					require(['./components/copyview'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-
-
-				case 'blankview':
-					require(['./components/blankview'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-
-			}
+            require(['./components/'+source.type], function(El) {
+                var el = new El();
+                el.init(source);
+                def.resolve(el);
+            });
 
 			return def.promise();
 		},

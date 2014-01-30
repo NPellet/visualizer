@@ -83,6 +83,13 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			this.viewCallback( view, true );
 			
 		},
+                
+		setDataJSON: function( json ) {
+
+			data = json;
+			this.dataCallback( data, true );
+			
+		},
 
 		blankView: function( ) {
 			this.setViewJSON( { } );
