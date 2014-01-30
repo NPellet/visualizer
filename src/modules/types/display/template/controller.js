@@ -17,8 +17,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
     controller.prototype.references = {
         "value": {
-            label: 'Any object',
-            type: 'object'
+            label: 'Any object'
         },
         "tpl" : {
             label: 'Template',

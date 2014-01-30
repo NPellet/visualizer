@@ -31,7 +31,7 @@ define(['modules/default/defaultview', 'lib/mustache/mustache'], function(Defaul
                 }
                 this._value = value;
 
-                this.dom.html(Mustache.render(this.template, value));
+                this.dom.html(Mustache.render(this.template, value.get()));
 
             },
             tpl: function(value) {
@@ -40,7 +40,7 @@ define(['modules/default/defaultview', 'lib/mustache/mustache'], function(Defaul
                 var tpl = value.get();
                 try {
                     Mustache.parse(tpl);
-                    this.dom.html(Mustache.render(tpl, this._value));
+                    this.dom.html(Mustache.render(tpl, this._value.get()));
                     this.module.definition.configuration.groups.group[0].template[0] = tpl;
                     this.template = tpl;
                 } catch (e) {
