@@ -56,8 +56,6 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 			'mol': function(moduleValue) {
 				if(!moduleValue) return;
 
-console.log(moduleValue.get())
-
 				var contentWindow = this.dom.get(0).contentWindow;
 				contentWindow.setMolFile(moduleValue.get());
 			

@@ -3062,7 +3062,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 
 			var self = this;
 			this.slotsData = {};
-			this.slotWorker = new Worker('./scripts/lib/plot/slotworker.js');
+			this.slotWorker = new Worker('./lib/plot/slotworker.js');
 
 			this.slotWorker.onmessage = function( e ) {
 				self.slotsData[ e.data.slot ].resolve( e.data.data );
