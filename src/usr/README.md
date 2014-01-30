@@ -1,4 +1,0 @@
-visualizer-firmenich
-====================
-
-visualizer-firmenich
