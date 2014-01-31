@@ -40,7 +40,8 @@ requirejs.config({
 		"lib/flot/jquery.flot.pie": ["jquery","lib/flot/jquery.flot"],
 		"jqueryui": ["jquery"],
 		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"],
-                "components/farbtastic/src/farbtastic" : ["components/jquery/jquery-migrate.min"]
+                "components/farbtastic/src/farbtastic" : ["components/jquery/jquery-migrate.min"],
+                "lib/pixastic/pixastic" : ["lib/pixastic/pixastic/pixastic.core"]
 	}
 });
 

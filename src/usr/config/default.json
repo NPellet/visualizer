@@ -20,6 +20,10 @@
         {
 		"file": "./usr/filters/hclust.js",
 		"name": "Hierarchical clustering"
+        },
+                {
+		"file": "./usr/filters/histogram.js",
+		"name": "Color histogram"
         }
 ],
 

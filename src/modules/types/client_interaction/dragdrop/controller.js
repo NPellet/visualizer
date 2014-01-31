@@ -160,7 +160,6 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 
 				}
 			}
-console.log(obj)
 			obj = new DataObject({ type: self.lineCfg.type, value: obj }, true);
                         self.tmpVar(self.lineCfg.variable, obj);
 			self.leased = false;
