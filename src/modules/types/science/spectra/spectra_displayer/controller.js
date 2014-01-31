@@ -49,7 +49,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 		// input
 		chart: {
-			type: ['array','object'],
+			type: 'chart',
 			label: 'Chart object'
 		},
 

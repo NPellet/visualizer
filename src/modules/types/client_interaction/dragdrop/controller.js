@@ -113,7 +113,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 						filetype: {
 							type: "combo",
 							title: "Read type",
-							options: [{ title: "Text", key: "text"}, { title: "Base64 Encoded", key: "base64"}, { title: "Binary", key: "binary"} ]
+							options: [{ title: "Text", key: "text"}, { title: "Base64 Encoded", key: "base64"}, { title: "Binary string", key: "binary"}, { title: "Array buffer", key: "b"} ]
 						},
 
 						type: {
@@ -160,7 +160,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 
 				}
 			}
-
+console.log(obj)
 			obj = new DataObject({ type: self.lineCfg.type, value: obj }, true);
                         self.tmpVar(self.lineCfg.variable, obj);
 			self.leased = false;
@@ -210,7 +210,11 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 			break;
 
 			case 'binary':
-				this.reader.readAsBinary( file );
+				this.reader.readAsBinaryString( file );
+			break;
+                        
+                        case 'buffer':
+				this.reader.readAsArrayBuffer( file );
 			break;
 		}
 	};
