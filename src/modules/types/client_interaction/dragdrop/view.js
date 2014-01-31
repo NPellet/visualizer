@@ -12,12 +12,12 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/versioning'], 
 			this.dom = $('<div />', { class: 'dragdropzone' } ).html( this.module.getConfiguration( 'label', 'Drop your file here' ));
 			this.module.getDomContent().html( this.dom );
 
-			if (cfg('filter')) {
+			/*if (cfg('filter')) {
         		eval("self.filter = function(data) { try { \n " + cfg('filter') + "\n } catch(_) { console.log(_); } }");
       		} else {
       			// WTF ?
       			delete self.filter;
-      		}
+      		}*/
 		},
 
 		inDom: function() {

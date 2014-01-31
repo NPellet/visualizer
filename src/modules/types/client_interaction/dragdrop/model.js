@@ -1,6 +1,8 @@
-define(['modules/default/defaultmodel'], function(Default) {
+define(['modules/default/defaultmodel','src/util/datatraversing'], function(Default,Traversing) {
 	
-	function model() {};
+	function model() {
+            this.tmpVars = new DataObject();
+        };
 	model.prototype = $.extend(true, {}, Default, {
 
 		getValue: function() {
@@ -9,7 +11,8 @@ define(['modules/default/defaultmodel'], function(Default) {
 				
 		
 		getjPath: function(rel, accepts) {
-			return {};
+                    var jpaths = [];
+                    return Traversing.getJPathsFromElement(this.tmpVars, jpaths), jpaths;
 		}
 	});
 

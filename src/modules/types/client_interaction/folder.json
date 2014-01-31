@@ -5,7 +5,7 @@
 			"url": "modules/types/client_interaction/button_action/"
 		},
 		{
-			"moduleName": "Two dimensional list",
+			"moduleName": "Drag and drop",
 			"url": "modules/types/client_interaction/dragdrop/"
 		},
 		{
