@@ -563,29 +563,28 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 			shape.onMouseOver( function ( data ) {
 
-				API.highlight( data._highlight , 1 );
+				API.highlight( data , 1 );
 
 			});
 
 			shape.onMouseOut( function ( data ) {
 
-				API.highlight( data._highlight , 0 );
+				API.highlight( data , 0 );
 
 			});
 
 
 
-			if( annotation._highlight ) {
 
-				API.listenHighlight( annotation._highlight, function(onOff) {
+                        API.listenHighlight( annotation, function(onOff) {
 
-					if(onOff) {
-						shape.highlight( );
-					} else {
-						shape.unHighlight( );
-					}
-				} );
-			}
+                                if(onOff) {
+                                        shape.highlight( );
+                                } else {
+                                        shape.unHighlight( );
+                                }
+                        } );
+			
 
 			shape.draw();
 			shape.redraw();
