@@ -422,8 +422,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				this.redraw();
 			},
 
-			'annotation': function(value) {
-
+			annotations: function(value) {
 				value = DataTraversing.getValueIfNeeded(value);
 				if(!value)
 					return;
