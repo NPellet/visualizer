@@ -141,7 +141,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 		configurable: false,
 		writable: false,
 		value: function(k, l, check) {
-			console.log('View has changed');
+			//console.log('View has changed');
 
 			if(check) {
 				if(l instanceof Array)
@@ -159,7 +159,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 		configurable: false,
 		writable: false,
 		value: function(k, l) {
-			console.log('Data has changed');
+			//console.log('Data has changed');
 			this[k] = l;
 			return this;
 		}

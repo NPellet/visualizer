@@ -51,7 +51,7 @@ define(['jquery', 'modules/module'], function($, Module) {
 		getTypes: function() {
 
 			return $.when.apply( $, modulesDeferred ).pipe( function() {
-				console.log( allModules );
+				//console.log( allModules );
 				return allModules;
 			});
 		},
@@ -87,9 +87,9 @@ define(['jquery', 'modules/module'], function($, Module) {
 
 					
 				} else { // It's a folder type structure
-console.log( list[ i ].folders );
+//console.log( list[ i ].folders );
 					getModules( list[ i ] ).then( function( data ) {
-						console.log( data );
+						//console.log( data );
 						$.extend( true, finalList,  data);	
 					} );
 					
