@@ -266,6 +266,11 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			jcamp: function ( varName ) {
 
 				this.removeSerie( varName );
+			},
+
+			chart: function ( varName ) {
+
+				this.removeSerie( varName );
 			}
 		},
 		
