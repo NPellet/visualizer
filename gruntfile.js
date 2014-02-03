@@ -2,6 +2,7 @@ module.exports = function(grunt) {
 
   var modulesFinal = {};
   var modulesStack = {};
+  var _ = require('underscore');
 
   // Project configuration.
   grunt.initConfig({
@@ -265,6 +266,86 @@ module.exports = function(grunt) {
   var $ = require('jQuery');
 
   grunt.registerTask( 'upload', [ 'ftp' ] );
+  
+  grunt.registerTask('clean-images', 'Clean all images that are not used in the build', function(){
+    var walk = require('walk');
+    var fs = require('fs');
+    var walk = require('walk')
+        , fs = require('fs')
+        , options
+        , walker
+        , whiteset = {}
+        , allimages = [];
+
+      // To be truly synchronous in the emitter and maintain a compatible api,
+      // the listeners must be listed before the object is created
+      options = {
+        listeners: {
+          file: function (root, fileStats, next) {
+            var expressions;
+            expressions = [new RegExp(/\.jpg$/), new RegExp(/\.png$/), new RegExp(/\.jpeg$/), new RegExp(/\.gif$/)];
+            if(_.any(expressions, function(exp){
+              return fileStats.name.match(exp);
+            })) {
+              allimages.push(root+'/'+fileStats.name);
+            }
+          
+            var expressions = [new RegExp(/\.css$/), new RegExp(/\.js$/), new RegExp(/\.html$/)];
+            if(_.any(expressions, function(exp){
+              return fileStats.name.match(exp);
+            })) {
+              // File content
+              var content = fs.readFileSync(root+'/'+fileStats.name).toString();
+              
+              // Search for icons specified using the forms library
+              if(fileStats.name.match(new RegExp(/\.js$/))) {
+                var formreg = RegExp(/require\(\[['"]\.\/forms\/form['"]\]/);
+                if(content.match(formreg)) {
+                  var iconreg = RegExp(/icon:\s*['"]([a-zA-Z_\-]+)['"]/g);
+                  var m = iconreg.exec(content);
+                  while (m != null) {
+                      whiteset['build/lib/forms/images/'+m[1]+'.png'] = '';
+                      m = iconreg.exec(content);
+                  }
+                }
+              }
+              
+              // Search for images specified in .js, .css and .html files
+              var expression = /[\/a-zA-Z_\- 0-9]+\.(png|jpeg|jpg|gif)/gi;
+              var reg = RegExp(expression);
+              var res = content.match(reg);
+              if(res) {
+                _.keys(res).forEach(function(i){
+                  if(res[i][0] !== '/') { // ignore absolute path
+                    var filepath = root+'/'+res[i];
+                    if(fs.existsSync(filepath)) {
+                      whiteset[filepath] = '';
+                    }
+                  }
+                });
+              }
+              next();
+            }
+          }
+        , errors: function (root, nodeStatsArray, next) {
+            console.log('An error occured in walk');
+            next();
+          }
+        }
+      };
+
+      walker = walk.walkSync("build", options);
+      
+      // Delete images that are not in the white set
+      var delcount = 0;
+      _.keys(allimages).forEach(function(i){
+        if(!_.has(whiteset, allimages[i])) {
+          fs.unlinkSync(allimages[i]);
+          delcount++;
+        }
+      });
+      console.log('Deleted ' + delcount + ' out of '+ allimages.length + ' images.')
+  });
 
   grunt.registerTask( 'build', [
                         'clean:build',
