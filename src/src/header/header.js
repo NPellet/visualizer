@@ -33,7 +33,7 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 			var dom = $("#title").children('div');
 
 			dom
-				.text(view.title || 'Untitled')
+				.text(view.configuration ? view.configuration.title : 'Untitled')
 				.attr('contenteditable', 'true')
 				.bind('keypress', function(e) {
 					e.stopPropagation();
@@ -44,7 +44,7 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 				})
 
 				.bind('blur', function() {
-					view.set('title', $(this).text().replace(/[\r\n]/g, ""));
+					view.configuration.set('title', $(this).text().replace(/[\r\n]/g, ""));
 				});
 		},
 
@@ -94,7 +94,7 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 		}
 
 		// 'forms/button'
-	}
+	};
 
 			/*Header.addButtons(buttons, EntryPoint.getDataHandler(), EntryPoint.getViewHandler(), EntryPoint.getData(), EntryPoint.getView());
 			
@@ -102,6 +102,6 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 
 
 	return {
-		makeHeaderEditable: makeHeaderEditable,
-	}
+		makeHeaderEditable: makeHeaderEditable
+	};
 });
