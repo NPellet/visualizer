@@ -47,7 +47,13 @@ define(['jquery', 'src/util/versioning'], function($, Versioning) {
 							module.url="./modules/types/array_search/configured_search/";
 						}
 					}
-				}				
+				}
+			case "2.2.2": // view title is in configuration.title
+				if(view.title) {
+                                    if(!view.configuration) view.configuration = new ViewObject();
+                                    view.configuration.title = view.title;
+                                    delete view.title;
+                                }
 		}
 
 		view._version = Versioning.version;
