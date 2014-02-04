@@ -85,6 +85,8 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 					if( el.dataURL || el.dataBranch ) {
 						self.loadDataWith(el.dataURL, el.dataBranch);
 					}
+                                        
+                                        self.onClick();
 				});
 			}
 
