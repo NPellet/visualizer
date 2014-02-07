@@ -78,6 +78,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             if(rev)
                 doc._rev = rev;
             $.couch.db(this.database).saveDoc(doc,{
+                success: function() {
+                    if(rev) {
+                        var tree = $("#ci-couchdbheader-datatree").data("ui-fancytree");
+                        tree.getNodeByKey(id).lazyLoad(true);
+                    }
+                    
+                },
                 error: showError
             });
         },
@@ -101,6 +108,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             if(rev)
                 doc._rev = rev;
             $.couch.db(this.database).saveDoc(doc,{
+                success: function() {
+                    if(rev) {
+                        var tree = $("#ci-couchdbheader-viewtree").data("ui-fancytree");
+                        tree.getNodeByKey(id).lazyLoad(true);
+                    }
+                    
+                },
                 error: showError
             });
         },
@@ -217,7 +231,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         revs = new Array(l);
                     for(var i = 0; i < l; i++) {
                         var rev = info[i];
-                        var el = {title:rev.rev, id:data._id, rev:rev.rev};
+                        var el = {title:rev.rev, id:data._id, rev:rev.rev, key:data._id.replace(/^[^:]*:[^:]*:/,"")+rev.rev};
                         revs[i]=el;
                     }
                     def.resolve(revs);
@@ -228,7 +242,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             if(data.targetType!=="title")
                 return;
             var couchData = data.node.data;
-            var name = couchData.path ? couchData.path : couchData.id.replace(/^[^:]*:[^:]*:/,"");
+            var name = data.node.key ? (couchData.rev ? data.node.key.replace(couchData.rev,"") : data.node.key) : couchData.id.replace(/^[^:]*:[^:]*:/,"");
             setFormContent(type.toLowerCase(),name);
             if(data.node.folder!==true) {
                 this["load"+type](couchData.id, couchData.rev);
@@ -322,12 +336,12 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 continue;
             var obj = object[name];
             var thisPath = currentPath+name;
-            var el = {title:name, path:thisPath};
+            var el = {title:name, key:thisPath};
             if(obj._folder) {
-                if(obj.name)
-                    el.id = obj.name;
-                else
-                    el.folder = true;
+                if(obj.name) {
+                    tree.push({id: obj.name, lazy: true, title: name, key: thisPath});
+                }
+                el.folder = true;
                 el.children = createFancyTree(obj, thisPath+":");
             } else {
                 el.lazy = true;
