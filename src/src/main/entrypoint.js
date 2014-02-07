@@ -638,7 +638,7 @@ define([	'jquery',
 			Versioning.setView(urls['views'], urls['viewBranch'], urls['viewURL']);
 			Versioning.setViewLoadCallback(doView);
 
-			Versioning.setData(urls['results'], urls['	resultBranch'], urls['dataURL']);
+			Versioning.setData(urls['results'], urls['resultBranch'], urls['dataURL']);
 			Versioning.setDataLoadCallback(doData);
 			
 			// Sets the header

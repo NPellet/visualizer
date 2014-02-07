@@ -1,15 +1,23 @@
-define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'lib/couchdb/jquery.couch', 'fancytree'], function($, Default, Versioning, Button) {
+define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/couchdb/jquery.couch', 'fancytree'], function($, Default, Versioning, Button, Util) {
 
     var couchDBManager = function() {
     };
+    
     $.extend(couchDBManager.prototype, Default, {
         initImpl: function() {
-            var that = this;
             this.ok = false;
             this.loggedIn = false;
+            this.id = Util.getNextUniqueId();
             if(this.options.url) $.couch.urlPrefix = this.options.url;
             this.database = this.options.database || "visualizer";
             
+            this.showError = $.proxy(showError, this);
+            this.getFormContent = $.proxy(getFormContent, this);
+            
+            this.checkDatabase();
+        },
+        checkDatabase: function() {
+            var that = this;
             $.couch.info({
                 success: function(e) {
                     that.ok = true;
@@ -18,6 +26,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     console.error("CouchDB header : database connection error. Code:" + e+".",g);
                 }
             });
+        },
+        cssId : function(name) {
+            return "ci-couchdb-header-"+this.id+"-"+name;
         },
         _onClick: function() {
             if (this.ok) {
@@ -29,9 +40,10 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     this.close();
                 }
             }
-            else
+            else {
+                this.checkDatabase();
                 console.error("CouchDB header : unreachable database.");
-
+            }
         },
         createMenu: function() {
             if (this.$_elToOpen) {
@@ -44,6 +56,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             
             var that = this;
             this.$_elToOpen = $("<div>");
+            this.errorP = $('<p id="'+this.cssId("error")+'" style="color: red;">');
             
             $.couch.session({
                 success: function(data) {
@@ -58,68 +71,69 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             });
             
         },
-        loadData: function(id, rev) {
+        load: function(type, node, rev) {
             var options = {
                 success: function(data) {
-                    data = new DataObject(data.value,true);
-                    Versioning.setDataJSON( data );
+                    data = new window[type+"Object"](data.value,true);
+                    Versioning["set"+type+"JSON"]( data );
                 }
             };
             if(rev)
                 options.rev = rev;
-            $.couch.db(this.database).openDoc(id,options);
+            $.couch.db(this.database).openDoc(node.data.id,options);
         },
-        saveData: function(id, rev) {
-            var data = Versioning.getData();
+        save: function(type, name) {
+            
+            if(name.length < 1)
+                return;
+            if(name.indexOf(":")!==-1)
+                return this.showError(10);
+            
+            var content = Versioning["get"+type]();
+            
+            var last = this["last"+type+"Node"];
+            if(typeof last === "undefined")
+                return this.showError(11);
+            
+            var id, folderNode;
+            if(last.node.folder) {
+                id = last.name +":"+ name;
+                folderNode = last.node;
+            } else {
+                id = last.name.replace(/[^:]*$/,name);
+                folderNode = last.node.parent;
+            }
+            
             var doc = {
-                _id : this.username+":data:"+id,
-                value : data
+                value : content,
+                _id : id
             };
-            if(rev)
-                doc._rev = rev;
+            
+            var update = false;
+            if(id===last.name) {
+                update = true;
+                doc._rev = last.node.data.lastRev;
+            }
+            
             $.couch.db(this.database).saveDoc(doc,{
-                success: function() {
-                    if(rev) {
-                        var tree = $("#ci-couchdbheader-datatree").data("ui-fancytree");
-                        tree.getNodeByKey(id).lazyLoad(true);
-                    }
-                    
-                },
-                error: showError
-            });
-        },
-        loadView: function(id, rev) {
-            var options = {
                 success: function(data) {
-                    data = new ViewObject(data.value,true);
-                    Versioning.setViewJSON( data );
-                }
-            };
-            if(rev)
-                options.rev = rev;
-            $.couch.db(this.database).openDoc(id,options);
-        },
-        saveView: function(id, rev) {
-            var view = Versioning.getView();
-            var doc = {
-                _id : this.username+":view:"+id,
-                value : view
-            };
-            if(rev)
-                doc._rev = rev;
-            $.couch.db(this.database).saveDoc(doc,{
-                success: function() {
-                    if(rev) {
-                        var tree = $("#ci-couchdbheader-viewtree").data("ui-fancytree");
-                        tree.getNodeByKey(id).lazyLoad(true);
+                    if(update) {
+                        last.node.data.lastRev = data.rev;
+                        if(last.node.children) last.node.lazyLoad(true); 
+                    } else {
+                        folderNode.addNode({
+                            id: data.id,
+                            lazy: true,
+                            title: name,
+                            key: folderNode.key+":"+name,
+                            lastRev: data.rev
+                        });
                     }
                     
                 },
-                error: showError
+                error: this.showError
             });
-        },
-        getTreeSource: function() {
-            $.couch.db(this.database).query();
+
         },
         login: function(username, password) {
             var that = this;
@@ -131,7 +145,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     that.username = data.name;
                     that.$_elToOpen.html(that.getMenuContent());
                 },
-                error: showError
+                error: this.showError
             });
         },
         logout: function() {
@@ -151,21 +165,21 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             var that = this;
             
             function doLogin() {
-                that.login(getFormContent("login-username"),getFormContent("login-password"));
+                that.login(that.getFormContent("login-username"),that.getFormContent("login-password"));
                 return false;
             }
             
             var loginForm = this.loginForm = $("<div>");
             loginForm.append("<h1>Login</h1>");
-            loginForm.append('<label for="ci-couchdbheader-login-username">Username </label><input type="text" id="ci-couchdbheader-login-username" /><br>');
-            loginForm.append('<label for="ci-couchdbheader-login-password">Password </label><input type="password" id="ci-couchdbheader-login-password" />');
+            loginForm.append('<label for="'+this.cssId("login-username")+'">Username </label><input type="text" id="'+this.cssId("login-username")+'" /><br>');
+            loginForm.append('<label for="'+this.cssId("login-password")+'">Password </label><input type="password" id="'+this.cssId("login-password")+'" />');
             loginForm.append(new Button('Login', doLogin, {color: 'green'}).render());
             loginForm.bind("keypress",function(e){
                 if(e.charCode===13)
                     return doLogin();
             });
             
-            loginForm.append('<p id="ci-couchdbheader-error" style="color: red;">');
+            loginForm.append(this.errorP);
             
             return loginForm;
         },
@@ -177,43 +191,48 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             
             var that = this;
             var dom = this.menuContent = $("<div>");
+            
+            var logout = $("<p>").append("Logged in as "+this.username+" ").css("text-align","right").append($('<a href="#">Logout</a>').on("click",function(){
+                that.logout();
+            }));
+            dom.append(logout);
+            
             var tableRow = $("<tr>").appendTo($("<table>").appendTo(dom));
             var treeCSS = {
                 "overflow-y":"auto",
                 "height": "200px",
-                "width": "250px"
+                "width": "300px"
             };
             
             var dataCol = $('<td valign="top">').appendTo(tableRow);
             dataCol.append('<h1>Data</h1>');
             
-            var dataTree = $("<div>").attr("id", "ci-couchdbheader-datatree").css(treeCSS);
+            var dataTree = $("<div>").attr("id", this.cssId("datatree")).css(treeCSS);
             dataCol.append(dataTree);
 
-            dataCol.append($("<p>").append('<input type="text" id="ci-couchdbheader-data"/>')
+            dataCol.append('<p id="'+this.cssId("datadiv")+'">&nbsp;</p>');
+            dataCol.append($("<p>").append('<input type="text" id="'+this.cssId("data")+'"/>')
                    .append(new Button('Save', function() {
-                       that.saveData(getFormContent("data"), that.lastDataRev);
+                       that.save("Data", that.getFormContent("data"));
                    }, {color: 'red'}).render())
             );
+            this.lastDataFolder = {name:this.username+":data",node:null};
 
             var viewCol = $('<td valign="top">').appendTo(tableRow);
             viewCol.append('<h1>View</h1>');
             
-            var viewTree = $("<div>").attr("id", "ci-couchdbheader-viewtree").css(treeCSS);
+            var viewTree = $("<div>").attr("id", this.cssId("viewtree")).css(treeCSS);
             viewCol.append(viewTree);
             
-            viewCol.append($("<p>").append('<input type="text" id="ci-couchdbheader-view"/>')
+            viewCol.append('<p id="'+this.cssId("viewdiv")+'">&nbsp;</p>');
+            viewCol.append($("<p>").append('<input type="text" id="'+this.cssId("view")+'"/>')
                    .append(new Button('Save', function() {
-                       that.saveView(getFormContent("view"), that.lastViewRev);
+                       that.save("View", that.getFormContent("view"));
                    }, {color: 'red'}).render())
             );
+            this.lastViewFolder = {name:this.username+":view",node:null};
             
-            var logout = $("<p>").append("Logged in as "+this.username).append(new Button('Logout', function() {
-                that.logout();
-            }, {color: 'red'}).render()).css("text-align","center").css("margin-top","30px");
-            dom.append(logout);
-            
-            dom.append('<p id="ci-couchdbheader-error" style="color: red;">');
+            dom.append(this.errorP);
             
             this.loadTree();
             
@@ -231,7 +250,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         revs = new Array(l);
                     for(var i = 0; i < l; i++) {
                         var rev = info[i];
-                        var el = {title:rev.rev, id:data._id, rev:rev.rev, key:data._id.replace(/^[^:]*:[^:]*:/,"")+rev.rev};
+                        var el = {title:rev.rev, id:data._id, rev:true, key:data._id.replace(/^[^:]*:[^:]*:/,"")+rev.rev};
                         revs[i]=el;
                     }
                     def.resolve(revs);
@@ -239,32 +258,49 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             });
         },
         clickNode: function(type, event, data) {
-            if(data.targetType!=="title")
+            if(data.targetType!=="title" && data.targetType!=="icon")
                 return;
-            var couchData = data.node.data;
-            var name = data.node.key ? (couchData.rev ? data.node.key.replace(couchData.rev,"") : data.node.key) : couchData.id.replace(/^[^:]*:[^:]*:/,"");
-            setFormContent(type.toLowerCase(),name);
-            if(data.node.folder!==true) {
-                this["load"+type](couchData.id, couchData.rev);
-                this["last"+type+"Rev"] = couchData.rev;
+            
+            var node = data.node, formContent, divContent = "", last;
+            var typeL = type.toLowerCase();
+            
+            if(node.folder) {
+                divContent += node.key;
+                last = {name: this.username+":"+typeL+":"+divContent, node: node};
+            } else {
+                var rev;
+                divContent += node.key.replace(/:?[^:]*$/,"");
+                if(node.data.rev) {
+                    rev = node.title;
+                    node = node.parent;
+                }
+                formContent = node.title;
+                last = {name: node.data.id, node: node};
+                this.load(type, node, rev);
             }
+            
+            this["last"+type+"Node"] = last;
+            $("#"+this.cssId(typeL)).val(formContent);
+            $("#"+this.cssId(typeL+"div")).html("&nbsp;"+divContent);
+            
         },
         loadTree: function() {
             var proxyLazyLoad = $.proxy(this, "lazyLoad"),
                 proxyClickData = $.proxy(this, "clickNode", "Data"),
-                proxyClickView = $.proxy(this, "clickNode", "View");
+                proxyClickView = $.proxy(this, "clickNode", "View"),
+                that = this;
             $.couch.db(this.database).allDocs({
                 startkey: this.username+':',
                 endkey: this.username+':~',
                 success: function(data) {
                     var trees = createTrees(data.rows);
-                    $("#ci-couchdbheader-datatree").fancytree({
+                    $("#"+that.cssId("datatree")).fancytree({
                         source: trees.data,
                         lazyload: proxyLazyLoad,
                         click: proxyClickData,
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
-                    $("#ci-couchdbheader-viewtree").fancytree({
+                    $("#"+that.cssId("viewtree")).fancytree({
                         source: trees.view,
                         lazyload: proxyLazyLoad,
                         click: proxyClickView,
@@ -278,32 +314,38 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
     function showError(e){
         var content;
         switch(e) {
+            case 10:
+                content = "Colons are not allowed in the name.";
+                break;
+            case 11:
+                content = "Please select a folder";
+                break;
             case 401:
-                content = "Wrong username or password";
+                content = "Wrong username or password.";
                 break;
             case 409:
-                content = "Conflict. Please select a revision first.";
+                content = "Conflict. An entry with the same name already exists.";
                 break;
             case 503:
-                content = "Service Unavailable";
+                content = "Service Unavailable.";
                 break;
             default:
-                content = "Unknown error";
+                content = "Unknown error.";
         }
-        $("#ci-couchdbheader-error").text(content).show().delay(3000).fadeOut();
+        $(("#"+this.cssId("error"))).text(content).show().delay(3000).fadeOut();
     }
     
     function createTrees(data) {
         var trees = {data: {_folder:true}, view: {_folder:true}};
         
         for(var i = 0, ii = data.length; i < ii; i++) {
-            var id = data[i].id;
-            var split = id.split(":");
+            var info = data[i];
+            var split = info.id.split(":");
             split.shift();
             if(split.shift()==="data")
-                addBranch(trees.data, split, id);
+                addBranch(trees.data, split, info);
             else
-                addBranch(trees.view, split, id);
+                addBranch(trees.view, split, info);
         }
         
         trees.data = createFancyTree(trees.data, "");
@@ -312,55 +354,64 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         return trees;
     }
     
-    function addBranch(tree, indices, id) {
+    function addBranch(tree, indices, info) {
         if(indices.length === 0) {
-            addLeaf(tree, id);
+            addLeaf(tree, info);
         } else {
             tree._folder=true;
             var index = indices.shift();
             if(!tree[index])
                 tree[index] = {};
-            addBranch(tree[index], indices, id);
+            addBranch(tree[index], indices, info);
         }
     }
     
-    function addLeaf(tree, id) {
-        tree.name = id;
+    function addLeaf(tree, info) {
+        tree.name = info.id;
+        tree.rev = info.value.rev;
     }
     
     function createFancyTree(object, currentPath) {
-        var tree = [];
+        var tree, root;
+        if(currentPath.length) {
+            tree = root = [];
+        } else {
+            root = [{
+                key:"",
+                title: "-",
+                folder: true,
+                children: []
+            }];
+            tree = root[0].children;
+        }
         
         for(var name in object) {
-            if(name==="_folder"||name==="name")
+            if(name==="_folder"||name==="name"||name==="rev")
                 continue;
             var obj = object[name];
             var thisPath = currentPath+name;
             var el = {title:name, key:thisPath};
             if(obj._folder) {
                 if(obj.name) {
-                    tree.push({id: obj.name, lazy: true, title: name, key: thisPath});
+                    tree.push({id: obj.name, lazy: true, title: name, key: thisPath, lastRev: obj.rev});
                 }
                 el.folder = true;
                 el.children = createFancyTree(obj, thisPath+":");
             } else {
                 el.lazy = true;
                 el.id = obj.name;
+                el.lastRev = obj.rev;
             }
             tree.push(el);
         }
         
-        return tree;
+        return root;
     }
     
     function getFormContent(type) {
-        return $("#ci-couchdbheader-"+type).val();
+        return $("#"+this.cssId(type)).val();
     }
     
-    function setFormContent(type, value) {
-        $("#ci-couchdbheader-"+type).val(value);
-    }
-
     return couchDBManager;
 
 });
