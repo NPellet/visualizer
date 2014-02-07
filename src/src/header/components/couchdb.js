@@ -94,7 +94,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             var last = this["last"+type+"Node"];
             if(typeof last === "undefined")
                 return this.showError(11);
-            
+
             var id, folderNode;
             if(last.node.folder) {
                 id = last.name +":"+ name;
@@ -128,12 +128,49 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                             key: folderNode.key+":"+name,
                             lastRev: data.rev
                         });
+                        if(!folderNode.expanded)
+                            folderNode.toggleExpanded();
                     }
                     
                 },
                 error: this.showError
             });
 
+        },
+        mkdir: function(type, name) {
+            
+            if(name.length < 1)
+                return;
+            if(name.indexOf(":")!==-1)
+                return this.showError(10);
+            
+            var last = this["last"+type+"Node"];
+            if(typeof last === "undefined")
+                return this.showError(11);
+            
+            var folderNode;
+            if(last.node.folder)
+                folderNode = last.node;
+            else
+                folderNode = last.node.parent;
+            
+            // Check if folder already exists
+            var children = folderNode.getChildren();
+            if(children) {
+                for(var i = 0; i < children.length; i++) {
+                    if(children[i].title === name)
+                        return this.showError(12);
+                }
+            }
+            
+            folderNode.addNode({
+                folder: true,
+                title: name,
+                key: folderNode.key+":"+name
+            });
+            if(!folderNode.expanded)
+                folderNode.toggleExpanded();
+            
         },
         login: function(username, password) {
             var that = this;
@@ -215,6 +252,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                    .append(new Button('Save', function() {
                        that.save("Data", that.getFormContent("data"));
                    }, {color: 'red'}).render())
+                   .append(new Button('Mkdir', function() {
+                       that.mkdir("Data", that.getFormContent("data"));
+                   }, {color: 'blue'}).render())
             );
             this.lastDataFolder = {name:this.username+":data",node:null};
 
@@ -229,6 +269,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                    .append(new Button('Save', function() {
                        that.save("View", that.getFormContent("view"));
                    }, {color: 'red'}).render())
+                   .append(new Button('Mkdir', function() {
+                       that.mkdir("View", that.getFormContent("view"));
+                   }, {color: 'blue'}).render())
             );
             this.lastViewFolder = {name:this.username+":view",node:null};
             
@@ -250,7 +293,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         revs = new Array(l);
                     for(var i = 0; i < l; i++) {
                         var rev = info[i];
-                        var el = {title:rev.rev, id:data._id, rev:true, key:data._id.replace(/^[^:]*:[^:]*:/,"")+rev.rev};
+                        var el = {title:"rev "+(l-i), id:data._id, rev:true, key:rev.rev};
                         revs[i]=el;
                     }
                     def.resolve(revs);
@@ -263,15 +306,15 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             
             var node = data.node, formContent, divContent = "", last;
             var typeL = type.toLowerCase();
-            
+
             if(node.folder) {
                 divContent += node.key;
-                last = {name: this.username+":"+typeL+":"+divContent, node: node};
+                last = {name: this.username+":"+typeL+":"+divContent.substring(5), node: node};
             } else {
                 var rev;
                 divContent += node.key.replace(/:?[^:]*$/,"");
                 if(node.data.rev) {
-                    rev = node.title;
+                    rev = node.key;
                     node = node.parent;
                 }
                 formContent = node.title;
@@ -294,18 +337,23 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 endkey: this.username+':~',
                 success: function(data) {
                     var trees = createTrees(data.rows);
-                    $("#"+that.cssId("datatree")).fancytree({
+                    var datatree = $("#"+that.cssId("datatree"));
+                    datatree.fancytree({
                         source: trees.data,
                         lazyload: proxyLazyLoad,
                         click: proxyClickData,
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
-                    $("#"+that.cssId("viewtree")).fancytree({
+                    datatree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
+                    
+                    var viewtree = $("#"+that.cssId("viewtree"));
+                    viewtree.fancytree({
                         source: trees.view,
                         lazyload: proxyLazyLoad,
                         click: proxyClickView,
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
+                    viewtree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
                 }
             });
         }
@@ -319,6 +367,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 break;
             case 11:
                 content = "Please select a folder";
+                break;
+            case 12:
+                content = "A folder with this name already exists.";
                 break;
             case 401:
                 content = "Wrong username or password.";
@@ -377,12 +428,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             tree = root = [];
         } else {
             root = [{
-                key:"",
-                title: "-",
+                key:"root",
+                title: "root",
                 folder: true,
                 children: []
             }];
             tree = root[0].children;
+            currentPath = "root:";
         }
         
         for(var name in object) {
@@ -409,7 +461,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
     }
     
     function getFormContent(type) {
-        return $("#"+this.cssId(type)).val();
+        return $("#"+this.cssId(type)).val().trim();
     }
     
     return couchDBManager;
