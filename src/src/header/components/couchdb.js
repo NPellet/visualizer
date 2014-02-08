@@ -1,12 +1,10 @@
 define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/couchdb/jquery.couch', 'fancytree'], function($, Default, Versioning, Button, Util) {
 
-    var couchDBManager = function() {
-    };
+    var couchDBManager = function() {};
     
     $.extend(couchDBManager.prototype, Default, {
         initImpl: function() {
-            this.ok = false;
-            this.loggedIn = false;
+            this.ok = this.loggedIn = false;
             this.id = Util.getNextUniqueId();
             if(this.options.url) $.couch.urlPrefix = this.options.url;
             this.database = this.options.database || "visualizer";
@@ -309,7 +307,8 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 
             if(node.folder) {
                 divContent += node.key;
-                last = {name: this.username+":"+typeL+":"+divContent.substring(5), node: node};
+                var folderName = divContent.substring(5);
+                last = {name: this.username+":"+typeL+(folderName.length>0 ? ":"+folderName : ""), node: node};
             } else {
                 var rev;
                 divContent += node.key.replace(/:?[^:]*$/,"");
@@ -387,7 +386,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
     }
     
     function createTrees(data) {
-        var trees = {data: {_folder:true}, view: {_folder:true}};
+        var trees = {data: {__folder:true}, view: {__folder:true}};
         
         for(var i = 0, ii = data.length; i < ii; i++) {
             var info = data[i];
@@ -409,7 +408,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         if(indices.length === 0) {
             addLeaf(tree, info);
         } else {
-            tree._folder=true;
+            tree.__folder=true;
             var index = indices.shift();
             if(!tree[index])
                 tree[index] = {};
@@ -418,8 +417,8 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
     }
     
     function addLeaf(tree, info) {
-        tree.name = info.id;
-        tree.rev = info.value.rev;
+        tree.__name = info.id;
+        tree.__rev = info.value.rev;
     }
     
     function createFancyTree(object, currentPath) {
@@ -438,21 +437,21 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         }
         
         for(var name in object) {
-            if(name==="_folder"||name==="name"||name==="rev")
+            if(name==="__folder"||name==="__name"||name==="__rev")
                 continue;
             var obj = object[name];
             var thisPath = currentPath+name;
             var el = {title:name, key:thisPath};
-            if(obj._folder) {
-                if(obj.name) {
-                    tree.push({id: obj.name, lazy: true, title: name, key: thisPath, lastRev: obj.rev});
+            if(obj.__folder) {
+                if(obj.__name) {
+                    tree.push({id: obj.__name, lazy: true, title: name, key: thisPath, lastRev: obj.__rev});
                 }
                 el.folder = true;
                 el.children = createFancyTree(obj, thisPath+":");
             } else {
                 el.lazy = true;
-                el.id = obj.name;
-                el.lastRev = obj.rev;
+                el.id = obj.__name;
+                el.lastRev = obj.__rev;
             }
             tree.push(el);
         }
