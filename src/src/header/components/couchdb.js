@@ -177,7 +177,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 password: password,
                 success: function(data) {
                     that.loggedIn = true;
-                    that.username = data.name;
+                    that.username = username;
                     that.$_elToOpen.html(that.getMenuContent());
                 },
                 error: this.showError
@@ -194,8 +194,6 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             });
         },
         getLoginForm: function() {
-            if(this.loginForm)
-                return this.loginForm;
             
             var that = this;
             
@@ -219,16 +217,16 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             return loginForm;
         },
         getMenuContent: function() {
-            if(this.menuContent) {
-                this.loadTree();
-                return this.menuContent;
-            }
             
             var that = this;
             var dom = this.menuContent = $("<div>");
             
-            var logout = $("<p>").append("Logged in as "+this.username+" ").css("text-align","right").append($('<a href="#">Logout</a>').on("click",function(){
+            var logout = $("<p>").append("Logged in as "+this.username+" ").css("text-align","right").append($('<a>Logout</a>').on("click",function(){
                 that.logout();
+            }).css({
+                color:"blue",
+                "text-decoration":"underline",
+                "cursor": "pointer"
             }));
             dom.append(logout);
             
