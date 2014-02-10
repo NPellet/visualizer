@@ -72,7 +72,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         load: function(type, node, rev) {
             var options = {
                 success: function(data) {
-                    data = new window[type+"Object"](data.value,true);
+                    data = new window[type+"Object"](data,true);
                     Versioning["set"+type+"JSON"]( data );
                 }
             };
@@ -102,18 +102,16 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 folderNode = last.node.parent;
             }
             
-            var doc = {
-                value : content,
-                _id : id
-            };
+            content._id = id;
+            delete content._rev;
             
             var update = false;
             if(id===last.name) {
                 update = true;
-                doc._rev = last.node.data.lastRev;
+                content._rev = last.node.data.lastRev;
             }
             
-            $.couch.db(this.database).saveDoc(doc,{
+            $.couch.db(this.database).saveDoc(content,{
                 success: function(data) {
                     if(update) {
                         last.node.data.lastRev = data.rev;
@@ -156,7 +154,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             var children = folderNode.getChildren();
             if(children) {
                 for(var i = 0; i < children.length; i++) {
-                    if(children[i].title === name)
+                    if(children[i].title === name && children[i].folder)
                         return this.showError(12);
                 }
             }
@@ -221,13 +219,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             var that = this;
             var dom = this.menuContent = $("<div>");
             
-            var logout = $("<p>").append("Logged in as "+this.username+" ").css("text-align","right").append($('<a>Logout</a>').on("click",function(){
+            var logout = $("<div>").append($("<p>").css("display","inline-block").css("width","50%").append("Click on an element to select it. Double-click to load.")).append($("<p>").append("Logged in as "+this.username+" ").css("width","50%").css("text-align","right").css("display","inline-block").append($('<a>Logout</a>').on("click",function(){
                 that.logout();
             }).css({
                 color:"blue",
                 "text-decoration":"underline",
                 "cursor": "pointer"
-            }));
+            })));
             dom.append(logout);
             
             var tableRow = $("<tr>").appendTo($("<table>").appendTo(dom));
@@ -299,7 +297,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         clickNode: function(type, event, data) {
             if(data.targetType!=="title" && data.targetType!=="icon")
                 return;
-            
+
             var node = data.node, formContent, divContent = "", last;
             var typeL = type.toLowerCase();
 
@@ -316,13 +314,16 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 }
                 formContent = node.title;
                 last = {name: node.data.id, node: node};
-                this.load(type, node, rev);
+                if(event.type==="fancytreedblclick")
+                    this.load(type, node, rev);
             }
             
             this["last"+type+"Node"] = last;
             $("#"+this.cssId(typeL)).val(formContent);
             $("#"+this.cssId(typeL+"div")).html("&nbsp;"+divContent);
             
+            if(event.type==="fancytreedblclick" && !node.folder)
+                return false;
         },
         loadTree: function() {
             var proxyLazyLoad = $.proxy(this, "lazyLoad"),
@@ -339,6 +340,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         source: trees.data,
                         lazyload: proxyLazyLoad,
                         click: proxyClickData,
+                        dblclick: proxyClickData,
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
                     datatree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
@@ -348,6 +350,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         source: trees.view,
                         lazyload: proxyLazyLoad,
                         click: proxyClickView,
+                        dblclick: proxyClickView,
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
                     viewtree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
