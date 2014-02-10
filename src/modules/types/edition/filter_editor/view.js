@@ -20,6 +20,14 @@ define(['modules/types/client_interaction/code_editor/view', "src/util/util", "a
         this.editor.getSession().on('change', function() {
             self.editorChanged();
         });
+        
+        this.buttonCell.append(
+                $("<span>Execute filter</span>")
+                .addClass("form-button")
+                .on("click",function(){
+                    self.module.controller.onButtonClick(self._code, self._object);
+                })
+        );
 
         this.onReady.resolve();
     };
@@ -28,12 +36,10 @@ define(['modules/types/client_interaction/code_editor/view', "src/util/util", "a
         var val = this.editor.getValue();
         this._code.value = val;
         this.module.definition.configuration.groups.group[0].script[0] = val;
-        this.module.controller.onEditorChanged(this._code, this._object);
     };
 
     view.prototype.update.dataobject = function(value) {
         this._object = value;
-        this.editorChanged();
     };
 
     return view;

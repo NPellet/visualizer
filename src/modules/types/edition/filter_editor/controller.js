@@ -1,4 +1,4 @@
-define(['modules/types/client_interaction/code_editor/controller'], function(CodeEditor) {
+define(['modules/types/client_interaction/code_editor/controller','src/util/api'], function(CodeEditor, API) {
 
     function controller() {
     }
@@ -22,8 +22,8 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
     };
     
     controller.prototype.events = {
-        onEditorChange: {
-            label: 'The value in the editor has changed',
+        onButtonClick: {
+            label: 'The button was clicked',
             refVariable: ['dataobject']
         }
     };
@@ -51,19 +51,17 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
         };
     };
     
-    controller.prototype.onEditorChanged = function(value, object) {
+    controller.prototype.onButtonClick = function(value, object) {
         var result = executeFilter(value.get(), object);
         if(typeof result !== "undefined")
-            this.setVarFromEvent('onEditorChange', result, 'dataobject');
+            this.setVarFromEvent('onButtonClick', result, 'dataobject');
     };
     
     function executeFilter(filter, object) {
         var theFilter;
-        try {
-            eval("theFilter = "+filter);
-            if(typeof theFilter === "function")
-                return theFilter(object);
-        } catch(e) {}
+        eval("try{ theFilter = "+filter+"; } catch(e) {}");
+        if(typeof theFilter === "function")
+            return theFilter(object);
     }
 
     return controller;
