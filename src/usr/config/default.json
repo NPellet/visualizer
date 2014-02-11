@@ -16,10 +16,18 @@
         {
 		"file": "./usr/filters/gcgenerator.js",
 		"name": "Generate GC"
-	}
+	},
+        {
+		"file": "./usr/filters/hclust.js",
+		"name": "Hierarchical clustering"
+        },
+                {
+		"file": "./usr/filters/histogram.js",
+		"name": "Color histogram"
+        }
 ],
 
-"modules": ["./modules/types/folder.json"],
+"modules": ["./modules/types/folder.json"] ,
 
 "header": {
 	"height": "30px",

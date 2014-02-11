@@ -19,7 +19,6 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
             var labelColor;
             if(labelColorRGB && labelColorRGB[3]!==0) {
                 labelColor = Util.rgbToHex(labelColorRGB[0],labelColorRGB[1],labelColorRGB[2]);
-                console.log(labelColor)
             }
             this.chartOptions = {
                 injectInto: this._id,

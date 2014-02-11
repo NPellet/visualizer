@@ -11,6 +11,7 @@ define(['jquery'], function($) {
 
 		init: function(options) {
 			this.options = $.extend(true, {}, FieldElement.options, options);
+			this.validation = { error: false, value: undefined };
 		},
 
 		getDom: function() {
@@ -64,6 +65,17 @@ define(['jquery'], function($) {
 		setValueSilent: function( value, doNotNotifyForm ) {
 			var oldValue = this._value;
 
+
+			this.validate( value );
+
+			if( this.validation.error ) {
+
+				//this.showError( );
+				return;
+			}
+
+			value = this.validation.value;
+
 			this._value = value;
 			this.field.changed( this );
 
@@ -71,12 +83,25 @@ define(['jquery'], function($) {
 				this.form.fieldElementValueChanged( this, value, oldValue );
 			}
 
+
+
 			// The conditional displaying will mess with the dom. This can be done only if the dom whole document model is 
 			// already created. Otherwise nevermind, all fields will be examined when the dom is created.
 			// This is due to the fact that setting a value may (and will) occur before creating the dom.
 			if( this._inDom ) {
 				this.form.conditionalDisplayer.changed( this, oldValue );
 			}
+		},
+
+		showError: function() {
+
+		},
+
+		validate: function( value ) {
+
+			this.validation.value = value;
+			this.validation.error = false;
+
 		},
 
 		setDefaultOr: function( el ) {

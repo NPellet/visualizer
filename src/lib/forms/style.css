@@ -173,7 +173,7 @@ body, th, td, .forms input, .forms select, .forms textarea {
 }
 
 
-.forms .form-field-list-text input {
+.forms .form-field-list-text input, .forms .form-field-list-float input {
 	width: 100%;
 	border: 1px solid #c0c0c0;
 	padding: 3px;
@@ -181,6 +181,15 @@ body, th, td, .forms input, .forms select, .forms textarea {
 	height: 25px;
 	box-sizing: border-box;
 }
+
+
+
+.forms .form-field-list-text .form-field-error input, .forms .form-field-list-float .form-field-error input {
+	border: 1px solid #a10f0f;
+	background-color: #fe9f9f;
+}
+
+
 
 .forms .form-field-list-wysiwyg .form-field-list-elements > div > div {
 	height: auto;

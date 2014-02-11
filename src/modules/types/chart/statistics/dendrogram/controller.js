@@ -41,7 +41,6 @@ define(['modules/default/defaultcontroller','src/util/datatraversing'], function
 	
 	controller.prototype.onHover = function(element) {
 
-console.log(element);
 
 		if( ! element ) {
 			return;
@@ -59,8 +58,8 @@ console.log(element);
 			type: ['tree'],
 			label: 'A hierarchical tree'
 		},
-		row: {
-			label: 'Row'
+		node: {
+			label: 'Node'
 		}
 	};
 
@@ -98,7 +97,8 @@ console.log(element);
 								{title: 'Star', key: 'star'},
 								{title: 'Ellipse', key: 'ellipse'},
 								{title: 'Rectangle', key: 'rectangle'},
-								{title: 'Image', key: 'image'}
+								{title: 'Image', key: 'image'},
+                                                                {title: 'Pie chart', key: 'piechart'}
 							]
 						},
 

@@ -1,6 +1,8 @@
 module.exports = function(grunt) {
 
-  var modulesFinal;
+  var modulesFinal = {};
+  var modulesStack = {};
+  var _ = require('underscore');
 
   // Project configuration.
   grunt.initConfig({
@@ -38,11 +40,13 @@ module.exports = function(grunt) {
             cwd: './src/components/',
             src: [
               './d3/d3.min.js',
-              './fancytree/src/jquery.fancytree.*.js',
-              './fancytree/src/skin-lion/ui.fancytree.css',
-              './jqgrid/js/*.js',
-              './jqgrid/css/*.css',
+              './fancytree/src/jquery.fancytree*.js',
+              './fancytree/src/skin-lion/*',
+              './jqgrid_edit/js/*.js',
+              './jqgrid_edit/js/i18n/grid.locale-en.js',
+              './jqgrid_edit/css/*.css',
               './jquery/jquery.min.js',
+              './jquery/jquery-migrate.min.js',
               './jquery-ui/ui/minified/jquery-ui.min.js',
               './three.js/build/three.min.js',
               './ace/lib/ace/**',
@@ -60,7 +64,9 @@ module.exports = function(grunt) {
               './Aristo-jQuery-UI-Theme/css/Aristo/*.css',
               './x2js/xml2json.min.js',
               './leaflet/**',
-              './jsoneditor/jsoneditor-min*'
+              './jsoneditor/jsoneditor-min*',
+              './jsoneditor/img/*',
+              './jit/Jit/**/*'
             ],
 
             dest: './build/components/'
@@ -118,6 +124,13 @@ module.exports = function(grunt) {
             
           },
           dest: './build/filters/'
+        }, 
+
+        {
+          cwd: './src/usr/',
+          expand: true,
+          src: './datastructures/**',
+          dest: './build/usr/'
         }]
       },
 
@@ -130,7 +143,7 @@ module.exports = function(grunt) {
           dest: './build/',
           filter: function(filepath) {
 
-            for( var i in modulesFinal ) {
+            for( var i in modulesStack ) {
 
               if( filepath.indexOf( i ) > -1 )
                 return true;
@@ -250,8 +263,89 @@ module.exports = function(grunt) {
 
   var fs = require('fs');
   var path = require('path');
+  var $ = require('jQuery');
 
   grunt.registerTask( 'upload', [ 'ftp' ] );
+  
+  grunt.registerTask('clean-images', 'Clean all images that are not used in the build', function(){
+    var walk = require('walk');
+    var fs = require('fs');
+    var walk = require('walk')
+        , fs = require('fs')
+        , options
+        , walker
+        , whiteset = {}
+        , allimages = [];
+
+      // To be truly synchronous in the emitter and maintain a compatible api,
+      // the listeners must be listed before the object is created
+      options = {
+        listeners: {
+          file: function (root, fileStats, next) {
+            var expressions;
+            expressions = [new RegExp(/\.jpg$/), new RegExp(/\.png$/), new RegExp(/\.jpeg$/), new RegExp(/\.gif$/)];
+            if(_.any(expressions, function(exp){
+              return fileStats.name.match(exp);
+            })) {
+              allimages.push(root+'/'+fileStats.name);
+            }
+          
+            var expressions = [new RegExp(/\.css$/), new RegExp(/\.js$/), new RegExp(/\.html$/)];
+            if(_.any(expressions, function(exp){
+              return fileStats.name.match(exp);
+            })) {
+              // File content
+              var content = fs.readFileSync(root+'/'+fileStats.name).toString();
+              
+              // Search for icons specified using the forms library
+              if(fileStats.name.match(new RegExp(/\.js$/))) {
+                var formreg = RegExp(/require\(\[['"]\.\/forms\/form['"]\]/);
+                if(content.match(formreg)) {
+                  var iconreg = RegExp(/icon:\s*['"]([a-zA-Z_\-]+)['"]/g);
+                  var m = iconreg.exec(content);
+                  while (m != null) {
+                      whiteset['build/lib/forms/images/'+m[1]+'.png'] = '';
+                      m = iconreg.exec(content);
+                  }
+                }
+              }
+              
+              // Search for images specified in .js, .css and .html files
+              var expression = /[\/a-zA-Z_\- 0-9]+\.(png|jpeg|jpg|gif)/gi;
+              var reg = RegExp(expression);
+              var res = content.match(reg);
+              if(res) {
+                _.keys(res).forEach(function(i){
+                  if(res[i][0] !== '/') { // ignore absolute path
+                    var filepath = root+'/'+res[i];
+                    if(fs.existsSync(filepath)) {
+                      whiteset[filepath] = '';
+                    }
+                  }
+                });
+              }
+              next();
+            }
+          }
+        , errors: function (root, nodeStatsArray, next) {
+            console.log('An error occured in walk');
+            next();
+          }
+        }
+      };
+
+      walker = walk.walkSync("build", options);
+      
+      // Delete images that are not in the white set
+      var delcount = 0;
+      _.keys(allimages).forEach(function(i){
+        if(!_.has(whiteset, allimages[i])) {
+          fs.unlinkSync(allimages[i]);
+          delcount++;
+        }
+      });
+      console.log('Deleted ' + delcount + ' out of '+ allimages.length + ' images.')
+  });
 
   grunt.registerTask( 'build', [
                         'clean:build',
@@ -294,23 +388,29 @@ module.exports = function(grunt) {
           i = 0,
           l,
           jsonStructure = { modules: [], folders: {} };
+//console.log( fileName );
+      if( typeof fileName !== "object" ) {
 
-      if( ! require('fs').existsSync( fileName ) ) {
-        console.log( 'Folder file ' + fileName + ' does not exist');
-        return;
+        if( ! require('fs').existsSync( fileName ) ) {
+          console.log( 'Folder file ' + fileName + ' does not exist');
+          return;
+        }
+        console.log( 'Fetching file ' + fileName);
+        file = grunt.file.readJSON( fileName );
+      } else {
+        file = fileName;
       }
-
-      console.log( 'Fetching file ' + fileName);
-      file = grunt.file.readJSON( fileName );
-
+      
       for( var k in file.folders ) {
         jsonStructure.folders[ k ] = loadFile( './src/' + file.folders[ k ] + 'folder.json');
       }
 
       if( file.modules ) {
-         
         for( j = 0, l = file.modules.length ; j < l ; j ++ ) {
           modules[ file.modules[ j ].url ] = true;
+          modulesStack[ file.modules[ j ].url ] = true;
+
+
           jsonStructure.modules.push( file.modules[ j ] );
         }
       }
@@ -318,10 +418,21 @@ module.exports = function(grunt) {
       return jsonStructure;
     }
 
-    for( var i in cfg.modules ) {
-      jsonStructure[ i ] = ( loadFile( './src/' + cfg.modules[ i ] ) );
+    
+    for( var i = 0, l = cfg.modules.length ; i <l ; i ++ ) {
+      console.log( typeof cfg.modules[ i ] );
+      console.log( cfg.modules[ i ] );
+      if( typeof cfg.modules[ i ] == "object" ) {
+        
+          $.extend( true, modulesFinal, loadFile( cfg.modules[ i ] ) ); 
+      } else {
+        $.extend( true, modulesFinal, loadFile( './src/' + cfg.modules[ i ] ) );
+//        console.log( loadFile( './src/' + cfg.modules[ i ] ) );
+ //       console.log( "___" );
+      } 
     }
-
+    
+//console.log( modulesFinal );
     /* Find filter files from the config.json and puts them in an option */
     var filterFiles = [];
     for( var i in cfg.filters ) {
@@ -330,10 +441,11 @@ module.exports = function(grunt) {
     grunt.option('filterFiles', filterFiles);
     /* */
 
-    modulesFinal = modules;
+    //modulesFinal = modules;
+    cfg.modules = modulesFinal;
     
     //fs.writeFileSync( './build/modules.json', JSON.stringify( jsonStructure, false, '\t' ) );
-    cfg.modules = jsonStructure;//'./modules.json';
+    //cfg.modules = jsonStructure;//'./modules.json';
     fs.writeFileSync( './build/default.json', JSON.stringify( cfg, false, '\t' ) );
     //grunt.task.run('clean:buildTemp');
   });

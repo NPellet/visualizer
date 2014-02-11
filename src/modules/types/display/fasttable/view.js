@@ -18,33 +18,30 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 			if(this !== lastTr) {
 
-	 				var dataRowId = parseInt( $(this).attr('data-row-id') ),
-	 					el;
+	 				var dataRowId = parseInt( $(this).attr('data-row-id') );
 	 					
 	 				if( ! isNaN ( dataRowId ) ) {
-		 				el = self.module.data[ dataRowId ];
-		 				self.module.controller.lineHover( el );
+		 				self.module.controller.lineHover( self.module.data, dataRowId );
 		 			}
+                                        
 	 			}
 				lastTr = this;
 
 	 		}).on('mouseout', 'tr', function() {
 
-	 			if(this == lastTr) {
+	 			if(this === lastTr) {
 
 	 				var dataRowId = parseInt( $(this).attr('data-row-id') );
 
 	 				if( ! isNaN ( dataRowId ) ) {
-		 				var el = self.module.data[ dataRowId ];
-						lastTr = this;
-						self.module.controller.lineOut( el );
+						self.module.controller.lineOut( self.module.data, dataRowId );
 					}
+                                        
 	 			}
 
 	 		}).on('click', 'tr', function() {
 
- 				var el = self.module.data[ parseInt( $(this).attr('data-row-id') ) ];
- 				self.module.controller.lineClick( el );
+ 				self.module.controller.lineClick( self.module.data, parseInt( $(this).attr('data-row-id') ) );
 
 	 		}).on('click', 'th', function() { // Sorting
 

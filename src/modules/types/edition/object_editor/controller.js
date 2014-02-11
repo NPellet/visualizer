@@ -17,8 +17,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'Object explorer',
-        description: 'Display a JSON object',
+        moduleName: 'Object editor',
+        description: 'Display and/or modify a JSON object',
         author: 'Michaël Zasso',
         date: '13.01.2014',
         license: 'MIT'
@@ -99,9 +99,9 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype.editorChanged = function(json) {
         var toSet;
         if(json instanceof Array)
-            toSet = new DataArray(json);
+            toSet = new DataArray(json,true);
         else
-            toSet = new DataObject(json);
+            toSet = new DataObject(json,true);
         this.setVarFromEvent( 'onObjectChange', toSet );
     };
 

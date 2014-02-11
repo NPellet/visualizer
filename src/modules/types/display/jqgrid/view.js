@@ -14,14 +14,14 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 		this.dom.on('mouseover', 'tr.jqgrow', function() {
 
 	 			if(this !== lastTr) {
-					self.module.controller.lineHover(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
+					self.module.controller.lineHover(self.elements, $(this).attr('id').replace(self.uniqId, ''));
 	 			}
 				lastTr = this;
 
 	 		}).on('mouseout', 'tr.jqgrow', function() {
 
 	 			if(this === lastTr) {
-					self.module.controller.lineOut(self.elements[$(this).attr('id').replace(self.uniqId, '')]);
+					self.module.controller.lineOut(self.elements, $(this).attr('id').replace(self.uniqId, ''));
 					lastTr = null;
 	 			}
 	 		});
@@ -152,8 +152,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			   		}
 
 			   		self.elements[ rowId.replace( self.uniqId, '') ].setChild( colModel[ colNum ]._jpath, value, { moduleid: self.module.getId( ) } );
-
-			   		console.log(self.elements[ rowId.replace( self.uniqId, '') ]);
 			   		self.applyFilterToRow( rowId.replace( self.uniqId, '' ), rowId );
 			   	},
 
@@ -171,7 +169,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 					for( ; i < l ; i++ ) {
 						id = ids[ i ].replace( self.uniqId, '' );
 						self.applyFilterToRow( id , ids[ i ] );
-						self.tableElements[ id ]._inDom.resolve( );
+						self.tableElements[ id ]._inDom.notify( );
 					}
 			   	},
 
@@ -181,16 +179,32 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 			    	if ( status ) {
 
-			    		self.module.controller.onToggleOn( self.elements[ rowid.replace( self.uniqId, '' ) ] );
+			    		self.module.controller.onToggleOn( self.elements, rowid.replace( self.uniqId, '' ) );
 
 			    	} else {
 
-			    		self.module.controller.onToggleOff( self.elements[ rowid.replace( self.uniqId, '' ) ] );
+			    		self.module.controller.onToggleOff( self.elements, rowid.replace( self.uniqId, '' ) );
 
 			    	}
 
-					self.module.controller.lineClick( self.elements[ rowid.replace( self.uniqId, '' ) ] );
+					self.module.controller.lineClick( self.elements, rowid.replace( self.uniqId, '' ) );
 			    },
+
+			    onSortCol: function() {
+
+			    	var ids = self.jqGrid( 'getDataIDs' ),
+						i = 0,
+						l = ids.length,
+						id;
+
+					for( ; i < l ; i++ ) {
+console.log( self.tableElements[ i ] );
+
+
+						self.tableElements[ i ]._inDom.notify( );
+					}
+
+			    }
 			});
 
 			this.jqGrid = $.proxy( $( this.domTable ).jqGrid, $( this.domTable ) );
@@ -232,7 +246,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
-console.log( moduleValue );
+
 	 			var self = this, 
 	 				list = moduleValue.get(),
 	 				jpaths = this.module.getConfiguration( 'colsjPaths' ), 
@@ -240,7 +254,8 @@ console.log( moduleValue );
 
 	 			this.jpaths = jpaths;
 	 			this.elements = list;
-	 			this.module.data = moduleValue;
+	 
+				this.module.data = moduleValue;
 
 	 			if( ! jpaths ) {
 	 				return;
@@ -280,6 +295,7 @@ console.log( moduleValue );
 			self.done = 0;
 
 			for( ; i < l ; i++) {
+
 				arrayToPush.push( this.buildElement( source[ i ], self.uniqId + i, jpaths ) );
 			}
 
@@ -327,7 +343,8 @@ console.log( moduleValue );
 
 				self.jqGrid( 'setRowData', id, self.buildElement( data, id, jpaths, true ) );
 				var scroll = $( "body" ).scrollTop( );
-				var target = $( "tr#" + id, self.domTable ).effect( 'highlight', {}, 1000 ).get( 0 );
+			//	console.log( 'Do' );
+				var target = $( "tr#" + id, self.domTable ).get(0);//.clearQueue().finish().effect( 'highlight', { queue: true }, 1000 ).get( 0 );
 
 				if(target) {
 					target.scrollIntoView( );
@@ -339,32 +356,42 @@ console.log( moduleValue );
 
 		renderElement: function(element, source, jpath, l) {
 
-			var self = this, box = self.module;
-			var defScreen = Renderer.toScreen(source, box, {}, jpath);
+			var self = this,
+				box = self.module;
+			
+			var defScreen = Renderer
+				.toScreen(source, box, {}, jpath)
+				.done( function( value ) {
 
-			$.when(element._inDom, defScreen).then(function(something, value) {
-				element[l] = value;
-				self.done--;
-				self.jqGrid('setCell', element.id, l, value);
+					element._inDom.progress(function( ) {
+                                            
+						element[ l ] = value;
+						self.done --;
+						
 
-				if(defScreen.build)
-					defScreen.build();
-				
-				/* todo In this required ??? */
-				if(self.done == 0) {
-					self.onResize(self.width, self.height);
-				}
-			}, function(value) {
+						self.jqGrid('setCell', element.id, l, value);
 
-				element[l] = value;
-				self.done--;
-				
-				/* todo In this required ??? */
-				if(self.done == 0) {
-					self.onResize(self.width, self.height);
-				}
-				
-			});
+						if( defScreen.build ) {
+							defScreen.build();
+						}
+						
+						/* todo In this required ??? */
+						if(self.done == 0) {
+							self.onResize(self.width, self.height);
+						}
+
+					}, function(value) {
+
+						element[l] = value;
+						self.done--;
+						
+						/* todo In this required ??? */
+						if(self.done == 0) {
+							self.onResize(self.width, self.height);
+						}
+						
+					});
+				});
 		},
 
 		getDom: function() {

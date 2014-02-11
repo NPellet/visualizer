@@ -1,43 +1,65 @@
 define([ 'lib/forms/form'], function( Form ) {
 
-
-
 	function makeOptions( cfg, form ) {
 
 		var type = form.groups.general[ 0 ].type[ 0 ];
 
 		switch( type ) {
 
-			case 'combo':
-				cfg.options = makeComboOptions( form )
+			case 'checkbox':
+				cfg.options = makeCheckboxOptions( form );
 			break;
+
+			case 'combo':
+				cfg.options = makeComboOptions( form );
+			break;
+
 			case 'slider':
 				cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
 				cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
 				cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
-				cfg.range = form.groups.slider[ 0 ].range[ 0 ].indexOf( 'range' ) > -1;
+			break;
 
-				console.log(form.groups.slider[ 0 ].range[ 0 ]);
+
+			case 'slider_range':
+				cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
+				cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
+				cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
+				
+				if( form.groups.range ) {
+					cfg.default = [ 
+						form.groups.range[ 0 ].val1[ 0 ],
+						form.groups.range[ 0 ].val2[ 0 ]
+					];
+				}
+
+				cfg.range = true;				
 			break;
 		}
 	};
 
 	function makeComboOptions( form ) {
-		
 		form = form.groups.options[ 0 ];
-
 		var i = 0,
 			l = form.length,
 			cfg = [];
-
 		for( ; i < l ; i ++ ) {
-
 			cfg.push({ 
 				title: form[ i ].label, 
 				key: form[ i ].value
 			});
 
 		}
+		return cfg;
+	};
+
+	function makeCheckboxOptions( form ) {
+		form = form.groups.options[ 0 ];
+		var i = 0,
+			l = form.length,
+			cfg = [];
+
+		for( ; i < l ; cfg[ form[ i ].value ] = form[ i ].label, i ++ );
 
 		return cfg;
 	};
@@ -81,21 +103,43 @@ define([ 'lib/forms/form'], function( Form ) {
 								type: 'combo',
 								title: 'Field type',
 								options: [
-									{ title: 'Text', key: 'text' },
+									{ title: 'Text', key: 'text' },	
+									{ title: 'Number', key: 'float' },
 									{ title: 'Combo', key: 'combo' },
 									{ title: 'Slider', key: 'slider' },
+									{ title: 'Range', key: 'slider_range' },
 									{ title: 'Checkbox', key: 'checkbox' }
 								],
 
 								displaySource:  {
 									'text': 'text',
+									'float': 'float',
 									'combo': 'combo',
 									'checkbox': 'checkbox',
 									'slider': 'slider',
+									'slider_range': 'slider_range'
 								}
 							}
 						}
 					},
+
+					text: {
+
+						options: {
+							type: 'list',
+							displayTarget: [ 'text' ]
+						},
+
+						fields: {
+
+							case_sensitive: {
+								type: 'checkbox',
+								title: 'Case sensitive',
+								options: {'case_sensitive': ''}
+							}
+						}
+					},
+
 
 					slider: {
 
@@ -107,25 +151,56 @@ define([ 'lib/forms/form'], function( Form ) {
 						fields: {
 
 							start: {
-								type: 'text',
+								type: 'float',
 								title: 'Start'
 							},
 
 							end: {
-								type: 'text',
+								type: 'float',
 								title: 'End'
 							},
 
 							step: {
-								type: 'text',
+								type: 'float',
+								title: 'Step'
+							}
+						}
+					},
+
+
+					range: {
+
+						options: {
+							type: 'list',
+							displayTarget: [ 'slider_range' ]
+						},
+
+						fields: {
+
+							start: {
+								type: 'float',
+								title: 'Start'
+							},
+
+							end: {
+								type: 'float',
+								title: 'End'
+							},
+
+							step: {
+								type: 'float',
 								title: 'Step'
 							},
 
-							range: {
-								type: 'checkbox',
-								title: 'Range',
-								options: {'range': ''}
-							}
+							val1: {
+								type: 'float',
+								title: 'Default min'
+							},
+
+							val2: {
+								type: 'float',
+								title: 'Default max'
+							},
 
 						}
 					},
@@ -158,8 +233,8 @@ define([ 'lib/forms/form'], function( Form ) {
 				el.groups.general.fields.searchOnField = {
 					type: 'combo',
 					multiple: true,
-					title: 'Search fields',
-					options: jpath
+					title: jpath.name,
+					options: jpath.jpaths
 				};
 			}
 
@@ -168,7 +243,7 @@ define([ 'lib/forms/form'], function( Form ) {
 				el.groups.general.fields.operator = {
 					type: 'combo',
 					multiple: true,
-					title: 'Operator',
+					title: operator.name,
 					options: [
 						{ title: '=', key: '=' },
 						{ title: '!=', key: '!=' },
@@ -201,8 +276,17 @@ define([ 'lib/forms/form'], function( Form ) {
 
 				var defaultVal = fields[ i ].groups.general[ 0 ].defaultVal ? fields[ i ].groups.general[ 0 ].defaultVal[ 0 ] : ''
 
+				type = fields[ i ].groups.general[ 0 ].type[ 0 ];
+
+				switch( type ) {
+
+					case 'slider_range':
+						type = 'slider';
+					break;
+				}
+
 				allFields[ fields[ i ].groups.general[ 0 ].name[ 0 ] ] = {
-					type: 	fields[ i ].groups.general[ 0 ].type[ 0 ],
+					type: 	type,
 					title: 	fields[ i ].groups.general[ 0 ].label[ 0 ],
 					default: defaultVal
 				};

@@ -21,6 +21,7 @@ define(['jquery', 'modules/module'], function($, Module) {
 
 	function getModules( folderInfo ) {
 
+		var defs = [];
 
 		for( var i in folderInfo.folders ) {
 
@@ -32,23 +33,25 @@ define(['jquery', 'modules/module'], function($, Module) {
 					folderInfo.folders[ folder.name || j ] = folder;	
 
 				} else {
-					modulesDeferred.push( getSubFoldersFrom( folderInfo.folders[ j ] + "folder.json" ).done( function( folder ) {
+					defs.push( getSubFoldersFrom( folderInfo.folders[ j ] + "folder.json" ).done( function( folder ) {
 						delete folderInfo.folders[ j ];
 						folderInfo.folders[ folder.name ] = folder;	
-						
 					} ) );
 				}
 				
 			}) ( i );
 		}
 
-		return folderInfo;
+		return $.when.apply( $, defs ).pipe( function() {
+			return folderInfo;			
+		});
 	}
 
 	return {
 		getTypes: function() {
 
 			return $.when.apply( $, modulesDeferred ).pipe( function() {
+				//console.log( allModules );
 				return allModules;
 			});
 		},
@@ -61,18 +64,12 @@ define(['jquery', 'modules/module'], function($, Module) {
 
 			if( ! ( list instanceof Array ) ) {
 				
-				var targetList = {};
-				if( typeof list == "object" ) {
-					for( var i in list ) {
-						$.extend( true, targetList, list[ i ] );
-					}
-				}
-
-				allModules = targetList;
+				allModules = list;
 				return;
 			}
 
 			l = list.length;
+			var finalList = {};
 
 			for( ; i < l ; i ++ ) {
 
@@ -81,22 +78,25 @@ define(['jquery', 'modules/module'], function($, Module) {
 					( function( j ) {
 
 						getSubFoldersFrom( list[ j ] ).then( function( data ) {
-
-							list[ j ] = data;
-						
+							
+							$.extend( true, finalList, data );
+							
 						} );
 
 					} ) ( i );
 
 					
 				} else { // It's a folder type structure
-
-					list[ i ] = getModules( list[ i ] );
-			
+//console.log( list[ i ].folders );
+					getModules( list[ i ] ).then( function( data ) {
+						//console.log( data );
+						$.extend( true, finalList,  data);	
+					} );
+					
 				}
 			}
-
-			allModules = list;
+			
+			allModules = finalList;
 		},
 
 		newModule: function(definition) {
@@ -118,7 +118,6 @@ define(['jquery', 'modules/module'], function($, Module) {
 
 			modules.splice( modules.indexOf( module ), 1 );
 			definitions.splice( definitions.indexOf( module.definition ), 1 );
-			
 		},
 
 		empty: function() {

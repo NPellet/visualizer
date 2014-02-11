@@ -266,6 +266,11 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			jcamp: function ( varName ) {
 
 				this.removeSerie( varName );
+			},
+
+			chart: function ( varName ) {
+
+				this.removeSerie( varName );
 			}
 		},
 		
@@ -285,7 +290,8 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				return;
 			},
 
-			chart: function(moduleValue, varname) {
+			/* OLD FORMAT
+                         * chart: function(moduleValue, varname) {
 
 				this.series[varname] = this.series[varname] || [];
 				this.removeSerie( varname );
@@ -317,6 +323,49 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 					if( newSerie.infos ) {
 						serie.setInfos( newSerie.infos );
+					}
+					serie.autoAxis();
+					this.series[varname].push(serie);
+				}
+
+				this.redraw();
+			},*/
+                        
+                        chart: function(moduleValue, varname) {
+
+                                this.series[varname] = this.series[varname] || [];
+				this.removeSerie( varname );
+
+				if(!moduleValue)
+					return;
+                                    
+                                moduleValue = moduleValue.get();
+                               
+                                var data = moduleValue.data;
+                                for (var i = 0; i < data.length; i++) {
+                                
+                                    var aData = data[i];
+                                    var serieName = data.serieLabel;
+                                    
+				
+
+					var valFinal=[];
+					if(aData.y) {
+						for(var j = 0, l = aData.y.length; j < l; j++) {
+							valFinal.push(aData.x ? aData.x[j] : j);
+							valFinal.push(aData.y[j]);
+						}
+					}
+					
+					var serie = this.graph.newSerie(serieName, {trackMouse: true});
+
+					this.setSerieParameters(serie, varname, aData._highlight);
+
+					this.normalize( valFinal, varname );
+					serie.setData( valFinal );
+
+					if( aData.infos ) {
+						serie.setInfos( aData.infos );
 					}
 					serie.autoAxis();
 					this.series[varname].push(serie);
@@ -378,8 +427,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				this.redraw();
 			},
 
-			'annotation': function(value) {
-
+			annotations: function(value) {
 				value = DataTraversing.getValueIfNeeded(value);
 				if(!value)
 					return;
@@ -520,29 +568,28 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 			shape.onMouseOver( function ( data ) {
 
-				API.highlight( data._highlight , 1 );
+				API.highlight( data , 1 );
 
 			});
 
 			shape.onMouseOut( function ( data ) {
 
-				API.highlight( data._highlight , 0 );
+				API.highlight( data , 0 );
 
 			});
 
 
 
-			if( annotation._highlight ) {
 
-				API.listenHighlight( annotation._highlight, function(onOff) {
+                        API.listenHighlight( annotation, function(onOff) {
 
-					if(onOff) {
-						shape.highlight( );
-					} else {
-						shape.unHighlight( );
-					}
-				} );
-			}
+                                if(onOff) {
+                                        shape.highlight( );
+                                } else {
+                                        shape.unHighlight( );
+                                }
+                        } );
+			
 
 			shape.draw();
 			shape.redraw();

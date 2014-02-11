@@ -1,64 +1,6 @@
 {
 	"modules": [
 		{
-			"type": "jsmol_script",
-			"title": "Script editor",
-			"displayWrapper": true,
-			"position": {
-				"left": 55,
-				"top": 0
-			},
-			"size": {
-				"width": 41.01818182468414,
-				"height": 53.01818182468414
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"btnvalue": [
-								"Run script"
-							],
-							"iseditable": [
-								[
-									"true"
-								]
-							],
-							"script": [
-								"cpk 0 ;"
-							]
-						}
-					]
-				}
-			},
-			"id": 1,
-			"vars_in": [
-				{}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{
-					"event": "onActionSent",
-					"rel": "jsmolscript",
-					"jpath": "_2",
-					"name": "testscript"
-				}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
-		},
-		{
-			"type": "jsmol",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -66,8 +8,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 54.01818182468414,
-				"height": 53.01818182468414
+				"width": 54,
+				"height": 53
 			},
 			"configuration": {
 				"sections": {},
@@ -91,7 +33,7 @@
 			"actions_in": [
 				{
 					"rel": "jsmolscript",
-					"name": "testscript"
+					"name": "test"
 				}
 			],
 			"vars_out": [
@@ -105,10 +47,10 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/science/chemistry/jsmol/"
 		},
 		{
-			"type": "fasttable",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -116,8 +58,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 19.01818182468414,
-				"height": 23.01818182468414
+				"width": 19,
+				"height": 23
 			},
 			"configuration": {
 				"sections": {},
@@ -133,12 +75,10 @@
 							"colorjpath": [
 								null
 							],
-							"displaySearch": [
-								[]
-							],
 							"filterRow": [
 								null
-							]
+							],
+							"displaySearch": []
 						}
 					],
 					"cols": [
@@ -166,7 +106,7 @@
 			"vars_out": [
 				{
 					"event": "onSelect",
-					"rel": "element",
+					"rel": "row",
 					"jpath": "element.pdb",
 					"name": "pdb"
 				}
@@ -179,10 +119,10 @@
 				255,
 				255,
 				0
-			]
+			],
+			"url": "./modules/types/display/fasttable/"
 		},
 		{
-			"type": "dragdrop",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -190,8 +130,8 @@
 				"top": 24
 			},
 			"size": {
-				"width": 30.01818182468414,
-				"height": 17.01818182468414
+				"width": 30,
+				"height": 17
 			},
 			"configuration": {
 				"sections": {},
@@ -247,6 +187,64 @@
 				255,
 				255,
 				0
+			],
+			"url": "./modules/types/client_interaction/dragdrop/"
+		},
+		{
+			"url": "modules/types/client_interaction/code_editor/",
+			"title": "JSMol script",
+			"displayWrapper": true,
+			"position": {
+				"left": 54,
+				"top": 0
+			},
+			"size": {
+				"width": 43,
+				"height": 53
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mode": [
+								"text"
+							],
+							"btnvalue": [
+								"Execute script"
+							],
+							"iseditable": [
+								[
+									"editable"
+								]
+							],
+							"script": [
+								"cpk 0 ;"
+							]
+						}
+					]
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{
+					"event": "onButtonClick",
+					"rel": "value",
+					"name": "test"
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
 			]
 		}
 	],
@@ -266,5 +264,5 @@
 		"title": "JSMol Scripting"
 	},
 	"title": "Scripting JSMol",
-	"_version": "2.2"
+	"_version": "2.2.2"
 }

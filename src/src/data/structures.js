@@ -19,6 +19,7 @@ define(function() {
 		'mf': 'string',
 		'jcamp': "string",
 		"downloadLink": "string",
+                "html": "string",
 
 		'boolean': "boolean",
                 
@@ -27,6 +28,14 @@ define(function() {
                     'elements' : {
                         'type': 'array',
                         'elements': ['number','string']
+                    }
+                },
+                
+                'styledValue' : {
+                    'type' : 'object',
+                    'elements' : {
+                        'css' : 'object',
+                        'value' : 'object'
                     }
                 },
                 

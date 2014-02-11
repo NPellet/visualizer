@@ -49,7 +49,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 		// input
 		chart: {
-			type: ['array','object'],
+			type: 'chart',
 			label: 'Chart object'
 		},
 
@@ -459,6 +459,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		this.setVarFromEvent( 'onMouseOutMarker', infos, 'markerInfos' );
 		this.setVarFromEvent( 'onMouseOutMarker', xy, 'markerXY' );
 	};
+    
+    controller.prototype.print = function(printWindow) {
+        printWindow.document.open("image/svg+xml");
+        printWindow.document.write(this.module.view.graph._dom.innerHTML);
+    }
 
  	return controller;
 });

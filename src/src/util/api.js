@@ -21,29 +21,29 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 	function setVar( name, element, jpath, filter ) {
 
 		var self = this;
-		
-		
-		if( ! jpath || ! element.getChild ) {
-
-			setVarFilter.call( self, name, element, filter );
-
-			return;
-		}
-
 		self.repositoryData.set(name, null);
 
-		element.getChild( jpath ).done( function( returned ) {
+		switch( typeof element ) {
+			case 'string':
+				element = new DataObject( { type: "string", value: element } );
+			break;
+			case 'number':
+				element = new DataObject( { type: "number", value: element } );
+			break;
+		}
+
+		element.getChild( jpath, true ).done( function( returned ) {
 
 			setVarFilter.call( self, name, returned, filter );
-
-		});
+		} );	
 	}
 
 	function setHighlight( element, value ) {
 
-		if( ! ( element._highlight instanceof Array ) ) {
+		if( typeof element._highlight == "undefined" ) {
 			return;	
 		}
+		
 		this.repositoryHighlights.set( element._highlight, value );
 	}
 
@@ -95,7 +95,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 
 		listenHighlight: function() {
 
-			if( ! Array.isArray( arguments[ 0 ]._highlight ) ) {
+			if( ! arguments[ 0 ] || typeof arguments[ 0 ]._highlight == "undefined" ) {
 				return;
 			}
 

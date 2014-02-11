@@ -2,7 +2,7 @@
 
 define(['src/util/versionhandler'], function(VersionHandler) {
 	
-	var version = [2, 2, 2].join('.');
+	var version = [2, 2, 3].join('.');
 	var dataHandler = new VersionHandler(),
 		viewHandler = new VersionHandler(),
 		view, data;
@@ -83,9 +83,16 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			this.viewCallback( view, true );
 			
 		},
+                
+		setDataJSON: function( json ) {
+
+			data = json;
+			this.dataCallback( data, true );
+			
+		},
 
 		blankView: function( ) {
 			this.setViewJSON( { } );
 		}
-	}
+	};
 });

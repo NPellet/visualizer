@@ -1,4 +1,4 @@
-define( [ 'modules/default/defaultcontroller', 'src/util/api' ], function( Default, API ) {
+define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning' ], function( Default, API, Versioning ) {
 	
 	/**
 	 * Creates a new empty controller
@@ -16,8 +16,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api' ], function( Defau
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Two dimensional list',
-		description: 'Display an array of data in 2 dimensions using a table',
+		moduleName: "Drag and drop",
+		description: 'Drop a file or some content to load',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
 		license: 'MIT',
@@ -49,14 +49,14 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api' ], function( Defau
 		// List of all possible events
 		'onDropped': {
 			label: 'A file has been dropped',
-			refVariable: [ 'file' ],
-			refAction: [ 'file' ]
+			//refVariable: [ 'file' ],
+			//refAction: [ 'file' ]
 		},
 
 		'onRead': {
 			label: 'The file has been read',
-			refVariable: [ 'file', 'data' ],
-			refAction: [ 'file', 'data' ]
+			refVariable: [ /*'file',*/ 'data' ],
+			//refAction: [ 'file', 'data' ]
 		}
 	};
 	
@@ -87,12 +87,12 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api' ], function( Defau
 						label: {
 							type: 'text',
 							title: 'Displayed text'
-						},
+						}/*,
 
 						filter: {
 							type: 'jscode',
 							title: 'Result data filter'
-						}
+						}*/
 					}
 				},
 
@@ -113,7 +113,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api' ], function( Defau
 						filetype: {
 							type: "combo",
 							title: "Read type",
-							options: [{ title: "Text", key: "text"}, { title: "Base64 Encoded", key: "base64"}, { title: "Binary", key: "binary"} ]
+							options: [{ title: "Text", key: "text"}, { title: "Base64 Encoded", key: "base64"}, { title: "Binary string", key: "binary"}, { title: "Array buffer", key: "b"} ]
 						},
 
 						type: {
@@ -123,21 +123,21 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api' ], function( Defau
 
 						variable: {
 							type: "text",
-							title: "In variable"	
+							title: "Temporary variable"	
 						}
 					}
 				}
 			}
-		}	
+		};	
 	};
 
 
 	controller.prototype.configAliases = {
 		'vartype': [ 'groups', 'group', 0, 'vartype', 0 ],
 		'label': [ 'groups', 'group', 0, 'label', 0 ],
-		'filter': [ 'groups', 'group', 0, 'filter', 0 ],
+		//'filter': [ 'groups', 'group', 0, 'filter', 0 ],
 		'vars': [ 'groups', 'vars', 0 ]
-	}
+	};
 
 
 
@@ -152,8 +152,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api' ], function( Defau
 		this.reader.onload = function(e) {
 
 			var obj = e.target.result;
-
-			if( self.lineCfg.type[ 0 ] == "array" || self.lineCfg.type[ 0 ] == "object" ) {
+			if( self.lineCfg.type === "array" || self.lineCfg.type === "object" ) {
 
 				try {
 					obj = JSON.parse( obj, Versioning.getViewHandler( ).reviver );
@@ -161,16 +160,15 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api' ], function( Defau
 
 				}
 			}
-
-			obj = new DataObject({ type: self.lineCfg.type, value: obj });
-			API.setVar( self.lineCfg.variable, obj );
+			obj = new DataObject({ type: self.lineCfg.type, value: obj }, true);
+                        self.tmpVar(self.lineCfg.variable, obj);
 			self.leased = false;
-		}
+		};
 
 		this.reader.onerror = function(e) {
 			console.error(e);
 			self.leased = false;
-		}
+		};
 	};
 
 
@@ -183,38 +181,47 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api' ], function( Defau
 
 		//self.controller.fileReceived( obj );
 
-		var self = this,
-			ext = file.name.split( '.' ).pop(),
+		var ext = file.name.split( '.' ).pop(),
 			cfg = this.module.getConfiguration('vars'),
 			lineCfg;
-
-		self.leased = true;
+                if(!cfg)
+                    return console.warn("No extension configured");
+		this.leased = true;
 		for( var i = 0, l = cfg.length ; i < l ; i ++ ) {
-			if( cfg[ i ].extension == ext) {
-				lineCfg = cfg[ i ];
+			if( cfg[ i ].extension === ext) {
+				this.lineCfg = lineCfg = cfg[ i ];
 				break;
 			}
 		}
 
 		if( ! lineCfg ) {
-			return;
+			return console.warn("Extension "+ext+" not configured");
 		}
-
+                
 		switch( lineCfg.filetype ) {
 
 			case 'text':
-				self.reader.readAsText( file );
+				this.reader.readAsText( file );
 			break;
 
 			case 'base64':
-				self.reader.readAsDataURL( file );
+				this.reader.readAsDataURL( file );
 			break;
 
 			case 'binary':
-				self.reader.readAsBinary( file );
+				this.reader.readAsBinaryString( file );
+			break;
+                        
+                        case 'buffer':
+				this.reader.readAsArrayBuffer( file );
 			break;
 		}
 	};
+        
+        controller.prototype.tmpVar = function(name, obj) {
+            this.module.model.tmpVars[name] = obj;
+            this.setVarFromEvent('onRead', this.module.model.tmpVars, 'data');
+        };
 
  	return controller;
 });

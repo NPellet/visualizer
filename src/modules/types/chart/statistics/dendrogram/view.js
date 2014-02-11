@@ -1,4 +1,4 @@
-define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','libs/jit/jit-custom'], function(Default, Traversing, API, Util) {
+define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','lib/jit/jit-custom'], function(Default, Traversing, API, Util) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -133,7 +133,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 	    	var actions=this.module.vars_out();
 	    	if (! actions || actions.length==0) return;
-	    	var hover=hover=function(node) {
+	    	var hover=function(node) {
 	    	//	self.module.controller.onHover(new DataObject(self._idHash[node.id]), 'node');
 	    		self.module.controller.onHover(self._idHash[node.id]);
 	    	}

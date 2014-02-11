@@ -35,7 +35,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
 		var self = this,
 			url = this.module.getConfiguration( 'url' ),
 			reg,
-			i = 0,
+                        val,
 			data = {};
 
 
@@ -63,7 +63,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
 
 			self.module.view.unlock();
 
-			if(typeof data == "object") {
+			if(typeof data === "object") {
 				data = new DataObject.check(data, true);
 			}
 			self.onAnalysisDone(data);
@@ -76,16 +76,16 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
 		self.result = elements;
 		self.module.model.data = elements;
 
-
+                var actions;
 		if( ! ( actions = this.module.vars_out() ) ) {
 			return;
 		}
 
-		for( i in actions ) {
-			if( actions[ i ].event == "onSearchReturn" ) {
-				if( actions[ i ].rel == "results" ) {
+		for( var i in actions ) {
+			if( actions[ i ].event === "onSearchReturn" ) {
+				if( actions[ i ].rel === "results" ) {
 					API.setVar( actions[i].name, elements, actions[i].jpath );
-				} if ( actions[ i ].rel == "url" ) {
+				} if ( actions[ i ].rel === "url" ) {
 						API.setVar( actions[i].name, self.url);
 				}
 			}
@@ -93,33 +93,22 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
 
 	};
 
-
-
-	controller.prototype.configurationSend = {
-
-		events: {
-			onSearchReturn: {
-				label: 'An analysis has been completed',
-				description: ''
-			}
-			
+	controller.prototype.references = {
+		results : {
+			label: 'Results'
 		},
-		
-		rels: {
-			'results': {
-				label: 'Results',
-				description: ''
-			},
-			'url': {
-				label: 'URL',
-				description: ''
-			}
+		url : {
+			label: 'URL'
 		}
 	};
-	
-	controller.prototype.configurationReceive = {
+
+
+	controller.prototype.events = {
+		onSearchReturn: {
+			label: 'An analysis has been completed',
+			refVariable: ['results']
+		}
 	};
-	
 	
 	controller.prototype.configurationStructure = function(section) {
 
@@ -153,7 +142,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
 						button: {
 							type: 'checkbox',
 							title: 'Process button',
-							default: true,
+                                                        default: "button",
 							options: { button: '' }
 						},
 
@@ -172,13 +161,13 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
 						onloadanalysis: {
 							type: 'checkbox',
 							title: 'Make one process on load',
-							default: true,
-							options: { button: '' }
+                                                        default: "onload",
+							options: { onload: '' }
 						}
 					}
 				}
 			}
-		}
+		};
 	};
 	
 	controller.prototype.configAliases = {
