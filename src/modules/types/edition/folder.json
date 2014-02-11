@@ -19,6 +19,10 @@
 		{
 			"moduleName": "Var Editor",
 			"url": "modules/types/edition/var_editor/"
+		},
+		{
+			"moduleName": "Filter Editor",
+			"url": "modules/types/edition/filter_editor/"
 		}
 	],
 	"name": "Edition",

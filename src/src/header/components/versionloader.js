@@ -56,6 +56,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 		},
 
 		_doElements: function(elements) {
+                    
+                    if(!elements)
+                        return;
 
 			var ul = $("<ul />") || this.$_elToOpen.empty(),
 				i = 0, 
@@ -85,6 +88,10 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 					if( el.dataURL || el.dataBranch ) {
 						self.loadDataWith(el.dataURL, el.dataBranch);
 					}
+                                        
+                                        self.setStyleOpen(false);
+                                        self._open = false;
+                                        self.close();
 				});
 			}
 

@@ -35,7 +35,7 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
                 var initVal = this.module.getConfiguration('script') || "";
                 this._code.value = initVal;
                 this.editor.getSession().setMode(mode);
-                this.editor.setValue(initVal);
+                this.editor.setValue(initVal, -1);
                 this.editor.getSession().on('change', function() {
                     self.editorChanged();
                 });

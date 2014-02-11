@@ -364,8 +364,7 @@ console.log( self.tableElements[ i ] );
 				.done( function( value ) {
 
 					element._inDom.progress(function( ) {
-						
-console.log( 'Prog');
+                                            
 						element[ l ] = value;
 						self.done --;
 						

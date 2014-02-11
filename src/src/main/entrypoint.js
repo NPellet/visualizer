@@ -158,11 +158,10 @@ define([	'jquery',
 		ActionManager.viewHasChanged( view );
 
 		// If no variable is defined in the view, we start browsing the data and add all the first level
-		if(view.variables.length == 0) {
-			var jpath;
+		if(view.variables.length === 0) {
 			for(var i in data) {
 
-				if( i.slice( 0, 1 ) == '_' ) {
+				if( i.charAt(0) === '_' ) {
 					continue;
 				}
 
@@ -638,7 +637,7 @@ define([	'jquery',
 			Versioning.setView(urls['views'], urls['viewBranch'], urls['viewURL']);
 			Versioning.setViewLoadCallback(doView);
 
-			Versioning.setData(urls['results'], urls['	resultBranch'], urls['dataURL']);
+			Versioning.setData(urls['results'], urls['resultBranch'], urls['dataURL']);
 			Versioning.setDataLoadCallback(doData);
 			
 			// Sets the header
