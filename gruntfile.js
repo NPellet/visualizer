@@ -151,9 +151,8 @@ module.exports = function(grunt) {
           src: ['./usr/modules/**', './modules/**' ],
           dest: './build/',
           filter: function(filepath) {
-
+            filepath = filepath.replace(/\\/g,"/");
             for( var i in modulesStack ) {
-
               if( filepath.indexOf( i ) > -1 ) {
                 return true;
               }
