@@ -73,10 +73,11 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
     };
     
     controller.prototype.onButtonClick = function(value, object) {
+        var that = this;
         var result = this.executeFilter(value.get(), object);
         result.done(function(data){
             if(typeof data !== "undefined")
-                this.setVarFromEvent('onButtonClick', data, 'dataobject');
+                that.setVarFromEvent('onButtonClick', data, 'dataobject');
         });
     };
     
