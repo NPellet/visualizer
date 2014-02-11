@@ -346,6 +346,64 @@ module.exports = function(grunt) {
       });
       console.log('Deleted ' + delcount + ' out of '+ allimages.length + ' images.')
   });
+  
+  grunt.registerTask('clean-libraries', 'Clean libraries that are not required', function() {
+    var walk = require('walk');
+    var fs = require('fs');
+    var walk = require('walk')
+        , fs = require('fs')
+        , options
+        , walker
+        , libset={};
+
+    // To be truly synchronous in the emitter and maintain a compatible api,
+    // the listeners must be listed before the object is created
+    options = {
+      listeners: {
+        file: function (root, fileStats, next) {
+          var jsreg = new RegExp(/\.js$/);
+          if(fileStats.name.match(jsreg)) {
+            console.log('js file', root+'/'+fileStats.name);
+            var content = fs.readFileSync(root+'/'+fileStats.name).toString();
+            var defreg = new RegExp(/define\(\[[^\]]+\s*\]/);
+            var libreg = new RegExp(/['"]([^'"]+)['"]/);
+            var reqreg = new RegExp(/require\(\[[^\]]+\s*\]/);
+            
+            var defmatch = content.match(defreg);
+            if(defmatch) {
+              
+              console.log('defmatch', defmatch);
+              var libmatch = libreg.exec(defmatch[0]);
+              while(libmatch != null) {
+                // console.log('libmatch');
+                libset[libmatch[1]] = '';
+                libmatch = libreg.exec(defmatch[0]);
+              }
+            }
+            var reqmatch = reqreg.exec(content);
+            while(reqmatch != null) {
+              console.log('reqmatch', reqmatch);
+              libmatch = libreg.exec(reqmatch[0]);
+              while(libmatch != null) {
+                // console.log('libmatch');
+                libset[libmatch[1]] = '';
+                libmatch = libreg.exec(reqmatch[0]);
+              }
+              var reqmatch = reqreg.exec(content);
+            }
+          }
+        },
+        errors: function (root, nodeStatsArray, next) {
+          console.log('An error occured in walk');
+          next();
+        }
+      }
+    }
+    walker = walk.walkSync("build/modules", options);
+    _.keys(libset).forEach(function(key){
+      console.log(key);
+    });
+  });
 
   grunt.registerTask( 'build', [
                         'clean:build',
