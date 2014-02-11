@@ -125,14 +125,8 @@ module.exports = function(grunt) {
         }, 
 
         {
+          expand: true,
           cwd: grunt.option('usr') || './src/usr',
-          expand: true,
-          src: './datastructures/**',
-          dest: './build/usr/'
-        },
-        {
-          expand: true,
-          cwd: grunt.option('usr'),
           src: '**',
           filter: function(filePath){
             var forbiddenTerms = ['config', 'filters', 'modules'];
