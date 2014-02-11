@@ -108,14 +108,12 @@ module.exports = function(grunt) {
 
         files: [{
           expand: true,
-          cwd: './src/usr/filters/',
+          cwd: (grunt.option('usr') || './src/usr') + '/filters/',
           src: '**',
           filter: function( filePath ) {
             var files = grunt.option('filterFiles');
-//console.log( files , files.length);
             for( var i = 0, l = files.length ; i < l ; i ++ ) {
-              
-              if( path.relative( 'src/usr/filters/' + files[ i ], filePath) == "" ) {
+              if( path.relative( (grunt.option('usr') || './src/usr') + '/filters/' + files[ i ], filePath) == "" ) {
                 return true;
               }
             }
@@ -123,13 +121,30 @@ module.exports = function(grunt) {
             return false;
             
           },
-          dest: './build/filters/'
+          dest: './build/usr/filters/'
         }, 
 
         {
-          cwd: './src/usr/',
+          cwd: grunt.option('usr') || './src/usr',
           expand: true,
           src: './datastructures/**',
+          dest: './build/usr/'
+        },
+        {
+          expand: true,
+          cwd: grunt.option('usr'),
+          src: '**',
+          filter: function(filePath){
+            var forbiddenTerms = ['config', 'filters', 'modules'];
+            var isForbidden = _.map(forbiddenTerms, function(term) {
+              return (filePath.search(path.join(grunt.option('usr') || './src/usr', term)) > -1);
+            });
+            
+            if(_.some(isForbidden)) {
+              return false;
+            }
+            return true;
+          },
           dest: './build/usr/'
         }]
       },
@@ -145,8 +160,9 @@ module.exports = function(grunt) {
 
             for( var i in modulesStack ) {
 
-              if( filepath.indexOf( i ) > -1 )
+              if( filepath.indexOf( i ) > -1 ) {
                 return true;
+              }
             }
             return false;
           }
@@ -156,7 +172,7 @@ module.exports = function(grunt) {
           expand: true,
           cwd: './src/',
           src: ['./modules/module.js', './modules/modulefactory.js', './default/**', './modules/default/**' ],
-          dest: './build/',
+          dest: './build/'
         }
 
         ]
@@ -219,7 +235,6 @@ module.exports = function(grunt) {
               "d3": "empty:",
               "fancytree": "empty:",
               "jqgrid": "empty:",
-              "jquery": "empty:",
               "jqueryui": "empty:",
               "threejs": "empty:",
               "ckeditor": "empty:",
@@ -346,7 +361,7 @@ module.exports = function(grunt) {
       });
       console.log('Deleted ' + delcount + ' out of '+ allimages.length + ' images.')
   });
-
+  
   grunt.registerTask( 'build', [
                         'clean:build',
                         'buildProject',
