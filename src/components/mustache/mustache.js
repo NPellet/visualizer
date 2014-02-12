@@ -19,6 +19,13 @@
   }
 }(this, function (mustache) {
 
+  var whiteRe = /\s*/;
+  var spaceRe = /\s+/;
+  var nonSpaceRe = /\S/;
+  var eqRe = /\s*=/;
+  var curlyRe = /\s*\}/;
+  var tagRe = /#|\^|\/|>|\{|&|=|!/;
+
   // Workaround for https://issues.apache.org/jira/browse/COUCHDB-577
   // See https://github.com/janl/mustache.js/issues/189
   var RegExp_test = RegExp.prototype.test;
@@ -26,7 +33,6 @@
     return RegExp_test.call(re, string);
   }
 
-  var nonSpaceRe = /\S/;
   function isWhitespace(string) {
     return !testRegExp(nonSpaceRe, string);
   }
@@ -70,12 +76,6 @@
     ];
   }
 
-  var whiteRe = /\s*/;
-  var spaceRe = /\s+/;
-  var equalsRe = /\s*=/;
-  var curlyRe = /\s*\}/;
-  var tagRe = /#|\^|\/|>|\{|&|=|!/;
-
   /**
    * Breaks up the given `template` string into a tree of tokens. If the `tags`
    * argument is given here it must be an array with two string values: the
@@ -85,18 +85,18 @@
    * A token is an array with at least 4 elements. The first element is the
    * mustache symbol that was used inside the tag, e.g. "#" or "&". If the tag
    * did not contain a symbol (i.e. {{myValue}}) this element is "name". For
-   * all text that appears outside a symbol this element is "text".
+   * all template text that appears outside a symbol this element is "text".
    *
    * The second element of a token is its "value". For mustache tags this is
    * whatever else was inside the tag besides the opening symbol. For text tokens
    * this is the text itself.
    *
-   * The third and fourth elements of the token are the start and end indices,
-   * respectively, of the token in the original template.
+   * The third and fourth elements of the token are the start and end indices
+   * in the original template of the token, respectively.
    *
-   * Tokens that are the root node of a subtree contain two more elements: 1) an
-   * array of tokens in the subtree and 2) the index in the original template at
-   * which the closing tag for that section begins.
+   * Tokens that are the root node of a subtree contain two more elements: an
+   * array of tokens in the subtree and the index in the original template at which
+   * the closing tag for that section begins.
    */
   function parseTemplate(template, tags) {
     tags = tags || mustache.tags;
@@ -166,8 +166,8 @@
 
       // Get the tag value.
       if (type === '=') {
-        value = scanner.scanUntil(equalsRe);
-        scanner.scan(equalsRe);
+        value = scanner.scanUntil(eqRe);
+        scanner.scan(eqRe);
         scanner.scanUntil(tagRes[1]);
       } else if (type === '{') {
         value = scanner.scanUntil(new RegExp('\\s*' + escapeRegExp('}' + tags[1])));
