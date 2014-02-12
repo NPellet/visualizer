@@ -33,7 +33,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 					return;
 				}
 
-				this.module.getDomContent( ).css( 'backgroundColor', color );
+				this.module.getDomContent( ).css( 'background-color', color.get() );
 			},
 
 			'value': function( varValue, varName ) {
