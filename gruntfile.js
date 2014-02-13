@@ -372,6 +372,11 @@ module.exports = function(grunt) {
       console.log('Deleted ' + delcount + ' out of '+ allimages.length + ' images.')
   });
   
+  grunt.registerTask('couchdb:copyModules', function() {
+    file = grunt.file.readJSON('build/default.json');
+    fs.writeFileSync('./build/modules/types/folder.json', JSON.stringify(file.modules));
+  }); 
+  
   grunt.registerTask( 'build', [
                         'clean:build',
                         'buildProject',
@@ -379,6 +384,7 @@ module.exports = function(grunt) {
                         'copy:buildUsr',
                         'copy:build',
                         'copy:buildLib',
+                        'couchdb:copyModules',
                         'requirejs',
                         'uglify:build',
                         'clean:build',
