@@ -406,6 +406,7 @@ module.exports = function(grunt) {
         modules = {},
         jsonStructure = {};
 
+    debugger;
     function loadFile() {
       var fileName;
       if(typeof arguments[0] === 'object') {
@@ -427,15 +428,15 @@ module.exports = function(grunt) {
 
         if( ! require('fs').existsSync( fileName ) ) {
           if(arguments.length === 1) {
-            loadFile(arguments[0], grunt.option('usr')+'/');
-            return;
+            return loadFile(arguments[0], grunt.option('usr')+'/');
           }
           console.log( 'Folder file ' + fileName + ' does not exist');
           return;
         }
         console.log( 'Fetching file ' + fileName);
         file = grunt.file.readJSON( fileName );
-      } else {
+      }
+      else {
         file = fileName;
       }
       
@@ -444,6 +445,7 @@ module.exports = function(grunt) {
           jsonStructure.folders[k] = loadFile(file.folders[k] + 'folder.json')
         }
         else {
+          console.log('load file:', file.folders[k]+'folder.json', arguments[1]);
           jsonStructure.folders[k] = loadFile(file.folders[k] + 'folder.json', arguments[1])
         }
         // jsonStructure.folders[ k ] = loadFile( './src/' + file.folders[ k ] + 'folder.json');
@@ -453,12 +455,14 @@ module.exports = function(grunt) {
         for( j = 0, l = file.modules.length ; j < l ; j ++ ) {
           modules[ file.modules[ j ].url ] = true;
           modulesStack[ file.modules[ j ].url ] = true;
-
-
+          if(arguments.length === 2) {
+           file.modules[j].url = './usr/' + file.modules[j].url; 
+          }
+          console.log('module added: ', file.modules[j]);
           jsonStructure.modules.push( file.modules[ j ] );
         }
       }
-
+      
       return jsonStructure;
     }
 
@@ -467,7 +471,6 @@ module.exports = function(grunt) {
       console.log( typeof cfg.modules[ i ] );
       console.log( cfg.modules[ i ] );
       if( typeof cfg.modules[ i ] == "object" ) {
-        
           $.extend( true, modulesFinal, loadFile( cfg.modules[ i ] ) ); 
       } else {
         $.extend( true, modulesFinal, loadFile(cfg.modules[ i ] ) );
@@ -476,7 +479,6 @@ module.exports = function(grunt) {
       } 
     }
     
-//console.log( modulesFinal );
     /* Find filter files from the config.json and puts them in an option */
     var filterFiles = [];
     for( var i in cfg.filters ) {
