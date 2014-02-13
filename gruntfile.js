@@ -406,7 +406,6 @@ module.exports = function(grunt) {
         modules = {},
         jsonStructure = {};
 
-    debugger;
     function loadFile() {
       var fileName;
       if(typeof arguments[0] === 'object') {
