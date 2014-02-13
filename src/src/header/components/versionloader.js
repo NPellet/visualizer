@@ -12,22 +12,29 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 	}
 
 	var el = function() {};
+        
+        var current;
 
 	$.extend(el.prototype, Default, {
 	
 		initImpl: function() {},
 
-		_onClick: function() {
-			this.setStyleOpen(this._open);
-			this.loadView();
-			this.loadData();
+                _onClick: function() {
+                    
+                    this.setStyleOpen(this._open);
 
-			if(this._open)
-				this.doElements();
-			else
-				this.close();
+                    if (this._open) {
+                        if(current && (current !== this) && current._open)
+                            current.onClick();
+                        current = this;
+                        this.loadView();
+                        this.loadData();
+                        this.doElements();
+                    }
+                    else
+                        this.close();
 
-		},
+                },
 
 		loadView: function() {
 			if(!this.options.viewURL)
@@ -88,10 +95,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 					if( el.dataURL || el.dataBranch ) {
 						self.loadDataWith(el.dataURL, el.dataBranch);
 					}
-                                        
-                                        self.setStyleOpen(false);
-                                        self._open = false;
-                                        self.close();
+                                        self.onClick();
 				});
 			}
 
@@ -99,6 +103,6 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 		//	self.close();
 		}
 	});
-
+                
 	return el;
 });
