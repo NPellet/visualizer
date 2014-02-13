@@ -145,11 +145,28 @@ module.exports = function(grunt) {
       },
 
       buildModules: {
-
+        // Modules defined in usr folder
         files: [{
           expand: true,
+          cwd: grunt.option('usr') || './src/usr',
+          src: ['./modules/**'],
+          dest: './build/usr/',
+          filter: function(filepath) {
+            // console.log('filepath:', filepath);
+            filepath = filepath.replace(/\\/g,"/");
+            for( var i in modulesStack ) {
+              // console.log(i);
+              if( filepath.indexOf( i ) > -1 ) {
+                return true;
+              }
+            }
+            return false;
+          }
+        }, 
+        {
+          expand: true,
           cwd: './src/',
-          src: ['./usr/modules/**', './modules/**' ],
+          src: ['./modules/**' ],
           dest: './build/',
           filter: function(filepath) {
             filepath = filepath.replace(/\\/g,"/");
@@ -160,8 +177,7 @@ module.exports = function(grunt) {
             }
             return false;
           }
-        }, 
-
+        },
         {
           expand: true,
           cwd: './src/',
@@ -390,8 +406,17 @@ module.exports = function(grunt) {
         modules = {},
         jsonStructure = {};
 
-    function loadFile( fileName ) {
-  
+    function loadFile() {
+      var fileName;
+      if(typeof arguments[0] === 'object') {
+        fileName = arguments[0];
+      }
+      else if(arguments.length === 1) {
+        fileName = './src/' + arguments[0];
+      }
+      else {
+        fileName =  arguments[1] + arguments[0];
+      }
       var file,
           j = 0,
           i = 0,
@@ -401,6 +426,10 @@ module.exports = function(grunt) {
       if( typeof fileName !== "object" ) {
 
         if( ! require('fs').existsSync( fileName ) ) {
+          if(arguments.length === 1) {
+            loadFile(arguments[0], grunt.option('usr')+'/');
+            return;
+          }
           console.log( 'Folder file ' + fileName + ' does not exist');
           return;
         }
@@ -411,7 +440,13 @@ module.exports = function(grunt) {
       }
       
       for( var k in file.folders ) {
-        jsonStructure.folders[ k ] = loadFile( './src/' + file.folders[ k ] + 'folder.json');
+        if(arguments.length === 1) {
+          jsonStructure.folders[k] = loadFile(file.folders[k] + 'folder.json')
+        }
+        else {
+          jsonStructure.folders[k] = loadFile(file.folders[k] + 'folder.json', arguments[1])
+        }
+        // jsonStructure.folders[ k ] = loadFile( './src/' + file.folders[ k ] + 'folder.json');
       }
 
       if( file.modules ) {
@@ -435,7 +470,7 @@ module.exports = function(grunt) {
         
           $.extend( true, modulesFinal, loadFile( cfg.modules[ i ] ) ); 
       } else {
-        $.extend( true, modulesFinal, loadFile( './src/' + cfg.modules[ i ] ) );
+        $.extend( true, modulesFinal, loadFile(cfg.modules[ i ] ) );
 //        console.log( loadFile( './src/' + cfg.modules[ i ] ) );
  //       console.log( "___" );
       } 
