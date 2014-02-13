@@ -58,7 +58,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 					self.domTable.find('th[data-jpath-number="' + currentColSort.col + '"]').append( currentColSort.span );
 
-	 			} else if( currentColSort.col == jpathId ) {
+	 			} else if( currentColSort.col === jpathId ) {
 	 				currentColSort.asc = ! currentColSort.asc;
 	 				currentColSort.span.toggleClass('up');
 	 			}
@@ -154,7 +154,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			}
 
 	 			moduleValue = moduleValue.get();
-	 			
+                                
 				var self = this, 
 					jpaths = this.module.getConfiguration( 'colsjPaths' ),
 					nbLines = this.module.getConfiguration( 'nbLines' ) || 20,
@@ -180,7 +180,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 						}
 						
 						html += '<td>';
-						html += this.getValue( moduleValue[ i ], jpaths[ j ].jpath );
+						html += this.getValue( moduleValue[ i ].get(), jpaths[ j ].jpath );
 						html += '</td>';
 					}
 					html += '</tr>';

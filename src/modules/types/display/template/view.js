@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', 'lib/mustache/mustache'], function(Default, Mustache) {
+define(['modules/default/defaultview', 'components/mustache/mustache'], function(Default, Mustache) {
 
     function view() {
     }

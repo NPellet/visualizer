@@ -1,4 +1,4 @@
-define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/couchdb/jquery.couch', 'fancytree'], function($, Default, Versioning, Button, Util) {
+define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/couchdb/jquery.couch', 'fancytree', 'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'], function($, Default, Versioning, Button, Util) {
 
     var couchDBManager = function() {};
     
@@ -159,13 +159,14 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 }
             }
             
-            folderNode.addNode({
+            var newNode = folderNode.addNode({
                 folder: true,
                 title: name,
                 key: folderNode.key+":"+name
             });
             if(!folderNode.expanded)
                 folderNode.toggleExpanded();
+            $(newNode.li).find(".fancytree-title").trigger("click");
             
         },
         login: function(username, password) {
@@ -298,7 +299,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             if(data.targetType!=="title" && data.targetType!=="icon")
                 return;
 
-            var node = data.node, formContent, divContent = "", last;
+            var node = data.node, divContent = "", last;
             var typeL = type.toLowerCase();
 
             if(node.folder) {
@@ -312,14 +313,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     rev = node.key;
                     node = node.parent;
                 }
-                formContent = node.title;
+                $("#"+this.cssId(typeL)).val(node.title);
                 last = {name: node.data.id, node: node};
                 if(event.type==="fancytreedblclick")
                     this.load(type, node, rev);
             }
             
             this["last"+type+"Node"] = last;
-            $("#"+this.cssId(typeL)).val(formContent);
             $("#"+this.cssId(typeL+"div")).html("&nbsp;"+divContent);
             
             if(event.type==="fancytreedblclick" && !node.folder)
@@ -330,6 +330,26 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 proxyClickData = $.proxy(this, "clickNode", "Data"),
                 proxyClickView = $.proxy(this, "clickNode", "View"),
                 that = this;
+        
+            var menuOptions = {
+                delegate: "span.fancytree-title",
+                menu: [
+                    {title: "Delete", cmd: "delete", uiIcon: "ui-icon-trash"}
+                ],
+                beforeOpen: function(event, ui) {
+                    var node = $.ui.fancytree.getNode(ui.target);
+                    if(node.folder) return false;
+                    node.setActive();
+                },
+                select: function(event, ui) {
+                    var node = $.ui.fancytree.getNode(ui.target);
+                    that.contextClick(node, ui.cmd);
+                },
+                createMenu: function(event) {
+                    $(event.target).css("z-index",1000);
+                }
+            };
+            
             $.couch.db(this.database).allDocs({
                 startkey: this.username+':',
                 endkey: this.username+':~',
@@ -344,6 +364,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
                     datatree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
+                    datatree.contextmenu(menuOptions);
                     
                     var viewtree = $("#"+that.cssId("viewtree"));
                     viewtree.fancytree({
@@ -354,8 +375,25 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
                     viewtree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
+                    viewtree.contextmenu(menuOptions);
                 }
             });
+        },
+        contextClick: function(node, action) {
+            if(action === "delete" && !node.folder) {
+                if(node.data.rev)
+                    node = node.parent;
+                var doc = {
+                    _id: node.data.id,
+                    _rev: node.data.lastRev
+                };
+                $.couch.db(this.database).removeDoc(doc, {
+                    success: function() {
+                        node.remove();
+                    },
+                    error: this.showError
+                });
+            }
         }
     });
     

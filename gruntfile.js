@@ -66,7 +66,8 @@ module.exports = function(grunt) {
               './leaflet/**',
               './jsoneditor/jsoneditor-min*',
               './jsoneditor/img/*',
-              './jit/Jit/**/*'
+              './jit/Jit/**/*',
+              './jquery-ui-contextmenu/jquery.ui-contextmenu.min.js'
             ],
 
             dest: './build/components/'
@@ -108,14 +109,12 @@ module.exports = function(grunt) {
 
         files: [{
           expand: true,
-          cwd: './src/usr/filters/',
+          cwd: (grunt.option('usr') || './src/usr') + '/filters/',
           src: '**',
           filter: function( filePath ) {
             var files = grunt.option('filterFiles');
-//console.log( files , files.length);
             for( var i = 0, l = files.length ; i < l ; i ++ ) {
-              
-              if( path.relative( 'src/usr/filters/' + files[ i ], filePath) == "" ) {
+              if( path.relative( (grunt.option('usr') || './src/usr') + '/filters/' + files[ i ], filePath) == "" ) {
                 return true;
               }
             }
@@ -123,13 +122,24 @@ module.exports = function(grunt) {
             return false;
             
           },
-          dest: './build/filters/'
+          dest: './build/usr/filters/'
         }, 
 
         {
-          cwd: './src/usr/',
           expand: true,
-          src: './datastructures/**',
+          cwd: grunt.option('usr') || './src/usr',
+          src: '**',
+          filter: function(filePath){
+            var forbiddenTerms = ['config', 'filters', 'modules'];
+            var isForbidden = _.map(forbiddenTerms, function(term) {
+              return (filePath.search(path.join(grunt.option('usr') || './src/usr', term)) > -1);
+            });
+            
+            if(_.some(isForbidden)) {
+              return false;
+            }
+            return true;
+          },
           dest: './build/usr/'
         }]
       },
@@ -142,11 +152,11 @@ module.exports = function(grunt) {
           src: ['./usr/modules/**', './modules/**' ],
           dest: './build/',
           filter: function(filepath) {
-
+            filepath = filepath.replace(/\\/g,"/");
             for( var i in modulesStack ) {
-
-              if( filepath.indexOf( i ) > -1 )
+              if( filepath.indexOf( i ) > -1 ) {
                 return true;
+              }
             }
             return false;
           }
@@ -156,7 +166,7 @@ module.exports = function(grunt) {
           expand: true,
           cwd: './src/',
           src: ['./modules/module.js', './modules/modulefactory.js', './default/**', './modules/default/**' ],
-          dest: './build/',
+          dest: './build/'
         }
 
         ]
@@ -219,7 +229,6 @@ module.exports = function(grunt) {
               "d3": "empty:",
               "fancytree": "empty:",
               "jqgrid": "empty:",
-              "jquery": "empty:",
               "jqueryui": "empty:",
               "threejs": "empty:",
               "ckeditor": "empty:",
@@ -347,64 +356,6 @@ module.exports = function(grunt) {
       console.log('Deleted ' + delcount + ' out of '+ allimages.length + ' images.')
   });
   
-  grunt.registerTask('clean-libraries', 'Clean libraries that are not required', function() {
-    var walk = require('walk');
-    var fs = require('fs');
-    var walk = require('walk')
-        , fs = require('fs')
-        , options
-        , walker
-        , libset={};
-
-    // To be truly synchronous in the emitter and maintain a compatible api,
-    // the listeners must be listed before the object is created
-    options = {
-      listeners: {
-        file: function (root, fileStats, next) {
-          var jsreg = new RegExp(/\.js$/);
-          if(fileStats.name.match(jsreg)) {
-            console.log('js file', root+'/'+fileStats.name);
-            var content = fs.readFileSync(root+'/'+fileStats.name).toString();
-            var defreg = new RegExp(/define\(\[[^\]]+\s*\]/);
-            var libreg = new RegExp(/['"]([^'"]+)['"]/);
-            var reqreg = new RegExp(/require\(\[[^\]]+\s*\]/);
-            
-            var defmatch = content.match(defreg);
-            if(defmatch) {
-              
-              console.log('defmatch', defmatch);
-              var libmatch = libreg.exec(defmatch[0]);
-              while(libmatch != null) {
-                // console.log('libmatch');
-                libset[libmatch[1]] = '';
-                libmatch = libreg.exec(defmatch[0]);
-              }
-            }
-            var reqmatch = reqreg.exec(content);
-            while(reqmatch != null) {
-              console.log('reqmatch', reqmatch);
-              libmatch = libreg.exec(reqmatch[0]);
-              while(libmatch != null) {
-                // console.log('libmatch');
-                libset[libmatch[1]] = '';
-                libmatch = libreg.exec(reqmatch[0]);
-              }
-              var reqmatch = reqreg.exec(content);
-            }
-          }
-        },
-        errors: function (root, nodeStatsArray, next) {
-          console.log('An error occured in walk');
-          next();
-        }
-      }
-    }
-    walker = walk.walkSync("build/modules", options);
-    _.keys(libset).forEach(function(key){
-      console.log(key);
-    });
-  });
-
   grunt.registerTask( 'build', [
                         'clean:build',
                         'buildProject',
