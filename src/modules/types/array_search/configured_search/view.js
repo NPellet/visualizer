@@ -111,7 +111,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 		_makeOp: function( op, val, options ) {
 
-			val = "cfg[ '" + val + "' ]";
+			val = "cfg[ '" + val + "' ] && cfg[ '" + val + "' ]";
                         var numPrefix = "", numSuffix = "";
                         if(options.number) {
                             numPrefix = "parseFloat(";
