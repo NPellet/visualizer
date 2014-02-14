@@ -38,7 +38,6 @@ define(['modules/default/defaultview','src/util/api','src/util/util','src/util/d
 		
 		update: {
 			'mol2d': function(moduleValue, canDoAtomLabels) {
-				console.log(moduleValue);
 				if( ! moduleValue ) {
 					return;
 				}
@@ -67,7 +66,7 @@ define(['modules/default/defaultview','src/util/api','src/util/util','src/util/d
 					self.def.build( );
 
 					self._molecule = self.def.canvas;
-					var atoms = self._molecule.atoms;
+					var atoms = self._molecule.molecule.atoms;
 
 					if( canDoAtomLabels && self._atomLabels ) {
 						for(var i = 0, l = self._atomLabels.length; i < l; i++) {
