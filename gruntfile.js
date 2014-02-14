@@ -67,7 +67,8 @@ module.exports = function(grunt) {
               './jsoneditor/jsoneditor-min*',
               './jsoneditor/img/*',
               './jit/Jit/**/*',
-              './jquery-ui-contextmenu/jquery.ui-contextmenu.min.js'
+              './jquery-ui-contextmenu/jquery.ui-contextmenu.min.js',
+              './mustache/mustache.js'
             ],
 
             dest: './build/components/'
