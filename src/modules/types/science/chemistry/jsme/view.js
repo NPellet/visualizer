@@ -44,7 +44,11 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 
 		blank: {
 			'mol': function(varName) {
-		//		console.log("CLEAR");
+				if (this.dom.get(0).contentWindow.clear) {
+					this.dom.get(0).contentWindow.clear();
+				}
+			},
+			'jme': function(varName) {
 				if (this.dom.get(0).contentWindow.clear) {
 					this.dom.get(0).contentWindow.clear();
 				}
