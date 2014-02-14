@@ -101,7 +101,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			l = val.length;
 
 			for( ; i < l ; i ++ ) {
-				if( this.searchElement( cfg, val[ i ] ) ) {
+				if( this.searchElement( cfg, val[ i ].get() ) ) {
 					target.push( val[ i ] );
 				}
 			}
@@ -111,7 +111,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 		_makeOp: function( op, val, options ) {
 
-			val = "self.cfgValue[ '" + val + "' ]";
+			val = "cfg[ '" + val + "' ]";
                         var numPrefix = "", numSuffix = "";
                         if(options.number) {
                             numPrefix = "parseFloat(";
@@ -217,7 +217,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 						if( j > 0 ) {
 							toEval += " || ";
 						}
-                                                var opts = {};console.log(searchfields[ i ])
+                                                var opts = {};
                                                 if(searchfields[ i ].groups.general[ 0 ].type[ 0 ]==='float') opts.number=true;
                                                 if(searchfields[ i ].groups.text && searchfields[ i ].groups.text[ 0 ].case_sensitive[ 0 ][ 0 ]==='case_sensitive') opts.caseSensitive=true;
 						toEval += " ( ( el = self.getJpath( '" + searchOn[ j ] + "', row ) ) && ( ";
