@@ -1,6 +1,6 @@
 {
 	"modules": [
-		"./scripts/modules/lists/all.json"
+		"./modules/types/folder.json"
 	],
 
 	"header": {
