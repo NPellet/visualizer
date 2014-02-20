@@ -100,7 +100,11 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
             var dataobj = data;
             if(datatype==='json') {
                 var json = JSON.parse(data);
-                dataobj = new DataObject(json, true);
+                if (json instanceof Array) {
+                    dataobj = new DataArray(json, true);
+                } else {
+                    dataobj = new DataObject(json, true);
+                }  
             } else if(datatype==='xml') {
                 dataobj = new DataObject(self.converter.xml_str2json(data), true);
             }
