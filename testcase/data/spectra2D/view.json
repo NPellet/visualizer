@@ -5,7 +5,6 @@
 	"_local": false,
 	"modules": [
 		{
-			"type": "spectra_displayer",
 			"title": "1H NMR spectrum",
 			"displayWrapper": true,
 			"position": {
@@ -13,8 +12,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 54,
-				"height": 26
+				"width": 54.01818182468414,
+				"height": 26.01818182468414
 			},
 			"configuration": {
 				"sections": {},
@@ -125,10 +124,10 @@
 			],
 			"actions_out": [
 				{}
-			]
+			],
+			"url": "./modules/types/science/spectra/spectra_displayer/"
 		},
 		{
-			"type": "spectra_displayer",
 			"title": "COSY",
 			"displayWrapper": true,
 			"position": {
@@ -136,8 +135,8 @@
 				"top": 28
 			},
 			"size": {
-				"width": 54,
-				"height": 38
+				"width": 54.01818182468414,
+				"height": 38.01818182468414
 			},
 			"configuration": {
 				"sections": {},
@@ -203,6 +202,9 @@
 							],
 							"wheelAction": [
 								"zoomY"
+							],
+							"fullOut": [
+								"both"
 							]
 						}
 					],
@@ -240,6 +242,10 @@
 				{
 					"rel": "jcamp",
 					"name": "cosy"
+				},
+				{
+					"rel": "annotations",
+					"name": "annotations"
 				}
 			],
 			"actions_in": [
@@ -250,10 +256,10 @@
 			],
 			"actions_out": [
 				{}
-			]
+			],
+			"url": "./modules/types/science/spectra/spectra_displayer/"
 		},
 		{
-			"type": "spectra_displayer",
 			"title": "HSQC (orange) / HMBC (black)",
 			"displayWrapper": true,
 			"position": {
@@ -261,8 +267,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 68,
-				"height": 66
+				"width": 68.01818182468415,
+				"height": 66.01818182468415
 			},
 			"configuration": {
 				"sections": {},
@@ -328,6 +334,9 @@
 							],
 							"wheelAction": [
 								"none"
+							],
+							"fullOut": [
+								"both"
 							]
 						}
 					],
@@ -386,6 +395,10 @@
 				{
 					"rel": "jcamp",
 					"name": "hmbc"
+				},
+				{
+					"rel": "annotations",
+					"name": "annotations"
 				}
 			],
 			"actions_in": [
@@ -396,7 +409,8 @@
 			],
 			"actions_out": [
 				{}
-			]
+			],
+			"url": "./modules/types/science/spectra/spectra_displayer/"
 		}
 	],
 	"configuration": {
@@ -423,7 +437,44 @@
 		{
 			"varname": "h1",
 			"jpath": "element.h1"
+		},
+		{
+			"varname": "annotations",
+			"jpath": "element.annotations",
+			"url": ""
 		}
 	],
-	"_version": "2.2"
+	"version": "2.2.3",
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"crons": [
+		{}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
 }
