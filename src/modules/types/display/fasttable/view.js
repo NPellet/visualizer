@@ -103,7 +103,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			var colorjpath = this.module.getConfiguration( 'colorjPath' );
 
 			if( colorjpath ) {
-				Util.addjPathFunction( undefined, jpaths[ j ].jpath, this.colorjpath);
+	//			Util.addjPathFunction( undefined, jpaths[ j ].jpath, colorjpath);
 			}
 		
 			this.domHead.html( thead );

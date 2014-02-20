@@ -12,8 +12,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 15,
-				"height": 10
+				"width": 14.966666662693024,
+				"height": 9.966666662693024
 			},
 			"configuration": {
 				"frontcolor": "",
@@ -64,8 +64,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 22,
-				"height": 30
+				"width": 21.966666662693022,
+				"height": 29.966666662693022
 			},
 			"configuration": {
 				"sections": {},
@@ -79,7 +79,7 @@
 								null
 							],
 							"colorjpath": [
-								null
+								"element.color"
 							],
 							"filterRow": [
 								null
@@ -152,8 +152,8 @@
 				"top": 11
 			},
 			"size": {
-				"width": 15,
-				"height": 9
+				"width": 14.966666662693024,
+				"height": 8.966666662693024
 			},
 			"configuration": {
 				"frontcolor": "",
@@ -204,8 +204,8 @@
 				"top": 21
 			},
 			"size": {
-				"width": 15,
-				"height": 9
+				"width": 14.966666662693024,
+				"height": 8.966666662693024
 			},
 			"configuration": {
 				"frontcolor": "",
@@ -267,6 +267,78 @@
 			"actions_in": {},
 			"text": "<p>A simple table with linked values for mouse over and mouse clicked.</p><p>And a post-it !</p>",
 			"url": "./modules/types/display/postit/"
+		},
+		{
+			"url": "modules/types/display/fasttable/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 77,
+				"top": 4
+			},
+			"size": {
+				"width": 32.96666666269302,
+				"height": 29.966666662693022
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								"element.color"
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Value",
+								"jpath": "element.theValue",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Label",
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "results"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
 		}
 	],
 	"variables": [
@@ -282,8 +354,7 @@
 		}
 	],
 	"configuration": {
-		"title": "No title"
+		"title": "Simple module demonstration"
 	},
-	"title": "Simple module demonstration",
-	"_version": "2.2.1"
+	"version": "2.2.3"
 }
