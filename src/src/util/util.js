@@ -5,6 +5,32 @@ define(['src/util/api'], function(API) {
 	var months = ['January', 'February', 'March', 'April', 'Mai', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 	var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+	function makejPathFunction( jpath ) {
+
+		var jpaths2 = jpath.replace(/^element\./, ''),
+			splitted = jpaths2.split('.'),
+			i = 0,
+			l = splitted.length - 1,
+			ifArray = [],
+			ifString,
+			ifElement = '',
+			regNum = /\.([0-9]+)(\.?)/g;
+
+		for( ; i < l ; i ++ ) {
+			ifElement += splitted[ i ];
+			ifArray .push ('el.' + ifElement + ' !== undefined ');
+			ifElement += '.';
+		}
+
+		ifString = ifArray.join(" && ").replace(regNum,"[$1]$2");
+		if (! ifString ) {
+			ifString = "true";
+		}
+
+		eval( 'var functionEvaled = function( el ) { if (' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1]$2") + '; else return "" }');	
+		return functionEvaled;
+	}
+
 	return {
 
 		getCurrentLang: function() {
@@ -166,32 +192,11 @@ define(['src/util/api'], function(API) {
 			return color;
 		},
 
-		
+		makejPathFunction: makejPathFunction,
+		addjPathFunction: function( stack, jpath ) {
+			stack[ jpath ] = makejPathFunction( jpath )
+		},
 
-		addjPathFunction: function( stack, jpath, el ) {
 
-			var jpaths2 = jpath.replace(/^element\./, ''),
-				splitted = jpaths2.split('.'),
-				i = 0,
-				l = splitted.length - 1,
-				ifArray = [],
-				ifString,
-				ifElement = '',
-				regNum = /\.([0-9]+)(\.?)/g;
-
-			for( ; i < l ; i ++ ) {
-				ifElement += splitted[ i ];
-				ifArray .push ('el.' + ifElement + ' !== undefined ');
-				ifElement += '.';
-			}
-
-			ifString = ifArray.join(" && ").replace(regNum,"[$1]$2");
-			if (! ifString) ifString="true";
-
-			if( stack ) {
-				eval( ( stack ? 'stack[ "' + jpath + '" ] ' : 'el' ) + '= function( el ) { if (' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1]$2") + '; else return "" }');	
-			}
-			
-		}
 	}
 });

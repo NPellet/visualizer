@@ -103,7 +103,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			var colorjpath = this.module.getConfiguration( 'colorjPath' );
 
 			if( colorjpath ) {
-	//			Util.addjPathFunction( undefined, jpaths[ j ].jpath, colorjpath);
+				
+				this.colorjpath = Util.makejPathFunction( colorjpath );
 			}
 		
 			this.domHead.html( thead );
@@ -168,6 +169,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				for( ; i < l ; i ++ ) {
 					html += '<tr';
+					
 					if( this.colorjpath ) {
 						html += ' style="background-color: ' + this.colorjpath( moduleValue[ i ] ) + ';"';
 					}
