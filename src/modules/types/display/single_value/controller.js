@@ -77,11 +77,10 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 					fields: {
 
-						defaultvalue: {
-							type: 'number',
+						valuetest: {
+							type: 'float',
 							title: 'Number value'
 						},
-
 
 						defaultvalue: {
 							type: 'wysiwyg',

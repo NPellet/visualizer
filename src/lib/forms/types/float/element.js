@@ -10,11 +10,13 @@ define( [ 'require', '../text/element'], function( require, textElement ) {
 
 		var floatVal = parseFloat( value );
 
-		if( floatVal == value ) {
+		if( value == "" || floatVal == value ) {
 			this.validation.value = floatVal;	
 
 			if( this.validation.error ) {
-				this.hideError();
+				if( this.hideError() ) {
+					this.validation.error = false;
+				}
 			}
 
 			this.validation.error = false;
@@ -24,18 +26,20 @@ define( [ 'require', '../text/element'], function( require, textElement ) {
 			this.validation.errorType = 1;
 
 			if( ! this.validation.error ) {
-				this.showError();
+				if( this.showError() ) {
+					this.validation.error = true;
+				}
 			}
-
-			this.validation.error = true;
 		}
 	}
 	
 	FieldConstructor.prototype.showError = function( ) {
+		console.log( this.dom );
 		if( ! this.dom ) {
 			return;
 		}
 		this.dom.addClass('form-field-error');
+		return true;
 	}
 
 	FieldConstructor.prototype.hideError = function( ) {

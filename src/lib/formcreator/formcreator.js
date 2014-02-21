@@ -200,7 +200,7 @@ define([ 'lib/forms/form'], function( Form ) {
 							val2: {
 								type: 'float',
 								title: 'Default max'
-							},
+							}
 
 						}
 					},

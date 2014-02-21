@@ -40,7 +40,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					form.init({
 						onValueChanged: function( value, fieldElement ) {
 							var jpath = fieldElement.field.options.jpath;
-						//	self.value.setChild( jpath, fieldElement.value );
 						}
 					});
 
