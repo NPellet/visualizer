@@ -117,10 +117,10 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                             numPrefix = "parseFloat(";
                             numSuffix = ")";
                         }
-                        var textSuffix = ".toLowerCase()";
-                        if(options.caseSensitive) {
+             //           var textSuffix = ".toLowerCase()";
+             //           if(options.caseSensitive) {
                             textSuffix = "";
-                        }
+             //        }
 			switch( op ) {
 
 				case '=':
