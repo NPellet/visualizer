@@ -43,10 +43,11 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 		},
 
 		loadViewWith: function(url, branch) {
-                    if (url !== currentViewURL || branch !== currentViewBranch)
-			Versioning.setView(url, branch);
-                    currentViewURL = url;
-                    currentViewBranch = branch;
+            if (url !== currentViewURL || branch !== currentViewBranch) {
+				Versioning.setView(url, branch);
+			}
+            currentViewURL = url;
+            currentViewBranch = branch;
 		},
 
 		loadData: function() {

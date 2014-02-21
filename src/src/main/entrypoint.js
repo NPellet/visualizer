@@ -71,23 +71,18 @@ define([	'jquery',
 	}
 
 	
-	function doView(view, reloading) {
+	function doView(view) {
 
 		var i = 0, l;
 
 		view = Migration(view);
 
-		if( reloading ) {
+		if( this.viewLoaded ) {
 			reloadingView( );
-		}
-
-		if( ! reloading ) {
-
-			Grid.init( view.grid, document.getElementById( "modules-grid" ) );
-
-		} else {
-
 			Grid.reset( view.grid );
+		} else {
+			Grid.init( view.grid, document.getElementById( "modules-grid" ) );
+			this.viewLoaded = true;
 		}
 
 		ModuleFactory.empty( );
