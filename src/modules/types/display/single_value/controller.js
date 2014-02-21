@@ -104,19 +104,9 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 								{title: 'Trebuchet MS', key: 'trebuchet ms'},
 								{title: 'Verdana', key: 'verdana'}
 							],
-
-							displaySource:  {
-								'arial': 1,
-								'verdana': 4,
-								'trebuchet ms': 3,
-								'palatino': 5
-							}
 						},
 
 						fontsize: {
-
-							displayTarget: [1,3,4],
-
 							type: 'combo',
 							title: 'Font size',
 							options: [
