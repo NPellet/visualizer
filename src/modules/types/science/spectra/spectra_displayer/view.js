@@ -457,29 +457,28 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				}
 
 				this.zones[varname] = moduleValue._zones;
-
-				
 				
 				if( self.deferreds[ varname ] ) {
 					self.deferreds[ varname ].reject();
 				}
-				
+
+				self.deferreds[ varname ] = $.Deferred();
+				var def = self.deferreds[ varname ];
+
 				require( [ 'src/util/jcampconverter' ], function( JcampConverter ) {
 
-					self.deferreds[ varname ] = JcampConverter( moduleValue, { lowRes: 1024 } ).done( function( spectra ) {
+					JcampConverter( moduleValue, { lowRes: 1024 } ).done( function( spectra ) {
 
-					//	console.log(JSON.stringify(spectra.profiling,true));
+						if( def.state() == "rejected" ) {
+							return;
+						}
 
-	//					self.blank.jcamp( varname );
+						self.deferreds[ varname ] = false;
 						self.series[ varname ] = self.series[ varname ] || [];
 						self.series[ varname ] = [];
 
 						if(spectra.contourLines) {
-							
-	//						self.graph.setOption('zoomMode', 'xy');
-						/*	self.graph.setOption('defaultWheelAction', 'toSeries');
-							self.graph.setOption('defaultMouseAction', 'drag');
-	*/
+	
 							serie = self.graph.newSerie( varname, { trackMouse: true }, 'contour' );
 							self.setSerieParameters(serie, varname);
 							serie.setData( spectra.contourLines );
@@ -488,10 +487,6 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 						} else {
 
-				//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
-							/*self.graph.setOption('defaultWheelAction', 'zoomY');
-							self.graph.setOption('defaultMouseAction', 'zoom');
-	*/
 							spectra = spectra.spectra;
 							for (var i=0, l = spectra.length; i<l; i++) {
 								serie = self.graph.newSerie(varname, {trackMouse: true});
