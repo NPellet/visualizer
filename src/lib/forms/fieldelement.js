@@ -93,19 +93,49 @@ define(['jquery'], function($) {
 		},
 
 		showError: function( ) {
-			console.log( this.dom );
+			
 			if( ! this.dom ) {
 				return false;
 			}
-			this.dom.addClass('form-field-error');
+
+			if( this.validation.feedback._class ) {
+				this.dom.addClass('form-field-error');
+			}
+
+			if( this.validation.feedback.message ) {
+				this.addValidationMessage();
+			}
+
 			return true;
 		},
 		
 		hideError: function( ) {
+			
 			if( ! this.dom ) {
 				return false;
 			}
+
 			this.dom.removeClass('form-field-error');
+			this.removeValidationMessage();
+
+			return true;
+		},
+
+		addValidationMessage: function() {
+			if( ! this.validationMessageDOM ) {
+				this.validationMessageDOM = $("<div />");
+			}
+
+			this.dom.after( this.validationMessageDOM.html( this.validation.feedback.message ) );
+		},
+
+		removeValidationMessage: function() {
+
+			if( ! this.validationMessageDOM ) {
+				return;
+			}
+			
+			this.validationMessageDOM.remove();	
 		},
 
 		_validate: function( value ) {
@@ -142,8 +172,7 @@ define(['jquery'], function($) {
 				if( this.hideError() ) {
 					
 				} else {
-					this.validation.error = this._backedUpValidation.error;
-					this.validation.value = this._backedUpValidation.value;
+					this.validation.error = true;
 				}
 			}
 
@@ -152,8 +181,7 @@ define(['jquery'], function($) {
 				if( this.showError() ) {
 				
 				} else {
-					this.validation.error = this._backedUpValidation.error;
-					this.validation.value = this._backedUpValidation.value;
+					this.validation.error = false;
 				}
 			}
 		},
