@@ -238,6 +238,49 @@ define([ 'lib/forms/form'], function( Form ) {
 							}
 						}
 					}
+				},
+
+				sections: {
+
+					validation: {
+						options: {
+							multiple: false,
+							title: "Field validation"
+						},
+
+						groups: {
+
+							general: {
+								options: {
+									type: 'list'
+								},
+
+								fields: {
+
+									pattern: {
+										type: 'text',
+										title: 'Pattern'
+									},
+
+									neg: {
+										type: 'text',
+										title: 'Negative feedback'
+									},
+
+									pos: {
+										type: 'text',
+										title: 'Positive feedback'
+									},
+
+									authorize_empty: {
+										type: 'checkbox',
+										title: 'Authorize empty',
+										options: { 'authorize': '' }
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 
@@ -288,6 +331,26 @@ define([ 'lib/forms/form'], function( Form ) {
 				}
 
 				var defaultVal = (fields[ i ].groups.defaultVal && fields[ i ].groups.defaultVal[ 0 ].defaultVal) ? fields[ i ].groups.defaultVal[ 0 ].defaultVal[ 0 ] : ''
+				var validation = {};
+
+				if( fields[ i ].sections.validation && fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].pattern[ 0 ] !== "" ) {
+					validation.rules = [
+											{
+												pattern: fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].pattern[ 0 ],
+												orEmpty: fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].authorize_empty[ 0 ][ 0 ] == 'authorize',
+												feedback: {
+													_class: true,
+													message: fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].neg
+												}
+											}
+										];
+
+					validation.positiveFeedback = {
+						message: fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].pos
+					};
+				}
+
+				console.log( validation );
 
 				type = fields[ i ].groups.general[ 0 ].type[ 0 ];
 
@@ -301,7 +364,8 @@ define([ 'lib/forms/form'], function( Form ) {
 				allFields[ fields[ i ].groups.general[ 0 ].name[ 0 ] ] = {
 					type: 	type,
 					title: 	fields[ i ].groups.general[ 0 ].label[ 0 ],
-					default: defaultVal
+					default: defaultVal,
+					validation: validation
 				};
 
 				if( callback ) {

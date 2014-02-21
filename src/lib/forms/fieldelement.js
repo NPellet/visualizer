@@ -82,8 +82,6 @@ define(['jquery'], function($) {
 				this.form.fieldElementValueChanged( this, value, oldValue );
 			}
 
-
-
 			// The conditional displaying will mess with the dom. This can be done only if the dom whole document model is 
 			// already created. Otherwise nevermind, all fields will be examined when the dom is created.
 			// This is due to the fact that setting a value may (and will) occur before creating the dom.
@@ -99,6 +97,10 @@ define(['jquery'], function($) {
 			}
 
 			this.dom.removeClass('form-field-valid');
+
+			if( ! this.validation.feedback ) {
+				return;
+			}
 
 			if( this.validation.feedback._class ) {
 				this.dom.addClass('form-field-error');
@@ -163,14 +165,14 @@ define(['jquery'], function($) {
 			this.validation.value = value;
 			
 			this.backupValidation();
+			
+			this.validation.error = true;
+
 			this.validate();
 
-			//if( this.validation.error == false ) { // Don't need to do that if already on error natively
-			this.field.validate( this, value );
-
-			//}
-
-
+			if( this.validation.error == false ) { // Don't need to do that if already on error natively
+				this.field.validate( this, value );
+			}
 
 			this.doValidationFeedback();
 		},
