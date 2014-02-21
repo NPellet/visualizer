@@ -104,7 +104,7 @@ define(['require', 'jquery'], function(require, $) {
 
 					if( this.options.validation.rules[ i ].pattern ) {
 						
-						if( ( this.options.validation.rules[ i ].orEmpty && !value ) || new RegExp( this.options.validation.rules[ i ].pattern ).test( value ) ) {
+						if( ( this.options.validation.rules[ i ].orEmpty && ! value ) || new RegExp( this.options.validation.rules[ i ].pattern ).test( value ) ) {
 
 							fieldElement.validation.error = false;
 
@@ -115,10 +115,6 @@ define(['require', 'jquery'], function(require, $) {
 							break;
 						}
 					}
-
-					// Next ones
-
-
 				}
 			}
 

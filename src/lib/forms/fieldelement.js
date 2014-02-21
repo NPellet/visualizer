@@ -11,7 +11,7 @@ define(['jquery'], function($) {
 
 		init: function(options) {
 			this.options = $.extend(true, {}, FieldElement.options, options);
-			this.validation = { error: false, value: undefined };
+			this.validation = { error: undefined, value: undefined };
 		},
 
 		getDom: function() {
@@ -163,14 +163,11 @@ define(['jquery'], function($) {
 		_validate: function( value ) {
 
 			this.validation.value = value;
-			
 			this.backupValidation();
-			
-			this.validation.error = true;
-
+			this.validation.error = undefined;
 			this.validate();
 
-			if( this.validation.error == false ) { // Don't need to do that if already on error natively
+			if( ! this.validation.error ) {
 				this.field.validate( this, value );
 			}
 
@@ -180,7 +177,7 @@ define(['jquery'], function($) {
 		validate: function( value ) {
 
 			//this.validation.value = value;
-			this.validation.error = false;
+		//	this.validation.error = false;
 		},
 
 		backupValidation: function() {
@@ -191,21 +188,21 @@ define(['jquery'], function($) {
 
 		doValidationFeedback: function() {
 
-			if( this._backedUpValidation.error && ! this.validation.error ) {
+			if( ( this._backedUpValidation.error === true || ( this._backedUpValidation.error === undefined ) ) && this.validation.error === false ) {
 
 				if( this.hideError() ) {
-					
+				
 				} else {
-					this.validation.error = true;
+					this.validation.error = undefined;
 				}
 			}
 
-			if( ! this._backedUpValidation.error && this.validation.error ) {
+			if( ! this._backedUpValidation.error && this.validation.error === true ) {
 
 				if( this.showError() ) {
 				
 				} else {
-					this.validation.error = false;
+					this.validation.error = undefined;
 				}
 			}
 		},
