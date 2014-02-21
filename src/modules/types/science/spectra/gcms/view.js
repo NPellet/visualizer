@@ -254,17 +254,16 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				shape.redraw();
 			}, self.module.getId());
 			
-			if( annotation._highlight ) {
+			API.killHighlight(this.module.getId());
+			API.listenHighlight( annotation, function( onOff ) {
 
-				API.listenHighlight( annotation._highlight, function( onOff ) {
+				if( onOff ) {
+					shape.highlight();
+				} else {
+					shape.unHighlight();
+				}
+			}, , false, this.module.getId());
 
-					if( onOff ) {
-						shape.highlight();
-					} else {
-						shape.unHighlight();
-					}
-				});
-			}
 
 			shape.draw();
 			shape.redraw();
