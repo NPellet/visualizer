@@ -91,7 +91,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 											message: "Not a valid e-mail"
 										}
 									}
-								]
+								],
+
+								positiveFeedback: {
+									message: 'E-mail is valid ! =)'
+								}
 							}
 						},
 

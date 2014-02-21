@@ -98,12 +98,14 @@ define(['jquery'], function($) {
 				return false;
 			}
 
+			this.dom.removeClass('form-field-valid');
+
 			if( this.validation.feedback._class ) {
 				this.dom.addClass('form-field-error');
 			}
 
 			if( this.validation.feedback.message ) {
-				this.addValidationMessage();
+				this.addValidationMessage( this.validation.feedback.message );
 			}
 
 			return true;
@@ -116,17 +118,36 @@ define(['jquery'], function($) {
 			}
 
 			this.dom.removeClass('form-field-error');
-			this.removeValidationMessage();
+			if( this.field.options.validation.positiveFeedback ) {
+
+				this.dom.addClass('form-field-valid');
+
+				if( this.field.options.validation.positiveFeedback.message ) {
+					this.addValidationMessage( this.field.options.validation.positiveFeedback.message, true );	
+				}
+				
+			} else {
+
+				this.removeValidationMessage();
+
+			}
 
 			return true;
 		},
 
-		addValidationMessage: function() {
+		addValidationMessage: function( text, valid ) {
 			if( ! this.validationMessageDOM ) {
 				this.validationMessageDOM = $("<div />");
 			}
 
-			this.dom.after( this.validationMessageDOM.html( this.validation.feedback.message ) );
+			if( valid ) {
+				this.validationMessageDOM.addClass( 'form-field-valid-message' ).removeClass( 'form-field-error-message' );
+			} else {
+				this.validationMessageDOM.addClass( 'form-field-error-message' ).removeClass( 'form-field-valid-message' );
+			}
+			
+
+			this.dom.after( this.validationMessageDOM.html( text ) );
 		},
 
 		removeValidationMessage: function() {
@@ -134,7 +155,7 @@ define(['jquery'], function($) {
 			if( ! this.validationMessageDOM ) {
 				return;
 			}
-			
+
 			this.validationMessageDOM.remove();	
 		},
 
@@ -146,9 +167,11 @@ define(['jquery'], function($) {
 			this.validate();
 
 			//if( this.validation.error == false ) { // Don't need to do that if already on error natively
-				this.field.validate( this, value );
+			this.field.validate( this, value );
 
 			//}
+
+
 
 			this.doValidationFeedback();
 		},
