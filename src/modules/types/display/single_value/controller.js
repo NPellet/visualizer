@@ -79,7 +79,17 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 						valuetest: {
 							type: 'float',
-							title: 'Number value'
+							title: 'Number value',
+							validation: {
+
+								rules: [
+
+									{
+										pattern:"^[a-zA-Z0-9_.]+@[a-zA-Z0-9.]+\\.[a-zA-Z0-9]+$",
+										feedback: {}
+									}
+								]
+							}
 						},
 
 						defaultvalue: {

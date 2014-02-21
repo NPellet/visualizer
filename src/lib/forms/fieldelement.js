@@ -65,8 +65,7 @@ define(['jquery'], function($) {
 		setValueSilent: function( value, doNotNotifyForm ) {
 			var oldValue = this._value;
 
-
-			this.validate( value );
+			this._validate( value );
 
 			if( this.validation.error ) {
 
@@ -93,15 +92,70 @@ define(['jquery'], function($) {
 			}
 		},
 
-		showError: function() {
+		showError: function( ) {
+			console.log( this.dom );
+			if( ! this.dom ) {
+				return false;
+			}
+			this.dom.addClass('form-field-error');
+			return true;
+		},
+		
+		hideError: function( ) {
+			if( ! this.dom ) {
+				return false;
+			}
+			this.dom.removeClass('form-field-error');
+		},
 
+		_validate: function( value ) {
+
+			this.validation.value = value;
+			
+			this.backupValidation();
+			this.validate();
+
+			//if( this.validation.error == false ) { // Don't need to do that if already on error natively
+				this.field.validate( this, value );
+
+			//}
+
+			this.doValidationFeedback();
 		},
 
 		validate: function( value ) {
 
-			this.validation.value = value;
+			//this.validation.value = value;
 			this.validation.error = false;
+		},
 
+		backupValidation: function() {
+			this._backedUpValidation = this._backedUpValidation || {};
+			this._backedUpValidation.error = this.validation.error;
+			this._backedUpValidation.value = this.validation.value;
+		},
+
+		doValidationFeedback: function() {
+
+			if( this._backedUpValidation.error && ! this.validation.error ) {
+
+				if( this.hideError() ) {
+					
+				} else {
+					this.validation.error = this._backedUpValidation.error;
+					this.validation.value = this._backedUpValidation.value;
+				}
+			}
+
+			if( ! this._backedUpValidation.error && this.validation.error ) {
+
+				if( this.showError() ) {
+				
+				} else {
+					this.validation.error = this._backedUpValidation.error;
+					this.validation.value = this._backedUpValidation.value;
+				}
+			}
 		},
 
 		setDefaultOr: function( el ) {
