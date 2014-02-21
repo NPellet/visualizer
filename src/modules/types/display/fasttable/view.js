@@ -196,7 +196,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				this.timeout = window.setTimeout( function( ) {
 
-					API.killHighlight( self.module.id );
+					API.killHighlight( self.module.getId( ) );
 
 					for( i = 0; i < l ; i++ ) {
 							
@@ -205,7 +205,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 							API.listenHighlight( self.module.data[ j ], function( val ) {
 								self.doHighlight( j, val );
-							}, self.module.id );
+							}, false, self.module.getId( ) );
 
 						}) ( i );
 						
