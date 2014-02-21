@@ -1,0 +1,48 @@
+{
+	"highlight": [
+		{"label":"A","_highlight":["A"]},
+		{"label":"B","_highlight":["B"]},
+		{"label":"C","_highlight":["C"]},
+		{"label":"D","_highlight":["D"]},
+		{"label":"E","_highlight":["E"]}
+	],
+	"pieChart":
+	{
+		"type":"chart",
+		"value": {
+			"title" : "A pie chart",
+			"axis": {
+				"0": {
+					"type": "bottom", 
+					"unit": "",
+					"name": "",
+					"min":"",
+					"max":""
+				},
+				"1": {
+					"type": "left",
+					"unit": "",
+					"name": "",
+					"min":"",
+					"max":""
+				}
+			},
+			"data" : 
+			[
+				{
+					"x":[0,1,2,3,4],
+					"y":[1.5,1,2,3,3.5],
+					"z":[],
+					"_highlight":["A","B","C",["A","D"],"E"],
+					"info":[{"name":"first"},{"name":"second"},{"name":"third"},{"name":"forth"},{"name":"fifth"}],
+					"serieLabel": "My first serie",
+					"xAxis": "0", 
+					"yAxis": "1",
+					"preference": "bars"
+				}
+				
+			]
+		}
+	}
+}
+	
