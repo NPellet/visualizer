@@ -31,7 +31,7 @@ define(['modules/default/defaultview','src/util/api','src/util/util','src/util/d
 		blank: {
 			mol2d: function() {
 				var view = this;
-				API.killHighlight( this.module.id );
+				API.killHighlight( this.module.getId() );
 				view.module.getDomContent( ).empty( );
 			}
 		},
@@ -46,7 +46,7 @@ define(['modules/default/defaultview','src/util/api','src/util/util','src/util/d
 					return;
 				}
 
-				API.killHighlight( this.module.id );
+				API.killHighlight( this.module.getId() );
 				this._lastMol = moduleValue;
 				
 				var self = this,
@@ -177,7 +177,7 @@ define(['modules/default/defaultview','src/util/api','src/util/util','src/util/d
 				self._currentValue = moduleValue;
 				molLoaded._highlights = molLoaded._highlights || {};
 				
-				API.killHighlight( this.module.id );
+				API.killHighlight( this.module.getId() );
 
 				API.listenHighlight( moduleValue._highlight, function(value, commonKeys) {
 
@@ -206,7 +206,7 @@ define(['modules/default/defaultview','src/util/api','src/util/util','src/util/d
 
 					canvas.repaint();
 					
-				}, true, this.module.id);
+				}, true, this.module.getId());
 			}	
 		}
 	});

@@ -448,7 +448,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 					serie, 
 					spectra;
 
-				API.killHighlight(this.module.id + varname);
+				API.killHighlight(this.module.getId() + varname);
 
 				if(!this.graph) {
 					return;
@@ -513,7 +513,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 										self.doZone( varname, self.zones[ varname ][ commonKeys [ i ] ], value, self.series[varname].options.lineColor );
 									}
 								}
-							}, true, self.module.id + varname);
+							}, true, self.module.getId() + varname);
 						}
 						
 						self.redraw( );
