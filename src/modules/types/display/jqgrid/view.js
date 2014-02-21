@@ -198,9 +198,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 						id;
 
 					for( ; i < l ; i++ ) {
-console.log( self.tableElements[ i ] );
-
-
 						self.tableElements[ i ]._inDom.notify( );
 					}
 
@@ -361,7 +358,7 @@ console.log( self.tableElements[ i ] );
 			
 			var defScreen = Renderer
 				.toScreen(source, box, {}, jpath)
-				.done( function( value ) {
+				.then( function( value ) {
 
 					element._inDom.progress(function( ) {
                                             
@@ -380,17 +377,18 @@ console.log( self.tableElements[ i ] );
 							self.onResize(self.width, self.height);
 						}
 
-					}, function(value) {
-
-						element[l] = value;
-						self.done--;
-						
-						/* todo In this required ??? */
-						if(self.done == 0) {
-							self.onResize(self.width, self.height);
-						}
-						
 					});
+
+				}, function(value) {
+
+					element[l] = value;
+					self.done--;
+					
+					/* todo In this required ??? */
+					if(self.done == 0) {
+						self.onResize(self.width, self.height);
+					}
+					
 				});
 		},
 

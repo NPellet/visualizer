@@ -6,21 +6,21 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.string = {};
 	functions.string.toscreen = function(def, val) {
-            val = Traversing.get( val );
-            while( true ) {
-                val = val.replace('<', '&lt;' ).replace('>', '&gt;');
-                if( val.indexOf('<') === -1 && val.indexOf('>') === -1) {
-                    break;
-                }
+        val = Traversing.get( val );
+        while( true ) {
+            val = val.replace('<', '&lt;' ).replace('>', '&gt;');
+            if( val.indexOf('<') === -1 && val.indexOf('>') === -1) {
+                break;
             }
-            def.resolve( val );
+        }
+        def.resolve( val );	
 	}
-        
-        functions.html = {};
-        functions.html.toscreen = function(def, val) {
-            val = Traversing.get(val);
-            def.resolve( val );
-        };
+    
+    functions.html = {};
+    functions.html.toscreen = function(def, val) {
+        val = Traversing.get(val);
+        def.resolve( val );
+    };
 		
 	functions.matrix = {};
 	functions.matrix.toscreen = function(def, val) {
@@ -387,7 +387,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	functions.mf = {};
 	functions.mf.toscreen = function(def, value) {
 		
-		return def.resolve(value.value.replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
+		return def.reject(value.value.replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
 	}
 
 
@@ -468,8 +468,10 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 			return deferred;
 		}
 		
-		element.getChild(jpath).done(function(element) {
-			_valueToScreen(deferred, element, box, opts, jpath); 
+		element.getChild( jpath ).done( function( element ) {
+
+			_valueToScreen( deferred, element, box, opts, jpath ); 
+
 		}).fail(function() { deferred.reject(); });
 		
 		return deferred;
