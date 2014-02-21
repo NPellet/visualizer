@@ -40,6 +40,7 @@ requirejs.config({
 		"ckeditor": {
 			exports: "CKEDITOR"
 		},
+    "components/three.js/examples/js/controls/TrackballControls": ["threejs"],
 		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"lib/flot/jquery.flot.pie": ["jquery", "lib/flot/jquery.flot"],
