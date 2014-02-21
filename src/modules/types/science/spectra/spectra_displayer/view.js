@@ -428,6 +428,8 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			},
 
 			annotations: function(value) {
+
+				API.killHighlight( this.module.getId() );
 				value = DataTraversing.getValueIfNeeded(value);
 				if(!value)
 					return;
@@ -579,16 +581,14 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			});
 
 
+            API.listenHighlight( annotation, function(onOff) {
 
-
-                        API.listenHighlight( annotation, function(onOff) {
-
-                                if(onOff) {
-                                        shape.highlight( );
-                                } else {
-                                        shape.unHighlight( );
-                                }
-                        } );
+                    if(onOff) {
+                            shape.highlight( );
+                    } else {
+                            shape.unHighlight( );
+                    }
+            }, false, self.module.getId() );
 			
 
 			shape.draw();
