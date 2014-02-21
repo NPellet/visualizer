@@ -93,12 +93,7 @@ define([ 'lib/forms/form'], function( Form ) {
 								type: 'text',
 								title: 'Field label'
 							},
-
-							defaultVal: {
-								type: 'text',
-								title: 'Default value'
-							},
-
+						
 							type: {
 								type: 'combo',
 								title: 'Field type',
@@ -123,6 +118,22 @@ define([ 'lib/forms/form'], function( Form ) {
 						}
 					},
 
+					defaultVal: {
+
+						options: {
+							type: 'list',
+							displayTarget: [ 'text', 'slider', 'combo', 'checkbox' ]
+						},
+
+						fields: {
+
+							defaultVal: {
+								type: 'text',
+								title: 'Default value'
+							}
+						}
+					},
+
 					text: {
 
 						options: {
@@ -131,6 +142,7 @@ define([ 'lib/forms/form'], function( Form ) {
 						},
 
 						fields: {
+
 
 							case_sensitive: {
 								type: 'checkbox',
@@ -149,6 +161,7 @@ define([ 'lib/forms/form'], function( Form ) {
 						},
 
 						fields: {
+
 
 							start: {
 								type: 'float',
@@ -274,7 +287,7 @@ define([ 'lib/forms/form'], function( Form ) {
 					continue;
 				}
 
-				var defaultVal = fields[ i ].groups.general[ 0 ].defaultVal ? fields[ i ].groups.general[ 0 ].defaultVal[ 0 ] : ''
+				var defaultVal = (fields[ i ].groups.defaultVal && fields[ i ].groups.defaultVal[ 0 ].defaultVal) ? fields[ i ].groups.defaultVal[ 0 ].defaultVal[ 0 ] : ''
 
 				type = fields[ i ].groups.general[ 0 ].type[ 0 ];
 
