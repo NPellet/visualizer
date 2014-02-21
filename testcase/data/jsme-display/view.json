@@ -1,5 +1,4 @@
 {
-	"_version": "2.2.1",
 	"modules": [
 		{
 			"title": "Untitled module",
@@ -107,6 +106,12 @@
 								[
 									"oldlook"
 								]
+							],
+							"labelsize": [
+								"7"
+							],
+							"bondwidth": [
+								"2"
 							]
 						}
 					]
@@ -390,5 +395,6 @@
 	"_local": false,
 	"_saved": 1380886298789,
 	"_time": 1380886298789,
-	"_name": "Master"
+	"_name": "Master",
+	"version": "2.2.3"
 }

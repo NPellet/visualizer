@@ -26,6 +26,7 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 			return this.module.getConfiguration( 'prefs' ).join( );
 		},
 
+
 		onResize: function() {
 			this.dom.attr( 'width', this.width );
 			this.dom.attr( 'height', this.height );
