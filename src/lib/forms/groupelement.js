@@ -112,6 +112,7 @@ define(['jquery'], function($) {
 				self.eachFieldElements( field.getName() , function( fieldElement ) {
 					fieldElement._inDom = true;
 					fieldElement.inDom();
+					fieldElement._validate( fieldElement._value );
 				} );
 			} );
 		},

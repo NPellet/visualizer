@@ -146,7 +146,6 @@ define(['jquery'], function($) {
 				this.validationMessageDOM.addClass( 'form-field-error-message' ).removeClass( 'form-field-valid-message' );
 			}
 			
-
 			this.dom.after( this.validationMessageDOM.html( text ) );
 		},
 
