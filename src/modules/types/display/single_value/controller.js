@@ -78,6 +78,12 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 					fields: {
 
 						defaultvalue: {
+							type: 'number',
+							title: 'Number value'
+						},
+
+
+						defaultvalue: {
 							type: 'wysiwyg',
 							title: 'Default value'
 						},
