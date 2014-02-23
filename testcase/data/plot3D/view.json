@@ -1,1 +1,159 @@
-{}
+{
+	"version": "2.2.3",
+	"modules": [
+		{
+			"url": "modules/types/chart/basic/scatter3D/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 19,
+				"top": 13
+			},
+			"size": {
+				"width": 34,
+				"height": 34
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nodeType": [
+								"circle"
+							],
+							"nodeSize": [
+								null
+							],
+							"nodeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"labelSize": [
+								null
+							],
+							"labelColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"edgeWidth": [
+								null
+							],
+							"edgeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"strokeWidth": [
+								null
+							],
+							"strokeColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "chart",
+					"name": "pieChart"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/edition/object_editor/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 67,
+				"top": 16
+			},
+			"size": {
+				"width": 34,
+				"height": 35
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"text"
+							],
+							"expanded": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "pieChart"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"event": "onObjectChange",
+					"rel": "value",
+					"name": "pieChart"
+				}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "highlight",
+			"jpath": "element.highlight"
+		},
+		{
+			"varname": "pieChart",
+			"jpath": "element.pieChart"
+		},
+		{
+			"varname": "simpleArray",
+			"jpath": "element.simpleArray"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	}
+}

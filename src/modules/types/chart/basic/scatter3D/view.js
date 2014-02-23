@@ -10,104 +10,98 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
     _initThreejs: function() {
       var self = this;
-
 			var container;
-
-			var camera, controls, scene, renderer;
-
-			var cross;
-
+      
 			init();
 			animate();
       
       function onMouseDown(event) {
         // event.preventDefault();
         var vector = new THREE.Vector3(
-          ( event.offsetX / $(renderer.domElement).width() ) * 2 - 1,
-          - ( event.offsetY / $(renderer.domElement).height() ) * 2 + 1,
+          ( event.offsetX / $(self.renderer.domElement).width() ) * 2 - 1,
+          - ( event.offsetY / $(self.renderer.domElement).height() ) * 2 + 1,
           0.5
         );
         projector = new THREE.Projector();
-        projector.unprojectVector( vector, camera );
+        projector.unprojectVector( vector, self.camera );
 
-        var ray = new THREE.Raycaster( camera.position, 
-          vector.sub( camera.position ).normalize() );
+        var ray = new THREE.Raycaster( self.camera.position, 
+          vector.sub( self.camera.position ).normalize() );
 
-        var intersects = ray.intersectObjects(scene.children);
+        var intersects = ray.intersectObjects(self.scene.children);
         console.log(intersects);
 
         // if ( intersects.length > 0 ) {
-        //   intersects[ 0 ].object.materials[ 0 ].color.setHex( Math.random() * 0xffffff );
+        //   intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
         // }
       }
 
 			function init() {
 
-				camera = new THREE.PerspectiveCamera( 60, self.dom.width() / self.dom.height(), 1, 1000 );
-				camera.position.z = 500;
+				self.camera = new THREE.PerspectiveCamera( 60, self.dom.width() / self.dom.height(), 1, 1000 );
+				self.camera.position.z = 500;
 
-				controls = new THREE.TrackballControls( camera, self.dom.get(0) );
+				self.controls = new THREE.TrackballControls( self.camera, self.dom.get(0) );
 
-				controls.rotateSpeed = 1.0;
-				controls.zoomSpeed = 1.2;
-				controls.panSpeed = 0.8;
+				self.controls.rotateSpeed = 1.0;
+				self.controls.zoomSpeed = 1.2;
+				self.controls.panSpeed = 0.8;
 
-				controls.noZoom = false;
-				controls.noPan = false;
+				self.controls.noZoom = false;
+				self.controls.noPan = false;
 
-				controls.staticMoving = true;
-				controls.dynamicDampingFactor = 0.3;
+				self.controls.staticMoving = true;
+				self.controls.dynamicDampingFactor = 0.3;
 
-				controls.keys = [ 65, 83, 68 ];
-
-				controls.addEventListener( 'change', render );
+				self.controls.keys = [ 65, 83, 68 ];
+				self.controls.addEventListener( 'change', render );
 
 				// world
 
-				scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
+				self.scene = new THREE.Scene();
+        self.scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
 
         // var geometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
-        var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-				var material =  new THREE.MeshLambertMaterial( { color:0xffffff, shading: THREE.FlatShading } );
-
-				for ( var i = 0; i < 500; i ++ ) {
-
-					var mesh = new THREE.Mesh( geometry, material );
-					mesh.position.x = ( Math.random() - 0.5 ) * 1000;
-					mesh.position.y = ( Math.random() - 0.5 ) * 1000;
-					mesh.position.z = ( Math.random() - 0.5 ) * 1000;
-					mesh.updateMatrix();
-					mesh.matrixAutoUpdate = false;
-					scene.add( mesh );
-
-				}
+        //         var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+        // var material =  new THREE.MeshLambertMaterial( { color:0xffffff, shading: THREE.FlatShading } );
+        // 
+        // for ( var i = 0; i < 500; i ++ ) {
+        // 
+        //   var mesh = new THREE.Mesh( geometry, material );
+        //   mesh.position.x = ( Math.random() - 0.5 ) * 1000;
+        //   mesh.position.y = ( Math.random() - 0.5 ) * 1000;
+        //   mesh.position.z = ( Math.random() - 0.5 ) * 1000;
+        //   mesh.updateMatrix();
+        //   mesh.matrixAutoUpdate = false;
+        //   self.scene.add( mesh );
+        // 
+        // }
 
 
 				// lights
 
-				light = new THREE.DirectionalLight( 0xffffff );
-				light.position.set( 1, 1, 1 );
-				scene.add( light );
-
-				light = new THREE.DirectionalLight( 0x002288 );
-				light.position.set( -1, -1, -1 );
-				scene.add( light );
-
-				light = new THREE.AmbientLight( 0x222222 );
-				scene.add( light );
+        // light = new THREE.DirectionalLight( 0xffffff );
+        // light.position.set( 1, 1, 1 );
+        // self.scene.add( light );
+        // 
+        // light = new THREE.DirectionalLight( 0x002288 );
+        // light.position.set( -1, -1, -1 );
+        // self.scene.add( light );
+        // 
+        // light = new THREE.AmbientLight( 0x222222 );
+        // self.scene.add( light );
 
 
 				// renderer
 
-				renderer = new THREE.WebGLRenderer( { antialias: false } );
-        renderer.setClearColor( scene.fog.color, 1 );
-				renderer.setSize( window.innerWidth, window.innerHeight );
+				self.renderer = new THREE.WebGLRenderer( { antialias: false } );
+        self.renderer.setClearColor( self.scene.fog.color, 1 );
+				self.renderer.setSize( window.innerWidth, window.innerHeight );
 
 				container = document.getElementById(self.dom.attr('id'));
         container.innerHTML = '';
-        console.log(renderer.domElement);
-				container.appendChild( renderer.domElement );
+        console.log(self.renderer.domElement);
+				container.appendChild( self.renderer.domElement );
         console.log(container);
         
         
@@ -116,19 +110,19 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 				//window.addEventListener( 'resize', onWindowResize, false );
         onWindowResize();
-        $(renderer.domElement).off('mousedown', onMouseDown);
-        $(renderer.domElement).on('mousedown', onMouseDown);
+        $(self.renderer.domElement).off('mousedown', onMouseDown);
+        $(self.renderer.domElement).on('mousedown', onMouseDown);
 
 			}
 
 			function onWindowResize() {
 
-				camera.aspect = self.dom.width() / self.dom.height();
-				camera.updateProjectionMatrix();
+				self.camera.aspect = self.dom.width() / self.dom.height();
+				self.camera.updateProjectionMatrix();
 
-				renderer.setSize( self.dom.width(), self.dom.height() );
+				self.renderer.setSize( self.dom.width(), self.dom.height() );
 
-				controls.handleResize();
+				self.controls.handleResize();
 
 				render();
 
@@ -137,16 +131,40 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			function animate() {
 
 				requestAnimationFrame( animate );
-				controls.update();
+				self.controls.update();
 
 			}
 
 			function render() {
 
-				renderer.render( scene, camera );
+				self.renderer.render( self.scene, self.camera );
 
 			}
       
+    },
+    
+    _plotPoints: function(value) {
+      var self = this;
+      var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+			var material =  new THREE.MeshLambertMaterial( { color:0xffffff, shading: THREE.FlatShading } );
+      
+      // Remove all objects
+      this.scene.traverse(function(obj) {
+        self.scene.remove(obj);
+      });
+      
+			for ( var i = 0; i < value.data[0].x.length; i ++ ) {
+
+				var mesh = new THREE.Mesh( geometry, material );
+				mesh.position.x = value.data[0].x[i];
+				mesh.position.y = value.data[0].y[i];
+				mesh.position.z = value.data[0].z[i];
+				mesh.updateMatrix();
+				mesh.matrixAutoUpdate = false;
+				this.scene.add( mesh );
+			}
+      
+      this.renderer.render(self.scene, self.camera);
     },
     
     
@@ -199,56 +217,37 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			// the size is now really defined (we are after inDom)
 			// and we received the data ...
 			this.loadedData.done(function() {
-				self._plot=$.plot("#"+self._id, self._data, self._options);
-
-				$("#"+self._id).bind("plotclick", function (event, pos, item) {
-				    if (item) {
-				      	cconsole.log(item.dataIndex, item.seriesIndex);
-				    }
-				});
-				$("#"+self._id).bind("plothover", function (event, pos, item) {
-				    if (item) {
-				    	self.module.controller.elementHover(self._data[item.seriesIndex]);
-				    } else {
-				    	self.module.controller.elementOut();
-				    }
-				});
-
-				for (var i=0; i<self._data.length; i++) {
-					var currentDataPoint=i;
-					API.listenHighlight( self._data[i], function( onOff, key ) {
-
-						// we need to highlight the correct shape ...
-						console.log(onOff, key, currentDataPoint);
-						if (onOff) {
-							console.log(i);
-							self._plot.highlight(0, currentDataPoint);
-						} else {
-							self._plot.unhighlight(0, currentDataPoint);
-						}
-					});
-				}
-        
-				
-
-
+        console.log('loadedData done');
+        if(self._data) {
+          self._plotPoints(self._data);
+        }
 			})
 		},
 		
-		/* When a vaue change this method is called. It will be called for all 
+		/* When a value changes this method is called. It will be called for all 
 		possible received variable of this module.
 		It will also be called at the beginning and in this case the value is null !
 		*/
 		update: {
 			'chart': function(moduleValue) {
 				if (this.DEBUG) console.log("Pie Chart: update from chart object");
+        
+				if (! moduleValue.get() ){ 
+          console.log('unvalid value', moduleValue);
+          return;
+        }
 
-				if (! moduleValue || ! moduleValue.value) return;
-
-				this._convertChartToData(moduleValue.get());
+				this._data = moduleValue.get();
 
 				// data are ready to be ploteed
-				this.loadedData.resolve();
+        console.log('state:', this.loadedData.state());
+        if(this.loadedData.state() === 'pending') {
+  				this.loadedData.resolve();
+        }
+        else {
+          console.log("points changed");
+          this._plotPoints(this._data);
+        }
 			},
 			'yArray': function(moduleValue) {
 				if (this.DEBUG) console.log("Pie Chart: update from array");

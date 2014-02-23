@@ -29,9 +29,9 @@
 			"data" : 
 			[
 				{
-					"x":[],
-					"y":[1,2,3,4],
-					"z":[],
+					"x":[0],
+					"y":[0],
+					"z":[0],
 					"_highlight":["A","B","C",["A","D"]],
 					"info":[{"name":"first"},{"name":"second"},{"name":"third"},{"name":"forth"}],
 					"serieLabel": "My first serie",
@@ -39,9 +39,9 @@
 					"yAxis": "1"
 				},
 				{
-					"x":[],
-					"y":[1,2,3,44],
-					"z":[],
+					"x":[0,100,200,300],
+          "y":[0,100,200,300],
+          "z":[0,100,200,300],
 					"info":[{"_highlight":["A"], "name":"first"},{"_highlight":["B"], "name":"second"},{"_highlight":["C"], "name":"third"},{"_highlight":["A","D"], "name":"forth"}],
 					"serieLabel": "My second serie",
 					"xAxis": "0", 

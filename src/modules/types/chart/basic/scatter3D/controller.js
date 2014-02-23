@@ -51,7 +51,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 	*/
 	controller.prototype.references = {
 		chart: {
-			type: ['chart'],
+			type: [],
 			label: 'A json describing a chart'
 		},
 		yArray: {
