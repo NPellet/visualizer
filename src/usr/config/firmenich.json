@@ -1,0 +1,49 @@
+{
+    "filters": [
+        {
+            "file": "gcgenerator.js",
+            "name": "Generate GC"
+        },
+        {
+            "file": "piechart.js",
+            "name": "Pie chart from olfaction"
+        }
+    ],
+    "modules": [
+        "./modules/types/folder.json",
+        {"folders":{"Firmenich":"modules/dev/"}}
+    ],
+    "header": {
+        "height": "30px",
+        "elements": [
+            {
+                "type": "versionloader",
+                "label": "Ingredients",
+                "elements": [
+                  {
+                      "type": "versionloader",
+                      "label": "Ingredient explorer",
+                      "viewURL": "./usr/views/ingredients.json"
+                  }
+                ]
+            },
+            {
+                "type": "versionloader",
+                "label": "Perfume Creator",
+                "elements": [
+                  {
+                      "type": "versionloader",
+                      "label": "Perfume creator",
+                      "viewURL": "./usr/views/perfume_creator.json"
+                  }
+                ]
+            },
+            {
+              "type": "link",
+              "label": "TOC",
+              "url": "./?dataURL=&viewURL=./usr/views/tocView.json" 
+            }
+        ]
+    }
+
+}

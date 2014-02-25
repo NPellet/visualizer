@@ -1,0 +1,601 @@
+{
+	"modules": [
+		{
+			"url": "modules/types/display/jqgrid/",
+			"title": "Ingredients",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 23
+			},
+			"size": {
+				"width": 63,
+				"height": 63
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								"100"
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "ID",
+								"jpath": "element.iid",
+								"number": [
+									"number"
+								],
+								"editable": "none",
+								"width": 61
+							},
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none",
+								"width": 150
+							},
+							{
+								"name": "Description",
+								"jpath": "element.description",
+								"number": [],
+								"editable": "none",
+								"width": 366
+							},
+							{
+								"name": "Olfaction",
+								"jpath": "element.olfaction.familyExtension.colorbar",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "ingredients"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.physchem.gcpolar",
+					"filter": "./usr/filters/gcgenerator.js",
+					"name": "gcpolar"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.physchem.gcapolar",
+					"filter": "./usr/filters/gcgenerator.js",
+					"name": "gcapolar"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.molecule",
+					"name": "molecule"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.synonyms",
+					"name": "synonyms"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.info",
+					"name": "info"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.olfaction.familyExtension.values",
+					"filter": "./usr/filters/piechart.js",
+					"name": "olfactionPie"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element",
+					"name": "ingredient"
+				}
+			],
+			"actions_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.physchem",
+					"name": "test"
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 6
+		},
+		{
+			"url": "modules/types/science/spectra/spectra_displayer/",
+			"title": "GC polar",
+			"displayWrapper": true,
+			"position": {
+				"left": 110,
+				"top": 0
+			},
+			"size": {
+				"width": 54,
+				"height": 36
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								"Time"
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								"0.05"
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								"0"
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"x"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"zoomY"
+							],
+							"fullOut": [
+								"both"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "xyArray",
+					"name": "gcpolar"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 0
+		},
+		{
+			"url": "modules/types/science/spectra/spectra_displayer/",
+			"title": "GC apolar",
+			"displayWrapper": true,
+			"position": {
+				"left": 110,
+				"top": 36
+			},
+			"size": {
+				"width": 54,
+				"height": 36
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								"Time"
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								"0.05"
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								"0"
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"x"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"zoomY"
+							],
+							"fullOut": [
+								"both"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "xyArray",
+					"name": "gcapolar"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 0
+		},
+		{
+			"url": "modules/types/science/chemistry/jsme/",
+			"title": "Structure",
+			"displayWrapper": true,
+			"position": {
+				"left": 63,
+				"top": 36
+			},
+			"size": {
+				"width": 24,
+				"height": 18
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[
+									"depict"
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "jme",
+					"name": "molecule"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 5
+		},
+		{
+			"url": "modules/types/edition/object_editor/",
+			"title": "Synonyms",
+			"displayWrapper": true,
+			"position": {
+				"left": 87,
+				"top": 36
+			},
+			"size": {
+				"width": 23,
+				"height": 36
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"view"
+							],
+							"expanded": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "synonyms"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 3
+		},
+		{
+			"url": "modules/types/chart/basic/pie_chart_jit/",
+			"title": "Olfaction",
+			"displayWrapper": true,
+			"position": {
+				"left": 63,
+				"top": 0
+			},
+			"size": {
+				"width": 47,
+				"height": 36
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"sliceOffset": [
+								1
+							],
+							"updateHeights": [
+								[
+									"updateHeights"
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "chart",
+					"name": "olfactionPie"
+				}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 0
+		},
+		{
+			"url": "modules/types/display/template/",
+			"title": "Information about the ingredient",
+			"displayWrapper": true,
+			"position": {
+				"left": 63,
+				"top": 54
+			},
+			"size": {
+				"width": 47,
+				"height": 32
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"template": [
+								"<style type=\"text/css\">\n.inginfo {\n    text-align:center;\n}\nh1.inginfo {\n    font-size:24pt;\n}\n</style>\n\n<h1 class=\"inginfo\">{{ name }}</h1>\n<p>\nCaptif : {{ info.captif }}<br>\nNatural : {{ info.natural }}\n</p>"
+							]
+						}
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "ingredient"
+				}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				1
+			],
+			"zindex": 8
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	],
+	"variables": [
+		{
+			"varname": "ingredients",
+			"jpath": "element.ingredients"
+		},
+		{
+			"varname": "brief",
+			"jpath": "element.brief"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"version": "2.2.3"
+}

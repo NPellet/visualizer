@@ -5,7 +5,7 @@
 			"url": "modules/types/chart/basic/pie_chart/"
 		},
 		{
-			"moduleName": "Pie chart",
+			"moduleName": "Pie chart jit",
 			"url": "modules/types/chart/basic/pie_chart_jit/"
 		},
 		{

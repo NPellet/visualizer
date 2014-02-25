@@ -170,10 +170,15 @@ define([	'jquery',
 
 			if( ! view.variables[i].jpath && view.variables[i].url ) {
 
-				variable.fetch( ).done( function( v ) {
+				console.log( view.variables[i] );
+				view.variables[i].fetch( ).done( function( v ) {
 
-					var varname = variable.get( 'varname' );
-					data[ varname ] = v;
+					var varname = v.varname;
+					v.type = Traversing.getType( v.value );
+					
+					data[ varname ] = DataObject.check( v, true );
+					
+
 					API.setVariable( varname , data, [ varname ] );
 					
 				} );

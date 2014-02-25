@@ -1,0 +1,1514 @@
+{
+	"modules": [
+		{
+			"url": "./modules/types/display/fasttable/",
+			"title": "Ingredients",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 18.000000381469725
+			},
+			"size": {
+				"width": 24,
+				"height": 54
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								"1000"
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.iupac.0.value",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "filteredIngredients"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.mol.0.value",
+					"name": "mol"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.hazard",
+					"name": "hazard"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.mp.0.low",
+					"name": "mp"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.iupac",
+					"name": "iupacs"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.catalog.0.catalogLine",
+					"name": "prices"
+				}
+			],
+			"actions_out": [
+				{
+					"event": "onSelect",
+					"rel": "row",
+					"jpath": "element",
+					"name": "addIngredient"
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				1
+			]
+		},
+		{
+			"url": "./modules/types/display/fasttable/",
+			"title": "Composition",
+			"displayWrapper": true,
+			"position": {
+				"left": 97,
+				"top": 18
+			},
+			"size": {
+				"width": 27,
+				"height": 51
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Year",
+								"jpath": "element.year",
+								"number": [],
+								"editable": "none",
+								"width": "50"
+							},
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "perfumesFiltered"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.ingredients",
+					"name": "perfumeIngredients"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.bases",
+					"name": "perfumeBases"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.company",
+					"name": "perfumeCompany"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.perfumer",
+					"name": "perfumePerfumer"
+				}
+			],
+			"actions_out": [
+				{
+					"event": "onSelect",
+					"rel": "row",
+					"jpath": "element",
+					"name": "addPerfume"
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0.82
+			]
+		},
+		{
+			"url": "./modules/types/display/fasttable/",
+			"title": "Brief composition",
+			"displayWrapper": true,
+			"position": {
+				"left": 97,
+				"top": 70
+			},
+			"size": {
+				"width": 21,
+				"height": 27
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "bases"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.ingredients",
+					"name": "baseComposition"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				1
+			]
+		},
+		{
+			"url": "http://cheminfo.epfl.ch/firmenich/perfume_creator/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 25,
+				"top": 18
+			},
+			"size": {
+				"width": 71,
+				"height": 54
+			},
+			"configuration": {
+				"sections": {
+					"postvariables": [
+						{
+							"sections": {},
+							"groups": {
+								"postvariables": [
+									[
+										{}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {
+					"group": [
+						{
+							"url": [
+								null
+							],
+							"button": [
+								[]
+							],
+							"buttonlabel": [
+								null
+							],
+							"buttonlabel_exec": [
+								null
+							],
+							"onloadsearch": [
+								[]
+							],
+							"resultfilter": [
+								null
+							]
+						}
+					],
+					"searchparams": [
+						[
+							{}
+						]
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "ingredients",
+					"name": "ingredients"
+				},
+				{
+					"rel": "bases",
+					"name": "bases"
+				},
+				{
+					"rel": "perfumeInformation",
+					"name": "perfumeInformation"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "addPerfume",
+					"name": "addPerfume"
+				},
+				{
+					"rel": "addIngredient",
+					"name": "addIngredient"
+				}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{
+					"event": "onCompositionChange",
+					"rel": "perfume",
+					"jpath": "element",
+					"name": "onCompChange"
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0.82
+			]
+		},
+		{
+			"url": "./modules/types/science/chemistry/jsme/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 25,
+				"top": 73
+			},
+			"size": {
+				"width": 29,
+				"height": 24
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[
+									"oldlook",
+									"depict"
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "mol",
+					"name": "mol"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/array_search/configured_search/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 24,
+				"height": 17
+			},
+			"configuration": {
+				"sections": {
+					"searchFields": [
+						{
+							"sections": {},
+							"groups": {
+								"general": [
+									{
+										"name": [
+											"Iupac contains"
+										],
+										"label": [
+											"Iupac contains"
+										],
+										"defaultVal": [
+											""
+										],
+										"type": [
+											"text"
+										],
+										"searchOnField": [
+											"element.iupac.0.value"
+										],
+										"operator": [
+											"contains"
+										]
+									}
+								],
+								"slider": [
+									{
+										"start": [
+											null
+										],
+										"end": [
+											null
+										],
+										"step": [
+											null
+										],
+										"range": [
+											[]
+										]
+									}
+								],
+								"options": [
+									[
+										{}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "array",
+					"name": "ingredients"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"event": "onSearchDone",
+					"rel": "filteredArray",
+					"name": "filteredIngredients"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/display/fasttable/",
+			"title": "Synonyms",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 73
+			},
+			"size": {
+				"width": 24,
+				"height": 18
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.value",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "iupacs"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				1
+			]
+		},
+		{
+			"url": "./modules/types/display/single_value/",
+			"title": "Melting point",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 92
+			},
+			"size": {
+				"width": 24,
+				"height": 5
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								"arial"
+							],
+							"fontsize": [
+								"14pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								null
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"id": 8,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "mp"
+				}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/display/jqgrid/",
+			"title": "Hazard",
+			"displayWrapper": true,
+			"position": {
+				"left": 77,
+				"top": 73
+			},
+			"size": {
+				"width": 19,
+				"height": 24
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Pictogram",
+								"jpath": "element.pictogram",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Value",
+								"jpath": "element.value",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 9,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "hazard"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/display/fasttable/",
+			"title": "Prices",
+			"displayWrapper": true,
+			"position": {
+				"left": 55,
+				"top": 73
+			},
+			"size": {
+				"width": 21,
+				"height": 24
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Quantity",
+								"jpath": "element.quantity",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Price",
+								"jpath": "element.price",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 10,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "prices"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				1
+			]
+		},
+		{
+			"url": "./modules/types/display/fasttable/",
+			"title": "Base composition",
+			"displayWrapper": true,
+			"position": {
+				"left": 119,
+				"top": 70
+			},
+			"size": {
+				"width": 19,
+				"height": 27
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								"20"
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "ID",
+								"jpath": "element.id",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Qty",
+								"jpath": "element.quantity",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 11,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "baseComposition"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/display/fasttable/",
+			"title": "Perfume ingredients",
+			"displayWrapper": true,
+			"position": {
+				"left": 124.99999780654908,
+				"top": 17.9985782623291
+			},
+			"size": {
+				"width": 16,
+				"height": 28
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "ID",
+								"jpath": "element.id",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Qty",
+								"jpath": "element.parts",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 12,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "perfumeIngredients"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0.82
+			]
+		},
+		{
+			"url": "./modules/types/display/fasttable/",
+			"title": "Perfume ingredients",
+			"displayWrapper": true,
+			"position": {
+				"left": 124.99999780654908,
+				"top": 46.9985767364502
+			},
+			"size": {
+				"width": 16,
+				"height": 22
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "ID",
+								"jpath": "element.id",
+								"number": [],
+								"editable": "none"
+							},
+							{
+								"name": "Qty",
+								"jpath": "element.quantity",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 13,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "perfumeBases"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0.81
+			]
+		},
+		{
+			"url": "./modules/types/array_search/configured_search/",
+			"title": "Perfume filter",
+			"displayWrapper": true,
+			"position": {
+				"left": 97,
+				"top": 0
+			},
+			"size": {
+				"width": 27,
+				"height": 17
+			},
+			"configuration": {
+				"sections": {
+					"searchFields": [
+						{
+							"sections": {},
+							"groups": {
+								"general": [
+									{
+										"name": [
+											"Name contains"
+										],
+										"label": [
+											"Name contains"
+										],
+										"defaultVal": [
+											""
+										],
+										"type": [
+											"text"
+										],
+										"searchOnField": [
+											"element.name"
+										],
+										"operator": [
+											"contains"
+										]
+									}
+								],
+								"slider": [
+									{
+										"start": [
+											null
+										],
+										"end": [
+											null
+										],
+										"step": [
+											null
+										],
+										"range": [
+											[]
+										]
+									}
+								],
+								"options": [
+									[
+										{}
+									]
+								]
+							}
+						},
+						{
+							"sections": {},
+							"groups": {
+								"general": [
+									{
+										"name": [
+											"Perfumer contains"
+										],
+										"label": [
+											"Perfumer contains"
+										],
+										"defaultVal": [
+											""
+										],
+										"type": [
+											"text"
+										],
+										"searchOnField": [
+											"element.perfumer"
+										],
+										"operator": [
+											"contains"
+										]
+									}
+								],
+								"slider": [
+									{
+										"start": [
+											null
+										],
+										"end": [
+											null
+										],
+										"step": [
+											null
+										],
+										"range": [
+											[]
+										]
+									}
+								],
+								"options": [
+									[
+										{}
+									]
+								]
+							}
+						},
+						{
+							"sections": {},
+							"groups": {
+								"general": [
+									{
+										"name": [
+											"Year"
+										],
+										"label": [
+											"Year"
+										],
+										"defaultVal": [
+											"1900"
+										],
+										"type": [
+											"slider"
+										],
+										"searchOnField": [
+											"element.year"
+										],
+										"operator": [
+											">"
+										]
+									}
+								],
+								"slider": [
+									{
+										"start": [
+											"1900"
+										],
+										"end": [
+											"2020"
+										],
+										"step": [
+											"1"
+										],
+										"range": [
+											[]
+										]
+									}
+								],
+								"options": [
+									[
+										{}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {}
+			},
+			"id": 14,
+			"vars_in": [
+				{
+					"rel": "array",
+					"name": "perfumes"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"event": "onSearchDone",
+					"rel": "filteredArray",
+					"name": "perfumesFiltered"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/display/single_value/",
+			"title": "Perfumer",
+			"displayWrapper": true,
+			"position": {
+				"left": 125,
+				"top": 0
+			},
+			"size": {
+				"width": 16,
+				"height": 7
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								null
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"id": 15,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "perfumePerfumer"
+				}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0.52
+			]
+		},
+		{
+			"url": "./modules/types/display/single_value/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 125,
+				"top": 8
+			},
+			"size": {
+				"width": 16,
+				"height": 7
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								null
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"id": 16,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "perfumeCompany"
+				}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0.53
+			]
+		},
+		{
+			"url": "./modules/types/display/single_value/",
+			"title": "Total Parts",
+			"displayWrapper": true,
+			"position": {
+				"left": 66,
+				"top": 10
+			},
+			"size": {
+				"width": 30,
+				"height": 7
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								"arial"
+							],
+							"fontsize": [
+								"18pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								null
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"id": 17,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "totalParts"
+				}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/display/single_value/",
+			"title": "Total price",
+			"displayWrapper": true,
+			"position": {
+				"left": 25,
+				"top": 10
+			},
+			"size": {
+				"width": 25,
+				"height": 7
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								"arial"
+							],
+							"fontsize": [
+								"18pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								"%.2f"
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"id": 18,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "totalPrice"
+				},
+				{
+					"rel": "color",
+					"name": "totalPriceColor"
+				}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "ingredients",
+			"jpath": "element.ingredients"
+		},
+		{
+			"varname": "bases",
+			"jpath": "element.bases"
+		},
+		{
+			"varname": "perfumes",
+			"jpath": "element.perfumes"
+		}
+	],
+	"configuration": {
+		"title": "Perfume creator"
+	},
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							"onCompChange"
+						],
+						"script": [
+							"if (arguments && arguments.length>0) {\n    var firstArgument=arguments[0].get();\n    var allIngredients=firstArgument.indexedIngredients\n    var baseComponents=firstArgument.baseComponents; // does not contain the components of the base\n    var components=firstArgument.components;\n    \n    // to calculate prices we don't need the ingredients of a base\n    var parts=0;\n    for (var i in baseComponents) {\n            parts += baseComponents[i].get().parts;\n        \n    }\n    API.setVariable(\"totalParts\", new DataObject({type:'string',value:parts}));\n    \n    // Let's try to calculate prices ;\n    var price=0;\n    for (var i in components) {\n        var component=components[i].get();\n        if (component.isIngredient) {\n           price+=allIngredients[component.id].catalog[0].catalogLine[1].price * component.parts;\n        }\n    }\n    API.setVariable(\"totalPrice\", new DataObject({type:'string',value:price}));\n    var color=getPriceColor(price);\n    console.log(color);\n      API.setVariable(\"totalPriceColor\", color);\n \n     \n    var calculation={\n        price: price,\n        parts: parts,\n        perfumeName: firstArgument.name\n    }\n    \n    API.setVariable(\"perfumeInformation\", new DataObject(calculation));\n    \n    function getPriceColor(price) {\n        if (price<5000) return \"#00FF00\";\n        return \"#FF0000\";\n    }\n}\n"
+						]
+					}
+				]
+			}
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	],
+	"version": "2.2.3"
+}

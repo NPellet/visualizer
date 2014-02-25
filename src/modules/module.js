@@ -380,6 +380,10 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 
 			for( i = 0, l = varsIn.length ; i < l ; i ++ ) {
 				
+				if( ! references[ varsIn [ i ] ] ) {
+					continue;
+				}
+				
 				varsInList.push( { key: varsIn[ i ], title: references[ varsIn [ i ] ].label } )
 			}
 

@@ -27,7 +27,7 @@
         }
 ],
 
-"modules": ["./modules/types/folder.json"] ,
+"modules": ["./modules/types/folder.json", "./usr/modules/folder.json"] ,
 
 "header": {
 	"height": "30px",

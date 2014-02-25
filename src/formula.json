@@ -1,0 +1,276 @@
+{
+   "id": "452111 B",
+   "header": {
+       "codelab": null,
+       "datecreation": "2013-11-12T00:00:00.000Z",
+       "datemodification": "2013-11-12T00:00:00.000Z",
+       "name": "GREEN TEA",
+       "isformula": true,
+       "nbparts": 700,
+       "nbart": 42
+   },
+   "composition": [
+       {
+           "iid": "909272",
+           "quantity": 2,
+           "seq": 0
+       },
+       {
+           "iid": "184056",
+           "quantity": 15,
+           "seq": 10
+       },
+       {
+           "iid": "184067",
+           "quantity": 35,
+           "seq": 30
+       },
+       {
+           "iid": "925958",
+           "quantity": 8,
+           "seq": 40
+       },
+       {
+           "iid": "926150",
+           "quantity": 4,
+           "seq": 50
+       },
+       {
+           "iid": "933298",
+           "quantity": 8,
+           "seq": 60,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 10
+           }
+       },
+       {
+           "iid": "937856",
+           "quantity": 3,
+           "seq": 70,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 10
+           }
+       },
+       {
+           "iid": "941620",
+           "quantity": 1,
+           "seq": 80,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 1
+           }
+       },
+       {
+           "iid": "907049",
+           "quantity": 1,
+           "seq": 90
+       },
+       {
+           "iid": "907163",
+           "quantity": 1,
+           "seq": 100
+       },
+       {
+           "iid": "922560",
+           "quantity": 4,
+           "seq": 110,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 10
+           }
+       },
+       {
+           "iid": "945550",
+           "quantity": 10,
+           "seq": 120
+       },
+       {
+           "iid": "947303",
+           "quantity": 15,
+           "seq": 130,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 50
+           }
+       },
+       {
+           "iid": "947650",
+           "quantity": 3,
+           "seq": 140,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 10
+           }
+       },
+       {
+           "iid": "907600",
+           "quantity": 90,
+           "seq": 150
+       },
+       {
+           "iid": "951310",
+           "quantity": 8,
+           "seq": 160
+       },
+       {
+           "iid": "953290",
+           "quantity": 1,
+           "seq": 170
+       },
+       {
+           "iid": "955604",
+           "quantity": 60,
+           "seq": 190
+       },
+       {
+           "iid": "964898",
+           "quantity": 100,
+           "seq": 200
+       },
+       {
+           "iid": "974755",
+           "quantity": 15,
+           "seq": 210
+       },
+       {
+           "iid": "986243",
+           "quantity": 50,
+           "seq": 220
+       },
+       {
+           "iid": "971060",
+           "quantity": 6,
+           "seq": 230,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 0.1
+           }
+       },
+       {
+           "iid": "957675",
+           "quantity": 2,
+           "seq": 240,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 10
+           }
+       },
+       {
+           "iid": "951177",
+           "quantity": 1,
+           "seq": 250,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 10
+           }
+       },
+       {
+           "iid": "901957",
+           "quantity": 3,
+           "seq": 260
+       },
+       {
+           "iid": "972368",
+           "quantity": 10,
+           "seq": 270
+       },
+       {
+           "iid": "951196",
+           "quantity": 1,
+           "seq": 280,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 10
+           }
+       },
+       {
+           "iid": "972900",
+           "quantity": 4,
+           "seq": 290
+       },
+       {
+           "iid": "974325",
+           "quantity": 1,
+           "seq": 300
+       },
+       {
+           "iid": "975085",
+           "quantity": 2,
+           "seq": 310
+       },
+       {
+           "iid": "100084 SA",
+           "quantity": 5,
+           "seq": 320,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 10
+           }
+       },
+       {
+           "iid": "957542",
+           "quantity": 3,
+           "seq": 330,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 10
+           }
+       },
+       {
+           "iid": "902280",
+           "quantity": 40,
+           "seq": 340
+       },
+       {
+           "iid": "912784",
+           "quantity": 2,
+           "seq": 350,
+           "solvent": {
+               "iid": "982230",
+               "dilution": 10
+           }
+       },
+       {
+           "iid": "991705",
+           "quantity": 6,
+           "seq": 360
+       },
+       {
+           "iid": "993135",
+           "quantity": 3,
+           "seq": 370
+       },
+       {
+           "iid": "100526 D",
+           "quantity": 1,
+           "seq": 380
+       },
+       {
+           "iid": "100535",
+           "quantity": 8,
+           "seq": 390
+       },
+       {
+           "iid": "982230",
+           "quantity": 133,
+           "seq": 400
+       },
+       {
+           "iid": "936653",
+           "quantity": 14,
+           "seq": 410
+       },
+       {
+           "iid": "950103",
+           "quantity": 14,
+           "seq": 420
+       },
+       {
+           "iid": "936652",
+           "quantity": 7,
+           "seq": 430
+       }
+   ]
+}

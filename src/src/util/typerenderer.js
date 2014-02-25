@@ -61,13 +61,10 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		// Find the dom in here
 		var can = $( '<canvas />', { id: id2 } ).get( 0 );
 		
-		
-
 		def.build = function() {
-	//console.trace();
-
+	
 			$("#" + id ).html( can );
-
+			
 			require(['ChemDoodle'], function() {
 
 				var canvas = new ChemDoodle.ViewerCanvas(id2);
