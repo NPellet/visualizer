@@ -170,7 +170,6 @@ define([	'jquery',
 
 			if( ! view.variables[i].jpath && view.variables[i].url ) {
 
-				console.log( view.variables[i] );
 				view.variables[i].fetch( ).done( function( v ) {
 
 					var varname = v.varname;
