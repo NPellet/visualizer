@@ -350,7 +350,7 @@ define([ 'lib/forms/form'], function( Form ) {
 					};
 				}
 
-				console.log( validation );
+				//console.log( validation );
 
 				type = fields[ i ].groups.general[ 0 ].type[ 0 ];
 

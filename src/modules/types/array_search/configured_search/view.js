@@ -67,6 +67,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			form.onLoaded( ).done( function( ) {
 				self.dom.html( form.makeDom( 2 ) );
 				form.inDom();
+                                form.fieldElementValueChanged();
 			});
 			
 			this.makeSearchFilter();
@@ -91,10 +92,9 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				l,
 				target = new DataArray();
 
-			if( ! val ) {
+			if( ! val || Object.keys(cfg).length===0 ) {
 				return;
 			}
-
 
 			val = val.get();
 				
@@ -111,16 +111,16 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 		_makeOp: function( op, val, options ) {
 
-			val = "cfg[ '" + val + "' ] && cfg[ '" + val + "' ]";
+			val = "cfg[ '" + val + "' ]";
                         var numPrefix = "", numSuffix = "";
                         if(options.number) {
                             numPrefix = "parseFloat(";
                             numSuffix = ")";
                         }
-             //           var textSuffix = ".toLowerCase()";
-             //           if(options.caseSensitive) {
+                        var textSuffix = ".toLowerCase()";
+                        if(options.caseSensitive) {
                             textSuffix = "";
-             //        }
+                     }
 			switch( op ) {
 
 				case '=':
@@ -186,7 +186,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				searchfields = this.module.getConfiguration( 'searchfields' ),
 				i = 0,
 				l = searchfields.length,
-					searchOn;
+				searchOn;
 
 
 			var toEval = "";
@@ -204,7 +204,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					toEval += " && ";
 				}
 
-				j = 0,
+				var j = 0,
 				k = searchOn.length;
 
 				/////////
