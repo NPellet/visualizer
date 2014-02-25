@@ -132,6 +132,18 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
     controller.prototype.configurationStructure = function() {
         return {
             groups: {
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+                    fields: {
+                        max: {
+                            type: 'float',
+                            title: 'Max number of logs',
+                            default: 10
+                        }
+                    }
+                },
                 cronInfos: {
                     options: {
                         type: 'table',
@@ -166,7 +178,12 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
     };
 
     controller.prototype.configAliases = {
-        cronInfos: ['groups', 'cronInfos', 0]
+        cronInfos: ['groups', 'cronInfos', 0],
+        maxLogs: ['groups', 'group', 0, 'max', 0]
+    };
+    
+    controller.prototype.onRemove = function() {
+        this.stop();
     };
 
     return controller;
