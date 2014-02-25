@@ -533,6 +533,31 @@ define([	'jquery',
 		//	console.log( ActionManager.getFilesForm() );
 
 			form.onStructureLoaded( ).done(function() {
+				console.log( { 
+					sections: {
+						cfg: [ {
+							groups: {
+								tablevars: [ view.variables ]
+							}
+						} ],
+
+						actionscripts: [ {
+							sections: {
+								actions: ActionManager.getScriptsForm()
+							}
+						} ],
+
+
+						actionfiles: ActionManager.getFilesForm(),
+						webcron: [ {
+							groups: {
+								general: [ view.crons || [] ]
+							}
+						}],
+
+//						script_cron: view.script_crons
+					}
+				} );
 				form.fill({ 
 					sections: {
 						cfg: [ {
