@@ -573,8 +573,8 @@ define([	'jquery',
 					allcrons;
 
 				/* Entry variables */
-				data = form.getValue().sections.cfg[ 0 ].groups.tablevars[ 0 ];
-				allcrons = form.getValue().sections.webcron[ 0 ].groups.general[ 0 ];
+				data = new ViewObject( form.getValue().sections.cfg[ 0 ].groups.tablevars[ 0 ] );
+				allcrons = new ViewObject( form.getValue().sections.webcron[ 0 ].groups.general[ 0 ] );
 
 				view.variables = data;
 				view.crons = allcrons;
@@ -592,7 +592,9 @@ define([	'jquery',
 				ActionManager.setFilesFromForm( data );
 				/* */
 
-				CronManager.setCronsFromForm( data, view );
+				if( typeof CronManager !== "undefined" ) {
+					CronManager.setCronsFromForm( data, view );
+				}
 
 			});
 
