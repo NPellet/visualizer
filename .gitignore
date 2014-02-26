@@ -5,3 +5,5 @@ nbproject/*
 /node_modules
 /build
 /build2
+
+/src/usr/*
