@@ -13,12 +13,12 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
                 break;
             }
         }
-        def.resolve( val );	
+        def.reject( val );	
 	}
     
     functions.html = {};
     functions.html.toscreen = function(def, val) {
-        val = Traversing.get(val);
+        val = Traversing.get( val );
         def.resolve( val );
     };
 		
