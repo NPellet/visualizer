@@ -120,7 +120,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                     layer.setIcon(blueIcon);
                 }
                 else {
-                    layer.setStyle({color: "0033ff"});
+                    layer.setStyle({color: "#0033ff"});
                 }
             }
         }, false, this.module.getId());
