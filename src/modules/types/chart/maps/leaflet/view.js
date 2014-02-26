@@ -129,6 +129,9 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
             "mouseover": function() {
                 this.module.controller.hoverElement(data);
             },
+            "click": function() {
+                this.module.controller.clickElement(data);
+            },
             "mouseout": function() {
                 API.highlight(data, 0);
             }

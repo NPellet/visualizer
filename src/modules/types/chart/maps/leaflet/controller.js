@@ -63,6 +63,10 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
             label : 'Hovers an object',
             refVariable : ['item']
         },
+        onClickElement : {
+            label : 'Click an object',
+            refVariable : ['item']
+        }
     };
 
 
@@ -133,6 +137,10 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
     controller.prototype.hoverElement = function(data) {
         this.setVarFromEvent('onHoverElement', DataObject.check(data), 'item');
         API.highlight(data, 1);
+    };
+    
+    controller.prototype.clickElement = function(data) {
+        this.setVarFromEvent('onClickElement', DataObject.check(data), 'item');
     };
     
     controller.prototype.moveAction = function(){
