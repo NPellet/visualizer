@@ -384,8 +384,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				});
 
-				//element[l] = value;
-				//self.done--;
+				element[l] = value;
+				self.done--;
 
 			}, function( value ) {
 
