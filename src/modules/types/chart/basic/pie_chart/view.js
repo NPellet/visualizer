@@ -140,6 +140,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					});
 				}				
 			}
+			console.log(this._data);
 		},
 
 		updateOptions: function() {
