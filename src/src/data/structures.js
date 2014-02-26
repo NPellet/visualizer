@@ -563,6 +563,8 @@ define(function() {
 				
 			}
 		},
+        
+                "geojson": "object",
 
 		"pdb": "string",
 		"magres": "string",
