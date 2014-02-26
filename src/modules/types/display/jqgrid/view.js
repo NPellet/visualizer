@@ -322,11 +322,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			for( ; j < l ; j ++) {
 
 				var jpath = jp[ j ].jpath;
-				if( ! jpath ) {
+				/*if( ! jpath ) {
 					element[ jp[ j ].name ] = '';
-				} else {
+				} else {*/
 					element[ jp[ j ].name ] = 'Loading';
-				}
+				//}
 				
 				self.done ++;
 				element[ ";" + jp[ j ].name ] = this.renderElement( element, s, jpath, jp[ j ].name );
@@ -384,8 +384,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				});
 
-				element[l] = value;
-				self.done--;
+				//element[l] = value;
+				//self.done--;
 
 			}, function( value ) {
 
