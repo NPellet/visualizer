@@ -10,7 +10,7 @@
 	{
 		"type":"chart",
 		"value": {
-			"title" : "A pie chart",
+			"title" : "A stack chart",
 			"axis": {
 				"0": {
 					"type": "bottom", 
@@ -27,18 +27,33 @@
 					"max":""
 				}
 			},
+			"pref": {
+			"type": "bars",
+			"stack": ""
+			},
 			"data" : 
 			[
 				{
-					"x":[0,1,2,3,4],
-					"y":[1.5,1,2,3,3.5],
+					"x":[0,1,4],
+					"y":[1,7,5],
 					"z":[],
-					"_highlight":["A","B","C",["A","D"],"E"],
-					"info":[{"name":"first"},{"name":"second"},{"name":"third"},{"name":"forth"},{"name":"fifth"}],
+					"_highlight":["A"],
+					"info":[{"name":"first"}],
 					"serieLabel": "My first serie",
 					"xAxis": "0", 
 					"yAxis": "1",
-					"preference": "bars"
+					"preference": "lines"
+				},
+				{
+					"x":[0,2,5],
+					"y":[2,3,4],
+					"z":[],
+					"_highlight":["B","E"],
+					"info":[{"name":"second"}],
+					"serieLabel": "My second serie",
+					"xAxis": "0", 
+					"yAxis": "1",
+					"preference": "lines"
 				}
 				
 			]
