@@ -9,16 +9,20 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 		listen: function(dom, elements, callback) {
 			if(!(elements[0] instanceof Array))
 				elements = [elements];
+			
 			dom.addEventListener('contextmenu', function(e) {	
 				for(var i = 0, l = elements.length; i < l; i++) {
-					(function(element, callback) {
+					( function(element, callback) {
 						contextMenu.append(element.bind('click', function(e2) {
-							callback.call(this, e);
+							if( callback ) {
+								callback.call(this, e, e2);
+							}
 						}));	
-					}) ($(elements[i][0]), elements[i][1]);
+					} ) ( $( elements[ i ][ 0 ] ), elements[ i ][ 1 ] );
 				}
-				if(callback)
+				if(callback) {
 					callback(contextMenu);
+				}
 			}, true);
 		},
 

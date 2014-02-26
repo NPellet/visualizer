@@ -322,7 +322,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			for( ; j < l ; j ++) {
 
 				var jpath = jp[ j ].jpath;
-				element[ jp[ j ].name ] = 'Loading';
+
+				if( ! jpath ) {
+					element[ jp[ j ].name ] = '';
+				} else {
+					element[ jp[ j ].name ] = 'Loading';
+				}
+				
 				self.done ++;
 				element[ ";" + jp[ j ].name ] = this.renderElement( element, s, jpath, jp[ j ].name );
 			}
