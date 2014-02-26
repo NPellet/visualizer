@@ -13,7 +13,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
                 break;
             }
         }
-        def.reject( val );	
+        def.resolve( val );	
 	}
     
     functions.html = {};
