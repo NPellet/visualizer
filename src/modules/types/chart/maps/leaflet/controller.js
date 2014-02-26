@@ -1,7 +1,7 @@
 define(['modules/default/defaultcontroller','src/util/api','components/leaflet/leaflet'], function(Default,API,L) {
 
     function controller() {
-        this.moveActive = true;
+        
     }
 
     controller.prototype = $.extend(true, {}, Default);
@@ -24,8 +24,12 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
      */
     controller.prototype.references = {
         "geojson": {
-            type: ['geojson-feature-collection','geojson-feature','geojson-geometry'],
+            type: 'geojson',
             label: 'A GeoJSON object'
+        },
+        "viewport": {
+            type: 'geojson',
+            label: 'Current map view'
         },
         "position": {
             label : 'Geo coordinates',
@@ -48,13 +52,14 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
     controller.prototype.events = {
         onMapMove : {
             label: 'The map has moved',
-            refAction: [ 'position' ]
+            refAction: [ 'position' ],
+            refVariable: ['viewport']
         },
         onZoomChange : {
             label : 'The zoom level has changed',
             refAction: ['zoom']
         },
-        onHoverMarker : {
+        onHoverElement : {
             label : 'Hovers an object',
             refVariable : ['item']
         },
@@ -125,27 +130,50 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
         'maptiles' : ['groups', 'group', 0, 'maptiles', 0]
     };
     
-    controller.prototype.hoverElement = function(element, layer, subLayer) {
-        if(subLayer instanceof L.Marker) {
-            this.setVarFromEvent( 'onHoverMarker', layer.data, 'item' );
-        }
-        API.highlight( element, 1 );
+    controller.prototype.hoverElement = function(data) {
+        this.setVarFromEvent('onHoverElement', DataObject.check(data), 'item');
+        API.highlight(data, 1);
     };
     
-    controller.prototype.setBounds = function(bounds) {
-
-        var arr = new Array(4);
+    controller.prototype.moveAction = function(){
         
-        arr[0] = getGeoCoords(bounds.getSouthWest());
-        arr[1] = getGeoCoords(bounds.getNorthWest());
-        arr[2] = getGeoCoords(bounds.getNorthEast());
-        arr[3] = getGeoCoords(bounds.getSouthEast());
+        var center = this.map.getCenter();
 
-        this.setVarFromEvent('onMapMove', new DataArray(arr), 'polygon');
+        this.module.controller.sendAction('position', [center.lat,center.lng] ,'onMapMove');
+        
+        boundUpdate.call(this);
     };
     
-    function getGeoCoords(latLng) {
-        return [latLng.lat,latLng.lng];
+    controller.prototype.zoomAction = function() {
+        
+        this.module.controller.sendAction('zoom', this.map.getZoom(), 'onZoomChange');
+        
+        boundUpdate.call(this);
+    };
+    
+    function boundUpdate() {
+        var map = this.map;
+        this.module.controller.setVarFromEvent('onMapMove', function() {
+            var bounds = map.getBounds();
+            var arr = new Array(4);
+        
+            arr[0] = getGeoCoords(bounds.getSouthWest());
+            arr[1] = getGeoCoords(bounds.getNorthWest());
+            arr[2] = getGeoCoords(bounds.getNorthEast());
+            arr[3] = getGeoCoords(bounds.getSouthEast());
+
+            return new DataObject({
+                type: "geojson",
+                value: {type:"Feature",geometry:{
+                    type: "Polygon",
+                    coordinates: [arr]}
+                }
+            });
+        }, 'viewport');
+    }
+    
+    function getGeoCoords(latLng) { // return coordinates in geojson order
+        return [latLng.lng,latLng.lat];
     }
 
     return controller;

@@ -22,6 +22,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
             });
             this.module.getDomContent( ).html(this.dom);
                 
+            API.killHighlight(this.module.getId());
             
             this.onReady = $.Deferred();
         },
@@ -35,65 +36,46 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                 zoomAnimation: false
             }).setView(center, zoom);
             
-            this.map._controller = this.module.controller;
             this.getTileLayer().addTo(this.map);
 
-            this.map.on("move",this.moveAction);
-            this.map.on("zoomend", this.zoomAction);
+            this.map.on("drag",this.module.controller.moveAction, this);
+            this.map.on("zoomend", this.module.controller.zoomAction, this);
             
             this.onReady.resolve();
         },
+        blank: {
+            geojson: function(varname) {
+                if (this.mapLayers.hasOwnProperty(varname)) {
+                    this.mapLayers[varname].clearLayers();
+                    delete this.mapLayers[varname];
+                }
+            }
+        },
         update: {
-            'position' : function(value) {
+            position : function(value) {
                 if(value.length !== 2)
                     return;
                 this.map.setView(L.latLng(value[0],value[1]));
             },
-            'geojson': function(geo, varname) {
-                var geoJson = geo.get();
-                L.geoJson(geoJson,{}).addTo(map);
-                /*var geoJson = geo.get();
-                if(!this.module.data)
-                    this.module.data = geoJson;
-                if (this.mapLayers.hasOwnProperty(varname))
-                    this.map.removeLayer(this.mapLayers[varname]);
-
-                var newMarker = L.geoJson(geoJson);
-                newMarker.data=geoJson;
-                newMarker.addTo(this.map);
-                addHighlight(this, geo, newMarker);
-                this.mapLayers[varname] = newMarker;*/
-
-            }/*,
-            'geocollection': function(geo, varname) {
-                if (this.mapLayers.hasOwnProperty(varname)) {
-                    this.map.removeLayer(this.mapLayers[varname]);
-                }
-                if (!geo.length)
+            geojson: function(geo, varname) {
+                if(!geo)
                     return;
-                if(!this.module.data)
-                    this.module.data = geo[0].get();
-                var group = L.layerGroup();
-                for (var i = 0; i < geo.length; i++) {
-                    var obj = geo[i];
-                    var geoJson = obj.get();
-                    var layer = L.geoJson(geoJson);
-                    layer.data = geoJson;
-                    group.addLayer(layer);
-                    addHighlight(this, obj, layer);
-                }
-                group.addTo(this.map);
-                this.mapLayers[varname] = group;
-            }*/
+                var geoJson = geo.get();
+                var converted = L.geoJson(geoJson,{});
+                
+                converted.addTo(this.map);
+                this.mapLayers[varname] = converted;
+                
+                converted.eachLayer(addEvents, this);
+
+            }
         },
         onResize: function() {
             this.map.invalidateSize();
         },
         onActionReceive: {
             position : function(val) {
-                this.module.controller.moveActive=false;
                 this.map.setView(L.latLng(val[0],val[1]));
-                this.module.controller.moveActive=true;
             },
             zoom : function(val) {
                 var min = this.map.getMinZoom();
@@ -102,18 +84,6 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                 else if(val > max) val = max;
                 this.map.setZoom(val);
             }
-        },
-        moveAction : function(){
-            var center = this.getCenter();
-            if(this._controller.moveActive)
-                this._controller.sendAction('position', [center.lat,center.lng], 'onMapMove');
-            
-            var bounds = this.getBounds();
-
-            this._controller.setBounds(bounds);
-        },
-        zoomAction : function() {
-            this._controller.sendAction('zoom', this.getZoom(), 'onZoomChange');
         },
         getTileLayer : function() {
             var baselayer =  this.module.getConfiguration('maptiles') || 'osm';
@@ -131,31 +101,39 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
             return L.tileLayer(tileLayer.template,tileLayer.parameters);
         }
     });
-
-    function addHighlight(view, element, layer) {
-        var theLayer = layer._layers[layer._leaflet_id-1]; // Layers are encapsulated in a LayerGroup
-        layer.on("mouseover", function() {
-            view.module.controller.hoverElement(element,layer,theLayer);
-        });
-        layer.on("mouseout", function() {
-            API.highlight( element, 0 );
-        });
-        API.listenHighlight( element, function(onOff) {
-            if(onOff) { // Highlight
-                if(theLayer instanceof L.Marker) {
-                    theLayer.setIcon(redIcon);
-                } else {
-                    layer.setStyle({color:'#ff3300'});
-                }  
-            } else { // disable Highlight
-                if(theLayer instanceof L.Marker) {
-                    theLayer.setIcon(blueIcon);
-                } else {
-                    layer.setStyle({color:'#0033ff'});
-                } 
+    
+    function addEvents(layer) {
+        
+        var data = layer.feature.properties || {};
+        
+        API.listenHighlight(data, function(onOff){
+            if(onOff) {
+                if(layer instanceof L.Marker) {
+                    layer.setIcon(redIcon);
+                }
+                else {
+                    layer.setStyle({color: "#ff3300"});
+                }
             }
-
-        }, false, view.module.getId() );
+            else {
+                if(layer instanceof L.Marker) {
+                    layer.setIcon(blueIcon);
+                }
+                else {
+                    layer.setStyle({color: "0033ff"});
+                }
+            }
+        }, false, this.module.getId());
+        
+        layer.addEventListener({
+            "mouseover": function() {
+                this.module.controller.hoverElement(data);
+            },
+            "mouseout": function() {
+                API.highlight(data, 0);
+            }
+        }, this);
+        
     }
 
     return view;

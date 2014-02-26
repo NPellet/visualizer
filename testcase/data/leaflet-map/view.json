@@ -1,8 +1,7 @@
 {
-	"_version": "2.2.1",
 	"modules": [
 		{
-			"url": "./modules/types/chart/map/leaflet/",
+			"url": "./modules/types/chart/maps/leaflet/",
 			"title": "Default center - OpenStreetMap",
 			"displayWrapper": true,
 			"position": {
@@ -10,8 +9,8 @@
 				"top": 1
 			},
 			"size": {
-				"width": 50,
-				"height": 42
+				"width": 50.039999997615816,
+				"height": 42.039999997615816
 			},
 			"configuration": {
 				"sections": {},
@@ -34,26 +33,26 @@
 			"id": 1,
 			"vars_in": [
 				{
-					"rel": "geo",
+					"rel": "geojson",
 					"name": "geoHover"
 				},
 				{
-					"rel": "geo",
+					"rel": "geojson",
 					"name": "polygons"
 				},
 				{
-					"rel": "polygon",
+					"rel": "geojson",
 					"name": "polygon"
 				}
 			],
 			"actions_in": [
 				{
 					"rel": "position",
-					"name": "move"
+					"name": "move1"
 				},
 				{
 					"rel": "zoom",
-					"name": "zoom"
+					"name": "zoom1"
 				}
 			],
 			"vars_out": [
@@ -63,12 +62,12 @@
 				{
 					"event": "onMapMove",
 					"rel": "position",
-					"name": "move"
+					"name": "move2"
 				},
 				{
 					"event": "onZoomChange",
 					"rel": "zoom",
-					"name": "zoom"
+					"name": "zoom2"
 				}
 			],
 			"bgColor": [
@@ -79,7 +78,7 @@
 			]
 		},
 		{
-			"url": "./modules/types/chart/map/leaflet/",
+			"url": "./modules/types/chart/maps/leaflet/",
 			"title": "Custom center",
 			"displayWrapper": true,
 			"position": {
@@ -87,8 +86,8 @@
 				"top": 1
 			},
 			"size": {
-				"width": 53,
-				"height": 42
+				"width": 53.039999997615816,
+				"height": 42.039999997615816
 			},
 			"configuration": {
 				"sections": {},
@@ -111,7 +110,7 @@
 			"id": 2,
 			"vars_in": [
 				{
-					"rel": "geoarray",
+					"rel": "geojson",
 					"name": "multi"
 				}
 			],
@@ -120,9 +119,9 @@
 			],
 			"vars_out": [
 				{
-					"event": "onHoverMarker",
+					"event": "onHoverElement",
 					"rel": "item",
-					"jpath": "element.data.value",
+					"jpath": "element",
 					"name": "value"
 				}
 			],
@@ -137,7 +136,7 @@
 			]
 		},
 		{
-			"url": "./modules/types/chart/map/leaflet/",
+			"url": "./modules/types/chart/maps/leaflet/",
 			"title": "Marker from JSON - HikeBike",
 			"displayWrapper": true,
 			"position": {
@@ -145,8 +144,8 @@
 				"top": 1
 			},
 			"size": {
-				"width": 54,
-				"height": 42
+				"width": 54.039999997615816,
+				"height": 42.039999997615816
 			},
 			"configuration": {
 				"sections": {},
@@ -169,35 +168,37 @@
 			"id": 3,
 			"vars_in": [
 				{
-					"rel": "geo",
+					"rel": "geojson",
 					"name": "result"
 				},
 				{
-					"rel": "geo",
+					"rel": "geojson",
 					"name": "geoHover"
 				}
 			],
 			"actions_in": [
 				{
 					"rel": "position",
-					"name": "move"
+					"name": "move2"
 				},
 				{
 					"rel": "zoom",
-					"name": "zoom"
+					"name": "zoom2"
 				}
 			],
-			"vars_out": {},
+			"vars_out": [
+				{}
+			],
 			"actions_out": [
 				{
 					"event": "onMapMove",
 					"rel": "position",
-					"name": "move"
+					"name": "move1"
 				},
 				{
 					"event": "onZoomChange",
 					"rel": "zoom",
-					"name": "zoom"
+					"name": "zoom1"
 				}
 			],
 			"bgColor": [
@@ -216,8 +217,8 @@
 				"top": 43
 			},
 			"size": {
-				"width": 20,
-				"height": 27
+				"width": 20.039999997615816,
+				"height": 26.939999997615814
 			},
 			"configuration": {
 				"sections": {},
@@ -287,8 +288,8 @@
 				"top": 43
 			},
 			"size": {
-				"width": 18,
-				"height": 20
+				"width": 18.039999997615816,
+				"height": 20.039999997615816
 			},
 			"configuration": {
 				"sections": {},
@@ -345,74 +346,7 @@
 			]
 		},
 		{
-			"url": "./modules/types/display/single_value/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 85,
-				"top": 43
-			},
-			"size": {
-				"width": 27,
-				"height": 19
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"defaultvalue": [
-								null
-							],
-							"fontcolor": [
-								[
-									0,
-									0,
-									0,
-									1
-								]
-							],
-							"font": [
-								null
-							],
-							"fontsize": [
-								null
-							],
-							"align": [
-								null
-							],
-							"valign": [
-								null
-							],
-							"sprintf": [
-								null
-							],
-							"preformatted": [
-								[]
-							]
-						}
-					]
-				}
-			},
-			"id": 7,
-			"vars_in": [
-				{
-					"rel": "value",
-					"name": "value"
-				}
-			],
-			"actions_in": {},
-			"vars_out": {},
-			"actions_out": {},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
-		},
-		{
-			"url": "./modules/types/chart/map/leaflet/",
+			"url": "./modules/types/chart/maps/leaflet/",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
@@ -420,8 +354,8 @@
 				"top": 45
 			},
 			"size": {
-				"width": 42,
-				"height": 31
+				"width": 42.039999997615816,
+				"height": 30.939999997615814
 			},
 			"configuration": {
 				"sections": {},
@@ -441,7 +375,7 @@
 					]
 				}
 			},
-			"id": 8,
+			"id": 6,
 			"vars_in": [
 				{}
 			],
@@ -454,10 +388,62 @@
 			"vars_out": [
 				{
 					"event": "onMapMove",
-					"rel": "polygon",
+					"rel": "viewport",
 					"name": "polygon"
 				}
 			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/edition/object_editor/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 88,
+				"top": 51
+			},
+			"size": {
+				"width": 24.039999997615816,
+				"height": 20.939999997615814
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"view"
+							],
+							"expanded": [
+								[]
+							],
+							"storeObject": [
+								[]
+							],
+							"storedObject": [
+								"{}"
+							]
+						}
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "value"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
 			"bgColor": [
 				255,
 				255,
@@ -519,5 +505,6 @@
 				]
 			}
 		}
-	]
+	],
+	"version": "2.2.3"
 }
