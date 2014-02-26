@@ -63,7 +63,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				$("#"+self._id).bind("plotclick", function (event, pos, item) {
 				    if (item) {
 				      	console.log("Y:"+item.datapoint[1]);
-				      	console.log(self._plot.getOptions());
+			
 
 				    }
 				});
@@ -141,12 +141,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				 s.push([x[i], y[i]]);
 			 				
 				}
-				/*
-
-					if (infos instanceof Array && infos.length>i) {
-						// Data can be retrieved async so to fetch an information from the "info" object we need this strange code
-						 
-					}*/
+				
 				
 				
 					if (highlight instanceof Array && highlight.length>j) {
@@ -173,12 +168,19 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 						});
 				
 			}
-			console.log(this._data);
 		},
 
 		updateOptions: function(preference, stack) {
 			var points,bars,lines,stack;
 			stack = stack;
+			switch (stack)
+				{
+				case 'true': stack = true;
+							break;
+				  case 'false': stack = false;
+							break;
+				  default:  stack = true
+				}
 			switch (preference)
 				{
 				  case 'points': points = true;
@@ -205,13 +207,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				},
 				series: {
 				stack: stack,
-					/*lines: {
-						show: true,
-						fill: 0.5,
-						steps: false
-					}*/
+					
 					lines: { show: lines, fill: true},
-					points: { show: points, fill: false },
+					points: { show: points, fill: true },
 					bars: { show: bars, barWidth: 0.5 }
 
 				}
