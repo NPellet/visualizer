@@ -322,7 +322,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			for( ; j < l ; j ++) {
 
 				var jpath = jp[ j ].jpath;
-
 				if( ! jpath ) {
 					element[ jp[ j ].name ] = '';
 				} else {
@@ -385,7 +384,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				});
 
-			}, function(value) {
+				element[l] = value;
+				self.done--;
+
+			}, function( value ) {
 
 				element[l] = value;
 				self.done--;
