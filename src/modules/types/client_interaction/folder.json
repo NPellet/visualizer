@@ -5,12 +5,12 @@
 			"url": "modules/types/client_interaction/button_action/"
 		},
 		{
-			"moduleName": "Drag and drop",
-			"url": "modules/types/client_interaction/dragdrop/"
-		},
-		{
 			"moduleName": "Code editor",
 			"url": "modules/types/client_interaction/code_editor/"
+		},
+		{
+			"moduleName": "Drag and drop",
+			"url": "modules/types/client_interaction/dragdrop/"
 		}
 	],
 	"name": "Client interaction",

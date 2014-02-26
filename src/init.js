@@ -34,7 +34,7 @@ requirejs.config({
         "components/jit/Jit/jit" : {
             "exports" : "$jit"
         },
-		"ckeditor": ["./components/ckeditor/adapters/jquery"],
+	//	"ckeditor": ["./components/ckeditor/adapters/jquery"],
 		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"lib/flot/jquery.flot.pie": ["jquery","lib/flot/jquery.flot"],
@@ -226,7 +226,9 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 						break;
 					}
 
-					subEl.linkToParent( self, el );
+					if( subEl.linkToParent ) {
+						subEl.linkToParent( self, el );
+					}
 				}
 
 				if( jpath.length == 0 ) {
@@ -405,7 +407,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 			var self = this,
 				deferred = $.Deferred( );
 
-			if( !this.url || !this.type ) { // No need for fetching. Still returning a deferred, though.
+			if( !this.url ) { // No need for fetching. Still returning a deferred, though.
 				return deferred.resolve( this );
 			}
 
@@ -432,6 +434,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 					deferred.reject( self ); 
 				});
 			});
+			
 			return deferred;
 		}
 	};

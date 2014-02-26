@@ -77,6 +77,28 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 					fields: {
 
+						valuetest: {
+							type: 'float',
+							title: 'Number value',
+							validation: {
+
+								rules: [
+
+									{
+										pattern:"^[a-zA-Z0-9_.]+@[a-zA-Z0-9.]+\\.[a-zA-Z0-9]+$",
+										feedback: {
+											_class: true,
+											message: "Not a valid e-mail"
+										}
+									}
+								],
+
+								positiveFeedback: {
+									message: 'E-mail is valid ! =)'
+								}
+							}
+						},
+
 						defaultvalue: {
 							type: 'wysiwyg',
 							title: 'Default value'
@@ -104,19 +126,9 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 								{title: 'Trebuchet MS', key: 'trebuchet ms'},
 								{title: 'Verdana', key: 'verdana'}
 							],
-
-							displaySource:  {
-								'arial': 1,
-								'verdana': 4,
-								'trebuchet ms': 3,
-								'palatino': 5
-							}
 						},
 
 						fontsize: {
-
-							displayTarget: [1,3,4],
-
 							type: 'combo',
 							title: 'Font size',
 							options: [

@@ -58,7 +58,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 					self.domTable.find('th[data-jpath-number="' + currentColSort.col + '"]').append( currentColSort.span );
 
-	 			} else if( currentColSort.col == jpathId ) {
+	 			} else if( currentColSort.col === jpathId ) {
 	 				currentColSort.asc = ! currentColSort.asc;
 	 				currentColSort.span.toggleClass('up');
 	 			}
@@ -103,7 +103,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			var colorjpath = this.module.getConfiguration( 'colorjPath' );
 
 			if( colorjpath ) {
-				Util.addjPathFunction( undefined, jpaths[ j ].jpath, this.colorjpath);
+				
+				this.colorjpath = Util.makejPathFunction( colorjpath );
 			}
 		
 			this.domHead.html( thead );
@@ -154,7 +155,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			}
 
 	 			moduleValue = moduleValue.get();
-	 			
+                                
 				var self = this, 
 					jpaths = this.module.getConfiguration( 'colsjPaths' ),
 					nbLines = this.module.getConfiguration( 'nbLines' ) || 20,
@@ -168,6 +169,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				for( ; i < l ; i ++ ) {
 					html += '<tr';
+					
 					if( this.colorjpath ) {
 						html += ' style="background-color: ' + this.colorjpath( moduleValue[ i ] ) + ';"';
 					}
@@ -180,7 +182,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 						}
 						
 						html += '<td>';
-						html += this.getValue( moduleValue[ i ], jpaths[ j ].jpath );
+						html += this.getValue( moduleValue[ i ].get(), jpaths[ j ].jpath );
 						html += '</td>';
 					}
 					html += '</tr>';
@@ -196,7 +198,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				this.timeout = window.setTimeout( function( ) {
 
-					API.killHighlight( self.module.id );
+					API.killHighlight( self.module.getId( ) );
 
 					for( i = 0; i < l ; i++ ) {
 							
@@ -205,7 +207,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 							API.listenHighlight( self.module.data[ j ], function( val ) {
 								self.doHighlight( j, val );
-							}, self.module.id );
+							}, false, self.module.getId( ) );
 
 						}) ( i );
 						

@@ -6,21 +6,21 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.string = {};
 	functions.string.toscreen = function(def, val) {
-            val = Traversing.get( val );
-            while( true ) {
-                val = val.replace('<', '&lt;' ).replace('>', '&gt;');
-                if( val.indexOf('<') === -1 && val.indexOf('>') === -1) {
-                    break;
-                }
+        val = Traversing.get( val );
+        while( true ) {
+            val = val.replace('<', '&lt;' ).replace('>', '&gt;');
+            if( val.indexOf('<') === -1 && val.indexOf('>') === -1) {
+                break;
             }
-            def.resolve( val );
+        }
+        def.resolve( val );	
 	}
-        
-        functions.html = {};
-        functions.html.toscreen = function(def, val) {
-            val = Traversing.get(val);
-            def.resolve( val );
-        };
+    
+    functions.html = {};
+    functions.html.toscreen = function(def, val) {
+        val = Traversing.get(val);
+        def.resolve( val );
+    };
 		
 	functions.matrix = {};
 	functions.matrix.toscreen = function(def, val) {
@@ -55,23 +55,17 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	functions.mol2d = {};
 	functions.mol2d.toscreen = function(def, molfile, options, highlights, box) {
 		
-		require(['ChemDoodle'], function() {
-
-			ChemDoodle.ELEMENT.H.jmolColor="#BBBBBB";
-			ChemDoodle.ELEMENT.S.jmolColor="#CCCC30";
-
-			var id = Util.getNextUniqueId();
-			var id2 = Util.getNextUniqueId();
+		var id = Util.getNextUniqueId();
+		var id2 = Util.getNextUniqueId();
+		var div = '<div id="' + id + '" />';
+		// Find the dom in here
+		var can = $( '<canvas />', { id: id2 } ).get( 0 );
+		
+		def.build = function() {
+	
+			$("#" + id ).html( can );
 			
-			var div = '<div id="' + id + '" />';
-
-			// Find the dom in here
-			var can = $( '<canvas />', { id: id2 } ).get( 0 );
-			
-			def.build = function() {
-	//console.trace();
-
-				$("#" + id ).html( can );
+			require(['ChemDoodle'], function() {
 
 				var canvas = new ChemDoodle.ViewerCanvas(id2);
 				var parent = $(can).parent();
@@ -87,7 +81,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				//canvas.loadMolecule(molLoaded);
 
 
- 				var dim = molLoaded.getDimension();
+					var dim = molLoaded.getDimension();
 
 	//			var ratio = Math.min(1, Math.max(parent.width() / dim.x, parent.height() / dim.y));
 				var ratio=1;
@@ -130,15 +124,21 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 					canvas.repaint();
 
 				}, true, box.id || 0);
-			}
+			});
+		}
 
-			def.unbuild = function() {
-				//$(this.canvas).remove();
-			};
+		def.unbuild = function() {
+			//$(this.canvas).remove();
+		};
 
-			def.getCWC = function() {
-				return this.canvas;
-			}
+		def.getCWC = function() {
+			return this.canvas;
+		}
+
+		require(['ChemDoodle'], function() {
+
+			ChemDoodle.ELEMENT.H.jmolColor="#BBBBBB";
+			ChemDoodle.ELEMENT.S.jmolColor="#CCCC30";
 
 			def.id = id;
 			def.canvasdom = can;
@@ -387,7 +387,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	functions.mf = {};
 	functions.mf.toscreen = function(def, value) {
 		
-		return def.resolve(value.value.replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
+		return def.reject(value.value.replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
 	}
 
 
@@ -468,8 +468,10 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 			return deferred;
 		}
 		
-		element.getChild(jpath).done(function(element) {
-			_valueToScreen(deferred, element, box, opts, jpath); 
+		element.getChild( jpath ).done( function( element ) {
+
+			_valueToScreen( deferred, element, box, opts, jpath ); 
+
 		}).fail(function() { deferred.reject(); });
 		
 		return deferred;

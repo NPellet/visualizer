@@ -1,5 +1,5 @@
 
-define( [ 'jquery', 'src/util/util', 'ckeditor' ], function( $, Util ) {
+define( [ 'require', 'jquery', 'src/util/util', 'ckeditor' ], function( require, $, Util ) {
 
 	CKEDITOR.disableAutoInline = true;
 
@@ -26,6 +26,7 @@ define( [ 'jquery', 'src/util/util', 'ckeditor' ], function( $, Util ) {
 		var self = this;
 
 		this._editor = CKEDITOR.replace(this._id, {
+			customConfig: "../../" + require.toUrl('./') + 'ckeditor_config.js',
 			extraPlugins: 'onchange'
 		});
 

@@ -26,6 +26,7 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 			return this.module.getConfiguration( 'prefs' ).join( );
 		},
 
+
 		onResize: function() {
 			this.dom.attr( 'width', this.width );
 			this.dom.attr( 'height', this.height );
@@ -44,7 +45,11 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 
 		blank: {
 			'mol': function(varName) {
-		//		console.log("CLEAR");
+				if (this.dom.get(0).contentWindow.clear) {
+					this.dom.get(0).contentWindow.clear();
+				}
+			},
+			'jme': function(varName) {
 				if (this.dom.get(0).contentWindow.clear) {
 					this.dom.get(0).contentWindow.clear();
 				}

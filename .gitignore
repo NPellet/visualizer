@@ -2,7 +2,8 @@
 .idea/*
 nbproject/*
 
-src/usr/*/dev
 /node_modules
 /build
 /build2
+
+/src/usr/*

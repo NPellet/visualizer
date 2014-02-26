@@ -71,23 +71,18 @@ define([	'jquery',
 	}
 
 	
-	function doView(view, reloading) {
+	function doView(view) {
 
 		var i = 0, l;
 
 		view = Migration(view);
 
-		if( reloading ) {
+		if( this.viewLoaded ) {
 			reloadingView( );
-		}
-
-		if( ! reloading ) {
-
-			Grid.init( view.grid, document.getElementById( "modules-grid" ) );
-
-		} else {
-
 			Grid.reset( view.grid );
+		} else {
+			Grid.init( view.grid, document.getElementById( "modules-grid" ) );
+			this.viewLoaded = true;
 		}
 
 		ModuleFactory.empty( );
@@ -99,7 +94,6 @@ define([	'jquery',
 		view.variables = view.variables || new ViewArray();
 		view.configuration = view.configuration || new ViewObject();
 		view.configuration.title = view.configuration.title || 'No title';
-		
 
 		for( ; i < l ; ) {
 
@@ -175,12 +169,16 @@ define([	'jquery',
 
 			if( ! view.variables[i].jpath && view.variables[i].url ) {
 
-				variable.fetch( ).done( function( v ) {
+				view.variables[i].fetch( ).done( function( v ) {
 
-					var varname = variable.get( 'varname' );
-					data[ varname ] = v;
-					API.setVariable( varname , data, [ varname ] );
+					var varname = v.varname;
+					v.type = Traversing.getType( v.value );
 					
+					data[ varname ] = DataObject.check( v, true );
+					
+
+					API.setVariable( varname , data, [ varname ] );
+					console.log( view.variables );
 				} );
 
 			} else if( ! view.variables[ i ].jpath ) {
@@ -535,6 +533,31 @@ define([	'jquery',
 		//	console.log( ActionManager.getFilesForm() );
 
 			form.onStructureLoaded( ).done(function() {
+				console.log( { 
+					sections: {
+						cfg: [ {
+							groups: {
+								tablevars: [ view.variables ]
+							}
+						} ],
+
+						actionscripts: [ {
+							sections: {
+								actions: ActionManager.getScriptsForm()
+							}
+						} ],
+
+
+						actionfiles: ActionManager.getFilesForm(),
+						webcron: [ {
+							groups: {
+								general: [ view.crons || [] ]
+							}
+						}],
+
+//						script_cron: view.script_crons
+					}
+				} );
 				form.fill({ 
 					sections: {
 						cfg: [ {
@@ -574,8 +597,8 @@ define([	'jquery',
 					allcrons;
 
 				/* Entry variables */
-				data = form.getValue().sections.cfg[ 0 ].groups.tablevars[ 0 ];
-				allcrons = form.getValue().sections.webcron[ 0 ].groups.general[ 0 ];
+				data = new ViewArray( form.getValue().sections.cfg[ 0 ].groups.tablevars[ 0 ], true );
+				allcrons = new ViewObject( form.getValue().sections.webcron[ 0 ].groups.general[ 0 ], true );
 
 				view.variables = data;
 				view.crons = allcrons;
@@ -593,7 +616,9 @@ define([	'jquery',
 				ActionManager.setFilesFromForm( data );
 				/* */
 
-				CronManager.setCronsFromForm( data, view );
+				if( typeof CronManager !== "undefined" ) {
+					CronManager.setCronsFromForm( data, view );
+				}
 
 			});
 
@@ -657,9 +682,6 @@ define([	'jquery',
 				API.setAllFilters( cfgJson.filters || [ ] );
 			} );
 
-
-
-
 			Context.init( document.getElementById( 'modules-grid' ) );
 
 			Context.listen(Context.getRootDom(), [
@@ -668,7 +690,6 @@ define([	'jquery',
 					configureEntryPoint();
 				}]]
 			);
-
 /*
 			Context.listen(Context.getRootDom(), [
 				['<li class="ci-item-configureactions" name="refresh"><a><span class="ui-icon ui-icon-clock"></span>Configure actions</a></li>', 
@@ -677,29 +698,25 @@ define([	'jquery',
 				}]]
 			);
 */
-
 			Context.listen(Context.getRootDom(), [
 				['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>', 
 				function() {
 					document.location.href = document.location.href;
 				}]]
 			);
-
-
 		},
 
-
-		getVariables: function() {
+		getVariables: function( ) {
 			return view.variables;
 		},
 		
-		setVariables: function(vars) {
+		setVariables: function( vars ) {
 			view.variables = vars;
 			loaded();
 		},
 
-		setVariable: function(varname, varvalue) {
-			view.variables[varname] = varvalue;
+		setVariable: function( varname, varvalue ) {
+			view.variables[ varname ] = varvalue;
 		},
 
 		//getActionScripts: getActionScripts,

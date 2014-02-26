@@ -628,6 +628,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 			obj._time = Date.now();
 			
 			this._savedServer = JSON.stringify(obj);
+
 			return $.ajax({
 				type: 'post',
 				url: this.getUrl(),

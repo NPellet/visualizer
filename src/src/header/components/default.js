@@ -68,6 +68,7 @@ define(['jquery'], function() {
 
 
 		close: function() {
+                    if(this.$_elToOpen)
 			this.$_elToOpen.remove();
 		}
 	};

@@ -48,11 +48,11 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 
 	function getOptions(value) {
-		return value._options || {};
+            return value ? (value._options ? value._options : {}) : {};
 	}
 
 	function getHighlights(value) {
-		return value._highlight || [];
+            return value ? (value._highlight ? value._highlight : []) : [];
 	}
 
 	function getValueIfNeeded(element) {
