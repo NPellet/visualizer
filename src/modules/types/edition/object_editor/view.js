@@ -2,6 +2,7 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
 
     function view() {
         this._id = Util.getNextUniqueId();
+        this._data = new DataObject();
     }
     ;
 
@@ -42,18 +43,31 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
             this.dom.empty();
             var mode = this.module.getConfiguration('editable');
             this.expand = this.module.getConfiguration('expanded') || false;
+            this.storeObject = this.module.getConfiguration('storeObject') || false;
+            if(this.storeObject[0]) {
+                this._data = DataObject.check(JSON.parse(this.module.getConfiguration('storedObject')));
+            }
             this.editor = new jsoneditor.JSONEditor(document.getElementById(this._id), {mode: mode, change: this.editorChanged, module: this.module});
+            this.editor.set(this._data)
+            this.editorChanged();
             this.onReady.resolve();
         },
         update: {
             value: function(value) {
-                this.editor.set(value.get());
+                if(!value)
+                    return;
+                var theValue = value.get();
+                this.editor.set(theValue);
+                this._data = theValue;
                 if (this.expand[0])
                     this.editor.expandAll();
+                this.module.controller.editorChanged();
             }
         },
         editorChanged: function() {
-            this.module.controller.editorChanged(this.module.view.editor.get());
+            this.module.view._data = DataObject.check(this.module.view.editor.get(), true);
+            
+            this.module.controller.editorChanged();
         }
 
     });

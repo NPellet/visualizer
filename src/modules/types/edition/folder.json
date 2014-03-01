@@ -5,6 +5,10 @@
 			"url": "modules/types/edition/filter/"
 		},
 		{
+			"moduleName": "Filter editor",
+			"url": "modules/types/edition/filter_editor/"
+		},
+		{
 			"moduleName": "Form",
 			"url": "modules/types/edition/form/"
 		},
@@ -13,16 +17,12 @@
 			"url": "modules/types/edition/form_simple/"
 		},
 		{
-			"moduleName": "Object explorer",
+			"moduleName": "Object editor",
 			"url": "modules/types/edition/object_editor/"
 		},
 		{
 			"moduleName": "Var Editor",
 			"url": "modules/types/edition/var_editor/"
-		},
-		{
-			"moduleName": "Filter Editor",
-			"url": "modules/types/edition/filter_editor/"
 		}
 	],
 	"name": "Edition",

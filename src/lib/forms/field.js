@@ -90,8 +90,36 @@ define(['require', 'jquery'], function(require, $) {
 
 		getOptions: function( fieldElement ) {
 			return fieldElement.getOptions() || this.options.options;
-		}
+		},
 
+		validate: function( fieldElement, value ) {
+
+			var i = 0, l;
+
+			if( this.options.validation && this.options.validation.rules ) {
+
+				l = this.options.validation.rules.length;
+
+				for( ; i < l ; i ++ ) {
+
+					if( this.options.validation.rules[ i ].pattern ) {
+						
+						if( ( this.options.validation.rules[ i ].orEmpty && ! value ) || new RegExp( this.options.validation.rules[ i ].pattern ).test( value ) ) {
+
+							fieldElement.validation.error = false;
+
+						} else {
+
+							fieldElement.validation.error = true;
+							fieldElement.validation.feedback = this.options.validation.rules[ i ].feedback;
+							break;
+						}
+					}
+				}
+			}
+
+			return;
+		}
 	});
 	
 

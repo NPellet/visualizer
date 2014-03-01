@@ -16,7 +16,8 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 
 			var actionsOut = this.module.actions_out(),
 				i,
-				jpath;
+				jpath,
+                                actionname;
 
 			if( ! actionsOut ) {
 				return;

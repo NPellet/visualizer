@@ -322,7 +322,12 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			for( ; j < l ; j ++) {
 
 				var jpath = jp[ j ].jpath;
-				element[ jp[ j ].name ] = 'Loading';
+				/*if( ! jpath ) {
+					element[ jp[ j ].name ] = '';
+				} else {*/
+					element[ jp[ j ].name ] = 'Loading';
+				//}
+				
 				self.done ++;
 				element[ ";" + jp[ j ].name ] = this.renderElement( element, s, jpath, jp[ j ].name );
 			}
@@ -356,40 +361,43 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			var self = this,
 				box = self.module;
 			
-			var defScreen = Renderer
-				.toScreen(source, box, {}, jpath)
-				.then( function( value ) {
+			var defScreen = Renderer.toScreen(source, box, {}, jpath);
 
-					element._inDom.progress(function( ) {
-                                            
-						element[ l ] = value;
-						self.done --;
-						
+			defScreen.then( function( value ) {
 
-						self.jqGrid('setCell', element.id, l, value);
+				element._inDom.progress(function( ) {
+                        
+					element[ l ] = value;
+					self.done --;
+					
+					self.jqGrid('setCell', element.id, l, value);
 
-						if( defScreen.build ) {
-							defScreen.build();
-						}
-						
-						/* todo In this required ??? */
-						if(self.done == 0) {
-							self.onResize(self.width, self.height);
-						}
-
-					});
-
-				}, function(value) {
-
-					element[l] = value;
-					self.done--;
+					if( defScreen.build ) {
+						//console.log( defScreen );
+						defScreen.build();
+					}
 					
 					/* todo In this required ??? */
 					if(self.done == 0) {
 						self.onResize(self.width, self.height);
 					}
-					
+
 				});
+
+				element[l] = value;
+				self.done--;
+
+			}, function( value ) {
+
+				element[l] = value;
+				self.done--;
+				
+				/* todo In this required ??? */
+				if(self.done == 0) {
+					self.onResize(self.width, self.height);
+				}
+				
+			});
 		},
 
 		getDom: function() {

@@ -262,7 +262,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				} else {
 					shape.unHighlight();
 				}
-			}, , false, this.module.getId());
+			}, false, this.module.getId());
 
 
 			shape.draw();

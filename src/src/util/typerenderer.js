@@ -18,7 +18,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
     
     functions.html = {};
     functions.html.toscreen = function(def, val) {
-        val = Traversing.get(val);
+        val = Traversing.get( val );
         def.resolve( val );
     };
 		
@@ -55,23 +55,17 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	functions.mol2d = {};
 	functions.mol2d.toscreen = function(def, molfile, options, highlights, box) {
 		
-		require(['ChemDoodle'], function() {
-
-			ChemDoodle.ELEMENT.H.jmolColor="#BBBBBB";
-			ChemDoodle.ELEMENT.S.jmolColor="#CCCC30";
-
-			var id = Util.getNextUniqueId();
-			var id2 = Util.getNextUniqueId();
+		var id = Util.getNextUniqueId();
+		var id2 = Util.getNextUniqueId();
+		var div = '<div id="' + id + '" />';
+		// Find the dom in here
+		var can = $( '<canvas />', { id: id2 } ).get( 0 );
+		
+		def.build = function() {
+	
+			$("#" + id ).html( can );
 			
-			var div = '<div id="' + id + '" />';
-
-			// Find the dom in here
-			var can = $( '<canvas />', { id: id2 } ).get( 0 );
-			
-			def.build = function() {
-	//console.trace();
-
-				$("#" + id ).html( can );
+			require(['ChemDoodle'], function() {
 
 				var canvas = new ChemDoodle.ViewerCanvas(id2);
 				var parent = $(can).parent();
@@ -87,7 +81,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				//canvas.loadMolecule(molLoaded);
 
 
- 				var dim = molLoaded.getDimension();
+					var dim = molLoaded.getDimension();
 
 	//			var ratio = Math.min(1, Math.max(parent.width() / dim.x, parent.height() / dim.y));
 				var ratio=1;
@@ -130,15 +124,21 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 					canvas.repaint();
 
 				}, true, box.id || 0);
-			}
+			});
+		}
 
-			def.unbuild = function() {
-				//$(this.canvas).remove();
-			};
+		def.unbuild = function() {
+			//$(this.canvas).remove();
+		};
 
-			def.getCWC = function() {
-				return this.canvas;
-			}
+		def.getCWC = function() {
+			return this.canvas;
+		}
+
+		require(['ChemDoodle'], function() {
+
+			ChemDoodle.ELEMENT.H.jmolColor="#BBBBBB";
+			ChemDoodle.ELEMENT.S.jmolColor="#CCCC30";
 
 			def.id = id;
 			def.canvasdom = can;

@@ -17,7 +17,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 	function makeHandlerButtons() {
 
 		var pos = ['view', 'data'];
-		var pos2 = ['View', 'Data']
+		var pos2 = ['View', 'Data'];
 
 		for(var i = 0; i < pos.length; i++) {
 

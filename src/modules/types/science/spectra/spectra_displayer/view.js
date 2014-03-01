@@ -153,21 +153,22 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			}
 		},
 
-		redraw: function(forceReacalculateAxis) {
+		redraw: function( forceReacalculateAxis ) {
 			
 			var cfg = $.proxy(this.module.getConfiguration, this.module);
+
 			if (forceReacalculateAxis) {
 				this.graph.redraw();
-			} else  if (cfg('fullOut')=="none") {
-				this.graph.redraw(false, true, true);
-			} else if (cfg('fullOut')=="xAxis") {
-				this.graph.redraw(false, false, true);
-			} else if (cfg('fullOut')=="yAxis") {
+			} else  if (cfg('fullOut') == "none") {
+				this.graph.redraw( true, true, true );
+			} else if (cfg('fullOut') == "xAxis") {
+				this.graph.redraw( false, false, true );
+			} else if (cfg('fullOut') == "yAxis") {
 				this.graph.redraw(false, true, false);
 			} else {
 				this.graph.redraw();
 			}
-			this.graph.drawSeries();
+			this.graph.drawSeries( );
 
 		},
 		
@@ -331,24 +332,22 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				this.redraw();
 			},*/
                         
-                        chart: function(moduleValue, varname) {
+            chart: function(moduleValue, varname) {
 
-                                this.series[varname] = this.series[varname] || [];
+            	this.series[varname] = this.series[varname] || [];
 				this.removeSerie( varname );
 
 				if(!moduleValue)
 					return;
                                     
-                                moduleValue = moduleValue.get();
-                               
-                                var data = moduleValue.data;
-                                for (var i = 0; i < data.length; i++) {
-                                
-                                    var aData = data[i];
-                                    var serieName = data.serieLabel;
-                                    
-				
-
+                moduleValue = moduleValue.get();
+               
+                var data = moduleValue.data;
+                for (var i = 0; i < data.length; i++) {
+                
+                    var aData = data[i];
+                    var serieName = data.serieLabel;
+                
 					var valFinal=[];
 					if(aData.y) {
 						for(var j = 0, l = aData.y.length; j < l; j++) {
@@ -595,7 +594,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 		removeSerie: function(serieName) {
 			if(this.series[serieName]) {
 				for(var i = 0; i < this.series[serieName].length; i++) {
-					this.series[serieName][i].kill();
+					this.series[serieName][i].kill( true );
 				}
 			}
 

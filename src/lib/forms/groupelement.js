@@ -112,6 +112,7 @@ define(['jquery'], function($) {
 				self.eachFieldElements( field.getName() , function( fieldElement ) {
 					fieldElement._inDom = true;
 					fieldElement.inDom();
+					fieldElement._validate( fieldElement._value );
 				} );
 			} );
 		},
@@ -132,10 +133,14 @@ define(['jquery'], function($) {
 		getFieldElement: function( fieldName, fieldId ) { // Creates the fieldEl and returns deferred OR returns the already created field element
 			var self = this,
 				el;
-		
+			
+			if( ! this.group.getField( fieldName ) ) {
+				return;
+
+			}
 			this.fieldElements[ fieldName ] = this.fieldElements[ fieldName ] || [];
 
-			if( ! this.fieldElements[ fieldName ][ fieldId ] && this.group.getField( fieldName ) ) {
+			if( ! this.fieldElements[ fieldName ][ fieldId ] ) {
 
 				el = this.group.getField( fieldName ).makeElement( ).done( function( fieldElement ) {
 					fieldElement.group = self.group;
@@ -149,7 +154,7 @@ define(['jquery'], function($) {
 
 				return el;
 			}
-
+			
 			return this.fieldElements[ fieldName ][ fieldId ]; // If no creation is needed, we return the fieldElement defined by fieldName and fieldId
 		},
 

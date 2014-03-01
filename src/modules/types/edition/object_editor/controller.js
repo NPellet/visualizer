@@ -81,6 +81,16 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             type: 'checkbox',
                             title: 'Auto-expand JSON',
                             options: {expand: 'Yes'}
+                        },
+                        storeObject: {
+                            type: 'checkbox',
+                            title: 'Store object in view',
+                            options: {expand: 'Yes'}
+                        },
+                        storedObject: {
+                            type: 'jscode',
+                            title: 'Object stored in view',
+                            default: '{}'
                         }
                     }
                 }
@@ -88,21 +98,18 @@ define(['modules/default/defaultcontroller'], function(Default) {
         };
     };
 
-    controller.prototype.configFunctions = {
-    };
-
     controller.prototype.configAliases = {
         'editable': ['groups', 'group', 0, 'editable', 0],
-        'expanded': ['groups', 'group', 0, 'expanded', 0]
+        'expanded': ['groups', 'group', 0, 'expanded', 0],
+        'storeObject': ['groups', 'group', 0, 'storeObject', 0],
+        'storedObject': ['groups', 'group', 0, 'storedObject', 0]
     };
 
-    controller.prototype.editorChanged = function(json) {
-        var toSet;
-        if(json instanceof Array)
-            toSet = new DataArray(json,true);
-        else
-            toSet = new DataObject(json,true);
-        this.setVarFromEvent( 'onObjectChange', toSet );
+    controller.prototype.editorChanged = function() {
+        if(this.module.view.storeObject[0]) {
+            this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(this.module.view._data);
+        }
+        this.setVarFromEvent( 'onObjectChange', DataObject.check(this.module.view._data, true) );
     };
 
     return controller;

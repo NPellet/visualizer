@@ -226,7 +226,9 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 						break;
 					}
 
-					subEl.linkToParent( self, el );
+					if( subEl.linkToParent ) {
+						subEl.linkToParent( self, el );
+					}
 				}
 
 				if( jpath.length == 0 ) {
@@ -405,7 +407,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 			var self = this,
 				deferred = $.Deferred( );
 
-			if( !this.url || !this.type ) { // No need for fetching. Still returning a deferred, though.
+			if( !this.url ) { // No need for fetching. Still returning a deferred, though.
 				return deferred.resolve( this );
 			}
 
@@ -432,6 +434,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 					deferred.reject( self ); 
 				});
 			});
+			
 			return deferred;
 		}
 	};

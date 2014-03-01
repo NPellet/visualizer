@@ -168,24 +168,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				this.module.data = moduleValue;
 
 				for( ; i < l ; i ++ ) {
-					html += '<tr';
-					
-					if( this.colorjpath ) {
-						html += ' style="background-color: ' + this.colorjpath( moduleValue[ i ] ) + ';"';
-					}
-					html += ' data-row-id="' + i + '"';
-					html += '>';
-					j = 0;
-					for( ; j < k ; j ++ ) {
-						if( ! jpaths[ j ].jpath ) {
-							continue;
-						}
-						
-						html += '<td>';
-						html += this.getValue( moduleValue[ i ].get(), jpaths[ j ].jpath );
-						html += '</td>';
-					}
-					html += '</tr>';
+
+					html += this.buildElement( moduleValue[ i ], i );
 				}
 
 				this.domBody.html( html );
@@ -217,6 +201,36 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			}
 		},
 
+		buildElement: function( source, i ) {
+
+			var 
+				jpaths = this.module.getConfiguration( 'colsjPaths' ),
+				html = '',
+				j,
+				k = jpaths.length;
+
+			html += '<tr';
+			
+			if( this.colorjpath ) {
+				html += ' style="background-color: ' + this.colorjpath( source ) + ';"';
+			}
+			html += ' data-row-id="' + i + '"';
+			html += '>';
+			j = 0;
+			for( ; j < k ; j ++ ) {
+				if( ! jpaths[ j ].jpath ) {
+					continue;
+				}
+				
+				html += '<td>';
+				html += this.getValue( source.get(), jpaths[ j ].jpath );
+				html += '</td>';
+			}
+			html += '</tr>';
+
+			return html;
+		},
+
 		doHighlight: function( i, val ) {
 			this.domBody.find('tr[data-row-id=' + i + ']')[ val ? 'addClass' : 'removeClass']( 'ci-highlight' );
 		},
@@ -230,6 +244,22 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 		},
 
 		onActionReceive:  {
+
+			addRow: function(source) {
+				console.log( source );
+				
+				this.elements = this.elements || [];
+				this.elements.push(source);
+
+				var jpaths = this.module.getConfiguration( 'colsjPaths' );
+				var l = this.elements.length - 1;
+
+				this.module.data = this.module.data || new DataArray();
+				this.module.data.push( source );
+
+				var el = this.buildElement(source, l);
+				this.domBody.after( el );
+			}
 
 		},
 

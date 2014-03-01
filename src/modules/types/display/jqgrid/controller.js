@@ -245,6 +245,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 	controller.prototype.lineClick = function( elements, row ) {
 
+
 		elements[ row ].linkToParent( elements, row );
 
 		this.setVarFromEvent( 'onSelect', elements[ row ], 'row' );

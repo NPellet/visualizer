@@ -49,9 +49,7 @@ define( [ 'jquery' ], function( $ ) {
 			for( fieldName in groupElement.fieldElements ) { // string -> array
 
 				field = groupElement.group.fields[ fieldName ]; // Access to the field
-
-				
-				if( field.options.displayTarget && field.options.displayTarget.indexOf( key ) > -1 ) {
+				if( field.options && field.options.displayTarget && field.options.displayTarget.indexOf( key ) > -1 ) {
 
 					groupElement.condDisplay( fieldName, displayOrHide );
 				}
