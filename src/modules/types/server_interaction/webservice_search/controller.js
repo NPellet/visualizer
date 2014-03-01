@@ -260,8 +260,9 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 		var reg = /\<var:([a-zA-Z0-9]+)\>/;
 		while(val = reg.exec(url)) {
 			variable = API.getRepositoryData().get(val[1]) || [''];
+
 			variable = variable[1];
-			url = url.replace('<var:' + val[1] + '>', encodeURIComponent(variable));
+			url = url.replace('<var:' + val[1] + '>', encodeURIComponent(variable.get()));
 		}
 
 		this.url=url;
