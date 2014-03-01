@@ -1,7 +1,7 @@
 .DS_Store
 .idea/*
 nbproject/*
-
+src/usr
 src/usr/*/dev
 /node_modules
 /build
