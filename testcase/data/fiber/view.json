@@ -1,71 +1,62 @@
 {
 	"modules": [
 		{
-			"title": "Full list",
-			"displayWrapper": true,
+			"title": "Distance matrix",
 			"position": {
 				"left": 0,
-				"top": 0.9985797882080079
+				"right": 1,
+				"top": 0
 			},
 			"size": {
-				"width": 48.96666666269302,
-				"height": 78.96666666269303
+				"width": 66,
+				"height": 56
 			},
 			"configuration": {
 				"sections": {},
 				"groups": {
 					"group": [
 						{
-							"nblines": [
-								20
+							"highcontrast": [
+								[
+									"true"
+								]
 							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"filterRow": [
-								null
-							],
-							"displaySearch": []
+							"color": [
+								[
+									255,
+									245,
+									245,
+									1
+								],
+								[
+									255,
+									31,
+									31,
+									1
+								],
+								[
+									17,
+									255,
+									10,
+									1
+								]
+							]
 						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Ref",
-								"jpath": "element.catalogID",
-								"number": [],
-								"editable": "none"
-							},
-							{
-								"name": "Name",
-								"jpath": "element.iupac.0.value",
-								"number": [],
-								"editable": "none"
-							},
-							{
-								"name": "bp",
-								"jpath": "element.bp.0.low",
-								"number": [],
-								"editable": "none"
-							},
-							{
-								"name": "mp",
-								"jpath": "element.mp.0.low",
-								"number": [],
-								"editable": "none"
-							}
-						]
 					]
 				}
 			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"displayWrapper": true,
 			"id": 1,
 			"vars_in": [
 				{
-					"rel": "list",
-					"name": "result"
+					"rel": "matrix",
+					"name": "distanceMatrix"
 				}
 			],
 			"actions_in": [
@@ -73,827 +64,396 @@
 			],
 			"vars_out": [
 				{
-					"event": "onHover",
+					"event": "onPixelHover",
 					"rel": "row",
-					"jpath": "element.mol.0.value",
-					"name": "molfile"
+					"jpath": "element.jcamp",
+					"name": "row"
 				},
 				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element.safety",
-					"name": "safeties"
+					"event": "onPixelHover",
+					"rel": "col",
+					"jpath": "element.jcamp",
+					"name": "col"
+				},
+				{
+					"event": "onPixelHover",
+					"rel": "intersect",
+					"jpath": "element",
+					"name": "similarity"
 				}
 			],
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
+			"url": "./modules/types/chart/advanced/canvas_matrix/"
 		},
 		{
-			"title": "Structure",
-			"displayWrapper": true,
+			"title": "Row spetrum",
 			"position": {
-				"left": 110.99999780654908,
-				"top": 13.000000381469727
+				"left": 68,
+				"right": 1,
+				"top": 0
 			},
 			"size": {
-				"width": 30.966666662693022,
-				"height": 25.966666662693022
+				"width": 61,
+				"height": 23
 			},
 			"configuration": {
 				"sections": {},
 				"groups": {
 					"group": [
 						{
-							"prefs": [
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
 								[
-									"oldlook",
-									"depict"
+									"y",
+									"x"
 								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"none"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
 							]
 						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
 					]
 				}
 			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"displayWrapper": true,
 			"id": 2,
 			"vars_in": [
 				{
-					"rel": "mol",
-					"name": "molfile"
+					"rel": "jcamp",
+					"name": "row"
+				},
+				{
+					"rel": "fromTo",
+					"name": "fromTo"
 				}
 			],
 			"actions_in": [
-				{}
+				{
+					"rel": "fromto",
+					"name": "fromTo"
+				}
 			],
 			"vars_out": [
-				{}
+				{
+					"event": "onZoomChange",
+					"rel": "fromTo",
+					"name": "fromTo"
+				}
 			],
 			"actions_out": [
-				{}
+				{
+					"event": "onZoomChange",
+					"rel": "fromto",
+					"jpath": "_2",
+					"name": "fromTo"
+				}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/science/chemistry/jsme/"
+			"url": "./modules/types/science/spectra/spectra_displayer/"
 		},
 		{
-			"title": "Safety",
-			"displayWrapper": true,
+			"title": "Column spectrum",
 			"position": {
-				"left": 94.99999780654908,
-				"top": 39.99999885559082
+				"left": 68,
+				"right": 1,
+				"top": 30
 			},
 			"size": {
-				"width": 46.96666666269302,
-				"height": 12.966666662693024
+				"width": 60,
+				"height": 26
 			},
 			"configuration": {
 				"sections": {},
 				"groups": {
 					"group": [
 						{
-							"nblines": [
-								20
+							"graphurl": [
+								""
 							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"displaySearch": [
+							"flip": [
 								[]
 							],
-							"filterRow": [
-								null
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"none"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"none"
 							]
 						}
 					],
-					"cols": [
+					"plotinfos": [
 						[
 							{
-								"name": "Code",
-								"jpath": "element.value",
-								"number": [],
-								"editable": "none"
-							},
-							{
-								"name": "Description",
-								"jpath": "element.description",
-								"number": [],
-								"editable": "none"
+								"variable": "",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
 							}
 						]
 					]
 				}
 			},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"displayWrapper": true,
 			"id": 3,
 			"vars_in": [
 				{
-					"rel": "list",
-					"name": "safeties"
+					"rel": "fromTo",
+					"name": "fromTo"
+				},
+				{
+					"rel": "jcamp",
+					"name": "col"
 				}
 			],
 			"actions_in": [
-				{}
+				{
+					"rel": "fromto",
+					"name": "fromTo"
+				}
 			],
 			"vars_out": [
-				{}
+				{
+					"event": "onZoomChange",
+					"rel": "fromTo",
+					"name": "fromTo"
+				}
 			],
 			"actions_out": [
-				{}
+				{
+					"event": "onZoomChange",
+					"rel": "fromto",
+					"jpath": "_2",
+					"name": "fromTo"
+				}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
+			"url": "./modules/types/science/spectra/spectra_displayer/"
 		},
 		{
-			"title": "Filter",
-			"displayWrapper": true,
+			"title": "Untitled module",
+			"displayWrapper": false,
 			"position": {
-				"left": 49.999997806549075,
-				"top": 1
+				"left": 130,
+				"top": 0
 			},
 			"size": {
-				"width": 43.96666666269302,
-				"height": 29.966666662693022
+				"width": 34,
+				"height": 88
 			},
 			"configuration": {
-				"sections": {
-					"searchFields": [
-						{
-							"sections": {},
-							"groups": {
-								"general": [
-									{
-										"name": [
-											"Catalog starts with"
-										],
-										"label": [
-											"Catalog starts with"
-										],
-										"defaultVal": [
-											""
-										],
-										"type": [
-											"text"
-										],
-										"searchOnField": [
-											"element.catalogID"
-										],
-										"operator": [
-											"starts"
-										]
-									}
-								],
-								"text": [
-									{
-										"case_sensitive": [
-											[]
-										]
-									}
-								],
-								"slider": [
-									{
-										"start": [
-											null
-										],
-										"end": [
-											null
-										],
-										"step": [
-											null
-										],
-										"range": []
-									}
-								],
-								"range": [
-									{
-										"start": [
-											null
-										],
-										"end": [
-											null
-										],
-										"step": [
-											null
-										],
-										"val1": [
-											null
-										],
-										"val2": [
-											null
-										]
-									}
-								],
-								"options": [
-									[
-										{}
-									]
-								]
-							}
-						},
-						{
-							"sections": {},
-							"groups": {
-								"general": [
-									{
-										"name": [
-											"Iupac name contains"
-										],
-										"label": [
-											"Iupac name contains"
-										],
-										"defaultVal": [
-											""
-										],
-										"type": [
-											"text"
-										],
-										"searchOnField": [
-											"element.iupac.0.value",
-											"element.iupac.1.value"
-										],
-										"operator": [
-											"contains"
-										]
-									}
-								],
-								"text": [
-									{
-										"case_sensitive": [
-											[]
-										]
-									}
-								],
-								"slider": [
-									{
-										"start": [
-											null
-										],
-										"end": [
-											null
-										],
-										"step": [
-											null
-										],
-										"range": []
-									}
-								],
-								"range": [
-									{
-										"start": [
-											null
-										],
-										"end": [
-											null
-										],
-										"step": [
-											null
-										],
-										"val1": [
-											null
-										],
-										"val2": [
-											null
-										]
-									}
-								],
-								"options": [
-									[
-										{}
-									]
-								]
-							}
-						},
-						{
-							"sections": {},
-							"groups": {
-								"general": [
-									{
-										"name": [
-											"mp between"
-										],
-										"label": [
-											"mp between"
-										],
-										"defaultVal": [
-											"[10,90|"
-										],
-										"type": [
-											"slider_range"
-										],
-										"searchOnField": [
-											"element.mp.0.low"
-										],
-										"operator": [
-											"btw"
-										]
-									}
-								],
-								"text": [
-									{
-										"case_sensitive": [
-											[]
-										]
-									}
-								],
-								"slider": [
-									{
-										"start": [
-											0
-										],
-										"end": [
-											200
-										],
-										"step": [
-											10
-										],
-										"range": []
-									}
-								],
-								"range": [
-									{
-										"start": [
-											0
-										],
-										"end": [
-											200
-										],
-										"step": [
-											10
-										],
-										"val1": [
-											20
-										],
-										"val2": [
-											100
-										]
-									}
-								],
-								"options": [
-									[
-										{}
-									]
-								]
-							}
-						}
-					]
-				},
-				"groups": {}
+				"frontcolor": "",
+				"font": "arial",
+				"fontsize": "",
+				"align": "left",
+				"valign": "top",
+				"defaultvalue": "Fiber analysis<br />\nThis example display the result of a similarity analysis of fibers done using infrared spectroscopy.<br />\n<br />\nThe similarity matrix shows as expected a red line on the diagonal. A IR spectrum is obviously similar to itself.<br />\n<br />\nEach IR spectrum is associated with a keyowrd describing the category to which it belongs. A ROC curve analysis shows a nearly perfect result. The perfect model having a AROC (Area under the ROC curve) of 1.<br />\n<br />\nHistogram for inter and intra similarity shows also a clear separation.<br />\n<br />\n",
+				"sprintf": ""
 			},
+			"bgColor": "#feffa8",
+			"dataSend": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
 			"id": 4,
 			"vars_in": [
 				{
-					"rel": "array",
-					"name": "result"
+					"rel": "",
+					"name": ""
 				}
 			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{
-					"event": "onSearchDone",
-					"rel": "filteredArray",
-					"jpath": "_1",
-					"name": "filtered"
-				}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/array_search/configured_search/"
+			"actions_in": {},
+			"url": "./modules/types/display/single_value/"
 		},
 		{
-			"title": "Filtered list",
-			"displayWrapper": true,
+			"title": "Untitled module",
+			"displayWrapper": false,
 			"position": {
-				"left": 49.999997806549075,
-				"top": 31.99999885559082
+				"left": 78,
+				"top": 23
 			},
 			"size": {
-				"width": 43.96666666269302,
-				"height": 47.96666666269302
+				"width": 45,
+				"height": 8
 			},
 			"configuration": {
 				"sections": {},
 				"groups": {
 					"group": [
 						{
-							"nblines": [
-								20
-							],
-							"toggle": [
+							"defaultvalue": [
 								null
 							],
-							"colorjpath": [
-								null
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
 							],
-							"filterRow": [
-								null
+							"font": [
+								"arial black"
 							],
-							"displaySearch": []
+							"fontsize": [
+								"14pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"sprintf": [
+								"Similarity %.2f"
+							]
 						}
-					],
-					"cols": [
-						[
-							{
-								"name": "catalogID",
-								"jpath": "element.catalogID",
-								"number": [],
-								"editable": "none"
-							},
-							{
-								"name": "iupac",
-								"jpath": "element.iupac.0.value",
-								"number": [],
-								"editable": "none"
-							}
-						]
 					]
 				}
 			},
 			"id": 5,
 			"vars_in": [
 				{
-					"rel": "list",
-					"name": "filtered"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element.iupac",
-					"name": "iupacs"
-				},
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element.bp.0.low",
-					"name": "bp"
-				},
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element.safety",
-					"name": "safeties"
-				},
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element.risk",
-					"name": "risks"
-				},
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element.hazard",
-					"name": "hazards"
-				},
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element.mp.0.low",
-					"name": "mp"
-				},
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element.mol.0.value",
-					"name": "molfile"
-				},
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element.mf.0.value",
-					"name": "mf"
-				}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
-		},
-		{
-			"title": "Risk",
-			"displayWrapper": true,
-			"position": {
-				"left": 94.99999780654908,
-				"top": 53.998579788208005
-			},
-			"size": {
-				"width": 46.96666666269302,
-				"height": 12.966666662693024
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"nblines": [
-								20
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"displaySearch": [
-								[]
-							],
-							"filterRow": [
-								null
-							]
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Value",
-								"jpath": "element.value",
-								"number": [],
-								"editable": "none"
-							},
-							{
-								"name": "Description",
-								"jpath": "element.description",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"id": 6,
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "risks"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
-		},
-		{
-			"title": "Hazard",
-			"displayWrapper": true,
-			"position": {
-				"left": 94.99999780654908,
-				"top": 67.999995803833
-			},
-			"size": {
-				"width": 46.96666666269302,
-				"height": 11.966666662693024
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"nblines": [
-								20
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"displaySearch": [
-								[]
-							],
-							"filterRow": [
-								null
-							]
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Value",
-								"jpath": "element.value",
-								"number": [],
-								"editable": "none"
-							},
-							{
-								"name": "Description",
-								"jpath": "element.description",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"id": 7,
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "hazards"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
-		},
-		{
-			"title": "Safety",
-			"displayWrapper": true,
-			"position": {
-				"left": 94.99999780654908,
-				"top": 0.9985797882080079
-			},
-			"size": {
-				"width": 46.96666666269302,
-				"height": 10.966666662693024
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"nblines": [
-								20
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"displaySearch": [
-								[]
-							],
-							"filterRow": [
-								null
-							]
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Name",
-								"jpath": "element.value",
-								"number": [],
-								"editable": "none"
-							},
-							{
-								"name": "Language",
-								"jpath": "element.language",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"id": 8,
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "iupacs"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
-		},
-		{
-			"title": "bp",
-			"displayWrapper": true,
-			"position": {
-				"left": 94.99999780654908,
-				"top": 12.998579788208009
-			},
-			"size": {
-				"width": 14.966666662693024,
-				"height": 7.966666662693024
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"defaultvalue1": [
-								0.4
-							],
-							"defaultvalue": [
-								null
-							],
-							"fontcolor": [
-								[
-									0,
-									0,
-									0,
-									1
-								]
-							],
-							"font": [
-								"arial"
-							],
-							"fontsize": [
-								"14pt"
-							],
-							"align": [
-								"center"
-							],
-							"valign": [
-								"middle"
-							],
-							"sprintf": [
-								""
-							],
-							"preformatted": [
-								[]
-							]
-						}
-					],
-					"group2": [
-						{
-							"defaultvalue1": [
-								0.4
-							]
-						}
-					]
-				}
-			},
-			"id": 9,
-			"vars_in": [
-				{
 					"rel": "value",
-					"name": "bp"
+					"name": "similarity"
 				}
 			],
 			"actions_in": [
@@ -912,104 +472,44 @@
 				0
 			],
 			"url": "./modules/types/display/single_value/"
-		},
-		{
-			"title": "mp",
-			"displayWrapper": true,
-			"position": {
-				"left": 94.99999780654908,
-				"top": 21.99999885559082
-			},
-			"size": {
-				"width": 14.966666662693024,
-				"height": 7.966666662693024
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"defaultvalue1": [
-								0.4
-							],
-							"defaultvalue": [
-								null
-							],
-							"fontcolor": [
-								[
-									0,
-									0,
-									0,
-									1
-								]
-							],
-							"font": [
-								"arial"
-							],
-							"fontsize": [
-								"14pt"
-							],
-							"align": [
-								"center"
-							],
-							"valign": [
-								"middle"
-							],
-							"sprintf": [
-								""
-							],
-							"preformatted": [
-								[]
-							]
-						}
-					],
-					"group2": [
-						{
-							"defaultvalue1": [
-								0.4
-							]
-						}
-					]
-				}
-			},
-			"id": 10,
-			"vars_in": [
-				{
-					"rel": "value",
-					"name": "mp"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/single_value/"
-		}
-	],
-	"variables": [
-		{
-			"varname": "result",
-			"jpath": "element.chemicals",
-			"url": ""
 		}
 	],
 	"configuration": {
-		"title": "No title"
+		"showMenuBarOnStart": false,
+		"showModuleHeaderOnHover": false,
+		"title": "IR spectra similarity",
+		"moduleBackground": "#ffffff",
+		"variableFilters": {
+			"rocARUC": [
+				"round3dec"
+			]
+		}
 	},
-	"_local": false,
-	"_saved": 1387056449879,
-	"_time": 1387056449879,
-	"_name": "Master",
+	"variables": [
+		{
+			"varname": "histogram",
+			"jpath": "element.histogram"
+		},
+		{
+			"varname": "rocChart",
+			"jpath": "element.rocChart"
+		},
+		{
+			"varname": "rocARUC",
+			"jpath": "element.roc.ARUC"
+		},
+		{
+			"varname": "stats",
+			"jpath": "element.stats"
+		},
+		{
+			"varname": "distanceMatrix",
+			"jpath": "element.distanceMatrix"
+		},
+		{
+			"varname": "roc",
+			"jpath": "element.roc"
+		}
+	],
 	"version": "2.2.3"
 }
