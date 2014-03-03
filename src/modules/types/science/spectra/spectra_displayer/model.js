@@ -14,6 +14,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 
 			switch(rel) {
 				case 'markerXY':
+                                    data = [0,0];
 					break;
 				case 'markerInfos':
 					data = this.module.controller.infos;

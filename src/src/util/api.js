@@ -39,6 +39,13 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 	}
 
 	function setHighlight( element, value ) {
+            
+            if(!element)
+                return;
+            
+            if(element instanceof Array) {
+                element = {_highlight:element};
+            }
 
 		if( typeof element._highlight == "undefined" ) {
 			return;	

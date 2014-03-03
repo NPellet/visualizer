@@ -3116,8 +3116,8 @@ define(['jquery', 'src/util/util'], function($, Util) {
 
 		onMouseOverMarker: function(e, index) {
 			var toggledOn = this.toggleMarker(index, true, true);
-			if(this.options.onMouseOverMarker && this.infos) {
-				this.options.onMouseOverMarker(index, this.infos[index[0]] || false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
+			if(this.options.onMouseOverMarker) {
+				this.options.onMouseOverMarker(index, this.infos ? (this.infos[index[0]] || false) : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
 			}
 		},
 
@@ -3125,7 +3125,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 		onMouseOutMarker: function(e, index) {
 			this.markersOffHover();
 			if(this.options.onMouseOutMarker && this.infos) {
-				this.options.onMouseOutMarker(index, this.infos[index[0]] || false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
+				this.options.onMouseOutMarker(index, this.infos ? (this.infos[index[0]] || false) : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
 			}
 		},
 
@@ -3187,13 +3187,13 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			var toggledOn = this.toggleMarker(index);
 
 			if(toggledOn && this.options.onSelectMarker)
-				this.options.onSelectMarker(index, this.infos[index[0]] || false);
+				this.options.onSelectMarker(index, this.infos ? (this.infos[index[0]] || false) : false);
 
 			if(!toggledOn && this.options.onUnselectMarker)
-				this.options.onUnselectMarker(index, this.infos[index[0]] || false);
+				this.options.onUnselectMarker(index, this.infos ? (this.infos[index[0]] || false) : false);
 
 			if(this.options.onToggleMarker)
-				this.options.onToggleMarker(index, this.infos[index[0]] || false, toggledOn);
+				this.options.onToggleMarker(index, this.infos ? (this.infos[index[0]] || false) : false, toggledOn);
 		},
 
 
