@@ -59,6 +59,32 @@ define(['jquery', 'src/util/versioning'], function($, Versioning) {
                                     view.configuration.title = view.title;
                                     delete view.title;
                                 }
+                if (view.modules) {
+					for (var i=0; i<view.modules.length; i++) {
+						var module=view.modules[i];
+						if(module.url==="./modules/types/science/chemistry/jsmol_script/"){
+                            module.url = "modules/types/client_interaction/code_editor/";
+                            if(module.configuration.groups.group[0].iseditable[0][0]==="true")
+                                module.configuration.groups.group[0].iseditable[0][0]="editable";
+                            delete module.configuration.groups.group[0].padding;
+                            module.configuration.groups.group[0].mode = ["text"];
+                            for(var i = 0; i < module.vars_out.length; i++) {
+                                var varout = module.vars_out[i];
+                                if(varout.event) {
+                                    varout.event = "onEditorChange";
+                                    varout.rel = "value";
+                                }
+                            }
+                            for(var i = 0; i < module.actions_out.length; i++) {
+                                var actout = module.actions_out[i];
+                                if(actout.event) {
+                                    actout.event = "onButtonClick";
+                                    actout.rel = "value";
+                                }
+                            }
+                        }
+					}
+				}
 		}
 
 		view.version = Versioning.version;

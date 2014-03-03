@@ -26,14 +26,15 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
         blank: {},
         inDom: function() {
             var self = this;
+            var initVal = this.module.getConfiguration('script') || "";
+            this._code.value = initVal;
             
             if(this.module.getConfiguration('iseditable')[0]) {
                 this.editable=true;
                 $('<div id="' + this._id + '"></div>').css("height","100%").css("width","100%").appendTo(this.editorCell);
                 this.editor = ace.edit(this._id);
                 var mode = "./mode/" + this.module.getConfiguration('mode');
-                var initVal = this.module.getConfiguration('script') || "";
-                this._code.value = initVal;
+                
                 this.editor.getSession().setMode(mode);
                 this.editor.setValue(initVal, -1);
                 this.editor.getSession().on('change', function() {
