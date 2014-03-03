@@ -417,7 +417,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 
 				urlData.get( self.url , false , self.timeout ).then( function(data) {
 
-					data = DataObject.check( JSON.parse(data), true );	// Transform the input into a DataObject
+					data = DataObject.check( data, true );	// Transform the input into a DataObject
 					
 					Object.defineProperty( self, 'value', {	// Sets the value to the object
 						enumerable: self._keep || false, // If this._keep is true, then we will save the fetched data
