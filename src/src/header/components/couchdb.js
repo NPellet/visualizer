@@ -7,7 +7,8 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             this.ok = this.loggedIn = false;
             this.id = Util.getNextUniqueId();
             if(this.options.url) $.couch.urlPrefix = this.options.url;
-            this.database = this.options.database || "visualizer";
+            var db = this.options.database || "visualizer";
+            this.database = $.couch.db(db);
             
             this.showError = $.proxy(showError, this);
             this.getFormContent = $.proxy(getFormContent, this);
@@ -78,7 +79,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             };
             if(rev)
                 options.rev = rev;
-            $.couch.db(this.database).openDoc(node.data.id,options);
+            this.database.openDoc(node.data.id,options);
         },
         save: function(type, name) {
             
@@ -102,8 +103,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 folderNode = last.node.parent;
             }
             
+            var keys = Object.keys(content);
+            for(var i = 0, ii = keys.length; i < ii; i++) {
+                if(keys[i].charAt(0)==="_")
+                    delete content[keys[i]];
+            }
+            
             content._id = id;
-            delete content._rev;
             
             var update = false;
             if(id===last.name) {
@@ -111,7 +117,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 content._rev = last.node.data.lastRev;
             }
             
-            $.couch.db(this.database).saveDoc(content,{
+            this.database.saveDoc(content,{
                 success: function(data) {
                     if(update) {
                         last.node.data.lastRev = data.rev;
@@ -280,16 +286,18 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             var id = result.node.data.id;
             var def = $.Deferred();
             result.result = def.promise();
-            $.couch.db(this.database).openDoc(id,{
+            this.database.openDoc(id,{
                 revs_info: true,
                 success: function(data) {
                     var info = data._revs_info,
                         l = info.length,
-                        revs = new Array(l);
+                        revs = [];
                     for(var i = 0; i < l; i++) {
                         var rev = info[i];
-                        var el = {title:"rev "+(l-i), id:data._id, rev:true, key:rev.rev};
-                        revs[i]=el;
+                        if(rev.status==="available") {
+                            var el = {title:"rev "+(l-i), id:data._id, rev:true, key:rev.rev};
+                            revs.push(el);
+                        }
                     }
                     def.resolve(revs);
                 }
@@ -350,7 +358,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 }
             };
             
-            $.couch.db(this.database).allDocs({
+            this.database.allDocs({
                 startkey: this.username+':',
                 endkey: this.username+':~',
                 success: function(data) {
@@ -387,7 +395,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     _id: node.data.id,
                     _rev: node.data.lastRev
                 };
-                $.couch.db(this.database).removeDoc(doc, {
+                this.database.removeDoc(doc, {
                     success: function() {
                         node.remove();
                     },
