@@ -170,7 +170,7 @@ define([	'jquery',
 			if( ! view.variables[i].jpath && view.variables[i].url ) {
 
 				view.variables[i].fetch( ).done( function( v ) {
-
+                                    
 					var varname = v.varname;
 					v.type = Traversing.getType( v.value );
 					
@@ -178,7 +178,6 @@ define([	'jquery',
 					
 
 					API.setVariable( varname , data, [ varname ] );
-					console.log( view.variables );
 				} );
 
 			} else if( ! view.variables[ i ].jpath ) {
@@ -533,7 +532,7 @@ define([	'jquery',
 		//	console.log( ActionManager.getFilesForm() );
 
 			form.onStructureLoaded( ).done(function() {
-				console.log( { 
+				/*console.log( { 
 					sections: {
 						cfg: [ {
 							groups: {
@@ -557,7 +556,7 @@ define([	'jquery',
 
 //						script_cron: view.script_crons
 					}
-				} );
+				} );*/
 				form.fill({ 
 					sections: {
 						cfg: [ {
