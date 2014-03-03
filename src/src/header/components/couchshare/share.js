@@ -1,9 +1,9 @@
 define(["lib/webtoolkit/base64", "src/util/versioning", "lib/couchdb/jquery.couch"],function(Base64, Versioning){
     function share(options) {
         
-        var urlPrefix = options.couchUrl || window.location.origin;
+        var urlPrefix = (options.couchUrl || window.location.origin).replace(/\/$/,"");
         var database = options.database || "x";
-        var tinyPrefix = (options.tinyUrl || window.location.origin+"/x/_design/x/_show/x")+"/";
+        var tinyPrefix = (options.tinyUrl || window.location.origin+"/x/_design/x/_show/x").replace(/\/$/,"")+"/";
         $.couch.urlPrefix = urlPrefix;
         var db = $.couch.db(database);
         

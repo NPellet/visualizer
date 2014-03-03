@@ -6,7 +6,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         initImpl: function() {
             this.ok = this.loggedIn = false;
             this.id = Util.getNextUniqueId();
-            if(this.options.url) $.couch.urlPrefix = this.options.url;
+            if(this.options.url) $.couch.urlPrefix = this.options.url.replace(/\/$/,"");
             var db = this.options.database || "visualizer";
             this.database = $.couch.db(db);
             
