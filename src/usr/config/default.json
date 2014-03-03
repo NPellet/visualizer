@@ -25,15 +25,11 @@
             "name": "Color histogram"
         }
     ],
-    "modules": ["./modules/types/folder.json", "./usr/modules/folder.json"],
+    "modules": ["./modules/types/folder.json"],
     "header": {
         "height": "30px",
         "elements":
                 [
-                    {
-                        "type": "autosavelocalview",
-                        "label": "Autosave view"
-                    },
                     {
                         "type": "copydata",
                         "label": "Copy data"
@@ -61,6 +57,10 @@
                     {
                         "type": "versioning",
                         "label": "Versioning"
+                    },
+                    {
+                        "type":"feedback",
+                        "label":"Feedback"
                     }
                 ]
     }
