@@ -81,7 +81,7 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 				structure: FormCreator.makeConfig({ jpaths: jpaths, name: 'Fill with'}),
 				trigger: {
 					options: { title: "Trigger" },
-					groups: { trigger: { options: { type: 'list' }, fields: { triggerType: { type: "Combo", title: "Trigger type", options: [ {key: 'btn', title: 'Button'}, { key: 'change', title: 'On change'} ] }}} }
+					groups: { trigger: { options: { type: 'list' }, fields: { triggerType: { type: "combo", title: "Trigger type", options: [ {key: 'btn', title: 'Button'}, { key: 'change', title: 'On change'} ] }}} }
 				},
 		
 				template: {
