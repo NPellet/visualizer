@@ -17,7 +17,7 @@
   
   
   <script type="text/javascript" charset="utf-8">
-  if(window.safari) {
+  if(!window.indexedDB) {
     var se = document.createElement('script');
     se.type = "text/javascript";
     se.src = 'lib/IndexedDBShim/IndexedDBShim.js';
