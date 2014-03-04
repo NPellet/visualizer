@@ -102,7 +102,11 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 
 		makeDomTpl: function( ) {
 			this.doneDom = true;
-			return this._makeDomTpl( );
+			var returned = this._makeDomTpl( );
+
+			this.dom.find('.buttons').html( this.buttonsDom );
+
+			return returned;
 		},
 
 		_makeDomTpl: SectionElement.prototype._makeDomTpl,

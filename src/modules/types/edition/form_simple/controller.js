@@ -47,6 +47,12 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 		onChange: {
 			label: 'Form has changed',
 			refVariable: [ 'formValue' ]
+		},
+
+		formTriggered: {
+			label: 'Form is triggered',
+			refAction: [ 'formValue' ],
+			refVariable: [ 'formValue' ]
 		}
 	};
 	
@@ -73,6 +79,10 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 			sections: {
 
 				structure: FormCreator.makeConfig({ jpaths: jpaths, name: 'Fill with'}),
+				trigger: {
+					options: { title: "Trigger" },
+					groups: { trigger: { options: { type: 'list' }, fields: { triggerType: { type: "Combo", title: "Trigger type", options: [ {key: 'btn', title: 'Button'}, { key: 'change', title: 'On change'} ] }}} }
+				},
 		
 				template: {
 
@@ -104,17 +114,22 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 			}
 		}
 	},
-	
 		
 	controller.prototype.configAliases = {
 		structure: [ 'sections', 'structure' ],
 		tpl_file: [ 'sections', 'template', 0, 'groups', 'template', 0, 'file', 0 ],
-		tpl_html: [ 'sections', 'template', 0, 'groups', 'template', 0, 'html', 0 ]
+		tpl_html: [ 'sections', 'template', 0, 'groups', 'template', 0, 'html', 0 ],
+		trigger: [ 'sections', 'trigger', 0, 'groups', 'trigger', 0, 'triggerType', 0 ]
 	};
 
 
 	controller.prototype.valueChanged = function( newValue ) {
 		this.setVarFromEvent('onChange', newValue, 'formValue');
+	};
+
+	controller.prototype.formTriggered = function( value ) {
+		console.log( value );
+		this.sendAction('formValue', value, 'formTriggered' );
 	};
 	
 	return controller;

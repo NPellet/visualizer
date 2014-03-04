@@ -73,7 +73,7 @@ define([ 'lib/forms/form'], function( Form ) {
 
 				options: {
 					multiple: true,
-					title: "Filtering field"
+					title: "Form field"
 				},
 
 				groups: {
