@@ -14,7 +14,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			// When we change configuration the method init is called again. Also the case when we change completely of view
 			if (! this.dom) {
 				this._id = Util.getNextUniqueId();
-				this.dom = $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
+				this.dom = $('<p id="choices" style="float:right; width:15%;"><br></p><p id="stack" style="float:right; width:0;position: relative;top: 50px"><br></p><select id="prefs" style="float:right; width:15%;position: relative;top: 150px;left: 70px;"></select><div style="height: 100%;width: 80%" id="' + this._id + '"></div>');
 				this.module.getDomContent().html(this.dom);
 			}
 
@@ -57,42 +57,49 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			// the size is now really defined (we are after inDom)
 			// and we received the data ...
 
-			this.loadedData.done(function() {
-				self._plot=$.plot("#"+self._id, self._data, self._options);
+			this.loadedData.done(this.plot(self._id, self._data, self._options))
+				// insert checkboxes 
+		var i = 0;
+		$.each(self._data, function(key, val) {
+			val.color = i;
+			++i;
+		});
 
-				$("#"+self._id).bind("plotclick", function (event, pos, item) {
-				    if (item) {
-				      	console.log("Y:"+item.datapoint[1]);
-			
-
-				    }
-				});
-				$("#"+self._id).bind("plothover", function (event, pos, item) {
-				    if (item) {
-				    	self.module.controller.elementHover(self._data[item.seriesIndex]);
-				    } else {
-				    	self.module.controller.elementOut();
-				    }
-				});
-
-				for (var i=0; i<self._data.length; i++) {
-					var currentDataPoint=i;
-					API.listenHighlight( self._data[i], function( onOff, key ) {
-
-						// we need to highlight the correct shape ...
-						console.log(onOff, key, currentDataPoint);
-						if (onOff) {
-							//console.log(i);
-							self._plot.highlight(0, currentDataPoint);
-						} else {
-							self._plot.unhighlight(0, currentDataPoint);
-						}
-					});
-				}
-
-
-
-			})
+		// insert checkboxes 
+		var choiceContainer = $("#choices");
+		$.each(self._data, function(key, val) {
+			choiceContainer.append("<br/><input type='checkbox' name='" + key +
+				"' checked='checked' id='id" + key + "'></input>" +
+				"<label for='id" + key + "'>"
+				+ val.label + "</label>");
+		});
+		
+		choiceContainer.find("input").bind("click",function (event, pos, item){
+		self.plotAccordingToChoices(choiceContainer);
+		});
+		
+		var stack = $("#stack");
+		var prf = $("#prefs");
+		var stacked;
+		prf.append("<option>Bars</option>");
+		prf.append("<option selected>Lines</option>");
+		prf.append("<option>Lines With Steps</option>");
+		stack.append("<br/><input type='checkbox' id='withstack'></input><label for='withstack'>Stacked/Not Sacked</label>");
+		stack.find("input").bind("click",function (event, pos, item){
+		if (stack.find("#withstack")[0].checked) {
+		stacked = true;
+		}else {
+		stacked = false;
+		}
+		self.updateOptions(prf[0].selectedOptions[0].text,stacked);
+		self.plot(self._id, self._data, self._options);
+		});		
+		prf.bind("click",function (event, pos, item){
+		
+			self.updateOptions(prf[0].selectedOptions[0].text,stacked);
+		    self.plot(self._id, self._data, self._options);
+		});
+		
 		},
 
 		/* When a value change this method is called. It will be called for all 
@@ -104,9 +111,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				if (this.DEBUG) console.log("stack Chart: update from chart object");
 
 				if (! moduleValue || ! moduleValue.value) return;
-				console.log(moduleValue.get().data.length);
 				
-				this.updateOptions(moduleValue.get().pref.type,moduleValue.get().pref.stack);
+				this.updateOptions("lines",true);
 				this._convertChartToData(moduleValue.get().data);
 				this.loadedData.resolve();
 				
@@ -125,8 +131,6 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			if ( ! value instanceof Array || ! value || ! value.x instanceof Array) return;
 			
 			
-			//we suppose there is the same number of x as y axis
-			//if there are any additional y numbers without the corresponding x, they will be ignored for the moment!
 			
 			for (var j = 0; j < value.length; j++) 
 			{
@@ -136,9 +140,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var info=value[j].info;
 			var label;
 			s = [];
-				for (var i = 0; i < x.length; i++) 
+				for (var i = 0; i < y.length; i++) 
 				{
-				 s.push([x[i], y[i]]);
+				if(! x[i]) s.push([i, y[i]]);
+				else s.push([x[i], y[i]]);
+				
 			 				
 				}
 				
@@ -170,26 +176,20 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			}
 		},
 
-		updateOptions: function(preference, stack) {
-			var points,bars,lines,stack;
-			stack = stack;
-			switch (stack)
-				{
-				case 'true': stack = true;
-							break;
-				  case 'false': stack = false;
-							break;
-				  default:  stack = true
-				}
+		updateOptions: function(preference, stacked) {
+			var steps,bars,lines = false;
+			
 			switch (preference)
 				{
-				  case 'points': points = true;
+				  case 'Lines With Steps': steps = true;
+							lines = true;
 							break;
-				  case 'bars': bars = true;
+				  case 'Bars': bars = true;
 							break;
-				  case 'lines': lines = true;
+				  case 'Lines': lines = true;
 							break;
-				  default:  bars = true
+				  default:  lines = true;
+				  stacked = false
 				}
 			this._options = {
 
@@ -206,10 +206,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					hoverable:true
 				},
 				series: {
-				stack: stack,
+				stack: stacked,
 					
-					lines: { show: lines, fill: true},
-					points: { show: points, fill: true },
+					lines: { show: lines, fill: true, steps: steps},
 					bars: { show: bars, barWidth: 0.5 }
 
 				}
@@ -221,6 +220,57 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			this._options.test=cfg('nodeSize') || 1;
 
+		},
+		plot: function(id,data,options) {
+		var self=this;
+				self._plot=$.plot("#"+id, data, options);
+
+				$("#"+id).bind("plotclick", function (event, pos, item) {
+				    if (item) {
+				      	console.log("Y:"+item.datapoint[1]);
+			
+
+				    }
+				});
+				$("#"+id).bind("plothover", function (event, pos, item) {
+				    if (item) {
+				    	self.module.controller.elementHover(self._data[item.seriesIndex]);
+				    } else {
+				    	self.module.controller.elementOut();
+				    }
+				});
+
+				for (var i=0; i<data.length; i++) {
+					var currentDataPoint=i;
+					API.listenHighlight( data[i], function( onOff, key ) {
+
+						// we need to highlight the correct shape ...
+						//console.log(onOff, key, currentDataPoint);
+						if (onOff) {
+							//console.log(i);
+							self._plot.highlight(0, currentDataPoint);
+						} else {
+							self._plot.unhighlight(0, currentDataPoint);
+						}
+					});
+				}
+
+
+
+			},
+			plotAccordingToChoices : function(choiceContainer) {
+			var self=this;
+			var data = [];
+			choiceContainer.find("input:checked").each(function () {
+				var key = $(this).attr("name");
+				if (key && self._data[key]) {
+					data.push(self._data[key]);
+				}
+			});
+
+			if (data.length > 0) {
+				this.plot(self._id, data, self._options)
+			}
 		}
 
 

@@ -27,33 +27,27 @@
 					"max":""
 				}
 			},
-			"pref": {
-			"type": "bars",
-			"stack": ""
-			},
 			"data" : 
 			[
 				{
-					"x":[0,1,4],
+					"x":[],
 					"y":[1,7,5],
 					"z":[],
-					"_highlight":["A"],
+					"_highlight":["A","B","C"],
 					"info":[{"name":"first"}],
 					"serieLabel": "My first serie",
 					"xAxis": "0", 
-					"yAxis": "1",
-					"preference": "lines"
+					"yAxis": "1"
 				},
 				{
 					"x":[0,2,5],
 					"y":[2,3,4],
 					"z":[],
-					"_highlight":["B","E"],
+					"_highlight":["D","E","A"],
 					"info":[{"name":"second"}],
-					"serieLabel": "My second serie",
+					"serieLabel": "My seconde serie",
 					"xAxis": "0", 
-					"yAxis": "1",
-					"preference": "lines"
+					"yAxis": "1"
 				}
 				
 			]

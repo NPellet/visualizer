@@ -161,10 +161,6 @@
 			"jpath": "element.pieChart"
 		},
 		{
-			"varname": "simpleArray",
-			"jpath": "element.simpleArray"
-		},
-		{
 			"varname": "highlight",
 			"jpath": "element.highlight"
 		}
