@@ -4,7 +4,7 @@
  * Support keyboard navigation for trees with embedded input controls.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -54,28 +54,27 @@ function findNeighbourTd($target, keyCode){
 /*******************************************************************************
  * Extension code
  */
-$.ui.fancytree.registerExtension("gridnav", {
+$.ui.fancytree.registerExtension({
+	name: "gridnav",
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
 		autofocusInput:   false,  // Focus first embedded input if node gets activated
-		handleCursorKeys: true,   // Allow UP/DOWN in inputs to move to prev/next node
-		titlesTabbable:   true    // Add node title to TAB chain
+		handleCursorKeys: true   // Allow UP/DOWN in inputs to move to prev/next node
 	},
 
 	treeInit: function(ctx){
-
+		// gridnav requires the table extension to be loaded before itself
+		this._requireExtension("table", true, true);
 		this._super(ctx);
 
 		this.$container.addClass("fancytree-ext-gridnav");
 
 		// Activate node if embedded input gets focus (due to a click)
-//		this.$container.on("focusin", "input", function(event){
 		this.$container.on("focusin", function(event){
 			var ctx2,
 				node = $.ui.fancytree.getNode(event.target);
 
-			// node.debug("INPUT focusin", event.target, event);
 			if( node && !node.isActive() ){
 				// Call node.setActive(), but also pass the event
 				ctx2 = ctx.tree._makeHookContext(node, event);
@@ -83,29 +82,6 @@ $.ui.fancytree.registerExtension("gridnav", {
 			}
 		});
 	},
-	nodeRender: function(ctx) {
-		this._super(ctx);
-		// Add every node title to the tab sequence
-		if( ctx.options.gridnav.titlesTabbable === true ){
-			$(ctx.node.span).find("span.fancytree-title").attr("tabindex", "0");
-		}
-	},
-	// nodeRenderStatus: function(ctx) {
-	// 	var opts = ctx.options.gridnav,
-	// 		node = ctx.node;
-
-	// 	this._super(ctx);
-
-	//	// Note: Setting 'tabbable' only to the active node wouldn't help,
-	//  // because the first row contains a tabbable input element anyway.
-	// 	if( opts.titlesTabbable === "active" ){
-	// 		if( node.isActive() ){
-	// 			$(node.span) .find("span.fancytree-title") .attr("tabindex", "0");
-	// 		}else{
-	// 			$(node.span) .find("span.fancytree-title") .removeAttr("tabindex");
-	// 		}
-	// 	}
-	// },
 	nodeSetActive: function(ctx, flag) {
 		var $outer,
 			opts = ctx.options.gridnav,
@@ -118,7 +94,7 @@ $.ui.fancytree.registerExtension("gridnav", {
 		this._super(ctx, flag);
 
 		if( flag ){
-			if( opts.titlesTabbable ){
+			if( ctx.options.titlesTabbable ){
 				if( !triggeredByInput ) {
 					$(node.span).find("span.fancytree-title").focus();
 					node.setFocus();
@@ -142,7 +118,7 @@ $.ui.fancytree.registerExtension("gridnav", {
 
 		// jQuery
 		inputType = $target.is(":input:enabled") ? $target.prop("type") : null;
-		ctx.node.debug("input", event, inputType);
+		ctx.tree.debug("ext-gridnav nodeKeydown", event, inputType);
 
 		if( inputType && opts.handleCursorKeys ){
 			handleKeys = NAV_KEYS[inputType];
@@ -157,7 +133,8 @@ $.ui.fancytree.registerExtension("gridnav", {
 			}
 			return true;
 		}
-		this._super(ctx);
+		ctx.tree.debug("ext-gridnav NOT HANDLED", event, inputType);
+		return this._super(ctx);
 	}
 });
 }(jQuery, window, document));

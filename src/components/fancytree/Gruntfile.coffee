@@ -38,9 +38,18 @@ module.exports = (grunt) ->
           clean: true # // Require repo to be clean (no unstaged changes)
       beforeRelease:
           tag:
-            lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
+              lt: "<%= pkg.version %>" # Check if highest repo tag is lower than pkg.version
 #          tagged: false # Require last commit (HEAD) to be tagged
           clean: true # // Require repo to be clean (no unstaged changes)
+
+    # compare_size:
+    #     files:
+    #         "jquery.ui-contextmenu.min.js"
+    #         "jquery.ui-contextmenu.js"
+    #     options:
+    #         compress:
+    #             gz: function (fileContents)
+    #                 return require("gzip-js").zip(fileContents, {}).length;
 
     clean:
         build:
@@ -69,10 +78,12 @@ module.exports = (grunt) ->
             src: [
                 "<%= meta.banner %>"
                 "src/jquery.fancytree.js"
-                "src/jquery.fancytree.columnview.js"
+#                "src/jquery.fancytree.columnview.js"
                 "src/jquery.fancytree.dnd.js"
+                "src/jquery.fancytree.edit.js"
                 "src/jquery.fancytree.filter.js"
-                "src/jquery.fancytree.menu.js"
+                "src/jquery.fancytree.gridnav.js"
+#                "src/jquery.fancytree.menu.js"
                 "src/jquery.fancytree.persist.js"
                 "src/jquery.fancytree.table.js"
                 "src/jquery.fancytree.themeroller.js"
@@ -90,6 +101,12 @@ module.exports = (grunt) ->
                 port: 8080
                 base: "./"
                 keepalive: false
+        sauce:
+            options:
+                hostname: "localhost"
+                port: 9999
+                base: ""
+                keepalive: false
 
     copy:
         build:
@@ -103,27 +120,30 @@ module.exports = (grunt) ->
                     dest: "build/"
                 }]
 
-    csslint:
-  #      options:
-  #              csslintrc: ".csslintrc"
-        strict:
-            options:
-                import: 2
-            src: ["src/**/*.css"]
+  #   csslint:
+  # #      options:
+  # #              csslintrc: ".csslintrc"
+  #       strict:
+  #           options:
+  #               import: 2
+  #           src: ["src/**/*.css"]
 
     cssmin:
+        options:
+          report: "min"
         build:
-            report: true
-            minify:
-                expand: true
-                cwd: "src/skin-win8/"
-                src: ["*.css", "!*.min.css"]
-                dest: "build/"
-                ext: ".min.css"
+            expand: true
+            cwd: "build/"
+            src: ["**/*.fancytree.css", "!*.min.css"]
+            dest: "build/"
+            ext: ".fancytree.min.css"
 
     docco:
         docs:
+#            expand: true
+#            cwd: "src/"
             src: ["src/jquery.fancytree.childcounter.js"]
+#            dest: "doc/annotated-src/"
             options:
                 output: "doc/annotated-src"
 
@@ -136,17 +156,20 @@ module.exports = (grunt) ->
         upload:
             # FTP upload the demo files (requires https://github.com/mar10/pyftpsync)
             cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --delete-unmatched --omit build,node_modules,.*,_*  -x"
+#            cmd: "pyftpsync --progress upload . ftp://www.wwwendt.de/tech/fancytree --omit build,node_modules,.*,_*  -x"
 
     htmllint:
         all: ["demo/**/*.html", "doc/**/*.html", "test/**/*.html"]
 
     jsdoc:
         build:
-            src: ["src/*.js", "doc/README.md"]
-            # http://usejsdoc.org/about-configuring-jsdoc.html#example
+            src: ["src/*.js", "doc/README.md", "doc/jsdoctest.js"]
             options:
-                destination: "doc/jsdoc_grunt"
+                destination: "doc/jsdoc_new"
 #                template: "bin/jsdoc3-moogle",
+#                template: "node_modules/ink-docstrap/template",
+                template: "../docstrap/template",
+                configure: "doc/jsdoc.conf.json"
                 verbose: true
 
     jshint:
@@ -216,6 +239,29 @@ module.exports = (grunt) ->
                 to : "debugLevel: 1"
             } ]
 
+    "saucelabs-qunit":
+      all:
+        options:
+          urls: ["http://localhost:9999/test/unit/test-core.html"]
+          
+          tunnelTimeout: 5
+          build: process.env.TRAVIS_JOB_ID
+          concurrency: 3
+          browsers: [
+            { browserName: "chrome", platform: "Windows 7" }
+            { browserName: "firefox", platform: "Windows 7" }
+            { browserName: "firefox", platform: "Windows XP" }
+            { browserName: "firefox", platform: "Linux" }
+            { browserName: "internet explorer", version: "6", platform: "Windows XP" }
+            { browserName: "internet explorer", version: "7", platform: "Windows XP" }
+            { browserName: "internet explorer", version: "8", platform: "Windows XP" }
+            { browserName: "internet explorer", version: "9", platform: "Windows 7" }
+            { browserName: "internet explorer", version: "10", platform: "Windows 8" }
+            { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
+            { browserName: "safari", platform: "OS X 10.8" }
+          ]
+          testname: "fancytree qunit tests"
+
     tagrelease:
         file: "package.json"
         commit:  true
@@ -243,10 +289,13 @@ module.exports = (grunt) ->
                 "build/<%= pkg.name %>-all.min.js": ["<%= concat.all.dest %>"]
 
     watch:
+        # options:
+        #     atBegin: true
         less:
             files: "src/**/*.less"
             tasks: ["less:development"]
         jshint:
+            atBegin: true
             files: "src/*.js"
             tasks: ["jshint:beforeConcat"]
 
@@ -266,21 +315,31 @@ module.exports = (grunt) ->
       # "csslint",
       "qunit:develop"
   ]
-  # grunt.registerTask("makejsdoc", ["jsdoc"]
-  grunt.registerTask "travis", ["test"]
+
+  grunt.registerTask "sauce", ["connect:sauce", "saucelabs-qunit"]
+  if parseInt(process.env.TRAVIS_PULL_REQUEST, 10) > 0
+      # saucelab keys do not work on forks
+      # http://support.saucelabs.com/entries/25614798
+      grunt.registerTask "travis", ["test"]
+  else
+      grunt.registerTask "travis", ["test", "sauce"]
+  
   grunt.registerTask "default", ["test"]
   grunt.registerTask "build", [
       "exec:tabfix"
       "test"
+      "jsdoc:build"
+      "docco:docs"
       "clean:build"
       "copy:build"
       "concat"
-      # "cssmin:build"
+      "cssmin:build"
       "replace:build"
       "jshint:afterConcat"
       "uglify"
       "qunit:build"
       "compress:build"
+      # "compare_size"
       # "clean:build"
       ]
   grunt.registerTask "release", [

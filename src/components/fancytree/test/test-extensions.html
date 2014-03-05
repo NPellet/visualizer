@@ -52,7 +52,8 @@ $(function(){
 	;(function($, undefined) {
 		"use strict";
 		var CNT = 0;
-		$.ui.fancytree.registerExtension("sampleExt1", {
+		$.ui.fancytree.registerExtension({
+			name: "sampleExt1",
 			version: "1.0.0",
 			options: {
 				opt1: true,
@@ -74,7 +75,8 @@ $(function(){
 
 	;(function($, undefined) {
 		"use strict";
-		$.ui.fancytree.registerExtension("sampleExt2", {
+		$.ui.fancytree.registerExtension({
+			name: "sampleExt2",
 			version: "1.0.0",
 			options: {
 				opt1: true,
@@ -125,7 +127,7 @@ $(function(){
 			Fanytree's the general extension concept:
 			<br>
 			See the
-			<a class="external" href="../doc/annotated-src/jquery.fancytree.childcounter.html">annotated source</a>
+			<a class="external" href="../doc/annotated-src/src/jquery.fancytree.childcounter.html">annotated source</a>
 			to learn how to write a Fancytree extension.<br>
 			Click the [View source code] link below, to see how an extension is used.
 		</p>

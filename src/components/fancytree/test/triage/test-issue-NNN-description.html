@@ -25,7 +25,7 @@ ul.fancytree-container{
 }
 </style>
 
-	<!-- Add code to initialize the tree when the document is loaded: -->
+
 <script type="text/javascript">
 
 var SOURCE = [
@@ -87,27 +87,10 @@ $(function(){
 			preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
 			autoExpandMS: 400,
 			dragStart: function(node, data) {
-				/** This function MUST be defined to enable dragging for the tree.
-				 *  Return false to cancel dragging of node.
-				 */
 				return true;
 			},
 			dragEnter: function(node, data) {
-				/** data.otherNode may be null for non-fancytree droppables.
-				 *  Return false to disallow dropping on node. In this case
-				 *  dragOver and dragLeave are not called.
-				 *  Return 'over', 'before, or 'after' to force a hitMode.
-				 *  Return ['before', 'after'] to restrict available hitModes.
-				 *  Any other return value will calc the hitMode from the cursor position.
-				 */
-				// Prevent dropping a parent below another parent (only sort
-				// nodes under the same parent)
-/* 					if(node.parent !== data.otherNode.parent){
-					return false;
-				}
-				// Don't allow dropping *over* a node (would create a child)
-				return ["before", "after"];
-*/
+//               return ["before", "after"];
 			   return true;
 			},
 			dragDrop: function(node, data) {
@@ -129,21 +112,29 @@ $(function(){
 });
 </script>
 
-<!-- Start_Exclude: This block is not part of the sample code -->
 <script>
 $(function(){
-/*
 	addSampleButton({
-		label: "Generate <input> elements",
+		label: "Remove",
+		newline: false,
 		code: function(){
-			$("#tree").fancytree("getTree").generateInput();
-			$("#tree2").fancytree("getTree").generateInput();
+			var tree = $("#tree").fancytree("getTree"),
+				node = tree.getActiveNode();
+			// node = tree.getNodeByKey("node1");
+			node.remove();
 		}
 	});
-*/
+	addSampleButton({
+		label: "Add Child",
+		newline: false,
+		code: function(){
+			var node,
+				tree = $("#tree").fancytree("getTree");
+			tree.getActiveNode().addChildren({title: "new node" + new Date()});
+		}
+	});
 });
 </script>
-<!-- End_Exclude -->
 
 </head>
 
@@ -156,12 +147,13 @@ $(function(){
 		<label for="skinswitcher">Skin:</label> <select id="skinswitcher"></select>
 	</div>
 	<hr>
+	<p id="sampleButtons">
+	</p>
+	<hr>
 	<div id="tree">
 	</div>
 
 	<!-- Start_Exclude: This block is not part of the sample code -->
-	<p id="sampleButtons">
-	</p>
 	<hr>
 	<p class="sample-links  no_code">
 		<a class="hideInsideFS" href="https://github.com/mar10/fancytree/">Fancytree project home</a>
