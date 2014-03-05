@@ -52,6 +52,8 @@ module.exports = function(grunt) {
               './ace/lib/ace/**',
               './ckeditor/skins/**',
               './ckeditor/ckeditor.js',
+              './ckeditor/styles.js',
+              './ckeditor/contents.css',
               './ckeditor/adapters/jquery.js',
               './ckeditor/lang/en.js',
               './ckeditor/plugins/**',
@@ -68,7 +70,8 @@ module.exports = function(grunt) {
               './jsoneditor/img/*',
               './jit/Jit/**/*',
               './jquery-ui-contextmenu/jquery.ui-contextmenu.min.js',
-              './mustache/mustache.js'
+              './mustache/mustache.js',
+              './papa-parse/jquery.parse.min.js'
             ],
 
             dest: './build/components/'
