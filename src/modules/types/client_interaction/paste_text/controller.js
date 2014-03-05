@@ -116,7 +116,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
                 break;
         }
         def.done(function(data){
-            that.module.definition.configuration.groups.group[0].thevalue[0] = value;
+            if(that.module.definition.configuration.groups) that.module.definition.configuration.groups.group[0].thevalue[0] = value;
             that.setVarFromEvent( 'onEditorChange', DataObject.check(data, true));
         });
         
