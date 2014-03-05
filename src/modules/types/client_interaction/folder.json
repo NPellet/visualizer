@@ -1,6 +1,10 @@
 {
 	"modules": [
 		{
+			"moduleName": "Paste text",
+			"url": "modules/types/client_interaction/paste_text/"
+		},
+		{
 			"moduleName": "Button action",
 			"url": "modules/types/client_interaction/button_action/"
 		},
