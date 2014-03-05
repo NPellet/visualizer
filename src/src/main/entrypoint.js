@@ -679,7 +679,7 @@ define([	'jquery',
 
 				// Set the filters
 				API.setAllFilters( cfgJson.filters || [ ] );
-			} );
+			} ).fail(function(a, b){console.error("Error loading the config : "+b)});
 
 			Context.init( document.getElementById( 'modules-grid' ) );
 

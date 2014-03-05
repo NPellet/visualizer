@@ -288,7 +288,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 		getJPathsFromElement: function(element, jpaths) {
 			if(!jpaths)
-				var jpaths = [];
+				jpaths = [];
 			jpaths.push({title: 'Not set', key: ''});
 			if(element === undefined || element == null)
 				return;
@@ -308,6 +308,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 					break;
 				}
 			}
+            return jpaths;
 		},
 
 		get: function( data ) {
