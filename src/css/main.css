@@ -873,4 +873,8 @@ table.moduleInformation tr td {
 table.moduleInformation tr td:first-child {
 	font-weight: bold;
 	width: 120px;
-};
+}
+
+.ui-dialog, .ui-front {
+    z-index: 10000 !important;
+}

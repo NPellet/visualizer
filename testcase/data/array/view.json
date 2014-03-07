@@ -1,71 +1,15 @@
 {
-	"_name": "Master",
-	"_time": 1375084553986,
-	"_saved": 1375084553986,
-	"_local": false,
 	"modules": [
 		{
-			"title": "A single value",
+			"title": "Complex grid",
 			"displayWrapper": true,
 			"position": {
-				"left": 23,
-				"top": 0
+				"left": 0.9985795021057129,
+				"top": 0.9985794067382813
 			},
 			"size": {
-				"width": 14.966666662693024,
-				"height": 9.966666662693024
-			},
-			"configuration": {
-				"frontcolor": "",
-				"font": "arial",
-				"fontsize": "18pt",
-				"align": "center",
-				"valign": "middle",
-				"defaultvalue": "",
-				"sprintf": ""
-			},
-			"id": 1,
-			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"vars_in": [
-				{
-					"rel": "value",
-					"name": "myFirstValue"
-				}
-			],
-			"actions_in": [
-				{
-					"rel": "",
-					"name": ""
-				}
-			],
-			"url": "./modules/types/display/single_value/"
-		},
-		{
-			"title": "Simple table V1",
-			"displayWrapper": true,
-			"position": {
-				"left": 0,
-				"top": 0
-			},
-			"size": {
-				"width": 21.966666662693022,
-				"height": 29.966666662693022
+				"width": 22.01818182468414,
+				"height": 51.01818182468414
 			},
 			"configuration": {
 				"sections": {},
@@ -83,8 +27,7 @@
 							],
 							"filterRow": [
 								null
-							],
-							"displaySearch": []
+							]
 						}
 					],
 					"cols": [
@@ -109,7 +52,7 @@
 					]
 				}
 			},
-			"id": 2,
+			"id": 1,
 			"bgColor": [
 				255,
 				255,
@@ -148,12 +91,12 @@
 			"title": "Mouse over value",
 			"displayWrapper": true,
 			"position": {
-				"left": 23,
-				"top": 11
+				"left": 49.999997806549075,
+				"top": 22.99857940673828
 			},
 			"size": {
-				"width": 14.966666662693024,
-				"height": 8.966666662693024
+				"width": 15.018181824684143,
+				"height": 9.018181824684143
 			},
 			"configuration": {
 				"frontcolor": "",
@@ -164,24 +107,8 @@
 				"defaultvalue": "",
 				"sprintf": ""
 			},
-			"id": 3,
+			"id": 2,
 			"bgColor": "",
-			"dataSend": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
-			"actionsOut": [
-				{
-					"event": "",
-					"rel": "",
-					"jpath": "",
-					"name": ""
-				}
-			],
 			"vars_in": [
 				{
 					"rel": "value",
@@ -194,18 +121,34 @@
 					"name": ""
 				}
 			],
-			"url": "./modules/types/display/single_value/"
+			"url": "./modules/types/display/single_value/",
+			"vars_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			],
+			"actions_out": [
+				{
+					"event": "",
+					"rel": "",
+					"jpath": "",
+					"name": ""
+				}
+			]
 		},
 		{
 			"title": "Mouse clicked value",
 			"displayWrapper": true,
 			"position": {
-				"left": 23,
-				"top": 21
+				"left": 49.999997806549075,
+				"top": 33.99999847412109
 			},
 			"size": {
-				"width": 14.966666662693024,
-				"height": 8.966666662693024
+				"width": 15.018181824684143,
+				"height": 9.018181824684143
 			},
 			"configuration": {
 				"frontcolor": "",
@@ -216,7 +159,7 @@
 				"defaultvalue": "",
 				"sprintf": ""
 			},
-			"id": 4,
+			"id": 3,
 			"bgColor": "",
 			"vars_in": [
 				{
@@ -252,17 +195,14 @@
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 43,
-				"top": 4
+				"left": 51,
+				"top": 0
 			},
 			"size": {
 				"width": 33,
 				"height": 19
 			},
-			"configuration": {
-				"text": "<p>Comparison of table V1 and V2 with sorting and searching behaviour.</p><p><br></p>"
-			},
-			"id": 5,
+			"id": 4,
 			"vars_in": {},
 			"actions_in": {},
 			"text": "<p>A simple table with linked values for mouse over and mouse clicked.</p><p>And a post-it !</p>",
@@ -270,15 +210,15 @@
 		},
 		{
 			"url": "modules/types/display/fasttable/",
-			"title": "Untitled module",
+			"title": "Fast grid",
 			"displayWrapper": true,
 			"position": {
-				"left": 77,
-				"top": 4
+				"left": 24.99857873916626,
+				"top": 0.994317626953125
 			},
 			"size": {
-				"width": 32.96666666269302,
-				"height": 29.966666662693022
+				"width": 23.01818182468414,
+				"height": 51.01818182468414
 			},
 			"configuration": {
 				"sections": {},
@@ -317,7 +257,7 @@
 					]
 				}
 			},
-			"id": 6,
+			"id": 5,
 			"vars_in": [
 				{
 					"rel": "list",
@@ -328,11 +268,74 @@
 				{}
 			],
 			"vars_out": [
-				{}
+				{
+					"event": "onSelect",
+					"rel": "row",
+					"jpath": "element.theValue",
+					"name": "clickedValue"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.theValue",
+					"name": "hoverValue"
+				}
 			],
 			"actions_out": [
 				{}
 			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/edition/object_editor/",
+			"title": "Input data",
+			"displayWrapper": true,
+			"position": {
+				"left": 85.99999780654908,
+				"top": 0
+			},
+			"size": {
+				"width": 33.01818182468414,
+				"height": 51.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"view"
+							],
+							"expanded": [
+								[]
+							],
+							"storeObject": [
+								[]
+							],
+							"storedObject": [
+								"{}"
+							]
+						}
+					]
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "data"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
 			"bgColor": [
 				255,
 				255,
@@ -344,17 +347,62 @@
 	"variables": [
 		{
 			"varname": "results",
-			"jpath": "element.results",
-			"url": ""
+			"jpath": "element.results"
 		},
 		{
 			"varname": "myFirstValue",
-			"jpath": "element.results.0.theValue",
-			"url": ""
+			"jpath": "element.results.0.theValue"
+		},
+		{
+			"varname": "data",
+			"jpath": "element"
 		}
 	],
 	"configuration": {
 		"title": "Simple module demonstration"
 	},
-	"version": "2.2.3"
+	"version": "2.2.3",
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"crons": {
+		"0": [
+			{}
+		],
+		"cronurl": [
+			null
+		],
+		"crontime": [
+			null
+		],
+		"cronvariable": [
+			null
+		]
+	},
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
 }

@@ -434,7 +434,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
     
     function createTrees(data) {
         var trees = {data: {__folder:true}, view: {__folder:true}};
-        
+        var trees2 = {data: {__folder:true}, view: {__folder:true}};
         for(var i = 0, ii = data.length; i < ii; i++) {
             var info = data[i];
             var split = info.id.split(":");
@@ -445,10 +445,10 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 addBranch(trees.view, split, info);
         }
         
-        trees.data = createFancyTree(trees.data, "");
-        trees.view = createFancyTree(trees.view, "");
+        trees2.data = createFancyTree(trees.data, "");
+        trees2.view = createFancyTree(trees.view, "");
         
-        return trees;
+        return trees2;
     }
     
     function addBranch(tree, indices, info) {

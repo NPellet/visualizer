@@ -41,7 +41,8 @@ requirejs.config({
 		"jqueryui": ["jquery"],
 		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"],
                 "components/farbtastic/src/farbtastic" : ["components/jquery/jquery-migrate.min"],
-                "lib/pixastic/pixastic" : ["lib/pixastic/pixastic/pixastic.core"]
+                "lib/pixastic/pixastic" : ["lib/pixastic/pixastic/pixastic.core"],
+                'components/fancytree/src/jquery.fancytree.dnd' : ["fancytree"]
 	}
 });
 

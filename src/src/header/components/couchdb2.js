@@ -1,4 +1,4 @@
-define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/couchdb/jquery.couch', 'fancytree', 'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'], function($, Default, Versioning, Button, Util) {
+define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/webtoolkit/base64','lib/couchdb/jquery.couch', 'fancytree', 'components/fancytree/src/jquery.fancytree.dnd','components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'], function($, Default, Versioning, Button, Util, Base64) {
 
     var couchDBManager = function() {};
     
@@ -7,6 +7,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             this.ok = this.loggedIn = false;
             this.id = Util.getNextUniqueId();
             if(this.options.url) $.couch.urlPrefix = this.options.url.replace(/\/$/,"");
+            this.url = $.couch.urlPrefix;
             var db = this.options.database || "visualizer";
             this.database = $.couch.db(db);
             this.flavor = "default";
@@ -72,15 +73,11 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             
         },
         load: function(type, node, rev) {
-            var options = {
-                success: function(data) {
-                    data = new window[type+"Object"](data,true);
-                    Versioning["set"+type+"JSON"]( data );
-                }
-            };
-            if(rev)
-                options.rev = rev;
-            this.database.openDoc(node.data.id,options);
+            $.getJSON(this.database.uri+node.data.doc._id+"/"+type.toLowerCase()+".json"+(rev ? "?rev="+rev : ""),function(data){
+                data = new window[type+"Object"](data,true);
+                Versioning["set"+type+"JSON"]( data );
+                this["last"+type+"Loaded"] = node.data.doc;
+            });
         },
         save: function(type, name) {
             
@@ -95,50 +92,51 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             if(typeof last === "undefined")
                 return this.showError(11);
 
-            var id, folderNode;
-            if(last.node.folder) {
-                id = last.name +":"+ name;
-                folderNode = last.node;
-            } else {
-                id = last.name.replace(/[^:]*$/,name);
-                folderNode = last.node.parent;
+            var child = last.node.findFirst(name);
+            
+            var encodedAttachment = {
+                "content_type":"application/json",
+                "data": Base64.encode(JSON.stringify(content))
+            };
+            
+            var doc, newDoc;
+            
+            if(child && child.title===name && !child.folder && (last.node.getChildren().indexOf(child) >= 0)) {
+                doc = child.data.doc;
+                if(!doc._attachments) doc._attachments = {};
             }
-            
-            var keys = Object.keys(content);
-            for(var i = 0, ii = keys.length; i < ii; i++) {
-                if(keys[i].charAt(0)==="_")
-                    delete content[keys[i]];
+            else {
+                newDoc = true;
+                var flavors = {},flav = [];
+                if(last.key)
+                    flav = last.key.split(":");
+                flav.push(name);
+                flavors[this.flavor] = flav;
+                doc = {
+                    _id: $.couch.newUUID()+"test",
+                    flavors: flavors,
+                    _attachments: {}
+                };
+
             }
-            
-            content._id = id;
-            
-            var update = false;
-            if(id===last.name) {
-                update = true;
-                content._rev = last.node.data.lastRev;
-            }
-            
-            this.database.saveDoc(content,{
+            doc._attachments[type.toLowerCase()+".json"] = encodedAttachment;console.log(doc)
+            this.database.saveDoc(doc, {
                 success: function(data) {
-                    if(update) {
-                        last.node.data.lastRev = data.rev;
-                        if(last.node.children) last.node.lazyLoad(true); 
-                    } else {
-                        folderNode.addNode({
-                            id: data.id,
+                    if(newDoc) {
+                        doc._rev = data.rev
+                        last.node.addNode({
+                            doc: doc,
                             lazy: true,
                             title: name,
-                            key: folderNode.key+":"+name,
-                            lastRev: data.rev
+                            key: last.node.key+":"+name
                         });
-                        if(!folderNode.expanded)
-                            folderNode.toggleExpanded();
+                        if(!last.node.expanded)
+                            last.node.toggleExpanded();
+                    } else {
+                        if(child.children) child.lazyLoad(true); 
                     }
-                    
-                },
-                error: this.showError
+                }
             });
-
         },
         mkdir: function(type, name) {
             
@@ -256,7 +254,6 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             var dataTree = $("<div>").attr("id", this.cssId("datatree")).css(treeCSS);
             dataCol.append(dataTree);
 
-            dataCol.append('<p id="'+this.cssId("datadiv")+'">&nbsp;</p>');
             dataCol.append($("<p>").append('<input type="text" id="'+this.cssId("data")+'"/>')
                    .append(new Button('Save', function() {
                        that.save("Data", that.getFormContent("data"));
@@ -273,7 +270,6 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             var viewTree = $("<div>").attr("id", this.cssId("viewtree")).css(treeCSS);
             viewCol.append(viewTree);
             
-            viewCol.append('<p id="'+this.cssId("viewdiv")+'">&nbsp;</p>');
             viewCol.append($("<p>").append('<input type="text" id="'+this.cssId("view")+'"/>')
                    .append(new Button('Save', function() {
                        that.save("View", that.getFormContent("view"));
@@ -291,7 +287,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             return dom;
         },
         lazyLoad: function(event, result) {
-            var id = result.node.data.id;
+            var id = result.node.data.doc._id;
             var def = $.Deferred();
             result.result = def.promise();
             this.database.openDoc(id,{
@@ -315,85 +311,39 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             if(data.targetType!=="title" && data.targetType!=="icon")
                 return;
 
-            var node = data.node, divContent = "", last;
+            var node = folder = data.node, last;
             var typeL = type.toLowerCase();
-
+            
+            var index = node.key.indexOf(":"), keyWithoutFlavor;
+            if(index>=0)
+                keyWithoutFlavor = node.key.substring(index+1);
+            else
+                keyWithoutFlavor = "";
+            
             if(node.folder) {
-                divContent += node.key;
-                var folderName = divContent.substring(5);
+                var folderName = keyWithoutFlavor;
                 last = {name: this.username+":"+typeL+(folderName.length>0 ? ":"+folderName : ""), node: node};
             } else {
                 var rev;
-                divContent += node.key.replace(/:?[^:]*$/,"");
                 if(node.data.rev) {
                     rev = node.key;
                     node = node.parent;
                 }
+                folder = node.parent;
                 $("#"+this.cssId(typeL)).val(node.title);
-                last = {name: node.data.id, node: node};
+                last = {name: node.data.doc._id, node: node};
                 if(event.type==="fancytreedblclick")
                     this.load(type, node, rev);
             }
             
-            this["last"+type+"Node"] = last;
-            $("#"+this.cssId(typeL+"div")).html("&nbsp;"+divContent);
+            last = {
+                key: keyWithoutFlavor,
+                node: folder
+            }
             
+            this["last"+type+"Node"] = last;
             if(event.type==="fancytreedblclick" && !node.folder)
                 return false;
-        },
-        loadTree: function() {
-            var proxyLazyLoad = $.proxy(this, "lazyLoad"),
-                proxyClickData = $.proxy(this, "clickNode", "Data"),
-                proxyClickView = $.proxy(this, "clickNode", "View"),
-                that = this;
-        
-            var menuOptions = {
-                delegate: "span.fancytree-title",
-                menu: [
-                    {title: "Delete", cmd: "delete", uiIcon: "ui-icon-trash"}
-                ],
-                beforeOpen: function(event, ui) {
-                    var node = $.ui.fancytree.getNode(ui.target);
-                    if(node.folder) return false;
-                    node.setActive();
-                },
-                select: function(event, ui) {
-                    var node = $.ui.fancytree.getNode(ui.target);
-                    that.contextClick(node, ui.cmd);
-                },
-                createMenu: function(event) {
-                    $(event.target).css("z-index",1000);
-                }
-            };
-            
-            this.database.allDocs({
-                startkey: this.username+':',
-                endkey: this.username+':~',
-                success: function(data) {
-                    var trees = createTrees(data.rows);
-                    var datatree = $("#"+that.cssId("datatree"));
-                    datatree.fancytree({
-                        source: trees.data,
-                        lazyload: proxyLazyLoad,
-                        click: proxyClickData,
-                        dblclick: proxyClickData,
-                        debugLevel:0
-                    }).children("ul").css("box-sizing", "border-box");
-                    datatree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
-                    datatree.contextmenu(menuOptions);
-                    
-                    var viewtree = $("#"+that.cssId("viewtree"));
-                    viewtree.fancytree({
-                        source: trees.view,
-                        lazyload: proxyLazyLoad,
-                        click: proxyClickView,
-                        dblclick: proxyClickView,
-                        debugLevel:0
-                    }).children("ul").css("box-sizing", "border-box");
-                    viewtree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
-                    viewtree.contextmenu(menuOptions);
-                }
-            });
         },
         loadFlavor: function() {
             var proxyLazyLoad = $.proxy(this, "lazyLoad"),
@@ -404,7 +354,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             var menuOptions = {
                 delegate: "span.fancytree-title",
                 menu: [
-                    {title: "Delete", cmd: "delete", uiIcon: "ui-icon-trash"}
+                    {title: "Delete", cmd: "delete", uiIcon: "ui-icon-trash"},
+                    {title: "New flavor", cmd: "newflavor", uiIcon: "ui-icon-folder-collapsed"},
+                    {title: "Rename", cmd: "rename", uiIcon: "ui-icon-folder-collapsed"}
                 ],
                 beforeOpen: function(event, ui) {
                     var node = $.ui.fancytree.getNode(ui.target);
@@ -420,49 +372,162 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 }
             };
             
-            this.database.allDocs({
-                startkey: this.username+':',
-                endkey: this.username+':~',
-                success: function(data) {
-                    var trees = createTrees(data.rows);
+            var dnd = {                         
+                preventVoidMoves: true,
+                preventRecursiveMoves: true,
+                autoExpandMS: 300,
+                dragStart: function(node){
+                    if(node.folder) // Can only move documents
+                        return false;
+                    return true;
+                },
+                dragEnter: function(target){
+                    if(!target.folder) // Can only drop in a folder
+                        return false;
+                    return true;
+                },
+                dragDrop: function(target, info){
+                    var theNode = info.otherNode;
+                    if(target === theNode.parent) // Same folder, nothing to do
+                        return false;
+                    var newKey = target.key.substring(that.flavor.length+1);
+                    newKey += newKey.length ? ":"+theNode.title : theNode.title;
+                    var newFlavor = newKey.split(":");
+                    theNode.data.doc.flavors[that.flavor] = newFlavor;
+                    that.database.saveDoc(theNode.data.doc, {
+                                success: function() {
+                                theNode.moveTo(target, info.hitMode);
+                            },
+                            error: that.showError
+                    });
+                }
+            }   
+            
+            this.database.view("test/flavors", {
+                success: function(data) {console.log(data);
+                    var trees = createTrees(data.rows, that.flavor);
                     var datatree = $("#"+that.cssId("datatree"));
                     datatree.fancytree({
-                        source: trees.data,
+                        extensions: ["dnd"],
+                        dnd: dnd,
+                        source: [],
                         lazyload: proxyLazyLoad,
                         click: proxyClickData,
                         dblclick: proxyClickData,
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
-                    datatree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
+                    var dataftree = datatree.data("ui-fancytree").getTree();
+                    dataftree.reload(trees.data);
+                    dataftree.getNodeByKey(that.flavor).toggleExpanded();
                     datatree.contextmenu(menuOptions);
                     
                     var viewtree = $("#"+that.cssId("viewtree"));
                     viewtree.fancytree({
-                        source: trees.view,
+                        extensions: ["dnd"],
+                        dnd: dnd,
+                        source: [],
                         lazyload: proxyLazyLoad,
                         click: proxyClickView,
                         dblclick: proxyClickView,
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
-                    viewtree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
+                    var viewftree = viewtree.data("ui-fancytree").getTree();
+                    viewftree.reload(trees.view);
+                    viewftree.getNodeByKey(that.flavor).toggleExpanded();
                     viewtree.contextmenu(menuOptions);
-                }
+                },
+                error: function(status) {
+                    console.log(status);
+                },
+                key: this.flavor,
+                include_docs: true
             });
         },
         contextClick: function(node, action) {
-            if(action === "delete" && !node.folder) {
-                if(node.data.rev)
-                    node = node.parent;
-                var doc = {
-                    _id: node.data.id,
-                    _rev: node.data.lastRev
-                };
-                this.database.removeDoc(doc, {
-                    success: function() {
-                        node.remove();
-                    },
-                    error: this.showError
-                });
+            var that = this;
+            
+            var newflavordialog;
+            
+            if(!node.folder) {
+                if(action === "delete") {
+                    if(node.data.rev)
+                        node = node.parent;
+                        
+                    delete node.data.doc.flavors[this.flavor]; // Delete current flavor
+                    if($.isEmptyObject(node.data.doc.flavors)) {  // No more flavors, delete document
+                        var doc = {
+                            _id: node.data.doc._id,
+                            _rev: node.data.doc._rev
+                        };
+                        this.database.removeDoc(doc, {
+                            success: function() {
+                                node.remove();
+                            },
+                            error: this.showError
+                        });
+                    }
+                    else { // Update current doc
+                        this.database.saveDoc(node.data.doc, {
+                                success: function() {
+                                node.remove();
+                            },
+                            error: this.showError
+                        });
+                    }
+                }
+                else if(action === "rename") {
+                    console.warn("renaming unimplemented")
+                }
+                else if(action === "newflavor") {
+                    if(!newflavordialog) {
+                        newflavordialog = $('<div>').html('Flavor : <input type="text" id="'+this.cssId("newflavorname")+'"<br>Path : <input type="text" id="'+this.cssId("newflavorpath")+'" />').dialog({
+                            buttons: {
+                                "Save": function() {
+                                    var dialog = $(this);
+                                    var doc = node.data.doc;
+                                    var flavor = $("#"+that.cssId("newflavorname")).val();
+                                    if(doc.flavors[flavor])
+                                        that.showError(20);
+                                    else {
+                                        var path = $("#"+that.cssId("newflavorpath")).val();
+                                        that.database.view("test/flavors", {
+                                            success: function(data) {
+                                                for(var i = 0; i < data.rows.length; i++) {
+                                                    var thePath = data.rows[i].value.flavors.join(":")
+                                                    if(path===thePath)
+                                                        return that.showError(21);
+                                                }
+                                                doc.flavors[flavor] = path.split(":");
+                                                that.database.saveDoc(doc, {
+                                                    success: function(data) {
+                                                        that.flavor = flavor;
+                                                        dialog.dialog("close");
+                                                        that.loadFlavor();
+                                                    },
+                                                    error: function(status) {
+                                                        console.log(status);
+                                                    }
+                                                });
+                                            },
+                                            error: function(status) {
+                                                console.log(status);
+                                            },
+                                            key: flavor,
+                                            include_docs: false
+                                        });
+                                    }
+                                },
+                                "Cancel": function() {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            title: "New flavor",
+                            width: 375,
+                            autoOpen: false
+                        });
+                    }
+                    newflavordialog.dialog("open");
+                }
             }
         }
     });
@@ -479,6 +544,12 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             case 12:
                 content = "A folder with this name already exists.";
                 break;
+            case 20:
+                content = "Document already has this flavor";
+                break;
+            case 21:
+                content = "Path already used by another document";
+                break;
             case 401:
                 content = "Wrong username or password.";
                 break;
@@ -494,77 +565,70 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         $(("#"+this.cssId("error"))).text(content).show().delay(3000).fadeOut();
     }
     
-    function createTrees(data) {
-        var trees = {data: {__folder:true}, view: {__folder:true}};
-        
-        for(var i = 0, ii = data.length; i < ii; i++) {
-            var info = data[i];
-            var split = info.id.split(":");
-            split.shift();
-            if(split.shift()==="data")
-                addBranch(trees.data, split, info);
-            else
-                addBranch(trees.view, split, info);
+    function createTrees(data, flavor) {
+        var trees = {data: {}, view: {}};
+        for(var i = 0; i < data.length; i++) {
+            var theData = data[i];
+            var structure = getStructure(theData);
+            if(theData.value.data)
+                $.extend(true, trees.data, structure);
+            if(theData.value.view)
+                $.extend(true, trees.view, structure);
         }
         
-        trees.data = createFancyTree(trees.data, "");
-        trees.view = createFancyTree(trees.view, "");
-        
-        return trees;
+        var trees2 = {};
+        trees2.data = createFancyTree(trees.data, "", flavor);
+        trees2.view = createFancyTree(trees.view, "", flavor);
+        console.log(trees2);
+        return trees2;
     }
     
-    function addBranch(tree, indices, info) {
-        if(indices.length === 0) {
-            addLeaf(tree, info);
-        } else {
-            tree.__folder=true;
-            var index = indices.shift();
-            if(!tree[index])
-                tree[index] = {};
-            addBranch(tree[index], indices, info);
+    function getStructure(data) {
+        var flavors = data.value.flavors;
+        var structure = {}, current = structure;
+        for(var i = 0; i < flavors.length-1; i++) {
+            current = current[flavors[i]] = {__folder:true};
         }
+        current[flavors[flavors.length-1]] = {
+            __name:flavors.join(":"),
+            __doc:data.doc
+        }
+        return structure;
     }
     
-    function addLeaf(tree, info) {
-        tree.__name = info.id;
-        tree.__rev = info.value.rev;
-    }
-    
-    function createFancyTree(object, currentPath) {
+    function createFancyTree(object, currentPath, flavor) {
         var tree, root;
         if(currentPath.length) {
             tree = root = [];
         } else {
             root = [{
-                key:"root",
-                title: "root",
+                key:flavor,
+                title: flavor,
                 folder: true,
                 children: []
             }];
             tree = root[0].children;
-            currentPath = "root:";
+            currentPath = flavor+":";
         }
         
         for(var name in object) {
-            if(name==="__folder"||name==="__name"||name==="__rev")
+            if(name.indexOf("__")===0)
                 continue;
             var obj = object[name];
             var thisPath = currentPath+name;
             var el = {title:name, key:thisPath};
             if(obj.__folder) {
                 if(obj.__name) {
-                    tree.push({id: obj.__name, lazy: true, title: name, key: thisPath, lastRev: obj.__rev});
+                    tree.push({doc: obj.__doc, lazy: true, title: name, key: thisPath});
                 }
                 el.folder = true;
-                el.children = createFancyTree(obj, thisPath+":");
+                el.children = createFancyTree(obj, thisPath+":", flavor);
             } else {
                 el.lazy = true;
-                el.id = obj.__name;
-                el.lastRev = obj.__rev;
+                el.doc = obj.__doc;
             }
             tree.push(el);
         }
-        
         return root;
     }
     
