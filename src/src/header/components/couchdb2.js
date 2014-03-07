@@ -56,7 +56,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             }
             
             var that = this;
-            this.$_elToOpen = $("<div>");
+            this.$_elToOpen = $("<div>").css("width",550);
             this.errorP = $('<p id="'+this.cssId("error")+'" style="color: red;">');
             
             $.couch.session({
@@ -72,12 +72,23 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             });
             
         },
-        load: function(type, node, rev) {
-            $.getJSON(this.database.uri+node.data.doc._id+"/"+type.toLowerCase()+".json"+(rev ? "?rev="+rev : ""),function(data){
-                data = new window[type+"Object"](data,true);
-                Versioning["set"+type+"JSON"]( data );
-                this["last"+type+"Loaded"] = node.data.doc;
-            });
+        load: function(node, rev) {
+            var that = this;
+            var def;
+            if(node.data.hasData) {
+                def = $.getJSON(this.database.uri+node.data.doc._id+"/data.json"+(rev ? "?rev="+rev : ""),function(data){
+                    data = new DataObject(data,true);
+                    Versioning.setDataJSON(data);
+                });
+            } else def = $.Deferred().resolve();
+            if(node.data.hasView) {
+                def.done(function() {
+                    $.getJSON(that.database.uri+node.data.doc._id+"/view.json"+(rev ? "?rev="+rev : ""),function(view){
+                        view = new ViewObject(view,true);
+                        Versioning.setViewJSON(view);
+                    });
+                });
+            }
         },
         save: function(type, name) {
             
@@ -86,66 +97,71 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             if(name.indexOf(":")!==-1)
                 return this.showError(10);
             
-            var content = Versioning["get"+type]();
+            var content = JSON.stringify(Versioning["get"+type]());
             
-            var last = this["last"+type+"Node"];
+            var last = this["lastNode"];
             if(typeof last === "undefined")
                 return this.showError(11);
 
             var child = last.node.findFirst(name);
             
-            var encodedAttachment = {
-                "content_type":"application/json",
-                "data": Base64.encode(JSON.stringify(content))
-            };
-            
-            var doc, newDoc;
+            var doc;
             
             if(child && child.title===name && !child.folder && (last.node.getChildren().indexOf(child) >= 0)) {
                 doc = child.data.doc;
-                if(!doc._attachments) doc._attachments = {};
+                $.ajax({
+                    url: this.database.uri+doc._id+"/"+type.toLowerCase()+".json?rev="+doc._rev,
+                    type: "PUT",
+                    contentType: "application/json",
+                    data: content,
+                    dataType: "json",
+                    error: this.showError,
+                    success: function(data) {
+                        doc._rev = data.rev;
+                        child.data["has"+type] = true;
+                        if(child.children) child.lazyLoad(true);
+                    }
+                });
             }
             else {
-                newDoc = true;
                 var flavors = {},flav = [];
                 if(last.key)
                     flav = last.key.split(":");
                 flav.push(name);
                 flavors[this.flavor] = flav;
                 doc = {
-                    _id: $.couch.newUUID()+"test",
+                    _id: $.couch.newUUID(),
                     flavors: flavors,
                     _attachments: {}
                 };
-
-            }
-            doc._attachments[type.toLowerCase()+".json"] = encodedAttachment;console.log(doc)
-            this.database.saveDoc(doc, {
-                success: function(data) {
-                    if(newDoc) {
-                        doc._rev = data.rev
-                        last.node.addNode({
+                doc._attachments[type.toLowerCase()+".json"] = {
+                    "content_type":"application/json",
+                    "data": Base64.encode(content)
+                };
+                this.database.saveDoc(doc, {
+                    success: function(data) {
+                        doc._rev = data.rev;
+                        var newNode = {
                             doc: doc,
                             lazy: true,
                             title: name,
                             key: last.node.key+":"+name
-                        });
+                        };
+                        newNode["has"+type] = true;
+                        last.node.addNode(newNode);
                         if(!last.node.expanded)
                             last.node.toggleExpanded();
-                    } else {
-                        if(child.children) child.lazyLoad(true); 
                     }
-                }
-            });
+                });
+            }
         },
-        mkdir: function(type, name) {
-            
+        mkdir: function(name) {
             if(name.length < 1)
                 return;
             if(name.indexOf(":")!==-1)
                 return this.showError(10);
             
-            var last = this["last"+type+"Node"];
+            var last = this["lastNode"];
             if(typeof last === "undefined")
                 return this.showError(11);
             
@@ -241,44 +257,23 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                }, {color: 'red'}).render()
            ));
             
-            var tableRow = $("<tr>").appendTo($("<table>").appendTo(dom));
             var treeCSS = {
                 "overflow-y":"auto",
                 "height": "200px",
                 "width": "300px"
             };
-            
-            var dataCol = $('<td valign="top">').appendTo(tableRow);
-            dataCol.append('<h1>Data</h1>');
-            
-            var dataTree = $("<div>").attr("id", this.cssId("datatree")).css(treeCSS);
-            dataCol.append(dataTree);
-
-            dataCol.append($("<p>").append('<input type="text" id="'+this.cssId("data")+'"/>')
-                   .append(new Button('Save', function() {
-                       that.save("Data", that.getFormContent("data"));
+            var treeContainer = $("<div>").attr("id", this.cssId("tree")).css(treeCSS).appendTo(dom);
+            dom.append($("<p>").append('<input type="text" id="'+this.cssId("docName")+'"/>')
+                   .append(new Button('Save data', function() {
+                       that.save("Data", that.getFormContent("docName"));
+                   }, {color: 'red'}).render())
+                   .append(new Button('Save view', function() {
+                       that.save("View", that.getFormContent("docName"));
                    }, {color: 'red'}).render())
                    .append(new Button('Mkdir', function() {
-                       that.mkdir("Data", that.getFormContent("data"));
+                       that.mkdir(that.getFormContent("docName"));
                    }, {color: 'blue'}).render())
             );
-            this.lastDataFolder = {name:this.username+":data",node:null};
-
-            var viewCol = $('<td valign="top">').appendTo(tableRow);
-            viewCol.append('<h1>View</h1>');
-            
-            var viewTree = $("<div>").attr("id", this.cssId("viewtree")).css(treeCSS);
-            viewCol.append(viewTree);
-            
-            viewCol.append($("<p>").append('<input type="text" id="'+this.cssId("view")+'"/>')
-                   .append(new Button('Save', function() {
-                       that.save("View", that.getFormContent("view"));
-                   }, {color: 'red'}).render())
-                   .append(new Button('Mkdir', function() {
-                       that.mkdir("View", that.getFormContent("view"));
-                   }, {color: 'blue'}).render())
-            );
-            this.lastViewFolder = {name:this.username+":view",node:null};
             
             dom.append(this.errorP);
             
@@ -307,12 +302,11 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 }
             });
         },
-        clickNode: function(type, event, data) {
+        clickNode: function(event, data) {
             if(data.targetType!=="title" && data.targetType!=="icon")
                 return;
 
             var node = folder = data.node, last;
-            var typeL = type.toLowerCase();
             
             var index = node.key.indexOf(":"), keyWithoutFlavor;
             if(index>=0)
@@ -322,7 +316,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             
             if(node.folder) {
                 var folderName = keyWithoutFlavor;
-                last = {name: this.username+":"+typeL+(folderName.length>0 ? ":"+folderName : ""), node: node};
+                last = {name: this.username+(folderName.length>0 ? ":"+folderName : ""), node: node};
             } else {
                 var rev;
                 if(node.data.rev) {
@@ -330,10 +324,10 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     node = node.parent;
                 }
                 folder = node.parent;
-                $("#"+this.cssId(typeL)).val(node.title);
+                $("#"+this.cssId("docName")).val(node.title);
                 last = {name: node.data.doc._id, node: node};
                 if(event.type==="fancytreedblclick")
-                    this.load(type, node, rev);
+                    this.load(node, rev);
             }
             
             last = {
@@ -341,14 +335,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 node: folder
             }
             
-            this["last"+type+"Node"] = last;
+            this["lastNode"] = last;
             if(event.type==="fancytreedblclick" && !node.folder)
                 return false;
         },
         loadFlavor: function() {
             var proxyLazyLoad = $.proxy(this, "lazyLoad"),
-                proxyClickData = $.proxy(this, "clickNode", "Data"),
-                proxyClickView = $.proxy(this, "clickNode", "View"),
+                proxyClick = $.proxy(this, "clickNode"),
                 that = this;
         
             var menuOptions = {
@@ -404,37 +397,22 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             }   
             
             this.database.view("test/flavors", {
-                success: function(data) {console.log(data);
-                    var trees = createTrees(data.rows, that.flavor);
-                    var datatree = $("#"+that.cssId("datatree"));
-                    datatree.fancytree({
+                success: function(data) {
+                    var tree = createFullTree(data.rows, that.flavor)
+                    var theTree = $("#"+that.cssId("tree"));
+                    theTree.fancytree({
                         extensions: ["dnd"],
                         dnd: dnd,
                         source: [],
                         lazyload: proxyLazyLoad,
-                        click: proxyClickData,
-                        dblclick: proxyClickData,
+                        click: proxyClick,
+                        dblclick: proxyClick,
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
-                    var dataftree = datatree.data("ui-fancytree").getTree();
-                    dataftree.reload(trees.data);
-                    dataftree.getNodeByKey(that.flavor).toggleExpanded();
-                    datatree.contextmenu(menuOptions);
-                    
-                    var viewtree = $("#"+that.cssId("viewtree"));
-                    viewtree.fancytree({
-                        extensions: ["dnd"],
-                        dnd: dnd,
-                        source: [],
-                        lazyload: proxyLazyLoad,
-                        click: proxyClickView,
-                        dblclick: proxyClickView,
-                        debugLevel:0
-                    }).children("ul").css("box-sizing", "border-box");
-                    var viewftree = viewtree.data("ui-fancytree").getTree();
-                    viewftree.reload(trees.view);
-                    viewftree.getNodeByKey(that.flavor).toggleExpanded();
-                    viewtree.contextmenu(menuOptions);
+                    var thefTree = theTree.data("ui-fancytree").getTree();
+                    thefTree.reload(tree);
+                    thefTree.getNodeByKey(that.flavor).toggleExpanded();
+                    theTree.contextmenu(menuOptions);
                 },
                 error: function(status) {
                     console.log(status);
@@ -565,22 +543,14 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         $(("#"+this.cssId("error"))).text(content).show().delay(3000).fadeOut();
     }
     
-    function createTrees(data, flavor) {
-        var trees = {data: {}, view: {}};
+    function createFullTree(data, flavor) {
+        var tree = {};
         for(var i = 0; i < data.length; i++) {
             var theData = data[i];
             var structure = getStructure(theData);
-            if(theData.value.data)
-                $.extend(true, trees.data, structure);
-            if(theData.value.view)
-                $.extend(true, trees.view, structure);
+            $.extend(true, tree, structure);
         }
-        
-        var trees2 = {};
-        trees2.data = createFancyTree(trees.data, "", flavor);
-        trees2.view = createFancyTree(trees.view, "", flavor);
-        console.log(trees2);
-        return trees2;
+        return createFancyTree(tree, "", flavor);
     }
     
     function getStructure(data) {
@@ -591,7 +561,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         }
         current[flavors[flavors.length-1]] = {
             __name:flavors.join(":"),
-            __doc:data.doc
+            __doc:data.doc,
+            __data:data.value.data,
+            __view:data.value.view
         }
         return structure;
     }
@@ -619,13 +591,15 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             var el = {title:name, key:thisPath};
             if(obj.__folder) {
                 if(obj.__name) {
-                    tree.push({doc: obj.__doc, lazy: true, title: name, key: thisPath});
+                    tree.push({doc: obj.__doc, hasData: obj.__data, hasView: obj.__view, lazy: true, title: name, key: thisPath});
                 }
                 el.folder = true;
                 el.children = createFancyTree(obj, thisPath+":", flavor);
             } else {
                 el.lazy = true;
                 el.doc = obj.__doc;
+                el.hasData = obj.__data;
+                el.hasView = obj.__view;
             }
             tree.push(el);
         }
