@@ -20,7 +20,7 @@ define(['modules/default/defaultview'], function(Default) {
 				if(!moduleValue)
 					return;
 				
-				this.dom.attr('src', moduleValue);
+				this.dom.attr('src', moduleValue.get());
 			},
 
 			doi: function(moduleValue) {

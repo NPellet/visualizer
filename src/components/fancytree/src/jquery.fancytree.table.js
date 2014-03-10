@@ -4,7 +4,7 @@
  * Render tree as table (aka 'treegrid', 'tabletree').
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -71,8 +71,9 @@ function findPrevRowNode(node){
 }
 
 
-$.ui.fancytree.registerExtension("table", {
-	version: "0.0.1",
+$.ui.fancytree.registerExtension({
+	name: "table",
+	version: "0.1.0",
 	// Default options for this extension.
 	options: {
 		indentation: 16,        // indent every node level by 16px
@@ -156,16 +157,16 @@ $.ui.fancytree.registerExtension("table", {
 			node = ctx.node,
 			opts = ctx.options,
 			isRootNode = !node.parent;
-//			firstTime = false;
+
 		if( !_recursive ){
 			ctx.hasCollapsedParents = node.parent && !node.parent.expanded;
 		}
+		$.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode);
 		if( !isRootNode ){
 			if(!node.tr){
 				// Create new <tr> after previous row
 				newRow = tree.rowFragment.firstChild.cloneNode(true);
 				prevNode = findPrevRowNode(node);
-//				firstTime = true;
 //				$.ui.fancytree.debug("*** nodeRender " + node + ": prev: " + prevNode.key);
 				_assert(prevNode);
 				if(collapsed === true && _recursive){
@@ -202,7 +203,7 @@ $.ui.fancytree.registerExtension("table", {
 				}
 			} else {
 				// Set icon, link, and title (normally this is only required on initial render)
-				this.nodeRenderTitle(ctx);
+				//this.nodeRenderTitle(ctx);
 			}
 		}
 		 // Allow tweaking after node state was rendered
@@ -227,10 +228,10 @@ $.ui.fancytree.registerExtension("table", {
 			// Iterate over all descendants
 			node.visit(function(n){
 				if(n.tr){
-					if(!node.expanded && !isRootNode && n.tr.style.display !== "none"){
-						// fix after a node was dropped over a sibling.
-						// In this case it must be hidden
+					if(!n.parent.expanded && n.tr.style.display !== "none"){
+						// fix after a node was dropped over a collapsed
 						n.tr.style.display = "none";
+						setChildRowVisibility(n, false);
 					}
 					if(n.tr.previousSibling !== prevTr){
 						node.debug("_fixOrder: mismatch at node: " + n);
@@ -245,12 +246,6 @@ $.ui.fancytree.registerExtension("table", {
 		if(!isRootNode){
 			this.nodeRenderStatus(ctx);
 		}
-		// Finally add the whole structure to the DOM, so the browser can render
-		// if(firstTime){
-		//     parent.ul.appendChild(node.li);
-		// }
-			// TODO: just for debugging
-	//            this._super(ctx);
 	},
 	nodeRenderTitle: function(ctx, title) {
 		var $cb,
@@ -258,12 +253,12 @@ $.ui.fancytree.registerExtension("table", {
 			opts = ctx.options;
 
 		this._super(ctx);
-				// move checkbox to custom column
+		// Move checkbox to custom column
 		if(opts.checkbox && opts.table.checkboxColumnIdx != null){
 			$cb = $("span.fancytree-checkbox", node.span).detach();
 			$(node.tr).find("td:first").html($cb);
 		}
-		// let user code write column content
+		// Let user code write column content
 		// ctx.tree._triggerNodeEvent("renderColumns", node);
 		if ( opts.renderColumns ){
 			opts.renderColumns.call(ctx.tree, {type: "renderColumns"}, ctx);
@@ -275,16 +270,15 @@ $.ui.fancytree.registerExtension("table", {
 			opts = ctx.options;
 
 		this._super(ctx);
+
 		$(node.tr).removeClass("fancytree-node");
 		// indent
 		indent = (node.getLevel() - 1) * opts.table.indentation;
-		if(indent){
-			$(node.span).css({marginLeft: indent + "px"});
-		}
+		$(node.span).css({marginLeft: indent + "px"});
 	 },
 	/* Expand node, return Deferred.promise. */
-	nodeSetExpanded: function(ctx, flag) {
-		return this._super(ctx, flag).always(function () {
+	nodeSetExpanded: function(ctx, flag, opts) {
+		return this._super(ctx, flag, opts).always(function () {
 			flag = (flag !== false);
 			setChildRowVisibility(ctx.node, flag);
 		});

@@ -78,6 +78,17 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				serie.setXAxis(NMR.getTopAxis());
 				serie.setYAxis(NMR.getLeftAxis());
 				this.redraw();
+			},
+
+			annotations: function(value) {
+				value = DataTraversing.getValueIfNeeded(value);
+
+				console.log(value);
+				if(!value)
+					return;
+
+				this.annotations = value;
+				this.resetAnnotations(true);
 			}
 		},
 

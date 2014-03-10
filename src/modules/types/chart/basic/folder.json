@@ -3,8 +3,16 @@
 		{
 			"moduleName": "Pie chart",
 			"url": "modules/types/chart/basic/pie_chart/"
+		},
+		{
+			"moduleName": "Pie chart jit",
+			"url": "modules/types/chart/basic/pie_chart_jit/"
+		},
+		{
+			"moduleName": "Stack chart",
+			"url": "modules/types/chart/basic/stack_chart/"
 		}
 	],
-	"name": "basic",
+	"name": "Basic",
 	"folders": {}
 }

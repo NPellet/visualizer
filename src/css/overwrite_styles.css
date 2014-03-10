@@ -34,3 +34,15 @@
 	outline: none;
 }
 
+
+
+
+/* Norman modification */
+.jqgrow:hover {
+	background-color: #e5be39 !important;
+}
+
+.jqgrow td.ui-state-highlight {
+	background-color: transparent;
+	border: none;
+}

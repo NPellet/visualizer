@@ -67,6 +67,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			form.onLoaded( ).done( function( ) {
 				self.dom.html( form.makeDom( 2 ) );
 				form.inDom();
+                                form.fieldElementValueChanged();
 			});
 			
 			this.makeSearchFilter();
@@ -91,17 +92,16 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				l,
 				target = new DataArray();
 
-			if( ! val ) {
+			if( ! val || Object.keys(cfg).length===0 ) {
 				return;
 			}
-
 
 			val = val.get();
 				
 			l = val.length;
 
 			for( ; i < l ; i ++ ) {
-				if( this.searchElement( cfg, val[ i ] ) ) {
+				if( this.searchElement( cfg, val[ i ].get() ) ) {
 					target.push( val[ i ] );
 				}
 			}
@@ -109,14 +109,27 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			this.module.controller.searchDone( target );		
 		},
 
-		_makeOp: function( op, val ) {
+		_makeOp: function( op, val, options ) {
 
-			val = "self.cfgValue[ '" + val + "' ]";
+			val = "cfg[ '" + val + "' ]";
+                        var numPrefix = "", numSuffix = "";
+                        if(options.number) {
+                            numPrefix = "parseFloat(";
+                            numSuffix = ")";
+                        }
+                        var textSuffix = ".toLowerCase()";
+                        if(options.caseSensitive) {
+                            textSuffix = "";
+                     }
 			switch( op ) {
 
 				case '=':
 				case 'eq':
-					return " (el + '') == " + val + " ";
+                                    if(options.number) {
+                                        return " el == " + numPrefix + val + numSuffix + " ";
+                                    } else {
+                                        return " ((el+'')"+textSuffix+") == " + val + textSuffix + " ";
+                                    }
 				break;
 
 				case '<>':
@@ -126,35 +139,35 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				break;
 
 				case '>':
-					return " el > " + val + " ";
+					return " el > " + numPrefix + val + numSuffix + " ";
 				break;
 
 				case '>=':
-					return " el >= " + val + " ";
+					return " el >= " + numPrefix + val + numSuffix + " ";
 				break;
 
 				case '<':
-					return " el > parseFloat( " + val + " ) ";
+					return " el <  " + numPrefix + val + numSuffix + "  ";
 				break;
 
 				case '<=':
-					return " el <= parseFloat( " + val + " ) ";
+					return " el <=  " + numPrefix + val + numSuffix + "  ";
 				break;
 
 				case 'contains':
-					return " el.match(" + val + ") ";
+					return " el"+textSuffix+".match(" + val + textSuffix + ") ";
 				break;
 
 				case 'notcontain':
-					return " ! el.match(" + val + ") ";
+					return " ! el"+textSuffix+".match(" + val + textSuffix + ") ";
 				break;
 
 				case 'starts':
-					return " el.match(new RegExp('^'+" + val + ")) ";
+					return " el"+textSuffix+".match(new RegExp('^'+" + val + textSuffix + ")) ";
 				break;
 
 				case 'end':
-					return " el.match(new RegExp(" + val + "+'$')) ";
+					return " el"+ textSuffix +".match(new RegExp(" + val + textSuffix + "+'$')) ";
 				break;
 
 				case 'btw':
@@ -173,7 +186,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				searchfields = this.module.getConfiguration( 'searchfields' ),
 				i = 0,
 				l = searchfields.length,
-					searchOn;
+				searchOn;
 
 
 			var toEval = "";
@@ -191,7 +204,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					toEval += " && ";
 				}
 
-				j = 0,
+				var j = 0,
 				k = searchOn.length;
 
 				/////////
@@ -204,9 +217,11 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 						if( j > 0 ) {
 							toEval += " || ";
 						}
-
+                                                var opts = {};
+                                                if(searchfields[ i ].groups.general[ 0 ].type[ 0 ]==='float') opts.number=true;
+                                                if(searchfields[ i ].groups.text && searchfields[ i ].groups.text[ 0 ].case_sensitive[ 0 ][ 0 ]==='case_sensitive') opts.caseSensitive=true;
 						toEval += " ( ( el = self.getJpath( '" + searchOn[ j ] + "', row ) ) && ( ";
-						toEval += this._makeOp( searchfields[ i ].groups.general[ 0 ].operator[ 0 ], searchfields[ i ].groups.general[ 0 ].name[ 0 ] );
+						toEval += this._makeOp( searchfields[ i ].groups.general[ 0 ].operator[ 0 ], searchfields[ i ].groups.general[ 0 ].name[ 0 ], opts );
 						toEval += " ) ) ";
 
 					}

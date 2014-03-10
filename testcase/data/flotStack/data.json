@@ -1,0 +1,63 @@
+{
+	"highlight": [
+		{"label":"A","_highlight":["A"]},
+		{"label":"B","_highlight":["B"]},
+		{"label":"C","_highlight":["C"]},
+		{"label":"D","_highlight":["D"]},
+		{"label":"E","_highlight":["E"]}
+	],
+	"pieChart":
+	{
+		"type":"chart",
+		"value": {
+			"title" : "A stack chart",
+			"axis": {
+				"0": {
+					"type": "bottom", 
+					"unit": "",
+					"name": "",
+					"min":"",
+					"max":""
+				},
+				"1": {
+					"type": "left",
+					"unit": "",
+					"name": "",
+					"min":"",
+					"max":""
+				}
+			},
+			"pref": {
+			"type": "bars",
+			"stack": ""
+			},
+			"data" : 
+			[
+				{
+					"x":[0,1,4],
+					"y":[1,7,5],
+					"z":[],
+					"_highlight":["A"],
+					"info":[{"name":"first"}],
+					"serieLabel": "My first serie",
+					"xAxis": "0", 
+					"yAxis": "1",
+					"preference": "lines"
+				},
+				{
+					"x":[0,2,5],
+					"y":[2,3,4],
+					"z":[],
+					"_highlight":["B","E"],
+					"info":[{"name":"second"}],
+					"serieLabel": "My second serie",
+					"xAxis": "0", 
+					"yAxis": "1",
+					"preference": "lines"
+				}
+				
+			]
+		}
+	}
+}
+	

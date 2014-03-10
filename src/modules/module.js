@@ -285,6 +285,11 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 				function() {
 					self.exportData();
 				}],
+                
+				['<li><a><span class="ui-icon ui-icon-print"></span> Print</a></li>', 
+				function() {
+					self.printView();
+				}],
 				
 				['<li><a><span class="ui-icon ui-icon-gear"></span> Parameters</a></li>', 
 				function() {
@@ -374,6 +379,10 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 				varsInList = [];
 
 			for( i = 0, l = varsIn.length ; i < l ; i ++ ) {
+				
+				if( ! references[ varsIn [ i ] ] ) {
+					continue;
+				}
 				
 				varsInList.push( { key: varsIn[ i ], title: references[ varsIn [ i ] ].label } )
 			}
@@ -828,7 +837,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 						}
 					}
 
-					form.fill(fill);
+
+					form.fill( fill );
 
 				});
 
@@ -1107,6 +1117,15 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 				'width': '70%',
 				height: 500
 			}).children('textarea').text(module.controller["export"]());
+		},
+		
+		printView: function() {
+			var openWindow = window.open("", "", "");
+			this.controller["print"](openWindow);
+			openWindow.document.close();
+			openWindow.focus();
+			openWindow.print();
+			openWindow.close();
 		},
 
 		setBackgroundColor: function(color) {

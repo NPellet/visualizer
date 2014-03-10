@@ -14,51 +14,51 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 			changing,
 			range = self.field.options.range,
 			slider = $("<div />")
-					.appendTo( div )
-					.slider( {
+				.appendTo( div )
+				.slider( {
 
-						min: this.field.options.min,
-						max: this.field.options.max,
-						step: this.field.options.step,
+					min: this.field.options.min,
+					max: this.field.options.max,
+					step: this.field.options.step,
 
-						range: this.field.options.range,
+					range: this.field.options.range,
 
-						change: function( event, ui ) {
-								
-							ui.value = range ? ui.values[ changing ] : ui.value;
+					change: function( event, ui ) {
+							
+						ui.value = range ? ui.values[ changing ] : ui.value;
 
+						if( valueInput[ changing ] && lastVal[ changing ] !== ui.value && ! isNaN( ui.value ) ) {
+							lastVal[ changing ] = ui.value;
+							valueInput[ changing ].val( lastVal[ changing ] );	
+							self.setValueSilent( lastVal );
+						}
+					},
+
+					slide: function( event, ui ) {
+						
+						var index = $(ui.handle).index();
+						changing = index;
+
+						if( range ) {
+							changing --;
+						}
+						
+						ui.value = range ? ui.values[ changing ] : ui.value;
+
+						if( !isNaN( ui.value )) {
+						
 							if( valueInput[ changing ] && lastVal[ changing ] !== ui.value && ! isNaN( ui.value ) ) {
+
 								lastVal[ changing ] = ui.value;
-								valueInput[ changing ].val( lastVal[ changing ] );	
-								self.setValueSilent( lastVal );
-							}
-						},
 
-						slide: function( event, ui ) {
-							
-							var index = $(ui.handle).index();
-							changing = index;
-
-							if( range ) {
-								changing --;
-							}
-							
-							ui.value = range ? ui.values[ changing ] : ui.value;
-
-							if( !isNaN( ui.value )) {
-							
-								if( valueInput[ changing ] && lastVal[ changing ] !== ui.value && ! isNaN( ui.value ) ) {
-
-									lastVal[ changing ] = ui.value;
-
-									if( valueInput[ changing ] ) {
-										valueInput[ changing ].val( lastVal[ changing ] );	
-										self.setValueSilent( lastVal );
-									}
+								if( valueInput[ changing ] ) {
+									valueInput[ changing ].val( lastVal[ changing ] );	
+									self.setValueSilent( lastVal );
 								}
 							}
 						}
-					}),
+					}
+				}),
 
 			valueWrap = $("<div />")
 				.addClass( 'forms-field-slider-value')
@@ -105,19 +105,23 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 		this.div = div;
 		this.dom = dom;
 		this.slider = slider;
+		this.inputs = valueInput;
 		
+//		this.checkValue();
+
 		return dom;
 	};
 
 	FieldConstructor.prototype.checkValue = function() {
 
-		if( this.slider && !isNaN( this.value ) ) {
+		if( this.slider && typeof this.value !== "undefined" ) {
 
 			if( this.field.options.range ) {
 
 				if( this.value instanceof Array ) {
 					for( var i = 0, l = this.value.length; i < l ; i ++ ) {
-						this.slider.slider( 'value', i, this.value[ i ] );	
+						this.slider.slider( 'values', i, this.value[ i ] );	
+						this.inputs[ i ].val( this.value[ i ] );	
 					}
 				}
 			} else {

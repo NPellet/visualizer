@@ -173,13 +173,33 @@ body, th, td, .forms input, .forms select, .forms textarea {
 }
 
 
-.forms .form-field-list-text input {
+.forms .form-field-list-text input, .forms .form-field-list-float input {
 	width: 100%;
 	border: 1px solid #c0c0c0;
 	padding: 3px;
 	outline: none;
 	height: 25px;
 	box-sizing: border-box;
+}
+
+.forms .form-field-error input {
+	border: 1px solid #a10f0f;
+	background-color: #fe9f9f;
+	color: #a10f0f;
+}
+
+.forms .form-field-error-message {
+	color: #a10f0f;
+}
+
+.forms .form-field-valid input {
+	border: 1px solid #08881d;
+	background-color: #c6f3a9;
+	color: #08881d;
+}
+
+.forms .form-field-valid-message {
+	color: #08881d;
 }
 
 .forms .form-field-list-wysiwyg .form-field-list-elements > div > div {

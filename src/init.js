@@ -1,18 +1,18 @@
-
 requirejs.config({
 	"baseUrl": "",
 	"paths": {
-		"ace": "./components/ace/lib/ace/",
+		"ace": "./components/ace/lib/ace",
 		"d3": "./components/d3/d3.min",
 		"fancytree": "./components/fancytree/src/jquery.fancytree",
-		"jqgrid": "./components/jqgrid/js/jquery.jqGrid",
+		"jqgrid": "./components/jqgrid_edit/js/jquery.jqGrid",
 		"jquery": "./components/jquery/jquery.min",
 		"jqueryui": "./components/jquery-ui/ui/minified/jquery-ui.min",
 		"ckeditor": "./components/ckeditor/ckeditor",
 		"threejs": "./components/three.js/build/three.min",
-		"forms": "./lib/forms/",
+		"forms": "./lib/forms",
 		"plot": "./lib/plot/plot",
-		'ChemDoodle': 'lib/chemdoodle/ChemDoodleWeb-unpacked'
+		'ChemDoodle': 'lib/chemdoodle/ChemDoodleWeb-unpacked',
+        "pouchdb": "./components/pouchdb/dist/pouchdb-nightly.min"
 	},
 
 	"shim": {
@@ -31,12 +31,18 @@ requirejs.config({
                 return this.L.noConflict();
             }
         },
-		"ckeditor": ["./components/ckeditor/adapters/jquery"],
-		"jqgrid": ["jquery", "components/jqgrid/js/i18n/grid.locale-en"],
+        "components/jit/Jit/jit" : {
+            "exports" : "$jit"
+        },
+	//	"ckeditor": ["./components/ckeditor/adapters/jquery"],
+		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"lib/flot/jquery.flot.pie": ["jquery","lib/flot/jquery.flot"],
 		"jqueryui": ["jquery"],
 		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"],
+                "components/farbtastic/src/farbtastic" : ["components/jquery/jquery-migrate.min"],
+                "lib/pixastic/pixastic" : ["lib/pixastic/pixastic/pixastic.core"],
+                'components/fancytree/src/jquery.fancytree.dnd' : ["fancytree"],
                 "lib/parallel-coordinates/d3.parcoords": ["d3"]
 	}
 });
@@ -137,7 +143,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 		configurable: false,
 		writable: false,
 		value: function(k, l, check) {
-			console.log('View has changed');
+			//console.log('View has changed');
 
 			if(check) {
 				if(l instanceof Array)
@@ -155,7 +161,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 		configurable: false,
 		writable: false,
 		value: function(k, l) {
-			console.log('Data has changed');
+			//console.log('Data has changed');
 			this[k] = l;
 			return this;
 		}
@@ -193,47 +199,127 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 	}
 
 	var getChild = {
-		value: function(jpath) {
+		value: function( jpath, setParents ) {
 
 			if(jpath && jpath.split) { // Old version
 				jpath = jpath.split('.');
 				jpath.shift();
 			}
 
-			if(!jpath || jpath.length == 0)
+			if(!jpath || jpath.length == 0) {
 				return $.Deferred().resolve(this);
-			else if(jpath.length == 0) {// Last element
-				return this.get(el, true);
 			}
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
+			var self = this;
 
-			return this
-					.get(el, true)
-					.pipe(function(el) { 
-						if(el.getChild) { // If the element could be fetched further down
-							return el.getChild(jpath);
-						} else {
-							return el;
-						}
-					});
+			var subEl = this.get(el, true).pipe( function( subEl ) {
+
+				if( setParents ) {
+
+					switch( typeof subEl ) {
+
+						case 'string':
+							subEl = new DataObject( { type: "string", value: subEl } );
+						break;
+
+						case 'number':
+							subEl = new DataObject( { type: "number", value: subEl } );
+						break;
+					}
+
+					if( subEl.linkToParent ) {
+						subEl.linkToParent( self, el );
+					}
+				}
+
+				if( jpath.length == 0 ) {
+					return subEl;
+				}
+
+				return subEl.getChild( jpath, setParents );
+			});
+
+			return subEl;
 		}
 	};
 
+
+	var getChildSync = {
+		value: function( jpath, setParents ) {
+
+			if( jpath && jpath.split ) { // Old version
+				jpath = jpath.split( '.' );
+				jpath.shift( );
+			}
+
+			if( ! jpath ) {
+				return this;
+			}
+
+			var el = jpath.shift(); // Gets the current element and removes it from the array
+			var subEl = this.get(el, true);
+
+			switch( typeof subEl ) {
+				case 'string':
+					subEl = new DataObject( { type: "string", value: subEl } );
+				break;
+
+				case 'number':
+					subEl = new DataObject( { type: "number", value: subEl } );
+				break;
+			}
+
+			if( ! subEl.__parent ) {
+
+				Object.defineProperty( subEl, '__parent', { value: this, writable: false, configurable: false, enumerable: false });
+				Object.defineProperty( subEl, '__name', { value: el, writable: false, configurable: false, enumerable: false });
+
+			}
+
+			if( jpath.length == 0 ) {
+				return subEl;
+			}
+
+			return subEl.getChildSync( jpath, setParents );
+		}
+	};
+
+
+	var linkToParent = {
+		value: function( parent, name ) {
+
+			if( this.__parent ) {
+				return;
+			}
+			
+			parent[ name ] = this;
+
+			Object.defineProperty( this, '__parent', { value: parent, writable: false, configurable: false, enumerable: false } );
+			Object.defineProperty( this, '__name', { value: name, writable: false, configurable: false, enumerable: false } );
+		}
+	};
+
+
 	var setChild = {
-		value: function(jpath, newValue, options) {
+		value: function( jpath, newValue, options ) {
 			var self = this;
+
+			options = options || {};
 
 			if(jpath.split) { // Old version
 				jpath = jpath.split('.');
 				jpath.shift();
 			}
 			
-			if(!jpath || jpath.length == 0)
-				return $.Deferred().reject();
+			if(!jpath || jpath.length == 0) {
+				this.value = newValue;
+				this.triggerChange( options.moduleid );
+				return $.Deferred().resolve( this );
+			}
 
 			if(jpath.length == 1) // Ok we're done, let's set it
-				return $.Deferred().resolve(this.set(jpath[0], newValue));
+				return $.Deferred().resolve( this.set( jpath[0], newValue ) );
 
 			var el = jpath.shift();
 			if(!this[el]) // We need to set an empty object to create the elements
@@ -242,24 +328,44 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 			return this
 					.get(el, true)
 					.pipe(function(el) { el.setChild(jpath, newValue, options) })
-					.done(function() { if(!options.mute) self.triggerChange(options.moduleid); });
+					.done(function() { 
+						if( ! options.mute ) {
+							self.triggerChange( options.moduleid );
+						}
+					} );
 		}
 	};
 
 	var dataChanged = {
 		value: function(moduleid) {
 			
-			if(!this._listenersDataChanged)
+			if( ! this._listenersDataChanged ) {
+
+
+				if( this.__parent ) {
+					this.__parent.triggerChange( moduleid );
+				}
+
 				return;
+			}
 
 			var i = 0, 
 				l = this._listenersDataChanged.length;
 
-			for (; i < l; i++) {
-				if(moduleid === undefined || (this._listenersDataChanged[i][1] !== moduleid)) {
-					this._listenersDataChanged[i][0].call(this, this);
+			for ( ; i < l; i++ ) {
+
+				if( moduleid === undefined || ( this._listenersDataChanged[i][1] !== moduleid ) ) {
+
+					this._listenersDataChanged[ i ][ 0 ].call( this, this );
+
 				}
 			}
+
+
+			if( this.__parent ) {
+				this.__parent.triggerChange( moduleid );
+			}
+
 		}
 	}
 
@@ -303,7 +409,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 			var self = this,
 				deferred = $.Deferred( );
 
-			if( !this.url || !this.type ) { // No need for fetching. Still returning a deferred, though.
+			if( !this.url ) { // No need for fetching. Still returning a deferred, though.
 				return deferred.resolve( this );
 			}
 
@@ -330,6 +436,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 					deferred.reject( self ); 
 				});
 			});
+			
 			return deferred;
 		}
 	};
@@ -354,6 +461,11 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 
 	Object.defineProperty(DataObject.prototype, 'onChange', listenDataChanged);
 	Object.defineProperty(DataArray.prototype, 'onChange', listenDataChanged);
+
+
+	Object.defineProperty(DataObject.prototype, 'linkToParent', linkToParent);
+	Object.defineProperty(DataArray.prototype, 'linkToParent', linkToParent);
+
 
 	Object.defineProperty(DataObject.prototype, 'triggerChange', dataChanged);
 	Object.defineProperty(DataArray.prototype, 'triggerChange', dataChanged);
@@ -381,6 +493,8 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 
 		var url = window.document.location.search.substring(1).split('&'),
 			urls = {};
+                if(url[0]==="")
+                    url = window.document.location.hash.substring(1).split('&');
 		for(var i = 0; i < url.length; i++) {
 			var args = url[i].split('=');
 			urls[args[0]] = unescape(args[1]);

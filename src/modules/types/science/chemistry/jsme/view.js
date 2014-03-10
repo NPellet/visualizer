@@ -26,6 +26,7 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 			return this.module.getConfiguration( 'prefs' ).join( );
 		},
 
+
 		onResize: function() {
 			this.dom.attr( 'width', this.width );
 			this.dom.attr( 'height', this.height );
@@ -44,7 +45,11 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 
 		blank: {
 			'mol': function(varName) {
-		//		console.log("CLEAR");
+				if (this.dom.get(0).contentWindow.clear) {
+					this.dom.get(0).contentWindow.clear();
+				}
+			},
+			'jme': function(varName) {
 				if (this.dom.get(0).contentWindow.clear) {
 					this.dom.get(0).contentWindow.clear();
 				}
@@ -55,8 +60,6 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 
 			'mol': function(moduleValue) {
 				if(!moduleValue) return;
-
-console.log(moduleValue.get())
 
 				var contentWindow = this.dom.get(0).contentWindow;
 				contentWindow.setMolFile(moduleValue.get());
@@ -94,15 +97,16 @@ console.log(moduleValue.get())
 		},
 
 		_doHighlight: function(mol, id) {
+			window.ab=this._currentValue._atoms;
 			if (! this._currentValue) return;
 			for(var i in this._currentValue._atoms) {
 				if (id==0) {
 					if(this._currentValue._atoms[i].indexOf(this.highlightedAtom) > -1) {
-						API.highlight(i, false);
+						API.highlightId(i, false);
 					}
 				} else {
 					if(this._currentValue._atoms[i].indexOf(id-1) > -1) {
-						API.highlight(i, 1);
+						API.highlightId(i, 1);
 					}						
 				}
 

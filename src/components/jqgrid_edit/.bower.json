@@ -1,0 +1,23 @@
+{
+  "name": "jqGrid",
+  "version": "4.5.6",
+  "main": [
+    "js/i18n/grid.locale-en.js",
+    "js/jquery.jqGrid.js",
+    "css/ui.jqgrid.css"
+  ],
+  "dependencies": {
+    "jquery": ">=1.7.0"
+  },
+  "homepage": "https://github.com/NPellet/jqGrid",
+  "_release": "4.5.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "v4.5.6",
+    "commit": "089e4883a58c841880f8c0396523bd18e8fd084c"
+  },
+  "_source": "git://github.com/NPellet/jqGrid.git",
+  "_target": "~4.5.6",
+  "_originalSource": "git://github.com/NPellet/jqGrid",
+  "_direct": true
+}

@@ -14,7 +14,7 @@
  * Add a child counter bubble to tree nodes.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -91,8 +91,9 @@ $.ui.fancytree.prototype.widgetMethod1 = function(arg1){
 
 
 /* 'childcounter' extension */
-//Every extension must be registered by a unique name.
-$.ui.fancytree.registerExtension("childcounter", {
+$.ui.fancytree.registerExtension({
+// Every extension must be registered by a unique name.
+	name: "childcounter",
 // Version information should be compliant with [semver](http://semver.org)
 	version: "1.0.0",
 
@@ -134,7 +135,8 @@ $.ui.fancytree.registerExtension("childcounter", {
 		var tree = this, // same as ctx.tree,
 			opts = ctx.options,
 			extOpts = ctx.options.childcounter;
-
+// Optionally check for dependencies with other extensions
+		//this._requireExtension("awesome", false, false);
 // Call the base implementation
 		this._super(ctx);
 // Add a class to the tree container
@@ -161,12 +163,12 @@ $.ui.fancytree.registerExtension("childcounter", {
 		}
 	},
 // Overload the `setExpanded` hook, so the counters are updated
-	nodeSetExpanded: function(ctx, flag) {
+	nodeSetExpanded: function(ctx, flag, opts) {
 		var tree = ctx.tree,
 			node = ctx.node;
 // Let the base implementation expand/collapse the node, then redraw the title
 // after the animation has finished
-		this._super(ctx, flag).done(function(){
+		return this._super(ctx, flag, opts).always(function(){
 			tree.nodeRenderTitle(ctx);
 		});
 	}

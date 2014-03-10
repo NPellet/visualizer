@@ -7,7 +7,7 @@ define(['modules/default/defaultview'], function(Default) {
 			var self = this;
 
 			this.cfg = $.proxy(this.module.getConfiguration, this.module);
-			this.button = this.cfg( 'button', false );
+			this.button = this.cfg( 'button' )[0] === "button" ? true : false; 
 			this.dom = $('<div>').addClass('ci-module-webservice_nmr_spin');
 
 			var selector=[];
@@ -36,11 +36,11 @@ define(['modules/default/defaultview'], function(Default) {
 			if(! this.button) {
 				this.system.on( 'keyup', 'input[type=text]', function( e ) {
 					self.module.controller.doAnalysis();
-				})
+				});
 
 				this.system.on('change', 'select, input[type=text]', function() {
 					self.module.controller.doAnalysis();
-				})
+				});
 			}
 
 			this.dom.append( this.system );
@@ -56,7 +56,7 @@ define(['modules/default/defaultview'], function(Default) {
 				});
 			}
 
-			if ( this.cfg( 'onloadanalysis' )) {
+			if ( this.cfg( 'onloadanalysis' ) === "onload") {
 				this.module.controller.doAnalysis();
 			}
 

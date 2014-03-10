@@ -4,7 +4,7 @@
  * Use glyph fonts as instead of icon sprites.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -25,7 +25,9 @@ function _getIcon(opts, type){
 	return opts.map[type];
 }
 
-$.ui.fancytree.registerExtension("awesome", {
+$.ui.fancytree.registerExtension({
+	name: "awesome",
+	version: "0.0.1",
 	// Default options for this extension.
 	options: {
 		prefix: "icon-",

@@ -88,7 +88,6 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 					},
 
 					fields: {
-						
 						prefs: {
 
 							type: 'checkbox',
@@ -111,7 +110,36 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 								'star': 'Display start button allowing hightlight of atoms (placed in the smiels)',
 								'oldlook': 'Use the old look'
 							}
-						}
+						},
+						labelsize: {
+							type: 'combo',
+							title: 'Label size',
+							options: [
+								{title: '6pt', key: '6'},
+								{title: '7pt', key: '7'},
+								{title: '8pt', key: '8'},
+								{title: '9pt', key: '9'},
+								{title: '10pt', key: '10'},
+								{title: '11pt', key: '11'},
+								{title: '12pt', key: '12'},
+								{title: '13pt', key: '13'},
+								{title: '14pt', key: '14'},
+								{title: '16pt', key: '16'},
+								{title: '18pt', key: '18'},
+								{title: '24pt', key: '24'}
+							],
+							default: 14
+						},
+						bondwidth: {
+							type: 'combo',
+							title: 'Bond width',
+							options: [
+								{title: '1px', key: '1'},
+								{title: '1.5px', key: '1.5'},
+								{title: '2px', key: '2'}
+							],
+							default: 1
+						},
 					}
 				}
 			}
@@ -125,7 +153,9 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 	};
 
 	controller.prototype.configAliases = {
-		prefs: [ 'groups', 'group', 0, 'prefs', 0 ]
+		'prefs': [ 'groups', 'group', 0, 'prefs', 0 ],
+		'labelsize': [ 'groups', 'group', 0, 'labelsize', 0 ],
+		'bondwidth': [ 'groups', 'group', 0, 'bondwidth', 0 ],
 	}
 
 	return controller;

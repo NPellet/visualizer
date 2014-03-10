@@ -33,7 +33,7 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 			var dom = $("#title").children('div');
 
 			dom
-				.text(view.title || 'Untitled')
+				.text(view.configuration ? view.configuration.title : 'Untitled')
 				.attr('contenteditable', 'true')
 				.bind('keypress', function(e) {
 					e.stopPropagation();
@@ -44,7 +44,7 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 				})
 
 				.bind('blur', function() {
-					view.set('title', $(this).text().replace(/[\r\n]/g, ""));
+					view.configuration.set('title', $(this).text().replace(/[\r\n]/g, ""));
 				});
 		},
 
@@ -73,69 +73,11 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 		createElement: function(source) {
 			var def = $.Deferred();
 			
-			switch(source.type) {
-				case 'versioning':
-					require(['./components/versioning'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-				case 'versionloader': 
-					require(['./components/versionloader'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-				case 'autosavelocalview':
-					require(['./components/autosavelocalview'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-				case 'pasteview':
-					require(['./components/pasteview'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-
-				case 'pushviewtoserver':
-					require(['./components/pushviewtoserver'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-
-				case 'copyview':
-					require(['./components/copyview'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-
-
-				case 'blankview':
-					require(['./components/blankview'], function(El) {
-						el = new El();
-						el.init(source);
-						def.resolve(el);
-					});
-				break;
-
-
-			}
+            require(['./components/'+source.type], function(El) {
+                var el = new El();
+                el.init(source);
+                def.resolve(el);
+            });
 
 			return def.promise();
 		},
@@ -152,7 +94,7 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 		}
 
 		// 'forms/button'
-	}
+	};
 
 			/*Header.addButtons(buttons, EntryPoint.getDataHandler(), EntryPoint.getViewHandler(), EntryPoint.getData(), EntryPoint.getView());
 			
@@ -160,6 +102,6 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 
 
 	return {
-		makeHeaderEditable: makeHeaderEditable,
-	}
+		makeHeaderEditable: makeHeaderEditable
+	};
 });

@@ -19,8 +19,26 @@ define(function() {
 		'mf': 'string',
 		'jcamp': "string",
 		"downloadLink": "string",
+                "html": "string",
 
 		'boolean': "boolean",
+                
+                'colorBar': {
+                    'type': 'array',
+                    'elements' : {
+                        'type': 'array',
+                        'elements': ['number','string']
+                    }
+                },
+                
+                'styledValue' : {
+                    'type' : 'object',
+                    'elements' : {
+                        'css' : 'object',
+                        'value' : 'object'
+                    }
+                },
+                
 		'arrayXY': {
 			'type': 'array',
 			'elements': ['number', 'number']
@@ -107,54 +125,6 @@ define(function() {
 							'name': 'string',
 							'label': 'strig'
 						}
-					}
-				}
-			}
-		},
-
-		'chart': {
-
-			"type": "object",
-			"elements": {
-				"serieLabels": {
-					"type": "array",
-					"elements": "string"
-				},
-
-
-				"series": {
-					"type": "array",
-					"elements": {
-						"type": "array",
-						"elements": {
-							"type": "object",
-							"elements": {
-								"value": "number",
-							},
-							"otherElementsPossible": true
-						}
-					}
-				},
-
-				"title": "string",
-				"x": {
-					"type": "array",
-					"elements": "number"
-				},
-
-				"xAxis": {
-					"type": "object",
-					"elements": {
-						"label": "string",
-						"maxValue": "number",
-						"minValue": "number"
-					}
-				},
-
-				"yAxis": {
-					"type": "object",
-					"elements": {
-						"label": "string"
 					}
 				}
 			}
@@ -593,6 +563,8 @@ define(function() {
 				
 			}
 		},
+        
+                "geojson": "object",
 
 		"pdb": "string",
 		"magres": "string",

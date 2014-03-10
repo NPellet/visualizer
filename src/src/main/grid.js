@@ -317,10 +317,22 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		module.definition.zindex = 1;
 	};
 	
-	function removeModule(module) {
+	function removeModule( module ) {
+
+		if( module.controller && module.controller.onBeforeRemove ) {
+			if( module.controller.onBeforeRemove( ) === false ) {
+				return;
+			}
+		}
+
 		module.getDomWrapper().remove().unbind();
 		ModuleFactory.removeModule(module);
+
+		if( module.controller && module.controller.onRemove ) {
+			module.controller.onRemove( );
+		}
 	};
+
 
 	function moveModule(module, shiftX, shiftY) {
 

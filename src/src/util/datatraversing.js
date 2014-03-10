@@ -48,11 +48,11 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 
 	function getOptions(value) {
-		return value._options || {};
+            return value ? (value._options ? value._options : {}) : {};
 	}
 
 	function getHighlights(value) {
-		return value._highlight || [];
+            return value ? (value._highlight ? value._highlight : []) : [];
 	}
 
 	function getValueIfNeeded(element) {
@@ -160,46 +160,89 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 			return _setValueFromJPath(element, jpathSplitted, newValue, moduleId, mute);
 		},
 
-		getJPathsFromStructure: function(structure, title, jpathspool, keystr) {		 
+		getJPathsFromStructure: function(structure, title, jpathspool, jpathString) {
 			
-		 	if(!structure)
+		 	if( ! structure ) {
 				return;
-			var children = [];
+		 	}
 
-			if(structure.elements) {
-				if(!keystr || keystr == null) {
-					keystr = "element";
-					title = keystr;
-				} else
-					keystr = keystr + "." + title;
-				jpathspool.push({ title: title, children: children, key: keystr });
-				switch(structure.type) {
+			var children = [], len, i;
+
+			if( structure.elements ) {
+
+				if( ! jpathString ) {
+					
+					jpathString = title = "element";
+					
+				} else {
+
+					jpathString += "." + title;
+
+				}
+
+				jpathspool.push( {
+					title: title,
+					children: children,
+					key: jpathString 
+				} );
+
+				switch( structure.type ) {
+
 					case 'object':
-						for(var i in structure.elements)
-							this.getJPathsFromStructure(structure.elements[i], i + "", children, keystr);
+
+						// The type is object (native). Then look for its children (structure.elements)
+						for( i in structure.elements ) {
+
+							this.getJPathsFromStructure(structure.elements[ i ], (i + ""), children, jpathString);
+
+						}
+
 					break;
+
+					// It it's an array, look for the children
 					case 'array':
-						// Array which length is nown
-						if(!(structure.elements instanceof Array))
-							structure.elements = [structure.elements];
-						var len = Math.min(5, structure.elements.length);
-						if(structure.nbElements)
+
+						// Array which length is nown => Then it's an object type
+						if(! ( structure.elements instanceof Array ) ) {
+							structure.elements = [ structure.elements ];
+						}
+						
+						// Look for how many elements to display
+						len = Math.min( 5, structure.elements.length || 0 );
+						
+						// Can be overridden in the structure.
+						if( structure.nbElements ) {
 							len = structure.nbElements;
-						for(var i = 0; i < len; i++) {
-							this.getJPathsFromStructure(structure.elements[i] || structure.elements[0], i + "", children, keystr);
+						}
+
+						for( i = 0; i < len; i++ ) {
+							this.getJPathsFromStructure(structure.elements[ i ] || structure.elements[ 0 ], (i + ""), children, jpathString);
 						}
 					break;
 				}		
 			} else {
-				if(typeof Structures[structure] == "object")
-					this.getJPathsFromStructure(Structures[structure], title, jpathspool, keystr);
-				else {
-					if(!keystr || keystr == null) {
-						keystr = "element";
-						title = keystr;
-					} else
-						keystr = keystr + "." + title;
-					jpathspool.push({ title: title, children: children, key: keystr });
+
+				// Useful is { myProp: "chemical" } => will fetch the chemical structure
+				if(typeof structure == "string" && typeof Structures[ structure ] == "object") {
+
+					this.getJPathsFromStructure( Structures[ structure ], title, jpathspool, jpathString);
+
+				} else {
+
+					if( ! jpathString || jpathString == null ) {
+
+						jpathString = title = "element";
+
+					} else {
+
+						jpathString += "." + title;
+					}
+
+					jpathspool.push( { 
+						title: title,
+						children: children,
+						key: jpathString
+					} );
 				}
 			}
 
@@ -245,7 +288,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 		getJPathsFromElement: function(element, jpaths) {
 			if(!jpaths)
-				var jpaths = [];
+				jpaths = [];
 			jpaths.push({title: 'Not set', key: ''});
 			if(element === undefined || element == null)
 				return;
@@ -265,6 +308,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 					break;
 				}
 			}
+            return jpaths;
 		},
 
 		get: function( data ) {

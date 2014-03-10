@@ -27,8 +27,12 @@
 		{
 			"moduleName": "Display value",
 			"url": "modules/types/display/single_value/"
+		},
+		{
+			"moduleName": "Template",
+			"url": "modules/types/display/template/"
 		}
 	],
-	"name": "display",
+	"name": "Display",
 	"folders": {}
 }

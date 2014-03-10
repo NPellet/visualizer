@@ -13,6 +13,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 				width: '100%'
 			} );
 
+			this.values = {};
 			this.module.getDomContent( ).html( this.dom );
 			this.fillWithVal( this.module.getConfiguration( 'defaultvalue' ) );
 		},
@@ -32,41 +33,70 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 					return;
 				}
 
-				this.module.getDomContent( ).css( 'backgroundColor', color );
+				this.module.getDomContent( ).css( 'background-color', color.get() );
 			},
 
-			'value': function(moduleValue) {
-				var view = this,
-					sprintfVal = this.module.getConfiguration('sprintf');
+			'value': function( varValue, varName ) {
+				var view = this;
+				
+				varValue.onChange( function( value ) {
+					view.render( value, varName );
+				});
 
-				if( moduleValue == undefined ) {
+
+				if( varValue == undefined ) {
 
 					this.fillWithVal( this.module.getConfiguration('defaultvalue') || '' );
 
 				} else {
 
-					Renderer.toScreen( moduleValue, this.module ).always(function(val) {
-						if ( sprintfVal && sprintfVal != "" ) {
-
-							try {
-								require( [ 'components/sprintf/src/sprintf.min' ], function( ) {
-									val = sprintf( sprintfVal, val );
-									view.fillWithVal( val );	
-								});
-							} catch( e ) {
-								view.fillWithVal( val );
-							}
-
-						} else {
-							view.fillWithVal( val );
-						}
-
-					});
-
+					this.render( varValue, varName );
 				}
 			}
 		},
+
+		render: function( varValue, varName ) {
+
+			var self = this;
+
+			Renderer.toScreen( varValue, this.module ).always( function( val ) {
+				self.values[ varName ] = val;
+				self.renderAll( val );
+			} );
+		},
 		
+		renderAll: function( val ) {
+
+			var view = this,
+				sprintfVal = this.module.getConfiguration('sprintf'),
+				sprintfOrder = this.module.getConfiguration('sprintfOrder');
+
+			if ( sprintfVal && sprintfVal != "" ) {
+
+				try {
+					require( [ 'components/sprintf/src/sprintf.min' ], function( ) {
+
+						var args = [ sprintfVal ];
+						for( var i in view.values ) {
+							args.push( view.values[ i ] );	
+						}
+
+						val = sprintf.apply( this, args );
+
+						view.fillWithVal( val );	
+					});
+
+				} catch( e ) {
+
+					view.fillWithVal( val );
+
+				}
+
+			} else {
+				view.fillWithVal( val );
+			}
+		},
+
 		fillWithVal: function(val) {
 			
 			var valign = this.module.getConfiguration('valign'),

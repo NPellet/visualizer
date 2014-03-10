@@ -17,8 +17,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'Object explorer',
-        description: 'Display a JSON object',
+        moduleName: 'Object editor',
+        description: 'Display and/or modify a JSON object',
         author: 'Michaël Zasso',
         date: '13.01.2014',
         license: 'MIT'
@@ -77,26 +77,39 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             ],
                             default: 'view'
                         },
+                        expanded: {
+                            type: 'checkbox',
+                            title: 'Auto-expand JSON',
+                            options: {expand: 'Yes'}
+                        },
+                        storeObject: {
+                            type: 'checkbox',
+                            title: 'Store object in view',
+                            options: {expand: 'Yes'}
+                        },
+                        storedObject: {
+                            type: 'jscode',
+                            title: 'Object stored in view',
+                            default: '{}'
+                        }
                     }
                 }
             }
         };
     };
 
-    controller.prototype.configFunctions = {
-    };
-
     controller.prototype.configAliases = {
-        'editable': ['groups', 'group', 0, 'editable', 0]
+        'editable': ['groups', 'group', 0, 'editable', 0],
+        'expanded': ['groups', 'group', 0, 'expanded', 0],
+        'storeObject': ['groups', 'group', 0, 'storeObject', 0],
+        'storedObject': ['groups', 'group', 0, 'storedObject', 0]
     };
 
-    controller.prototype.editorChanged = function(json) {
-        var toSet;
-        if(json instanceof Array)
-            toSet = new DataArray(json);
-        else
-            toSet = new DataObject(json);
-        this.setVarFromEvent( 'onObjectChange', toSet );
+    controller.prototype.editorChanged = function() {
+        if(this.module.view.storeObject[0]) {
+            this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(this.module.view._data);
+        }
+        this.setVarFromEvent( 'onObjectChange', DataObject.check(this.module.view._data, true) );
     };
 
     return controller;

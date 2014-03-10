@@ -6,7 +6,7 @@
  *
  * @depends: jquery.cookie.js
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -89,7 +89,8 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
 /* *****************************************************************************
  * Extension code
  */
-$.ui.fancytree.registerExtension("persist", {
+$.ui.fancytree.registerExtension({
+	name: "persist",
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
@@ -213,11 +214,11 @@ $.ui.fancytree.registerExtension("persist", {
 //	treeDestroy: function(ctx){
 //		this._super(ctx);
 //	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, opts) {
 		var instData = this._local,
 			instOpts = this.options.persist;
 
-		this._super(ctx, flag);
+		this._super(ctx, flag, opts);
 
 		if(instData.storeActive){
 			$.cookie(instData.cookiePrefix + ACTIVE,
@@ -225,15 +226,17 @@ $.ui.fancytree.registerExtension("persist", {
 					 instOpts.cookie);
 		}
 	},
-	nodeSetExpanded: function(ctx, flag) {
-		var node = ctx.node,
+	nodeSetExpanded: function(ctx, flag, opts) {
+		var res,
+			node = ctx.node,
 			instData = this._local;
 
-		this._super(ctx, flag);
+		res = this._super(ctx, flag, opts);
 
 		if(instData.storeExpanded){
 			instData._setKey(EXPANDED, node.key, flag);
 		}
+		return res;
 	},
 	nodeSetFocus: function(ctx) {
 		var instData = this._local,
