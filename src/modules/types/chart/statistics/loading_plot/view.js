@@ -16,8 +16,8 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/loadingplot/libs/jq
 		inDom: function() {},
 		
 		onResize: function(w, h) {
-			this._w = w - 10;
-			this._h = h - 10;
+			this._w = this.width - 10;
+			this._h = this.height - 10;
 			if(this._w && this._h && this._svg)
 				this._svg.setSize(this._w, this._h);
 		},
