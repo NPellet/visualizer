@@ -2,6 +2,8 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 
     var couchDBManager = function() {};
     
+    var regAlphaNum = /^[a-zA-Z0-9]+$/;
+    
     $.extend(couchDBManager.prototype, Default, {
         initImpl: function() {
             this.ok = this.loggedIn = false;
@@ -12,10 +14,49 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             this.database = $.couch.db(db);
             this.flavor = "default";
             
-            this.showError = $.proxy(showError, this);
-            this.getFormContent = $.proxy(getFormContent, this);
-            
             this.checkDatabase();
+        },
+        showError : function(e) {
+            var content;
+            if(typeof e === "number") {
+                switch(e) {
+                    case 10:
+                        content = "Colons are not allowed in the name.";
+                        break;
+                    case 11:
+                        content = "Please select a folder";
+                        break;
+                    case 12:
+                        content = "A folder with this name already exists.";
+                        break;
+                    case 20:
+                        content = "Document already has this flavor";
+                        break;
+                    case 21:
+                        content = "Path already used by another document";
+                        break;
+                    case 401:
+                        content = "Wrong username or password.";
+                        break;
+                    case 409:
+                        content = "Conflict. An entry with the same name already exists.";
+                        break;
+                    case 503:
+                        content = "Service Unavailable.";
+                        break;
+                    default:
+                        content = "Unknown error.";
+                }
+            } else {
+                content = e;
+            }
+            $(("#"+this.cssId("error"))).text(content).show().delay(3000).fadeOut();
+        },
+        getFormContent : function(type) {
+            return $("#"+this.cssId(type)).val().trim();
+        },
+        setFormContent : function(type, value) {
+            $("#"+this.cssId(type)).val(value);
         },
         checkDatabase: function() {
             var that = this;
@@ -30,6 +71,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         },
         cssId : function(name) {
             return "ci-couchdb-header-"+this.id+"-"+name;
+        },
+        changeFlavor: function(flavorName) {
+            if(!regAlphaNum.test(flavorName))
+                return this.showError("Flavor name must be alphanumeric.");
+            this.flavor = flavorName;
+            this.setFormContent("flavor-input", flavorName);
+            this.loadFlavor();
         },
         _onClick: function() {
             if (this.ok) {
@@ -252,8 +300,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             
             dom.append($("<p><span>Flavor : </span>").append($('<input type="text" value="'+this.flavor+'" id="'+this.cssId("flavor-input")+'">')).append(
                 new Button('Switch', function() {
-                   that.flavor = that.getFormContent("flavor-input");
-                   that.loadFlavor();
+                   that.changeFlavor(that.getFormContent("flavor-input"));
                }, {color: 'red'}).render()
            ));
             
@@ -305,7 +352,8 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         clickNode: function(event, data) {
             if(data.targetType!=="title" && data.targetType!=="icon")
                 return;
-
+            
+            var folder;
             var node = folder = data.node, last;
             
             var index = node.key.indexOf(":"), keyWithoutFlavor;
@@ -348,7 +396,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 delegate: "span.fancytree-title",
                 menu: [
                     {title: "Delete", cmd: "delete", uiIcon: "ui-icon-trash"},
-                    {title: "New flavor", cmd: "newflavor", uiIcon: "ui-icon-folder-collapsed"},
+                    {title: "New flavor", cmd: "newflavor", uiIcon: "ui-icon-newwin"},
                     {title: "Rename", cmd: "rename", uiIcon: "ui-icon-folder-collapsed"}
                 ],
                 beforeOpen: function(event, ui) {
@@ -361,7 +409,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     that.contextClick(node, ui.cmd);
                 },
                 createMenu: function(event) {
-                    $(event.target).css("z-index",1000);
+                    $(event.target).css("z-index",10000);
                 }
             };
             
@@ -478,9 +526,8 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                                                 doc.flavors[flavor] = path.split(":");
                                                 that.database.saveDoc(doc, {
                                                     success: function(data) {
-                                                        that.flavor = flavor;
+                                                        that.changeFlavor(flavor);
                                                         dialog.dialog("close");
-                                                        that.loadFlavor();
                                                     },
                                                     error: function(status) {
                                                         console.log(status);
@@ -509,39 +556,6 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             }
         }
     });
-    
-    function showError(e){
-        var content;
-        switch(e) {
-            case 10:
-                content = "Colons are not allowed in the name.";
-                break;
-            case 11:
-                content = "Please select a folder";
-                break;
-            case 12:
-                content = "A folder with this name already exists.";
-                break;
-            case 20:
-                content = "Document already has this flavor";
-                break;
-            case 21:
-                content = "Path already used by another document";
-                break;
-            case 401:
-                content = "Wrong username or password.";
-                break;
-            case 409:
-                content = "Conflict. An entry with the same name already exists.";
-                break;
-            case 503:
-                content = "Service Unavailable.";
-                break;
-            default:
-                content = "Unknown error.";
-        }
-        $(("#"+this.cssId("error"))).text(content).show().delay(3000).fadeOut();
-    }
     
     function createFullTree(data, flavor) {
         var tree = {};
@@ -604,10 +618,6 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             tree.push(el);
         }
         return root;
-    }
-    
-    function getFormContent(type) {
-        return $("#"+this.cssId(type)).val().trim();
     }
     
     return couchDBManager;
