@@ -1,0 +1,127 @@
+{
+	"version": "2.2.3",
+	"modules": [
+		{
+			"url": "modules/types/chart/statistics/parallel_coordinates/",
+			"title": "Chart",
+			"displayWrapper": true,
+			"position": {
+				"left": 1,
+				"top": 0
+			},
+			"size": {
+				"width": 116,
+				"height": 66
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"view"
+							]
+						}
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "data"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"event": "onBrushSelection",
+					"rel": "value",
+					"name": "out"
+				}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/display/fasttable/",
+			"title": "Selection",
+			"displayWrapper": true,
+			"position": {
+				"left": 118,
+				"top": 0
+			},
+			"size": {
+				"width": 20,
+				"height": 66
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "out"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "data",
+			"jpath": "element.data"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	}
+}

@@ -20,7 +20,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
         moduleName: 'Parallel coordinates',
         description: 'Multivariate data visualization',
         author: 'Michaël Zasso',
-        date: '14.01.2014',
+        date: '11.03.2014',
         license: 'MIT'
     };
 
@@ -41,55 +41,18 @@ define(['modules/default/defaultcontroller'], function(Default) {
      Configuration of the module for sending events, as a static object
      */
     controller.prototype.events = {
-       /* onObjectChange: {
-            label: 'The object has changed',
+        onBrushSelection: {
+            label: 'A selection has been made',
             refVariable: ['value'],
-        }*/
-    };
-    /*
-     Configuration of the module for receiving events, as a static object
-             In the form of 
-             */
-            controller.prototype.variablesIn = ['value'];
-
-    /*
-     Received actions
-     */
-    controller.prototype.actionsIn = {
+        }
     };
 
+    controller.prototype.variablesIn = ['value'];
+    
+    controller.prototype.onBrushSelection = function(value) {
+        this.setVarFromEvent("onBrushSelection", new DataArray(value), "value");
+    }
 
-    controller.prototype.configurationStructure = function(section) {
-
-        return {
-            groups: {
-                group: {
-                    options: {
-                        type: 'list'
-                    },
-                    fields: {
-                        editable: {
-                            type: 'combo',
-                            title: 'Editable ?',
-                            options: [
-                                {title: 'No', key: 'view'},
-                                {title: 'Yes', key: 'tree'},
-                                {title: 'Text', key: 'text'}
-                            ],
-                            default: 'view'
-                        },
-                    }
-                }
-            }
-        };
-    };
-
-    controller.prototype.configFunctions = {
-    };
-
-    controller.prototype.configAliases = {
-        'editable': ['groups', 'group', 0, 'editable', 0]
-    };
 
     return controller;
 });
