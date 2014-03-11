@@ -42,7 +42,8 @@ requirejs.config({
 		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"],
                 "components/farbtastic/src/farbtastic" : ["components/jquery/jquery-migrate.min"],
                 "lib/pixastic/pixastic" : ["lib/pixastic/pixastic/pixastic.core"],
-                'components/fancytree/src/jquery.fancytree.dnd' : ["fancytree"]
+                'components/fancytree/src/jquery.fancytree.dnd' : ["fancytree"],
+                "lib/parallel-coordinates/d3.parcoords": ["d3"]
 	}
 });
 
