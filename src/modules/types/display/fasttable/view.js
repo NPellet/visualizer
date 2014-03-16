@@ -206,9 +206,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			var self = this;
 			if( ! mute ) {
 				source.onChange( function( el ) {
-
 					var html = self.buildElement( el, i, true );
-					console.log( html, el );
 					self.domBody.find('[data-row-id=' + i + ']').replaceWith( html );
 				});
 			}
@@ -258,18 +256,18 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 		onActionReceive:  {
 
 			addRow: function(source) {
-				console.log( source );
+			
 				
 				this.elements = this.elements || [];
 				this.elements.push(source);
 
 				var jpaths = this.module.getConfiguration( 'colsjPaths' );
 				var l = this.elements.length - 1;
-console.log( this.module.data );
+
 				//this.module.data = this.module.data || new DataArray();
 				//console.log(this.module, this.module.);// this.module.model.getDataFromRel('list') );
 				this.module.getDataFromRel('list').push( source );
-console.log( this.module.data );
+
 				var el = this.buildElement(source, l);
 				this.domBody.after( el );
 			}

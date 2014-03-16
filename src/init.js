@@ -327,7 +327,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			if(jpathLength == 1) { // Ok we're done, let's set it
 
 				return $.Deferred().resolve( this.set( jpath[0], newValue ) ).then( function() {
-					
+
 					if( ! options.mute ) {
 						self.triggerChange( options.moduleid );
 					}
@@ -343,7 +343,10 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 					.get(el, true)
 					.pipe(function(el) { el.setChild(jpath, newValue, options) })
 					.done(function() { 
-						
+						// This has been commented so that there's no trigger for every level, which would cause the first level 
+						// to trigger n times (n = nb of levels in jpath).
+						// HOWEVER, that may cause an issue for the updating of subelements of the main element
+						// This can be solved. We'd have to prevent parenting the trigger and uncomment this line
 						if( ! options.mute ) {
 						//	self.triggerChange( options.moduleid );
 						}
@@ -376,7 +379,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 				}
 			}
 
-
+			// Trigger on the parent if it exists !
 			if( this.__parent ) {
 				this.__parent.triggerChange( moduleid );
 			}
