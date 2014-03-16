@@ -11,6 +11,7 @@ define([	'jquery',
 			'src/util/viewmigration',
 			'src/util/actionmanager',
 			'src/util/cron',
+			'src/util/pouchtovar',
 			'usr/datastructures/filelist'
 ], function($,
 			Header,
@@ -23,7 +24,8 @@ define([	'jquery',
 			ModuleFactory,
 			Migration,
 			ActionManager,
-			Cron
+			Cron,
+			PouchDBUtil
 ) {
 
 	var _viewLoaded, _dataLoaded;
@@ -92,6 +94,7 @@ define([	'jquery',
 		l = view.modules.length;
 
 		view.variables = view.variables || new ViewArray();
+		view.pouchvariables = view.pouchvariables || new ViewArray();
 		view.configuration = view.configuration || new ViewObject();
 		view.configuration.title = view.configuration.title || 'No title';
 
@@ -164,7 +167,7 @@ define([	'jquery',
 		}
 
 		// Entry point variables
-		for( var i = 0, l = view.variables; i < view.variables.length; i++ ) {
+		for( var i = 0, l = view.variables.length; i < l; i++ ) {
 			// Defined by an URL
 
 			if( ! view.variables[i].jpath && view.variables[i].url ) {
@@ -192,6 +195,34 @@ define([	'jquery',
 				API.setVariable( view.variables[ i ].varname, data, view.variables[ i ].jpath );
 			}
 		}
+
+
+		for( var i = 0, l = view.pouchvariables.length ; i < l ; i ++ ) {
+
+			( function ( k ) { 
+
+				PouchDBUtil.makePouch( view.pouchvariables[ k ].dbname );
+				PouchDBUtil.pouchToVar( view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function( el ) {
+
+					el.setPouch( view.pouchvariables[ k ].dbname );
+					el.linkToParent( data, view.pouchvariables[ k ].varname );
+					API.setVariable( view.pouchvariables[ k ].varname, el );
+
+				} );
+
+			}) ( i );
+		}
+
+		// Pouch DB replication
+		var data = view.couch_replication[ 0 ].groups.couch[ 0 ];
+		for( var i = 0, l = data.length ; i < l ; i ++ ) {
+			PouchDBUtil.makePouch( data[ i ].pouchname );
+
+			if( data[ i ].couchurl ) {
+		//		PouchDBUtil.replicate( data[ i ].pouchname, data[ i ].couchurl );
+			}
+		}
+
 	}
 
 
@@ -247,6 +278,34 @@ define([	'jquery',
 									url: {
 										type: 'text',
 										title: 'From URL'
+									}
+								}
+							},
+
+
+							pouchvars: {
+
+								options: {
+									type: 'table',
+									title: "PouchDB variables",
+									multiple: true
+								},
+
+								fields: {
+									varname: {
+										type: 'text',
+										multiple: false,
+										title: 'Variable name'
+									},
+
+									dbname: {
+										type: 'text',
+										title: 'DB name'
+									},
+
+									id: {
+										type: 'text',
+										title: 'ID'
 									}
 								}
 							}
@@ -523,8 +582,44 @@ define([	'jquery',
 								}
 							}
 						}
-					}
+					},
+
+
+					couch_replication: {
+
+						options: {
+							title: 'Couch replication',
+							icon: 'scripts'
+						},						
+
+
 				
+						groups: {
+
+							couch: {
+
+								options: {
+									type: 'table',
+									multiple: true
+								},
+
+								fields: {
+
+
+									pouchname: {
+										type: 'text',
+										title: "Pouch DB name"
+									},
+
+									couchurl: {
+										type: 'text',
+										title: 'Couch URL'
+									}
+
+								}
+							}
+						}
+					}
 				}
 			});
 
@@ -561,7 +656,8 @@ define([	'jquery',
 					sections: {
 						cfg: [ {
 							groups: {
-								tablevars: [ view.variables ]
+								tablevars: [ view.variables ],
+								pouchvars: [ view.pouchvariables ]
 							}
 						} ],
 
@@ -579,7 +675,8 @@ define([	'jquery',
 							}
 						}],
 
-						script_cron: view.script_crons
+						script_cron: view.script_crons,
+						couch_replication: view.couch_replication
 					}
 				});
 			});
@@ -593,31 +690,40 @@ define([	'jquery',
 				div.dialog('close');
 
 				var data,
-					allcrons;
+					allcrons,
+					value = form.getValue();
 
 				/* Entry variables */
-				data = new ViewArray( form.getValue().sections.cfg[ 0 ].groups.tablevars[ 0 ], true );
-				allcrons = new ViewObject( form.getValue().sections.webcron[ 0 ].groups.general[ 0 ], true );
+				data = new ViewArray( value.sections.cfg[ 0 ].groups.tablevars[ 0 ], true );
+				allcrons = new ViewObject( value.sections.webcron[ 0 ].groups.general[ 0 ], true );
 
 				view.variables = data;
 				view.crons = allcrons;
 
+				view.couch_replication = value.sections.couch_replication;
+				
+				// PouchDB variables
+				var data = new ViewArray( value.sections.cfg[ 0 ].groups.pouchvars[ 0 ] );
+				view.pouchvariables = data;
+
+
 				_check(true);
 
 				/* Handle actions scripts */
-				var data = form.getValue().sections.actionscripts[ 0 ].sections.actions;
+				var data = value.sections.actionscripts[ 0 ].sections.actions;
 				ActionManager.setScriptsFromForm( data );
 				/* */
 
 
 				/* Handle actions files */
-				var data = form.getValue().sections.actionfiles;
+				var data = value.sections.actionfiles;
 				ActionManager.setFilesFromForm( data );
 				/* */
 
 				if( typeof CronManager !== "undefined" ) {
 					CronManager.setCronsFromForm( data, view );
 				}
+
 
 			});
 

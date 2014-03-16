@@ -148,14 +148,15 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 	update: {
 
-	 		list: function(moduleValue) {
+	 		list: function( moduleValue ) {
 
+if( moduleValue.type == "string") return;
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
-
+        
 	 			moduleValue = moduleValue.get();
-                                
+                
 				var self = this, 
 					jpaths = this.module.getConfiguration( 'colsjPaths' ),
 					nbLines = this.module.getConfiguration( 'nbLines' ) || 20,
@@ -253,10 +254,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				var jpaths = this.module.getConfiguration( 'colsjPaths' );
 				var l = this.elements.length - 1;
-
-				this.module.data = this.module.data || new DataArray();
-				this.module.data.push( source );
-
+console.log( this.module.data );
+				//this.module.data = this.module.data || new DataArray();
+				//console.log(this.module, this.module.);// this.module.model.getDataFromRel('list') );
+				this.module.getDataFromRel('list').push( source );
+console.log( this.module.data );
 				var el = this.buildElement(source, l);
 				this.domBody.after( el );
 			}

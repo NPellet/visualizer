@@ -48,7 +48,7 @@ requirejs.config({
 });
 
 
-require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, EntryPoint, Header) {
+require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchtovar'], function($, EntryPoint, Header, PouchDB) {
 
 	DataObject = function(l, checkDeep) {	
 		for(var i in l) {
@@ -241,7 +241,9 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 			});
 
 			return subEl;
-		}
+		},
+
+		enumerable: false
 	};
 
 
@@ -297,7 +299,9 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 
 			Object.defineProperty( this, '__parent', { value: parent, writable: false, configurable: false, enumerable: false } );
 			Object.defineProperty( this, '__name', { value: name, writable: false, configurable: false, enumerable: false } );
-		}
+		},
+
+		enumerable: false
 	};
 
 
@@ -366,7 +370,9 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 				this.__parent.triggerChange( moduleid );
 			}
 
-		}
+		},
+
+		enumerable: false
 	}
 
 	var listenDataChanged = {
@@ -382,7 +388,9 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 
 			this._listenersDataChanged.push([callback, moduleid]);
 			
-		}
+		},
+
+		enumerable: false
 	}
 
 
@@ -483,6 +491,91 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header'], function($, Entr
 	Object.defineProperty(Number.prototype, 'getType', {
 		value: function() { return 'number'; }
 	});
+
+
+
+
+	PouchObject = function(l, checkDeep) {	
+		for(var i in l) {
+			if(l.hasOwnProperty(i)) {
+				if(!checkDeep) {
+					this[i] = l[i];
+					continue;
+				} else {
+					this[i] = DataObject.check(l[i], true);
+				}
+			}
+		}
+
+		this.onChange( function() {
+			PouchDB.getPouchInstance( l.__parent.getPouch() ).put( l, l._id, l._rev );
+		} )
+	};
+
+	PouchObject.prototype = new DataObject;
+
+	PouchObject.prototype.setPouch = function( pouchName ) {
+		this._pouchName = pouchName;
+	}
+
+	PouchObject.prototype.getPouch = function( ) {
+		return this._pouchName;
+	}
+
+	
+	function PouchArray(arr, deep) { 
+	  arr = { type: 'array', value: arr || [] };
+	  
+	  if(deep) {
+	  	for(var i = 0, l = arr.length; i < l; i++) {
+	  		arr.value[i] = PourchObject.check(arr[i], deep);
+	  	}
+	  }
+
+	  arr.__proto__ = PouchArray.prototype;
+	  return arr;
+	}
+
+	PouchArray.prototype = new DataArray;
+
+	PouchArray.prototype.setPouch = function( pouchName ) {
+		this._pouchName = pouchName;
+	}
+
+	PouchArray.prototype.getPouch = function( ) {
+		return this._pouchName;
+	}
+
+	PouchArray.prototype.push = function() {
+		console.log('PUSHING');
+		// arguments contain the element to push
+		Array.prototype.push.apply( this.value, arguments );
+		console.log( "Pouch Array has a new element. Pushing into Pouch");
+
+		PouchDB.getPouch( this.getPouch() ).post( arguments[ 0 ], function() {
+			console.log(arguments);
+			console.log( "Pouch has saved your data" );
+		});
+	}
+
+	PouchArray.prototype.splice = function() {
+
+		var elementsRemoved = Array.prototype.splice.apply( this.value, arguments ),
+			pouch = PouchDB.getPouchInstanceFor( this.pouchName );
+
+		for( var i = 0, l = elementsRemoved.length ; i < l ; i ++ ) {
+			pouch.remove( elementsRemoved[ i ] );
+		}
+	}
+
+	PouchArray.prototype.get = function() {
+		console.log('dsf');
+		return this;
+	}
+
+
+	window.PouchObject = PouchObject;
+	window.PouchArray = PouchArray;
 
 
 

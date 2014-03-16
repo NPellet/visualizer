@@ -343,6 +343,8 @@ module.exports = function (Pouch) {
 
     /* Begin api wrappers. Specific functionality to storage belongs in the _[method] */
     api.get = function (id, opts, callback) {
+      
+   
       if (!api.taskqueue.ready()) {
         api.taskqueue.addTask('get', arguments);
         return;
@@ -351,6 +353,7 @@ module.exports = function (Pouch) {
         callback = opts;
         opts = {};
       }
+
 
       var leaves = [];
       function finishOpenRevs() {
@@ -751,6 +754,7 @@ module.exports = function (Pouch) {
     api.taskqueue.execute = function (db) {
       if (taskqueue.ready) {
         taskqueue.queue.forEach(function (d) {
+          console.log( d );
           d.task = db[d.name].apply(null, d.parameters);
         });
       }
@@ -764,6 +768,7 @@ module.exports = function (Pouch) {
     };
 
     api.taskqueue.addTask = function (name, parameters) {
+      console.log( parameters );
       var task = { name: name, parameters: parameters };
       taskqueue.queue.push(task);
       return task;
