@@ -48,7 +48,7 @@ requirejs.config({
 });
 
 
-require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchtovar'], function($, EntryPoint, Header, PouchDB) {
+require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchtovar'], function($, EntryPoint, Header, PouchDBUtil) {
 
 	DataObject = function(l, checkDeep) {	
 		for(var i in l) {
@@ -237,6 +237,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 					return subEl;
 				}
 
+
 				return subEl.getChild( jpath, setParents );
 			});
 
@@ -322,19 +323,29 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 				return $.Deferred().resolve( this );
 			}
 
-			if(jpath.length == 1) // Ok we're done, let's set it
-				return $.Deferred().resolve( this.set( jpath[0], newValue ) );
+			var jpathLength = jpath.length;
+			if(jpathLength == 1) { // Ok we're done, let's set it
+
+				return $.Deferred().resolve( this.set( jpath[0], newValue ) ).then( function() {
+					
+					if( ! options.mute ) {
+						self.triggerChange( options.moduleid );
+					}
+
+				});
+			}
 
 			var el = jpath.shift();
 			if(!this[el]) // We need to set an empty object to create the elements
 				this.set(el, new DataObject());
-
+//console.log('setChild', self, jpath, newValue);
 			return this
 					.get(el, true)
 					.pipe(function(el) { el.setChild(jpath, newValue, options) })
 					.done(function() { 
+						
 						if( ! options.mute ) {
-							self.triggerChange( options.moduleid );
+						//	self.triggerChange( options.moduleid );
 						}
 					} );
 		}
@@ -460,7 +471,6 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 	Object.defineProperty(DataObject.prototype, 'setChild', setChild);
 	Object.defineProperty(DataArray.prototype, 'setChild', setChild);
 
-
 	Object.defineProperty(DataObject.prototype, 'fetch', fetch);
 	Object.defineProperty(ViewObject.prototype, 'fetch', fetch);
 
@@ -470,10 +480,8 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 	Object.defineProperty(DataObject.prototype, 'onChange', listenDataChanged);
 	Object.defineProperty(DataArray.prototype, 'onChange', listenDataChanged);
 
-
 	Object.defineProperty(DataObject.prototype, 'linkToParent', linkToParent);
 	Object.defineProperty(DataArray.prototype, 'linkToParent', linkToParent);
-
 
 	Object.defineProperty(DataObject.prototype, 'triggerChange', dataChanged);
 	Object.defineProperty(DataArray.prototype, 'triggerChange', dataChanged);
@@ -506,9 +514,10 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 				}
 			}
 		}
-
+		var self = this;
 		this.onChange( function() {
-			PouchDB.getPouchInstance( l.__parent.getPouch() ).put( l, l._id, l._rev );
+
+			PouchDBUtil.getPouch( self.getPouch() ).put( l, l._id, l._rev );
 		} )
 	};
 
@@ -528,7 +537,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 	  
 	  if(deep) {
 	  	for(var i = 0, l = arr.length; i < l; i++) {
-	  		arr.value[i] = PourchObject.check(arr[i], deep);
+	  		arr.value[i] = new PouchObject(arr[i], deep);
 	  	}
 	  }
 
@@ -552,7 +561,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 		Array.prototype.push.apply( this.value, arguments );
 		console.log( "Pouch Array has a new element. Pushing into Pouch");
 
-		PouchDB.getPouch( this.getPouch() ).post( arguments[ 0 ], function() {
+		PouchDBUtil.getPouch( this.getPouch() ).post( arguments[ 0 ], function() {
 			console.log(arguments);
 			console.log( "Pouch has saved your data" );
 		});
@@ -561,7 +570,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 	PouchArray.prototype.splice = function() {
 
 		var elementsRemoved = Array.prototype.splice.apply( this.value, arguments ),
-			pouch = PouchDB.getPouchInstanceFor( this.pouchName );
+			pouch = PouchDBUtil.getPouchInstanceFor( this.pouchName );
 
 		for( var i = 0, l = elementsRemoved.length ; i < l ; i ++ ) {
 			pouch.remove( elementsRemoved[ i ] );
@@ -569,7 +578,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 	}
 
 	PouchArray.prototype.get = function() {
-		console.log('dsf');
+	
 		return this;
 	}
 
@@ -586,8 +595,8 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 
 		var url = window.document.location.search.substring(1).split('&'),
 			urls = {};
-                if(url[0]==="")
-                    url = window.document.location.hash.substring(1).split('&');
+            if(url[0]==="")
+             	url = window.document.location.hash.substring(1).split('&');
 		for(var i = 0; i < url.length; i++) {
 			var args = url[i].split('=');
 			urls[args[0]] = unescape(args[1]);

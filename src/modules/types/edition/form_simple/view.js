@@ -56,7 +56,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				var input = self.module.getDataFromRel('input_object'),
 					structure = self.module.getConfiguration('structure') || [],
 					jpath;
-
+console.log( input );
 				if( input.setChild ) {
 					for( var i = 0, l = structure.length ; i < l ; i ++ ) {
 						jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
@@ -128,7 +128,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 						self.nb++;
 
 						varValue.getChild( jpath, true ).done( function( returned ) {
-
+console.log( self.form );
 							self
 								.form
 								.sectionElements

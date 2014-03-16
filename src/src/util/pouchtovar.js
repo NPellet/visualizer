@@ -81,15 +81,17 @@ define(['components/pouchdb/dist/pouchdb-nightly'], function( PouchDB ) {
 		} else {
 
 			pouch.allDocs( { include_docs: true }, function( err, allDocs ) {
-				console.log( allDocs );
+			
 				if( allDocs === null ) {
 					allDocs = new PouchArray();
 				} else {
-					var all = [];
+					var all = [], pouchObject;
 					for( var i = 0, l = allDocs.rows.length ; i < l ; i ++ ) {
-						all.push( allDocs.rows[ i ].doc );
+						pouchObject = new PouchObject( allDocs.rows[ i ].doc, true );
+						pouchObject.setPouch( dbname );
+						all.push( pouchObject );
 					}
-					allDocs = new PouchArray( all, true );
+					allDocs = new PouchArray( all );
 				}
 				callback( allDocs );
 			});

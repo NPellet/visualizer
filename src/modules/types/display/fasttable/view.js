@@ -98,8 +98,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			}
 			thead += '</tr>';
 
-
-
 			var colorjpath = this.module.getConfiguration( 'colorjPath' );
 
 			if( colorjpath ) {
@@ -150,7 +148,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 		list: function( moduleValue ) {
 
-if( moduleValue.type == "string") return;
+				if( moduleValue.type == "string") 
+					return;
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
@@ -202,7 +201,18 @@ if( moduleValue.type == "string") return;
 			}
 		},
 
-		buildElement: function( source, i ) {
+		buildElement: function( source, i, mute ) {
+			
+			var self = this;
+			if( ! mute ) {
+				source.onChange( function( el ) {
+
+					var html = self.buildElement( el, i, true );
+					console.log( html, el );
+					self.domBody.find('[data-row-id=' + i + ']').replaceWith( html );
+				});
+			}
+
 
 			var 
 				jpaths = this.module.getConfiguration( 'colsjPaths' ),
@@ -224,7 +234,8 @@ if( moduleValue.type == "string") return;
 				}
 				
 				html += '<td>';
-				html += this.getValue( source.get(), jpaths[ j ].jpath );
+				//console.log( source.get(), jpaths[ j ].jpath, this.getValue( source.get(), jpaths[ j ].jpath ));
+				html += Traversing.get( this.getValue( source.get(), jpaths[ j ].jpath ) );
 				html += '</td>';
 			}
 			html += '</tr>';
