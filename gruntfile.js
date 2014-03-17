@@ -73,7 +73,8 @@ module.exports = function(grunt) {
               './mustache/mustache.js',
               './papa-parse/jquery.parse.min.js',
               './font-awesome/css/font-awesome.min.css',
-              './font-awesome/fonts/*'
+              './font-awesome/fonts/*',
+              './colors/css/colors.min.css'
             ],
 
             dest: './build/components/'
