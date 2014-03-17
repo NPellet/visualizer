@@ -6,6 +6,14 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 	init: function() {	
 
 	 		var self = this, lastTr;
+	 		
+	 		var actionsOut = this.module.actions_out();
+	 		if(actionsOut) {
+	 			for(var i=0; i<actionsOut.length; i++) {
+	 				if(actionsOut[i].event==="onToggleOn" || actionsOut[i].event==="onToggleOff")
+	 					this.hasToggleAction=true;
+	 			}
+	 		}
 
 	 		this.uniqId = Util.getNextUniqueId();
 	 		this.dom = $('<div class="ci-displaylist-list"></div>');
@@ -176,15 +184,16 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			    viewrecords: true,
 			    onSelectRow: function( rowid, status ) {
 			    	//rowid--; // ?? Plugin mistake ?
-
-			    	if ( status ) {
-                                        $("#"+rowid).addClass('bg-orange').removeClass("ui-widget-content ui-state-highlight");
-			    		self.module.controller.onToggleOn( self.elements, rowid.replace( self.uniqId, '' ) );
-
-			    	} else {
-                                        $("#"+rowid).removeClass('bg-orange');
-			    		self.module.controller.onToggleOff( self.elements, rowid.replace( self.uniqId, '' ) );
-
+				if(self.hasToggleAction) {
+				    	if ( status ) {
+	                                        $("#"+rowid).addClass('bg-orange').removeClass("ui-widget-content ui-state-highlight");
+				    		self.module.controller.onToggleOn( self.elements, rowid.replace( self.uniqId, '' ) );
+	
+				    	} else {
+	                                        $("#"+rowid).removeClass('bg-orange');
+				    		self.module.controller.onToggleOff( self.elements, rowid.replace( self.uniqId, '' ) );
+	
+				    	}
 			    	}
 
 					self.module.controller.lineClick( self.elements, rowid.replace( self.uniqId, '' ) );
