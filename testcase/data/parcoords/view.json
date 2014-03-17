@@ -6,22 +6,23 @@
 			"title": "Chart",
 			"displayWrapper": true,
 			"position": {
-				"left": 1,
-				"top": 0
+				"left": 16.99857873916626,
+				"top": 1
 			},
 			"size": {
-				"width": 116,
-				"height": 66
+				"width": 116.01818182468415,
+				"height": 66.01818182468415
 			},
 			"configuration": {
 				"sections": {},
 				"groups": {
-					"group": [
-						{
-							"editable": [
-								"view"
-							]
-						}
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name"
+							}
+						]
 					]
 				}
 			},
@@ -32,7 +33,16 @@
 					"name": "data"
 				}
 			],
-			"actions_in": {},
+			"actions_in": [
+				{
+					"rel": "addColumn",
+					"name": "addCol"
+				},
+				{
+					"rel": "removeColumn",
+					"name": "removeCol"
+				}
+			],
 			"vars_out": [
 				{
 					"event": "onBrushSelection",
@@ -53,12 +63,83 @@
 			"title": "Selection",
 			"displayWrapper": true,
 			"position": {
-				"left": 118,
-				"top": 0
+				"left": 133.99999780654906,
+				"top": 1
 			},
 			"size": {
-				"width": 20,
-				"height": 66
+				"width": 20.01818182468414,
+				"height": 66.01818182468415
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "out"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{
+					"event": "onToggleOn",
+					"rel": "row",
+					"jpath": "element.name",
+					"name": "plop"
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/display/jqgrid/",
+			"title": "Select columns",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 1
+			},
+			"size": {
+				"width": 16.01818182468414,
+				"height": 55.01818182468414
 			},
 			"configuration": {
 				"sections": {},
@@ -95,7 +176,7 @@
 			"vars_in": [
 				{
 					"rel": "list",
-					"name": "out"
+					"name": "jpaths"
 				}
 			],
 			"actions_in": [
@@ -105,7 +186,18 @@
 				{}
 			],
 			"actions_out": [
-				{}
+				{
+					"event": "onToggleOn",
+					"rel": "row",
+					"jpath": "element",
+					"name": "addCol"
+				},
+				{
+					"event": "onToggleOff",
+					"rel": "row",
+					"jpath": "element",
+					"name": "removeCol"
+				}
 			],
 			"bgColor": [
 				255,
@@ -119,9 +211,60 @@
 		{
 			"varname": "data",
 			"jpath": "element.data"
+		},
+		{
+			"varname": "jpaths",
+			"jpath": "element.jpaths"
 		}
 	],
 	"configuration": {
 		"title": "No title"
-	}
+	},
+	"pouchvariables": [
+		{}
+	],
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"crons": {
+		"0": {}
+	},
+	"couch_replication": [
+		{
+			"sections": {},
+			"groups": {
+				"couch": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
 }

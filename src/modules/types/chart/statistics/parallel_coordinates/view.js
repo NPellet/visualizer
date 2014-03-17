@@ -3,6 +3,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
     function view() {
         this._id = Util.getNextUniqueId();
         this._value = new DataArray();
+        this._addedColumns = {};
     }
     ;
 
@@ -34,9 +35,17 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                     return;
                 
                 this._value = value;
-                this.createIntermediateData();
                 
-                this.module.controller.onBrushSelection(this._data);
+                this.redrawChart();
+            }
+        },
+        onActionReceive: {
+            addColumn: function(value) {
+                this._addedColumns[value.name] = value;
+                this.redrawChart();
+            },
+            removeColumn: function(value) {
+                delete this._addedColumns[value.name];
                 this.redrawChart();
             }
         },
@@ -46,7 +55,9 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
         },
         redrawChart: function() {
             var that=this;
+            this.createIntermediateData();
             this.dom.empty();
+            
             var parcoords = d3.parcoords()("#"+(this._id));
                 parcoords.data(this._data);
                 parcoords.detectDimensions();
@@ -59,26 +70,41 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 parcoords.on("brush", function(d){
                     that.module.controller.onBrushSelection(d);
                 });
+                
+            this.module.controller.onBrushSelection(this._data);
         },
         createIntermediateData: function() {
+            var totalConfig = [];
             var config = this.module.getConfiguration("colsjPaths");
+            if(config) {
+                for(var i = 0; i < config.length; i++){
+                    totalConfig.push(config[i]);
+                }
+            }
+            if(this._addedColumns) {
+                for(var i in this._addedColumns){
+                    totalConfig.push(this._addedColumns[i]);
+                }
+            }
+            
             var value = this._value;
-            if(!config)
+            
+            if(!totalConfig.length)
                return this._data = value;
             
             var newValue = new DataArray();
             var names = [];
-            for(var i = 0; i < config.length; i++){
-                names[i] = config[i].name;
+            for(var i = 0; i < totalConfig.length; i++){
+                names[i] = totalConfig[i].name;
             }
             this._names = names;
             
             for(var i = 0; i < value.length; i++) {
                 var val = new DataObject();
                 newValue[i] = val;
-                for(var j = 0; j < config.length; j++) {
-                    Traversing.getValueFromJPath(value[i],config[j].jpath).always(function(result){
-                        val[config[j].name] = result;
+                for(var j = 0; j < totalConfig.length; j++) {
+                    Traversing.getValueFromJPath(value[i],totalConfig[j].jpath).always(function(result){
+                        val[totalConfig[j].name] = result;
                     });
                     val.__id = i;
                 }

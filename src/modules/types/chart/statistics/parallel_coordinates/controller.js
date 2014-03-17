@@ -33,6 +33,9 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
         "value": {
             type: 'array',
             label: 'An array of data points'
+        },
+        "column": {
+            label: 'Column description'
         }
     };
 
@@ -48,6 +51,11 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
     };
 
     controller.prototype.variablesIn = ['value'];
+    
+    controller.prototype.actionsIn = {
+        addColumn: 'Add a column',
+        removeColumn: 'Remove a column',
+    };
     
     controller.prototype.configurationStructure = function(section) {
 

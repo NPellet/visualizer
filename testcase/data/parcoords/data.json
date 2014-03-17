@@ -29,4 +29,9 @@
     "calcium": 0.756,
     "sodium": 0.876
   }
+],
+"jpaths":[
+    {"name":"Protein", "jpath":"element.protein"},
+    {"name":"Calcium", "jpath":"element.calcium"},
+    {"name":"Sodium", "jpath":"element.sodium"}
 ]}
