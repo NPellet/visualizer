@@ -178,11 +178,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			    	//rowid--; // ?? Plugin mistake ?
 
 			    	if ( status ) {
-
+                                        $("#"+rowid).addClass('bg-orange').removeClass("ui-widget-content ui-state-highlight");
 			    		self.module.controller.onToggleOn( self.elements, rowid.replace( self.uniqId, '' ) );
 
 			    	} else {
-
+                                        $("#"+rowid).removeClass('bg-orange');
 			    		self.module.controller.onToggleOff( self.elements, rowid.replace( self.uniqId, '' ) );
 
 			    	}
