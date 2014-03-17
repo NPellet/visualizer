@@ -329,7 +329,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 				return $.Deferred().resolve( this.set( jpath[0], newValue ) ).then( function() {
 
 					if( ! options.mute ) {
-						self.triggerChange( options.moduleid );
+			//			self.triggerChange( options.moduleid );
 					}
 
 				});
@@ -348,14 +348,14 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 						// HOWEVER, that may cause an issue for the updating of subelements of the main element
 						// This can be solved. We'd have to prevent parenting the trigger and uncomment this line
 						if( ! options.mute ) {
-						//	self.triggerChange( options.moduleid );
+							self.triggerChange( options.moduleid, true );
 						}
 					} );
 		}
 	};
 
 	var dataChanged = {
-		value: function(moduleid) {
+		value: function( moduleid, noBubble ) {
 			
 			if( ! this._listenersDataChanged ) {
 
@@ -380,7 +380,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			}
 
 			// Trigger on the parent if it exists !
-			if( this.__parent ) {
+			if( this.__parent && ! noBubble ) {
 				this.__parent.triggerChange( moduleid );
 			}
 
@@ -407,6 +407,23 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 		enumerable: false
 	}
 
+
+
+	var unbindChange = {
+		value: function( moduleid ) {
+			
+			if( this._listenersDataChanged ) {
+				for( var i = 0, l = this._listenersDataChanged.length ; i < l ; i ++ ) {
+
+					if( this._listenersDataChanged[ i ][ 1 ] == moduleid ) {
+						this._listenersDataChanged.splice(i, 1);
+					}
+				}
+			}
+		},
+
+		enumerable: false
+	};
 
 	var getType = {
 		value: function() {
@@ -482,6 +499,11 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 
 	Object.defineProperty(DataObject.prototype, 'onChange', listenDataChanged);
 	Object.defineProperty(DataArray.prototype, 'onChange', listenDataChanged);
+
+
+	Object.defineProperty(DataObject.prototype, 'unbindChange', unbindChange);
+	Object.defineProperty(DataArray.prototype, 'unbindChange', unbindChange);
+
 
 	Object.defineProperty(DataObject.prototype, 'linkToParent', linkToParent);
 	Object.defineProperty(DataArray.prototype, 'linkToParent', linkToParent);
@@ -573,11 +595,13 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 	PouchArray.prototype.splice = function() {
 
 		var elementsRemoved = Array.prototype.splice.apply( this.value, arguments ),
-			pouch = PouchDBUtil.getPouchInstanceFor( this.pouchName );
+			pouch = PouchDBUtil.getPouch( this.getPouch() );
 
 		for( var i = 0, l = elementsRemoved.length ; i < l ; i ++ ) {
 			pouch.remove( elementsRemoved[ i ] );
 		}
+
+		return elementsRemoved;
 	}
 
 	PouchArray.prototype.get = function() {

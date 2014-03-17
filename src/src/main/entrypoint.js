@@ -259,6 +259,7 @@ define([	'jquery',
 
 								options: {
 									type: 'table',
+									title: "Main variables",
 									multiple: true
 								},
 

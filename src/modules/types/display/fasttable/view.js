@@ -1,4 +1,4 @@
-define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/domdeferred', 'src/util/datatraversing', 'src/util/typerenderer'], function(require, Default, Util, API, DomDeferred, Traversing, Renderer) {
+define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/domdeferred', 'src/util/datatraversing', 'src/util/typerenderer', 'src/util/context'], function(require, Default, Util, API, DomDeferred, Traversing, Renderer, Context) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -139,9 +139,17 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 		list: function() {
 				
-				
-	 		}
-	 	
+				if( ! this.module.data ) {
+	 				return;
+	 			}
+
+	 			var i,
+	 				l = this.module.data.length;
+	 			
+				for( i = 0; i < l ; i++ ) {
+					this.module.data[ i ].unbindChange( this.module.getId() );
+				}
+			}
 	 	},
 
 	 	update: {
@@ -180,6 +188,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 					window.clearTimeout( this.timeout );
 				}
 
+				// Wait before setting the highlights
 				this.timeout = window.setTimeout( function( ) {
 
 					API.killHighlight( self.module.getId( ) );
@@ -193,6 +202,20 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 								self.doHighlight( j, val );
 							}, false, self.module.getId( ) );
 
+							var dom = self.domBody.find('[data-row-id=' + j + ']')
+							self.module.data[ j ].onChange( function( el ) {
+								dom.replaceWith( self.buildElement( el, i, true ) );
+							}, self.module.getId() );
+
+							if( self.module.data[ j ].removable ) {
+								Context.listen( dom.get( 0 ), [
+									['<li><a><span class="ui-icon ui-icon-cross"></span> Remove</a></li>', 
+									function() {
+										self.onActionReceive.removeRowById.call( self, j );
+									}]
+								]);
+							}
+							
 						}) ( i );
 						
 					}
@@ -201,16 +224,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			}
 		},
 
-		buildElement: function( source, i, mute ) {
+		buildElement: function( source, i ) {
 			
-			var self = this;
-			if( ! mute ) {
-				source.onChange( function( el ) {
-					var html = self.buildElement( el, i, true );
-					self.domBody.find('[data-row-id=' + i + ']').replaceWith( html );
-				});
-			}
-
 
 			var 
 				jpaths = this.module.getConfiguration( 'colsjPaths' ),
@@ -257,7 +272,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 			addRow: function(source) {
 			
-				
 				this.elements = this.elements || [];
 				this.elements.push(source);
 
@@ -270,6 +284,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				var el = this.buildElement(source, l);
 				this.domBody.after( el );
+			},
+
+			removeRowById: function( rowId ) {
+
+				var el = this.module.getDataFromRel('list').splice( rowId, 1 );
+				el[ 0 ].unbindChange( this.module.getId( ) );
+				this.domBody.find("[data-row-id=" + rowId + "]").remove();
 			}
 
 		},
