@@ -1,4 +1,4 @@
-define(['modules/default/defaultcontroller'], function(Default) {
+define(['modules/default/defaultcontroller',"src/util/datatraversing"], function(Default, Traversing) {
 
     /**
      * Creates a new empty controller
@@ -49,9 +49,48 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
     controller.prototype.variablesIn = ['value'];
     
-    controller.prototype.onBrushSelection = function(value) {
-        this.setVarFromEvent("onBrushSelection", new DataArray(value), "value");
-    }
+    controller.prototype.configurationStructure = function(section) {
+
+        var jpaths = Traversing.getJPathsFromElement(this.module.view._value[0]);
+        return {
+            groups: {               
+                cols: {
+                    options: {
+                        type: 'table',
+                        multiple: true,
+                        title: 'Columns'
+                    },
+                    fields: {
+                        name: {
+                            type: 'text',
+                            title: 'Columns name'
+                        },
+                        jpath: {
+                            type: 'combo',
+                            title: 'jPath',
+                            options: jpaths
+                        }
+                    }
+                }
+            }
+        };
+    };
+    
+    controller.prototype.configAliases = {
+        'colsjPaths': ['groups', 'cols', 0]
+    };
+    
+    controller.prototype.onBrushSelection = function(value, convert) {
+        var toSend = value;
+        if(value[0] && value[0].hasOwnProperty('__id')) {
+            var original = this.module.view._value;
+            toSend = new Array(value.length);
+            for(var i = 0; i < value.length; i++) {
+                toSend[i] = original[value[i].__id];
+            }
+        }
+        this.setVarFromEvent("onBrushSelection", new DataArray(toSend), "value");
+    };
 
 
     return controller;
