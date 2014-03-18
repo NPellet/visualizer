@@ -219,7 +219,7 @@ define([	'jquery',
 			PouchDBUtil.makePouch( data[ i ].pouchname );
 
 			if( data[ i ].couchurl ) {
-		//		PouchDBUtil.replicate( data[ i ].pouchname, data[ i ].couchurl );
+				PouchDBUtil.replicate( data[ i ].pouchname, data[ i ].couchurl );
 			}
 		}
 

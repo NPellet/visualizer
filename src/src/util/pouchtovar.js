@@ -51,8 +51,10 @@ define(['components/pouchdb/dist/pouchdb-nightly'], function( PouchDB ) {
 			return;
 		}
 
-//		PouchDB.replicate( couchURL, allPouch[ name ] );
-		//PouchDB.replicate( allPouch[ name ], couchURL );
+		new PouchDB('http://admin:cheminfo77@visualizer.epfl.ch/f_formula');
+
+		PouchDB.replicate( couchURL, allPouch[ name ] );
+		PouchDB.replicate( allPouch[ name ], couchURL );
 	}
 
 	constructor.pouchToVar = function( dbname, id, callback ) {

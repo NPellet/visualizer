@@ -226,7 +226,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 		buildElement: function( source, i ) {
 			
-
 			var 
 				jpaths = this.module.getConfiguration( 'colsjPaths' ),
 				html = '',
@@ -238,16 +237,18 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			if( this.colorjpath ) {
 				html += ' style="background-color: ' + this.colorjpath( source ) + ';"';
 			}
+
 			html += ' data-row-id="' + i + '"';
 			html += '>';
+
 			j = 0;
 			for( ; j < k ; j ++ ) {
+
 				if( ! jpaths[ j ].jpath ) {
 					continue;
 				}
 				
 				html += '<td>';
-				//console.log( source.get(), jpaths[ j ].jpath, this.getValue( source.get(), jpaths[ j ].jpath ));
 				html += Traversing.get( this.getValue( source.get(), jpaths[ j ].jpath ) );
 				html += '</td>';
 			}
