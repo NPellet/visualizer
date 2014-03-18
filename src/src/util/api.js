@@ -32,10 +32,17 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 			break;
 		}
 
-		element.getChild( jpath, true ).done( function( returned ) {
+		if( element && element.getChild ) {
+			element.getChild( jpath, true ).done( function( returned ) {
 
-			setVarFilter.call( self, name, returned, filter );
-		} );	
+				setVarFilter.call( self, name, returned, filter );
+			} );	
+
+		} else {
+			console.warn("Vartiable " + name + " could not be set. Method getChild does not exist.")
+			console.log( element );
+			console.trace();
+		}
 	}
 
 	function setHighlight( element, value ) {

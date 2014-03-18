@@ -190,19 +190,20 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				// Wait before setting the highlights
 				this.timeout = window.setTimeout( function( ) {
-
+					console.time('timer');
 					API.killHighlight( self.module.getId( ) );
 
 					for( i = 0; i < l ; i++ ) {
 							
 
 						( function( j ) {
-
+/*
 							API.listenHighlight( self.module.data[ j ], function( val ) {
 								self.doHighlight( j, val );
 							}, false, self.module.getId( ) );
+*/
 
-							var dom = self.domBody.find('[data-row-id=' + j + ']')
+							var dom = self.domBody.find('#' + self.module.getId() + '_' + j);
 							self.module.data[ j ].onChange( function( el ) {
 								dom.replaceWith( self.buildElement( el, i, true ) );
 							}, self.module.getId() );
@@ -220,12 +221,17 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 						
 					}
 
+					console.timeEnd('timer');
 				}, 1000); // 1 sec timeout
 			}
 		},
 
 		buildElement: function( source, i ) {
 			
+			if( ! source.get ) {
+				return;
+			}
+
 			var 
 				jpaths = this.module.getConfiguration( 'colsjPaths' ),
 				html = '',
@@ -238,7 +244,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				html += ' style="background-color: ' + this.colorjpath( source ) + ';"';
 			}
 
-			html += ' data-row-id="' + i + '"';
+			html += ' id="' + this.module.getId() + '_' + i + '" data-row-id="' + i + '"';
 			html += '>';
 
 			j = 0;
@@ -248,8 +254,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 					continue;
 				}
 				
-				html += '<td>';
-				html += Traversing.get( this.getValue( source.get(), jpaths[ j ].jpath ) );
+				html += '<td>';	
+				html += Traversing.get( this.getValue( source.get(), jpaths[ j ].jpath ) ) || "";
 				html += '</td>';
 			}
 			html += '</tr>';
@@ -262,6 +268,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 		},
 
 		getValue: function( trVal, jpath ) {
+
+			if( ! this.jpaths[ jpath ]) {
+				return "";
+			}
+
 			return this.jpaths[ jpath ]( trVal );
 		},
 

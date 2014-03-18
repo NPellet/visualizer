@@ -145,8 +145,8 @@ define([	'jquery',
 
 	function _check() {
 
-		var view = Versioning.getView(),
-			data = Versioning.getData();
+		var view = Versioning.getView();
+		var data = Versioning.getData();
 
 		if( ! _dataLoaded || ! _viewLoaded ) {
 			return;
@@ -173,13 +173,12 @@ define([	'jquery',
 			if( ! view.variables[i].jpath && view.variables[i].url ) {
 
 				view.variables[i].fetch( ).done( function( v ) {
-                                    
+                          
 					var varname = v.varname;
 					v.type = Traversing.getType( v.value );
 					
 					data[ varname ] = DataObject.check( v, true );
 					
-
 					API.setVariable( varname , data, [ varname ] );
 				} );
 
@@ -214,15 +213,16 @@ define([	'jquery',
 		}
 
 		// Pouch DB replication
-		var data = view.couch_replication[ 0 ].groups.couch[ 0 ];
-		for( var i = 0, l = data.length ; i < l ; i ++ ) {
-			PouchDBUtil.makePouch( data[ i ].pouchname );
+		if( view.couch_replication ) {
+			var couchData = view.couch_replication[ 0 ].groups.couch[ 0 ];
+			for( var i = 0, l = couchData.length ; i < l ; i ++ ) {
+				PouchDBUtil.makePouch( couchData[ i ].pouchname );
 
-			if( data[ i ].couchurl ) {
-				PouchDBUtil.replicate( data[ i ].pouchname, data[ i ].couchurl );
+				if( couchData[ i ].couchurl ) {
+					PouchDBUtil.replicate( couchData[ i ].pouchname, couchData[ i ].couchurl );
+				}
 			}
 		}
-
 	}
 
 
