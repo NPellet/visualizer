@@ -3,8 +3,7 @@ define([
 	"src/util/typerenderer",
 
 	// Add you own types here
-	"./firmenich_constraint.js",
-        "./ingredient.js"
+	"./example.js"
 
 	], function( Structures, Renderer ) {
 
