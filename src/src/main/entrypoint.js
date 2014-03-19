@@ -170,7 +170,7 @@ define([	'jquery',
 		for( var i = 0, l = view.variables.length; i < l; i++ ) {
 			// Defined by an URL
 
-			if( ! view.variables[i].jpath && view.variables[i].url ) {
+			if( view.variables[i].url ) {
 
 				view.variables[i].fetch( ).done( function( v ) {
                           

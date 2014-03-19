@@ -156,8 +156,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 		list: function( moduleValue ) {
 
-				if( moduleValue.type == "string") 
+				if( moduleValue.type == "string") {
 					return;
+				}
+
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
@@ -190,18 +192,18 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				// Wait before setting the highlights
 				this.timeout = window.setTimeout( function( ) {
-					console.time('timer');
+					
 					API.killHighlight( self.module.getId( ) );
 
 					for( i = 0; i < l ; i++ ) {
 							
 
 						( function( j ) {
-/*
+
 							API.listenHighlight( self.module.data[ j ], function( val ) {
 								self.doHighlight( j, val );
 							}, false, self.module.getId( ) );
-*/
+
 
 							var dom = self.domBody.find('#' + self.module.getId() + '_' + j);
 							self.module.data[ j ].onChange( function( el ) {
@@ -221,7 +223,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 						
 					}
 
-					console.timeEnd('timer');
 				}, 1000); // 1 sec timeout
 			}
 		},
