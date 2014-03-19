@@ -301,8 +301,22 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 "cursor": "pointer"
             })));
             dom.append(logout);
+            
+            var flavorField = $('<input type="text" value="' + this.flavor + '" id="' + this.cssId("flavor-input") + '">');
+            
+            this.database.view("flavor/list", {
+                success: function(data) {
+                    flavorField.autocomplete({
+                        minLength: 0,
+                        source: data.rows[0].value
+                    });
+                },
+                error: function(status) {
+                    console.log(status);
+                }
+            });            
 
-            dom.append($("<p><span>Flavor : </span>").append($('<input type="text" value="' + this.flavor + '" id="' + this.cssId("flavor-input") + '">')).append(
+            dom.append($("<p><span>Flavor : </span>").append(flavorField).append(
                     new Button('Switch', function() {
                         that.changeFlavor(that.getFormContent("flavor-input"));
                     }, {color: 'red'}).render()
@@ -385,7 +399,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             last = {
                 key: keyWithoutFlavor,
                 node: folder
-            }
+            };
 
             this["lastNode"] = last;
             if (event.type === "fancytreedblclick" && !node.folder)
@@ -439,7 +453,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     var newKey = target.key.substring(that.flavor.length + 1);
                     newKey += newKey.length ? ":" + theNode.title : theNode.title;
                     var newFlavor = newKey.split(":");
-                    that.database.view("test/flavors", {
+                    that.database.view("flavor/docs", {
                         success: function(data) {
                             if (comparePaths(newFlavor, data.rows))
                                 return that.showError(21);
@@ -461,11 +475,11 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 
 
                 }
-            }
+            };
 
-            this.database.view("test/flavors", {
+            this.database.view("flavor/docs", {
                 success: function(data) {
-                    var tree = createFullTree(data.rows, that.flavor)
+                    var tree = createFullTree(data.rows, that.flavor);
                     var theTree = $("#" + that.cssId("tree"));
                     theTree.fancytree({
                         extensions: ["dnd"],
@@ -528,7 +542,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                                 var path = doc.flavors[that.flavor];
                                 var oldName = path[path.length - 1];
                                 path[path.length - 1] = name;
-                                that.database.view("test/flavors", {
+                                that.database.view("flavor/docs", {
                                     success: function(data) {
                                         if (comparePaths(path, data.rows)) {
                                             path[path.length - 1] = oldName;
@@ -570,7 +584,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                                     that.showError(20);
                                 else {
                                     var path = doc.flavors[that.flavor];
-                                    that.database.view("test/flavors", {
+                                    that.database.view("flavor/docs", {
                                         success: function(data) {
                                             if (comparePaths(path, data.rows))
                                                 return that.showError(21);
@@ -628,7 +642,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             __doc: data.doc,
             __data: data.value.data,
             __view: data.value.view
-        }
+        };
         return structure;
     }
 
