@@ -34,4 +34,15 @@
     {"name":"Protein", "jpath":"element.protein"},
     {"name":"Calcium", "jpath":"element.calcium"},
     {"name":"Sodium", "jpath":"element.sodium"}
-]}
+],
+"jpaths2":[{"name":"All","data":[{"name":"Protein", "jpath":"element.protein"},
+    {"name":"Calcium", "jpath":"element.calcium"},
+    {"name":"Sodium", "jpath":"element.sodium"}]},
+{"name":"Protein + Calcium","data":[{"name":"Protein", "jpath":"element.protein"},
+    {"name":"Calcium", "jpath":"element.calcium"}
+   ]},
+{"name":"Calcium + Sodium","data":[
+    {"name":"Calcium", "jpath":"element.calcium"},
+    {"name":"Sodium", "jpath":"element.sodium"}]}
+]
+}

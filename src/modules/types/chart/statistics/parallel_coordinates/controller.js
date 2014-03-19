@@ -34,8 +34,9 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
             type: 'array',
             label: 'An array of data points'
         },
-        "column": {
-            label: 'Column description'
+        "columns": {
+            type: 'array',
+            label: 'Array of column descriptions'
         }
     };
 
@@ -46,15 +47,15 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
     controller.prototype.events = {
         onBrushSelection: {
             label: 'A selection has been made',
-            refVariable: ['value'],
+            refVariable: ['value']
         }
     };
 
-    controller.prototype.variablesIn = ['value'];
+    controller.prototype.variablesIn = ['value','columns'];
     
     controller.prototype.actionsIn = {
         addColumn: 'Add a column',
-        removeColumn: 'Remove a column',
+        removeColumn: 'Remove a column'
     };
     
     controller.prototype.configurationStructure = function(section) {

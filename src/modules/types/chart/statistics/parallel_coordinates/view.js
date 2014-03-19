@@ -4,6 +4,8 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
         this._id = Util.getNextUniqueId();
         this._value = new DataArray();
         this._addedColumns = {};
+        this._currentColumns = {};
+        this._previousColumns = [];
     }
     ;
 
@@ -20,6 +22,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
 
             this.module.getDomContent( ).html(this.dom);
             this.onReady = $.Deferred();
+            
         },
         blank: {
             value: function() {
@@ -37,16 +40,32 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 this._value = value;
                 
                 this.redrawChart();
+            },
+            columns: function(value) {
+                if(!value || !value.length)
+                    return;
+                for(var i = 0; i < this._previousColumns.length; i++) {
+                    delete this._currentColumns[this._previousColumns[i].name];
+                }
+                for(var i = 0; i < value.length; i++) {
+                    this._currentColumns[value[i].name] = value[i];
+                }
+                this._previousColumns = value;
+                this.redrawChart();
             }
         },
         onActionReceive: {
             addColumn: function(value) {
-                this._addedColumns[value.name] = value;
-                this.redrawChart();
+                if(value && value.name && value.jpath) {
+                    this._addedColumns[value.name] = value;
+                    this.redrawChart();
+                }
             },
             removeColumn: function(value) {
-                delete this._addedColumns[value.name];
-                this.redrawChart();
+                if(value && value.name) {
+                    delete this._addedColumns[value.name];
+                    this.redrawChart();
+                }
             }
         },
         onResize: function() {
@@ -74,43 +93,50 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             this.module.controller.onBrushSelection(this._data);
         },
         createIntermediateData: function() {
-            var totalConfig = [];
-            var config = this.module.getConfiguration("colsjPaths");
-            if(config) {
-                for(var i = 0; i < config.length; i++){
-                    totalConfig.push(config[i]);
-                }
-            }
-            if(this._addedColumns) {
-                for(var i in this._addedColumns){
-                    totalConfig.push(this._addedColumns[i]);
-                }
-            }
+            
+            var columns = this.getColumns(), l = columns.length;
             
             var value = this._value;
             
-            if(!totalConfig.length)
+            if(!l)
                return this._data = value;
             
             var newValue = new DataArray();
             var names = [];
-            for(var i = 0; i < totalConfig.length; i++){
-                names[i] = totalConfig[i].name;
+            for(var i = 0; i < l; i++){
+                names[i] = columns[i].name;
             }
             this._names = names;
             
             for(var i = 0; i < value.length; i++) {
                 var val = new DataObject();
                 newValue[i] = val;
-                for(var j = 0; j < totalConfig.length; j++) {
-                    Traversing.getValueFromJPath(value[i],totalConfig[j].jpath).always(function(result){
-                        val[totalConfig[j].name] = result;
+                for(var j = 0; j < l; j++) {
+                    Traversing.getValueFromJPath(value[i],columns[j].jpath).always(function(result){
+                        val[columns[j].name] = result;
                     });
                     val.__id = i;
                 }
             }
             
             this._data = newValue;
+        },
+        getColumns: function() {
+            var totalConfig = [], i;
+            var objConfig = {};
+            var config = this.module.getConfiguration("colsjPaths");
+            if(config) {
+                for(var i = 0; i < config.length; i++){
+                    objConfig[config[i].name] = config[i];
+                }
+            }
+            $.extend(objConfig, this._currentColumns, this._addedColumns);
+
+            for(i in objConfig){
+                totalConfig.push(objConfig[i]);
+            }
+
+            return totalConfig;
         }
       
     });
