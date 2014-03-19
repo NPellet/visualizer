@@ -74,7 +74,8 @@ module.exports = function(grunt) {
               './papa-parse/jquery.parse.min.js',
               './font-awesome/css/font-awesome.min.css',
               './font-awesome/fonts/*',
-              './colors/css/colors.min.css'
+              './colors/css/colors.min.css',
+              './pouchdb/dist/*'
             ],
 
             dest: './build/components/'
