@@ -42,7 +42,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 this.redrawChart();
             },
             columns: function(value) {
-                if(!value || !value.length)
+                if(!(value instanceof Array))
                     return;
                 for(var i = 0; i < this._previousColumns.length; i++) {
                     delete this._currentColumns[this._previousColumns[i].name];
@@ -77,29 +77,40 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             this.createIntermediateData();
             this.dom.empty();
             
-            var parcoords = d3.parcoords()("#"+(this._id));
-                parcoords.data(this._data);
-                parcoords.detectDimensions();
-                if(this._names)
-                    parcoords.dimensions(this._names);
-                
-                parcoords.render()
-                        .brushable()
-                        .reorderable();
-                parcoords.on("brush", function(d){
-                    that.module.controller.onBrushSelection(d);
-                });
-                
-            this.module.controller.onBrushSelection(this._data);
+            if(this._data) {
+                var parcoords = d3.parcoords()("#"+(this._id));
+                    parcoords.data(this._data);
+                    parcoords.detectDimensions();
+                    if(this._names)
+                        parcoords.dimensions(this._names);
+
+                    parcoords.color(function(item) {
+                        return item.__color ? item.__color : "#000";
+                    });
+
+                    parcoords.render()
+                            .brushable()
+                            .reorderable();
+                    parcoords.on("brush", function(d){
+                        that.module.controller.onBrushSelection(d);
+                    });
+
+                this.module.controller.onBrushSelection(this._data);
+            } else {
+                this.dom.html("No column to display");
+            }
         },
         createIntermediateData: function() {
             
             var columns = this.getColumns(), l = columns.length;
+            var colorJpath = this.module.getConfiguration("colorjpath");
             
             var value = this._value;
             
-            if(!l)
-               return this._data = value;
+            if(!l) {
+                this._data=false;
+                return;
+            }
             
             var newValue = new DataArray();
             var names = [];
@@ -115,6 +126,12 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                     Traversing.getValueFromJPath(value[i],columns[j].jpath).always(function(result){
                         val[columns[j].name] = result;
                     });
+                    if(colorJpath) {
+                        Traversing.getValueFromJPath(value[i],colorJpath).always(function(result){
+                            if(result)
+                                val.__color = result;
+                        });
+                    }
                     val.__id = i;
                 }
             }
@@ -127,7 +144,8 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             var config = this.module.getConfiguration("colsjPaths");
             if(config) {
                 for(var i = 0; i < config.length; i++){
-                    objConfig[config[i].name] = config[i];
+                    if(config[i].jpath)
+                        objConfig[config[i].name] = config[i];
                 }
             }
             $.extend(objConfig, this._currentColumns, this._addedColumns);

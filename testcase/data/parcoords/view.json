@@ -16,6 +16,13 @@
 			"configuration": {
 				"sections": {},
 				"groups": {
+					"group": [
+						{
+							"colJPath": [
+								"element.color"
+							]
+						}
+					],
 					"cols": [
 						[
 							{
@@ -256,7 +263,7 @@
 					]
 				}
 			},
-			"id": 6,
+			"id": 4,
 			"actions_out": [
 				{}
 			],

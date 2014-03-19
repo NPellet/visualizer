@@ -62,7 +62,20 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
 
         var jpaths = Traversing.getJPathsFromElement(this.module.view._value[0]);
         return {
-            groups: {               
+            groups: {
+                group: {
+                    options: {
+                        type: "list",
+                        multiple: "false"
+                    },
+                    fields: {
+                        colJPath: {
+                            type: 'combo',
+                            title: 'Color jPath',
+                            options: jpaths
+                        }
+                    }
+                },
                 cols: {
                     options: {
                         type: 'table',
@@ -86,7 +99,8 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
     };
     
     controller.prototype.configAliases = {
-        'colsjPaths': ['groups', 'cols', 0]
+        'colsjPaths': ['groups', 'cols', 0],
+        'colorjpath': ['groups','group',0,'colJPath',0]
     };
     
     controller.prototype.onBrushSelection = function(value, convert) {
