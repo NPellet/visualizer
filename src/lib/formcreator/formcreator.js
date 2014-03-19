@@ -333,7 +333,7 @@ define([ 'lib/forms/form'], function( Form ) {
 				var defaultVal = (fields[ i ].groups.defaultVal && fields[ i ].groups.defaultVal[ 0 ].defaultVal) ? fields[ i ].groups.defaultVal[ 0 ].defaultVal[ 0 ] : ''
 				var validation = {};
 
-				if( fields[ i ].sections.validation && fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].pattern[ 0 ] !== "" ) {
+				if( fields[ i ].sections.validation && fields[ i ].sections.validation[ 0 ].groups && fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].pattern[ 0 ] !== "" ) {
 					validation.rules = [
 											{
 												pattern: fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].pattern[ 0 ],
