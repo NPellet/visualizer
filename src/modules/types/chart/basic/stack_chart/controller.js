@@ -95,18 +95,41 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 					},
 
 					fields: {
-						nodeType : {
+						preference : {
 							type: 'combo',
 							title: 'Node Type',
-							default: 'Bars',
+							default: 'Lines',
 							options: [
 								{title: 'Bars', key: 'Bars'},
 								{title: 'Lines', key: 'Lines'},
-								{title: 'withStack', key: 'withStack'},
-								{title: 'WithoutStack', key: 'WithoutStack'}
+								{title: 'Lines With Steps', key: 'Lines With Steps'}
 							]
 						},
-
+						barWidth : {
+							type: 'combo',
+							title: 'Bars Width',
+							options: [
+								{title: '0.3', key: 0.3},
+								{title: '0.4', key: 0.4},
+								{title: '0.5', key: 0.5},
+								{title: '0.6', key: 0.6},
+								{title: '0.7', key: 0.7},
+								{title: '0.8', key: 0.8},
+								{title: '0.9', key: 0.9}
+							]
+						},
+						stack: {
+						type: 'checkbox',
+							title: 'stack',
+							default: false,
+							options: { 'stack': 'withStack/withoutStack'}
+						},
+						fill: {
+						type: 'checkbox',
+						default: false,
+							title: 'fill',
+							options: { 'fill': 'withFilling/withoutFilling'}
+						},
 						nodeSize: {
 							type: 'text',
 							title: 'Default node size'
@@ -146,14 +169,22 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 							type: 'color',
 							title: 'Background line color'
 						}
+
 					}
 				}
 			}
 		}
 	};
+	controller.prototype.configFunctions = {
+		'stack': function(cfg) { return cfg.indexOf('stack') == -1 ? null : true; },
+		'fill': function(cfg) { return cfg.indexOf('fill') == -1 ? false : true; }
+	};
 	
 	controller.prototype.configAliases = {
-		'nodeType': [ 'groups', 'group', 0, 'nodeType', 0 ],
+		'preference': [ 'groups', 'group', 0, 'preference', 0 ],
+		'barWidth': [ 'groups', 'group', 0, 'barWidth', 0],
+		'stack': [ 'groups', 'group', 0, 'stack', 0 ],
+		'fill': [ 'groups', 'group', 0, 'fill', 0 ],
 		'nodeSize': [ 'groups', 'group', 0, 'nodeSize', 0 ],
 		'nodeColor': [ 'groups', 'group', 0, 'nodeColor', 0 ],
 		'labelSize': [ 'groups', 'group', 0, 'labelSize', 0 ],

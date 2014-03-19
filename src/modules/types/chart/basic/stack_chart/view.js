@@ -10,20 +10,20 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		init: function() {
 
 			if (this.DEBUG) console.log("Stack Chart: init");
-
-			// When we change configuration the method init is called again. Also the case when we change completely of view
-			if (! this.dom) {
-				this._id = Util.getNextUniqueId();
-				this.dom = $('<p id="choices" style="float:right; width:15%;"><br></p><p id="stack" style="float:right; width:0;position: relative;top: 50px"><br></p><select id="prefs" style="float:right; width:15%;position: relative;top: 150px;left: 70px;"></select><div style="height: 100%;width: 80%" id="' + this._id + '"></div>');
-				this.module.getDomContent().html(this.dom);
-			}
-
-
 			if (this.dom) {
 				// in the dom exists and the preferences has been changed we need to clean the canvas
 				this.dom.empty();
 
 			}
+			// When we change configuration the method init is called again. Also the case when we change completely of view
+			if (! this.dom) {
+				this._id = Util.getNextUniqueId();
+				this.dom = $('<p id="choices" style="float:right; width:15%;"><br></p><div style="height: 100%;width: 80%" id="' + this._id + '"></div>');
+				this.module.getDomContent().html(this.dom);
+			}
+
+
+			
 			if (this._flot) { // if the dom existed there was probably a graph or when changing of view
 				delete this._flot;
 			}
@@ -32,21 +32,20 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			// we decided here to plot the chart in the "onResize" event
 			this.loadedData=$.Deferred();
 
-
-
-
-
-
 			if (this.DEBUG) console.log("Stack Chart: ID: "+this._id);
 
 			this._data=[];	// the data that will be sent to FLOT
+			var cfg = $.proxy( this.module.getConfiguration, this.module );
+			
+			this.updateOptions(cfg);
 
 		},
 
 
 		inDom: function() {
+		
 			if (this.DEBUG) console.log("Stack Chart: inDom");
-
+			
 		},
 
 		onResize: function() {
@@ -54,52 +53,36 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			if (this.DEBUG) console.log("Stack Chart: onResize");
 
 			var self=this;
-			// the size is now really defined (we are after inDom)
-			// and we received the data ...
-
-			this.loadedData.done(this.plot(self._id, self._data, self._options))
-				// insert checkboxes 
+			
+			this.loadedData.done(function() {
+			self.plot(self._id, self._data, self._options);
+			
 		var i = 0;
 		$.each(self._data, function(key, val) {
 			val.color = i;
 			++i;
 		});
 
-		// insert checkboxes 
+		
+		
 		var choiceContainer = $("#choices");
-		$.each(self._data, function(key, val) {
+		choiceContainer.empty();
+		
+			$.each(self._data, function(key, val) {
 			choiceContainer.append("<br/><input type='checkbox' name='" + key +
 				"' checked='checked' id='id" + key + "'></input>" +
 				"<label for='id" + key + "'>"
 				+ val.label + "</label>");
 		});
-		
-		choiceContainer.find("input").bind("click",function (event, pos, item){
+			
+			choiceContainer.find("input").bind("click",function (event, pos, item){
+		//event.preventDefault();
 		self.plotAccordingToChoices(choiceContainer);
 		});
 		
-		var stack = $("#stack");
-		var prf = $("#prefs");
-		var stacked;
-		prf.append("<option>Bars</option>");
-		prf.append("<option selected>Lines</option>");
-		prf.append("<option>Lines With Steps</option>");
-		stack.append("<br/><input type='checkbox' id='withstack'></input><label for='withstack'>Stacked/Not Sacked</label>");
-		stack.find("input").bind("click",function (event, pos, item){
-		if (stack.find("#withstack")[0].checked) {
-		stacked = true;
-		}else {
-		stacked = false;
-		}
-		self.updateOptions(prf[0].selectedOptions[0].text,stacked);
-		self.plot(self._id, self._data, self._options);
-		});		
-		prf.bind("click",function (event, pos, item){
-		
-			self.updateOptions(prf[0].selectedOptions[0].text,stacked);
-		    self.plot(self._id, self._data, self._options);
-		});
-		
+			})
+				
+				
 		},
 
 		/* When a value change this method is called. It will be called for all 
@@ -107,15 +90,25 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		It will also be called at the beginning and in this case the value is null !
 		*/
 		update: {
+		
 			'chart': function(moduleValue) {
-				if (this.DEBUG) console.log("stack Chart: update from chart object");
+			var self=this;
+			var cfg = $.proxy( this.module.getConfiguration, this.module );
+			
+			if (this.DEBUG) console.log("stack Chart: update from chart object");
 
 				if (! moduleValue || ! moduleValue.value) return;
 				
-				this.updateOptions("lines",true);
+				self.updateOptions(cfg);
 				this._convertChartToData(moduleValue.get().data);
 				this.loadedData.resolve();
 				
+				
+			/*else
+			{
+			
+				this.loadedData.done(this.plot(self._id, self._data, self._options))
+			} */
 				
 				// data are ready to be ploteed
 			},
@@ -139,47 +132,38 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var highlight=value[j]._highlight;
 			var info=value[j].info;
 			var label;
+			point = {
+			
+			}
 			s = [];
 				for (var i = 0; i < y.length; i++) 
 				{
-				if(! x[i]) s.push([i, y[i]]);
-				else s.push([x[i], y[i]]);
 				
-			 				
+				if(! x[i]) s.push({0:i,1:y[i],_highlight:highlight[i]});
+				else s.push( {0:x[i],1:y[i],_highlight:highlight[i]});
 				}
-				
-				
-				
-					if (highlight instanceof Array && highlight.length>j) {
-						if (highlight instanceof Array) {
-						
-							this._data[j] = {
+				this._data[j] = {
 						data: s,
-						_highlight: highlight,
 						info: null,
 						label: null
 					}
-						} else {
-						this._data[j] = {
-						data: s,
-						_highlight: [highlight],
-						info: null,
-						label: null
-					}
-						}
-					}
+					
 						Traversing.getValueFromJPath(info[0],"element.name").done(function(elVal) {
 							self._data[j].label=elVal;
 							self._data[j].info=value[j].info
-						});
-				
+						}); 
 			}
+			
 		},
 
-		updateOptions: function(preference, stacked) {
-			var steps,bars,lines = false;
-			
-			switch (preference)
+		updateOptions: function(cfg) {
+			var steps= false;
+			var bars= false;
+			var lines = false;
+			var stack = cfg('stack');
+			var barWidth = cfg('barWidth');
+		
+			switch (cfg('preference'))
 				{
 				  case 'Lines With Steps': steps = true;
 							lines = true;
@@ -188,8 +172,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 							break;
 				  case 'Lines': lines = true;
 							break;
-				  default:  lines = true;
-				  stacked = false
+				  
 				}
 			this._options = {
 
@@ -206,26 +189,28 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					hoverable:true
 				},
 				series: {
-				stack: stacked,
+				stack: stack,
 					
-					lines: { show: lines, fill: true, steps: steps},
-					bars: { show: bars, barWidth: 0.5 }
+					lines: { show: lines, fill: cfg('fill'), steps: steps},
+					bars: { show: bars, barWidth: barWidth }
 
 				}
 
 			};
 
 
-	 		var cfg = $.proxy( this.module.getConfiguration, this.module );
-
-			this._options.test=cfg('nodeSize') || 1;
+	 		
+			//this._options.test=cfg('nodeSize') || 1;
+			//console.log(cfg('barWidth'));
 
 		},
 		plot: function(id,data,options) {
 		var self=this;
+		
 				self._plot=$.plot("#"+id, data, options);
 
 				$("#"+id).bind("plotclick", function (event, pos, item) {
+				event.preventDefault();
 				    if (item) {
 				      	console.log("Y:"+item.datapoint[1]);
 			
@@ -233,27 +218,37 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				    }
 				});
 				$("#"+id).bind("plothover", function (event, pos, item) {
+				event.preventDefault();
 				    if (item) {
-				    	self.module.controller.elementHover(self._data[item.seriesIndex]);
+				    	self.module.controller.elementHover(self._data[item.seriesIndex].data[item.dataIndex]);
 				    } else {
 				    	self.module.controller.elementOut();
 				    }
 				});
-
+				
 				for (var i=0; i<data.length; i++) {
-					var currentDataPoint=i;
-					API.listenHighlight( data[i], function( onOff, key ) {
+					
+					for (var j=0; j<data[i].data.length; j++) {
+					var currentDataPoint=data[i].data[j];
+					API.listenHighlight( data[i].data[j], function( onOff, key ) {
 
-						// we need to highlight the correct shape ...
-						//console.log(onOff, key, currentDataPoint);
+						
+						
 						if (onOff) {
-							//console.log(i);
+						
+						
 							self._plot.highlight(0, currentDataPoint);
+						
+							
 						} else {
+						
 							self._plot.unhighlight(0, currentDataPoint);
+						
 						}
 					});
+					}
 				}
+				
 
 
 

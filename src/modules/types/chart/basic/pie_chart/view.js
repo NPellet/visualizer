@@ -140,7 +140,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					});
 				}				
 			}
-			console.log(this._data);
+			
 		},
 
 		updateOptions: function() {
@@ -156,11 +156,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				}
 			};
 
-
+			
 	 		var cfg = $.proxy( this.module.getConfiguration, this.module );
 
 			this._options.test=cfg('nodeSize') || 1;
-
+			
+			
 		}
 
 

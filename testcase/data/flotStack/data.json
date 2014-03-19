@@ -6,7 +6,7 @@
 		{"label":"D","_highlight":["D"]},
 		{"label":"E","_highlight":["E"]}
 	],
-	"pieChart":
+	"stackChart":
 	{
 		"type":"chart",
 		"value": {
@@ -31,21 +31,31 @@
 			[
 				{
 					"x":[],
-					"y":[1,7,5],
+					"y":[1,7,5,6],
 					"z":[],
-					"_highlight":["A","B","C"],
+					"_highlight":["A","B","E","C"],
 					"info":[{"name":"first"}],
 					"serieLabel": "My first serie",
 					"xAxis": "0", 
 					"yAxis": "1"
 				},
 				{
-					"x":[0,2,5],
-					"y":[2,3,4],
+					"x":[0,1,2,3],
+					"y":[2,3,4,1],
 					"z":[],
-					"_highlight":["D","E","A"],
+					"_highlight":["D","E","C","A"],
 					"info":[{"name":"second"}],
 					"serieLabel": "My seconde serie",
+					"xAxis": "0", 
+					"yAxis": "1"
+				},
+				{
+					"x":[0,1,2,3],
+					"y":[3,3,9,5],
+					"z":[],
+					"_highlight":["A","B","C","D"],
+					"info":[{"name":"third"}],
+					"serieLabel": "My third serie",
 					"xAxis": "0", 
 					"yAxis": "1"
 				}

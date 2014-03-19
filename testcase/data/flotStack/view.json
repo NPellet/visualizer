@@ -3,7 +3,7 @@
 	"modules": [
 		{
 			"url": "./modules/types/chart/basic/stack_chart/",
-			"title": "Untitled module",
+			"title": "Stack Chart",
 			"displayWrapper": true,
 			"position": {
 				"left": 18,
@@ -18,11 +18,20 @@
 				"groups": {
 					"group": [
 						{
-							"nodeType": [
-								"circle"
+							"barWidth": [
+								0.3
+							],
+							"stack": [
+								
+							],
+							"fill": [
+								
+							],
+							"preference": [
+							"Lines"
 							],
 							"nodeSize": [
-								null
+								10
 							],
 							"nodeColor": [
 								[
@@ -65,6 +74,7 @@
 									1
 								]
 							]
+							
 						}
 					]
 				}
@@ -73,7 +83,7 @@
 			"vars_in": [
 				{
 					"rel": "chart",
-					"name": "pieChart"
+					"name": "stackChart"
 				}
 			],
 			"actions_in": {},
@@ -157,8 +167,8 @@
 	],
 	"variables": [
 		{
-			"varname": "pieChart",
-			"jpath": "element.pieChart"
+			"varname": "stackChart",
+			"jpath": "element.stackChart"
 		},
 		{
 			"varname": "highlight",
