@@ -105,7 +105,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             var columns = this.getColumns(), l = columns.length;
             var colorJpath = this.module.getConfiguration("colorjpath");
             
-            var value = this._value;
+            var value = this._value, result;
             
             if(!l) {
                 this._data=false;
@@ -123,19 +123,16 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 var val = new DataObject();
                 newValue[i] = val;
                 for(var j = 0; j < l; j++) {
-                    Traversing.getValueFromJPath(value[i],columns[j].jpath).always(function(result){
-                        val[columns[j].name] = result;
-                    });
+                    result = value[i].getChildSync(columns[j].jpath);
+                    if(result = value[i].getChildSync(columns[j].jpath))
+                        val[columns[j].name] = result.get();
                     if(colorJpath) {
-                        Traversing.getValueFromJPath(value[i],colorJpath).always(function(result){
-                            if(result)
-                                val.__color = result;
-                        });
+                        if(result = value[i].getChildSync(colorJpath))
+                            val.__color = result.get();
                     }
                     val.__id = i;
                 }
             }
-            
             this._data = newValue;
         },
         getColumns: function() {

@@ -261,9 +261,13 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			}
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
-			var subEl = this.get(el, true);
+			var subEl = this.get(el, false);
 
 			switch( typeof subEl ) {
+				case 'undefined':
+					return;
+				break;
+
 				case 'string':
 					subEl = new DataObject( { type: "string", value: subEl } );
 				break;
@@ -280,7 +284,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 
 			}
 
-			if( jpath.length == 0 ) {
+			if( jpath.length === 0 ) {
 				return subEl;
 			}
 
@@ -317,14 +321,14 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 				jpath.shift();
 			}
 			
-			if(!jpath || jpath.length == 0) {
+			if(!jpath || jpath.length === 0) {
 				this.value = newValue;
 				this.triggerChange( options.moduleid );
 				return $.Deferred().resolve( this );
 			}
 
 			var jpathLength = jpath.length;
-			if(jpathLength == 1) { // Ok we're done, let's set it
+			if(jpathLength === 1) { // Ok we're done, let's set it
 
 				return $.Deferred().resolve( this.set( jpath[0], newValue ) ).then( function() {
 
@@ -496,6 +500,9 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 
 	Object.defineProperty(DataObject.prototype, 'getChild', getChild);
 	Object.defineProperty(DataArray.prototype, 'getChild', getChild);
+        
+	Object.defineProperty(DataObject.prototype, 'getChildSync', getChildSync);
+	Object.defineProperty(DataArray.prototype, 'getChildSync', getChildSync);
 
 	Object.defineProperty(DataObject.prototype, 'onChange', listenDataChanged);
 	Object.defineProperty(DataArray.prototype, 'onChange', listenDataChanged);
