@@ -184,6 +184,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 doc = {
                     _id: $.couch.newUUID(),
                     flavors: flavors,
+                    name: this.username,
                     _attachments: {}
                 };
                 doc._attachments[type.toLowerCase() + ".json"] = {
