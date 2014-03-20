@@ -314,7 +314,8 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 },
                 error: function(status) {
                     console.log(status);
-                }
+                },
+                key: this.username
             });            
 
             dom.append($("<p><span>Flavor : </span>").append(flavorField).append(
@@ -470,7 +471,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         error: function(status) {
                             console.log(status);
                         },
-                        key: that.flavor,
+                        key: [that.flavor, that.username],
                         include_docs: false
                     });
 
@@ -499,7 +500,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 error: function(status) {
                     console.log(status);
                 },
-                key: this.flavor,
+                key: [this.flavor, this.username],
                 include_docs: true
             });
         },
@@ -563,7 +564,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                                     error: function(status) {
                                         console.log(status);
                                     },
-                                    key: that.flavor,
+                                    key: [that.flavor, that.username],
                                     include_docs: false
                                 });
                             },
@@ -603,7 +604,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                                         error: function(status) {
                                             console.log(status);
                                         },
-                                        key: flavor,
+                                        key: [flavor, that.username],
                                         include_docs: false
                                     });
                                 }
