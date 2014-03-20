@@ -18,8 +18,11 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             $.ui.fancytree.debugLevel = 0;
             this.checkDatabase();
         },
-        showError: function(e) {
+        showError: function(e, type) {
             var content;
+            var color = "red";
+            if(type===2)
+                color="green";
             if (typeof e === "number") {
                 switch (e) {
                     case 10:
@@ -52,7 +55,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             } else {
                 content = e;
             }
-            $(("#" + this.cssId("error"))).text(content).show().delay(3000).fadeOut();
+            $(("#" + this.cssId("error"))).text(content).css("color",color).show().delay(3000).fadeOut();
         },
         getFormContent: function(type) {
             return $("#" + this.cssId(type)).val().trim();
@@ -107,7 +110,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 
             var that = this;
             this.$_elToOpen = $("<div>").css("width", 550);
-            this.errorP = $('<p id="' + this.cssId("error") + '" style="color: red;">');
+            this.errorP = $('<p id="' + this.cssId("error") + '">');
 
             $.couch.session({
                 success: function(data) {
@@ -124,11 +127,12 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         },
         load: function(node, rev) {
             var that = this;
-            var def;
+            var def, message={};
             if (node.data.hasData) {
                 def = $.getJSON(this.database.uri + node.data.doc._id + "/data.json" + (rev ? "?rev=" + rev : ""), function(data) {
                     data = new DataObject(data, true);
                     Versioning.setDataJSON(data);
+                    that.showError("Data loaded.", 2);
                 });
             } else
                 def = $.Deferred().resolve();
@@ -137,6 +141,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     $.getJSON(that.database.uri + node.data.doc._id + "/view.json" + (rev ? "?rev=" + rev : ""), function(view) {
                         view = new ViewObject(view, true);
                         Versioning.setViewJSON(view);
+                        that.showError("View loaded.", 2);
                     });
                 });
             }
@@ -157,6 +162,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             var child = last.node.findFirst(name);
 
             var doc;
+            var that = this;
 
             if (child && child.title === name && !child.folder && (last.node.getChildren().indexOf(child) >= 0)) {
                 doc = child.data.doc;
@@ -172,6 +178,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         child.data["has" + type] = true;
                         if (child.children)
                             child.lazyLoad(true);
+                        that.showError(type+" saved.", 2);
                     }
                 });
             }
@@ -204,6 +211,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         last.node.addNode(newNode);
                         if (!last.node.expanded)
                             last.node.toggleExpanded();
+                        that.showError(type+" saved.", 2);
                     }
                 });
             }
@@ -310,6 +318,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     flavorField.autocomplete({
                         minLength: 0,
                         source: data.rows[0].value
+                    }).on('autocompleteselect',function(e,d){
+                        var flavor = d.item.value;
+                        if(that.flavor!==flavor) that.changeFlavor(flavor);
                     });
                 },
                 error: function(status) {
@@ -320,7 +331,8 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 
             dom.append($("<p><span>Flavor : </span>").append(flavorField).append(
                     new Button('Switch', function() {
-                        that.changeFlavor(that.getFormContent("flavor-input"));
+                        var flavor = that.getFormContent("flavor-input");
+                        if(that.flavor!==flavor) that.changeFlavor(flavor);
                     }, {color: 'red'}).render()
                     ));
 
@@ -520,6 +532,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         };
                         this.database.removeDoc(doc, {
                             success: function() {
+                                that.showError("Document deleted.", 2);
                                 node.remove();
                             },
                             error: this.showError
@@ -528,6 +541,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     else { // Update current doc
                         this.database.saveDoc(node.data.doc, {
                             success: function() {
+                                that.showError("Flavor deleted.", 2);
                                 node.remove();
                             },
                             error: this.showError
@@ -593,7 +607,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                                             doc.flavors[flavor] = path;
                                             that.database.saveDoc(doc, {
                                                 success: function() {
-                                                    that.changeFlavor(flavor);
+                                                    that.showError("Flavor "+flavor+" successfully added.", 2);
                                                     dialog.dialog("destroy");
                                                 },
                                                 error: function(status) {
