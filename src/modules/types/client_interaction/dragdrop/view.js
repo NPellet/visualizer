@@ -31,18 +31,30 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/versioning'], 
 	 		dom.addEventListener('drop', function(e) {
 	 			e.stopPropagation();
 	 			e.preventDefault();
-	 			self.open(e.dataTransfer.files);
+	 			self.open(e.dataTransfer);
                                 self.dom.removeClass('dragdrop-over');
 	 		});
-
 		},
 
-		open: function(files) {
-			var file = files[0];
-
-			if( ! this.module.controller.leased ) {
-				this.module.controller.onDropped( file );
+		open: function(data) {
+                    
+                    if(!data.items.length)
+                        return;
+                    
+                    var that = this;
+                    var item = data.items[0];
+                    
+                    if(item.kind==="file") {
+                        if( ! this.module.controller.leased ) {
+				this.module.controller.onDropped( item.getAsFile() );
 			}
+                    } else {
+                        item.getAsString(function(value){
+                            that.module.controller.treatString(value);
+                        });
+                    }
+
+			
 		},
 
 

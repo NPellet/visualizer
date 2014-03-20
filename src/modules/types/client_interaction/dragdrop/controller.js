@@ -1,4 +1,4 @@
-define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning' ], function( Default, API, Versioning ) {
+define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning', 'src/data/structures' ], function( Default, API, Versioning, Structure ) {
 	
 	/**
 	 * Creates a new empty controller
@@ -74,6 +74,11 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 	
 		
 	controller.prototype.configurationStructure = function(section) {
+            
+            var types = Structure._getList(), l = types.length, typeList = new Array(l);
+            for(var i = 0; i < l; i++) {
+                typeList[i] = {key:types[i], title:types[i]};
+            }
 		
 		return {
 			groups: {
@@ -100,7 +105,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 
 					options: {
 						type: 'table',
-						multiple: true
+						multiple: true,
+                                                title: 'For files'
 					},
 
 					fields: {
@@ -117,8 +123,9 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 						},
 
 						type: {
-							type: "text",
-							title: "Force type"
+							type: "combo",
+							title: "Force type",
+                                                        options: typeList
 						},
 
 						variable: {
@@ -126,7 +133,26 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 							title: "Temporary variable"	
 						}
 					}
-				}
+				},
+                                
+                                string: {
+                                    options: {
+                                        type: 'table',
+                                        multiple: false,
+                                        title: 'For strings'
+                                    },
+                                    fields: {
+                                        type: {
+                                            type: "combo",
+                                            title: "Force type",
+                                            options: typeList
+                                        },
+                                        variable: {
+                                            type: "text",
+                                            title: "Temporary variable"	
+                                        }
+                                    }
+                                }
 			}
 		};	
 	};
@@ -136,7 +162,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 		'vartype': [ 'groups', 'group', 0, 'vartype', 0 ],
 		'label': [ 'groups', 'group', 0, 'label', 0 ],
 		//'filter': [ 'groups', 'group', 0, 'filter', 0 ],
-		'vars': [ 'groups', 'vars', 0 ]
+		'vars': [ 'groups', 'vars', 0 ],
+                'string': [ 'groups', 'string', 0, 0 ]
 	};
 
 
@@ -152,17 +179,21 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 		this.reader.onload = function(e) {
 
 			var obj = e.target.result;
-			if( self.lineCfg.type === "array" || self.lineCfg.type === "object" ) {
+                        if(self.lineCfg.filetype === "text") {
+                            self.parseString(self.lineCfg, obj);
+                        } else {
+                            if( self.lineCfg.type === "array" || self.lineCfg.type === "object" ) {
 
-				try {
-					obj = JSON.parse( obj, Versioning.getViewHandler( ).reviver );
-				} catch( _ ) {
+                                    try {
+                                            obj = JSON.parse( obj, Versioning.getViewHandler( ).reviver );
+                                    } catch( _ ) {
 
-				}
-			}
-			obj = new DataObject({ type: self.lineCfg.type, value: obj }, true);
-                        self.tmpVar(self.lineCfg.variable, obj);
-			self.leased = false;
+                                    }
+                            }
+                            obj = DataObject.check({ type: self.lineCfg.type, value: obj }, true);
+                            self.tmpVar(self.lineCfg.variable, obj);
+                            self.leased = false;
+                        }
 		};
 
 		this.reader.onerror = function(e) {
@@ -171,6 +202,20 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 		};
 	};
 
+
+        controller.prototype.treatString = function(value) {
+            var cfg = this.module.getConfiguration('string');            
+            this.parseString(cfg, value);
+        };
+
+        controller.prototype.parseString = function(cfg, value) {
+            try{
+                var result = Structure._parse(cfg.type, value);
+                this.tmpVar(cfg.variable,result);
+            } finally{
+                this.leased = false;
+            }
+        };
 
 	/**
 	 *	Called after a file is dropped
