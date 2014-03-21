@@ -5,7 +5,7 @@ define( [ require, '../../field', 'src/util/util', 'jqueryui', 'components/farbt
     console.log('field constructor')
 		var self = this;
 
-    $('head').append('<link rel="stylesheet" href="./components/spectrum/spectrum.css" />')
+    Util.loadCss("./components/spectrum/spectrum.css")
 		this.name = name;
 		this.domExpander = $("<div></div>");
     this.domExpander.append('<div><input type="text"></input></div>')
@@ -13,6 +13,8 @@ define( [ require, '../../field', 'src/util/util', 'jqueryui', 'components/farbt
     $(this.domExpander).find('input').spectrum({
       color: "#ffffff",
       cancelText: '',
+      showInitial:true,
+      showInput: true,
       flat: true,
       clickoutFiresChange: true,
       showAlpha: true,

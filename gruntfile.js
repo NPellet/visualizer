@@ -68,7 +68,8 @@ module.exports = function(grunt) {
               './jsoneditor/img/*',
               './jit/Jit/**/*',
               './jquery-ui-contextmenu/jquery.ui-contextmenu.min.js',
-              './mustache/mustache.js'
+              './mustache/mustache.js',
+              ['./spectrum/spectrum.js', './spectrum/spectrum.css']
             ],
 
             dest: './build/components/'
