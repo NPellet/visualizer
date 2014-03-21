@@ -12,10 +12,10 @@ define( [ require, '../../field', 'src/util/util', 'jqueryui', 'components/farbt
     $(this.domExpander).children('div').css('float','left').addClass('form-spectrum');
     $(this.domExpander).find('input').spectrum({
       color: "#ffffff",
+      cancelText: '',
       flat: true,
       clickoutFiresChange: true,
       showAlpha: true,
-      showInitial:true,
       showPalette:true,
       showSelectionPalette:true,
       palette: [ ],
