@@ -20,52 +20,11 @@ define( [ require, '../../field', 'src/util/util', 'jqueryui', 'components/farbt
       change: function(color) {
         var rgb = color.toRgb();
         self.getElementExpanded( ).value = [ rgb['r'], rgb['g'], rgb['b'], rgb['a'] ];
+        self.form.hideExpander();
       }
     });
     
-    
-
-    
     console.log('spectrum', this.domExpander);
-    
-
-    // $("<div></div>").addClass('form-colorpicker').css({ 'float': 'left' }).farbtastic(function(color) {
-    // 
-    //   if( self.getElementExpanded( ) ) {
-    //     var value = Util.hexToRgb(color);
-    // 
-    //     self.getElementExpanded( ).value = [ value[ 0 ], value[ 1 ], value[ 2 ], self.getElementExpanded( ).value[ 3 ] ] ;
-    //   }
-    // 
-    // }).appendTo( this.domExpander );
-    // 
-    // $("<div></div>").addClass('form-slider').css({ height: '180px', marginLeft: '20px', float: 'left' }).slider({ 
-    // 
-    //   orientation: "vertical",
-    //     min: 0,
-    //     max: 1,
-    //     step: 0.01,
-    // 
-    //     start: function( event, ui ) {
-    //       //event.preventDefault();
-    //       event.stopPropagation();
-    //     },
-    // 
-    //     slide: function( event, ui ) {
-    // 
-    //       self.getElementExpanded( ).value = [ self.getElementExpanded( ).value[ 0 ], self.getElementExpanded( ).value[ 1 ], self.getElementExpanded( ).value[ 2 ], ui.value ] ;
-    //        event.stopPropagation( );
-    //     },
-    // 
-    //     stop: function( event ) {
-    // 
-    //       event.preventDefault( );
-    // 
-    //     }
-    // 
-    // }).appendTo( this.domExpander );
-
-
 		$("<div />").addClass('clear').appendTo( this.domExpander );
 	};
 

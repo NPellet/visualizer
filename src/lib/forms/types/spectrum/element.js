@@ -19,6 +19,8 @@ define( [ ], function(  ) {
             event.stopPropagation();
             
           });
+          
+          
 
 		this.div = div;
 		this.fieldElement = div;
