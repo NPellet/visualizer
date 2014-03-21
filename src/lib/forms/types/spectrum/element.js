@@ -11,7 +11,7 @@ define( [ ], function(  ) {
 					.addClass( 'form-field' )
 					.appendTo( dom )
           .bind('click', function( event ) {
-          
+            console.log('toggle');
             self.toggleSelect( event );
           
           }).bind('click', function( event ) {

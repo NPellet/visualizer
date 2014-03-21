@@ -1,6 +1,6 @@
 
 define( [ require, '../../field', 'src/util/util', 'jqueryui', 'components/farbtastic/src/farbtastic', 'components/spectrum/spectrum' ], function( require, FieldDefaultConstructor, Util, ui, spectrum ) {
-
+  var felement = null;
 	var FieldConstructor = function(name) {
     console.log('field constructor')
 		var self = this;
@@ -12,15 +12,19 @@ define( [ require, '../../field', 'src/util/util', 'jqueryui', 'components/farbt
     $(this.domExpander).children('div').css('float','left').addClass('form-spectrum');
     $(this.domExpander).find('input').spectrum({
       color: "#ffffff",
-      localStorageKey: 'visualizer-spectrum',
       flat: true,
       clickoutFiresChange: true,
       showAlpha: true,
       showInitial:true,
+      showPalette:true,
+      showSelectionPalette:true,
+      palette: [ ],
+      localStorageKey: 'visualizer-spectrum',
       change: function(color) {
         var rgb = color.toRgb();
-        self.getElementExpanded( ).value = [ rgb['r'], rgb['g'], rgb['b'], rgb['a'] ];
-        self.form.hideExpander();
+        self.getElementExpanded( ).value = felement.value = [ rgb['r'], rgb['g'], rgb['b'], rgb['a'] ];
+        // self.form.hideExpander();
+        felement.toggleSelect();
       }
     });
     
@@ -36,13 +40,11 @@ define( [ require, '../../field', 'src/util/util', 'jqueryui', 'components/farbt
 	};
 
 	FieldConstructor.prototype.showExpander = function( fieldElement ) {
-
+    felement = fieldElement
 		this._showExpander( fieldElement );
 		var value = fieldElement.value || [0, 0, 0, 1];
     this.domExpander.find('.form-spectrum').spectrum('set', Util.rgbToHex( value[0], value[1], value[2] ));
     
-    // $.farbtastic( this.domExpander.children( '.form-colorpicker' ) ).setColor( Util.rgbToHex( value[0], value[1], value[2] ) );
-    // this.domExpander.children( '.form-slider' ).slider( 'value', value[ 3 ] );
 	};
 
 	return FieldConstructor;
