@@ -33,7 +33,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 		'mol': {
 			label: 'Mol 2D',
-			type: [ 'mol2d', 'molfile2d' ]
+			type: [ 'mol2d', 'molfile2d', 'string' ]
 
 		},
 
