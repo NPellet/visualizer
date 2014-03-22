@@ -66,6 +66,31 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		
 	controller.prototype.configurationStructure = function(section) {
 		
+
+		/*
+			valuetest: {
+				type: 'float',
+				title: 'Number value',
+				validation: {
+
+					rules: [
+
+						{
+							pattern:"^[a-zA-Z0-9_.]+@[a-zA-Z0-9.]+\\.[a-zA-Z0-9]+$",
+							feedback: {
+								_class: true,
+								message: "Not a valid e-mail"
+							}
+						}
+					],
+
+					positiveFeedback: {
+						message: 'E-mail is valid ! =)'
+					}
+				}
+			},
+		*/
+
 		return {
 
 			groups: {
@@ -77,27 +102,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 					fields: {
 
-						valuetest: {
-							type: 'float',
-							title: 'Number value',
-							validation: {
 
-								rules: [
-
-									{
-										pattern:"^[a-zA-Z0-9_.]+@[a-zA-Z0-9.]+\\.[a-zA-Z0-9]+$",
-										feedback: {
-											_class: true,
-											message: "Not a valid e-mail"
-										}
-									}
-								],
-
-								positiveFeedback: {
-									message: 'E-mail is valid ! =)'
-								}
-							}
-						},
 
 						defaultvalue: {
 							type: 'wysiwyg',
