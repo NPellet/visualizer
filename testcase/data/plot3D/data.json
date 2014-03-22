@@ -24,32 +24,47 @@
 					"name": "",
 					"min":"",
 					"max":""
+				},
+				"2": {
+					"type": "",
+					"unit": "",
+					"name": "",
+					"min":"",
+					"max":""
 				}
 			},
 			"data" : 
 			[
 				{
-					"x":[0],
-					"y":[0],
-					"z":[0],
-					"_highlight":["A","B","C",["A","D"]],
+					"x":[100,200,300,400],
+					"y":[100,200,300,400],
+					"z":[100,200,100,200],
+					"color":["#ff0000","#00ff00","#0000ff","#000000"],
+					"size":[1,2,3,4],
+					"shape":["cube","sphere","cone",""],
+					"label":["a","b","c","d"],
+					"_highlight":["A","B","C","D"],
 					"info":[{"name":"first"},{"name":"second"},{"name":"third"},{"name":"forth"}],
 					"serieLabel": "My first serie",
 					"xAxis": "0", 
-					"yAxis": "1"
+					"yAxis": "1",
+					"zAxis": "2"
 				},
 				{
-					"x":[0,100,200,300],
-          "y":[0,100,200,300],
-          "z":[0,100,200,300],
-					"info":[{"_highlight":["A"], "name":"first"},{"_highlight":["B"], "name":"second"},{"_highlight":["C"], "name":"third"},{"_highlight":["A","D"], "name":"forth"}],
+					"x":[400,300,200,100],
+					"y":[400,300,200,100],
+					"z":[400,200,400,200],
+					"color":["#ff0000","#00ff00","#0000ff","#000000"],
+					"size":[1,2,3,4],
+					"shape":["cube","sphere","cone",""],
+					"label":["a","b","c","d"],
+					"info":[{"_highlight":["A"], "name":"first"},{"_highlight":["B"], "name":"second"},{"_highlight":["C"], "name":"third"},{"_highlight":["D"], "name":"forth"}],
 					"serieLabel": "My second serie",
 					"xAxis": "0", 
-					"yAxis": "1"
+					"yAxis": "1",
+					"zAxis": "2"
 				}
 			]
 		}
-	},
-	"simpleArray": [1,2,3,4,5]
+	}
 }
-	

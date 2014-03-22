@@ -37,9 +37,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       }
 
 			function init() {
-
-				self.camera = new THREE.PerspectiveCamera( 60, self.dom.width() / self.dom.height(), 1, 1000 );
-				self.camera.position.z = 500;
+        if(!self.camera) {
+          self.camera = new THREE.PerspectiveCamera( 60, self.dom.width() / self.dom.height(), 1, 1000 );
+          self.camera.position.z = 500;
+        }
 
 				self.controls = new THREE.TrackballControls( self.camera, self.dom.get(0) );
 
@@ -59,7 +60,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				// world
 
 				self.scene = new THREE.Scene();
-        self.scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
+        // self.scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
 
         // var geometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
         //         var geometry = new THREE.SphereGeometry( 5, 32, 32 );
@@ -87,15 +88,16 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         // light = new THREE.DirectionalLight( 0x002288 );
         // light.position.set( -1, -1, -1 );
         // self.scene.add( light );
-        // 
-        // light = new THREE.AmbientLight( 0x222222 );
+        
+        // var light = new THREE.AmbientLight( 0xffffff );
         // self.scene.add( light );
 
 
 				// renderer
 
 				self.renderer = new THREE.WebGLRenderer( { antialias: false } );
-        self.renderer.setClearColor( self.scene.fog.color, 1 );
+        // self.renderer.setClearColor( self.scene.fog.color, 1 );
+        self.renderer.setClearColor('#eeeeee', 1);
 				self.renderer.setSize( window.innerWidth, window.innerHeight );
 
 				container = document.getElementById(self.dom.attr('id'));
@@ -145,24 +147,71 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
     
     _plotPoints: function(value) {
       var self = this;
-      var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-			var material =  new THREE.MeshLambertMaterial( { color:0xffffff, shading: THREE.FlatShading } );
       
       // Remove all objects
       this.scene.traverse(function(obj) {
         self.scene.remove(obj);
       });
       
-			for ( var i = 0; i < value.data[0].x.length; i ++ ) {
+      var maxX = Math.max.apply(null, value.data[1].x);
+      var oX = Math.min.apply(null, value.data[1].x);
+      var maxY = Math.max.apply(null, value.data[1].y);
+      var oY = Math.min.apply(null, value.data[1].y);
+      var maxZ = Math.max.apply(null, value.data[1].z);
+      var oZ = Math.min.apply(null, value.data[1].z);
+      console.log('Max X: ', maxX);
+      var vX = new THREE.Vector3( maxX, 0, 0 );
+      var vY = new THREE.Vector3(0, maxY, 0);
+      var vZ = new THREE.Vector3(0,0,maxZ);
+      var origin = new THREE.Vector3( 0, 0, 0 );
+      var length = maxX;
+      var hex = 0x000000;
 
-				var mesh = new THREE.Mesh( geometry, material );
-				mesh.position.x = value.data[0].x[i];
-				mesh.position.y = value.data[0].y[i];
-				mesh.position.z = value.data[0].z[i];
-				mesh.updateMatrix();
-				mesh.matrixAutoUpdate = false;
-				this.scene.add( mesh );
-			}
+      var axX = new THREE.ArrowHelper( vX, origin, maxX, hex );
+      var axY = new THREE.ArrowHelper( vY, origin, maxY, hex );
+      var axZ = new THREE.ArrowHelper( vZ, origin, maxZ, hex );
+      
+      this.scene.add(axX);
+      this.scene.add(axY);
+      this.scene.add(axZ);
+      
+      
+      var light1 = new THREE.DirectionalLight( 0xffffff, 1000 );
+      light1.position.set( 1, 1, 1 );
+      var light2 = new THREE.DirectionalLight(0xffffff, 1000);
+      light2.position.set( -1, -1, -1 );
+      // self.scene.add( light );
+      // 
+      // light = new THREE.DirectionalLight( 0x002288 );
+      // light.position.set( -1, -1, -1 );
+      // self.scene.add( light );
+      
+      // var light = new THREE.AmbientLight( 0x404040 );
+      self.scene.add(light1);
+      self.scene.add(light2);
+      
+      
+      for(var j=0; j<value.data.length; j++) {
+        for ( var i = 0; i < value.data[j].x.length; i++ ) {
+          var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+    			var material =  new THREE.MeshLambertMaterial( { color: 0x000000, shading: THREE.FlatShading } );
+          if(value.data[j].color && value.data[j].color[i]) {
+            console.log('setting color');
+            material.color = new THREE.Color(value.data[j].color[i]);
+            console.log(material.color);
+          }
+          else {
+            material.color = '0x000000';
+          }
+          var mesh = new THREE.Mesh( geometry, material );
+          mesh.position.x = value.data[j].x[i];
+          mesh.position.y = value.data[j].y[i];
+          mesh.position.z = value.data[j].z[i];
+          mesh.updateMatrix();
+          mesh.matrixAutoUpdate = false;
+          this.scene.add( mesh );
+        }
+      }
       
       this.renderer.render(self.scene, self.camera);
     },
