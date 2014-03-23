@@ -212,7 +212,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 							if( self.module.data[ j ].removable ) {
 								Context.listen( dom.get( 0 ), [
-									['<li><a><span class="ui-icon ui-icon-cross"></span> Remove</a></li>', 
+									['<li><a><span class="ui-icon ui-icon-close"></span> Remove</a></li>', 
 									function() {
 										self.onActionReceive.removeRowById.call( self, j );
 									}]

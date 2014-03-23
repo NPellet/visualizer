@@ -70,6 +70,10 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 
 
 		dom.parentNode.addEventListener('contextmenu', function(e) {
+
+			console.log( contextMenu );
+
+			
 			contextMenu.menu({
 				select: function(event, ui) {
 					var moduleName = ui.item.attr('name');

@@ -50,59 +50,67 @@ requirejs.config({
 
 require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchtovar'], function($, EntryPoint, Header, PouchDBUtil) {
 
-	DataObject = function(l, checkDeep) {	
+	DataObject = function(l, checkDeep, forceCopy) {	
 		for(var i in l) {
 			if(l.hasOwnProperty(i)) {
 				if(!checkDeep) {
 					this[i] = l[i];
 					continue;
 				} else {
-					this[i] = DataObject.check(l[i], true);
+					this[i] = DataObject.check(l[i], true, forceCopy);
 				}
 			}
 		}
+
+		if( forceCopy ) {
+			this.unbindChange();
+			this._name = null;
+			this._parent = null;	
+		}
 	};
 
-	ViewObject = function(l, checkDeep) {	
+	ViewObject = function(l, checkDeep, forceCopy) {	
 		for(var i in l) {
 			if(l.hasOwnProperty(i)) {
 				if(!checkDeep) {
 					this[i] = l[i];
 					continue;
 				} else {
-					this[i] = ViewObject.check(l[i], true);
+					this[i] = ViewObject.check(l[i], true, forceCopy);
 				}
 			}
 		}
 	};
 
-	ViewObject.check = function(el, check) {
+	ViewObject.check = function(el, check, forceCopy) {
 		
-		if(el instanceof ViewObject || el instanceof ViewArray) {
+		if( ! forceCopy && ( el instanceof ViewObject || el instanceof ViewArray ) ) {
 			return el;
-		} else if(el instanceof Array)
-			return new ViewArray(el, check);
-		else if(el === null)
+		} else if(el instanceof Array) {
+			return new ViewArray(el, check, forceCopy);
+		} else if(el === null) {
 			return null;
-		else if(typeof el == "object")
-			return new ViewObject(el, check);
-		else
+		} else if(typeof el == "object") {
+			return new ViewObject(el, check, forceCopy);
+		} else {
 			return el;
+		}
 	};
 
 
-	DataObject.check = function(el, check) {
+	DataObject.check = function(el, check, forceCopy) {
 
-		if(el instanceof DataObject || el instanceof DataArray) {
+		if( ! forceCopy && ( el instanceof DataObject || el instanceof DataArray ) ) {
 			return el;
-		} else if(el instanceof Array)
-			return new DataArray(el, check);
-		else if(el === null)
+		} else if(el instanceof Array) {
+			return new DataArray(el, check, true);
+		} else if(el === null) {
 			return null;
-		else if(typeof el == "object")
-			return new DataObject(el, check);
-		else
+		} else if(typeof el == "object") {
+			return new DataObject(el, check, true);
+		} else {
 			return el;
+		}
 	};
 
 	$.extend(ViewObject.prototype, Object.prototype);
@@ -197,6 +205,19 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			return this;
 		}
 	}
+
+
+	var dataDuplicator = {
+		enumerable: false,
+		configurable: false,
+		writable: false,
+		value: function( source ) {
+			return DataObject.check( this, true, true );
+		}
+	}
+
+
+
 
 	var getChild = {
 		value: function( jpath, setParents ) {
@@ -405,13 +426,9 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 				});
 
 			this._listenersDataChanged.push([callback, moduleid]);
-			
 		},
-
 		enumerable: false
 	}
-
-
 
 	var unbindChange = {
 		value: function( moduleid ) {
@@ -419,7 +436,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			if( this._listenersDataChanged ) {
 				for( var i = 0, l = this._listenersDataChanged.length ; i < l ; i ++ ) {
 
-					if( this._listenersDataChanged[ i ][ 1 ] == moduleid ) {
+					if( ! moduleid || this._listenersDataChanged[ i ][ 1 ] == moduleid ) {
 						this._listenersDataChanged.splice(i, 1);
 					}
 				}
@@ -507,6 +524,9 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 	Object.defineProperty(DataObject.prototype, 'onChange', listenDataChanged);
 	Object.defineProperty(DataArray.prototype, 'onChange', listenDataChanged);
 
+	Object.defineProperty(DataObject.prototype, 'duplicate', dataDuplicator);
+	Object.defineProperty(DataArray.prototype, 'duplicate', dataDuplicator);
+
 
 	Object.defineProperty(DataObject.prototype, 'unbindChange', unbindChange);
 	Object.defineProperty(DataArray.prototype, 'unbindChange', unbindChange);
@@ -535,17 +555,27 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 
 
 
-	PouchObject = function(l, checkDeep) {	
+	PouchObject = function(l, checkDeep, forceCopy) {	
 		for(var i in l) {
 			if(l.hasOwnProperty(i)) {
 				if(!checkDeep) {
 					this[i] = l[i];
 					continue;
 				} else {
-					this[i] = DataObject.check(l[i], true);
+					this[i] = DataObject.check(l[i], true, forceCopy);
 				}
 			}
 		}
+
+		if( forceCopy ) {
+		
+			this.unbindChange();
+			this._name = null;
+			this._parent = null;
+			this._rev = null;
+			this._id = null;
+		}
+
 		var self = this;
 		this.onChange( function() {
 
