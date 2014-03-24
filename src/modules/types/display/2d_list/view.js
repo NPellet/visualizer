@@ -29,7 +29,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 			list: function( moduleValue ) {
 
 				this.defs = [];
-				if(moduleValue == undefined || !(moduleValue instanceof Array)) {
+				if(!(moduleValue instanceof Array)) {
 					return;
 				}
 
@@ -39,7 +39,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 					sizeStyle = "",
 					self = this,
 					val = moduleValue.get(),
-					table = $('<table cellpadding="3" cellspacing="0">'),
+					table = $('<table cellpadding="3" cellspacing="0">').css("text-align", "center"),
 					l = val.length,
 					done = 0,
 					td,
@@ -60,7 +60,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 					}
 				}
 
-				current = undefined;
+				var current, colId;
 				this._inDom = false;
 				
 				for( ; i < l ; i ++ ) {
@@ -68,7 +68,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 					td = this.renderElement( view.list[ i ], cols );
 					colId = done % cols;
 
-					if( colId == 0 ) {
+					if( colId === 0 ) {
 						if( current ) {
 							current.appendTo( table );
 						}
@@ -116,7 +116,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 			if( colorJpath ) {
 
 				element.getChild( colorJpath , true ).done( function( val ) {
-					td.css( 'background-color', val );
+					td.css( 'background-color', val.get() );
 				} );
 			}
 
