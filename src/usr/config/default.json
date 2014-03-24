@@ -1,68 +1,68 @@
 {
-
-"filters": [
-	{
-		"file": "./usr/filters/testFilter.js",
-		"name": "Filter"
-	},
-	{
-		"file": "./usr/filters/doitourl.js",
-		"name": "DOI to URL"
-	},
+    "filters": [
         {
-		"file": "./usr/filters/flickr.js",
-		"name": "Flickr image"
-	},
-        {
-		"file": "./usr/filters/gcgenerator.js",
-		"name": "Generate GC"
-	},
-        {
-		"file": "./usr/filters/hclust.js",
-		"name": "Hierarchical clustering"
+            "file": "./usr/filters/testFilter.js",
+            "name": "Filter"
         },
-                {
-		"file": "./usr/filters/histogram.js",
-		"name": "Color histogram"
+        {
+            "file": "./usr/filters/doitourl.js",
+            "name": "DOI to URL"
+        },
+        {
+            "file": "./usr/filters/flickr.js",
+            "name": "Flickr image"
+        },
+        {
+            "file": "./usr/filters/gcgenerator.js",
+            "name": "Generate GC"
+        },
+        {
+            "file": "./usr/filters/hclust.js",
+            "name": "Hierarchical clustering"
+        },
+        {
+            "file": "./usr/filters/histogram.js",
+            "name": "Color histogram"
         }
-],
-
-"modules": ["./modules/types/folder.json", "./usr/modules/folder.json"] ,
-
-"header": {
-	"height": "30px",
-	"elements":
-	[
-		{
-			"type": "autosavelocalview",
-			"label": "Autosave view"
-		},
-
-		{
-			"type": "copyview",
-			"label": "Copy view"
-		},
-
-	    {
-	        "type": "blankview",
-	        "label": "Blank view"
-	    },
-	    
-	    {
-	        "type": "pasteview",
-	        "label": "Paste view"
-	    },
-
-		{
-			"type": "pushviewtoserver",
-			"label": "Save to server"
-		},
-
-		{
-			"type": "versioning",
-			"label": "Versioning"
-		}
-	]
-}
+    ],
+    "modules": ["./modules/types/folder.json"],
+    "header": {
+        "height": "30px",
+        "elements":
+                [
+                    {
+                        "type": "copydata",
+                        "label": "Copy data"
+                    },
+                    {
+                        "type": "pastedata",
+                        "label": "Paste data"
+                    },
+                    {
+                        "type": "copyview",
+                        "label": "Copy view"
+                    },
+                    {
+                        "type": "pasteview",
+                        "label": "Paste view"
+                    },
+                    {
+                        "type": "blankview",
+                        "label": "Blank view"
+                    },
+                    {
+                        "type": "pushviewtoserver",
+                        "label": "Save to server"
+                    },
+                    {
+                        "type": "versioning",
+                        "label": "Versioning"
+                    },
+                    {
+                        "type":"feedback",
+                        "label":"Feedback"
+                    }
+                ]
+    }
 
 }
