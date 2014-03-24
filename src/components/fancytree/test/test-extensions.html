@@ -56,9 +56,8 @@ $(function(){
 			name: "sampleExt1",
 			version: "1.0.0",
 			options: {
-				opt1: true,
+				opt1: true
 			},
-			name: "sampleExt1",
 
 			treeInit: function(ctx){
 				var tree = this, // same as ctx.tree,
@@ -81,7 +80,6 @@ $(function(){
 			options: {
 				opt1: true,
 			},
-			name: "sampleExt2",
 
 			treeInit: function(ctx){
 				var tree = this, // same as ctx.tree,
@@ -108,7 +106,7 @@ $(function(){
 		sampleExt2: {
 			opt1: "set by tree (2)"
 		},
-		lazyload: function(e, data) {
+		lazyLoad: function(event, data) {
 			data.result = {url: "ajax-sub2.json"}
 		}
 	});

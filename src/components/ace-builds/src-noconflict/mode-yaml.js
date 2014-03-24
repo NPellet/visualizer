@@ -39,7 +39,7 @@ var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutd
 var FoldMode = require("./folding/coffee").FoldMode;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new YamlHighlightRules().getRules());
+    this.HighlightRules = YamlHighlightRules;
     this.$outdent = new MatchingBraceOutdent();
     this.foldingRules = new FoldMode();
 };
@@ -71,6 +71,7 @@ oop.inherits(Mode, TextMode);
     };
 
 
+    this.$id = "ace/mode/yaml";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -118,7 +119,7 @@ var YamlHighlightRules = function() {
                 regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
                 token : "string", // multi line string start
-                regex : '[\\|>]\\w*',
+                regex : '[|>][-+\\d\\s]*$',
                 next : "qqstring"
             }, {
                 token : "string", // single quoted string
@@ -132,9 +133,6 @@ var YamlHighlightRules = function() {
             }, {
                 token : "constant.language.boolean",
                 regex : "(?:true|false|TRUE|FALSE|True|False|yes|no)\\b"
-            }, {
-                token : "invalid.illegal", // comments are not allowed
-                regex : "\\/\\/.*$"
             }, {
                 token : "paren.lparen",
                 regex : "[[({]"

@@ -35,6 +35,7 @@ function insertSiblingAfter(referenceNode, newNode) {
 function setChildRowVisibility(parent, flag) {
 	parent.visit(function(node){
 		var tr = node.tr;
+		flag = node.hide ? false : flag; // fix for ext-filter
 		if(tr){
 			tr.style.display = flag ? "" : "none";
 		}
@@ -94,7 +95,7 @@ $.ui.fancytree.registerExtension({
 		$(tree.tbody).empty();
 
 		tree.rowFragment = document.createDocumentFragment();
-		$row = $("<tr>");
+		$row = $("<tr />");
 		tdRole = "";
 		if(ctx.options.aria){
 			$row.attr("role", "row");
@@ -161,7 +162,7 @@ $.ui.fancytree.registerExtension({
 		if( !_recursive ){
 			ctx.hasCollapsedParents = node.parent && !node.parent.expanded;
 		}
-		$.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode);
+		// $.ui.fancytree.debug("*** nodeRender " + node + ", isRoot=" + isRootNode);
 		if( !isRootNode ){
 			if(!node.tr){
 				// Create new <tr> after previous row
@@ -204,6 +205,8 @@ $.ui.fancytree.registerExtension({
 			} else {
 				// Set icon, link, and title (normally this is only required on initial render)
 				//this.nodeRenderTitle(ctx);
+				// Update element classes according to node state
+				this.nodeRenderStatus(ctx);
 			}
 		}
 		 // Allow tweaking after node state was rendered
@@ -243,9 +246,9 @@ $.ui.fancytree.registerExtension({
 			});
 		}
 		// Update element classes according to node state
-		if(!isRootNode){
-			this.nodeRenderStatus(ctx);
-		}
+		// if(!isRootNode){
+		// 	this.nodeRenderStatus(ctx);
+		// }
 	},
 	nodeRenderTitle: function(ctx, title) {
 		var $cb,
@@ -260,6 +263,10 @@ $.ui.fancytree.registerExtension({
 		}
 		// Let user code write column content
 		// ctx.tree._triggerNodeEvent("renderColumns", node);
+		// Update element classes according to node state
+		if( ! node.isRoot() ){
+			this.nodeRenderStatus(ctx);
+		}
 		if ( opts.renderColumns ){
 			opts.renderColumns.call(ctx.tree, {type: "renderColumns"}, ctx);
 		}
@@ -287,12 +294,17 @@ $.ui.fancytree.registerExtension({
 		if(status === "ok"){
 			var node = ctx.node,
 				firstChild = ( node.children ? node.children[0] : null );
-			if ( firstChild && firstChild.isStatusNode ) {
+			if ( firstChild && firstChild.isStatusNode() ) {
 				$(firstChild.tr).remove();
 			}
 		}
 		this._super(ctx, status, message, details);
-	}/*,
+	},
+	treeClear: function(ctx) {
+		this.nodeRemoveChildMarkup(this._makeHookContext(this.rootNode));
+		return this._super(ctx);
+	}
+	/*,
 	treeSetFocus: function(ctx, flag) {
 //	        alert("treeSetFocus" + ctx.tree.$container);
 		ctx.tree.$container.focus();

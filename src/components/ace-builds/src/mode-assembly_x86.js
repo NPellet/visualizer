@@ -39,14 +39,14 @@ var AssemblyX86HighlightRules = require("./assembly_x86_highlight_rules").Assemb
 var FoldMode = require("./folding/coffee").FoldMode;
 
 var Mode = function() {
-    var highlighter = new AssemblyX86HighlightRules();
+    this.HighlightRules = AssemblyX86HighlightRules;
     this.foldingRules = new FoldMode();
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
     this.lineCommentStart = ";";
+    this.$id = "ace/mode/assembly_x86";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

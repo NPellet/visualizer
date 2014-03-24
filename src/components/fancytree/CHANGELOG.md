@@ -1,6 +1,24 @@
-# 2.0.0-6 / Unreleased
+# 2.0.0-7 / Unreleased
+  * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
+    Added new property `node.statusNodeType`.
+  * [BREAKING CHANGE] Renamed ext-awesome to ext-glyph
+  * [DEPRECATION] Deprecated event `lazyload`, use `lazyLoad` (upper case L) instead.
+  * [DEPRECATION] Deprecated methods node.lazyLoad() and node.discard(). use load() and resetLazy() instead.
+  * [FEATURE] Added node.isUndefined(), isLoaded(), resetLazy(), load(), resetLazy()
+  * [FEATURE] [ext-persist] Added option `expandLazy` for recursive loading (still experimental).
+  * [FEATURE] [ext-filter] 'mode: hide' now works with ext-table (still experimental).
+  * [FEATURE] node.makeVisible() accepts options, scrolls into view, and returns a promise.
+  * [FEATURE] Sample xxl and bootstrap themes.
+  * [CHANGE] nodeRenderStatus() is now implicitly called by nodeRenderTitle().  
+    This also means that now all markup and css classes are finshed, when `renderNode` 
+    is fired.
+  * [CHANGE] Calling setExpanded() on a leaf node fires .done() (not .fail())
+  * [CHANGE] Removing the last child node collapses the parent; lazy nodes become empty (not undefined).
 
-  * [BREAKING CHANGE]  Removed 'name' argument from `$.ui.fancytree.registerExtension()`
+
+# 2.0.0-6 / 2014-02-08
+
+  * [BREAKING CHANGE] Removed 'name' argument from `$.ui.fancytree.registerExtension()`
     (now the extension object requires a 'name' property)
   * [DEPRECATION]  Deprecated startEdit/endEdit to use editStart/editEnd
   * [FEATURE] New method `tree._requireExtension()`

@@ -39,7 +39,7 @@ var TextMode = require("./text").Mode;
 var oop = require("../lib/oop");
 
 function Mode() {
-    this.$tokenizer = new Tokenizer(new Rules().getRules());
+    this.HighlightRules = Rules;
     this.foldingRules = new FoldMode();
 }
 
@@ -70,6 +70,7 @@ oop.inherits(Mode, TextMode);
         }
     };
     
+    this.$id = "ace/mode/abap";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

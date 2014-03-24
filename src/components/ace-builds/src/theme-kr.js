@@ -45,11 +45,7 @@ background-color: #0B0A09;\
 color: #FCFFE0\
 }\
 .ace-kr-theme .ace_cursor {\
-border-left: 2px solid #FF9900\
-}\
-.ace-kr-theme .ace_overwrite-cursors .ace_cursor {\
-border-left: 0px;\
-border-bottom: 1px solid #FF9900\
+color: #FF9900\
 }\
 .ace-kr-theme .ace_marker-layer .ace_selection {\
 background: rgba(170, 0, 255, 0.45)\
@@ -120,20 +116,18 @@ color: #706D5B\
 .ace-kr-theme .ace_variable {\
 color: #D1A796\
 }\
+.ace-kr-theme .ace_list,\
+.ace-kr-theme .ace_markup.ace_list {\
+background-color: #0F0040\
+}\
 .ace-kr-theme .ace_variable.ace_language {\
 color: #FF80E1\
 }\
 .ace-kr-theme .ace_meta.ace_tag {\
 color: #BABD9C\
 }\
-.ace-kr-theme .ace_markup.ace_underline {\
-text-decoration: underline\
-}\
-.ace-kr-theme .ace_markup.ace_list {\
-background-color: #0F0040\
-}\
 .ace-kr-theme .ace_indent-guide {\
-background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYFBXV/8PAAJoAXX4kT2EAAAAAElFTkSuQmCC) right repeat-y;\
+background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYFBXV/8PAAJoAXX4kT2EAAAAAElFTkSuQmCC) right repeat-y\
 }";
 
 var dom = require("../lib/dom");

@@ -29,10 +29,17 @@
  * ***** END LICENSE BLOCK ***** */
 
 
-define('kitchen-sink/demo', ['require', 'exports', 'module' , 'ace/lib/fixoldbrowsers', 'ace/config', 'ace/lib/dom', 'ace/lib/net', 'ace/lib/lang', 'ace/lib/useragent', 'ace/lib/event', 'ace/theme/textmate', 'ace/edit_session', 'ace/undomanager', 'ace/keyboard/hash_handler', 'ace/virtual_renderer', 'ace/editor', 'ace/multi_select', 'ace/ext/whitespace', 'kitchen-sink/doclist', 'ace/ext/modelist', 'kitchen-sink/layout', 'kitchen-sink/token_tooltip', 'kitchen-sink/util', 'ace/ext/elastic_tabstops_lite', 'ace/incremental_search', 'ace/split', 'ace/keyboard/vim', 'ace/ext/statusbar', 'ace/ext/emmet', 'ace/placeholder', 'ace/snippets', 'ace/snippets/javascript'], function(require, exports, module) {
+define('kitchen-sink/demo', ['require', 'exports', 'module' , 'ace/lib/fixoldbrowsers', 'ace/multi_select', 'ace/ext/spellcheck', 'kitchen-sink/inline_editor', 'kitchen-sink/dev_util', 'kitchen-sink/file_drop', 'ace/config', 'ace/lib/dom', 'ace/lib/net', 'ace/lib/lang', 'ace/lib/useragent', 'ace/lib/event', 'ace/theme/textmate', 'ace/edit_session', 'ace/undomanager', 'ace/keyboard/hash_handler', 'ace/virtual_renderer', 'ace/editor', 'ace/ext/whitespace', 'kitchen-sink/doclist', 'ace/ext/modelist', 'ace/ext/themelist', 'kitchen-sink/layout', 'kitchen-sink/token_tooltip', 'kitchen-sink/util', 'ace/ext/elastic_tabstops_lite', 'ace/incremental_search', 'ace/worker/worker_client', 'ace/split', 'ace/keyboard/vim', 'ace/ext/statusbar', 'ace/ext/emmet', 'ace/snippets', 'ace/ext/language_tools'], function(require, exports, module) {
 
 
 require("ace/lib/fixoldbrowsers");
+
+require("ace/multi_select");
+require("ace/ext/spellcheck");
+require("./inline_editor");
+require("./dev_util");
+require("./file_drop");
+
 var config = require("ace/config");
 config.init();
 var env = {};
@@ -51,12 +58,14 @@ var HashHandler = require("ace/keyboard/hash_handler").HashHandler;
 
 var Renderer = require("ace/virtual_renderer").VirtualRenderer;
 var Editor = require("ace/editor").Editor;
-var MultiSelect = require("ace/multi_select").MultiSelect;
 
 var whitespace = require("ace/ext/whitespace");
 
+
+
 var doclist = require("./doclist");
 var modelist = require("ace/ext/modelist");
+var themelist = require("ace/ext/themelist");
 var layout = require("./layout");
 var TokenTooltip = require("./token_tooltip").TokenTooltip;
 var util = require("./util");
@@ -68,6 +77,12 @@ var bindDropdown = util.bindDropdown;
 var ElasticTabstopsLite = require("ace/ext/elastic_tabstops_lite").ElasticTabstopsLite;
 
 var IncrementalSearch = require("ace/incremental_search").IncrementalSearch;
+
+
+var workerModule = require("ace/worker/worker_client");
+if (location.href.indexOf("noworker") !== -1) {
+    workerModule.WorkerClient = workerModule.UIWorkerClient;
+}
 var container = document.getElementById("editor-container");
 var Split = require("ace/split").Split;
 var split = new Split(container, theme, 1);
@@ -78,9 +93,7 @@ split.on("focus", function(editor) {
 });
 env.split = split;
 window.env = env;
-window.ace = env.editor;
-env.editor.setAnimatedScroll(true);
-require("ace/multi_select").MultiSelect(env.editor);
+
 
 var consoleEl = dom.createElement("div");
 container.parentNode.appendChild(consoleEl);
@@ -145,11 +158,11 @@ env.editor.commands.addCommands([{
     bindKey: "ctrl+enter",
     exec: function(editor) {
         try {
-            var r = eval(editor.getCopyText()||editor.getValue());
+            var r = window.eval(editor.getCopyText() || editor.getValue());
         } catch(e) {
             r = e;
         }
-        editor.cmdLine.setValue(r + "")
+        editor.cmdLine.setValue(r + "");
     },
     readOnly: true
 }, {
@@ -158,8 +171,28 @@ env.editor.commands.addCommands([{
     exec: function(editor) {
         config.loadModule("ace/ext/keybinding_menu", function(module) {
             module.init(editor);
-            editor.showKeyboardShortcuts()
-        })
+            editor.showKeyboardShortcuts();
+        });
+    }
+}, {
+    name: "increaseFontSize",
+    bindKey: "Ctrl-+",
+    exec: function(editor) {
+        var size = parseInt(editor.getFontSize(), 10) || 12;
+        editor.setFontSize(size + 1);
+    }
+}, {
+    name: "decreaseFontSize",
+    bindKey: "Ctrl+-",
+    exec: function(editor) {
+        var size = parseInt(editor.getFontSize(), 10) || 12;
+        editor.setFontSize(Math.max(size - 1 || 1));
+    }
+}, {
+    name: "resetFontSize",
+    bindKey: "Ctrl+0",
+    exec: function(editor) {
+        editor.setFontSize(12);
     }
 }]);
 
@@ -183,10 +216,34 @@ var commands = env.editor.commands;
 commands.addCommand({
     name: "save",
     bindKey: {win: "Ctrl-S", mac: "Command-S"},
-    exec: function() {alert("Fake Save File");}
+    exec: function(arg) {
+        var session = env.editor.session;
+        var name = session.name.match(/[^\/]+$/);
+        localStorage.setItem(
+            "saved_file:" + name,
+            session.getValue()
+        );
+        env.editor.cmdLine.setValue("saved "+ name);
+    }
 });
 
-var keybindings = {
+commands.addCommand({
+    name: "load",
+    bindKey: {win: "Ctrl-O", mac: "Command-O"},
+    exec: function(arg) {
+        var session = env.editor.session;
+        var name = session.name.match(/[^\/]+$/);
+        var value = localStorage.getItem("saved_file:" + name);
+        if (typeof value == "string") {
+            session.setValue(value);
+            env.editor.cmdLine.setValue("loaded "+ name);
+        } else {
+            env.editor.cmdLine.setValue("no previuos value saved for "+ name);
+        }
+    }
+});
+
+var keybindings = {    
     ace: null, // Null = use "default" keymapping
     vim: require("ace/keyboard/vim").handler,
     emacs: "ace/keyboard/emacs",
@@ -224,6 +281,7 @@ var showGutterEl = document.getElementById("show_gutter");
 var showPrintMarginEl = document.getElementById("show_print_margin");
 var highlightSelectedWordE = document.getElementById("highlight_selected_word");
 var showHScrollEl = document.getElementById("show_hscroll");
+var showVScrollEl = document.getElementById("show_vscroll");
 var animateScrollEl = document.getElementById("animate_scroll");
 var softTabEl = document.getElementById("soft_tab");
 var behavioursEl = document.getElementById("enable_behaviours");
@@ -242,7 +300,7 @@ doclist.history = doclist.docs.map(function(doc) {
 });
 doclist.history.index = 0;
 doclist.cycleOpen = function(editor, dir) {
-    var h = this.history
+    var h = this.history;
     h.index += dir;
     if (h.index >= h.length) 
         h.index = 0;
@@ -251,17 +309,16 @@ doclist.cycleOpen = function(editor, dir) {
     var s = h[h.index];
     docEl.value = s;
     docEl.onchange();
-    h.index
-}
+};
 doclist.addToHistory = function(name) {
-    var h = this.history
+    var h = this.history;
     var i = h.indexOf(name);
     if (i != h.index) {
         if (i != -1)
             h.splice(i, 1);
         h.index = h.push(name);
     }
-}
+};
 
 bindDropdown("doc", function(name) {
     doclist.loadDoc(name, function(session) {
@@ -299,20 +356,26 @@ function updateUIEditorOptions() {
     saveOption(behavioursEl, editor.getBehavioursEnabled());
 }
 
+themelist.themes.forEach(function(x){ x.value = x.theme });
+fillDropdown(themeEl, {
+    Bright: themelist.themes.filter(function(x){return !x.isDark}),
+    Dark: themelist.themes.filter(function(x){return x.isDark}),
+});
+
 event.addListener(themeEl, "mouseover", function(e){
-    this.desiredValue = e.target.value;
-    if (!this.$timer)
-        this.$timer = setTimeout(this.updateTheme);
+    themeEl.desiredValue = e.target.value;
+    if (!themeEl.$timer)
+        themeEl.$timer = setTimeout(themeEl.updateTheme);
 });
 
 event.addListener(themeEl, "mouseout", function(e){
-    this.desiredValue = null;
-    if (!this.$timer)
-        this.$timer = setTimeout(this.updateTheme, 20);
+    themeEl.desiredValue = null;
+    if (!themeEl.$timer)
+        themeEl.$timer = setTimeout(themeEl.updateTheme, 20);
 });
 
 themeEl.updateTheme = function(){
-    env.split.setTheme(themeEl.desiredValue || themeEl.selectedValue);
+    env.split.setTheme((themeEl.desiredValue || themeEl.selectedValue));
     themeEl.$timer = null;
 };
 
@@ -386,7 +449,11 @@ bindCheckbox("highlight_selected_word", function(checked) {
 });
 
 bindCheckbox("show_hscroll", function(checked) {
-    env.editor.renderer.setHScrollBarAlwaysVisible(checked);
+    env.editor.setOption("hScrollBarAlwaysVisible", checked);
+});
+
+bindCheckbox("show_vscroll", function(checked) {
+    env.editor.setOption("vScrollBarAlwaysVisible", checked);
 });
 
 bindCheckbox("animate_scroll", function(checked) {
@@ -407,6 +474,9 @@ bindCheckbox("fade_fold_widgets", function(checked) {
 bindCheckbox("read_only", function(checked) {
     env.editor.setReadOnly(checked);
 });
+bindCheckbox("scrollPastEnd", function(checked) {
+    env.editor.setOption("scrollPastEnd", checked);
+});
 
 bindDropdown("split", function(value) {
     var sp = env.split;
@@ -414,7 +484,7 @@ bindDropdown("split", function(value) {
         sp.setSplits(1);
     } else {
         var newEditor = (sp.getSplits() == 1);
-        sp.setOrientation(value == "below" ? sp.BELOW : sp.BESIDE);
+        sp.setOrientation(value == "below" ? sp.BELOW : sp.BESIDE);        
         sp.setSplits(2);
 
         if (newEditor) {
@@ -457,58 +527,18 @@ bindCheckbox("highlight_token", function(checked) {
         editor.tokenTooltip = new TokenTooltip(editor);
     }
 });
-event.addListener(container, "dragover", function(e) {
-    var types = e.dataTransfer.types;
-    if (types && Array.prototype.indexOf.call(types, 'Files') !== -1)
-        return event.preventDefault(e);
-});
-
-event.addListener(container, "drop", function(e) {
-    var file;
-    try {
-        file = e.dataTransfer.files[0];
-        if (window.FileReader) {
-            var reader = new FileReader();
-            reader.onload = function() {
-                var mode = modelist.getModeForPath(file.name);
-
-                env.editor.session.doc.setValue(reader.result);
-                modeEl.value = mode.name;
-                env.editor.session.setMode(mode.mode);
-                env.editor.session.modeName = mode.name;
-            };
-            reader.readAsText(file);
-        }
-        return event.preventDefault(e);
-    } catch(err) {
-        return event.stopEvent(e);
-    }
-});
-
-
 
 var StatusBar = require("ace/ext/statusbar").StatusBar;
 new StatusBar(env.editor, cmdLine.container);
 
 
 var Emmet = require("ace/ext/emmet");
-net.loadScript("https://rawgithub.com/nightwing/emmet-core/master/emmet.js", function() {
+net.loadScript("http://nightwing.github.io/emmet-core/emmet.js", function() {
     Emmet.setCore(window.emmet);
     env.editor.setOption("enableEmmet", true);
-})
+});
 
-
-require("ace/placeholder").PlaceHolder;
-
-var snippetManager = require("ace/snippets").snippetManager
-var jsSnippets = require("ace/snippets/javascript");
-window.snippetManager = snippetManager
-saveSnippets()
-
-function saveSnippets() {
-    jsSnippets.snippets = snippetManager.parseSnippetFile(jsSnippets.snippetText);
-    snippetManager.register(jsSnippets.snippets, "javascript")
-}
+var snippetManager = require("ace/snippets").snippetManager;
 
 env.editSnippets = function() {
     var sp = env.split;
@@ -519,1104 +549,33 @@ env.editSnippets = function() {
     sp.setSplits(1);
     sp.setSplits(2);
     sp.setOrientation(sp.BESIDE);
-    var editor = sp.$editors[1]
-    if (!env.snippetSession) {
-        var file = jsSnippets.snippetText;
-        env.snippetSession = doclist.initDoc(file, "", {});
-        env.snippetSession.setMode("ace/mode/tmsnippet");
-        env.snippetSession.setUseSoftTabs(false);
+    var editor = sp.$editors[1];
+    var id = sp.$editors[0].session.$mode.$id || "";
+    var m = snippetManager.files[id];
+    if (!doclist["snippets/" + id]) {
+        var text = m.snippetText;
+        var s = doclist.initDoc(text, "", {});
+        s.setMode("ace/mode/snippets");
+        doclist["snippets/" + id] = s;
     }
     editor.on("blur", function() {
-        jsSnippets.snippetText = editor.getValue();
-        saveSnippets();
-    })
-    editor.setSession(env.snippetSession, 1);
+        m.snippetText = editor.getValue();
+        snippetManager.unregister(m.snippets);
+        m.snippets = snippetManager.parseSnippetFile(m.snippetText, m.scope);
+        snippetManager.register(m.snippets);
+    });
+    sp.$editors[0].once("changeMode", function() {
+        sp.setSplits(1);
+    });
+    editor.setSession(doclist["snippets/" + id], 1);
     editor.focus();
-}
+};
 
-ace.commands.bindKey("Tab", function(editor) {
-    var success = snippetManager.expandWithTab(editor);
-    if (!success)
-        editor.execCommand("indent");
-})
-
+require("ace/ext/language_tools");
+env.editor.setOptions({
+    enableBasicAutocompletion: true,
+    enableSnippets: true
 });
-
-define('ace/ext/whitespace', ['require', 'exports', 'module' , 'ace/lib/lang'], function(require, exports, module) {
-
-
-var lang = require("../lib/lang");
-exports.$detectIndentation = function(lines, fallback) {
-    var stats = [];
-    var changes = [];
-    var tabIndents = 0;
-    var prevSpaces = 0;
-    var max = Math.min(lines.length, 1000);
-    for (var i = 0; i < max; i++) {
-        var line = lines[i];
-        if (!/^\s*[^*+\-\s]/.test(line))
-            continue;
-
-        var tabs = line.match(/^\t*/)[0].length;
-        if (line[0] == "\t")
-            tabIndents++;
-
-        var spaces = line.match(/^ */)[0].length;
-        if (spaces && line[spaces] != "\t") {
-            var diff = spaces - prevSpaces;
-            if (diff > 0 && !(prevSpaces%diff) && !(spaces%diff))
-                changes[diff] = (changes[diff] || 0) + 1;
-
-            stats[spaces] = (stats[spaces] || 0) + 1;
-        }
-        prevSpaces = spaces;
-        while (line[line.length - 1] == "\\")
-            line = lines[i++];
-    };
-
-    function getScore(indent) {
-        var score = 0;
-        for (var i = indent; i < stats.length; i += indent)
-            score += stats[i] || 0;
-        return score;
-    }
-
-    var changesTotal = changes.reduce(function(a,b){return a+b}, 0);
-
-    var first = {score: 0, length: 0};
-    var spaceIndents = 0;
-    for (var i = 1; i < 12; i++) {
-        if (i == 1) {
-            spaceIndents = getScore(i);
-            var score = 1;
-        } else
-            var score = getScore(i) / spaceIndents;
-
-        if (changes[i]) {
-            score += changes[i] / changesTotal;
-        }
-
-        if (score > first.score)
-            first = {score: score, length: i};
-    }
-
-    if (first.score && first.score > 1.4)
-        var tabLength = first.length;
-
-    if (tabIndents > spaceIndents + 1)
-        return {ch: "\t", length: tabLength};
-
-    if (spaceIndents + 1 > tabIndents)
-        return {ch: " ", length: tabLength};
-};
-
-exports.detectIndentation = function(session) {
-    var lines = session.getLines(0, 1000);
-    var indent = exports.$detectIndentation(lines) || {};
-
-    if (indent.ch)
-        session.setUseSoftTabs(indent.ch == " ");
-
-    if (indent.length)
-        session.setTabSize(indent.length);
-    return indent;
-};
-
-exports.trimTrailingSpace = function(session) {
-    var doc = session.getDocument();
-    var lines = doc.getAllLines();
-
-    for (var i = 0, l=lines.length; i < l; i++) {
-        var line = lines[i];
-        var index = line.search(/\s+$/);
-
-        if (index !== -1)
-            doc.removeInLine(i, index, line.length);
-    }
-};
-
-exports.convertIndentation = function(session, ch, len) {
-    var oldCh = session.getTabString()[0];
-    var oldLen = session.getTabSize();
-    if (!len) len = oldLen;
-    if (!ch) ch = oldCh;
-
-    var tab = ch == "\t" ? ch: lang.stringRepeat(ch, len);
-
-    var doc = session.doc;
-    var lines = doc.getAllLines();
-
-    var cache = {};
-    var spaceCache = {};
-    for (var i = 0, l=lines.length; i < l; i++) {
-        var line = lines[i];
-        var match = line.match(/^\s*/)[0];
-        if (match) {
-            var w = session.$getStringScreenWidth(match)[0];
-            var tabCount = Math.floor(w/oldLen);
-            var reminder = w%oldLen;
-            var toInsert = cache[tabCount] || (cache[tabCount] = lang.stringRepeat(tab, tabCount));
-            toInsert += spaceCache[reminder] || (spaceCache[reminder] = lang.stringRepeat(" ", reminder));
-
-            if (toInsert != match) {
-                doc.removeInLine(i, 0, match.length);
-                doc.insertInLine({row: i, column: 0}, toInsert);
-            }
-        }
-    }
-    session.setTabSize(len);
-    session.setUseSoftTabs(ch == " ");
-};
-
-exports.$parseStringArg = function(text) {
-    var indent = {}
-    if (/t/.test(text))
-        indent.ch = "\t";
-    else if (/s/.test(text))
-        indent.ch = " ";
-    var m = text.match(/\d+/);
-    if (m)
-        indent.length = parseInt(m[0]);
-    return indent;
-};
-
-exports.$parseArg = function(arg) {
-    if (!arg)
-        return {};
-    if (typeof arg == "string")
-        return exports.$parseStringArg(arg);
-    if (typeof arg.text == "string")
-        return exports.$parseStringArg(arg.text);
-    return arg;
-}
-
-exports.commands = [{
-    name: "detectIndentation",
-    exec: function(editor) {
-        exports.detectIndentation(editor.session);
-    }
-}, {
-    name: "trimTrailingSpace",
-    exec: function(editor) {
-        exports.trimTrailingSpace(editor.session);
-    }
-}, {
-    name: "convertIndentation",
-    exec: function(editor, arg) {
-        var indent = exports.$parseArg(arg);
-        exports.convertIndentation(editor.session, arg.ch, arg.length);
-    }
-}, {
-    name: "setIndentation",
-    exec: function(editor, arg) {
-        var indent = exports.$parseArg(arg);
-        indent.length && editor.session.setTabSize(indent.length);
-        indent.ch && editor.session.setUseSoftTabs(indent.ch == " ");
-    }
-}]
-
-});
-
- define('kitchen-sink/doclist', ['require', 'exports', 'module' , 'ace/edit_session', 'ace/undomanager', 'ace/lib/net', 'ace/ext/modelist'], function(require, exports, module) {
-
-
-var EditSession = require("ace/edit_session").EditSession;
-var UndoManager = require("ace/undomanager").UndoManager;
-var net = require("ace/lib/net");
-
-var modelist = require("ace/ext/modelist");
-var fileCache = {};
-
-function initDoc(file, path, doc) {
-    if (doc.prepare)
-        file = doc.prepare(file);
-
-    var session = new EditSession(file);
-    session.setUndoManager(new UndoManager());
-    doc.session = session;
-    doc.path = path;
-    session.name = doc.name;
-    if (doc.wrapped) {
-        session.setUseWrapMode(true);
-        session.setWrapLimitRange(80, 80);
-    }
-    var mode = modelist.getModeForPath(path);
-    session.modeName = mode.name;
-    session.setMode(mode.mode);
-    return session;
-}
-
-
-function makeHuge(txt) {
-    for (var i = 0; i < 5; i++)
-        txt += txt;
-    return txt;
-}
-
-var docs = {
-    "docs/javascript.js": "JavaScript",
-    "docs/AsciiDoc.asciidoc": "AsciiDoc",
-    "docs/clojure.clj": "Clojure",
-    "docs/coffeescript.coffee": "CoffeeScript",
-    "docs/coldfusion.cfm": "ColdFusion",
-    "docs/cpp.cpp": "C/C++",
-    "docs/csharp.cs": "C#",
-    "docs/css.css": "CSS",
-    "docs/curly.curly": "Curly",
-    "docs/dart.dart": "Dart",
-    "docs/diff.diff": "Diff",
-    "docs/dot.dot": "Dot",
-    "docs/freemarker.ftl" : "FreeMarker",
-    "docs/glsl.glsl": "Glsl",
-    "docs/golang.go": "Go",
-    "docs/groovy.groovy": "Groovy",
-    "docs/haml.haml": "Haml",
-    "docs/Haxe.hx": "haXe",
-    "docs/html.html": "HTML",
-    "docs/html_ruby.erb": "HTML (Ruby)",
-    "docs/jade.jade": "Jade",
-    "docs/java.java": "Java",
-    "docs/jsp.jsp": "JSP",
-    "docs/json.json": "JSON",
-    "docs/jsx.jsx": "JSX",
-    "docs/latex.tex": {name: "LaTeX", wrapped: true},
-    "docs/less.less": "LESS",
-    "docs/lisp.lisp": "Lisp",
-    "docs/lsl.lsl": "LSL",
-    "docs/scheme.scm": "Scheme",
-    "docs/livescript.ls": "LiveScript",
-    "docs/liquid.liquid": "Liquid",
-    "docs/logiql.logic": "LogiQL",
-    "docs/lua.lua": "Lua",
-    "docs/lucene.lucene": "Lucene",
-    "docs/luapage.lp": "LuaPage",
-    "docs/Makefile": "Makefile",
-    "docs/markdown.md": {name: "Markdown", wrapped: true},
-    "docs/mushcode.mc": {name: "MUSHCode", wrapped: true},
-    "docs/objectivec.m": {name: "Objective-C"},
-    "docs/ocaml.ml": "OCaml",
-    "docs/OpenSCAD.scad": "OpenSCAD",
-    "docs/pascal.pas": "Pascal",
-    "docs/perl.pl": "Perl",
-    "docs/pgsql.pgsql": {name: "pgSQL", wrapped: true},
-    "docs/php.php": "PHP",
-    "docs/plaintext.txt": {name: "Plain Text", prepare: makeHuge, wrapped: true},
-    "docs/powershell.ps1": "Powershell",
-    "docs/properties.properties": "Properties",
-    "docs/python.py": "Python",
-    "docs/r.r": "R",
-    "docs/rdoc.Rd": "RDoc",
-    "docs/rhtml.rhtml": "RHTML",
-    "docs/ruby.rb": "Ruby",
-    "docs/abap.abap": "SAP - ABAP",
-    "docs/scala.scala": "Scala",
-    "docs/scss.scss": "SCSS",
-    "docs/sass.sass": "SASS",
-    "docs/sh.sh": "SH",
-    "docs/stylus.styl": "Stylus",
-    "docs/sql.sql": {name: "SQL", wrapped: true},
-    "docs/svg.svg": "SVG",
-    "docs/tcl.tcl": "Tcl",
-    "docs/tex.tex": "Tex",
-    "docs/textile.textile": {name: "Textile", wrapped: true},
-    "docs/snippets.snippets": "snippets",
-    "docs/toml.toml": "TOML",
-    "docs/typescript.ts": "Typescript",
-    "docs/vbscript.vbs": "VBScript",
-    "docs/velocity.vm": "Velocity",
-    "docs/xml.xml": "XML",
-    "docs/xquery.xq": "XQuery",
-    "docs/yaml.yaml": "YAML",
-    "docs/c9search.c9search_results": "C9 Search Results",
-    
-    "docs/actionscript.as": "ActionScript",
-    "docs/assembly_x86.asm": "Assembly_x86",
-    "docs/autohotkey.ahk": "AutoHotKey",
-    "docs/batchfile.bat": "BatchFile",
-    "docs/erlang/erl": "Erlang",
-    "docs/forth.frt": "Forth",
-    "docs/haskell.hs": "Haskell",
-    "docs/julia.js": "Julia",
-    "docs/prolog/plg": "Prolog",
-    "docs/rust.rs": "Rust",
-    "docs/twig.twig": "Twig"
-};
-
-var ownSource = {
-};
-
-var hugeDocs = {
-    "src/ace.js": "",
-    "src-min/ace.js": ""
-};
-
-if (window.require && window.require.s) try {
-    for (var path in window.require.s.contexts._.defined) {
-        if (path.indexOf("!") != -1)
-            path = path.split("!").pop();
-        else
-            path = path + ".js";
-        ownSource[path] = "";
-    }
-} catch(e) {}
-
-function prepareDocList(docs) {
-    var list = [];
-    for (var path in docs) {
-        var doc = docs[path];
-        if (typeof doc != "object")
-            doc = {name: doc || path};
-
-        doc.path = path;
-        doc.desc = doc.name.replace(/^(ace|docs|demo|build)\//, "");
-        if (doc.desc.length > 18)
-            doc.desc = doc.desc.slice(0, 7) + ".." + doc.desc.slice(-9);
-
-        fileCache[doc.name] = doc;
-        list.push(doc);
-    }
-
-    return list;
-}
-
-function loadDoc(name, callback) {
-    var doc = fileCache[name];
-    if (!doc)
-        return callback(null);
-
-    if (doc.session)
-        return callback(doc.session);
-    var path = doc.path;
-    var parts = path.split("/");
-    if (parts[0] == "docs")
-        path = "kitchen-sink/" + path;
-    else if (parts[0] == "ace")
-        path = "lib/" + path;
-
-    net.get(path, function(x) {
-        initDoc(x, path, doc);
-        callback(doc.session);
-    });
-}
-
-module.exports = {
-    fileCache: fileCache,
-    docs: prepareDocList(docs),
-    ownSource: prepareDocList(ownSource),
-    hugeDocs: prepareDocList(hugeDocs),
-    initDoc: initDoc,
-    loadDoc: loadDoc
-};
-module.exports.all = {
-    "Mode Examples": module.exports.docs,
-    "Huge documents": module.exports.hugeDocs,
-    "own source": module.exports.ownSource
-};
-
-});
-
-define('ace/ext/modelist', ['require', 'exports', 'module' ], function(require, exports, module) {
-
-
-var modes = [];
-function getModeForPath(path) {
-    var mode = modesByName.text;
-    var fileName = path.split(/[\/\\]/).pop();
-    for (var i = 0; i < modes.length; i++) {
-        if (modes[i].supportsFile(fileName)) {
-            mode = modes[i];
-            break;
-        }
-    }
-    return mode;
-}
-
-var Mode = function(name, caption, extensions) {
-    this.name = name;
-    this.caption = caption;
-    this.mode = "ace/mode/" + name;
-    this.extensions = extensions;
-    if (/\^/.test(extensions)) {
-        var re = extensions.replace(/\|(\^)?/g, function(a, b){
-            return "$|" + (b ? "^" : "^.*\\.");
-        }) + "$";
-    } else {
-        var re = "^.*\\.(" + extensions + ")$";
-    }
-
-    this.extRe = new RegExp(re, "gi");
-};
-
-Mode.prototype.supportsFile = function(filename) {
-    return filename.match(this.extRe);
-};
-var supportedModes = {
-    ABAP:        ["abap"],
-    ADA:         ["ada|adb"],
-    ActionScript:["as"],
-    AsciiDoc:    ["asciidoc"],
-    Assembly_x86:["asm"],
-    AutoHotKey:  ["ahk"],
-    BatchFile:   ["bat|cmd"],
-    C9Search:    ["c9search_results"],
-    C_Cpp:       ["c|cc|cpp|cxx|h|hh|hpp"],
-    Clojure:     ["clj"],
-    Cobol:       ["^CBL|COB"],
-    coffee:      ["^Cakefile|coffee|cf|cson"],
-    ColdFusion:  ["cfm"],
-    CSharp:      ["cs"],
-    CSS:         ["css"],
-    Curly:       ["curly"],
-    D:           ["d|di"],
-    Dart:        ["dart"],
-    Diff:        ["diff|patch"],
-    Dot:         ["dot"],
-    Erlang:      ["erl|hrl"],
-    EJS:         ["ejs"],
-    Forth:       ["frt|fs|ldr"],
-    FreeMarker:  ["ftl"],
-    Glsl:        ["glsl|frag|vert"],
-    golang:      ["go"],
-    Groovy:      ["groovy"],
-    HAML:        ["haml"],
-    Haskell:     ["hs"],
-    haXe:        ["hx"],
-    HTML:        ["htm|html|xhtml"],
-    HTML_Ruby:   ["erb|rhtml|html.erb"],
-    Ini:         ["Ini|conf"],
-    Jade:        ["jade"],
-    Java:        ["java"],
-    JavaScript:  ["js"],
-    JSON:        ["json"],
-    JSONiq:      ["jq"],
-    JSP:         ["jsp"],
-    JSX:         ["jsx"],
-    Julia:       ["jl"],
-    LaTeX:       ["latex|tex|ltx|bib"],
-    LESS:        ["less"],
-    Liquid:      ["liquid"],
-    Lisp:        ["lisp"],
-    LiveScript:  ["ls"],
-    LogiQL:      ["logic|lql"],
-    LSL:         ["lsl"],
-    Lua:         ["lua"],
-    LuaPage:     ["lp"],
-    Lucene:      ["lucene"],
-    Makefile:    ["^GNUmakefile|^makefile|^Makefile|^OCamlMakefile|make"],
-    MATLAB:      ["matlab"],
-    Markdown:    ["md|markdown"],
-    MySQL:       ["mysql"],
-    MUSHCode:    ["mc|mush"],
-    ObjectiveC:  ["m|mm"],
-    OCaml:       ["ml|mli"],
-    Pascal:      ["pas|p"],
-    Perl:        ["pl|pm"],
-    pgSQL:       ["pgsql"],
-    PHP:         ["php|phtml"],
-    Powershell:  ["ps1"],
-    Prolog:      ["plg|prolog"],
-    Properties:  ["properties"],
-    Python:      ["py"],
-    R:           ["r"],
-    RDoc:        ["Rd"],
-    RHTML:       ["Rhtml"],
-    Ruby:        ["ru|gemspec|rake|rb"],
-    Rust:        ["rs"],
-    SASS:        ["sass"],
-    SCAD:        ["scad"],
-    Scala:       ["scala"],
-    Scheme:      ["scm|rkt"],
-    SCSS:        ["scss"],
-    SH:          ["sh|bash"],
-    snippets:    ["snippets"],
-    SQL:         ["sql"],
-    Stylus:      ["styl|stylus"],
-    SVG:         ["svg"],
-    Tcl:         ["tcl"],
-    Tex:         ["tex"],
-    Text:        ["txt"],
-    Textile:     ["textile"],
-    Toml:        ["toml"],
-    Twig:        ["twig"],
-    Typescript:  ["typescript|ts|str"],
-    VBScript:    ["vbs"],
-    Velocity:    ["vm"],
-    XML:         ["xml|rdf|rss|wsdl|xslt|atom|mathml|mml|xul|xbl"],
-    XQuery:      ["xq"],
-    YAML:        ["yaml"]
-};
-
-var nameOverrides = {
-    ObjectiveC: "Objective-C",
-    CSharp: "C#",
-    golang: "Go",
-    C_Cpp: "C/C++",
-    coffee: "CoffeeScript",
-    HTML_Ruby: "HTML (Ruby)"
-};
-var modesByName = {};
-for (var name in supportedModes) {
-    var data = supportedModes[name];
-    var displayName = nameOverrides[name] || name;
-    var filename = name.toLowerCase();
-    var mode = new Mode(filename, displayName, data[0]);
-    modesByName[filename] = mode;
-    modes.push(mode);
-}
-
-module.exports = {
-    getModeForPath: getModeForPath,
-    modes: modes,
-    modesByName: modesByName
-};
-
-});
-
-
-define('kitchen-sink/layout', ['require', 'exports', 'module' , 'ace/lib/dom', 'ace/lib/event', 'ace/edit_session', 'ace/undomanager', 'ace/virtual_renderer', 'ace/editor', 'ace/multi_select', 'ace/theme/textmate'], function(require, exports, module) {
-
-
-var dom = require("ace/lib/dom");
-var event = require("ace/lib/event");
-
-var EditSession = require("ace/edit_session").EditSession;
-var UndoManager = require("ace/undomanager").UndoManager;
-var Renderer = require("ace/virtual_renderer").VirtualRenderer;
-var Editor = require("ace/editor").Editor;
-var MultiSelect = require("ace/multi_select").MultiSelect;
-
-dom.importCssString("\
-splitter {\
-    border: 1px solid #C6C6D2;\
-    width: 0px;\
-    cursor: ew-resize;\
-    z-index:10}\
-splitter:hover {\
-    margin-left: -2px;\
-    width:3px;\
-    border-color: #B5B4E0;\
-}\
-", "splitEditor");
-
-exports.edit = function(el) {
-    if (typeof(el) == "string")
-        el = document.getElementById(el);
-
-    var editor = new Editor(new Renderer(el, require("ace/theme/textmate")));
-
-    editor.resize();
-    event.addListener(window, "resize", function() {
-        editor.resize();
-    });
-    return editor;
-};
-
-
-var SplitRoot = function(el, theme, position, getSize) {
-    el.style.position = position || "relative";
-    this.container = el;
-    this.getSize = getSize || this.getSize;
-    this.resize = this.$resize.bind(this);
-
-    event.addListener(el.ownerDocument.defaultView, "resize", this.resize);
-    this.editor = this.createEditor();
-};
-
-(function(){
-    this.createEditor = function() {
-        var el = document.createElement("div");
-        el.className = this.$editorCSS;
-        el.style.cssText = "position: absolute; top:0px; bottom:0px";
-        this.$container.appendChild(el);
-        var session = new EditSession("");
-        var editor = new Editor(new Renderer(el, this.$theme));
-
-        this.$editors.push(editor);
-        editor.setFontSize(this.$fontSize);
-        return editor;
-    };
-    this.$resize = function() {
-        var size = this.getSize(this.container);
-        this.rect = {
-            x: size.left,
-            y: size.top,
-            w: size.width,
-            h: size.height
-        };
-        this.item.resize(this.rect);
-    };
-    this.getSize = function(el) {
-        return el.getBoundingClientRect();
-    };
-    this.destroy = function() {
-        var win = this.container.ownerDocument.defaultView;
-        event.removeListener(win, "resize", this.resize);
-    };
-
-
-}).call(SplitRoot.prototype);
-
-
-
-var Split = function(){
-
-};
-(function(){
-    this.execute = function(options) {
-        this.$u.execute(options);
-    };
-
-}).call(Split.prototype);
-
-
-
-exports.singleLineEditor = function(el) {
-    var renderer = new Renderer(el);
-    el.style.overflow = "hidden";
-    renderer.scrollBar.element.style.top = "0";
-    renderer.scrollBar.element.style.display = "none";
-    renderer.scrollBar.orginalWidth = renderer.scrollBar.width;
-    renderer.scrollBar.width = 0;
-    renderer.content.style.height = "auto";
-
-    renderer.screenToTextCoordinates = function(x, y) {
-        var pos = this.pixelToScreenCoordinates(x, y);
-        return this.session.screenToDocumentPosition(
-            Math.min(this.session.getScreenLength() - 1, Math.max(pos.row, 0)),
-            Math.max(pos.column, 0)
-        );
-    };
-
-    renderer.maxLines = 4;
-    renderer.$computeLayerConfigWithScroll = renderer.$computeLayerConfig;
-    renderer.$computeLayerConfig = function() {
-        var config = this.layerConfig;
-        var height = this.session.getScreenLength() * this.lineHeight;
-        if (config.height != height) {
-            var vScroll = height > this.maxLines * this.lineHeight;
-
-            if (vScroll != this.$vScroll) {
-                if (vScroll) {
-                    this.scrollBar.element.style.display = "";
-                    this.scrollBar.width = this.scrollBar.orginalWidth;
-                    this.container.style.height = config.height + "px";
-                    height = config.height;
-                    this.scrollTop = height - this.maxLines * this.lineHeight;
-                } else {
-                    this.scrollBar.element.style.display = "none";
-                    this.scrollBar.width = 0;
-                }
-
-                this.onResize();
-                this.$vScroll = vScroll;
-            }
-
-            if (this.$vScroll)
-                return renderer.$computeLayerConfigWithScroll();
-
-            this.container.style.height = height + "px";
-            this.scroller.style.height = height + "px";
-            this.content.style.height = height + "px";
-            this._emit("resize");
-        }
-
-        var longestLine = this.$getLongestLine();
-        var firstRow = 0;
-        var lastRow = this.session.getLength();
-
-        this.scrollTop = 0;
-        config.width = longestLine;
-        config.padding = this.$padding;
-        config.firstRow = 0;
-        config.firstRowScreen = 0;
-        config.lastRow = lastRow;
-        config.lineHeight = this.lineHeight;
-        config.characterWidth = this.characterWidth;
-        config.minHeight = height;
-        config.maxHeight = height;
-        config.offset = 0;
-        config.height = height;
-
-        this.$gutterLayer.element.style.marginTop = 0 + "px";
-        this.content.style.marginTop = 0 + "px";
-        this.content.style.width = longestLine + 2 * this.$padding + "px";
-    };
-    renderer.isScrollableBy=function(){return false};
-
-    renderer.setStyle("ace_one-line");
-    var editor = new Editor(renderer);
-    new MultiSelect(editor);
-    editor.session.setUndoManager(new UndoManager());
-
-    editor.setHighlightActiveLine(false);
-    editor.setShowPrintMargin(false);
-    editor.renderer.setShowGutter(false);
-    editor.renderer.setHighlightGutterLine(false);
-
-    editor.$mouseHandler.$focusWaitTimout = 0;
-
-    return editor;
-};
-
-
-
-});
-
-define('kitchen-sink/token_tooltip', ['require', 'exports', 'module' , 'ace/lib/dom', 'ace/lib/event', 'ace/range'], function(require, exports, module) {
-
-
-var dom = require("ace/lib/dom");
-var event = require("ace/lib/event");
-var Range = require("ace/range").Range;
-
-var tooltipNode;
-
-var TokenTooltip = function(editor) {
-    if (editor.tokenTooltip)
-        return;
-    editor.tokenTooltip = this;    
-    this.editor = editor;
-    
-    editor.tooltip = tooltipNode || this.$init();
-
-    this.update = this.update.bind(this);
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.onMouseOut = this.onMouseOut.bind(this);
-    event.addListener(editor.renderer.scroller, "mousemove", this.onMouseMove);
-    event.addListener(editor.renderer.content, "mouseout", this.onMouseOut);
-};
-
-(function(){
-    this.token = {};
-    this.range = new Range();
-    
-    this.update = function() {
-        this.$timer = null;
-        
-        var r = this.editor.renderer;
-        if (this.lastT - (r.timeStamp || 0) > 1000) {
-            r.rect = null;
-            r.timeStamp = this.lastT;
-            this.maxHeight = innerHeight;
-            this.maxWidth = innerWidth;
-        }
-
-        var canvasPos = r.rect || (r.rect = r.scroller.getBoundingClientRect());
-        var offset = (this.x + r.scrollLeft - canvasPos.left - r.$padding) / r.characterWidth;
-        var row = Math.floor((this.y + r.scrollTop - canvasPos.top) / r.lineHeight);
-        var col = Math.round(offset);
-
-        var screenPos = {row: row, column: col, side: offset - col > 0 ? 1 : -1};
-        var session = this.editor.session;
-        var docPos = session.screenToDocumentPosition(screenPos.row, screenPos.column);
-        var token = session.getTokenAt(docPos.row, docPos.column);
-
-        if (!token && !session.getLine(docPos.row)) {
-            token = {
-                type: "",
-                value: "",
-                state: session.bgTokenizer.getState(0)
-            };
-        }
-        if (!token) {
-            session.removeMarker(this.marker);
-            tooltipNode.style.display = "none";
-            this.isOpen = false;
-            return;
-        }
-        if (!this.isOpen) {
-            tooltipNode.style.display = "";
-            this.isOpen = true;
-        }
-        
-        var tokenText = token.type;
-        if (token.state)
-            tokenText += "|" + token.state;
-        if (token.merge)
-            tokenText += "\n  merge";
-        if (token.stateTransitions)
-            tokenText += "\n  " + token.stateTransitions.join("\n  ");
-        
-        if (this.tokenText != tokenText) {
-            tooltipNode.textContent = tokenText;
-            this.tooltipWidth = tooltipNode.offsetWidth;
-            this.tooltipHeight = tooltipNode.offsetHeight;
-            this.tokenText = tokenText;
-        }
-        
-        this.updateTooltipPosition(this.x, this.y);
-
-        this.token = token;
-        session.removeMarker(this.marker);
-        this.range = new Range(docPos.row, token.start, docPos.row, token.start + token.value.length);
-        this.marker = session.addMarker(this.range, "ace_bracket", "text");
-    };
-    
-    this.onMouseMove = function(e) {
-        this.x = e.clientX;
-        this.y = e.clientY;
-        if (this.isOpen) {
-            this.lastT = e.timeStamp;
-            this.updateTooltipPosition(this.x, this.y);
-        }
-        if (!this.$timer)
-            this.$timer = setTimeout(this.update, 100);
-    };
-    
-    this.onMouseOut = function(e) {
-        var t = e && e.relatedTarget;
-        var ct = e &&  e.currentTarget;
-        while(t && (t = t.parentNode)) {
-            if (t == ct)
-                return;
-        }
-        tooltipNode.style.display = "none";
-        this.editor.session.removeMarker(this.marker);
-        this.$timer = clearTimeout(this.$timer);
-        this.isOpen = false;
-    };
-    
-    this.updateTooltipPosition = function(x, y) {
-        var st = tooltipNode.style;
-        if (x + 10 + this.tooltipWidth > this.maxWidth)
-            x = innerWidth - this.tooltipWidth - 10;
-        if (y > innerHeight * 0.75 || y + 20 + this.tooltipHeight > this.maxHeight)
-            y = y - this.tooltipHeight - 30;
-        
-        st.left = x + 10 + "px";
-        st.top = y + 20 + "px";
-    };
-
-    this.$init = function() {
-        tooltipNode = document.documentElement.appendChild(dom.createElement("div"));
-        var st = tooltipNode.style;
-        st.position = "fixed";
-        st.display = "none";
-        st.background = "lightyellow";
-        st.borderRadius = "";
-        st.border = "1px solid gray";
-        st.padding = "1px";
-        st.zIndex = 1000;
-        st.fontFamily = "monospace";
-        st.whiteSpace = "pre-line";
-        return tooltipNode;
-    };
-
-    this.destroy = function() {
-        this.onMouseOut();
-        event.removeListener(this.editor.renderer.scroller, "mousemove", this.onMouseMove);
-        event.removeListener(this.editor.renderer.content, "mouseout", this.onMouseOut);
-        delete this.editor.tokenTooltip;    
-    };
-
-}).call(TokenTooltip.prototype);
-
-exports.TokenTooltip = TokenTooltip;
-
-});
-
-define('kitchen-sink/util', ['require', 'exports', 'module' , 'ace/lib/dom', 'ace/lib/event', 'ace/edit_session', 'ace/undomanager', 'ace/virtual_renderer', 'ace/editor', 'ace/multi_select'], function(require, exports, module) {
-
-
-var dom = require("ace/lib/dom");
-var event = require("ace/lib/event");
-
-var EditSession = require("ace/edit_session").EditSession;
-var UndoManager = require("ace/undomanager").UndoManager;
-var Renderer = require("ace/virtual_renderer").VirtualRenderer;
-var Editor = require("ace/editor").Editor;
-var MultiSelect = require("ace/multi_select").MultiSelect;
-
-exports.createEditor = function(el) {
-    return new Editor(new Renderer(el));
-}
-
-exports.createSplitEditor = function(el) {
-    if (typeof(el) == "string")
-        el = document.getElementById(el);
-
-    var e0 = document.createElement("div");
-    var s = document.createElement("splitter");
-    var e1 = document.createElement("div");
-    el.appendChild(e0);
-    el.appendChild(e1);
-    el.appendChild(s);
-    e0.style.position = e1.style.position = s.style.position = "absolute";
-    el.style.position = "relative";
-    var split = {$container: el};
-
-    split.editor0 = split[0] = new Editor(new Renderer(e0));
-    split.editor1 = split[1] = new Editor(new Renderer(e1));
-    split.splitter = s;
-
-    MultiSelect(split.editor0);
-    MultiSelect(split.editor1);
-
-    s.ratio = 0.5;
-
-    split.resize = function resize(){
-        var height = el.parentNode.clientHeight - el.offsetTop;
-        var total = el.clientWidth;
-        var w1 = total * s.ratio;
-        var w2 = total * (1- s.ratio);
-        s.style.left = w1 - 1 + "px";
-        s.style.height = el.style.height = height + "px";
-
-        var st0 = split[0].container.style;
-        var st1 = split[1].container.style;
-        st0.width = w1 + "px";
-        st1.width = w2 + "px";
-        st0.left = 0 + "px";
-        st1.left = w1 + "px";
-
-        st0.top = st1.top = "0px";
-        st0.height = st1.height = height + "px";
-
-        split[0].resize();
-        split[1].resize();
-    };
-
-    split.onMouseDown = function(e) {
-        var rect = el.getBoundingClientRect();
-        var x = e.clientX;
-        var y = e.clientY;
-
-        var button = e.button;
-        if (button !== 0) {
-            return;
-        }
-
-        var onMouseMove = function(e) {
-            x = e.clientX;
-            y = e.clientY;
-        };
-        var onResizeEnd = function(e) {
-            clearInterval(timerId);
-        };
-
-        var onResizeInterval = function() {
-            s.ratio = (x - rect.left) / rect.width
-            split.resize()
-        };
-
-        event.capture(s, onMouseMove, onResizeEnd);
-        var timerId = setInterval(onResizeInterval, 40);
-
-        return e.preventDefault();
-    };
-
-
-
-    event.addListener(s, "mousedown", split.onMouseDown);
-    event.addListener(window, "resize", split.resize);
-    split.resize();
-    return split;
-};
-exports.stripLeadingComments = function(str) {
-    if(str.slice(0,2)=='/*') {
-        var j = str.indexOf('*/')+2;
-        str = str.substr(j);
-    }
-    return str.trim() + "\n";
-};
-exports.saveOption = function(el, val) {
-    if (!el.onchange && !el.onclick)
-        return;
-
-    if ("checked" in el) {
-        if (val !== undefined)
-            el.checked = val;
-
-        localStorage && localStorage.setItem(el.id, el.checked ? 1 : 0);
-    }
-    else {
-        if (val !== undefined)
-            el.value = val;
-
-        localStorage && localStorage.setItem(el.id, el.value);
-    }
-};
-
-exports.bindCheckbox = function(id, callback, noInit) {
-    if (typeof id == "string")
-        var el = document.getElementById(id);
-    else {
-        var el = id;
-        id = el.id;
-    }
-    var el = document.getElementById(id);
-    if (localStorage && localStorage.getItem(id))
-        el.checked = localStorage.getItem(id) == "1";
-
-    var onCheck = function() {
-        callback(!!el.checked);
-        exports.saveOption(el);
-    };
-    el.onclick = onCheck;
-    noInit || onCheck();
-    return el;
-};
-
-exports.bindDropdown = function(id, callback, noInit) {
-    if (typeof id == "string")
-        var el = document.getElementById(id);
-    else {
-        var el = id;
-        id = el.id;
-    }
-    if (localStorage && localStorage.getItem(id))
-        el.value = localStorage.getItem(id);
-
-    var onChange = function() {
-        callback(el.value);
-        exports.saveOption(el);
-    };
-
-    el.onchange = onChange;
-    noInit || onChange();
-};
-
-exports.fillDropdown = function(el, values) {
-    if (typeof el == "string")
-        el = document.getElementById(el);
-
-    dropdown(values).forEach(function(e) {
-        el.appendChild(e);
-    });
-};
-
-function elt(tag, attributes, content) {
-    var el = dom.createElement(tag);
-    if (typeof content == "string") {
-        el.appendChild(document.createTextNode(content));
-    } else if (content) {
-        content.forEach(function(ch) {
-            el.appendChild(ch);
-        });
-    }
-
-    for (var i in attributes)
-        el.setAttribute(i, attributes[i]);
-    return el;
-}
-
-function optgroup(values) {
-    return values.map(function(item) {
-        if (typeof item == "string")
-            item = {name: item, caption: item};
-        return elt("option", {value: item.name}, item.caption || item.desc);
-    });
-}
-
-function dropdown(values) {
-    if (Array.isArray(values))
-        return optgroup(values);
-
-    return Object.keys(values).map(function(i) {
-        return elt("optgroup", {"label": i}, optgroup(values[i]));
-    });
-}
-
 
 });
 
@@ -2224,82 +1183,205 @@ exports.IncrementalSearchKeyboardHandler = IncrementalSearchKeyboardHandler;
 
 });
 
-define('ace/commands/occur_commands', ['require', 'exports', 'module' , 'ace/config', 'ace/occur', 'ace/keyboard/hash_handler', 'ace/lib/oop'], function(require, exports, module) {
+define('kitchen-sink/util', ['require', 'exports', 'module' , 'ace/lib/dom', 'ace/lib/event', 'ace/edit_session', 'ace/undomanager', 'ace/virtual_renderer', 'ace/editor', 'ace/multi_select'], function(require, exports, module) {
 
-var config = require("../config"),
-    Occur = require("../occur").Occur;
-var occurStartCommand = {
-    name: "occur",
-    exec: function(editor, options) {
-        var alreadyInOccur = !!editor.session.$occur;
-        var occurSessionActive = new Occur().enter(editor, options);
-        if (occurSessionActive && !alreadyInOccur)
-            OccurKeyboardHandler.installIn(editor);
-    },
-    readOnly: true
+
+var dom = require("ace/lib/dom");
+var event = require("ace/lib/event");
+
+var EditSession = require("ace/edit_session").EditSession;
+var UndoManager = require("ace/undomanager").UndoManager;
+var Renderer = require("ace/virtual_renderer").VirtualRenderer;
+var Editor = require("ace/editor").Editor;
+var MultiSelect = require("ace/multi_select").MultiSelect;
+
+exports.createEditor = function(el) {
+    return new Editor(new Renderer(el));
 };
 
-var occurCommands = [{
-    name: "occurexit",
-    bindKey: 'esc|Ctrl-G',
-    exec: function(editor) {
-        var occur = editor.session.$occur;
-        if (!occur) return;
-        occur.exit(editor, {});
-        if (!editor.session.$occur) OccurKeyboardHandler.uninstallFrom(editor);
-    },
-    readOnly: true
-}, {
-    name: "occuraccept",
-    bindKey: 'enter',
-    exec: function(editor) {
-        var occur = editor.session.$occur;
-        if (!occur) return;
-        occur.exit(editor, {translatePosition: true});
-        if (!editor.session.$occur) OccurKeyboardHandler.uninstallFrom(editor);
-    },
-    readOnly: true
-}];
+exports.createSplitEditor = function(el) {
+    if (typeof(el) == "string")
+        el = document.getElementById(el);
 
-var HashHandler = require("../keyboard/hash_handler").HashHandler;
-var oop = require("../lib/oop");
+    var e0 = document.createElement("div");
+    var s = document.createElement("splitter");
+    var e1 = document.createElement("div");
+    el.appendChild(e0);
+    el.appendChild(e1);
+    el.appendChild(s);
+    e0.style.position = e1.style.position = s.style.position = "absolute";
+    el.style.position = "relative";
+    var split = {$container: el};
+
+    split.editor0 = split[0] = new Editor(new Renderer(e0));
+    split.editor1 = split[1] = new Editor(new Renderer(e1));
+    split.splitter = s;
+
+    s.ratio = 0.5;
+
+    split.resize = function resize(){
+        var height = el.parentNode.clientHeight - el.offsetTop;
+        var total = el.clientWidth;
+        var w1 = total * s.ratio;
+        var w2 = total * (1- s.ratio);
+        s.style.left = w1 - 1 + "px";
+        s.style.height = el.style.height = height + "px";
+
+        var st0 = split[0].container.style;
+        var st1 = split[1].container.style;
+        st0.width = w1 + "px";
+        st1.width = w2 + "px";
+        st0.left = 0 + "px";
+        st1.left = w1 + "px";
+
+        st0.top = st1.top = "0px";
+        st0.height = st1.height = height + "px";
+
+        split[0].resize();
+        split[1].resize();
+    };
+
+    split.onMouseDown = function(e) {
+        var rect = el.getBoundingClientRect();
+        var x = e.clientX;
+        var y = e.clientY;
+
+        var button = e.button;
+        if (button !== 0) {
+            return;
+        }
+
+        var onMouseMove = function(e) {
+            x = e.clientX;
+            y = e.clientY;
+        };
+        var onResizeEnd = function(e) {
+            clearInterval(timerId);
+        };
+
+        var onResizeInterval = function() {
+            s.ratio = (x - rect.left) / rect.width;
+            split.resize();
+        };
+
+        event.capture(s, onMouseMove, onResizeEnd);
+        var timerId = setInterval(onResizeInterval, 40);
+
+        return e.preventDefault();
+    };
 
 
-function OccurKeyboardHandler() {}
 
-oop.inherits(OccurKeyboardHandler, HashHandler);
+    event.addListener(s, "mousedown", split.onMouseDown);
+    event.addListener(window, "resize", split.resize);
+    split.resize();
+    return split;
+};
+exports.stripLeadingComments = function(str) {
+    if(str.slice(0,2)=='/*') {
+        var j = str.indexOf('*/')+2;
+        str = str.substr(j);
+    }
+    return str.trim() + "\n";
+};
+exports.saveOption = function(el, val) {
+    if (!el.onchange && !el.onclick)
+        return;
 
-;(function() {
+    if ("checked" in el) {
+        if (val !== undefined)
+            el.checked = val;
 
-    this.isOccurHandler = true;
+        localStorage && localStorage.setItem(el.id, el.checked ? 1 : 0);
+    }
+    else {
+        if (val !== undefined)
+            el.value = val;
 
-    this.attach = function(editor) {
-        HashHandler.call(this, occurCommands, editor.commands.platform);
-        this.$editor = editor;
+        localStorage && localStorage.setItem(el.id, el.value);
+    }
+};
+
+exports.bindCheckbox = function(id, callback, noInit) {
+    if (typeof id == "string")
+        var el = document.getElementById(id);
+    else {
+        var el = id;
+        id = el.id;
+    }
+    var el = document.getElementById(id);
+    if (localStorage && localStorage.getItem(id))
+        el.checked = localStorage.getItem(id) == "1";
+
+    var onCheck = function() {
+        callback(!!el.checked);
+        exports.saveOption(el);
+    };
+    el.onclick = onCheck;
+    noInit || onCheck();
+    return el;
+};
+
+exports.bindDropdown = function(id, callback, noInit) {
+    if (typeof id == "string")
+        var el = document.getElementById(id);
+    else {
+        var el = id;
+        id = el.id;
+    }
+    if (localStorage && localStorage.getItem(id))
+        el.value = localStorage.getItem(id);
+
+    var onChange = function() {
+        callback(el.value);
+        exports.saveOption(el);
+    };
+
+    el.onchange = onChange;
+    noInit || onChange();
+};
+
+exports.fillDropdown = function(el, values) {
+    if (typeof el == "string")
+        el = document.getElementById(el);
+
+    dropdown(values).forEach(function(e) {
+        el.appendChild(e);
+    });
+};
+
+function elt(tag, attributes, content) {
+    var el = dom.createElement(tag);
+    if (typeof content == "string") {
+        el.appendChild(document.createTextNode(content));
+    } else if (content) {
+        content.forEach(function(ch) {
+            el.appendChild(ch);
+        });
     }
 
-    var handleKeyboard$super = this.handleKeyboard;
-    this.handleKeyboard = function(data, hashId, key, keyCode) {
-        var cmd = handleKeyboard$super.call(this, data, hashId, key, keyCode);
-        return (cmd && cmd.command) ? cmd : undefined;
-    }
-
-}).call(OccurKeyboardHandler.prototype);
-
-OccurKeyboardHandler.installIn = function(editor) {
-    var handler = new this();
-    editor.keyBinding.addKeyboardHandler(handler);
-    editor.commands.addCommands(occurCommands);
+    for (var i in attributes)
+        el.setAttribute(i, attributes[i]);
+    return el;
 }
 
-OccurKeyboardHandler.uninstallFrom = function(editor) {
-    editor.commands.removeCommands(occurCommands);
-    var handler = editor.getKeyboardHandler();
-    if (handler.isOccurHandler)
-        editor.keyBinding.removeKeyboardHandler(handler);
+function optgroup(values) {
+    return values.map(function(item) {
+        if (typeof item == "string")
+            item = {name: item, caption: item};
+        return elt("option", {value: item.value || item.name}, item.caption || item.desc);
+    });
 }
 
-exports.occurStartCommand = occurStartCommand;
+function dropdown(values) {
+    if (Array.isArray(values))
+        return optgroup(values);
+
+    return Object.keys(values).map(function(i) {
+        return elt("optgroup", {"label": i}, optgroup(values[i]));
+    });
+}
+
 
 });
 
@@ -2692,9 +1774,41 @@ exports.handler = {
             data.lastEvent = "keypress";
         }
     },
+    updateMacCompositionHandlers: function(editor, enable) {
+        var onCompositionUpdateOverride = function(text) {
+            if (util.currentMode !== "insert") {
+                var el = this.textInput.getElement();
+                el.blur();
+                el.focus();
+                el.value = text;
+            } else {
+                this.onCompositionUpdateOrig(text);
+            }
+        };
+        var onCompositionStartOverride = function(text) {
+            if (util.currentMode === "insert") {            
+                this.onCompositionStartOrig(text);
+            }
+        };
+        if (enable) {
+            if (!editor.onCompositionUpdateOrig) {
+                editor.onCompositionUpdateOrig = editor.onCompositionUpdate;
+                editor.onCompositionUpdate = onCompositionUpdateOverride;
+                editor.onCompositionStartOrig = editor.onCompositionStart;
+                editor.onCompositionStart = onCompositionStartOverride;
+            }
+        } else {
+            if (editor.onCompositionUpdateOrig) {
+                editor.onCompositionUpdate = editor.onCompositionUpdateOrig;
+                editor.onCompositionUpdateOrig = null;
+                editor.onCompositionStart = editor.onCompositionStartOrig;
+                editor.onCompositionStartOrig = null;
+            }
+        }
+    },
 
     handleKeyboard: function(data, hashId, key, keyCode, e) {
-        if (hashId != 0 && (key == "" || key == "\x00"))
+        if (hashId !== 0 && (!key || keyCode == -1))
             return null;
         
         var editor = data.editor;
@@ -2712,7 +1826,7 @@ exports.handler = {
                 return {command: "null", passEvent: true};
             }
             return {command: coreCommands.stop};            
-        } else if ((key == "esc" && hashId == 0) || key == "ctrl-[") {
+        } else if ((key == "esc" && hashId === 0) || key == "ctrl-[") {
             return {command: coreCommands.stop};
         } else if (data.state == "start") {
             if (useragent.isMac && this.handleMacRepeat(data, hashId, key)) {
@@ -2720,15 +1834,15 @@ exports.handler = {
                 key = data.inputChar;
             }
             
-            if (hashId == -1 || hashId == 1 || hashId == 0 && key.length > 1) {
+            if (hashId == -1 || hashId == 1 || hashId === 0 && key.length > 1) {
                 if (cmds.inputBuffer.idle && startCommands[key])
                     return startCommands[key];
-                cmds.inputBuffer.push(editor, key);
-                return {command: "null", passEvent: false}; 
+                var isHandled = cmds.inputBuffer.push(editor, key);
+                return {command: "null", passEvent: !isHandled}; 
             } // if no modifier || shift: wait for input.
-            else if (key.length == 1 && (hashId == 0 || hashId == 4)) {
+            else if (key.length == 1 && (hashId === 0 || hashId == 4)) {
                 return {command: "null", passEvent: true};
-            } else if (key == "esc" && hashId == 0) {
+            } else if (key == "esc" && hashId === 0) {
                 return {command: coreCommands.stop};
             }
         } else {
@@ -2743,12 +1857,15 @@ exports.handler = {
         if (util.currentMode !== "insert")
             cmds.coreCommands.stop.exec(editor);
         editor.$vimModeHandler = this;
+        
+        this.updateMacCompositionHandlers(editor, true);
     },
 
     detach: function(editor) {
         editor.removeListener("click", exports.onCursorMove);
         util.noMode(editor);
         util.currentMode = "normal";
+        this.updateMacCompositionHandlers(editor, false);
     },
 
     actions: cmds.actions,
@@ -2823,6 +1940,18 @@ var actions = exports.actions = {
                     break;
                 case "b":
                     editor.renderer.alignCursor(null, 1);
+                    break;
+                case "c":
+                    editor.session.onFoldWidgetClick(range.start.row, {domEvent:{target :{}}});
+                    break;
+                case "o":
+                    editor.session.onFoldWidgetClick(range.start.row, {domEvent:{target :{}}});
+                    break;
+                case "C":
+                    editor.session.foldAll();
+                    break;
+                case "O":
+                    editor.session.unfold();
                     break;
             }
         }
@@ -2928,8 +2057,7 @@ var actions = exports.actions = {
     "V": {
         fn: function(editor, range, count, param) {
             var row = editor.getCursorPosition().row;
-            editor.selection.clearSelection();
-            editor.selection.moveCursorTo(row, 0);
+            editor.selection.moveTo(row, 0);
             editor.selection.selectLineEnd();
             editor.selection.visualLineStart = row;
 
@@ -3298,13 +2426,11 @@ var handleCursorMove = exports.onCursorMove = function(editor, e) {
             var cursorRow = editor.getCursorPosition().row;
             if(originRow <= cursorRow) {
                 var endLine = editor.session.getLine(cursorRow);
-                editor.selection.clearSelection();
-                editor.selection.moveCursorTo(originRow, 0);
+                editor.selection.moveTo(originRow, 0);
                 editor.selection.selectTo(cursorRow, endLine.length);
             } else {
                 var endLine = editor.session.getLine(originRow);
-                editor.selection.clearSelection();
-                editor.selection.moveCursorTo(originRow, endLine.length);
+                editor.selection.moveTo(originRow, endLine.length);
                 editor.selection.selectTo(cursorRow, 0);
             }
         }
@@ -3446,15 +2572,140 @@ module.exports = {
     },
     copyLine: function(editor) {
         var pos = editor.getCursorPosition();
-        editor.selection.clearSelection();
-        editor.moveCursorTo(pos.row, pos.column);
+        editor.selection.moveTo(pos.row, pos.column);
         editor.selection.selectLine();
         registers._default.isLine = true;
         registers._default.text = editor.getCopyText().replace(/\n$/, "");
-        editor.selection.clearSelection();
-        editor.moveCursorTo(pos.row, pos.column);
+        editor.selection.moveTo(pos.row, pos.column);
     }
 };
+});
+
+define('kitchen-sink/token_tooltip', ['require', 'exports', 'module' , 'ace/lib/dom', 'ace/lib/oop', 'ace/lib/event', 'ace/range', 'ace/tooltip'], function(require, exports, module) {
+
+
+var dom = require("ace/lib/dom");
+var oop = require("ace/lib/oop");
+var event = require("ace/lib/event");
+var Range = require("ace/range").Range;
+var Tooltip = require("ace/tooltip").Tooltip;
+
+function TokenTooltip (editor) {
+    if (editor.tokenTooltip)
+        return;
+    Tooltip.call(this, editor.container);
+    editor.tokenTooltip = this;
+    this.editor = editor;
+
+    this.update = this.update.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseOut = this.onMouseOut.bind(this);
+    event.addListener(editor.renderer.scroller, "mousemove", this.onMouseMove);
+    event.addListener(editor.renderer.content, "mouseout", this.onMouseOut);
+}
+
+oop.inherits(TokenTooltip, Tooltip);
+
+(function(){
+    this.token = {};
+    this.range = new Range();
+    
+    this.update = function() {
+        this.$timer = null;
+        
+        var r = this.editor.renderer;
+        if (this.lastT - (r.timeStamp || 0) > 1000) {
+            r.rect = null;
+            r.timeStamp = this.lastT;
+            this.maxHeight = window.innerHeight;
+            this.maxWidth = window.innerWidth;
+        }
+
+        var canvasPos = r.rect || (r.rect = r.scroller.getBoundingClientRect());
+        var offset = (this.x + r.scrollLeft - canvasPos.left - r.$padding) / r.characterWidth;
+        var row = Math.floor((this.y + r.scrollTop - canvasPos.top) / r.lineHeight);
+        var col = Math.round(offset);
+
+        var screenPos = {row: row, column: col, side: offset - col > 0 ? 1 : -1};
+        var session = this.editor.session;
+        var docPos = session.screenToDocumentPosition(screenPos.row, screenPos.column);
+        var token = session.getTokenAt(docPos.row, docPos.column);
+
+        if (!token && !session.getLine(docPos.row)) {
+            token = {
+                type: "",
+                value: "",
+                state: session.bgTokenizer.getState(0)
+            };
+        }
+        if (!token) {
+            session.removeMarker(this.marker);
+            this.hide();
+            return;
+        }
+
+        var tokenText = token.type;
+        if (token.state)
+            tokenText += "|" + token.state;
+        if (token.merge)
+            tokenText += "\n  merge";
+        if (token.stateTransitions)
+            tokenText += "\n  " + token.stateTransitions.join("\n  ");
+
+        if (this.tokenText != tokenText) {
+            this.setText(tokenText);
+            this.width = this.getWidth();
+            this.height = this.getHeight();
+            this.tokenText = tokenText;
+        }
+
+        this.show(null, this.x, this.y);
+
+        this.token = token;
+        session.removeMarker(this.marker);
+        this.range = new Range(docPos.row, token.start, docPos.row, token.start + token.value.length);
+        this.marker = session.addMarker(this.range, "ace_bracket", "text");
+    };
+    
+    this.onMouseMove = function(e) {
+        this.x = e.clientX;
+        this.y = e.clientY;
+        if (this.isOpen) {
+            this.lastT = e.timeStamp;
+            this.setPosition(this.x, this.y);
+        }
+        if (!this.$timer)
+            this.$timer = setTimeout(this.update, 100);
+    };
+
+    this.onMouseOut = function(e) {
+        if (e && e.currentTarget.contains(e.relatedTarget))
+            return;
+        this.hide();
+        this.editor.session.removeMarker(this.marker);
+        this.$timer = clearTimeout(this.$timer);
+    };
+
+    this.setPosition = function(x, y) {
+        if (x + 10 + this.width > this.maxWidth)
+            x = window.innerWidth - this.width - 10;
+        if (y > window.innerHeight * 0.75 || y + 20 + this.height > this.maxHeight)
+            y = y - this.height - 30;
+
+        Tooltip.prototype.setPosition.call(this, x + 10, y + 20);
+    };
+
+    this.destroy = function() {
+        this.onMouseOut();
+        event.removeListener(this.editor.renderer.scroller, "mousemove", this.onMouseMove);
+        event.removeListener(this.editor.renderer.content, "mouseout", this.onMouseOut);
+        delete this.editor.tokenTooltip;
+    };
+
+}).call(TokenTooltip.prototype);
+
+exports.TokenTooltip = TokenTooltip;
+
 });
 
 define('ace/keyboard/vim/registers', ['require', 'exports', 'module' ], function(require, exports, module) {
@@ -3467,6 +2718,134 @@ module.exports = {
         isLine: false
     }
 };
+
+});
+
+define('kitchen-sink/layout', ['require', 'exports', 'module' , 'ace/lib/dom', 'ace/lib/event', 'ace/edit_session', 'ace/undomanager', 'ace/virtual_renderer', 'ace/editor', 'ace/multi_select', 'ace/theme/textmate'], function(require, exports, module) {
+
+
+var dom = require("ace/lib/dom");
+var event = require("ace/lib/event");
+
+var EditSession = require("ace/edit_session").EditSession;
+var UndoManager = require("ace/undomanager").UndoManager;
+var Renderer = require("ace/virtual_renderer").VirtualRenderer;
+var Editor = require("ace/editor").Editor;
+var MultiSelect = require("ace/multi_select").MultiSelect;
+
+dom.importCssString("\
+splitter {\
+    border: 1px solid #C6C6D2;\
+    width: 0px;\
+    cursor: ew-resize;\
+    z-index:10}\
+splitter:hover {\
+    margin-left: -2px;\
+    width:3px;\
+    border-color: #B5B4E0;\
+}\
+", "splitEditor");
+
+exports.edit = function(el) {
+    if (typeof(el) == "string")
+        el = document.getElementById(el);
+
+    var editor = new Editor(new Renderer(el, require("ace/theme/textmate")));
+
+    editor.resize();
+    event.addListener(window, "resize", function() {
+        editor.resize();
+    });
+    return editor;
+};
+
+
+var SplitRoot = function(el, theme, position, getSize) {
+    el.style.position = position || "relative";
+    this.container = el;
+    this.getSize = getSize || this.getSize;
+    this.resize = this.$resize.bind(this);
+
+    event.addListener(el.ownerDocument.defaultView, "resize", this.resize);
+    this.editor = this.createEditor();
+};
+
+(function(){
+    this.createEditor = function() {
+        var el = document.createElement("div");
+        el.className = this.$editorCSS;
+        el.style.cssText = "position: absolute; top:0px; bottom:0px";
+        this.$container.appendChild(el);
+        var session = new EditSession("");
+        var editor = new Editor(new Renderer(el, this.$theme));
+
+        this.$editors.push(editor);
+        editor.setFontSize(this.$fontSize);
+        return editor;
+    };
+    this.$resize = function() {
+        var size = this.getSize(this.container);
+        this.rect = {
+            x: size.left,
+            y: size.top,
+            w: size.width,
+            h: size.height
+        };
+        this.item.resize(this.rect);
+    };
+    this.getSize = function(el) {
+        return el.getBoundingClientRect();
+    };
+    this.destroy = function() {
+        var win = this.container.ownerDocument.defaultView;
+        event.removeListener(win, "resize", this.resize);
+    };
+
+
+}).call(SplitRoot.prototype);
+
+
+
+var Split = function(){
+
+};
+(function(){
+    this.execute = function(options) {
+        this.$u.execute(options);
+    };
+
+}).call(Split.prototype);
+
+
+
+exports.singleLineEditor = function(el) {
+    var renderer = new Renderer(el);
+    el.style.overflow = "hidden";
+
+    renderer.screenToTextCoordinates = function(x, y) {
+        var pos = this.pixelToScreenCoordinates(x, y);
+        return this.session.screenToDocumentPosition(
+            Math.min(this.session.getScreenLength() - 1, Math.max(pos.row, 0)),
+            Math.max(pos.column, 0)
+        );
+    };
+
+    renderer.$maxLines = 4;
+
+    renderer.setStyle("ace_one-line");
+    var editor = new Editor(renderer);
+    new MultiSelect(editor);
+    editor.session.setUndoManager(new UndoManager());
+
+    editor.setShowPrintMargin(false);
+    editor.renderer.setShowGutter(false);
+    editor.renderer.setHighlightGutterLine(false);
+    editor.$mouseHandler.$focusWaitTimout = 0;
+
+    return editor;
+};
+
+
 
 });
 
@@ -3495,8 +2874,7 @@ function Motion(m) {
         var a = getPos(editor, range, count, param, false);
         if (!a)
             return;
-        editor.clearSelection();
-        editor.moveCursorTo(a.row, a.column);
+        editor.selection.moveTo(a.row, a.column);
     };
     m.sel = function(editor, range, count, param) {
         var a = getPos(editor, range, count, param, true);
@@ -3918,10 +3296,17 @@ module.exports = {
         }
     },
     "$": {
-        nav: function(editor) {
+        handlesCount: true,
+        nav: function(editor, range, count, param) {
+            if (count > 1) {
+                editor.navigateDown(count-1);
+            }
             editor.navigateLineEnd();
         },
-        sel: function(editor) {
+        sel: function(editor, range, count, param) {
+            if (count > 1) {
+                editor.selection.moveCursorBy(count-1, 0);
+            }
             editor.selection.selectLineEnd();
         }
     },
@@ -4097,6 +3482,62 @@ module.exports.up = module.exports.k;
 module.exports.down = module.exports.j;
 module.exports.pagedown = module.exports["ctrl-d"];
 module.exports.pageup = module.exports["ctrl-u"];
+module.exports.home = module.exports["0"];
+module.exports.end = module.exports["$"];
+
+});
+
+define('ace/ext/themelist', ['require', 'exports', 'module' ], function(require, exports, module) {
+
+
+var themeData = [
+    ["Chrome"         ],
+    ["Clouds"         ],
+    ["Crimson Editor" ],
+    ["Dawn"           ],
+    ["Dreamweaver"    ],
+    ["Eclipse"        ],
+    ["GitHub"         ],
+    ["Solarized Light"],
+    ["TextMate"       ],
+    ["Tomorrow"       ],
+    ["XCode"          ],
+    ["Kuroir"],
+    ["KatzenMilch"],
+    ["Ambiance"             ,"ambiance"                ,  "dark"],
+    ["Chaos"                ,"chaos"                   ,  "dark"],
+    ["Clouds Midnight"      ,"clouds_midnight"         ,  "dark"],
+    ["Cobalt"               ,"cobalt"                  ,  "dark"],
+    ["idle Fingers"         ,"idle_fingers"            ,  "dark"],
+    ["krTheme"              ,"kr_theme"                ,  "dark"],
+    ["Merbivore"            ,"merbivore"               ,  "dark"],
+    ["Merbivore Soft"       ,"merbivore_soft"          ,  "dark"],
+    ["Mono Industrial"      ,"mono_industrial"         ,  "dark"],
+    ["Monokai"              ,"monokai"                 ,  "dark"],
+    ["Pastel on dark"       ,"pastel_on_dark"          ,  "dark"],
+    ["Solarized Dark"       ,"solarized_dark"          ,  "dark"],
+    ["Terminal"             ,"terminal"                ,  "dark"],
+    ["Tomorrow Night"       ,"tomorrow_night"          ,  "dark"],
+    ["Tomorrow Night Blue"  ,"tomorrow_night_blue"     ,  "dark"],
+    ["Tomorrow Night Bright","tomorrow_night_bright"   ,  "dark"],
+    ["Tomorrow Night 80s"   ,"tomorrow_night_eighties" ,  "dark"],
+    ["Twilight"             ,"twilight"                ,  "dark"],
+    ["Vibrant Ink"          ,"vibrant_ink"             ,  "dark"]
+];
+
+
+exports.themesByName = {};
+exports.themes = themeData.map(function(data) {
+    var name = data[1] || data[0].replace(/ /g, "_").toLowerCase();
+    var theme = {
+        caption: data[0],
+        theme: "ace/theme/" + name,
+        isDark: data[2] == "dark",
+        name: name
+    };
+    exports.themesByName[name] = theme;
+    return theme;
+});
 
 });
  
@@ -4262,6 +3703,156 @@ module.exports = {
     }
 };
 });
+
+ define('kitchen-sink/doclist', ['require', 'exports', 'module' , 'ace/edit_session', 'ace/undomanager', 'ace/lib/net', 'ace/ext/modelist'], function(require, exports, module) {
+
+
+var EditSession = require("ace/edit_session").EditSession;
+var UndoManager = require("ace/undomanager").UndoManager;
+var net = require("ace/lib/net");
+
+var modelist = require("ace/ext/modelist");
+var fileCache = {};
+
+function initDoc(file, path, doc) {
+    if (doc.prepare)
+        file = doc.prepare(file);
+
+    var session = new EditSession(file);
+    session.setUndoManager(new UndoManager());
+    doc.session = session;
+    doc.path = path;
+    session.name = doc.name;
+    if (doc.wrapped) {
+        session.setUseWrapMode(true);
+        session.setWrapLimitRange(80, 80);
+    }
+    var mode = modelist.getModeForPath(path);
+    session.modeName = mode.name;
+    session.setMode(mode.mode);
+    return session;
+}
+
+
+function makeHuge(txt) {
+    for (var i = 0; i < 5; i++)
+        txt += txt;
+    return txt;
+}
+
+var docs = {
+    "docs/javascript.js": {order: 1, name: "JavaScript"},
+
+    "docs/latex.tex": {name: "LaTeX", wrapped: true},
+    "docs/markdown.md": {name: "Markdown", wrapped: true},
+    "docs/mushcode.mc": {name: "MUSHCode", wrapped: true},
+    "docs/pgsql.pgsql": {name: "pgSQL", wrapped: true},
+    "docs/plaintext.txt": {name: "Plain Text", prepare: makeHuge, wrapped: true},
+    "docs/sql.sql": {name: "SQL", wrapped: true},
+
+    "docs/textile.textile": {name: "Textile", wrapped: true},
+
+    "docs/c9search.c9search_results": "C9 Search Results",
+    "docs/mel.mel": "MEL",
+    "docs/Nix.nix": "Nix"
+};
+
+var ownSource = {
+};
+
+var hugeDocs = {
+    "src/ace.js": "",
+    "src-min/ace.js": ""
+};
+
+modelist.modes.forEach(function(m) {
+    var ext = m.extensions.split("|")[0];
+    if (ext[0] === "^") {
+        path = ext.substr(1);
+    } else {
+        var path = m.name + "." + ext;
+    }
+    path = "docs/" + path;
+    if (!docs[path]) {
+        docs[path] = {name: m.caption};
+    } else if (typeof docs[path] == "object" && !docs[path].name) {
+        docs[path].name = m.caption;
+    }
+});
+
+
+
+if (window.require && window.require.s) try {
+    for (var path in window.require.s.contexts._.defined) {
+        if (path.indexOf("!") != -1)
+            path = path.split("!").pop();
+        else
+            path = path + ".js";
+        ownSource[path] = "";
+    }
+} catch(e) {}
+
+function sort(list) {
+    return list.sort(function(a, b) {
+        var cmp = (b.order || 0) - (a.order || 0);
+        return cmp || a.name && a.name.localeCompare(b.name);
+    });
+}
+
+function prepareDocList(docs) {
+    var list = [];
+    for (var path in docs) {
+        var doc = docs[path];
+        if (typeof doc != "object")
+            doc = {name: doc || path};
+
+        doc.path = path;
+        doc.desc = doc.name.replace(/^(ace|docs|demo|build)\//, "");
+        if (doc.desc.length > 18)
+            doc.desc = doc.desc.slice(0, 7) + ".." + doc.desc.slice(-9);
+
+        fileCache[doc.name] = doc;
+        list.push(doc);
+    }
+
+    return list;
+}
+
+function loadDoc(name, callback) {
+    var doc = fileCache[name];
+    if (!doc)
+        return callback(null);
+
+    if (doc.session)
+        return callback(doc.session);
+    var path = doc.path;
+    var parts = path.split("/");
+    if (parts[0] == "docs")
+        path = "kitchen-sink/" + path;
+    else if (parts[0] == "ace")
+        path = "lib/" + path;
+
+    net.get(path, function(x) {
+        initDoc(x, path, doc);
+        callback(doc.session);
+    });
+}
+
+module.exports = {
+    fileCache: fileCache,
+    docs: sort(prepareDocList(docs)),
+    ownSource: prepareDocList(ownSource),
+    hugeDocs: prepareDocList(hugeDocs),
+    initDoc: initDoc,
+    loadDoc: loadDoc
+};
+module.exports.all = {
+    "Mode Examples": module.exports.docs,
+    "Huge documents": module.exports.hugeDocs,
+    "own source": module.exports.ownSource
+};
+
+});
  
 "use strict"
 
@@ -4327,6 +3918,185 @@ module.exports = {
 };
 });
 
+define('ace/ext/whitespace', ['require', 'exports', 'module' , 'ace/lib/lang'], function(require, exports, module) {
+
+
+var lang = require("../lib/lang");
+exports.$detectIndentation = function(lines, fallback) {
+    var stats = [];
+    var changes = [];
+    var tabIndents = 0;
+    var prevSpaces = 0;
+    var max = Math.min(lines.length, 1000);
+    for (var i = 0; i < max; i++) {
+        var line = lines[i];
+        if (!/^\s*[^*+\-\s]/.test(line))
+            continue;
+
+        var tabs = line.match(/^\t*/)[0].length;
+        if (line[0] == "\t")
+            tabIndents++;
+
+        var spaces = line.match(/^ */)[0].length;
+        if (spaces && line[spaces] != "\t") {
+            var diff = spaces - prevSpaces;
+            if (diff > 0 && !(prevSpaces%diff) && !(spaces%diff))
+                changes[diff] = (changes[diff] || 0) + 1;
+
+            stats[spaces] = (stats[spaces] || 0) + 1;
+        }
+        prevSpaces = spaces;
+        while (i < max && line[line.length - 1] == "\\")
+            line = lines[i++];
+    }
+    
+    if (!stats.length)
+        return;
+
+    function getScore(indent) {
+        var score = 0;
+        for (var i = indent; i < stats.length; i += indent)
+            score += stats[i] || 0;
+        return score;
+    }
+
+    var changesTotal = changes.reduce(function(a,b){return a+b}, 0);
+
+    var first = {score: 0, length: 0};
+    var spaceIndents = 0;
+    for (var i = 1; i < 12; i++) {
+        if (i == 1) {
+            spaceIndents = getScore(i);
+            var score = 1;
+        } else
+            var score = getScore(i) / spaceIndents;
+
+        if (changes[i]) {
+            score += changes[i] / changesTotal;
+        }
+
+        if (score > first.score)
+            first = {score: score, length: i};
+    }
+
+    if (first.score && first.score > 1.4)
+        var tabLength = first.length;
+
+    if (tabIndents > spaceIndents + 1)
+        return {ch: "\t", length: tabLength};
+
+    if (spaceIndents + 1 > tabIndents)
+        return {ch: " ", length: tabLength};
+};
+
+exports.detectIndentation = function(session) {
+    var lines = session.getLines(0, 1000);
+    var indent = exports.$detectIndentation(lines) || {};
+
+    if (indent.ch)
+        session.setUseSoftTabs(indent.ch == " ");
+
+    if (indent.length)
+        session.setTabSize(indent.length);
+    return indent;
+};
+
+exports.trimTrailingSpace = function(session, trimEmpty) {
+    var doc = session.getDocument();
+    var lines = doc.getAllLines();
+    
+    var min = trimEmpty ? -1 : 0;
+
+    for (var i = 0, l=lines.length; i < l; i++) {
+        var line = lines[i];
+        var index = line.search(/\s+$/);
+
+        if (index > min)
+            doc.removeInLine(i, index, line.length);
+    }
+};
+
+exports.convertIndentation = function(session, ch, len) {
+    var oldCh = session.getTabString()[0];
+    var oldLen = session.getTabSize();
+    if (!len) len = oldLen;
+    if (!ch) ch = oldCh;
+
+    var tab = ch == "\t" ? ch: lang.stringRepeat(ch, len);
+
+    var doc = session.doc;
+    var lines = doc.getAllLines();
+
+    var cache = {};
+    var spaceCache = {};
+    for (var i = 0, l=lines.length; i < l; i++) {
+        var line = lines[i];
+        var match = line.match(/^\s*/)[0];
+        if (match) {
+            var w = session.$getStringScreenWidth(match)[0];
+            var tabCount = Math.floor(w/oldLen);
+            var reminder = w%oldLen;
+            var toInsert = cache[tabCount] || (cache[tabCount] = lang.stringRepeat(tab, tabCount));
+            toInsert += spaceCache[reminder] || (spaceCache[reminder] = lang.stringRepeat(" ", reminder));
+
+            if (toInsert != match) {
+                doc.removeInLine(i, 0, match.length);
+                doc.insertInLine({row: i, column: 0}, toInsert);
+            }
+        }
+    }
+    session.setTabSize(len);
+    session.setUseSoftTabs(ch == " ");
+};
+
+exports.$parseStringArg = function(text) {
+    var indent = {};
+    if (/t/.test(text))
+        indent.ch = "\t";
+    else if (/s/.test(text))
+        indent.ch = " ";
+    var m = text.match(/\d+/);
+    if (m)
+        indent.length = parseInt(m[0], 10);
+    return indent;
+};
+
+exports.$parseArg = function(arg) {
+    if (!arg)
+        return {};
+    if (typeof arg == "string")
+        return exports.$parseStringArg(arg);
+    if (typeof arg.text == "string")
+        return exports.$parseStringArg(arg.text);
+    return arg;
+};
+
+exports.commands = [{
+    name: "detectIndentation",
+    exec: function(editor) {
+        exports.detectIndentation(editor.session);
+    }
+}, {
+    name: "trimTrailingSpace",
+    exec: function(editor) {
+        exports.trimTrailingSpace(editor.session);
+    }
+}, {
+    name: "convertIndentation",
+    exec: function(editor, arg) {
+        var indent = exports.$parseArg(arg);
+        exports.convertIndentation(editor.session, indent.ch, indent.length);
+    }
+}, {
+    name: "setIndentation",
+    exec: function(editor, arg) {
+        var indent = exports.$parseArg(arg);
+        indent.length && editor.session.setTabSize(indent.length);
+        indent.ch && editor.session.setUseSoftTabs(indent.ch == " ");
+    }
+}];
+
+});
 define('ace/ext/statusbar', ['require', 'exports', 'module' , 'ace/lib/dom', 'ace/lib/lang'], function(require, exports, module) {
 var dom = require("ace/lib/dom");
 var lang = require("ace/lib/lang");
@@ -4375,10 +4145,12 @@ exports.StatusBar = StatusBar;
 
 });
 
-define('ace/ext/emmet', ['require', 'exports', 'module' , 'ace/keyboard/hash_handler', 'ace/editor', 'ace/config'], function(require, exports, module) {
+define('ace/ext/emmet', ['require', 'exports', 'module' , 'ace/keyboard/hash_handler', 'ace/editor', 'ace/snippets', 'ace/range', 'ace/config'], function(require, exports, module) {
 
 var HashHandler = require("ace/keyboard/hash_handler").HashHandler;
 var Editor = require("ace/editor").Editor;
+var snippetManager = require("ace/snippets").snippetManager;
+var Range = require("ace/range").Range;
 var emmet;
 
 Editor.prototype.indexToPosition = function(index) {
@@ -4428,8 +4200,7 @@ AceEmmetEditor.prototype = {
     },
     setCaretPos: function(index){
         var pos = this.ace.indexToPosition(index);
-        this.ace.clearSelection();
-        this.ace.selection.moveCursorToPosition(pos);
+        this.ace.selection.moveToPosition(pos);
     },
     getCurrentLine: function() {
         var row = this.ace.getCursorPosition().row;
@@ -4439,39 +4210,16 @@ AceEmmetEditor.prototype = {
         if (end == null)
             end = start == null ? this.getContent().length : start;
         if (start == null)
-            start = 0;
-        var utils = emmet.require("utils");
-        if (!noIndent) {
-            value = utils.padString(value, utils.getLinePaddingFromPosition(this.getContent(), start));
-        }
-        var tabstopData = emmet.require("tabStops").extract(value, {
-            escape: function(ch) {
-                return ch;
-            }
-        });
-
-        value = tabstopData.text;
-        var firstTabStop = tabstopData.tabstops[0];
-
-        if (firstTabStop) {
-            firstTabStop.start += start;
-            firstTabStop.end += start;
-        } else {
-            firstTabStop = {
-                start: value.length + start,
-                end: value.length + start
-            };
-        }
-
-        var range = this.ace.getSelectionRange();
-        range.start = this.ace.indexToPosition(start);
-        range.end = this.ace.indexToPosition(end);
-
-        this.ace.session.replace(range, value);
-
-        range.start = this.ace.indexToPosition(firstTabStop.start);
-        range.end = this.ace.indexToPosition(firstTabStop.end);
-        this.ace.selection.setRange(range);
+            start = 0;        
+        
+        var editor = this.ace;
+        var range = Range.fromPoints(editor.indexToPosition(start), editor.indexToPosition(end));
+        editor.session.remove(range);
+        
+        range.end = range.start;
+        
+        value = this.$updateTabstops(value);
+        snippetManager.insertSnippet(editor, value)
     },
     getContent: function(){
         return this.ace.getValue();
@@ -4517,6 +4265,52 @@ AceEmmetEditor.prototype = {
     },
     getFilePath: function() {
         return "";
+    },
+    $updateTabstops: function(value) {
+        var base = 1000;
+        var zeroBase = 0;
+        var lastZero = null;
+        var range = emmet.require('range');
+        var ts = emmet.require('tabStops');
+        var settings = emmet.require('resources').getVocabulary("user");
+        var tabstopOptions = {
+            tabstop: function(data) {
+                var group = parseInt(data.group, 10);
+                var isZero = group === 0;
+                if (isZero)
+                    group = ++zeroBase;
+                else
+                    group += base;
+
+                var placeholder = data.placeholder;
+                if (placeholder) {
+                    placeholder = ts.processText(placeholder, tabstopOptions);
+                }
+
+                var result = '${' + group + (placeholder ? ':' + placeholder : '') + '}';
+
+                if (isZero) {
+                    lastZero = range.create(data.start, result);
+                }
+
+                return result
+            },
+            escape: function(ch) {
+                if (ch == '$') return '\\$';
+                if (ch == '\\') return '\\\\';
+                return ch;
+            }
+        };
+
+        value = ts.processText(value, tabstopOptions);
+
+        if (settings.variables['insert_final_tabstop'] && !/\$\{0\}$/.test(value)) {
+            value += '${0}';
+        } else if (lastZero) {
+            value = emmet.require('utils').replaceSubstring(value, '${0}', lastZero);
+        }
+        
+        return value;
     }
 };
 
@@ -4590,7 +4384,7 @@ var onChangeMode = function(e, target) {
     if (!editor)
         return;
     var modeId = editor.session.$modeId;
-    var enabled = modeId && /css|less|sass|html|php/.test(modeId);
+    var enabled = modeId && /css|less|scss|sass|stylus|html|php/.test(modeId);
     if (e.enableEmmet === false)
         enabled = false;
     if (enabled)
@@ -4613,6 +4407,137 @@ require("ace/config").defineOptions(Editor.prototype, "editor", {
 
 
 exports.setCore = function(e) {emmet = e;};
+});
+
+define('ace/theme/textmate', ['require', 'exports', 'module' , 'ace/lib/dom'], function(require, exports, module) {
+
+
+exports.isDark = false;
+exports.cssClass = "ace-tm";
+exports.cssText = ".ace-tm .ace_gutter {\
+background: #f0f0f0;\
+color: #333;\
+}\
+.ace-tm .ace_print-margin {\
+width: 1px;\
+background: #e8e8e8;\
+}\
+.ace-tm .ace_fold {\
+background-color: #6B72E6;\
+}\
+.ace-tm {\
+background-color: #FFFFFF;\
+color: black;\
+}\
+.ace-tm .ace_cursor {\
+color: black;\
+}\
+.ace-tm .ace_invisible {\
+color: rgb(191, 191, 191);\
+}\
+.ace-tm .ace_storage,\
+.ace-tm .ace_keyword {\
+color: blue;\
+}\
+.ace-tm .ace_constant {\
+color: rgb(197, 6, 11);\
+}\
+.ace-tm .ace_constant.ace_buildin {\
+color: rgb(88, 72, 246);\
+}\
+.ace-tm .ace_constant.ace_language {\
+color: rgb(88, 92, 246);\
+}\
+.ace-tm .ace_constant.ace_library {\
+color: rgb(6, 150, 14);\
+}\
+.ace-tm .ace_invalid {\
+background-color: rgba(255, 0, 0, 0.1);\
+color: red;\
+}\
+.ace-tm .ace_support.ace_function {\
+color: rgb(60, 76, 114);\
+}\
+.ace-tm .ace_support.ace_constant {\
+color: rgb(6, 150, 14);\
+}\
+.ace-tm .ace_support.ace_type,\
+.ace-tm .ace_support.ace_class {\
+color: rgb(109, 121, 222);\
+}\
+.ace-tm .ace_keyword.ace_operator {\
+color: rgb(104, 118, 135);\
+}\
+.ace-tm .ace_string {\
+color: rgb(3, 106, 7);\
+}\
+.ace-tm .ace_comment {\
+color: rgb(76, 136, 107);\
+}\
+.ace-tm .ace_comment.ace_doc {\
+color: rgb(0, 102, 255);\
+}\
+.ace-tm .ace_comment.ace_doc.ace_tag {\
+color: rgb(128, 159, 191);\
+}\
+.ace-tm .ace_constant.ace_numeric {\
+color: rgb(0, 0, 205);\
+}\
+.ace-tm .ace_variable {\
+color: rgb(49, 132, 149);\
+}\
+.ace-tm .ace_xml-pe {\
+color: rgb(104, 104, 91);\
+}\
+.ace-tm .ace_entity.ace_name.ace_function {\
+color: #0000A2;\
+}\
+.ace-tm .ace_heading {\
+color: rgb(12, 7, 255);\
+}\
+.ace-tm .ace_list {\
+color:rgb(185, 6, 144);\
+}\
+.ace-tm .ace_meta.ace_tag {\
+color:rgb(0, 22, 142);\
+}\
+.ace-tm .ace_string.ace_regex {\
+color: rgb(255, 0, 0)\
+}\
+.ace-tm .ace_marker-layer .ace_selection {\
+background: rgb(181, 213, 255);\
+}\
+.ace-tm.ace_multiselect .ace_selection.ace_start {\
+box-shadow: 0 0 3px 0px white;\
+border-radius: 2px;\
+}\
+.ace-tm .ace_marker-layer .ace_step {\
+background: rgb(252, 255, 0);\
+}\
+.ace-tm .ace_marker-layer .ace_stack {\
+background: rgb(164, 229, 101);\
+}\
+.ace-tm .ace_marker-layer .ace_bracket {\
+margin: -1px 0 0 -1px;\
+border: 1px solid rgb(192, 192, 192);\
+}\
+.ace-tm .ace_marker-layer .ace_active-line {\
+background: rgba(0, 0, 0, 0.07);\
+}\
+.ace-tm .ace_gutter-active-line {\
+background-color : #dcdcdc;\
+}\
+.ace-tm .ace_marker-layer .ace_selected-word {\
+background: rgb(250, 250, 255);\
+border: 1px solid rgb(200, 200, 250);\
+}\
+.ace-tm .ace_indent-guide {\
+background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==\") right repeat-y;\
+}\
+";
+
+var dom = require("../lib/dom");
+dom.importCssString(exports.cssText, exports.cssClass);
 });
 
 define('ace/snippets', ['require', 'exports', 'module' , 'ace/lib/lang', 'ace/range', 'ace/keyboard/hash_handler', 'ace/tokenizer', 'ace/lib/dom'], function(require, exports, module) {
@@ -4742,18 +4667,20 @@ var SnippetManager = function() {
             case "SELECTED_TEXT":
                 return s.getTextRange(r);
             case "CURRENT_LINE":
-                return s.getLine(e.getCursorPosition().row);
+                return s.getLine(editor.getCursorPosition().row);
+            case "PREV_LINE": // not possible in textmate
+                return s.getLine(editor.getCursorPosition().row - 1);
             case "LINE_INDEX":
-                return e.getCursorPosition().column;
+                return editor.getCursorPosition().column;
             case "LINE_NUMBER":
-                return e.getCursorPosition().row + 1;
+                return editor.getCursorPosition().row + 1;
             case "SOFT_TABS":
                 return s.getUseSoftTabs() ? "YES" : "NO";
             case "TAB_SIZE":
                 return s.getTabSize();
             case "FILENAME":
             case "FILEPATH":
-                return "ace.ajax.org";
+                return "";
             case "FULLNAME":
                 return "Ace";
         }
@@ -4864,37 +4791,70 @@ var SnippetManager = function() {
             if (typeof p != "object")
                 return;
             var id = p.tabstopId;
-            if (!tabstops[id]) {
-                tabstops[id] = [];
-                tabstops[id].index = id;
-                tabstops[id].value = "";
+            var ts = tabstops[id];
+            if (!ts) {
+                ts = tabstops[id] = [];
+                ts.index = id;
+                ts.value = "";
             }
-            if (tabstops[id].indexOf(p) != -1)
+            if (ts.indexOf(p) !== -1)
                 return;
-            tabstops[id].push(p);
+            ts.push(p);
             var i1 = tokens.indexOf(p, i + 1);
-            if (i1 == -1)
+            if (i1 === -1)
                 return;
-            var value = tokens.slice(i + 1, i1).join("");
-            if (value)
-                tabstops[id].value = value;
-        });
 
-        tabstops.forEach(function(ts) {
-            ts.value && ts.forEach(function(p) {
-                var i = tokens.indexOf(p);
-                var i1 = tokens.indexOf(p, i + 1);
-                if (i1 == -1)
-                    tokens.splice(i + 1, 0, ts.value, p);
-                else if (i1 == i + 1)
-                    tokens.splice(i + 1, 0, ts.value);
-            });
+            var value = tokens.slice(i + 1, i1);
+            var isNested = value.some(function(t) {return typeof t === "object"});          
+            if (isNested && !ts.value) {
+                ts.value = value;
+            } else if (value.length && (!ts.value || typeof ts.value !== "string")) {
+                ts.value = value.join("");
+            }
         });
+        tabstops.forEach(function(ts) {ts.length = 0});
+        var expanding = {};
+        function copyValue(val) {
+            var copy = []
+            for (var i = 0; i < val.length; i++) {
+                var p = val[i];
+                if (typeof p == "object") {
+                    if (expanding[p.tabstopId])
+                        continue;
+                    var j = val.lastIndexOf(p, i - 1);
+                    p = copy[j] || {tabstopId: p.tabstopId};
+                }
+                copy[i] = p;
+            }
+            return copy;
+        }
+        for (var i = 0; i < tokens.length; i++) {
+            var p = tokens[i];
+            if (typeof p != "object")
+                continue;
+            var id = p.tabstopId;
+            var i1 = tokens.indexOf(p, i + 1);
+            if (expanding[id]) {
+                if (expanding[id] === p)
+                    expanding[id] = null;
+                continue;
+            }
+            
+            var ts = tabstops[id];
+            var arg = typeof ts.value == "string" ? [ts.value] : copyValue(ts.value);
+            arg.unshift(i + 1, Math.max(0, i1 - i));
+            arg.push(p);
+            expanding[id] = p;
+            tokens.splice.apply(tokens, arg);
+
+            if (ts.indexOf(p) === -1)
+                ts.push(p);
+        };
         var row = 0, column = 0;
         var text = "";
         tokens.forEach(function(t) {
-            if (typeof t == "string") {
-                if (t[0] == "\n"){
+            if (typeof t === "string") {
+                if (t[0] === "\n"){
                     column = t.length - 1;
                     row ++;
                 } else
@@ -4918,9 +4878,14 @@ var SnippetManager = function() {
     this.$getScope = function(editor) {
         var scope = editor.session.$mode.$id || "";
         scope = scope.split("/").pop();
-        if (editor.session.$mode.$modes) {
+        if (scope === "html" || scope === "php") {
+            if (scope === "php") 
+                scope = "html";
             var c = editor.getCursorPosition()
             var state = editor.session.getState(c.row);
+            if (typeof state === "object") {
+                state = state[0];
+            }
             if (state.substring) {
                 if (state.substring(0, 3) == "js-")
                     scope = "javascript";
@@ -4930,7 +4895,19 @@ var SnippetManager = function() {
                     scope = "php";
             }
         }
+        
         return scope;
+    };
+
+    this.getActiveScopes = function(editor) {
+        var scope = this.$getScope(editor);
+        var scopes = [scope];
+        var snippetMap = this.snippetMap;
+        if (snippetMap[scope] && snippetMap[scope].includeScopes) {
+            scopes.push.apply(scopes, snippetMap[scope].includeScopes);
+        }
+        scopes.push("_");
+        return scopes;
     };
 
     this.expandWithTab = function(editor) {
@@ -4939,10 +4916,9 @@ var SnippetManager = function() {
         var before = line.substring(0, cursor.column);
         var after = line.substr(cursor.column);
 
-        var scope = this.$getScope(editor);
         var snippetMap = this.snippetMap;
         var snippet;
-        [scope, "_"].some(function(scope) {
+        this.getActiveScopes(editor).some(function(scope) {
             var snippets = snippetMap[scope];
             if (snippets)
                 snippet = this.findMatchingSnippet(snippets, before, after);
@@ -5050,10 +5026,10 @@ var SnippetManager = function() {
         var snippetNameMap = this.snippetNameMap;
 
         function removeSnippet(s) {
-            var map = snippetNameMap[scope];
-            if (map && map[s.name]) {
-                delete map[s.name];
-                map = snippetMap[scope];
+            var nameMap = snippetNameMap[s.scope||scope];
+            if (nameMap && nameMap[s.name]) {
+                delete nameMap[s.name];
+                var map = snippetMap[s.scope||scope];
                 var i = map && map.indexOf(s);
                 if (i >= 0)
                     map.splice(i, 1);
@@ -5065,7 +5041,7 @@ var SnippetManager = function() {
             snippets.forEach(removeSnippet);
     };
     this.parseSnippetFile = function(str) {
-        str = str.replace(/\r/, "");
+        str = str.replace(/\r/g, "");
         var list = [], snippet = {};
         var re = /^#.*|^({[\s\S]*})\s*$|^(\S+) (.*)$|^((?:\n*\t.*)+)/gm;
         var m;
@@ -5099,10 +5075,9 @@ var SnippetManager = function() {
         return list;
     };
     this.getSnippetByName = function(name, editor) {
-        var scope = editor && this.$getScope(editor);
         var snippetMap = this.snippetNameMap;
         var snippet;
-        [scope, "_"].some(function(scope) {
+        this.getActiveScopes(editor).some(function(scope) {
             var snippets = snippetMap[scope];
             if (snippets)
                 snippet = snippets[name];
@@ -5112,7 +5087,6 @@ var SnippetManager = function() {
     };
 
 }).call(SnippetManager.prototype);
-
 
 
 var TabstopManager = function(editor) {
@@ -5257,15 +5231,20 @@ var TabstopManager = function(editor) {
         ts = this.tabstops[this.index];
         if (!ts || !ts.length)
             return;
-
+        
         this.selectedTabstop = ts;
-        var sel = this.editor.multiSelect;
-        sel.toSingleRange(ts.firstNonLinked.clone());
-        for (var i = ts.length; i--;) {
-            if (ts.hasLinkedRanges && ts[i].linked)
-                continue;
-            sel.addRange(ts[i].clone(), true);
+        if (!this.editor.inVirtualSelectionMode) {        
+            var sel = this.editor.multiSelect;
+            sel.toSingleRange(ts.firstNonLinked.clone());
+            for (var i = ts.length; i--;) {
+                if (ts.hasLinkedRanges && ts[i].linked)
+                    continue;
+                sel.addRange(ts[i].clone(), true);
+            }
+        } else {
+            this.editor.selection.setRange(ts.firstNonLinked);
         }
+        
         this.editor.keyBinding.addKeyboardHandler(this.keyboardHandler);
     };
     this.addTabstops = function(tabstops, start, end) {
@@ -5331,6 +5310,10 @@ var TabstopManager = function(editor) {
     this.keyboardHandler = new HashHandler();
     this.keyboardHandler.bindKeys({
         "Tab": function(ed) {
+            if (exports.snippetManager && exports.snippetManager.expandWithTab(ed)) {
+                return;
+            }
+
             ed.tabstopManager.tabNext(1);
         },
         "Shift-Tab": function(ed) {
@@ -5372,205 +5355,1289 @@ exports.snippetManager = new SnippetManager();
 
 
 });
-define('ace/snippets/javascript', ['require', 'exports', 'module' ], function(require, exports, module) {
+define('ace/ext/modelist', ['require', 'exports', 'module' ], function(require, exports, module) {
 
 
-exports.snippetText = "# Prototype\n\
-snippet proto\n\
-	${1:class_name}.prototype.${2:method_name} = function(${3:first_argument}) {\n\
-		${4:// body...}\n\
-	};\n\
-# Function\n\
-snippet fun\n\
-	function ${1?:function_name}(${2:argument}) {\n\
-		${3:// body...}\n\
-	}\n\
-# Anonymous Function\n\
-regex /((=)\\s*|(:)\\s*|(\\()|\\b)/f/(\\))?/\n\
-name f\n\
-	function${M1?: ${1:functionName}}($2) {\n\
-		${0:$TM_SELECTED_TEXT}\n\
-	}${M2?;}${M3?,}${M4?)}\n\
-# Immediate function\n\
-trigger \\(?f\\(\n\
-endTrigger \\)?\n\
-snippet f(\n\
-	(function(${1}) {\n\
-		${0:${TM_SELECTED_TEXT:/* code */}}\n\
-	}(${1}));\n\
-# if\n\
-snippet if\n\
-	if (${1:true}) {\n\
-		${0}\n\
-	}\n\
-# if ... else\n\
-snippet ife\n\
-	if (${1:true}) {\n\
-		${2}\n\
-	} else {\n\
-		${0}\n\
-	}\n\
-# tertiary conditional\n\
-snippet ter\n\
-	${1:/* condition */} ? ${2:a} : ${3:b}\n\
-# switch\n\
-snippet switch\n\
-	switch (${1:expression}) {\n\
-		case '${3:case}':\n\
-			${4:// code}\n\
-			break;\n\
-		${5}\n\
-		default:\n\
-			${2:// code}\n\
-	}\n\
-# case\n\
-snippet case\n\
-	case '${1:case}':\n\
-		${2:// code}\n\
-		break;\n\
-	${3}\n\
-\n\
-# while (...) {...}\n\
-snippet wh\n\
-	while (${1:/* condition */}) {\n\
-		${0:/* code */}\n\
-	}\n\
-# try\n\
-snippet try\n\
-	try {\n\
-		${0:/* code */}\n\
-	} catch (e) {}\n\
-# do...while\n\
-snippet do\n\
-	do {\n\
-		${2:/* code */}\n\
-	} while (${1:/* condition */});\n\
-# Object Method\n\
-snippet :f\n\
-regex /([,{[])|^\\s*/:f/\n\
-	${1:method_name}: function(${2:attribute}) {\n\
-		${0}\n\
-	}${3:,}\n\
-# setTimeout function\n\
-snippet setTimeout\n\
-regex /\\b/st|timeout|setTimeo?u?t?/\n\
-	setTimeout(function() {${3:$TM_SELECTED_TEXT}}, ${1:10});\n\
-# Get Elements\n\
-snippet gett\n\
-	getElementsBy${1:TagName}('${2}')${3}\n\
-# Get Element\n\
-snippet get\n\
-	getElementBy${1:Id}('${2}')${3}\n\
-# console.log (Firebug)\n\
-snippet cl\n\
-	console.log(${1});\n\
-# return\n\
-snippet ret\n\
-	return ${1:result}\n\
-# for (property in object ) { ... }\n\
-snippet fori\n\
-	for (var ${1:prop} in ${2:Things}) {\n\
-		${0:$2[$1]}\n\
-	}\n\
-# hasOwnProperty\n\
-snippet has\n\
-	hasOwnProperty(${1})\n\
-# docstring\n\
-snippet /**\n\
-	/**\n\
-	 * ${1:description}\n\
-	 *\n\
-	 */\n\
-snippet @par\n\
-regex /^\\s*\\*\\s*/@(para?m?)?/\n\
-	@param {${1:type}} ${2:name} ${3:description}\n\
-snippet @ret\n\
-	@return {${1:type}} ${2:description}\n\
-# JSON.parse\n\
-snippet jsonp\n\
-	JSON.parse(${1:jstr});\n\
-# JSON.stringify\n\
-snippet jsons\n\
-	JSON.stringify(${1:object});\n\
-# self-defining function\n\
-snippet sdf\n\
-	var ${1:function_name} = function(${2:argument}) {\n\
-		${3:// initial code ...}\n\
-\n\
-		$1 = function($2) {\n\
-			${4:// main code}\n\
-		};\n\
-	}\n\
-# singleton\n\
-snippet sing\n\
-	function ${1:Singleton} (${2:argument}) {\n\
-		// the cached instance\n\
-		var instance;\n\
-\n\
-		// rewrite the constructor\n\
-		$1 = function $1($2) {\n\
-			return instance;\n\
-		};\n\
-		\n\
-		// carry over the prototype properties\n\
-		$1.prototype = this;\n\
-\n\
-		// the instance\n\
-		instance = new $1();\n\
-\n\
-		// reset the constructor pointer\n\
-		instance.constructor = $1;\n\
-\n\
-		${3:// code ...}\n\
-\n\
-		return instance;\n\
-	}\n\
-# class\n\
-name class\n\
-regex /^\\s*/clas{0,2}/\n\
-	var ${1:class} = function(${20}) {\n\
-		$40$0\n\
-	};\n\
-	\n\
-	(function() {\n\
-		${60:this.prop = \"\"}\n\
-	}).call(${1:class}.prototype);\n\
-	\n\
-	exports.${1:class} = ${1:class};\n\
-# \n\
-snippet for-\n\
-	for (var ${1:i} = ${2:Things}.length; ${1:i}--; ) {\n\
-		${0:${2:Things}[${1:i}];}\n\
-	}\n\
-# for (...) {...}\n\
-snippet for\n\
-	for (var ${1:i} = 0; $1 < ${2:Things}.length; $1++) {\n\
-		${3:$2[$1]}$0\n\
-	}\n\
-# for (...) {...} (Improved Native For-Loop)\n\
-snippet forr\n\
-	for (var ${1:i} = ${2:Things}.length - 1; $1 >= 0; $1--) {\n\
-		${3:$2[$1]}$0\n\
-	}\n\
-\n\
-\n\
-#modules\n\
-snippet def\n\
-	define(function(require, exports, module) {\n\
-	\"use strict\";\n\
-	var ${1/.*\\///} = require(\"${1}\");\n\
-	\n\
-	$TM_SELECTED_TEXT\n\
-	});\n\
-snippet req\n\
-guard ^\\s*\n\
-	var ${1/.*\\///} = require(\"${1}\");\n\
-	$0\n\
-snippet requ\n\
-guard ^\\s*\n\
-	var ${1/.*\\/(.)/\\u$1/} = require(\"${1}\").${1/.*\\/(.)/\\u$1/};\n\
-	$0\n\
-";
+var modes = [];
+function getModeForPath(path) {
+    var mode = modesByName.text;
+    var fileName = path.split(/[\/\\]/).pop();
+    for (var i = 0; i < modes.length; i++) {
+        if (modes[i].supportsFile(fileName)) {
+            mode = modes[i];
+            break;
+        }
+    }
+    return mode;
+}
 
+var Mode = function(name, caption, extensions) {
+    this.name = name;
+    this.caption = caption;
+    this.mode = "ace/mode/" + name;
+    this.extensions = extensions;
+    if (/\^/.test(extensions)) {
+        var re = extensions.replace(/\|(\^)?/g, function(a, b){
+            return "$|" + (b ? "^" : "^.*\\.");
+        }) + "$";
+    } else {
+        var re = "^.*\\.(" + extensions + ")$";
+    }
+
+    this.extRe = new RegExp(re, "gi");
+};
+
+Mode.prototype.supportsFile = function(filename) {
+    return filename.match(this.extRe);
+};
+var supportedModes = {
+    ABAP:        ["abap"],
+    ActionScript:["as"],
+    ADA:         ["ada|adb"],
+    Apache_Conf: ["^htaccess|^htgroups|^htpasswd|^conf|htaccess|htgroups|htpasswd"],
+    AsciiDoc:    ["asciidoc"],
+    Assembly_x86:["asm"],
+    AutoHotKey:  ["ahk"],
+    BatchFile:   ["bat|cmd"],
+    C9Search:    ["c9search_results"],
+    C_Cpp:       ["cpp|c|cc|cxx|h|hh|hpp"],
+    Cirru:       ["cirru|cr"],
+    Clojure:     ["clj"],
+    Cobol:       ["CBL|COB"],
+    coffee:      ["coffee|cf|cson|^Cakefile"],
+    ColdFusion:  ["cfm"],
+    CSharp:      ["cs"],
+    CSS:         ["css"],
+    Curly:       ["curly"],
+    D:           ["d|di"],
+    Dart:        ["dart"],
+    Diff:        ["diff|patch"],
+    Dot:         ["dot"],
+    Erlang:      ["erl|hrl"],
+    EJS:         ["ejs"],
+    Forth:       ["frt|fs|ldr"],
+    FTL:         ["ftl"],
+    Gherkin:     ["feature"],
+    Glsl:        ["glsl|frag|vert"],
+    golang:      ["go"],
+    Groovy:      ["groovy"],
+    HAML:        ["haml"],
+    Handlebars:  ["hbs|handlebars|tpl|mustache"],
+    Haskell:     ["hs"],
+    haXe:        ["hx"],
+    HTML:        ["html|htm|xhtml"],
+    HTML_Ruby:   ["erb|rhtml|html.erb"],
+    INI:         ["ini|conf|cfg|prefs"],
+    Jack:        ["jack"],
+    Jade:        ["jade"],
+    Java:        ["java"],
+    JavaScript:  ["js|jsm"],
+    JSON:        ["json"],
+    JSONiq:      ["jq"],
+    JSP:         ["jsp"],
+    JSX:         ["jsx"],
+    Julia:       ["jl"],
+    LaTeX:       ["tex|latex|ltx|bib"],
+    LESS:        ["less"],
+    Liquid:      ["liquid"],
+    Lisp:        ["lisp"],
+    LiveScript:  ["ls"],
+    LogiQL:      ["logic|lql"],
+    LSL:         ["lsl"],
+    Lua:         ["lua"],
+    LuaPage:     ["lp"],
+    Lucene:      ["lucene"],
+    Makefile:    ["^Makefile|^GNUmakefile|^makefile|^OCamlMakefile|make"],
+    MATLAB:      ["matlab"],
+    Markdown:    ["md|markdown"],
+    MEL:         ["mel"],
+    MySQL:       ["mysql"],
+    MUSHCode:    ["mc|mush"],
+    Nix:         ["nix"],
+    ObjectiveC:  ["m|mm"],
+    OCaml:       ["ml|mli"],
+    Pascal:      ["pas|p"],
+    Perl:        ["pl|pm"],
+    pgSQL:       ["pgsql"],
+    PHP:         ["php|phtml"],
+    Powershell:  ["ps1"],
+    Prolog:      ["plg|prolog"],
+    Properties:  ["properties"],
+    Protobuf:    ["proto"],
+    Python:      ["py"],
+    R:           ["r"],
+    RDoc:        ["Rd"],
+    RHTML:       ["Rhtml"],
+    Ruby:        ["rb|ru|gemspec|rake|^Guardfile|^Rakefile|^Gemfile"],
+    Rust:        ["rs"],
+    SASS:        ["sass"],
+    SCAD:        ["scad"],
+    Scala:       ["scala"],
+    Smarty:      ["smarty|tpl"],
+    Scheme:      ["scm|rkt"],
+    SCSS:        ["scss"],
+    SH:          ["sh|bash|^.bashrc"],
+    SJS:         ["sjs"],
+    Space:       ["space"],
+    snippets:    ["snippets"],
+    Soy_Template:["soy"],
+    SQL:         ["sql"],
+    Stylus:      ["styl|stylus"],
+    SVG:         ["svg"],
+    Tcl:         ["tcl"],
+    Tex:         ["tex"],
+    Text:        ["txt"],
+    Textile:     ["textile"],
+    Toml:        ["toml"],
+    Twig:        ["twig"],
+    Typescript:  ["ts|typescript|str"],
+    VBScript:    ["vbs"],
+    Velocity:    ["vm"],
+    Verilog:     ["v|vh|sv|svh"],
+    XML:         ["xml|rdf|rss|wsdl|xslt|atom|mathml|mml|xul|xbl"],
+    XQuery:      ["xq"],
+    YAML:        ["yaml|yml"]
+};
+
+var nameOverrides = {
+    ObjectiveC: "Objective-C",
+    CSharp: "C#",
+    golang: "Go",
+    C_Cpp: "C/C++",
+    coffee: "CoffeeScript",
+    HTML_Ruby: "HTML (Ruby)",
+    FTL: "FreeMarker"
+};
+var modesByName = {};
+for (var name in supportedModes) {
+    var data = supportedModes[name];
+    var displayName = (nameOverrides[name] || name).replace(/_/g, " ");
+    var filename = name.toLowerCase();
+    var mode = new Mode(filename, displayName, data[0]);
+    modesByName[filename] = mode;
+    modes.push(mode);
+}
+
+module.exports = {
+    getModeForPath: getModeForPath,
+    modes: modes,
+    modesByName: modesByName
+};
+
+});
+
+define('ace/ext/language_tools', ['require', 'exports', 'module' , 'ace/snippets', 'ace/autocomplete', 'ace/config', 'ace/autocomplete/text_completer', 'ace/editor'], function(require, exports, module) {
+
+
+var snippetManager = require("../snippets").snippetManager;
+var Autocomplete = require("../autocomplete").Autocomplete;
+var config = require("../config");
+
+var textCompleter = require("../autocomplete/text_completer");
+var keyWordCompleter = {
+    getCompletions: function(editor, session, pos, prefix, callback) {
+        var state = editor.session.getState(pos.row);
+        var completions = session.$mode.getCompletions(state, session, pos, prefix);
+        callback(null, completions);
+    }
+};
+
+var snippetCompleter = {
+    getCompletions: function(editor, session, pos, prefix, callback) {
+        var snippetMap = snippetManager.snippetMap;
+        var completions = [];
+        snippetManager.getActiveScopes(editor).forEach(function(scope) {
+            var snippets = snippetMap[scope] || [];
+            for (var i = snippets.length; i--;) {
+                var s = snippets[i];
+                var caption = s.name || s.tabTrigger;
+                if (!caption)
+                    continue;
+                completions.push({
+                    caption: caption,
+                    snippet: s.content,
+                    meta: s.tabTrigger && !s.name ? s.tabTrigger + "\u21E5 " : "snippet"
+                });
+            }
+        }, this);
+        callback(null, completions);
+    }
+};
+
+var completers = [snippetCompleter, textCompleter, keyWordCompleter];
+exports.addCompleter = function(completer) {
+    completers.push(completer);
+};
+
+var expandSnippet = {
+    name: "expandSnippet",
+    exec: function(editor) {
+        var success = snippetManager.expandWithTab(editor);
+        if (!success)
+            editor.execCommand("indent");
+    },
+    bindKey: "tab"
+};
+
+var onChangeMode = function(e, editor) {
+    loadSnippetsForMode(editor.session.$mode);
+};
+
+var loadSnippetsForMode = function(mode) {
+    var id = mode.$id;
+    if (!snippetManager.files)
+        snippetManager.files = {};
+    loadSnippetFile(id);
+    if (mode.modes)
+        mode.modes.forEach(loadSnippetsForMode);
+};
+
+var loadSnippetFile = function(id) {
+    if (!id || snippetManager.files[id])
+        return;
+    var snippetFilePath = id.replace("mode", "snippets");
+    snippetManager.files[id] = {};
+    config.loadModule(snippetFilePath, function(m) {
+        if (m) {
+            snippetManager.files[id] = m;
+            m.snippets = snippetManager.parseSnippetFile(m.snippetText);
+            snippetManager.register(m.snippets, m.scope);
+            if (m.includeScopes) {
+                snippetManager.snippetMap[m.scope].includeScopes = m.includeScopes;
+                m.includeScopes.forEach(function(x) {
+                    loadSnippetFile("ace/mode/" + x);
+                });
+            }
+        }
+    });
+};
+
+var Editor = require("../editor").Editor;
+require("../config").defineOptions(Editor.prototype, "editor", {
+    enableBasicAutocompletion: {
+        set: function(val) {
+            if (val) {
+                this.completers = completers;
+                this.commands.addCommand(Autocomplete.startCommand);
+            } else {
+                this.commands.removeCommand(Autocomplete.startCommand);
+            }
+        },
+        value: false
+    },
+    enableSnippets: {
+        set: function(val) {
+            if (val) {
+                this.commands.addCommand(expandSnippet);
+                this.on("changeMode", onChangeMode);
+                onChangeMode(null, this);
+            } else {
+                this.commands.removeCommand(expandSnippet);
+                this.off("changeMode", onChangeMode);
+            }
+        },
+        value: false
+    }
+});
+
+});
+
+define('kitchen-sink/file_drop', ['require', 'exports', 'module' , 'ace/config', 'ace/lib/event', 'ace/ext/modelist', 'ace/editor'], function(require, exports, module) {
+
+var config = require("ace/config");
+var event = require("ace/lib/event");
+var modelist = require("ace/ext/modelist");
+
+module.exports = function(editor) {
+    event.addListener(editor.container, "dragover", function(e) {
+        var types = e.dataTransfer.types;
+        if (types && Array.prototype.indexOf.call(types, 'Files') !== -1)
+            return event.preventDefault(e);
+    });
+
+    event.addListener(editor.container, "drop", function(e) {
+        var file;
+        try {
+            file = e.dataTransfer.files[0];
+            if (window.FileReader) {
+                var reader = new FileReader();
+                reader.onload = function() {
+                    var mode = modelist.getModeForPath(file.name);
+                    editor.session.doc.setValue(reader.result);
+                    editor.session.setMode(mode.mode);
+                    editor.session.modeName = mode.name;
+                };
+                reader.readAsText(file);
+            }
+            return event.preventDefault(e);
+        } catch(err) {
+            return event.stopEvent(e);
+        }
+    });
+};
+
+var Editor = require("ace/editor").Editor;
+config.defineOptions(Editor.prototype, "editor", {
+    loadDroppedFile: {
+        set: function() { module.exports(this); },
+        value: true
+    }
+});
+
+});
+
+define('ace/autocomplete', ['require', 'exports', 'module' , 'ace/keyboard/hash_handler', 'ace/autocomplete/popup', 'ace/autocomplete/util', 'ace/lib/event', 'ace/lib/lang', 'ace/snippets'], function(require, exports, module) {
+
+
+var HashHandler = require("./keyboard/hash_handler").HashHandler;
+var AcePopup = require("./autocomplete/popup").AcePopup;
+var util = require("./autocomplete/util");
+var event = require("./lib/event");
+var lang = require("./lib/lang");
+var snippetManager = require("./snippets").snippetManager;
+
+var Autocomplete = function() {
+    this.autoInsert = true;
+    this.keyboardHandler = new HashHandler();
+    this.keyboardHandler.bindKeys(this.commands);
+
+    this.blurListener = this.blurListener.bind(this);
+    this.changeListener = this.changeListener.bind(this);
+    this.mousedownListener = this.mousedownListener.bind(this);
+    this.mousewheelListener = this.mousewheelListener.bind(this);
+    
+    this.changeTimer = lang.delayedCall(function() {
+        this.updateCompletions(true);
+    }.bind(this))
+};
+
+(function() {
+    this.$init = function() {
+        this.popup = new AcePopup(document.body || document.documentElement);
+        this.popup.on("click", function(e) {
+            this.insertMatch();
+            e.stop();
+        }.bind(this));
+    };
+
+    this.openPopup = function(editor, prefix, keepPopupPosition) {
+        if (!this.popup)
+            this.$init();
+
+        this.popup.setData(this.completions.filtered);
+
+        var renderer = editor.renderer;
+        if (!keepPopupPosition) {
+            this.popup.setRow(0);
+            this.popup.setFontSize(editor.getFontSize());
+
+            var lineHeight = renderer.layerConfig.lineHeight;
+            
+            var pos = renderer.$cursorLayer.getPixelPosition(this.base, true);            
+            pos.left -= this.popup.getTextLeftOffset();
+            
+            var rect = editor.container.getBoundingClientRect();
+            pos.top += rect.top - renderer.layerConfig.offset;
+            pos.left += rect.left - editor.renderer.scrollLeft;
+            pos.left += renderer.$gutterLayer.gutterWidth;
+
+            this.popup.show(pos, lineHeight);
+        }
+    };
+
+    this.detach = function() {
+        this.editor.keyBinding.removeKeyboardHandler(this.keyboardHandler);
+        this.editor.off("changeSelection", this.changeListener);
+        this.editor.off("blur", this.blurListener);
+        this.editor.off("mousedown", this.mousedownListener);
+        this.editor.off("mousewheel", this.mousewheelListener);
+        this.changeTimer.cancel();
+        
+        if (this.popup)
+            this.popup.hide();
+
+        this.activated = false;
+        this.completions = this.base = null;
+    };
+
+    this.changeListener = function(e) {
+        var cursor = this.editor.selection.lead;
+        if (cursor.row != this.base.row || cursor.column < this.base.column) {
+            this.detach();
+        }
+        if (this.activated)
+            this.changeTimer.schedule();
+        else
+            this.detach();
+    };
+
+    this.blurListener = function() {
+        if (document.activeElement != this.editor.textInput.getElement())
+            this.detach();
+    };
+
+    this.mousedownListener = function(e) {
+        this.detach();
+    };
+
+    this.mousewheelListener = function(e) {
+        this.detach();
+    };
+
+    this.goTo = function(where) {
+        var row = this.popup.getRow();
+        var max = this.popup.session.getLength() - 1;
+
+        switch(where) {
+            case "up": row = row < 0 ? max : row - 1; break;
+            case "down": row = row >= max ? -1 : row + 1; break;
+            case "start": row = 0; break;
+            case "end": row = max; break;
+        }
+
+        this.popup.setRow(row);
+    };
+
+    this.insertMatch = function(data) {
+        if (!data)
+            data = this.popup.getData(this.popup.getRow());
+        if (!data)
+            return false;
+        if (data.completer && data.completer.insertMatch) {
+            data.completer.insertMatch(this.editor);
+        } else {
+            if (this.completions.filterText) {
+                var ranges = this.editor.selection.getAllRanges();
+                for (var i = 0, range; range = ranges[i]; i++) {
+                    range.start.column -= this.completions.filterText.length;
+                    this.editor.session.remove(range);
+                }
+            }
+            if (data.snippet)
+                snippetManager.insertSnippet(this.editor, data.snippet);
+            else
+                this.editor.execCommand("insertstring", data.value || data);
+        }
+        this.detach();
+    };
+
+    this.commands = {
+        "Up": function(editor) { editor.completer.goTo("up"); },
+        "Down": function(editor) { editor.completer.goTo("down"); },
+        "Ctrl-Up|Ctrl-Home": function(editor) { editor.completer.goTo("start"); },
+        "Ctrl-Down|Ctrl-End": function(editor) { editor.completer.goTo("end"); },
+
+        "Esc": function(editor) { editor.completer.detach(); },
+        "Space": function(editor) { editor.completer.detach(); editor.insert(" ");},
+        "Return": function(editor) { editor.completer.insertMatch(); },
+        "Shift-Return": function(editor) { editor.completer.insertMatch(true); },
+        "Tab": function(editor) { editor.completer.insertMatch(); },
+
+        "PageUp": function(editor) { editor.completer.popup.gotoPageUp(); },
+        "PageDown": function(editor) { editor.completer.popup.gotoPageDown(); }
+    };
+
+    this.gatherCompletions = function(editor, callback) {
+        var session = editor.getSession();
+        var pos = editor.getCursorPosition();
+        
+        var line = session.getLine(pos.row);
+        var prefix = util.retrievePrecedingIdentifier(line, pos.column);
+        
+        this.base = editor.getCursorPosition();
+        this.base.column -= prefix.length;
+
+        var matches = [];
+        util.parForEach(editor.completers, function(completer, next) {
+            completer.getCompletions(editor, session, pos, prefix, function(err, results) {
+                if (!err)
+                    matches = matches.concat(results);
+                next();
+            });
+        }, function() {
+            callback(null, {
+                prefix: prefix,
+                matches: matches
+            });
+        });
+        return true;
+    };
+
+    this.showPopup = function(editor) {
+        if (this.editor)
+            this.detach();
+        
+        this.activated = true;
+
+        this.editor = editor;
+        if (editor.completer != this) {
+            if (editor.completer)
+                editor.completer.detach();
+            editor.completer = this;
+        }
+
+        editor.keyBinding.addKeyboardHandler(this.keyboardHandler);
+        editor.on("changeSelection", this.changeListener);
+        editor.on("blur", this.blurListener);
+        editor.on("mousedown", this.mousedownListener);
+        editor.on("mousewheel", this.mousewheelListener);
+        
+        this.updateCompletions();
+    };
+    
+    this.updateCompletions = function(keepPopupPosition) {
+        if (keepPopupPosition && this.base && this.completions) {
+            var pos = this.editor.getCursorPosition();
+            var prefix = this.editor.session.getTextRange({start: this.base, end: pos});
+            if (prefix == this.completions.filterText)
+                return;
+            this.completions.setFilter(prefix);
+            if (!this.completions.filtered.length)
+                return this.detach();
+            this.openPopup(this.editor, prefix, keepPopupPosition);
+            return;
+        }
+        this.gatherCompletions(this.editor, function(err, results) {
+            var matches = results && results.matches;
+            if (!matches || !matches.length)
+                return this.detach();
+
+            this.completions = new FilteredList(matches);
+            this.completions.setFilter(results.prefix);
+            var filtered = this.completions.filtered;
+            if (!filtered.length)
+                return this.detach();
+            if (this.autoInsert && filtered.length == 1)
+                return this.insertMatch(filtered[0]);
+            this.openPopup(this.editor, results.prefix, keepPopupPosition);
+        }.bind(this));
+    };
+
+    this.cancelContextMenu = function() {
+        var stop = function(e) {
+            this.editor.off("nativecontextmenu", stop);
+            if (e && e.domEvent)
+                event.stopEvent(e.domEvent);
+        }.bind(this);
+        setTimeout(stop, 10);
+        this.editor.on("nativecontextmenu", stop);
+    };
+
+}).call(Autocomplete.prototype);
+
+Autocomplete.startCommand = {
+    name: "startAutocomplete",
+    exec: function(editor) {
+        if (!editor.completer)
+            editor.completer = new Autocomplete();
+        editor.completer.showPopup(editor);
+        editor.completer.cancelContextMenu();
+    },
+    bindKey: "Ctrl-Space|Ctrl-Shift-Space|Alt-Space"
+};
+
+var FilteredList = function(array, filterText, mutateData) {
+    this.all = array;
+    this.filtered = array;
+    this.filterText = filterText || "";
+};
+(function(){
+    this.setFilter = function(str) {
+        if (str.length > this.filterText && str.lastIndexOf(this.filterText, 0) === 0)
+            var matches = this.filtered;
+        else
+            var matches = this.all;
+
+        this.filterText = str;
+        matches = this.filterCompletions(matches, this.filterText);
+        matches = matches.sort(function(a, b) {
+            return b.exactMatch - a.exactMatch || b.score - a.score;
+        });
+        var prev = null;
+        matches = matches.filter(function(item){
+            var caption = item.value || item.caption || item.snippet; 
+            if (caption === prev) return false;
+            prev = caption;
+            return true;
+        });
+        
+        this.filtered = matches;
+    };
+    this.filterCompletions = function(items, needle) {
+        var results = [];
+        var upper = needle.toUpperCase();
+        var lower = needle.toLowerCase();
+        loop: for (var i = 0, item; item = items[i]; i++) {
+            var caption = item.value || item.caption || item.snippet;
+            if (!caption) continue;
+            var lastIndex = -1;
+            var matchMask = 0;
+            var penalty = 0;
+            var index, distance;
+            for (var j = 0; j < needle.length; j++) {
+                var i1 = caption.indexOf(lower[j], lastIndex + 1);
+                var i2 = caption.indexOf(upper[j], lastIndex + 1);
+                index = (i1 >= 0) ? ((i2 < 0 || i1 < i2) ? i1 : i2) : i2;
+                if (index < 0)
+                    continue loop;
+                distance = index - lastIndex - 1;
+                if (distance > 0) {
+                    if (lastIndex === -1)
+                        penalty += 10;
+                    penalty += distance;
+                }
+                matchMask = matchMask | (1 << index);
+                lastIndex = index;
+            }
+            item.matchMask = matchMask;
+            item.exactMatch = penalty ? 0 : 1;
+            item.score = (item.score || 0) - penalty;
+            results.push(item);
+        }
+        return results;
+    };
+}).call(FilteredList.prototype);
+
+exports.Autocomplete = Autocomplete;
+exports.FilteredList = FilteredList;
+
+});
+
+define('kitchen-sink/dev_util', ['require', 'exports', 'module' ], function(require, exports, module) {
+function isStrict() {
+    try { return !arguments.callee.caller.caller.caller}
+    catch(e){ return true }
+}
+function warn() {
+    if (isStrict()) {
+        console.error("trying to access to global variable");
+    }
+}
+function def(o, key, get) {
+    try {
+        Object.defineProperty(o, key, {
+            configurable: true, 
+            get: get,
+            set: function(val) {
+                delete o[key];
+                o[key] = val;
+            }
+        });
+    } catch(e) {
+        console.error(e);
+    }
+}
+def(window, "ace", function(){ warn(); return window.env.editor });
+def(window, "editor", function(){ warn(); return window.env.editor });
+def(window, "session", function(){ warn(); return window.env.editor.session });
+def(window, "split", function(){ warn(); return window.env.split });
+
+});
+
+define('ace/autocomplete/popup', ['require', 'exports', 'module' , 'ace/edit_session', 'ace/virtual_renderer', 'ace/editor', 'ace/range', 'ace/lib/event', 'ace/lib/lang', 'ace/lib/dom'], function(require, exports, module) {
+
+
+var EditSession = require("../edit_session").EditSession;
+var Renderer = require("../virtual_renderer").VirtualRenderer;
+var Editor = require("../editor").Editor;
+var Range = require("../range").Range;
+var event = require("../lib/event");
+var lang = require("../lib/lang");
+var dom = require("../lib/dom");
+
+var $singleLineEditor = function(el) {
+    var renderer = new Renderer(el);
+
+    renderer.$maxLines = 4;
+    
+    var editor = new Editor(renderer);
+
+    editor.setHighlightActiveLine(false);
+    editor.setShowPrintMargin(false);
+    editor.renderer.setShowGutter(false);
+    editor.renderer.setHighlightGutterLine(false);
+
+    editor.$mouseHandler.$focusWaitTimout = 0;
+
+    return editor;
+};
+
+var AcePopup = function(parentNode) {
+    var el = dom.createElement("div");
+    var popup = new $singleLineEditor(el);
+    
+    if (parentNode)
+        parentNode.appendChild(el);
+    el.style.display = "none";
+    popup.renderer.content.style.cursor = "default";
+    popup.renderer.setStyle("ace_autocomplete");
+    
+    popup.setOption("displayIndentGuides", false);
+
+    var noop = function(){};
+
+    popup.focus = noop;
+    popup.$isFocused = true;
+
+    popup.renderer.$cursorLayer.restartTimer = noop;
+    popup.renderer.$cursorLayer.element.style.opacity = 0;
+
+    popup.renderer.$maxLines = 8;
+    popup.renderer.$keepTextAreaAtCursor = false;
+
+    popup.setHighlightActiveLine(false);
+    popup.session.highlight("");
+    popup.session.$searchHighlight.clazz = "ace_highlight-marker";
+
+    popup.on("mousedown", function(e) {
+        var pos = e.getDocumentPosition();
+        popup.selection.moveToPosition(pos);
+        selectionMarker.start.row = selectionMarker.end.row = pos.row;
+        e.stop();
+    });
+
+    var lastMouseEvent;
+    var hoverMarker = new Range(-1,0,-1,Infinity);
+    var selectionMarker = new Range(-1,0,-1,Infinity);
+    selectionMarker.id = popup.session.addMarker(selectionMarker, "ace_active-line", "fullLine");
+    popup.setSelectOnHover = function(val) {
+        if (!val) {
+            hoverMarker.id = popup.session.addMarker(hoverMarker, "ace_line-hover", "fullLine");
+        } else if (hoverMarker.id) {
+            popup.session.removeMarker(hoverMarker.id);
+            hoverMarker.id = null;
+        }
+    }
+    popup.setSelectOnHover(false);
+    popup.on("mousemove", function(e) {
+        if (!lastMouseEvent) {
+            lastMouseEvent = e;
+            return;
+        }
+        if (lastMouseEvent.x == e.x && lastMouseEvent.y == e.y) {
+            return;
+        }
+        lastMouseEvent = e;
+        lastMouseEvent.scrollTop = popup.renderer.scrollTop;
+        var row = lastMouseEvent.getDocumentPosition().row;
+        if (hoverMarker.start.row != row) {
+            if (!hoverMarker.id)
+                popup.setRow(row);
+            setHoverMarker(row);
+        }
+    });
+    popup.renderer.on("beforeRender", function() {
+        if (lastMouseEvent && hoverMarker.start.row != -1) {
+            lastMouseEvent.$pos = null;
+            var row = lastMouseEvent.getDocumentPosition().row;
+            if (!hoverMarker.id)
+                popup.setRow(row);
+            setHoverMarker(row, true);
+        }
+    });
+    popup.renderer.on("afterRender", function() {
+        var row = popup.getRow();
+        var t = popup.renderer.$textLayer;
+        var selected = t.element.childNodes[row - t.config.firstRow];
+        if (selected == t.selectedNode)
+            return;
+        if (t.selectedNode)
+            dom.removeCssClass(t.selectedNode, "ace_selected");
+        t.selectedNode = selected;
+        if (selected)
+            dom.addCssClass(selected, "ace_selected");
+    });
+    var hideHoverMarker = function() { setHoverMarker(-1) };
+    var setHoverMarker = function(row, suppressRedraw) {
+        if (row !== hoverMarker.start.row) {
+            hoverMarker.start.row = hoverMarker.end.row = row;
+            if (!suppressRedraw)
+                popup.session._emit("changeBackMarker");
+            popup._emit("changeHoverMarker");
+        }
+    };
+    popup.getHoveredRow = function() {
+        return hoverMarker.start.row;
+    };
+    
+    event.addListener(popup.container, "mouseout", hideHoverMarker);
+    popup.on("hide", hideHoverMarker);
+    popup.on("changeSelection", hideHoverMarker);
+    
+    popup.session.doc.getLength = function() {
+        return popup.data.length;
+    };
+    popup.session.doc.getLine = function(i) {
+        var data = popup.data[i];
+        if (typeof data == "string")
+            return data;
+        return (data && data.value) || "";
+    };
+
+    var bgTokenizer = popup.session.bgTokenizer;
+    bgTokenizer.$tokenizeRow = function(i) {
+        var data = popup.data[i];
+        var tokens = [];
+        if (!data)
+            return tokens;
+        if (typeof data == "string")
+            data = {value: data};
+        if (!data.caption)
+            data.caption = data.value;
+
+        var last = -1;
+        var flag, c;
+        for (var i = 0; i < data.caption.length; i++) {
+            c = data.caption[i];
+            flag = data.matchMask & (1 << i) ? 1 : 0;
+            if (last !== flag) {
+                tokens.push({type: data.className || "" + ( flag ? "completion-highlight" : ""), value: c});
+                last = flag;
+            } else {
+                tokens[tokens.length - 1].value += c;
+            }
+        }
+
+        if (data.meta) {
+            var maxW = popup.renderer.$size.scrollerWidth / popup.renderer.layerConfig.characterWidth;
+            if (data.meta.length + data.caption.length < maxW - 2)
+                tokens.push({type: "rightAlignedText", value: data.meta});
+        }
+        return tokens;
+    };
+    bgTokenizer.$updateOnChange = noop;
+    bgTokenizer.start = noop;
+    
+    popup.session.$computeWidth = function() {
+        return this.screenWidth = 0;
+    }
+    popup.isOpen = false;
+    popup.isTopdown = false;
+    
+    popup.data = [];
+    popup.setData = function(list) {
+        popup.data = list || [];
+        popup.setValue(lang.stringRepeat("\n", list.length), -1);
+        popup.setRow(0);
+    };
+    popup.getData = function(row) {
+        return popup.data[row];
+    };
+
+    popup.getRow = function() {
+        return selectionMarker.start.row;
+    };
+    popup.setRow = function(line) {
+        line = Math.max(-1, Math.min(this.data.length, line));
+        if (selectionMarker.start.row != line) {
+            popup.selection.clearSelection();
+            selectionMarker.start.row = selectionMarker.end.row = line || 0;
+            popup.session._emit("changeBackMarker");
+            popup.moveCursorTo(line || 0, 0);
+            if (popup.isOpen)
+                popup._signal("select");
+        }
+    };
+    
+    popup.on("changeSelection", function() {
+        if (popup.isOpen)
+            popup.setRow(popup.selection.lead.row);
+    });
+
+    popup.hide = function() {
+        this.container.style.display = "none";
+        this._signal("hide");
+        popup.isOpen = false;
+    };
+    popup.show = function(pos, lineHeight, topdownOnly) {
+        var el = this.container;
+        var screenHeight = window.innerHeight;
+        var screenWidth = window.innerWidth;
+        var renderer = this.renderer;
+        var maxH = renderer.$maxLines * lineHeight * 1.4;
+        var top = pos.top + this.$borderSize;
+        if (top + maxH > screenHeight - lineHeight && !topdownOnly) {
+            el.style.top = "";
+            el.style.bottom = screenHeight - top + "px";
+            popup.isTopdown = false;
+        } else {
+            top += lineHeight;
+            el.style.top = top + "px";
+            el.style.bottom = "";
+            popup.isTopdown = true;
+        }
+
+        el.style.display = "";
+        this.renderer.$textLayer.checkForSizeChanges();
+        
+        var left = pos.left;
+        if (left + el.offsetWidth > screenWidth)
+            left = screenWidth - el.offsetWidth;
+            
+        el.style.left = left + "px";
+        
+        this._signal("show");
+        lastMouseEvent = null;
+        popup.isOpen = true;
+    };
+    
+    popup.getTextLeftOffset = function() {
+        return this.$borderSize + this.renderer.$padding + this.$imageSize;
+    };
+    
+    popup.$imageSize = 0;
+    popup.$borderSize = 1;
+
+    return popup;
+};
+
+dom.importCssString("\
+.ace_autocomplete.ace-tm .ace_marker-layer .ace_active-line {\
+    background-color: #CAD6FA;\
+    z-index: 1;\
+}\
+.ace_autocomplete.ace-tm .ace_line-hover {\
+    border: 1px solid #abbffe;\
+    margin-top: -1px;\
+    background: rgba(233,233,253,0.4);\
+}\
+.ace_autocomplete .ace_line-hover {\
+    position: absolute;\
+    z-index: 2;\
+}\
+.ace_rightAlignedText {\
+    color: gray;\
+    display: inline-block;\
+    position: absolute;\
+    right: 4px;\
+    text-align: right;\
+    z-index: -1;\
+}\
+.ace_autocomplete .ace_completion-highlight{\
+    color: #000;\
+    text-shadow: 0 0 0.01em;\
+}\
+.ace_autocomplete {\
+    width: 280px;\
+    z-index: 200000;\
+    background: #fbfbfb;\
+    color: #444;\
+    border: 1px lightgray solid;\
+    position: fixed;\
+    box-shadow: 2px 3px 5px rgba(0,0,0,.2);\
+    line-height: 1.4;\
+}");
+
+exports.AcePopup = AcePopup;
+
+});
+
+
+define('kitchen-sink/inline_editor', ['require', 'exports', 'module' , 'ace/line_widgets', 'ace/editor', 'ace/virtual_renderer', 'ace/lib/dom', 'ace/commands/default_commands'], function(require, exports, module) {
+
+
+var LineWidgets = require("ace/line_widgets").LineWidgets;
+var Editor = require("ace/editor").Editor;
+var Renderer = require("ace/virtual_renderer").VirtualRenderer;
+var dom = require("ace/lib/dom");
+
+
+require("ace/commands/default_commands").commands.push({
+    name: "openInlineEditor",
+    bindKey: "F3",
+    exec: function(editor) {
+        var split = window.env.split;
+        var s = editor.session;
+        var inlineEditor = new Editor(new Renderer());
+        var splitSession = split.$cloneSession(s);
+
+        var row = editor.getCursorPosition().row;
+        if (editor.session.lineWidgets && editor.session.lineWidgets[row]) {
+            editor.session.lineWidgets[row].destroy();
+            return;
+        }
+        
+        var rowCount = 10;        
+        var w = {
+            row: row, 
+            fixedWidth: true,
+            el: dom.createElement("div"),
+            editor: editor
+        };
+        var el = w.el;
+        el.appendChild(inlineEditor.container);      
+
+        if (!editor.session.widgetManager) {
+            editor.session.widgetManager = new LineWidgets(editor.session);
+            editor.session.widgetManager.attach(editor);
+        }
+        
+        var h = rowCount*editor.renderer.layerConfig.lineHeight;
+        inlineEditor.container.style.height = h + "px";
+
+        el.style.position = "absolute";
+        el.style.zIndex = "4";
+        el.style.borderTop = "solid blue 2px";
+        el.style.borderBottom = "solid blue 2px";
+        
+        inlineEditor.setSession(splitSession);
+        editor.session.widgetManager.addLineWidget(w);
+        
+        var kb = {
+            handleKeyboard:function(_,hashId, keyString) {
+                if (hashId === 0 && keyString === "esc") {
+                    w.destroy();
+                    return true;
+                }
+            }
+        };
+        
+        w.destroy = function() {
+            editor.keyBinding.removeKeyboardHandler(kb);
+            s.widgetManager.removeLineWidget(w);
+        };
+        
+        editor.keyBinding.addKeyboardHandler(kb);
+        inlineEditor.keyBinding.addKeyboardHandler(kb);
+        editor.on("changeSession", function(e) {
+            w.el.parentNode && w.el.parentNode.removeChild(w.el);
+        });
+        inlineEditor.setTheme("ace/theme/solarized_light");
+    }
+});
+});
+
+define('ace/autocomplete/util', ['require', 'exports', 'module' ], function(require, exports, module) {
+
+
+exports.parForEach = function(array, fn, callback) {
+    var completed = 0;
+    var arLength = array.length;
+    if (arLength === 0)
+        callback();
+    for (var i = 0; i < arLength; i++) {
+        fn(array[i], function(result, err) {
+            completed++;
+            if (completed === arLength)
+                callback(result, err);
+        });
+    }
+}
+
+var ID_REGEX = /[a-zA-Z_0-9\$-]/;
+
+exports.retrievePrecedingIdentifier = function(text, pos, regex) {
+    regex = regex || ID_REGEX;
+    var buf = [];
+    for (var i = pos-1; i >= 0; i--) {
+        if (regex.test(text[i]))
+            buf.push(text[i]);
+        else
+            break;
+    }
+    return buf.reverse().join("");
+}
+
+exports.retrieveFollowingIdentifier = function(text, pos, regex) {
+    regex = regex || ID_REGEX;
+    var buf = [];
+    for (var i = pos; i < text.length; i++) {
+        if (regex.test(text[i]))
+            buf.push(text[i]);
+        else
+            break;
+    }
+    return buf;
+}
+
+});
+define('ace/ext/spellcheck', ['require', 'exports', 'module' , 'ace/lib/event', 'ace/editor', 'ace/config'], function(require, exports, module) {
+
+var event = require("../lib/event");
+
+exports.contextMenuHandler = function(e){
+    var host = e.target;
+    var text = host.textInput.getElement();
+    if (!host.selection.isEmpty())
+        return;
+    var c = host.getCursorPosition();
+    var r = host.session.getWordRange(c.row, c.column);
+    var w = host.session.getTextRange(r);
+
+    host.session.tokenRe.lastIndex = 0;
+    if (!host.session.tokenRe.test(w))
+        return;
+    var PLACEHOLDER = "\x01\x01";
+    var value = w + " " + PLACEHOLDER;
+    text.value = value;
+    text.setSelectionRange(w.length, w.length + 1);
+    text.setSelectionRange(0, 0);
+    text.setSelectionRange(0, w.length);
+
+    var afterKeydown = false;
+    event.addListener(text, "keydown", function onKeydown() {
+        event.removeListener(text, "keydown", onKeydown);
+        afterKeydown = true;
+    });
+
+    host.textInput.setInputHandler(function(newVal) {
+        console.log(newVal , value, text.selectionStart, text.selectionEnd)
+        if (newVal == value)
+            return '';
+        if (newVal.lastIndexOf(value, 0) === 0)
+            return newVal.slice(value.length);
+        if (newVal.substr(text.selectionEnd) == value)
+            return newVal.slice(0, -value.length);
+        if (newVal.slice(-2) == PLACEHOLDER) {
+            var val = newVal.slice(0, -2);
+            if (val.slice(-1) == " ") {
+                if (afterKeydown)
+                    return val.substring(0, text.selectionEnd);
+                val = val.slice(0, -1);
+                host.session.replace(r, val);
+                return "";
+            }
+        }
+
+        return newVal;
+    });
+};
+var Editor = require("../editor").Editor;
+require("../config").defineOptions(Editor.prototype, "editor", {
+    spellcheck: {
+        set: function(val) {
+            var text = this.textInput.getElement();
+            text.spellcheck = !!val;
+            if (!val)
+                this.removeListener("nativecontextmenu", exports.contextMenuHandler);
+            else
+                this.on("nativecontextmenu", exports.contextMenuHandler);
+        },
+        value: true
+    }
+});
+
+});
+
+define('ace/autocomplete/text_completer', ['require', 'exports', 'module' , 'ace/range'], function(require, exports, module) {
+    var Range = require("ace/range").Range;
+    
+    var splitRegex = /[^a-zA-Z_0-9\$\-]+/;
+
+    function getWordIndex(doc, pos) {
+        var textBefore = doc.getTextRange(Range.fromPoints({row: 0, column:0}, pos));
+        return textBefore.split(splitRegex).length - 1;
+    }
+    function wordDistance(doc, pos) {
+        var prefixPos = getWordIndex(doc, pos);
+        var words = doc.getValue().split(splitRegex);
+        var wordScores = Object.create(null);
+        
+        var currentWord = words[prefixPos];
+
+        words.forEach(function(word, idx) {
+            if (!word || word === currentWord) return;
+
+            var distance = Math.abs(prefixPos - idx);
+            var score = words.length - distance;
+            if (wordScores[word]) {
+                wordScores[word] = Math.max(score, wordScores[word]);
+            } else {
+                wordScores[word] = score;
+            }
+        });
+        return wordScores;
+    }
+
+    exports.getCompletions = function(editor, session, pos, prefix, callback) {
+        var wordScore = wordDistance(session, pos, prefix);
+        var wordList = Object.keys(wordScore);
+        callback(null, wordList.map(function(word) {
+            return {
+                name: word,
+                value: word,
+                score: wordScore[word],
+                meta: "local"
+            };
+        }));
+    };
+});
+
+define('ace/commands/occur_commands', ['require', 'exports', 'module' , 'ace/config', 'ace/occur', 'ace/keyboard/hash_handler', 'ace/lib/oop'], function(require, exports, module) {
+
+var config = require("../config"),
+    Occur = require("../occur").Occur;
+var occurStartCommand = {
+    name: "occur",
+    exec: function(editor, options) {
+        var alreadyInOccur = !!editor.session.$occur;
+        var occurSessionActive = new Occur().enter(editor, options);
+        if (occurSessionActive && !alreadyInOccur)
+            OccurKeyboardHandler.installIn(editor);
+    },
+    readOnly: true
+};
+
+var occurCommands = [{
+    name: "occurexit",
+    bindKey: 'esc|Ctrl-G',
+    exec: function(editor) {
+        var occur = editor.session.$occur;
+        if (!occur) return;
+        occur.exit(editor, {});
+        if (!editor.session.$occur) OccurKeyboardHandler.uninstallFrom(editor);
+    },
+    readOnly: true
+}, {
+    name: "occuraccept",
+    bindKey: 'enter',
+    exec: function(editor) {
+        var occur = editor.session.$occur;
+        if (!occur) return;
+        occur.exit(editor, {translatePosition: true});
+        if (!editor.session.$occur) OccurKeyboardHandler.uninstallFrom(editor);
+    },
+    readOnly: true
+}];
+
+var HashHandler = require("../keyboard/hash_handler").HashHandler;
+var oop = require("../lib/oop");
+
+
+function OccurKeyboardHandler() {}
+
+oop.inherits(OccurKeyboardHandler, HashHandler);
+
+;(function() {
+
+    this.isOccurHandler = true;
+
+    this.attach = function(editor) {
+        HashHandler.call(this, occurCommands, editor.commands.platform);
+        this.$editor = editor;
+    }
+
+    var handleKeyboard$super = this.handleKeyboard;
+    this.handleKeyboard = function(data, hashId, key, keyCode) {
+        var cmd = handleKeyboard$super.call(this, data, hashId, key, keyCode);
+        return (cmd && cmd.command) ? cmd : undefined;
+    }
+
+}).call(OccurKeyboardHandler.prototype);
+
+OccurKeyboardHandler.installIn = function(editor) {
+    var handler = new this();
+    editor.keyBinding.addKeyboardHandler(handler);
+    editor.commands.addCommands(occurCommands);
+}
+
+OccurKeyboardHandler.uninstallFrom = function(editor) {
+    editor.commands.removeCommands(occurCommands);
+    var handler = editor.getKeyboardHandler();
+    if (handler.isOccurHandler)
+        editor.keyBinding.removeKeyboardHandler(handler);
+}
+
+exports.occurStartCommand = occurStartCommand;
 
 });

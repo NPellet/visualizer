@@ -207,7 +207,7 @@ function _registerDnd() {
 $.ui.fancytree.registerExtension(
 	{
 	name: "dnd",
-	version: "0.0.1",
+	version: "0.1.0",
 	// Default options for this extension.
 	options: {
 		// Make tree nodes draggable:
@@ -394,7 +394,7 @@ $.ui.fancytree.registerExtension(
 			res = $helper;
 			break;
 		case "start":
-			if( node.isStatusNode ) {
+			if( node.isStatusNode() ) {
 				res = false;
 			} else if(dnd.dragStart) {
 				res = dnd.dragStart(node, ctx);
