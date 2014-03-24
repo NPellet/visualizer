@@ -81,6 +81,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 
 			view = json;
 			this.viewCallback( view, true );
+                        viewHandler.versionChange().notify(view);
 			
 		},
                 
