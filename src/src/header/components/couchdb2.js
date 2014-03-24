@@ -127,7 +127,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         },
         load: function(node, rev) {
             var that = this;
-            var def, message={};
+            var def;
             if (node.data.hasData) {
                 def = $.getJSON(this.database.uri + node.data.doc._id + "/data.json" + (rev ? "?rev=" + rev : ""), function(data) {
                     data = new DataObject(data, true);
@@ -145,6 +145,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     });
                 });
             }
+            this.lastKeyLoaded = node.key;
         },
         save: function(type, name) {
 
@@ -508,6 +509,8 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     thefTree.reload(tree);
                     thefTree.getNodeByKey(that.flavor).toggleExpanded();
                     theTree.contextmenu(menuOptions);
+                    if(that.lastKeyLoaded)
+                        thefTree.activateKey(that.lastKeyLoaded);
                 },
                 error: function(status) {
                     console.log(status);
