@@ -383,8 +383,6 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             });
         },
         clickNode: function(event, data) {
-            if (data.targetType !== "title" && data.targetType !== "icon")
-                return;
 
             var folder;
             var node = folder = data.node, last;
@@ -416,7 +414,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 node: folder
             };
 
-            this["lastNode"] = last;
+            this.lastNode = last;
             if (event.type === "fancytreedblclick" && !node.folder)
                 return false;
         },
@@ -500,10 +498,10 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         extensions: ["dnd"],
                         dnd: dnd,
                         source: [],
-                        lazyload: proxyLazyLoad,
-                        click: proxyClick,
+                        lazyLoad: proxyLazyLoad,
                         dblclick: proxyClick,
-                        debugLevel: 0
+                        debugLevel: 0,
+                        activate: proxyClick
                     }).children("ul").css("box-sizing", "border-box");
                     var thefTree = theTree.data("ui-fancytree").getTree();
                     thefTree.reload(tree);
