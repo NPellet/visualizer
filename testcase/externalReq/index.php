@@ -1,21 +1,15 @@
-<?php
-//header("Access-Control-Allow-Origin: *");
-?>
-
 <html>
 <head>
-  <script src="pouchdb.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/pouchdb-nightly.min.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
     <script type="text/javascript" charset="utf-8">
-    console.log('in script');
+    //console.log('in script');
     var types = {
       molfile: 'mol2d'
     };
     var views = {
-      molfile: {
-        nmrPredict: "/example/nmrPredictURL.json"
-      }
+      molfile: '2e853f5d3e21623f28d235a412e1e169'
     }
     
     var jsonval = "<?php echo $_POST['value'] ?>";
@@ -25,7 +19,7 @@
       writeBody('Error: '+name+' has no corresponding type');
     }
     else {
-      var db = new PouchDB('external_info');
+      var db = new PouchDB('external_infos');
       var rev = null;
     
       db.get(name, function(err, res) {
@@ -36,14 +30,14 @@
           _id: name,
           _rev: rev ? rev : undefined,
           type: types[name],
-          value: JSON.parse(jsonval),
+          value: jsonval,
           views: views[name]
         }, function(err, res) {
           if(!err) {
             db.compact();
             writeBody('Document written to database. Redirecting...');
             setTimeout(function() {
-               window.location = '../../src/index.html?config=usr/config/default.json'
+               window.location = '/visualizer/_design/visualizer_head/index.html?config=default.json&viewURL=/c/'+views[name]+'/view.json'
             }, 1000);
           }
           else {
