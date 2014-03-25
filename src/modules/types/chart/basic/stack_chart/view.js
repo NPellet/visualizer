@@ -1,4 +1,4 @@
-define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','lib/flot/jquery.flot','lib/flot/jquery.flot.stack'], function(Default, Traversing, API, Util) {
+define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util','lib/flot/jquery.flot'], function(Default, Traversing, API, Util) {
 
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -36,8 +36,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			this._data=[];	// the data that will be sent to FLOT
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
-			
-			this.updateOptions(cfg);
+			axis = undefined;
+			this.updateOptions(cfg, axis);
 
 		},
 
@@ -99,7 +99,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 				if (! moduleValue || ! moduleValue.value) return;
 				
-				self.updateOptions(cfg);
+				
+				var axis = moduleValue.get().axis;
+				
+				self.updateOptions(cfg, axis);
 				this._convertChartToData(moduleValue.get().data);
 				this.loadedData.resolve();
 				
@@ -156,7 +159,43 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			
 		},
 
-		updateOptions: function(cfg) {
+		updateOptions: function(cfg, axis) {
+			var posx = null;
+			var posy = null;
+			var xmin = null;
+			var ymin = null;
+			var xmax = null;
+			var ymax = null;
+			var xunit = null;
+			var yunit = null;
+			if (undefined != axis)
+			{
+			posx = axis[0].type;
+			posy = axis[1].type;
+			xmax = axis[0].max;
+			ymax = axis[1].max;
+			xmin = axis[0].min;
+			ymin = axis[1].min;
+			if(axis[0].unit instanceof Array)
+			{
+			u = [];
+			for(i=0;i<axis[0].unit.length;i++)
+			{
+			u.push([i,axis[0].unit[i]]);
+			}
+			xunit = u;
+			console.log(xunit);
+			}
+			if(axis[1].unit instanceof Array)
+			{
+			u = [];
+			for(i=0;i<axis[1].unit.length;i++)
+			{
+			u.push([i,axis[1].unit[i]]);
+			}
+			yunit = u;
+			}
+			}
 			var steps= false;
 			var bars= false;
 			var lines = false;
@@ -174,14 +213,21 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 							break;
 				  
 				}
+					
 			this._options = {
 
 				xaxis: {
 				show: true,
-				min: 0
+				position: posx,
+				min: xmin,
+				max: xmax,
+				ticks: xunit
 				},
 				yaxis: {
-				min: 0
+				position: posy,
+				min: ymin,
+				max: ymax,
+				ticks: yunit
 				},
 				grid: {
 
@@ -200,16 +246,17 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 
 	 		
-			//this._options.test=cfg('nodeSize') || 1;
-			//console.log(cfg('barWidth'));
 
 		},
+		
 		plot: function(id,data,options) {
 		var self=this;
 		
+		var self=this;
+		
 				self._plot=$.plot("#"+id, data, options);
-
 				$("#"+id).bind("plotclick", function (event, pos, item) {
+
 				event.preventDefault();
 				    if (item) {
 				      	console.log("Y:"+item.datapoint[1]);

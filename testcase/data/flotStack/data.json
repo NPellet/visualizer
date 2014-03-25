@@ -15,16 +15,14 @@
 				"0": {
 					"type": "bottom", 
 					"unit": "",
-					"name": "",
-					"min":"",
-					"max":""
+					"min": 0,
+					"max": 5
 				},
 				"1": {
 					"type": "left",
 					"unit": "",
-					"name": "",
-					"min":"",
-					"max":""
+					"min": 0 ,
+					"max": 15 
 				}
 			},
 			"data" : 

@@ -64,7 +64,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 			return;
 		}
 
-		// this.setVarFromEvent( 'onHover', element, 'row' );
+		
 		if (this._highlighted) {
 			API.highlight( this._highlighted, 0 );
 		}
@@ -97,14 +97,28 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 					fields: {
 						preference : {
 							type: 'combo',
-							title: 'Node Type',
+							title: 'Chart Type',
 							default: 'Lines',
 							options: [
 								{title: 'Bars', key: 'Bars'},
 								{title: 'Lines', key: 'Lines'},
 								{title: 'Lines With Steps', key: 'Lines With Steps'}
-							]
+							],
+							displaySource:  {
+							'Bars': 'b',
+							'Lines': 'l',
+							'Lines With Steps': 'ls'
+							
+							}
+							
 						},
+						stack: {
+						type: 'checkbox',
+							title: 'Stack',
+							default: false,
+							options: { 'stack': 'Stacking the series together'}
+						},
+						
 						barWidth : {
 							type: 'combo',
 							title: 'Bars Width',
@@ -116,19 +130,16 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 								{title: '0.7', key: 0.7},
 								{title: '0.8', key: 0.8},
 								{title: '0.9', key: 0.9}
-							]
-						},
-						stack: {
-						type: 'checkbox',
-							title: 'stack',
-							default: false,
-							options: { 'stack': 'withStack/withoutStack'}
+							],
+							
+							displayTarget: [ 'b' ]
 						},
 						fill: {
 						type: 'checkbox',
 						default: false,
-							title: 'fill',
-							options: { 'fill': 'withFilling/withoutFilling'}
+							title: 'Fill',
+							options: { 'fill': 'Filling under lines'},
+							displayTarget: [ 'l' , 'ls']
 						},
 						nodeSize: {
 							type: 'text',
