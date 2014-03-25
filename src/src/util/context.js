@@ -71,7 +71,7 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 
 		dom.parentNode.addEventListener('contextmenu', function(e) {
 
-			console.log( contextMenu );
+			//console.log( contextMenu );
 
 			
 			contextMenu.menu({

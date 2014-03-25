@@ -292,7 +292,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     that.username = username;
                     that.$_elToOpen.html(that.getMenuContent());
                 },
-                error: this.showError
+                error: function(){
+                    that.showError.apply(that, arguments);
+                }
             });
         },
         logout: function() {
@@ -346,9 +348,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             
             this.database.view("flavor/list", {
                 success: function(data) {
+                    if(!data.rows.length)
+                        that.flavorList = ["default"];
+                    else
+                        that.flavorList = data.rows[0].value;
                     flavorField.autocomplete({
                         minLength: 0,
-                        source: data.rows[0].value
+                        source: that.flavorList
                     }).on('autocompleteselect',function(e,d){
                         var flavor = d.item.value;
                         if(that.flavor!==flavor) that.changeFlavor(flavor);
@@ -506,7 +512,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                                 success: function() {
                                     theNode.moveTo(target, info.hitMode);
                                 },
-                                error: that.showError
+                                error: function(){ that.showError.apply(that, arguments) }
                             });
                         },
                         error: function(status) {
@@ -566,7 +572,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                                 that.showError("Document deleted.", 2);
                                 node.remove();
                             },
-                            error: this.showError
+                            error: function(){ that.showError.apply(that, arguments) }
                         });
                     }
                     else { // Update current doc
@@ -575,7 +581,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                                 that.showError("Flavor deleted.", 2);
                                 node.remove();
                             },
-                            error: this.showError
+                            error: function(){ that.showError.apply(that, arguments) }
                         });
                     }
                 }
@@ -617,11 +623,11 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                                 $(this).dialog("destroy");
                             }
                         },
-                        title: "New flavor"
+                        title: "New name"
                     });
                 }
                 else if (action === "newflavor") {
-                    $('<div>').html('Flavor : <input type="text" id="' + this.cssId("newflavorname") + '" />').dialog({
+                    $('<div>').html('Flavor :').dialog({
                         buttons: {
                             "Save": function() {
                                 var dialog = $(this);
@@ -659,7 +665,10 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                             }
                         },
                         title: "New flavor"
-                    });
+                    }).append($('<input type="text" id="' + this.cssId("newflavorname") + '" />').autocomplete({
+                        minLength: 0,
+                        source: that.flavorList
+                    }));
                 }
                 else {
                     console.warn("Context menu action '" + action + "' not implemented !");
