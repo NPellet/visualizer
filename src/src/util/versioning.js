@@ -19,20 +19,69 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 	viewHandler.reviver = function(k, l) {
 		return ViewObject.check(l);
 	};
-				
+        
+        window.onpopstate = function(event) {
+            if(event.state && event.state.type === "viewchange"){
+                switchView(event.state.value, false);
+            }
+        };
+        
+        function switchView(value, pushstate) {
+            var def;
+            if(value.data) {
+                def = setData(value.data.url, value.data.branch);
+            } else {
+                def = $.Deferred().resolve();
+            }
+            if(value.view) {
+                def.done(function(){
+                    setView(value.view.url, value.view.branch);
+                });
+            }
+            if(pushstate) {
+                var location = window.location,
+                    search = location.search.split("&");
+                var hasView = false, hasData = false, hasElems = false;
+                if(location.search.length > 0)
+                    hasElems = true;
+                for(var i = 0; i < search.length; i++) {
+                    var str = search[i];
+                    if(str.indexOf("dataURL=")!==-1 && value.data) {
+                        search[i] = str.replace(/dataURL=.*/,"dataURL="+value.data.url);
+                        hasData = true;
+                    } else if(str.indexOf("viewURL=")!==-1 && value.view) {
+                        search[i] = str.replace(/viewURL=.*/,"viewURL="+value.view.url);
+                        hasView = true;
+                    }
+                }
+                search = search.join("&");
+                if(!hasElems)
+                    search += "?";
+                if(!hasData && value.data)
+                    search += "dataURL="+value.data.url+"&";
+                if(!hasView && value.view)
+                    search += "viewURL="+value.view.url+"&";
+
+                window.history.pushState({type:"viewchange",value:value}, "", location.origin+location.pathname+search);
+            }
+        }
+        
+        function setView(url, branch, defUrl) {
+                return viewHandler.load(url, branch, defUrl);
+        }
+        function setData(url, branch, defUrl) {
+                return dataHandler.load(url, branch, defUrl);
+        }
+                
 	return {
 
 		get version() {
 			return String(version);
 		},
 
-		setView: function(url, branch, defUrl) {
-			viewHandler.load(url, branch, defUrl);
-		},
+		setView: setView,
 
-		setData: function(url, branch, defUrl) {
-			dataHandler.load(url, branch, defUrl);
-		},
+		setData: setData,
 
 		getView: function() {
 			return view;
@@ -94,6 +143,8 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 
 		blankView: function( ) {
 			this.setViewJSON( { } );
-		}
+		},
+                
+                switchView: switchView
 	};
 });

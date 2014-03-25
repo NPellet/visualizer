@@ -126,54 +126,66 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 
         },
         load: function(node, rev) {
-            var that = this;
-            var def, url, urls={data:"",view:""};
-            if (node.data.hasData) {
-                url = this.database.uri + node.data.doc._id + "/data.json" + (rev ? "?rev=" + rev : "");
-                urls.data = url;
-                def = $.getJSON(url, function(data) {
-                    data = new DataObject(data, true);
-                    Versioning.setDataJSON(data);
-                    that.showError("Data loaded.", 2);
-                });
-            } else
-                def = $.Deferred().resolve();
-            if (node.data.hasView) {
-                url = that.database.uri + node.data.doc._id + "/view.json" + (rev ? "?rev=" + rev : "");
-                urls.view = url;
-                def.done(function() {
-                    $.getJSON(url, function(view) {
-                        view = new ViewObject(view, true);
-                        Versioning.setViewJSON(view);
-                        that.showError("View loaded.", 2);
-                    });
-                });
+            var result = {};
+            if(node.data.hasData) {
+                result.data = {
+                    url: this.database.uri + node.data.doc._id + "/data.json" + (rev ? "?rev=" + rev : "")
+                };
             }
-            
-            var location = window.location,
-                search = location.search.split("&");
-            var hasView = false, hasData = false, hasElems = false;
-            if(location.search.length > 0)
-                hasElems = true;
-            for(var i = 0; i < search.length; i++) {
-                var str = search[i];
-                if(str.indexOf("dataURL=")!==-1) {
-                    search[i] = str.replace(/dataURL=.*/,"dataURL="+urls.data);
-                    hasData = true;
-                } else if(str.indexOf("viewURL=")!==-1) {
-                    search[i] = str.replace(/viewURL=.*/,"viewURL="+urls.view);
-                    hasView = true;
-                }
+            if(node.data.hasView) {
+                result.view = {
+                    url: this.database.uri + node.data.doc._id + "/view.json" + (rev ? "?rev=" + rev : "")
+                };
             }
-            search = search.join("&");
-            if(!hasElems)
-                search += "?";
-            if(!hasData)
-                search += "dataURL="+urls.data+"&";
-            if(!hasView)
-                search += "viewURL="+urls.view+"&";
-            
-            window.history.replaceState(urls, "", location.origin+location.pathname+search);
+            Versioning.switchView(result, true);
+//            var that = this;
+//            var def, url, urls={data:"",view:""};
+//            if (node.data.hasData) {
+//                url = this.database.uri + node.data.doc._id + "/data.json" + (rev ? "?rev=" + rev : "");
+//                urls.data = url;
+//                def = $.getJSON(url, function(data) {
+//                    data = new DataObject(data, true);
+//                    Versioning.setDataJSON(data);
+//                    that.showError("Data loaded.", 2);
+//                });
+//            } else
+//                def = $.Deferred().resolve();
+//            if (node.data.hasView) {
+//                url = that.database.uri + node.data.doc._id + "/view.json" + (rev ? "?rev=" + rev : "");
+//                urls.view = url;
+//                def.done(function() {
+//                    $.getJSON(url, function(view) {
+//                        view = new ViewObject(view, true);
+//                        Versioning.setViewJSON(view);
+//                        that.showError("View loaded.", 2);
+//                    });
+//                });
+//            }
+//            
+//            var location = window.location,
+//                search = location.search.split("&");
+//            var hasView = false, hasData = false, hasElems = false;
+//            if(location.search.length > 0)
+//                hasElems = true;
+//            for(var i = 0; i < search.length; i++) {
+//                var str = search[i];
+//                if(str.indexOf("dataURL=")!==-1) {
+//                    search[i] = str.replace(/dataURL=.*/,"dataURL="+urls.data);
+//                    hasData = true;
+//                } else if(str.indexOf("viewURL=")!==-1) {
+//                    search[i] = str.replace(/viewURL=.*/,"viewURL="+urls.view);
+//                    hasView = true;
+//                }
+//            }
+//            search = search.join("&");
+//            if(!hasElems)
+//                search += "?";
+//            if(!hasData)
+//                search += "dataURL="+urls.data+"&";
+//            if(!hasView)
+//                search += "viewURL="+urls.view+"&";
+//            
+//            window.history.pushState({type:"viewchange",value:urls}, "", location.origin+location.pathname+search);
 
             this.lastKeyLoaded = node.key;
         },
