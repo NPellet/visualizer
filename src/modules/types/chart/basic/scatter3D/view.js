@@ -1,4 +1,4 @@
-define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'threejs', 'components/three.js/examples/js/controls/TrackballControls'], function(Default, Traversing, API, Util) {
+define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'components/three.js/examples/js/controls/TrackballControls'], function(Default, Traversing, API, Util, _) {
   
   
 	
@@ -30,15 +30,29 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
         var intersects = ray.intersectObjects(self.scene.children);
         console.log(intersects);
-
-        // if ( intersects.length > 0 ) {
-        //   intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
-        // }
       }
+      
+      function onMouseMove(event) {
+        var vector = new THREE.Vector3(
+          ( event.offsetX / $(self.renderer.domElement).width() ) * 2 - 1,
+          - ( event.offsetY / $(self.renderer.domElement).height() ) * 2 + 1,
+          0.5
+        );
+        projector = new THREE.Projector();
+        projector.unprojectVector( vector, self.camera );
+
+        var ray = new THREE.Raycaster( self.camera.position, 
+          vector.sub( self.camera.position ).normalize() );
+
+        var intersects = ray.intersectObjects(self.scene.children);
+        console.log(intersects);
+      }
+      
+      var onMouseMoveThrottle = _.throttle(onMouseMove, 200);
 
 			function init() {
         if(!self.camera) {
-          self.camera = new THREE.PerspectiveCamera( 60, self.dom.width() / self.dom.height(), 1, 1000 );
+          self.camera = new THREE.PerspectiveCamera( 60, self.dom.width() / self.dom.height(), 1, 10000 );
           self.camera.position.z = 500;
         }
 
@@ -57,41 +71,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				self.controls.keys = [ 65, 83, 68 ];
 				self.controls.addEventListener( 'change', render );
 
-				// world
-
+        // Init scene
 				self.scene = new THREE.Scene();
-        // self.scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
-
-        // var geometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
-        //         var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-        // var material =  new THREE.MeshLambertMaterial( { color:0xffffff, shading: THREE.FlatShading } );
-        // 
-        // for ( var i = 0; i < 500; i ++ ) {
-        // 
-        //   var mesh = new THREE.Mesh( geometry, material );
-        //   mesh.position.x = ( Math.random() - 0.5 ) * 1000;
-        //   mesh.position.y = ( Math.random() - 0.5 ) * 1000;
-        //   mesh.position.z = ( Math.random() - 0.5 ) * 1000;
-        //   mesh.updateMatrix();
-        //   mesh.matrixAutoUpdate = false;
-        //   self.scene.add( mesh );
-        // 
-        // }
-
-
-				// lights
-
-        // light = new THREE.DirectionalLight( 0xffffff );
-        // light.position.set( 1, 1, 1 );
-        // self.scene.add( light );
-        // 
-        // light = new THREE.DirectionalLight( 0x002288 );
-        // light.position.set( -1, -1, -1 );
-        // self.scene.add( light );
-        
-        // var light = new THREE.AmbientLight( 0xffffff );
-        // self.scene.add( light );
-
 
 				// renderer
 
@@ -106,14 +87,18 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				container.appendChild( self.renderer.domElement );
         console.log(container);
         
-        
+        console.log(self.dom);
+        // $(self.dom).append('<div style="z-index: 10000; position:absolute; top: 20px;"> Hello world </div>');
 
 				//
 
 				//window.addEventListener( 'resize', onWindowResize, false );
         onWindowResize();
-        $(self.renderer.domElement).off('mousedown', onMouseDown);
-        $(self.renderer.domElement).on('mousedown', onMouseDown);
+        // $(self.renderer.domElement).off('mousedown', onMouseDown);
+        // $(self.renderer.domElement).on('mousedown', onMouseDown);
+        
+        // $(self.renderer.domElement).off('mousemove', onMouseMoveThrottle);
+        $(self.renderer.domElement).on('mousemove', _.throttle(onMouseMove, 200));
 
 			}
 
@@ -175,6 +160,31 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       this.scene.add(axY);
       this.scene.add(axZ);
       
+      // textGeo = new THREE.TextGeometry( 'hello', {
+      // 
+      //   size: 70,
+      //   height: 20,
+      // 
+      //   font: 'optimer',
+      //   weight: 'bold',
+      //   style: 'normal',
+      // 
+      //   material: 0,
+      //   extrudeMaterial: 1
+      // 
+      // });
+      // 
+      // textGeo.computeBoundingBox();
+      // textGeo.computeVertexNormals();
+      // 
+      // textMaterial = new THREE.MeshFaceMaterial( [ 
+      //   new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.FlatShading } ), // front
+      //   new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
+      //   ] );
+      // textMesh1 = new THREE.Mesh( textGeo, material );
+      // this.scene.add(textMesh1)
+      
+      
       
       var light1 = new THREE.DirectionalLight( 0xffffff, 1000 );
       light1.position.set( 1, 1, 1 );
@@ -190,19 +200,21 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       self.scene.add(light1);
       self.scene.add(light2);
       
-      
+      // Add all data levels in one graph
       for(var j=0; j<value.data.length; j++) {
         for ( var i = 0; i < value.data[j].x.length; i++ ) {
-          var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-    			var material =  new THREE.MeshLambertMaterial( { color: 0x000000, shading: THREE.FlatShading } );
+          var radius = 5;
+          var color = '#000000';
+          if(value.data[j].size && value.data[j].size[i]) {
+            radius = value.data[j].size[i];
+          }
           if(value.data[j].color && value.data[j].color[i]) {
-            console.log('setting color');
-            material.color = new THREE.Color(value.data[j].color[i]);
-            console.log(material.color);
+            color = value.data[j].color[i];
           }
-          else {
-            material.color = '0x000000';
-          }
+          
+          var geometry = new THREE.SphereGeometry( radius, 32, 32 );
+    			var material =  new THREE.MeshLambertMaterial( { color: new THREE.Color(color), shading: THREE.FlatShading } );
+
           var mesh = new THREE.Mesh( geometry, material );
           mesh.position.x = value.data[j].x[i];
           mesh.position.y = value.data[j].y[i];
