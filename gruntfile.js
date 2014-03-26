@@ -76,7 +76,7 @@ module.exports = function(grunt) {
               './font-awesome/fonts/*',
               './colors/css/colors.min.css',
               './pouchdb/dist/*',
-              './uri.js/src/URI.js'
+              './uri.js/src/*.js'
             ],
 
             dest: './build/components/'
