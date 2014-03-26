@@ -1,8 +1,13 @@
+
+
 module.exports = function(grunt) {
 
   var modulesFinal = {};
   var modulesStack = {};
+  var walk = require('walk');
+  var fs = require('fs');
   var _ = require('underscore');
+  
 
   // Project configuration.
   grunt.initConfig({
@@ -294,18 +299,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-rename');
   grunt.loadNpmTasks('grunt-ftp');
 
-  var fs = require('fs');
   var path = require('path');
   var $ = require('jQuery');
 
   grunt.registerTask( 'upload', [ 'ftp' ] );
   
   grunt.registerTask('clean-images', 'Clean all images that are not used in the build', function(){
-    var walk = require('walk');
-    var fs = require('fs');
-    var walk = require('walk')
-        , fs = require('fs')
-        , options
+    var options
         , walker
         , whiteset = {}
         , allimages = [];
@@ -385,19 +385,78 @@ module.exports = function(grunt) {
     fs.writeFileSync('./build/modules/types/folder.json', JSON.stringify(file.modules));
   }); 
   
-  grunt.registerTask( 'build', [
-                        'clean:build',
-                        'buildProject',
-                        'copy:buildModules',
-                        'copy:buildUsr',
-                        'copy:build',
-                        'copy:buildLib',
-                        'couchdb:copyModules',
-                        'requirejs',
-                        'uglify:build',
-                        'clean:build',
-                        'rename:afterBuild'
-                    ] );
+  grunt.registerTask('manifest:generate', function() {
+    var files = recursivelyLookupDirectory('build', true);
+    fs.writeFileSync('build/cache.appcache', 'CACHE MANIFEST\n\nCACHE:\n\n');
+    for(var i=0; i<files.length; i++) {
+     fs.appendFileSync('build/cache.appcache', files[i] + '\n'); 
+    }
+    fs.appendFileSync('build/cache.appcache', '\n\nNETWORK:\n*\n');
+  });
+  
+  function recursivelyLookupDirectory(path, asCwd) {
+    var relPath;
+    var cd = process.cwd();
+    if(asCwd) {
+      process.chdir(process.cwd() + '/' + path);
+      relPath = '.';
+    }
+    else {
+      relPath = path;
+    }
+    var files = [];
+    // var stats = fs.lstatSync(relPath);
+    var options = {
+      listeners: {
+        file: function (root, fileStats, next) {
+          // console.log(root, fileStats);
+          var p
+          if(root === '.') {
+            p = fileStats.name;
+          }
+          else if(root.substr(0,2) === './') {
+            p = root.substr(2) + '/' + fileStats.name;
+          }
+          else {
+            p = root + '/' + fileStats.name;
+          }
+          files.push(p);
+          next();
+        },
+        errors: function (root, nodeStatsArray, next) {
+          console.log('An error occured in walk', root, nodeStatsArray);
+          next();
+        }
+      }
+    };
+    walker = walk.walkSync(relPath, options);
+    process.chdir(cd);
+    return files;
+  }
+  
+  var buildTasks = [
+    'clean:build',
+    'buildProject',
+    'copy:buildModules',
+    'copy:buildUsr',
+    'copy:build',
+    'copy:buildLib',
+    'couchdb:copyModules',
+    'requirejs',
+    'uglify:build',
+    'clean:build',
+    'rename:afterBuild'
+  ];
+  
+  if(grunt.option('clean-images')) {
+    console.log('clean-images on');
+    buildTasks.push('clean-images');
+  }
+  if(grunt.option('manifest')) {
+    console.log('manifest on');
+    buildTasks.push('manifest:generate');
+  }
+  grunt.registerTask( 'build', buildTasks );
     
   grunt.registerTask( 'buildProject', 'Build project', function() {
 
@@ -439,14 +498,14 @@ module.exports = function(grunt) {
 //console.log( fileName );
       if( typeof fileName !== "object" ) {
 
-        if( ! require('fs').existsSync( fileName ) ) {
+        if( ! fs.existsSync( fileName ) ) {
           if(arguments.length === 1) {
             return loadFile(arguments[0], grunt.option('usr')+'/');
           }
           console.log( 'Folder file ' + fileName + ' does not exist');
           return;
         }
-        console.log( 'Fetching file ' + fileName);
+        // console.log( 'Fetching file ' + fileName);
         file = grunt.file.readJSON( fileName );
       }
       else {
@@ -471,7 +530,7 @@ module.exports = function(grunt) {
           if(arguments.length === 2) {
            file.modules[j].url = './usr/' + file.modules[j].url; 
           }
-          console.log('module added: ', file.modules[j]);
+          // console.log('module added: ', file.modules[j]);
           jsonStructure.modules.push( file.modules[ j ] );
         }
       }
