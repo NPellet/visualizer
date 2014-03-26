@@ -27,7 +27,11 @@
                         "type": "Point",
                         "coordinates": [-74.05973, 40.714353]
                     },
-                    "properties":  {"value":"Point 1", "_highlight" : [0,2]}
+                    "properties":  {"marker": {
+                    "kind":"circle",
+                    "size": 20,
+                    "color": "red"
+                },"value":"Point 1", "_highlight" : [0,2]}
                 },
                 {
                     "type": "Feature",
@@ -35,7 +39,11 @@
                         "type": "Point",
                 "coordinates": [-74.12973, 40.714353]
                     },
-                    "properties":  {"value":"Point 2", "_highlight" : [1]}
+                    "properties":  {"marker": {
+                    "kind":"circle",
+                    "size": 40,
+                    "color":"green"
+                },"value":"Point 2", "_highlight" : [1]}
                 },
                 {
                     "type": "Feature",
@@ -43,17 +51,22 @@
                         "type": "Point",
                 "coordinates": [-74.000973, 40.710353]
                     },
-                    "properties":  {"value":"Point 3", "_highlight" : [3]}
+                    "properties":  {"marker": {
+                    "kind":"rectangle",
+                    "width": 10,
+                    "height": 30,
+                    "color": "red"
+                },"value":"Point 3", "_highlight" : [3]}
                 },
                 {
                     "type": "Feature",
                     "geometry": {
                         "type" : "Polygon",
                         "coordinates" : [
-                            [[-74.05973,40.814353],[-74.12973, 40.714353],[-74.000973, 40.710353]]
+                            [[-74.05973,40.914353],[-74.12973, 40.814353],[-74.000973, 40.810353]]
                         ]
                     },
-                    "properties":  {"value":"Surface 1", "_highlight" : [0,1]}
+                    "properties":  {"marker":{},"value":"Surface 1", "_highlight" : [0,1]}
                 }
             ]
         }

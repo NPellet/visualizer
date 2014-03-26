@@ -104,6 +104,27 @@
 								"10"
 							]
 						}
+					],
+					"markers": [
+						{
+							"markerjpath": [
+								"element.marker"
+							],
+							"markerkind": [
+								"image"
+							],
+							"markercolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"markersize": [
+								"30"
+							]
+						}
 					]
 				}
 			},

@@ -42,7 +42,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
         });
     }
     Marker.defaultOptions = {
-        width: 30,
+        size: 30,
         color: "rgba(1,1,1,0.5)",
         kind: "circle"
     };
@@ -55,12 +55,12 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                 if(this.kind==="image" && this.options.imgHighlight)
                     this.div.attr("src", this.options.imgHighlight);
                 else
-                    this.div.css("background","rgba(255,51,0,0.5)");
+                    this.div.css("border", "solid");
             } else {
                 if(this.kind==="image" && this.options.imgHighlight)
                     this.div.attr("src", this.options.img);
                 else
-                    this.div.css("background",this.options.color);
+                    this.div.css("border", "none");
             }
         },
         get center() {
@@ -70,10 +70,10 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                 return [this.width/2,this.height/2];
         },
         get width() {
-            return (this.options.width||this.options.height);
+            return (this.options.width||this.options.height||this.options.size);
         },
         get height() {
-            return (this.options.height||this.options.width);
+            return (this.options.height||this.options.width||this.options.size);
         }
     };
 
@@ -92,7 +92,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
             Marker.setDefaultOptions ({
                 kind: this.module.getConfiguration('markerkind'),
                 color: Util.getColor(this.module.getConfiguration('markercolor')),
-                width: parseInt(this.module.getConfiguration('markersize')),
+                size: parseInt(this.module.getConfiguration('markersize')),
                 img: 'components/leaflet/images/marker-icon.png',
                 imgHighlight: 'modules/types/chart/maps/leaflet/marker-icon-red.png'
             });
