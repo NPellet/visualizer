@@ -392,7 +392,15 @@ module.exports = function(grunt) {
      fs.appendFileSync('build/cache.appcache', files[i] + '\n'); 
     }
     fs.appendFileSync('build/cache.appcache', '\n\nNETWORK:\n*\n');
+    
+    enableManifest('build/index.html', 'cache.appcache');
   });
+  
+  function enableManifest(file, manifest) {
+    var content = fs.readFileSync(file);
+    content = content.toString().replace('<html>', '<html manifest="' + (manifest || 'cache.appcache') +'">');
+    fs.writeFileSync(file, content);
+  }
   
   function recursivelyLookupDirectory(path, asCwd) {
     var relPath;
