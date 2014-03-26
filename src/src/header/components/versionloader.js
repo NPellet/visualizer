@@ -39,16 +39,18 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
                 
                 load: function(el) {
                     var result = {};
-                    if(el.viewURL) {
+                    if(el.views || el.viewURL) {
                         result.view = {
                             url: el.viewURL,
-                            branch: el.viewBranch
+                            branch: el.viewBranch,
+                            urls: el.views
                         };
                     }
-                    if(el.dataURL) {
+                    if(el.results || el.dataURL) {
                         result.data = {
                             url: el.dataURL,
-                            branch: el.branchURL
+                            branch: el.branchURL,
+                            urls: el.views
                         };
                     }
                     Versioning.switchView(result, true);
