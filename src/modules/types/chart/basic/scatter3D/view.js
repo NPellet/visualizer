@@ -1,6 +1,19 @@
 define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'components/three.js/examples/js/controls/TrackballControls'], function(Default, Traversing, API, Util, _) {
   
-  
+  $.fn.listHandlers = function(events, outputFunction) {
+      return this.each(function(i){
+          var elem = this,
+              dEvents = $(this).data('events');
+          if (!dEvents) {return;}
+          $.each(dEvents, function(name, handler){
+              if((new RegExp('^(' + (events === '*' ? '.+' : events.replace(',','|').replace(/^on/i,'')) + ')$' ,'i')).test(name)) {
+                 $.each(handler, function(i,handler){
+                     outputFunction(elem, '\n' + i + ': [' + name + '] : ' + handler );
+                 });
+             }
+          });
+      });
+  };
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -90,15 +103,17 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         console.log(self.dom);
         // $(self.dom).append('<div style="z-index: 10000; position:absolute; top: 20px;"> Hello world </div>');
 
-				//
 
 				//window.addEventListener( 'resize', onWindowResize, false );
         onWindowResize();
         // $(self.renderer.domElement).off('mousedown', onMouseDown);
         // $(self.renderer.domElement).on('mousedown', onMouseDown);
         
+        
         // $(self.renderer.domElement).off('mousemove', onMouseMoveThrottle);
         $(self.renderer.domElement).on('mousemove', _.throttle(onMouseMove, 200));
+        
+        $(self.renderer.domElement).listHandlers('mousemove', console.log);
 
 			}
 
