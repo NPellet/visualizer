@@ -278,7 +278,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			}
 
 			if( ! jpath ) {
-				return this;
+				return;
 			}
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array

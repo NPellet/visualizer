@@ -2,20 +2,84 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
 
     function view() {
         this.mapID = Util.getNextUniqueId();
-        this.mapLayers = {};
     }
 
     Util.loadCss('components/leaflet/leaflet.css');
-    var blueIcon = L.icon({
-        iconUrl: 'components/leaflet/images/marker-icon.png'
+    
+    // Custom icon that accepts Marker objects
+    var CustomIcon = L.Icon.extend({
+        createIcon: function (oldIcon) {
+            this._marker = this.options.marker;
+            var div = this._marker.div[0];
+            this._setIconStyles(div, 'icon');
+            return div;
+        },
+        createShadow: function () {
+                return null;
+        }
     });
-    var redIcon = L.icon({
-        iconUrl: 'modules/types/chart/maps/leaflet/marker-icon-red.png'
-    });            
+    function customIcon(marker) {
+        return new CustomIcon({marker:marker,iconAnchor:marker.center});
+    }
+    
+    function Marker(options) {
+        var merged = (this.options = $.extend({},Marker.defaultOptions,options));
+        this.div = $("<div>");
+        this.kind = merged.kind;
+        switch(merged.kind) {
+            case "image":
+                this.div = $('<img src="'+merged.img+'">');
+                break;
+            case "circle":
+                this.div.css("border-radius", merged.size);
+            default:
+                this.div.css("background", merged.color);
+                break;
+        }
+        this.div.css({
+            width: this.width,
+            height: this.height
+        });
+    }
+    Marker.defaultOptions = {
+        width: 30,
+        color: "rgba(1,1,1,0.5)",
+        kind: "circle"
+    };
+    Marker.setDefaultOptions = function(options) {
+        $.extend(Marker.defaultOptions, options);
+    };
+    Marker.prototype = {
+        highlight: function(onOff) {
+            if(onOff) {
+                if(this.kind==="image" && this.options.imgHighlight)
+                    this.div.attr("src", this.options.imgHighlight);
+                else
+                    this.div.css("background","rgba(255,51,0,0.5)");
+            } else {
+                if(this.kind==="image" && this.options.imgHighlight)
+                    this.div.attr("src", this.options.img);
+                else
+                    this.div.css("background",this.options.color);
+            }
+        },
+        get center() {
+            if(this.kind==="image")
+                return [this.width/2,this.height];
+            else
+                return [this.width/2,this.height/2];
+        },
+        get width() {
+            return (this.options.width||this.options.height);
+        },
+        get height() {
+            return (this.options.height||this.options.width);
+        }
+    };
 
     view.prototype = $.extend(true, {}, Default, {
         init: function() {
-
+            this.mapLayers = {};
             this.dom = $('<div id="' + this.mapID + '"></div>').css({
                 height: '100%',
                 width: '100%'
@@ -23,6 +87,16 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
             this.module.getDomContent( ).html(this.dom);
                 
             API.killHighlight(this.module.getId());
+            
+            // Construct default marker options
+            Marker.setDefaultOptions ({
+                kind: this.module.getConfiguration('markerkind'),
+                color: Util.getColor(this.module.getConfiguration('markercolor')),
+                width: parseInt(this.module.getConfiguration('markersize')),
+                img: 'components/leaflet/images/marker-icon.png',
+                imgHighlight: 'modules/types/chart/maps/leaflet/marker-icon-red.png'
+            });
+            this.markerjpath = this.module.getConfiguration("markerjpath");
             
             this.onReady = $.Deferred();
         },
@@ -105,11 +179,23 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
     function addEvents(layer) {
         
         var data = layer.feature.properties || {};
+        this.module.data = data;
+        
+        var icon;
+        if(layer instanceof L.Marker) {
+            var options = {};
+            if(data instanceof DataObject) {
+                $.extend(options, data.getChildSync(this.markerjpath));
+            }
+            var marker = new Marker(options);
+            icon = customIcon(marker);
+            layer.setIcon(icon);
+        }
         
         API.listenHighlight(data, function(onOff){
             if(onOff) {
                 if(layer instanceof L.Marker) {
-                    layer.setIcon(redIcon);
+                    icon._marker.highlight(true);
                 }
                 else {
                     layer.setStyle({color: "#ff3300"});
@@ -117,7 +203,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
             }
             else {
                 if(layer instanceof L.Marker) {
-                    layer.setIcon(blueIcon);
+                    icon._marker.highlight(false);
                 }
                 else {
                     layer.setStyle({color: "#0033ff"});

@@ -2,8 +2,18 @@
     "result": {
         "type":"geojson",
         "value": {
-            "type": "Point",
-            "coordinates": [6.566144, 46.522117]
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [6.566144, 46.522117]
+            },
+            "properties": {
+                "marker": {
+                    "imgHighlight": "http://www.veryicon.com/icon/48/Emoticon/IconTexto%20Emoticons/Angry.png",
+                    "img": "http://www.veryicon.com/icon/48/Emoticon/IconTexto%20Emoticons/Laughing.png"
+                },
+                "_highlight": 1
+            }
         }
     },
     "multipleresults": {

@@ -91,6 +91,7 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
             groups: {
                 group: {
                     options: {
+                        title: 'Map',
                         type: 'list'
                     },
                     fields: {
@@ -105,16 +106,50 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
                         },
                         mapcenter: {
                             type: 'text',
-                            title: 'Map default center'
+                            title: 'Default center'
                         },
                         mapzoom: {
                             type: 'slider',
-                            title: 'Zoom',
+                            title: 'Default zoom',
                             min: 0,
                             max: 19,
                             step: 1,
                             default: '10'
+                        }
+                    }
+                },
+                markers: {
+                    options: {
+                        title: 'Markers',
+                        type: 'list',
+                        multiple: false
+                    },
+                    fields: {
+                        markerjpath: {
+                            type: 'combo',
+                            title: 'Marker JPath',
+                            options: this.module.model.getjPath('item')
                         },
+                        markerkind: {
+                            type: 'combo',
+                            title: 'Default marker kind',
+                            options: [
+                                {title: "Square", key: 'square'},
+                                {title: "Circle", key: 'circle'},
+                                {title: "Image", key: 'image'}
+                            ],
+                            'default': 'image'
+                        },
+                        markercolor: {
+                            type: 'color',
+                            title: 'Default marker color',
+                            'default': 'rgba(0,51,255,0.5)'
+                        },
+                        markersize: {
+                            type: 'text',
+                            title: 'Default marker size',
+                            'default': '30'
+                        }
                     }
                 }
             }
@@ -131,7 +166,11 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
     controller.prototype.configAliases = {
         'mapcenter': ['groups', 'group', 0, 'mapcenter', 0],
         'mapzoom' : ['groups', 'group', 0, 'mapzoom', 0],
-        'maptiles' : ['groups', 'group', 0, 'maptiles', 0]
+        'maptiles' : ['groups', 'group', 0, 'maptiles', 0],
+        'markerjpath' : ['groups', 'markers', 0, 'markerjpath', 0],
+        'markerkind' : ['groups', 'markers', 0, 'markerkind', 0],
+        'markercolor' : ['groups', 'markers', 0, 'markercolor', 0],
+        'markersize' : ['groups', 'markers', 0, 'markersize', 0]
     };
     
     controller.prototype.hoverElement = function(data) {
