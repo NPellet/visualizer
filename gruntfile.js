@@ -80,7 +80,8 @@ module.exports = function(grunt) {
               './font-awesome/css/font-awesome.min.css',
               './font-awesome/fonts/*',
               './colors/css/colors.min.css',
-              './pouchdb/dist/*'
+              './pouchdb/dist/*',
+              './uri.js/src/*.js'
             ],
 
             dest: './build/components/'

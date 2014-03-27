@@ -762,17 +762,26 @@ define([	'jquery',
 
 		init: function(urls) {
 
-			var url, i, args;
-
+                        var viewInfo = {
+                            view: {
+                                urls: urls['views'],
+                                branch: urls['viewBranch'],
+                                url: urls['viewURL']
+                            },
+                            data: {
+                                urls: urls['results'],
+                                branch: urls['resultBranch'],
+                                url: urls['dataURL']
+                            }
+                        };
+                        window.history.replaceState({type:"viewchange",value:viewInfo});
+                        Versioning.switchView(viewInfo, false);
 			
-			Versioning.setView(urls['views'], urls['viewBranch'], urls['viewURL']);
 			Versioning.setViewLoadCallback(doView);
-
-			Versioning.setData(urls['results'], urls['resultBranch'], urls['dataURL']);
 			Versioning.setDataLoadCallback(doData);
 			
 			// Sets the header
-            var configJson = urls['config'] || './usr/config/default.json';
+                        var configJson = urls['config'] || './usr/config/default.json';
 
 			$.getJSON( configJson, { }, function( cfgJson ) {
 			
@@ -807,7 +816,7 @@ define([	'jquery',
 			Context.listen(Context.getRootDom(), [
 				['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>', 
 				function() {
-					document.location.href = document.location.href;
+					document.location.reload();
 				}]]
 			);
 		},
@@ -851,6 +860,6 @@ define([	'jquery',
 		getRepositoryHighlight: function() {
 			return RepositoryHighlight;
 		}
-	}
+	};
 
 });
