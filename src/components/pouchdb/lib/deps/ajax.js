@@ -4,6 +4,7 @@ var request = require('request');
 var extend = require('./extend.js');
 var createBlob = require('./blob.js');
 var errors = require('./errors');
+var uuid = require('../deps/uuid');
 
 function ajax(options, callback) {
 
@@ -11,7 +12,7 @@ function ajax(options, callback) {
     callback = options;
     options = {};
   }
-
+  options = extend(true, {}, options);
   function call(fun) {
     /* jshint validthis: true */
     var args = Array.prototype.slice.call(arguments, 1);
@@ -25,10 +26,18 @@ function ajax(options, callback) {
     headers: {},
     json: true,
     processData: true,
-    timeout: 10000
+    timeout: 10000,
+    cache: false
   };
 
   options = extend(true, defaultOptions, options);
+
+  // cache-buster, specifically designed to work around IE's aggressive caching
+  // see http://www.dashbay.com/2011/05/internet-explorer-caches-ajax/
+  if (options.method === 'GET' && !options.cache) {
+    var hasArgs = options.url.indexOf('?') !== -1;
+    options.url += (hasArgs ? '&' : '?') + '_nonce=' + uuid(16);
+  }
 
   function onSuccess(obj, resp, cb) {
     if (!options.binary && !options.json && options.processData &&
@@ -52,10 +61,17 @@ function ajax(options, callback) {
           obj = errors.REV_CONFLICT;
           obj.id = v.id;
           return obj;
+        } else if (v.error && v.error === 'forbidden') {
+          obj = errors.FORBIDDEN;
+          obj.id = v.id;
+          obj.reason = v.reason;
+          return obj;
         } else if (v.missing) {
           obj = errors.MISSING_DOC;
           obj.missing = v.missing;
           return obj;
+        } else {
+          return v;
         }
       });
     }
@@ -68,23 +84,50 @@ function ajax(options, callback) {
       errParsed = JSON.parse(err.responseText);
       //would prefer not to have a try/catch clause
       for (key in errors) {
-        if (errors[key].name === errParsed.error) {
+        if (errors.hasOwnProperty(key) && errors[key].name === errParsed.error) {
           errType = errors[key];
           break;
         }
       }
-      errType = errType || errors.UNKNOWN_ERROR;
+      if (!errType) {
+        errType = errors.UNKNOWN_ERROR;
+        if (err.status) {
+          errType.status = err.status;
+        }
+        if (err.statusText) {
+          err.name = err.statusText;
+        }
+      }
       errObj = errors.error(errType, errParsed.reason);
     } catch (e) {
-      errObj = errors.error(errors.UNKNOWN_ERROR);
+      for (var key in errors) {
+        if (errors.hasOwnProperty(key) && errors[key].status === err.status) {
+          errType = errors[key];
+          break;
+        }
+      }
+      if (!errType) {
+        errType = errors.UNKNOWN_ERROR;
+        if (err.status) {
+          errType.status = err.status;
+        }
+        if (err.statusText) {
+          err.name = err.statusText;
+        }
+      }
+      errObj = errors.error(errType);
     }
     call(cb, errObj);
   }
 
-  if (process.browser && typeof XMLHttpRequest !== 'undefined') {
+  if (process.browser) {
     var timer, timedout = false;
-    var xhr = new XMLHttpRequest();
-
+    var xhr;
+    if (options.xhr) {
+      xhr = new options.xhr();
+    } else {
+      xhr = new XMLHttpRequest();
+    }
     xhr.open(options.method, options.url);
     xhr.withCredentials = true;
 
@@ -152,10 +195,13 @@ function ajax(options, callback) {
 
     if (options.timeout > 0) {
       timer = setTimeout(abortReq, options.timeout);
-      xhr.upload.onprogress = xhr.onprogress = function () {
+      xhr.onprogress = function () {
         clearTimeout(timer);
         timer = setTimeout(abortReq, options.timeout);
       };
+      if (xhr.upload) { // does not exist in ie9
+        xhr.upload.onprogress = xhr.onprogress;
+      }
     }
     xhr.send(options.body);
     return {abort: abortReq};

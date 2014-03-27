@@ -1,30 +1,21 @@
 #!/usr/bin/env node
+"use strict";
 
 var path = require('path');
 var spawn = require('child_process').spawn;
 
-var webdriverjs = require('webdriverjs');
+var request = require('request');
+var wd = require('wd');
 var devserver = require('./dev-server.js');
 
-var SELENIUM_PATH = '../node_modules/.bin/start-selenium';
+var SELENIUM_PATH = '../vendor/selenium-server-standalone-2.38.0.jar';
 var testUrl = 'http://127.0.0.1:8000/tests/test.html';
-var testTimeout = 2 * 60 * 1000;
-var testSelector = 'body.testsComplete';
+var testTimeout = 30 * 60 * 1000;
 
-var currentTest = '';
-var results = {};
-var client = {};
+var client;
 
-var browsers = [
-  'firefox',
-  // Temporarily disable safari until it is fixed (#1068)
-  // 'safari',
-  'chrome'
-];
-
-// Travis only has firefox
-if (process.env.TRAVIS) {
-  browsers = ['firefox'];
+if (process.env.GREP) {
+  testUrl += '?grep=' + process.env.GREP;
 }
 
 function startServers(callback) {
@@ -33,64 +24,73 @@ function startServers(callback) {
   devserver.start();
 
   // Start selenium
-  var selenium = spawn(path.resolve(__dirname, SELENIUM_PATH));
+  spawn('java', ['-jar', path.resolve(__dirname, SELENIUM_PATH)], {});
 
-  selenium.stdout.on('data', function(data) {
-    if (/Started org.openqa.jetty.jetty/.test(data)) {
-      callback();
+  var retries = 0;
+  var started = function () {
+
+    if (++retries > 30) {
+      console.error('Unable to connect to selenium');
+      process.exit(1);
+      return;
     }
+
+    request('http://localhost:4444/wd/hub/status', function (err, resp) {
+      if (resp && resp.statusCode === 200) {
+        callback();
+      } else {
+        setTimeout(started, 1000);
+      }
+    });
+  };
+
+  started();
+}
+
+function testError(e) {
+  console.error(e);
+  console.error('Doh, tests failed');
+  client.quit().then(function () {
+    process.exit(3);
   });
 }
 
-function testsComplete() {
-  var passed = Object.keys(results).every(function(x) {
-    return results[x].passed;
-  });
+function testComplete(result) {
 
-  if (passed) {
-    console.log('Woot, tests passed');
-    process.exit(0);
+  var total = result.passed + result.failed;
+
+  if (result.failed) {
+    console.log('failed ' + result.failed + ' of ' + total + ' tests');
+    console.log(JSON.stringify(result.failures, false, 4));
   } else {
-    console.error('Doh, tests failed');
-    process.exit(1);
+    console.log('passed ' + result.passed + ' of ' + total + ' tests');
   }
-}
 
-function resultCollected(err, result) {
-  console.log('[' + currentTest + '] ' +
-              (result.value.passed ? 'passed' : 'failed'));
-  results[currentTest] = result.value;
-  client.end(startTest);
-}
+  client.quit().then(function () {
+    process.exit(result.failed ? 1 : 0);
+  });
 
-function testComplete(err, result) {
-  if (err) {
-    console.log('[' + currentTest + '] failed');
-    results[currentTest] = {passed: false};
-    return client.end(startTest);
-  }
-  client.execute('return window.testReport;', [], resultCollected);
 }
 
 function startTest() {
-  if (!browsers.length) {
-    return testsComplete();
-  }
 
-  currentTest = browsers.pop();
-  console.log('[' + currentTest + '] starting');
+  var browser = process.env.CLIENT || 'firefox';
+  console.log('Starting', browser);
 
-  client = webdriverjs.remote({
-    logLevel: 'silent',
-    desiredCapabilities: {
-      browserName: currentTest
-    }
-  });
+  var script =
+    'var cb = arguments[arguments.length - 1];' +
+    'runner.on("end", function() { cb(results); });' +
+    'runner.on("fail", function() { cb(results); });';
 
-  client.init();
-  client.url(testUrl).waitFor(testSelector, testTimeout, testComplete);
+  client = wd.promiseChainRemote();
+  client
+    .init({browserName: browser})
+    .get(testUrl)
+    .setAsyncScriptTimeout(testTimeout)
+    .executeAsync(script)
+    .then(testComplete, testError);
 }
 
-startServers(function() {
+startServers(function () {
   startTest();
 });

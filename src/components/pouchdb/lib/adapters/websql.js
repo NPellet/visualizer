@@ -8,19 +8,23 @@ function quote(str) {
 }
 
 function openDB() {
-  if (typeof window !== 'undefined') {
-    if (window.navigator && window.navigator.sqlitePlugin && window.navigator.sqlitePlugin.openDatabase) {
-      return navigator.sqlitePlugin.openDatabase.apply(navigator.sqlitePlugin, arguments);
-    } else if (window.sqlitePlugin && window.sqlitePlugin.openDatabase) {
-      return window.sqlitePlugin.openDatabase.apply(window.sqlitePlugin, arguments);
+  if (typeof global !== 'undefined') {
+    if (global.navigator && global.navigator.sqlitePlugin &&
+        global.navigator.sqlitePlugin.openDatabase) {
+      return navigator.sqlitePlugin.openDatabase
+        .apply(navigator.sqlitePlugin, arguments);
+    } else if (global.sqlitePlugin && global.sqlitePlugin.openDatabase) {
+      return global.sqlitePlugin.openDatabase
+        .apply(global.sqlitePlugin, arguments);
     } else {
-      return window.openDatabase.apply(window, arguments);
+      return global.openDatabase.apply(global, arguments);
     }
   }
 }
 
 var POUCH_VERSION = 1;
 var POUCH_SIZE = 5 * 1024 * 1024;
+var ADAPTER_VERSION = 2; // used to manage migrations
 
 // The object stores created for each database
 // DOC_STORE stores the document meta data, its revision history and state
@@ -32,76 +36,212 @@ var BY_SEQ_STORE = quote('by-sequence');
 var ATTACH_STORE = quote('attach-store');
 var META_STORE = quote('metadata-store');
 
+// these indexes cover the ground for most allDocs queries
+var BY_SEQ_STORE_DELETED_INDEX_SQL = 'CREATE INDEX IF NOT EXISTS \'by-seq-deleted-idx\' ON ' +
+  BY_SEQ_STORE + ' (seq, deleted)';
+var DOC_STORE_LOCAL_INDEX_SQL = 'CREATE INDEX IF NOT EXISTS \'doc-store-local-idx\' ON ' +
+  DOC_STORE + ' (local, id)';
+var DOC_STORE_WINNINGSEQ_INDEX_SQL = 'CREATE INDEX IF NOT EXISTS \'doc-winningseq-idx\' ON ' +
+  DOC_STORE + ' (winningseq)';
+
+
+var idRequests = [];
+var cachedDatabases = {};
+
 function unknownError(callback) {
   return function (event) {
-    utils.call(callback, {
-      status: 500,
-      error: event.type,
-      reason: event.target
-    });
+    // event may actually be a SQLError object, so report is as such
+    var errorNameMatch = event && event.constructor.toString()
+      .match(/function ([^\(]+)/);
+    var errorName = (errorNameMatch && errorNameMatch[1]) || event.type;
+    var errorReason = event.target || event.message;
+    callback(errors.error(errors.WSQ_ERROR, errorReason, errorName));
   };
 }
-function idbError(callback) {
-  return function (event) {
-    utils.call(callback, errors.error(errors.WSQ_ERROR, event.target, event.type));
-  };
-}
-function webSqlPouch(opts, callback) {
 
-  var api = {};
+function parseHexString(str) {
+  var result = '';
+  for (var i = 0, len = str.length; i < len; i += 2) {
+    result += String.fromCharCode(parseInt(str.substring(i, i + 2), 16));
+  }
+  return result;
+}
+
+// Safari is weird, it encodes everything with bonus \u0000 characters after
+// every character rather than user agent sniff, we test every odd
+// character for \u0000
+function isMangledUnicode(str) {
+  for (var i = 1, len = str.length; i < len; i += 2) {
+    if (str.charAt(i) !== '\u0000') {
+      return false;
+    }
+  }
+  return true;
+}
+
+// unmangle the aforementioned Safari atrocity
+function unmangleUnicode(str) {
+  var result = '';
+  for (var i = 0, len = str.length; i < len; i += 2) {
+    result += str.charAt(i);
+  }
+  return result;
+}
+
+// used to deal with utf8 encoding that occurs in most sqlite implementations
+// partially taken from
+// http://ecmanaut.blogspot.ca/2006/07/encoding-decoding-utf8-in-javascript.html
+function decodeUtf8(str) {
+  var result;
+  try {
+    result = decodeURIComponent(window.escape(str));
+  } catch (err) {
+    // URI error in safari, string is already escaped but still possibly mangled
+    result = str;
+  }
+  return isMangledUnicode(result) ? unmangleUnicode(result) : result;
+}
+function WebSqlPouch(opts, callback) {
+  var api = this;
   var instanceId = null;
   var name = opts.name;
 
-  var db = openDB(name, POUCH_VERSION, name, POUCH_SIZE);
+  var db = cachedDatabases[name];
   if (!db) {
-    return utils.call(callback, errors.UNKNOWN_ERROR);
+    cachedDatabases[name] = db = openDB(name, POUCH_VERSION, name, POUCH_SIZE);
+  }
+  if (!db) {
+    return callback(errors.UNKNOWN_ERROR);
   }
 
   function dbCreated() {
     callback(null, api);
   }
 
-  function setup() {
-    db.transaction(function (tx) {
+  // In this migration, we added the 'deleted' and 'local' columns to the by-seq and doc store tables.
+  // To preserve existing user data, we re-process all the existing JSON
+  // and add these values.
+  // Called migration2 because it corresponds to adapter version (db_version) #2
+  function runMigration2(tx) {
+
+    tx.executeSql(DOC_STORE_WINNINGSEQ_INDEX_SQL); // index used for the join in the allDocs query
+
+    tx.executeSql('ALTER TABLE ' + BY_SEQ_STORE + ' ADD COLUMN deleted TINYINT(1) DEFAULT 0', [], function () {
+      tx.executeSql(BY_SEQ_STORE_DELETED_INDEX_SQL);
+      tx.executeSql('ALTER TABLE ' + DOC_STORE + ' ADD COLUMN local TINYINT(1) DEFAULT 0', [], function () {
+        tx.executeSql(DOC_STORE_LOCAL_INDEX_SQL);
+
+        var sql = 'SELECT ' + DOC_STORE + '.winningseq AS seq, ' + DOC_STORE + '.json AS metadata FROM ' +
+          BY_SEQ_STORE + ' JOIN ' + DOC_STORE + ' ON ' + BY_SEQ_STORE + '.seq = ' +
+          DOC_STORE + '.winningseq';
+
+        tx.executeSql(sql, [], function (tx, result) {
+
+          var deleted = [];
+          var local = [];
+
+          for (var i = 0; i < result.rows.length; i++) {
+            var item = result.rows.item(i);
+            var seq = item.seq;
+            var metadata = JSON.parse(item.metadata);
+            if (utils.isDeleted(metadata)) {
+              deleted.push(seq);
+            }
+            if (utils.isLocalId(metadata.id)) {
+              local.push(metadata.id);
+            }
+          }
+
+          tx.executeSql('UPDATE ' + DOC_STORE + 'SET local = 1 WHERE id IN (' + local.map(function () {
+            return '?';
+          }).join(',') + ')', local);
+          tx.executeSql('UPDATE ' + BY_SEQ_STORE + ' SET deleted = 1 WHERE seq IN (' + deleted.map(function () {
+            return '?';
+          }).join(',') + ')', deleted);
+        });
+      });
+    });
+  }
+
+  function onGetInstanceId() {
+    while (idRequests.length > 0) {
+      var idCallback = idRequests.pop();
+      idCallback(null, instanceId);
+    }
+  }
+
+  function onGetVersion(tx, dbVersion) {
+    if (dbVersion === 0) {
+      // initial schema
+
       var meta = 'CREATE TABLE IF NOT EXISTS ' + META_STORE +
-        ' (update_seq, dbid)';
+        ' (update_seq, dbid, db_version INTEGER)';
       var attach = 'CREATE TABLE IF NOT EXISTS ' + ATTACH_STORE +
         ' (digest, json, body BLOB)';
       var doc = 'CREATE TABLE IF NOT EXISTS ' + DOC_STORE +
-        ' (id unique, seq, json, winningseq)';
+        ' (id unique, seq, json, winningseq, local TINYINT(1))';
       var seq = 'CREATE TABLE IF NOT EXISTS ' + BY_SEQ_STORE +
-        ' (seq INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, doc_id_rev UNIQUE, json)';
+        ' (seq INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, doc_id_rev UNIQUE, json, deleted TINYINT(1))';
 
+      // creates
       tx.executeSql(attach);
-      tx.executeSql(doc);
-      tx.executeSql(seq);
-      tx.executeSql(meta);
-
-      var updateseq = 'SELECT update_seq FROM ' + META_STORE;
-      tx.executeSql(updateseq, [], function (tx, result) {
-        if (!result.rows.length) {
-          var initSeq = 'INSERT INTO ' + META_STORE + ' (update_seq) VALUES (?)';
-          tx.executeSql(initSeq, [0]);
-          return;
-        }
+      tx.executeSql(doc, [], function () {
+        tx.executeSql(DOC_STORE_WINNINGSEQ_INDEX_SQL);
+        tx.executeSql(DOC_STORE_LOCAL_INDEX_SQL);
       });
+      tx.executeSql(seq, [], function () {
+        tx.executeSql(BY_SEQ_STORE_DELETED_INDEX_SQL);
+      });
+      tx.executeSql(meta, [], function () {
+        // mark the update_seq, db version, and new dbid
+        var initSeq = 'INSERT INTO ' + META_STORE + ' (update_seq, db_version, dbid) VALUES (?, ?, ?)';
+        instanceId = utils.uuid();
+        tx.executeSql(initSeq, [0, ADAPTER_VERSION, instanceId]);
+        onGetInstanceId();
+      });
+    } else { // version > 0
 
-      var dbid = 'SELECT dbid FROM ' + META_STORE + ' WHERE dbid IS NOT NULL';
-      tx.executeSql(dbid, [], function (tx, result) {
-        if (!result.rows.length) {
-          var initDb = 'UPDATE ' + META_STORE + ' SET dbid=?';
-          instanceId = utils.uuid();
-          tx.executeSql(initDb, [instanceId]);
-          return;
-        }
+      if (dbVersion === 1) {
+        runMigration2(tx);
+        // mark the db version within this transaction
+        tx.executeSql('UPDATE ' + META_STORE + ' SET db_version = ' + ADAPTER_VERSION);
+      } // in the future, add more migrations here
+
+      // notify db.id() callers
+      tx.executeSql('SELECT dbid FROM ' + META_STORE, [], function (tx, result) {
         instanceId = result.rows.item(0).dbid;
+        onGetInstanceId();
+      });
+    }
+  }
+
+  function setup() {
+
+    db.transaction(function (tx) {
+      // first get the version
+      tx.executeSql('SELECT sql FROM sqlite_master WHERE tbl_name = ' + META_STORE, [], function (tx, result) {
+        if (!result.rows.length) {
+          // database hasn't even been created yet (version 0)
+          onGetVersion(tx, 0);
+        } else if (!/db_version/.test(result.rows.item(0).sql)) {
+          // table was created, but without the new db_version column, so add it.
+          tx.executeSql('ALTER TABLE ' + META_STORE + ' ADD COLUMN db_version INTEGER', [], function () {
+            onGetVersion(tx, 1); // before version 2, this column didn't even exist
+          });
+        } else { // column exists, we can safely get it
+          tx.executeSql('SELECT db_version FROM ' + META_STORE, [], function (tx, result) {
+            var dbVersion = result.rows.item(0).db_version;
+            onGetVersion(tx, dbVersion);
+          });
+        }
       });
     }, unknownError(callback), dbCreated);
   }
-  if (utils.isCordova() && typeof window !== 'undefined') {
+
+  if (utils.isCordova() && typeof global !== 'undefined') {
     //to wait until custom api is made in pouch.adapters before doing setup
-    window.addEventListener(name + '_pouch', function cordova_init() {
-      window.removeEventListener(name + '_pouch', cordova_init, false);
+    global.addEventListener(name + '_pouch', function cordova_init() {
+      global.removeEventListener(name + '_pouch', cordova_init, false);
       setup();
     }, false);
   } else {
@@ -113,9 +253,9 @@ function webSqlPouch(opts, callback) {
     return 'websql';
   };
 
-  api.id = function () {
-    return instanceId;
-  };
+  api._id = utils.toPromise(function (callback) {
+    callback(null, instanceId);
+  });
 
   api._info = function (callback) {
     db.transaction(function (tx) {
@@ -152,7 +292,7 @@ function webSqlPouch(opts, callback) {
       return docInfo.error;
     });
     if (docInfoErrors.length) {
-      return utils.call(callback, docInfoErrors[0]);
+      return callback(docInfoErrors[0]);
     }
 
     var tx;
@@ -187,8 +327,8 @@ function webSqlPouch(opts, callback) {
 
         docsWritten++;
 
-        webSqlPouch.Changes.notify(name);
-        webSqlPouch.Changes.notifyLocalWindows(name);
+        WebSqlPouch.Changes.notify(name);
+        WebSqlPouch.Changes.notifyLocalWindows(name);
       });
 
       var updateseq = 'SELECT update_seq FROM ' + META_STORE;
@@ -196,7 +336,7 @@ function webSqlPouch(opts, callback) {
         var update_seq = result.rows.item(0).update_seq + docsWritten;
         var sql = 'UPDATE ' + META_STORE + ' SET update_seq=?';
         tx.executeSql(sql, [update_seq], function () {
-          utils.call(callback, null, aresults);
+          callback(null, aresults);
         });
       });
     }
@@ -211,10 +351,10 @@ function webSqlPouch(opts, callback) {
         } catch (e) {
           var err = errors.error(errors.BAD_ARG,
                                 "Attachments need to be base64 encoded");
-          return utils.call(callback, err);
+          return callback(err);
         }
-        att.digest = 'md5-' + utils.Crypto.MD5(att.data);
-        return finish();
+        var data = utils.fixBinary(att.data);
+        att.data = utils.createBlob([data], {type: att.content_type});
       }
       var reader = new FileReader();
       reader.onloadend = function (e) {
@@ -231,11 +371,11 @@ function webSqlPouch(opts, callback) {
       }
 
       var docv = 0;
-      var recv = 0;
 
       docInfos.forEach(function (docInfo) {
         var attachments = docInfo.data && docInfo.data._attachments ?
           Object.keys(docInfo.data._attachments) : [];
+        var recv = 0;
 
         if (!attachments.length) {
           return done();
@@ -249,7 +389,9 @@ function webSqlPouch(opts, callback) {
         }
 
         for (var key in docInfo.data._attachments) {
-          preprocessAttachment(docInfo.data._attachments[key], processedAttachment);
+          if (docInfo.data._attachments.hasOwnProperty(key)) {
+            preprocessAttachment(docInfo.data._attachments[key], processedAttachment);
+          }
         }
       });
 
@@ -265,16 +407,20 @@ function webSqlPouch(opts, callback) {
 
       function finish() {
         var data = docInfo.data;
-        var sql = 'INSERT INTO ' + BY_SEQ_STORE + ' (doc_id_rev, json) VALUES (?, ?);';
-        tx.executeSql(sql, [data._id + "::" + data._rev,
-                            JSON.stringify(data)], dataWritten);
+        var sql = 'INSERT INTO ' + BY_SEQ_STORE + ' (doc_id_rev, json, deleted) VALUES (?, ?, ?);';
+        var sqlArgs = [
+          data._id + "::" + data._rev,
+          JSON.stringify(data),
+          utils.isDeleted(docInfo.metadata, docInfo.metadata.rev) ? 1 : 0
+        ];
+        tx.executeSql(sql, sqlArgs, dataWritten);
       }
 
       function collectResults(attachmentErr) {
         if (!err) {
           if (attachmentErr) {
             err = attachmentErr;
-            utils.call(callback, err);
+            callback(err);
           } else if (recv === attachments.length) {
             finish();
           }
@@ -324,15 +470,16 @@ function webSqlPouch(opts, callback) {
         var sql = isUpdate ?
           'UPDATE ' + DOC_STORE + ' SET seq=?, json=?, winningseq=(SELECT seq FROM ' +
           BY_SEQ_STORE + ' WHERE doc_id_rev=?) WHERE id=?' :
-          'INSERT INTO ' + DOC_STORE + ' (id, seq, winningseq, json) VALUES (?, ?, ?, ?);';
+          'INSERT INTO ' + DOC_STORE + ' (id, seq, winningseq, json, local) VALUES (?, ?, ?, ?, ?);';
         var metadataStr = JSON.stringify(docInfo.metadata);
         var key = docInfo.metadata.id + "::" + mainRev;
+        var local = utils.isLocalId(docInfo.metadata.id) ? 1 : 0;
         var params = isUpdate ?
           [seq, metadataStr, key, docInfo.metadata.id] :
-          [docInfo.metadata.id, seq, seq, metadataStr];
+          [docInfo.metadata.id, seq, seq, metadataStr, local];
         tx.executeSql(sql, params, function (tx, result) {
           results.push(docInfo);
-          utils.call(callback, null);
+          callback();
         });
       }
     }
@@ -394,13 +541,13 @@ function webSqlPouch(opts, callback) {
           newAtt.refs[ref] = true;
           sql = 'INSERT INTO ' + ATTACH_STORE + '(digest, json, body) VALUES (?, ?, ?)';
           tx.executeSql(sql, [digest, JSON.stringify(newAtt), data], function () {
-            utils.call(callback, null);
+            callback();
           });
         } else {
           newAtt.refs = JSON.parse(result.rows.item(0).json).refs;
           sql = 'UPDATE ' + ATTACH_STORE + ' SET json=?, body=? WHERE digest=?';
           tx.executeSql(sql, [JSON.stringify(newAtt), data, digest], function () {
-            utils.call(callback, null);
+            callback();
           });
         }
       });
@@ -417,16 +564,16 @@ function webSqlPouch(opts, callback) {
     preprocessAttachments(function () {
       db.transaction(function (txn) {
         tx = txn;
-        var ids = '(' + docInfos.map(function (d) {
-          return quote(d.metadata.id);
-        }).join(',') + ')';
-        var sql = 'SELECT * FROM ' + DOC_STORE + ' WHERE id IN ' + ids;
-        tx.executeSql(sql, [], metadataFetched);
+        var sql = 'SELECT * FROM ' + DOC_STORE + ' WHERE id IN ' +
+          '(' + docInfos.map(function () {return '?'; }).join(',') + ')';
+        var queryArgs = docInfos.map(function (d) { return d.metadata.id; });
+        tx.executeSql(sql, queryArgs, metadataFetched);
       }, unknownError(callback));
     });
   };
 
   api._get = function (id, opts, callback) {
+    opts = utils.extend(true, {}, opts);
     var doc;
     var metadata;
     var err;
@@ -440,7 +587,7 @@ function webSqlPouch(opts, callback) {
     var tx = opts.ctx;
 
     function finish() {
-      utils.call(callback, err, {doc: doc, metadata: metadata, ctx: tx});
+      callback(err, {doc: doc, metadata: metadata, ctx: tx});
     }
 
     var sql = 'SELECT * FROM ' + DOC_STORE + ' WHERE id=?';
@@ -471,46 +618,89 @@ function webSqlPouch(opts, callback) {
     });
   };
 
-  function makeRevs(arr) {
-    return arr.map(function (x) { return {rev: x.rev}; });
-  }
-
   api._allDocs = function (opts, callback) {
     var results = [];
     var resultsMap = {};
-    var start = 'startkey' in opts ? opts.startkey : false;
-    var end = 'endkey' in opts ? opts.endkey : false;
-    var descending = 'descending' in opts ? opts.descending : false;
-    var sql = 'SELECT ' + DOC_STORE + '.id, ' + BY_SEQ_STORE + '.seq, ' +
-      BY_SEQ_STORE + '.json AS data, ' + DOC_STORE + '.json AS metadata FROM ' +
-      BY_SEQ_STORE + ' JOIN ' + DOC_STORE + ' ON ' + BY_SEQ_STORE + '.seq = ' +
+    var totalRows;
+
+    var from = BY_SEQ_STORE + ' JOIN ' + DOC_STORE + ' ON ' + BY_SEQ_STORE + '.seq = ' +
       DOC_STORE + '.winningseq';
 
+    var start = 'startkey' in opts ? opts.startkey : false;
+    var end = 'endkey' in opts ? opts.endkey : false;
+    var key = 'key' in opts ? opts.key : false;
+    var descending = 'descending' in opts ? opts.descending : false;
+    var keys = 'keys' in opts ? opts.keys : false;
+    var limit = 'limit' in opts ? opts.limit : false;
+    var offset = 'skip' in opts ? opts.skip : false;
+
     var sqlArgs = [];
-    if ('keys' in opts) {
-      sql += ' WHERE ' + DOC_STORE + '.id IN (' + opts.keys.map(function () {
+    var criteria = [DOC_STORE + '.local = 0'];
+
+    if (key !== false) {
+      criteria.push(DOC_STORE + '.id = ?');
+      sqlArgs.push(key);
+    } else if (keys !== false) {
+      criteria.push(DOC_STORE + '.id in (' + keys.map(function () {
         return '?';
-      }).join(',') + ')';
-      sqlArgs = sqlArgs.concat(opts.keys);
-    } else {
-      if (start) {
-        sql += ' WHERE ' + DOC_STORE + '.id >= ?';
+      }).join(',') + ')');
+      sqlArgs = sqlArgs.concat(keys);
+    } else if (start !== false || end !== false) {
+      if (start !== false) {
+        criteria.push(DOC_STORE + '.id ' + (descending ? '<=' : '>=') + ' ?');
         sqlArgs.push(start);
       }
-      if (end) {
-        sql += (start ? ' AND ' : ' WHERE ') + DOC_STORE + '.id <= ?';
+      if (end !== false) {
+        criteria.push(DOC_STORE + '.id ' + (descending ? '>=' : '<=') + ' ?');
         sqlArgs.push(end);
       }
-      sql += ' ORDER BY ' + DOC_STORE + '.id ' + (descending ? 'DESC' : 'ASC');
+      if (key !== false) {
+        criteria.push(DOC_STORE + '.id = ?');
+        sqlArgs.push(key);
+      }
+    }
+
+    if (keys === false) {
+      // report deleted if keys are specified
+      criteria.push(BY_SEQ_STORE + '.deleted = 0');
     }
 
     db.transaction(function (tx) {
-      tx.executeSql(sql, sqlArgs, function (tx, result) {
-        for (var i = 0, l = result.rows.length; i < l; i++) {
-          var doc = result.rows.item(i);
-          var metadata = JSON.parse(doc.metadata);
-          var data = JSON.parse(doc.data);
-          if (!(utils.isLocalId(metadata.id))) {
+
+      // first count up the total rows
+      var sql = 'SELECT COUNT(' + DOC_STORE + '.id) AS \'num\' FROM ' +
+        from + ' WHERE ' + BY_SEQ_STORE + '.deleted = 0 AND ' +
+        // local docs are e.g. '_local_foo'
+        DOC_STORE + '.local = 0';
+
+      tx.executeSql(sql, [], function (tx, result) {
+        totalRows = result.rows.item(0).num;
+
+        // then actually fetch the documents
+
+        var sql = 'SELECT ' + DOC_STORE + '.id, ' + BY_SEQ_STORE + '.seq, ' +
+          BY_SEQ_STORE + '.json AS data, ' + DOC_STORE + '.json AS metadata FROM ' + from;
+
+        if (criteria.length) {
+          sql += ' WHERE ' + criteria.join(' AND ');
+        }
+        sql += ' ORDER BY ' + DOC_STORE + '.id ' + (descending ? 'DESC' : 'ASC');
+        if (limit !== false) {
+          sql += ' LIMIT ' + limit;
+        }
+        if (offset !== false && offset > 0) {
+          if (limit === false) {
+            // sqlite requires limit with offset, -1 acts as infinity here
+            sql += ' LIMIT -1';
+          }
+          sql += ' OFFSET ' + offset;
+        }
+
+        tx.executeSql(sql, sqlArgs, function (tx, result) {
+          for (var i = 0, l = result.rows.length; i < l; i++) {
+            var doc = result.rows.item(i);
+            var metadata = JSON.parse(doc.metadata);
+            var data = JSON.parse(doc.data);
             doc = {
               id: metadata.id,
               key: metadata.id,
@@ -523,7 +713,9 @@ function webSqlPouch(opts, callback) {
                 doc.doc._conflicts = merge.collectConflicts(metadata);
               }
               for (var att in doc.doc._attachments) {
-                doc.doc._attachments[att].stub = true;
+                if (doc.doc._attachments.hasOwnProperty(att)) {
+                  doc.doc._attachments[att].stub = true;
+                }
               }
             }
             if ('keys' in opts) {
@@ -535,12 +727,10 @@ function webSqlPouch(opts, callback) {
                 resultsMap[doc.id] = doc;
               }
             } else {
-              if (!utils.isDeleted(metadata)) {
-                results.push(doc);
-              }
+              results.push(doc);
             }
           }
-        }
+        });
       });
     }, unknownError(callback), function () {
       if ('keys' in opts) {
@@ -555,16 +745,16 @@ function webSqlPouch(opts, callback) {
           results.reverse();
         }
       }
-      utils.call(callback, null, {
-        total_rows: results.length,
+      callback(null, {
+        total_rows: totalRows,
         offset: opts.skip,
-        rows: ('limit' in opts) ? results.slice(opts.skip, opts.limit + opts.skip) :
-          (opts.skip > 0) ? results.slice(opts.skip) : results
+        rows: results
       });
     });
   };
 
   api._changes = function idb_changes(opts) {
+    opts = utils.extend(true, {}, opts);
 
 
     //console.log(name + ': Start Changes Feed: continuous=' + opts.continuous);
@@ -573,13 +763,14 @@ function webSqlPouch(opts, callback) {
     if (opts.continuous) {
       var id = name + ':' + utils.uuid();
       opts.cancelled = false;
-      webSqlPouch.Changes.addListener(name, id, api, opts);
-      webSqlPouch.Changes.notify(name);
+      WebSqlPouch.Changes.addListener(name, id, api, opts);
+      WebSqlPouch.Changes.notify(name);
       return {
         cancel: function () {
-          //console.log(name + ': Cancel Changes Feed');
+          opts.complete(null, {status: 'cancelled'});
+          opts.complete = null;
           opts.cancelled = true;
-          webSqlPouch.Changes.removeListener(name, id);
+          WebSqlPouch.Changes.removeListener(name, id);
         }
       };
     }
@@ -590,7 +781,6 @@ function webSqlPouch(opts, callback) {
     opts.since = opts.since && !descending ? opts.since : 0;
 
     var results = [];
-    var txn;
 
     function fetchChanges() {
       var sql = 'SELECT ' + DOC_STORE + '.id, ' + BY_SEQ_STORE + '.seq, ' +
@@ -626,7 +816,7 @@ function webSqlPouch(opts, callback) {
 
   api._close = function (callback) {
     //WebSQL databases do not need to be closed
-    utils.call(callback, null);
+    callback();
   };
 
   api._getAttachment = function (attachment, opts, callback) {
@@ -634,15 +824,18 @@ function webSqlPouch(opts, callback) {
     var tx = opts.ctx;
     var digest = attachment.digest;
     var type = attachment.content_type;
-    var sql = 'SELECT body FROM ' + ATTACH_STORE + ' WHERE digest=?';
+    var sql = 'SELECT hex(body) as body FROM ' + ATTACH_STORE + ' WHERE digest=?';
     tx.executeSql(sql, [digest], function (tx, result) {
-      var data = result.rows.item(0).body;
+      // TODO: sqlite normally stores data as utf8, so even the hex() function "encodes" the binary
+      // data in utf8 before returning it, and yet hex() is the only way to get the full data. so we do this.
+      var data = decodeUtf8(parseHexString(result.rows.item(0).body));
       if (opts.encode) {
         res = btoa(data);
       } else {
+        data = utils.fixBinary(data);
         res = utils.createBlob([data], {type: type});
       }
-      utils.call(callback, null, res);
+      callback(null, res);
     });
   };
 
@@ -651,10 +844,10 @@ function webSqlPouch(opts, callback) {
       var sql = 'SELECT json AS metadata FROM ' + DOC_STORE + ' WHERE id = ?';
       tx.executeSql(sql, [docId], function (tx, result) {
         if (!result.rows.length) {
-          utils.call(callback, errors.MISSING_DOC);
+          callback(errors.MISSING_DOC);
         } else {
           var data = JSON.parse(result.rows.item(0).metadata);
-          utils.call(callback, null, data.rev_tree);
+          callback(null, data.rev_tree);
         }
       });
     });
@@ -683,24 +876,23 @@ function webSqlPouch(opts, callback) {
       });
     });
   };
-
-  return api;
 }
 
-webSqlPouch.valid = function () {
-  if (typeof window !== 'undefined') {
-    if (window.navigator && window.navigator.sqlitePlugin && window.navigator.sqlitePlugin.openDatabase) {
+WebSqlPouch.valid = function () {
+  if (typeof global !== 'undefined') {
+    if (global.navigator && global.navigator.sqlitePlugin && global.navigator.sqlitePlugin.openDatabase) {
       return true;
-    } else if (window.sqlitePlugin && window.sqlitePlugin.openDatabase) {
+    } else if (global.sqlitePlugin && global.sqlitePlugin.openDatabase) {
       return true;
-    } else if (window.openDatabase) {
+    } else if (global.openDatabase) {
       return true;
     }
   }
   return false;
 };
 
-webSqlPouch.destroy = function (name, opts, callback) {
+WebSqlPouch.destroy = utils.toPromise(function (name, opts, callback) {
+  var self = this;
   var db = openDB(name, POUCH_VERSION, name, POUCH_SIZE);
   db.transaction(function (tx) {
     tx.executeSql('DROP TABLE IF EXISTS ' + DOC_STORE, []);
@@ -708,10 +900,11 @@ webSqlPouch.destroy = function (name, opts, callback) {
     tx.executeSql('DROP TABLE IF EXISTS ' + ATTACH_STORE, []);
     tx.executeSql('DROP TABLE IF EXISTS ' + META_STORE, []);
   }, unknownError(callback), function () {
-    utils.call(callback, null);
+    self.emit('destroyed');
+    callback();
   });
-};
+});
 
-webSqlPouch.Changes = new utils.Changes();
+WebSqlPouch.Changes = new utils.Changes();
 
-module.exports = webSqlPouch;
+module.exports = WebSqlPouch;

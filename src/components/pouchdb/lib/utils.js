@@ -9,6 +9,7 @@ var uuid = require('./deps/uuid');
 exports.Crypto = require('./deps/md5.js');
 var buffer = require('./deps/buffer');
 var errors = require('./deps/errors');
+var Promise = typeof global.Promise === 'function' ? global.Promise : require('bluebird');
 
 // List of top level reserved words for doc
 var reservedWords = [
@@ -23,6 +24,7 @@ var reservedWords = [
   '_local_seq',
   '_rev_tree'
 ];
+exports.inherits = require('inherits');
 exports.uuids = function (count, options) {
 
   if (typeof(options) !== 'object') {
@@ -45,14 +47,15 @@ exports.uuid = function (options) {
 // Determine id an ID is valid
 //   - invalid IDs begin with an underescore that does not begin '_design' or '_local'
 //   - any other string value is a valid id
-exports.isValidId = function (id) {
-  if (!id || (typeof id !== 'string')) {
-    return false;
+// Returns the specific error object for each case
+exports.invalidIdError = function (id) {
+  if (!id) {
+    return errors.MISSING_ID;
+  } else if (typeof id !== 'string') {
+    return errors.INVALID_ID;
+  } else if (/^_/.test(id) && !(/^_(design|local)/).test(id)) {
+    return errors.RESERVED_ID;
   }
-  if (/^_/.test(id)) {
-    return (/^_(design|local)/).test(id);
-  }
-  return true;
 };
 
 function isChromeApp() {
@@ -110,7 +113,9 @@ exports.filterChange = function (opts) {
       delete change.doc;
     } else {
       for (var att in change.doc._attachments) {
-        change.doc._attachments[att].stub = true;
+        if (change.doc._attachments.hasOwnProperty(att)) {
+          change.doc._attachments[att].stub = true;
+        }
       }
     }
     return true;
@@ -128,7 +133,9 @@ exports.processChanges = function (opts, changes, last_seq) {
   changes.forEach(function (change) {
     exports.call(opts.onChange, change);
   });
-  exports.call(opts.complete, null, {results: changes, last_seq: last_seq});
+  if (!opts.continuous) {
+    exports.call(opts.complete, null, {results: changes, last_seq: last_seq});
+  }
 };
 
 // Preprocess documents, parse their revisions, assign an id and a
@@ -194,12 +201,7 @@ exports.parseDoc = function (doc, newEdits) {
     }
   }
 
-  if (typeof doc._id !== 'string') {
-    error = errors.INVALID_ID;
-  }
-  else if (!exports.isValidId(doc._id)) {
-    error = errors.RESERVED_ID;
-  }
+  error = exports.invalidIdError(doc._id);
 
   for (var key in doc) {
     if (doc.hasOwnProperty(key) && key[0] === '_' && reservedWords.indexOf(key) === -1) {
@@ -244,7 +246,7 @@ exports.Changes = function () {
       }
     });
   } else if (typeof window !== 'undefined') {
-    window.addEventListener("storage", function (e) {
+    global.addEventListener("storage", function (e) {
       api.notify(e.key);
     });
   }
@@ -272,10 +274,10 @@ exports.Changes = function () {
   api.notifyLocalWindows = function (db_name) {
     //do a useless change on a storage thing
     //in order to get other windows's listeners to activate
-    if (!isChromeApp()) {
-      localStorage[db_name] = (localStorage[db_name] === "a") ? "b" : "a";
-    } else {
+    if (isChromeApp()) {
       chrome.storage.local.set({db_name: db_name});
+    } else if (global.localStorage) {
+      localStorage[db_name] = (localStorage[db_name] === "a") ? "b" : "a";
     }
   };
 
@@ -306,7 +308,7 @@ exports.Changes = function () {
   return api;
 };
 
-if (typeof window === 'undefined' || !('atob' in window)) {
+if (!process.browser || !('atob' in global)) {
   exports.atob = function (str) {
     var base64 = new buffer(str, 'base64');
     // Node.js will just skip the characters it can't encode instead of
@@ -322,7 +324,7 @@ if (typeof window === 'undefined' || !('atob' in window)) {
   };
 }
 
-if (typeof window === 'undefined' || !('btoa' in window)) {
+if (!process.browser || !('btoa' in global)) {
   exports.btoa = function (str) {
     return new buffer(str, 'binary').toString('base64');
   };
@@ -332,5 +334,58 @@ if (typeof window === 'undefined' || !('btoa' in window)) {
   };
 }
 
+// From http://stackoverflow.com/questions/14967647/encode-decode-image-with-base64-breaks-image (2013-04-21)
+exports.fixBinary = function (bin) {
+  if (!process.browser) {
+    // don't need to do this in Node
+    return bin;
+  }
 
-module.exports = exports;
+  var length = bin.length;
+  var buf = new ArrayBuffer(length);
+  var arr = new Uint8Array(buf);
+  for (var i = 0; i < length; i++) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return buf;
+};
+
+exports.toPromise = function (func) {
+  //create the function we will be returning
+  return function () {
+    var self = this;
+    var args = Array.prototype.slice.call(arguments);
+    var tempCB = (typeof args[args.length - 1] === 'function') ? args.pop() : false;
+    // if the last argument is a function, assume its a callback
+    var usedCB;
+    if (tempCB) {
+      // if it was a callback, create a new callback which calls the callback function
+      // but we do so async so we don't trap any errors
+      usedCB = function (err, resp) {
+        process.nextTick(function () {
+          tempCB(err, resp);
+        });
+      };
+    }
+    var promise = new Promise(function (fulfill, reject) {
+      function callback(err, mesg) {
+        if (err) {
+          reject(err);
+        } else {
+          fulfill(mesg);
+        }
+      }
+      // create a callback for this invocation
+      args.push(callback);
+      func.apply(self, args);
+      // apply the function in the orig context
+    });
+    // if there is a callback, call it back
+    if (usedCB) {
+      promise.then(function (result) {
+        usedCB(null, result);
+      }, usedCB);
+    }
+    return promise;
+  };
+};
