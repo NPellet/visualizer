@@ -87,6 +87,11 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			['<li><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>', 
 			function() {
 				duplicateModule( module );
+			}],
+                    
+                        ['<li><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>', 
+			function() {
+				window.localStorage.setItem("ci-copy-module",JSON.stringify( module.definition ));
 			}]
 		]);
 
@@ -251,7 +256,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				position: 'absolute'
 
 			} ).appendTo( $ ( "body" ) );
-		}
+		};
 
 		var mouseMoveHandler = function(e) {
 			
@@ -286,7 +291,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		var modules = ModuleFactory.getModules(),
 			dom = module.dom,
 			myZIndex  = module.definition.zindex || 1,
-			count = 0, i
+			count = 0, i;
 		for (i in modules) {
 			modules[i].definition.zindex = modules[i].definition.zindex || 1;
 			if(modules[i].definition.zindex >= myZIndex)
@@ -374,7 +379,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				.unbind('click', clickHandler)
 				.unbind('mousemove', mouseMoveHandler);
 
-		}
+		};
 
 		$(document)
 			.bind('click', clickHandler)
@@ -411,11 +416,19 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 						var el = $('<li><a>' + i + '</a></li>');
 						var ul = $("<ul />").appendTo( el );
-						makeRecursiveMenu( elements.folders[ i ], ul  )
+						makeRecursiveMenu( elements.folders[ i ], ul  );
 						dom.append( el );
 					}
 				}
 			}
+                        
+                        Context.listen(Context.getRootDom(), [
+				['<li><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>', 
+				function() {
+					var module = JSON.parse(window.localStorage.getItem("ci-copy-module"),Versioning.getViewHandler()._reviver);
+                                        addModuleFromJSON( module );
+				}]]
+			);
 			
 			Context.listen(dom, [], function(contextDom) {
 				$li = $('<li><a> Add a module</a></li>');
@@ -424,7 +437,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				var allTypes = ModuleFactory.getTypes();
 				$.when( allTypes ).then( function( json ) {
 
-					if( typeof json == "object" && ! Array.isArray( json ) ) {
+					if( typeof json === "object" && ! Array.isArray( json ) ) {
 						json = [ json ];
 					}
 
@@ -444,7 +457,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 					newModule( decodeURIComponent( $( event.target.parentNode ).attr( 'data-url' ) ) );
 				});
 			});
-
+                        
 			this.reset( def );
 		},
 
@@ -459,5 +472,5 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		addModuleFromJSON: addModuleFromJSON,
 		checkDimensions: checkDimensions,
 		moduleResize: moduleResize
-	}
+	};
 });
