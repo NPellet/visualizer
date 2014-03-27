@@ -3,8 +3,25 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/versioning'], 
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
-		init: function() {	
-			this.dom = $('<div />', { class: 'dragdropzone' } ).html( this.module.getConfiguration( 'label', 'Drop your file here' ));
+		init: function() {
+                    var self = this;
+                    var textarea = $("<textarea>").css({
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            height: 0,
+                            width: 0,
+                            opacity:0
+                        }).on("paste",function(e){
+                            e.preventDefault();
+                            e.stopPropagation();
+                            self.open(e.originalEvent.clipboardData);
+                        });
+			this.dom = $('<div />', { class: 'dragdropzone' } ).html( this.module.getConfiguration( 'label', 'Drop your file here' )).on("click mousemove",function(){
+                            textarea.focus();
+                        }).mouseout(function(){
+                            textarea.blur();
+                        }).append(textarea);
 			this.module.getDomContent().html( this.dom );
 		},
 

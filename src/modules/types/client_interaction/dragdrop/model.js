@@ -14,13 +14,15 @@ define(['modules/default/defaultmodel','src/util/datatraversing'], function(Defa
                     var jpaths = [];
                     
                     // Populate tmpVars with empty object so the user can set a variable out even if no file was dropped
-                    var definedDrops;
-                    if(definedDrops = this.module.getConfiguration("vars")) {
-                        for(var i = 0; i < definedDrops.length; i++) {
-                            var def = definedDrops[i];
-                            if(!this.tmpVars.hasOwnProperty(def.variable)) {
-                                this.tmpVars[def.variable] = new DataObject();
-                            }
+                    var definedDrops = (this.module.getConfiguration("vars") || []).slice();
+                    var definedString = this.module.getConfiguration("string");
+                    if(definedString)
+                        definedDrops.push(definedString);
+                    
+                    for(var i = 0; i < definedDrops.length; i++) {
+                        var def = definedDrops[i];
+                        if(!this.tmpVars.hasOwnProperty(def.variable)) {
+                            this.tmpVars[def.variable] = new DataObject();
                         }
                     }
                     return Traversing.getJPathsFromElement(this.tmpVars, jpaths), jpaths;

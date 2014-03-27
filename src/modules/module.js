@@ -905,11 +905,12 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 		},
 
 
-		getConfiguration: function( aliasName ) {
+		getConfiguration: function( aliasName, fallbackValue ) {
 
 
 			var cfgEl = this.definition.configuration,
-				alias = this.controller.configAliases[ aliasName ];
+				alias = this.controller.configAliases[ aliasName ],
+                                toReturn;
 
 
 			if( alias ) {
@@ -917,18 +918,23 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 				for( var i = 0, l = alias.length ; i < l ; i ++) {
 					cfgEl = cfgEl[ alias[ i ] ];
 
-					if( typeof cfgEl == 'undefined' ) {
+					if( typeof cfgEl === 'undefined' ) {
 
-						return this._getConfigurationDefault( alias, aliasName );
+						toReturn = this._getConfigurationDefault( alias, aliasName );
+                                                break;
 					}
 				}
 			} else {
 				console.warn( 'Alias ' + alias + ' not defined ');
 				console.trace();
 			}
-			
-
-			return this._doConfigurationFunction( cfgEl, aliasName );
+			if(typeof toReturn === "undefined")
+                            toReturn = this._doConfigurationFunction( cfgEl, aliasName );
+                        if(typeof toReturn === "undefined")
+                            toReturn = fallbackValue;
+                        
+                        return toReturn;
+                        
 		},
 
 		_getConfigurationDefault: function( alias, aliasName ) {

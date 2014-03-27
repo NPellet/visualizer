@@ -119,13 +119,15 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 						filetype: {
 							type: "combo",
 							title: "Read type",
-							options: [{ title: "Text", key: "text"}, { title: "Base64 Encoded", key: "base64"}, { title: "Binary string", key: "binary"}, { title: "Array buffer", key: "b"} ]
+							options: [{ title: "Text", key: "text"}, { title: "Base64 Encoded", key: "base64"}, { title: "Binary string", key: "binary"}, { title: "Array buffer", key: "b"} ],
+                                                        "default": "text"
 						},
 
 						type: {
 							type: "combo",
 							title: "Force type",
-                                                        options: typeList
+                                                        options: typeList,
+                                                        "default":"string"
 						},
 
 						variable: {
@@ -145,7 +147,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
                                         type: {
                                             type: "combo",
                                             title: "Force type",
-                                            options: typeList
+                                            options: typeList,
+                                            "default":"string"
                                         },
                                         variable: {
                                             type: "text",
