@@ -279,7 +279,12 @@ define([	'jquery',
 									url: {
 										type: 'text',
 										title: 'From URL'
-									}
+									},
+                                                                        
+                                                                        timeout: {
+                                                                            type:"text",
+                                                                            title:"Timeout"
+                                                                        }
 								}
 							},
 
