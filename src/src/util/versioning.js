@@ -9,7 +9,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
                 lastLoaded = {
                     view: {},
                     data: {}
-                };
+                }, urlType = "Search";
 
 
 	viewHandler.version = version;
@@ -48,28 +48,28 @@ define(['src/util/versionhandler'], function(VersionHandler) {
                 });
             }
             if(pushstate) {
-                require(["components/uri.js/src/URI"],function(URI){
+                require(["uri/URI.fragmentQuery"],function(URI){
                     var uri = new URI(window.location.href);
                     if(value.data) {
-                        uri.removeQuery(["dataURL","dataBranch","results"]);
+                        uri["remove"+urlType](["dataURL","dataBranch","results"]);
                         if(value.data.urls) {
-                            uri.setQuery("results",value.data.urls);
+                            uri["add"+urlType]("results",value.data.urls);
                             if(value.data.branch)
-                                uri.setQuery("dataBranch",value.data.branch)
+                                uri["add"+urlType]("dataBranch",value.data.branch);
                         }
                         else if(value.data.url) {
-                            uri.setQuery("dataURL", value.data.url)
+                            uri["add"+urlType]("dataURL", value.data.url);
                         }
                     }
                     if(value.view) {
-                        uri.removeQuery(["viewURL","viewBranch","views"]);
+                        uri["remove"+urlType](["viewURL","viewBranch","views"]);
                         if(value.view.urls) {
-                            uri.setQuery("views",value.view.urls);
+                            uri["add"+urlType]("views",value.view.urls);
                             if(value.view.branch)
-                                uri.setQuery("viewBranch",value.view.branch)
+                                uri["add"+urlType]("viewBranch",value.view.branch);
                         }
                         else if(value.view.url) {
-                            uri.setQuery("viewURL", value.view.url)
+                            uri["add"+urlType]("viewURL", value.view.url);
                         }
                     }
                     window.history.pushState({type:"viewchange",value:value}, "", uri.href());
@@ -156,6 +156,9 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			this.setViewJSON( { } );
 		},
                 
-                switchView: switchView
+                switchView: switchView,
+                setURLType: function(type) {
+                    urlType = type;
+                }
 	};
 });

@@ -760,25 +760,7 @@ define([	'jquery',
 			return datahandler || false;
 		},
 
-		init: function(urls) {
-
-                        var viewInfo = {
-                            view: {
-                                urls: urls['views'],
-                                branch: urls['viewBranch'],
-                                url: urls['viewURL']
-                            },
-                            data: {
-                                urls: urls['results'],
-                                branch: urls['resultBranch'],
-                                url: urls['dataURL']
-                            }
-                        };
-                        window.history.replaceState({type:"viewchange",value:viewInfo});
-                        Versioning.switchView(viewInfo, false);
-			
-			Versioning.setViewLoadCallback(doView);
-			Versioning.setDataLoadCallback(doData);
+		init: function(urls, type) {
 			
 			// Sets the header
                         var configJson = urls['config'] || './usr/config/default.json';
@@ -819,6 +801,30 @@ define([	'jquery',
 					document.location.reload();
 				}]]
 			);
+                
+                	Versioning.setViewLoadCallback(doView);
+			Versioning.setDataLoadCallback(doData);
+                        
+                        Versioning.setViewJSON({});
+                        Versioning.setDataJSON({});
+                        
+                        Versioning.setURLType(type);
+                
+                        var viewInfo = {
+                            view: {
+                                urls: urls['views'],
+                                branch: urls['viewBranch'],
+                                url: urls['viewURL']
+                            },
+                            data: {
+                                urls: urls['results'],
+                                branch: urls['resultBranch'],
+                                url: urls['dataURL']
+                            }
+                        };
+                        window.history.replaceState({type:"viewchange",value:viewInfo});
+                        Versioning.switchView(viewInfo, false);
+
 		},
 
 		getVariables: function( ) {

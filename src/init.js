@@ -12,9 +12,15 @@ requirejs.config({
 		"forms": "./lib/forms",
 		"plot": "./lib/plot/plot",
 		'ChemDoodle': 'lib/chemdoodle/ChemDoodleWeb-unpacked',
-        "pouchdb": "./components/pouchdb/dist/pouchdb-nightly.min",
-        "uri": "./components/uri.js/src/URI"
+        "pouchdb": "./components/pouchdb/dist/pouchdb-nightly.min"
 	},
+        packages: [
+            {
+                name: "uri",
+                location: "./components/uri.js/src",
+                main: "URI"
+            }
+        ],
 
 	"shim": {
         "d3": {
@@ -654,21 +660,17 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 
 
 	$(document).ready(function() {
-
-		var title = $("#title");
+            require(["uri/URI.fragmentQuery"],function(URI){
+                		var title = $("#title");
 		var buttons = $("#visualizer-buttons");
+                
+                var url = new URI(window.location.href);
+                var type = (url.search().length > 0) ? "search" : "fragment";
 
-		var url = window.document.location.search.substring(1).split('&'),
-			urls = {};
-            if(url[0]==="")
-             	url = window.document.location.hash.substring(1).split('&');
-		for(var i = 0; i < url.length; i++) {
-			var args = url[i].split('=');
-			urls[args[0]] = unescape(args[1]);
-		}
+                var query = new URI(url[type]()).query(true);
 
-
-		var entryPoint = EntryPoint.init(urls);
+		var entryPoint = EntryPoint.init(query, type.replace(type[0],type[0].toUpperCase()));
 		//Header.setTitle(title, Versioning.getViewHandler());
+            });
 	});
 });
