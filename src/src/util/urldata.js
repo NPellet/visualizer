@@ -77,6 +77,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 	return {
 
 		get: function(url, force, timeout, headers) {
+
 			var def = $.Deferred();
 			var value;
 
@@ -88,11 +89,11 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 				timeout = force;
 				force = false;
 			} else if(typeof timeout == "object") {
-				data = timeout;
+			//	data = timeout;
 				timeout = 0;
 				force = false;
 			} else if(typeof force == "object") {
-				data = force;
+			//	data = force;
 				force = false;
 			}
 

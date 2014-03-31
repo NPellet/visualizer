@@ -5,7 +5,8 @@ define(['modules/default/defaultview'], function(Default) {
 
 		init: function() {	
 			var self = this,
-				cfg = $.proxy(this.module.getConfiguration, this.module);
+				cfg = $.proxy(this.module.getConfiguration, this.module),
+                                searchparams;
 
 			this.dom = $('<div></div>');
 			this.search = $('<table class="Search" cellpadding="5" cellspacing="0"><col width="100"><col width="*"></table>').css('width', '90%');
