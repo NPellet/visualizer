@@ -509,6 +509,13 @@ module.exports = function(grunt) {
 
         if( ! fs.existsSync( fileName ) ) {
           if(arguments.length === 1) {
+            console.log('arguments[0]', arguments[0]);
+            // Not a very neat fix but whatever
+            var pos = arguments[0].search('usr');
+            if(pos > -1){
+              console.log('new : ', arguments[0].substring(pos+1));
+              arguments[0] = arguments[0].substring(pos+1);
+            }
             return loadFile(arguments[0], grunt.option('usr')+'/');
           }
           console.log( 'Folder file ' + fileName + ' does not exist');
@@ -537,7 +544,8 @@ module.exports = function(grunt) {
           modules[ file.modules[ j ].url ] = true;
           modulesStack[ file.modules[ j ].url ] = true;
           if(arguments.length === 2) {
-           file.modules[j].url = './usr/' + file.modules[j].url; 
+            console.log('here...', file.modules[j].url);
+           file.modules[j].url = './usr/' + file.modules[j].url;
           }
           // console.log('module added: ', file.modules[j]);
           jsonStructure.modules.push( file.modules[ j ] );
