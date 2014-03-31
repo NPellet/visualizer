@@ -1,0 +1,65 @@
+{
+	"highlight": [
+		{"label":"A","_highlight":["A"]},
+		{"label":"B","_highlight":["B"]},
+		{"label":"C","_highlight":["C"]},
+		{"label":"D","_highlight":["D"]},
+		{"label":"E","_highlight":["E"]}
+	],
+	"stackChart":
+	{
+		"type":"chart",
+		"value": {
+			"title" : "A stack chart",
+			"axis": {
+				"0": {
+					"type": "bottom", 
+					"unit": "",
+					"min": 0,
+					"max": 5
+				},
+				"1": {
+					"type": "left",
+					"unit": "",
+					"min": 0 ,
+					"max": 15 
+				}
+			},
+			"data" : 
+			[
+				{
+					"x":[],
+					"y":[1,7,5,6],
+					"z":[],
+					"_highlight":["A","B","E","C"],
+					"info":[{"name":"first"}],
+					"serieLabel": "My first serie",
+					"xAxis": "0", 
+					"yAxis": "1"
+				},
+				{
+					"x":[0,1,2,3],
+					"y":[2,3,4,1],
+					"z":[],
+					"_highlight":["D","E","C","A"],
+					"info":[{"name":"second"}],
+					"serieLabel": "My seconde serie",
+					"xAxis": "0", 
+					"yAxis": "1"
+				},
+				{
+					"x":[0,1,2,3],
+					"y":[3,3,9,5],
+					"z":[],
+					"_highlight":["A","B","C","D"],
+					"info":[{"name":"third"}],
+					"serieLabel": "My third serie",
+					"xAxis": "0", 
+					"yAxis": "1"
+				}
+				
+			]
+		}
+	}
+}
+	

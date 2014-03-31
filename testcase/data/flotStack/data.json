@@ -4,7 +4,9 @@
 		{"label":"B","_highlight":["B"]},
 		{"label":"C","_highlight":["C"]},
 		{"label":"D","_highlight":["D"]},
-		{"label":"E","_highlight":["E"]}
+		{"label":"E","_highlight":["E"]},
+		{"label":"F","_highlight":["F"]},
+		{"label":"G","_highlight":["G"]}
 	],
 	"stackChart":
 	{
@@ -14,45 +16,45 @@
 			"axis": {
 				"0": {
 					"type": "bottom", 
-					"unit": "",
+					"unit": ["january", "february", "march", "april", "may", "june", "august", "september", "october", "november", "december"],
 					"min": 0,
-					"max": 5
+					"max": 13
 				},
 				"1": {
 					"type": "left",
 					"unit": "",
 					"min": 0 ,
-					"max": 15 
+					"max": 25 
 				}
 			},
 			"data" : 
 			[
 				{
-					"x":[],
-					"y":[1,7,5,6],
+					"x":[0,1,2,3,4,5,6,7,8,9,10,11],
+					"y":[1,7,5,6,5,4,7,6,3,8,5,7],
 					"z":[],
-					"_highlight":["A","B","E","C"],
-					"info":[{"name":"first"}],
+					"_highlight":["A","B","E","C","F","G","C","F","G","C","F","B"],
+					"info":[{"name":"USA"}],
 					"serieLabel": "My first serie",
 					"xAxis": "0", 
 					"yAxis": "1"
 				},
 				{
-					"x":[0,1,2,3],
-					"y":[2,3,4,1],
+					"x":[],
+					"y":[2,3,4,6,3,8,3,6,3,8,4,3],
 					"z":[],
-					"_highlight":["D","E","C","A"],
-					"info":[{"name":"second"}],
+					"_highlight":["D","E","C","A","G","C","F","B","C","A","G","C"],
+					"info":[{"name":"Canada"}],
 					"serieLabel": "My seconde serie",
 					"xAxis": "0", 
 					"yAxis": "1"
 				},
 				{
-					"x":[0,1,2,3],
-					"y":[3,3,9,5],
+					"x":[0,1,2,3,4,5,6,7,8,9,10,11],
+					"y":[3,3,9,5,4,5,7,8,9,7,6,7],
 					"z":[],
-					"_highlight":["A","B","C","D"],
-					"info":[{"name":"third"}],
+					"_highlight":["A","B","C","D","C","A","G","C","C","D","C","A"],
+					"info":[{"name":"UK"}],
 					"serieLabel": "My third serie",
 					"xAxis": "0", 
 					"yAxis": "1"

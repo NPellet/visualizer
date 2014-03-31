@@ -11,6 +11,10 @@
 		{
 			"moduleName": "Stack chart",
 			"url": "modules/types/chart/basic/stack_chart/"
+		},
+		{
+			"moduleName": "Chartjs",
+			"url": "modules/types/chart/basic/chartjs/"
 		}
 	],
 	"name": "Basic",

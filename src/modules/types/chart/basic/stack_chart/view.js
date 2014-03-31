@@ -18,13 +18,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			// When we change configuration the method init is called again. Also the case when we change completely of view
 			if (! this.dom) {
 				this._id = Util.getNextUniqueId();
-				this.dom = $('<p id="choices" style="float:right; width:15%;"><br></p><div style="height: 100%;width: 80%" id="' + this._id + '"></div>');
+				this.dom = $('<p id="choices'+this._id+'" style="float:right; width:15%;"><br></p><div style="height: 100%;width: 80%" id="' + this._id + '"></div>');
 				this.module.getDomContent().html(this.dom);
 			}
-
-
-			
-			if (this._flot) { // if the dom existed there was probably a graph or when changing of view
+			// if the dom existed there was probably a graph or when changing of view
+			if (this._flot) { 
 				delete this._flot;
 			}
 
@@ -38,6 +36,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
 			axis = undefined;
 			this.updateOptions(cfg, axis);
+
+			
 
 		},
 
@@ -55,32 +55,30 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var self=this;
 			
 			this.loadedData.done(function() {
-			self.plot(self._id, self._data, self._options);
 			
-		var i = 0;
-		$.each(self._data, function(key, val) {
-			val.color = i;
-			++i;
-		});
-
-		
-		
-		var choiceContainer = $("#choices");
-		choiceContainer.empty();
+			p = self.plot(self._id, self._data, self._options);
+			var choiceContainer = $("#choices"+self._id);
+			choiceContainer.empty();
 		
 			$.each(self._data, function(key, val) {
 			choiceContainer.append("<br/><input type='checkbox' name='" + key +
 				"' checked='checked' id='id" + key + "'></input>" +
 				"<label for='id" + key + "'>"
 				+ val.label + "</label>");
-		});
+			});
 			
 			choiceContainer.find("input").bind("click",function (event, pos, item){
-		//event.preventDefault();
-		self.plotAccordingToChoices(choiceContainer);
-		});
-		
-			})
+			self.plotAccordingToChoices(choiceContainer,self._id);
+			});
+			var i = 0;
+			$.each(self._data, function(key, val) {
+				val.color = i;
+				++i;
+			});
+			
+			
+			});
+			
 				
 				
 		},
@@ -104,16 +102,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				
 				self.updateOptions(cfg, axis);
 				this._convertChartToData(moduleValue.get().data);
+				
 				this.loadedData.resolve();
-				
-				
-			/*else
-			{
-			
-				this.loadedData.done(this.plot(self._id, self._data, self._options))
-			} */
-				
-				// data are ready to be ploteed
 			},
 
 
@@ -125,36 +115,30 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var self=this;
 			self._data = this._data;
 			if ( ! value instanceof Array || ! value || ! value.x instanceof Array) return;
-			
-			
-			
 			for (var j = 0; j < value.length; j++) 
 			{
-			var x=value[j].x;
-			var y=value[j].y;
-			var highlight=value[j]._highlight;
-			var info=value[j].info;
-			var label;
-			point = {
-			
-			}
-			s = [];
+				var x=value[j].x;
+				var y=value[j].y;
+				var highlight=value[j]._highlight;
+				var info=value[j].info;
+				var label;
+				s = [];
+				
 				for (var i = 0; i < y.length; i++) 
 				{
-				
-				if(! x[i]) s.push({0:i,1:y[i],_highlight:highlight[i]});
-				else s.push( {0:x[i],1:y[i],_highlight:highlight[i]});
+					if(! x[i]) s.push({0:i,1:y[i],_highlight:highlight[i]});
+					else s.push( {0:x[i],1:y[i],_highlight:highlight[i]});
 				}
+				
 				this._data[j] = {
 						data: s,
 						info: null,
 						label: null
-					}
-					
-						Traversing.getValueFromJPath(info[0],"element.name").done(function(elVal) {
-							self._data[j].label=elVal;
-							self._data[j].info=value[j].info
-						}); 
+					}	
+				Traversing.getValueFromJPath(info[0],"element.name").done(function(elVal) {
+					self._data[j].label=elVal;
+					self._data[j].info=value[j].info
+				}); 
 			}
 			
 		},
@@ -184,7 +168,6 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			u.push([i,axis[0].unit[i]]);
 			}
 			xunit = u;
-			console.log(xunit);
 			}
 			if(axis[1].unit instanceof Array)
 			{
@@ -201,6 +184,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var lines = false;
 			var stack = cfg('stack');
 			var barWidth = cfg('barWidth');
+			var xlab = cfg('xLabel');
+			var ylab = cfg('yLabel');
+			var xlabh = cfg('xLabelHeight');
+			var xlabw = cfg('xLabelWidth');
+			var ylabh = cfg('yLabelHeight');
+			var ylabw = cfg('yLabelWidth');
 		
 			switch (cfg('preference'))
 				{
@@ -221,13 +210,21 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				position: posx,
 				min: xmin,
 				max: xmax,
-				ticks: xunit
+				tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(2) : xlab;},
+				ticks: xunit,
+				labelWidth: xlabw,
+				labelHeight: xlabh
+				
 				},
 				yaxis: {
 				position: posy,
 				min: ymin,
 				max: ymax,
-				ticks: yunit
+				ticks: yunit,
+				tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(2) : ylab;},
+				labelWidth: ylabw,
+				labelHeight: ylabh
+
 				},
 				grid: {
 
@@ -250,70 +247,45 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		},
 		
 		plot: function(id,data,options) {
-		var self=this;
-		
-		var self=this;
-		
-				self._plot=$.plot("#"+id, data, options);
-				$("#"+id).bind("plotclick", function (event, pos, item) {
-
-				event.preventDefault();
-				    if (item) {
-				      	console.log("Y:"+item.datapoint[1]);
-			
-
-				    }
-				});
-				$("#"+id).bind("plothover", function (event, pos, item) {
-				event.preventDefault();
-				    if (item) {
-				    	self.module.controller.elementHover(self._data[item.seriesIndex].data[item.dataIndex]);
-				    } else {
-				    	self.module.controller.elementOut();
-				    }
-				});
-				
-				for (var i=0; i<data.length; i++) {
-					
-					for (var j=0; j<data[i].data.length; j++) {
-					var currentDataPoint=data[i].data[j];
-					API.listenHighlight( data[i].data[j], function( onOff, key ) {
-
-						
-						
-						if (onOff) {
-						
-						
-							self._plot.highlight(0, currentDataPoint);
-						
-							
-						} else {
-						
-							self._plot.unhighlight(0, currentDataPoint);
-						
-						}
-					});
-					}
-				}
-				
-
-
-
-			},
-			plotAccordingToChoices : function(choiceContainer) {
 			var self=this;
-			var data = [];
-			choiceContainer.find("input:checked").each(function () {
-				var key = $(this).attr("name");
-				if (key && self._data[key]) {
-					data.push(self._data[key]);
+			
+			var self=this;
+		
+			self._plot=$.plot("#"+id, data, options);
+			$("#"+id).bind("plotclick", function (event, pos, item) {
+
+			event.preventDefault();
+				if (item) {
+					console.log("Y:"+item.datapoint[1]);
+		
+
 				}
 			});
+			$("#"+id).bind("plothover", function (event, pos, item) {
+			
+				if (item) {
+					self.module.controller.elementHover(self._data[item.seriesIndex].data[item.dataIndex]);
+					
+				} else {
+					self.module.controller.elementOut();
+				}
+			}); 
+	
+		},
+			plotAccordingToChoices : function(choiceContainer,id) {
+				var self=this;
+				var data = [];
+				choiceContainer.find("input:checked").each(function () {
+					var key = $(this).attr("name");
+					if (key && self._data[key]) {
+						data.push(self._data[key]);
+					}
+				});
 
-			if (data.length > 0) {
-				this.plot(self._id, data, self._options)
+				if (data.length > 0) {
+					this.plot(id, data, self._options)
+				}
 			}
-		}
 
 
 	});
