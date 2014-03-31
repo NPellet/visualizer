@@ -3,18 +3,20 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 
 	var pendings = {};
 	Debug.setDebugLevel(0);
-	function doByUrl(def, url, force) {
+	function doByUrl(def, url, headers) {
 		Debug.log('DataURL: Looking for ' + url + ' by AJAX');
 		// Nothing in the DB  -- OR -- force ajax => AJAX
 		var dataType = false;
-		if(url.indexOf('.json') > -1)
+		if( url.indexOf('.json') > -1 ) {
 			dataType = 'json';
+		}
 
 		return (pendings[url] = $.ajax({
 			url: url,
 			type: 'get',
 			dataType: dataType || '',
 			timeout: 120000, // 2 minutes timeout
+			headers: headers || {},
 			success: function(data) {
 
 				Debug.log('DataURL: Found ' + url + ' by AJAX');
@@ -38,7 +40,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 		}));
 	}
 
-	function doLRUOrAjax(def, url, force, timeout) {
+	function doLRUOrAjax(def, url, force, timeout, headers) {
 		// Check in the memory if the url exists
 
 
@@ -51,7 +53,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 			// If timeouted. If no timeout is defined, then the link is assumed permanent
 			if(timeout !== undefined && (Date.now() - data.timeout > timeout * 1000)) {
 				Debug.log('DataURL: URL is over timeout threshold. Looking by AJAX');
-				return doByUrl(def, url).pipe(function(data) { return data }, function() {
+				return doByUrl(def, url, headers ).pipe(function(data) { return data }, function() {
 					Debug.log('DataURL: Failed in retrieving URL by AJAX. Fallback to cached version');
 					def.resolve(data.data);
 				});
@@ -63,7 +65,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 		}, function() {
 
 			Debug.log('DataURL: URL ' + url + ' not found in LRU. Look for AJAX');
-			return doByUrl(def, url);
+			return doByUrl(def, url, headers );
 		});
 	}
 
@@ -74,12 +76,13 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 
 	return {
 
-		get: function(url, force, timeout) {
+		get: function(url, force, timeout, headers) {
 			var def = $.Deferred();
 			var value;
 
-			if(pendings[url])
-				return pendings[url];
+			if( pendings[ url ] ) {
+				return pendings[ url ];
+			}
 
 			if(typeof force == "number") {
 				timeout = force;
@@ -95,16 +98,18 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 
 			Debug.log('DataURL: getting ' + url + ' with force set to ' + force + ' and timeout to ' + timeout);
 			// If we force to do ajax first. Fallback if we 
-			if(force)
-				doByUrl(def, url, force).pipe(function(data) { return data }, function() {
+			if( force ) {
+
+				doByUrl(def, url, headers).pipe(function(data) { return data }, function() {
 					// If ajax fails (no internet), go for LRU
 					return doLRU(def, url, false).pipe(function(data) {
 						def.resolve(data.data);
 					});
 				});
+			}
 
 			// Standard: first LRU, then ajax
-			doLRUOrAjax(def, url, force, timeout);
+			doLRUOrAjax(def, url, force, timeout, headers);
 			return def;
 		},
 
