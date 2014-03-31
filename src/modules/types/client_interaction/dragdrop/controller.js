@@ -91,8 +91,17 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 					
 						label: {
 							type: 'text',
-							title: 'Displayed text'
-						}/*,
+							title: 'Text displayed by default',
+                                                        'default': 'Drop your file here'
+						},
+                                                dragoverlabel: {
+                                                    type: 'text',
+                                                    title: 'Text displayed on drag'
+                                                },
+                                                hoverlabel: {
+                                                    type:'text',
+                                                    title: 'Text displayed on hover'
+                                                }/*,
 
 						filter: {
 							type: 'jscode',
@@ -164,6 +173,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 	controller.prototype.configAliases = {
 		'vartype': [ 'groups', 'group', 0, 'vartype', 0 ],
 		'label': [ 'groups', 'group', 0, 'label', 0 ],
+                'dragoverlabel': [ 'groups', 'group', 0, 'dragoverlabel', 0 ],
+                'hoverlabel': [ 'groups', 'group', 0, 'hoverlabel', 0 ],
 		//'filter': [ 'groups', 'group', 0, 'filter', 0 ],
 		'vars': [ 'groups', 'vars', 0 ],
                 'string': [ 'groups', 'string', 0, 0 ]
