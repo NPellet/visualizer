@@ -74,7 +74,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 
 	return {
 
-		get: function(url, force, timeout) {
+		get: function(url, force, timeout, data) {
 			var def = $.Deferred();
 			var value;
 
