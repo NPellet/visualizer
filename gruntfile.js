@@ -1,5 +1,4 @@
 module.exports = function(grunt) {
-
   var modulesFinal = {};
   var modulesStack = {};
   var _ = require('underscore');
