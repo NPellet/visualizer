@@ -85,8 +85,19 @@ define(['jquery', 'src/util/versioning'], function($, Versioning) {
                         }
 					}
 				}
+                            case "2.2.3": // Change in the webservice search module
+                               if(view.modules){
+                for (var i = 0; i < view.modules.length; i++) {
+                    var module = view.modules[i];
+                    if(module.url==="./modules/types/server_interaction/webservice_search/") {
+                        var url = module.configuration.groups.group[0].url;
+                        if(url[0]) {
+                            url[0] = url[0].replace(/<([a-zA-Z0-9]+)>/g,"{$1}");
+                        }
+                    }
+                }
 		}
-
+                }
 		view.version = Versioning.version;
 
 		return view;

@@ -2,7 +2,7 @@
 
 define(['src/util/versionhandler'], function(VersionHandler) {
 	
-	var version = [2, 2, 3].join('.');
+	var version = [2, 2, 4].join('.');
 	var dataHandler = new VersionHandler(),
 		viewHandler = new VersionHandler(),
 		view, data,

@@ -127,6 +127,24 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 						}
 					}
 				},
+                                
+                                headers: {
+                                    options: {
+                                        type: 'table',
+                                        multiple: true,
+                                        title: 'Request headers'
+                                    },
+                                    fields: {
+                                        name: {
+                                            type: "text",
+                                            title: "Name"
+                                        },
+                                        value: {
+                                            type:"text",
+                                            title:"Value"
+                                        }
+                                    }
+                                },
 
 				searchparams: {
 					options: {
@@ -225,7 +243,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 		'buttonlabel_exec': [ 'groups', 'group', 0, 'buttonlabel_exec', 0 ],
 		'onloadsearch': [ 'groups', 'group', 0, 'onloadsearch', 0, 0 ],
 		'resultfilter': [ 'groups', 'group', 0, 'resultfilter', 0 ],
-		'postvariables': [ 'sections', 'postvariables', 0, 'groups', 'postvariables', 0 ]
+		'postvariables': [ 'sections', 'postvariables', 0, 'groups', 'postvariables', 0 ],
+                'headers': [ 'groups', 'headers', 0 ]
 	};
 
 	controller.prototype.initimpl = function() { 
@@ -288,7 +307,15 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 
 		this.url=urltemplate.expand(this.searchTerms);
 
-		
+                var headers = {};
+                var headerList = this.module.getConfiguration('headers') || [];
+		for(var i = 0; i < headerList.length; i++) {
+                    var header = headerList[i];
+                    if(!header.name || !header.value)
+                        continue;
+                    headers[header.name] = header.value;
+                }
+                
 		for(; i < l; i++) {
 			var valueToPost = API.getVar(toPost[i].variable);
 			if (valueToPost) {
@@ -308,9 +335,9 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 			this.request.abort();
 		}
 
-                var method = this.module.getConfiguration('method')
+                var method = this.module.getConfiguration('method');
 		if(method === 'GET') {
-			this.request = URL.get(this.url, 30, data);	
+			this.request = URL.get(this.url, 30, data, headers);	
 		} else {
 			this.request = URL.post(this.url, data);	
 		}
@@ -346,7 +373,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 			return;
 		}
 
-		for( i in actions ) {
+		for( var i in actions ) {
 			if( actions[ i ].event === "onSearchReturn" ) {
 				if( actions[ i ].rel === "results" ) {
 					API.setVar( actions[i].name, elements, actions[i].jpath );
