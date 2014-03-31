@@ -278,19 +278,15 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 //			url = url.replace('<var:' + val[1] + '>', encodeURIComponent(variable.get()));
 //		}
                 var varsin = this.module.vars_in();
-                var variables = {};
+
                 for(var i = 0; i < varsin.length; i++) {
                     var varin = varsin[i];
                     if(varin.rel==="vartrigger" && varin.name) {
-                        variables[varin.name] = API.getVar(varin.name);
+                        this.searchTerms[varin.name] = API.getVar(varin.name);
                     }
                 }
-                var values = {
-                    search: this.searchTerms,
-                    'var': variables
-                };
 
-		this.url=urltemplate.expand(values);
+		this.url=urltemplate.expand(this.searchTerms);
 
 		
 		for(; i < l; i++) {
