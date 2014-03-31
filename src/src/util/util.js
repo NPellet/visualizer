@@ -64,7 +64,7 @@ define(['src/util/api'], function(API) {
 		getNextUniqueId: function( absolute ) {
 
 			if( absolute ) {
-				return "id_" + Data.now() + Math.round(Math.random() * 100000);
+				return "id_" + Date.now() + Math.round(Math.random() * 100000);
 			}
 
 			return 'uniqid_' + (++uniqueid);
