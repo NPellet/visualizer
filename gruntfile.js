@@ -345,13 +345,13 @@ module.exports = function(grunt) {
               }
               
               // Search for images specified in .js, .css and .html files
-              var expression = /[\/a-zA-Z_\- 0-9]+\.(png|jpeg|jpg|gif)/gi;
+              var expression = /[\/\.a-zA-Z_\- 0-9]+\.(png|jpeg|jpg|gif)/gi;
               var reg = RegExp(expression);
               var res = content.match(reg);
               if(res) {
                 _.keys(res).forEach(function(i){
                   if(res[i][0] !== '/') { // ignore absolute path
-                    var filepath = root+'/'+res[i];
+                    var filepath = path.join(root,res[i]);
                     if(fs.existsSync(filepath)) {
                       whiteset[filepath] = '';
                     }
