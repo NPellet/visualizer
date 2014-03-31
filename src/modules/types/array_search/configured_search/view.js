@@ -9,6 +9,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			this.module.getDomContent( ).html( this.dom );
 			this.variables = {};
 			this.cfgValue = {};
+            this.maxhits = parseInt(this.module.getConfiguration( 'maxhits' ))||Number.POSITIVE_INFINITY;
 
 			this._jpathsFcts = {};
 
@@ -97,8 +98,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			}
 
 			val = val.get();
-				
-			l = val.length;
+            
+			l = Math.min(val.length, this.maxhits);
 
 			for( ; i < l ; i ++ ) {
 				if( this.searchElement( cfg, val[ i ].get() ) ) {

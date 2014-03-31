@@ -152,7 +152,7 @@ define(['jquery', 'src/util/event'], function($, Event) {
 
 	Repository.prototype.resetVariables = function() {
 		this._keys = {};
-		this._value = undefined;
+		this._value = [];
 	}
 
 	Repository.prototype.resetCallbacks = function() {

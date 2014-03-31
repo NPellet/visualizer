@@ -87,8 +87,22 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 		}
 
 		return {
-			groups: { },
+			groups: {
+                group: {
+                    options:{
+                        type:'list'
+                    },
+                    fields:{
+                        max:{
+                            type:'text',
+                            title:'Maximum hits',
+                            'default': '50'
+                        }
+                    }
+                }
+            },
 			sections: {
+                
 				searchFields: FormCreator.makeConfig( { name: 'Search on', jpaths: all_jpaths }, { name: "Comparison" } ),
 			}
 		}
@@ -119,7 +133,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 	},
 
 	controller.prototype.configAliases = {
-		searchfields: [ 'sections', 'searchFields' ]
+		searchfields: [ 'sections', 'searchFields' ],
+        maxhits: ['groups','group',0,'max',0]
 	}
 
 	return controller;
