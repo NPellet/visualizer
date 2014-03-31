@@ -223,6 +223,10 @@ define([	'jquery',
 				}
 			}
 		}
+
+		if( view.init_script ) {
+			eval( view.init_script[ 0 ].groups.general[ 0 ].script[ 0 ] );
+		}
 	}
 
 
@@ -590,6 +594,34 @@ define([	'jquery',
 						}
 					},
 
+					init_script: {
+
+						options: {
+							title: 'Initialization script',
+							icon: 'scripts'
+						},						
+
+						groups: {
+
+							general: {
+
+								options: {
+									type: 'list',
+									multiple: true
+								},
+
+								fields: {
+
+									script: {
+										type: 'jscode',
+										title: 'Javascript to execute'
+									}
+
+								}
+							}
+						}
+					},
+
 
 					couch_replication: {
 
@@ -673,7 +705,7 @@ define([	'jquery',
 							}
 						} ],
 
-
+						init_script: view.init_script,
 						actionfiles: ActionManager.getFilesForm(),
 						webcron: [ {
 							groups: {
@@ -707,7 +739,8 @@ define([	'jquery',
 				view.crons = allcrons;
 
 				view.couch_replication = value.sections.couch_replication;
-				
+				view.init_script = value.sections.init_script
+
 				// PouchDB variables
 				var data = new ViewArray( value.sections.cfg[ 0 ].groups.pouchvars[ 0 ] );
 				view.pouchvariables = data;
