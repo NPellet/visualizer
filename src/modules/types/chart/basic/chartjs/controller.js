@@ -63,12 +63,13 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		if( ! element ) {
 			return;
 		}
+
+		
 		if (this._highlighted) {
 			API.highlight( this._highlighted, 0 );
 		}
 		API.highlight( element, 1 );
 		this._highlighted=element;
-		
 	},
 
 	controller.prototype.elementOut = function() {
@@ -140,32 +141,45 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 							options: { 'fill': 'Filling under lines'},
 							displayTarget: [ 'l' , 'ls']
 						},
-						xLabel: {
+						nodeSize: {
 							type: 'text',
-							title: 'X Axis Label'
+							title: 'Default node size'
 						},
 
-						yLabel: {
-							type: 'text',
-							title: 'Y Axis Label'
+						nodeColor: {
+							type: 'color',
+							title: 'Default node color'
 						},
 
-						xLabelHeight: {
+						labelSize: {
 							type: 'text',
-							title: 'X Axis label Height'
+							title: 'Default label size'
 						},
-						xLabelWidth: {
+
+						labelColor: {
+							type: 'color',
+							title: 'Default label color'
+						},
+
+						edgeWidth: {
 							type: 'text',
-							title: 'X Axis label Width'
+							title: 'Default edge width'
 						},
-						yLabelHeight: {
+
+						edgeColor: {
+							type: 'color',
+							title: 'Default edge color'
+						},
+
+						strokeWidth: {
 							type: 'text',
-							title: 'Y Axis label Height'
+							title: 'Background line width'
 						},
-						yLabelWidth: {
-							type: 'text',
-							title: 'Y Axis label Width'
-						},
+
+						strokeColor: {
+							type: 'color',
+							title: 'Background line color'
+						}
 
 					}
 				}
@@ -182,12 +196,14 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		'barWidth': [ 'groups', 'group', 0, 'barWidth', 0],
 		'stack': [ 'groups', 'group', 0, 'stack', 0 ],
 		'fill': [ 'groups', 'group', 0, 'fill', 0 ],
-		'xLabel': [ 'groups', 'group', 0, 'xLabel', 0 ],
-		'yLabel': [ 'groups', 'group', 0, 'yLabel', 0 ],
-		'xLabelHeight': [ 'groups', 'group', 0, 'xLabelHeight', 0 ],
-		'xLabelWidth': [ 'groups', 'group', 0, 'xLabelWidth', 0 ],
-		'yLabelHeight': [ 'groups', 'group', 0, 'yLabelHeight', 0 ],
-		'yLabelWidth': [ 'groups', 'group', 0, 'yLabelWidth', 0 ],
+		'nodeSize': [ 'groups', 'group', 0, 'nodeSize', 0 ],
+		'nodeColor': [ 'groups', 'group', 0, 'nodeColor', 0 ],
+		'labelSize': [ 'groups', 'group', 0, 'labelSize', 0 ],
+		'labelColor': [ 'groups', 'group', 0, 'labelColor', 0 ],
+		'edgeWidth': [ 'groups', 'group', 0, 'edgeWidth', 0 ],
+		'edgeColor': [ 'groups', 'group', 0, 'edgeColor', 0 ],
+		'strokeWidth': [ 'groups', 'group', 0, 'strokeWidth', 0 ],
+		'strokeColor': [ 'groups', 'group', 0, 'strokeColor', 0 ]
 	};
 
 

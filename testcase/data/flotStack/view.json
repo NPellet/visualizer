@@ -1,16 +1,15 @@
 {
-	"_version": "2.2.2",
 	"modules": [
 		{
 			"url": "./modules/types/chart/basic/stack_chart/",
-			"title": "Untitled module",
+			"title": "Stack Chart",
 			"displayWrapper": true,
 			"position": {
-				"left": 18,
+				"left": 17,
 				"top": 0
 			},
 			"size": {
-				"width": 51,
+				"width": 81,
 				"height": 41
 			},
 			"configuration": {
@@ -18,52 +17,37 @@
 				"groups": {
 					"group": [
 						{
-							"nodeType": [
-								"circle"
+							"preference": [
+								"Bars"
 							],
-							"nodeSize": [
-								null
-							],
-							"nodeColor": [
+							"stack": [
 								[
-									0,
-									0,
-									0,
-									1
+									"stack"
 								]
 							],
-							"labelSize": [
+							"barWidth": [
+								0.5
+							],
+							"fill": [
+								[]
+							],
+							"xLabel": [
+								"X axis"
+							],
+							"yLabel": [
+								"Y axis"
+							],
+							"xLabelHeight": [
 								null
 							],
-							"labelColor": [
-								[
-									0,
-									0,
-									0,
-									1
-								]
-							],
-							"edgeWidth": [
+							"xLabelWidth": [
 								null
 							],
-							"edgeColor": [
-								[
-									0,
-									0,
-									0,
-									1
-								]
-							],
-							"strokeWidth": [
+							"yLabelHeight": [
 								null
 							],
-							"strokeColor": [
-								[
-									0,
-									0,
-									0,
-									1
-								]
+							"yLabelWidth": [
+								null
 							]
 						}
 					]
@@ -73,7 +57,74 @@
 			"vars_in": [
 				{
 					"rel": "chart",
-					"name": "pieChart"
+					"name": "stackChart"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/chart/basic/stack_chart/",
+			"title": "Stack Chart",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 44
+			},
+			"size": {
+				"width": 76,
+				"height": 41
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"preference": [
+								"Lines"
+							],
+							"stack": [
+								[]
+							],
+							"barWidth": [
+								0.3
+							],
+							"fill": [
+								[]
+							],
+							"xLabel": [
+								"X axis"
+							],
+							"yLabel": [
+								"Y axis"
+							],
+							"xLabelHeight": [
+								null
+							],
+							"xLabelWidth": [
+								null
+							],
+							"yLabelHeight": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "chart",
+					"name": "stackChart"
 				}
 			],
 			"actions_in": {},
@@ -153,16 +204,86 @@
 				255,
 				0
 			]
+		},
+		{
+			"url": "./modules/types/chart/basic/stack_chart/",
+			"title": "Stack Chart",
+			"displayWrapper": true,
+			"position": {
+				"left": 80,
+				"top": 43
+			},
+			"size": {
+				"width": 78,
+				"height": 41
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"preference": [
+								"Lines With Steps"
+							],
+							"stack": [
+								[
+									"stack"
+								]
+							],
+							"barWidth": [
+								0.3
+							],
+							"fill": [
+								[
+									"fill"
+								]
+							],
+							"xLabel": [
+								"X axis"
+							],
+							"yLabel": [
+								"Y axis"
+							],
+							"xLabelHeight": [
+								null
+							],
+							"xLabelWidth": [
+								null
+							],
+							"yLabelHeight": [
+								null
+							],
+							"yLabelWidth": [
+								null
+							]
+						}
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "chart",
+					"name": "stackChart"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
 		}
 	],
 	"variables": [
 		{
-			"varname": "pieChart",
-			"jpath": "element.pieChart"
-		},
-		{
-			"varname": "simpleArray",
-			"jpath": "element.simpleArray"
+			"varname": "stackChart",
+			"jpath": "element.stackChart"
 		},
 		{
 			"varname": "highlight",
@@ -200,5 +321,6 @@
 				]
 			}
 		}
-	]
+	],
+	"version": "2.2.3"
 }
