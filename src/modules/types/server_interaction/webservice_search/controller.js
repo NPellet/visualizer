@@ -34,6 +34,10 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 		"vartrigger": {
 			label: 'A variable to trigger the search'
 		},
+                
+                "varinput": {
+                    label: 'A variable to add to the search'
+                },
 
 		'results': {
 			label: 'Search results'
@@ -62,7 +66,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 	/*
 		Configuration of the module for receiving events, as a static object
 	*/
-	controller.prototype.variablesIn = [ 'vartrigger' ];
+	controller.prototype.variablesIn = [ 'vartrigger', 'varinput' ];
 
 	/*
 		Received actions
@@ -300,8 +304,10 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 
                 for(var i = 0; i < varsin.length; i++) {
                     var varin = varsin[i];
-                    if(varin.rel==="vartrigger" && varin.name) {
-                        this.searchTerms[varin.name] = API.getVar(varin.name);
+                    if((varin.rel==="vartrigger"||varin.rel==="varinput") && varin.name) {
+                        var theVar = API.getVar(varin.name);
+                        if(theVar.get && typeof(theVar.get)==='function') theVar=theVar.get();
+                        this.searchTerms[varin.name] = theVar;
                     }
                 }
 
