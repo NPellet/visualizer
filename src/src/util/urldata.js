@@ -60,8 +60,8 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 			}
 
 			Debug.log('DataURL: URL is under timeout threshold. Return cached version');
-			
 			def.resolve(data.data || data); 
+			
 		}, function() {
 
 			Debug.log('DataURL: URL ' + url + ' not found in LRU. Look for AJAX');
@@ -101,12 +101,15 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 			// If we force to do ajax first. Fallback if we 
 			if( force ) {
 
-				doByUrl(def, url, headers).pipe(function(data) { return data }, function() {
-					// If ajax fails (no internet), go for LRU
-					return doLRU(def, url, false).pipe(function(data) {
-						def.resolve(data.data);
+				doByUrl(def, url, headers)
+					.pipe(
+						function(data) { return data },
+						function() {
+							// If ajax fails (no internet), go for LRU
+							return doLRU(def, url, false).pipe(function(data) {
+								def.resolve(data.data);
+							});
 					});
-				});
 			}
 
 			// Standard: first LRU, then ajax
