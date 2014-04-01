@@ -708,10 +708,12 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 	}
 
 	PouchArray.prototype.push = function() {
-		console.log('PUSHING');
+		
 		// arguments contain the element to push
 		Array.prototype.push.apply( this.value, arguments );
 		console.log( "Pouch Array has a new element. Pushing into Pouch");
+
+		console.log( this.getPouch(), PouchDBUtil.getPouch( this.getPouch() ) );
 
 		PouchDBUtil.getPouch( this.getPouch() ).post( arguments[ 0 ], function() {
 			console.log(arguments);
