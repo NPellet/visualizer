@@ -688,8 +688,8 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 	  arr = { type: 'array', value: arr || [] };
 	  
 	  if(deep) {
-	  	for(var i = 0, l = arr.length; i < l; i++) {
-	  		arr.value[i] = new PouchObject(arr[i], deep);
+	  	for(var i = 0, l = arr.value.length; i < l; i++) {
+	  		arr.value[i] = new PouchObject(arr.value[i], deep);
 	  	}
 	  }
 
