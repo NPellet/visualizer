@@ -626,7 +626,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			
 			var toSave = self.exportForPouch();
 			
-
+			console.log( toSave, self._id, self._rev );
 
 			PouchDBUtil.getPouch( self.getPouch() ).put( toSave, self._id, self._rev, function( err, callback ) {
 				console.log(err, callback);
