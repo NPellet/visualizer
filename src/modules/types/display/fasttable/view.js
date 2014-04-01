@@ -163,7 +163,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
-        
+        console.log( moduleValue );
 	 			moduleValue = moduleValue.get();
                 
 				var self = this, 
