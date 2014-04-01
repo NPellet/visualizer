@@ -713,7 +713,10 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 		Array.prototype.push.apply( this.value, arguments );
 		console.log( "Pouch Array has a new element. Pushing into Pouch");
 
-		console.log( this.getPouch(), PouchDBUtil.getPouch( this.getPouch() ) );
+		if( this.getPouch() == undefined ) {
+			console.error("No Pouch name has been defined for this array. Aborting save procedure");
+			return;
+		}
 
 		PouchDBUtil.getPouch( this.getPouch() ).post( arguments[ 0 ], function() {
 			console.log(arguments);
