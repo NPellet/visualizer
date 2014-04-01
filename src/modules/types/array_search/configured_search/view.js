@@ -99,11 +99,12 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 			val = val.get();
             
-			l = Math.min(val.length, this.maxhits);
+			l = val.length;
+                        var max = this.maxhits, count = 0;
 
-			for( ; i < l ; i ++ ) {
+			for( ; (i < l)&&(count<max) ; i ++ ) {
 				if( this.searchElement( cfg, val[ i ].get() ) ) {
-					target.push( val[ i ] );
+					target[count++] = val[ i ] ;
 				}
 			}
 
