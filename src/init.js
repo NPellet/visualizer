@@ -628,8 +628,8 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			
 			console.log( toSave, self._id, self._rev );
 
-			PouchDBUtil.getPouch( self.getPouch() ).put( toSave, self._id, self._rev, function( err, callback ) {
-				console.log(err, callback);
+			PouchDBUtil.getPouch( self.getPouch() ).put( toSave, self._id, self._rev, function( err, response ) {
+				self._rev = response.rev;
 			} );
 		} )
 	};
