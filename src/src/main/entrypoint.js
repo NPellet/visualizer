@@ -801,10 +801,15 @@ define([	'jquery',
 		init: function(urls, type) {
 			
 			// Sets the header
-                        var configJson = urls['config'] || './usr/config/default.json';
+            var self = this,
+            	configJson = urls['config'] || './usr/config/default.json';
 
 			$.getJSON( configJson, { }, function( cfgJson ) {
-			
+				
+				if( cfgJson.lockView || cfgJson.viewLock ) {
+					API.viewLock();
+				}
+
 				if( cfgJson.header ) {
 					Header.init( cfgJson.header );
 				}
@@ -815,53 +820,57 @@ define([	'jquery',
 
 				// Set the filters
 				API.setAllFilters( cfgJson.filters || [ ] );
-			} ).fail(function(a, b){console.error("Error loading the config : "+b)});
 
-			Context.init( document.getElementById( 'modules-grid' ) );
+			} ).fail(function(a, b) { 
 
-			Context.listen(Context.getRootDom(), [
-				['<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>', 
-				function() {
-					configureEntryPoint();
-				}]]
-			);
-/*
-			Context.listen(Context.getRootDom(), [
-				['<li class="ci-item-configureactions" name="refresh"><a><span class="ui-icon ui-icon-clock"></span>Configure actions</a></li>', 
-				function() {
-					configureActions();
-				}]]
-			);
-*/
-			Context.listen(Context.getRootDom(), [
-				['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>', 
-				function() {
-					document.location.reload();
-				}]]
-			);
-                
-                	Versioning.setViewLoadCallback(doView);
-			Versioning.setDataLoadCallback(doData);
-                        
-                        Versioning.setViewJSON({});
-                        Versioning.setDataJSON({});
-                        
-                        Versioning.setURLType(type);
-                
-                        var viewInfo = {
-                            view: {
-                                urls: urls['views'],
-                                branch: urls['viewBranch'],
-                                url: urls['viewURL']
-                            },
-                            data: {
-                                urls: urls['results'],
-                                branch: urls['resultBranch'],
-                                url: urls['dataURL']
-                            }
-                        };
-                        window.history.replaceState({type:"viewchange",value:viewInfo});
-                        Versioning.switchView(viewInfo, false);
+				console.error("Error loading the config : " + b );
+
+			} ).always( function( ) {
+
+				Context.init( document.getElementById( 'modules-grid' ) );
+
+				if( ! API.isViewLocked() ) {
+
+					Context.listen(Context.getRootDom(), [
+						['<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>', 
+						function() {
+							configureEntryPoint();
+						}]]
+					);
+
+					Context.listen(Context.getRootDom(), [
+						['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>', 
+						function() {
+							document.location.reload();
+						}]]
+					);
+		        }
+
+	            Versioning.setViewLoadCallback(doView);
+				Versioning.setDataLoadCallback(doData);
+	            
+	            Versioning.setViewJSON({});
+	            Versioning.setDataJSON({});
+	            
+	            Versioning.setURLType(type);
+	    
+	            var viewInfo = {
+	                view: {
+	                    urls: urls['views'],
+	                    branch: urls['viewBranch'],
+	                    url: urls['viewURL']
+	                },
+	                data: {
+	                    urls: urls['results'],
+	                    branch: urls['resultBranch'],
+	                    url: urls['dataURL']
+	                }
+	            };
+	            window.history.replaceState({type:"viewchange",value:viewInfo});
+	            Versioning.switchView(viewInfo, false);
+
+
+			} );
 
 		},
 

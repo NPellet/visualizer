@@ -2,6 +2,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 
 	var allScripts = [];
 	var variableFilters;
+	var viewLocked = false;
 
 	function setVarFilter( name, element, filter ) {
 
@@ -141,6 +142,14 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 
 		setAllFilters: function( filters ) {
 			variableFilters = filters;
+		},
+
+		viewLock: function() {
+			viewLocked = true;
+		},
+
+		isViewLocked: function() {
+			return viewLocked;
 		}
 	}
 });

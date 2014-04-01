@@ -1,8 +1,8 @@
 
-define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning'], function($, ui, Util, ModuleFactory, Context, Versioning) {	
+define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api'], function($, ui, Util, ModuleFactory, Context, Versioning, API) {	
 
 
-	var definition, jqdom, self = this, moduleMove;
+	var definition, jqdom, self = this, moduleMove, isInit = false;
 
 	var defaults = {
 		xWidth: 10, // 20px per step
@@ -58,42 +58,44 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 		} );
 
-		Context.listen(module.getDomWrapper().get(0), [
+		if( ! API.isViewLocked() ) {
+			Context.listen(module.getDomWrapper().get(0), [
 
-			['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>', 
-			function() {
-				moveToFront(module);
-			}],
-			
-			['<li><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>', 
-			function() {
-				moveToBack(module);
-			}],
-			
-			['<li><a><span class="ui-icon ui-icon-close"></span> Remove module</a></li>', 
-			function() {
-				removeModule(module);
-			}],
+				['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>', 
+				function() {
+					moveToFront(module);
+				}],
+				
+				['<li><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>', 
+				function() {
+					moveToBack(module);
+				}],
+				
+				['<li><a><span class="ui-icon ui-icon-close"></span> Remove module</a></li>', 
+				function() {
+					removeModule(module);
+				}],
 
-			['<li><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>', 
-			function(e) {
-				var pos = module.getDomWrapper().position();
-				var shiftX = e.pageX - pos.left;
-				var shiftY = e.pageY - pos.top;
-				moveModule(module, shiftX, shiftY);
-			}],
+				['<li><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>', 
+				function(e) {
+					var pos = module.getDomWrapper().position();
+					var shiftX = e.pageX - pos.left;
+					var shiftY = e.pageY - pos.top;
+					moveModule(module, shiftX, shiftY);
+				}],
 
 
-			['<li><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>', 
-			function() {
-				duplicateModule( module );
-			}],
-                    
-                        ['<li><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>', 
-			function() {
-				window.localStorage.setItem("ci-copy-module",JSON.stringify( module.definition ));
-			}]
-		]);
+				['<li><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>', 
+				function() {
+					duplicateModule( module );
+				}],
+	                    
+	                        ['<li><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>', 
+				function() {
+					window.localStorage.setItem("ci-copy-module",JSON.stringify( module.definition ));
+				}]
+			]);
+		}
 
 		module.ready.done(function() {
 
@@ -105,45 +107,49 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				checkDimensions(true);
 			});
 			
-			// Insert jQuery UI resizable and draggable
-			module.getDomWrapper().resizable({
-				grid: [ definition.xWidth, definition.yHeight ],
-				start: function() {
-					Util.maskIframes();
-					module.resizing = true;
-				},
-				stop: function() {
-					Util.unmaskIframes();
-					moduleResize(module);
-					module.resizing = false;
-					checkDimensions(false);
-				},
-				containment: "parent"
-				
-			}).draggable({
-				
-				grid: [definition.xWidth, definition.yHeight],
-				containment: "parent",
-				handle: '.ci-module-header',
-				start: function() {
-					Util.maskIframes();
-					checkDimensions(true);
-					module.moving = true;
-				},
-				stop: function() {
-					var position = $(this).position();
-					Util.unmaskIframes();
-					module.getPosition().set('left', position.left / definition.xWidth);
-					module.getPosition().set('top', position.top / definition.yHeight);
-					module.moving = false;
-					checkDimensions(false);
-				},
-				drag: function() {
-					checkDimensions(true);
-				}
+			if( ! API.isViewLocked() ) {
+				// Insert jQuery UI resizable and draggable
+				module.getDomWrapper().resizable({
+					grid: [ definition.xWidth, definition.yHeight ],
+					start: function() {
+						Util.maskIframes();
+						module.resizing = true;
+					},
+					stop: function() {
+						Util.unmaskIframes();
+						moduleResize(module);
+						module.resizing = false;
+						checkDimensions(false);
+					},
+					containment: "parent"
+					
+				}).draggable({
+					
+					grid: [definition.xWidth, definition.yHeight],
+					containment: "parent",
+					handle: '.ci-module-header',
+					start: function() {
+						Util.maskIframes();
+						checkDimensions(true);
+						module.moving = true;
+					},
+					stop: function() {
+						var position = $(this).position();
+						Util.unmaskIframes();
+						module.getPosition().set('left', position.left / definition.xWidth);
+						module.getPosition().set('top', position.top / definition.yHeight);
+						module.moving = false;
+						checkDimensions(false);
+					},
+					drag: function() {
+						checkDimensions(true);
+					}
 
-			}).trigger('resize').bind('mouseover', function() {
-				
+				}).trigger('resize');
+			}
+
+			module.getDomWrapper().bind('mouseover', function() {
+					
 				if(module.resizing || module.moving)
 					return;
 				if(module.getDomHeader().hasClass('ci-hidden')) {
@@ -397,9 +403,14 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		 */
 		init: function( def, dom, modules ) {
 			
+			if( isInit ) {
+				return;
+			}
+
 			this.modules = modules;
 			jqdom = $( dom );
-			
+			isInit = true;
+
 			function makeRecursiveMenu( elements, dom ) {
 
 				if( elements.modules ) {
@@ -421,42 +432,45 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 					}
 				}
 			}
-                        
-                        Context.listen(Context.getRootDom(), [
-				['<li><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>', 
-				function() {
-					var module = JSON.parse(window.localStorage.getItem("ci-copy-module"),Versioning.getViewHandler()._reviver);
-                                        addModuleFromJSON( module );
-				}]]
-			);
-			
-			Context.listen(dom, [], function(contextDom) {
-				$li = $('<li><a> Add a module</a></li>');
 
-				$ulModules = $("<ul />").appendTo($li);
-				var allTypes = ModuleFactory.getTypes();
-				$.when( allTypes ).then( function( json ) {
+            if( ! API.isViewLocked() ) { 
 
-					if( typeof json === "object" && ! Array.isArray( json ) ) {
-						json = [ json ];
-					}
+	            Context.listen(Context.getRootDom(), [
+					['<li><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>', 
+					function() {
+						var module = JSON.parse(window.localStorage.getItem("ci-copy-module"),Versioning.getViewHandler()._reviver);
+	                                        addModuleFromJSON( module );
+					}]]
+				);
+				
+				Context.listen(dom, [], function(contextDom) {
+					$li = $('<li><a> Add a module</a></li>');
 
-					if( Array.isArray( json ) ) {					
-						for( var i = 0, l = json.length ; i < l ; i ++) {
-							makeRecursiveMenu( json[ i ], $ulModules );	
+					$ulModules = $("<ul />").appendTo($li);
+					var allTypes = ModuleFactory.getTypes();
+					$.when( allTypes ).then( function( json ) {
+
+						if( typeof json === "object" && ! Array.isArray( json ) ) {
+							json = [ json ];
 						}
-					} else {
 
-					}
-					
+						if( Array.isArray( json ) ) {					
+							for( var i = 0, l = json.length ; i < l ; i ++) {
+								makeRecursiveMenu( json[ i ], $ulModules );	
+							}
+						} else {
+
+						}
+						
+					});
+
+					$(contextDom).append( $li );
+
+					$li.bind( 'click', function( event ) {
+						newModule( decodeURIComponent( $( event.target.parentNode ).attr( 'data-url' ) ) );
+					});
 				});
-
-				$(contextDom).append( $li );
-
-				$li.bind( 'click', function( event ) {
-					newModule( decodeURIComponent( $( event.target.parentNode ).attr( 'data-url' ) ) );
-				});
-			});
+			}
                         
 			this.reset( def );
 		},

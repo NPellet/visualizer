@@ -1,5 +1,9 @@
 
-define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/util'], function($, ContextMenu, API, Button, Util) {
+define([	
+	'jquery',
+	'src/util/context',
+	'src/util/api',
+	'src/util/util'], function($, ContextMenu, API, Util) {
 	
 	function init(module) {
 		//define object properties
@@ -278,24 +282,28 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 			this.model.inDom( );
 			
 			var self = this;
+console.log( API.isViewLocked() );
+			if( ! API.isViewLocked() ) {
 
-			ContextMenu.listen(this.getDomWrapper().get(0), [
+				ContextMenu.listen(this.getDomWrapper().get(0), [
 
-				['<li><a><span class="ui-icon ui-icon-suitcase"></span> Export</a></li>', 
-				function() {
-					self.exportData();
-				}],
-                
-				['<li><a><span class="ui-icon ui-icon-print"></span> Print</a></li>', 
-				function() {
-					self.printView();
-				}],
-				
-				['<li><a><span class="ui-icon ui-icon-gear"></span> Parameters</a></li>', 
-				function() {
-					self.doConfig();
-				}]
-			]);
+					['<li><a><span class="ui-icon ui-icon-suitcase"></span> Export</a></li>', 
+					function() {
+						self.exportData();
+					}],
+	                
+					['<li><a><span class="ui-icon ui-icon-print"></span> Print</a></li>', 
+					function() {
+						self.printView();
+					}],
+					
+					['<li><a><span class="ui-icon ui-icon-gear"></span> Parameters</a></li>', 
+					function() {
+						self.doConfig();
+					}]
+				]);
+
+			}
 
 			this.setDisplayWrapper();
 		},

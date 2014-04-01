@@ -156,9 +156,13 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			this.setViewJSON( { } );
 		},
                 
-                switchView: switchView,
-                setURLType: function(type) {
-                    urlType = type;
-                }
+        switchView: switchView,
+        setURLType: function(type) {
+            urlType = type;
+        },
+
+        isViewLocked: function() {
+        	return this.getView().configuration.lockView || false;
+        }
 	};
 });
