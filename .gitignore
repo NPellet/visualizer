@@ -9,3 +9,5 @@ nbproject/*
 /build2
 
 /src/usr/*
+
+src/usr/config/default.json

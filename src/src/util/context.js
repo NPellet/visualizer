@@ -37,9 +37,15 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 		init: function(dom) {
 			this.dom = dom;
 			dom.addEventListener('contextmenu', function(e) {
-				e.preventDefault();
-				if(contextMenu)
-					contextMenu.menu('destroy').remove();
+
+				//e.preventDefault();
+				if( contextMenu ) {
+					if( contextMenu.hasClass('ui-menu') ) {
+						contextMenu.menu('destroy')
+					}
+					contextMenu.remove();
+				} 
+
 				contextMenu = null;
 				$menu = $('<ul class="ci-contextmenu"></ul>').css({
 					'position': 'absolute',
@@ -51,41 +57,54 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 				contextMenu = $menu;
 
 				var clickHandler = function() {
-					if(contextMenu)
-						contextMenu.menu('destroy').remove();
+					
+					//e.preventDefault();
+					if( contextMenu ) {
+						if( contextMenu.hasClass('ui-menu') ) {
+							contextMenu.menu('destroy')
+						}
+						contextMenu.remove();
+					} 
+
 					contextMenu = null;
 					$(document).unbind('click', clickHandler);
 				}
 
 				var rightClickHandler = function() {
-					if(contextMenu)
-						contextMenu.menu('destroy').remove();
+					
+					//e.preventDefault();
+					if( contextMenu ) {
+						if( contextMenu.hasClass('ui-menu') ) {
+							contextMenu.menu('destroy')
+						}
+						contextMenu.remove();
+					} 
+
 					contextMenu = null;
 				}
 				
 				$(document).bind('click', clickHandler);
-				return false;
+		//		return false;
 
 			}, true);
 
 
-		dom.parentNode.addEventListener('contextmenu', function(e) {
+			dom.parentNode.addEventListener('contextmenu', function(e) {
 
-			//console.log( contextMenu );
+				//console.log( contextMenu );
+				if( contextMenu.children().length > 0 ) {
+					contextMenu.menu({
+						select: function(event, ui) {
+							var moduleName = ui.item.attr('name');
+						}
+					});
 
-			
-			contextMenu.menu({
-				select: function(event, ui) {
-					var moduleName = ui.item.attr('name');
+					e.preventDefault();
+					e.stopPropagation();
+					return false;
 				}
-			});
-			e.preventDefault();
-			e.stopPropagation();
-			return false;
-
-		}, false);
-
-
+				
+			}, false);
 		}
 
 
