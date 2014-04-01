@@ -149,9 +149,44 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 	window.DataArray = DataArray;
 
 
+	var resurectObject = {
+		enumerable: false,
+		configurable: false,
+		writable: false,
+		value: function() {
+			var obj = {};
+			for( var i in this ) {
 
-	//DataArray.prototype = new Array;
-	//console.
+				if( this[ i ] instanceof DataArray || this[ i ] instanceof DataObject ) {
+					obj[ i ] = this[ i ].resurect()
+				} else {
+					obj[ i ] = this[ i ];
+				}
+			}
+
+			return obj;
+		}
+	};
+
+	var resurectArray = {
+		enumerable: false,
+		configurable: false,
+		writable: false,
+		value: function() {
+			var obj = [];
+			for( var i = 0, l = this.length ; i < l ; i ++ ) {
+				if( typeof this[ i ] == "object" ) {
+					obj[ i ] = this[ i ].resurect()
+				} else {
+					obj[ i ] = this[ i ];
+				}
+			}
+
+			return obj;
+		}
+	};
+
+
 
 	var viewSetter = {
 		enumerable: false,
@@ -412,7 +447,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			}
 
 			// Trigger on the parent if it exists !
-			if( this.__parent && ! noBubble ) {
+			if( this.__parent && ! noBubble && this.__parent.triggerChange ) {
 				this.__parent.triggerChange( moduleid );
 			}
 
@@ -534,6 +569,9 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 	Object.defineProperty(DataObject.prototype, 'duplicate', dataDuplicator);
 	Object.defineProperty(DataArray.prototype, 'duplicate', dataDuplicator);
 
+	Object.defineProperty(DataObject.prototype, 'resurect', resurectObject);
+	Object.defineProperty(DataArray.prototype, 'resurect', resurectArray);
+
 
 	Object.defineProperty(DataObject.prototype, 'unbindChange', unbindChange);
 	Object.defineProperty(DataArray.prototype, 'unbindChange', unbindChange);
@@ -585,20 +623,65 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 
 		var self = this;
 		this.onChange( function() {
-
-			PouchDBUtil.getPouch( self.getPouch() ).put( l, l._id, l._rev );
+			
+			var toSave = self.exportForPouch();
+			console.log( toSave );
+			PouchDBUtil.getPouch( self.getPouch() ).put( toSave, self._id, self._rev, function( err, callback ) {
+				console.log(err, callback);
+			} );
 		} )
 	};
 
 	PouchObject.prototype = new DataObject;
 
-	PouchObject.prototype.setPouch = function( pouchName ) {
-		this._pouchName = pouchName;
-	}
+	Object.defineProperty( PouchObject.prototype, "setPouch", {
 
-	PouchObject.prototype.getPouch = function( ) {
-		return this._pouchName;
-	}
+		enumerable: false,
+		writable: false,
+		configurable: false,
+		value: function( pouchName ) {
+			this._pouchName = pouchName;
+		}
+	});
+	
+
+	Object.defineProperty( PouchObject.prototype, "getPouch", {
+
+		enumerable: false,
+		writable: false,
+		configurable: false,
+		value: function() {
+			return this._pouchName;
+		}
+	});
+
+
+
+	Object.defineProperty( PouchObject.prototype, "exportForPouch", {
+
+		enumerable: false,
+		writable: false,
+		configurable: false,
+		value: function() {
+
+			var obj = new DataObject();
+
+			for( var i in this ) {
+
+				if( typeof this[ i ] == "function ") {
+					continue;
+				}
+
+				if( ( i ).slice( 0, 1 ) == "_") {
+					continue;
+				}
+
+				obj[ i ] = this[ i ];
+			}
+
+			return obj.resurect();
+		}
+	});
 
 	
 	function PouchArray(arr, deep) { 
