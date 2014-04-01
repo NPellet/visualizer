@@ -625,7 +625,9 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 		this.onChange( function() {
 			
 			var toSave = self.exportForPouch();
-			console.log( toSave );
+			
+
+
 			PouchDBUtil.getPouch( self.getPouch() ).put( toSave, self._id, self._rev, function( err, callback ) {
 				console.log(err, callback);
 			} );
@@ -701,6 +703,10 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 
 	PouchArray.prototype.setPouch = function( pouchName ) {
 		this._pouchName = pouchName;
+
+		for( var i = 0, l = this.value.length ; i < l ; i ++ ) {
+			this.value[ i ].setPouch( pouchName );
+		}
 	}
 
 	PouchArray.prototype.getPouch = function( ) {
