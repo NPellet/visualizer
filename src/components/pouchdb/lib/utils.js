@@ -9,6 +9,7 @@ var uuid = require('./deps/uuid');
 exports.Crypto = require('./deps/md5.js');
 var buffer = require('./deps/buffer');
 var errors = require('./deps/errors');
+var EventEmitter = require('events').EventEmitter;
 var Promise = typeof global.Promise === 'function' ? global.Promise : require('bluebird');
 
 // List of top level reserved words for doc
@@ -64,14 +65,28 @@ function isChromeApp() {
           typeof chrome.storage.local !== "undefined");
 }
 
+exports.getArguments = function (fun) {
+  return function () {
+    var len = arguments.length;
+    var args = new Array(len);
+    var i = -1;
+    while (++i < len) {
+      args[i] = arguments[i];
+    }
+    return fun.call(this, args);
+  };
+};
 // Pretty dumb name for a function, just wraps callback calls so we dont
 // to if (callback) callback() everywhere
-exports.call = function (fun) {
-  if (typeof fun === typeof Function) {
-    var args = Array.prototype.slice.call(arguments, 1);
+exports.call = exports.getArguments(function (args) {
+  if (!args.length) {
+    return;
+  }
+  var fun = args.shift();
+  if (typeof fun === 'function') {
     fun.apply(this, args);
   }
-};
+});
 
 exports.isLocalId = function (id) {
   return (/^_local/).test(id);
@@ -233,60 +248,51 @@ exports.isCordova = function () {
           typeof phonegap !== "undefined");
 };
 
+exports.hasLocalStorage = function () {
+  if (isChromeApp()) {
+    return false;
+  }
+  try {
+    return global.localStorage;
+  } catch (e) {
+    return false;
+  }
+};
 exports.Changes = function () {
 
   var api = {};
+  var eventEmitter = new EventEmitter();
+  var isChrome = isChromeApp();
   var listeners = {};
-
-  if (isChromeApp()) {
+  var hasLocal = false;
+  if (!isChrome) {
+    hasLocal = exports.hasLocalStorage();
+  }
+  if (isChrome) {
     chrome.storage.onChanged.addListener(function (e) {
       // make sure it's event addressed to us
       if (e.db_name != null) {
-        api.notify(e.db_name.newValue);//object only has oldValue, newValue members
+        eventEmitter.emit(e.dbName.newValue);//object only has oldValue, newValue members
       }
     });
-  } else if (typeof window !== 'undefined') {
-    global.addEventListener("storage", function (e) {
-      api.notify(e.key);
-    });
+  } else if (hasLocal) {
+    if (global.addEventListener) {
+      global.addEventListener("storage", function (e) {
+        eventEmitter.emit(e.key);
+      });
+    } else {
+      global.attachEvent("storage", function (e) {
+        eventEmitter.emit(e.key);
+      });
+    }
   }
 
-  api.addListener = function (db_name, id, db, opts) {
-    if (!listeners[db_name]) {
-      listeners[db_name] = {};
+  api.addListener = function (dbName, id, db, opts) {
+    if (listeners[id]) {
+      return;
     }
-    listeners[db_name][id] = {
-      db: db,
-      opts: opts
-    };
-  };
-
-  api.removeListener = function (db_name, id) {
-    if (listeners[db_name]) {
-      delete listeners[db_name][id];
-    }
-  };
-
-  api.clearListeners = function (db_name) {
-    delete listeners[db_name];
-  };
-
-  api.notifyLocalWindows = function (db_name) {
-    //do a useless change on a storage thing
-    //in order to get other windows's listeners to activate
-    if (isChromeApp()) {
-      chrome.storage.local.set({db_name: db_name});
-    } else if (global.localStorage) {
-      localStorage[db_name] = (localStorage[db_name] === "a") ? "b" : "a";
-    }
-  };
-
-  api.notify = function (db_name) {
-    if (!listeners[db_name]) { return; }
-
-    Object.keys(listeners[db_name]).forEach(function (i) {
-      var opts = listeners[db_name][i].opts;
-      listeners[db_name][i].db.changes({
+    function eventFunction() {
+      db.changes({
         include_docs: opts.include_docs,
         conflicts: opts.conflicts,
         continuous: false,
@@ -302,7 +308,34 @@ exports.Changes = function () {
           }
         }
       });
-    });
+    }
+    listeners[id] = eventFunction;
+    eventEmitter.on(dbName, eventFunction);
+  };
+
+  api.removeListener = function (dbName, id) {
+    if (!(id in listeners)) {
+      return;
+    }
+    eventEmitter.removeListener(dbName, listeners[id]);
+  };
+
+  api.clearListeners = function (dbName) {
+    eventEmitter.removeAllListeners(dbName);
+  };
+
+  api.notifyLocalWindows = function (dbName) {
+    //do a useless change on a storage thing
+    //in order to get other windows's listeners to activate
+    if (isChrome) {
+      chrome.storage.local.set({dbName: dbName});
+    } else if (hasLocal) {
+      localStorage[dbName] = (localStorage[dbName] === "a") ? "b" : "a";
+    }
+  };
+
+  api.notify = function (dbName) {
+    eventEmitter.emit(dbName);
   };
 
   return api;
@@ -350,17 +383,29 @@ exports.fixBinary = function (bin) {
   return buf;
 };
 
+exports.once = function (fun) {
+  var called = false;
+  return exports.getArguments(function (args) {
+    if (called) {
+      console.trace();
+      throw new Error('once called  more than once');
+    } else {
+      called = true;
+      fun.apply(this, args);
+    }
+  });
+};
+
 exports.toPromise = function (func) {
   //create the function we will be returning
-  return function () {
+  return exports.getArguments(function (args) {
     var self = this;
-    var args = Array.prototype.slice.call(arguments);
     var tempCB = (typeof args[args.length - 1] === 'function') ? args.pop() : false;
     // if the last argument is a function, assume its a callback
     var usedCB;
     if (tempCB) {
-      // if it was a callback, create a new callback which calls the callback function
-      // but we do so async so we don't trap any errors
+      // if it was a callback, create a new callback which calls it,
+      // but do so async so we don't trap any errors
       usedCB = function (err, resp) {
         process.nextTick(function () {
           tempCB(err, resp);
@@ -368,17 +413,21 @@ exports.toPromise = function (func) {
       };
     }
     var promise = new Promise(function (fulfill, reject) {
-      function callback(err, mesg) {
-        if (err) {
-          reject(err);
-        } else {
-          fulfill(mesg);
-        }
+      try {
+        var callback = exports.once(function (err, mesg) {
+          if (err) {
+            reject(err);
+          } else {
+            fulfill(mesg);
+          }
+        });
+        // create a callback for this invocation
+        // apply the function in the orig context
+        args.push(callback);
+        func.apply(self, args);
+      } catch (e) {
+        reject(e);
       }
-      // create a callback for this invocation
-      args.push(callback);
-      func.apply(self, args);
-      // apply the function in the orig context
     });
     // if there is a callback, call it back
     if (usedCB) {
@@ -386,6 +435,74 @@ exports.toPromise = function (func) {
         usedCB(null, result);
       }, usedCB);
     }
+    promise.cancel = function () {
+      return this;
+    };
     return promise;
+  });
+};
+
+exports.adapterFun = function (name, callback) {
+  return exports.toPromise(exports.getArguments(function (args) {
+    if (!this.taskqueue.isReady) {
+      this.taskqueue.addTask(name, args);
+      return;
+    }
+    callback.apply(this, args);
+  }));
+};
+//Can't find original post, but this is close
+//http://stackoverflow.com/questions/6965107/converting-between-strings-and-arraybuffers
+exports.arrayBufferToBinaryString = function (buffer) {
+  var binary = "";
+  var bytes = new Uint8Array(buffer);
+  var length = bytes.byteLength;
+  for (var i = 0; i < length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return binary;
+};
+
+exports.cancellableFun = function (fun, self, opts) {
+
+  opts = opts ? exports.extend(true, {}, opts) : {};
+  opts.complete = opts.complete || function () { };
+  var complete = exports.once(opts.complete);
+
+  var promise = new Promise(function (fulfill, reject) {
+    opts.complete = function (err, res) {
+      if (err) {
+        reject(err);
+      } else {
+        fulfill(res);
+      }
+    };
+  });
+
+  promise.then(function (result) {
+    complete(null, result);
+  }, complete);
+
+  // this needs to be overwridden by caller, dont fire complete until
+  // the task is ready
+  promise.cancel = function () {
+    promise.isCancelled = true;
+    if (self.taskqueue.isReady) {
+      opts.complete(null, {status: 'cancelled'});
+    }
   };
+
+  if (!self.taskqueue.isReady) {
+    self.taskqueue.addTask(function () {
+      if (promise.isCancelled) {
+        opts.complete(null, {status: 'cancelled'});
+      } else {
+        fun(self, opts, promise);
+      }
+    });
+    return promise;
+  } else {
+    fun(self, opts, promise);
+    return promise;
+  }
 };

@@ -4,6 +4,7 @@ var utils = require('./utils');
 var merge = require('./merge');
 var errors = require('./deps/errors');
 var EventEmitter = require('events').EventEmitter;
+
 /*
  * A generic pouch adapter
  */
@@ -56,8 +57,10 @@ function computeHeight(revs) {
   });
   return height;
 }
+
 utils.inherits(AbstractPouchDB, EventEmitter);
 module.exports = AbstractPouchDB;
+
 function AbstractPouchDB() {
   var self = this;
   EventEmitter.call(this);
@@ -87,6 +90,7 @@ function AbstractPouchDB() {
       }
     };
   };
+
   var listeners = 0, changes;
   var eventNames = ['change', 'delete', 'create', 'update'];
   this.on('newListener', function (eventName) {
@@ -134,7 +138,8 @@ function AbstractPouchDB() {
     changes.cancel();
   });
 }
-AbstractPouchDB.prototype.post = utils.toPromise(function (doc, opts, callback) {
+
+AbstractPouchDB.prototype.post = utils.adapterFun('post', function (doc, opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -146,10 +151,10 @@ AbstractPouchDB.prototype.post = utils.toPromise(function (doc, opts, callback) 
       this.autoCompact(yankError(callback)));
 });
 
-AbstractPouchDB.prototype.put = utils.toPromise(function () {
-  var args = Array.prototype.slice.call(arguments);
-  var temp, temptype, doc, id, opts, callback;
-  doc = args.shift();
+AbstractPouchDB.prototype.put = utils.adapterFun('put', utils.getArguments(function (args) {
+  var temp, temptype, opts, callback;
+  var doc = args.shift();
+  var id = '_id' in doc;
   if (typeof doc !== 'object' || Array.isArray(doc)) {
     callback = args.pop();
     return callback(errors.NOT_AN_OBJECT);
@@ -161,7 +166,7 @@ AbstractPouchDB.prototype.put = utils.toPromise(function () {
     if (temptype === "string" && !id) {
       doc._id = temp;
       id = true;
-    } else if (temptype === "string" && id) {
+    } else if (temptype === "string" && id && !('_rev' in doc)) {
       doc._rev = temp;
     } else if (temptype === "object") {
       opts = temp;
@@ -179,13 +184,9 @@ AbstractPouchDB.prototype.put = utils.toPromise(function () {
   }
   return this.bulkDocs({docs: [doc]}, opts,
       this.autoCompact(yankError(callback)));
-});
+}));
 
-AbstractPouchDB.prototype.putAttachment = utils.toPromise(function (docId, attachmentId, rev, blob, type, callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('putAttachment', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.putAttachment = utils.adapterFun('putAttachment', function (docId, attachmentId, rev, blob, type, callback) {
   var api = this;
   if (typeof type === 'function') {
     callback = type;
@@ -228,7 +229,7 @@ AbstractPouchDB.prototype.putAttachment = utils.toPromise(function (docId, attac
   });
 });
 
-AbstractPouchDB.prototype.removeAttachment = utils.toPromise(function (docId, attachmentId, rev, callback) {
+AbstractPouchDB.prototype.removeAttachment = utils.adapterFun('removeAttachment', function (docId, attachmentId, rev, callback) {
   var self = this;
   self.get(docId, function (err, obj) {
     if (err) {
@@ -250,7 +251,7 @@ AbstractPouchDB.prototype.removeAttachment = utils.toPromise(function (docId, at
   });
 });
 
-AbstractPouchDB.prototype.remove = utils.toPromise(function (doc, opts, callback) {
+AbstractPouchDB.prototype.remove = utils.adapterFun('remove', function (doc, opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -265,7 +266,7 @@ AbstractPouchDB.prototype.remove = utils.toPromise(function (doc, opts, callback
   return this.bulkDocs({docs: [newDoc]}, opts, yankError(callback));
 });
 
-AbstractPouchDB.prototype.revsDiff = utils.toPromise(function (req, opts, callback) {
+AbstractPouchDB.prototype.revsDiff = utils.adapterFun('revsDiff', function (req, opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -354,7 +355,7 @@ AbstractPouchDB.prototype.compactDocument = function (docId, max_height, callbac
 
 // compact the whole database using single document
 // compaction
-AbstractPouchDB.prototype.compact = utils.toPromise(function (opts, callback) {
+AbstractPouchDB.prototype.compact = utils.adapterFun('compact', function (opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -382,11 +383,7 @@ AbstractPouchDB.prototype.compact = utils.toPromise(function (opts, callback) {
 });
 
 /* Begin api wrappers. Specific functionality to storage belongs in the _[method] */
-AbstractPouchDB.prototype.get = utils.toPromise(function (id, opts, callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('get', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.get = utils.adapterFun('get', function (id, opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -529,11 +526,7 @@ AbstractPouchDB.prototype.get = utils.toPromise(function (id, opts, callback) {
   });
 });
 
-AbstractPouchDB.prototype.getAttachment = utils.toPromise(function (docId, attachmentId, opts, callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('getAttachment', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.getAttachment = utils.adapterFun('getAttachment', function (docId, attachmentId, opts, callback) {
   var self = this;
   if (opts instanceof Function) {
     callback = opts;
@@ -553,11 +546,7 @@ AbstractPouchDB.prototype.getAttachment = utils.toPromise(function (docId, attac
   });
 });
 
-AbstractPouchDB.prototype.allDocs = utils.toPromise(function (opts, callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('allDocs', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.allDocs = utils.adapterFun('allDocs', function (opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
@@ -604,50 +593,50 @@ function processChange(doc, metadata, opts) {
   }
   return change;
 }
-AbstractPouchDB.prototype.changes = function (opts) {
-  if (!this.taskqueue.isReady) {
-    var task = this.taskqueue.addTask('changes', arguments);
-    return {
-      cancel: function () {
-        if (task.task) {
-          return task.task.cancel();
-        }
-        task.parameters[0].aborted = true;
-      }
-    };
-  }
-  var api = this;
+
+function doChanges(api, opts, promise) {
+
+  var callback = opts.complete;
+
   opts = utils.extend(true, {}, opts);
+  if ('live' in opts && !('continuous' in opts)) {
+    opts.continuous = opts.live;
+  }
   opts.processChange = processChange;
 
   if (!opts.since) {
     opts.since = 0;
   }
   if (opts.since === 'latest') {
-    var changes;
     api.info(function (err, info) {
-      if (!opts.aborted) {
-        opts.since = info.update_seq  - 1;
-        changes = api.changes(opts);
+      if (promise.isCancelled) {
+        callback(null, {status: 'cancelled'});
+        return;
       }
+      if (err) {
+        callback(err);
+        return;
+      }
+      opts.since = info.update_seq  - 1;
+      doChanges(api, opts, promise, callback);
     });
-    // Return a method to cancel this method from processing any more
-    return {
-      cancel: function () {
-        if (changes) {
-          return changes.cancel();
-        }
-        opts.aborted = true;
-      }
-    };
+    return;
   }
 
-  if (opts.filter && typeof opts.filter === 'string') {
+  if (api.type() !== 'http' && opts.filter && typeof opts.filter === 'string') {
     if (opts.filter === '_view') {
       if (opts.view && typeof opts.view === 'string') {
         // fetch a view from a design doc, make it behave like a filter
         var viewName = opts.view.split('/');
         api.get('_design/' + viewName[0], function (err, ddoc) {
+          if (promise.isCancelled) {
+            callback(null, {status: 'cancelled'});
+            return;
+          }
+          if (err) {
+            callback(err);
+            return;
+          }
           if (ddoc && ddoc.views && ddoc.views[viewName[1]]) {
             /*jshint evil: true */
             var filter = eval('(function () {' +
@@ -663,50 +652,52 @@ AbstractPouchDB.prototype.changes = function (opts) {
                               '    }' +
                               '  }' +
                               '})()');
-            if (!opts.aborted) {
-              opts.filter = filter;
-              api.changes(opts);
-            }
+            opts.filter = filter;
+            doChanges(api, opts, promise, callback);
+            return;
           } else {
             var msg = ddoc.views ? 'missing json key: ' + viewName[1] :
               'missing json key: views';
             err = err || errors.error(errors.MISSING_DOC, msg);
-            opts.complete(err);
+            callback(err);
+            return;
           }
         });
       } else {
         var err = errors.error(errors.BAD_REQUEST,
                               '`view` filter parameter is not provided.');
-        opts.complete(err);
+        callback(err);
+        return;
       }
     } else {
       // fetch a filter from a design doc
       var filterName = opts.filter.split('/');
       api.get('_design/' + filterName[0], function (err, ddoc) {
+        if (promise.isCancelled) {
+          callback(null, {status: 'cancelled'});
+          return;
+        }
+        if (err) {
+          callback(err);
+          return;
+        }
         if (ddoc && ddoc.filters && ddoc.filters[filterName[1]]) {
           /*jshint evil: true */
           var filter = eval('(function () { return ' +
                             ddoc.filters[filterName[1]] + ' })()');
-          if (!opts.aborted) {
-            opts.filter = filter;
-            api.changes(opts);
-          }
+          opts.filter = filter;
+          doChanges(api, opts, promise, callback);
+          return;
         } else {
           var msg = (ddoc && ddoc.filters) ? 'missing json key: ' + filterName[1]
             : 'missing json key: filters';
           err = err || errors.error(errors.MISSING_DOC, msg);
-          opts.complete(err);
+          callback(err);
+          return;
         }
       });
     }
-    // Return a method to cancel this method from processing any more
-    return {
-      cancel: function () {
-        opts.complete(null, {status: 'cancelled'});
-        opts.complete = null;
-        opts.aborted = true;
-      }
-    };
+    return;
   }
 
   if (!('descending' in opts)) {
@@ -715,22 +706,26 @@ AbstractPouchDB.prototype.changes = function (opts) {
 
   // 0 and 1 should return 1 document
   opts.limit = opts.limit === 0 ? 1 : opts.limit;
-  return this._changes(opts);
+  opts.complete = callback;
+  var newPromise = api._changes(opts);
+  if (newPromise && typeof newPromise.cancel === 'function') {
+    var cancel = promise.cancel;
+    promise.cancel = utils.getArguments(function (args) {
+      newPromise.cancel();
+      cancel.apply(this, args);
+    });
+  }
+}
+
+AbstractPouchDB.prototype.changes = function (opts) {
+  return utils.cancellableFun(doChanges, this, opts);
 };
 
-AbstractPouchDB.prototype.close = utils.toPromise(function (callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('close', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.close = utils.adapterFun('close', function (callback) {
   return this._close(callback);
 });
 
-AbstractPouchDB.prototype.info = utils.toPromise(function (callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('info', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.info = utils.adapterFun('info', function (callback) {
   var self = this;
   this._info(function (err, info) {
     if (err) {
@@ -744,11 +739,7 @@ AbstractPouchDB.prototype.info = utils.toPromise(function (callback) {
   });
 });
 
-AbstractPouchDB.prototype.id = utils.toPromise(function (callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('id', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.id = utils.adapterFun('id', function (callback) {
   return this._id(callback);
 });
 
@@ -756,11 +747,7 @@ AbstractPouchDB.prototype.type = function () {
   return (typeof this._type === 'function') ? this._type() : this.adapter;
 };
 
-AbstractPouchDB.prototype.bulkDocs = utils.toPromise(function (req, opts, callback) {
-  if (!this.taskqueue.isReady) {
-    this.taskqueue.addTask('bulkDocs', arguments);
-    return;
-  }
+AbstractPouchDB.prototype.bulkDocs = utils.adapterFun('bulkDocs', function (req, opts, callback) {
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};

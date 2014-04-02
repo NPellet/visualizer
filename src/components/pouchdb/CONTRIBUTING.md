@@ -104,6 +104,17 @@ or
 
     $ COUCH_HOST=http://user:pass@myname.host.com npm test
 
+### Testing Pouch in a shell
+
+For quick debugging, you can run an interactive Node shell with the `PouchDB` variable already available:
+
+    npm run shell
+
+Alternative Backends
+--------------------------------------
+PouchDB is looking to support alternative backends that comply with the [LevelDOWN API](https://github.com/rvagg/abstract-leveldown). For example, simply include `LEVEL_BACKEND=leveljs` in your `npm run build` and `npm run dev` commands to experiment with this feature!
+
+Doing so will also create a separate distribution, for example, `pouchdb-leveljs.js` rather than `pouchdb-nightly.js`. In order to test a different distribution from `pouchdb-nightly.js`, you must specify in the testing URL: http://127.0.0.1:8000/tests/test.html?sourceFile=pouchdb-leveljs.js. `LEVEL_BACKEND=leveljs npm run test` will accomplish the same thing.
 
 Git Essentials
 --------------------------------------
@@ -124,10 +135,16 @@ Building PouchDB Documentation
 
 The source for the website http://pouchdb.com is stored inside the `docs` directory of the PouchDB repository, you can make changes and submit pull requests as with any other patch. To build and view the website locally you will need to install [jekyll](http://jekyllrb.com/) then:
 
-    $ cd docs
-    $ jekyll -w serve
+    $ npm run build-site
 
 You should now find the documentation at http://127.0.0.1:4000
+
+Writing a PouchDB Blog Post
+--------------------------------------
+
+Writing a blog post for PouchDB is exactly the same process as other contributions, the blog posts are kept @ https://github.com/daleharvey/pouchdb/tree/master/docs/_posts, just build the site as documented above, its usually easiest to copy an existing post and write away.
+
+If you want to be sure the blog post is relevant, open an issue on what you want to write about to hear back from reviewers.
 
 Committers!
 --------------

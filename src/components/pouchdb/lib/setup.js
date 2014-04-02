@@ -20,13 +20,15 @@ var eventEmitterMethods = [
   'setMaxListeners'
 ];
 
+var preferredAdapters = ['levelalt', 'idb', 'leveldb', 'websql'];
+
 eventEmitterMethods.forEach(function (method) {
   PouchDB[method] = eventEmitter[method].bind(eventEmitter);
 });
 PouchDB.setMaxListeners(0);
-PouchDB.parseAdapter = function (name) {
+PouchDB.parseAdapter = function (name, opts) {
   var match = name.match(/([a-z\-]*):\/\/(.*)/);
-  var adapter;
+  var adapter, adapterName;
   if (match) {
     // the http adapter expects the fully qualified name
     name = /http(s?)/.test(match[1]) ? match[1] + '://' + match[2] : match[2];
@@ -37,17 +39,33 @@ PouchDB.parseAdapter = function (name) {
     return {name: name, adapter: match[1]};
   }
 
-  var preferredAdapters = ['idb', 'leveldb', 'websql'];
-  for (var i = 0; i < preferredAdapters.length; ++i) {
-    if (preferredAdapters[i] in PouchDB.adapters) {
-      adapter = PouchDB.adapters[preferredAdapters[i]];
-      var use_prefix = 'use_prefix' in adapter ? adapter.use_prefix : true;
+  // check for browsers that have been upgraded from websql-only to websql+idb
+  var skipIdb = 'idb' in PouchDB.adapters && 'websql' in PouchDB.adapters &&
+    utils.hasLocalStorage() &&
+    global.localStorage['_pouch__websqldb_' + PouchDB.prefix + name];
 
-      return {
-        name: use_prefix ? PouchDB.prefix + name : name,
-        adapter: preferredAdapters[i]
-      };
+  if (typeof opts !== 'undefined' && opts.db) {
+    adapterName = 'leveldb';
+  } else {
+    for (var i = 0; i < preferredAdapters.length; ++i) {
+      adapterName = preferredAdapters[i];
+      if (adapterName in PouchDB.adapters) {
+        if (skipIdb && adapterName === 'idb') {
+          continue; // keep using websql to avoid user data loss
+        }
+        break;
+      }
     }
+  }
+
+  if (adapterName) {
+    adapter = PouchDB.adapters[adapterName];
+    var use_prefix = 'use_prefix' in adapter ? adapter.use_prefix : true;
+
+    return {
+      name: use_prefix ? PouchDB.prefix + name : name,
+      adapter: adapterName
+    };
   }
 
   throw 'No valid adapter found';
@@ -64,7 +82,7 @@ PouchDB.destroy = utils.toPromise(function (name, opts, callback) {
     name = undefined;
   }
 
-  var backend = PouchDB.parseAdapter(opts.name || name);
+  var backend = PouchDB.parseAdapter(opts.name || name, opts);
   var dbName = backend.name;
 
   // call destroy method of the particular adaptor

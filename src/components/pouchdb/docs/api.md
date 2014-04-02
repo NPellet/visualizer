@@ -1,19 +1,18 @@
 ---
-layout: learn
-title: API Reference - PouchDB
+layout: 2ColLeft
+title: API Reference
+sidebar: api.html
 ---
-
-# API Reference
 
 Most of the PouchDB API is exposed as `fun(arg, [options], [callback])` where both the options and the callback are optional. Callbacks use the `function(err, result)` idiom where the first argument will be undefined unless there is an error, and the second argument holds the result. 
 
-Additionally, any method that only returns a single thing (e.g. `db.get`, but not `db.changes`) also returns a [promise][]. Promises come from the minimal library [lie][] in the browser, and the feature-rich [Bluebird][] in Node.
+Additionally, any method that only returns a single thing (e.g. `db.get`) also returns a [promise][]. Promises come from the minimal library [lie][] in the browser, and the feature-rich [Bluebird][] in Node.
 
   [promise]: http://www.html5rocks.com/en/tutorials/es6/promises/
   [lie]: https://github.com/calvinmetcalf/lie
   [bluebird]: https://github.com/petkaantonov/bluebird
 
-## Create database<a id="create_database"></a>
+{% include anchor.html title="Create a database" hash="create_database"%}
 
 {% highlight js %}
 new PouchDB([name], [options])
@@ -26,13 +25,13 @@ This method creates a database or opens an existing one. If you use a URL like `
 * `options.name`: You can omit the `name` argument and specify it via `options` instead. Note that the name is required.
 * `options.auto_compaction`: This turns on auto compaction (experimental). Defaults to `false`.
 * `options.cache`: Appends a random string to the end of all HTTP GET requests to avoid them being cached on IE. Set this to `true` to prevent this happening (can also be set per request). Defaults to `false`.
-* `options.adapter` One of `'idb'`, `'leveldb'`, `'websql'`, or `'http'`. If unspecified, PouchDB will infer this automatically, preferring IndexedDB to WebSQL in browsers that support both (e.g. Chrome).
+* `options.adapter`: One of `'idb'`, `'leveldb'`, `'websql'`, or `'http'`. If unspecified, PouchDB will infer this automatically, preferring IndexedDB to WebSQL in browsers that support both (i.e. Chrome, Opera and Android 4.4+).
 
 **Notes:** 
 
 1. In IndexedDB and WebSQL, PouchDB will use `_pouch_` to prefix the internal database names. Do not manually create databases with the same prefix.
 2. When acting as a client on Node, any other options given will be passed to [request][].
-3. When using the `'leveldb'` adapter (the default on Node), any other options given will be passed to [levelup][]. The storage layer of leveldb can be replaced by passing a level backend factory (such as [MemDOWN][]) as `options.db`. The rest of the supported options are [documented here][levelup_options], .
+3. When using the `'leveldb'` adapter (the default on Node), any other options given will be passed to [levelup][]. The storage layer of leveldb can be replaced by passing a level backend factory (such as [MemDOWN][]) as `options.db`. The rest of the supported options are [documented here][levelup_options].
 
   [request]: https://github.com/mikeal/request
   [levelup]: https://github.com/rvagg/node-levelup
@@ -46,7 +45,21 @@ var db = new PouchDB('dbname');
 var db = new PouchDB('http://localhost:5984/dbname');
 {% endhighlight %}
 
-## Delete database<a id="delete_database"></a>
+Create a WebSQL-only Pouch (e.g. when using the [SQLite Plugin][] for Cordova/PhoneGap):
+
+  [sqlite plugin]: https://github.com/lite4cordova/Cordova-SQLitePlugin
+
+{% highlight js %}
+var db = new PouchDB('dbname', {adapter : 'websql'});
+{% endhighlight %}
+
+Create an in-memory Pouch (in Node):
+
+{% highlight js %}
+var db = new PouchDB('dbname', {db : require('memdown')});
+{% endhighlight %}
+
+{% include anchor.html title="Delete a database" hash="delete_database"%}
 
 {% highlight js %}
 db.destroy([options], [callback])
@@ -61,7 +74,13 @@ Delete database.
 db.destroy(function(err, info) { });
 {% endhighlight %}
 
-## Create / Update a document<a id="create_document"></a>
+You can also delete a database using just the name:
+
+{% highlight js %}
+PouchDB.destroy('dbname', function(err, info) { });
+{% endhighlight %}
+
+{% include anchor.html title="Create / update a document" hash="create_document" %}
 
 ### Using db.put()
 {% highlight js %}
@@ -153,7 +172,7 @@ db.post({
 
 **Put vs. post**: The basic rule of thumb is: put new documents with an `_id`, post new documents without an `_id`.
 
-## Fetch document<a id="fetch_document"></a>
+{% include anchor.html title="Fetch a document" hash="fetch_document"%}
 
 {% highlight js %}
 db.get(docid, [options], [callback])
@@ -190,7 +209,7 @@ db.get('mydoc', function(err, doc) { });
 }
 {% endhighlight %}
 
-## Delete document<a id="delete_document"></a>
+{% include anchor.html title="Delete a document" hash="delete_document"%}
 
 {% highlight js %}
 db.remove(doc, [options], [callback])
@@ -223,7 +242,7 @@ db.get('mydoc').then(function(doc) {
 }
 {% endhighlight %}
 
-## Create a batch of documents<a id="batch_create"></a>
+{% include anchor.html title="Create a batch of documents" hash="batch_create" %}
 
 {% highlight js %}
 db.bulkDocs(docs, [options], [callback])
@@ -258,7 +277,7 @@ db.bulkDocs({docs: [
 {% endhighlight %}
 
 
-## Fetch documents<a id="batch_fetch"></a>
+{% include anchor.html title="Fetch a batch of documents" hash="batch_fetch" %}
 
 {% highlight js %}
 db.allDocs([options], [callback])
@@ -272,7 +291,7 @@ All options default to `false` unless otherwise specified.
 
 * `options.include_docs`: Include the document itself in each row in the `doc` field. Otherwise by default you only get the `_id` and `_rev` properties.
     - `options.conflicts`: Include conflict information in the `_conflicts` field of a doc.
-	- `options.attachments`: Include attachment data.
+  - `options.attachments`: Include attachment data.
 * `options.startkey` & `options.endkey`: Get documents with keys in a certain range (inclusive/inclusive).
 * `options.descending`: Reverse the order of the output documents.
 * `options.key`: Only return rows matching this string key.
@@ -309,34 +328,37 @@ db.allDocs({include_docs: true}, function(err, response) { });
 }
 {% endhighlight %}
 
-## Listen to database changes<a id="changes"></a>
+{% include anchor.html title="Listen to database changes" hash="changes" %}
 
 {% highlight js %}
 db.changes(options)
 {% endhighlight %}
 
 A list of changes made to documents in the database, in the order they were made.
-If `options.continuous` is set to `true`, it returns an object with one method `cancel` which you call if you don't want to listen to new changes anymore. `options.onChange` will be be called for each change that is encountered.
+It returns an object with one method `cancel`, which you call if you don't want to listen to new changes anymore. 
+`options.onChange` will be be called for each change that is encountered. 
+
+**Note** the 'live' option was formally called 'continuous', you can still use 'continuous' if you can spell it.
 
 ### Options
 
 All options default to `false` unless otherwise specified.
 
 * `options.include_docs`: Include the associated document with each change.
-	* `options.conflicts`: Include conflicts.
-	* `options.attachments`: Include attachments.
+  * `options.conflicts`: Include conflicts.
+  * `options.attachments`: Include attachments.
 * `options.descending`: Reverse the order of the output documents.
 * `options.filter`: Reference a filter function from a design document to selectively get updates.
 * `options.since`: Start the results from the change immediately after the given sequence number.
 * `options.complete`: Function called when all changes have been processed.
-* `options.continuous`: Use _longpoll_ feed.
-* `options.onChange`: Function called on each change after deduplication (only sends the most recent for each document). Not called as a callback but called as `onChange(change)`. Can also be used with the `continuous` flag.
+* `options.live`: Use _longpoll_ feed. 
+* `options.onChange`: Function called on each change after deduplication (only sends the most recent for each document). Not called as a callback but called as `onChange(change)`. Can also be used with the `live` flag.
 
 #### Example Usage:
 {% highlight js %}
 var changes = db.changes({
   since: 20,
-  continuous: true,
+  live: true,
   onChange: function(change) { }
 });
 
@@ -395,13 +417,13 @@ db.changes({complete: function(err, response) { }});
 }
 {% endhighlight %}
 
-## Replicate a database<a id="replication"></a>
+{% include anchor.html title="Replicate a database" hash="replication" %}
 
 {% highlight js %}
 PouchDB.replicate(source, target, [options])
 {% endhighlight %}
 
-Replicate data from `source` to `target`.  Both the `source` and `target` can be a string representing a CouchDB database url or the name a local PouchDB database. If `options.continuous` is `true`, then this will track future changes and also replicate them automatically.
+Replicate data from `source` to `target`.  Both the `source` and `target` can be a string representing a CouchDB database url or the name a local PouchDB database. If `options.live` is `true`, then this will track future changes and also replicate them automatically.
 
 If you want to sync data in both directions, you can call this twice, reversing the `source` and `target` arguments. Additionally, you can use PouchDB.sync().
 
@@ -414,7 +436,7 @@ All options default to `false` unless otherwise specified.
 * `options.doc_ids`: Only replicate docs with these ids.
 * `options.complete`: Function called when all changes have been processed.
 * `options.onChange`: Function called on each change processed.
-* `options.continuous`: If `true`, starts subscribing to future changes in the `source` database and continue replicating them.
+* `options.live`: If `true`, starts subscribing to future changes in the `source` database and continue replicating them.
 * `options.since`: Replicate changes after the given sequence number.
 * `options.server`: Initialize the replication on the server. The response is the CouchDB `POST _replicate` response and is different from the PouchDB replication response. Also, `options.onChange` is not supported on server replications.
 * `options.create_target`: Create target database if it does not exist. Only for server replications.
@@ -450,18 +472,13 @@ db.replicate.from(remoteDB, [options]);
 
 Note that the response for server replications (via `options.server`) is slightly different. See the [CouchDB replication documentation](http://wiki.apache.org/couchdb/Replication) for details.
 
-## Sync a database<a id="sync"></a>
+{% include anchor.html title="Sync a database" hash="sync" %}
 
 {% highlight js %}
-PouchDB.sync(target, [options])
+var sync = PouchDB.sync(src, target, [options])
 {% endhighlight %}
 
-Sync data from database to `target` and `target` to database. This is a convience method for bidirectional data replication, and is equivalent to:
-
-{% highlight js %}
-PouchDB.replicate(db1, db2, [options]);
-PouchDB.replicate(db2, db1, [options]);
-{% endhighlight %}
+Sync data from `src` to `target` and `target` to `src`. This is a convience method for bidirectional data replication.
 
 ### Options
 
@@ -483,7 +500,7 @@ db.sync(remoteDB, [options]);
 
 For any further details, please further to [Replication](api.html#replication).
 
-## Save an attachment<a id="save_attachment"></a>
+{% include anchor.html title="Save an attachment" hash="save_attachment" %}
 
 {% highlight js %}
 db.putAttachment(docId, attachmentId, rev, doc, type, [callback]);
@@ -541,7 +558,7 @@ You can also inline attachments inside the document. In this case, the attachmen
 See [Inline Attachments](http://wiki.apache.org/couchdb/HTTP_Document_API#Inline_Attachments)
 on the CouchDB wiki for details.
 
-## Get an attachment<a id="get_attachment"></a>
+{% include anchor.html title="Get an attachment" hash="get_attachment" %}
 
 {% highlight js %}
 db.getAttachment(docId, attachmentId, [options], [callback])
@@ -561,7 +578,7 @@ In Node you get `Buffer`s, and in the browser you get `Blob`s.
 
 You can specify `attachments: true` to most read operations. The attachment data will then be included inlined in the resulting list of docs.
 
-## Delete an attachment<a id="delete_attachment"></a>
+{% include anchor.html title="Delete an attachment" hash="delete_attachment" %}
 
 {% highlight js %}
 db.removeAttachment(docId, attachmentId, rev, [callback])
@@ -585,7 +602,7 @@ db.removeAttachment('otherdoc',
 }
 {% endhighlight %}
 
-## Query the database<a id="query_database"></a>
+{% include anchor.html title="Query the database" hash="query_database" %}
 
 {% highlight js %}
 db.query(fun, [options], [callback])
@@ -602,7 +619,7 @@ All options default to `false` unless otherwise specified.
     * Tip: if you're not using a built-in, [you're probably doing it wrong](http://youtu.be/BKQ9kXKoHS8?t=865s).
 * `options.include_docs`: Include the document in each row in the `doc` field.
     - `options.conflicts`: Include conflicts in the `_conflicts` field of a doc.
-	- `options.attachments`: Include attachment data.
+  - `options.attachments`: Include attachment data.
 * `options.startkey` & `options.endkey`: Get documents with keys in a certain range (inclusive/inclusive).
 * `options.descending`: Reverse the order of the output documents.
 * `options.key`: Only return rows matching this string key.
@@ -647,7 +664,7 @@ db.query({map: map}, {reduce: false}, function(err, response) { });
 }
 {% endhighlight %}
 
-If you pass a function to `db.query` and give it the `emit` function as the second argument, then you can use a closure. (Otherwise we have to use `eval()` to bind `emit`.)
+If u pass a function to `db.query` and give it the `emit` function as the second argument, then you can use a closure. (Otherwise we have to use `eval()` to bind `emit`.)
 
 {% highlight js %}
 // BAD! will throw error
@@ -683,7 +700,7 @@ db.query(function(thisIs, awesome) {
 3. [Complex keys](https://wiki.apache.org/couchdb/Introduction_to_CouchDB_views#Complex_Keys) are supported.  Use them for fancy ordering (e.g. `[firstName, lastName, isFemale]`).
 4. Closures are only supported by local databases. CouchDB still requires self-contained map/reduce functions.
 
-## Get database information<a id="database_information"></a>
+{% include anchor.html title="Get database information" hash="database_information" %}
 
 {% highlight js %}
 db.info(callback)
@@ -705,7 +722,7 @@ db.info(function(err, info) { })
 }
 {% endhighlight %}
 
-## Compact the database<a id="compaction"></a>
+{% include anchor.html title="Compact the database" hash="compaction" %}
 
 {% highlight js %}
 db.compact([options], [callback])
@@ -715,7 +732,7 @@ Runs compaction of the database. Fires callback when compaction is done. If you 
 
 * `options.interval`: Number of milliseconds Pouch waits before asking again if compaction is already done. Only for http adapter.
 
-## Document Revisions Diff<a id="revisions_diff"></a>
+{% include anchor.html title="Document revisions diff" hash="revisions_diff" %}
 
 {% highlight js %}
 db.revsDiff(diff, [callback])
@@ -743,9 +760,9 @@ db.revsDiff({
 }
 {% endhighlight %}
 
-## Events<a id="events"></a>
+{% include anchor.html title="Events" hash="events"%}
 
-PouchDB is an [event emiter](http://nodejs.org/api/events.html#events_class_events_eventemitter) and will emit a 'created' event when a database is created. A 'destroy' event is emited when a database is destroyed.
+PouchDB is an [event emiter](http://nodejs.org/api/events.html#events_class_events_eventemitter) and will emit a `'created'` event when a database is created. A `'destroy'` event is emited when a database is destroyed.
 
 {% highlight js %}
 PouchDB.on('created', function (dbName) {
@@ -756,15 +773,27 @@ PouchDB.on('destroyed', function (dbName) {
 });
 {% endhighlight %}
 
-## Plugins<a id="plugins"></a>
+{% include anchor.html title="Plugins" hash="plugins"%}
 
-Writing a plugin is easy the api is
+Writing a plugin is easy! The API is:
 
 {% highlight js %}
 PouchDB.plugin({
-  methodName: function
+  methodName: myFunction
+  }
 });
 {% endhighlight %}
 
-This will add the function as a method of all databases with the given name, it will always be called in context so that `this` is db.
+This will add the function as a method of all databases with the given method name.  It will always be called in context, so that `this` always refers to the database object.
 
+#### Example Usage:
+{% highlight js %}
+PouchDB.plugin({
+  sayMyName : function () {
+    this.info().then(function (info)   {
+      console.log('My name is ' + info.db_name);
+    }).catch(function (err) { });
+  }
+});
+new PouchDB('foobar').sayMyName(); // prints "My name is foobar"
+{% endhighlight %}

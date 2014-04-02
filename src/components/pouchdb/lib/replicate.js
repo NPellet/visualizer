@@ -17,7 +17,6 @@ function Promise() {
 // A batch of changes to be processed as a unit
 function Batch() {
   this.seq = 0;
-  this.state = 'start';
   this.changes = [];
   this.docs = [];
 }
@@ -30,7 +29,7 @@ function genReplicationId(src, target, opts, callback) {
   src.id(function (err, src_id) {
     target.id(function (err, target_id) {
       var queryData = src_id + target_id + filterFun +
-        JSON.stringify(opts.query_params);
+        JSON.stringify(opts.query_params) + opts.doc_ids;
       callback('_local/' + PouchUtils.Crypto.MD5(queryData));
     });
   });
@@ -73,7 +72,9 @@ function writeCheckpoint(src, target, id, checkpoint, callback) {
     });
   }
   updateCheckpoint(target, function (err, doc) {
+    if (err) { return callback(err); }
     updateCheckpoint(src, function (err, doc) {
+      if (err) { return callback(err); }
       callback();
     });
   });
@@ -81,12 +82,15 @@ function writeCheckpoint(src, target, id, checkpoint, callback) {
 
 
 function replicate(repId, src, target, opts, promise) {
-  var batches = [];     // queue of batches of changes to be processed
-  var pendingBatch = new Batch();
+  var batches = [];               // list of batches to be processed
+  var currentBatch;               // the batch currently being processed
+  var pendingBatch = new Batch(); // next batch, not yet ready to be processed
+  var fetchAgain = [];  // queue of documents to be fetched again with api.get
+  var writingCheckpoint = false;
   var changesCompleted = false;
   var completeCalled = false;
   var last_seq = 0;
-  var continuous = opts.continuous || false;
+  var continuous = opts.continuous || opts.live || false;
   var batch_size = opts.batch_size || 1;
   var doc_ids = opts.doc_ids;
   var result = {
@@ -94,12 +98,13 @@ function replicate(repId, src, target, opts, promise) {
     start_time: new Date(),
     docs_read: 0,
     docs_written: 0,
+    doc_write_failures: 0,
     errors: []
   };
 
 
   function writeDocs() {
-    if (batches[0].docs.length === 0) {
+    if (currentBatch.docs.length === 0) {
       // This should never happen:
       // batch processing continues past onRevsDiff only if there are diffs
       // and replication is aborted if a get fails.
@@ -107,10 +112,27 @@ function replicate(repId, src, target, opts, promise) {
       return finishBatch();
     }
 
-    var docs = batches[0].docs;
+    var docs = currentBatch.docs;
     target.bulkDocs({docs: docs}, {new_edits: false}, function (err, res) {
       if (err) {
+        result.doc_write_failures += docs.length;
         return abortReplication('target.bulkDocs completed with error', err);
+      }
+
+      var errors = [];
+      res.forEach(function (res) {
+        if (!res.ok) {
+          result.doc_write_failures++;
+          errors.push({
+            status: 500,
+            error: res.error || 'Unknown document write error',
+            reason: res.reason || 'Unknown reason',
+          });
+        }
+      });
+
+      if (errors.length > 0) {
+        return abortReplication('target.bulkDocs failed to write docs', errors);
       }
 
       result.docs_written += docs.length;
@@ -121,7 +143,7 @@ function replicate(repId, src, target, opts, promise) {
 
   function onGet(err, docs) {
     if (promise.cancelled) {
-      return replicationCancelled();
+      return replicationComplete();
     }
 
     if (err) {
@@ -133,28 +155,83 @@ function replicate(repId, src, target, opts, promise) {
 
       if (doc) {
         result.docs_read++;
-        batches[0].pendingRevs++;
-        batches[0].docs.push(doc);
+        currentBatch.pendingRevs++;
+        currentBatch.docs.push(doc);
       }
     });
 
     fetchRev();
   }
 
+  function fetchGenerationOneRevs(ids, revs) {
+    src.allDocs({keys: ids, include_docs: true}, function (err, res) {
+      if (promise.cancelled) {
+        return replicationComplete();
+      }
+      if (err) {
+        return abortReplication('src.get completed with error', err);
+      }
+      
+      res.rows.forEach(function (row, i) {
+        // fetch document again via api.get when doc
+        // * is deleted document (could have data)
+        // * is no longer generation 1
+        // * has attachments
+        var needsSingleFetch = !row.doc ||
+          row.value.rev.slice(0, 2) !== '1-' ||
+          row.doc._attachments && Object.keys(row.doc._attachments).length;
+
+        if (needsSingleFetch) {
+          return fetchAgain.push({
+            id: row.error === 'not_found' ? row.key : row.id,
+            rev: revs[i]
+          });
+        }
+
+        result.docs_read++;
+        currentBatch.pendingRevs++;
+        currentBatch.docs.push(row.doc);
+      });
+
+      fetchRev();
+    });
+  }
 
   function fetchRev() {
-    var diffs = batches[0].diffs;
+    if (fetchAgain.length) {
+      var doc = fetchAgain.shift();
+      return fetchSingleRev(src, onGet, doc.id, [doc.rev]);
+    }
+
+    var diffs = currentBatch.diffs;
 
     if (Object.keys(diffs).length === 0) {
       writeDocs();
       return;
     }
 
+    var generationOne = Object.keys(diffs).reduce(function (memo, id) {
+      if (diffs[id].missing.length === 1 && diffs[id].missing[0].slice(0, 2) === '1-') {
+        memo.ids.push(id);
+        memo.revs.push(diffs[id].missing[0]);
+        delete diffs[id];
+      }
+
+      return memo;
+    }, {
+      ids: [],
+      revs: []
+    });
+
+    if (generationOne.ids.length) {
+      return fetchGenerationOneRevs(generationOne.ids, generationOne.revs);
+    }
+    
     var id = Object.keys(diffs)[0];
     var revs = diffs[id].missing;
     delete diffs[id];
 
-    src.get(id, {revs: true, open_revs: revs, attachments: true}, onGet);
+    fetchSingleRev(src, onGet, id, revs);
   }
 
 
@@ -167,7 +244,6 @@ function replicate(repId, src, target, opts, promise) {
     result.errors.push(err);
     result.end_time = new Date();
     result.last_seq = last_seq;
-    promise.cancel();
     batches = [];
     pendingBatch = new Batch();
     var error = {
@@ -178,25 +254,30 @@ function replicate(repId, src, target, opts, promise) {
     };
     completeCalled = true;
     PouchUtils.call(opts.complete, error, result);
+    promise.cancel();
   }
 
 
   function finishBatch() {
-    writeCheckpoint(src, target, repId, batches[0].seq, function (err, res) {
+    writingCheckpoint = true;
+    writeCheckpoint(src, target, repId, currentBatch.seq, function (err, res) {
+      writingCheckpoint = false;
+      if (promise.cancelled) {
+        return replicationComplete();
+      }
       if (err) {
         return abortReplication('writeCheckpoint completed with error', err);
       }
-      last_seq = batches[0].seq;
-      result.last_seq = last_seq;
+      result.last_seq = last_seq = currentBatch.seq;
       PouchUtils.call(opts.onChange, null, result);
-      batches.shift();
+      currentBatch = undefined;
       startNextBatch();
     });
   }
 
   function onRevsDiff(err, diffs) {
     if (promise.cancelled) {
-      return replicationCancelled();
+      return replicationComplete();
     }
 
     if (err) {
@@ -208,15 +289,15 @@ function replicate(repId, src, target, opts, promise) {
       return;
     }
 
-    batches[0].diffs = diffs;
-    batches[0].pendingRevs = 0;
+    currentBatch.diffs = diffs;
+    currentBatch.pendingRevs = 0;
     fetchRev();
   }
 
 
   function fetchRevsDiff() {
     var diff = {};
-    batches[0].changes.forEach(function (change) {
+    currentBatch.changes.forEach(function (change) {
       diff[change.id] = change.changes.map(function (x) { return x.rev; });
     });
 
@@ -226,7 +307,11 @@ function replicate(repId, src, target, opts, promise) {
 
   function startNextBatch() {
     if (promise.cancelled) {
-      return replicationCancelled();
+      return replicationComplete();
+    }
+
+    if (currentBatch) {
+      return;
     }
 
     if (batches.length === 0) {
@@ -234,16 +319,14 @@ function replicate(repId, src, target, opts, promise) {
       return;
     }
 
-    if (batches[0].state === 'start') {
-      batches[0].state = 'processing';
-      fetchRevsDiff();
-    }
+    currentBatch = batches.shift();
+    fetchRevsDiff();
   }
 
 
   function processPendingBatch() {
     if (pendingBatch.changes.length === 0) {
-      if (changesCompleted && batches.length === 0) {
+      if (changesCompleted && batches.length === 0 && !currentBatch) {
         replicationComplete();
       }
       return;
@@ -257,27 +340,31 @@ function replicate(repId, src, target, opts, promise) {
   }
 
 
-  function replicationCancelled() {
-    result.status = 'cancelled';
-    replicationComplete();
-  }
-
-  
   function replicationComplete() {
     if (completeCalled) {
       return;
+    }
+    if (promise.cancelled) {
+      result.status = 'cancelled';
+      if (writingCheckpoint) {
+        return;
+      }
     }
     result.status = result.status || 'complete';
     result.end_time = new Date();
     result.last_seq = last_seq;
     completeCalled = true;
-    return PouchUtils.call(opts.complete, null, result);
+    if (result.errors.length > 0) {
+      return PouchUtils.call(opts.complete, result.errors[0], result);
+    } else {
+      return PouchUtils.call(opts.complete, null, result);
+    }
   }
 
 
   function onChange(change) {
     if (promise.cancelled) {
-      return replicationCancelled();
+      return replicationComplete();
     }
 
     if (completeCalled) {
@@ -294,14 +381,15 @@ function replicate(repId, src, target, opts, promise) {
   }
 
 
-  function complete(err, result) {
+  function complete(err, changes) {
     changesCompleted = true;
     if (promise.cancelled) {
-      return replicationCancelled();
+      return replicationComplete();
     }
 
     if (err) {
-      return abortReplication('src.changes completed with error', err);
+      result.status = 'src.changes completed with error';
+      result.errors.push(err);
     }
 
     processPendingBatch();
@@ -319,7 +407,7 @@ function replicate(repId, src, target, opts, promise) {
       // Was the replication cancelled by the caller before it had a chance
       // to start. Shouldnt we be calling complete?
       if (promise.cancelled) {
-        return replicationCancelled();
+        return replicationComplete();
       }
 
       // Call changes on the source database, with callbacks to onChange for
@@ -343,13 +431,15 @@ function replicate(repId, src, target, opts, promise) {
 
       var changes = src.changes(repOpts);
 
-      if (opts.continuous) {
-        var cancel = promise.cancel;
-        promise.cancel = function () {
-          cancel();
+      var cancelPromise = promise.cancel;
+      promise.cancel = function () {
+        cancelPromise();
+        replicationComplete();
+        if (changes && changes.cancel instanceof Function) {
           changes.cancel();
-        };
-      }
+        }
+      };
+
     });
   }
 
@@ -365,6 +455,10 @@ function replicate(repId, src, target, opts, promise) {
       getChanges();
     });
   }
+}
+
+function fetchSingleRev(src, callback, id, revs) {
+  src.get(id, {revs: true, open_revs: revs, attachments: true}, callback);
 }
 
 function toPouch(db, callback) {
@@ -385,6 +479,8 @@ function replicateWrapper(src, target, opts, callback) {
   if (!opts.complete) {
     opts.complete = callback;
   }
+  opts = PouchUtils.extend(true, {}, opts);
+  opts.continuous = opts.continuous || opts.live;
   var replicateRet = new Promise();
   toPouch(src, function (err, src) {
     if (err) {
@@ -422,12 +518,24 @@ function sync(db1, db2, opts, callback) {
   var push_promise;
   var pull_promise;
 
-  function complete(callback) {
+  if (opts instanceof Function) {
+    callback = opts;
+    opts = {};
+  }
+  if (opts === undefined) {
+    opts = {};
+  }
+  if (callback instanceof Function && !opts.complete) {
+    opts.complete = callback;
+  }
+
+  function complete(callback, direction) {
     return function (err, res) {
       if (err) {
         // cancel both replications if either experiences problems
         cancel();
       }
+      res.direction = direction;
       callback(err, res);
     };
   }
@@ -442,20 +550,23 @@ function sync(db1, db2, opts, callback) {
     };
   }
 
-  function makeOpts(src, opts) {
+  function makeOpts(src, opts, direction) {
     opts = PouchUtils.extend(true, {}, opts);
-    opts.complete = complete(opts.complete);
+    opts.complete = complete(opts.complete, direction);
     opts.onChange = onChange(src, opts.onChange);
+    opts.continuous = opts.continuous || opts.live;
     return opts;
   }
 
   function push() {
-    push_promise = replicateWrapper(db1, db2, makeOpts(db1, opts), callback);
+    push_promise =
+      replicateWrapper(db1, db2, makeOpts(db1, opts, 'push'), callback);
     return push_promise;
   }
 
   function pull() {
-    pull_promise = replicateWrapper(db2, db1, makeOpts(db2, opts), callback);
+    pull_promise =
+      replicateWrapper(db2, db1, makeOpts(db2, opts, 'pull'), callback);
     return pull_promise;
   }
 

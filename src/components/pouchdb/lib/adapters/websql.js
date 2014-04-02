@@ -7,20 +7,26 @@ function quote(str) {
   return "'" + str + "'";
 }
 
-function openDB() {
+var cachedDatabases = {};
+
+var openDB = utils.getArguments(function (args) {
   if (typeof global !== 'undefined') {
     if (global.navigator && global.navigator.sqlitePlugin &&
         global.navigator.sqlitePlugin.openDatabase) {
       return navigator.sqlitePlugin.openDatabase
-        .apply(navigator.sqlitePlugin, arguments);
+        .apply(navigator.sqlitePlugin, args);
     } else if (global.sqlitePlugin && global.sqlitePlugin.openDatabase) {
       return global.sqlitePlugin.openDatabase
-        .apply(global.sqlitePlugin, arguments);
+        .apply(global.sqlitePlugin, args);
     } else {
-      return global.openDatabase.apply(global, arguments);
+      var db = cachedDatabases[args[0]];
+      if (!db) {
+        db = cachedDatabases[args[0]] = global.openDatabase.apply(global, args);
+      }
+      return db;
     }
   }
-}
+});
 
 var POUCH_VERSION = 1;
 var POUCH_SIZE = 5 * 1024 * 1024;
@@ -45,9 +51,6 @@ var DOC_STORE_WINNINGSEQ_INDEX_SQL = 'CREATE INDEX IF NOT EXISTS \'doc-winningse
   DOC_STORE + ' (winningseq)';
 
 
-var idRequests = [];
-var cachedDatabases = {};
-
 function unknownError(callback) {
   return function (event) {
     // event may actually be a SQLError object, so report is as such
@@ -58,63 +61,40 @@ function unknownError(callback) {
     callback(errors.error(errors.WSQ_ERROR, errorReason, errorName));
   };
 }
-
-function parseHexString(str) {
-  var result = '';
-  for (var i = 0, len = str.length; i < len; i += 2) {
-    result += String.fromCharCode(parseInt(str.substring(i, i + 2), 16));
-  }
-  return result;
-}
-
-// Safari is weird, it encodes everything with bonus \u0000 characters after
-// every character rather than user agent sniff, we test every odd
-// character for \u0000
-function isMangledUnicode(str) {
-  for (var i = 1, len = str.length; i < len; i += 2) {
-    if (str.charAt(i) !== '\u0000') {
-      return false;
-    }
-  }
-  return true;
-}
-
-// unmangle the aforementioned Safari atrocity
-function unmangleUnicode(str) {
-  var result = '';
-  for (var i = 0, len = str.length; i < len; i += 2) {
-    result += str.charAt(i);
-  }
-  return result;
-}
-
-// used to deal with utf8 encoding that occurs in most sqlite implementations
-// partially taken from
-// http://ecmanaut.blogspot.ca/2006/07/encoding-decoding-utf8-in-javascript.html
 function decodeUtf8(str) {
-  var result;
-  try {
-    result = decodeURIComponent(window.escape(str));
-  } catch (err) {
-    // URI error in safari, string is already escaped but still possibly mangled
-    result = str;
-  }
-  return isMangledUnicode(result) ? unmangleUnicode(result) : result;
+  return decodeURIComponent(window.escape(str));
 }
+function parseHexString(str, encoding) {
+  var result = '';
+  var charWidth = encoding === 'UTF-8' ? 2 : 4;
+  for (var i = 0, len = str.length; i < len; i += charWidth) {
+    var substring = str.substring(i, i + charWidth);
+    if (charWidth === 4) { // UTF-16, twiddle the bits
+      substring = substring.substring(2, 4) + substring.substring(0, 2);
+    }
+    result += String.fromCharCode(parseInt(substring, 16));
+  }
+  result = encoding === 'UTF-8' ? decodeUtf8(result) : result;
+  return result;
+}
+
 function WebSqlPouch(opts, callback) {
   var api = this;
   var instanceId = null;
   var name = opts.name;
+  var idRequests = [];
+  var encoding;
 
-  var db = cachedDatabases[name];
-  if (!db) {
-    cachedDatabases[name] = db = openDB(name, POUCH_VERSION, name, POUCH_SIZE);
-  }
+  var db = openDB(name, POUCH_VERSION, name, POUCH_SIZE);
   if (!db) {
     return callback(errors.UNKNOWN_ERROR);
   }
 
   function dbCreated() {
+    // note the db name in case the browser upgrades to idb
+    if (utils.hasLocalStorage()) {
+      global.localStorage['_pouch__websqldb_' + name] = true;
+    }
     callback(null, api);
   }
 
@@ -163,11 +143,23 @@ function WebSqlPouch(opts, callback) {
     });
   }
 
-  function onGetInstanceId() {
+  function onGetInstanceId(tx) {
     while (idRequests.length > 0) {
       var idCallback = idRequests.pop();
       idCallback(null, instanceId);
     }
+    checkDbEncoding(tx);
+  }
+
+  function checkDbEncoding(tx) {
+    // check db encoding - utf-8 (chrome, opera) or utf-16 (safari)?
+    tx.executeSql('SELECT dbid, hex(dbid) AS hexId FROM ' + META_STORE, [],
+      function (err, result) {
+        var id = result.rows.item(0).dbid;
+        var hexId = result.rows.item(0).hexId;
+        encoding = (hexId.length === id.length * 2) ? 'UTF-8' : 'UTF-16';
+      }
+    );
   }
 
   function onGetVersion(tx, dbVersion) {
@@ -197,7 +189,7 @@ function WebSqlPouch(opts, callback) {
         var initSeq = 'INSERT INTO ' + META_STORE + ' (update_seq, db_version, dbid) VALUES (?, ?, ?)';
         instanceId = utils.uuid();
         tx.executeSql(initSeq, [0, ADAPTER_VERSION, instanceId]);
-        onGetInstanceId();
+        onGetInstanceId(tx);
       });
     } else { // version > 0
 
@@ -210,7 +202,7 @@ function WebSqlPouch(opts, callback) {
       // notify db.id() callers
       tx.executeSql('SELECT dbid FROM ' + META_STORE, [], function (tx, result) {
         instanceId = result.rows.item(0).dbid;
-        onGetInstanceId();
+        onGetInstanceId(tx);
       });
     }
   }
@@ -358,11 +350,12 @@ function WebSqlPouch(opts, callback) {
       }
       var reader = new FileReader();
       reader.onloadend = function (e) {
-        att.data = this.result;
-        att.digest = 'md5-' + utils.Crypto.MD5(this.result);
+        var binary = utils.arrayBufferToBinaryString(this.result);
+        att.data = binary;
+        att.digest = 'md5-' + utils.Crypto.MD5(binary);
         finish();
       };
-      reader.readAsBinaryString(att.data);
+      reader.readAsArrayBuffer(att.data);
     }
 
     function preprocessAttachments(callback) {
@@ -407,13 +400,28 @@ function WebSqlPouch(opts, callback) {
 
       function finish() {
         var data = docInfo.data;
-        var sql = 'INSERT INTO ' + BY_SEQ_STORE + ' (doc_id_rev, json, deleted) VALUES (?, ?, ?);';
-        var sqlArgs = [
-          data._id + "::" + data._rev,
-          JSON.stringify(data),
-          utils.isDeleted(docInfo.metadata, docInfo.metadata.rev) ? 1 : 0
-        ];
-        tx.executeSql(sql, sqlArgs, dataWritten);
+        var doc_id_rev = data._id + "::" + data._rev;
+        var deleted = utils.isDeleted(docInfo.metadata, docInfo.metadata.rev) ? 1 : 0;
+        var fetchSql = 'SELECT * FROM ' + BY_SEQ_STORE + ' WHERE doc_id_rev=?;';
+
+        tx.executeSql(fetchSql, [doc_id_rev], function (err, res) {
+          var sql, sqlArgs;
+          if (res.rows.length) {
+            sql = 'UPDATE ' + BY_SEQ_STORE +
+              ' SET json=?, deleted=? WHERE doc_id_rev=?;';
+            sqlArgs = [JSON.stringify(data), deleted, doc_id_rev];
+            tx.executeSql(sql, sqlArgs, function (tx) {
+              dataWritten(tx, res.rows.item(0).seq);
+            });
+          } else {
+            sql = 'INSERT INTO ' + BY_SEQ_STORE +
+              ' (doc_id_rev, json, deleted) VALUES (?, ?, ?);';
+            sqlArgs = [doc_id_rev, JSON.stringify(data), deleted];
+            tx.executeSql(sql, sqlArgs, function (tx, result) {
+              dataWritten(tx, result.insertId);
+            });
+          }
+        });
       }
 
       function collectResults(attachmentErr) {
@@ -461,8 +469,8 @@ function WebSqlPouch(opts, callback) {
         finish();
       }
 
-      function dataWritten(tx, result) {
-        var seq = docInfo.metadata.seq = result.insertId;
+      function dataWritten(tx, seq) {
+        docInfo.metadata.seq = seq;
         delete docInfo.metadata.rev;
 
         var mainRev = merge.winningRev(docInfo.metadata);
@@ -556,7 +564,8 @@ function WebSqlPouch(opts, callback) {
     function metadataFetched(tx, results) {
       for (var j = 0; j < results.rows.length; j++) {
         var row = results.rows.item(j);
-        fetchedDocs[row.id] = JSON.parse(row.json);
+        var id = parseHexString(row.hexId, encoding);
+        fetchedDocs[id] = JSON.parse(row.json);
       }
       processDocs();
     }
@@ -564,7 +573,7 @@ function WebSqlPouch(opts, callback) {
     preprocessAttachments(function () {
       db.transaction(function (txn) {
         tx = txn;
-        var sql = 'SELECT * FROM ' + DOC_STORE + ' WHERE id IN ' +
+        var sql = 'SELECT hex(id) AS hexId, json FROM ' + DOC_STORE + ' WHERE id IN ' +
           '(' + docInfos.map(function () {return '?'; }).join(',') + ')';
         var queryArgs = docInfos.map(function (d) { return d.metadata.id; });
         tx.executeSql(sql, queryArgs, metadataFetched);
@@ -676,6 +685,10 @@ function WebSqlPouch(opts, callback) {
       tx.executeSql(sql, [], function (tx, result) {
         totalRows = result.rows.item(0).num;
 
+        if (limit === 0) {
+          return;
+        }
+
         // then actually fetch the documents
 
         var sql = 'SELECT ' + DOC_STORE + '.id, ' + BY_SEQ_STORE + '.seq, ' +
@@ -733,7 +746,7 @@ function WebSqlPouch(opts, callback) {
         });
       });
     }, unknownError(callback), function () {
-      if ('keys' in opts) {
+      if (limit !== 0 && 'keys' in opts) {
         opts.keys.forEach(function (key) {
           if (key in resultsMap) {
             results.push(resultsMap[key]);
@@ -756,20 +769,12 @@ function WebSqlPouch(opts, callback) {
   api._changes = function idb_changes(opts) {
     opts = utils.extend(true, {}, opts);
 
-
-    //console.log(name + ': Start Changes Feed: continuous=' + opts.continuous);
-
-
     if (opts.continuous) {
       var id = name + ':' + utils.uuid();
-      opts.cancelled = false;
       WebSqlPouch.Changes.addListener(name, id, api, opts);
       WebSqlPouch.Changes.notify(name);
       return {
         cancel: function () {
-          opts.complete(null, {status: 'cancelled'});
-          opts.complete = null;
-          opts.cancelled = true;
           WebSqlPouch.Changes.removeListener(name, id);
         }
       };
@@ -826,9 +831,10 @@ function WebSqlPouch(opts, callback) {
     var type = attachment.content_type;
     var sql = 'SELECT hex(body) as body FROM ' + ATTACH_STORE + ' WHERE digest=?';
     tx.executeSql(sql, [digest], function (tx, result) {
-      // TODO: sqlite normally stores data as utf8, so even the hex() function "encodes" the binary
-      // data in utf8 before returning it, and yet hex() is the only way to get the full data. so we do this.
-      var data = decodeUtf8(parseHexString(result.rows.item(0).body));
+      // sqlite normally stores data as utf8, so even the hex() function
+      // "encodes" the binary data in utf8/16 before returning it. yet hex()
+      // is the only way to get the full data, so we do this.
+      var data = parseHexString(result.rows.item(0).body, encoding);
       if (opts.encode) {
         res = btoa(data);
       } else {
@@ -864,12 +870,13 @@ function WebSqlPouch(opts, callback) {
         metadata.rev_tree = rev_tree;
 
         var sql = 'DELETE FROM ' + BY_SEQ_STORE + ' WHERE doc_id_rev IN (' +
-          revs.map(function (rev) {return quote(docId + '::' + rev); }).join(',') + ')';
+          revs.map(function () { return '?'; }).join(',') + ')';
 
-        tx.executeSql(sql, [], function (tx, result) {
+        var docIdRevs = revs.map(function (rev) {return docId + '::' + rev; });
+        tx.executeSql(sql, [docIdRevs], function (tx) {
           var sql = 'UPDATE ' + DOC_STORE + ' SET json = ? WHERE id = ?';
 
-          tx.executeSql(sql, [JSON.stringify(metadata), docId], function (tx, result) {
+          tx.executeSql(sql, [JSON.stringify(metadata), docId], function () {
             callback();
           });
         });
@@ -892,7 +899,6 @@ WebSqlPouch.valid = function () {
 };
 
 WebSqlPouch.destroy = utils.toPromise(function (name, opts, callback) {
-  var self = this;
   var db = openDB(name, POUCH_VERSION, name, POUCH_SIZE);
   db.transaction(function (tx) {
     tx.executeSql('DROP TABLE IF EXISTS ' + DOC_STORE, []);
@@ -900,7 +906,9 @@ WebSqlPouch.destroy = utils.toPromise(function (name, opts, callback) {
     tx.executeSql('DROP TABLE IF EXISTS ' + ATTACH_STORE, []);
     tx.executeSql('DROP TABLE IF EXISTS ' + META_STORE, []);
   }, unknownError(callback), function () {
-    self.emit('destroyed');
+    if (utils.hasLocalStorage()) {
+      delete global.localStorage['_pouch__websqldb_' + name];
+    }
     callback();
   });
 });

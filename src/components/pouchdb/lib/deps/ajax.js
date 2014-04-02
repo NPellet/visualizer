@@ -5,21 +5,25 @@ var extend = require('./extend.js');
 var createBlob = require('./blob.js');
 var errors = require('./errors');
 var uuid = require('../deps/uuid');
+var utils = require("../utils");
 
-function ajax(options, callback) {
+function ajax(options, adapterCallback) {
+
+  var requestCompleted = false;
+  var callback = utils.getArguments(function (args) {
+    if (requestCompleted) {
+      return;
+    }
+    adapterCallback.apply(this, args);
+    requestCompleted = true;
+  });
 
   if (typeof options === "function") {
     callback = options;
     options = {};
   }
+
   options = extend(true, {}, options);
-  function call(fun) {
-    /* jshint validthis: true */
-    var args = Array.prototype.slice.call(arguments, 1);
-    if (typeof fun === typeof Function) {
-      fun.apply(this, args);
-    }
-  }
 
   var defaultOptions = {
     method : "GET",
@@ -48,8 +52,7 @@ function ajax(options, callback) {
         obj = JSON.parse(obj);
       } catch (e) {
         // Probably a malformed JSON from server
-        call(cb, e);
-        return;
+        return cb(e);
       }
     }
     if (Array.isArray(obj)) {
@@ -75,7 +78,7 @@ function ajax(options, callback) {
         }
       });
     }
-    call(cb, null, obj, resp);
+    cb(null, obj, resp);
   }
 
   function onError(err, cb) {
@@ -84,7 +87,8 @@ function ajax(options, callback) {
       errParsed = JSON.parse(err.responseText);
       //would prefer not to have a try/catch clause
       for (key in errors) {
-        if (errors.hasOwnProperty(key) && errors[key].name === errParsed.error) {
+        if (errors.hasOwnProperty(key) &&
+            errors[key].name === errParsed.error) {
           errType = errors[key];
           break;
         }
@@ -117,11 +121,11 @@ function ajax(options, callback) {
       }
       errObj = errors.error(errType);
     }
-    call(cb, errObj);
+    cb(errObj);
   }
 
   if (process.browser) {
-    var timer, timedout = false;
+    var timer;
     var xhr;
     if (options.xhr) {
       xhr = new options.xhr();
@@ -135,7 +139,9 @@ function ajax(options, callback) {
       options.headers.Accept = 'application/json';
       options.headers['Content-Type'] = options.headers['Content-Type'] ||
         'application/json';
-      if (options.body && options.processData && typeof options.body !== "string") {
+      if (options.body &&
+          options.processData &&
+          typeof options.body !== "string") {
         options.body = JSON.stringify(options.body);
       }
     }
@@ -168,13 +174,15 @@ function ajax(options, callback) {
     }
 
     var abortReq = function () {
-      timedout = true;
+      if (requestCompleted) {
+        return;
+      }
       xhr.abort();
-      call(onError, xhr, callback);
+      onError(xhr, callback);
     };
 
     xhr.onreadystatechange = function () {
-      if (xhr.readyState !== 4 || timedout) {
+      if (xhr.readyState !== 4 || requestCompleted) {
         return;
       }
       clearTimeout(timer);
@@ -187,9 +195,9 @@ function ajax(options, callback) {
         } else {
           data = xhr.responseText;
         }
-        call(onSuccess, data, xhr, callback);
+        onSuccess(data, xhr, callback);
       } else {
-        call(onError, xhr, callback);
+        onError(xhr, callback);
       }
     };
 
@@ -228,7 +236,7 @@ function ajax(options, callback) {
     return request(options, function (err, response, body) {
       if (err) {
         err.status = response ? response.statusCode : 400;
-        return call(onError, err, callback);
+        return onError(err, callback);
       }
       var error;
       var content_type = response.headers['content-type'];
@@ -244,7 +252,7 @@ function ajax(options, callback) {
       }
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        call(onSuccess, data, response, callback);
+        onSuccess(data, response, callback);
       }
       else {
         if (options.binary) {
@@ -260,7 +268,7 @@ function ajax(options, callback) {
           error = errors.error(errors.UNKNOWN_ERROR, data.reason, data.error);
         }
         error.status = response.statusCode;
-        call(callback, error);
+        callback(error);
       }
     });
   }

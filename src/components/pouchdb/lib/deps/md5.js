@@ -71,7 +71,8 @@ exports.MD5 = function (string) {
     var lWordCount;
     var lMessageLength = string.length;
     var lNumberOfWords_temp1 = lMessageLength + 8;
-    var lNumberOfWords_temp2 = (lNumberOfWords_temp1 - (lNumberOfWords_temp1 % 64)) / 64;
+    var lNumberOfWords_temp2 =
+      (lNumberOfWords_temp1 - (lNumberOfWords_temp1 % 64)) / 64;
     var lNumberOfWords = (lNumberOfWords_temp2 + 1) * 16;
     var lWordArray = new Array(lNumberOfWords - 1);
     var lBytePosition = 0;
@@ -79,7 +80,8 @@ exports.MD5 = function (string) {
     while (lByteCount < lMessageLength) {
       lWordCount = (lByteCount - (lByteCount % 4)) / 4;
       lBytePosition = (lByteCount % 4) * 8;
-      lWordArray[lWordCount] = (lWordArray[lWordCount] | (string.charCodeAt(lByteCount)<<lBytePosition));
+      lWordArray[lWordCount] = (lWordArray[lWordCount] |
+                               (string.charCodeAt(lByteCount)<<lBytePosition));
       lByteCount++;
     }
     lWordCount = (lByteCount - (lByteCount % 4)) / 4;
@@ -95,12 +97,15 @@ exports.MD5 = function (string) {
     for (lCount = 0;lCount <= 3;lCount++) {
       lByte = (lValue>>>(lCount * 8)) & 255;
       wordToHexValue_temp = "0" + lByte.toString(16);
-      wordToHexValue = wordToHexValue + wordToHexValue_temp.substr(wordToHexValue_temp.length - 2, 2);
+      wordToHexValue = wordToHexValue +
+                      wordToHexValue_temp.substr(
+                        wordToHexValue_temp.length - 2, 2
+                      );
     }
     return   wordToHexValue;
   }
 
-  //**	function Utf8Encode(string) removed. Aready defined in pidcrypt_utils.js
+  //**  function Utf8Encode(string) removed. Aready defined in pidcrypt_utils.js
 
   var x = [];
   var k, AA, BB, CC, DD, a, b, c, d;
@@ -109,7 +114,7 @@ exports.MD5 = function (string) {
   var S31 = 4, S32 = 11, S33 = 16, S34 = 23;
   var S41 = 6, S42 = 10, S43 = 15, S44 = 21;
 
-  //	string = Utf8Encode(string); #function call removed
+  //  string = Utf8Encode(string); #function call removed
 
   x = convertToWordArray(string);
 
