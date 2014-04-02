@@ -12,7 +12,7 @@ define([
 		
 		//Construct the DOM within the module
 		
-		Util.loadCss( require.toUrl( moduleURL + "/style.css" ) );
+		Util.loadCss( require.toUrl( moduleURL + "style.css" ) );
 
 		if( ! moduleURL ) {
 			def.reject( );
