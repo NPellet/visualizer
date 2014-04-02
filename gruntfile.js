@@ -334,14 +334,14 @@ module.exports = function(grunt) {
               
               // Search for icons specified using the forms library
               if(fileStats.name.match(new RegExp(/\.js$/))) {
-                var formreg = RegExp(/require\(\[['"]\.\/forms\/form['"]\]/);
-                if(content.match(formreg)) {
-                  var iconreg = RegExp(/icon:\s*['"]([a-zA-Z_\-]+)['"]/g);
-                  var m = iconreg.exec(content);
-                  while (m != null) {
-                      whiteset['build/lib/forms/images/'+m[1]+'.png'] = '';
-                      m = iconreg.exec(content);
+                var iconreg = RegExp(/icon:\s*['"]([a-zA-Z_\-]+)['"]/g);
+                var m = iconreg.exec(content);
+                while (m != null) {
+                  var fn = 'build/lib/forms/images/'+m[1]+'.png';
+                  if(fs.existsSync(fn)) {
+                    whiteset[fn] = '';
                   }
+                  m = iconreg.exec(content);
                 }
               }
               
