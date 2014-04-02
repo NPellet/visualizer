@@ -88,25 +88,26 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 			var self = this,
 				cfg = this.cfgValue,
-				val = this.module.getDataFromRel( 'array' ),
-				i = 0,
+				//val = this.module.getDataFromRel( 'array' ),
+				i,
 				l,
 				target = new DataArray();
 
-			if( ! val || Object.keys(cfg).length===0 ) {
+                                var keys = Object.keys(this.variables), val;
+			if( keys.length===0 || Object.keys(cfg).length===0 ) {
 				return;
 			}
-
-			val = val.get();
-            
-			l = val.length;
+                        
                         var max = this.maxhits, count = 0;
-
-			for( ; (i < l)&&(count<max) ; i ++ ) {
+                        for(var key in keys) {
+                            val = this.variables[keys[key]];
+                            l = val.length;
+                            for( i=0 ; (i < l)&&(count<max) ; i ++ ) {
 				if( this.searchElement( cfg, val[ i ].get() ) ) {
 					target[count++] = val[ i ] ;
 				}
-			}
+                            }
+                        }
 
 			this.module.controller.searchDone( target );		
 		},
@@ -258,7 +259,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			array: function( variableValue, variableName ) {
 				
 				//variableValue = Traversing.get( variableValue );
-				//this.variables[ variableName ] = variableValue;
+				this.variables[ variableName ] = variableValue.get();
 				this.search( );
 			}
 		},

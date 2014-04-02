@@ -282,7 +282,7 @@ define([
 			this.model.inDom( );
 			
 			var self = this;
-console.log( API.isViewLocked() );
+                        
 			if( ! API.isViewLocked() ) {
 
 				ContextMenu.listen(this.getDomWrapper().get(0), [
