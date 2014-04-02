@@ -5,13 +5,13 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
 
 		init: function() {	
 
-			var self = this
+			var self = this,
 				id = Util.getNextUniqueId(),
 				done = false;
 
 			this._id = id;
 
-			this.dom = $('<div />', {  class: 'postit' });
+			this.dom = $('<div />', {  class: 'postit' }).css("font-family", this.module.getConfiguration("fontfamily")+", Arial");
 			this.inside = $('<div>', { id: id, class: 'inside', contentEditable: 'true' }).bind('keyup', function() {
 
 				self.module.definition.text = $(this).html();
@@ -20,7 +20,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
 
 				//console.log($(this).html());
 			}).html(self.module.definition.text || '').bind('focus', function() {
-				require(['ckeditor'], function() {
+				require(['ckeditor'], function(CKEDITOR) {
 					if(done)
 						return;
 					CKEDITOR.disableAutoInline = true;

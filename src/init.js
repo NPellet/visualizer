@@ -41,6 +41,9 @@ requirejs.config({
         "components/jit/Jit/jit" : {
             "exports" : "$jit"
         },
+        "ckeditor": {
+            "exports": "CKEDITOR"
+        },
 	//	"ckeditor": ["./components/ckeditor/adapters/jquery"],
 		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
