@@ -1,0 +1,170 @@
+{
+	"version": "2.2.4",
+	"modules": [
+		{
+			"url": "modules/types/client_interaction/code_editor/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 49,
+				"height": 45
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mode": [
+								"html"
+							],
+							"btnvalue": [
+								""
+							],
+							"iseditable": [
+								[
+									"editable"
+								]
+							],
+							"script": [
+								"<style>\n    .twigtest {\n        padding-left: 5px;\n    }\n</style>\n<div class=\"twigtest\">\n<p>\n    Any text with primitive values...<br><br>\n    String : {{str}}<br>\n    Number : {{num}}<br>\n    Boolean : {{bool}}<br>\n    Undefined element : {{und}}\n</p>\n<p>\n    Arrays<br><br>\n    Simple : {{arr}}<br>\n    2D : {{arr2}}\n</p>\n<p>\n    Loop<br>\n    {% for val in arr %}\n    <br>Value {{val}}\n    {% endfor %}\n</p>\n</div>"
+							]
+						}
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"event": "onEditorChange",
+					"rel": "value",
+					"name": "twig"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/display/template-twig/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 50,
+				"top": 0
+			},
+			"size": {
+				"width": 25,
+				"height": 45
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"template": [
+								"<style>\n    .twigtest {\n        padding-left: 5px;\n    }\n</style>\n<div class=\"twigtest\">\n<p>\n    Any text with primitive values...<br><br>\n    String : {{str}}<br>\n    Number : {{num}}<br>\n    Boolean : {{bool}}<br>\n    Undefined element : {{und}}\n</p>\n<p>\n    Arrays<br><br>\n    Simple : {{arr}}<br>\n    2D : {{arr2}}\n</p>\n<p>\n    Loop<br>\n    {% for val in arr %}\n    <br>Value {{val}}\n    {% endfor %}\n</p>\n</div>"
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "tpl",
+					"name": "twig"
+				},
+				{
+					"rel": "value",
+					"name": "test"
+				}
+			],
+			"actions_in": {},
+			"vars_out": {},
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/edition/object_editor/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 76,
+				"top": 0
+			},
+			"size": {
+				"width": 44,
+				"height": 45
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"view"
+							],
+							"expanded": [
+								[
+									"expand"
+								]
+							],
+							"storeObject": [
+								[
+									"expand"
+								]
+							],
+							"storedObject": [
+								"{\"str\":\"Hello world\",\"num\":156,\"bool\":false,\"arr\":[0,1,2,3,4,5,6],\"arr2\":[[0,1],[1,0]],\"_name\":null,\"_parent\":null}"
+							]
+						}
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"event": "onObjectChange",
+					"rel": "value",
+					"jpath": "element",
+					"name": "test"
+				}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [],
+	"pouchvariables": [],
+	"configuration": {
+		"title": "Twig templates"
+	}
+}
