@@ -7,12 +7,12 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype = $.extend(true, {}, Default);
 
     controller.prototype.moduleInformation = {
-        moduleName: 'Mustache template',
-        description: 'Display parts of an object using a mustache template',
+        moduleName: 'Twig template',
+        description: 'Display parts of an object using a twig template',
         author: 'Michaël Zasso',
-        date: '21.01.2014',
+        date: '02.04.2014',
         license: 'MIT',
-        cssClass: 'mustache'
+        cssClass: 'twig'
     };
 
     controller.prototype.references = {

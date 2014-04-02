@@ -29,8 +29,12 @@
 			"url": "modules/types/display/single_value/"
 		},
 		{
-			"moduleName": "Template",
+			"moduleName": "Mustache template",
 			"url": "modules/types/display/template/"
+		},
+                {
+			"moduleName": "Twig template",
+			"url": "modules/types/display/template-twig/"
 		}
 	],
 	"name": "Display",
