@@ -81,7 +81,8 @@ module.exports = function(grunt) {
               './font-awesome/fonts/*',
               './colors/css/colors.min.css',
               './pouchdb/dist/*',
-              './uri.js/src/*.js'
+              './uri.js/src/*.js',
+              './twig.js/twig.min.js'
             ],
 
             dest: './build/components/'
