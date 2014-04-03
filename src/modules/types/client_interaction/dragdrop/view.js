@@ -23,7 +23,8 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/versioning'], 
                             drag: this.module.getConfiguration( 'dragoverlabel', defaultMessage ),
                             hover: this.module.getConfiguration( 'hoverlabel', defaultMessage )
                         };
-			this.dom = $('<div />', { class: 'dragdropzone' } ).html( this.messages.default).on("click mousemove",function(){
+                        this.messageP=$('<p>').html(this.messages.default);
+			this.dom = $('<div />', { class: 'dragdropzone' } ).html( this.messageP).on("click mousemove",function(){
                             textarea.focus();
                         }).mouseout(function(){
                             textarea.blur();
@@ -37,14 +38,14 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/versioning'], 
 	 		dom.addEventListener('mouseenter', function(e) {
 	 			e.stopPropagation();
 	 			e.preventDefault();
-                                self.dom.html(self.messages.hover);
+                                self.messageP.html(self.messages.hover);
 	 			self.dom.addClass('dragdrop-over');
 	 		});
                         
                         dom.addEventListener('dragenter', function(e) {
 	 			e.stopPropagation();
 	 			e.preventDefault();
-                                self.dom.html(self.messages.drag);
+                                self.messageP.html(self.messages.drag);
 	 			self.dom.addClass('dragdrop-over');
 	 		});
 
@@ -56,14 +57,14 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/versioning'], 
                         dom.addEventListener('dragleave', function(e) {
 	 			 e.stopPropagation();
 	 			 e.preventDefault();
-                                 self.dom.html(self.messages.default);
+                                 self.messageP.html(self.messages.default);
 	 			 self.dom.removeClass('dragdrop-over');
 	 		});
                         
 	 		dom.addEventListener('mouseleave', function(e) {
 	 			 e.stopPropagation();
 	 			 e.preventDefault();
-                                 self.dom.html(self.messages.default);
+                                 self.messageP.html(self.messages.default);
 	 			 self.dom.removeClass('dragdrop-over');
 	 		});
 

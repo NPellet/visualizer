@@ -16,10 +16,10 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: "Drag and drop",
-		description: 'Drop a file or some content to load',
-		author: 'Norman Pellet',
-		date: '24.12.2013',
+		moduleName: "Drag and drop / paste",
+		description: 'Drop a file or paste some content to load',
+		author: 'Norman Pellet / Michaël Zasso',
+		date: '03.04.2014',
 		license: 'MIT',
 		cssClass: 'dragdrop'
 	};
@@ -36,7 +36,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 		},
 
 		'data': {
-			label: 'The data of the dropped file'
+			label: 'The loaded data'
 		}
 	};
 
@@ -54,7 +54,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 		},
 
 		'onRead': {
-			label: 'The file has been read',
+			label: 'The data has been read',
 			refVariable: [ /*'file',*/ 'data' ],
 			//refAction: [ 'file', 'data' ]
 		}

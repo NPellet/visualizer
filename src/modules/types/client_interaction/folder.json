@@ -13,7 +13,7 @@
 			"url": "modules/types/client_interaction/code_editor/"
 		},
 		{
-			"moduleName": "Drag and drop",
+			"moduleName": "Drag and drop / paste",
 			"url": "modules/types/client_interaction/dragdrop/"
 		}
 	],
