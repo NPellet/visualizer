@@ -1,5 +1,5 @@
 define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/api'], function(Default, Traversing, API) {
-	
+
 	/**
 	 * Creates a new empty controller
 	 * @class Controller
@@ -36,14 +36,14 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 			refVariable: [ 'piece' ]
 		}
 	};
-	
+
 	controller.prototype.onHover = function(element) {
 		if( ! element ) {
 			return;
 		}
 		this.setVarFromEvent( 'onHover', element, 'piece' );
 	};
-	
+
 
 
 	/*
@@ -54,7 +54,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 			type: ['chart'],
 			label: 'A json describing a chart'
 		},
-		
+
 	};
 
 
@@ -68,7 +68,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		}
 		API.highlight( element, 1 );
 		this._highlighted=element;
-		
+
 	},
 
 	controller.prototype.elementOut = function() {
@@ -83,7 +83,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		In the form of 
 	*/
 	controller.prototype.variablesIn = [ 'chart' ];
-	
+
 
 	controller.prototype.configurationStructure = function() {
 		return {
@@ -107,9 +107,9 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 							'Bars': 'b',
 							'Lines': 'l',
 							'Lines With Steps': 'ls'
-							
+
 							}
-							
+
 						},
 						stack: {
 						type: 'checkbox',
@@ -117,7 +117,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 							default: false,
 							options: { 'stack': 'Stacking the series together'}
 						},
-						
+
 						barWidth : {
 							type: 'combo',
 							title: 'Bars Width',
@@ -130,7 +130,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 								{title: '0.8', key: 0.8},
 								{title: '0.9', key: 0.9}
 							],
-							
+
 							displayTarget: [ 'b' ]
 						},
 						fill: {
@@ -176,7 +176,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		'stack': function(cfg) { return cfg.indexOf('stack') == -1 ? null : true; },
 		'fill': function(cfg) { return cfg.indexOf('fill') == -1 ? false : true; }
 	};
-	
+
 	controller.prototype.configAliases = {
 		'preference': [ 'groups', 'group', 0, 'preference', 0 ],
 		'barWidth': [ 'groups', 'group', 0, 'barWidth', 0],
@@ -193,4 +193,3 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 
  	return controller;
 });
-

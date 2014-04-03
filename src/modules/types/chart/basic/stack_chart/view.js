@@ -37,15 +37,15 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			axis = undefined;
 			this.updateOptions(cfg, axis);
 
-			
+
 
 		},
 
 
 		inDom: function() {
-		
+
 			if (this.DEBUG) console.log("Stack Chart: inDom");
-			
+
 		},
 
 		onResize: function() {
@@ -53,34 +53,27 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			if (this.DEBUG) console.log("Stack Chart: onResize");
 
 			var self=this;
-			
+
 			this.loadedData.done(function() {
-			
+
 			p = self.plot(self._id, self._data, self._options);
 			var choiceContainer = $("#choices"+self._id);
 			choiceContainer.empty();
-		
+
 			$.each(self._data, function(key, val) {
 			choiceContainer.append("<br/><input type='checkbox' name='" + key +
 				"' checked='checked' id='id" + key + "'></input>" +
 				"<label for='id" + key + "'>"
 				+ val.label + "</label>");
 			});
-			
+
 			choiceContainer.find("input").bind("click",function (event, pos, item){
 			self.plotAccordingToChoices(choiceContainer,self._id);
 			});
-			var i = 0;
-			$.each(self._data, function(key, val) {
-				val.color = i;
-				++i;
 			});
-			
-			
-			});
-			
-				
-				
+
+
+
 		},
 
 		/* When a value change this method is called. It will be called for all 
@@ -88,21 +81,21 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		It will also be called at the beginning and in this case the value is null !
 		*/
 		update: {
-		
+
 			'chart': function(moduleValue) {
 			var self=this;
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
-			
+
 			if (this.DEBUG) console.log("stack Chart: update from chart object");
 
 				if (! moduleValue || ! moduleValue.value) return;
-				
-				
+
+
 				var axis = moduleValue.get().axis;
-				
+
 				self.updateOptions(cfg, axis);
 				this._convertChartToData(moduleValue.get().data);
-				
+
 				this.loadedData.resolve();
 			},
 
@@ -123,13 +116,13 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				var info=value[j].info;
 				var label;
 				s = [];
-				
+
 				for (var i = 0; i < y.length; i++) 
 				{
 					if(! x[i]) s.push({0:i,1:y[i],_highlight:highlight[i]});
 					else s.push( {0:x[i],1:y[i],_highlight:highlight[i]});
 				}
-				
+
 				this._data[j] = {
 						data: s,
 						info: null,
@@ -140,7 +133,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					self._data[j].info=value[j].info
 				}); 
 			}
-			
+
 		},
 
 		updateOptions: function(cfg, axis) {
@@ -190,7 +183,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var xlabw = cfg('xLabelWidth');
 			var ylabh = cfg('yLabelHeight');
 			var ylabw = cfg('yLabelWidth');
-		
+
 			switch (cfg('preference'))
 				{
 				  case 'Lines With Steps': steps = true;
@@ -200,9 +193,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 							break;
 				  case 'Lines': lines = true;
 							break;
-				  
+
 				}
-					
+
 			this._options = {
 
 				xaxis: {
@@ -214,7 +207,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				ticks: xunit,
 				labelWidth: xlabw,
 				labelHeight: xlabh
-				
+
 				},
 				yaxis: {
 				position: posy,
@@ -233,7 +226,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				},
 				series: {
 				stack: stack,
-					
+
 					lines: { show: lines, fill: cfg('fill'), steps: steps},
 					bars: { show: bars, barWidth: barWidth }
 
@@ -242,35 +235,35 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			};
 
 
-	 		
+
 
 		},
-		
+
 		plot: function(id,data,options) {
 			var self=this;
-			
+
 			var self=this;
-		
+
 			self._plot=$.plot("#"+id, data, options);
 			$("#"+id).bind("plotclick", function (event, pos, item) {
 
 			event.preventDefault();
 				if (item) {
 					console.log("Y:"+item.datapoint[1]);
-		
+
 
 				}
 			});
 			$("#"+id).bind("plothover", function (event, pos, item) {
-			
+
 				if (item) {
 					self.module.controller.elementHover(self._data[item.seriesIndex].data[item.dataIndex]);
-					
+
 				} else {
 					self.module.controller.elementOut();
 				}
 			}); 
-	
+
 		},
 			plotAccordingToChoices : function(choiceContainer,id) {
 				var self=this;

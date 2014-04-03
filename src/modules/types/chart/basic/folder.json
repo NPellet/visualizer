@@ -13,8 +13,8 @@
 			"url": "modules/types/chart/basic/stack_chart/"
 		},
 		{
-			"moduleName": "Chartjs",
-			"url": "modules/types/chart/basic/chartjs/"
+			"moduleName": "Radar chart",
+			"url": "modules/types/chart/basic/radar_chart/"
 		}
 	],
 	"name": "Basic",
