@@ -72,7 +72,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 		}
 	*/
 	controller.prototype.actionsIn = {
-		
+		disable: "Disable the search"
 	};
 	
 		
@@ -97,15 +97,19 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
                             type:'text',
                             title:'Maximum hits',
                             'default': '50'
+                        },
+                        disableMessage: {
+                            type: 'text',
+                            title: 'Disable message',
+                            'default': 'Click to enable search'
                         }
                     }
                 }
             },
 			sections: {
-                
-				searchFields: FormCreator.makeConfig( { name: 'Search on', jpaths: all_jpaths }, { name: "Comparison" } ),
+				searchFields: FormCreator.makeConfig( { name: 'Search on', jpaths: all_jpaths }, { name: "Comparison" } )
 			}
-		}
+		};
 	};
 
 
@@ -134,8 +138,9 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 
 	controller.prototype.configAliases = {
 		searchfields: [ 'sections', 'searchFields' ],
-        maxhits: ['groups','group',0,'max',0]
-	}
+        maxhits: ['groups','group',0,'max',0],
+        disableMessage: ['groups','group',0,'disableMessage',0]
+	};
 
 	return controller;
 });

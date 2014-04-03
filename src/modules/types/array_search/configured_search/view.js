@@ -4,12 +4,45 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-			
-			this.dom = $( '<div>' ).css( { } );
-			this.module.getDomContent( ).html( this.dom );
+			var self = this;
+                        var parentDom = $( '<div>' ).css( { 
+                            position: 'relative',
+                            height: '100%',
+                            weight: '100%'
+                        } );
+                        this.overlay = $('<div>').css({
+                            position: 'absolute',
+                            height:'100%',
+                            width:'100%',
+                            zIndex:1000,
+                            backgroundColor:'rgba(200,200,200,0)',
+                            color:'rgba(50,50,50,0)',
+                            display:'none'
+                        }).appendTo(parentDom).click(function(e){
+                            e.stopPropagation();
+                            self.searchEnabled = true;
+                            self.overlay.animate({
+                                backgroundColor: 'rgba(200,200,200,0)',
+                                color: 'rgba(50,50,50,0)'
+                            },500,function(){
+                                self.overlay.css('display', 'none');
+                            });
+                            self.search();
+                        }).append($('<div>'+this.module.getConfiguration('disableMessage')+'</div>').css({
+                            textAlign:'center',
+                            width:'100%',
+                            zIndex:1001,
+                            display:'table-cell',
+                            verticalAlign:'middle',
+                            fontSize:"20pt"
+                        }));
+                        this.searchEnabled = true;
+                        
+			this.dom =  $( '<div>' ).appendTo(parentDom);
+			this.module.getDomContent( ).html( parentDom);
 			this.variables = {};
 			this.cfgValue = {};
-            this.maxhits = parseInt(this.module.getConfiguration( 'maxhits' ))||Number.POSITIVE_INFINITY;
+                        this.maxhits = parseInt(this.module.getConfiguration( 'maxhits' ))||Number.POSITIVE_INFINITY;
 
 			this._jpathsFcts = {};
 
@@ -56,7 +89,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					}
 
 					$.extend( self.cfgValue, cfgFinal );
-					self.search();
+                                        self.search();
 				}
 			} );
 
@@ -85,7 +118,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 		search: function() {
 
-
+                    if(this.searchEnabled) {
 			var self = this,
 				cfg = this.cfgValue,
 				//val = this.module.getDataFromRel( 'array' ),
@@ -109,7 +142,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                             }
                         }
 
-			this.module.controller.searchDone( target );		
+			this.module.controller.searchDone( target );	
+                    }
 		},
 
 		_makeOp: function( op, val, options ) {
@@ -195,10 +229,10 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			var toEval = "";
 			toEval += " this._searchFunc = function( cfg, row ) { ";
 			
-			toEval += " var el; "
+			toEval += " var el; ";
 
 
-			toEval += " return "
+			toEval += " return ";
 			for( ; i < l ; i ++ ) {
 
 				searchOn = searchfields[ i ].groups.general[ 0 ].searchOnField || [];
@@ -241,7 +275,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			try {
 				eval( toEval );
 			} catch( e ) {
-				console.error("Error while evaluating function.")
+				console.error("Error while evaluating function.");
 				console.log( toEval );
 			}
 		},
@@ -255,16 +289,26 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 		},
 
 		update: {
-			
 			array: function( variableValue, variableName ) {
-				
-				//variableValue = Traversing.get( variableValue );
-				this.variables[ variableName ] = variableValue.get();
-				this.search( );
+                            this.variables[ variableName ] = variableValue.get();	
+                            this.search( );
 			}
 		},
 				
-		typeToScreen: {}
+		typeToScreen: {},
+                
+                onActionReceive: {
+                    disable: function(){
+                        if(this.searchEnabled) {
+                            this.searchEnabled = false;
+                            this.overlay.css("display","table");
+                            this.overlay.animate({
+                                backgroundColor: 'rgba(200,200,200,0.6)',
+                                color: 'rgba(50,50,50,1)'
+                            },500);
+                        }
+                    }
+                }
 	});
 
 	return view;
