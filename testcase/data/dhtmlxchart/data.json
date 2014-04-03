@@ -13,23 +13,23 @@
 			"title" : "A stack chart",
 			"axis": {
 				"0": {
-					"type": "bottom", 
-					"unit": "",
+					"type": "", 
+					"unit": ["january", "february", "march", "april", "may", "june", "august"],
 					"min": 0,
-					"max": 5
+					"max": 20
 				},
 				"1": {
-					"type": "left",
+					"type": "",
 					"unit": "",
-					"min": 0 ,
-					"max": 15 
+					"min": "",
+					"max": "" 
 				}
 			},
 			"data" : 
 			[
 				{
-					"x":[],
-					"y":[1,7,5,6],
+					"x":[65,59,90,81,56,55,40],
+					"y":[],
 					"z":[],
 					"_highlight":["A","B","E","C"],
 					"info":[{"name":"first"}],
@@ -38,22 +38,12 @@
 					"yAxis": "1"
 				},
 				{
-					"x":[0,1,2,3],
-					"y":[2,3,4,1],
+					"x":[28,48,40,19,96,27,100],
+					"y":[],
 					"z":[],
 					"_highlight":["D","E","C","A"],
 					"info":[{"name":"second"}],
 					"serieLabel": "My seconde serie",
-					"xAxis": "0", 
-					"yAxis": "1"
-				},
-				{
-					"x":[0,1,2,3],
-					"y":[3,3,9,5],
-					"z":[],
-					"_highlight":["A","B","C","D"],
-					"info":[{"name":"third"}],
-					"serieLabel": "My third serie",
 					"xAxis": "0", 
 					"yAxis": "1"
 				}
