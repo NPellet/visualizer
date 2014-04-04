@@ -86,7 +86,7 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
                         //skipLabels: false
                     });
 
-                    leaves = d3.selectAll(view.selectorId + " .leaf");
+                    var leaves = d3.selectAll(view.selectorId + " .leaf");
 
                     leaves.each(function(data) {
 

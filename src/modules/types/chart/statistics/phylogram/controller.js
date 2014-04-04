@@ -7,6 +7,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
      * @constructor
      */
     function controller() {
+        this._data=new DataObject();
     }
     ;
 
@@ -20,7 +21,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype.moduleInformation = {
         moduleName: 'D3 Phylogram',
         description: 'Display phylogram using D3 library',
-        author: 'Nathanaêl Khodl, Luc Patiny',
+        author: 'Nathanaêl Khodl, Luc Patiny, Michaël Zasso',
         date: '30.12.2013',
         license: 'MIT',
         cssClass: 'phylogram'
@@ -29,13 +30,21 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
     // Leaves
     controller.prototype.mouseOverLeaf = function(data) {
-        this.sendTreeFromEvent(data, "onLeafHover");
+        data = data.get();
+        if(data.data) {
+            this._data = DataObject.check(data.data);
+            this.setVarFromEvent("onLeafHover", DataObject.check(this._data), 'leaf');
+        }
     };
     controller.prototype.mouseOutLeaf = function() {
 
     };
     controller.prototype.clickLeaf = function(data) {
-        this.sendTreeFromEvent(data, "onLeafSelect");
+        data = data.get();
+        if(data.data) {
+            this._data = DataObject.check(data.data);
+            this.setVarFromEvent("onLeafSelect", DataObject.check(this._data), 'leaf');
+        }
     };
 
     // BRanches
@@ -120,11 +129,11 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype.events = {
         onLeafSelect: {
             label: 'Select a leaf',
-            refVariable: ['tree']
+            refVariable: ['leaf']
         },
         onLeafHover: {
             label: 'Hovers a leaf',
-            refVariable: ['tree']
+            refVariable: ['leaf']
         },
         onBranchSelect: {
             label: 'Select a branch',
@@ -143,6 +152,9 @@ define(['modules/default/defaultcontroller'], function(Default) {
         tree: {
             type: ['tree'],
             label: 'A tree with children'
+        },
+        leaf: {
+            label: 'Value of the leaf'
         }
     };
 
