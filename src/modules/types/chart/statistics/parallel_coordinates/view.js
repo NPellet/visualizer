@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing", "lib/parallel-coordinates/d3.parcoords"], function(Default, Util, Traversing) {
+define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing", "src/util/context", "lib/parallel-coordinates/d3.parcoords"], function(Default, Util, Traversing, Context) {
 
     function view() {
         this._id = Util.getNextUniqueId();
@@ -13,12 +13,20 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
 
     view.prototype = $.extend(true, {}, Default, {
         init: function() {
+            var that = this;
             var html = '<div class="parcoords" id="'+this._id+'"></div>';
 
             this.dom = $(html).css({
                 height: '100%',
                 width: '100%'
             });
+            
+            Context.listen(this.dom[0], [
+                    ['<li><a><span class="ui-icon ui-icon-refresh"></span>Refresh selection</a></li>', 
+                    function() {
+                            that.resetBrush();
+                    }]]
+            );
 
             this.module.getDomContent( ).html(this.dom);
             this.onReady = $.Deferred();
@@ -94,6 +102,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                     parcoords.on("brush", function(d){
                         that.module.controller.onBrushSelection(d);
                     });
+                this._parcoords=parcoords;
 
                 this.module.controller.onBrushSelection(this._data);
             } else {
@@ -152,6 +161,10 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             }
 
             return totalConfig;
+        },
+        resetBrush: function(){
+            if(this._parcoords)
+                this._parcoords.brushReset();
         }
       
     });
