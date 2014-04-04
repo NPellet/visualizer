@@ -91,10 +91,15 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                     parcoords.detectDimensions();
                     if(this._names)
                         parcoords.dimensions(this._names);
-
+                    
                     parcoords.color(function(item) {
                         return item.__color ? item.__color : "#000";
                     });
+                    
+                    if(this._data.length > 2000) {
+                        parcoords.mode("queue");
+                        parcoords.rate(100);
+                    }
 
                     parcoords.render()
                             .brushable()
