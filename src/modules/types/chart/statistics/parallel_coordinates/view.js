@@ -114,10 +114,10 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             var columns = this.getColumns(), l = columns.length;
             var colorJpath = this.module.getConfiguration("colorjpath");
             
-            var value = this._value, result;
+            var value = this._value, vl = value.length, result;
             
-            if(!l) {
-                this._data=false;
+            if(!l || !vl) {
+                this._data=[];
                 return;
             }
             
