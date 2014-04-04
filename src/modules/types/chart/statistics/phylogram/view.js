@@ -11,7 +11,7 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
             this.chart = null;
             this.currentHighlightId = null;
 
-            $block = $('<div>', {id: this._id});
+            var $block = $('<div>', {id: this._id});
             $block.css( {
                 'display' : 'table',
                 'height' : '90%',
@@ -38,22 +38,42 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
         update: {
             'tree': function(data) {
 
-                var view = this;
-                var box = this.module;
+                if(!data)
+                    return;
+                
+                data = data.get();
+
                 this._idHash = [];
-                this.getIdHash(data.value);
+                this.getIdHash(data);
 
-                API.killHighlight(box.id);
-
-                // Loading phylogram extension for D3
+                API.killHighlight(this._id);
+                
+                this._data = data;
+                
+                this.drawPhylogram();
+            }
+        },
+        getDom: function() {
+            return this.dom;
+        },
+        typeToScreen: {},
+    
+    
+    drawPhylogram: function(data, view) {
+        
+        if(!this._data)
+            return;
+        
+        var data = this._data;
+        var that = this;
+        // Loading phylogram extension for D3
                 require(['lib/d3/d3.phylogram'], function() {
 
-                    view.dom.empty();
+                    that.dom.empty();
                     var skipBranchLengthScaling = true;
-                    if (data.value.children && data.value.children.length > 0)
-                        skipBranchLengthScaling = (data.value.children[0].length === undefined);
-
-                    this.phylogram = d3.phylogram.build(view.selectorId, data.value, {
+                    if (data.children && data.children.length > 0)
+                        skipBranchLengthScaling = (data.children[0].length === undefined);
+                    d3.phylogram.build(that.selectorId, data, {
                         //height : view._idHash.length*8,
                         skipBranchLengthScaling: skipBranchLengthScaling,
                         skipTicks: false,
@@ -63,30 +83,30 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
                         },
                         // LEAF
                         callbackMouseOverLeaf: function(data) {
-                            box.controller.mouseOverLeaf(data);
+                            that.module.controller.mouseOverLeaf(data);
                             API.highlight(data.data, 1);
                         },
                         callbackMouseOutLeaf: function(data) {
-                            box.controller.mouseOutLeaf(data);
+                            that.module.controller.mouseOutLeaf(data);
                             API.highlight(data.data, 0);
                         },
                         callbackClickLeaf: function(data) {
-                            box.controller.clickLeaf(data);
+                            that.module.controller.clickLeaf(data);
                         },
                         // BRANCH
                         callbackMouseOverBranch: function(data) {
-                            box.controller.mouseOverBranch(data.target);
+                            that.module.controller.mouseOverBranch(data.target);
                         },
                         callbackMouseOutBranch: function(data) {
-                            box.controller.mouseOutBranch(data.target);
+                            that.module.controller.mouseOutBranch(data.target);
                         },
                         callbackClickBranch: function(data) {
-                            box.controller.clickBranch(data.target);
+                            that.module.controller.clickBranch(data.target);
                         }
                         //skipLabels: false
                     });
 
-                    var leaves = d3.selectAll(view.selectorId + " .leaf");
+                    var leaves = d3.selectAll(that.selectorId + " .leaf");
 
                     leaves.each(function(data) {
 
@@ -106,7 +126,7 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
                                     });
                                     point.attr("r", (value ? 9 : 4.5));
 
-                                }, false, box.id);
+                                }, false, that._id);
 
                             }
 
@@ -117,22 +137,16 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
                     });
 
                     // ( this.module.getConfiguration('defaultvalue') || '' )
-                    d3.selectAll(view.selectorId + " .link").each(function() {
+                    d3.selectAll(that.selectorId + " .link").each(function() {
                         //d3.select(this).attr("stroke",( view.module.getConfiguration('branchColor') || '#cccccc' ));
-                        d3.select(this).attr("stroke-width", (view.module.getConfiguration('branchWidth') + "px" || '5px'));
+                        d3.select(this).attr("stroke-width", (that.module.getConfiguration('branchWidth') + "px" || '5px'));
                     });
 
                 }); // End require phylogram
-
-
-
-
-            }
         },
-        getDom: function() {
-            return this.dom;
-        },
-        typeToScreen: {}
+        onResize: function() {
+            this.drawPhylogram();
+        }
     });
 
     return view;
