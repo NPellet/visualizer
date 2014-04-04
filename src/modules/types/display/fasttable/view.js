@@ -156,14 +156,14 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 		list: function( moduleValue ) {
 
-				if( moduleValue.type == "string") {
+				if( moduleValue.type === "string") {
 					return;
 				}
 
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
-        console.log( moduleValue );
+                                
 	 			moduleValue = moduleValue.get();
                 
 				var self = this, 
