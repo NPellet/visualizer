@@ -174,7 +174,7 @@ define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util
 		resetZoomPrefetch: function() {
 			
 			var currentIndex;
-			console.log(this.pxPerCell);
+			//console.log(this.pxPerCell);
 			for(var i = 0; i < this.availableZooms.length; i++) {
 				if(this.availableZooms[i] == this.pxPerCell) {
 					currentIndex = i;
@@ -286,7 +286,7 @@ define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util
 				if(!this.minmaxworker) {
 					this.minmaxworker = new Worker('src/util/workers/getminmaxmatrix.js');
 					this.minmaxworker.addEventListener('message', function(event) {
-							console.log('Get message');
+							//console.log('Get message');
 						var data = event.data.message;
 						
 						self.minValue = data.min;
@@ -401,7 +401,7 @@ define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util
 			
 			var self = this;
 			worker.addEventListener('message', function(event) {
-				console.log(event.data);
+				//console.log(event.data);
 				var data = event.data;
 				var pxPerCell = data.pxPerCell;
 				var buffIndexX = data.indexX;
