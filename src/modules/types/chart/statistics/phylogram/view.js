@@ -48,7 +48,7 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
 
                 API.killHighlight(this._id);
                 
-                this._data = data.duplicate();
+                this._data = $.extend(true, {}, data);
                 
                 this.drawPhylogram();
             }
