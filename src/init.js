@@ -166,7 +166,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 		value: function() {
 			var obj = {};
 			for(var i in this) {
-				if(this[i] instanceof DataArray || this[i] instanceof DataObject) {
+				if(this[i] instanceof DataArray || this[i] instanceof DataObject) {
 					obj[i] = this[i].resurrect();
 				} else {
 					obj[i] = this[i];
@@ -180,7 +180,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 		value: function() {
 			var obj = [];
 			for(var i = 0, l = this.length; i < l; i++) {
-				if(this[i] instanceof DataArray || this[i] instanceof DataObject) {
+				if(this[i] instanceof DataArray || this[i] instanceof DataObject) {
 					obj[i] = this[i].resurrect();
 				} else {
 					obj[i] = this[i];
@@ -365,7 +365,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 				jpath.shift();
 			}
 			
-			if(!jpath || jpath.length === 0) {
+			if(!jpath || jpath.length === 0) {
 				this.value = newValue;
 				this.triggerChange( options.moduleid );
 				return $.Deferred().resolve( this );
@@ -633,13 +633,13 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 				obj[ i ] = this[ i ];
 			}
 
-			return obj.resurect();
+			return obj.resurrect();
 		}
 	});
 
 	
 	function PouchArray(arr, deep) { 
-	  arr = { type: 'array', value: arr || [] };
+	  arr = { type: 'array', value: arr || [] };
 	  
 	  if(deep) {
 	  	for(var i = 0, l = arr.value.length; i < l; i++) {
