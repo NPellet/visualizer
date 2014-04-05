@@ -1,6 +1,6 @@
 requirejs.config({
-	"baseUrl": "",
-	"paths": {
+	baseUrl: "",
+	paths: {
 		"ace": "./components/ace/lib/ace",
 		"d3": "./components/d3/d3.min",
 		"fancytree": "./components/fancytree/src/jquery.fancytree",
@@ -11,258 +11,240 @@ requirejs.config({
 		"threejs": "./components/three.js/build/three.min",
 		"forms": "./lib/forms",
 		"plot": "./lib/plot/plot",
-		'ChemDoodle': 'lib/chemdoodle/ChemDoodleWeb-unpacked',
-        "pouchdb": "./components/pouchdb/dist/pouchdb-nightly.min"
+		"ChemDoodle": "./lib/chemdoodle/ChemDoodleWeb-unpacked",
+		"pouchdb": "./components/pouchdb/dist/pouchdb-nightly.min"
 	},
-        packages: [
-            {
-                name: "uri",
-                location: "./components/uri.js/src",
-                main: "URI"
-            }
-        ],
-
-	"shim": {
-        "d3": {
-            "exports" : "d3"
-        },
-        "threejs": {
-            "exports" : "THREE"
-        },
-        "components/x2js/xml2json.min": {
-            "exports" : "X2JS"
-        },
-        "components/leaflet/leaflet" : {
-            "exports" : "L",
-            "init" : function() {
-                return this.L.noConflict();
-            }
-        },
-        "components/jit/Jit/jit" : {
-            "exports" : "$jit"
-        },
-        "ckeditor": {
-            "exports": "CKEDITOR"
-        },
-	//	"ckeditor": ["./components/ckeditor/adapters/jquery"],
+	packages: [
+		{
+			name: "uri",
+			location: "./components/uri.js/src",
+			main: "URI"
+		}
+	],
+	shim: {
+		"d3": {
+			exports : "d3"
+		},
+		"threejs": {
+			exports : "THREE"
+		},
+		"components/x2js/xml2json.min": {
+			exports : "X2JS"
+		},
+		"components/leaflet/leaflet" : {
+			exports : "L",
+			init : function() {
+				return this.L.noConflict();
+			}
+		},
+		"components/jit/Jit/jit" : {
+			exports : "$jit"
+		},
+		"ckeditor": {
+			exports: "CKEDITOR"
+		},
 		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"lib/flot/jquery.flot.pie": ["jquery","lib/flot/jquery.flot"],
 		"jqueryui": ["jquery"],
 		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"],
-                "components/farbtastic/src/farbtastic" : ["components/jquery/jquery-migrate.min"],
-                "lib/pixastic/pixastic" : ["lib/pixastic/pixastic/pixastic.core"],
-                'components/fancytree/src/jquery.fancytree.dnd' : ["fancytree"],
-                "lib/parallel-coordinates/d3.parcoords": ["d3"]
+		"components/farbtastic/src/farbtastic" : ["components/jquery/jquery-migrate.min"],
+		"lib/pixastic/pixastic" : ["lib/pixastic/pixastic/pixastic.core"],
+		"components/fancytree/src/jquery.fancytree.dnd" : ["fancytree"],
+		"lib/parallel-coordinates/d3.parcoords": ["d3"]
 	}
 });
 
+require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, EntryPoint, PouchDBUtil) {
 
-require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchtovar'], function($, EntryPoint, Header, PouchDBUtil) {
-
-	DataObject = function(l, checkDeep, forceCopy) {	
-		for(var i in l) {
-			if(l.hasOwnProperty(i)) {
-				if(!checkDeep) {
-					this[i] = l[i];
-					continue;
-				} else {
-					this[i] = DataObject.check(l[i], true, forceCopy);
+	function DataObject(object, recursive, forceCopy) {
+		if(object) {
+			for(var i in object) {
+				if(object.hasOwnProperty(i)) {
+					if(recursive) {
+						this[i] = DataObject.check(object[i], true, forceCopy);
+					} else {
+						this[i] = object[i];
+					}
 				}
 			}
 		}
-
-		if( forceCopy ) {
-			this.unbindChange();
-			this._name = null;
-			this._parent = null;	
-		}
-	};
-
-	ViewObject = function(l, checkDeep, forceCopy) {	
-		for(var i in l) {
-			if(l.hasOwnProperty(i)) {
-				if(!checkDeep) {
-					this[i] = l[i];
-					continue;
-				} else {
-					this[i] = ViewObject.check(l[i], true, forceCopy);
-				}
-			}
-		}
-	};
-
-	ViewObject.check = function(el, check, forceCopy) {
-		
-		if( ! forceCopy && ( el instanceof ViewObject || el instanceof ViewArray ) ) {
-			return el;
-		} else if(el instanceof Array) {
-			return new ViewArray(el, check, forceCopy);
-		} else if(el === null) {
-			return null;
-		} else if(typeof el == "object") {
-			return new ViewObject(el, check, forceCopy);
-		} else {
-			return el;
-		}
-	};
-
-
-	DataObject.check = function(el, check, forceCopy) {
-
-		if( ! forceCopy && ( el instanceof DataObject || el instanceof DataArray ) ) {
-			return el;
-		} else if(el instanceof Array) {
-			return new DataArray(el, check, true);
-		} else if(el === null) {
-			return null;
-		} else if(typeof el == "object") {
-			return new DataObject(el, check, true);
-		} else {
-			return el;
-		}
-	};
-
-	$.extend(ViewObject.prototype, Object.prototype);
-	$.extend(DataObject.prototype, Object.prototype);
-
+	}
 	
-	ViewArray = function(arr, deep) { 
-	  arr = arr || [];
-	  if(deep)
-	  	for(var i = 0, l = arr.length; i < l; i++)
-	  		arr[i] = ViewObject.check(arr[i], deep);
-	  arr.__proto__ = ViewArray.prototype;
-	  return arr;
+	DataObject.check = function(object, recursive, forceCopy) {
+		if(!forceCopy && (object instanceof DataObject || object instanceof DataArray)) {
+			return object;
+		} else if(object instanceof Array) {
+			return new DataArray(object, recursive, forceCopy);
+		} else if(object === null) {
+			return null;
+		} else if(typeof object === "object") {
+			return new DataObject(object, recursive, forceCopy);
+		} else {
+			return object;
+		}
+	};
+	
+	function DataArray(arr, recursive, forceCopy) {
+		var newArr = [];
+		if(arr) {
+			if(!(arr instanceof Array))
+				throw "DataArray can only be constructed from arrays";
+			for(var i = 0, l = arr.length; i < l; i++) {
+				if(recursive) {
+					newArr[i] = DataObject.check(arr[i], recursive, forceCopy);
+				} else {
+					newArr[i] = arr[i];
+				}
+			}
+		}
+		newArr.__proto__ = DataArray.prototype;
+		return newArr;
 	}
-	ViewArray.prototype = new Array;
-
-
-	function DataArray(arr, deep) { 
-	  arr = arr || [];
-	  if(deep)
-	  	for(var i = 0, l = arr.length; i < l; i++)
-	  		arr[i] = DataObject.check(arr[i], deep);
-	  arr.__proto__ = DataArray.prototype;
-	  return arr;
-	}
-	DataArray.prototype = new Array;
-
-	window.ViewArray = ViewArray;
+	
+	DataArray.prototype = Object.create(Array.prototype);
+	Object.defineProperty(DataArray.prototype, "constructor", DataArray);
+	
+	window.DataObject = DataObject;
 	window.DataArray = DataArray;
+	
+	function ViewObject(object, recursive, forceCopy) {
+		if(object) {
+			for(var i in object) {
+				if(object.hasOwnProperty(i)) {
+					if(recursive) {
+						this[i] = ViewObject.check(object[i], true, forceCopy);
+					} else {
+						this[i] = object[i];
+					}
+				}
+			}
+		}
+	}
+	
+	ViewObject.check = function(object, recursive, forceCopy) {
+		if(!forceCopy && (object instanceof ViewObject || object instanceof ViewArray)) {
+			return object;
+		} else if(object instanceof Array) {
+			return new ViewArray(object, recursive, forceCopy);
+		} else if(object === null) {
+			return null;
+		} else if(typeof object === "object") {
+			return new ViewObject(object, recursive, forceCopy);
+		} else {
+			return object;
+		}
+	};
+	
+	function ViewArray(arr, recursive, forceCopy) {
+		var newArr = [];
+		if(arr) {
+			if(!(arr instanceof Array))
+				throw "ViewArray can only be constructed from arrays";
+			for(var i = 0, l = arr.length; i < l; i++) {
+				if(recursive) {
+					newArr[i] = ViewObject.check(arr[i], recursive, forceCopy);
+				} else {
+					newArr[i] = arr[i];
+				}
+			}
+		}
+		newArr.__proto__ = ViewArray.prototype;
+		return newArr;
+	}
+	
+	ViewObject.prototype = Object.create(DataObject.prototype);
+	Object.defineProperty(ViewObject.prototype, "constructor", ViewObject);
+	
+	ViewArray.prototype = Object.create(DataArray.prototype);
+	Object.defineProperty(ViewArray.prototype, "constructor", ViewArray);
 
+	window.ViewObject = ViewObject;
+	window.ViewArray = ViewArray;
 
-	var resurectObject = {
-		enumerable: false,
-		configurable: false,
-		writable: false,
+	var resurrectObject = {
 		value: function() {
 			var obj = {};
-			for( var i in this ) {
-
-				if( this[ i ] instanceof DataArray || this[ i ] instanceof DataObject ) {
-					obj[ i ] = this[ i ].resurect()
+			for(var i in this) {
+				if(this[i] instanceof DataArray || this[i] instanceof DataObject) {
+					obj[i] = this[i].resurrect();
 				} else {
-					obj[ i ] = this[ i ];
+					obj[i] = this[i];
 				}
 			}
-
 			return obj;
 		}
 	};
 
-	var resurectArray = {
-		enumerable: false,
-		configurable: false,
-		writable: false,
+	var resurrectArray = {
 		value: function() {
 			var obj = [];
-			for( var i = 0, l = this.length ; i < l ; i ++ ) {
-				if( typeof this[ i ] == "object" ) {
-					obj[ i ] = this[ i ].resurect()
+			for(var i = 0, l = this.length; i < l; i++) {
+				if(this[i] instanceof DataArray || this[i] instanceof DataObject) {
+					obj[i] = this[i].resurrect();
 				} else {
-					obj[ i ] = this[ i ];
+					obj[i] = this[i];
 				}
 			}
-
 			return obj;
 		}
 	};
-
-
-
-	var viewSetter = {
-		enumerable: false,
-		configurable: false,
-		writable: false,
-		value: function(k, l, check) {
-			//console.log('View has changed');
-
-			if(check) {
-				if(l instanceof Array)
-					l = new ViewArray(l, true);
-				else if(typeof l == 'object')
-					l = new ViewObject(l, true);
-			}
-
-			this[k] = l;
-		}
-	}
-
-	var dataSetter = {
-		enumerable: false,
-		configurable: false,
-		writable: false,
-		value: function(k, l) {
-			//console.log('Data has changed');
-			this[k] = l;
-			return this;
-		}
-	}
-
+	
 	var dataGetter = {
-		enumerable: false,
-		configurable: false,
-		writable: false,
-		value: function(el, returnDeferred) {
-			if(el !== undefined) {
+		value: function(prop, returnDeferred) {
+			if(typeof(prop) !== "undefined") {
 				var val = this.get();
 				if(returnDeferred) { // Returns a deferred if asked
-					if(val[el] !== undefined) {
-						if(val[el] && val[el].fetch) {
-							return val[el].fetch();
+					if(typeof(val[prop]) !== "undefined") {
+						if(val[prop].fetch) {
+							return val[prop].fetch();
 						} else {
-							return $.Deferred().resolve(val[el]);
+							return $.Deferred().resolve(val[prop]);
 						}
 					} else {
 						return $.Deferred().reject();
 					}
 				} else {
-					if(val[el])
-						return val[el];
-					else
-						return;
+					return val[prop];
 				}
 			}
-
 			if(this.value && this.type)
 				return this.value;
 			return this;
 		}
-	}
-
+	};
+	
+	var dataSetter = {
+		value: function(prop, value, recursive) {
+			if(recursive) {
+				if(value instanceof Array)
+					value = new DataArray(value, true);
+				else if(typeof value === 'object')
+					value = new DataObject(value, true);
+			}
+			this[prop] = value;
+			return this;
+		}
+	};
+	
+	var viewSetter = {
+		value: function(prop, value, recursive) {
+			if(recursive) {
+				if(value instanceof Array)
+					value = new ViewArray(value, true);
+				else if(typeof value === 'object')
+					value = new ViewObject(value, true);
+			}
+			this[prop] = value;
+			return this;
+		}
+	};
 
 	var dataDuplicator = {
-		enumerable: false,
-		configurable: false,
-		writable: false,
-		value: function( source ) {
-			return DataObject.check( this, true, true );
+		value: function(source) {
+			return DataObject.check(this, true, true);
 		}
-	}
-
-
-
+	};
 
 	var getChild = {
 		value: function( jpath, setParents ) {
@@ -308,9 +290,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			});
 
 			return subEl;
-		},
-
-		enumerable: false
+		}
 	};
 
 
@@ -370,9 +350,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 
 			Object.defineProperty( this, '__parent', { value: parent, writable: false, configurable: false, enumerable: false } );
 			Object.defineProperty( this, '__name', { value: name, writable: false, configurable: false, enumerable: false } );
-		},
-
-		enumerable: false
+		}
 	};
 
 
@@ -408,7 +386,6 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			var el = jpath.shift();
 			if(!this[el]) // We need to set an empty object to create the elements
 				this.set(el, new DataObject());
-//console.log('setChild', self, jpath, newValue);
 			return this
 					.get(el, true)
 					.pipe(function(el) { el.setChild(jpath, newValue, options) })
@@ -454,9 +431,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 				this.__parent.triggerChange( moduleid );
 			}
 
-		},
-
-		enumerable: false
+		}
 	}
 
 	var listenDataChanged = {
@@ -471,8 +446,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 				});
 
 			this._listenersDataChanged.push([callback, moduleid]);
-		},
-		enumerable: false
+		}
 	}
 
 	var unbindChange = {
@@ -486,29 +460,23 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 					}
 				}
 			}
-		},
-
-		enumerable: false
+		}
 	};
 
 	var getType = {
 		value: function() {
 			var type = typeof this;
-			if(type !== 'object')
+			if(type !== "object") // Native types: number, string, boolean
 				return type;
 			if(this instanceof Array)
 				return "array";
 			if(this.type && (this.value || this.url))
 				return this.type;
-			if(typeof this == "object")
-				return "object";
-			// Native types: int, string, boolean
 			return type;
 		}
-	}
+	};
 
 	var fetch = {
-
 		value: function() {
 
 			var self = this,
@@ -545,52 +513,32 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			return deferred;
 		}
 	};
+	
+	var commonProperties = {
+		set: dataSetter,
+		get: dataGetter,
+		setChild: setChild,
+		getChild: getChild,
+		getChildSync: getChildSync,
+		onChange: listenDataChanged,
+		duplicate: dataDuplicator,
+		unbindChange: unbindChange,
+		linkToParent: linkToParent,
+		triggerChange: dataChanged,
+		getType: getType
+	};
+	
+	Object.defineProperties(DataObject.prototype, commonProperties);
+	Object.defineProperties(DataArray.prototype, commonProperties);
+	
+	Object.defineProperty(DataObject.prototype, "fetch", fetch);
+	Object.defineProperty(DataObject.prototype, "resurrect", resurrectObject);
+	
+	Object.defineProperty(DataArray.prototype, "resurrect", resurrectArray);
 
+	// Special setters for view objects
 	Object.defineProperty(ViewObject.prototype, 'set', viewSetter);
 	Object.defineProperty(ViewArray.prototype, 'set', viewSetter);
-	Object.defineProperty(DataObject.prototype, 'set', dataSetter);
-	Object.defineProperty(DataArray.prototype, 'set', dataSetter);
-
-	Object.defineProperty(DataObject.prototype, 'get', dataGetter);
-	Object.defineProperty(DataArray.prototype, 'get', dataGetter);
-
-	Object.defineProperty(DataObject.prototype, 'setChild', setChild);
-	Object.defineProperty(DataArray.prototype, 'setChild', setChild);
-
-	Object.defineProperty(DataObject.prototype, 'fetch', fetch);
-	Object.defineProperty(ViewObject.prototype, 'fetch', fetch);
-
-	Object.defineProperty(DataObject.prototype, 'getChild', getChild);
-	Object.defineProperty(DataArray.prototype, 'getChild', getChild);
-        
-	Object.defineProperty(DataObject.prototype, 'getChildSync', getChildSync);
-	Object.defineProperty(DataArray.prototype, 'getChildSync', getChildSync);
-
-	Object.defineProperty(DataObject.prototype, 'onChange', listenDataChanged);
-	Object.defineProperty(DataArray.prototype, 'onChange', listenDataChanged);
-
-	Object.defineProperty(DataObject.prototype, 'duplicate', dataDuplicator);
-	Object.defineProperty(DataArray.prototype, 'duplicate', dataDuplicator);
-
-	Object.defineProperty(DataObject.prototype, 'resurect', resurectObject);
-	Object.defineProperty(DataArray.prototype, 'resurect', resurectArray);
-
-
-	Object.defineProperty(DataObject.prototype, 'unbindChange', unbindChange);
-	Object.defineProperty(DataArray.prototype, 'unbindChange', unbindChange);
-
-
-	Object.defineProperty(DataObject.prototype, 'linkToParent', linkToParent);
-	Object.defineProperty(DataArray.prototype, 'linkToParent', linkToParent);
-
-	Object.defineProperty(DataObject.prototype, 'triggerChange', dataChanged);
-	Object.defineProperty(DataArray.prototype, 'triggerChange', dataChanged);
-
-	Object.defineProperty(DataObject.prototype, 'getType', getType);
-	Object.defineProperty(DataArray.prototype, 'getType', getType);
-
-	Object.defineProperty(ViewObject.prototype, 'getType', getType);
-	Object.defineProperty(ViewArray.prototype, 'getType', getType);
 
 	Object.defineProperty(String.prototype, 'getType', {
 		value: function() { return 'string'; }
@@ -603,7 +551,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 
 
 
-	PouchObject = function(l, checkDeep, forceCopy) {	
+	function PouchObject(l, checkDeep, forceCopy) {	
 		for(var i in l) {
 			if(l.hasOwnProperty(i)) {
 				if(!checkDeep) {
@@ -637,7 +585,8 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 		} )
 	};
 
-	PouchObject.prototype = new DataObject;
+	PouchObject.prototype = Object.create(DataObject.prototype);
+	Object.defineProperty(PouchObject.prototype, "constructor", PouchObject);
 
 	Object.defineProperty( PouchObject.prototype, "setPouch", {
 
@@ -700,9 +649,10 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 
 	  arr.__proto__ = PouchArray.prototype;
 	  return arr;
-	}
+	};
 
-	PouchArray.prototype = new DataArray;
+	PouchArray.prototype = Object.create(DataObject.prototype);
+	Object.defineProperty(PouchArray.prototype, "constructor", PouchArray);
 
 	PouchArray.prototype.setPouch = function( pouchName ) {
 		this._pouchName = pouchName;
@@ -710,11 +660,11 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 		for( var i = 0, l = this.value.length ; i < l ; i ++ ) {
 			this.value[ i ].setPouch( pouchName );
 		}
-	}
+	};
 
 	PouchArray.prototype.getPouch = function( ) {
 		return this._pouchName;
-	}
+	};
 
 	PouchArray.prototype.push = function() {
 		
@@ -731,7 +681,7 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 			console.log(arguments);
 			console.log( "Pouch has saved your data" );
 		});
-	}
+	};
 
 	PouchArray.prototype.splice = function() {
 
@@ -743,31 +693,21 @@ require(['jquery', 'src/main/entrypoint', 'src/header/header', 'src/util/pouchto
 		}
 
 		return elementsRemoved;
-	}
+	};
 
 	PouchArray.prototype.get = function() {
-	
 		return this;
-	}
-
+	};
 
 	window.PouchObject = PouchObject;
 	window.PouchArray = PouchArray;
 
-
-
 	$(document).ready(function() {
-            require(["uri/URI.fragmentQuery"],function(URI){
-                		var title = $("#title");
-		var buttons = $("#visualizer-buttons");
-                
-                var url = new URI(window.location.href);
-                var type = (url.search().length > 0) ? "search" : "fragment";
-
-                var query = new URI(url[type]()).query(true);
-
-		var entryPoint = EntryPoint.init(query, type.replace(type[0],type[0].toUpperCase()));
-		//Header.setTitle(title, Versioning.getViewHandler());
-            });
+		require(["uri/URI.fragmentQuery"], function(URI) {
+			var url = new URI(window.location.href);
+			var type = (url.search().length > 0) ? "search" : (url.fragment()[0]==="?" ? "fragment" : "search");
+			var query = new URI(url[type]()).query(true);
+			EntryPoint.init(query, type.replace(type[0],type[0].toUpperCase()));
+		});
 	});
 });
