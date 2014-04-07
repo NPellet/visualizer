@@ -16,7 +16,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 	*/
 	controller.prototype.moduleInformation = {
 		moduleName: 'chartjs',
-		description: 'Display a Radar chart - Polar area chart - Pie chart et Doughnut chart based on chartjs',
+		description: 'Display a Radar chart - Polar area chart - Pie chart et Doughnut chart based on dhtmlxchart',
 		author: 'Khalid Arroub',
 		date: '07.01.2014',
 		license: 'MIT',
@@ -96,25 +96,54 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 
 					fields: {
 						
-						start: {
+						preference : {
+							type: 'combo',
+							title: 'Chart Type',
+							options: [
+								{title: 'Radar', key: 'radar'},
+								{title: 'Pie', key: 'pie'}
+							]
+							,displaySource:  {
+							'radar': 'r',
+							'pie': 'p'
+
+							} 
+
+						},
+						pie : {
+							type: 'combo',
+							title: 'Pie Type',
+							options: [
+								{title: 'Pie', key: 'pie'},
+								{title: '3D Pie', key: 'pie3D'},
+								{title: 'Donut', key: 'donut'}
+							],
+							displayTarget: [ 'p' ]
+
+						}
+						,start: {
 							type: 'text',
-							title: 'Start Value Of Y Axis'
+							title: 'Start Value Of Y Axis',
+							displayTarget: [ 'r' ]
 						},
 
 						end: {
 							type: 'text',
-							title: 'End Value Of Y Axis'
+							title: 'End Value Of Y Axis',
+							displayTarget: [ 'r' ]
 						},
 
 						step: {
 							type: 'text',
-							title: 'Steps Between'
+							title: 'Steps Between',
+							displayTarget: [ 'r' ]
 						},
 
 						point: {
 							type: 'checkbox',
 								title: 'point',
 								options: { 'point': 'Show Point Area'},
+							displayTarget: [ 'r' ]
 						},
 						lineshape : {
 							type: 'combo',
@@ -124,8 +153,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 								{title: 'Line', key: 'line'}
 								
 							],
-
-							displayTarget: [ 'b' ]
+							displayTarget: [ 'r' ]
 						}
 
 						
@@ -140,6 +168,9 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		'point': function(cfg) { return cfg.indexOf('point') == -1 ? true : false; }
 	};
 	controller.prototype.configAliases = {
+	
+		'preference': [ 'groups', 'group', 0, 'preference', 0 ],
+		'pie': [ 'groups', 'group', 0, 'pie', 0 ],
 		'start': [ 'groups', 'group', 0, 'start', 0 ],
 		'end': [ 'groups', 'group', 0, 'end', 0],
 		'step': [ 'groups', 'group', 0, 'step', 0 ],
