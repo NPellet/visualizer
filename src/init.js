@@ -208,7 +208,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 					return val[prop];
 				}
 			}
-			if(this.value && this.type)
+			if(typeof(this.value)!=="undefined" && this.type)
 				return this.value;
 			return this;
 		}
@@ -470,7 +470,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 				return type;
 			if(this instanceof Array)
 				return "array";
-			if(this.type && (this.value || this.url))
+			if(this.type && (typeof(this.value)!=="undefined" || this.url))
 				return this.type;
 			return type;
 		}
