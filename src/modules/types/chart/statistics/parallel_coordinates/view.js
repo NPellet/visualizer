@@ -133,11 +133,10 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             }
             this._names = names;
             
-            for(var i = 0; i < value.length; i++) {
+            for(var i = 0; i < vl; i++) {
                 var val = new DataObject();
                 newValue[i] = val;
                 for(var j = 0; j < l; j++) {
-                    result = value[i].getChildSync(columns[j].jpath);
                     if(result = value[i].getChildSync(columns[j].jpath))
                         val[columns[j].name] = result.get();
                     if(colorJpath) {

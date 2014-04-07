@@ -361,7 +361,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 			self.module.view.unlock();
 
 			if(typeof data === "object") {
-				data = new DataObject.check(data, true);
+				data = DataObject.check(data, true);
 			}
 			//console.log(data);
 			self.onSearchDone(data);

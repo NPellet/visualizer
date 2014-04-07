@@ -308,6 +308,9 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
 			var subEl = this.get(el, false);
+			
+			if(subEl === null)
+				return;
 
 			switch( typeof subEl ) {
 				case 'undefined':
@@ -320,6 +323,10 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 
 				case 'number':
 					subEl = new DataObject( { type: "number", value: subEl } );
+				break;
+
+				case 'boolean':
+					subEl = new DataObject( { type: "boolean", value: subEl } );
 				break;
 			}
 
