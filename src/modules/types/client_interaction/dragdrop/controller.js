@@ -122,7 +122,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 
 						extension: {
 							type: "text",
-							title: "File extension"
+							title: "File extension(s)"
 						},
 						
 						filetype: {
@@ -247,7 +247,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
                     return console.warn("No extension configured");
 		this.leased = true;
 		for( var i = 0, l = cfg.length ; i < l ; i ++ ) {
-			if( cfg[ i ].extension === ext) {
+			if( cfg[ i ].extension.split(',').indexOf(ext) !== -1) {
 				this.lineCfg = lineCfg = cfg[ i ];
 				break;
 			}
