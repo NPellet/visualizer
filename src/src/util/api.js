@@ -105,7 +105,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 			if(data && data[1]) {
 				return data[1];
 			}
-			return new DataObject({type:"boolean", value:false});
+			return new DataObject({type:"undefined", value:undefined});
 		},
 
 		listenHighlight: function() {
