@@ -20,8 +20,8 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/versioning'], 
                         var defaultMessage = this.module.getConfiguration( 'label' );
                         this.messages = {
                             'default': defaultMessage,
-                            drag: this.module.getConfiguration( 'dragoverlabel', defaultMessage ),
-                            hover: this.module.getConfiguration( 'hoverlabel', defaultMessage )
+                            drag: this.module.getConfiguration( 'dragoverlabel' ) || defaultMessage ,
+                            hover: this.module.getConfiguration( 'hoverlabel' ) || defaultMessage 
                         };
                         this.messageP=$('<p>').html(this.messages.default);
 			this.dom = $('<div />', { class: 'dragdropzone' } ).html( this.messageP).on("click mousemove",function(){
