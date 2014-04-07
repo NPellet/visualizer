@@ -323,7 +323,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                 }
                 
 		for(var i = 0; i < l; i++) {
-			var valueToPost = API.getVar(toPost[i].variable);
+			var valueToPost = API.getVar(toPost[i].variable).get();
 			if (valueToPost) {
 				if ( valueToPost.getType() !== "number" && valueToPost.getType() !== "string" ) {
 					if (toPost[i].filter==="value") {
