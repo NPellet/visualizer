@@ -76,7 +76,7 @@
 					"group": [
 						{
 							"template": [
-								"<style>\n    .twigtest {\n        padding-left: 5px;\n    }\n</style>\n<div class=\"twigtest\">\n<p>\n    Any text with primitive values...<br><br>\n    String : {{str}}<br>\n    Number : {{num}}<br>\n    Boolean : {{bool}}<br>\n    Undefined element : {{und}}\n</p>\n<p>\n    Arrays<br><br>\n    Simple : {{arr}}<br>\n    2D : {{arr2}}\n</p>\n<p>\n    Loop<br>\n    {% for val in arr %}\n    <br>Value {{val}}\n    {% endfor %}\n</p>\n</div>"
+								"<style>\n    .twigtest {\n        padding-left: 5px;\n    }\n</style>\n<div class=\"twigtest\">\n<p>\n    Any text with primitive values...<br><br>\n    String : {{test.str}}<br>\n    Number : {{test.num}}<br>\n    Boolean : {{test.bool}}<br>\n    Undefined element : {{test.und}}\n</p>\n<p>\n    Arrays<br><br>\n    Simple : {{test.arr}}<br>\n    2D : {{test.arr2}}\n</p>\n<p>\n    Loop<br>\n    {% for val in test.arr %}\n    <br>Value {{val}}\n    {% endfor %}\n</p>\n</div>"
 							]
 						}
 					]

@@ -14,7 +14,7 @@ define(['modules/default/defaultview', 'components/twig.js/twig.min'], function(
             });
 
             this.module.getDomContent().html(this.dom);
-            this._value = new DataObject();
+            this._values = new DataObject();
             this.template = Twig.twig({
                 data: this.module.getConfiguration('template')
             });
@@ -27,13 +27,13 @@ define(['modules/default/defaultview', 'components/twig.js/twig.min'], function(
         inDom: function() {
         },
         update: {
-            value: function(value) {
+            value: function(value, name) {
                 if (!value) {
                     return;
                 }
-                this._value = value;
+                this._values[name] = value.get();
 
-                this.dom.html(this.template.render(value.get()));
+                this.dom.html(this.template.render(this._values));
 
             },
             tpl: function(value) {
@@ -44,7 +44,7 @@ define(['modules/default/defaultview', 'components/twig.js/twig.min'], function(
                     var template = Twig.twig({
                         data: tpl
                     });
-                    this.dom.html(template.render(this._value.get()));
+                    this.dom.html(template.render(this._values));
                     this.module.definition.configuration.groups.group[0].template[0] = tpl;
                     this.template = template;
                 } catch (e) {
