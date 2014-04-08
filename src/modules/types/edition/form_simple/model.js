@@ -11,7 +11,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 			switch( rel ) {
 
 				case 'formValue':
-				console.log( this.module.view.formValue );
+				//console.log( this.module.view.formValue );
 					DataTraversing.getJPathsFromElement( this.module.view.formValue, jpaths );
 				break;
 			}

@@ -75,8 +75,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				switch( trigger ) {
 
 					case 'btn':
-
-						form.addButton('Ok', { color: 'blue' }, $.proxy( triggerFunction, form ) );
+                                                var btnLabel = self.module.getConfiguration('btnLabel');
+						form.addButton(btnLabel, { color: 'blue' }, $.proxy( triggerFunction, form ) );
 
 					break;
 

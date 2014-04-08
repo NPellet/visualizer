@@ -67,7 +67,7 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 	controller.prototype.configurationStructure = function() {
 
 		var jpaths = [];
-		arr = this.module.getDataFromRel('input_object');
+		var arr = this.module.getDataFromRel('input_object');
 
 		if( arr ) {
 			arr = arr.get();
@@ -81,7 +81,10 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 				structure: FormCreator.makeConfig({ jpaths: jpaths, name: 'Fill with'}),
 				trigger: {
 					options: { title: "Trigger" },
-					groups: { trigger: { options: { type: 'list' }, fields: { triggerType: { type: "combo", title: "Trigger type", options: [ {key: 'btn', title: 'Button'}, { key: 'change', title: 'On change'} ] }}} }
+					groups: { trigger: { options: { type: 'list' }, fields: {
+                                                    triggerType: { type: "combo", title: "Trigger type", options: [ {key: 'btn', title: 'Button'}, { key: 'change', title: 'On change'} ], displaySource: { btn:'btn' } },
+                                                    buttonLabel : { type: 'text', title: 'Button label', 'default': 'OK', displayTarget: ['btn']}
+                                                }} }
 				},
 		
 				template: {
@@ -113,14 +116,15 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 					}
 				}
 			}
-		}
+		};
 	},
 		
 	controller.prototype.configAliases = {
 		structure: [ 'sections', 'structure' ],
 		tpl_file: [ 'sections', 'template', 0, 'groups', 'template', 0, 'file', 0 ],
 		tpl_html: [ 'sections', 'template', 0, 'groups', 'template', 0, 'html', 0 ],
-		trigger: [ 'sections', 'trigger', 0, 'groups', 'trigger', 0, 'triggerType', 0 ]
+		trigger: [ 'sections', 'trigger', 0, 'groups', 'trigger', 0, 'triggerType', 0 ],
+                btnLabel: [ 'sections', 'trigger', 0, 'groups', 'trigger', 0, 'buttonLabel', 0 ]
 	};
 
 
