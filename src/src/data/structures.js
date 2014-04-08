@@ -21,6 +21,7 @@ define(function() {
                 "html": "string",
 
 		'boolean': "boolean",
+                'array': 'array',
                 
                 'colorBar': {
                     'type': 'array',

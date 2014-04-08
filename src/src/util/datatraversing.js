@@ -60,8 +60,8 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 			return;
 
 		if(typeof element == "object" && element.url)
-			return fetchElementIfNeeded(element).pipe(function(value) {
-				return value.data;
+			return fetchElementIfNeeded(element).pipe(function(data) {
+				return data.value;
 			});
 		if(element.value && element.type)
 			return element.value;

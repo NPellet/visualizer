@@ -396,8 +396,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 			xArray: function(moduleValue, varname) {
 				var self = this,
-					val, 
-					val2;
+					val;
 
 
 	//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
@@ -409,21 +408,24 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 					return;
 				
 				val = DataTraversing.getValueIfNeeded(moduleValue),
-				val2 = [];
+                        
+                                $.when(val).then(function(value){
+                                    var val2 = [];
+                                    for(var i = 0, l = value.length; i < l; i++) {
+                                            val2.push(i);
+                                            val2.push(value[i]);
+                                    }
 
-				for(var i = 0, l = val.length; i < l; i++) {
-					val2.push(i);
-					val2.push(val[i]);
-				}
+                                    var serie = self.graph.newSerie(varname, {trackMouse: true}); // lineToZero: !continuous}
+                                    self.setSerieParameters(serie, varname);
+                                    self.normalize(val2, varname);
 
-				var serie = this.graph.newSerie(varname, {trackMouse: true}); // lineToZero: !continuous}
-				this.setSerieParameters(serie, varname);
-				this.normalize(val2, varname);
-
-				serie.setData(val2);
-				serie.autoAxis();
-				this.series[ varname ].push( serie );
-				this.redraw();
+                                    serie.setData(val2);
+                                    serie.autoAxis();
+                                    self.series[ varname ].push( serie );
+                                    self.redraw();
+                                });
+                                
 			},
 
 			annotations: function(value) {
