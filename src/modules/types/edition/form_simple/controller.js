@@ -104,8 +104,9 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 								},
 								
 								html: {
-									type: 'textarea',
-									title: 'HTML template'
+									type: 'jscode',
+									title: 'HTML template',
+                                                                        mode: 'html'
 								}
 							}
 						}
