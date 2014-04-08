@@ -477,7 +477,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 				return type;
 			if(this instanceof Array)
 				return "array";
-			if(this.type && (typeof(this.value)!=="undefined" || this.url))
+			if(this.hasOwnProperty("type") && (this.hasOwnProperty("value") || this.hasOwnProperty("url")))
 				return this.type;
 			return type;
 		}

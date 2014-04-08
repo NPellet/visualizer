@@ -83,8 +83,13 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
 					return;
 				}
+                
+                var data = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
+                
+                if(!data)
+                    return;
 
-				self.data[ varName ] = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
+				self.data[ varName ] = data;
 				rel = self.module.getDataRelFromName( varName );
 
 				i = 0, l = rel.length;

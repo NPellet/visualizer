@@ -31,6 +31,9 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 			case 'number':
 				element = new DataObject( { type: "number", value: element } );
 			break;
+			case 'boolean':
+				element = new DataObject( { type: "boolean", value: element } );
+			break;
 		}
 
 		if( element && element.getChild ) {
@@ -40,7 +43,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 			} );	
 
 		} else {
-			console.warn("Vartiable " + name + " could not be set. Method getChild does not exist.")
+			console.warn("Variable " + name + " could not be set. Method getChild does not exist.")
 			console.log( element );
 			console.trace();
 		}

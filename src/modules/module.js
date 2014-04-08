@@ -152,7 +152,7 @@ define([
 			for( ; i < l ; i++ ) {
 				
 	 			val = API.getVar( vars[ i ].name );
-	 			if( val ) {	 				
+	 			if( val.getType()!== "undefined" ) {	 				
 	 				this.model.onVarGet( val, vars[ i ].name );
 	 			}
 			}
