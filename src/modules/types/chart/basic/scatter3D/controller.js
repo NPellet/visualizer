@@ -32,16 +32,18 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		// List of all possible events
 
 		onHover: {
-			label: 'Hover a piece of pie',
-			refVariable: [ 'piece' ]
+			label: 'Hover a 3D point',
+			refVariable: [ 'point', 'info' ]
 		}
 	};
 	
 	controller.prototype.onHover = function(element) {
+    console.log(element);
 		if( ! element ) {
 			return;
 		}
-		this.setVarFromEvent( 'onHover', element, 'piece' );
+    // this.setVarFromEvent( 'onHover', DataObject.check(element), 'point');
+    this.setVarFromEvent( 'onHover', DataObject.check(element), 'info');
 	};
 	
 
@@ -58,6 +60,12 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 			type: 'array',
 			label: '1D Y array'
 		},
+    point: {
+      label: 'Point label' 
+    },
+    info: {
+      label: 'Point info'
+    }
 	};
 
 

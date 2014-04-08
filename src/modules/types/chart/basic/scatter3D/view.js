@@ -1,18 +1,23 @@
 define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'components/three.js/examples/js/controls/TrackballControls'], function(Default, Traversing, API, Util, _) {
   
+  var TOOLTIP_WIDTH = 100;
   $.fn.listHandlers = function(events, outputFunction) {
-      return this.each(function(i){
-          var elem = this,
-              dEvents = $(this).data('events');
-          if (!dEvents) {return;}
-          $.each(dEvents, function(name, handler){
-              if((new RegExp('^(' + (events === '*' ? '.+' : events.replace(',','|').replace(/^on/i,'')) + ')$' ,'i')).test(name)) {
-                 $.each(handler, function(i,handler){
-                     outputFunction(elem, '\n' + i + ': [' + name + '] : ' + handler );
-                 });
-             }
+    return this.each(function(i){
+      console.log('hello a');
+      var elem = this,
+      dEvents = $(this).data('events');
+      console.log(this);
+      if (!dEvents) {console.log('hello d'); return;}
+      $.each(dEvents, function(name, handler){
+        console.log('hello c');
+        if((new RegExp('^(' + (events === '*' ? '.+' : events.replace(',','|').replace(/^on/i,'')) + ')$' ,'i')).test(name)) {
+          $.each(handler, function(i,handler){
+            console.log('hello b');
+            outputFunction(elem, '\n' + i + ': [' + name + '] : ' + handler );
           });
+        }
       });
+    });
   };
 	
 	function view() {};
@@ -24,6 +29,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
     _initThreejs: function() {
       var self = this;
 			var container;
+      var pointerObjects = [];
+      var lastMouseMoveEvent = null;
       
 			init();
 			animate();
@@ -59,9 +66,37 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
         var intersects = ray.intersectObjects(self.scene.children);
         console.log(intersects);
+        pointerObjects = intersects;
+        lastMouseMoveEvent = event;
+        if(intersects.length > 0){
+          console.log(self._data.data[intersects[0].object.data.serie].label[intersects[0].object.data.index]);
+        }
       }
       
-      var onMouseMoveThrottle = _.throttle(onMouseMove, 200);
+      function showTooltip() {
+        if(pointerObjects.length === 0) {
+          return;
+        }
+        var data = self._data.data[pointerObjects[0].object.data.serie];
+        if(!data.label){
+          return;
+        }
+        
+        var label = data.label[pointerObjects[0].object.data.index];
+        $('#scatter3D_tooltip').css('left', lastMouseMoveEvent.offsetX - TOOLTIP_WIDTH);
+        $('#scatter3D_tooltip').css('top', lastMouseMoveEvent.offsetY);
+        $('#scatter3D_tooltip').css('width', TOOLTIP_WIDTH);
+        $('#scatter3D_tooltip').html(label)
+        $('#scatter3D_tooltip').show();
+        console.log('tooltip show object: ', pointerObjects[0]);
+        console.log(lastMouseMoveEvent);
+      }
+      
+      
+      function hideTooltip() {
+        $('#scatter3D_tooltip').hide();
+        console.log('hide tooltip');
+      }
 
 			function init() {
         if(!self.camera) {
@@ -97,11 +132,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				container = document.getElementById(self.dom.attr('id'));
         container.innerHTML = '';
         console.log(self.renderer.domElement);
-				container.appendChild( self.renderer.domElement );
+				container.appendChild(self.renderer.domElement);
         console.log(container);
         
         console.log(self.dom);
-        // $(self.dom).append('<div style="z-index: 10000; position:absolute; top: 20px;"> Hello world </div>');
+        $(self.dom).append( '<div id="scatter3D_tooltip" style="z-index: 10000; position:absolute; top: 20px; width:' + TOOLTIP_WIDTH + 100 + 'px; height: auto; background-color: #f9edbe;"> </div>');
+        $('#scatter3D_tooltip').hide();
 
 
 				//window.addEventListener( 'resize', onWindowResize, false );
@@ -109,11 +145,22 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         // $(self.renderer.domElement).off('mousedown', onMouseDown);
         // $(self.renderer.domElement).on('mousedown', onMouseDown);
         
+        function onHover() {
+          if(pointerObjects.length > 0) {
+            var i = pointerObjects[0].object.data.serie;
+            var j = pointerObjects[0].object.data.index;
+            self.module.controller.onHover(self._data.data[i].info[j]);
+          }
+        }
         
-        // $(self.renderer.domElement).off('mousemove', onMouseMoveThrottle);
+        console.log('Init three js');
+        // self.renderer is recreated each time in init() so we don't need to 'off' events
         $(self.renderer.domElement).on('mousemove', _.throttle(onMouseMove, 200));
+        $(self.renderer.domElement).on('mousemove', _.debounce(showTooltip, 500));
+        $(self.renderer.domElement).on('mousemove', _.throttle(hideTooltip, 500));
+        $(self.renderer.domElement).on('mousemove', _.throttle(onHover, 300));
         
-        $(self.renderer.domElement).listHandlers('mousemove', console.log);
+        $(self.renderer.domElement).listHandlers('mousemove', function(a, b) { console.log(a,b);});
 
 			}
 
@@ -218,6 +265,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       // Add all data levels in one graph
       for(var j=0; j<value.data.length; j++) {
         for ( var i = 0; i < value.data[j].x.length; i++ ) {
+          if(i===0 && j===0) {
+            self.module._data = value.data[j].info[i];
+          }
           var radius = 5;
           var color = '#000000';
           if(value.data[j].size && value.data[j].size[i]) {
@@ -236,6 +286,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           mesh.position.z = value.data[j].z[i];
           mesh.updateMatrix();
           mesh.matrixAutoUpdate = false;
+          $.extend(mesh, {
+            data: {
+              serie: j,
+              index: i,
+            }
+          });
           this.scene.add( mesh );
         }
       }
@@ -245,7 +301,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
     
     
 		init: function() {
-			if (this.DEBUG) console.log("Pie Chart: init");
+			if (this.DEBUG) console.log("Scatter 3D: init");
 
 			// When we change configuration the method init is called again. Also the case when we change completely of view
 			if (! this.dom) {
@@ -253,7 +309,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
 				this.module.getDomContent().html(this.dom);
 			}
-
+      
 
 			if (this.dom) {
 				// in the dom exists and the preferences has been changed we need to clean the canvas
@@ -270,24 +326,20 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			this.updateOptions();
 
-			
-
-
-			if (this.DEBUG) console.log("Pie Chart: ID: "+this._id);
+			if (this.DEBUG) console.log("Scatter 3D: ID: "+this._id);
 
 			this._data=[];	// the data that will be sent to FLOT
       
-
 		},
 		
 
 		inDom: function() {
-			if (this.DEBUG) console.log("Pie Chart: inDom");
+			if (this.DEBUG) console.log("Scatter 3D: inDom");
 
 		},
 
 		onResize: function() {
-			if (this.DEBUG) console.log("Pie Chart: onResize");
+			if (this.DEBUG) console.log("Scatter 3D: onResize");
       this._initThreejs();
 			var self=this;
 			// the size is now really defined (we are after inDom)
@@ -298,6 +350,29 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           self._plotPoints(self._data);
         }
 			})
+      
+      API.killHighlight( self.module.getId());
+      var highlightSet = {};
+      console.log("-----")
+      console.log(self._data);
+      for(var i=0; i<self._data.data.length; i++) {
+        console.log('setting highlights: ', self._data.data[i]._highlight);
+        for(var j=0; j<self._data.data[i]._highlight.length; j++) {
+          highlightSet[self._data.data[i]._highlight[j].toString()] = self._data.data[i]._highlight[j];
+        }
+      }
+			
+      _.keys(highlightSet).forEach(function(key){
+        API.listenHighlight( {_highlight: highlightSet[key]}, function( onOff, key ) {
+          console.log('-- Listening to highlight ', key, '(is '+ (onOff ? 'on': 'off') + ')');
+          // console.log(onOff, key, currentDataPoint);
+        
+        }, false, self.module.getId());
+        
+      });
+      
+      
+      
 		},
 		
 		/* When a value changes this method is called. It will be called for all 
@@ -306,14 +381,17 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		*/
 		update: {
 			'chart': function(moduleValue) {
-				if (this.DEBUG) console.log("Pie Chart: update from chart object");
+				if (this.DEBUG) console.log("Scatter 3D: update from chart object");
         
+        console.log('module value on update', moduleValue);
 				if (! moduleValue.get() ){ 
           console.log('unvalid value', moduleValue);
           return;
         }
 
 				this._data = moduleValue.get();
+        
+        console.log('moduleValue.get(): ', this._data);
 
 				// data are ready to be ploteed
         console.log('state:', this.loadedData.state());
@@ -326,7 +404,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         }
 			},
 			'yArray': function(moduleValue) {
-				if (this.DEBUG) console.log("Pie Chart: update from array");
+				if (this.DEBUG) console.log("Scatter 3D: update from array");
 				this._data=moduleValue.get();
 				this.loadedData.resolve();
 			}
@@ -337,7 +415,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var self=this;
 			if ( ! value.data instanceof Array || ! value.data[0] || ! value.data[0].y instanceof Array) return;
 			if (value.data.length>0) {
-				console.log("Pie Chart module can only display the first serie of data")
+				console.log("Scatter 3D module can only display the first serie of data")
 			}
 			var y=value.data[0].y;
 			var highlight=value.data[0]._highlight;
@@ -364,6 +442,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		},
 
 		updateOptions: function() {
+      console.log('update options');
 			this._options = {
 				grid: {
 					clickable:true,

@@ -1,17 +1,17 @@
 {
-	"version": "2.2.3",
+	"version": "2.2.4",
 	"modules": [
 		{
 			"url": "modules/types/chart/basic/scatter3D/",
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 2,
+				"left": 0,
 				"top": 0
 			},
 			"size": {
-				"width": 106,
-				"height": 58
+				"width": 71,
+				"height": 57
 			},
 			"configuration": {
 				"sections": {},
@@ -73,12 +73,17 @@
 			"vars_in": [
 				{
 					"rel": "chart",
-					"name": "pieChart"
+					"name": "pieChart1"
 				}
 			],
 			"actions_in": {},
 			"vars_out": [
-				{}
+				{
+					"event": "onHover",
+					"rel": "info",
+					"jpath": "element",
+					"name": "apoint"
+				}
 			],
 			"actions_out": {},
 			"bgColor": [
@@ -93,12 +98,12 @@
 			"title": "Untitled module",
 			"displayWrapper": true,
 			"position": {
-				"left": 109,
+				"left": 72,
 				"top": 0
 			},
 			"size": {
-				"width": 34,
-				"height": 35
+				"width": 25,
+				"height": 50
 			},
 			"configuration": {
 				"sections": {},
@@ -110,6 +115,12 @@
 							],
 							"expanded": [
 								[]
+							],
+							"storeObject": [
+								[]
+							],
+							"storedObject": [
+								"{}"
 							]
 						}
 					]
@@ -127,8 +138,127 @@
 				{
 					"event": "onObjectChange",
 					"rel": "value",
-					"name": "pieChart"
+					"jpath": "element",
+					"name": "pieChart1"
 				}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/display/fasttable/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 98,
+				"top": 16
+			},
+			"size": {
+				"width": 29,
+				"height": 34
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "id",
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "highlight"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/edition/object_editor/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 98,
+				"top": 0
+			},
+			"size": {
+				"width": 29,
+				"height": 15
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"view"
+							],
+							"expanded": [
+								[]
+							],
+							"storeObject": [
+								[]
+							],
+							"storedObject": [
+								"{}"
+							]
+						}
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "apoint"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
 			],
 			"actions_out": {},
 			"bgColor": [
@@ -147,12 +277,9 @@
 		{
 			"varname": "pieChart",
 			"jpath": "element.pieChart"
-		},
-		{
-			"varname": "simpleArray",
-			"jpath": "element.simpleArray"
 		}
 	],
+	"pouchvariables": [],
 	"configuration": {
 		"title": "No title"
 	}
