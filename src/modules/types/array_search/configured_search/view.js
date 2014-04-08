@@ -290,8 +290,10 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 		update: {
 			array: function( variableValue, variableName ) {
-                            this.variables[ variableName ] = variableValue.get();	
-                            this.search( );
+                            if(variableValue) {
+                                this.variables[ variableName ] = variableValue.get();	
+                                this.search( );
+                            }
 			}
 		},
 				
