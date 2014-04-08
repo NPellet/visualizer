@@ -34,8 +34,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			this._data=[];	// the data that will be sent to FLOT
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
-			axis = undefined;
-			//this.updateOptions(cfg, axis);
+			data = undefined;
+			//this.updateoptions(cfg, data);
 
 
 
@@ -55,11 +55,17 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var self=this;
 
 			this.loadedData.done(function() {
-
-			// p = self.plot(self._id, self._data, self._options);
-			console.log(self._data);
 			self._radar.parse(self._data,"json");
+			console.log(self._data);
+			/*self._radar.attachEvent("onItemclick", function (id, ev, trg){
 			
+			
+			console.log(trg[0]);
+		
+			
+			return true;
+
+}); */
 			});
 
 
@@ -80,7 +86,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 				if (! moduleValue || ! moduleValue.value) return;
 				
-				self.updateOptions(cfg, moduleValue.get());
+				this.updateoptions(cfg, moduleValue.get());
 				
 				this._convertChartToData(moduleValue.get());
 				
@@ -95,80 +101,100 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			
 			if ( ! value.data instanceof Array || ! value ) return;
 			
-			console.log(value.axis[0].unit.length);
 			for (var j = 0; j < value.axis[0].unit.length; j++) 
 			{
 				self._data[j] = {};
 				self._data[j]["xunit"] = value.axis[0].unit[j];
-					
+				self._data[j]['_highlight'] = [];	
 				for (var i = 0; i < value.data.length; i++) 
 				{
-					self._data[j][value.data[i].info[0].name] = value.data[i].x[j]
+					self._data[j][value.data[i].name] = value.data[i].x[j];
+					self._data[j]['_highlight'].push({name: value.data[i].name, _highlight: value.data[i]._highlight[j]});
 					
 				}
 					
-			}
+			};
+			console.log(self._data);
 		},
 
-		updateOptions: function(cfg, chart) {
+		updateoptions: function(cfg, chart) {
 		var self=this;
-			var posx = null;
-			var posy = null;
-			var xmin = null;
-			var ymin = null;
-			var xmax = null;
-			var ymax = null;
-			if (undefined != axis)
+			 switch (cfg('preference'))
 			{
-			// posx = axis[0].type;
-			// posy = axis[1].type;
-			// xmax = axis[0].max;
-			// ymax = axis[1].max;
-			// xmin = axis[0].min;
-			// ymin = axis[1].min;
-			}
-			//console.log(cfg('fill'));
-			
-			this._radar = new dhtmlXChart({
-		view: "radar",
-                container: self._id,
-                alpha:0.2,
-                fill: false,
-				disableItems:cfg('point'),
-		
-		xAxis:{
-				template:"#xunit#",
-				
-				// lineShape: null,
-				// lineColor: null
-		},
-		yAxis:{
-				lineShape:cfg('lineshape'),
-				start: cfg('start'),
-				end: cfg('end'),
-				step: cfg('step'),
-		}
-        });
-		try
-		{
-		for (var i = 0; i < chart.data.length; i++) 
-				{
-					color = "rgba("+Math.floor((Math.random()*255)+0)+","+Math.floor((Math.random()*255)+1)+","+Math.floor((Math.random()*255)+1)+","+Math.floor((Math.random()*255)+1)+")";
-						this._radar.addSeries({
-							value: "#"+chart.data[i].info[0].name+"#",
-							color: color,
-							fill: color,
-							line:{
-								color:color,
+			case 'radar':
+				o = {
+					view: "radar",
+					container: self._id,
+					alpha:0.2,
+					value: "#"+chart.data[0].name+"#",
+					disableItems: false,//cfg('point'),
+					color: chart.data[0].color,
+					fill: chart.data[0].color,
+					line:{
+								color:chart.data[0].color,
 								width:1
 							},
-						 
-						})
+					xAxis:{
+							template:"#xunit#"
+					},
+					yAxis:{
+							lineShape:cfg('lineshape'),
+							start: cfg('start'),
+							end: cfg('end'),
+							step: cfg('step'),
+					},
 					
-				}	
-		}
-		catch(e)
-		{}
+				};
+				this._radar = new dhtmlXChart(o);
+				
+				var val = []
+		
+				for (var i = 0; i < chart.data.length; i++) 
+						{
+							if(i != 0)
+							{
+							this._radar.addSeries({
+									value: "#"+chart.data[i].name+"#",
+									fill: chart.data[i].color,
+									line:{
+										color:chart.data[i].color,
+										width:1
+									},
+							 
+							})
+							}
+							val.push({text: chart.data[i].serieLabel,color: chart.data[i].color});
+						}
+				this._radar.define("legend",{
+					width: 120,
+					align: "left",
+					valign: "top",
+					marker:{
+						type: "cube",
+						width: 15
+					},
+					values: val
+				}); 
+			
+
+				break;
+			case 'pie':
+			o = {
+			view: cfg('pie'),
+			container: self._id,
+			value: "#"+chart.data[0].name+"#",
+			color: chart.data[0].color,
+				
+			pieInnerText: "<b>#xunit#</b>"
+			
+			};
+			this._radar = new dhtmlXChart(o);
+			
+			break;
+			};
+			
+		
+			
 		
 
 

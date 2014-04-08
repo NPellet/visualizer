@@ -17,6 +17,12 @@
 				"groups": {
 					"group": [
 						{
+							"preference": [
+									"radar"
+							],
+							"pie": [
+									"pie3D"
+							],
 							"start": [
 								[
 									0
@@ -34,7 +40,7 @@
 							],
 							"point": [
 								[
-									false
+									true
 								]
 							],
 							"lineshape": [

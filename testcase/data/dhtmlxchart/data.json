@@ -32,7 +32,8 @@
 					"y":[],
 					"z":[],
 					"_highlight":["A","B","E","C"],
-					"info":[{"name":"first"}],
+					"color":"#FF00FF",
+					"name": "first",
 					"serieLabel": "My first serie",
 					"xAxis": "0", 
 					"yAxis": "1"
@@ -42,8 +43,21 @@
 					"y":[],
 					"z":[],
 					"_highlight":["D","E","C","A"],
-					"info":[{"name":"second"}],
-					"serieLabel": "My seconde serie",
+					"color":"#0000FF",
+					"name": "second",
+					"serieLabel": "My second serie",
+					"xAxis": "0", 
+					"yAxis": "1"
+				},
+				{
+					"x":[48,68,40,19,76,27,31],
+					"y":[],
+					"z":[],
+					"_highlight":["D","E","C","A"],
+					"color":"#FF0000",
+					"name": "third",
+					"info":[{"name":"third"}],
+					"serieLabel": "My third serie",
 					"xAxis": "0", 
 					"yAxis": "1"
 				}
