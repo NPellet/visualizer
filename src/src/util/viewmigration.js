@@ -62,7 +62,7 @@ define(['jquery', 'src/util/versioning'], function($, Versioning) {
                 if (view.modules) {
 					for (var i=0; i<view.modules.length; i++) {
 						var module=view.modules[i];
-						if(module.url.indexOf("science/chemistry/jsmol_script")>=0){
+						if(module.url && module.url.indexOf("science/chemistry/jsmol_script")>=0){
                             module.url = "modules/types/client_interaction/code_editor/";
                             if(module.configuration.groups.group[0].iseditable[0][0]==="true")
                                 module.configuration.groups.group[0].iseditable[0][0]="editable";
@@ -89,7 +89,7 @@ define(['jquery', 'src/util/versioning'], function($, Versioning) {
                                if(view.modules){
                 for (var i = 0; i < view.modules.length; i++) {
                     var module = view.modules[i];
-                    if(module.url.indexOf("server_interaction/webservice_search")>=0) {
+                    if(module.url && module.url.indexOf("server_interaction/webservice_search")>=0) {
                         var url = module.configuration.groups.group[0].url;
                         if(url[0]) {
                             url[0] = url[0].replace(/<([a-zA-Z0-9]+)>/g,"{$1}");
