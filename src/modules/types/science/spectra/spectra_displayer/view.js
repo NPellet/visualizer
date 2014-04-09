@@ -394,9 +394,11 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				this.redraw();
 			},
 
+// in fact it is a Y array ...
 			xArray: function(moduleValue, varname) {
 				var self = this,
 					val;
+
 
 
 	//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
@@ -408,23 +410,26 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 					return;
 				
 				val = DataTraversing.getValueIfNeeded(moduleValue),
-                        
-                                $.when(val).then(function(value){
-                                    var val2 = [];
-                                    for(var i = 0, l = value.length; i < l; i++) {
-                                            val2.push(i);
-                                            val2.push(value[i]);
-                                    }
 
-                                    var serie = self.graph.newSerie(varname, {trackMouse: true}); // lineToZero: !continuous}
-                                    self.setSerieParameters(serie, varname);
-                                    self.normalize(val2, varname);
+                    $.when(val).then(function(value){
+	                    var minX=self.module.getConfiguration( 'minX' ) || 0;
+						var maxX=self.module.getConfiguration( 'maxX' ) || value.length-1;
+						var step=(maxX-minX)/(value.length-1);
+                        var val2 = [];
+                        for(var i = 0, l = value.length; i < l; i++) {
+                                val2.push(minX+step*i);
+                                val2.push(value[i]);
+                        }
 
-                                    serie.setData(val2);
-                                    serie.autoAxis();
-                                    self.series[ varname ].push( serie );
-                                    self.redraw();
-                                });
+                        var serie = self.graph.newSerie(varname, {trackMouse: true}); // lineToZero: !continuous}
+                        self.setSerieParameters(serie, varname);
+                        self.normalize(val2, varname);
+
+                        serie.setData(val2);
+                        serie.autoAxis();
+                        self.series[ varname ].push( serie );
+                        self.redraw();
+                    });
                                 
 			},
 
