@@ -167,32 +167,35 @@ define([	'jquery',
 		}
 
 		// Entry point variables
+        var entryVar;
 		for( var i = 0, l = view.variables.length; i < l; i++ ) {
-			// Defined by an URL
+            entryVar = view.variables[i];
+            if(entryVar.varname) {
+                // Defined by an URL
+                if( entryVar.url ) {
 
-			if( view.variables[i].url ) {
+                    entryVar.fetch( ).done( function( v ) {
+                              
+                        var varname = v.varname;
+                        v.type = Traversing.getType( v.value );
+                        
+                        data[ varname ] = DataObject.check( v, true );
+                        
+                        API.setVariable( varname , data, [ varname ] );
+                    } );
 
-				view.variables[i].fetch( ).done( function( v ) {
-                          
-					var varname = v.varname;
-					v.type = Traversing.getType( v.value );
-					
-					data[ varname ] = DataObject.check( v, true );
-					
-					API.setVariable( varname , data, [ varname ] );
-				} );
+                } else if( ! entryVar.jpath ) {
 
-			} else if( ! view.variables[ i ].jpath ) {
+                    // If there is no jpath, we assume the variable is an object and we add it in the data stack
+                    // Note: if that's not an object, we will have a problem...
+                    data[ entryVar.varname ] = new DataObject();
+                    API.setVariable( entryVar.varname, data, [ entryVar.varname ] );
 
-				// If there is no jpath, we assume the variable is an object and we add it in the data stack
-				// Note: if that's not an object, we will have a problem...
-				data[ view.variables[ i ].varname ] = new DataObject();
-				API.setVariable( view.variables[ i ].varname, data, [ view.variables[ i ].varname ] );
+                } else {
 
-			} else {
-
-				API.setVariable( view.variables[ i ].varname, data, view.variables[ i ].jpath );
-			}
+                    API.setVariable( entryVar.varname, data, entryVar.jpath );
+                }
+            }
 		}
 
 
