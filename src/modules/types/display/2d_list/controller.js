@@ -50,8 +50,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		// List of all possible events
 		onHover: {
 			label: 'Hover a cell',
-			refVariable: [ 'cell' ],
-			refAction: [ 'cell' ]
+			refVariable: [ 'cell' ]
 		},
                 onClick: {
 			label: 'Click a cell',

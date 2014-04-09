@@ -19,10 +19,13 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 				var cols = self.module.getConfiguration('colnumber', 4) || 4;
 				var elementId = trIndex * cols + tdIndex;
 				var value = self.list.get();
-                                if(e.type === "mouseenter")
+                                if(e.type === "mouseenter") {
                                     self.module.controller.setVarFromEvent('onHover', value[elementId], 'cell');
-                                else if(e.type === "click")
+                                }
+                                else if(e.type === "click") {
                                     self.module.controller.setVarFromEvent('onClick', value[elementId], 'cell');
+                                    self.module.controller.sendAction('cell', value[elementId], 'onClick');
+                                }
 			});
 
 		},
