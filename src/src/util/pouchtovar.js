@@ -45,16 +45,35 @@ define(['components/pouchdb/dist/pouchdb-nightly'], function( PouchDB ) {
 
 	}
 
-	constructor.replicate = function( name, couchURL ) {
+	constructor.replicate = function( name, couchURL, direction ) {
 
 		if( ! constructor.getPouch( name ) ) {
 			return;
 		}
-
-		new PouchDB('http://admin:cheminfo77@visualizer.epfl.ch/f_formula');
-
-		PouchDB.replicate( couchURL, allPouch[ name ] );
-		PouchDB.replicate( allPouch[ name ], couchURL );
+        
+        var options = {
+           // live: true,
+            create_target: true,
+            complete: function(err, res) {
+                if(err)
+                    return console.error("Replication error :", err, res);
+                if(res.direction==="pull")
+                    return console.info("Replication from couchDB "+couchURL+" to localDB "+name+" done.");
+                else
+                    return console.info("Replication from localDB "+name+" to couchDB "+couchURL+" done.");
+            }
+        };
+        
+        if(direction === "CtoP") {
+            PouchDB.replicate( couchURL, allPouch[ name ], options );
+        }
+        else if(direction === "PtoC") {
+            PouchDB.replicate( allPouch[ name ], couchURL, options );
+        }
+        else {
+            PouchDB.sync( couchURL, allPouch[ name ], options );
+        }
+        
 	}
 
 	constructor.pouchToVar = function( dbname, id, callback ) {

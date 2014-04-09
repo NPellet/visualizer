@@ -219,7 +219,7 @@ define([	'jquery',
 				PouchDBUtil.makePouch( couchData[ i ].pouchname );
 
 				if( couchData[ i ].couchurl ) {
-					PouchDBUtil.replicate( couchData[ i ].pouchname, couchData[ i ].couchurl );
+					PouchDBUtil.replicate( couchData[ i ].pouchname, couchData[ i ].couchurl, couchData[ i ].direction );
 				}
 			}
 		}
@@ -652,6 +652,13 @@ define([	'jquery',
 									couchurl: {
 										type: 'text',
 										title: 'Couch URL'
+									},
+
+									direction: {
+										type: 'combo',
+										title: 'Direction',
+										options: [ {key: 'PtoC', title: 'Pouch -> Couch'}, {key: 'CtoP', title: 'Couch -> Pouch'}, {key: 'both', title: 'Both ways'} ],
+										'default': 'both'
 									}
 
 								}
