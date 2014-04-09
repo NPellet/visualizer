@@ -187,11 +187,17 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         console.log('Init three js');
         // self.renderer is recreated each time in init() so we don't need to 'off' events
         $(self.renderer.domElement).on('mousemove', _.throttle(onMouseMove, 100));
-        $(self.renderer.domElement).on('mousemove', _.debounce(showTooltip, 500));
-        $(self.renderer.domElement).on('mousemove', _.throttle(hideTooltip, 500));
         $(self.renderer.domElement).on('mousemove', _.throttle(onHover, 300));
+        console.log('tooltip config: ', self.module.getConfiguration('tooltip'));
+        if(self.module.getConfiguration('tooltip') && _.find(self.module.getConfiguration('tooltip'), function(val){
+          return val === 'show';
+        })) {
+          console.log('Activating tooltip');
+          $(self.renderer.domElement).on('mousemove', _.debounce(showTooltip, 500));
+          $(self.renderer.domElement).on('mousemove', _.throttle(hideTooltip, 500));
+        }
         
-        // $(self.renderer.domElement).listHandlers('mousemove', function(a, b) { console.log(a,b);});
+        $(self.renderer.domElement).listHandlers('mousemove', function(a, b) { console.log('handler list: ', a,b);});
 
 			}
 

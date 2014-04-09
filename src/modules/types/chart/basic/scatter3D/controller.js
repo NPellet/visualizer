@@ -120,7 +120,11 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 								{title: 'Image', key: 'image'}
 							]
 						},
-
+            tooltip: {
+                type: 'checkbox',
+                title: 'Show tooltip',
+                options: {show: 'Yes'}
+            },
 						nodeSize: {
 							type: 'text',
 							title: 'Default node size'
@@ -175,7 +179,8 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		'edgeWidth': [ 'groups', 'group', 0, 'edgeWidth', 0 ],
 		'edgeColor': [ 'groups', 'group', 0, 'edgeColor', 0 ],
 		'strokeWidth': [ 'groups', 'group', 0, 'strokeWidth', 0 ],
-		'strokeColor': [ 'groups', 'group', 0, 'strokeColor', 0 ]
+		'strokeColor': [ 'groups', 'group', 0, 'strokeColor', 0 ],
+    'tooltip': ['groups', 'group', 0, 'tooltip', 0]
 	};
 
 
