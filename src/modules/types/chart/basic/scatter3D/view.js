@@ -31,12 +31,13 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var container;
       var pointerObjects = [];
       var lastMouseMoveEvent = null;
+      var currentPoint = null;
+
       
 			init();
 			animate();
       
-      function onMouseDown(event) {
-        // event.preventDefault();
+      function getIntersects(event) {
         var vector = new THREE.Vector3(
           ( event.offsetX / $(self.renderer.domElement).width() ) * 2 - 1,
           - ( event.offsetY / $(self.renderer.domElement).height() ) * 2 + 1,
@@ -50,27 +51,49 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
         var intersects = ray.intersectObjects(self.scene.children);
         console.log(intersects);
+        
+        intersects = _.filter(intersects, function(intersect) {
+          return intersect.object.data;
+        });
+        return intersects;
+      }
+      
+      function onMouseDown(event) {
+        var intersects = getIntersects(event);
+        console.log(intersects);
       }
       
       function onMouseMove(event) {
-        var vector = new THREE.Vector3(
-          ( event.offsetX / $(self.renderer.domElement).width() ) * 2 - 1,
-          - ( event.offsetY / $(self.renderer.domElement).height() ) * 2 + 1,
-          0.5
-        );
-        projector = new THREE.Projector();
-        projector.unprojectVector( vector, self.camera );
-
-        var ray = new THREE.Raycaster( self.camera.position, 
-          vector.sub( self.camera.position ).normalize() );
-
-        var intersects = ray.intersectObjects(self.scene.children);
+        var intersects = getIntersects(event);
         console.log(intersects);
         pointerObjects = intersects;
         lastMouseMoveEvent = event;
         if(intersects.length > 0){
           console.log(self._data.data[intersects[0].object.data.serie].label[intersects[0].object.data.index]);
+          var newPoint = { serie: intersects[0].object.data.serie, index: intersects[0].object.data.index };
+          var pointChanged = JSON.stringify(newPoint) !== JSON.stringify(currentPoint);
+          if( currentPoint && pointChanged) {
+           // rehighlight currentPoint -> newPoint
+           console.log('rehighlight currentPoint -> newPoint');
+           API.highlightId(self._data.data[currentPoint.serie]._highlight[currentPoint.index], 0);
+           API.highlightId(self._data.data[newPoint.serie]._highlight[newPoint.index], 1);
+          }
+          else if(pointChanged){
+            // highlight newPoint
+            console.log('highlight newPoint');
+            API.highlightId(self._data.data[newPoint.serie]._highlight[newPoint.index], 1);
+          }
+          currentPoint = newPoint;
         }
+        else {
+          if(currentPoint) {
+            // unhighlight currentPoint
+            console.log('unhighlight currentPoint');
+            API.highlightId(self._data.data[currentPoint.serie]._highlight[currentPoint.index], 0);
+          }
+          currentPoint = null;
+        }
+        
       }
       
       function showTooltip() {
@@ -90,6 +113,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         $('#scatter3D_tooltip').show();
         console.log('tooltip show object: ', pointerObjects[0]);
         console.log(lastMouseMoveEvent);
+        
+        
       }
       
       
@@ -153,14 +178,20 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           }
         }
         
+        function sendHighlight() {
+          if(pointerObjects.length > 0) {
+            
+          }
+        }
+        
         console.log('Init three js');
         // self.renderer is recreated each time in init() so we don't need to 'off' events
-        $(self.renderer.domElement).on('mousemove', _.throttle(onMouseMove, 200));
+        $(self.renderer.domElement).on('mousemove', _.throttle(onMouseMove, 100));
         $(self.renderer.domElement).on('mousemove', _.debounce(showTooltip, 500));
         $(self.renderer.domElement).on('mousemove', _.throttle(hideTooltip, 500));
         $(self.renderer.domElement).on('mousemove', _.throttle(onHover, 300));
         
-        $(self.renderer.domElement).listHandlers('mousemove', function(a, b) { console.log(a,b);});
+        // $(self.renderer.domElement).listHandlers('mousemove', function(a, b) { console.log(a,b);});
 
 			}
 
@@ -196,9 +227,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
       var self = this;
       
       // Remove all objects
-      this.scene.traverse(function(obj) {
-        self.scene.remove(obj);
+      _.keys(self.scene.children).forEach(function(key){
+        self.scene.remove(self.scene.children[key]);
       });
+      // this.scene.traverse(function(obj) {
+      //   self.scene.remove(obj);
+      // });
       
       var maxX = Math.max.apply(null, value.data[1].x);
       var oX = Math.min.apply(null, value.data[1].x);
@@ -268,8 +302,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
           if(i===0 && j===0) {
             self.module._data = value.data[j].info[i];
           }
-          var radius = 5;
+          
           var color = '#000000';
+          var radius = 5;
           if(value.data[j].size && value.data[j].size[i]) {
             radius = value.data[j].size[i];
           }
@@ -277,26 +312,44 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
             color = value.data[j].color[i];
           }
           
-          var geometry = new THREE.SphereGeometry( radius, 32, 32 );
-    			var material =  new THREE.MeshLambertMaterial( { color: new THREE.Color(color), shading: THREE.FlatShading } );
-
-          var mesh = new THREE.Mesh( geometry, material );
-          mesh.position.x = value.data[j].x[i];
-          mesh.position.y = value.data[j].y[i];
-          mesh.position.z = value.data[j].z[i];
-          mesh.updateMatrix();
-          mesh.matrixAutoUpdate = false;
+          var mesh = this._plotPoint({
+            x: value.data[j].x[i],
+            y: value.data[j].y[i],
+            z: value.data[j].z[i],
+            color: color,
+            radius: radius,
+            opacity: 1,
+          });
+          
           $.extend(mesh, {
             data: {
               serie: j,
               index: i,
             }
           });
-          this.scene.add( mesh );
         }
       }
       
       this.renderer.render(self.scene, self.camera);
+    },
+    
+    _plotPoint: function(point) {
+      var geometry = new THREE.SphereGeometry( point.radius, 32, 32 );
+			var material =  new THREE.MeshLambertMaterial({ 
+        color: new THREE.Color(point.color),
+        shading: THREE.FlatShading,
+        opacity: point.opacity,
+        transparent: point.opacity === 1 ? false : true
+      });
+
+      var mesh = new THREE.Mesh( geometry, material );
+      mesh.position.x = point.x
+      mesh.position.y = point.y
+      mesh.position.z = point.z
+      mesh.updateMatrix();
+      mesh.matrixAutoUpdate = false;
+      this.scene.add( mesh );
+      return mesh;
     },
     
     
@@ -339,6 +392,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		},
 
 		onResize: function() {
+      var highlightObjects = {};
+      var self = this;
+      
 			if (this.DEBUG) console.log("Scatter 3D: onResize");
       this._initThreejs();
 			var self=this;
@@ -348,31 +404,76 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
         console.log('loadedData done');
         if(self._data) {
           self._plotPoints(self._data);
+          
+          API.killHighlight( self.module.getId());
+          var highlightSet = {};
+          console.log("-----")
+          console.log(self._data);
+          for(var i=0; i<self._data.data.length; i++) {
+            console.log('setting highlights: ', self._data.data[i]._highlight);
+            for(var j=0; j<self._data.data[i]._highlight.length; j++) {
+              (function(){
+                var serie = i;
+                var index = j;
+                // highlightSet[self._data.data[i]._highlight[j].toString()] = self._data.data[i]._highlight[j];
+                API.listenHighlight( {_highlight: self._data.data[i]._highlight[j]}, function( onOff, key ) {
+                  console.log('-- Listening to highlight ', key, '(is '+ (onOff ? 'on': 'off') + ')');
+                  // console.log(onOff, key, currentDataPoint);
+                  if(onOff) {
+                    drawHighlight(serie, index);
+                  }
+                  else {
+                    undrawHighlight(serie, index);
+                  }
+        
+                }, false, self.module.getId());
+              })();
+            }
+          }
         }
 			})
       
-      API.killHighlight( self.module.getId());
-      var highlightSet = {};
-      console.log("-----")
-      console.log(self._data);
-      for(var i=0; i<self._data.data.length; i++) {
-        console.log('setting highlights: ', self._data.data[i]._highlight);
-        for(var j=0; j<self._data.data[i]._highlight.length; j++) {
-          highlightSet[self._data.data[i]._highlight[j].toString()] = self._data.data[i]._highlight[j];
+      
+		
+      
+      function undrawHighlight(serie, index) {
+        if(!highlightObjects[serie]) {
+          return
         }
+        if(!highlightObjects[serie][index]) {
+          return;
+        }
+        self.scene.remove(highlightObjects[serie][index]);
+        delete highlightObjects[serie][index];
+        self.renderer.render( self.scene, self.camera );
       }
-			
-      _.keys(highlightSet).forEach(function(key){
-        API.listenHighlight( {_highlight: highlightSet[key]}, function( onOff, key ) {
-          console.log('-- Listening to highlight ', key, '(is '+ (onOff ? 'on': 'off') + ')');
-          // console.log(onOff, key, currentDataPoint);
+      function drawHighlight(serie , index) {
+        if(highlightObjects[serie] && highlightObjects[serie][index]) {
+          return;
+        }
         
-        }, false, self.module.getId());
+        var color = '#000000';
+        var radius = 8;
+        if(self._data.data[serie].size && self._data.data[serie].size[index]) {
+          radius = self._data.data[serie].size[index] * 1.5;
+        }
+        if(self._data.data[serie].color && self._data.data[serie].color[index]) {
+          color = self._data.data[serie].color[index];
+        }
         
-      });
-      
-      
-      
+        var mesh = self._plotPoint({
+          x: self._data.data[serie].x[index],
+          y: self._data.data[serie].y[index],
+          z: self._data.data[serie].z[index],
+          color: color,
+          radius: radius,
+          opacity:0.3,
+          transparent: true
+        });
+        highlightObjects[serie] = highlightObjects[serie] || {};
+        highlightObjects[serie][index] = mesh;
+        self.renderer.render( self.scene, self.camera );
+      }
 		},
 		
 		/* When a value changes this method is called. It will be called for all 
