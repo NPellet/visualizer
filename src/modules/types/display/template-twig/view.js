@@ -18,6 +18,7 @@ define(['modules/default/defaultview', 'components/twig.js/twig.min'], function(
             this.template = Twig.twig({
                 data: this.module.getConfiguration('template')
             });
+            this.render();
         },
         blank: {
             value: function(varName) {
@@ -33,7 +34,7 @@ define(['modules/default/defaultview', 'components/twig.js/twig.min'], function(
                 }
                 this._values[name] = value.get();
 
-                this.dom.html(this.template.render(this._values));
+                this.render();
 
             },
             tpl: function(value) {
@@ -41,15 +42,17 @@ define(['modules/default/defaultview', 'components/twig.js/twig.min'], function(
                     return;
                 var tpl = value.get();
                 try {
-                    var template = Twig.twig({
+                    this.template = Twig.twig({
                         data: tpl
                     });
-                    this.dom.html(template.render(this._values));
                     this.module.definition.configuration.groups.group[0].template[0] = tpl;
-                    this.template = template;
+                    this.render();
                 } catch (e) {
                }
             }
+        },
+        render: function() {
+            this.dom.html(this.template.render(this._values));
         }
     });
 
