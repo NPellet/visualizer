@@ -9,6 +9,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 			
 			this.dom = $( html ).css( { 
 				display: 'table',
+				'table-layout': 'fixed',
 				height: '100%',
 				width: '100%'
 			} );
@@ -115,7 +116,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 				textAlign: align || 'center',
 				width: '100%',
 				height: '100%',
-				'white-space': preformatted || 'normal'
+				'white-space': preformatted || 'normal',
+				'word-wrap':'break-word'
 			} ).html( val );
 
 //			if (preformatted) div.html("<pre />").html( val );
