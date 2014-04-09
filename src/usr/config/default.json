@@ -1,4 +1,6 @@
 {
+    "lockView": false,
+    "usrDir": "usr",
     "filters": [
         {
             "file": "./usr/filters/testFilter.js",

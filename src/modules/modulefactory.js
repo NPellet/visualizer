@@ -14,7 +14,7 @@ define(['jquery', 'modules/module'], function($, Module) {
 
 	function getSubFoldersFrom( folder ) {
 
-		return $.getJSON( folder , {}).pipe( function( data ) {
+		return $.getJSON( require.toUrl(folder) , {}).pipe( function( data ) {
 			return getModules( data );
 		});
 	}
@@ -55,6 +55,20 @@ define(['jquery', 'modules/module'], function($, Module) {
 				return allModules;
 			});
 		},
+        
+        newSetModules: function( list ) {
+            
+            if(!(list instanceof Array)) {
+                allModules = list;
+                return;
+            }
+            
+            var i = 0,
+                l = list.length;
+            
+            var finalList = {};
+            
+        },
 
 		setModules: function( list ) {
 

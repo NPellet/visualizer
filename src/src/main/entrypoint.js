@@ -815,6 +815,16 @@ define([	'jquery',
             	configJson = urls['config'] || './usr/config/default.json';
 
 			$.getJSON( configJson, { }, function( cfgJson ) {
+                
+                if( cfgJson.usrDir ) {
+                    requirejs.config({
+                        paths: {
+                            "usr":cfgJson.usrDir
+                        }
+                    });
+                } else {
+                    console.warn("Configuration file is missing 'usrDir' property.");
+                }
 				
 				if( cfgJson.lockView || cfgJson.viewLock ) {
 					API.viewLock();
@@ -836,7 +846,7 @@ define([	'jquery',
 				console.error("Error loading the config : " + b );
 
 			} ).always( function( ) {
-
+            
 				Context.init( document.getElementById( 'modules-grid' ) );
 
 				if( ! API.isViewLocked() ) {

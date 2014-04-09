@@ -343,7 +343,7 @@ define([
 					for( ; i < l ; i ++ ) {
 
 						target.push( {
-							key: arraySource[ i ].file,
+							key: require.toUrl(arraySource[ i ].file),
 							title: arraySource[ i ].name,
 							children: makeFilters( arraySource[ i ].children )
 						} );		

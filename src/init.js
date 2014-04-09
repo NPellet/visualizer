@@ -12,15 +12,9 @@ requirejs.config({
 		"forms": "./lib/forms",
 		"plot": "./lib/plot/plot",
 		"ChemDoodle": "./lib/chemdoodle/ChemDoodleWeb-unpacked",
-		"pouchdb": "./components/pouchdb/dist/pouchdb-nightly.min"
+		"pouchdb": "./components/pouchdb/dist/pouchdb-nightly.min",
+		"uri":"components/uri.js/src"
 	},
-	packages: [
-		{
-			name: "uri",
-			location: "./components/uri.js/src",
-			main: "URI"
-		}
-	],
 	shim: {
 		"d3": {
 			exports : "d3"
