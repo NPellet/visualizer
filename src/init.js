@@ -208,7 +208,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 					return val[prop];
 				}
 			}
-			if(typeof(this.value)!=="undefined" && this.type)
+			if(this.hasOwnProperty("value") && this.hasOwnProperty("type"))
 				return this.value;
 			return this;
 		}
