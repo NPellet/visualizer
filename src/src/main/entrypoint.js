@@ -866,7 +866,7 @@ define([	'jquery',
 	                    url: urls['dataURL']
 	                }
 	            };
-	            window.history.replaceState({type:"viewchange",value:viewInfo});
+	            window.history.replaceState({type:"viewchange",value:viewInfo},"");
 	            Versioning.switchView(viewInfo, false);
 
 

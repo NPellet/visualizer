@@ -1,4 +1,4 @@
-define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Default, Renderer ) {
+define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' ], function( Default, Renderer, API ) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -10,21 +10,32 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 			this.module.getDomContent().html( this.dom );
 
 		},
+                
+                blank: {
+                    list: function() {
+                        API.killHighlight( this.module.getId() );
+                        this.dom.empty();
+                    }
+                },
 		
 		inDom: function() {
 			var self = this;
-			this.module.getDomView().on('mouseenter click', 'td', function(e) {
+			this.module.getDomView().on('mouseenter mouseleave click', 'td', function(e) {
 				var tdIndex = $(this).index();
 				var trIndex = $(this).parent().index();
 				var cols = self.module.getConfiguration('colnumber', 4) || 4;
 				var elementId = trIndex * cols + tdIndex;
-				var value = self.list.get();
+				var value = self.list.get()[elementId];
                                 if(e.type === "mouseenter") {
-                                    self.module.controller.setVarFromEvent('onHover', value[elementId], 'cell');
+                                    self.module.controller.setVarFromEvent('onHover', value, 'cell');
+                                    API.highlight(value, 1);
+                                }
+                                else if(e.type === "mouseleave") {
+                                    API.highlight(value, 0);
                                 }
                                 else if(e.type === "click") {
-                                    self.module.controller.setVarFromEvent('onClick', value[elementId], 'cell');
-                                    self.module.controller.sendAction('cell', value[elementId], 'onClick');
+                                    self.module.controller.setVarFromEvent('onClick', value, 'cell');
+                                    self.module.controller.sendAction('cell', value, 'onClick');
                                 }
 			});
 
@@ -116,7 +127,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 				valJpath = cfg('valjpath', ''),
 				td = $( "<td>" ).css( {
 					width: Math.round(100 / cols) + "%", 
-					height: cfg.height 
+					height: cfg.height
 				} );
 
 			if( colorJpath ) {
@@ -131,6 +142,14 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 				td.html(val);
 
 			} ) );
+                        
+                        API.listenHighlight( element, function( onOff, key ) {
+                            if(onOff) {
+                                td.css("border-color", "black");
+                            } else {
+                                td.css("border-color", "");
+                            }
+			}, false, this.module.getId());
 			
 			return td;
 		},
