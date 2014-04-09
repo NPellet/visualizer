@@ -48,8 +48,13 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 	controller.prototype.events = {
 
 		// List of all possible events
-		'onHover': {
-			label: 'Hovers a cell',
+		onHover: {
+			label: 'Hover a cell',
+			refVariable: [ 'cell' ],
+			refAction: [ 'cell' ]
+		},
+                onClick: {
+			label: 'Click a cell',
 			refVariable: [ 'cell' ],
 			refAction: [ 'cell' ]
 		}
@@ -118,7 +123,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 					}
 				}
 			}
-		}
+		};
 	};
 
 		
