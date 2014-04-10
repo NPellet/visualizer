@@ -49,7 +49,7 @@ requirejs.config({
 	}
 });
 
-require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar', 'components/when/es6-shim/Promise'], function($, EntryPoint, PouchDBUtil) {
+require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, EntryPoint, PouchDBUtil) {
 
 	function DataObject(object, recursive, forceCopy) {
 		if(object) {
