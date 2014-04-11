@@ -103,19 +103,41 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
         inDom: function() {
         
             this.dom.empty();
-            var center = this.module.getConfiguration('mapcenter') || [46.522117, 6.566144];
-            var zoom = this.module.getConfiguration('mapzoom') || 10;
+            var that = this;
             
             this.map = L.map(this.mapID, {
                 zoomAnimation: false
-            }).setView(center, zoom);
+            });
             
-            this.getTileLayer().addTo(this.map);
+            this.getTileLayer().addTo(that.map);
 
-            this.map.on("drag",this.module.controller.moveAction, this);
-            this.map.on("zoomend", this.module.controller.zoomAction, this);
+            this.map.on("drag",that.module.controller.moveAction, that);
+            this.map.on("zoomend", that.module.controller.zoomAction, that);
             
-            this.onReady.resolve();
+            var defaultCenter = [46.522117, 6.566144];
+            var configCenter = this.module.getConfiguration('mapcenter');
+            var promise;
+            if(configCenter)
+                promise = Promise.resolve(configCenter);
+            else {
+                promise = new Promise(function(resolve){
+                    if(window.navigator && window.navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function(geoposition){
+                            resolve([geoposition.coords.latitude,geoposition.coords.longitude]);
+                        },function(){
+                            resolve(defaultCenter);
+                        });
+                    } else {
+                        resolve(defaultCenter);
+                    }
+               });
+            }
+            promise.then(function(value){
+                var zoom = that.module.getConfiguration('mapzoom') || 10;
+                that.map.setView(value, zoom);
+                that.onReady.resolve();
+            });
+            
         },
         blank: {
             geojson: function(varname) {
