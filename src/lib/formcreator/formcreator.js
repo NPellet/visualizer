@@ -22,17 +22,13 @@ define([ 'lib/forms/form'], function( Form ) {
 
 
 			case 'slider_range':
-				cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
-				cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
-				cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
-				
-				if( form.groups.range ) {
-					cfg.default = [ 
-						form.groups.range[ 0 ].val1[ 0 ],
-						form.groups.range[ 0 ].val2[ 0 ]
-					];
-				}
-
+				cfg.min = parseFloat( form.groups.range[ 0 ].start[ 0 ] || 0 );
+				cfg.max = parseFloat( form.groups.range[ 0 ].end[ 0 ] || 1 );
+				cfg.step = parseFloat( form.groups.range[ 0 ].step[ 0 ] || 0.1 );
+				cfg.default = [ 
+					Math.max(parseFloat(form.groups.range[ 0 ].val1[ 0 ]),cfg.min),
+					Math.min(parseFloat(form.groups.range[ 0 ].val2[ 0 ]),cfg.max)
+				];
 				cfg.range = true;				
 			break;
 		}
