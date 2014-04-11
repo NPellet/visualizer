@@ -139,7 +139,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 
 		setViewJSON: function( json ) {
 
-			view = json;
+			view = new ViewObject(json, true);
 			this.viewCallback( view, true );
                         viewHandler.versionChange().notify(view);
 			
@@ -147,7 +147,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
                 
 		setDataJSON: function( json ) {
 
-			data = json;
+			data = new DataObject(json, true);
 			this.dataCallback( data, true );
 			
 		},

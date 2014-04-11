@@ -47,32 +47,36 @@ define(['components/pouchdb/dist/pouchdb-nightly'], function( PouchDB ) {
 
 	constructor.replicate = function( name, couchURL, direction ) {
 
-		if( ! constructor.getPouch( name ) ) {
-			return;
-		}
-        
-        var options = {
-           // live: true,
-            create_target: true,
-            complete: function(err, res) {
-                if(err)
-                    return console.error("Replication error :", err, res);
-                if(res.direction==="pull")
-                    return console.info("Replication from couchDB "+couchURL+" to localDB "+name+" done.");
-                else
-                    return console.info("Replication from localDB "+name+" to couchDB "+couchURL+" done.");
+            if( ! constructor.getPouch( name ) ) {
+                    return;
             }
-        };
         
-        if(direction === "CtoP") {
-            PouchDB.replicate( couchURL, allPouch[ name ], options );
-        }
-        else if(direction === "PtoC") {
-            PouchDB.replicate( allPouch[ name ], couchURL, options );
-        }
-        else {
-            PouchDB.sync( couchURL, allPouch[ name ], options );
-        }
+            var options = {
+                // live: true,
+                complete: function(err, res) {
+                    if(err) {
+                        if(res.direction==="pull")
+                            return console.error("Replication from couchDB "+couchURL.replace(/\/\/[^\/]*@/,"//***@")+" to localDB "+name+" failed.", err);
+                        else
+                            return console.error("Replication from localDB "+name+" to couchDB "+couchURL.replace(/\/\/[^\/]*@/,"//***@")+" failed.", err);
+                    } else {
+                        if(res.direction==="pull")
+                            return console.info("Replication from couchDB "+couchURL.replace(/\/\/[^\/]*@/,"//***@")+" to localDB "+name+" done.");
+                        else
+                            return console.info("Replication from localDB "+name+" to couchDB "+couchURL.replace(/\/\/[^\/]*@/,"//***@")+" done.");
+                    }
+                }
+            };
+
+            if(direction === "CtoP") {
+                PouchDB.replicate( couchURL, allPouch[ name ], options );
+            }
+            else if(direction === "PtoC") {
+                PouchDB.replicate( allPouch[ name ], couchURL, options );
+            }
+            else {
+                PouchDB.sync( couchURL, allPouch[ name ], options );
+            }
         
 	}
 
