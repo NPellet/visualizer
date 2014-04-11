@@ -11,8 +11,7 @@ define([	'jquery',
 			'src/util/viewmigration',
 			'src/util/actionmanager',
 			'src/util/cron',
-			'src/util/pouchtovar',
-			'usr/datastructures/filelist'
+			'src/util/pouchtovar'
 ], function($,
 			Header,
 			Repository,
@@ -846,7 +845,7 @@ define([	'jquery',
 				console.error("Error loading the config : " + b );
 
 			} ).always( function( ) {
-            
+                            require([require.toUrl('usr/datastructures/filelist')],function(){
 				Context.init( document.getElementById( 'modules-grid' ) );
 
 				if( ! API.isViewLocked() ) {
@@ -891,6 +890,7 @@ define([	'jquery',
 
 
 			} );
+                        });
 
 		},
 
