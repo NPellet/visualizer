@@ -10,7 +10,7 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 			div = $( "<div></div>" )
 					.addClass( 'field-list' )
 					.appendTo( dom ),
-			lastVal = [],
+			lastVal = [this.field.options.min, this.field.options.max],
 			changing,
 			range = self.field.options.range,
 			slider = $("<div />")
