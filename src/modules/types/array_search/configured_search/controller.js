@@ -123,6 +123,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 
 		// Sets the variable corresponding to the onSearchDone event
 		this.setVarFromEvent( 'onSearchDone', arr, 'filteredArray' );
+                this.sendAction('filteredArray', arr, 'onSearchDone');
 	},
 
 		
