@@ -384,7 +384,7 @@ module.exports = function(grunt) {
   });
   
   grunt.registerTask('couchdb:copyModules', function() {
-    file = grunt.file.readJSON('build/default.json');
+    file = grunt.file.readJSON('build/usr/config/default.json');
     fs.writeFileSync('./build/modules/types/folder.json', JSON.stringify(file.modules));
   }); 
   
@@ -583,7 +583,9 @@ module.exports = function(grunt) {
     
     //fs.writeFileSync( './build/modules.json', JSON.stringify( jsonStructure, false, '\t' ) );
     //cfg.modules = jsonStructure;//'./modules.json';
-    fs.writeFileSync( './build/default.json', JSON.stringify( cfg, false, '\t' ) );
+    cfg.usrDir = "usr";
+    require('mkpath').sync('./build/usr/config/');
+    fs.writeFileSync( './build/usr/config/default.json', JSON.stringify( cfg, false, '\t' ) );
     //grunt.task.run('clean:buildTemp');
   });
 

@@ -25,6 +25,7 @@
     "jsdom": "~0.8.11",
     "xmlhttprequest": "~1.6.0",
     "walk": "~2.3.1",
-    "underscore": "~1.5.2"
+    "underscore": "~1.5.2",
+    "mkpath": "^0.1.0"
   }
 }
