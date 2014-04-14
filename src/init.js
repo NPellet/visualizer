@@ -155,10 +155,14 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 
 	window.ViewObject = ViewObject;
 	window.ViewArray = ViewArray;
+        
+        var nativeTypes = ["string", "boolean", "number", "undefined"];
 
 	var resurrectObject = {
 		value: function() {
 			var obj = {};
+                        if(nativeTypes.indexOf(this.getType())>-1)
+                            return this.get();
 			for(var i in this) {
 				if(this[i] instanceof DataArray || this[i] instanceof DataObject) {
 					obj[i] = this[i].resurrect();
@@ -514,29 +518,6 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 			return deferred;
 		}
 	};
-        
-        var toJSON = {
-            value: function() {
-                var type = this.getType();
-                if(type === "array") {
-                    var val = this.get(), ii = val.length, i = 0;
-                    var arr = new Array(ii);
-                    for(; i < ii; i++) {
-                        arr[i] = val[i].toJSON ? val[i].toJSON() : val[i];
-                    }
-                    return arr;
-                } else if(type === "object") {
-                    var val = this.get(), keys = Object.keys(val), ii = keys.length, i = 0;
-                    var obj = {};
-                    for(; i < ii; i++) {
-                        obj[keys[i]] = val[keys[i]].toJSON ? val[keys[i]].toJSON() : val[keys[i]];
-                    }
-                    return obj;
-                } else {
-                    return this.get();
-                }
-            }
-        };
 	
 	var commonProperties = {
 		set: dataSetter,
@@ -549,8 +530,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 		unbindChange: unbindChange,
 		linkToParent: linkToParent,
 		triggerChange: dataChanged,
-		getType: getType,
-                toJSON: toJSON
+		getType: getType
 	};
 	
 	Object.defineProperties(DataObject.prototype, commonProperties);
