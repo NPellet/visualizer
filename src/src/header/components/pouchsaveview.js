@@ -16,10 +16,9 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
                         var text = $("#"+id).val();
                         text = text.replace(/[^a-zA-Z0-9-_]*/g,"");
                         var view = Versioning.getView();
-                        db.put({
-                            _id:text,
-                            view:view
-                        });
+                        db.get(text, function(err, otherDoc) {
+                            db.put({view:view}, text, otherDoc._rev, function(err, response) { });
+                          });
                         $(this).dialog("close");
                     },
                     "Cancel": function() {
