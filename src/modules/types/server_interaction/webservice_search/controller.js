@@ -98,7 +98,10 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                                               title:'Query method',
                                               options: [
                                                   { key: 'GET', title: 'GET'},
-						{ key: 'POST', title: 'POST'}
+						{ key: 'POST', title: 'POST'},
+						{ key: 'PUT', title: 'PUT'},
+						{ key: 'DELETE', title: 'DELETE'},
+						{ key: 'HEAD', title: 'HEAD'}
                                               ],
                                               'default':'POST'
                                             },
@@ -273,33 +276,14 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 	};
 		
 	controller.prototype.doSearch = function() {
-		/*	if(this.request)
-				this.request.abort();
-*/
+
 		var self = this,
 			urltemplate = new URITemplate(this.module.getConfiguration( 'url' )),
-			//reg,
 			toPost = this.module.getConfiguration( 'postvariables', [] ),
 			l = toPost.length,
 			i = 0,
 			data = {};
-                       // val, variable;
 
-
-		// Replace all search terms in the URL
-//		var reg = /\<([a-zA-Z0-9]+)\>/;
-//		while(val = reg.exec(url)) {
-//			url = url.replace('<' + val[1] + '>', (encodeURIComponent(this.searchTerms[val[1]] || '')));
-//		}
-//
-//		// Replace all variables in the URL
-//		var reg = /\<var:([a-zA-Z0-9]+)\>/;
-//		while(val = reg.exec(url)) {
-//			variable = API.getRepositoryData().get(val[1]) || [''];
-//
-//			variable = variable[1];
-//			url = url.replace('<var:' + val[1] + '>', encodeURIComponent(variable.get()));
-//		}
                 var varsin = this.module.vars_in();
 
                 for(var i = 0; i < varsin.length; i++) {
@@ -340,30 +324,32 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 		if(this.request && this.request.abort) {
 			this.request.abort();
 		}
-
-                var method = this.module.getConfiguration('method');
-		if(method === 'GET') {
-			this.request = URL.get(this.url, 30, data, headers);	
-		} else {
-			this.request = URL.post(this.url, data);	
-		}
                 
+                var options = {
+                    url: this.url,
+                    type: this.module.getConfiguration('method'),
+                    cache: false,
+                    data: data,
+                    headers: headers
+                };
+                
+                this.request = $.ajax(options);
 
 		this.module.view.lock();
 		
-		this.request.done(function(data) {
+		this.request.always(function(data) {
 			self.request = null;
 
 			if (self.module.resultfilter) {
 				data = self.module.resultfilter(data);
 			}
-
-			self.module.view.unlock();
-
+                        
+                        self.module.view.unlock();
+                        
 			if(typeof data === "object") {
 				data = DataObject.check(data, true);
 			}
-			//console.log(data);
+                        
 			self.onSearchDone(data);
 		});
 	};
