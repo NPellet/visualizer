@@ -58,7 +58,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 		// List of all possible events
 		'onSearchReturn': {
 			label: 'On search complete',
-			refVariable: [ 'results', 'url' ]
+			refVariable: [ 'results', 'url' ],
+                        refAction: [ 'results' ]
 		}
 	};
 	
@@ -104,6 +105,16 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 						{ key: 'HEAD', title: 'HEAD'}
                                               ],
                                               'default':'POST'
+                                            },
+                                            
+                                            dataType: {
+                                                type: "combo",
+                                                title: "Data type to send",
+                                                options: [
+                                                    {key: 'json', title: 'JSON'},
+                                                    {key: 'form', title: 'Form data'}
+                                                ],
+                                                'default': 'form'
                                             },
 
 						button: {
@@ -251,7 +262,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 		'onloadsearch': [ 'groups', 'group', 0, 'onloadsearch', 0, 0 ],
 		'resultfilter': [ 'groups', 'group', 0, 'resultfilter', 0 ],
 		'postvariables': [ 'sections', 'postvariables', 0, 'groups', 'postvariables', 0 ],
-                'headers': [ 'groups', 'headers', 0 ]
+                'headers': [ 'groups', 'headers', 0 ],
+                'dataType': [ 'groups', 'group', 0, 'dataType', 0 ]
 	};
 
 	controller.prototype.initimpl = function() { 
@@ -306,74 +318,78 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                     headers[header.name] = header.value;
                 }
                 
-		for(var i = 0; i < l; i++) {
-			var valueToPost = API.getVar(toPost[i].variable).get();
-			if (valueToPost) {
-				if ( valueToPost.getType() !== "number" && valueToPost.getType() !== "string" ) {
-					if (toPost[i].filter==="value") {
-						data[toPost[i].name]=valueToPost.get();
-					} else {
-						data[toPost[i].name] = JSON.stringify(valueToPost);
-					}
-				} else {
-					data[toPost[i].name]=valueToPost;
-				}
-			}
-		}
+                var options = {
+                    url: this.url,
+                    type: this.module.getConfiguration('method'),
+                    cache: false,
+                    headers: headers
+                };
+                
+                var dataType = this.module.getConfiguration( 'dataType' );
+                if(dataType === "form") {
+                    for(var i = 0; i < l; i++) {
+                            var valueToPost = API.getVar(toPost[i].variable).get();
+                            if (valueToPost) {
+                                    if ( valueToPost.getType() !== "number" && valueToPost.getType() !== "string" ) {
+                                            if (toPost[i].filter==="value") {
+                                                    data[toPost[i].name]=valueToPost.get();
+                                            } else {
+                                                    data[toPost[i].name] = JSON.stringify(valueToPost);
+                                            }
+                                    } else {
+                                            data[toPost[i].name]=valueToPost;
+                                    }
+                            }
+                    }
+                } else {
+                    data = JSON.stringify(API.getVar(toPost[0].variable).toJSON());
+                    options.contentType = "application/json; charset=utf-8";
+                }
+                
+                options.data = data;
 
 		if(this.request && this.request.abort) {
 			this.request.abort();
 		}
                 
-                var options = {
-                    url: this.url,
-                    type: this.module.getConfiguration('method'),
-                    cache: false,
-                    data: data,
-                    headers: headers
-                };
-                
                 this.request = $.ajax(options);
 
 		this.module.view.lock();
 		
-		this.request.always(function(data) {
+		this.request.done(function(data) {
 			self.request = null;
 
 			if (self.module.resultfilter) {
 				data = self.module.resultfilter(data);
 			}
                         
-                        self.module.view.unlock();
-                        
 			if(typeof data === "object") {
 				data = DataObject.check(data, true);
 			}
                         
 			self.onSearchDone(data);
-		});
+		}).fail(function(xhr){
+                    self.onSearchDone(new DataObject({
+                        type: "error",
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        responseText: xhr.responseText,
+                        responseJSON: xhr.responseJSON
+                    }));
+                }).always(function(){
+                    self.module.view.unlock();
+                });
 	};
 
 
 	controller.prototype.onSearchDone = function(elements) {
-		var self = this, actions;
-		self.result = elements;
-		self.module.model.data = elements;
-
-
-		if( ! ( actions = this.module.vars_out() ) ) {
-			return;
-		}
-
-		for( var i in actions ) {
-			if( actions[ i ].event === "onSearchReturn" ) {
-				if( actions[ i ].rel === "results" ) {
-					API.setVar( actions[i].name, elements, actions[i].jpath );
-				} if ( actions[ i ].rel === "url" ) {
-						API.setVar( actions[i].name, self.url);
-				}
-			}
-		}
+		this.result = elements;
+		this.module.model.data = elements;
+                
+                this.setVarFromEvent('onSearchReturn', elements, 'results');
+                this.setVarFromEvent('onSearchReturn', this.url, 'url');
+                
+                this.sendAction('results', elements, 'onSearchReturn');
 	};
 
  	return controller;
