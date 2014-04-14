@@ -7,6 +7,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 	 * @constructor
 	 */
 	function controller() { };
+        
+        var reg = new RegExp("^data:([^;]+);base64,(.+)$");
 
 	// Extends the default properties of the default controller
 	controller.prototype = $.extend( true, {}, Default );
@@ -196,6 +198,14 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
                         if(self.lineCfg.filetype === "text") {
                             self.parseString(self.lineCfg, obj);
                         } else {
+                            if(self.lineCfg.filetype === "base64") {
+                                var result = reg.exec(obj);
+            
+                                obj = {
+                                    mimeType: result[1],
+                                    base64: result[2]
+                                };
+                            }
                             if( self.lineCfg.type === "array" || self.lineCfg.type === "object" ) {
 
                                     try {
@@ -240,14 +250,15 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 
 		//self.controller.fileReceived( obj );
 
-		var ext = file.name.split( '.' ).pop(),
+		var ext = file.name.split( '.' ).pop().toLowerCase(),
 			cfg = this.module.getConfiguration('vars'),
 			lineCfg;
                 if(!cfg)
                     return console.warn("No extension configured");
 		this.leased = true;
 		for( var i = 0, l = cfg.length ; i < l ; i ++ ) {
-			if( cfg[ i ].extension.split(',').indexOf(ext) !== -1) {
+                    var extensions = cfg[ i ].extension;
+			if( extensions === "*" || extensions.split(',').indexOf(ext) !== -1) {
 				this.lineCfg = lineCfg = cfg[ i ];
 				break;
 			}
