@@ -342,7 +342,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                             }
                     }
                 } else {
-                    data = JSON.stringify(API.getVar(toPost[0].variable).toJSON());
+                    data = JSON.stringify(API.getVar(toPost[0].variable).resurrect());
                     options.contentType = "application/json; charset=utf-8";
                 }
                 
