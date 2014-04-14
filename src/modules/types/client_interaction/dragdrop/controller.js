@@ -39,7 +39,10 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 
 		'data': {
 			label: 'The loaded data'
-		}
+		},
+                filename: {
+                    label: 'The filename'
+                }
 	};
 
 
@@ -51,6 +54,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 		// List of all possible events
 		'onDropped': {
 			label: 'A file has been dropped',
+                        refVariable: ['filename']
 			//refVariable: [ 'file' ],
 			//refAction: [ 'file' ]
 		},
@@ -267,6 +271,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/version
 		if( ! lineCfg ) {
 			return console.warn("Extension "+ext+" not configured");
 		}
+                
+                this.setVarFromEvent('onDropped', file.name, 'filename');
                 
 		switch( lineCfg.filetype ) {
 
