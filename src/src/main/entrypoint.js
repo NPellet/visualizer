@@ -1,4 +1,3 @@
-
 define([	'jquery',
 			'src/header/header',
 			'src/util/repository',
@@ -156,7 +155,7 @@ define([	'jquery',
                 var def = $.Deferred();
                 if( view.init_script ) {
                     var prefix = "(function(init_deferred){";
-                    var script = view.init_script[ 0 ].groups.general[ 0 ].script[ 0 ];
+                    var script = view.init_script[ 0 ].groups.general[ 0 ].script[ 0 ]||"";
                     var suffix = "})(def);";
                     if(script.indexOf("init_deferred")===-1) {
                         suffix += "def.resolve();";
