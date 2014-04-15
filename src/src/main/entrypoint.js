@@ -152,7 +152,21 @@ define([	'jquery',
 		}
 
 		ActionManager.viewHasChanged( view );
-
+                
+                var def = $.Deferred();
+                if( view.init_script ) {
+                    var prefix = "(function(init_deferred){";
+                    var script = view.init_script[ 0 ].groups.general[ 0 ].script[ 0 ];
+                    var suffix = "})(def);";
+                    if(script.indexOf("init_deferred")===-1) {
+                        suffix += "def.resolve();";
+                    }
+                    eval(prefix+script+suffix);
+		} else {
+                    def.resolve();
+                }
+                
+                def.done(function(){
 		// If no variable is defined in the view, we start browsing the data and add all the first level
 		if(view.variables.length === 0) {
 			for(var i in data) {
@@ -225,10 +239,7 @@ define([	'jquery',
 				}
 			}
 		}
-
-		if( view.init_script ) {
-			eval( view.init_script[ 0 ].groups.general[ 0 ].script[ 0 ] );
-		}
+                });
 	}
 
 
