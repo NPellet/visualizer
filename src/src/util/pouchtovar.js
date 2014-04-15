@@ -60,10 +60,7 @@ define(['components/pouchdb/dist/pouchdb-nightly'], function( PouchDB ) {
                         else
                             return console.error("Replication from localDB "+name+" to couchDB "+couchURL.replace(/\/\/[^\/]*@/,"//***@")+" failed.", err);
                     } else {
-                        if(res.direction==="pull")
-                            return console.info("Replication from couchDB "+couchURL.replace(/\/\/[^\/]*@/,"//***@")+" to localDB "+name+" done.");
-                        else
-                            return console.info("Replication from localDB "+name+" to couchDB "+couchURL.replace(/\/\/[^\/]*@/,"//***@")+" done.");
+                            return console.info("Replication between localDB "+name+" and couchDB "+couchURL.replace(/\/\/[^\/]*@/,"//***@")+" done. ("+direction+")");
                     }
                 }
             };
