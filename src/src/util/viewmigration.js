@@ -1,4 +1,4 @@
-define(['jquery', 'src/util/versioning'], function($, Versioning) {
+define(['src/util/versioning'], function(Versioning) {
 
     var migrate = function(view) {
 
@@ -43,14 +43,10 @@ define(['jquery', 'src/util/versioning'], function($, Versioning) {
                     }
                 }
             case "2.2.1": // modules are now defined based on URL
-                if (view.modules) {
-                    for (var i = 0; i < view.modules.length; i++) {
-                        var module = view.modules[i];
-                        if (module.url === "./modules/types/client_interaction/array_search/") {
-                            module.url = "./modules/types/array_search/configured_search/";
-                        }
-                    }
-                }
+                eachModule(view, function(module){
+                    module.url = "./modules/types/array_search/configured_search/";
+                }, "types/client_interaction/array_search");
+                
             case "2.2.2": // view title is in configuration.title
                 if (view.title) {
                     if (!view.configuration)
@@ -58,62 +54,50 @@ define(['jquery', 'src/util/versioning'], function($, Versioning) {
                     view.configuration.title = view.title;
                     delete view.title;
                 }
-                if (view.modules) {
-                    for (var i = 0; i < view.modules.length; i++) {
-                        var module = view.modules[i];
-                        if (module.url && module.url.indexOf("science/chemistry/jsmol_script") >= 0) {
-                            module.url = "modules/types/client_interaction/code_editor/";
-                            if (module.configuration.groups.group[0].iseditable[0][0] === "true")
-                                module.configuration.groups.group[0].iseditable[0][0] = "editable";
-                            delete module.configuration.groups.group[0].padding;
-                            module.configuration.groups.group[0].mode = ["text"];
-                            for (var i = 0; i < module.vars_out.length; i++) {
-                                var varout = module.vars_out[i];
-                                if (varout.event) {
-                                    varout.event = "onEditorChange";
-                                    varout.rel = "value";
-                                }
-                            }
-                            for (var i = 0; i < module.actions_out.length; i++) {
-                                var actout = module.actions_out[i];
-                                if (actout.event) {
-                                    actout.event = "onButtonClick";
-                                    actout.rel = "value";
-                                }
-                            }
+                eachModule(view, function(module){
+                    module.url = "modules/types/client_interaction/code_editor/";
+                    if (module.configuration.groups.group[0].iseditable[0][0] === "true")
+                        module.configuration.groups.group[0].iseditable[0][0] = "editable";
+                    delete module.configuration.groups.group[0].padding;
+                    module.configuration.groups.group[0].mode = ["text"];
+                    for (var i = 0; i < module.vars_out.length; i++) {
+                        var varout = module.vars_out[i];
+                        if (varout.event) {
+                            varout.event = "onEditorChange";
+                            varout.rel = "value";
                         }
                     }
-                }
+                    for (var i = 0; i < module.actions_out.length; i++) {
+                        var actout = module.actions_out[i];
+                        if (actout.event) {
+                            actout.event = "onButtonClick";
+                            actout.rel = "value";
+                        }
+                    }
+                }, "types/science/chemistry/jsmol_script");
+                
             case "2.2.3": // Change in the webservice search module
-                if (view.modules) {
-                    for (var i = 0; i < view.modules.length; i++) {
-                        var module = view.modules[i];
-                        if (module.url && module.url.indexOf("server_interaction/webservice_search") >= 0) {
-                            var url = module.configuration.groups.group[0].url;
-                            if (url[0]) {
-                                url[0] = url[0].replace(/<([a-zA-Z0-9]+)>/g, "{$1}");
-                            }
-                        }
+                eachModule(view, function(module){
+                    var url = module.configuration.groups.group[0].url;
+                    if (url[0]) {
+                        url[0] = url[0].replace(/<([a-zA-Z0-9]+)>/g, "{$1}");
                     }
-                }
+                }, "types/server_interaction/webservice_search");
+                
             case "2.2.4": // Changes in the dragdrop module
-                if (view.modules) {
-                    for (var i = 0; i < view.modules.length; i++) {
-                        var module = view.modules[i];
-                        if (module.url && module.url.indexOf("client_interaction/dragdrop") >= 0 && module.vars_out) {
-                            for (var j = 0; j < module.vars_out.length; j++) {
-                                var var_out = module.vars_out[j];
-                                var_out.event = "onRead";
-                                if (var_out.rel === "data")
-                                    var_out.jpath = var_out.jpath + ".content";
-                                else if (var_out.rel === "filename") {
-                                    var_out.rel = "data";
-                                    var_out.jpath = var_out.jpath + ".filename";
-                                }
-                            }
+                eachModule(view, function(module){
+                    for (var j = 0; j < module.vars_out.length; j++) {
+                        var var_out = module.vars_out[j];
+                        var_out.event = "onRead";
+                        if (var_out.rel === "data")
+                            var_out.jpath = var_out.jpath + ".content";
+                        else if (var_out.rel === "filename") {
+                            var_out.rel = "data";
+                            var_out.jpath = var_out.jpath + ".filename";
                         }
                     }
-                }
+                }, "types/client_interaction/dragdrop");
+                
         }
         view.version = Versioning.version;
 
@@ -121,6 +105,27 @@ define(['jquery', 'src/util/versioning'], function($, Versioning) {
     };
 
     return migrate;
+    
+    function eachModule(view, callback, moduleNames) {
+        if(view.modules) {
+            if(typeof(moduleNames)==="string") {
+                moduleNames = [moduleNames];
+            } else if(!(moduleNames instanceof Array)) {
+                moduleNames = [""];
+            }
+            var i = 0, ii = view.modules.length, module;
+            var j, jj = moduleNames.length;
+            for(; i < ii; i++) {
+                module = view.modules[i];
+                for(j = 0; j < jj; j++) {
+                    if(module.name.indexOf(moduleNames[j]) >= 0) {
+                        callback(module);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
     function updateModule(type) {
         if (type === "display_value")
