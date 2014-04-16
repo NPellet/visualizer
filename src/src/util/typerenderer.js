@@ -450,8 +450,8 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         		"width":width,
         		"border":"none"
         	});
-        	if(element.bgColor)
-        		span.css('background-color', element.bgColor);
+        	if(element.bgcolor)
+        		span.css('background-color', element.bgcolor);
         	if(element.color)
         		span.css('color', element.color);
         	if(element.text)
@@ -462,6 +462,8 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         		span.prepend('<i class="fa fa-'+element.icon+'"></i>');
         	if(element.css)
         		span.css(element.css);
+        	if(element.tooltip)
+        		span.attr("data-tooltip",element.tooltip);
         	html+=span.get(0).outerHTML;
         }
 				html += '</tr></table>';

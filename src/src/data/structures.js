@@ -39,7 +39,8 @@ define(function() {
                 		'text': 'string',
                 		'class': 'string',
                 		'icon': 'string',
-                		'css': 'object'
+                		'css': 'object',
+                		'tooltip': 'string'
                 	}
                 },
                 
