@@ -454,8 +454,8 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         		span.css('background-color', element.bgColor);
         	if(element.color)
         		span.css('color', element.color);
-        	if(element.tag)
-        		span.append(element.tag);
+        	if(element.text)
+        		span.append(element.text);
         	if(element.class)
         		span.addClass(element.class);
         	if(element.icon)
