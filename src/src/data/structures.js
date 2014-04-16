@@ -36,7 +36,7 @@ define(function() {
                 	'elements': {
                 		'color': 'string',
                 		'bgcolor': 'string',
-                		'tag': 'string',
+                		'text': 'string',
                 		'class': 'string',
                 		'icon': 'string',
                 		'css': 'object'
