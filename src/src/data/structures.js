@@ -30,6 +30,18 @@ define(function() {
                         'elements': ['number','string']
                     }
                 },
+
+                'indicator': {
+                	'type': 'array',
+                	'elements': {
+                		'color': 'string',
+                		'bgcolor': 'string',
+                		'tag': 'string',
+                		'class': 'string',
+                		'icon': 'string',
+                		'css': 'object'
+                	}
+                },
                 
                 'styledValue' : {
                     'type' : 'object',

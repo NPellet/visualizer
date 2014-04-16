@@ -1,6 +1,8 @@
 
 define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatraversing'], function(require, $, API, Util, Traversing) {
 
+	Util.loadCss('components/font-awesome/css/font-awesome.min.css');
+
 	var functions = {};
 
 
@@ -430,6 +432,37 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         
         div.css({height:"100%",width:"100%"})/*.css("background","-webkit-"+gradient).css("background","-moz-"+gradient)*/.css("background",gradient);
         def.resolve(div.get(0));
+    };
+
+    functions.indicator = {};
+    functions.indicator.toscreen = function(def, value) {
+        value = value.get();
+        if(!(value instanceof Array))
+        	def.reject('');
+        var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; border: none; height:100%; width:100%"><tr>';
+
+		var length = value.length;
+		var width = 100/length;
+
+        for(var i = 0; i < length; i++) {
+        	var element = value[i];
+        	var span = $('<td>').css("width",width+"%");
+        	if(element.bgColor)
+        		span.css('background-color', element.bgColor);
+        	if(element.color)
+        		span.css('color', element.color);
+        	if(element.tag)
+        		span.append(element.tag);
+        	if(element.class)
+        		span.addClass(element.class);
+        	if(element.icon)
+        		span.prepend('<i class="fa fa-'+element.icon+'"></i>');
+        	if(element.css)
+        		span.css(element.css);
+        	html+=span.get(0).outerHTML;
+        }
+				html += '</tr></table>';
+				def.resolve( html );
     };
         
         
