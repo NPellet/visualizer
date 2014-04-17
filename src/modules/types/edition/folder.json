@@ -23,6 +23,10 @@
 		{
 			"moduleName": "Var Editor",
 			"url": "modules/types/edition/var_editor/"
+		},
+		{
+			"moduleName": "Onde",
+			"url": "modules/types/edition/onde/"
 		}
 	],
 	"name": "Edition",
