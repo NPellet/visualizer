@@ -83,7 +83,8 @@ module.exports = function(grunt) {
               './pouchdb/dist/*',
               './uri.js/src/*.js',
               './twig.js/twig.min.js',
-              './when/**'
+              './when/**',
+              './onde/src/*'
             ],
 
             dest: './build/components/'
