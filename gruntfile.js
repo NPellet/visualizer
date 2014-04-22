@@ -150,18 +150,7 @@ module.exports = function(grunt) {
         {
           expand: true,
           cwd: usrPath,
-          src: '**',
-          filter: function(filePath){
-            var forbiddenTerms = ['config', 'filters', 'modules'];
-            var isForbidden = _.map(forbiddenTerms, function(term) {
-              return (filePath.search(path.join(usrPath, term)) > -1);
-            });
-            
-            if(_.some(isForbidden)) {
-              return false;
-            }
-            return true;
-          },
+          src: ['**','!config/**','!filters/**','!modules/**'],
           dest: './build/usr/'
         }]
       },
