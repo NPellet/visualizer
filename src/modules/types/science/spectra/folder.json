@@ -14,7 +14,7 @@
 		}
 	],
 	"name": "Spectra modules",
-	"folders": {
-		"nmr": "modules/types/science/spectra/nmr/"
-	}
+	"folders": [
+		"nmr"
+	]
 }

@@ -9,14 +9,14 @@
 			"url": "modules/types/chart/basic/pie_chart_jit/"
 		},
 		{
-			"moduleName": "Stack chart",
-			"url": "modules/types/chart/basic/stack_chart/"
+			"moduleName": "chartjs",
+			"url": "modules/types/chart/basic/radar_chart/"
 		},
 		{
-			"moduleName": "Radar chart",
-			"url": "modules/types/chart/basic/radar_chart/"
+			"moduleName": "Stack chart",
+			"url": "modules/types/chart/basic/stack_chart/"
 		}
 	],
 	"name": "Basic",
-	"folders": {}
+	"folders": []
 }

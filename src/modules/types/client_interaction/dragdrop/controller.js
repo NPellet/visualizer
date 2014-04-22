@@ -8,7 +8,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
     controller.prototype = $.extend(true, {}, Default);
 
     controller.prototype.moduleInformation = {
-        moduleName: "Drag and drop / paste",
+        moduleName: 'Drag and drop',
         description: 'Drop a file or paste some content to load',
         author: 'Norman Pellet / Michaël Zasso',
         date: '03.04.2014',

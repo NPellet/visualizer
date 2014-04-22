@@ -1,10 +1,6 @@
 {
 	"modules": [
 		{
-			"moduleName": "Paste text",
-			"url": "modules/types/client_interaction/paste_text/"
-		},
-		{
 			"moduleName": "Button action",
 			"url": "modules/types/client_interaction/button_action/"
 		},
@@ -13,10 +9,14 @@
 			"url": "modules/types/client_interaction/code_editor/"
 		},
 		{
-			"moduleName": "Drag and drop / paste",
+			"moduleName": "Drag and drop",
 			"url": "modules/types/client_interaction/dragdrop/"
+		},
+		{
+			"moduleName": "Paste value",
+			"url": "modules/types/client_interaction/paste_text/"
 		}
 	],
 	"name": "Client interaction",
-	"folders": {}
+	"folders": []
 }

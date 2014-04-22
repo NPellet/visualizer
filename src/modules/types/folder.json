@@ -1,14 +1,14 @@
 {
-	"folders": {
-		"Array search": "modules/types/array_search/",
-		"Chart": "modules/types/chart/",
-		"Client interaction": "modules/types/client_interaction/",
-		"Display": "modules/types/display/",
-		"Edition": "modules/types/edition/",
-		"Legacy": "modules/types/legacy/",
-		"Science": "modules/types/science/",
-		"Server interaction": "modules/types/server_interaction/"
-	},
-	"name": "types",
+	"folders": [
+		"array_search",
+		"chart",
+		"client_interaction",
+		"display",
+		"edition",
+		"legacy",
+		"science",
+		"server_interaction"
+	],
+	"name": "Base modules",
 	"modules": []
 }

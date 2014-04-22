@@ -1,10 +1,10 @@
 {
-	"folders": {
-		"Advanced charting": "modules/types/chart/advanced/",
-		"Basic": "modules/types/chart/basic/",
-                "Maps" : "modules/types/chart/maps/",
-		"Statistics" : "modules/types/chart/statistics/"
-	},
+	"folders": [
+		"advanced",
+		"basic",
+		"maps",
+		"statistics"
+	],
 	"name": "Chart",
 	"modules": []
 }

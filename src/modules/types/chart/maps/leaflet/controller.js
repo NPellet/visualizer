@@ -10,7 +10,7 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'Map',
+        moduleName: 'Leaflet map',
         description: 'Display a map with objects in it',
         author: 'Michaeël Zasso',
         date: '11.01.2014',
