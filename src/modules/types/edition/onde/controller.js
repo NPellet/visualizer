@@ -142,8 +142,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
     controller.prototype.updateInput = function(newData) {
 		var input = this.module.view.inputObj;
 		if(input) {
-			$.extend(true, input, newData);
-			input.triggerChange(this.module.getId());
+			input.mergeWith(newData, this.module.getId());
 			this.setVarFromEvent('onFormSubmit', input);
 		}
     };

@@ -1,10 +1,8 @@
 define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/jsoneditor-min", "src/util/context", "jquery"], function(Default, Util, jsoneditor, Context, $) {
 
     function view() {
-        this._id = Util.getNextUniqueId();
-        this._data = new DataObject();
+		this._id = Util.getNextUniqueId();
     }
-    ;
 
     Util.loadCss('components/jsoneditor/jsoneditor-min.css');
 
@@ -35,41 +33,45 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
                     });
                 });
             }
-
             this.onReady = $.Deferred();
         },
         blank: {},
         inDom: function() {
+			var that = this;
             this.dom.empty();
+			
             var mode = this.module.getConfiguration('editable');
-            this.expand = this.module.getConfiguration('expanded') || false;
-            this.storeObject = this.module.getConfiguration('storeObject') || false;
-            if(this.storeObject[0]) {
-                this._data = DataObject.check(JSON.parse(this.module.getConfiguration('storedObject')));
-            }
-            this.editor = new jsoneditor.JSONEditor(document.getElementById(this._id), {mode: mode, change: this.editorChanged, module: this.module});
-            this.editor.set(this._data)
-            this.editorChanged();
+            this.expand = !!this.module.getConfiguration('expanded')[0];
+            this.storeObject = !!this.module.getConfiguration('storeObject')[0];
+            this.changeInputData(DataObject.check(JSON.parse(this.module.getConfiguration('storedObject'))));
+			
+            this.editor = new jsoneditor.JSONEditor(document.getElementById(this._id), {mode: mode, change: function(){
+					that.module.controller.sendValue(DataObject.check(that.editor.get(), true));
+			}, module: this.module});
+			this.update.value.call(this, this.inputData);
             this.onReady.resolve();
         },
         update: {
             value: function(value) {
-                if(!value)
-                    return;
-                var theValue = value.get();
-                this.editor.set(theValue);
-                this._data = theValue;
-                if (this.expand[0])
+				this.changeInputData(value);
+                this.editor.set(value);
+                if (this.expand)
                     this.editor.expandAll();
-                this.module.controller.editorChanged();
+                this.module.controller.sendValue(value);
             }
         },
-        editorChanged: function() {
-            this.module.view._data = DataObject.check(this.module.view.editor.get(), true);
-            
-            this.module.controller.editorChanged();
-        }
-
+		changeInputData: function(newData) {
+			if(this.inputData === newData)
+				return;
+			var that = this;
+			var id = this.module.getId();
+			if(this.inputData)
+				this.inputData.unbindChange(id);
+			this.inputData = newData;
+			newData.onChange(function(val){
+				that.update.value.call(that, val);
+			},this.module.getId());
+		}
     });
 
     return view;
