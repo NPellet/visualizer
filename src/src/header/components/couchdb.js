@@ -71,15 +71,11 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             
         },
         load: function(type, node, rev) {
-            var options = {
-                success: function(data) {
-                    data = new window[type+"Object"](data,true);
-                    Versioning["set"+type+"JSON"]( data );
-                }
-            };
-            if(rev)
-                options.rev = rev;
-            this.database.openDoc(node.data.id,options);
+			var result = {};
+			result[type.toLowerCase()] = {
+				url: this.database.uri + node.data.id + (rev ? "?rev=" + rev : "")
+			};
+            Versioning.switchView(result, true);
         },
         save: function(type, name) {
             
