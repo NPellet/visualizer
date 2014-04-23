@@ -393,7 +393,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 				this.set(el, new DataObject());
 			return this
 					.get(el, true)
-					.pipe(function(el) { el.setChild(jpath, newValue, options) })
+					.pipe(function(el) { el.setChild(jpath, newValue, options); })
 					.done(function() { 
 						// This has been commented so that there's no trigger for every level, which would cause the first level 
 						// to trigger n times (n = nb of levels in jpath).
@@ -437,7 +437,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 			}
 
 		}
-	}
+	};
 
 	var listenDataChanged = {
 		value: function(callback, moduleid) {
@@ -452,7 +452,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 
 			this._listenersDataChanged.push([callback, moduleid]);
 		}
-	}
+	};
 
 	var unbindChange = {
 		value: function( moduleid ) {
@@ -460,7 +460,7 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 			if( this._listenersDataChanged ) {
 				for( var i = 0, l = this._listenersDataChanged.length ; i < l ; i ++ ) {
 
-					if( ! moduleid || this._listenersDataChanged[ i ][ 1 ] == moduleid ) {
+					if( ! moduleid || this._listenersDataChanged[ i ][ 1 ] === moduleid ) {
 						this._listenersDataChanged.splice(i, 1);
 					}
 				}
@@ -518,6 +518,43 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 			return deferred;
 		}
 	};
+	/*
+	 * Performs a deep merge of an object into another.Properties of the from object will overwrite those of the to object.
+	 * Result is different from jQuery.extend in the way that arrays are completely overwritten
+	 */
+	function merge(to, from) {
+		for(var i in from) {
+			var el = from[i];
+			if(typeof el === "object") {
+				if(el instanceof Array) {
+					to[i] = el;
+				}
+				else if(el !== null) {
+					if(!to[i])
+						to[i] = {};
+					merge(to[i], el);
+				}
+			} else {
+				to[i] = el;
+			}
+		}
+	}
+	
+	var mergeWithObject = {
+		value: function(objectToMerge, moduleId, noBubble) {
+			if((typeof(objectToMerge)!=="object")||(objectToMerge instanceof Array))
+				return;
+			merge(this, objectToMerge);
+			this.triggerChange(moduleId, noBubble);
+		}
+	};
+	
+	var mergeWithArray = {
+		value: function(objectToMerge, moduleId, noBubble) { // TODO find a way to implement this
+			this.triggerChange(moduleId, noBubble);
+			return console.warn("mergeWith method not yet implemented for DataArray");
+		}
+	};
 	
 	var commonProperties = {
 		set: dataSetter,
@@ -538,8 +575,10 @@ require(['jquery', 'src/main/entrypoint', 'src/util/pouchtovar'], function($, En
 	
 	Object.defineProperty(DataObject.prototype, "fetch", fetch);
 	Object.defineProperty(DataObject.prototype, "resurrect", resurrectObject);
+	Object.defineProperty(DataObject.prototype, "mergeWith", mergeWithObject);
 	
 	Object.defineProperty(DataArray.prototype, "resurrect", resurrectArray);
+	Object.defineProperty(DataArray.prototype, "mergeWith", mergeWithArray);
 
 	// Special setters for view objects
 	Object.defineProperty(ViewObject.prototype, 'set', viewSetter);
