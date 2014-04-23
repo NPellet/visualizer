@@ -99,7 +99,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 
 			Debug.log('DataURL: getting ' + url + ' with force set to ' + force + ' and timeout to ' + timeout);
 			// If we force to do ajax first. Fallback if we 
-			if( force ) {
+			if( force || timeout<0 ) {
 
 				doByUrl(def, url, headers)
 					.pipe(
