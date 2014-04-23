@@ -50,11 +50,16 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                         type: 'list'
                     },
                     fields: {
+						button_text: {
+							type: 'text',
+							title: 'Text of the export button',
+							default: 'Export'
+						},
                         output: {
                             type: 'combo',
                             title: 'Output result',
                             options: [
-                                //{title: 'Modified input object', key: 'modified'},
+                                {title: 'Modified input object', key: 'modified'},
                                 {title: 'New object', key: 'new'}
                             ],
                             default: 'new'
@@ -65,7 +70,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                             options: [
                                 {title: 'Input object', key: 'object'},
                                 {title: 'Schema', key: 'schema'},
-                                //{title: 'Both', key: 'both'}
+                                {title: 'Both', key: 'both'}
                             ],
                             default: 'object',
                             displaySource: {
@@ -104,22 +109,24 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         output: ['groups', 'group', 0, 'output', 0],
         mode: ['groups', 'group', 0, 'mode', 0],
         schemaSource: ['groups', 'group', 0, 'schemaSource', 0],
-        schema: ['groups', 'group', 0, 'schema', 0]
+        schema: ['groups', 'group', 0, 'schema', 0],
+		button_text: ['groups', 'group', 0, 'button_text', 0]
     };
     
     controller.prototype.getSchema = function() {
         var mode = this.module.getConfiguration('mode');
         var schema = {};
-        if(mode === 'schema') {
+		if(mode === "object" || mode === "both") {
+			schema = Schema.fromObject(this.module.view.inputObj);
+		}
+        if(mode === 'schema' || mode === "both") {
             var schemaSource = this.module.getConfiguration("schemaSource");
+			var intSchema;
             if(schemaSource==='variable')
-                schema = this.inputSchema;
+                intSchema = this.inputSchema;
             else
-                schema = JSON.parse(this.module.getConfiguration('schema'));
-        } else if(mode === 'object') {
-            schema = Schema.fromObject(this.module.view.inputObj);
-        } else {
-            //TODO mode mix
+                intSchema = JSON.parse(this.module.getConfiguration('schema'));
+			$.extend(true, schema, intSchema);
         }
         return schema;
     };
@@ -133,7 +140,12 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
     };
     
     controller.prototype.updateInput = function(newData) {
-        //TODO update input object
+		var input = this.module.view.inputObj;
+		if(input) {
+			$.extend(true, input, newData);
+			input.triggerChange(this.module.getId());
+			this.setVarFromEvent('onFormSubmit', input);
+		}
     };
 
     return controller;
