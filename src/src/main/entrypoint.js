@@ -97,9 +97,7 @@ define([	'jquery',
 		view.configuration.title = view.configuration.title || 'No title';
 
 		for( ; i < l ; ) {
-
-			Grid.addModuleFromJSON( view.modules[ i ] );
-			i ++
+			Grid.addModuleFromJSON( view.modules[ i++ ] );
 		}
 
 		Grid.checkDimensions();
@@ -143,102 +141,103 @@ define([	'jquery',
 
 	function _check() {
 
-		var view = Versioning.getView();
-		var data = Versioning.getData();
-
-		if( ! _dataLoaded || ! _viewLoaded ) {
+		if (!_dataLoaded || !_viewLoaded) {
 			return;
 		}
+		
+		var view = Versioning.getView();
 
-		ActionManager.viewHasChanged( view );
-                
-                var def = $.Deferred();
-                if( view.init_script ) {
-                    var prefix = "(function(init_deferred){";
-                    var script = view.init_script[ 0 ].groups.general[ 0 ].script[ 0 ]||"";
-                    var suffix = "})(def);";
-                    if(script.indexOf("init_deferred")===-1) {
-                        suffix += "def.resolve();";
-                    }
-                    eval(prefix+script+suffix);
+		var def = $.Deferred();
+		if (view.init_script) {
+			var prefix = '(function(init_deferred){"use strict";';
+			var script = view.init_script[ 0 ].groups.general[ 0 ].script[ 0 ] || "";
+			var suffix = "})(def);";
+			if (script.indexOf("init_deferred") === -1) {
+				suffix += "def.resolve();";
+			}
+			eval(prefix + script + suffix);
 		} else {
-                    def.resolve();
-                }
-                
-                def.done(function(){
-		// If no variable is defined in the view, we start browsing the data and add all the first level
-		if(view.variables.length === 0) {
-			for(var i in data) {
-
-				if( i.charAt(0) === '_' ) {
-					continue;
-				}
-
-				view.variables.push( new ViewObject( { varname: i, jpath: "element." + i } ) );
-			}
+			def.resolve();
 		}
 
-		// Entry point variables
-        var entryVar;
-		for( var i = 0, l = view.variables.length; i < l; i++ ) {
-            entryVar = view.variables[i];
-            if(entryVar.varname) {
-                // Defined by an URL
-                if( entryVar.url ) {
+		def.done(function() {
+			
+			var data = Versioning.getData();
+			
+			ActionManager.viewHasChanged(view);
 
-                    entryVar.fetch( ).done( function( v ) {
-                              
-                        var varname = v.varname;
-                        v.type = Traversing.getType( v.value );
-                        
-                        data[ varname ] = DataObject.check( v, true );
-                        
-                        API.setVariable( varname , data, [ varname ] );
-                    } );
+			// If no variable is defined in the view, we start browsing the data and add all the first level
+			if (view.variables.length === 0) {
+				for (var i in data) {
 
-                } else if( ! entryVar.jpath ) {
+					if (i.charAt(0) === '_') {
+						continue;
+					}
 
-                    // If there is no jpath, we assume the variable is an object and we add it in the data stack
-                    // Note: if that's not an object, we will have a problem...
-                    data[ entryVar.varname ] = new DataObject();
-                    API.setVariable( entryVar.varname, data, [ entryVar.varname ] );
-
-                } else {
-
-                    API.setVariable( entryVar.varname, data, entryVar.jpath );
-                }
-            }
-		}
-
-
-		for( var i = 0, l = view.pouchvariables.length ; i < l ; i ++ ) {
-
-			( function ( k ) { 
-
-				PouchDBUtil.makePouch( view.pouchvariables[ k ].dbname );
-				PouchDBUtil.pouchToVar( view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function( el ) {
-
-					el.setPouch( view.pouchvariables[ k ].dbname );
-					el.linkToParent( data, view.pouchvariables[ k ].varname );
-					API.setVariable( view.pouchvariables[ k ].varname, el );
-
-				} );
-
-			}) ( i );
-		}
-
-		// Pouch DB replication
-		if( view.couch_replication ) {
-			var couchData = view.couch_replication[ 0 ].groups.couch[ 0 ];
-			for( var i = 0, l = couchData.length ; i < l ; i ++ ) {
-				PouchDBUtil.makePouch( couchData[ i ].pouchname );
-
-				if( couchData[ i ].couchurl ) {
-					PouchDBUtil.replicate( couchData[ i ].pouchname, couchData[ i ].couchurl, couchData[ i ].direction );
+					view.variables.push(new ViewObject({varname: i, jpath: "element." + i}));
 				}
 			}
-		}
-                });
+
+			// Entry point variables
+			var entryVar;
+			for (var i = 0, l = view.variables.length; i < l; i++) {
+				entryVar = view.variables[i];
+				if (entryVar.varname) {
+					// Defined by an URL
+					if (entryVar.url) {
+
+						entryVar.fetch( ).done(function(v) {
+
+							var varname = v.varname;
+							v.type = Traversing.getType(v.value);
+
+							data[ varname ] = DataObject.check(v, true);
+
+							API.setVariable(varname, data, [varname]);
+						});
+
+					} else if (!entryVar.jpath) {
+
+						// If there is no jpath, we assume the variable is an object and we add it in the data stack
+						// Note: if that's not an object, we will have a problem...
+						data[ entryVar.varname ] = new DataObject();
+						API.setVariable(entryVar.varname, data, [entryVar.varname]);
+
+					} else {
+
+						API.setVariable(entryVar.varname, data, entryVar.jpath);
+					}
+				}
+			}
+
+			for (var i = 0, l = view.pouchvariables.length; i < l; i++) {
+
+				(function(k) {
+
+					PouchDBUtil.makePouch(view.pouchvariables[ k ].dbname);
+					PouchDBUtil.pouchToVar(view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function(el) {
+
+						el.setPouch(view.pouchvariables[ k ].dbname);
+						el.linkToParent(data, view.pouchvariables[ k ].varname);
+						API.setVariable(view.pouchvariables[ k ].varname, el);
+
+					});
+
+				})(i);
+			}
+
+			// Pouch DB replication
+			if (view.couch_replication) {
+				var couchData = view.couch_replication[ 0 ].groups.couch[ 0 ];
+				for (var i = 0, l = couchData.length; i < l; i++) {
+					PouchDBUtil.makePouch(couchData[ i ].pouchname);
+
+					if (couchData[ i ].couchurl) {
+						PouchDBUtil.replicate(couchData[ i ].pouchname, couchData[ i ].couchurl, couchData[ i ].direction);
+					}
+				}
+			}
+		});
 	}
 
 
@@ -758,7 +757,7 @@ define([	'jquery',
 				view.crons = allcrons;
 
 				view.couch_replication = value.sections.couch_replication;
-				view.init_script = value.sections.init_script
+				view.init_script = value.sections.init_script;
 
 				// PouchDB variables
 				var data = new ViewArray( value.sections.cfg[ 0 ].groups.pouchvars[ 0 ] );
