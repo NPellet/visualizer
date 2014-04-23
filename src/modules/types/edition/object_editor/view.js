@@ -41,8 +41,8 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
             this.dom.empty();
 			
             var mode = this.module.getConfiguration('editable');
-            this.expand = !!this.module.getConfiguration('expanded')[0];
-            this.storeObject = !!this.module.getConfiguration('storeObject')[0];
+            this.expand = !!this.module.getConfiguration('expanded', false)[0];
+            this.storeObject = !!this.module.getConfiguration('storeObject', false)[0];
             this.changeInputData(DataObject.check(JSON.parse(this.module.getConfiguration('storedObject'))));
 			
             this.editor = new jsoneditor.JSONEditor(document.getElementById(this._id), {mode: mode, change: function(){
