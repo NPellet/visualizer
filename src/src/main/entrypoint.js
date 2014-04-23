@@ -146,6 +146,7 @@ define([	'jquery',
 		}
 		
 		var view = Versioning.getView();
+		var data = Versioning.getData();
 
 		var def = $.Deferred();
 		if (view.init_script) {
@@ -161,8 +162,6 @@ define([	'jquery',
 		}
 
 		def.done(function() {
-			
-			var data = Versioning.getData();
 			
 			ActionManager.viewHasChanged(view);
 
