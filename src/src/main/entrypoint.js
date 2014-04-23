@@ -131,15 +131,15 @@ define([	'jquery',
 
 	function viewLoaded() {
 		_viewLoaded = true;
-		_check();
+		_check("view");
 	}
 
 	function dataLoaded() {
 		_dataLoaded = true;
-		_check();
+		_check("data");
 	}
 
-	function _check() {
+	function _check(loading) {
 
 		if (!_dataLoaded || !_viewLoaded) {
 			return;
