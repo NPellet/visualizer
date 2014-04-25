@@ -70,7 +70,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				});
 
 
-				API.killHighlight( self.mofule.getId());
+				API.killHighlight( self.module.getId());
 				
 				for (var i=0; i<self._data.length; i++) {
 					var currentDataPoint=i;
