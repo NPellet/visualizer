@@ -4,6 +4,10 @@ define(function(){
         var schema = {};
         switch(typeof object) {
             case "object":
+				if(object === null) {
+					schema.type = "string";
+					break;
+				}
                 if(object instanceof Array) {
                     schema.type = "array";
                     if(object.length) {
