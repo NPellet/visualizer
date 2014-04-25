@@ -18,50 +18,63 @@
 				"groups": {
 					"group": [
 						{
-							"nodeType": [
-								"circle"
+							"tooltip": [
+								[]
 							],
-							"nodeSize": [
+							"tooltipJpath": [
 								null
 							],
-							"nodeColor": [
+							"grid": [
 								[
-									0,
-									0,
-									0,
-									1
+									"xy",
+									"yz",
+									"xz",
+									"xysec",
+									"yzsec",
+									"xzsec"
 								]
 							],
-							"labelSize": [
-								null
-							],
-							"labelColor": [
+							"projection": [
 								[
-									0,
-									0,
-									0,
-									1
+									"show"
 								]
 							],
-							"edgeWidth": [
-								null
-							],
-							"edgeColor": [
+							"ticks": [
 								[
-									0,
-									0,
-									0,
-									1
+									"x",
+									"y",
+									"z",
+									"xlab",
+									"ylab",
+									"zlab"
 								]
 							],
-							"strokeWidth": [
-								null
+							"labels": [
+								"alegend"
 							],
-							"strokeColor": [
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"minZ": [
+								""
+							],
+							"maxZ": [
+								""
+							],
+							"backgroundColor": [
 								[
-									0,
-									0,
-									0,
+									229,
+									229,
+									224,
 									1
 								]
 							]

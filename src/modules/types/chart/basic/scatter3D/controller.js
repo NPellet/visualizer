@@ -15,12 +15,12 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'Pie chart',
-		description: 'Display a pie chart based on flot',
-		author: '',
-		date: '07.01.2014',
+		moduleName: '3D Scatter Plot',
+		description: 'Display',
+		author: 'Daniel Kostro',
+		date: '01.04.2014',
 		license: 'MIT',
-		cssClass: 'pie_chart'
+		cssClass: 'scatter_3D'
 	};
 
 
@@ -98,72 +98,115 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 	
 
 	controller.prototype.configurationStructure = function() {
+    var jpath = [];
+    Traversing.getJPathsFromElement(this.module._data, jpath);
 		return {
 			groups: {
 				group: {
 					options: {
 						type: 'list'
 					},
-
+          
 					fields: {
-						nodeType : {
-							type: 'combo',
-							title: 'Node Type',
-							default: 'circle',
-							options: [
-								{title: 'Circle', key: 'circle'},
-								{title: 'Triangle', key: 'triangle'},
-								{title: 'Square', key: 'squqre'},
-								{title: 'Star', key: 'star'},
-								{title: 'Ellipse', key: 'ellipse'},
-								{title: 'Rectangle', key: 'rectangle'},
-								{title: 'Image', key: 'image'}
-							]
-						},
             tooltip: {
                 type: 'checkbox',
                 title: 'Show tooltip',
                 options: {show: 'Yes'}
             },
-						nodeSize: {
+            
+            tooltipJpath: {
+                type: 'combo',
+                title: 'Tooltip jPath',
+                options: jpath
+            },
+            
+            grid: {
+              type: 'checkbox',
+              title: 'Grids',
+              options: {
+                'xy': 'XY Main',
+                'yz': 'YZ Main',
+                'xz': 'XZ Main',
+                'xysec': 'XY Secondary',
+                'yzsec': 'YZ Secondary',
+                'xzsec': 'XZ Secondary'
+              },
+              default: ['xy','yz','xz']
+            },
+            
+            projection: {
+              type: 'checkbox',
+              title: 'Projections',
+              options: {
+                'show': 'Show'
+              },
+              default: ['show']
+            },
+            
+            ticks: {
+              type: 'checkbox',
+              title: 'Ticks',
+              options: {
+                'x': 'X',
+                'y': 'Y',
+                'z': 'Z',
+                'xlab': 'X Label',
+                'ylab': 'Y Label',
+                'zlab': 'Z Label'
+              },
+              default: ['x','y','z', 'xlab', 'ylab', 'zlab']
+            },
+            
+            labels: {
+              type: 'combo',
+              title: 'Labels',
+              options: [
+              { title: 'None', key: 'none'},
+              { title: 'As Legend', key: 'alegend'},
+              { title: 'On axis', key: 'axis'}
+              ]
+            },
+            
+						minX: {
 							type: 'text',
-							title: 'Default node size'
+							title: 'Min X',
+							default: ''
 						},
-
-						nodeColor: {
-							type: 'color',
-							title: 'Default node color'
-						},
-
-						labelSize: {
+            
+						maxX: {
 							type: 'text',
-							title: 'Default label size'
+							title: 'Max X',
+							default: ''
 						},
-
-						labelColor: {
-							type: 'color',
-							title: 'Default label color'
-						},
-
-						edgeWidth: {
+						minY: {
 							type: 'text',
-							title: 'Default edge width'
+							title: 'Min Y',
+							default: ''
 						},
-
-						edgeColor: {
-							type: 'color',
-							title: 'Default edge color'
-						},
-
-						strokeWidth: {
+            
+						maxY: {
 							type: 'text',
-							title: 'Background line width'
+							title: 'Max Y',
+							default: ''
 						},
-
-						strokeColor: {
-							type: 'color',
-							title: 'Background line color'
-						}
+						minZ: {
+							type: 'text',
+							title: 'Min Z',
+							default: ''
+						},
+            
+						maxZ: {
+							type: 'text',
+							title: 'Max Z',
+							default: ''
+						},
+            
+            backgroundColor: {
+              type: 'color',
+              title: 'Background Color',
+              default: 'rgb(230,230,230)',
+            }
+            
 					}
 				}
 			}
@@ -171,16 +214,19 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 	};
 	
 	controller.prototype.configAliases = {
-		'nodeType': [ 'groups', 'group', 0, 'nodeType', 0 ],
-		'nodeSize': [ 'groups', 'group', 0, 'nodeSize', 0 ],
-		'nodeColor': [ 'groups', 'group', 0, 'nodeColor', 0 ],
-		'labelSize': [ 'groups', 'group', 0, 'labelSize', 0 ],
-		'labelColor': [ 'groups', 'group', 0, 'labelColor', 0 ],
-		'edgeWidth': [ 'groups', 'group', 0, 'edgeWidth', 0 ],
-		'edgeColor': [ 'groups', 'group', 0, 'edgeColor', 0 ],
-		'strokeWidth': [ 'groups', 'group', 0, 'strokeWidth', 0 ],
-		'strokeColor': [ 'groups', 'group', 0, 'strokeColor', 0 ],
-    'tooltip': ['groups', 'group', 0, 'tooltip', 0]
+    'tooltip': ['groups', 'group', 0, 'tooltip', 0],
+    'tooltipJpath': ['groups', 'group', 0, 'tooltipJpath', 0],
+    'grid': ['groups', 'group', 0, 'grid', 0],
+    'ticks': ['groups', 'group', 0, 'ticks', 0],
+    'projection': ['groups', 'group', 0, 'projection', 0],
+    'labels': ['groups', 'group', 0, 'labels', 0],
+    'minX': ['groups', 'group', 0, 'minX', 0],
+    'maxX': ['groups', 'group', 0, 'maxX', 0],
+    'minY': ['groups', 'group', 0, 'minY', 0],
+    'maxY': ['groups', 'group', 0, 'maxY', 0],
+    'minZ': ['groups', 'group', 0, 'minZ', 0],
+    'maxZ': ['groups', 'group', 0, 'maxZ', 0],
+    'backgroundColor': ['groups', 'group', 0, 'backgroundColor', 0],
 	};
 
 

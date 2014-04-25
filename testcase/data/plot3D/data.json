@@ -36,11 +36,11 @@
 			"data" : 
 			[
 				{
-					"x":[100,200,300,400],
+					"x":[1,2,3,4],
 					"y":[100,50,150,450],
 					"z":[100,200,100,200],
-					"color":["#ff0000","#00ff00","#0000ff","#000000"],
-					"size":[5,7,9,11],
+					"color":["#aaaaaa","#00ff00","#0000ff","#000000"],
+					"size":[0.03, 0.03, 0.03, 0.03],
 					"shape":["cube","sphere","cone",""],
 					"label":["Label A","Label B","Label C","Label D Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. "],
 					"_highlight":["A","B","C","D"],
@@ -54,11 +54,11 @@
 					"zAxis": "2"
 				},
 				{
-					"x":[200,200,50,350],
+					"x":[2,2,0.5,3.5],
 					"y":[400,300,200,100],
 					"z":[400,200,400,200],
-					"color":["#ff0000","#00ff00","#0000ff","#000000"],
-					"size":[5,7,9,11],
+					"color":["#aaaaaa","#00ff00","#0000ff","#000000"],
+					"size":[0.03, 0.03, 0.03, 0.03],
 					"shape":["cube","sphere","cone",""],
 					"label":["Label A","Label B","Label C","Label D"],
           "_highlight":["A","B","C","D"],
