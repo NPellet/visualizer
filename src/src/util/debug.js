@@ -16,7 +16,7 @@ define(function() {
 		
 		error: function(message) {
 			if(debugLevel >= 0) {
-				console.error(message);
+				console.error.apply(console, arguments);
 			}
 			if(debugLevel > -1)
 				addEntry("ERROR : "+ message);
@@ -24,7 +24,7 @@ define(function() {
 		
 		warn: function(message) {
 			if(debugLevel >= 1) {
-				console.warn(message);
+				console.warn.apply(console, arguments);
 			}
 			if(debugLevel > -1)
 				addEntry("WARN  : "+ message);
@@ -32,7 +32,7 @@ define(function() {
 		
 		info: function(message) {
 			if(debugLevel >= 2) {
-				console.info(message);
+				console.info.apply(console, arguments);
 			}
 			if(debugLevel > -1)
 				addEntry("INFO  : "+ message);
@@ -40,7 +40,7 @@ define(function() {
 		
 		debug: function(message) {
 			if(debugLevel >= 3) {
-				console.log(message);
+				console.log.apply(console, arguments);
 			}
 			if(debugLevel > -1)
 				addEntry("DEBUG : " + message);
