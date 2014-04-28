@@ -11,6 +11,11 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 	
 	var exports = {};
 	
+	var propertyDescriptor = {
+		writable: true,
+		enumerable: false
+	};
+	
 	function PouchObject(l, checkDeep, forceCopy) {	
 		
 		this.initProperties();
@@ -37,82 +42,82 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 		this.addChangeListener();
 	};
 
-	PouchObject.prototype = Object.create(DataObject.prototype);
-	Object.defineProperty(PouchObject.prototype, "constructor", PouchObject);
-	
-	Object.defineProperty( PouchObject.prototype, "initProperties", {
-		value: function(){
-			Object.defineProperty(this, "__pouch", {value: this.__pouch, writable: true});
-			Object.defineProperty(this, "__name", {value: this.__name, writable: true});
-			Object.defineProperty(this, "__parent", {value: this.__parent, writable: true});
-			Object.defineProperty(this, "_id", {value: this._id, writable: true});
-			Object.defineProperty(this, "_rev", {value: this._rev, writable: true});
-		}
-	});
-	
-	Object.defineProperty( PouchObject.prototype, "setPouch", {
-		value: function( pouchManager ) {
-			this.__pouch = pouchManager;
-		}
-	});
-
-	Object.defineProperty( PouchObject.prototype, "getPouch", {
-		value: function() {
-			return this.__pouch;
-		}
-	});
-
-	Object.defineProperty( PouchObject.prototype, "exportForPouch", {
-		value: function() {
-
-			var obj = new DataObject();
-
-			for( var i in this ) {
-
-				if( typeof this[ i ] === "function ") {
-					continue;
-				}
-
-				if( ( i ).slice( 0, 1 ) === "_") {
-					continue;
-				}
-
-				obj[ i ] = this[ i ];
-			}
-
-			return obj.resurrect();
-		}
-	});
-	
-	Object.defineProperty(PouchObject.prototype, "addChangeListener", {
-		value: function() {
-			if(this.hasChangeListener)
-				return;
-			Object.defineProperty(this, "hasChangeListener", {value: true});
-			var queue = [];
-			var saving = false;
-			
-			var self = this;
-			function doSave(safe) {
-				if(saving && !safe)
-					return;
-				saving = true;
-				var el = queue.shift();
-				self.getPouch().pouchdb.put(el, self._id, self._rev, function(err, response) {
-					if(err)
-						return console.error("Error while writing PouchObject", err);
-					self._rev = response.rev;
-					if(queue.length)
-						doSave(true);
-					else
-						saving = false;
+	PouchObject.prototype = Object.create(DataObject.prototype, {
+		constructor: {
+			value: PouchObject
+		},
+		initProperties: {
+			value: function(){
+				Object.defineProperties(this,{
+					__pouch: propertyDescriptor,
+					__nane: propertyDescriptor,
+					__parent: propertyDescriptor,
+					_id: propertyDescriptor,
+					_rev: propertyDescriptor
 				});
 			}
-			this.onChange(function() {
-				var toSave = self.exportForPouch();
-				queue.push(toSave);
-				doSave();
-			}, "internal_pouch_change" );
+		},
+		setPouch: {
+			value : function( pouchManager ) {
+				this.__pouch = pouchManager;
+			}
+		},
+		getPouch: {
+			value: function(){
+				return this.__pouch;
+			}
+		},
+		exportForPouch: {
+			value: function() {
+
+				var obj = new DataObject();
+
+				for( var i in this ) {
+
+					if( typeof this[ i ] === "function ") {
+						continue;
+					}
+
+					if( ( i ).slice( 0, 1 ) === "_") {
+						continue;
+					}
+
+					obj[ i ] = this[ i ];
+				}
+
+				return obj.resurrect();
+			}
+		},
+		addChangeListener: {
+			value: function() {
+				if(this.hasChangeListener)
+					return;
+				Object.defineProperty(this, "hasChangeListener", {value: true});
+				var queue = [];
+				var saving = false;
+
+				var self = this;
+				function doSave(safe) {
+					if(saving && !safe)
+						return;
+					saving = true;
+					var el = queue.shift();
+					self.getPouch().pouchdb.put(el, self._id, self._rev, function(err, response) {
+						if(err)
+							return console.error("Error while writing PouchObject", err);
+						self._rev = response.rev;
+						if(queue.length)
+							doSave(true);
+						else
+							saving = false;
+					});
+				}
+				this.onChange(function() {
+					var toSave = self.exportForPouch();
+					queue.push(toSave);
+					doSave();
+				}, "internal_pouch_change" );
+			}
 		}
 	});
 
@@ -143,7 +148,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 		this.type = 'array';
 		this.value = arr || [];
 		
-		Object.defineProperty(this, "__pouch", {writable: true});
+		Object.defineProperty(this, "__pouch", propertyDescriptor);
 		
 		if(deep) {
 			for(var i = 0, l = this.value.length; i < l; i++) {
@@ -153,64 +158,71 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 		}
 	};
 
-	PouchArray.prototype = Object.create(DataObject.prototype);
-	Object.defineProperty(PouchArray.prototype, "constructor", PouchArray);
-
-	PouchArray.prototype.setPouch = function(pouchManager) {
-		this.__pouch = pouchManager;
-		for(var i = 0, l = this.value.length; i < l; i ++) {
-			this.value[i].__pouch = pouchManager;
-		}
-	};
-
-	PouchArray.prototype.getPouch = function() {
-		return this.__pouch;
-	};
-
-	PouchArray.prototype.push = function() {
-		var manager;
-		if(!(manager = this.getPouch())) {
-			console.error("No Pouch manager has been defined for this array. Aborting push procedure.");
-			return;
-		}
-		
-		Array.prototype.push.apply(this.value, arguments);
-		
-		var l = arguments.length;
-		var docs = Array(l);
-		var args = Array(l);
-		for(var i = 0; i < l; i++) {
-			var doc = PouchObject.from(arguments[i], manager, true);
-			docs[i] = doc.resurrect();
-			args[i] = doc;
-		}
-		manager.pouchdb.bulkDocs({docs: docs}).then(function(res){
-			for(var i = 0; i < l; i++) {
-				args[i]._rev = res[i].rev;
+	PouchArray.prototype = Object.create(DataObject.prototype, {
+		constructor: {
+			value: PouchArray
+		},
+		setPouch: {
+			value: function(pouchManager) {
+				this.__pouch = pouchManager;
+				for(var i = 0, l = this.value.length; i < l; i ++) {
+					this.value[i].__pouch = pouchManager;
+				}
 			}
-		}).catch(function(err){
-			console.error("An error occured while pushing into PouchArray.", err);
-		});
-		
-		this.triggerChange("internal_pouch_change");
-	};
+		},
+		getPouch: {
+			value: function() {
+				return this.__pouch;
+			}
+		},
+		push: {
+			value: function() {
+				var manager;
+				if(!(manager = this.getPouch())) {
+					console.error("No Pouch manager has been defined for this array. Aborting push procedure.");
+					return;
+				}
 
-	PouchArray.prototype.splice = function() {
-		var manager;
-		if(!(manager = this.getPouch())) {
-			console.error("No Pouch manager has been defined for this array. Aborting splice procedure.");
-			return;
-		}
-		var elementsRemoved = Array.prototype.splice.apply(this.value, arguments);
+				Array.prototype.push.apply(this.value, arguments);
 
-		for(var i = 0, l = elementsRemoved.length ; i < l ; i ++ ) {
-			manager.pouchdb.remove( elementsRemoved[ i ] );
+				var l = arguments.length;
+				var docs = Array(l);
+				var args = Array(l);
+				for(var i = 0; i < l; i++) {
+					var doc = PouchObject.from(arguments[i], manager, true);
+					docs[i] = doc.resurrect();
+					args[i] = doc;
+				}
+				manager.pouchdb.bulkDocs({docs: docs}).then(function(res){
+					for(var i = 0; i < l; i++) {
+						args[i]._rev = res[i].rev;
+					}
+				}).catch(function(err){
+					console.error("An error occured while pushing into PouchArray.", err);
+				});
+
+				this.triggerChange("internal_pouch_change");
+			}
+		},
+		splice: {
+			value: function() {
+				var manager;
+				if(!(manager = this.getPouch())) {
+					console.error("No Pouch manager has been defined for this array. Aborting splice procedure.");
+					return;
+				}
+				var elementsRemoved = Array.prototype.splice.apply(this.value, arguments);
+
+				for(var i = 0, l = elementsRemoved.length ; i < l ; i ++ ) {
+					manager.pouchdb.remove( elementsRemoved[ i ] );
+				}
+
+				this.triggerChange("internal_pouch_change");
+				return elementsRemoved;
+			}
 		}
-		
-		this.triggerChange("internal_pouch_change");
-		return elementsRemoved;
-	};
-	
+	});
+
 	var PouchFactory = (function(){
 		var allPouch = {};
 		return {
