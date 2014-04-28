@@ -434,6 +434,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 		if(this.singleDocs[id])
 			return Promise.resolve(this.singleDocs[id]);
 		
+		options = options || {};
 		var that = this;
 		return new Promise(function(resolve){
 			var pouchobj;
