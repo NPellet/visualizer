@@ -430,14 +430,14 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 		doSync(fromCouch, this, couchURL);
 	};
 	
-	PouchManager.prototype.getDoc = function(id) {
+	PouchManager.prototype.getDoc = function(id, options) {
 		if(this.singleDocs[id])
 			return Promise.resolve(this.singleDocs[id]);
 		
 		var that = this;
 		return new Promise(function(resolve){
 			var pouchobj;
-			that.pouchdb.get(id).then(function(doc){
+			that.pouchdb.get(id, options).then(function(doc){
 				pouchobj = new PouchObject(doc, true);
 				pouchobj.setPouch(that);
 				that.singleDocs[id] = pouchobj;
@@ -452,13 +452,16 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 		});
 	};
 	
-	PouchManager.prototype.getDocs = function() {
+	PouchManager.prototype.getDocs = function(options) {
 		if(this.allDocs)
 			return Promise.resolve(this.allDocs);
 		
+		options = options || {};
+		options.include_docs = true;
+		
 		var that = this;
 		return new Promise(function(resolve){
-			that.pouchdb.allDocs({include_docs:true}).then(function(allDocs){
+			that.pouchdb.allDocs(options).then(function(allDocs){
 				var all = [];
 				for (var i = 0, l = allDocs.rows.length; i < l; i++) {
 					all.push(allDocs.rows[i].doc);
@@ -507,7 +510,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 		}
 	};
 
-	exports.pouchToVar = function(dbname, id, callback) {
+	exports.pouchToVar = function(dbname, id, callback, options) {
 
 		var pouch;
 
@@ -516,15 +519,16 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 		}
 		
 		if(typeof id === "function") {
+			options = callback;
 			callback = id;
-			id = null;
+			id = false;
 		}
 
 		if (id) {
-			pouch.getDoc(id).then(callback);
+			pouch.getDoc(id, options).then(callback);
 		}
 		else {
-			pouch.getDocs().then(callback);
+			pouch.getDocs(options).then(callback);
 		}
 	};
 	
