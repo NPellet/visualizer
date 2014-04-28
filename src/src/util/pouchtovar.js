@@ -13,10 +13,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 	
 	function PouchObject(l, checkDeep, forceCopy) {	
 		
-		Object.defineProperty(this, "__name", {writable: true});
-		Object.defineProperty(this, "__parent", {writable: true});
-		Object.defineProperty(this, "_id", {writable: true});
-		Object.defineProperty(this, "_rev", {writable: true});
+		this.initProperties();
 		
 		for(var i in l) {
 			if(l.hasOwnProperty(i)) {
@@ -43,9 +40,19 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 	PouchObject.prototype = Object.create(DataObject.prototype);
 	Object.defineProperty(PouchObject.prototype, "constructor", PouchObject);
 	
+	Object.defineProperty( PouchObject.prototype, "initProperties", {
+		value: function(){
+			Object.defineProperty(this, "__pouch", {value: this.__pouch, writable: true});
+			Object.defineProperty(this, "__name", {value: this.__name, writable: true});
+			Object.defineProperty(this, "__parent", {value: this.__parent, writable: true});
+			Object.defineProperty(this, "_id", {value: this._id, writable: true});
+			Object.defineProperty(this, "_rev", {value: this._rev, writable: true});
+		}
+	});
+	
 	Object.defineProperty( PouchObject.prototype, "setPouch", {
 		value: function( pouchManager ) {
-			Object.defineProperty(this, "__pouch", {value: pouchManager, writable: true});
+			this.__pouch = pouchManager;
 		}
 	});
 
@@ -113,19 +120,22 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 		if(forceNew) {
 			baseObject = new PouchObject(baseObject, deep, forceNew);
 		}
-		else if(!(baseObject instanceof PouchObject)) {
-			baseObject.__proto__ = PouchObject.prototype;
-			Object.defineProperty(baseObject, "_id", {value: baseObject._id, writable: true});
-			Object.defineProperty(baseObject, "_rev", {writable: true});
-			baseObject.addChangeListener();
-		}
-		baseObject.setPouch(pouchManager);
-		if(deep) {
-			for(var i in baseObject) {
-				if(baseObject.hasOwnProperty(i))
-					baseObject[i] = DataObject.check(baseObject[i], true, forceNew);
+		else {
+			if(!(baseObject instanceof PouchObject)) {
+				baseObject.__proto__ = PouchObject.prototype;
+				baseObject.initProperties();
+				baseObject.addChangeListener();
+			}
+			if(deep) {
+				for(var i in baseObject) {
+					if(baseObject.hasOwnProperty(i))
+						baseObject[i] = DataObject.check(baseObject[i], true, forceNew);
+				}
 			}
 		}
+		
+		baseObject.setPouch(pouchManager);
+
 		return baseObject;
 	};
 	
@@ -133,10 +143,12 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 		this.type = 'array';
 		this.value = arr || [];
 		
+		Object.defineProperty(this, "__pouch", {writable: true});
+		
 		if(deep) {
 			for(var i = 0, l = this.value.length; i < l; i++) {
 				this.value[i] = new PouchObject(this.value[i], deep);
-				Object.defineProperty(this.value[i], '__parent', {value: this});
+				this.value[i].__parent = this;
 			}
 		}
 	};
@@ -145,7 +157,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 	Object.defineProperty(PouchArray.prototype, "constructor", PouchArray);
 
 	PouchArray.prototype.setPouch = function(pouchManager) {
-		Object.defineProperty(this, "__pouch", {value: pouchManager, writable: true});
+		this.__pouch = pouchManager;
 		for(var i = 0, l = this.value.length; i < l; i ++) {
 			this.value[i].__pouch = pouchManager;
 		}
