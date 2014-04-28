@@ -10,7 +10,8 @@ define(['jquery',
 	'src/util/viewmigration',
 	'src/util/actionmanager',
 	'src/util/cron',
-	'src/util/pouchtovar'
+	'src/util/pouchtovar',
+	'src/util/debug'
 ], function($,
 		Header,
 		Repository,
@@ -23,7 +24,8 @@ define(['jquery',
 		Migration,
 		ActionManager,
 		Cron,
-		PouchDBUtil
+		PouchDBUtil,
+		Debug
 		) {
 	"use strict";
 
@@ -684,6 +686,10 @@ define(['jquery',
 							usr: cfgJson.usrDir
 						}
 					});
+				}
+				
+				if(cfgJson.debugLevel) {
+					Debug.setDebugLevel(cfgJson.debugLevel);
 				}
 
 				if (cfgJson.lockView || cfgJson.viewLock) {

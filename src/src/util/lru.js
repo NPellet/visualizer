@@ -94,7 +94,7 @@ define(['jquery', 'src/util/debug'], function($, Debug) {
 			}
 			deferred.resolve();
 		}, function() {
-			console.warn('IDB opening failure');
+			Debug.warn('IDB opening failure');
 			deferred.reject();
 		});
 
@@ -138,7 +138,7 @@ define(['jquery', 'src/util/debug'], function($, Debug) {
 
 		openrequest.onerror = function(e) {
 			
-			console.log(e);
+			Debug.info(e);
 			ready.reject();
 		}
 
@@ -203,7 +203,7 @@ define(['jquery', 'src/util/debug'], function($, Debug) {
 			});
 			
 		}, function() {
-			console.warn('IDB opening failure');
+			Debug.warn('IDB opening failure');
 			deferred.reject();
 		});
 
@@ -256,7 +256,7 @@ define(['jquery', 'src/util/debug'], function($, Debug) {
 		
 			deferred.resolve(data);
 		}, function() {
-			console.warn('IDB opening failure');
+			Debug.warn('IDB opening failure');
 			deferred.reject();
 		});
 

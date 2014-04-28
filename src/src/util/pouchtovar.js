@@ -6,7 +6,7 @@
  *	Perhaps a deep extend is needed. Otherwise we need to copy the listeners and callbacks !
  */
 
-define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB, URI) {
+define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'], function(PouchDB, URI, Debug) {
 	"use strict";
 	
 	var exports = {};
@@ -104,7 +104,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 					var el = queue.shift();
 					self.getPouch().pouchdb.put(el, self._id, self._rev, function(err, response) {
 						if(err)
-							return console.error("Error while writing PouchObject", err);
+							return Debug.error("Error while writing PouchObject", err);
 						self._rev = response.rev;
 						if(queue.length)
 							doSave(true);
@@ -179,7 +179,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 			value: function() {
 				var manager;
 				if(!(manager = this.getPouch())) {
-					console.error("No Pouch manager has been defined for this array. Aborting push procedure.");
+					Debug.error("No Pouch manager has been defined for this array. Aborting push procedure.");
 					return;
 				}
 
@@ -198,7 +198,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 						args[i]._rev = res[i].rev;
 					}
 				}).catch(function(err){
-					console.error("An error occured while pushing into PouchArray.", err);
+					Debug.error("An error occured while pushing into PouchArray.", err);
 				});
 
 				this.triggerChange("internal_pouch_change");
@@ -208,7 +208,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 			value: function() {
 				var manager;
 				if(!(manager = this.getPouch())) {
-					console.error("No Pouch manager has been defined for this array. Aborting splice procedure.");
+					Debug.error("No Pouch manager has been defined for this array. Aborting splice procedure.");
 					return;
 				}
 				var elementsRemoved = Array.prototype.splice.apply(this.value, arguments);
@@ -252,14 +252,14 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 		function complete(err, res) {
 			if(err) {
 				if (fromCouch)
-					return console.error("Replication from couchDB " + urlH + " to localDB " + pouchName + " failed.", err);
+					return Debug.warn("Replication from couchDB " + urlH + " to localDB " + pouchName + " failed.", err);
 				else
-					return console.error("Replication from localDB " + pouchName + " to couchDB " + urlH + " failed.", err);
+					return Debug.warn("Replication from localDB " + pouchName + " to couchDB " + urlH + " failed.", err);
 			} else {
 				if (fromCouch)
-					return console.info("Replication from couchDB " + urlH + " to localDB " + pouchName + " aborted.", res);
+					return Debug.debug("Replication from couchDB " + urlH + " to localDB " + pouchName + " aborted.", res);
 				else
-					return console.info("Replication from localDB " + pouchName + " to couchDB " + urlH + " aborted.", res);
+					return Debug.debug("Replication from localDB " + pouchName + " to couchDB " + urlH + " aborted.", res);
 			}
 		}
 		
@@ -269,7 +269,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 				return;
 			
 			callback = function() {
-				console.info("Started replication from couchDB " + urlH + " to localDB " + pouchName + ".");
+				Debug.debug("Started replication from couchDB " + urlH + " to localDB " + pouchName + ".");
 				return pouch.pouchdb.replicate.from(couchURL, {
 					live: true,
 					complete: complete
@@ -283,7 +283,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 				return;
 			
 			callback = function() {
-				console.info("Started replication from localDB " + pouchName + " to couchDB " + urlH + ".");
+				Debug.debug("Started replication from localDB " + pouchName + " to couchDB " + urlH + ".");
 				return pouch.pouchdb.replicate.to(couchURL, {
 					live: true,
 					complete: complete
@@ -330,10 +330,10 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 			var i;
 			checkURL(that.url).then(
 					function(){
-						console.info(that.urlH+" is responding.");
+						Debug.trace(that.urlH+" is responding.");
 						if(that.online)
 							return;
-						console.log("Start replications");
+						Debug.info("Start all replications");
 						for(i in that.froms) {
 							that.running.push(that.froms[i]());
 						}
@@ -343,10 +343,10 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 						that.online = true;
 					},
 					function(err){
-						console.error(that.urlH+" is not responding.", err);
+						Debug.trace(that.urlH+" is not responding.", err);
 						if(!that.online)
 							return;
-						console.log("Stop replications");
+						Debug.warn("Stop all replications");
 						while(that.running.length > 0){
 							that.running.pop().cancel();
 						}
@@ -456,7 +456,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 				that.singleDocs[id] = pouchobj;
 				resolve(pouchobj);
 			}).catch(function(err){
-				console.info("Doc "+id+" does not exist, creating new doc.", err);
+				Debug.info("Doc "+id+" does not exist, creating new doc.", err);
 				pouchobj = new PouchObject({_id: id});
 				pouchobj.setPouch(that);
 				that.singleDocs[id] = pouchobj;
@@ -484,7 +484,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI'], function(PouchDB,
 				that.allDocs = all;
 				resolve(all);
 			}).catch(function(err){
-				console.warn("Error in pouchdb.allDocs", err);
+				Debug.warn("Error in pouchdb.allDocs", err);
 				/*var arr = new PouchArray();
 				arr.setPouch(that);
 				that.allDocs = arr;
