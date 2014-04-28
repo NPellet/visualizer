@@ -186,12 +186,8 @@ define(['jquery',
 					if (entryVar.url) {
 
 						entryVar.fetch( ).done(function(v) {
-
 							var varname = v.varname;
-							v.type = Traversing.getType(v.value);
-
-							data[ varname ] = DataObject.check(v, true);
-
+							data[ varname ] = v.value;
 							API.setVariable(varname, data, [varname]);
 						});
 

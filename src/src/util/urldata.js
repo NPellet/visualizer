@@ -30,7 +30,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 
 				delete pendings[url];
 			}
-		}).pipe(function(data) {
+		}).then(function(data) {
 
 			def.resolve(data);
 			
@@ -79,20 +79,19 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 		get: function(url, force, timeout, headers) {
 
 			var def = $.Deferred();
-			var value;
 
 			if( pendings[ url ] ) {
 				return pendings[ url ];
 			}
 
-			if(typeof force == "number") {
+			if(typeof force === "number") {
 				timeout = force;
 				force = false;
-			} else if(typeof timeout == "object") {
+			} else if(typeof timeout === "object") {
 			//	data = timeout;
 				timeout = 0;
 				force = false;
-			} else if(typeof force == "object") {
+			} else if(typeof force === "object") {
 			//	data = force;
 				force = false;
 			}
@@ -111,9 +110,10 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 							});
 					});
 			}
-
 			// Standard: first LRU, then ajax
-			doLRUOrAjax(def, url, force, timeout, headers);
+			else {
+				doLRUOrAjax(def, url, force, timeout, headers);
+			}
 			return def;
 		},
 
