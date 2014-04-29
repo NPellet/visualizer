@@ -190,7 +190,9 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 				var args = Array(l);
 				for(var i = 0; i < l; i++) {
 					var doc = PouchObject.from(arguments[i], manager, true);
-					docs[i] = doc.resurrect();
+					var exp = doc.exportForPouch();
+					if(doc._id) exp._id = doc._id;
+					docs[i] = exp;
 					args[i] = doc;
 				}
 				manager.pouchdb.bulkDocs({docs: docs}).then(function(res){
