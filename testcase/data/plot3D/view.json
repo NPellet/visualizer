@@ -24,6 +24,14 @@
 							"tooltipJpath": [
 								null
 							],
+							"appearance": [
+								"plastic"
+							],
+							"displayPointCoordinates": [
+								[
+									"onhover"
+								]
+							],
 							"grid": [
 								[
 									"xy",
@@ -33,6 +41,9 @@
 									"yzsec",
 									"xzsec"
 								]
+							],
+							"secondaryGrids": [
+								2
 							],
 							"projection": [
 								[
@@ -50,7 +61,7 @@
 								]
 							],
 							"labels": [
-								"alegend"
+								"axis"
 							],
 							"minX": [
 								""
@@ -69,14 +80,6 @@
 							],
 							"maxZ": [
 								""
-							],
-							"backgroundColor": [
-								[
-									229,
-									229,
-									224,
-									1
-								]
 							]
 						}
 					]

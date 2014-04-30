@@ -1,4 +1,25 @@
 define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'components/three.js/examples/js/controls/TrackballControls'], function(Default, Graph, Traversing, API, Util, _) {
+  function generateRandomArray(n, min, max) {
+    var result = [];
+    for(var i=0; i<n; i++) {
+      result.push(Math.random()*(max-min) + min);
+    }
+    return result;
+  }
+  
+  function generateRandomColors(n, min, max) {
+    var result = [];
+    var letters = '0123456789ABCDEF'.split('');
+    for(var i=0; i<n; i++) {
+      var color = '#'
+      for(var j=0; j<3; j++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      result.push(color);
+    }
+    return result;
+  }
+
   function hexToRgb(hex) {
       // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
       var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -21,6 +42,19 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 
   function rgbToHex(r, g, b) {
       return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+  }
+  
+  function arrayToRgba(arr) {
+    if(arr.length === 3) {
+      return 'rgba(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ',1)';
+    }
+    else if(arr.length === 4) {
+      return 'rgba(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ',' + arr[3] + ')';
+    }
+    else {
+      return 'rgba(0,0,0,1)';
+    }
+    
   }
   
   function rgbStringToHex(rgbString) {
@@ -48,6 +82,13 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
   var ZOOM_START = 3;
   var DEFAULT_BACKGROUND_COLOR = '#eeeeee';
   var DEFAULT_PROJECTION_COLOR = '#888888';
+  var DEFAULT_POINT_COLOR = '#0000ff';
+  var DEFAULT_POINT_RADIUS = 0.03;
+  var DEFAULT_POINT_GEOMETRY = "sphere";
+  var DEFAULT_POINT_APPEARANCE = "none";
+  var DEFAULT_TEXT_COLOR = "rgba(0,0,0,1)";
+  var HIGHLIGHT_OPACITY = 0.6;
+  var DELTA = NORM_CONSTANT / 1000;
   
   $.fn.listHandlers = function(events, outputFunction) {
     return this.each(function(i){
@@ -64,9 +105,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     });
   };
 	
-	function view() {};
+	function view() {
+	  this._firstLoad = true;
+	};
 	view.prototype = $.extend(true, {}, Default, {
-
+    
 		DEBUG: true,
 
 
@@ -107,32 +150,52 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         console.log(intersects);
       }
       
+      function showPointCoordinates(index) {
+        if(self._configCheckBox('displayPointCoordinates', 'onhover')) {
+          console.log('Show point coordinates');
+          var arr = [];
+          arr.push('X: ' + parseFloat(self._data.x[index].toPrecision(3)).toExponential());
+          arr.push('Y: ' + parseFloat(self._data.y[index].toPrecision(3)).toExponential());
+          arr.push('Z: ' + parseFloat(self._data.z[index].toPrecision(3)).toExponential());
+          $('#legend_point_coordinates').html(arr.join('<br/>'));
+          $('#legend_point_coordinates').show(); 
+        }
+      }
+      
+      function hidePointCoordinates() {
+        if(self._configCheckBox('displayPointCoordinates', 'onhover')) {
+          $('#legend_point_coordinates').hide();
+        }
+      }
+      
       function onMouseMove(event) {
         var intersects = getIntersects(event);
         pointerObjects = intersects;
         lastMouseMoveEvent = event;
         if(intersects.length > 0){
-          console.log(self._data.label[intersects[0].object.data.index]);
-          var newPoint = { index: intersects[0].object.data.index };
+          var index = intersects[0].object.data.index;
+          var newPoint = { index: index };
           var pointChanged = JSON.stringify(newPoint) !== JSON.stringify(currentPoint);
           if( currentPoint && pointChanged) {
            // rehighlight currentPoint -> newPoint
-           console.log('rehighlight currentPoint -> newPoint');
            API.highlightId(self._data._highlight[currentPoint.index], 0);
            API.highlightId(self._data._highlight[newPoint.index], 1);
-          }
+           showPointCoordinates(index);
+         }
           else if(pointChanged){
             // highlight newPoint
-            console.log('highlight newPoint');
             API.highlightId(self._data._highlight[newPoint.index], 1);
+            
+            showPointCoordinates(index);
           }
           currentPoint = newPoint;
         }
         else {
           if(currentPoint) {
             // unhighlight currentPoint
-            console.log('unhighlight currentPoint');
             API.highlightId(self._data._highlight[currentPoint.index], 0);
+            
+            hidePointCoordinates();
           }
           currentPoint = null;
         }
@@ -196,7 +259,8 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           color: '#000000',
           radius: self._data.size[index],
           x: self._data.normalizedData.x[index], 
-          y: self._data.normalizedData.y[index]
+          y: self._data.normalizedData.y[index],
+          z: DELTA
         }));
         
         // xz projection
@@ -208,6 +272,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           color: '#000000',
           radius: self._data.size[index],
           x: self._data.normalizedData.x[index], 
+          y: DELTA,
           z: self._data.normalizedData.z[index]
         }));
         
@@ -219,6 +284,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           rotationAxis: {y: 1},
           color: '#000000',
           radius: self._data.size[index],
+          x: DELTA,
           y: self._data.normalizedData.y[index], 
           z: self._data.normalizedData.z[index]
         }));
@@ -235,22 +301,23 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
 
 			function init() {
-        self.camera = new THREE.PerspectiveCamera( 60, self.dom.width() / self.dom.height(), 1, 10000 );
-
+        self.camera = self.camera || new THREE.PerspectiveCamera( 60, self.dom.width() / self.dom.height(), 1, 10000 );
+        if(self.controls) {
+          // self.controls.reset();
+        }
+        else {
 				self.controls = new THREE.TrackballControls( self.camera, self.dom.get(0) );
 
 				self.controls.rotateSpeed = 1.0;
 				self.controls.zoomSpeed = 1.2;
 				self.controls.panSpeed = 0.8;
-
 				self.controls.noZoom = false;
 				self.controls.noPan = false;
-
 				self.controls.staticMoving = true;
 				self.controls.dynamicDampingFactor = 0.3;
-
 				self.controls.keys = [ 65, 83, 68 ];
 				self.controls.addEventListener( 'change', render );
+      }
 
         // Init scene
 				self.scene = new THREE.Scene();
@@ -271,21 +338,23 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         $('#scatter3D_tooltip').hide();
         
         $(self.dom).append( '<div id="legend" style="z-index: 10000; right:10px ;position:absolute; top: 25px; height: auto; background-color: #ffffff;"> </div>');
-        $('#legend').hide();
-        $('#legend').css('background-color', self.module.getConfiguration('backgroundColor'));
-        
-        self._zoomToFit();
+        $('#legend').append( '<div id="legend_titles"></div>');
+        $('#legend').append( '<div id="legend_point_coordinates"></div>');
+        $('#legend').css('background-color', self.module.getConfiguration('backgroundColor')).css('text-align', 'right');
+        $('#legend_titles').hide();
+        $('#legend_point_coordinates').hide();
 
-
-				//window.addEventListener( 'resize', onWindowResize, false );
         onWindowResize();
-        // $(self.renderer.domElement).off('mousedown', onMouseDown);
-        // $(self.renderer.domElement).on('mousedown', onMouseDown);
+
         
         function onHover() {
           if(pointerObjects.length > 0) {
             var j = pointerObjects[0].object.data.index;
-            self.module.controller.onHover(self._data.info[j]);
+            self.module.controller.onHover([self._data.info[j], [
+              self._data.x[j],
+              self._data.y[j],
+              self._data.z[j]]
+            ], ['info', 'coordinates']);
           }
         }
         
@@ -318,16 +387,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 			}
 
 			function onWindowResize() {
-
 				self.camera.aspect = self.dom.width() / self.dom.height();
 				self.camera.updateProjectionMatrix();
-
-				self.renderer.setSize( self.dom.width(), self.dom.height() );
-
+				self.renderer.setSize(self.dom.width(), self.dom.height());
 				self.controls.handleResize();
-
 				render();
-
 			}
 
 			function animate() {
@@ -340,7 +404,10 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 			function render() {
 				self.renderer.render( self.scene, self.camera );
         if(self.headlight) {
-         self.headlight.position.set = self.camera.position; 
+         self.headlight.position.x = self.camera.position.x +200;
+         self.headlight.position.y = self.camera.position.y +200;
+         self.headlight.position.z = self.camera.position.z +200; 
+         console.log('target',self.headlight.target);
         }
         if(self.tickLabels) {
           drawTickLabelsThrottled();
@@ -352,11 +419,12 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     
     _plotPoints: function(value) {
       var self = this;
-      console.log('plot points');
+      console.log('plot points', new Date().getTime());
       // Remove all objects
       _.keys(self.scene.children).forEach(function(key){
         self.scene.remove(self.scene.children[key]);
       });
+      console.log('objects removed', new Date().getTime());
       // this.scene.traverse(function(obj) {
       //   self.scene.remove(obj);
       // });
@@ -400,10 +468,13 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 
       // HEADLIGHT ============
       light = new THREE.AmbientLight( 0x222222, 1 );
-      self.scene.add( light );
+      self.scene.add(light);
       
       self.headlight = new THREE.PointLight ( 0xaaaaaa, 1.5 );
-      self.headlight.position = self.camera.position;
+      // self.headlight.position = self.camera.position;
+      self.headlight.position.x = 1000;
+      self.headlight.position.y = 1000;
+      self.headlight.position.z = 1000;
       self.scene.add(self.headlight);
       // ===================================================
       
@@ -417,13 +488,18 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           self.module._data = value.info[i];
         }
           
-        var color = '#000000';
-        var radius = 5;
+        var color = undefined;
+        var radius = undefined;
+        var geometry = undefined;
+        
         if(value.size && value.size[i]) {
-          radius = value.size[i] * NORM_CONSTANT;
+          radius = value.size[i];
         }
         if(value.color && value.color[i]) {
           color = value.color[i];
+        }
+        if(value.geometry && value.geometry[i]) {
+          geometry = value.geometry[i];
         }
         
         var mesh = this._plotPoint({
@@ -432,6 +508,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           z: self._data.normalizedData.z[i],
           color: color,
           radius: radius,
+          geometry: geometry,
           opacity: 1,
           index: i
         });
@@ -441,7 +518,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
             index: i,
           }
         });
-        self.scene.add(mesh);
       }
       this._drawAxes();
       this._drawFaces();
@@ -451,6 +527,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       this._drawTickLabels(); 
       this._drawAxisLabels();
       this.renderer.render(self.scene, self.camera);
+      console.log('end plot points', new Date().getTime());
     },
     
     _configCheckBox: function(config, option) {
@@ -581,11 +658,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       self._data.nbTicks[axis] = Math.floor(nbTicks);
       self._data.intervalVal[axis] = unitPerTickCorrect;
       self._data.intervalPx[axis] = NORM_CONSTANT / (self._data.nbTicks[axis]-1);
-      self._data.realLen[axis] = self._data.realMax[axis] - self._data.realMin.x;
+      self._data.realLen[axis] = self._data.realMax[axis] - self._data.realMin[axis];
       self._data.decimals[axis] = decimals;
       self._data.pxPerTick[axis] = pxPerTick;
       var intdec = Math.floor(Math.log(unitPerTickCorrect) / Math.log(10));
-      if(Math.abs(intdec <= 1)) {
+      if(Math.abs(intdec) <= 1) {
         self._data.intervalFactor[axis] = 1;
       }
       else {
@@ -641,7 +718,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       var self = this;
       var options = options || {};
       var circle = new THREE.Shape();
-      var radius = options.radius || 0.03;
+      var radius = options.radius || DEFAULT_POINT_RADIUS;
       radius = radius * NORM_CONSTANT;
 
       for (var i = 0; i < 16; i++) {
@@ -659,14 +736,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       var geometry = circle.makeGeometry();
       var material = new THREE.MeshBasicMaterial({ color: options.color || DEFAULT_PROJECTION_COLOR , side:THREE.DoubleSide});
       var mesh = new THREE.Mesh(geometry, material);
-      // var mat = new THREE.Matrix4();
-      // console.log('MATH PI', Math.PI);
-      // mat.makeRotationY(Math.PI/2);
-      // console.log(mat);
-      // mat.makeTranslation(100,0,0);
-      // mesh.applyMatrix(mat);
-      // rotateAroundObjectAxis(mesh, new THREE.Vector3(1,0,0), Math.PI/2);
-      
       
       var m1 = new THREE.Matrix4();
       var m2 = new THREE.Matrix4();
@@ -709,15 +778,15 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       var options = { color: 0x888888 };
       
       // x lines
-      var jmax = 3;
+      var jmax = self.module.getConfiguration('secondaryGrids') || 2;
       for(var i=0; i<self._data.nbTicks.x-1; i++) {
         for(var j=1; j<jmax; j++) {
           if(this._configCheckBox('grid', 'xysec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, 0, 0), 
-            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, NORM_CONSTANT, 0), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, 0, DELTA), 
+            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, NORM_CONSTANT, DELTA), options));
           if(this._configCheckBox('grid', 'xzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, 0, 0), 
-            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, 0, NORM_CONSTANT), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, DELTA, 0), 
+            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, DELTA, NORM_CONSTANT), options));
         }
       }
       
@@ -725,11 +794,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       for(var i=0; i<self._data.nbTicks.y-1; i++) {
         for(var j=1; j<jmax; j++){
           if(this._configCheckBox('grid', 'yzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, 0),
-            new THREE.Vector3(0, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, NORM_CONSTANT), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, 0),
+            new THREE.Vector3(DELTA, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, NORM_CONSTANT), options));
           if(this._configCheckBox('grid', 'xysec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, 0),
-            new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, 0), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, DELTA),
+            new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, DELTA), options));
         }
       }
       
@@ -737,11 +806,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       for(var i=0; i<self._data.nbTicks.z-1; i++) {
         for(var j=1; j<jmax; j++) {
           if(this._configCheckBox('grid', 'yzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(0, 0, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
-            new THREE.Vector3(0, NORM_CONSTANT, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA, 0, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
+            new THREE.Vector3(DELTA, NORM_CONSTANT, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
           if(this._configCheckBox('grid', 'xzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3( 0, 0, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
-            new THREE.Vector3( NORM_CONSTANT, 0, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3( 0, DELTA, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
+            new THREE.Vector3( NORM_CONSTANT, DELTA, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
         }
       }
     },
@@ -749,15 +818,14 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     _drawGrid: function() {
       var self = this;
       self._reinitObject3DArray('grid');
-      
       // x lines
       for(var i=0; i<self._data.nbTicks.x; i++) {
         if(this._configCheckBox('grid', 'xy'))
-        self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, 0, 0), 
-          new THREE.Vector3(self._data.intervalPx.x * i, NORM_CONSTANT, 0)));
+        self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, 0, DELTA),
+          new THREE.Vector3(self._data.intervalPx.x * i, NORM_CONSTANT, DELTA)));
         if(this._configCheckBox('grid', 'xz'))
-        self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, 0, 0), 
-          new THREE.Vector3(self._data.intervalPx.x * i, 0, NORM_CONSTANT)));
+        self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, DELTA, 0), 
+          new THREE.Vector3(self._data.intervalPx.x * i, DELTA, NORM_CONSTANT)));
       }
 
 
@@ -765,22 +833,22 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       // y lines
       for(var i=0; i<self._data.nbTicks.y; i++) {
         if(this._configCheckBox('grid', 'yz'))
-        self.grid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i, 0),
-          new THREE.Vector3(0, self._data.intervalPx.y * i, NORM_CONSTANT)));
+        self.grid.push(self._drawLine(new THREE.Vector3(DELTA, self._data.intervalPx.y * i, 0),
+          new THREE.Vector3(DELTA, self._data.intervalPx.y * i, NORM_CONSTANT)));
         if(this._configCheckBox('grid', 'xy'))
-        self.grid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i, 0),
-          new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i, 0)));
+        self.grid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i, DELTA),
+          new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i, DELTA)));
       }
       
       
       // z lines
       for(var i=0; i<self._data.nbTicks.z; i++) {
         if(this._configCheckBox('grid', 'yz'))
-        self.grid.push(self._drawLine(new THREE.Vector3(0, 0, self._data.intervalPx.z * i),
-          new THREE.Vector3(0, NORM_CONSTANT, self._data.intervalPx.z * i)));
+        self.grid.push(self._drawLine(new THREE.Vector3(DELTA, 0, self._data.intervalPx.z * i),
+          new THREE.Vector3(DELTA, NORM_CONSTANT, self._data.intervalPx.z * i)));
         if(this._configCheckBox('grid', 'xz'))
-        self.grid.push(self._drawLine(new THREE.Vector3( 0, 0, self._data.intervalPx.z * i),
-          new THREE.Vector3( NORM_CONSTANT, 0, self._data.intervalPx.z * i)));
+        self.grid.push(self._drawLine(new THREE.Vector3( 0, DELTA, self._data.intervalPx.z * i),
+          new THREE.Vector3( NORM_CONSTANT, DELTA, self._data.intervalPx.z * i)));
 
       }
     },
@@ -817,23 +885,43 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       var self = this;
       var options = options || {};
       
-
+      // Set default options
+      options.size = options.size || 50;
+      options.fillStyle = options.fillStyle || arrayToRgba(self.module.getConfiguration('annotationColor')) || DEFAULT_TEXT_COLOR;
+      options.textAlign = options.textAlign || "left";  
+      options.font = options.font || "Arial";
+      // Stange, opacity of 1 will dispaly a black background on the text
+      options.opacity = options.opacity || 0.99;
+      
+      
       // create a canvas element
       var canvas = document.createElement('canvas');
-      canvas.height = 100;
-      canvas.width = NORM_CONSTANT * 2;
+      canvas.height = options.size;
+      canvas.width = options.size * text.length / 2;
+      
+      switch(options.textAlign) {
+      case "left":
+        x += canvas.width/2;
+        break;
+      case "right":
+        x -= canvas.width /2;
+        break;
+      }
+  
       var ctx = canvas.getContext('2d');
-      ctx.font = "Bold " + (options.size || 50) + "px " + (options.font || "Arial");
-      ctx.fillStyle = options.fillStyle || "rgba(255,0,0,0.95)";
-      ctx.textAlign = options.textAlign || "left";
-      ctx.fillText(text, NORM_CONSTANT, 50);
+      ctx.font = "Bold " + options.size + "px " + options.font;
+      ctx.fillStyle = options.fillStyle;
+      ctx.fillText(text, 0, options.size);
       
       // canvas contents will be used for a texture
       var texture = new THREE.Texture(canvas) 
       texture.needsUpdate = true;
       
-      var material = new THREE.MeshBasicMaterial( {map: texture, side:THREE.DoubleSide } );
-      material.transparent = true;
+      var material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: (options.opacity === 1) ? false : true,
+        opacity: options.opacity
+      });
       var mesh = new THREE.Mesh(
         new THREE.PlaneGeometry(canvas.width, canvas.height),
         material
@@ -843,6 +931,8 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       textOrientation.setPosition(new THREE.Vector3(0,0,0));
       mesh.applyMatrix(textOrientation);
       mesh.position.set(x,y,z);
+      mesh.castShadow = false;
+      mesh.receiveShadow = false;
       self.scene.add(mesh);
       return mesh;
     },
@@ -890,17 +980,25 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       self._reinitObject3DArray('axisLabels');
       
       var mode = self.module.getConfiguration('labels');
+      xtitle = 'X title';
+      ytitle = 'Y title';
+      ztitle = 'Z title';
       switch(mode) {
       case 'axis':
-        drawOnAxis('X title', 'Y title', 'Z title');
-        $('#legend').hide();
+        drawOnAxis(xtitle, ytitle, ztitle);
+        $('#legend_titles').hide();
         break;
       case 'alegend':
         drawOnAxis('X', 'Y', 'Z');
-        drawLegend('X title', 'Y title', 'Z title');
-        $('#legend').show();
+        drawLegend(xtitle, ytitle, ztitle);
+        $('#legend_titles').show();
         break;
-      case 'none':
+      case 'both':
+        drawOnAxis(xtitle, ytitle, ztitle);
+        drawLegend(xtitle, ytitle, ztitle);
+        $('#legend_titles').show();
+        break;
+      default:
         return;
         break;
       }
@@ -911,7 +1009,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         arr.push('X: '+ tx);
         arr.push('Y: '+ ty);
         arr.push('Z: '+ tz);
-        $('#legend').html(arr.join('<br/>'));
+        $('#legend_titles').html(arr.join('<br/>'));
       }
       
       function drawOnAxis(tx, ty, tz) {
@@ -927,27 +1025,35 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       
         // z label
         self.tickLabels.push(self._addText(addFactor(tz,'z'), NORM_CONSTANT *1.4,0,NORM_CONSTANT/2, {
-          textAlign: "left",
+          textAlign: "left"
         }));
         
       }
       
       function addFactor(text, axis) {
-        return text + (self._data.intervalFactor[axis] === 1 ? '' : ' (\u00D7 10' + unicodeSuperscript(Math.log(self._data.intervalFactor[axis])/Math.LN10) + ')');
+        if(self._data.intervalFactor[axis] === 1)
+        return text;
+        else if(self._data.intervalFactor[axis] > 1)
+        return text + ' (\u00D7 10' + unicodeSuperscript(Math.round(Math.log(self._data.intervalFactor[axis])/Math.LN10)) + ')';
+        else
+        return text + ' (\u00D7 10' + unicodeSuperscript('-'+(-Math.round(Math.log(self._data.intervalFactor[axis])/Math.LN10))) + ')';
       }
       
       function unicodeSuperscript(num) {
         console.log(num);
-        num = num.toString();
+        var num = num.toString();
         var result = '';
         for(var i=0; i<num.length; i++) {
           if(parseInt(num[i] === NaN))
           continue;
-          if(num[i] < '2' && num[i] > '3') {
+          if(num[i] === '2' || num[i] === '3') {
+            result += String.fromCharCode(176 + parseInt(num[i]));
+          }
+          else if(num[i] >= '0' && num[i] < '9'){
             result += String.fromCharCode(8304 + parseInt(num[i]));
           }
-          else {
-            result += String.fromCharCode(176 + parseInt(num[i]));
+          else if(num[i] === '-') {
+            result += String.fromCharCode(8315);
           }
         }
         return result;
@@ -976,19 +1082,13 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       var geometry6 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
 
       var material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity:0.6} );
-      var group = new THREE.Object3D();
       var mesh1 = new THREE.Mesh(geometry1, material);
       var mesh2 = new THREE.Mesh(geometry2, material);
       var mesh3 = new THREE.Mesh(geometry3, material);
       var mesh4 = new THREE.Mesh(geometry4, material);
       var mesh5 = new THREE.Mesh(geometry5, material);
       var mesh6 = new THREE.Mesh(geometry6, material);
-      group.add(mesh1);
-      group.add(mesh2);
-      group.add(mesh3);
-      group.add(mesh4);
-      group.add(mesh5);
-      group.add(mesh6);
+
       
       
       var m1, m2, m3;
@@ -1029,14 +1129,16 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       m3.multiplyMatrices(m2, m3);
       mesh6.applyMatrix(m3);
       
-      mesh1.receiveShadow = false;
-      mesh2.receiveShadow = false;
-      mesh3.receiveShadow = false;
       mesh4.visible = false;
       mesh5.visible = false;
       mesh6.visible = false;
       
-      self.faces.push(group);
+      self.faces.push(mesh1);
+      self.faces.push(mesh2);
+      self.faces.push(mesh3);
+      
+      // self.faces.push(group);
+      // self.scene.add(group);
       for(var i=0; i<self.faces.length; i++) {
         self.scene.add(self.faces[i]);
       }
@@ -1078,14 +1180,105 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         console.log('not in boundary', point);
         return;
       }
-      var geometry = new THREE.SphereGeometry( point.radius, 32, 32 );
-      console.log(new THREE.Color(point.color));
-			var material =  new THREE.MeshLambertMaterial({ 
-        color: new THREE.Color(point.color),
-        shading: THREE.FlatShading,
-        opacity: point.opacity,
-        transparent: point.opacity === 1 ? false : true
-      });
+      var segments = 32;
+      if(self._data.x.length >200) {
+        segments = 16;
+      }
+      else if(self._data.x.length > 500) {
+        segments = 8;
+      }
+      point.color = point.color || DEFAULT_POINT_COLOR;
+      point.radius = point.radius || DEFAULT_POINT_RADIUS;
+      point.geometry = point.geometry || DEFAULT_POINT_GEOMETRY;
+      var trueRadius = point.radius * NORM_CONSTANT;
+      var geometry;
+      switch(point.geometry) {
+      case "cube":
+        var len = 2 * trueRadius;
+        geometry = new THREE.CubeGeometry(len, len, len);
+        break;
+      case "tetrahedron":
+        geometry = new THREE.TetrahedronGeometry(trueRadius);
+        break;
+      case "octahedron":
+        geometry = new THREE.OctahedronGeometry(trueRadius);
+        break;
+      case "ring":
+        geometry = new THREE.RingGeometry(trueRadius*0.7, trueRadius,segments,segments);
+        break;
+      case "torus":
+        geometry = new THREE.TorusGeometry(trueRadius, trueRadius*0.3, segments, segments);
+        break;
+      default:
+        geometry = new THREE.SphereGeometry(trueRadius, segments, segments);
+        break;
+      }
+    
+      var material;
+      var appearance = self.module.getConfiguration('appearance') || DEFAULT_POINT_APPEARANCE;
+      
+      switch(appearance) {
+      case "metallic":
+        var cubemap2 = THREE.ImageUtils.loadDDSTexture( '/test/threejs/examples/textures/compressed/Mountains_argb_mip.dds', new THREE.CubeReflectionMapping, function( cubemap ) {
+        					cubemap2.magFilter = cubemap2.minFilter = THREE.LinearFilter;
+        					material.needsUpdate = true;
+        				});
+        cubemap2.anisiotropy = 4;
+        material = new THREE.MeshBasicMaterial({
+          envMap: cubemap2,
+          color: new THREE.Color(point.color),
+          transparent: point.opacity === 1 ? false : true,
+          opacity: point.opacity || 1
+        });
+        break;
+      case "plastic":
+        material = new THREE.MeshPhongMaterial({
+          specular: 0x505050,
+          side: THREE.DoubleSide,
+          ambient: 0x030303,
+          color: new THREE.Color(point.color),
+          shininess: 1,
+          shading: THREE.SmoothShading,
+          transparent: point.opacity === 1 ? false : true,
+          opacity: point.opacity || 1
+        })
+        break;
+      case "mirror":
+        var path = "/test/threejs/examples/textures/cube/pisa/";
+        var format = '.png';
+        var urls = [
+        path + 'px' + format, path + 'nx' + format,
+        path + 'py' + format, path + 'ny' + format,
+        path + 'pz' + format, path + 'nz' + format
+        ];
+        var textureCube = THREE.ImageUtils.loadTextureCube( urls );
+        var shader = THREE.ShaderLib[ "cube" ];
+        shader.uniforms[ "tCube" ].value = textureCube;
+        var material = new THREE.ShaderMaterial({
+          fragmentShader: shader.fragmentShader,
+          vertexShader: shader.vertexShader,
+          uniforms: shader.uniforms,
+          depthWrite: false,
+          side: THREE.BackSide,
+          transparent: point.opacity === 1 ? false : true,
+          opacity: point.opacity || 1
+        });
+        // material = new THREE.MeshBasicMaterial( { color: 0xffffff, envMap: textureCube } );
+        break;
+      case "none":
+        material = undefined;
+        break;
+      default:
+        var material =  new THREE.MeshLambertMaterial({ 
+          color: new THREE.Color(point.color),
+          shading: THREE.FlatShading,
+          opacity: point.opacity,
+          transparent: point.opacity === 1 ? false : true
+        });
+        break;
+      }
+
+      
 
       var mesh = new THREE.Mesh(geometry, material);
       mesh.position.x = point.x;
@@ -1164,6 +1357,10 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 			// and we received the data ...
 			this.loadedData.done(function() {
         self._initThreejs();
+        if(self._firstLoad) {
+          self._zoomToFit();
+          self._firstLoad = false;
+        }
         console.log('loadedData done');
         if(self._data) {
           self._plotPoints(self._data);
@@ -1172,29 +1369,37 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           var highlightSet = {};
           console.log("-----");
           console.log(self._data);
-          for(var i=0; i<self._data.x.length; i++) {
-            console.log('setting highlights: ', self._data._highlight);
-            (function(){
-              var index = i;
-              // highlightSet[self._data[i]._highlight[j].toString()] = self._data[i]._highlight[j];
-              API.listenHighlight( {_highlight: self._data._highlight[i]}, function( onOff, key ) {
-                console.log('-- Listening to highlight ', key, '(is '+ (onOff ? 'on': 'off') + ')');
-                // console.log(onOff, key, currentDataPoint);
-                if(onOff) {
-                  drawHighlight(index);
-                }
-                else {
-                  undrawHighlight(index);
-                }
-        
-              }, false, self.module.getId());
-            })();
+          if(self._data._highlight) {
+            console.log('listen highlights');
+            listenHighlights(self._data._highlight);
+          }
+          var infoHighlights = _.flatten(_.pluck(self._data.info, '_highlight'))
+          if(infoHighlights) {
+            listenHighlights(infoHighlights);
           }
         }
       });
       
       
-		
+		  function listenHighlights(hl) {
+        if(!hl || !hl.length) {
+          return;
+        }
+        for(var i=0; i<hl.length; i++) {
+          (function(){
+            var index = i;
+            API.listenHighlight( {_highlight: hl[i]}, function( onOff, key ) {
+              if(onOff) {
+                drawHighlight(index);
+              }
+              else {
+                undrawHighlight(index);
+              }
+      
+            }, false, self.module.getId());
+          })();
+        }
+		  }
       
       function undrawHighlight(index) {
         if(!highlightObjects[index]) {
@@ -1209,12 +1414,19 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           return;
         }
         
-        var color = '#e5be39';
-        // var color = '#aaaaaa';
-        var radius = 8;
+        // Highlight radius
+        var radius = DEFAULT_POINT_RADIUS * 1.5;
         if(self._data.size && self._data.size[index]) {
-          radius = self._data.size[index] * NORM_CONSTANT * 1.5;
+          radius = self._data.size[index] * 1.5;
         }
+        
+        var geometry = DEFAULT_POINT_GEOMETRY;
+        if(self._data.geometry && self._data.geometry[index]) {
+          geometry = self._data.geometry[index];
+        }
+        
+        // Highlight color
+        var color = '#e5be39';
         // if(self._data[serie].color && self._data[serie].color[index]) {
         //   color = self._data[serie].color[index];
         // }
@@ -1225,9 +1437,10 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           z: self._data.normalizedData.z[index],
           color: color,
           radius: radius,
-          opacity: 0.6,
+          opacity: HIGHLIGHT_OPACITY,
           transparent: true,
-          index: index
+          index: index,
+          geometry: geometry
         });
         highlightObjects[index] = mesh;
         self.renderer.render( self.scene, self.camera );
@@ -1282,13 +1495,18 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
             self._data[key] = self._data[key] || [];
             self._data[key].push(value.data[j][key]);
             self._data[key] = _.flatten(self._data[key], true);
-            // self._data[key] = _.union(self._data[key], value.data[j][key]);
+            
           }
           _.filter(self._data[key], function(val) {
             return val !== undefined;
           });
         });
       }
+      
+      // generate random x,y z
+      self._data.x = generateRandomArray(50,0,5);
+      self._data.y = generateRandomArray(50,0,5);
+      self._data.z = generateRandomArray(50,0,5);
       console.log('Converted data: ', self._data);
 		},
 

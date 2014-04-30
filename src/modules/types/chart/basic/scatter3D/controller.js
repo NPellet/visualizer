@@ -33,17 +33,20 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 
 		onHover: {
 			label: 'Hover a 3D point',
-			refVariable: [ 'point', 'info' ]
+			refVariable: [ 'point', 'info', 'coordinates' ]
 		}
 	};
 	
-	controller.prototype.onHover = function(element) {
-    console.log(element);
-		if( ! element ) {
+	controller.prototype.onHover = function(elements, ref) {
+    console.log(elements);
+		if( ! elements ) {
 			return;
 		}
     // this.setVarFromEvent( 'onHover', DataObject.check(element), 'point');
-    this.setVarFromEvent( 'onHover', DataObject.check(element), 'info');
+    for(var i=0; i<elements.length; i++) {
+      if(!elements[i]) continue;
+     this.setVarFromEvent( 'onHover', DataObject.check(elements[i]), ref[i]); 
+    }
 	};
 	
 
@@ -65,6 +68,9 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
     },
     info: {
       label: 'Point info'
+    },
+    coordinates: {
+      label: 'Point coordinates'
     }
 	};
 
@@ -120,6 +126,24 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                 options: jpath
             },
             
+            appearance: {
+              type: 'combo',
+              title: 'Appearance',
+              options:[
+                {title: 'Plastic', key: 'plastic'},
+                {title: 'Metallic', key: 'metallic'},
+                {title: 'Mirror', key: 'mirror'},
+                {title: 'None', key: 'none'}]
+            },
+            
+            displayPointCoordinates: {
+              type: 'checkbox',
+              title: "Display point coordinates",
+              options: {
+                onhover: 'Yes (on hover)'
+              }
+            },
+            
             grid: {
               type: 'checkbox',
               title: 'Grids',
@@ -132,6 +156,12 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                 'xzsec': 'XZ Secondary'
               },
               default: ['xy','yz','xz']
+            },
+            
+            secondaryGrids: {
+              type: 'text',
+              title: 'Secondary grid',
+              default: 2
             },
             
             projection: {
@@ -163,7 +193,8 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
               options: [
               { title: 'None', key: 'none'},
               { title: 'As Legend', key: 'alegend'},
-              { title: 'On axis', key: 'axis'}
+              { title: 'On axis', key: 'axis'},
+              {title: "Both", key: 'both'}
               ]
             },
             
@@ -204,9 +235,14 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
             backgroundColor: {
               type: 'color',
               title: 'Background Color',
-              default: 'rgb(230,230,230)',
-            }
+              default: [230, 230, 230, 1],
+            },
             
+            annotationColor: {
+              type: 'color',
+              title: 'Annotation color',
+            default: [50,50,50,1]
+            }
 					}
 				}
 			}
@@ -227,6 +263,10 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
     'minZ': ['groups', 'group', 0, 'minZ', 0],
     'maxZ': ['groups', 'group', 0, 'maxZ', 0],
     'backgroundColor': ['groups', 'group', 0, 'backgroundColor', 0],
+    'secondaryGrids': ['groups', 'group', 0, 'secondaryGrids', 0],
+    'appearance': ['groups', 'group', 0, 'appearance', 0],
+    'displayPointCoordinates': ['groups', 'group', 0, 'displayPointCoordinates', 0],
+    'annotationColor': ['groups', 'group', 0, 'annotationColor', 0],
 	};
 
 

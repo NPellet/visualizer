@@ -9,23 +9,23 @@
 	{
 		"type":"chart",
 		"value": {
-			"title" : "A pie chart",
+			"title" : "A 3D scatter plot",
 			"axis": {
-				"0": {
+				"x": {
 					"type": "bottom", 
 					"unit": "",
 					"name": "",
 					"min":"",
 					"max":""
 				},
-				"1": {
+				"y": {
 					"type": "left",
 					"unit": "",
 					"name": "",
 					"min":"",
 					"max":""
 				},
-				"2": {
+				"z": {
 					"type": "",
 					"unit": "",
 					"name": "",
@@ -36,40 +36,22 @@
 			"data" : 
 			[
 				{
-					"x":[1,2,3,4],
-					"y":[100,50,150,450],
-					"z":[100,200,100,200],
-					"color":["#aaaaaa","#00ff00","#0000ff","#000000"],
-					"size":[0.03, 0.03, 0.03, 0.03],
-					"shape":["cube","sphere","cone",""],
+					"x":[],
+          "y": [],
+          "z": [],
+					"color":[],
+					"size":[],
+					"geometry":["tetrahedron","octahedron","torus","cube","sphere","cube","cube","cube","cube","cube"],
 					"label":["Label A","Label B","Label C","Label D Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. "],
-					"_highlight":["A","B","C","D"],
+					"_highlight":["A","B","C","D","E","A","B","C","D","E"],
 					"info":[{"name":"first", "label":"Label A"},
                   {"name":"second", "label":"Label B"},
                   {"name":"third", "label":"Label C"},
                   {"name":"forth", "label":"Label D"}],
 					"serieLabel": "My first serie",
-					"xAxis": "0", 
-					"yAxis": "1",
-					"zAxis": "2"
-				},
-				{
-					"x":[2,2,0.5,3.5],
-					"y":[400,300,200,100],
-					"z":[400,200,400,200],
-					"color":["#aaaaaa","#00ff00","#0000ff","#000000"],
-					"size":[0.03, 0.03, 0.03, 0.03],
-					"shape":["cube","sphere","cone",""],
-					"label":["Label A","Label B","Label C","Label D"],
-          "_highlight":["A","B","C","D"],
-					"info":[{"_highlight":["A"], "name":"first", "label":"Label A"},
-                  {"_highlight":["B"], "name":"second", "label":"Label A"},
-                  {"_highlight":["C"], "name":"third", "label":"Label A"},
-                  {"_highlight":["D"], "name":"forth", "label":"Label A"}],
-					"serieLabel": "My second serie",
-					"xAxis": "0", 
-					"yAxis": "1",
-					"zAxis": "2"
+					"xAxis": "x", 
+					"yAxis": "y",
+					"zAxis": "z"
 				}
 			]
 		}
