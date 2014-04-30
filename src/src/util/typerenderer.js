@@ -439,7 +439,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         value = value.get();
         if(!(value instanceof Array))
         	def.reject('');
-        var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%"><tr>';
+        var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%; position:absolute"><tr>';
 
 		var length = value.length;
 		var width = (100/length)+"%";

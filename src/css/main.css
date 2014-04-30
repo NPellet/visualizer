@@ -892,8 +892,7 @@ table.moduleInformation tr td:first-child {
 	content: attr(data-tooltip);
 	padding: 5px 15px;
 	position: absolute;
-	bottom:100%;
-	margin-bottom: 5px;
+	bottom: calc(100% + 5px);
 	display:block;
 	pointer-events:none;
 
