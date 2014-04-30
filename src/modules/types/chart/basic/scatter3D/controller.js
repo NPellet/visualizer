@@ -164,6 +164,24 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
               default: 2
             },
             
+            gridOriginX: {
+              type: 'text',
+              title: 'Grid Origin X',
+              default: ''
+            },
+            
+            gridOriginY: {
+              type: 'text',
+              title: 'Grid Origin Y',
+              default: ''
+            },
+            
+            gridOriginZ: {
+              type: 'text',
+              title: 'Grid Origin Z',
+              default: ''
+            },
+            
             projection: {
               type: 'checkbox',
               title: 'Projections',
@@ -267,6 +285,9 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
     'appearance': ['groups', 'group', 0, 'appearance', 0],
     'displayPointCoordinates': ['groups', 'group', 0, 'displayPointCoordinates', 0],
     'annotationColor': ['groups', 'group', 0, 'annotationColor', 0],
+    'gridOriginX': ['groups', 'group', 0, 'gridOriginX', 0],
+    'gridOriginY': ['groups', 'group', 0, 'gridOriginY', 0],
+    'gridOriginZ': ['groups', 'group', 0, 'gridOriginZ', 0]
 	};
 
 

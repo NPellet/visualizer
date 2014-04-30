@@ -260,7 +260,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           radius: self._data.size[index],
           x: self._data.normalizedData.x[index], 
           y: self._data.normalizedData.y[index],
-          z: DELTA
+          z: DELTA+self.gorigin.z
         }));
         
         // xz projection
@@ -272,7 +272,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           color: '#000000',
           radius: self._data.size[index],
           x: self._data.normalizedData.x[index], 
-          y: DELTA,
+          y: DELTA + self.gorigin.y,
           z: self._data.normalizedData.z[index]
         }));
         
@@ -284,7 +284,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           rotationAxis: {y: 1},
           color: '#000000',
           radius: self._data.size[index],
-          x: DELTA,
+          x: DELTA + self.gorigin.x,
           y: self._data.normalizedData.y[index], 
           z: self._data.normalizedData.z[index]
         }));
@@ -771,6 +771,18 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       this[name] = [];
     },
     
+    _setGridOrigin: function() {
+      var self = this;
+      self.gorigin = {};
+      self.gorigin.x = parseFloat(self.module.getConfiguration('gridOriginX') || self._data.realMin.x);
+      self.gorigin.y = parseFloat(self.module.getConfiguration('gridOriginY') || self._data.realMin.y);
+      self.gorigin.z = parseFloat(self.module.getConfiguration('gridOriginZ') || self._data.realMin.z);
+      self.gorigin.x = NORM_CONSTANT * (self.gorigin.x - self._data.realMin.x)/self._data.realLen.x;
+      self.gorigin.y = NORM_CONSTANT * (self.gorigin.y - self._data.realMin.y)/self._data.realLen.y;
+      self.gorigin.z = NORM_CONSTANT * (self.gorigin.z - self._data.realMin.z)/self._data.realLen.z;
+      console.log('GRID ORIGIN', self.gorigin.x, self.gorigin.y, self.gorigin.z);
+    },
+    
     _drawSecondaryGrid: function() {
       var self = this;
       self._reinitObject3DArray('secondaryGrid');
@@ -782,11 +794,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       for(var i=0; i<self._data.nbTicks.x-1; i++) {
         for(var j=1; j<jmax; j++) {
           if(this._configCheckBox('grid', 'xysec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, 0, DELTA), 
-            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, NORM_CONSTANT, DELTA), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, 0, DELTA+self.gorigin.z), 
+            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, NORM_CONSTANT, DELTA+self.gorigin.z), options));
           if(this._configCheckBox('grid', 'xzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, DELTA, 0), 
-            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, DELTA, NORM_CONSTANT), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, DELTA+self.gorigin.y, 0), 
+            new THREE.Vector3(self._data.intervalPx.x * i + self._data.intervalPx.x/jmax * j, DELTA+self.gorigin.y, NORM_CONSTANT), options));
         }
       }
       
@@ -794,11 +806,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       for(var i=0; i<self._data.nbTicks.y-1; i++) {
         for(var j=1; j<jmax; j++){
           if(this._configCheckBox('grid', 'yzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, 0),
-            new THREE.Vector3(DELTA, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, NORM_CONSTANT), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, 0),
+            new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, NORM_CONSTANT), options));
           if(this._configCheckBox('grid', 'xysec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, DELTA),
-            new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, DELTA), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, DELTA+self.gorigin.z),
+            new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i + self._data.intervalPx.y/jmax * j, DELTA+self.gorigin.z), options));
         }
       }
       
@@ -806,11 +818,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       for(var i=0; i<self._data.nbTicks.z-1; i++) {
         for(var j=1; j<jmax; j++) {
           if(this._configCheckBox('grid', 'yzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA, 0, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
-            new THREE.Vector3(DELTA, NORM_CONSTANT, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, 0, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
+            new THREE.Vector3(DELTA+self.gorigin.x, NORM_CONSTANT, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
           if(this._configCheckBox('grid', 'xzsec'))
-          self.secondaryGrid.push(self._drawLine(new THREE.Vector3( 0, DELTA, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
-            new THREE.Vector3( NORM_CONSTANT, DELTA, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
+          self.secondaryGrid.push(self._drawLine(new THREE.Vector3( 0, DELTA+self.gorigin.y, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j),
+            new THREE.Vector3( NORM_CONSTANT, DELTA+self.gorigin.y, self._data.intervalPx.z * i + self._data.intervalPx.z/jmax * j), options));
         }
       }
     },
@@ -821,11 +833,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       // x lines
       for(var i=0; i<self._data.nbTicks.x; i++) {
         if(this._configCheckBox('grid', 'xy'))
-        self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, 0, DELTA),
-          new THREE.Vector3(self._data.intervalPx.x * i, NORM_CONSTANT, DELTA)));
+        self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, 0, DELTA+self.gorigin.z),
+          new THREE.Vector3(self._data.intervalPx.x * i, NORM_CONSTANT, DELTA+self.gorigin.z)));
         if(this._configCheckBox('grid', 'xz'))
-        self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, DELTA, 0), 
-          new THREE.Vector3(self._data.intervalPx.x * i, DELTA, NORM_CONSTANT)));
+        self.grid.push(self._drawLine(new THREE.Vector3(self._data.intervalPx.x * i, DELTA+self.gorigin.y, 0), 
+          new THREE.Vector3(self._data.intervalPx.x * i, DELTA+self.gorigin.y, NORM_CONSTANT)));
       }
 
 
@@ -833,22 +845,22 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       // y lines
       for(var i=0; i<self._data.nbTicks.y; i++) {
         if(this._configCheckBox('grid', 'yz'))
-        self.grid.push(self._drawLine(new THREE.Vector3(DELTA, self._data.intervalPx.y * i, 0),
-          new THREE.Vector3(DELTA, self._data.intervalPx.y * i, NORM_CONSTANT)));
+        self.grid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i, 0),
+          new THREE.Vector3(DELTA+self.gorigin.x, self._data.intervalPx.y * i, NORM_CONSTANT)));
         if(this._configCheckBox('grid', 'xy'))
-        self.grid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i, DELTA),
-          new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i, DELTA)));
+        self.grid.push(self._drawLine(new THREE.Vector3(0, self._data.intervalPx.y * i, DELTA+self.gorigin.z),
+          new THREE.Vector3(NORM_CONSTANT, self._data.intervalPx.y * i, DELTA+self.gorigin.z)));
       }
       
       
       // z lines
       for(var i=0; i<self._data.nbTicks.z; i++) {
         if(this._configCheckBox('grid', 'yz'))
-        self.grid.push(self._drawLine(new THREE.Vector3(DELTA, 0, self._data.intervalPx.z * i),
-          new THREE.Vector3(DELTA, NORM_CONSTANT, self._data.intervalPx.z * i)));
+        self.grid.push(self._drawLine(new THREE.Vector3(DELTA+self.gorigin.x, 0, self._data.intervalPx.z * i),
+          new THREE.Vector3(DELTA+self.gorigin.x, NORM_CONSTANT, self._data.intervalPx.z * i)));
         if(this._configCheckBox('grid', 'xz'))
-        self.grid.push(self._drawLine(new THREE.Vector3( 0, DELTA, self._data.intervalPx.z * i),
-          new THREE.Vector3( NORM_CONSTANT, DELTA, self._data.intervalPx.z * i)));
+        self.grid.push(self._drawLine(new THREE.Vector3( 0, DELTA+self.gorigin.y, self._data.intervalPx.z * i),
+          new THREE.Vector3( NORM_CONSTANT, DELTA+self.gorigin.y, self._data.intervalPx.z * i)));
 
       }
     },
@@ -1074,6 +1086,14 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       //               | /       | /     /  
       //               |/________|/      z
       
+      // 1: xy back
+      // 2: yz left
+      // 3: xz bottom
+      // 4: xy front
+      // 5: yz right
+      // 6: xz top
+      
+      
       var geometry1 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
       var geometry2 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
       var geometry3 = new THREE.PlaneGeometry(NORM_CONSTANT, NORM_CONSTANT);
@@ -1096,11 +1116,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       m1 = new THREE.Matrix4();
       m2 = new THREE.Matrix4();
       m3 = new THREE.Matrix4();
-      m1.makeTranslation(NORM_CONSTANT/2, NORM_CONSTANT/2, 0);
+      m1.makeTranslation(NORM_CONSTANT/2, NORM_CONSTANT/2, self.gorigin.z);
       m2.makeTranslation(0,0,NORM_CONSTANT/2);
       mesh1.applyMatrix(m1);
       m2.multiplyMatrices(m1,m2);
-      mesh4.applyMatrix(m2)
+      mesh4.applyMatrix(m2);
       
       
       // Face 2
@@ -1108,7 +1128,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       m2 = new THREE.Matrix4();
       m3 = new THREE.Matrix4();
       m1.makeRotationY(Math.PI/2);
-      m2.makeTranslation(-NORM_CONSTANT/2, NORM_CONSTANT/2, 0);
+      m2.makeTranslation(-NORM_CONSTANT/2, NORM_CONSTANT/2, self.gorigin.x);
       m2.multiplyMatrices(m1,m2);
       // m3.makeTranslation(0, 0, self._data.len.x);
       m3.makeTranslation(0, 0, NORM_CONSTANT);
@@ -1121,7 +1141,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       m2 = new THREE.Matrix4();
       m3 = new THREE.Matrix4();
       m1.makeRotationX(Math.PI/2);
-      m2.makeTranslation(NORM_CONSTANT/2, NORM_CONSTANT/2, 0);
+      m2.makeTranslation(NORM_CONSTANT/2, NORM_CONSTANT/2, -self.gorigin.y);
       m2.multiplyMatrices(m1,m2);
       mesh3.applyMatrix(m2);
       // m3.makeTranslation(0, 0, -self._data.len.y);
@@ -1136,9 +1156,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       self.faces.push(mesh1);
       self.faces.push(mesh2);
       self.faces.push(mesh3);
-      
-      // self.faces.push(group);
-      // self.scene.add(group);
+
       for(var i=0; i<self.faces.length; i++) {
         self.scene.add(self.faces[i]);
       }
@@ -1466,6 +1484,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         this._computeMinMax();
         this._computeTickInfo();
         this._normalizeData();
+        this._setGridOrigin();
         
         console.log('moduleValue.get(): ', this._data);
 
@@ -1504,9 +1523,9 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
       
       // generate random x,y z
-      self._data.x = generateRandomArray(50,0,5);
-      self._data.y = generateRandomArray(50,0,5);
-      self._data.z = generateRandomArray(50,0,5);
+      self._data.x = generateRandomArray(50,-0.005,0.005);
+      self._data.y = generateRandomArray(50,-5,5);
+      self._data.z = generateRandomArray(50,-5,5);
       console.log('Converted data: ', self._data);
 		},
 
