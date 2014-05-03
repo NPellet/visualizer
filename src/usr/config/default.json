@@ -1,33 +1,32 @@
 {
     "lockView": false,
     "usrDir": "usr",
+    "debugLevel": -1,
     "filters": [
         {
-            "file": "./usr/filters/testFilter.js",
-            "name": "Filter"
-        },
-        {
-            "file": "./usr/filters/doitourl.js",
+            "file": "usr/filters/doitourl.js",
             "name": "DOI to URL"
         },
         {
-            "file": "./usr/filters/flickr.js",
+            "file": "usr/filters/flickr.js",
             "name": "Flickr image"
         },
         {
-            "file": "./usr/filters/gcgenerator.js",
+            "file": "usr/filters/gcgenerator.js",
             "name": "Generate GC"
         },
         {
-            "file": "./usr/filters/hclust.js",
+            "file": "usr/filters/hclust.js",
             "name": "Hierarchical clustering"
         },
         {
-            "file": "./usr/filters/histogram.js",
+            "file": "usr/filters/histogram.js",
             "name": "Color histogram"
         }
     ],
-    "modules": ["./modules/types/folder.json"],
+    "modules": {
+        "folders":["modules/types"]
+    },
     "header": {
         "height": "30px",
         "elements":

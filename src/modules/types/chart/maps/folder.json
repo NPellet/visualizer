@@ -1,10 +1,10 @@
 {
 	"modules": [
 		{
-			"moduleName": "Leaflet",
+			"moduleName": "Map",
 			"url": "modules/types/chart/maps/leaflet/"
 		}
 	],
 	"name": "Maps",
-	"folders": {}
+	"folders": []
 }

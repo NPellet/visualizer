@@ -162,6 +162,12 @@ define(['modules/default/defaultview'], function(Default) {
 				this.module.controller.doSearch();
 			}
 		},
+                
+                onActionReceive: {
+                    doSearch: function() {
+                        this.module.controller.doSearch();
+                    }
+                },
 
 		getDom: function() {
 			return this.dom;

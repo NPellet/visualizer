@@ -21,10 +21,14 @@
 			"url": "modules/types/edition/object_editor/"
 		},
 		{
+			"moduleName": "Onde",
+			"url": "modules/types/edition/onde/"
+		},
+		{
 			"moduleName": "Var Editor",
 			"url": "modules/types/edition/var_editor/"
 		}
 	],
 	"name": "Edition",
-	"folders": {}
+	"folders": []
 }

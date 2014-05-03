@@ -5,7 +5,7 @@
 			"url": "modules/types/display/2d_list/"
 		},
 		{
-			"moduleName": "Fast grid",
+			"moduleName": "Fast table",
 			"url": "modules/types/display/fasttable/"
 		},
 		{
@@ -32,11 +32,11 @@
 			"moduleName": "Mustache template",
 			"url": "modules/types/display/template/"
 		},
-                {
+		{
 			"moduleName": "Twig template",
 			"url": "modules/types/display/template-twig/"
 		}
 	],
 	"name": "Display",
-	"folders": {}
+	"folders": []
 }

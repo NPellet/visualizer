@@ -884,3 +884,24 @@ table.moduleInformation tr td:first-child {
 .ui-dialog, .ui-front {
     z-index: 10000 !important;
 }
+
+[data-tooltip]:before {
+	background: rgba(0,0,0,.8);
+	border-radius: 5px;
+	color: #fff;
+	content: attr(data-tooltip);
+	padding: 5px 15px;
+	position: absolute;
+	bottom: calc(100% + 5px);
+	display:block;
+	pointer-events:none;
+
+	opacity:0;
+	transition: none;
+}
+
+[data-tooltip]:hover:before {
+	opacity:1;
+	transition:opacity 0.4s ease-out;
+	transition-delay: 0.5s;
+}

@@ -40,7 +40,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
                         template: {
                             type: 'jscode',
                             title: 'Template',
-                            mode: 'html'
+                            mode: 'html',
+                            default: ''
                         }
 
                     }

@@ -1,4 +1,4 @@
-define([ 'lib/forms/form'], function( Form ) {
+define(['forms/form'], function( Form ) {
 
 	function makeOptions( cfg, form ) {
 

@@ -58,7 +58,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 		// List of all possible events
 		'onSearchReturn': {
 			label: 'On search complete',
-			refVariable: [ 'results', 'url' ]
+			refVariable: [ 'results', 'url' ],
+                        refAction: [ 'results' ]
 		}
 	};
 	
@@ -98,9 +99,22 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                                               title:'Query method',
                                               options: [
                                                   { key: 'GET', title: 'GET'},
-						{ key: 'POST', title: 'POST'}
+						{ key: 'POST', title: 'POST'},
+						{ key: 'PUT', title: 'PUT'},
+						{ key: 'DELETE', title: 'DELETE'},
+						{ key: 'HEAD', title: 'HEAD'}
                                               ],
                                               'default':'POST'
+                                            },
+                                            
+                                            dataType: {
+                                                type: "combo",
+                                                title: "Data type to send",
+                                                options: [
+                                                    {key: 'json', title: 'JSON'},
+                                                    {key: 'form', title: 'Form data'}
+                                                ],
+                                                'default': 'form'
                                             },
 
 						button: {
@@ -248,7 +262,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 		'onloadsearch': [ 'groups', 'group', 0, 'onloadsearch', 0, 0 ],
 		'resultfilter': [ 'groups', 'group', 0, 'resultfilter', 0 ],
 		'postvariables': [ 'sections', 'postvariables', 0, 'groups', 'postvariables', 0 ],
-                'headers': [ 'groups', 'headers', 0 ]
+                'headers': [ 'groups', 'headers', 0 ],
+                'dataType': [ 'groups', 'group', 0, 'dataType', 0 ]
 	};
 
 	controller.prototype.initimpl = function() { 
@@ -273,33 +288,14 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 	};
 		
 	controller.prototype.doSearch = function() {
-		/*	if(this.request)
-				this.request.abort();
-*/
+
 		var self = this,
 			urltemplate = new URITemplate(this.module.getConfiguration( 'url' )),
-			//reg,
 			toPost = this.module.getConfiguration( 'postvariables', [] ),
 			l = toPost.length,
 			i = 0,
 			data = {};
-                       // val, variable;
 
-
-		// Replace all search terms in the URL
-//		var reg = /\<([a-zA-Z0-9]+)\>/;
-//		while(val = reg.exec(url)) {
-//			url = url.replace('<' + val[1] + '>', (encodeURIComponent(this.searchTerms[val[1]] || '')));
-//		}
-//
-//		// Replace all variables in the URL
-//		var reg = /\<var:([a-zA-Z0-9]+)\>/;
-//		while(val = reg.exec(url)) {
-//			variable = API.getRepositoryData().get(val[1]) || [''];
-//
-//			variable = variable[1];
-//			url = url.replace('<var:' + val[1] + '>', encodeURIComponent(variable.get()));
-//		}
                 var varsin = this.module.vars_in();
 
                 for(var i = 0; i < varsin.length; i++) {
@@ -322,32 +318,41 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                     headers[header.name] = header.value;
                 }
                 
-		for(var i = 0; i < l; i++) {
-			var valueToPost = API.getVar(toPost[i].variable).get();
-			if (valueToPost) {
-				if ( valueToPost.getType() !== "number" && valueToPost.getType() !== "string" ) {
-					if (toPost[i].filter==="value") {
-						data[toPost[i].name]=valueToPost.get();
-					} else {
-						data[toPost[i].name] = JSON.stringify(valueToPost);
-					}
-				} else {
-					data[toPost[i].name]=valueToPost;
-				}
-			}
-		}
+                var options = {
+                    url: this.url,
+                    type: this.module.getConfiguration('method'),
+                    cache: false,
+                    headers: headers
+                };
+                
+                var dataType = this.module.getConfiguration( 'dataType' );
+                if(dataType === "form") {
+                    for(var i = 0; i < l; i++) {
+                            var valueToPost = API.getVar(toPost[i].variable).get();
+                            if (valueToPost) {
+                                    if ( valueToPost.getType() !== "number" && valueToPost.getType() !== "string" ) {
+                                            if (toPost[i].filter==="value") {
+                                                    data[toPost[i].name]=valueToPost.get();
+                                            } else {
+                                                    data[toPost[i].name] = JSON.stringify(valueToPost);
+                                            }
+                                    } else {
+                                            data[toPost[i].name]=valueToPost;
+                                    }
+                            }
+                    }
+                } else {
+                    data = JSON.stringify(API.getVar(toPost[0].variable).resurrect());
+                    options.contentType = "application/json; charset=utf-8";
+                }
+                
+                options.data = data;
 
 		if(this.request && this.request.abort) {
 			this.request.abort();
 		}
-
-                var method = this.module.getConfiguration('method');
-		if(method === 'GET') {
-			this.request = URL.get(this.url, 30, data, headers);	
-		} else {
-			this.request = URL.post(this.url, data);	
-		}
                 
+                this.request = $.ajax(options);
 
 		this.module.view.lock();
 		
@@ -357,37 +362,34 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 			if (self.module.resultfilter) {
 				data = self.module.resultfilter(data);
 			}
-
-			self.module.view.unlock();
-
+                        
 			if(typeof data === "object") {
 				data = DataObject.check(data, true);
 			}
-			//console.log(data);
+                        
 			self.onSearchDone(data);
-		});
+		}).fail(function(xhr){
+                    self.onSearchDone(new DataObject({
+                        type: "error",
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        responseText: xhr.responseText,
+                        responseJSON: xhr.responseJSON
+                    }));
+                }).always(function(){
+                    self.module.view.unlock();
+                });
 	};
 
 
 	controller.prototype.onSearchDone = function(elements) {
-		var self = this, actions;
-		self.result = elements;
-		self.module.model.data = elements;
-
-
-		if( ! ( actions = this.module.vars_out() ) ) {
-			return;
-		}
-
-		for( var i in actions ) {
-			if( actions[ i ].event === "onSearchReturn" ) {
-				if( actions[ i ].rel === "results" ) {
-					API.setVar( actions[i].name, elements, actions[i].jpath );
-				} if ( actions[ i ].rel === "url" ) {
-						API.setVar( actions[i].name, self.url);
-				}
-			}
-		}
+		this.result = elements;
+		this.module.model.data = elements;
+                
+                this.setVarFromEvent('onSearchReturn', elements, 'results');
+                this.setVarFromEvent('onSearchReturn', this.url, 'url');
+                
+                this.sendAction('results', elements, 'onSearchReturn');
 	};
 
  	return controller;

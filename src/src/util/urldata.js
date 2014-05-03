@@ -1,10 +1,11 @@
 
 define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
+	"use strict";
 
 	var pendings = {};
-	Debug.setDebugLevel(0);
+	
 	function doByUrl(def, url, headers) {
-		Debug.log('DataURL: Looking for ' + url + ' by AJAX');
+		Debug.debug('DataURL: Looking for ' + url + ' by AJAX');
 		// Nothing in the DB  -- OR -- force ajax => AJAX
 		var dataType = false;
 		if( url.indexOf('.json') > -1 ) {
@@ -19,7 +20,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 			headers: headers || {},
 			success: function(data) {
 
-				Debug.log('DataURL: Found ' + url + ' by AJAX');
+				Debug.info('DataURL: Found ' + url + ' by AJAX');
 
 				// We set 20 data in memory, 500 in local database
 				if(!LRU.exists('urlData')) {
@@ -30,12 +31,12 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 
 				delete pendings[url];
 			}
-		}).pipe(function(data) {
+		}).then(function(data) {
 
 			def.resolve(data);
 			
 		}, function() {
-			Debug.log('DataURL: Failing in retrieving ' + url + ' by AJAX.');
+			Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
 			return;
 		}));
 	}
@@ -43,34 +44,33 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 	function doLRUOrAjax(def, url, force, timeout, headers) {
 		// Check in the memory if the url exists
 
-
-		Debug.log('DataURL: Looking in LRU for ' + url + ' with timeout of ' + timeout + ' seconds');
+		Debug.debug('DataURL: Looking in LRU for ' + url + ' with timeout of ' + timeout + ' seconds');
 
 		return doLRU(def, url).pipe(function(data) {
 
-			Debug.log('DataURL: Found ' + url + ' in local DB. Timout: ' + data.timeout);
+			Debug.debug('DataURL: Found ' + url + ' in local DB. Timout: ' + data.timeout);
 
 			// If timeouted. If no timeout is defined, then the link is assumed permanent
 			if(timeout !== undefined && (Date.now() - data.timeout > timeout * 1000)) {
-				Debug.log('DataURL: URL is over timeout threshold. Looking by AJAX');
-				return doByUrl(def, url, headers ).pipe(function(data) { return data }, function() {
-					Debug.log('DataURL: Failed in retrieving URL by AJAX. Fallback to cached version');
+				Debug.debug('DataURL: URL is over timeout threshold. Looking by AJAX');
+				return doByUrl(def, url, headers ).pipe(function(data) { return data; }, function() {
+					Debug.debug('DataURL: Failed in retrieving URL by AJAX. Fallback to cached version');
 					def.resolve(data.data);
 				});
 			}
 
-			Debug.log('DataURL: URL is under timeout threshold. Return cached version');
+			Debug.info('DataURL: URL is under timeout threshold. Return cached version');
 			def.resolve(data.data || data); 
 			
 		}, function() {
 
-			Debug.log('DataURL: URL ' + url + ' not found in LRU. Look for AJAX');
+			Debug.debug('DataURL: URL ' + url + ' not found in LRU. Look for AJAX');
 			return doByUrl(def, url, headers );
 		});
 	}
 
 	function doLRU(def, url) {
-		Debug.log('DataURL: Looking into LRU for ' + url);
+		Debug.debug('DataURL: Looking into LRU for ' + url);
 		return LRU.get('urlData', url);
 	}
 
@@ -79,27 +79,26 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 		get: function(url, force, timeout, headers) {
 
 			var def = $.Deferred();
-			var value;
 
 			if( pendings[ url ] ) {
 				return pendings[ url ];
 			}
 
-			if(typeof force == "number") {
+			if(typeof force === "number") {
 				timeout = force;
 				force = false;
-			} else if(typeof timeout == "object") {
+			} else if(typeof timeout === "object") {
 			//	data = timeout;
 				timeout = 0;
 				force = false;
-			} else if(typeof force == "object") {
+			} else if(typeof force === "object") {
 			//	data = force;
 				force = false;
 			}
 
-			Debug.log('DataURL: getting ' + url + ' with force set to ' + force + ' and timeout to ' + timeout);
+			Debug.debug('DataURL: getting ' + url + ' with force set to ' + force + ' and timeout to ' + timeout);
 			// If we force to do ajax first. Fallback if we 
-			if( force ) {
+			if( force || timeout<0 ) {
 
 				doByUrl(def, url, headers)
 					.pipe(
@@ -111,9 +110,10 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 							});
 					});
 			}
-
 			// Standard: first LRU, then ajax
-			doLRUOrAjax(def, url, force, timeout, headers);
+			else {
+				doLRUOrAjax(def, url, force, timeout, headers);
+			}
 			return def;
 		},
 
@@ -122,7 +122,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 				url: url,
 				timeout: 120000,
 				data: data,
-				type: 'post',
+				type: 'post'
 			});
 		},
 
@@ -137,6 +137,6 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 		emptyAll: function() {
 			LRU.empty('urlData', true, true);
 		}
-	}
+	};
 });
 

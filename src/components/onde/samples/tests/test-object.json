@@ -1,0 +1,40 @@
+{
+    "type": "object",
+    "properties": {
+        "default": "object",
+        "basic": { "type": "object" },
+        "propertyTypes": {
+            "type": "object",
+            "properties": {
+                "string": "string",
+                "number": "number",
+                "integer": "integer",
+                "boolean": "boolean",
+                "array": "array",
+                "object": "object"
+            }
+        },
+        "simpleUsage": {
+            "type": "object",
+            "properties": {
+                "name": "string",
+                "description": "string",
+                "price": "number",
+                "availibility": { "type": "string", "enum": [ "in-stock", "out-of-stock" ] },
+                "keywords": { "type": "array", "items": "string" }
+            }
+        },
+        "objectOfSpecifiedAdditionalPropertyTypes": {
+            "type": "object",
+            "additionalProperties": ["number", "string"]
+        },
+        "objectOfString": {
+            "type": "object",
+            "additionalProperties": "string"
+        },
+        "additionalWithBareTypeList": {
+            "type": "object",
+            "additionalProperties": ["integer", "boolean"]
+        }
+    }
+}

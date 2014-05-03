@@ -15,7 +15,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/versioning'], 
                         }).on("paste",function(e){
                             e.preventDefault();
                             e.stopPropagation();
-                            self.open(e.originalEvent.clipboardData);
+                            self.module.controller.open(e.originalEvent.clipboardData);
                         });
                         var defaultMessage = this.module.getConfiguration( 'label' );
                         this.messages = {
@@ -71,49 +71,8 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/versioning'], 
 	 		dom.addEventListener('drop', function(e) {
 	 			e.stopPropagation();
 	 			e.preventDefault();
-	 			self.open(e.dataTransfer);
+	 			self.module.controller.open(e.dataTransfer);
 	 		});
-                        
-                        
-                        
-		},
-
-		open: function(data) {
-                    
-                    if(!data.items.length)
-                        return;
-                    
-                    var that = this;
-                    var item = data.items[0];
-                    
-                    if(item.kind==="file") {
-                        if( ! this.module.controller.leased ) {
-				this.module.controller.onDropped( item.getAsFile() );
-			}
-                    } else {
-                        item.getAsString(function(value){
-                            that.module.controller.treatString(value);
-                        });
-                    }
-
-			
-		},
-
-
-		blank: {
-
-		},
-
-		update: {
-
-		},
-
-		getDom: function() {
-			return this.dom;
-		},
-		
-		typeToScreen: {
-			
 		}
 	});
 

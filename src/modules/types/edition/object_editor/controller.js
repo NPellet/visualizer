@@ -87,6 +87,15 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             title: 'Store object in view',
                             options: {expand: 'Yes'}
                         },
+						output: {
+                            type: 'combo',
+                            title: 'Output result',
+                            options: [
+                                {title: 'Modified input object', key: 'modified'},
+                                {title: 'New object', key: 'new'}
+                            ],
+                            default: 'new'
+                        },
                         storedObject: {
                             type: 'jscode',
                             title: 'Object stored in view',
@@ -99,18 +108,29 @@ define(['modules/default/defaultcontroller'], function(Default) {
     };
 
     controller.prototype.configAliases = {
-        'editable': ['groups', 'group', 0, 'editable', 0],
-        'expanded': ['groups', 'group', 0, 'expanded', 0],
-        'storeObject': ['groups', 'group', 0, 'storeObject', 0],
-        'storedObject': ['groups', 'group', 0, 'storedObject', 0]
+        editable: ['groups', 'group', 0, 'editable', 0],
+        expanded: ['groups', 'group', 0, 'expanded', 0],
+        storeObject: ['groups', 'group', 0, 'storeObject', 0],
+        storedObject: ['groups', 'group', 0, 'storedObject', 0],
+		output: ['groups', 'group', 0, 'output', 0]
+		
     };
 
-    controller.prototype.editorChanged = function() {
-        if(this.module.view.storeObject[0]) {
-            this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(this.module.view._data);
+	controller.prototype.sendValue = function(newValue) {
+        if(this.module.view.storeObject) {
+            this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(newValue.resurrect());
         }
-        this.setVarFromEvent( 'onObjectChange', DataObject.check(this.module.view._data, true) );
-    };
-
+		var outputType = this.module.getConfiguration('output');
+        if(outputType==='new')
+            this.setVarFromEvent('onObjectChange', newValue.duplicate());
+        else {
+			var input = this.module.view.inputData;
+			if(input) {
+				input.mergeWith(newValue, this.module.getId());
+				this.setVarFromEvent('onObjectChange', input);
+			}
+		}
+	};
+	
     return controller;
 });

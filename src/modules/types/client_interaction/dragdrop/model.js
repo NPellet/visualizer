@@ -3,7 +3,21 @@ define(['modules/default/defaultmodel','src/util/datatraversing'], function(Defa
 	function model() {
             this.tmpVars = new DataObject();
         };
+        
+        var standardFile = new DataObject({
+            filename: "",
+            mimetype: "",
+            content: ""
+        });
+        
+        var standardArray = new DataArray([standardFile]);
+        
 	model.prototype = $.extend(true, {}, Default, {
+            
+            init: function() {
+                this.tmpVars = new DataObject();
+                this.tmpVarsArray = new DataObject();
+            },
 
 		getValue: function() {
 			return this.dataValue;
@@ -13,19 +27,30 @@ define(['modules/default/defaultmodel','src/util/datatraversing'], function(Defa
 		getjPath: function(rel, accepts) {
                     var jpaths = [];
                     
-                    // Populate tmpVars with empty object so the user can set a variable out even if no file was dropped
-                    var definedDrops = (this.module.getConfiguration("vars") || []).slice();
-                    var definedString = this.module.getConfiguration("string");
-                    if(definedString)
-                        definedDrops.push(definedString);
-                    
-                    for(var i = 0; i < definedDrops.length; i++) {
-                        var def = definedDrops[i];
-                        if(!this.tmpVars.hasOwnProperty(def.variable)) {
-                            this.tmpVars[def.variable] = new DataObject();
+                    if(rel==='data' || rel==='dataarray') {
+                        // Populate tmpVars with empty object so the user can set a variable out even if no file was dropped
+                        var definedDrops = (this.module.getConfiguration("vars") || []).slice();
+                        var definedString = this.module.getConfiguration("string");
+                        if(definedString)
+                            definedDrops.push(definedString);
+
+                        for(var i = 0; i < definedDrops.length; i++) {
+                            var def = definedDrops[i];
+                            if(!def.variable)
+                                continue;
+                            if(rel==='data' && !this.tmpVars.hasOwnProperty(def.variable)) {
+                                this.tmpVars[def.variable] = standardFile;
+                            }
+                            else if(rel==='dataarray' && !this.tmpVarsArray.hasOwnProperty(def.variable)) {
+                                this.tmpVarsArray[def.variable] = standardArray;
+                            }
                         }
+                        if(rel==='data')
+                            Traversing.getJPathsFromElement(this.tmpVars, jpaths);
+                        else if(rel ==='dataarray')
+                            Traversing.getJPathsFromElement(this.tmpVarsArray, jpaths);
                     }
-                    return Traversing.getJPathsFromElement(this.tmpVars, jpaths), jpaths;
+                    return jpaths;
 		}
 	});
 

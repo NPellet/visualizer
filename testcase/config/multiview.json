@@ -1,7 +1,7 @@
 {
-    	"modules": [
-		"modules/types/folder.json"
-	],
+            "modules": {
+            "folders":["modules/types"]
+        },
     "header": {
         "height": "30px",
         "elements":

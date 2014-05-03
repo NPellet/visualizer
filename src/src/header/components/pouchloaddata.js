@@ -16,7 +16,11 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
                         var text = $("#"+id).val();
                         text = text.replace(/[^a-zA-Z0-9-_]*/g,"");
                         db.get(text,function(err,data){
-                            var datas = new DataObject(data.data,true);
+                            var datas;
+                            if(err)
+                                datas = new DataObject();
+                            else
+                                datas = new DataObject(data.data,true);
                             Versioning.setDataJSON( datas );
                         });
                         $(this).dialog("close");

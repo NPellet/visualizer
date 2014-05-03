@@ -467,7 +467,9 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 					$(contextDom).append( $li );
 
 					$li.bind( 'click', function( event ) {
-						newModule( decodeURIComponent( $( event.target.parentNode ).attr( 'data-url' ) ) );
+						var url = $( event.target.parentNode ).attr( 'data-url' );
+						if(url)
+							newModule( decodeURIComponent( url ) );
 					});
 				});
 			}
