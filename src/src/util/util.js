@@ -7,6 +7,10 @@ define(['src/util/api'], function(API) {
 
 	function makejPathFunction( jpath ) {
 
+		if( ! jpath ) {
+			return function() {};
+		}
+
 		var jpaths2 = jpath.replace(/^element\./, ''),
 			splitted = jpaths2.split('.'),
 			i = 0,
@@ -30,6 +34,50 @@ define(['src/util/api'], function(API) {
 		eval( 'var functionEvaled = function( el ) { if (' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1]$2") + '; else return "" }');	
 		return functionEvaled;
 	}
+
+	function getCSS(ruleName, deleteFlag) {
+
+		ruleName = ruleName.toLowerCase();
+
+		if ( ! document.styleSheets) {
+			return 
+		}
+
+		var i = 0, stylesheet, ii, cssRule;
+
+		for ( ; i < document.styleSheets.length; i ++ ) {
+     		styleSheet = document.styleSheets[ i ];
+     		ii = 0;         
+     		cssRule = false;
+  		   	do {                                             // For each rule in stylesheet
+            	cssRule = styleSheet.cssRules ? styleSheet.cssRules[ ii ] : styleSheet.rules[ ii ];
+            	if( ! cssRule || ! cssRule.selectorText ) {
+            		ii ++;
+            		continue;
+            	}
+
+                if( cssRule.selectorText.toLowerCase() == ruleName) {
+                  if( deleteFlag ) {
+                     if(styleSheet.cssRules) {       
+                        styleSheet.deleteRule(ii);      
+                     } else {                         
+                        styleSheet.removeRule(ii);       
+                     }
+                     return true;
+                                      
+                  } else {
+                     return cssRule;
+                  }           
+               }              
+                              
+	           ii++;  
+
+	        } while (cssRule);
+  		} 
+
+  		return false;
+  	}
+
 
 	return {
 
@@ -202,23 +250,55 @@ define(['src/util/api'], function(API) {
 			stack[ jpath ] = makejPathFunction( jpath )
 		},
                 
-                getWebsafeFonts: function() {
-                    return [
-                        {title: "Arial", key: "Arial"},
-                        {title: "Arial Black", key: "'Arial Black'"},
-                        {title: "Comic Sans MS", key: "'Comic Sans MS'"},
-                        {title: "Courier", key: "Courier"},
-                        {title: "Courier new", key: "'Courier New'"},
-                        {title: "Georgia", key: "Georgia"},
-                        {title: "Helvetica", key: "Helvetica"},
-                        {title: "Impact", key: "Impact"},
-                        {title: "Palatino", key: "Palatino"},
-                        {title: "Times new roman", key: "'Times New Roman'"},
-                        {title: "Trebuchet MS", key: "'Trebuchet MS'"},
-                        {title: "Verdana", key: "Verdana"}
-                    ];
-                }
+        getWebsafeFonts: function() {
+            return [
+                {title: "Arial", key: "Arial"},
+                {title: "Arial Black", key: "'Arial Black'"},
+                {title: "Comic Sans MS", key: "'Comic Sans MS'"},
+                {title: "Courier", key: "Courier"},
+                {title: "Courier new", key: "'Courier New'"},
+                {title: "Georgia", key: "Georgia"},
+                {title: "Helvetica", key: "Helvetica"},
+                {title: "Impact", key: "Impact"},
+                {title: "Palatino", key: "Palatino"},
+                {title: "Times new roman", key: "'Times New Roman'"},
+                {title: "Trebuchet MS", key: "'Trebuchet MS'"},
+                {title: "Verdana", key: "Verdana"}
+            ];
+        },
+
+        // CSS rules
+        // Modified version
+        // See http://www.hunlock.com/blogs/Totally_Pwn_CSS_with_Javascript
+        // for original source
 
 
-	}
+        getCSS: getCSS,
+
+  		removeCSS: function(ruleName) {
+   			return getCSSRule( ruleName, true );
+		},                                                   
+
+		addCSS: function(ruleName) {
+
+   			if( ! document.styleSheets) {
+   				return;
+   			}
+
+   			var rule;
+      		if( ! ( rule = getCSS( ruleName ) ) )  {
+		        
+		        if (document.styleSheets[0].addRule) { 
+		           document.styleSheets[0].addRule(ruleName, null,0);
+		        } else {
+		           document.styleSheets[0].insertRule(ruleName+' { }', 0);
+		        }
+
+		        return getCSS(ruleName);
+		    }
+
+		    return rule;
+        }
+   }
 });
+	

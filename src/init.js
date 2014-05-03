@@ -6,7 +6,7 @@ requirejs.config({
 		"fancytree": "./components/fancytree/src/jquery.fancytree",
 		"jqgrid": "./components/jqgrid_edit/js/jquery.jqGrid",
 		"jquery": "./components/jquery/jquery.min",
-		"jqueryui": "./components/jquery-ui/ui/minified/jquery-ui.min",
+		"jqueryui": "./components/jquery-ui/ui/jquery-ui",
 		"ckeditor": "./components/ckeditor/ckeditor",
 		"threejs": "./components/three.js/build/three.min",
 		"forms": "./lib/forms",

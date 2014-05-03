@@ -967,7 +967,8 @@ define([
 				cfgEl = cfgEl[ alias[ i ] ];
 				if( ! cfgEl ) {
 
-					return 'Error in configuration file - Alias is not a correct jPath';
+					console.warn('Error in configuration file - Alias is not a correct jPath');
+					return false;
 				}
 
 			}
