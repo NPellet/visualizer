@@ -1,19 +1,20 @@
 requirejs.config({
 	paths: {
 
-		"ace": "./components/ace/lib/ace",
-		"d3": "./components/d3/d3.min",
-		"fancytree": "./components/fancytree/src/jquery.fancytree",
-		"jqgrid": "./components/jqgrid_edit/js/jquery.jqGrid",
-		"jquery": "./components/jquery/jquery.min",
-		"jqueryui": "./components/jquery-ui/ui/jquery-ui",
-		"ckeditor": "./components/ckeditor/ckeditor",
-		"threejs": "./components/three.js/build/three.min",
-		"forms": "./lib/forms",
-		"plot": "./lib/plot/plot",
-		"ChemDoodle": "./lib/chemdoodle/ChemDoodleWeb-unpacked",
-		"pouchdb": "./components/pouchdb/dist/pouchdb-nightly.min",
-		"uri":"components/uri.js/src"
+
+		ace: "components/ace/lib/ace",
+		d3: "components/d3/d3.min",
+		fancytree: "components/fancytree/src/jquery.fancytree",
+		jqgrid: "components/jqgrid_edit/js/jquery.jqGrid",
+		jquery: "components/jquery/jquery.min",
+		jqueryui: "components/jquery-ui/ui/minified/jquery-ui.min",
+		ckeditor: "components/ckeditor/ckeditor",
+		threejs: "components/three.js/build/three.min",
+		forms: "lib/forms",
+		plot: "lib/plot/plot",
+		ChemDoodle: "lib/chemdoodle/ChemDoodleWeb-unpacked",
+		pouchdb: "components/pouchdb/dist/pouchdb-nightly.min",
+		uri: "components/uri.js/src"
 
 	},
 	shim: {
