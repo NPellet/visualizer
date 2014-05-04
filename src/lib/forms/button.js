@@ -1,4 +1,4 @@
-define(['jquery', 'forms/title'], function($, title) {
+define(['require', 'jquery', 'forms/title'], function(require, $, title) {
 
 	var id = 0;
 	var stack = {};
@@ -49,14 +49,20 @@ define(['jquery', 'forms/title'], function($, title) {
 			this.color = color;
 			this.applyStyle();
 		},
+		setValue: function( val ) {
+			this.value = val;
+		},
+		setIcon: function(icon) {
+			this.icon = icon;
+		},
 
 		render: function() {
 			var html = "";
 			html += '<div class="form-button';
 			html += '" data-id="';
 			html += this.id;
-			html += '" id="button-' + this.id + '"><span>';
-			html += '</span></div>';
+			html += '" id="button-' + this.id + '"><span /><span />';
+			html += '</div>';
 			
 			this.dom = $(html);
 
@@ -88,7 +94,12 @@ define(['jquery', 'forms/title'], function($, title) {
 				}
 			}
 
-			this.dom.children().html(this.title.getLabel());
+			this.dom.children().eq(1).html(this.title.getLabel());
+
+			if( this.icon ) {
+				this.dom.children().eq(0).html('<img src="' + require.toUrl('./images/' + this.icon + '.png') + '" />');
+			}
+				
 		},
 
 		doClick: function(event, item) {
