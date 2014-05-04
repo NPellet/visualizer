@@ -165,7 +165,7 @@ define(['jquery'], function($) {
 			this.validation.value = value;
 			this.backupValidation();
 			this.validation.error = undefined;
-			this.validate();
+			this.validate( value );
 
 			if( ! this.validation.error ) {
 				this.field.validate( this, value );

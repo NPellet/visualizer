@@ -199,6 +199,12 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 			}, false);
 
 
+			dom.get(0).addEventListener('submit', function( e ) {
+			
+				self.formSubmitted( e );
+			}, false);
+
+
 
 			dom.get(0).addEventListener('keydown', function( event ) {
 				
@@ -410,13 +416,14 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 			}
 		},
 
-		addButton: function( label, options, callback ) {
+		addButton: function( label, options, callback, onSubmitClick ) {
 
 			var self = this;
 			require( [ 'forms/button' ], function( Button ) {
 
 				var btn = new Button( label, callback, options );
 				self.buttons.push( btn );
+				btn.clickOnSubmit = onSubmitClick;
 				self.onReady( ).done( function( ) {
 					self.buttonsDom.append( btn.render( ) );	
 				});
@@ -426,6 +433,16 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 		throwError: function(error) {
 			console.error(error);
 			return false;
+		},
+
+		formSubmitted: function( e ) {
+
+			e.preventDefault();
+			for( var i = 0, l = this.buttons.length ; i < l ; i ++ ) {
+				if( this.buttons[ i ].clickOnSubmit ) {
+					this.buttons[ i ].doClick();
+				}
+			}
 		}
 
 	});
