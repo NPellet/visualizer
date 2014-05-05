@@ -4,6 +4,10 @@
 			"moduleName": "Two dimensional list",
 			"url": "modules/types/display/2d_list/"
 		},
+                {
+			"moduleName": "Fast two dimensional list",
+			"url": "modules/types/display/2d_list_fast/"
+		},
 		{
 			"moduleName": "Fast table",
 			"url": "modules/types/display/fasttable/"
