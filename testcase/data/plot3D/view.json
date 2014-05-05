@@ -18,6 +18,11 @@
 				"groups": {
 					"group": [
 						{
+							"optimize": [
+								[
+									"show"
+								]
+							],
 							"tooltip": [
 								[]
 							],
@@ -44,6 +49,15 @@
 							],
 							"secondaryGrids": [
 								2
+							],
+							"gridOriginX": [
+								""
+							],
+							"gridOriginY": [
+								""
+							],
+							"gridOriginZ": [
+								""
 							],
 							"projection": [
 								[
@@ -80,6 +94,22 @@
 							],
 							"maxZ": [
 								""
+							],
+							"backgroundColor": [
+								[
+									230,
+									230,
+									230,
+									1
+								]
+							],
+							"annotationColor": [
+								[
+									50,
+									50,
+									50,
+									1
+								]
 							]
 						}
 					]

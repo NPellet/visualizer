@@ -114,6 +114,13 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 					},
           
 					fields: {
+            
+            optimize: {
+                type: 'checkbox',
+                title: 'Optimize',
+                options: {show: 'Yes'}
+            },
+            
             tooltip: {
                 type: 'checkbox',
                 title: 'Show tooltip',
@@ -287,7 +294,8 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
     'annotationColor': ['groups', 'group', 0, 'annotationColor', 0],
     'gridOriginX': ['groups', 'group', 0, 'gridOriginX', 0],
     'gridOriginY': ['groups', 'group', 0, 'gridOriginY', 0],
-    'gridOriginZ': ['groups', 'group', 0, 'gridOriginZ', 0]
+    'gridOriginZ': ['groups', 'group', 0, 'gridOriginZ', 0],
+    'optimize': ['groups', 'group', 0, 'optimize', 0]
 	};
 
 
