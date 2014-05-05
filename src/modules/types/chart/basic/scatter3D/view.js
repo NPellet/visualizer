@@ -7,7 +7,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     return result;
   }
   
-  function generateRandomColors(n, min, max) {
+  function generateRandomColors(n) {
     var result = [];
     var letters = '0123456789ABCDEF'.split('');
     for(var i=0; i<n; i++) {
@@ -233,7 +233,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           currentPoint = newPoint;
         }
         else {
-          if(currentPoint) {
+          if(currentPoint !== null) {
             // unhighlight currentPoint
             API.highlightId(self._data._highlight[currentPoint], 0);
             hidePointCoordinates();
@@ -624,11 +624,13 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 
 			var values_size = attributes.size.value;
 			var values_color = attributes.ca.value;
-
+      var color = self._data.color || [];
+      var size  = self._data.size || [];
 			for( var v = 0; v < vertices.length; v ++ ) {
-				values_size[ v ] = DEFAULT_POINT_RADIUS * NORM_CONSTANT * self.dom.height()/67*150;
-				values_color[ v ] = new THREE.Color( 0xffffff );
-        values_color[ v ].setHSL( 0.5 + 0.2 * ( v / vc1 ), 1, 0.5 );
+        console.log(size[v], 'size');
+				values_size[ v ] = (size[v] || DEFAULT_POINT_RADIUS) * NORM_CONSTANT * self.dom.height() * 2.2388;
+				values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+        // values_color[ v ].setHSL( 0.5 + 0.2 * ( v / vc1 ), 1, 0.5 );
         // values_color[v].setRGB(1,0,0);
 			}
 			self.scene.add(object);
@@ -1653,9 +1655,9 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
       
       // generate random x,y z
-      self._data.x = generateRandomArray(100000,-0.005,0.005);
-      self._data.y = generateRandomArray(100000,-5,5);
-      self._data.z = generateRandomArray(100000,-5,5);
+      // self._data.x = generateRandomArray(100000,-0.005,0.005);
+      // self._data.y = generateRandomArray(100000,-5,5);
+      // self._data.z = generateRandomArray(100000,-5,5);
       console.log('Converted data: ', self._data);
 		},
 
