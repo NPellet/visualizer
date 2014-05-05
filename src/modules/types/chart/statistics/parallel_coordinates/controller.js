@@ -30,14 +30,18 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
      Configuration of the input/output references of the module
      */
     controller.prototype.references = {
-        "value": {
+        value: {
             type: 'array',
             label: 'An array of data points'
         },
-        "columns": {
+        columns: {
             type: 'array',
             label: 'Array of column descriptions'
-        }
+        },
+		flagResult: {
+			type: 'array',
+			label: 'Array of boolean values'
+		}
     };
 
 
@@ -47,7 +51,7 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
     controller.prototype.events = {
         onBrushSelection: {
             label: 'A selection has been made',
-            refVariable: ['value']
+            refVariable: ['value','flagResult']
         }
     };
 
@@ -103,16 +107,25 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
         'colorjpath': ['groups','group',0,'colJPath',0]
     };
     
-    controller.prototype.onBrushSelection = function(value, convert) {
+    controller.prototype.onBrushSelection = function(value) {
         var toSend = value;
+		
+		var original = this.module.view._value;
+		var flags = Array(original.length);
+		
         if(value[0] && value[0].hasOwnProperty('__id')) {
             var original = this.module.view._value;
             toSend = new Array(value.length);
+			
+			var index;
             for(var i = 0; i < value.length; i++) {
-                toSend[i] = original[value[i].__id];
+				index = value[i].__id;
+                toSend[i] = original[index];
+				flags[index] = true;
             }
         }
         this.setVarFromEvent("onBrushSelection", new DataArray(toSend), "value");
+		this.setVarFromEvent("onBrushSelection", new DataArray(flags), "flagResult");
     };
 
 
