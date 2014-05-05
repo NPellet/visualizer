@@ -31,13 +31,18 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 		Configuration of the input/output references of the module
 	*/
 	controller.prototype.references = {
-		'array': {
+		array: {
 			label: 'An input array', // The input array is never modified
 			type: 'array'
 		},
 
-		'filteredArray': {
+		filteredArray: {
 			label: 'Filtered array',
+			type: 'array'
+		},
+		
+		flagArray: {
+			label: 'Array of booleans',
 			type: 'array'
 		}
 	};
@@ -51,8 +56,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 		// List of all possible events
 		'onSearchDone': {
 			label: 'When a search is performed',
-			refVariable: [ 'filteredArray' ],
-			refAction: [ 'filteredArray' ]
+			refVariable: [ 'filteredArray', 'flagArray' ],
+			refAction: [ 'filteredArray', 'flagArray' ]
 		}
 	};
 	
@@ -119,11 +124,17 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 	 *
 	 * @param {Array} arr The ouput array
 	 */
-	controller.prototype.searchDone = function( arr ) {
+	controller.prototype.searchDone = function( arr, flags ) {
 
 		// Sets the variable corresponding to the onSearchDone event
-		this.setVarFromEvent( 'onSearchDone', arr, 'filteredArray' );
-                this.sendAction('filteredArray', arr, 'onSearchDone');
+
+			this.setVarFromEvent( 'onSearchDone', flags, 'flagArray' );
+			this.sendAction('flagArray', flags, 'onSearchDone');
+
+			this.setVarFromEvent( 'onSearchDone', arr, 'filteredArray' );
+			this.sendAction('filteredArray', arr, 'onSearchDone');
+
+
 	},
 
 		

@@ -118,32 +118,34 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 		search: function() {
 
-                    if(this.searchEnabled) {
-			var self = this,
-				cfg = this.cfgValue,
-				//val = this.module.getDataFromRel( 'array' ),
-				i,
-				l,
-				target = new DataArray();
+			if (this.searchEnabled) {
+						var cfg = this.cfgValue,
+						i,
+						l,
+						target = new DataArray(),
+						flags = new DataArray();
 
-                                var keys = Object.keys(this.variables), val;
-			if( keys.length===0 || Object.keys(cfg).length===0 ) {
-				return;
-			}
-                        
-                        var max = this.maxhits, count = 0;
-                        for(var key in keys) {
-                            val = this.variables[keys[key]];
-                            l = val.length;
-                            for( i=0 ; (i < l)&&(count<max) ; i ++ ) {
-				if( this.searchElement( cfg, val[ i ].get() ) ) {
-					target[count++] = val[ i ] ;
+				var keys = Object.keys(this.variables), val;
+				if (keys.length === 0 || Object.keys(cfg).length === 0) {
+					return;
 				}
-                            }
-                        }
 
-			this.module.controller.searchDone( target );	
-                    }
+				var max = this.maxhits, count = 0;
+				for (var key in keys) {
+					val = this.variables[keys[key]];
+					l = val.length;
+					for (i = 0; (i < l); i++) {
+						if (this.searchElement(cfg, val[ i ].get())) {
+							if(count < max) target[count++] = val[ i ];
+							flags[i] = true;
+						} else {
+							flags[i] = false;
+						}
+					}
+				}
+
+				this.module.controller.searchDone(target, flags);
+			}
 		},
 
 		_makeOp: function( op, val, options ) {
