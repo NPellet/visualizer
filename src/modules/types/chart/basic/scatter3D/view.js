@@ -83,12 +83,14 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
   var DEFAULT_BACKGROUND_COLOR = '#eeeeee';
   var DEFAULT_PROJECTION_COLOR = '#888888';
   var DEFAULT_POINT_COLOR = '#0000ff';
-  var DEFAULT_POINT_RADIUS = 0.03;
+  var DEFAULT_POINT_RADIUS = 0.01;
   var DEFAULT_POINT_GEOMETRY = "sphere";
   var DEFAULT_POINT_APPEARANCE = "none";
   var DEFAULT_TEXT_COLOR = "rgba(0,0,0,1)";
   var HIGHLIGHT_OPACITY = 0.6;
   var DELTA = NORM_CONSTANT / 1000;
+  var CAMERA_NEAR = 120;
+  var CAMERA_FAR = 10000;
   
   $.fn.listHandlers = function(events, outputFunction) {
     return this.each(function(i){
@@ -172,20 +174,22 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
             count++;
             intersects.push({
               index: i,
-              distance: ray.distanceToPoint(self.mathPoints[i].center)
+              distance: self.camera.position.distanceTo(self.mathPoints[i].center)
             });
           }
         }
         intersects.sort(descSort);
-        console.log('count', count);
-        return _.map(intersects, function(val){
-          return val.index
+        intersects = _.filter(intersects, function(val){
+          return val.distance > CAMERA_NEAR;
+        })
+        intersects = _.map(intersects, function(val){
+          return val.index;
         });
+        return intersects;
       }
       
       function showPointCoordinates(index) {
         if(self._configCheckBox('displayPointCoordinates', 'onhover')) {
-          console.log('Show point coordinates');
           var arr = [];
           arr.push('X: ' + parseFloat(self._data.x[index].toPrecision(3)).toExponential());
           arr.push('Y: ' + parseFloat(self._data.y[index].toPrecision(3)).toExponential());
@@ -214,7 +218,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         if(intersects.length > 0){
           var index = intersects[0];
           var newPoint = index;
-          var pointChanged = newPoint === currentPoint;
+          var pointChanged = (newPoint !== currentPoint);
           if( currentPoint && pointChanged) {
            // rehighlight currentPoint -> newPoint
            API.highlightId(self._data._highlight[currentPoint], 0);
@@ -224,7 +228,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           else if(pointChanged){
             // highlight newPoint
             API.highlightId(self._data._highlight[newPoint], 1);
-            
             showPointCoordinates(index);
           }
           currentPoint = newPoint;
@@ -233,7 +236,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           if(currentPoint) {
             // unhighlight currentPoint
             API.highlightId(self._data._highlight[currentPoint], 0);
-            
             hidePointCoordinates();
           }
           currentPoint = null;
@@ -242,7 +244,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
       
       function showTooltip() {
-        console.log('Show tooltip');
         if(pointedObjects.length === 0) {
           return;
         }
@@ -259,9 +260,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         
         var info = data.info[pointedObjects[0]];
         var label = info.getChildSync(jpath);
-        console.log('jpath is: ', jpath);
-        console.log('info is: ', info);
-        console.log('selected text is: ', label.value);
         $('#scatter3D_tooltip').css('left', lastMouseMoveEvent.offsetX - TOOLTIP_WIDTH);
         $('#scatter3D_tooltip').css('top', lastMouseMoveEvent.offsetY);
         $('#scatter3D_tooltip').css('width', TOOLTIP_WIDTH);
@@ -271,11 +269,9 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       
       function hideTooltip() {
         $('#scatter3D_tooltip').hide();
-        console.log('hide tooltip');
       }
       
       function showProjection() {
-        console.log('Show projection');
         
         if(pointedObjects.length === 0) {
           return;
@@ -329,7 +325,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
       
       function hideProjection() {
-        console.log('hide projections');
         for(var i=0; i<projections.length; i++) {
           self.scene.remove(projections[i]);
         }
@@ -338,7 +333,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
 
 			function init() {
-        self.camera = self.camera || new THREE.PerspectiveCamera( 60, self.dom.width() / self.dom.height(), 1, 10000 );
+        self.camera = self.camera || new THREE.PerspectiveCamera( 60, self.dom.width() / self.dom.height(), CAMERA_NEAR, CAMERA_FAR );
         if(self.controls) {
           // self.controls.reset();
         }
@@ -593,7 +588,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 			uniforms = {
 				amplitude: { type: "f", value: 1 },
 				color:     { type: "c", value: new THREE.Color( 0xffffff ) },
-				texture:   { type: "t", value: THREE.ImageUtils.loadTexture( "/test/threejs/examples/textures/sprites/Tetrahedron.png" ) },
+				texture:   { type: "t", value: THREE.ImageUtils.loadTexture( "/test/threejs/examples/textures/sprites/ball.png" ) },
 			};
 
 			//uniforms.texture.value.wrapS = uniforms.texture.value.wrapT = THREE.RepeatWrapping;
@@ -602,9 +597,9 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 
 				uniforms: 		uniforms,
 				attributes:     attributes,
-				vertexShader:   "			attribute float size;			attribute vec4 ca;			varying vec4 vColor;			void main() {				vColor = ca;				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );				gl_PointSize = size * ( 150.0 / length( mvPosition.xyz ) );				gl_Position = projectionMatrix * mvPosition;			}",
+				vertexShader:   "			attribute float size;			attribute vec4 ca;			varying vec4 vColor;			void main() {				vColor = ca;				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );				gl_PointSize = size * ( 1.0 / length( mvPosition.xyz ) );				gl_Position = projectionMatrix * mvPosition;			}",
 				fragmentShader: "uniform vec3 color;			uniform sampler2D texture;			varying vec4 vColor;			void main() {				vec4 outColor = texture2D( texture, gl_PointCoord );				if ( outColor.a < 0.5 ) discard;				gl_FragColor = outColor * vec4( color * vColor.xyz, 1.0 );				float depth = gl_FragCoord.z / gl_FragCoord.w;				const vec3 fogColor = vec3( 0.0 );				float fogFactor = smoothstep( 0.0, 10000.0, depth );				gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );			}",
-
+        transparent: true
 			});
 
 
@@ -631,9 +626,10 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 			var values_color = attributes.ca.value;
 
 			for( var v = 0; v < vertices.length; v ++ ) {
-				values_size[ v ] = 0.03 * NORM_CONSTANT * 7.8;
+				values_size[ v ] = DEFAULT_POINT_RADIUS * NORM_CONSTANT * self.dom.height()/67*150;
 				values_color[ v ] = new THREE.Color( 0xffffff );
-				values_color[ v ].setHSL( 0.5 + 0.2 * ( v / vc1 ), 1, 0.5 );
+        values_color[ v ].setHSL( 0.5 + 0.2 * ( v / vc1 ), 1, 0.5 );
+        // values_color[v].setRGB(1,0,0);
 			}
 			self.scene.add(object);
     },
@@ -1058,7 +1054,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     },
     
     _drawTickLabels: function() {
-      console.log("Draw labels");
       var self = this;
       
       self._reinitObject3DArray('tickLabels');
@@ -1094,7 +1089,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     },
     
     _drawAxisLabels: function() {
-      console.log("Draw labels");
       var self = this;
       
       self._reinitObject3DArray('axisLabels');
@@ -1569,9 +1563,9 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         }
         
         // Highlight radius
-        var radius = DEFAULT_POINT_RADIUS * 1.5;
+        var radius = DEFAULT_POINT_RADIUS * 1.0;
         if(self._data.size && self._data.size[index]) {
-          radius = self._data.size[index] * 1.5;
+          radius = self._data.size[index] * 1.0;
         }
         
         var geometry = DEFAULT_POINT_GEOMETRY;
@@ -1659,9 +1653,9 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
       
       // generate random x,y z
-      self._data.x = generateRandomArray(10,-0.005,0.005);
-      self._data.y = generateRandomArray(10,-5,5);
-      self._data.z = generateRandomArray(10,-5,5);
+      self._data.x = generateRandomArray(100000,-0.005,0.005);
+      self._data.y = generateRandomArray(100000,-5,5);
+      self._data.z = generateRandomArray(100000,-5,5);
       console.log('Converted data: ', self._data);
 		},
 

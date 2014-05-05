@@ -38,7 +38,6 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 	};
 	
 	controller.prototype.onHover = function(elements, ref) {
-    console.log(elements);
 		if( ! elements ) {
 			return;
 		}
