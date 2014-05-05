@@ -313,6 +313,16 @@ module.exports = function(grunt) {
       options = {
         listeners: {
           file: function (root, fileStats, next) {
+            function findFormIcon(regexp) {
+              var m = regexp.exec(content);
+              while (m != null) {
+                var fn = 'build/lib/forms/images/'+m[1]+'.png';
+                if(fs.existsSync(fn)) {
+                  whiteset[fn] = '';
+                }
+                m = iconreg.exec(content);
+              }
+            }
             var expressions;
             expressions = [new RegExp(/\.jpg$/), new RegExp(/\.png$/), new RegExp(/\.jpeg$/), new RegExp(/\.gif$/)];
             if(_.any(expressions, function(exp){
@@ -331,14 +341,9 @@ module.exports = function(grunt) {
               // Search for icons specified using the forms library
               if(fileStats.name.match(new RegExp(/\.js$/))) {
                 var iconreg = RegExp(/icon:\s*['"]([a-zA-Z_\-]+)['"]/g);
-                var m = iconreg.exec(content);
-                while (m != null) {
-                  var fn = 'build/lib/forms/images/'+m[1]+'.png';
-                  if(fs.existsSync(fn)) {
-                    whiteset[fn] = '';
-                  }
-                  m = iconreg.exec(content);
-                }
+                findFormIcon(iconreg);
+                iconreg = RegExp(/setIcon\(['"]([a-zA-Z_\-]+)['"]/g);
+                findFormIcon(iconreg);
               }
               
               // Search for images specified in .js, .css and .html files
