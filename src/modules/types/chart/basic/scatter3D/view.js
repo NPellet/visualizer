@@ -7,6 +7,15 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     return result;
   }
   
+  function generateRandomFromArray(arr, n) {
+    var x = generateRandomArray(n, 0, arr.length-0.001);
+    x = x.map(function(a) {
+      return arr[Math.floor(a)];
+    }); 
+    return x;
+  }
+  
+  
   function generateRandomColors(n) {
     var result = [];
     var letters = '0123456789ABCDEF'.split('');
@@ -83,7 +92,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
   var DEFAULT_BACKGROUND_COLOR = '#eeeeee';
   var DEFAULT_PROJECTION_COLOR = '#888888';
   var DEFAULT_POINT_COLOR = '#0000ff';
-  var DEFAULT_POINT_RADIUS = 0.01;
+  var DEFAULT_POINT_RADIUS = 0.03;
   var DEFAULT_POINT_GEOMETRY = "sphere";
   var DEFAULT_POINT_APPEARANCE = "none";
   var DEFAULT_TEXT_COLOR = "rgba(0,0,0,1)";
@@ -428,7 +437,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 			}
 
 			function render() {
-				self.renderer.render( self.scene, self.camera );
+				self._render();
         if(self.headlight) {
          self.headlight.position.x = self.camera.position.x +200;
          self.headlight.position.y = self.camera.position.y +200;
@@ -444,7 +453,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     
     _drawGraph: function() {
       var self = this;
-      console.log('Plot Graph', new Date().getTime());
+      var tstart = new Date().getTime();
       // Remove all objects
       _.keys(self.scene.children).forEach(function(key){
         self.scene.remove(self.scene.children[key]);
@@ -525,8 +534,8 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       self._drawTicks();
       self._drawTickLabels(); 
       self._drawAxisLabels();
-      self.renderer.render(self.scene, self.camera);
-      console.log('end plot points', new Date().getTime());
+      self._render()
+      console.log('end plot points', new Date().getTime()-tstart);
     },
     
     _drawPoints: function(options) {
@@ -627,9 +636,10 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       var color = self._data.color || [];
       var size  = self._data.size || [];
 			for( var v = 0; v < vertices.length; v ++ ) {
-        console.log(size[v], 'size');
-				values_size[ v ] = (size[v] || DEFAULT_POINT_RADIUS) * NORM_CONSTANT * self.dom.height() * 2.2388;
-				values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+        values_size[ v ] = (size[v] || DEFAULT_POINT_RADIUS) * NORM_CONSTANT * self.dom.height() * 2.2388;
+        // values_size[v] = 7000;
+        values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+        // values_color[v] = new THREE.Color(0x0000ff)
         // values_color[ v ].setHSL( 0.5 + 0.2 * ( v / vc1 ), 1, 0.5 );
         // values_color[v].setRGB(1,0,0);
 			}
@@ -1501,6 +1511,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 
 		onResize: function() {
       var highlightObjects = {};
+      var highlightObjectBis = null;
       var self = this;
       
 			if (this.DEBUG) console.log("Scatter 3D: onResize");
@@ -1521,20 +1532,19 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           console.log("-----");
           if(self._data._highlight) {
             console.log('listen highlights');
-            listenHighlights(self._data._highlight);
+            if(self._configCheckBox('optimize', 'show')) listenHighlightsBis(self._data._highlight);
+            else listenHighlights(self._data._highlight);
           }
           var infoHighlights = _.flatten(_.pluck(self._data.info, '_highlight'))
           if(infoHighlights) {
-            listenHighlights(infoHighlights);
+            if(self._configCheckBox('optimize', 'show')) listenHighlightsBis(infoHighlights);
+            else listenHighlights(infoHighlights);
           }
         }
       });
       
       
 		  function listenHighlights(hl) {
-        if(!hl || !hl.length) {
-          return;
-        }
         for(var i=0; i<hl.length; i++) {
           (function(){
             var index = i;
@@ -1551,14 +1561,53 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         }
 		  }
       
-      function undrawHighlight(index) {
-        if(!highlightObjects[index]) {
-          return;
+      function listenHighlightsBis(hl) {
+        self._prepareHighlights(hl);
+        var hlset = _.uniq(hl);
+        
+        _.keys(hlset).forEach(function(k){
+          console.log('soetuhon', hlset[k]);
+          API.listenHighlight( {_highlight: hlset[k]}, function(onOff, key) {
+            if(onOff) {
+              drawHighlightBis(key);
+            }
+            else {
+              undrawHighlightBis(key);
+            }
+          });
+        });
+      }
+      
+      function undrawHighlightBis(hl) {
+        if(self.hlObjectsBis[hl] && self.hlObjectsBis[hl].drawn) {
+          self.scene.remove(self.hlObjectsBis[hl]);
+          self.hlObjectsBis[hl].drawn = false;
+          self._render();
         }
+      }
+      
+      function drawHighlightBis(hl) {
+        console.log('draw highlights', hl);
+        if(self.hlObjectsBis[hl]) {
+          if(self.hlObjectsBis[hl].drawn === true) {
+            return;
+          }
+          else {
+            self.scene.add(self.hlObjectsBis[hl]);
+            self.hlObjectsBis[hl].drawn = true;
+            self._render();
+          }
+        }
+      }
+      
+      function undrawHighlight(index) {
+        if(!highlightObjects[index]) return;
         self.scene.remove(highlightObjects[index]);
         delete highlightObjects[index];
-        self.renderer.render( self.scene, self.camera );
+        self._render();
       }
+      
+      
       function drawHighlight(index) {
         if(highlightObjects[index]) {
           return;
@@ -1593,9 +1642,76 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           geometry: geometry
         });
         highlightObjects[index] = mesh;
-        self.renderer.render( self.scene, self.camera );
+        self._render();
       }
-		},
+    },
+    
+    _prepareHighlights: function(hl) {
+      var self = this;
+      self.hlObjectsBis = self.hlObjectsBis || {};
+      var m = {};
+      for(var i=0; i<hl.length; i++) {
+        m[hl[i]] = m[hl[i]] || [];
+        m[hl[i]].push(i);
+      }
+      
+      _.keys(m).forEach(function(key) {
+        var indexes = m[key];
+        var tstart = new Date().getTime();
+        attributes = {
+          size: {	type: 'f', value: [] },
+          ca:   {	type: 'c', value: [] }
+        };
+        uniforms = {
+          amplitude: { type: "f", value: 1 },
+          color:     { type: "c", value: new THREE.Color( '#e5be39' ) },
+          texture:   { type: "t", value: THREE.ImageUtils.loadTexture( "/test/threejs/examples/textures/sprites/ballt.png" ) },
+        };
+
+        //uniforms.texture.value.wrapS = uniforms.texture.value.wrapT = THREE.RepeatWrapping;
+
+        var shaderMaterial = new THREE.ShaderMaterial( {
+
+          uniforms: 		uniforms,
+          attributes:     attributes,
+          vertexShader:   "			attribute float size;			attribute vec4 ca;			varying vec4 vColor;			void main() {				vColor = ca;				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );				gl_PointSize = size * ( 1.0 / length( mvPosition.xyz ) );				gl_Position = projectionMatrix * mvPosition;			}",
+          fragmentShader: "uniform vec3 color;			uniform sampler2D texture;			varying vec4 vColor;			void main() {				vec4 outColor = texture2D( texture, gl_PointCoord );				if ( outColor.a < 0.5 ) discard;				gl_FragColor = outColor * vec4( color * vColor.xyz, 1.0 );				float depth = gl_FragCoord.z / gl_FragCoord.w;				const vec3 fogColor = vec3( 0.0 );				float fogFactor = smoothstep( 0.0, 10000.0, depth );				gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );			}",
+          transparent: true
+        });
+
+
+        var geometry = new THREE.Geometry();      
+        for(var i=0; i<indexes.length; i++) {
+          var vertex = new THREE.Vector3();
+          vertex.x = self._data.normalizedData.x[indexes[i]];
+          vertex.y = self._data.normalizedData.y[indexes[i]];
+          vertex.z = self._data.normalizedData.z[indexes[i]];
+          geometry.vertices.push(vertex);
+        }
+
+        // particle system
+        self.hlObjectsBis[key] = new THREE.ParticleSystem( geometry, shaderMaterial );
+        // self.hlObjectsBis[key].drawn = true;
+        // highlightObjectBis.dynamic = true;
+
+        // custom attributes
+
+        var vertices = object.geometry.vertices;
+
+        var values_size = attributes.size.value;
+        var values_color = attributes.ca.value;
+        var color = self._data.color || [];
+        var size  = self._data.size || [];
+        for( var v = 0; v < vertices.length; v ++ ) {
+          values_size[ v ] = (size[indexes[v]] || DEFAULT_POINT_RADIUS) * NORM_CONSTANT * self.dom.height() * 3.35;
+          // values_size[v] = 7000;
+          values_color[ v ] = new THREE.Color('#e5be39');
+        }
+        // self.scene.add(self.hlObjectsBis[key]);
+        // self._render();
+        console.log('highlight time:', new Date().getTime() - tstart);
+      });
+    },
 		
 		/* When a value changes this method is called. It will be called for all 
 		possible received variable of this module.
@@ -1631,6 +1747,13 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         }
 			}
 		},
+    
+    _render: function () {
+      var self = this;
+      setTimeout(function() {
+        self.renderer.render(self.scene, self.camera, 0);
+      }, 20);
+    },
 		
 		_convertChartToData: function(value) {
 			this._data = {};
@@ -1655,9 +1778,13 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
       
       // generate random x,y z
-      // self._data.x = generateRandomArray(100000,-0.005,0.005);
-      // self._data.y = generateRandomArray(100000,-5,5);
-      // self._data.z = generateRandomArray(100000,-5,5);
+      var n = 10000;
+      self._data.x =       generateRandomArray(n,-0.005,0.005);
+      self._data.y =       generateRandomArray(n,-5,5);
+      self._data.z =       generateRandomArray(n,-5,5);
+      self._data.size =    generateRandomArray(n, 0.005, 0.01);
+      self._data.color =  generateRandomColors(n);
+      self._data._highlight = generateRandomFromArray(['A','B','C','D'], n);
       console.log('Converted data: ', self._data);
 		},
 
