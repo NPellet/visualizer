@@ -113,6 +113,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 							type: 'combo',
 							title: 'Color jPath',
 							options: jpaths
+						},
+						
+						height: {
+							type: 'text',
+							title: 'Force height'
 						}
 					}
 				}
@@ -124,7 +129,8 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 	controller.prototype.configAliases = {
 		colnumber: [ 'groups', 'group', 0, 'colnumber', 0 ],
 		colorjpath: [ 'groups', 'group', 0, 'colorjPath', 0 ],
-		valjpath: [ 'groups', 'group', 0, 'valjPath', 0 ]
+		valjpath: [ 'groups', 'group', 0, 'valjPath', 0 ],
+		height: [ 'groups', 'group', 0, 'height', 0 ]
 	};
 
  	return controller;

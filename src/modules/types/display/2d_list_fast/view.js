@@ -63,6 +63,9 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 				dimensions = {
 					width: cols
 				};
+				var height = cfg('height');
+				if(height)
+					dimensions.height = height;
 				
 				for( ; i < l ; i ++ ) {
 
