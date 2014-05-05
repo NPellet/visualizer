@@ -115,6 +115,22 @@ define(['require', 'jquery'], function(require, $) {
 							break;
 						}
 					}
+
+					if( typeof this.options.validation.rules[ i ].nonEmpty !== "undefined" ) {
+						
+						if( ! ( this.options.validation.rules[ i ].nonEmpty && ! value ) ) {
+
+							fieldElement.validation.error = false;
+
+						} else {
+
+							fieldElement.validation.error = true;
+							fieldElement.validation.feedback = this.options.validation.rules[ i ].feedback;
+							break;
+						}
+					}
+
+
 				}
 			}
 
