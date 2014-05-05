@@ -5,7 +5,7 @@ define(['require', 'jquery', 'forms/title'], function(require, $, title) {
 
 	$(document).on('click', '.form-button', function(event) {
 		var btn = stack[$(this).data('id')];
-		if(btn) {
+		if( btn && ! btn.isDisabled( ) ) {
 			btn.doClick(event, $(this));
 		}
 	});
@@ -126,6 +126,10 @@ define(['require', 'jquery', 'forms/title'], function(require, $, title) {
 		enable: function() {
 			this.options.disabled = false;
 			this.applyStyle();
+		},
+
+		isDisabled: function() {
+			return this.options.disabled;
 		}
 	}
 
