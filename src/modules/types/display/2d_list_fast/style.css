@@ -10,6 +10,7 @@
     text-align: center;
     box-sizing: border-box;
     vertical-align: middle;
+    border: 1px solid transparent;
 }
 
 .ci-displaylist-list-2d-fast img {
