@@ -1022,7 +1022,6 @@ define([
 		},
 
 		getWidthPx: function() {
-			console.log( this );
 			return this.getDomContent().innerWidth();
 		},
 

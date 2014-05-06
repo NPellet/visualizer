@@ -290,7 +290,8 @@ h2 .form-duplicator-wrapper {
 	font-weight: bold;
 	text-align: center;
 	line-height: 27px;
-	display: inline-block;
+	display: block;
+	float: left;
 	
 	-webkit-border-radius: 0px;
 	-moz-border-radius: 0px;
@@ -315,21 +316,35 @@ h2 .form-duplicator-wrapper {
 
 
 .form-button {
-	display: table-cell;
-	vertical-align: middle;
-	white-space: nowrap;
+	
+	
+	height: 30px;
+
 }
 
 .form-button span {
-	float: left;
-	display: block;
-	height: 17px;
-	line-height: 17px;
+	display: table-cell;
+	height: 100%;
+	vertical-align: middle;
 }
 
 
-.form-button img {
 
+
+.form-button span:nth-child(2) {
+	line-height: 30px;	
+}
+
+
+.form-button span:nth-child(1) {
+	padding-top: -10px;
+	line-height: 10px;
+	/*line-height: 20px;*/
+}
+
+
+
+.form-button img {
 	height: 17px;
 	margin-right: 5px;
 }
