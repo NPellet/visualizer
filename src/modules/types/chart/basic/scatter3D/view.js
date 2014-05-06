@@ -132,6 +132,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       var currentPoint = null;
       var drawTickLabelsThrottled = $.proxy(_.throttle(self._drawTickLabels, 500), self);
       var drawAxisLabelsThrottled = $.proxy(_.throttle(self._drawAxisLabels, 500), self);
+      var drawGraphTitleThrottled = $.proxy(_.throttle(self._drawGraphTitle, 500), self);
       var projections = [];
       
 			init();
@@ -446,6 +447,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         if(self.tickLabels) {
           drawTickLabelsThrottled();
           drawAxisLabelsThrottled();
+          drawGraphTitleThrottled();
         }
 			}
       
@@ -534,6 +536,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       self._drawTicks();
       self._drawTickLabels(); 
       self._drawAxisLabels();
+      self._drawGraphTitle();
       self._render()
       console.log('end plot points', new Date().getTime()-tstart);
     },
@@ -1100,15 +1103,42 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
     },
     
+    _drawGraphTitle: function() {
+      var self = this;
+      
+      self._reinitObject3DArray('graphTitle');
+      var mode = self.module.getConfiguration('labels');
+      var title = self._meta.title;
+      if(!title || title === '') return;
+      switch(mode) {
+        case 'none':
+          return;
+          break;
+        default:
+          self.graphTitle.push(self._addText(title, NORM_CONSTANT/10, NORM_CONSTANT * 1.3, 100, {
+            textAlign: 'left'
+          }));
+          break;
+      }
+    },
+    
     _drawAxisLabels: function() {
       var self = this;
       
       self._reinitObject3DArray('axisLabels');
       
       var mode = self.module.getConfiguration('labels');
-      xtitle = 'X title';
-      ytitle = 'Y title';
-      ztitle = 'Z title';
+      var xkey = (self._data.xAxis) ? self._data.xAxis : null;
+      var ykey = (self._data.yAxis) ? self._data.xAxis : null;
+      var zkey = (self._data.yAxis) ? self._data.xAxis : null;
+      
+      console.log('xAxis', self._data);
+      console.log('meta', self._meta);
+      var xtitle = (xkey && self._meta.axis && self._meta.axis[xkey]) ? self._meta.axis[xkey].name : 'X';
+      var ytitle = (ykey && self._meta.axis && self._meta.axis[ykey]) ? self._meta.axis[ykey].name : 'Y';
+      var ztitle = (zkey && self._meta.axis && self._meta.axis[zkey]) ? self._meta.axis[zkey].name : 'Z';
+      
+      console.log('xtitle', xtitle);
       switch(mode) {
       case 'axis':
         drawOnAxis(xtitle, ytitle, ztitle);
@@ -1566,7 +1596,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         var hlset = _.uniq(hl);
         
         _.keys(hlset).forEach(function(k){
-          console.log('soetuhon', hlset[k]);
+          if(!hlset[k]) return;
           API.listenHighlight( {_highlight: hlset[k]}, function(onOff, key) {
             if(onOff) {
               drawHighlightBis(key);
@@ -1757,6 +1787,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 		
 		_convertChartToData: function(value) {
 			this._data = {};
+      this._meta = {};
 			var self=this;
 			if ( ! value.data instanceof Array || ! value.data[0] || ! value.data[0].y instanceof Array) return;
 			if (value.data.length>0) {
@@ -1771,18 +1802,28 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
             self._data[key] = _.flatten(self._data[key], true);
             
           }
+          else {
+            self._data[key] = value.data[j][key];
+          }
           _.filter(self._data[key], function(val) {
             return val !== undefined;
           });
         });
       }
       
+      _.keys(value).forEach(function(key){
+        if(key === 'data') return;
+        else self._meta[key] = value[key];
+      });
+      
+      console.log('meta: ', self._meta);
+      
       // generate random x,y z
       var n = 10000;
       self._data.x =       generateRandomArray(n,-0.005,0.005);
       self._data.y =       generateRandomArray(n,-5,5);
       self._data.z =       generateRandomArray(n,-5,5);
-      self._data.size =    generateRandomArray(n, 0.005, 0.01);
+      self._data.size =    generateRandomArray(n, 0.01, 0.02);
       self._data.color =  generateRandomColors(n);
       self._data._highlight = generateRandomFromArray(['A','B','C','D'], n);
       console.log('Converted data: ', self._data);

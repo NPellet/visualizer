@@ -14,21 +14,21 @@
 				"x": {
 					"type": "bottom", 
 					"unit": "",
-					"name": "",
+					"name": "My x axis",
 					"min":"",
 					"max":""
 				},
 				"y": {
 					"type": "left",
 					"unit": "",
-					"name": "",
+					"name": "My y axis",
 					"min":"",
 					"max":""
 				},
 				"z": {
 					"type": "",
 					"unit": "",
-					"name": "",
+					"name": "My z axis",
 					"min":"",
 					"max":""
 				}
