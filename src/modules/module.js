@@ -74,7 +74,7 @@ define([
 		this.definition = definition;
 		this.definition.configuration = this.definition.configuration || new ViewObject({});
 
-		this.definition.layers = this.definition.layers || {}; // View on which layers ?
+		this.definition.layers = this.definition.layers || new ViewObject(); // View on which layers ?
 
 		this.ready = init(this);
 	};
@@ -343,7 +343,7 @@ console.log( newLayerShown );
 		},
 
 		setLayers: function( layers ) {
-			this.definition.layers = this.definition.layers || {};
+			this.definition.layers = this.definition.layers || new ViewObject();
 
 			$.extend( true, this.definition.layers, layers );
 
@@ -366,9 +366,9 @@ console.log( newLayerShown );
 					return false;
 				}
 
-				this.definition.layers[ activeLayer ] = {
-					position: new ViewObject({ left: 0, right: 0 }),
-					size: new ViewObject({ width: 20, height: 20}),
+				this.definition.layers[ activeLayer ] = new ViewObject({
+					position: { left: 0, right: 0 },
+					size: { width: 20, height: 20},
 					zIndex: 0,
 					display: true,
 					title: "",
@@ -376,7 +376,7 @@ console.log( newLayerShown );
 					wrapper: true,
 					created: true,
 					name: activeLayer
-				}
+				}, true);
 
 				console.log( this.definition.layers[ activeLayer ] );
 
