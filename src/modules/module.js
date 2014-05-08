@@ -62,6 +62,7 @@ define([
 				def.resolve();
 
 
+
 	//		});
 		
 		});
@@ -72,6 +73,9 @@ define([
 	 var Module = function(definition) {
 		this.definition = definition;
 		this.definition.configuration = this.definition.configuration || new ViewObject({});
+
+		this.definition.layers = this.definition.layers || {}; // View on which layers ?
+
 		this.ready = init(this);
 	};
 	/**
@@ -304,10 +308,90 @@ define([
 				]);
 
 			}
-
-			this.setDisplayWrapper();
 		},
 		
+		toggleLayer: function( newLayerShown, layerOut ) {
+
+			var layer;
+console.log( newLayerShown );
+			if( layer = this.getActiveLayer( newLayerShown )) {
+
+				if( ! layer.display ) {
+					
+					this.hide();
+					console.log('Hide');
+					return;
+				} else {
+					this.show();
+					console.log('Show');
+					
+				}
+
+				this.setTitle( layer.title );
+				this.setDisplayWrapper( layer.wrapper );
+				this.activeLayerName = newLayerShown;
+
+				return layer;
+			}
+		},
+
+		eachLayer: function( callback ) {
+
+			for( var i in this.definition.layers ) {
+				callback( this.definition.layers[ i ], i );	
+			}
+		},
+
+		setLayers: function( layers ) {
+			this.definition.layers = this.definition.layers || {};
+
+			$.extend( true, this.definition.layers, layers );
+
+		},
+
+		getActiveLayerName: function() {
+			return this.activeLayerName;
+		},
+
+		getActiveLayer: function( activeLayer, noCreation ) {
+
+			if( ! activeLayer ) {
+				return false;
+			}
+//console.log( this.definition.layers )
+
+			if( ! this.definition.layers[ activeLayer ] || ! this.definition.layers[ activeLayer ].created ) {
+
+				if( noCreation ) {
+					return false;
+				}
+
+				this.definition.layers[ activeLayer ] = {
+					position: new ViewObject({ left: 0, right: 0 }),
+					size: new ViewObject({ width: 20, height: 20}),
+					zIndex: 0,
+					display: true,
+					title: "",
+					bgcolor: [ 255, 255, 255, 0 ],
+					wrapper: true,
+					created: true,
+					name: activeLayer
+				}
+
+				console.log( this.definition.layers[ activeLayer ] );
+
+			}
+
+			return this.definition.layers[ activeLayer ];
+		},
+
+		hide: function() {
+			this.getDomWrapper().hide();
+		},
+
+		show: function() {
+			this.getDomWrapper().show();
+		},
 
 		doConfig: function() {
 
@@ -466,7 +550,6 @@ define([
 				}
 			}
 
-
 			// ACTIONS IN
 			var actionsIn = this.controller.actionsIn || {},
 				actionsInList = [];	
@@ -474,7 +557,12 @@ define([
 			for( i in actionsIn ) {
 				actionsInList.push({ title: actionsIn[ i ], key: i});
 			}
-			
+
+
+			var allLayers = {};
+			module.eachLayer( function( layer, key ) {
+				allLayers[ key ] = key;
+			} );
 
 			require(['./forms/form'], function(Form) {
 
@@ -514,32 +602,68 @@ define([
 								icon: 'page_white_paint'
 							},
 
-							groups: {
 
-								group: {
+							groups: {
+								layerDisplay: {
 									options: {
-										type: 'list',
-										multiple: true
+										title: "Display on layers",
+										type: 'list'
 									},
 
 									fields: {
-
-										moduletitle: {
-											type: 'text',
-											multiple: false,
-											title: 'Module title'
-										},
-
-										bgcolor: {
-											type: 'color',
-											multiple: false,
-											title: 'Background color'
-										},
-
-										modulewrapper: {
+										displayOn: {
 											type: 'checkbox',
-											title: 'Module boundaries',
-											options: { 'display': '' }
+											title: 'Display on layers',
+											options: allLayers
+										}
+									}
+								}
+							},
+
+							sections: {
+
+								layer: {
+
+									options: {
+										title: 'Shown on layers',
+										multiple: true
+									},
+								
+									groups: {
+
+										group: {
+											options: {
+												type: 'list',
+												multiple: true
+											},
+
+											fields: {
+
+												layerName: {
+													type: 'text',
+													multiple: false,
+													title: 'Layer name'
+												},
+
+												moduletitle: {
+													type: 'text',
+													multiple: false,
+													title: 'Module title'
+												},
+
+
+												bgcolor: {
+													type: 'color',
+													multiple: false,
+													title: 'Background color'
+												},
+
+												modulewrapper: {
+													type: 'checkbox',
+													title: 'Module boundaries',
+													options: { 'display': '' }
+												}
+											}
 										}
 									}
 								}
@@ -832,9 +956,30 @@ define([
 						"</table>"
 					;
 					
+
+					var allLayers = [],
+						allLayerDisplay = [];
+
+					module.eachLayer( function( layer, name ) {
+
+						if( layer.display ) {
+							allLayerDisplay.push( name );
+						}
+						
+
+
+						allLayers.push({ 
+							layerName: [ name ],
+							moduletitle: [ layer.title ],
+							bgcolor: [ layer.bgColor || [ 255, 255, 255, 0 ] ],
+							modulewrapper: [ ( layer.wrapper === true || layer.wrapper === undefined ) ? 'display' : '' ]
+						});
+					} ); 
+
 					var fill = {
 						sections: {
-							module_config: [ { groups: { group: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor || [ 255, 255, 255, 0 ] ],  modulewrapper: [[ (module.definition.displayWrapper === true || module.definition.displayWrapper == undefined) ? 'display' : '' ]] }] } } ],
+							module_config: [ { groups: { layerDisplay: [ { displayOn: [ allLayerDisplay ]} ] }, sections: { layer: [ { groups: { group: allLayers } }]  } } ],
+
 							module_infos: [ { groups: { group: [ moduleInfosHtml ] } } ],
 							module_specific_config: [ module.definition.configuration || {} ],
 
@@ -858,12 +1003,25 @@ define([
 
 					var value = form.getValue().sections;
 
-					module.setTitle( value.module_config[ 0 ].groups.group[ 0 ].moduletitle[ 0 ] );
-					module.definition.bgColor 			= value.module_config[ 0 ].groups.group[ 0 ].bgcolor[ 0 ];
-					module.setBackgroundColor( module.definition.bgColor );
+			//		module.setTitle( value.module_config[ 0 ].groups.group[ 0 ].moduletitle[ 0 ] );
+				//	module.definition.bgColor 			= value.module_config[ 0 ].groups.group[ 0 ].bgcolor[ 0 ];
+//					module.setBackgroundColor( module.definition.bgColor );
 
-					module.definition.displayWrapper 	= value.module_config[ 0 ].groups.group[ 0 ].modulewrapper[ 0 ].indexOf('display') > -1;
-					module.setDisplayWrapper();
+					module.definition.layers = module.definition.layers || {};
+					var l = value.module_config[ 0 ].sections.layer;
+					var allDisplay = value.module_config[ 0 ].groups.layerDisplay[ 0 ].displayOn[ 0 ];
+
+					for( var i = 0, ll = l.length ; i < ll ; i ++ ) {
+						
+						module.definition.layers[ l[ i ].groups.group[ 0 ].layerName[ 0 ] ].display = allDisplay.indexOf( l[ i ].groups.group[ 0 ].layerName[ 0 ] ) > -1;
+						module.definition.layers[ l[ i ].groups.group[ 0 ].layerName[ 0 ] ].title = l[ i ].groups.group[ 0 ].moduletitle[ 0 ];
+						module.definition.layers[ l[ i ].groups.group[ 0 ].layerName[ 0 ] ].bgcolor = l[ i ].groups.group[ 0 ].bgcolor;
+						module.definition.layers[ l[ i ].groups.group[ 0 ].layerName[ 0 ] ].wrapper = l[ i ].groups.group[ 0 ].modulewrapper[ 0 ].indexOf('display') > -1;
+					}
+
+console.log( module.definition.layers )
+					//module.definition.displayWrapper 	= value.module_config[ 0 ].groups.group[ 0 ].modulewrapper[ 0 ].indexOf('display') > -1;
+		//			module.setDisplayWrapper();
 
 					if( value.vars_out ) {
 						module.setSendVars(		value.vars_out[ 0 ].groups.group[ 0 ]			);
@@ -889,7 +1047,9 @@ define([
 					if( module.view.unload ) {
 						module.view.unload();
 					}
-					
+						
+					module.toggleLayer( module.getActiveLayerName() );
+
 					module.view.init();
 
 					module.view.inDom();
@@ -1003,22 +1163,19 @@ define([
 		/** 
 		 * Returns the current position of the module
 		 */
-		getPosition: function() {
+		getPosition: function( activeLayer ) {
 			
-			if(!this.definition.position)
-				this.definition.position = { left: 0, right: 0};
-			return this.definition.position;
+			var layer = this.getActiveLayer( activeLayer );
+			return layer.position;
 		},
 		
 		/** 
 		 * Returns the current size of the module
 		 */
-		getSize: function() {
+		getSize: function( activeLayer ) {
 			
-			if(!this.definition.size)
-				this.definition.size = new ViewObject({ width: 20, height: 20});
-				
-			return this.definition.size;
+			var layer = this.getActiveLayer( activeLayer );
+			return layer.size;
 		},
 
 		getWidthPx: function() {
@@ -1147,8 +1304,8 @@ define([
 			this.domContent.get(0).style.backgroundColor = 'rgba(' + color + ')';
 		},
 
-		setDisplayWrapper: function() {
-			var bln = this.definition.displayWrapper;
+		setDisplayWrapper: function( bln ) {
+
 			this.getDomWrapper()[(bln === true || bln == undefined) ? 'addClass' : 'removeClass']('ci-module-displaywrapper');
 			
 			try {

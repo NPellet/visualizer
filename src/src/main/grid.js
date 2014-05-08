@@ -1,8 +1,13 @@
 
-define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api'], function($, ui, Util, ModuleFactory, Context, Versioning, API) {	
+define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form'], function($, ui, Util, ModuleFactory, Context, Versioning, API, Form) {	
 
 
 	var definition, jqdom, self = this, moduleMove, isInit = false;
+	var activeLayer = "Default layer";
+	var modules = [];
+	var layersUl, layersLi;
+
+	//var layers = { "Default : { name: activeLayer } };
 
 	var defaults = {
 		xWidth: 10, // 20px per step
@@ -12,9 +17,9 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 	function checkDimensions(extend) {
 			
 		var bottomMax = 0;
-		for(var i in this.modules) {
-			var pos = this.modules[i].getPosition(),
-				size = this.modules[i].getSize();
+		for(var i in modules) {
+			var pos = modules[i].getPosition( getActiveLayer( ) ),
+				size = modules[i].getSize( getActiveLayer( ) );
 
 			if(pos.top && size.height) {
 				bottomMax = Math.max( bottomMax, pos.top + size.height );
@@ -43,13 +48,13 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		addModuleFromJSON( def );
 	}
 
-	function addModule(module) {
-		
-		var grid = this,
-			modulePos = module.getPosition( ),
-			moduleSize = module.getSize( );
+	function setModuleSize( module ) {
 
-		module.getDomWrapper( ).appendTo( jqdom ).css( {
+		var modulePos = module.getPosition( getActiveLayer( ) ),
+			moduleSize = module.getSize( getActiveLayer( ) );
+
+
+		 module.getDomWrapper( ).css( {
 
 			top: Math.round( modulePos.top ) * definition.yHeight,
 			left: Math.round( modulePos.left ) * definition.xWidth,
@@ -57,6 +62,17 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			height: Math.round( moduleSize.height ) * definition.yHeight
 
 		} );
+	}
+
+	function addModule(module) {
+		
+		var grid = this;
+		module.getDomWrapper( ).appendTo( jqdom );
+		modules.push( module );
+
+		setModuleSize( module );
+
+		
 
 		if( ! API.isViewLocked() ) {
 			Context.listen(module.getDomWrapper().get(0), [
@@ -90,7 +106,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 					duplicateModule( module );
 				}],
 	                    
-	                        ['<li><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>', 
+	            ['<li><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>', 
 				function() {
 					window.localStorage.setItem("ci-copy-module",JSON.stringify( module.definition ));
 				}]
@@ -102,6 +118,9 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			if( module.inDom ) {
 				module.inDom( );
 			}
+
+			module.toggleLayer( getActiveLayer( ) );
+
 			// Expands the grid when one click on the header
 			module.getDomHeader().bind('mousedown', function() {
 				checkDimensions(true);
@@ -136,8 +155,12 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 					stop: function() {
 						var position = $(this).position();
 						Util.unmaskIframes();
-						module.getPosition().set('left', position.left / definition.xWidth);
-						module.getPosition().set('top', position.top / definition.yHeight);
+			
+						module.getPosition( getActiveLayer() ).set('left', position.left / definition.xWidth);
+						module.getPosition( getActiveLayer() ).set('top', position.top / definition.yHeight);
+			
+						//console.log( module.getPosition( getActiveLayer() ) );
+			
 						module.moving = false;
 						checkDimensions(false);
 					},
@@ -187,8 +210,8 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		
 		var wrapper = module.getDomWrapper();
 		
-		module.getSize().set('width', wrapper.width() / definition.xWidth);
-		module.getSize().set('height', wrapper.height() / definition.yHeight);
+		module.getSize( getActiveLayer( ) ).set('width', wrapper.width() / definition.xWidth);
+		module.getSize( getActiveLayer( ) ).set('height', wrapper.height() / definition.yHeight);
 
 		var containerHeight = wrapper.height() - (module.getDomHeader().is(':visible') ? module.getDomHeader().outerHeight(true) : 0);
 		
@@ -371,8 +394,9 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 			var left = Math.max(0, Math.round((moduleMove.left) / definition.xWidth));
 			var top = Math.max(0, Math.round((moduleMove.top) / definition.yHeight));
-			moduleMove.module.getPosition().top = top;
-			moduleMove.module.getPosition().left = left;
+
+			moduleMove.module.getPosition( getActiveLayer() ).top = top;
+			moduleMove.module.getPosition( getActiveLayer() ).left = left;
 			
 			moduleMove.div.css({
 				top: top * definition.yHeight,
@@ -392,6 +416,145 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			.bind('mousemove', mouseMoveHandler);
 	};
 
+	var eachModules = function( callback ) {
+
+		if( ! modules ) {
+			return;
+		}
+
+		for( var i = 0, l = modules.length ; i < l ; i ++ ) {
+			callback( modules[ i ] );
+		}
+	};
+
+
+	var getActiveLayer = function() {
+		return activeLayer;
+	};
+
+	function newLayer( toggleToIt, name ) {
+
+		var self = this,
+			def = $.Deferred();
+
+		if( name ) {
+			return definition.layers[ name ] = { name: name };
+
+			setLayers()
+			def.resolve( definition.layers[ name ] );
+		}
+
+		var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: ""});		
+			form = new Form({});
+
+		form.init();
+		form.setStructure( {
+
+			sections: {
+		
+				layeropts: {
+
+					options: { },
+					groups: {
+
+						layeropts: {
+							options: {
+								type: 'list',
+								multiple: true
+							},
+
+							fields: {
+
+								layername: {
+									type: 'text',
+									title: 'Layer name',
+									validation: {
+										rules: [{
+											nonEmpty: true,
+											feedback: {
+												_class: true,
+												message: "The layer name cannot be empty"
+											}
+										}]
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} );
+
+
+		form.onStructureLoaded().done(function() {
+			form.fill( { } );
+		});
+
+		form.addButton('Validate', { color: 'green' }, function() {
+
+			div.dialog('close');
+			var value = form.getValue().sections.layeropts[ 0 ].groups.layeropts[ 0 ],
+				layer = { name: value.layername[ 0 ] };
+				
+			definition.layers[ layer.name ] = layer;
+			def.resolve( layer );
+
+			setLayers();
+
+			if( toggleToIt ) {
+				switchToLayer( layer.name );
+			}
+		});
+
+		form.onLoaded().done(function() {
+			div.html( form.makeDom( 2 ) );
+			form.inDom();
+		});
+
+		return def;
+	}
+
+	function setLayers() {
+		eachModules( function( moduleInstance ) {
+			moduleInstance.setLayers( definition.layers );
+		} );
+	}
+
+	function switchToLayer( layerId, noForm ) {
+		
+		var layer = ( ! definition.layers[ layerId ] ) ? ( newLayer( false, layerId ) ) : definition.layers[ layerId ];
+
+		$.when( layer ).then( function( layer2 ) {
+
+			if( layer2 ) {
+				layer = layer2;
+			}
+
+			activeLayer = layer.name;
+
+			eachModules( function( moduleInstance ) {
+
+				var layer3 = moduleInstance.toggleLayer( layer.name );
+
+				if( ! layer3 ) {
+					//moduleInstance.hide();
+				} else {
+					//moduleInstance.show();
+					setModuleSize( moduleInstance );
+				}
+			} );
+
+		} );
+
+	};
+
+	function eachLayer( callback ) {
+
+		for( var i in definition.layers ) {
+			callback( definition.layers[ i ], i );
+		}
+	}
+
 
 	return {
 
@@ -401,13 +564,17 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		 * @param {integer} [definition.xWidth] The width of the grid cells
 		 * @param {integer} [definition.xHeight] The height of the grid cells
 		 */
-		init: function( def, dom, modules ) {
+		init: function( def, dom, _modules ) {
 			
 			if( isInit ) {
 				return;
 			}
 
-			this.modules = modules;
+			if( _modules ) {
+				modules = _modules;
+			}
+
+			console.log( modules );
 			jqdom = $( dom );
 			isInit = true;
 
@@ -472,6 +639,43 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 							newModule( decodeURIComponent( url ) );
 					});
 				});
+
+				layersLi = $('<li><a> Switch to layer</a></li>');
+				layersUl = $("<ul />").appendTo( layersLi );
+
+				Context.listen(dom, [], function( contextDom ) {
+					
+					layersUl.empty();
+
+					eachLayer( function( layer, key ) {
+						var li = $('<li data-layer="' + encodeURIComponent( key ) + '"><a><span />' + key + '</a></li>').data( 'layerkey', key ).appendTo( layersUl );
+
+						if( key == activeLayer ) {
+							li.find('span').addClass('ui-icon ui-icon-check');
+						}
+						
+
+					});
+
+					$('<li data-layer=""><a>+ Add a new layer</a></li>').data( 'layerkey', "-1" ).appendTo( layersUl );
+
+					$(contextDom).append( layersLi );
+
+					layersLi.bind( 'click', function( event ) {
+						var layer = $( event.target.parentNode ).data( 'layerkey' );
+	
+						if( layer !== "-1" ) {
+							switchToLayer( layer );
+							
+						} else if( layer == "-1" ) {
+							newLayer();
+						}
+					});
+
+				});
+
+			
+
 			}
                         
 			this.reset( def );
@@ -479,9 +683,21 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 		reset: function( def ) {
 
-			definition = $.extend(true, defaults, def);
+			definition = def;
+			definition.layers = definition.layers || {};
+
+			if( ! definition.xWidth ) {
+				definition.xWidth = 10;
+			}
+
+			if( ! definition.yHeight ) {
+				definition.yHeight = 10;
+			}
+
+
 			$( jqdom ).empty( );
 			checkDimensions( );
+			switchToLayer( activeLayer );
 		},
 
 		addModule: addModule,

@@ -79,6 +79,8 @@ define(['jquery',
 
 		view = Migration(view);
 
+		view.grid = view.grid || new ViewObject();
+		
 		if (this.viewLoaded) {
 			reloadingView( );
 			Grid.reset(view.grid);
