@@ -1008,15 +1008,20 @@ console.log( newLayerShown );
 //					module.setBackgroundColor( module.definition.bgColor );
 
 					module.definition.layers = module.definition.layers || {};
-					var l = value.module_config[ 0 ].sections.layer;
-					var allDisplay = value.module_config[ 0 ].groups.layerDisplay[ 0 ].displayOn[ 0 ];
+					console.log( value.module_config[ 0 ].sections.layer[ 0 ] );
+					var l = value.module_config[ 0 ].sections.layer[ 0 ].groups.group;
 
+					var allDisplay = value.module_config[ 0 ].groups.layerDisplay[ 0 ].displayOn[ 0 ];
+console.log( l );
 					for( var i = 0, ll = l.length ; i < ll ; i ++ ) {
-						
-						module.definition.layers[ l[ i ].groups.group[ 0 ].layerName[ 0 ] ].display = allDisplay.indexOf( l[ i ].groups.group[ 0 ].layerName[ 0 ] ) > -1;
-						module.definition.layers[ l[ i ].groups.group[ 0 ].layerName[ 0 ] ].title = l[ i ].groups.group[ 0 ].moduletitle[ 0 ];
-						module.definition.layers[ l[ i ].groups.group[ 0 ].layerName[ 0 ] ].bgcolor = l[ i ].groups.group[ 0 ].bgcolor;
-						module.definition.layers[ l[ i ].groups.group[ 0 ].layerName[ 0 ] ].wrapper = l[ i ].groups.group[ 0 ].modulewrapper[ 0 ].indexOf('display') > -1;
+
+						//console.log( l[ i ].groups.group[ 0 ].layerName[ 0 ], allDisplay, allDisplay.indexOf( l[ i ].groups.group[ 0 ].layerName[ 0 ] ) );
+
+
+						module.definition.layers[ l[ i ].layerName[ 0 ] ].display = allDisplay.indexOf( l[ i ].layerName[ 0 ] ) > -1;
+						module.definition.layers[ l[ i ].layerName[ 0 ] ].title = l[ i ].moduletitle[ 0 ];
+						module.definition.layers[ l[ i ].layerName[ 0 ] ].bgcolor = l[ i ].bgcolor;
+						module.definition.layers[ l[ i ].layerName[ 0 ] ].wrapper = l[ i ].modulewrapper[ 0 ].indexOf('display') > -1;
 					}
 
 console.log( module.definition.layers )
