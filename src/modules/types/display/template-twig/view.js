@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', 'components/twig.js/twig.min'], function(Default, Twig) {
+define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twig) {
 
     function view() {
     }
