@@ -313,7 +313,6 @@ define([
 		toggleLayer: function( newLayerShown, layerOut ) {
 
 			var layer;
-console.log( newLayerShown );
 			if( layer = this.getActiveLayer( newLayerShown )) {
 
 				if( ! layer.display ) {

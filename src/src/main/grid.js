@@ -239,24 +239,27 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			modulePos.div.remove();
 			modulePos = {};
 
-			var module = ModuleFactory.newModule(new ViewObject({
+			var module = ModuleFactory.newModule( new ViewObject( {
 				//type: type,
-				url: url,
-				title: "Untitled module",
-				displayWrapper: true,
-				position: new ViewObject({
-					left: left,
-					top: top	
-				}),
+				url: url
 				
-				size: new ViewObject({
-					width: width,
-					height: height
-				})
-			}));
+			} ) );
 
+			var layer = module.getActiveLayer( getActiveLayer() );
+			layer.position.set('left', left);
+			layer.position.set('top', top);
+
+			layer.size.set('width', width);
+			layer.size.set('height', height);
+
+			layer.wrapper = true;
+			layer.title = "Untitled";
+
+		
 			$.when(module.ready).then(function() {
 				addModule(module);	
+			//	module.toggleLayer( getActiveLayer( ) );
+
 			});
 		
 			$(document)
