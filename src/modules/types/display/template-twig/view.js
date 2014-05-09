@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', 'components/twig.js/twig.min'], function(Default, Twig) {
+define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twig) {
 
     function view() {
     }
@@ -52,7 +52,9 @@ define(['modules/default/defaultview', 'components/twig.js/twig.min'], function(
             }
         },
         render: function() {
-            this.dom.html(this.template.render(this._values));
+            var render = this.template.renderAsync(this._values);
+            this.dom.html(render.html);
+            render.render();
         }
     });
 
