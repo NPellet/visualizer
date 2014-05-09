@@ -577,7 +577,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				modules = _modules;
 			}
 
-			console.log( modules );
+		
 			jqdom = $( dom );
 			isInit = true;
 

@@ -318,11 +318,11 @@ define([
 				if( ! layer.display ) {
 					
 					this.hide();
-					console.log('Hide');
+				//	console.log('Hide');
 					return;
 				} else {
 					this.show();
-					console.log('Show');
+				//	console.log('Show');
 					
 				}
 
