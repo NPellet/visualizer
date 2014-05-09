@@ -344,8 +344,16 @@ define([
 		setLayers: function( layers ) {
 			this.definition.layers = this.definition.layers || new ViewObject();
 
-			$.extend( true, this.definition.layers, layers );
-
+			for( var i in layers ) {
+				if( this.definition.layers[ i ] ) {
+					continue;
+				}
+//console.log()
+				// new layer
+				this.definition.layers[ i ] = {};
+				$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );
+				console.log( this.definition.layers );
+			}
 		},
 
 		getActiveLayerName: function() {

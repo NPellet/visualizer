@@ -157,7 +157,7 @@ define(['src/util/versioning'], function(Versioning) {
             for(; i < ii; i++) {
                 module = view.modules[i];
                 for(j = 0; j < jj; j++) {
-                    if(module.url.indexOf(moduleNames[j]) >= 0) {
+                    if(module.url && module.url.indexOf(moduleNames[j]) >= 0) {
                         callback(module);
                         break;
                     }
