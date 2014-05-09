@@ -52,11 +52,9 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twi
             }
         },
         render: function() {
-            var def = this.template.renderAsync(this._values);
-            var dom = this.dom;
-            def.then(function(html){
-                dom.html(html);
-            });
+            var render = this.template.renderAsync(this._values);
+            this.dom.html(render.html);
+            render.render();
         }
     });
 
