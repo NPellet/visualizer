@@ -35,6 +35,7 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 
 			this.buttons = [];
 			this.buttonsDom = $("<div />").addClass('form-buttonzone');
+			this.buttonsDom.append( $("<div />").addClass('cleaner') ); 
 		},
 
 		triggerAction: function() {
@@ -425,7 +426,7 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 				self.buttons.push( btn );
 				btn.clickOnSubmit = onSubmitClick;
 				self.onReady( ).done( function( ) {
-					self.buttonsDom.append( btn.render( ) );	
+					self.buttonsDom.prepend( btn.render( ) );	
 				});
 			});
 		},
