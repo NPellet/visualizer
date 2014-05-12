@@ -1,4 +1,4 @@
-define(['components/twig.js/twig', 'src/util/typerenderer', 'src/util/util'],function(Twig, Renderer, Util){
+define(['components/twig.js/twig.min', 'src/util/typerenderer', 'src/util/util'],function(Twig, Renderer, Util){
 	
 	// Add support for deferred rendering
 		
