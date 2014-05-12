@@ -1,8 +1,8 @@
 'use strict';
 
-var LevelPouch = require('./leveldb');
-var levelalt = require('level-js');
-var utils = require('../utils');
+var LevelPouch = require('../lib/adapters/leveldb');
+var levelalt = require('levelalt');
+var utils = require('../lib/utils');
 
 function LevelPouchAlt(opts, callback) {
   var _opts = utils.extend({
@@ -21,7 +21,6 @@ LevelPouchAlt.destroy = utils.toPromise(function (name, opts, callback) {
     callback = opts;
     opts = {};
   }
-
   var _opts = utils.extend({
     db: levelalt
   }, opts);

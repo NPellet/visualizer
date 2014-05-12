@@ -18,7 +18,7 @@ Most project discussions should happen on the Mailing list / Bug Tracker and IRC
 Good First Patch
 ----------------
 
-If you are looking for something to work on, we try to maintain a list of issues that should be suitable for first time contributions, they can be found tagged [goodfirstpatch](https://github.com/daleharvey/pouchdb/issues?labels=goodfirstpatch&state=open).
+If you are looking for something to work on, we try to maintain a list of issues that should be suitable for first time contributions, they can be found tagged [goodfirstpatch](https://github.com/pouchdb/pouchdb/issues?labels=goodfirstpatch&state=open).
 
 
 Guide to Contributions
@@ -76,13 +76,13 @@ Run all tests with:
 
 Browser tests can be run automatically with:
 
-    $ CLIENT=firefox npm test
+    $ CLIENT=selenium:firefox npm test
 
 or you can run:
 
     $ npm run dev
 
-and open http://127.0.0.1:8000/tests/test.html in your browser of choice.
+and open [http://127.0.0.1:8000/tests/test.html](http://127.0.0.1:8000/tests/test.html) in your browser of choice. The performance tests are located @ [http://localhost:8000/tests/performance/test.html](http://localhost:8000/tests/performance/test.html).
 
 ### Test Options
 
@@ -110,11 +110,30 @@ For quick debugging, you can run an interactive Node shell with the `PouchDB` va
 
     npm run shell
 
+### Performance tests
+
+    PERF=1 npm test
+
+To run the performance test suite in node.js or the automated browser runner.
+
+### Performance tests in the browser
+
+You can specify a particular version of PouchDB or a particular adapter by doing e.g.:
+
+    http://localhost:8000/tests/performance/test.html?src=http://site.com/path/to/pouchdb.js
+    http://localhost:8000/tests/performance/test.html?adapter=websql
+    http://localhost:8000/tests/performance/test.html?adapter=idb&src=//site.com/pouchdb.js
+
+You can specify particular tests by using `grep=`, e.g.:
+
+    http://127.0.0.1:8000/tests/performance/test.html?grep=basics
+    http://127.0.0.1:8000/tests/performance/test.html?grep=basic-inserts
+
 Alternative Backends
 --------------------------------------
-PouchDB is looking to support alternative backends that comply with the [LevelDOWN API](https://github.com/rvagg/abstract-leveldown). For example, simply include `LEVEL_BACKEND=leveljs` in your `npm run build` and `npm run dev` commands to experiment with this feature!
+PouchDB is looking to support alternative backends that comply with the [LevelDOWN API](https://github.com/rvagg/abstract-leveldown). For example, simply include `LEVEL_BACKEND=level-js` in your `npm run build-alt` and `npm run dev` commands to experiment with this feature!
 
-Doing so will also create a separate distribution, for example, `pouchdb-leveljs.js` rather than `pouchdb-nightly.js`. In order to test a different distribution from `pouchdb-nightly.js`, you must specify in the testing URL: http://127.0.0.1:8000/tests/test.html?sourceFile=pouchdb-leveljs.js. `LEVEL_BACKEND=leveljs npm run test` will accomplish the same thing.
+Doing so will also create a separate distribution, for example `pouchdb-level-js.js` rather than `pouchdb-nightly.js`. In order to test a different distribution from `pouchdb-nightly.js`, you must specify in the testing URL: http://127.0.0.1:8000/tests/test.html?sourceFile=pouchdb-level-js.js. `LEVEL_BACKEND=level-js npm run test` will accomplish the same thing.
 
 Git Essentials
 --------------------------------------
@@ -122,7 +141,7 @@ Git Essentials
 Workflows can vary, but here is a very simple workflow for contributing a bug fix:
 
     $ git clone git@github.com:myfork/pouchdb.git
-    $ git remote add pouchdb https://github.com/daleharvey/pouchdb.git
+    $ git remote add pouchdb https://github.com/pouchdb/pouchdb.git
 
     $ git checkout -b 121-issue-keyword master
     # Write tests + code
@@ -142,7 +161,7 @@ You should now find the documentation at http://127.0.0.1:4000
 Writing a PouchDB Blog Post
 --------------------------------------
 
-Writing a blog post for PouchDB is exactly the same process as other contributions, the blog posts are kept @ https://github.com/daleharvey/pouchdb/tree/master/docs/_posts, just build the site as documented above, its usually easiest to copy an existing post and write away.
+Writing a blog post for PouchDB is exactly the same process as other contributions, the blog posts are kept @ https://github.com/pouchdb/pouchdb/tree/master/docs/_posts, just build the site as documented above, its usually easiest to copy an existing post and write away.
 
 If you want to be sure the blog post is relevant, open an issue on what you want to write about to hear back from reviewers.
 
@@ -158,3 +177,16 @@ With great power comes great responsibility yada yada yada:
  * Please try to watch when Pull Requests are made and review and / or commit them in a timely manner.
  * After you merge in a patch use tin to update the version accordingly. Run `tin -v x.x.x-prerelease` with x.x.x being the previous version upgraded appropriately via semver. When we are ready to publish to npm we can remove the `-prerelease`.
  * Thanks, you are all awesome human beings.
+
+Release Procedure
+-----------------
+
+ * Copy the last release post from ./docs/_posts/date-pouchdb-version.md, ammend date and version and fill in release notes
+ * Update docs/_config.yml to latest version
+ * Push release post
+ * `./node_modules/.bin/tin -v $VERSION
+ * `npm run publish`
+ * Copy the `dist/pouchdb*` files from the $VERSION tag on github, paste the release notes and add the distribution files to Github Releases
+ * `./node_modules/.bin/tin -v $VERSION+1-prerelease
+ * Push updated versions to master
+ * `npm run publish-site`

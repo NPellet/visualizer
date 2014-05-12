@@ -9,8 +9,10 @@ VERSION=$(node --eval "console.log(require('./package.json').version);")
 
 # Build
 git checkout -b build
+
 npm run build
 git add dist -f
+git add lib/.version.js -f
 git commit -m "build $VERSION"
 
 # Tag and push
@@ -19,8 +21,6 @@ git push --tags git@github.com:daleharvey/pouchdb.git $VERSION
 
 # Publish JS modules
 npm publish
-
-npm run publish-site
 
 # Cleanup
 git checkout master
