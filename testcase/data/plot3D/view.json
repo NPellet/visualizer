@@ -119,7 +119,7 @@
 			"vars_in": [
 				{
 					"rel": "chart",
-					"name": "pieChart1"
+					"name": "pieChart"
 				}
 			],
 			"actions_in": {},

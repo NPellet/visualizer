@@ -16,7 +16,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 	*/
 	controller.prototype.moduleInformation = {
 		moduleName: '3D Scatter Plot',
-		description: 'Display',
+		description: 'Display 3D points',
 		author: 'Daniel Kostro',
 		date: '01.04.2014',
 		license: 'MIT',
@@ -34,7 +34,12 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		onHover: {
 			label: 'Hover a 3D point',
 			refVariable: [ 'point', 'info', 'coordinates' ]
-		}
+		},
+    
+    onClick: {
+      label: 'Click a 3D point',
+      refVariable: ['point', 'info', 'coordinates']
+    }
 	};
 	
 	controller.prototype.onHover = function(elements, ref) {
@@ -48,20 +53,22 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
     }
 	};
 	
-
-
 	/*
 		Configuration of the input/output references of the module
 	*/
 	controller.prototype.references = {
 		chart: {
-			type: [],
+			type: 'chart',
 			label: 'A json describing a chart'
 		},
-		yArray: {
+		boolArray: {
 			type: 'array',
-			label: '1D Y array'
+			label: 'An array of boolean'
 		},
+    data3D: {
+      type: 'data3D',
+      label: 'Array of {x, y, z, size, color} objects'
+    },
     point: {
       label: 'Point label' 
     },
@@ -69,6 +76,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
       label: 'Point info'
     },
     coordinates: {
+      type: 'array',
       label: 'Point coordinates'
     }
 	};
@@ -99,7 +107,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		Configuration of the module for receiving events, as a static object
 		In the form of 
 	*/
-	controller.prototype.variablesIn = [ 'chart', 'yArray' ];
+	controller.prototype.variablesIn = [ 'chart', 'boolArray', 'data3D' ];
 	
 
 	controller.prototype.configurationStructure = function() {

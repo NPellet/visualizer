@@ -183,7 +183,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           if(ray.isIntersectionSphere(self.mathPoints[i])) {
             count++;
             intersects.push({
-              index: i,
+              index: self.mathPoints[i].index,
               distance: self.camera.position.distanceTo(self.mathPoints[i].center)
             });
           }
@@ -592,61 +592,10 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     
     _drawPointsQuick: function() {
       var self = this;
-      console.log('Plot QUICK');
-			attributes = {
-				size: {	type: 'f', value: [] },
-				ca:   {	type: 'c', value: [] }
-			};
-			uniforms = {
-				amplitude: { type: "f", value: 1 },
-				color:     { type: "c", value: new THREE.Color( 0xffffff ) },
-				texture:   { type: "t", value: THREE.ImageUtils.loadTexture( "/test/threejs/examples/textures/sprites/ball.png" ) },
-			};
-
-			//uniforms.texture.value.wrapS = uniforms.texture.value.wrapT = THREE.RepeatWrapping;
-
-			var shaderMaterial = new THREE.ShaderMaterial( {
-
-				uniforms: 		uniforms,
-				attributes:     attributes,
-				vertexShader:   "			attribute float size;			attribute vec4 ca;			varying vec4 vColor;			void main() {				vColor = ca;				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );				gl_PointSize = size * ( 1.0 / length( mvPosition.xyz ) );				gl_Position = projectionMatrix * mvPosition;			}",
-				fragmentShader: "uniform vec3 color;			uniform sampler2D texture;			varying vec4 vColor;			void main() {				vec4 outColor = texture2D( texture, gl_PointCoord );				if ( outColor.a < 0.5 ) discard;				gl_FragColor = outColor * vec4( color * vColor.xyz, 1.0 );				float depth = gl_FragCoord.z / gl_FragCoord.w;				const vec3 fogColor = vec3( 0.0 );				float fogFactor = smoothstep( 0.0, 10000.0, depth );				gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );			}",
-        transparent: true
-			});
-
-
-			var geometry = new THREE.Geometry();      
-      for(var i=0; i<self._data.normalizedData.x.length; i++) {
-        var vertex = new THREE.Vector3();
-        vertex.x = self._data.normalizedData.x[i];
-        vertex.y = self._data.normalizedData.y[i];
-        vertex.z = self._data.normalizedData.z[i];
-        geometry.vertices.push(vertex);
-      }
-
-			vc1 = geometry.vertices.length;
       
-			// particle system
-			object = new THREE.ParticleSystem( geometry, shaderMaterial );
-      // object.dynamic = true;
-
-			// custom attributes
-
-			var vertices = object.geometry.vertices;
-
-			var values_size = attributes.size.value;
-			var values_color = attributes.ca.value;
-      var color = self._data.color || [];
-      var size  = self._data.size || [];
-			for( var v = 0; v < vertices.length; v ++ ) {
-        values_size[ v ] = (size[v] || DEFAULT_POINT_RADIUS) * NORM_CONSTANT * self.dom.height() * 2.2388;
-        // values_size[v] = 7000;
-        values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
-        // values_color[v] = new THREE.Color(0x0000ff)
-        // values_color[ v ].setHSL( 0.5 + 0.2 * ( v / vc1 ), 1, 0.5 );
-        // values_color[v].setRGB(1,0,0);
-			}
-			self.scene.add(object);
+      self._mainParticleObject = self._newParticleObject();      
+      self._updateParticleObject(self._mainParticleObject);
+			self.scene.add(self._mainParticleObject);
     },
     
     _configCheckBox: function(config, option) {
@@ -1027,8 +976,8 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       
       // create a canvas element
       var canvas = document.createElement('canvas');
-      canvas.height = options.size;
-      canvas.width = options.size * text.length / 2;
+      canvas.height = options.size *1.2;
+      canvas.width = options.size * text.length / 2 + options.size / 2;
       
       switch(options.textAlign) {
       case "left":
@@ -1108,7 +1057,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       
       self._reinitObject3DArray('graphTitle');
       var mode = self.module.getConfiguration('labels');
-      var title = self._meta.title;
+      var title = self._meta.title || '';
       if(!title || title === '') return;
       switch(mode) {
         case 'none':
@@ -1331,6 +1280,18 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
     },
     
+    _computeInBoundaryIndexes: function() {
+      var self = this;
+      self._data.inBoundary = [];
+      for (var i = 0; i < self._data.x.length; i++) {
+        self._inBoundary({
+          x: self._data.x[i],
+          y: self._data.y[i],
+          z: self._data.z[i]
+        }) ? self._data.inBoundary.push(true) : self._data.inBoundary.push(false);
+      }
+    },
+    
     
     _mathPoints: function() {
       var self = this;
@@ -1338,21 +1299,15 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       self.mathPoints = [];
       
       for(var i=0; i<self._data.x.length; i++) {
-        if(!self._inBoundary({
-          x: self._data.x[i],
-          y: self._data.y[i],
-          z: self._data.z[i]
-        })) {
-          console.log('not in boundary', point);
-          continue;
-        }
-        
+        if(!self._data.inBoundary[i]) continue;
+                
         var radius = DEFAULT_POINT_RADIUS;
         if(self._data.size && self._data.size[i]){
           var radius = self._data.size[i];
         }
         
         var sphere = new THREE.Sphere(new THREE.Vector3(self._data.normalizedData.x[i], self._data.normalizedData.y[i], self._data.normalizedData.z[i]), radius*NORM_CONSTANT);
+        sphere.index = i;
         self.mathPoints.push(sphere);
       }
       
@@ -1676,6 +1631,88 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
     },
     
+    _newParticleObject: function(indexes, options) {
+      var self = this;
+      options = options || {};
+      attributes = {
+        size: {	type: 'f', value: [] },
+        ca:   {	type: 'c', value: [] }
+      };
+      uniforms = {
+        amplitude: { type: "f", value: 1 },
+        color:     { type: "c", value: new THREE.Color( '#e5be39' ) },
+        texture:   { type: "t", value: THREE.ImageUtils.loadTexture( options.image || "/test/threejs/examples/textures/sprites/ball.png" ) },
+      };
+
+      //uniforms.texture.value.wrapS = uniforms.texture.value.wrapT = THREE.RepeatWrapping;
+
+      var shaderMaterial = new THREE.ShaderMaterial( {
+
+        uniforms: 		uniforms,
+        attributes:     attributes,
+        vertexShader:   "			attribute float size;			attribute vec4 ca;			varying vec4 vColor;			void main() {				vColor = ca;				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );				gl_PointSize = size * ( 1.0 / length( mvPosition.xyz ) );				gl_Position = projectionMatrix * mvPosition;			}",
+        fragmentShader: "uniform vec3 color;			uniform sampler2D texture;			varying vec4 vColor;			void main() {				vec4 outColor = texture2D( texture, gl_PointCoord );				if ( outColor.a < 0.5 ) discard;				gl_FragColor = outColor * vec4( color * vColor.xyz, 1.0 );				float depth = gl_FragCoord.z / gl_FragCoord.w;				const vec3 fogColor = vec3( 0.0 );				float fogFactor = smoothstep( 0.0, 10000.0, depth );				gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );			}",
+        transparent: true
+      });
+
+
+      var geometry = new THREE.Geometry();
+      if(indexes){
+        for(var i=0; i<indexes.length; i++) {
+          var vertex = new THREE.Vector3();
+          vertex.x = self._data.normalizedData.x[indexes[i]];
+          vertex.y = self._data.normalizedData.y[indexes[i]];
+          vertex.z = self._data.normalizedData.z[indexes[i]];
+          geometry.vertices.push(vertex);
+        }
+      }
+      else {
+        for(var i=0; i<self._data.normalizedData.x.length; i++) {
+          var vertex = new THREE.Vector3();
+          vertex.x = self._data.normalizedData.x[i];
+          vertex.y = self._data.normalizedData.y[i];
+          vertex.z = self._data.normalizedData.z[i];
+          geometry.vertices.push(vertex);
+        }
+      }
+
+      // particle system
+      var object = new THREE.ParticleSystem( geometry, shaderMaterial );
+      object.indexes = indexes;
+      // self.hlObjectsBis[key].drawn = true;
+      // highlightObjectBis.dynamic = true;
+      return object;
+    },
+    
+    _updateParticleObject: function(object, options) {
+      var self = this;
+      options = options || {};
+      var indexes = object.indexes;
+      var vertices = object.geometry.vertices;
+      var values_size = object.material.attributes.size.value;
+      var values_color = object.material.attributes.ca.value;
+      var color = self._data.color;
+      var size  = self._data.size;
+      var factor = 2.2388 * (options.sizeFactor || 1.0);
+      var forcedColor = options.forcedColor ? new THREE.Color(options.forcedColor) : null;
+      if(indexes) {
+        for( var v = 0; v < vertices.length; v ++ ) {
+          values_size[ v ] = self._data.inBoundary[indexes[v]]
+            ? (size[indexes[v]] || DEFAULT_POINT_RADIUS) * NORM_CONSTANT * self.dom.height() * factor
+            : 0;
+          values_color[ v ] = forcedColor || new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+        }
+      }
+      else {
+        for( var v = 0; v < vertices.length; v ++ ) {
+          values_size[ v ] = self._data.inBoundary[v] 
+            ?(size[v] || DEFAULT_POINT_RADIUS) * NORM_CONSTANT * self.dom.height() * factor
+            : 0;
+          values_color[ v ] = forcedColor || new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+        }
+      }
+    },
+    
     _prepareHighlights: function(hl) {
       var self = this;
       self.hlObjectsBis = self.hlObjectsBis || {};
@@ -1686,61 +1723,21 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
       
       _.keys(m).forEach(function(key) {
-        var indexes = m[key];
         var tstart = new Date().getTime();
-        attributes = {
-          size: {	type: 'f', value: [] },
-          ca:   {	type: 'c', value: [] }
-        };
-        uniforms = {
-          amplitude: { type: "f", value: 1 },
-          color:     { type: "c", value: new THREE.Color( '#e5be39' ) },
-          texture:   { type: "t", value: THREE.ImageUtils.loadTexture( "/test/threejs/examples/textures/sprites/ballt.png" ) },
-        };
-
-        //uniforms.texture.value.wrapS = uniforms.texture.value.wrapT = THREE.RepeatWrapping;
-
-        var shaderMaterial = new THREE.ShaderMaterial( {
-
-          uniforms: 		uniforms,
-          attributes:     attributes,
-          vertexShader:   "			attribute float size;			attribute vec4 ca;			varying vec4 vColor;			void main() {				vColor = ca;				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );				gl_PointSize = size * ( 1.0 / length( mvPosition.xyz ) );				gl_Position = projectionMatrix * mvPosition;			}",
-          fragmentShader: "uniform vec3 color;			uniform sampler2D texture;			varying vec4 vColor;			void main() {				vec4 outColor = texture2D( texture, gl_PointCoord );				if ( outColor.a < 0.5 ) discard;				gl_FragColor = outColor * vec4( color * vColor.xyz, 1.0 );				float depth = gl_FragCoord.z / gl_FragCoord.w;				const vec3 fogColor = vec3( 0.0 );				float fogFactor = smoothstep( 0.0, 10000.0, depth );				gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );			}",
-          transparent: true
+        self.hlObjectsBis[key] = self._newParticleObject(m[key], {
+          image: "/test/threejs/examples/textures/sprites/ballt.png"
         });
-
-
-        var geometry = new THREE.Geometry();      
-        for(var i=0; i<indexes.length; i++) {
-          var vertex = new THREE.Vector3();
-          vertex.x = self._data.normalizedData.x[indexes[i]];
-          vertex.y = self._data.normalizedData.y[indexes[i]];
-          vertex.z = self._data.normalizedData.z[indexes[i]];
-          geometry.vertices.push(vertex);
-        }
-
-        // particle system
-        self.hlObjectsBis[key] = new THREE.ParticleSystem( geometry, shaderMaterial );
-        // self.hlObjectsBis[key].drawn = true;
-        // highlightObjectBis.dynamic = true;
-
-        // custom attributes
-
-        var vertices = object.geometry.vertices;
-
-        var values_size = attributes.size.value;
-        var values_color = attributes.ca.value;
-        var color = self._data.color || [];
-        var size  = self._data.size || [];
-        for( var v = 0; v < vertices.length; v ++ ) {
-          values_size[ v ] = (size[indexes[v]] || DEFAULT_POINT_RADIUS) * NORM_CONSTANT * self.dom.height() * 3.35;
-          // values_size[v] = 7000;
-          values_color[ v ] = new THREE.Color('#e5be39');
-        }
-        // self.scene.add(self.hlObjectsBis[key]);
-        // self._render();
+        
+        self._updateParticleObject(self.hlObjectsBis[key], {
+          sizeFactor: 1.5,
+          forcedColor: '#e5be39'
+        });
         console.log('highlight time:', new Date().getTime() - tstart);
       });
+    },
+    
+    _updatePoints: function() {
+      
     },
 		
 		/* When a value changes this method is called. It will be called for all 
@@ -1753,7 +1750,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         
         console.log('module value on update', moduleValue);
 				if (! moduleValue.get() ){ 
-          console.log('unvalid value', moduleValue);
+          console.error('Unvalid value', moduleValue);
           return;
         }
 
@@ -1761,8 +1758,10 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         this._convertChartToData(moduleValue.get());
         this._computeMinMax();
         this._computeTickInfo();
+        this._computeInBoundaryIndexes();
         this._normalizeData();
         this._setGridOrigin();
+        this._updateChartData();
         
         console.log('moduleValue.get(): ', this._data);
 
@@ -1775,7 +1774,39 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           console.log("points changed");
           this._drawGraph();
         }
-			}
+			},
+      'data3D': function(moduleValue) {
+        console.log('data3d received');
+        console.log('Scatter 3D: update from data3D object');
+        if(!moduleValue || !moduleValue.get()) {
+          console.error('Unvalid value', moduleValue);
+          return;
+        }
+        
+        // Convert data
+        this._convertData3dToData(moduleValue.get());
+        console.log(this._data);
+        
+        
+        this._computeMinMax();
+        this._computeTickInfo();
+        this._computeInBoundaryIndexes();
+        this._normalizeData();
+        this._setGridOrigin();
+        this._updateChartData();
+        
+        console.log('moduleValue.get(): ', this._data);
+
+				// data are ready to be ploted
+        console.log('state:', this.loadedData.state());
+        if(this.loadedData.state() === 'pending') {
+  				this.loadedData.resolve();
+        }
+        else {
+          console.log("points changed");
+          this._drawGraph();
+        }
+      }
 		},
     
     _render: function () {
@@ -1783,6 +1814,31 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       setTimeout(function() {
         self.renderer.render(self.scene, self.camera, 0);
       }, 20);
+    },
+    
+    _convertData3dToData: function(value) {
+      var self = this;
+      if(! value instanceof Array || value.length === 0) {
+        console.error('Data 3D not valid');
+      }
+      self._data = self._data || {};
+      for (var i = 0; i < value.length; i++) {
+        for(var key in value[i]) {
+          self._data[key] ? self._data[key].push(value[i][key]) : (self._data[key] = [value[i][key]]);
+        }
+      }
+      self._meta = {};
+      self._data._highlight = self._data._highlight || [];
+      self._data.info = self._data._info || [];
+      
+      // generate random x,y z
+      var n = 1000;
+      self._data.x =       generateRandomArray(n,0,5);
+      self._data.y =       generateRandomArray(n,0,5);
+      self._data.z =       generateRandomArray(n,0,5);
+      self._data.size =    generateRandomArray(n, 0.01, 0.02);
+      self._data.color =  generateRandomColors(n);
+      // self._data._highlight = generateRandomFromArray(['A','B','C','D'], n);
     },
 		
 		_convertChartToData: function(value) {
@@ -1819,15 +1875,28 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       console.log('meta: ', self._meta);
       
       // generate random x,y z
-      var n = 10000;
-      self._data.x =       generateRandomArray(n,-0.005,0.005);
-      self._data.y =       generateRandomArray(n,-5,5);
-      self._data.z =       generateRandomArray(n,-5,5);
+      var n = 1000;
+      self._data.x =       generateRandomArray(n,0,5);
+      self._data.y =       generateRandomArray(n,0,5);
+      self._data.z =       generateRandomArray(n,0,5);
       self._data.size =    generateRandomArray(n, 0.01, 0.02);
       self._data.color =  generateRandomColors(n);
       self._data._highlight = generateRandomFromArray(['A','B','C','D'], n);
       console.log('Converted data: ', self._data);
 		},
+    
+    _completeDataInfo: function(name, defaultValue) {
+      var self = this;
+      self._data[name] = self._data[name] || [];
+      for(var i=0; i<self._data.x.length; i++) {
+        if(!self._data[name][i]) self._data[name][i] = defaultValue;
+      }
+    },
+    
+    _updateChartData: function() {
+      this._completeDataInfo('size', DEFAULT_POINT_RADIUS);
+      this._completeDataInfo('color', DEFAULT_POINT_COLOR);
+    },
 
 		updateOptions: function() {
       console.log('update options');
