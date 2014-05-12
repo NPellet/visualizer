@@ -9,7 +9,7 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'Filter editor',
+        moduleName: 'Script editor',
         description: 'Write code for a filter and test it in real time',
         author: 'Michaël Zasso',
         date: '04.02.2014',
@@ -42,8 +42,7 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
                         script: {
                             type: 'jscode',
                             title: 'Code',
-                            mode: 'html',
-                            default: "function filter(value) {\n    return value;\n}"
+                            default: "function filter(value) {\n    // The returned value must be a DataObject.\n    // Use DataObject.check(toReturn, true) to create it for a new variable.\n    return value;\n    return value;\n}"
                         }
                     }
                 },
