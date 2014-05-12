@@ -226,7 +226,7 @@ define(['jquery',
 				var couchData = view.couch_replication[ 0 ].groups.couch[ 0 ];
 				for (var i = 0, l = couchData.length; i < l; i++) {
 					if (couchData[ i ].couchurl) {
-						PouchDBUtil.replicate(couchData[ i ].pouchname, couchData[ i ].couchurl, couchData[ i ].direction);
+						PouchDBUtil.replicate(couchData[ i ].pouchname, couchData[ i ].couchurl, {direction: couchData[ i ].direction, continuous: couchData[ i ].continuous ? couchData[ i ].continuous.length : true});
 					}
 				}
 			}
@@ -565,6 +565,11 @@ define(['jquery',
 										title: 'Direction',
 										options: [{key: 'PtoC', title: 'Pouch -> Couch'}, {key: 'CtoP', title: 'Couch -> Pouch'}, {key: 'both', title: 'Both ways'}],
 										'default': 'both'
+									},
+									continuous: {
+										type: 'checkbox',
+										title: 'Continuous replication',
+										options: {continuous: 'Continuous'}
 									}
 
 								}

@@ -246,7 +246,9 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		this.run();
 	}
 	
-	SyncManager.prototype.add = function(fromCouch, couchURL, pouch) {
+	SyncManager.prototype.add = function(fromCouch, couchURL, pouch, continuous) {
+		
+		continuous = !!continuous;
 		
 		var pouchName = pouch.name;
 		var urlH = couchURL.replace(/\/\/[^\/]*@/, "//***@");
@@ -259,9 +261,9 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 					return Debug.warn("Replication from localDB " + pouchName + " to couchDB " + urlH + " failed.", err);
 			} else {
 				if (fromCouch)
-					return Debug.debug("Replication from couchDB " + urlH + " to localDB " + pouchName + " aborted.", res);
+					return Debug.debug("Replication from couchDB " + urlH + " to localDB " + pouchName + " finished.", res);
 				else
-					return Debug.debug("Replication from localDB " + pouchName + " to couchDB " + urlH + " aborted.", res);
+					return Debug.debug("Replication from localDB " + pouchName + " to couchDB " + urlH + " finished.", res);
 			}
 		}
 		
@@ -273,7 +275,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 			callback = function() {
 				Debug.debug("Started replication from couchDB " + urlH + " to localDB " + pouchName + ".");
 				return pouch.pouchdb.replicate.from(couchURL, {
-					live: true,
+					live: continuous,
 					complete: complete
 				});
 			};
@@ -287,7 +289,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 			callback = function() {
 				Debug.debug("Started replication from localDB " + pouchName + " to couchDB " + urlH + ".");
 				return pouch.pouchdb.replicate.to(couchURL, {
-					live: true,
+					live: continuous,
 					complete: complete
 				});
 			};
@@ -375,13 +377,13 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		return uri.toString();
 	}
 	
-	function doSync(fromCouch, pouch, couchURL) {
+	function doSync(fromCouch, pouch, couchURL, continuous) {
 		var serverURL = getServerURL(couchURL);
 		if(!allSyncs[serverURL]) {
 			allSyncs[serverURL] = new SyncManager(serverURL);
 		}
 		var syncManager = allSyncs[serverURL];
-		syncManager.add(fromCouch, couchURL, pouch);
+		syncManager.add(fromCouch, couchURL, pouch, continuous);
 	}
 	
 	function PouchManager(name) {
@@ -440,8 +442,8 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		});
 	}
 	
-	PouchManager.prototype.sync = function(fromCouch, couchURL) {
-		doSync(fromCouch, this, couchURL);
+	PouchManager.prototype.sync = function(fromCouch, couchURL, continuous) {
+		doSync(fromCouch, this, couchURL, continuous);
 	};
 	
 	PouchManager.prototype.getDoc = function(id, options) {
@@ -495,19 +497,27 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		});
 	};
 
-	exports.replicate = function(name, couchURL, direction) {
+	var defaultRepOpt = {
+		direction: "both",
+		continuous: true
+	};
+	exports.replicate = function(name, couchURL, options) {
 		
 		if(!name || !couchURL)
 			return;
 		
+		options = $.extend({}, defaultRepOpt, options);
+		
+		console.log("CONTINUOUS",options.continuous);
+		
 		var pouch = PouchFactory.get(name);
 		
-		if (direction === "CtoP" || direction === "both") {
-			pouch.sync(true, couchURL);
+		if (options.direction === "CtoP" || options.direction === "both") {
+			pouch.sync(true, couchURL, options.continuous);
 		}
 		
-		if (direction === "PtoC" || direction === "both") {
-			pouch.sync(false, couchURL);
+		if (options.direction === "PtoC" || options.direction === "both") {
+			pouch.sync(false, couchURL, options.continuous);
 		}
 		
 	};
