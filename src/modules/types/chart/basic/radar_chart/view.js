@@ -56,16 +56,43 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			this.loadedData.done(function() {
 			self._radar.parse(self._data,"json");
+			
+			self._radar.attachEvent("onMouseMove", function (id, ev, trg){
 			console.log(self._data);
-			/*self._radar.attachEvent("onItemclick", function (id, ev, trg){
 			
+			/*if (item) {
+					self.module.controller.elementHover(self._data[item.seriesIndex].data[item.dataIndex]);
+
+				} else {
+					self.module.controller.elementOut();
+				} */
+				self._data.forEach(function(entry) {
+				if(entry.id == id)
+				{
+				var obj = entry;
+				console.log(obj);
+				console.log(ev.toElement.outerHTML);
+				console.log(ev.toElement.outerHTML[ev.toElement.outerHTML.length -3]);
+				//console.log(obj._highlight[ev.toElement.outerHTML[ev.toElement.outerHTML.length -3]]);
+				if(ev.toElement.outerHTML[ev.toElement.outerHTML.length -3] == 'd')
+				{
+				self.module.controller.elementHover(obj._highlight[0]);
+				}
+				else
+				{
+				self.module.controller.elementHover(obj._highlight[ev.toElement.outerHTML[ev.toElement.outerHTML.length -3]]);
+				}
+				
+				}
+				
 			
-			console.log(trg[0]);
-		
-			
+});		
 			return true;
 
-}); */
+}); 
+			self._radar.attachEvent("onMouseOut", function (id, ev, trg){
+						self.module.controller.elementOut();
+			}); 
 			});
 
 

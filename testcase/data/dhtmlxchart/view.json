@@ -72,12 +72,78 @@
 			]
 		},
 		{
+			"url": "./modules/types/display/fasttable/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 17,
+				"height": 21
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Label",
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "highlight"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
 			"url": "./modules/types/chart/basic/radar_chart/",
 			"title": "Radar Chart",
 			"displayWrapper": true,
 			"position": {
-				"left": 96,
-				"top": 0
+				"left": 83,
+				"top": 1
 			},
 			"size": {
 				"width": 61,
@@ -93,77 +159,6 @@
 							],
 							"pie": [
 								"pie3D"
-							],
-							"start": [
-								[
-									0
-								]
-							],
-							"end": [
-								[
-									100
-								]
-							],
-							"step": [
-								[
-									10
-								]
-							],
-							"point": [
-								[
-									true
-								]
-							],
-							"lineshape": [
-								[
-									"arc"
-								]
-							]
-						}
-					]
-				}
-			},
-			"id": 2,
-			"vars_in": [
-				{
-					"rel": "chart",
-					"name": "stackChart"
-				}
-			],
-			"actions_in": {},
-			"vars_out": [
-				{}
-			],
-			"actions_out": {},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
-		},
-		{
-			"url": "./modules/types/chart/basic/radar_chart/",
-			"title": "Radar Chart",
-			"displayWrapper": true,
-			"position": {
-				"left": 19,
-				"top": 49
-			},
-			"size": {
-				"width": 61,
-				"height": 51
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"preference": [
-								"pie"
-							],
-							"pie": [
-								"donut"
 							],
 							"start": [
 								[
@@ -218,8 +213,79 @@
 			"title": "Radar Chart",
 			"displayWrapper": true,
 			"position": {
-				"left": 90,
-				"top": 51
+				"left": 82,
+				"top": 50
+			},
+			"size": {
+				"width": 61,
+				"height": 51
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"preference": [
+								"pie"
+							],
+							"pie": [
+								"donut"
+							],
+							"start": [
+								[
+									0
+								]
+							],
+							"end": [
+								[
+									100
+								]
+							],
+							"step": [
+								[
+									10
+								]
+							],
+							"point": [
+								[
+									true
+								]
+							],
+							"lineshape": [
+								[
+									"arc"
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "chart",
+					"name": "stackChart"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/chart/basic/radar_chart/",
+			"title": "Radar Chart",
+			"displayWrapper": true,
+			"position": {
+				"left": 14,
+				"top": 50
 			},
 			"size": {
 				"width": 61,
@@ -265,7 +331,7 @@
 					]
 				}
 			},
-			"id": 4,
+			"id": 5,
 			"vars_in": [
 				{
 					"rel": "chart",
