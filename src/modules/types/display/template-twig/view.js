@@ -13,12 +13,10 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twi
                 width: '100%'
             });
 
-            this.module.getDomContent().html(this.dom);
             this._values = new DataObject();
             this.template = Twig.twig({
                 data: this.module.getConfiguration('template')
             });
-            this.render();
         },
         blank: {
             value: function(varName) {
@@ -26,6 +24,8 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twi
             }
         },
         inDom: function() {
+			this.module.getDomContent().html(this.dom);
+			this.render();
         },
         update: {
             value: function(value, name) {

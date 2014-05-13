@@ -27,7 +27,11 @@
 		{
 			"moduleName": "Var Editor",
 			"url": "modules/types/edition/var_editor/"
-		}
+		},
+                {
+                        "moduleName": "Edit/Display",
+                        "url": "modules/types/edition/dualview/"
+                }
 	],
 	"name": "Edition",
 	"folders": []

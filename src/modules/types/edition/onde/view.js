@@ -16,10 +16,8 @@ define(['modules/default/defaultview', "src/util/util", "jquery", "components/on
 			}).append($('<div class="onde-panel">')).append(new Button(this.module.getConfiguration('button_text'), function() {
 					that.exportForm();
 				}, {color: 'green'}).render().css({
-					marginTop: "10px",
-					display: "inline-block"
+					marginTop: "10px"
 				}));
-			this.module.getDomContent( ).html(this.dom);
             
             this.inputVal = {};
 
@@ -27,10 +25,14 @@ define(['modules/default/defaultview', "src/util/util", "jquery", "components/on
         },
         blank: {},
         inDom: function() {
-            this.form = new onde.Onde(this.dom);
-            this.renderForm();
+			this.module.getDomContent( ).html(this.dom);
+			this.initForm();
             this.onReady.resolve();
         },
+		initForm: function() {
+			this.form = new onde.Onde(this.dom);
+            this.renderForm();
+		},
         update: {
             inputValue: function(value) {
 				this.inputObj = value;
