@@ -24,7 +24,9 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
 					if(done)
 						return;
 					CKEDITOR.disableAutoInline = true;
-					CKEDITOR.inline(self._id);
+					CKEDITOR.inline(self._id, {
+						extraPlugins:"mathjax"
+					});
 					done = true;
 				});
 			});
