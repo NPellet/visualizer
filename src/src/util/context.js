@@ -54,6 +54,7 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 		
 		init: function(dom) {
 			this.dom = dom;
+			var top, left;
 			dom.addEventListener('contextmenu', function(e) {
 
 				//e.preventDefault();
@@ -65,10 +66,12 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 				} 
 
 				contextMenu = null;
-				$menu = $('<ul class="ci-contextmenu"></ul>').css({
+				top = e.pageY;
+				left = e.pageX;
+				var $menu = $('<ul class="ci-contextmenu"></ul>').css({
 					'position': 'absolute',
-					'left': e.pageX,
-					'top': e.pageY,
+					'left': left,
+					'top': top,
 					'z-index': 10000
 				}).appendTo($("body"));
 
@@ -108,6 +111,9 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 
 
 			dom.parentNode.addEventListener('contextmenu', function(e) {
+				
+
+				//contextMenu.height(contextMenu.height(document.documentElement.clientHeight))
 
 				//console.log( contextMenu );
 				if( contextMenu.children().length > 0 ) {
@@ -119,6 +125,19 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 
 					e.preventDefault();
 					e.stopPropagation();
+					
+									// Move the menu if it would go beyond the viewport
+				var height = contextMenu.height();
+				var width = contextMenu.width();
+				var clientH = document.documentElement.clientHeight;
+				var clientW = document.documentElement.clientWidth;
+				if(top+height>clientH) {
+					contextMenu.css("top", Math.max(0, clientH-height-10));
+				}
+				if(left+width>clientW) {
+					contextMenu.css("left", Math.max(0, clientW-width-10));
+				}
+					
 					return false;
 				}
 				
