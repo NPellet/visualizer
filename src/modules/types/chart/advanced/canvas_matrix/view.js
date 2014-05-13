@@ -4,8 +4,9 @@ define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {
-				
-
+			
+			this.colors = null;
+			
 			this.canvas = document.createElement("canvas");
 			this.canvasContext = this.canvas.getContext('2d');
 			
@@ -419,7 +420,18 @@ define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util
 		},
 		
 		getColors: function() {
-			return this.colors || (this.colors = ( this.module.getConfiguration('colors') || ['#000000', '#ffffff']) );
+			if(!this.colors) {
+				var colors = this.module.getConfiguration('colors');
+				if(colors) {
+					if(colors.length===1) {
+						colors.push([255,255,255,1]);
+					}
+					this.colors = colors;
+				} else {
+					this.colors = [[0,0,0,1],[255,255,255,1]];
+				}
+			}
+			return this.colors;
 		},
 		
 		getHighContrast: function() {
