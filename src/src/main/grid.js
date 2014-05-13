@@ -1,5 +1,6 @@
 
-define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form'], function($, ui, Util, ModuleFactory, Context, Versioning, API, Form) {	
+define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form'], function($, ui, Util, ModuleFactory, Context, Versioning, API, Form) {
+	"use strict";
 
 
 	var definition, jqdom, self = this, moduleMove, isInit = false;
@@ -447,7 +448,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			def.resolve( definition.layers[ name ] );
 		}
 
-		var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: ""});		
+		var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: ""}),
 			form = new Form({});
 
 		form.init();
@@ -614,9 +615,9 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				);
 				
 				Context.listen(dom, [], function(contextDom) {
-					$li = $('<li><a> Add a module</a></li>');
+					var $li = $('<li><a> Add a module</a></li>');
 
-					$ulModules = $("<ul />").appendTo($li);
+					var $ulModules = $("<ul />").appendTo($li);
 					var allTypes = ModuleFactory.getTypes();
 					$.when( allTypes ).then( function( json ) {
 
