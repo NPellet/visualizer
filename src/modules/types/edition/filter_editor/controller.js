@@ -42,7 +42,7 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
                         script: {
                             type: 'jscode',
                             title: 'Code',
-                            default: "function filter(value) {\n    // The returned value must be a DataObject.\n    // Use DataObject.check(toReturn, true) to create it for a new variable.\n    return value;\n    return value;\n}"
+                            default: "function filter(value) {\n    // The returned value must be a DataObject.\n    // Use DataObject.check(toReturn, true) to create it for a new variable.\n    return value;\n}"
                         }
                     }
                 },

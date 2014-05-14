@@ -47,7 +47,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
         },
         onButtonClick: {
             label: 'The button was clicked',
-            refAction: ['value']
+            refAction: ['value'],
+			refVariable: ['value']
         }
     };
     /*
@@ -93,6 +94,12 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             type: 'checkbox',
                             options: {'editable': 'Show the code editor'}
                         },
+						hasButton: {
+                            title: 'Display button',
+                            default: 'button',
+                            type: 'checkbox',
+                            options: {'button': 'Show the button'}
+						},
                         script: {
                             type: 'jscode',
                             title: 'Code',
@@ -111,6 +118,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
         'mode': ['groups', 'group', 0, 'mode', 0],
         'btnvalue': [ 'groups', 'group', 0, 'btnvalue', 0],
         'iseditable': [ 'groups', 'group', 0 , 'iseditable', 0],
+		'hasButton': [ 'groups', 'group', 0 , 'hasButton', 0],
         'script': [ 'groups', 'group', 0, 'script', 0]
     };
     
@@ -119,6 +127,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
     };
     
     controller.prototype.onButtonClick = function(value) {
+		this.setVarFromEvent('onButtonClick', value, 'value');
         this.sendAction('value', value, 'onButtonClick');
     };
 

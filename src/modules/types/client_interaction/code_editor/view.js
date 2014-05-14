@@ -14,9 +14,9 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
                 width: '100%'
             });
             var editorRow = $('<tr>').appendTo(table).css("height","auto");
-            var buttonRow = $('<tr>').appendTo(table).css("height","30px");
+            this.buttonRow = $('<tr>').appendTo(table).css("height","30px");
             this.editorCell = $('<td>').appendTo(editorRow);
-            this.buttonCell = $('<td>').appendTo(buttonRow).css("text-align","center");
+            this.buttonCell = $('<td>').appendTo(this.buttonRow).css("text-align","center");
             
             this.module.getDomContent( ).html(table);
 
@@ -42,14 +42,19 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
                 });
             }
             
-            this.buttonCell.append(
-                $("<span>"+this.module.getConfiguration('btnvalue')+"</span>")
-                .addClass("form-button")
-                .on("click",function(){
-                    self.module.controller.onButtonClick(self._code);
-                })
-            );
-    
+			var hasButton = this.module.getConfiguration("hasButton");
+			if(hasButton==="button") {
+				this.buttonCell.append(
+					$("<span>"+this.module.getConfiguration('btnvalue')+"</span>")
+					.addClass("form-button")
+					.on("click",function(){
+						self.module.controller.onButtonClick(self._code);
+					})
+				);
+			}
+			else {
+				this.buttonRow.remove();
+			}
             this.onReady.resolve();
         },
         update: {
