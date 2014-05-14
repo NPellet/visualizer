@@ -41,8 +41,8 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.picture = {};
 	functions.picture.toscreen = function(def, val) {
-		def.reject('<img src="' + Traversing.get(val) + '" />')
-	}
+		def.reject('<img src="' + Traversing.get(val) + '" />');
+	};
 
 	functions.gif = functions.picture;
 	functions.jpeg = functions.picture;
@@ -52,7 +52,18 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	functions.doi = {};
 	functions.doi.toscreen = function(def, value) {
 		return def.resolve(value.value.replace(/^(.*)$/,'<a target="_blank" href="http://dx.doi.org/$1"><img src="../images/logo/doi.png" /></a>'));
-	}
+	};
+	
+	functions.jme = {};
+	functions.jme.toscreen = function(def, jme, options, highlights, box) {
+		require(["lib/chemistry/jme-converter"], function(Converter){
+			var molfile = {
+				type:"mol2d",
+				value: Converter.toMolfile(jme.value)
+			};
+			functions.mol2d.toscreen(def, molfile, options, highlights, box);
+		});
+	};
 
 	functions.mol2d = {};
 	functions.mol2d.toscreen = function(def, molfile, options, highlights, box) {
