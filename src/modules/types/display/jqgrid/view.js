@@ -15,7 +15,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			}
 	 		}
 
-	 		this.uniqId = Util.getNextUniqueId();
+	 		this.uniqId = Util.getNextUniqueId()+"_";
 	 		this.dom = $('<div class="ci-displaylist-list"></div>');
 	 		this.domTable = $("<table />").attr('id', this.uniqId).css({width: '100%'});
 
