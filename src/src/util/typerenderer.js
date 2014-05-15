@@ -87,7 +87,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				canvas.specs.backgroundColor = "transparent";
 				canvas.specs.bonds_saturationWidth_2D = .18;
 				canvas.specs.atoms_font_families_2D = ['Helvetica', 'Arial', 'sans-serif'];
-				canvas.specs.atoms_displayTerminalCarbonLabels_2D = true;
+			//	canvas.specs.atoms_displayTerminalCarbonLabels_2D = false;
 
 				var molLoaded = ChemDoodle.readMOL(molfile.value);
 				//molLoaded.scaleToAverageBondLength(14.4);
