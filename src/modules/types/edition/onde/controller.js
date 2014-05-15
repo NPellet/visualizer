@@ -50,6 +50,12 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
                         type: 'list'
                     },
                     fields: {
+						hasButton: {
+							type:"checkbox",
+							title:"Show export button",
+							default:["show"],
+							options:{show:"Show"}
+						},
 						button_text: {
 							type: 'text',
 							title: 'Text of the export button',
@@ -110,7 +116,8 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         mode: ['groups', 'group', 0, 'mode', 0],
         schemaSource: ['groups', 'group', 0, 'schemaSource', 0],
         schema: ['groups', 'group', 0, 'schema', 0],
-		button_text: ['groups', 'group', 0, 'button_text', 0]
+		button_text: ['groups', 'group', 0, 'button_text', 0],
+		hasButton: ['groups', 'group', 0, 'hasButton', 0]
     };
     
     controller.prototype.getSchema = function() {

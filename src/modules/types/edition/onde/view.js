@@ -9,16 +9,26 @@ define(['modules/default/defaultview', "src/util/util", "jquery", "components/on
     view.prototype = $.extend(true, {}, Default, {
         init: function() {
             var that = this;
-			this.dom = $('<form id="' + this._id + '"></form>').css({
+			this.dom = $('<form id="' + this._id + '">').css({
 				height: '100%',
 				width: '100%',
 				textAlign: "center"
-			}).append($('<div class="onde-panel">')).append(new Button(this.module.getConfiguration('button_text'), function() {
+			}).append($('<div class="onde-panel">'));
+			
+			var hasButton = this.module.getConfiguration("hasButton");
+			if(hasButton[0]) {
+				this.dom.append(new Button(this.module.getConfiguration('button_text'), function() {
 					that.exportForm();
 				}, {color: 'green'}).render().css({
 					marginTop: "10px"
 				}));
-            
+			}
+			
+            this.dom.on("submit",function(e){
+				e.preventDefault();
+				that.exportForm();
+				return false;
+			});
             this.inputVal = {};
 
             this.onReady = $.Deferred();
