@@ -166,6 +166,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			}
                                 
 	 			moduleValue = moduleValue.get();
+				this.elements = moduleValue;
                 
 				var self = this, 
 					jpaths = this.module.getConfiguration( 'colsjPaths' ),
@@ -315,14 +316,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			addRow: function(source) {
 			
 				this.elements = this.elements || [];
-				this.elements.push(source);
 
-				var jpaths = this.module.getConfiguration( 'colsjPaths' );
-				var l = this.elements.length - 1;
-
-				//this.module.data = this.module.data || new DataArray();
-				//console.log(this.module, this.module.);// this.module.model.getDataFromRel('list') );
 				this.module.getDataFromRel('list').push( source );
+				var l = this.elements.length - 1;
 
 				var el = this.buildElement(source, l);
 				this.domBody.after( el );
