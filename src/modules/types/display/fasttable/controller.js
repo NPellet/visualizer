@@ -16,6 +16,13 @@ define(['modules/types/display/jqgrid/controller'], function(controller) {
 		cssClass: 'fasttable'
 	};
 	
+	controller.prototype.references.showList = {
+		label: 'Array of display flags',
+		type: 'array'
+	};
+	
+	controller.prototype.variablesIn.push("showList");
+	
 
 	return controllerExtended;
 });

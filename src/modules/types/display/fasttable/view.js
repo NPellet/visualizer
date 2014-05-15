@@ -1,4 +1,5 @@
 define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/domdeferred', 'src/util/datatraversing', 'src/util/typerenderer', 'src/util/context'], function(require, Default, Util, API, DomDeferred, Traversing, Renderer, Context) {
+	"use strict";
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -86,7 +87,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 			this.jpaths = {};
 
-			thead = '<tr>';
+			var thead = '<tr>';
 			for( ; j < l ; j ++ ) {
 
 				if( ! jpaths[ j ].jpath ) {
@@ -224,7 +225,35 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 					}
 
 				}, 1000); // 1 sec timeout
+				
+				this.list = true;
+				this.showList = false; // Input data has changed,  showList must be reset.
+				this.updateVisibility();
+			},
+			showList: function( value ) {
+				if(!(value instanceof Array)) {
+					return;
+				}
+				
+				this.showList = value;
+				this.updateVisibility();
+			}		
+		
+		},
+		
+		updateVisibility: function() {
+			if(!this.showList || !this.list)
+				return;
+			
+			var s = this.showList,
+					l = s.length,
+					el,
+					id = this.module.getId()+"_";
+			for(var i = 0; i < l; i++) {
+				el = document.getElementById(id+i);
+				s[i] ? el.removeAttribute("style") : el.setAttribute("style","display:none");
 			}
+			
 		},
 
 		buildElement: function( source, i ) {
