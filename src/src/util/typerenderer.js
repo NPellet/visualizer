@@ -51,7 +51,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.doi = {};
 	functions.doi.toscreen = function(def, value) {
-		return def.resolve(value.value.replace(/^(.*)$/,'<a target="_blank" href="http://dx.doi.org/$1"><img src="../images/logo/doi.png" /></a>'));
+		return def.resolve(value.value.replace(/^(.*)$/,'<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
 	};
 	
 	functions.jme = {};
