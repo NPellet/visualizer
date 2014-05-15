@@ -11,6 +11,7 @@
 	padding: 3px;
 	border-right: 1px solid #777777;
 	border-bottom: 1px solid #777777;
+        overflow: hidden;
 }
 
 
