@@ -209,7 +209,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 							var dom = self.domBody.find('#' + self.module.getId() + '_' + j);
 							self.module.data[ j ].onChange( function( el ) {
-								dom.replaceWith( self.buildElement( el, i, true ) );
+								dom.replaceWith( self.buildElement( el, j, true ) );
 							}, self.module.getId() );
 
 							if( self.module.data[ j ].removable ) {
