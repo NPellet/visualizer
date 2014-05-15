@@ -1,4 +1,5 @@
 define(['forms/form'], function( Form ) {
+	"use strict";
 
 	function makeOptions( cfg, form ) {
 
@@ -318,15 +319,16 @@ define(['forms/form'], function( Form ) {
 
 			var i = 0,
 				l = fields.length,
-				allFields = {};
+				allFields = {},
+				type;
 				
 			for( ; i < l ; i ++ ) {
 
 				if( ! fields[ i ].groups.general ) {
 					continue;
 				}
-
-				var defaultVal = (fields[ i ].groups.defaultVal && fields[ i ].groups.defaultVal[ 0 ].defaultVal) ? fields[ i ].groups.defaultVal[ 0 ].defaultVal[ 0 ] : ''
+				
+				var defaultVal = (fields[ i ].groups.defaultVal && fields[ i ].groups.defaultVal[ 0 ].defaultVal[0]) ? fields[ i ].groups.defaultVal[ 0 ].defaultVal[ 0 ] : ''
 				var validation = {};
 
 				if( fields[ i ].sections.validation && fields[ i ].sections.validation[ 0 ].groups && fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].pattern[ 0 ] !== "" ) {
