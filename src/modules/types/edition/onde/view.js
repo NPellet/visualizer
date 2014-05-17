@@ -15,7 +15,7 @@ define(['modules/default/defaultview', "src/util/util", "jquery", "components/on
 				textAlign: "center"
 			}).append($('<div class="onde-panel">'));
 			
-			var hasButton = this.module.getConfiguration("hasButton");
+			var hasButton = this.module.getConfiguration("hasButton") || [];
 			if(hasButton[0]) {
 				this.dom.append(new Button(this.module.getConfiguration('button_text'), function() {
 					that.exportForm();
