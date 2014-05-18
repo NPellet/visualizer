@@ -42,7 +42,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 		}).on('click', 'tr', function() {
 
- 				self.module.controller.lineClick( self.module.data, parseInt( $(this).attr('data-row-id') ) );
+ 				self.module.controller.lineClick( self.module.data, $(this).index() );
 
 	 		}).on('click', 'th', function() { // Sorting
 
@@ -324,11 +324,15 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				this.domBody.after( el );
 			},
 
+			removeRow: function( source ) {
+				this.onActionReceive.removeRowById.call( this, this.module.getDataFromRel('list').indexOf( source ) );
+			},
+
 			removeRowById: function( rowId ) {
 
 				var el = this.module.getDataFromRel('list').splice( rowId, 1 );
 				el[ 0 ].unbindChange( this.module.getId( ) );
-				this.domBody.find("[data-row-id=" + rowId + "]").remove();
+				this.domBody.children().eq( rowId ).remove();
 			}
 
 		},
