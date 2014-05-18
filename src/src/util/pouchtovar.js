@@ -222,6 +222,11 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 				this.triggerChange("internal_pouch_change");
 				return elementsRemoved;
 			}
+		},
+		indexOf: {
+			value: function() {
+				return Array.prototype.indexOf.apply( this.value, arguments );
+			}
 		}
 	});
 
