@@ -592,7 +592,10 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     
     _drawPointsQuick: function() {
       var self = this;
-      
+      if(self._mainParticleObject) {
+        self.scene.remove(self._mainParticleObject);
+        self._mainParticleObject = null;
+      }
       self._mainParticleObject = self._newParticleObject();      
       self._updateParticleObject(self._mainParticleObject);
 			self.scene.add(self._mainParticleObject);
@@ -1313,6 +1316,26 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       
     },
     
+    _updateMathPoints: function(options) {
+      var self = this;
+      var filter;
+      if(options.applyFilter) {
+        filter = self._data.inBoundary.slice(0);
+        for (var i = 0; i < self._dispFilter.length; i++) {
+          filter[i] = self._dispFilter[i] && filter[i];
+        }
+      }
+      else {
+        filter = self._data.inBoundary;
+      }
+      
+      for( var i = 0; i < self._data.x.length; i++ ) {
+        self.mathPoints[i].radius = filter[i]
+        ? self._data.size[i] * NORM_CONSTANT
+        : 0;
+      }
+    },
+    
     _drawPoint: function(point) {
       var self = this;
       if(point.render !== false) point.render = true;
@@ -1508,127 +1531,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           self._zoomToFit();
           self._firstLoad = false;
         }
-        console.log('loadedData done');
         if(self._data) {
           self._drawGraph();
-          
-          API.killHighlight( self.module.getId());
-          var highlightSet = {};
-          console.log("-----");
-          if(self._data._highlight) {
-            console.log('listen highlights');
-            if(self._configCheckBox('optimize', 'show')) listenHighlightsBis(self._data._highlight);
-            else listenHighlights(self._data._highlight);
-          }
-          var infoHighlights = _.flatten(_.pluck(self._data.info, '_highlight'))
-          if(infoHighlights) {
-            if(self._configCheckBox('optimize', 'show')) listenHighlightsBis(infoHighlights);
-            else listenHighlights(infoHighlights);
-          }
         }
+        console.log('loadedData done');
       });
-      
-      
-		  function listenHighlights(hl) {
-        for(var i=0; i<hl.length; i++) {
-          (function(){
-            var index = i;
-            API.listenHighlight( {_highlight: hl[i]}, function( onOff, key ) {
-              if(onOff) {
-                drawHighlight(index);
-              }
-              else {
-                undrawHighlight(index);
-              }
-      
-            }, false, self.module.getId());
-          })();
-        }
-		  }
-      
-      function listenHighlightsBis(hl) {
-        self._prepareHighlights(hl);
-        var hlset = _.uniq(hl);
-        
-        _.keys(hlset).forEach(function(k){
-          if(!hlset[k]) return;
-          API.listenHighlight( {_highlight: hlset[k]}, function(onOff, key) {
-            if(onOff) {
-              drawHighlightBis(key);
-            }
-            else {
-              undrawHighlightBis(key);
-            }
-          });
-        });
-      }
-      
-      function undrawHighlightBis(hl) {
-        if(self.hlObjectsBis[hl] && self.hlObjectsBis[hl].drawn) {
-          self.scene.remove(self.hlObjectsBis[hl]);
-          self.hlObjectsBis[hl].drawn = false;
-          self._render();
-        }
-      }
-      
-      function drawHighlightBis(hl) {
-        console.log('draw highlights', hl);
-        if(self.hlObjectsBis[hl]) {
-          if(self.hlObjectsBis[hl].drawn === true) {
-            return;
-          }
-          else {
-            self.scene.add(self.hlObjectsBis[hl]);
-            self.hlObjectsBis[hl].drawn = true;
-            self._render();
-          }
-        }
-      }
-      
-      function undrawHighlight(index) {
-        if(!highlightObjects[index]) return;
-        self.scene.remove(highlightObjects[index]);
-        delete highlightObjects[index];
-        self._render();
-      }
-      
-      
-      function drawHighlight(index) {
-        if(highlightObjects[index]) {
-          return;
-        }
-        
-        // Highlight radius
-        var radius = DEFAULT_POINT_RADIUS * 1.0;
-        if(self._data.size && self._data.size[index]) {
-          radius = self._data.size[index] * 1.0;
-        }
-        
-        var geometry = DEFAULT_POINT_GEOMETRY;
-        if(self._data.geometry && self._data.geometry[index]) {
-          geometry = self._data.geometry[index];
-        }
-        
-        // Highlight color
-        var color = '#e5be39';
-        // if(self._data[serie].color && self._data[serie].color[index]) {
-        //   color = self._data[serie].color[index];
-        // }
-        
-        var mesh = self._drawPoint({
-          x: self._data.normalizedData.x[index],
-          y: self._data.normalizedData.y[index],
-          z: self._data.normalizedData.z[index],
-          color: color,
-          radius: radius,
-          opacity: HIGHLIGHT_OPACITY,
-          transparent: true,
-          index: index,
-          geometry: geometry
-        });
-        highlightObjects[index] = mesh;
-        self._render();
-      }
     },
     
     _newParticleObject: function(indexes, options) {
@@ -1679,7 +1586,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       // particle system
       var object = new THREE.ParticleSystem( geometry, shaderMaterial );
       object.indexes = indexes;
-      // self.hlObjectsBis[key].drawn = true;
+      // self._hlObjectsBis[key].drawn = true;
       // highlightObjectBis.dynamic = true;
       return object;
     },
@@ -1693,29 +1600,52 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       var values_color = object.material.attributes.ca.value;
       var color = self._data.color;
       var size  = self._data.size;
-      var factor = 2.2388 * (options.sizeFactor || 1.0);
+      var factor = 2.2388 * (options.sizeFactor || 1.0) * NORM_CONSTANT * self.dom.height();
       var forcedColor = options.forcedColor ? new THREE.Color(options.forcedColor) : null;
+      var updateColor = options.updateColor || true;
+      var filter;
+      if(options.applyFilter) {
+        filter = self._data.inBoundary.slice(0);
+        for (var i = 0; i < self._dispFilter.length; i++) {
+          filter[i] = self._dispFilter[i] && filter[i];
+        }
+      }
+      else {
+        filter = self._data.inBoundary;
+      }
       if(indexes) {
         for( var v = 0; v < vertices.length; v ++ ) {
-          values_size[ v ] = self._data.inBoundary[indexes[v]]
-            ? (size[indexes[v]] || DEFAULT_POINT_RADIUS) * NORM_CONSTANT * self.dom.height() * factor
+          values_size[ v ] = filter[indexes[v]]
+            ? (size[indexes[v]] || DEFAULT_POINT_RADIUS) * factor
             : 0;
-          values_color[ v ] = forcedColor || new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+            if(forcedColor){
+              values_color[v] = forcedColor;
+            }
+            else if(updateColor){
+             values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR); 
+            }
         }
       }
       else {
         for( var v = 0; v < vertices.length; v ++ ) {
-          values_size[ v ] = self._data.inBoundary[v] 
-            ?(size[v] || DEFAULT_POINT_RADIUS) * NORM_CONSTANT * self.dom.height() * factor
+          values_size[ v ] = filter[v]
+            ?(size[v] || DEFAULT_POINT_RADIUS) * factor
             : 0;
-          values_color[ v ] = forcedColor || new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+            if(forcedColor) {
+              values_color[ v ] = forcedColor
+            }
+            else if(updateColor) {
+              values_color[ v ] = new THREE.Color(color[v] || DEFAULT_POINT_COLOR);
+            }
         }
       }
+      object.material.attributes.size.needsUpdate = true;
+      self.renderer.render(self.scene, self.camera);
     },
     
     _prepareHighlights: function(hl) {
       var self = this;
-      self.hlObjectsBis = self.hlObjectsBis || {};
+      self._hlObjectsBis = self._hlObjectsBis || {};
       var m = {};
       for(var i=0; i<hl.length; i++) {
         m[hl[i]] = m[hl[i]] || [];
@@ -1724,11 +1654,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       
       _.keys(m).forEach(function(key) {
         var tstart = new Date().getTime();
-        self.hlObjectsBis[key] = self._newParticleObject(m[key], {
+        self._hlObjectsBis[key] = self._newParticleObject(m[key], {
           image: "/test/threejs/examples/textures/sprites/ballt.png"
         });
         
-        self._updateParticleObject(self.hlObjectsBis[key], {
+        self._updateParticleObject(self._hlObjectsBis[key], {
           sizeFactor: 1.5,
           forcedColor: '#e5be39'
         });
@@ -1762,6 +1692,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         this._normalizeData();
         this._setGridOrigin();
         this._updateChartData();
+        this._activateHighlights();
         
         console.log('moduleValue.get(): ', this._data);
 
@@ -1794,6 +1725,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         this._normalizeData();
         this._setGridOrigin();
         this._updateChartData();
+        this._activateHighlights();
         
         console.log('moduleValue.get(): ', this._data);
 
@@ -1805,6 +1737,21 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         else {
           console.log("points changed");
           this._drawGraph();
+        }
+      },
+      
+      'boolArray': function(moduleValue) {
+        console.log('bool array received');
+        var self = this;
+        if(!moduleValue || !moduleValue.get()) {
+          console.error('Unvalid value boolArray', moduleValue);
+          return;
+        }
+        self._dispFilter = moduleValue.get();
+        self._updateParticleObject(self._mainParticleObject, {applyFilter: true, updateColor: false});
+        self._updateMathPoints({applyFilter: true});
+        for(var key in self._hlObjectsBis) {
+          self._updateParticleObject(self._hlObjectsBis[key], {applyFilter: true, updateColor: false, sizeFactor: 1.5});
         }
       }
 		},
@@ -1821,7 +1768,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       if(! value instanceof Array || value.length === 0) {
         console.error('Data 3D not valid');
       }
-      self._data = self._data || {};
+      self._data = {};
       for (var i = 0; i < value.length; i++) {
         for(var key in value[i]) {
           self._data[key] ? self._data[key].push(value[i][key]) : (self._data[key] = [value[i][key]]);
@@ -1830,14 +1777,15 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       self._meta = {};
       self._data._highlight = self._data._highlight || [];
       self._data.info = self._data._info || [];
+      self._dispFilter = self._dispFilter || [];
       
       // generate random x,y z
-      var n = 1000;
-      self._data.x =       generateRandomArray(n,0,5);
-      self._data.y =       generateRandomArray(n,0,5);
-      self._data.z =       generateRandomArray(n,0,5);
-      self._data.size =    generateRandomArray(n, 0.01, 0.02);
-      self._data.color =  generateRandomColors(n);
+      // var n = 1000;
+      // self._data.x =       generateRandomArray(n,0,5);
+      // self._data.y =       generateRandomArray(n,0,5);
+      // self._data.z =       generateRandomArray(n,0,5);
+      // self._data.size =    generateRandomArray(n, 0.01, 0.02);
+      // self._data.color =  generateRandomColors(n);
       // self._data._highlight = generateRandomFromArray(['A','B','C','D'], n);
     },
 		
@@ -1872,6 +1820,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         else self._meta[key] = value[key];
       });
       
+      self._dispFilter = self._dispFilter || [];
       console.log('meta: ', self._meta);
       
       // generate random x,y z
@@ -1896,6 +1845,126 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     _updateChartData: function() {
       this._completeDataInfo('size', DEFAULT_POINT_RADIUS);
       this._completeDataInfo('color', DEFAULT_POINT_COLOR);
+    },
+    
+    _activateHighlights: function() {
+      var self = this;
+      if(self._data) {        
+        API.killHighlight( self.module.getId());
+        var highlightSet = {};
+        console.log("-----");
+        if(self._data._highlight) {
+          console.log('listen highlights');
+          if(self._configCheckBox('optimize', 'show')) listenHighlightsBis(self._data._highlight);
+          else listenHighlights(self._data._highlight);
+        }
+        var infoHighlights = _.flatten(_.pluck(self._data.info, '_highlight'))
+        if(infoHighlights) {
+          if(self._configCheckBox('optimize', 'show')) listenHighlightsBis(infoHighlights);
+          else listenHighlights(infoHighlights);
+        }
+      }
+      
+		  function listenHighlights(hl) {
+        for(var i=0; i<hl.length; i++) {
+          (function(){
+            var index = i;
+            API.listenHighlight( {_highlight: hl[i]}, function( onOff, key ) {
+              if(onOff) {
+                drawHighlight(index);
+              }
+              else {
+                undrawHighlight(index);
+              }
+      
+            }, false, self.module.getId());
+          })();
+        }
+		  }
+      
+      function listenHighlightsBis(hl) {
+        self._prepareHighlights(hl);
+        var hlset = _.uniq(hl);
+        
+        _.keys(hlset).forEach(function(k){
+          if(!hlset[k]) return;
+          API.listenHighlight( {_highlight: hlset[k]}, function(onOff, key) {
+            if(onOff) {
+              drawHighlightBis(key);
+            }
+            else {
+              undrawHighlightBis(key);
+            }
+          });
+        });
+      }
+      
+      function undrawHighlightBis(hl) {
+        if(self._hlObjectsBis[hl] && self._hlObjectsBis[hl].drawn) {
+          self.scene.remove(self._hlObjectsBis[hl]);
+          self._hlObjectsBis[hl].drawn = false;
+          self._render();
+        }
+      }
+      
+      function drawHighlightBis(hl) {
+        console.log('draw highlights', hl);
+        if(self._hlObjectsBis[hl]) {
+          if(self._hlObjectsBis[hl].drawn === true) {
+            return;
+          }
+          else {
+            self.scene.add(self._hlObjectsBis[hl]);
+            self._hlObjectsBis[hl].drawn = true;
+            self._render();
+          }
+        }
+      }
+      
+      function undrawHighlight(index) {
+        if(!highlightObjects[index]) return;
+        self.scene.remove(highlightObjects[index]);
+        delete highlightObjects[index];
+        self._render();
+      }
+      
+      
+      function drawHighlight(index) {
+        if(highlightObjects[index]) {
+          return;
+        }
+        
+        // Highlight radius
+        var radius = DEFAULT_POINT_RADIUS * 1.0;
+        if(self._data.size && self._data.size[index]) {
+          radius = self._data.size[index] * 1.0;
+        }
+        
+        var geometry = DEFAULT_POINT_GEOMETRY;
+        if(self._data.geometry && self._data.geometry[index]) {
+          geometry = self._data.geometry[index];
+        }
+        
+        // Highlight color
+        var color = '#e5be39';
+        // if(self._data[serie].color && self._data[serie].color[index]) {
+        //   color = self._data[serie].color[index];
+        // }
+        
+        var mesh = self._drawPoint({
+          x: self._data.normalizedData.x[index],
+          y: self._data.normalizedData.y[index],
+          z: self._data.normalizedData.z[index],
+          color: color,
+          radius: radius,
+          opacity: HIGHLIGHT_OPACITY,
+          transparent: true,
+          index: index,
+          geometry: geometry
+        });
+        highlightObjects[index] = mesh;
+        self._render();
+      }
     },
 
 		updateOptions: function() {

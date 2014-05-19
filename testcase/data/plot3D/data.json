@@ -5,53 +5,30 @@
 		{"label":"C","_highlight":["C"]},
 		{"label":"D","_highlight":["D"]}
 	],
-	"pieChart":
-	{
-		"type":"chart",
-		"value": {
-			"title" : "A 3D scatter plot",
-			"axis": {
-				"x": {
-					"type": "bottom", 
-					"unit": "",
-					"name": "My x axis",
-					"min":"",
-					"max":""
-				},
-				"y": {
-					"type": "left",
-					"unit": "",
-					"name": "My y axis",
-					"min":"",
-					"max":""
-				},
-				"z": {
-					"type": "",
-					"unit": "",
-					"name": "My z axis",
-					"min":"",
-					"max":""
-				}
-			},
-			"data" : 
-			[
-				{
-					"x":[  -3.754205689765513,  -1.6333345114253461,  2.2538907872512937,  -3.9900323399342597,  -0.4148072609677911,  -0.9389640227891505,  2.458617442753166,  -4.768574552144855,  4.049353285226971,  1.5502651664428413],          "y": [  -1.7616987996734679,  -1.1755939945578575,  -2.4749519187025726,  -4.1625286266207695,  -2.4428422981873155,  0.5347359040752053,  0.7007912127301097,  -4.8655423312447965,  3.0277323978953063,  4.266316152643412],          "z": [  -1.4008182426914573,  3.7658356968313456,  1.9420735887251794,  -1.6442730068229139,  -4.122758428566158,  -4.480947081465274,  -1.9561637588776648,  4.926873424556106,  -2.505868310108781,  1.5264936676248908],
-					"color":[  "#2E8",  "#840",  "#408",  "#B0B",  "#7EF",  "#2DF",  "#FC5",  "#419",  "#BCC",  "#CE2"],
-					"size":[  0.04149198345607147,  0.04904271787265316,  0.057007366572506726,  0.036798863927833735,  0.04028600241523236,  0.03705501230433583,  0.031499664578586814,  0.04477527257753536,  0.04834282983094454,  0.04827300011878833],
-					"geometry":[],
-					"label":["Label A","Label B","Label C","Label D Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. "],
-					"_highlight":["A","B","C","D","E","A","B","C","D","E"],
-					"info":[{"name":"first", "label":"Label A"},
-                  {"name":"second", "label":"Label B"},
-                  {"name":"third", "label":"Label C"},
-                  {"name":"forth", "label":"Label D"}],
-					"serieLabel": "My first serie",
-					"xAxis": "x", 
-					"yAxis": "y",
-					"zAxis": "z"
-				}
-			]
-		}
-	}
+  "pieChart":
+  [
+    {
+      "x": 3.754205689765513,
+      "y": 1.7616987996734679,
+      "z": 1.4008182426914573,
+      "color":"#4A1",
+      "size":0.04149198345607147
+    },
+    {
+      "x": 2.1,
+      "y": 4.3,
+      "z": 2.3,
+      "color":"#2E8",
+      "size":0.03
+    },
+    {
+      "x": 1.754205689765513,
+      "y": 2.7616987996734679,
+      "z": 4.4008182426914573,
+      "color":"#EB3",
+      "size":0.025
+    }
+  ]
+
 }
+

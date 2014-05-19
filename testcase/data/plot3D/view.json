@@ -1,18 +1,8 @@
 {
-	"version": "2.2.4",
+	"version": "2.3.0-beta1",
 	"modules": [
 		{
 			"url": "modules/types/chart/basic/scatter3D/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 0,
-				"top": 0
-			},
-			"size": {
-				"width": 71,
-				"height": 57
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -51,13 +41,13 @@
 								2
 							],
 							"gridOriginX": [
-								""
+								"1"
 							],
 							"gridOriginY": [
-								""
+								"1"
 							],
 							"gridOriginZ": [
-								""
+								"1"
 							],
 							"projection": [
 								[
@@ -118,39 +108,49 @@
 			"id": 1,
 			"vars_in": [
 				{
-					"rel": "chart",
-					"name": "pieChart"
+					"rel": "data3D",
+					"name": "test"
+				},
+				{
+					"rel": "boolArray",
+					"name": "pointsToDraw"
 				}
 			],
 			"actions_in": {},
 			"vars_out": [
-				{
-					"event": "onHover",
-					"rel": "info",
-					"jpath": "element",
-					"name": "apoint"
-				}
+				{}
 			],
 			"actions_out": {},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 66,
+						"height": 44
+					},
+					"display": true,
+					"title": "Untitled module",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Untitled module"
 		},
 		{
 			"url": "modules/types/edition/object_editor/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 72,
-				"top": 0
-			},
-			"size": {
-				"width": 25,
-				"height": 50
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -189,25 +189,34 @@
 				}
 			],
 			"actions_out": {},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 72,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 23,
+						"height": 32
+					},
+					"display": true,
+					"title": "Untitled module",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Untitled module"
 		},
 		{
 			"url": "modules/types/display/fasttable/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 98,
-				"top": 16
-			},
-			"size": {
-				"width": 29,
-				"height": 34
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -255,64 +264,169 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 98,
+						"top": 16,
+						"right": 0
+					},
+					"size": {
+						"width": 28,
+						"height": 16
+					},
+					"display": true,
+					"title": "Untitled module",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Untitled module"
 		},
 		{
-			"url": "modules/types/edition/object_editor/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 98,
-				"top": 0
-			},
-			"size": {
-				"width": 29,
-				"height": 15
-			},
+			"url": "modules/types/chart/statistics/parallel_coordinates/",
 			"configuration": {
 				"sections": {},
 				"groups": {
 					"group": [
 						{
-							"editable": [
-								"view"
-							],
-							"expanded": [
-								[]
-							],
-							"storeObject": [
-								[]
-							],
-							"storedObject": [
-								"{}"
+							"colJPath": [
+								null
 							]
 						}
+					],
+					"cols": [
+						[
+							{
+								"name": "x",
+								"jpath": "element.x"
+							},
+							{
+								"name": "y",
+								"jpath": "element.y"
+							},
+							{
+								"name": "z",
+								"jpath": "element.z"
+							}
+						]
 					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 7,
+						"right": 0,
+						"top": 47
+					},
+					"size": {
+						"width": 56,
+						"height": 30
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 4,
 			"vars_in": [
 				{
 					"rel": "value",
-					"name": "apoint"
+					"name": "test"
 				}
 			],
-			"actions_in": {},
-			"vars_out": [
+			"actions_in": [
 				{}
 			],
-			"actions_out": {},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"title": "Untitled",
+			"vars_out": [
+				{
+					"event": "onBrushSelection",
+					"rel": "flagResult",
+					"name": "pointsToDraw"
+				}
+			],
+			"actions_out": {}
+		},
+		{
+			"url": "modules/types/edition/filter_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"script": [
+								"function filter() {\n  function generateRandomArray(n, min, max) {\n    var result = [];\n    for(var i=0; i<n; i++) {\n      result.push(Math.random()*(max-min) + min);\n    }\n    return result;\n  }\n  function generateRandomColors(n) {\n    var result = [];\n    var letters = '0123456789ABCDEF'.split('');\n    for(var i=0; i<n; i++) {\n      var color = '#'\n      for(var j=0; j<3; j++) {\n        color += letters[Math.floor(Math.random() * 16)];\n      }\n      result.push(color);\n    }\n    return result;\n  }\n  function generateRandomFromArray(arr, n) {\n    var x = generateRandomArray(n, 0, arr.length-0.001);\n    x = x.map(function(a) {\n      return arr[Math.floor(a)];\n    }); \n    return x;\n  }\n  var n = 100;\n  var x = generateRandomArray(n, 0, 5);\n  var y = generateRandomArray(n, 0, 5);\n  var z = generateRandomArray(n, 0, 5);\n  var color = generateRandomColors(n);\n  var highlight = generateRandomFromArray(['A','B','C','D'], n);\n  var result = [];\n  for(var i=0; i<n; i++) {\n    result.push({});\n    result[i].x = x[i];\n    result[i].y = y[i];\n    result[i].z = z[i];\n    result[i].color = color[i];\n    result[i]._highlight = highlight[i];\n  }\n  console.log(result);\n  return DataObject.check(result, true);\n\n}"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 74,
+						"right": 0,
+						"top": 33
+					},
+					"size": {
+						"width": 54,
+						"height": 37
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{}
+			],
+			"actions_in": {},
+			"title": "Untitled",
+			"vars_out": [
+				{
+					"event": "onButtonClick",
+					"rel": "dataobject",
+					"name": "test"
+				}
+			],
+			"actions_out": {}
 		}
 	],
 	"variables": [
@@ -325,8 +439,91 @@
 			"jpath": "element.pieChart"
 		}
 	],
-	"pouchvariables": [],
+	"pouchvariables": [
+		{}
+	],
 	"configuration": {
 		"title": "No title"
-	}
+	},
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"crons": {
+		"0": [
+			{}
+		],
+		"cronurl": [
+			null
+		],
+		"crontime": [
+			null
+		],
+		"cronvariable": [
+			null
+		]
+	},
+	"couch_replication": [
+		{
+			"sections": {},
+			"groups": {
+				"couch": [
+					[
+						{
+							"direction": "both",
+							"continuous": []
+						}
+					]
+				]
+			}
+		}
+	],
+	"init_script": [
+		{
+			"sections": {},
+			"groups": {
+				"general": [
+					{
+						"script": [
+							"    function generateRandomArray(n, min, max) {\n    var result = [];\n    for(var i=0; i<n; i++) {\n      result.push(Math.random()*(max-min) + min);\n    }\n    return result;\n  }\n  function generateRandomColors(n) {\n    var result = [];\n    var letters = '0123456789ABCDEF'.split('');\n    for(var i=0; i<n; i++) {\n      var color = '#'\n      for(var j=0; j<3; j++) {\n        color += letters[Math.floor(Math.random() * 16)];\n      }\n      result.push(color);\n    }\n    return result;\n  }\n  var n = 100;\n  var x = generateRandomArray(n, 0, 5);\n  var y = generateRandomArray(n, 0, 5);\n  var z = generateRandomArray(n, 0, 5);\n  var color = generateRandomColors(n);\n  var result = [];\n  for(var i=0; i<n; i++) {\n    result.push({});\n    result[i].x = x[i];\n    result[i].y = y[i];\n    result[i].z = z[i];\n    result[i].color = color[i];\n  }\n  console.log(result);\n  API.setVar('test', DataObject.check(result, true));\n"
+						]
+					}
+				]
+			}
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
 }

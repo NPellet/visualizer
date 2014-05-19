@@ -66,7 +66,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 			label: 'An array of boolean'
 		},
     data3D: {
-      type: 'data3D',
+      type: 'array',
       label: 'Array of {x, y, z, size, color} objects'
     },
     point: {
