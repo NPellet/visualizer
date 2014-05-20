@@ -9,6 +9,7 @@ define(function() {
 		'jme': "string",
 		'doi': "string",
 		'gif': "string",
+		'svg': "string",
 		'picture': "string",
 		'string': "string",
 		'jpg': "string",
