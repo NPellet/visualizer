@@ -1,4 +1,4 @@
-define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'components/three.js/examples/js/controls/TrackballControls'], function(Default, Graph, Traversing, API, Util, _) {
+define(['modules/default/defaultview','src/util/datatraversing','src/util/api','src/util/util', 'underscore', 'threejs', 'components/three.js/examples/js/controls/TrackballControls'], function(Default, Traversing, API, Util, _) {
   function generateRandomArray(n, min, max) {
     var result = [];
     for(var i=0; i<n; i++) {
