@@ -726,12 +726,12 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         nbTicks++;
       }      
       
-      self._data.nbTicks[axis] = Math.floor(nbTicks) + 1;
+      // self._data.nbTicks[axis] = Math.floor(nbTicks) + 1;
       self._data.intervalVal[axis] = unitPerTickCorrect;
-      self._data.intervalPx[axis] = NORM_CONSTANT / (self._data.nbTicks[axis]-1);
       self._data.realLen[axis] = self._data.realMax[axis] - self._data.realMin[axis];
+      self._data.nbTicks[axis] = Math.round((self._data.realMax[axis] - self._data.realMin[axis])/self._data.intervalVal[axis]+1);
+      self._data.intervalPx[axis] = NORM_CONSTANT / (self._data.nbTicks[axis]-1);
       self._data.decimals[axis] = decimals;
-      self._data.pxPerTick[axis] = pxPerTick;
       var intdec = Math.floor(Math.log(unitPerTickCorrect) / Math.log(10));
       if(Math.abs(intdec) <= 1) {
         self._data.intervalFactor[axis] = 1;
@@ -752,7 +752,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       self._data.nbTicks = {};
       self._data.intervalVal = {}; 
       self._data.decimals = {};
-      self._data.pxPerTick = {};
       self._data.intervalFactor = {};
       
       self._getUnitPerTick(NORM_CONSTANT, 3, self._data.len.x, 'x');
@@ -1518,6 +1517,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 		},
 
 		onResize: function() {
+      console.log("In onResize");
       var highlightObjects = {};
       var highlightObjectBis = null;
       var self = this;
@@ -1592,6 +1592,9 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     },
     
     _updateParticleObject: function(object, options) {
+      if(!object) {
+        return;
+      }
       var self = this;
       options = options || {};
       var indexes = object.indexes;
@@ -1617,7 +1620,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         for( var v = 0; v < vertices.length; v ++ ) {
           values_size[ v ] = filter[indexes[v]]
             ? (size[indexes[v]] || DEFAULT_POINT_RADIUS) * factor
-            : 0;
+            : -1;
             if(forcedColor){
               values_color[v] = forcedColor;
             }
@@ -1742,6 +1745,9 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       
       'boolArray': function(moduleValue) {
         console.log('bool array received');
+        if(!this._data || !this._mainParticleObject) {
+          return;
+        }
         var self = this;
         if(!moduleValue || !moduleValue.get()) {
           console.error('Unvalid value boolArray', moduleValue);
