@@ -375,7 +375,7 @@
 					"group": [
 						{
 							"script": [
-								"function filter() {\n  function generateRandomArray(n, min, max) {\n    var result = [];\n    for(var i=0; i<n; i++) {\n      result.push(Math.random()*(max-min) + min);\n    }\n    return result;\n  }\n  function generateRandomColors(n) {\n    var result = [];\n    var letters = '0123456789ABCDEF'.split('');\n    for(var i=0; i<n; i++) {\n      var color = '#'\n      for(var j=0; j<3; j++) {\n        color += letters[Math.floor(Math.random() * 16)];\n      }\n      result.push(color);\n    }\n    return result;\n  }\n  function generateRandomFromArray(arr, n) {\n    var x = generateRandomArray(n, 0, arr.length-0.001);\n    x = x.map(function(a) {\n      return arr[Math.floor(a)];\n    }); \n    return x;\n  }\n  var n = 100;\n  var x = generateRandomArray(n, 0, 5);\n  var y = generateRandomArray(n, 0, 5);\n  var z = generateRandomArray(n, -2, 5);\n  var color = generateRandomColors(n);\n  var highlight = generateRandomFromArray(['A','B','C','D'], n);\n  var result = [];\n  for(var i=0; i<n; i++) {\n    result.push({});\n    result[i].x = x[i];\n    result[i].y = y[i];\n    result[i].z = z[i];\n    result[i].color = color[i];\n    result[i]._highlight = highlight[i];\n  }\n  console.log(result);\n  return DataObject.check(result, true);\n\n}"
+								"function filter() {\n  function generateRandomArray(n, min, max) {\n    var result = [];\n    for(var i=0; i<n; i++) {\n      result.push(Math.random()*(max-min) + min);\n    }\n    return result;\n  }\n  function generateRandomColors(n) {\n    var result = [];\n    var letters = '0123456789ABCDEF'.split('');\n    for(var i=0; i<n; i++) {\n      var color = '#'\n      for(var j=0; j<3; j++) {\n        color += letters[Math.floor(Math.random() * 16)];\n      }\n      result.push(color);\n    }\n    return result;\n  }\n  function generateRandomFromArray(arr, n) {\n    var x = generateRandomArray(n, 0, arr.length-0.001);\n    x = x.map(function(a) {\n      return arr[Math.floor(a)];\n    }); \n    return x;\n  }\n  var n = 100;\n  var x = generateRandomArray(n, 0, 5);\n  var y = generateRandomArray(n, 0, 5);\n  var z = generateRandomArray(n, -0.005, 0.005);\n  var color = generateRandomColors(n);\n  var highlight = generateRandomFromArray(['A','B','C','D'], n);\n  var result = [];\n  for(var i=0; i<n; i++) {\n    result.push({});\n    result[i].x = x[i];\n    result[i].y = y[i];\n    result[i].z = z[i];\n    result[i].color = color[i];\n    result[i]._highlight = highlight[i];\n  }\n  console.log(result);\n  return DataObject.check(result, true);\n\n}"
 							]
 						}
 					],
@@ -472,18 +472,7 @@
 		}
 	],
 	"crons": {
-		"0": [
-			{}
-		],
-		"cronurl": [
-			null
-		],
-		"crontime": [
-			null
-		],
-		"cronvariable": [
-			null
-		]
+		"0": {}
 	},
 	"couch_replication": [
 		{
@@ -507,7 +496,7 @@
 				"general": [
 					{
 						"script": [
-							"    function generateRandomArray(n, min, max) {\n    var result = [];\n    for(var i=0; i<n; i++) {\n      result.push(Math.random()*(max-min) + min);\n    }\n    return result;\n  }\n  function generateRandomColors(n) {\n    var result = [];\n    var letters = '0123456789ABCDEF'.split('');\n    for(var i=0; i<n; i++) {\n      var color = '#'\n      for(var j=0; j<3; j++) {\n        color += letters[Math.floor(Math.random() * 16)];\n      }\n      result.push(color);\n    }\n    return result;\n  }\n  var n = 100;\n  var x = generateRandomArray(n, 0, 5);\n  var y = generateRandomArray(n, 0, 5);\n  var z = generateRandomArray(n, 0, 5);\n  var color = generateRandomColors(n);\n  var result = [];\n  for(var i=0; i<n; i++) {\n    result.push({});\n    result[i].x = x[i];\n    result[i].y = y[i];\n    result[i].z = z[i];\n    result[i].color = color[i];\n  }\n  console.log(result);\n  API.setVar('test', DataObject.check(result, true));\n"
+							""
 						]
 					}
 				]

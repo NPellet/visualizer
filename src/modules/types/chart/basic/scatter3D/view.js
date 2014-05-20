@@ -1528,6 +1528,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 			this.loadedData.done(function() {
         self._initThreejs();
         if(self._firstLoad) {
+          self._activateHighlights();
           self._zoomToFit();
           self._firstLoad = false;
         }
@@ -1695,7 +1696,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         this._normalizeData();
         this._setGridOrigin();
         this._updateChartData();
-        this._activateHighlights();
+        if(!this._firstLoad) this._activateHighlights();
         
         console.log('moduleValue.get(): ', this._data);
 
@@ -1728,7 +1729,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         this._normalizeData();
         this._setGridOrigin();
         this._updateChartData();
-        this._activateHighlights();
+        if(!this._firstLoad) this._activateHighlights();
         
         console.log('moduleValue.get(): ', this._data);
 
