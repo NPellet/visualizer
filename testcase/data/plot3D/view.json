@@ -122,7 +122,7 @@
 					},
 					"size": {
 						"width": 66,
-						"height": 44
+						"height": 55
 					},
 					"display": true,
 					"title": "Untitled module",
@@ -133,72 +133,6 @@
 							255,
 							0
 						]
-					],
-					"wrapper": true,
-					"created": true,
-					"name": "Default layer"
-				}
-			},
-			"title": "Untitled module"
-		},
-		{
-			"url": "modules/types/edition/object_editor/",
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"editable": [
-								"text"
-							],
-							"expanded": [
-								[]
-							],
-							"storeObject": [
-								[]
-							],
-							"storedObject": [
-								"{}"
-							]
-						}
-					]
-				}
-			},
-			"id": 2,
-			"vars_in": [
-				{
-					"rel": "value",
-					"name": "pieChart"
-				}
-			],
-			"actions_in": {},
-			"vars_out": [
-				{
-					"event": "onObjectChange",
-					"rel": "value",
-					"jpath": "element",
-					"name": "pieChart1"
-				}
-			],
-			"actions_out": {},
-			"layers": {
-				"Default layer": {
-					"position": {
-						"left": 72,
-						"top": 0,
-						"right": 0
-					},
-					"size": {
-						"width": 23,
-						"height": 32
-					},
-					"display": true,
-					"title": "Untitled module",
-					"bgcolor": [
-						255,
-						255,
-						255,
-						0
 					],
 					"wrapper": true,
 					"created": true,
@@ -240,7 +174,7 @@
 					]
 				}
 			},
-			"id": 3,
+			"id": 2,
 			"vars_in": [
 				{
 					"rel": "list",
@@ -259,13 +193,13 @@
 			"layers": {
 				"Default layer": {
 					"position": {
-						"left": 98,
-						"top": 16,
+						"left": 67,
+						"top": 0,
 						"right": 0
 					},
 					"size": {
-						"width": 28,
-						"height": 16
+						"width": 12,
+						"height": 25
 					},
 					"display": true,
 					"title": "Untitled module",
@@ -315,13 +249,13 @@
 			"layers": {
 				"Default layer": {
 					"position": {
-						"left": 7,
+						"left": 67,
 						"right": 0,
-						"top": 47
+						"top": 26
 					},
 					"size": {
-						"width": 56,
-						"height": 30
+						"width": 68,
+						"height": 29
 					},
 					"zIndex": 0,
 					"display": true,
@@ -339,7 +273,7 @@
 					"name": "Default layer"
 				}
 			},
-			"id": 4,
+			"id": 3,
 			"vars_in": [
 				{
 					"rel": "value",
@@ -381,13 +315,13 @@
 			"layers": {
 				"Default layer": {
 					"position": {
-						"left": 74,
+						"left": 80,
 						"right": 0,
-						"top": 33
+						"top": 0
 					},
 					"size": {
-						"width": 54,
-						"height": 37
+						"width": 55,
+						"height": 25
 					},
 					"zIndex": 0,
 					"display": true,
@@ -405,7 +339,7 @@
 					"name": "Default layer"
 				}
 			},
-			"id": 5,
+			"id": 4,
 			"vars_in": [
 				{}
 			],
