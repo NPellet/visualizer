@@ -1,8 +1,6 @@
 requirejs.config({
 	waitSeconds: 0,
 	paths: {
-
-
 		ace: "components/ace/lib/ace",
 		d3: "components/d3/d3.min",
 		fancytree: "components/fancytree/src/jquery.fancytree",
@@ -15,8 +13,8 @@ requirejs.config({
 		plot: "lib/plot/plot",
 		ChemDoodle: "lib/chemdoodle/ChemDoodleWeb-unpacked",
 		pouchdb: "components/pouchdb/dist/pouchdb-nightly.min",
-		uri: "components/uri.js/src"
-
+		uri: "components/uri.js/src",
+    underscore: "./components/underscore/underscore"
 	},
 	shim: {
 		"d3": {
@@ -40,6 +38,7 @@ requirejs.config({
 		"ckeditor": {
 			exports: "CKEDITOR"
 		},
+    "components/three.js/examples/js/controls/TrackballControls": ["threejs"],
 		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"lib/flot/jquery.flot.pie": ["jquery", "lib/flot/jquery.flot"],
