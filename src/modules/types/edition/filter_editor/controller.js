@@ -87,9 +87,8 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
         
         var def = $.Deferred();
         
-        filter = filter || '""';
         var requireBody = "var theFilter; try{ theFilter = "+filter+"; } catch(e) {console.error('Filter parsing error : ', e);}";
-        requireBody += "if(typeof theFilter === 'function') { var result; try { result = theFilter(object); } catch(e) { console.error('Filter execution error : ', e); } }";
+        requireBody += "if(typeof theFilter === 'function') { var result; try {result = theFilter(object);} catch(e) {console.error('Filter execution error : ', e);} }";
         requireBody += "def.resolve(result);";
         
         var requireEnd = "});";
