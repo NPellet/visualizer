@@ -579,21 +579,42 @@ require(['jquery'], function($) {
 	Object.defineProperty(ViewObject.prototype, 'set', viewSetter);
 	Object.defineProperty(ViewArray.prototype, 'set', viewSetter);
 
-	Object.defineProperty(String.prototype, 'getType', {
-		value: function() {
-			return 'string';
+	Object.defineProperties(String.prototype, {
+		getType: {
+			value: function() {
+				return 'string';
+			}
+		},
+		get: {
+			value: function() {
+				return this;
+			}
 		}
 	});
 
-	Object.defineProperty(Number.prototype, 'getType', {
-		value: function() {
-			return 'number';
+	Object.defineProperties(Number.prototype, {
+		getType: {
+			value: function() {
+				return 'number';
+			}
+		},
+		get: {
+			value: function() {
+				return this;
+			}
 		}
 	});
 
-	Object.defineProperty(Boolean.prototype, 'getType', {
-		value: function() {
-			return 'boolean';
+	Object.defineProperties(Boolean.prototype, {
+		getType: {
+			value: function() {
+				return 'boolean';
+			}
+		},
+		get: {
+			value: function() {
+				return this;
+			}
 		}
 	});
 
