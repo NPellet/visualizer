@@ -138,29 +138,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
 			init();
 			animate();
       
-      function getIntersects(event) {
-        var vector = new THREE.Vector3(
-          ( event.offsetX / $(self.renderer.domElement).width() ) * 2 - 1,
-          - ( event.offsetY / $(self.renderer.domElement).height() ) * 2 + 1,
-          0.5
-        );
-        projector = new THREE.Projector();
-        projector.unprojectVector( vector, self.camera );
-
-        var ray = new THREE.Raycaster( self.camera.position,
-          vector.sub(self.camera.position).normalize());
-
-        var intersects = ray.intersectObjects(self.points);
-        intersects = _.filter(intersects, function(intersect) {
-          return intersect.object.data;
-        });
-        
-        intersects = _.map(intersects, function(val) {
-          return val.object.data.index;
-        });
-        return intersects;
-      }
-      
       var descSort = function ( a, b ) {
       		return a.distance - b.distance;
       };
@@ -526,55 +503,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       self._drawGraphTitle();
       self._render()
       console.log('end plot points', new Date().getTime()-tstart);
-    },
-    
-    _drawPoints: function(options) {
-      var self = this;
-      
-      if(!self._data) {
-        return;
-      }
-      self._reinitObject3DArray('points');
-      
-      for(var i=0; i<self._data.x.length; i++) {
-        if(i===0) {
-          self.module._data = self._data.info[i];
-        }
-          
-        var color = undefined;
-        var radius = undefined;
-        var geometry = undefined;
-        
-        if(self._data.size && self._data.size[i]) {
-          radius = self._data.size[i];
-        }
-        if(self._data.color && self._data.color[i]) {
-          color = self._data.color[i];
-        }
-        if(self._data.geometry && self._data.geometry[i]) {
-          geometry = self._data.geometry[i];
-        }
-        var opt = {
-          x: self._data.normalizedData.x[i],
-          y: self._data.normalizedData.y[i],
-          z: self._data.normalizedData.z[i],
-          color: color,
-          radius: radius,
-          geometry: geometry,
-          opacity: 1,
-          index: i,
-        };
-        
-        $.extend(opt, options);
-        var mesh = this._drawPoint(opt);
-
-        $.extend(mesh, {
-          data: {
-            index: i,
-          }
-        });
-        self.points.push(mesh);
-      }
     },
     
     _drawPointsQuick: function() {
@@ -1322,129 +1250,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
     },
     
-    _drawPoint: function(point) {
-      var self = this;
-      if(point.render !== false) point.render = true;
-      if(!self._inBoundary({
-        x: self._data.x[point.index],
-        y: self._data.y[point.index],
-        z: self._data.z[point.index]
-      })) {
-        console.log('not in boundary', point);
-        return;
-      }
-      var segments = 32;
-      if(self._data.x.length >200) {
-        segments = 16;
-      }
-      else if(self._data.x.length > 500) {
-        segments = 8;
-      }
-      point.color = point.color || DEFAULT_POINT_COLOR;
-      point.radius = point.radius || DEFAULT_POINT_RADIUS;
-      point.geometry = point.geometry || DEFAULT_POINT_GEOMETRY;
-      var trueRadius = point.radius * NORM_CONSTANT;
-      var geometry;
-      switch(point.geometry) {
-      case "cube":
-        var len = 2 * trueRadius;
-        geometry = new THREE.CubeGeometry(len, len, len);
-        break;
-      case "tetrahedron":
-        geometry = new THREE.TetrahedronGeometry(trueRadius);
-        break;
-      case "octahedron":
-        geometry = new THREE.OctahedronGeometry(trueRadius);
-        break;
-      case "ring":
-        geometry = new THREE.RingGeometry(trueRadius*0.7, trueRadius,segments,segments);
-        break;
-      case "torus":
-        geometry = new THREE.TorusGeometry(trueRadius, trueRadius*0.3, segments, segments);
-        break;
-      default:
-        geometry = new THREE.SphereGeometry(trueRadius, segments, segments);
-        break;
-      }
-    
-      var material = null;
-      var appearance = self.module.getConfiguration('appearance') || DEFAULT_POINT_APPEARANCE;
-      
-      // We only care about appearance if we are rendering this point
-        switch(appearance) {
-        case "metallic":
-          var cubemap2 = THREE.ImageUtils.loadDDSTexture( '/test/threejs/examples/textures/compressed/Mountains_argb_mip.dds', new THREE.CubeReflectionMapping, function( cubemap ) {
-            cubemap2.magFilter = cubemap2.minFilter = THREE.LinearFilter;
-            material.needsUpdate = true;
-          });
-          cubemap2.anisiotropy = 4;
-          material = new THREE.MeshBasicMaterial({
-            envMap: cubemap2,
-            color: new THREE.Color(point.color),
-            transparent: point.opacity === 1 ? false : true,
-            opacity: point.opacity || 1
-          });
-          break;
-        case "plastic":
-          material = new THREE.MeshPhongMaterial({
-            specular: 0x505050,
-            side: THREE.DoubleSide,
-            ambient: 0x030303,
-            color: new THREE.Color(point.color),
-            shininess: 1,
-            shading: THREE.SmoothShading,
-            transparent: point.opacity === 1 ? false : true,
-            opacity: point.opacity || 1
-          })
-          break;
-        case "mirror":
-          var path = "/test/threejs/examples/textures/cube/pisa/";
-          var format = '.png';
-          var urls = [
-          path + 'px' + format, path + 'nx' + format,
-          path + 'py' + format, path + 'ny' + format,
-          path + 'pz' + format, path + 'nz' + format
-          ];
-          var textureCube = THREE.ImageUtils.loadTextureCube( urls );
-          var shader = THREE.ShaderLib[ "cube" ];
-          shader.uniforms[ "tCube" ].value = textureCube;
-          material = new THREE.ShaderMaterial({
-            fragmentShader: shader.fragmentShader,
-            vertexShader: shader.vertexShader,
-            uniforms: shader.uniforms,
-            depthWrite: false,
-            side: THREE.BackSide,
-            transparent: point.opacity === 1 ? false : true,
-            opacity: point.opacity || 1
-          });
-          // material = new THREE.MeshBasicMaterial( { color: 0xffffff, envMap: textureCube } );
-          break;
-        case "none":
-          material = undefined;
-          break;
-        default:
-          material =  new THREE.MeshLambertMaterial({ 
-            color: new THREE.Color(point.color),
-            shading: THREE.FlatShading,
-            opacity: point.opacity,
-            transparent: point.opacity === 1 ? false : true
-          });
-          break;
-        }
-      
-      
-      var mesh = new THREE.Mesh(geometry, material);
-      mesh.position.x = point.x;
-      mesh.position.y = point.y;
-      mesh.position.z = point.z;
-      mesh.updateMatrix();
-      mesh.matrixAutoUpdate = true;
-      if(point.render) {
-        this.scene.add(mesh);
-      }
-      return mesh;
-    },
-    
     _zoomToFit: function() {
       console.log('Zoom to fit');
       var self = this;
@@ -1856,23 +1661,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           listenHighlightsBis(infoHighlights);
         }
       }
-      
-		  function listenHighlights(hl) {
-        for(var i=0; i<hl.length; i++) {
-          (function(){
-            var index = i;
-            API.listenHighlight( {_highlight: hl[i]}, function( onOff, key ) {
-              if(onOff) {
-                drawHighlight(index);
-              }
-              else {
-                undrawHighlight(index);
-              }
-      
-            }, false, self.module.getId());
-          })();
-        }
-		  }
+
       
       function listenHighlightsBis(hl) {
         self._prepareHighlights(hl);
@@ -1911,51 +1700,6 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
             self._render();
           }
         }
-      }
-      
-      function undrawHighlight(index) {
-        if(!highlightObjects[index]) return;
-        self.scene.remove(highlightObjects[index]);
-        delete highlightObjects[index];
-        self._render();
-      }
-      
-      
-      function drawHighlight(index) {
-        if(highlightObjects[index]) {
-          return;
-        }
-        
-        // Highlight radius
-        var radius = DEFAULT_POINT_RADIUS * 1.0;
-        if(self._data.size && self._data.size[index]) {
-          radius = self._data.size[index] * 1.0;
-        }
-        
-        var geometry = DEFAULT_POINT_GEOMETRY;
-        if(self._data.geometry && self._data.geometry[index]) {
-          geometry = self._data.geometry[index];
-        }
-        
-        // Highlight color
-        var color = '#e5be39';
-        // if(self._data[serie].color && self._data[serie].color[index]) {
-        //   color = self._data[serie].color[index];
-        // }
-        
-        var mesh = self._drawPoint({
-          x: self._data.normalizedData.x[index],
-          y: self._data.normalizedData.y[index],
-          z: self._data.normalizedData.z[index],
-          color: color,
-          radius: radius,
-          opacity: HIGHLIGHT_OPACITY,
-          transparent: true,
-          index: index,
-          geometry: geometry
-        });
-        highlightObjects[index] = mesh;
-        self._render();
       }
     },
 

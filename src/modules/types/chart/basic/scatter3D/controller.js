@@ -134,16 +134,6 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
                 options: jpath
             },
             
-            appearance: {
-              type: 'combo',
-              title: 'Appearance',
-              options:[
-                {title: 'Plastic', key: 'plastic'},
-                {title: 'Metallic', key: 'metallic'},
-                {title: 'Mirror', key: 'mirror'},
-                {title: 'None', key: 'none'}]
-            },
-            
             displayPointCoordinates: {
               type: 'checkbox',
               title: "Display point coordinates",
