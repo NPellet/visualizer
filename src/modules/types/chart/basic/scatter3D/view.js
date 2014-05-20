@@ -217,12 +217,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       
       function onMouseMove(event) {
         var intersects;
-        if(self._configCheckBox('optimize', 'show')) {
-          intersects = getIntersectsBis(event);
-        }
-        else {
-          intersects = getIntersects(event);
-        }
+        intersects = getIntersectsBis(event);
         pointedObjects = intersects;
         lastMouseMoveEvent = event;
         if(intersects.length > 0){
@@ -517,16 +512,8 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       // 2 Directional light with diff intensities =========
       // ===================================================
       
-      if(self._configCheckBox('optimize', 'show')) {
-        // self._drawPoints({
-        //   render: false
-        // });
-        self._mathPoints();
-        self._drawPointsQuick();
-      }
-      else {
-       self._drawPoints(); 
-      }
+      self._mathPoints();
+      self._drawPointsQuick();
       // self._drawPointsQuick();
       
       self._drawAxes();
@@ -1862,13 +1849,11 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
         console.log("-----");
         if(self._data._highlight) {
           console.log('listen highlights');
-          if(self._configCheckBox('optimize', 'show')) listenHighlightsBis(self._data._highlight);
-          else listenHighlights(self._data._highlight);
+          listenHighlightsBis(self._data._highlight);
         }
         var infoHighlights = _.flatten(_.pluck(self._data.info, '_highlight'))
         if(infoHighlights) {
-          if(self._configCheckBox('optimize', 'show')) listenHighlightsBis(infoHighlights);
-          else listenHighlights(infoHighlights);
+          listenHighlightsBis(infoHighlights);
         }
       }
       

@@ -122,12 +122,6 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
           
 					fields: {
             
-            optimize: {
-                type: 'checkbox',
-                title: 'Optimize',
-                options: {show: 'Yes'}
-            },
-            
             tooltip: {
                 type: 'checkbox',
                 title: 'Show tooltip',
