@@ -95,11 +95,17 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
   var DEFAULT_POINT_RADIUS = 0.03;
   var DEFAULT_POINT_GEOMETRY = "sphere";
   var DEFAULT_POINT_APPEARANCE = "none";
+  var DEFAULT_POINT_SHAPE = "sphere";
   var DEFAULT_TEXT_COLOR = "rgba(0,0,0,1)";
   var HIGHLIGHT_OPACITY = 0.6;
   var DELTA = NORM_CONSTANT / 1000;
-  var CAMERA_NEAR = 120;
+  var CAMERA_NEAR = 2;
   var CAMERA_FAR = 10000;
+  
+  var shapeImages = {
+    'sphere': "modules/types/chart/basic/scatter3D/img/ball.png",
+    'tetrahedron': 'modules/types/chart/basic/scatter3D/img/tetrahedron2.png'
+  }
   
   $.fn.listHandlers = function(events, outputFunction) {
     return this.each(function(i){
@@ -507,13 +513,26 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     
     _drawPointsQuick: function() {
       var self = this;
-      if(self._mainParticleObject) {
-        self.scene.remove(self._mainParticleObject);
-        self._mainParticleObject = null;
+      if(self._mainParticleObjects) {
+        for(var shape in self._mainParticleObjects) {
+          self.scene.remove(self._mainParticleObjects[shape]);
+        }
       }
-      self._mainParticleObject = self._newParticleObject();      
-      self._updateParticleObject(self._mainParticleObject);
-			self.scene.add(self._mainParticleObject);
+      self._mainParticleObjects = {};
+      var m = {};
+      for(var i=0; i<self._data.shape.length; i++) {
+        m[self._data.shape[i]] = m[self._data.shape[i]] || [];
+        m[self._data.shape[i]].push(i);
+      }
+      
+      for(var shape in m) {
+        self._mainParticleObjects[shape] = self._newParticleObject(m[shape], {
+          shape: shape
+        });      
+        self._updateParticleObject(self._mainParticleObjects[shape]);
+  			self.scene.add(self._mainParticleObjects[shape]);
+      }
+      self.renderer.render(self.scene, self.camera);
     },
     
     _configCheckBox: function(config, option) {
@@ -1334,14 +1353,19 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     _newParticleObject: function(indexes, options) {
       var self = this;
       options = options || {};
+      var image = shapeImages[options.shape] || shapeImages[DEFAULT_POINT_SHAPE];
+      if(options.transparent) {
+        image = image.replace(/\.(png|svg|jpeg|jpg|gif)$/i, "t.$1");
+      }
+      console.log('IMAGE repalce:', image);
       attributes = {
         size: {	type: 'f', value: [] },
         ca:   {	type: 'c', value: [] }
       };
       uniforms = {
         amplitude: { type: "f", value: 1 },
-        color:     { type: "c", value: new THREE.Color( '#e5be39' ) },
-        texture:   { type: "t", value: THREE.ImageUtils.loadTexture( options.image || "/test/threejs/examples/textures/sprites/ball.png" ) },
+        color:     { type: "c", value: new THREE.Color('#e5be39') },
+        texture:   { type: "t", value: THREE.ImageUtils.loadTexture(image) },
       };
 
       //uniforms.texture.value.wrapS = uniforms.texture.value.wrapT = THREE.RepeatWrapping;
@@ -1379,7 +1403,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       // particle system
       var object = new THREE.ParticleSystem( geometry, shaderMaterial );
       object.indexes = indexes;
-      // self._hlObjectsBis[key].drawn = true;
+      // self._highlightParticleObjects[key].drawn = true;
       // highlightObjectBis.dynamic = true;
       return object;
     },
@@ -1441,25 +1465,32 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     
     _prepareHighlights: function(hl) {
       var self = this;
-      self._hlObjectsBis = self._hlObjectsBis || {};
+      self._highlightParticleObjects = self._highlightParticleObjects || {};
       var m = {};
+      
       for(var i=0; i<hl.length; i++) {
-        m[hl[i]] = m[hl[i]] || [];
-        m[hl[i]].push(i);
+        m[self._data.shape[i]] = m[self._data.shape[i]] || {};
+        m[self._data.shape[i]][hl[i]] = m[self._data.shape[i]][hl[i]] || [];
+        m[self._data.shape[i]][hl[i]].push(i);
       }
       
-      _.keys(m).forEach(function(key) {
-        var tstart = new Date().getTime();
-        self._hlObjectsBis[key] = self._newParticleObject(m[key], {
-          image: "/test/threejs/examples/textures/sprites/ballt.png"
-        });
+      for(var shape in m){
+        for(var hlkey in m[shape]) {
+          var tstart = new Date().getTime();
+          self._highlightParticleObjects[shape] = self._highlightParticleObjects[shape] || {};
+          self._highlightParticleObjects[shape][hlkey] = self._newParticleObject(m[shape][hlkey], {
+            shape: shape || DEFAULT_POINT_SHAPE,
+            transparent: true
+          });
         
-        self._updateParticleObject(self._hlObjectsBis[key], {
-          sizeFactor: 1.5,
-          forcedColor: '#e5be39'
-        });
-        console.log('highlight time:', new Date().getTime() - tstart);
-      });
+          self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {
+            sizeFactor: 1.5,
+            forcedColor: '#e5be39'
+          });
+          console.log('highlight time:', new Date().getTime() - tstart);
+        }
+      }
+        
     },
     
     _updatePoints: function() {
@@ -1538,7 +1569,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       
       'boolArray': function(moduleValue) {
         console.log('bool array received');
-        if(!this._data || !this._mainParticleObject) {
+        if(!this._data || !this._mainParticleObjects) {
           return;
         }
         var self = this;
@@ -1547,10 +1578,15 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
           return;
         }
         self._dispFilter = moduleValue.get();
-        self._updateParticleObject(self._mainParticleObject, {applyFilter: true, updateColor: false});
+        for(var shape in self._mainParticleObjects) {
+          self._updateParticleObject(self._mainParticleObjects[shape], {applyFilter: true, updateColor: false});
+        }
+        
         self._updateMathPoints({applyFilter: true});
-        for(var key in self._hlObjectsBis) {
-          self._updateParticleObject(self._hlObjectsBis[key], {applyFilter: true, updateColor: false, sizeFactor: 1.5});
+        for(var shape in self._highlightParticleObjects) {
+          for(var hlkey in self._highlightParticleObjects[shape]) {
+            self._updateParticleObject(self._highlightParticleObjects[shape][hlkey], {applyFilter: true, updateColor: false, sizeFactor: 1.5});
+          }
         }
       }
 		},
@@ -1644,6 +1680,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
     _updateChartData: function() {
       this._completeDataInfo('size', DEFAULT_POINT_RADIUS);
       this._completeDataInfo('color', DEFAULT_POINT_COLOR);
+      this._completeDataInfo('shape', DEFAULT_POINT_SHAPE);
     },
     
     _activateHighlights: function() {
@@ -1666,7 +1703,7 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       function listenHighlightsBis(hl) {
         self._prepareHighlights(hl);
         var hlset = _.uniq(hl);
-        
+
         _.keys(hlset).forEach(function(k){
           if(!hlset[k]) return;
           API.listenHighlight( {_highlight: hlset[k]}, function(onOff, key) {
@@ -1681,25 +1718,31 @@ define(['modules/default/defaultview','lib/plotBis/plot','src/util/datatraversin
       }
       
       function undrawHighlightBis(hl) {
-        if(self._hlObjectsBis[hl] && self._hlObjectsBis[hl].drawn) {
-          self.scene.remove(self._hlObjectsBis[hl]);
-          self._hlObjectsBis[hl].drawn = false;
-          self._render();
+        var doDraw = false;
+        for(var shape in self._highlightParticleObjects) {
+          if(self._highlightParticleObjects[shape][hl] && self._highlightParticleObjects[shape][hl].drawn) {
+            self.scene.remove(self._highlightParticleObjects[shape][hl]);
+            self._highlightParticleObjects[shape][hl].drawn = false;
+            doDraw = true;
+          }
         }
+        if(doDraw) self._render();
       }
       
       function drawHighlightBis(hl) {
         console.log('draw highlights', hl);
-        if(self._hlObjectsBis[hl]) {
-          if(self._hlObjectsBis[hl].drawn === true) {
-            return;
+        for(var shape in self._highlightParticleObjects) {
+          if(self._highlightParticleObjects[shape][hl]) {
+            if(self._highlightParticleObjects[shape][hl].drawn === true) {
+              return;
+            }
+            else {
+              self.scene.add(self._highlightParticleObjects[shape][hl]);
+              self._highlightParticleObjects[shape][hl].drawn = true;
+              self._render();
+            }
           }
-          else {
-            self.scene.add(self._hlObjectsBis[hl]);
-            self._hlObjectsBis[hl].drawn = true;
-            self._render();
-          }
-        }
+        }  
       }
     },
 
