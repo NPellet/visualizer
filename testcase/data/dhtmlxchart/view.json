@@ -2,6 +2,16 @@
 	"modules": [
 		{
 			"url": "./modules/types/chart/basic/radar_chart/",
+			"title": "Radar Chart",
+			"displayWrapper": true,
+			"position": {
+				"left": 18,
+				"top": 0
+			},
+			"size": {
+				"width": 61,
+				"height": 51
+			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -46,7 +56,7 @@
 			"vars_in": [
 				{
 					"rel": "chart",
-					"name": "chart"
+					"name": "stackChart"
 				}
 			],
 			"actions_in": {},
@@ -54,101 +64,291 @@
 				{}
 			],
 			"actions_out": {},
-			"layers": {
-				"Default layer": {
-					"position": {
-						"left": 89,
-						"top": 0,
-						"right": 0
-					},
-					"size": {
-						"width": 61,
-						"height": 51
-					},
-					"display": true,
-					"title": "Radar Chart",
-					"bgcolor": [
-						[
-							255,
-							255,
-							255,
-							0
-						]
-					],
-					"wrapper": true,
-					"created": true,
-					"name": "Default layer"
-				}
-			},
-			"title": "Radar Chart"
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
 		},
 		{
-			"url": "modules/types/edition/object_editor/",
+			"url": "./modules/types/display/fasttable/",
+			"title": "Untitled module",
+			"displayWrapper": true,
+			"position": {
+				"left": 0,
+				"top": 0
+			},
+			"size": {
+				"width": 17,
+				"height": 21
+			},
 			"configuration": {
 				"sections": {},
 				"groups": {
 					"group": [
 						{
-							"editable": [
-								"text"
+							"nblines": [
+								20
 							],
-							"expanded": [
-								[]
+							"toggle": [
+								null
 							],
-							"storeObject": [
-								[]
+							"colorjpath": [
+								null
 							],
-							"output": [
-								"new"
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Label",
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "highlight"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/chart/basic/radar_chart/",
+			"title": "Radar Chart",
+			"displayWrapper": true,
+			"position": {
+				"left": 83,
+				"top": 1
+			},
+			"size": {
+				"width": 61,
+				"height": 51
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"preference": [
+								"pie"
 							],
-							"storedObject": [
-								"{\n  \"type\": \"chart\",\n  \"value\": {\n    \"title\": \"Headspace evolution\",\n    \"axis\": {\n      \"0\": {\n        \"type\": \"\",\n        \"unit\": [\n          \"Citrus\",\n          \"Aldehydic\",\n          \"Green\",\n          \"Terpenic\",\n          \"Floral\",\n          \"Animal\",\n          \"Fruity\",\n          \"Aromatic\",\n          \"Gourmand\",\n          \"Watery\",\n          \"Phenolic\",\n          \"Sulphur\",\n          \"Balsamic\",\n          \"Musk\",\n          \"Powdery\",\n          \"Amber\",\n          \"Woody\",\n          \"Earthy-Moss\"\n        ],\n        \"min\": 0,\n        \"max\": 1910\n      },\n      \"1\": {\n        \"type\": \"\",\n        \"unit\": \"\",\n        \"min\": \"\",\n        \"max\": \"\"\n      }\n    },\n    \"data\": [\n      {\n        \"serieLabel\": \"1 minute\",\n        \"name\": \"1 minute\",\n        \"color\": \"hsl(0,50%,50%)\",\n        \"x\": [\n          437.0404965612681,\n          103.10982223588566,\n          234.1986989003956,\n          26.00853847553912,\n          1903.6386391593835,\n          0,\n          328.08183212343636,\n          299.4231094241767,\n          1.2231745291371654,\n          161.05850083143554,\n          7.744668194019746,\n          7.744668194019746,\n          15.489336388039492,\n          49.29760129881117,\n          84.60786338346715,\n          39.51791673741194,\n          96.88772144092684,\n          0\n        ],\n        \"y\": [],\n        \"z\": [],\n        \"xAxis\": \"0\",\n        \"yAxis\": \"1\"\n      },\n      {\n        \"serieLabel\": \"15 minutes\",\n        \"name\": \"15 minutes\",\n        \"color\": \"hsl(22,50%,50%)\",\n        \"x\": [\n          0.001235544195903727,\n          84.81298096238797,\n          16.04280704560063,\n          21.46165040385223,\n          862.8661330826844,\n          0,\n          14.371885046755532,\n          0.0012360643133392216,\n          0.07011556702801783,\n          84.99640284364834,\n          1.8301694826053613e-20,\n          1.8301694826053613e-20,\n          3.6603389652107225e-20,\n          46.70880293662294,\n          61.27511074657141,\n          34.015911093692836,\n          61.45056117149693,\n          0\n        ],\n        \"y\": [],\n        \"z\": [],\n        \"xAxis\": \"0\",\n        \"yAxis\": \"1\"\n      },\n      {\n        \"serieLabel\": \"30 minutes\",\n        \"name\": \"30 minutes\",\n        \"color\": \"hsl(44,50%,50%)\",\n        \"x\": [\n          9.646579696454184e-8,\n          67.9727647812574,\n          14.291273739116928,\n          18.05164485274167,\n          796.3094280547516,\n          0,\n          0.35195165939390527,\n          9.646579702443424e-8,\n          0.005457238523562497,\n          67.99404863027642,\n          1.132933649764141e-43,\n          1.132933649764141e-43,\n          2.265867299528282e-43,\n          44.114291869053865,\n          47.963915474236245,\n          28.611180167931625,\n          41.94591484608256,\n          0\n        ],\n        \"y\": [],\n        \"z\": [],\n        \"xAxis\": \"0\",\n        \"yAxis\": \"1\"\n      },\n      {\n        \"serieLabel\": \"1.25 hours\",\n        \"name\": \"1.25 hours\",\n        \"color\": \"hsl(66,50%,50%)\",\n        \"x\": [\n          2.388505034255772e-20,\n          32.45281708458811,\n          9.968267433078926,\n          9.902299467239288,\n          688.3656337529771,\n          0,\n          0.000002932121757987276,\n          2.388505034255772e-20,\n          0.0000016409353877431384,\n          32.462967660875435,\n          2.6870832610884376e-113,\n          2.6870832610884376e-113,\n          5.374166522176875e-113,\n          37.34298943806763,\n          31.17050496755444,\n          15.694773326485358,\n          19.890015656954063,\n          0\n        ],\n        \"y\": [],\n        \"z\": [],\n        \"xAxis\": \"0\",\n        \"yAxis\": \"1\"\n      },\n      {\n        \"serieLabel\": \"2.25 hours\",\n        \"name\": \"2.25 hours\",\n        \"color\": \"hsl(88,50%,50%)\",\n        \"x\": [\n          3.5637789544837515e-37,\n          10.195837709628675,\n          5.973790288981538,\n          3.6390954741082906,\n          579.8812524095093,\n          0,\n          4.233422907704319e-11,\n          3.5637789544837515e-37,\n          2.490404742562137e-11,\n          10.19902675877085,\n          3.945027060376533e-206,\n          3.945027060376533e-206,\n          7.890054120753066e-206,\n          30.326759107506362,\n          19.54823315027041,\n          5.767829863005717,\n          7.27830864873951,\n          0\n        ],\n        \"y\": [],\n        \"z\": [],\n        \"xAxis\": \"0\",\n        \"yAxis\": \"1\"\n      },\n      {\n        \"serieLabel\": \"3.25 hours\",\n        \"name\": \"3.25 hours\",\n        \"color\": \"hsl(111,50%,50%)\",\n        \"x\": [\n          5.317092139357823e-54,\n          2.675013237393715,\n          3.456335866766882,\n          1.0626100512081873,\n          487.66643360512774,\n          0,\n          6.178016718695704e-16,\n          5.317092139357823e-54,\n          3.634367222032442e-16,\n          2.6758499267284193,\n          5.791870587887343e-299,\n          5.791870587887343e-299,\n          1.1583741175774687e-298,\n          25.12436174504508,\n          12.93793629535296,\n          1.6841970840543645,\n          2.1252202178512025,\n          0\n        ],\n        \"y\": [],\n        \"z\": [],\n        \"xAxis\": \"0\",\n        \"yAxis\": \"1\"\n      },\n      {\n        \"serieLabel\": \"4.25 hours\",\n        \"name\": \"4.25 hours\",\n        \"color\": \"hsl(133,50%,50%)\",\n        \"x\": [\n          7.93300284002909e-71,\n          0.6027093540825371,\n          1.9343567962236108,\n          0.2514130268192288,\n          403.8790813238413,\n          0,\n          8.986029274650151e-21,\n          7.93300284002909e-71,\n          5.286248280996237e-21,\n          0.6028978692201215,\n          0,\n          0,\n          0,\n          21.292911836990392,\n          9.085037676300614,\n          0.39848021970127995,\n          0.502826053743304,\n          0\n        ],\n        \"y\": [],\n        \"z\": [],\n        \"xAxis\": \"0\",\n        \"yAxis\": \"1\"\n      },\n      {\n        \"serieLabel\": \"6.25 hours\",\n        \"name\": \"6.25 hours\",\n        \"color\": \"hsl(155,50%,50%)\",\n        \"x\": [\n          1.7658932920408013e-104,\n          0.021984491187327832,\n          0.5535820939881573,\n          0.00865014818145864,\n          256.4269811511866,\n          0,\n          1.8999958828775154e-30,\n          1.7658932920408013e-104,\n          1.1177183673433302e-30,\n          0.02199136748575066,\n          0,\n          0,\n          0,\n          16.401111381030262,\n          4.86638884813606,\n          0.013710160493293247,\n          0.017300296362917363,\n          0\n        ],\n        \"y\": [],\n        \"z\": [],\n        \"xAxis\": \"0\",\n        \"yAxis\": \"1\"\n      },\n      {\n        \"serieLabel\": \"8.25 hours\",\n        \"name\": \"8.25 hours\",\n        \"color\": \"hsl(177,50%,50%)\",\n        \"x\": [\n          3.930893738168857e-138,\n          0.0006154481682764855,\n          0.1429604243202849,\n          0.0001992437501445141,\n          142.9716905893122,\n          0,\n          4.0172189274790646e-40,\n          3.930893738168857e-138,\n          2.3632258476699468e-40,\n          0.0006156406678541555,\n          0,\n          0,\n          0,\n          13.680195761225216,\n          2.6642957976386272,\n          0.00031579387248211024,\n          0.0003984875002890282,\n          0\n        ],\n        \"y\": [],\n        \"z\": [],\n        \"xAxis\": \"0\",\n        \"yAxis\": \"1\"\n      }\n    ]\n  }\n}"
+							"pie": [
+								"pie3D"
+							],
+							"start": [
+								[
+									0
+								]
+							],
+							"end": [
+								[
+									100
+								]
+							],
+							"step": [
+								[
+									10
+								]
+							],
+							"point": [
+								[
+									true
+								]
+							],
+							"lineshape": [
+								[
+									"arc"
+								]
 							]
 						}
 					]
 				}
 			},
-			"layers": {
-				"Default layer": {
-					"position": {
-						"left": 0,
-						"right": 0,
-						"top": 0
-					},
-					"size": {
-						"width": 86,
-						"height": 52
-					},
-					"zIndex": 0,
-					"display": true,
-					"title": "Untitled",
-					"bgcolor": [
-						[
-							255,
-							255,
-							255,
-							0
-						]
-					],
-					"wrapper": true,
-					"created": true,
-					"name": "Default layer"
-				}
-			},
-			"id": 2,
+			"id": 3,
 			"vars_in": [
-				{}
+				{
+					"rel": "chart",
+					"name": "stackChart"
+				}
 			],
 			"actions_in": {},
 			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/chart/basic/radar_chart/",
+			"title": "Radar Chart",
+			"displayWrapper": true,
+			"position": {
+				"left": 82,
+				"top": 50
+			},
+			"size": {
+				"width": 61,
+				"height": 51
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"preference": [
+								"pie"
+							],
+							"pie": [
+								"donut"
+							],
+							"start": [
+								[
+									0
+								]
+							],
+							"end": [
+								[
+									100
+								]
+							],
+							"step": [
+								[
+									10
+								]
+							],
+							"point": [
+								[
+									true
+								]
+							],
+							"lineshape": [
+								[
+									"arc"
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [
 				{
-					"event": "onObjectChange",
-					"rel": "value",
-					"name": "chart2"
+					"rel": "chart",
+					"name": "stackChart"
 				}
 			],
-			"title": "Untitled",
-			"actions_out": {}
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "./modules/types/chart/basic/radar_chart/",
+			"title": "Radar Chart",
+			"displayWrapper": true,
+			"position": {
+				"left": 14,
+				"top": 50
+			},
+			"size": {
+				"width": 61,
+				"height": 51
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"preference": [
+								"pie"
+							],
+							"pie": [
+								"pie"
+							],
+							"start": [
+								[
+									0
+								]
+							],
+							"end": [
+								[
+									100
+								]
+							],
+							"step": [
+								[
+									10
+								]
+							],
+							"point": [
+								[
+									true
+								]
+							],
+							"lineshape": [
+								[
+									"arc"
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "chart",
+					"name": "stackChart"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
 		}
 	],
 	"variables": [
@@ -193,15 +393,5 @@
 			}
 		}
 	],
-	"version": "2.3.0-beta1",
-	"grid": {
-		"layers": {
-			"Default layer": {
-				"name": "Default layer"
-			}
-		},
-		"xWidth": 10,
-		"yHeight": 10
-	},
-	"pouchvariables": []
+	"version": "2.2.3"
 }
