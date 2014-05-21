@@ -5,11 +5,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 		DEBUG: true,
 
-
-
 		init: function() {
-
-			if (this.DEBUG) console.log("Stack Chart: init");
+			
+			if (this.DEBUG) console.log("Radar Chart: init");
 			if (this.dom) {
 				// in the dom exists and the preferences has been changed we need to clean the canvas
 				this.dom.empty();
@@ -18,54 +16,32 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			// When we change configuration the method init is called again. Also the case when we change completely of view
 			if (! this.dom) {
 				this._id = Util.getNextUniqueId();
-				this.dom = $('<div style="height: 100%;width: 100%" id="' + this._id + '"></div>');
+				this.dom = $('<div style="height: 100%; width: 100%" id="' + this._id + '"></div>');
 				this.module.getDomContent().html(this.dom);
 			}
-			// if the dom existed there was probably a graph or when changing of view
-			if (this._flot) { 
-				delete this._flot;
-			}
+
 
 			// Adding a deferred allows to wait to get actually the data before we draw the chart
 			// we decided here to plot the chart in the "onResize" event
 			this.loadedData=$.Deferred();
 
-			if (this.DEBUG) console.log("Stack Chart: ID: "+this._id);
+			if (this.DEBUG) console.log("Radar Chart: ID: "+this._id);
 
 			this._data=[];	// the data that will be sent to FLOT
-			var cfg = $.proxy( this.module.getConfiguration, this.module );
-			data = undefined;
-			//this.updateoptions(cfg, data);
-
-
-
 		},
 
 
 		inDom: function() {
-
-			if (this.DEBUG) console.log("Stack Chart: inDom");
-
+			if (this.DEBUG) console.log("Radar Chart: inDom");
 		},
 
 		onResize: function() {
-
-			if (this.DEBUG) console.log("Stack Chart: onResize");
+			if (this.DEBUG) console.log("Radar Chart: onResize");
 
 			var self=this;
 
 			this.loadedData.done(function() {
-			self._radar.parse(self._data,"json");
-			console.log(self._data);
-			/*self._radar.attachEvent("onItemclick", function (id, ev, trg){
-			
-			
-			console.log(trg[0]);
-		
-			
-			return true;
-
-}); */
+				self._radar.parse(self._data,"json");
 			});
 
 
@@ -80,15 +56,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			'chart': function(moduleValue) {
 			var self=this;
-			var cfg = $.proxy( this.module.getConfiguration, this.module );
-
-			if (this.DEBUG) console.log("stack Chart: update from chart object");
+			if (this.DEBUG) console.log("Radar Chart: update from chart object");
 
 				if (! moduleValue || ! moduleValue.value) return;
-				
-				this.updateoptions(cfg, moduleValue.get());
-				
 				this._convertChartToData(moduleValue.get());
+
+				this.updateChart(moduleValue.get());
 				
 				this.loadedData.resolve();
 			},
@@ -96,44 +69,51 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 		},
 
-		_convertChartToData: function(value,radar) {
+
+
+		_convertChartToData: function(value) {
 			var self=this;
 			
-			if ( ! value.data instanceof Array || ! value ) return;
+			if ( ! value ||  ! value.data instanceof Array ) return;
 			
-			for (var j = 0; j < value.axis[0].unit.length; j++) 
+			for (var j = 0; j < value.data[0].x.length; j++) 
 			{
 				self._data[j] = {};
-				self._data[j]["xunit"] = value.axis[0].unit[j];
+				self._data[j]["xunit"] = value.data[0].x;
 				self._data[j]['_highlight'] = [];	
 				for (var i = 0; i < value.data.length; i++) 
 				{
-					self._data[j][value.data[i].name] = value.data[i].x[j];
-					self._data[j]['_highlight'].push({name: value.data[i].name, _highlight: value.data[i]._highlight[j]});
-					
+					self._data[j][value.data[i].name] = value.data[i].y[j];
+					if (value.data[i]._highlight && value.data[i]._highlight[j]) {
+						self._data[j]['_highlight'].push({name: value.data[i].name, _highlight: value.data[i]._highlight[j]});
+					}
 				}
 					
 			};
 			console.log(self._data);
 		},
 
-		updateoptions: function(cfg, chart) {
-		var self=this;
-			 switch (cfg('preference'))
+
+		updateChart: function(chart) {
+			console.log("Update chart");
+			var cfg=$.proxy( this.module.getConfiguration, this.module );
+			var self=this;
+			this.dom.empty();
+			switch (cfg('preference'))
 			{
 			case 'radar':
-				o = {
+				var o = {
 					view: "radar",
 					container: self._id,
-					alpha:0.2,
+					alpha: 0.2,
 					value: "#"+chart.data[0].name+"#",
-					disableItems: false,//cfg('point'),
+					disableItems: false,
 					color: chart.data[0].color,
 					fill: chart.data[0].color,
 					line:{
-								color:chart.data[0].color,
-								width:1
-							},
+						color:chart.data[0].color,
+						width:1
+					},
 					xAxis:{
 							template:"#xunit#"
 					},
@@ -149,22 +129,21 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				
 				var val = []
 		
-				for (var i = 0; i < chart.data.length; i++) 
-						{
-							if(i != 0)
-							{
-							this._radar.addSeries({
-									value: "#"+chart.data[i].name+"#",
-									fill: chart.data[i].color,
-									line:{
-										color:chart.data[i].color,
-										width:1
-									},
-							 
-							})
-							}
-							val.push({text: chart.data[i].serieLabel,color: chart.data[i].color});
-						}
+				for (var i = 0; i < chart.data.length; i++) {
+					if(i != 0)
+					{
+					this._radar.addSeries({
+							value: "#"+chart.data[i].name+"#",
+							fill: chart.data[i].color,
+							line:{
+								color:chart.data[i].color,
+								width:1
+							},
+					 
+					})
+					}
+					val.push({text: chart.data[i].serieLabel,color: chart.data[i].color});
+				}
 				this._radar.define("legend",{
 					width: 120,
 					align: "left",
@@ -175,35 +154,22 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					},
 					values: val
 				}); 
-			
-
 				break;
 			case 'pie':
-			o = {
-			view: cfg('pie'),
-			container: self._id,
-			value: "#"+chart.data[0].name+"#",
-			color: chart.data[0].color,
+				var o = {
+				view: cfg('pie'),
+				container: self._id,
+				value: "#"+chart.data[0].name+"#",
+				color: chart.data[0].color,
+				pieInnerText: "<b>#xunit#</b>"
 				
-			pieInnerText: "<b>#xunit#</b>"
-			
+				};
+				this._radar = new dhtmlXChart(o);
+				
+				break;
 			};
-			this._radar = new dhtmlXChart(o);
-			
-			break;
-			};
-			
-		
-			
-		
-
-
-
-		},
-
-	
-
-
+			this._radar.parse(self._data,"json");
+		}
 	});
 
 	return view;

@@ -16,7 +16,7 @@
 			"axis": {
 				"0": {
 					"type": "bottom", 
-					"unit": ["january", "february", "march", "april", "may", "june", "august", "september", "october", "november", "december"],
+					"unit": "",
 					"min": 0,
 					"max": 13
 				},
@@ -30,7 +30,7 @@
 			"data" : 
 			[
 				{
-					"x":[0,1,2,3,4,5,6,7,8,9,10,11],
+					"x":["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"],
 					"y":[1,7,5,6,5,4,7,6,3,8,5,7],
 					"z":[],
 					"_highlight":["A","B","E","C","F","G","C","F","G","C","F","B"],
@@ -40,7 +40,7 @@
 					"yAxis": "1"
 				},
 				{
-					"x":[],
+					"x":["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"],
 					"y":[2,3,4,6,3,8,3,6,3,8,4,3],
 					"z":[],
 					"_highlight":["D","E","C","A","G","C","F","B","C","A","G","C"],
@@ -50,7 +50,7 @@
 					"yAxis": "1"
 				},
 				{
-					"x":[0,1,2,3,4,5,6,7,8,9,10,11],
+					"x":["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"],
 					"y":[3,3,9,5,4,5,7,8,9,7,6,7],
 					"z":[],
 					"_highlight":["A","B","C","D","C","A","G","C","C","D","C","A"],
