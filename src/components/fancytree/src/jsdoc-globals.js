@@ -5,26 +5,53 @@
 // Allow unused variables for demonstration
 /*jshint unused:false */
 
+/**
+ * The jQuery namespace, also acessible by the alias `$`.
+ * @name jQuery
+ * @namespace
+ */
+
+/**
+ * The <a href="http://jqueryui.com">jQuery UI</a> namespace.
+ * @name ui
+ * @namespace
+ * @memberof jQuery
+ */
+
+/**
+ * Create stateful jQuery plugins using the same abstraction as all jQuery UI widgets.
+ * @name jQuery.Widget
+ * @class
+ * @classdesc Base class for <a href="http://api.jqueryui.com/jQuery.widget/">jQueryUI widgets</a>.
+ * @see http://api.jqueryui.com/jQuery.widget/
+ */
+
+/**
+ * (Upcoming) namespace for Fancytree.
+ * @name moogle
+ * @namespace
+ */
 
 /**
  * Context object passed to events and hook functions.
  * @name EventData
+ * @type {Object}
  *
  * @property {Fancytree} tree The tree instance
- * @property {object} widget The {@link http://api.jqueryui.com/jQuery.widget/|jQuery UI tree widget}
+ * @property {object} widget The [jQuery UI tree widget](http://api.jqueryui.com/jQuery.widget)
  * @property {FancytreeOptions} options Shortcut to tree.options
- * @property {Event} originalEvent The {@link http://api.jquery.com/category/events/event-object/|jQuery Event} that initially triggered this call
+ * @property {Event} originalEvent The [jQuery Event](http://api.jquery.com/category/events/event-object) that initially triggered this call
  * @property {FancytreeNode | null} node The node that this call applies to (`null` for tree events)
- * @property {any} result (output parameter) Event handlers can return values back to the caller. Used by `lazyload`, `postProcess`, ...
+ * @property {any} result (output parameter) Event handlers can return values back to the caller. Used by `lazyLoad`, `postProcess`, ...
  * @property {String | undefined} targetType (only for click and dblclick events) 'title' | 'prefix' | 'expander' | 'checkbox' | 'icon'
  * @property {any} response (only for postProcess event) Original ajax response
  */
 var EventData = {};
 
-
 /**
  * Data object passed to FancytreeNode() constructor.
  * @name NodeData
+ * @type {Object}
  *
  * @property {String} title node text (may contain HTML tags)
  * @property {String} key unique key for this node (auto-generated if omitted)
@@ -51,6 +78,7 @@ var NodeData = {};
  * May be passed to {@link FancytreeNode#applyPatch}
  * (Every property that is omitted (or set to undefined) will be ignored)
  * @name NodePatch
+ * @type {Object}
  *
  * @property {any} any (see NodeData)
  * @property {NodeData} appendChildren (not yet implemented)
@@ -63,20 +91,23 @@ var NodePatch = {};
 /**
  * List of [key, {@link NodePatch}]  tuples.
  * May be passed to {@link Fancytree#applyPatch}.
+ *
  * @name TreePatch
+ * @type {Object}
  *
  */
 var TreePatch = {};
 
 /**
  * @name FancytreeOptions
+ * @type {Object}
  *
  * @description
  * Fancytree options (see also example)
  *
  * @example $("#tree").fancytree({source: "/myService"});
  *
- * @property {Boolean} activeVisible Make sure that the active node is always visible, i.e. it's parents are expanded (default: true).
+ * @property {Boolean} activeVisible Make sure that the active node is always visible, i.e. its parents are expanded (default: true).
  * @property {object} ajax Default options for ajax requests
  * @property {Boolean} aria (default: false) Add WAI-ARIA attributes to markup
  * @property {Boolean} autoActivate Activate a node when focused with the keyboard (default: true)
@@ -99,6 +130,7 @@ var TreePatch = {};
  * @property {any} source Used to Initialize the tree.
  * @property {object} strings Translation table
  * @property {Boolean} tabbable Add tabindex='0' to container, so tree can be reached using TAB
+ * @property {Boolean} titlesTabbable Add tabindex='0' to node title span, so it can receive keyboard focus
  * @property {function} EVENT
  *
  */
@@ -106,14 +138,15 @@ var FancytreeOptions = {};
 
 /** Fancytree events
  * @name FancytreeEvents
+ * @type {Object}
  *
  * @description
  * Events are called like this:
  *    `CALLBACK_NAME(event, data)`
- * where `event` is a {@link http://api.jquery.com/category/events/event-object/|jQuery Event} object and `data` is of type {@link EventData}
+ * where `event` is a [jQuery Event](http://api.jquery.com/category/events/event-object) object and `data` is of type {@link EventData}
  * The `this` context is set to  tree's the HTMLDivElement
  *
- * @see <a href="http://api.jquery.com/category/events/event-object/">jQuery Event</a>
+ * @see {@link http://api.jquery.com/category/events/event-object|jQuery Event}
  * @see EventData
  *
  * @example $("#tree").fancytree({
@@ -140,7 +173,7 @@ var FancytreeOptions = {};
  * @property {function} init Widget was (re-)initialized.
  * @property {function} keydown `data.node` received key. `event.which` contains the key. Return `false` to prevent default processing, i.e. navigation. Return `result.preventNav` to prevent navigation but still allow default handling inside embedded input controls.
  * @property {function} keypress (currently unused)
- * @property {function} lazyload `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
+ * @property {function} lazyLoad `data.node` is a lazy node that is expanded for the first time. The new child data must be returned in the `data.result` property (see `source` option for available formats).
  * @property {function} loadChildren Node data was loaded, i.e. `node.nodeLoadChildren()` finished
  * @property {function} postProcess Allows to modify the ajax response
  * @property {function} removeNode `data.node` was removed (NOTE: this event is only available as callback, but not for bind())

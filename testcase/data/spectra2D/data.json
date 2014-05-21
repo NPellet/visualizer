@@ -1,2 +1,98 @@
-{"cosy":{"type":"jcamp","url":"../testcase/data/spectra2D/cosy.jdx"},"hsqc":{"type":"jcamp","url":"../testcase/data/spectra2D/hsqc.jdx"},"hmbc":{"type":"jcamp","url":"../testcase/data/spectra2D/hmbc.jdx"},"_saved":1370241743563,"cosyLabels":[{"color":"black","type":"cross","y":7.28727,"x":7.28727},{"color":"black","type":"cross","y":7.34745,"x":7.34745},{"color":"black","type":"cross","y":3.5995,"x":3.5995},{"color":"black","type":"cross","y":3.3345,"x":3.3345},{"color":"black","type":"cross","y":3.33348,"x":2.29517},{"color":"black","type":"cross","y":2.37347,"x":2.37347},{"color":"black","type":"cross","y":2.29693,"x":2.29693},{"color":"black","type":"cross","y":2.29517,"x":3.33348},{"color":"black","type":"cross","y":2.20892,"x":2.20892}],"_viewFilename":"Demo/peakpicking/.views/Master/1370196452998.json","h1":{"type":"jcamp","url":"../testcase/data/spectra2D/1h.jdx"}}
+{"annotations": [
+    {
+      "height": "10px",
+      "pos2": {
+        "y": 2,
+        "x": 2
+      },
+      "fillColor": "#FE84CE",
+      "width": "20px",
+      "_highlight": [
+        1
+      ],
+      "label": {
+        "position": {
+          "dx": "0px",
+          "dy": "-10px",
+          "y": 0
+        },
+        "text": "rect:1",
+        "color": "#CC0000",
+        "angle": 0,
+        "anchor": "middle",
+        "size": "14px"
+      },
+      "type": "rect",
+      "strokeColor": "#CC0000",
+      "strokeWidth": "3px",
+      "pos": {
+        "y": 1,
+        "x": 1
+      }
+    },
+    {
+      "height": "10px",
+      "pos2": {
+        "y": 3,
+        "x": 3
+      },
+      "fillColor": "#DC37A4",
+      "width": "20px",
+      "_highlight": [
+        2
+      ],
+      "label": {
+        "position": {
+          "dx": "0px",
+          "dy": "-10px",
+          "y": 0
+        },
+        "text": "rect:2",
+        "color": "#CC0000",
+        "angle": 0,
+        "anchor": "middle",
+        "size": "18px"
+      },
+      "type": "rect",
+      "strokeColor": "#CC0000",
+      "strokeWidth": "6px",
+      "pos": {
+        "y": 2,
+        "x": 2
+      }
+    },
+    {
+      "height": "10px",
+      "pos2": {
+        "y": 4,
+        "x": 4
+      },
+      "fillColor": "#7BA51E",
+      "width": "20px",
+      "_highlight": [
+        3
+      ],
+      "label": {
+        "position": {
+          "dx": "0px",
+          "dy": "-10px",
+          "y": 0
+        },
+        "text": "rect:3",
+        "color": "#CC0000",
+        "angle": 0,
+        "anchor": "middle",
+        "size": "22px"
+      },
+      "type": "rect",
+      "strokeColor": "#CC0000",
+      "strokeWidth": "9px",
+      "pos": {
+        "y": 3,
+        "x": 3
+      }
+    }
+  ],
+
+  "cosy":{"type":"jcamp","url":"../testcase/data/spectra2D/cosy.jdx"},"hsqc":{"type":"jcamp","url":"../testcase/data/spectra2D/hsqc.jdx"},"hmbc":{"type":"jcamp","url":"../testcase/data/spectra2D/hmbc.jdx"},"_saved":1370241743563,"cosyLabels":[{"color":"black","type":"cross","y":7.28727,"x":7.28727},{"color":"black","type":"cross","y":7.34745,"x":7.34745},{"color":"black","type":"cross","y":3.5995,"x":3.5995},{"color":"black","type":"cross","y":3.3345,"x":3.3345},{"color":"black","type":"cross","y":3.33348,"x":2.29517},{"color":"black","type":"cross","y":2.37347,"x":2.37347},{"color":"black","type":"cross","y":2.29693,"x":2.29693},{"color":"black","type":"cross","y":2.29517,"x":3.33348},{"color":"black","type":"cross","y":2.20892,"x":2.20892}],"_viewFilename":"Demo/peakpicking/.views/Master/1370196452998.json","h1":{"type":"jcamp","url":"../testcase/data/spectra2D/1h.jdx"}}
 

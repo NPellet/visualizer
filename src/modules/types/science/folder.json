@@ -1,8 +1,8 @@
 {
-	"folders": {
-		"Chemistry": "modules/types/science/chemistry/",
-		"Spectra modules": "modules/types/science/spectra/"
-	},
+	"folders": [
+		"chemistry",
+		"spectra"
+	],
 	"name": "Science",
 	"modules": []
 }

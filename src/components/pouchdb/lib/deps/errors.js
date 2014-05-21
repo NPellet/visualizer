@@ -6,15 +6,28 @@ function PouchError(opts) {
   this.message = opts.reason;
   this.error = true;
 }
-PouchError.prototype = new Error();
 
+PouchError.prototype__proto__ = Error.prototype;
 
+PouchError.prototype.toString = function () {
+  return JSON.stringify({
+    status: this.status,
+    name: this.name,
+    message: this.message
+  });
+};
+
+exports.UNAUTHORIZED = new PouchError({
+  status: 401,
+  error: 'unauthorized',
+  reason: "Name or password is incorrect."
+});
 exports.MISSING_BULK_DOCS = new PouchError({
   status: 400,
   error: 'bad_request',
   reason: "Missing JSON list of 'docs'"
 });
-exports.MISSING_DOC = new PouchError({ 
+exports.MISSING_DOC = new PouchError({
   status: 404,
   error: 'not_found',
   reason: 'missing'
@@ -98,6 +111,11 @@ exports.LDB_ERROR = new PouchError({
   status: 500,
   error: 'levelDB_went_went_bad',
   reason: 'unknown'
+});
+exports.FORBIDDEN = new PouchError({
+  status: 403,
+  error: 'forbidden',
+  reason: 'Forbidden by design doc validate_doc_update function'
 });
 exports.error = function (error, reason, name) {
   function CustomPouchError(msg) {

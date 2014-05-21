@@ -808,13 +808,13 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			return (this.width && this.height);
 		},
 
-		redraw: function(doNotRecalculateMinMax, noX, noY) {
+		redraw: function( doNotResetMinMax, noX, noY) {
 
 			if( ! this.canRedraw() ) {
 				return;
 			}
 
-			this.refreshDrawingZone(doNotRecalculateMinMax, noX, noY);
+			this.refreshDrawingZone( doNotResetMinMax, noX, noY);
 
 			return true;
 		},
@@ -2024,7 +2024,10 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			this.options.flipped = bool;
 		},
 
-		_draw: function(doNotRecalculateMinMax) { // Redrawing of the axis
+		/**
+		 *	@param doNotResetMinMax Whether min max of the axis should fit the one of the series
+		 */
+		_draw: function( doNotResetMinMax ) { // Redrawing of the axis
 			var visible;
 
 			switch(this.options.tickPosition) {
@@ -2057,8 +2060,10 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			while(this.groupGrids.firstChild)
 				this.groupGrids.removeChild(this.groupGrids.firstChild);
 
-			if(!doNotRecalculateMinMax || this._realMin == undefined || !this._realMax == undefined)
+			if( ! doNotResetMinMax || this._realMin == undefined || ! this._realMax == undefined ) {
 				this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
+			}
+
 			// The data min max is stored in this.realMin, this.realMax
 
 			var widthPx = this.maxPx - this.minPx;
@@ -2134,9 +2139,9 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			this.options.ticklabelratio = tickRatio;
 		},
 
-		draw: function(doNotRecalculateMinMax) {
+		draw: function( doNotResetMinMax ) {
 			this._widthLabels = 0;
-			var drawn = this._draw(doNotRecalculateMinMax);
+			var drawn = this._draw( doNotResetMinMax );
 			this._widthLabels += drawn;
 
 			return this.series.length > 0 ? 100 : drawn;
@@ -3092,7 +3097,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			});
 		},
 
-		kill: function(noRedraw) {
+		kill: function( noRedraw ) {
 
 			this.graph.plotGroup.removeChild(this.groupMain);
 
@@ -3103,15 +3108,16 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			}
 
 			this.graph.series.splice(this.graph.series.indexOf(this), 1);
-			if(!noRedraw) {
+
+			if( ! noRedraw ) {
 				this.graph.redraw();
 			}
 		},
 
 		onMouseOverMarker: function(e, index) {
 			var toggledOn = this.toggleMarker(index, true, true);
-			if(this.options.onMouseOverMarker && this.infos) {
-				this.options.onMouseOverMarker(index, this.infos[index[0]] || false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
+			if(this.options.onMouseOverMarker) {
+				this.options.onMouseOverMarker(index, this.infos ? (this.infos[index[0]] || false) : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
 			}
 		},
 
@@ -3119,7 +3125,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 		onMouseOutMarker: function(e, index) {
 			this.markersOffHover();
 			if(this.options.onMouseOutMarker && this.infos) {
-				this.options.onMouseOutMarker(index, this.infos[index[0]] || false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
+				this.options.onMouseOutMarker(index, this.infos ? (this.infos[index[0]] || false) : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
 			}
 		},
 
@@ -3181,13 +3187,13 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			var toggledOn = this.toggleMarker(index);
 
 			if(toggledOn && this.options.onSelectMarker)
-				this.options.onSelectMarker(index, this.infos[index[0]] || false);
+				this.options.onSelectMarker(index, this.infos ? (this.infos[index[0]] || false) : false);
 
 			if(!toggledOn && this.options.onUnselectMarker)
-				this.options.onUnselectMarker(index, this.infos[index[0]] || false);
+				this.options.onUnselectMarker(index, this.infos ? (this.infos[index[0]] || false) : false);
 
 			if(this.options.onToggleMarker)
-				this.options.onToggleMarker(index, this.infos[index[0]] || false, toggledOn);
+				this.options.onToggleMarker(index, this.infos ? (this.infos[index[0]] || false) : false, toggledOn);
 		},
 
 

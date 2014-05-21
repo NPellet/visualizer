@@ -1,8 +1,14 @@
 
-define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning'], function($, ui, Util, ModuleFactory, Context, Versioning) {	
+define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/util/context', 'src/util/versioning', 'src/util/api', 'forms/form'], function($, ui, Util, ModuleFactory, Context, Versioning, API, Form) {
+	"use strict";
 
 
-	var definition, jqdom, self = this, moduleMove;
+	var definition, jqdom, self = this, moduleMove, isInit = false;
+	var activeLayer = "Default layer";
+	var modules = [];
+	var layersUl, layersLi;
+
+	//var layers = { "Default : { name: activeLayer } };
 
 	var defaults = {
 		xWidth: 10, // 20px per step
@@ -12,9 +18,9 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 	function checkDimensions(extend) {
 			
 		var bottomMax = 0;
-		for(var i in this.modules) {
-			var pos = this.modules[i].getPosition(),
-				size = this.modules[i].getSize();
+		for(var i in modules) {
+			var pos = modules[i].getPosition( getActiveLayer( ) ),
+				size = modules[i].getSize( getActiveLayer( ) );
 
 			if(pos.top && size.height) {
 				bottomMax = Math.max( bottomMax, pos.top + size.height );
@@ -43,13 +49,13 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		addModuleFromJSON( def );
 	}
 
-	function addModule(module) {
-		
-		var grid = this,
-			modulePos = module.getPosition( ),
-			moduleSize = module.getSize( );
+	function setModuleSize( module ) {
 
-		module.getDomWrapper( ).appendTo( jqdom ).css( {
+		var modulePos = module.getPosition( getActiveLayer( ) ),
+			moduleSize = module.getSize( getActiveLayer( ) );
+
+
+		 module.getDomWrapper( ).css( {
 
 			top: Math.round( modulePos.top ) * definition.yHeight,
 			left: Math.round( modulePos.left ) * definition.xWidth,
@@ -57,88 +63,117 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			height: Math.round( moduleSize.height ) * definition.yHeight
 
 		} );
+	}
 
-		Context.listen(module.getDomWrapper().get(0), [
+	function addModule(module) {
+		
+		var grid = this;
+		module.getDomWrapper( ).appendTo( jqdom );
+		modules.push( module );
 
-			['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>', 
-			function() {
-				moveToFront(module);
-			}],
-			
-			['<li><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>', 
-			function() {
-				moveToBack(module);
-			}],
-			
-			['<li><a><span class="ui-icon ui-icon-close"></span> Remove module</a></li>', 
-			function() {
-				removeModule(module);
-			}],
+		setModuleSize( module );
 
-			['<li><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>', 
-			function(e) {
-				var pos = module.getDomWrapper().position();
-				var shiftX = e.pageX - pos.left;
-				var shiftY = e.pageY - pos.top;
-				moveModule(module, shiftX, shiftY);
-			}],
+		
+
+		if( ! API.isViewLocked() ) {
+			Context.listen(module.getDomWrapper().get(0), [
+
+				['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>', 
+				function() {
+					moveToFront(module);
+				}],
+				
+				['<li><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>', 
+				function() {
+					moveToBack(module);
+				}],
+				
+				['<li><a><span class="ui-icon ui-icon-close"></span> Remove module</a></li>', 
+				function() {
+					removeModule(module);
+				}],
+
+				['<li><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>', 
+				function(e) {
+					var pos = module.getDomWrapper().position();
+					var shiftX = e.pageX - pos.left;
+					var shiftY = e.pageY - pos.top;
+					moveModule(module, shiftX, shiftY);
+				}],
 
 
-			['<li><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>', 
-			function() {
-				duplicateModule( module );
-			}]
-		]);
+				['<li><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>', 
+				function() {
+					duplicateModule( module );
+				}],
+	                    
+	            ['<li><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>', 
+				function() {
+					window.localStorage.setItem("ci-copy-module",JSON.stringify( module.definition ));
+				}]
+			]);
+		}
 
 		module.ready.done(function() {
 
 			if( module.inDom ) {
 				module.inDom( );
 			}
+
+			module.toggleLayer( getActiveLayer( ) );
+
 			// Expands the grid when one click on the header
 			module.getDomHeader().bind('mousedown', function() {
 				checkDimensions(true);
 			});
 			
-			// Insert jQuery UI resizable and draggable
-			module.getDomWrapper().resizable({
-				grid: [ definition.xWidth, definition.yHeight ],
-				start: function() {
-					Util.maskIframes();
-					module.resizing = true;
-				},
-				stop: function() {
-					Util.unmaskIframes();
-					moduleResize(module);
-					module.resizing = false;
-					checkDimensions(false);
-				},
-				containment: "parent"
-				
-			}).draggable({
-				
-				grid: [definition.xWidth, definition.yHeight],
-				containment: "parent",
-				handle: '.ci-module-header',
-				start: function() {
-					Util.maskIframes();
-					checkDimensions(true);
-					module.moving = true;
-				},
-				stop: function() {
-					var position = $(this).position();
-					Util.unmaskIframes();
-					module.getPosition().set('left', position.left / definition.xWidth);
-					module.getPosition().set('top', position.top / definition.yHeight);
-					module.moving = false;
-					checkDimensions(false);
-				},
-				drag: function() {
-					checkDimensions(true);
-				}
+			if( ! API.isViewLocked() ) {
+				// Insert jQuery UI resizable and draggable
+				module.getDomWrapper().resizable({
+					grid: [ definition.xWidth, definition.yHeight ],
+					start: function() {
+						Util.maskIframes();
+						module.resizing = true;
+					},
+					stop: function() {
+						Util.unmaskIframes();
+						moduleResize(module);
+						module.resizing = false;
+						checkDimensions(false);
+					},
+					containment: "parent"
+					
+				}).draggable({
+					
+					grid: [definition.xWidth, definition.yHeight],
+					containment: "parent",
+					handle: '.ci-module-header',
+					start: function() {
+						Util.maskIframes();
+						checkDimensions(true);
+						module.moving = true;
+					},
+					stop: function() {
+						var position = $(this).position();
+						Util.unmaskIframes();
+			
+						module.getPosition( getActiveLayer() ).set('left', position.left / definition.xWidth);
+						module.getPosition( getActiveLayer() ).set('top', position.top / definition.yHeight);
+			
+						//console.log( module.getPosition( getActiveLayer() ) );
+			
+						module.moving = false;
+						checkDimensions(false);
+					},
+					drag: function() {
+						checkDimensions(true);
+					}
 
-			}).trigger('resize').bind('mouseover', function() {
-				
+				}).trigger('resize');
+			}
+
+			module.getDomWrapper().bind('mouseover', function() {
+					
 				if(module.resizing || module.moving)
 					return;
 				if(module.getDomHeader().hasClass('ci-hidden')) {
@@ -176,8 +211,8 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		
 		var wrapper = module.getDomWrapper();
 		
-		module.getSize().set('width', wrapper.width() / definition.xWidth);
-		module.getSize().set('height', wrapper.height() / definition.yHeight);
+		module.getSize( getActiveLayer( ) ).set('width', wrapper.width() / definition.xWidth);
+		module.getSize( getActiveLayer( ) ).set('height', wrapper.height() / definition.yHeight);
 
 		var containerHeight = wrapper.height() - (module.getDomHeader().is(':visible') ? module.getDomHeader().outerHeight(true) : 0);
 		
@@ -205,24 +240,27 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			modulePos.div.remove();
 			modulePos = {};
 
-			var module = ModuleFactory.newModule(new ViewObject({
+			var module = ModuleFactory.newModule( new ViewObject( {
 				//type: type,
-				url: url,
-				title: "Untitled module",
-				displayWrapper: true,
-				position: new ViewObject({
-					left: left,
-					top: top	
-				}),
+				url: url
 				
-				size: new ViewObject({
-					width: width,
-					height: height
-				})
-			}));
+			} ) );
 
+			var layer = module.getActiveLayer( getActiveLayer() );
+			layer.position.set('left', left);
+			layer.position.set('top', top);
+
+			layer.size.set('width', width);
+			layer.size.set('height', height);
+
+			layer.wrapper = true;
+			layer.title = "Untitled";
+
+		
 			$.when(module.ready).then(function() {
 				addModule(module);	
+			//	module.toggleLayer( getActiveLayer( ) );
+
 			});
 		
 			$(document)
@@ -251,7 +289,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				position: 'absolute'
 
 			} ).appendTo( $ ( "body" ) );
-		}
+		};
 
 		var mouseMoveHandler = function(e) {
 			
@@ -286,7 +324,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		var modules = ModuleFactory.getModules(),
 			dom = module.dom,
 			myZIndex  = module.definition.zindex || 1,
-			count = 0, i
+			count = 0, i;
 		for (i in modules) {
 			modules[i].definition.zindex = modules[i].definition.zindex || 1;
 			if(modules[i].definition.zindex >= myZIndex)
@@ -360,8 +398,9 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 			var left = Math.max(0, Math.round((moduleMove.left) / definition.xWidth));
 			var top = Math.max(0, Math.round((moduleMove.top) / definition.yHeight));
-			moduleMove.module.getPosition().top = top;
-			moduleMove.module.getPosition().left = left;
+
+			moduleMove.module.getPosition( getActiveLayer() ).top = top;
+			moduleMove.module.getPosition( getActiveLayer() ).left = left;
 			
 			moduleMove.div.css({
 				top: top * definition.yHeight,
@@ -374,12 +413,151 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				.unbind('click', clickHandler)
 				.unbind('mousemove', mouseMoveHandler);
 
-		}
+		};
 
 		$(document)
 			.bind('click', clickHandler)
 			.bind('mousemove', mouseMoveHandler);
 	};
+
+	var eachModules = function( callback ) {
+
+		if( ! modules ) {
+			return;
+		}
+
+		for( var i = 0, l = modules.length ; i < l ; i ++ ) {
+			callback( modules[ i ] );
+		}
+	};
+
+
+	var getActiveLayer = function() {
+		return activeLayer;
+	};
+
+	function newLayer( toggleToIt, name ) {
+
+		var self = this,
+			def = $.Deferred();
+
+		if( name ) {
+			return definition.layers[ name ] = { name: name };
+
+			setLayers()
+			def.resolve( definition.layers[ name ] );
+		}
+
+		var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: ""}),
+			form = new Form({});
+
+		form.init();
+		form.setStructure( {
+
+			sections: {
+		
+				layeropts: {
+
+					options: { },
+					groups: {
+
+						layeropts: {
+							options: {
+								type: 'list',
+								multiple: true
+							},
+
+							fields: {
+
+								layername: {
+									type: 'text',
+									title: 'Layer name',
+									validation: {
+										rules: [{
+											nonEmpty: true,
+											feedback: {
+												_class: true,
+												message: "The layer name cannot be empty"
+											}
+										}]
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} );
+
+
+		form.onStructureLoaded().done(function() {
+			form.fill( { } );
+		});
+
+		form.addButton('Validate', { color: 'green' }, function() {
+
+			div.dialog('close');
+			var value = form.getValue().sections.layeropts[ 0 ].groups.layeropts[ 0 ],
+				layer = { name: value.layername[ 0 ] };
+				
+			definition.layers[ layer.name ] = layer;
+			def.resolve( layer );
+
+			setLayers();
+
+			if( toggleToIt ) {
+				switchToLayer( layer.name );
+			}
+		});
+
+		form.onLoaded().done(function() {
+			div.html( form.makeDom( 2 ) );
+			form.inDom();
+		});
+
+		return def;
+	}
+
+	function setLayers() {
+		eachModules( function( moduleInstance ) {
+			moduleInstance.setLayers( definition.layers );
+		} );
+	}
+
+	function switchToLayer( layerId, noForm ) {
+		
+		var layer = ( ! definition.layers[ layerId ] ) ? ( newLayer( false, layerId ) ) : definition.layers[ layerId ];
+
+		$.when( layer ).then( function( layer2 ) {
+
+			if( layer2 ) {
+				layer = layer2;
+			}
+
+			activeLayer = layer.name;
+
+			eachModules( function( moduleInstance ) {
+
+				var layer3 = moduleInstance.toggleLayer( layer.name );
+
+				if( ! layer3 ) {
+					//moduleInstance.hide();
+				} else {
+					//moduleInstance.show();
+					setModuleSize( moduleInstance );
+				}
+			} );
+
+		} );
+
+	};
+
+	function eachLayer( callback ) {
+
+		for( var i in definition.layers ) {
+			callback( definition.layers[ i ], i );
+		}
+	}
 
 
 	return {
@@ -390,11 +568,20 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		 * @param {integer} [definition.xWidth] The width of the grid cells
 		 * @param {integer} [definition.xHeight] The height of the grid cells
 		 */
-		init: function( def, dom, modules ) {
+		init: function( def, dom, _modules ) {
 			
-			this.modules = modules;
+			if( isInit ) {
+				return;
+			}
+
+			if( _modules ) {
+				modules = _modules;
+			}
+
+		
 			jqdom = $( dom );
-			
+			isInit = true;
+
 			function makeRecursiveMenu( elements, dom ) {
 
 				if( elements.modules ) {
@@ -411,53 +598,115 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 						var el = $('<li><a>' + i + '</a></li>');
 						var ul = $("<ul />").appendTo( el );
-						makeRecursiveMenu( elements.folders[ i ], ul  )
+						makeRecursiveMenu( elements.folders[ i ], ul  );
 						dom.append( el );
 					}
 				}
 			}
-			
-			Context.listen(dom, [], function(contextDom) {
-				$li = $('<li><a> Add a module</a></li>');
 
-				$ulModules = $("<ul />").appendTo($li);
-				var allTypes = ModuleFactory.getTypes();
-				$.when( allTypes ).then( function( json ) {
+            if( ! API.isViewLocked() ) { 
 
-					if( typeof json == "object" && ! Array.isArray( json ) ) {
-						json = [ json ];
-					}
+	            Context.listen(Context.getRootDom(), [
+					['<li><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>', 
+					function() {
+						var module = JSON.parse(window.localStorage.getItem("ci-copy-module"),Versioning.getViewHandler()._reviver);
+	                                        addModuleFromJSON( module );
+					}]]
+				);
+				
+				Context.listen(dom, [], function(contextDom) {
+					var $li = $('<li><a> Add a module</a></li>');
 
-					if( Array.isArray( json ) ) {					
-						for( var i = 0, l = json.length ; i < l ; i ++) {
-							makeRecursiveMenu( json[ i ], $ulModules );	
+					var $ulModules = $("<ul />").appendTo($li);
+					var allTypes = ModuleFactory.getTypes();
+					$.when( allTypes ).then( function( json ) {
+
+						if( typeof json === "object" && ! Array.isArray( json ) ) {
+							json = [ json ];
 						}
-					} else {
 
-					}
+						if( Array.isArray( json ) ) {					
+							for( var i = 0, l = json.length ; i < l ; i ++) {
+								makeRecursiveMenu( json[ i ], $ulModules );	
+							}
+						} else {
+
+						}
+						
+					});
+
+					$(contextDom).append( $li );
+
+					$li.bind( 'click', function( event ) {
+						var url = $( event.target.parentNode ).attr( 'data-url' );
+						if(url)
+							newModule( decodeURIComponent( url ) );
+					});
+				});
+
+				layersLi = $('<li><a> Switch to layer</a></li>');
+				layersUl = $("<ul />").appendTo( layersLi );
+
+				Context.listen(dom, [], function( contextDom ) {
 					
+					layersUl.empty();
+
+					eachLayer( function( layer, key ) {
+						var li = $('<li data-layer="' + encodeURIComponent( key ) + '"><a><span />' + key + '</a></li>').data( 'layerkey', key ).appendTo( layersUl );
+
+						if( key == activeLayer ) {
+							li.find('span').addClass('ui-icon ui-icon-check');
+						}
+						
+
+					});
+
+					$('<li data-layer=""><a>+ Add a new layer</a></li>').data( 'layerkey', "-1" ).appendTo( layersUl );
+
+					$(contextDom).append( layersLi );
+
+					layersLi.bind( 'click', function( event ) {
+						var layer = $( event.target.parentNode ).data( 'layerkey' );
+	
+						if( layer !== "-1" ) {
+							switchToLayer( layer );
+							
+						} else if( layer == "-1" ) {
+							newLayer();
+						}
+					});
+
 				});
 
-				$(contextDom).append( $li );
+			
 
-				$li.bind( 'click', function( event ) {
-					newModule( decodeURIComponent( $( event.target.parentNode ).attr( 'data-url' ) ) );
-				});
-			});
-
+			}
+                        
 			this.reset( def );
 		},
 
 		reset: function( def ) {
 
-			definition = $.extend(true, defaults, def);
+			definition = def;
+			definition.layers = definition.layers || {};
+
+			if( ! definition.xWidth ) {
+				definition.xWidth = 10;
+			}
+
+			if( ! definition.yHeight ) {
+				definition.yHeight = 10;
+			}
+
+
 			$( jqdom ).empty( );
 			checkDimensions( );
+			switchToLayer( activeLayer );
 		},
 
 		addModule: addModule,
 		addModuleFromJSON: addModuleFromJSON,
 		checkDimensions: checkDimensions,
 		moduleResize: moduleResize
-	}
+	};
 });

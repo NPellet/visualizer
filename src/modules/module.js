@@ -1,5 +1,9 @@
 
-define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/util'], function($, ContextMenu, API, Button, Util) {
+define([	
+	'jquery',
+	'src/util/context',
+	'src/util/api',
+	'src/util/util'], function($, ContextMenu, API, Util) {
 	
 	function init(module) {
 		//define object properties
@@ -8,7 +12,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 		
 		//Construct the DOM within the module
 		
-		Util.loadCss( require.toUrl( moduleURL + "/style.css" ) );
+		Util.loadCss( require.toUrl( moduleURL + "style.css" ) );
 
 		if( ! moduleURL ) {
 			def.reject( );
@@ -58,6 +62,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 				def.resolve();
 
 
+
 	//		});
 		
 		});
@@ -68,6 +73,9 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 	 var Module = function(definition) {
 		this.definition = definition;
 		this.definition.configuration = this.definition.configuration || new ViewObject({});
+
+		this.definition.layers = this.definition.layers || new ViewObject(); // View on which layers ?
+
 		this.ready = init(this);
 	};
 	/**
@@ -148,7 +156,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 			for( ; i < l ; i++ ) {
 				
 	 			val = API.getVar( vars[ i ].name );
-	 			if( val ) {	 				
+	 			if( val.getType()!== "undefined" ) {	 				
 	 				this.model.onVarGet( val, vars[ i ].name );
 	 			}
 			}
@@ -278,28 +286,119 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 			this.model.inDom( );
 			
 			var self = this;
+                        
+			if( ! API.isViewLocked() ) {
 
-			ContextMenu.listen(this.getDomWrapper().get(0), [
+				ContextMenu.listen(this.getDomWrapper().get(0), [
 
-				['<li><a><span class="ui-icon ui-icon-suitcase"></span> Export</a></li>', 
-				function() {
-					self.exportData();
-				}],
-                
-				['<li><a><span class="ui-icon ui-icon-print"></span> Print</a></li>', 
-				function() {
-					self.printView();
-				}],
-				
-				['<li><a><span class="ui-icon ui-icon-gear"></span> Parameters</a></li>', 
-				function() {
-					self.doConfig();
-				}]
-			]);
+					['<li><a><span class="ui-icon ui-icon-suitcase"></span> Export</a></li>', 
+					function() {
+						self.exportData();
+					}],
+	                
+					['<li><a><span class="ui-icon ui-icon-print"></span> Print</a></li>', 
+					function() {
+						self.printView();
+					}],
+					
+					['<li><a><span class="ui-icon ui-icon-gear"></span> Parameters</a></li>', 
+					function() {
+						self.doConfig();
+					}]
+				]);
 
-			this.setDisplayWrapper();
+			}
 		},
 		
+		toggleLayer: function( newLayerShown, layerOut ) {
+
+			var layer;
+			if( layer = this.getActiveLayer( newLayerShown )) {
+
+				if( ! layer.display ) {
+					
+					this.hide();
+				//	console.log('Hide');
+					return;
+				} else {
+					this.show();
+				//	console.log('Show');
+					
+				}
+
+				this.setTitle( layer.title );
+				this.setDisplayWrapper( layer.wrapper );
+				this.activeLayerName = newLayerShown;
+
+				return layer;
+			}
+		},
+
+		eachLayer: function( callback ) {
+
+			for( var i in this.definition.layers ) {
+				callback( this.definition.layers[ i ], i );	
+			}
+		},
+
+		setLayers: function( layers ) {
+			this.definition.layers = this.definition.layers || new ViewObject();
+
+			for( var i in layers ) {
+				if( this.definition.layers[ i ] ) {
+					continue;
+				}
+//console.log()
+				// new layer
+				this.definition.layers[ i ] = {};
+				$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );
+				console.log( this.definition.layers );
+			}
+		},
+
+		getActiveLayerName: function() {
+			return this.activeLayerName;
+		},
+
+		getActiveLayer: function( activeLayer, noCreation ) {
+
+			if( ! activeLayer ) {
+				return false;
+			}
+//console.log( this.definition.layers )
+
+			if( ! this.definition.layers[ activeLayer ] || ! this.definition.layers[ activeLayer ].created ) {
+
+				if( noCreation ) {
+					return false;
+				}
+
+				this.definition.layers[ activeLayer ] = new ViewObject({
+					position: { left: 0, right: 0 },
+					size: { width: 20, height: 20},
+					zIndex: 0,
+					display: true,
+					title: "",
+					bgcolor: [ 255, 255, 255, 0 ],
+					wrapper: true,
+					created: true,
+					name: activeLayer
+				}, true);
+
+				console.log( this.definition.layers[ activeLayer ] );
+
+			}
+
+			return this.definition.layers[ activeLayer ];
+		},
+
+		hide: function() {
+			this.getDomWrapper().hide();
+		},
+
+		show: function() {
+			this.getDomWrapper().show();
+		},
 
 		doConfig: function() {
 
@@ -335,7 +434,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 					for( ; i < l ; i ++ ) {
 
 						target.push( {
-							key: arraySource[ i ].file,
+							key: require.toUrl(arraySource[ i ].file),
 							title: arraySource[ i ].name,
 							children: makeFilters( arraySource[ i ].children )
 						} );		
@@ -379,6 +478,10 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 				varsInList = [];
 
 			for( i = 0, l = varsIn.length ; i < l ; i ++ ) {
+				
+				if( ! references[ varsIn [ i ] ] ) {
+					continue;
+				}
 				
 				varsInList.push( { key: varsIn[ i ], title: references[ varsIn [ i ] ].label } )
 			}
@@ -454,7 +557,6 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 				}
 			}
 
-
 			// ACTIONS IN
 			var actionsIn = this.controller.actionsIn || {},
 				actionsInList = [];	
@@ -462,7 +564,12 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 			for( i in actionsIn ) {
 				actionsInList.push({ title: actionsIn[ i ], key: i});
 			}
-			
+
+
+			var allLayers = {};
+			module.eachLayer( function( layer, key ) {
+				allLayers[ key ] = key;
+			} );
 
 			require(['./forms/form'], function(Form) {
 
@@ -502,32 +609,68 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 								icon: 'page_white_paint'
 							},
 
-							groups: {
 
-								group: {
+							groups: {
+								layerDisplay: {
 									options: {
-										type: 'list',
-										multiple: true
+										title: "Display on layers",
+										type: 'list'
 									},
 
 									fields: {
-
-										moduletitle: {
-											type: 'text',
-											multiple: false,
-											title: 'Module title'
-										},
-
-										bgcolor: {
-											type: 'color',
-											multiple: false,
-											title: 'Background color'
-										},
-
-										modulewrapper: {
+										displayOn: {
 											type: 'checkbox',
-											title: 'Module boundaries',
-											options: { 'display': '' }
+											title: 'Display on layers',
+											options: allLayers
+										}
+									}
+								}
+							},
+
+							sections: {
+
+								layer: {
+
+									options: {
+										title: 'Shown on layers',
+										multiple: true
+									},
+								
+									groups: {
+
+										group: {
+											options: {
+												type: 'list',
+												multiple: true
+											},
+
+											fields: {
+
+												layerName: {
+													type: 'text',
+													multiple: false,
+													title: 'Layer name'
+												},
+
+												moduletitle: {
+													type: 'text',
+													multiple: false,
+													title: 'Module title'
+												},
+
+
+												bgcolor: {
+													type: 'color',
+													multiple: false,
+													title: 'Background color'
+												},
+
+												modulewrapper: {
+													type: 'checkbox',
+													title: 'Module boundaries',
+													options: { 'display': '' }
+												}
+											}
 										}
 									}
 								}
@@ -820,9 +963,30 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 						"</table>"
 					;
 					
+
+					var allLayers = [],
+						allLayerDisplay = [];
+
+					module.eachLayer( function( layer, name ) {
+
+						if( layer.display ) {
+							allLayerDisplay.push( name );
+						}
+						
+
+
+						allLayers.push({ 
+							layerName: [ name ],
+							moduletitle: [ layer.title ],
+							bgcolor: [ layer.bgColor || [ 255, 255, 255, 0 ] ],
+							modulewrapper: [ ( layer.wrapper === true || layer.wrapper === undefined ) ? 'display' : '' ]
+						});
+					} ); 
+
 					var fill = {
 						sections: {
-							module_config: [ { groups: { group: [{ moduletitle: [module.getTitle()], bgcolor: [ module.definition.bgColor || [ 255, 255, 255, 0 ] ],  modulewrapper: [[ (module.definition.displayWrapper === true || module.definition.displayWrapper == undefined) ? 'display' : '' ]] }] } } ],
+							module_config: [ { groups: { layerDisplay: [ { displayOn: [ allLayerDisplay ]} ] }, sections: { layer: [ { groups: { group: allLayers } }]  } } ],
+
 							module_infos: [ { groups: { group: [ moduleInfosHtml ] } } ],
 							module_specific_config: [ module.definition.configuration || {} ],
 
@@ -833,7 +997,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 						}
 					}
 
-					form.fill(fill);
+
+					form.fill( fill );
 
 				});
 
@@ -845,12 +1010,30 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 
 					var value = form.getValue().sections;
 
-					module.setTitle( value.module_config[ 0 ].groups.group[ 0 ].moduletitle[ 0 ] );
-					module.definition.bgColor 			= value.module_config[ 0 ].groups.group[ 0 ].bgcolor[ 0 ];
-					module.setBackgroundColor( module.definition.bgColor );
+			//		module.setTitle( value.module_config[ 0 ].groups.group[ 0 ].moduletitle[ 0 ] );
+				//	module.definition.bgColor 			= value.module_config[ 0 ].groups.group[ 0 ].bgcolor[ 0 ];
+//					module.setBackgroundColor( module.definition.bgColor );
 
-					module.definition.displayWrapper 	= value.module_config[ 0 ].groups.group[ 0 ].modulewrapper[ 0 ].indexOf('display') > -1;
-					module.setDisplayWrapper();
+					module.definition.layers = module.definition.layers || {};
+					console.log( value.module_config[ 0 ].sections.layer[ 0 ] );
+					var l = value.module_config[ 0 ].sections.layer[ 0 ].groups.group;
+
+					var allDisplay = value.module_config[ 0 ].groups.layerDisplay[ 0 ].displayOn[ 0 ];
+console.log( l );
+					for( var i = 0, ll = l.length ; i < ll ; i ++ ) {
+
+						//console.log( l[ i ].groups.group[ 0 ].layerName[ 0 ], allDisplay, allDisplay.indexOf( l[ i ].groups.group[ 0 ].layerName[ 0 ] ) );
+
+
+						module.definition.layers[ l[ i ].layerName[ 0 ] ].display = allDisplay.indexOf( l[ i ].layerName[ 0 ] ) > -1;
+						module.definition.layers[ l[ i ].layerName[ 0 ] ].title = l[ i ].moduletitle[ 0 ];
+						module.definition.layers[ l[ i ].layerName[ 0 ] ].bgcolor = l[ i ].bgcolor;
+						module.definition.layers[ l[ i ].layerName[ 0 ] ].wrapper = l[ i ].modulewrapper[ 0 ].indexOf('display') > -1;
+					}
+
+console.log( module.definition.layers )
+					//module.definition.displayWrapper 	= value.module_config[ 0 ].groups.group[ 0 ].modulewrapper[ 0 ].indexOf('display') > -1;
+		//			module.setDisplayWrapper();
 
 					if( value.vars_out ) {
 						module.setSendVars(		value.vars_out[ 0 ].groups.group[ 0 ]			);
@@ -876,7 +1059,9 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 					if( module.view.unload ) {
 						module.view.unload();
 					}
-					
+						
+					module.toggleLayer( module.getActiveLayerName() );
+
 					module.view.init();
 
 					module.view.inDom();
@@ -900,11 +1085,12 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 		},
 
 
-		getConfiguration: function( aliasName ) {
+		getConfiguration: function( aliasName, fallbackValue ) {
 
 
 			var cfgEl = this.definition.configuration,
-				alias = this.controller.configAliases[ aliasName ];
+				alias = this.controller.configAliases[ aliasName ],
+                                toReturn;
 
 
 			if( alias ) {
@@ -912,18 +1098,23 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 				for( var i = 0, l = alias.length ; i < l ; i ++) {
 					cfgEl = cfgEl[ alias[ i ] ];
 
-					if( typeof cfgEl == 'undefined' ) {
+					if( typeof cfgEl === 'undefined' ) {
 
-						return this._getConfigurationDefault( alias, aliasName );
+						toReturn = this._getConfigurationDefault( alias, aliasName );
+                                                break;
 					}
 				}
 			} else {
 				console.warn( 'Alias ' + alias + ' not defined ');
 				console.trace();
 			}
-			
-
-			return this._doConfigurationFunction( cfgEl, aliasName );
+			if(typeof toReturn === "undefined")
+                            toReturn = this._doConfigurationFunction( cfgEl, aliasName );
+                        if(typeof toReturn === "undefined")
+                            toReturn = fallbackValue;
+                        
+                        return toReturn;
+                        
 		},
 
 		_getConfigurationDefault: function( alias, aliasName ) {
@@ -948,7 +1139,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 				cfgEl = cfgEl[ alias[ i ] ];
 				if( ! cfgEl ) {
 
-					return 'Error in configuration file - Alias is not a correct jPath';
+					console.warn('Error in configuration file - Alias is not a correct jPath');
+					return false;
 				}
 
 			}
@@ -983,22 +1175,19 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 		/** 
 		 * Returns the current position of the module
 		 */
-		getPosition: function() {
+		getPosition: function( activeLayer ) {
 			
-			if(!this.definition.position)
-				this.definition.position = { left: 0, right: 0};
-			return this.definition.position;
+			var layer = this.getActiveLayer( activeLayer );
+			return layer.position;
 		},
 		
 		/** 
 		 * Returns the current size of the module
 		 */
-		getSize: function() {
+		getSize: function( activeLayer ) {
 			
-			if(!this.definition.size)
-				this.definition.size = new ViewObject({ width: 20, height: 20});
-				
-			return this.definition.size;
+			var layer = this.getActiveLayer( activeLayer );
+			return layer.size;
 		},
 
 		getWidthPx: function() {
@@ -1127,8 +1316,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'forms/button', 'src/util/
 			this.domContent.get(0).style.backgroundColor = 'rgba(' + color + ')';
 		},
 
-		setDisplayWrapper: function() {
-			var bln = this.definition.displayWrapper;
+		setDisplayWrapper: function( bln ) {
+
 			this.getDomWrapper()[(bln === true || bln == undefined) ? 'addClass' : 'removeClass']('ci-module-displaywrapper');
 			
 			try {

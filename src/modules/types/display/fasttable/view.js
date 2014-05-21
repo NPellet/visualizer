@@ -1,4 +1,5 @@
-define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/domdeferred', 'src/util/datatraversing', 'src/util/typerenderer'], function(require, Default, Util, API, DomDeferred, Traversing, Renderer) {
+define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api', 'src/util/domdeferred', 'src/util/datatraversing', 'src/util/typerenderer', 'src/util/context'], function(require, Default, Util, API, DomDeferred, Traversing, Renderer, Context) {
+	"use strict";
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -41,7 +42,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 		}).on('click', 'tr', function() {
 
- 				self.module.controller.lineClick( self.module.data, parseInt( $(this).attr('data-row-id') ) );
+ 				self.module.controller.lineClick( self.module.data, $(this).index() );
 
 	 		}).on('click', 'th', function() { // Sorting
 
@@ -58,7 +59,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 					self.domTable.find('th[data-jpath-number="' + currentColSort.col + '"]').append( currentColSort.span );
 
-	 			} else if( currentColSort.col == jpathId ) {
+	 			} else if( currentColSort.col === jpathId ) {
 	 				currentColSort.asc = ! currentColSort.asc;
 	 				currentColSort.span.toggleClass('up');
 	 			}
@@ -86,7 +87,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 			this.jpaths = {};
 
-			thead = '<tr>';
+			var thead = '<tr>';
 			for( ; j < l ; j ++ ) {
 
 				if( ! jpaths[ j ].jpath ) {
@@ -98,12 +99,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			}
 			thead += '</tr>';
 
-
-
 			var colorjpath = this.module.getConfiguration( 'colorjPath' );
 
 			if( colorjpath ) {
-				Util.addjPathFunction( undefined, jpaths[ j ].jpath, this.colorjpath);
+				
+				this.colorjpath = Util.makejPathFunction( colorjpath );
 			}
 		
 			this.domHead.html( thead );
@@ -140,21 +140,34 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 		list: function() {
 				
-				
-	 		}
-	 	
+				if( ! this.module.data ) {
+	 				return;
+	 			}
+
+	 			var i,
+	 				l = this.module.data.length;
+	 			
+				for( i = 0; i < l ; i++ ) {
+					this.module.data[ i ].unbindChange( this.module.getId() );
+				}
+			}
 	 	},
 
 	 	update: {
 
-	 		list: function(moduleValue) {
+	 		list: function( moduleValue ) {
+
+				if( moduleValue.type === "string") {
+					return;
+				}
 
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
-
+                                
 	 			moduleValue = moduleValue.get();
-	 			
+				this.elements = moduleValue;
+                
 				var self = this, 
 					jpaths = this.module.getConfiguration( 'colsjPaths' ),
 					nbLines = this.module.getConfiguration( 'nbLines' ) || 20,
@@ -167,23 +180,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				this.module.data = moduleValue;
 
 				for( ; i < l ; i ++ ) {
-					html += '<tr';
-					if( this.colorjpath ) {
-						html += ' style="background-color: ' + this.colorjpath( moduleValue[ i ] ) + ';"';
-					}
-					html += ' data-row-id="' + i + '"';
-					html += '>';
-					j = 0;
-					for( ; j < k ; j ++ ) {
-						if( ! jpaths[ j ].jpath ) {
-							continue;
-						}
-						
-						html += '<td>';
-						html += this.getValue( moduleValue[ i ], jpaths[ j ].jpath );
-						html += '</td>';
-					}
-					html += '</tr>';
+
+					html += this.buildElement( moduleValue[ i ], i );
 				}
 
 				this.domBody.html( html );
@@ -194,9 +192,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 					window.clearTimeout( this.timeout );
 				}
 
+				// Wait before setting the highlights
 				this.timeout = window.setTimeout( function( ) {
-
-					API.killHighlight( self.module.id );
+					
+					API.killHighlight( self.module.getId( ) );
 
 					for( i = 0; i < l ; i++ ) {
 							
@@ -205,14 +204,94 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 							API.listenHighlight( self.module.data[ j ], function( val ) {
 								self.doHighlight( j, val );
-							}, self.module.id );
+							}, false, self.module.getId( ) );
 
+
+							var dom = self.domBody.find('#' + self.module.getId() + '_' + j);
+							self.module.data[ j ].onChange( function( el ) {
+								dom.replaceWith( self.buildElement( el, j, true ) );
+							}, self.module.getId() );
+
+							if( self.module.data[ j ].removable ) {
+								Context.listen( dom.get( 0 ), [
+									['<li><a><span class="ui-icon ui-icon-close"></span> Remove</a></li>', 
+									function() {
+										self.onActionReceive.removeRowById.call( self, j );
+									}]
+								]);
+							}
+							
 						}) ( i );
 						
 					}
 
 				}, 1000); // 1 sec timeout
+				
+				this.list = true;
+				this.showList = false; // Input data has changed,  showList must be reset.
+				this.updateVisibility();
+			},
+			showList: function( value ) {
+				if(!(value instanceof Array)) {
+					return;
+				}
+				
+				this.showList = value;
+				this.updateVisibility();
+			}		
+		
+		},
+		
+		updateVisibility: function() {
+			if(!this.showList || !this.list)
+				return;
+			
+			var s = this.showList,
+					l = s.length,
+					el,
+					id = this.module.getId()+"_";
+			for(var i = 0; i < l; i++) {
+				el = document.getElementById(id+i);
+				s[i] ? el.removeAttribute("style") : el.setAttribute("style","display:none");
 			}
+			
+		},
+
+		buildElement: function( source, i ) {
+			
+			if( ! source.get ) {
+				return;
+			}
+
+			var 
+				jpaths = this.module.getConfiguration( 'colsjPaths' ),
+				html = '',
+				j,
+				k = jpaths.length;
+
+			html += '<tr';
+			
+			if( this.colorjpath ) {
+				html += ' style="background-color: ' + this.colorjpath( source ) + ';"';
+			}
+
+			html += ' id="' + this.module.getId() + '_' + i + '" data-row-id="' + i + '"';
+			html += '>';
+
+			j = 0;
+			for( ; j < k ; j ++ ) {
+
+				if( ! jpaths[ j ].jpath ) {
+					continue;
+				}
+				
+				html += '<td>';	
+				html += Traversing.get( this.getValue( source.get(), jpaths[ j ].jpath ) ) || "";
+				html += '</td>';
+			}
+			html += '</tr>';
+
+			return html;
 		},
 
 		doHighlight: function( i, val ) {
@@ -220,6 +299,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 		},
 
 		getValue: function( trVal, jpath ) {
+
+			if( ! this.jpaths[ jpath ]) {
+				return "";
+			}
+
 			return this.jpaths[ jpath ]( trVal );
 		},
 
@@ -228,6 +312,28 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 		},
 
 		onActionReceive:  {
+
+			addRow: function(source) {
+			
+				this.elements = this.elements || [];
+
+				this.module.getDataFromRel('list').push( source );
+				var l = this.elements.length - 1;
+
+				var el = this.buildElement(source, l);
+				this.domBody.after( el );
+			},
+
+			removeRow: function( source ) {
+				this.onActionReceive.removeRowById.call( this, this.module.getDataFromRel('list').indexOf( source ) );
+			},
+
+			removeRowById: function( rowId ) {
+
+				var el = this.module.getDataFromRel('list').splice( rowId, 1 );
+				el[ 0 ].unbindChange( this.module.getId( ) );
+				this.domBody.children().eq( rowId ).remove();
+			}
 
 		},
 

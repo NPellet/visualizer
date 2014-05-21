@@ -7,42 +7,55 @@ define( [ 'require', '../text/element'], function( require, textElement ) {
 
 
 	FieldConstructor.prototype.validate = function( value ) {
-
+	
+		var error = false;
 		var floatVal = parseFloat( value );
 
-		if( floatVal == value ) {
-			this.validation.value = floatVal;	
+		if( value == "" || floatVal == value ) {
+				var i = 0, l;
 
-			if( this.validation.error ) {
-				this.hideError();
+			if( this.field.options.validation && this.field.options.validation.rules ) {
+
+				l = this.field.options.validation.rules.length;
+
+				for( ; i < l ; i ++ ) {
+
+					var error = false;
+				
+					if( typeof( this.field.options.validation.rules[ i ].max ) !== "undefined" ) {
+
+						var max = this.field.options.validation.rules[ i ].max;
+						console.log( floatVal, max );
+						if( floatVal > max ) {
+							error = true;
+						}
+					}
+
+					if( typeof( this.field.options.validation.rules[ i ].min ) !== "undefined" ) {
+
+						var max = this.field.options.validation.rules[ i ].min;
+						if( floatVal < max ) {
+							error = true;
+						}
+					}
+
+					if( error ) {
+						this.validation.error = true;
+						this.validation.feedback = this.field.options.validation.rules[ i ].feedback;
+						return;
+					}
+				
+					this.validation.error = false;
+				}
 			}
 
+			this.validation.value = floatVal;	
 			this.validation.error = false;
 
 		} else {
 
 			this.validation.errorType = 1;
-
-			if( ! this.validation.error ) {
-				this.showError();
-			}
-
-			this.validation.error = true;
 		}
-	}
-	
-	FieldConstructor.prototype.showError = function( ) {
-		if( ! this.dom ) {
-			return;
-		}
-		this.dom.addClass('form-field-error');
-	}
-
-	FieldConstructor.prototype.hideError = function( ) {
-		if( ! this.dom ) {
-			return;
-		}
-		this.dom.removeClass('form-field-error');
 	}
 
 	return FieldConstructor;

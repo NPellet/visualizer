@@ -1,7 +1,7 @@
 {
-	"modules": [
-		"./scripts/modules/lists/all.json"
-	],
+        "modules": {
+            "folders":["modules/types"]
+        },
 
 	"header": {
 		"height": "30px",

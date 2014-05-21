@@ -6,19 +6,41 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 
 	return {
 
-		listen: function(dom, elements, callback) {
+		listen: function(dom, elements, onBeforeShow, onAfterShow) {
 			if(!(elements[0] instanceof Array))
 				elements = [elements];
+			
 			dom.addEventListener('contextmenu', function(e) {	
-				for(var i = 0, l = elements.length; i < l; i++) {
-					(function(element, callback) {
-						contextMenu.append(element.bind('click', function(e2) {
-							callback.call(this, e);
-						}));	
-					}) ($(elements[i][0]), elements[i][1]);
+				
+
+				if( onBeforeShow ) {
+					onBeforeShow( contextMenu );
 				}
-				if(callback)
-					callback(contextMenu);
+
+				for(var i = 0, l = elements.length; i < l; i++) {
+					( 
+						function(element, callbackClick, callbackOpen) {
+
+							if( ( callbackOpen && callbackOpen( e, element ) ) || ! callbackOpen ) {
+								contextMenu.append( element );
+							}
+
+							element.bind('click', function( e2 ) {
+
+								if( callbackClick ) {
+
+									callbackClick.call( this, e, e2 );
+								}
+							})
+
+						}
+					) ( $( elements[ i ][ 0 ] ), elements[ i ][ 1 ], elements[ i ][ 2 ] );
+				}
+
+				if( onAfterShow ) {
+					onAfterShow( contextMenu );
+				}
+
 			}, true);
 		},
 
@@ -32,52 +54,94 @@ define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
 		
 		init: function(dom) {
 			this.dom = dom;
+			var top, left;
 			dom.addEventListener('contextmenu', function(e) {
-				e.preventDefault();
-				if(contextMenu)
-					contextMenu.menu('destroy').remove();
+
+				//e.preventDefault();
+				if( contextMenu ) {
+					if( contextMenu.hasClass('ui-menu') ) {
+						contextMenu.menu('destroy')
+					}
+					contextMenu.remove();
+				} 
+
 				contextMenu = null;
-				$menu = $('<ul class="ci-contextmenu"></ul>').css({
+				top = e.pageY;
+				left = e.pageX;
+				var $menu = $('<ul class="ci-contextmenu"></ul>').css({
 					'position': 'absolute',
-					'left': e.pageX,
-					'top': e.pageY,
+					'left': left,
+					'top': top,
 					'z-index': 10000
 				}).appendTo($("body"));
 
 				contextMenu = $menu;
 
 				var clickHandler = function() {
-					if(contextMenu)
-						contextMenu.menu('destroy').remove();
+					
+					//e.preventDefault();
+					if( contextMenu ) {
+						if( contextMenu.hasClass('ui-menu') ) {
+							contextMenu.menu('destroy')
+						}
+						contextMenu.remove();
+					} 
+
 					contextMenu = null;
 					$(document).unbind('click', clickHandler);
 				}
 
 				var rightClickHandler = function() {
-					if(contextMenu)
-						contextMenu.menu('destroy').remove();
+					
+					//e.preventDefault();
+					if( contextMenu ) {
+						if( contextMenu.hasClass('ui-menu') ) {
+							contextMenu.menu('destroy')
+						}
+						contextMenu.remove();
+					} 
+
 					contextMenu = null;
 				}
 				
 				$(document).bind('click', clickHandler);
-				return false;
+		//		return false;
 
 			}, true);
 
 
-		dom.parentNode.addEventListener('contextmenu', function(e) {
-			contextMenu.menu({
-				select: function(event, ui) {
-					var moduleName = ui.item.attr('name');
+			dom.parentNode.addEventListener('contextmenu', function(e) {
+				
+
+				//contextMenu.height(contextMenu.height(document.documentElement.clientHeight))
+
+				//console.log( contextMenu );
+				if( contextMenu.children().length > 0 ) {
+					contextMenu.menu({
+						select: function(event, ui) {
+							var moduleName = ui.item.attr('name');
+						}
+					});
+
+					e.preventDefault();
+					e.stopPropagation();
+					
+									// Move the menu if it would go beyond the viewport
+				var height = contextMenu.height();
+				var width = contextMenu.width();
+				var clientH = document.documentElement.clientHeight;
+				var clientW = document.documentElement.clientWidth;
+				if(top+height>clientH) {
+					contextMenu.css("top", Math.max(0, clientH-height-10));
 				}
-			});
-			e.preventDefault();
-			e.stopPropagation();
-			return false;
-
-		}, false);
-
-
+				if(left+width>clientW) {
+					contextMenu.css("left", Math.max(0, clientW-width-10));
+				}
+					
+					return false;
+				}
+				
+			}, false);
 		}
 
 

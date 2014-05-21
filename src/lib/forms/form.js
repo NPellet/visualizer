@@ -35,6 +35,7 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 
 			this.buttons = [];
 			this.buttonsDom = $("<div />").addClass('form-buttonzone');
+			this.buttonsDom.append( $("<div />").addClass('cleaner') ); 
 		},
 
 		triggerAction: function() {
@@ -102,7 +103,11 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 
 		makeDomTpl: function( ) {
 			this.doneDom = true;
-			return this._makeDomTpl( );
+			var returned = this._makeDomTpl( );
+
+			this.dom.find('.buttons').html( this.buttonsDom );
+
+			return returned;
 		},
 
 		_makeDomTpl: SectionElement.prototype._makeDomTpl,
@@ -192,6 +197,12 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 			dom.get(0).addEventListener('click', function() {
 				self.hideExpander();
 				self._unselectField();
+			}, false);
+
+
+			dom.get(0).addEventListener('submit', function( e ) {
+			
+				self.formSubmitted( e );
 			}, false);
 
 
@@ -406,15 +417,16 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 			}
 		},
 
-		addButton: function( label, options, callback ) {
+		addButton: function( label, options, callback, onSubmitClick ) {
 
 			var self = this;
 			require( [ 'forms/button' ], function( Button ) {
 
 				var btn = new Button( label, callback, options );
 				self.buttons.push( btn );
+				btn.clickOnSubmit = onSubmitClick;
 				self.onReady( ).done( function( ) {
-					self.buttonsDom.append( btn.render( ) );	
+					self.buttonsDom.prepend( btn.render( ) );	
 				});
 			});
 		},
@@ -422,6 +434,16 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 		throwError: function(error) {
 			console.error(error);
 			return false;
+		},
+
+		formSubmitted: function( e ) {
+
+			e.preventDefault();
+			for( var i = 0, l = this.buttons.length ; i < l ; i ++ ) {
+				if( this.buttons[ i ].clickOnSubmit ) {
+					this.buttons[ i ].doClick();
+				}
+			}
 		}
 
 	});

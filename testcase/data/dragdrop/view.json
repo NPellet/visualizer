@@ -1,0 +1,230 @@
+{
+	"name": "mzasso",
+	"version": "2.2.3",
+	"modules": [
+		{
+			"url": "modules/types/client_interaction/dragdrop/",
+			"title": "",
+			"displayWrapper": true,
+			"position": {
+				"left": 44,
+				"top": 1
+			},
+			"size": {
+				"width": 47.039999997615816,
+				"height": 20.039999997615816
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"label": [
+								"Drop a file here<br>or paste your jcamp data"
+							]
+						}
+					],
+					"vars": [
+						[
+							{
+								"extension": "jdx",
+								"filetype": "text",
+								"type": "jcamp",
+								"variable": "jcamp1"
+							}
+						]
+					],
+					"string": [
+						[
+							{
+								"type": "jcamp",
+								"variable": "jcamp2"
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"event": "onRead",
+					"rel": "data",
+					"jpath": "element.jcamp1",
+					"name": "jcampDrop"
+				},
+				{
+					"event": "onRead",
+					"rel": "data",
+					"jpath": "element.jcamp2",
+					"name": "jcampPaste"
+				}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/science/spectra/spectra_displayer/",
+			"title": "Spectra",
+			"displayWrapper": true,
+			"position": {
+				"left": 4,
+				"top": 23.000001907348633
+			},
+			"size": {
+				"width": 128.0399999976158,
+				"height": 44.039999997615816
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[]
+							],
+							"displayAxis": [
+								[
+									"y",
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								0
+							],
+							"xLeftSpacing": [
+								0
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"x"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"zoomY"
+							],
+							"fullOut": [
+								"both"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "jcampDrop",
+								"plotcolor": [
+									1,
+									1,
+									255,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							},
+							{
+								"variable": "jcampPaste",
+								"plotcolor": [
+									255,
+									0,
+									3,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous",
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "none",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "jcampDrop"
+				},
+				{
+					"rel": "jcamp",
+					"name": "jcampPaste"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "name",
+			"jpath": "element.name"
+		}
+	],
+	"pouchvariables": [],
+	"configuration": {
+		"title": "Drag and drop / paste data"
+	}
+}

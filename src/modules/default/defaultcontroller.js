@@ -16,7 +16,8 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 
 			var actionsOut = this.module.actions_out(),
 				i,
-				jpath;
+				jpath,
+                                actionname;
 
 			if( ! actionsOut ) {
 				return;
@@ -80,7 +81,7 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 
 		"export": function() {},
         print: function() {},
-		configurationStructure:  {},
+		configurationStructure:  function() {},
 		configFunctions: {},
 		configAliases: {},
 		events: {},

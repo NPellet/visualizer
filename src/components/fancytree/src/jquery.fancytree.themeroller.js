@@ -6,7 +6,7 @@
  *
  * @see http://jqueryui.com/themeroller/
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -22,7 +22,8 @@
 /*******************************************************************************
  * Extension code
  */
-$.ui.fancytree.registerExtension("themeroller", {
+$.ui.fancytree.registerExtension({
+	name: "themeroller",
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {

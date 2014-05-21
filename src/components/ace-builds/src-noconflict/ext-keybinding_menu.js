@@ -174,7 +174,7 @@ module.exports.getEditorKeybordShortcuts = function(editor) {
     var keybindings = [];
     var commandMap = {};
     editor.keyBinding.$handlers.forEach(function(handler) {
-        var ckb = handler.commmandKeyBinding;
+        var ckb = handler.commandKeyBinding;
         for (var i in ckb) {
             var modifier = parseInt(i);
             if (modifier == -1) {
@@ -204,4 +204,8 @@ module.exports.getEditorKeybordShortcuts = function(editor) {
     return keybindings;
 };
 
-});
+});;
+                (function() {
+                    ace.require(["ace/ext/keybinding_menu"], function() {});
+                })();
+            

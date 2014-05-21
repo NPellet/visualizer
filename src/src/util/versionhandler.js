@@ -393,7 +393,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 					
 					data = JSON.parse( data, self._reviver );
 					self.make(data);
-					self.onLoaded(data);
+					self._onLoaded(data);
 					def.resolve();
 				}
 			});
@@ -472,7 +472,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				self.make(el, self.currentPath[2], self.currentPath[3]);
 				def.resolve(el);
 				
-				self.onLoaded(el);
+				self._onLoaded(el);
 			}
 
 			function doServer(el, branch, rev) {
@@ -483,7 +483,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				self.make(el, self.currentPath[2], self.currentPath[3]);
 				self._savedServer = JSON.stringify(el);
 				def.resolve(el);
-				self.onLoaded(el);
+				self._onLoaded(el);
 			}
 			
 			return def;
@@ -628,6 +628,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 			obj._time = Date.now();
 			
 			this._savedServer = JSON.stringify(obj);
+
 			return $.ajax({
 				type: 'post',
 				url: this.getUrl(),
@@ -679,8 +680,18 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 
 		serverPush: function(obj) {
 			return this._saveToServer(obj);
-		}
-	}
+		},
+                
+                _onLoaded: function(el) {
+                    var elTyped;
+                    if(this.type === "data") {
+                        elTyped = DataObject.check(el);
+                    } else if(this.type === "view") {
+                        elTyped = ViewObject.check(el);
+                    }
+                    this.onLoaded(elTyped);
+                }
+	};
 
 	return DataViewHandler;
 });

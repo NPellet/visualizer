@@ -2,7 +2,6 @@
 
 var utils = require('../utils');
 var errors = require('../deps/errors');
-
 // parseUri 1.2.2
 // (c) Steven Levithan <stevenlevithan.com>
 // MIT License
@@ -35,13 +34,15 @@ function encodeDocId(id) {
 
 parseUri.options = {
   strictMode: false,
-  key: ["source", "protocol", "authority", "userInfo", "user", "password", "host",
-        "port", "relative", "path", "directory", "file", "query", "anchor"],
+  key: ["source", "protocol", "authority", "userInfo", "user", "password",
+        "host", "port", "relative", "path", "directory", "file", "query",
+        "anchor"],
   q:   {
     name:   "queryKey",
     parser: /(?:^|&)([^&=]*)=?([^&]*)/g
   },
   parser: {
+    /* jshint maxlen: false */
     strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
     loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
   }
@@ -75,6 +76,7 @@ function getHost(name, opts) {
     // except for the database name) with '/'s
     uri.path = parts.join('/');
     opts = opts || {};
+    opts = utils.clone(opts);
     uri.headers = opts.headers || {};
 
     if (opts.auth || uri.auth) {
@@ -98,20 +100,7 @@ function getHost(name, opts) {
 
 // Generate a URL with the host data given by opts and the given path
 function genDBUrl(opts, path) {
-  // If the host is remote
-  if (opts.remote) {
-    // If the host already has a path, then we need to have a path delimiter
-    // Otherwise, the path delimiter is the empty string
-    var pathDel = !opts.path ? '' : '/';
-
-    // Return the URL made up of all the host's information and the given path
-    return opts.protocol + '://' + opts.host + ':' + opts.port + '/' +
-      opts.path + pathDel + opts.db + '/' + path;
-  }
-
-  // If the host is not remote, then return the URL made up of just the
-  // database name and the given path
-  return '/' + opts.db + '/' + path;
+  return genUrl(opts, opts.db + '/' + path);
 }
 
 // Generate a URL with the host data given by opts and the given path
@@ -123,24 +112,28 @@ function genUrl(opts, path) {
 
     // If the host already has a path, then we need to have a path delimiter
     // Otherwise, the path delimiter is the empty string
-    return opts.protocol + '://' + opts.host + ':' + opts.port + '/' + opts.path + pathDel + path;
+    return opts.protocol + '://' + opts.host + ':' + opts.port + '/' +
+           opts.path + pathDel + path;
   }
 
   return '/' + path;
 }
-
 // Implements the PouchDB API for dealing with CouchDB instances over HTTP
 function HttpPouch(opts, callback) {
+  // The functions that will be publicly available for HttpPouch
+  var api = this;
+  api.getHost = opts.getHost ? opts.getHost : getHost;
 
   // Parse the URI given by opts.name into an easy-to-use object
-  var host = getHost(opts.name, opts);
+  var host = api.getHost(opts.name, opts);
 
   // Generate the database URL based on the host
-  var db_url = genDBUrl(host, '');
+  var dbUrl = genDBUrl(host, '');
 
-  // The functions that will be publically available for HttpPouch
-  var api = {};
+  api.getUrl = function () {return dbUrl; };
+
   var ajaxOpts = opts.ajax || {};
+  opts = utils.clone(opts);
   function ajax(options, callback) {
     return utils.ajax(utils.extend({}, ajaxOpts, options), callback);
   }
@@ -153,10 +146,10 @@ function HttpPouch(opts, callback) {
       }
       var cb = function (err, body) {
         if (err || !('uuids' in body)) {
-          utils.call(callback, err || errors.UNKNOWN_ERROR);
+          callback(err || errors.UNKNOWN_ERROR);
         } else {
           uuids.list = uuids.list.concat(body.uuids);
-          utils.call(callback, null, "OK");
+          callback(null, "OK");
         }
       };
       var params = '?count=' + opts.count;
@@ -170,18 +163,20 @@ function HttpPouch(opts, callback) {
 
   // Create a new CouchDB database based on the given opts
   var createDB = function () {
-    ajax({headers: host.headers, method: 'PUT', url: db_url}, function (err, ret) {
+    ajax({headers: host.headers, method: 'PUT', url: dbUrl},
+         function (err, ret) {
       // If we get an "Unauthorized" error
       if (err && err.status === 401) {
         // Test if the database already exists
-        ajax({headers: host.headers, method: 'HEAD', url: db_url}, function (err, ret) {
+        ajax({headers: host.headers, method: 'HEAD', url: dbUrl},
+             function (err, ret) {
           // If there is still an error
           if (err) {
             // Give the error to the callback to deal with
-            utils.call(callback, err);
+            callback(err);
           } else {
             // Continue as if there had been no errors
-            utils.call(callback, null, api);
+            callback(null, api);
           }
         });
         // If there were no errros or if the only error is "Precondition Failed"
@@ -189,25 +184,26 @@ function HttpPouch(opts, callback) {
         // that already exists)
       } else if (!err || err.status === 412) {
         // Continue as if there had been no errors
-        utils.call(callback, null, api);
+        callback(null, api);
       } else {
-        utils.call(callback, errors.UNKNOWN_ERROR);
+        callback(err);
       }
     });
   };
   if (!opts.skipSetup) {
-    ajax({headers: host.headers, method: 'GET', url: db_url}, function (err, ret) {
+    ajax({headers: host.headers, method: 'GET', url: dbUrl},
+         function (err, ret) {
       //check if the db exists
       if (err) {
         if (err.status === 404) {
           //if it doesn't, create it
           createDB();
         } else {
-          utils.call(callback, err);
+          callback(err);
         }
       } else {
         //go do stuff with the db
-        utils.call(callback, null, api);
+        callback(null, api);
       }
     });
   }
@@ -216,32 +212,32 @@ function HttpPouch(opts, callback) {
     return 'http';
   };
 
-  // The HttpPouch's ID is its URL
-  api.id = function () {
-    return genDBUrl(host, '');
-  };
+  api.id = utils.adapterFun('id', function (callback) {
+    ajax({
+      headers: host.headers,
+      method: 'GET',
+      url: genUrl(host, '')
+    }, function (err, result) {
+      var uuid = (result && result.uuid) ?
+        result.uuid + host.db : genDBUrl(host, '');
+      callback(null, uuid);
+    });
+  });
 
-  api.request = function (options, callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('request', arguments);
-      return;
-    }
+  api.request = utils.adapterFun('request', function (options, callback) {
     options.headers = host.headers;
     options.url = genDBUrl(host, options.url);
     ajax(options, callback);
-  };
+  });
 
   // Sends a POST request to the host calling the couchdb _compact function
   //    version: The version of CouchDB it is running
-  api.compact = function (opts, callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('compact', arguments);
-      return;
-    }
+  api.compact = utils.adapterFun('compact', function (opts, callback) {
     if (typeof opts === 'function') {
       callback = opts;
       opts = {};
     }
+    opts = utils.clone(opts);
     ajax({
       headers: host.headers,
       url: genDBUrl(host, '_compact'),
@@ -250,7 +246,7 @@ function HttpPouch(opts, callback) {
       function ping() {
         api.info(function (err, res) {
           if (!res.compact_running) {
-            utils.call(callback, null);
+            callback();
           } else {
             setTimeout(ping, opts.interval || 200);
           }
@@ -261,37 +257,36 @@ function HttpPouch(opts, callback) {
         ping();
       }
     });
-  };
+  });
 
   // Calls GET on the host, which gets back a JSON string containing
   //    couchdb: A welcome string
   //    version: The version of CouchDB it is running
-  api.info = function (callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('info', arguments);
-      return;
-    }
+  api._info = function (callback) {
     ajax({
       headers: host.headers,
       method: 'GET',
       url: genDBUrl(host, '')
-    }, callback);
+    }, function (err, res) {
+      if (err) {
+        callback(err);
+      } else {
+        res.host = genDBUrl(host, '');
+        callback(null, res);
+      }
+    });
   };
 
   // Get the document with the given id from the database given by host.
   // The id could be solely the _id in the database, or it may be a
   // _design/ID or _local/ID path
-  api.get = function (id, opts, callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('get', arguments);
-      return;
-    }
+  api.get = utils.adapterFun('get', function (id, opts, callback) {
     // If no options were given, set the callback to the second parameter
     if (typeof opts === 'function') {
       callback = opts;
       opts = {};
     }
-
+    opts = utils.clone(opts);
     if (opts.auto_encode === undefined) {
       opts.auto_encode = true;
     }
@@ -381,40 +376,45 @@ function HttpPouch(opts, callback) {
     ajax(options, function (err, doc, xhr) {
       // If the document does not exist, send an error to the callback
       if (err) {
-        return utils.call(callback, err);
+        return callback(err);
       }
 
       // Send the document to the callback
-      utils.call(callback, null, doc, xhr);
+      callback(null, doc, xhr);
     });
-  };
+  });
 
   // Delete the document given by doc from the database given by host.
-  api.remove = function (doc, opts, callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('remove', arguments);
-      return;
-    }
+  api.remove = utils.adapterFun('remove', function (doc, opts, callback) {
     // If no options were given, set the callback to be the second parameter
     if (typeof opts === 'function') {
       callback = opts;
       opts = {};
+    }  else if (typeof opts === 'string') {
+      doc = {
+        _id: doc,
+        _rev: opts
+      };
+    } else if (opts === undefined) {
+      opts = {};
     }
-
     // Delete the document
     ajax({
       headers: host.headers,
       method: 'DELETE',
       url: genDBUrl(host, encodeDocId(doc._id)) + '?rev=' + doc._rev
     }, callback);
-  };
+  });
 
   // Get the attachment
-  api.getAttachment = function (docId, attachmentId, opts, callback) {
+  api.getAttachment =
+    utils.adapterFun('getAttachment', function (docId, attachmentId, opts,
+                                                callback) {
     if (typeof opts === 'function') {
       callback = opts;
       opts = {};
     }
+    opts = utils.clone(opts);
     if (opts.auto_encode === undefined) {
       opts.auto_encode = true;
     }
@@ -423,29 +423,26 @@ function HttpPouch(opts, callback) {
     }
     opts.auto_encode = false;
     api.get(docId + '/' + attachmentId, opts, callback);
-  };
+  });
 
   // Remove the attachment given by the id and rev
-  api.removeAttachment = function (docId, attachmentId, rev, callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('removeAttachment', arguments);
-      return;
-    }
+  api.removeAttachment =
+    utils.adapterFun('removeAttachment', function (docId, attachmentId, rev,
+                                                   callback) {
     ajax({
       headers: host.headers,
       method: 'DELETE',
-      url: genDBUrl(host, encodeDocId(docId) + '/' + attachmentId) + '?rev=' + rev
+      url: genDBUrl(host, encodeDocId(docId) + '/' + attachmentId) + '?rev=' +
+           rev
     }, callback);
-  };
+  });
 
   // Add the attachment given by blob and its contentType property
   // to the document with the given id, the revision given by rev, and
   // add it to the database given by host.
-  api.putAttachment = function (docId, attachmentId, rev, blob, type, callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('putAttachment', arguments);
-      return;
-    }
+  api.putAttachment =
+    utils.adapterFun('putAttachment', function (docId, attachmentId, rev, blob,
+                                                type, callback) {
     if (typeof type === 'function') {
       callback = type;
       type = blob;
@@ -474,25 +471,40 @@ function HttpPouch(opts, callback) {
     opts.headers['Content-Type'] = type;
     // Add the attachment
     ajax(opts, callback);
-  };
+  });
 
   // Add the document given by doc (in JSON string format) to the database
   // given by host. This fails if the doc has no _id field.
-  api.put = function (doc, opts, callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('put', arguments);
-      return;
+  api.put = utils.adapterFun('put', utils.getArguments(function (args) {
+    var temp, temptype, opts, callback;
+    var doc = args.shift();
+    var id = '_id' in doc;
+    if (typeof doc !== 'object' || Array.isArray(doc)) {
+      callback = args.pop();
+      return callback(errors.NOT_AN_OBJECT);
     }
-    // If no options were given, set the callback to be the second parameter
-    if (typeof opts === 'function') {
-      callback = opts;
-      opts = {};
+    doc = utils.clone(doc);
+    while (true) {
+      temp = args.shift();
+      temptype = typeof temp;
+      if (temptype === "string" && !id) {
+        doc._id = temp;
+        id = true;
+      } else if (temptype === "string" && id && !('_rev' in doc)) {
+        doc._rev = temp;
+      } else if (temptype === "object") {
+        opts = utils.clone(temp);
+      } else if (temptype === "function") {
+        callback = temp;
+      }
+      if (!args.length) {
+        break;
+      }
     }
-    if (typeof doc !== 'object') {
-      return utils.call(callback, errors.NOT_AN_OBJECT);
-    }
-    if (!utils.isValidId(doc._id)) {
-      return utils.call(callback, errors.MISSING_ID);
+    opts = opts || {};
+    var error = utils.invalidIdError(doc._id);
+    if (error) {
+      return callback(error);
     }
 
     // List of parameter to add to the PUT request
@@ -518,23 +530,20 @@ function HttpPouch(opts, callback) {
       url: genDBUrl(host, encodeDocId(doc._id)) + params,
       body: doc
     }, callback);
-  };
+  }));
 
   // Add the document given by doc (in JSON string format) to the database
-  // given by host. This does not assume that doc is a new document (i.e. does not
-  // have a _id or a _rev field.
-  api.post = function (doc, opts, callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('post', arguments);
-      return;
-    }
+  // given by host. This does not assume that doc is a new document 
+  // (i.e. does not have a _id or a _rev field.)
+  api.post = utils.adapterFun('post', function (doc, opts, callback) {
     // If no options were given, set the callback to be the second parameter
     if (typeof opts === 'function') {
       callback = opts;
       opts = {};
     }
+    opts = utils.clone(opts);
     if (typeof doc !== 'object') {
-      return utils.call(callback, errors.NOT_AN_OBJECT);
+      return callback(errors.NOT_AN_OBJECT);
     }
     if (! ("_id" in doc)) {
       if (uuids.list.length > 0) {
@@ -543,7 +552,7 @@ function HttpPouch(opts, callback) {
       } else {
         uuids.get(function (err, resp) {
           if (err) {
-            return utils.call(callback, errors.UNKNOWN_ERROR);
+            return callback(errors.UNKNOWN_ERROR);
           }
           doc._id = uuids.list.pop();
           api.put(doc, opts, callback);
@@ -552,24 +561,11 @@ function HttpPouch(opts, callback) {
     } else {
       api.put(doc, opts, callback);
     }
-  };
+  });
 
   // Update/create multiple documents given by req in the database
   // given by host.
-  api.bulkDocs = function (req, opts, callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('bulkDocs', arguments);
-      return;
-    }
-    // If no options were given, set the callback to be the second parameter
-    if (typeof opts === 'function') {
-      callback = opts;
-      opts = {};
-    }
-    if (!opts) {
-      opts = {};
-    }
-
+  api._bulkDocs = function (req, opts, callback) {
     // If opts.new_edits exists add it to the document data to be
     // send to the database.
     // If new_edits=false then it prevents the database from creating
@@ -590,24 +586,20 @@ function HttpPouch(opts, callback) {
 
   // Get a listing of the documents in the database given
   // by host and ordered by increasing id.
-  api.allDocs = function (opts, callback) {
-    // If no options were given, set the callback to be the second parameter
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('allDocs', arguments);
-      return;
-    }
+  api.allDocs = utils.adapterFun('allDocs', function (opts, callback) {
     if (typeof opts === 'function') {
       callback = opts;
       opts = {};
     }
-
+    opts = utils.clone(opts);
     // List of parameters to add to the GET request
     var params = [];
     var body;
     var method = 'GET';
 
     // TODO I don't see conflicts as a valid parameter for a
-    // _all_docs request (see http://wiki.apache.org/couchdb/HTTP_Document_API#all_docs)
+    // _all_docs request 
+    // (see http://wiki.apache.org/couchdb/HTTP_Document_API#all_docs)
     if (opts.conflicts) {
       params.push('conflicts=true');
     }
@@ -625,13 +617,17 @@ function HttpPouch(opts, callback) {
       params.push('include_docs=true');
     }
 
+    if (opts.key) {
+      params.push('key=' + encodeURIComponent(JSON.stringify(opts.key)));
+    }
+
     // If opts.startkey exists, add the startkey value to the list of
     // parameters.
     // If startkey is given then the returned list of documents will
     // start with the document whose id is startkey.
     if (opts.startkey) {
       params.push('startkey=' +
-                  encodeURIComponent(JSON.stringify(opts.startkey)));
+        encodeURIComponent(JSON.stringify(opts.startkey)));
     }
 
     // If opts.endkey exists, add the endkey value to the list of parameters.
@@ -641,8 +637,12 @@ function HttpPouch(opts, callback) {
       params.push('endkey=' + encodeURIComponent(JSON.stringify(opts.endkey)));
     }
 
+    if (typeof opts.inclusive_end !== 'undefined') {
+      params.push('inclusive_end=' + !!opts.inclusive_end);
+    }
+
     // If opts.limit exists, add the limit value to the parameter list.
-    if (opts.limit) {
+    if (typeof opts.limit !== 'undefined') {
       params.push('limit=' + opts.limit);
     }
 
@@ -656,11 +656,25 @@ function HttpPouch(opts, callback) {
       params = '?' + params;
     }
 
-    // If keys are supplied, issue a POST request to circumvent GET query string limits
-    // see http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
     if (typeof opts.keys !== 'undefined') {
-      method = 'POST';
-      body = JSON.stringify({keys: opts.keys});
+
+      var MAX_URL_LENGTH = 2000;
+      // according to http://stackoverflow.com/a/417184/680742,
+      // the de factor URL length limit is 2000 characters
+
+      var keysAsString =
+        'keys=' + encodeURIComponent(JSON.stringify(opts.keys));
+      if (keysAsString.length + params.length + 1 <= MAX_URL_LENGTH) {
+        // If the keys are short enough, do a GET. we do this to work around
+        // Safari not understanding 304s on POSTs (see issue #1239)
+        params += (params.indexOf('?') !== -1 ? '&' : '?') + keysAsString;
+      } else {
+        // If keys are too long, issue a POST request to circumvent GET
+        // query string limits
+        // see http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
+        method = 'POST';
+        body = JSON.stringify({keys: opts.keys});
+      }
     }
 
     // Get the document listing
@@ -670,58 +684,32 @@ function HttpPouch(opts, callback) {
       url: genDBUrl(host, '_all_docs' + params),
       body: body
     }, callback);
-  };
+  });
 
   // Get a list of changes made to documents in the database given by host.
   // TODO According to the README, there should be two other methods here,
   // api.changes.addListener and api.changes.removeListener.
-  api.changes = function (opts) {
-
+  api._changes = function (opts) {
     // We internally page the results of a changes request, this means
     // if there is a large set of changes to be returned we can start
     // processing them quicker instead of waiting on the entire
     // set of changes to return and attempting to process them at once
     var CHANGES_LIMIT = 25;
 
-    if (!api.taskqueue.ready()) {
-      var task = api.taskqueue.addTask('changes', arguments);
-      return {
-        cancel: function () {
-          if (task.task) {
-            return task.task.cancel();
-          }
-          //console.log(db_url + ': Cancel Changes Feed');
-          task.parameters[0].aborted = true;
-        }
-      };
-    }
+    opts = utils.clone(opts);
+    opts.timeout = opts.timeout || 0;
 
-    if (opts.since === 'latest') {
-      var changes;
-      api.info(function (err, info) {
-        if (!opts.aborted) {
-          opts.since = info.update_seq;
-          changes = api.changes(opts);
-        }
-      });
-      // Return a method to cancel this method from processing any more
-      return {
-        cancel: function () {
-          if (changes) {
-            return changes.cancel();
-          }
-          //console.log(db_url + ': Cancel Changes Feed');
-          opts.aborted = true;
-        }
-      };
-    }
-
-    //console.log(db_url + ': Start Changes Feed: continuous=' + opts.continuous);
-
-    var params = {};
+    // set timeout to 20s to prevent aborting via Ajax timeout
+    var params = { timeout: 20 * 1000 };
     var limit = (typeof opts.limit !== 'undefined') ? opts.limit : false;
     if (limit === 0) {
       limit = 1;
+    }
+    var returnDocs;
+    if ('returnDocs' in opts) {
+      returnDocs = opts.returnDocs;
+    } else {
+      returnDocs = true;
     }
     //
     var leftToFetch = limit;
@@ -748,7 +736,9 @@ function HttpPouch(opts, callback) {
 
     if (opts.filter && typeof opts.filter === 'string') {
       params.filter = opts.filter;
-      if (opts.filter === '_view' && opts.view && typeof opts.view === 'string') {
+      if (opts.filter === '_view' &&
+          opts.view &&
+          typeof opts.view === 'string') {
         params.view = opts.view;
       }
     }
@@ -765,18 +755,22 @@ function HttpPouch(opts, callback) {
 
     var xhr;
     var lastFetchedSeq;
-    var remoteLastSeq;
-    var pagingCount;
 
     // Get all the changes starting wtih the one immediately after the
     // sequence number given by since.
     var fetch = function (since, callback) {
-      params.since = since;
-      if (!opts.continuous && !pagingCount) {
-        pagingCount = remoteLastSeq;
+      if (opts.aborted) {
+        return;
       }
-      params.limit = (!limit || leftToFetch > CHANGES_LIMIT) ?
-        CHANGES_LIMIT : leftToFetch;
+      params.since = since;
+      if (opts.descending) {
+        if (limit) {
+          params.limit = leftToFetch;
+        }
+      } else {
+        params.limit = (!limit || leftToFetch > CHANGES_LIMIT) ?
+          CHANGES_LIMIT : leftToFetch;
+      }
 
       var paramStr = '?' + Object.keys(params).map(function (k) {
         return k + '=' + params[k];
@@ -788,7 +782,7 @@ function HttpPouch(opts, callback) {
         method: 'GET',
         url: genDBUrl(host, '_changes' + paramStr),
         // _changes can take a long time to generate, especially when filtered
-        timeout: null
+        timeout: opts.timeout
       };
       lastFetchedSeq = since;
 
@@ -809,8 +803,13 @@ function HttpPouch(opts, callback) {
     var results = {results: []};
 
     var fetched = function (err, res) {
+      if (opts.aborted) {
+        return;
+      }
+      var raw_results_length = 0;
       // If the result of the ajax call (res) contains changes (res.results)
       if (res && res.results) {
+        raw_results_length = res.results.length;
         results.last_seq = res.last_seq;
         // For each change
         var req = {};
@@ -819,15 +818,19 @@ function HttpPouch(opts, callback) {
           leftToFetch--;
           var ret = utils.filterChange(opts)(c);
           if (ret) {
-            results.results.push(c);
+            if (returnDocs) {
+              results.results.push(c);
+            }
             utils.call(opts.onChange, c);
           }
           return ret;
         });
       } else if (err) {
-        // In case of an error, stop listening for changes and call opts.complete
+        // In case of an error, stop listening for changes and call
+        // opts.complete
         opts.aborted = true;
-        utils.call(opts.complete, err, null);
+        utils.call(opts.complete, err);
+        return;
       }
 
       // The changes feed may have timed out with no results
@@ -836,16 +839,11 @@ function HttpPouch(opts, callback) {
         lastFetchedSeq = res.last_seq;
       }
 
-      var resultsLength = res && res.results.length || 0;
-
-      pagingCount -= CHANGES_LIMIT;
-
       var finished = (limit && leftToFetch <= 0) ||
-        (res && !resultsLength && pagingCount <= 0) ||
-        (resultsLength && res.last_seq === remoteLastSeq) ||
-        (opts.descending && lastFetchedSeq !== 0);
+        (res && raw_results_length < CHANGES_LIMIT) ||
+        (opts.descending);
 
-      if (opts.continuous || !finished) {
+      if ((opts.continuous && !(limit && leftToFetch <= 0)) || !finished) {
         // Increase retry delay exponentially as long as errors persist
         if (err) {
           fetchRetryCount += 1;
@@ -857,7 +855,8 @@ function HttpPouch(opts, callback) {
         var maximumWait = opts.maximumWait || 30000;
 
         if (retryWait > maximumWait) {
-          utils.call(opts.complete, err || errors.UNKNOWN_ERROR, null);
+          utils.call(opts.complete, err || errors.UNKNOWN_ERROR);
+          return;
         }
 
         // Queue a call to fetch again with the newest sequence number
@@ -868,27 +867,15 @@ function HttpPouch(opts, callback) {
       }
     };
 
-    // If we arent doing a continuous changes request we need to know
-    // the current update_seq so we know when to stop processing the
-    // changes
-    if (opts.continuous) {
-      fetch(opts.since || 0, fetched);
-    } else {
-      api.info(function (err, res) {
-        if (err) {
-          return utils.call(opts.complete, err);
-        }
-        remoteLastSeq = res.update_seq;
-        fetch(opts.since || 0, fetched);
-      });
-    }
+    fetch(opts.since || 0, fetched);
 
     // Return a method to cancel this method from processing any more
     return {
       cancel: function () {
-        //console.log(db_url + ': Cancel Changes Feed');
         opts.aborted = true;
-        xhr.abort();
+        if (xhr) {
+          xhr.abort();
+        }
       }
     };
   };
@@ -896,11 +883,7 @@ function HttpPouch(opts, callback) {
   // Given a set of document/revision IDs (given by req), tets the subset of
   // those that do NOT correspond to revisions stored in the database.
   // See http://wiki.apache.org/couchdb/HttpPostRevsDiff
-  api.revsDiff = function (req, opts, callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('revsDiff', arguments);
-      return;
-    }
+  api.revsDiff = utils.adapterFun('revsDif', function (req, opts, callback) {
     // If no options were given, set the callback to be the second parameter
     if (typeof opts === 'function') {
       callback = opts;
@@ -914,28 +897,22 @@ function HttpPouch(opts, callback) {
       url: genDBUrl(host, '_revs_diff'),
       body: req
     }, function (err, res) {
-      utils.call(callback, err, res);
+      callback(err, res);
     });
-  };
+  });
 
-  api.close = function (callback) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('close', arguments);
-      return;
-    }
-    utils.call(callback, null);
-  };
+  api.close = utils.adapterFun('close', function (callback) {
+    callback();
+  });
 
-  api.replicateOnServer = function (target, opts, promise) {
-    if (!api.taskqueue.ready()) {
-      api.taskqueue.addTask('replicateOnServer', arguments);
-      return promise;
-    }
-
-    var targetHost = getHost(target.id());
+  function replicateOnServer(target, opts, promise, targetHostUrl) {
+    opts = utils.clone(opts);
+    var targetHost = api.getHost(targetHostUrl);
     var params = {
       source: host.db,
-      target: targetHost.protocol === host.protocol && targetHost.authority === host.authority ? targetHost.db : targetHost.source
+      target: targetHost.protocol === host.protocol &&
+        targetHost.authority ===
+          host.authority ? targetHost.db : targetHost.source
     };
 
     if (opts.continuous) {
@@ -962,9 +939,10 @@ function HttpPouch(opts, callback) {
     var repOpts = {
       headers: host.headers,
       method: 'POST',
-      url: host.protocol + '://' + host.host + (host.port === 80 ? '' : (':' + host.port)) + '/_replicate',
+      url: genUrl(host, '_replicate'),
       body: params
     };
+
     var xhr;
     promise.cancel = function () {
       this.cancelled = true;
@@ -978,9 +956,10 @@ function HttpPouch(opts, callback) {
       }
       repOpts.body.cancel = true;
       ajax(repOpts, function (err, resp, xhr) {
-        // If the replication cancel request fails, send an error to the callback
+        // If the replication cancel request fails, send an error to the
+        // callback
         if (err) {
-          return utils.call(callback, err);
+          return callback(err);
         }
         // Send the replication cancel result to the complete callback
         utils.call(opts.complete, null, result, xhr);
@@ -994,7 +973,7 @@ function HttpPouch(opts, callback) {
     xhr = ajax(repOpts, function (err, resp, xhr) {
       // If the replication fails, send an error to the callback
       if (err) {
-        return utils.call(callback, err);
+        return callback(err);
       }
 
       result.ok = true;
@@ -1007,24 +986,50 @@ function HttpPouch(opts, callback) {
       // Send the replication result to the complete callback
       utils.call(opts.complete, null, resp, xhr);
     });
-  };
+  }
 
-  return api;
+  api.replicateOnServer = function (target, opts, promise) {
+    if (!api.taskqueue.isReady) {
+      api.taskqueue.addTask('replicateOnServer', [target, opts, promise]);
+      return promise;
+    }
+    target.info(function (err, info) {
+      replicateOnServer(target, opts, promise, info.host);
+    });
+  };
+  api.destroy = utils.adapterFun('destroy', function (callback) {
+    ajax({
+      url: genDBUrl(host, ''),
+      method: 'DELETE',
+      headers: host.headers
+    }, function (err, resp) {
+      if (err) {
+        api.emit('error', err);
+        callback(err);
+      } else {
+        api.emit('destroyed');
+        callback(null, resp);
+      }
+    });
+  });
 }
 
 // Delete the HttpPouch specified by the given name.
-HttpPouch.destroy = function (name, opts, callback) {
+HttpPouch.destroy = utils.toPromise(function (name, opts, callback) {
   var host = getHost(name, opts);
   opts = opts || {};
   if (typeof opts === 'function') {
     callback = opts;
     opts = {};
   }
+  opts = utils.clone(opts);
   opts.headers = host.headers;
   opts.method = 'DELETE';
   opts.url = genDBUrl(host, '');
+  var ajaxOpts = opts.ajax || {};
+  opts = utils.extend({}, opts, ajaxOpts);
   utils.ajax(opts, callback);
-};
+});
 
 // HttpPouch is a valid adapter.
 HttpPouch.valid = function () {

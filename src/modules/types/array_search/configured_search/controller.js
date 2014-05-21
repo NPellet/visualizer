@@ -31,13 +31,18 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 		Configuration of the input/output references of the module
 	*/
 	controller.prototype.references = {
-		'array': {
+		array: {
 			label: 'An input array', // The input array is never modified
 			type: 'array'
 		},
 
-		'filteredArray': {
+		filteredArray: {
 			label: 'Filtered array',
+			type: 'array'
+		},
+		
+		flagArray: {
+			label: 'Array of booleans',
 			type: 'array'
 		}
 	};
@@ -51,8 +56,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 		// List of all possible events
 		'onSearchDone': {
 			label: 'When a search is performed',
-			refVariable: [ 'filteredArray' ],
-			refAction: [ 'filteredArray' ]
+			refVariable: [ 'filteredArray', 'flagArray' ],
+			refAction: [ 'filteredArray', 'flagArray' ]
 		}
 	};
 	
@@ -72,7 +77,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 		}
 	*/
 	controller.prototype.actionsIn = {
-		
+		disable: "Disable the search"
 	};
 	
 		
@@ -87,11 +92,29 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 		}
 
 		return {
-			groups: { },
+			groups: {
+                group: {
+                    options:{
+                        type:'list'
+                    },
+                    fields:{
+                        max:{
+                            type:'text',
+                            title:'Maximum hits',
+                            'default': '50'
+                        },
+                        disableMessage: {
+                            type: 'text',
+                            title: 'Disable message',
+                            'default': 'Click to enable search'
+                        }
+                    }
+                }
+            },
 			sections: {
-				searchFields: FormCreator.makeConfig( { name: 'Search on', jpaths: all_jpaths }, { name: "Comparison" } ),
+				searchFields: FormCreator.makeConfig( { name: 'Search on', jpaths: all_jpaths }, { name: "Comparison" } )
 			}
-		}
+		};
 	};
 
 
@@ -101,10 +124,17 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 	 *
 	 * @param {Array} arr The ouput array
 	 */
-	controller.prototype.searchDone = function( arr ) {
+	controller.prototype.searchDone = function( arr, flags ) {
 
 		// Sets the variable corresponding to the onSearchDone event
-		this.setVarFromEvent( 'onSearchDone', arr, 'filteredArray' );
+
+			this.setVarFromEvent( 'onSearchDone', flags, 'flagArray' );
+			this.sendAction('flagArray', flags, 'onSearchDone');
+
+			this.setVarFromEvent( 'onSearchDone', arr, 'filteredArray' );
+			this.sendAction('filteredArray', arr, 'onSearchDone');
+
+
 	},
 
 		
@@ -119,8 +149,10 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 	},
 
 	controller.prototype.configAliases = {
-		searchfields: [ 'sections', 'searchFields' ]
-	}
+		searchfields: [ 'sections', 'searchFields' ],
+        maxhits: ['groups','group',0,'max',0],
+        disableMessage: ['groups','group',0,'disableMessage',0]
+	};
 
 	return controller;
 });

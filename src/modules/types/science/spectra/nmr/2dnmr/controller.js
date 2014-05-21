@@ -50,6 +50,11 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
 		'jcamp2d': {
 			type: ["jcamp"],
 			label: '2D Jcamp'
+		},
+
+		'annotations': {
+			type: ['array'],
+			label: 'Annotation file'
 		}
 	};
 
@@ -65,7 +70,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
 		Configuration of the module for receiving events, as a static object
 		In the form of 
 	*/
-	controller.prototype.variablesIn = [ 'jcampx', 'jcampy', 'jcampxy', 'jcamp2d' ];
+	controller.prototype.variablesIn = [ 'jcampx', 'jcampy', 'jcampxy', 'jcamp2d', 'annotations' ];
 
 	/*
 		Received actions

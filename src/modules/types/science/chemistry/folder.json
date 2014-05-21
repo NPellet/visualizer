@@ -9,14 +9,10 @@
 			"url": "modules/types/science/chemistry/jsmol/"
 		},
 		{
-			"moduleName": "JSMol Script",
-			"url": "modules/types/science/chemistry/jsmol_script/"
-		},
-		{
 			"moduleName": "CWC molfile displayer",
 			"url": "modules/types/science/chemistry/mol2d/"
 		}
 	],
 	"name": "Chemistry",
-	"folders": {}
+	"folders": []
 }

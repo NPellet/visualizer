@@ -3,7 +3,11 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
     function view() {
         this._id = Util.getNextUniqueId();
     }
-    ;
+    
+    function customBlank() {
+        this.chart.canvas.clear();
+    }
+    
     view.prototype = $.extend(true, {}, Default, {
         init: function() {
             if (!this.dom) {
@@ -14,12 +18,11 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 this.module.getDomContent().html(this.dom);
             }
             this.onReady = $.Deferred();
-            
+
             var labelColorRGB = this.module.getConfiguration('labelColor');
             var labelColor;
-            if(labelColorRGB && labelColorRGB[3]!==0) {
-                labelColor = Util.rgbToHex(labelColorRGB[0],labelColorRGB[1],labelColorRGB[2]);
-                console.log(labelColor)
+            if (labelColorRGB && labelColorRGB[3] !== 0) {
+                labelColor = Util.rgbToHex(labelColorRGB[0], labelColorRGB[1], labelColorRGB[2]);
             }
             this.chartOptions = {
                 injectInto: this._id,
@@ -30,7 +33,7 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 hoveredColor: false,
                 updateHeights: this.module.getConfiguration('updateHeights'),
                 sliceOffset: this.module.getConfiguration('sliceOffset'),
-                Label : {
+                Label: {
                     color: labelColor
                 }
             };
@@ -46,11 +49,15 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
         },
         update: {
             'chart': function(moduleValue) {
+                if (!moduleValue)
+                    return;
                 var chartJson = convertChartToJson(moduleValue.get());
                 this._data = chartJson;
                 this.setData(chartJson);
             },
             'yArray': function(moduleValue) {
+                if (!moduleValue)
+                    return;
                 var arrayJson = convertSingleArrayToJson(moduleValue.get());
                 this._data = arrayJson;
                 this.setData(arrayJson);
@@ -58,6 +65,10 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
         },
         setData: function(dataJson) {
             this.chart.loadJSON(dataJson);
+        },
+        blank: {
+            chart: customBlank,
+            yArray: customBlank
         }
     });
 
@@ -119,22 +130,22 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
     }
 
     /*function convertArrayToJson(array) {
-        var json = {};
-        var ii = array.length;
-        var jj = array[0].length;
-        json.values = new Array(jj);
-        json.label = new Array(jj);
-        for (var i = 0; i < ii; i++) {
-            for (var j = 0; j < jj; j++) {
-                if (i === 0) {
-                    json.values[j] = {values: new Array(ii), label: "label2 " + j};
-                    json.label[j] = "label " + j;
-                }
-                json.values[j].values[i] = array[i][j];
-            }
-        }
-        return(json);
-    }*/
+     var json = {};
+     var ii = array.length;
+     var jj = array[0].length;
+     json.values = new Array(jj);
+     json.label = new Array(jj);
+     for (var i = 0; i < ii; i++) {
+     for (var j = 0; j < jj; j++) {
+     if (i === 0) {
+     json.values[j] = {values: new Array(ii), label: "label2 " + j};
+     json.label[j] = "label " + j;
+     }
+     json.values[j].values[i] = array[i][j];
+     }
+     }
+     return(json);
+     }*/
 
     return view;
 });

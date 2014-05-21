@@ -6,7 +6,7 @@
  *
  * @depends: jquery.cookie.js
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -35,12 +35,72 @@ var ACTIVE = "active",
 	FOCUS = "focus",
 	SELECTED = "selected";
 
+
+/* Recursively load lazy nodes
+ * @param {string} mode 'load', 'expand', false
+ */
+function _loadLazyNodes(tree, instData, keyList, mode, dfd) {
+	var i, key, l, node,
+		foundOne = false,
+		deferredList = [],
+		// lazyNodeList = [],
+		missingKeyList = []; //keyList.slice(0),
+
+	keyList = keyList || [];
+	// expand = expand !== false;
+	dfd = dfd || $.Deferred();
+
+	for( i=0, l=keyList.length; i<l; i++ ) {
+		key = keyList[i];
+		node = tree.getNodeByKey(key);
+		if( node ) {
+			if( mode && node.isUndefined() ) {
+				// lazyNodeList.push(node);
+				foundOne = true;
+				tree.debug("_loadLazyNodes: " + node + " is lazy: loading...");
+				if( mode === "expand" ) {
+					deferredList.push(node.setExpanded());
+				} else {
+					deferredList.push(node.load());
+				}
+			} else {
+				tree.debug("_loadLazyNodes: " + node + " already loaded.");
+				node.setExpanded();
+				// node.expanded = true;
+				// node.render();
+			}
+		} else {
+			missingKeyList.push(key);
+			tree.debug("_loadLazyNodes: " + node + " was not yet found.");
+		}
+	}
+
+	$.when.apply($, deferredList).always(function(){
+		// All lazy-expands have finished
+		if( foundOne && missingKeyList.length > 0 ) {
+			// If we read new nodes from server, try to resolve yet-missing keys
+			_loadLazyNodes(tree, instData, missingKeyList, mode, dfd);
+		} else {
+			if( missingKeyList.length ) {
+				tree.warn("_loadLazyNodes: could not load those keys: ", missingKeyList);
+				for( i=0, l=missingKeyList.length; i<l; i++ ) {
+					key = keyList[i];
+					instData._setKey(EXPANDED, keyList[i], false);
+				}
+			}
+			dfd.resolve();
+		}
+	});
+	return dfd;
+}
+
+
 /**
- *
+ * [ext-persist] Remove persistence cookies of the given type(s).
  * Called like
  *     $("#tree").fancytree("getTree").clearCookies("active expanded focus selected");
  *
- * @lends Fancytree.prototype
+ * @alias Fancytree#clearCookies
  * @requires jquery.fancytree.persist.js
  */
 $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
@@ -50,29 +110,33 @@ $.ui.fancytree._FancytreeClass.prototype.clearCookies = function(types){
 	types = types || "active expanded focus selected";
 	// TODO: optimize
 	if(types.indexOf(ACTIVE) >= 0){
-		$.cookie(cookiePrefix + ACTIVE, null);
+		// $.cookie(cookiePrefix + ACTIVE, null);
+		$.removeCookie(cookiePrefix + ACTIVE);
 	}
 	if(types.indexOf(EXPANDED) >= 0){
-		$.cookie(cookiePrefix + EXPANDED, null);
+		// $.cookie(cookiePrefix + EXPANDED, null);
+		$.removeCookie(cookiePrefix + EXPANDED);
 	}
 	if(types.indexOf(FOCUS) >= 0){
-		$.cookie(cookiePrefix + FOCUS, null);
+		// $.cookie(cookiePrefix + FOCUS, null);
+		$.removeCookie(cookiePrefix + FOCUS);
 	}
 	if(types.indexOf(SELECTED) >= 0){
-		$.cookie(cookiePrefix + SELECTED, null);
+		// $.cookie(cookiePrefix + SELECTED, null);
+		$.removeCookie(cookiePrefix + SELECTED);
 	}
 };
 
 
 /**
-* Return persistence information from cookies
-*
-* Called like
-*     $("#tree").fancytree("getTree").getPersistData();
-*
-* @lends Fancytree.prototype
-* @requires jquery.fancytree.persist.js
-*/
+ * [ext-persist] Return persistence information from cookies
+ *
+ * Called like
+ *     $("#tree").fancytree("getTree").getPersistData();
+ *
+ * @alias Fancytree#getPersistData
+ * @requires jquery.fancytree.persist.js
+ */
 $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
 	var inst = this.ext.persist,
 		instOpts= this.options.persist,
@@ -89,8 +153,9 @@ $.ui.fancytree._FancytreeClass.prototype.getPersistData = function(){
 /* *****************************************************************************
  * Extension code
  */
-$.ui.fancytree.registerExtension("persist", {
-	version: "0.0.1",
+$.ui.fancytree.registerExtension({
+	name: "persist",
+	version: "0.2.0",
 	// Default options for this extension.
 	options: {
 //		appendRequestInfo: false,
@@ -103,6 +168,7 @@ $.ui.fancytree.registerExtension("persist", {
 			domain: "",
 			secure: false
 		},
+		expandLazy: false, // true: recursively expand and load lazy nodes
 		overrideSource: false,  // true: cookie takes precedence over `source` data attributes.
 		types: "active expanded focus selected"
 	},
@@ -144,68 +210,80 @@ $.ui.fancytree.registerExtension("persist", {
 		instData.storeFocus = instOpts.types.indexOf(FOCUS) >= 0;
 
 		// Bind init-handler to apply cookie state
-		tree.$div.bind("fancytreeinit", function(e){
-			var cookie,
-				keyList,
-				i,
-				prevFocus = $.cookie(instData.cookiePrefix + FOCUS), // record this before node.setActive() overrides it
-				node;
+		tree.$div.bind("fancytreeinit", function(event){
+			var cookie, dfd, i, keyList, node,
+				prevFocus = $.cookie(instData.cookiePrefix + FOCUS); // record this before node.setActive() overrides it;
 
 			tree.debug("COOKIE " + document.cookie);
 
-			if(instData.storeExpanded){
-				cookie = $.cookie(instData.cookiePrefix + EXPANDED);
-				if(cookie){
-					keyList = cookie.split(instOpts.cookieDelimiter);
-					for(i=0; i<keyList.length; i++){
-						node = tree.getNodeByKey(keyList[i]);
-						if(node){
-							if(node.expanded === undefined || instOpts.overrideSource && (node.expanded === false)){
-//								node.setExpanded();
-								node.expanded = true;
-								node.render();
+			cookie = $.cookie(instData.cookiePrefix + EXPANDED);
+			keyList = cookie && cookie.split(instOpts.cookieDelimiter);
+
+			if( instData.storeExpanded ) {
+				// Recursively load nested lazy nodes if expandLazy is 'expand' or 'load'
+				// Also remove expand-cookies for unmatched nodes
+				dfd = _loadLazyNodes(tree, instData, keyList, instOpts.expandLazy ? "expand" : false , null);
+			} else {
+				// nothing to do
+				dfd = new $.Deferred().resolve();
+			}
+
+			dfd.done(function(){
+				// alert("persistent expand done");
+	// 			if(instData.storeExpanded){
+	// 				cookie = $.cookie(instData.cookiePrefix + EXPANDED);
+	// 				if(cookie){
+	// 					keyList = cookie.split(instOpts.cookieDelimiter);
+	// 					for(i=0; i<keyList.length; i++){
+	// 						node = tree.getNodeByKey(keyList[i]);
+	// 						if(node){
+	// 							if(node.expanded === undefined || instOpts.overrideSource && (node.expanded === false)){
+	// //								node.setExpanded();
+	// 								node.expanded = true;
+	// 								node.render();
+	// 							}
+	// 						}else{
+	// 							// node is no longer member of the tree: remove from cookie
+	// 							instData._setKey(EXPANDED, keyList[i], false);
+	// 						}
+	// 					}
+	// 				}
+	// 			}
+				if(instData.storeSelected){
+					cookie = $.cookie(instData.cookiePrefix + SELECTED);
+					if(cookie){
+						keyList = cookie.split(instOpts.cookieDelimiter);
+						for(i=0; i<keyList.length; i++){
+							node = tree.getNodeByKey(keyList[i]);
+							if(node){
+								if(node.selected === undefined || instOpts.overrideSource && (node.selected === false)){
+	//								node.setSelected();
+									node.selected = true;
+									node.renderStatus();
+								}
+							}else{
+								// node is no longer member of the tree: remove from cookie also
+								instData._setKey(SELECTED, keyList[i], false);
 							}
-						}else{
-							// node is no longer member of the tree: remove from cookie
-							instData._setKey(EXPANDED, keyList[i], false);
 						}
 					}
 				}
-			}
-			if(instData.storeSelected){
-				cookie = $.cookie(instData.cookiePrefix + SELECTED);
-				if(cookie){
-					keyList = cookie.split(instOpts.cookieDelimiter);
-					for(i=0; i<keyList.length; i++){
-						node = tree.getNodeByKey(keyList[i]);
+				if(instData.storeActive){
+					cookie = $.cookie(instData.cookiePrefix + ACTIVE);
+					if(cookie && (opts.persist.overrideSource || !tree.activeNode)){
+						node = tree.getNodeByKey(cookie);
 						if(node){
-							if(node.selected === undefined || instOpts.overrideSource && (node.selected === false)){
-//								node.setSelected();
-								node.selected = true;
-								node.renderStatus();
-							}
-						}else{
-							// node is no longer member of the tree: remove from cookie also
-							instData._setKey(SELECTED, keyList[i], false);
+							node.setActive();
 						}
 					}
 				}
-			}
-			if(instData.storeActive){
-				cookie = $.cookie(instData.cookiePrefix + ACTIVE);
-				if(cookie && (opts.persist.overrideSource || !tree.activeNode)){
-					node = tree.getNodeByKey(cookie);
+				if(instData.storeFocus && prevFocus){
+					node = tree.getNodeByKey(prevFocus);
 					if(node){
-						node.setActive();
+						node.setFocus();
 					}
 				}
-			}
-			if(instData.storeFocus && prevFocus){
-				node = tree.getNodeByKey(prevFocus);
-				if(node){
-					node.setFocus();
-				}
-			}
+			});
 		});
 		// Init the tree
 		this._super(ctx);
@@ -213,11 +291,12 @@ $.ui.fancytree.registerExtension("persist", {
 //	treeDestroy: function(ctx){
 //		this._super(ctx);
 //	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, opts) {
 		var instData = this._local,
 			instOpts = this.options.persist;
 
-		this._super(ctx, flag);
+		flag = flag !== false;
+		this._super(ctx, flag, opts);
 
 		if(instData.storeActive){
 			$.cookie(instData.cookiePrefix + ACTIVE,
@@ -225,15 +304,18 @@ $.ui.fancytree.registerExtension("persist", {
 					 instOpts.cookie);
 		}
 	},
-	nodeSetExpanded: function(ctx, flag) {
-		var node = ctx.node,
+	nodeSetExpanded: function(ctx, flag, opts) {
+		var res,
+			node = ctx.node,
 			instData = this._local;
 
-		this._super(ctx, flag);
+		flag = flag !== false;
+		res = this._super(ctx, flag, opts);
 
 		if(instData.storeExpanded){
 			instData._setKey(EXPANDED, node.key, flag);
 		}
+		return res;
 	},
 	nodeSetFocus: function(ctx) {
 		var instData = this._local,
@@ -242,7 +324,7 @@ $.ui.fancytree.registerExtension("persist", {
 		this._super(ctx);
 
 		if(instData.storeFocus){
-			$.cookie(this.cookiePrefix + FOCUS,
+			$.cookie(instData.cookiePrefix + FOCUS,
 					 this.focusNode ? this.focusNode.key : null,
 					 instOpts.cookie);
 		}
@@ -251,6 +333,7 @@ $.ui.fancytree.registerExtension("persist", {
 		var node = ctx.node,
 			instData = this._local;
 
+		flag = flag !== false;
 		this._super(ctx, flag);
 
 		if(instData.storeSelected){

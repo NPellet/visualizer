@@ -4,11 +4,45 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {	
-			
-			this.dom = $( '<div>' ).css( { } );
-			this.module.getDomContent( ).html( this.dom );
+			var self = this;
+                        var parentDom = $( '<div>' ).css( { 
+                            position: 'relative',
+                            height: '100%',
+                            weight: '100%'
+                        } );
+                        this.overlay = $('<div>').css({
+                            position: 'absolute',
+                            height:'100%',
+                            width:'100%',
+                            zIndex:1000,
+                            backgroundColor:'rgba(200,200,200,0)',
+                            color:'rgba(50,50,50,0)',
+                            display:'none'
+                        }).appendTo(parentDom).click(function(e){
+                            e.stopPropagation();
+                            self.searchEnabled = true;
+                            self.overlay.animate({
+                                backgroundColor: 'rgba(200,200,200,0)',
+                                color: 'rgba(50,50,50,0)'
+                            },500,function(){
+                                self.overlay.css('display', 'none');
+                            });
+                            self.search();
+                        }).append($('<div>'+this.module.getConfiguration('disableMessage')+'</div>').css({
+                            textAlign:'center',
+                            width:'100%',
+                            zIndex:1001,
+                            display:'table-cell',
+                            verticalAlign:'middle',
+                            fontSize:"20pt"
+                        }));
+                        this.searchEnabled = true;
+                        
+			this.dom =  $( '<div>' ).appendTo(parentDom);
+			this.module.getDomContent( ).html( parentDom);
 			this.variables = {};
 			this.cfgValue = {};
+                        this.maxhits = parseInt(this.module.getConfiguration( 'maxhits' ))||Number.POSITIVE_INFINITY;
 
 			this._jpathsFcts = {};
 
@@ -55,7 +89,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					}
 
 					$.extend( self.cfgValue, cfgFinal );
-					self.search();
+                                        self.search();
 				}
 			} );
 
@@ -67,6 +101,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			form.onLoaded( ).done( function( ) {
 				self.dom.html( form.makeDom( 2 ) );
 				form.inDom();
+                                form.fieldElementValueChanged();
 			});
 			
 			this.makeSearchFilter();
@@ -83,35 +118,39 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 		search: function() {
 
+			if (this.searchEnabled) {
+						var cfg = this.cfgValue,
+						i,
+						l,
+						target = new DataArray(),
+						flags = new DataArray();
 
-			var self = this,
-				cfg = this.cfgValue,
-				val = this.module.getDataFromRel( 'array' ),
-				i = 0,
-				l,
-				target = new DataArray();
-
-			if( ! val ) {
-				return;
-			}
-
-
-			val = val.get();
-				
-			l = val.length;
-
-			for( ; i < l ; i ++ ) {
-				if( this.searchElement( cfg, val[ i ] ) ) {
-					target.push( val[ i ] );
+				var keys = Object.keys(this.variables), val;
+				if (keys.length === 0 || Object.keys(cfg).length === 0) {
+					return;
 				}
-			}
 
-			this.module.controller.searchDone( target );		
+				var max = this.maxhits, count = 0;
+				for (var key in keys) {
+					val = this.variables[keys[key]];
+					l = val.length;
+					for (i = 0; (i < l); i++) {
+						if (this.searchElement(cfg, val[ i ].get())) {
+							if(count < max) target[count++] = val[ i ];
+							flags[i] = true;
+						} else {
+							flags[i] = false;
+						}
+					}
+				}
+
+				this.module.controller.searchDone(target, flags);
+			}
 		},
 
 		_makeOp: function( op, val, options ) {
 
-			val = "self.cfgValue[ '" + val + "' ]";
+			val = "cfg[ '" + val + "' ]";
                         var numPrefix = "", numSuffix = "";
                         if(options.number) {
                             numPrefix = "parseFloat(";
@@ -120,7 +159,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                         var textSuffix = ".toLowerCase()";
                         if(options.caseSensitive) {
                             textSuffix = "";
-                        }
+                     }
 			switch( op ) {
 
 				case '=':
@@ -186,16 +225,16 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				searchfields = this.module.getConfiguration( 'searchfields' ),
 				i = 0,
 				l = searchfields.length,
-					searchOn;
+				searchOn;
 
 
 			var toEval = "";
 			toEval += " this._searchFunc = function( cfg, row ) { ";
 			
-			toEval += " var el; "
+			toEval += " var el; ";
 
 
-			toEval += " return "
+			toEval += " return ";
 			for( ; i < l ; i ++ ) {
 
 				searchOn = searchfields[ i ].groups.general[ 0 ].searchOnField || [];
@@ -204,7 +243,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					toEval += " && ";
 				}
 
-				j = 0,
+				var j = 0,
 				k = searchOn.length;
 
 				/////////
@@ -217,7 +256,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 						if( j > 0 ) {
 							toEval += " || ";
 						}
-                                                var opts = {};console.log(searchfields[ i ])
+                                                var opts = {};
                                                 if(searchfields[ i ].groups.general[ 0 ].type[ 0 ]==='float') opts.number=true;
                                                 if(searchfields[ i ].groups.text && searchfields[ i ].groups.text[ 0 ].case_sensitive[ 0 ][ 0 ]==='case_sensitive') opts.caseSensitive=true;
 						toEval += " ( ( el = self.getJpath( '" + searchOn[ j ] + "', row ) ) && ( ";
@@ -238,7 +277,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			try {
 				eval( toEval );
 			} catch( e ) {
-				console.error("Error while evaluating function.")
+				console.error("Error while evaluating function.");
 				console.log( toEval );
 			}
 		},
@@ -252,16 +291,28 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 		},
 
 		update: {
-			
 			array: function( variableValue, variableName ) {
-				
-				//variableValue = Traversing.get( variableValue );
-				//this.variables[ variableName ] = variableValue;
-				this.search( );
+                            if(variableValue) {
+                                this.variables[ variableName ] = variableValue.get();	
+                                this.search( );
+                            }
 			}
 		},
 				
-		typeToScreen: {}
+		typeToScreen: {},
+                
+                onActionReceive: {
+                    disable: function(){
+                        if(this.searchEnabled) {
+                            this.searchEnabled = false;
+                            this.overlay.css("display","table");
+                            this.overlay.animate({
+                                backgroundColor: 'rgba(200,200,200,0.6)',
+                                color: 'rgba(50,50,50,1)'
+                            },500);
+                        }
+                    }
+                }
 	});
 
 	return view;

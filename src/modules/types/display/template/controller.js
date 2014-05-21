@@ -7,7 +7,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype = $.extend(true, {}, Default);
 
     controller.prototype.moduleInformation = {
-        moduleName: 'Template',
+        moduleName: 'Mustache template',
         description: 'Display parts of an object using a mustache template',
         author: 'Michaël Zasso',
         date: '21.01.2014',

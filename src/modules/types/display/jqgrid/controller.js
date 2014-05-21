@@ -245,6 +245,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 	controller.prototype.lineClick = function( elements, row ) {
 
+
 		elements[ row ].linkToParent( elements, row );
 
 		this.setVarFromEvent( 'onSelect', elements[ row ], 'row' );
@@ -255,7 +256,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 		elements[ row ].linkToParent( elements, row );
 
-		this.sendAction( 'element', elements[ row ], 'onToggleOn' );
+		this.sendAction( 'row', elements[ row ], 'onToggleOn' );
 		this.setVarFromEvent( 'onToggleOn', elements[ row ], 'row' );
 	};
 
@@ -263,7 +264,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 		elements[ row ].linkToParent( elements, row );
 
-		this.sendAction( 'element', elements[ row ], 'onToggleOff' );
+		this.sendAction( 'row', elements[ row ], 'onToggleOff' );
 		this.setVarFromEvent( 'onToggleOff', elements[ row ], 'row' );
 	};
 

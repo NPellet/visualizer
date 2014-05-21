@@ -6,7 +6,7 @@
  *
  * @see http://api.jqueryui.com/menu/
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -25,7 +25,8 @@
 //     return;
 // }
 
-$.ui.fancytree.registerExtension("menu", {
+$.ui.fancytree.registerExtension({
+	name: "menu",
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {

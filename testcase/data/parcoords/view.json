@@ -1,0 +1,359 @@
+{
+	"version": "2.2.3",
+	"modules": [
+		{
+			"url": "modules/types/chart/statistics/parallel_coordinates/",
+			"title": "Chart",
+			"displayWrapper": true,
+			"position": {
+				"left": 21.99999933242798,
+				"top": 1
+			},
+			"size": {
+				"width": 116.01818182468415,
+				"height": 66.01818182468415
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"colJPath": [
+								"element.color"
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name"
+							}
+						]
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "data"
+				},
+				{
+					"rel": "columns",
+					"name": "columns"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "addColumn",
+					"name": "addCol"
+				},
+				{
+					"rel": "removeColumn",
+					"name": "removeCol"
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onBrushSelection",
+					"rel": "value",
+					"name": "out"
+				}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				1
+			],
+			"zindex": 4
+		},
+		{
+			"url": "modules/types/display/fasttable/",
+			"title": "Selection",
+			"displayWrapper": true,
+			"position": {
+				"left": 137.99999780654906,
+				"top": 1
+			},
+			"size": {
+				"width": 20.01818182468414,
+				"height": 66.01818182468415
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "out"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{
+					"event": "onToggleOn",
+					"rel": "row",
+					"jpath": "element.name",
+					"name": "plop"
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/display/jqgrid/",
+			"title": "Select individual columns",
+			"displayWrapper": true,
+			"position": {
+				"left": 0.9985795021057129,
+				"top": 0.9985797882080079
+			},
+			"size": {
+				"width": 21.01818182468414,
+				"height": 18.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "jpaths"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{
+					"event": "onToggleOn",
+					"rel": "row",
+					"jpath": "element",
+					"name": "addCol"
+				},
+				{
+					"event": "onToggleOff",
+					"rel": "row",
+					"jpath": "element",
+					"name": "removeCol"
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			],
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/display/jqgrid/",
+			"title": "Select multiple columns",
+			"displayWrapper": true,
+			"position": {
+				"left": 1,
+				"top": 18.9985782623291
+			},
+			"size": {
+				"width": 21.01818182468414,
+				"height": 31.01818182468414
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								""
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 4,
+			"actions_out": [
+				{}
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "jpaths2"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onSelect",
+					"rel": "row",
+					"jpath": "element.data",
+					"name": "columns"
+				}
+			],
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "data",
+			"jpath": "element.data"
+		},
+		{
+			"varname": "jpaths",
+			"jpath": "element.jpaths"
+		},
+		{
+			"varname": "jpaths2",
+			"jpath": "element.jpaths2"
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"pouchvariables": [
+		{}
+	],
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							""
+						]
+					}
+				]
+			}
+		}
+	],
+	"crons": {
+		"0": {}
+	},
+	"couch_replication": [
+		{
+			"sections": {},
+			"groups": {
+				"couch": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
+}

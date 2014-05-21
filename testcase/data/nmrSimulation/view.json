@@ -1,21 +1,47 @@
 {
-	"_name": "Master",
-	"_time": false,
-	"_saved": 1389025034493,
-	"_local": true,
-	"_version": "2.2",
 	"modules": [
 		{
-			"type": "spectra_displayer",
+			"url": "modules/types/display/postit/",
+			"title": "Untitled module",
+			"displayWrapper": false,
+			"position": {
+				"left": 4,
+				"top": 29
+			},
+			"size": {
+				"width": 35,
+				"height": 17
+			},
+			"configuration": {
+				"sections": {},
+				"groups": {}
+			},
+			"id": 1,
+			"vars_in": [],
+			"actions_in": {},
+			"text": "<p>Just enter the chemical shifts (in PPM) and the coupling constants (in Hz) and simulate exactly any system from AB to ABCDEF.</p>",
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"bgColor": [
+				255,
+				255,
+				255,
+				0
+			]
+		},
+		{
+			"url": "modules/types/science/spectra/spectra_displayer/",
 			"title": "Simulated spectrum",
 			"displayWrapper": true,
 			"position": {
-				"left": 42,
+				"left": 43,
 				"top": 0
 			},
 			"size": {
-				"width": 74.03999999761581,
-				"height": 48.039999997615816
+				"width": 67,
+				"height": 45
 			},
 			"configuration": {
 				"sections": {},
@@ -42,7 +68,7 @@
 								""
 							],
 							"yTopSpacing": [
-								"0"
+								0
 							],
 							"yBottomSpacing": [
 								"0.05"
@@ -79,6 +105,9 @@
 							],
 							"wheelAction": [
 								"zoomY"
+							],
+							"fullOut": [
+								"both"
 							]
 						}
 					],
@@ -105,7 +134,7 @@
 					]
 				}
 			},
-			"id": 1,
+			"id": 2,
 			"vars_in": [
 				{
 					"rel": "jcamp",
@@ -129,7 +158,7 @@
 			]
 		},
 		{
-			"type": "webservice_nmr_spin",
+			"url": "modules/types/science/spectra/nmr/webservice_nmr_spin/",
 			"title": "Describe your spin system",
 			"displayWrapper": true,
 			"position": {
@@ -137,8 +166,8 @@
 				"top": 0
 			},
 			"size": {
-				"width": 41.039999997615816,
-				"height": 28.039999997615816
+				"width": 42,
+				"height": 29
 			},
 			"configuration": {
 				"sections": {},
@@ -146,10 +175,13 @@
 					"group": [
 						{
 							"url": [
-								"http://script-test.epfl.ch/script/Service/20131119/JGCtqW73qk"
+								"http://www.nmrdb.org/service/simulation"
 							],
 							"systemSize": [
 								"2"
+							],
+							"button": [
+								[]
 							],
 							"buttonlabel": [
 								"Calculate"
@@ -158,22 +190,17 @@
 								"Calculating"
 							],
 							"onloadanalysis": [
-								[]
-							],
-							"button": [
-								null
+								[
+									"onload"
+								]
 							]
 						}
 					]
 				}
 			},
-			"id": 2,
-			"vars_in": [
-				{}
-			],
-			"actions_in": [
-				{}
-			],
+			"id": 3,
+			"vars_in": [],
+			"actions_in": {},
 			"vars_out": [
 				{
 					"event": "onSearchReturn",
@@ -182,43 +209,18 @@
 					"name": "jcamp"
 				}
 			],
-			"actions_out": [
-				{}
-			],
+			"actions_out": {},
 			"bgColor": [
 				255,
 				255,
 				255,
 				0
 			]
-		},
-		{
-			"type": "postit",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 1,
-				"top": 28
-			},
-			"size": {
-				"width": 40,
-				"height": 21
-			},
-			"configuration": {},
-			"id": 3,
-			"vars_in": {},
-			"actions_in": {},
-			"text": "<p>NMR Simulation</p><p>Just enter the chemical shifts (in PPM) and the coupling constants (in Hz) and simulate exactly any system from AB to ABCDEF.</p>"
 		}
 	],
-	"variables": [
-		{
-			"varname": "jcamp",
-			"jpath": "element.jcamp"
-		}
-	],
+	"variables": [],
 	"configuration": {
-		"title": "No title"
+		"title": "Simulate NMR spin system"
 	},
-	"title": "Simulate NMR spin system"
+	"version": "2.2.3"
 }

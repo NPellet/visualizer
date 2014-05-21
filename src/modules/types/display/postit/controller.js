@@ -1,4 +1,4 @@
-define( [ 'modules/default/defaultcontroller' ], function( Default ) {
+define( [ 'modules/default/defaultcontroller', 'src/util/util' ], function( Default, Util ) {
 	
 	/**
 	 * Creates a new empty controller
@@ -68,11 +68,29 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 	
 		
 	controller.prototype.configurationStructure = function(section) {
-		return { };
+            var standardFonts = Util.getWebsafeFonts();
+            standardFonts.push({ title: "Post-it", key: "Post_IT"});
+		return { groups:{
+                        group:{
+                            options:{
+                                type:'list'
+                            },
+                            fields: {
+                                fontfamily:{
+                                    type:'combo',
+                                    title:'Font-family',
+                                    'default': 'Post_IT',
+                                    options: standardFonts
+                                }
+                            }
+                        }
+                } };
 	};
 
 		
-	controller.prototype.configAliases = { };
+	controller.prototype.configAliases = {
+            fontfamily:['groups','group',0,'fontfamily',0]
+        };
 
  	return controller;
 });

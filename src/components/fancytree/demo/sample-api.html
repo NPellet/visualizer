@@ -22,22 +22,22 @@ $(function(){
 	// Initialize the tree inside the <div>element.
 	// The tree structure is read from the contained <ul> tag.
 	$("#tree").fancytree({
-		activate: function(e, data) {
+		activate: function(event, data) {
 			$("#echoActive").text(data.node.title);
 //              alert(node.getKeyPath());
 			if( data.node.url )
 				window.open(data.node.url, data.node.target);
 		},
-		deactivate: function(e, data) {
+		deactivate: function(event, data) {
 			$("#echoSelected").text("-");
 		},
-		focus: function(e, data) {
+		focus: function(event, data) {
 			$("#echoFocused").text(data.node.title);
 		},
-		blur: function(e, data) {
+		blur: function(event, data) {
 			$("#echoFocused").text("-");
 		},
-		lazyread: function(e, data){
+		lazyread: function(event, data){
 			var fakeJsonResult = [
 				{ title: 'Lazy node 1', lazy: true },
 				{ title: 'Simple node 2', select: true }
@@ -303,7 +303,7 @@ $(function(){
 			<li id="id5" class="expanded folder">Advanced examples
 				<ul>
 					<li data="key: 'node5.1'">item5.1: Using data attribute as an alternative way to specify a key.
-					<li data="key: 'node5.3', isFolder: true">item5.1: Using data attribute as an alternative way to specify a folder.
+					<li data="key: 'node5.3', folder: true">item5.1: Using data attribute as an alternative way to specify a folder.
 					<li id="id5.2">Sub-item 5.2
 					<li>Item without a key. Keys are optional (generated automatically), but may be used in the callbacks
 				</ul>

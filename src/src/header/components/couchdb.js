@@ -1,4 +1,4 @@
-define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/couchdb/jquery.couch', 'fancytree'], function($, Default, Versioning, Button, Util) {
+define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/couchdb/jquery.couch', 'fancytree', 'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'], function($, Default, Versioning, Button, Util) {
 
     var couchDBManager = function() {};
     
@@ -6,8 +6,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
         initImpl: function() {
             this.ok = this.loggedIn = false;
             this.id = Util.getNextUniqueId();
-            if(this.options.url) $.couch.urlPrefix = this.options.url;
-            this.database = this.options.database || "visualizer";
+            if(this.options.url) $.couch.urlPrefix = this.options.url.replace(/\/$/,"");
+            var db = this.options.database || "visualizer";
+            this.database = $.couch.db(db);
             
             this.showError = $.proxy(showError, this);
             this.getFormContent = $.proxy(getFormContent, this);
@@ -70,15 +71,11 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             
         },
         load: function(type, node, rev) {
-            var options = {
-                success: function(data) {
-                    data = new window[type+"Object"](data,true);
-                    Versioning["set"+type+"JSON"]( data );
-                }
-            };
-            if(rev)
-                options.rev = rev;
-            $.couch.db(this.database).openDoc(node.data.id,options);
+			var result = {};
+			result[type.toLowerCase()] = {
+				url: this.database.uri + node.data.id + (rev ? "?rev=" + rev : "")
+			};
+            Versioning.switchView(result, true);
         },
         save: function(type, name) {
             
@@ -102,8 +99,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 folderNode = last.node.parent;
             }
             
+            var keys = Object.keys(content);
+            for(var i = 0, ii = keys.length; i < ii; i++) {
+                if(keys[i].charAt(0)==="_")
+                    delete content[keys[i]];
+            }
+            
             content._id = id;
-            delete content._rev;
             
             var update = false;
             if(id===last.name) {
@@ -111,7 +113,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 content._rev = last.node.data.lastRev;
             }
             
-            $.couch.db(this.database).saveDoc(content,{
+            this.database.saveDoc(content,{
                 success: function(data) {
                     if(update) {
                         last.node.data.lastRev = data.rev;
@@ -159,13 +161,14 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 }
             }
             
-            folderNode.addNode({
+            var newNode = folderNode.addNode({
                 folder: true,
                 title: name,
                 key: folderNode.key+":"+name
             });
             if(!folderNode.expanded)
                 folderNode.toggleExpanded();
+            $(newNode.li).find(".fancytree-title").trigger("click");
             
         },
         login: function(username, password) {
@@ -279,16 +282,18 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             var id = result.node.data.id;
             var def = $.Deferred();
             result.result = def.promise();
-            $.couch.db(this.database).openDoc(id,{
+            this.database.openDoc(id,{
                 revs_info: true,
                 success: function(data) {
                     var info = data._revs_info,
                         l = info.length,
-                        revs = new Array(l);
+                        revs = [];
                     for(var i = 0; i < l; i++) {
                         var rev = info[i];
-                        var el = {title:"rev "+(l-i), id:data._id, rev:true, key:rev.rev};
-                        revs[i]=el;
+                        if(rev.status==="available") {
+                            var el = {title:"rev "+(l-i), id:data._id, rev:true, key:rev.rev};
+                            revs.push(el);
+                        }
                     }
                     def.resolve(revs);
                 }
@@ -298,7 +303,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             if(data.targetType!=="title" && data.targetType!=="icon")
                 return;
 
-            var node = data.node, formContent, divContent = "", last;
+            var node = data.node, divContent = "", last;
             var typeL = type.toLowerCase();
 
             if(node.folder) {
@@ -312,14 +317,13 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     rev = node.key;
                     node = node.parent;
                 }
-                formContent = node.title;
+                $("#"+this.cssId(typeL)).val(node.title);
                 last = {name: node.data.id, node: node};
                 if(event.type==="fancytreedblclick")
                     this.load(type, node, rev);
             }
             
             this["last"+type+"Node"] = last;
-            $("#"+this.cssId(typeL)).val(formContent);
             $("#"+this.cssId(typeL+"div")).html("&nbsp;"+divContent);
             
             if(event.type==="fancytreedblclick" && !node.folder)
@@ -330,7 +334,27 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 proxyClickData = $.proxy(this, "clickNode", "Data"),
                 proxyClickView = $.proxy(this, "clickNode", "View"),
                 that = this;
-            $.couch.db(this.database).allDocs({
+        
+            var menuOptions = {
+                delegate: "span.fancytree-title",
+                menu: [
+                    {title: "Delete", cmd: "delete", uiIcon: "ui-icon-trash"}
+                ],
+                beforeOpen: function(event, ui) {
+                    var node = $.ui.fancytree.getNode(ui.target);
+                    if(node.folder) return false;
+                    node.setActive();
+                },
+                select: function(event, ui) {
+                    var node = $.ui.fancytree.getNode(ui.target);
+                    that.contextClick(node, ui.cmd);
+                },
+                createMenu: function(event) {
+                    $(event.target).css("z-index",1000);
+                }
+            };
+            
+            this.database.allDocs({
                 startkey: this.username+':',
                 endkey: this.username+':~',
                 success: function(data) {
@@ -344,6 +368,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
                     datatree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
+                    datatree.contextmenu(menuOptions);
                     
                     var viewtree = $("#"+that.cssId("viewtree"));
                     viewtree.fancytree({
@@ -354,8 +379,25 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                         debugLevel:0
                     }).children("ul").css("box-sizing", "border-box");
                     viewtree.data("ui-fancytree").getNodeByKey("root").toggleExpanded();
+                    viewtree.contextmenu(menuOptions);
                 }
             });
+        },
+        contextClick: function(node, action) {
+            if(action === "delete" && !node.folder) {
+                if(node.data.rev)
+                    node = node.parent;
+                var doc = {
+                    _id: node.data.id,
+                    _rev: node.data.lastRev
+                };
+                this.database.removeDoc(doc, {
+                    success: function() {
+                        node.remove();
+                    },
+                    error: this.showError
+                });
+            }
         }
     });
     
@@ -388,7 +430,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
     
     function createTrees(data) {
         var trees = {data: {__folder:true}, view: {__folder:true}};
-        
+        var trees2 = {data: {__folder:true}, view: {__folder:true}};
         for(var i = 0, ii = data.length; i < ii; i++) {
             var info = data[i];
             var split = info.id.split(":");
@@ -399,10 +441,10 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                 addBranch(trees.view, split, info);
         }
         
-        trees.data = createFancyTree(trees.data, "");
-        trees.view = createFancyTree(trees.view, "");
+        trees2.data = createFancyTree(trees.data, "");
+        trees2.view = createFancyTree(trees.view, "");
         
-        return trees;
+        return trees2;
     }
     
     function addBranch(tree, indices, info) {

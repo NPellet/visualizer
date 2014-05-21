@@ -14,9 +14,9 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
                 width: '100%'
             });
             var editorRow = $('<tr>').appendTo(table).css("height","auto");
-            var buttonRow = $('<tr>').appendTo(table).css("height","30px");
+            this.buttonRow = $('<tr>').appendTo(table).css("height","30px");
             this.editorCell = $('<td>').appendTo(editorRow);
-            this.buttonCell = $('<td>').appendTo(buttonRow).css("text-align","center");
+            this.buttonCell = $('<td>').appendTo(this.buttonRow).css("text-align","center");
             
             this.module.getDomContent( ).html(table);
 
@@ -26,29 +26,35 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
         blank: {},
         inDom: function() {
             var self = this;
+            var initVal = this.module.getConfiguration('script') || "";
+            this._code.value = initVal;
             
             if(this.module.getConfiguration('iseditable')[0]) {
                 this.editable=true;
                 $('<div id="' + this._id + '"></div>').css("height","100%").css("width","100%").appendTo(this.editorCell);
                 this.editor = ace.edit(this._id);
                 var mode = "./mode/" + this.module.getConfiguration('mode');
-                var initVal = this.module.getConfiguration('script') || "";
-                this._code.value = initVal;
+                
                 this.editor.getSession().setMode(mode);
-                this.editor.setValue(initVal);
+                this.editor.setValue(initVal, -1);
                 this.editor.getSession().on('change', function() {
                     self.editorChanged();
                 });
             }
             
-            this.buttonCell.append(
-                $("<span>"+this.module.getConfiguration('btnvalue')+"</span>")
-                .addClass("form-button")
-                .on("click",function(){
-                    self.module.controller.onButtonClick(self._code);
-                })
-            );
-    
+			var hasButton = this.module.getConfiguration("hasButton");
+			if(hasButton==="button") {
+				this.buttonCell.append(
+					$("<span>"+this.module.getConfiguration('btnvalue')+"</span>")
+					.addClass("form-button")
+					.on("click",function(){
+						self.module.controller.onButtonClick(self._code);
+					})
+				);
+			}
+			else {
+				this.buttonRow.remove();
+			}
             this.onReady.resolve();
         },
         update: {

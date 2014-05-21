@@ -1,8 +1,18 @@
+
+
 module.exports = function(grunt) {
 
-  var modulesFinal = {};
-  var modulesStack = {};
+  var walk = require('walk');
+  var fs = require('fs');
   var _ = require('underscore');
+  
+  var usrPath = grunt.option('usr')||'./src/usr';
+  
+  function mapPath(path) { // Map a relative application path to a relative build path
+	  if(path.indexOf('usr/')===0)
+		  return usrPath+path.substr(3);
+	  return './src/'+path;
+  }
 
   // Project configuration.
   grunt.initConfig({
@@ -21,7 +31,8 @@ module.exports = function(grunt) {
               'init.js',
               'modules/**/*.js',
               'lib/**/*.js',
-              '!lib/jsmol/**/*.js'
+              '!lib/jsmol/**/*.js',
+			  '!lib/jsme/jsme/deferredjs/**/*.js'
             ], // Actual pattern(s) to match.
             dest: './build2/',   // Destination path prefix.
             //overwrite: true,
@@ -52,6 +63,8 @@ module.exports = function(grunt) {
               './ace/lib/ace/**',
               './ckeditor/skins/**',
               './ckeditor/ckeditor.js',
+              './ckeditor/styles.js',
+              './ckeditor/contents.css',
               './ckeditor/adapters/jquery.js',
               './ckeditor/lang/en.js',
               './ckeditor/plugins/**',
@@ -66,7 +79,18 @@ module.exports = function(grunt) {
               './leaflet/**',
               './jsoneditor/jsoneditor-min*',
               './jsoneditor/img/*',
-              './jit/Jit/**/*'
+              './jit/Jit/**/*',
+              './jquery-ui-contextmenu/jquery.ui-contextmenu.min.js',
+              './mustache/mustache.js',
+              './papa-parse/jquery.parse.min.js',
+              './font-awesome/css/font-awesome.min.css',
+              './font-awesome/fonts/*',
+              './colors/css/colors.min.css',
+              './pouchdb/dist/*',
+              './uri.js/src/*.js',
+              './twig.js/twig.min.js',
+              ['./setImmediate/setimmediate.js','./promises/promise.js'], // Promises polyfill
+              './onde/src/*'
             ],
 
             dest: './build/components/'
@@ -108,55 +132,68 @@ module.exports = function(grunt) {
 
         files: [{
           expand: true,
-          cwd: './src/usr/filters/',
+          cwd: usrPath + '/filters/',
           src: '**',
           filter: function( filePath ) {
             var files = grunt.option('filterFiles');
-//console.log( files , files.length);
-            for( var i = 0, l = files.length ; i < l ; i ++ ) {
-              
-              if( path.relative( 'src/usr/filters/' + files[ i ], filePath) == "" ) {
+            for(var i = 0, l = files.length ; i < l ; i++ ) {
+              if( path.relative( mapPath(files[ i ]), filePath) == "" ) {
                 return true;
               }
             }
 
             return false;
-            
           },
-          dest: './build/filters/'
+          dest: './build/usr/filters/'
         }, 
 
         {
-          cwd: './src/usr/',
           expand: true,
-          src: './datastructures/**',
+          cwd: usrPath,
+          src: ['**','!config/**','!filters/**','!modules/**'],
           dest: './build/usr/'
         }]
       },
 
       buildModules: {
-
+        // Modules defined in usr folder
         files: [{
           expand: true,
-          cwd: './src/',
-          src: ['./usr/modules/**', './modules/**' ],
-          dest: './build/',
+          cwd: usrPath,
+          src: ['./modules/**'],
+          dest: './build/usr/',
           filter: function(filepath) {
-
-            for( var i in modulesStack ) {
-
-              if( filepath.indexOf( i ) > -1 )
-                return true;
-            }
+			var modulesStack = grunt.option('modulesStack');
+            filepath = filepath.replace(/\\/g,"/");
+				for( var i in modulesStack ) {
+				  if( filepath.indexOf( i.substr(4) ) > -1 ) {
+					return true;
+				  }
+			}
             return false;
           }
         }, 
-
+        {
+          expand: true,
+          cwd: './src/',
+          src: ['./modules/**' ],
+          dest: './build/',
+          filter: function(filepath) {
+			var modulesStack = grunt.option('modulesStack');
+            filepath = filepath.replace(/\\/g,"/");
+            for( var i in modulesStack ) {
+              if( filepath.indexOf( i ) > -1 ) {
+                return true;
+              }
+            }
+            return false;
+          }
+        },
         {
           expand: true,
           cwd: './src/',
           src: ['./modules/module.js', './modules/modulefactory.js', './default/**', './modules/default/**' ],
-          dest: './build/',
+          dest: './build/'
         }
 
         ]
@@ -219,7 +256,6 @@ module.exports = function(grunt) {
               "d3": "empty:",
               "fancytree": "empty:",
               "jqgrid": "empty:",
-              "jquery": "empty:",
               "jqueryui": "empty:",
               "threejs": "empty:",
               "ckeditor": "empty:",
@@ -261,18 +297,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-rename');
   grunt.loadNpmTasks('grunt-ftp');
 
-  var fs = require('fs');
   var path = require('path');
   var $ = require('jQuery');
 
   grunt.registerTask( 'upload', [ 'ftp' ] );
   
   grunt.registerTask('clean-images', 'Clean all images that are not used in the build', function(){
-    var walk = require('walk');
-    var fs = require('fs');
-    var walk = require('walk')
-        , fs = require('fs')
-        , options
+    var options
         , walker
         , whiteset = {}
         , allimages = [];
@@ -282,6 +313,16 @@ module.exports = function(grunt) {
       options = {
         listeners: {
           file: function (root, fileStats, next) {
+            function findFormIcon(regexp) {
+              var m = regexp.exec(content);
+              while (m != null) {
+                var fn = 'build/lib/forms/images/'+m[1]+'.png';
+                if(fs.existsSync(fn)) {
+                  whiteset[fn] = '';
+                }
+                m = iconreg.exec(content);
+              }
+            }
             var expressions;
             expressions = [new RegExp(/\.jpg$/), new RegExp(/\.png$/), new RegExp(/\.jpeg$/), new RegExp(/\.gif$/)];
             if(_.any(expressions, function(exp){
@@ -299,25 +340,20 @@ module.exports = function(grunt) {
               
               // Search for icons specified using the forms library
               if(fileStats.name.match(new RegExp(/\.js$/))) {
-                var formreg = RegExp(/require\(\[['"]\.\/forms\/form['"]\]/);
-                if(content.match(formreg)) {
-                  var iconreg = RegExp(/icon:\s*['"]([a-zA-Z_\-]+)['"]/g);
-                  var m = iconreg.exec(content);
-                  while (m != null) {
-                      whiteset['build/lib/forms/images/'+m[1]+'.png'] = '';
-                      m = iconreg.exec(content);
-                  }
-                }
+                var iconreg = RegExp(/icon:\s*['"]([a-zA-Z_\-]+)['"]/g);
+                findFormIcon(iconreg);
+                iconreg = RegExp(/setIcon\(['"]([a-zA-Z_\-]+)['"]/g);
+                findFormIcon(iconreg);
               }
               
               // Search for images specified in .js, .css and .html files
-              var expression = /[\/a-zA-Z_\- 0-9]+\.(png|jpeg|jpg|gif)/gi;
+              var expression = /[\/\.a-zA-Z_\- 0-9]+\.(png|jpeg|jpg|gif)/gi;
               var reg = RegExp(expression);
               var res = content.match(reg);
               if(res) {
                 _.keys(res).forEach(function(i){
                   if(res[i][0] !== '/') { // ignore absolute path
-                    var filepath = root+'/'+res[i];
+                    var filepath = path.join(root,res[i]);
                     if(fs.existsSync(filepath)) {
                       whiteset[filepath] = '';
                     }
@@ -346,27 +382,97 @@ module.exports = function(grunt) {
       });
       console.log('Deleted ' + delcount + ' out of '+ allimages.length + ' images.')
   });
-
-  grunt.registerTask( 'build', [
-                        'clean:build',
-                        'buildProject',
-                        'copy:buildModules',
-                        'copy:buildUsr',
-                        'copy:build',
-                        'copy:buildLib',
-                        'requirejs',
-                        'uglify:build',
-                        'clean:build',
-                        'rename:afterBuild'
-                    ] );
+    
+  grunt.registerTask('manifest:generate', function() {
+    var files = recursivelyLookupDirectory('build', true);
+    fs.writeFileSync('build/cache.appcache', 'CACHE MANIFEST\n\nCACHE:\n\n');
+    for(var i=0; i<files.length; i++) {
+     fs.appendFileSync('build/cache.appcache', files[i] + '\n'); 
+    }
+    fs.appendFileSync('build/cache.appcache', '\n\nNETWORK:\n*\n');
+    
+    enableManifest('build/index.html', 'cache.appcache');
+  });
+  
+  function enableManifest(file, manifest) {
+    var content = fs.readFileSync(file);
+    content = content.toString().replace('<html>', '<html manifest="' + (manifest || 'cache.appcache') +'">');
+    fs.writeFileSync(file, content);
+  }
+  
+  function recursivelyLookupDirectory(path, asCwd) {
+    var relPath;
+    var cd = process.cwd();
+    if(asCwd) {
+      process.chdir(process.cwd() + '/' + path);
+      relPath = '.';
+    }
+    else {
+      relPath = path;
+    }
+    var files = [];
+    // var stats = fs.lstatSync(relPath);
+    var options = {
+      listeners: {
+        file: function (root, fileStats, next) {
+          // console.log(root, fileStats);
+          var p
+          if(root === '.') {
+            p = fileStats.name;
+          }
+          else if(root.substr(0,2) === './') {
+            p = root.substr(2) + '/' + fileStats.name;
+          }
+          else {
+            p = root + '/' + fileStats.name;
+          }
+          files.push(p);
+          next();
+        },
+        errors: function (root, nodeStatsArray, next) {
+          console.log('An error occured in walk', root, nodeStatsArray);
+          next();
+        }
+      }
+    };
+    walker = walk.walkSync(relPath, options);
+    process.chdir(cd);
+    return files;
+  }
+  
+  var buildTasks = [
+    'clean:build',
+    'buildProject',
+    'copy:buildModules',
+    'copy:buildUsr',
+    'copy:build',
+    'copy:buildLib',
+    'requirejs',
+    'uglify:build',
+    'clean:build',
+    'rename:afterBuild'
+  ];
+  
+  if(grunt.option('clean-images')) {
+    console.log('clean-images on');
+    buildTasks.push('clean-images');
+  }
+  if(grunt.option('manifest')) {
+    console.log('manifest on');
+    buildTasks.push('manifest:generate');
+  }
+  grunt.registerTask( 'build', buildTasks );
     
   grunt.registerTask( 'buildProject', 'Build project', function() {
 
-/*
+
     if( ! fs.existsSync('./build/') ) {
-*/
+
       fs.mkdirSync( 'build/');
-  //  }
+    }
+	
+	var modulesStack = {};
+	grunt.option('modulesStack', modulesStack);
 
     var config = grunt.option('config') || './src/usr/config/default.json';
 
@@ -379,10 +485,23 @@ module.exports = function(grunt) {
     var cfg = grunt.file.readJSON( config ),
         file,
         modules = {},
-        jsonStructure = {};
-
-    function loadFile( fileName ) {
-  
+        jsonStructure = {},
+		modulesFinal = {};
+	
+	var usrDir = cfg.usrDir||"usr";
+	cfg.usrDir = "usr";	// after the build, it will be in usr
+	
+    function oldLoadFile() {
+      var fileName;
+      if(typeof arguments[0] === 'object') {
+        fileName = arguments[0];
+      }
+      else if(arguments.length === 1) {
+        fileName = './src/' + arguments[0];
+      }
+      else {
+        fileName =  arguments[1] + arguments[0];
+      }
       var file,
           j = 0,
           i = 0,
@@ -391,62 +510,148 @@ module.exports = function(grunt) {
 //console.log( fileName );
       if( typeof fileName !== "object" ) {
 
-        if( ! require('fs').existsSync( fileName ) ) {
+        if( ! fs.existsSync( fileName ) ) {
+          if(arguments.length === 1) {
+            console.log('arguments[0]', arguments[0]);
+            // Not a very neat fix but whatever
+            var pos = arguments[0].search('usr');
+            if(pos > -1){
+              console.log('new : ', arguments[0].substring(pos+1));
+              arguments[0] = arguments[0].substring(pos+1);
+            }
+            return oldLoadFile(arguments[0], usrPath+'/');
+          }
           console.log( 'Folder file ' + fileName + ' does not exist');
           return;
         }
-        console.log( 'Fetching file ' + fileName);
+        // console.log( 'Fetching file ' + fileName);
         file = grunt.file.readJSON( fileName );
-      } else {
+      }
+      else {
         file = fileName;
       }
       
       for( var k in file.folders ) {
-        jsonStructure.folders[ k ] = loadFile( './src/' + file.folders[ k ] + 'folder.json');
+        if(arguments.length === 1) {
+          jsonStructure.folders[k] = oldLoadFile(file.folders[k] + 'folder.json')
+        }
+        else {
+          console.log('load file:', file.folders[k]+'folder.json', arguments[1]);
+          jsonStructure.folders[k] = oldLoadFile(file.folders[k] + 'folder.json', arguments[1])
+        }
+        // jsonStructure.folders[ k ] = oldLoadFile( './src/' + file.folders[ k ] + 'folder.json');
       }
 
       if( file.modules ) {
         for( j = 0, l = file.modules.length ; j < l ; j ++ ) {
           modules[ file.modules[ j ].url ] = true;
           modulesStack[ file.modules[ j ].url ] = true;
-
-
+          if(arguments.length === 2) {
+            console.log('here...', file.modules[j].url);
+           file.modules[j].url = './usr/' + file.modules[j].url;
+          }
+          // console.log('module added: ', file.modules[j]);
           jsonStructure.modules.push( file.modules[ j ] );
         }
       }
-
+      
       return jsonStructure;
     }
+	
+	function getRealPath(path) {
+		if(path.indexOf("usr") === 0) {
+			path = usrDir+path.substr(3);
+		}
+		return "./src/"+path;
+	}
+	
+	function loadFile(fileName) {
+		var file,
+				j = 0,
+				i = 0,
+				l,
+				jsonStructure = { modules: [], folders: {} };
+		if(typeof fileName === "string") {
+			if(!fs.existsSync(fileName)) {
+				return console.log( 'Folder file ' + fileName + ' does not exist');
+			}
+			file = grunt.file.readJSON(fileName + "/folder.json");
+		}
+		else {
+			file = fileName;
+		}
+		
+		jsonStructure.name = file.name;
+		if(file.folders && (file.folders instanceof Array)) {
+			for(var i = 0; i < file.folders.length; i++) {
+				var res = loadFile(fileName + "/" + file.folders[i]);
+				jsonStructure.folders[res.name] = res;
+			}
+		}
 
-    
-    for( var i = 0, l = cfg.modules.length ; i <l ; i ++ ) {
-      console.log( typeof cfg.modules[ i ] );
-      console.log( cfg.modules[ i ] );
-      if( typeof cfg.modules[ i ] == "object" ) {
-        
-          $.extend( true, modulesFinal, loadFile( cfg.modules[ i ] ) ); 
-      } else {
-        $.extend( true, modulesFinal, loadFile( './src/' + cfg.modules[ i ] ) );
-//        console.log( loadFile( './src/' + cfg.modules[ i ] ) );
- //       console.log( "___" );
-      } 
+		if( file.modules ) {
+			for( j = 0, l = file.modules.length ; j < l ; j ++ ) {
+				modules[ file.modules[ j ].url ] = true;
+				modulesStack[ file.modules[ j ].url ] = true;
+				jsonStructure.modules.push( file.modules[ j ] );
+			}
+		}
+		return jsonStructure;
     }
-    
-//console.log( modulesFinal );
+	
+	if(cfg.modules) {
+		if(cfg.modules instanceof Array) {  // Backwards compatibility
+			for( var i = 0, l = cfg.modules.length ; i <l ; i ++ ) {
+			  console.log( typeof cfg.modules[ i ] );
+			  console.log( cfg.modules[ i ] );
+			  if( typeof cfg.modules[ i ] == "object" ) {
+				  $.extend( true, modulesFinal, oldLoadFile( cfg.modules[ i ] ) ); 
+			  } else {
+				$.extend( true, modulesFinal, oldLoadFile(cfg.modules[ i ] ) );
+		//        console.log( oldLoadFile( './src/' + cfg.modules[ i ] ) );
+		 //       console.log( "___" );
+			  } 
+			}
+		} else if(cfg.modules.folders instanceof Array) {
+			var list = cfg.modules;
+			if( list.modules ) {
+				modulesFinal.modules = [];
+				for( j = 0, l = list.modules.length ; j < l ; j ++ ) {
+				  modules[ list.modules[ j ].url ] = true;
+				  modulesStack[ list.modules[ j ].url ] = true;
+				  modulesFinal.modules.push( list.modules[ j ] );
+				}
+			}
+			modulesFinal.folders = {};
+			for(var i = 0; i < list.folders.length; i++) {
+				$.extend(true, modulesFinal, loadFile(getRealPath(list.folders[i])));
+			}
+		}
+		else {
+			modulesFinal = loadFile(cfg.modules);
+		}
+	}
+	
     /* Find filter files from the config.json and puts them in an option */
     var filterFiles = [];
     for( var i in cfg.filters ) {
       filterFiles.push( cfg.filters[i].file );
     }
     grunt.option('filterFiles', filterFiles);
-    /* */
 
     //modulesFinal = modules;
     cfg.modules = modulesFinal;
     
     //fs.writeFileSync( './build/modules.json', JSON.stringify( jsonStructure, false, '\t' ) );
     //cfg.modules = jsonStructure;//'./modules.json';
-    fs.writeFileSync( './build/default.json', JSON.stringify( cfg, false, '\t' ) );
+	
+	var mkpath = require('mkpath');
+	
+	mkpath.sync('./build/modules/types/');
+	fs.writeFileSync('./build/modules/types/folder.json', JSON.stringify(cfg.modules));
+	
+	mkpath.sync('./build/usr/config/');
+    fs.writeFileSync( './build/usr/config/default.json', JSON.stringify( cfg, false, '\t' ) );
     //grunt.task.run('clean:buildTemp');
   });
 
@@ -480,11 +685,9 @@ module.exports = function(grunt) {
         return;
       }
 
-
       target.modules = [];
       for( var i = 0, l = allModules.length ; i < l ; i ++ ) {
         var el = /moduleName(?:[: ]*)(?:'|")([a-zA-Z0-9 _-]*)(?:'|")/.exec( grunt.file.read( basePath + "/" + allModules[ i ] + "/controller.js" ) );
-
 
         target.modules.push({
           "moduleName": (el[ 1 ] || allModules[ i ]),
@@ -492,13 +695,13 @@ module.exports = function(grunt) {
         });
       }
 
-      target.folders = {};
+      target.folders = [];
       for( var i = 0, l = allFolders.length ; i < l ; i ++ ) {
         recurseFolder( basePath + "/" + allFolders[ i ], relPath + "/" + allFolders[ i ] );
 
         if( fs.existsSync( basePath + "/" + allFolders[ i ] + "/folder.json" ) ) {
           subFolder = grunt.file.readJSON( basePath + "/" + allFolders[ i ] + "/folder.json" );
-          target.folders[ subFolder.name ] = relPath + "/" + allFolders[ i ] + "/"
+          target.folders.push(allFolders[i]);
         }
       }
 
@@ -512,7 +715,7 @@ module.exports = function(grunt) {
       } else {
         target.name = basePath.split('/').pop();
       }
-
+	  
       fs.writeFileSync(basePath + '/folder.json', JSON.stringify( target, null, "\t") );
     }
 

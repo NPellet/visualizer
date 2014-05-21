@@ -2,6 +2,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 
 	var allScripts = [];
 	var variableFilters;
+	var viewLocked = false;
 
 	function setVarFilter( name, element, filter ) {
 
@@ -30,15 +31,32 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 			case 'number':
 				element = new DataObject( { type: "number", value: element } );
 			break;
+			case 'boolean':
+				element = new DataObject( { type: "boolean", value: element } );
+			break;
 		}
 
-		element.getChild( jpath, true ).done( function( returned ) {
+		if( element && element.getChild ) {
+			element.getChild( jpath, true ).done( function( returned ) {
 
-			setVarFilter.call( self, name, returned, filter );
-		} );	
+				setVarFilter.call( self, name, returned, filter );
+			} );	
+
+		} else {
+			console.warn("Variable " + name + " could not be set. Method getChild does not exist.")
+			console.log( element );
+			console.trace();
+		}
 	}
 
 	function setHighlight( element, value ) {
+            
+            if(!element)
+                return;
+            
+            if(element instanceof Array) {
+                element = {_highlight:element};
+            }
 
 		if( typeof element._highlight == "undefined" ) {
 			return;	
@@ -90,7 +108,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 			if(data && data[1]) {
 				return data[1];
 			}
-			return;
+			return new DataObject({type:"undefined", value:undefined});
 		},
 
 		listenHighlight: function() {
@@ -127,6 +145,14 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 
 		setAllFilters: function( filters ) {
 			variableFilters = filters;
+		},
+
+		viewLock: function() {
+			viewLocked = true;
+		},
+
+		isViewLocked: function() {
+			return viewLocked;
 		}
 	}
 });

@@ -1,68 +1,76 @@
 {
-
-"filters": [
-	{
-		"file": "./usr/filters/testFilter.js",
-		"name": "Filter"
-	},
-	{
-		"file": "./usr/filters/doitourl.js",
-		"name": "DOI to URL"
-	},
+    "lockView": false,
+    "usrDir": "usr",
+    "debugLevel": -1,
+    "filters": [
         {
-		"file": "./usr/filters/flickr.js",
-		"name": "Flickr image"
-	},
-        {
-		"file": "./usr/filters/gcgenerator.js",
-		"name": "Generate GC"
-	},
-        {
-		"file": "./usr/filters/hclust.js",
-		"name": "Hierarchical clustering"
+            "file": "usr/filters/doitourl.js",
+            "name": "DOI to URL"
         },
-                {
-		"file": "./usr/filters/histogram.js",
-		"name": "Color histogram"
+        {
+            "file": "usr/filters/flickr.js",
+            "name": "Flickr image"
+        },
+        {
+            "file": "usr/filters/gcgenerator.js",
+            "name": "Generate GC"
+        },
+        {
+            "file": "usr/filters/hclust.js",
+            "name": "Hierarchical clustering"
+        },
+        {
+            "file": "usr/filters/histogram.js",
+            "name": "Color histogram"
         }
-],
-
-"modules": ["./modules/types/folder.json"] ,
-
-"header": {
-	"height": "30px",
-	"elements":
-	[
-		{
-			"type": "autosavelocalview",
-			"label": "Autosave view"
-		},
-
-		{
-			"type": "copyview",
-			"label": "Copy view"
-		},
-
-	    {
-	        "type": "blankview",
-	        "label": "Blank view"
-	    },
-	    
-	    {
-	        "type": "pasteview",
-	        "label": "Paste view"
-	    },
-
-		{
-			"type": "pushviewtoserver",
-			"label": "Save to server"
-		},
-
-		{
-			"type": "versioning",
-			"label": "Versioning"
-		}
-	]
-}
+    ],
+    "modules": {
+        "folders":["modules/types"]
+    },
+    "header": {
+        "height": "30px",
+        "elements":
+                [
+                    {
+                        "type": "copydata",
+                        "label": "Copy data"
+                    },
+                    {
+                        "type": "pastedata",
+                        "label": "Paste data"
+                    },
+                    {
+                        "type": "copyview",
+                        "label": "Copy view"
+                    },
+                    {
+                        "type": "pasteview",
+                        "label": "Paste view"
+                    },
+                    {
+                        "type": "blankview",
+                        "label": "Blank view"
+                    },
+                    {
+                        "type": "pushviewtoserver",
+                        "label": "Save to server"
+                    },
+                    {
+                        "type": "versioning",
+                        "label": "Versioning"
+                    },
+                    {
+                        "type": "couchshare",
+                        "label": "Share view",
+                        "couchUrl": "http://visualizer.epfl.ch",
+                        "tinyUrl": "http://visualizer.epfl.ch/tiny",
+                        "database": "x"
+                    },
+                    {
+                        "type":"feedback",
+                        "label":"Feedback"
+                    }
+                ]
+    }
 
 }

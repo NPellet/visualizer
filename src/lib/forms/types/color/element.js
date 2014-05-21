@@ -30,7 +30,6 @@ define( [ ], function(  ) {
 	FieldConstructor.prototype.checkValue = function() {
 
 		if( this.dom ) {
-
 			if( ! ( this.value instanceof Array) ) {
 				this.value = [ 0, 0, 0, 1 ];
 				return;

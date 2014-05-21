@@ -7,48 +7,54 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 		dataURL: false,
 		viewBranch: false,
 		dataBranch: false,
-
 		toggle: false
-	}
+	};
 
 	var el = function() {};
+        
+        var currentMenu;
 
 	$.extend(el.prototype, Default, {
 	
 		initImpl: function() {},
 
-		_onClick: function() {
-			this.setStyleOpen(this._open);
-			this.loadView();
-			this.loadData();
+                _onClick: function() {
+                    
+                    this.setStyleOpen(this._open);
 
-			if(this._open)
-				this.doElements();
-			else
-				this.close();
+                    if (this._open) {
+                        if(currentMenu && (currentMenu !== this) && currentMenu._open)
+                            currentMenu.onClick();
+                        currentMenu = this;
+                        
+                        if(this.options.viewURL || this.options.dataURL)
+                            this.load(this.options);
 
-		},
+                        this.doElements();
+                    }
+                    else
+                        this.close();
 
-		loadView: function() {
-			if(!this.options.viewURL)
-				return;
-			this.loadViewWith(this.options.viewURL, this.options.viewBranch);
-		},
-
-		loadViewWith: function(url, branch) {
-			Versioning.setView(url, branch);
-		},
-
-		loadData: function() {
-			
-			if(!this.options.dataURL)
-				return;
-			this.loadDataWith(this.options.dataURL, this.options.dataBranch)
-		},
-
-		loadDataWith: function(url, branch) {
-			Versioning.setData(url, branch);
-		},
+                },
+                
+                load: function(el) {
+                    var result = {};
+                    if(el.views || el.viewURL) {
+                        result.view = {
+                            url: el.viewURL,
+                            branch: el.viewBranch,
+                            urls: el.views
+                        };
+                    }
+                    if(el.results || el.dataURL) {
+                        result.data = {
+                            url: el.dataURL,
+                            branch: el.branchURL,
+                            urls: el.views
+                        };
+                    }
+                    Versioning.switchView(result, true);
+                },
 
 		doElements: function() {
 			this.$_elToOpen = this._doElements(this.options.elements);
@@ -56,6 +62,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 		},
 
 		_doElements: function(elements) {
+                    
+                    if(!elements)
+                        return;
 
 			var ul = $("<ul />") || this.$_elToOpen.empty(),
 				i = 0, 
@@ -77,23 +86,14 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 				dom = $("<li />").text(el.label || '');
 			if(el.viewURL || el.dataURL) {
 				dom.addClass('hasEvent').bind('click', function() {
-
-					if( el.viewURL || el.viewBranch ) {
-						self.loadViewWith(el.viewURL, el.viewBranch);
-					}
-
-					if( el.dataURL || el.dataBranch ) {
-						self.loadDataWith(el.dataURL, el.dataBranch);
-					}
-                                        
-                                        self.onClick();
+                                    self.load(el);
+                                    self.onClick();
 				});
 			}
 
 			return dom;
-		//	self.close();
 		}
 	});
-
+                
 	return el;
 });

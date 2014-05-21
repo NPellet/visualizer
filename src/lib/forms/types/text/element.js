@@ -64,8 +64,12 @@ define( [ ], function(  ) {
 
 	FieldConstructor.prototype.checkValue = function() {
 
+		if( this.value === null ) {
+			this.value = "";
+		}
+		
 		if( this.dom ) {
-			this.input.val(this.value);
+			this.input.val( this.value );
 		}
 	};
 

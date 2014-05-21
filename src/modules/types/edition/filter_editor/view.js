@@ -16,7 +16,7 @@ define(['modules/types/client_interaction/code_editor/view', "src/util/util", "a
         var initVal = this.module.getConfiguration('script') || "";
         this._code.value = initVal;
         this.editor.getSession().setMode("./mode/javascript");
-        this.editor.setValue(initVal);
+        this.editor.setValue(initVal, -1);
         this.editor.getSession().on('change', function() {
             self.editorChanged();
         });

@@ -1,10 +1,10 @@
 /*!
  * jquery.fancytree.dnd.js
  *
- * Drag'N'drop support.
+ * Drag-and-drop support.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -203,13 +203,11 @@ function _registerDnd() {
 /* *****************************************************************************
  *
  */
-/** @namespace $.ui.fancytree.ext.dnd */
-$.ui.fancytree.registerExtension("dnd",
-	/** @scope ui_fancytree
-	 * @lends $.ui.fancytree.ext.dnd.prototype
-	 */
+
+$.ui.fancytree.registerExtension(
 	{
-	version: "0.0.1",
+	name: "dnd",
+	version: "0.1.0",
 	// Default options for this extension.
 	options: {
 		// Make tree nodes draggable:
@@ -239,7 +237,7 @@ $.ui.fancytree.registerExtension("dnd",
 		if( event.which === $.ui.keyCode.ESCAPE) {
 			this._local._cancelDrag();
 		}
-		this._super(ctx);
+		return this._super(ctx);
 	},
 	/* Display drop marker according to hitMode ('after', 'before', 'over', 'out', 'start', 'stop'). */
 	_setDndStatus: function(sourceNode, targetNode, helper, hitMode, accept) {
@@ -396,7 +394,7 @@ $.ui.fancytree.registerExtension("dnd",
 			res = $helper;
 			break;
 		case "start":
-			if( node.isStatusNode ) {
+			if( node.isStatusNode() ) {
 				res = false;
 			} else if(dnd.dragStart) {
 				res = dnd.dragStart(node, ctx);

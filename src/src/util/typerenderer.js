@@ -1,26 +1,28 @@
 
 define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatraversing'], function(require, $, API, Util, Traversing) {
 
+	Util.loadCss('components/font-awesome/css/font-awesome.min.css');
+
 	var functions = {};
 
 
 	functions.string = {};
 	functions.string.toscreen = function(def, val) {
-            val = Traversing.get( val );
-            while( true ) {
-                val = val.replace('<', '&lt;' ).replace('>', '&gt;');
-                if( val.indexOf('<') === -1 && val.indexOf('>') === -1) {
-                    break;
-                }
+        val = Traversing.get( val );
+        while( true ) {
+            val = val.replace('<', '&lt;' ).replace('>', '&gt;');
+            if( val.indexOf('<') === -1 && val.indexOf('>') === -1) {
+                break;
             }
-            def.resolve( val );
+        }
+        def.resolve( val );	
 	}
-        
-        functions.html = {};
-        functions.html.toscreen = function(def, val) {
-            val = Traversing.get(val);
-            def.resolve( val );
-        };
+    
+    functions.html = {};
+    functions.html.toscreen = function(def, val) {
+        val = Traversing.get( val );
+        def.resolve( val );
+    };
 		
 	functions.matrix = {};
 	functions.matrix.toscreen = function(def, val) {
@@ -39,8 +41,8 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.picture = {};
 	functions.picture.toscreen = function(def, val) {
-		def.reject('<img src="' + Traversing.get(val) + '" />')
-	}
+		def.reject('<img src="' + Traversing.get(val) + '" />');
+	};
 
 	functions.gif = functions.picture;
 	functions.jpeg = functions.picture;
@@ -49,29 +51,34 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.doi = {};
 	functions.doi.toscreen = function(def, value) {
-		return def.resolve(value.value.replace(/^(.*)$/,'<a target="_blank" href="http://dx.doi.org/$1"><img src="../images/logo/doi.png" /></a>'));
-	}
+		return def.resolve(value.value.replace(/^(.*)$/,'<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
+	};
+	
+	functions.jme = {};
+	functions.jme.toscreen = function(def, jme, options, highlights, box) {
+		require(["lib/chemistry/jme-converter"], function(Converter){
+			var molfile = {
+				type:"mol2d",
+				value: Converter.toMolfile(jme.value)
+			};
+			functions.mol2d.toscreen(def, molfile, options, highlights, box);
+		});
+	};
 
 	functions.mol2d = {};
 	functions.mol2d.toscreen = function(def, molfile, options, highlights, box) {
 		
-		require(['ChemDoodle'], function() {
-
-			ChemDoodle.ELEMENT.H.jmolColor="#BBBBBB";
-			ChemDoodle.ELEMENT.S.jmolColor="#CCCC30";
-
-			var id = Util.getNextUniqueId();
-			var id2 = Util.getNextUniqueId();
+		var id = Util.getNextUniqueId();
+		var id2 = Util.getNextUniqueId();
+		var div = '<div id="' + id + '" />';
+		// Find the dom in here
+		var can = $( '<canvas />', { id: id2 } ).get( 0 );
+		
+		def.build = function() {
+	
+			$("#" + id ).html( can );
 			
-			var div = '<div id="' + id + '" />';
-
-			// Find the dom in here
-			var can = $( '<canvas />', { id: id2 } ).get( 0 );
-			
-			def.build = function() {
-	//console.trace();
-
-				$("#" + id ).html( can );
+			require(['ChemDoodle'], function() {
 
 				var canvas = new ChemDoodle.ViewerCanvas(id2);
 				var parent = $(can).parent();
@@ -80,14 +87,14 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				canvas.specs.backgroundColor = "transparent";
 				canvas.specs.bonds_saturationWidth_2D = .18;
 				canvas.specs.atoms_font_families_2D = ['Helvetica', 'Arial', 'sans-serif'];
-				canvas.specs.atoms_displayTerminalCarbonLabels_2D = true;
+			//	canvas.specs.atoms_displayTerminalCarbonLabels_2D = false;
 
 				var molLoaded = ChemDoodle.readMOL(molfile.value);
 				//molLoaded.scaleToAverageBondLength(14.4);
 				//canvas.loadMolecule(molLoaded);
 
 
- 				var dim = molLoaded.getDimension();
+					var dim = molLoaded.getDimension();
 
 	//			var ratio = Math.min(1, Math.max(parent.width() / dim.x, parent.height() / dim.y));
 				var ratio=1;
@@ -130,15 +137,21 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 					canvas.repaint();
 
 				}, true, box.id || 0);
-			}
+			});
+		}
 
-			def.unbuild = function() {
-				//$(this.canvas).remove();
-			};
+		def.unbuild = function() {
+			//$(this.canvas).remove();
+		};
 
-			def.getCWC = function() {
-				return this.canvas;
-			}
+		def.getCWC = function() {
+			return this.canvas;
+		}
+
+		require(['ChemDoodle'], function() {
+
+			ChemDoodle.ELEMENT.H.jmolColor="#BBBBBB";
+			ChemDoodle.ELEMENT.S.jmolColor="#CCCC30";
 
 			def.id = id;
 			def.canvasdom = can;
@@ -387,7 +400,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	functions.mf = {};
 	functions.mf.toscreen = function(def, value) {
 		
-		return def.resolve(value.value.replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
+		return def.reject(value.value.replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
 	}
 
 
@@ -431,6 +444,42 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         div.css({height:"100%",width:"100%"})/*.css("background","-webkit-"+gradient).css("background","-moz-"+gradient)*/.css("background",gradient);
         def.resolve(div.get(0));
     };
+
+    functions.indicator = {};
+    functions.indicator.toscreen = function(def, value) {
+        value = value.get();
+        if(!(value instanceof Array))
+        	def.reject('');
+        var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%"><tr>';
+
+		var length = value.length;
+		var width = (100/length)+"%";
+
+        for(var i = 0; i < length; i++) {
+        	var element = value[i];
+        	var span = $('<td>').css({
+        		"width":width,
+        		"border":"none"
+        	});
+        	if(element.bgcolor)
+        		span.css('background-color', element.bgcolor);
+        	if(element.color)
+        		span.css('color', element.color);
+        	if(element.text)
+        		span.append(element.text);
+        	if(element.class)
+        		span.addClass(element.class);
+        	if(element.icon)
+        		span.prepend('<i class="fa fa-'+element.icon+'"></i>');
+        	if(element.css)
+        		span.css(element.css);
+        	if(element.tooltip)
+        		span.attr("data-tooltip",element.tooltip);
+        	html+=span.get(0).outerHTML;
+        }
+				html += '</tr></table>';
+				def.resolve( html );
+    };
         
         
         functions.styledValue = {};
@@ -468,8 +517,10 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 			return deferred;
 		}
 		
-		element.getChild(jpath).done(function(element) {
-			_valueToScreen(deferred, element, box, opts, jpath); 
+		element.getChild( jpath ).done( function( element ) {
+
+			_valueToScreen( deferred, element, box, opts, jpath ); 
+
 		}).fail(function() { deferred.reject(); });
 		
 		return deferred;

@@ -11,7 +11,7 @@ define(['jquery'], function($) {
 
 		init: function(options) {
 			this.options = $.extend(true, {}, FieldElement.options, options);
-			this.validation = { error: false, value: undefined };
+			this.validation = { error: undefined, value: undefined };
 		},
 
 		getDom: function() {
@@ -65,8 +65,7 @@ define(['jquery'], function($) {
 		setValueSilent: function( value, doNotNotifyForm ) {
 			var oldValue = this._value;
 
-
-			this.validate( value );
+			this._validate( value );
 
 			if( this.validation.error ) {
 
@@ -83,8 +82,6 @@ define(['jquery'], function($) {
 				this.form.fieldElementValueChanged( this, value, oldValue );
 			}
 
-
-
 			// The conditional displaying will mess with the dom. This can be done only if the dom whole document model is 
 			// already created. Otherwise nevermind, all fields will be examined when the dom is created.
 			// This is due to the fact that setting a value may (and will) occur before creating the dom.
@@ -93,15 +90,121 @@ define(['jquery'], function($) {
 			}
 		},
 
-		showError: function() {
+		showError: function( ) {
+			
+			if( ! this.dom ) {
+				return false;
+			}
 
+			this.dom.removeClass('form-field-valid');
+
+			if( ! this.validation.feedback ) {
+				return;
+			}
+
+			if( this.validation.feedback._class ) {
+				this.dom.addClass('form-field-error');
+			}
+
+			if( this.validation.feedback.message ) {
+				this.addValidationMessage( this.validation.feedback.message );
+			}
+
+			return true;
+		},
+		
+		hideError: function( ) {
+			
+			if( ! this.dom ) {
+				return false;
+			}
+
+			this.dom.removeClass('form-field-error');
+			if( this.field.options.validation.positiveFeedback ) {
+
+				this.dom.addClass('form-field-valid');
+
+				if( this.field.options.validation.positiveFeedback.message ) {
+					this.addValidationMessage( this.field.options.validation.positiveFeedback.message, true );	
+				}
+				
+			} else {
+
+				this.removeValidationMessage();
+
+			}
+
+			return true;
+		},
+
+		addValidationMessage: function( text, valid ) {
+			if( ! this.validationMessageDOM ) {
+				this.validationMessageDOM = $("<div />");
+			}
+
+			if( valid ) {
+				this.validationMessageDOM.addClass( 'form-field-valid-message' ).removeClass( 'form-field-error-message' );
+			} else {
+				this.validationMessageDOM.addClass( 'form-field-error-message' ).removeClass( 'form-field-valid-message' );
+			}
+			
+			this.dom.after( this.validationMessageDOM.html( text ) );
+		},
+
+		removeValidationMessage: function() {
+
+			if( ! this.validationMessageDOM ) {
+				return;
+			}
+
+			this.validationMessageDOM.remove();	
+		},
+
+		_validate: function( value ) {
+
+			this.validation.value = value;
+			this.backupValidation();
+			this.validation.error = undefined;
+			this.validate( value );
+
+			if( ! this.validation.error ) {
+				this.field.validate( this, value );
+			}
+
+			this.doValidationFeedback();
 		},
 
 		validate: function( value ) {
 
-			this.validation.value = value;
-			this.validation.error = false;
+			//this.validation.value = value;
+		//	this.validation.error = false;
+		},
 
+		backupValidation: function() {
+			this._backedUpValidation = this._backedUpValidation || {};
+			this._backedUpValidation.error = this.validation.error;
+			this._backedUpValidation.value = this.validation.value;
+		},
+
+		doValidationFeedback: function() {
+
+			if( ( this._backedUpValidation.error === true || ( this._backedUpValidation.error === undefined ) ) && this.validation.error === false ) {
+
+				if( this.hideError() ) {
+				
+				} else {
+					this.validation.error = undefined;
+				}
+			}
+
+			if( ! this._backedUpValidation.error && this.validation.error === true ) {
+
+				if( this.showError() ) {
+				
+				} else {
+					this.validation.error = undefined;
+				}
+			}
 		},
 
 		setDefaultOr: function( el ) {

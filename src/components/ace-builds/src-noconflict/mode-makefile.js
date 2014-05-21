@@ -43,16 +43,17 @@ var MakefileHighlightRules = require("./makefile_highlight_rules").MakefileHighl
 var FoldMode = require("./folding/coffee").FoldMode;
 
 var Mode = function() {
-    var highlighter = new MakefileHighlightRules();
+    this.HighlightRules = MakefileHighlightRules;
     this.foldingRules = new FoldMode();
-    
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
        
-    this.lineCommentStart = "#";
+    this.lineCommentStart = "#";    
+    this.$indentWithTabs = true;
+    
+    this.$id = "ace/mode/makefile";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -177,12 +178,28 @@ var ShHighlightRules = function() {
     var func = "(?:" + variableName + "\\s*\\(\\))";
 
     this.$rules = {
-        "start" : [ {
+        "start" : [{
+            token : "constant",
+            regex : /\\./
+        }, {
             token : ["text", "comment"],
             regex : /(^|\s)(#.*)$/
         }, {
-            token : "string",           // " string
-            regex : '"(?:[^\\\\]|\\\\.)*?"'
+            token : "string",
+            regex : '"',
+            push : [{
+                token : "constant.language.escape",
+                regex : /\\(?:[$abeEfnrtv\\'"]|x[a-fA-F\d]{1,2}|u[a-fA-F\d]{4}([a-fA-F\d]{4})?|c.|\d{1,3})/
+            }, {
+                token : "constant",
+                regex : /\$\w+/
+            }, {
+                token : "string",
+                regex : '"',
+                next: "pop"
+            }, {
+                defaultToken: "string"
+            }]
         }, {
             token : "variable.language",
             regex : builtinVariable
@@ -197,7 +214,7 @@ var ShHighlightRules = function() {
             regex : fileDescriptor
         }, {
             token : "string",           // ' string
-            regex : "'(?:[^\\\\]|\\\\.)*?'"
+            start : "'", end : "'"
         }, {
             token : "constant.numeric", // float
             regex : floatNumber
@@ -218,6 +235,8 @@ var ShHighlightRules = function() {
             regex : "[\\]\\)\\}]"
         } ]
     };
+    
+    this.normalizeRules();
 };
 
 oop.inherits(ShHighlightRules, TextHighlightRules);

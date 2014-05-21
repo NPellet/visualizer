@@ -21,8 +21,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 
 			var self = this;
 			self.$_dom.css({ color: '' });
-			
+			console.log( Versioning.getView() );
 			self.viewHandler.serverPush(Versioning.getView()).then(function() {
+
 				self.$_dom.css({ color: '#357535' });
 			}, function() {
 				self.$_dom.css({ color: '#872A2A' });

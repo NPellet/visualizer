@@ -81,6 +81,25 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             type: 'checkbox',
                             title: 'Auto-expand JSON',
                             options: {expand: 'Yes'}
+                        },
+                        storeObject: {
+                            type: 'checkbox',
+                            title: 'Store object in view',
+                            options: {expand: 'Yes'}
+                        },
+						output: {
+                            type: 'combo',
+                            title: 'Output result',
+                            options: [
+                                {title: 'Modified input object', key: 'modified'},
+                                {title: 'New object', key: 'new'}
+                            ],
+                            default: 'new'
+                        },
+                        storedObject: {
+                            type: 'jscode',
+                            title: 'Object stored in view',
+                            default: '{}'
                         }
                     }
                 }
@@ -88,22 +107,30 @@ define(['modules/default/defaultcontroller'], function(Default) {
         };
     };
 
-    controller.prototype.configFunctions = {
-    };
-
     controller.prototype.configAliases = {
-        'editable': ['groups', 'group', 0, 'editable', 0],
-        'expanded': ['groups', 'group', 0, 'expanded', 0]
+        editable: ['groups', 'group', 0, 'editable', 0],
+        expanded: ['groups', 'group', 0, 'expanded', 0],
+        storeObject: ['groups', 'group', 0, 'storeObject', 0],
+        storedObject: ['groups', 'group', 0, 'storedObject', 0],
+		output: ['groups', 'group', 0, 'output', 0]
+		
     };
 
-    controller.prototype.editorChanged = function(json) {
-        var toSet;
-        if(json instanceof Array)
-            toSet = new DataArray(json,true);
-        else
-            toSet = new DataObject(json,true);
-        this.setVarFromEvent( 'onObjectChange', toSet );
-    };
-
+	controller.prototype.sendValue = function(newValue) {
+        if(this.module.view.storeObject) {
+            this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(newValue.resurrect());
+        }
+		var outputType = this.module.getConfiguration('output');
+        if(outputType==='new')
+            this.setVarFromEvent('onObjectChange', newValue.duplicate());
+        else {
+			var input = this.module.view.inputData;
+			if(input) {
+				input.mergeWith(newValue, this.module.getId());
+				this.setVarFromEvent('onObjectChange', input);
+			}
+		}
+	};
+	
     return controller;
 });

@@ -451,13 +451,13 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 	controller.prototype.onMouseOverMarker = function( xy, infos ) {
 		this.infos=infos;
-		this.setVarFromEvent( 'onMouseOverMarker', infos, 'markerInfos' );
-		this.setVarFromEvent( 'onMouseOverMarker', xy, 'markerXY' );
+		this.setVarFromEvent( 'onMouseOverMarker', DataObject.check(infos), 'markerInfos' );
+		this.setVarFromEvent( 'onMouseOverMarker', new DataArray(xy), 'markerXY' );
 	};
 
 	controller.prototype.onMouseOutMarker = function( xy, infos ) {
-		this.setVarFromEvent( 'onMouseOutMarker', infos, 'markerInfos' );
-		this.setVarFromEvent( 'onMouseOutMarker', xy, 'markerXY' );
+		this.setVarFromEvent( 'onMouseOutMarker', DataObject.check(infos), 'markerInfos' );
+		this.setVarFromEvent( 'onMouseOutMarker', new DataArray(xy), 'markerXY' );
 	};
     
     controller.prototype.print = function(printWindow) {

@@ -10,7 +10,7 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 			div = $( "<div></div>" )
 					.addClass( 'field-list' )
 					.appendTo( dom ),
-			lastVal = [],
+			lastVal = [this.field.options.min, this.field.options.max],
 			changing,
 			range = self.field.options.range,
 			slider = $("<div />")
@@ -105,6 +105,7 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 		this.div = div;
 		this.dom = dom;
 		this.slider = slider;
+		this.inputs = valueInput;
 		
 //		this.checkValue();
 
@@ -119,8 +120,8 @@ define( [ 'jquery', 'jqueryui' ], function( $, jqueryui ) {
 
 				if( this.value instanceof Array ) {
 					for( var i = 0, l = this.value.length; i < l ; i ++ ) {
-						console.log( i, this.value[ i ] );
-						this.slider.slider( 'value', i, this.value[ i ] );	
+						this.slider.slider( 'values', i, this.value[ i ] );	
+						this.inputs[ i ].val( this.value[ i ] );	
 					}
 				}
 			} else {

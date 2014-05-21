@@ -4,8 +4,9 @@ define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {
-				
-
+			
+			this.colors = null;
+			
 			this.canvas = document.createElement("canvas");
 			this.canvasContext = this.canvas.getContext('2d');
 			
@@ -174,7 +175,7 @@ define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util
 		resetZoomPrefetch: function() {
 			
 			var currentIndex;
-			console.log(this.pxPerCell);
+			//console.log(this.pxPerCell);
 			for(var i = 0; i < this.availableZooms.length; i++) {
 				if(this.availableZooms[i] == this.pxPerCell) {
 					currentIndex = i;
@@ -286,7 +287,7 @@ define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util
 				if(!this.minmaxworker) {
 					this.minmaxworker = new Worker('src/util/workers/getminmaxmatrix.js');
 					this.minmaxworker.addEventListener('message', function(event) {
-							console.log('Get message');
+							//console.log('Get message');
 						var data = event.data.message;
 						
 						self.minValue = data.min;
@@ -401,7 +402,7 @@ define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util
 			
 			var self = this;
 			worker.addEventListener('message', function(event) {
-				console.log(event.data);
+				//console.log(event.data);
 				var data = event.data;
 				var pxPerCell = data.pxPerCell;
 				var buffIndexX = data.indexX;
@@ -419,7 +420,18 @@ define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util
 		},
 		
 		getColors: function() {
-			return this.colors || (this.colors = ( this.module.getConfiguration('colors') || ['#000000', '#ffffff']) );
+			if(!this.colors) {
+				var colors = this.module.getConfiguration('colors');
+				if(colors) {
+					if(colors.length===1) {
+						colors.push([255,255,255,1]);
+					}
+					this.colors = colors;
+				} else {
+					this.colors = [[0,0,0,1],[255,255,255,1]];
+				}
+			}
+			return this.colors;
 		},
 		
 		getHighContrast: function() {

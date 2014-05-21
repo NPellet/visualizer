@@ -39,7 +39,7 @@ var MatchingParensOutdent = require("./matching_parens_outdent").MatchingParensO
 var Range = require("../range").Range;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new ClojureHighlightRules().getRules());
+    this.HighlightRules = ClojureHighlightRules;
     this.$outdent = new MatchingParensOutdent();
 };
 oop.inherits(Mode, TextMode);
@@ -51,7 +51,7 @@ oop.inherits(Mode, TextMode);
     this.getNextLineIndent = function(state, line, tab) {
         var indent = this.$getIndent(line);
 
-        var tokenizedLine = this.$tokenizer.getLineTokens(line, state);
+        var tokenizedLine = this.getTokenizer().getLineTokens(line, state);
         var tokens = tokenizedLine.tokens;
 
         if (tokens.length && tokens[tokens.length-1].type == "comment") {
@@ -80,6 +80,7 @@ oop.inherits(Mode, TextMode);
         this.$outdent.autoOutdent(doc, row);
     };
 
+    this.$id = "ace/mode/clojure";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

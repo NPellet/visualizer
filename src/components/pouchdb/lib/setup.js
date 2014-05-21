@@ -1,15 +1,35 @@
 "use strict";
 
 var PouchDB = require("./constructor");
-
+var utils = require('./utils');
+var Promise = utils.Promise;
+var EventEmitter = require('events').EventEmitter;
 PouchDB.adapters = {};
-PouchDB.plugins = {};
 
 PouchDB.prefix = '_pouch_';
 
-PouchDB.parseAdapter = function (name) {
+var eventEmitter = new EventEmitter();
+
+var eventEmitterMethods = [
+  'on',
+  'addListener',
+  'emit',
+  'listeners',
+  'once',
+  'removeAllListeners',
+  'removeListener',
+  'setMaxListeners'
+];
+
+var preferredAdapters = ['levelalt', 'idb', 'leveldb', 'websql'];
+
+eventEmitterMethods.forEach(function (method) {
+  PouchDB[method] = eventEmitter[method].bind(eventEmitter);
+});
+PouchDB.setMaxListeners(0);
+PouchDB.parseAdapter = function (name, opts) {
   var match = name.match(/([a-z\-]*):\/\/(.*)/);
-  var adapter;
+  var adapter, adapterName;
   if (match) {
     // the http adapter expects the fully qualified name
     name = /http(s?)/.test(match[1]) ? match[1] + '://' + match[2] : match[2];
@@ -20,23 +40,39 @@ PouchDB.parseAdapter = function (name) {
     return {name: name, adapter: match[1]};
   }
 
-  var preferredAdapters = ['idb', 'leveldb', 'websql'];
-  for (var i = 0; i < preferredAdapters.length; ++i) {
-    if (preferredAdapters[i] in PouchDB.adapters) {
-      adapter = PouchDB.adapters[preferredAdapters[i]];
-      var use_prefix = 'use_prefix' in adapter ? adapter.use_prefix : true;
+  // check for browsers that have been upgraded from websql-only to websql+idb
+  var skipIdb = 'idb' in PouchDB.adapters && 'websql' in PouchDB.adapters &&
+    utils.hasLocalStorage() &&
+    global.localStorage['_pouch__websqldb_' + PouchDB.prefix + name];
 
-      return {
-        name: use_prefix ? PouchDB.prefix + name : name,
-        adapter: preferredAdapters[i]
-      };
+  if (typeof opts !== 'undefined' && opts.db) {
+    adapterName = 'leveldb';
+  } else {
+    for (var i = 0; i < preferredAdapters.length; ++i) {
+      adapterName = preferredAdapters[i];
+      if (adapterName in PouchDB.adapters) {
+        if (skipIdb && adapterName === 'idb') {
+          continue; // keep using websql to avoid user data loss
+        }
+        break;
+      }
     }
+  }
+
+  if (adapterName) {
+    adapter = PouchDB.adapters[adapterName];
+    var use_prefix = 'use_prefix' in adapter ? adapter.use_prefix : true;
+
+    return {
+      name: use_prefix ? PouchDB.prefix + name : name,
+      adapter: adapterName
+    };
   }
 
   throw 'No valid adapter found';
 };
 
-PouchDB.destroy = function (name, opts, callback) {
+PouchDB.destroy = utils.toPromise(function (name, opts, callback) {
   if (typeof opts === 'function' || typeof opts === 'undefined') {
     callback = opts;
     opts = {};
@@ -47,197 +83,69 @@ PouchDB.destroy = function (name, opts, callback) {
     name = undefined;
   }
 
-  if (typeof callback === 'undefined') {
-    callback = function () {};
-  }
-  var backend = PouchDB.parseAdapter(opts.name || name);
+  var backend = PouchDB.parseAdapter(opts.name || name, opts);
   var dbName = backend.name;
 
-  var cb = function (err, response) {
-    if (err) {
-      callback(err);
-      return;
-    }
+  var adapter = PouchDB.adapters[backend.adapter];
 
-    for (var plugin in PouchDB.plugins) {
-      PouchDB.plugins[plugin]._delete(dbName);
-    }
-    //console.log(dbName + ': Delete Database');
-
+  function destroyDb() {
     // call destroy method of the particular adaptor
-    PouchDB.adapters[backend.adapter].destroy(dbName, opts, callback);
-  };
-
-  // remove PouchDB from allDBs
-  PouchDB.removeFromAllDbs(backend, cb);
-};
-
-PouchDB.removeFromAllDbs = function (opts, callback) {
-  // Only execute function if flag is enabled
-  if (!PouchDB.enableAllDbs) {
-    callback();
-    return;
-  }
-
-  // skip http and https adaptors for allDbs
-  var adapter = opts.adapter;
-  if (adapter === "http" || adapter === "https") {
-    callback();
-    return;
-  }
-
-  // remove db from PouchDB.ALL_DBS
-  new PouchDB(PouchDB.allDBName(opts.adapter), function (err, db) {
-    if (err) {
-      // don't fail when allDbs fail
-      //console.error(err);
-      callback();
-      return;
-    }
-    // check if db has been registered in PouchDB.ALL_DBS
-    var dbname = PouchDB.dbName(opts.adapter, opts.name);
-    db.get(dbname, function (err, doc) {
+    adapter.destroy(dbName, opts, function (err, resp) {
       if (err) {
-        callback();
+        callback(err);
       } else {
-        db.remove(doc, function (err, response) {
-          if (err) {
-            //console.error(err);
-          }
-          callback();
-        });
+        PouchDB.emit('destroyed', dbName);
+        //so we don't have to sift through all dbnames
+        PouchDB.emit(dbName, 'destroyed');
+        callback(null, resp || { 'ok': true });
       }
     });
+  }
+
+  var usePrefix = 'use_prefix' in adapter ? adapter.use_prefix : true;
+
+  var trueDbName = usePrefix ?
+    dbName.replace(new RegExp('^' + PouchDB.prefix), '') : dbName;
+  new PouchDB(trueDbName, {adapter : backend.adapter}, function (err, db) {
+    if (err) {
+      return callback(err);
+    }
+    db.get('_local/_pouch_dependentDbs', function (err, localDoc) {
+      if (err) {
+        if (err.name !== 'not_found') {
+          return callback(err);
+        } else { // no dependencies
+          return destroyDb();
+        }
+      }
+      var dependentDbs = localDoc.dependentDbs;
+      var deletedMap = Object.keys(dependentDbs).map(function (name) {
+        var trueName = usePrefix ?
+          name.replace(new RegExp('^' + PouchDB.prefix), '') : name;
+        return PouchDB.destroy(trueName, {adapter: backend.adapter});
+      });
+      Promise.all(deletedMap).then(destroyDb, function (error) {
+        callback(error);
+      });
+    });
   });
+});
 
-};
-
+PouchDB.allDbs = utils.toPromise(function (callback) {
+  var err = new Error('allDbs method removed');
+  err.stats = '400';
+  callback(err);
+});
 PouchDB.adapter = function (id, obj) {
   if (obj.valid()) {
     PouchDB.adapters[id] = obj;
   }
 };
 
-PouchDB.plugin = function (id, obj) {
-  PouchDB.plugins[id] = obj;
-};
-
-// flag to toggle allDbs (off by default)
-PouchDB.enableAllDbs = false;
-
-// name of database used to keep track of databases
-PouchDB.ALL_DBS = "_allDbs";
-PouchDB.dbName = function (adapter, name) {
-  return [adapter, "-", name].join('');
-};
-PouchDB.realDBName = function (adapter, name) {
-  return [adapter, "://", name].join('');
-};
-PouchDB.allDBName = function (adapter) {
-  return [adapter, "://", PouchDB.prefix + PouchDB.ALL_DBS].join('');
-};
-
-PouchDB.open = function (opts, callback) {
-  // Only register pouch with allDbs if flag is enabled
-  if (!PouchDB.enableAllDbs) {
-    callback();
-    return;
-  }
-
-  var adapter = opts.adapter;
-  // skip http and https adaptors for allDbs
-  if (adapter === "http" || adapter === "https") {
-    callback();
-    return;
-  }
-
-  new PouchDB(PouchDB.allDBName(adapter), function (err, db) {
-    if (err) {
-      // don't fail when allDb registration fails
-      //console.error(err);
-      callback();
-      return;
-    }
-
-    // check if db has been registered in PouchDB.ALL_DBS
-    var dbname = PouchDB.dbName(adapter, opts.name);
-    db.get(dbname, function (err, response) {
-      if (err && err.status === 404) {
-        db.put({
-          _id: dbname,
-          dbname: opts.originalName
-        }, function (err) {
-            if (err) {
-              //console.error(err);
-            }
-
-            callback();
-          });
-      } else {
-        callback();
-      }
-    });
+PouchDB.plugin = function (obj) {
+  Object.keys(obj).forEach(function (id) {
+    PouchDB.prototype[id] = obj[id];
   });
-};
-
-PouchDB.allDbs = function (callback) {
-  var accumulate = function (adapters, all_dbs) {
-    if (adapters.length === 0) {
-      // remove duplicates
-      var result = [];
-      all_dbs.forEach(function (doc) {
-        var exists = result.some(function (db) {
-          return db.id === doc.id;
-        });
-
-        if (!exists) {
-          result.push(doc);
-        }
-      });
-
-      // return an array of dbname
-      callback(null, result.map(function (row) {
-          return row.doc.dbname;
-        }));
-      return;
-    }
-
-    var adapter = adapters.shift();
-
-    // skip http and https adaptors for allDbs
-    if (adapter === "http" || adapter === "https") {
-      accumulate(adapters, all_dbs);
-      return;
-    }
-
-    new PouchDB(PouchDB.allDBName(adapter), function (err, db) {
-      if (err) {
-        callback(err);
-        return;
-      }
-      db.allDocs({include_docs: true}, function (err, response) {
-        if (err) {
-          callback(err);
-          return;
-        }
-
-        // append from current adapter rows
-        all_dbs.unshift.apply(all_dbs, response.rows);
-
-        // code to clear allDbs.
-        // response.rows.forEach(function (row) {
-        //   db.remove(row.doc, function () {
-        //     //console.log(arguments);
-        //   });
-        // });
-
-        // recurse
-        accumulate(adapters, all_dbs);
-      });
-    });
-  };
-  var adapters = Object.keys(PouchDB.adapters);
-  accumulate(adapters, []);
 };
 
 module.exports = PouchDB;

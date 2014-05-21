@@ -123,32 +123,36 @@ define(['jquery', 'src/util/event'], function($, Event) {
 
 		var _callbackId = ++callbackId;
 		this._callbacks[_callbackId] = [keys, callback, sendCallbackOnEmptyArray];
-
+ 
 		if(killerID) {
 			this._killers[killerID] = this._killers[killerID] || [];
 			this._killers[killerID].push(_callbackId);
 		}
-
+//console.log( this._callbacks );
 		bindKeysRecursively(this, keys, _callbackId, true);
 
 		return callbackId;
 	}
 
 	Repository.prototype.kill = function( killerId ) {
-		if(!this._killers[killerId])
+
+		if( ! this._killers[ killerId ] ) {
 			return;
-		var callbackIds = this._killers[killerId];
-		for(var i = 0, l = callbackIds.length; i < l; i++) {
-			bindKeysRecursively(this, this._callbacks[callbackIds[i]][0], callbackIds[i], false);
-			this._callbacks[callbackIds[i]] = undefined;
 		}
 
-		this._killers[killerId] = [];
+		var callbackIds = this._killers[ killerId ];
+		for( var i = 0, l = callbackIds.length; i < l; i++ ) {
+
+			bindKeysRecursively( this, this._callbacks[callbackIds[i]][0], callbackIds[i], false );
+			delete this._callbacks[ callbackIds[ i ] ];
+		}
+
+		this._killers[ killerId ] = [];
 	}
 
 	Repository.prototype.resetVariables = function() {
 		this._keys = {};
-		this._value = undefined;
+		this._value = [];
 	}
 
 	Repository.prototype.resetCallbacks = function() {

@@ -162,10 +162,10 @@ function addSampleButton(options)
 {
 	var opts = $.extend({}, SAMPLE_BUTTON_DEFAULTS, options),
 		$container;
-	$container = $("<span>", {
+	$container = $("<span />", {
 		"class": "sampleButtonContainer"
 	});
-	$("<button>", {
+	$("<button />", {
 		id: opts.id,
 		title: opts.tooltip,
 		text: opts.label
@@ -174,7 +174,7 @@ function addSampleButton(options)
 		opts.code();
 	}).appendTo($container);
 
-	$("<a>", {
+	$("<a />", {
 		text: "Source code",
 		href: "#",
 		"class": "showCode"
@@ -205,17 +205,20 @@ function addSampleButton(options)
 	sourceCode = sourceCode.replace(/\t/g, "  ");
 	// Format code samples
 
-	$("<pre>", {
+	$("<pre />", {
 		text: sourceCode,
 		"class": "prettyprint"
 	}).hide().appendTo($container);
 	if(opts.newline){
-		$container.append($("<br>"));
+		$container.append($("<br />"));
 	}
 	if(opts.header){
-		$("<h5>", {text: opts.header}).appendTo($("p#sampleButtons"));
+		$("<h5 />", {text: opts.header}).appendTo($("p#sampleButtons"));
 	}
-	$container.appendTo($("p#sampleButtons"));
+	if( !$("#sampleButtons").length ){
+		$.error("addSampleButton() needs a container with id #sampleButtons");
+	}
+	$container.appendTo($("#sampleButtons"));
 }
 
 
@@ -293,6 +296,7 @@ $(function(){
 				  {name: "Vista (classic Dynatree)", value: "vista", href: "skin-vista/ui.fancytree.css"},
 				  {name: "Win7", value: "win7", href: "skin-win7/ui.fancytree.css"},
 				  {name: "Win8", value: "win8", href: "skin-win8/ui.fancytree.css"},
+				  {name: "Win8 xxl", value: "win8xxl", href: "skin-win8-xxl/ui.fancytree.css"},
 				  {name: "Lion", value: "lion", href: "skin-lion/ui.fancytree.css"}
 				  ]
 //		init: "lion"

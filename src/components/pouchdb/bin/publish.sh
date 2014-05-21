@@ -1,19 +1,18 @@
 #!/bin/bash
 
-VERSION=$1
+#make sure deps are up to date
+rm -r node_modules
+npm install
 
-if [[ ! $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+(\.[0-9]+)?)?$ ]]; then
-    echo "Usage: ./bin/publish.sh 0.0.1(-version(.2))"
-    exit 2
-fi
+# get current version
+VERSION=$(node --eval "console.log(require('./package.json').version);")
 
 # Build
 git checkout -b build
-./node_modules/tin/bin/tin -v $VERSION
-echo "module.exports = '"$VERSION"';" > lib/version.js
+
 npm run build
 git add dist -f
-git add lib/version.js package.json bower.json component.json
+git add lib/.version.js -f
 git commit -m "build $VERSION"
 
 # Tag and push
@@ -22,15 +21,6 @@ git push --tags git@github.com:daleharvey/pouchdb.git $VERSION
 
 # Publish JS modules
 npm publish
-
-# Build pouchdb.com
-cd docs
-jekyll build
-cd ..
-
-# Publish pouchdb.com + nightly
-scp -r docs/_site/* pouchdb.com:www/pouchdb.com
-scp dist/* pouchdb.com:www/download.pouchdb.com
 
 # Cleanup
 git checkout master

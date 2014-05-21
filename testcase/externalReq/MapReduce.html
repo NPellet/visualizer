@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Test Map/Reduce with big data</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <script src="lib/pouchdb-nightly.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="lib/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    </head>
+    <body>
+        <div>
+            <input type="button" onclick="createDB();" value="Create database" /><br>
+            <input type="text" id="briefid" value = "000007"/>
+            <input type="button" onclick="search();" value="Search database" />
+        </div>
+        <script>
+            var db = new PouchDB('map_reduce100');
+            var total = 100000;
+            var composition = [];
+            for(var i = 0; i < 50; i++){
+                composition[i] = {id:Math.floor(Math.random()*10000),qty:Math.floor(Math.random()*100)};
+            }
+            var keywords = ["ab","cd","ef","gh"];
+            function pad(num){ return ('00000' + num).substr(-6); }
+            function randomBrief() { return pad(Math.floor(Math.random()*250)) }
+            function createDB() {console.log("plop")
+                db.info(function(err, info){console.log("info")
+                    if(info && info.doc_count > 0)
+                        return;
+                    var doc, docs = new Array(total);
+                    for(var i = 0; i < total; i++) {
+                        if(i%1000===0) console.log("Creating doc "+i);
+                        var brief = randomBrief();
+                        doc = {
+                            _id: brief+"_"+pad(i),
+                            briefID: brief,
+                            composition: composition,
+                            keywords: keywords
+                        };
+                
+                        docs[i]=doc;
+                        if(i===total-1) console.log("finished")
+                    }
+                    db.bulkDocs({docs:docs}, function(err,response){
+                        if(err) return console.log("ERROR:", err);
+                        else console.log("OK")
+                    });
+                });
+            }
+            function search() {
+                console.time("search")
+                var briefID = $("#briefid").val();
+                db.allDocs({startkey: briefID, endkey:briefID+"_\uFFF0", include_docs:true}, function(err, response) {
+                    console.timeEnd("search")
+                    console.log(response)
+                });
+            }
+            
+        </script>
+    </body>
+</html>

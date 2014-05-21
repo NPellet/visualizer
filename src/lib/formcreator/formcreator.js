@@ -1,4 +1,5 @@
-define([ 'lib/forms/form'], function( Form ) {
+define(['forms/form'], function( Form ) {
+	"use strict";
 
 	function makeOptions( cfg, form ) {
 
@@ -22,17 +23,13 @@ define([ 'lib/forms/form'], function( Form ) {
 
 
 			case 'slider_range':
-				cfg.min = parseFloat( form.groups.slider[ 0 ].start[ 0 ] || 0 );
-				cfg.max = parseFloat( form.groups.slider[ 0 ].end[ 0 ] || 1 );
-				cfg.step = parseFloat( form.groups.slider[ 0 ].step[ 0 ] || 0.1 );
-				
-				if( form.groups.range ) {
-					cfg.default = [ 
-						form.groups.range[ 0 ].val1[ 0 ],
-						form.groups.range[ 0 ].val2[ 0 ]
-					];
-				}
-
+				cfg.min = parseFloat( form.groups.range[ 0 ].start[ 0 ] || 0 );
+				cfg.max = parseFloat( form.groups.range[ 0 ].end[ 0 ] || 1 );
+				cfg.step = parseFloat( form.groups.range[ 0 ].step[ 0 ] || 0.1 );
+				cfg.default = [ 
+					Math.max(parseFloat(form.groups.range[ 0 ].val1[ 0 ]),cfg.min),
+					Math.min(parseFloat(form.groups.range[ 0 ].val2[ 0 ]),cfg.max)
+				];
 				cfg.range = true;				
 			break;
 		}
@@ -73,7 +70,7 @@ define([ 'lib/forms/form'], function( Form ) {
 
 				options: {
 					multiple: true,
-					title: "Filtering field"
+					title: "Form field"
 				},
 
 				groups: {
@@ -93,12 +90,7 @@ define([ 'lib/forms/form'], function( Form ) {
 								type: 'text',
 								title: 'Field label'
 							},
-
-							defaultVal: {
-								type: 'text',
-								title: 'Default value'
-							},
-
+						
 							type: {
 								type: 'combo',
 								title: 'Field type',
@@ -123,6 +115,22 @@ define([ 'lib/forms/form'], function( Form ) {
 						}
 					},
 
+					defaultVal: {
+
+						options: {
+							type: 'list',
+							displayTarget: [ 'text', 'slider', 'combo', 'checkbox' ]
+						},
+
+						fields: {
+
+							defaultVal: {
+								type: 'text',
+								title: 'Default value'
+							}
+						}
+					},
+
 					text: {
 
 						options: {
@@ -131,6 +139,7 @@ define([ 'lib/forms/form'], function( Form ) {
 						},
 
 						fields: {
+
 
 							case_sensitive: {
 								type: 'checkbox',
@@ -149,6 +158,7 @@ define([ 'lib/forms/form'], function( Form ) {
 						},
 
 						fields: {
+
 
 							start: {
 								type: 'float',
@@ -200,7 +210,7 @@ define([ 'lib/forms/form'], function( Form ) {
 							val2: {
 								type: 'float',
 								title: 'Default max'
-							},
+							}
 
 						}
 					},
@@ -222,6 +232,49 @@ define([ 'lib/forms/form'], function( Form ) {
 							value: {
 								type: 'text',
 								title: 'Value'
+							}
+						}
+					}
+				},
+
+				sections: {
+
+					validation: {
+						options: {
+							multiple: false,
+							title: "Field validation"
+						},
+
+						groups: {
+
+							general: {
+								options: {
+									type: 'list'
+								},
+
+								fields: {
+
+									pattern: {
+										type: 'text',
+										title: 'Pattern'
+									},
+
+									neg: {
+										type: 'text',
+										title: 'Negative feedback'
+									},
+
+									pos: {
+										type: 'text',
+										title: 'Positive feedback'
+									},
+
+									authorize_empty: {
+										type: 'checkbox',
+										title: 'Authorize empty',
+										options: { 'authorize': '' }
+									}
+								}
 							}
 						}
 					}
@@ -266,15 +319,36 @@ define([ 'lib/forms/form'], function( Form ) {
 
 			var i = 0,
 				l = fields.length,
-				allFields = {};
+				allFields = {},
+				type;
 				
 			for( ; i < l ; i ++ ) {
 
 				if( ! fields[ i ].groups.general ) {
 					continue;
 				}
+				
+				var defaultVal = (fields[ i ].groups.defaultVal && fields[ i ].groups.defaultVal[ 0 ].defaultVal[0]) ? fields[ i ].groups.defaultVal[ 0 ].defaultVal[ 0 ] : ''
+				var validation = {};
 
-				var defaultVal = fields[ i ].groups.general[ 0 ].defaultVal ? fields[ i ].groups.general[ 0 ].defaultVal[ 0 ] : ''
+				if( fields[ i ].sections.validation && fields[ i ].sections.validation[ 0 ].groups && fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].pattern[ 0 ] !== "" ) {
+					validation.rules = [
+											{
+												pattern: fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].pattern[ 0 ],
+												orEmpty: fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].authorize_empty[ 0 ][ 0 ] == 'authorize',
+												feedback: {
+													_class: true,
+													message: fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].neg
+												}
+											}
+										];
+
+					validation.positiveFeedback = {
+						message: fields[ i ].sections.validation[ 0 ].groups.general[ 0 ].pos
+					};
+				}
+
+				//console.log( validation );
 
 				type = fields[ i ].groups.general[ 0 ].type[ 0 ];
 
@@ -288,7 +362,8 @@ define([ 'lib/forms/form'], function( Form ) {
 				allFields[ fields[ i ].groups.general[ 0 ].name[ 0 ] ] = {
 					type: 	type,
 					title: 	fields[ i ].groups.general[ 0 ].label[ 0 ],
-					default: defaultVal
+					default: defaultVal,
+					validation: validation
 				};
 
 				if( callback ) {

@@ -6,8 +6,16 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 	init: function() {	
 
 	 		var self = this, lastTr;
+	 		
+	 		var actionsOut = this.module.actions_out();
+	 		if(actionsOut) {
+	 			for(var i=0; i<actionsOut.length; i++) {
+	 				if(actionsOut[i].event==="onToggleOn" || actionsOut[i].event==="onToggleOff")
+	 					this.hasToggleAction=true;
+	 			}
+	 		}
 
-	 		this.uniqId = Util.getNextUniqueId();
+	 		this.uniqId = Util.getNextUniqueId()+"_";
 	 		this.dom = $('<div class="ci-displaylist-list"></div>');
 	 		this.domTable = $("<table />").attr('id', this.uniqId).css({width: '100%'});
 
@@ -176,15 +184,16 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			    viewrecords: true,
 			    onSelectRow: function( rowid, status ) {
 			    	//rowid--; // ?? Plugin mistake ?
-
-			    	if ( status ) {
-
-			    		self.module.controller.onToggleOn( self.elements, rowid.replace( self.uniqId, '' ) );
-
-			    	} else {
-
-			    		self.module.controller.onToggleOff( self.elements, rowid.replace( self.uniqId, '' ) );
-
+				if(self.hasToggleAction) {
+				    	if ( status ) {
+	                                        $("#"+rowid).addClass('bg-orange').removeClass("ui-widget-content ui-state-highlight");
+				    		self.module.controller.onToggleOn( self.elements, rowid.replace( self.uniqId, '' ) );
+	
+				    	} else {
+	                                        $("#"+rowid).removeClass('bg-orange');
+				    		self.module.controller.onToggleOff( self.elements, rowid.replace( self.uniqId, '' ) );
+	
+				    	}
 			    	}
 
 					self.module.controller.lineClick( self.elements, rowid.replace( self.uniqId, '' ) );
@@ -198,9 +207,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 						id;
 
 					for( ; i < l ; i++ ) {
-console.log( self.tableElements[ i ] );
-
-
 						self.tableElements[ i ]._inDom.notify( );
 					}
 
@@ -325,7 +331,12 @@ console.log( self.tableElements[ i ] );
 			for( ; j < l ; j ++) {
 
 				var jpath = jp[ j ].jpath;
-				element[ jp[ j ].name ] = 'Loading';
+				/*if( ! jpath ) {
+					element[ jp[ j ].name ] = '';
+				} else {*/
+					element[ jp[ j ].name ] = 'Loading';
+				//}
+				
 				self.done ++;
 				element[ ";" + jp[ j ].name ] = this.renderElement( element, s, jpath, jp[ j ].name );
 			}
@@ -359,40 +370,43 @@ console.log( self.tableElements[ i ] );
 			var self = this,
 				box = self.module;
 			
-			var defScreen = Renderer
-				.toScreen(source, box, {}, jpath)
-				.done( function( value ) {
+			var defScreen = Renderer.toScreen(source, box, {}, jpath);
 
-					element._inDom.progress(function( ) {
-						
-console.log( 'Prog');
-						element[ l ] = value;
-						self.done --;
-						
+			defScreen.then( function( value ) {
 
-						self.jqGrid('setCell', element.id, l, value);
+				element._inDom.progress(function( ) {
+                        
+					element[ l ] = value;
+					self.done --;
+					
+					self.jqGrid('setCell', element.id, l, value);
 
-						if( defScreen.build ) {
-							defScreen.build();
-						}
-						
-						/* todo In this required ??? */
-						if(self.done == 0) {
-							self.onResize(self.width, self.height);
-						}
+					if( defScreen.build ) {
+						//console.log( defScreen );
+						defScreen.build();
+					}
+					
+					/* todo In this required ??? */
+					if(self.done == 0) {
+						self.onResize(self.width, self.height);
+					}
 
-					}, function(value) {
-
-						element[l] = value;
-						self.done--;
-						
-						/* todo In this required ??? */
-						if(self.done == 0) {
-							self.onResize(self.width, self.height);
-						}
-						
-					});
 				});
+
+				element[l] = value;
+				self.done--;
+
+			}, function( value ) {
+
+				element[l] = value;
+				self.done--;
+				
+				/* todo In this required ??? */
+				if(self.done == 0) {
+					self.onResize(self.width, self.height);
+				}
+				
+			});
 		},
 
 		getDom: function() {

@@ -4,7 +4,7 @@
  * Render tree like a Mac Finder's column view.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -39,7 +39,8 @@ function _assert(cond, msg){
 /*******************************************************************************
  * Private functions and variables
  */
-$.ui.fancytree.registerExtension("columnview", {
+$.ui.fancytree.registerExtension({
+	name: "columnview",
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
@@ -77,7 +78,7 @@ $.ui.fancytree.registerExtension("columnview", {
 		tree.widget.options.clickFolderMode = 1;
 
 		// Make sure that only active path is expanded when a node is activated:
-		$table.bind("fancytreeactivate", function(e, data){
+		$table.bind("fancytreeactivate", function(event, data){
 			var i, tdList,
 				node = data.node,
 				tree = data.tree,
@@ -96,9 +97,9 @@ $.ui.fancytree.registerExtension("columnview", {
 				node.setExpanded();
 			}
 		// Adjust keyboard behaviour:
-		}).bind("fancytreekeydown", function(e, data){
+		}).bind("fancytreekeydown", function(event, data){
 			var next = null;
-			switch(e.which){
+			switch(event.which){
 			case $.ui.keyCode.DOWN:
 				next = data.node.getNextSibling();
 				if( next ){

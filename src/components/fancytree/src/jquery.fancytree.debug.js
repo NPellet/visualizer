@@ -4,7 +4,7 @@
  * Miscellaneous debug extensions.
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
  *
- * Copyright (c) 2013, Martin Wendt (http://wwWendt.de)
+ * Copyright (c) 2014, Martin Wendt (http://wwWendt.de)
  *
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
@@ -39,7 +39,8 @@ for(i=0; i<EVENT_NAMES.length; i++){ EVENT_NAME_MAP[EVENT_NAMES[i]] = true; }
 /* *****************************************************************************
  * Extension code
  */
-$.ui.fancytree.registerExtension("tracecalls", {
+$.ui.fancytree.registerExtension({
+	name: "tracecalls",
 	version: "0.0.1",
 	// Default options for this extension.
 	options: {
@@ -54,7 +55,7 @@ $.ui.fancytree.registerExtension("tracecalls", {
 		var tree = ctx.tree;
 
 		// Bind init-handler to apply cookie state
-		tree.$div.bind("fancytreeinit", function(e){
+		tree.$div.bind("fancytreeinit", function(event){
 			tree.debug("COOKIE " + document.cookie);
 		});
 		// Init the tree
@@ -73,8 +74,6 @@ $.ui.fancytree.registerExtension("tracecalls", {
 	},
 	nodeLoadChildren: function(ctx, source) {
 	},
-	nodeMakeVisible: function(ctx) {
-	},
 	nodeOnFocusInOut: function(ctx) {
 	},
 	nodeRemoveChildMarkup: function(ctx) {
@@ -87,9 +86,9 @@ $.ui.fancytree.registerExtension("tracecalls", {
 	},
 	nodeRenderTitle: function(ctx, title) {
 	},
-	nodeSetActive: function(ctx, flag) {
+	nodeSetActive: function(ctx, flag, opts) {
 	},
-	nodeSetExpanded: function(ctx, flag) {
+	nodeSetExpanded: function(ctx, flag, opts) {
 	},
 	nodeSetFocus: function(ctx) {
 	},
@@ -123,7 +122,9 @@ $.ui.fancytree.registerExtension("tracecalls", {
  * Fancytree extension: profiler
  */
 ;(function($, window, document, undefined) {
-	$.ui.fancytree.registerExtension("profiler", {
+	$.ui.fancytree.registerExtension({
+		name: "profiler",
+		version: "0.0.1",
 		// Default options for this extension
 		options: {
 			prefix: ""

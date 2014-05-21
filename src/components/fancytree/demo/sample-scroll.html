@@ -7,11 +7,6 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js" type="text/javascript"></script>
 	<link href="../src/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css">
-<!--
-	<script src="../dist/jquery.fancytree-all.min.js" type="text/javascript"></script>
-	<script src="../dist/jquery.fancytree-2.0.0pre-all.js" type="text/javascript"></script>
-	<script src="../lib/jquery.scrollTo.js" type="text/javascript"></script>
--->
 
 	<script src="../src/jquery.fancytree.js" type="text/javascript"></script>
 	<script src="../src/jquery.fancytree.columnview.js" type="text/javascript"></script>
@@ -26,7 +21,7 @@
 	<script src="sample.js" type="text/javascript"></script>
 	<!-- End_Exclude -->
 <style type="text/css">
-.fancytree-container {
+ul.fancytree-container {
 	width: 200px;
 	height: 100px;
 	overflow: auto;
@@ -65,10 +60,11 @@ $.fn.scrollTo = function( target, options, callback ){
 		$("#tree").fancytree({
 			extensions: [],
 			checkbox: true,
+			autoScroll: true,
 			source: {
 				url: "../test/unit/ajax-tree-plain.json"
 			},
-			lazyload: function(event, data) {
+			lazyLoad: function(event, data) {
 				data.result = {url: "../test/unit/ajax-sub2.json"}
 			},
 			init: function(event, data) {
@@ -77,10 +73,10 @@ $.fn.scrollTo = function( target, options, callback ){
 			focus: function(event, data){
 				data.node.scrollIntoView(true);
 			},
-			expand: function(event, data){
-				// scroll down to last node, but keep current node visible
-				data.node.getLastChild().scrollIntoView(true, data.node);
-			}
+			// expand: function(event, data){
+			// 	// scroll down to last node, but keep current node visible
+			// 	data.node.getLastChild().scrollIntoView(true, data.node);
+			// }
 		});
 	});
 		</script>

@@ -2,39 +2,75 @@
     "result": {
         "type":"geojson",
         "value": {
-            "type": "Point",
-            "coordinates": [6.566144, 46.522117]
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [6.566144, 46.522117]
+            },
+            "properties": {
+                "marker": {
+                    "imgHighlight": "http://www.veryicon.com/icon/48/Emoticon/IconTexto%20Emoticons/Angry.png",
+                    "img": "http://www.veryicon.com/icon/48/Emoticon/IconTexto%20Emoticons/Laughing.png"
+                },
+                "_highlight": 1
+            }
         }
     },
-    "multipleresults" : [
-        {
-            "type":"geojson",
-            "value": {
-                "type": "Point",
-                "coordinates": [-74.05973, 40.714353],
-                "data": {"value":"Point 1"}
-            },
-            "_highlight" : [0,2]
-        },
-        {
-            "type":"geojson",
-            "value": {
-                "type": "Point",
-                "coordinates": [-74.12973, 40.714353],
-                "data": {"value":"Point 2"}
-            },
-            "_highlight" : [1]
-        },
-        {
-            "type":"geojson",
-            "value": {
-                "type": "Point",
-                "coordinates": [-74.000973, 40.710353],
-                "data": {"value":"Point 3"}
-            },
-            "_highlight" : [3]
+    "multipleresults": {
+        "type":"geojson",
+        "value": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [-74.05973, 40.714353]
+                    },
+                    "properties":  {"marker": {
+                    "kind":"circle",
+                    "size": 20,
+                    "color": "red"
+                },"value":"Point 1", "_highlight" : [0,2]}
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                "coordinates": [-74.12973, 40.714353]
+                    },
+                    "properties":  {"marker": {
+                    "kind":"circle",
+                    "size": 40,
+                    "color":"green"
+                },"value":"Point 2", "_highlight" : [1]}
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                "coordinates": [-74.000973, 40.710353]
+                    },
+                    "properties":  {"marker": {
+                    "kind":"rectangle",
+                    "width": 10,
+                    "height": 30,
+                    "color": "red"
+                },"value":"Point 3", "_highlight" : [3]}
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type" : "Polygon",
+                        "coordinates" : [
+                            [[-74.05973,40.914353],[-74.12973, 40.814353],[-74.000973, 40.810353]]
+                        ]
+                    },
+                    "properties":  {"marker":{},"value":"Surface 1", "_highlight" : [0,1]}
+                }
+            ]
         }
-    ],
+    },
     "multiplearray" : [
         {"value":"Line 1","_highlight":[0]},
         {"value":"Line 2","_highlight":[1]},

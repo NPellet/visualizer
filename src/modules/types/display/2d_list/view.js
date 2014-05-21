@@ -1,4 +1,4 @@
-define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Default, Renderer ) {
+define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' ], function( Default, Renderer, API ) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -10,16 +10,33 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 			this.module.getDomContent().html( this.dom );
 
 		},
+                
+                blank: {
+                    list: function() {
+                        API.killHighlight( this.module.getId() );
+                        this.dom.empty();
+                    }
+                },
 		
 		inDom: function() {
 			var self = this;
-			this.module.getDomView().on('hover', 'table td', function() {
+			this.module.getDomView().on('mouseenter mouseleave click', 'td', function(e) {
 				var tdIndex = $(this).index();
 				var trIndex = $(this).parent().index();
 				var cols = self.module.getConfiguration('colnumber', 4) || 4;
 				var elementId = trIndex * cols + tdIndex;
-				var value = self.list.get();
-				self.module.controller.setVarFromEvent('onHover', value[elementId], 'cell');
+				var value = self.list.get()[elementId];
+                                if(e.type === "mouseenter") {
+                                    self.module.controller.setVarFromEvent('onHover', value, 'cell');
+                                    API.highlight(value, 1);
+                                }
+                                else if(e.type === "mouseleave") {
+                                    API.highlight(value, 0);
+                                }
+                                else if(e.type === "click") {
+                                    self.module.controller.setVarFromEvent('onClick', value, 'cell');
+                                    self.module.controller.sendAction('cell', value, 'onClick');
+                                }
 			});
 
 		},
@@ -29,7 +46,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 			list: function( moduleValue ) {
 
 				this.defs = [];
-				if(moduleValue == undefined || !(moduleValue instanceof Array)) {
+				if(!(moduleValue instanceof Array)) {
 					return;
 				}
 
@@ -39,7 +56,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 					sizeStyle = "",
 					self = this,
 					val = moduleValue.get(),
-					table = $('<table cellpadding="3" cellspacing="0">'),
+					table = $('<table cellpadding="3" cellspacing="0">').css("text-align", "center"),
 					l = val.length,
 					done = 0,
 					td,
@@ -60,7 +77,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 					}
 				}
 
-				current = undefined;
+				var current, colId;
 				this._inDom = false;
 				
 				for( ; i < l ; i ++ ) {
@@ -68,7 +85,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 					td = this.renderElement( view.list[ i ], cols );
 					colId = done % cols;
 
-					if( colId == 0 ) {
+					if( colId === 0 ) {
 						if( current ) {
 							current.appendTo( table );
 						}
@@ -110,13 +127,13 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 				valJpath = cfg('valjpath', ''),
 				td = $( "<td>" ).css( {
 					width: Math.round(100 / cols) + "%", 
-					height: cfg.height 
+					height: cfg.height
 				} );
 
 			if( colorJpath ) {
 
 				element.getChild( colorJpath , true ).done( function( val ) {
-					td.css( 'background-color', val );
+					td.css( 'background-color', val.get() );
 				} );
 			}
 
@@ -125,6 +142,14 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer' ], function( Def
 				td.html(val);
 
 			} ) );
+                        
+                        API.listenHighlight( element, function( onOff, key ) {
+                            if(onOff) {
+                                td.css("border-color", "black");
+                            } else {
+                                td.css("border-color", "");
+                            }
+			}, false, this.module.getId());
 			
 			return td;
 		},

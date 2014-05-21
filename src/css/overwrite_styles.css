@@ -46,3 +46,9 @@
 	background-color: transparent;
 	border: none;
 }
+
+/* disable link animations from colors component */
+a {
+  -webkit-transition: none;
+  transition: none;
+}

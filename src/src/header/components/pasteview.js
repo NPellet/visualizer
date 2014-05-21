@@ -11,12 +11,17 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
 		_onClick: function() { // Overwrite usual onclick which loads a list / loads views/datas
 			
 			var txtarea = $('<textarea></textarea>').css({width: '100%', height: '200px'}),
-				val,
+				val, keys,
 				btn = new Button('Paste', function( ) {
 
 					try {
 
 						val = JSON.parse( txtarea.val(), Versioning.getViewHandler()._reviver );
+                                                keys = Object.keys(val);
+                                                for(var i = 0, ii = keys.length; i < ii; i++) {
+                                                    if(keys[i].charAt(0)==="_")
+                                                        delete val[keys[i]];
+                                                }
 						Versioning.setViewJSON( val );
 
 					} catch(_) { }

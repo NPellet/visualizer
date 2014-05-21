@@ -1,4 +1,4 @@
-define( [ 'modules/default/defaultcontroller' ], function( Default ) {
+define( [ 'modules/default/defaultcontroller', 'src/util/util' ], function( Default, Util ) {
 	
 	/**
 	 * Creates a new empty controller
@@ -66,6 +66,31 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		
 	controller.prototype.configurationStructure = function(section) {
 		
+
+		/*
+			valuetest: {
+				type: 'float',
+				title: 'Number value',
+				validation: {
+
+					rules: [
+
+						{
+							pattern:"^[a-zA-Z0-9_.]+@[a-zA-Z0-9.]+\\.[a-zA-Z0-9]+$",
+							feedback: {
+								_class: true,
+								message: "Not a valid e-mail"
+							}
+						}
+					],
+
+					positiveFeedback: {
+						message: 'E-mail is valid ! =)'
+					}
+				}
+			},
+		*/
+
 		return {
 
 			groups: {
@@ -76,6 +101,8 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 					},
 
 					fields: {
+
+
 
 						defaultvalue: {
 							type: 'wysiwyg',
@@ -90,33 +117,10 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 						font: {
 							type: 'combo',
 							title: 'Font',
-							options: [
-								{title: 'Arial', key: 'arial'},
-								{title: 'Arial Black', key: 'arial black'},
-								{title: 'Comic Sans MS', key: 'comic sans ms'},
-								{title: 'Courier', key: 'courier'},
-								{title: 'Courier new', key: 'courier new'},
-								{title: 'Georgia', key: 'georgia'},
-								{title: 'Helvetica', key: 'helvetica'},
-								{title: 'Impact', key: 'impact'},
-								{title: 'Palatino', key: 'palatino'},
-								{title: 'Times new roman', key: 'times new roman'},
-								{title: 'Trebuchet MS', key: 'trebuchet ms'},
-								{title: 'Verdana', key: 'verdana'}
-							],
-
-							displaySource:  {
-								'arial': 1,
-								'verdana': 4,
-								'trebuchet ms': 3,
-								'palatino': 5
-							}
+							options: Util.getWebsafeFonts()
 						},
 
 						fontsize: {
-
-							displayTarget: [1,3,4],
-
 							type: 'combo',
 							title: 'Font size',
 							options: [

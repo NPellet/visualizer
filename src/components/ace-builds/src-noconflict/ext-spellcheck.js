@@ -17,8 +17,9 @@ exports.contextMenuHandler = function(e){
     var PLACEHOLDER = "\x01\x01";
     var value = w + " " + PLACEHOLDER;
     text.value = value;
-    text.setSelectionRange(w.length + 1, w.length + 1);
+    text.setSelectionRange(w.length, w.length + 1);
     text.setSelectionRange(0, 0);
+    text.setSelectionRange(0, w.length);
 
     var afterKeydown = false;
     event.addListener(text, "keydown", function onKeydown() {
@@ -65,3 +66,8 @@ require("../config").defineOptions(Editor.prototype, "editor", {
 
 });
 
+;
+                (function() {
+                    ace.require(["ace/ext/spellcheck"], function() {});
+                })();
+            

@@ -2,6 +2,8 @@
 define( [ require, '../../field', 'fancytree' ], function( require, FieldDefaultConstructor ) {
 
 	var FieldConstructor = function(name) {
+            
+            $.ui.fancytree.debugLevel = 0;
 
 		var self = this;
 

@@ -8,13 +8,20 @@ define(['modules/types/display/jqgrid/controller'], function(controller) {
 		Information about the module
 	*/
 	controllerExtended.prototype.moduleInformation = {
-		moduleName: 'Fast grid',
+		moduleName: 'Fast table',
 		description: 'Displays a fast grid',
 		author: 'Norman Pellet',
 		date: '24.12.2013',
 		license: 'MIT',
 		cssClass: 'fasttable'
 	};
+	
+	controller.prototype.references.showList = {
+		label: 'Array of display flags',
+		type: 'array'
+	};
+	
+	controller.prototype.variablesIn.push("showList");
 	
 
 	return controllerExtended;

@@ -153,21 +153,22 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			}
 		},
 
-		redraw: function(forceReacalculateAxis) {
+		redraw: function( forceReacalculateAxis ) {
 			
 			var cfg = $.proxy(this.module.getConfiguration, this.module);
+
 			if (forceReacalculateAxis) {
 				this.graph.redraw();
-			} else  if (cfg('fullOut')=="none") {
-				this.graph.redraw(false, true, true);
-			} else if (cfg('fullOut')=="xAxis") {
-				this.graph.redraw(false, false, true);
-			} else if (cfg('fullOut')=="yAxis") {
+			} else  if (cfg('fullOut') == "none") {
+				this.graph.redraw( true, true, true );
+			} else if (cfg('fullOut') == "xAxis") {
+				this.graph.redraw( false, false, true );
+			} else if (cfg('fullOut') == "yAxis") {
 				this.graph.redraw(false, true, false);
 			} else {
 				this.graph.redraw();
 			}
-			this.graph.drawSeries();
+			this.graph.drawSeries( );
 
 		},
 		
@@ -331,24 +332,22 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				this.redraw();
 			},*/
                         
-                        chart: function(moduleValue, varname) {
+            chart: function(moduleValue, varname) {
 
-                                this.series[varname] = this.series[varname] || [];
+            	this.series[varname] = this.series[varname] || [];
 				this.removeSerie( varname );
 
 				if(!moduleValue)
 					return;
                                     
-                                moduleValue = moduleValue.get();
-                               
-                                var data = moduleValue.data;
-                                for (var i = 0; i < data.length; i++) {
-                                
-                                    var aData = data[i];
-                                    var serieName = data.serieLabel;
-                                    
-				
-
+                moduleValue = moduleValue.get();
+               
+                var data = moduleValue.data;
+                for (var i = 0; i < data.length; i++) {
+                
+                    var aData = data[i];
+                    var serieName = data.serieLabel;
+                
 					var valFinal=[];
 					if(aData.y) {
 						for(var j = 0, l = aData.y.length; j < l; j++) {
@@ -395,10 +394,11 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				this.redraw();
 			},
 
+// in fact it is a Y array ...
 			xArray: function(moduleValue, varname) {
 				var self = this,
-					val, 
-					val2;
+					val;
+
 
 
 	//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
@@ -410,24 +410,32 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 					return;
 				
 				val = DataTraversing.getValueIfNeeded(moduleValue),
-				val2 = [];
 
-				for(var i = 0, l = val.length; i < l; i++) {
-					val2.push(i);
-					val2.push(val[i]);
-				}
+                    $.when(val).then(function(value){
+	                    var minX=self.module.getConfiguration( 'minX' ) || 0;
+						var maxX=self.module.getConfiguration( 'maxX' ) || value.length-1;
+						var step=(maxX-minX)/(value.length-1);
+                        var val2 = [];
+                        for(var i = 0, l = value.length; i < l; i++) {
+                                val2.push(minX+step*i);
+                                val2.push(value[i]);
+                        }
 
-				var serie = this.graph.newSerie(varname, {trackMouse: true}); // lineToZero: !continuous}
-				this.setSerieParameters(serie, varname);
-				this.normalize(val2, varname);
+                        var serie = self.graph.newSerie(varname, {trackMouse: true}); // lineToZero: !continuous}
+                        self.setSerieParameters(serie, varname);
+                        self.normalize(val2, varname);
 
-				serie.setData(val2);
-				serie.autoAxis();
-				this.series[ varname ].push( serie );
-				this.redraw();
+                        serie.setData(val2);
+                        serie.autoAxis();
+                        self.series[ varname ].push( serie );
+                        self.redraw();
+                    });
+                                
 			},
 
 			annotations: function(value) {
+
+				API.killHighlight( this.module.getId() );
 				value = DataTraversing.getValueIfNeeded(value);
 				if(!value)
 					return;
@@ -448,36 +456,35 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 					serie, 
 					spectra;
 
-				API.killHighlight(this.module.id + varname);
+				API.killHighlight(this.module.getId() + varname);
 
 				if(!this.graph) {
 					return;
 				}
 
 				this.zones[varname] = moduleValue._zones;
-
-				
 				
 				if( self.deferreds[ varname ] ) {
 					self.deferreds[ varname ].reject();
 				}
-				
+
+				self.deferreds[ varname ] = $.Deferred();
+				var def = self.deferreds[ varname ];
+
 				require( [ 'src/util/jcampconverter' ], function( JcampConverter ) {
 
-					self.deferreds[ varname ] = JcampConverter( moduleValue, { lowRes: 1024 } ).done( function( spectra ) {
+					JcampConverter( moduleValue, { lowRes: 1024 } ).done( function( spectra ) {
 
-					//	console.log(JSON.stringify(spectra.profiling,true));
+						if( def.state() == "rejected" ) {
+							return;
+						}
 
-	//					self.blank.jcamp( varname );
+						self.deferreds[ varname ] = false;
 						self.series[ varname ] = self.series[ varname ] || [];
 						self.series[ varname ] = [];
 
 						if(spectra.contourLines) {
-							
-	//						self.graph.setOption('zoomMode', 'xy');
-						/*	self.graph.setOption('defaultWheelAction', 'toSeries');
-							self.graph.setOption('defaultMouseAction', 'drag');
-	*/
+	
 							serie = self.graph.newSerie( varname, { trackMouse: true }, 'contour' );
 							self.setSerieParameters(serie, varname);
 							serie.setData( spectra.contourLines );
@@ -486,10 +493,6 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 						} else {
 
-				//			self.graph.setOption('zoomMode', self.module.getConfiguration( 'zoom' ) );
-							/*self.graph.setOption('defaultWheelAction', 'zoomY');
-							self.graph.setOption('defaultMouseAction', 'zoom');
-	*/
 							spectra = spectra.spectra;
 							for (var i=0, l = spectra.length; i<l; i++) {
 								serie = self.graph.newSerie(varname, {trackMouse: true});
@@ -513,7 +516,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 										self.doZone( varname, self.zones[ varname ][ commonKeys [ i ] ], value, self.series[varname].options.lineColor );
 									}
 								}
-							}, true, self.module.id + varname);
+							}, true, self.module.getId() + varname);
 						}
 						
 						self.redraw( );
@@ -579,16 +582,14 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			});
 
 
+            API.listenHighlight( annotation, function(onOff) {
 
-
-                        API.listenHighlight( annotation, function(onOff) {
-
-                                if(onOff) {
-                                        shape.highlight( );
-                                } else {
-                                        shape.unHighlight( );
-                                }
-                        } );
+                    if(onOff) {
+                            shape.highlight( );
+                    } else {
+                            shape.unHighlight( );
+                    }
+            }, false, self.module.getId() );
 			
 
 			shape.draw();
@@ -600,7 +601,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 		removeSerie: function(serieName) {
 			if(this.series[serieName]) {
 				for(var i = 0; i < this.series[serieName].length; i++) {
-					this.series[serieName][i].kill();
+					this.series[serieName][i].kill( true );
 				}
 			}
 

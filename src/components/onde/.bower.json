@@ -1,0 +1,14 @@
+{
+  "name": "onde",
+  "homepage": "https://github.com/targos/onde",
+  "_release": "d01a48af6b",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "d01a48af6b3f50624b847ee1582065a6a9a3edc6"
+  },
+  "_source": "git@github.com:targos/onde.git",
+  "_target": "*",
+  "_originalSource": "git@github.com:targos/onde.git",
+  "_direct": true
+}

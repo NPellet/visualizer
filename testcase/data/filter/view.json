@@ -1,17 +1,6 @@
 {
-	"_version": "2.2.1",
 	"modules": [
 		{
-			"title": "Full list",
-			"displayWrapper": true,
-			"position": {
-				"left": 0,
-				"top": 0.9985797882080079
-			},
-			"size": {
-				"width": 49,
-				"height": 79
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -89,25 +78,34 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
+			"url": "./modules/types/display/fasttable/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0.9985797882080079,
+						"right": 0
+					},
+					"size": {
+						"width": 49,
+						"height": 79
+					},
+					"display": true,
+					"title": "Full list",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Full list"
 		},
 		{
-			"title": "Structure",
-			"displayWrapper": true,
-			"position": {
-				"left": 110.99999780654908,
-				"top": 13.000000381469727
-			},
-			"size": {
-				"width": 31,
-				"height": 26
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -139,25 +137,34 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/science/chemistry/jsme/"
+			"url": "./modules/types/science/chemistry/jsme/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 110.99999780654908,
+						"top": 13.000000381469727,
+						"right": 0
+					},
+					"size": {
+						"width": 31,
+						"height": 26
+					},
+					"display": true,
+					"title": "Structure",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Structure"
 		},
 		{
-			"title": "Safety",
-			"displayWrapper": true,
-			"position": {
-				"left": 94.99999780654908,
-				"top": 39.99999885559082
-			},
-			"size": {
-				"width": 47,
-				"height": 13
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -214,25 +221,34 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
+			"url": "./modules/types/display/fasttable/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 94.99999780654908,
+						"top": 39.99999885559082,
+						"right": 0
+					},
+					"size": {
+						"width": 47,
+						"height": 13
+					},
+					"display": true,
+					"title": "Safety",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Safety"
 		},
 		{
-			"title": "Filter",
-			"displayWrapper": true,
-			"position": {
-				"left": 49.999997806549075,
-				"top": 1
-			},
-			"size": {
-				"width": 44,
-				"height": 30
-			},
 			"configuration": {
 				"sections": {
 					"searchFields": [
@@ -247,9 +263,6 @@
 										"label": [
 											"Catalog starts with"
 										],
-										"defaultVal": [
-											""
-										],
 										"type": [
 											"text"
 										],
@@ -258,6 +271,20 @@
 										],
 										"operator": [
 											"starts"
+										]
+									}
+								],
+								"defaultVal": [
+									{
+										"defaultVal": [
+											null
+										]
+									}
+								],
+								"text": [
+									{
+										"case_sensitive": [
+											[]
 										]
 									}
 								],
@@ -271,9 +298,25 @@
 										],
 										"step": [
 											null
+										]
+									}
+								],
+								"range": [
+									{
+										"start": [
+											null
 										],
-										"range": [
-											[]
+										"end": [
+											null
+										],
+										"step": [
+											null
+										],
+										"val1": [
+											null
+										],
+										"val2": [
+											null
 										]
 									}
 								],
@@ -294,9 +337,6 @@
 										],
 										"label": [
 											"Iupac name contains"
-										],
-										"defaultVal": [
-											""
 										],
 										"type": [
 											"text"
@@ -310,6 +350,20 @@
 										]
 									}
 								],
+								"defaultVal": [
+									{
+										"defaultVal": [
+											null
+										]
+									}
+								],
+								"text": [
+									{
+										"case_sensitive": [
+											[]
+										]
+									}
+								],
 								"slider": [
 									{
 										"start": [
@@ -320,9 +374,25 @@
 										],
 										"step": [
 											null
+										]
+									}
+								],
+								"range": [
+									{
+										"start": [
+											null
 										],
-										"range": [
-											[]
+										"end": [
+											null
+										],
+										"step": [
+											null
+										],
+										"val1": [
+											null
+										],
+										"val2": [
+											null
 										]
 									}
 								],
@@ -344,11 +414,8 @@
 										"label": [
 											"mp between"
 										],
-										"defaultVal": [
-											"[10,90|"
-										],
 										"type": [
-											"slider"
+											"slider_range"
 										],
 										"searchOnField": [
 											"element.mp.0.low"
@@ -358,21 +425,49 @@
 										]
 									}
 								],
+								"defaultVal": [
+									{
+										"defaultVal": [
+											null
+										]
+									}
+								],
+								"text": [
+									{
+										"case_sensitive": [
+											[]
+										]
+									}
+								],
 								"slider": [
 									{
 										"start": [
-											"0"
+											0
 										],
 										"end": [
-											"200"
+											200
 										],
 										"step": [
-											"10"
+											10
+										]
+									}
+								],
+								"range": [
+									{
+										"start": [
+											0
 										],
-										"range": [
-											[
-												"range"
-											]
+										"end": [
+											100
+										],
+										"step": [
+											2
+										],
+										"val1": [
+											10
+										],
+										"val2": [
+											20
 										]
 									}
 								],
@@ -400,7 +495,7 @@
 			"vars_out": [
 				{
 					"event": "onSearchDone",
-					"rel": "filteredArray",
+					"rel": "flagArray",
 					"jpath": "_1",
 					"name": "filtered"
 				}
@@ -408,25 +503,34 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/client_interaction/array_search/"
+			"url": "./modules/types/array_search/configured_search/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 49.999997806549075,
+						"top": 1,
+						"right": 0
+					},
+					"size": {
+						"width": 44,
+						"height": 30
+					},
+					"display": true,
+					"title": "Filter",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Filter"
 		},
 		{
-			"title": "Filtered list",
-			"displayWrapper": true,
-			"position": {
-				"left": 49.999997806549075,
-				"top": 31.99999885559082
-			},
-			"size": {
-				"width": 44,
-				"height": 48
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -443,8 +547,7 @@
 							],
 							"filterRow": [
 								null
-							],
-							"displaySearch": []
+							]
 						}
 					],
 					"cols": [
@@ -469,6 +572,10 @@
 			"vars_in": [
 				{
 					"rel": "list",
+					"name": "result"
+				},
+				{
+					"rel": "showList",
 					"name": "filtered"
 				}
 			],
@@ -528,25 +635,36 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
+			"url": "./modules/types/display/fasttable/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 49.999997806549075,
+						"top": 31.99999885559082,
+						"right": 0
+					},
+					"size": {
+						"width": 44,
+						"height": 48
+					},
+					"display": true,
+					"title": "Filtered list",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Filtered list"
 		},
 		{
-			"title": "Risk",
-			"displayWrapper": true,
-			"position": {
-				"left": 94.99999780654908,
-				"top": 53.998579788208005
-			},
-			"size": {
-				"width": 47,
-				"height": 13
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -603,25 +721,34 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
+			"url": "./modules/types/display/fasttable/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 94.99999780654908,
+						"top": 53.998579788208005,
+						"right": 0
+					},
+					"size": {
+						"width": 47,
+						"height": 13
+					},
+					"display": true,
+					"title": "Risk",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Risk"
 		},
 		{
-			"title": "Hazard",
-			"displayWrapper": true,
-			"position": {
-				"left": 94.99999780654908,
-				"top": 67.999995803833
-			},
-			"size": {
-				"width": 47,
-				"height": 12
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -678,25 +805,34 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
+			"url": "./modules/types/display/fasttable/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 94.99999780654908,
+						"top": 67.999995803833,
+						"right": 0
+					},
+					"size": {
+						"width": 47,
+						"height": 12
+					},
+					"display": true,
+					"title": "Hazard",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Hazard"
 		},
 		{
-			"title": "Safety",
-			"displayWrapper": true,
-			"position": {
-				"left": 94.99999780654908,
-				"top": 0.9985797882080079
-			},
-			"size": {
-				"width": 47,
-				"height": 11
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -753,25 +889,34 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
+			"url": "./modules/types/display/fasttable/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 94.99999780654908,
+						"top": 0.9985797882080079,
+						"right": 0
+					},
+					"size": {
+						"width": 47,
+						"height": 11
+					},
+					"display": true,
+					"title": "Safety",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Safety"
 		},
 		{
-			"title": "bp",
-			"displayWrapper": true,
-			"position": {
-				"left": 94.99999780654908,
-				"top": 12.998579788208009
-			},
-			"size": {
-				"width": 15,
-				"height": 8
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -836,25 +981,34 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/single_value/"
+			"url": "./modules/types/display/single_value/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 94.99999780654908,
+						"top": 12.998579788208009,
+						"right": 0
+					},
+					"size": {
+						"width": 15,
+						"height": 8
+					},
+					"display": true,
+					"title": "bp",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "bp"
 		},
 		{
-			"title": "mp",
-			"displayWrapper": true,
-			"position": {
-				"left": 94.99999780654908,
-				"top": 21.99999885559082
-			},
-			"size": {
-				"width": 15,
-				"height": 8
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -919,13 +1073,32 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/single_value/"
+			"url": "./modules/types/display/single_value/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 94.99999780654908,
+						"top": 21.99999885559082,
+						"right": 0
+					},
+					"size": {
+						"width": 15,
+						"height": 8
+					},
+					"display": true,
+					"title": "mp",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "mp"
 		}
 	],
 	"variables": [
@@ -941,5 +1114,16 @@
 	"_local": false,
 	"_saved": 1387056449879,
 	"_time": 1387056449879,
-	"_name": "Master"
+	"_name": "Master",
+	"version": "2.3.0-beta1",
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"pouchvariables": []
 }

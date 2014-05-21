@@ -1,4 +1,4 @@
-define(['modules/types/client_interaction/code_editor/controller','src/util/api'], function(CodeEditor, API) {
+define(['modules/types/client_interaction/code_editor/controller'], function(CodeEditor) {
 
     function controller() {
     }
@@ -9,7 +9,7 @@ define(['modules/types/client_interaction/code_editor/controller','src/util/api'
      Information about the module
      */
     controller.prototype.moduleInformation = {
-        moduleName: 'Filter editor',
+        moduleName: 'Script editor',
         description: 'Write code for a filter and test it in real time',
         author: 'Michaël Zasso',
         date: '04.02.2014',
@@ -42,8 +42,23 @@ define(['modules/types/client_interaction/code_editor/controller','src/util/api'
                         script: {
                             type: 'jscode',
                             title: 'Code',
-                            mode: 'html',
-                            default: "function filter(value) {\n    return value;\n}"
+                            default: "function filter(value) {\n    // The returned value must be a DataObject.\n    // Use DataObject.check(toReturn, true) to create it for a new variable.\n    return value;\n}"
+                        }
+                    }
+                },
+                libs: {
+                    options: {
+                        type: 'table',
+                        multiple: 'true'
+                    },
+                    fields: {
+                        lib: {
+                            type : 'text',
+                            title: 'url'
+                        },
+                        alias: {
+                            type : 'text',
+                            title: 'alias'
                         }
                     }
                 }
@@ -51,17 +66,64 @@ define(['modules/types/client_interaction/code_editor/controller','src/util/api'
         };
     };
     
-    controller.prototype.onButtonClick = function(value, object) {
-        var result = executeFilter(value.get(), object);
-        if(typeof result !== "undefined")
-            this.setVarFromEvent('onButtonClick', result, 'dataobject');
+    controller.prototype.configAliases = {
+        'script': [ 'groups', 'group', 0, 'script', 0],
+        'libs': [ 'groups', 'libs', 0]
     };
     
-    function executeFilter(filter, object) {
-        var theFilter;
-        eval("try{ theFilter = "+filter+"; } catch(e) {}");
-        if(typeof theFilter === "function")
-            return theFilter(object);
+    controller.prototype.onButtonClick = function(value, object) {
+        var that = this;
+        var result = this.executeFilter(value.get(), object);
+        result.done(function(data){
+            if(typeof data !== "undefined")
+                that.setVarFromEvent('onButtonClick', data, 'dataobject');
+        });
+    };
+    
+    controller.prototype.executeFilter = function(filter, object) {
+
+        var neededLibs = this.module.getConfiguration("libs");
+        var requireStart = "require"+getRequireStart(neededLibs);
+        
+        var def = $.Deferred();
+        
+        var requireBody = "var theFilter; try{ theFilter = "+filter+"; } catch(e) {console.error('Filter parsing error : ', e);}";
+        requireBody += "if(typeof theFilter === 'function') { var result; try {result = theFilter(object);} catch(e) {console.error('Filter execution error : ', e);} }";
+        requireBody += "def.resolve(result);";
+        
+        var requireEnd = "});";
+        
+        eval(requireStart+requireBody+requireEnd);
+        
+        return def;
+        
+    };
+    
+    controller.prototype.export = function() {
+        var neededLibs = this.module.getConfiguration("libs");
+        var requireStart = "define"+getRequireStart(neededLibs)+"\n return ";
+        var requireBody = this.module.getConfiguration("script");
+        var requireEnd = ";\n});";
+        
+        return requireStart+requireBody+requireEnd;
+    };
+    
+    function getRequireStart(neededLibs) {
+        var required = "(['src/util/api'";
+        var callback = "function(API";
+
+        if (neededLibs) {
+            for (var i = 0; i < neededLibs.length; i++) {
+                var neededLib = neededLibs[i];
+                if (neededLib.lib) {
+                    required += ", '" + neededLib.lib + "'";
+                    callback += ", " + (neededLib.alias || "required_anonymous_"+i);
+                } else
+                    continue;
+            }
+        }
+        
+        return required+"], "+callback+"){";
     }
 
     return controller;

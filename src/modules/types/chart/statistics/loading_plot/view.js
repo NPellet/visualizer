@@ -16,8 +16,8 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/loadingplot/libs/jq
 		inDom: function() {},
 		
 		onResize: function(w, h) {
-			this._w = w - 10;
-			this._h = h - 10;
+			this._w = this.width - 10;
+			this._h = this.height - 10;
 			if(this._w && this._h && this._svg)
 				this._svg.setSize(this._w, this._h);
 		},
@@ -87,7 +87,7 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/loadingplot/libs/jq
 					this.dom.empty();
 				}
 
-				var svg = new LoadingPlot.SVG(null, null, null, null, this.module.getConfiguration().navigation || false);
+				var svg = new LoadingPlot.SVG(null, null, null, null, this.module.getConfiguration('navigation')[0][0] || false);
 
 				svg.onZoomChange(function(zoom01) {
 					self.module.controller.onZoomChange(zoom01);
@@ -126,38 +126,49 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/loadingplot/libs/jq
 				if(!moduleValue.value || !moduleValue.value.series)
 					return;
 
-				var cfg = this.module.getConfiguration();
-				var layers = cfg.layers;
+				var layers = this.module.getConfiguration('layers');
 
 				for(var i = 0; i < layers.length; i++) {
-					var layerId = layers[i].layer;
-					var type = layers[i].display || 'ellipse';
+                                    var layer = layers[i].groups.group[0];
+                                    var labels = layer.labels[0];
+                                    var theLabels = {};
+                                    for(var j = 0; j < labels.length; j++) {
+                                        theLabels[labels[j]] = true;
+                                    }
+					var layerId = layer.el[0];
+					var type = layer.type[0] || 'ellipse';
 					
 					for(var j = 0; j < moduleValue.value.series.length; j++) {
-						if(moduleValue.value.series[j].category == layerId) {
+						if(moduleValue.value.series[j].category === layerId) {
 							var datas = moduleValue.value.series[j].data;
 							for(var k = 0, l = datas.length; k < l; k++) {
-								if(type == 'pie')
+								if(type === 'pie')
 									var el = new LoadingPlot.Pie(svg, datas[k].x, datas[k].y, datas[k]);
-								else if(type == 'ellipse')
+								else if(type === 'ellipse')
 									var el = new LoadingPlot.Ellipse(svg, datas[k].x, datas[k].y, datas[k]);
-								else if(type == 'img')
+								else if(type === 'img')
 									var el = new LoadingPlot.Image(svg, datas[k].x, datas[k].y, datas[k]);
-								el.allowLabelDisplay(layers[i].displayLabels);
-								if(layers[i].color)
-									el.setColor(layers[i].color);
-								if(layers[i].labelsize)
-									el.setLabelSize(layers[i].labelsize);
-								el.forceField(layers[i].forceField);
-								if(layers[i].labelzoomthreshold !== '')
-									el.setLabelDisplayThreshold(layers[i].labelzoomthreshold);
+								el.allowLabelDisplay(theLabels.display_labels);
+								/*if(layer.color[0])
+									el.setColor(layer.color[0]);*/
+								if(layer.labelsize[0])
+									el.setLabelSize(layer.labelsize[0]);
+								el.forceField(theLabels.forcefield);
+								if(layer.labelzoomthreshold[0] !== '')
+									el.setLabelDisplayThreshold(layer.labelzoomthreshold[0]);
+                                                                    
+                                                                var highlightMag = layer.highlightmag[0] ? (layer.highlightmag[0]) : 1;
+                                                                var highlightStroke = layer.highlighteffect[0][0] ? true : false;
 
-								el.setHighlightMag(layers[i].highlightEffect ? (layers[i].highlightEffect.mag) : 1);
-								el.setHighlightEffect(layers[i].highlightEffect);
+								el.setHighlightMag(highlightMag);
+								el.setHighlightEffect({
+                                                                    mag: highlightMag,
+                                                                    yStroke: highlightStroke
+                                                                });
 								
 								
-								el.setLabelStroke(layers[i].blackstroke);
-								el.setLabelScale(layers[i].scalelabel);
+								el.setLabelStroke(theLabels.blackstroke);
+								el.setLabelScale(theLabels.scalelabel);
 								var fnc = $.proxy(el.highlight, el);
 
 						//var id = CI.RepoHighlight.listen(datas[k]._highlight, fnc);

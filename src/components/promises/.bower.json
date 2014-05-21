@@ -1,0 +1,46 @@
+{
+  "name": "Promise polyfill",
+  "main": "promise.js",
+  "version": "1.0.4",
+  "homepage": "https://github.com/Octane/Promise",
+  "authors": [
+    "Dmitry Korobkin <dmitry.korobkin@gmail.com>"
+  ],
+  "description": "ES6 Promise polyfill",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "promise",
+    "polyfill",
+    "es6",
+    "client",
+    "browser",
+    "server",
+    "nodejs",
+    "async"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "setImmediate": "~1.0.0"
+  },
+  "ignore": [
+    ".gitignore",
+    ".gitmodules",
+    "bower.json",
+    "package.json",
+    "index.html",
+    "LICENSE",
+    "setimmediate"
+  ],
+  "_release": "1.0.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.4",
+    "commit": "d69a3dd2aeae2192e83d7fc30d0b23a0b5e6364e"
+  },
+  "_source": "git://github.com/Octane/Promise.git",
+  "_target": "~1.0.4",
+  "_originalSource": "promises",
+  "_direct": true
+}

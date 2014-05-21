@@ -1,17 +1,17 @@
 
 define(function() {
 
-	return {
+	var structures = {
 		
 		'object': "object",
 		'mol2d': "string",
 		'molfile2D': "string",
 		'jme': "string",
 		'doi': "string",
-		'gif': "string" ,
+		'gif': "string",
+		'svg': "string",
 		'picture': "string",
 		'string': "string",
-		'gif': "string",
 		'jpg': "string",
 		'jpeg': "string",
 		'png': "string",
@@ -22,6 +22,7 @@ define(function() {
                 "html": "string",
 
 		'boolean': "boolean",
+                'array': 'array',
                 
                 'colorBar': {
                     'type': 'array',
@@ -29,6 +30,19 @@ define(function() {
                         'type': 'array',
                         'elements': ['number','string']
                     }
+                },
+
+                'indicator': {
+                	'type': 'array',
+                	'elements': {
+                		'color': 'string',
+                		'bgcolor': 'string',
+                		'text': 'string',
+                		'class': 'string',
+                		'icon': 'string',
+                		'css': 'object',
+                		'tooltip': 'string'
+                	}
                 },
                 
                 'styledValue' : {
@@ -563,12 +577,58 @@ define(function() {
 				
 			}
 		},
+        
+                "geojson": "object",
 
 		"pdb": "string",
 		"magres": "string",
-		"jsmolscript": "string",
+		"jsmolscript": "string"
 	};
-
-
-})
+        
+        var getList = function() {
+            return Object.keys(this).sort();
+        };
+        
+        var parse = function(type, value) {
+            if(!this[type])
+                return;
+            
+            var result = {type:type};
+            var val;
+            
+            if(typeof this[type] === 'string') {
+                switch(this[type]) {
+                    case 'string':
+                        val = value;
+                        break;
+                    case 'number':
+                        val = parseFloat(value);
+                        break;
+                    case 'boolean':
+                        val = !!value;
+                        break;
+                   default:
+                        val = JSON.parse(value);
+                        break;
+                }
+            } else {
+                val = JSON.parse(value);
+            }
+            
+            result.value = val;
+            return DataObject.check(result, true);
+            
+        };
+        
+        Object.defineProperty(structures, '_getList', {
+            value: getList
+        });
+        
+        Object.defineProperty(structures, '_parse', {
+            value: parse
+        });
+        
+        return structures;
+        
+});
 

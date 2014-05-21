@@ -1,5 +1,5 @@
 
-define( [ 'jquery', 'src/util/util', 'ckeditor' ], function( $, Util ) {
+define( [ 'require', 'jquery', 'src/util/util', 'ckeditor' ], function( require, $, Util, CKEDITOR ) {
 
 	CKEDITOR.disableAutoInline = true;
 
@@ -9,12 +9,10 @@ define( [ 'jquery', 'src/util/util', 'ckeditor' ], function( $, Util ) {
 		
 		this._id = Util.getNextUniqueId();
 
-		var self = this,
-			dom = $("<div />"),
-
+		var dom = $("<div />"),
 			input = $( "<div />", { name: this._id } )
-					.addClass( 'field-list' )
-					.appendTo( dom );
+				.addClass( 'field-list' )
+				.appendTo( dom );
 		
 		this.dom = dom;
 		return dom;
@@ -26,6 +24,7 @@ define( [ 'jquery', 'src/util/util', 'ckeditor' ], function( $, Util ) {
 		var self = this;
 
 		this._editor = CKEDITOR.replace(this._id, {
+			customConfig: "../../" + require.toUrl('./') + 'ckeditor_config.js',
 			extraPlugins: 'onchange'
 		});
 
@@ -39,15 +38,14 @@ define( [ 'jquery', 'src/util/util', 'ckeditor' ], function( $, Util ) {
 		});
 
 		this.checkValue( );
-	}
+	};
 
 	FieldConstructor.prototype.checkValue = function() {
 
-		if( this._id && CKEDITOR.instances[ this._id ] ) {
-
-			CKEDITOR.instances[this._id].setData( this.value );
+		if( this._editor ) {
+			this._editor.setData( this.value );
 		}
-	}
+	};
 
 	return FieldConstructor;
 });

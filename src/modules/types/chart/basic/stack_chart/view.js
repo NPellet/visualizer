@@ -35,7 +35,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			this._data=[];	// the data that will be sent to FLOT
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
 			axis = undefined;
-			this.updateOptions(cfg, axis);
+			x = undefined;
+			this.updateOptions(cfg, axis, x);
 
 
 
@@ -92,8 +93,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 
 				var axis = moduleValue.get().axis;
-
-				self.updateOptions(cfg, axis);
+				var x = moduleValue.get().data[0].x
+				
+				self.updateOptions(cfg, axis, x);
 				this._convertChartToData(moduleValue.get().data);
 
 				this.loadedData.resolve();
@@ -119,8 +121,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 				for (var i = 0; i < y.length; i++) 
 				{
-					if(! x[i]) s.push({0:i,1:y[i],_highlight:highlight[i]});
-					else s.push( {0:x[i],1:y[i],_highlight:highlight[i]});
+					if($.isNumeric(x[i])) s.push({0:x[i],1:y[i],_highlight:highlight[i]});
+					else s.push( {0:i,1:y[i],_highlight:highlight[i]});
 				}
 
 				this._data[j] = {
@@ -136,7 +138,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 		},
 
-		updateOptions: function(cfg, axis) {
+		updateOptions: function(cfg, axis, x) {
 			var posx = null;
 			var posy = null;
 			var xmin = null;
@@ -153,12 +155,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			ymax = axis[1].max;
 			xmin = axis[0].min;
 			ymin = axis[1].min;
-			if(axis[0].unit instanceof Array)
+			if(x instanceof Array)
 			{
 			u = [];
-			for(i=0;i<axis[0].unit.length;i++)
+			for(i=0;i<x.length;i++)
 			{
-			u.push([i,axis[0].unit[i]]);
+			u.push([i,x[i]]);
 			}
 			xunit = u;
 			}

@@ -2,68 +2,120 @@ define(['jquery', 'modules/module'], function($, Module) {
 
 	var incrementalId = 0;
 
-	var modules = [ ],
-		definitions = [ ];
-
-	var allTypes = { };
-	var modulesLoading = 0;
-	var modulesDeferred = [],
-		url,
-		allModules;
+	var modules = [],
+			definitions = [],
+			modulesDeferred = [],
+			allModules;
 
 
-	function getSubFoldersFrom( folder ) {
-
-		return $.getJSON( folder , {}).pipe( function( data ) {
-			return getModules( data );
+	function oldGetSubFoldersFrom(folder) {
+		return $.getJSON(require.toUrl(folder), {}).pipe(function(data) {
+			return getModules(data);
 		});
 	}
 
-	function getModules( folderInfo ) {
+	function getModules(folderInfo) {
 
 		var defs = [];
 
-		for( var i in folderInfo.folders ) {
+		for(var i in folderInfo.folders) {
+			(function(j) {
 
-			( function( j ) {
-
-				if( typeof folderInfo.folders[ j ] == "object" ) {
+				if (typeof folderInfo.folders[ j ] === "object") {
 					var folder = folderInfo.folders[ j ];
 					delete folderInfo.folders[ j ];
-					folderInfo.folders[ folder.name || j ] = folder;	
+					folderInfo.folders[ folder.name || j ] = folder;
 
 				} else {
-					defs.push( getSubFoldersFrom( folderInfo.folders[ j ] + "folder.json" ).done( function( folder ) {
+					defs.push(oldGetSubFoldersFrom(folderInfo.folders[ j ] + "folder.json").done(function(folder) {
 						delete folderInfo.folders[ j ];
-						folderInfo.folders[ folder.name ] = folder;	
-					} ) );
+						folderInfo.folders[ folder.name ] = folder;
+					}));
 				}
-				
-			}) ( i );
+
+			})(i);
 		}
 
-		return $.when.apply( $, defs ).pipe( function() {
-			return folderInfo;			
+		return $.when.apply($, defs).pipe(function() {
+			return folderInfo;
+		});
+	}
+	function getSubFoldersFrom(folder){
+		return new Promise(function(resolve){
+			var result = {
+				folders:{}
+			};
+			$.getJSON(require.toUrl(folder+"/folder.json")).then(function(folderContent){
+				result.name = folderContent.name;
+				result.modules = folderContent.modules;
+				if(folderContent.folders && (folderContent.folders instanceof Array)) {
+					var defs = [];
+					for(var i = 0; i < folderContent.folders.length; i++) {
+						defs.push(getSubFoldersFrom(folder+"/"+folderContent.folders[i]));
+					}
+					Promise.all(defs).then(function(results){
+						for(var i = 0; i < results.length; i++) {
+							var res = results[i];
+							result.folders[res.name] = res;
+						}
+						resolve(result);
+					});
+				}
+				else {
+					if(typeof folderContent.folders === "object")
+						result.folders = folderContent.folders;
+					resolve(result);
+				}
+			});
 		});
 	}
 
 	return {
 		getTypes: function() {
-
-			return $.when.apply( $, modulesDeferred ).pipe( function() {
-				//console.log( allModules );
+			return $.when.apply($, modulesDeferred).pipe(function() {
 				return allModules;
 			});
 		},
+		setModules: function(list) {
 
-		setModules: function( list ) {
+			if (list instanceof Array) { // backwards compatibility
+				return this.oldSetModules(list);
+			}
+
+			if (list.folders instanceof Array) { // folders to retreive
+				var finalList = {};
+
+				if (list.modules) {
+					finalList.modules = list.modules;
+				}
+
+				finalList.folders = {};
+				for (var i = 0; i < list.folders.length; i++) {
+					if (typeof list.folders[ i ] === "object") {
+						var folder = list.folders[ i ];
+						$.extend(true, finalList.folders, folder.folders);
+
+					} else { // Folder is a string, start recursive lookup
+						getSubFoldersFrom(list.folders[ i ]).then(function(folder) {
+							$.extend(true, finalList, folder);
+						});
+					}
+				}
+
+				allModules = finalList;
+			}
+
+			else {
+				allModules = list;
+			}
+
+		},
+		oldSetModules: function(list) {
 
 			var i = 0,
-				l,
-				folders = [];
+					l;
 
-			if( ! ( list instanceof Array ) ) {
-				
+			if (!(list instanceof Array)) {
 				allModules = list;
 				return;
 			}
@@ -71,66 +123,48 @@ define(['jquery', 'modules/module'], function($, Module) {
 			l = list.length;
 			var finalList = {};
 
-			for( ; i < l ; i ++ ) {
+			for (; i < l; i++) {
 
-				if( typeof list[ i ] == "string" ) { // url
+				if (typeof list[ i ] === "string") { // url
 
-					( function( j ) {
+					(function(j) {
+						oldGetSubFoldersFrom(list[ j ]).then(function(data) {
+							$.extend(true, finalList, data);
+						});
+					})(i);
 
-						getSubFoldersFrom( list[ j ] ).then( function( data ) {
-							
-							$.extend( true, finalList, data );
-							
-						} );
-
-					} ) ( i );
-
-					
 				} else { // It's a folder type structure
-//console.log( list[ i ].folders );
-					getModules( list[ i ] ).then( function( data ) {
-						//console.log( data );
-						$.extend( true, finalList,  data);	
-					} );
-					
+					getModules(list[ i ]).then(function(data) {
+						$.extend(true, finalList, data);
+					});
 				}
 			}
 			
 			allModules = finalList;
+			
 		},
-
 		newModule: function(definition) {
 
-			var module = new Module( definition );
-			module.setId( ++ incrementalId );
-			modules.push( module );
-			definitions.push( definition );
+			var module = new Module(definition);
+			module.setId(++incrementalId);
+			modules.push(module);
+			definitions.push(definition);
 
 			return module;
 		},
-
-		/**
-		 * Removes a module.
-		 *
-		 * @param {Module} Module object to remove
-		 */
-		removeModule: function( module ) {
-
-			modules.splice( modules.indexOf( module ), 1 );
-			definitions.splice( definitions.indexOf( module.definition ), 1 );
+		removeModule: function(module) {
+			modules.splice(modules.indexOf(module), 1);
+			definitions.splice(definitions.indexOf(module.definition), 1);
 		},
-
 		empty: function() {
 			definitions = [];
 			modules = [];
 		},
-
 		getModules: function() {
 			return modules;
 		},
-
 		getDefinitions: function() {
 			return definitions;
 		}
-	}
+	};
 });

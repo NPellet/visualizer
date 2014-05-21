@@ -1,227 +1,283 @@
-define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning' ], function( Default, API, Versioning ) {
-	
-	/**
-	 * Creates a new empty controller
-	 * @class Controller
-	 * @name Controller
-	 * @constructor
-	 */
-	function controller() { };
+define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versioning', 'src/data/structures'], function(Default, API, Versioning, Structure) {
 
-	// Extends the default properties of the default controller
-	controller.prototype = $.extend( true, {}, Default );
+    function controller() {
+    }
 
+    var reg = new RegExp(";base64,(.+)$");
 
-	/*
-		Information about the module
-	*/
-	controller.prototype.moduleInformation = {
-		moduleName: "Drag and drop",
-		description: 'Drop a file or some content to load',
-		author: 'Norman Pellet',
-		date: '24.12.2013',
-		license: 'MIT',
-		cssClass: 'dragdrop'
-	};
-	
+    controller.prototype = $.extend(true, {}, Default);
 
+    controller.prototype.moduleInformation = {
+        moduleName: 'Drag and drop',
+        description: 'Drop a file or paste some content to load',
+        author: 'Norman Pellet / Michaël Zasso',
+        date: '03.04.2014',
+        license: 'MIT',
+        cssClass: 'dragdrop'
+    };
 
-	/*
-		Configuration of the input/output references of the module
-	*/
-	controller.prototype.references = {
-		'file': {
-			label: 'The dropped file',
-			type: 'object'
-		},
+    controller.prototype.references = {
+        data: {
+            label: 'The loaded data'
+        },
+        dataarray: {
+            label: 'Array of loaded data'
+        }
+    };
 
-		'data': {
-			label: 'The data of the dropped file'
-		}
-	};
+    controller.prototype.events = {
+        onRead: {
+            label: 'The data has been read',
+            refVariable: ['data','dataarray']
+        }
+    };
 
+    controller.prototype.configurationStructure = function() {
 
-	/*
-		Configuration of the module for sending events, as a static object
-	*/
-	controller.prototype.events = {
+        var types = Structure._getList(), l = types.length, typeList = new Array(l);
+        for (var i = 0; i < l; i++) {
+            typeList[i] = {key: types[i], title: types[i]};
+        }
 
-		// List of all possible events
-		'onDropped': {
-			label: 'A file has been dropped',
-			//refVariable: [ 'file' ],
-			//refAction: [ 'file' ]
-		},
+        return {
+            groups: {
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+                    fields: {
+                        label: {
+                            type: 'text',
+                            title: 'Text displayed by default',
+                            'default': 'Drop your file here'
+                        },
+                        dragoverlabel: {
+                            type: 'text',
+                            title: 'Text displayed on drag'
+                        },
+                        hoverlabel: {
+                            type: 'text',
+                            title: 'Text displayed on hover'
+                        }
+                    }
+                },
+                vars: {
+                    options: {
+                        type: 'table',
+                        multiple: true,
+                        title: 'For files'
+                    },
+                    fields: {
+                        extension: {
+                            type: "text",
+                            title: "File extension(s)",
+                            "default": "*"
+                        },
+                        filetype: {
+                            type: "combo",
+                            title: "Read type",
+                            options: [{title: "Text", key: "text"}, {title: "Base64 Encoded", key: "base64"}/*, {title: "Binary string", key: "binary"}, {title: "Array buffer", key: "b"}*/],
+                            "default": "text"
+                        },
+                        type: {
+                            type: "combo",
+                            title: "Force type",
+                            options: typeList,
+                            "default": "string"
+                        },
+                        mime: {
+                            type: "text",
+                            title: "Force mime-type"
+                        },
+                        variable: {
+                            type: "text",
+                            title: "Temporary variable",
+                            "default": "file"
+                        }
+                    }
+                },
+                string: {
+                    options: {
+                        type: 'table',
+                        multiple: false,
+                        title: 'For strings'
+                    },
+                    fields: {
+                        type: {
+                            type: "combo",
+                            title: "Force type",
+                            options: typeList,
+                            "default": "string"
+                        },
+                        variable: {
+                            type: "text",
+                            title: "Temporary variable",
+                            "default": "str"
+                        }
+                    }
+                }
+            }
+        };
+    };
 
-		'onRead': {
-			label: 'The file has been read',
-			refVariable: [ /*'file',*/ 'data' ],
-			//refAction: [ 'file', 'data' ]
-		}
-	};
-	
+    controller.prototype.configAliases = {
+        vartype: ['groups', 'group', 0, 'vartype', 0],
+        label: ['groups', 'group', 0, 'label', 0],
+        dragoverlabel: ['groups', 'group', 0, 'dragoverlabel', 0],
+        hoverlabel: ['groups', 'group', 0, 'hoverlabel', 0],
+        vars: ['groups', 'vars', 0],
+        string: ['groups', 'string', 0, 0]
+    };
 
-	/*
-		Configuration of the module for receiving events, as a static object
-		In the form of 
-	*/
-	controller.prototype.variablesIn = [ ];
+    controller.prototype.parseString = function(value, meta) {
+        try {
+            var result = Structure._parse(meta.cfg.type, value);
+            this.tmpVar(result, meta);
+        } catch(e) {}
+    };
 
-	/*
-		Received actions
-	*/
-	controller.prototype.actionsIn = { };
-	
-		
-	controller.prototype.configurationStructure = function(section) {
-		
-		return {
-			groups: {
-				group: {
-					options: {
-						type: 'list'
-					},
+    controller.prototype.open = function(data) {
 
-					fields: {
-					
-						label: {
-							type: 'text',
-							title: 'Displayed text'
-						}/*,
-
-						filter: {
-							type: 'jscode',
-							title: 'Result data filter'
-						}*/
-					}
-				},
-
-				vars: {
-
-					options: {
-						type: 'table',
-						multiple: true
-					},
-
-					fields: {
-
-						extension: {
-							type: "text",
-							title: "File extension"
-						},
-						
-						filetype: {
-							type: "combo",
-							title: "Read type",
-							options: [{ title: "Text", key: "text"}, { title: "Base64 Encoded", key: "base64"}, { title: "Binary string", key: "binary"}, { title: "Array buffer", key: "b"} ]
-						},
-
-						type: {
-							type: "text",
-							title: "Force type"
-						},
-
-						variable: {
-							type: "text",
-							title: "Temporary variable"	
-						}
-					}
-				}
-			}
-		};	
-	};
-
-
-	controller.prototype.configAliases = {
-		'vartype': [ 'groups', 'group', 0, 'vartype', 0 ],
-		'label': [ 'groups', 'group', 0, 'label', 0 ],
-		//'filter': [ 'groups', 'group', 0, 'filter', 0 ],
-		'vars': [ 'groups', 'vars', 0 ]
-	};
-
-
-
-	/**
-	 *	Initializes the controller by setting the FileReader and setting the variable
-	 *	after the read is done
-	 */
-	controller.prototype.init = function() {
-
-		var self = this;
-		this.reader = new FileReader();
-		this.reader.onload = function(e) {
-
-			var obj = e.target.result;
-			if( self.lineCfg.type === "array" || self.lineCfg.type === "object" ) {
-
-				try {
-					obj = JSON.parse( obj, Versioning.getViewHandler( ).reviver );
-				} catch( _ ) {
-
-				}
-			}
-			obj = new DataObject({ type: self.lineCfg.type, value: obj }, true);
-                        self.tmpVar(self.lineCfg.variable, obj);
-			self.leased = false;
-		};
-
-		this.reader.onerror = function(e) {
-			console.error(e);
-			self.leased = false;
-		};
-	};
-
-
-	/**
-	 *	Called after a file is dropped
-	 *
-	 *	@param {File} file The dropped file
-	 */
-	controller.prototype.onDropped = function( file ) {
-
-		//self.controller.fileReceived( obj );
-
-		var ext = file.name.split( '.' ).pop(),
-			cfg = this.module.getConfiguration('vars'),
-			lineCfg;
-                if(!cfg)
-                    return console.warn("No extension configured");
-		this.leased = true;
-		for( var i = 0, l = cfg.length ; i < l ; i ++ ) {
-			if( cfg[ i ].extension === ext) {
-				this.lineCfg = lineCfg = cfg[ i ];
-				break;
-			}
-		}
-
-		if( ! lineCfg ) {
-			return console.warn("Extension "+ext+" not configured");
-		}
-                
-		switch( lineCfg.filetype ) {
-
-			case 'text':
-				this.reader.readAsText( file );
-			break;
-
-			case 'base64':
-				this.reader.readAsDataURL( file );
-			break;
-
-			case 'binary':
-				this.reader.readAsBinaryString( file );
-			break;
-                        
-                        case 'buffer':
-				this.reader.readAsArrayBuffer( file );
-			break;
-		}
-	};
+        if (!data.items.length)
+            return;
         
-        controller.prototype.tmpVar = function(name, obj) {
-            this.module.model.tmpVars[name] = obj;
-            this.setVarFromEvent('onRead', this.module.model.tmpVars, 'data');
+        this.module.model.tmpVars = new DataObject();
+        this.module.model.tmpVarsArray = new DataObject();
+        
+        var that = this;
+        var defs = [];
+        
+        var cfg = this.module.getConfiguration('vars');
+        var cfgString = this.module.getConfiguration('string');
+                
+        var i = 0, ii = data.items.length, item, meta, def;
+        for(; i < ii; i++) {
+            item = data.items[i];
+            def = $.Deferred();
+            defs.push(def);
+            if(item.kind === "file") {
+                item = item.getAsFile();
+                if(meta = this.checkMetadata(item, cfg)) {
+                    meta.def = def;
+                    this.read(item, meta);
+                } else {
+                    def.resolve();
+                    continue;
+                }
+            } else {
+                this.treatString(item, {
+                    filename: "",
+                    mime: "",
+                    def: def,
+                    cfg: cfgString
+                });
+            }
+        }
+                
+        $.when.apply(window, defs).done(function(){
+            that.setVarFromEvent('onRead', that.module.model.tmpVars, 'data');
+            that.setVarFromEvent('onRead', that.module.model.tmpVarsArray, 'dataarray');
+        });
+    };
+    
+    controller.prototype.treatString = function(item, meta) {
+        var that = this;
+        item.getAsString(function(str){
+            that.parseString(str, meta);
+        });  
+    };
+    
+    controller.prototype.checkMetadata = function(item, cfg) {
+        if(!cfg) {
+            return console.warn("No extension configured");
+        }
+        var split = item.name.split("."), ext, lineCfg;
+        if(split.length<2) {
+            ext = "";
+        } else {
+            ext = split.pop().toLowerCase();
+        }
+        for (var i = 0, l = cfg.length; i < l; i++) {
+            var extensions = cfg[i].extension;
+            if (extensions === "*" || extensions.split(',').indexOf(ext) !== -1) {
+                lineCfg = cfg[i];
+                break;
+            }
+        }
+        if(! lineCfg) {
+            return console.warn("Extension " + ext + " not configured (filename: "+item.name+")");
+        }
+        return {
+            filename: item.name,
+            mime: lineCfg.mime||item.type||"application/octet-stream",
+            cfg: lineCfg
+        };
+    };
+    
+    controller.prototype.fileRead = function(result, meta) {
+        switch (meta.cfg.filetype) {
+            case 'text':
+                this.parseString(result, meta);
+                break;
+
+            case 'base64':
+                var base64 = reg.exec(result)[1];
+                this.tmpVar(base64, meta);
+                break;
+
+            /*case 'binary':
+                reader.readAsBinaryString(file);
+                break;
+
+            case 'buffer':
+                reader.readAsArrayBuffer(file);
+                break;*/
+        }
+    };
+
+    controller.prototype.read = function(file, meta) {
+        var that = this;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            that.fileRead(e.target.result, meta);
+        };
+        reader.onerror = function(e) {
+            console.error(e);
         };
 
- 	return controller;
+        switch (meta.cfg.filetype) {
+            case 'text':
+                reader.readAsText(file);
+                break;
+
+            case 'base64':
+                reader.readAsDataURL(file);
+                break;
+
+            /*case 'binary':
+                reader.readAsBinaryString(file);
+                break;
+
+            case 'buffer':
+                reader.readAsArrayBuffer(file);
+                break;*/
+        }
+    };
+
+    controller.prototype.tmpVar = function(obj, meta) {
+        var name = meta.cfg.variable;
+        var variable = new DataObject({
+            filename: meta.filename,
+            mimetype: meta.mime,
+            content: obj
+        }, true);
+        if(!this.module.model.tmpVarsArray[name])
+            this.module.model.tmpVarsArray[name] = new DataArray();
+        this.module.model.tmpVarsArray[name].push(variable);
+        this.module.model.tmpVars[name] = variable;
+
+        meta.def.resolve();
+    };
+
+    return controller;
 });

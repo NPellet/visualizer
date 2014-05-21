@@ -4,8 +4,12 @@
 			"moduleName": "Two dimensional list",
 			"url": "modules/types/display/2d_list/"
 		},
+                {
+			"moduleName": "Fast two dimensional list",
+			"url": "modules/types/display/2d_list_fast/"
+		},
 		{
-			"moduleName": "Fast grid",
+			"moduleName": "Fast table",
 			"url": "modules/types/display/fasttable/"
 		},
 		{
@@ -28,11 +32,15 @@
 			"moduleName": "Display value",
 			"url": "modules/types/display/single_value/"
 		},
-        {
-			"moduleName": "Template",
+		{
+			"moduleName": "Mustache template",
 			"url": "modules/types/display/template/"
+		},
+		{
+			"moduleName": "Twig template",
+			"url": "modules/types/display/template-twig/"
 		}
 	],
 	"name": "Display",
-	"folders": {}
+	"folders": []
 }

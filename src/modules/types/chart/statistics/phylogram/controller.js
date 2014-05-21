@@ -1,18 +1,11 @@
 define(['modules/default/defaultcontroller'], function(Default) {
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
     function controller() {
+        this._data=new DataObject();
     }
-    ;
 
     // Extends the default properties of the default controller
     controller.prototype = $.extend(true, {}, Default);
-
 
     /*
      Information about the module
@@ -20,25 +13,30 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype.moduleInformation = {
         moduleName: 'D3 Phylogram',
         description: 'Display phylogram using D3 library',
-        author: 'Nathanaêl Khodl, Luc Patiny',
+        author: 'Nathanaêl Khodl, Luc Patiny, Michaël Zasso',
         date: '30.12.2013',
         license: 'MIT',
         cssClass: 'phylogram'
     };
 
-
-    // Leaves
     controller.prototype.mouseOverLeaf = function(data) {
-        this.sendTreeFromEvent(data, "onLeafHover");
+        data = data.get();
+        if(data.data) {
+            this._data = DataObject.check(data.data);
+            this.setVarFromEvent("onLeafHover", DataObject.check(this._data), 'leaf');
+        }
     };
     controller.prototype.mouseOutLeaf = function() {
 
     };
     controller.prototype.clickLeaf = function(data) {
-        this.sendTreeFromEvent(data, "onLeafSelect");
+        data = data.get();
+        if(data.data) {
+            this._data = DataObject.check(data.data);
+            this.setVarFromEvent("onLeafSelect", DataObject.check(this._data), 'leaf');
+        }
     };
 
-    // BRanches
     controller.prototype.mouseOverBranch = function(data) {
         this.sendTreeFromEvent(data, "onBranchHover");
     };
@@ -86,45 +84,14 @@ define(['modules/default/defaultcontroller'], function(Default) {
         //'branchColor': [ 'groups', 'group', 0, 'branchColor', 0 ]
     };
 
-    /*controller.prototype.configurationSend = {
-     events: {
-     
-     onLeafSelect: {
-     label: 'Select a leaf',
-     description: 'Click on a leaf to select it'
-     },
-     
-     onLeafHover: {
-     label: 'Hovers a leaf',
-     description: 'Pass the mouse over a leaf to select it'
-     },
-     
-     onBranchSelect: {
-     label: 'Select a branch',
-     description: 'Click on a branch to select it'
-     },
-     
-     onBranchHover: {
-     label: 'Hovers a branch',
-     description: 'Pass the mouse over a branch to select it'
-     }
-     },
-     
-     rels: {
-     'tree': {
-     label: 'Tree',
-     description: 'Returns the selected tree'
-     }
-     }
-     }*/
     controller.prototype.events = {
         onLeafSelect: {
             label: 'Select a leaf',
-            refVariable: ['tree']
+            refVariable: ['leaf']
         },
         onLeafHover: {
             label: 'Hovers a leaf',
-            refVariable: ['tree']
+            refVariable: ['leaf']
         },
         onBranchSelect: {
             label: 'Select a branch',
@@ -143,6 +110,9 @@ define(['modules/default/defaultcontroller'], function(Default) {
         tree: {
             type: ['tree'],
             label: 'A tree with children'
+        },
+        leaf: {
+            label: 'Value of the leaf'
         }
     };
 
