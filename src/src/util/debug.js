@@ -8,7 +8,7 @@ define(function() {
 		entries.push(entry);
 	}
 
-	return {
+	var Debug = {
 		
 		setDebugLevel: function(level) {
 			debugLevel = level;
@@ -40,7 +40,7 @@ define(function() {
 		
 		debug: function(message) {
 			if(debugLevel >= 3) {
-				console.log.apply(console, arguments);
+				console.debug.apply(console, arguments);
 			}
 			if(debugLevel > -1)
 				addEntry("DEBUG : " + message);
@@ -48,7 +48,7 @@ define(function() {
 		
 		trace: function(message) {
 			if(debugLevel >= 4) {
-				
+				console.log.apply(console, arguments);
 			}
 			if(debugLevel > -1)
 				addEntry("TRACE : " + message);
@@ -57,8 +57,44 @@ define(function() {
 		dump: function() {
 			console.log(entries.join("\n"));
 			entries = [];
+		},
+		
+		timer: function() {
+			return new Timer();
 		}
 
 	};
+	
+	function formatTime(time, format) {
+		if(format) {
+			if(format==="ms") {
+				return time+"ms";
+			}
+			if(format==="s") {
+				return (time/1000)+"s";
+			}
+		}
+		else
+			return time;
+	}
+	
+	function Timer() {
+		this._start = Date.now();
+		this._step = this._start;
+	}
+	
+	Timer.prototype = {
+		time: function(format) {
+			return formatTime(Date.now()-this._start, format);
+		},
+		step: function(format) {
+			var now = Date.now(),
+				time = now-this._step;
+			this._step = now;
+			return formatTime(time, format);
+		}
+	};
+	
+	return Debug;
 
 });
