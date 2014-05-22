@@ -31,6 +31,10 @@
                 {
                         "moduleName": "Edit/Display",
                         "url": "modules/types/edition/dualview/"
+                },
+                {
+                        "moduleName": "Rich text editor",
+                        "url": "modules/types/edition/rich_text/"
                 }
 	],
 	"name": "Edition",
