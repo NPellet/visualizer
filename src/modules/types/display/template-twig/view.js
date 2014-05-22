@@ -32,7 +32,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twi
                 if (!value) {
                     return;
                 }
-                this._values[name] = value.get();
+                this._values[name] = value;
 
                 this.render();
 
