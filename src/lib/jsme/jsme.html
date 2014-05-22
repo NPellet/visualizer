@@ -16,6 +16,7 @@
 	<script type="text/javascript">
 		var jsmeApplet;
 		var deferred=$.Deferred();
+		var previousHighlight;
 
 		this.setController = function(controller) {
 			this.controller = controller;
@@ -47,9 +48,11 @@
 
 		this.setHighlight = function(atoms, onOff) {
 			var molIndex=1;
-			if(!onOff) {
-				jsmeApplet.resetAtomColors(1);	
-			} else {
+
+			// before highlight we systematically reset all the colors because there is a problem in case of
+			// overlapping atoms and events
+			jsmeApplet.resetAtomColors(1);
+			if(onOff) {
 				var highlight=[];
 				for (var i=0; i<atoms.length; i++) {
 					highlight.push(atoms[i]+1);
