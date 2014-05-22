@@ -9,7 +9,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 		init: function() {
 
-			if (this.DEBUG) console.log("Stack Chart: init");
+			if (this.DEBUG) console.log("Radar Chart: init");
 			if (this.dom) {
 				// in the dom exists and the preferences has been changed we need to clean the canvas
 				this.dom.empty();
@@ -22,80 +22,63 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				this.module.getDomContent().html(this.dom);
 			}
 			// if the dom existed there was probably a graph or when changing of view
-			if (this._flot) { 
-				delete this._flot;
+			if (this._radar) { 
+				delete this._radar;
 			}
 
 			// Adding a deferred allows to wait to get actually the data before we draw the chart
 			// we decided here to plot the chart in the "onResize" event
 			this.loadedData=$.Deferred();
 
-			if (this.DEBUG) console.log("Stack Chart: ID: "+this._id);
+			if (this.DEBUG) console.log("Radar Chart: ID: "+this._id);
 
-			this._data=[];	// the data that will be sent to FLOT
+			this._data=[];	// the data that will be represented
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
-			data = undefined;
-			//this.updateoptions(cfg, data);
-
-
 
 		},
 
 
 		inDom: function() {
 
-			if (this.DEBUG) console.log("Stack Chart: inDom");
+			if (this.DEBUG) console.log("Radar Chart: inDom");
 
 		},
 
 		onResize: function() {
 
-			if (this.DEBUG) console.log("Stack Chart: onResize");
+			if (this.DEBUG) console.log("Radar Chart: onResize");
 
 			var self=this;
 
 			this.loadedData.done(function() {
-			self._radar.parse(self._data,"json");
-			
-			self._radar.attachEvent("onMouseMove", function (id, ev, trg){
-			console.log(self._data);
-			
-			/*if (item) {
-					self.module.controller.elementHover(self._data[item.seriesIndex].data[item.dataIndex]);
+				self._radar.parse(self._data,"json");
 
-				} else {
-					self.module.controller.elementOut();
-				} */
-				self._data.forEach(function(entry) {
-				if(entry.id == id)
+				self._radar.attachEvent("onMouseMove", function (id, ev, trg)
 				{
-				var obj = entry;
-				console.log(obj);
-				console.log(ev.toElement.outerHTML);
-				console.log(ev.toElement.outerHTML[ev.toElement.outerHTML.length -3]);
-				//console.log(obj._highlight[ev.toElement.outerHTML[ev.toElement.outerHTML.length -3]]);
-				if(ev.toElement.outerHTML[ev.toElement.outerHTML.length -3] == 'd')
-				{
-				self.module.controller.elementHover(obj._highlight[0]);
-				}
-				else
-				{
-				self.module.controller.elementHover(obj._highlight[ev.toElement.outerHTML[ev.toElement.outerHTML.length -3]]);
-				}
-				
-				}
-				
-			
-});		
-			return true;
+					self._data.forEach(function(entry) 
+					{
+					
+						if(entry.id == id)
+						{
+							var obj = entry;
+							if(ev.toElement.outerHTML[ev.toElement.outerHTML.length -3] == 'd')
+						{
+							self.module.controller.elementHover(obj._highlight[0]);
+						}
+						else
+						{
+							self.module.controller.elementHover(obj._highlight[ev.toElement.outerHTML[ev.toElement.outerHTML.length -3]]);
+						}}
 
-}); 
-			self._radar.attachEvent("onMouseOut", function (id, ev, trg){
-						self.module.controller.elementOut();
-			}); 
+
+					});		
+					return true;
+
+				}); 
+				self._radar.attachEvent("onMouseOut", function (id, ev, trg){
+							self.module.controller.elementOut();
+				}); 
 			});
-
-
 
 		},
 
@@ -105,19 +88,20 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		*/
 		update: {
 
-			'chart': function(moduleValue) {
-			var self=this;
-			var cfg = $.proxy( this.module.getConfiguration, this.module );
+			'chart': function(moduleValue) 
+			{
+				var self=this;
+				var cfg = $.proxy( this.module.getConfiguration, this.module );
 
-			if (this.DEBUG) console.log("stack Chart: update from chart object");
+				if (this.DEBUG) console.log("Radar Chart: update from chart object");
 
-				if (! moduleValue || ! moduleValue.value) return;
-				
-				this.updateoptions(cfg, moduleValue.get());
-				
-				this._convertChartToData(moduleValue.get());
-				
-				this.loadedData.resolve();
+					if (! moduleValue || ! moduleValue.value) return;
+
+					this.updateOptions(cfg, moduleValue.get());
+
+					this._convertChartToData(moduleValue.get());
+
+					this.loadedData.resolve();
 			},
 
 
@@ -125,36 +109,37 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 		_convertChartToData: function(value,radar) {
 			var self=this;
-			
+
 			if ( ! value.data instanceof Array || ! value ) return;
-			
-			for (var j = 0; j < value.axis[0].unit.length; j++) 
+
+			for (var j = 0; j < value.data[0].x.length; j++) 
 			{
 				self._data[j] = {};
-				self._data[j]["xunit"] = value.axis[0].unit[j];
+				self._data[j]["xunit"] = value.data[0].x[j];
 				self._data[j]['_highlight'] = [];	
 				for (var i = 0; i < value.data.length; i++) 
 				{
-					self._data[j][value.data[i].name] = value.data[i].x[j];
+					self._data[j][value.data[i].name] = value.data[i].y[j];
 					self._data[j]['_highlight'].push({name: value.data[i].name, _highlight: value.data[i]._highlight[j]});
-					
+
 				}
-					
+
 			};
-			console.log(self._data);
+			
+			
 		},
 
-		updateoptions: function(cfg, chart) {
-		var self=this;
-			 switch (cfg('preference'))
+		updateOptions: function(cfg, chart) {
+			var self=this;
+			switch (cfg('preference'))
 			{
 			case 'radar':
-				o = {
+				var options = {
 					view: "radar",
 					container: self._id,
 					alpha:0.2,
 					value: "#"+chart.data[0].name+"#",
-					disableItems: false,//cfg('point'),
+					disableItems: false,
 					color: chart.data[0].color,
 					fill: chart.data[0].color,
 					line:{
@@ -170,12 +155,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 							end: cfg('end'),
 							step: cfg('step'),
 					},
-					
+
 				};
-				this._radar = new dhtmlXChart(o);
-				
+				this._radar = new dhtmlXChart(options);
+
 				var val = []
-		
+
 				for (var i = 0; i < chart.data.length; i++) 
 						{
 							if(i != 0)
@@ -187,7 +172,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 										color:chart.data[i].color,
 										width:1
 									},
-							 
+
 							})
 							}
 							val.push({text: chart.data[i].serieLabel,color: chart.data[i].color});
@@ -202,36 +187,25 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					},
 					values: val
 				}); 
-			
-
 				break;
+				
 			case 'pie':
-			o = {
+			var options = {
 			view: cfg('pie'),
 			container: self._id,
 			value: "#"+chart.data[0].name+"#",
 			color: chart.data[0].color,
-				
+
 			pieInnerText: "<b>#xunit#</b>"
-			
+
 			};
-			this._radar = new dhtmlXChart(o);
-			
+			this._radar = new dhtmlXChart(options);
+
 			break;
 			};
-			
-		
-			
-		
-
 
 
 		},
-
-	
-
-
 	});
-
 	return view;
 });

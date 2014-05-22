@@ -31,18 +31,9 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 
 		// List of all possible events
 
-		onHover: {
-			label: 'Hover a piece of chart',
-			refVariable: [ 'piece' ]
-		}
 	};
 	
-	controller.prototype.onHover = function(element) {
-		if( ! element ) {
-			return;
-		}
-		this.setVarFromEvent( 'onHover', element, 'piece' );
-	};
+
 	
 
 
