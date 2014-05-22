@@ -62,8 +62,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 61.039999997615816,
-						"height": 51.039999997615816
+						"width": 61,
+						"height": 51
 					},
 					"display": true,
 					"title": "Radar Chart",
@@ -137,8 +137,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 17.039999997615816,
-						"height": 21.039999997615816
+						"width": 18,
+						"height": 16
 					},
 					"display": true,
 					"title": "Untitled module",
@@ -217,8 +217,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 60.939999997615814,
-						"height": 50.939999997615814
+						"width": 61,
+						"height": 51
 					},
 					"display": true,
 					"title": "Radar Chart",
@@ -297,8 +297,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 61.039999997615816,
-						"height": 51.039999997615816
+						"width": 61,
+						"height": 51
 					},
 					"display": true,
 					"title": "Radar Chart",
@@ -377,8 +377,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 61.039999997615816,
-						"height": 51.039999997615816
+						"width": 61,
+						"height": 51
 					},
 					"display": true,
 					"title": "Radar Chart",
@@ -426,11 +426,11 @@
 					"position": {
 						"left": 0,
 						"right": 0,
-						"top": 22.000000381469725
+						"top": 17
 					},
 					"size": {
-						"width": 51.039999997615816,
-						"height": 51.039999997615816
+						"width": 55,
+						"height": 35
 					},
 					"zIndex": 0,
 					"display": true,
@@ -457,11 +457,93 @@
 				{
 					"event": "onObjectChange",
 					"rel": "value",
-					"name": "chart2"
+					"name": "dynamicChart"
 				}
 			],
 			"title": "Untitled",
 			"actions_out": {}
+		},
+		{
+			"url": "./modules/types/chart/basic/radar_chart/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"preference": [
+								"radar"
+							],
+							"pie": [
+								"pie3D"
+							],
+							"start": [
+								[
+									0
+								]
+							],
+							"end": [
+								[
+									100
+								]
+							],
+							"step": [
+								[
+									10
+								]
+							],
+							"point": [
+								[
+									true
+								]
+							],
+							"lineshape": [
+								[
+									"arc"
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "chart",
+					"name": "dynamicChart"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 53,
+						"right": 0
+					},
+					"size": {
+						"width": 55,
+						"height": 50
+					},
+					"display": true,
+					"title": "Radar Chart",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Radar Chart"
 		}
 	],
 	"variables": [
