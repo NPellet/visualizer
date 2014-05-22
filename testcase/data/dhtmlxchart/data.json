@@ -6,7 +6,7 @@
 		{"label":"D","_highlight":["D"]},
 		{"label":"E","_highlight":["E"]}
 	],
-	"stackChart":
+	"radarChart":
 	{
 		"type":"chart",
 		"value": {
@@ -14,7 +14,7 @@
 			"axis": {
 				"0": {
 					"type": "", 
-					"unit": ["january", "february", "march", "april", "may", "june", "august"],
+					"unit": "",
 					"min": 0,
 					"max": 20
 				},
@@ -28,10 +28,10 @@
 			"data" : 
 			[
 				{
-					"x":[65,59,90,81,56,55,40],
-					"y":[],
-					"z":[],
-					"_highlight":["A","B","E","C"],
+					"x": ["january", "february", "march", "april", "may", "june", "august"],
+					"y": [65,59,90,81,56,55,40],
+					"z": [],
+					"_highlight":["A","B","E","C","B","E","D"],
 					"color":"#FF00FF",
 					"name": "first",
 					"serieLabel": "My first serie",
@@ -39,10 +39,10 @@
 					"yAxis": "1"
 				},
 				{
-					"x":[28,48,40,19,96,27,100],
-					"y":[],
+					"x": ["january", "february", "march", "april", "may", "june", "august"],
+					"y":[28,48,40,19,96,27,100],
 					"z":[],
-					"_highlight":["D","E","C","A"],
+					"_highlight":["D","E","C","E","D","A","B"],
 					"color":"#0000FF",
 					"name": "second",
 					"serieLabel": "My second serie",
@@ -50,10 +50,10 @@
 					"yAxis": "1"
 				},
 				{
-					"x":[48,68,40,19,76,27,31],
-					"y":[],
+					"x": ["january", "february", "march", "april", "may", "june", "august"],
+					"y": [48,68,40,19,76,27,31],
 					"z":[],
-					"_highlight":["D","E","C","A"],
+					"_highlight":["B","D","E","C","A","E","D"],
 					"color":"#FF0000",
 					"name": "third",
 					"info":[{"name":"third"}],
@@ -66,4 +66,3 @@
 		}
 	}
 }
-	

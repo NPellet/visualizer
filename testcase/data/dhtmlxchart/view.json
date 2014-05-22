@@ -56,7 +56,7 @@
 			"vars_in": [
 				{
 					"rel": "chart",
-					"name": "stackChart"
+					"name": "radarChart"
 				}
 			],
 			"actions_in": {},
@@ -193,7 +193,7 @@
 			"vars_in": [
 				{
 					"rel": "chart",
-					"name": "stackChart"
+					"name": "radarChart"
 				}
 			],
 			"actions_in": {},
@@ -264,7 +264,7 @@
 			"vars_in": [
 				{
 					"rel": "chart",
-					"name": "stackChart"
+					"name": "radarChart"
 				}
 			],
 			"actions_in": {},
@@ -335,7 +335,7 @@
 			"vars_in": [
 				{
 					"rel": "chart",
-					"name": "stackChart"
+					"name": "radarChart"
 				}
 			],
 			"actions_in": {},
@@ -353,8 +353,8 @@
 	],
 	"variables": [
 		{
-			"varname": "stackChart",
-			"jpath": "element.stackChart"
+			"varname": "radarChart",
+			"jpath": "element.radarChart"
 		},
 		{
 			"varname": "highlight",
