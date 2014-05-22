@@ -125,7 +125,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				for (var i = 0; i < value.data.length; i++) 
 				{
 					self._data[j][value.data[i].name] = value.data[i].y[j];
-					self._data[j]['_highlight'].push({name: value.data[i].name, _highlight: value.data[i]._highlight[j]});
+					if (value.data[i]._highlight && value.data[i]._highlight[j]) {
+						self._data[j]['_highlight'].push({name: value.data[i].name, _highlight: value.data[i]._highlight[j]});
+					}
 				}
 			};
 		},
