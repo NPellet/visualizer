@@ -10,7 +10,7 @@ define(function(){
 		var view = currentFullscreenModule.view;
 		if(fullscreenElement) { // New element is now fullscreen
 			oldStyle = fullscreenElement.getAttribute("style");
-			fullscreenElement.setAttribute("style","height:100%; width:100%;");
+			fullscreenElement.setAttribute("style","height:100%; width:100%; background-color:white;");
 			currentFullscreenElement = fullscreenElement;
 			oldViewDimensions = {height: view.height, width:view.width};
 			view.height = currentFullscreenModule.getDomContent().height();
