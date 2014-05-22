@@ -17,12 +17,6 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				this.dom = $('<div style="height: 100%;width: 100%" id="' + this._id + '"></div>');
 				this.module.getDomContent().html(this.dom);
 			}
-			// if the dom existed there was probably a graph or when changing of view
-			if (this._radar) { 
-				delete this._radar;
-			}
-
-
 
 			if (this.DEBUG) console.log("Radar Chart: ID: "+this._id);
 
@@ -74,14 +68,19 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				this.dom.empty();
 			}
 
-			this._convertChartToData(this.value);
+			// Redrawing the chart requires 3 steps
+			// 1. convert the data
+			// 2. create an empty chart
+			// 3. apply the data
+
+			var data=this._convertChartToData(this.value);
+
 
 			this.createChart(this.value);
 
+			this._radar.parse(data,"json");
+
 			var self=this;
-
-			self._radar.parse(self._data,"json");
-
 			self._radar.attachEvent("onMouseMove", function (id, ev, trg)
 			{
 				self._data.forEach(function(entry) 
@@ -112,27 +111,27 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 		},
 
-		_convertChartToData: function(value,radar) {
-			var self=this;
-
-			if ( ! value.data instanceof Array || ! value ) return;
-
-			for (var j = 0; j < value.data[0].x.length; j++) 
-			{
-				self._data[j] = {};
-				self._data[j]["xunit"] = value.data[0].x[j];
-				self._data[j]['_highlight'] = [];	
-				for (var i = 0; i < value.data.length; i++) 
+		_convertChartToData: function(value) {
+			var data=[];
+			if (value && value.data instanceof Array) {
+				for (var j = 0; j < value.data[0].x.length; j++) 
 				{
-					self._data[j][value.data[i].name] = value.data[i].y[j];
-					if (value.data[i]._highlight && value.data[i]._highlight[j]) {
-						self._data[j]['_highlight'].push({name: value.data[i].name, _highlight: value.data[i]._highlight[j]});
+					data[j] = {};
+					data[j]["xunit"] = value.data[0].x[j];
+					data[j]['_highlight'] = [];	
+					for (var i = 0; i < value.data.length; i++) 
+					{
+						data[j][value.data[i].name] = value.data[i].y[j];
+						if (value.data[i]._highlight && value.data[i]._highlight[j]) {
+							data[j]['_highlight'].push({name: value.data[i].name, _highlight: value.data[i]._highlight[j]});
+						}
 					}
-				}
-			};
+				};
+			}
+			return data;
 		},
 
-		createChart: function(chart) {
+		createChart: function(chart, data) {
 			var self=this;
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
 			switch (cfg('preference'))
@@ -147,9 +146,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					color: chart.data[0].color,
 					fill: chart.data[0].color,
 					line:{
-								color:chart.data[0].color,
-								width:1
-							},
+						color:chart.data[0].color,
+						width:1
+					},
 					xAxis:{
 							template:"#xunit#"
 					},
@@ -195,7 +194,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				
 			case 'pie':
 				var options = {
-					view: cfg('pie'),
+					// view: cfg('pie'),
 					container: self._id,
 					value: "#"+chart.data[0].name+"#",
 					color: chart.data[0].color,
