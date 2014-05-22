@@ -91,13 +91,13 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			'chart': function(moduleValue) 
 			{
 				var self=this;
-				var cfg = $.proxy( this.module.getConfiguration, this.module );
+				
 
 				if (this.DEBUG) console.log("Radar Chart: update from chart object");
 
 					if (! moduleValue || ! moduleValue.value) return;
 
-					this.updateOptions(cfg, moduleValue.get());
+					this.updateOptions(moduleValue.get());
 
 					this._convertChartToData(moduleValue.get());
 
@@ -129,8 +129,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			
 		},
 
-		updateOptions: function(cfg, chart) {
+		updateOptions: function(chart) {
 			var self=this;
+			var cfg = $.proxy( this.module.getConfiguration, this.module );
 			switch (cfg('preference'))
 			{
 			case 'radar':
