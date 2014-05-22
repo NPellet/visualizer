@@ -1,9 +1,4 @@
-
-define([	
-	'jquery',
-	'src/util/context',
-	'src/util/api',
-	'src/util/util'], function($, ContextMenu, API, Util) {
+define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util/fullscreen'], function($, ContextMenu, API, Util, Fullscreen) {
 	
 	function init(module) {
 		//define object properties
@@ -290,6 +285,11 @@ define([
 			if( ! API.isViewLocked() ) {
 
 				ContextMenu.listen(this.getDomWrapper().get(0), [
+					
+					['<li><a><span class="ui-icon ui-icon-arrow-4-diag"></span> Fullscreen</a></li>', 
+					function() {
+						self.enableFullscreen();
+					}],
 
 					['<li><a><span class="ui-icon ui-icon-suitcase"></span> Export</a></li>', 
 					function() {
@@ -308,6 +308,10 @@ define([
 				]);
 
 			}
+		},
+		
+		enableFullscreen: function() {
+			Fullscreen.requestFullscreen(this);
 		},
 		
 		toggleLayer: function( newLayerShown, layerOut ) {
