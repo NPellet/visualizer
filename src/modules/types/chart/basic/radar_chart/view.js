@@ -10,11 +10,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		init: function() {
 
 			if (this.DEBUG) console.log("Radar Chart: init");
-			if (this.dom) {
-				// in the dom exists and the preferences has been changed we need to clean the canvas
-				this.dom.empty();
 
-			}
 			// When we change configuration the method init is called again. Also the case when we change completely of view
 			if (! this.dom) {
 				this._id = Util.getNextUniqueId();
@@ -26,9 +22,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				delete this._radar;
 			}
 
-			// Adding a deferred allows to wait to get actually the data before we draw the chart
-			// we decided here to plot the chart in the "onResize" event
-			this.loadedData=$.Deferred();
+
 
 			if (this.DEBUG) console.log("Radar Chart: ID: "+this._id);
 
@@ -45,41 +39,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		},
 
 		onResize: function() {
-
 			if (this.DEBUG) console.log("Radar Chart: onResize");
-
-			var self=this;
-
-			this.loadedData.done(function() {
-				self._radar.parse(self._data,"json");
-
-				self._radar.attachEvent("onMouseMove", function (id, ev, trg)
-				{
-					self._data.forEach(function(entry) 
-					{
-					
-						if(entry.id == id)
-						{
-							var obj = entry;
-							if(ev.toElement.outerHTML[ev.toElement.outerHTML.length -3] == 'd')
-						{
-							self.module.controller.elementHover(obj._highlight[0]);
-						}
-						else
-						{
-							self.module.controller.elementHover(obj._highlight[ev.toElement.outerHTML[ev.toElement.outerHTML.length -3]]);
-						}}
-
-
-					});		
-					return true;
-
-				}); 
-				self._radar.attachEvent("onMouseOut", function (id, ev, trg){
-							self.module.controller.elementOut();
-				}); 
-			});
-
+			this._redraw();
 		},
 
 		/* When a value change this method is called. It will be called for all 
@@ -87,19 +48,66 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		It will also be called at the beginning and in this case the value is null !
 		*/
 		update: {
-
 			'chart': function(moduleValue) 
 			{
 				if (this.DEBUG) console.log("Radar Chart: update from chart object");
 
-				if (! moduleValue || ! moduleValue.value) return;
+				if (! moduleValue) {
+					delete this.value;
+				} else {
+					this.value=moduleValue.get();
+				}
 
-				this.updateOptions(moduleValue.get());
-
-				this._convertChartToData(moduleValue.get());
-
-				this.loadedData.resolve();
+				this._redraw();
 			},
+
+
+		},
+
+
+		_redraw: function() {
+			if (! this.value) {
+				return;
+			}
+
+			if (this.dom) {
+				this.dom.empty();
+			}
+
+			this._convertChartToData(this.value);
+
+			this.createChart(this.value);
+
+			var self=this;
+
+			self._radar.parse(self._data,"json");
+
+			self._radar.attachEvent("onMouseMove", function (id, ev, trg)
+			{
+				self._data.forEach(function(entry) 
+				{
+				
+					if(entry.id == id)
+					{
+						var obj = entry;
+						if(ev.toElement.outerHTML[ev.toElement.outerHTML.length -3] == 'd')
+					{
+						self.module.controller.elementHover(obj._highlight[0]);
+					}
+					else
+					{
+						self.module.controller.elementHover(obj._highlight[ev.toElement.outerHTML[ev.toElement.outerHTML.length -3]]);
+					}}
+
+
+				});		
+				return true;
+
+			}); 
+			self._radar.attachEvent("onMouseOut", function (id, ev, trg){
+						self.module.controller.elementOut();
+			}); 
+
 
 
 		},
@@ -122,7 +130,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			};
 		},
 
-		updateOptions: function(chart) {
+		createChart: function(chart) {
 			var self=this;
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
 			switch (cfg('preference'))
