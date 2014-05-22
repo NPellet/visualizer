@@ -90,18 +90,15 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			'chart': function(moduleValue) 
 			{
-				var self=this;
-				
-
 				if (this.DEBUG) console.log("Radar Chart: update from chart object");
 
-					if (! moduleValue || ! moduleValue.value) return;
+				if (! moduleValue || ! moduleValue.value) return;
 
-					this.updateOptions(moduleValue.get());
+				this.updateOptions(moduleValue.get());
 
-					this._convertChartToData(moduleValue.get());
+				this._convertChartToData(moduleValue.get());
 
-					this.loadedData.resolve();
+				this.loadedData.resolve();
 			},
 
 
@@ -121,12 +118,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				{
 					self._data[j][value.data[i].name] = value.data[i].y[j];
 					self._data[j]['_highlight'].push({name: value.data[i].name, _highlight: value.data[i]._highlight[j]});
-
 				}
-
 			};
-			
-			
 		},
 
 		updateOptions: function(chart) {
@@ -163,21 +156,21 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				var val = []
 
 				for (var i = 0; i < chart.data.length; i++) 
+					{
+						if(i != 0)
 						{
-							if(i != 0)
-							{
-							this._radar.addSeries({
-									value: "#"+chart.data[i].name+"#",
-									fill: chart.data[i].color,
-									line:{
-										color:chart.data[i].color,
-										width:1
-									},
+						this._radar.addSeries({
+								value: "#"+chart.data[i].name+"#",
+								fill: chart.data[i].color,
+								line:{
+									color:chart.data[i].color,
+									width:1
+								},
 
-							})
-							}
-							val.push({text: chart.data[i].serieLabel,color: chart.data[i].color});
+						})
 						}
+						val.push({text: chart.data[i].serieLabel,color: chart.data[i].color});
+					}
 				this._radar.define("legend",{
 					width: 120,
 					align: "left",
@@ -191,18 +184,16 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				break;
 				
 			case 'pie':
-			var options = {
-			view: cfg('pie'),
-			container: self._id,
-			value: "#"+chart.data[0].name+"#",
-			color: chart.data[0].color,
+				var options = {
+					view: cfg('pie'),
+					container: self._id,
+					value: "#"+chart.data[0].name+"#",
+					color: chart.data[0].color,
+					pieInnerText: "<b>#xunit#</b>"
+				};
+				this._radar = new dhtmlXChart(options);
 
-			pieInnerText: "<b>#xunit#</b>"
-
-			};
-			this._radar = new dhtmlXChart(options);
-
-			break;
+				break;
 			};
 
 
