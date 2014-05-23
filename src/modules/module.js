@@ -332,6 +332,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 				this.setTitle( layer.title );
 				this.setDisplayWrapper( layer.wrapper );
+				this.setBackgroundColor( layer.bgcolor || [255,255,255,1] );
+
 				this.activeLayerName = newLayerShown;
 
 				return layer;
@@ -1313,7 +1315,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 		},
 
 		setBackgroundColor: function(color) {
-			this.domContent.get(0).style.backgroundColor = 'rgba(' + color + ')';
+			this.domContent.get(0).style.backgroundColor = 'rgba(' + color.join(",") + ')';
 		},
 
 		setDisplayWrapper: function( bln ) {
