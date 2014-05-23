@@ -44,8 +44,11 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 	function duplicateModule( module ) {
 
 		var def = JSON.parse( JSON.stringify( module.definition ), Versioning.getViewHandler()._reviver );
-		def.position.left += 2;
-		def.position.top += 2;
+		console.log( def );
+
+		def.layers[ getActiveLayer() ].position.left += 2;
+		def.layers[ getActiveLayer() ].position.top += 2;
+		
 		addModuleFromJSON( def );
 	}
 
