@@ -569,7 +569,6 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				actionsInList.push({ title: actionsIn[ i ], key: i});
 			}
 
-
 			var allLayers = {};
 			module.eachLayer( function( layer, key ) {
 				allLayers[ key ] = key;
@@ -636,8 +635,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 								layer: {
 
 									options: {
-										title: 'Shown on layers',
-										multiple: true
+										title: 'Shown on layers'
 									},
 								
 									groups: {
@@ -645,7 +643,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 										group: {
 											options: {
 												type: 'list',
-												multiple: true
+												multiple: true,
+												title: true
 											},
 
 											fields: {
@@ -653,7 +652,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 												layerName: {
 													type: 'text',
 													multiple: false,
-													title: 'Layer name'
+													title: 'Layer name',
+													displayed: false
 												},
 
 												moduletitle: {
@@ -977,9 +977,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 							allLayerDisplay.push( name );
 						}
 						
-
-
 						allLayers.push({ 
+							_title: name,
 							layerName: [ name ],
 							moduletitle: [ layer.title ],
 							bgcolor: [ layer.bgColor || [ 255, 255, 255, 0 ] ],
@@ -1023,7 +1022,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 					var l = value.module_config[ 0 ].sections.layer[ 0 ].groups.group;
 
 					var allDisplay = value.module_config[ 0 ].groups.layerDisplay[ 0 ].displayOn[ 0 ];
-console.log( l );
+
 					for( var i = 0, ll = l.length ; i < ll ; i ++ ) {
 
 						//console.log( l[ i ].groups.group[ 0 ].layerName[ 0 ], allDisplay, allDisplay.indexOf( l[ i ].groups.group[ 0 ].layerName[ 0 ] ) );
@@ -1035,9 +1034,6 @@ console.log( l );
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].wrapper = l[ i ].modulewrapper[ 0 ].indexOf('display') > -1;
 					}
 
-console.log( module.definition.layers )
-					//module.definition.displayWrapper 	= value.module_config[ 0 ].groups.group[ 0 ].modulewrapper[ 0 ].indexOf('display') > -1;
-		//			module.setDisplayWrapper();
 
 					if( value.vars_out ) {
 						module.setSendVars(		value.vars_out[ 0 ].groups.group[ 0 ]			);

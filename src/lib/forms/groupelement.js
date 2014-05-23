@@ -47,6 +47,10 @@ define(['jquery'], function($) {
 				i, j, l,
 				done = 0;
 				
+			if( json._title ) {
+				this.setTitle( json._title );
+			}
+
 			this.group.eachFields(function(field) {
 				self.getFieldElement( field.getName( ) , 0 );
 
@@ -184,10 +188,16 @@ define(['jquery'], function($) {
 			}
 		},
 
-
 		makeDomTpl: function( ) {
-
 			return this._makeDomTpl();
+		},
+
+		getTitle: function() {
+			return this._title || this.group.getTitle();
+		},
+
+		setTitle: function( title ) {
+			this._title = title;
 		}
 	});
 

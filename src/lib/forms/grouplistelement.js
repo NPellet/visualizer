@@ -17,21 +17,25 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			divFieldElements;
 
 		if( this.group.getTitle() ) {
-			dom.append('<div class="form-groupelement-title">' + this.group.getTitle() + '</div>');
+			dom.append('<div class="form-groupelement-title">' + this.getTitle() + '</div>');
 		}
 
 		self.fieldElementsDom = self.fieldElementsDom || { };
 		this.group.eachFields( function( field ) {
 
-			div = $( "<div />" ).addClass( 'form-field-list-' + field.getType( ) );
-			label = $( "<label />" ).html( field.getTitle( true ) ); // Title is attached to field element
+			if( field.isDisplayed() ) {
 
-			div.append( label );
-			divFieldElements = $( '<div />' ).addClass( 'form-field-list-elements' );
-			div.append( divFieldElements );
-			dom.append( div );
+				div = $( "<div />" ).addClass( 'form-field-list-' + field.getType( ) );
+				label = $( "<label />" ).html( field.getTitle( true ) ); // Title is attached to field element
 
-			self.fieldElementsDom[ field.getName( ) ] = divFieldElements;
+				div.append( label );
+				divFieldElements = $( '<div />' ).addClass( 'form-field-list-elements' );
+				div.append( divFieldElements );
+				dom.append( div );
+
+				self.fieldElementsDom[ field.getName( ) ] = divFieldElements;
+			}
+			
 		});
 
 		this.updateDom();
@@ -54,11 +58,9 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 					self.fieldElementsDom[ field.getName() ].append( fieldElement.getDom( ) );
 				});
 			}
-			//self.fieldElementsDom[ field.getName() ] = divFieldElements;
 		});
 
 		this.group.form.redoTabIndices();
-
 		return this.dom;
 	};
 

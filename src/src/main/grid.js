@@ -192,7 +192,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				}
 			});
 
-			module.setDisplayWrapper();
+		//	module.setDisplayWrapper();
 			module.getDomWrapper().find('.ui-resizable-handle').bind('mousedown', function() {
 				checkDimensions(true);
 			});

@@ -100,7 +100,10 @@ define(['require', 'jquery', './field', './grouplistelement', './grouptableeleme
 			}
 
 			if( ! this.fields[ fieldName ] ) {
-				return this.form.throwError('Cannot return field "' + fieldName + '". Field does not exist');
+
+				if( fieldName != "_title" ) {
+					return this.form.throwError('Cannot return field "' + fieldName + '". Field does not exist');
+				}
 			}
 
 			return this.fields[ fieldName ];
