@@ -319,6 +319,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			var layer;
 			if( layer = this.getActiveLayer( newLayerShown )) {
 
+
 				if( ! layer.display ) {
 					
 					this.hide();
@@ -329,6 +330,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				//	console.log('Show');
 					
 				}
+
+
 
 				this.setTitle( layer.title );
 				this.setDisplayWrapper( layer.wrapper );
@@ -347,7 +350,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			}
 		},
 
-		setLayers: function( layers ) {
+		setLayers: function( layers, blankLayer ) {
 			this.definition.layers = this.definition.layers || new ViewObject();
 
 			for( var i in layers ) {
@@ -357,7 +360,14 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 //console.log()
 				// new layer
 				this.definition.layers[ i ] = {};
-				$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );
+
+				if( blankLayer ) {
+					$.extend( true, this.definition.layers[ i ], Module.prototype.emptyConfig );	
+					this.definition.layers[ i ].name = i;
+				} else {
+					$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );	
+				}
+				
 				console.log( this.definition.layers );
 			}
 		},
@@ -379,19 +389,10 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 					return false;
 				}
 
-				this.definition.layers[ activeLayer ] = new ViewObject({
-					position: { left: 0, right: 0 },
-					size: { width: 20, height: 20},
-					zIndex: 0,
-					display: true,
-					title: "",
-					bgcolor: [ 255, 255, 255, 0 ],
-					wrapper: true,
-					created: true,
-					name: activeLayer
-				}, true);
+				this.definition.layers[ activeLayer ] = new ViewObject(Module.prototype.emptyConfig,  true);
+				this.definition.layers[ activeLayer ].name = activeLayer;
 
-				console.log( this.definition.layers[ activeLayer ] );
+				//console.log( this.definition.layers[ activeLayer ] );
 
 			}
 
@@ -1325,6 +1326,17 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			try {
 				this.getDomWrapper().resizable((bln === true || bln == undefined) ? 'enable' : 'disable');
 			} catch(e) {}; 
+		},
+
+		emptyConfig: {
+				position: { left: 0, top: 0 },
+				size: { width: 20, height: 20},
+				zIndex: 0,
+				display: true, 
+				title: "",
+				bgcolor: [ 255, 255, 255, 0 ],
+				wrapper: true,
+				created: true
 		}
 	};
 
