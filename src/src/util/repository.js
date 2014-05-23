@@ -4,7 +4,6 @@ define(['jquery', 'src/util/event'], function($, Event) {
 
 	var bindKeysRecursively = function(repository, keys, callbackId, add) {
 
-console.log( add, keys, repository );
 		for(var i = 0, l = keys.length; i < l; i++) {
 			if(keys[i] instanceof Array) {
 				bindKeysRecursively(repository, keys[i], callbackId, add)
@@ -16,9 +15,10 @@ console.log( add, keys, repository );
 				repository._keys[keys[i]].push(callbackId);
 			} else {
 				var index = repository._keys[keys[i]].indexOf(callbackId);
-				console.log( callbackId, index );
-				if(index == -1)
+				
+				if(index == -1) {
 					continue;
+				}
 				repository._keys[keys[i]].splice(index, 1);
 			}
 		}
@@ -79,7 +79,7 @@ console.log( add, keys, repository );
 				var commonKeys = getCommonKeys(currentCallback[0], sourcekeys);
 
 				if(commonKeys.length > 0 || ((!commonKeys || commonKeys.length == 0) && currentCallback[2])) {
-					console.log( value, commonKeys );
+					
 					currentCallback[1](value, commonKeys);
 				}
 			}
@@ -170,10 +170,7 @@ console.log( add, keys, repository );
 	Repository.prototype.unListen = function(keys, callbackId) {
 		this._keys = this._keys || {};
 		this._callbacks = this._callbacks || [];
-		
 		this._callbacks[callbackId] = undefined;
-		console.log('UnListen');
-
 		bindKeysRecursively(this, keys, callbackId, false);
 	}
 	
