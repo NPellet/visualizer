@@ -30,7 +30,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
 	controller.prototype.valueChanged = function(value) {
 			this.module.definition.richtext = value;
-		this.setVarFromEvent('onEditorChange', DataObject.check(value));
+		this.setVarFromEvent('onEditorChange',new DataObject({type:"html",value:value}));
 	};
 
 	return controller;
