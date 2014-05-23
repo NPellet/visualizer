@@ -367,8 +367,6 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				} else {
 					$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );	
 				}
-				
-				console.log( this.definition.layers );
 			}
 		},
 
@@ -381,7 +379,6 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			if( ! activeLayer ) {
 				return false;
 			}
-//console.log( this.definition.layers )
 
 			if( ! this.definition.layers[ activeLayer ] || ! this.definition.layers[ activeLayer ].created ) {
 
@@ -391,8 +388,6 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 				this.definition.layers[ activeLayer ] = new ViewObject(Module.prototype.emptyConfig,  true);
 				this.definition.layers[ activeLayer ].name = activeLayer;
-
-				//console.log( this.definition.layers[ activeLayer ] );
 
 			}
 
@@ -1016,20 +1011,12 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 					var value = form.getValue().sections;
 
-			//		module.setTitle( value.module_config[ 0 ].groups.group[ 0 ].moduletitle[ 0 ] );
-				//	module.definition.bgColor 			= value.module_config[ 0 ].groups.group[ 0 ].bgcolor[ 0 ];
-//					module.setBackgroundColor( module.definition.bgColor );
-
 					module.definition.layers = module.definition.layers || {};
-					console.log( value.module_config[ 0 ].sections.layer[ 0 ] );
 					var l = value.module_config[ 0 ].sections.layer[ 0 ].groups.group;
 
 					var allDisplay = value.module_config[ 0 ].groups.layerDisplay[ 0 ].displayOn[ 0 ];
 
 					for( var i = 0, ll = l.length ; i < ll ; i ++ ) {
-
-						//console.log( l[ i ].groups.group[ 0 ].layerName[ 0 ], allDisplay, allDisplay.indexOf( l[ i ].groups.group[ 0 ].layerName[ 0 ] ) );
-
 
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].display = allDisplay.indexOf( l[ i ].layerName[ 0 ] ) > -1;
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].title = l[ i ].moduletitle[ 0 ];

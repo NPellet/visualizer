@@ -4,16 +4,19 @@ define(['jquery', 'src/util/event'], function($, Event) {
 
 	var bindKeysRecursively = function(repository, keys, callbackId, add) {
 
+console.log( add, keys, repository );
 		for(var i = 0, l = keys.length; i < l; i++) {
 			if(keys[i] instanceof Array) {
 				bindKeysRecursively(repository, keys[i], callbackId, add)
 				continue;
 			}
 			repository._keys[keys[i]] = repository._keys[keys[i]] || [];
-			if(add)
+
+			if(add) {
 				repository._keys[keys[i]].push(callbackId);
-			else {
+			} else {
 				var index = repository._keys[keys[i]].indexOf(callbackId);
+				console.log( callbackId, index );
 				if(index == -1)
 					continue;
 				repository._keys[keys[i]].splice(index, 1);
@@ -76,6 +79,7 @@ define(['jquery', 'src/util/event'], function($, Event) {
 				var commonKeys = getCommonKeys(currentCallback[0], sourcekeys);
 
 				if(commonKeys.length > 0 || ((!commonKeys || commonKeys.length == 0) && currentCallback[2])) {
+					console.log( value, commonKeys );
 					currentCallback[1](value, commonKeys);
 				}
 			}
@@ -103,8 +107,9 @@ define(['jquery', 'src/util/event'], function($, Event) {
 		if(!(this.options.doNotSave === true))
 			this._value[keys] = [keys, value];
 
-		if(!noTrigger)
+		if(!noTrigger) {
 			this.trigger('change', keys, value);
+		}
 	}
 
 
@@ -114,11 +119,13 @@ define(['jquery', 'src/util/event'], function($, Event) {
 		this._keys = this._keys || {};
 		this._callbacks = this._callbacks || [];
 
-		if(!(keys instanceof Array))
+		if(!(keys instanceof Array)) {
 			keys = [keys];
+		}
 		
-		if(!keys || keys.length == undefined || keys.length == 0)
+		if(!keys || keys.length == undefined || keys.length == 0) {
 			return;
+		}
 
 
 		var _callbackId = ++callbackId;
@@ -165,6 +172,8 @@ define(['jquery', 'src/util/event'], function($, Event) {
 		this._callbacks = this._callbacks || [];
 		
 		this._callbacks[callbackId] = undefined;
+		console.log('UnListen');
+
 		bindKeysRecursively(this, keys, callbackId, false);
 	}
 	

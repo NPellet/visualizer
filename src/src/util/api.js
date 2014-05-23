@@ -22,8 +22,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 	function setVar( name, element, jpath, filter ) {
 
 		var self = this;
-		self.repositoryData.set(name, null);
-
+		
 		switch( typeof element ) {
 			case 'string':
 				element = new DataObject( { type: "string", value: element } );
@@ -43,8 +42,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 			} );	
 
 		} else {
-			console.warn("Variable " + name + " could not be set. Method getChild does not exist.")
-			console.log( element );
+			console.warn("Variable " + name + " could not be set. Method getChild does not exist.");
 			console.trace();
 		}
 	}
