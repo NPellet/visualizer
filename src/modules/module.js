@@ -1,9 +1,4 @@
-
-define([	
-	'jquery',
-	'src/util/context',
-	'src/util/api',
-	'src/util/util'], function($, ContextMenu, API, Util) {
+define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util/fullscreen'], function($, ContextMenu, API, Util, Fullscreen) {
 	
 	function init(module) {
 		//define object properties
@@ -290,6 +285,11 @@ define([
 			if( ! API.isViewLocked() ) {
 
 				ContextMenu.listen(this.getDomWrapper().get(0), [
+					
+					['<li><a><span class="ui-icon ui-icon-arrow-4-diag"></span> Fullscreen</a></li>', 
+					function() {
+						self.enableFullscreen();
+					}],
 
 					['<li><a><span class="ui-icon ui-icon-suitcase"></span> Export</a></li>', 
 					function() {
@@ -310,10 +310,15 @@ define([
 			}
 		},
 		
+		enableFullscreen: function() {
+			Fullscreen.requestFullscreen(this);
+		},
+		
 		toggleLayer: function( newLayerShown, layerOut ) {
 
 			var layer;
 			if( layer = this.getActiveLayer( newLayerShown )) {
+
 
 				if( ! layer.display ) {
 					
@@ -326,8 +331,12 @@ define([
 					
 				}
 
+
+
 				this.setTitle( layer.title );
 				this.setDisplayWrapper( layer.wrapper );
+				this.setBackgroundColor( layer.bgcolor || [255,255,255,1] );
+
 				this.activeLayerName = newLayerShown;
 
 				return layer;
@@ -341,7 +350,7 @@ define([
 			}
 		},
 
-		setLayers: function( layers ) {
+		setLayers: function( layers, blankLayer ) {
 			this.definition.layers = this.definition.layers || new ViewObject();
 
 			for( var i in layers ) {
@@ -351,8 +360,13 @@ define([
 //console.log()
 				// new layer
 				this.definition.layers[ i ] = {};
-				$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );
-				console.log( this.definition.layers );
+
+				if( blankLayer ) {
+					$.extend( true, this.definition.layers[ i ], Module.prototype.emptyConfig );	
+					this.definition.layers[ i ].name = i;
+				} else {
+					$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );	
+				}
 			}
 		},
 
@@ -365,7 +379,6 @@ define([
 			if( ! activeLayer ) {
 				return false;
 			}
-//console.log( this.definition.layers )
 
 			if( ! this.definition.layers[ activeLayer ] || ! this.definition.layers[ activeLayer ].created ) {
 
@@ -373,19 +386,8 @@ define([
 					return false;
 				}
 
-				this.definition.layers[ activeLayer ] = new ViewObject({
-					position: { left: 0, right: 0 },
-					size: { width: 20, height: 20},
-					zIndex: 0,
-					display: true,
-					title: "",
-					bgcolor: [ 255, 255, 255, 0 ],
-					wrapper: true,
-					created: true,
-					name: activeLayer
-				}, true);
-
-				console.log( this.definition.layers[ activeLayer ] );
+				this.definition.layers[ activeLayer ] = new ViewObject(Module.prototype.emptyConfig,  true);
+				this.definition.layers[ activeLayer ].name = activeLayer;
 
 			}
 
@@ -565,7 +567,6 @@ define([
 				actionsInList.push({ title: actionsIn[ i ], key: i});
 			}
 
-
 			var allLayers = {};
 			module.eachLayer( function( layer, key ) {
 				allLayers[ key ] = key;
@@ -632,8 +633,7 @@ define([
 								layer: {
 
 									options: {
-										title: 'Shown on layers',
-										multiple: true
+										title: 'Shown on layers'
 									},
 								
 									groups: {
@@ -641,7 +641,8 @@ define([
 										group: {
 											options: {
 												type: 'list',
-												multiple: true
+												multiple: true,
+												title: true
 											},
 
 											fields: {
@@ -649,7 +650,8 @@ define([
 												layerName: {
 													type: 'text',
 													multiple: false,
-													title: 'Layer name'
+													title: 'Layer name',
+													displayed: false
 												},
 
 												moduletitle: {
@@ -973,9 +975,8 @@ define([
 							allLayerDisplay.push( name );
 						}
 						
-
-
 						allLayers.push({ 
+							_title: name,
 							layerName: [ name ],
 							moduletitle: [ layer.title ],
 							bgcolor: [ layer.bgColor || [ 255, 255, 255, 0 ] ],
@@ -1010,20 +1011,12 @@ define([
 
 					var value = form.getValue().sections;
 
-			//		module.setTitle( value.module_config[ 0 ].groups.group[ 0 ].moduletitle[ 0 ] );
-				//	module.definition.bgColor 			= value.module_config[ 0 ].groups.group[ 0 ].bgcolor[ 0 ];
-//					module.setBackgroundColor( module.definition.bgColor );
-
 					module.definition.layers = module.definition.layers || {};
-					console.log( value.module_config[ 0 ].sections.layer[ 0 ] );
 					var l = value.module_config[ 0 ].sections.layer[ 0 ].groups.group;
 
 					var allDisplay = value.module_config[ 0 ].groups.layerDisplay[ 0 ].displayOn[ 0 ];
-console.log( l );
+
 					for( var i = 0, ll = l.length ; i < ll ; i ++ ) {
-
-						//console.log( l[ i ].groups.group[ 0 ].layerName[ 0 ], allDisplay, allDisplay.indexOf( l[ i ].groups.group[ 0 ].layerName[ 0 ] ) );
-
 
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].display = allDisplay.indexOf( l[ i ].layerName[ 0 ] ) > -1;
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].title = l[ i ].moduletitle[ 0 ];
@@ -1031,9 +1024,6 @@ console.log( l );
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].wrapper = l[ i ].modulewrapper[ 0 ].indexOf('display') > -1;
 					}
 
-console.log( module.definition.layers )
-					//module.definition.displayWrapper 	= value.module_config[ 0 ].groups.group[ 0 ].modulewrapper[ 0 ].indexOf('display') > -1;
-		//			module.setDisplayWrapper();
 
 					if( value.vars_out ) {
 						module.setSendVars(		value.vars_out[ 0 ].groups.group[ 0 ]			);
@@ -1313,7 +1303,7 @@ console.log( module.definition.layers )
 		},
 
 		setBackgroundColor: function(color) {
-			this.domContent.get(0).style.backgroundColor = 'rgba(' + color + ')';
+			this.domContent.get(0).style.backgroundColor = 'rgba(' + color.join(",") + ')';
 		},
 
 		setDisplayWrapper: function( bln ) {
@@ -1323,6 +1313,17 @@ console.log( module.definition.layers )
 			try {
 				this.getDomWrapper().resizable((bln === true || bln == undefined) ? 'enable' : 'disable');
 			} catch(e) {}; 
+		},
+
+		emptyConfig: {
+				position: { left: 0, top: 0 },
+				size: { width: 20, height: 20},
+				zIndex: 0,
+				display: true, 
+				title: "",
+				bgcolor: [ 255, 255, 255, 0 ],
+				wrapper: true,
+				created: true
 		}
 	};
 

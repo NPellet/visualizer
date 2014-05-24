@@ -12,9 +12,9 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			dom = $("<div />").addClass('form-group-table'),
 			table, domHead, domBody, tr, th, divFieldElements;
 
-
-		if( this.group.getTitle() ) {
-			dom.append('<div class="form-groupelement-title">' + this.group.getTitle() + '</div>');
+console.log( this.getTitle(), this.group.getTitle())
+		if( this.getTitle() ) {
+			dom.append('<div class="form-groupelement-title">' + this.getTitle() + '</div>');
 		}
 
 		table = $("<table />", { cellpadding: 0, cellspacing: 0 } ).css( { width: '100%' } );
@@ -27,8 +27,10 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 
 		this.group.eachFields( function( field ) {
 
-			th = $( "<th />" ).html( field.getTitle( true ) );
-			tr.append( th );
+			if( field.isDisplayed() ) {
+				th = $( "<th />" ).html( field.getTitle( true ) );
+				tr.append( th );
+			}
 
 		});
 

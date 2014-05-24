@@ -33,6 +33,14 @@ define(['require', 'jquery'], function(require, $) {
 			return this.name || '';
 		},
 
+		isHidden: function() {
+			return this.options.hidden;
+		},
+
+		isDisplayed: function() {
+			return this.options.displayed === true ||  this.options.displayed === undefined;
+		},
+
 		makeElement: function() {
 
 			var 

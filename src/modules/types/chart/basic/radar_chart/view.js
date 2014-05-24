@@ -72,15 +72,22 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			// 1. convert the data
 			// 2. create an empty chart
 			// 3. apply the data
+<<<<<<< HEAD
 
 			var data=this._convertChartToData(this.value);
 
+=======
+
+			var data=this._convertChartToData(this.value);
+
+>>>>>>> upstream/gh-pages
 
 			this.createChart(this.value);
 
 			this._radar.parse(data,"json");
 
 			var self=this;
+<<<<<<< HEAD
 			this._radar.attachEvent("onMouseMove", function (id, ev, trg)
 			{
 				data.forEach(function(entry) 
@@ -100,11 +107,35 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					}}
 
 
+=======
+			self._radar.attachEvent("onMouseMove", function (id, ev, trg)
+			{
+				self._data.forEach(function(entry) 
+				{
+				
+					if(entry.id == id)
+					{
+						var obj = entry;
+						if(ev.toElement.outerHTML[ev.toElement.outerHTML.length -3] == 'd')
+					{
+						self.module.controller.elementHover(obj._highlight[0]);
+					}
+					else
+					{
+						self.module.controller.elementHover(obj._highlight[ev.toElement.outerHTML[ev.toElement.outerHTML.length -3]]);
+					}}
+
+
+>>>>>>> upstream/gh-pages
 				});		
 				return true;
 
 			}); 
+<<<<<<< HEAD
 			this._radar.attachEvent("onMouseOut", function (id, ev, trg){
+=======
+			self._radar.attachEvent("onMouseOut", function (id, ev, trg){
+>>>>>>> upstream/gh-pages
 						self.module.controller.elementOut();
 			}); 
 
@@ -122,11 +153,17 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					data[j]['_highlight'] = [];	
 					for (var i = 0; i < value.data.length; i++) 
 					{
+<<<<<<< HEAD
 						var index = "serie"+i;
 						data[j][index] = value.data[i].y[j];
 						console.log(value.data[i]._highlight[j]);
 						if (value.data[i]._highlight && value.data[i]._highlight[j]) {
 							data[j]['_highlight'].push({name: index, _highlight: value.data[i]._highlight[j]});
+=======
+						data[j][value.data[i].name] = value.data[i].y[j];
+						if (value.data[i]._highlight && value.data[i]._highlight[j]) {
+							data[j]['_highlight'].push({name: value.data[i].name, _highlight: value.data[i]._highlight[j]});
+>>>>>>> upstream/gh-pages
 						}
 					}
 				};
@@ -172,7 +209,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 						if(i != 0)
 						{
 						this._radar.addSeries({
+<<<<<<< HEAD
 								value: "#serie"+i+"#",
+=======
+								value: "#"+chart.data[i].name+"#",
+>>>>>>> upstream/gh-pages
 								fill: chart.data[i].color,
 								line:{
 									color:chart.data[i].color,
@@ -194,6 +235,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					values: val
 				}); 
 				break;
+<<<<<<< HEAD
 
 			case 'pie':
 				var options = {
@@ -201,6 +243,14 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					container: this._id,
 					radius: 250,
 					value: "#serie0#",
+=======
+				
+			case 'pie':
+				var options = {
+					// view: cfg('pie'),
+					container: self._id,
+					value: "#"+chart.data[0].name+"#",
+>>>>>>> upstream/gh-pages
 					color: chart.data[0].color,
 					pieInnerText: "<b>#xunit#</b>"
 				};

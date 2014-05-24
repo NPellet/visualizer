@@ -44,8 +44,10 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 	function duplicateModule( module ) {
 
 		var def = JSON.parse( JSON.stringify( module.definition ), Versioning.getViewHandler()._reviver );
-		def.position.left += 2;
-		def.position.top += 2;
+
+		def.layers[ getActiveLayer() ].position.left += 2;
+		def.layers[ getActiveLayer() ].position.top += 2;
+		
 		addModuleFromJSON( def );
 	}
 
@@ -65,15 +67,14 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		} );
 	}
 
-	function addModule(module) {
+	function addModule( module ) {
 		
 		var grid = this;
 		module.getDomWrapper( ).appendTo( jqdom );
 		modules.push( module );
-
 		setModuleSize( module );
+		module.setLayers( definition.layers, true );
 
-		
 
 		if( ! API.isViewLocked() ) {
 			Context.listen(module.getDomWrapper().get(0), [
@@ -192,7 +193,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				}
 			});
 
-			module.setDisplayWrapper();
+		//	module.setDisplayWrapper();
 			module.getDomWrapper().find('.ui-resizable-handle').bind('mousedown', function() {
 				checkDimensions(true);
 			});
@@ -518,9 +519,9 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		return def;
 	}
 
-	function setLayers() {
+	function setLayers( newIsBlank ) {
 		eachModules( function( moduleInstance ) {
-			moduleInstance.setLayers( definition.layers );
+			moduleInstance.setLayers( definition.layers, newIsBlank );
 		} );
 	}
 

@@ -26,10 +26,17 @@ define(['components/twig.js/twig.min', 'src/util/typerenderer', 'src/util/util']
 	
 	// Add typerenderer support
 	
-	Twig.extendFunction("rendertype", function(value) {
+	Twig.extendFunction("rendertype", function(value, forceType) {
 		
 		if(!value)
 			return;
+		
+		if(forceType) {
+			value = new DataObject({
+				type: forceType,
+				value: value
+			});
+		}
             
         var id = Util.getNextUniqueId();
 		

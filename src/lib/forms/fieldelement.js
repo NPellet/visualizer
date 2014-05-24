@@ -120,7 +120,7 @@ define(['jquery'], function($) {
 			}
 
 			this.dom.removeClass('form-field-error');
-			if( this.field.options.validation.positiveFeedback ) {
+			if( this.field.options.validation && this.field.options.validation.positiveFeedback ) {
 
 				this.dom.addClass('form-field-valid');
 

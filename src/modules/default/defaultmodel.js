@@ -18,14 +18,12 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 		resetListeners: function() {
 			this.sourceMap = null;
-
-			if( this._varlisten && this._actionlisten ) {
-				API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
-				API.getRepositoryActions( ).unListen( this.getActionNameList(), this._actionlisten );
-			}
-
-			this._varlisten = API.getRepositoryData().listen(this.getVarNameList(), $.proxy(this.onVarGet, this));
-			this._actionlisten = API.getRepositoryActions().listen(this.getActionNameList(), $.proxy(this.onActionTrigger, this));
+	
+			API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
+			API.getRepositoryActions( ).unListen( this.getActionNameList(), this._actionlisten );
+		
+			this._varlisten = API.getRepositoryData().listen( this.getVarNameList(), $.proxy(this.onVarGet, this) );
+			this._actionlisten = API.getRepositoryActions().listen( this.getActionNameList(), $.proxy(this.onActionTrigger, this) );
 		},
 
 		getVarNameList: function() {
