@@ -122,8 +122,9 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					data[j]['_highlight'] = [];	
 					for (var i = 0; i < value.data.length; i++) 
 					{
-						index = "serie"+i;
+						var index = "serie"+i;
 						data[j][index] = value.data[i].y[j];
+						console.log(value.data[i]._highlight[j]);
 						if (value.data[i]._highlight && value.data[i]._highlight[j]) {
 							data[j]['_highlight'].push({name: index, _highlight: value.data[i]._highlight[j]});
 						}
