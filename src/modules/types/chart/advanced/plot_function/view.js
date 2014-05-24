@@ -3,7 +3,7 @@ define(['require','modules/default/defaultview','src/util/util','src/util/api','
 	view.prototype = $.extend(true, {}, Default, {
 
 		init: function() {
-			console.log("INIT");
+			// console.log("INIT");
 
 			var self=this;
 
@@ -17,14 +17,13 @@ define(['require','modules/default/defaultview','src/util/util','src/util/api','
 				}
 			)();
 
-			
 			var cfg = $.proxy(self.module.getConfiguration, self.module);
 
 			this._id = Util.getNextUniqueId();
 			$block = $('<div>',{Id: this._id }) ;
 			$block.css('display', 'table').css('height', '100%').css('width', '100%').css("overflow","hidden") ; //.css("background","#33ccff");
 			this.dom = $block ;
-			this.module.getDomContent().html(this.dom) ;
+			this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
 
 			this.zFunctionText=cfg('function')||"sin(sqrt(0.01*x^2  + 0.01*y^2))*10";
 			this.xMin=cfg('xMin')||-100;
@@ -39,7 +38,7 @@ define(['require','modules/default/defaultview','src/util/util','src/util/api','
 			
 			
 			if (this.scene) {
-				console.log(this.scene.__webglObjects);
+			//	console.log(this.scene.__webglObjects);
 			//	this.scene.remove
 
 				this.scene.remove(this.graphGeometry);
@@ -48,7 +47,7 @@ define(['require','modules/default/defaultview','src/util/util','src/util/api','
 				delete this.graphGeometry;
 				delete this.graphMesh;
 				delete this.floor;
-				console.log(this.scene.__webglObjects);
+				// console.log(this.scene.__webglObjects);
 			}
 			this.graphGeometry;
 			this.graphMesh;
