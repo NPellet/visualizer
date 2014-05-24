@@ -242,10 +242,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		},
 
 		plot: function(id,data,options) {
-			var self=this;
 
 			var self=this;
-
 			self._plot=$.plot("#"+id, data, options);
 			$("#"+id).bind("plotclick", function (event, pos, item) {
 
