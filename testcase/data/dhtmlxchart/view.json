@@ -2,16 +2,6 @@
 	"modules": [
 		{
 			"url": "./modules/types/chart/basic/radar_chart/",
-			"title": "Radar Chart",
-			"displayWrapper": true,
-			"position": {
-				"left": 18,
-				"top": 0
-			},
-			"size": {
-				"width": 61,
-				"height": 51
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -64,25 +54,34 @@
 				{}
 			],
 			"actions_out": {},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 56,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 61,
+						"height": 51
+					},
+					"display": true,
+					"title": "Radar Chart",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Radar Chart"
 		},
 		{
 			"url": "./modules/types/display/fasttable/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 0,
-				"top": 0
-			},
-			"size": {
-				"width": 17,
-				"height": 21
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -130,25 +129,34 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 18,
+						"height": 16
+					},
+					"display": true,
+					"title": "Untitled module",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Untitled module"
 		},
 		{
 			"url": "./modules/types/chart/basic/radar_chart/",
-			"title": "Radar Chart",
-			"displayWrapper": true,
-			"position": {
-				"left": 83,
-				"top": 1
-			},
-			"size": {
-				"width": 61,
-				"height": 51
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -201,25 +209,34 @@
 				{}
 			],
 			"actions_out": {},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 120,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 61,
+						"height": 51
+					},
+					"display": true,
+					"title": "Radar Chart",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Radar Chart"
 		},
 		{
 			"url": "./modules/types/chart/basic/radar_chart/",
-			"title": "Radar Chart",
-			"displayWrapper": true,
-			"position": {
-				"left": 82,
-				"top": 50
-			},
-			"size": {
-				"width": 61,
-				"height": 51
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -272,25 +289,34 @@
 				{}
 			],
 			"actions_out": {},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 120,
+						"top": 51.99999885559082,
+						"right": 0
+					},
+					"size": {
+						"width": 61,
+						"height": 51
+					},
+					"display": true,
+					"title": "Radar Chart",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Radar Chart"
 		},
 		{
 			"url": "./modules/types/chart/basic/radar_chart/",
-			"title": "Radar Chart",
-			"displayWrapper": true,
-			"position": {
-				"left": 14,
-				"top": 50
-			},
-			"size": {
-				"width": 61,
-				"height": 51
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -343,12 +369,181 @@
 				{}
 			],
 			"actions_out": {},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 56,
+						"top": 51.99999885559082,
+						"right": 0
+					},
+					"size": {
+						"width": 61,
+						"height": 51
+					},
+					"display": true,
+					"title": "Radar Chart",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Radar Chart"
+		},
+		{
+			"url": "modules/types/edition/object_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"text"
+							],
+							"expanded": [
+								[]
+							],
+							"storeObject": [
+								[]
+							],
+							"output": [
+								"new"
+							],
+							"storedObject": [
+								"{\n    \"type\": \"chart\",\n    \"value\": {\n      \"title\": \"A stack chart\",\n      \"axis\": {\n        \"0\": {\n          \"type\": \"\",\n          \"unit\": \"\",\n          \"min\": 0,\n          \"max\": 20\n        },\n        \"1\": {\n          \"type\": \"\",\n          \"unit\": \"\",\n          \"min\": \"\",\n          \"max\": \"\"\n        }\n      },\n      \"data\": [\n        {\n          \"x\": [\n            \"january\",\n            \"february\",\n            \"march\",\n            \"april\",\n            \"may\",\n            \"june\",\n            \"august\"\n          ],\n          \"y\": [\n            65,\n            59,\n            90,\n            81,\n            56,\n            55,\n            40\n          ],\n          \"z\": [],\n          \"_highlight\": [\n            \"A\",\n            \"B\",\n            \"E\",\n            \"C\"\n          ],\n          \"color\": \"#FF00FF\",\n          \"name\": \"first\",\n          \"serieLabel\": \"My first serie\",\n          \"xAxis\": \"0\",\n          \"yAxis\": \"1\"\n        },\n        {\n          \"x\": [\n            \"january\",\n            \"february\",\n            \"march\",\n            \"april\",\n            \"may\",\n            \"june\",\n            \"august\"\n          ],\n          \"y\": [\n            28,\n            48,\n            40,\n            19,\n            96,\n            27,\n            100\n          ],\n          \"z\": [],\n          \"_highlight\": [\n            \"D\",\n            \"E\",\n            \"C\",\n            \"A\"\n          ],\n          \"color\": \"#0000FF\",\n          \"name\": \"second\",\n          \"serieLabel\": \"My second serie\",\n          \"xAxis\": \"0\",\n          \"yAxis\": \"1\"\n        },\n        {\n          \"x\": [\n            \"january\",\n            \"february\",\n            \"march\",\n            \"april\",\n            \"may\",\n            \"june\",\n            \"august\"\n          ],\n          \"y\": [\n            48,\n            68,\n            40,\n            19,\n            76,\n            27,\n            31\n          ],\n          \"z\": [],\n          \"_highlight\": [\n            \"D\",\n            \"E\",\n            \"C\",\n            \"A\"\n          ],\n          \"color\": \"#FF0000\",\n          \"name\": \"third\",\n          \"info\": [\n            {\n              \"name\": \"third\"\n            }\n          ],\n          \"serieLabel\": \"My third serie\",\n          \"xAxis\": \"0\",\n          \"yAxis\": \"1\"\n        }\n      ]\n    }\n  }"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"right": 0,
+						"top": 17
+					},
+					"size": {
+						"width": 55,
+						"height": 35
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"event": "onObjectChange",
+					"rel": "value",
+					"name": "dynamicChart"
+				}
+			],
+			"title": "Untitled",
+			"actions_out": {}
+		},
+		{
+			"url": "./modules/types/chart/basic/radar_chart/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"preference": [
+								"radar"
+							],
+							"pie": [
+								"pie3D"
+							],
+							"start": [
+								[
+									0
+								]
+							],
+							"end": [
+								[
+									100
+								]
+							],
+							"step": [
+								[
+									10
+								]
+							],
+							"point": [
+								[
+									true
+								]
+							],
+							"lineshape": [
+								[
+									"arc"
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "chart",
+					"name": "dynamicChart"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 53,
+						"right": 0
+					},
+					"size": {
+						"width": 55,
+						"height": 50
+					},
+					"display": true,
+					"title": "Radar Chart",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Radar Chart"
 		}
 	],
 	"variables": [
@@ -393,5 +588,15 @@
 			}
 		}
 	],
-	"version": "2.2.3"
+	"version": "2.3.0-beta1",
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"pouchvariables": []
 }
