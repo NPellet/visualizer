@@ -91,6 +91,7 @@ define(['require',
       var svgcode = this.module.getConfiguration('svgcode');
       console.log('load svg code: ', svgcode);
       this.svgCanvas.setSvgString(svgcode);
+      this.module.controller.onChange(svgcode);
     },
 
     _saveSvg: function() {
