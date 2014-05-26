@@ -83,8 +83,6 @@ define(['require',
 
       }
     },
-
-
     getDom: function() {
       return this.dom;
     },
@@ -103,6 +101,7 @@ define(['require',
           return;
         }
         self.module.definition.configuration.groups.group[0].svgcode = [data];
+        self.module.controller.onChange(data);
       }
       self.svgCanvas.getSvgString()(handleSvgData);
         

@@ -14,6 +14,7 @@ define(function() {
 		'jpg': "string",
 		'jpeg': "string",
 		'png': "string",
+    'svg': "string",
 		'number': "number",
 		'mf': 'string',
 		'jcamp': "string",

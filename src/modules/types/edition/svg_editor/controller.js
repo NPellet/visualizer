@@ -39,8 +39,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     }
   };
 	
-  controller.prototype.onChange = function(elements, ref) {
-    return;
+  controller.prototype.onChange = function(val) {
+    this.setVarFromEvent("onChange", DataObject.check({type:"svg", value: val}, true), "svgString");
   }
 	
 
