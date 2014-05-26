@@ -84,7 +84,8 @@ module.exports = function(grunt) {
               './uri.js/src/*.js',
               './twig.js/twig.min.js',
               ['./setImmediate/setimmediate.js','./promises/promise.js'], // Promises polyfill
-              './onde/src/*'
+              './onde/src/*',
+              ['./spectrum/spectrum.js', './spectrum/spectrum.css']
             ],
 
             dest: './build/components/'
