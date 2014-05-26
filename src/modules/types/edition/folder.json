@@ -1,38 +1,43 @@
 {
-	"modules": [
-		{
-			"moduleName": "Filter",
-			"url": "modules/types/edition/filter/"
-		},
-		{
-			"moduleName": "Filter editor",
-			"url": "modules/types/edition/filter_editor/"
-		},
-		{
-			"moduleName": "Form",
-			"url": "modules/types/edition/form/"
-		},
-		{
-			"moduleName": "Simple Form",
-			"url": "modules/types/edition/form_simple/"
-		},
-		{
-			"moduleName": "Object editor",
-			"url": "modules/types/edition/object_editor/"
-		},
-		{
-			"moduleName": "Onde",
-			"url": "modules/types/edition/onde/"
-		},
-		{
-			"moduleName": "Var Editor",
-			"url": "modules/types/edition/var_editor/"
-		},
-                {
-                        "moduleName": "Edit/Display",
-                        "url": "modules/types/edition/dualview/"
-                }
-	],
-	"name": "Edition",
-	"folders": []
+  "modules": [
+    {
+      "moduleName": "Filter",
+      "url": "modules/types/edition/filter/"
+    },
+    {
+      "moduleName": "Filter editor",
+      "url": "modules/types/edition/filter_editor/"
+    },
+    {
+      "moduleName": "Form",
+      "url": "modules/types/edition/form/"
+    },
+    {
+      "moduleName": "Simple Form",
+      "url": "modules/types/edition/form_simple/"
+    },
+    {
+      "moduleName": "Object editor",
+      "url": "modules/types/edition/object_editor/"
+    },
+    {
+      "moduleName": "Onde",
+      "url": "modules/types/edition/onde/"
+    },
+    {
+      "moduleName": "Var Editor",
+      "url": "modules/types/edition/var_editor/"
+    },
+    {
+      "moduleName": "Edit/Display",
+      "url": "modules/types/edition/dualview/"
+    },
+    {
+      "moduleName": "SVG Editor",
+      "url": "modules/types/edition/svg_editor/"
+    }
+    
+  ],
+  "name": "Edition",
+  "folders": []
 }
