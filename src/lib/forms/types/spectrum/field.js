@@ -2,7 +2,6 @@
 define( [ require, '../../field', 'src/util/util', 'jqueryui', 'components/farbtastic/src/farbtastic', 'components/spectrum/spectrum' ], function( require, FieldDefaultConstructor, Util, ui, spectrum ) {
   var felement = null;
 	var FieldConstructor = function(name) {
-    console.log('field constructor')
 		var self = this;
 
     Util.loadCss("./components/spectrum/spectrum.css")
@@ -30,7 +29,6 @@ define( [ require, '../../field', 'src/util/util', 'jqueryui', 'components/farbt
       }
     });
     
-    console.log('spectrum', this.domExpander);
 		$("<div />").addClass('clear').appendTo( this.domExpander );
 	};
 
