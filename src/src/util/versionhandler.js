@@ -4,7 +4,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 		
 		this.currentPath = [];
 		this._allData = {};
-		self._head = {};
+		//self._head = {};
 		this.dom = $("<div />");
 		
  		this.versionChangeDeferred = $.Deferred();
