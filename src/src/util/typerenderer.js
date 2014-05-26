@@ -43,6 +43,39 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 	functions.picture.toscreen = function(def, val) {
 		def.reject('<img src="' + Traversing.get(val) + '" />');
 	};
+  
+  functions.svg = {};
+  functions.svg.toscreen = function(def, val) {
+    var dom = $(val.value);
+    var viewbox = [0, 0, dom.attr('width'), dom.attr('height')];
+    dom[0].setAttribute('viewBox', viewbox.join(' '));
+    dom.attr('width', '100%');
+    dom.attr('height', '100%');
+    // dom.attr('viewbox', '0 0 1000 1000');
+    // dom.attr('preserveAspectRatio', 'xMin');
+    // dom.width(100).height(100);
+    // img.wrap("<span></span>").parent().html()
+    // def.build = function(domEl) {
+    //   var domSvg = domEl.children();
+    //   
+    //   
+    // }
+    def.resolve(dom);
+  }
+  
+  // functions.svg.toscreen = function(def, val) {
+  //   var canvas = $('<canvas></canvas>');
+  //   canvg(canvas[0], Traversing.get(val));
+  //   def.reject('<img src="' + canvas[0].toDataURL() + '" style="max-width:100%; max-height:100%"/>');
+  //   // def.build = function(domEl) {
+  //   //   var el = $(domEl).closest('.ci-module-content');
+  //   //   var img = $(domEl).find('img');
+  //   //   var imgw = img.width(); var imgh = img.height();
+  //   //   var domw = el.width(); var domh = el.height();
+  //   //   var factor = Math.max(imgw/domw, imgh/domh);
+  //   //   img.width(imgw/factor).height(imgh/factor);
+  //   // }
+  // }
 
 	functions.gif = functions.picture;
 	functions.jpeg = functions.picture;

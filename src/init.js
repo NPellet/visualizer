@@ -14,7 +14,8 @@ requirejs.config({
 		ChemDoodle: "lib/chemdoodle/ChemDoodleWeb-unpacked",
 		pouchdb: "components/pouchdb/dist/pouchdb-nightly.min",
 		uri: "components/uri.js/src",
-    underscore: "./components/underscore/underscore"
+    underscore: "./components/underscore/underscore",
+    svgedit: "./lib/svg-edit-2.7/embedapi"
 	},
 	shim: {
 		"d3": {
