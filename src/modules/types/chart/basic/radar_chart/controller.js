@@ -1,5 +1,5 @@
 define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/api'], function(Default, Traversing, API) {
-	
+
 	/**
 	 * Creates a new empty controller
 	 * @class Controller
@@ -32,9 +32,9 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		// List of all possible events
 
 	};
-	
 
-	
+
+
 
 
 	/*
@@ -45,7 +45,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 			type: ['chart'],
 			label: 'A json describing a chart'
 		},
-		
+
 	};
 
 
@@ -55,7 +55,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 			return;
 		}
 
-		
+
 		if (this._highlighted) {
 			API.highlight( this._highlighted, 0 );
 		}
@@ -75,7 +75,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		In the form of 
 	*/
 	controller.prototype.variablesIn = [ 'chart' ];
-	
+
 
 	controller.prototype.configurationStructure = function() {
 		return {
@@ -86,7 +86,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 					},
 
 					fields: {
-						
+
 						preference : {
 							type: 'combo',
 							title: 'Chart Type',
@@ -142,24 +142,24 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 							options: [
 								{title: 'Arc', key: 'arc'},
 								{title: 'Line', key: 'line'}
-								
+
 							],
 							displayTarget: [ 'r' ]
 						}
 
-						
+
 
 					}
 				}
 			}
 		}
 	};
-	
+
 	controller.prototype.configFunctions = {
 		'point': function(cfg) { return cfg.indexOf('point') == -1 ? true : false; }
 	};
 	controller.prototype.configAliases = {
-	
+
 		'preference': [ 'groups', 'group', 0, 'preference', 0 ],
 		'pie': [ 'groups', 'group', 0, 'pie', 0 ],
 		'start': [ 'groups', 'group', 0, 'start', 0 ],
@@ -172,4 +172,3 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 
  	return controller;
 });
-

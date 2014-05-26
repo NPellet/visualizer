@@ -81,14 +81,15 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			this._radar.parse(data,"json");
 
 			var self=this;
-			self._radar.attachEvent("onMouseMove", function (id, ev, trg)
+			this._radar.attachEvent("onMouseMove", function (id, ev, trg)
 			{
-				self._data.forEach(function(entry) 
+				data.forEach(function(entry) 
 				{
-				
+
 					if(entry.id == id)
 					{
 						var obj = entry;
+						console.log(obj);
 						if(ev.toElement.outerHTML[ev.toElement.outerHTML.length -3] == 'd')
 					{
 						self.module.controller.elementHover(obj._highlight[0]);
@@ -103,7 +104,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				return true;
 
 			}); 
-			self._radar.attachEvent("onMouseOut", function (id, ev, trg){
+			this._radar.attachEvent("onMouseOut", function (id, ev, trg){
 						self.module.controller.elementOut();
 			}); 
 
@@ -121,9 +122,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					data[j]['_highlight'] = [];	
 					for (var i = 0; i < value.data.length; i++) 
 					{
-						data[j][value.data[i].name] = value.data[i].y[j];
+						index = "serie"+i;
+						data[j][index] = value.data[i].y[j];
 						if (value.data[i]._highlight && value.data[i]._highlight[j]) {
-							data[j]['_highlight'].push({name: value.data[i].name, _highlight: value.data[i]._highlight[j]});
+							data[j]['_highlight'].push({name: index, _highlight: value.data[i]._highlight[j]});
 						}
 					}
 				};
@@ -141,7 +143,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					view: "radar",
 					container: self._id,
 					alpha:0.2,
-					value: "#"+chart.data[0].name+"#",
+					value: "#serie0#",
 					disableItems: false,
 					color: chart.data[0].color,
 					fill: chart.data[0].color,
@@ -169,7 +171,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 						if(i != 0)
 						{
 						this._radar.addSeries({
-								value: "#"+chart.data[i].name+"#",
+								value: "#serie"+i+"#",
 								fill: chart.data[i].color,
 								line:{
 									color:chart.data[i].color,
@@ -191,12 +193,13 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					values: val
 				}); 
 				break;
-				
+
 			case 'pie':
 				var options = {
-					// view: cfg('pie'),
-					container: self._id,
-					value: "#"+chart.data[0].name+"#",
+					view: cfg('pie'),
+					container: this._id,
+					radius: 250,
+					value: "#serie0#",
 					color: chart.data[0].color,
 					pieInnerText: "<b>#xunit#</b>"
 				};
