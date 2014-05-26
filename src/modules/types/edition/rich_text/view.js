@@ -6,14 +6,16 @@ define(['modules/default/defaultview', 'src/util/util', 'ckeditor'], function(De
 
     view.prototype = $.extend(true, {}, Default, {
         init: function() {
+			var initText = this.module.definition.richtext || '';
             var html = $('<div id="'+this._id+'" contenteditable="true">');
             this.dom = $(html).css({
                 height: '100%',
                 width: '100%',
 				padding: "5px",
 				boxSizing: "border-box"
-            }).html(this.module.definition.richtext || '');
+            }).html(initText);
             this.module.getDomContent().html(this.dom);
+			this.module.controller.valueChanged(initText);
         },
         inDom: function() {
 			var self = this;
