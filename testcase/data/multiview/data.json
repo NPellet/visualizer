@@ -1,5 +1,5 @@
 {
-    "a": "test",
+    "x": [{"label":"val1"},{"label":"val2"},{"label":"val3"}],
     "b": {
         "c" : "test2",
         "d" : "test3"
