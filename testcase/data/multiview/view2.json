@@ -1,18 +1,7 @@
 {
-	"_version": "2.2.2",
 	"modules": [
 		{
 			"url": "modules/types/science/spectra/spectra_displayer/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 34,
-				"top": 1
-			},
-			"size": {
-				"width": 66,
-				"height": 46
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -102,7 +91,7 @@
 					]
 				}
 			},
-			"id": 1,
+			"id": 4,
 			"vars_in": [
 				{
 					"rel": "xArray",
@@ -118,25 +107,34 @@
 			"actions_out": [
 				{}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 34,
+						"top": 1,
+						"right": 0
+					},
+					"size": {
+						"width": 66,
+						"height": 46
+					},
+					"display": true,
+					"title": "Untitled module",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Untitled module"
 		},
 		{
 			"url": "modules/types/display/single_value/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 112,
-				"top": 40
-			},
-			"size": {
-				"width": 48,
-				"height": 13
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -178,7 +176,7 @@
 					]
 				}
 			},
-			"id": 2,
+			"id": 5,
 			"vars_in": [
 				{
 					"rel": "value",
@@ -188,11 +186,112 @@
 			"actions_in": {},
 			"vars_out": {},
 			"actions_out": {},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 112,
+						"top": 40,
+						"right": 0
+					},
+					"size": {
+						"width": 48,
+						"height": 13
+					},
+					"display": true,
+					"title": "Untitled module",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Untitled module"
+		},
+		{
+			"url": "modules/types/display/fasttable/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Label",
+								"jpath": "element.label",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 113,
+						"top": 0
+					},
+					"size": {
+						"width": 36,
+						"height": 39
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "x"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "Untitled",
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": "element.label",
+					"name": "a"
+				}
+			],
+			"actions_out": [
+				{}
 			]
 		}
 	],
@@ -212,5 +311,16 @@
 	],
 	"configuration": {
 		"title": "No title"
-	}
+	},
+	"version": "2.3.0-beta1",
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"pouchvariables": []
 }

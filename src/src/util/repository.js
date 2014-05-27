@@ -75,7 +75,7 @@ define(['jquery', 'src/util/event'], function($, Event) {
 				var currentCallback = this._callbacks[i];
 
 				if(!currentCallback)
-						return;
+						continue;
 				var commonKeys = getCommonKeys(currentCallback[0], sourcekeys);
 
 				if(commonKeys.length > 0 || ((!commonKeys || commonKeys.length == 0) && currentCallback[2])) {
@@ -114,7 +114,7 @@ define(['jquery', 'src/util/event'], function($, Event) {
 
 
 	Repository.prototype.listen = function(keys, callback, sendCallbackOnEmptyArray, killerID) {
-
+		
 		var self = this;
 		this._keys = this._keys || {};
 		this._callbacks = this._callbacks || [];
