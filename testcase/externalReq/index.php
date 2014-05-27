@@ -65,7 +65,7 @@
             db.compact();
             writeBody('Document written to database. Redirecting...');
             setTimeout(function() {
-               //window.location = '/visualizer/_design/visualizer_head/index.html?config=default.json&viewURL=/c/'+views[data.name]+'/view.json'
+               window.location = '/visualizer/_design/visualizer_head/index.html?config=default.json&viewURL=/c/'+views[data.name]+'/view.json'
             }, 1000);
           }
           else {
