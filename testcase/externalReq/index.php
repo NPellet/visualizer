@@ -1,25 +1,25 @@
 <html>
 <head>
-    <script src="lib/pouchdb-nightly.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/pouchdb-2.2.2.min.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
     <script type="text/javascript" charset="utf-8">
     //console.log('in script');
     var types = {
-      molfile: 'mol2d'
+      molfile: 'mol2d',
+      smiles: 'smiles'
     };
     var views = {
-      molfile: '2e853f5d3e21623f28d235a412e1e169'
-    }
+      molfile: '1a2f56c6e19761ec8e64c07c006eaa5b'
+    };
     
     var data = {};
     try {
       <?php foreach($_POST as $key=>$postvar): ?>
-      console.log("post var: <?php echo $key ?>", "<?php echo $postvar ?>");
       try {
-        data["<?php echo $key ?>"] = JSON.parse("<?php echo $postvar ?>")
+        data["<?php echo $key ?>"] = JSON.parse(<?php echo json_encode($postvar) ?>)
       } catch(e) {
-        data["<?php echo $key ?>"] = "<?php echo $postvar ?>";
+        data["<?php echo $key ?>"] = <?php echo json_encode($postvar) ?>;
       }
       <?php endforeach; ?>
     } catch(e) {
@@ -28,23 +28,23 @@
     
     try {
       <?php foreach($_GET as $key=>$postvar): ?>
-      console.log("post var: <?php echo $key ?>", "<?php echo $postvar ?>");
       try {
-        data["<?php echo $key ?>"] = JSON.parse("<?php echo $postvar ?>")
+        data["<?php echo $key ?>"] = JSON.parse(<?php echo json_encode($postvar) ?>)
       } catch(e) {
-        data["<?php echo $key ?>"] = "<?php echo $postvar ?>";
+        data["<?php echo $key ?>"] = <?php echo json_encode($postvar) ?>;
       }
       <?php endforeach; ?>
     } catch(e) {
-      console.log("went wrong");
+      alert("Something went wrong");
     }
     
     
     
     console.log(data);
-        
-    if(!data.name || typeof data.name !== "string" || !types[data.name] || !data.value) {
-      writeBody('Error: '+data.name+' has no corresponding type');
+    
+    if(!data.value) data.value = {};
+    if(!data.name || typeof data.name !== "string" || !types[data.name]) {
+      writeBody('Error: '+data.name+' service does not exist');
     }
     else {
       var db = new PouchDB('external_infos');
@@ -54,19 +54,22 @@
         if(!err) {
           rev = res._rev
         }
-        db.put({
+        var x = {
           _id: data.name,
           _rev: rev ? rev : undefined,
           type: types[data.name],
           value: data.value,
           views: views[data.name]
-        }, function(err, res) {
+        };
+        console.log(x);
+        db.put(x, function(err, res) {
           if(!err) {
-            db.compact();
-            writeBody('Document written to database. Redirecting...');
-            setTimeout(function() {
-               window.location = '/visualizer/_design/visualizer_head/index.html?config=default.json&viewURL=/c/'+views[data.name]+'/view.json'
-            }, 1000);
+            db.compact().then(function() {
+              writeBody('Document written to database. Redirecting...');
+              setTimeout(function() {
+                 window.location = '/visualizer/_design/visualizer_head/index.html?viewURL=/c/'+views[data.name]+'/view.json'
+              }, 500);
+            });
           }
           else {
             writeBody('Error: Could not write to database.');
