@@ -36,7 +36,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.chemical = {};
 	functions.chemical.toscreen = function(def, val) {
-		source.getChild(['iupac', '0', 'value']).then(def.resolve, def.reject);
+		val.getChild(['iupac', '0', 'value']).then(def.resolve, def.reject);
 	}
 
 	functions.picture = {};
