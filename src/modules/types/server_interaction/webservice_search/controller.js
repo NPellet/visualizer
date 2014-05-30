@@ -67,7 +67,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 	/*
 		Configuration of the module for receiving events, as a static object
 	*/
-	controller.prototype.variablesIn = [ 'vartrigger', 'varinput' ];
+	controller.prototype.variablesIn = [ 'vartrigger', 'varinput', 'url' ];
 
 	/*
 		Received actions
@@ -288,9 +288,11 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 	};
 		
 	controller.prototype.doSearch = function() {
+		
+		var url = this.module.view._url || this.module.getConfiguration( 'url' );
 
 		var self = this,
-			urltemplate = new URITemplate(this.module.getConfiguration( 'url' )),
+			urltemplate = new URITemplate(url),
 			toPost = this.module.getConfiguration( 'postvariables', [] ),
 			l = toPost.length,
 			i = 0,

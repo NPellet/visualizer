@@ -14,6 +14,7 @@ define(['modules/default/defaultview'], function(Default) {
 			this.dom.append( this.search );
 			this.module.getDomContent( ).html( this.dom );
 			this.oldVal = {};
+			this._url = false;
 
 
 			if(searchparams = cfg('searchparams' ) ) {
@@ -160,6 +161,9 @@ define(['modules/default/defaultview'], function(Default) {
 					return;
 
 				this.module.controller.doSearch();
+			},
+			'url': function(val) {
+				this._url = val.get();
 			}
 		},
                 
