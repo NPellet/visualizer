@@ -17,7 +17,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 		
 		inDom: function() {
 			var self = this;
-			this.dom.on('mouseenter mouseleave click', 'div', function(e) {
+			this.dom.on('mouseenter mouseleave click', '> div', function(e) {
 				var elementId = $(this).index();
 				var value = self.list.get()[elementId];
                                 if(e.type === "mouseenter") {
