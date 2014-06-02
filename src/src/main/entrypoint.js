@@ -696,7 +696,7 @@ define(['jquery',
 				}
 				
 				if(urls['debug']) {
-					Debug.setDebugLevel(urls['debug']);
+					Debug.setDebugLevel(parseInt(urls['debug']));
 				} else if(cfgJson.debugLevel) {
 					Debug.setDebugLevel(cfgJson.debugLevel);
 				}
