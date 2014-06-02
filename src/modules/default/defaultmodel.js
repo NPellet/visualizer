@@ -180,10 +180,10 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			this.module._resolveModel();
 		},
 
-		dataListenChange: function( data, callback ) {
+		dataListenChange: function( data, callback, bindToRel ) {
 
-			var self = this;
-			data.onChange( function( moduleId ) {
+			var self = this,
+				proxiedCallback = function( moduleId ) {
 
 				if( moduleId == self.module.getId( ) ) {
 					// Do not update itself;
@@ -191,7 +191,10 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				}
 
 				callback.call( data );
-			});
+			};
+
+			this.addChangeListener( bindToRel, proxiedCallback );
+			data.onChange( proxiedCallback );
 		},
 
 		dataTriggerChange: function( data ) { // self is not available
@@ -202,6 +205,16 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 		dataSetChild: function( data, jpath, value ) {
 
 			data.setChild( jpath, value, this.module.getId( ) );
+		},
+
+		addChangeListener: function( rel, callback ) {
+
+			if( ! rel ) {
+				return;
+			}
+
+
+			
 		}
 	};
 });

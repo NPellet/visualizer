@@ -354,9 +354,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 		listenFor: function(source, jpaths, id) {
 			var self = this;
-console.log(source, 'Listen');
+
 			this.module.model.dataListenChange( source, function() {
-console.log( this );
+
 				self.jqGrid( 'setRowData', id, self.buildElement( this, id, jpaths, true ) );
 					var scroll = $( "body" ).scrollTop( );
 					var target = $( "tr#" + id, self.domTable ).get(0);//.clearQueue().finish().effect( 'highlight', { queue: true }, 1000 ).get( 0 );
@@ -364,7 +364,7 @@ console.log( this );
 						target.scrollIntoView( );
 						$("body").scrollTop( scroll );
 					}
-			});
+			}, 'list');
 		},
 
 		renderElement: function(element, source, jpath, l) {
