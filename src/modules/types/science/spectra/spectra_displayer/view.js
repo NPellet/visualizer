@@ -16,8 +16,6 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			this.colors = [ "red", "blue", "green", "black" ];
 
 			this.deferreds = { };
-
-			this.onReady = $.Deferred( );
 		},
 		
 		inDom: function() {
@@ -142,7 +140,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				self.graph.getYAxis().flip( cfg('flipY', false) );
 
 				self.redraw( );
-				self.onReady.resolve();
+				self.resolveReady();
 			});
 		},
 		

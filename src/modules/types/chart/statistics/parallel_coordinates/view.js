@@ -31,7 +31,6 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
 			this.jpathConfig = $.extend(true, [], this.module.getConfiguration("colsjPaths"));
 
             this.module.getDomContent( ).html(this.dom);
-            this.onReady = $.Deferred();
             
         },
         blank: {
@@ -78,8 +77,10 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 }
             }
         },
+		inDom: function() {
+			this.resolveReady();
+		},
         onResize: function() {
-            this.onReady.resolve();
             this.redrawChart();
         },
         redrawChart: function() {

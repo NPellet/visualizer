@@ -131,6 +131,8 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function(Default, 
 				}
 			}
 		});
+		
+		this.resolveReady();
 	};
 	
 	controller.prototype.references = {

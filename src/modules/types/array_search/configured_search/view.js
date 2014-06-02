@@ -3,7 +3,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
-		init: function() {	
+		init: function() {
 			var self = this;
                         var parentDom = $( '<div>' ).css( { 
                             position: 'relative',
@@ -105,15 +105,14 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			});
 			
 			this.makeSearchFilter();
+			
+			this.resolveReady();
 		},
 
 		blank: {
 			value: function(varName) {
 				this.dom.empty();
 			}
-		},
-		
-		inDom: function() { 
 		},
 
 		search: function() {

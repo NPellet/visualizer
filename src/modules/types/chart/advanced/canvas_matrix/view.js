@@ -69,6 +69,7 @@ define(['require','modules/default/defaultview', 'src/util/webworker', 'src/util
 			this.canvasContainer.width(this.dom.width() - 55);
 			this.onResize(true);
 			this.initWorkers();
+			this.resolveReady();
 		},
 		
 		onResize: function(doNotRedraw) {
