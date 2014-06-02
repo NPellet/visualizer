@@ -284,7 +284,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 			} else if( type && Structures[ type ] && ( element.value || element.url ) ) {
 
-				structure = Structures[el.type];
+				structure = Structures[type];
 
 			} else {
 				structure = type;
