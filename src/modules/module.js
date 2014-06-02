@@ -21,7 +21,10 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			module._resolveModel = res;
 		});
 
-		module._onReady = Promise.all( [ module.viewReady, module.controllerReady, module.modelReady ] )
+		module._onReady = Promise.all( [ module.viewReady, module.controllerReady, module.modelReady ] ).catch( function() {
+
+			Debug.error( "Error. Caught error in module ready state", arguments );
+		});
 
 		return new Promise(
 
@@ -76,7 +79,10 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 		this.definition.layers = this.definition.layers || new ViewObject(); // View on which layers ?
 
-		this.ready = init( this );
+		this.ready = init( this ).catch( function() {
+
+			Debug.error( "Error. Caught error in module initialization", arguments );
+		});
 	};
 	/**
 	 * Overrideable prototype
@@ -500,7 +506,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			var makeSendJpaths = function() {	
 			
 				for( var i in references ) {
-					alljpaths[ i ] = module.model.getjPath( i, temporary );
+					alljpaths[ i ] = module.model.getjPath( i );
 				}
 			}
 

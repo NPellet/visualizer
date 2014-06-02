@@ -5,15 +5,16 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 
 		getValue: function() {
 			return this.dataValue;
-		},
+		}//,
 		
-		getjPath: function(rel, temporary) {
+		/*getjPath: function(rel, temporary) {
 			var data;
 			switch(rel) {
 				
 				case 'row':
 				case 'element': // Wants to get the row ?
 					data = (temporary && temporary['list']) ? temporary['list'] : (this.module.getDataFromRel('list') || new DataArray());
+					console.log( data );
 					data = data.get(0);
 
 					if(!data)
@@ -28,7 +29,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 			var jpaths = []; 
 			Traversing.getJPathsFromElement(data, jpaths);
 			return jpaths;
-		}
+		}*/
 	});
 
 	return model;

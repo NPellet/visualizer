@@ -103,7 +103,6 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 					varName = varName[ 0 ];
 				}
 
-console.log( self.sourceMap );
 				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
 					return;
 				}
@@ -194,8 +193,13 @@ console.log( self.sourceMap );
 			return this.data;
 		},
 				
-		getjPath: function(rel, accepts) {
+		getjPath: function(rel, subjPath) {
 			var data = this.module.getDataFromRel(rel);
+
+			if( data && subjPath !== undefined ) {
+				data = data.getChildSync( subjPath );
+			}
+
 			return Traversing.getJPathsFromElement(data); // (data,jpaths)
 		},
 
@@ -257,8 +261,7 @@ console.log( self.sourceMap );
 			}
 
 			for( var i = 0, l = this.triggerChangeCallbacksByRels[ rel ].length ; i < l ; i ++ ) {
-				console.log(  this.triggerChangeCallbacksByRels[ rel ][ i ] );
-				this.removeChangeListener( rel, this.triggerChangeCallbacksByRels[ rel ][ i ].data, triggerChangeCallbacksByRels[ rel ][ i ].callback );
+				this.removeChangeListener( rel, this.triggerChangeCallbacksByRels[ rel ][ i ].data, this.triggerChangeCallbacksByRels[ rel ][ i ].callback );
 			}
 		},
 

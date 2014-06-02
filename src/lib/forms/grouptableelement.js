@@ -12,7 +12,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			dom = $("<div />").addClass('form-group-table'),
 			table, domHead, domBody, tr, th, divFieldElements;
 
-console.log( this.getTitle(), this.group.getTitle())
+
 		if( this.getTitle() ) {
 			dom.append('<div class="form-groupelement-title">' + this.getTitle() + '</div>');
 		}

@@ -3,7 +3,7 @@ define(function() {
 
 	var structures = {
 		
-		'object': "object",
+	//	'object': "object", // Removed ! Object should by dynamic.
 		'mol2d': "string",
 		'molfile2D': "string",
 		'jme': "string",
@@ -15,7 +15,7 @@ define(function() {
 		'jpg': "string",
 		'jpeg': "string",
 		'png': "string",
-    'svg': "string",
+   		 'svg': "string",
 		'number': "number",
 		'mf': 'string',
 		'jcamp': "string",

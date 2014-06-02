@@ -96,7 +96,9 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 		
 	controller.prototype.configurationStructure = function(section) {
 		
-		var jpaths = this.module.model.getjPath('element');
+		var jpaths = this.module.model.getjPath('list', [ 0 ] );
+
+		
 		return {
 			groups: {
 

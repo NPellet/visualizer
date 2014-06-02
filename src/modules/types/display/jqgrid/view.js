@@ -24,11 +24,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			if(this !== lastTr) {
 					self.module.controller.lineHover(self.elements, $(this).attr('id').replace(self.uniqId, ''));
 	 			}
+
 				lastTr = this;
 
 	 		}).on('mouseout', 'tr.jqgrow', function() {
 
 	 			if(this === lastTr) {
+
 					self.module.controller.lineOut(self.elements, $(this).attr('id').replace(self.uniqId, ''));
 					lastTr = null;
 	 			}
@@ -285,6 +287,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				this.jqGrid('setGridParam', { datatype: 'local', data: allEls });
 				$( this.domTable ).trigger( 'reloadGrid' );
+
+				this.module.model.getjPath('list', [ 0 ] );
+				
 			}
 		},
 
@@ -335,11 +340,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			for( ; j < l ; j ++) {
 
 				var jpath = jp[ j ].jpath;
-				/*if( ! jpath ) {
-					element[ jp[ j ].name ] = '';
-				} else {*/
-					element[ jp[ j ].name ] = 'Loading';
-				//}
+				
+				element[ jp[ j ].name ] = 'Loading';
 				
 				self.done ++;
 				element[ ";" + jp[ j ].name ] = this.renderElement( element, s, jpath, jp[ j ].name );

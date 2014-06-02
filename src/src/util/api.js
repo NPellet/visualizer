@@ -33,17 +33,24 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 			case 'boolean':
 				element = new DataObject( { type: "boolean", value: element } );
 			break;
+			default:
+				element = DataObject.check( element );
+			break;
 		}
 
 		if( element && element.getChild ) {
+
 			element.getChild( jpath, true ).done( function( returned ) {
 
 				setVarFilter.call( self, name, returned, filter );
+
 			} );	
 
 		} else {
+
 			console.warn("Variable " + name + " could not be set. Method getChild does not exist.");
 			console.trace();
+
 		}
 	}
 

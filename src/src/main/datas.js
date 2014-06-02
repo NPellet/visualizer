@@ -15,6 +15,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 	}
 
 	DataObject.check = function(object, recursive, forceCopy) {
+
 		if (!forceCopy && (object instanceof DataObject || object instanceof DataArray)) {
 			return object;
 		} else if (object instanceof Array) {
@@ -138,11 +139,23 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 	};
 
 	var dataGetter = {
-		value: function(prop, returnDeferred) {
-			if (typeof (prop) !== "undefined") {
-				var val = this.get();
+		value: function( prop, returnDeferred ) {
+
+			// Looking for this[ prop ]
+			if (typeof prop !== "undefined") {
+
+				var val = this.get(); // Current value
+
+				// Create dataobject out of the element
+				// Allows for pseudo-recursion on getting the element
+
+				//console.log( this, DataArray.prototype.constructor, this.__proto__.constructor );
+				val[ prop ] = DataObject.check( val[ prop ] );
+
 				if (returnDeferred) { // Returns a deferred if asked
-					if (typeof (val[prop]) !== "undefined") {
+
+					if (typeof val[ prop ] !== "undefined") {
+
 						if (val[prop] && val[prop].fetch) {
 							return val[prop].fetch();
 						} else {
@@ -152,6 +165,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 						return $.Deferred().reject();
 					}
 				} else {
+
 					return val[prop];
 				}
 			}
@@ -208,11 +222,13 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 			var el = jpath.shift(); // Gets the current element and removes it from the array
 			var self = this;
 
-			var subEl = this.get(el, true).pipe(function(subEl) {
+			var subEl = this.get( el, true ).pipe(function( subEl ) {
 
-				if (setParents) {
+				// 2 june 2014
+				// This has to be automatic !
+				//if (setParents) {
 
-					switch (typeof subEl) {
+					switch ( typeof subEl ) {
 
 						case 'string':
 							subEl = new DataObject({type: "string", value: subEl});
@@ -226,10 +242,10 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 							subEl = new DataObject({type: "boolean", value: subEl});
 					}
 
-					if (subEl && subEl.linkToParent) {
+					if( subEl && subEl.linkToParent ) {
 						subEl.linkToParent(self, el);
 					}
-				}
+				// }
 
 				if (!subEl || (jpath.length === 0)) {
 					return subEl;
