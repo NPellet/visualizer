@@ -202,7 +202,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 							self.module.model.dataListenChange( self.module.data[ j ], function() {
 								dom.replaceWith( ( dom = $( self.buildElement( this, j, true ) ) ) );
-							});
+							}, 'list');
 
 							if( self.module.data[ j ].removable ) {
 								Context.listen( dom.get( 0 ), [

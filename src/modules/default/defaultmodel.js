@@ -1,16 +1,21 @@
-define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/api'], function($, Entry, Traversing, API) {
+define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/util/debug'], function($, Entry, Traversing, API, Debug) {
 
 	return {
 
 		setModule: function(module) { this.module = module; },
 
 		init: function() {
+
 			var sourceName, sourceAccepts;
 			this.module.model = this;
 			this.data = [ ];
+		
+			this.triggerChangeCallbacksByRels = {};
+			this.mapVars();
+		
 			this.resetListeners();
-
 			this.initImpl();
+
 		},
 
 		initImpl: function() {
@@ -24,7 +29,9 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 		resetListeners: function() {
 			this.sourceMap = null;
-	
+		
+			this.mapVars();
+
 			API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
 			API.getRepositoryActions( ).unListen( this.getActionNameList(), this._actionlisten );
 		
@@ -32,22 +39,34 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			this._actionlisten = API.getRepositoryActions().listen( this.getActionNameList(), $.proxy(this.onActionTrigger, this) );
 		},
 
-		getVarNameList: function() {
+		mapVars: function() {
+			// Indexing all variables in
 			var list = this.module.vars_in( ),
-				listFinal = [],
-				keyedMap = {};
+				listNames = [],
+				listRels = [],
+				varsKeyedName = {};
 
-			if( ! list ) {
-				return [];
+
+
+			if( Array.isArray( list ) ) {
+
+				for(var l = list.length, i = l - 1; i >= 0; i--) {
+
+					listNames.push( list[ i ].name );
+					listRels.push( list[ i ].rel );
+					varsKeyedName[ list[i].name ] = list[ i ];
+				}
+
+
 			}
 
-			for(var l = list.length, i = l - 1; i >= 0; i--) {
-				listFinal.push( list[ i ].name );
-				keyedMap[ list[i].name ] = list[ i ];
-			}
+			this.sourceMap = varsKeyedName;
+			this.listNames = listNames;
+			this.listRels = listRels;
+		},
 
-			this.sourceMap = keyedMap;
-			return listFinal;
+		getVarNameList: function() {
+			return this.listNames;
 		},
 
 		getActionNameList: function() {
@@ -84,14 +103,16 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 					varName = varName[ 0 ];
 				}
 
+console.log( self.sourceMap );
 				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
 					return;
 				}
                 
                 var data = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
                 
-                if(!data)
+                if(!data) {
                     return;
+                }
 
 				self.data[ varName ] = data;
 				rel = self.module.getDataRelFromName( varName );
@@ -100,6 +121,8 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 				for( ; i < l; i++) {
 
+					// For each rel we need to remove the triggerChange callbacks from the previous data before updating the new one !
+					self.removeAllChangeListeners( rel[ i ] );
 
 					if (  self.module.view.blank[ rel[ i ] ] ) {
 
@@ -193,8 +216,12 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				callback.call( data );
 			};
 
-			this.addChangeListener( bindToRel, proxiedCallback );
-			data.onChange( proxiedCallback );
+			if( this.addChangeListener( bindToRel, data, proxiedCallback ) ) {
+				data.onChange( proxiedCallback );
+			} else {
+				Debug.setDebugLevel(1);
+				Debug.error("Adding the change callback is forbidden as no rel has been defined ! Aborting callback binding to prevent leaks");
+			}
 		},
 
 		dataTriggerChange: function( data ) { // self is not available
@@ -207,14 +234,37 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			data.setChild( jpath, value, this.module.getId( ) );
 		},
 
-		addChangeListener: function( rel, callback ) {
+		addChangeListener: function( rel, data, callback ) {
 
 			if( ! rel ) {
+				return false;
+			}
+
+			if( this.listRels.indexOf( rel ) == -1 ) {
+				return false;
+			}
+
+			this.triggerChangeCallbacksByRels[ rel ] = this.triggerChangeCallbacksByRels[ rel ] || [];
+			this.triggerChangeCallbacksByRels[ rel ].push( { data: data, callback: callback } );
+
+			return true;
+		},
+
+		removeAllChangeListeners: function( rel ) {
+
+			if( ! this.triggerChangeCallbacksByRels[ rel ] ) {
 				return;
 			}
 
+			for( var i = 0, l = this.triggerChangeCallbacksByRels[ rel ].length ; i < l ; i ++ ) {
+				console.log(  this.triggerChangeCallbacksByRels[ rel ][ i ] );
+				this.removeChangeListener( rel, this.triggerChangeCallbacksByRels[ rel ][ i ].data, triggerChangeCallbacksByRels[ rel ][ i ].callback );
+			}
+		},
 
-			
+		removeChangeListener: function( data, callback ) {
+
+			data.unbindChange( callback );
 		}
 	};
 });
