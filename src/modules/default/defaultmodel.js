@@ -8,7 +8,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 			var sourceName, sourceAccepts;
 			this.module.model = this;
-			this.data = [ ];
+			this.data = new DataObject();
 		
 			this.triggerChangeCallbacksByRels = {};
 			this.mapVars();
