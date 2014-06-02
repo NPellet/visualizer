@@ -46,8 +46,6 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				listRels = [],
 				varsKeyedName = {};
 
-
-
 			if( Array.isArray( list ) ) {
 
 				for(var l = list.length, i = l - 1; i >= 0; i--) {
@@ -56,8 +54,6 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 					listRels.push( list[ i ].rel );
 					varsKeyedName[ list[i].name ] = list[ i ];
 				}
-
-
 			}
 
 			this.sourceMap = varsKeyedName;
