@@ -75,10 +75,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 		});
 
 	 		this.dom = this.domTable;
-
 	 		this.module.getDomContent( ).html( this.dom );
-
-	 		this.onReady = $.Deferred();
 	 		this.onResize( );
 
 	 		var jpaths = this.module.getConfiguration( 'colsjPaths' ),
@@ -107,6 +104,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			}
 		
 			this.domHead.html( thead );
+			this.resolveReady();
 	 	},
 
 	 	unload: function() {
@@ -114,10 +112,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 		this.module.getDomContent( ).empty( );
 	 	},
 
-	 	inDom: function() {
-
-			this.onReady.resolve( );
-	 	},
 
 
 	 	applyFilterToRow: function(elId, rowId) {
@@ -187,7 +181,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				this.domBody.html( html );
 
 				// Debouncing the highlighting
-
 				if( this.timeout ) {
 					window.clearTimeout( this.timeout );
 				}
@@ -199,32 +192,30 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 					for( i = 0; i < l ; i++ ) {
 							
-
 						( function( j ) {
 
 							API.listenHighlight( self.module.data[ j ], function( val ) {
 								self.doHighlight( j, val );
 							}, false, self.module.getId( ) );
 
-
 							var dom = self.domBody.find('#' + self.module.getId() + '_' + j);
-							self.module.data[ j ].onChange( function( el ) {
-								dom.replaceWith( self.buildElement( el, j, true ) );
-							}, self.module.getId() );
+
+							self.module.model.dataListenChange( self.module.data[ j ], function() {
+								dom.replaceWith( ( dom = $( self.buildElement( this, j, true ) ) ) );
+							});
 
 							if( self.module.data[ j ].removable ) {
 								Context.listen( dom.get( 0 ), [
-									['<li><a><span class="ui-icon ui-icon-close"></span> Remove</a></li>', 
-									function() {
-										self.onActionReceive.removeRowById.call( self, j );
-									}]
+									[
+										'<li><a><span class="ui-icon ui-icon-close"></span> Remove</a></li>', 
+										function() {
+											self.onActionReceive.removeRowById.call( self, j );
+										}
+									]
 								]);
 							}
-							
 						}) ( i );
-						
 					}
-
 				}, 1000); // 1 sec timeout
 				
 				this.list = true;

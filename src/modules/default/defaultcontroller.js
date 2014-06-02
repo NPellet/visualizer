@@ -4,8 +4,12 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 		setModule: function(module) { this.module = module; },
 
 		init: function() {
-			if(this.initimpl)
-				this.initimpl();
+			this.initImpl( );
+		},
+
+		initImpl: function() {
+			console.log( this );
+			this.resolveReady();
 		},
 
 		inDom: function() {
@@ -85,6 +89,11 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 		configFunctions: {},
 		configAliases: {},
 		events: {},
-		variablesIn: []
+		variablesIn: [],
+
+		resolveReady: function() {
+			this.module._resolveController();
+		}
+
 	}
 });

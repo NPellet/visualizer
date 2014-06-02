@@ -17,6 +17,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 			this.values = {};
 			this.module.getDomContent( ).html( this.dom );
 			this.fillWithVal( this.module.getConfiguration( 'defaultvalue' ) );
+			this.resolveReady();
 		},
 		
 		blank: {
@@ -25,8 +26,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 			}
 		},
 		
-		inDom: function() {},
-
 		update: {
 			'color': function(color) {
 

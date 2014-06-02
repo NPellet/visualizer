@@ -1,68 +1,73 @@
 define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util/fullscreen'], function($, ContextMenu, API, Util, Fullscreen) {
 	
-	function init(module) {
+	function init( module ) {
 		//define object properties
 		var moduleURL = module.definition.url,
-			def = $.Deferred();
-		
-		//Construct the DOM within the module
-		
-		Util.loadCss( require.toUrl( moduleURL + "style.css" ) );
-
-		if( ! moduleURL ) {
-			def.reject( );
-			return def;
-		}
-
-
-		var ext = '';
+			ext = '';
 		
 		if( moduleURL.indexOf('http://') > -1 ) {
 			ext = '.js';
 		}
 
-		require( [
-			
-			moduleURL + "model" + ext,
-			moduleURL + "view" + ext,
-			moduleURL + "controller" + ext
-
-		], function(M, V, C) {
-
-//			$.getJSON( moduleURL + "module.json", {}, function( config ) {
-
-			//	module.config = config;
-				module.model = new M();
-				module.view = new V();
-				module.controller = new C();
-
-
-				module.dom = $( module.buildDom( ) );
-
-				module.domContent = module.dom.children( ).children( '.ci-module-content' );
-				module.domHeader = module.dom.children( ).children( '.ci-module-header' );
-				module.domWrapper = module.dom;
-		
-				module.view.setModule( module );
-				module.controller.setModule( module );
-				module.model.setModule( module );
-
-				module.view.onReady = true;
-
-				module.view.init( );
-				module.controller.init( );
-				module.model.init( );
-				
-	 			module.updateAllView( );
-				def.resolve();
-
-
-
-	//		});
-		
+		module.viewReady = new Promise( function( res, rej ) {
+			module._resolveView = res;
 		});
 
-		return def.promise();
+		module.controllerReady = new Promise( function( res, rej ) {
+			module._resolveController = res;
+		});
+
+		module.modelReady = new Promise( function( res, rej ) {
+			module._resolveModel = res;
+		});
+
+		module._onReady = Promise.all( [ module.viewReady, module.controllerReady, module.modelReady ] )
+
+		return new Promise(
+
+			function( resolve, reject ) {
+
+				if( ! moduleURL ) {
+					reject();
+					return;
+				}
+
+				Util.loadCss( require.toUrl( moduleURL + "style.css" ) );
+
+				require( [
+					
+					moduleURL + "model" + ext,
+					moduleURL + "view" + ext,
+					moduleURL + "controller" + ext
+
+				], function(M, V, C) {
+
+					module.model = new M();
+					module.view = new V();
+					module.controller = new C();
+
+					module.dom = $( module.buildDom( ) );
+
+					module.domContent = module.dom.children( ).children( '.ci-module-content' );
+					module.domHeader = module.dom.children( ).children( '.ci-module-header' );
+					module.domWrapper = module.dom;
+			
+					module.view.setModule( module );
+					module.controller.setModule( module );
+					module.model.setModule( module );
+
+					module.view.initDefault();
+					module.view.init( );
+					module.controller.init( );
+					module.model.init( );
+					
+		 			module.updateAllView( );
+					
+					resolve( module );
+				});
+			}
+
+		);
 	}
 
 	 var Module = function(definition) {
@@ -71,7 +76,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 		this.definition.layers = this.definition.layers || new ViewObject(); // View on which layers ?
 
-		this.ready = init(this);
+		this.ready = init( this );
 	};
 	/**
 	 * Overrideable prototype
@@ -122,20 +127,27 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			return html;
 		},
 
+		onReady: function() {
+			return this._onReady;
+		},
+
 		/**
 		 * Called to update the view (normally after a change of data)
 		 */
 		updateView: function(rel) {
 		
-			$.when(this.ready, this.view.onReady).then(function() {
+			this.onReady().then( function( ) {
 				var val = API.getRepositoryData().get(this.getNameFromRel(rel)), name;
-				if(!val)
+				if( ! val ) {
 					return;
+				}
 
-				if(this.view.update && this.view.update[rel])
-					this.view.update[rel].call(this.view, val[1], val[0][0]);	
+				if( this.view.update && this.view.update[rel] ) {
+					this.view.update[ rel ].call(this.view, val[ 1 ], val[ 0 ][ 0 ] );	
+				}
 			});
 		},
+
 
 		updateAllView: function() {
 				
@@ -357,7 +369,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				if( this.definition.layers[ i ] ) {
 					continue;
 				}
-//console.log()
+
 				// new layer
 				this.definition.layers[ i ] = {};
 
@@ -367,6 +379,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				} else {
 					$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );	
 				}
+
+				this.definition.layers[ i ] = new ViewObject( this.definition.layers[ i ], true );
 			}
 		},
 
@@ -378,17 +392,6 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 			if( ! activeLayer ) {
 				return false;
-			}
-
-			if( ! this.definition.layers[ activeLayer ] || ! this.definition.layers[ activeLayer ].created ) {
-
-				if( noCreation ) {
-					return false;
-				}
-
-				this.definition.layers[ activeLayer ] = new ViewObject(Module.prototype.emptyConfig,  true);
-				this.definition.layers[ activeLayer ].name = activeLayer;
-
 			}
 
 			return this.definition.layers[ activeLayer ];
@@ -1316,14 +1319,14 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 		},
 
 		emptyConfig: {
-				position: { left: 0, top: 0 },
-				size: { width: 20, height: 20},
-				zIndex: 0,
-				display: true, 
-				title: "",
-				bgcolor: [ 255, 255, 255, 0 ],
-				wrapper: true,
-				created: true
+			position: { left: 0, top: 0 },
+			size: { width: 20, height: 20},
+			zIndex: 0,
+			display: true, 
+			title: "",
+			bgcolor: [ 255, 255, 255, 0 ],
+			wrapper: true,
+			created: true
 		}
 	};
 

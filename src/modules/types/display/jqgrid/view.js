@@ -38,57 +38,16 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			eval("self.filter = function(jqGrid, source, rowId) { try { \n " + filter + "\n } catch(_) { console.log(_); } }");
 
 	 		this.module.getDomContent( ).html( this.dom );
-
-	 		this.onReady = $.Deferred();
 	 		this.onResize( );
-	 	},
 
-		exportToTabDelimited: function() {
- 			if( ! this.jpaths ) {
- 				return;
- 			}
 
- 			var result=[];
-			var allEls = [],
-				i = 0,
-				l = this.elements.length;
-			
-			var header=[];
-			for (var j=0; j<this.jpaths.length; j++) {
-				header.push(this.jpaths[j].name);
-			}
-			result.push(header.join("\t"));
-
-			for( ; i < l ; i++ ) {
-				var line=[];
-				for (var j=0; j<this.jpaths.length; j++) {
-					Traversing.getValueFromJPath(this.elements[i], this.jpaths[j].jpath).done(function(elVal) {
-						line.push(elVal);
-						//allEls.push(elVal);
-					});
-				}
-				result.push(line.join("\t"));
-			}
-
-			return (result.join("\r\n"));
-		},
-
-	 	unload: function() {
-
-	 		this.jqGrid( 'GridDestroy' );
-	 		this.jqGrid = false;
-	 		this.module.getDomContent( ).empty( );
-	 	},
-
-	 	inDom: function() {
-
-			var self = this, 
-				colNames = [], 
-				colModel = [], 
-				j = 0,
-				editable,
-				jpaths = this.module.getConfiguration( 'colsjPaths' ),
-				l;
+	 		var self = this, 
+			colNames = [], 
+			colModel = [], 
+			j = 0,
+			editable,
+			jpaths = this.module.getConfiguration( 'colsjPaths' ),
+			l;
 
 
 			if( typeof jpaths == 'object' ) {
@@ -159,7 +118,12 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			   			value = parseFloat(value);
 			   		}
 
-			   		self.elements[ rowId.replace( self.uniqId, '') ].setChild( colModel[ colNum ]._jpath, value, { moduleid: self.module.getId( ) } );
+			   		self.module.model.dataSetChild( 
+			   			self.elements[ rowId.replace( self.uniqId, '') ],  // source
+			   			colModel[ colNum ]._jpath,	// jpath
+			   			value // value
+			   		);
+			   		
 			   		self.applyFilterToRow( rowId.replace( self.uniqId, '' ), rowId );
 			   	},
 
@@ -214,9 +178,50 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			});
 
 			this.jqGrid = $.proxy( $( this.domTable ).jqGrid, $( this.domTable ) );
-			this.onReady.resolve( );
+			this.resolveReady();
 	 	},
 
+		exportToTabDelimited: function() {
+ 			if( ! this.jpaths ) {
+ 				return;
+ 			}
+
+ 			var result=[];
+			var allEls = [],
+				i = 0,
+				l = this.elements.length;
+			
+			var header=[];
+			for (var j=0; j<this.jpaths.length; j++) {
+				header.push(this.jpaths[j].name);
+			}
+			result.push(header.join("\t"));
+
+			for( ; i < l ; i++ ) {
+				var line=[];
+				for (var j=0; j<this.jpaths.length; j++) {
+					Traversing.getValueFromJPath(this.elements[i], this.jpaths[j].jpath).done(function(elVal) {
+						line.push(elVal);
+						//allEls.push(elVal);
+					});
+				}
+				result.push(line.join("\t"));
+			}
+
+			return (result.join("\r\n"));
+		},
+
+	 	unload: function() {
+
+	 		this.jqGrid( 'GridDestroy' );
+	 		this.jqGrid = false;
+	 		this.module.getDomContent( ).empty( );
+	 	},
+
+	 	inDom: function() {
+
+
+	 	},
 
 	 	applyFilterToRow: function(elId, rowId) {
 
@@ -242,7 +247,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				this.jqGrid( 'clearGridData' );
 				$( this.domTable ).trigger( 'reloadGrid' );
 	 		}
-	 	
 	 	},
 
 	 	update: {
@@ -350,19 +354,17 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 		listenFor: function(source, jpaths, id) {
 			var self = this;
-			source.onChange(function( data ) {
-
-				self.jqGrid( 'setRowData', id, self.buildElement( data, id, jpaths, true ) );
-				var scroll = $( "body" ).scrollTop( );
-			//	console.log( 'Do' );
-				var target = $( "tr#" + id, self.domTable ).get(0);//.clearQueue().finish().effect( 'highlight', { queue: true }, 1000 ).get( 0 );
-
-				if(target) {
-					target.scrollIntoView( );
-					$("body").scrollTop( scroll );
-				}
-				
-			}, self.module.getId( ) );
+console.log(source, 'Listen');
+			this.module.model.dataListenChange( source, function() {
+console.log( this );
+				self.jqGrid( 'setRowData', id, self.buildElement( this, id, jpaths, true ) );
+					var scroll = $( "body" ).scrollTop( );
+					var target = $( "tr#" + id, self.domTable ).get(0);//.clearQueue().finish().effect( 'highlight', { queue: true }, 1000 ).get( 0 );
+					if(target) {
+						target.scrollIntoView( );
+						$("body").scrollTop( scroll );
+					}
+			});
 		},
 
 		renderElement: function(element, source, jpath, l) {

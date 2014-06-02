@@ -9,6 +9,12 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			this.module.model = this;
 			this.data = [ ];
 			this.resetListeners();
+
+			this.initImpl();
+		},
+
+		initImpl: function() {
+			this.resolveReady();
 		},
 
 		
@@ -72,7 +78,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				rel;
 
 
-			$.when(this.module.ready, this.module.view.onReady).then(function() {
+			this.module.onReady().then( function() {
 
 				if( varName instanceof Array ) {
 					varName = varName[ 0 ];
@@ -168,7 +174,34 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 		getjPath: function(rel, accepts) {
 			var data = this.module.getDataFromRel(rel);
 			return Traversing.getJPathsFromElement(data); // (data,jpaths)
-		}
+		},
 
+		resolveReady: function() {
+			this.module._resolveModel();
+		},
+
+		dataListenChange: function( data, callback ) {
+
+			var self = this;
+			data.onChange( function( moduleId ) {
+
+				if( moduleId == self.module.getId( ) ) {
+					// Do not update itself;
+					return;
+				}
+
+				callback.call( data );
+			});
+		},
+
+		dataTriggerChange: function( data ) { // self is not available
+
+			data.triggerChange( this.module.getId( ) );
+		},
+
+		dataSetChild: function( data, jpath, value ) {
+
+			data.setChild( jpath, value, this.module.getId( ) );
+		}
 	};
 });
