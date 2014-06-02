@@ -138,6 +138,8 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 					}
 				}
+			}).catch(function(err){
+				Debug.error( "Error. Caught error in model's var get", err );
 			});		
  		},
 
@@ -240,7 +242,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				return false;
 			}
 
-			if( this.listRels.indexOf( rel ) == -1 ) {
+			if( this.listRels.indexOf( rel ) === -1 ) {
 				return false;
 			}
 
@@ -257,12 +259,11 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			}
 
 			for( var i = 0, l = this.triggerChangeCallbacksByRels[ rel ].length ; i < l ; i ++ ) {
-				this.removeChangeListener( rel, this.triggerChangeCallbacksByRels[ rel ][ i ].data, this.triggerChangeCallbacksByRels[ rel ][ i ].callback );
+				this.removeChangeListener( this.triggerChangeCallbacksByRels[ rel ][ i ].data, this.triggerChangeCallbacksByRels[ rel ][ i ].callback );
 			}
 		},
 
 		removeChangeListener: function( data, callback ) {
-
 			data.unbindChange( callback );
 		}
 	};
