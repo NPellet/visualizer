@@ -322,7 +322,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                 
                 var options = {
                     url: this.url,
-                    type: this.module.getConfiguration('method'),
+                    type: this.module.getConfiguration('method')||"POST",
                     cache: false,
                     headers: headers
                 };
