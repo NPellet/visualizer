@@ -695,7 +695,9 @@ define(['jquery',
 					});
 				}
 				
-				if(cfgJson.debugLevel) {
+				if(urls['debug']) {
+					Debug.setDebugLevel(urls['debug']);
+				} else if(cfgJson.debugLevel) {
 					Debug.setDebugLevel(cfgJson.debugLevel);
 				}
 
