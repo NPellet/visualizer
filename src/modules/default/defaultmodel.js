@@ -32,10 +32,16 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 		
 			this.mapVars();
 
-			API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
+			//API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
 			API.getRepositoryActions( ).unListen( this.getActionNameList(), this._actionlisten );
-		
-			this._varlisten = API.getRepositoryData().listen( this.getVarNameList(), $.proxy(this.onVarGet, this) );
+			
+			var list = this.getVarNameList();
+			for( var i = 0, l = list.length ; i < l ; i ++ ) {
+
+				API.getVar( list[ i ] ).listen( this.module, $.proxy( this.onVarChange, this ) );
+			}
+
+			//this._varlisten = API.getRepositoryData().listen( this.getVarNameList(), $.proxy(this.onVarGet, this) );
 			this._actionlisten = API.getRepositoryActions().listen( this.getActionNameList(), $.proxy(this.onActionTrigger, this) );
 		},
 
@@ -86,59 +92,77 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			return names;
 		},
 
-		onVarGet: function(varValue, varName) {
+		onVarChange: function( variable ) {
+
 			var self = this,
 				i,
 				l,
 				rel;
 
-
 			this.module.onReady().then( function() {
 
-				if( varName instanceof Array ) {
-					varName = varName[ 0 ];
-				}
+				self.module.blankVariable( variable.getName() );
+			});
 
+			var rejectLatency;
+			var latency = new Promise( function( resolve, reject ) {
+
+				rejectLatency = reject;
+				setTimeout( resolve, 500 );
+			} );
+
+			// Start loading
+			var loadingState = Promise.all( [ this.module.onReady(), latency ] ).then( function() {
+
+				self.module.startLoading( variable.getName( ) );
+			} ).catch( function() {
+
+			} );
+
+			Promise.all( [ this.module.onReady( ), variable.onReady( ) ] ).then( function() {
+			
+				rejectLatency();
+
+				// Gets through the input filter first
+				var varName = variable.getName();
+				var varValue = variable.getValue();
+
+				self.module.endLoading( variable.getName( ) );
+
+				// Then validate
 				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
 					return;
 				}
                 
                 var data = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
-                
-                if(!data) {
+
+                if( ! data ) {
                     return;
                 }
 
 				self.data[ varName ] = data;
 				rel = self.module.getDataRelFromName( varName );
-
 				i = 0, l = rel.length;
 
 				for( ; i < l; i++) {
-
-					// For each rel we need to remove the triggerChange callbacks from the previous data before updating the new one !
 					self.removeAllChangeListeners( rel[ i ] );
 
-					if (  self.module.view.blank[ rel[ i ] ] ) {
-
-					/*
-					  && varValue === null
-					  has been removed. We need to clear the module even for the true variable value.
-					  This is to account for asynchronous fetching that may come back in between two clearing elements
-					  DO NOT ADD THIS BACK !!!
-					*/
-
-						self.module.view.blank[ rel[ i ] ].call( self.module.view, varName );
-
-					}
-					
 					if( self.module.view.update[ rel[ i ] ] && varValue !== null ) {
 
 						self.module.view.update[ rel[ i ] ].call( self.module.view, self.data[ varName ], varName );
 
 					}
 				}
-			});		
+
+			} ).catch( function() {
+
+				rejectLatency();
+
+			} );
+
+			var varName = variable.getName();
+			var varValue = variable.getValue();
+
  		},
 
 		onActionTrigger: function(value, actionName) {
@@ -190,6 +214,10 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 		},
 				
 		getjPath: function(rel, subjPath) {
+			return this.getjPath( rel, subjPath );
+		},
+
+		_getjPath: function(rel, subjPath) {
 			var data = this.module.getDataFromRel(rel);
 
 			if( data && subjPath !== undefined ) {
@@ -217,6 +245,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			};
 
 			if( this.addChangeListener( bindToRel, data, proxiedCallback ) ) {
+
 				data.onChange( proxiedCallback );
 			} else {
 				Debug.setDebugLevel(1);

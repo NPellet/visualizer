@@ -18,6 +18,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 			this.module.getDomContent( ).html( this.dom );
 			this.fillWithVal( this.module.getConfiguration( 'defaultvalue' ) );
 			this.resolveReady();
+			this._relsForLoading = [ 'value' ];
 		},
 		
 		blank: {
@@ -37,6 +38,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 			},
 
 			'value': function( varValue, varName ) {
+
 				var view = this;
 				
 				varValue.onChange( function( value ) {

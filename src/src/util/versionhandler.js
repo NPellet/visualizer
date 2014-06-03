@@ -518,6 +518,8 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 					el = JSON.parse( el );
 				}
 
+				return el;
+
 				if(self.type == 'view')
 					return new ViewObject(el, true);
 				else if(self.type == 'data')
@@ -654,8 +656,9 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				data: data || {},
 				success: function(data) { // data is now a text
 					self._savedServer = data;
-					data = JSON.parse(data, self._reviver);
-					def.resolve(data);
+					data = JSON.parse(data);
+					self._reviver( data )
+					def.resolve( data );
 				},
 
 				error: function() {
@@ -681,16 +684,18 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 		serverPush: function(obj) {
 			return this._saveToServer(obj);
 		},
-                
-                _onLoaded: function(el) {
-                    var elTyped;
-                    if(this.type === "data") {
-                        elTyped = DataObject.check(el);
-                    } else if(this.type === "view") {
-                        elTyped = ViewObject.check(el);
-                    }
-                    this.onLoaded(elTyped);
-                }
+	    
+	    _onLoaded: function(el) {
+	        var elTyped;
+			
+	        if(this.type === "data") {
+	            elTyped = DataObject.check(el, 1);
+	        } else if(this.type === "view") {
+	            elTyped = ViewObject.check(el, 1);
+	        }
+	        
+	        this.onLoaded(elTyped);
+	    }
 	};
 
 	return DataViewHandler;

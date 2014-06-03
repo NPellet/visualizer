@@ -302,7 +302,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			for( ; j < l ; j ++) {
 
 				stackTo[ j ] = stackTo[ j ] || { };
-				stackTo[ j ][ i ] = this.fieldElements[ i ][ j ].value;
+				stackTo[ j ][ i ] = this.fieldElements[ i ][ j ].extractValue( );
 			}
 		}
 

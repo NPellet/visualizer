@@ -99,43 +99,53 @@ define(['src/util/versioning'], function(Versioning) {
                 }, "types/client_interaction/dragdrop");
 				
 			case "2.2.5": // Add layers
-				view.grid = new ViewObject({
-					layers: {
-						"Default layer": {
-							name: "Default layer"
-						}
-					},
-					xWidth: 10,
-					yHeight: 10
-				}, true);
-				eachModule(view, function(module){
-					module.layers = new ViewObject({
-						"Default layer": {
-							position: {
-								left: module.position.left,
-								top: module.position.top,
-								right: 0
-							},
-							size: {
-								width: module.size.width,
-								height: module.size.height
-							},
-							zIndex: module.zIndex,
-							display: true,
-							title: module.title,
-							bgcolor: module.bgColor,
-							wrapper: module.displayWrapper,
-							created: true,
-							name: "Default layer"
-						}
-					}, true);
-					delete module.title;
-					delete module.position;
-					delete module.size;
-					delete module.zIndex;
-					delete module.displayWrapper;
-					delete module.bgColor;
-				});
+                view.grid = new ViewObject({
+                    layers: {
+                        "Default layer": {
+                            name: "Default layer"
+                        }
+                    },
+                    xWidth: 10,
+                    yHeight: 10
+                }, true);
+                eachModule(view, function(module){
+                    module.layers = new ViewObject({
+                        "Default layer": {
+                            position: {
+                                left: module.position.left,
+                                top: module.position.top,
+                                right: 0
+                            },
+                            size: {
+                                width: module.size.width,
+                                height: module.size.height
+                            },
+                            zIndex: module.zIndex,
+                            display: true,
+                            title: module.title,
+                            bgcolor: module.bgColor,
+                            wrapper: module.displayWrapper,
+                            created: true,
+                            name: "Default layer"
+                        }
+                    }, true);
+                    delete module.title;
+                    delete module.position;
+                    delete module.size;
+                    delete module.zIndex;
+                    delete module.displayWrapper;
+                    delete module.bgColor;
+                });
+
+
+            case "2.3.0-beta1": // Add layers
+                
+                if( view.variables ) {
+                    for( var i = 0; i < view.variables.length ; i ++ ) {
+                        view.variables[ i ].jpath = view.variables[ i ].split(".");
+                        view.variables[ i ].jpath.shift( 0 );
+                    }    
+                }
                 
         }
         view.version = Versioning.version;

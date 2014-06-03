@@ -160,6 +160,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			}
                                 
 	 			moduleValue = moduleValue.get();
+
 				this.elements = moduleValue;
                 
 				var self = this, 
@@ -175,7 +176,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				for( ; i < l ; i ++ ) {
 
-					html += this.buildElement( moduleValue[ i ], i );
+					html += this.buildElement( moduleValue.getChildSync( i ), i );
 				}
 
 				this.domBody.html( html );
@@ -250,10 +251,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 		buildElement: function( source, i ) {
 			
-			if( ! source.get ) {
-				return;
-			}
-
 			var 
 				jpaths = this.module.getConfiguration( 'colsjPaths' ),
 				html = '',
@@ -277,7 +274,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				}
 				
 				html += '<td>';	
-				html += Traversing.get( this.getValue( source.get(), jpaths[ j ].jpath ) ) || "";
+				html += Traversing.get( this.getValue( Traversing.get( source ), jpaths[ j ].jpath ) ) || "";
 				html += '</td>';
 			}
 			html += '</tr>';
