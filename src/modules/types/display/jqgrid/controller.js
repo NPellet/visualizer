@@ -221,18 +221,15 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 	controller.prototype.lineHover = function(elements, row) {
 		
 		this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
-		//API.highlight( element, 1 );
+		API.highlight( elements[ row ], 1 );
 	},
 
 	controller.prototype.lineOut = function(elements, row) {
 
 		var element = elements[ row ];
-		elements[ row ].linkToParent( elements, row );
-
 		if( ! element ) {
 			return;
 		}
-
 		API.highlight( element, 0 );
 	};
 
