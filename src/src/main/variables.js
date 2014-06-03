@@ -31,12 +31,12 @@ define([
 		var variable = getVariable( name );
 		
 		if( jpath ) {
-			
+
 			variable.setjPath( jpath, filter ? function( value, resolve ) {
 				
 				require( [ filter ], function( filterFunction ) {
 				
-					resolve( filterFunction( value ) );
+					filterFunction( varValue, resolve );
 
 				} );
 			
