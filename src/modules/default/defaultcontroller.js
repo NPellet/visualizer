@@ -86,6 +86,24 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 			}
 		},
 
+
+		createDataFromEvent: function( event, rel, data ) {
+
+			var varsOut, i = 0, first;
+
+			if( ! ( varsOut = this.module.vars_out() ) ) {
+				return;
+			}
+			
+			for( ; i < varsOut.length; i++ ) {
+				
+				if( varsOut[ i ].event == event  && ( varsOut[ i ].rel == rel || ! rel ) ) {
+
+					API.createData( varsOut[ i ].name, data );
+				}
+			}
+		},
+
 		"export": function() {},
         print: function() {},
 		configurationStructure:  function() {},

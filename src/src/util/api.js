@@ -30,6 +30,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 	}
 
 	function getVar(name) {
+		
 		return Variables.getVariable( name );
 	}
 
@@ -96,7 +97,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 
 		getVar: getVar,
 		getVariable: getVar,
-
+		createData: createData,
 
 		listenHighlight: function() {
 

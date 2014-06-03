@@ -1,4 +1,13 @@
-define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util/fullscreen'], function($, ContextMenu, API, Util, Fullscreen) {
+define([
+	'jquery',
+	'src/util/context',
+	'src/util/api',
+	'src/util/util',
+	'src/util/fullscreen',
+	'src/util/debug'
+], 
+
+function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 	
 	function init( module ) {
 		//define object properties
@@ -251,6 +260,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 		getVariableFromRel: function( rel ) {
 
 			var name = this.getNameFromRel( rel );
+			
 			return API.getVar( name );
 		},
 

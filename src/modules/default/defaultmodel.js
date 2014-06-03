@@ -122,7 +122,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			} );
 
 			Promise.all( [ this.module.onReady( ), variable.onReady( ) ] ).then( function() {
-			
+			console.log('dsf');
 				// Gets through the input filter first
 				var varName = variable.getName();
 				var varValue = variable.getValue();
@@ -285,7 +285,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 		dataTriggerChange: function( data ) { // self is not available
 
-			data.triggerChange( this.module.getId( ) );
+			data.triggerChange( false, [ this.module.getId( ) ] );
 		},
 
 		dataSetChild: function( data, jpath, value ) {

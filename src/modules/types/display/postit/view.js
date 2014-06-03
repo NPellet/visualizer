@@ -32,9 +32,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
 			this.dom.html(this.inside);
 			this.module.getDomContent().html(this.dom);
 			
-			this.resolveReady();
-
-			
+			this.resolveReady();			
 		}
 		
 	});

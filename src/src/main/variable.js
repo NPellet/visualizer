@@ -72,6 +72,11 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 			return this._value;
 		},
 
+		setData: function( newData ) { // CAUTION. This function will overwrite source data
+			data.setChild( this.getjPath(), newData );
+			newData.triggerChange();
+		},
+
 		getValue: function() {
 			return this._value;
 		},
@@ -120,7 +125,7 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 						
 					} else {
 						self._value = value;
-						resolve( value );	
+						_resolve( value );	
 					}
 
 					

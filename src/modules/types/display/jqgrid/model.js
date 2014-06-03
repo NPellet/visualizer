@@ -7,8 +7,9 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 			return this.dataValue;
 		},
 		
-		getjPath: function(rel, temporary) {
+		getjPath: function(rel, temporary, sub) {
 			var data;
+
 			switch(rel) {
 				
 				case 'row':

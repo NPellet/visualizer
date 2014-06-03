@@ -96,7 +96,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 		
 	controller.prototype.configurationStructure = function(section) {
 		
-		var jpaths = this.module.model.getjPath('list', [ 0 ] );
+		var jpaths = this.module.model.getjPath('row', false );
 
 		
 		return {
@@ -193,7 +193,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 			return;
 		
 		if(data.getType() == 'array') 
-			Traversing.getJPathsFromElement(data[0], jpaths);
+			Traversing.getJPathsFromElement(data.get(0), jpaths);
 		else if(data.getType() == 'arrayXY')
 			Traversing.getJPathsFromElement(data, jpaths);
 

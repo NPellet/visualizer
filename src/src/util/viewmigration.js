@@ -109,38 +109,41 @@ define(['src/util/versioning'], function(Versioning) {
 					yHeight: 10
 				}, true);
 				eachModule(view, function(module){
-					module.layers = new ViewObject({
-						"Default layer": {
-							position: {
-								left: module.position.left,
-								top: module.position.top,
-								right: 0
-							},
-							size: {
-								width: module.size.width,
-								height: module.size.height
-							},
-							zIndex: module.zIndex,
-							display: true,
-							title: module.title,
-							bgcolor: module.bgColor,
-							wrapper: module.displayWrapper,
-							created: true,
-							name: "Default layer"
-						}
-					}, true);
-					delete module.title;
-					delete module.position;
-					delete module.size;
-					delete module.zIndex;
-					delete module.displayWrapper;
-					delete module.bgColor;
+                    if( ! module.layers ) {
+    					module.layers = new ViewObject({
+    						"Default layer": {
+    							position: {
+    								left: module.position.left,
+    								top: module.position.top,
+    								right: 0
+    							},
+    							size: {
+    								width: module.size.width,
+    								height: module.size.height
+    							},
+    							zIndex: module.zIndex,
+    							display: true,
+    							title: module.title,
+    							bgcolor: module.bgColor,
+    							wrapper: module.displayWrapper,
+    							created: true,
+    							name: "Default layer"
+    						}
+    					}, true);
+    					delete module.title;
+    					delete module.position;
+    					delete module.size;
+    					delete module.zIndex;
+    					delete module.displayWrapper;
+    					delete module.bgColor;
+                    }
 				});
             case "2.3.0-beta1" :
 
                 function updateJpath(element) {
+                    
                     if (element.jpath) {
-                        element.jpath=element.jpath.split(".").slice(1);
+                        element.jpath=element.jpath.get().split(".").slice(1);
                     }
 
                 }
@@ -185,7 +188,8 @@ define(['src/util/versioning'], function(Versioning) {
             for(; i < ii; i++) {
                 module = view.modules[i];
                 for(j = 0; j < jj; j++) {
-                    if(module.url && module.url.indexOf(moduleNames[j]) >= 0) {
+                    
+                    if(module.url && module.url.get().indexOf(moduleNames[j]) >= 0) {
                         callback(module);
                         break;
                     }

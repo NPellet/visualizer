@@ -33,7 +33,7 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
                     });
                 });
             }
-            this.onReady = $.Deferred();
+            
         },
         blank: {},
         inDom: function() {
@@ -49,7 +49,7 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
 					that.module.controller.sendValue(DataObject.check(that.editor.get(), true));
 			}, module: this.module});
 			this.update.value.call(this, this.inputData);
-            this.onReady.resolve();
+            this.resolveReady();
         },
         update: {
             value: function(value) {
@@ -65,12 +65,14 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
 				return;
 			var that = this;
 			var id = this.module.getId();
-			if(this.inputData)
-				this.inputData.unbindChange(id);
+			
 			this.inputData = newData;
-			newData.onChange(function(val){
-				that.update.value.call(that, val);
-			},this.module.getId());
+
+            this.module.model.dataListenChange( newData, function() {
+
+                that.update.value.call( that, this );
+                
+            }, 'value');			
 		}
     });
 

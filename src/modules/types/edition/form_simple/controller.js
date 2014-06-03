@@ -30,12 +30,13 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 	*/
 	controller.prototype.references = {
 		input_object: {
-			label: 'Input object'
+			label: 'Input object',
+			type: 'object'
 		},
 
-		formValue: {
+		output_object: {
 			type: 'object',
-			label: 'Value of the form'
+			label: 'Output object'
 		}
 	};
 
@@ -46,13 +47,13 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 	controller.prototype.events = {
 		onChange: {
 			label: 'Form has changed',
-			refVariable: [ 'formValue' ]
+			refVariable: [ 'output_object' ]
 		},
 
 		formTriggered: {
 			label: 'Form is triggered',
-			refAction: [ 'formValue' ],
-			refVariable: [ 'formValue' ]
+			refAction: [ 'output_object' ],
+			refVariable: [ 'output_object' ]
 		}
 	};
 	
@@ -74,7 +75,6 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 			Traversing.getJPathsFromElement( arr, jpaths );
 		}
 
-
 		return {
 			sections: {
 
@@ -87,6 +87,34 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
                                                 }} }
 				},
 		
+				formdata: {
+
+					options: {
+						title: 'Form data'
+					},
+
+					groups: {
+
+						formdata: {
+
+							options: {
+								type: 'list',
+								multiple: false
+							},
+
+							fields: {
+								replaceEntryVar: {
+									type: "checkbox",
+									title: "Replace entry variable",
+									options: {"replace": ""}
+								}
+							}
+						}
+
+					}
+
+				},
+
 				template: {
 
 					options: {
@@ -109,7 +137,7 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 								html: {
 									type: 'jscode',
 									title: 'HTML template',
-                                                                        mode: 'html'
+                                    mode: 'html'
 								}
 							}
 						}
@@ -118,22 +146,37 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 			}
 		};
 	},
-		
+
+	controller.prototype.configFunctions = {
+		replaceObj: function( val ) {
+			console.log( val );
+			return val == "replace";
+		}
+	};
+
 	controller.prototype.configAliases = {
 		structure: [ 'sections', 'structure' ],
 		tpl_file: [ 'sections', 'template', 0, 'groups', 'template', 0, 'file', 0 ],
 		tpl_html: [ 'sections', 'template', 0, 'groups', 'template', 0, 'html', 0 ],
 		trigger: [ 'sections', 'trigger', 0, 'groups', 'trigger', 0, 'triggerType', 0 ],
-                btnLabel: [ 'sections', 'trigger', 0, 'groups', 'trigger', 0, 'buttonLabel', 0 ]
+		replaceObj: [ 'sections', 'formdata', 0, 'groups', 'formdata', 0, 'replaceEntryVar', 0, 0 ],
+      	btnLabel: [ 'sections', 'trigger', 0, 'groups', 'trigger', 0, 'buttonLabel', 0 ]
 	};
 
 
 	controller.prototype.valueChanged = function( newValue ) {
-		this.setVarFromEvent('onChange', newValue, 'formValue');
+
+		if( this.module.getConfiguration( "replaceObj" ) ) {
+
+			this.setVarFromEvent( 'onChange', 'output_object', 'input_object', [] );
+
+		} else {
+		
+			this.createDataFromEvent( 'onChange', 'output_object', newValue );
+		}
 	};
 
 	controller.prototype.formTriggered = function( value ) {
-		console.log( value );
 		this.sendAction('formValue', value, 'formTriggered' );
 	};
 	

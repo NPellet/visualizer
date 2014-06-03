@@ -347,7 +347,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 			
 			var onChangeOptions = Array.prototype.slice.call( arguments, 2 );
 
-			if( jpath.split ) { // Old version
+			if( jpath && jpath.split ) { // Old version
 				jpath = jpath.split('.');
 				jpath.shift();
 			}
@@ -379,12 +379,15 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 				this.set( el, new DataObject( ) );
 			}
 
+			var name = el;
 			arguments[ 0 ] = jpath;
+			var args = arguments;
 
 			return this
 					.get(el, true)
 					.pipe(function(el) {
-						el.setChild.call( el, arguments );
+						el.linkToParent( self, name );
+						el.setChild.apply( el, args );
 					})
 					// 2 June 2014. This code has been removed.
 					// Bubbling should be done within the triggerElement with parenting.
@@ -544,13 +547,13 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 			if((typeof (objectToMerge) !== "object") || (objectToMerge instanceof Array))
 				return;
 			merge(this, objectToMerge);
-			this.triggerChange(moduleId, noBubble);
+			this.triggerChange( noBubble, [ moduleId ] );
 		}
 	};
 
 	var mergeWithArray = {
 		value: function(objectToMerge, moduleId, noBubble) { // TODO find a way to implement this
-			this.triggerChange(moduleId, noBubble);
+			this.triggerChange( noBubble, [ moduleId ] );
 			return console.warn("mergeWith method not yet implemented for DataArray");
 		}
 	};
