@@ -388,10 +388,8 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				url: url,
 				timeout: 200000,
 				dataType: 'text',
-				success: function(data) {
-					//console.log(this._reviver);
-					
-					data = JSON.parse( data, self._reviver );
+				success: function(data) {					
+					data = self._reviver(JSON.parse( data ));
 					self.make(data);
 					self._onLoaded(data);
 					def.resolve();
@@ -656,8 +654,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				data: data || {},
 				success: function(data) { // data is now a text
 					self._savedServer = data;
-					data = JSON.parse(data);
-					self._reviver( data )
+					data = self._reviver(JSON.parse(data));
 					def.resolve( data );
 				},
 

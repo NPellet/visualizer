@@ -17,11 +17,11 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 	viewHandler.setType('view');
 
 	dataHandler.reviver = function(l) {
-		DataObject.check(l, 1, false);
+		return DataObject.check(l, 1, false);
 	};
 
 	viewHandler.reviver = function(l) {
-		ViewObject.check(l, 1, false);
+		return ViewObject.check(l, 1, false);
 	};
 
 	window.onpopstate = function(event) {
