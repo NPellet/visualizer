@@ -136,6 +136,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		createChart: function(chart, data) {
 			var self=this;
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
+
 			switch (cfg('preference'))
 			{
 			case 'radar':
@@ -144,7 +145,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					container: self._id,
 					alpha:0.2,
 					value: "#serie0#",
-					disableItems: false,
+					disableItems: cfg('point'),
 					color: chart.data[0].color,
 					fill: chart.data[0].color,
 					line:{
@@ -182,6 +183,26 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 						}
 						val.push({text: chart.data[i].serieLabel,color: chart.data[i].color});
 					}
+					
+				break;
+
+			case 'pie':
+				var options = {
+					view: cfg('pie'),
+					container: this._id,
+					radius: 220,
+					value: "#serie0#",
+					color: chart.data[0].color,
+					pieInnerText: "<b>#xunit#</b>"
+				};
+				this._radar = new dhtmlXChart(options);
+
+				break;
+			};
+			
+		if(cfg('showlegend') == 'true')
+					{
+					
 				this._radar.define("legend",{
 					width: 120,
 					align: "left",
@@ -192,22 +213,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					},
 					values: val
 				}); 
-				break;
-
-			case 'pie':
-				var options = {
-					view: cfg('pie'),
-					container: this._id,
-					radius: 250,
-					value: "#serie0#",
-					color: chart.data[0].color,
-					pieInnerText: "<b>#xunit#</b>"
-				};
-				this._radar = new dhtmlXChart(options);
-
-				break;
-			};
-
+				}
 
 		},
 	});

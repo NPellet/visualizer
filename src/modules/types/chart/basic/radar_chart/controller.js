@@ -133,7 +133,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 						point: {
 							type: 'checkbox',
 								title: 'point',
-								options: { 'point': 'Show Point Area'},
+								options: { 'point': 'Hide Point Area'},
 							displayTarget: [ 'r' ]
 						},
 						lineshape : {
@@ -145,7 +145,17 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 
 							],
 							displayTarget: [ 'r' ]
+						},
+						showlegend: {
+							type: 'combo',
+							title: 'Line Shape',
+							options: [
+								{title: 'True', key: 'true'},
+								{title: 'False', key: 'false'}
+
+							]
 						}
+						
 
 
 
@@ -156,7 +166,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 	};
 
 	controller.prototype.configFunctions = {
-		'point': function(cfg) { return cfg.indexOf('point') == -1 ? true : false; }
+		'point': function(cfg) { return cfg.indexOf('point') == -1 ? false : true; },
 	};
 	controller.prototype.configAliases = {
 
@@ -166,7 +176,8 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		'end': [ 'groups', 'group', 0, 'end', 0],
 		'step': [ 'groups', 'group', 0, 'step', 0 ],
 		'lineshape': [ 'groups', 'group', 0, 'lineshape', 0 ],
-		'point': [ 'groups', 'group', 0, 'point', 0 ]
+		'point': [ 'groups', 'group', 0, 'point', 0 ],
+		'showlegend': [ 'groups', 'group', 0, 'showlegend', 0 ]
 	};
 
 

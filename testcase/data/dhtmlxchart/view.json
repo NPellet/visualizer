@@ -37,6 +37,11 @@
 								[
 									"arc"
 								]
+							],
+							"showlegend": [
+								[
+									true
+								]
 							]
 						}
 					]
@@ -272,6 +277,11 @@
 								[
 									"arc"
 								]
+							],
+							"legendwidth": [
+								[
+									120
+								]
 							]
 						}
 					]
@@ -499,6 +509,11 @@
 							"lineshape": [
 								[
 									"arc"
+								]
+							],
+							"showlegend": [
+								[
+									true
 								]
 							]
 						}
