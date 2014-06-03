@@ -391,7 +391,8 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				success: function(data) {
 					//console.log(this._reviver);
 					
-					data = JSON.parse( data, self._reviver );
+					data = JSON.parse(data);
+					self._reviver( data )
 					self.make(data);
 					self._onLoaded(data);
 					def.resolve();
