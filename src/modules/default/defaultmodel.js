@@ -32,10 +32,16 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 		
 			this.mapVars();
 
-			API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
+			//API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
 			API.getRepositoryActions( ).unListen( this.getActionNameList(), this._actionlisten );
-		
-			this._varlisten = API.getRepositoryData().listen( this.getVarNameList(), $.proxy(this.onVarGet, this) );
+			
+			var list = this.getVarNameList();
+			for( var i = 0, l = list.length ; i < l ; i ++ ) {
+
+				API.getVar( list[ i ] ).listen( this.module, $.proxy( this.onVarChange, this ) );
+			}
+
+			//this._varlisten = API.getRepositoryData().listen( this.getVarNameList(), $.proxy(this.onVarGet, this) );
 			this._actionlisten = API.getRepositoryActions().listen( this.getActionNameList(), $.proxy(this.onActionTrigger, this) );
 		},
 
@@ -86,61 +92,107 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			return names;
 		},
 
-		onVarGet: function(varValue, varName) {
+		onVarChange: function( variable ) {
+
 			var self = this,
 				i,
 				l,
+				k,
+				m,
 				rel;
-
 
 			this.module.onReady().then( function() {
 
-				if( varName instanceof Array ) {
-					varName = varName[ 0 ];
-				}
+				self.module.blankVariable( variable.getName() );
+			});
 
+			var rejectLatency;
+			var latency = new Promise( function( resolve, reject ) {
+
+				rejectLatency = reject;
+				setTimeout( resolve, 500 );
+			} );
+
+			// Start loading
+			var loadingState = Promise.all( [ this.module.onReady(), latency ] ).then( function() {
+
+				self.module.startLoading( variable.getName( ) );
+			} ).catch( function() {
+
+			} );
+
+			Promise.all( [ this.module.onReady( ), variable.onReady( ) ] ).then( function() {
+			
+				// Gets through the input filter first
+				var varName = variable.getName();
+				var varValue = variable.getValue();
+
+				self.module.endLoading( variable.getName( ) );
+
+				// Then validate
 				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
+					rejectLatency();
 					return;
 				}
                 
                 var data = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
-                
-                if(!data) {
-                    return;
+
+                if( ! data ) {
+                  	rejectLatency();
+					return;
                 }
 
-				self.data[ varName ] = data;
 				rel = self.module.getDataRelFromName( varName );
+				
+				i = 0,
+				l = rel.length,
+				k = 0;
 
-				i = 0, l = rel.length;
+				var vars = self.module.vars_in();
 
-				for( ; i < l; i++) {
+				m = vars.length;
+				for( ; k < m ; k ++ ) {
 
-					// For each rel we need to remove the triggerChange callbacks from the previous data before updating the new one !
-					self.removeAllChangeListeners( rel[ i ] );
+					if( vars[ k ].name == varName && self.module.view.update[ vars[ k ].rel ] && varValue !== null ) {
 
-					if (  self.module.view.blank[ rel[ i ] ] ) {
+						( function( j ) {
 
-					/*
-					  && varValue === null
-					  has been removed. We need to clear the module even for the true variable value.
-					  This is to account for asynchronous fetching that may come back in between two clearing elements
-					  DO NOT ADD THIS BACK !!!
-					*/
+							new Promise( function( resolve, reject ) {
 
-						self.module.view.blank[ rel[ i ] ].call( self.module.view, varName );
+								if( vars[ j ].filter ) {
 
+									require( [ vars[ j ].filter ], function( filterFunction ) {
+									
+										resolve( filterFunction( varValue ) );
+
+									} );
+								
+								} else {
+									resolve( varValue );
+								}
+							} ).then( function( varValue ) {
+
+								self.data[ vars[ j ].rel ] = varValue;
+								self.removeAllChangeListeners( vars[ j ].rel );
+								self.module.view.update[ vars[ j ].rel ].call( self.module.view, self.data[ vars[ j ].rel ], varName );
+
+							} );
+
+						}) ( k );
+						
 					}
 					
-					if( self.module.view.update[ rel[ i ] ] && varValue !== null ) {
-
-						self.module.view.update[ rel[ i ] ].call( self.module.view, self.data[ varName ], varName );
-
-					}
 				}
-			}).catch(function(err){
-				Debug.error( "Error. Caught error in model's var get", err );
-			});		
+
+				rejectLatency();
+				
+
+			} ).catch( function() {
+				Debug.error( "Error while updating variable ", arguments );
+				rejectLatency();
+
+			} );
+
  		},
 
 		onActionTrigger: function(value, actionName) {
@@ -181,8 +233,9 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				}
 			}
 
-			if(mustRebuild)
+			if(mustRebuild) {
 				return dataRebuilt;
+			}
 			
 			return false;
 		},
@@ -192,6 +245,10 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 		},
 				
 		getjPath: function(rel, subjPath) {
+			return this._getjPath( rel, subjPath );
+		},
+
+		_getjPath: function(rel, subjPath) {
 			var data = this.module.getDataFromRel(rel);
 
 			if( data && subjPath !== undefined ) {
@@ -210,15 +267,15 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			var self = this,
 				proxiedCallback = function( moduleId ) {
 
-				if( moduleId == self.module.getId( ) ) {
-					// Do not update itself;
-					return;
-				}
+					if( moduleId == self.module.getId( ) ) {
+						return;// Do not update itself;
+					}
 
-				callback.call( data );
-			};
+					callback.call( data );
+				};
 
 			if( this.addChangeListener( bindToRel, data, proxiedCallback ) ) {
+
 				data.onChange( proxiedCallback );
 			} else {
 				Debug.setDebugLevel(1);

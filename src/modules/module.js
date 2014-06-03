@@ -2,7 +2,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 	
 	function init( module ) {
 		//define object properties
-		var moduleURL = module.definition.url,
+		var moduleURL = module.definition.getChildSync('url', true).get();
 			ext = '';
 		
 		if( moduleURL.indexOf('http://') > -1 ) {
@@ -21,7 +21,11 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			module._resolveModel = res;
 		});
 
-		module._onReady = Promise.all( [ module.viewReady, module.controllerReady, module.modelReady ] ).catch( function() {
+		module._onReady = Promise.all( [ module.viewReady, module.controllerReady, module.modelReady ] ).then( function() {
+
+			module.updateAllView( );
+
+		}).catch( function() {
 
 			Debug.error( "Error. Caught error in module ready state", arguments );
 		});
@@ -53,6 +57,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 					module.domContent = module.dom.children( ).children( '.ci-module-content' );
 					module.domHeader = module.dom.children( ).children( '.ci-module-header' );
+					module.domLoading = module.dom.children( ).children( '.ci-module-loading' );
 					module.domWrapper = module.dom;
 			
 					module.view.setModule( module );
@@ -64,8 +69,6 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 					module.controller.init( );
 					module.model.init( );
 					
-		 			module.updateAllView( );
-					
 					resolve( module );
 				});
 			}
@@ -73,7 +76,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 		);
 	}
 
-	 var Module = function(definition) {
+	 var Module = function( definition ) {
 		this.definition = definition;
 		this.definition.configuration = this.definition.configuration || new ViewObject({});
 
@@ -129,6 +132,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			html += '">';
 			
 			html += '</div>';
+
+			html += '<div class="ci-module-loading">Loading ...</div>';
 			html += '</div>';
 			return html;
 		},
@@ -143,7 +148,10 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 		updateView: function(rel) {
 		
 			this.onReady().then( function( ) {
-				var val = API.getRepositoryData().get(this.getNameFromRel(rel)), name;
+
+				var val = API.getVariable( this.getNameFromRel( rel ) ),
+					name;
+
 				if( ! val ) {
 					return;
 				}
@@ -164,14 +172,12 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			var vars = this.vars_in(),
 				i = 0, 
 				l = vars.length, 
-				val;
+				variable;
 
 			for( ; i < l ; i++ ) {
 				
-	 			val = API.getVar( vars[ i ].name );
-	 			if( val.getType()!== "undefined" ) {	 				
-	 				this.model.onVarGet( val, vars[ i ].name );
-	 			}
+	 			variable = API.getVar( vars[ i ].name );
+	 			this.model.onVarChange( variable );
 			}
 		},
 		
@@ -239,7 +245,13 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				return;
 			}
 			
-			return this.model.data[ this.getNameFromRel( rel ) ] || false;
+			return this.model.data[ rel ] || false;
+		},
+
+		getVariableFromRel: function( rel ) {
+
+			var name = this.getNameFromRel( rel );
+			return API.getVar( name );
 		},
 
 		getNameFromRel: function(rel) {
@@ -445,7 +457,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 					for( ; i < l ; i ++ ) {
 
 						target.push( {
-							key: require.toUrl(arraySource[ i ].file),
+							key: arraySource[ i ].file ? require.toUrl(arraySource[ i ].file) : "",
 							title: arraySource[ i ].name,
 							children: makeFilters( arraySource[ i ].children )
 						} );		
@@ -456,7 +468,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			}
 
 			allFilters = makeFilters( filter );
-			
+			console.log( allFilters );
 
 			// AUTOCOMPLETE VARIABLES
 			var autoCompleteVariables = [],
@@ -508,6 +520,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				for( var i in references ) {
 					alljpaths[ i ] = module.model.getjPath( i );
 				}
+
+				console.log( alljpaths );
 			}
 
 			makeSendJpaths();
@@ -735,6 +749,12 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 										type: 'text',
 										title: 'From variable',
 										options: autoCompleteVariables
+									},
+
+									filter: {
+										type: 'combo',
+										title: 'Filter variable',
+										options: allFilters
 									}
 								}
 							}
@@ -775,7 +795,17 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 									jpath: {
 										type: 'combo',
 										title: 'jPath',
-										options: {}
+										options: {},
+										extractValue: function( val ) {
+											var val2 = val.split(".");
+											val2.shift();
+											return val2;
+										},
+
+										insertValue: function( val ) {
+											val = val || [];
+											return "element." + val.join(".");
+										}
 									},
 
 
@@ -865,7 +895,17 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 									jpath: {
 										type: 'combo',
 										title: 'jPath',
-										options: {}
+										options: {},
+										extractValue: function( val ) {
+											var val2 = val.split(".");
+											val2.shift();
+											return val2;
+										},
+
+										insertValue: function( val ) {
+											val = val || [];
+											return "element." + val.join(".");
+										}
 									},
 
 									name: {
@@ -1322,6 +1362,35 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			try {
 				this.getDomWrapper().resizable((bln === true || bln == undefined) ? 'enable' : 'disable');
 			} catch(e) {}; 
+		},
+
+		blankVariable: function( variableName ) {
+
+			var rels = this.getDataRelFromName( variableName );
+
+			for( var i = 0; i < rels.length ; i ++ ) {
+				if( this.view.blank[ rels[ i ] ] ) {
+					this.view.blank[ rels[ i ] ].call( this.view );
+				}
+			}
+		},
+
+		startLoading: function( variableName ) {
+
+			var rels = this.getDataRelFromName( variableName );
+			for( var i = 0; i < rels.length ; i ++ ) {
+				
+				this.view.startLoading( rels[ i ] );
+			}
+		},
+
+		endLoading: function( variableName ) {
+
+			var rels = this.getDataRelFromName( variableName );
+			for( var i = 0; i < rels.length ; i ++ ) {
+				
+				this.view.endLoading( rels[ i ] );
+			}
 		},
 
 		emptyConfig: {

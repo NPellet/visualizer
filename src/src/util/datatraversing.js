@@ -255,7 +255,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 			
 			var structure = {};
 
-			if(element === undefined || element === null) {
+			if( ! element ) {
 				return;
 			}
 

@@ -5,7 +5,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 			for (var i in object) {
 				if (object.hasOwnProperty(i)) {
 					if (recursive) {
-						this[i] = DataObject.check(object[i], true, forceCopy);
+						this[i] = DataObject.check(object[i], recursive, forceCopy);
 					} else {
 						this[i] = object[i];
 					}
@@ -14,18 +14,30 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		}
 	}
 
-	DataObject.check = function(object, recursive, forceCopy) {
+	DataObject.check = function(object, recursiveLevel, forceCopy) {
+		
+//console.log( recursiveLevel );
+		
+		if( recursiveLevel === undefined ) {
+			recursiveLevel = 1;
+		}
+
+		if( recursiveLevel <= 0 ) {
+			return object;
+		}
+
+		recursiveLevel--;
 
 		if (!forceCopy && (object instanceof DataObject || object instanceof DataArray)) {
 			return object;
 		} else if (object instanceof Array) {
-			return new DataArray(object, recursive, forceCopy);
+			return new DataArray(object, recursiveLevel, forceCopy);
 		} else if (object === null) {
 			return null;
 		} else if (typeof object === "object") {
-			return new DataObject(object, recursive, forceCopy);
+			return new DataObject( object, recursiveLevel, forceCopy );
 		} else {
-			return object;
+			return new DataObject( { type: typeof object, value: object }, 0 );
 		}
 	};
 
@@ -150,7 +162,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 				// Allows for pseudo-recursion on getting the element
 
 				//console.log( this, DataArray.prototype.constructor, this.__proto__.constructor );
-				val[ prop ] = DataObject.check( val[ prop ] );
+				val[ prop ] = DataObject.check( val[ prop ], 1 ); // Singe recursion
 
 				if (returnDeferred) { // Returns a deferred if asked
 
@@ -169,6 +181,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 					return val[prop];
 				}
 			}
+
 			if (this.hasOwnProperty("value") && this.hasOwnProperty("type"))
 				return this.value;
 			return this;
@@ -215,14 +228,14 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 				jpath.shift();
 			}
 
-			if (!jpath || jpath.length === 0) {
+			if ( ! jpath || jpath.length === 0 ) {
 				return $.Deferred().resolve(this);
 			}
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
 			var self = this;
 
-			var subEl = this.get( el, true ).pipe(function( subEl ) {
+			return this.get( el, true ).pipe(function( subEl ) {
 
 				// 2 june 2014
 				// This has to be automatic !
@@ -255,16 +268,14 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 				return subEl.getChild(jpath, setParents);
 			});
 
-			return subEl;
 		}
 	};
 
 	var getChildSync = {
 		value: function(jpath, setParents) {
 
-			if (jpath && jpath.split) { // Old version
-				jpath = jpath.split('.');
-				jpath.shift( );
+			if( ! Array.isArray( jpath ) ) {
+				jpath = [ jpath ];
 			}
 
 			if (!jpath) {
@@ -576,44 +587,5 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 	// Special setters for view objects
 	Object.defineProperty(ViewObject.prototype, 'set', viewSetter);
 	Object.defineProperty(ViewArray.prototype, 'set', viewSetter);
-
-	Object.defineProperties(String.prototype, {
-		getType: {
-			value: function() {
-				return 'string';
-			}
-		},
-		get: {
-			value: function() {
-				return this;
-			}
-		}
-	});
-
-	Object.defineProperties(Number.prototype, {
-		getType: {
-			value: function() {
-				return 'number';
-			}
-		},
-		get: {
-			value: function() {
-				return this;
-			}
-		}
-	});
-
-	Object.defineProperties(Boolean.prototype, {
-		getType: {
-			value: function() {
-				return 'boolean';
-			}
-		},
-		get: {
-			value: function() {
-				return this;
-			}
-		}
-	});
 
 });

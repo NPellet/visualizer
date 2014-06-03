@@ -3,7 +3,7 @@ requirejs.config({
 	paths: {
 		ace: "components/ace/lib/ace",
 		d3: "components/d3/d3.min",
-		fancytree: "components/fancytree/src/jquery.fancytree",
+		fancytree: "components/fancytree/dist/jquery.fancytree",
 		jqgrid: "components/jqgrid_edit/js/jquery.jqGrid",
 		jquery: "components/jquery/jquery.min",
 		jqueryui: "components/jquery-ui/ui/minified/jquery-ui.min",
@@ -47,7 +47,7 @@ requirejs.config({
 		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"],
 		"components/farbtastic/src/farbtastic": ["components/jquery/jquery-migrate.min"],
 		"lib/pixastic/pixastic": ["lib/pixastic/pixastic/pixastic.core"],
-		"components/fancytree/src/jquery.fancytree.dnd": ["fancytree"],
+		"components/fancytree/dist/jquery.fancytree.dnd": ["fancytree"],
 		"lib/parallel-coordinates/d3.parcoords": ["d3"]
 	}
 });

@@ -16,12 +16,12 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 	dataHandler.setType('data');
 	viewHandler.setType('view');
 
-	dataHandler.reviver = function(k, l) {
-		return DataObject.check(l);
+	dataHandler.reviver = function(l) {
+		DataObject.check(l, 1, false);
 	};
 
-	viewHandler.reviver = function(k, l) {
-		return ViewObject.check(l);
+	viewHandler.reviver = function(l) {
+		ViewObject.check(l, 1, false);
 	};
 
 	window.onpopstate = function(event) {
@@ -116,11 +116,12 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			this.dataCallback = c;
 			var that = this;
 			dataHandler.onLoaded = function(d) {
+			
 				data = d;
 				c.call(that, d);
 			};
 			dataHandler.onReload = function(d) {
-				data = d;
+				data = d
 				c.call(that, d, true);
 			};
 		},
@@ -133,7 +134,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 		},
 		setDataJSON: function(json) {
 
-			data = new DataObject(json, true);
+			data = new DataObject(json, false);
 			this.dataCallback(data, true);
 
 		},

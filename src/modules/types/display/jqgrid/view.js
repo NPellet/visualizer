@@ -253,11 +253,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 	update: {
 
-	 		list: function(moduleValue) {
+	 		list: function( moduleValue ) {
 
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
+
+	 			
 
 	 			var self = this, 
 	 				list = moduleValue.get(),

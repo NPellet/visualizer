@@ -1,4 +1,68 @@
-# 2.0.0-7 / Unreleased
+# 2.0.0 / 2014-05-01
+  * [Added] [ext-clones] #213 New method Fancytree.changeRefKey()
+
+
+# 2.0.0-12 / 2014-04-29
+  * [Added] /dist/src folder contains uncompressed extensions for bower
+  * [Improved] cleanup
+
+
+# 2.0.0-11 / 2014-04-27
+  * [Added] /dist/jquery.fancytree-custom.min.js with AMD support
+  * [Added] #56: Allow to set special node.attributes from data-...
+  * [Added] #191: Allow to set additional tree.data attributes from <ul data-...>
+  * [Added] [ext-childcounter] #202: Allow lazy children count
+  * [Improved] #192: Removed 'height: 100%' for container (was introduced to fix 
+     an IE 9 bug, that now should be solved by 'min-height: 0%')
+  * [Improved] [ext-table] #93 renderColumns called for status nodes 
+    (added 'customStatus' option)
+  * [Improved] [ext-dnd] #196 Make draggable/droppable options configurable
+  * [Fixed] [ext-glyph] #194 Render noExpander icon from icon map for leaf nodes
+  * [Fixed] #197: Allow special characters in tooltips
+  * [Fixed] #68: renderStatus method doesn't render 'loading' status
+  * [Fixed] #201: originalEvent not passed along to activate callback
+  * [Fixed] [ext-glyph] compatible with ext-table
+
+
+# 2.0.0-10 / 2014-04-13
+  * [Added] New method node.appendSibling()
+  * [Improved] setExpanded resolves promise *after* scrollIntoView
+  * [Improved] Allow to return false in lazyLoad for manual loading.
+  * [Improved] [ext-table] trigger expand event *after* animations
+  * [Improved] [ext-gridnav] skips empty and merged cells
+  * [Improved] grunt build no longer depends on tabfix.py
+  * [Fixed] selectMode: 1 + "selected": true looks buggy
+
+
+# 2.0.0-9 / 2014-04-02
+  * [Added] New helper method $.ui.fancytree.escapeHtml().
+  * [Added] [ext-clones] new method node,reRegister(key, refKey)
+  * [Added] Support for bower.
+  * [Added] dist/ folder to repository
+  * [Improved] [ext-edit] handles `<`, `>`, ...
+  * [Improved] [ext-table] node.render(force) trigger renderColumns event
+  * [Fixed] [ext-table] #178 children are not displayed when filtering
+
+
+# 2.0.0-8 / 2014-04-01
+  * [FEATURE] #18: load lazy nodes, if initialized as 'expanded'.
+  * [FEATURE] #162: Optional parameter `noEvents` for node.setActive() and .setExpanded().
+  * [CHANGE] Prefixed all Less variables with '@fancy-' and introduced '@fancy-image-dir'.
+  * [CHANGE] 'loadChildren' event is now also triggered for initial tree load (before it was only triggered for lazy child nodes)
+  * [BUGFIX] #117: line height too large when using doctype xhtml
+  * [BUGFIX] #115: Fixed error when trying to drag table headers
+  * [BUGFIX] #163: lazy load throws error if autoscroll: true and result is empty
+  * [FEATURE] [ext-clones] (experimental) new extension that introduces 
+    `node.refKey`, which may occur multiple times in one tree (as opposed to `key`, 
+    which must be unique).
+    New methods `node.isClone()`, `node.getCloneList()` and `tree.getNodesByRef()`.
+    Optionally, clones are tagged wit the `fancytree-clone` class.  
+  * [FEATURE] New option 'defaultKey'. This calback allows to generate keys while loading.
+  * build process creates /dist folder
+  * "bower install fancytree" delivers dist folder
+
+
+# 2.0.0-7 / 2014-03-09
   * [BREAKING CHANGE] node.isStatusNode() is now a function (was a property before).
     Added new property `node.statusNodeType`.
   * [BREAKING CHANGE] Renamed ext-awesome to ext-glyph

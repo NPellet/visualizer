@@ -145,7 +145,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 			stackTo[ i ] = [ ];
 
 			for( ; j < l ; j ++) {
-				stackTo[ i ].push( this.fieldElements[ i ][ j ].value );
+				stackTo[ i ].push( this.fieldElements[ i ][ j ].extractValue( ) );
 			}
 		}
 

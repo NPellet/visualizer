@@ -1,4 +1,4 @@
-define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversing, ActionManager) {
+define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables'], function(Traversing, ActionManager, Variables) {
 
 	var allScripts = [];
 	var variableFilters;
@@ -8,50 +8,34 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 
 		var self = this;
 
-		if( ! filter ) {
+/*		if( ! filter ) {
 			self.getRepositoryData().set( name, element );
 			return;
 		}
 
 		require( [ filter ], function( filterFunction ) {
+*/
+			Variables.setVariable( name, element );
 
-			self.getRepositoryData( ).set( name, filterFunction( element ) );
-		} );
+//			self.getRepositoryData( ).set( name, filterFunction( element ) );
+//		} );
 	}
 
-	function setVar( name, element, jpath, filter ) {
+	function setVar( name, sourceVariable, jpath, filter ) {
 
-		var self = this;
-		
-		switch( typeof element ) {
-			case 'string':
-				element = new DataObject( { type: "string", value: element } );
-			break;
-			case 'number':
-				element = new DataObject( { type: "number", value: element } );
-			break;
-			case 'boolean':
-				element = new DataObject( { type: "boolean", value: element } );
-			break;
-			default:
-				element = DataObject.check( element );
-			break;
-		}
+		var self = this,
+			jpathNewVar = ( ! sourceVariable ) ? jpath : sourceVariable.getjPath().concat( jpath );
 
-		if( element && element.getChild ) {
+		Variables.setVariable( name, jpathNewVar, false, filter );
+	}
 
-			element.getChild( jpath, true ).done( function( returned ) {
+	function getVar(name) {
+		return Variables.getVariable( name );
+	}
 
-				setVarFilter.call( self, name, returned, filter );
+	function createData( name, data ) {
 
-			} );	
-
-		} else {
-
-			console.warn("Variable " + name + " could not be set. Method getChild does not exist.");
-			console.trace();
-
-		}
+		Variables.setVariable( name, false, data );
 	}
 
 	function setHighlight( element, value ) {
@@ -105,16 +89,14 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 		setVar: setVar,
 		setVariable: setVar,
 		resetVariables: function() {
-			this.repositoryData.reset();
+
+			Variables.eraseAll();
+
 		},
 
-		getVar: function(name) {
-			var data = this.repositoryData.get(name);
-			if(data && data[1]) {
-				return data[1];
-			}
-			return new DataObject({type:"undefined", value:undefined});
-		},
+		getVar: getVar,
+		getVariable: getVar,
+
 
 		listenHighlight: function() {
 
@@ -149,7 +131,9 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 		},
 
 		setAllFilters: function( filters ) {
+
 			variableFilters = filters;
+			variableFilters.unshift({ file: "", name: "No filter"});
 		},
 
 		viewLock: function() {

@@ -67,7 +67,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 	function addModule( module ) {
 		
-		module.setLayers( definition.layers, true );
+		module.setLayers( definition.getChildSync('layers', true), true );
 	
 		module.ready.then( function( ) {
 
@@ -612,7 +612,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 					['<li><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>', 
 					function() {
 						var module = JSON.parse(window.localStorage.getItem("ci-copy-module"),Versioning.getViewHandler()._reviver);
-	                                        addModuleFromJSON( module );
+	                    addModuleFromJSON( module );
 					}]]
 				);
 				

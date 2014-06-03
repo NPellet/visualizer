@@ -42,36 +42,6 @@ define(['jquery',
 	API.setRepositoryHighlights(RepositoryHighlight);
 	API.setRepositoryActions(RepositoryActions);
 
-	/*window.onbeforeunload = function() {
-		var dommessage = {
-			data: false,
-			view: false
-		},
-		data = JSON.stringify(data),
-				view = JSON.stringify(view),
-				message = [];
-
-		if (viewhandler && viewhandler._savedLocal != view && viewserver._savedServer != view) {
-			dommessage.view = true;
-		}
-
-		if (datahandler && datahandler._savedLocal != data && datahandler._savedServer != data) {
-			dommessage.data = true;
-		}
-
-		if (dommessage.view) {
-			message.push("The view file has not been saved. If you continue, you will loose your changes");
-		}
-
-		if (dommessage.data) {
-			message.push("The data file has not been saved. If you continue, you will loose your changes");
-		}
-
-		if (message.length > 0) {
-			return message.join("\n\n");
-		}
-	};*/
-
 
 	function doView(view) {
 
@@ -101,7 +71,8 @@ define(['jquery',
 		view.configuration.title = view.configuration.title || 'No title';
 
 		for (; i < l; ) {
-			Grid.addModuleFromJSON(view.modules[ i++ ]);
+			
+			Grid.addModuleFromJSON(view.getChildSync( [ 'modules', i++ ], true ) );
 		}
 
 		Grid.checkDimensions();
@@ -152,6 +123,7 @@ define(['jquery',
 		var view = Versioning.getView();
 		var data = Versioning.getData();
 
+
 		var def = $.Deferred();
 		if (view.init_script) {
 			var prefix = '(function(init_deferred){"use strict";';
@@ -177,7 +149,7 @@ define(['jquery',
 						continue;
 					}
 
-					view.variables.push(new ViewObject({varname: i, jpath: "element." + i}));
+					view.variables.push( new ViewObject( { varname: i, jpath: [ i ] } ) );
 				}
 			}
 
@@ -192,19 +164,24 @@ define(['jquery',
 						entryVar.fetch( ).done(function(v) {
 							var varname = v.varname;
 							data[ varname ] = v.value;
-							API.setVariable(varname, data, [varname]);
+
+							API.setVariable( varname, false, [ varname ] );
 						});
 
-					} else if (!entryVar.jpath) {
+					} else if ( ! entryVar.jpath ) {
 
 						// If there is no jpath, we assume the variable is an object and we add it in the data stack
 						// Note: if that's not an object, we will have a problem...
-						data[ entryVar.varname ] = new DataObject();
-						API.setVariable(entryVar.varname, data, [entryVar.varname]);
+						API.createData( name, false );
 
 					} else {
 
-						API.setVariable(entryVar.varname, data, entryVar.jpath);
+						if( typeof entryVar.jpath == "string" ) {
+							entryVar.jpath = entryVar.jpath.split('.');
+							entryVar.jpath.shift();
+						}
+
+						API.setVariable( entryVar.varname, false, entryVar.jpath );
 					}
 				}
 			}
@@ -214,14 +191,15 @@ define(['jquery',
 
 					PouchDBUtil.pouchToVar(view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function(el) {
 						el.linkToParent(data, view.pouchvariables[ k ].varname);
-						API.setVariable(view.pouchvariables[ k ].varname, el);
+
+						//API.setVariable( view.pouchvariables[ k ].varname, el );
 					});
 
 				})(i);
 			}
 
 			// Pouch DB replication
-			PouchDBUtil.abortReplications();
+		/*	PouchDBUtil.abortReplications();
 			if (view.couch_replication) {
 				var couchData = view.couch_replication[ 0 ].groups.couch[ 0 ];
 				for (var i = 0, l = couchData.length; i < l; i++) {
@@ -229,7 +207,7 @@ define(['jquery',
 						PouchDBUtil.replicate(couchData[ i ].pouchname, couchData[ i ].couchurl, {direction: couchData[ i ].direction, continuous: couchData[ i ].continuous ? couchData[ i ].continuous.length : true});
 					}
 				}
-			}
+			}*/
 		});
 	}
 
@@ -245,6 +223,7 @@ define(['jquery',
 
 		var options = [];
 		Traversing.getJPathsFromElement(data, options);
+
 		require(['./forms/form'], function(Form) {
 
 			var form = new Form();
@@ -277,7 +256,17 @@ define(['jquery',
 									jpath: {
 										type: 'combo',
 										title: 'J-Path',
-										options: options
+										options: options,
+										extractValue: function( val ) {
+											
+											var val2 = val.split(".");
+											val2.shift();
+											return val2;
+										},
+
+										insertValue: function( val ) {
+											return "element." + val.join(".");
+										}
 									},
 									url: {
 										type: 'text',
@@ -620,6 +609,8 @@ define(['jquery',
 				/* Entry variables */
 				data = new ViewArray(value.sections.cfg[ 0 ].groups.tablevars[ 0 ], true);
 				allcrons = new ViewObject(value.sections.webcron[ 0 ].groups.general[ 0 ], true);
+
+
 
 				view.variables = data;
 				view.crons = allcrons;
