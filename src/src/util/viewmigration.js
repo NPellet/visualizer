@@ -136,6 +136,34 @@ define(['src/util/versioning'], function(Versioning) {
 					delete module.displayWrapper;
 					delete module.bgColor;
 				});
+            case "2.3.0-beta1" :
+
+                function updateJpath(element) {
+                    if (element.jpath) {
+                        element.jpath=element.jpath.split(".").slice(1);
+                    }
+
+                }
+                if (view.variables) {
+                    for (var i=0; i<view.variables.length; i++) {
+                        updateJpath(view.variables[i])
+                    }
+                }
+
+                eachModule(view, function(module) {
+                    if (module.vars_out) {
+                        for (var i=0; i<module.vars_out.length; i++) {
+                            updateJpath(module.vars_out[i])
+                        }
+                    }
+                    if (module.actions_out) {
+                        for (var i=0; i<module.actions_out.length; i++) {
+                            updateJpath(module.actions_out[i])
+                        }
+                    }
+
+                });
+
                 
         }
         view.version = Versioning.version;
