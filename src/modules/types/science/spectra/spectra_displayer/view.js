@@ -141,6 +141,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 				self.redraw( );
 				self.resolveReady();
+
 			});
 		},
 		
@@ -334,7 +335,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
             	this.series[varname] = this.series[varname] || [];
 				this.removeSerie( varname );
-
+console.log( moduleValue );	
 				if(!moduleValue)
 					return;
                                     

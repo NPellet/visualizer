@@ -258,7 +258,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 			if( ! element ) {
 				return;
 			}
-
+console.log( element );
 			var type = element.getType();
 			element = element.get();
 
