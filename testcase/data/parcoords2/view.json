@@ -18,7 +18,7 @@
 					"group": [
 						{
 							"script": [
-								"function filter() {\n    \n    // Change this variable to modify the number of generated colors\n    var l = 100000;\n    \n    \n    var i = 0,\n        a = new DataArray(Array(l));\n    \n    function rnd() {\n        return Math.floor(Math.random()*256);\n    }\n    \n    var o;\n    for(; i < l; i++) {\n        o = new DataObject({\n            r: rnd(),\n            g: rnd(),\n            b: rnd(),\n            a: Math.random()\n        });\n        o.color = \"rgba(\"+o.r+\",\"+o.g+\",\"+o.b+\",\"+o.a+\")\"\n        a[i] = o;\n    }\n    \n    return a;\n    \n}"
+								"function filter() {\n    \n    // Change this variable to modify the number of generated colors\n    var l = 100000;\n    \n    \n    var i = 0,\n        a = Array(l);\n    \n    function rnd() {\n        return Math.floor(Math.random()*256);\n    }\n    \n    var o;\n    for(; i < l; i++) {\n        o = {\n            r: rnd(),\n            g: rnd(),\n            b: rnd(),\n            a: Math.random()\n        };\n        o.color = \"rgba(\"+o.r+\",\"+o.g+\",\"+o.b+\",\"+o.a+\")\"\n        a[i] = o;\n    }\n    \n    return a;\n    \n}"
 							]
 						}
 					],
@@ -37,8 +37,8 @@
 						"top": 0
 					},
 					"size": {
-						"width": 56,
-						"height": 70
+						"width": 56.01818182468414,
+						"height": 70.01818182468415
 					},
 					"zIndex": 0,
 					"display": true,
@@ -113,8 +113,8 @@
 						"top": 0
 					},
 					"size": {
-						"width": 102,
-						"height": 70
+						"width": 102.01818182468415,
+						"height": 70.01818182468415
 					},
 					"zIndex": 0,
 					"display": true,

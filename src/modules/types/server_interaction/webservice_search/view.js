@@ -69,7 +69,7 @@ define(['modules/default/defaultview'], function(Default) {
 					
 					var searchTerm = $(this).val();
 					var searchName = $(this).attr('name');
-					
+					console.log("CHANGE")
 					if(searchName !== undefined) {
 						self.module.controller.searchTerms[ searchName ] = searchTerm;
 					}
@@ -94,12 +94,13 @@ define(['modules/default/defaultview'], function(Default) {
 				});
 			}
 
-
 			if (cfg('resultfilter')) {
         		eval("self.module.resultfilter = function(data) { try { \n " + cfg('resultfilter') + "\n } catch(_) { console.log(_); } }");
       		} else {
       			delete self.module.resultfilter;
       		}
+			
+			this.resolveReady();
 		},
 
 		_makeFormEl: function(spec, name) {
@@ -134,7 +135,7 @@ define(['modules/default/defaultview'], function(Default) {
 			}	
 		},
 
-		inDom: function() {
+		inDom: function() {console.log("INDOM")
 			this.search.find('input:last').trigger('change');
 		},
 

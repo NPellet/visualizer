@@ -266,7 +266,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                 'dataType': [ 'groups', 'group', 0, 'dataType', 0 ]
 	};
 
-	controller.prototype.initimpl = function() { 
+	controller.prototype.initImpl = function() {
 		this.searchTerms = {};
 		var searchparams;
 
@@ -285,6 +285,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 		if ( this.module.getConfiguration( 'onloadsearch' )) {
 			this.doSearch();
 		}
+		
+		this.resolveReady();
 	};
 		
 	controller.prototype.doSearch = function() {

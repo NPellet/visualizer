@@ -8,7 +8,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 			var sourceName, sourceAccepts;
 			this.module.model = this;
-			this.data = [ ];
+			this.data = new DataObject();
 		
 			this.triggerChangeCallbacksByRels = {};
 			this.mapVars();
@@ -160,9 +160,6 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 			} );
 
-			var varName = variable.getName();
-			var varValue = variable.getValue();
-
  		},
 
 		onActionTrigger: function(value, actionName) {
@@ -269,7 +266,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				return false;
 			}
 
-			if( this.listRels.indexOf( rel ) == -1 ) {
+			if( this.listRels.indexOf( rel ) === -1 ) {
 				return false;
 			}
 
@@ -286,12 +283,11 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			}
 
 			for( var i = 0, l = this.triggerChangeCallbacksByRels[ rel ].length ; i < l ; i ++ ) {
-				this.removeChangeListener( rel, this.triggerChangeCallbacksByRels[ rel ][ i ].data, this.triggerChangeCallbacksByRels[ rel ][ i ].callback );
+				this.removeChangeListener( this.triggerChangeCallbacksByRels[ rel ][ i ].data, this.triggerChangeCallbacksByRels[ rel ][ i ].callback );
 			}
 		},
 
 		removeChangeListener: function( data, callback ) {
-
 			data.unbindChange( callback );
 		}
 	};

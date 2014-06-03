@@ -1,16 +1,6 @@
 {
 	"modules": [
 		{
-			"title": "Possible mass",
-			"position": {
-				"left": 0,
-				"right": 1,
-				"top": 14
-			},
-			"size": {
-				"width": 60.96666666269302,
-				"height": 47.96666666269302
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -51,13 +41,6 @@
 					]
 				}
 			},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"displayWrapper": true,
 			"id": 1,
 			"vars_in": [
 				{
@@ -85,29 +68,34 @@
 			"actions_out": [
 				{}
 			],
-			"url": "./modules/types/display/jqgrid/"
+			"url": "./modules/types/display/jqgrid/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 14,
+						"right": 0
+					},
+					"size": {
+						"width": 61.01818182468414,
+						"height": 48.01818182468414
+					},
+					"display": true,
+					"title": "Possible mass",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Possible mass"
 		},
 		{
-			"title": [
-				[
-					[
-						[
-							[
-								"Isotopic distribution"
-							]
-						]
-					]
-				]
-			],
-			"position": {
-				"left": 62,
-				"right": 1,
-				"top": 0
-			},
-			"size": {
-				"width": 63.96666666269302,
-				"height": 31.966666662693022
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -197,14 +185,7 @@
 					]
 				}
 			},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
 			"id": 2,
-			"displayWrapper": true,
 			"vars_in": [
 				{
 					"rel": "jcamp",
@@ -227,23 +208,54 @@
 					"name": "fromTo"
 				}
 			],
-			"url": "./modules/types/science/spectra/spectra_displayer/"
-		},
-		{
+			"url": "./modules/types/science/spectra/spectra_displayer/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 62,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 64.01818182468415,
+						"height": 32.01818182468414
+					},
+					"display": true,
+					"title": [
+						[
+							[
+								[
+									[
+										"Isotopic distribution"
+									]
+								]
+							]
+						]
+					],
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
 			"title": [
 				[
-					"Molecular formula range"
+					[
+						[
+							[
+								"Isotopic distribution"
+							]
+						]
+					]
 				]
-			],
-			"position": {
-				"left": 0,
-				"right": 1,
-				"top": 7
-			},
-			"size": {
-				"width": 60.96666666269302,
-				"height": 5.966666662693024
-			},
+			]
+		},
+		{
 			"configuration": {
 				"frontcolor": "",
 				"font": "arial",
@@ -260,7 +272,6 @@
 					"name": ""
 				}
 			],
-			"bgColor": "",
 			"id": 3,
 			"vars_in": [
 				{
@@ -272,19 +283,36 @@
 				}
 			],
 			"actions_in": {},
-			"url": "./modules/types/display/single_value/"
+			"url": "./modules/types/display/single_value/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 7,
+						"right": 0
+					},
+					"size": {
+						"width": 61.01818182468414,
+						"height": 6.018181824684143
+					},
+					"display": true,
+					"title": [
+						[
+							"Molecular formula range"
+						]
+					],
+					"bgcolor": "",
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": [
+				[
+					"Molecular formula range"
+				]
+			]
 		},
 		{
-			"title": "maxMass",
-			"position": {
-				"left": 33,
-				"right": 1,
-				"top": 0
-			},
-			"size": {
-				"width": 27.966666662693022,
-				"height": 5.966666662693024
-			},
 			"configuration": {
 				"frontcolor": "",
 				"font": "arial",
@@ -300,7 +328,6 @@
 					"name": ""
 				}
 			],
-			"bgColor": "#daa9c4",
 			"id": 4,
 			"vars_in": [
 				{
@@ -312,21 +339,28 @@
 				}
 			],
 			"actions_in": {},
-			"url": "./modules/types/display/single_value/"
+			"url": "./modules/types/display/single_value/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 33,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 27.966666662693022,
+						"height": 5.966666662693024
+					},
+					"display": true,
+					"title": "maxMass",
+					"bgcolor": "#daa9c4",
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "maxMass"
 		},
 		{
-			"title": [
-				"minMass"
-			],
-			"position": {
-				"left": 0,
-				"right": 1,
-				"top": 0
-			},
-			"size": {
-				"width": 31.966666662693022,
-				"height": 5.966666662693024
-			},
 			"configuration": {
 				"frontcolor": "",
 				"font": "arial",
@@ -344,8 +378,6 @@
 					"name": ""
 				}
 			],
-			"bgColor": "#f95d5d",
-			"displayWrapper": true,
 			"id": 5,
 			"vars_in": [
 				{
@@ -357,21 +389,33 @@
 				}
 			],
 			"actions_in": {},
-			"url": "./modules/types/display/single_value/"
+			"url": "./modules/types/display/single_value/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 31.966666662693022,
+						"height": 5.966666662693024
+					},
+					"display": true,
+					"title": [
+						"minMass"
+					],
+					"bgcolor": "#f95d5d",
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": [
+				"minMass"
+			]
 		},
 		{
-			"title": [
-				"Clicked spectrum"
-			],
-			"position": {
-				"left": 0,
-				"right": 1,
-				"top": 63
-			},
-			"size": {
-				"width": 125.96666666269303,
-				"height": 27.966666662693022
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -458,14 +502,7 @@
 					]
 				}
 			},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
 			"id": 6,
-			"displayWrapper": true,
 			"vars_in": [
 				{
 					"rel": "jcamp",
@@ -481,19 +518,38 @@
 			"actions_out": [
 				{}
 			],
-			"url": "./modules/types/science/spectra/spectra_displayer/"
+			"url": "./modules/types/science/spectra/spectra_displayer/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 63,
+						"right": 0
+					},
+					"size": {
+						"width": 126.01818182468415,
+						"height": 28.01818182468414
+					},
+					"display": true,
+					"title": [
+						"Clicked spectrum"
+					],
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": [
+				"Clicked spectrum"
+			]
 		},
 		{
-			"title": "A jcamp encode in the JSON (Isotopic distribution of C10H10)",
-			"position": {
-				"left": 62,
-				"right": 1,
-				"top": 33
-			},
-			"size": {
-				"width": 63.96666666269302,
-				"height": 28.966666662693022
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
@@ -583,14 +639,7 @@
 					]
 				}
 			},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
 			"id": 7,
-			"displayWrapper": true,
 			"vars_in": [
 				{
 					"rel": "jcamp",
@@ -613,26 +662,59 @@
 					"name": "fromTo"
 				}
 			],
-			"url": "./modules/types/science/spectra/spectra_displayer/"
+			"url": "./modules/types/science/spectra/spectra_displayer/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 62,
+						"top": 33,
+						"right": 0
+					},
+					"size": {
+						"width": 64.01818182468415,
+						"height": 29.01818182468414
+					},
+					"display": true,
+					"title": "A jcamp encode in the JSON (Isotopic distribution of C10H10)",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "A jcamp encode in the JSON (Isotopic distribution of C10H10)"
 		},
 		{
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 127,
-				"top": 0
-			},
-			"size": {
-				"width": 37,
-				"height": 15
-			},
-			"configuration": {
-				"text": "<p>This example display possible molecular for a specified monoisotopic mass and is using chemcalc.</p>"
-			},
+			"text": "<p>This example display possible molecular for a specified monoisotopic mass and is using chemcalc.</p>",
 			"id": 8,
 			"vars_in": {},
 			"actions_in": {},
-			"url": "./modules/types/display/postit/"
+			"url": "./modules/types/display/postit/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 127,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 37,
+						"height": 15
+					},
+					"display": true,
+					"title": "Untitled module",
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"configuration": {},
+			"title": "Untitled module"
 		}
 	],
 	"configuration": {
@@ -672,5 +754,15 @@
 			"jpath": "element.chemcalc"
 		}
 	],
-	"_version": "2.2.1"
+	"version": "2.3.0-beta1",
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"pouchvariables": []
 }
