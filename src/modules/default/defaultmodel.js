@@ -97,6 +97,8 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			var self = this,
 				i,
 				l,
+				k,
+				m,
 				rel;
 
 			this.module.onReady().then( function() {
@@ -121,8 +123,6 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 			Promise.all( [ this.module.onReady( ), variable.onReady( ) ] ).then( function() {
 			
-				rejectLatency();
-
 				// Gets through the input filter first
 				var varName = variable.getName();
 				var varValue = variable.getValue();
@@ -131,31 +131,64 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 				// Then validate
 				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
+					rejectLatency();
 					return;
 				}
                 
                 var data = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
 
                 if( ! data ) {
-                    return;
+                  	rejectLatency();
+					return;
                 }
 
-				self.data[ varName ] = data;
 				rel = self.module.getDataRelFromName( varName );
-				i = 0, l = rel.length;
+				
+				i = 0,
+				l = rel.length,
+				k = 0;
 
-				for( ; i < l; i++) {
-					self.removeAllChangeListeners( rel[ i ] );
+				var vars = self.module.vars_in();
 
-					if( self.module.view.update[ rel[ i ] ] && varValue !== null ) {
+				m = vars.length;
+				for( ; k < m ; k ++ ) {
 
-						self.module.view.update[ rel[ i ] ].call( self.module.view, self.data[ varName ], varName );
+					if( vars[ k ].name == varName && self.module.view.update[ vars[ k ].rel ] && varValue !== null ) {
 
+						( function( j ) {
+
+							new Promise( function( resolve, reject ) {
+
+								if( vars[ j ].filter ) {
+
+									require( [ vars[ j ].filter ], function( filterFunction ) {
+									
+										resolve( filterFunction( varValue ) );
+
+									} );
+								
+								} else {
+									resolve( varValue );
+								}
+							} ).then( function( varValue ) {
+
+								self.data[ vars[ j ].rel ] = varValue;
+								self.removeAllChangeListeners( vars[ j ].rel );
+								self.module.view.update[ vars[ j ].rel ].call( self.module.view, self.data[ vars[ j ].rel ], varName );
+
+							} );
+
+						}) ( k );
+						
 					}
+					
 				}
 
-			} ).catch( function() {
+				rejectLatency();
+				
 
+			} ).catch( function() {
+				Debug.error( "Error while updating variable ", arguments );
 				rejectLatency();
 
 			} );
@@ -200,8 +233,9 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				}
 			}
 
-			if(mustRebuild)
+			if(mustRebuild) {
 				return dataRebuilt;
+			}
 			
 			return false;
 		},
@@ -211,7 +245,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 		},
 				
 		getjPath: function(rel, subjPath) {
-			return this.getjPath( rel, subjPath );
+			return this._getjPath( rel, subjPath );
 		},
 
 		_getjPath: function(rel, subjPath) {
@@ -233,13 +267,12 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			var self = this,
 				proxiedCallback = function( moduleId ) {
 
-				if( moduleId == self.module.getId( ) ) {
-					// Do not update itself;
-					return;
-				}
+					if( moduleId == self.module.getId( ) ) {
+						return;// Do not update itself;
+					}
 
-				callback.call( data );
-			};
+					callback.call( data );
+				};
 
 			if( this.addChangeListener( bindToRel, data, proxiedCallback ) ) {
 

@@ -131,7 +131,9 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 		},
 
 		setAllFilters: function( filters ) {
+
 			variableFilters = filters;
+			variableFilters.unshift({ file: "", name: "No filter"});
 		},
 
 		viewLock: function() {

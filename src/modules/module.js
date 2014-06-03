@@ -245,7 +245,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				return;
 			}
 			
-			return this.model.data[ this.getNameFromRel( rel ) ] || false;
+			return this.model.data[ rel ] || false;
 		},
 
 		getVariableFromRel: function( rel ) {
@@ -457,7 +457,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 					for( ; i < l ; i ++ ) {
 
 						target.push( {
-							key: require.toUrl(arraySource[ i ].file),
+							key: arraySource[ i ].file ? require.toUrl(arraySource[ i ].file) : "",
 							title: arraySource[ i ].name,
 							children: makeFilters( arraySource[ i ].children )
 						} );		
@@ -468,7 +468,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			}
 
 			allFilters = makeFilters( filter );
-			
+			console.log( allFilters );
 
 			// AUTOCOMPLETE VARIABLES
 			var autoCompleteVariables = [],
@@ -749,6 +749,12 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 										type: 'text',
 										title: 'From variable',
 										options: autoCompleteVariables
+									},
+
+									filter: {
+										type: 'combo',
+										title: 'Filter variable',
+										options: allFilters
 									}
 								}
 							}

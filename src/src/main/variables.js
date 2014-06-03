@@ -31,9 +31,8 @@ define([
 		var variable = getVariable( name );
 		
 		if( jpath ) {
-
+			
 			variable.setjPath( jpath, filter ? function( value, resolve ) {
-
 				
 				require( [ filter ], function( filterFunction ) {
 				
