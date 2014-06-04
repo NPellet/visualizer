@@ -89,7 +89,6 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					if(entry.id == id)
 					{
 						var obj = entry;
-						console.log(obj);
 						if(ev.toElement.outerHTML[ev.toElement.outerHTML.length -3] == 'd')
 					{
 						self.module.controller.elementHover(obj._highlight[0]);
@@ -132,19 +131,33 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			}
 			return data;
 		},
+		getRandomColor: function() {
+			var letters = '0123456789ABCDEF'.split('');
+			var color = '#';
+			for (var i = 0; i < 6; i++ ) {
+				color += letters[Math.floor(Math.random() * 16)];
+			}
+			return color;
+		},
 
 		createChart: function(chart, data) {
-			var self=this;
+		
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
 			switch (cfg('preference'))
 			{
 			case 'radar':
+				if(!chart.data[0].color)
+				{
+				chart.data[0].color = this.getRandomColor();
+				}
+				
 				var options = {
 					view: "radar",
-					container: self._id,
+					container: this._id,
 					alpha:0.2,
 					value: "#serie0#",
-					disableItems: false,
+					disableLines:cfg('line'),
+					disableItems: cfg('point'),
 					color: chart.data[0].color,
 					fill: chart.data[0].color,
 					line:{
@@ -170,35 +183,31 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					{
 						if(i != 0)
 						{
+						if(!chart.data[i].color)
+						{
+							chart.data[i].color = this.getRandomColor();
+						}
 						this._radar.addSeries({
-								value: "#serie"+i+"#",
-								fill: chart.data[i].color,
-								line:{
-									color:chart.data[i].color,
-									width:1
-								},
+							value: "#serie"+i+"#",
+							fill: chart.data[i].color,
+							disableLines:cfg('line'),
+							line:{
+								color:chart.data[i].color,
+								width:1
+							},
 
 						})
 						}
 						val.push({text: chart.data[i].serieLabel,color: chart.data[i].color});
 					}
-				this._radar.define("legend",{
-					width: 120,
-					align: "left",
-					valign: "top",
-					marker:{
-						type: "cube",
-						width: 15
-					},
-					values: val
-				}); 
+					
 				break;
 
 			case 'pie':
 				var options = {
 					view: cfg('pie'),
 					container: this._id,
-					radius: 250,
+					radius: 220,
 					value: "#serie0#",
 					color: chart.data[0].color,
 					pieInnerText: "<b>#xunit#</b>"
@@ -207,7 +216,21 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 				break;
 			};
-
+			
+		if(cfg('showlegend') == 'true')
+					{
+					
+				this._radar.define("legend",{
+					width: 120,
+					align: cfg('legendalign'),
+					valign: cfg('legendvalign'),
+					marker:{
+						type: cfg('legendmarker'),
+						width: 15
+					},
+					values: val
+				}); 
+				}
 
 		},
 	});
