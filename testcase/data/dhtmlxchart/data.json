@@ -32,7 +32,6 @@
 					"y": [65,59,90,81,56,55,40],
 					"z": [],
 					"_highlight":["A","B","E","C","B","E","D"],
-					"color":"#FF00FF",
 					"name": "first",
 					"serieLabel": "My first serie",
 					"xAxis": "0", 

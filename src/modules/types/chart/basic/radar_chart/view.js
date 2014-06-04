@@ -89,7 +89,6 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					if(entry.id == id)
 					{
 						var obj = entry;
-						console.log(obj);
 						if(ev.toElement.outerHTML[ev.toElement.outerHTML.length -3] == 'd')
 					{
 						self.module.controller.elementHover(obj._highlight[0]);
@@ -132,6 +131,14 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			}
 			return data;
 		},
+		getRandomColor: function() {
+			var letters = '0123456789ABCDEF'.split('');
+			var color = '#';
+			for (var i = 0; i < 6; i++ ) {
+				color += letters[Math.floor(Math.random() * 16)];
+			}
+			return color;
+		},
 
 		createChart: function(chart, data) {
 			var self=this;
@@ -140,6 +147,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			switch (cfg('preference'))
 			{
 			case 'radar':
+				if(!chart.data[0].color)
+				{
+				chart.data[0].color = this.getRandomColor();
+				}
+				
 				var options = {
 					view: "radar",
 					container: self._id,
@@ -171,13 +183,17 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					{
 						if(i != 0)
 						{
+						if(!chart.data[i].color)
+						{
+							chart.data[i].color = this.getRandomColor();
+						}
 						this._radar.addSeries({
-								value: "#serie"+i+"#",
-								fill: chart.data[i].color,
-								line:{
-									color:chart.data[i].color,
-									width:1
-								},
+							value: "#serie"+i+"#",
+							fill: chart.data[i].color,
+							line:{
+								color:chart.data[i].color,
+								width:1
+							},
 
 						})
 						}
