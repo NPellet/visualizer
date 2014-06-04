@@ -3,7 +3,7 @@ requirejs.config({
 	paths: {
 		ace: "components/ace/lib/ace",
 		d3: "components/d3/d3.min",
-		fancytree: "components/fancytree/dist/jquery.fancytree",
+		fancytree: "components/fancytree/dist/jquery.fancytree-all",
 		jqgrid: "components/jqgrid_edit/js/jquery.jqGrid",
 		jquery: "components/jquery/jquery.min",
 		jqueryui: "components/jquery-ui/ui/minified/jquery-ui.min",
@@ -14,8 +14,8 @@ requirejs.config({
 		ChemDoodle: "lib/chemdoodle/ChemDoodleWeb-unpacked",
 		pouchdb: "components/pouchdb/dist/pouchdb-nightly.min",
 		uri: "components/uri.js/src",
-    underscore: "./components/underscore/underscore",
-    svgedit: "./lib/svg-edit-2.7/embedapi"
+		underscore: "components/underscore/underscore",
+		svgedit: "lib/svg-edit-2.7/embedapi"
 	},
 	shim: {
 		"d3": {
@@ -39,7 +39,7 @@ requirejs.config({
 		"ckeditor": {
 			exports: "CKEDITOR"
 		},
-    "components/three.js/examples/js/controls/TrackballControls": ["threejs"],
+		"components/three.js/examples/js/controls/TrackballControls": ["threejs"],
 		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
 		"lib/flot/jquery.flot.pie": ["jquery", "lib/flot/jquery.flot"],
@@ -47,7 +47,6 @@ requirejs.config({
 		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"],
 		"components/farbtastic/src/farbtastic": ["components/jquery/jquery-migrate.min"],
 		"lib/pixastic/pixastic": ["lib/pixastic/pixastic/pixastic.core"],
-		"components/fancytree/dist/jquery.fancytree.dnd": ["fancytree"],
 		"lib/parallel-coordinates/d3.parcoords": ["d3"]
 	}
 });
