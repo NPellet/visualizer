@@ -38,10 +38,22 @@
 									"arc"
 								]
 							],
+							"line": [
+								[]
+							],
 							"showlegend": [
 								[
 									true
 								]
+							],
+							"legendmarker": [
+								"round"
+							],
+							"legendalign": [
+								"left"
+							],
+							"legendvalign": [
+								"top"
 							]
 						}
 					]
@@ -73,10 +85,12 @@
 					"display": true,
 					"title": "Radar Chart",
 					"bgcolor": [
-						255,
-						255,
-						255,
-						0
+						[
+							255,
+							255,
+							255,
+							0
+						]
 					],
 					"wrapper": true,
 					"created": true,
@@ -511,10 +525,20 @@
 									"arc"
 								]
 							],
+							"line": [
+								[]
+							],
 							"showlegend": [
-								[
-									true
-								]
+								"false"
+							],
+							"legendmarker": [
+								null
+							],
+							"legendalign": [
+								null
+							],
+							"legendvalign": [
+								null
 							]
 						}
 					]

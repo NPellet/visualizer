@@ -6183,7 +6183,7 @@ dhtmlXChart.prototype={
 		/*creation of legend container*/
 		if(this.legendObj){
 			this.legendObj.innerHTML = "";
-			this.legendObj.parentNode.removeChild(this.legendObj);
+			//this.legendObj.parentNode.removeChild(this.legendObj);
 		}
 
 		this.canvases["legend"].clearCanvas(true);

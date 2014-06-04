@@ -15,10 +15,10 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		Information about the module
 	*/
 	controller.prototype.moduleInformation = {
-		moduleName: 'chartjs',
-		description: 'Display a Radar chart - Polar area chart - Pie chart et Doughnut chart based on dhtmlxchart',
+		moduleName: 'RadarChart',
+		description: 'Display a Radar chart - Polar area chart - Pie chart et Donut chart based on dhtmlxchart',
 		author: 'Khalid Arroub',
-		date: '07.01.2014',
+		date: '04.07.2014',
 		license: 'MIT',
 		cssClass: ''
 	};
@@ -129,7 +129,6 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 							title: 'Steps Between',
 							displayTarget: [ 'r' ]
 						},
-
 						point: {
 							type: 'checkbox',
 								title: 'point',
@@ -146,15 +145,59 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 							],
 							displayTarget: [ 'r' ]
 						},
+						line: {
+							type: 'checkbox',
+								title: 'Line',
+								options: { 'line': 'Hide Line Area'},
+							displayTarget: [ 'r' ]
+						},
 						showlegend: {
 							type: 'combo',
-							title: 'Line Shape',
+							title: 'Show Legend',
 							options: [
 								{title: 'True', key: 'true'},
 								{title: 'False', key: 'false'}
+							],
+							displaySource:  {
+							'true': 't',
+							'false': 'f'
 
-							]
+							}
+						},
+						legendmarker : {
+							type: 'combo',
+							title: 'Legend Marker',
+							options: [
+								{title: 'Cube', key: 'cube'},
+								{title: 'Round', key: 'round'}
+
+							],
+							displayTarget: [ 'r' ],
+							displayTarget: [ 't' ]
+						},
+						legendalign : {
+							type: 'combo',
+							title: 'Legend Align',
+							options: [
+								{title: 'Left', key: 'left'},
+								{title: 'Right', key: 'right'}
+
+							],
+							displayTarget: [ 'r' ],
+							displayTarget: [ 't' ]
+						},
+						legendvalign : {
+							type: 'combo',
+							title: 'Legend Valign',
+							options: [
+								{title: 'Top', key: 'top'},
+								{title: 'Bottom', key: 'bottom'}
+
+							],
+							displayTarget: [ 'r' ],
+							displayTarget: [ 't' ]
 						}
+						
 						
 
 
@@ -167,6 +210,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 
 	controller.prototype.configFunctions = {
 		'point': function(cfg) { return cfg.indexOf('point') == -1 ? false : true; },
+		'line': function(cfg) { return cfg.indexOf('line') == -1 ? false : true; }
 	};
 	controller.prototype.configAliases = {
 
@@ -177,7 +221,11 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		'step': [ 'groups', 'group', 0, 'step', 0 ],
 		'lineshape': [ 'groups', 'group', 0, 'lineshape', 0 ],
 		'point': [ 'groups', 'group', 0, 'point', 0 ],
-		'showlegend': [ 'groups', 'group', 0, 'showlegend', 0 ]
+		'showlegend': [ 'groups', 'group', 0, 'showlegend', 0 ],
+		'line': [ 'groups', 'group', 0, 'line', 0 ],
+		'legendmarker': [ 'groups', 'group', 0, 'legendmarker', 0 ],
+		'legendalign': [ 'groups', 'group', 0, 'legendalign', 0 ],
+		'legendvalign': [ 'groups', 'group', 0, 'legendvalign', 0 ]
 	};
 
 

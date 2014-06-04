@@ -10,7 +10,7 @@
 	{
 		"type":"chart",
 		"value": {
-			"title" : "A stack chart",
+			"title" : "Radar chart",
 			"axis": {
 				"0": {
 					"type": "", 
@@ -32,6 +32,7 @@
 					"y": [65,59,90,81,56,55,40],
 					"z": [],
 					"_highlight":["A","B","E","C","B","E","D"],
+					"color":"",
 					"name": "first",
 					"serieLabel": "My first serie",
 					"xAxis": "0", 

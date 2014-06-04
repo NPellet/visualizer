@@ -141,9 +141,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		},
 
 		createChart: function(chart, data) {
-			var self=this;
+		
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
-
 			switch (cfg('preference'))
 			{
 			case 'radar':
@@ -154,9 +153,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				
 				var options = {
 					view: "radar",
-					container: self._id,
+					container: this._id,
 					alpha:0.2,
 					value: "#serie0#",
+					disableLines:cfg('line'),
 					disableItems: cfg('point'),
 					color: chart.data[0].color,
 					fill: chart.data[0].color,
@@ -190,6 +190,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 						this._radar.addSeries({
 							value: "#serie"+i+"#",
 							fill: chart.data[i].color,
+							disableLines:cfg('line'),
 							line:{
 								color:chart.data[i].color,
 								width:1
@@ -221,10 +222,10 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					
 				this._radar.define("legend",{
 					width: 120,
-					align: "left",
-					valign: "top",
+					align: cfg('legendalign'),
+					valign: cfg('legendvalign'),
 					marker:{
-						type: "cube",
+						type: cfg('legendmarker'),
 						width: 15
 					},
 					values: val
