@@ -280,9 +280,8 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 			callback = function() {
 				Debug.debug("Started replication from couchDB " + urlH + " to localDB " + pouchName + ".");
 				return pouch.pouchdb.replicate.from(couchURL, {
-					live: continuous,
-					complete: complete
-				});
+					live: continuous
+				}).on('complete', complete);
 			};
 			
 			this.froms[pouchName] = callback;
@@ -294,9 +293,8 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 			callback = function() {
 				Debug.debug("Started replication from localDB " + pouchName + " to couchDB " + urlH + ".");
 				return pouch.pouchdb.replicate.to(couchURL, {
-					live: continuous,
-					complete: complete
-				});
+					live: continuous
+				}).on('complete', complete);
 			};
 			
 			this.tos[pouchName] = callback;
@@ -396,54 +394,51 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		this.pouchdb = new PouchDB(name);
 		this.singleDocs = {};
 		var that = this;
-		this.pouchdb.info().then(function(info){
-			that.pouchdb.changes({
-				live: true,
-				since: info.update_seq,
-				include_docs: true,
-				onChange: function(change) {
-					if(that.singleDocs[change.id]) {
-						if(change.deleted) {
-							that.singleDocs[change.id].setPouch(null);
-							delete that.singleDocs[change.id];
-						}
-						else {
-							if(that.singleDocs[change.id]._rev !== change.doc._rev) { // If revID is the same, it means the change was already done in the visualizer
-								that.singleDocs[change.id].mergeWith(change.doc, "internal_pouch_change");
-							}
-						}
+		this.pouchdb.changes({
+			include_doc: true,
+			live: true,
+			since: 'now'
+		}).on('change', function(change) {
+			if (that.singleDocs[change.id]) {
+				if (change.deleted) {
+					that.singleDocs[change.id].setPouch(null);
+					delete that.singleDocs[change.id];
+				}
+				else {
+					if (that.singleDocs[change.id]._rev !== change.doc._rev) { // If revID is the same, it means the change was already done in the visualizer
+						that.singleDocs[change.id].mergeWith(change.doc, "internal_pouch_change");
 					}
-					if(that.allDocs) {
-						var arr = that.allDocs.value, index = -1;
-						for(var i = 0, l = arr.length; i < l; i++) {
-							if(arr[i]._id === change.id) {
-								index = i;
-								break;
-							}
-						}
-						if(index === -1) { // Doc is not in the array
-							if(!change.deleted) {
-								var pouchobj = new PouchObject(change.doc, true);
-								pouchobj.setPouch(that);
-								arr.push(pouchobj)
-								that.allDocs.triggerChange("internal_pouch_change");
-							}
-						}
-						else {
-							if(change.deleted) { // Remove object from the array
-								arr[index].setPouch(null);
-								arr.splice(index, 1);
-								that.allDocs.triggerChange("internal_pouch_change");
-							}
-							else { // Modify object in the array
-								if(arr[index]._rev !== change.doc._rev) {
-									arr[index].mergeWith(change.doc, "internal_pouch_change");
-								}
-							}
+				}
+			}
+			if (that.allDocs) {
+				var arr = that.allDocs.value, index = -1;
+				for (var i = 0, l = arr.length; i < l; i++) {
+					if (arr[i]._id === change.id) {
+						index = i;
+						break;
+					}
+				}
+				if (index === -1) { // Doc is not in the array
+					if (!change.deleted) {
+						var pouchobj = new PouchObject(change.doc, true);
+						pouchobj.setPouch(that);
+						arr.push(pouchobj);
+						that.allDocs.triggerChange("internal_pouch_change");
+					}
+				}
+				else {
+					if (change.deleted) { // Remove object from the array
+						arr[index].setPouch(null);
+						arr.splice(index, 1);
+						that.allDocs.triggerChange("internal_pouch_change");
+					}
+					else { // Modify object in the array
+						if (arr[index]._rev !== change.doc._rev) {
+							arr[index].mergeWith(change.doc, "internal_pouch_change");
 						}
 					}
 				}
-			});
+			}
 		});
 	}
 	
@@ -506,15 +501,14 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		direction: "both",
 		continuous: true
 	};
+	
 	exports.replicate = function(name, couchURL, options) {
 		
 		if(!name || !couchURL)
 			return;
 		
 		options = $.extend({}, defaultRepOpt, options);
-		
-		console.log("CONTINUOUS",options.continuous);
-		
+				
 		var pouch = PouchFactory.get(name);
 		
 		if (options.direction === "CtoP" || options.direction === "both") {
