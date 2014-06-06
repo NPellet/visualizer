@@ -1,4 +1,4 @@
-define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/webtoolkit/base64', 'lib/couchdb/jquery.couch', 'fancytree', 'components/fancytree/src/jquery.fancytree.dnd', 'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'], function($, Default, Versioning, Button, Util, Base64) {
+define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util', 'lib/webtoolkit/base64', 'lib/couchdb/jquery.couch', 'fancytree', 'fancytree', 'components/jquery-ui-contextmenu/jquery.ui-contextmenu.min'], function($, Default, Versioning, Button, Util, Base64) {
 
     var couchDBManager = function() {
     };

@@ -141,12 +141,12 @@ define(['src/util/versioning'], function(Versioning) {
             case "2.3.0-beta1" :
 
                 function updateJpath(element) {
-                    
-                    if (element.jpath) {
-                        element.jpath=element.getChildSync(['jpath']).get().split(".").slice(1);
+                    var jpath = element.getChildSync(['jpath']).get();
+                    if (jpath) {
+						element.setChild("jpath",jpath.split(".").slice(1));
                     }
-
                 }
+				
                 if (view.variables) {
                     for (var i=0; i<view.variables.length; i++) {
                         updateJpath(view.variables[i])
@@ -183,17 +183,21 @@ define(['src/util/versioning'], function(Versioning) {
             } else if(!(moduleNames instanceof Array)) {
                 moduleNames = [""];
             }
-            var i = 0, ii = view.modules.length, module;
+            var i = 0, ii = view.modules.length, module, url;
             var j, jj = moduleNames.length;
             for(; i < ii; i++) {
                 module = view.modules[i];
-                for(j = 0; j < jj; j++) {
-                    //console.log( module );
-                    if(module.url && module.get('url').get().indexOf(moduleNames[j]) >= 0) {
-                        callback(module);
-                        break;
-                    }
-                }
+
+				url = module.getChildSync(['url']).get();
+				if(url) {
+					for(j = 0; j < jj; j++) {
+						if(url.indexOf(moduleNames[j]) >= 0) {
+							callback(module);
+							break;
+						}
+					}
+				}
+
             }
         }
     }

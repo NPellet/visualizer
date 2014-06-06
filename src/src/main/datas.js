@@ -237,7 +237,9 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 				// Allows for pseudo-recursion on getting the element
 
 				//console.log( this, DataArray.prototype.constructor, this.__proto__.constructor );
-				val[ prop ] = DataObject.check( val[ prop ], 1 ); // Single recursion
+
+//				val[ prop ] = DataObject.check( val[ prop ], 1 ); // Single recursion
+
 
 				if (returnDeferred) { // Returns a deferred if asked
 
@@ -252,7 +254,10 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 						return $.Deferred().reject();
 					}
 				} else {
-
+					
+					if (typeof val[ prop ] !== "undefined") {
+						val[ prop ] = DataObject.check( val[ prop ], 1 ); // Singe recursion
+					}
 					return val[prop];
 				}
 			}
@@ -396,7 +401,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 			/*switch (typeof subEl) {
 				case 'undefined':
-					return;
+					return new DataObject({type: "undefined", value: undefined});
 					break;
 
 				case 'string':
