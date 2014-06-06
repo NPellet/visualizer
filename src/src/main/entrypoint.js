@@ -31,9 +31,6 @@ define(['jquery',
 
 	var _viewLoaded, _dataLoaded;
 
-	var evaluatedScripts = {};
-	var crons = [];
-
 	var RepositoryData = new Repository(),
 			RepositoryHighlight = new Repository(),
 			RepositoryActions = new Repository();
