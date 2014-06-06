@@ -5,7 +5,8 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 	var version = [2, 4, '0b0'].join('.');
 	var dataHandler = new VersionHandler(),
 			viewHandler = new VersionHandler(),
-			view, data,
+			view = new ViewObject(),
+			data = new DataObject(),
 			lastLoaded = {
 				view: {},
 				data: {}
@@ -126,17 +127,25 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			};
 		},
 		setViewJSON: function(json) {
-
-			view = new ViewObject(json, true);
+			var i;
+			for(i in view) {
+				delete view[i];
+			}
+			for(i in json) {
+				view[i] = new ViewObject(json[i], true);
+			}
 			this.viewCallback(view, true);
 			viewHandler.versionChange().notify(view);
-
 		},
 		setDataJSON: function(json) {
-
-			data = new DataObject(json, false);
+			var i;
+			for(i in data) {
+				delete data[i];
+			}
+			for(i in json) {
+				data[i] = new DataObject(json[i], false);
+			}
 			this.dataCallback(data, true);
-
 		},
 		blankView: function( ) {
 			this.setViewJSON({});

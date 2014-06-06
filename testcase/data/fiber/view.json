@@ -384,7 +384,7 @@
 				"defaultvalue": "Fiber analysis<br />\nThis example display the result of a similarity analysis of fibers done using infrared spectroscopy.<br />\n<br />\nThe similarity matrix shows as expected a red line on the diagonal. A IR spectrum is obviously similar to itself.<br />\n<br />\nEach IR spectrum is associated with a keyowrd describing the category to which it belongs. A ROC curve analysis shows a nearly perfect result. The perfect model having a AROC (Area under the ROC curve) of 1.<br />\n<br />\nHistogram for inter and intra similarity shows also a clear separation.<br />\n<br />\n",
 				"sprintf": ""
 			},
-			"bgColor": "#feffa8",
+			"bgColor": [254,255,168,1],
 			"dataSend": [
 				{
 					"event": "",

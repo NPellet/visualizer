@@ -136,7 +136,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				}
                 
                 var data = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
-console.log( varName, data );
+				
                 if( ! data ) {
                   	rejectLatency();
 					return;

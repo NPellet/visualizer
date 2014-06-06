@@ -224,7 +224,7 @@ define(['jquery',
 		div.parent( ).css('z-index', 1000);
 
 		var options = [];
-		console.log( data );
+		
 		Traversing.getJPathsFromElement(data, options);
 
 		require(['./forms/form'], function(Form) {
