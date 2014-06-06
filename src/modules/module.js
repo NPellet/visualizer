@@ -48,7 +48,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 					return;
 				}
 
-				Util.loadCss( require.toUrl( moduleURL + "style.css" ) );
+				Util.loadCss( moduleURL + "style.css" );
 
 				require( [
 					
