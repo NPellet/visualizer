@@ -39,6 +39,10 @@
 		{
 			"moduleName": "Twig template",
 			"url": "modules/types/display/template-twig/"
+		},
+		{
+			"moduleName": "Hierarchical structure",
+			"url": "modules/types/display/fancytree/"
 		}
 	],
 	"name": "Display",
