@@ -8,10 +8,11 @@ define([
 ], 
 
 function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
+	"use strict";
 	
 	function init( module ) {
 		//define object properties
-		var moduleURL = module.definition.getChildSync('url', true).get();
+		var moduleURL = module.definition.getChildSync('url', true).get(),
 			ext = '';
 		
 		if( moduleURL.indexOf('http://') > -1 ) {
