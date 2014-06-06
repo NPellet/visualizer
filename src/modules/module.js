@@ -1346,20 +1346,19 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		exportData: function() {
 			var module = this;
 			$('<div class="ci-module-export"><textarea></textarea></div>').dialog({
-				'modal': true,
-				'title': 'Export data from module ' + module.getTitle(),
-				'width': '70%',
+				modal: true,
+				title: 'Export data from module ' + module.getTitle(),
+				width: '70%',
 				height: 500
 			}).children('textarea').text(module.controller["export"]());
 		},
 		
 		printView: function() {
+			var content = this.controller.print();
 			var openWindow = window.open("", "", "");
-			this.controller["print"](openWindow);
+			openWindow.document.write(content);
 			openWindow.document.close();
 			openWindow.focus();
-			openWindow.print();
-			openWindow.close();
 		},
 
 		setBackgroundColor: function(color) {

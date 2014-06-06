@@ -8,7 +8,6 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 		},
 
 		initImpl: function() {
-			console.log( this );
 			this.resolveReady();
 		},
 
@@ -105,7 +104,9 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 		},
 
 		"export": function() {},
-        print: function() {},
+        print: function() {
+			return this.module.getDomContent()[0].innerHTML;
+		},
 		configurationStructure:  function() {},
 		configFunctions: {},
 		configAliases: {},

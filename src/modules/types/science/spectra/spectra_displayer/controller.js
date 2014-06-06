@@ -461,10 +461,9 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		this.createDataFromEvent( 'onMouseOutMarker', 'markerXY', new DataArray(xy) );
 	};
     
-    controller.prototype.print = function(printWindow) {
-        printWindow.document.open("image/svg+xml");
-        printWindow.document.write(this.module.view.graph._dom.innerHTML);
-    }
+    controller.prototype.print = function() {
+        return this.module.view.graph._dom.innerHTML;
+    };
 
  	return controller;
 });
