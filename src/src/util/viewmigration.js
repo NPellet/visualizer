@@ -188,8 +188,8 @@ define(['src/util/versioning'], function(Versioning) {
             for(; i < ii; i++) {
                 module = view.modules[i];
                 for(j = 0; j < jj; j++) {
-                    
-                    if(module.url && module.url.get().indexOf(moduleNames[j]) >= 0) {
+                    //console.log( module );
+                    if(module.url && module.get('url').get().indexOf(moduleNames[j]) >= 0) {
                         callback(module);
                         break;
                     }

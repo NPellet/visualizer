@@ -28,7 +28,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 		recursiveLevel--;
 
-		if (!forceCopy && (object instanceof DataObject || object instanceof DataArray)) {
+		if (!forceCopy && (object instanceof DataObject || object instanceof DataArray || object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean)) {
 			return object;
 		} else if (object instanceof Array) {
 			return new DataArray(object, recursiveLevel, forceCopy);
@@ -37,9 +37,84 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		} else if (typeof object === "object") {
 			return new DataObject( object, recursiveLevel, forceCopy );
 		} else {
-			return new DataObject( { type: typeof object, value: object }, 0 );
+			
+			switch ( typeof object ) {
+
+				case 'string':
+					return new DataString( object );
+				break;
+
+				case 'number':
+					return new DataNumber( object );
+				break;
+					
+				case 'boolean':
+					return new DataBoolean( object );
+				break;
+			}
+
 		}
 	};
+
+
+	function DataString( s ) {
+		String.call(this, s);
+    	this.s_ = s;
+    }
+
+	DataString.prototype.getType = function() {
+		return "string";
+	}
+
+	DataString.prototype.toString = function() {
+		return this.s_;
+	}
+
+	DataString.prototype.get = function() {
+		return this.s_;
+	}
+
+	DataString.prototype.valueOf = function() {
+		return this.s_;
+	}
+
+	DataString.prototype.toSource = function() {
+		return this.s_;
+	}
+
+
+
+	function DataNumber( s ) {
+		Number.call(this, s);
+    	this.s_ = s;
+    }
+
+	DataNumber.prototype.getType = function() {
+		return "number";
+	}
+
+	DataNumber.prototype.toString = function() {
+		return this.s_;
+	}
+
+	DataNumber.prototype.get = function() {
+		return this.s_;
+	}
+
+	DataNumber.prototype.valueOf = function() {
+		return this.s_;
+	}
+
+	DataNumber.prototype.toSource = function() {
+		return this.s_;
+	}
+
+	function DataBoolean() { }
+	DataBoolean.prototype = new Boolean();
+	DataBoolean.prototype.getType = function() {
+		return "boolean";
+	}
+
 
 	function DataArray(arr, recursive, forceCopy) {
 		var newArr = [];
@@ -162,7 +237,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 				// Allows for pseudo-recursion on getting the element
 
 				//console.log( this, DataArray.prototype.constructor, this.__proto__.constructor );
-				val[ prop ] = DataObject.check( val[ prop ], 1 ); // Singe recursion
+				val[ prop ] = DataObject.check( val[ prop ], 1 ); // Single recursion
 
 				if (returnDeferred) { // Returns a deferred if asked
 
@@ -237,39 +312,70 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 			return this.get( el, true ).pipe(function( subEl ) {
 
-				// 2 june 2014
-				// This has to be automatic !
-				//if (setParents) {
-
-					switch ( typeof subEl ) {
-
-						case 'string':
-							subEl = new DataObject({type: "string", value: subEl});
-							break;
-
-						case 'number':
-							subEl = new DataObject({type: "number", value: subEl});
-							break;
-							
-						case 'boolean':
-							subEl = new DataObject({type: "boolean", value: subEl});
-					}
-
-					if( subEl && subEl.linkToParent ) {
-						subEl.linkToParent(self, el);
-					}
-				// }
-
 				if (!subEl || (jpath.length === 0)) {
 					return subEl;
 				}
-
 
 				return subEl.getChild(jpath, setParents);
 			});
 
 		}
 	};
+
+
+
+
+	var trace = {
+		value: function(jpath, setParents) {
+
+			if (jpath && jpath.split) { // Old version
+				jpath = jpath.split('.');
+				jpath.shift();
+			}
+
+			if ( ! jpath || jpath.length === 0 ) {
+				return $.Deferred().resolve(this);
+			}
+
+			var el = jpath.shift(); // Gets the current element and removes it from the array
+			var self = this;
+
+			return this.get( el, true ).pipe(function( subEl ) {
+
+				switch ( typeof subEl ) {
+
+					case 'string':
+						subEl = new DataString( subEl );
+					break;
+
+					case 'number':
+						subEl = new DataNumber( subEl );
+					break;
+						
+					case 'boolean':
+						subEl = new DataBoolean( subEl );
+					break;
+				}
+
+				if( subEl && subEl.linkToParent ) {
+					subEl.linkToParent(self, el);
+				}
+
+				if (!subEl || (jpath.length === 0)) {
+					return subEl;
+				}
+
+				return subEl.getChild(jpath, setParents);
+			});
+		}
+	};
+
+
+
+
+
+					
+					
 
 	var getChildSync = {
 		value: function(jpath, setParents) {
@@ -288,7 +394,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 			if (subEl === null)
 				return;
 
-			switch (typeof subEl) {
+			/*switch (typeof subEl) {
 				case 'undefined':
 					return;
 					break;
@@ -304,15 +410,15 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 				case 'boolean':
 					subEl = new DataObject({type: "boolean", value: subEl});
 					break;
-			}
+			}*/
 
-			if (!subEl.__parent) {
+			/*if (!subEl.__parent) {
 
 				Object.defineProperty(subEl, '__parent', {value: this, writable: false, configurable: false, enumerable: false});
 				Object.defineProperty(subEl, '__name', {value: el, writable: false, configurable: false, enumerable: false});
 
 			}
-
+*/
 			if (jpath.length === 0) {
 				return subEl;
 			}
@@ -566,7 +672,8 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		getChildSync: getChildSync,
 		
 		duplicate: dataDuplicator,
-		
+		trace: trace,
+
 		onChange: bindChange,
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,

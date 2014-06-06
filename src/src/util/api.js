@@ -26,6 +26,12 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 		var self = this,
 			jpathNewVar = ( ! sourceVariable ) ? jpath : sourceVariable.getjPath().concat( jpath );
 
+			if( sourceVariable ) {
+				sourceVariable.getData().trace( jpath );		
+			}
+//console.log( sourceVariable );
+		//
+
 		Variables.setVariable( name, jpathNewVar, false, filter );
 	}
 

@@ -95,6 +95,11 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 	function getType(element) {
 		if(element == undefined)
 			return;
+
+		if( element.getType ) {
+			return element.getType();
+		}
+		
 		var type = typeof element;
 		if(type == 'object') {
 			if(element instanceof Array)
@@ -259,17 +264,23 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 				return;
 			}
 
+			if( ! element.getType ) {
+				console.warn("Error ");
+				console.log( element );
+			}
+
+
 			var type = element.getType();
-			element = element.get();
+			//element = element.get();
 
 			if( type == "array") {
 
 				structure.type = "array";
 				structure.elements = [];
-				var length = Math.min(5, element.length);
+				var length = Math.min(5, element.length );
 
 				for(var i = 0; i < length; i++) {
-					structure.elements[ i ] = this.getStructureFromElement( element.get( i ) );
+					structure.elements[ i ] = this.getStructureFromElement( element.get( i, false, true ) );
 				}
 
 			} else if( type =="object" ) {
@@ -279,7 +290,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 				for( var i in element ) {
 
-					structure.elements[ i ] = this.getStructureFromElement( element.get( i ) );
+					structure.elements[ i ] = this.getStructureFromElement( element.get( i, false, true ) );
 				}
 
 			} else if( type && Structures[ type ] && ( element.value || element.url ) ) {

@@ -259,8 +259,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 				return;
 	 			}
 
-	 			
-
 	 			var self = this, 
 	 				list = moduleValue.get(),
 	 				jpaths = this.module.getConfiguration( 'colsjPaths' ), 
@@ -313,7 +311,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 			for( ; i < l ; i++) {
 
-				arrayToPush.push( this.buildElement( source[ i ], self.uniqId + i, jpaths ) );
+				arrayToPush.push( this.buildElement( source.get( i ), self.uniqId + i, jpaths ) );
 			}
 
 		},

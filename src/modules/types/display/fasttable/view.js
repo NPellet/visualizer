@@ -159,7 +159,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 				return;
 	 			}
                                 
-	 			moduleValue = moduleValue.get();
+//	 			moduleValue = moduleValue.get();
 
 				this.elements = moduleValue;
                 
@@ -168,13 +168,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 					nbLines = this.module.getConfiguration( 'nbLines' ) || 20,
 					html = '',
 					i = 0,
-					l = moduleValue.length,
+					l = moduleValue.get().length,
 					j,
 					k = jpaths.length;
 
 				this.module.data = moduleValue;
 
-				for( ; i < l ; i ++ ) {
+				for( i = 0 ; i < l ; i ++ ) {
 
 					html += this.buildElement( moduleValue.getChildSync( i ), i );
 				}
@@ -201,11 +201,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 							var dom = self.domBody.find('#' + self.module.getId() + '_' + j);
 
-							self.module.model.dataListenChange( self.module.data[ j ], function() {
+							self.module.model.dataListenChange( self.module.data.get( j ), function() {
 								dom.replaceWith( ( dom = $( self.buildElement( this, j, true ) ) ) );
 							}, 'list');
 
-							if( self.module.data[ j ].removable ) {
+							if( self.module.data.get( j ).removable ) {
 								Context.listen( dom.get( 0 ), [
 									[
 										'<li><a><span class="ui-icon ui-icon-close"></span> Remove</a></li>', 

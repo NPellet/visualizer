@@ -488,6 +488,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 				for (var i = 0, l = allDocs.rows.length; i < l; i++) {
 					all.push(allDocs.rows[i].doc);
 				}
+
 				all = new PouchArray(all, true);
 				all.setPouch(that);
 				that.allDocs = all;

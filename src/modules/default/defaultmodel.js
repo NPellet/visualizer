@@ -122,7 +122,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			} );
 
 			Promise.all( [ this.module.onReady( ), variable.onReady( ) ] ).then( function() {
-			console.log('dsf');
+			
 				// Gets through the input filter first
 				var varName = variable.getName();
 				var varValue = variable.getValue();
@@ -136,7 +136,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				}
                 
                 var data = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
-
+console.log( varName, data );
                 if( ! data ) {
                   	rejectLatency();
 					return;
@@ -176,7 +176,10 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 								self.removeAllChangeListeners( vars[ j ].rel );
 								self.module.view.update[ vars[ j ].rel ].call( self.module.view, self.data[ vars[ j ].rel ], varName );
 
-							} );
+							} ).catch( function() {
+
+								Debug.error("Error while updating module ", arguments, arguments[0].stack );
+							});
 
 						}) ( k );
 						
@@ -188,7 +191,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				
 
 			} ).catch( function() {
-				Debug.error( "Error while updating variable ", arguments );
+				Debug.error( "Error while updating variable ", arguments[ 0 ].getStack( ) );
 				rejectLatency();
 
 			} );
@@ -219,7 +222,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 			var dataType = data.getType(),
 				mustRebuild = false;
-
+console.log( data, dataType );
 
 			// If no in type is defined, the module accepts anything
 			if( sourceTypes.length == 0) {
@@ -264,6 +267,10 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 		dataListenChange: function( data, callback, bindToRel ) {
 
+			if( ! data ) {
+				return;
+			}
+
 			var self = this,
 				proxiedCallback = function( moduleId ) {
 
@@ -277,6 +284,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			if( this.addChangeListener( bindToRel, data, proxiedCallback ) ) {
 
 				data.onChange( proxiedCallback );
+
 			} else {
 				Debug.setDebugLevel(1);
 				Debug.error("Adding the change callback is forbidden as no rel has been defined ! Aborting callback binding to prevent leaks");

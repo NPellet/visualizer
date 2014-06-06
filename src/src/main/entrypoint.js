@@ -190,16 +190,21 @@ define(['jquery',
 				(function(k) {
 
 					PouchDBUtil.pouchToVar(view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function(el) {
-						el.linkToParent(data, view.pouchvariables[ k ].varname);
-
-						//API.setVariable( view.pouchvariables[ k ].varname, el );
+						
+						if( view.pouchvariables[ k ].id ) {
+							el = new PouchArray( el );
+						} 
+						
+						el.linkToParent( data, view.pouchvariables[ k ].varname );
+						//console.log( data );
+						API.setVariable( view.pouchvariables[ k ].varname, false, [ view.pouchvariables[ k ].varname ] );
 					});
 
-				})(i);
+				}) (i);
 			}
 
 			// Pouch DB replication
-		/*	PouchDBUtil.abortReplications();
+			PouchDBUtil.abortReplications();
 			if (view.couch_replication) {
 				var couchData = view.couch_replication[ 0 ].groups.couch[ 0 ];
 				for (var i = 0, l = couchData.length; i < l; i++) {
@@ -207,7 +212,7 @@ define(['jquery',
 						PouchDBUtil.replicate(couchData[ i ].pouchname, couchData[ i ].couchurl, {direction: couchData[ i ].direction, continuous: couchData[ i ].continuous ? couchData[ i ].continuous.length : true});
 					}
 				}
-			}*/
+			}
 		});
 	}
 
@@ -222,6 +227,7 @@ define(['jquery',
 		div.parent( ).css('z-index', 1000);
 
 		var options = [];
+		console.log( data );
 		Traversing.getJPathsFromElement(data, options);
 
 		require(['./forms/form'], function(Form) {
@@ -265,7 +271,7 @@ define(['jquery',
 										},
 
 										insertValue: function( val ) {
-											return "element." + val.join(".");
+											return "element." + (val || []).join(".");
 										}
 									},
 									url: {
