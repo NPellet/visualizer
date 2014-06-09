@@ -10,6 +10,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			lastTr,
 	 			currentColSort;
 
+	 		var toggle = this.module.getConfiguration( 'toggle' );
+
 	 		this.domTable = $( "<table />" , { cellpadding: 0, cellspacing: 0 } ).css( { width: '100%' } );
 	 		this.domHead = $( "<thead />" ).appendTo( this.domTable );
 	 		this.domBody = $( "<tbody />" ).appendTo( this.domTable );
@@ -43,6 +45,18 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 		}).on('click', 'tr', function() {
 
  				self.module.controller.lineClick( self.module.data, $(this).index() );
+
+ 				if( toggle ) {
+ 					var $this = $(this);
+
+ 					if( $( this ).hasClass( 'toggled' ) ) {
+ 						self.module.controller.onToggleOff( self.module.data, $(this).index() );
+ 					} else {
+ 						self.module.controller.onToggleOn( self.module.data, $(this).index() );
+ 					}
+
+ 					$(this).toggleClass('toggled');
+ 				}
 
 	 		}).on('click', 'th', function() { // Sorting
 

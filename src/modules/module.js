@@ -14,11 +14,11 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		//define object properties
 		var moduleURL = module.definition.getChildSync('url', true).get(),
 			ext = '';
-console.log( moduleURL );
-			if( moduleURL.toString ) {
-				moduleURL = moduleURL.toString();
-			}
-		console.log( moduleURL );
+
+		if( moduleURL.toString ) {
+			moduleURL = moduleURL.toString();
+		}
+		
 		if( moduleURL.indexOf('http://') > -1 ) {
 			ext = '.js';
 		}
@@ -812,7 +812,7 @@ console.log( moduleURL );
 										title: 'jPath',
 										options: {},
 										extractValue: function( val ) {
-											var val2 = val.split(".");
+											var val2 = (val || "").split(".");
 											val2.shift();
 											return val2;
 										},
@@ -1257,6 +1257,7 @@ console.log( moduleURL );
 		},
 
 		setId: function(id) {
+			
 			this.definition.set('id', id);
 		},
 		

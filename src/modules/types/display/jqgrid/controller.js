@@ -1,4 +1,4 @@
-define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api' ], function( Default, Traversing, API ) {
+define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api', 'src/util/debug' ], function( Default, Traversing, API, Debug ) {
 	
 	/**
 	 * Creates a new empty controller
@@ -11,6 +11,11 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 	// Extends the default properties of the default controller
 	controller.prototype = $.extend( true, {}, Default );
 
+	controller.prototype.init = function() {
+
+		this.toggleElements = {};
+		this.resolveReady();
+	}
 
 	/*
 		Information about the module
@@ -245,6 +250,9 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 		this.sendAction( 'row', elements.get( row ), 'onToggleOn' );
 		this.setVarFromEvent( 'onToggleOn', 'row', 'list', [ row ] );
+
+		this.toggleElements[ row ] = true;
+		this.doToggle( "on" );
 	};
 
 	controller.prototype.onToggleOff = function( elements, row ) {
@@ -253,6 +261,34 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 		this.sendAction( 'row', elements.get( row ), 'onToggleOff' );
 		this.setVarFromEvent( 'onToggleOff', 'row', 'list', [ row ] );
+
+	    delete this.toggleElements[ row ];
+
+	    this.doToggle( "off" );
+	};
+
+	controller.prototype.doToggle = function( act ) {
+
+		var self = this,
+			data = this.module.getDataFromRel('list');
+
+		this.allVariablesFor( ( act == 'on' ? 'onToggleOn' : 'onToggleOff' ), 'selectedrows', function( varToSend ) {
+
+			var results = new DataArray();
+console.log( self.toggleElements, varToSend.jpath );
+			for( var i in self.toggleElements ) {
+
+				data.traceSync( [ i ] );
+				Debug.warn("Warning. This is only sync");
+				var el = data[ i ].traceSync( varToSend.jpath.slice(0) );
+				results.push( el );
+			}
+console.log( results );
+			API.createData( varToSend.name, results, varToSend.filter );
+		} );
+
+
+
 	};
 
  	return controller;

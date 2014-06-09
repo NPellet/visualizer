@@ -160,7 +160,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 					stop: function() {
 						var position = $(this).position();
 						Util.unmaskIframes();
-			
+	
 						module.getPosition( getActiveLayer() ).set('left', position.left / definition.xWidth);
 						module.getPosition( getActiveLayer() ).set('top', position.top / definition.yHeight);
 			

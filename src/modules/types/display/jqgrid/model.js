@@ -12,6 +12,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 
 			switch(rel) {
 				
+				case 'selectedrows':
 				case 'row':
 				case 'element': // Wants to get the row ?
 					data = (temporary && temporary['list']) ? temporary['list'] : (this.module.getDataFromRel('list') || new DataArray());

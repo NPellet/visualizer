@@ -19,7 +19,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		return object;
 	}
 
-	DataObject.check = function( object ) {
+	DataObject.check = function( object, transformNatives ) {
 	
 		if( object instanceof DataObject || object instanceof DataArray || object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean ) {
 
@@ -35,13 +35,18 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 			return null;
 
 		} else {
+			var type = typeof object;
+
+			if( type == "object" ) {
+				object.__proto__ = DataObject.prototype;
+				return object;
+			}
+
+			if( ! transformNatives ) {
+				return object;
+			}
 
 			switch ( typeof object ) {
-
-				case 'object':
-					object.__proto__ = DataObject.prototype;
-					return object;
-				break;
 
 				case 'string':
 					return new DataString( object );
@@ -55,8 +60,29 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 					return new DataBoolean( object );
 				break;
 			}
-
 		}
+	};
+
+
+
+	DataObject.recursiveTransform = function( object, transformNatives ) {
+		
+
+		if( object instanceof Array ) {
+
+			for( var i = 0, l = object.length ; i < l ; i ++ ) {
+				object[ i ] = DataObject.check( object[ i ], transformNatives );
+				DataObject.recursiveTransform( object[ i ], transformNatives );
+			}
+		} else if( object instanceof Object ) {
+
+			for( var i in object ) {
+
+				object[ i ] = DataObject.check( object[ i ], transformNatives );
+				DataObject.recursiveTransform( object[ i ], transformNatives );
+			}
+
+		}  
 	};
 
 
@@ -236,12 +262,12 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 	var dataSetter = {
 		value: function(prop, value, recursive) {
 			
-			var valueTyped = DataObject.check( value ),	
+			var valueTyped = DataObject.check( value, true ),
 				type = valueTyped.getType();
 
 			this[ prop ] = DataObject.check( this[ prop ] );
 
-			var typeNow = this[ prop ] !== undefined ? this[ prop ].getType() : undefined;
+			var typeNow = this[ prop ] !== undefined && this[ prop ].getType ? this[ prop ].getType() : undefined;
 
 			if( typeNow != type ) {
 

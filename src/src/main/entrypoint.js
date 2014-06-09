@@ -45,8 +45,10 @@ define(['jquery',
 		var i = 0, l;
 
 		view = Migration(view);
+		console.log( view );
+		DataObject.recursiveTransform( view, false );
 console.log( view );
-		view.grid = view.traceSync( [ 'grid' ] ) || new DataObject();
+		view.grid = view.grid || new DataObject();
 		
 		if (this.viewLoaded) {
 			reloadingView( );

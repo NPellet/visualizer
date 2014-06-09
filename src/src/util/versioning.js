@@ -5,7 +5,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 	var version = [2, 4, '0b0'].join('.');
 	var dataHandler = new VersionHandler(),
 			viewHandler = new VersionHandler(),
-			view = new ViewObject(),
+			view = new DataObject(),
 			data = new DataObject(),
 			lastLoaded = {
 				view: {},
