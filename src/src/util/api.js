@@ -4,23 +4,9 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 	var variableFilters;
 	var viewLocked = false;
 
-	function setVarFilter( name, element, filter ) {
-
-		var self = this;
-
-/*		if( ! filter ) {
-			self.getRepositoryData().set( name, element );
-			return;
-		}
-
-		require( [ filter ], function( filterFunction ) {
-*/
-			Variables.setVariable( name, element );
-
-//			self.getRepositoryData( ).set( name, filterFunction( element ) );
-//		} );
-	}
-
+	var loadingHtml = $('<div id="loading-visualizer"><div class="title">Loading</div><div class="animation"><div /><div /><div /><div /></div><div class="subtitle" id="loading-message"></div></div>');
+	var loading = false;
+	
 	function setVar( name, sourceVariable, jpath, filter ) {
 
 		var self = this,
@@ -29,19 +15,15 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 			if( sourceVariable ) {
 				sourceVariable.getData().trace( jpath );		
 			}
-//console.log( sourceVariable );
-		//
 
 		Variables.setVariable( name, jpathNewVar, false, filter );
 	}
 
 	function getVar(name) {
-		
 		return Variables.getVariable( name );
 	}
 
 	function createData( name, data, filter ) {
-
 		Variables.setVariable( name, false, data, filter );
 	}
 
@@ -133,7 +115,6 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 		},
 
 		getAllFilters: function( ) {
-
 			return variableFilters;
 		},
 
@@ -144,11 +125,26 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 		},
 
 		viewLock: function() {
+			$("body").addClass('locked');
 			viewLocked = true;
 		},
 
 		isViewLocked: function() {
 			return viewLocked;
+		},
+
+		loading: function( message ) {
+
+			if( ! loading ) {
+				loading = true;
+				$("body").append( loadingHtml );	
+			}
+
+			$("#loading-message").html( message );
+		},
+
+		stopLoading: function() {
+			loadingHtml.detach();
 		}
 	}
 });

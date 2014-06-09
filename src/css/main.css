@@ -13,6 +13,10 @@ body {
 	color: black;
 }
 
+body.locked {
+	overflow: hidden;
+}
+
 .ci-spacer {
 	clear: both;
 }
@@ -920,3 +924,77 @@ table.moduleInformation tr td:first-child {
 	transition:opacity 0.4s ease-out;
 	transition-delay: 0.5s;
 }
+
+
+
+/* Loading css */
+
+div#loading-visualizer {
+	height: 100%;
+	width: 100%;
+	background-color: #d9ddf4;
+	text-align: center;
+	position: absolute;
+	top: 0px;
+	z-index: 1000000;
+}
+
+
+div#loading-visualizer > div {
+	width: 100%;
+}
+
+
+div#loading-visualizer > div.title {
+	font-size: 3.2em;
+	color: #666a83;
+	position: absolute;
+	top: 50%;
+}
+
+
+div#loading-visualizer > div.subtitle {
+	font-size: 1.5em;
+	color: #666a83;
+	position: absolute;
+	top: 60%;
+}
+
+
+
+div#loading-visualizer > div.animation > div {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  background-color: #ccc;
+  top: 40%;
+  border-radius: 50%;
+}
+
+div#loading-visualizer > div.animation > div:nth-child(1) {
+  background-color: #21253e;
+  -webkit-animation: move 2s infinite cubic-bezier(.2,.64,.81,.23);
+}
+div#loading-visualizer > div.animation > div:nth-child(2) {
+  background-color: #3b4270;
+  -webkit-animation: move 2s 150ms infinite cubic-bezier(.2,.64,.81,.23);
+}
+div#loading-visualizer > div.animation > div:nth-child(3) {
+  background-color: #5661a3;
+  -webkit-animation: move 2s 300ms infinite cubic-bezier(.2,.64,.81,.23);
+}
+div#loading-visualizer > div.animation > div:nth-child(4) {
+  background-color: #727fd6;
+  -webkit-animation: move 2s 450ms infinite cubic-bezier(.2,.64,.81,.23);
+}
+
+@-webkit-keyframes move {
+  0% {left: 0%;}
+  100% {left:100%;}
+}
+
+
+
+
+
+
