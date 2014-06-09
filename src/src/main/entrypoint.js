@@ -151,19 +151,21 @@ define(['jquery',
 			}
 
 			// Entry point variables
+			API.loading("Fetching remote variables");
 			var entryVar;
+			var fetching = [];
 			for (var i = 0, l = view.variables.length; i < l; i++) {
 				entryVar = view.traceSync(['variables', i]);
 				if (entryVar.varname) {
 					// Defined by an URL
 					if (entryVar.url) {
 
-						entryVar.fetch( ).done(function(v) {
+						fetching.push( entryVar.fetch( ).done(function(v) {
 							var varname = v.varname;
 							data[ varname ] = v.value;
 
 							API.setVariable( varname, false, [ varname ] );
-						});
+						}) );
 
 					} else if ( ! entryVar.jpath ) {
 
@@ -183,8 +185,11 @@ define(['jquery',
 				}
 			}
 
+			$.when.apply( $, fetching ).then( function() {
+				API.stopLoading("Fetching remote variables");
+			});
 
-			API.loading("Fetching pouch variables");
+			API.loading("Fetching local variables");
 			var pouching = [];
 			for (var i = 0, l = view.pouchvariables.length; i < l; i++) {
 				(function(k) {
@@ -198,13 +203,15 @@ define(['jquery',
 						el.linkToParent( data, view.pouchvariables[ k ].varname );
 						//console.log( data );
 						API.setVariable( view.pouchvariables[ k ].varname, false, [ view.pouchvariables[ k ].varname ] );
+
 					}) );
 
 				}) (i);
 			}
 
 			Promise.all( pouching ).then( function() {
-				API.stopLoading("Fetching pouch variables");	
+		
+				API.stopLoading("Fetching local variables");	
 			});
 			
 
