@@ -141,9 +141,9 @@ define(['src/util/versioning'], function(Versioning) {
             case "2.3.0-beta1" :
 
                 function updateJpath(element) {
-                    var jpath = element.getChildSync(['jpath']).get();
+                    var jpath = element.getChildSync(['jpath']);
                     if (jpath) {
-						element.setChild("jpath",jpath.split(".").slice(1));
+						element.setChild("jpath",jpath.get().split(".").slice(1));
                     }
                 }
 				

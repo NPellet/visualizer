@@ -8,10 +8,11 @@ define([
 ], 
 
 function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
+	"use strict";
 	
 	function init( module ) {
 		//define object properties
-		var moduleURL = module.definition.getChildSync('url', true).get();
+		var moduleURL = module.definition.getChildSync('url', true).get(),
 			ext = '';
 console.log( moduleURL );
 			if( moduleURL.toString ) {
@@ -52,7 +53,7 @@ console.log( moduleURL );
 					return;
 				}
 
-				Util.loadCss( require.toUrl( moduleURL + "style.css" ) );
+				Util.loadCss( moduleURL + "style.css" );
 
 				require( [
 					
@@ -1349,20 +1350,19 @@ console.log( moduleURL );
 		exportData: function() {
 			var module = this;
 			$('<div class="ci-module-export"><textarea></textarea></div>').dialog({
-				'modal': true,
-				'title': 'Export data from module ' + module.getTitle(),
-				'width': '70%',
+				modal: true,
+				title: 'Export data from module ' + module.getTitle(),
+				width: '70%',
 				height: 500
 			}).children('textarea').text(module.controller["export"]());
 		},
 		
 		printView: function() {
+			var content = this.controller.print();
 			var openWindow = window.open("", "", "");
-			this.controller["print"](openWindow);
+			openWindow.document.write(content);
 			openWindow.document.close();
 			openWindow.focus();
-			openWindow.print();
-			openWindow.close();
 		},
 
 		setBackgroundColor: function(color) {

@@ -1,4 +1,5 @@
 define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versioning) {
+	"use strict";
 
 	var elements = [];
 	return {
@@ -11,7 +12,7 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 			}
 
 			this.dom = $('<div id="header"><div id="title"><div></div></div></div>');
-			$("body").prepend(this.dom);
+			$("#ci-visualizer").prepend(this.dom);
 
 			self.setHeight( headerConfig.height || "30px" );
 			this.setHeight( "30px" );
@@ -93,15 +94,6 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 			}
 		}
 
-		// 'forms/button'
 	};
 
-			/*Header.addButtons(buttons, EntryPoint.getDataHandler(), EntryPoint.getViewHandler(), EntryPoint.getData(), EntryPoint.getView());
-			
-*/
-
-
-	return {
-		makeHeaderEditable: makeHeaderEditable
-	};
 });

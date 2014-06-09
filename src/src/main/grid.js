@@ -589,7 +589,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				if( elements.modules ) {
 
 					for( var i = 0, l = elements.modules.length ; i < l ; i ++ ) {
-						dom.append('<li class="ci-item-newnmodule" data-url="' + encodeURIComponent( elements.modules[ i ].url ) + '"><a>' + elements.modules[ i ].moduleName + '</a></li>');
+						dom.append('<li class="ci-item-newmodule" data-url="' + encodeURIComponent( elements.modules[ i ].url ) + '"><a>' + elements.modules[ i ].moduleName + '</a></li>');
 					}
 
 				} 

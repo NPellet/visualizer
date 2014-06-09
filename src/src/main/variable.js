@@ -108,7 +108,7 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 				self.rejectCurrentPromise = reject;
 				var _resolve = resolve;
 				
-				data.getChild( self._jpath.slice( 0 ), true ).then( function( value ) {
+				data.getChild( self._jpath.toString().slice( 0 ), true ).then( function( value ) {
 
 					if( callback ) {
 

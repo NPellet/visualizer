@@ -31,9 +31,6 @@ define(['jquery',
 
 	var _viewLoaded, _dataLoaded;
 
-	var evaluatedScripts = {};
-	var crons = [];
-
 	var RepositoryData = new Repository(),
 			RepositoryHighlight = new Repository(),
 			RepositoryActions = new Repository();
@@ -227,7 +224,7 @@ console.log( view );
 		div.parent( ).css('z-index', 1000);
 
 		var options = [];
-		console.log( data );
+		
 		Traversing.getJPathsFromElement(data, options);
 
 		require(['./forms/form'], function(Form) {
@@ -680,9 +677,9 @@ console.log( view );
 		init: function(urls, type) {
 
 			// Sets the header
-			var configJson = urls['config'] || './usr/config/default.json';
+			var configJson = urls['config'] || 'usr/config/default.json';
 
-			$.getJSON(configJson, {}, function(cfgJson) {
+			$.getJSON(require.toUrl(configJson), {}, function(cfgJson) {
 
 				if (cfgJson.usrDir) {
 					require.config({
