@@ -50,7 +50,7 @@ define(['src/util/versioning'], function(Versioning) {
             case "2.2.2": // view title is in configuration.title
                 if (view.title) {
                     if (!view.configuration)
-                        view.configuration = new ViewObject();
+                        view.configuration = new DataObject();
                     view.configuration.title = view.title;
                     delete view.title;
                 }
@@ -99,7 +99,7 @@ define(['src/util/versioning'], function(Versioning) {
                 }, "types/client_interaction/dragdrop");
 				
 			case "2.2.5": // Add layers
-				view.grid = new ViewObject({
+				view.grid = new DataObject({
 					layers: {
 						"Default layer": {
 							name: "Default layer"
@@ -110,7 +110,7 @@ define(['src/util/versioning'], function(Versioning) {
 				}, true);
 				eachModule(view, function(module){
                     if( ! module.layers ) {
-    					module.layers = new ViewObject({
+    					module.layers = new DataObject({
     						"Default layer": {
     							position: {
     								left: module.position.left,

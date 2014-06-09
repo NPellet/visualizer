@@ -40,9 +40,9 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 		return Variables.getVariable( name );
 	}
 
-	function createData( name, data ) {
+	function createData( name, data, filter ) {
 
-		Variables.setVariable( name, false, data );
+		Variables.setVariable( name, false, data, filter );
 	}
 
 	function setHighlight( element, value ) {

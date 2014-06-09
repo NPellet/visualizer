@@ -28,19 +28,16 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 		},
 
 		resetListeners: function() {
-			this.sourceMap = null;
-		
-			this.mapVars();
 
+			this.sourceMap = null;
+			this.mapVars();
 			//API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
 			API.getRepositoryActions( ).unListen( this.getActionNameList(), this._actionlisten );
 			
 			var list = this.getVarNameList();
 			for( var i = 0, l = list.length ; i < l ; i ++ ) {
-
 				API.getVar( list[ i ] ).listen( this.module, $.proxy( this.onVarChange, this ) );
 			}
-
 			//this._varlisten = API.getRepositoryData().listen( this.getVarNameList(), $.proxy(this.onVarGet, this) );
 			this._actionlisten = API.getRepositoryActions().listen( this.getActionNameList(), $.proxy(this.onActionTrigger, this) );
 		},
@@ -136,7 +133,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				}
                 
                 var data = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
-console.log( varName, data );
+
                 if( ! data ) {
                   	rejectLatency();
 					return;
@@ -222,13 +219,11 @@ console.log( varName, data );
 
 			var dataType = data.getType(),
 				mustRebuild = false;
-console.log( data, dataType );
 
 			// If no in type is defined, the module accepts anything
 			if( sourceTypes.length == 0) {
 				return data;
 			}
-
 
 			for(var i = 0; i < sourceTypes.length; i++) {
 				if(sourceTypes[i] == dataType) {

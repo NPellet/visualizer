@@ -21,7 +21,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 	};
 
 	viewHandler.reviver = function(l) {
-		return ViewObject.check(l, 1, false);
+		return DataObject.check(l, 1, false);
 	};
 
 	window.onpopstate = function(event) {
@@ -127,7 +127,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 		},
 		setViewJSON: function(json) {
 
-			view = new ViewObject(json, true);
+			view = new DataObject(json, true);
 			this.viewCallback(view, true);
 			viewHandler.versionChange().notify(view);
 

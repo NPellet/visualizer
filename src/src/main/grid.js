@@ -244,7 +244,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			modulePos.div.remove();
 			modulePos = {};
 
-			var module = ModuleFactory.newModule( new ViewObject( {
+			var module = ModuleFactory.newModule( new DataObject( {
 				//type: type,
 				url: url
 				

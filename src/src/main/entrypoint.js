@@ -48,8 +48,8 @@ define(['jquery',
 		var i = 0, l;
 
 		view = Migration(view);
-
-		view.grid = view.grid || new ViewObject();
+console.log( view );
+		view.grid = view.traceSync( [ 'grid' ] ) || new DataObject();
 		
 		if (this.viewLoaded) {
 			reloadingView( );
@@ -61,13 +61,13 @@ define(['jquery',
 
 		ModuleFactory.empty( );
 
-		view.modules = view.modules || new ViewArray();
+		view.modules = view.modules || new DataArray();
 
 		l = view.modules.length;
 
-		view.variables = view.variables || new ViewArray();
-		view.pouchvariables = view.pouchvariables || new ViewArray();
-		view.configuration = view.configuration || new ViewObject();
+		view.variables = view.variables || new DataArray();
+		view.pouchvariables = view.pouchvariables || new DataArray();
+		view.configuration = view.configuration || new DataObject();
 		view.configuration.title = view.configuration.title || 'No title';
 
 		for (; i < l; ) {
@@ -149,14 +149,14 @@ define(['jquery',
 						continue;
 					}
 
-					view.variables.push( new ViewObject( { varname: i, jpath: [ i ] } ) );
+					view.variables.push( new DataObject( { varname: i, jpath: [ i ] } ) );
 				}
 			}
 
 			// Entry point variables
 			var entryVar;
 			for (var i = 0, l = view.variables.length; i < l; i++) {
-				entryVar = view.variables[i];
+				entryVar = view.traceSync(['variables', i]);
 				if (entryVar.varname) {
 					// Defined by an URL
 					if (entryVar.url) {
@@ -613,8 +613,8 @@ define(['jquery',
 						value = form.getValue();
 
 				/* Entry variables */
-				data = new ViewArray(value.sections.cfg[ 0 ].groups.tablevars[ 0 ], true);
-				allcrons = new ViewObject(value.sections.webcron[ 0 ].groups.general[ 0 ], true);
+				data = new DataArray(value.sections.cfg[ 0 ].groups.tablevars[ 0 ], true);
+				allcrons = new DataObject(value.sections.webcron[ 0 ].groups.general[ 0 ], true);
 
 
 
@@ -625,7 +625,7 @@ define(['jquery',
 				view.init_script = value.sections.init_script;
 
 				// PouchDB variables
-				var data = new ViewArray(value.sections.cfg[ 0 ].groups.pouchvars[ 0 ]);
+				var data = new DataArray(value.sections.cfg[ 0 ].groups.pouchvars[ 0 ]);
 				view.pouchvariables = data;
 
 

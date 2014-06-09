@@ -29,21 +29,23 @@ define([
 	function setVariable( name, jpath, newData, filter ) {
 
 		var variable = getVariable( name );
-		
+		var filterFunction = false;
+
+		if( filter ) {
+			filterFunction = function( value, resolve ) {
+				require( [ filter ], function( filterFunction ) {
+					filterFunction( value, resolve );
+				} );
+			};
+		}
+
 		if( jpath ) {
 
-			variable.setjPath( jpath, filter ? function( value, resolve ) {
-				
-				require( [ filter ], function( filterFunction ) {
-				
-					filterFunction( varValue, resolve );
-
-				} );
-			
-			} : false);
+			variable.setjPath( jpath, filterFunction );
 
 		} else if( ! jpath && newData ) {
-			variable.createData( [ name ], newData );
+			
+			variable.createData( [ name ], newData, filterFunction );
 		}
 	}
 

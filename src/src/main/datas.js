@@ -1,44 +1,47 @@
 define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
-	function DataObject(object, recursive, forceCopy) {
-		if (object) {
-			for (var i in object) {
-				if (object.hasOwnProperty(i)) {
-					if (recursive) {
-						this[i] = DataObject.check(object[i], recursive, forceCopy);
-					} else {
-						this[i] = object[i];
-					}
-				}
+	function DataObject( object, recursive, forceCopy ) {
+		if (! object) {
+			return;
+		}
+
+		for( var i in object ) {
+
+			if( object.hasOwnProperty( i ) ) {
+
+				object[ i ] = DataObject.check( object[ i ] );
+				
 			}
 		}
+
+		DataObject.check( object );
+
+		return object;
 	}
 
-	DataObject.check = function(object, recursiveLevel, forceCopy) {
-		
-//console.log( recursiveLevel );
-		
-		if( recursiveLevel === undefined ) {
-			recursiveLevel = 1;
-		}
+	DataObject.check = function( object ) {
+	
+		if( object instanceof DataObject || object instanceof DataArray || object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean ) {
 
-		if( recursiveLevel <= 0 ) {
 			return object;
-		}
 
-		recursiveLevel--;
+		} else if( object instanceof Array ) {
 
-		if (!forceCopy && (object instanceof DataObject || object instanceof DataArray || object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean)) {
+			object.__proto__ = DataArray.prototype;
 			return object;
-		} else if (object instanceof Array) {
-			return new DataArray(object, recursiveLevel, forceCopy);
-		} else if (object === null) {
+
+		} else if( object === null ) {
+
 			return null;
-		} else if (typeof object === "object") {
-			return new DataObject( object, recursiveLevel, forceCopy );
+
 		} else {
-			
+
 			switch ( typeof object ) {
+
+				case 'object':
+					object.__proto__ = DataObject.prototype;
+					return object;
+				break;
 
 				case 'string':
 					return new DataString( object );
@@ -62,25 +65,31 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
     	this.s_ = s;
     }
 
+	var StringProperties = ["charAt", "charCodeAt", "concat", "fromCharCode", "indexOf", "lastIndexOf", "localCompare", 
+							"match", "replace", "search", "slice", "split", "substr", "substring", "toLocaleLowerCase", "toLocaleUpperCase",
+							"toLowerCase", "toString", "toUpperCase", "trim", "valueOf" ];
+
+	for( var i = 0, l = StringProperties.length ; i < l ; i ++ ) {
+		( function ( j ) {
+			
+			DataString.prototype[ StringProperties[ j ] ] = function() {
+				return String.prototype[ StringProperties[ j ] ].apply( this.s_, arguments );
+			}
+
+		} ) ( i );
+	}
+
 	DataString.prototype.getType = function() {
 		return "string";
 	}
-
-	DataString.prototype.toString = function() {
-		return this.s_;
-	}
-
 	DataString.prototype.get = function() {
 		return this.s_;
 	}
 
-	DataString.prototype.valueOf = function() {
-		return this.s_;
+	DataString.prototype.setValue = function( val ) {
+		this.s_ = val;
 	}
 
-	DataString.prototype.toSource = function() {
-		return this.s_;
-	}
 
 
 
@@ -92,6 +101,11 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 	DataNumber.prototype.getType = function() {
 		return "number";
 	}
+
+	DataNumber.prototype.setValue = function( val ) {
+		this.s_ = val;
+	}
+
 
 	DataNumber.prototype.toString = function() {
 		return this.s_;
@@ -109,11 +123,19 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		return this.s_;
 	}
 
+
+
 	function DataBoolean() { }
 	DataBoolean.prototype = new Boolean();
 	DataBoolean.prototype.getType = function() {
 		return "boolean";
 	}
+
+
+	window.DataString = DataString;
+	window.DataNumber = DataNumber;
+
+	window.DataBoolean = DataBoolean;
 
 
 	function DataArray(arr, recursive, forceCopy) {
@@ -138,60 +160,6 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 	window.DataObject = DataObject;
 	window.DataArray = DataArray;
-
-	function ViewObject(object, recursive, forceCopy) {
-		if (object) {
-			for (var i in object) {
-				if (object.hasOwnProperty(i)) {
-					if (recursive) {
-						this[i] = ViewObject.check(object[i], true, forceCopy);
-					} else {
-						this[i] = object[i];
-					}
-				}
-			}
-		}
-	}
-
-	ViewObject.check = function(object, recursive, forceCopy) {
-		if (!forceCopy && (object instanceof ViewObject || object instanceof ViewArray)) {
-			return object;
-		} else if (object instanceof Array) {
-			return new ViewArray(object, recursive, forceCopy);
-		} else if (object === null) {
-			return null;
-		} else if (typeof object === "object") {
-			return new ViewObject(object, recursive, forceCopy);
-		} else {
-			return object;
-		}
-	};
-
-	function ViewArray(arr, recursive, forceCopy) {
-		var newArr = [];
-		if (arr) {
-			if (!(arr instanceof Array))
-				throw "ViewArray can only be constructed from arrays";
-			for (var i = 0, l = arr.length; i < l; i++) {
-				if (recursive) {
-					newArr[i] = ViewObject.check(arr[i], recursive, forceCopy);
-				} else {
-					newArr[i] = arr[i];
-				}
-			}
-		}
-		newArr.__proto__ = ViewArray.prototype;
-		return newArr;
-	}
-
-	ViewObject.prototype = Object.create(DataObject.prototype);
-	Object.defineProperty(ViewObject.prototype, "constructor", ViewObject);
-
-	ViewArray.prototype = Object.create(DataArray.prototype);
-	Object.defineProperty(ViewArray.prototype, "constructor", ViewArray);
-
-	window.ViewObject = ViewObject;
-	window.ViewArray = ViewArray;
 
 	var nativeTypes = ["string", "boolean", "number", "undefined"];
 
@@ -226,20 +194,12 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 	};
 
 	var dataGetter = {
-		value: function( prop, returnDeferred ) {
+		value: function( prop, returnDeferred, constructor ) {
 
 			// Looking for this[ prop ]
 			if (typeof prop !== "undefined") {
 
 				var val = this.get(); // Current value
-
-				// Create dataobject out of the element
-				// Allows for pseudo-recursion on getting the element
-
-				//console.log( this, DataArray.prototype.constructor, this.__proto__.constructor );
-
-//				val[ prop ] = DataObject.check( val[ prop ], 1 ); // Single recursion
-
 
 				if (returnDeferred) { // Returns a deferred if asked
 
@@ -250,7 +210,12 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 						} else {
 							return $.Deferred().resolve(val[prop]);
 						}
-					} else {
+					} else if( constructor ) {
+
+						val[ prop ] = new constructor();
+						return $.Deferred().resolve(val[prop]);
+
+					}  else {
 						return $.Deferred().reject();
 					}
 				} else {
@@ -270,29 +235,37 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 	var dataSetter = {
 		value: function(prop, value, recursive) {
-			if (recursive) {
-				if (value instanceof Array)
-					value = new DataArray(value, true);
-				else if (typeof value === 'object')
-					value = new DataObject(value, true);
+			
+			var valueTyped = DataObject.check( value ),	
+				type = valueTyped.getType();
+
+			this[ prop ] = DataObject.check( this[ prop ] );
+
+			var typeNow = this[ prop ] !== undefined ? this[ prop ].getType() : undefined;
+
+			if( typeNow != type ) {
+
+				this[ prop ] = valueTyped;
+				
+				return this[ prop ];
 			}
-			this[prop] = value;
-			return this;
+
+			if( type == "string" || type == "number" || type == "boolean" ) {
+
+				this[ prop ].setValue( value );
+				return this[ prop ];
+			}
+
+			if( valueTyped != this[ prop ] ) {
+				this[ prop ] = valueTyped;
+			}
+
+
+			//this[ prop ] = value;
+			return this[ prop ];
 		}
 	};
 
-	var viewSetter = {
-		value: function(prop, value, recursive) {
-			if (recursive) {
-				if (value instanceof Array)
-					value = new ViewArray(value, true);
-				else if (typeof value === 'object')
-					value = new ViewObject(value, true);
-			}
-			this[prop] = value;
-			return this;
-		}
-	};
 
 	var dataDuplicator = {
 		value: function(source) {
@@ -301,7 +274,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 	};
 
 	var getChild = {
-		value: function(jpath, setParents) {
+		value: function(jpath) {
 
 			if (jpath && jpath.split) { // Old version
 				jpath = jpath.split('.');
@@ -309,7 +282,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 			}
 
 			if ( ! jpath || jpath.length === 0 ) {
-				return $.Deferred().resolve(this);
+				return $.Deferred().resolve( this );
 			}
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
@@ -317,11 +290,12 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 			return this.get( el, true ).pipe(function( subEl ) {
 
-				if (!subEl || (jpath.length === 0)) {
+				if ( ! subEl || ( jpath.length === 0 ) ) {
 					return subEl;
 				}
 
-				return subEl.getChild(jpath, setParents);
+				subEl = DataObject.check( subEl );
+				return subEl.getChild(jpath);
 			});
 
 		}
@@ -331,7 +305,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 
 	var trace = {
-		value: function(jpath, setParents) {
+		value: function( jpath, constructor ) {
 
 			if (jpath && jpath.split) { // Old version
 				jpath = jpath.split('.');
@@ -345,22 +319,13 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 			var el = jpath.shift(); // Gets the current element and removes it from the array
 			var self = this;
 
-			return this.get( el, true ).pipe(function( subEl ) {
+			var elementType = jpath.length == 0 ? constructor : ( typeof el == "number" ? DataArray : DataObject );
 
-				switch ( typeof subEl ) {
+			return this.get( el, true, elementType ).pipe(function( subEl ) {
 
-					case 'string':
-						subEl = new DataString( subEl );
-					break;
 
-					case 'number':
-						subEl = new DataNumber( subEl );
-					break;
-						
-					case 'boolean':
-						subEl = new DataBoolean( subEl );
-					break;
-				}
+				// Perform check if anything...
+				self.get()[ el ] = DataObject.check( subEl );
 
 				if( subEl && subEl.linkToParent ) {
 					subEl.linkToParent(self, el);
@@ -370,10 +335,46 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 					return subEl;
 				}
 
-				return subEl.getChild(jpath, setParents);
+				return subEl.trace( jpath, constructor );
 			});
 		}
 	};
+
+
+	var traceSync = {
+		value: function( jpath, constructor ) {
+
+			if (jpath && jpath.split) { // Old version
+				jpath = jpath.split('.');
+				jpath.shift();
+			}
+
+			if ( ! jpath || jpath.length === 0 ) {
+				return this;
+			}
+
+			var el = jpath.shift(); // Gets the current element and removes it from the array
+			var self = this;
+
+			var elementType = jpath.length == 0 ? constructor : ( typeof el == "number" ? DataArray : DataObject );
+
+			var subEl = this.get( el, false, elementType );
+
+			// Perform check if anything...
+			self.get()[ el ] = DataObject.check( subEl );
+
+			if( subEl && subEl.linkToParent ) {
+				subEl.linkToParent(self, el);
+			}
+
+			if (!subEl || (jpath.length === 0)) {
+				return subEl;
+			}
+
+			return subEl.traceSync( jpath, constructor );
+		}
+	};
+
 
 
 
@@ -393,39 +394,19 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 				return;
 			}
 
-			var el = jpath.shift(); // Gets the current element and removes it from the array
-			var subEl = this.get(el, false);
+			var el = jpath.shift( ); // Gets the current element and removes it from the array
+			var subEl = this.get( el, false );
 
-			if (subEl === null)
+			if( subEl === null ) {
 				return;
-
-			/*switch (typeof subEl) {
-				case 'undefined':
-					return new DataObject({type: "undefined", value: undefined});
-					break;
-
-				case 'string':
-					subEl = new DataObject({type: "string", value: subEl});
-					break;
-
-				case 'number':
-					subEl = new DataObject({type: "number", value: subEl});
-					break;
-
-				case 'boolean':
-					subEl = new DataObject({type: "boolean", value: subEl});
-					break;
-			}*/
-
-			/*if (!subEl.__parent) {
-
-				Object.defineProperty(subEl, '__parent', {value: this, writable: false, configurable: false, enumerable: false});
-				Object.defineProperty(subEl, '__name', {value: el, writable: false, configurable: false, enumerable: false});
-
 			}
-*/
-			if (jpath.length === 0) {
+
+			if( jpath.length === 0 ) {
 				return subEl;
+			}
+
+			if( subEl === undefined ) {
+				return undefined;
 			}
 
 			return subEl.getChildSync(jpath, setParents);
@@ -447,7 +428,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 	};
 
 	var setChild = {
-		value: function( jpath, newValue, noMute ) {
+		value: function( jpath, newValue, noMute, constructor ) {
 			var self = this;
 
 			var mute = false;
@@ -463,42 +444,31 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 				jpath.shift();
 			}
 
-			// Cannot go further. No jpath here
-			if( ! jpath || jpath.length === 0 ) {
-				this.value = newValue;
-				// Bubbling allowed
-				self.triggerChange( true, onChangeOptions );
-				return $.Deferred().resolve(this);
-			}
-
 			var jpathLength = jpath.length;
-			if (jpathLength === 1) { // Ok we're done, let's set it
-
-				return $.Deferred().resolve(this.set(jpath[0], newValue)).then(function() {
-
-					if ( ! mute ) {
-						// This is the last set. Now we can trigger the whole stack
-						self.triggerChange( true, onChangeOptions );
-					}
-
-				});
-			}
-
 			var el = jpath.shift();
-			// We need to set an empty object to create the elements
-			if ( ! this[ el ] ) {
-				this.set( el, new DataObject( ) );
+
+			if( jpathLength == 1 ) {
+
+				return self.set( el, newValue ).triggerChange();
+
+			} else {
+
 			}
+							
+
+			var elementType = jpath.length == 0 ? constructor : ( typeof el == "number" ? DataArray : DataObject );
 
 			var name = el;
 			arguments[ 0 ] = jpath;
 			var args = arguments;
 
 			return this
-					.get(el, true)
-					.pipe(function(el) {
-						el.linkToParent( self, name );
-						el.setChild.apply( el, args );
+					.get(el, true, elementType)
+					.pipe(function( val ) {
+					
+						self.set( name, val );
+						val.linkToParent( self, name );
+						val.setChild.apply( val, args );
 					})
 					// 2 June 2014. This code has been removed.
 					// Bubbling should be done within the triggerElement with parenting.
@@ -517,6 +487,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 			// 2 June 2014
 			// This has been removed. No reason to trigger parent before self
+
 
 			/*
 			if ( ! this._dataChange ) {
@@ -675,17 +646,14 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		setChild: setChild,
 		getChild: getChild,
 		getChildSync: getChildSync,
-		
 		duplicate: dataDuplicator,
 		trace: trace,
 
+		traceSync: traceSync,
 		onChange: bindChange,
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,
-
-
 		linkToParent: linkToParent,
-		
 		getType: getType
 	};
 
@@ -699,8 +667,17 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 	Object.defineProperty(DataArray.prototype, "resurrect", resurrectArray);
 	Object.defineProperty(DataArray.prototype, "mergeWith", mergeWithArray);
 
-	// Special setters for view objects
-	Object.defineProperty(ViewObject.prototype, 'set', viewSetter);
-	Object.defineProperty(ViewArray.prototype, 'set', viewSetter);
+
+	var commonProperties = {
+		trace: trace,
+		onChange: bindChange,
+		unbindChange: unbindChange,
+		triggerChange: triggerChange,
+		linkToParent: linkToParent,
+	};
+
+	Object.defineProperties(DataString.prototype, commonProperties);
+	Object.defineProperties(DataNumber.prototype, commonProperties);
+	
 
 });

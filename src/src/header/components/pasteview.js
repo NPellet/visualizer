@@ -16,12 +16,14 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
 
 					try {
 
-						val = JSON.parse( txtarea.val(), Versioning.getViewHandler()._reviver );
+						val = JSON.parse( txtarea.val() );
                                                 keys = Object.keys(val);
                                                 for(var i = 0, ii = keys.length; i < ii; i++) {
                                                     if(keys[i].charAt(0)==="_")
                                                         delete val[keys[i]];
                                                 }
+
+                                                console.log( val );
 						Versioning.setViewJSON( val );
 
 					} catch(_) { }

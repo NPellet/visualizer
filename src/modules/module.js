@@ -13,7 +13,11 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		//define object properties
 		var moduleURL = module.definition.getChildSync('url', true).get();
 			ext = '';
-		
+console.log( moduleURL );
+			if( moduleURL.toString ) {
+				moduleURL = moduleURL.toString();
+			}
+		console.log( moduleURL );
 		if( moduleURL.indexOf('http://') > -1 ) {
 			ext = '.js';
 		}

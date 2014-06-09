@@ -99,7 +99,7 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 				
 				if( varsOut[ i ].event == event  && ( varsOut[ i ].rel == rel || ! rel ) ) {
 
-					API.createData( varsOut[ i ].name, data );
+					API.createData( varsOut[ i ].name, data, varsOut[ i ].filter );
 				}
 			}
 		},

@@ -403,13 +403,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			}, function( value ) {
 
 				element[l] = value;
-				self.done--;
-				
-				/* todo In this required ??? */
-				if(self.done == 0) {
-					self.onResize(self.width, self.height);
-				}
-				
+				self.done--;				
 			});
 		},
 

@@ -1,5 +1,14 @@
 define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 
+	function replacer( key, value ) {
+
+		if( value instanceof DataString || value instanceof DataNumber || value instanceof DataBoolean ) {
+			return value.toString();
+		}
+
+		return value;
+	}
+
 	var DataViewHandler = function(dirUrl, defaultBranch, defaultUrl) {
 		
 		this.currentPath = [];
@@ -42,7 +51,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				return this._getServer().pipe(function(data) {
 					
 					if(self.type == 'view') {
-						return self._data['server'] = new ViewObject(data, true);
+						return self._data['server'] = new DataObject(data, true);
 					} else if(self.type == 'data') {
 						return self._data['server'] = new DataObject(data, true);
 					}
@@ -61,7 +70,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 					}
 					
 					if(self.type == 'view') {
-						return self._data['local'] = new ViewObject(data, true);
+						return self._data['local'] = new DataObject(data, true);
 					} else if(self.type == 'data') {
 						return self._data['local'] = new DataObject(data, true);
 					}
@@ -349,7 +358,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 					self.currentPath[2] = branch;
 					self.currentPath[3] = i;
 					self.make(el, branch, i);	
-					self._savedServer = JSON.stringify(el);
+					self._savedServer = JSON.stringify(el, replacer);
 					self.onReload(el);
 				});
 				
@@ -374,7 +383,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 					self.currentPath[2] = branch;
 					self.currentPath[3] = i;
 					self.make(el, branch, i);
-					self._savedLocal = JSON.stringify(el);
+					self._savedLocal = JSON.stringify(el, replacer);
 					self.onReload(el);
 				});
 			}
@@ -466,7 +475,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				self.currentPath[3] = rev;
 
 
-				self._savedLocal = JSON.stringify(el);
+				self._savedLocal = JSON.stringify(el, replacer);
 				self.make(el, self.currentPath[2], self.currentPath[3]);
 				def.resolve(el);
 				
@@ -479,7 +488,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				self.currentPath[2] = branch;
 				self.currentPath[3] = rev;
 				self.make(el, self.currentPath[2], self.currentPath[3]);
-				self._savedServer = JSON.stringify(el);
+				self._savedServer = JSON.stringify(el, replacer);
 				def.resolve(el);
 				self._onLoaded(el);
 			}
@@ -519,7 +528,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				return el;
 
 				if(self.type == 'view')
-					return new ViewObject(el, true);
+					return new DataObject(el, true);
 				else if(self.type == 'data')
 					return new DataObject(el, true);
 
@@ -627,7 +636,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 			obj._saved = Date.now();
 			obj._time = Date.now();
 			
-			this._savedServer = JSON.stringify(obj);
+			this._savedServer = JSON.stringify(obj, replacer);
 
 			return $.ajax({
 				type: 'post',
@@ -684,13 +693,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 	    
 	    _onLoaded: function(el) {
 	        var elTyped;
-			
-	        if(this.type === "data") {
-	            elTyped = DataObject.check(el, 1);
-	        } else if(this.type === "view") {
-	            elTyped = ViewObject.check(el, 1);
-	        }
-	        
+	        elTyped = DataObject.check(el, 1);
 	        this.onLoaded(elTyped);
 	    }
 	};

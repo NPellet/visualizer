@@ -62,10 +62,9 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 
 		
 
-		createData: function( jpath, dataToCreate ) {
-			data.setChild( jpath, dataToCreate );
-
-			this.setjPath( jpath );
+		createData: function( jpath, dataToCreate, callback ) {
+			data.setChild( jpath.slice(0), dataToCreate );
+			this.setjPath( jpath, callback );
 		},
 
 		getData: function() {
@@ -74,6 +73,7 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 
 		setData: function( newData ) { // CAUTION. This function will overwrite source data
 			data.setChild( this.getjPath(), newData );
+			this._value = newData;
 			newData.triggerChange();
 		},
 
@@ -124,6 +124,8 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 						} );
 						
 					} else {
+
+						
 						self._value = value;
 						_resolve( value );	
 					}

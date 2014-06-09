@@ -66,13 +66,13 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 		onToggleOn: {
 			label: 'On Toggle On',
-			refVariables: [ 'selectedrows' ],
+			refVariable: [ 'selectedrows' ],
 			refAction: [ 'row' ]
 		},
 
 		onToggleOff: {
 			label: 'On Toggle Off',
-			refVariables: [ 'selectedrows' ],
+			refVariable: [ 'selectedrows' ],
 			refAction: [ 'row' ]
 		}
 	};

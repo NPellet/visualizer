@@ -21,7 +21,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 				var dataRowId = parseInt( $(this).attr('data-row-id') );
 	 					
-	 				if( ! isNaN ( dataRowId ) ) {
+	 				if( ! isNaN( dataRowId ) ) {
 		 				self.module.controller.lineHover( self.module.data, dataRowId );
 		 			}
                                         

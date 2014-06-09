@@ -265,8 +265,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 			}
 
 			if( ! element.getType ) {
-				console.warn("Error ");
-				console.log( element );
+				element = DataObject.check( element );
 			}
 
 
