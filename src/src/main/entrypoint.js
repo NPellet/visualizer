@@ -32,8 +32,8 @@ define(['jquery',
 	var _viewLoaded, _dataLoaded;
 
 	var RepositoryData = new Repository(),
-			RepositoryHighlight = new Repository(),
-			RepositoryActions = new Repository();
+		RepositoryHighlight = new Repository(),
+		RepositoryActions = new Repository();
 
 	API.setRepositoryData(RepositoryData);
 	API.setRepositoryHighlights(RepositoryHighlight);
@@ -183,10 +183,13 @@ define(['jquery',
 				}
 			}
 
+
+			API.loading("Fetching pouch variables");
+			var pouching = [];
 			for (var i = 0, l = view.pouchvariables.length; i < l; i++) {
 				(function(k) {
 
-					PouchDBUtil.pouchToVar(view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function(el) {
+					pouching.push( PouchDBUtil.pouchToVar(view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function(el) {
 						
 						if( view.pouchvariables[ k ].id ) {
 							el = new PouchArray( el );
@@ -195,10 +198,17 @@ define(['jquery',
 						el.linkToParent( data, view.pouchvariables[ k ].varname );
 						//console.log( data );
 						API.setVariable( view.pouchvariables[ k ].varname, false, [ view.pouchvariables[ k ].varname ] );
-					});
+					}) );
 
 				}) (i);
 			}
+
+			Promise.all( pouching ).then( function() {
+				API.stopLoading("Fetching pouch variables");	
+			});
+			
+
+
 
 			// Pouch DB replication
 			PouchDBUtil.abortReplications();

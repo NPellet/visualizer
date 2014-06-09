@@ -5,8 +5,9 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 	var viewLocked = false;
 
 	var loadingHtml = $('<div id="loading-visualizer"><div class="title">Loading</div><div class="animation"><div /><div /><div /><div /></div><div class="subtitle" id="loading-message"></div></div>');
-	var loading = false;
-	
+	var loading = {};
+	var loadingNumber = 0;
+
 	function setVar( name, sourceVariable, jpath, filter ) {
 
 		var self = this,
@@ -135,16 +136,31 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 
 		loading: function( message ) {
 
-			if( ! loading ) {
-				loading = true;
+			if( loadingNumber == 0) {
 				$("body").append( loadingHtml );	
 			}
 
-			$("#loading-message").html( message );
+			if( ! loading[ message ] ) {
+				loading[ message ] = $("<div>" + message + "</div>");
+				loadingNumber++;
+				
+				$("#loading-message").append( loading[ message ] );
+			}
+
 		},
 
-		stopLoading: function() {
-			loadingHtml.detach();
+		stopLoading: function( message ) {
+
+			if( loading[ message ] ) {
+				
+				loadingNumber--;
+				loading[ message ].detach();
+				loading[ message ] = null;
+
+				if( loadingNumber == 0) {
+					loadingHtml.detach();
+				}
+			}
 		}
 	}
 });

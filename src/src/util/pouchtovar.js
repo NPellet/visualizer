@@ -540,7 +540,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		var pouch;
 
 		if (!(pouch = exports.getManager(dbname))) {
-			return;
+			return true;
 		}
 		
 		if(typeof id === "function") {
@@ -550,10 +550,10 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		}
 
 		if (id) {
-			pouch.getDoc(id, options).then(callback);
+			return pouch.getDoc(id, options).then(callback);
 		}
 		else {
-			pouch.getDocs(options).then(callback);
+			return pouch.getDocs(options).then(callback);
 		}
 	};
 	
