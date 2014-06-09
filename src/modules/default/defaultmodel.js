@@ -215,8 +215,9 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				return data;
 			}
 
-			if(!(sourceTypes instanceof Array))
-				sourceTypes = [sourceTypes];
+			if( ! ( sourceTypes instanceof Array ) ) {
+				sourceTypes = [ sourceTypes ]; 
+			}
 
 			var dataType = data.getType(),
 				mustRebuild = false;

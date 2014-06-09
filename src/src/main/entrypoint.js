@@ -43,11 +43,9 @@ define(['jquery',
 	function doView(view) {
 
 		var i = 0, l;
-
-		view = Migration(view);
-
 		DataObject.recursiveTransform( view, false );
 
+		view = Migration(view);
 		view.grid = view.grid || new DataObject();
 		
 		if (this.viewLoaded) {
