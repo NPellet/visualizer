@@ -3,7 +3,7 @@ define(['jquery', 'modules/module'], function($, Module) {
 	var incrementalId = 0;
 
 	var modules = [],
-			definitions = [],
+			definitions = new DataArray(),
 			modulesDeferred = [],
 			allModules;
 
@@ -157,7 +157,7 @@ define(['jquery', 'modules/module'], function($, Module) {
 			definitions.splice(definitions.indexOf(module.definition), 1);
 		},
 		empty: function() {
-			definitions = [];
+			definitions = new DataArray();
 			modules = [];
 		},
 		getModules: function() {

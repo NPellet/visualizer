@@ -22,8 +22,6 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
                                                     if(keys[i].charAt(0)==="_")
                                                         delete val[keys[i]];
                                                 }
-
-                                                console.log( val );
 						Versioning.setViewJSON( val );
 
 					} catch(_) { }

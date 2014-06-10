@@ -20,7 +20,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning'], funct
 		open: function() {
 			var self = this;
 			this.interval = window.setInterval(function() {
-				var view = Versioning.getView();
+				var view = Versioning.getViewJSON();
 				
 				if(self.viewHandler.currentPath[3] !== 'head') 
 					self.viewHandler.serverCopy(view);

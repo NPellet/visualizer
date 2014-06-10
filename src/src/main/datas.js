@@ -21,7 +21,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 	DataObject.check = function( object, transformNatives ) {
 	
-		if( object instanceof DataObject || object instanceof DataArray || object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean ) {
+		if (isSpecialObject(object)) {
 
 			return object;
 
@@ -154,16 +154,39 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 
 
-	function DataBoolean() { }
+	function DataBoolean( s ) {
+		Boolean.call(this, s);
+		this.s_ = s;
+	}
+	
 	DataBoolean.prototype = new Boolean();
 	DataBoolean.prototype.getType = function() {
 		return "boolean";
+	}
+	DataBoolean.prototype.setValue = function( val ) {
+		this.s_ = val;
+	}
+
+
+	DataBoolean.prototype.toString = function() {
+		return this.s_;
+	}
+
+	DataBoolean.prototype.get = function() {
+		return this.s_;
+	}
+
+	DataBoolean.prototype.valueOf = function() {
+		return this.s_;
+	}
+
+	DataBoolean.prototype.toSource = function() {
+		return this.s_;
 	}
 
 
 	window.DataString = DataString;
 	window.DataNumber = DataNumber;
-
 	window.DataBoolean = DataBoolean;
 
 
@@ -198,7 +221,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 			if (nativeTypes.indexOf(this.getType()) > -1)
 				return this.get();
 			for (var i in this) {
-				if (this[i] instanceof DataArray || this[i] instanceof DataObject) {
+				if (isSpecialObject(this[i])) {
 					obj[i] = this[i].resurrect();
 				} else {
 					obj[i] = this[i];
@@ -212,7 +235,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		value: function() {
 			var obj = [];
 			for (var i = 0, l = this.length; i < l; i++) {
-				if (this[i] instanceof DataArray || this[i] instanceof DataObject) {
+				if (isSpecialObject(this[i])) {
 					obj[i] = this[i].resurrect();
 				} else {
 					obj[i] = this[i];
@@ -703,10 +726,14 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,
 		linkToParent: linkToParent,
+		resurrect: resurrectObject
 	};
 
 	Object.defineProperties(DataString.prototype, commonProperties);
 	Object.defineProperties(DataNumber.prototype, commonProperties);
 	
+	function isSpecialObject(object) {
+		return( object instanceof DataObject || object instanceof DataArray || object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean );
+	}
 
 });

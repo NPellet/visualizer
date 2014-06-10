@@ -15,7 +15,7 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
                     "Save": function() {
                         var text = $("#"+id).val();
                         text = text.replace(/[^a-zA-Z0-9-_]*/g,"");
-                        var data = Versioning.getData();
+                        var data = Versioning.getDataJSON();
                         db.get(text, function(err, otherDoc) {
                             db.put({data:data}, text, otherDoc ? otherDoc._rev : undefined);
                           });

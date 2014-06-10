@@ -1292,7 +1292,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 				delete this.definition.dataSource;
 			}
 
-			return this.definition.vars_in = this.definition.vars_in || new ViewArray();
+			return this.definition.vars_in = this.definition.vars_in || new DataArray();
 		},
 
 
