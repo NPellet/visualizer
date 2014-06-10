@@ -159,6 +159,13 @@ define(['src/util/versioning'], function(Versioning) {
                     }
 
                 });
+			case "2.4.0b0" :
+				eachModule(view, function(module) {
+					var out = module.vars_out, varout;
+					for(var i = 0; i < out.length; i++) {
+						out[i].setChild(["rel"], "output");
+					}
+				}, "types/edition/object_editor");
         }
         view.version = Versioning.version;
 
