@@ -94,7 +94,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		this.definition = definition;
 		this.definition.configuration = this.definition.configuration || new ViewObject({});
 
-		this.definition.layers = this.definition.layers || new ViewObject(); // View on which layers ?
+		this.definition.layers = this.definition.layers || new DataObject(); // View on which layers ?
 
 		this.ready = init( this ).catch( function() {
 
@@ -372,11 +372,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 					return;
 				} else {
 					this.show();
-				//	console.log('Show');
-					
+				//	console.log('Show');	
 				}
-
-
 
 				this.setTitle( layer.title );
 				this.setDisplayWrapper( layer.wrapper );
@@ -404,7 +401,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 				}
 
 				// new layer
-				this.definition.layers[ i ] = {};
+				this.definition.layers[ i ] = new DataObject({});
 
 				if( blankLayer ) {
 					$.extend( true, this.definition.layers[ i ], Module.prototype.emptyConfig );	
@@ -483,7 +480,6 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 			}
 
 			allFilters = makeFilters( filter );
-			console.log( allFilters );
 
 			// AUTOCOMPLETE VARIABLES
 			var autoCompleteVariables = [],
@@ -1257,7 +1253,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		},
 
 		setId: function(id) {
-			
+
 			this.definition.set('id', id);
 		},
 		
@@ -1408,7 +1404,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 			}
 		},
 
-		emptyConfig: {
+		emptyConfig: new DataObject({
 			position: { left: 0, top: 0 },
 			size: { width: 20, height: 20},
 			zIndex: 0,
@@ -1417,7 +1413,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 			bgcolor: [ 255, 255, 255, 0 ],
 			wrapper: true,
 			created: true
-		}
+		})
 	};
 
 	return Module;
