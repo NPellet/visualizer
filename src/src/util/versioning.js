@@ -98,7 +98,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			delete data[i];
 		}
 		for(i in newData) {
-			data[i] = DataObject.check(newData[i]);
+			data[i] = DataObject.check(newData[i], true);
 		}
 	}
 
