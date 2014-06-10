@@ -7,7 +7,7 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
         init: function() {
             
             this._id = Util.getNextUniqueId();
-            this._code = new DataObject({type:"string",value:""});
+            this._code = "";
             
             var table = $('<table>').css({
                 height: '100%',
@@ -25,7 +25,7 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
         inDom: function() {
             var self = this;
             var initVal = this.module.getConfiguration('script') || "";
-            this._code.value = initVal;
+            this._code = initVal;
             
             if(this.module.getConfiguration('iseditable')[0]) {
                 this.editable=true;
@@ -58,7 +58,7 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
         update: {
             value: function(value) {
                 var val = value.get();
-                this._code.value = val;
+                this._code = val;
                 if(this.editable) {
                     this.editor.setValue(val);
                     this.editorChanged();
@@ -70,7 +70,7 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
         },
         editorChanged : function() {
             var val = this.editor.getValue();
-            this._code.value = val;
+            this._code = val;
             this.module.definition.configuration.groups.group[0].script[0] = val;
             this.module.controller.onEditorChanged(this._code);
         }
