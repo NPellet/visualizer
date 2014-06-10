@@ -134,7 +134,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					val = this.variables[keys[key]];
 					l = val.length;
 					for (i = 0; (i < l); i++) {
-						if (this.searchElement(cfg, val[ i ].get())) {
+						if (this.searchElement(cfg, val.getChildSync(i))) {
 							if(count < max) target[count++] = val[ i ];
 							flags[i] = true;
 						} else {

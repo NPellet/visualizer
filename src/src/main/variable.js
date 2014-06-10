@@ -87,7 +87,7 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 			if( this.listenedBy[ module.getId() ] ) {
 				Debug.warn("This module already listens the variable " + this.getName() + ". No new listener is added");
 			}
-
+			
 			this.listenedBy[ module.getId() ] = true;
 			this.listeners.push( callback );
 		},
@@ -102,14 +102,14 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 				this.rejectCurrentPromise();
 				this.rejectCurrentPromise = false;
 			}
-console.log( this.getName() );
+
 			this.currentPromise = new Promise( function( resolve, reject ) {
 
 				self.rejectCurrentPromise = reject;
 				var _resolve = resolve;
 				
 				data.getChild( self._jpath.slice( 0 ), true ).then( function( value ) {
-
+					
 					if( callback ) {
 
 						new Promise( function( resolve ) {

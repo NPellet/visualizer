@@ -117,27 +117,19 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 		};
 	};
 
-
-
-	/**
-	 * Called from the view when a search has been performed
-	 *
-	 * @param {Array} arr The ouput array
-	 */
 	controller.prototype.searchDone = function( arr, flags ) {
 
 		// Sets the variable corresponding to the onSearchDone event
 
-			this.setVarFromEvent( 'onSearchDone', flags, 'flagArray' );
+			this.createDataFromEvent( 'onSearchDone', 'flagArray', flags );
 			this.sendAction('flagArray', flags, 'onSearchDone');
 
-			this.setVarFromEvent( 'onSearchDone', arr, 'filteredArray' );
+			this.createDataFromEvent( 'onSearchDone', 'filteredArray', arr );
 			this.sendAction('filteredArray', arr, 'onSearchDone');
 
 
-	},
+	};
 
-		
 	controller.prototype.configFunctions =  {
 
 		searchfields: function( cfg ) {
@@ -146,7 +138,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
 			}
 			return cfg;
 		}
-	},
+	};
 
 	controller.prototype.configAliases = {
 		searchfields: [ 'sections', 'searchFields' ],

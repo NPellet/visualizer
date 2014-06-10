@@ -171,7 +171,6 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 								self.data[ vars[ j ].rel ] = varValue;
 								self.removeAllChangeListeners( vars[ j ].rel );
-								console.log('Send !');
 								self.module.view.update[ vars[ j ].rel ].call( self.module.view, self.data[ vars[ j ].rel ], varName );
 
 							} ).catch( function() {
