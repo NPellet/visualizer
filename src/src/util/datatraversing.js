@@ -1,5 +1,6 @@
 
 define(['jquery', 'src/data/structures'], function($, Structures) {
+	"use strict";
 
 	var asyncId = 0;
 
@@ -265,7 +266,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 			}
 
 			if( ! element.getType ) {
-				element = DataObject.check( element );
+				element = DataObject.check( element, true );
 			}
 
 
