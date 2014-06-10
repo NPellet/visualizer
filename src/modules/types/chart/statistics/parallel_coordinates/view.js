@@ -66,14 +66,13 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
         onActionReceive: {
             addColumn: function(value) {
                 if(value && value.name && value.jpath) {
-					var val = value.resurrect();
-                    this._addedColumns[val.name] = val;
+                    this._addedColumns[value.name] = value;
                     this.redrawChart();
                 }
             },
             removeColumn: function(value) {
                 if(value && value.name) {
-                    delete this._addedColumns[val.name];
+                    delete this._addedColumns[value.name];
                     this.redrawChart();
                 }
             }
