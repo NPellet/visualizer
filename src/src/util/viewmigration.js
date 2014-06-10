@@ -100,7 +100,7 @@ define(['src/util/versioning'], function(Versioning) {
                 }, "types/client_interaction/dragdrop");
 				
 			case "2.2.5": // Add layers
-				view.grid = new DataObject({
+				view.grid = DataObject.recursiveTransform({
 					layers: {
 						"Default layer": {
 							name: "Default layer"
@@ -108,10 +108,10 @@ define(['src/util/versioning'], function(Versioning) {
 					},
 					xWidth: 10,
 					yHeight: 10
-				}, true);
+				});
 				eachModule(view, function(module){
                     if( ! module.layers ) {
-    					module.layers = new DataObject({
+    					module.layers = DataObject.recursiveTransform({
     						"Default layer": {
     							position: {
     								left: module.position.left,
@@ -130,7 +130,7 @@ define(['src/util/versioning'], function(Versioning) {
     							created: true,
     							name: "Default layer"
     						}
-    					}, true);
+    					});
     					delete module.title;
     					delete module.position;
     					delete module.size;

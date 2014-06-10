@@ -67,6 +67,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 	DataObject.recursiveTransform = function( object, transformNatives ) {
 		
+		object = DataObject.check(object, transformNatives);
 
 		if( object instanceof Array ) {
 
@@ -82,7 +83,9 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 				DataObject.recursiveTransform( object[ i ], transformNatives );
 			}
 
-		}  
+		}
+		
+		return object;
 	};
 
 
