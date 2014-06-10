@@ -20,8 +20,6 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
             
             this.module.getDomContent( ).html(table);
 
-
-            this.onReady = $.Deferred();
         },
         blank: {},
         inDom: function() {
@@ -55,7 +53,7 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
 			else {
 				this.buttonRow.remove();
 			}
-            this.onReady.resolve();
+            this.resolveReady();
         },
         update: {
             value: function(value) {

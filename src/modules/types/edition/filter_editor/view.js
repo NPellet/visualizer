@@ -29,7 +29,7 @@ define(['modules/types/client_interaction/code_editor/view', "src/util/util", "a
                 })
         );
 
-        this.onReady.resolve();
+        this.resolveReady();
     };
 
     view.prototype.editorChanged = function() {

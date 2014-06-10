@@ -25,6 +25,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twi
         },
         inDom: function() {
 			this.module.getDomContent().html(this.dom);
+			this.resolveReady();
 			this.render();
         },
         update: {
