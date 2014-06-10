@@ -196,9 +196,9 @@ define(['jquery',
 
 					pouching.push( PouchDBUtil.pouchToVar(view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function(el) {
 						
-						if( view.pouchvariables[ k ].id ) {
+					/*	if( view.pouchvariables[ k ].id ) {
 							el = new PouchArray( el );
-						} 
+						} */
 						
 						el.linkToParent( data, view.pouchvariables[ k ].varname );
 						//console.log( data );
