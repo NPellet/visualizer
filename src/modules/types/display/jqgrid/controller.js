@@ -225,7 +225,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 	controller.prototype.lineHover = function(elements, row) {
 		
-		this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
+		this.setVarFromEvent( 'onHover', 'row', 'list', [ row ] );
 		API.highlight( elements[ row ], 1 );
 	},
 
