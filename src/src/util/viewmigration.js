@@ -1,4 +1,5 @@
 define(['src/util/versioning'], function(Versioning) {
+	"use strict";
 
     var migrate = function(view) {
 
@@ -139,35 +140,25 @@ define(['src/util/versioning'], function(Versioning) {
                     }
 				});
             case "2.3.0-beta1" :
-
-                function updateJpath(element) {
-                    var jpath = element.getChildSync(['jpath']);
-                    if (jpath) {
-						element.setChild("jpath",jpath.get().split(".").slice(1));
-                    }
-                }
-				
                 if (view.variables) {
                     for (var i=0; i<view.variables.length; i++) {
-                        updateJpath(view.variables[i])
+                        updateJpath(view.variables[i]);
                     }
                 }
 
                 eachModule(view, function(module) {
                     if (module.vars_out) {
                         for (var i=0; i<module.vars_out.length; i++) {
-                            updateJpath(module.vars_out[i])
+                            updateJpath(module.vars_out[i]);
                         }
                     }
                     if (module.actions_out) {
                         for (var i=0; i<module.actions_out.length; i++) {
-                            updateJpath(module.actions_out[i])
+                            updateJpath(module.actions_out[i]);
                         }
                     }
 
                 });
-
-                
         }
         view.version = Versioning.version;
 
@@ -188,7 +179,7 @@ define(['src/util/versioning'], function(Versioning) {
             for(; i < ii; i++) {
                 module = view.modules[i];
 
-				url = module.getChildSync(['url']).get();
+				url = module.getChildSync(['url']);
 				if(url) {
 					for(j = 0; j < jj; j++) {
 						if(url.indexOf(moduleNames[j]) >= 0) {
@@ -273,4 +264,11 @@ define(['src/util/versioning'], function(Versioning) {
             return "./modules/types/webservice_cron/";
         console.error("viewmigration problem: " + type + " is unknown");
     }
+	
+	function updateJpath(element) {
+		var jpath = element.getChildSync(['jpath']);
+		if (jpath) {
+			element.setChild(["jpath"],jpath.split(".").slice(1));
+		}
+	}
 });
