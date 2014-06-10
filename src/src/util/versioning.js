@@ -126,11 +126,11 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 
 			viewHandler.onLoaded = function(v) {
 				updateView(v);
-				c.call(that, v);
+				c.call(that, view);
 			};
 			viewHandler.onReload = function(v) {
 				updateView(v);
-				c.call(that, v, true);
+				c.call(that, view, true);
 			};
 		},
 		setDataLoadCallback: function(c) {
@@ -138,11 +138,11 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			var that = this;
 			dataHandler.onLoaded = function(d) {
 				updateData(d);
-				c.call(that, d);
+				c.call(that, data);
 			};
 			dataHandler.onReload = function(d) {
 				updateData(d);
-				c.call(that, d, true);
+				c.call(that, data, true);
 			};
 		},
 		setViewJSON: function(json) {
