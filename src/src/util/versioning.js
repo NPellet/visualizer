@@ -81,6 +81,26 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 	function setData(url, branch, defUrl) {
 		return dataHandler.load(url, branch, defUrl);
 	}
+	
+	function updateView(newView) {
+		var i;
+		for(i in view) {
+			delete view[i];
+		}
+		for(i in newView) {
+			view[i] = DataObject.check(newView[i], true);
+		}
+	}
+	
+	function updateData(newData) {
+		var i;
+		for(i in data) {
+			delete data[i];
+		}
+		for(i in newData) {
+			data[i] = DataObject.check(newData[i], false);
+		}
+	}
 
 	return {
 		get version() {
@@ -105,11 +125,11 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			var that = this;
 
 			viewHandler.onLoaded = function(v) {
-				view = v;
+				updateView(v);
 				c.call(that, v);
 			};
 			viewHandler.onReload = function(v) {
-				view = v;
+				updateView(v);
 				c.call(that, v, true);
 			};
 		},
@@ -117,39 +137,24 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			this.dataCallback = c;
 			var that = this;
 			dataHandler.onLoaded = function(d) {
-			
-				data = d;
+				updateData(d);
 				c.call(that, d);
 			};
 			dataHandler.onReload = function(d) {
-				data = d
+				updateData(d);
 				c.call(that, d, true);
 			};
 		},
 		setViewJSON: function(json) {
-
-			var i;
-			for(i in view) {
-				delete view[i];
-			}
-			for(i in json) {
-				view[i] = new DataObject(json[i], true);
-			}
-
+			updateView(json);
 			this.viewCallback(view, true);
 			viewHandler.versionChange().notify(view);
 		},
 		setDataJSON: function(json) {
-			var i;
-			for(i in data) {
-				delete data[i];
-			}
-			for(i in json) {
-				data[i] = new DataObject(json[i], false);
-			}
+			updateData(json);
 			this.dataCallback(data, true);
 		},
-		blankView: function( ) {
+		blankView: function() {
 			this.setViewJSON({});
 		},
 		switchView: switchView,

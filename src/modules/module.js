@@ -92,7 +92,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 
 	 var Module = function( definition ) {
 		this.definition = definition;
-		this.definition.configuration = this.definition.configuration || new ViewObject({});
+		this.definition.configuration = this.definition.configuration || new DataObject({});
 
 		this.definition.layers = this.definition.layers || new DataObject(); // View on which layers ?
 
@@ -393,7 +393,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		},
 
 		setLayers: function( layers, blankLayer ) {
-			this.definition.layers = this.definition.layers || new ViewObject();
+			this.definition.layers = this.definition.layers || new DataObject();
 
 			for( var i in layers ) {
 				if( this.definition.layers[ i ] ) {
@@ -410,7 +410,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 					$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );	
 				}
 
-				this.definition.layers[ i ] = new ViewObject( this.definition.layers[ i ], true );
+				this.definition.layers[ i ] = new DataObject( this.definition.layers[ i ], true );
 			}
 		},
 

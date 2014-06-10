@@ -18,9 +18,9 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
                         db.get(text,function(err,data){
                             var view;
                             if(err)
-                                view = new ViewObject();
+                                view = new DataObject();
                             else
-                                view = new ViewObject(data.view,true);
+                                view = new DataObject(data.view,true);
                             Versioning.setViewJSON( view );
                         });
                         $(this).dialog("close");
