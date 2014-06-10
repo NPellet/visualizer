@@ -88,7 +88,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			delete view[i];
 		}
 		for(i in newView) {
-			view[i] = DataObject.check(newView[i], true);
+			view[i] = DataObject.recursiveTransform(newView[i]);
 		}
 	}
 	
@@ -98,7 +98,7 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			delete data[i];
 		}
 		for(i in newData) {
-			data[i] = DataObject.check(newData[i], false);
+			data[i] = DataObject.check(newData[i]);
 		}
 	}
 
