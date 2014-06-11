@@ -2,7 +2,7 @@
 
 define(['src/util/versionhandler'], function(VersionHandler) {
 	"use strict";
-	var version = [2, 4, '0b1'].join('.');
+	var version = [2, 4, '0b2'].join('.');
 	var dataHandler = new VersionHandler(),
 			viewHandler = new VersionHandler(),
 			view = new DataObject(),

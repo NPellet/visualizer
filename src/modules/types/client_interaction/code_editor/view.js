@@ -9,7 +9,7 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
             this._id = Util.getNextUniqueId();
             this._code = "";
             
-            var table = $('<table>').css({
+            var table = this.table = $('<table>').css({
                 height: '100%',
                 width: '100%'
             });

@@ -5,7 +5,6 @@ define(['modules/types/client_interaction/code_editor/view', "src/util/util", "a
     view.prototype = Object.create(CodeEditor.prototype);
     view.prototype.init = function() {
         CodeEditor.prototype.init.call(this);
-        this._object = new DataObject();
     };
     view.prototype.inDom = function() {
         var self = this;
@@ -14,7 +13,7 @@ define(['modules/types/client_interaction/code_editor/view', "src/util/util", "a
         $('<div id="' + this._id + '"></div>').css("height", "100%").css("width", "100%").appendTo(this.editorCell);
         this.editor = ace.edit(this._id);
         var initVal = this.module.getConfiguration('script') || "";
-        this._code.value = initVal;
+        this._code = initVal;
         this.editor.getSession().setMode("./mode/javascript");
         this.editor.setValue(initVal, -1);
         this.editor.getSession().on('change', function() {
@@ -28,13 +27,16 @@ define(['modules/types/client_interaction/code_editor/view', "src/util/util", "a
                     self.module.controller.onButtonClick(self._code, self._object);
                 })
         );
+	
+		this.table.prepend($("<tr><td>function(value, resolve, reject) {</td></tr>").css("height","10px"));
+		$("<tr><td>}</td></tr>").css("height","10px").insertBefore(this.buttonRow);
 
         this.resolveReady();
     };
 
     view.prototype.editorChanged = function() {
         var val = this.editor.getValue();
-        this._code.value = val;
+        this._code = val;
         this.module.definition.configuration.groups.group[0].script[0] = val;
     };
 
