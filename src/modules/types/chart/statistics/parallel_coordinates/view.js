@@ -162,7 +162,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             if(config) {
                 for(var i = 0; i < config.length; i++){
                     if(config[i].jpath) {
-                        objConfig[config[i].name] = config[i];
+                        objConfig[config[i].name] = $.extend( true, {}, config[i]);
 					}
                 }
             }
@@ -178,7 +178,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
 					continue;
 				totalConfig[i].jpath = Util.makejPathFunction(totalConfig[i].jpath);
 			}
-
+			
             return totalConfig;
         },
         resetBrush: function(){
