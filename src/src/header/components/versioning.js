@@ -22,7 +22,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 		for(var i = 0; i < pos.length; i++) {
 
 			(function(j) {
-				var subject = j == 0 ?	Versioning.getViewJSON() : Versioning.getDataJSON();
+				var subject = j == 0 ?	Versioning.getView() : Versioning.getData();
 				var handler = j == 0 ? Versioning.getViewHandler() : Versioning.getDataHandler();
 
 				buttons[pos[j]].copyToLocal = new Button('Copy to local', function() {

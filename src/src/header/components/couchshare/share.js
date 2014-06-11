@@ -7,8 +7,8 @@ define(["lib/webtoolkit/base64", "src/util/versioning", "lib/couchdb/jquery.couc
         $.couch.urlPrefix = urlPrefix;
         var db = $.couch.db(database);
         
-        var encodedView = Base64.encode(JSON.stringify(Versioning.getViewJSON()));
-        var encodedData = Base64.encode(JSON.stringify(Versioning.getDataJSON()));
+        var encodedView = Base64.encode(Versioning.getViewJSON());
+        var encodedData = Base64.encode(Versioning.getDataJSON());
         
         var docid = guid();
         

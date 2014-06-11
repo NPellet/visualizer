@@ -105,16 +105,16 @@ define(['modules/types/client_interaction/code_editor/controller','src/util/debu
     
     controller.prototype.export = function() {
         var neededLibs = this.module.getConfiguration("libs");
-        var requireStart = "define"+getRequireStart(neededLibs)+"\n return ";
-        var requireBody = "function(value, resolve, reject){\n"+this.module.getConfiguration("script")+"\n};";
-        var requireEnd = ";\n});";
+        var requireStart = "define"+getRequireStart(neededLibs)+"\n    return {\n    filter: ";
+        var requireBody = "function( value, resolve, reject ) {\n            "+this.module.getConfiguration("script").replace(/(\r\n|\r|\n)/g,"\n            ")+"\n        }\n    };";
+        var requireEnd = "\n});";
         
         return requireStart+requireBody+requireEnd;
     };
     
     function getRequireStart(neededLibs) {
-        var required = "(['src/util/api'";
-        var callback = "function(API";
+        var required = "( [ 'src/util/api'";
+        var callback = "function( API";
 
         if (neededLibs) {
             for (var i = 0; i < neededLibs.length; i++) {
@@ -127,7 +127,7 @@ define(['modules/types/client_interaction/code_editor/controller','src/util/debu
             }
         }
         
-        return required+"], "+callback+"){";
+        return required+" ], "+callback+" ){";
     }
 
     return controller;

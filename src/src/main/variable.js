@@ -106,8 +106,9 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 			this.currentPromise = new Promise( function( resolve, reject ) {
 
 				self.rejectCurrentPromise = reject;
-				var _resolve = resolve;
-				var _reject = reject;
+
+				var _resolve = resolve, _reject = reject;
+
 				
 				data.getChild( self._jpath.slice( 0 ), true ).then( function( value ) {
 					
@@ -122,10 +123,11 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 							self._value = value;
 							_resolve( value );	
 
-						} ).catch( function() {
-
-							console.log("Filter has rejected the input");
+						}, function( error ) {
+							
+							Debug.error("Error during variable filtering", error);
 							_reject();
+							
 						} );
 						
 					} else {
