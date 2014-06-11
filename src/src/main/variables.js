@@ -33,11 +33,20 @@ define([
 
 		if( filter ) {
 			filterFunction = function( value, resolve, reject ) {
+				
 				require( [ filter ], function( filterFunction ) {
-					filterFunction( value, resolve, reject );
+				
+					if( filterFunction.filter ) {
+						return filterFunction.filter( value, resolve, reject );
+					}
+					
+					reject("No filter function defined");
 				} );
+
 			};
 		}
+
+
 
 		if( jpath ) {
 

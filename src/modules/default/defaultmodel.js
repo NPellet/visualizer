@@ -160,7 +160,11 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 									require( [ vars[ j ].filter ], function( filterFunction ) {
 									
-										filterFunction( varValue, resolve, reject );
+										if( filterFunction.filter ) {
+											return filterFunction.filter( varValue, resolve, reject );
+										}
+										
+										reject("No filter function defined");
 
 									} );
 								
