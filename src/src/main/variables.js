@@ -7,7 +7,7 @@ define([
 
 	function( Util, Datas, Debug, Variable, Versioning ) { // Ensures Data is loaded, although not compulsory
 
-	"use scrict";
+	"use strict";
 
 	var allVariables = {};
 
@@ -32,9 +32,9 @@ define([
 		var filterFunction = false;
 
 		if( filter ) {
-			filterFunction = function( value, resolve ) {
+			filterFunction = function( value, resolve, reject ) {
 				require( [ filter ], function( filterFunction ) {
-					filterFunction( value, resolve );
+					filterFunction( value, resolve, reject );
 				} );
 			};
 		}
