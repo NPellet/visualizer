@@ -40,6 +40,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
         },
         update: {
             value : function(value) {
+             
                 if(!value)
                     return;
                 value = value.get();
@@ -51,6 +52,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 this.redrawChart();
             },
             columns: function(value) {
+
                 if(!(value instanceof Array))
                     return;
                 for(var i = 0; i < this._previousColumns.length; i++) {
@@ -141,7 +143,9 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 newVal = {};
 				val = value[i];
                 newValue[i] = newVal;
+               
                 for(var j = 0; j < l; j++) {
+
                     newVal[columns[j].name] = columns[j].jpath(val);
                 }
 				if(colorJpath) {
