@@ -103,8 +103,8 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
 				flags[index] = true;
             }
         }
-        this.setVarFromEvent("onBrushSelection", new DataArray(toSend), "value");
-		this.setVarFromEvent("onBrushSelection", new DataArray(flags), "flagResult");
+        this.createDataFromEvent("onBrushSelection", "value", toSend);
+		this.createDataFromEvent("onBrushSelection", "flagResult", flags);
     };
 
     return controller;
