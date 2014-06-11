@@ -131,8 +131,9 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 						},
 						point: {
 							type: 'checkbox',
-								title: 'point',
-								options: { 'point': 'Hide Point Area'},
+								title: 'Point',
+								//default: false,
+								options: { 'point': 'Show Point Area'},
 							displayTarget: [ 'r' ]
 						},
 						lineshape : {
@@ -158,6 +159,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 								{title: 'True', key: 'true'},
 								{title: 'False', key: 'false'}
 							],
+							displayTarget: [ 'r' ],
 							displaySource:  {
 							'true': 't',
 							'false': 'f'
@@ -179,25 +181,15 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 							type: 'combo',
 							title: 'Legend Align',
 							options: [
-								{title: 'Left', key: 'left'},
-								{title: 'Right', key: 'right'}
-
-							],
-							displayTarget: [ 'r' ],
-							displayTarget: [ 't' ]
-						},
-						legendvalign : {
-							type: 'combo',
-							title: 'Legend Valign',
-							options: [
-								{title: 'Top', key: 'top'},
-								{title: 'Bottom', key: 'bottom'}
+								{title: 'top-right', key: 'top-right'},
+								{title: 'top-left', key: 'top-left'},
+								{title: 'bottom-right', key: 'bottom-right'},
+								{title: 'bottom-left', key: 'bottom-left'}
 
 							],
 							displayTarget: [ 'r' ],
 							displayTarget: [ 't' ]
 						}
-						
 						
 
 
@@ -209,7 +201,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 	};
 
 	controller.prototype.configFunctions = {
-		'point': function(cfg) { return cfg.indexOf('point') == -1 ? false : true; },
+		'point': function(cfg) { return cfg.indexOf('point') == -1 ? true : false; },
 		'line': function(cfg) { return cfg.indexOf('line') == -1 ? false : true; }
 	};
 	controller.prototype.configAliases = {
@@ -224,8 +216,7 @@ define(['modules/default/defaultcontroller','src/util/datatraversing','src/util/
 		'showlegend': [ 'groups', 'group', 0, 'showlegend', 0 ],
 		'line': [ 'groups', 'group', 0, 'line', 0 ],
 		'legendmarker': [ 'groups', 'group', 0, 'legendmarker', 0 ],
-		'legendalign': [ 'groups', 'group', 0, 'legendalign', 0 ],
-		'legendvalign': [ 'groups', 'group', 0, 'legendvalign', 0 ]
+		'legendalign': [ 'groups', 'group', 0, 'legendalign', 0 ]
 	};
 
 

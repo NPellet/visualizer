@@ -35,6 +35,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		onResize: function() {
 			if (this.DEBUG) console.log("Radar Chart: onResize");
 			this._redraw();
+			
 		},
 
 		/* When a value change this method is called. It will be called for all 
@@ -44,6 +45,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		update: {
 			'chart': function(moduleValue) 
 			{
+			
 				if (this.DEBUG) console.log("Radar Chart: update from chart object");
 
 				if (! moduleValue) {
@@ -219,17 +221,59 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			
 		if(cfg('showlegend') == 'true')
 					{
-					
-				this._radar.define("legend",{
+					switch (cfg('legendalign'))
+					{
+					case 'top-left':
+					this._radar.define("legend",{
 					width: 120,
-					align: cfg('legendalign'),
-					valign: cfg('legendvalign'),
+					align: 'left',
+					valign: 'top',
 					marker:{
 						type: cfg('legendmarker'),
 						width: 15
 					},
 					values: val
 				}); 
+				break
+					case 'top-right':
+					this._radar.define("legend",{
+					width: 120,
+					align: 'right',
+					valign: 'top',
+					marker:{
+						type: cfg('legendmarker'),
+						width: 15
+					},
+					values: val
+				}); 
+				break;
+					case 'bottom-left':
+					this._radar.define("legend",{
+					width: 120,
+					align: 'left',
+					valign: 'bottom',
+					marker:{
+						type: cfg('legendmarker'),
+						width: 15
+					},
+					values: val
+				}); 
+			break;
+					case 'bottom-right':
+					this._radar.define("legend",{
+					width: 120,
+					align: 'right',
+					valign: 'bottom',
+					marker:{
+						type: cfg('legendmarker'),
+						width: 15
+					},
+					values: val
+				}); 
+				break;
+					
+				
+				}
 				}
 
 		},
