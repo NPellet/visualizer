@@ -112,13 +112,13 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			return view;
 		},
 		getViewJSON: function(tab) {
-			return view.toJSON(tab);
+			return JSON.stringify(view, null, tab);
 		},
 		getData: function() {
 			return data;
 		},
 		getDataJSON: function(tab) {
-			return data.toJSON(tab);
+			return JSON.stringify(data, null, tab);
 		},
 		getViewHandler: function() {
 			return viewHandler;

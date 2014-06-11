@@ -691,21 +691,6 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 			return console.warn("mergeWith method not yet implemented for DataArray");
 		}
 	};
-	
-	var toJSON = {
-		value: function(tab) {
-			
-			function replacer(key, value) {
-				if( value instanceof DataString || value instanceof DataNumber || value instanceof DataBoolean ) {
-					return value.toString();
-				}
-				return value;
-			}
-			
-			JSON.stringify(this, replacer, tab);
-			
-		}
-	};
 
 	var commonProperties = {
 		set: dataSetter,
@@ -721,8 +706,7 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,
 		linkToParent: linkToParent,
-		getType: getType,
-		toJSON: toJSON
+		getType: getType
 	};
 
 	Object.defineProperties(DataObject.prototype, commonProperties);
@@ -734,7 +718,13 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 
 	Object.defineProperty(DataArray.prototype, "resurrect", resurrectArray);
 	Object.defineProperty(DataArray.prototype, "mergeWith", mergeWithArray);
-
+	
+	// The toJSON method is automatically called when JSON.stringify is used
+	var toJSON = {
+		value: function() {
+			return this.s_;
+		}
+	};
 
 	var commonProperties = {
 		trace: trace,
@@ -742,11 +732,13 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,
 		linkToParent: linkToParent,
-		resurrect: resurrectObject
+		resurrect: resurrectObject,
+		toJSON: toJSON
 	};
 
 	Object.defineProperties(DataString.prototype, commonProperties);
 	Object.defineProperties(DataNumber.prototype, commonProperties);
+	Object.defineProperties(DataBoolean.prototype, commonProperties);
 	
 	function isSpecialObject(object) {
 		return( object instanceof DataObject || object instanceof DataArray || object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean );
