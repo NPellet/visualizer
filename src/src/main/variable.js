@@ -106,21 +106,26 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 			this.currentPromise = new Promise( function( resolve, reject ) {
 
 				self.rejectCurrentPromise = reject;
-				var _resolve = resolve;
+				var _resolve = resolve, _reject = reject;
 				
 				data.getChild( self._jpath.slice( 0 ), true ).then( function( value ) {
 					
 					if( callback ) {
 
-						new Promise( function( resolve ) {
+						new Promise( function( resolve, reject ) {
 
-							callback( value, resolve );	
+							callback( value, resolve, reject );	
 
 						} ).then( function( value ) {
 
 							self._value = value;
 							_resolve( value );	
 
+						}, function( error ) {
+							
+							Debug.error("Error during variable filtering", error);
+							_reject();
+							
 						} );
 						
 					} else {
