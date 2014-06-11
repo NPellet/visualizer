@@ -105,7 +105,7 @@ define(['modules/types/client_interaction/code_editor/controller','src/util/debu
     
     controller.prototype.export = function() {
         var neededLibs = this.module.getConfiguration("libs");
-        var requireStart = "define"+getRequireStart(neededLibs)+"\n\treturn {\n    filter: ";
+        var requireStart = "define"+getRequireStart(neededLibs)+"\n    return {\n    filter: ";
         var requireBody = "function( value, resolve, reject ) {\n            "+this.module.getConfiguration("script").replace(/(\r\n|\r|\n)/g,"\n            ")+"\n        }\n    };";
         var requireEnd = "\n});";
         
