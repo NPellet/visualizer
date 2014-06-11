@@ -1,0 +1,10 @@
+{
+	"modules": [
+		{
+			"moduleName": "DNA sequence display",
+			"url": "modules/types/bio/sequence/"
+		}
+	],
+	"name": "Bio",
+	"folders": []
+}
