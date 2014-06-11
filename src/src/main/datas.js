@@ -691,6 +691,21 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 			return console.warn("mergeWith method not yet implemented for DataArray");
 		}
 	};
+	
+	var toJSON = {
+		value: function(tab) {
+			
+			function replacer(key, value) {
+				if( value instanceof DataString || value instanceof DataNumber || value instanceof DataBoolean ) {
+					return value.toString();
+				}
+				return value;
+			}
+			
+			JSON.stringify(this, replacer, tab);
+			
+		}
+	};
 
 	var commonProperties = {
 		set: dataSetter,
@@ -706,7 +721,8 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,
 		linkToParent: linkToParent,
-		getType: getType
+		getType: getType,
+		toJSON: toJSON
 	};
 
 	Object.defineProperties(DataObject.prototype, commonProperties);

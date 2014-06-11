@@ -1,14 +1,5 @@
 define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 
-	function replacer( key, value ) {
-
-		if( value instanceof DataString || value instanceof DataNumber || value instanceof DataBoolean ) {
-			return value.toString();
-		}
-
-		return value;
-	}
-
 	var DataViewHandler = function(dirUrl, defaultBranch, defaultUrl) {
 		
 		this.currentPath = [];
@@ -358,7 +349,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 					self.currentPath[2] = branch;
 					self.currentPath[3] = i;
 					self.make(el, branch, i);	
-					self._savedServer = JSON.stringify(el, replacer);
+					self._savedServer = el.toJSON();
 					self.onReload(el);
 				});
 				
@@ -383,7 +374,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 					self.currentPath[2] = branch;
 					self.currentPath[3] = i;
 					self.make(el, branch, i);
-					self._savedLocal = JSON.stringify(el, replacer);
+					self._savedLocal = el.toJSON();
 					self.onReload(el);
 				});
 			}
@@ -475,7 +466,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				self.currentPath[3] = rev;
 
 
-				self._savedLocal = JSON.stringify(el, replacer);
+				self._savedLocal = el.toJSON();
 				self.make(el, self.currentPath[2], self.currentPath[3]);
 				def.resolve(el);
 				
@@ -488,7 +479,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				self.currentPath[2] = branch;
 				self.currentPath[3] = rev;
 				self.make(el, self.currentPath[2], self.currentPath[3]);
-				self._savedServer = JSON.stringify(el, replacer);
+				self._savedServer = el.toJSON();
 				def.resolve(el);
 				self._onLoaded(el);
 			}
@@ -636,7 +627,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 			obj._saved = Date.now();
 			obj._time = Date.now();
 			
-			this._savedServer = JSON.stringify(obj, replacer);
+			this._savedServer = obj.toJSON();
 
 			return $.ajax({
 				type: 'post',
