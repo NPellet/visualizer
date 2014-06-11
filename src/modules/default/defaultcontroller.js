@@ -59,7 +59,7 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 
 		setVarFromEvent: function( event, rel, relSource, jpath, callback ) {
 
-			var varsOut, i = 0, first;
+			var varsOut, i = 0, first = true;
 
 			if( ! ( varsOut = this.module.vars_out() ) ) {
 				return;
@@ -70,6 +70,7 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 				if( varsOut[ i ].event == event  && ( varsOut[ i ].rel == rel || ! rel ) ) {
 
 					if( first && callback ) {
+						first = false;
 						callback.call( this );
 					}
 					
@@ -88,7 +89,7 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 
 		createDataFromEvent: function( event, rel, data, callback ) {
 
-			var varsOut, i = 0, first;
+			var varsOut, i = 0, first = true;
 
 			if( ! ( varsOut = this.module.vars_out() ) ) {
 				return;
@@ -97,6 +98,11 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 			for( ; i < varsOut.length; i++ ) {
 				
 				if( varsOut[ i ].event == event  && ( varsOut[ i ].rel == rel || ! rel ) ) {
+
+					if( first && callback ) {
+						first = false;
+						data = callback.call( this );
+					}
 
 					API.createData( varsOut[ i ].name, data, varsOut[ i ].filter );
 				}
