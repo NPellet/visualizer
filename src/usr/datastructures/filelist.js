@@ -3,7 +3,7 @@ define([
 	"src/util/typerenderer",
 
 	// Add you own types here
-	"./example.js"
+	"./example"
 
 	], function( Structures, Renderer ) {
 
