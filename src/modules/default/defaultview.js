@@ -2,6 +2,7 @@ define(function() {
 	return {
 		
 		initDefault: function() {
+
 			this.onReady = true;
 		},
 
@@ -39,6 +40,7 @@ define(function() {
 
 			if( this.relsForLoading().indexOf( rel ) > -1 ) {
 
+				this.loadingElements = this.loadingElements || 1;
 				this.loadingElements --;
 
 				if( ! this.loadingElements ) {

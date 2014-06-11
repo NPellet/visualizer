@@ -103,6 +103,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				self.module.blankVariable( variable.getName() );
 			});
 
+
 			var rejectLatency;
 			var latency = new Promise( function( resolve, reject ) {
 
@@ -124,8 +125,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				var varName = variable.getName();
 				var varValue = variable.getValue();
 
-				self.module.endLoading( variable.getName( ) );
-
+				
 				// Then validate
 				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
 					rejectLatency();
@@ -146,6 +146,10 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				k = 0;
 
 				var vars = self.module.vars_in();
+
+				rejectLatency();
+				self.module.endLoading( variable.getName( ) );
+
 
 				m = vars.length;
 				for( ; k < m ; k ++ ) {
@@ -188,13 +192,18 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 					
 				}
 
-				rejectLatency();
 				
 
-			} ).catch( function() {
-				Debug.error( "Error while updating variable ", arguments[ 0 ].getStack( ) );
+			}, function() {
+				
 				rejectLatency();
+				self.module.endLoading( variable.getName( ) );
 
+				var stack = "";
+				if( this && this.getStack ) {
+					stack = this.getStack();
+				}
+				Debug.error( "Error while updating variable", stack );
 			} );
 
  		},

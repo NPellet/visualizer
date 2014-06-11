@@ -8,7 +8,7 @@ define(
 ],
 function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, although not compulsory
 
-	"use scrict";
+	"use strict";
 
 	var data = Versioning.getData();
 
@@ -107,20 +107,25 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 
 				self.rejectCurrentPromise = reject;
 				var _resolve = resolve;
+				var _reject = reject;
 				
 				data.getChild( self._jpath.slice( 0 ), true ).then( function( value ) {
 					
 					if( callback ) {
 
-						new Promise( function( resolve ) {
+						new Promise( function( resolve, reject ) {
 
-							callback( value, resolve );	
+							callback( value, resolve, reject );	
 
 						} ).then( function( value ) {
-
+							
 							self._value = value;
 							_resolve( value );	
 
+						} ).catch( function() {
+
+							console.log("Filter has rejected the input");
+							_reject();
 						} );
 						
 					} else {
@@ -132,7 +137,16 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 
 					
 				} );	
-			} );
+			} ).catch( function( ) {
+
+				var stack = "";
+				if( this && this.getStack ) {
+					var stack = this.getStack();
+				}
+
+				Debug.error("Error in getting the variable through variable.js", stack );
+				throw Error();
+			});
 
 			for( var i = 0, l = self.listeners.length ; i < l ; i ++ ) {
 
@@ -141,6 +155,7 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 		},
 
 		onReady: function() {
+
 			return this.currentPromise;
 		}
 	});

@@ -31,11 +31,22 @@ define([
 		var variable = getVariable( name );
 		var filterFunction = false;
 
+		if( variable.killFilter ) {
+			variable.killFilter();
+		}
+
+		variable.killFilter = false;
+
 		if( filter ) {
-			filterFunction = function( value, resolve, reject ) {
+			var filterFunction = function( value, resolve, reject ) {
 				
 				require( [ filter ], function( filterFunction ) {
 				
+					if( filterFunction.kill ) {
+						
+						variable.killFilter = filterFunction.kill;
+					}	
+
 					if( filterFunction.filter ) {
 						return filterFunction.filter( value, resolve, reject );
 					}
