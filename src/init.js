@@ -15,7 +15,8 @@ requirejs.config({
 		pouchdb: "components/pouchdb/dist/pouchdb-nightly.min",
 		uri: "components/uri.js/src",
 		underscore: "components/underscore/underscore",
-		svgedit: "lib/svg-edit-2.7/embedapi"
+		svgedit: "lib/svg-edit-2.7/embedapi",
+		leaflet: "components/leaflet/dist/leaflet"
 	},
 	shim: {
 		"d3": {
@@ -27,7 +28,7 @@ requirejs.config({
 		"components/x2js/xml2json.min": {
 			exports: "X2JS"
 		},
-		"components/leaflet/leaflet": {
+		"leaflet": {
 			exports: "L",
 			init: function() {
 				return this.L.noConflict();

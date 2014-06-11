@@ -1,10 +1,10 @@
-define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'components/leaflet/leaflet'], function(Default, Util, API, L) {
+define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'leaflet'], function(Default, Util, API, L) {
 
     function view() {
         this.mapID = Util.getNextUniqueId();
     }
 
-    Util.loadCss('components/leaflet/leaflet.css');
+    Util.loadCss('components/leaflet/dist/leaflet.css');
     
     // Custom icon that accepts Marker objects
     var CustomIcon = L.Icon.extend({
@@ -93,12 +93,11 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                 kind: this.module.getConfiguration('markerkind'),
                 color: Util.getColor(this.module.getConfiguration('markercolor')),
                 size: parseInt(this.module.getConfiguration('markersize')),
-                img: 'components/leaflet/images/marker-icon.png',
+                img: 'components/leaflet/dist/images/marker-icon.png',
                 imgHighlight: 'modules/types/chart/maps/leaflet/marker-icon-red.png'
             });
             this.markerjpath = this.module.getConfiguration("markerjpath");
             
-            this.onReady = $.Deferred();
         },
         inDom: function() {
         
@@ -135,7 +134,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
             promise.then(function(value){
                 var zoom = that.module.getConfiguration('mapzoom') || 10;
                 that.map.setView(value, zoom);
-                that.onReady.resolve();
+                that.resolveReady();
             });
             
         },
@@ -157,7 +156,11 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                 if(!geo)
                     return;
                 var geoJson = geo.get();
-                var converted = L.geoJson(geoJson,{});
+                var converted = L.geoJson(geoJson,{
+					style: function(feature) {
+						return feature.properties && feature.properties.style;
+					}
+				});
                 
                 converted.addTo(this.map);
                 this.mapLayers[varname] = converted;

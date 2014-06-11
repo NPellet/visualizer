@@ -1,4 +1,4 @@
-define(['modules/default/defaultcontroller','src/util/api','components/leaflet/leaflet'], function(Default,API,L) {
+define(['modules/default/defaultcontroller','src/util/api'], function(Default,API) {
 
     function controller() {
         
@@ -164,22 +164,22 @@ define(['modules/default/defaultcontroller','src/util/api','components/leaflet/l
     };
 
     controller.prototype.configAliases = {
-        'mapcenter': ['groups', 'group', 0, 'mapcenter', 0],
-        'mapzoom' : ['groups', 'group', 0, 'mapzoom', 0],
-        'maptiles' : ['groups', 'group', 0, 'maptiles', 0],
-        'markerjpath' : ['groups', 'markers', 0, 'markerjpath', 0],
-        'markerkind' : ['groups', 'markers', 0, 'markerkind', 0],
-        'markercolor' : ['groups', 'markers', 0, 'markercolor', 0],
-        'markersize' : ['groups', 'markers', 0, 'markersize', 0]
+        mapcenter: ['groups', 'group', 0, 'mapcenter', 0],
+        mapzoom : ['groups', 'group', 0, 'mapzoom', 0],
+        maptiles : ['groups', 'group', 0, 'maptiles', 0],
+        markerjpath : ['groups', 'markers', 0, 'markerjpath', 0],
+        markerkind : ['groups', 'markers', 0, 'markerkind', 0],
+        markercolor : ['groups', 'markers', 0, 'markercolor', 0],
+        markersize : ['groups', 'markers', 0, 'markersize', 0]
     };
     
     controller.prototype.hoverElement = function(data) {
-        this.setVarFromEvent('onHoverElement', DataObject.check(data), 'item');
+        this.createDataFromEvent('onHoverElement', 'item', data);
         API.highlight(data, 1);
     };
     
     controller.prototype.clickElement = function(data) {
-        this.setVarFromEvent('onClickElement', DataObject.check(data), 'item');
+        this.createDataFromEvent('onClickElement', 'item', data);
     };
     
     controller.prototype.moveAction = function(){
