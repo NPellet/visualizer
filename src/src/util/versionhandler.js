@@ -349,7 +349,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 					self.currentPath[2] = branch;
 					self.currentPath[3] = i;
 					self.make(el, branch, i);	
-					self._savedServer = el.toJSON();
+					self._savedServer = JSON.stringify(el);
 					self.onReload(el);
 				});
 				
@@ -374,7 +374,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 					self.currentPath[2] = branch;
 					self.currentPath[3] = i;
 					self.make(el, branch, i);
-					self._savedLocal = el.toJSON();
+					self._savedLocal = JSON.stringify(el);
 					self.onReload(el);
 				});
 			}
@@ -466,7 +466,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				self.currentPath[3] = rev;
 
 
-				self._savedLocal = el.toJSON();
+				self._savedLocal = JSON.stringify(el);
 				self.make(el, self.currentPath[2], self.currentPath[3]);
 				def.resolve(el);
 				
@@ -479,7 +479,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				self.currentPath[2] = branch;
 				self.currentPath[3] = rev;
 				self.make(el, self.currentPath[2], self.currentPath[3]);
-				self._savedServer = el.toJSON();
+				self._savedServer = JSON.stringify(el);
 				def.resolve(el);
 				self._onLoaded(el);
 			}
@@ -627,7 +627,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 			obj._saved = Date.now();
 			obj._time = Date.now();
 			
-			this._savedServer = obj.toJSON();
+			this._savedServer = JSON.stringify(obj);
 
 			return $.ajax({
 				type: 'post',
