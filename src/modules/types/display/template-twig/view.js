@@ -5,10 +5,8 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twi
     ;
     view.prototype = $.extend(true, {}, Default, {
         init: function() {
-            var html = "";
-            html += '<div></div>';
 
-            this.dom = $(html).css({
+            this.dom = $("<div>").css({
                 height: '100%',
                 width: '100%'
             });
@@ -30,10 +28,20 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twi
         },
         update: {
             value: function(value, name) {
+				
                 if (!value) {
                     return;
                 }
-                this._values[name] = value.get();
+				
+				// Extract typed value
+				value = value.get();
+				
+				// Convert special objects like DataString (twig does some check depending on the filter used and the values need to be native)
+				if(typeof value.resurrect === "function") {
+					value = value.resurrect();
+				}
+				
+                this._values[name] = value;
 
                 this.render();
 
