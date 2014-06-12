@@ -133,12 +133,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			}
 			return data;
 		},
-		getRandomColor: function() {
-			var letters = '0123456789ABCDEF'.split('');
-			var color = '#';
-			for (var i = 0; i < 6; i++ ) {
-				color += letters[Math.floor(Math.random() * 16)];
-			}
+		getRandomColor: function(nbColor, i) {
+			
+			var currentColor=360/nbColor*i;
+			color = "hsla("+currentColor+",100%,50%,0.3)";
+			
 			return color;
 		},
 
@@ -150,7 +149,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			case 'radar':
 				if(!chart.data[0].color)
 				{
-				chart.data[0].color = this.getRandomColor();
+				chart.data[0].color = this.getRandomColor(chart.data.length, 0);
 				}
 				
 				var options = {
@@ -187,7 +186,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 						{
 						if(!chart.data[i].color)
 						{
-							chart.data[i].color = this.getRandomColor();
+							chart.data[i].color = this.getRandomColor(chart.data.length, i);
 						}
 						this._radar.addSeries({
 							value: "#serie"+i+"#",
