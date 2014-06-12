@@ -231,7 +231,12 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'leaflet
                     icon._marker.highlight(false);
                 }
                 else {
-                    layer.setStyle({color: "#0033ff"});
+					if(layer.feature && layer.feature.properties && layer.feature.properties.style) {
+						layer.setStyle(layer.feature.properties.style);
+					}
+					else {
+						layer.setStyle({color: "#0033ff"});
+					}
                 }
             }
         }, false, this.module.getId());
