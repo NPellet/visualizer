@@ -84,7 +84,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             if(name.indexOf(":")!==-1)
                 return this.showError(10);
             
-            var content = Versioning["get"+type+"JSON"]();
+            var content = JSON.parse(Versioning["get"+type+"JSON"]());
             
             var last = this["last"+type+"Node"];
             if(typeof last === "undefined")
