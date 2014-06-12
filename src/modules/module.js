@@ -1381,7 +1381,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 
 			for( var i = 0; i < rels.length ; i ++ ) {
 				if( this.view.blank[ rels[ i ] ] ) {
-					this.view.blank[ rels[ i ] ].call( this.view );
+					this.view.blank[ rels[ i ] ].call( this.view, variableName );
 				}
 			}
 		},
