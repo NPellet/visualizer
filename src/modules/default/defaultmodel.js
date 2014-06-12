@@ -9,6 +9,8 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			var sourceName, sourceAccepts;
 			this.module.model = this;
 			this.data = new DataObject();
+			
+			this.checkBlank = {};
 		
 			this.triggerChangeCallbacksByRels = {};
 			this.mapVars();
@@ -88,7 +90,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 			return names;
 		},
-
+		
 		onVarChange: function( variable ) {
 
 			var self = this,
@@ -97,32 +99,43 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				k,
 				m,
 				rel;
-
+			
+			var varName = variable.getName();
+			
+			if(this.stopVarChange) {
+				this.stopVarChange();
+			}
+			
 			this.module.onReady().then( function() {
-
-				self.module.blankVariable( variable.getName() );
+				if(!self.checkBlank[varName]) {
+					self.module.blankVariable( varName );
+					self.checkBlank[varName] = true;
+				}
 			});
 
-
+			// Show loading state if it takes more than 500ms to get the data
 			var rejectLatency;
 			var latency = new Promise( function( resolve, reject ) {
-
-				rejectLatency = reject;
-				setTimeout( resolve, 500 );
+				var resolveL = function() {
+					resolve();
+				};
+				var timeout = setTimeout(resolveL, 500);
+				rejectLatency = function() {
+					clearTimeout(timeout);
+					reject();
+				};
+			} ).then( function() {
+				self.module.startLoading( varName );
 			} );
 
 			// Start loading
-			var loadingState = Promise.all( [ this.module.onReady(), latency ] ).then( function() {
-
-				self.module.startLoading( variable.getName( ) );
-			} ).catch( function() {
-
+			Promise.all( [ this.module.onReady(), latency ] ).then( function() {
+				self.module.startLoading( varName );
 			} );
 
 			Promise.all( [ this.module.onReady( ), variable.onReady( ) ] ).then( function() {
-			
+				
 				// Gets through the input filter first
-				var varName = variable.getName();
 				var varValue = variable.getValue();
 
 				
@@ -148,7 +161,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				var vars = self.module.vars_in();
 
 				rejectLatency();
-				self.module.endLoading( variable.getName( ) );
+				self.module.endLoading( varName );
 
 
 				m = vars.length;
@@ -176,10 +189,16 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 									resolve( varValue );
 								}
 							} ).then( function( varValue ) {
-
-								self.data[ vars[ j ].rel ] = varValue;
-								self.removeAllChangeListeners( vars[ j ].rel );
-								self.module.view.update[ vars[ j ].rel ].call( self.module.view, self.data[ vars[ j ].rel ], varName );
+								
+								if(self.checkBlank[varName]) {
+									
+									self.checkBlank[varName] = false;
+									
+									self.data[ vars[ j ].rel ] = varValue;
+									self.removeAllChangeListeners( vars[ j ].rel );
+									self.module.view.update[ vars[ j ].rel ].call( self.module.view, self.data[ vars[ j ].rel ], varName );
+									
+								}
 
 							} ).catch( function() {
 
@@ -197,7 +216,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			}, function() {
 				
 				rejectLatency();
-				self.module.endLoading( variable.getName( ) );
+				self.module.endLoading( varName );
 
 				var stack = "";
 				if( this && this.getStack ) {
