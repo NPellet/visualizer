@@ -38,7 +38,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			x = undefined;
 			this.updateOptions(cfg, axis, x);
 
-
+			this.resolveReady();
 
 		},
 
