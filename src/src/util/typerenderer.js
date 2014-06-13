@@ -8,8 +8,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.string = {};
 	functions.string.toscreen = function(def, val) {
-
-        val = val.toString();
+        val = val.get();
         while( true ) {
             val = val.replace('<', '&lt;' ).replace('>', '&gt;');
             if( val.indexOf('<') === -1 && val.indexOf('>') === -1) {
