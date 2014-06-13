@@ -1,4 +1,4 @@
-define([ 'jquery', 'src/util/util' ], function( $, Util ) {
+define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug ) {
 
 	function DataObject( object, recursive, forceCopy ) {
 		if (! object) {
@@ -688,7 +688,21 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 	var mergeWithArray = {
 		value: function(objectToMerge, moduleId, noBubble) { // TODO find a way to implement this
 			this.triggerChange( noBubble, [ moduleId ] );
-			return console.warn("mergeWith method not yet implemented for DataArray");
+			return Debug.warn("mergeWith method not yet implemented for DataArray");
+		}
+	};
+	
+	var setValue = {
+		value: function(newValue) {
+			if( this.hasOwnProperty("type") && this.hasOwnProperty("value") ) {
+				if(this.value instanceof DataString || this.value instanceof DataNumber || this.value instanceof DataBoolean) {
+					this.value.setValue(newValue);
+				} else {
+					this.value = newValue;
+				}
+			} else {
+				Debug.warn("Cannot set value of untyped DataObject");
+			}
 		}
 	};
 
@@ -706,7 +720,8 @@ define([ 'jquery', 'src/util/util' ], function( $, Util ) {
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,
 		linkToParent: linkToParent,
-		getType: getType
+		getType: getType,
+		setValue: setValue
 	};
 
 	Object.defineProperties(DataObject.prototype, commonProperties);
