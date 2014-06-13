@@ -260,6 +260,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 						if (val[prop] && val[prop].fetch) {
 							return val[prop].fetch();
 						} else {
+							val[prop] = DataObject.check(val[prop], true);
 							return $.Deferred().resolve(val[prop]);
 						}
 					} else if( constructor ) {
@@ -346,7 +347,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 					return subEl;
 				}
 
-				subEl = DataObject.check( subEl );
+				subEl = DataObject.check( subEl, true );
 				return subEl.getChild(jpath);
 			});
 
