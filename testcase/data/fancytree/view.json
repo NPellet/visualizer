@@ -1,0 +1,76 @@
+{
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"version": "2.4.0b2",
+	"modules": [
+		{
+			"url": "modules/types/display/fancytree/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"cols": [
+						[
+							{}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 59,
+						"top": 11
+					},
+					"size": {
+						"width": 79,
+						"height": 60
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "tree",
+					"name": "tree"
+				}
+			],
+			"actions_in": {},
+			"title": "Untitled",
+			"vars_out": {},
+			"actions_out": {}
+		}
+	],
+	"variables": [
+		{
+			"varname": "tree",
+			"jpath": [
+				"tree"
+			]
+		}
+	],
+	"pouchvariables": [],
+	"configuration": {
+		"title": "No title"
+	}
+}

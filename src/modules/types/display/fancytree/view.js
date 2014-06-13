@@ -14,6 +14,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 				thead = $('<tr><th></th></tr>').appendTo($('<thead></thead>').appendTo(this.dom)),
 				trow = $('<tr><td></td></tr>').appendTo($('<tbody></tbody>').appendTo(this.dom)),
 				jpaths = [];
+			this.jpathsF = {};
 			
 			if(columns.length) {
 				var col;
@@ -24,6 +25,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 						thead.append('<th>'+(col.name||"")+'</th>');
 						trow.append('<td></td>');
 						jpaths.push(col.jpath);
+						Util.addjPathFunction(this.jpathsF, col.jpath);
 					}
 				}
 			}
@@ -43,13 +45,16 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 					indentation: 20,
 					nodeColumnIdx: 0
 				},
-				source:[/*{title:"a1",children:[{title:"b1",data:{plop:"LOL"}}]},{title:"a2"}*/],
+				icons: false,
 				renderColumns: function(event, data) {
 					var node = data.node,
+						dataObj = node.data.dataObj,
 						$tdList = $(node.tr).find(">td"),
 						jpaths = that.jpaths;
-					for(var i = 0; i < jpaths.length; i++) {
-						$tdList.eq(i+1).text(jpaths[i]+i);
+					if(dataObj.info) {
+						for(var i = 0; i < jpaths.length; i++) {
+							$tdList.eq(i+1).text(that.jpathsF[jpaths[i]](dataObj.info));
+						}
 					}
 				}
 			});
@@ -61,21 +66,60 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 		
 		update: {
 			tree: function(value) {
-				value = treeToFancy(value.get());
-				this.tree.reload(value);
+				var result = treeToFancy(value.get());
+				this.module.model._objectModel = result.model;
+				this.tree.reload(result.fancy);
 			}
 		},
 		blank: {
 			tree: function() {
-				this.tree.reload([]);
+				this.tree.reload();
 			}
 		}
 	});
 	
 	function treeToFancy(tree) {
-		console.log(tree)
-		var fancytree = [];
-		var props = {};
+		var fancyTree = [];
+		if(tree.children && tree.children.length) {
+			var objectModel = new DataObject();
+			addFancyChildren(fancyTree, tree.children, objectModel);			
+		}
+		return {
+			fancy: fancyTree,
+			model: objectModel
+		};
+	}
+	
+	function addFancyChildren(fancyTree, children, objectModel) {
+		var child, fancyChild,
+			i = 0,
+			l = children.length;
+		for(; i < l; i++) {
+			child = children[i];
+			
+			if(i===0) {
+				// add current object's properties to the model
+				if(typeof child.info === "object") {
+					var keys = Object.keys(child.info), key;
+					for(var j = 0; j < keys.length; j++) {
+						key = keys[j];
+						if(!objectModel.hasOwnProperty(key)) {
+							objectModel[key] = child.info[key];
+						}
+					}
+				}
+			}
+			
+			fancyChild = {
+				title: child.label||"Untitled node",
+				dataObj: DataObject.check(child)
+			};
+			fancyTree.push(fancyChild);
+			if(child.children && child.children.length) {
+				fancyChild.children = [];
+				addFancyChildren(fancyChild.children, child.children, objectModel);
+			}
+		}
 	}
 
 	return view;

@@ -1,4 +1,4 @@
-define(['modules/default/defaultcontroller'], function(Default) {
+define(['modules/default/defaultcontroller','src/util/datatraversing'], function(Default, Traversing) {
 
 	function controller() {}
 	
@@ -23,6 +23,11 @@ define(['modules/default/defaultcontroller'], function(Default) {
 	controller.prototype.variablesIn = ['tree'];
 
 	controller.prototype.configurationStructure = function() {
+		
+		var jpaths = [];
+		if(this.module.model._objectModel)
+			Traversing.getJPathsFromElement(this.module.model._objectModel, jpaths);
+		
 		return {
 			groups: {
 				cols: {
@@ -42,7 +47,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 						jpath: {
 							type: 'combo',
 							title: 'jPath',
-							options: [{title:"plop", key:"element.plop"}]
+							options: jpaths
 						},
 
 						width: {
