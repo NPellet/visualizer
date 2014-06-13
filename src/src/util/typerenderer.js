@@ -31,7 +31,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.number = {};
 	functions.number.toscreen = function(def, val) {
-		def.reject( Traversing.get( val ) );
+		def.reject( val.toString() );
 	}
 
 	functions.chemical = {};
