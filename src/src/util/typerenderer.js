@@ -542,22 +542,26 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		functions[ type ].toscreen(deferred, data, args, highlights, box, jpath);
 	}
 
-	functions.toScreen = function(element, box, opts, jpath) {
-		var deferred = $.Deferred(), self = this;
-		
-		if(!element.getChild || !jpath) {
-			_valueToScreen(deferred, element, box, opts, jpath);
+	return {
+		toScreen: function(element, box, opts, jpath) {
+			var deferred = $.Deferred();
+
+			if(!element.getChild || !jpath) {
+				_valueToScreen(deferred, element, box, opts, jpath);
+				return deferred;
+			}
+
+			element.getChild( jpath ).done( function( element ) {
+
+				_valueToScreen( deferred, element, box, opts, jpath ); 
+
+			}).fail(function() { deferred.reject(); });
+
 			return deferred;
+		},
+		addType: function(name, renderer) {
+			functions[name] = renderer;
 		}
-		
-		element.getChild( jpath ).done( function( element ) {
-
-			_valueToScreen( deferred, element, box, opts, jpath ); 
-
-		}).fail(function() { deferred.reject(); });
-		
-		return deferred;
-	}
-
-	return functions;
+	};
+	
 });
