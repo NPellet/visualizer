@@ -740,6 +740,12 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			return this.s_;
 		}
 	};
+	
+	var nativeGetter = {
+		value: function() {
+			return this;
+		}
+	};
 
 	var commonProperties = {
 		trace: trace,
@@ -748,7 +754,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		triggerChange: triggerChange,
 		linkToParent: linkToParent,
 		resurrect: resurrectObject,
-		toJSON: toJSON
+		toJSON: toJSON,
+		get: nativeGetter
 	};
 
 	Object.defineProperties(DataString.prototype, commonProperties);
