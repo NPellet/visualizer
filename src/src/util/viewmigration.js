@@ -281,7 +281,7 @@ define(['src/util/versioning'], function(Versioning) {
 	
 	function updateJpath(element) {
 		var jpath = element.getChildSync(['jpath']);
-		if (jpath) {
+		if (jpath && jpath.split) {
 			element.setChild(["jpath"],jpath.split(".").slice(1));
 		}
 	}
