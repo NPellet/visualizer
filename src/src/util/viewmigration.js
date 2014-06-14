@@ -196,7 +196,8 @@ define(['src/util/versioning'], function(Versioning) {
 				url = module.getChildSync(['url']);
 				if(url) {
 					for(j = 0; j < jj; j++) {
-						if(url.indexOf(moduleNames[j]) >= 0) {
+                        
+						if(url.toString().indexOf(moduleNames[j]) >= 0) {
 							callback(module);
 							break;
 						}
