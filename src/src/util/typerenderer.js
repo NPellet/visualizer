@@ -31,6 +31,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.number = {};
 	functions.number.toscreen = function(def, val) {
+		console.log( val, val.toString() );
 		def.reject( val.toString() );
 	}
 
@@ -546,7 +547,8 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		toScreen: function(element, box, opts, jpath) {
 			var deferred = $.Deferred();
 
-			if(!element.getChild || !jpath) {
+			if( ! element.getChild || ! jpath ) {
+
 				_valueToScreen(deferred, element, box, opts, jpath);
 				return deferred;
 			}

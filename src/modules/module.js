@@ -1387,7 +1387,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		},
 
 		startLoading: function( variableName ) {
-
+			
+console.log( variableName );
 			var rels = this.getDataRelFromName( variableName );
 			for( var i = 0; i < rels.length ; i ++ ) {
 				
@@ -1396,7 +1397,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		},
 
 		endLoading: function( variableName ) {
-
+console.log( variableName );
 			var rels = this.getDataRelFromName( variableName );
 			for( var i = 0; i < rels.length ; i ++ ) {
 				

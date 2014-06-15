@@ -28,22 +28,23 @@ define(function() {
 
 		startLoading: function( rel ) {
 
-			if( this.relsForLoading().indexOf( rel ) > -1 ) {
+			this.loadingElements = this.loadingElements || [];
+			if( this.relsForLoading().indexOf( rel ) > -1 && this.loadingElements.indexOf( rel ) == -1 ) {
 
-				this.loadingElements = this.loadingElements || 0;
-				this.loadingElements ++;
+				this.loadingElements.push( rel );
 				this.showLoading();
 			}
 		},
 
 		endLoading: function( rel ) {
 
-			if( this.relsForLoading().indexOf( rel ) > -1 ) {
+			this.loadingElements = this.loadingElements || [];
+			
+			if( this.relsForLoading().indexOf( rel ) > -1 && this.loadingElements.indexOf( rel ) > -1 ) {
 
-				this.loadingElements = this.loadingElements || 1;
-				this.loadingElements --;
+				this.loadingElements.splice( this.loadingElements.indexOf( rel ), 1 );
 
-				if( ! this.loadingElements ) {
+				if( this.loadingElements.length == 0 ) {
 					this.hideLoading();
 				}
 			}

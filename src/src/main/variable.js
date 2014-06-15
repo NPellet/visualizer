@@ -107,7 +107,8 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 
 				self.rejectCurrentPromise = reject;
 
-				var _resolve = resolve, _reject = reject;
+				var _resolve = resolve,
+					_reject = reject;
 
 				
 				data.getChild( self._jpath.slice( 0 ), true ).then( function( value ) {
@@ -138,7 +139,9 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 					}
 
 					
-				} );	
+				}, function() {
+					_reject();
+				} );
 			} ).catch( function( ) {
 
 				var stack = "";

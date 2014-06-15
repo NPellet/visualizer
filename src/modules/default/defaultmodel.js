@@ -116,17 +116,14 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			// Show loading state if it takes more than 500ms to get the data
 			var rejectLatency;
 			var latency = new Promise( function( resolve, reject ) {
-				var resolveL = function() {
-					resolve();
-				};
-				var timeout = setTimeout(resolveL, 500);
+				var timeout = setTimeout(resolve, 500);
 				rejectLatency = function() {
 					clearTimeout(timeout);
 					reject();
 				};
-			} ).then( function() {
+			} )/*.then( function() {
 				self.module.startLoading( varName );
-			} );
+			} );*/
 
 			// Start loading
 			Promise.all( [ this.module.onReady(), latency ] ).then( function() {
@@ -138,10 +135,11 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				// Gets through the input filter first
 				var varValue = variable.getValue();
 
-				
+				console.log( varValue );
 				// Then validate
 				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
 					rejectLatency();
+					self.module.endLoading( varName );
 					return;
 				}
                 
@@ -149,6 +147,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
                 if( ! data ) {
                   	rejectLatency();
+					self.module.endLoading( varName );
 					return;
                 }
 
@@ -214,8 +213,9 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				
 
 			}, function() {
-				
+				console.log('Rejecting');
 				rejectLatency();
+
 				self.module.endLoading( varName );
 
 				var stack = "";
