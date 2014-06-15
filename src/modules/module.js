@@ -438,13 +438,9 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		doConfig: function() {
 
 			var module = this;
-		
 			var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: "Edit module preferences"});
-
-
 			div.prev().remove();
 			div.parent().css('z-index', 1000);
-
 
 			var references = this.controller.references,
 				events = this.controller.events,
@@ -1080,7 +1076,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].display = allDisplay.indexOf( l[ i ].layerName[ 0 ] ) > -1;
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].title = l[ i ].moduletitle[ 0 ];
-						module.definition.layers[ l[ i ].layerName[ 0 ] ].bgcolor = l[ i ].bgcolor;
+						module.definition.layers[ l[ i ].layerName[ 0 ] ].bgColor = l[ i ].bgcolor;
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].wrapper = l[ i ].modulewrapper[ 0 ].indexOf('display') > -1;
 					}
 
@@ -1387,8 +1383,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		},
 
 		startLoading: function( variableName ) {
-			
-console.log( variableName );
+
 			var rels = this.getDataRelFromName( variableName );
 			for( var i = 0; i < rels.length ; i ++ ) {
 				
@@ -1397,7 +1392,7 @@ console.log( variableName );
 		},
 
 		endLoading: function( variableName ) {
-console.log( variableName );
+
 			var rels = this.getDataRelFromName( variableName );
 			for( var i = 0; i < rels.length ; i ++ ) {
 				
@@ -1411,7 +1406,7 @@ console.log( variableName );
 			zIndex: 0,
 			display: true, 
 			title: "",
-			bgcolor: [ 255, 255, 255, 0 ],
+			bgColor: [ 255, 255, 255, 0 ],
 			wrapper: true,
 			created: true
 		})
