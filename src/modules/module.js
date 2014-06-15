@@ -135,13 +135,6 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 			html += '</div>';
 			html += '</div><div class="ci-module-content" style="';
 			
-			if(this.definition.bgColor) {
-				html += "background-color: ";
-				html += "rgba(" + this.definition.bgColor + ")";
-			} /*else if(entryCfg.moduleBackground) {
-				html += "background-color: ";
-				html += entryCfg.moduleBackground;
-			}*/
 			
 			html += '">';
 			
@@ -377,7 +370,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 
 				this.setTitle( layer.title );
 				this.setDisplayWrapper( layer.wrapper );
-				this.setBackgroundColor( layer.bgcolor || [255,255,255,1] );
+
+				this.setBackgroundColor( layer.bgColor || [255,255,255,1] );
 
 				this.activeLayerName = newLayerShown;
 
@@ -528,7 +522,6 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 					alljpaths[ i ] = module.model.getjPath( i );
 				}
 
-				console.log( alljpaths );
 			}
 
 			makeSendJpaths();
@@ -1076,7 +1069,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].display = allDisplay.indexOf( l[ i ].layerName[ 0 ] ) > -1;
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].title = l[ i ].moduletitle[ 0 ];
-						module.definition.layers[ l[ i ].layerName[ 0 ] ].bgColor = l[ i ].bgcolor;
+						module.definition.layers[ l[ i ].layerName[ 0 ] ].bgColor = l[ i ].bgcolor[ 0 ];
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].wrapper = l[ i ].modulewrapper[ 0 ].indexOf('display') > -1;
 					}
 
@@ -1359,6 +1352,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		},
 
 		setBackgroundColor: function(color) {
+
+
 			this.domContent.get(0).style.backgroundColor = 'rgba(' + color.join(",") + ')';
 		},
 
