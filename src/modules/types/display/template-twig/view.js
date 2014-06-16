@@ -49,7 +49,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig'], function(Default, Twi
             tpl: function(value) {
                 if (!value)
                     return;
-                var tpl = value.get();
+                var tpl = value.get().toString();
                 try {
                     this.template = Twig.twig({
                         data: tpl
