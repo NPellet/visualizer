@@ -41,7 +41,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 	function duplicateModule( module ) {
 
-		var def = JSON.parse( JSON.stringify( module.definition ), Versioning.getViewHandler()._reviver );
+		var def = DataObject.recursiveTransform( JSON.parse( JSON.stringify( module.definition ) ) );
 
 		def.layers[ getActiveLayer() ].position.left += 2;
 		def.layers[ getActiveLayer() ].position.top += 2;
@@ -613,7 +613,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 	            Context.listen(Context.getRootDom(), [
 					['<li><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>', 
 					function() {
-						var module = JSON.parse(window.localStorage.getItem("ci-copy-module"),Versioning.getViewHandler()._reviver);
+						var module = DataObject.recursiveTransform(JSON.parse(window.localStorage.getItem("ci-copy-module")));
 	                    addModuleFromJSON( module );
 					}]]
 				);
