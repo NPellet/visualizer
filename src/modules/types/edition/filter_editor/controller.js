@@ -91,7 +91,7 @@ define(['modules/types/client_interaction/code_editor/controller','src/util/debu
         var neededLibs = this.module.getConfiguration("libs");
         var requireStart = "require"+getRequireStart(neededLibs);
         
-        var requireBody = "(function(value, resolve, reject){\n"+filter+"\n})(object, resolve, reject);";
+        var requireBody = "(function(value, resolve, reject){"+filter+"\n})(object, resolve, reject);";
         
         var requireEnd = "});";
 		
