@@ -25,8 +25,7 @@ define( [ ], function(  ) {
 	};
 
 	FieldConstructor.prototype.checkValue = function() {
-console.log( this.dom, this.value );
-console.trace();
+
 		if( this.dom ) {
 
 			var val = this.value,
