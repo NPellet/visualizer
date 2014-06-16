@@ -4,7 +4,7 @@
 		"basic",
 		"maps",
 		"statistics"
-	],
+  ],
 	"name": "Chart",
 	"modules": []
 }

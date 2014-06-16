@@ -1,0 +1,27 @@
+/* remove label borders in IE6 because IE6 does not support transparency */
+* html .ui-multiselect-checkboxes label { border:none }
+
+.label{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+table {
+    background-color: #FFFFFF;
+    border: 5px solid #F1F1F1;
+    border-collapse: collapse;
+    margin: 9px auto;
+    width: 99%;
+}
+
+th, td {
+    font-size: 93%;
+}
+th, td {
+    border: 1px solid #F1F1F1;
+    border-collapse: collapse;
+    padding: 8px 5px 5px;
+    vertical-align: top;
+}
+
+

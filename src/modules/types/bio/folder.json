@@ -1,0 +1,14 @@
+{
+	"modules": [
+		{
+			"moduleName": "Sequence displayer",
+			"url": "modules/types/bio/sequence/"
+		},
+		{
+			"moduleName": "Protein Annotation Viewer",
+			"url": "modules/types/bio/feature_viewer/"
+		}
+	],
+	"name": "Bio",
+	"folders": []
+}
