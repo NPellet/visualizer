@@ -97,7 +97,7 @@ define(['modules/types/client_interaction/code_editor/controller','src/util/debu
 		
 		
 		var prom = new Promise(function(resolve,reject){
-			eval('"use strict";\n'+requireStart+requireBody+requireEnd);
+			eval('"use strict";'+requireStart+requireBody+requireEnd);
 		});
 
         return prom;
