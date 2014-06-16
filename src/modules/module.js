@@ -374,7 +374,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 				this.setBackgroundColor( layer.bgColor || [255,255,255,1] );
 
 				this.activeLayerName = newLayerShown;
-
+				this.view.onResize();
+				
 				return layer;
 			}
 		},
