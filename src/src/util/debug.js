@@ -16,6 +16,7 @@ define(function() {
 		
 		error: function(message) {
 			if(debugLevel >= 0) {
+				entries.push.call(arguments, "\n"+Error().stack);
 				console.error.apply(console, arguments);
 			}
 			if(debugLevel > -1)
