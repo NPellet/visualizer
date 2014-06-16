@@ -55,5 +55,9 @@ define(['components/twig.js/twig.min', 'src/util/typerenderer', 'src/util/util']
 		
 	});
 	
+	Twig.extendFunction("log", function(){
+		console.log.apply(console, arguments);
+	});
+	
 	return Twig;
 });

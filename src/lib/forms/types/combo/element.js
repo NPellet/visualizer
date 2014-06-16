@@ -25,7 +25,7 @@ define( [ ], function(  ) {
 	};
 
 	FieldConstructor.prototype.checkValue = function() {
-		
+
 		if( this.dom ) {
 
 			var val = this.value,

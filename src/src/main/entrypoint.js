@@ -175,7 +175,7 @@ define(['jquery',
 
 					} else {
 
-						if( typeof entryVar.jpath == "string" ) {
+						if( typeof entryVar.jpath === "string" ) {
 							entryVar.jpath = entryVar.jpath.split('.');
 							entryVar.jpath.shift();
 						}
@@ -190,33 +190,28 @@ define(['jquery',
 			});
 
 			API.loading("Fetching local variables");
-			var pouching = [];
+			var pouching = [], pouchVariable;
 			for (var i = 0, l = view.pouchvariables.length; i < l; i++) {
-				(function(k) {
+				pouchVariable = view.pouchvariables[ i ];
+				if(pouchVariable.dbname && pouchVariable.varname) {
+					(function(k) {
 
-					pouching.push( PouchDBUtil.pouchToVar(view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function(el) {
-						
-					/*	if( view.pouchvariables[ k ].id ) {
-							el = new PouchArray( el );
-						} */
-						
-						el.linkToParent( data, view.pouchvariables[ k ].varname );
-						//console.log( data );
-						API.setVariable( view.pouchvariables[ k ].varname, false, [ view.pouchvariables[ k ].varname ] );
+						pouching.push( PouchDBUtil.pouchToVar(view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function(el) {
 
-					}) );
+							el.linkToParent( data, view.pouchvariables[ k ].varname );
+							API.setVariable( view.pouchvariables[ k ].varname, false, [ view.pouchvariables[ k ].varname ] );
 
-				}) (i);
+						}) );
+
+					}) (i);
+				}
 			}
-
+			
 			Promise.all( pouching ).then( function() {
-		
+				
 				API.stopLoading("Fetching local variables");	
 			});
 			
-
-
-
 			// Pouch DB replication
 			PouchDBUtil.abortReplications();
 			if (view.couch_replication) {

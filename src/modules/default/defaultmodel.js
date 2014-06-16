@@ -135,7 +135,6 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				// Gets through the input filter first
 				var varValue = variable.getValue();
 
-				console.log( varValue );
 				// Then validate
 				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
 					rejectLatency();
