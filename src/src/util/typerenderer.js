@@ -16,38 +16,36 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
             }
         }
         def.resolve( val );	
-	}
+	};
     
     functions.html = {};
     functions.html.toscreen = function(def, val) {
-        val = Traversing.get( val );
-        def.resolve( val );
+        def.resolve( val.toString() );
     };
 		
 	functions.matrix = {};
 	functions.matrix.toscreen = function(def, val) {
-		def.resolve( Traversing.get( val ) );
-	}
+		def.resolve( val );
+	};
 
 	functions.number = {};
 	functions.number.toscreen = function(def, val) {
-		console.log( val, val.toString() );
 		def.reject( val.toString() );
-	}
+	};
 
 	functions.chemical = {};
 	functions.chemical.toscreen = function(def, val) {
 		val.getChild(['iupac', '0', 'value']).then(def.resolve, def.reject);
-	}
+	};
 
 	functions.picture = {};
 	functions.picture.toscreen = function(def, val) {
-		def.reject('<img src="' + Traversing.get(val) + '" />');
+		def.reject('<img src="' + val + '" />');
 	};
   
   functions.svg = {};
   functions.svg.toscreen = function(def, val) {
-    var dom = $(val.value);
+    var dom = $(val);
     var viewbox = [0, 0, dom.attr('width'), dom.attr('height')];
     dom[0].setAttribute('viewBox', viewbox.join(' '));
     dom.attr('width', '100%');
@@ -62,7 +60,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
     //   
     // }
     def.resolve(dom);
-  }
+  };
   
   // functions.svg.toscreen = function(def, val) {
   //   var canvas = $('<canvas></canvas>');
@@ -85,22 +83,23 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 	functions.doi = {};
 	functions.doi.toscreen = function(def, value) {
-		return def.resolve(value.value.replace(/^(.*)$/,'<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
+		return def.resolve(value.replace(/^(.*)$/,'<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
 	};
 	
 	functions.jme = {};
-	functions.jme.toscreen = function(def, jme, options, highlights, box) {
+	functions.jme.toscreen = function(def, jme, jmeRoot, options, highlights, box) {
 		require(["lib/chemistry/jme-converter"], function(Converter){
+			var converted = Converter.toMolfile(jme);
 			var molfile = {
 				type:"mol2d",
-				value: Converter.toMolfile(jme.value)
+				value: converted
 			};
-			functions.mol2d.toscreen(def, molfile, options, highlights, box);
+			functions.mol2d.toscreen(def, converted, molfile, options, highlights, box);
 		});
 	};
 
 	functions.mol2d = {};
-	functions.mol2d.toscreen = function(def, molfile, options, highlights, box) {
+	functions.mol2d.toscreen = function(def, molfileChild, molfile, options, highlights, box) {
 		
 		var id = Util.getNextUniqueId();
 		var id2 = Util.getNextUniqueId();
@@ -145,7 +144,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				
 				API.listenHighlight(molfile._highlight, function(value, commonKeys) {
 
-					if($("#" + id).length == 0)
+					if($("#" + id).length === 0)
 						return;
 
 					var commonKeys2 = {};
@@ -172,7 +171,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 				}, true, box.id || 0);
 			});
-		}
+		};
 
 		def.unbuild = function() {
 			//$(this.canvas).remove();
@@ -180,7 +179,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
 		def.getCWC = function() {
 			return this.canvas;
-		}
+		};
 
 		require(['ChemDoodle'], function() {
 
@@ -191,7 +190,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 			def.canvasdom = can;
 			def.resolve(div);
 		});
-	}
+	};
 
 	functions.molfile2D = functions.mol2d;
 
@@ -201,7 +200,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		var id = Util.getNextUniqueId();
 		CI.Util.DOMDeferred.progress(function(dom) {
 
-			if($("#" + id, dom).length == 0)
+			if($("#" + id, dom).length === 0)
 				return;
 
 			var mg = new ChemDoodle.MolGrabberCanvas3D(id, 600, 400);
@@ -223,13 +222,13 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				mat4.rotate(matrix, increment*change, [ 0, 1, 0 ]);
 				mat4.rotate(matrix, increment*change, [ 0, 0, 1 ]);
 				mat4.multiply(this.rotationMatrix, matrix);
-			}
+			};
 			
 			mg.startAnimation();
 		});
 
 		def.resolve('<canvas id="' + id + '"></canvas>');
-	}
+	};
 
 	functions.jcamp = {};
 	functions.jcamp.hexToRgb = function(hex) {
@@ -239,13 +238,13 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		    g: parseInt(result[2], 16),
 		    b: parseInt(result[3], 16)
 		} : null;
-	}
+	};
 	functions.id = 0;
 	functions.cache = [];
 
 	functions.jcamp.fromdom = function(dom, value, opts, highlights, box) {
 		var spectra;
-		if(dom.length == 0)
+		if(dom.length === 0)
 			return;
 		if(!dom.data('spectra')) {
 
@@ -256,7 +255,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				if(spectra._highlights) {
 
 					for(var i in spectra._highlights) {
-						if(spectra._highlights[i] == 1) {
+						if(spectra._highlights[i] === 1) {
 
  							for(var j in zones) {
  								if(zones[j][i])
@@ -275,7 +274,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				    context.rect(x1, 0, x2 - x1, mem.height);
 				    var color = hexToRgb(h[i].color);
 
-				    if(color == null || color.r == 0 && color.g == 0 && color.b == 0)
+				    if(color === null || color.r === 0 && color.g === 0 && color.b === 0)
 				    	color = {r: 222, g: 205,  b: 59};
 				    context.fillStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", 0.5)";
 				 	context.fill();
@@ -301,7 +300,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 								CI.RepoHighlight.set(i, 1);
 							}
 
-						} else if(spectra._highlights[i] == 1) {
+						} else if(spectra._highlights[i] === 1) {
 							CI.RepoHighlight.set(i, 0);
 						}
 					}
@@ -349,7 +348,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 			value._cacheId = functions.jcamp.id;
 			functions.id++;
 
-			if(functions.jcamp.cache.length == 100) {
+			if(functions.jcamp.cache.length === 100) {
 				functions.jcamp.cache.splice(0, 1);
 				functions.jcamp.id--;
 			}
@@ -358,19 +357,19 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		allspectras[spectraid].plots_color = opts.plotcolor;
   		allspectras[spectraid].continuous = opts.continuous || false;
 
-		if(allspectrasid[spectraid] == undefined) {
+		if(allspectrasid[spectraid] === undefined) {
 	  		var id = spectra.addSpectrum(allspectras[spectraid]);
 			allspectrasid[spectraid] = id;
 			spectra.getXMaxBound();
 			spectra.repaint();
-		} else if(allspectrasid[spectraid] == -1) {
+		} else if(allspectrasid[spectraid] === -1) {
 			spectra.loadSpectrum(allspectras[spectraid]);
 			spectra.getXMaxBound();
 			spectra.repaint();
-			API.killHighlight(box.id + "_"  + spectraid)
+			API.killHighlight(box.id + "_"  + spectraid);
 		} else {
 			spectra.overlaySpectra[allspectrasid[spectraid]] = allspectras[spectraid];
-			API.killHighlight(box.id + "_"  + spectraid)
+			API.killHighlight(box.id + "_"  + spectraid);
 		}
 
 		allzones[spectraid] = value._zones;
@@ -382,14 +381,14 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				spectra._highlights[commonKeys[i]] = value;
 			spectra.repaint();
 		}, true, box.id + "_"  + spectraid);
-	}
+	};
 
-	functions.jcamp.toscreen =function(def, value, args, highlights, box) {
+	functions.jcamp.toscreen =function(def, valueChild, value, args, highlights, box) {
 
 		require(['lib/plot/plot', 'src/util/jcampconverter'], function(Graph, Converter) {
 
 			var dom = $("<div />").css({width: 200, height: 200});
-			graph = new Graph(dom.get(0), {
+			var graph = new Graph(dom.get(0), {
 				closeRight: false, 
 				closeTop: false, 
 				zoomMode: ''
@@ -401,7 +400,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 						nbTicksPrimary: 5,
 						nbTicksSecondary: 2,
 						secondaryGrid: false,
-						axisDataSpacing: { min: 0, max: 0 },
+						axisDataSpacing: { min: 0, max: 0 }
 					}
 				],
 
@@ -414,7 +413,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 						//scientificTicks: true,
 						nbTicksPrimary: 2,
 						forcedMin: 0,
-						axisDataSpacing: { min: 0, max: 0 },
+						axisDataSpacing: { min: 0, max: 0 }
 					}
 				]}
 			);
@@ -429,24 +428,24 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		});
 
 		
-	}
+	};
 
 	functions.mf = {};
 	functions.mf.toscreen = function(def, value) {
 		
-		return def.reject(value.value.replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
-	}
+		return def.reject(value.replace(/\[([0-9]+)/g,"[<sup>$1</sup>").replace(/([a-zA-Z)])([0-9]+)/g,"$1<sub>$2</sub>").replace(/\(([0-9+-]+)\)/g,"<sup>$1</sup>"));
+	};
 
 
 	functions.pdb = {};
 	functions.pdb.toscreen = function(def, value) {
-		return def.resolve(value.value);
-	}
+		return def.resolve(value);
+	};
 
 	functions.downloadLink = {};
 	functions.downloadLink.toscreen = function(def, value) {
-		return def.resolve(value.value.replace(/^(.*)$/,'<a href="$1">⤵</a>'));
-	}
+		return def.resolve(value.replace(/^(.*)$/,'<a href="$1">⤵</a>'));
+	};
 
 	functions.boolean = {};
 	functions.boolean.toscreen = function(def, value) {
@@ -454,11 +453,10 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 			def.resolve('<span style="color: green;">&#10004;</span>');
 		else
 			def.resolve('<span style="color: red;">&#10008;</span>');
-	}
+	};
     
     functions.colorBar = {};
     functions.colorBar.toscreen = function(def, value) {
-        value = Traversing.get(value);
         
         var div = $('<div>');
         var gradient = "linear-gradient(to right";
@@ -481,7 +479,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 
     functions.indicator = {};
     functions.indicator.toscreen = function(def, value) {
-        value = value.get();
+		
         if(!(value instanceof Array))
         	def.reject('');
         var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%"><tr>';
@@ -517,9 +515,7 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
         
         
         functions.styledValue = {};
-        functions.styledValue.toscreen = function(def, value, args, highlights, box, jpath) {
-
-            value = Traversing.get(value);
+        functions.styledValue.toscreen = function(def, value, valueRoot, args, highlights, box, jpath) {
 
             var div = $('<div>');
             div.css(value.css);
@@ -540,7 +536,11 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		if( ! functions[ type ] ) {
 			return deferred.resolve('');
 		}
-		functions[ type ].toscreen(deferred, data, args, highlights, box, jpath);
+		
+		var rootData = data;
+		data = Traversing.get(data);
+		
+		functions[ type ].toscreen(deferred, data, rootData, args, highlights, box, jpath);
 	}
 
 	return {
