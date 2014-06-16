@@ -342,10 +342,13 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 		},
 
 		get: function( data ) {
-
-
-			if( data && data.get ) {
-				return data.get();
+			
+			if(data) {
+				if(typeof data.get === "function") {
+					return data.get();
+				} else if(data.type && data.value) {
+					return data.value;
+				}
 			}
 
 			return data;
