@@ -6543,9 +6543,20 @@ ChemDoodle.RESIDUE = (function() {
 			// we analyse extra information
 			// M  ISO
 			// M  CHG
+
 			for ( var i = 4 + numAtoms + numBonds; i < currentTagTokens.length; i++) {
 				var line = currentTagTokens[i];
-				console.log(line);
+				var parts=line.split(/ */);
+				var type=line.substr(3,3);
+				if (type=="CHG") {
+					var end=parseInt(line.substr(6,3));
+					for (var j=0; j<end; j++) {
+						var atom=parseInt(line.substr(9+j*8,4));
+						var charge=parseInt(line.substr(13+j*8,4));
+						molecule.atoms[atom-1].charge = charge;
+					}
+
+				}
 			}
 
 
