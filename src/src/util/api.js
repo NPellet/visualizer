@@ -137,7 +137,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 		loading: function( message ) {
 
 			if( loadingNumber == 0) {
-				$("body").append( loadingHtml );	
+				$("#ci-visualizer").append( loadingHtml );	
 			}
 
 			if( ! loading[ message ] ) {
@@ -150,7 +150,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 		},
 
 		stopLoading: function( message ) {
-
+			
 			if( loading[ message ] ) {
 				
 				loadingNumber--;
