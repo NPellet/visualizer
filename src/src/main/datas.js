@@ -137,7 +137,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 
 
 	DataNumber.prototype.toString = function() {
-		return this.s_;
+		return String(this.s_);
 	}
 
 	DataNumber.prototype.get = function() {
@@ -169,7 +169,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 
 
 	DataBoolean.prototype.toString = function() {
-		return this.s_;
+		return String(this.s_);
 	}
 
 	DataBoolean.prototype.get = function() {
@@ -213,13 +213,9 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	window.DataObject = DataObject;
 	window.DataArray = DataArray;
 
-	var nativeTypes = ["string", "boolean", "number", "undefined"];
-
 	var resurrectObject = {
 		value: function() {
 			var obj = {};
-			if (nativeTypes.indexOf(this.getType()) > -1)
-				return this.get();
 			for (var i in this) {
 				if (isSpecialObject(this[i])) {
 					obj[i] = this[i].resurrect();
@@ -747,6 +743,12 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			return this;
 		}
 	};
+	
+	var resurrectNative = {
+		value: function() {
+			return this.valueOf();
+		}
+	};
 
 	var commonProperties = {
 		trace: trace,
@@ -756,7 +758,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		linkToParent: linkToParent,
 		resurrect: resurrectObject,
 		toJSON: toJSON,
-		get: nativeGetter
+		get: nativeGetter,
+		resurrect: resurrectNative
 	};
 
 	Object.defineProperties(DataString.prototype, commonProperties);
