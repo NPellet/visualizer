@@ -28,7 +28,7 @@ define(['modules/default/defaultview', 'src/util/util',
     inDom: function() {
       var self = this;
       var myPainter = new Biojs.DasProteinFeatureViewer({
-        proxyUrl: "lib/biojs-1.0/src/main/resources/dependencies/proxy/proxy.php",
+        proxyUrl: "/static/biojs/proxy.php",
         target: this._id,
         segment: "a4_human",
         highlightFeatureOnMouseOver: true
