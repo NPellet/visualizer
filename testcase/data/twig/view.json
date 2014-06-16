@@ -1,5 +1,5 @@
 {
-	"version": "2.3.0-beta1",
+	"version": "2.4.0b2",
 	"modules": [
 		{
 			"url": "modules/types/client_interaction/code_editor/",
@@ -19,6 +19,9 @@
 									"editable"
 								]
 							],
+							"hasButton": [
+								[]
+							],
 							"script": [
 								"<style>\n    .twigtest {\n        padding-left: 5px;\n    }\n</style>\n<div class=\"twigtest\">\n<p>\n    Any text with primitive values...<br><br>\n    String : {{test.str}}<br>\n    Number : {{test.num}}<br>\n    Boolean : {{test.bool}}<br>\n    Undefined element : {{test.und}}\n</p>\n<p>\n    Arrays<br><br>\n    Simple : {{test.arr}}<br>\n    2D : {{test.arr2}}\n</p>\n<p>\n    Loop<br>\n    {% for val in test.arr %}\n    <br>Value {{val}}\n    {% endfor %}\n</p>\n<p>\n    <br><br>Type renderer : {{ rendertype(test.render) }}\n</p>\n</div>"
 							]
@@ -35,11 +38,18 @@
 				{
 					"event": "onEditorChange",
 					"rel": "value",
+					"jpath": [
+						""
+					],
 					"name": "twig"
 				}
 			],
 			"actions_out": [
-				{}
+				{
+					"jpath": [
+						""
+					]
+				}
 			],
 			"layers": {
 				"Default layer": {
@@ -62,7 +72,13 @@
 					],
 					"wrapper": true,
 					"created": true,
-					"name": "Default layer"
+					"name": "Default layer",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					]
 				}
 			},
 			"title": "Untitled module"
@@ -158,8 +174,8 @@
 			"vars_out": [
 				{
 					"event": "onObjectChange",
-					"rel": "value",
-					"jpath": "element",
+					"rel": "output",
+					"jpath": [],
 					"name": "test"
 				}
 			],
