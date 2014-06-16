@@ -6539,6 +6539,15 @@ ChemDoodle.RESIDUE = (function() {
 				}
 				molecule.bonds[i] = b;
 			}
+			// LP
+			// we analyse extra information
+			// M  ISO
+			// M  CHG
+			for ( var i = 4 + numAtoms + numBonds; i < currentTagTokens.length; i++) {
+				var line = currentTagTokens[i];
+				console.log(line);
+			}
+
 
 			return molecule;
 		};
