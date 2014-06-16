@@ -17,7 +17,6 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 				self.dom.get( 0 ).contentWindow.setView( self );
 			});
 
-			this.onReady = $.Deferred();
 		},
 		
 		inDom: function() { },
