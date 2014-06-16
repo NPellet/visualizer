@@ -18,8 +18,8 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
     controller.prototype.moduleInformation = {
         moduleName: 'Sequence displayer',
         description: 'Displays DNA sequence with annotations',
-        author: 'Luc Patiny',
-        date: '28.12.2013',
+        author: 'Daniel Kostro',
+        date: '12.06.2014',
         license: 'MIT',
         cssClass: 'sequence_display'
     };
@@ -30,10 +30,9 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         Configuration of the input/output references of the module
     */
     controller.prototype.references = {
-        'function': {
-            label: 'Mathematical function with x and y parameters',
-            type: 'string'
-        }
+      sequence: {
+        label: "An Amino Acid Sequence"
+      }
     };
 
 
@@ -41,9 +40,15 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         Configuration of the module for sending events, as a static object
     */
     controller.prototype.events = {
-      
-    
+      onSequenceSelectionChanged: {
+        label: "A sequence was selected",
+        refVariable: ["sequence"]
+      }
     };
+    
+    controller.prototype.onSequenceSelectionChanged = function(val) {
+      this.createDataFromEvent("onSequenceSelectionChanged", "sequence", DataObject.check(val, true));
+    }
     
 
     /*

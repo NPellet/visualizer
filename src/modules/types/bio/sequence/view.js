@@ -10,7 +10,6 @@ define(['modules/default/defaultview', 'src/util/util',
   view.prototype = $.extend(true, {}, Default, {
 
     init: function() {
-      console.log(Biojs);
 			if (! this.dom) {
 				this._id = Util.getNextUniqueId();
 				this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
@@ -25,6 +24,7 @@ define(['modules/default/defaultview', 'src/util/util',
 
 
     inDom: function() {
+      var self = this;
       var theSequence = "METLCQRLNVCQDKILTHYENDSTDLRDHIDYWKHMRLECAIYYKAREMGFKHINHQVVPTLAVSKNKALQAIELQLTLETIYNSQYSNEKWTLQDVSLEVYLTAPTGCIKKHGYTVEVQFDGDICNTMHYTNWTHIYICEEAojs SVTVVEGQVDYYGLYYVHEGIRTYFVQFKDDAEKYSKNKVWEVHAGGQVILCPTSVFSSNEVSSPEIIRQHLANHPAATHTKAVALGTEETQTTIQRPRSEPDTGNPCHTTKLLHRDSVDSAPILTAFNSSHKGRINCNSNTTPIVHLKGDANTLKCLRYRFKKHCTLYTAVSSTWHWTGHNVKHKSAIVTLTYDSEWQRDQFLSQVKIPKTITVSTGFMSI";
       console.log('init sequence');
       var mySequence = new Biojs.Sequence({
@@ -53,6 +53,16 @@ define(['modules/default/defaultview', 'src/util/util',
           { start:631, end:633, color:"white", background:"blue" }
         ]
       });
+      
+      mySequence.onSelectionChange(function(data) {
+        console.log(data);
+        self.module.controller.onSequenceSelectionChanged(data);
+      });
+      
+      // var mySeq = new Biojs.Sequence({
+      //   sequenceUrl: 'http://www.rcsb.org/pdb/download/downloadFile.do?fileFormat=xml&compression=NO&structureId=100D',
+      //   id: '100D'
+      // });
     },
 
     onResize: function() {
