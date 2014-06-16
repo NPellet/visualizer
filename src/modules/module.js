@@ -803,8 +803,9 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 										},
 
 										insertValue: function( val ) {
-											val = val || [];
-											return "element." + val.join(".");
+											val = (val || []).slice(0);
+											val.unshift("element");
+											return val.join(".");
 										}
 									},
 
@@ -902,9 +903,11 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 											return val2;
 										},
 
+										
 										insertValue: function( val ) {
-											val = val || [];
-											return "element." + val.join(".");
+											val = (val || []).slice(0);
+											val.unshift("element");
+											return val.join(".");
 										}
 									},
 

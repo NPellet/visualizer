@@ -310,12 +310,6 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 				jpaths = [];
 			}
 
-			jpaths.push(
-				{
-					title: 'Root element',
-					key: ''
-				}
-			);
 
 			if(element === undefined || element == null) {
 				return;
