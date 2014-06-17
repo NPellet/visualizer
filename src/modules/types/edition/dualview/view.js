@@ -50,6 +50,7 @@ define(['modules/default/defaultview', 'modules/types/edition/onde/view', 'modul
         inDom: function() {
 			this.module.getDomContent().html(this.dom);
 			this.loadTwig();
+			this.resolveready();
         },
         update: {
 			value: function(val, name) {

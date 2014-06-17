@@ -26,6 +26,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ckeditor'], function(De
 			this.instance.on("change",function(){
 				self.module.controller.valueChanged(self.instance.getData());
 			});
+			this.resolveReady();
         }
     });
 

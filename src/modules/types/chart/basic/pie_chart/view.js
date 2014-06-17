@@ -3,7 +3,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
-		DEBUG: true,
+		DEBUG: false,
 
 
 
@@ -39,15 +39,11 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			if (this.DEBUG) console.log("Pie Chart: ID: "+this._id);
 
 			this._data=[];	// the data that will be sent to FLOT
+			
+			this.resolveReady();
 
 		},
 		
-
-		inDom: function() {
-			if (this.DEBUG) console.log("Pie Chart: inDom");
-
-		},
-
 		onResize: function() {
 			if (this.DEBUG) console.log("Pie Chart: onResize");
 			var self=this;

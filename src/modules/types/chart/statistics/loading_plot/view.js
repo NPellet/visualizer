@@ -10,10 +10,8 @@ define(['modules/default/defaultview', 'src/util/util', 'lib/loadingplot/libs/jq
 			this.dom = $('<div class="ci-display-loading-plot"></div>');
 			this.module.getDomContent().html(this.dom);
 			
-			var self = this;
+			this.resolveReady();
 		},
-
-		inDom: function() {},
 		
 		onResize: function(w, h) {
 			this._w = this.width - 10;

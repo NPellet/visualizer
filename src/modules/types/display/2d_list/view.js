@@ -38,7 +38,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
                     self.module.controller.sendAction('cell', value, 'onClick');
                 }
 			});
-
+			this.resolveReady();
 		},
 
 		update: {

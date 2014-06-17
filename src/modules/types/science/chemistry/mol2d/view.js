@@ -10,6 +10,7 @@ define(['modules/default/defaultview','src/util/api','src/util/util','src/util/d
 			this._highlighted = {};
 
 			this.typeToScreen.molfile2D = this.typeToScreen.mol2d;
+			this.resolveReady();
 		},
 		
 		inDom: function() {

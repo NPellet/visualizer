@@ -52,6 +52,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 						form.setTpl( tpl );
 						self.dom.html( form.makeDomTpl() );
 						form.inDom( );
+						self.resolveReady();
 					});
 				});
 			});

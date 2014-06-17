@@ -59,6 +59,8 @@ define(['modules/default/defaultview'], function(Default) {
 			if ( this.cfg( 'onloadanalysis' ) === "onload") {
 				this.module.controller.doAnalysis();
 			}
+			
+			this.resolveReady();
 
 		},
 

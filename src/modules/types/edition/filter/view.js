@@ -103,6 +103,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				return f;
 
 			}) ( API, this.cfgValue, this.variables, varsout, script );
+			
+			this.resolveReady();
 
 		},
 	
@@ -111,8 +113,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				this.dom.empty();
 			}
 		},
-		
-		inDom: function() { },
 
 		filter: function() {
 

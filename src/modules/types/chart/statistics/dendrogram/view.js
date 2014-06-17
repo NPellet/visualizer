@@ -34,6 +34,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			}
 			this._highlighted = {};
 			this.updateOptions();
+			
+			this.resolveReady();
 
 			if (this.DEBUG) console.log("Dendrogram: ID: "+this._id);
 

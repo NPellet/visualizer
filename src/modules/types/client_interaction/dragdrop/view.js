@@ -73,6 +73,8 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/versioning'], 
 	 			e.preventDefault();
 	 			self.module.controller.open(e.dataTransfer);
 	 		});
+			
+			this.resolveReady();
 		}
 	});
 

@@ -6,7 +6,7 @@ define(['modules/default/defaultview'], function(Default) {
 		init: function() {	
 			this.dom = $('<iframe border="0" frameborder="none" width="100%" height="100%" />');
 			this.module.getDomContent().html(this.dom);
-			var self = this;
+			this.resolveReady();
 		},
 
 		

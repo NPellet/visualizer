@@ -56,6 +56,7 @@ define(['require',
           });
           self._loadSvg();
           self.iframeLoaded.resolve();
+		  self.resolveReady();
         });
       }
       else {

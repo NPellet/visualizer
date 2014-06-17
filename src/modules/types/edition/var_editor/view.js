@@ -93,6 +93,8 @@ define(['modules/default/defaultview'], function(Default) {
       		} else {
       			delete self.module.resultfilter;
       		}
+			
+			this.resolveReady();
 		},
 
 		_makeFormEl: function(spec, name) {

@@ -6,6 +6,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer'], function(Defaul
 		init: function() {	
 			this.dom = $('<table><tbody></tbody></table>');
 			this.module.getDomContent().html(this.dom);
+			this.resolveReady();
 		},
 		
 		inDom: function() {},

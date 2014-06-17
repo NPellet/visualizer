@@ -16,6 +16,7 @@ define(['modules/default/defaultview', 'src/util/util',
         this._id = Util.getNextUniqueId();
         this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
         this.module.getDomContent().html(this.dom);
+		this.resolveReady();
       }
     },
 
