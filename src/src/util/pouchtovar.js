@@ -258,17 +258,17 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		var pouchName = pouch.name;
 		var urlH = couchURL.replace(/\/\/[^\/]*@/, "//***@");
 		
-		function complete(err, res) {
-			if(err) {
-				if (fromCouch)
-					return Debug.warn("Replication from couchDB " + urlH + " to localDB " + pouchName + " failed.", err);
-				else
-					return Debug.warn("Replication from localDB " + pouchName + " to couchDB " + urlH + " failed.", err);
-			} else {
+		function complete(res) {
+			if(res.ok) {
 				if (fromCouch)
 					return Debug.debug("Replication from couchDB " + urlH + " to localDB " + pouchName + " finished.", res);
 				else
 					return Debug.debug("Replication from localDB " + pouchName + " to couchDB " + urlH + " finished.", res);
+			} else {
+				if (fromCouch)
+					return Debug.warn("Replication from couchDB " + urlH + " to localDB " + pouchName + " failed.", res);
+				else
+					return Debug.warn("Replication from localDB " + pouchName + " to couchDB " + urlH + " failed.", res);
 			}
 		}
 		
