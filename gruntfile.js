@@ -76,7 +76,7 @@ module.exports = function(grunt) {
               './pouchdb/dist/*',
               './uri.js/src/*.js',
               './twig.js/twig.min.js',
-              ['./setImmediate/setimmediate.js','./promises/promise.js'], // Promises polyfill
+              ['./setImmediate/setimmediate.js','./promises/promise.js','./bluebird/js/browser/bluebird .js'], // Promises polyfill
               './onde/src/*',
               ['./spectrum/spectrum.js', './spectrum/spectrum.css']
             ],
