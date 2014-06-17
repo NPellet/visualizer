@@ -48,7 +48,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 
 		return doLRU(def, url).pipe(function(data) {
 
-			Debug.debug('DataURL: Found ' + url + ' in local DB. Timout: ' + data.timeout);
+			Debug.debug('DataURL: Found ' + url + ' in local DB. Timeout: ' + data.timeout);
 
 			// If timeouted. If no timeout is defined, then the link is assumed permanent
 			if(timeout !== undefined && (Date.now() - data.timeout > timeout * 1000)) {
