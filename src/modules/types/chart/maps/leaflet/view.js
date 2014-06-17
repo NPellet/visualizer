@@ -109,9 +109,15 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'leaflet
             });
             
             this.getTileLayer().addTo(that.map);
+			
+			function onZoom() {
+				// First call the move handler in case zooming changed the center
+				that.module.controller.moveAction.call(that);
+				that.module.controller.zoomAction.call(that);
+			}
 
             this.map.on("drag",that.module.controller.moveAction, that);
-            this.map.on("zoomend", that.module.controller.zoomAction, that);
+            this.map.on("zoomend", onZoom);
             
             var defaultCenter = [46.522117, 6.566144];
             var configCenter = this.module.getConfiguration('mapcenter');
