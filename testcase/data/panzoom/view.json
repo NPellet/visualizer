@@ -1,0 +1,51 @@
+{
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"version": "2.4.0b2",
+	"modules": [
+		{
+			"url": "modules/types/display/panzoom/",
+			"configuration": {},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 42,
+						"top": 11
+					},
+					"size": {
+						"width": 48,
+						"height": 29
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 1,
+			"vars_in": [],
+			"actions_in": {},
+			"title": "Untitled"
+		}
+	],
+	"variables": [],
+	"pouchvariables": [],
+	"configuration": {
+		"title": "No title"
+	}
+}
