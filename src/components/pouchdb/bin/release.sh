@@ -12,12 +12,12 @@ git checkout -b build
 
 npm run build
 git add dist -f
-git add lib/.version.js -f
+git add lib/version-browser.js
 git commit -m "build $VERSION"
 
 # Tag and push
 git tag $VERSION
-git push --tags git@github.com:daleharvey/pouchdb.git $VERSION
+git push --tags git@github.com:pouchdb/pouchdb.git $VERSION
 
 # Publish JS modules
 npm publish

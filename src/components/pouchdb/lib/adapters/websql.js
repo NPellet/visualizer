@@ -30,7 +30,7 @@ var openDB = utils.getArguments(function (args) {
 });
 
 var POUCH_VERSION = 1;
-var POUCH_SIZE =  3000000;
+var POUCH_SIZE = 0; // doesn't matter as long as it's <= 5000000
 var ADAPTER_VERSION = 2; // used to manage migrations
 
 // The object stores created for each database
@@ -354,9 +354,8 @@ function WebSqlPouch(opts, callback) {
 
         docsWritten++;
 
-        WebSqlPouch.Changes.notify(name);
-        WebSqlPouch.Changes.notifyLocalWindows(name);
       });
+      WebSqlPouch.Changes.notify(name);
 
       var updateseq = 'SELECT update_seq FROM ' + META_STORE;
       tx.executeSql(updateseq, [], function (tx, result) {
@@ -432,7 +431,7 @@ function WebSqlPouch(opts, callback) {
       }
     }
 
-    function writeDoc(docInfo, deleted, callback, isUpdate) {
+    function writeDoc(docInfo, winningRev, deleted, callback, isUpdate) {
 
       function finish() {
         var data = docInfo.data;
@@ -509,8 +508,6 @@ function WebSqlPouch(opts, callback) {
         docInfo.metadata.seq = seq;
         delete docInfo.metadata.rev;
 
-        var mainRev = merge.winningRev(docInfo.metadata);
-
         var sql = isUpdate ?
           'UPDATE ' + DOC_STORE +
           ' SET json=?, winningseq=(SELECT seq FROM ' + BY_SEQ_STORE +
@@ -518,13 +515,14 @@ function WebSqlPouch(opts, callback) {
           : 'INSERT INTO ' + DOC_STORE +
           ' (id, winningseq, json, local) VALUES (?, ?, ?, ?);';
         var metadataStr = JSON.stringify(docInfo.metadata);
-        var key = docInfo.metadata.id + "::" + mainRev;
+        var key = docInfo.metadata.id + "::" + winningRev;
         var local = utils.isLocalId(docInfo.metadata.id) ? 1 : 0;
         var params = isUpdate ?
           [metadataStr, key, docInfo.metadata.id] :
           [docInfo.metadata.id, seq, metadataStr, local];
         tx.executeSql(sql, params, function () {
           results.push(docInfo);
+          fetchedDocs[docInfo.metadata.id] = docInfo.metadata;
           callback();
         });
       }
@@ -543,17 +541,23 @@ function WebSqlPouch(opts, callback) {
       }
 
       docInfo.metadata.rev_tree = merged.tree;
-      writeDoc(docInfo, deleted, processDocs, true);
+
+      // recalculate
+      var winningRev = merge.winningRev(docInfo.metadata);
+      deleted = utils.isDeleted(docInfo.metadata, winningRev);
+
+      writeDoc(docInfo, winningRev, deleted, processDocs, true);
     }
 
     function insertDoc(docInfo) {
       // Cant insert new deleted documents
-      var deleted = utils.isDeleted(docInfo.metadata);
+      var winningRev = merge.winningRev(docInfo.metadata);
+      var deleted = utils.isDeleted(docInfo.metadata, winningRev);
       if ('was_delete' in opts && deleted) {
         results.push(errors.MISSING_DOC);
         return processDocs();
       }
-      writeDoc(docInfo, deleted, processDocs, false);
+      writeDoc(docInfo, winningRev, deleted, processDocs, false);
     }
 
     function processDocs() {
@@ -562,14 +566,22 @@ function WebSqlPouch(opts, callback) {
       }
       var currentDoc = docInfos.shift();
       var id = currentDoc.metadata.id;
+
       if (id in fetchedDocs) {
-        updateDoc(fetchedDocs[id], currentDoc);
-      } else {
-        // if we have newEdits=false then we can update the same
-        // document twice in a single bulk docs call
-        fetchedDocs[id] = currentDoc.metadata;
-        insertDoc(currentDoc);
+        // if newEdits=false, can re-use the same id from this batch
+        return updateDoc(fetchedDocs[id], currentDoc);
       }
+
+      tx.executeSql('SELECT json FROM ' + DOC_STORE +
+        ' WHERE id = ?', [id], function (tx, result) {
+
+        if (result.rows.length) {
+          var metadata = JSON.parse(result.rows.item(0).json);
+          updateDoc(metadata, currentDoc);
+        } else {
+          insertDoc(currentDoc);
+        }
+      });
     }
 
     // Insert sequence number into the error so we can sort later
@@ -603,23 +615,10 @@ function WebSqlPouch(opts, callback) {
       });
     }
 
-    function metadataFetched(tx, results) {
-      for (var j = 0; j < results.rows.length; j++) {
-        var row = results.rows.item(j);
-        var id = parseHexString(row.hexId, encoding);
-        fetchedDocs[id] = JSON.parse(row.json);
-      }
-      processDocs();
-    }
-
     preprocessAttachments(function () {
       db.transaction(function (txn) {
         tx = txn;
-        var sql = 'SELECT hex(id) AS hexId, json FROM ' + DOC_STORE +
-          ' WHERE id IN ' + '(' +
-          docInfos.map(function () {return '?'; }).join(',') + ')';
-        var queryArgs = docInfos.map(function (d) { return d.metadata.id; });
-        tx.executeSql(sql, queryArgs, metadataFetched);
+        processDocs();
       }, unknownError(callback), function () {
         docCount = -1;
       });
@@ -984,6 +983,7 @@ WebSqlPouch.valid = function () {
 };
 
 WebSqlPouch.destroy = utils.toPromise(function (name, opts, callback) {
+  WebSqlPouch.Changes.removeAllListeners(name);
   var db = openDB(name, POUCH_VERSION, name, POUCH_SIZE);
   db.transaction(function (tx) {
     var stores = [DOC_STORE, BY_SEQ_STORE, ATTACH_STORE, META_STORE];

@@ -1,6 +1,6 @@
 {
   "name": "pouchdb",
-  "version": "2.2.0",
+  "version": "2.2.3-prerelease",
   "description": "PouchDB is a pocket-sized database.",
   "main": "./lib/index.js",
   "homepage": "http://pouchdb.com/",
@@ -17,22 +17,24 @@
   ],
   "dependencies": {
     "argsarray": "0.0.1",
-    "bluebird": "~1.0.0",
+    "bluebird": "^1.2.4",
     "inherits": "~2.0.1",
-    "level-js": "~2.0.0",
+    "level-js": "^2.1.3",
     "level-sublevel": "~5.2.0",
     "leveldown": "~0.10.2",
     "levelup": "~0.18.2",
     "lie": "^2.6.0",
-    "localstorage-down": "~0.4.4",
-    "pouchdb-mapreduce": "~2.2.1",
+    "localstorage-down": "^0.4.4",
+    "pouchdb-mapreduce": "~2.2.4",
     "request": "~2.28.0",
-    "extend": "^1.2.1",
     "md5-jkmyers": "0.0.1",
     "through2": "^0.4.1",
-    "es3ify": "^0.1.3"
+    "es3ify": "^0.1.3",
+    "memdown": "^0.8.0",
+    "pouchdb-extend": "^0.1.0"
   },
   "devDependencies": {
+    "pouchdb-server": "^0.2.1",
     "commander": "~2.1.0",
     "watchify": "~0.8.2",
     "uglify-js": "~2.4.6",
@@ -49,30 +51,35 @@
     "tape": "~2.12.2",
     "glob": "~3.2.9",
     "watch-glob": "~0.1.1",
-    "mkdirp": "~0.3.5",
+    "mkdirp": "~0.4.2",
     "exec-sync": "~0.1.6",
     "ua-parser-js": "^0.6.2",
     "chai": "^1.9.1",
     "mocha": "^1.18.2",
-    "istanbul": "^0.2.7"
+    "istanbul": "^0.2.7",
+    "cordova": "~3.4.1-0.1.0",
+    "replace": "^0.2.9",
+    "es5-shim": "^3.1.1",
+    "phantomjs": "^1.9.7-5"
   },
   "scripts": {
-    "build-js": "browserify . -s PouchDB > dist/pouchdb-nightly.js",
+    "build-js": "npm run build-main-js && npm run min && npm run build-plugins",
+    "build-main-js": "browserify . -s PouchDB > dist/pouchdb-nightly.js",
     "min": "uglifyjs dist/pouchdb-nightly.js -mc > dist/pouchdb-nightly.min.js",
-    "build": "npm run version && mkdir -p dist && npm run build-js && npm run min",
-    "build-alt": "./bin/build-alt.sh",
-    "version": "echo \"module.exports = $(./bin/get-version.js);\" > lib/.version.js",
+    "build-plugins": "./bin/build-all-plugins.sh",
+    "build": "npm run version && mkdirp dist && npm run build-js",
+    "version": "node ./bin/get-version.js",
     "test-node": "./bin/run-mocha.sh",
-    "test-browser": "mkdir -p dist && npm run build-js && ./bin/test-browser.js",
-    "test-browser-alt": "mkdir -p dist && npm run build-alt && ./bin/test-browser.js",
-    "jshint": "jshint -c .jshintrc bin/ lib/ tests/*.js tests/performance/*.js alt/*.js",
-    "dev": "npm run version && ./bin/dev-server.js",
+    "test-browser": "mkdirp dist && npm run build-js && node ./bin/test-browser.js",
+    "cordova": "npm run build && ./bin/run-cordova.sh",
+    "jshint": "jshint -c .jshintrc bin/ lib/ tests/ tests/performance/",
+    "dev": "npm run version && node ./bin/dev-server.js",
     "test": "npm run version && npm run jshint && ./bin/run-test.sh",
-    "publish": "./bin/publish.sh",
+    "release": "./bin/release.sh",
     "publish-site": "./bin/publish-site.sh",
-    "build-site": "./bin/build-site.js",
+    "build-site": "node ./bin/build-site.js",
     "shell": "./bin/repl.js",
-    "report-coverage": "./bin/run-coverage.js",
+    "report-coverage": "node ./bin/run-coverage.js",
     "build-perf": "browserify tests/performance/*.js > dist/performance-bundle.js"
   },
   "browser": {
@@ -82,13 +89,14 @@
     "./adapters/leveldb": false,
     "./adapters/levelalt": false,
     "./lib/deps/ajax.js": "./lib/deps/ajax-browser.js",
-    "./lib/version.js": "./lib/.version.js",
+    "./lib/version.js": "./lib/version-browser.js",
+    "./lib/adapters/preferredAdapters.js": "./lib/adapters/preferredAdapters-browser.js",
     "bluebird": "lie",
     "leveldown": "level-js"
   },
   "browserify": {
     "transform": [
-      "./node_modules/es3ify"
+      "es3ify"
     ]
   }
 }

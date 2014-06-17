@@ -28,6 +28,6 @@
     "commit": "2d5fedb1ff7097e7a7c7eb150fca38d812031eff"
   },
   "_source": "git://github.com/Octane/setImmediate.git",
-  "_target": "~1.0.0",
+  "_target": "*",
   "_originalSource": "setImmediate"
 }

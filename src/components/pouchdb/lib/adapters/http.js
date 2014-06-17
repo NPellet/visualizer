@@ -137,29 +137,6 @@ function HttpPouch(opts, callback) {
   function ajax(options, callback) {
     return utils.ajax(utils.extend({}, ajaxOpts, options), callback);
   }
-  var uuids = {
-    list: [],
-    get: function (opts, callback) {
-      if (typeof opts === 'function') {
-        callback = opts;
-        opts = {count: 10};
-      }
-      var cb = function (err, body) {
-        if (err || !('uuids' in body)) {
-          callback(err || errors.UNKNOWN_ERROR);
-        } else {
-          uuids.list = uuids.list.concat(body.uuids);
-          callback(null, "OK");
-        }
-      };
-      var params = '?count=' + opts.count;
-      ajax({
-        headers: host.headers,
-        method: 'GET',
-        url: genUrl(host, '_uuids') + params
-      }, cb);
-    }
-  };
 
   // Create a new CouchDB database based on the given opts
   var createDB = function () {
@@ -546,21 +523,10 @@ function HttpPouch(opts, callback) {
       return callback(errors.NOT_AN_OBJECT);
     }
     if (! ("_id" in doc)) {
-      if (uuids.list.length > 0) {
-        doc._id = uuids.list.pop();
-        api.put(doc, opts, callback);
-      } else {
-        uuids.get(function (err, resp) {
-          if (err) {
-            return callback(errors.UNKNOWN_ERROR);
-          }
-          doc._id = uuids.list.pop();
-          api.put(doc, opts, callback);
-        });
-      }
-    } else {
-      api.put(doc, opts, callback);
+      doc._id = utils.uuid();
     }
+    api.put(doc, opts, callback);
+    
   });
 
   // Update/create multiple documents given by req in the database
@@ -697,10 +663,11 @@ function HttpPouch(opts, callback) {
     var CHANGES_LIMIT = 25;
 
     opts = utils.clone(opts);
-    opts.timeout = opts.timeout || 0;
+    opts.timeout = opts.timeout || 30 * 1000;
 
-    // set timeout to 20s to prevent aborting via Ajax timeout
-    var params = { timeout: 20 * 1000 };
+    // We give a 5 second buffer for CouchDB changes to respond with
+    // an ok timeout
+    var params = { timeout: opts.timeout - (5 * 1000) };
     var limit = (typeof opts.limit !== 'undefined') ? opts.limit : false;
     if (limit === 0) {
       limit = 1;
@@ -901,9 +868,9 @@ function HttpPouch(opts, callback) {
     });
   });
 
-  api.close = utils.adapterFun('close', function (callback) {
+  api._close = function (callback) {
     callback();
-  });
+  };
 
   function replicateOnServer(target, opts, promise, targetHostUrl) {
     opts = utils.clone(opts);
