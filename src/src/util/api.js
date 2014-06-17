@@ -28,6 +28,18 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 		Variables.setVariable( name, false, data, filter );
 	}
 
+
+	function createDataJpath( name, data, jpath, filter ) {
+
+		data = DataObject.check( data );
+		
+		data.getChild( jpath ).then( function( data ) {
+
+			Variables.setVariable( name, false, data, filter );	
+		});
+		
+	}
+
 	function setHighlight( element, value ) {
             
             if(!element)
@@ -87,6 +99,7 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 		getVar: getVar,
 		getVariable: getVar,
 		createData: createData,
+		createDataJpath: createDataJpath,
 
 		listenHighlight: function() {
 
