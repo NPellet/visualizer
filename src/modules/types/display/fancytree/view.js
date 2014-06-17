@@ -56,6 +56,9 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 							$tdList.eq(i+1).text(that.jpathsF[jpaths[i]](dataObj.info));
 						}
 					}
+				},
+				activate: function(event, data) {
+					that.module.controller.onActivate(data.node.data.dataObj.info);
 				}
 			});
 			

@@ -1,4 +1,4 @@
-define(['modules/default/defaultcontroller','src/util/datatraversing'], function(Default, Traversing) {
+define(['modules/default/defaultcontroller'], function(Default) {
 
 	function controller() {}
 	
@@ -17,16 +17,24 @@ define(['modules/default/defaultcontroller','src/util/datatraversing'], function
 		tree: {
 			label: "Hierarchical structure (tree)",
 			type: "tree"
+		},
+		nodeData: {
+			label: "Node data"
 		}
 	};
 	
 	controller.prototype.variablesIn = ['tree'];
+	
+	controller.prototype.events = {
+		onActivate: {
+			label: "Select a node",
+			refVariable: ["nodeData"]
+		}
+	};
 
 	controller.prototype.configurationStructure = function() {
 		
-		var jpaths = [];
-		if(this.module.model._objectModel)
-			Traversing.getJPathsFromElement(this.module.model._objectModel, jpaths);
+		var jpaths = this.module.model.getjPath("nodeData");
 		
 		return {
 			groups: {
@@ -62,6 +70,10 @@ define(['modules/default/defaultcontroller','src/util/datatraversing'], function
 	
 	controller.prototype.configAliases = {
 		columns: [ 'groups', 'cols', 0 ]
+	};
+	
+	controller.prototype.onActivate = function(data) {
+		this.createDataFromEvent("onActivate", "nodeData", data);
 	};
 
 	return controller;

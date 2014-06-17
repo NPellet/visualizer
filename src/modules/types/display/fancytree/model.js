@@ -1,7 +1,16 @@
-define(['modules/default/defaultmodel'], function(Default) {
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Default, Traversing) {
 	
 	function model() {};
 	model.prototype = $.extend(true, {}, Default, {
+		
+		getjPath: function(ref){
+			if(ref === "nodeData" && this._objectModel) {
+				return Traversing.getJPathsFromElement(this.module.model._objectModel);
+			}
+			else {
+				return [];
+			}
+		}
 		
 	});
 
