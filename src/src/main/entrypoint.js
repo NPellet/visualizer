@@ -273,10 +273,11 @@ define(['jquery',
 										title: 'J-Path',
 										options: options,
 										extractValue: function( val ) {
-											
-											var val2 = val.split(".");
-											val2.shift();
-											return val2;
+											if(val){
+												var val2 = val.split(".");
+												val2.shift();
+												return val2;
+											}
 										},
 
 										insertValue: function( val ) {

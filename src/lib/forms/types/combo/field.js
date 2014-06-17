@@ -57,7 +57,7 @@ define( [ require, '../../field', 'fancytree' ], function( require, FieldDefault
 				node.setActive( false );
 			}
 		}
-console.log( fieldElement.value );
+		
 		if( tree.getNodeByKey && ( node = tree.getNodeByKey( fieldElement.value ) ) ) {
 			node.setActive( true );
 		}
