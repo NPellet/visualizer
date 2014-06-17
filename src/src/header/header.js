@@ -4,24 +4,37 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 	var elements = [];
 	return {
 
-		init: function( headerConfig ) {
+		init: function(headerConfig) {
 			var self = this;
 
-			if( headerConfig.elements ) {
-				this.loadHeaderElements( headerConfig.elements );
+			if (headerConfig.elements) {
+				this.loadHeaderElements(headerConfig.elements);
 			}
 
 			this.dom = $('<div id="header"><div id="title"><div></div></div></div>');
 			$("#ci-visualizer").prepend(this.dom);
 
-			self.setHeight( headerConfig.height || "30px" );
-			this.setHeight( "30px" );
+			self.setHeight(headerConfig.height || "30px");
+			this.setHeight("30px");
 
-			Versioning.getViewHandler( ).versionChange( ).progress( function(el) {
+			this._titleDiv = $("#title").children('div');
+			this._titleDiv.attr('contenteditable', 'true').bind('keypress', function(e) {
+				e.stopPropagation();
+				if (e.keyCode !== 13)
+					return;
+				e.preventDefault();
+				$(this).trigger('blur');
+			})
+				.bind('blur', function() {
+					Versioning.getView().configuration.set('title', $(this).text().replace(/[\r\n]/g, ""));
+				});
 
-				self.setTitle( el );
-				
-			} );
+
+			Versioning.getViewHandler( ).versionChange( ).progress(function(el) {
+
+				self.setTitle(el);
+
+			});
 
 		},
 
@@ -31,24 +44,8 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 		},
 
 		setTitle: function(view) {
-			var dom = $("#title").children('div');
-
-			dom
-				.text(view.configuration ? view.configuration.title : 'Untitled')
-				.attr('contenteditable', 'true')
-				.bind('keypress', function(e) {
-					e.stopPropagation();
-					if(e.keyCode !== 13)
-						return;
-					e.preventDefault();
-					$(this).trigger('blur');
-				})
-
-				.bind('blur', function() {
-					view.configuration.set('title', $(this).text().replace(/[\r\n]/g, ""));
-				});
+			this._titleDiv.text(view.configuration ? view.configuration.title : 'Untitled');
 		},
-
 		
 		loadHeaderElements: function(all) {
 			if(!$.isArray(all))
