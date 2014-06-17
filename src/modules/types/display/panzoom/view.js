@@ -78,7 +78,7 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
         // $zoomRange: this.dom.find(".zoom-range"),
         // $reset: this.dom.find(".reset"),
         increment: 0.1,
-        maxScale: 5.0,
+        maxScale: 10.0,
         minScale: 0.2,
         duration:100
       });
@@ -103,14 +103,25 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
         self.panzoomElements.panzoom("reset");
       });
       
-      this.panzoomElements.on('mousewheel', function(event) {
-        event.preventDefault();
-        zoomCount += event.deltaY;
-        
-        console.log(event.deltaX, event.deltaY, event.deltaFactor);
-        if(zoomCount%3 === 0)
-          self.panzoomElements.panzoom("zoom", event.deltaY > 0 ? true : false);
+      this.panzoomElements.parent().on('mousewheel.focal', function( e ) {
+        e.preventDefault();
+        var delta = e.delta || e.originalEvent.wheelDelta;
+        var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
+        self.panzoomElements.panzoom('zoom', zoomOut, {
+          increment: 0.1,
+          animate: false,
+          focal: e
+        });
       });
+      
+      // this.panzoomElements.on('mousewheel', function(event) {
+      //   event.preventDefault();
+      //   zoomCount += event.deltaY;
+      //   console.log(event);
+      //   console.log(event.deltaX, event.deltaY, event.deltaFactor);
+      //   if(zoomCount%3 === 0)
+      //     self.panzoomElements.panzoom("zoom", event.deltaY > 0 ? true : false, {middle: true});
+      // });
     },
     
     selectionMode: function() {
