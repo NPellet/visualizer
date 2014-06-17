@@ -25,7 +25,9 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
 
     inDom: function() {
       var self = this;
-      self.dom.html(' <div class="parent"><div class="panzoom"><img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg"></div></div> ');
+      self.dom.html('<div class="parent"><div class="panzoom"><img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg"></div></div>\
+      <div class="parent"><div class="panzoom"><img class="transparent" src="http://www.colourbox.com/preview/6527480-273411-cute-baby-tiger-cartoon.jpg"></div></div>');
+      
         
       
       var selectArea = '<button class="select-area">Select Area</button>';
@@ -84,6 +86,17 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
       this.panzoomElements.on('panzoomchange', function(data, panzoom) {
         // console.log('panzoom changed ', data);
         console.log('panzoom matrix', panzoom.getMatrix());
+      });
+      
+      this.panzoomElements.on('panzoompan', function(data, panzoom){
+        var panzoomInstances = self.panzoomElements.panzoom("instance");
+        for(i=0; i<panzoomInstances.length; i++) {
+          console.log('hhh matrix', panzoom.getMatrix());
+          if(panzoomInstances[i] !== panzoom) {
+            panzoomInstances[i].setMatrix(panzoom.getMatrix());
+          }
+        }
+        console.log('pan el length', self.panzoomElements.length);
       });
       this.dom.off('dblclick');
       this.dom.dblclick(function() {
