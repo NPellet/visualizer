@@ -4,6 +4,8 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
 ], function(Default, Util, _) {
   function view() {
     this.selectingArea = false;
+    this.imgWidth = [];
+    this.imgHeight = [];
   };
   view.prototype = $.extend(true, {}, Default, {
 
@@ -24,58 +26,47 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
 
     inDom: function() {
       var self = this;
-      self.dom.html('<div class="parent"><div class="panzoom"><img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg"></div></div>\
-      <div class="parent"><div class="panzoom"><img class="transparent" src="http://www.colourbox.com/preview/6527480-273411-cute-baby-tiger-cartoon.jpg"></div></div>');
-      
-        
-      
-      var selectArea = '<button class="select-area">Select Area</button>';
-      var zoomIn = '<button class="zoom-in">Zoom In</button>';
-      var zoomOut = '<button class="zoom-out">Zoom Out</button>';
-      var zoomRange = '<input type="range" class="zoom-range">';
-      var reset = '<button class="reset">Reset</button>'
-        
-      self.dom.append('<div class="buttons"></div>');
-        
-      this.panzoomElements = this.dom.find('.panzoom');
-      this.panzoomMode();
-      
-      // this.dom.find('.select-area').off('click');
-      // this.dom.find('.select-area').on('click', _.once(function() {
-      //   self.dom.find('img').first().Jcrop({
-      //     trueSize: [900, 900]
-      //   }, function() {
-      //     self.jcropApi = this;
-      //   });
-      // }));
+      // self.dom.html('<div class="parent"><div class="panzoom"><img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg"></div></div>\
+      // <div class="parent"><div class="panzoom"><img class="transparent" src="http://www.colourbox.com/preview/6527480-273411-cute-baby-tiger-cartoon.jpg"></div></div>');
       // 
-      // this.dom.find('.select-area').on('click', function() {
-      //   self.selectingArea = !self.selectingArea;
-      // });
-      // 
-      // this.dom.find('.select-area').on('click', function() {
-      //   if(self.selectingArea) {
-      //     self.selectionMode();
-      //   }
-      //   else {
-      //     self.panzoomMode();
-      //   }
-      // });
+        
+      this.dom.html('');
+      this.resolveReady();
+
       
+    },
+    
+    update:{
+      picture: function(val) {
+        var self = this;
+        console.log('picture update ', val.get());
+        this.addImage(val.get(), function() {
+          self.panzoomElements = self.dom.find('.panzoom');
+          self.panzoomMode();
+          self.onResize();
+        });
+        
+      }
+    },
+    
+    addImage: function(val, cb) {
+      var self = this;
+      console.log('add image');
+      var x = $('<div class="parent"><div class="panzoom"><img/></div></div>');
+      
+      x.find('img').attr('src', val).load(function() {
+        self.imgWidth.push(this.width);   // Note: $(this).width() will not
+        self.imgHeight.push(this.height); // work for in memory images.
+        self.dom.append(x);
+        cb();
+      });
     },
     
     panzoomMode: function() {
       var self = this;
       var zoomCount = 0;
-      if(this.jcropApi) {
-        this.jcropApi.disable();
-      }
       
       this.panzoomElements.panzoom({
-        // $zoomIn: this.dom.find(".zoom-in"),
-        // $zoomOut: this.dom.find(".zoom-out"),
-        // $zoomRange: this.dom.find(".zoom-range"),
-        // $reset: this.dom.find(".reset"),
         increment: 0.1,
         maxScale: 10.0,
         minScale: 0.2,
@@ -138,14 +129,19 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
     },
 
     onResize: function() {
-			this.dom.find('img').width(this.dom.width()).height(this.dom.height());
-      this.panzoomElements.panzoom('resetDimensions');
-    },
-
-
-    update: {
-      'image':function(data) {
-
+      if(this.panzoomElements) {
+        var domimg = this.dom.find('img');
+        for(var i=0; i<domimg.length; i++) {
+          if(this.imgWidth[i]/this.imgHeight[i] > this.dom.width()/this.dom.height()) {
+            domimg[i].width = this.dom.width();
+            domimg[i].height = this.imgHeight[i]/this.imgWidth[i] * this.dom.width();
+          }
+          else {
+            domimg[i].height = this.dom.height();
+            domimg[i].width = this.imgWidth[i]/this.imgHeight[i] * this.dom.height();
+          }
+        }
+        this.panzoomElements.panzoom('resetDimensions'); 
       }
     },
 

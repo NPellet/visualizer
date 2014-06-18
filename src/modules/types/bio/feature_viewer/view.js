@@ -48,8 +48,6 @@ define(['modules/default/defaultview', 'src/util/util',
     },
 
     onResize: function() {
-			
-      if (!this.webgl) return;
       var self=this;
 
       this.onReady.done(function() {

@@ -30,8 +30,9 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
   		Configuration of the input/output references of the module
   	*/
   	controller.prototype.references = {
-      image: {
-        
+      picture: {
+        type:'picture',
+        label: 'A picture'
       }
   	};
   
@@ -45,7 +46,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         Configuration of the module for receiving events, as a static object
         In the form of 
     */
-    controller.prototype.variablesIn = [ 'image'];
+    controller.prototype.variablesIn = ['picture'];
 
     /*
         Received actions
