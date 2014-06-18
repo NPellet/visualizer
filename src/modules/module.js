@@ -903,9 +903,11 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 										title: 'jPath',
 										options: {},
 										extractValue: function( val ) {
-											var val2 = val.split(".");
-											val2.shift();
-											return val2;
+											if(val){
+												var val2 = val.split(".");
+												val2.shift();
+												return val2;
+											}
 										},
 
 										

@@ -6,7 +6,7 @@
  *	Perhaps a deep extend is needed. Otherwise we need to copy the listeners and callbacks !
  */
 
-define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'], function(PouchDB, URI, Debug) {
+define(['pouchdb', 'uri/URI', 'src/util/debug'], function(PouchDB, URI, Debug) {
 	"use strict";
 	
 	var exports = {};
@@ -16,27 +16,14 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		enumerable: false
 	};
 	
-	function PouchObject(l, checkDeep, forceCopy) {	
+	function PouchObject(l) {	
 		
 		this.initProperties();
 		
 		for(var i in l) {
 			if(l.hasOwnProperty(i)) {
-				if(!checkDeep) {
-					this[i] = l[i];
-					continue;
-				} else {
-					this[i] = DataObject.check(l[i], true, forceCopy);
-				}
+				this[i] = l[i];
 			}
-		}
-
-		if( forceCopy ) {
-			this.unbindChange();
-			this.__name = null;
-			this.__parent = null;
-			this._rev = null;
-			this._id = null;
 		}
 		
 		this.addChangeListener();
@@ -78,7 +65,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 						continue;
 					}
 
-					if( ( i ).slice( 0, 1 ) === "_") {
+					if( ( i ).indexOf("_") === 0) {
 						continue;
 					}
 
@@ -121,40 +108,27 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		}
 	});
 
-	PouchObject.from = function(baseObject, pouchManager ,deep , forceNew) {
-		if(forceNew) {
-			baseObject = new PouchObject(baseObject, deep, forceNew);
+	PouchObject.from = function(baseObject, pouchManager) {
+		if(!(baseObject instanceof PouchObject)) {
+			baseObject.__proto__ = PouchObject.prototype;
+			baseObject.initProperties();
+			baseObject.addChangeListener();
 		}
-		else {
-			if(!(baseObject instanceof PouchObject)) {
-				baseObject.__proto__ = PouchObject.prototype;
-				baseObject.initProperties();
-				baseObject.addChangeListener();
-			}
-			if(deep) {
-				for(var i in baseObject) {
-					if(baseObject.hasOwnProperty(i))
-						baseObject[i] = DataObject.check(baseObject[i], true, forceNew);
-				}
-			}
-		}
-		
+
 		baseObject.setPouch(pouchManager);
 
 		return baseObject;
 	};
 	
-	function PouchArray(arr, deep) {
+	function PouchArray(arr) {
 		this.type = 'array';
-		this.value = arr || [];
+		this.value = DataObject.check(arr || []);
 		
 		Object.defineProperty(this, "__pouch", propertyDescriptor);
 		
-		if(deep) {
-			for(var i = 0, l = this.value.length; i < l; i++) {
-				this.value[i] = new PouchObject(this.value[i], deep);
-				this.value[i].__parent = this;
-			}
+		for(var i = 0, l = this.value.length; i < l; i++) {
+			this.value[i] = new PouchObject(this.value[i]);
+			this.value[i].__parent = this;
 		}
 	};
 
@@ -199,7 +173,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 					for(var i = 0; i < l; i++) {
 						args[i]._rev = res[i].rev;
 					}
-				}).catch(function(err){
+				}, function(err){
 					Debug.error("An error occured while pushing into PouchArray.", err);
 				});
 
@@ -389,55 +363,62 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		syncManager.add(fromCouch, couchURL, pouch, continuous);
 	}
 	
+	function getIndex(arr, id) {
+		var index = -1;
+		for (var i = 0, l = arr.length; i < l; i++) {
+			if (arr[i]._id === id) {
+				index = i;
+				break;
+			}
+		}
+		return index;
+	}
+	
 	function PouchManager(name) {
 		this.name = name;
 		this.pouchdb = new PouchDB(name);
 		this.singleDocs = {};
 		var that = this;
 		this.pouchdb.changes({
-			include_doc: true,
+			include_docs: true,
 			live: true,
 			since: 'now'
-		}).on('change', function(change) {
-			if (that.singleDocs[change.id]) {
-				if (change.deleted) {
-					that.singleDocs[change.id].setPouch(null);
-					delete that.singleDocs[change.id];
-				}
-				else {
-					if (that.singleDocs[change.id]._rev !== change.doc._rev) { // If revID is the same, it means the change was already done in the visualizer
-						that.singleDocs[change.id].mergeWith(change.doc, "internal_pouch_change");
-					}
+		}).on("create", function(change){
+			// If there is a new doc, we just need to add it to the allDocs object
+			if(that.allDocs) {
+				var pouchobj = new PouchObject(change.doc);
+				pouchobj.setPouch(that);
+				that.allDocs.value.push(pouchobj);
+				that.allDocs.triggerChange("internal_pouch_change");
+			}
+		}).on("update", function(change){
+			// Here we need to update the singleDoc and the reference in allDocs
+			var id = change.id;
+			if(that.singleDocs[id]) {
+				if (that.singleDocs[id]._rev !== change.doc._rev) { // If revID is the same, it means the change was already done in the visualizer
+					that.singleDocs[id].mergeWith(change.doc, "internal_pouch_change");
 				}
 			}
-			if (that.allDocs) {
-				var arr = that.allDocs.value, index = -1;
-				for (var i = 0, l = arr.length; i < l; i++) {
-					if (arr[i]._id === change.id) {
-						index = i;
-						break;
-					}
+			if(that.allDocs) {
+				var arr = that.allDocs.value,
+					index = getIndex(arr, id);
+				if (arr[index]._rev !== change.doc._rev) {
+					arr[index].mergeWith(change.doc, "internal_pouch_change");
 				}
-				if (index === -1) { // Doc is not in the array
-					if (!change.deleted) {
-						var pouchobj = new PouchObject(change.doc, true);
-						pouchobj.setPouch(that);
-						arr.push(pouchobj);
-						that.allDocs.triggerChange("internal_pouch_change");
-					}
-				}
-				else {
-					if (change.deleted) { // Remove object from the array
-						arr[index].setPouch(null);
-						arr.splice(index, 1);
-						that.allDocs.triggerChange("internal_pouch_change");
-					}
-					else { // Modify object in the array
-						if (arr[index]._rev !== change.doc._rev) {
-							arr[index].mergeWith(change.doc, "internal_pouch_change");
-						}
-					}
-				}
+			}
+		}).on("delete", function(change){
+			// Here we must flush the reference to the object and disable its pouch functionalities
+			var id = change.id;
+			if(that.singleDocs[id]) {
+				that.singleDocs[id].setPouch(null);
+				delete that.singleDocs[id];
+			}
+			if(that.allDocs) {
+				var arr = that.allDocs.value,
+					index = getIndex(arr, id);
+				arr[index].setPouch(null);
+				arr.splice(index, 1);
+				that.allDocs.triggerChange("internal_pouch_change");
 			}
 		});
 	}
@@ -459,7 +440,7 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 				pouchobj.setPouch(that);
 				that.singleDocs[id] = pouchobj;
 				resolve(pouchobj);
-			}).catch(function(err){
+			}, function(err){
 				Debug.info("Doc "+id+" does not exist, creating new doc.", err);
 				pouchobj = new PouchObject({_id: id});
 				pouchobj.setPouch(that);
@@ -484,16 +465,12 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 					all.push(allDocs.rows[i].doc);
 				}
 
-				all = new PouchArray(all, true);
+				all = new PouchArray(all);
 				all.setPouch(that);
 				that.allDocs = all;
 				resolve(all);
-			}).catch(function(err){
+			}, function(err){
 				Debug.warn("Error in pouchdb.allDocs", err);
-				/*var arr = new PouchArray();
-				arr.setPouch(that);
-				that.allDocs = arr;
-				resolve(arr);*/
 			});
 		});
 	};
@@ -550,10 +527,14 @@ define(['components/pouchdb/dist/pouchdb-nightly', 'uri/URI', 'src/util/debug'],
 		}
 
 		if (id) {
-			return pouch.getDoc(id, options).then(callback);
+			return pouch.getDoc(id, options).then(callback, function(){
+				Debug.error("Caught error in PouchManager.getDoc", dbname, id);
+			});
 		}
 		else {
-			return pouch.getDocs(options).then(callback);
+			return pouch.getDocs(options).then(callback, function(){
+				Debug.error("Caught error in PouchManager.getDocs", dbname);
+			});
 		}
 	};
 	
