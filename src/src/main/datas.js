@@ -333,9 +333,10 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			if ( ! jpath || jpath.length === 0 ) {
 				return $.Deferred().resolve( this );
 			}
+			
+			jpath = jpath.slice();
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
-			var self = this;
 
 			return this.get( el, true ).pipe(function( subEl ) {
 
@@ -364,6 +365,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			if ( ! jpath || jpath.length === 0 ) {
 				return $.Deferred().resolve(this);
 			}
+			
+			jpath = jpath.slice();
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
 			var self = this;
@@ -401,6 +404,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			if ( ! jpath || jpath.length === 0 ) {
 				return this;
 			}
+			
+			jpath = jpath.slice();
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
 			var self = this;
@@ -442,6 +447,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			if (!jpath) {
 				return;
 			}
+			
+			jpath = jpath.slice();
 
 			var el = jpath.shift( ); // Gets the current element and removes it from the array
 			var subEl = this.get( el, false );
@@ -492,6 +499,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 				jpath = jpath.split('.');
 				jpath.shift();
 			}
+			
+			jpath = jpath.slice();
 
 			var jpathLength = jpath.length;
 			var el = jpath.shift();
