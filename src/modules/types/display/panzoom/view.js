@@ -19,41 +19,86 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
     },
 
 
-    blank: function() {
-      this.dom.empty();
+    blank: {
+      picture: function() {
+        console.log('blank');
+        this.dom.empty();
+      }
     },
 
 
     inDom: function() {
-      var self = this;
       // self.dom.html('<div class="parent"><div class="panzoom"><img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg"></div></div>\
       // <div class="parent"><div class="panzoom"><img class="transparent" src="http://www.colourbox.com/preview/6527480-273411-cute-baby-tiger-cartoon.jpg"></div></div>');
       // 
         
-      this.dom.html('');
       this.resolveReady();
 
       
     },
     
     update:{
-      picture: function(val) {
+      picture: function(val, varname) {
         var self = this;
-        console.log('picture update ', val.get());
-        this.addImage(val.get(), function() {
+        this.clearImages();
+        console.log('picture update ', val, 'varname: ', varname);
+        this.addImage(val.get(), varname, function() {
           self.panzoomElements = self.dom.find('.panzoom');
           self.panzoomMode();
           self.onResize();
+          self.reorderImages();
         });
         
       }
     },
     
-    addImage: function(val, cb) {
+    clearImages: function() {
+      this.imgWidth = [];
+      this.imgHeight = [];
+      if(this.panzoomElements) {
+        this.panzoomElements.panzoom("destroy");
+        this.dom.html('');
+      }
+    },
+    
+    reorderImages: function() {
+      
+      var vars_in = _.map(this.module.definition.vars_in, function(v){
+        return v.name;
+      });
+      
+      
+      console.log('vars_in', vars_in);
+      for(var i=0; i<vars_in.length; i++) {
+        this.dom.find('#'+vars_in[i]).css('z-index', (vars_in.length-i)*10)
+      }
+
+    },
+    
+    addImage: function(val, varname, cb) {
       var self = this;
       console.log('add image');
-      var x = $('<div class="parent"><div class="panzoom"><img/></div></div>');
+      var x = self.dom.find('#'+varname);
+      if(x.length === 0) {
+        x = $('<div class="parent" id="' + varname + '"><div class="panzoom"><img/></div></div>');
+      }
+      var imgconf = self.module.getConfiguration('img');
+      imgconf = _.find(imgconf, function(c) {
+        if(c.variable === varname) {
+          
+          var op = parseFloat(c.opacity);
+          if(op && op >=0 && op <=1) {
+            return true;
+          }
+        }
+        return false;
+      });
+      console.log('img conf: ', imgconf);
       
+      if(imgconf && imgconf.opacity) {
+        x.find('img').css('opacity', parseFloat(imgconf.opacity));
+      }
+      // x.find('img')
       x.find('img').attr('src', val).load(function() {
         self.imgWidth.push(this.width);   // Note: $(this).width() will not
         self.imgHeight.push(this.height); // work for in memory images.
@@ -135,11 +180,14 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
           if(this.imgWidth[i]/this.imgHeight[i] > this.dom.width()/this.dom.height()) {
             domimg[i].width = this.dom.width();
             domimg[i].height = this.imgHeight[i]/this.imgWidth[i] * this.dom.width();
+            // domimg[i].height = 'auto'
           }
           else {
             domimg[i].height = this.dom.height();
             domimg[i].width = this.imgWidth[i]/this.imgHeight[i] * this.dom.height();
+            // domimg[i].width = 'auto';
           }
+          this.dom.find('.parent').width(this.dom.parent().width()).height(this.dom.parent().height());
         }
         this.panzoomElements.panzoom('resetDimensions'); 
       }

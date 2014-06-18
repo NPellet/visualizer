@@ -17,6 +17,14 @@
 				"groups": {
 					"group": [
 						{}
+					],
+					"img": [
+						[
+							{
+								"variable": "image1",
+								"opacity": "0.5"
+							}
+						]
 					]
 				}
 			},
@@ -49,6 +57,10 @@
 				{
 					"rel": "picture",
 					"name": "image1"
+				},
+				{
+					"rel": "picture",
+					"name": "image2"
 				}
 			],
 			"actions_in": {},
