@@ -119,15 +119,15 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				var timeout = setTimeout(resolve, 500);
 				rejectLatency = function() {
 					clearTimeout(timeout);
-					reject();
+					reject("latency");
 				};
-			} )/*.then( function() {
-				self.module.startLoading( varName );
-			} );*/
+			} );
 
 			// Start loading
 			Promise.all( [ this.module.onReady(), latency ] ).then( function() {
 				self.module.startLoading( varName );
+			}, function(err) {
+				// Fail silently (onReady is already covered and reject latency is expected)
 			} );
 
 			Promise.all( [ this.module.onReady( ), variable.onReady( ) ] ).then( function() {
@@ -198,8 +198,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 									
 								}
 
-							} ).catch( function() {
-
+							}, function() {
 								Debug.error("Error while updating module ", arguments, arguments[0].stack );
 							});
 

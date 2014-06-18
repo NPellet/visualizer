@@ -145,7 +145,7 @@ function AbstractPouchDB() {
       conflicts: true,
       include_docs: true,
       continuous: true,
-      since: 'latest',
+      since: 'now',
       onChange: function (change) {
         if (change.seq <= lastChange) {
           return;
@@ -525,8 +525,10 @@ AbstractPouchDB.prototype.get =
           .indexOf(doc._rev.split('-')[1]) !== -1;
       });
 
-      path.ids.splice(path.ids.map(function (x) {return x.id; })
-                      .indexOf(doc._rev.split('-')[1]) + 1);
+      var indexOfRev = path.ids.map(function (x) {return x.id; })
+        .indexOf(doc._rev.split('-')[1]) + 1;
+      var howMany = path.ids.length - indexOfRev;
+      path.ids.splice(indexOfRev, howMany);
       path.ids.reverse();
 
       if (opts.revs) {
@@ -644,6 +646,7 @@ AbstractPouchDB.prototype.changes = function (opts, callback) {
 
 AbstractPouchDB.prototype.close =
   utils.adapterFun('close', function (callback) {
+  this._closed = true;
   return this._close(callback);
 });
 

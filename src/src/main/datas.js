@@ -759,7 +759,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		resurrect: resurrectObject,
 		toJSON: toJSON,
 		get: nativeGetter,
-		resurrect: resurrectNative
+		resurrect: resurrectNative,
+		getChild: { value: function() { return $.Deferred().resolve( this ); } }
 	};
 
 	Object.defineProperties(DataString.prototype, commonProperties);

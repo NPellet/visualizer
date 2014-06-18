@@ -104,7 +104,7 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 						data = callback.call( this );
 					}
 
-					API.createData( varsOut[ i ].name, data, varsOut[ i ].filter );
+					API.createDataJpath( varsOut[ i ].name, data, varsOut[ i ].jpath, varsOut[ i ].filter );
 				}
 			}
 		},

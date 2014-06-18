@@ -3,6 +3,7 @@
 var createBlob = require('./blob.js');
 var errors = require('./errors');
 var utils = require("../utils");
+var hasUpload;
 
 function ajax(options, adapterCallback) {
 
@@ -203,13 +204,34 @@ function ajax(options, adapterCallback) {
       clearTimeout(timer);
       timer = setTimeout(abortReq, options.timeout);
     };
-    if (xhr.upload) { // does not exist in ie9
+    if (typeof hasUpload === 'undefined') {
+      // IE throws an error if you try to access it directly
+      hasUpload = Object.keys(xhr).indexOf('upload') !== -1;
+    }
+    if (hasUpload) { // does not exist in ie9
       xhr.upload.onprogress = xhr.onprogress;
     }
   }
-  xhr.send(options.body);
-  return {abort: abortReq};
+  if (options.body && (options.body instanceof Blob)) {
+    var reader = new FileReader();
+    reader.onloadend = function (e) {
 
+      var binary = "";
+      var bytes = new Uint8Array(this.result);
+      var length = bytes.byteLength;
+
+      for (var i = 0; i < length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+
+      binary = utils.fixBinary(binary);
+      xhr.send(binary);
+    };
+    reader.readAsArrayBuffer(options.body);
+  } else {
+    xhr.send(options.body);
+  }
+  return {abort: abortReq};
 }
 
 module.exports = ajax;

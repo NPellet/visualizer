@@ -21,6 +21,9 @@ function Replication(opts) {
   self.catch = function (reject) {
     return promise.catch(reject);
   };
+  // As we allow error handling via "error" event as well,
+  // put a stub in here so that rejecting never throws UnhandledError.
+  self.catch(function (err) {});
 }
 
 Replication.prototype.cancel = function () {
@@ -563,11 +566,13 @@ function replicateWrapper(src, target, opts, callback) {
         src.replicateOnServer(target, opts, replicateRet);
       } else {
         return genReplicationId(src, target, opts).then(function (repId) {
+          replicateRet.emit('id', repId);
           replicate(repId, src, target, opts, replicateRet);
         });
       }
     });
   }).catch(function (err) {
+    replicateRet.emit('error', err);
     opts.complete(err);
   });
   return replicateRet;

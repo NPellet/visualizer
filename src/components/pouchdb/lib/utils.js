@@ -3,7 +3,7 @@
 var crypto = require('crypto');
 var md5 = require('md5-jkmyers');
 var merge = require('./merge');
-exports.extend = require('extend');
+exports.extend = require('pouchdb-extend');
 exports.ajax = require('./deps/ajax');
 exports.createBlob = require('./deps/blob');
 exports.uuid = require('./deps/uuid');
@@ -229,88 +229,89 @@ exports.hasLocalStorage = function () {
     return false;
   }
 };
-exports.Changes = function () {
-
-  var api = {};
-  var eventEmitter = new EventEmitter();
-  var isChrome = isChromeApp();
-  var listeners = {};
-  var hasLocal = false;
-  if (!isChrome) {
-    hasLocal = exports.hasLocalStorage();
+exports.Changes = Changes;
+exports.inherits(Changes, EventEmitter);
+function Changes() {
+  if (!(this instanceof Changes)) {
+    return new Changes();
   }
-  if (isChrome) {
+  var self = this;
+  EventEmitter.call(this);
+  this.isChrome = isChromeApp();
+  this.listeners = {};
+  this.hasLocal = false;
+  if (!this.isChrome) {
+    this.hasLocal = exports.hasLocalStorage();
+  }
+  if (this.isChrome) {
     chrome.storage.onChanged.addListener(function (e) {
       // make sure it's event addressed to us
       if (e.db_name != null) {
         //object only has oldValue, newValue members
-        eventEmitter.emit(e.dbName.newValue);
+        self.emit(e.dbName.newValue);
       }
     });
-  } else if (hasLocal) {
+  } else if (this.hasLocal) {
     if (global.addEventListener) {
       global.addEventListener("storage", function (e) {
-        eventEmitter.emit(e.key);
+        self.emit(e.key);
       });
     } else {
       global.attachEvent("storage", function (e) {
-        eventEmitter.emit(e.key);
+        self.emit(e.key);
       });
     }
   }
 
-  api.addListener = function (dbName, id, db, opts) {
-    if (listeners[id]) {
-      return;
-    }
-    function eventFunction() {
-      db.changes({
-        include_docs: opts.include_docs,
-        conflicts: opts.conflicts,
-        continuous: false,
-        descending: false,
-        filter: opts.filter,
-        view: opts.view,
-        since: opts.since,
-        query_params: opts.query_params,
-        onChange: function (c) {
-          if (c.seq > opts.since && !opts.cancelled) {
-            opts.since = c.seq;
-            exports.call(opts.onChange, c);
-          }
+}
+Changes.prototype.addListener = function (dbName, id, db, opts) {
+  if (this.listeners[id]) {
+    return;
+  }
+  function eventFunction() {
+    db.changes({
+      include_docs: opts.include_docs,
+      conflicts: opts.conflicts,
+      continuous: false,
+      descending: false,
+      filter: opts.filter,
+      view: opts.view,
+      since: opts.since,
+      query_params: opts.query_params,
+      onChange: function (c) {
+        if (c.seq > opts.since && !opts.cancelled) {
+          opts.since = c.seq;
+          exports.call(opts.onChange, c);
         }
-      });
-    }
-    listeners[id] = eventFunction;
-    eventEmitter.on(dbName, eventFunction);
-  };
+      }
+    });
+  }
+  this.listeners[id] = eventFunction;
+  this.on(dbName, eventFunction);
+};
 
-  api.removeListener = function (dbName, id) {
-    if (!(id in listeners)) {
-      return;
-    }
-    eventEmitter.removeListener(dbName, listeners[id]);
-  };
+Changes.prototype.removeListener = function (dbName, id) {
+  if (!(id in this.listeners)) {
+    return;
+  }
+  EventEmitter.prototype.removeListener.call(this, dbName,
+    this.listeners[id]);
+};
 
-  api.clearListeners = function (dbName) {
-    eventEmitter.removeAllListeners(dbName);
-  };
 
-  api.notifyLocalWindows = function (dbName) {
-    //do a useless change on a storage thing
-    //in order to get other windows's listeners to activate
-    if (isChrome) {
-      chrome.storage.local.set({dbName: dbName});
-    } else if (hasLocal) {
-      localStorage[dbName] = (localStorage[dbName] === "a") ? "b" : "a";
-    }
-  };
+Changes.prototype.notifyLocalWindows = function (dbName) {
+  //do a useless change on a storage thing
+  //in order to get other windows's listeners to activate
+  if (this.isChrome) {
+    chrome.storage.local.set({dbName: dbName});
+  } else if (this.hasLocal) {
+    localStorage[dbName] = (localStorage[dbName] === "a") ? "b" : "a";
+  }
+};
 
-  api.notify = function (dbName) {
-    eventEmitter.emit(dbName);
-  };
-
-  return api;
+Changes.prototype.notify = function (dbName) {
+  this.emit(dbName);
+  this.notifyLocalWindows(dbName);
 };
 
 if (!process.browser || !('atob' in global)) {
@@ -360,7 +361,9 @@ exports.once = function (fun) {
   var called = false;
   return exports.getArguments(function (args) {
     if (called) {
-      console.trace();
+      if (typeof console.trace === 'function') {
+        console.trace();
+      }
       throw new Error('once called  more than once');
     } else {
       called = true;
@@ -422,6 +425,9 @@ exports.toPromise = function (func) {
 
 exports.adapterFun = function (name, callback) {
   return exports.toPromise(exports.getArguments(function (args) {
+    if (this._closed) {
+      return Promise.reject(new Error('database is closed'));
+    }
     var self = this;
     if (!this.taskqueue.isReady) {
       return new exports.Promise(function (fulfill, reject) {

@@ -208,8 +208,9 @@ define(['jquery',
 			}
 			
 			Promise.all( pouching ).then( function() {
-				
 				API.stopLoading("Fetching local variables");	
+			}, function(err) {
+				Debug.error("Unable to fetch local variables", err)
 			});
 			
 			// Pouch DB replication
@@ -273,10 +274,11 @@ define(['jquery',
 										title: 'J-Path',
 										options: options,
 										extractValue: function( val ) {
-											
-											var val2 = val.split(".");
-											val2.shift();
-											return val2;
+											if(val){
+												var val2 = val.split(".");
+												val2.shift();
+												return val2;
+											}
 										},
 
 										insertValue: function( val ) {
