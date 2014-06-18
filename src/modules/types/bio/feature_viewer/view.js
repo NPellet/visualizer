@@ -36,7 +36,7 @@ define(['modules/default/defaultview', 'src/util/util',
       });
       
       myPainter.onFeatureClick(function(data) {
-        console.log('fetaure click: ', data);
+        console.log('feature click: ', data);
         delete data.shape;
         self.module.controller.onFeatureClicked(data);
       });
