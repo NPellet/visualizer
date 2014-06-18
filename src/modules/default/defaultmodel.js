@@ -198,8 +198,10 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 									
 								}
 
-							}, function() {
-								Debug.error("Error while updating module ", arguments, arguments[0].stack );
+							}, function(err) {
+								Debug.error("Error while filtering the data", err );
+							}).catch(function(err){
+								Debug.error("Error while updating module", err);
 							});
 
 						}) ( k );
@@ -210,17 +212,13 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 				
 
-			}, function() {
+			}, function( err ) {
 				console.log('Rejecting');
 				rejectLatency();
 
 				self.module.endLoading( varName );
 
-				var stack = "";
-				if( this && this.getStack ) {
-					stack = this.getStack();
-				}
-				Debug.error( "Error while updating variable", stack );
+				Debug.error( "Error while updating variable", err );
 			} );
 
  		},
