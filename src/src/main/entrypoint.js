@@ -208,8 +208,9 @@ define(['jquery',
 			}
 			
 			Promise.all( pouching ).then( function() {
-				
 				API.stopLoading("Fetching local variables");	
+			}, function(err) {
+				Debug.error("Unable to fetch local variables", err)
 			});
 			
 			// Pouch DB replication

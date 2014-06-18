@@ -142,7 +142,8 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 				}, function() {
 					_reject();
 				} );
-			} ).catch( function( ) {
+			} );
+			this.currentPromise.catch( function( ) {
 
 				var stack = "";
 				if( this && this.getStack ) {
@@ -160,7 +161,6 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 		},
 
 		onReady: function() {
-
 			return this.currentPromise;
 		}
 	});

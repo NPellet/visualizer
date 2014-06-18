@@ -35,13 +35,15 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 			module._resolveModel = res;
 		});
 
-		module._onReady = Promise.all( [ module.viewReady, module.controllerReady, module.modelReady ] ).then( function() {
+		module._onReady = Promise.all( [ module.viewReady, module.controllerReady, module.modelReady ] );
+		module._onReady.then( function() {
 
 			module.updateAllView( );
 
-		}).catch( function() {
-
-			Debug.error( "Error. Caught error in module ready state", arguments );
+		}, function(err) {
+			Debug.error( "Caught error in module ready state", err );
+		}).catch(function(err){
+			Debug.error("Caught error while updating module", err);
 		});
 
 		return new Promise(
@@ -96,9 +98,9 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 
 		this.definition.layers = this.definition.layers || new DataObject(); // View on which layers ?
 
-		this.ready = init( this ).catch( function() {
-
-			Debug.error( "Error. Caught error in module initialization", arguments );
+		this.ready = init( this );
+		this.ready.catch( function(err) {
+			Debug.error( "Caught error in module initialization.", err );
 		});
 	};
 	/**
@@ -166,6 +168,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 				if( this.view.update && this.view.update[rel] ) {
 					this.view.update[ rel ].call(this.view, val[ 1 ], val[ 0 ][ 0 ] );	
 				}
+			}, function(err) {
+				Debug.error("Error during view update", err);
 			});
 		},
 

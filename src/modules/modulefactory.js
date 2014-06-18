@@ -1,4 +1,4 @@
-define(['jquery', 'modules/module'], function($, Module) {
+define(['jquery', 'modules/module', 'src/util/debug'], function($, Module, Debug) {
 
 	var incrementalId = 0;
 
@@ -59,6 +59,8 @@ define(['jquery', 'modules/module'], function($, Module) {
 							result.folders[res.name] = res;
 						}
 						resolve(result);
+					}, function(err){
+						Debug.error("Caught error in ModuleFactory", err);
 					});
 				}
 				else {
@@ -98,6 +100,8 @@ define(['jquery', 'modules/module'], function($, Module) {
 					} else { // Folder is a string, start recursive lookup
 						getSubFoldersFrom(list.folders[ i ]).then(function(folder) {
 							$.extend(true, finalList, folder);
+						}, function(err) {
+							Debug.error("Caught error in ModuleFactory", err);
 						});
 					}
 				}

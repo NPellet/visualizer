@@ -207,7 +207,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			});
 			
 			moduleResize(module);
-		}).catch(function(err){
+		}, function(err){
 			Debug.error("Error during module dom initialization", err);
 		});
 	}
