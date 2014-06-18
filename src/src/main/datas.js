@@ -749,6 +749,10 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			return this.valueOf();
 		}
 	};
+	
+	var getChildNative = {
+		value: function() { return $.Deferred().resolve( this ); }
+	};
 
 	var commonProperties = {
 		trace: trace,
@@ -756,11 +760,10 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,
 		linkToParent: linkToParent,
-		resurrect: resurrectObject,
 		toJSON: toJSON,
 		get: nativeGetter,
 		resurrect: resurrectNative,
-		getChild: { value: function() { return $.Deferred().resolve( this ); } }
+		getChild: getChildNative
 	};
 
 	Object.defineProperties(DataString.prototype, commonProperties);
