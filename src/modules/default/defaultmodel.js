@@ -119,7 +119,8 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				var timeout = setTimeout(resolve, 500);
 				rejectLatency = function() {
 					clearTimeout(timeout);
-					reject("latency");
+					self.module.endLoading( varName );
+					reject();
 				};
 			} );
 
@@ -137,17 +138,13 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 				// Then validate
 				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
-					rejectLatency();
-					self.module.endLoading( varName );
-					return;
+					return rejectLatency();
 				}
                 
                 var data = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
 
                 if( ! data ) {
-                  	rejectLatency();
-					self.module.endLoading( varName );
-					return;
+                  	return rejectLatency();
                 }
 
 				rel = self.module.getDataRelFromName( varName );
@@ -159,8 +156,6 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				var vars = self.module.vars_in();
 
 				rejectLatency();
-				self.module.endLoading( varName );
-
 
 				m = vars.length;
 				
@@ -213,13 +208,13 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 				
 
-			}, function( err ) {
-				console.log('Rejecting');
+			}, function(e) {
 				rejectLatency();
-
-				self.module.endLoading( varName );
-
+			} ).catch( function( err ) {
+				
+				rejectLatency();
 				Debug.error( "Error while updating variable", err );
+				
 			} );
 
  		},

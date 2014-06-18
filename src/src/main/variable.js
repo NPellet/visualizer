@@ -99,7 +99,7 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 
 			if( this.rejectCurrentPromise ) {
 	
-				this.rejectCurrentPromise();
+				this.rejectCurrentPromise("latency");
 				this.rejectCurrentPromise = false;
 			}
 
@@ -127,24 +127,29 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 
 						}, function( error ) {
 							
-							Debug.error("Error during variable filtering", error);
-							_reject();
+							Debug.warn("Error during variable filtering : ", error);
+							_reject("filter");
 							
 						} );
 						
 					} else {
-
 						
 						self._value = value;
 						_resolve( value );	
+						
 					}
-
 					
 				}, function(err) {
 					_reject(err);
 				} );
 			} );
 			this.currentPromise.catch( function( err ) {
+				if (
+					err === "filter" || // Already caught
+					err === "latency" // Expected
+					) {
+					return; 
+				}
 				Debug.error("Error in getting the variable through variable.js", err );
 			});
 
