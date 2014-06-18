@@ -30,13 +30,19 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 
 
 	function createDataJpath( name, data, jpath, filter ) {
-
+		
 		data = DataObject.check( data, true );
 		
-		data.getChild( jpath ).then( function( data ) {
+		if(data && data.getChild) {
 
+			data.getChild( jpath ).then( function( data ) {
+
+				Variables.setVariable( name, false, data, filter );	
+			});
+			
+		} else {
 			Variables.setVariable( name, false, data, filter );	
-		});
+		}
 		
 	}
 

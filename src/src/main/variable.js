@@ -63,7 +63,7 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 		
 
 		createData: function( jpath, dataToCreate, callback ) {
-			data.setChild( jpath.slice(0), dataToCreate );
+			data.setChild( jpath, dataToCreate );
 			this.setjPath( jpath, callback );
 		},
 
@@ -111,7 +111,7 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 					_reject = reject;
 
 				
-				data.getChild( self._jpath.slice( 0 ), true ).then( function( value ) {
+				data.getChild( self._jpath, true ).then( function( value ) {
 					
 					if( callback ) {
 
@@ -139,19 +139,12 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 					}
 
 					
-				}, function() {
-					_reject();
+				}, function(err) {
+					_reject(err);
 				} );
 			} );
-			this.currentPromise.catch( function( ) {
-
-				var stack = "";
-				if( this && this.getStack ) {
-					var stack = this.getStack();
-				}
-
-				Debug.error("Error in getting the variable through variable.js", stack );
-				throw Error();
+			this.currentPromise.catch( function( err ) {
+				Debug.error("Error in getting the variable through variable.js", err );
 			});
 
 			for( var i = 0, l = self.listeners.length ; i < l ; i ++ ) {
