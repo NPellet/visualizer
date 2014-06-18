@@ -12,16 +12,32 @@
 	"modules": [
 		{
 			"url": "modules/types/display/panzoom/",
-			"configuration": {},
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{}
+					],
+					"img": [
+						[
+							{
+								"variable": "baby_tiger",
+								"opacity": "0.5",
+								"order": "2"
+							}
+						]
+					]
+				}
+			},
 			"layers": {
 				"Default layer": {
 					"position": {
-						"left": 42,
-						"top": 11
+						"left": 37,
+						"top": 8
 					},
 					"size": {
-						"width": 48,
-						"height": 29
+						"width": 53,
+						"height": 31
 					},
 					"zIndex": 0,
 					"display": true,
@@ -38,12 +54,30 @@
 				}
 			},
 			"id": 1,
-			"vars_in": [],
+			"vars_in": [
+				{
+					"rel": "picture",
+					"name": "baby_tiger"
+				},
+				{
+					"rel": "picture",
+					"name": "tiger"
+				}
+			],
 			"actions_in": {},
-			"title": "Untitled"
+			"title": "Untitled",
+			"vars_out": {},
+			"actions_out": {}
 		}
 	],
-	"variables": [],
+	"variables": [
+		{
+			"varname": "image1",
+			"jpath": [
+				"image1"
+			]
+		}
+	],
 	"pouchvariables": [],
 	"configuration": {
 		"title": "No title"

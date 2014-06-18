@@ -1,10 +1,11 @@
-# JSON Editor Online
+# JSON Editor
+https://github.com/josdejong/jsoneditor
 http://jsoneditoronline.org/
 
 
 ### Description
 
-JSON Editor Online is a web-based tool to view, edit, and format JSON.
+JSON Editor is a web-based tool to view, edit, and format JSON.
 It has various modes such as a tree editor, a code editor, and a plain text
 editor.
 
@@ -12,16 +13,6 @@ The editor can be used as a component in your own web application. The library
 can be loaded as CommonJS module, AMD module, or as a regular javascript file.
 
 Supported browsers: Chrome, Firefox, Safari, Opera, Internet Explorer 9+.
-
-### Screenshot
-
-The web application shows two panels side by side: a code editor on the left,
-and a tree editor on the right. Files and urls can be loaded via the main menu.
-
-<a href="http://jsoneditoronline.org">
-    <img alt="jsoneditor"
-        src="https://raw.github.com/josdejong/jsoneditor/master/misc/screenshots/jsoneditoronline.png">
-</a>
 
 
 ### Features
@@ -43,9 +34,20 @@ and a tree editor on the right. Files and urls can be loaded via the main menu.
 - Format and compact JSON.
 
 
+### Screenshots
+
+#### Tree editor
+<img alt="json editor" src="https://raw.github.com/josdejong/jsoneditor/master/misc/jsoneditor.png">
+
+#### Code editor
+<img alt="code editor" src="https://raw.github.com/josdejong/jsoneditor/master/misc/codeeditor.png">
+
+
 ### Documentation
 
-- [Docs](https://github.com/josdejong/jsoneditor/tree/master/docs)
+- Documentation:
+  - [API](https://github.com/josdejong/jsoneditor/tree/master/docs/api.md)
+  - [Usage](https://github.com/josdejong/jsoneditor/tree/master/docs/usage.md)
 - [Examples](https://github.com/josdejong/jsoneditor/tree/master/examples)
 - [Source](https://github.com/josdejong/jsoneditor)
 - [History](https://github.com/josdejong/jsoneditor/blob/master/HISTORY.md)
@@ -81,7 +83,7 @@ download:
     <script type="text/javascript" >
         // create the editor
         var container = document.getElementById("jsoneditor");
-        var editor = new jsoneditor.JSONEditor(container);
+        var editor = new JSONEditor(container);
 
         // set json
         var json = {
@@ -103,12 +105,23 @@ download:
 
 ### Build
 
-The code of the JSON Editor is located in the folder `jsoneditor`.
-The code for the web application in `app/web`.
-To build the library from sourcecode, run
+The code of the JSON Editor is located in the folder `./src`. To build 
+jsoneditor:
 
-    jake
+- Install dependencies:
 
-in the root of the project. This will generate the files `jsoneditor.js`,
-`jsoneditor.css`, and minified versions, and will create a folder `build`
-containing the zipped library and the built web application.
+      npm install
+
+- Build JSON Editor:
+
+      npm run build
+
+  This will generate the files `./jsoneditor.js`, `./jsoneditor.css`, and  
+  minified versions in the root of the project.
+
+- To rebuild the assets (not necessary):
+
+      npm run build-assets
+
+  This will build Ace editor, and then generates necessary ace editor files in 
+  the folder `./asset/ace`, and jsonlint in the folder `./asset/jsonlint`.

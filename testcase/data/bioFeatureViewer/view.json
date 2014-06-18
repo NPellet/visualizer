@@ -8,7 +8,7 @@
 		"xWidth": 10,
 		"yHeight": 10
 	},
-	"version": "2.4.0b1",
+	"version": "2.4.0b2",
 	"modules": [
 		{
 			"url": "modules/types/bio/feature_viewer/",
@@ -43,11 +43,22 @@
 					],
 					"wrapper": true,
 					"created": true,
-					"name": "Default layer"
+					"name": "Default layer",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					]
 				}
 			},
 			"id": 1,
-			"vars_in": [],
+			"vars_in": [
+				{
+					"rel": "feature",
+					"name": "a4_human"
+				}
+			],
 			"actions_in": {},
 			"title": "Untitled",
 			"vars_out": [
@@ -115,7 +126,14 @@
 			"actions_out": {}
 		}
 	],
-	"variables": [],
+	"variables": [
+		{
+			"varname": "a4_human",
+			"jpath": [
+				"a4_human"
+			]
+		}
+	],
 	"pouchvariables": [],
 	"configuration": {
 		"title": "No title"

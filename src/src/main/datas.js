@@ -37,7 +37,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		} else {
 			var type = typeof object;
 
-			if( type == "object" ) {
+			if( type === "object" ) {
 				object.__proto__ = DataObject.prototype;
 				return object;
 			}
@@ -131,31 +131,21 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 
 	var StringProperties = ["charAt", "charCodeAt", "concat", "fromCharCode", "indexOf", "lastIndexOf", "localCompare", 
 							"match", "replace", "search", "slice", "split", "substr", "substring", "toLocaleLowerCase", "toLocaleUpperCase",
-							"toLowerCase", "toString", "toUpperCase", "trim", "valueOf" ];
+							"toLowerCase", "toUpperCase", "trim" ];
 
 	for( var i = 0, l = StringProperties.length ; i < l ; i ++ ) {
 		( function ( j ) {
 			
 			DataString.prototype[ StringProperties[ j ] ] = function() {
 				return String.prototype[ StringProperties[ j ] ].apply( this.s_, arguments );
-			}
+			};
 
 		} ) ( i );
 	}
 
 	DataString.prototype.getType = function() {
 		return "string";
-	}
-	DataString.prototype.get = function() {
-		return this.s_;
-	}
-
-	DataString.prototype.setValue = function( val ) {
-		this.s_ = val;
-	}
-
-
-
+	};
 
 	function DataNumber( s ) {
 		Number.call(this, s);
@@ -164,62 +154,17 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 
 	DataNumber.prototype.getType = function() {
 		return "number";
-	}
-
-	DataNumber.prototype.setValue = function( val ) {
-		this.s_ = val;
-	}
-
-
-	DataNumber.prototype.toString = function() {
-		return String(this.s_);
-	}
-
-	DataNumber.prototype.get = function() {
-		return this.s_;
-	}
-
-	DataNumber.prototype.valueOf = function() {
-		return this.s_;
-	}
-
-	DataNumber.prototype.toSource = function() {
-		return this.s_;
-	}
-
-
+	};
 
 	function DataBoolean( s ) {
 		Boolean.call(this, s);
 		this.s_ = s;
 	}
 	
-	DataBoolean.prototype = new Boolean();
 	DataBoolean.prototype.getType = function() {
 		return "boolean";
-	}
-	DataBoolean.prototype.setValue = function( val ) {
-		this.s_ = val;
-	}
-
-
-	DataBoolean.prototype.toString = function() {
-		return String(this.s_);
-	}
-
-	DataBoolean.prototype.get = function() {
-		return this.s_;
-	}
-
-	DataBoolean.prototype.valueOf = function() {
-		return this.s_;
-	}
-
-	DataBoolean.prototype.toSource = function() {
-		return this.s_;
-	}
-
-
+	};
+	
 	window.DataString = DataString;
 	window.DataNumber = DataNumber;
 	window.DataBoolean = DataBoolean;
@@ -283,8 +228,10 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			if (typeof prop !== "undefined") {
 
 				var val = this.get(); // Current value
-
+				
 				if (returnDeferred) { // Returns a deferred if asked
+					if(typeof val !== "object" || val === null)
+						return $.Deferred().resolve(val);
 
 					if (typeof val[ prop ] !== "undefined") {
 
@@ -300,9 +247,12 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 						return $.Deferred().resolve(val[prop]);
 
 					}  else {
-						return $.Deferred().reject();
+						return $.Deferred().resolve();
 					}
 				} else {
+					
+					if(typeof val !== "object" || val === null)
+						return val;
 					
 					if (typeof val[ prop ] !== "undefined") {
 						val[ prop ] = DataObject.check( val[ prop ], 1 ); // Singe recursion
@@ -318,34 +268,38 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	};
 
 	var dataSetter = {
-		value: function(prop, value, recursive) {
+		value: function(prop, value) {
 			
-			var valueTyped = DataObject.check( value, true ),
-				type = valueTyped.getType();
+			var valueTyped = DataObject.check( value, true );
+			
+			if(!valueTyped) {
+				this[ prop ] = valueTyped;
+				return;
+			}
+			
+			var type = valueTyped.getType();
 
 			this[ prop ] = DataObject.check( this[ prop ] );
 
 			var typeNow = this[ prop ] !== undefined && this[ prop ].getType ? this[ prop ].getType() : undefined;
 
-			if( typeNow != type ) {
+			if( typeNow !== type ) {
 
 				this[ prop ] = valueTyped;
 				
 				return this[ prop ];
 			}
 
-			if( type == "string" || type == "number" || type == "boolean" ) {
+			if( type === "string" || type === "number" || type === "boolean" ) {
 
 				this[ prop ].setValue( value );
 				return this[ prop ];
 			}
 
-			if( valueTyped != this[ prop ] ) {
+			if( valueTyped !== this[ prop ] ) {
 				this[ prop ] = valueTyped;
 			}
 
-
-			//this[ prop ] = value;
 			return this[ prop ];
 		}
 	};
@@ -362,11 +316,12 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			if ( ! jpath || jpath.length === 0 ) {
 				return $.Deferred().resolve( this );
 			}
+			
+			jpath = jpath.slice();
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
-			var self = this;
 
-			return this.get( el, true ).pipe(function( subEl ) {
+			return this.get( el, true ).then(function( subEl ) {
 
 				if ( ! subEl || ( jpath.length === 0 ) ) {
 					return subEl;
@@ -393,13 +348,15 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			if ( ! jpath || jpath.length === 0 ) {
 				return $.Deferred().resolve(this);
 			}
+			
+			jpath = jpath.slice();
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
 			var self = this;
 
 			var elementType = jpath.length == 0 ? constructor : ( typeof el == "number" ? DataArray : DataObject );
 
-			return this.get( el, true, elementType ).pipe(function( subEl ) {
+			return this.get( el, true, elementType ).then(function( subEl ) {
 
 
 				// Perform check if anything...
@@ -430,6 +387,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			if ( ! jpath || jpath.length === 0 ) {
 				return this;
 			}
+			
+			jpath = jpath.slice();
 
 			var el = jpath.shift(); // Gets the current element and removes it from the array
 			var self = this;
@@ -471,6 +430,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			if (!jpath) {
 				return;
 			}
+			
+			jpath = jpath.slice();
 
 			var el = jpath.shift( ); // Gets the current element and removes it from the array
 			var subEl = this.get( el, false );
@@ -521,20 +482,21 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 				jpath = jpath.split('.');
 				jpath.shift();
 			}
+			
+			jpath = jpath.slice();
 
 			var jpathLength = jpath.length;
 			var el = jpath.shift();
 
-			if( jpathLength == 1 ) {
+			if( jpathLength === 1 ) {
+				var res = self.set(el, newValue);
+				if(res) {
+					res.triggerChange();
+				}
+				return;
+			}							
 
-				return self.set( el, newValue ).triggerChange();
-
-			} else {
-
-			}
-							
-
-			var elementType = jpath.length == 0 ? constructor : ( typeof el == "number" ? DataArray : DataObject );
+			var elementType = jpath.length === 0 ? constructor : ( typeof el === "number" ? DataArray : DataObject );
 
 			var name = el;
 			arguments[ 0 ] = jpath;
@@ -542,7 +504,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 
 			return this
 					.get(el, true, elementType)
-					.pipe(function( val ) {
+					.then(function( val ) {
 					
 						self.set( name, val );
 						val.linkToParent( self, name );
@@ -759,22 +721,27 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	Object.defineProperty(DataArray.prototype, "resurrect", resurrectArray);
 	Object.defineProperty(DataArray.prototype, "mergeWith", mergeWithArray);
 	
-	// The toJSON method is automatically called when JSON.stringify is used
-	var toJSON = {
+	var nativeGetter = {
 		value: function() {
 			return this.s_;
 		}
 	};
 	
-	var nativeGetter = {
+	var getChildNative = {
 		value: function() {
-			return this;
+			return $.Deferred().resolve( this );
 		}
 	};
 	
-	var resurrectNative = {
+	var setValueNative = {
+		value: function(value) {
+			this.s_ = value;
+		}
+	};
+
+	var nativeToString = {
 		value: function() {
-			return this.valueOf();
+			return String(this.s_);
 		}
 	};
 
@@ -784,11 +751,13 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		unbindChange: unbindChange,
 		triggerChange: triggerChange,
 		linkToParent: linkToParent,
-		resurrect: resurrectObject,
-		toJSON: toJSON,
+		toJSON: nativeGetter, // The toJSON method is automatically called when JSON.stringify is used
 		get: nativeGetter,
-		resurrect: resurrectNative,
-		getChild: { value: function() { return $.Deferred().resolve( this ); } }
+		resurrect: nativeGetter,
+		getChild: getChildNative,
+		valueOf: nativeGetter,
+		setValue: setValueNative,
+		toString: nativeToString
 	};
 
 	Object.defineProperties(DataString.prototype, commonProperties);

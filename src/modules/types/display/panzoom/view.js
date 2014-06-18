@@ -4,6 +4,8 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
 ], function(Default, Util, _) {
   function view() {
     this.selectingArea = false;
+    this.imgWidth = [];
+    this.imgHeight = [];
   };
   view.prototype = $.extend(true, {}, Default, {
 
@@ -17,65 +19,102 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
     },
 
 
-    blank: function() {
-      this.dom.empty();
+    blank: {
+      picture: function() {
+        console.log('blank');
+        this.dom.empty();
+      }
     },
 
 
     inDom: function() {
+      // self.dom.html('<div class="parent"><div class="panzoom"><img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg"></div></div>\
+      // <div class="parent"><div class="panzoom"><img class="transparent" src="http://www.colourbox.com/preview/6527480-273411-cute-baby-tiger-cartoon.jpg"></div></div>');
+      // 
+        
+      this.resolveReady();
+
+      
+    },
+    
+    update:{
+      picture: function(val, varname) {
+        var self = this;
+        this.clearImages();
+        console.log('picture update ', val, 'varname: ', varname);
+        this.addImage(val.get(), varname, function() {
+          self.panzoomElements = self.dom.find('.panzoom');
+          self.panzoomMode();
+          self.onResize();
+          self.reorderImages();
+        });
+        
+      }
+    },
+    
+    clearImages: function() {
+      this.imgWidth = [];
+      this.imgHeight = [];
+      if(this.panzoomElements) {
+        this.panzoomElements.panzoom("destroy");
+        this.dom.html('');
+      }
+    },
+    
+    reorderImages: function() {
+      
+      var vars_in = _.map(this.module.definition.vars_in, function(v){
+        return v.name;
+      });
+      
+      
+      console.log('vars_in', vars_in);
+      for(var i=0; i<vars_in.length; i++) {
+        var order = _.find(this.module.getConfiguration('img'), function(c) {
+          return parseInt(c.order);
+        })
+        this.dom.find('#'+vars_in[i]).css('z-index', (order || vars_in.length-i)*10)
+      }
+
+    },
+    
+    addImage: function(val, varname, cb) {
       var self = this;
-      self.dom.html('<div class="parent"><div class="panzoom"><img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg"></div></div>\
-      <div class="parent"><div class="panzoom"><img class="transparent" src="http://www.colourbox.com/preview/6527480-273411-cute-baby-tiger-cartoon.jpg"></div></div>');
+      console.log('add image');
+      var x = self.dom.find('#'+varname);
+      if(x.length === 0) {
+        x = $('<div class="parent" id="' + varname + '"><div class="panzoom"><img/></div></div>');
+      }
+      var imgconf = self.module.getConfiguration('img');
+      imgconf = _.find(imgconf, function(c) {
+        if(c.variable === varname) {
+          
+          var op = parseFloat(c.opacity);
+          if(op && op >=0 && op <=1) {
+            return true;
+          }
+        }
+        return false;
+      });
+      console.log('img conf: ', imgconf);
       
-        
-      
-      var selectArea = '<button class="select-area">Select Area</button>';
-      var zoomIn = '<button class="zoom-in">Zoom In</button>';
-      var zoomOut = '<button class="zoom-out">Zoom Out</button>';
-      var zoomRange = '<input type="range" class="zoom-range">';
-      var reset = '<button class="reset">Reset</button>'
-        
-      self.dom.append('<div class="buttons"></div>');
-        
-      this.panzoomElements = this.dom.find('.panzoom');
-      this.panzoomMode();
-      
-      // this.dom.find('.select-area').off('click');
-      // this.dom.find('.select-area').on('click', _.once(function() {
-      //   self.dom.find('img').first().Jcrop({
-      //     trueSize: [900, 900]
-      //   }, function() {
-      //     self.jcropApi = this;
-      //   });
-      // }));
-      // 
-      // this.dom.find('.select-area').on('click', function() {
-      //   self.selectingArea = !self.selectingArea;
-      // });
-      // 
-      // this.dom.find('.select-area').on('click', function() {
-      //   if(self.selectingArea) {
-      //     self.selectionMode();
-      //   }
-      //   else {
-      //     self.panzoomMode();
-      //   }
-      // });
-      
+      if(imgconf && imgconf.opacity) {
+        x.find('img').css('opacity', parseFloat(imgconf.opacity));
+      }
+      // x.find('img')
+      x.find('img').attr('src', val).load(function() {
+        self.imgWidth.push(this.width);   // Note: $(this).width() will not
+        self.imgHeight.push(this.height); // work for in memory images.
+        self.dom.append(x);
+        cb();
+      });
     },
     
     panzoomMode: function() {
       var self = this;
       var zoomCount = 0;
-      if(this.jcropApi) {
-        this.jcropApi.disable();
-      }
       
       this.panzoomElements.panzoom({
-        // $zoomIn: this.dom.find(".zoom-in"),
-        // $zoomOut: this.dom.find(".zoom-out"),
-        // $zoomRange: this.dom.find(".zoom-range"),
-        // $reset: this.dom.find(".reset"),
         increment: 0.1,
         maxScale: 10.0,
         minScale: 0.2,
@@ -138,14 +177,22 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
     },
 
     onResize: function() {
-			this.dom.find('img').width(this.dom.width()).height(this.dom.height());
-      this.panzoomElements.panzoom('resetDimensions');
-    },
-
-
-    update: {
-      'image':function(data) {
-
+      if(this.panzoomElements) {
+        var domimg = this.dom.find('img');
+        for(var i=0; i<domimg.length; i++) {
+          if(this.imgWidth[i]/this.imgHeight[i] > this.dom.width()/this.dom.height()) {
+            domimg[i].width = this.dom.width();
+            domimg[i].height = this.imgHeight[i]/this.imgWidth[i] * this.dom.width();
+            // domimg[i].height = 'auto'
+          }
+          else {
+            domimg[i].height = this.dom.height();
+            domimg[i].width = this.imgWidth[i]/this.imgHeight[i] * this.dom.height();
+            // domimg[i].width = 'auto';
+          }
+          this.dom.find('.parent').width(this.dom.parent().width()).height(this.dom.parent().height());
+        }
+        this.panzoomElements.panzoom('resetDimensions'); 
       }
     },
 

@@ -38,7 +38,7 @@ define([
 		variable.killFilter = false;
 
 		if( filter ) {
-			var filterFunction = function( value, resolve, reject ) {
+			filterFunction = function( value, resolve, reject ) {
 				
 				require( [ filter ], function( filterFunction ) {
 				
@@ -63,15 +63,16 @@ define([
 
 			variable.setjPath( jpath, filterFunction );
 
-		} else if( ! jpath && newData ) {
+		} else {
 			
 			variable.createData( [ name ], newData, filterFunction );
+			
 		}
 	}
 
 	return {
-
 		getVariable: getVariable,
 		setVariable: setVariable
-	}
+	};
+	
 });
