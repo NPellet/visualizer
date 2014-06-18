@@ -66,7 +66,7 @@ module.exports = function(grunt) {
               ['./Aristo-jQuery-UI-Theme/css/Aristo/images/*', './Aristo-jQuery-UI-Theme/css/Aristo/*.css'],
               './x2js/xml2json.min.js',
               './leaflet/dist/**',
-              ['./jsoneditor/jsoneditor-min*', './jsoneditor/img/*'],
+              ['./jsoneditor/jsoneditor.min*', './jsoneditor/img/*'],
               './jit/Jit/**/*',
               './jquery-ui-contextmenu/jquery.ui-contextmenu.min.js',
               './mustache/mustache.js',
