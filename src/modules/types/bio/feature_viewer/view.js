@@ -42,7 +42,7 @@ define(['modules/default/defaultview', 'src/util/util',
     },
 
     onResize: function() {
-
+      this.dom.find('table').attr('width', this.dom.width());
     },
 
 
@@ -52,8 +52,17 @@ define(['modules/default/defaultview', 'src/util/util',
         console.log('update features: ', data);
         var myPainter = new Biojs.MyFeatureViewer({
           target: this._id,
-          json: data
+          json: data,
+          imageWidth: 200
         });
+        
+        var dom = this.dom.find('svg').first();
+        var viewbox = [0, 0, dom.attr('width'), dom.attr('height')];
+        dom[0].setAttribute('viewBox', viewbox.join(' '));
+        dom.attr('width', '100%');
+        dom.attr('height', '100%');
+        
+        dom.parent().width('100%').height('100%');
       
         myPainter.onFeatureClick(function(data) {
           console.log('feature click: ', data);
