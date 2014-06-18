@@ -121,13 +121,13 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
 	controller.prototype.sendValue = function(newValue) {
         if(this.module.view.storeObject) {
-            this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(newValue.resurrect());
+            this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(newValue);
         }
 		var outputType = this.module.getConfiguration('output');
 
         if( outputType === 'new' ) {
 
-            this.createDataFromEvent( 'onObjectChange', 'output', newValue.duplicate( ) );
+            this.createDataFromEvent( 'onObjectChange', 'output', newValue );
 
         } else {
 

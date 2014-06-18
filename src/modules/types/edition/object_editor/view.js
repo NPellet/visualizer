@@ -35,7 +35,11 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
             }
             
         },
-        blank: {},
+        blank: {
+			value: function() {
+				this.editor.set({});
+			}
+		},
         inDom: function() {
 			var that = this;
             this.dom.empty();
@@ -46,7 +50,7 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
             this.changeInputData(DataObject.check(JSON.parse(this.module.getConfiguration('storedObject'))));
 			
             this.editor = new jsoneditor.JSONEditor(document.getElementById(this._id), {mode: mode, change: function(){
-					that.module.controller.sendValue(DataObject.check(that.editor.get(), true));
+					that.module.controller.sendValue(that.editor.get());
 			}, module: this.module});
 			this.update.value.call(this, this.inputData);
             this.resolveReady();
@@ -54,10 +58,11 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
         update: {
             value: function(value) {
 				this.changeInputData(value);
-                this.editor.set(value);
+				var valNative = value.resurrect();
+                this.editor.set(valNative);
                 if (this.expand)
                     this.editor.expandAll();
-                this.module.controller.sendValue(value);
+                this.module.controller.sendValue(valNative);
             }
         },
 		changeInputData: function(newData) {
