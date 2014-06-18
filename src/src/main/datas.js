@@ -19,9 +19,9 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		return object;
 	}
 
-	DataObject.check = function( object, transformNatives ) {
+	DataObject.check = function( object, transformNatives, duplicate ) {
 	
-		if (isSpecialObject(object)) {
+		if ( isSpecialObject( object ) ) {
 
 			return object;
 
@@ -87,6 +87,41 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		
 		return object;
 	};
+
+
+
+
+	var duplicator = {
+
+		value: function( transformNatives ) {
+		
+		var target;
+
+		
+		if( this instanceof Array ) {
+
+			target = [];
+
+			for( var i = 0, l = this.length ; i < l ; i ++ ) {
+				target[ i ] = DataObject.recursiveTransform( this[ i ], transformNatives );
+			}
+		} else if( this instanceof Object ) {
+
+			target = {};
+
+			for( var i in this ) {
+
+				target[ i ] = DataObject.recursiveTransform( this[ i ], transformNatives );
+			}
+
+		} else {
+			return DataObject.check( this, true ); // Return new native.
+		}
+		
+		return target;
+	} };
+
+
 
 
 	function DataString( s ) {
@@ -315,12 +350,6 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		}
 	};
 
-
-	var dataDuplicator = {
-		value: function(source) {
-			return DataObject.check(this, true, true);
-		}
-	};
 
 	var getChild = {
 		value: function(jpath) {
@@ -709,9 +738,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		setChild: setChild,
 		getChild: getChild,
 		getChildSync: getChildSync,
-		duplicate: dataDuplicator,
 		trace: trace,
-
+		duplicate: duplicator,
 		traceSync: traceSync,
 		onChange: bindChange,
 		unbindChange: unbindChange,

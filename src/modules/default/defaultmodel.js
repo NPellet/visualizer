@@ -163,6 +163,7 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 
 				m = vars.length;
+				
 				for( ; k < m ; k ++ ) {
 
 					if( vars[ k ].name == varName && self.module.view.update[ vars[ k ].rel ] && varValue !== null ) {
@@ -187,16 +188,16 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 									resolve( varValue );
 								}
 							} ).then( function( varValue ) {
-								
-								if(self.checkBlank[varName]) {
+									
+						//		if(self.checkBlank[varName]) {
 									
 									self.checkBlank[varName] = false;
-									
+								
 									self.data[ vars[ j ].rel ] = varValue;
 									self.removeAllChangeListeners( vars[ j ].rel );
 									self.module.view.update[ vars[ j ].rel ].call( self.module.view, self.data[ vars[ j ].rel ], varName );
 									
-								}
+						//		}
 
 							}, function() {
 								Debug.error("Error while updating module ", arguments, arguments[0].stack );

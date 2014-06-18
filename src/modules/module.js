@@ -69,6 +69,10 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 					module.view = new V();
 					module.controller = new C();
 
+					if( ! module.controller.moduleInformation ) {
+						return;
+					}
+					
 					module.dom = $( module.buildDom( ) );
 
 					module.domContent = module.dom.children( ).children( '.ci-module-content' );
