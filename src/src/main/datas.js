@@ -46,20 +46,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 				return object;
 			}
 
-			switch ( typeof object ) {
-
-				case 'string':
-					return new DataString( object );
-				break;
-
-				case 'number':
-					return new DataNumber( object );
-				break;
-					
-				case 'boolean':
-					return new DataBoolean( object );
-				break;
-			}
+			return transformNative( object );
 		}
 	};
 
@@ -91,35 +78,44 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 
 
 
-	var duplicator = {
+	function duplicate( object ) {
 
-		value: function( transformNatives ) {
-		
 		var target;
+	
+		if( isSpecialNativeObject( object ) ) {
 
-		
-		if( this instanceof Array ) {
+			return transformNative( object );
+
+		} else if( object instanceof Array ) {
 
 			target = [];
 
 			for( var i = 0, l = this.length ; i < l ; i ++ ) {
-				target[ i ] = DataObject.recursiveTransform( this[ i ], transformNatives );
+				target[ i ] = duplicate( object[ i ] );
 			}
-		} else if( this instanceof Object ) {
+		} else if( typeof object == "object" ) {
 
 			target = {};
 
-			for( var i in this ) {
+			for( var i in object ) {
 
-				target[ i ] = DataObject.recursiveTransform( this[ i ], transformNatives );
+				target[ i ] = duplicate( object[ i ] );
 			}
-
 		} else {
-			return DataObject.check( this, true ); // Return new native.
+			target = object;
 		}
 		
 		return target;
-	} };
+	}
+
+
+	var duplicator = {
+
+		value: function( transformNatives ) {
+			
+			return duplicate( this );
+		}
+	};
 
 
 
@@ -765,7 +761,39 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	Object.defineProperties(DataBoolean.prototype, commonProperties);
 	
 	function isSpecialObject(object) {
-		return( object instanceof DataObject || object instanceof DataArray || object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean );
+		return( object instanceof DataObject || object instanceof DataArray || isSpecialNativeObject( object ) );
+	}
+
+	function isSpecialNativeObject( object ) {
+		return ( object instanceof DataString || object instanceof DataNumber || object instanceof DataBoolean) ;
+	}
+
+	function transformNative( object ) {
+
+		var type;
+
+		if( isSpecialNativeObject( object ) ) {
+			type = object.getType();
+			object = object.get();
+		} else {
+			type = typeof object
+		}
+
+
+		switch ( type ) {
+
+			case 'string':
+				return new DataString( object );
+			break;
+
+			case 'number':
+				return new DataNumber( object );
+			break;
+				
+			case 'boolean':
+				return new DataBoolean( object );
+			break;
+		}
 	}
 
 });
