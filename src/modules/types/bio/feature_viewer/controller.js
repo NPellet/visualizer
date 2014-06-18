@@ -60,7 +60,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
         Configuration of the module for receiving events, as a static object
         In the form of 
     */
-    controller.prototype.variablesIn = [ ];
+    controller.prototype.variablesIn = ['feature' ];
 
     /*
         Received actions
