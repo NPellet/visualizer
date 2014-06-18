@@ -70,7 +70,10 @@ define(['modules/default/defaultview', 'src/util/util', 'underscore',
       
       console.log('vars_in', vars_in);
       for(var i=0; i<vars_in.length; i++) {
-        this.dom.find('#'+vars_in[i]).css('z-index', (vars_in.length-i)*10)
+        var order = _.find(this.module.getConfiguration('img'), function(c) {
+          return parseInt(c.order);
+        })
+        this.dom.find('#'+vars_in[i]).css('z-index', (order || vars_in.length-i)*10)
       }
 
     },

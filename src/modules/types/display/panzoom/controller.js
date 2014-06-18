@@ -108,6 +108,12 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
               type: 'text',
               title: 'Opacity [0,1]',
               default: '1'
+            },
+            
+            order: {
+              type: 'text',
+              title: 'Order',
+              default: ''
             }
           }
         }

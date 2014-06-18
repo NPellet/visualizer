@@ -21,8 +21,9 @@
 					"img": [
 						[
 							{
-								"variable": "image1",
-								"opacity": "0.5"
+								"variable": "baby_tiger",
+								"opacity": "0.5",
+								"order": ""
 							}
 						]
 					]
@@ -56,11 +57,11 @@
 			"vars_in": [
 				{
 					"rel": "picture",
-					"name": "image1"
+					"name": "baby_tiger"
 				},
 				{
 					"rel": "picture",
-					"name": "image2"
+					"name": "tiger"
 				}
 			],
 			"actions_in": {},
