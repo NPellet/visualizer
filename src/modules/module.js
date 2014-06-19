@@ -463,12 +463,12 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 				var i = 0,
 					l = arraySource.length,
 					target = [];
-
+				
 				if( Array.isArray( arraySource ) ) {
 					for( ; i < l ; i ++ ) {
 
 						target.push( {
-							key: arraySource[ i ].file ? require.toUrl(arraySource[ i ].file) : "",
+							key: arraySource[ i ].file || "",
 							title: arraySource[ i ].name,
 							children: makeFilters( arraySource[ i ].children )
 						} );		
