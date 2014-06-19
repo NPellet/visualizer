@@ -11,7 +11,7 @@ module.exports = function(grunt) {
   function mapPath(path) { // Map a relative application path to a relative build path
 	  var mapped;
 	  if(path.indexOf('usr/')===0)
-		  mapped usrPath+path.substr(3);
+		  mapped = usrPath+path.substr(3);
 	  else
 		  mapped = './src/'+path;
 	  
