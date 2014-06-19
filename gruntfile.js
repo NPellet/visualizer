@@ -9,9 +9,16 @@ module.exports = function(grunt) {
   var usrPath = grunt.option('usr')||'./src/usr';
   
   function mapPath(path) { // Map a relative application path to a relative build path
+	  var mapped;
 	  if(path.indexOf('usr/')===0)
-		  return usrPath+path.substr(3);
-	  return './src/'+path;
+		  mapped usrPath+path.substr(3);
+	  else
+		  mapped = './src/'+path;
+	  
+	  if(mapped.indexOf('.js')===-1)
+		  mapped += ".js";
+	  
+	  return mapped;
   }
 
   // Project configuration.
