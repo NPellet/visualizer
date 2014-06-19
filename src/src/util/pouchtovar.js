@@ -402,7 +402,7 @@ define(['pouchdb', 'uri/URI', 'src/util/debug'], function(PouchDB, URI, Debug) {
 			if(that.allDocs) {
 				var arr = that.allDocs.value,
 					index = getIndex(arr, id);
-				if (arr[index]._rev !== change.doc._rev) {
+				if (index > -1 && arr[index]._rev !== change.doc._rev) {
 					arr[index].mergeWith(change.doc, "internal_pouch_change");
 				}
 			}
@@ -416,9 +416,11 @@ define(['pouchdb', 'uri/URI', 'src/util/debug'], function(PouchDB, URI, Debug) {
 			if(that.allDocs) {
 				var arr = that.allDocs.value,
 					index = getIndex(arr, id);
-				arr[index].setPouch(null);
-				arr.splice(index, 1);
-				that.allDocs.triggerChange("internal_pouch_change");
+				if(index > -1) {
+					arr[index].setPouch(null);
+					arr.splice(index, 1);
+					that.allDocs.triggerChange("internal_pouch_change");
+				}
 			}
 		});
 	}
