@@ -79,6 +79,10 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 					for(var i = 0; i < firstlvl.length; i++) {
 						firstlvl[i].setExpanded(true);
 					}
+				} else if(this.expand === "all") {
+					this.tree.visit(function(node){
+						node.setExpanded(true);
+					});
 				}
 			}
 		},

@@ -56,6 +56,10 @@ define(['modules/default/defaultcontroller'], function(Default) {
 								{
 									title: 'First level',
 									key:'lvl1'
+								},
+								{
+									title: 'All nodes',
+									key:'all'
 								}
 							]
 						}
