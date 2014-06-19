@@ -15,6 +15,13 @@
 			"configuration": {
 				"sections": {},
 				"groups": {
+					"group": [
+						{
+							"expand": [
+								"lvl1"
+							]
+						}
+					],
 					"cols": [
 						[
 							{

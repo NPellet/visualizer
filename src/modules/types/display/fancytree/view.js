@@ -30,6 +30,8 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 				}
 			}
 			
+			this.expand = this.module.getConfiguration("expand");
+			
 			this.jpaths = jpaths;
 			
 			this.module.getDomContent().html(this.dom);
@@ -72,6 +74,12 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function(D
 				var result = treeToFancy(value.get());
 				this.module.model._objectModel = result.model;
 				this.tree.reload(result.fancy);
+				if(this.expand === "lvl1") {
+					var firstlvl = this.tree.rootNode.children;
+					for(var i = 0; i < firstlvl.length; i++) {
+						firstlvl[i].setExpanded(true);
+					}
+				}
 			}
 		},
 		blank: {

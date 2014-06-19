@@ -38,6 +38,29 @@ define(['modules/default/defaultcontroller'], function(Default) {
 		
 		return {
 			groups: {
+				group: {
+					options: {
+						type: 'list',
+						multiple: false
+					},
+					fields : {
+						expand: {
+							type: 'combo',
+							title: 'Auto-expand children',
+							default: 'none',
+							options: [
+								{
+									title:'None',
+									key:'none'
+								},
+								{
+									title: 'First level',
+									key:'lvl1'
+								}
+							]
+						}
+					}
+				},
 				cols: {
 					options: {
 						type: 'table',
@@ -69,7 +92,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
 	};
 	
 	controller.prototype.configAliases = {
-		columns: [ 'groups', 'cols', 0 ]
+		columns: [ 'groups', 'cols', 0 ],
+		expand: [ 'groups', 'group', 0, 'expand', 0 ]
 	};
 	
 	controller.prototype.onActivate = function(data) {
