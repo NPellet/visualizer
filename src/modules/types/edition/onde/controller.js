@@ -13,8 +13,9 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
         license: 'MIT'
     };
     
-    controller.prototype.init = function() {
+    controller.prototype.initImpl = function() {
         this.inputSchema = {};
+		this.resolveReady();
     };
 
     controller.prototype.references = {
@@ -141,7 +142,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
     controller.prototype.onSubmit = function(data) {
         var outputType = this.module.getConfiguration('output');
         if(outputType==='new')
-            this.setVarFromEvent('onFormSubmit', DataObject.check(data, true));
+            this.createDataFromEvent('onFormSubmit','outputValue', data);
         else
             this.updateInput(data);
     };
@@ -150,7 +151,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
 		var input = this.module.view.inputObj;
 		if(input) {
 			input.mergeWith(newData, this.module.getId());
-			this.setVarFromEvent('onFormSubmit', input);
+			this.createDataFromEvent('onFormSubmit', 'outputValue', input);
 		}
     };
 

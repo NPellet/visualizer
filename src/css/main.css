@@ -903,7 +903,16 @@ table.moduleInformation tr td:first-child {
     z-index: 10000 !important;
 }
 
-[data-tooltip]:before {
+.ci-tooltip {
+    background: rgba(0,0,0,.8);
+    border-radius: 5px;
+    color: #fff;
+    padding: 5px 15px;
+    position: absolute;
+    pointer-events: none;
+}
+
+/*[data-tooltip]:before {
 	background: rgba(0,0,0,.8);
 	border-radius: 5px;
 	color: #fff;
@@ -922,7 +931,7 @@ table.moduleInformation tr td:first-child {
 	opacity:1;
 	transition:opacity 0.4s ease-out;
 	transition-delay: 0.5s;
-}
+}*/
 
 
 
