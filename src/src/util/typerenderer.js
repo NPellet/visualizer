@@ -478,6 +478,39 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
     };
 
     functions.indicator = {};
+	functions.indicator.init = function() {
+		
+		var tooltip = $('<div class="ci-tooltip"></div>').css({
+			display: "none",
+			opacity: 0
+		}).appendTo("#ci-visualizer");
+		var current;
+		
+		$('#modules-grid').on('mouseenter', '[data-tooltip]', function(e) {
+			
+			current = setTimeout(function(){
+				var target = $(e.target);
+				var offset = target.offset();
+				tooltip.css({
+					left: offset.left,
+					top: offset.top,
+					display: "block"
+				}).text(target.attr("data-tooltip"));
+				tooltip.animate({
+					opacity: 1
+				});
+			}, 500);
+		});
+		
+		$('#modules-grid').on('mouseleave', '[data-tooltip]', function(e) {
+			clearTimeout(current);
+			tooltip.css({
+				opacity: 0,
+				display: "none"
+			});
+		});
+		
+	};
     functions.indicator.toscreen = function(def, value) {
 		
         if(!(value instanceof Array))
@@ -539,6 +572,11 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 		
 		var rootData = data;
 		data = Traversing.get(data);
+		
+		if(!functions[ type ].ready && functions[ type ].init) {
+			functions[ type ].init();
+			functions[ type ].ready = true;
+		}
 		
 		functions[ type ].toscreen(deferred, data, rootData, args, highlights, box, jpath);
 	}
