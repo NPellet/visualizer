@@ -142,6 +142,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	DataString.prototype.getType = function() {
 		return "string";
 	};
+	
+	DataString.prototype.nativeConstructor = String;
 
 	function DataNumber( s ) {
 		Number.call(this, s);
@@ -151,6 +153,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	DataNumber.prototype.getType = function() {
 		return "number";
 	};
+	
+	DataNumber.prototype.nativeConstructor = Number;
 
 	function DataBoolean( s ) {
 		Boolean.call(this, s);
@@ -160,6 +164,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	DataBoolean.prototype.getType = function() {
 		return "boolean";
 	};
+	
+	DataBoolean.prototype.nativeConstructor = Boolean;
 	
 	window.DataString = DataString;
 	window.DataNumber = DataNumber;
@@ -731,7 +737,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	
 	var setValueNative = {
 		value: function(value) {
-			this.s_ = value;
+			this.s_ = this.nativeConstructor(value);
 		}
 	};
 

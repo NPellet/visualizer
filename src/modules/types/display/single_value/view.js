@@ -41,11 +41,11 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 
 				var view = this;
 				
-				if( varValue.onChange ) {
+				/*if( varValue.onChange ) {
 					varValue.onChange( function( value ) {
 						view.render( value, varName );
 					});
-				}
+				}*/
 
 				if( varValue == undefined ) {
 

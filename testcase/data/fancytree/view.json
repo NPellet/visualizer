@@ -35,8 +35,8 @@
 			"layers": {
 				"Default layer": {
 					"position": {
-						"left": 39,
-						"top": 7
+						"left": 0,
+						"top": 0
 					},
 					"size": {
 						"width": 79,
@@ -53,7 +53,7 @@
 							0
 						]
 					],
-					"wrapper": true,
+					"wrapper": false,
 					"created": true,
 					"name": "Default layer",
 					"bgColor": [
@@ -77,10 +77,17 @@
 				{
 					"event": "onActivate",
 					"rel": "nodeData",
-					"jpath": [
-						"a"
-					],
+					"jpath": [],
 					"name": "node"
+				},
+				{
+					"event": "onActivate",
+					"rel": "nodeData",
+					"jpath": [
+						"other",
+						"value"
+					],
+					"name": "node2"
 				}
 			],
 			"actions_out": {}
@@ -114,12 +121,12 @@
 			"layers": {
 				"Default layer": {
 					"position": {
-						"left": 123,
-						"top": 12
+						"left": 122,
+						"top": 2
 					},
 					"size": {
 						"width": 45,
-						"height": 50
+						"height": 34
 					},
 					"zIndex": 0,
 					"display": true,
@@ -150,6 +157,85 @@
 			],
 			"title": "Untitled",
 			"actions_out": {}
+		},
+		{
+			"url": "modules/types/display/single_value/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							],
+							"sprintfOrder": [
+								null
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 124,
+						"top": 41
+					},
+					"size": {
+						"width": 45,
+						"height": 26
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "node2"
+				}
+			],
+			"actions_in": {},
+			"title": "Untitled",
+			"vars_out": {},
+			"actions_out": {}
 		}
 	],
 	"variables": [
@@ -162,6 +248,6 @@
 	],
 	"pouchvariables": [],
 	"configuration": {
-		"title": "No title"
+		"title": "Display a tree structure in a table"
 	}
 }
