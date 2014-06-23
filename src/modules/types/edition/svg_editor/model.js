@@ -8,7 +8,16 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 		},
 		
 		getjPath: function(rel) {
-			return {};
+      return [];
+      switch(rel) {
+      case 'info':
+        if(!this.module._data) {
+          return [];
+        }
+        return Traversing.getJPathsFromElement(this.module._data);
+      default: 
+      return [];
+      }
 		}
 	});
 

@@ -33,6 +33,10 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     
     svgModifier: {
       label: "An object describing svg modification"
+    },
+    
+    info: {
+      label: "An info object"
     }
 	};
   
@@ -43,7 +47,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     },
     
     onHover: {
-      label: "An svg element is hovered"
+      label: "An svg element is hovered",
+      refVariable: ["info"]
     }
   };
 	
@@ -51,6 +56,9 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     this.createDataFromEvent("onChange", "svgString", DataObject.check({type:"svg", value: val}, true));
   }
 
+  controller.prototype.onHover = function(val) {
+    this.createDataFromEvent("onHover", "info", val);
+  }
 
 	/*
 		Configuration of the module for receiving events, as a static object

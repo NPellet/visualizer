@@ -97,8 +97,13 @@ define(['require',
     
     modifySvg: function(data) {
       var self = this;
+      console.log('modify svg', data);
       var svgcontent= $(self.iframeDoc).find('#svgcontent');
+      self.module._data = [];
       for(var key in data) {
+        if(data[key].info) {
+          self.module._data = data[key].info;
+        }
         var contentElement = svgcontent.find('#'+key);
         if(data[key].value) {
           contentElement.html(data[key].value);
@@ -107,7 +112,8 @@ define(['require',
           contentElement.attr(data[key].attributes);
         }
         contentElement.off('mouseover').on('mouseover', function() {
-          console.log('mouse over svg element');
+          console.log('mouse over svg element', data[key].info  || {});
+          self.module.controller.onHover(data[key].info || {});
         })
         .off('click').on('click', function() {
           console.log('click over svg element')
