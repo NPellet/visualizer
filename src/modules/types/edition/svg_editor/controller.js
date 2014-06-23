@@ -29,28 +29,34 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 	  svgString: {
 	    type: "svg",
       label: "A string describing an svg"
-	  }
+	  },
+    
+    svgModifier: {
+      label: "An object describing svg modification"
+    }
 	};
   
   controller.prototype.events = {
     onChange: {
       label: "The svg content changed",
       refVariable: ["svgString"]
+    },
+    
+    onHover: {
+      label: "An svg element is hovered"
     }
   };
 	
   controller.prototype.onChange = function(val) {
     this.createDataFromEvent("onChange", "svgString", DataObject.check({type:"svg", value: val}, true));
   }
-	
-
 
 
 	/*
 		Configuration of the module for receiving events, as a static object
 		In the form of 
 	*/
-	controller.prototype.variablesIn = [];
+	controller.prototype.variablesIn = ['svgModifier'];
 
 	
 	

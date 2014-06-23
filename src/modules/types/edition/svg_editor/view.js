@@ -21,6 +21,7 @@ define(['require',
     view.prototype = $.extend(true, {}, Default, {
       
       init: function() {
+        console.log('init');
         var self = this;
         var doLoad = false;
         if(this.firstLoad) {
@@ -32,8 +33,7 @@ define(['require',
           console.log('svg editor init')
           this.dom = $('<iframe src="lib/svg-edit-2.7/svg-editor.html?extensions=ext-xdomain-messaging.js' +
           window.location.href.replace(/\?(.*)$/, '&$1') + // Append arguments to this file onto the iframe
-          '" id="svgedit"></iframe>'
-        );
+          '" id="svgedit"></iframe>');
 
         this.module.getDomContent().html(this.dom);
             
@@ -56,7 +56,8 @@ define(['require',
           });
           self._loadSvg();
           self.iframeLoaded.resolve();
-		  self.resolveReady();
+          self.resolveReady();
+          console.log('resolve ready');
         });
       }
       else {
@@ -64,9 +65,12 @@ define(['require',
       }
     },
 
-    inDom: function() {},
+    inDom: function() {
+      console.log('in dom');
+    },
 
     onResize: function() {
+      console.log('on resize');
       this.dom.height(this.height).width(this.width);
       // $(this.fitToCanvasButton).click();
       if(this.svgCanvas) {
@@ -76,21 +80,53 @@ define(['require',
     },
 
     blank: function() {
+      console.log('blank');
     },
 
     update: {
 
-      data: function(data) {
-
+      svgModifier: function(data) {
+        var self = this;
+        console.log('svg modifier update')
+        setTimeout(function() {
+          self.modifySvg(data);
+        }, 0);
+        
       }
     },
+    
+    modifySvg: function(data) {
+      var self = this;
+      var svgcontent= $(self.iframeDoc).find('#svgcontent');
+      for(var key in data) {
+        var contentElement = svgcontent.find('#'+key);
+        if(data[key].value) {
+          contentElement.html(data[key].value);
+        }
+        if(data[key].attributes) {
+          contentElement.attr(data[key].attributes);
+        }
+        contentElement.off('mouseover').on('mouseover', function() {
+          console.log('mouse over svg element');
+        })
+        .off('click').on('click', function() {
+          console.log('click over svg element')
+        })
+        .off('mousedown').on('mousedown', function() {
+          console.log('mousedown on svg element');
+        });
+        
+      }
+      self._saveSvg();
+    },
+    
     getDom: function() {
       return this.dom;
     },
     
     _loadSvg: function() {
       var svgcode = this.module.getConfiguration('svgcode');
-      console.log('load svg code: ', svgcode);
+      // console.log('load svg code: ', svgcode);
       this.svgCanvas.setSvgString(svgcode);
       this.module.controller.onChange(svgcode);
     },
@@ -99,7 +135,7 @@ define(['require',
       var self = this;
       function handleSvgData(data, error) {
         if(error) {
-          console.error("Unable to save svg");
+          console.error("Unable to get svg from iframe");
           return;
         }
         self.module.definition.configuration.groups.group[0].svgcode = [data];
