@@ -35,7 +35,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		onResize: function() {
 			if (this.DEBUG) console.log("Radar Chart: onResize");
 			this._redraw();
-			
+
 		},
 
 		/* When a value change this method is called. It will be called for all 
@@ -45,7 +45,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		update: {
 			'chart': function(moduleValue) 
 			{
-			
+
 				if (this.DEBUG) console.log("Radar Chart: update from chart object");
 
 				if (! moduleValue) {
@@ -134,15 +134,15 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			return data;
 		},
 		getRandomColor: function(nbColor, i) {
-			
+
 			var currentColor=360/nbColor*i;
 			color = "hsla("+currentColor+",100%,50%,0.3)";
-			
+
 			return color;
 		},
 
 		createChart: function(chart, data) {
-		
+
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
 			switch (cfg('preference'))
 			{
@@ -151,7 +151,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 				{
 				chart.data[0].color = this.getRandomColor(chart.data.length, 0);
 				}
-				
+
 				var options = {
 					view: "radar",
 					container: this._id,
@@ -201,7 +201,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 						}
 						val.push({text: chart.data[i].serieLabel,color: chart.data[i].color});
 					}
-					
+
 				break;
 
 			case 'pie':
@@ -217,7 +217,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 				break;
 			};
-			
+
 		if(cfg('showlegend') == 'true')
 					{
 					switch (cfg('legendalign'))
@@ -270,8 +270,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					values: val
 				}); 
 				break;
-					
-				
+
+
 				}
 				}
 
