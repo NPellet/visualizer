@@ -31,7 +31,6 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
 			this.jpathConfig = $.extend(true, [], this.module.getConfiguration("colsjPaths"));
 
             this.module.getDomContent( ).html(this.dom);
-            this.onReady = $.Deferred();
             
         },
         blank: {
@@ -41,6 +40,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
         },
         update: {
             value : function(value) {
+             
                 if(!value)
                     return;
                 value = value.get();
@@ -52,6 +52,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 this.redrawChart();
             },
             columns: function(value) {
+
                 if(!(value instanceof Array))
                     return;
                 for(var i = 0; i < this._previousColumns.length; i++) {
@@ -78,8 +79,10 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 }
             }
         },
+		inDom: function() {
+			this.resolveReady();
+		},
         onResize: function() {
-            this.onReady.resolve();
             this.redrawChart();
         },
         redrawChart: function() {
@@ -121,26 +124,28 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             var colorJpath = this.module.getConfiguration("colorjpath");
 			if(colorJpath) colorJpath = Util.makejPathFunction(colorJpath);
 
-            var value = this._value, vl = value.length, result;
+            var value = this._value, vl = value.length;
 
             if(!l || !vl) {
                 this._data=[];
                 return;
             }
             
-            var newValue = new DataArray();
-            var names = [];
+            var newValue = Array(vl);
+            var names = Array(l);
             for(var i = 0; i < l; i++){
-                names[i] = columns[i].name;
+                names[i] = columns[i].name.toString();
             }
             this._names = names;
 
 			var newVal, val;
             for(var i = 0; i < vl; i++) {
-                newVal = new DataObject();
+                newVal = {};
 				val = value[i];
                 newValue[i] = newVal;
+               
                 for(var j = 0; j < l; j++) {
+
                     newVal[columns[j].name] = columns[j].jpath(val);
                 }
 				if(colorJpath) {
@@ -157,7 +162,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             if(config) {
                 for(var i = 0; i < config.length; i++){
                     if(config[i].jpath) {
-                        objConfig[config[i].name] = config[i];
+                        objConfig[config[i].name] = $.extend( true, {}, config[i]);
 					}
                 }
             }
@@ -169,10 +174,11 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
             }
 			
 			for(var i = 0; i < totalConfig.length; i++) {
-				if(typeof totalConfig[i].jpath === "string")
-					totalConfig[i].jpath = Util.makejPathFunction(totalConfig[i].jpath);
+				if(typeof totalConfig[i].jpath === "function")
+					continue;
+				totalConfig[i].jpath = Util.makejPathFunction(totalConfig[i].jpath);
 			}
-
+			
             return totalConfig;
         },
         resetBrush: function(){

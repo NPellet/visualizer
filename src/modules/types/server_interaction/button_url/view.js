@@ -6,6 +6,8 @@ define(['modules/default/defaultview'], function(Default) {
 		init: function() {	
 			var self = this;
 			this.dom = $('<div></div>');
+			
+			this.resolveReady();
 		/*	var button = new BI.Buttons.Button(this.module.getConfiguration().label || '', function() {
 				self.module.controller.onClick();
 			}, { 

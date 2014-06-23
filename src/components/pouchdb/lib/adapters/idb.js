@@ -4,9 +4,40 @@ var utils = require('../utils');
 var merge = require('../merge');
 var errors = require('../deps/errors');
 
+var cachedDBs = {};
+var taskQueue = {
+  running: false,
+  queue: []
+};
+
+function tryCode(fun, that, args) {
+  try {
+    fun.apply(that, args);
+  } catch (err) { // shouldn't happen
+    if (window.PouchDB) {
+      window.PouchDB.emit('error', err);
+    }
+  }
+}
+
+function applyNext() {
+  if (taskQueue.running || !taskQueue.queue.length) {
+    return;
+  }
+  taskQueue.running = true;
+  var item = taskQueue.queue.shift();
+  item.action(function (err, res) {
+    tryCode(item.callback, this, [err, res]);
+    taskQueue.running = false;
+    process.nextTick(applyNext);
+  });
+}
+
 function idbError(callback) {
   return function (event) {
-    callback(errors.error(errors.IDB_ERROR, event.target, event.type));
+    var message = (event.target && event.target.error &&
+      event.target.error.name) || event.target;
+    callback(errors.error(errors.IDB_ERROR, message, event.type));
   };
 }
 
@@ -35,6 +66,18 @@ function isModernIdb() {
 }
 
 function IdbPouch(opts, callback) {
+  var api = this;
+
+  taskQueue.queue.push({
+    action: function (thisCallback) {
+      init(api, opts, thisCallback);
+    },
+    callback: callback
+  });
+  applyNext();
+}
+
+function init(api, opts, callback) {
 
   // IndexedDB requires a versioned database structure, so we use the
   // version here to manage migrations.
@@ -42,42 +85,26 @@ function IdbPouch(opts, callback) {
 
   // The object stores created for each database
   // DOC_STORE stores the document meta data, its revision history and state
+  // Keyed by document id
   var DOC_STORE = 'document-store';
   // BY_SEQ_STORE stores a particular version of a document, keyed by its
   // sequence id
   var BY_SEQ_STORE = 'by-sequence';
   // Where we store attachments
   var ATTACH_STORE = 'attach-store';
-  // Where we store meta data
+  // Where we store database-wide meta data in a single record
+  // keyed by id: META_STORE
   var META_STORE = 'meta-store';
   // Where we detect blob support
   var DETECT_BLOB_SUPPORT_STORE = 'detect-blob-support';
 
   var name = opts.name;
-  var req = global.indexedDB.open(name, ADAPTER_VERSION);
-  var docCount = -1;
-
-  if (!('openReqList' in IdbPouch)) {
-    IdbPouch.openReqList = {};
-  }
-  IdbPouch.openReqList[name] = req;
 
   var blobSupport = null;
   var instanceId = null;
-  var api = this;
+  var idStored = false;
   var idb = null;
-
-  req.onupgradeneeded = function (e) {
-    var db = e.target.result;
-    if (e.oldVersion < 1) {
-      // initial schema
-      createSchema(db);
-    }
-    if (e.oldVersion < 2) {
-      // version 2 adds the deletedOrLocal index
-      addDeletedOrLocalIndex(e);
-    }
-  };
+  var docCount = -1;
 
   function createSchema(db) {
     db.createObjectStore(DOC_STORE, {keyPath : 'id'})
@@ -108,59 +135,6 @@ function IdbPouch(opts, callback) {
     };
   }
 
-  req.onsuccess = function (e) {
-
-    idb = e.target.result;
-
-    idb.onversionchange = function () {
-      idb.close();
-    };
-
-    var txn = idb.transaction([META_STORE, DETECT_BLOB_SUPPORT_STORE],
-                              'readwrite');
-
-    var req = txn.objectStore(META_STORE).get(META_STORE);
-
-    req.onsuccess = function (e) {
-
-      var idStored = false;
-      var checkSetupComplete = function () {
-        if (blobSupport === null || !idStored) {
-          return;
-        } else {
-          callback(null, api);
-        }
-      };
-
-      var meta = e.target.result || {id: META_STORE};
-      if (name  + '_id' in meta) {
-        instanceId = meta[name + '_id'];
-        idStored = true;
-        checkSetupComplete();
-      } else {
-        instanceId = utils.uuid();
-        meta[name + '_id'] = instanceId;
-        txn.objectStore(META_STORE).put(meta).onsuccess = function () {
-          idStored = true;
-          checkSetupComplete();
-        };
-      }
-
-      // detect blob support
-      try {
-        txn.objectStore(DETECT_BLOB_SUPPORT_STORE).put(utils.createBlob(),
-                                                       "key");
-        blobSupport = true;
-      } catch (err) {
-        blobSupport = false;
-      } finally {
-        checkSetupComplete();
-      }
-    };
-  };
-
-  req.onerror = idbError(callback);
-
   api.type = function () {
     return 'idb';
   };
@@ -187,6 +161,7 @@ function IdbPouch(opts, callback) {
     }
 
     var results = [];
+    var fetchedDocs = {};
     var docsWritten = 0;
 
     function writeMetaData(e) {
@@ -201,7 +176,14 @@ function IdbPouch(opts, callback) {
         return;
       }
       var currentDoc = docInfos.shift();
-      var req = txn.objectStore(DOC_STORE).get(currentDoc.metadata.id);
+      var id = currentDoc.metadata.id;
+
+      if (id in fetchedDocs) {
+        // if newEdits=false, can re-use the same id from this batch
+        return updateDoc(fetchedDocs[id], currentDoc);
+      }
+
+      var req = txn.objectStore(DOC_STORE).get(id);
       req.onsuccess = function process_docRead(event) {
         var oldDoc = event.target.result;
         if (!oldDoc) {
@@ -233,10 +215,8 @@ function IdbPouch(opts, callback) {
         if (utils.isLocalId(metadata.id)) {
           return;
         }
-
-        IdbPouch.Changes.notify(name);
-        IdbPouch.Changes.notifyLocalWindows(name);
       });
+      IdbPouch.Changes.notify(name);
       docCount = -1; // invalidate
       callback(null, aresults);
     }
@@ -373,12 +353,13 @@ function IdbPouch(opts, callback) {
             delete metadata.rev;
             var local = utils.isLocalId(metadata.id);
             metadata.deletedOrLocal = (deleted || local) ? "1" : "0";
-            metadata.winningRev = merge.winningRev(metadata);
+            metadata.winningRev = winningRev;
             var metaDataReq = txn.objectStore(DOC_STORE).put(metadata);
             metaDataReq.onsuccess = function () {
               delete metadata.deletedOrLocal;
               delete metadata.winningRev;
               results.push(docInfo);
+              fetchedDocs[docInfo.metadata.id] = docInfo.metadata;
               utils.call(callback);
             };
           };
@@ -391,12 +372,10 @@ function IdbPouch(opts, callback) {
     }
 
     function updateDoc(oldDoc, docInfo) {
-      var winningRev = merge.winningRev(docInfo.metadata);
-      var deleted = utils.isDeleted(docInfo.metadata, winningRev);
-
       var merged =
         merge.merge(oldDoc.rev_tree, docInfo.metadata.rev_tree[0], 1000);
       var wasPreviouslyDeleted = utils.isDeleted(oldDoc);
+      var deleted = utils.isDeleted(docInfo.metadata);
       var inConflict = (wasPreviouslyDeleted && deleted && newEdits) ||
         (!wasPreviouslyDeleted && newEdits && merged.conflicts !== 'new_leaf');
 
@@ -406,6 +385,10 @@ function IdbPouch(opts, callback) {
       }
 
       docInfo.metadata.rev_tree = merged.tree;
+
+      // recalculate
+      var winningRev = merge.winningRev(docInfo.metadata);
+      deleted = utils.isDeleted(docInfo.metadata, winningRev);
 
       writeDoc(docInfo, winningRev, deleted, processDocs);
     }
@@ -573,15 +556,25 @@ function IdbPouch(opts, callback) {
       end = false;
     }
 
-    var keyRange;
+    var keyRange = null;
     try {
-      keyRange = start && end ? global.IDBKeyRange.bound(start, end, false,
-          !inclusiveEnd)
-        : start ? (descending ? global.IDBKeyRange.upperBound(start)
-                  : global.IDBKeyRange.lowerBound(start))
-        : end ? (descending ? global.IDBKeyRange.lowerBound(end, !inclusiveEnd)
-                : global.IDBKeyRange.upperBound(end, !inclusiveEnd))
-        : key ? global.IDBKeyRange.only(key) : null;
+      if (start && end) {
+        keyRange = global.IDBKeyRange.bound(start, end, false, !inclusiveEnd);
+      } else if (start) {
+        if (descending) {
+          keyRange = global.IDBKeyRange.upperBound(start);
+        } else {
+          keyRange = global.IDBKeyRange.lowerBound(start);
+        }
+      } else if (end) {
+        if (descending) {
+          keyRange = global.IDBKeyRange.lowerBound(end, !inclusiveEnd);
+        } else {
+          keyRange = global.IDBKeyRange.upperBound(end, !inclusiveEnd);
+        }
+      } else if (key) {
+        keyRange = global.IDBKeyRange.only(key);
+      }
     } catch (e) {
       if (e.name === "DataError" && e.code === 0) {
         // data error, start is less than end
@@ -652,8 +645,12 @@ function IdbPouch(opts, callback) {
           }
           results.push(doc);
         } else if (!deleted && skip-- <= 0) {
-          if (manualDescEnd && doc.key < manualDescEnd) {
-            return;
+          if (manualDescEnd) {
+            if (inclusiveEnd && doc.key < manualDescEnd) {
+              return;
+            } else if (!inclusiveEnd && doc.key <= manualDescEnd) {
+              return;
+            }
           }
           results.push(doc);
           if (--limit === 0) {
@@ -859,6 +856,7 @@ function IdbPouch(opts, callback) {
     // https://developer.mozilla.org/en-US/docs/IndexedDB/IDBDatabase#close
     // "Returns immediately and closes the connection in a separate thread..."
     idb.close();
+    delete cachedDBs[name];
     idb = null;
     callback();
   };
@@ -910,17 +908,113 @@ function IdbPouch(opts, callback) {
     };
   };
 
+  var cached = cachedDBs[name];
+
+  if (cached) {
+    idb = cached.idb;
+    blobSupport = cached.blobSupport;
+    instanceId = cached.instanceId;
+    idStored = cached.idStored;
+    process.nextTick(function () {
+      callback(null, api);
+    });
+    return;
+  }
+
+  var req = global.indexedDB.open(name, ADAPTER_VERSION);
+
+  if (!('openReqList' in IdbPouch)) {
+    IdbPouch.openReqList = {};
+  }
+  IdbPouch.openReqList[name] = req;
+
+  req.onupgradeneeded = function (e) {
+    var db = e.target.result;
+    if (e.oldVersion < 1) {
+      // initial schema
+      createSchema(db);
+    }
+    if (e.oldVersion < 2) {
+      // version 2 adds the deletedOrLocal index
+      addDeletedOrLocalIndex(e);
+    }
+  };
+
+  req.onsuccess = function (e) {
+
+    idb = e.target.result;
+
+    idb.onversionchange = function () {
+      idb.close();
+      delete cachedDBs[name];
+    };
+    idb.onabort = function () {
+      idb.close();
+      delete cachedDBs[name];
+    };
+
+    var txn = idb.transaction([META_STORE, DETECT_BLOB_SUPPORT_STORE],
+      'readwrite');
+
+    var req = txn.objectStore(META_STORE).get(META_STORE);
+
+    req.onsuccess = function (e) {
+
+      var checkSetupComplete = function () {
+        if (blobSupport === null || !idStored) {
+          return;
+        } else {
+          cachedDBs[name] = {
+            idb: idb,
+            blobSupport: blobSupport,
+            instanceId: instanceId,
+            idStored: idStored,
+            loaded: true
+          };
+          callback(null, api);
+        }
+      };
+
+      var meta = e.target.result || {id: META_STORE};
+      if (name  + '_id' in meta) {
+        instanceId = meta[name + '_id'];
+        idStored = true;
+        checkSetupComplete();
+      } else {
+        instanceId = utils.uuid();
+        meta[name + '_id'] = instanceId;
+        txn.objectStore(META_STORE).put(meta).onsuccess = function () {
+          idStored = true;
+          checkSetupComplete();
+        };
+      }
+
+      // detect blob support
+      try {
+        txn.objectStore(DETECT_BLOB_SUPPORT_STORE).put(utils.createBlob(),
+          "key");
+        blobSupport = true;
+      } catch (err) {
+        blobSupport = false;
+      } finally {
+        checkSetupComplete();
+      }
+    };
+  };
+
+  req.onerror = idbError(callback);
+
 }
 
 IdbPouch.valid = function () {
   return global.indexedDB && isModernIdb();
 };
 
-IdbPouch.destroy = utils.toPromise(function (name, opts, callback) {
+function destroy(name, opts, callback) {
   if (!('openReqList' in IdbPouch)) {
     IdbPouch.openReqList = {};
   }
-  IdbPouch.Changes.clearListeners(name);
+  IdbPouch.Changes.removeAllListeners(name);
 
   //Close open request for "name" database to fix ie delay.
   if (IdbPouch.openReqList[name] && IdbPouch.openReqList[name].result) {
@@ -936,11 +1030,21 @@ IdbPouch.destroy = utils.toPromise(function (name, opts, callback) {
     if (utils.hasLocalStorage()) {
       delete global.localStorage[name];
     }
-
+    delete cachedDBs[name];
     callback(null, { 'ok': true });
   };
 
   req.onerror = idbError(callback);
+}
+
+IdbPouch.destroy = utils.toPromise(function (name, opts, callback) {
+  taskQueue.queue.push({
+    action: function (thisCallback) {
+      destroy(name, opts, thisCallback);
+    },
+    callback: callback
+  });
+  applyNext();
 });
 
 IdbPouch.Changes = new utils.Changes();

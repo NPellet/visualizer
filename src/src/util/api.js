@@ -1,50 +1,49 @@
-define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversing, ActionManager) {
+define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables'], function(Traversing, ActionManager, Variables) {
 
 	var allScripts = [];
 	var variableFilters;
 	var viewLocked = false;
 
-	function setVarFilter( name, element, filter ) {
+	var loadingHtml = $('<div id="loading-visualizer"><div class="title">Loading</div><div class="animation"><div /><div /><div /><div /></div><div class="subtitle" id="loading-message"></div></div>');
+	var loading = {};
+	var loadingNumber = 0;
 
-		var self = this;
+	function setVar( name, sourceVariable, jpath, filter ) {
 
-		if( ! filter ) {
-			self.getRepositoryData().set( name, element );
-			return;
-		}
+		var self = this,
+			jpathNewVar = ( ! sourceVariable ) ? jpath : sourceVariable.getjPath().concat( jpath );
 
-		require( [ filter ], function( filterFunction ) {
+			if( sourceVariable ) {
+				sourceVariable.getData().trace( jpath );		
+			}
 
-			self.getRepositoryData( ).set( name, filterFunction( element ) );
-		} );
+		Variables.setVariable( name, jpathNewVar, false, filter );
 	}
 
-	function setVar( name, element, jpath, filter ) {
+	function getVar(name) {
+		return Variables.getVariable( name );
+	}
 
-		var self = this;
+	function createData( name, data, filter ) {
+		Variables.setVariable( name, false, data, filter );
+	}
+
+
+	function createDataJpath( name, data, jpath, filter ) {
 		
-		switch( typeof element ) {
-			case 'string':
-				element = new DataObject( { type: "string", value: element } );
-			break;
-			case 'number':
-				element = new DataObject( { type: "number", value: element } );
-			break;
-			case 'boolean':
-				element = new DataObject( { type: "boolean", value: element } );
-			break;
-		}
+		data = DataObject.check( data, true );
+		
+		if(data && data.getChild) {
 
-		if( element && element.getChild ) {
-			element.getChild( jpath, true ).done( function( returned ) {
+			data.getChild( jpath ).then( function( data ) {
 
-				setVarFilter.call( self, name, returned, filter );
-			} );	
-
+				Variables.setVariable( name, false, data, filter );	
+			});
+			
 		} else {
-			console.warn("Variable " + name + " could not be set. Method getChild does not exist.");
-			console.trace();
+			Variables.setVariable( name, false, data, filter );	
 		}
+		
 	}
 
 	function setHighlight( element, value ) {
@@ -98,16 +97,15 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 		setVar: setVar,
 		setVariable: setVar,
 		resetVariables: function() {
-			this.repositoryData.reset();
+
+			Variables.eraseAll();
+
 		},
 
-		getVar: function(name) {
-			var data = this.repositoryData.get(name);
-			if(data && data[1]) {
-				return data[1];
-			}
-			return new DataObject({type:"undefined", value:undefined});
-		},
+		getVar: getVar,
+		getVariable: getVar,
+		createData: createData,
+		createDataJpath: createDataJpath,
 
 		listenHighlight: function() {
 
@@ -137,20 +135,51 @@ define(['src/util/datatraversing', 'src/util/actionmanager'], function(Traversin
 		},
 
 		getAllFilters: function( ) {
-
 			return variableFilters;
 		},
 
 		setAllFilters: function( filters ) {
+
 			variableFilters = filters;
+			variableFilters.unshift({ file: "", name: "No filter"});
 		},
 
 		viewLock: function() {
+			$("body").addClass('locked');
 			viewLocked = true;
 		},
 
 		isViewLocked: function() {
 			return viewLocked;
+		},
+
+		loading: function( message ) {
+
+			if( loadingNumber == 0) {
+				$("#ci-visualizer").append( loadingHtml );	
+			}
+
+			if( ! loading[ message ] ) {
+				loading[ message ] = $("<div>" + message + "</div>");
+				loadingNumber++;
+				
+				$("#loading-message").append( loading[ message ] );
+			}
+
+		},
+
+		stopLoading: function( message ) {
+			
+			if( loading[ message ] ) {
+				
+				loadingNumber--;
+				loading[ message ].detach();
+				loading[ message ] = null;
+
+				if( loadingNumber == 0) {
+					loadingHtml.detach();
+				}
+			}
 		}
 	}
 });

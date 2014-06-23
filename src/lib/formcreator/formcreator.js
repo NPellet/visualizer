@@ -90,6 +90,12 @@ define(['forms/form'], function( Form ) {
 								type: 'text',
 								title: 'Field label'
 							},
+							
+							allow_undefined: {
+								type: 'checkbox',
+								title: 'Allow undefined',
+								options: {allow:''}
+							},
 						
 							type: {
 								type: 'combo',

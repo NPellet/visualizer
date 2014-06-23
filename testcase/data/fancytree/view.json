@@ -1,0 +1,167 @@
+{
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"version": "2.4.0b2",
+	"modules": [
+		{
+			"url": "modules/types/display/fancytree/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"expand": [
+								"lvl1"
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "a",
+								"jpath": "element.a"
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 39,
+						"top": 7
+					},
+					"size": {
+						"width": 79,
+						"height": 60
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "tree",
+					"name": "tree"
+				}
+			],
+			"actions_in": {},
+			"title": "Untitled",
+			"vars_out": [
+				{
+					"event": "onActivate",
+					"rel": "nodeData",
+					"jpath": [
+						"a"
+					],
+					"name": "node"
+				}
+			],
+			"actions_out": {}
+		},
+		{
+			"url": "modules/types/edition/object_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"view"
+							],
+							"expanded": [
+								[]
+							],
+							"storeObject": [
+								[]
+							],
+							"output": [
+								"new"
+							],
+							"storedObject": [
+								"{}"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 123,
+						"top": 12
+					},
+					"size": {
+						"width": 45,
+						"height": 50
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "node"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"title": "Untitled",
+			"actions_out": {}
+		}
+	],
+	"variables": [
+		{
+			"varname": "tree",
+			"jpath": [
+				"tree"
+			]
+		}
+	],
+	"pouchvariables": [],
+	"configuration": {
+		"title": "No title"
+	}
+}

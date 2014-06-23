@@ -32,6 +32,9 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype.references = {
         "value": {
             label: 'A JSON object'
+        },
+        "output": {
+            label: 'Output object'
         }
     };
 
@@ -42,7 +45,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype.events = {
         onObjectChange: {
             label: 'The object has changed',
-            refVariable: ['value'],
+            refVariable: ['output'],
         }
     };
     /*
@@ -118,16 +121,23 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
 	controller.prototype.sendValue = function(newValue) {
         if(this.module.view.storeObject) {
-            this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(newValue.resurrect());
+            this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(newValue);
         }
 		var outputType = this.module.getConfiguration('output');
-        if(outputType==='new')
-            this.setVarFromEvent('onObjectChange', newValue.duplicate());
-        else {
+
+        if( outputType === 'new' ) {
+
+            this.createDataFromEvent( 'onObjectChange', 'output', newValue );
+
+        } else {
+
 			var input = this.module.view.inputData;
-			if(input) {
+
+			if( input ) {
+
 				input.mergeWith(newValue, this.module.getId());
-				this.setVarFromEvent('onObjectChange', input);
+				this.setVarFromEvent( 'onObjectChange', 'output', 'value', [ ] );
+
 			}
 		}
 	};

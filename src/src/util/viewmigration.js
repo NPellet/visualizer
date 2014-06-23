@@ -1,4 +1,5 @@
 define(['src/util/versioning'], function(Versioning) {
+	"use strict";
 
     var migrate = function(view) {
 
@@ -50,7 +51,7 @@ define(['src/util/versioning'], function(Versioning) {
             case "2.2.2": // view title is in configuration.title
                 if (view.title) {
                     if (!view.configuration)
-                        view.configuration = new ViewObject();
+                        view.configuration = new DataObject();
                     view.configuration.title = view.title;
                     delete view.title;
                 }
@@ -99,7 +100,7 @@ define(['src/util/versioning'], function(Versioning) {
                 }, "types/client_interaction/dragdrop");
 				
 			case "2.2.5": // Add layers
-				view.grid = new ViewObject({
+				view.grid = DataObject.recursiveTransform({
 					layers: {
 						"Default layer": {
 							name: "Default layer"
@@ -107,36 +108,71 @@ define(['src/util/versioning'], function(Versioning) {
 					},
 					xWidth: 10,
 					yHeight: 10
-				}, true);
-				eachModule(view, function(module){
-					module.layers = new ViewObject({
-						"Default layer": {
-							position: {
-								left: module.position.left,
-								top: module.position.top,
-								right: 0
-							},
-							size: {
-								width: module.size.width,
-								height: module.size.height
-							},
-							zIndex: module.zIndex,
-							display: true,
-							title: module.title,
-							bgcolor: module.bgColor,
-							wrapper: module.displayWrapper,
-							created: true,
-							name: "Default layer"
-						}
-					}, true);
-					delete module.title;
-					delete module.position;
-					delete module.size;
-					delete module.zIndex;
-					delete module.displayWrapper;
-					delete module.bgColor;
 				});
-                
+				eachModule(view, function(module){
+                    if( ! module.layers ) {
+    					module.layers = DataObject.recursiveTransform({
+    						"Default layer": {
+    							position: {
+    								left: module.position.left,
+    								top: module.position.top,
+    								right: 0
+    							},
+    							size: {
+    								width: module.size.width,
+    								height: module.size.height
+    							},
+    							zIndex: module.zIndex,
+    							display: true,
+    							title: module.title,
+    							bgcolor: module.bgColor,
+    							wrapper: module.displayWrapper,
+    							created: true,
+    							name: "Default layer"
+    						}
+    					});
+    					delete module.title;
+    					delete module.position;
+    					delete module.size;
+    					delete module.zIndex;
+    					delete module.displayWrapper;
+    					delete module.bgColor;
+                    }
+				});
+            case "2.3.0-beta1" :
+                if (view.variables) {
+                    for (var i=0; i<view.variables.length; i++) {
+                        updateJpath(view.variables[i]);
+                    }
+                }
+
+                eachModule(view, function(module) {
+                    if (module.vars_out) {
+                        for (var i=0; i<module.vars_out.length; i++) {
+                            updateJpath(module.vars_out[i]);
+                        }
+                    }
+                    if (module.actions_out) {
+                        for (var i=0; i<module.actions_out.length; i++) {
+                            updateJpath(module.actions_out[i]);
+                        }
+                    }
+
+                });
+			case "2.4.0b0" :
+				eachModule(view, function(module) {
+					var out = module.vars_out;
+					for(var i = 0; i < out.length; i++) {
+						out[i].setChild(["rel"], "output");
+					}
+				}, "types/edition/object_editor");
+			case "2.4.0b1" :
+				eachModule(view, function(module) {
+					var out = module.vars_out;
+					for(var i = 0; i < out.length; i++) {
+						out[i].setChild(["rel"], "filteredObject");
+					}
+				}, "types/edition/filter_editor");
         }
         view.version = Versioning.version;
 
@@ -152,16 +188,22 @@ define(['src/util/versioning'], function(Versioning) {
             } else if(!(moduleNames instanceof Array)) {
                 moduleNames = [""];
             }
-            var i = 0, ii = view.modules.length, module;
+            var i = 0, ii = view.modules.length, module, url;
             var j, jj = moduleNames.length;
             for(; i < ii; i++) {
                 module = view.modules[i];
-                for(j = 0; j < jj; j++) {
-                    if(module.url && module.url.indexOf(moduleNames[j]) >= 0) {
-                        callback(module);
-                        break;
-                    }
-                }
+
+				url = module.getChildSync(['url']);
+				if(url) {
+					for(j = 0; j < jj; j++) {
+                        
+						if(url.toString().indexOf(moduleNames[j]) >= 0) {
+							callback(module);
+							break;
+						}
+					}
+				}
+
             }
         }
     }
@@ -237,4 +279,11 @@ define(['src/util/versioning'], function(Versioning) {
             return "./modules/types/webservice_cron/";
         console.error("viewmigration problem: " + type + " is unknown");
     }
+	
+	function updateJpath(element) {
+		var jpath = element.getChildSync(['jpath']);
+		if (jpath && jpath.split) {
+			element.setChild(["jpath"],jpath.split(".").slice(1));
+		}
+	}
 });

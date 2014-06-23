@@ -31,27 +31,10 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
 
 			this.dom.html(this.inside);
 			this.module.getDomContent().html(this.dom);
-
 			
-		},
-
-		inDom: function() {
-			
-		},
-
-		onResize: function() {},		
-		blank: function() {},
-		update: {
-
-		},
-
-		getDom: function() {
-			return this.dom;
-		},
-		
-		typeToScreen: {
-			
+			this.resolveReady();			
 		}
+		
 	});
 
 	return view;

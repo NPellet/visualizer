@@ -66,7 +66,14 @@
                             [[-74.05973,40.914353],[-74.12973, 40.814353],[-74.000973, 40.810353]]
                         ]
                     },
-                    "properties":  {"marker":{},"value":"Surface 1", "_highlight" : [0,1]}
+                    "properties":  {
+                        "marker":{},
+                        "value":"Surface 1",
+                        "_highlight" : [0,1],
+                        "style":{
+                            "color": "green"
+                        }
+                    }
                 }
             ]
         }

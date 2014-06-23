@@ -1,10 +1,10 @@
-define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'components/leaflet/leaflet'], function(Default, Util, API, L) {
+define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'leaflet'], function(Default, Util, API, L) {
 
     function view() {
         this.mapID = Util.getNextUniqueId();
     }
 
-    Util.loadCss('components/leaflet/leaflet.css');
+    Util.loadCss('components/leaflet/dist/leaflet.css');
     
     // Custom icon that accepts Marker objects
     var CustomIcon = L.Icon.extend({
@@ -93,12 +93,11 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                 kind: this.module.getConfiguration('markerkind'),
                 color: Util.getColor(this.module.getConfiguration('markercolor')),
                 size: parseInt(this.module.getConfiguration('markersize')),
-                img: 'components/leaflet/images/marker-icon.png',
+                img: 'components/leaflet/dist/images/marker-icon.png',
                 imgHighlight: 'modules/types/chart/maps/leaflet/marker-icon-red.png'
             });
             this.markerjpath = this.module.getConfiguration("markerjpath");
             
-            this.onReady = $.Deferred();
         },
         inDom: function() {
         
@@ -110,9 +109,15 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
             });
             
             this.getTileLayer().addTo(that.map);
+			
+			function onZoom() {
+				// First call the move handler in case zooming changed the center
+				that.module.controller.moveAction.call(that);
+				that.module.controller.zoomAction.call(that);
+			}
 
             this.map.on("drag",that.module.controller.moveAction, that);
-            this.map.on("zoomend", that.module.controller.zoomAction, that);
+            this.map.on("zoomend", onZoom);
             
             var defaultCenter = [46.522117, 6.566144];
             var configCenter = this.module.getConfiguration('mapcenter');
@@ -135,7 +140,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
             promise.then(function(value){
                 var zoom = that.module.getConfiguration('mapzoom') || 10;
                 that.map.setView(value, zoom);
-                that.onReady.resolve();
+                that.resolveReady();
             });
             
         },
@@ -157,7 +162,11 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                 if(!geo)
                     return;
                 var geoJson = geo.get();
-                var converted = L.geoJson(geoJson,{});
+                var converted = L.geoJson(geoJson,{
+					style: function(feature) {
+						return feature.properties && feature.properties.style;
+					}
+				});
                 
                 converted.addTo(this.map);
                 this.mapLayers[varname] = converted;
@@ -228,7 +237,12 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/api', 'compone
                     icon._marker.highlight(false);
                 }
                 else {
-                    layer.setStyle({color: "#0033ff"});
+					if(layer.feature && layer.feature.properties && layer.feature.properties.style) {
+						layer.setStyle(layer.feature.properties.style);
+					}
+					else {
+						layer.setStyle({color: "#0033ff"});
+					}
                 }
             }
         }, false, this.module.getId());

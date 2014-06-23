@@ -22,6 +22,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			this._data=[];	// the data that will be represented
 			var cfg = $.proxy( this.module.getConfiguration, this.module );
+			
+			this.resolveReady();
 
 		},
 

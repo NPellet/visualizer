@@ -17,7 +17,6 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
                 });
                 this.module.getDomContent().html(this.dom);
             }
-            this.onReady = $.Deferred();
 
             var labelColorRGB = this.module.getConfiguration('labelColor');
             var labelColor;
@@ -45,7 +44,7 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
             this.chart = new $jit.PieChart(this.chartOptions);
             if (this._data)
                 this.setData(this._data);
-            this.onReady.resolve();
+            this.resolveReady();
         },
         update: {
             'chart': function(moduleValue) {

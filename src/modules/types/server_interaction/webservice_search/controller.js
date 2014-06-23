@@ -67,7 +67,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 	/*
 		Configuration of the module for receiving events, as a static object
 	*/
-	controller.prototype.variablesIn = [ 'vartrigger', 'varinput' ];
+	controller.prototype.variablesIn = [ 'vartrigger', 'varinput', 'url' ];
 
 	/*
 		Received actions
@@ -266,7 +266,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                 'dataType': [ 'groups', 'group', 0, 'dataType', 0 ]
 	};
 
-	controller.prototype.initimpl = function() { 
+	controller.prototype.initImpl = function() {
 		this.searchTerms = {};
 		var searchparams;
 
@@ -285,12 +285,16 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 		if ( this.module.getConfiguration( 'onloadsearch' )) {
 			this.doSearch();
 		}
+		
+		this.resolveReady();
 	};
 		
 	controller.prototype.doSearch = function() {
+		
+		var url = this.module.view._url || this.module.getConfiguration( 'url' );
 
 		var self = this,
-			urltemplate = new URITemplate(this.module.getConfiguration( 'url' )),
+			urltemplate = new URITemplate(url),
 			toPost = this.module.getConfiguration( 'postvariables', [] ),
 			l = toPost.length,
 			i = 0,
@@ -301,8 +305,8 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                 for(var i = 0; i < varsin.length; i++) {
                     var varin = varsin[i];
                     if((varin.rel==="vartrigger"||varin.rel==="varinput") && varin.name) {
-                        var theVar = API.getVar(varin.name);
-                        if(theVar.get && typeof(theVar.get)==='function') theVar=theVar.get();
+                        var theVar = API.getVar(varin.name).getData();
+                        if(typeof(theVar.get)==='function') theVar=theVar.get();
                         this.searchTerms[varin.name] = theVar;
                     }
                 }
@@ -320,7 +324,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                 
                 var options = {
                     url: this.url,
-                    type: this.module.getConfiguration('method'),
+                    type: this.module.getConfiguration('method')||"POST",
                     cache: false,
                     headers: headers
                 };
@@ -328,7 +332,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                 var dataType = this.module.getConfiguration( 'dataType' );
                 if(dataType === "form") {
                     for(var i = 0; i < l; i++) {
-                            var valueToPost = API.getVar(toPost[i].variable).get();
+                            var valueToPost = API.getVar(toPost[i].variable).getData();
                             if (valueToPost) {
                                     if ( valueToPost.getType() !== "number" && valueToPost.getType() !== "string" ) {
                                             if (toPost[i].filter==="value") {
@@ -342,7 +346,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
                             }
                     }
                 } else {
-                    data = JSON.stringify(API.getVar(toPost[0].variable).resurrect());
+                    data = JSON.stringify(API.getVar(toPost[0].variable).getData());
                     options.contentType = "application/json; charset=utf-8";
                 }
                 
@@ -363,19 +367,15 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 				data = self.module.resultfilter(data);
 			}
                         
-			if(typeof data === "object") {
-				data = DataObject.check(data, true);
-			}
-                        
 			self.onSearchDone(data);
 		}).fail(function(xhr){
-                    self.onSearchDone(new DataObject({
+                    self.onSearchDone({
                         type: "error",
                         status: xhr.status,
                         statusText: xhr.statusText,
                         responseText: xhr.responseText,
                         responseJSON: xhr.responseJSON
-                    }));
+                    });
                 }).always(function(){
                     self.module.view.unlock();
                 });
@@ -385,9 +385,9 @@ define( [ 'modules/default/defaultcontroller', 'src/util/api', 'src/util/urldata
 	controller.prototype.onSearchDone = function(elements) {
 		this.result = elements;
 		this.module.model.data = elements;
-                
-                this.setVarFromEvent('onSearchReturn', elements, 'results');
-                this.setVarFromEvent('onSearchReturn', this.url, 'url');
+		
+                this.createDataFromEvent('onSearchReturn', 'results', elements);
+                this.createDataFromEvent('onSearchReturn', 'url', this.url);
                 
                 this.sendAction('results', elements, 'onSearchReturn');
 	};

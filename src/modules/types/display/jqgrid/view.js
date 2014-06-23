@@ -24,11 +24,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			if(this !== lastTr) {
 					self.module.controller.lineHover(self.elements, $(this).attr('id').replace(self.uniqId, ''));
 	 			}
+
 				lastTr = this;
 
 	 		}).on('mouseout', 'tr.jqgrow', function() {
 
 	 			if(this === lastTr) {
+
 					self.module.controller.lineOut(self.elements, $(this).attr('id').replace(self.uniqId, ''));
 					lastTr = null;
 	 			}
@@ -38,57 +40,16 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			eval("self.filter = function(jqGrid, source, rowId) { try { \n " + filter + "\n } catch(_) { console.log(_); } }");
 
 	 		this.module.getDomContent( ).html( this.dom );
-
-	 		this.onReady = $.Deferred();
 	 		this.onResize( );
-	 	},
 
-		exportToTabDelimited: function() {
- 			if( ! this.jpaths ) {
- 				return;
- 			}
 
- 			var result=[];
-			var allEls = [],
-				i = 0,
-				l = this.elements.length;
-			
-			var header=[];
-			for (var j=0; j<this.jpaths.length; j++) {
-				header.push(this.jpaths[j].name);
-			}
-			result.push(header.join("\t"));
-
-			for( ; i < l ; i++ ) {
-				var line=[];
-				for (var j=0; j<this.jpaths.length; j++) {
-					Traversing.getValueFromJPath(this.elements[i], this.jpaths[j].jpath).done(function(elVal) {
-						line.push(elVal);
-						//allEls.push(elVal);
-					});
-				}
-				result.push(line.join("\t"));
-			}
-
-			return (result.join("\r\n"));
-		},
-
-	 	unload: function() {
-
-	 		this.jqGrid( 'GridDestroy' );
-	 		this.jqGrid = false;
-	 		this.module.getDomContent( ).empty( );
-	 	},
-
-	 	inDom: function() {
-
-			var self = this, 
-				colNames = [], 
-				colModel = [], 
-				j = 0,
-				editable,
-				jpaths = this.module.getConfiguration( 'colsjPaths' ),
-				l;
+	 		var self = this, 
+			colNames = [], 
+			colModel = [], 
+			j = 0,
+			editable,
+			jpaths = this.module.getConfiguration( 'colsjPaths' ),
+			l;
 
 
 			if( typeof jpaths == 'object' ) {
@@ -159,7 +120,12 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			   			value = parseFloat(value);
 			   		}
 
-			   		self.elements[ rowId.replace( self.uniqId, '') ].setChild( colModel[ colNum ]._jpath, value, { moduleid: self.module.getId( ) } );
+			   		self.module.model.dataSetChild( 
+			   			self.elements[ rowId.replace( self.uniqId, '') ],  // source
+			   			colModel[ colNum ]._jpath,	// jpath
+			   			value // value
+			   		);
+			   		
 			   		self.applyFilterToRow( rowId.replace( self.uniqId, '' ), rowId );
 			   	},
 
@@ -214,9 +180,50 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			});
 
 			this.jqGrid = $.proxy( $( this.domTable ).jqGrid, $( this.domTable ) );
-			this.onReady.resolve( );
+			this.resolveReady();
 	 	},
 
+		exportToTabDelimited: function() {
+ 			if( ! this.jpaths ) {
+ 				return;
+ 			}
+
+ 			var result=[];
+			var allEls = [],
+				i = 0,
+				l = this.elements.length;
+			
+			var header=[];
+			for (var j=0; j<this.jpaths.length; j++) {
+				header.push(this.jpaths[j].name);
+			}
+			result.push(header.join("\t"));
+
+			for( ; i < l ; i++ ) {
+				var line=[];
+				for (var j=0; j<this.jpaths.length; j++) {
+					Traversing.getValueFromJPath(this.elements[i], this.jpaths[j].jpath).done(function(elVal) {
+						line.push(elVal);
+						//allEls.push(elVal);
+					});
+				}
+				result.push(line.join("\t"));
+			}
+
+			return (result.join("\r\n"));
+		},
+
+	 	unload: function() {
+
+	 		this.jqGrid( 'GridDestroy' );
+	 		this.jqGrid = false;
+	 		this.module.getDomContent( ).empty( );
+	 	},
+
+	 	inDom: function() {
+
+
+	 	},
 
 	 	applyFilterToRow: function(elId, rowId) {
 
@@ -242,12 +249,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				this.jqGrid( 'clearGridData' );
 				$( this.domTable ).trigger( 'reloadGrid' );
 	 		}
-	 	
 	 	},
 
 	 	update: {
 
-	 		list: function(moduleValue) {
+	 		list: function( moduleValue ) {
 
 	 			if( ! moduleValue ) {
 	 				return;
@@ -281,6 +287,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				this.jqGrid('setGridParam', { datatype: 'local', data: allEls });
 				$( this.domTable ).trigger( 'reloadGrid' );
+
+				this.module.model.getjPath('list', [ 0 ] );
+				
 			}
 		},
 
@@ -302,7 +311,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 			for( ; i < l ; i++) {
 
-				arrayToPush.push( this.buildElement( source[ i ], self.uniqId + i, jpaths ) );
+				arrayToPush.push( this.buildElement( source.get( i ), self.uniqId + i, jpaths ) );
 			}
 
 		},
@@ -331,11 +340,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			for( ; j < l ; j ++) {
 
 				var jpath = jp[ j ].jpath;
-				/*if( ! jpath ) {
-					element[ jp[ j ].name ] = '';
-				} else {*/
-					element[ jp[ j ].name ] = 'Loading';
-				//}
+				
+				element[ jp[ j ].name ] = 'Loading';
 				
 				self.done ++;
 				element[ ";" + jp[ j ].name ] = this.renderElement( element, s, jpath, jp[ j ].name );
@@ -350,19 +356,17 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 		listenFor: function(source, jpaths, id) {
 			var self = this;
-			source.onChange(function( data ) {
 
-				self.jqGrid( 'setRowData', id, self.buildElement( data, id, jpaths, true ) );
-				var scroll = $( "body" ).scrollTop( );
-			//	console.log( 'Do' );
-				var target = $( "tr#" + id, self.domTable ).get(0);//.clearQueue().finish().effect( 'highlight', { queue: true }, 1000 ).get( 0 );
+			this.module.model.dataListenChange( source, function() {
 
-				if(target) {
-					target.scrollIntoView( );
-					$("body").scrollTop( scroll );
-				}
-				
-			}, self.module.getId( ) );
+				self.jqGrid( 'setRowData', id, self.buildElement( this, id, jpaths, true ) );
+					var scroll = $( "body" ).scrollTop( );
+					var target = $( "tr#" + id, self.domTable ).get(0);//.clearQueue().finish().effect( 'highlight', { queue: true }, 1000 ).get( 0 );
+					if(target) {
+						target.scrollIntoView( );
+						$("body").scrollTop( scroll );
+					}
+			}, 'list');
 		},
 
 		renderElement: function(element, source, jpath, l) {
@@ -399,13 +403,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			}, function( value ) {
 
 				element[l] = value;
-				self.done--;
-				
-				/* todo In this required ??? */
-				if(self.done == 0) {
-					self.onResize(self.width, self.height);
-				}
-				
+				self.done--;				
 			});
 		},
 

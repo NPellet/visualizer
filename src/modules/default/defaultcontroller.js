@@ -4,8 +4,11 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 		setModule: function(module) { this.module = module; },
 
 		init: function() {
-			if(this.initimpl)
-				this.initimpl();
+			this.initImpl( );
+		},
+
+		initImpl: function() {
+			this.resolveReady();
 		},
 
 		inDom: function() {
@@ -17,7 +20,7 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 			var actionsOut = this.module.actions_out(),
 				i,
 				jpath,
-                                actionname;
+                actionname;
 
 			if( ! actionsOut ) {
 				return;
@@ -54,37 +57,89 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 		},
 
 
-		setVarFromEvent: function( event, element, rel, callback ) {
+		setVarFromEvent: function( event, rel, relSource, jpath, callback ) {
 
-			var actions, i = 0, first;
+			var varsOut, i = 0, first = true;
 
-			if( ! ( actions = this.module.vars_out() ) ) {
+			if( ! ( varsOut = this.module.vars_out() ) ) {
 				return;
 			}
 			
-			for( ; i < actions.length; i++ ) {
+			for( ; i < varsOut.length; i++ ) {
 				
-				if( actions[ i ].event == event  && ( actions[ i ].rel == rel || ! rel ) ) {
+				if( varsOut[ i ].event == event  && ( varsOut[ i ].rel == rel || ! rel ) ) {
 
 					if( first && callback ) {
+						first = false;
 						callback.call( this );
 					}
+					
+					varsOut[ i ].jpath = varsOut[ i ].jpath || []; // Need not be undefined
 
-					if( typeof element == "function" ) {
-						element = element.call( this, actions[ i ].name, actions[ i ].jpath );
+					if( typeof varsOut[ i ].jpath == "string" ) {
+						varsOut[ i ].jpath = varsOut[ i ].jpath.split('.');
+						varsOut[ i ].jpath.shift();
 					}
 
-					API.setVar( actions[ i ].name, element, actions[ i ].jpath, actions[ i ].filter );
+					API.setVar( varsOut[ i ].name, this.module.getVariableFromRel( relSource ), jpath.concat( varsOut[ i ].jpath ), varsOut[ i ].filter );
 				}
 			}
 		},
 
+
+		createDataFromEvent: function( event, rel, data, callback ) {
+
+			var varsOut, i = 0, first = true;
+
+			if( ! ( varsOut = this.module.vars_out() ) ) {
+				return;
+			}
+			
+			for( ; i < varsOut.length; i++ ) {
+				
+				if( varsOut[ i ].event == event  && ( varsOut[ i ].rel == rel || ! rel ) ) {
+
+					if( first && callback ) {
+						first = false;
+						data = callback.call( this );
+					}
+
+					API.createDataJpath( varsOut[ i ].name, data, varsOut[ i ].jpath, varsOut[ i ].filter );
+				}
+			}
+		},
+
+		allVariablesFor: function( event, rel, callback ) {
+
+			var varsOut, i = 0, first;
+
+			if( ! ( varsOut = this.module.vars_out() ) ) {
+				return;
+			}
+			
+			for( ; i < varsOut.length; i++ ) {
+				
+				if( varsOut[ i ].event == event  && ( varsOut[ i ].rel == rel || ! rel ) ) {
+
+					callback( varsOut[ i ] );
+				} 
+			}
+		},
+
+
 		"export": function() {},
-        print: function() {},
+        print: function() {
+			return this.module.getDomContent()[0].innerHTML;
+		},
 		configurationStructure:  function() {},
 		configFunctions: {},
 		configAliases: {},
 		events: {},
-		variablesIn: []
+		variablesIn: [],
+
+		resolveReady: function() {
+			this.module._resolveController();
+		}
+
 	}
 });

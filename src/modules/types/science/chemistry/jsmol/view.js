@@ -26,7 +26,6 @@ function(require,Default, UTIL, DataTraversing) {
             });
 
             this._highlights = this._highlights || [];
-            this.onReady = $.Deferred();
 	 	},
 
 	 	inDom: function() {},

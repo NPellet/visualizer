@@ -15,7 +15,7 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
 				btn = new Button('Paste', function( ) {
 
 					try {
-						val = JSON.parse( txtarea.val(), Versioning.getDataHandler()._reviver );
+						val = JSON.parse( txtarea.val() );
                                                 keys = Object.keys(val);
                                                 for(var i = 0, ii = keys.length; i < ii; i++) {
                                                     if(keys[i].charAt(0)==="_")

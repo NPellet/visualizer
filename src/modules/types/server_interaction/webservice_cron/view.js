@@ -10,6 +10,7 @@ define(['modules/default/defaultview'], function(Default) {
             this.module.getDomContent().html(this.dom);
             this.module.controller.start();
             this.maxLogs = this.module.getConfiguration('maxLogs');
+			this.resolveReady();
         },
         log: function(success, variable) {
             var time = new Date();

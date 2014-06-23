@@ -7,10 +7,12 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Def
 			return this.dataValue;
 		},
 		
-		getjPath: function(rel, temporary) {
+		getjPath: function(rel, temporary, sub) {
 			var data;
+
 			switch(rel) {
 				
+				case 'selectedrows':
 				case 'row':
 				case 'element': // Wants to get the row ?
 					data = (temporary && temporary['list']) ? temporary['list'] : (this.module.getDataFromRel('list') || new DataArray());

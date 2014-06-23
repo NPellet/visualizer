@@ -19,9 +19,9 @@ define(['modules/default/defaultview', 'src/util/api'], function(Default, API) {
             var that = this;
             var defaultValue = this.module.getConfiguration("thevalue");
             var textarea = $("<textarea>").css({
-                "box-sizing": "border-box",
-                "width": "99%",
-                "height": "99%"
+                boxSizing: "border-box",
+                width: "99%",
+                height: "99%"
             }).on("keyup", function() {
                 var val = textarea.val();
                 if (that.currentValue !== val) {
@@ -32,6 +32,7 @@ define(['modules/default/defaultview', 'src/util/api'], function(Default, API) {
             this.dom.append(textarea);
             that.currentValue = defaultValue;
             this.module.controller.valueChanged(defaultValue);
+			this.resolveReady();
         }
     });
 

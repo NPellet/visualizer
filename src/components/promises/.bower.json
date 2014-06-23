@@ -1,7 +1,6 @@
 {
   "name": "Promise polyfill",
   "main": "promise.js",
-  "version": "1.0.4",
   "homepage": "https://github.com/Octane/Promise",
   "authors": [
     "Dmitry Korobkin <dmitry.korobkin@gmail.com>"
@@ -22,25 +21,20 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "setImmediate": "~1.0.0"
+    "setImmediate": "*"
   },
   "ignore": [
-    ".gitignore",
-    ".gitmodules",
-    "bower.json",
-    "package.json",
-    "index.html",
-    "LICENSE",
-    "setimmediate"
+    "*",
+    "!README.md",
+    "!promise.js"
   ],
-  "_release": "1.0.4",
+  "_release": "dfe8a1673e",
   "_resolution": {
-    "type": "version",
-    "tag": "v1.0.4",
-    "commit": "d69a3dd2aeae2192e83d7fc30d0b23a0b5e6364e"
+    "type": "commit",
+    "commit": "dfe8a1673e1961176ed4c94fe6b7301acaa2fd38"
   },
-  "_source": "git://github.com/Octane/Promise.git",
-  "_target": "~1.0.4",
-  "_originalSource": "promises",
+  "_source": "git://github.com/targos/Promise.git",
+  "_target": "dfe8a1673e1961176ed4c94fe6b7301acaa2fd38",
+  "_originalSource": "git://github.com/targos/Promise.git",
   "_direct": true
 }

@@ -12,7 +12,7 @@ Additionally, any method that only returns a single thing (e.g. `db.get`) also r
   [lie]: https://github.com/calvinmetcalf/lie
   [bluebird]: https://github.com/petkaantonov/bluebird
 
-{% include anchor.html title="Create a database" hash="create_database"%}
+{% include anchor.html title="Create a database" hash="create_database" %}
 
 {% highlight js %}
 new PouchDB([name], [options])
@@ -347,6 +347,7 @@ All options default to `false` unless otherwise specified.
     - `options.conflicts`: Include conflict information in the `_conflicts` field of a doc.
   - `options.attachments`: Include attachment data.
 * `options.startkey` & `options.endkey`: Get documents with IDs in a certain range (inclusive/inclusive).
+* `options.inclusive_end`: Include documents having an ID equal to the given `options.endkey`. Default: `true`.
 * `options.limit`: Maximum number of documents to return.
 * `options.skip`: Number of docs to skip before returning (warning: poor performance on IndexedDB/LevelDB!).
 * `options.descending`: Reverse the order of the output documents.
@@ -405,7 +406,7 @@ All options default to `false` unless otherwise specified.
   * `options.attachments`: Include attachments.
 * `options.descending`: Reverse the order of the output documents.
 * `options.filter`: Reference a filter function from a design document to selectively get updates.
-* `options.since`: Start the results from the change immediately after the given sequence number, you can also pass 'latest' if you want only new changes.
+* `options.since`: Start the results from the change immediately after the given sequence number, you can also pass 'now' if you want only new changes.
 * `options.live`: Use _longpoll_ feed. 
 * `options.limit`: Limit the number of results to this number.
 * `options.style`: Specifies how many revisions are returned in the changes array. The default, main_only, will only return the current "winning" revision; all_docs will return all leaf revisions (including conflicts and deleted former conflicts).
@@ -476,7 +477,10 @@ db.changes()
 }
 {% endhighlight %}
 
-**Note:** The `changes()` method was not an event emitter before PouchDB 2.2.0, and instead of the `'change'` and `'complete'` events it took `complete` and `onChange` function options. This is deprecated and could be removed in PouchDB version 3.
+**Note:**
+
+* The `changes()` method was not an event emitter before PouchDB 2.2.0, and instead of the `'change'` and `'complete'` events it took `complete` and `onChange` function options. This is deprecated and could be removed in PouchDB version 3.
+* The `'since'`option formally took 'latest' but has been changed to 'now' to keep consistency with CouchDB, 'latest' is deprecated but will still work to ensure backwards compatibility.
 
 {% include anchor.html title="Replicate a database" hash="replication" %}
 
@@ -486,7 +490,7 @@ PouchDB.replicate(source, target, [options])
 
 Replicate data from `source` to `target`.  Both the `source` and `target` can be a PouchDB instance or a string representing a CouchDB database url or the name a local PouchDB database. If `options.live` is `true`, then this will track future changes and also replicate them automatically.
 
-Replication is an event emiter like changes and emits the `complete`, `change`, and `error` events.
+Replication is an event emiter like `changes()` and emits the `'complete'`, `'uptodate'`, `'change'` and `'error'` events.
 
 ### Options
 
@@ -505,8 +509,15 @@ All options default to `false` unless otherwise specified.
 #### Example Usage:
 {% highlight js %}
 PouchDB.replicate('mydb', 'http://localhost:5984/mydb')
-  .on('change', onChange)
-  .on('complete', onComplete);
+  .on('change', function (info) {
+    // handle change
+  }).on('complete', function (info) {
+    // handle complete
+  }).on('uptodate', function (info) {
+    // handle up-to-date
+  }).on('error', function (err) {
+    // handle error
+  });
 {% endhighlight %}
 
 There are also shorthands for replication given existing PouchDB objects. These behave the same as `PouchDB.replicate()`:
@@ -517,16 +528,40 @@ db.replicate.to(remoteDB, [options]);
 db.replicate.from(remoteDB, [options]);
 {% endhighlight %}
 
+**Notes:**
+
+* The `'complete'` event only fires when you aren't doing live replication, or when live replication fails.
+* The `'uptodate'` event fires during live replication, when the target database is up-to-date and just idling, waiting for new changes.
+
 #### Example Response:
+
+Example response in the `'change'` listener:
+
 {% highlight js %}
 {
-  'ok': true,
-  'docs_read': 2,
-  'docs_written': 2,
-  'start_time': "Sun Sep 23 2012 08:14:45 GMT-0500 (CDT)",
-  'end_time': "Sun Sep 23 2012 08:14:45 GMT-0500 (CDT)",
-  'status': 'complete',
-  'errors': []
+  "doc_write_failures": 0, 
+  "docs_read": 1, 
+  "docs_written": 1, 
+  "errors": [], 
+  "last_seq": 1, 
+  "ok": true, 
+  "start_time": "Fri May 16 2014 18:23:12 GMT-0700 (PDT)"
+}
+{% endhighlight %}
+
+Example response in the `'complete'` listener:
+
+{% highlight js %}
+{
+  "doc_write_failures": 0, 
+  "docs_read": 2, 
+  "docs_written": 2, 
+  "end_time": "Fri May 16 2014 18:26:00 GMT-0700 (PDT)", 
+  "errors": [], 
+  "last_seq": 2, 
+  "ok": true, 
+  "start_time": "Fri May 16 2014 18:26:00 GMT-0700 (PDT)", 
+  "status": "complete"
 }
 {% endhighlight %}
 
@@ -552,7 +587,8 @@ Please refer to [Replication](api.html#replication) for documention on options, 
 {% highlight js %}
 PouchDB.sync('http://localhost:5984/mydb')
   .on('change', onChange)
-  .on('complete', onComplete);
+  .on('complete', onComplete)
+  .on('error', onError);
 {% endhighlight %}
 
 There is also a shorthand for syncing given existing PouchDB objects. This behaves the same as `PouchDB.sync()`:
@@ -684,6 +720,7 @@ All options default to `false` unless otherwise specified.
     - `options.conflicts`: Include conflicts in the `_conflicts` field of a doc.
   - `options.attachments`: Include attachment data.
 * `options.startkey` & `options.endkey`: Get rows with keys in a certain range (inclusive/inclusive).
+* `options.inclusive_end`: Include rows having a key equal to the given `options.endkey`. Default: `true`.
 * `options.limit`: Maximum number of rows to return.
 * `options.skip`: Number of rows to skip before returning (warning: poor performance on IndexedDB/LevelDB!).
 * `options.descending`: Reverse the order of the output rows.
@@ -885,6 +922,30 @@ db.query(function(thisIs, awesome) {
 
 Note that closures are only supported by local databases with temporary views.
 
+{% include anchor.html title="View cleanup" hash="view_cleanup" %}
+
+{% highlight js %}
+db.viewCleanup([options], [callback])
+{% endhighlight %}
+
+Cleans up any stale map/reduce indexes.
+
+As design docs are deleted or modified, their associated index files (in CouchDB) or companion databases (in local PouchDBs) continue to take up space on disk. `viewCleanup()` removes these unnecessary index files.
+
+See [the CouchDB documentation on view cleanup](http://couchdb.readthedocs.org/en/latest/maintenance/compaction.html#views-cleanup) for details.
+
+#### Example Usage:
+{% highlight js %}
+db.viewCleanup([options], [callback])
+{% endhighlight %}
+
+#### Example Response:
+{% highlight js %}
+{
+  "ok" : "true"
+}
+{% endhighlight %}
+
 {% include anchor.html title="Get database information" hash="database_information" %}
 
 {% highlight js %}
@@ -906,6 +967,12 @@ db.info(function(err, info) { })
   "update_seq": 5
 }
 {% endhighlight %}
+
+**Response object:**
+
+* `db_name` is the name of the database you gave when you called `new PouchDB()`, and also the unique identifier for the database.
+* `doc_count` is the total number of non-deleted documents in the database.
+* `update_seq` is the sequence number of the database.  It starts at 0 and gets incremented every time a document is added or modified.
 
 {% include anchor.html title="Compact the database" hash="compaction" %}
 
@@ -969,6 +1036,8 @@ PouchDB.plugin({
 {% endhighlight %}
 
 This will add the function as a method of all databases with the given method name.  It will always be called in context, so that `this` always refers to the database object.
+
+We also offer a [PouchDB Plugin Seed project](https://github.com/pouchdb/plugin-seed), which is the fastest way to get started writing, building and testing your very own plugin.
 
 #### Example Usage:
 {% highlight js %}

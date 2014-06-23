@@ -46,7 +46,9 @@ define( [ require, '../../field', 'fancytree' ], function( require, FieldDefault
 			root = this.domExpander.fancytree( 'getRootNode' ),
 			tree = this.domExpander.fancytree( 'getTree' ),
 			node;
-		
+
+		this._showExpander( fieldElement );
+
 		tree._callHook("treeClear", tree); // root.removeChildren() causes root ul to loose its classes => bad.
 		root.addChildren( optionsSource );
 
@@ -55,14 +57,14 @@ define( [ require, '../../field', 'fancytree' ], function( require, FieldDefault
 				node.setActive( false );
 			}
 		}
-
+		
 		if( tree.getNodeByKey && ( node = tree.getNodeByKey( fieldElement.value ) ) ) {
 			node.setActive( true );
 		}
 
 		root.toggleExpanded();
 
-		this._showExpander( fieldElement );
+	
 	};
 
 	return FieldConstructor;

@@ -10,6 +10,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			lastTr,
 	 			currentColSort;
 
+	 		var toggle = this.module.getConfiguration( 'toggle' );
+
 	 		this.domTable = $( "<table />" , { cellpadding: 0, cellspacing: 0 } ).css( { width: '100%' } );
 	 		this.domHead = $( "<thead />" ).appendTo( this.domTable );
 	 		this.domBody = $( "<tbody />" ).appendTo( this.domTable );
@@ -21,7 +23,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 				var dataRowId = parseInt( $(this).attr('data-row-id') );
 	 					
-	 				if( ! isNaN ( dataRowId ) ) {
+	 				if( ! isNaN( dataRowId ) ) {
 		 				self.module.controller.lineHover( self.module.data, dataRowId );
 		 			}
                                         
@@ -43,6 +45,18 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 		}).on('click', 'tr', function() {
 
  				self.module.controller.lineClick( self.module.data, $(this).index() );
+
+ 				if( toggle ) {
+ 					var $this = $(this);
+
+ 					if( $( this ).hasClass( 'toggled' ) ) {
+ 						self.module.controller.onToggleOff( self.module.data, $(this).index() );
+ 					} else {
+ 						self.module.controller.onToggleOn( self.module.data, $(this).index() );
+ 					}
+
+ 					$(this).toggleClass('toggled');
+ 				}
 
 	 		}).on('click', 'th', function() { // Sorting
 
@@ -75,10 +89,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 		});
 
 	 		this.dom = this.domTable;
-
 	 		this.module.getDomContent( ).html( this.dom );
-
-	 		this.onReady = $.Deferred();
 	 		this.onResize( );
 
 	 		var jpaths = this.module.getConfiguration( 'colsjPaths' ),
@@ -107,6 +118,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			}
 		
 			this.domHead.html( thead );
+			this.resolveReady();
 	 	},
 
 	 	unload: function() {
@@ -114,10 +126,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 		this.module.getDomContent( ).empty( );
 	 	},
 
-	 	inDom: function() {
-
-			this.onReady.resolve( );
-	 	},
 
 
 	 	applyFilterToRow: function(elId, rowId) {
@@ -165,7 +173,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 				return;
 	 			}
                                 
-	 			moduleValue = moduleValue.get();
+//	 			moduleValue = moduleValue.get();
+
 				this.elements = moduleValue;
                 
 				var self = this, 
@@ -173,21 +182,20 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 					nbLines = this.module.getConfiguration( 'nbLines' ) || 20,
 					html = '',
 					i = 0,
-					l = moduleValue.length,
+					l = moduleValue.get().length,
 					j,
 					k = jpaths.length;
 
 				this.module.data = moduleValue;
 
-				for( ; i < l ; i ++ ) {
+				for( i = 0 ; i < l ; i ++ ) {
 
-					html += this.buildElement( moduleValue[ i ], i );
+					html += this.buildElement( moduleValue.getChildSync( i ), i );
 				}
 
 				this.domBody.html( html );
 
 				// Debouncing the highlighting
-
 				if( this.timeout ) {
 					window.clearTimeout( this.timeout );
 				}
@@ -199,32 +207,30 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 					for( i = 0; i < l ; i++ ) {
 							
-
 						( function( j ) {
 
 							API.listenHighlight( self.module.data[ j ], function( val ) {
 								self.doHighlight( j, val );
 							}, false, self.module.getId( ) );
 
-
 							var dom = self.domBody.find('#' + self.module.getId() + '_' + j);
-							self.module.data[ j ].onChange( function( el ) {
-								dom.replaceWith( self.buildElement( el, j, true ) );
-							}, self.module.getId() );
 
-							if( self.module.data[ j ].removable ) {
+							self.module.model.dataListenChange( self.module.data.get( j ), function() {
+								dom.replaceWith( ( dom = $( self.buildElement( this, j, true ) ) ) );
+							}, 'list');
+
+							if( self.module.data.get( j ).removable ) {
 								Context.listen( dom.get( 0 ), [
-									['<li><a><span class="ui-icon ui-icon-close"></span> Remove</a></li>', 
-									function() {
-										self.onActionReceive.removeRowById.call( self, j );
-									}]
+									[
+										'<li><a><span class="ui-icon ui-icon-close"></span> Remove</a></li>', 
+										function() {
+											self.onActionReceive.removeRowById.call( self, j );
+										}
+									]
 								]);
 							}
-							
 						}) ( i );
-						
 					}
-
 				}, 1000); // 1 sec timeout
 				
 				this.list = true;
@@ -259,10 +265,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 		buildElement: function( source, i ) {
 			
-			if( ! source.get ) {
-				return;
-			}
-
 			var 
 				jpaths = this.module.getConfiguration( 'colsjPaths' ),
 				html = '',
@@ -286,7 +288,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				}
 				
 				html += '<td>';	
-				html += Traversing.get( this.getValue( source.get(), jpaths[ j ].jpath ) ) || "";
+				html += Traversing.get( this.getValue( Traversing.get( source ), jpaths[ j ].jpath ) ) || "";
 				html += '</td>';
 			}
 			html += '</tr>';

@@ -17,7 +17,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 		
 		inDom: function() {
 			var self = this;
-			this.module.getDomView().on('mouseenter mouseleave click', 'div', function(e) {
+			this.dom.on('mouseenter mouseleave click', '> div', function(e) {
 				var elementId = $(this).index();
 				var value = self.list.get()[elementId];
                                 if(e.type === "mouseenter") {
@@ -32,7 +32,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
                                     self.module.controller.sendAction('cell', value, 'onClick');
                                 }
 			});
-
+			this.resolveReady();
 		},
 
 		update: {

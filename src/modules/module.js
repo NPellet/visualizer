@@ -1,77 +1,111 @@
-define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util/fullscreen'], function($, ContextMenu, API, Util, Fullscreen) {
+define([
+	'jquery',
+	'src/util/context',
+	'src/util/api',
+	'src/util/util',
+	'src/util/fullscreen',
+	'src/util/debug'
+], 
+
+function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
+	"use strict";
 	
-	function init(module) {
+	function init( module ) {
 		//define object properties
-		var moduleURL = module.definition.url,
-			def = $.Deferred();
-		
-		//Construct the DOM within the module
-		
-		Util.loadCss( require.toUrl( moduleURL + "style.css" ) );
+		var moduleURL = module.definition.getChildSync('url', true).get(),
+			ext = '';
 
-		if( ! moduleURL ) {
-			def.reject( );
-			return def;
+		if( moduleURL.toString ) {
+			moduleURL = moduleURL.toString();
 		}
-
-
-		var ext = '';
 		
 		if( moduleURL.indexOf('http://') > -1 ) {
 			ext = '.js';
 		}
 
-		require( [
-			
-			moduleURL + "model" + ext,
-			moduleURL + "view" + ext,
-			moduleURL + "controller" + ext
-
-		], function(M, V, C) {
-
-//			$.getJSON( moduleURL + "module.json", {}, function( config ) {
-
-			//	module.config = config;
-				module.model = new M();
-				module.view = new V();
-				module.controller = new C();
-
-
-				module.dom = $( module.buildDom( ) );
-
-				module.domContent = module.dom.children( ).children( '.ci-module-content' );
-				module.domHeader = module.dom.children( ).children( '.ci-module-header' );
-				module.domWrapper = module.dom;
-		
-				module.view.setModule( module );
-				module.controller.setModule( module );
-				module.model.setModule( module );
-
-				module.view.onReady = true;
-
-				module.view.init( );
-				module.controller.init( );
-				module.model.init( );
-				
-	 			module.updateAllView( );
-				def.resolve();
-
-
-
-	//		});
-		
+		module.viewReady = new Promise( function( res, rej ) {
+			module._resolveView = res;
 		});
 
-		return def.promise();
+		module.controllerReady = new Promise( function( res, rej ) {
+			module._resolveController = res;
+		});
+
+		module.modelReady = new Promise( function( res, rej ) {
+			module._resolveModel = res;
+		});
+
+		module._onReady = Promise.all( [ module.viewReady, module.controllerReady, module.modelReady ] );
+		module._onReady.then( function() {
+
+			module.updateAllView( );
+
+		}, function(err) {
+			Debug.error( "Caught error in module ready state", err );
+		}).catch(function(err){
+			Debug.error("Caught error while updating module", err);
+		});
+
+		return new Promise(
+
+			function( resolve, reject ) {
+
+				if( ! moduleURL ) {
+					reject();
+					return;
+				}
+
+				Util.loadCss( moduleURL + "style.css" );
+
+				require( [
+					
+					moduleURL + "model" + ext,
+					moduleURL + "view" + ext,
+					moduleURL + "controller" + ext
+
+				], function(M, V, C) {
+
+					module.model = new M();
+					module.view = new V();
+					module.controller = new C();
+
+					if( ! module.controller.moduleInformation ) {
+						return;
+					}
+					
+					module.dom = $( module.buildDom( ) );
+
+					module.domContent = module.dom.children( ).children( '.ci-module-content' );
+					module.domHeader = module.dom.children( ).children( '.ci-module-header' );
+					module.domLoading = module.dom.children( ).children( '.ci-module-loading' );
+					module.domWrapper = module.dom;
+			
+					module.view.setModule( module );
+					module.controller.setModule( module );
+					module.model.setModule( module );
+
+					module.view.initDefault();
+					module.view.init( );
+					module.controller.init( );
+					module.model.init( );
+					
+					resolve( module );
+				});
+			}
+
+		);
 	}
 
-	 var Module = function(definition) {
+	 var Module = function( definition ) {
 		this.definition = definition;
-		this.definition.configuration = this.definition.configuration || new ViewObject({});
+		this.definition.configuration = this.definition.configuration || new DataObject({});
 
-		this.definition.layers = this.definition.layers || new ViewObject(); // View on which layers ?
+		this.definition.layers = this.definition.layers || new DataObject(); // View on which layers ?
 
-		this.ready = init(this);
+		this.ready = init( this );
+		this.ready.catch( function(err) {
+			Debug.error( "Caught error in module initialization.", err );
+		});
 	};
 	/**
 	 * Overrideable prototype
@@ -107,19 +141,18 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			html += '</div>';
 			html += '</div><div class="ci-module-content" style="';
 			
-			if(this.definition.bgColor) {
-				html += "background-color: ";
-				html += "rgba(" + this.definition.bgColor + ")";
-			} /*else if(entryCfg.moduleBackground) {
-				html += "background-color: ";
-				html += entryCfg.moduleBackground;
-			}*/
 			
 			html += '">';
 			
 			html += '</div>';
+
+			html += '<div class="ci-module-loading">Loading ...</div>';
 			html += '</div>';
 			return html;
+		},
+
+		onReady: function() {
+			return this._onReady;
 		},
 
 		/**
@@ -127,15 +160,23 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 		 */
 		updateView: function(rel) {
 		
-			$.when(this.ready, this.view.onReady).then(function() {
-				var val = API.getRepositoryData().get(this.getNameFromRel(rel)), name;
-				if(!val)
-					return;
+			this.onReady().then( function( ) {
 
-				if(this.view.update && this.view.update[rel])
-					this.view.update[rel].call(this.view, val[1], val[0][0]);	
+				var val = API.getVariable( this.getNameFromRel( rel ) ),
+					name;
+
+				if( ! val ) {
+					return;
+				}
+
+				if( this.view.update && this.view.update[rel] ) {
+					this.view.update[ rel ].call(this.view, val[ 1 ], val[ 0 ][ 0 ] );	
+				}
+			}, function(err) {
+				Debug.error("Error during view update", err);
 			});
 		},
+
 
 		updateAllView: function() {
 				
@@ -146,14 +187,12 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			var vars = this.vars_in(),
 				i = 0, 
 				l = vars.length, 
-				val;
+				variable;
 
 			for( ; i < l ; i++ ) {
 				
-	 			val = API.getVar( vars[ i ].name );
-	 			if( val.getType()!== "undefined" ) {	 				
-	 				this.model.onVarGet( val, vars[ i ].name );
-	 			}
+	 			variable = API.getVar( vars[ i ].name );
+	 			this.model.onVarChange( variable );
 			}
 		},
 		
@@ -221,7 +260,14 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				return;
 			}
 			
-			return this.model.data[ this.getNameFromRel( rel ) ] || false;
+			return this.model.data[ rel ] || false;
+		},
+
+		getVariableFromRel: function( rel ) {
+
+			var name = this.getNameFromRel( rel );
+			
+			return API.getVar( name );
 		},
 
 		getNameFromRel: function(rel) {
@@ -327,18 +373,17 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 					return;
 				} else {
 					this.show();
-				//	console.log('Show');
-					
+				//	console.log('Show');	
 				}
-
-
 
 				this.setTitle( layer.title );
 				this.setDisplayWrapper( layer.wrapper );
-				this.setBackgroundColor( layer.bgcolor || [255,255,255,1] );
+
+				this.setBackgroundColor( layer.bgColor || [255,255,255,1] );
 
 				this.activeLayerName = newLayerShown;
-
+				this.view.onResize();
+				
 				return layer;
 			}
 		},
@@ -351,15 +396,15 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 		},
 
 		setLayers: function( layers, blankLayer ) {
-			this.definition.layers = this.definition.layers || new ViewObject();
+			this.definition.layers = this.definition.layers || new DataObject();
 
 			for( var i in layers ) {
 				if( this.definition.layers[ i ] ) {
 					continue;
 				}
-//console.log()
+
 				// new layer
-				this.definition.layers[ i ] = {};
+				this.definition.layers[ i ] = new DataObject({});
 
 				if( blankLayer ) {
 					$.extend( true, this.definition.layers[ i ], Module.prototype.emptyConfig );	
@@ -367,6 +412,8 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				} else {
 					$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );	
 				}
+
+				this.definition.layers[ i ] = new DataObject( this.definition.layers[ i ], true );
 			}
 		},
 
@@ -378,17 +425,6 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 			if( ! activeLayer ) {
 				return false;
-			}
-
-			if( ! this.definition.layers[ activeLayer ] || ! this.definition.layers[ activeLayer ].created ) {
-
-				if( noCreation ) {
-					return false;
-				}
-
-				this.definition.layers[ activeLayer ] = new ViewObject(Module.prototype.emptyConfig,  true);
-				this.definition.layers[ activeLayer ].name = activeLayer;
-
 			}
 
 			return this.definition.layers[ activeLayer ];
@@ -405,13 +441,9 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 		doConfig: function() {
 
 			var module = this;
-		
 			var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%', title: "Edit module preferences"});
-
-
 			div.prev().remove();
 			div.parent().css('z-index', 1000);
-
 
 			var references = this.controller.references,
 				events = this.controller.events,
@@ -431,12 +463,12 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				var i = 0,
 					l = arraySource.length,
 					target = [];
-
+				
 				if( Array.isArray( arraySource ) ) {
 					for( ; i < l ; i ++ ) {
 
 						target.push( {
-							key: require.toUrl(arraySource[ i ].file),
+							key: arraySource[ i ].file || "",
 							title: arraySource[ i ].name,
 							children: makeFilters( arraySource[ i ].children )
 						} );		
@@ -447,7 +479,6 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			}
 
 			allFilters = makeFilters( filter );
-			
 
 			// AUTOCOMPLETE VARIABLES
 			var autoCompleteVariables = [],
@@ -497,8 +528,9 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			var makeSendJpaths = function() {	
 			
 				for( var i in references ) {
-					alljpaths[ i ] = module.model.getjPath( i, temporary );
+					alljpaths[ i ] = module.model.getjPath( i );
 				}
+
 			}
 
 			makeSendJpaths();
@@ -726,6 +758,12 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 										type: 'text',
 										title: 'From variable',
 										options: autoCompleteVariables
+									},
+
+									filter: {
+										type: 'combo',
+										title: 'Filter variable',
+										options: allFilters
 									}
 								}
 							}
@@ -766,7 +804,18 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 									jpath: {
 										type: 'combo',
 										title: 'jPath',
-										options: {}
+										options: {},
+										extractValue: function( val ) {
+											var val2 = (val || "").split(".");
+											val2.shift();
+											return val2;
+										},
+
+										insertValue: function( val ) {
+											val = (val || []).slice(0);
+											val.unshift("element");
+											return val.join(".");
+										}
 									},
 
 
@@ -856,7 +905,21 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 									jpath: {
 										type: 'combo',
 										title: 'jPath',
-										options: {}
+										options: {},
+										extractValue: function( val ) {
+											if(val){
+												var val2 = val.split(".");
+												val2.shift();
+												return val2;
+											}
+										},
+
+										
+										insertValue: function( val ) {
+											val = (val || []).slice(0);
+											val.unshift("element");
+											return val.join(".");
+										}
 									},
 
 									name: {
@@ -1020,7 +1083,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].display = allDisplay.indexOf( l[ i ].layerName[ 0 ] ) > -1;
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].title = l[ i ].moduletitle[ 0 ];
-						module.definition.layers[ l[ i ].layerName[ 0 ] ].bgcolor = l[ i ].bgcolor;
+						module.definition.layers[ l[ i ].layerName[ 0 ] ].bgColor = l[ i ].bgcolor[ 0 ];
 						module.definition.layers[ l[ i ].layerName[ 0 ] ].wrapper = l[ i ].modulewrapper[ 0 ].indexOf('display') > -1;
 					}
 
@@ -1193,6 +1256,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 		},
 
 		setId: function(id) {
+
 			this.definition.set('id', id);
 		},
 		
@@ -1231,7 +1295,7 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 				delete this.definition.dataSource;
 			}
 
-			return this.definition.vars_in = this.definition.vars_in || new ViewArray();
+			return this.definition.vars_in = this.definition.vars_in || new DataArray();
 		},
 
 
@@ -1286,23 +1350,24 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 		exportData: function() {
 			var module = this;
 			$('<div class="ci-module-export"><textarea></textarea></div>').dialog({
-				'modal': true,
-				'title': 'Export data from module ' + module.getTitle(),
-				'width': '70%',
+				modal: true,
+				title: 'Export data from module ' + module.getTitle(),
+				width: '70%',
 				height: 500
 			}).children('textarea').text(module.controller["export"]());
 		},
 		
 		printView: function() {
+			var content = this.controller.print();
 			var openWindow = window.open("", "", "");
-			this.controller["print"](openWindow);
+			openWindow.document.write(content);
 			openWindow.document.close();
 			openWindow.focus();
-			openWindow.print();
-			openWindow.close();
 		},
 
 		setBackgroundColor: function(color) {
+
+
 			this.domContent.get(0).style.backgroundColor = 'rgba(' + color.join(",") + ')';
 		},
 
@@ -1315,16 +1380,45 @@ define(['jquery', 'src/util/context', 'src/util/api', 'src/util/util', 'src/util
 			} catch(e) {}; 
 		},
 
-		emptyConfig: {
-				position: { left: 0, top: 0 },
-				size: { width: 20, height: 20},
-				zIndex: 0,
-				display: true, 
-				title: "",
-				bgcolor: [ 255, 255, 255, 0 ],
-				wrapper: true,
-				created: true
-		}
+		blankVariable: function( variableName ) {
+
+			var rels = this.getDataRelFromName( variableName );
+
+			for( var i = 0; i < rels.length ; i ++ ) {
+				if( this.view.blank[ rels[ i ] ] ) {
+					this.view.blank[ rels[ i ] ].call( this.view, variableName );
+				}
+			}
+		},
+
+		startLoading: function( variableName ) {
+
+			var rels = this.getDataRelFromName( variableName );
+			for( var i = 0; i < rels.length ; i ++ ) {
+				
+				this.view.startLoading( rels[ i ] );
+			}
+		},
+
+		endLoading: function( variableName ) {
+
+			var rels = this.getDataRelFromName( variableName );
+			for( var i = 0; i < rels.length ; i ++ ) {
+				
+				this.view.endLoading( rels[ i ] );
+			}
+		},
+
+		emptyConfig: new DataObject({
+			position: { left: 0, top: 0 },
+			size: { width: 20, height: 20},
+			zIndex: 0,
+			display: true, 
+			title: "",
+			bgColor: [ 255, 255, 255, 0 ],
+			wrapper: true,
+			created: true
+		})
 	};
 
 	return Module;

@@ -1315,16 +1315,12 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			// Adding a deferred allows to wait to get actually the data before we draw the chart
 			// we decided here to plot the chart in the "onResize" event
 			this.loadedData=$.Deferred();
+			
+			this.resolveReady();
 
       // this.updateOptions();
 
 			if (this.DEBUG) console.log("Scatter 3D: ID: "+this._id);      
-		},
-		
-
-		inDom: function() {
-			if (this.DEBUG) console.log("Scatter 3D: inDom");
-
 		},
 
 		onResize: function() {

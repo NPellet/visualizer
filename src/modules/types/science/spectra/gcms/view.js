@@ -10,6 +10,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			this.namedSeries = {};
 			this.dom = $(html.join(''));
 			this.module.getDomContent().html(this.dom);
+			this.resolveReady();
 		},
 
 		unload: function() {

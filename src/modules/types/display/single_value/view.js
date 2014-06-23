@@ -17,6 +17,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 			this.values = {};
 			this.module.getDomContent( ).html( this.dom );
 			this.fillWithVal( this.module.getConfiguration( 'defaultvalue' ) );
+			this.resolveReady();
+			this._relsForLoading = [ 'value' ];
 		},
 		
 		blank: {
@@ -25,8 +27,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 			}
 		},
 		
-		inDom: function() {},
-
 		update: {
 			'color': function(color) {
 
@@ -38,12 +38,14 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 			},
 
 			'value': function( varValue, varName ) {
+
 				var view = this;
 				
-				varValue.onChange( function( value ) {
-					view.render( value, varName );
-				});
-
+				if( varValue.onChange ) {
+					varValue.onChange( function( value ) {
+						view.render( value, varName );
+					});
+				}
 
 				if( varValue == undefined ) {
 
@@ -59,14 +61,15 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 		render: function( varValue, varName ) {
 
 			var self = this;
-
-			Renderer.toScreen( varValue, this.module ).always( function( val ) {
+			
+			var def = Renderer.toScreen( varValue, this.module );
+			def.always( function( val ) {
 				self.values[ varName ] = val;
-				self.renderAll( val );
+				self.renderAll( val, def );
 			} );
 		},
 		
-		renderAll: function( val ) {
+		renderAll: function( val, def ) {
 
 			var view = this,
 				sprintfVal = this.module.getConfiguration('sprintf'),
@@ -84,21 +87,21 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 
 						val = sprintf.apply( this, args );
 
-						view.fillWithVal( val );	
+						view.fillWithVal( val, def );	
 					});
 
 				} catch( e ) {
 
-					view.fillWithVal( val );
+					view.fillWithVal( val, def );
 
 				}
 
 			} else {
-				view.fillWithVal( val );
+				view.fillWithVal( val, def );
 			}
 		},
 
-		fillWithVal: function(val) {
+		fillWithVal: function(val, def) {
 			
 			var valign = this.module.getConfiguration('valign'),
 				align = this.module.getConfiguration('align'),
@@ -123,6 +126,11 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/domd
 //			if (preformatted) div.html("<pre />").html( val );
 
 			this.dom.html( div );
+			
+			if(def && def.build) {
+				def.build();
+			}
+			
 			DomDeferred.notify( div );
 		},
 		

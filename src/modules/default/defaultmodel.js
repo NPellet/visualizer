@@ -1,14 +1,27 @@
-define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/api'], function($, Entry, Traversing, API) {
+define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/util/debug'], function($, Entry, Traversing, API, Debug) {
 
 	return {
 
 		setModule: function(module) { this.module = module; },
 
 		init: function() {
+
 			var sourceName, sourceAccepts;
 			this.module.model = this;
-			this.data = [ ];
+			this.data = new DataObject();
+			
+			this.checkBlank = {};
+		
+			this.triggerChangeCallbacksByRels = {};
+			this.mapVars();
+		
 			this.resetListeners();
+			this.initImpl();
+
+		},
+
+		initImpl: function() {
+			this.resolveReady();
 		},
 
 		
@@ -17,31 +30,44 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 		},
 
 		resetListeners: function() {
+
 			this.sourceMap = null;
-	
-			API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
+			this.mapVars();
+			//API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
 			API.getRepositoryActions( ).unListen( this.getActionNameList(), this._actionlisten );
-		
-			this._varlisten = API.getRepositoryData().listen( this.getVarNameList(), $.proxy(this.onVarGet, this) );
+			
+			var list = this.getVarNameList();
+			for( var i = 0, l = list.length ; i < l ; i ++ ) {
+				API.getVar( list[ i ] ).listen( this.module, $.proxy( this.onVarChange, this ) );
+			}
+			//this._varlisten = API.getRepositoryData().listen( this.getVarNameList(), $.proxy(this.onVarGet, this) );
 			this._actionlisten = API.getRepositoryActions().listen( this.getActionNameList(), $.proxy(this.onActionTrigger, this) );
 		},
 
-		getVarNameList: function() {
+		mapVars: function() {
+			// Indexing all variables in
 			var list = this.module.vars_in( ),
-				listFinal = [],
-				keyedMap = {};
+				listNames = [],
+				listRels = [],
+				varsKeyedName = {};
 
-			if( ! list ) {
-				return [];
+			if( Array.isArray( list ) ) {
+
+				for(var l = list.length, i = l - 1; i >= 0; i--) {
+
+					listNames.push( list[ i ].name );
+					listRels.push( list[ i ].rel );
+					varsKeyedName[ list[i].name ] = list[ i ];
+				}
 			}
 
-			for(var l = list.length, i = l - 1; i >= 0; i--) {
-				listFinal.push( list[ i ].name );
-				keyedMap[ list[i].name ] = list[ i ];
-			}
+			this.sourceMap = varsKeyedName;
+			this.listNames = listNames;
+			this.listRels = listRels;
+		},
 
-			this.sourceMap = keyedMap;
-			return listFinal;
+		getVarNameList: function() {
+			return this.listNames;
 		},
 
 		getActionNameList: function() {
@@ -64,57 +90,133 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 
 			return names;
 		},
+		
+		onVarChange: function( variable ) {
 
-		onVarGet: function(varValue, varName) {
 			var self = this,
 				i,
 				l,
+				k,
+				m,
 				rel;
-
-
-			$.when(this.module.ready, this.module.view.onReady).then(function() {
-
-				if( varName instanceof Array ) {
-					varName = varName[ 0 ];
+			
+			var varName = variable.getName();
+			
+			if(this.stopVarChange) {
+				this.stopVarChange();
+			}
+			
+			this.module.onReady().then( function() {
+				if(!self.checkBlank[varName]) {
+					self.module.blankVariable( varName );
+					self.checkBlank[varName] = true;
 				}
+			});
 
+			// Show loading state if it takes more than 500ms to get the data
+			var rejectLatency;
+			var latency = new Promise( function( resolve, reject ) {
+				var timeout = setTimeout(resolve, 500);
+				rejectLatency = function() {
+					clearTimeout(timeout);
+					self.module.endLoading( varName );
+					reject();
+				};
+			} );
+
+			// Start loading
+			Promise.all( [ this.module.onReady(), latency ] ).then( function() {
+				self.module.startLoading( varName );
+			}, function(err) {
+				// Fail silently (onReady is already covered and reject latency is expected)
+			} );
+
+			Promise.all( [ this.module.onReady( ), variable.onReady( ) ] ).then( function() {
+				
+				// Gets through the input filter first
+				var varValue = variable.getValue();
+
+				// Then validate
 				if( ! varName || ! self.sourceMap || ! self.sourceMap[ varName ] || ! self.module.controller.references[ self.sourceMap[ varName ].rel ] ) {
-					return;
+					return rejectLatency();
 				}
                 
                 var data = self.buildData( varValue, self.module.controller.references[ self.sourceMap[ varName ].rel ].type );
-                
-                if(!data)
-                    return;
 
-				self.data[ varName ] = data;
+                if( ! data ) {
+                  	return rejectLatency();
+                }
+
 				rel = self.module.getDataRelFromName( varName );
+				
+				i = 0,
+				l = rel.length,
+				k = 0;
 
-				i = 0, l = rel.length;
+				var vars = self.module.vars_in();
 
-				for( ; i < l; i++) {
+				rejectLatency();
 
+				m = vars.length;
+				
+				for( ; k < m ; k ++ ) {
 
-					if (  self.module.view.blank[ rel[ i ] ] ) {
+					if( vars[ k ].name == varName && self.module.view.update[ vars[ k ].rel ] && varValue !== null ) {
 
-					/*
-					  && varValue === null
-					  has been removed. We need to clear the module even for the true variable value.
-					  This is to account for asynchronous fetching that may come back in between two clearing elements
-					  DO NOT ADD THIS BACK !!!
-					*/
+						( function( j ) {
 
-						self.module.view.blank[ rel[ i ] ].call( self.module.view, varName );
+							new Promise( function( resolve, reject ) {
 
+								if( vars[ j ].filter ) {
+
+									require( [ vars[ j ].filter ], function( filterFunction ) {
+									
+										if( filterFunction.filter ) {
+											return filterFunction.filter( varValue, resolve, reject );
+										}
+										
+										reject("No filter function defined");
+
+									} );
+								
+								} else {
+									resolve( varValue );
+								}
+							} ).then( function( varValue ) {
+									
+						//		if(self.checkBlank[varName]) {
+									
+									self.checkBlank[varName] = false;
+								
+									self.data[ vars[ j ].rel ] = varValue;
+									self.removeAllChangeListeners( vars[ j ].rel );
+									self.module.view.update[ vars[ j ].rel ].call( self.module.view, self.data[ vars[ j ].rel ], varName );
+									
+						//		}
+
+							}, function(err) {
+								Debug.error("Error while filtering the data", err );
+							}).catch(function(err){
+								Debug.error("Error while updating module", err);
+							});
+
+						}) ( k );
+						
 					}
 					
-					if( self.module.view.update[ rel[ i ] ] && varValue !== null ) {
-
-						self.module.view.update[ rel[ i ] ].call( self.module.view, self.data[ varName ], varName );
-
-					}
 				}
-			});		
+
+				
+
+			}, function(e) {
+				rejectLatency();
+			} ).catch( function( err ) {
+				
+				rejectLatency();
+				Debug.error( "Error while updating variable", err );
+				
+			} );
+
  		},
 
 		onActionTrigger: function(value, actionName) {
@@ -136,18 +238,17 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				return data;
 			}
 
-			if(!(sourceTypes instanceof Array))
-				sourceTypes = [sourceTypes];
+			if( ! ( sourceTypes instanceof Array ) ) {
+				sourceTypes = [ sourceTypes ]; 
+			}
 
 			var dataType = data.getType(),
 				mustRebuild = false;
-
 
 			// If no in type is defined, the module accepts anything
 			if( sourceTypes.length == 0) {
 				return data;
 			}
-
 
 			for(var i = 0; i < sourceTypes.length; i++) {
 				if(sourceTypes[i] == dataType) {
@@ -155,8 +256,9 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 				}
 			}
 
-			if(mustRebuild)
+			if(mustRebuild) {
 				return dataRebuilt;
+			}
 			
 			return false;
 		},
@@ -165,10 +267,89 @@ define(['jquery', 'src/main/entrypoint', 'src/util/datatraversing', 'src/util/ap
 			return this.data;
 		},
 				
-		getjPath: function(rel, accepts) {
-			var data = this.module.getDataFromRel(rel);
-			return Traversing.getJPathsFromElement(data); // (data,jpaths)
-		}
+		getjPath: function(rel, subjPath) {
+			return this._getjPath( rel, subjPath );
+		},
 
+		_getjPath: function(rel, subjPath) {
+			var data = this.module.getDataFromRel(rel);
+
+			if( data && subjPath !== undefined ) {
+				data = data.getChildSync( subjPath );
+			}
+
+			return Traversing.getJPathsFromElement(data); // (data,jpaths)
+		},
+
+		resolveReady: function() {
+			this.module._resolveModel();
+		},
+
+		dataListenChange: function( data, callback, bindToRel ) {
+
+			if( ! data ) {
+				return;
+			}
+
+			var self = this,
+				proxiedCallback = function( moduleId ) {
+
+					if( moduleId == self.module.getId( ) ) {
+						return;// Do not update itself;
+					}
+
+					callback.call( data );
+				};
+
+			if( this.addChangeListener( bindToRel, data, proxiedCallback ) ) {
+
+				data.onChange( proxiedCallback );
+
+			} else {
+				Debug.setDebugLevel(1);
+				Debug.error("Adding the change callback is forbidden as no rel has been defined ! Aborting callback binding to prevent leaks");
+			}
+		},
+
+		dataTriggerChange: function( data ) { // self is not available
+
+			data.triggerChange( false, [ this.module.getId( ) ] );
+		},
+
+		dataSetChild: function( data, jpath, value ) {
+
+			data.setChild( jpath, value, this.module.getId( ) );
+		},
+
+		addChangeListener: function( rel, data, callback ) {
+
+			if( ! rel ) {
+				return false;
+			}
+
+			if( this.listRels.indexOf( rel ) === -1 ) {
+				return false;
+			}
+
+			this.triggerChangeCallbacksByRels[ rel ] = this.triggerChangeCallbacksByRels[ rel ] || [];
+			this.triggerChangeCallbacksByRels[ rel ].push( { data: data, callback: callback } );
+
+			return true;
+		},
+
+		removeAllChangeListeners: function( rel ) {
+
+			if( ! this.triggerChangeCallbacksByRels[ rel ] ) {
+				return;
+			}
+
+			for( var i = 0, l = this.triggerChangeCallbacksByRels[ rel ].length ; i < l ; i ++ ) {
+				this.removeChangeListener( this.triggerChangeCallbacksByRels[ rel ][ i ].data, this.triggerChangeCallbacksByRels[ rel ][ i ].callback );
+			}
+		},
+
+		removeChangeListener: function( data, callback ) {
+			data.unbindChange( callback );
+		}
 	};
 });

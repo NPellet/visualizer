@@ -20,7 +20,7 @@ define(['require'], function(require) {
     return function( input ) {
 
         var stamp = Date.now( ) + Math.random( );
-        this.worker.postMessage( { stamp: stamp, input: input } );
+        this.worker.postMessage( { stamp: stamp, input: input.toString() } );
         this.stamps[ stamp ] = $.Deferred( );
         return this.stamps[ stamp ];
     }

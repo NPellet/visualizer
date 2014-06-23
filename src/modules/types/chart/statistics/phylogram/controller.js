@@ -52,7 +52,23 @@ define(['modules/default/defaultcontroller'], function(Default) {
         var element = new DataObject({'type': 'tree', value: data}, true);
         this.sendAction('tree', element, name);
         this.setVarFromEvent(name, element, 'tree');
+		this.setVarFromEvent(name, function(){
+			var arr = [];
+			treeToArray(arr, data);
+			return DataArray(arr);
+		}, 'list');
     };
+	
+	function treeToArray(arr, tree) {
+		if(tree.children) {
+			for(var i = 0, ii = tree.children.length; i < ii; i++) {
+				treeToArray(arr, tree.children[i]);
+			}
+		}
+		else if(tree.data) {
+			arr.push(tree.data);
+		}
+	}
 
     controller.prototype.configurationStructure = function() {
         return {
@@ -95,11 +111,11 @@ define(['modules/default/defaultcontroller'], function(Default) {
         },
         onBranchSelect: {
             label: 'Select a branch',
-            refVariable: ['tree']
+            refVariable: ['tree','list']
         },
         onBranchHover: {
             label: 'Hovers a branch',
-            refVariable: ['tree']
+            refVariable: ['tree','list']
         }
     };
 
@@ -113,7 +129,11 @@ define(['modules/default/defaultcontroller'], function(Default) {
         },
         leaf: {
             label: 'Value of the leaf'
-        }
+        },
+		list: {
+			type: 'array',
+			label: 'A list of children'
+		}
     };
 
     controller.prototype.variablesIn = ['tree'];

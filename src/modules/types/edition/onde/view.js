@@ -31,13 +31,12 @@ define(['modules/default/defaultview', "src/util/util", "jquery", "components/on
 			});
             this.inputVal = {};
 
-            this.onReady = $.Deferred();
         },
         blank: {},
         inDom: function() {
 			this.module.getDomContent( ).html(this.dom);
 			this.initForm();
-            this.onReady.resolve();
+            this.resolveReady();
         },
 		initForm: function() {
 			this.form = new onde.Onde(this.dom);

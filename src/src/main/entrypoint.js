@@ -31,55 +31,22 @@ define(['jquery',
 
 	var _viewLoaded, _dataLoaded;
 
-	var evaluatedScripts = {};
-	var crons = [];
-
 	var RepositoryData = new Repository(),
-			RepositoryHighlight = new Repository(),
-			RepositoryActions = new Repository();
+		RepositoryHighlight = new Repository(),
+		RepositoryActions = new Repository();
 
 	API.setRepositoryData(RepositoryData);
 	API.setRepositoryHighlights(RepositoryHighlight);
 	API.setRepositoryActions(RepositoryActions);
 
-	/*window.onbeforeunload = function() {
-		var dommessage = {
-			data: false,
-			view: false
-		},
-		data = JSON.stringify(data),
-				view = JSON.stringify(view),
-				message = [];
-
-		if (viewhandler && viewhandler._savedLocal != view && viewserver._savedServer != view) {
-			dommessage.view = true;
-		}
-
-		if (datahandler && datahandler._savedLocal != data && datahandler._savedServer != data) {
-			dommessage.data = true;
-		}
-
-		if (dommessage.view) {
-			message.push("The view file has not been saved. If you continue, you will loose your changes");
-		}
-
-		if (dommessage.data) {
-			message.push("The data file has not been saved. If you continue, you will loose your changes");
-		}
-
-		if (message.length > 0) {
-			return message.join("\n\n");
-		}
-	};*/
-
 
 	function doView(view) {
 
 		var i = 0, l;
+		DataObject.recursiveTransform( view, false );
 
 		view = Migration(view);
-
-		view.grid = view.grid || new ViewObject();
+		view.grid = view.grid || new DataObject();
 		
 		if (this.viewLoaded) {
 			reloadingView( );
@@ -91,17 +58,18 @@ define(['jquery',
 
 		ModuleFactory.empty( );
 
-		view.modules = view.modules || new ViewArray();
+		view.modules = view.modules || new DataArray();
 
 		l = view.modules.length;
 
-		view.variables = view.variables || new ViewArray();
-		view.pouchvariables = view.pouchvariables || new ViewArray();
-		view.configuration = view.configuration || new ViewObject();
+		view.variables = view.variables || new DataArray();
+		view.pouchvariables = view.pouchvariables || new DataArray();
+		view.configuration = view.configuration || new DataObject();
 		view.configuration.title = view.configuration.title || 'No title';
 
 		for (; i < l; ) {
-			Grid.addModuleFromJSON(view.modules[ i++ ]);
+			
+			Grid.addModuleFromJSON(view.getChildSync( [ 'modules', i++ ], true ) );
 		}
 
 		Grid.checkDimensions();
@@ -152,6 +120,7 @@ define(['jquery',
 		var view = Versioning.getView();
 		var data = Versioning.getData();
 
+
 		var def = $.Deferred();
 		if (view.init_script) {
 			var prefix = '(function(init_deferred){"use strict";';
@@ -177,49 +146,73 @@ define(['jquery',
 						continue;
 					}
 
-					view.variables.push(new ViewObject({varname: i, jpath: "element." + i}));
+					view.variables.push( new DataObject( { varname: i, jpath: [ i ] } ) );
 				}
 			}
 
 			// Entry point variables
+			API.loading("Fetching remote variables");
 			var entryVar;
+			var fetching = [];
 			for (var i = 0, l = view.variables.length; i < l; i++) {
-				entryVar = view.variables[i];
+				entryVar = view.traceSync(['variables', i]);
 				if (entryVar.varname) {
 					// Defined by an URL
 					if (entryVar.url) {
 
-						entryVar.fetch( ).done(function(v) {
+						fetching.push( entryVar.fetch( ).done(function(v) {
 							var varname = v.varname;
 							data[ varname ] = v.value;
-							API.setVariable(varname, data, [varname]);
-						});
 
-					} else if (!entryVar.jpath) {
+							API.setVariable( varname, false, [ varname ] );
+						}) );
+
+					} else if ( ! entryVar.jpath ) {
 
 						// If there is no jpath, we assume the variable is an object and we add it in the data stack
 						// Note: if that's not an object, we will have a problem...
-						data[ entryVar.varname ] = new DataObject();
-						API.setVariable(entryVar.varname, data, [entryVar.varname]);
+						API.createData( name, false );
 
 					} else {
 
-						API.setVariable(entryVar.varname, data, entryVar.jpath);
+						if( typeof entryVar.jpath === "string" ) {
+							entryVar.jpath = entryVar.jpath.split('.');
+							entryVar.jpath.shift();
+						}
+
+						API.setVariable( entryVar.varname, false, entryVar.jpath );
 					}
 				}
 			}
 
+			$.when.apply( $, fetching ).then( function() {
+				API.stopLoading("Fetching remote variables");
+			});
+
+			API.loading("Fetching local variables");
+			var pouching = [], pouchVariable;
 			for (var i = 0, l = view.pouchvariables.length; i < l; i++) {
-				(function(k) {
+				pouchVariable = view.pouchvariables[ i ];
+				if(pouchVariable.dbname && pouchVariable.varname) {
+					(function(k) {
 
-					PouchDBUtil.pouchToVar(view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function(el) {
-						el.linkToParent(data, view.pouchvariables[ k ].varname);
-						API.setVariable(view.pouchvariables[ k ].varname, el);
-					});
+						pouching.push( PouchDBUtil.pouchToVar(view.pouchvariables[ k ].dbname, view.pouchvariables[ k ].id, function(el) {
 
-				})(i);
+							el.linkToParent( data, view.pouchvariables[ k ].varname );
+							API.setVariable( view.pouchvariables[ k ].varname, false, [ view.pouchvariables[ k ].varname ] );
+
+						}) );
+
+					}) (i);
+				}
 			}
-
+			
+			Promise.all( pouching ).then( function() {
+				API.stopLoading("Fetching local variables");	
+			}, function(err) {
+				Debug.error("Unable to fetch local variables", err)
+			});
+			
 			// Pouch DB replication
 			PouchDBUtil.abortReplications();
 			if (view.couch_replication) {
@@ -244,7 +237,9 @@ define(['jquery',
 		div.parent( ).css('z-index', 1000);
 
 		var options = [];
+		
 		Traversing.getJPathsFromElement(data, options);
+
 		require(['./forms/form'], function(Form) {
 
 			var form = new Form();
@@ -277,7 +272,18 @@ define(['jquery',
 									jpath: {
 										type: 'combo',
 										title: 'J-Path',
-										options: options
+										options: options,
+										extractValue: function( val ) {
+											if(val){
+												var val2 = val.split(".");
+												val2.shift();
+												return val2;
+											}
+										},
+
+										insertValue: function( val ) {
+											return "element." + (val || []).join(".");
+										}
 									},
 									url: {
 										type: 'text',
@@ -618,8 +624,10 @@ define(['jquery',
 						value = form.getValue();
 
 				/* Entry variables */
-				data = new ViewArray(value.sections.cfg[ 0 ].groups.tablevars[ 0 ], true);
-				allcrons = new ViewObject(value.sections.webcron[ 0 ].groups.general[ 0 ], true);
+				data = new DataArray(value.sections.cfg[ 0 ].groups.tablevars[ 0 ], true);
+				allcrons = new DataObject(value.sections.webcron[ 0 ].groups.general[ 0 ], true);
+
+
 
 				view.variables = data;
 				view.crons = allcrons;
@@ -628,7 +636,7 @@ define(['jquery',
 				view.init_script = value.sections.init_script;
 
 				// PouchDB variables
-				var data = new ViewArray(value.sections.cfg[ 0 ].groups.pouchvars[ 0 ]);
+				var data = new DataArray(value.sections.cfg[ 0 ].groups.pouchvars[ 0 ]);
 				view.pouchvariables = data;
 
 
@@ -683,9 +691,9 @@ define(['jquery',
 		init: function(urls, type) {
 
 			// Sets the header
-			var configJson = urls['config'] || './usr/config/default.json';
+			var configJson = urls['config'] || 'usr/config/default.json';
 
-			$.getJSON(configJson, {}, function(cfgJson) {
+			$.getJSON(require.toUrl(configJson), {}, function(cfgJson) {
 
 				if (cfgJson.usrDir) {
 					require.config({
@@ -695,7 +703,9 @@ define(['jquery',
 					});
 				}
 				
-				if(cfgJson.debugLevel) {
+				if(urls['debug']) {
+					Debug.setDebugLevel(parseInt(urls['debug']));
+				} else if(cfgJson.debugLevel) {
 					Debug.setDebugLevel(cfgJson.debugLevel);
 				}
 

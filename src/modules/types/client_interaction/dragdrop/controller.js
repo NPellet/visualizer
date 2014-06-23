@@ -175,8 +175,8 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/versionin
         }
                 
         $.when.apply(window, defs).done(function(){
-            that.setVarFromEvent('onRead', that.module.model.tmpVars, 'data');
-            that.setVarFromEvent('onRead', that.module.model.tmpVarsArray, 'dataarray');
+            that.createDataFromEvent('onRead', 'data', that.module.model.tmpVars);
+            that.createDataFromEvent('onRead', 'dataarray', that.module.model.tmpVarsArray);
         });
     };
     

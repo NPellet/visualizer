@@ -451,19 +451,19 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 
 	controller.prototype.onMouseOverMarker = function( xy, infos ) {
 		this.infos=infos;
-		this.setVarFromEvent( 'onMouseOverMarker', DataObject.check(infos), 'markerInfos' );
-		this.setVarFromEvent( 'onMouseOverMarker', new DataArray(xy), 'markerXY' );
+		this.createDataFromEvent( 'onMouseOverMarker', 'markerInfos', DataObject.check(infos) );
+		this.createDataFromEvent( 'onMouseOverMarker', 'markerXY', new DataArray(xy) );
 	};
 
 	controller.prototype.onMouseOutMarker = function( xy, infos ) {
-		this.setVarFromEvent( 'onMouseOutMarker', DataObject.check(infos), 'markerInfos' );
-		this.setVarFromEvent( 'onMouseOutMarker', new DataArray(xy), 'markerXY' );
+
+		this.createDataFromEvent( 'onMouseOutMarker', 'markerInfos', DataObject.check(infos) );
+		this.createDataFromEvent( 'onMouseOutMarker', 'markerXY', new DataArray(xy) );
 	};
     
-    controller.prototype.print = function(printWindow) {
-        printWindow.document.open("image/svg+xml");
-        printWindow.document.write(this.module.view.graph._dom.innerHTML);
-    }
+    controller.prototype.print = function() {
+        return this.module.view.graph._dom.innerHTML;
+    };
 
  	return controller;
 });

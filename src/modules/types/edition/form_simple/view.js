@@ -8,6 +8,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			this.dom = $('<div />');
 			this.module.getDomContent( ).html( this.dom );
 			this.callback = null;
+			this.resolveReady();
 		},
 
 		inDom: function() {
@@ -51,20 +52,36 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 				var val = new DataObject( this.getValue(), true );
 				self.formValue = val;
-				self.module.controller.valueChanged( val );
+//				self.module.controller.valueChanged( val );
 
 				var input = self.module.getDataFromRel('input_object'),
 					structure = self.module.getConfiguration('structure') || [],
 					jpath;
 
-				if( input.setChild ) {
-					for( var i = 0, l = structure.length ; i < l ; i ++ ) {
-						jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
-						input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
+
+				var el = new DataObject();
+
+				if( input ) {
+					if( self.module.getConfiguration( "replaceObj" ) ) {
+
+						for( var i = 0, l = structure.length ; i < l ; i ++ ) {
+							jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
+							input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value, true );
+						}
+
+					} else {
+
+						for( var i = 0, l = structure.length ; i < l ; i ++ ) {
+							jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
+							el.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value )
+	//						input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
+						}
 					}
+				} else {
+					el = val;
 				}
 
-				self.module.controller.formTriggered( val );
+				self.module.controller.valueChanged( el );
 			}
 
 			$.when( def ).done( function( tpl ) { 
@@ -75,7 +92,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				switch( trigger ) {
 
 					case 'btn':
-                                                var btnLabel = self.module.getConfiguration('btnLabel');
+                        var btnLabel = self.module.getConfiguration('btnLabel');
 						form.addButton(btnLabel, { color: 'blue' }, $.proxy( triggerFunction, form ) );
 
 					break;
@@ -102,8 +119,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					
 					self.dom.html( form.makeDomTpl() );
 					form.inDom( );
-
-					self.module.controller.valueChanged( new DataObject( form.getValue(), true ) );
 				});
 			});
 
@@ -114,44 +129,59 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 		update: {
 			input_object: function( varValue, varName ) {
 
-				var self = this,
-					structure = this.module.getConfiguration('structure') || [],
-					jpath;
-
-				self.lockEvents = true;
-				self.nb = 0;
-
-				for( var i = 0, l = structure.length ; i < l ; i ++ ) {
-					jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
-
-					( function( j, jpath ) {
-						self.nb++;
-
-						varValue.getChild( jpath, true ).done( function( returned ) {
-
-							self
-								.form
-								.sectionElements
-								.main[ 0 ]
-								.groupElements
-								.main[ 0 ]
-								.fieldElements[ 
-
-									structure[ j ].groups.general[ 0 ].name[ 0 ]
-
-							][0]
-								.value = ( returned.get( ) );
-
-							self.nb--;
-							if( self.nb == 0 ) {
-								self.lockEvents = false;
-							}
-						});
+				var self = this;
+				this.newValue( varValue );
 				
-					}) ( i, jpath );
-					
-				}
+
+				this.module.model.dataListenChange( varValue, function() {
+
+					self.newValue( this );
+
+				}, 'input_object');
 			}
+		},
+
+
+		newValue: function( varValue ) {
+
+			var self = this,
+				structure = this.module.getConfiguration('structure') || [],
+				jpath;
+
+			self.lockEvents = true;
+			self.nb = 0;
+
+			for( var i = 0, l = structure.length ; i < l ; i ++ ) {
+				jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
+
+				( function( j, jpath ) {
+					self.nb++;
+
+					varValue.getChild( jpath, true ).done( function( returned ) {
+
+						self
+							.form
+							.sectionElements
+							.main[ 0 ]
+							.groupElements
+							.main[ 0 ]
+							.fieldElements[ 
+
+								structure[ j ].groups.general[ 0 ].name[ 0 ]
+
+						][0]
+							.value = ( returned.get( ) );
+
+						self.nb--;
+						if( self.nb == 0 ) {
+							self.lockEvents = false;
+						}
+					});
+			
+				}) ( i, jpath );
+				
+			}
+
 		},
 
 		getDom: function() {

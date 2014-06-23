@@ -14,8 +14,13 @@ define(function() {
 			debugLevel = level;
 		},
 		
-		error: function(message) {
+		error: function(message, error) {
 			if(debugLevel >= 0) {
+				if(error instanceof Error && error.stack) {
+					arguments[1] = "\n"+error.stack;
+				} else {
+					entries.push.call(arguments, "\n"+Error().stack);
+				}
 				console.error.apply(console, arguments);
 			}
 			if(debugLevel > -1)

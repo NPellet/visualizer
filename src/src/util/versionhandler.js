@@ -4,7 +4,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 		
 		this.currentPath = [];
 		this._allData = {};
-		self._head = {};
+		//self._head = {};
 		this.dom = $("<div />");
 		
  		this.versionChangeDeferred = $.Deferred();
@@ -42,7 +42,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				return this._getServer().pipe(function(data) {
 					
 					if(self.type == 'view') {
-						return self._data['server'] = new ViewObject(data, true);
+						return self._data['server'] = new DataObject(data, true);
 					} else if(self.type == 'data') {
 						return self._data['server'] = new DataObject(data, true);
 					}
@@ -61,7 +61,7 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 					}
 					
 					if(self.type == 'view') {
-						return self._data['local'] = new ViewObject(data, true);
+						return self._data['local'] = new DataObject(data, true);
 					} else if(self.type == 'data') {
 						return self._data['local'] = new DataObject(data, true);
 					}
@@ -388,10 +388,8 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				url: url,
 				timeout: 200000,
 				dataType: 'text',
-				success: function(data) {
-					//console.log(this._reviver);
-					
-					data = JSON.parse( data, self._reviver );
+				success: function(data) {					
+					data = self._reviver(JSON.parse( data ));
 					self.make(data);
 					self._onLoaded(data);
 					def.resolve();
@@ -518,8 +516,10 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 					el = JSON.parse( el );
 				}
 
+				return el;
+
 				if(self.type == 'view')
-					return new ViewObject(el, true);
+					return new DataObject(el, true);
 				else if(self.type == 'data')
 					return new DataObject(el, true);
 
@@ -654,8 +654,8 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 				data: data || {},
 				success: function(data) { // data is now a text
 					self._savedServer = data;
-					data = JSON.parse(data, self._reviver);
-					def.resolve(data);
+					data = self._reviver(JSON.parse(data));
+					def.resolve( data );
 				},
 
 				error: function() {
@@ -681,16 +681,12 @@ define(['src/util/util', 'src/util/localdb'], function(Util, db) {
 		serverPush: function(obj) {
 			return this._saveToServer(obj);
 		},
-                
-                _onLoaded: function(el) {
-                    var elTyped;
-                    if(this.type === "data") {
-                        elTyped = DataObject.check(el);
-                    } else if(this.type === "view") {
-                        elTyped = ViewObject.check(el);
-                    }
-                    this.onLoaded(elTyped);
-                }
+	    
+	    _onLoaded: function(el) {
+	        var elTyped;
+	        elTyped = DataObject.check(el, 1);
+	        this.onLoaded(elTyped);
+	    }
 	};
 
 	return DataViewHandler;

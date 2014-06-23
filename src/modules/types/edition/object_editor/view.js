@@ -1,10 +1,10 @@
-define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/jsoneditor-min", "src/util/context", "jquery"], function(Default, Util, jsoneditor, Context, $) {
+define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/jsoneditor.min", "src/util/context", "jquery"], function(Default, Util, jsoneditor, Context, $) {
 
     function view() {
 		this._id = Util.getNextUniqueId();
     }
 
-    Util.loadCss('components/jsoneditor/jsoneditor-min.css');
+    Util.loadCss('components/jsoneditor/jsoneditor.min.css');
 
     view.prototype = $.extend(true, {}, Default, {
         init: function() {
@@ -33,9 +33,13 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
                     });
                 });
             }
-            this.onReady = $.Deferred();
+            
         },
-        blank: {},
+        blank: {
+			value: function() {
+				this.editor.set({});
+			}
+		},
         inDom: function() {
 			var that = this;
             this.dom.empty();
@@ -45,19 +49,20 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
             this.storeObject = !!this.module.getConfiguration('storeObject', false)[0];
             this.changeInputData(DataObject.check(JSON.parse(this.module.getConfiguration('storedObject'))));
 			
-            this.editor = new jsoneditor.JSONEditor(document.getElementById(this._id), {mode: mode, change: function(){
-					that.module.controller.sendValue(DataObject.check(that.editor.get(), true));
+            this.editor = new jsoneditor(document.getElementById(this._id), {mode: mode, change: function(){
+					that.module.controller.sendValue(that.editor.get());
 			}, module: this.module});
 			this.update.value.call(this, this.inputData);
-            this.onReady.resolve();
+            this.resolveReady();
         },
         update: {
             value: function(value) {
 				this.changeInputData(value);
-                this.editor.set(value);
+				var valNative = value.resurrect();
+                this.editor.set(valNative);
                 if (this.expand)
                     this.editor.expandAll();
-                this.module.controller.sendValue(value);
+                this.module.controller.sendValue(valNative);
             }
         },
 		changeInputData: function(newData) {
@@ -65,12 +70,15 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
 				return;
 			var that = this;
 			var id = this.module.getId();
-			if(this.inputData)
-				this.inputData.unbindChange(id);
+			
 			this.inputData = newData;
-			newData.onChange(function(val){
-				that.update.value.call(that, val);
-			},this.module.getId());
+
+			// Need to see how it must be done now
+            /*this.module.model.dataListenChange( newData, function() {
+
+                that.update.value.call( that, this );
+                
+            }, 'value');	*/		
 		}
     });
 

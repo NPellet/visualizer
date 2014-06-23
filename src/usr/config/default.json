@@ -22,6 +22,10 @@
         {
             "file": "usr/filters/histogram.js",
             "name": "Color histogram"
+        },
+        {
+            "file": "usr/filters/testdelay.js",
+            "name": "Delay test"
         }
     ],
     "modules": {

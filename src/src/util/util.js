@@ -32,7 +32,7 @@ define([], function() {
 		}
 
 		var functionEvaled;
-		eval('functionEvaled = function( el ) { if (' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1]$2") + '; else return "" };');
+		eval('functionEvaled = function( el ) { if (el && ' + ifString + ') return el.' + jpaths2.replace(regNum, "[$1]$2") + '; else return "" };');
 		return functionEvaled;
 	}
 
@@ -144,7 +144,7 @@ define([], function() {
 			var link = document.createElement("link");
 			link.type = "text/css";
 			link.rel = "stylesheet";
-			link.href = url;
+			link.href = require.toUrl(url);
 
 			try {
 				document.getElementsByTagName("head")[0].appendChild(link);

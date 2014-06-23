@@ -12,6 +12,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 			this.dom = $(html.join(''));
 			this.module.getDomContent().html(this.dom);
+			this.resolveReady();
 
 		},
 

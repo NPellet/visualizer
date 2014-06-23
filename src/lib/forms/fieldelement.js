@@ -210,9 +210,9 @@ define(['jquery'], function($) {
 		setDefaultOr: function( el ) {
 
 			if( el !== undefined && el !== null) {
-				this.value = el;
+				this.value = this.insertValue( el );
 			} else {
-				this.value = this.field.options.default;
+				this.value = this.insertValue( this.field.options.default );
 			}
 		},
 
@@ -267,6 +267,25 @@ define(['jquery'], function($) {
 			} else {
 				this.unSelect( event );
 			}
+		},
+
+		extractValue: function() {
+
+			if( this.field.options.extractValue ) {
+				return this.field.options.extractValue( this.value );
+			}
+
+			return this.value;
+		},
+
+
+		insertValue: function( value ) {
+
+			if( this.field.options.insertValue ) {
+				return this.field.options.insertValue( value );
+			}
+			
+			return value;
 		}
 	});
 

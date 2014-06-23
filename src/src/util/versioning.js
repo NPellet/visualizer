@@ -2,10 +2,11 @@
 
 define(['src/util/versionhandler'], function(VersionHandler) {
 	"use strict";
-	var version = [2, 3, '0-beta1'].join('.');
+	var version = [2, 4, '0b2'].join('.');
 	var dataHandler = new VersionHandler(),
 			viewHandler = new VersionHandler(),
-			view, data,
+			view = new DataObject(),
+			data = new DataObject(),
 			lastLoaded = {
 				view: {},
 				data: {}
@@ -16,12 +17,12 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 	dataHandler.setType('data');
 	viewHandler.setType('view');
 
-	dataHandler.reviver = function(k, l) {
-		return DataObject.check(l);
+	dataHandler.reviver = function(l) {
+		return DataObject.check(l, 1, false);
 	};
 
-	viewHandler.reviver = function(k, l) {
-		return ViewObject.check(l);
+	viewHandler.reviver = function(l) {
+		return DataObject.check(l, 1, false);
 	};
 
 	window.onpopstate = function(event) {
@@ -80,6 +81,26 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 	function setData(url, branch, defUrl) {
 		return dataHandler.load(url, branch, defUrl);
 	}
+	
+	function updateView(newView) {
+		var i;
+		for(i in view) {
+			delete view[i];
+		}
+		for(i in newView) {
+			view[i] = DataObject.recursiveTransform(newView[i]);
+		}
+	}
+	
+	function updateData(newData) {
+		var i;
+		for(i in data) {
+			delete data[i];
+		}
+		for(i in newData) {
+			data[i] = DataObject.check(newData[i], true);
+		}
+	}
 
 	return {
 		get version() {
@@ -90,8 +111,14 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 		getView: function() {
 			return view;
 		},
+		getViewJSON: function(tab) {
+			return JSON.stringify(view, null, tab);
+		},
 		getData: function() {
 			return data;
+		},
+		getDataJSON: function(tab) {
+			return JSON.stringify(data, null, tab);
 		},
 		getViewHandler: function() {
 			return viewHandler;
@@ -104,40 +131,36 @@ define(['src/util/versionhandler'], function(VersionHandler) {
 			var that = this;
 
 			viewHandler.onLoaded = function(v) {
-				view = v;
-				c.call(that, v);
+				updateView(v);
+				c.call(that, view);
 			};
 			viewHandler.onReload = function(v) {
-				view = v;
-				c.call(that, v, true);
+				updateView(v);
+				c.call(that, view, true);
 			};
 		},
 		setDataLoadCallback: function(c) {
 			this.dataCallback = c;
 			var that = this;
 			dataHandler.onLoaded = function(d) {
-				data = d;
-				c.call(that, d);
+				updateData(d);
+				c.call(that, data);
 			};
 			dataHandler.onReload = function(d) {
-				data = d;
-				c.call(that, d, true);
+				updateData(d);
+				c.call(that, data, true);
 			};
 		},
 		setViewJSON: function(json) {
-
-			view = new ViewObject(json, true);
+			updateView(json);
 			this.viewCallback(view, true);
 			viewHandler.versionChange().notify(view);
-
 		},
 		setDataJSON: function(json) {
-
-			data = new DataObject(json, true);
+			updateData(json);
 			this.dataCallback(data, true);
-
 		},
-		blankView: function( ) {
+		blankView: function() {
 			this.setViewJSON({});
 		},
 		switchView: switchView,

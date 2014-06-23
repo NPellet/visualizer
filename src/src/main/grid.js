@@ -35,15 +35,13 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 	function addModuleFromJSON( json ) {
 
 		var module = ModuleFactory.newModule( json );
-		$.when( module.ready ).then( function( ) {
-
-			addModule( module );	
-		} );
+		addModule( module );
+		
 	}
 
 	function duplicateModule( module ) {
 
-		var def = JSON.parse( JSON.stringify( module.definition ), Versioning.getViewHandler()._reviver );
+		var def = DataObject.recursiveTransform( JSON.parse( JSON.stringify( module.definition ) ) );
 
 		def.layers[ getActiveLayer() ].position.left += 2;
 		def.layers[ getActiveLayer() ].position.top += 2;
@@ -69,57 +67,62 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 
 	function addModule( module ) {
 		
-		var grid = this;
-		module.getDomWrapper( ).appendTo( jqdom );
-		modules.push( module );
-		setModuleSize( module );
-		module.setLayers( definition.layers, true );
+		module.setLayers( definition.getChildSync('layers', true), true );
+	
+		module.ready.then( function( ) {
+
+			module.getDomWrapper( ).appendTo( jqdom );
+
+			var grid = this;	
+			
+			modules.push( module );
+			setModuleSize( module );
+			
+			if( ! API.isViewLocked() ) {
+				Context.listen(module.getDomWrapper().get(0), [
+
+					['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>', 
+					function() {
+						moveToFront(module);
+					}],
+					
+					['<li><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>', 
+					function() {
+						moveToBack(module);
+					}],
+					
+					['<li><a><span class="ui-icon ui-icon-close"></span> Remove module</a></li>', 
+					function() {
+						removeModule(module);
+					}],
+
+					['<li><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>', 
+					function(e) {
+						var pos = module.getDomWrapper().position();
+						var shiftX = e.pageX - pos.left;
+						var shiftY = e.pageY - pos.top;
+						moveModule(module, shiftX, shiftY);
+					}],
 
 
-		if( ! API.isViewLocked() ) {
-			Context.listen(module.getDomWrapper().get(0), [
+					['<li><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>', 
+					function() {
+						duplicateModule( module );
+					}],
+		                    
+		            ['<li><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>', 
+					function() {
+						window.localStorage.setItem("ci-copy-module",JSON.stringify( module.definition ));
+					}]
+				]);
+			}
 
-				['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>', 
-				function() {
-					moveToFront(module);
-				}],
-				
-				['<li><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>', 
-				function() {
-					moveToBack(module);
-				}],
-				
-				['<li><a><span class="ui-icon ui-icon-close"></span> Remove module</a></li>', 
-				function() {
-					removeModule(module);
-				}],
-
-				['<li><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>', 
-				function(e) {
-					var pos = module.getDomWrapper().position();
-					var shiftX = e.pageX - pos.left;
-					var shiftY = e.pageY - pos.top;
-					moveModule(module, shiftX, shiftY);
-				}],
-
-
-				['<li><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>', 
-				function() {
-					duplicateModule( module );
-				}],
-	                    
-	            ['<li><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>', 
-				function() {
-					window.localStorage.setItem("ci-copy-module",JSON.stringify( module.definition ));
-				}]
-			]);
-		}
-
-		module.ready.done(function() {
+	
 
 			if( module.inDom ) {
 				module.inDom( );
 			}
+
 
 			module.toggleLayer( getActiveLayer( ) );
 
@@ -157,7 +160,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 					stop: function() {
 						var position = $(this).position();
 						Util.unmaskIframes();
-			
+	
 						module.getPosition( getActiveLayer() ).set('left', position.left / definition.xWidth);
 						module.getPosition( getActiveLayer() ).set('top', position.top / definition.yHeight);
 			
@@ -204,6 +207,8 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			});
 			
 			moduleResize(module);
+		}, function(err){
+			Debug.error("Error during module dom initialization", err);
 		});
 	}
 
@@ -241,13 +246,17 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			modulePos.div.remove();
 			modulePos = {};
 
-			var module = ModuleFactory.newModule( new ViewObject( {
+			var module = ModuleFactory.newModule( new DataObject( {
 				//type: type,
 				url: url
 				
 			} ) );
 
+
+			addModule( module );	
+
 			var layer = module.getActiveLayer( getActiveLayer() );
+
 			layer.position.set('left', left);
 			layer.position.set('top', top);
 
@@ -257,13 +266,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			layer.wrapper = true;
 			layer.title = "Untitled";
 
-		
-			$.when(module.ready).then(function() {
-				addModule(module);	
-			//	module.toggleLayer( getActiveLayer( ) );
-
-			});
-		
+				
 			$(document)
 				.unbind('mousedown', mouseDownHandler)
 				.unbind('mousemove', mouseMoveHandler)
@@ -588,7 +591,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				if( elements.modules ) {
 
 					for( var i = 0, l = elements.modules.length ; i < l ; i ++ ) {
-						dom.append('<li class="ci-item-newnmodule" data-url="' + encodeURIComponent( elements.modules[ i ].url ) + '"><a>' + elements.modules[ i ].moduleName + '</a></li>');
+						dom.append('<li class="ci-item-newmodule" data-url="' + encodeURIComponent( elements.modules[ i ].url ) + '"><a>' + elements.modules[ i ].moduleName + '</a></li>');
 					}
 
 				} 
@@ -610,8 +613,8 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 	            Context.listen(Context.getRootDom(), [
 					['<li><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>', 
 					function() {
-						var module = JSON.parse(window.localStorage.getItem("ci-copy-module"),Versioning.getViewHandler()._reviver);
-	                                        addModuleFromJSON( module );
+						var module = DataObject.recursiveTransform(JSON.parse(window.localStorage.getItem("ci-copy-module")));
+	                    addModuleFromJSON( module );
 					}]]
 				);
 				

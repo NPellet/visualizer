@@ -123,11 +123,11 @@ define(['modules/default/defaultcontroller'], function(Default) {
     };
     
     controller.prototype.onEditorChanged = function(value) {
-        this.setVarFromEvent('onEditorChange', value, 'value');
+        this.createDataFromEvent('onEditorChange', 'value', value);
     };
     
     controller.prototype.onButtonClick = function(value) {
-		this.setVarFromEvent('onButtonClick', value, 'value');
+		this.createDataFromEvent('onButtonClick', 'value', value);
         this.sendAction('value', value, 'onButtonClick');
     };
 

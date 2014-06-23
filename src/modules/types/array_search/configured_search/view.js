@@ -3,7 +3,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
-		init: function() {	
+		init: function() {
 			var self = this;
                         var parentDom = $( '<div>' ).css( { 
                             position: 'relative',
@@ -105,15 +105,14 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			});
 			
 			this.makeSearchFilter();
+			
+			this.resolveReady();
 		},
 
 		blank: {
 			value: function(varName) {
 				this.dom.empty();
 			}
-		},
-		
-		inDom: function() { 
 		},
 
 		search: function() {
@@ -135,7 +134,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					val = this.variables[keys[key]];
 					l = val.length;
 					for (i = 0; (i < l); i++) {
-						if (this.searchElement(cfg, val[ i ].get())) {
+						if (this.searchElement(cfg, val.getChildSync(i).get())) {
 							if(count < max) target[count++] = val[ i ];
 							flags[i] = true;
 						} else {
@@ -259,9 +258,10 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                                                 var opts = {};
                                                 if(searchfields[ i ].groups.general[ 0 ].type[ 0 ]==='float') opts.number=true;
                                                 if(searchfields[ i ].groups.text && searchfields[ i ].groups.text[ 0 ].case_sensitive[ 0 ][ 0 ]==='case_sensitive') opts.caseSensitive=true;
-						toEval += " ( ( el = self.getJpath( '" + searchOn[ j ] + "', row ) ) && ( ";
+												var allow_undefined = !!(searchfields[ i ].groups.general[ 0 ].allow_undefined ? searchfields[ i ].groups.general[ 0 ].allow_undefined[0].length : 0);
+						toEval += " ( ( el = self.getJpath( '" + searchOn[ j ] + "', row ) ) ? ( ";
 						toEval += this._makeOp( searchfields[ i ].groups.general[ 0 ].operator[ 0 ], searchfields[ i ].groups.general[ 0 ].name[ 0 ], opts );
-						toEval += " ) ) ";
+						toEval += " ) : "+allow_undefined+" ) ";
 
 					}
 					toEval += " ) ";

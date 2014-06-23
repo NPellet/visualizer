@@ -84,7 +84,7 @@
 				jsmeApplet.setMolecularAreaLineWidth(parseFloat(window.view.module.getConfiguration( 'bondwidth' )));
 				jsmeApplet.setAtomMolecularAreaFontSize(parseFloat(window.view.module.getConfiguration( 'labelsize' )));
 
-				self.view.onReady.resolve();
+				self.view.resolveReady();
 			})
 
 			jsmeApplet.setNotifyStructuralChangeJSfunction('(function() { var mol = this.jsmeApplet.molFile(); var jme = this.jsmeApplet.jmeFile(); var smiles = this.jsmeApplet.smiles(); this.controller.onChange(mol, smiles, jme); })');

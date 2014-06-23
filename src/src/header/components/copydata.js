@@ -9,7 +9,7 @@ define(['jquery', 'jqueryui', 'src/header/components/default', 'src/util/version
 		},
 
 		_onClick: function() { // Overwrite usual onclick which loads a list / loads views/datas
-			var str = JSON.stringify(Versioning.getData(), null, "\t");
+			var str = Versioning.getDataJSON("\t");
 			var strlen = str.length;
 			var txtarea = $('<textarea>' + str + "</textarea>").css({width: '100%', height: '200px'});
 

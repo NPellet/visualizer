@@ -1,4 +1,4 @@
-define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api' ], function( Default, Traversing, API ) {
+define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api', 'src/util/debug' ], function( Default, Traversing, API, Debug ) {
 	
 	/**
 	 * Creates a new empty controller
@@ -11,6 +11,11 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 	// Extends the default properties of the default controller
 	controller.prototype = $.extend( true, {}, Default );
 
+	controller.prototype.init = function() {
+
+		this.toggleElements = {};
+		this.resolveReady();
+	}
 
 	/*
 		Information about the module
@@ -66,13 +71,13 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 		onToggleOn: {
 			label: 'On Toggle On',
-			refVariables: [ 'selectedrows' ],
+			refVariable: [ 'selectedrows' ],
 			refAction: [ 'row' ]
 		},
 
 		onToggleOff: {
 			label: 'On Toggle Off',
-			refVariables: [ 'selectedrows' ],
+			refVariable: [ 'selectedrows' ],
 			refAction: [ 'row' ]
 		}
 	};
@@ -96,7 +101,9 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 		
 	controller.prototype.configurationStructure = function(section) {
 		
-		var jpaths = this.module.model.getjPath('element');
+		var jpaths = this.module.model.getjPath('row', false );
+
+		
 		return {
 			groups: {
 
@@ -191,7 +198,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 			return;
 		
 		if(data.getType() == 'array') 
-			Traversing.getJPathsFromElement(data[0], jpaths);
+			Traversing.getJPathsFromElement(data.get(0), jpaths);
 		else if(data.getType() == 'arrayXY')
 			Traversing.getJPathsFromElement(data, jpaths);
 
@@ -217,55 +224,71 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 
 
 	controller.prototype.lineHover = function(elements, row) {
-
-		var element = elements[ row ];
-		elements[ row ].linkToParent( elements, row );
-
 		
-		if( ! element ) {
-			return;
-		}
-
-		this.setVarFromEvent( 'onHover', element, 'row' );
-
-		API.highlight( element, 1 );
+		this.setVarFromEvent( 'onHover', 'row', 'list', [ row ] );
+		API.highlight( elements[ row ], 1 );
 	},
 
 	controller.prototype.lineOut = function(elements, row) {
 
 		var element = elements[ row ];
-		elements[ row ].linkToParent( elements, row );
-
 		if( ! element ) {
 			return;
 		}
-
 		API.highlight( element, 0 );
 	};
 
 	controller.prototype.lineClick = function( elements, row ) {
-
-
-		elements[ row ].linkToParent( elements, row );
-
-		this.setVarFromEvent( 'onSelect', elements[ row ], 'row' );
-		this.sendAction( 'row', elements[ row ], 'onSelect' );
+	//	elements[ row ].linkToParent( elements, row );
+		this.setVarFromEvent( 'onSelect', 'row', 'list', [ row ] );
+		this.sendAction( 'row', elements.get( row ), 'onSelect' );
 	};
 
 	controller.prototype.onToggleOn = function( elements, row ) {
 
-		elements[ row ].linkToParent( elements, row );
+//		elements[ row ].linkToParent( elements, row );
 
-		this.sendAction( 'row', elements[ row ], 'onToggleOn' );
-		this.setVarFromEvent( 'onToggleOn', elements[ row ], 'row' );
+		this.sendAction( 'row', elements.get( row ), 'onToggleOn' );
+		this.setVarFromEvent( 'onToggleOn', 'row', 'list', [ row ] );
+
+		this.toggleElements[ row ] = true;
+		this.doToggle( "on" );
 	};
 
 	controller.prototype.onToggleOff = function( elements, row ) {
 
-		elements[ row ].linkToParent( elements, row );
+	//	elements[ row ].linkToParent( elements, row );
 
-		this.sendAction( 'row', elements[ row ], 'onToggleOff' );
-		this.setVarFromEvent( 'onToggleOff', elements[ row ], 'row' );
+		this.sendAction( 'row', elements.get( row ), 'onToggleOff' );
+		this.setVarFromEvent( 'onToggleOff', 'row', 'list', [ row ] );
+
+	    delete this.toggleElements[ row ];
+
+	    this.doToggle( "off" );
+	};
+
+	controller.prototype.doToggle = function( act ) {
+
+		var self = this,
+			data = this.module.getDataFromRel('list');
+
+		this.allVariablesFor( ( act == 'on' ? 'onToggleOn' : 'onToggleOff' ), 'selectedrows', function( varToSend ) {
+
+			var results = new DataArray();
+console.log( self.toggleElements, varToSend.jpath );
+			for( var i in self.toggleElements ) {
+
+				data.traceSync( [ i ] );
+				Debug.warn("Warning. This is only sync");
+				var el = data[ i ].traceSync( varToSend.jpath.slice(0) );
+				results.push( el );
+			}
+console.log( results );
+			API.createData( varToSend.name, results, varToSend.filter );
+		} );
+
+
+
 	};
 
  	return controller;

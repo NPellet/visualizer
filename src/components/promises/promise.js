@@ -1,24 +1,20 @@
 /**
- * Promise polyfill v1.0.4
+ * Promise polyfill v1.0.5
  * requires setImmediate
  *
  * © 2014 Dmitry Korobkin
  * Released under the MIT license
  * github.com/Octane/Promise
  */
-(function () {'use strict';
+(function (global) {'use strict';
 
-    var global = new Function('return this')(),
-        setImmediate = global.setImmediate;
+    var setImmediate = global.setImmediate || require('timers').setImmediate;
 
     function toPromise(thenable) {
         if (isPromise(thenable)) {
             return thenable;
         }
         return new Promise(function (resolve, reject) {
-            //execute thenable.then asynchronously
-            //github.com/getify/native-promise-only/issues/5
-            //github.com/domenic/promises-unwrapping/issues/105
             setImmediate(function () {
                 try {
                     thenable.then(resolve, reject);
@@ -92,6 +88,8 @@
     };
 
     Promise.all = function (promises) {
+        if(!(promises instanceof Array) || promises.length === 0)
+            return Promise.resolve([]);
         return new Promise(function (resolve, reject) {
             var values = [];
             promises = promises.map(toPromise);
@@ -224,10 +222,10 @@
 
     };
 
-    if (typeof module != 'undefined' && module.exports) {
+    if ('undefined' != typeof module && module.exports) {
         module.exports = global.Promise || Promise;
     } else if (!global.Promise) {
         global.Promise = Promise;
     }
 
-}());
+}(this));

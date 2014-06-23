@@ -1,20 +1,18 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+  <title>JSONEditor | Switch mode</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 
-  <!-- jsoneditor -->
+  <!-- json editor -->
   <link rel="stylesheet" type="text/css" href="../jsoneditor.css">
   <script type="text/javascript" src="../jsoneditor.js"></script>
 
-  <!-- ace code editor -->
-  <script type="text/javascript" src="../lib/ace/ace.js"></script>
-  <script type="text/javascript" src="../lib/ace/mode-json.js"></script>
-  <script type="text/javascript" src="../lib/ace/theme-textmate.js"></script>
-  <script type="text/javascript" src="../lib/ace/theme-jsoneditor.js"></script>
+  <!-- ace editor -->
+  <script type="text/javascript" src="../asset/ace/ace.js"></script>
 
   <!-- json lint -->
-  <script type="text/javascript" src="../lib/jsonlint/jsonlint.js"></script>
+  <script type="text/javascript" src="../asset/jsonlint/jsonlint.js"></script>
 
   <style type="text/css">
     body {
@@ -64,7 +62,7 @@
     "string": "Hello World"
   };
 
-  var editor = new jsoneditor.JSONEditor(container, options, json);
+  var editor = new JSONEditor(container, options, json);
 </script>
 </body>
 </html>

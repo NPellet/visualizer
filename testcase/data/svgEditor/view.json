@@ -1,0 +1,155 @@
+{
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"version": "2.3.0-beta1",
+	"modules": [
+		{
+			"url": "modules/types/edition/svg_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"svgcode": [
+								"<svg width=\"500.00000000000006\" height=\"500.00000000000006\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n <defs>\n  <linearGradient id=\"linearGradient6453\">\n   <stop stop-color=\"#ffffff\" id=\"stop6455\" offset=\"0\"></stop>\n   <stop stop-color=\"#000000\" id=\"stop6457\" offset=\"1\"></stop>\n  </linearGradient>\n  <radialGradient gradientTransform=\"matrix(1.040418,0.796229,-0.814518,1.064316,153.4218,-150.4353)\" gradientUnits=\"userSpaceOnUse\" xlink:href=\"#linearGradient6453\" id=\"radialGradient6459\" fy=\"196.85463\" fx=\"171.2081\" r=\"200\" cy=\"196.85463\" cx=\"171.2081\"></radialGradient>\n  <pattern height=\"100\" width=\"100\" y=\"0\" x=\"0\" patternUnits=\"userSpaceOnUse\" id=\"gridpattern\">\n   <image height=\"100\" width=\"100\" y=\"0\" x=\"0\"></image>\n  </pattern>\n </defs>\n <g>\n  <title>Layer 1</title>\n  <g id=\"layer1\">\n   <path fill=\"url(#radialGradient6459)\" fill-rule=\"evenodd\" stroke-width=\"8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"4\" stroke-dashoffset=\"0\" id=\"path5725\" d=\"m478.48264,239.74388a220.94595,227.29729 0 1 1 -441.89188,0a220.94595,227.29729 0 1 1 441.89188,0z\"></path>\n  </g>\n </g>\n</svg>"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"right": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 95,
+						"height": 76
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 1,
+			"vars_in": [],
+			"actions_in": {},
+			"title": "Untitled",
+			"vars_out": [
+				{
+					"event": "onChange",
+					"rel": "svgString",
+					"name": "thesvg"
+				}
+			],
+			"actions_out": {}
+		},
+		{
+			"url": "modules/types/display/single_value/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"defaultvalue": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"font": [
+								null
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"sprintf": [
+								null
+							],
+							"sprintfOrder": [
+								null
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 96,
+						"right": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 29,
+						"height": 29
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgcolor": [
+						[
+							255,
+							255,
+							255,
+							0
+						]
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "thesvg"
+				}
+			],
+			"actions_in": {},
+			"title": "Untitled",
+			"vars_out": {},
+			"actions_out": {}
+		}
+	],
+	"variables": [],
+	"pouchvariables": [],
+	"configuration": {
+		"title": "No title"
+	}
+}

@@ -28,14 +28,18 @@
 			"moduleName": "Var Editor",
 			"url": "modules/types/edition/var_editor/"
 		},
-                {
-                        "moduleName": "Edit/Display",
-                        "url": "modules/types/edition/dualview/"
-                },
-                {
-                        "moduleName": "Rich text editor",
-                        "url": "modules/types/edition/rich_text/"
-                }
+    {
+      "moduleName": "Edit/Display",
+      "url": "modules/types/edition/dualview/"
+    },
+    {
+      "moduleName": "Rich text editor",
+      "url": "modules/types/edition/rich_text/"
+    },
+    {
+      "moduleName": "SVG Editor",
+      "url": "modules/types/edition/svg_editor/"
+    }
 	],
 	"name": "Edition",
 	"folders": []

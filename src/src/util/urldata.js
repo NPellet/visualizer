@@ -23,11 +23,11 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 				Debug.info('DataURL: Found ' + url + ' by AJAX');
 
 				// We set 20 data in memory, 500 in local database
-				if(!LRU.exists('urlData')) {
+			/*	if(!LRU.exists('urlData')) {
 					LRU.create('urlData', 20, 500);
 				}
 				
-				LRU.store('urlData', url, data);
+				LRU.store('urlData', url, data);*/
 
 				delete pendings[url];
 			}
@@ -48,7 +48,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 
 		return doLRU(def, url).pipe(function(data) {
 
-			Debug.debug('DataURL: Found ' + url + ' in local DB. Timout: ' + data.timeout);
+			Debug.debug('DataURL: Found ' + url + ' in local DB. Timeout: ' + data.timeout);
 
 			// If timeouted. If no timeout is defined, then the link is assumed permanent
 			if(timeout !== undefined && (Date.now() - data.timeout > timeout * 1000)) {
@@ -98,7 +98,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 
 			Debug.debug('DataURL: getting ' + url + ' with force set to ' + force + ' and timeout to ' + timeout);
 			// If we force to do ajax first. Fallback if we 
-			if( force || timeout<0 ) {
+			if( force || timeout<0 || typeof timeout==="undefined" ) {
 
 				doByUrl(def, url, headers)
 					.pipe(

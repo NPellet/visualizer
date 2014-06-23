@@ -105,7 +105,6 @@ define(['jquery'], function($) {
 				}
 				
 				el.setDefaultOr( json ); // The filling adds either the json, which is the data loaded, or the default from the structure (automatic)
-				
 			} );
 		},
 

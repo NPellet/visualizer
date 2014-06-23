@@ -1,4 +1,4 @@
-define(['modules/types/client_interaction/code_editor/controller'], function(CodeEditor) {
+define(['modules/types/client_interaction/code_editor/controller','src/util/debug'], function(CodeEditor, Debug) {
 
     function controller() {
     }
@@ -20,17 +20,21 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
     controller.prototype.references.dataobject = {
         label: "Object to filter"
     };
+	
+	controller.prototype.references.filteredObject = {
+		label: "Filtered object"
+	};
     
     controller.prototype.events = {
         onButtonClick: {
-            label: 'The button was clicked',
-            refVariable: ['dataobject']
+            label: 'Button was clicked / Incoming variable',
+            refVariable: ['filteredObject']
         }
     };
     
     controller.prototype.variablesIn = ['dataobject'];
 
-    controller.prototype.configurationStructure = function(section) {
+    controller.prototype.configurationStructure = function() {
 
         return {
             groups: {
@@ -42,7 +46,7 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
                         script: {
                             type: 'jscode',
                             title: 'Code',
-                            default: "function filter(value) {\n    // The returned value must be a DataObject.\n    // Use DataObject.check(toReturn, true) to create it for a new variable.\n    return value;\n}"
+                            default: "//When the result is ready, use resolve(result) to send it.\n//In case of an error, use reject(error)\nresolve(value);"
                         }
                     }
                 },
@@ -67,17 +71,19 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
     };
     
     controller.prototype.configAliases = {
-        'script': [ 'groups', 'group', 0, 'script', 0],
-        'libs': [ 'groups', 'libs', 0]
+        script: [ 'groups', 'group', 0, 'script', 0],
+        libs: [ 'groups', 'libs', 0]
     };
     
     controller.prototype.onButtonClick = function(value, object) {
         var that = this;
-        var result = this.executeFilter(value.get(), object);
-        result.done(function(data){
+        var result = this.executeFilter(value, object);
+        result.then(function(data){
             if(typeof data !== "undefined")
-                that.setVarFromEvent('onButtonClick', data, 'dataobject');
-        });
+                that.createDataFromEvent('onButtonClick', 'filteredObject', data);
+        }, function(error){
+			console.error("Filter execution error : ", error);
+		});
     };
     
     controller.prototype.executeFilter = function(filter, object) {
@@ -85,32 +91,30 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
         var neededLibs = this.module.getConfiguration("libs");
         var requireStart = "require"+getRequireStart(neededLibs);
         
-        var def = $.Deferred();
-        
-        var requireBody = "var theFilter; try{ theFilter = "+filter+"; } catch(e) {console.error('Filter parsing error : ', e);}";
-        requireBody += "if(typeof theFilter === 'function') { var result; try {result = theFilter(object);} catch(e) {console.error('Filter execution error : ', e);} }";
-        requireBody += "def.resolve(result);";
+        var requireBody = "(function(value, resolve, reject){"+filter+"\n})(object, resolve, reject);";
         
         var requireEnd = "});";
-        
-        eval(requireStart+requireBody+requireEnd);
-        
-        return def;
-        
+		
+		
+		var prom = new Promise(function(resolve,reject){
+			eval('"use strict";'+requireStart+requireBody+requireEnd);
+		});
+
+        return prom;
     };
     
     controller.prototype.export = function() {
         var neededLibs = this.module.getConfiguration("libs");
-        var requireStart = "define"+getRequireStart(neededLibs)+"\n return ";
-        var requireBody = this.module.getConfiguration("script");
-        var requireEnd = ";\n});";
+        var requireStart = "define"+getRequireStart(neededLibs)+"\n    return {\n    filter: ";
+        var requireBody = "function( value, resolve, reject ) {\n            "+this.module.getConfiguration("script").replace(/(\r\n|\r|\n)/g,"\n            ")+"\n        }\n    };";
+        var requireEnd = "\n});";
         
         return requireStart+requireBody+requireEnd;
     };
     
     function getRequireStart(neededLibs) {
-        var required = "(['src/util/api'";
-        var callback = "function(API";
+        var required = "( [ 'src/util/api'";
+        var callback = "function( API";
 
         if (neededLibs) {
             for (var i = 0; i < neededLibs.length; i++) {
@@ -123,7 +127,7 @@ define(['modules/types/client_interaction/code_editor/controller'], function(Cod
             }
         }
         
-        return required+"], "+callback+"){";
+        return required+" ], "+callback+" ){";
     }
 
     return controller;

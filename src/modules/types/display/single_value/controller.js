@@ -110,7 +110,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/util' ], function( Defa
 						},
 
 						fontcolor: {
-							type: 'color',
+							type: 'spectrum',
 							title: 'Foreground color'
 						},
 

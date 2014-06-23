@@ -1,5 +1,6 @@
 
 define(['jquery', 'src/data/structures'], function($, Structures) {
+	"use strict";
 
 	var asyncId = 0;
 
@@ -95,6 +96,11 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 	function getType(element) {
 		if(element == undefined)
 			return;
+
+		if( element.getType ) {
+			return element.getType();
+		}
+		
 		var type = typeof element;
 		if(type == 'object') {
 			if(element instanceof Array)
@@ -246,76 +252,97 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 				}
 			}
 
+
+
 		},
 
 
 		getStructureFromElement: function(element) {
 			
 			var structure = {};
-			var el = element;
 
-			if(element === undefined || element === null)
+			if( ! element ) {
 				return;
-				
-			if(element.type && element.value)
-				element = element.value;
-			
-			if(el !== false && el.type && Structures[el.type] && (element.value || element.url)) {
+			}
 
-				structure = Structures[el.type];
-			} else if(element instanceof Array) {
+			if( ! element.getType ) {
+				element = DataObject.check( element, true );
+			}
+
+
+			var type = element.getType();
+			//element = element.get();
+
+			if( type == "array") {
 
 				structure.type = "array";
 				structure.elements = [];
-				var length = Math.min(5, element.length);
+				var length = Math.min(5, element.length );
+
 				for(var i = 0; i < length; i++) {
-					var elementI = element[i];	
-					structure.elements[i] = this.getStructureFromElement(elementI);
+					structure.elements[ i ] = this.getStructureFromElement( element.get( i, false, true ) );
 				}
-			} else if(typeof element == "object") {
+
+			} else if( type =="object" ) {
+
 				structure.type = "object";	
 				structure.elements = {};
 
-				for(var i in element) 
-					structure.elements[i] = this.getStructureFromElement(element[i]);
-			} else if(el.type && el.value)
-				structure = el.type;
-			else
-				return typeof el;
+				for( var i in element ) {
+
+					structure.elements[ i ] = this.getStructureFromElement( element.get( i, false, true ) );
+				}
+
+			} else if( type && Structures[ type ] && ( element.value || element.url ) ) {
+
+				structure = Structures[type];
+
+			} else {
+				structure = type;
+			}
 
 			return structure;
 		},
 
 		getJPathsFromElement: function(element, jpaths) {
-			if(!jpaths)
+			
+			if( ! jpaths ) {
 				jpaths = [];
-			jpaths.push({title: 'Not set', key: ''});
-			if(element === undefined || element == null)
+			}
+
+
+			if(element === undefined || element == null) {
 				return;
+			}
+
 			// We know the dynamic structure
 			// Apply to typed elements + to js objects
-			if(element.structure)
-				this.getJPathsFromStructure(element.structure, null, jpaths);	
-			else if(element.type && Structures[element.type] && (element.value || element.url)) {
-				this.getJPathsFromStructure(Structures[element.type], null, jpaths);
-			} else {
-				switch(typeof element) {
-					default:
-					case 'object':
-						var structure = this.getStructureFromElement(element, structure);
-						this.getJPathsFromStructure(structure, null, jpaths);
+			if(element.structure) {
 
-					break;
-				}
+				this.getJPathsFromStructure(element.structure, null, jpaths);	
+
+			} else if(element.type && Structures[element.type] && (element.value || element.url)) {
+
+				this.getJPathsFromStructure(Structures[element.type], null, jpaths);
+
+			} else {
+
+				var structure = this.getStructureFromElement(element, structure);
+				this.getJPathsFromStructure(structure, null, jpaths);
+
 			}
+
             return jpaths;
 		},
 
 		get: function( data ) {
-
-
-			if( data && data.get ) {
-				return data.get();
+			
+			if(data) {
+				if(typeof data.get === "function") {
+					return data.get();
+				} else if(data.type && data.value) {
+					return data.value;
+				}
 			}
 
 			return data;

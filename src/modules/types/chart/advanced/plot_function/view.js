@@ -52,8 +52,6 @@ define(['require','modules/default/defaultview','src/util/util','src/util/api','
 			this.graphGeometry;
 			this.graphMesh;
 
-			this.onReady = $.Deferred();
-
 			require(['./TrackballControls','lib/parser/Parser'], function() {
 				
 				self.createGraph();
@@ -72,7 +70,7 @@ define(['require','modules/default/defaultview','src/util/util','src/util/api','
 				self.dom.append(self.renderer.domElement);
 
 				self.addFloor(self.scene);
-				self.onReady.resolve();
+				self.resolveReady();
 			});
 
 	

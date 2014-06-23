@@ -9,9 +9,16 @@ module.exports = function(grunt) {
   var usrPath = grunt.option('usr')||'./src/usr';
   
   function mapPath(path) { // Map a relative application path to a relative build path
+	  var mapped;
 	  if(path.indexOf('usr/')===0)
-		  return usrPath+path.substr(3);
-	  return './src/'+path;
+		  mapped = usrPath+path.substr(3);
+	  else
+		  mapped = './src/'+path;
+	  
+	  if(mapped.indexOf('.js')===-1)
+		  mapped += ".js";
+	  
+	  return mapped;
   }
 
   // Project configuration.
@@ -51,13 +58,9 @@ module.exports = function(grunt) {
             cwd: './src/components/',
             src: [
               './d3/d3.min.js',
-              './fancytree/src/jquery.fancytree*.js',
-              './fancytree/src/skin-lion/*',
-              './jqgrid_edit/js/*.js',
-              './jqgrid_edit/js/i18n/grid.locale-en.js',
-              './jqgrid_edit/css/*.css',
-              './jquery/jquery.min.js',
-              './jquery/jquery-migrate.min.js',
+              ['./fancytree/dist/jquery.fancytree*.js', './fancytree/dist/skin-lion/*'],
+              ['./jqgrid_edit/js/*.js', './jqgrid_edit/js/i18n/grid.locale-en.js', './jqgrid_edit/css/*.css'],
+              ['./jquery/jquery.min.js', './jquery/jquery-migrate.min.js'],
               './jquery-ui/ui/minified/jquery-ui.min.js',
               './three.js/build/three.min.js',
               './ace/lib/ace/**',
@@ -67,24 +70,22 @@ module.exports = function(grunt) {
               './sprintf/src/sprintf.min.js',
               './requirejs/require.js',
               './jquery-throttle-debounce/jquery.ba-throttle-debounce.min.js',
-              './Aristo-jQuery-UI-Theme/css/Aristo/images/*',
-              './Aristo-jQuery-UI-Theme/css/Aristo/*.css',
+              ['./Aristo-jQuery-UI-Theme/css/Aristo/images/*', './Aristo-jQuery-UI-Theme/css/Aristo/*.css'],
               './x2js/xml2json.min.js',
-              './leaflet/**',
-              './jsoneditor/jsoneditor-min*',
-              './jsoneditor/img/*',
+              './leaflet/dist/**',
+              ['./jsoneditor/jsoneditor.min*', './jsoneditor/img/*'],
               './jit/Jit/**/*',
               './jquery-ui-contextmenu/jquery.ui-contextmenu.min.js',
               './mustache/mustache.js',
               './papa-parse/jquery.parse.min.js',
-              './font-awesome/css/font-awesome.min.css',
-              './font-awesome/fonts/*',
+              ['./font-awesome/css/font-awesome.min.css', './font-awesome/fonts/*'],
               './colors/css/colors.min.css',
               './pouchdb/dist/*',
               './uri.js/src/*.js',
               './twig.js/twig.min.js',
-              ['./setImmediate/setimmediate.js','./promises/promise.js'], // Promises polyfill
-              './onde/src/*'
+              ['./setImmediate/setimmediate.js','./promises/promise.js','./bluebird/js/browser/bluebird.js'], // Promises polyfill
+              './onde/src/*',
+              ['./spectrum/spectrum.js', './spectrum/spectrum.css']
             ],
 
             dest: './build/components/'

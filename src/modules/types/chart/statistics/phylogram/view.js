@@ -20,7 +20,7 @@ define(['modules/default/defaultview', 'src/util/util', 'd3', 'src/util/api'], f
             } );
             this.dom = $block;
             this.module.getDomContent().html(this.dom);
-
+			this.resolveReady();
         },
         blank: function() {
             this.dom.empty();

@@ -8,7 +8,7 @@
 		"xWidth": 10,
 		"yHeight": 10
 	},
-	"version": "2.3.0-beta1",
+	"version": "2.4.0b2",
 	"modules": [
 		{
 			"url": "modules/types/edition/filter_editor/",
@@ -18,7 +18,7 @@
 					"group": [
 						{
 							"script": [
-								"function filter() {\n    \n    // Change this variable to modify the number of generated colors\n    var l = 100000;\n    \n    \n    var i = 0,\n        a = new DataArray(Array(l));\n    \n    function rnd() {\n        return Math.floor(Math.random()*256);\n    }\n    \n    var o;\n    for(; i < l; i++) {\n        o = new DataObject({\n            r: rnd(),\n            g: rnd(),\n            b: rnd(),\n            a: Math.random()\n        });\n        o.color = \"rgba(\"+o.r+\",\"+o.g+\",\"+o.b+\",\"+o.a+\")\"\n        a[i] = o;\n    }\n    \n    return a;\n    \n}"
+								"// Change this variable to modify the number of generated colors\nvar l = 100000;\n\n\nvar i = 0,\n    a = Array(l);\n\nfunction rnd() {\n    return Math.floor(Math.random()*256);\n}\n\nvar o;\nfor(; i < l; i++) {\n    o = {\n        r: rnd(),\n        g: rnd(),\n        b: rnd(),\n        a: Math.random()\n    };\n    o.color = \"rgba(\"+o.r+\",\"+o.g+\",\"+o.b+\",\"+o.a+\")\"\n    a[i] = o;\n}\n\nresolve(a);"
 							]
 						}
 					],
@@ -65,7 +65,7 @@
 			"vars_out": [
 				{
 					"event": "onButtonClick",
-					"rel": "dataobject",
+					"rel": "filteredObject",
 					"name": "bigArray"
 				}
 			],
