@@ -33,7 +33,8 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
     controller.prototype.events = {
         onFormSubmit: {
             label: 'The form was submitted',
-            refVariable: ['outputValue']
+            refVariable: ['outputValue'],
+			refAction: ['outputValue']
         }
     };
 
@@ -141,8 +142,10 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
     
     controller.prototype.onSubmit = function(data) {
         var outputType = this.module.getConfiguration('output');
-        if(outputType==='new')
+        if(outputType==='new') {
             this.createDataFromEvent('onFormSubmit','outputValue', data);
+			this.sendAction('outputValue', data, 'onFormSubmit');
+		}
         else
             this.updateInput(data);
     };
@@ -152,6 +155,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema'], function
 		if(input) {
 			input.mergeWith(newData, this.module.getId());
 			this.createDataFromEvent('onFormSubmit', 'outputValue', input);
+			this.sendAction('outputValue', input, 'onFormSubmit');
 		}
     };
 
