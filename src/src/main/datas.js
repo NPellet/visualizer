@@ -614,7 +614,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	};
 
 	var fetch = {
-		value: function() {
+		value: function(forceJson) {
 
 			var self = this,
 					deferred = $.Deferred( );
@@ -623,8 +623,15 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 				return deferred.resolve(this);
 			}
 			require(['src/util/urldata'], function(urlData) { // We don't know yet if URLData has been loaded
+				
+				var headers;
+				if(forceJson) {
+					headers = {
+						Accept: "application/json"
+					};
+				}
 
-				urlData.get(self.url, false, self.timeout).then(function(data) {
+				urlData.get(self.url, false, self.timeout, headers).then(function(data) {
 
 					data = DataObject.check(data, true);	// Transform the input into a DataObject
 

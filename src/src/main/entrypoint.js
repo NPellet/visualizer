@@ -160,7 +160,7 @@ define(['jquery',
 					// Defined by an URL
 					if (entryVar.url) {
 
-						fetching.push( entryVar.fetch( ).done(function(v) {
+						fetching.push( entryVar.fetch(true).done(function(v) {
 							var varname = v.varname;
 							data[ varname ] = v.value;
 
