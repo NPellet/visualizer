@@ -121,7 +121,7 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 
 						} ).then( function( value ) {
 							
-							value = DataObject.check(value);
+							value = DataObject.check(value, true);
 							self._value = value;
 							_resolve( value );	
 
