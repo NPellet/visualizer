@@ -33,6 +33,8 @@ define(['modules/types/client_interaction/code_editor/controller','src/util/debu
     };
     
     controller.prototype.variablesIn = ['dataobject'];
+	
+	controller.prototype.actionsIn.doFilter = "Trigger the filter";
 
     controller.prototype.configurationStructure = function() {
 

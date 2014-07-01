@@ -142,6 +142,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	DataString.prototype.getType = function() {
 		return "string";
 	};
+	
+	DataString.prototype.nativeConstructor = String;
 
 	function DataNumber( s ) {
 		Number.call(this, s);
@@ -151,6 +153,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	DataNumber.prototype.getType = function() {
 		return "number";
 	};
+	
+	DataNumber.prototype.nativeConstructor = Number;
 
 	function DataBoolean( s ) {
 		Boolean.call(this, s);
@@ -160,6 +164,8 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	DataBoolean.prototype.getType = function() {
 		return "boolean";
 	};
+	
+	DataBoolean.prototype.nativeConstructor = Boolean;
 	
 	window.DataString = DataString;
 	window.DataNumber = DataNumber;
@@ -608,7 +614,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	};
 
 	var fetch = {
-		value: function() {
+		value: function(forceJson) {
 
 			var self = this,
 					deferred = $.Deferred( );
@@ -617,8 +623,15 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 				return deferred.resolve(this);
 			}
 			require(['src/util/urldata'], function(urlData) { // We don't know yet if URLData has been loaded
+				
+				var headers;
+				if(forceJson) {
+					headers = {
+						Accept: "application/json"
+					};
+				}
 
-				urlData.get(self.url, false, self.timeout).then(function(data) {
+				urlData.get(self.url, false, self.timeout, headers).then(function(data) {
 
 					data = DataObject.check(data, true);	// Transform the input into a DataObject
 
@@ -731,7 +744,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	
 	var setValueNative = {
 		value: function(value) {
-			this.s_ = value;
+			this.s_ = this.nativeConstructor(value);
 		}
 	};
 

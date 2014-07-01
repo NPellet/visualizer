@@ -22,6 +22,7 @@ define(['modules/default/defaultview', "src/util/util", "ace/ace", "src/util/con
 
         },
         blank: {},
+		onActionReceive: {},
         inDom: function() {
             var self = this;
             var initVal = this.module.getConfiguration('script') || "";

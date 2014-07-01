@@ -30,26 +30,22 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
  
 			for( ; i >= 0; i-- ) {
 
-				if( actionsOut[i].rel == rel && ((event && event == actionsOut[i].event) || !event)) {
+				if( actionsOut[i].rel === rel && ((event && event === actionsOut[i].event) || !event)) {
 
 					actionname = actionsOut[ i ].name,
-					jpath = actionsOut[ i ].jpath;	
-
-					if(!jpath) {
-
-						API.executeAction( actionname, value );
-						API.doAction( actionname, value );
-
-						continue;
-
-					} else if(value.getChild) {
-
+					jpath = actionsOut[ i ].jpath;
+				
+					if(jpath && value.getChild) {
 						value.getChild(jpath).done( function( returned ) {
 
 							API.executeAction( actionname, returned );
 							API.doAction( actionname, returned );
 
 						});
+					} else {
+
+						API.executeAction( actionname, value );
+						API.doAction( actionname, value );
 
 					}
 				}

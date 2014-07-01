@@ -57,7 +57,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 			this.loadedData.done(function() {
 
-			p = self.plot(self._id, self._data, self._options);
+			this._plot = self.plot(self._id, self._data, self._options);
 			var choiceContainer = $("#choices"+self._id);
 			choiceContainer.empty();
 
@@ -84,21 +84,24 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		update: {
 
 			'chart': function(moduleValue) {
+			if (! moduleValue || ! moduleValue.value) return;	
+			
 			var self=this;
-			var cfg = $.proxy( this.module.getConfiguration, this.module );
-
-			if (this.DEBUG) console.log("stack Chart: update from chart object");
-
-				if (! moduleValue || ! moduleValue.value) return;
-
-
-				var axis = moduleValue.get().axis;
-				var x = moduleValue.get().data[0].x
+			var cfg = $.proxy( this.module.getConfiguration, this.module );	
 				
-				self.updateOptions(cfg, axis, x);
-				this._convertChartToData(moduleValue.get().data);
+			if (this.DEBUG) console.log("stack Chart: update from chart object");
+			this._convertChartToData(moduleValue.get().data);;
+			var axis = moduleValue.get().axis;			
+			var x = moduleValue.get().data[0].x	
+			this.updateOptions(cfg, axis, x);
+			this._plot = self.plot(self._id, self._data, self._options);
+			
+			this.loadedData.resolve();
+				
 
-				this.loadedData.resolve();
+
+				
+				
 			},
 
 
@@ -110,13 +113,14 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 			var self=this;
 			self._data = this._data;
 			if ( ! value instanceof Array || ! value || ! value.x instanceof Array) return;
+			
 			for (var j = 0; j < value.length; j++) 
 			{
 				var x=value[j].x;
 				var y=value[j].y;
 				var highlight=value[j]._highlight;
-				var info=value[j].info;
-				var label;
+				var info=value[j].serieLabel;
+				var label=value[j].info[0].name;
 				s = [];
 
 				for (var i = 0; i < y.length; i++) 
@@ -127,13 +131,13 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 
 				this._data[j] = {
 						data: s,
-						info: null,
-						label: null
+						info: info,
+						label: label
 					}	
-				Traversing.getValueFromJPath(info[0],"element.name").done(function(elVal) {
+			/*	Traversing.getValueFromJPath(info[0],"element.name").done(function(elVal) {
 					self._data[j].label=elVal;
 					self._data[j].info=value[j].info
-				}); 
+				}); */ 
 			}
 
 		},
@@ -244,7 +248,7 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 		plot: function(id,data,options) {
 
 			var self=this;
-			self._plot=$.plot("#"+id, data, options);
+			this._plot=$.plot("#"+id, data, options);
 			$("#"+id).bind("plotclick", function (event, pos, item) {
 
 			event.preventDefault();
