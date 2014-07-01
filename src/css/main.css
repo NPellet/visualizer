@@ -275,6 +275,7 @@ div.ci-module-header-toolbar ul {
 	margin: 0;
 	height: 100%;
 	margin-right: 10px;
+  padding: 0;
 }
 
 div.ci-module-header-toolbar ul li {
