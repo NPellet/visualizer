@@ -1755,13 +1755,8 @@ define(['modules/default/defaultview','src/util/datatraversing','src/util/api','
 					}
 				}
 			};
-
-
        // var cfg = $.proxy( this.module.getConfiguration, this.module );
-
 		}
-
-
 	});
 
 	return view;

@@ -1,5 +1,5 @@
 {
-	"version": "2.3.0-beta1",
+	"version": "2.4.0b2",
 	"modules": [
 		{
 			"url": "modules/types/chart/basic/scatter3D/",
@@ -139,7 +139,8 @@
 					"name": "Default layer"
 				}
 			},
-			"title": "Untitled module"
+			"title": "Untitled module",
+			"zindex": 2
 		},
 		{
 			"url": "modules/types/display/fasttable/",
@@ -214,7 +215,8 @@
 					"name": "Default layer"
 				}
 			},
-			"title": "Untitled module"
+			"title": "Untitled module",
+			"zindex": 2
 		},
 		{
 			"url": "modules/types/chart/statistics/parallel_coordinates/",
@@ -291,7 +293,8 @@
 					"name": "pointsToDraw"
 				}
 			],
-			"actions_out": {}
+			"actions_out": {},
+			"zindex": 1
 		},
 		{
 			"url": "modules/types/edition/filter_editor/",
@@ -301,7 +304,7 @@
 					"group": [
 						{
 							"script": [
-								"function filter() {\n  function generateRandomArray(n, min, max) {\n    var result = [];\n    for(var i=0; i<n; i++) {\n      result.push(Math.random()*(max-min) + min);\n    }\n    return result;\n  }\n  function generateRandomColors(n) {\n    var result = [];\n    var letters = '0123456789ABCDEF'.split('');\n    for(var i=0; i<n; i++) {\n      var color = '#'\n      for(var j=0; j<3; j++) {\n        color += letters[Math.floor(Math.random() * 16)];\n      }\n      result.push(color);\n    }\n    return result;\n  }\n  function generateRandomFromArray(arr, n) {\n    var x = generateRandomArray(n, 0, arr.length-0.001);\n    x = x.map(function(a) {\n      return arr[Math.floor(a)];\n    }); \n    return x;\n  }\n  var n = 10000;\n  var x = generateRandomArray(n, 0, 5);\n  var y = generateRandomArray(n, 0, 5);\n  var z = generateRandomArray(n, -0.005, 0.005);\n  var color = generateRandomColors(n);\n  //var shape = generateRandomFromArray(['sphere', 'tetrahedron'], n);\n  var highlight = generateRandomFromArray(['A','B','C','D'], n);\n  var size = generateRandomArray(n, 0.005, 0.01);\n  var result = [];\n  for(var i=0; i<n; i++) {\n    result.push({});\n    result[i].x = x[i];\n    result[i].y = y[i];\n    result[i].z = z[i];\n    result[i].color = color[i];\n    //result[i].shape = shape[i];\n    result[i].size = size[i];\n    result[i]._highlight = highlight[i];\n  }\n  console.log(result);\n  return DataObject.check(result, true);\n\n}"
+								"function generateRandomArray(n, min, max) {\nvar result = [];\nfor(var i=0; i<n; i++) {\n  result.push(Math.random()*(max-min) + min);\n}\nreturn result;\n}\nfunction generateRandomColors(n) {\nvar result = [];\nvar letters = '0123456789ABCDEF'.split('');\nfor(var i=0; i<n; i++) {\n  var color = '#'\n  for(var j=0; j<3; j++) {\n    color += letters[Math.floor(Math.random() * 16)];\n  }\n  result.push(color);\n}\nreturn result;\n}\nfunction generateRandomFromArray(arr, n) {\nvar x = generateRandomArray(n, 0, arr.length-0.001);\nx = x.map(function(a) {\n  return arr[Math.floor(a)];\n}); \nreturn x;\n}\nvar n = 10000;\nvar x = generateRandomArray(n, 0, 5);\nvar y = generateRandomArray(n, 0, 5);\nvar z = generateRandomArray(n, -0.005, 0.005);\nvar color = generateRandomColors(n);\n//var shape = generateRandomFromArray(['sphere', 'tetrahedron'], n);\nvar highlight = generateRandomFromArray(['A','B','C','D'], n);\nvar size = generateRandomArray(n, 0.005, 0.01);\nvar result = [];\nfor(var i=0; i<n; i++) {\nresult.push({});\nresult[i].x = x[i];\nresult[i].y = y[i];\nresult[i].z = z[i];\nresult[i].color = color[i];\n//result[i].shape = shape[i];\nresult[i].size = size[i];\nresult[i]._highlight = highlight[i];\n}\nconsole.log(result);\nresolve(result);"
 							]
 						}
 					],
@@ -321,7 +324,7 @@
 					},
 					"size": {
 						"width": 55,
-						"height": 25
+						"height": 59
 					},
 					"zIndex": 0,
 					"display": true,
@@ -348,21 +351,26 @@
 			"vars_out": [
 				{
 					"event": "onButtonClick",
-					"rel": "dataobject",
+					"rel": "filteredObject",
 					"name": "test"
 				}
 			],
-			"actions_out": {}
+			"actions_out": {},
+			"zindex": 2
 		}
 	],
 	"variables": [
 		{
 			"varname": "highlight",
-			"jpath": "element.highlight"
+			"jpath": [
+				"highlight"
+			]
 		},
 		{
 			"varname": "pieChart",
-			"jpath": "element.pieChart"
+			"jpath": [
+				"pieChart"
+			]
 		}
 	],
 	"pouchvariables": [
