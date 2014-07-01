@@ -109,7 +109,7 @@ define(['require',
         svgcontent= $(self.iframeDoc).find('#svgcontent');
       }
       else {
-        svgcontent = self.dom.find()
+        svgcontent = self.dom;
       }
       
       self.module._data = [];
@@ -118,8 +118,8 @@ define(['require',
           self.module._data = data[key].info;
         }
         var contentElement = svgcontent.find('#'+key);
-        if(data[key].value) {
-          contentElement.html(data[key].value);
+        if(data[key].innerVal) {
+          contentElement.html(data[key].innerVal);
         }
         if(data[key].attributes) {
           contentElement.attr(data[key].attributes);

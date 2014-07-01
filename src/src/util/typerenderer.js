@@ -46,8 +46,9 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
   functions.svg = {};
   functions.svg.toscreen = function(def, val) {
     var dom = $(val);
-    var viewbox = [0, 0, dom.attr('width'), dom.attr('height')];
+    var viewbox = [0, 0, parseInt(dom.attr('width')), parseInt(dom.attr('height'))];
     dom[0].setAttribute('viewBox', viewbox.join(' '));
+    dom.removeAttr('id');
     dom.attr('width', '100%');
     dom.attr('height', '100%');
     // dom.attr('viewbox', '0 0 1000 1000');

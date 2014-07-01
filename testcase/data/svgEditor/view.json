@@ -21,7 +21,7 @@
 								[]
 							],
 							"svgcode": [
-								"<svg width=\"482.688\" height=\"500.87499999999994\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:svg=\"http://www.w3.org/2000/svg\">\n <g>\n  <title>Layer 1</title>\n  <g id=\"svg2\" xmlns:svg=\"http://www.w3.org/2000/svg\">\n   <linearGradient transform=\"translate(-18.2608699798584,-26.95652198791504) translate(14.782608985900879,13.043478965759277) \" y2=\"0.92344\" x2=\"0.49659\" y1=\"0.30996\" x1=\"0.50153\" id=\"SVGID_1_\">\n    <stop stop-color=\"#EEFFAA\" offset=\"0\"></stop>\n    <stop stop-color=\"#F6FFD5\" offset=\"1\"></stop>\n   </linearGradient>\n   <rect id=\"svg_1\" height=\"176.361\" width=\"177.824\" stroke-width=\"0.6246\" stroke=\"#ABC837\" fill=\"url(#SVGID_1_)\" y=\"202.02496\" x=\"151.22474\"></rect>\n   <g id=\"layer1\">\n    <path d=\"m85.50974,106.48244l82.12101,0l0,14.812l-82.12101,0\" stroke-width=\"2\" stroke=\"#000000\" fill=\"#FFFFFF\" id=\"rect3903\"></path>\n    <path d=\"m297.70776,386.21948c41.40802,0 39.15802,2.30499 39.15802,-39.62299l0,-149.44504c0,-20.08002 -14.93301,-36.67902 -34.30103,-39.27802l0,-7.60898c0,-1.91202 -1.547,-3.44301 -3.45898,-3.44301l-23.91,0c-1.91199,0 -3.44299,1.53099 -3.44299,3.44301l0,7.263l-16.21103,0l0,-7.263c0,-1.91202 -1.54501,-3.44301 -3.457,-3.44301l-23.91103,0c-1.91199,0 -3.44299,1.53099 -3.44299,3.44301l0,7.263l-16.48099,0l0,-7.263c0,-1.91202 -1.54602,-3.44301 -3.45901,-3.44301l-23.91,0l0,0c-1.91299,0 -3.444,1.53099 -3.444,3.44398l0,7.65402c-19.23898,2.71201 -34.03,19.24399 -34.03,39.233l0,149.44504c0,43.427 -1.79099,39.62399 39.15802,39.62399m0.45001,-220.85904l114.22701,0c17.68799,0 31.81201,14.10599 31.81201,31.79001l0,149.44504c0,32.427 0.06198,31.78799 -31.81201,31.78799l-114.22701,0c-33.39899,0 -31.79001,0.63901 -31.79001,-31.78799l0,-149.44604c0.00101,-17.68301 14.10699,-31.789 31.79001,-31.789z\" fill=\"#666666\" id=\"rect2993\"></path>\n    <g id=\"svg_2\">\n     <linearGradient transform=\"translate(-18.2608699798584,-26.95652198791504) translate(14.782608985900879,13.043478965759277) translate(-113.75,-92.8125) \" y2=\"0.04317\" x2=\"0.55077\" y1=\"0.98586\" x1=\"0.44606\" id=\"SVGID_2_\">\n      <stop stop-color=\"#000000\" offset=\"0\"></stop>\n      <stop stop-color=\"#CCCCCC\" offset=\"1\"></stop>\n     </linearGradient>\n     <path id=\"svg_3\" d=\"m232.41576,96.46146c0,-2.2 1.79999,-4 4,-4l7.00002,0c2.19199,0 4,1.8 4,4l0,250.41101c0,2.20001 -1.80801,4 -4,4l-7.00002,0c-2.20001,0 -4,-1.79999 -4,-4l0,-250.41101z\" fill=\"url(#SVGID_2_)\"></path>\n     <path id=\"svg_4\" d=\"m232.41576,96.46146c0,-2.2 1.79999,-4 4,-4l7.00002,0c2.19199,0 4,1.8 4,4l0,250.41101c0,2.20001 -1.80801,4 -4,4l-7.00002,0c-2.20001,0 -4,-1.79999 -4,-4l0,-250.41101z\" stroke-width=\"0.7399\" stroke=\"#000000\" fill=\"none\"></path>\n    </g>\n    <path d=\"m186.20775,182.35245l0,-46.14m14.81198,0l0,46.14\" stroke-width=\"2\" stroke=\"#000000\" fill=\"#FFFFFF\" id=\"rect3884\"></path>\n    <g id=\"water-in\">\n     <linearGradient transform=\"translate(-18.2608699798584,-26.95652198791504) translate(14.782608985900879,13.043478965759277) translate(-113.75,-92.8125) \" y2=\"0.09683\" x2=\"0.3975\" y1=\"1.02467\" x1=\"0.50278\" id=\"path4327_1_\">\n      <stop stop-color=\"#F6FFD5\" offset=\"0\"></stop>\n      <stop stop-color=\"#EEFFAA\" offset=\"1\"></stop>\n     </linearGradient>\n     <path d=\"m187.21776,137.35744l0,44.92699l-2,15.229l16.79199,0l-2,-15.229l0,-44.92699l-12.79199,0l0,0z\" fill=\"url(#path4327_1_)\" id=\"path4327\"></path>\n     <linearGradient transform=\"translate(-18.2608699798584,-26.95652198791504) translate(14.782608985900879,13.043478965759277) translate(-113.75,-92.8125) \" y2=\"0.51212\" x2=\"0.92481\" y1=\"0.49674\" x1=\"0.38733\" id=\"path4343_2_\">\n      <stop stop-color=\"#F6FFD5\" offset=\"0\"></stop>\n      <stop stop-color=\"#EEFFAA\" offset=\"1\"></stop>\n     </linearGradient>\n     <path d=\"m162.28575,107.36845l-76.92701,0l0,12.79199l76.92701,0l0,-12.79199z\" fill=\"url(#path4343_2_)\" id=\"path4343\"></path>\n     <linearGradient transform=\"translate(-18.2608699798584,-26.95652198791504) translate(14.782608985900879,13.043478965759277) translate(-113.75,-92.8125) \" y2=\"0.12875\" x2=\"0.50619\" y1=\"1.04909\" x1=\"0.49082\" id=\"path4339_2_\">\n      <stop stop-color=\"#F6FFD5\" offset=\"0\"></stop>\n      <stop stop-color=\"#EEFFAA\" offset=\"1\"></stop>\n     </linearGradient>\n     <path d=\"m187.21675,143.57645l0,44.927l12.79199,0l0,-44.927l-12.79199,0z\" fill=\"url(#path4339_2_)\" id=\"path4339\"></path>\n     <path d=\"m68.70974,130.40144c-0.02901,-11.01899 0.03,-22.03799 0,-33.05698c9.558,5.48298 19.071,11.04398 28.62799,16.52799c-9.52699,5.536 -19.09999,10.99399 -28.62799,16.52898z\" fill=\"#F6FFD5\" id=\"path4585\"></path>\n    </g>\n    <path d=\"m143.92174,113.88946c0,10.321 -8.367,18.688 -18.68801,18.688c-10.321,0 -18.688,-8.367 -18.688,-18.688c0,-10.321 8.367,-18.68798 18.688,-18.68798c10.32201,-0.00002 18.68801,8.36597 18.68801,18.68798l0,0z\" stroke-width=\"2\" stroke=\"#000000\" fill=\"#FFFFFF\" id=\"path3907\"></path>\n    <path d=\"m129.14075,121.53146c-0.01401,-5.095 0.01399,-10.19 0,-15.285c4.41899,2.536 8.81799,5.10699 13.23698,7.64301c-4.40599,2.55899 -8.83199,5.08299 -13.23698,7.642z\" stroke-width=\"0.3537\" stroke=\"#000000\" id=\"path3909\"></path>\n    <linearGradient transform=\"translate(-18.2608699798584,-26.95652198791504) translate(14.782608985900879,13.043478965759277) translate(-113.75,-92.8125) \" y2=\"0.61897\" x2=\"0.97628\" y1=\"0.45227\" x1=\"0.30922\" id=\"path4257_1_\">\n     <stop stop-color=\"#FFFFFF\" offset=\"0\"></stop>\n     <stop stop-color=\"#FFFFFF\" stop-opacity=\"0\" offset=\"1\"></stop>\n    </linearGradient>\n    <path d=\"m309.30176,268.67249c0,0.979 -0.797,1.78299 -1.78101,1.78299s-1.78198,-0.80698 -1.78198,-1.78299c0,-0.983 0.798,-1.78101 1.78198,-1.78101s1.78101,0.798 1.78101,1.78101z\" fill=\"url(#path4257_1_)\" id=\"path4257\"></path>\n    <linearGradient transform=\"translate(-18.2608699798584,-26.95652198791504) translate(14.782608985900879,13.043478965759277) translate(-113.75,-92.8125) \" y2=\"0.90177\" x2=\"0.51713\" y1=\"-0.03669\" x1=\"0.44811\" id=\"path3886_2_\">\n     <stop stop-color=\"#BFBFBF\" offset=\"0\"></stop>\n     <stop stop-color=\"#969696\" offset=\"1\"></stop>\n    </linearGradient>\n    <path d=\"m163.27873,104.02645l0,20.03101l6.90601,0l0,-2.81201c8.022,0.897 14.42899,6.811 16,14.594l-2.68802,0l0,6.938l20.03101,0l0,-6.938l-3.81198,0c-1.79102,-15.09499 -14.22101,-27.04899 -29.53101,-28.06199l0,-3.75l-6.90601,-0.00101l0,0z\" stroke-width=\"2\" stroke=\"#000000\" fill=\"url(#path3886_2_)\" id=\"path3886\"></path>\n    <linearGradient transform=\"translate(-18.2608699798584,-26.95652198791504) translate(14.782608985900879,13.043478965759277) translate(-113.75,-92.8125) \" y2=\"0.48279\" x2=\"0.90259\" y1=\"0.5518\" x1=\"-0.0355\" id=\"path3886_3_\">\n     <stop stop-color=\"#BFBFBF\" offset=\"0\"></stop>\n     <stop stop-color=\"#969696\" offset=\"1\"></stop>\n    </linearGradient>\n    <path d=\"m277.48477,143.52644l20.03101,0l0,-6.90601l-2.81201,0c0.897,-8.021 6.81201,-14.42898 14.60199,-15.99999l0,2.688l6.93802,0l0,-20.03099l-6.93802,0l0,3.812c-15.10397,1.791 -27.05698,14.22099 -28.06198,29.53098l-3.75,0l-0.009,6.90601l0,0z\" stroke-width=\"2\" stroke=\"#000000\" fill=\"url(#path3886_3_)\" id=\"path3886_1_\"></path>\n    <path d=\"m398.35574,120.54145l-82.121,0l0,-14.812l82.121,0\" stroke-width=\"2\" stroke=\"#000000\" fill=\"#FFFFFF\" id=\"rect3903_1_\"></path>\n    <g id=\"water-out\">\n     <g id=\"svg_5\">\n      <path d=\"m279.70776,190.50446l0,-46.14m14.81198,0.00099l0,46.13998\" stroke-width=\"2\" stroke=\"#000000\" fill=\"#FFFFFF\" id=\"rect3884_1_\"></path>\n      <linearGradient transform=\"translate(-18.2608699798584,-26.95652198791504) translate(14.782608985900879,13.043478965759277) translate(-113.75,-92.8125) \" y2=\"0.12882\" x2=\"0.50628\" y1=\"1.04912\" x1=\"0.49094\" id=\"path4339_3_\">\n       <stop stop-color=\"#F6FFD5\" offset=\"0\"></stop>\n       <stop stop-color=\"#EEFFAA\" offset=\"1\"></stop>\n      </linearGradient>\n      <path d=\"m280.71677,144.97145l0,44.92702l12.793,0l0,-44.92702l-12.793,0l0,0z\" fill=\"url(#path4339_3_)\" id=\"path4339_1_\"></path>\n     </g>\n     <linearGradient transform=\"translate(-18.2608699798584,-26.95652198791504) translate(14.782608985900879,13.043478965759277) translate(-113.75,-92.8125) \" y2=\"0.48733\" x2=\"0.07532\" y1=\"0.50354\" x1=\"0.61278\" id=\"path4343_3_\">\n      <stop stop-color=\"#F6FFD5\" offset=\"0\"></stop>\n      <stop stop-color=\"#EEFFAA\" offset=\"1\"></stop>\n     </linearGradient>\n     <path d=\"m317.15976,119.65545l81.19598,0l0,-12.79199l-81.19598,0l0,12.79199z\" fill=\"url(#path4343_3_)\" id=\"path4343_1_\"></path>\n     <path d=\"m415.15573,96.62247c0.02899,11.01899 -0.03003,22.038 0,33.05699c-9.55798,-5.48299 -19.07098,-11.044 -28.62799,-16.52799c9.52704,-5.53601 19.099,-10.99402 28.62799,-16.529z\" fill=\"#F6FFD5\" id=\"path4585_1_\"></path>\n    </g>\n    <path d=\"m339.94376,113.13445c0,-10.321 8.367,-18.688 18.68799,-18.688c10.31302,0 18.68802,8.367 18.68802,18.688c0,10.321 -8.366,18.688 -18.68802,18.688c-10.32199,0 -18.68799,-8.36599 -18.68799,-18.688l0,0z\" stroke-width=\"2\" stroke=\"#000000\" fill=\"#FFFFFF\" id=\"path3907_1_\"></path>\n    <path d=\"m362.95377,120.77946c-0.01498,-5.095 0.021,-10.19 0,-15.28499c4.418,2.536 8.81702,5.10698 13.23599,7.64299c-4.405,2.558 -8.832,5.082 -13.23599,7.642z\" stroke-width=\"0.3537\" stroke=\"#000000\" id=\"path3909_1_\"></path>\n    <path d=\"m133.60274,386.21948c11.564,0 203.61504,0 213.07802,0c0,0 0,8.25601 0,16.97101c0,0 -209.22202,0 -213.07802,0\" fill=\"#FF4E4E\" id=\"heat-plate\"></path>\n    <line id=\"svg_6\" y2=\"414.35746\" x2=\"173.03074\" y1=\"394.70646\" x1=\"187.21674\" stroke=\"#000000\" fill=\"none\"></line>\n    <text x=\"-117.22826\" y=\"-106.72554\" font-size=\"25.9254\" font-family=\"'MyriadPro-Regular'\" transform=\"matrix(1,0,0,1,271.0498,546.709) \" id=\"plate-temperature\">45 ºC</text>\n    <text x=\"-117.22826\" y=\"-106.72554\" font-size=\"21.9227\" font-family=\"'MyriadPro-Regular'\" transform=\"matrix(1,0,0,1,370.9053,356.0557) \" id=\"liquid-temperature\">37.6 ºC</text>\n    <text fill=\"black\" x=\"-138.09783\" y=\"-121.50815\" font-size=\"21.9227\" font-family=\"'MyriadPro-Regular'\" transform=\"matrix(1,0,0,1,341.7319,162.0557) \" id=\"stir-motor-status\">ON</text>\n    <text x=\"-117.22826\" y=\"-106.72554\" font-size=\"21.9227\" font-family=\"'MyriadPro-Regular'\" transform=\"matrix(1,0,0,1,461.3916,195.7505) \" id=\"pump-out-status\">ON</text>\n    <text x=\"-117.22826\" y=\"-106.72554\" font-size=\"21.9227\" font-family=\"'MyriadPro-Regular'\" transform=\"matrix(1,0,0,1,228.7559,195.7505) \" id=\"pump-in-status\">ON</text>\n    <text x=\"-117.22826\" y=\"-106.72554\" font-size=\"21.9227\" font-family=\"'MyriadPro-Regular'\" transform=\"matrix(1,0,0,1,168.7559,401.0176) \" id=\"liquid-weight\">1.21 kg</text>\n    <text x=\"-117.22826\" y=\"-106.72554\" font-size=\"20.3837\" font-family=\"'MyriadPro-Regular'\" transform=\"matrix(1,0,0,1,276.3828,384.6904) \" id=\"liquid-ph\">pH:10.8</text>\n    <rect id=\"svg_7\" height=\"37.333\" width=\"58\" stroke-width=\"2\" stroke=\"#000000\" fill=\"#FFFFFF\" y=\"64.35746\" x=\"211.69874\"></rect>\n    <g id=\"svg_8\">\n     <circle id=\"svg_9\" r=\"14.5\" cy=\"83.02446\" cx=\"240.69874\" stroke-width=\"2\" stroke=\"#000000\" fill=\"#FFFFFF\"></circle>\n     <text id=\"svg_10\" x=\"-117.22826\" y=\"-106.72554\" font-size=\"18.2205\" font-family=\"'Helvetica'\" transform=\"matrix(1,0,0,1,350.4951,195.7505) \">M</text>\n    </g>\n   </g>\n   <path id=\"svg_11\" d=\"m247.52176,327.08698l32,0l4,2l0,14l-4,2l-19,-4l-13,-2l0,-12z\"></path>\n   <path id=\"svg_12\" d=\"m233.52174,327.08698l-32,0l-4,2l0,14l4,2l19,-4l13,-2l0,-12z\"></path>\n  </g>\n  <g id=\"Layer_2\"></g>\n  <polyline id=\"svg_13\" points=\"139.235,215.938 127.301,215.938 127.301,392.299   139.235,392.299 \" stroke-miterlimit=\"10\" stroke=\"#000000\" fill=\"#FFFFFF\"></polyline>\n </g>\n</svg>"
+								"<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" width=\"482\" height=\"500\" enable-background=\"new 0 0 482.688 500.875\" xml:space=\"preserve\">\n<linearGradient id=\"SVGID_1_\" gradientUnits=\"userSpaceOnUse\" x1=\"243.8896\" y1=\"270.6035\" x2=\"243.0107\" y2=\"378.7963\">\n\t<stop offset=\"0\" style=\"stop-color:#F6FFD5\"></stop>\n\t<stop offset=\"1\" style=\"stop-color:#EEFFAA\"></stop>\n</linearGradient>\n<rect id=\"liquid-rect\" x=\"154.703\" y=\"216\" fill=\"url(#SVGID_1_)\" stroke=\"#ABC837\" stroke-width=\"0.6246\" width=\"177.829\" height=\"176\">300 g</rect>\n<g id=\"svg2\" inkscape:version=\"0.48.0 r9654\" sodipodi:docname=\"dessin-1.svg\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:cc=\"http://creativecommons.org/ns#\" xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\">\n\t\n\t\t<sodipodi:namedview fit-margin-top=\"0\" fit-margin-left=\"0\" fit-margin-bottom=\"0\" inkscape:guide-bbox=\"true\" showguides=\"true\" inkscape:window-maximized=\"1\" inkscape:window-y=\"26\" inkscape:window-x=\"0\" inkscape:window-height=\"695\" inkscape:window-width=\"1024\" showgrid=\"false\" inkscape:current-layer=\"layer1\" pagecolor=\"#ffffff\" inkscape:document-units=\"px\" inkscape:cx=\"248.90367\" id=\"base\" inkscape:zoom=\"1\" inkscape:pageshadow=\"2\" fit-margin-right=\"0\" inkscape:pageopacity=\"0.0\" inkscape:cy=\"169.88279\" bordercolor=\"#666666\" borderopacity=\"1.0\">\n\t\t</sodipodi:namedview>\n\t<g id=\"layer1\" transform=\"translate(-113.75,-92.8125)\" inkscape:groupmode=\"layer\" inkscape:label=\"Calque 1\">\n\t\t\n\t\t\t<path id=\"rect3903\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"cccc\" fill=\"#FFFFFF\" stroke=\"#000000\" stroke-width=\"2\" d=\"\n\t\t\tM202.738,213.208h82.121v14.812h-82.121\"></path>\n\t\t<path id=\"rect2993\" inkscape:connector-curvature=\"0\" fill=\"#666666\" d=\"M414.936,492.945c41.408,0,39.158,2.305,39.158-39.623\n\t\t\tV303.877c0-20.08-14.933-36.679-34.301-39.278v-7.609c0-1.912-1.547-3.443-3.459-3.443h-23.91c-1.912,0-3.443,1.531-3.443,3.443\n\t\t\tv7.263H372.77v-7.263c0-1.912-1.545-3.443-3.457-3.443h-23.911c-1.912,0-3.443,1.531-3.443,3.443v7.263h-16.481v-7.263\n\t\t\tc0-1.912-1.546-3.443-3.459-3.443h-23.91l0,0c-1.913,0-3.444,1.531-3.444,3.444v7.654c-19.239,2.712-34.03,19.244-34.03,39.233\n\t\t\tv149.445c0,43.427-1.791,39.624,39.158,39.624 M300.243,272.088H414.47c17.688,0,31.812,14.106,31.812,31.79v149.445\n\t\t\tc0,32.427,0.062,31.788-31.812,31.788H300.243c-33.399,0-31.79,0.639-31.79-31.788V303.877\n\t\t\tC268.454,286.194,282.56,272.088,300.243,272.088z\"></path>\n\t\t<g>\n\t\t\t\n\t\t\t\t<linearGradient id=\"SVGID_2_\" gradientUnits=\"userSpaceOnUse\" x1=\"1257.3906\" y1=\"1867.5029\" x2=\"1255.8201\" y2=\"1623.9031\" gradientTransform=\"matrix(-1 0 0 1 1613.7266 -1413.5605)\">\n\t\t\t\t<stop offset=\"0\" style=\"stop-color:#000000\"></stop>\n\t\t\t\t<stop offset=\"1\" style=\"stop-color:#CCCCCC\"></stop>\n\t\t\t</linearGradient>\n\t\t\t<path fill=\"url(#SVGID_2_)\" d=\"M349.644,203.187c0-2.2,1.8-4,4-4h7c2.191,0,4,1.8,4,4v250.411c0,2.2-1.809,4-4,4h-7\n\t\t\t\tc-2.2,0-4-1.8-4-4V203.187z\"></path>\n\t\t\t<path fill=\"none\" stroke=\"#000000\" stroke-width=\"0.7399\" d=\"M349.644,203.187c0-2.2,1.8-4,4-4h7c2.191,0,4,1.8,4,4v250.411\n\t\t\t\tc0,2.2-1.809,4-4,4h-7c-2.2,0-4-1.8-4-4V203.187z\"></path>\n\t\t</g>\n\t\t\n\t\t\t<path id=\"rect3884\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"cccc\" fill=\"#FFFFFF\" stroke=\"#000000\" stroke-width=\"2\" d=\"\n\t\t\tM303.436,289.078v-46.14 M318.248,242.938v46.14\"></path>\n\t\t<g id=\"water-in\">\n\t\t\t\n\t\t\t\t<linearGradient id=\"path4327_1_\" gradientUnits=\"userSpaceOnUse\" x1=\"2411.3896\" y1=\"1988.3486\" x2=\"2409.6218\" y2=\"1932.5325\" gradientTransform=\"matrix(1 0 0 1 -2100.5 -1682.625)\">\n\t\t\t\t<stop offset=\"0\" style=\"stop-color:#F6FFD5\"></stop>\n\t\t\t\t<stop offset=\"1\" style=\"stop-color:#EEFFAA\"></stop>\n\t\t\t</linearGradient>\n\t\t\t<path id=\"path4327\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"ccccccc\" fill=\"url(#path4327_1_)\" d=\"\n\t\t\t\tM304.446,244.083v44.927l-2,15.229h16.792l-2-15.229v-44.927H304.446L304.446,244.083z\"></path>\n\t\t\t\n\t\t\t\t<linearGradient id=\"path4343_2_\" gradientUnits=\"userSpaceOnUse\" x1=\"3555.3623\" y1=\"-283.3486\" x2=\"3555.5591\" y2=\"-324.696\" gradientTransform=\"matrix(0 1 -1 0 -50.9658 -3334.9141)\">\n\t\t\t\t<stop offset=\"0\" style=\"stop-color:#F6FFD5\"></stop>\n\t\t\t\t<stop offset=\"1\" style=\"stop-color:#EEFFAA\"></stop>\n\t\t\t</linearGradient>\n\t\t\t<path id=\"path4343\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"ccccc\" fill=\"url(#path4343_2_)\" d=\"M279.514,214.094\n\t\t\t\th-76.927v12.792h76.927V214.094z\"></path>\n\t\t\t\n\t\t\t\t<linearGradient id=\"path4339_2_\" gradientUnits=\"userSpaceOnUse\" x1=\"2411.2236\" y1=\"1973.8398\" x2=\"2411.4202\" y2=\"1932.4917\" gradientTransform=\"matrix(1 0 0 1 -2100.5 -1676.4053)\">\n\t\t\t\t<stop offset=\"0\" style=\"stop-color:#F6FFD5\"></stop>\n\t\t\t\t<stop offset=\"1\" style=\"stop-color:#EEFFAA\"></stop>\n\t\t\t</linearGradient>\n\t\t\t<path id=\"path4339\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"ccccc\" fill=\"url(#path4339_2_)\" d=\"M304.445,250.302\n\t\t\t\tv44.927h12.792v-44.927H304.445z\"></path>\n\t\t\t\n\t\t\t\t<path id=\"path4585\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"cccc\" inkscape:transform-center-x=\"-0.025718508\" inkscape:transform-center-y=\"-4.7490598\" fill=\"#F6FFD5\" d=\"\n\t\t\t\tM185.938,237.127c-0.029-11.019,0.03-22.038,0-33.057c9.558,5.483,19.071,11.044,28.628,16.528\n\t\t\t\tC205.039,226.134,195.466,231.592,185.938,237.127z\"></path>\n\t\t</g>\n\t\t<path id=\"path3907\" fill=\"#FFFFFF\" stroke=\"#000000\" stroke-width=\"2\" d=\"M261.15,220.615c0,10.321-8.367,18.688-18.688,18.688\n\t\t\tc-10.321,0-18.688-8.367-18.688-18.688c0-10.321,8.367-18.688,18.688-18.688C252.784,201.927,261.15,210.293,261.15,220.615\n\t\t\tL261.15,220.615z\"></path>\n\t\t\n\t\t\t<path id=\"path3909\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"cccc\" inkscape:transform-center-x=\"-2.1959249\" inkscape:transform-center-y=\"0.011889062\" stroke=\"#000000\" stroke-width=\"0.3537\" d=\"\n\t\t\tM246.369,228.257c-0.014-5.095,0.014-10.19,0-15.285c4.419,2.536,8.818,5.107,13.237,7.643\n\t\t\tC255.2,223.174,250.774,225.698,246.369,228.257z\"></path>\n\t\t\n\t\t\t<linearGradient id=\"path4257_1_\" gradientUnits=\"userSpaceOnUse\" x1=\"3603.3896\" y1=\"5889.5967\" x2=\"3611.1377\" y2=\"5891.5337\" gradientTransform=\"matrix(0.3068 0 0 0.3068 -681.4507 -1431.6987)\">\n\t\t\t<stop offset=\"0\" style=\"stop-color:#FFFFFF\"></stop>\n\t\t\t<stop offset=\"1\" style=\"stop-color:#FFFFFF;stop-opacity:0\"></stop>\n\t\t</linearGradient>\n\t\t<path id=\"path4257\" fill=\"url(#path4257_1_)\" d=\"M426.53,375.398c0,0.979-0.797,1.783-1.781,1.783s-1.782-0.808-1.782-1.783\n\t\t\tc0-0.983,0.798-1.781,1.782-1.781S426.53,374.415,426.53,375.398z\"></path>\n\t\t\n\t\t\t<linearGradient id=\"path3886_2_\" gradientUnits=\"userSpaceOnUse\" x1=\"2399.043\" y1=\"1891.9541\" x2=\"2401.821\" y2=\"1928.3204\" gradientTransform=\"matrix(1 0 0 1 -2100.5 -1682.625)\">\n\t\t\t<stop offset=\"0\" style=\"stop-color:#BFBFBF\"></stop>\n\t\t\t<stop offset=\"1\" style=\"stop-color:#969696\"></stop>\n\t\t</linearGradient>\n\t\t\n\t\t\t<path id=\"path3886\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"ccccccccccccc\" fill=\"url(#path3886_2_)\" stroke=\"#000000\" stroke-width=\"2\" d=\"\n\t\t\tM280.507,210.752v20.031h6.906v-2.812c8.022,0.897,14.429,6.811,16,14.594h-2.688v6.938h20.031v-6.938h-3.812\n\t\t\tc-1.791-15.095-14.221-27.049-29.531-28.062v-3.75L280.507,210.752L280.507,210.752z\"></path>\n\t\t\n\t\t\t<linearGradient id=\"path3886_3_\" gradientUnits=\"userSpaceOnUse\" x1=\"519.5215\" y1=\"804.8301\" x2=\"522.299\" y2=\"841.1896\" gradientTransform=\"matrix(-4.371139e-08 -1 1 -4.371139e-08 -411.4961 751.7339)\">\n\t\t\t<stop offset=\"0\" style=\"stop-color:#BFBFBF\"></stop>\n\t\t\t<stop offset=\"1\" style=\"stop-color:#969696\"></stop>\n\t\t</linearGradient>\n\t\t\n\t\t\t<path id=\"path3886_1_\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"ccccccccccccc\" fill=\"url(#path3886_3_)\" stroke=\"#000000\" stroke-width=\"2\" d=\"\n\t\t\tM394.713,250.252h20.031v-6.906h-2.812c0.897-8.021,6.812-14.429,14.603-16v2.688h6.938v-20.031h-6.938v3.812\n\t\t\tc-15.104,1.791-27.058,14.221-28.062,29.531h-3.75L394.713,250.252L394.713,250.252z\"></path>\n\t\t\n\t\t\t<path id=\"rect3903_1_\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"cccc\" fill=\"#FFFFFF\" stroke=\"#000000\" stroke-width=\"2\" d=\"\n\t\t\tM515.584,227.267h-82.121v-14.812h82.121\"></path>\n\t\t<g id=\"water-out\">\n\t\t\t<g>\n\t\t\t\t\n\t\t\t\t\t<path id=\"rect3884_1_\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"cccc\" fill=\"#FFFFFF\" stroke=\"#000000\" stroke-width=\"2\" d=\"\n\t\t\t\t\tM396.936,297.23v-46.14 M411.748,251.091v46.14\"></path>\n\t\t\t\t\n\t\t\t\t\t<linearGradient id=\"path4339_3_\" gradientUnits=\"userSpaceOnUse\" x1=\"2504.7246\" y1=\"1975.2373\" x2=\"2504.9209\" y2=\"1933.8898\" gradientTransform=\"matrix(1 0 0 1 -2100.5 -1676.4053)\">\n\t\t\t\t\t<stop offset=\"0\" style=\"stop-color:#F6FFD5\"></stop>\n\t\t\t\t\t<stop offset=\"1\" style=\"stop-color:#EEFFAA\"></stop>\n\t\t\t\t</linearGradient>\n\t\t\t\t<path id=\"path4339_1_\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"ccccc\" fill=\"url(#path4339_3_)\" d=\"\n\t\t\t\t\tM397.945,251.697v44.927h12.793v-44.927L397.945,251.697L397.945,251.697z\"></path>\n\t\t\t</g>\n\t\t\t\n\t\t\t\t<linearGradient id=\"path4343_3_\" gradientUnits=\"userSpaceOnUse\" x1=\"487.3291\" y1=\"427.875\" x2=\"487.5364\" y2=\"384.2344\" gradientTransform=\"matrix(0 -1 1 0 56.2695 707.3574)\">\n\t\t\t\t<stop offset=\"0\" style=\"stop-color:#F6FFD5\"></stop>\n\t\t\t\t<stop offset=\"1\" style=\"stop-color:#EEFFAA\"></stop>\n\t\t\t</linearGradient>\n\t\t\t<path id=\"path4343_1_\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"ccccc\" fill=\"url(#path4343_3_)\" d=\"\n\t\t\t\tM434.388,226.381h81.196v-12.792h-81.196V226.381z\"></path>\n\t\t\t\n\t\t\t\t<path id=\"path4585_1_\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"cccc\" inkscape:transform-center-x=\"-0.025718508\" inkscape:transform-center-y=\"-4.7490598\" fill=\"#F6FFD5\" d=\"\n\t\t\t\tM532.384,203.348c0.029,11.019-0.03,22.038,0,33.057c-9.558-5.483-19.071-11.044-28.628-16.528\n\t\t\t\tC513.283,214.341,522.855,208.883,532.384,203.348z\"></path>\n\t\t</g>\n\t\t<path id=\"path3907_1_\" fill=\"#FFFFFF\" stroke=\"#000000\" stroke-width=\"2\" d=\"M457.172,219.86c0-10.321,8.367-18.688,18.688-18.688\n\t\t\tc10.312,0,18.688,8.367,18.688,18.688c0,10.321-8.366,18.688-18.688,18.688C465.538,238.548,457.172,230.182,457.172,219.86\n\t\t\tL457.172,219.86z\"></path>\n\t\t\n\t\t\t<path id=\"path3909_1_\" inkscape:connector-curvature=\"0\" sodipodi:nodetypes=\"cccc\" inkscape:transform-center-x=\"-2.1959249\" inkscape:transform-center-y=\"0.011889062\" stroke=\"#000000\" stroke-width=\"0.3537\" d=\"\n\t\t\tM480.182,227.505c-0.015-5.095,0.021-10.19,0-15.285c4.418,2.536,8.817,5.107,13.236,7.643\n\t\t\tC489.013,222.421,484.586,224.945,480.182,227.505z\"></path>\n\t\t<path id=\"heat-plate\" fill=\"#8b2a2a\" d=\"M250.831,492.945c11.564,0,203.615,0,213.078,0c0,0,0,8.256,0,16.971\n\t\t\tc0,0-209.222,0-213.078,0\"></path>\n\t\t<line fill=\"none\" stroke=\"#000000\" x1=\"304.445\" y1=\"501.432\" x2=\"290.259\" y2=\"521.083\"></line>\n\t\t\n\t\t\t<text id=\"plate-temperature\" transform=\"matrix(1 0 0 1 271.0498 546.709)\" font-family=\"'MyriadPro-Regular'\" font-size=\"25.9254\">37 ºC</text>\n\t\t\n\t\t\t<text id=\"liquid-temperature\" transform=\"matrix(1 0 0 1 370.9053 356.0557)\" font-family=\"'MyriadPro-Regular'\" font-size=\"21.9227\">37.1 ºC</text>\n\t\t\n\t\t\t<text id=\"stir-motor-status\" transform=\"matrix(1 0 0 1 341.7319 162.0557)\" font-family=\"'MyriadPro-Regular'\" font-size=\"21.9227\" fill=\"red\">OFF</text>\n\t\t<text id=\"pump-out-status\" transform=\"matrix(1 0 0 1 461.3916 195.75)\" font-family=\"'MyriadPro-Regular'\" font-size=\"21.9227\" fill=\"red\">OFF</text>\n\t\t<text id=\"pump-in-status\" transform=\"matrix(1 0 0 1 228.7559 195.75)\" font-family=\"'MyriadPro-Regular'\" font-size=\"21.9227\" fill=\"red\">OFF</text>\n\t\t<text id=\"liquid-weight\" transform=\"matrix(1 0 0 1 168.7559 401.0176)\" font-family=\"'MyriadPro-Regular'\" font-size=\"21.9227\">300 g</text>\n\t\t<text id=\"liquid-ph\" transform=\"matrix(1 0 0 1 276.3828 384.6904)\" font-family=\"'MyriadPro-Regular'\" font-size=\"20.3837\">pH: 7</text>\n\t\t<rect x=\"328.927\" y=\"171.083\" fill=\"#FFFFFF\" stroke=\"#000000\" stroke-width=\"2\" width=\"58\" height=\"37.333\"></rect>\n\t\t<g>\n\t\t\t<circle fill=\"#FFFFFF\" stroke=\"#000000\" stroke-width=\"2\" cx=\"357.927\" cy=\"189.75\" r=\"14.5\"></circle>\n\t\t\t<text transform=\"matrix(1 0 0 1 350.4951 195.75)\" font-family=\"'Helvetica'\" font-size=\"18.2205\">M</text>\n\t\t</g>\n\t</g>\n  <path id=\"spatula-right\" d=\"M251,341h32l4,2v14l-4,2l-19-4l-13-2V341z\t\" style=\"display:inline\"></path>\n\t<path id=\"animated-spatula-right\" style=\"display:none\" d=\"M 239.801 341 L 220.605 341 L 218.206 343 L 218.206 357 L 220.605 359 L 232.003 355 L 239.801 353 Z\">\n<animate fill=\"remove\" accumulate=\"none\" repeatCount=\"indefinite\" calcMode=\"linear\" to=\"M 251,341, L 283,341, L 287,343, L 287,357, L 283,359, L 264,355, L 251,353 Z\" restart=\"always\" dur=\"1s\" values=\"M 251,341, L 283,341, L 287,343, L 287,357, L 283,359, L 264,355, L 251,353 Z;M 249.66311896062464,341, L 275.55166278062296,341, L 278.78773075812273,343, L 278.78773075812273,357, L 275.55166278062296,359, L 260.180339887499,355, L 249.66311896062464,353 Z;M 246.16311896062464,341, L 256.05166278062296,341, L 257.28773075812273,343, L 257.28773075812273,357, L 256.05166278062296,359, L 250.18033988749895,355, L 246.16311896062464,353 Z;M 241.83688103937536,341, L 231.94833721937707,341, L 230.71226924187727,343, L 230.71226924187727,357, L 231.94833721937707,359, L 237.81966011250105,355, L 241.83688103937536,353 Z;M 238.33688103937536,341, L 212.44833721937704,341, L 209.21226924187727,343, L 209.21226924187727,357, L 212.44833721937704,359, L 227.81966011250105,355, L 238.33688103937536,353 Z;M 237,341, L 205,341, L 201,343, L 201,357, L 205,359, L 224,355, L 237,353 Z;M 238.33688103937536,341, L 212.44833721937704,341, L 209.21226924187727,343, L 209.21226924187727,357, L 212.44833721937704,359, L 227.81966011250105,355, L 238.33688103937536,353 Z;M 241.83688103937536,341, L 231.94833721937704,341, L 230.71226924187727,343, L 230.71226924187727,357, L 231.94833721937704,359, L 237.81966011250105,355, L 241.83688103937536,353 Z;M 246.16311896062464,341, L 256.05166278062296,341, L 257.28773075812273,343, L 257.28773075812273,357, L 256.05166278062296,359, L 250.18033988749895,355, L 246.16311896062464,353 Z;M 249.66311896062464,341, L 275.55166278062296,341, L 278.78773075812273,343, L 278.78773075812273,357, L 275.55166278062296,359, L 260.1803398874989,355, L 249.66311896062464,353 Z;M 251,341, L 283,341, L 287,343, L 287,357, L 283,359, L 264,355, L 251,353 Z\" additive=\"replace\" attributeName=\"d\" begin=\"0s\" from=\"M 251,341, L 283,341, L 287,343, L 287,357, L 283,359, L 264,355, L 251,353 Z\">\n\t\t\t</animate>\n\t</path>\n  <path id=\"spatula-left\" d=\"M237,341h-32l-4,2v14l4,2l19-4l13-2V341z\t\" style=\"display:inline\"></path>\n\t<path style=\"display:none\" id=\"animated-spatula-left\" d=\"M 248.199 341 L 267.395 341 L 269.794 343 L 269.794 357 L 267.395 359 L 255.997 355 L 248.199 353 Z\">\n<animate fill=\"remove\" accumulate=\"none\" repeatCount=\"indefinite\" calcMode=\"linear\" to=\"M 237,341, L 205,341, L 201,343, L 201,357, L 205,359, L 224,355, L 237,353 Z\" restart=\"always\" dur=\"1s\" values=\"M 237,341, L 205,341, L 201,343, L 201,357, L 205,359, L 224,355, L 237,353 Z;M 238.33688103937536,341, L 212.44833721937704,341, L 209.21226924187727,343, L 209.21226924187727,357, L 212.44833721937704,359, L 227.81966011250105,355, L 238.33688103937536,353 Z;M 241.83688103937536,341, L 231.94833721937704,341, L 230.71226924187727,343, L 230.71226924187727,357, L 231.94833721937704,359, L 237.81966011250105,355, L 241.83688103937536,353 Z;M 246.16311896062464,341, L 256.05166278062296,341, L 257.28773075812273,343, L 257.28773075812273,357, L 256.05166278062296,359, L 250.18033988749895,355, L 246.16311896062464,353 Z;M 249.66311896062464,341, L 275.55166278062296,341, L 278.78773075812273,343, L 278.78773075812273,357, L 275.55166278062296,359, L 260.1803398874989,355, L 249.66311896062464,353 Z;M 251,341, L 283,341, L 287,343, L 287,357, L 283,359, L 264,355, L 251,353 Z;M 249.66311896062464,341, L 275.55166278062296,341, L 278.78773075812273,343, L 278.78773075812273,357, L 275.55166278062296,359, L 260.180339887499,355, L 249.66311896062464,353 Z;M 246.16311896062464,341, L 256.05166278062296,341, L 257.28773075812273,343, L 257.28773075812273,357, L 256.05166278062296,359, L 250.18033988749895,355, L 246.16311896062464,353 Z;M 241.83688103937536,341, L 231.94833721937707,341, L 230.71226924187727,343, L 230.71226924187727,357, L 231.94833721937707,359, L 237.81966011250105,355, L 241.83688103937536,353 Z;M 238.33688103937536,341, L 212.44833721937704,341, L 209.21226924187727,343, L 209.21226924187727,357, L 212.44833721937704,359, L 227.81966011250105,355, L 238.33688103937536,353 Z;M 237,341, L 205,341, L 201,343, L 201,357, L 205,359, L 224,355, L 237,353 Z\" additive=\"replace\" attributeName=\"d\" begin=\"0s\" from=\"M 237,341, L 205,341, L 201,343, L 201,357, L 205,359, L 224,355, L 237,353 Z\">\n\t\t\t</animate>\n\t</path>\n</g>\n<g id=\"Layer_2\">\n</g>\n<polyline fill=\"#FFFFFF\" stroke=\"#000000\" stroke-miterlimit=\"10\" points=\"139.235,215.938 127.301,215.938 127.301,392.299 \n\t139.235,392.299 \"></polyline>\n</svg>"
 							]
 						}
 					]
@@ -35,12 +35,12 @@
 						"top": 0
 					},
 					"size": {
-						"width": 95,
-						"height": 76
+						"width": 60,
+						"height": 48
 					},
 					"zIndex": 0,
 					"display": true,
-					"title": "Untitled",
+					"title": "Bioreactor svg",
 					"bgcolor": [
 						[
 							255,
@@ -68,7 +68,7 @@
 				}
 			],
 			"actions_in": {},
-			"title": "Untitled",
+			"title": "Bioreactor svg",
 			"vars_out": [
 				{
 					"event": "onChange",
@@ -85,88 +85,6 @@
 					"name": "atimestamp"
 				}
 			],
-			"actions_out": {}
-		},
-		{
-			"url": "modules/types/display/single_value/",
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"defaultvalue": [
-								null
-							],
-							"fontcolor": [
-								[
-									0,
-									0,
-									0,
-									1
-								]
-							],
-							"font": [
-								null
-							],
-							"fontsize": [
-								null
-							],
-							"align": [
-								null
-							],
-							"valign": [
-								null
-							],
-							"sprintf": [
-								null
-							],
-							"sprintfOrder": [
-								null
-							],
-							"preformatted": [
-								[]
-							]
-						}
-					]
-				}
-			},
-			"layers": {
-				"Default layer": {
-					"position": {
-						"left": 96,
-						"right": 0,
-						"top": 0
-					},
-					"size": {
-						"width": 31,
-						"height": 27
-					},
-					"zIndex": 0,
-					"display": true,
-					"title": "Untitled",
-					"bgcolor": [
-						[
-							255,
-							255,
-							255,
-							0
-						]
-					],
-					"wrapper": true,
-					"created": true,
-					"name": "Default layer"
-				}
-			},
-			"id": 2,
-			"vars_in": [
-				{
-					"rel": "value",
-					"name": "thesvg"
-				}
-			],
-			"actions_in": {},
-			"title": "Untitled",
-			"vars_out": {},
 			"actions_out": {}
 		},
 		{
@@ -191,7 +109,7 @@
 								"new"
 							],
 							"storedObject": [
-								"{\"temperature\":{\"value\":\"2014\",\"attributes\":{\"fill\":\"blue\",\"stroke\":\"#000000\",\"font-size\":\"24\",\"x\":\"59\",\"y\":\"77\",\"text-anchor\":\"middle\",\"stroke-width\":\"0\",\"font-family\":\"serif\"},\"info\":{\"timestamp\":\"1406231433\"}}}"
+								"{\"temp\":{\"innerVal\":\"hello\",\"attributes\":{\"fill\":\"blue\",\"stroke\":\"#000000\",\"font-size\":\"24\",\"text-anchor\":\"middle\",\"stroke-width\":\"0\",\"font-family\":\"serif\"},\"info\":{\"timestamp\":\"1406231433\"}}}"
 							]
 						}
 					]
@@ -200,16 +118,16 @@
 			"layers": {
 				"Default layer": {
 					"position": {
-						"left": 96,
-						"top": 28
+						"left": 39,
+						"top": 49
 					},
 					"size": {
-						"width": 31,
-						"height": 25
+						"width": 21,
+						"height": 27
 					},
 					"zIndex": 0,
 					"display": true,
-					"title": "Untitled",
+					"title": "Edit svg modifier",
 					"bgColor": [
 						255,
 						255,
@@ -221,7 +139,7 @@
 					"name": "Default layer"
 				}
 			},
-			"id": 3,
+			"id": 2,
 			"vars_in": [
 				{}
 			],
@@ -234,7 +152,7 @@
 					"name": "svgmodifier"
 				}
 			],
-			"title": "Untitled",
+			"title": "Edit svg modifier",
 			"actions_out": {}
 		},
 		{
@@ -266,16 +184,75 @@
 			"layers": {
 				"Default layer": {
 					"position": {
-						"left": 96,
-						"top": 54
+						"left": 20,
+						"top": 49
 					},
 					"size": {
-						"width": 30,
-						"height": 19
+						"width": 18,
+						"height": 27
 					},
 					"zIndex": 0,
 					"display": true,
-					"title": "Untitled",
+					"title": "svg modifier",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "svgmodifier"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"title": "svg modifier",
+			"actions_out": {}
+		},
+		{
+			"url": "modules/types/edition/filter_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"script": [
+								"//When the result is ready, use resolve(result) to send it.\n//In case of an error, use reject(error)\nvar minWeight = 200;\nvar maxWeight = 300;\n\nvar t1 = 10, t2=20, t3=30;\n\nvar interval = 1;\n\nfunction getAgitation(t) {\n return t<t1;   \n}\n\nfunction getPumpIn(t) {\n    return t >=t2 && t< t3;\n}\n\nfunction getPumpOut(t) {\n    return t>=t1 && t<t2;\n}\n\nfunction getWeight(t) {\n    var w = maxWeight;\n    if(t<=t1) {\n        return maxWeight;\n    }\n    else if(t<=t2) {\n        return maxWeight + (maxWeight-minWeight)*(t1-t)/(t2-t1);\n    }\n    else if(t<=t3) {\n        return minWeight - (maxWeight-minWeight)*(t2-t)/(t3-t2);\n    }\n    else {\n        return maxWeight;\n    }\n}\n\nfunction getPlateTemperature(t) {\n    return 37 + 4 * Math.sin(t/t3*2*Math.PI) + Math.random()/4;\n}\n\nfunction getLiquidTemperature(t) {\n    return 37 + Math.random()/8;\n}\n\nfunction getLiquidPH(t) {\n    return 7 + Math.random()/8;\n}\nfunction send(t) {\n    setTimeout(function() {\n        var x = {\n            pumpIn: getPumpIn(t/1000),\n            pumpOut: getPumpOut(t/1000),\n            agitation: getAgitation(t/1000),\n            weight: getWeight(t/1000),\n            plateTemperature: getPlateTemperature(t/1000),\n            liquidTemperature: getLiquidTemperature(t/1000),\n            liquidPH: getLiquidPH(t/1000)\n        };\n       API.createData('filterObj', DataObject(x));\n    }, t);\n}\n\nfor(var i=0; i<=t3*1000; i+=interval*1000) {\n    send(i);\n}\n\n"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 105,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 76
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Data generation",
 					"bgColor": [
 						255,
 						255,
@@ -289,9 +266,72 @@
 			},
 			"id": 4,
 			"vars_in": [
+				{}
+			],
+			"actions_in": {},
+			"title": "Data generation",
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": {}
+		},
+		{
+			"url": "modules/types/edition/object_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"view"
+							],
+							"expanded": [
+								[]
+							],
+							"storeObject": [
+								[]
+							],
+							"output": [
+								"new"
+							],
+							"storedObject": [
+								"{}"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 49
+					},
+					"size": {
+						"width": 19,
+						"height": 27
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Data",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 5,
+			"vars_in": [
 				{
 					"rel": "value",
-					"name": "atimestamp"
+					"name": "filterObj"
 				}
 			],
 			"actions_in": {},
@@ -300,7 +340,66 @@
 					"jpath": []
 				}
 			],
-			"title": "Untitled",
+			"title": "Data",
+			"actions_out": {}
+		},
+		{
+			"url": "modules/types/edition/filter_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"script": [
+								"//When the result is ready, use resolve(result) to send it.\n//In case of an error, use reject(error)\n//resolve(value);\nvar minWeight = 200;\nvar maxWeight = 300;\nvar maxHeight = 176;\nvar liquidY = 216;\n\nvar plateColor1 = hexToRgb('#444444');\nvar plateColor2 = hexToRgb('#ff0000');\n\nfunction hexToRgb(hex) {\n  // Expand shorthand form (e.g. \"03F\") to full form (e.g. \"0033FF\")\n  var shorthandRegex = /^#?([a-f\\d])([a-f\\d])([a-f\\d])$/i;\n  hex = hex.replace(shorthandRegex, function(m, r, g, b) {\n      return r + r + g + g + b + b;\n  });\n\n  var result = /^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$/i.exec(hex);\n  return result ? {\n      r: parseInt(result[1], 16),\n      g: parseInt(result[2], 16),\n      b: parseInt(result[3], 16)\n  } : null;\n}\n\nfunction makeGradientColor(color1, color2, percent) {\n    var newColor = {};\n\n    function makeChannel(a, b) {\n        return(a + Math.round((b-a)*(percent/100)));\n    }\n\n    function makeColorPiece(num) {\n        num = Math.min(num, 255);   // not more than 255\n        num = Math.max(num, 0);     // not less than 0\n        var str = num.toString(16);\n        if (str.length < 2) {\n            str = \"0\" + str;\n        }\n        return(str);\n    }\n\n    newColor.r = makeChannel(color1.r, color2.r);\n    newColor.g = makeChannel(color1.g, color2.g);\n    newColor.b = makeChannel(color1.b, color2.b);\n    newColor.cssColor = \"#\" + \n                        makeColorPiece(newColor.r) + \n                        makeColorPiece(newColor.g) + \n                        makeColorPiece(newColor.b);\n    return(newColor);\n}\n\nif(!value) return;\n\nvar textOn = {\n    innerVal: 'ON',\n    attributes: {\n        fill: 'green'\n    }\n}\n\nvar textOff = {\n    innerVal: 'OFF',\n    attributes: {\n        fill: 'red'\n    }\n}\n\nvar hidden = {\n    attributes: {\n        style: 'display:none'\n    }\n};\n\nvar visible = {\n    attributes: {\n        style: 'display:inline'\n    }\n}\n\nfunction weightToHeight(weight) {\n    console.log('weight: ', weight);\n    return (weight-minWeight)/(maxWeight-minWeight)*maxHeight;\n}\n\nfunction weightToY(weight) {\n    var height = weightToHeight(weight);\n    return liquidY + maxHeight - height;\n}\n\nvar result = {};\nvalue.pumpIn ? result['pump-in-status'] = textOn : result['pump-in-status'] = textOff;\nvalue.pumpOut ? result['pump-out-status'] = textOn : result['pump-out-status'] = textOff;\n\n\nif(value.agitation){\n    result['stir-motor-status'] = textOn; \n    result['animated-spatula-right'] = visible;\n    result['animated-spatula-left'] = visible;\n    result['spatula-left'] = hidden;\n    result['spatula-right'] = hidden;\n}\nelse {\n    result['stir-motor-status'] = textOff;\n    result['animated-spatula-right'] = hidden;\n    result['animated-spatula-left'] = hidden;\n    result['spatula-left'] = visible;\n    result['spatula-right'] = visible;\n}\n\nif(value.weight) {\n    console.log('x: ', weightToY(value.weight));\n    var modif = {\n        attributes: {\n            height: weightToHeight(value.weight),\n            y: weightToY(value.weight)\n        }\n    }\n    console.log('height: ', modif.attributes.height)\n    result['liquid-rect'] = modif;\n    result['liquid-weight'] = {\n      innerVal: value.weight.toString() + ' g'  \n    };\n}\n\nif(value.plateTemperature) {\n    result['plate-temperature'] = {\n        innerVal: Math.round(value.plateTemperature*10)/10  + ' ºC'\n    };\n    result['heat-plate'] = {\n        attributes: {\n            fill: makeGradientColor(plateColor1, plateColor2, (value.plateTemperature-34)/8*100).cssColor\n        }\n    };\n}\n\nif(value.liquidTemperature) {\n    result['liquid-temperature'] = {\n        innerVal: Math.round(value.liquidTemperature*10)/10 + ' ºC'\n    };\n}\n\nif(value.liquidPH) {\n    result['liquid-ph'] = {\n        innerVal: 'pH: ' + Math.round(value.liquidPH*10)/10\n    };\n}\n\nAPI.createData('svgmodifier', result);"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 61,
+						"top": 0
+					},
+					"size": {
+						"width": 43,
+						"height": 76
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Translation of data to svg modification",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "dataobject",
+					"name": "filterObj"
+				}
+			],
+			"actions_in": {},
+			"title": "Translation of data to svg modification",
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
 			"actions_out": {}
 		}
 	],
