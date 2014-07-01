@@ -48,10 +48,8 @@ requirejs.config({
 		"ChemDoodle": ["lib/chemdoodle/ChemDoodleWeb-libs"],
 		"components/farbtastic/src/farbtastic": ["components/jquery/jquery-migrate.min"],
 		"lib/pixastic/pixastic": ["lib/pixastic/pixastic/pixastic.core"],
-		"lib/parallel-coordinates/d3.parcoords": ["d3"],
-    
-    'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js'],
-    'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer.js': ['lib/biojs-1.0/src/main/javascript/Biojs.js', 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js']
+		"lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js": ['lib/biojs-1.0/src/main/javascript/Biojs.js'],
+		"lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer.js": ['lib/biojs-1.0/src/main/javascript/Biojs.js', 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer.js']
 	}
 });
 

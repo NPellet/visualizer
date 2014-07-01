@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing", "src/util/context", "lib/parallel-coordinates/d3.parcoords"], function(Default, Util, Traversing, Context) {
+define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing", "src/util/context", "lib/parallel-coordinates/d3.parcoords"], function(Default, Util, Traversing, Context, d3) {
 
     function view() {
         this._id = Util.getNextUniqueId();
