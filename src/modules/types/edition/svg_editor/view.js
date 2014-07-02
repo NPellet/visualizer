@@ -1,6 +1,3 @@
-var endEventsCount = 0;
-var beginEventsCount = 0;
-var addAnimationCount = 0;
 define(['require',
 'underscore',
 'modules/default/defaultview',
@@ -15,7 +12,8 @@ define(['require',
   function(require, _, Default, Renderer, UTIL, EditSvg) {
 	  var animationTags = ['animate', 'set', 'animateMotion', 'animateColor', 'animateTransform'];
     var defaultAnimAttributes =  {
-      repeatCount: 1
+      begin: 'indefinite'
+      // repeatCount: 1
     };
     
     var animMemory = {};
@@ -125,7 +123,6 @@ define(['require',
       }
       
       function addAnimation(anim, $svgel) {
-        addAnimationCount++;
         if(!anim.attributes) return;
         var id = $svgel.attr('id');
         if(_.some(animationTags, function(val) {
@@ -145,7 +142,6 @@ define(['require',
               if(anim.persist) {
                 $svgel.attr(anim.attributes.attributeName, anim.attributes.to);
               }
-              endEventsCount+=$(animation).length;
               console.log('animation length', $(animation).length);
               $(animation).remove();
               console.log('endEvent');
@@ -155,7 +151,6 @@ define(['require',
             });
             animation.addEventListener('beginEvent', function() {
               console.log('beginEvent');
-              beginEventsCount++;
             });
             animation.beginElement();
           }, 0);
