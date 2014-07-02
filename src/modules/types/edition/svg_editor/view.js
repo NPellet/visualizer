@@ -1,3 +1,6 @@
+var endEventsCount = 0;
+var beginEventsCount = 0;
+var addAnimationCount = 0;
 define(['require',
 'underscore',
 'modules/default/defaultview',
@@ -10,7 +13,12 @@ define(['require',
 
 
   function(require, _, Default, Renderer, UTIL, EditSvg) {
-	
+	  var animationTags = ['animate', 'set', 'animateMotion', 'animateColor', 'animateTransform'];
+    var defaultAnimAttributes =  {
+      repeatCount: 1
+    };
+    
+    var animMemory = {};
     function view() {
       var self = this;
       this.svgCanvas = null;
@@ -103,6 +111,57 @@ define(['require',
     
     modifySvg: function(data) {
       var self = this;
+      function memorizeAnim(anim, id) {
+        if(!id || !anim.attributes || !anim.attributes.to || !anim.attributes.attributeName) return;
+        animMemory[id] = animMemory[id] || {};
+        animMemory[id][anim.attributes.attributeName] = animMemory[id][anim.attributes.attributeName] || {};
+        animMemory[id][anim.attributes.attributeName].to = anim.attributes.to
+      }
+      
+      function rememberAnim(anim, id) {
+        if(!anim.attributes || anim.attributes.from || !id) return;
+        if(!animMemory[id] || !animMemory[id][anim.attributes.attributeName] || !animMemory[id][anim.attributes.attributeName].to) return;
+        anim.attributes.from = animMemory[id][anim.attributes.attributeName].to;
+      }
+      
+      function addAnimation(anim, $svgel) {
+        addAnimationCount++;
+        if(!anim.attributes) return;
+        var id = $svgel.attr('id');
+        if(_.some(animationTags, function(val) {
+          return val === anim.tag;
+        })) {
+          var animation = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+          anim.attributes = _.defaults(anim.attributes, defaultAnimAttributes);
+          // rememberAnim(anim,id)
+          // memorizeAnim(anim, id);
+          for(var attribute in anim.attributes) {
+            animation.setAttributeNS(null, attribute, anim.attributes[attribute]);
+          }
+          
+          $svgEl[0].appendChild(animation);
+          setTimeout(function() {
+            animation.addEventListener('endEvent', function() {
+              if(anim.persist) {
+                $svgel.attr(anim.attributes.attributeName, anim.attributes.to);
+              }
+              endEventsCount+=$(animation).length;
+              console.log('animation length', $(animation).length);
+              $(animation).remove();
+              console.log('endEvent');
+            });
+            animation.addEventListener('repeatEvent', function() {
+              console.log('repeatEvent');
+            });
+            animation.addEventListener('beginEvent', function() {
+              console.log('beginEvent');
+              beginEventsCount++;
+            });
+            animation.beginElement();
+          }, 0);
+          
+        }
+      }
       console.log('modify svg', data);
       var svgcontent;
       if(this._configCheckBox('editable', 'isEditable')) {
@@ -117,14 +176,32 @@ define(['require',
         if(data[key].info) {
           self.module._data = data[key].info;
         }
-        var contentElement = svgcontent.find('#'+key);
+        var $svgEl = svgcontent.find('#'+key);
+        if($svgEl.length === 0) {
+          console.warn('The svg element to modify was not found');
+          continue;
+        }
         if(data[key].innerVal) {
-          contentElement.html(data[key].innerVal);
+          $svgEl.html(data[key].innerVal);
         }
         if(data[key].attributes) {
-          contentElement.attr(data[key].attributes);
+          $svgEl.attr(data[key].attributes);
         }
-        contentElement.off('mouseover').on('mouseover', function() {
+        
+        if(data[key].animation) {
+          // First, remove all animations
+          // $svgEl.find(animationTags.join(',')).remove();
+          if(data[key].animation instanceof Array) {
+            for(var i=0; i<data[key].animation.length; i++) {
+              addAnimation(data[key].animation[i], $svgEl);
+            }
+          }
+          else {
+            addAnimation(data[key].animation, $svgEl);
+          }
+        }
+        
+        $svgEl.off('mouseover').on('mouseover', function() {
           console.log('mouse over svg element', data[key].info  || {});
           self.module.controller.onHover(data[key].info || {});
         })
