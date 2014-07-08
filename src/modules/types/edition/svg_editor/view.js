@@ -128,7 +128,7 @@ define(['require',
         if(_.some(animationTags, function(val) {
           return val === anim.tag;
         })) {
-          var animation = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+          var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
           anim.attributes = _.defaults(anim.attributes, defaultAnimAttributes);
           // rememberAnim(anim,id)
           // memorizeAnim(anim, id);
@@ -139,18 +139,16 @@ define(['require',
           $svgEl[0].appendChild(animation);
           setTimeout(function() {
             animation.addEventListener('endEvent', function() {
+              $(animation).remove();
               if(anim.persist) {
                 $svgel.attr(anim.attributes.attributeName, anim.attributes.to);
               }
-              console.log('animation length', $(animation).length);
-              $(animation).remove();
-              console.log('endEvent');
             });
             animation.addEventListener('repeatEvent', function() {
-              console.log('repeatEvent');
+              // nothing to do...
             });
             animation.addEventListener('beginEvent', function() {
-              console.log('beginEvent');
+              // nothing to do...
             });
             animation.beginElement();
           }, 0);
@@ -261,7 +259,7 @@ define(['require',
       return this.module.getConfiguration(config) && _.find(this.module.getConfiguration(config), function(val){
         return val === option;
       });
-    },
+    }
   });
 
   return view;
