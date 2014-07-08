@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing', 'src/util/api', 'src/util/util'], function(Default, Graph, DataTraversing, API, Util) {
+define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'src/util/debug'], function(Default, Graph, DataTraversing, API, Util, Debug) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -565,12 +565,13 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			shape.setSelectable( true );
 			shape.setSerie( this.getFirstSerie() );
 
-			annotation.onChange( annotation, function( value ) {
+                        Debug.debug('annotation.onChange is disabled, need to be fixed');
+			/*annotation.onChange( annotation, function( value ) {
 
 				shape.draw();
 				shape.redraw();
 
-			}, self.module.getId() );
+			}, self.module.getId() );*/
 
 			shape.onMouseOver( function ( data ) {
 

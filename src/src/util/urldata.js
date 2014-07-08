@@ -33,7 +33,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 			}
 		}).then(function(data) {
 
-			def.resolve(data);
+			return data;
 			
 		}, function() {
 			Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
