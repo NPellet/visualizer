@@ -49,6 +49,11 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     onHover: {
       label: "An svg element is hovered",
       refVariable: ["info"]
+    },
+    
+    onClick: {
+      label: "An svg element is clicked",
+      refVariable: ["info"]
     }
   };
 	
@@ -58,6 +63,10 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 
   controller.prototype.onHover = function(val) {
     this.createDataFromEvent("onHover", "info", val);
+  }
+  
+  controller.prototype.onClick = function(val) {
+    this.createDataFromEvent("onClick", "info", val);
   }
 
 	/*

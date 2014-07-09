@@ -124,11 +124,7 @@ define(['require',
 
       svgModifier: function(data) {
         var self = this;
-        console.log('svg modifier update')
-        setTimeout(function() {
-          self.modifySvg(data);
-        }, 0);
-        
+        self.modifySvg(data); 
       }
     },
     
@@ -179,7 +175,7 @@ define(['require',
           
         }
       }
-      console.log('modify svg', data);
+      // console.log('modify svg', data);
       var svgcontent;
       if(this._configCheckBox('editable', 'isEditable')) {
         svgcontent= $(self.iframeDoc).find('#svgcontent');
@@ -238,14 +234,10 @@ define(['require',
         (function($svgEl, key){
           if(data[key].info) {
             $svgEl.off('mouseover').on('mouseover', function() {
-              console.log('mouse over svg element',key,  data[key].info  || {});
               self.module.controller.onHover(data[key].info || {});
             })
             .off('click').on('click', function() {
-              console.log('click over svg element');
-            })
-            .off('mousedown').on('mousedown', function() {
-              console.log('mousedown on svg element');
+              self.module.controller.onClick(data[key].info || {});
             });
           } 
         })($svgEl, key);
