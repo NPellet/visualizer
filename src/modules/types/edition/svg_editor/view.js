@@ -53,13 +53,14 @@ define(['require',
     view.prototype = $.extend(true, {}, Default, {
       
       init: function() {
-        console.log('init');
         var self = this;
         
 
         console.log('svg editor init')
           
         if(this._configCheckBox('editable', 'isEditable')) {
+          if(this.dom) this.dom.remove();
+          this.svgCanvas = null;
           this.dom = $('<iframe src="lib/svg-edit-2.7/svg-editor.html?extensions=ext-xdomain-messaging.js' +
           window.location.href.replace(/\?(.*)$/, '&$1') + // Append arguments to this file onto the iframe
           '"></iframe>');
@@ -74,7 +75,7 @@ define(['require',
             // Hide main button, as we will be controlling new, load, save, etc. from the host document
             self.iframeDoc = frame.contentDocument || frame.contentWindow.document;
             self.svgEditor = frame.contentWindow.svgEditor;
-            console.log(self.svgEditor);
+            //console.log(self.svgEditor);
  
             // What to do when the canvas changes
             self.svgCanvas.bind('changed', function() {
@@ -85,6 +86,7 @@ define(['require',
             self._loadSvg();
             self.iframeLoaded.resolve();
             self.resolveReady();
+            self.onResize();
             console.log('resolve ready');
           });
         }
@@ -95,7 +97,8 @@ define(['require',
             value: self.module.getConfiguration('svgcode')
           }, this.module );
           def.always( function( val ) {
-            self.dom = val;
+            self.dom = val || $('<svg></svg>');
+            console.log('rendered', self.dom);
             self.module.getDomContent().html(self.dom);
             self.resolveReady();
           });   
@@ -108,7 +111,8 @@ define(['require',
 
     onResize: function() {
       console.log('on resize');
-      if(this._configCheckBox('editable', 'isEditable')) {
+      if(this._configCheckBox('editable', 'isEditable') && this.dom) {
+        console.log('on resize apply');
         this.dom.height(this.height).width(this.width);
         if(this.svgCanvas) {
           this.svgCanvas.zoomChanged(window, 'canvas');
@@ -149,7 +153,6 @@ define(['require',
         if(_.some(animationTags, function(val) {
           return val === anim.tag;
         })) {
-          console.log('animation ', anim.tag);
           var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
           anim.attributes = _.defaults(anim.attributes, defaultAnimAttributes);
           // rememberAnim(anim,id)
@@ -194,9 +197,6 @@ define(['require',
         $svgEl = svgcontent.find(key);
         if($svgEl.length === 0) {
           $svgEl = svgcontent.find('#'+key);
-        }
-        else {
-          console.log('lo');
         }
         
         if($svgEl.length === 0) {
