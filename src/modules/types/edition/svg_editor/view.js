@@ -10,10 +10,35 @@ define(['require',
 
 
   function(require, _, Default, Renderer, UTIL, EditSvg) {
+    
+    // Utility function
+    var rulesForCssText = function (styleContent) {
+        styleContent = '#dummydummydummy { ' + styleContent + '}';
+        var doc = document.implementation.createHTMLDocument(""),
+            styleElement = document.createElement("style");
+    
+        styleElement.textContent = styleContent;
+        // the style will only be parsed once it is added to a document
+        doc.body.appendChild(styleElement);
+        var result = {};
+        var style = styleElement.sheet.cssRules[0].style;
+        for(var i=0; i<style.length; i++) {
+            result[style[i]] = style[style[i]];
+        }
+        return result;
+    };
+    
+    var rulesToCss = function(rules) {
+        var result = [];
+        for(var el in rules) {
+            result.push(el+':' + rules[el]);
+        }
+        return result.join(';') + ';';
+    }
+    
 	  var animationTags = ['animate', 'set', 'animateMotion', 'animateColor', 'animateTransform'];
     var defaultAnimAttributes =  {
       begin: 'indefinite'
-      // repeatCount: 1
     };
     
     var animMemory = {};
@@ -122,12 +147,13 @@ define(['require',
         anim.attributes.from = animMemory[id][anim.attributes.attributeName].to;
       }
       
-      function addAnimation(anim, $svgel) {
+      function addAnimation(anim, $svgEl) {
         if(!anim.attributes) return;
-        var id = $svgel.attr('id');
+        var id = $svgEl.attr('id');
         if(_.some(animationTags, function(val) {
           return val === anim.tag;
         })) {
+          console.log('animation ', anim.tag);
           var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
           anim.attributes = _.defaults(anim.attributes, defaultAnimAttributes);
           // rememberAnim(anim,id)
@@ -137,11 +163,10 @@ define(['require',
           }
           
           $svgEl[0].appendChild(animation);
-          setTimeout(function() {
             animation.addEventListener('endEvent', function() {
               $(animation).remove();
               if(anim.persist) {
-                $svgel.attr(anim.attributes.attributeName, anim.attributes.to);
+                $svgEl.attr(anim.attributes.attributeName, anim.attributes.to);
               }
             });
             animation.addEventListener('repeatEvent', function() {
@@ -151,7 +176,6 @@ define(['require',
               // nothing to do...
             });
             animation.beginElement();
-          }, 0);
           
         }
       }
@@ -169,16 +193,34 @@ define(['require',
         if(data[key].info) {
           self.module._data = data[key].info;
         }
-        var $svgEl = svgcontent.find('#'+key);
+        
+        var $svgEl;
+        $svgEl = svgcontent.find(key);
+        if($svgEl.length === 0) {
+          $svgEl = svgcontent.find('#'+key);
+        }
+        else {
+          console.log('lo');
+        }
+        
         if($svgEl.length === 0) {
           console.warn('The svg element to modify was not found');
           continue;
         }
         if(data[key].innerVal) {
           $svgEl.html(data[key].innerVal);
+          
         }
         if(data[key].attributes) {
           $svgEl.attr(data[key].attributes);
+          
+          // We don't use jquery .css() because we want
+          // to override style properties defined in stylesheet
+          $svgEl.each(function() {
+            for(var attribute in data[key].attributes) {
+             this.style.removeProperty(attribute); 
+            }
+          });
         }
         
         if(data[key].animation) {
@@ -193,17 +235,20 @@ define(['require',
             addAnimation(data[key].animation, $svgEl);
           }
         }
-        
-        $svgEl.off('mouseover').on('mouseover', function() {
-          console.log('mouse over svg element', data[key].info  || {});
-          self.module.controller.onHover(data[key].info || {});
-        })
-        .off('click').on('click', function() {
-          console.log('click over svg element')
-        })
-        .off('mousedown').on('mousedown', function() {
-          console.log('mousedown on svg element');
-        });
+        (function($svgEl, key){
+          if(data[key].info) {
+            $svgEl.off('mouseover').on('mouseover', function() {
+              console.log('mouse over svg element',key,  data[key].info  || {});
+              self.module.controller.onHover(data[key].info || {});
+            })
+            .off('click').on('click', function() {
+              console.log('click over svg element');
+            })
+            .off('mousedown').on('mousedown', function() {
+              console.log('mousedown on svg element');
+            });
+          } 
+        })($svgEl, key);
         
       }
       self._saveSvg();
