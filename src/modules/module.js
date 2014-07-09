@@ -1113,13 +1113,12 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 						module.view.unload();
 					}
 						
-					module.toggleLayer( module.getActiveLayerName() );
 
 					module.view.init();
 
 					module.view.inDom();
 
-					module.view.onResize( );
+					module.toggleLayer( module.getActiveLayerName() );
 
 					module.model.resetListeners( );
 
