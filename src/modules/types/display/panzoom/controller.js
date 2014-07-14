@@ -112,7 +112,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
             
             order: {
               type: 'text',
-              title: 'Order',
+              title: 'z-index',
               default: ''
             }
           }
