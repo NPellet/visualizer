@@ -896,7 +896,7 @@ var textActions, pathActions;
 // Parameters:
 // newDoc - The SVG DOM document
 this.prepareSvg = function(newDoc) {
-	this.sanitizeSvg(newDoc.documentElement);
+    if(svgedit.options.sanitize) this.sanitizeSvg(newDoc.documentElement);
 
 	// convert paths into absolute commands
 	var i, path, len,

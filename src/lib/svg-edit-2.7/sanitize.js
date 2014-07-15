@@ -114,7 +114,7 @@ $.each(svgWhiteList_, function(elt, atts){
 //
 // Parameters:
 // node - The DOM element to be checked (we'll also check its children)
-svgedit.sanitize.sanitizeSvg = function(node) {
+svgedit.sanitize.sanitizeSvg = function(node, skipChildren) {
   // Cleanup text nodes
   if (node.nodeType == 3) { // 3 == TEXT_NODE
     // Trim whitespace
@@ -235,7 +235,7 @@ svgedit.sanitize.sanitizeSvg = function(node) {
 
     // recurse to children
     i = node.childNodes.length;
-    while (i--) { svgedit.sanitize.sanitizeSvg(node.childNodes.item(i)); }
+    while (i-- && !skipChildren) { svgedit.sanitize.sanitizeSvg(node.childNodes.item(i)); }
   }
   // else (element not supported), remove it
   else {
@@ -251,7 +251,7 @@ svgedit.sanitize.sanitizeSvg = function(node) {
 
     // call sanitizeSvg on each of those children
     i = children.length;
-    while (i--) { svgedit.sanitize.sanitizeSvg(children[i]); }
+    while (i-- && !skipChildren) { svgedit.sanitize.sanitizeSvg(children[i]); }
   }
 };
 

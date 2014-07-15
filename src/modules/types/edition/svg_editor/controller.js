@@ -93,6 +93,13 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
               default: []
             },
             
+            sanitize: {
+                type: 'checkbox',
+                title: 'Sanitize',
+                options: {doSanitize: 'yes'},
+                default: ['doSanitize']
+            },
+            
             svgcode: {
               type: 'jscode',
               mode: 'svg',
@@ -106,7 +113,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 
 	controller.prototype.configAliases = {
 		'svgcode': [ 'groups', 'group', 0, 'svgcode', 0 ],
-    'editable': [ 'groups', 'group', 0, 'editable', 0 ]
+        'editable': [ 'groups', 'group', 0, 'editable', 0 ],
+        'sanitize': [ 'groups', 'group', 0, 'sanitize', 0 ]
 	}
 
 	

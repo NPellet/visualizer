@@ -15,7 +15,6 @@ requirejs.config({
 		pouchdb: "components/pouchdb/dist/pouchdb-nightly.min",
 		uri: "components/uri.js/src",
 		underscore: "components/underscore/underscore",
-		svgedit: "lib/svg-edit-2.7/embedapi",
 		leaflet: "components/leaflet/dist/leaflet"
 	},
 	shim: {
@@ -40,6 +39,7 @@ requirejs.config({
 		"ckeditor": {
 			exports: "CKEDITOR"
 		},
+        
 		"components/three.js/examples/js/controls/TrackballControls": ["threejs"],
 		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
