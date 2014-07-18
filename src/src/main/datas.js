@@ -616,39 +616,38 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	var fetch = {
 		value: function(forceJson) {
 
-			var self = this,
-					deferred = $.Deferred( );
-
-			if (!this.url) { // No need for fetching. Still returning a deferred, though.
-				return deferred.resolve(this);
+			if (!this.url) { // No need for fetching. Still returning a promise, though.
+				return Promise.resolve(this);
 			}
-			require(['src/util/urldata'], function(urlData) { // We don't know yet if URLData has been loaded
-				
-				var headers;
-				if(forceJson) {
-					headers = {
-						Accept: "application/json"
-					};
-				}
 
-				urlData.get(self.url, false, self.timeout, headers).then(function(data) {
+            var self = this;
+            var promise = new Promise(function (resolve, reject) {
+                require(['src/util/urldata'], function(urlData) { // We don't know yet if URLData has been loaded
 
-					data = DataObject.check(data, true);	// Transform the input into a DataObject
+                    var headers;
+                    if(forceJson) {
+                        headers = {
+                            Accept: "application/json"
+                        };
+                    }
 
-					Object.defineProperty(self, 'value', {// Sets the value to the object
-						enumerable: self._keep || false, // If this._keep is true, then we will save the fetched data
-						writable: true,
-						configurable: false,
-						value: data
-					});
+                    urlData.get(self.url, false, self.timeout, headers).then(function(data) {
 
-					deferred.resolve(self);
-				}, function(data) {
-					deferred.reject(self);
-				});
-			});
+                        data = DataObject.check(data, true);	// Transform the input into a DataObject
 
-			return deferred;
+                        Object.defineProperty(self, 'value', {// Sets the value to the object
+                            enumerable: self._keep || false, // If this._keep is true, then we will save the fetched data
+                            writable: true,
+                            configurable: false,
+                            value: data
+                        });
+
+                        resolve(self);
+                    }, reject);
+                });
+            });
+
+			return promise;
 		}
 	};
 	/*

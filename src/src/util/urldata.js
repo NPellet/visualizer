@@ -17,24 +17,18 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 			type: 'get',
 			dataType: dataType || '',
 			timeout: 120000, // 2 minutes timeout
-			headers: headers || {},
-			success: function(data) {
-
-				Debug.info('DataURL: Found ' + url + ' by AJAX');
-
-				// We set 20 data in memory, 500 in local database
-			/*	if(!LRU.exists('urlData')) {
-					LRU.create('urlData', 20, 500);
-				}
-				
-				LRU.store('urlData', url, data);*/
-
-				delete pendings[url];
-			}
+			headers: headers || {}
 		}).then(function(data) {
+            Debug.info('DataURL: Found ' + url + ' by AJAX');
+            // We set 20 data in memory, 500 in local database
+            /*	if(!LRU.exists('urlData')) {
+             LRU.create('urlData', 20, 500);
+             }
 
+             LRU.store('urlData', url, data);*/
+
+            delete pendings[url];
 			return data;
-			
 		}, function() {
 			Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
 			return;
@@ -53,7 +47,7 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 			// If timeouted. If no timeout is defined, then the link is assumed permanent
 			if(timeout !== undefined && (Date.now() - data.timeout > timeout * 1000)) {
 				Debug.debug('DataURL: URL is over timeout threshold. Looking by AJAX');
-				return doByUrl(def, url, headers ).pipe(function(data) { return data; }, function() {
+				return doByUrl(def, url, headers ).then(function(data) { return data; }, function() {
 					Debug.debug('DataURL: Failed in retrieving URL by AJAX. Fallback to cached version');
 					def.resolve(data.data);
 				});
@@ -101,11 +95,11 @@ define(['jquery', 'src/util/lru', 'src/util/debug'], function($, LRU, Debug) {
 			if( force || timeout<0 || typeof timeout==="undefined" ) {
 
 				doByUrl(def, url, headers)
-					.pipe(
-						function(data) { return data },
+					.then(
+						function(data) { def.resolve(data) },
 						function() {
 							// If ajax fails (no internet), go for LRU
-							return doLRU(def, url, false).pipe(function(data) {
+							return doLRU(def, url, false).then(function(data) {
 								def.resolve(data.data);
 							});
 					});
