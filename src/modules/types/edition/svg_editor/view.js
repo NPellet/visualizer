@@ -15,13 +15,42 @@ define(['require',
 'src/util/typerenderer',
 'src/util/util',
 'src/util/datatraversing',
-'lib/svg-edit-2.7/embedapi',
-'svgsanitize'
+'lib/svg-edit-2.7/embedapi'
+,'svgsanitize'
 ], 
 
 
 
 function(require, _, Default, Renderer, UTIL) {
+    var saveSvgThrottled = _.throttle(function() {
+        var args = arguments;
+        function saveAndTrigger(data) {
+            args[0].module.definition.configuration.groups.group[0].svgcode = [data];
+            args[0].module.controller.onChange(data);
+        }
+        function handleSvgData(data, error) {
+            if(error) {
+                console.error("Unable to get svg from iframe");
+                return;
+            }
+            saveAndTrigger(data);
+        }
+        
+        
+        if(args[0]._configCheckBox('editable', 'isEditable')) {
+            setTimeout(function() {
+                args[0].svgCanvas.getSvgString()(handleSvgData)
+            }, 0);
+        }
+        else {
+            var svgcode = args[0].dom.clone();
+            var viewbox = svgcode[0].getAttribute('viewBox').split(' ');
+            svgcode.attr('width', viewbox[2]).attr('height', viewbox[3]).removeAttr('viewBox');
+            svgcode = svgcode.wrap('<p/>').parent().html();
+            saveAndTrigger(svgcode);
+        }
+    }, 1000);
+    
     
     var animationTags = ['animate', 'set', 'animateMotion', 'animateColor', 'animateTransform'];
     var defaultAnimAttributes =  {
@@ -36,6 +65,8 @@ function(require, _, Default, Renderer, UTIL) {
     'calcMode', 'additive', 'accumulate'];
     
     var animationReserved = ['options', 'tag', 'attributes'];
+    
+    var animStyleAccepted = ['display'];
     
     var animMemory = {};
     function view() {
@@ -73,7 +104,7 @@ function(require, _, Default, Renderer, UTIL) {
                     self.svgEditor = frame.contentWindow.svgEditor;
                     frame.contentWindow.svgedit.options = {};
                     
-                    frame.contentWindow.svgedit.options.sanitize = self._configCheckBox('sanitize', 'doSanitize');
+                    // frame.contentWindow.svgedit.options.sanitize = self._configCheckBox('sanitize', 'doSanitize');
                     //console.log(self.svgEditor);
  
                     // What to do when the canvas changes
@@ -100,9 +131,9 @@ function(require, _, Default, Renderer, UTIL) {
                     self.dom = val || $('<svg></svg>');
                     console.log('rendered', self.dom);
                     self.module.getDomContent().html(self.dom);
-                    if(self._configCheckBox('sanitize', 'doSanitize')) {
-                        svgedit.sanitize.sanitizeSvg(self.dom[0]);   
-                    }
+                    // if(self._configCheckBox('sanitize', 'doSanitize')) {
+                    //     svgedit.sanitize.sanitizeSvg(self.dom[0]);
+                    // }
                     self.resolveReady();
                 });   
             } 
@@ -156,7 +187,6 @@ function(require, _, Default, Renderer, UTIL) {
                 var id = $svgEl.attr('id');
                 anim.tag = anim.tag || 'animate';
                 if(animationTags.indexOf(anim.tag) === -1) return;
-                console.log('add animation');
                 if(! anim.attributes instanceof Array) {
                     anim.attributes = [anim.attributes];
                 }
@@ -169,7 +199,6 @@ function(require, _, Default, Renderer, UTIL) {
                 for(var i=0; i<anim.attributes.length; i++) {
                     var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
                     anim.attributes[i] = _.defaults(anim.attributes[i], thisDefault);
-                    console.log(anim.attributes[i])
                     // rememberAnim(anim,id)
                     // memorizeAnim(anim, id);
                     
@@ -177,29 +206,32 @@ function(require, _, Default, Renderer, UTIL) {
                         animation.setAttributeNS(null, attribute, anim.attributes[i][attribute]);
                     }
                     $svgEl.append(animation);
+                    
+                    (function(){
+                        var ii = i;
+                        var aanim = animation;
+                        aanim.addEventListener('endEvent', function() {
+                            if(anim.options.clearOnEnd) {
+                                $(aanim).remove();
+                                self._saveSvg();
+                            }
+                            else {
+                                console.log('not clear on end')
+                            }
+                            if(anim.options.persistOnEnd) {
+                                $svgEl.attr(this.getAttribute('attributeName'), this.getAttribute('to'));
+                            }
+                        });
+                        aanim.addEventListener('repeatEvent', function() {
+                            // nothing to do...
+                        });
+                        aanim.addEventListener('beginEvent', function() {
+                            // nothing to do...
+                        });
+                        aanim.beginElement();
+                    })();
                         
                 }
-                    
-                $svgEl.find(animationTags.join(',')).each(function() {
-                    console.log(this);
-                    var ii=i;
-                    var that = this;
-                    this.addEventListener('endEvent', function() {
-                        console.log('end event');
-                        console.log('clear on end', anim.options.clearOnEnd);
-                        if(anim.options.clearOnEnd) $(that).remove();
-                        if(anim.options.persistOnEnd) {
-                            $svgEl.attr(this.getAttribute('attributeName'), this.getAttribute('to'));
-                        }
-                    });
-                    this.addEventListener('repeatEvent', function() {
-                        // nothing to do...
-                    });
-                    this.addEventListener('beginEvent', function() {
-                        // nothing to do...
-                    });
-                    this.beginElement();
-                });
             }
             // console.log('modify svg', data);
             var svgcontent;
@@ -223,7 +255,7 @@ function(require, _, Default, Renderer, UTIL) {
                 }
         
                 if($svgEl.length === 0) {
-                    console.warn('The svg element to modify was not found');
+                    console.warn('The svg element to modify was not found', key);
                     continue;
                 }
                 if(data[key].innerVal) {
@@ -253,7 +285,6 @@ function(require, _, Default, Renderer, UTIL) {
                 }
         
                 function addAnimations($svgEl, animation) {
-                    console.log('add animations');
                     // First, remove all animations
                     // $svgEl.find(animationTags.join(',')).remove();
                     if(animation instanceof Array) {
@@ -265,12 +296,11 @@ function(require, _, Default, Renderer, UTIL) {
                         addAnimation($svgEl, animation);
                     }
                 }
-        
                 // Case 1)
                 if(data[key].attributes && !data[key].animation) {
                     $svgEl.attr(data[key].attributes);
                     $svgEl.each(function() {
-                       svgedit.sanitize.sanitizeSvg(this, true);
+                       // svgedit.sanitize.sanitizeSvg(this, true);
                     });
                     removeStyleProperties($svgEl, data[key].attributes);
                 }
@@ -327,37 +357,13 @@ function(require, _, Default, Renderer, UTIL) {
         _loadSvg: function() {
             var svgcode = this.module.getConfiguration('svgcode');
             // console.log('load svg code: ', svgcode);
-            this.svgCanvas.setSvgString(svgcode, { sanitize: true});
+            this.svgCanvas.setSvgString(svgcode);
             this.module.controller.onChange(svgcode);
         },
 
         _saveSvg: function() {
-            var self = this;
-      
-            function saveAndTrigger(data) {
-                self.module.definition.configuration.groups.group[0].svgcode = [data];
-                self.module.controller.onChange(data);
-            }
-            function handleSvgData(data, error) {
-                if(error) {
-                    console.error("Unable to get svg from iframe");
-                    return;
-                }
-                saveAndTrigger(data);
-            }
-            if(this._configCheckBox('editable', 'isEditable')) {
-                setTimeout(function() {
-                    self.svgCanvas.getSvgString()(handleSvgData)
-                }, 0);
-            }
-            else {
-                var svgcode = self.dom.clone();
-                var viewbox = svgcode[0].getAttribute('viewBox').split(' ');
-                svgcode.attr('width', viewbox[2]).attr('height', viewbox[3]).removeAttr('viewBox');
-                svgcode = svgcode.wrap('<p/>').parent().html();
-                saveAndTrigger(svgcode);
-            }
-        },
+            saveSvgThrottled(this);
+              },
     
         _configCheckBox: function(config, option) {
             return this.module.getConfiguration(config) && _.find(this.module.getConfiguration(config), function(val){

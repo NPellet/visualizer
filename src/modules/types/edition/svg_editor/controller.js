@@ -97,7 +97,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                 type: 'checkbox',
                 title: 'Sanitize',
                 options: {doSanitize: 'yes'},
-                default: ['doSanitize']
+                default: []
             },
             
             svgcode: {
