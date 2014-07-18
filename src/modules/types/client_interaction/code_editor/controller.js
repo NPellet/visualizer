@@ -31,8 +31,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
      */
     controller.prototype.references = {
         "value": {
-            label: 'String containing the code',
-            type: 'string'
+            label: 'String containing the code'
         }
     };
 
@@ -79,7 +78,8 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             options: [
                                 {title: 'Text', key: 'text'},
                                 {title: 'Javascript', key: 'javascript'},
-                                {title: 'HTML', key: 'html'}
+                                {title: 'HTML', key: 'html'},
+                                {title: 'XML', key: 'xml'}
                             ],
                             default: 'text'
                         },
