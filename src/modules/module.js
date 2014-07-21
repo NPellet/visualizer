@@ -407,10 +407,10 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 				this.definition.layers[ i ] = new DataObject({});
 
 				if( blankLayer ) {
-					$.extend( true, this.definition.layers[ i ], Module.prototype.emptyConfig );	
+					$.extend( true, this.definition.layers[ i ], Module.prototype.emptyConfig );
 					this.definition.layers[ i ].name = i;
 				} else {
-					$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );	
+					$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );
 				}
 
 				this.definition.layers[ i ] = new DataObject( this.definition.layers[ i ], true );
@@ -899,7 +899,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 
 									rel: {
 										type: 'combo',
-										title: 'Reference',
+										title: 'Reference'
 									},
 
 									jpath: {
@@ -1408,16 +1408,18 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 			}
 		},
 
-		emptyConfig: new DataObject({
-			position: { left: 0, top: 0 },
-			size: { width: 20, height: 20},
-			zIndex: 0,
-			display: true, 
-			title: "",
-			bgColor: [ 255, 255, 255, 0 ],
-			wrapper: true,
-			created: true
-		})
+        get emptyConfig() {
+            return new DataObject({
+                position: { left: 0, top: 0 },
+                size: { width: 20, height: 20},
+                zIndex: 0,
+                display: true,
+                title: "",
+                bgColor: [ 255, 255, 255, 0 ],
+                wrapper: true,
+                created: true
+            })
+        }
 	};
 
 	return Module;

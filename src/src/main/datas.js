@@ -55,16 +55,17 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	DataObject.recursiveTransform = function( object, transformNatives ) {
 		
 		object = DataObject.check(object, transformNatives);
+        var i;
 
 		if( object instanceof Array ) {
 
-			for( var i = 0, l = object.length ; i < l ; i ++ ) {
+			for( i = 0, l = object.length ; i < l ; i ++ ) {
 				object[ i ] = DataObject.check( object[ i ], transformNatives );
 				DataObject.recursiveTransform( object[ i ], transformNatives );
 			}
 		} else if( object instanceof Object ) {
 
-			for( var i in object ) {
+			for( i in object ) {
 
 				object[ i ] = DataObject.check( object[ i ], transformNatives );
 				DataObject.recursiveTransform( object[ i ], transformNatives );
@@ -80,32 +81,34 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 
 	function duplicate( object ) {
 
-		var target;
-	
-		if( isSpecialNativeObject( object ) ) {
+        var type = typeof object;
+        if(type === 'number' || type === 'string' || type === 'boolean') {
+            return object;
+        } else if(type === 'undefined' || type === 'function') {
+            return;
+        }
 
-			return transformNative( object );
+		var target, i, l;
 
-		} else if( object instanceof Array ) {
+        if( isSpecialNativeObject(object)) {
+            return transformNative(object);
+        } else if(object instanceof Array) {
+            l = object.length;
+            target = new Array(l);
+            for(i = 0; i<l; i++) {
+                target[i] = duplicate(object[i]);
+            }
+        } else {
+            var keys = Object.keys(object);
+            l = keys.length;
+            target = {};
+            for(i = 0; i < l; i++) {
+                target[keys[i]] = duplicate(object[keys[i]]);
+            }
+        }
 
-			target = [];
+        return target;
 
-			for( var i = 0, l = this.length ; i < l ; i ++ ) {
-				target[ i ] = duplicate( object[ i ] );
-			}
-		} else if( typeof object == "object" ) {
-
-			target = {};
-
-			for( var i in object ) {
-
-				target[ i ] = duplicate( object[ i ] );
-			}
-		} else {
-			target = object;
-		}
-		
-		return target;
 	}
 
 
@@ -511,7 +514,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 						self.set( name, val );
 						val.linkToParent( self, name );
 						val.setChild.apply( val, args );
-					})
+					});
 					// 2 June 2014. This code has been removed.
 					// Bubbling should be done within the triggerElement with parenting.
 					//.done(function() {
@@ -621,17 +624,17 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			}
 
             var self = this;
-            var promise = new Promise(function (resolve, reject) {
-                require(['src/util/urldata'], function(urlData) { // We don't know yet if URLData has been loaded
+            return new Promise(function (resolve, reject) {
+                require(['src/util/urldata'], function (urlData) { // We don't know yet if URLData has been loaded
 
                     var headers;
-                    if(forceJson) {
+                    if (forceJson) {
                         headers = {
                             Accept: "application/json"
                         };
                     }
 
-                    urlData.get(self.url, false, self.timeout, headers).then(function(data) {
+                    urlData.get(self.url, false, self.timeout, headers).then(function (data) {
 
                         data = DataObject.check(data, true);	// Transform the input into a DataObject
 
@@ -646,8 +649,6 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
                     }, reject);
                 });
             });
-
-			return promise;
 		}
 	};
 	/*
@@ -753,7 +754,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		}
 	};
 
-	var commonProperties = {
+	var commonNativeProperties = {
 		trace: trace,
 		onChange: bindChange,
 		unbindChange: unbindChange,
@@ -768,9 +769,9 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		toString: nativeToString
 	};
 
-	Object.defineProperties(DataString.prototype, commonProperties);
-	Object.defineProperties(DataNumber.prototype, commonProperties);
-	Object.defineProperties(DataBoolean.prototype, commonProperties);
+	Object.defineProperties(DataString.prototype, commonNativeProperties);
+	Object.defineProperties(DataNumber.prototype, commonNativeProperties);
+	Object.defineProperties(DataBoolean.prototype, commonNativeProperties);
 	
 	function isSpecialObject(object) {
 		return( object instanceof DataObject || object instanceof DataArray || isSpecialNativeObject( object ) );
