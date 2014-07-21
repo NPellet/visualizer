@@ -1,5 +1,5 @@
 /**
- * bluebird build version 2.1.2
+ * bluebird build version 2.2.2
  * Features enabled: core, race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, progress, cancel, using, filter, any, each, timers
 */
 /**
@@ -236,9 +236,12 @@ module.exports = Promise;
  */
 "use strict";
 var cr = Object.create;
-var callerCache = cr && cr(null);
-var getterCache = cr && cr(null);
-callerCache[" size"] = getterCache[" size"] = 0;
+if (cr) {
+    var callerCache = cr(null);
+    var getterCache = cr(null);
+    callerCache[" size"] = getterCache[" size"] = 0;
+}
+
 module.exports = function(Promise) {
 var util = require("./util.js");
 var canEvaluate = util.canEvaluate;
@@ -537,6 +540,22 @@ CapturedTrace.combine = function CapturedTrace$Combine(current, prev) {
         ret.push(lines[i]);
     }
     return ret;
+};
+
+CapturedTrace.protectErrorMessageNewlines = function(stack) {
+    for (var i = 0; i < stack.length; ++i) {
+        if (rtraceline.test(stack[i])) {
+            break;
+        }
+    }
+
+    if (i <= 1) return;
+
+    var errorMessageLines = [];
+    for (var j = 0; j < i; ++j) {
+        errorMessageLines.push(stack.shift());
+    }
+    stack.unshift(errorMessageLines.join("\u0002\u0000\u0001"));
 };
 
 CapturedTrace.isSupported = function CapturedTrace$IsSupported() {
@@ -2481,10 +2500,10 @@ function Promise$_resolveFromResolver(resolver) {
 Promise.prototype._spreadSlowCase =
 function Promise$_spreadSlowCase(targetFn, promise, values, boundTo) {
     var promiseForAll = new PromiseArray(values).promise();
-    promiseForAll._then(function() {
+    var promise2 = promiseForAll._then(function() {
         return targetFn.apply(boundTo, arguments);
-    }, INTERNAL, void 0, APPLY, void 0);
-    promise._follow(promiseForAll);
+    }, void 0, void 0, APPLY, void 0);
+    promise._follow(promise2);
 };
 
 Promise.prototype._callSpread =
@@ -2614,8 +2633,8 @@ function Promise$_attachExtraTrace(error) {
     if (debugging) {
         var promise = this;
         var stack = error.stack;
-        stack = typeof stack === "string"
-            ? stack.split("\n") : [];
+        stack = typeof stack === "string" ? stack.split("\n") : [];
+        CapturedTrace.protectErrorMessageNewlines(stack);
         var headerLineCount = 1;
         var combinedTraces = 1;
         while(promise != null &&
@@ -2631,9 +2650,13 @@ function Promise$_attachExtraTrace(error) {
         var stackTraceLimit = Error.stackTraceLimit || 10;
         var max = (stackTraceLimit + headerLineCount) * combinedTraces;
         var len = stack.length;
-        if (len  > max) {
+        if (len > max) {
             stack.length = max;
         }
+
+        if (len > 0)
+            stack[0] = stack[0].split("\u0002\u0000\u0001").join("\n");
+
         if (stack.length <= headerLineCount) {
             error.stack = "(No stack trace)";
         } else {
@@ -3949,30 +3972,31 @@ var util = require("./util.js");
 var tryCatch4 = util.tryCatch4;
 var tryCatch3 = util.tryCatch3;
 var errorObj = util.errorObj;
-var PENDING = {};
 function ReductionPromiseArray(promises, fn, accum, _each) {
     this.constructor$(promises);
-    var currentIndex = -2;
     this._preservedValues = _each === INTERNAL ? [] : null;
+    this._zerothIsAccum = (accum === void 0);
+    this._gotAccum = false;
+    this._reducingIndex = (this._zerothIsAccum ? 1 : 0);
+    this._valuesPhase = undefined;
+
     var maybePromise = cast(accum, void 0);
     var rejected = false;
     var isPromise = maybePromise instanceof Promise;
     if (isPromise) {
         if (maybePromise.isPending()) {
-            currentIndex = -1;
             maybePromise._proxyPromiseArray(this, -1);
         } else if (maybePromise.isFulfilled()) {
             accum = maybePromise.value();
-            currentIndex = 0;
+            this._gotAccum = true;
         } else {
             maybePromise._unsetRejectionIsUnhandled();
             this._reject(maybePromise.reason());
             rejected = true;
         }
     }
-    if (!isPromise && accum !== void 0) currentIndex = 0;
+    if (!(isPromise || this._zerothIsAccum)) this._gotAccum = true;
     this._callback = fn;
-    this._currentIndex = currentIndex;
     this._accum = accum;
     if (!rejected) this._init$(void 0, -5);
 }
@@ -3983,7 +4007,7 @@ function ReductionPromiseArray$_init() {};
 
 ReductionPromiseArray.prototype._resolveEmptyArray =
 function ReductionPromiseArray$_resolveEmptyArray() {
-    if (this._currentIndex !== -1) {
+    if (this._gotAccum || this._zerothIsAccum) {
         this._resolve(this._preservedValues !== null
                         ? [] : this._accum);
     }
@@ -3991,44 +4015,64 @@ function ReductionPromiseArray$_resolveEmptyArray() {
 
 ReductionPromiseArray.prototype._promiseFulfilled =
 function ReductionPromiseArray$_promiseFulfilled(value, index) {
-    var accum;
     var values = this._values;
     if (values === null) return;
     var length = this.length();
-    var currentIndex = this._currentIndex;
-    if (currentIndex > index) return;
     var preservedValues = this._preservedValues;
     var isEach = preservedValues !== null;
-    if (index === 0 && currentIndex === -2) {
-        accum = value;
-        currentIndex = 1;
-        if (length < 2) return this._resolve(void 0);
-        value = values[1];
-    } else if (index > currentIndex) {
-        return;
-    } else if (index === -1 || values[index] === PENDING) {
-        accum = value;
-        currentIndex++;
-        if (currentIndex >= length)
-            return this._resolve(isEach ? preservedValues : accum);
-        value = values[currentIndex];
-    } else {
-        accum = this._accum;
+    var gotAccum = this._gotAccum;
+    var valuesPhase = this._valuesPhase;
+    var valuesPhaseIndex;
+    if (!valuesPhase) {
+        valuesPhase = this._valuesPhase = Array(length);
+        for (valuesPhaseIndex=0; valuesPhaseIndex<length; ++valuesPhaseIndex) {
+            valuesPhase[valuesPhaseIndex] = 0;
+        }
     }
+    valuesPhaseIndex = valuesPhase[index];
+
+    if (index === 0 && this._zerothIsAccum) {
+        if (!gotAccum) {
+            this._accum = value;
+            this._gotAccum = gotAccum = true;
+        }
+        valuesPhase[index] = ((valuesPhaseIndex === 0)
+            ? 1 : 2);
+    } else if (index === -1) {
+        if (!gotAccum) {
+            this._accum = value;
+            this._gotAccum = gotAccum = true;
+        }
+    } else {
+        if (valuesPhaseIndex === 0) {
+            valuesPhase[index] = 1;
+        }
+        else {
+            valuesPhase[index] = 2;
+            if (gotAccum) {
+                this._accum = value;
+            }
+        }
+    }
+    if (!gotAccum) return;
 
     var callback = this._callback;
     var receiver = this._promise._boundTo;
     var ret;
 
-    for (var i = currentIndex; i < length; ++i) {
-        if (i > currentIndex) value = values[i];
+    for (var i = this._reducingIndex; i < length; ++i) {
+        valuesPhaseIndex = valuesPhase[i];
+        if (valuesPhaseIndex === 2) {
+            this._reducingIndex = i + 1;
+            continue;
+        }
+        if (valuesPhaseIndex !== 1) return;
 
+        value = values[i];
         if (value instanceof Promise) {
             if (value.isFulfilled()) {
                 value = value._settledValue;
             } else if (value.isPending()) {
-                this._accum = accum;
-                this._currentIndex = i;
                 return;
             } else {
                 value._unsetRejectionIsUnhandled();
@@ -4041,7 +4085,7 @@ function ReductionPromiseArray$_promiseFulfilled(value, index) {
             ret = tryCatch3(callback, receiver, value, i, length);
         }
         else {
-            ret = tryCatch4(callback, receiver, accum, value, i, length);
+            ret = tryCatch4(callback, receiver, this._accum, value, i, length);
         }
 
         if (ret === errorObj) return this._reject(ret.e);
@@ -4049,9 +4093,7 @@ function ReductionPromiseArray$_promiseFulfilled(value, index) {
         var maybePromise = cast(ret, void 0);
         if (maybePromise instanceof Promise) {
             if (maybePromise.isPending()) {
-                values[i] = PENDING;
-                this._accum = accum;
-                this._currentIndex = i;
+                valuesPhase[i] = 4;
                 return maybePromise._proxyPromiseArray(this, i);
             } else if (maybePromise.isFulfilled()) {
                 ret = maybePromise.value();
@@ -4060,9 +4102,13 @@ function ReductionPromiseArray$_promiseFulfilled(value, index) {
                 return this._reject(maybePromise.reason());
             }
         }
-        accum = ret;
+
+        this._reducingIndex = i + 1;
+        this._accum = ret;
     }
-    this._resolve(isEach ? preservedValues : accum);
+
+    if (this._reducingIndex < length) return;
+    this._resolve(isEach ? preservedValues : this._accum);
 };
 
 function reduce(promises, fn, initialValue, _each) {
@@ -4260,14 +4306,12 @@ SomePromiseArray.prototype._init = function SomePromiseArray$_init() {
         this._resolve([]);
         return;
     }
-    this._init$(void 0, -2);
+    this._init$(void 0, -5);
     var isArrayResolved = isArray(this._values);
     if (!this._isResolved() &&
         isArrayResolved &&
         this._howMany > this._canPossiblyFulfill()) {
-        var message = "(Promise.some) input array contains less than " +
-                        this._howMany  + " promises";
-        this._reject(new RangeError(message));
+        this._reject(this._getRangeError(this.length()));
     }
 };
 
@@ -4338,6 +4382,18 @@ function SomePromiseArray$_addFulfilled(value) {
 SomePromiseArray.prototype._canPossiblyFulfill =
 function SomePromiseArray$_canPossiblyFulfill() {
     return this.length() - this._rejected();
+};
+
+SomePromiseArray.prototype._getRangeError =
+function SomePromiseArray$_getRangeError(count) {
+    var message = "Input array must contain at least " +
+            this._howMany + " items but contains only " + count + " items";
+    return new RangeError(message);
+};
+
+SomePromiseArray.prototype._resolveEmptyArray =
+function SomePromiseArray$_resolveEmptyArray() {
+    this._reject(this._getRangeError(0));
 };
 
 function Promise$_Some(promises, howMany) {
