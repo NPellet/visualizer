@@ -37,21 +37,19 @@ define(function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var DHighlightRules = require("./d_highlight_rules").DHighlightRules;
 var FoldMode = require("./folding/cstyle").FoldMode;
 
 var Mode = function() {
-    var highlighter = new DHighlightRules();
+    this.HighlightRules = DHighlightRules;
     this.foldingRules = new FoldMode();
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
     this.lineCommentStart = "/\\+";
     this.blockComment = {start: "/*", end: "*/"};
-    // Extra logic goes here.
+    this.$id = "ace/mode/d";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

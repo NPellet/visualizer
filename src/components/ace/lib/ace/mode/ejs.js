@@ -84,7 +84,6 @@ exports.EjsHighlightRules = EjsHighlightRules;
 
 
 var oop = require("../lib/oop");
-var Tokenizer = require("../tokenizer").Tokenizer;
 var HtmlMode = require("./html").Mode;
 var JavaScriptMode = require("./javascript").Mode;
 var CssMode = require("./css").Mode;
@@ -92,9 +91,7 @@ var RubyMode = require("./ruby").Mode;
 
 var Mode = function() {
     HtmlMode.call(this);
-    var highlighter = new EjsHighlightRules();
-    this.$tokenizer = new Tokenizer(highlighter.getRules());    
-    this.$embeds = highlighter.getEmbeds();
+    this.HighlightRules = EjsHighlightRules;    
     this.createModeDelegates({
         "js-": JavaScriptMode,
         "css-": CssMode,
@@ -105,6 +102,7 @@ oop.inherits(Mode, HtmlMode);
 
 (function() {
 
+    this.$id = "ace/mode/ejs";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

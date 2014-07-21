@@ -386,11 +386,12 @@ module.exports = {
                 assert.ok(splits[i] == assertEqual[i]);
             }
         }
-
+        
+        EditSession.prototype.$wrapAsCode = true;
         // Basic splitting.
         computeAndAssert("foo bar foo bar", [ 12 ]);
         computeAndAssert("foo bar f   bar", [ 12 ]);
-        computeAndAssert("foo bar f     r", [ 14 ]);
+        computeAndAssert("foo bar f     r", [ 12 ]); // 14 if we enable 
         computeAndAssert("foo bar foo bar foo bara foo", [12, 25]);
 
         // Don't split if there is only whitespaces/tabs at the end of the line.
@@ -406,7 +407,7 @@ module.exports = {
         computeAndAssert("foo \t \tbar", [ 7 ]);
 
         // Ignore spaces/tabs at beginning of split.
-        computeAndAssert("foo \t \t   \t \t bar", [ 14 ]);
+        computeAndAssert("foo \t \t   \t \t bar", [ 7 ]); // 14
 
         // Test wrapping for asian characters.
         computeAndAssert("ぁぁ", [1], 2);
@@ -418,6 +419,10 @@ module.exports = {
         computeAndAssert(" ab.c;ef++", [1, 3, 5, 7, 8], 2);
         computeAndAssert(" a.b", [1, 2, 3], 1);
         computeAndAssert("#>>", [1, 2], 1);
+        
+        // Test wrapping for punctuation in
+        EditSession.prototype.$wrapAsCode = false;
+        computeAndAssert("ab cde, Juhu kinners", [3, 8, 13, 19], 6);
     },
 
     "test get longest line" : function() {
@@ -932,7 +937,7 @@ module.exports = {
                 fail = true;
             }
             if (fail != shouldFail) {
-                throw "Expected to get an exception";
+                throw new Error("Expected to get an exception");
             }
         }
 
@@ -1037,11 +1042,34 @@ module.exports = {
         assertArray(session.getAnnotations(), []);
         session.setAnnotations([annotation]);
         assertArray(session.getAnnotations(), [annotation]);
+    },
+    
+    "test: mode loading" : function(next) {
+        if (!require.undef) {
+            console.log("Skipping test: This test only runs in the browser");
+            next();
+            return;
+        }
+        var session = new EditSession([]);
+        session.setMode("ace/mode/javascript");
+        assert.equal(session.$modeid, "ace/mode/javascript");
+        session.on("changeMode", function() {
+            assert.equal(session.$modeid, "ace/mode/javascript");
+        });
+        session.setMode("ace/mode/sh", function(mode) {
+            assert.ok(!mode);
+        });
+        setTimeout(function() {
+            session.setMode("ace/mode/javascript", function(mode) {
+                session.setMode("ace/mode/javascript");
+                assert.equal(session.$modeid, "ace/mode/javascript");
+                next();
+            });
+        }, 0);
     }
 };
-
 });
 
 if (typeof module !== "undefined" && module === require.main) {
-    require("asyncjs").test.testcase(module.exports).exec()
+    require("asyncjs").test.testcase(module.exports).exec();
 }

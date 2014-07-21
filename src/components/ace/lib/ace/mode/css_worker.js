@@ -76,6 +76,8 @@ oop.inherits(Worker, Mirror);
 
     this.onUpdate = function() {
         var value = this.doc.getValue();
+        if (!value)
+            return this.sender.emit("csslint", []);
         var infoRules = this.infoRules;
 
         var result = CSSLint.verify(value, this.ruleset);
@@ -84,7 +86,8 @@ oop.inherits(Worker, Mirror);
                 row: msg.line - 1,
                 column: msg.col - 1,
                 text: msg.message,
-                type: infoRules[msg.rule.id] ? "info" : msg.type
+                type: infoRules[msg.rule.id] ? "info" : msg.type,
+                rule: msg.rule.name
             }
         }));
     };

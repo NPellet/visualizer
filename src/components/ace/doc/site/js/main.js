@@ -1,27 +1,52 @@
 var editor;
 var embedded_editor;
 $(function() {
-    hljs.initHighlighting();
     ace.config.set("workerPath", "build/src-min");
     editor = ace.edit("ace_editor_demo");
     editor.container.style.opacity = "";
     embedded_editor = ace.edit("embedded_ace_code");
     embedded_editor.container.style.opacity = "";
-    editor.session.setMode("ace/mode/javascript");
-    editor.session.setMode("ace/mode/javascript");
     embedded_editor.session.setMode("ace/mode/html");
-
     embedded_editor.setAutoScrollEditorIntoView(true);
-    editor.setAutoScrollEditorIntoView(true);
+    embedded_editor.setOption("maxLines", 40);
+    
+    editor.setOptions({
+        maxLines: 30,
+        mode: "ace/mode/javascript",
+        autoScrollEditorIntoView: true
+    });
+    
+    ace.config.loadModule("ace/ext/emmet", function() {
+        ace.require("ace/lib/net").loadScript("http://nightwing.github.io/emmet-core/emmet.js", function() {
+            embedded_editor.setOption("enableEmmet", true);
+            editor.setOption("enableEmmet", true);
+        });
+    });
+    
+    ace.config.loadModule("ace/ext/language_tools", function() {
+        embedded_editor.setOptions({
+            enableSnippets: true,
+            enableBasicAutocompletion: true
+        });
+        editor.setOptions({
+            enableSnippets: true,
+            enableBasicAutocompletion: true
+        });
+    });    
+    
+    $("ul.menu-list").mousedown(function(e) {
+        if (e.button === 1) {
+            e.preventDefault();
+        }
+    });
     
     $("ul.menu-list li").click(function(e) {
-        if (e.target.tagName === "LI") {
-            console.log($(this).find("a"));
-            window.location = $(this).find("a").attr("href");
-        }
-        else if (e.target.tagName === "P" || e.target.tagName === "IMG") {
-            var anchor = $(e.target).siblings();
-            window.location = anchor.attr("href");
+        if (e.target.tagName !== "A") {
+            var href = $(this).find("a").attr("href");
+            if (e.button == 1)
+                window.open(href, "_blank");
+            else
+                window.location = href;
         }
     });
     
@@ -53,19 +78,17 @@ $(function() {
     $('.menu-item a').click(magicClickInterceptor);
     $('a.argument').click(magicClickInterceptor);
     
-    $('a.external').click(function(e) {         
+    $('a.external').click(function(e) {
         e.preventDefault();
     });
 
-     var tabs = $("#tabnav"),
-         tab_a_selector = "a";
+    var tabs = $("#tabnav"),
+        tab_a_selector = "a";
 
-     var firstLoad = true;
+    var firstLoad = true;
      
-     tabs.find(tab_a_selector).click(function(e) {         
+    tabs.find(tab_a_selector).click(function(e) {
         e.preventDefault();
-        embedded_editor.resize();
-        editor.resize();
         if ($(this).attr("href") === "/") {
             window.location = "http://ace.ajax.org";
             return;
@@ -108,6 +131,12 @@ $(function() {
         $.bbq.pushState(state);
      });
 
+    $('#tabnav a[data-toggle="tab"]').on('shown', function (e) {
+        $(".tab-content .tab-pane.active .ace_editor").each(function(i, el){
+            el.env.onResize();
+        });
+    });
+
      $(window).on("hashchange", function(e) {
          _gaq.push(['_trackPageview',location.pathname + location.search  + location.hash]);
          tabs.each(function() {
@@ -122,4 +151,23 @@ $(function() {
             }
          });
      }).trigger("hashchange");
+     
+     highlight();
 });
+
+
+
+function highlight() {
+    var highlighter = ace.require("ace/ext/static_highlight")
+    var dom = ace.require("ace/lib/dom")
+    function qsa(sel) {
+        return Array.apply(null, document.querySelectorAll(sel));
+    }
+
+    qsa("code[class]").forEach(function(el) {
+        var m = el.className.match(/language-(\w+)|(javascript)/);
+        if (!m) return
+        var mode = "ace/mode/" + (m[1] || m[2]);
+        highlighter.highlight(el, {mode: mode, theme: "ace/theme/xcode"})
+    });
+}

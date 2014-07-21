@@ -52,15 +52,13 @@ var EventEmitter = require("./lib/event_emitter").EventEmitter;
  **/
 
 var Anchor = exports.Anchor = function(doc, row, column) {
-    this.document = doc;
-
+    this.$onChange = this.onChange.bind(this);
+    this.attach(doc);
+    
     if (typeof column == "undefined")
         this.setPosition(row.row, row.column);
     else
         this.setPosition(row, column);
-
-    this.$onChange = this.onChange.bind(this);
-    doc.on("change", this.$onChange);
 };
 
 (function() {
@@ -71,7 +69,6 @@ var Anchor = exports.Anchor = function(doc, row, column) {
      * Returns an object identifying the `row` and `column` position of the current anchor.
      * @returns {Object}
      **/
-
     this.getPosition = function() {
         return this.$clipPositionToDocument(this.row, this.column);
     };
@@ -81,11 +78,14 @@ var Anchor = exports.Anchor = function(doc, row, column) {
      * Returns the current document.
      * @returns {Document}
      **/
-
     this.getDocument = function() {
         return this.document;
     };
 
+    /**
+     * experimental: allows anchor to stick to the next on the left
+     */
+    this.$insertRight = false;
     /**
      * Fires whenever the anchor position changes.
      *
@@ -98,9 +98,7 @@ var Anchor = exports.Anchor = function(doc, row, column) {
      *  - `old`: An object describing the old Anchor position
      *  - `value`: An object describing the new Anchor position
      *
-     *
      **/
-
     this.onChange = function(e) {
         var delta = e.data;
         var range = delta.range;
@@ -121,7 +119,9 @@ var Anchor = exports.Anchor = function(doc, row, column) {
 
         if (delta.action === "insertText") {
             if (start.row === row && start.column <= column) {
-                if (start.row === end.row) {
+                if (start.column === column && this.$insertRight) {
+                    // do nothing
+                } else if (start.row === end.row) {
                     column += end.column - start.column;
                 } else {
                     column -= start.column;
@@ -131,7 +131,10 @@ var Anchor = exports.Anchor = function(doc, row, column) {
                 row += end.row - start.row;
             }
         } else if (delta.action === "insertLines") {
-            if (start.row <= row) {
+            if (start.row === row && column === 0 && this.$insertRight) {
+                // do nothing
+            }
+            else if (start.row <= row) {
                 row += end.row - start.row;
             }
         } else if (delta.action === "removeText") {
@@ -169,10 +172,7 @@ var Anchor = exports.Anchor = function(doc, row, column) {
      * @param {Number} column The column index to move the anchor to
      * @param {Boolean} noClip Identifies if you want the position to be clipped
      *
-     *
-     *
      **/
-
     this.setPosition = function(row, column, noClip) {
         var pos;
         if (noClip) {
@@ -194,7 +194,7 @@ var Anchor = exports.Anchor = function(doc, row, column) {
 
         this.row = pos.row;
         this.column = pos.column;
-        this._emit("change", {
+        this._signal("change", {
             old: old,
             value: pos
         });
@@ -204,9 +204,12 @@ var Anchor = exports.Anchor = function(doc, row, column) {
      * When called, the `'change'` event listener is removed.
      *
      **/
-
     this.detach = function() {
         this.document.removeEventListener("change", this.$onChange);
+    };
+    this.attach = function(doc) {
+        this.document = doc || this.document;
+        this.document.on("change", this.$onChange);
     };
 
     /**

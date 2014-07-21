@@ -31,7 +31,6 @@
 define(function(require, exports, module) {
 "use strict";
 
-var Tokenizer = require("../tokenizer").Tokenizer;
 var Rules = require("./lsl_highlight_rules").LSLHighlightRules;
 var Outdent = require("./matching_brace_outdent").MatchingBraceOutdent;
 var Range = require("../range").Range;
@@ -41,7 +40,7 @@ var CStyleFoldMode = require("./folding/cstyle").FoldMode;
 var oop = require("../lib/oop");
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new Rules().getRules());
+    this.HighlightRules = Rules;
     this.$outdent = new Outdent();
     this.$behaviour = new CstyleBehaviour();
     this.foldingRules = new CStyleFoldMode();
@@ -60,7 +59,7 @@ oop.inherits(Mode, TextMode);
     this.getNextLineIndent = function(state, line, tab) {
         var indent = this.$getIndent(line);
 
-        var tokenizedLine = this.$tokenizer.getLineTokens(line, state);
+        var tokenizedLine = this.getTokenizer().getLineTokens(line, state);
         var tokens = tokenizedLine.tokens;
         var endState = tokenizedLine.state;
 
@@ -86,6 +85,7 @@ oop.inherits(Mode, TextMode);
         this.$outdent.autoOutdent(doc, row);
     };
 
+    this.$id = "ace/mode/lsl";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

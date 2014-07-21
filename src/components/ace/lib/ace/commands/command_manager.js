@@ -16,18 +16,11 @@ var EventEmitter = require("../lib/event_emitter").EventEmitter;
  * @param {String} platform Identifier for the platform; must be either `'mac'` or `'win'`
  * @param {Array} commands A list of commands
  *
- *
- *
- *
  **/
 
 var CommandManager = function(platform, commands) {
-    this.platform = platform;
-    this.commands = this.byName = {};
-    this.commmandKeyBinding = {};
-
-    this.addCommands(commands);
-
+    HashHandler.call(this, commands, platform);
+    this.byName = this.commands;
     this.setDefaultHandler("exec", function(e) {
         return e.command.exec(e.editor, e.args || {});
     });

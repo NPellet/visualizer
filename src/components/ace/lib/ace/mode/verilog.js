@@ -33,12 +33,11 @@ define(function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var VerilogHighlightRules = require("./verilog_highlight_rules").VerilogHighlightRules;
 var Range = require("../range").Range;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new VerilogHighlightRules().getRules());
+    this.HighlightRules = VerilogHighlightRules;
 };
 oop.inherits(Mode, TextMode);
 
@@ -47,6 +46,7 @@ oop.inherits(Mode, TextMode);
     this.lineCommentStart = "//";
     this.blockComment = {start: "/*", end: "*/"};
 
+    this.$id = "ace/mode/verilog";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

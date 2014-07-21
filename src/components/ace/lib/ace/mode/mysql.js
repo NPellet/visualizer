@@ -32,12 +32,11 @@ define(function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextMode = require("../mode/text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var MysqlHighlightRules = require("./mysql_highlight_rules").MysqlHighlightRules;
 var Range = require("../range").Range;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new MysqlHighlightRules().getRules());
+    this.HighlightRules = MysqlHighlightRules;
 };
 oop.inherits(Mode, TextMode);
 
@@ -45,6 +44,7 @@ oop.inherits(Mode, TextMode);
     this.lineCommentStart = ["--", "#"]; // todo space
     this.blockComment = {start: "/*", end: "*/"};
 
+    this.$id = "ace/mode/mysql";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

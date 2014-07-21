@@ -42,22 +42,20 @@ define(function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var ForthHighlightRules = require("./forth_highlight_rules").ForthHighlightRules;
 // TODO: pick appropriate fold mode
 var FoldMode = require("./folding/cstyle").FoldMode;
 
 var Mode = function() {
-    var highlighter = new ForthHighlightRules();
+    this.HighlightRules = ForthHighlightRules;
     this.foldingRules = new FoldMode();
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
     this.lineCommentStart = "(?<=^|\\s)\\.?\\( [^)]*\\)";
     this.blockComment = {start: "/*", end: "*/"};
-    // Extra logic goes here.
+    this.$id = "ace/mode/forth";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
