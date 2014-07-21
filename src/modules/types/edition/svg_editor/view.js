@@ -187,7 +187,7 @@ function(require, _, Default, Renderer, UTIL) {
                 var id = $svgEl.attr('id');
                 anim.tag = anim.tag || 'animate';
                 if(animationTags.indexOf(anim.tag) === -1) return;
-                if(! anim.attributes instanceof Array) {
+                if(!(anim.attributes instanceof Array)) {
                     anim.attributes = [anim.attributes];
                 }
                 anim = _.defaults(anim, defaultAnimAttributes);
