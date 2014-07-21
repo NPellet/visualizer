@@ -604,7 +604,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 				allLayers[ key ] = key;
 			} );
 
-			require(['./forms/form'], function(Form) {
+			require(['forms/form'], function(Form) {
 
 				var form = new Form({
 				});
