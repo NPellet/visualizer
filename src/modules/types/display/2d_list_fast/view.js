@@ -21,14 +21,14 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 				var elementId = $(this).index();
 				var value = self.list.get()[elementId];
                                 if(e.type === "mouseenter") {
-                                    self.module.controller.setVarFromEvent('onHover', value, 'cell');
+                                    self.module.controller.setVarFromEvent( 'onHover', 'cell', 'list', [ elementId ] );
                                     API.highlight(value, 1);
                                 }
                                 else if(e.type === "mouseleave") {
                                     API.highlight(value, 0);
                                 }
                                 else if(e.type === "click") {
-                                    self.module.controller.setVarFromEvent('onClick', value, 'cell');
+                                    self.module.controller.setVarFromEvent( 'onClick', 'cell', 'list', [ elementId ] );
                                     self.module.controller.sendAction('cell', value, 'onClick');
                                 }
 			});
