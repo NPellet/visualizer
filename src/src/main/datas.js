@@ -1,4 +1,5 @@
 define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug ) {
+    "use strict";
 
 	function DataObject( object, recursive, forceCopy ) {
 		if (! object) {
@@ -53,9 +54,9 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 
 
 	DataObject.recursiveTransform = function( object, transformNatives ) {
-		
+
 		object = DataObject.check(object, transformNatives);
-        var i;
+        var i, l;
 
 		if( object instanceof Array ) {
 
@@ -72,7 +73,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			}
 
 		}
-		
+
 		return object;
 	};
 
