@@ -233,48 +233,63 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	};
 
 	var dataGetter = {
-		value: function( prop, returnDeferred, constructor ) {
+		value: function( prop, returnPromise, constructor ) {
 
 			// Looking for this[ prop ]
-			if (typeof prop !== "undefined") {
+			if ((typeof prop === "string") || (typeof prop === "number")) {
 
-				var val = this.get(); // Current value
-				
-				if (returnDeferred) { // Returns a deferred if asked
-					if(typeof val !== "object" || val === null)
-						return $.Deferred().resolve(val);
+				if (returnPromise) { // Returns a promise if asked
 
-					if (typeof val[ prop ] !== "undefined") {
+                    var that = this;
+                    return new Promise(function (resolve) {
+                        that.get(true).then(function (val) {
 
-						if (val[prop] && val[prop].fetch) {
-							return val[prop].fetch();
-						} else {
-							val[prop] = DataObject.check(val[prop], true);
-							return $.Deferred().resolve(val[prop]);
-						}
-					} else if( constructor ) {
+                            if(typeof val !== "object" || val === null)
+                                return resolve(val);
+                            if (typeof val[ prop ] !== "undefined") {
+                                if (val[prop] && val[prop].fetch) {
+                                    return val[prop].fetch(true).then(resolve);
+                                } else {
+                                    val[prop] = DataObject.check(val[prop], true);
+                                    return resolve(val[prop]);
+                                }
+                            } else if( constructor ) {
+                                val[ prop ] = new constructor();
+                                return resolve(val[prop]);
+                            }  else {
+                                return resolve();
+                            }
+                        });
+                    });
 
-						val[ prop ] = new constructor();
-						return $.Deferred().resolve(val[prop]);
-
-					}  else {
-						return $.Deferred().resolve();
-					}
 				} else {
+
+                    var val = this.get(); // Current value
 					
 					if(typeof val !== "object" || val === null)
 						return val;
 					
 					if (typeof val[ prop ] !== "undefined") {
-						val[ prop ] = DataObject.check( val[ prop ], 1 ); // Singe recursion
+						val[ prop ] = DataObject.check( val[ prop ], 1 ); // Single recursion
 					}
 					return val[prop];
-				}
-			}
 
-			if (this.hasOwnProperty("value") && this.hasOwnProperty("type"))
-				return this.value;
-			return this;
+				}
+			} else {
+                if(prop === true) {
+                    if(this.hasOwnProperty("type") && this.hasOwnProperty("value")) {
+                        return Promise.resolve(this.value);
+                    } else if (this.hasOwnProperty("type") && this.hasOwnProperty("url")) {
+                        return this.fetch(true);
+                    } else {
+                        return Promise.resolve(this);
+                    }
+                } else {
+                    if (this.hasOwnProperty("value") && this.hasOwnProperty("type"))
+                        return this.value;
+                    return this;
+                }
+            }
 		}
 	};
 
@@ -423,14 +438,6 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		}
 	};
 
-
-
-
-
-
-					
-					
-
 	var getChildSync = {
 		value: function(jpath, setParents) {
 
@@ -445,7 +452,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			jpath = jpath.slice();
 
 			var el = jpath.shift( ); // Gets the current element and removes it from the array
-			var subEl = this.get( el, false );
+			var subEl = this.get( el );
 
 			if( subEl === null ) {
 				return;
@@ -625,7 +632,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	var fetch = {
 		value: function(forceJson) {
 
-			if (!this.url) { // No need for fetching. Still returning a promise, though.
+			if (!this.type || (this.value || !this.url)) { // No need for fetching. Still returning a promise, though.
 				return Promise.resolve(this);
 			}
 
