@@ -216,7 +216,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 	function moduleResize(module) {
 		
 		var wrapper = module.getDomWrapper();
-		
+
 		module.getSize( getActiveLayer( ) ).set('width', wrapper.width() / definition.xWidth);
 		module.getSize( getActiveLayer( ) ).set('height', wrapper.height() / definition.yHeight);
 

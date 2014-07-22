@@ -77,39 +77,44 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	};
 
 
-
-
-	function duplicate( object ) {
+    function duplicate(object) {
 
         var type = typeof object;
-        if(type === 'number' || type === 'string' || type === 'boolean') {
+        if (type === 'number' || type === 'string' || type === 'boolean') {
             return object;
-        } else if(type === 'undefined' || type === 'function') {
+        } else if (type === 'undefined' || type === 'function') {
             return;
         }
 
-		var target, i, l;
+        var target, i, l;
 
-        if( isSpecialNativeObject(object)) {
+        if (isSpecialNativeObject(object)) {
             return transformNative(object);
-        } else if(object instanceof Array) {
+        } else if (object instanceof Array) {
             l = object.length;
             target = new Array(l);
-            for(i = 0; i<l; i++) {
+            if (object instanceof DataArray) {
+                target = DataArray(target);
+            }
+            for (i = 0; i < l; i++) {
                 target[i] = duplicate(object[i]);
             }
         } else {
             var keys = Object.keys(object);
             l = keys.length;
-            target = {};
-            for(i = 0; i < l; i++) {
+            if (object instanceof DataObject) {
+                target = new DataObject();
+            } else {
+                target = {};
+            }
+            for (i = 0; i < l; i++) {
                 target[keys[i]] = duplicate(object[keys[i]]);
             }
         }
 
         return target;
 
-	}
+    }
 
 
 	var duplicator = {
