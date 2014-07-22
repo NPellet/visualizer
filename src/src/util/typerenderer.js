@@ -592,11 +592,11 @@ define(['require', 'jquery', 'src/util/api', 'src/util/util', 'src/util/datatrav
 				return deferred;
 			}
 
-			element.getChild( jpath ).done( function( element ) {
+			element.getChild( jpath ).then( function( element ) {
 
 				_valueToScreen( deferred, element, box, opts, jpath ); 
 
-			}).fail(function() { deferred.reject(); });
+			}, function() { deferred.reject(); });
 
 			return deferred;
 		},
