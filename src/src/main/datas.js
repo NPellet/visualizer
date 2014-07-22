@@ -316,37 +316,37 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	};
 
 
-	var getChild = {
-		value: function(jpath) {
+    var getChild = {
+        value: function (jpath) {
 
-			if (jpath && jpath.split) { // Old version
-				jpath = jpath.split('.');
-				jpath.shift();
-			}
+            if (typeof jpath === 'string') { // Old version
+                jpath = jpath.split('.');
+                jpath.shift();
+            }
 
-			if ( ! jpath || jpath.length === 0 ) {
-				return $.Deferred().resolve( this );
-			}
-			
-			jpath = jpath.slice();
+            if (!jpath || jpath.length === 0) {
+                return Promise.resolve(this);
+            }
 
-			var el = jpath.shift(); // Gets the current element and removes it from the array
+            jpath = jpath.slice();
 
-			return this.get( el, true ).then(function( subEl ) {
+            var el = jpath.shift(); // Gets the current element and removes it from the array
+            var that = this;
 
-				if ( ! subEl || ( jpath.length === 0 ) ) {
-					return subEl;
-				}
+            return new Promise(function (resolve) {
+                that.get(el, true).then(function (subEl) {
+                    subEl = DataObject.check(subEl, true);
 
-				subEl = DataObject.check( subEl, true );
-				return subEl.getChild(jpath);
-			});
+                    if (!subEl || (jpath.length === 0)) {
+                        resolve(subEl);
+                    } else {
+                        subEl.getChild(jpath).then(resolve);
+                    }
+                });
+            });
 
-		}
-	};
-
-
-
+        }
+    };
 
 	var trace = {
 		value: function( jpath, constructor ) {
