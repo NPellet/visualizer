@@ -20,20 +20,18 @@ define(['modules/default/defaultcontroller'], function(Default) {
     };
 
     controller.prototype.mouseOverLeaf = function(data) {
-        data = data.get();
         if(data.data) {
             this._data = DataObject.check(data.data);
-            this.setVarFromEvent("onLeafHover", DataObject.check(this._data), 'leaf');
+            this.createDataFromEvent("onLeafHover", 'leaf', DataObject.check(this._data));
         }
     };
     controller.prototype.mouseOutLeaf = function() {
 
     };
     controller.prototype.clickLeaf = function(data) {
-        data = data.get();
         if(data.data) {
             this._data = DataObject.check(data.data);
-            this.setVarFromEvent("onLeafSelect", DataObject.check(this._data), 'leaf');
+            this.createDataFromEvent("onLeafSelect", 'leaf', DataObject.check(this._data));
         }
     };
 
@@ -51,12 +49,12 @@ define(['modules/default/defaultcontroller'], function(Default) {
     controller.prototype.sendTreeFromEvent = function(data, name) {
         var element = new DataObject({'type': 'tree', value: data}, true);
         this.sendAction('tree', element, name);
-        this.setVarFromEvent(name, element, 'tree');
-		this.setVarFromEvent(name, function(){
-			var arr = [];
-			treeToArray(arr, data);
-			return DataArray(arr);
-		}, 'list');
+        this.createDataFromEvent(name, 'tree', element);
+		this.createDataFromEvent(name, 'list', function(){
+            var arr = [];
+            treeToArray(arr, data);
+            return DataArray(arr);
+        });
     };
 	
 	function treeToArray(arr, tree) {

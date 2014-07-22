@@ -1,4 +1,4 @@
-define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing", "src/util/context", "lib/parallel-coordinates/d3.parcoords"], function(Default, Util, Traversing, Context, d3) {
+define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing", "src/util/context", "lib/d3/d3.parcoords"], function(Default, Util, Traversing, Context, d3) {
 
     function view() {
         this._id = Util.getNextUniqueId();
@@ -9,7 +9,7 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
     }
     ;
 
-    Util.loadCss('lib/parallel-coordinates/d3.parcoords.css');
+    Util.loadCss('lib/d3/d3.parcoords.css');
 
     view.prototype = $.extend(true, {}, Default, {
         init: function() {

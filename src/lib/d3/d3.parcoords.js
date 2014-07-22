@@ -1,4 +1,5 @@
 define(['d3'],function(d3){
+
 d3.parcoords = function(config) {
   var __ = {
     data: [],
@@ -786,5 +787,6 @@ d3.renderQueue = (function(func) {
 
   return rq;
 });
+
 return d3;
 });
