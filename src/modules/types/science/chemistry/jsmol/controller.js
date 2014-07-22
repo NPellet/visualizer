@@ -42,7 +42,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 
 
 	controller.prototype.onJSMolScriptReceive = function(a) {
-		this.module.view.executeScript(a.value);
+		this.module.view.executeScript(a);
 	}
 
 	
