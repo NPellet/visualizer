@@ -110,34 +110,41 @@ function( $, Util, Datas, Versioning, Debug ) { // Ensures Data is loaded, altho
 				var _resolve = resolve,
 					_reject = reject;
 
-				
-				data.getChild( self._jpath, true ).then( function( value ) {
-					
-					if( callback ) {
+				data.getChild( self._jpath, true ).then( function gotDataChild( value ) {
 
-						new Promise( function( resolve, reject ) {
+                    function treatValue(value) {
+                        if( callback ) {
 
-							callback( value, resolve, reject );	
+                            new Promise( function( resolve, reject ) {
 
-						} ).then( function( value ) {
-							
-							value = DataObject.check(value, true);
-							self._value = value;
-							_resolve( value );	
+                                callback( value, resolve, reject );
 
-						}, function( error ) {
-							
-							Debug.warn("Error during variable filtering : ", error);
-							_reject("filter");
-							
-						} );
-						
-					} else {
-						
-						self._value = value;
-						_resolve( value );	
-						
-					}
+                            } ).then( function( value ) {
+
+                                    value = DataObject.check(value, true);
+                                    self._value = value;
+                                    _resolve( value );
+
+                                }, function( error ) {
+
+                                    Debug.warn("Error during variable filtering : ", error);
+                                    _reject("filter");
+
+                                } );
+
+                        } else {
+
+                            self._value = value;
+                            _resolve( value );
+
+                        }
+                    }
+
+                    if(value && value.fetch) {
+                        value.fetch().then(treatValue);
+                    } else {
+                        treatValue(value);
+                    }
 					
 				}, function(err) {
 					_reject(err);
