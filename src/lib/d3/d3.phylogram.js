@@ -1,3 +1,5 @@
+define(['d3'],function(d3){
+
 /*
   d3.phylogram.js
   Wrapper around a d3-based phylogram (tree where branch lengths are scaled)
@@ -359,3 +361,6 @@ if (!d3) { throw "d3 wasn't included!"};
     return {tree: tree, vis: vis}
   }
 }());
+
+return d3;
+});

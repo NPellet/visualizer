@@ -97,8 +97,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 	}
 
 	 var Module = function( definition ) {
-		this.definition = definition;
-		this.definition.configuration = this.definition.configuration || new DataObject({});
+		this.definition = DataObject.recursiveTransform(definition);
+		this.definition.configuration = this.definition.configuration || new DataObject();
 
 		this.definition.layers = this.definition.layers || new DataObject(); // View on which layers ?
 
@@ -404,16 +404,16 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 				}
 
 				// new layer
-				this.definition.layers[ i ] = new DataObject({});
+				this.definition.layers[ i ] = new DataObject();
 
 				if( blankLayer ) {
-					$.extend( true, this.definition.layers[ i ], Module.prototype.emptyConfig );	
+					$.extend( true, this.definition.layers[ i ], Module.prototype.emptyConfig );
 					this.definition.layers[ i ].name = i;
 				} else {
-					$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );	
+					$.extend( true, this.definition.layers[ i ], this.getActiveLayer( this.getActiveLayerName() ) );
 				}
 
-				this.definition.layers[ i ] = new DataObject( this.definition.layers[ i ], true );
+				this.definition.layers[ i ] = this.definition.layers[ i ].duplicate();
 			}
 		},
 
@@ -604,7 +604,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 				allLayers[ key ] = key;
 			} );
 
-			require(['./forms/form'], function(Form) {
+			require(['forms/form'], function(Form) {
 
 				var form = new Form({
 				});
@@ -899,7 +899,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 
 									rel: {
 										type: 'combo',
-										title: 'Reference',
+										title: 'Reference'
 									},
 
 									jpath: {
@@ -1408,16 +1408,18 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 			}
 		},
 
-		emptyConfig: new DataObject({
-			position: { left: 0, top: 0 },
-			size: { width: 20, height: 20},
-			zIndex: 0,
-			display: true, 
-			title: "",
-			bgColor: [ 255, 255, 255, 0 ],
-			wrapper: true,
-			created: true
-		})
+        get emptyConfig() {
+            return new DataObject({
+                position: { left: 0, top: 0 },
+                size: { width: 20, height: 20},
+                zIndex: 0,
+                display: true,
+                title: "",
+                bgColor: [ 255, 255, 255, 0 ],
+                wrapper: true,
+                created: true
+            })
+        }
 	};
 
 	return Module;

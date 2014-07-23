@@ -33,12 +33,11 @@ define(function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var MatlabHighlightRules = require("./matlab_highlight_rules").MatlabHighlightRules;
 var Range = require("../range").Range;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new MatlabHighlightRules().getRules());
+    this.HighlightRules = MatlabHighlightRules;
 };
 oop.inherits(Mode, TextMode);
 
@@ -47,6 +46,7 @@ oop.inherits(Mode, TextMode);
     this.lineCommentStart = "%";
     this.blockComment = {start: "%{", end: "%}"};
 
+    this.$id = "ace/mode/matlab";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

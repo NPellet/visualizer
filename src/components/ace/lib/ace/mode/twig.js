@@ -32,30 +32,16 @@ define(function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
-var TextMode = require("./text").Mode;
-var JavaScriptMode = require("./javascript").Mode;
-var CssMode = require("./css").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
+var HtmlMode = require("./html").Mode;
 var TwigHighlightRules = require("./twig_highlight_rules").TwigHighlightRules;
-var HtmlBehaviour = require("./behaviour/html").HtmlBehaviour;
-var HtmlFoldMode = require("./folding/html").FoldMode;
 var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
 
 var Mode = function() {
-    var highlighter = new TwigHighlightRules();
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
+    HtmlMode.call(this);
+    this.HighlightRules = TwigHighlightRules;
     this.$outdent = new MatchingBraceOutdent();
-    this.$behaviour = new HtmlBehaviour();
-
-    this.$embeds = highlighter.getEmbeds();
-    this.createModeDelegates({
-        "js-": JavaScriptMode,
-        "css-": CssMode
-    });
-
-    this.foldingRules = new HtmlFoldMode();
 };
-oop.inherits(Mode, TextMode);
+oop.inherits(Mode, HtmlMode);
 
 (function() {
     this.blockComment = {start: "{#", end: "#}"};
@@ -63,7 +49,7 @@ oop.inherits(Mode, TextMode);
     this.getNextLineIndent = function(state, line, tab) {
         var indent = this.$getIndent(line);
 
-        var tokenizedLine = this.$tokenizer.getLineTokens(line, state);
+        var tokenizedLine = this.getTokenizer().getLineTokens(line, state);
         var tokens = tokenizedLine.tokens;
         var endState = tokenizedLine.state;
 
@@ -88,6 +74,7 @@ oop.inherits(Mode, TextMode);
     this.autoOutdent = function(state, doc, row) {
         this.$outdent.autoOutdent(doc, row);
     };
+    this.$id = "ace/mode/twig";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

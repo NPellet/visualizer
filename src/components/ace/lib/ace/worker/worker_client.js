@@ -32,25 +32,24 @@ define(function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
+var net = require("../lib/net");
 var EventEmitter = require("../lib/event_emitter").EventEmitter;
 var config = require("../config");
 
-var WorkerClient = function(topLevelNamespaces, mod, classname) {
+var WorkerClient = function(topLevelNamespaces, mod, classname, workerUrl) {
     this.$sendDeltaQueue = this.$sendDeltaQueue.bind(this);
     this.changeListener = this.changeListener.bind(this);
     this.onMessage = this.onMessage.bind(this);
-    this.onError = this.onError.bind(this);
 
     // nameToUrl is renamed to toUrl in requirejs 2
     if (require.nameToUrl && !require.toUrl)
         require.toUrl = require.nameToUrl;
-
-    var workerUrl;
+    
     if (config.get("packaged") || !require.toUrl) {
-        workerUrl = config.moduleUrl(mod, "worker");
+        workerUrl = workerUrl || config.moduleUrl(mod, "worker");
     } else {
         var normalizePath = this.$normalizePath;
-        workerUrl = normalizePath(require.toUrl("ace/worker/worker.js", null, "_"));
+        workerUrl = workerUrl || normalizePath(require.toUrl("ace/worker/worker.js", null, "_"));
 
         var tlns = {};
         topLevelNamespaces.forEach(function(ns) {
@@ -58,29 +57,37 @@ var WorkerClient = function(topLevelNamespaces, mod, classname) {
         });
     }
 
-    this.$worker = new Worker(workerUrl);
+    try {
+        this.$worker = new Worker(workerUrl);
+    } catch(e) {
+        if (e instanceof window.DOMException) {
+            // Likely same origin problem. Use importScripts from a shim Worker
+            var blob = this.$workerBlob(workerUrl);
+            var URL = window.URL || window.webkitURL;
+            var blobURL = URL.createObjectURL(blob);
+
+            this.$worker = new Worker(blobURL);
+            URL.revokeObjectURL(blobURL);
+        } else {
+            throw e;
+        }
+    }
     this.$worker.postMessage({
         init : true,
-        tlns: tlns,
-        module: mod,
-        classname: classname
+        tlns : tlns,
+        module : mod,
+        classname : classname
     });
 
     this.callbackId = 1;
     this.callbacks = {};
 
-    this.$worker.onerror = this.onError;
     this.$worker.onmessage = this.onMessage;
 };
 
 (function(){
 
     oop.implement(this, EventEmitter);
-
-    this.onError = function(e) {
-        window.console && console.log && console.log(e);
-        throw e;
-    };
 
     this.onMessage = function(e) {
         var msg = e.data;
@@ -90,7 +97,7 @@ var WorkerClient = function(topLevelNamespaces, mod, classname) {
                 break;
 
             case "event":
-                this._emit(msg.name, {data: msg.data});
+                this._signal(msg.name, {data: msg.data});
                 break;
 
             case "call":
@@ -104,18 +111,12 @@ var WorkerClient = function(topLevelNamespaces, mod, classname) {
     };
 
     this.$normalizePath = function(path) {
-        if (!location.host) // needed for file:// protocol
-            return path;
-        path = path.replace(/^[a-z]+:\/\/[^\/]+/, ""); // Remove domain name and rebuild it
-        path = location.protocol + "//" + location.host
-            // paths starting with a slash are relative to the root (host)
-            + (path.charAt(0) == "/" ? "" : location.pathname.replace(/\/[^\/]*$/, ""))
-            + "/" + path.replace(/^[\/]+/, "");
-        return path;
+        return net.qualifyURL(path);
     };
 
     this.terminate = function() {
-        this._emit("terminate", {});
+        this._signal("terminate", {});
+        this.deltaQueue = null;
         this.$worker.terminate();
         this.$worker = null;
         this.$doc.removeEventListener("change", this.changeListener);
@@ -141,7 +142,9 @@ var WorkerClient = function(topLevelNamespaces, mod, classname) {
             // TODO: cleanup event
             this.$worker.postMessage({event: event, data: {data: data.data}});
         }
-        catch(ex) {}
+        catch(ex) {
+            console.error(ex.stack);
+        }
     };
 
     this.attachToDocument = function(doc) {
@@ -156,7 +159,7 @@ var WorkerClient = function(topLevelNamespaces, mod, classname) {
     this.changeListener = function(e) {
         if (!this.deltaQueue) {
             this.deltaQueue = [e.data];
-            setTimeout(this.$sendDeltaQueue, 1);
+            setTimeout(this.$sendDeltaQueue, 0);
         } else
             this.deltaQueue.push(e.data);
     };
@@ -169,7 +172,21 @@ var WorkerClient = function(topLevelNamespaces, mod, classname) {
             this.call("setValue", [this.$doc.getValue()]);
         } else
             this.emit("change", {data: q});
-    }
+    };
+
+    this.$workerBlob = function(workerUrl) {
+        // workerUrl can be protocol relative
+        // importScripts only takes fully qualified urls
+        var script = "importScripts('" + net.qualifyURL(workerUrl) + "');";
+        try {
+            return new Blob([script], {"type": "application/javascript"});
+        } catch (e) { // Backwards-compatibility
+            var BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
+            var blobBuilder = new BlobBuilder();
+            blobBuilder.append(script);
+            return blobBuilder.getBlob("application/javascript");
+        }
+    };
 
 }).call(WorkerClient.prototype);
 
@@ -182,6 +199,7 @@ var UIWorkerClient = function(topLevelNamespaces, mod, classname) {
     this.messageBuffer = [];
 
     var main = null;
+    var emitSync = false;
     var sender = Object.create(EventEmitter);
     var _self = this;
 
@@ -189,15 +207,21 @@ var UIWorkerClient = function(topLevelNamespaces, mod, classname) {
     this.$worker.terminate = function() {};
     this.$worker.postMessage = function(e) {
         _self.messageBuffer.push(e);
-        main && setTimeout(processNext);
+        if (main) {
+            if (emitSync)
+                setTimeout(processNext);
+            else
+                processNext();
+        }
     };
+    this.setEmitSync = function(val) { emitSync = val };
 
     var processNext = function() {
         var msg = _self.messageBuffer.shift();
         if (msg.command)
             main[msg.command].apply(main, msg.args);
         else if (msg.event)
-            sender._emit(msg.event, msg.data);
+            sender._signal(msg.event, msg.data);
     };
 
     sender.postMessage = function(msg) {

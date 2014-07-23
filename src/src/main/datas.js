@@ -1,4 +1,5 @@
-define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug ) {
+define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
+    "use strict";
 
 	function DataObject( object, recursive, forceCopy ) {
 		if (! object) {
@@ -53,60 +54,68 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 
 
 	DataObject.recursiveTransform = function( object, transformNatives ) {
-		
+
 		object = DataObject.check(object, transformNatives);
+        var i, l;
 
 		if( object instanceof Array ) {
 
-			for( var i = 0, l = object.length ; i < l ; i ++ ) {
+			for( i = 0, l = object.length ; i < l ; i ++ ) {
 				object[ i ] = DataObject.check( object[ i ], transformNatives );
 				DataObject.recursiveTransform( object[ i ], transformNatives );
 			}
 		} else if( object instanceof Object ) {
 
-			for( var i in object ) {
+			for( i in object ) {
 
 				object[ i ] = DataObject.check( object[ i ], transformNatives );
 				DataObject.recursiveTransform( object[ i ], transformNatives );
 			}
 
 		}
-		
+
 		return object;
 	};
 
 
+    function duplicate(object) {
 
+        var type = typeof object;
+        if (type === 'number' || type === 'string' || type === 'boolean') {
+            return object;
+        } else if (type === 'undefined' || type === 'function') {
+            return;
+        }
 
-	function duplicate( object ) {
+        var target, i, l;
 
-		var target;
-	
-		if( isSpecialNativeObject( object ) ) {
+        if (isSpecialNativeObject(object)) {
+            return transformNative(object);
+        } else if (object instanceof Array) {
+            l = object.length;
+            target = new Array(l);
+            if (object instanceof DataArray) {
+                target = DataArray(target);
+            }
+            for (i = 0; i < l; i++) {
+                target[i] = duplicate(object[i]);
+            }
+        } else {
+            var keys = Object.keys(object);
+            l = keys.length;
+            if (object instanceof DataObject) {
+                target = new DataObject();
+            } else {
+                target = {};
+            }
+            for (i = 0; i < l; i++) {
+                target[keys[i]] = duplicate(object[keys[i]]);
+            }
+        }
 
-			return transformNative( object );
+        return target;
 
-		} else if( object instanceof Array ) {
-
-			target = [];
-
-			for( var i = 0, l = this.length ; i < l ; i ++ ) {
-				target[ i ] = duplicate( object[ i ] );
-			}
-		} else if( typeof object == "object" ) {
-
-			target = {};
-
-			for( var i in object ) {
-
-				target[ i ] = duplicate( object[ i ] );
-			}
-		} else {
-			target = object;
-		}
-		
-		return target;
-	}
+    }
 
 
 	var duplicator = {
@@ -224,48 +233,63 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	};
 
 	var dataGetter = {
-		value: function( prop, returnDeferred, constructor ) {
+		value: function( prop, returnPromise, constructor ) {
 
 			// Looking for this[ prop ]
-			if (typeof prop !== "undefined") {
+			if ((typeof prop === "string") || (typeof prop === "number")) {
 
-				var val = this.get(); // Current value
-				
-				if (returnDeferred) { // Returns a deferred if asked
-					if(typeof val !== "object" || val === null)
-						return $.Deferred().resolve(val);
+				if (returnPromise) { // Returns a promise if asked
 
-					if (typeof val[ prop ] !== "undefined") {
+                    var that = this;
+                    return new Promise(function (resolve) {
+                        that.get(true).then(function (val) {
 
-						if (val[prop] && val[prop].fetch) {
-							return val[prop].fetch();
-						} else {
-							val[prop] = DataObject.check(val[prop], true);
-							return $.Deferred().resolve(val[prop]);
-						}
-					} else if( constructor ) {
+                            if(typeof val !== "object" || val === null)
+                                return resolve(val);
+                            if (typeof val[ prop ] !== "undefined") {
+                                if (val[prop] && val[prop].fetch) {
+                                    return val[prop].fetch(true).then(resolve);
+                                } else {
+                                    val[prop] = DataObject.check(val[prop], true);
+                                    return resolve(val[prop]);
+                                }
+                            } else if( constructor ) {
+                                val[ prop ] = new constructor();
+                                return resolve(val[prop]);
+                            }  else {
+                                return resolve();
+                            }
+                        });
+                    });
 
-						val[ prop ] = new constructor();
-						return $.Deferred().resolve(val[prop]);
-
-					}  else {
-						return $.Deferred().resolve();
-					}
 				} else {
+
+                    var val = this.get(); // Current value
 					
 					if(typeof val !== "object" || val === null)
 						return val;
 					
 					if (typeof val[ prop ] !== "undefined") {
-						val[ prop ] = DataObject.check( val[ prop ], 1 ); // Singe recursion
+						val[ prop ] = DataObject.check( val[ prop ], 1 ); // Single recursion
 					}
 					return val[prop];
-				}
-			}
 
-			if (this.hasOwnProperty("value") && this.hasOwnProperty("type"))
-				return this.value;
-			return this;
+				}
+			} else {
+                if(prop === true) {
+                    if(this.hasOwnProperty("type") && this.hasOwnProperty("value")) {
+                        return Promise.resolve(this.value);
+                    } else if (this.hasOwnProperty("type") && this.hasOwnProperty("url")) {
+                        return this.fetch(true);
+                    } else {
+                        return Promise.resolve(this);
+                    }
+                } else {
+                    if (this.hasOwnProperty("value") && this.hasOwnProperty("type"))
+                        return this.value;
+                    return this;
+                }
+            }
 		}
 	};
 
@@ -307,37 +331,37 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	};
 
 
-	var getChild = {
-		value: function(jpath) {
+    var getChild = {
+        value: function (jpath) {
 
-			if (jpath && jpath.split) { // Old version
-				jpath = jpath.split('.');
-				jpath.shift();
-			}
+            if (typeof jpath === 'string') { // Old version
+                jpath = jpath.split('.');
+                jpath.shift();
+            }
 
-			if ( ! jpath || jpath.length === 0 ) {
-				return $.Deferred().resolve( this );
-			}
-			
-			jpath = jpath.slice();
+            if (!jpath || jpath.length === 0) {
+                return Promise.resolve(this);
+            }
 
-			var el = jpath.shift(); // Gets the current element and removes it from the array
+            jpath = jpath.slice();
 
-			return this.get( el, true ).then(function( subEl ) {
+            var el = jpath.shift(); // Gets the current element and removes it from the array
+            var that = this;
 
-				if ( ! subEl || ( jpath.length === 0 ) ) {
-					return subEl;
-				}
+            return new Promise(function (resolve) {
+                that.get(el, true).then(function (subEl) {
+                    subEl = DataObject.check(subEl, true);
 
-				subEl = DataObject.check( subEl, true );
-				return subEl.getChild(jpath);
-			});
+                    if (!subEl || (jpath.length === 0)) {
+                        resolve(subEl);
+                    } else {
+                        subEl.getChild(jpath).then(resolve);
+                    }
+                });
+            });
 
-		}
-	};
-
-
-
+        }
+    };
 
 	var trace = {
 		value: function( jpath, constructor ) {
@@ -348,7 +372,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			}
 
 			if ( ! jpath || jpath.length === 0 ) {
-				return $.Deferred().resolve(this);
+				return Promise.resolve(this);
 			}
 			
 			jpath = jpath.slice();
@@ -414,14 +438,6 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		}
 	};
 
-
-
-
-
-
-					
-					
-
 	var getChildSync = {
 		value: function(jpath, setParents) {
 
@@ -436,7 +452,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			jpath = jpath.slice();
 
 			var el = jpath.shift( ); // Gets the current element and removes it from the array
-			var subEl = this.get( el, false );
+			var subEl = this.get( el );
 
 			if( subEl === null ) {
 				return;
@@ -511,7 +527,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 						self.set( name, val );
 						val.linkToParent( self, name );
 						val.setChild.apply( val, args );
-					})
+					});
 					// 2 June 2014. This code has been removed.
 					// Bubbling should be done within the triggerElement with parenting.
 					//.done(function() {
@@ -616,22 +632,22 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	var fetch = {
 		value: function(forceJson) {
 
-			if (!this.url) { // No need for fetching. Still returning a promise, though.
+			if (this.value || !this.url) { // No need for fetching. Still returning a promise, though.
 				return Promise.resolve(this);
 			}
 
             var self = this;
-            var promise = new Promise(function (resolve, reject) {
-                require(['src/util/urldata'], function(urlData) { // We don't know yet if URLData has been loaded
+            return new Promise(function (resolve, reject) {
+                require(['src/util/urldata'], function (urlData) { // We don't know yet if URLData has been loaded
 
                     var headers;
-                    if(forceJson) {
+                    if (forceJson) {
                         headers = {
                             Accept: "application/json"
                         };
                     }
 
-                    urlData.get(self.url, false, self.timeout, headers).then(function(data) {
+                    urlData.get(self.url, false, self.timeout, headers).then(function (data) {
 
                         data = DataObject.check(data, true);	// Transform the input into a DataObject
 
@@ -646,8 +662,6 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
                     }, reject);
                 });
             });
-
-			return promise;
 		}
 	};
 	/*
@@ -737,7 +751,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	
 	var getChildNative = {
 		value: function() {
-			return $.Deferred().resolve( this );
+			return Promise.resolve( this );
 		}
 	};
 	
@@ -753,7 +767,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		}
 	};
 
-	var commonProperties = {
+	var commonNativeProperties = {
 		trace: trace,
 		onChange: bindChange,
 		unbindChange: unbindChange,
@@ -768,9 +782,9 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 		toString: nativeToString
 	};
 
-	Object.defineProperties(DataString.prototype, commonProperties);
-	Object.defineProperties(DataNumber.prototype, commonProperties);
-	Object.defineProperties(DataBoolean.prototype, commonProperties);
+	Object.defineProperties(DataString.prototype, commonNativeProperties);
+	Object.defineProperties(DataNumber.prototype, commonNativeProperties);
+	Object.defineProperties(DataBoolean.prototype, commonNativeProperties);
 	
 	function isSpecialObject(object) {
 		return( object instanceof DataObject || object instanceof DataArray || isSpecialNativeObject( object ) );

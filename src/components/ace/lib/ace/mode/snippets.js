@@ -3,7 +3,6 @@ define(function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
 var SnippetHighlightRules = function() {
@@ -86,7 +85,7 @@ var SnippetGroupHighlightRules = function() {
 		{onMatch: function(value, state, stack) {
 			stack.splice(stack.length);
 			return this.tokenName;
-		}, tokenName: "text", regex: "^(?!\t)", next: "start"},
+		}, tokenName: "text", regex: "^(?!\t)", next: "start"}
 	])
 	
 };
@@ -98,16 +97,14 @@ exports.SnippetGroupHighlightRules = SnippetGroupHighlightRules;
 var FoldMode = require("./folding/coffee").FoldMode;
 
 var Mode = function() {
-    var highlighter = new SnippetGroupHighlightRules();
+    this.HighlightRules = SnippetGroupHighlightRules;
     this.foldingRules = new FoldMode();
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
-    this.getNextLineIndent = function(state, line, tab) {
-        return this.$getIndent(line);
-    };
+    this.$indentWithTabs = true;
+    this.$id = "ace/mode/snippets";
 }).call(Mode.prototype);
 exports.Mode = Mode;
 

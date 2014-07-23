@@ -42,22 +42,20 @@ define(function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var AutoHotKeyHighlightRules = require("./autohotkey_highlight_rules").AutoHotKeyHighlightRules;
 // TODO: pick appropriate fold mode
 var FoldMode = require("./folding/cstyle").FoldMode;
 
 var Mode = function() {
-    var highlighter = new AutoHotKeyHighlightRules();
+    this.HighlightRules = AutoHotKeyHighlightRules;
     this.foldingRules = new FoldMode();
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
     this.lineCommentStart = "/\\*";
     this.blockComment = {start: "/*", end: "*/"};
-    // Extra logic goes here.
+    this.$id = "ace/mode/autohotkey";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

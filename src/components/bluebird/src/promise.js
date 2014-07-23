@@ -601,10 +601,10 @@ function Promise$_spreadSlowCase(targetFn, promise, values, boundTo) {
     ASSERT(isArray(values));
     ASSERT(typeof targetFn === "function");
     var promiseForAll = new PromiseArray(values).promise();
-    promiseForAll._then(function() {
+    var promise2 = promiseForAll._then(function() {
         return targetFn.apply(boundTo, arguments);
-    }, INTERNAL, void 0, APPLY, void 0);
-    promise._follow(promiseForAll);
+    }, void 0, void 0, APPLY, void 0);
+    promise._follow(promise2);
 };
 
 Promise.prototype._callSpread =
@@ -750,8 +750,8 @@ function Promise$_attachExtraTrace(error) {
         ASSERT(canAttach(error));
         var promise = this;
         var stack = error.stack;
-        stack = typeof stack === "string"
-            ? stack.split("\n") : [];
+        stack = typeof stack === "string" ? stack.split("\n") : [];
+        CapturedTrace.protectErrorMessageNewlines(stack);
         var headerLineCount = 1;
         var combinedTraces = 1;
         while(promise != null &&
@@ -767,9 +767,13 @@ function Promise$_attachExtraTrace(error) {
         var stackTraceLimit = Error.stackTraceLimit || 10;
         var max = (stackTraceLimit + headerLineCount) * combinedTraces;
         var len = stack.length;
-        if (len  > max) {
+        if (len > max) {
             stack.length = max;
         }
+
+        if (len > 0)
+            stack[0] = stack[0].split(NEWLINE_PROTECTOR).join("\n");
+
         if (stack.length <= headerLineCount) {
             error.stack = "(No stack trace)";
         } else {

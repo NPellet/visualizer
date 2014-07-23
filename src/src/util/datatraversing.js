@@ -25,7 +25,7 @@ define(['jquery', 'src/data/structures'], function($, Structures) {
 
 	function _setValueFromJPath(element, jpath, newValue, moduleId, mute) {
 		var el = getValueIfNeeded(element);
-		var type;
+		var type, subelement;
 		if(typeof el != "object" && jpath.length > 0)
 			el = {};
 		if(jpath.length == 1)

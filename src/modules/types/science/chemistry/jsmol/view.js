@@ -46,14 +46,12 @@ function(require,Default, UTIL, DataTraversing) {
 
             data: function(data) {
                 var self = this ;
-                this.onReady.done(function() {
-	                self.dom.get( 0 ).contentWindow.setMolFile(data);
+                self.dom.get( 0 ).contentWindow.setMolFile(data);
 
-	                var cfg = $.proxy(self.module.getConfiguration, self.module);
-	                if (cfg('script')) {
-	                    self.dom.get( 0 ).contentWindow.executeScript([cfg('script')]);
-	                }
-	            });
+                var cfg = $.proxy(self.module.getConfiguration, self.module);
+                if (cfg('script')) {
+                    self.dom.get( 0 ).contentWindow.executeScript([cfg('script')]);
+                }
             }
         },
 

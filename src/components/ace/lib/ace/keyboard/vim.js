@@ -80,46 +80,83 @@ exports.handler = {
             data.lastEvent = "keypress";
         }
     },
+    // on mac, with some keyboard layouts (e.g swedish) ^ starts composition, we don't need it in normal mode
+    updateMacCompositionHandlers: function(editor, enable) {
+        var onCompositionUpdateOverride = function(text) {
+            if (util.currentMode !== "insert") {
+                var el = this.textInput.getElement();
+                el.blur();
+                el.focus();
+                el.value = text;
+            } else {
+                this.onCompositionUpdateOrig(text);
+            }
+        };
+        var onCompositionStartOverride = function(text) {
+            if (util.currentMode === "insert") {            
+                this.onCompositionStartOrig(text);
+            }
+        };
+        if (enable) {
+            if (!editor.onCompositionUpdateOrig) {
+                editor.onCompositionUpdateOrig = editor.onCompositionUpdate;
+                editor.onCompositionUpdate = onCompositionUpdateOverride;
+                editor.onCompositionStartOrig = editor.onCompositionStart;
+                editor.onCompositionStart = onCompositionStartOverride;
+            }
+        } else {
+            if (editor.onCompositionUpdateOrig) {
+                editor.onCompositionUpdate = editor.onCompositionUpdateOrig;
+                editor.onCompositionUpdateOrig = null;
+                editor.onCompositionStart = editor.onCompositionStartOrig;
+                editor.onCompositionStartOrig = null;
+            }
+        }
+    },
 
     handleKeyboard: function(data, hashId, key, keyCode, e) {
         // ignore command keys (shift, ctrl etc.)
-        if (hashId != 0 && (key == "" || key == "\x00"))
+        if (hashId !== 0 && (!key || keyCode == -1))
             return null;
         
         var editor = data.editor;
+        var vimState = data.vimState || "start";
         
         if (hashId == 1)
             key = "ctrl-" + key;
         if (key == "ctrl-c") {
             if (!useragent.isMac && editor.getCopyText()) {
                 editor.once("copy", function() {
-                    if (data.state == "start")
+                    if (vimState == "start")
                         coreCommands.stop.exec(editor);
                     else
                         editor.selection.clearSelection();
                 });
                 return {command: "null", passEvent: true};
             }
-            return {command: coreCommands.stop};            
-        } else if ((key == "esc" && hashId == 0) || key == "ctrl-[") {
             return {command: coreCommands.stop};
-        } else if (data.state == "start") {
+        } else if ((key == "esc" && hashId === 0) || key == "ctrl-[") {
+            return {command: coreCommands.stop};
+        } else if (vimState == "start") {
             if (useragent.isMac && this.handleMacRepeat(data, hashId, key)) {
                 hashId = -1;
                 key = data.inputChar;
             }
             
-            if (hashId == -1 || hashId == 1 || hashId == 0 && key.length > 1) {
+            if (hashId == -1 || hashId == 1 || hashId === 0 && key.length > 1) {
                 if (cmds.inputBuffer.idle && startCommands[key])
                     return startCommands[key];
-                cmds.inputBuffer.push(editor, key);
-                return {command: "null", passEvent: false}; 
-            } // if no modifier || shift: wait for input.
-            else if (key.length == 1 && (hashId == 0 || hashId == 4)) {
-                return {command: "null", passEvent: true};
-            } else if (key == "esc" && hashId == 0) {
+                var isHandled = cmds.inputBuffer.push(editor, key);
+                if (!isHandled && hashId !== -1)
+                    return;
+                return {command: "null", passEvent: !isHandled}; 
+            } else if (key == "esc" && hashId === 0) {
                 return {command: coreCommands.stop};
             }
+            // if no modifier || shift: wait for input.
+            else if (hashId === 0 || hashId == 4) {
+                return {command: "null", passEvent: true};
+            } 
         } else {
             if (key == "ctrl-w") {
                 return {command: "removewordleft"};
@@ -132,12 +169,15 @@ exports.handler = {
         if (util.currentMode !== "insert")
             cmds.coreCommands.stop.exec(editor);
         editor.$vimModeHandler = this;
+        
+        this.updateMacCompositionHandlers(editor, true);
     },
 
     detach: function(editor) {
         editor.removeListener("click", exports.onCursorMove);
         util.noMode(editor);
         util.currentMode = "normal";
+        this.updateMacCompositionHandlers(editor, false);
     },
 
     actions: cmds.actions,

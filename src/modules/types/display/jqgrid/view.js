@@ -347,7 +347,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				element[ ";" + jp[ j ].name ] = this.renderElement( element, s, jpath, jp[ j ].name );
 			}
 			
-			s.getChild( this.module.getConfiguration( 'colorjPath' ) ).done( function(value) {
+			s.getChild( this.module.getConfiguration( 'colorjPath' ) ).then( function(value) {
 				element._backgroundColor = value;
 			} );
 
@@ -376,7 +376,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			
 			var defScreen = Renderer.toScreen(source, box, {}, jpath);
 
-			defScreen.then( function( value ) {
+			defScreen.always( function( value ) {
 
 				element._inDom.progress(function( ) {
                         

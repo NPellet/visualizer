@@ -53,8 +53,7 @@ function Motion(m) {
         var a = getPos(editor, range, count, param, false);
         if (!a)
             return;
-        editor.clearSelection();
-        editor.moveCursorTo(a.row, a.column);
+        editor.selection.moveTo(a.row, a.column);
     };
     m.sel = function(editor, range, count, param) {
         var a = getPos(editor, range, count, param, true);
@@ -351,6 +350,10 @@ module.exports = {
                 case "W":
                     editor.selection.selectAWord();
                     break;
+                case ")":
+                case "}":
+                case "]":
+                    param = editor.session.$brackets[param];
                 case "(":
                 case "{":
                 case "[":
@@ -384,6 +387,7 @@ module.exports = {
         param: true,
         handlesCount: true,
         getPos: function(editor, range, count, param, isSel, isRepeat) {
+            if (param == "space") param = " ";
             if (!isRepeat)
                 LAST_SEARCH_MOTION = {ch: "f", param: param};
             var cursor = editor.getCursorPosition();
@@ -399,6 +403,7 @@ module.exports = {
         param: true,
         handlesCount: true,
         getPos: function(editor, range, count, param, isSel, isRepeat) {
+            if (param == "space") param = " ";
             if (!isRepeat)
                 LAST_SEARCH_MOTION = {ch: "F", param: param};
             var cursor = editor.getCursorPosition();
@@ -414,6 +419,7 @@ module.exports = {
         param: true,
         handlesCount: true,
         getPos: function(editor, range, count, param, isSel, isRepeat) {
+            if (param == "space") param = " ";
             if (!isRepeat)
                 LAST_SEARCH_MOTION = {ch: "t", param: param};
             var cursor = editor.getCursorPosition();
@@ -432,6 +438,7 @@ module.exports = {
         param: true,
         handlesCount: true,
         getPos: function(editor, range, count, param, isSel, isRepeat) {
+            if (param == "space") param = " ";
             if (!isRepeat)
                 LAST_SEARCH_MOTION = {ch: "T", param: param};
             var cursor = editor.getCursorPosition();
@@ -481,10 +488,17 @@ module.exports = {
         }
     },
     "$": {
-        nav: function(editor) {
+        handlesCount: true,
+        nav: function(editor, range, count, param) {
+            if (count > 1) {
+                editor.navigateDown(count-1);
+            }
             editor.navigateLineEnd();
         },
-        sel: function(editor) {
+        sel: function(editor, range, count, param) {
+            if (count > 1) {
+                editor.selection.moveCursorBy(count-1, 0);
+            }
             editor.selection.selectLineEnd();
         }
     },
@@ -650,7 +664,8 @@ module.exports = {
                     pos.column = line.length;
                 return pos;
             }
-        }
+        },
+        isLine: true
     })
 };
 
@@ -660,5 +675,7 @@ module.exports.up = module.exports.k;
 module.exports.down = module.exports.j;
 module.exports.pagedown = module.exports["ctrl-d"];
 module.exports.pageup = module.exports["ctrl-u"];
+module.exports.home = module.exports["0"];
+module.exports.end = module.exports["$"];
 
 });

@@ -41,21 +41,30 @@ var Text = function(parentEl) {
     this.element = dom.createElement("div");
     this.element.className = "ace_layer ace_text-layer";
     parentEl.appendChild(this.element);
-
-    this.$characterSize = {width: 0, height: 0};
-    this.checkForSizeChanges();
-    this.$pollSizeChanges();
+    this.$updateEolChar = this.$updateEolChar.bind(this);
 };
 
 (function() {
 
     oop.implement(this, EventEmitter);
 
-    this.EOF_CHAR = "\xB6"; //"&para;";
-    this.EOL_CHAR = "\xAC"; //"&not;";
-    this.TAB_CHAR = "\u2192"; //"&rarr;" "\u21E5";
-    this.SPACE_CHAR = "\xB7"; //"&middot;";
+    this.EOF_CHAR = "\xB6";
+    this.EOL_CHAR_LF = "\xAC";
+    this.EOL_CHAR_CRLF = "\xa4";
+    this.EOL_CHAR = this.EOL_CHAR_LF;
+    this.TAB_CHAR = "\u2192"; //"\u21E5";
+    this.SPACE_CHAR = "\xB7";
     this.$padding = 0;
+
+    this.$updateEolChar = function() {
+        var EOL_CHAR = this.session.doc.getNewLineCharacter() == "\n"
+           ? this.EOL_CHAR_LF
+           : this.EOL_CHAR_CRLF;
+        if (this.EOL_CHAR != EOL_CHAR) {
+            this.EOL_CHAR = EOL_CHAR;
+            return true;
+        }
+    }
 
     this.setPadding = function(padding) {
         this.$padding = padding;
@@ -63,131 +72,27 @@ var Text = function(parentEl) {
     };
 
     this.getLineHeight = function() {
-        return this.$characterSize.height || 1;
+        return this.$fontMetrics.$characterSize.height || 0;
     };
 
     this.getCharacterWidth = function() {
-        return this.$characterSize.width || 1;
+        return this.$fontMetrics.$characterSize.width || 0;
     };
+    
+    this.$setFontMetrics = function(measure) {
+        this.$fontMetrics = measure;
+        this.$fontMetrics.on("changeCharacterSize", function(e) {
+            this._signal("changeCharacterSize", e);
+        }.bind(this));
+        this.$pollSizeChanges();
+    }
 
     this.checkForSizeChanges = function() {
-        var size = this.$measureSizes();
-        if (size && (this.$characterSize.width !== size.width || this.$characterSize.height !== size.height)) {
-            this.$measureNode.style.fontWeight = "bold";
-            var boldSize = this.$measureSizes();
-            this.$measureNode.style.fontWeight = "";
-            this.$characterSize = size;
-            this.allowBoldFonts = boldSize && boldSize.width === size.width && boldSize.height === size.height;
-            this._emit("changeCharacterSize", {data: size});
-        }
+        this.$fontMetrics.checkForSizeChanges();
     };
-
     this.$pollSizeChanges = function() {
-        var self = this;
-        this.$pollSizeChangesTimer = setInterval(function() {
-            self.checkForSizeChanges();
-        }, 500);
+        return this.$pollSizeChangesTimer = this.$fontMetrics.$pollSizeChanges();
     };
-
-    this.$fontStyles = {
-        fontFamily : 1,
-        fontSize : 1,
-        fontWeight : 1,
-        fontStyle : 1,
-        lineHeight : 1
-    };
-
-    this.$measureSizes = useragent.isIE || useragent.isOldGecko ? function() {
-        var n = 1000;
-        if (!this.$measureNode) {
-            var measureNode = this.$measureNode = dom.createElement("div");
-            var style = measureNode.style;
-
-            style.width = style.height = "auto";
-            style.left = style.top = (-n * 40)  + "px";
-
-            style.visibility = "hidden";
-            style.position = "fixed";
-            style.overflow = "visible";
-            style.whiteSpace = "nowrap";
-
-            // in FF 3.6 monospace fonts can have a fixed sub pixel width.
-            // that's why we have to measure many characters
-            // Note: characterWidth can be a float!
-            measureNode.innerHTML = lang.stringRepeat("Xy", n);
-
-            if (this.element.ownerDocument.body) {
-                this.element.ownerDocument.body.appendChild(measureNode);
-            } else {
-                var container = this.element.parentNode;
-                while (!dom.hasCssClass(container, "ace_editor"))
-                    container = container.parentNode;
-                container.appendChild(measureNode);
-            }
-        }
-
-        // Size and width can be null if the editor is not visible or
-        // detached from the document
-        if (!this.element.offsetWidth)
-            return null;
-
-        var style = this.$measureNode.style;
-        var computedStyle = dom.computedStyle(this.element);
-        for (var prop in this.$fontStyles)
-            style[prop] = computedStyle[prop];
-
-        var size = {
-            height: this.$measureNode.offsetHeight,
-            width: this.$measureNode.offsetWidth / (n * 2)
-        };
-
-        // Size and width can be null if the editor is not visible or
-        // detached from the document
-        if (size.width == 0 || size.height == 0)
-            return null;
-
-        return size;
-    }
-    : function() {
-        if (!this.$measureNode) {
-            var measureNode = this.$measureNode = dom.createElement("div");
-            var style = measureNode.style;
-
-            style.width = style.height = "auto";
-            style.left = style.top = -100 + "px";
-
-            style.visibility = "hidden";
-            style.position = "fixed";
-            style.overflow = "visible";
-            style.whiteSpace = "nowrap";
-
-            measureNode.innerHTML = "X";
-
-            var container = this.element.parentNode;
-            while (container && !dom.hasCssClass(container, "ace_editor"))
-                container = container.parentNode;
-
-            if (!container)
-                return this.$measureNode = null;
-
-            container.appendChild(measureNode);
-        }
-
-        var rect = this.$measureNode.getBoundingClientRect();
-
-        var size = {
-            height: rect.height,
-            width: rect.width
-        };
-
-        // Size and width can be null if the editor is not visible or
-        // detached from the document
-        if (size.width == 0 || size.height == 0)
-            return null;
-
-        return size;
-    };
-
     this.setSession = function(session) {
         this.session = session;
         this.$computeTabString();
@@ -221,7 +126,7 @@ var Text = function(parentEl) {
         var tabStr = this.$tabStrings = [0];
         for (var i = 1; i < tabSize + 1; i++) {
             if (this.showInvisibles) {
-                tabStr.push("<span class='ace_invisible'>"
+                tabStr.push("<span class='ace_invisible ace_invisible_tab'>"
                     + this.TAB_CHAR
                     + lang.stringRepeat("\xa0", i - 1)
                     + "</span>");
@@ -232,8 +137,12 @@ var Text = function(parentEl) {
         if (this.displayIndentGuides) {
             this.$indentGuideRe =  /\s\S| \t|\t |\s$/;
             var className = "ace_indent-guide";
+            var spaceClass = "";
+            var tabClass = "";
             if (this.showInvisibles) {
                 className += " ace_invisible";
+                spaceClass = " ace_invisible_space";
+                tabClass = " ace_invisible_tab";
                 var spaceContent = lang.stringRepeat(this.SPACE_CHAR, this.tabSize);
                 var tabContent = this.TAB_CHAR + lang.stringRepeat("\xa0", this.tabSize - 1);
             } else{
@@ -241,8 +150,8 @@ var Text = function(parentEl) {
                 var tabContent = spaceContent;
             }
 
-            this.$tabStrings[" "] = "<span class='" + className + "'>" + spaceContent + "</span>";
-            this.$tabStrings["\t"] = "<span class='" + className + "'>" + tabContent + "</span>";
+            this.$tabStrings[" "] = "<span class='" + className + spaceClass + "'>" + spaceContent + "</span>";
+            this.$tabStrings["\t"] = "<span class='" + className + tabClass + "'>" + tabContent + "</span>";
         }
     };
 
@@ -293,6 +202,7 @@ var Text = function(parentEl) {
                 this.$renderLine(
                     html, row, !this.$useLineGroups(), row == foldStart ? foldLine : false
                 );
+                lineElement.style.height = config.lineHeight * this.session.getRowLength(row) + "px";
                 dom.setInnerHtml(lineElement, html.join(""));
             }
             row++;
@@ -359,10 +269,11 @@ var Text = function(parentEl) {
             if (this.$useLineGroups()) {
                 container.className = 'ace_line_group';
                 fragment.appendChild(container);
+                container.style.height = config.lineHeight * this.session.getRowLength(row) + "px";
+
             } else {
-                var lines = container.childNodes
-                while(lines.length)
-                    fragment.appendChild(lines[0]);
+                while(container.firstChild)
+                    fragment.appendChild(container.firstChild);
             }
 
             row++;
@@ -390,7 +301,7 @@ var Text = function(parentEl) {
                 break;
 
             if (this.$useLineGroups())
-                html.push("<div class='ace_line_group'>")
+                html.push("<div class='ace_line_group' style='height:", config.lineHeight*this.session.getRowLength(row), "px'>")
 
             this.$renderLine(html, row, false, row == foldStart ? foldLine : false);
 
@@ -414,7 +325,7 @@ var Text = function(parentEl) {
         var replaceFunc = function(c, a, b, tabIdx, idx4) {
             if (a) {
                 return self.showInvisibles ?
-                    "<span class='ace_invisible'>" + lang.stringRepeat(self.SPACE_CHAR, c.length) + "</span>" :
+                    "<span class='ace_invisible ace_invisible_space'>" + lang.stringRepeat(self.SPACE_CHAR, c.length) + "</span>" :
                     lang.stringRepeat("\xa0", c.length);
             } else if (c == "&") {
                 return "&#38;";
@@ -426,14 +337,14 @@ var Text = function(parentEl) {
                 return self.$tabStrings[tabSize];
             } else if (c == "\u3000") {
                 // U+3000 is both invisible AND full-width, so must be handled uniquely
-                var classToUse = self.showInvisibles ? "ace_cjk ace_invisible" : "ace_cjk";
+                var classToUse = self.showInvisibles ? "ace_cjk ace_invisible ace_invisible_space" : "ace_cjk";
                 var space = self.showInvisibles ? self.SPACE_CHAR : "";
                 screenColumn += 1;
                 return "<span class='" + classToUse + "' style='width:" +
                     (self.config.characterWidth * 2) +
                     "px'>" + space + "</span>";
             } else if (b) {
-                return "<span class='ace_invisible ace_invalid'>" + self.SPACE_CHAR + "</span>";
+                return "<span class='ace_invisible ace_invisible_space ace_invalid'>" + self.SPACE_CHAR + "</span>";
             } else {
                 screenColumn += 1;
                 return "<span class='ace_cjk' style='width:" +
@@ -457,9 +368,9 @@ var Text = function(parentEl) {
         return screenColumn + value.length;
     };
 
-    this.renderIndentGuide = function(stringBuilder, value) {
+    this.renderIndentGuide = function(stringBuilder, value, max) {
         var cols = value.search(this.$indentGuideRe);
-        if (cols <= 0)
+        if (cols <= 0 || cols >= max)
             return value;
         if (value[0] == " ") {
             cols -= cols % this.tabSize;
@@ -483,7 +394,7 @@ var Text = function(parentEl) {
             var value = token.value;
             if (i == 0 && this.displayIndentGuides) {
                 chars = value.length;
-                value = this.renderIndentGuide(stringBuilder, value);
+                value = this.renderIndentGuide(stringBuilder, value, splitChars);
                 if (!value)
                     continue;
                 chars -= value.length;
@@ -550,7 +461,10 @@ var Text = function(parentEl) {
 
         if (!onlyContents) {
             stringBuilder.push(
-                "<div class='ace_line' style='height:", this.config.lineHeight, "px'>"
+                "<div class='ace_line' style='height:", 
+                    this.config.lineHeight * (
+                        this.$useLineGroups() ? 1 :this.session.getRowLength(row)
+                    ), "px'>"
             );
         }
 
@@ -567,7 +481,7 @@ var Text = function(parentEl) {
                 row = foldLine.end.row
 
             stringBuilder.push(
-                "<span class='ace_invisible'>",
+                "<span class='ace_invisible ace_invisible_eol'>",
                 row == this.session.getLength() - 1 ? this.EOF_CHAR : this.EOL_CHAR,
                 "</span>"
             );

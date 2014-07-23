@@ -33,7 +33,6 @@ define(function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var PhpHighlightRules = require("./php_highlight_rules").PhpHighlightRules;
 var PhpLangHighlightRules = require("./php_highlight_rules").PhpLangHighlightRules;
 var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
@@ -44,9 +43,9 @@ var CStyleFoldMode = require("./folding/cstyle").FoldMode;
 var unicode = require("../unicode");
 
 var Mode = function(opts) {
-    var inline = opts && opts.inline;
-    var HighlightRules = inline ? PhpLangHighlightRules : PhpHighlightRules;
-    this.$tokenizer = new Tokenizer(new HighlightRules().getRules());
+    this.inlinePhp = opts && opts.inline;
+    var HighlightRules = this.inlinePhp ? PhpLangHighlightRules : PhpHighlightRules;
+    this.HighlightRules = HighlightRules;
     this.$outdent = new MatchingBraceOutdent();
     this.$behaviour = new CstyleBehaviour();
     this.foldingRules = new CStyleFoldMode();
@@ -76,7 +75,7 @@ oop.inherits(Mode, TextMode);
     this.getNextLineIndent = function(state, line, tab) {
         var indent = this.$getIndent(line);
 
-        var tokenizedLine = this.$tokenizer.getLineTokens(line, state);
+        var tokenizedLine = this.getTokenizer().getLineTokens(line, state);
         var tokens = tokenizedLine.tokens;
         var endState = tokenizedLine.state;
 
@@ -117,6 +116,9 @@ oop.inherits(Mode, TextMode);
     this.createWorker = function(session) {
         var worker = new WorkerClient(["ace"], "ace/mode/php_worker", "PhpWorker");
         worker.attachToDocument(session.getDocument());
+        
+        if (this.inlinePhp)
+            worker.call("setOptions", [{inline: true}]);
 
         worker.on("error", function(e) {
             session.setAnnotations(e.data);
@@ -129,6 +131,7 @@ oop.inherits(Mode, TextMode);
         return worker;
     };
 
+    this.$id = "ace/mode/php";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

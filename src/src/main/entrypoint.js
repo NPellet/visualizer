@@ -120,21 +120,22 @@ define(['jquery',
 		var view = Versioning.getView();
 		var data = Versioning.getData();
 
+		var def = new Promise(function (resolve, reject) {
+            if (view.init_script) {
+                var prefix = '(function init_script(init_deferred){"use strict";\n';
+                var script = view.init_script[ 0 ].groups.general[ 0 ].script[ 0 ] || "";
+                var suffix = "\n})({resolve:resolve});";
+                if (script.indexOf("init_deferred") === -1) {
+                    suffix += "resolve();";
+                }
+                eval(prefix + script + suffix);
+            } else {
+                resolve();
+            }
+        });
 
-		var def = $.Deferred();
-		if (view.init_script) {
-			var prefix = '(function(init_deferred){"use strict";';
-			var script = view.init_script[ 0 ].groups.general[ 0 ].script[ 0 ] || "";
-			var suffix = "})(def);";
-			if (script.indexOf("init_deferred") === -1) {
-				suffix += "def.resolve();";
-			}
-			eval(prefix + script + suffix);
-		} else {
-			def.resolve();
-		}
 
-		def.done(function() {
+		def.then(function() {
 
 			ActionManager.viewHasChanged(view);
 
@@ -160,7 +161,7 @@ define(['jquery',
 					// Defined by an URL
 					if (entryVar.url) {
 
-						fetching.push( entryVar.fetch(true).done(function(v) {
+						fetching.push( entryVar.fetch(true).then(function(v) {
 							var varname = v.varname;
 							data[ varname ] = v.value;
 
@@ -185,7 +186,7 @@ define(['jquery',
 				}
 			}
 
-			$.when.apply( $, fetching ).then( function() {
+			Promise.all( fetching ).then( function() {
 				API.stopLoading("Fetching remote variables");
 			});
 
@@ -223,7 +224,9 @@ define(['jquery',
 					}
 				}
 			}
-		});
+		}, function (e) {
+            Debug.error("Error executing the init script", e);
+        });
 	}
 
 	function configureEntryPoint() {
@@ -240,7 +243,7 @@ define(['jquery',
 		
 		Traversing.getJPathsFromElement(data, options);
 
-		require(['./forms/form'], function(Form) {
+		require(['forms/form'], function(Form) {
 
 			var form = new Form();
 

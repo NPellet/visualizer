@@ -36,13 +36,12 @@ var useragent = require("../lib/useragent");
 var dom = require("../lib/dom");
 var lang = require("../lib/lang");
 var BROKEN_SETDATA = useragent.isChrome < 18;
+var USE_IE_MIME_TYPE =  useragent.isIE;
 
 var TextInput = function(parentNode, host) {
     var text = dom.createElement("textarea");
     text.className = "ace_text-input";
-    /*/ debug
-    text.style.cssText = "opacity:1;background:rgba(0, 250, 0, 0.3);outline:rgba(0, 250, 0, 0.8) solid 1px;outline-offset:3px;width:5em;z-index:500";
-    /**/
+
     if (useragent.isTouchPad)
         text.setAttribute("x-palm-disable-auto-cap", true);
 
@@ -51,12 +50,11 @@ var TextInput = function(parentNode, host) {
     text.autocapitalize = "off";
     text.spellcheck = false;
 
-    text.style.bottom = "2000em";
+    text.style.opacity = "0";
     parentNode.insertBefore(text, parentNode.firstChild);
 
     var PLACEHOLDER = "\x01\x01";
 
-    var cut = false;
     var copied = false;
     var pasted = false;
     var inComposition = false;
@@ -176,16 +174,19 @@ var TextInput = function(parentNode, host) {
             if (inComposition && (!text.value || keytable[e.keyCode]))
                 setTimeout(onCompositionEnd, 0);
             if ((text.value.charCodeAt(0)||0) < 129) {
-                return;
+                return syncProperty.call();
             }
             inComposition ? onCompositionUpdate() : onCompositionStart();
+        });
+        // when user presses backspace after focusing the editor 
+        // propertychange isn't called for the next character
+        event.addListener(text, "keydown", function (e) {
+            syncProperty.schedule(50);
         });
     }
 
     var onSelect = function(e) {
-        if (cut) {
-            cut = false;
-        } else if (copied) {
+        if (copied) {
             copied = false;
         } else if (isAllSelected(text)) {
             host.selectAll();
@@ -210,18 +211,20 @@ var TextInput = function(parentNode, host) {
             if (data)
                 host.onPaste(data);
             pasted = false;
-        } else if (data == PLACEHOLDER[0]) {
+        } else if (data == PLACEHOLDER.charAt(0)) {
             if (afterContextMenu)
                 host.execCommand("del", {source: "ace"});
+            else // some versions of android do not fire keydown when pressing backspace
+                host.execCommand("backspace", {source: "ace"});
         } else {
             if (data.substring(0, 2) == PLACEHOLDER)
                 data = data.substr(2);
-            else if (data[0] == PLACEHOLDER[0])
+            else if (data.charAt(0) == PLACEHOLDER.charAt(0))
                 data = data.substr(1);
-            else if (data[data.length - 1] == PLACEHOLDER[0])
+            else if (data.charAt(data.length - 1) == PLACEHOLDER.charAt(0))
                 data = data.slice(0, -1);
             // can happen if undo in textarea isn't stopped
-            if (data[data.length - 1] == PLACEHOLDER[0])
+            if (data.charAt(data.length - 1) == PLACEHOLDER.charAt(0))
                 data = data.slice(0, -1);
             
             if (data)
@@ -238,55 +241,31 @@ var TextInput = function(parentNode, host) {
         sendText(data);
         resetValue();
     };
-
-    var onCut = function(e) {
-        var data = host.getCopyText();
-        if (!data) {
-            event.preventDefault(e);
-            return;
-        }
-
+    
+    var handleClipboardData = function(e, data) {
         var clipboardData = e.clipboardData || window.clipboardData;
-
-        if (clipboardData && !BROKEN_SETDATA) {
-            // Safari 5 has clipboardData object, but does not handle setData()
-            var supported = clipboardData.setData("Text", data);
-            if (supported) {
-                host.onCut();
-                event.preventDefault(e);
-            }
-        }
-
-        if (!supported) {
-            cut = true;
-            text.value = data;
-            text.select();
-            setTimeout(function(){
-                cut = false;
-                resetValue();
-                resetSelection();
-                host.onCut();
-            });
-        }
-    };
-
-    var onCopy = function(e) {
-        var data = host.getCopyText();
-        if (!data) {
-            event.preventDefault(e);
+        if (!clipboardData || BROKEN_SETDATA)
             return;
-        }
-
-        var clipboardData = e.clipboardData || window.clipboardData;
-        if (clipboardData && !BROKEN_SETDATA) {
+        // using "Text" doesn't work on old webkit but ie needs it
+        // TODO are there other browsers that require "Text"?
+        var mime = USE_IE_MIME_TYPE ? "Text" : "text/plain";
+        if (data) {
             // Safari 5 has clipboardData object, but does not handle setData()
-            var supported = clipboardData.setData("Text", data);
-            if (supported) {
-                host.onCopy();
-                event.preventDefault(e);
-            }
+            return clipboardData.setData(mime, data) !== false;
+        } else {
+            return clipboardData.getData(mime);
         }
-        if (!supported) {
+    }
+
+    var doCopy = function(e, isCut) {
+        var data = host.getCopyText();
+        if (!data)
+            return event.preventDefault(e);
+
+        if (handleClipboardData(e, data)) {
+            isCut ? host.onCut() : host.onCopy();
+            event.preventDefault(e);
+        } else {
             copied = true;
             text.value = data;
             text.select();
@@ -294,16 +273,22 @@ var TextInput = function(parentNode, host) {
                 copied = false;
                 resetValue();
                 resetSelection();
-                host.onCopy();
+                isCut ? host.onCut() : host.onCopy();
             });
         }
     };
-
+    
+    var onCut = function(e) {
+        doCopy(e, true);
+    }
+    
+    var onCopy = function(e) {
+        doCopy(e, false);
+    }
+    
     var onPaste = function(e) {
-        var clipboardData = e.clipboardData || window.clipboardData;
-
-        if (clipboardData) {
-            var data = clipboardData.getData("Text");
+        var data = handleClipboardData(e);
+        if (typeof data == "string") {
             if (data)
                 host.onPaste(data);
             if (useragent.isIE)
@@ -331,7 +316,7 @@ var TextInput = function(parentNode, host) {
     if (!('oncut' in text) || !('oncopy' in text) || !('onpaste' in text)){
         event.addListener(parentNode, "keydown", function(e) {
             if ((useragent.isMac && !e.metaKey) || !e.ctrlKey)
-            return;
+                return;
 
             switch (e.keyCode) {
                 case 67:
@@ -350,7 +335,7 @@ var TextInput = function(parentNode, host) {
 
     // COMPOSITION
     var onCompositionStart = function(e) {
-        if (inComposition) return;
+        if (inComposition || !host.onCompositionStart) return;
         // console.log("onCompositionStart", inComposition)
         inComposition = {};
         host.onCompositionStart();
@@ -366,11 +351,14 @@ var TextInput = function(parentNode, host) {
 
     var onCompositionUpdate = function() {
         // console.log("onCompositionUpdate", inComposition && JSON.stringify(text.value))
-        if (!inComposition) return;
-        host.onCompositionUpdate(text.value);
+        if (!inComposition || !host.onCompositionUpdate) return;
+        var val = text.value.replace(/\x01/g, "");
+        if (inComposition.lastValue === val) return;
+        
+        host.onCompositionUpdate(val);
         if (inComposition.lastValue)
             host.undo();
-        inComposition.lastValue = text.value.replace(/\x01/g, "")
+        inComposition.lastValue = val;
         if (inComposition.lastValue) {
             var r = host.selection.getRange();
             host.insert(inComposition.lastValue);
@@ -382,10 +370,12 @@ var TextInput = function(parentNode, host) {
     };
 
     var onCompositionEnd = function(e) {
+        if (!host.onCompositionEnd) return;
         // console.log("onCompositionEnd", inComposition &&inComposition.lastValue)
         var c = inComposition;
         inComposition = false;
         var timer = setTimeout(function() {
+            timer = null;
             var str = text.value.replace(/\x01/g, "");
             // console.log(str, c.lastValue)
             if (inComposition)
@@ -399,14 +389,15 @@ var TextInput = function(parentNode, host) {
         });
         inputHandler = function compositionInputHandler(str) {
             // console.log("onCompositionEnd", str, c.lastValue)
-            clearTimeout(timer);
+            if (timer)
+                clearTimeout(timer);
             str = str.replace(/\x01/g, "");
             if (str == c.lastValue)
                 return "";
-            if (c.lastValue)
+            if (c.lastValue && timer)
                 host.undo();
             return str;
-        }        
+        };
         host.onCompositionEnd();
         host.removeListener("mousedown", onCompositionEnd);
         if (e.type == "compositionend" && c.range) {
@@ -419,7 +410,12 @@ var TextInput = function(parentNode, host) {
     var syncComposition = lang.delayedCall(onCompositionUpdate, 50);
 
     event.addListener(text, "compositionstart", onCompositionStart);
-    event.addListener(text, useragent.isGecko ? "text" : "keyup", function(){syncComposition.schedule()});
+    if (useragent.isGecko) {
+        event.addListener(text, "text", function(){syncComposition.schedule()});
+    } else {
+        event.addListener(text, "keyup", function(){syncComposition.schedule()});
+        event.addListener(text, "keydown", function(){syncComposition.schedule()});
+    }
     event.addListener(text, "compositionend", onCompositionEnd);
 
     this.getElement = function() {
@@ -436,10 +432,9 @@ var TextInput = function(parentNode, host) {
             tempStyle = text.style.cssText;
 
         text.style.cssText = "z-index:100000;" + (useragent.isIE ? "opacity:0.1;" : "");
-        // text.style.cssText += "background:rgba(250, 0, 0, 0.3); opacity:1;";
 
         resetSelection(host.selection.isEmpty());
-        host._emit("nativecontextmenu", {target: host});
+        host._emit("nativecontextmenu", {target: host, domEvent: e});
         var rect = host.container.getBoundingClientRect();
         var style = dom.computedStyle(host.container);
         var top = rect.top + (parseInt(style.borderTopWidth) || 0);
@@ -477,11 +472,13 @@ var TextInput = function(parentNode, host) {
     }
 
     // firefox fires contextmenu event after opening it
-    if (!useragent.isGecko) {
-        event.addListener(text, "contextmenu", function(e) {
+    if (!useragent.isGecko || useragent.isMac) {
+        var onContextMenu = function(e) {
             host.textInput.onContextMenu(e);
             onContextMenuClose();
-        });
+        };
+        event.addListener(host.renderer.scroller, "contextmenu", onContextMenu);
+        event.addListener(text, "contextmenu", onContextMenu);
     }
 };
 

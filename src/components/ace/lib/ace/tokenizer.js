@@ -34,8 +34,6 @@ define(function(require, exports, module) {
 // tokenizing lines longer than this makes editor very slow
 var MAX_TOKEN_COUNT = 1000;
 /**
- *
- *
  * This class takes a set of highlighting rules, and creates a tokenizer out of them. For more information, see [the wiki on extending highlighters](https://github.com/ajaxorg/ace/wiki/Creating-or-Extending-an-Edit-Mode#wiki-extendingTheHighlighter).
  * @class Tokenizer
  **/
@@ -97,7 +95,7 @@ var Tokenizer = function(rules) {
             if (matchcount > 1) {
                 if (/\\\d/.test(rule.regex)) {
                     // Replace any backreferences and offset appropriately.
-                    adjustedregex = rule.regex.replace(/\\([0-9]+)/g, function (match, digit) {
+                    adjustedregex = rule.regex.replace(/\\([0-9]+)/g, function(match, digit) {
                         return "\\" + (parseInt(digit, 10) + matchTotal + 1);
                     });
                 } else {
@@ -116,7 +114,11 @@ var Tokenizer = function(rules) {
             // makes property access faster
             if (!rule.onMatch)
                 rule.onMatch = null;
-            rule.__proto__ = null;
+        }
+        
+        if (!ruleRegExps.length) {
+            mapping[0] = 0;
+            ruleRegExps.push("$");
         }
         
         splitterRurles.forEach(function(rule) {
@@ -128,6 +130,10 @@ var Tokenizer = function(rules) {
 };
 
 (function() {
+    this.$setMaxTokenCount = function(m) {
+        MAX_TOKEN_COUNT = m | 0;
+    };
+    
     this.$applyToken = function(str) {
         var values = this.splitRegex.exec(str).slice(1);
         var types = this.token.apply(this, values);
@@ -220,6 +226,10 @@ var Tokenizer = function(rules) {
 
         var currentState = startState || "start";
         var state = this.states[currentState];
+        if (!state) {
+            currentState = "start";
+            state = this.states[currentState];
+        }
         var mapping = this.matchMappings[currentState];
         var re = this.regExps[currentState];
         re.lastIndex = 0;
@@ -308,7 +318,7 @@ var Tokenizer = function(rules) {
                     token = {
                         value: line.substring(lastIndex, lastIndex += 2000),
                         type: "overflow"
-                    }    
+                    };
                 }
                 currentState = "start";
                 stack = [];
@@ -318,7 +328,11 @@ var Tokenizer = function(rules) {
 
         if (token.type)
             tokens.push(token);
-
+        
+        if (stack.length > 1) {
+            if (stack[0] !== currentState)
+                stack.unshift(currentState);
+        }
         return {
             tokens : tokens,
             state : stack.length ? stack : currentState

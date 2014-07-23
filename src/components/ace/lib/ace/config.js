@@ -77,16 +77,26 @@ exports.moduleUrl = function(name, component) {
 
     var parts = name.split("/");
     component = component || parts[parts.length - 2] || "";
-    var base = parts[parts.length - 1].replace(component, "").replace(/(^[\-_])|([\-_]$)/, "");
+    
+    // todo make this configurable or get rid of '-'
+    var sep = component == "snippets" ? "/" : "-";
+    var base = parts[parts.length - 1];    
+    if (sep == "-") {
+        var re = new RegExp("^" + component + "[\\-_]|[\\-_]" + component + "$", "g");
+        base = base.replace(re, "");
+    }
 
-    if (!base && parts.length > 1)
+    if ((!base || base == component) && parts.length > 1)
         base = parts[parts.length - 2];
     var path = options[component + "Path"];
-    if (path == null)
+    if (path == null) {
         path = options.basePath;
+    } else if (sep == "/") {
+        component = sep = "";
+    }
     if (path && path.slice(-1) != "/")
         path += "/";
-    return path + component + "-" + base + this.get("suffix");
+    return path + component + sep + base + this.get("suffix");
 };
 
 exports.setModuleUrl = function(name, subst) {
@@ -103,7 +113,7 @@ exports.loadModule = function(moduleName, onLoad) {
 
     try {
         module = require(moduleName);
-    } catch (e) {};
+    } catch (e) {}
     // require(moduleName) can return empty object if called after require([moduleName], callback)
     if (module && !exports.$loading[moduleName])
         return onLoad && onLoad(module);
@@ -134,8 +144,8 @@ exports.loadModule = function(moduleName, onLoad) {
 
 
 // initialization
-exports.init = function() {
-    options.packaged = require.packaged || module.packaged || (global.define && define.packaged);
+function init(packaged) {
+    options.packaged = packaged || require.packaged || module.packaged || (global.define && define.packaged);
 
     if (!global.document)
         return "";
@@ -143,7 +153,11 @@ exports.init = function() {
     var scriptOptions = {};
     var scriptUrl = "";
 
-    var scripts = document.getElementsByTagName("script");
+    // Use currentScript.ownerDocument in case this file was loaded from imported document. (HTML Imports)
+    var currentScript = (document.currentScript || document._currentScript ); // native or polyfill
+    var currentDocument = currentScript && currentScript.ownerDocument || document;
+    
+    var scripts = currentDocument.getElementsByTagName("script");
     for (var i=0; i<scripts.length; i++) {
         var script = scripts[i];
 
@@ -180,6 +194,8 @@ exports.init = function() {
             exports.set(key, scriptOptions[key]);
 };
 
+exports.init = init;
+
 function deHyphenate(str) {
     return str.replace(/-(.)/g, function(m, m1) { return m1.toUpperCase(); });
 }
@@ -207,8 +223,11 @@ var optionsProvider = {
         if (this["$" + name] === value)
             return;
         var opt = this.$options[name];
-        if (!opt)
+        if (!opt) {
+            if (typeof console != "undefined" && console.warn)
+                console.warn('misspelled option "' + name + '"');
             return undefined;
+        }
         if (opt.forwardTo)
             return this[opt.forwardTo] && this[opt.forwardTo].setOption(name, value);
 
@@ -219,8 +238,11 @@ var optionsProvider = {
     },
     getOption: function(name) {
         var opt = this.$options[name];
-        if (!opt)
+        if (!opt) {
+            if (typeof console != "undefined" && console.warn)
+                console.warn('misspelled option "' + name + '"');
             return undefined;
+        }
         if (opt.forwardTo)
             return this[opt.forwardTo] && this[opt.forwardTo].getOption(name);
         return opt && opt.get ? opt.get.call(this) : this["$" + name];
@@ -264,7 +286,7 @@ exports.setDefaultValue = function(path, name, value) {
     var opts = defaultOptions[path] || (defaultOptions[path] = {});
     if (opts[name]) {
         if (opts.forwardTo)
-            exports.setDefaultValue(opts.forwardTo, name, value)
+            exports.setDefaultValue(opts.forwardTo, name, value);
         else
             opts[name].value = value;
     }

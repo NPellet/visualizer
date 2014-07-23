@@ -36,7 +36,7 @@ var event = require("../lib/event");
 
 var KeyBinding = function(editor) {
     this.$editor = editor;
-    this.$data = { };
+    this.$data = {editor: editor};
     this.$handlers = [];
     this.setDefaultHandler(editor.commands);
 };
@@ -46,7 +46,6 @@ var KeyBinding = function(editor) {
         this.removeKeyboardHandler(this.$defaultHandler);
         this.$defaultHandler = kb;
         this.addKeyboardHandler(kb, 0);
-        this.$data = {editor: this.$editor};
     };
 
     this.setKeyboardHandler = function(kb) {
@@ -63,6 +62,8 @@ var KeyBinding = function(editor) {
     this.addKeyboardHandler = function(kb, pos) {
         if (!kb)
             return;
+        if (typeof kb == "function" && !kb.handleKeyboard)
+            kb.handleKeyboard = kb;
         var i = this.$handlers.indexOf(kb);
         if (i != -1)
             this.$handlers.splice(i, 1);
@@ -108,8 +109,11 @@ var KeyBinding = function(editor) {
                 success = commands.exec(toExecute.command, this.$editor, toExecute.args, e);                
             }
             // do not stop input events to not break repeating
-            if (success && e && hashId != -1 && toExecute.passEvent != true)
+            if (success && e && hashId != -1 && 
+                toExecute.passEvent != true && toExecute.command.passEvent != true
+            ) {
                 event.stopEvent(e);
+            }
             if (success)
                 break;
         }
