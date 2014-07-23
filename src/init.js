@@ -15,6 +15,7 @@ requirejs.config({
 		pouchdb: "components/pouchdb/dist/pouchdb-nightly.min",
 		uri: "components/uri.js/src",
 		underscore: "components/underscore/underscore",
+        lodash: "components/lodash/dist/lodash",
 		leaflet: "components/leaflet/dist/leaflet"
 	},
 	shim: {
