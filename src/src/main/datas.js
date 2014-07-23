@@ -1,4 +1,4 @@
-define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug ) {
+define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
     "use strict";
 
 	function DataObject( object, recursive, forceCopy ) {
@@ -372,7 +372,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 			}
 
 			if ( ! jpath || jpath.length === 0 ) {
-				return $.Deferred().resolve(this);
+				return Promise.resolve(this);
 			}
 			
 			jpath = jpath.slice();
@@ -751,7 +751,7 @@ define([ 'jquery', 'src/util/util', 'src/util/debug' ], function( $, Util, Debug
 	
 	var getChildNative = {
 		value: function() {
-			return $.Deferred().resolve( this );
+			return Promise.resolve( this );
 		}
 	};
 	
