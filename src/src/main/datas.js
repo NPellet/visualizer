@@ -632,7 +632,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 	var fetch = {
 		value: function(forceJson) {
 
-			if (!this.type || (this.value || !this.url)) { // No need for fetching. Still returning a promise, though.
+			if (this.value || !this.url) { // No need for fetching. Still returning a promise, though.
 				return Promise.resolve(this);
 			}
 
