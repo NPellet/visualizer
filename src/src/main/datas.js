@@ -602,7 +602,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 		value: function( idOrFunc ) {
 
 			if( ! this._dataChange ) {
-				Debug.log("Could not unbind event. No listener for this object");
+				Debug.info("Could not unbind event. No listener for this object");
 				return false;
 			}
 
