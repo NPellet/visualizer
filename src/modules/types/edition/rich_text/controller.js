@@ -32,6 +32,31 @@ define(['modules/default/defaultcontroller'], function(Default) {
         this.module.definition.richtext = value;
         this.createDataFromEvent("onEditorChange", "html", DataObject.check({type:"html", value: value}, true));
     };
+    
+    controller.prototype.configurationStructure = function(section) {
+        return {
+            groups: {
+                group: {
+                    options: {
+                        type: 'list'
+                    },
+
+                    fields: {
+                        editable: {
+                            type: 'checkbox',
+                            title: 'Is Editable',
+                            options: {isEditable: 'Yes'},
+                            default: ['isEditable']
+                        }
+                    }
+                }
+            }
+        }		
+    }
+
+	controller.prototype.configAliases = {
+        'editable': [ 'groups', 'group', 0, 'editable', 0 ]
+	}
 
     return controller;
 });
