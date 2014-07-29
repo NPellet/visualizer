@@ -412,28 +412,41 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				if(!moduleValue)
 					return;
 				
-				val = DataTraversing.getValueIfNeeded(moduleValue),
+				val = DataTraversing.getValueIfNeeded(moduleValue);
 
-                    $.when(val).then(function(value){
-	                    var minX=self.module.getConfiguration( 'minX' ) || 0;
-						var maxX=self.module.getConfiguration( 'maxX' ) || value.length-1;
-						var step=(maxX-minX)/(value.length-1);
-                        var val2 = [];
-                        for(var i = 0, l = value.length; i < l; i++) {
-                                val2.push(minX+step*i);
-                                val2.push(value[i]);
-                        }
+				var serie = self.graph.newSerie(varname, {trackMouse: true});
 
-                        var serie = self.graph.newSerie(varname, {trackMouse: true}); // lineToZero: !continuous}
-                        self.setSerieParameters(serie, varname);
-                        self.normalize(val2, varname);
+				function buildVal( val ) {
+					var minX=self.module.getConfiguration( 'minX' ) || 0;
+					var maxX=self.module.getConfiguration( 'maxX' ) || value.length-1;
+					var step=(maxX-minX)/(value.length-1);
+                    var val2 = [];
+                    for(var i = 0, l = value.length; i < l; i++) {
+                            val2.push(minX+step*i);
+                            val2.push(value[i]);
+                    }
+                    
+					self.normalize(val2, varname);
 
-                        serie.setData(val2);
-                        serie.autoAxis();
-                        self.series[ varname ].push( serie );
-                        self.redraw();
-                    });
-                                
+                    return val2;
+				}
+
+				val.onChange( function() {
+
+					serie.setData( buildVal( this ) );
+					self.redraw();
+				} );
+
+                $.when(val).then(function(value){
+
+                     // lineToZero: !continuous}
+                    self.setSerieParameters(serie, varname);
+                    serie.setData( buildVal( val ) );
+                    serie.autoAxis();
+                    self.series[ varname ].push( serie );
+                    self.redraw();
+                });
+                            
 			},
 
 			annotations: function(value) {
