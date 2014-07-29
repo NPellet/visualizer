@@ -162,19 +162,17 @@ function(require, _, Default, Renderer, UTIL) {
 
             svgModifier: function(data) {
                 var self = this;
-                var clone = [];
+                // var clone = [];
                 
                 // Avoid potential problems when separete elements of this array share the same reference to an object
-                for(var i=0; i<data.length; i++) {
-                    clone.push(_.cloneDeep(data[i]));
-                }
-                console.log(clone == data);
-                self.modifySvgFromArray(clone, true); 
+                // for(var i=0; i<data.length; i++) {
+                //     clone.push(_.cloneDeep(data[i]));
+                // }
+                self.modifySvgFromArray(data, true); 
             }
         },
         
         addAnimation: function($svgEl, anim) {
-            console.log($svgEl.length);
             var self = this;
             var count = 0;
             if(!anim.attributes) return;
@@ -190,7 +188,6 @@ function(require, _, Default, Renderer, UTIL) {
                 if(animationReserved.indexOf(k) === -1) thisDefault[k] = _.cloneDeep(anim[k]);
             }
             for(var i=0; i<anim.attributes.length; i++) {
-                console.log('anim.attributes')
                 var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
                 anim.attributes[i] = _.defaults(anim.attributes[i], thisDefault);
                 // rememberAnim(anim,id)
@@ -198,25 +195,35 @@ function(require, _, Default, Renderer, UTIL) {
                 for(var attribute in anim.attributes[i]) {
                     animation.setAttributeNS(null, attribute, anim.attributes[i][attribute]);
                 }
-                console.log(animation.getAttribute('attributeName'));
                 $svgEl.append(animation);
                 $animations = $svgEl.children(':last-child');
                 
                 $animations.each(function() {
-                    console.log($(this).parent().attr('id'));
-                    // console.log(this.getAttribute('attributeName'));
-                    console.log($svgEl.attr('id'), '\n\n');
                     this.addEventListener('endEvent', function() {
+                        // console.log($(this).parent());
+                        // Persist works only for <animate/>    
+                        if(anim.options.persistOnEnd) {
+                            var attr, attrValue;
+                            if(anim.tag === 'animate') {
+                                $svgEl.attr(this.getAttribute('attributeName'), this.getAttribute('to'));
+                            }
+                            else {
+                                console.warn('Could not persist animation');
+                            }
+                            
+                        }
+                        
                         if(anim.options.clearOnEnd) {
-                            // console.log(this);
-                            $(this).remove();
-                            self._saveSvg();
+                            var el = this;
+                            var timeout = anim.options.clearOnEnd.timeout || 0;
+                            setTimeout(function() {
+                                $(el).remove();
+                                self._saveSvg();
+                            }, timeout);
                         }
                         else {
-                            console.log('not clear on end')
-                        }
-                        if(anim.options.persistOnEnd) {
-                            $svgEl.attr(this.getAttribute('attributeName'), this.getAttribute('to'));
+                            // Don't clear anything
+                            // console.log('not clear on end')
                         }
                     });
                     this.addEventListener('repeatEvent', function() {
@@ -314,7 +321,6 @@ function(require, _, Default, Renderer, UTIL) {
         },
         
         modifySvgFromObject: function(obj, isPrimaryCall) {
-            console.log('modify svg from object', obj);
             var self = this;
             var selector = obj.selector;
             if(!selector) return;
@@ -367,10 +373,8 @@ function(require, _, Default, Renderer, UTIL) {
     
             // Case 3)
             else if(obj.attributes && obj.animation && !obj.animation.attributes) {
-                console.log('case 3')
                 obj.animation.attributes = [];
-        
-        
+                
                 for(var k in obj.attributes) {
                     var a = {};
                     a.attributeName = k;
@@ -379,8 +383,6 @@ function(require, _, Default, Renderer, UTIL) {
                 }
         
                 delete obj.attributes;
-                
-                console.log(obj);
                 self.addAnimations($svgEl, obj.animation);
             }
     
@@ -396,7 +398,6 @@ function(require, _, Default, Renderer, UTIL) {
             return;
             
             function onMouseEnter() {
-                console.log('mouse enter callback');
                 self.module.controller.onHover(obj.info || {});
             }
             
