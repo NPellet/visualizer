@@ -16,6 +16,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			this.colors = [ "red", "blue", "green", "black" ];
 
 			this.deferreds = { };
+			this.onchanges = {};
 		},
 		
 		inDom: function() {
@@ -431,11 +432,11 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
                     return val2;
 				}
 
-				moduleValue.onChange( function() {
+				this.setOnChange( moduleValue.onChange( function() {
 
 					serie.setData( buildVal( this.get( ) ) );
 					self.redraw();
-				} );
+				} ), varName, moduleValue );
 
 				console.log( moduleValue._dataChange );
 
@@ -543,6 +544,18 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 				});
 			}
 		},
+
+
+		setOnChange: function( id, varname, obj ) {
+
+
+			if( this.onchanges[ varname ] ) {
+				this.onchanges[ varname ].obj.unbindChange( this.onchanges[ varname ].id );
+			}
+
+			this.onchanges[ varname ] = { obj: obj, id: id };
+		},
+
 
 		resetAnnotations: function(force) {
 
