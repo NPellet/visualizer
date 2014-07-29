@@ -418,12 +418,12 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 				function buildVal( val ) {
 					var minX=self.module.getConfiguration( 'minX' ) || 0;
-					var maxX=self.module.getConfiguration( 'maxX' ) || value.length-1;
-					var step=(maxX-minX)/(value.length-1);
+					var maxX=self.module.getConfiguration( 'maxX' ) || val.length-1;
+					var step=(maxX-minX)/(val.length-1);
                     var val2 = [];
-                    for(var i = 0, l = value.length; i < l; i++) {
+                    for(var i = 0, l = val.length; i < l; i++) {
                             val2.push(minX+step*i);
-                            val2.push(value[i]);
+                            val2.push(val[i]);
                     }
                     
 					self.normalize(val2, varname);
