@@ -82,7 +82,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 				
 				for( ; i < l ; i ++ ) {
 
-					td = this.renderElement( view.list[ i ], cols );
+					td = this.renderElement( view.list.getChildSync( i ), cols );
 					colId = done % cols;
 
 					if( colId === 0 ) {
@@ -109,7 +109,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 					
 					( function( j ) {
 
-						self.defs[ j ].done( function() {
+						self.defs[ j ].then( function() {
 							if( self.defs[ j ].build ) {
 								self.defs[ j ].build( );
 							}
@@ -132,7 +132,7 @@ define([ 'modules/default/defaultview', 'src/util/typerenderer', 'src/util/api' 
 
 			if( colorJpath ) {
 
-				element.getChild( colorJpath , true ).done( function( val ) {
+				element.getChild( colorJpath , true ).then( function( val ) {
 					td.css( 'background-color', val.get() );
 				} );
 			}
