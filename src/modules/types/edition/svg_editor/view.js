@@ -397,6 +397,10 @@ function(require, _, Default, Renderer, UTIL) {
             
             function onMouseEnter() {
                 console.log('mouse enter callback');
+
+                 if( self.dataTimeout) { window.clearInterval( self.dataTimeout); }
+                 self.dataTimeout = window.setInterval( function( ) { console.log( obj.info ); obj.info.triggerChange(); } , 100 );
+
                 self.module.controller.onHover(obj.info || {});
             }
             
