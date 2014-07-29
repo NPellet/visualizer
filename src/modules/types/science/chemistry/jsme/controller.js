@@ -147,9 +147,9 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 	}
 
 	controller.prototype.onChange = function(mol, smiles, jme) {
-		this.setVarFromEvent('onStructureChange', smiles, 'smiles');
-		this.setVarFromEvent('onStructureChange', new DataObject( { type:"mol2d", value: mol } ), 'mol');
-		this.setVarFromEvent('onStructureChange', new DataObject( { type:"jme", value: jme } ), 'jme');
+		this.createDataFromEvent('onStructureChange', 'smiles', smiles);
+		this.createDataFromEvent('onStructureChange', 'mol', new DataObject( { type:"mol2d", value: mol } ));
+		this.createDataFromEvent('onStructureChange', 'jme', new DataObject( { type:"jme", value: jme } ));
 	};
 
 	controller.prototype.configAliases = {
