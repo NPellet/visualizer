@@ -398,10 +398,13 @@ function(require, _, Default, Renderer, UTIL) {
             function onMouseEnter() {
                 console.log('mouse enter callback');
 
-                 if( self.dataTimeout) { window.clearInterval( self.dataTimeout); }
+           /*      if( self.dataTimeout) { window.clearInterval( self.dataTimeout); }
                  self.dataTimeout = window.setInterval( function( ) { console.log( obj.info ); obj.info.triggerChange(); } , 100 );
+*/
 
+console.log( obj.info._dataChange )
                 self.module.controller.onHover(obj.info || {});
+                console.log( obj.info._dataChange )
             }
             
             function onMouseLeave() {

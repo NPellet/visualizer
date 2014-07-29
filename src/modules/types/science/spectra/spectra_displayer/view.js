@@ -431,11 +431,13 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
                     return val2;
 				}
 
-				val.onChange( function() {
+				moduleValue.onChange( function() {
 
-					serie.setData( buildVal( this ) );
+					serie.setData( buildVal( this.get( ) ) );
 					self.redraw();
 				} );
+
+				console.log( moduleValue._dataChange );
 
                 $.when(val).then(function(value){
 
