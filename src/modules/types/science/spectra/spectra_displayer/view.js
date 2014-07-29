@@ -432,19 +432,23 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
                     return val2;
 				}
 
-				this.setOnChange( moduleValue.onChange( function() {
+				var changeid = moduleValue.onChange( function() {
 
 					serie.setData( buildVal( this.get( ) ) );
 					self.redraw();
-				} ), varName, moduleValue );
+				} );
 
-				console.log( moduleValue._dataChange );
+				this.setOnChange( changeid, varname, moduleValue );
+
 
                 $.when(val).then(function(value){
 
                      // lineToZero: !continuous}
                     self.setSerieParameters(serie, varname);
-                    serie.setData( buildVal( val ) );
+                    
+
+
+                    serie.setData( buildVal( value ) );
                     serie.autoAxis();
                     self.series[ varname ].push( serie );
                     self.redraw();
@@ -554,6 +558,8 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			}
 
 			this.onchanges[ varname ] = { obj: obj, id: id };
+
+
 		},
 
 
