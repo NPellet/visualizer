@@ -180,6 +180,12 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 					loadingHtml.detach();
 				}
 			}
-		}
+		},
+
+		/* Extra functions used in filter testsuite. Allows compatibility of filters */
+		dev_fctCalled: function( fct ) {},
+		dev_fctUncalled: function( fct ) {},
+		dev_assert: function( family, script, value ) {}
+
 	}
 });
