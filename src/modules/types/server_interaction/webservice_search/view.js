@@ -43,15 +43,19 @@ define(['modules/default/defaultview'], function(Default) {
 
 
 				this.search.on( 'keyup', 'input[type=text], textarea', function( e ) {
-					var searchTerm = $(this).val(),
-						searchName = $(this).attr('name');
+                    var $this = $(this);
+					var searchTerm = $this.val(),
+						searchName = $this.attr('name');
 
 					if( !self.oldVal[ searchName ] || self.oldVal[ searchName ] !== searchTerm ) {
-						$( this ).trigger( 'change' );
+						$this.trigger( 'change' );
 					}
 
 					if( searchName !== undefined ) {
-						self.module.controller.searchTerms[ searchName ] = searchTerm;
+                        self.module.controller.addValue({
+                            name: searchName,
+                            destination: $this.attr('data-dest')
+                        }, searchTerm);
 					}
 					
 					if ( ! self.button ) {
@@ -66,14 +70,16 @@ define(['modules/default/defaultview'], function(Default) {
 				});
 
 				this.search.on('change', 'select, input[type=text], textarea', function() {
+                    var $this = $(this);
 					
-					var searchTerm = $(this).val();
-					var searchName = $(this).attr('name');
-					console.log("CHANGE")
+					var searchTerm = $this.val();
+					var searchName = $this.attr('name');
 					if(searchName !== undefined) {
-						self.module.controller.searchTerms[ searchName ] = searchTerm;
+                        self.module.controller.addValue({
+                            name: searchName,
+                            destination: $this.attr('data-dest')
+                        }, searchTerm);
 					}
-
 					
 					if ( ! self.button ) {
 						self.module.controller.doSearch();
@@ -81,11 +87,15 @@ define(['modules/default/defaultview'], function(Default) {
 				});
 
 				this.search.on('change', 'input[type=checkbox]', function() {
-					var searchTerm = $(this).is(':checked');
-					var searchName = $(this).attr('name');
+                    var $this = $(this);
+					var searchTerm = $this.is(':checked');
+					var searchName = $this.attr('name');
 					
 					if( searchName !== undefined ) {
-						self.module.controller.searchTerms[ searchName ] = searchTerm;
+                        self.module.controller.addValue({
+                            name: searchName,
+                            destination: $this.attr('data-dest')
+                        }, searchTerm);
 					}
 
 					if ( ! self.button ) {
@@ -93,17 +103,13 @@ define(['modules/default/defaultview'], function(Default) {
 					}
 				});
 			}
-
-			if (cfg('resultfilter')) {
-        		eval("self.module.resultfilter = function(data) { try { \n " + cfg('resultfilter') + "\n } catch(_) { console.log(_); } }");
-      		} else {
-      			delete self.module.resultfilter;
-      		}
 			
 			this.resolveReady();
 		},
 
 		_makeFormEl: function(spec, name) {
+
+            var elemAttribute = 'name="'+spec.name+'" data-dest="'+spec.destination+'"';
 
 			switch(spec.fieldtype) {
 
@@ -115,27 +121,27 @@ define(['modules/default/defaultview'], function(Default) {
 						opt = opts[i].split(':');
 						html += '<option ' + (spec.defaultvalue == opt[0] ? 'selected="selected" ' : '') + 'value="' + opt[0] + '">' + (opt[1] || opt[0]) + '</option>';
 					}
-					return '<select name="' + spec.name + '">' + html + '</select>';
+					return '<select ' + elemAttribute + '>' + html + '</select>';
 				break;
 
 				case 'checkbox':
-					return '<input type="checkbox" ' + (spec.defaultvalue ? 'checked="checked"' : '') + ' value="1" offvalue="0" name="' +  spec.name +'" />';
+					return '<input type="checkbox" ' + (spec.defaultvalue ? 'checked="checked"' : '') + ' value="1" offvalue="0" ' + elemAttribute +' />';
 				break;
 
 				case 'textarea':
-					return '<textarea name="' + spec.name +
-						'" style="width: 100%" ' + (spec.fieldoptions || '') + '>' +
+					return '<textarea ' + elemAttribute +
+						' style="width: 100%" ' + (spec.fieldoptions || '') + '>' +
 						(spec.defaultvalue || '') +
 						'</textarea>';
 				
 				default:
 				case 'text':
-					return '<input type="text" value="' + (spec.defaultvalue || '') + '" name="' + spec.name +'" style="width: 100%" />';
+					return '<input type="text" value="' + (spec.defaultvalue || '') + '" ' + elemAttribute +' style="width: 100%" />';
 				break;
 			}	
 		},
 
-		inDom: function() {console.log("INDOM")
+		inDom: function() {
 			this.search.find('input:last').trigger('change');
 		},
 

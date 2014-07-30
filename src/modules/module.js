@@ -1112,7 +1112,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 					if( module.view.unload ) {
 						module.view.unload();
 					}
-						
+
+                    module.controller.init();
 
 					module.view.init();
 

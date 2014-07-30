@@ -173,6 +173,21 @@ define(['src/util/versioning'], function(Versioning) {
 						out[i].setChild(["rel"], "filteredObject");
 					}
 				}, "types/edition/filter_editor");
+            case "2.4.0b2" :
+                eachModule(view, function (module) {
+                    var input = module.vars_in;
+                    for(var i = 0; i < input.length; i++) {
+                        if(input[i].rel === "varinput") {
+                            module.configuration.sections.postvariables[0].groups.postvariables[0].push({
+                                name: input[i].name,
+                                destination: "url",
+                                variable: input[i].name,
+                                filter: "none"
+                            });
+                            input.splice(i--, 1);
+                        }
+                    }
+                }, "types/server_interaction/webservice_search");
         }
         view.version = Versioning.version;
 
