@@ -140,7 +140,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                                 { key: "query", title: "Query string"},
                                 { key: "data", title: "Post data"}
                             ],
-                            "default": "query"
+                            "default": "url"
                         },
                         label: {
                             type: "text",
