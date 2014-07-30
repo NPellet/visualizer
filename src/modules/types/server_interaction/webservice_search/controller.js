@@ -240,7 +240,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
     Controller.prototype.initImpl = function () {
 
         this.queryValues = {};
-        this.tplValues = {};
+        this.urlValues = {};
         this.dataValues = {};
         this.method = this.module.getConfiguration('method') || "POST";
 
