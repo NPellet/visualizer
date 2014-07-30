@@ -21,23 +21,16 @@ define([
                     value: initText
                 }, this.module );
                 def.always( function( val ) {
-                    self.dom = $('<div></div>').css({
-                        height: '100%',
-                        width: '100%',
-                        padding: "5px",
-                        boxSizing: "border-box"
-                    }).html(initText);
+                    self.dom = $( '<div id="'+this._id+ '">');
+                    self._setCss();
+                    self.dom.html(initText);
                     self.module.getDomContent().html(self.dom);
                 });   
             }
             else {
-                var html = $(' <div id="'+this._id+'" contenteditable="true">');
-                this.dom = $(html).css({
-                    height: '100%',
-                    width: '100%',
-                    padding: "5px",
-                    boxSizing: "border-box"
-                }).html(initText);
+                this.dom = $(' <div id="'+this._id+'" contenteditable="true">');
+                this._setCss();
+                this.dom.html(initText);
                 this.module.getDomContent().html(this.dom);
                 this.module.controller.valueChanged(initText);
             }
@@ -61,6 +54,15 @@ define([
                 return val === option;
             });
         },
+        
+        _setCss: function() {
+            this.dom.css({
+                height: '100%',
+                width: '100%',
+                padding: "5px",
+                boxSizing: "border-box"
+            });
+        }
     });
 
     return view;
