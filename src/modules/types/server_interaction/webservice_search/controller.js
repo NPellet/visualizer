@@ -298,21 +298,6 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         var self = this,
             urltemplate = new URITemplate(this.module.view._url || this.module.getConfiguration('url'));
 
-        /*
-         The following is kept for retrocompatibility. Now, the url parameters can also be specified
-         using the module configuration tab
-         */
-        var varsin = this.module.vars_in();
-        for (var i = 0, ii = varsin.length; i < ii; i++) {
-            var varin = varsin[i];
-            if ((varin.rel === "vartrigger" || varin.rel === "varinput") && varin.name) {
-                var theVar = API.getVar(varin.name).getData();
-                if (theVar) {
-                    this.urlValues[varin.name] = theVar.resurrect();
-                }
-            }
-        }
-
         var toPost = this.module.getConfiguration('postvariables', []);
         for (i = 0, ii = toPost.length; i < ii; i++) {
             var valueToPost = API.getVar(toPost[i].variable).getData();
@@ -330,10 +315,9 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
             }
         }
 
-        this.url = urltemplate.expand(this.queryValues);
+        this.url = urltemplate.expand(this.urlValues);
 
         if (this.request && this.request.abort) {
-            // Cancel previous request
             this.request.abort();
         }
 
