@@ -1169,6 +1169,15 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
                         return toReturn;
                         
 		},
+        
+        getConfigurationCheckbox: function(aliasName, optionName) {
+            var conf = this.getConfiguration(aliasName);
+            if(!(conf instanceof Array)) {
+                return undefined;
+            }
+            
+            return conf.indexOf(optionName) > -1;
+        },
 
 		_getConfigurationDefault: function( alias, aliasName ) {
 
