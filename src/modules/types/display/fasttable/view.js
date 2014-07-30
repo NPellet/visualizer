@@ -323,10 +323,11 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				var l = this.elements.length - 1;
 
 				var el = this.buildElement(source, l);
-				this.domBody.after( el );
+				this.domBody.append( el );
 			},
 
 			removeRow: function( source ) {
+
 				this.onActionReceive.removeRowById.call( this, this.module.getDataFromRel('list').indexOf( source ) );
 			},
 
@@ -334,6 +335,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				var el = this.module.getDataFromRel('list').splice( rowId, 1 );
 				el[ 0 ].unbindChange( this.module.getId( ) );
+
 				this.domBody.children().eq( rowId ).remove();
 			}
 

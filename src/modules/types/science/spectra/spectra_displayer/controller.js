@@ -76,6 +76,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		fromTo: {
 			type: 'fromTo',
 			label: 'From - To data'
+		},
+
+		series_xy1d: {
+			type: 'array',
+			label: 'List of series in 1D format ( [ x, y, x, y, ... ] )'
 		}
 	};
 
@@ -117,7 +122,7 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 	/*
 		Configuration of the module for receiving events, as a static object
 	*/
-	controller.prototype.variablesIn = [ 'chart', 'xArray', 'xyArray', 'jcamp', 'annotations', 'fromTo' ];
+	controller.prototype.variablesIn = [ 'chart', 'xArray', 'xyArray', 'jcamp', 'annotations', 'fromTo', 'series_xy1d' ];
 
 	/*
 		Received actions
