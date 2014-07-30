@@ -1,4 +1,4 @@
-define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/superagent/superagent', 'uri/URITemplate'], function (Default, API, superagent, URITemplate) {
+define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/superagent/superagent', 'uri/URITemplate', 'src/util/debug'], function (Default, API, superagent, URITemplate, Debug) {
     "use strict";
 
     function Controller() {
