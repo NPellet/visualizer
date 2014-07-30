@@ -299,17 +299,19 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
             urltemplate = new URITemplate(this.module.view._url || this.module.getConfiguration('url'));
 
         var toPost = this.module.getConfiguration('postvariables', []);
-        for (i = 0, ii = toPost.length; i < ii; i++) {
+        for (var i = 0, ii = toPost.length; i < ii; i++) {
             var valueToPost = API.getVar(toPost[i].variable).getData();
             if (valueToPost) {
                 var value;
                 var type = valueToPost.getType();
                 if (type === "string" || type === "number" || type === "boolean") {
-                    value = type;
+                    value = valueToPost.get();
                 } else if (toPost[i].filter === "value") {
                     value = valueToPost.get();
+                    if(value.resurrect)
+                        value = value.resurrect();
                 } else {
-                    value = JSON.stringify(valueToPost);
+                    value = valueToPost.resurrect();
                 }
                 this.addValue(toPost[i], value);
             }
