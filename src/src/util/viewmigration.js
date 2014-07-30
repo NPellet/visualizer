@@ -175,9 +175,28 @@ define(['src/util/versioning'], function(Versioning) {
 				}, "types/edition/filter_editor");
             case "2.4.0b2" :
                 eachModule(view, function (module) {
+                    var i;
+                    var postvariables = module.configuration.sections.postvariables[0].groups.postvariables[0];
+                    for (i = 0; i < postvariables.length; i++) {
+                        if (!postvariables[i].variable) {
+                            postvariables.splice(i--, 1);
+                        } else {
+                            postvariables[i].destination = "data";
+                        }
+                    }
+                    var searchparams = module.configuration.groups.searchparams[0];
+                    for (i = 0; i < searchparams.length; i++) {
+                        if (!searchparams[i].name) {
+                            searchparams.splice(i--, 1);
+                        } else {
+                            searchparams[i].destination = "url";
+                        }
+                    }
                     var input = module.vars_in;
-                    for(var i = 0; i < input.length; i++) {
-                        if(input[i].rel === "varinput") {
+                    for (i = 0; i < input.length; i++) {
+                        if (!input[i].rel) {
+                            input.splice(i--, 1);
+                        } else if (input[i].rel === "varinput") {
                             module.configuration.sections.postvariables[0].groups.postvariables[0].push({
                                 name: input[i].name,
                                 destination: "url",
@@ -185,6 +204,13 @@ define(['src/util/versioning'], function(Versioning) {
                                 filter: "none"
                             });
                             input.splice(i--, 1);
+                        } else if (input[i].rel === "vartrigger") {
+                            module.configuration.sections.postvariables[0].groups.postvariables[0].push({
+                                name: input[i].name,
+                                destination: "url",
+                                variable: input[i].name,
+                                filter: "none"
+                            });
                         }
                     }
                 }, "types/server_interaction/webservice_search");

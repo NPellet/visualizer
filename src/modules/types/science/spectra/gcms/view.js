@@ -1,4 +1,20 @@
-define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing', './gcms', 'src/util/util', 'src/util/api'], function(Default, Graph, Traversing, gcms, Util, API) {
+define( [
+
+	'modules/default/defaultview', 
+	'src/util/datatraversing', 
+	'./gcms', 
+	'src/util/util', 
+	'src/util/api'
+
+	], function(
+
+		Default, 
+		Traversing, 
+		gcms, 
+		Util, 
+		API
+
+	) {
 	
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
@@ -75,12 +91,12 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			}
 
 			_gcms.onMSSelect = function(ms, annot) {
-				self.module.controller.setVarFromEvent('onGCIntegralSelect', new DataArray( ms ), 'MSTrace');
+				self.module.controller.createDataFromEvent('onGCIntegralSelect', 'MSTrace', new DataArray( ms ) );
 				// Sends out an MS Trace (integrated and averaged MS data over the integral)
 			}
 
 			_gcms.onIntegralSelect = function(annot) {
-				self.module.controller.setVarFromEvent('onGCIntegralSelect', annot, 'GCIntegration');
+				self.module.controller.createDataFromEvent('onGCIntegralSelect', 'GCIntegration', annot );
 			}
 
 			_gcms.onZoomGC = function(from, to) {
@@ -126,7 +142,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 					var jcamp = tojcamp(moduleValue).done( function( jcamp ) {
 
-						console.log(JSON.stringify(jcamp.profiling,true));
+//						console.log(JSON.stringify(jcamp.profiling,true));
 
 						if(jcamp.gcms) {
 							self.gcmsInstance.setGC(jcamp.gcms.gc);
