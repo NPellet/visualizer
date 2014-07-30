@@ -39,7 +39,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         }
     };
 
-    Controller.prototype.variablesIn = [ 'vartrigger', 'varinput', 'url' ];
+    Controller.prototype.variablesIn = [ 'vartrigger', 'url' ];
 
     Controller.prototype.actionsIn = {
         doSearch: 'Trigger search'
@@ -136,6 +136,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                             type: "combo",
                             title: "Destination",
                             options: [
+                                { key: "url", title: "URL"},
                                 { key: "query", title: "Query string"},
                                 { key: "data", title: "Post data"}
                             ],
@@ -188,6 +189,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                                     type: "combo",
                                     title: "Destination",
                                     options: [
+                                        { key: "url", title: "URL"},
                                         { key: "query", title: "Query string"},
                                         { key: "data", title: "Post data"}
                                     ],
@@ -237,8 +239,9 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
 
     Controller.prototype.initImpl = function () {
 
-        this.searchTerms = {};
-        this.data = {};
+        this.queryValues = {};
+        this.tplValues = {};
+        this.dataValues = {};
         this.method = this.module.getConfiguration('method') || "POST";
 
         var searchparams = this.module.getConfiguration('searchparams') || [];
@@ -277,10 +280,16 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         if("function" === typeof value.resurrect) {
             value = value.resurrect();
         }
-        if (option.destination === "query") {
-            this.searchTerms[option.name] = value;
-        } else {
-            this.data[option.name] = value;
+        switch (option.destination) {
+            case "query":
+                this.queryValues[option.name] = value;
+                break;
+            case "url":
+                this.urlValues[option.name] = value;
+                break;
+            case "data":
+                this.dataValues[option.name] = value;
+                break;
         }
     };
 
@@ -290,7 +299,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
             urltemplate = new URITemplate(this.module.view._url || this.module.getConfiguration('url'));
 
         /*
-         The following is kept for retrocompatibility. Now, the query string parameters can also be specified
+         The following is kept for retrocompatibility. Now, the url parameters can also be specified
          using the module configuration tab
          */
         var varsin = this.module.vars_in();
@@ -299,7 +308,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
             if ((varin.rel === "vartrigger" || varin.rel === "varinput") && varin.name) {
                 var theVar = API.getVar(varin.name).getData();
                 if (theVar) {
-                    this.searchTerms[varin.name] = theVar.resurrect();
+                    this.urlValues[varin.name] = theVar.resurrect();
                 }
             }
         }
@@ -321,7 +330,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
             }
         }
 
-        this.url = urltemplate.expand(this.searchTerms);
+        this.url = urltemplate.expand(this.queryValues);
 
         if (this.request && this.request.abort) {
             // Cancel previous request
@@ -331,15 +340,15 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         this.request = superagent(this.method, this.url);
 
         this.request.set(this.headers)
-            .query(this.searchTerms)
-            .send(this.data)
+            .query(this.queryValues)
+            .send(this.dataValues)
             .type(this.dataType);
 
         this.module.view.lock();
 
         this.request.end(function (err, response) {
             if(err) {
-
+                Debug.warn('Webservice search: request failed', err);
             } else {
                 var body = response.body;
                 if (self.module.resultfilter) {
