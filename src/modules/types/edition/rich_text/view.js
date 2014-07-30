@@ -15,7 +15,7 @@ define([
             var self = this;
             var initText = this.module.definition.richtext || '';
             
-            if(!this._configCheckBox('editable', 'isEditable')) {
+            if(!this.module.getConfigurationCheckbox('editable', 'isEditable')) {
                 var def = Renderer.toScreen({
                     type: 'html',
                     value: initText
@@ -37,7 +37,7 @@ define([
         },
         inDom: function() {
             var self = this;
-            if(this._configCheckBox('editable', 'isEditable')) {
+            if(this.module.getConfigurationCheckbox('editable', 'isEditable')) {
                 CKEDITOR.disableAutoInline = true;
                 this.instance = CKEDITOR.inline(this._id, {
                     extraPlugins:"mathjax"
@@ -47,12 +47,6 @@ define([
                 });
             }
             this.resolveReady();
-        },
-        
-        _configCheckBox: function(config, option) {
-            return this.module.getConfiguration(config) && _.find(this.module.getConfiguration(config), function(val){
-                return val === option;
-            });
         },
         
         _setCss: function() {
