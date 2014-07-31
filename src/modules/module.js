@@ -139,11 +139,8 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 		
 			html += '</ul>';
 			html += '</div>';
-			html += '</div><div class="ci-module-content" style="';
-			
-			
-			html += '">';
-			
+			html += '</div><div class="ci-module-content">';
+						
 			html += '</div>';
 
 			html += '<div class="ci-module-loading">Loading ...</div>';
