@@ -14,8 +14,7 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 			this.dom = $('<div id="header"><div id="title"><div></div></div></div>');
 			$("#ci-visualizer").prepend(this.dom);
 
-			self.setHeight(headerConfig.height || "30px");
-			this.setHeight("30px");
+			this.setHeight(headerConfig.height || "30px");
 
 			this._titleDiv = $("#title").children('div');
 			this._titleDiv.attr('contenteditable', 'true').bind('keypress', function(e) {
@@ -40,7 +39,7 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 
 		setHeight: function(height) {
 			this.dom.css('height', height);
-			$("#modules-grid").css('margin-top', '5px');
+			$("#modules-grid").css('margin-top', height);
 		},
 
 		setTitle: function(view) {

@@ -29,6 +29,10 @@ html, body {
 	min-height: 100%;
 }
 
+#ci-visualizer {
+    position: relative;
+}
+
 #viewport {
 	width: 100%;
 	
@@ -410,6 +414,7 @@ div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid tr.ui-state
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#fefefe',GradientType=1 ); /* IE6-9 */
     top:0px;
     z-index: 9999;
+    position: fixed;
 }
 
 #title  {
