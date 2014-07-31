@@ -240,7 +240,7 @@ div.ci-module-wrapper .ci-module {
 }
 
 
-#modules-grid > div.ci-module-wrapper.ci-module-displaywrapper .ci-module-loading {
+.ci-module-loading {
 	position: absolute;
 	width: 100%;
 	height: 100%;
