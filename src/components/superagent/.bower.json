@@ -1,0 +1,15 @@
+{
+  "name": "superagent",
+  "homepage": "https://github.com/visionmedia/superagent",
+  "version": "0.18.2",
+  "_release": "0.18.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.18.2",
+    "commit": "55273f22f84e17c4acc8461719f9051320d831fb"
+  },
+  "_source": "git://github.com/visionmedia/superagent.git",
+  "_target": "~0.18.2",
+  "_originalSource": "superagent",
+  "_direct": true
+}
