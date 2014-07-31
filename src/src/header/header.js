@@ -40,7 +40,7 @@ define(['require', 'jquery', 'src/util/versioning'], function(require, $, Versio
 
 		setHeight: function(height) {
 			this.dom.css('height', height);
-			$("#modules-grid").css('margin-top', '30px');
+			$("#modules-grid").css('margin-top', '5px');
 		},
 
 		setTitle: function(view) {
