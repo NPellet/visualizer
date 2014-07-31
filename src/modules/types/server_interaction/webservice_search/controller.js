@@ -348,8 +348,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
     };
 
     Controller.prototype.onSearchDone = function (elements) {
-        this.result = elements;
-        this.module.model.data = elements;
+        this.module.model._data = elements;
 
         this.createDataFromEvent('onSearchReturn', 'results', elements);
         this.createDataFromEvent('onSearchReturn', 'url', this.url);

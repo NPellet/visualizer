@@ -2975,39 +2975,60 @@ define(['jquery', 'src/util/util'], function($, Util) {
 					}
 				}
 
+
 			} else if(typeof data[0] == 'object') {
 				
-				var number = 0, numbers = [], datas = [], k = 0;
-				for(var i = 0, l = data.length; i < l; i++) {
+				this.mode = 'x_equally_separated';
+
+				var number = 0, numbers = [], datas = [], k = 0, o;
+				for(var i = 0, l = data.length; i < l; i++) { // Several piece of data together
 					number += data[i].y.length;
 					continuous = (i != 0) && (!data[i + 1] || data[i].x + data[i].dx * (data[i].y.length) == data[i + 1].x);
-					if(!continous) {
+					if( ! continuous ) {
 						datas.push(this._addData(type, number));
 						numbers.push(number);
 						number = 0;
 					}
 				}
 
+				this.xData = [];
+
 				number = 0, k = 0, z = 0;
+
 				for(var i = 0, l = data.length; i < l; i++) {
 					x = data[i].x, dx = data[i].dx;
-					for(var j = 0, k = data[i].y.length; j < k; j++) {
-						datas[k][z] = (x + j * dx);
+
+					this.xData.push( { x : x, dx : dx } );
+
+					o = data[i].y.length;
+					this._checkX( x );
+					this._checkX( x + dx * o );
+
+					for(var j = 0; j < o; j++) {
+						/*datas[k][z] = (x + j * dx);
 						this._checkX(datas[k][z]);
-						z++;
+						z++;*/
+						// 30 june 2014. To save memory I suggest that we do not add this stupid data.
+			
 						datas[k][z] = (data[i].y[j]);
 						this._checkY(datas[k][z]);
 						z++;
 						total++;
+
+
 					}
 					number += data[i].y.length;
+			
 					if(numbers[k] == number) {
 						k++;
 						number = 0;
 						z = 0;
 					}
 				}
+
+
 			}
+
 
 			// Determination of slots for low res spectrum
 			var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth( ),
@@ -3344,29 +3365,58 @@ define(['jquery', 'src/util/util'], function($, Util) {
 				
 			} else {
 				
-				for(; i < l ; i++) {
-					
-					currentLine = "M ";
-					doAndContinue = 0;
-					_higher = false;
-					var _last = false, _in = false;
-					j = 0, k = 0;
+				if( this.mode == 'x_equally_separated' ) {
 
-					for( ; j < this.data[ i ].length; j += 2 ) {
+					for( ; i < l ; i ++ ) {
+						
+						currentLine = "M ";
+						j = 0, k = 0, m = this.data[ i ].length;
 
-						xpx = this.getX( this.data[ i ][ j + incrXFlip ] );
-						ypx = this.getY( this.data[ i ][ j + incrYFlip ] );
+						for( ; j < m ; j += 1 ) {
 
-						if(this.options.autoPeakPicking) {
-							allY.push( [ ( this.data[ i ][ j + incrYFlip ] ), this.data[ i ][ j + incrXFlip ] ] );
+							if( 1 == 1 ) {
+							
+								xpx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
+								ypx = this.getY( this.data[ i ][ j ] );								
+							} else {
+								ypx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
+								xpx = this.getY( this.data[ i ][ j ] );								
+							}
+
+							currentLine = this._addPoint( currentLine, xpx, ypx, k );
+							k++;
 						}
-						currentLine = this._addPoint( currentLine, xpx, ypx, k );
-						k++;
+						
+						this._createLine(currentLine, i, k);
+					}
+
+					}  else {
+
+
+					for(; i < l ; i++) {
+						
+						currentLine = "M ";
+						doAndContinue = 0;
+						_higher = false;
+						var _last = false, _in = false;
+						j = 0, k = 0;
+
+						for( ; j < this.data[ i ].length; j += 2 ) {
+
+							xpx = this.getX( this.data[ i ][ j + incrXFlip ] );
+							ypx = this.getY( this.data[ i ][ j + incrYFlip ] );
+
+							if(this.options.autoPeakPicking) {
+								allY.push( [ ( this.data[ i ][ j + incrYFlip ] ), this.data[ i ][ j + incrXFlip ] ] );
+							}
+							currentLine = this._addPoint( currentLine, xpx, ypx, k );
+							k++;
+						}
+						
+						this._createLine(currentLine, i, k);
 					}
 					
-					this._createLine(currentLine, i, k);
-				}
-				
+					}
 			}
 
 			if( this.options.autoPeakPicking ) {

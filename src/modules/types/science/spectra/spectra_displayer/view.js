@@ -546,6 +546,31 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 						self.resetAnnotations( true );
 					});
 				});
+			},
+
+
+			series_xy1d: function( data ) { // Receives an array of series. Blank the other ones.
+
+				if( ! data.data ) {
+					return;
+				}
+
+				this.graph.killSeries();
+				data = data.get();
+
+				var i = 0,
+					l = data.length;
+
+				for( ; i < l ; i ++ ) {
+
+					var serie = this.graph.newSerie();
+
+					serie.autoAxis();
+					serie.setData( data[ i ].data );
+					serie.setLabel( data[ i ].label );
+					serie.setLineWidth( data[ i ].lineWidth || 1 );
+					serie.setLineColor( data[ i ].lineColor || 'black' );
+				}
 			}
 		},
 
@@ -633,6 +658,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			shape.draw();
 			shape.redraw();
 		},
+
 
 
 

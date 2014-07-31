@@ -1,58 +1,58 @@
-define(['modules/default/defaultmodel','src/util/datatraversing'], function(Default,Traversing) {
-	
-	function model() {
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
+
+    function Model() {
+        this.tmpVars = new DataObject();
+    }
+
+    var standardFile = new DataObject({
+        filename: "",
+        mimetype: "",
+        content: ""
+    });
+
+    var standardArray = new DataArray([standardFile]);
+
+    Model.prototype = $.extend(true, {}, Default, {
+
+        init: function () {
             this.tmpVars = new DataObject();
-        };
-        
-        var standardFile = new DataObject({
-            filename: "",
-            mimetype: "",
-            content: ""
-        });
-        
-        var standardArray = new DataArray([standardFile]);
-        
-	model.prototype = $.extend(true, {}, Default, {
-            
-            init: function() {
-                this.tmpVars = new DataObject();
-                this.tmpVarsArray = new DataObject();
-            },
+            this.tmpVarsArray = new DataObject();
+        },
 
-		getValue: function() {
-			return this.dataValue;
-		},
-				
-		
-		getjPath: function(rel, accepts) {
-                    var jpaths = [];
-                    
-                    if(rel==='data' || rel==='dataarray') {
-                        // Populate tmpVars with empty object so the user can set a variable out even if no file was dropped
-                        var definedDrops = (this.module.getConfiguration("vars") || []).slice();
-                        var definedString = this.module.getConfiguration("string");
-                        if(definedString)
-                            definedDrops.push(definedString);
+        getValue: function () {
+            return this.dataValue;
+        },
 
-                        for(var i = 0; i < definedDrops.length; i++) {
-                            var def = definedDrops[i];
-                            if(!def.variable)
-                                continue;
-                            if(rel==='data' && !this.tmpVars.hasOwnProperty(def.variable)) {
-                                this.tmpVars[def.variable] = standardFile;
-                            }
-                            else if(rel==='dataarray' && !this.tmpVarsArray.hasOwnProperty(def.variable)) {
-                                this.tmpVarsArray[def.variable] = standardArray;
-                            }
-                        }
-                        if(rel==='data')
-                            Traversing.getJPathsFromElement(this.tmpVars, jpaths);
-                        else if(rel ==='dataarray')
-                            Traversing.getJPathsFromElement(this.tmpVarsArray, jpaths);
+
+        getjPath: function (rel, accepts) {
+            var jpaths = [];
+
+            if (rel === 'data' || rel === 'dataarray') {
+                // Populate tmpVars with empty object so the user can set a variable out even if no file was dropped
+                var definedDrops = (this.module.getConfiguration("vars") || []).slice();
+                var definedString = this.module.getConfiguration("string");
+                if (definedString)
+                    definedDrops.push(definedString);
+
+                for (var i = 0; i < definedDrops.length; i++) {
+                    var def = definedDrops[i];
+                    if (!def.variable)
+                        continue;
+                    if (rel === 'data' && !this.tmpVars.hasOwnProperty(def.variable)) {
+                        this.tmpVars[def.variable] = standardFile;
                     }
-                    return jpaths;
-		}
-	});
+                    else if (rel === 'dataarray' && !this.tmpVarsArray.hasOwnProperty(def.variable)) {
+                        this.tmpVarsArray[def.variable] = standardArray;
+                    }
+                }
+                if (rel === 'data')
+                    Traversing.getJPathsFromElement(this.tmpVars, jpaths);
+                else if (rel === 'dataarray')
+                    Traversing.getJPathsFromElement(this.tmpVarsArray, jpaths);
+            }
+            return jpaths;
+        }
+    });
 
-	return model;
+    return Model;
 });
