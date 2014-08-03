@@ -22,7 +22,7 @@ define(['modules/types/display/jqgrid/controller'], function(controller) {
 	};
 	
 	controller.prototype.variablesIn.push("showList");
-	
+	controller.prototype.actionsIn.toggleOff = "Toggle row off";
 
 	return controllerExtended;
 });

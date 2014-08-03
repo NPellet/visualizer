@@ -509,6 +509,7 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
 			if( jpathLength === 1 ) {
 				var res = self.set(el, newValue);
 				if(res) {
+					console.log('Trigger it !!');
 					res.triggerChange();
 				}
 				return;

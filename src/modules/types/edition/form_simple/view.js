@@ -62,12 +62,15 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				var el = new DataObject();
 
 				if( input ) {
+					
 					if( self.module.getConfiguration( "replaceObj" ) ) {
 
 						for( var i = 0, l = structure.length ; i < l ; i ++ ) {
 							jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
 							input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value, true );
 						}
+
+						self.module.model.dataTriggerChange( input );
 
 					} else {
 

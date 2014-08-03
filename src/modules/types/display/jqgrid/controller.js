@@ -275,15 +275,19 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 		this.allVariablesFor( ( act == 'on' ? 'onToggleOn' : 'onToggleOff' ), 'selectedrows', function( varToSend ) {
 
 			var results = new DataArray();
-console.log( self.toggleElements, varToSend.jpath );
+
 			for( var i in self.toggleElements ) {
 
+				if( ! data[ i ] ) {
+					continue;
+				}
+				
 				data.traceSync( [ i ] );
 				Debug.warn("Warning. This is only sync");
 				var el = data[ i ].traceSync( varToSend.jpath.slice(0) );
 				results.push( el );
 			}
-console.log( results );
+
 			API.createData( varToSend.name, results, varToSend.filter );
 		} );
 

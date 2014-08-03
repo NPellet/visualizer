@@ -148,6 +148,9 @@ define( [
 							self.gcmsInstance.setGC(jcamp.gcms.gc);
 							self.gcmsInstance.setMS(jcamp.gcms.ms);
 
+							self.module.controller.createDataFromEvent( "onJCampParsed", "msdata", jcamp.gcms.ms );
+							self.module.controller.createDataFromEvent( "onJCampParsed", "gcdata", jcamp.gcms.gc );
+
 							self.resetAnnotationsGC();
 						}
 					});
