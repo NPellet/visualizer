@@ -150,8 +150,8 @@ define(['modules/default/defaultview', "src/util/util", "src/util/datatraversing
                 newValue[i] = newVal;
 
                 for (var j = 0; j < l; j++) {
-
-                    newVal[columns[j].name] = columns[j].jpath(val);
+                    var theVal = columns[j].jpath(val);
+                    newVal[columns[j].name] = theVal ? theVal.valueOf() : theVal;
                 }
                 if (colorJpath) {
                     newVal.__color = colorJpath(val);

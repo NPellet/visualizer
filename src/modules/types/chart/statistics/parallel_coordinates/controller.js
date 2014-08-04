@@ -25,13 +25,17 @@ define(['modules/default/defaultcontroller', "src/util/datatraversing"], functio
         flagResult: {
             type: 'array',
             label: 'Array of boolean values'
+        },
+        countResult: {
+            type: 'number',
+            label: 'Number of selected items'
         }
     };
 
     Controller.prototype.events = {
         onBrushSelection: {
             label: 'A selection has been made',
-            refVariable: ['value', 'flagResult']
+            refVariable: ['value', 'flagResult', 'countResult']
         }
     };
 
@@ -88,16 +92,16 @@ define(['modules/default/defaultcontroller', "src/util/datatraversing"], functio
     };
 
     Controller.prototype.onBrushSelection = function (value) {
-        var toSend = value;
+        var toSend = value, l = value.length;
         var original = this.module.view._value;
         var flags = new Array(original.length);
 
         if (value[0] && value[0].hasOwnProperty('__id')) {
             original = this.module.view._value;
-            toSend = new Array(value.length);
+            toSend = new Array(l);
 
             var index;
-            for (var i = 0; i < value.length; i++) {
+            for (var i = 0; i < l; i++) {
                 index = value[i].__id;
                 toSend[i] = original[index];
                 flags[index] = true;
@@ -105,6 +109,7 @@ define(['modules/default/defaultcontroller', "src/util/datatraversing"], functio
         }
         this.createDataFromEvent("onBrushSelection", "value", toSend);
         this.createDataFromEvent("onBrushSelection", "flagResult", flags);
+        this.createDataFromEvent("onBrushSelection", "countResult", l);
     };
 
     return Controller;
