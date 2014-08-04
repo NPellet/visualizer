@@ -48,7 +48,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
  				self.module.controller.lineClick( self.module.data, $(this).index() );
 
  				if( toggle ) {
-
+console.log( toggle, self.selected );
  					if( toggle == 'single' && self.selected[ 0 ] !== undefined ) {
 
  						self.module.controller.onToggleOff( self.module.data, self.selected[ 0 ] );
@@ -67,7 +67,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
  					}
 
  					$(this).toggleClass('toggled');
-
+console.log("Push");
  					self.selected.push( index );
  				}
 
@@ -185,7 +185,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
-                                
+                 
+                this.selected = [];
+                       
 //	 			moduleValue = moduleValue.get();
 
 				this.elements = moduleValue;
