@@ -1,11 +1,11 @@
-define(['modules/default/defaultcontroller',"src/util/datatraversing"], function(Default, Traversing) {
+define(['modules/default/defaultcontroller', "src/util/datatraversing"], function (Default, Traversing) {
 
-    function controller() {
+    function Controller() {
     }
 
-    controller.prototype = $.extend(true, {}, Default);
+    Controller.prototype = $.extend(true, {}, Default);
 
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         moduleName: 'Parallel coordinates',
         description: 'Multivariate data visualization',
         author: 'Michaël Zasso',
@@ -13,7 +13,7 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
         license: 'MIT'
     };
 
-    controller.prototype.references = {
+    Controller.prototype.references = {
         value: {
             type: 'array',
             label: 'An array of data points'
@@ -22,27 +22,27 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
             type: 'array',
             label: 'Array of column descriptions'
         },
-		flagResult: {
-			type: 'array',
-			label: 'Array of boolean values'
-		}
-    };
-
-    controller.prototype.events = {
-        onBrushSelection: {
-            label: 'A selection has been made',
-            refVariable: ['value','flagResult']
+        flagResult: {
+            type: 'array',
+            label: 'Array of boolean values'
         }
     };
 
-    controller.prototype.variablesIn = ['value','columns'];
-    
-    controller.prototype.actionsIn = {
+    Controller.prototype.events = {
+        onBrushSelection: {
+            label: 'A selection has been made',
+            refVariable: ['value', 'flagResult']
+        }
+    };
+
+    Controller.prototype.variablesIn = ['value', 'columns'];
+
+    Controller.prototype.actionsIn = {
         addColumn: 'Add a column',
         removeColumn: 'Remove a column'
     };
-    
-    controller.prototype.configurationStructure = function(section) {
+
+    Controller.prototype.configurationStructure = function (section) {
 
         var jpaths = Traversing.getJPathsFromElement(this.module.view._value[0]);
         return {
@@ -81,31 +81,31 @@ define(['modules/default/defaultcontroller',"src/util/datatraversing"], function
             }
         };
     };
-    
-    controller.prototype.configAliases = {
+
+    Controller.prototype.configAliases = {
         colsjPaths: ['groups', 'cols', 0],
-        colorjpath: ['groups','group',0,'colJPath',0]
+        colorjpath: ['groups', 'group', 0, 'colJPath', 0]
     };
-	
-    controller.prototype.onBrushSelection = function(value) {
+
+    Controller.prototype.onBrushSelection = function (value) {
         var toSend = value;
-		var original = this.module.view._value;
-		var flags = Array(original.length);
-		
-        if(value[0] && value[0].hasOwnProperty('__id')) {
-            var original = this.module.view._value;
+        var original = this.module.view._value;
+        var flags = new Array(original.length);
+
+        if (value[0] && value[0].hasOwnProperty('__id')) {
+            original = this.module.view._value;
             toSend = new Array(value.length);
-			
-			var index;
-            for(var i = 0; i < value.length; i++) {
-				index = value[i].__id;
+
+            var index;
+            for (var i = 0; i < value.length; i++) {
+                index = value[i].__id;
                 toSend[i] = original[index];
-				flags[index] = true;
+                flags[index] = true;
             }
         }
         this.createDataFromEvent("onBrushSelection", "value", toSend);
-		this.createDataFromEvent("onBrushSelection", "flagResult", flags);
+        this.createDataFromEvent("onBrushSelection", "flagResult", flags);
     };
 
-    return controller;
+    return Controller;
 });
