@@ -70,9 +70,14 @@ define([
 		}
 	}
 
+        function getNames () {
+            return Object.keys(allVariables).sort();
+        }
+
 	return {
 		getVariable: getVariable,
-		setVariable: setVariable
+		setVariable: setVariable,
+        getNames: getNames
 	};
 	
 });

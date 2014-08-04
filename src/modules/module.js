@@ -4,10 +4,11 @@ define([
 	'src/util/api',
 	'src/util/util',
 	'src/util/fullscreen',
-	'src/util/debug'
+	'src/util/debug',
+        'src/main/variables'
 ], 
 
-function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
+function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 	"use strict";
 	
 	function init( module ) {
@@ -445,7 +446,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 			var references = this.controller.references,
 				events = this.controller.events,
 				i = 0,
-				l;
+                l, keys;
 
 			// Filters
 			var filter = API.getAllFilters(),
@@ -478,10 +479,10 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 			allFilters = makeFilters( filter );
 
 			// AUTOCOMPLETE VARIABLES
-			var autoCompleteVariables = [],
-				keys = API.getRepositoryData().getKeys(),
-				i = 0,
-				l = keys.length;
+			var autoCompleteVariables = [];
+			keys = Variables.getNames();
+			i = 0;
+			l = keys.length;
 
 			for( ; i < l; i++ ) {
 				autoCompleteVariables.push({title: keys[i], label: keys[i]});
@@ -490,18 +491,14 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 
 
 			// AUTOCOMPLETE ACTIONS
-			var autoCompleteActions = [],
-				keys = API.getRepositoryActions().getKeys(),
-				i = 0,
-				l = keys.length;
+			var autoCompleteActions = [];
+			keys = API.getRepositoryActions().getKeys();
+			i = 0;
+			l = keys.length;
 
 			for( ; i < l; i++ ) {
 				autoCompleteActions.push({title: keys[i], label: keys[i]});
 			}
-
-
-
-
 			
 			// Receive configuration
 			var varsIn = module.controller.variablesIn,
@@ -528,11 +525,9 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 					alljpaths[ i ] = module.model.getjPath( i );
 				}
 
-			}
+			};
 
 			makeSendJpaths();
-
-
 
 			var makeReferences = function( event, type ) {
 
@@ -561,7 +556,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug ) {
 				}
 
 				return list;
-			}
+			};
 
 			// VARIABLES OUT
 			// ACTIONS OUT
