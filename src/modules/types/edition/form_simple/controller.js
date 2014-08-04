@@ -1,5 +1,6 @@
 define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'src/util/datatraversing' ], function( Default, FormCreator, Traversing ) {
 	
+	"use strict";
 	/**
 	 * Creates a new empty controller
 	 * @class Controller
@@ -149,7 +150,6 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 
 	controller.prototype.configFunctions = {
 		replaceObj: function( val ) {
-			console.log( val );
 			return val == "replace";
 		}
 	};

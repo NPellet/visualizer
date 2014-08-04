@@ -8,6 +8,10 @@
             "name": "DOI to URL"
         },
         {
+            "file": "usr/filters/getfirstelement.js",
+            "name": "Get first element in array"
+        },
+        {
             "file": "usr/filters/flickr.js",
             "name": "Flickr image"
         },

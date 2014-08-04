@@ -1,5 +1,7 @@
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'lib/formcreator/formcreator'], function(Default, DataTraversing, API, FormCreator) {
 	
+	"use strict";
+
 	function view() {};
 	view.prototype = $.extend(true, {}, Default, {
 
@@ -19,6 +21,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				trigger = this.module.getConfiguration('trigger'),
 				tpl_html = this.module.getConfiguration('tpl_html'),
 				form,
+				def,
+				input,
 				options = {},
 				formStructure = {
 					sections: {
@@ -45,7 +49,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			}
 
 			var triggerFunction = function( ) {
-
+console.log("a");
 				if( self.lockEvents ) {
 					return;
 				}
@@ -58,16 +62,20 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					structure = self.module.getConfiguration('structure') || [],
 					jpath;
 
-
 				var el = new DataObject();
 
+				console.log('d');
+
 				if( input ) {
+					
 					if( self.module.getConfiguration( "replaceObj" ) ) {
 
 						for( var i = 0, l = structure.length ; i < l ; i ++ ) {
 							jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
 							input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value, true );
 						}
+
+						self.module.model.dataTriggerChange( input );
 
 					} else {
 
@@ -76,6 +84,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 							el.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value )
 	//						input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
 						}
+
+						console.log( el );
 					}
 				} else {
 					el = val;
@@ -98,6 +108,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					break;
 
 					case 'change':
+
 						options.onValueChanged = triggerFunction
 					break;
 				}

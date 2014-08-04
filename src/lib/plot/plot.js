@@ -1022,11 +1022,22 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			var i = this.series.length - 1;
 			for(;i >= 0; i--) { // Let's remove the serie from the stack
 				if(this.series[i] == serie)
-					this.series.slice(i, 1);
+					this.series.splice(i, 1);
 			}
 			serie.removeDom();
 			if(serie.isMinOrMax())
 				this.refreshDrawingZone();
+		},
+
+		removeSeries: function() {
+		
+			while( this.series.length > 0 ) {
+				this.series[ 0 ].kill();
+			}
+			this.series = [];
+			this.redraw();
+			this.drawSeries();
+			
 		},
 
 		setZoomMode: function(zoomMode) {

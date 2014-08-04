@@ -168,6 +168,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 			} else {
 				this.graph.redraw();
 			}
+
 			this.graph.drawSeries( );
 
 		},
@@ -551,12 +552,13 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 			series_xy1d: function( data ) { // Receives an array of series. Blank the other ones.
 
-				if( ! data.data ) {
+				/*if( ! data.data ) {
 					return;
-				}
+				}*/
 
-				this.graph.killSeries();
-				data = data.get();
+				this.graph.removeSeries();
+				
+				//data = data.get();
 
 				var i = 0,
 					l = data.length;
@@ -567,13 +569,14 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 					serie.autoAxis();
 					serie.setData( data[ i ].data );
-					serie.setLabel( data[ i ].label );
+				//	serie.setLabel( data[ i ].label.toString( ) );
 					serie.setLineWidth( data[ i ].lineWidth || 1 );
-					serie.setLineColor( data[ i ].lineColor || 'black' );
+					serie.setLineColor( data[ i ].lineColor || Util.getColor( Util.getNextColorRGB( i, l ) ) );
 				}
+
+				this.redraw();
 			}
 		},
-
 
 		setOnChange: function( id, varname, obj ) {
 

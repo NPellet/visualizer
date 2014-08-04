@@ -21,6 +21,7 @@ define( [ ], function(  ) {
 						if( self.value !== ( val = $( this ).val( ) ) ) {
 							self.setValueSilent( $( this ).val( ) );
 						}
+						
 
 					}).bind('keydown', function( e ) {
 

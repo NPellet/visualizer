@@ -35,13 +35,15 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 					actionname = actionsOut[ i ].name,
 					jpath = actionsOut[ i ].jpath;
 				
-					if(jpath && value.getChild) {
+					if( value && jpath && value.getChild ) {
+
 						value.getChild(jpath).done( function( returned ) {
 
 							API.executeAction( actionname, returned );
 							API.doAction( actionname, returned );
 
 						});
+
 					} else {
 
 						API.executeAction( actionname, value );

@@ -16,12 +16,13 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 		this.domHead = $( "<thead />" ).appendTo( this.domTable );
 	 		this.domBody = $( "<tbody />" ).appendTo( this.domTable );
 
+	 		this.selected = [];
 
 	 		this.domTable.on('mouseover', 'tr', function() {
 
 	 			if(this !== lastTr) {
 
-	 				var dataRowId = parseInt( $(this).attr('data-row-id') );
+	 				var dataRowId = $(this).index();
 	 					
 	 				if( ! isNaN( dataRowId ) ) {
 		 				self.module.controller.lineHover( self.module.data, dataRowId );
@@ -34,7 +35,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 			if(this === lastTr) {
 
-	 				var dataRowId = parseInt( $(this).attr('data-row-id') );
+	 				var dataRowId = $(this).index();
 
 	 				if( ! isNaN ( dataRowId ) ) {
 						self.module.controller.lineOut( self.module.data, dataRowId );
@@ -47,15 +48,27 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
  				self.module.controller.lineClick( self.module.data, $(this).index() );
 
  				if( toggle ) {
- 					var $this = $(this);
+console.log( toggle, self.selected );
+ 					if( toggle == 'single' && self.selected[ 0 ] !== undefined ) {
+
+ 						self.module.controller.onToggleOff( self.module.data, self.selected[ 0 ] );
+ 						$(this).parent().children().eq( self.selected[ 0 ] ).toggleClass('toggled');
+
+ 						self.selected = [];
+ 					}
+
+ 					var $this = $(this),
+ 						index = $(this).index();
 
  					if( $( this ).hasClass( 'toggled' ) ) {
- 						self.module.controller.onToggleOff( self.module.data, $(this).index() );
+ 						self.module.controller.onToggleOff( self.module.data, index );
  					} else {
- 						self.module.controller.onToggleOn( self.module.data, $(this).index() );
+ 						self.module.controller.onToggleOn( self.module.data, index );
  					}
 
  					$(this).toggleClass('toggled');
+console.log("Push");
+ 					self.selected.push( index );
  				}
 
 	 		}).on('click', 'th', function() { // Sorting
@@ -172,7 +185,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 	 			if( ! moduleValue ) {
 	 				return;
 	 			}
-                                
+                 
+                this.selected = [];
+                       
 //	 			moduleValue = moduleValue.get();
 
 				this.elements = moduleValue;
@@ -216,7 +231,9 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 							var dom = self.domBody.find('#' + self.module.getId() + '_' + j);
 
 							self.module.model.dataListenChange( self.module.data.get( j ), function() {
+
 								dom.replaceWith( ( dom = $( self.buildElement( this, j, true ) ) ) );
+								
 							}, 'list');
 
 							if( self.module.data.get( j ).removable ) {
@@ -277,7 +294,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 				html += ' style="background-color: ' + this.colorjpath( source ) + ';"';
 			}
 
-			html += ' id="' + this.module.getId() + '_' + i + '" data-row-id="' + i + '"';
+			html += ' id="' + this.module.getId() + '_' + i + '" ';
 			html += '>';
 
 			j = 0;
@@ -297,7 +314,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 		},
 
 		doHighlight: function( i, val ) {
-			this.domBody.find('tr[data-row-id=' + i + ']')[ val ? 'addClass' : 'removeClass']( 'ci-highlight' );
+			this.domBody.find('tr').eq(i)[ val ? 'addClass' : 'removeClass']( 'ci-highlight' );
 		},
 
 		getValue: function( trVal, jpath ) {
@@ -327,16 +344,44 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 			},
 
 			removeRow: function( source ) {
-
+console.log( source );
 				this.onActionReceive.removeRowById.call( this, this.module.getDataFromRel('list').indexOf( source ) );
 			},
 
 			removeRowById: function( rowId ) {
+console.log( rowId );
+				if( rowId < 0 ) {
+					return;
+				}
 
 				var el = this.module.getDataFromRel('list').splice( rowId, 1 );
 				el[ 0 ].unbindChange( this.module.getId( ) );
 
+				var index;
+
+				if( ( index = this.selected.indexOf( rowId ) ) > -1 ) {
+					this.selected.splice( index, 1 );
+				}
+
+				console.log( this.selected );
+
 				this.domBody.children().eq( rowId ).remove();
+			},
+
+			toggleOff: function( source ) {
+
+				console.log( "Toggle Off" );
+
+				var index = this.module.getDataFromRel('list').indexOf( source );
+				console.log( index, this.module.getDataFromRel('list'), source );
+
+				if( index == -1 ) {
+					return;
+				}
+
+				this.module.controller.onToggleOff( this.module.data, index );
+ 				this.domBody.children().eq( index ).removeClass('toggled');
+
 			}
 
 		},

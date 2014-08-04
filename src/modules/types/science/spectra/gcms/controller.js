@@ -73,7 +73,17 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 		
 		ms: {
 			type: ["jcamp"],
-			label: 'MS'	
+			label: 'MS (jcamp)'	
+		},
+
+		msdata: {
+			type: ["array"],
+			label: "Parsed MS Data"
+		},
+
+		gcdata: {
+			type: ["array"],
+			label: "Parsed GC Data"
 		},
 
 		mscont: {
@@ -131,6 +141,11 @@ define( [ 'modules/default/defaultcontroller' ], function( Default ) {
 			label: 'Add vertical tracking line over MS spectra',
 			refAction: [ 'MSIon' ], // We can either send the ion trace by action or also by variable
 			refVariable: [ 'MSIon' ] // Unused until 28.12.2013
+		},
+
+		onJCampParsed: {
+			label: "After the Jcamp has been parsed",
+			refVariable: [ 'msdata', 'gcdata' ]
 		}
 	};
 	

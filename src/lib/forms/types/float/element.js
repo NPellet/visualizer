@@ -25,7 +25,7 @@ define( [ 'require', '../text/element'], function( require, textElement ) {
 					if( typeof( this.field.options.validation.rules[ i ].max ) !== "undefined" ) {
 
 						var max = this.field.options.validation.rules[ i ].max;
-						console.log( floatVal, max );
+						
 						if( floatVal > max ) {
 							error = true;
 						}
