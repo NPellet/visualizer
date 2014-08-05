@@ -1,4 +1,4 @@
-html, body, h1, h2, h3, h4, h5, h6, p {
+h1, h2, h3, h4, h5, h6, p {
 	margin: 0;
 	padding: 0;
 }
@@ -175,7 +175,7 @@ td.ci-expand {
 #ci-center {
 	vertical-align: top;
 	height: 100%;
-	border-top: 1px solid #888888;
+/*    border-top: 1px solid #888888;*/
 	padding-top: 4px;
 	padding-left: 4px;
 }
@@ -1006,8 +1006,36 @@ div#loading-visualizer > div.animation > div:nth-child(4) {
   100% {left:100%;}
 }
 
+/* Browser compatibility */
+div#browser-compatibility {
+    font-size: 1.5em;
+}
 
+li.firefox {
+    background:;
+}
 
+ul.browser-list {
+    list-style-type: none;
+}
 
+ul.browser-list>li {
+    background-size: 1.1em 1.1em;
+    padding-left: 2em;
+    font-size: 1.3em;
+}
 
+li.firefox {
+/*    list-style-image: url('../bin/logo/firefox.png');*/
+    background: url('../bin/logo/firefox.png') left center no-repeat;
+    
+}
+
+li.chrome {
+    background: url('../bin/logo/chrome.png') left center no-repeat;
+}
+
+li.safari {
+    background: url('../bin/logo/safari.png') left center no-repeat;
+}
 
