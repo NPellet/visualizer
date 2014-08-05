@@ -73,24 +73,6 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'src/util/datatrave
 
 	controller.prototype.onAnalysisDone = function(elements) {
 		var self = this;
-        // self.result = elements;
-        // self.module.model.data = elements;
-        //
-        //                 var actions;
-        // if( ! ( actions = this.module.vars_out() ) ) {
-        //     return;
-        // }
-        //
-        // for( var i in actions ) {
-        //     if( actions[ i ].event === "onSearchReturn" ) {
-        //         if( actions[ i ].rel === "results" ) {
-        //             API.setVar( actions[i].name, elements, actions[i].jpath );
-        //         } if ( actions[ i ].rel === "url" ) {
-        //                 API.setVar( actions[i].name, self.url);
-        //         }
-        //     }
-        // }
-        
         this.createDataFromEvent("onSearchReturn", 'results', elements);
         this.createDataFromEvent("onSearchReturn", 'url', self.url);
 

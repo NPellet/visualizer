@@ -26,7 +26,7 @@ define(['jquery',
 		Cron,
 		PouchDBUtil,
 		Debug
-		) {
+    ) {
 	"use strict";
 
 	var _viewLoaded, _dataLoaded;
@@ -669,6 +669,7 @@ define(['jquery',
 
 		});
 	}
+    
 
 	return {
 //		getModules: function() {
@@ -692,7 +693,13 @@ define(['jquery',
 //		},
 
 		init: function(urls, type) {
-
+            // Check that browser is compatible
+            // if(!browser.checkBrowser()) {
+           //      $('#ci-visualizer').append('<div id="browser-compatibility">' + browser.errorMessage() + '</div>');
+           //      return;
+           //  }
+           
+                      
 			// Sets the header
 			var configJson = urls['config'] || 'usr/config/default.json';
 

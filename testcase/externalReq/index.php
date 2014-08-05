@@ -14,7 +14,9 @@
     
     // docIDs for service views, indexed by service name
     var views = {
-      'nmr-spectra-predictor': '1a2f56c6e19761ec8e64c07c006f9479'
+		
+      'nmr-spectra-predictor': '/visualizer/src/index.html?viewURL=../quickViews/nmrpredictall.json',
+	  'nmr-predictor': '/nmrdb/shtml/themes/nmrdb/pages/nmrpredict/?viewURL=view.json'
     };
     
     // Creating data object
@@ -77,7 +79,8 @@
                                 _id: i,
                                 _rev: rev,
                                 type: types[i] || "string",
-                                value: data[i]
+                                value: data[i],
+								timestamp: new Date().getTime()
                             };
                             db.put(x, function(err){
                                 if(err)
@@ -92,7 +95,7 @@
             Promise.all(docs).then(function(){
                 writeBody('Document written to database. Redirecting...');
                 setTimeout(function() {
-                    window.location = '/visualizer/_design/visualizer_head/index.html?viewURL=/cheminfo/'+views[service]+'/view.json';
+                    window.location = views[service];
                 }, 500);
             }, function(){
                 writeBody('Error: Could not write to database.');
