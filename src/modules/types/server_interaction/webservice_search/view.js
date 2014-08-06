@@ -44,8 +44,11 @@ define(['modules/default/defaultview'], function(Default) {
 
 				this.search.on( 'keyup', 'input[type=text], textarea', function( e ) {
                     var $this = $(this);
-					var searchTerm = $this.val(),
-						searchName = $this.attr('name');
+					var searchTerm = $this.val();
+                    if($this.attr('data-type') === 'float') {
+                        searchTerm = parseFloat(searchTerm);
+                    }
+					var searchName = $this.attr('name');
 
 					if( !self.oldVal[ searchName ] || self.oldVal[ searchName ] !== searchTerm ) {
 						$this.trigger( 'change' );
@@ -73,6 +76,9 @@ define(['modules/default/defaultview'], function(Default) {
                     var $this = $(this);
 					
 					var searchTerm = $this.val();
+                    if($this.attr('data-type') === 'float') {
+                        searchTerm = parseFloat(searchTerm);
+                    }
 					var searchName = $this.attr('name');
 					if(searchName !== undefined) {
                         self.module.controller.addValue({
@@ -109,7 +115,7 @@ define(['modules/default/defaultview'], function(Default) {
 
 		_makeFormEl: function(spec, name) {
 
-            var elemAttribute = 'name="'+spec.name+'" data-dest="'+spec.destination+'"';
+            var elemAttribute = 'name="'+spec.name+'" data-dest="'+spec.destination+'" data-type="'+spec.fieldtype+'"';
 
 			switch(spec.fieldtype) {
 
@@ -135,6 +141,7 @@ define(['modules/default/defaultview'], function(Default) {
 						'</textarea>';
 				
 				default:
+                case 'float':
 				case 'text':
 					return '<input type="text" value="' + (spec.defaultvalue || '') + '" ' + elemAttribute +' style="width: 100%" />';
 				break;

@@ -155,6 +155,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                             title: "Field type",
                             options: [
                                 { key: "text", title: "Text"},
+                                { key: "float", title: "Number"},
                                 { key: "textarea", title: "Textarea"},
                                 { key: "combo", title: "Combo"},
                                 { key: "checkbox", title: "Checkbox"}
