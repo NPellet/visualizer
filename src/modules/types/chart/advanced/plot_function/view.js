@@ -20,7 +20,7 @@ define(['require','modules/default/defaultview','src/util/util','src/util/api','
 			var cfg = $.proxy(self.module.getConfiguration, self.module);
 
 			this._id = Util.getNextUniqueId();
-			$block = $('<div>',{Id: this._id }) ;
+			var $block = $('<div>',{Id: this._id }) ;
 			$block.css('display', 'table').css('height', '100%').css('width', '100%').css("overflow","hidden") ; //.css("background","#33ccff");
 			this.dom = $block ;
 			this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
@@ -103,15 +103,15 @@ define(['require','modules/default/defaultview','src/util/util','src/util/api','
 			
 			if (!this.webgl) return;
 			var self=this;
-
-			this.onReady.done(function() {
+      console.log(this.onReady);
+			this.module.viewReady.then(function() {
 				var cfg = $.proxy(self.module.getConfiguration, self.module);
 				var segments=cfg('segments');
 
 				///////////////////////
 				// end vertex colors //
 				///////////////////////
-				
+
 				// material choices: vertexColorMaterial, wireMaterial , normMaterial , shadeMaterial
 
 				if (self.graphMesh) {
@@ -119,7 +119,7 @@ define(['require','modules/default/defaultview','src/util/util','src/util/api','
 				}
 
 				var wireTexture = new THREE.ImageUtils.loadTexture( require.toUrl('./square.png') );
-				wireTexture.wrapS = wireTexture.wrapT = THREE.RepeatWrapping; 
+				wireTexture.wrapS = wireTexture.wrapT = THREE.RepeatWrapping;
 				wireTexture.repeat.set( 40, 40 );
 				var wireMaterial = new THREE.MeshBasicMaterial( { map: wireTexture, vertexColors: THREE.VertexColors, side:THREE.DoubleSide } );
 
@@ -137,7 +137,7 @@ define(['require','modules/default/defaultview','src/util/util','src/util/api','
 
 				self.firstAnimation=60;
 				self.animate();
-				
+
 			});
 
 		},
