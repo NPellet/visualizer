@@ -1011,10 +1011,6 @@ div#browser-compatibility {
     font-size: 1.5em;
 }
 
-li.firefox {
-    background:;
-}
-
 ul.browser-list {
     list-style-type: none;
 }
@@ -1024,6 +1020,7 @@ ul.browser-list>li {
     padding-left: 2em;
     font-size: 1.3em;
 }
+
 
 li.firefox {
 /*    list-style-image: url('../bin/logo/firefox.png');*/

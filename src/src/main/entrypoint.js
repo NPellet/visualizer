@@ -11,7 +11,8 @@ define(['jquery',
 	'src/util/actionmanager',
 	'src/util/cron',
 	'src/util/pouchtovar',
-	'src/util/debug'
+	'src/util/debug',
+    'src/util/browser'
 ], function($,
 		Header,
 		Repository,
@@ -25,7 +26,8 @@ define(['jquery',
 		ActionManager,
 		Cron,
 		PouchDBUtil,
-		Debug
+		Debug,
+        browser
     ) {
 	"use strict";
 
@@ -698,92 +700,100 @@ define(['jquery',
            //      $('#ci-visualizer').append('<div id="browser-compatibility">' + browser.errorMessage() + '</div>');
            //      return;
            //  }
-           
+
+            browser.checkCompatibility().then(doInit);
                       
 			// Sets the header
-			var configJson = urls['config'] || 'usr/config/default.json';
+            function doInit(errorMessage) {
+                console.log('error message', errorMessage);
+                if(errorMessage) {
+                    $('#ci-visualizer').append('<div id="browser-compatibility">' + errorMessage + '</div>');
+                    return;
+                }
 
-			$.getJSON(require.toUrl(configJson), {}, function(cfgJson) {
+                var configJson = urls['config'] || 'usr/config/default.json';
 
-				if (cfgJson.usrDir) {
-					require.config({
-						paths: {
-							usr: cfgJson.usrDir
-						}
-					});
-				}
-				
-				if(urls['debug']) {
-					Debug.setDebugLevel(parseInt(urls['debug']));
-				} else if(cfgJson.debugLevel) {
-					Debug.setDebugLevel(cfgJson.debugLevel);
-				}
+                $.getJSON(configJson, {}, function(cfgJson) {
 
-				if (cfgJson.lockView || cfgJson.viewLock) {
-					API.viewLock();
-				}
+                    if (cfgJson.usrDir) {
+                        require.config({
+                            paths: {
+                                usr: cfgJson.usrDir
+                            }
+                        });
+                    }
 
-				if (cfgJson.header) {
-					Header.init(cfgJson.header);
-				}
+                    if(urls['debug']) {
+                        Debug.setDebugLevel(parseInt(urls['debug']));
+                    } else if(cfgJson.debugLevel) {
+                        Debug.setDebugLevel(cfgJson.debugLevel);
+                    }
 
-				if (cfgJson.modules) {
-					ModuleFactory.setModules(cfgJson.modules);
-				}
+                    if (cfgJson.lockView || cfgJson.viewLock) {
+                        API.viewLock();
+                    }
 
-				// Set the filters
-				API.setAllFilters(cfgJson.filters || []);
+                    if (cfgJson.header) {
+                        Header.init(cfgJson.header);
+                    }
 
-			}).fail(function(a, b) {
-				console.error("Error loading the config : " + b);
-			}).always(function( ) {
-				require(['usr/datastructures/filelist'], function() {
-					Context.init(document.getElementById('modules-grid'));
+                    if (cfgJson.modules) {
+                        ModuleFactory.setModules(cfgJson.modules);
+                    }
 
-					if (!API.isViewLocked()) {
+                    // Set the filters
+                    API.setAllFilters(cfgJson.filters || []);
 
-						Context.listen(Context.getRootDom(), [
-							['<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
-								function() {
-									configureEntryPoint();
-								}]]
-								);
+                }).fail(function(a, b) {
+                    console.error("Error loading the config : " + b);
+                }).always(function( ) {
+                    require(['usr/datastructures/filelist'], function() {
+                        Context.init(document.getElementById('modules-grid'));
 
-						Context.listen(Context.getRootDom(), [
-							['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>',
-								function() {
-									document.location.reload();
-								}]]
-								);
-					}
+                        if (!API.isViewLocked()) {
 
-					Versioning.setViewLoadCallback(doView);
-					Versioning.setDataLoadCallback(doData);
+                            Context.listen(Context.getRootDom(), [
+                                    ['<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
+                                        function() {
+                                            configureEntryPoint();
+                                        }]]
+                            );
 
-					Versioning.setViewJSON({});
-					Versioning.setDataJSON({});
+                            Context.listen(Context.getRootDom(), [
+                                    ['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>',
+                                        function() {
+                                            document.location.reload();
+                                        }]]
+                            );
+                        }
 
-					Versioning.setURLType(type);
+                        Versioning.setViewLoadCallback(doView);
+                        Versioning.setDataLoadCallback(doData);
 
-					var viewInfo = {
-						view: {
-							urls: urls['views'],
-							branch: urls['viewBranch'],
-							url: urls['viewURL']
-						},
-						data: {
-							urls: urls['results'],
-							branch: urls['resultBranch'],
-							url: urls['dataURL']
-						}
-					};
-					window.history.replaceState({type: "viewchange", value: viewInfo}, "");
-					Versioning.switchView(viewInfo, false);
+                        Versioning.setViewJSON({});
+                        Versioning.setDataJSON({});
+
+                        Versioning.setURLType(type);
+
+                        var viewInfo = {
+                            view: {
+                                urls: urls['views'],
+                                branch: urls['viewBranch'],
+                                url: urls['viewURL']
+                            },
+                            data: {
+                                urls: urls['results'],
+                                branch: urls['resultBranch'],
+                                url: urls['dataURL']
+                            }
+                        };
+                        window.history.replaceState({type: "viewchange", value: viewInfo}, "");
+                        Versioning.switchView(viewInfo, false);
 
 
-				});
-			});
-
+                    });
+                });
+            }
 		},
 //		getVariables: function( ) {
 //			return view.variables;
