@@ -15,8 +15,10 @@ requirejs.config({
 		pouchdb: "components/pouchdb/dist/pouchdb-nightly.min",
 		uri: "components/uri.js/src",
 		underscore: "components/underscore/underscore",
-        lodash: "components/lodash/dist/lodash",
-		leaflet: "components/leaflet/dist/leaflet"
+        lodash: "components/lodash/dist/lodash.min",
+		leaflet: "components/leaflet/dist/leaflet",
+        modernizr: "components/modernizr/modernizr",
+        bowser: "components/bowser/bowser.min"
 	},
 	shim: {
 		"d3": {
@@ -40,6 +42,9 @@ requirejs.config({
 		"ckeditor": {
 			exports: "CKEDITOR"
 		},
+        modernizr: {
+            exports: "Modernizr"
+        },
         
 		"components/three.js/examples/js/controls/TrackballControls": ["threejs"],
 		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],

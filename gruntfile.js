@@ -86,7 +86,10 @@ module.exports = function(grunt) {
               ['./setImmediate/setimmediate.js','./promises/promise.js','./bluebird/js/browser/bluebird.js'], // Promises polyfill
               './onde/src/*',
               ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
-              './superagent/superagent.js'
+              './superagent/superagent.js',
+              './modernizr/modernizr.js',
+              './lodash/dist/lodash.min.js',
+              './bowser/bowser.min.js'
             ],
 
             dest: './build/components/'
