@@ -13,7 +13,7 @@ body {
 }
 
 body.locked {
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 
 .ci-spacer {
