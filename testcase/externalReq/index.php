@@ -14,9 +14,8 @@
     
     // docIDs for service views, indexed by service name
     var views = {
-		
-      'nmr-spectra-predictor': 'http://isicsrv15.epfl.ch/pages/nmrpredictall/?viewURL=view.json&config=/config.json',
-	  'nmr-predictor': 'http://isicsrv15.epfl.ch/pages/nmrpredict/?viewURL=view.json&config=/config.json'
+      'nmr-spectra-predictor': '../../src/index.html?config=../testcase/config/default.json&viewURL=../testcase/externalReq/views/nmrpredictall.json',
+	  'nmr-predictor': '../../src/index.html?config=../testcase/config/default.json&viewURL=../testcase/externalReq/views/nmrpredict.json'
     };
     
     // Creating data object

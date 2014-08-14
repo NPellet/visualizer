@@ -1,0 +1,1986 @@
+{
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "version": "2.4.1",
+  "modules": [
+    {
+      "url": "modules/types/science/chemistry/jsme/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "prefs": [
+                [
+                  "oldlook"
+                ]
+              ],
+              "labelsize": [
+                14
+              ],
+              "bondwidth": [
+                1
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 40,
+            "height": 42
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Molecule",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "mol",
+          "name": "molfile-ext"
+        }
+      ],
+      "actions_in": {},
+      "title": "Molecule",
+      "vars_out": [
+        {
+          "event": "onStructureChange",
+          "rel": "mol",
+          "jpath": [],
+          "name": "molfile"
+        }
+      ],
+      "actions_out": {},
+      "zindex": 1
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "graphurl": [
+                ""
+              ],
+              "flip": [
+                [
+                  "flipX"
+                ]
+              ],
+              "displayAxis": [
+                [
+                  "x"
+                ]
+              ],
+              "grids": [
+                []
+              ],
+              "xLabel": [
+                "ppm"
+              ],
+              "yTopSpacing": [
+                0
+              ],
+              "yBottomSpacing": [
+                "0.05"
+              ],
+              "xLeftSpacing": [
+                0
+              ],
+              "xRightSpacing": [
+                0
+              ],
+              "yLabel": [
+                ""
+              ],
+              "minX": [
+                ""
+              ],
+              "maxX": [
+                ""
+              ],
+              "minY": [
+                ""
+              ],
+              "maxY": [
+                ""
+              ],
+              "zoom": [
+                "x"
+              ],
+              "shiftxtozero": [
+                []
+              ],
+              "xastime": [
+                []
+              ],
+              "wheelAction": [
+                "none"
+              ],
+              "fullOut": [
+                "both"
+              ]
+            }
+          ],
+          "plotinfos": [
+            [
+              {
+                "variable": "jcamp1H",
+                "plotcolor": [
+                  34,
+                  46,
+                  255,
+                  1
+                ],
+                "strokewidth": "1",
+                "plotcontinuous": [
+                  "continuous"
+                ],
+                "peakpicking": [],
+                "markers": [],
+                "normalize": "max1",
+                "optimizeSlots": []
+              },
+              {
+                "variable": "jcamp1HExp",
+                "plotcolor": [
+                  247,
+                  103,
+                  35,
+                  1
+                ],
+                "strokewidth": "1",
+                "plotcontinuous": [
+                  "continuous"
+                ],
+                "peakpicking": [],
+                "markers": [],
+                "normalize": "max1",
+                "optimizeSlots": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 40.999997806549075,
+            "top": 17.9985782623291
+          },
+          "size": {
+            "width": 38,
+            "height": 21
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "1H-NMR spectrum",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "jcamp",
+          "name": "jcamp1H"
+        },
+        {
+          "rel": "annotations",
+          "name": "annotations1H"
+        },
+        {
+          "rel": "jcamp",
+          "name": "jcamp1HExp"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "1H-NMR spectrum",
+      "vars_out": [
+        {}
+      ],
+      "actions_out": [
+        {}
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "graphurl": [
+                ""
+              ],
+              "flip": [
+                [
+                  "flipX"
+                ]
+              ],
+              "displayAxis": [
+                [
+                  "x"
+                ]
+              ],
+              "grids": [
+                []
+              ],
+              "xLabel": [
+                "ppm"
+              ],
+              "yTopSpacing": [
+                0
+              ],
+              "yBottomSpacing": [
+                "0.05"
+              ],
+              "xLeftSpacing": [
+                0
+              ],
+              "xRightSpacing": [
+                0
+              ],
+              "yLabel": [
+                ""
+              ],
+              "minX": [
+                ""
+              ],
+              "maxX": [
+                ""
+              ],
+              "minY": [
+                ""
+              ],
+              "maxY": [
+                ""
+              ],
+              "zoom": [
+                "x"
+              ],
+              "shiftxtozero": [
+                []
+              ],
+              "xastime": [
+                []
+              ],
+              "wheelAction": [
+                "none"
+              ],
+              "fullOut": [
+                "both"
+              ]
+            }
+          ],
+          "plotinfos": [
+            [
+              {
+                "variable": "jcamp13C",
+                "plotcolor": [
+                  0,
+                  3,
+                  255,
+                  1
+                ],
+                "strokewidth": "1",
+                "plotcontinuous": [
+                  "continuous"
+                ],
+                "peakpicking": [],
+                "markers": [],
+                "normalize": "max1",
+                "optimizeSlots": []
+              },
+              {
+                "variable": "jcamp13CExp",
+                "plotcolor": [
+                  255,
+                  82,
+                  0,
+                  0.68
+                ],
+                "strokewidth": "1",
+                "plotcontinuous": [
+                  "continuous"
+                ],
+                "peakpicking": [],
+                "markers": [],
+                "normalize": "max1",
+                "optimizeSlots": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 79.99999780654908,
+            "top": 0
+          },
+          "size": {
+            "width": 38,
+            "height": 17
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "13C-NMR spectrum",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "jcamp",
+          "name": "jcamp13C"
+        },
+        {
+          "rel": "annotations",
+          "name": "annotations13C"
+        },
+        {
+          "rel": "jcamp",
+          "name": "jcamp13CExp"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "13C-NMR spectrum",
+      "vars_out": [
+        {}
+      ],
+      "actions_out": [
+        {}
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "graphurl": [
+                ""
+              ],
+              "flip": [
+                []
+              ],
+              "displayAxis": [
+                [
+                  "y",
+                  "x"
+                ]
+              ],
+              "grids": [
+                []
+              ],
+              "xLabel": [
+                "m/Z"
+              ],
+              "yTopSpacing": [
+                "0"
+              ],
+              "yBottomSpacing": [
+                "0.05"
+              ],
+              "xLeftSpacing": [
+                0
+              ],
+              "xRightSpacing": [
+                0
+              ],
+              "yLabel": [
+                "Relative Abundance"
+              ],
+              "minX": [
+                ""
+              ],
+              "maxX": [
+                ""
+              ],
+              "minY": [
+                "0"
+              ],
+              "maxY": [
+                "10"
+              ],
+              "zoom": [
+                "x"
+              ],
+              "shiftxtozero": [
+                []
+              ],
+              "xastime": [
+                []
+              ],
+              "wheelAction": [
+                "none"
+              ],
+              "fullOut": [
+                "both"
+              ]
+            }
+          ],
+          "plotinfos": [
+            [
+              {
+                "variable": "ms",
+                "plotcolor": [
+                  71,
+                  183,
+                  7,
+                  1
+                ],
+                "strokewidth": "1",
+                "plotcontinuous": [
+                  "continuous"
+                ],
+                "peakpicking": [],
+                "markers": [],
+                "normalize": "none",
+                "optimizeSlots": []
+              },
+              {
+                "variable": "msExp",
+                "plotcolor": [
+                  255,
+                  100,
+                  0,
+                  0.77
+                ],
+                "strokewidth": "1",
+                "plotcontinuous": [
+                  "continuous"
+                ],
+                "peakpicking": [],
+                "markers": [],
+                "normalize": "none",
+                "optimizeSlots": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 79.99999780654908,
+            "top": 17.9985782623291
+          },
+          "size": {
+            "width": 38,
+            "height": 21
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "MS",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "jcamp",
+          "name": "ms"
+        },
+        {
+          "rel": "jcamp",
+          "name": "msExp"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "MS",
+      "vars_out": [
+        {}
+      ],
+      "actions_out": [
+        {}
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "graphurl": [
+                ""
+              ],
+              "flip": [
+                [
+                  "flipX",
+                  "flipY"
+                ]
+              ],
+              "displayAxis": [
+                [
+                  "y",
+                  "x"
+                ]
+              ],
+              "grids": [
+                []
+              ],
+              "xLabel": [
+                ""
+              ],
+              "yTopSpacing": [
+                0
+              ],
+              "yBottomSpacing": [
+                0
+              ],
+              "xLeftSpacing": [
+                0
+              ],
+              "xRightSpacing": [
+                0
+              ],
+              "yLabel": [
+                ""
+              ],
+              "minX": [
+                "0.001"
+              ],
+              "maxX": [
+                "10"
+              ],
+              "minY": [
+                "0.001"
+              ],
+              "maxY": [
+                "10"
+              ],
+              "zoom": [
+                "xy"
+              ],
+              "shiftxtozero": [
+                []
+              ],
+              "xastime": [
+                []
+              ],
+              "wheelAction": [
+                "none"
+              ],
+              "fullOut": [
+                "both"
+              ]
+            }
+          ],
+          "plotinfos": [
+            [
+              {
+                "variable": "cosy",
+                "plotcolor": [
+                  1,
+                  1,
+                  255,
+                  0.4
+                ],
+                "strokewidth": "1",
+                "plotcontinuous": [
+                  "continuous"
+                ],
+                "peakpicking": [],
+                "markers": [],
+                "normalize": "none",
+                "optimizeSlots": []
+              },
+              {
+                "variable": "cosyExp",
+                "plotcolor": [
+                  255,
+                  61,
+                  0,
+                  0.88
+                ],
+                "strokewidth": "1",
+                "plotcontinuous": [
+                  "continuous"
+                ],
+                "peakpicking": [],
+                "markers": [],
+                "normalize": "none",
+                "optimizeSlots": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 40.999997806549075,
+            "top": 39.99999885559082
+          },
+          "size": {
+            "width": 38,
+            "height": 33
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "COSY (1,2,3 J in yellow,  4J in blue)",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "jcamp",
+          "name": "cosy"
+        },
+        {
+          "rel": "annotations",
+          "name": "cosyPP"
+        },
+        {
+          "rel": "jcamp",
+          "name": "cosyExp"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "COSY (1,2,3 J in yellow,  4J in blue)",
+      "vars_out": [
+        {}
+      ],
+      "actions_out": [
+        {}
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "graphurl": [
+                ""
+              ],
+              "flip": [
+                [
+                  "flipX",
+                  "flipY"
+                ]
+              ],
+              "displayAxis": [
+                [
+                  "x",
+                  "y"
+                ]
+              ],
+              "grids": [
+                []
+              ],
+              "xLabel": [
+                ""
+              ],
+              "yTopSpacing": [
+                0
+              ],
+              "yBottomSpacing": [
+                0
+              ],
+              "xLeftSpacing": [
+                0
+              ],
+              "xRightSpacing": [
+                0
+              ],
+              "yLabel": [
+                ""
+              ],
+              "minX": [
+                "0.001"
+              ],
+              "maxX": [
+                "10"
+              ],
+              "minY": [
+                "0.001"
+              ],
+              "maxY": [
+                "200"
+              ],
+              "zoom": [
+                "xy"
+              ],
+              "shiftxtozero": [
+                []
+              ],
+              "xastime": [
+                []
+              ],
+              "wheelAction": [
+                "none"
+              ],
+              "fullOut": [
+                "both"
+              ]
+            }
+          ],
+          "plotinfos": [
+            [
+              {
+                "variable": "hmbc",
+                "plotcolor": [
+                  1,
+                  1,
+                  255,
+                  0.52
+                ],
+                "strokewidth": "1",
+                "plotcontinuous": [
+                  "continuous"
+                ],
+                "peakpicking": [],
+                "markers": [],
+                "normalize": "none",
+                "optimizeSlots": []
+              },
+              {
+                "variable": "hmbcExp",
+                "plotcolor": [
+                  255,
+                  92,
+                  0,
+                  0.78
+                ],
+                "strokewidth": "1",
+                "plotcontinuous": [
+                  "continuous"
+                ],
+                "peakpicking": [],
+                "markers": [],
+                "normalize": "none",
+                "optimizeSlots": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 79.99999780654908,
+            "top": 39.99999885559082
+          },
+          "size": {
+            "width": 38,
+            "height": 33
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "HMBC (1 red, 2-3 yellow, 4 blue) ",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [
+        {
+          "rel": "jcamp",
+          "name": "hmbc"
+        },
+        {
+          "rel": "annotations",
+          "name": "hmbcPP"
+        },
+        {
+          "rel": "jcamp",
+          "name": "hmbcExp"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "HMBC (1 red, 2-3 yellow, 4 blue) ",
+      "vars_out": [
+        {}
+      ],
+      "actions_out": [
+        {}
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/server_interaction/webservice_search/",
+      "configuration": {
+        "sections": {
+          "postvariables": [
+            {
+              "sections": {},
+              "groups": {
+                "postvariables": [
+                  [
+                    {
+                      "name": "molfile",
+                      "destination": "data",
+                      "variable": "molfile",
+                      "filter": "value"
+                    },
+                    {
+                      "name": "molfile",
+                      "destination": "url",
+                      "variable": "molfile",
+                      "filter": "none"
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {
+          "group": [
+            {
+              "url": [
+                "http://script.epfl.ch/script/Service/20140527/0ailQnpul0"
+              ],
+              "method": [
+                "POST"
+              ],
+              "dataType": [
+                "form"
+              ],
+              "button": [
+                [
+                  "button"
+                ]
+              ],
+              "buttonlabel": [
+                "Simulate spectra"
+              ],
+              "buttonlabel_exec": [
+                "Simulating..."
+              ],
+              "onloadsearch": [
+                []
+              ],
+              "resultfilter": [
+                null
+              ]
+            }
+          ],
+          "headers": [
+            [
+              {}
+            ]
+          ],
+          "searchparams": [
+            [
+              {
+                "destination": "url",
+                "fieldtype": "text"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 27,
+            "top": 35
+          },
+          "size": {
+            "width": 16,
+            "height": 9
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Click me",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {
+          "rel": "vartrigger",
+          "name": "molfile"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": "doSearch",
+          "name": "donmrpredict"
+        }
+      ],
+      "title": "Click me",
+      "vars_out": [
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "resultLog"
+          ],
+          "name": "log"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "result",
+            "jme",
+            "jmeNumbers"
+          ],
+          "name": "jme"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "result",
+            "jcampMS"
+          ],
+          "name": "ms"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "result",
+            "spectrumCOSY",
+            "jcamp2D"
+          ],
+          "name": "cosy"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "result",
+            "spectrumCOSY",
+            "annotations2D"
+          ],
+          "name": "cosyPP"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "result",
+            "spectrumHMBC",
+            "jcamp2D"
+          ],
+          "name": "hmbc"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "result",
+            "spectrumHMBC",
+            "annotations2D"
+          ],
+          "name": "hmbcPP"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "result",
+            "spectrum1H",
+            "jcamp"
+          ],
+          "name": "jcamp1H"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "result",
+            "spectrum1H",
+            "annotations"
+          ],
+          "name": "annotations1H"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "result",
+            "spectrum13C",
+            "jcamp"
+          ],
+          "name": "jcamp13C"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "result",
+            "spectrum13C",
+            "annotations"
+          ],
+          "name": "annotations13C"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "predictions"
+          ],
+          "name": "predictions"
+        },
+        {
+          "event": "onSearchReturn",
+          "rel": "results",
+          "jpath": [
+            "chemcalc"
+          ],
+          "name": "chemcalc"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "defaultvalue": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "font": [
+                null
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 43
+          },
+          "size": {
+            "width": 16,
+            "height": 7
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Log",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 8,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "log"
+        }
+      ],
+      "actions_in": {},
+      "title": "Log",
+      "vars_out": {},
+      "actions_out": {},
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/dragdrop/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "label": [
+                "Drop your file here"
+              ],
+              "dragoverlabel": [
+                null
+              ],
+              "hoverlabel": [
+                null
+              ]
+            }
+          ],
+          "vars": [
+            [
+              {
+                "extension": "*",
+                "filetype": "text",
+                "type": "jcamp",
+                "variable": "file"
+              }
+            ]
+          ],
+          "string": [
+            [
+              {
+                "type": "string",
+                "variable": "str"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 119,
+            "top": 14
+          },
+          "size": {
+            "width": 15,
+            "height": 13
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "COSY",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 9,
+      "vars_in": [],
+      "title": "COSY",
+      "vars_out": [
+        {
+          "event": "onRead",
+          "rel": "data",
+          "jpath": [
+            "file",
+            "content"
+          ],
+          "name": "cosyExp"
+        },
+        {
+          "event": "onRead",
+          "rel": "data",
+          "jpath": [
+            "str",
+            "content"
+          ],
+          "name": "cosyExp"
+        }
+      ],
+      "actions_in": {},
+      "actions_out": {},
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/dragdrop/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "label": [
+                "Drop your file here"
+              ],
+              "dragoverlabel": [
+                null
+              ],
+              "hoverlabel": [
+                null
+              ]
+            }
+          ],
+          "vars": [
+            [
+              {
+                "extension": "*",
+                "filetype": "text",
+                "type": "jcamp",
+                "variable": "file"
+              }
+            ]
+          ],
+          "string": [
+            [
+              {
+                "type": "string",
+                "variable": "str"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 119,
+            "top": 28
+          },
+          "size": {
+            "width": 15,
+            "height": 13
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "HMBC/HSQC",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 10,
+      "vars_in": [],
+      "title": "HMBC/HSQC",
+      "vars_out": [
+        {
+          "event": "onRead",
+          "rel": "data",
+          "jpath": [
+            "file",
+            "content"
+          ],
+          "name": "hmbcExp"
+        },
+        {
+          "event": "onRead",
+          "rel": "data",
+          "jpath": [
+            "str",
+            "content"
+          ],
+          "name": "hmbcExp"
+        }
+      ],
+      "actions_in": {},
+      "actions_out": {},
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/dragdrop/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "label": [
+                "Drop your file here"
+              ],
+              "dragoverlabel": [
+                null
+              ],
+              "hoverlabel": [
+                null
+              ]
+            }
+          ],
+          "vars": [
+            [
+              {
+                "extension": "*",
+                "filetype": "text",
+                "type": "jcamp",
+                "variable": "file"
+              }
+            ]
+          ],
+          "string": [
+            [
+              {
+                "type": "string",
+                "variable": "str"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 119,
+            "top": 0
+          },
+          "size": {
+            "width": 15,
+            "height": 13
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "1H-NMR",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 11,
+      "vars_in": [],
+      "title": "1H-NMR",
+      "vars_out": [
+        {
+          "event": "onRead",
+          "rel": "data",
+          "jpath": [
+            "file",
+            "content"
+          ],
+          "name": "jcamp1HExp"
+        },
+        {
+          "event": "onRead",
+          "rel": "data",
+          "jpath": [
+            "str",
+            "content"
+          ],
+          "name": "jcamp1HExp"
+        }
+      ],
+      "actions_in": {},
+      "actions_out": {},
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/display/template-twig/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "template": [
+                "<center><h2>Calculations</h2></center>\n\n<table>\n    <tr>\n        <th>log P:</th>\n        <td>{{predictions.logP}}</td>\n    </tr>\n     <tr>\n        <th>log S:</th>\n        <td>{{predictions.logS}}</td>\n    </tr>\n         <tr>\n        <th>Stereocenters:</th>\n        <td>{{predictions.stereoCenter}}</td>\n    </tr>\n         <tr>\n        <th>PSA:</th>\n        <td>{{predictions.polarSurfaceArea}}</td>\n    </tr>\n    <tr>\n        <th>H Bond donor:</th>\n        <td>{{predictions.hDonor}}</td>\n    </tr>\n    <tr>\n        <th>H Bond acceptor:</th>\n        <td>{{predictions.hAcceptor}}</td>\n    </tr>\n    <tr>\n        <th>MF:</th>\n        <td>{{rendertype(chemcalc.mf)}}</td>\n    </tr>\n     <tr>\n        <th>Mass weight:</th>\n        <td>{{rendertype(chemcalc.mw)}}</td>\n    </tr>\n</table>\n\n"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 17.99857873916626,
+            "top": 42.9985767364502
+          },
+          "size": {
+            "width": 22,
+            "height": 29
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Molecular information",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 12,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "predictions"
+        },
+        {
+          "rel": "value",
+          "name": "chemcalc"
+        }
+      ],
+      "actions_in": {},
+      "title": "Molecular information",
+      "vars_out": {},
+      "actions_out": {},
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/dragdrop/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "label": [
+                "Drop your file here"
+              ],
+              "dragoverlabel": [
+                null
+              ],
+              "hoverlabel": [
+                null
+              ]
+            }
+          ],
+          "vars": [
+            [
+              {
+                "extension": "*",
+                "filetype": "text",
+                "type": "jcamp",
+                "variable": "file"
+              }
+            ]
+          ],
+          "string": [
+            [
+              {
+                "type": "string",
+                "variable": "str"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 119,
+            "top": 56
+          },
+          "size": {
+            "width": 15,
+            "height": 13
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "13C-NMR",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 13,
+      "vars_in": [],
+      "title": "13C-NMR",
+      "vars_out": [
+        {
+          "event": "onRead",
+          "rel": "data",
+          "jpath": [
+            "file",
+            "content"
+          ],
+          "name": "jcamp13CExp"
+        },
+        {
+          "event": "onRead",
+          "rel": "data",
+          "jpath": [
+            "str",
+            "content"
+          ],
+          "name": "jcamp13CExp"
+        }
+      ],
+      "actions_in": {},
+      "actions_out": {},
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/dragdrop/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "label": [
+                "Drop your file here"
+              ],
+              "dragoverlabel": [
+                null
+              ],
+              "hoverlabel": [
+                null
+              ]
+            }
+          ],
+          "vars": [
+            [
+              {
+                "extension": "*",
+                "filetype": "text",
+                "type": "jcamp",
+                "variable": "file"
+              }
+            ]
+          ],
+          "string": [
+            [
+              {
+                "type": "string",
+                "variable": "str"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 119,
+            "top": 42
+          },
+          "size": {
+            "width": 15,
+            "height": 13
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "MS",
+          "bgcolor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 14,
+      "vars_in": [],
+      "title": "MS",
+      "vars_out": [
+        {
+          "event": "onRead",
+          "rel": "data",
+          "jpath": [
+            "file",
+            "content"
+          ],
+          "name": "msExp"
+        },
+        {
+          "event": "onRead",
+          "rel": "data",
+          "jpath": [
+            "str",
+            "content"
+          ],
+          "name": "msExp"
+        }
+      ],
+      "actions_in": {},
+      "actions_out": {},
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/display/postit/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "fontfamily": [
+                "Post_IT"
+              ],
+              "editable": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 42,
+            "top": 0
+          },
+          "size": {
+            "width": 38,
+            "height": 17
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Untitled",
+          "bgcolor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      },
+      "id": 15,
+      "vars_in": [],
+      "actions_in": {},
+      "title": "Untitled",
+      "text": "<p><strong>Simulate NMR, MS and more</strong></p>\n\n<p>Draw your molecule or drag and drop your molfile, click the button and prepare yourself to really understand your molecule.</p>\n\n<p>You can zoom and mouseover everywhere...</p>\n",
+      "zindex": 3,
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": {}
+    }
+  ],
+  "variables": [
+    {
+      "varname": "resultLog",
+      "jpath": [
+        "resultLog"
+      ]
+    },
+    {
+      "varname": "result",
+      "jpath": [
+        "result"
+      ]
+    },
+    {
+      "varname": "jme",
+      "jpath": [
+        "result",
+        "jme",
+        "jmeNumbers"
+      ]
+    },
+    {
+      "varname": "jcamp1H",
+      "jpath": [
+        "result",
+        "spectrum1H",
+        "jcamp"
+      ]
+    },
+    {
+      "varname": "annotations1H",
+      "jpath": [
+        "result",
+        "spectrum1H",
+        "annotations"
+      ]
+    },
+    {
+      "varname": "ms",
+      "jpath": [
+        "result",
+        "jcampMS"
+      ]
+    },
+    {
+      "varname": "jcamp13C",
+      "jpath": [
+        "result",
+        "spectrum13C",
+        "jcamp"
+      ]
+    },
+    {
+      "varname": "annotations13C",
+      "jpath": [
+        "result",
+        "spectrum13C",
+        "annotations"
+      ]
+    },
+    {
+      "varname": "cosy",
+      "jpath": [
+        "result",
+        "spectrumCOSY",
+        "jcamp2D"
+      ]
+    },
+    {
+      "varname": "cosyPP",
+      "jpath": [
+        "result",
+        "spectrumCOSY",
+        "annotations2D"
+      ]
+    },
+    {
+      "varname": "hmbc",
+      "jpath": [
+        "result",
+        "spectrumHMBC",
+        "jcamp2D"
+      ]
+    },
+    {
+      "varname": "hmbcPP",
+      "jpath": [
+        "result",
+        "spectrumHMBC",
+        "annotations2D"
+      ]
+    },
+    {
+      "varname": "log",
+      "jpath": [
+        "resultLog"
+      ]
+    },
+    {
+      "varname": "predictions",
+      "jpath": [
+        "predictions"
+      ]
+    },
+    {
+      "varname": "chemcalc",
+      "jpath": [
+        "chemcalc"
+      ]
+    }
+  ],
+  "pouchvariables": [
+    {}
+  ],
+  "configuration": {
+    "title": "Simulate NMR and MS"
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "crons": [
+    {}
+  ],
+  "couch_replication": [
+    {
+      "sections": {},
+      "groups": {
+        "couch": [
+          [
+            {
+              "direction": "both",
+              "continuous": []
+            }
+          ]
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              "require(['src/util/pouchtovar'], function(pouchtovar) {\n    Promise.all([pouchtovar.pouchToVar('external_infos', 'molfile'), pouchtovar.pouchToVar('external_infos', 'smiles')]).then(function(value) {\n        var molfile = value[0];\n        var smiles = value[1];\n        \n\n        if(!molfile._rev && !smiles._rev) {\n            console.log('not available');\n            return;\n        }\n        var useMolfile = (molfile._rev && !smiles._rev) || (molfile._rev && smiles._rev && molfile.timestamp > smiles.timestamp);\n        \n        if(useMolfile) {\n            console.log('use molfile');\n            API.createData('molfile-ext', molfile);\n\n        }\n        else {\n            console.log('use smiles');\n            $.ajax({\n                url: 'http://www.nmrdb.org/service/smiles2molfile?smiles='+smiles.get(),\n                type: 'GET',\n                dataType: 'json'\n            }).done(function(val){\n                API.createData('molfile-ext', DataObject.check({type:'mol2d', value: val.molfile}));\n            })\n        }\n    });\n});"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
+}

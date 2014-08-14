@@ -1,0 +1,790 @@
+{
+	"_id": "admin@cheminfo.org:view:Spectra:NMR:Tools:Prediction",
+	"_rev": "3-f007acfb4f53f8695d4bf18757c07d40",
+	"modules": [
+		{
+			"url": "modules/types/science/chemistry/jsme/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[]
+							],
+							"labelsize": [
+								14
+							],
+							"bondwidth": [
+								1
+							]
+						}
+					]
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "mol",
+					"name": "molfile-ext"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"event": "onStructureChange",
+					"rel": "mol",
+					"jpath": [],
+					"name": "molfile"
+				}
+			],
+			"actions_out": {},
+			"zindex": 1,
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 37,
+						"height": 34
+					},
+					"display": true,
+					"title": "Draw a chemical structure to predict",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					]
+				}
+			},
+			"title": "Draw a chemical structure to predict"
+		},
+		{
+			"url": "modules/types/science/chemistry/jsme/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[
+									"depict"
+								]
+							]
+						}
+					]
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "mol",
+					"name": "newMolfile"
+				}
+			],
+			"actions_in": {},
+			"vars_out": [
+				{}
+			],
+			"actions_out": {},
+			"zindex": 1,
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 37,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 37,
+						"height": 34
+					},
+					"display": true,
+					"title": "Chemical structure with hydrogen exploded",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Chemical structure with hydrogen exploded"
+		},
+		{
+			"url": "modules/types/display/fasttable/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								"100"
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "AtomID",
+								"jpath": "element.atomIDs.0",
+								"number": [
+									"number"
+								],
+								"editable": "none"
+							},
+							{
+								"name": "From",
+								"jpath": "element.startX",
+								"number": [
+									"number"
+								],
+								"editable": "none"
+							},
+							{
+								"name": "To",
+								"jpath": "element.stopX",
+								"number": [
+									"number"
+								],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "spinus"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"zindex": 1,
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": [
+						"nmrJs"
+					],
+					"name": "couplings"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 75,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 29,
+						"height": 26
+					},
+					"display": true,
+					"title": "Spinus predicted chemical shifts",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Spinus predicted chemical shifts"
+		},
+		{
+			"url": "modules/types/client_interaction/dragdrop/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"label": [
+								"Drop or paste a jcamp file"
+							]
+						}
+					],
+					"vars": [
+						[
+							{
+								"extension": "jdx",
+								"filetype": "text",
+								"type": "jcamp",
+								"variable": "jcamp"
+							},
+							{
+								"extension": "dx",
+								"filetype": "text",
+								"type": "jcamp",
+								"variable": "jcamp"
+							}
+						]
+					],
+					"string": [
+						[
+							{
+								"type": "jcamp",
+								"variable": "jcamp"
+							}
+						]
+					]
+				}
+			},
+			"id": 4,
+			"vars_in": [],
+			"actions_in": {},
+			"vars_out": [
+				{
+					"event": "onRead",
+					"rel": "data",
+					"jpath": [
+						"jcamp",
+						"content"
+					],
+					"name": "experimentalFile"
+				}
+			],
+			"actions_out": [
+				{}
+			],
+			"zindex": 4,
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 75,
+						"top": 26,
+						"right": 0
+					},
+					"size": {
+						"width": 63,
+						"height": 8
+					},
+					"display": true,
+					"title": "Superimpose exp. spectrum",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Superimpose exp. spectrum"
+		},
+		{
+			"url": "modules/types/display/fasttable/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "J (Hz)",
+								"jpath": "element.coupling",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "couplings"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"zindex": 1,
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 105,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 33,
+						"height": 26
+					},
+					"display": true,
+					"title": "J",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "J"
+		},
+		{
+			"url": "modules/types/science/spectra/spectra_displayer/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"graphurl": [
+								""
+							],
+							"flip": [
+								[
+									"flipX"
+								]
+							],
+							"displayAxis": [
+								[
+									"x"
+								]
+							],
+							"grids": [
+								[]
+							],
+							"xLabel": [
+								""
+							],
+							"yTopSpacing": [
+								0
+							],
+							"yBottomSpacing": [
+								"0.05"
+							],
+							"xLeftSpacing": [
+								"0"
+							],
+							"xRightSpacing": [
+								0
+							],
+							"yLabel": [
+								""
+							],
+							"minX": [
+								""
+							],
+							"maxX": [
+								""
+							],
+							"minY": [
+								""
+							],
+							"maxY": [
+								""
+							],
+							"zoom": [
+								"x"
+							],
+							"shiftxtozero": [
+								[]
+							],
+							"xastime": [
+								[]
+							],
+							"wheelAction": [
+								"zoomY"
+							],
+							"fullOut": [
+								"both"
+							]
+						}
+					],
+					"plotinfos": [
+						[
+							{
+								"variable": "nmrSpectrum",
+								"plotcolor": [
+									0,
+									0,
+									0,
+									1
+								],
+								"strokewidth": "1",
+								"plotcontinuous": [
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "max1",
+								"optimizeSlots": []
+							},
+							{
+								"variable": "experimentalFile",
+								"plotcolor": [
+									255,
+									36,
+									46,
+									0.35
+								],
+								"strokewidth": "2",
+								"plotcontinuous": [
+									"continuous",
+									"continuous"
+								],
+								"peakpicking": [],
+								"markers": [],
+								"normalize": "max1",
+								"optimizeSlots": []
+							}
+						]
+					]
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "nmrSpectrum"
+				},
+				{
+					"rel": "jcamp",
+					"name": "experimentalFile"
+				},
+				{
+					"rel": "annotations",
+					"name": "annotations"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{}
+			],
+			"actions_out": [
+				{}
+			],
+			"zindex": 1,
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 35,
+						"right": 0
+					},
+					"size": {
+						"width": 138,
+						"height": 31
+					},
+					"display": true,
+					"title": "Untitled module",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Untitled module"
+		},
+		{
+			"url": "modules/types/server_interaction/webservice_search/",
+			"configuration": {
+				"sections": {
+					"postvariables": [
+						{
+							"sections": {},
+							"groups": {
+								"postvariables": [
+									[
+										{
+											"name": "molfile",
+											"destination": "data",
+											"variable": "molfile",
+											"filter": "value"
+										}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {
+					"group": [
+						{
+							"url": [
+								"http://www.nmrdb.org/service/prediction"
+							],
+							"method": [
+								"POST"
+							],
+							"dataType": [
+								"form"
+							],
+							"button": [
+								[
+									"button"
+								]
+							],
+							"buttonlabel": [
+								"Calculate spectrum"
+							],
+							"buttonlabel_exec": [
+								"Calculating ..."
+							],
+							"onloadsearch": [
+								[]
+							],
+							"resultfilter": [
+								null
+							]
+						}
+					],
+					"headers": [
+						[
+							{}
+						]
+					],
+					"searchparams": [
+						[
+							{
+								"destination": "url",
+								"fieldtype": "text"
+							}
+						]
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "vartrigger",
+					"name": "molfile"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "doSearch",
+					"name": "donmrpredict"
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": [
+						"molfile"
+					],
+					"name": "newMolfile"
+				},
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": [
+						"jcamp"
+					],
+					"name": "nmrSpectrum"
+				},
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": [
+						"annotations"
+					],
+					"name": "annotations"
+				},
+				{
+					"event": "onSearchReturn",
+					"rel": "results",
+					"jpath": [
+						"spinus"
+					],
+					"name": "spinus"
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 8,
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 23,
+						"top": 27,
+						"right": 0
+					},
+					"size": {
+						"width": 17,
+						"height": 8
+					},
+					"display": true,
+					"title": "Untitled module",
+					"bgcolor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					]
+				}
+			},
+			"title": "Untitled module"
+		}
+	],
+	"variables": [
+		{
+			"varname": "exercises",
+			"jpath": [
+				"exercises"
+			]
+		}
+	],
+	"configuration": {
+		"title": "Predict NMR spectra"
+	},
+	"version": "2.4.1",
+	"pouchvariables": [
+		{}
+	],
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"crons": [
+		{}
+	],
+	"couch_replication": [
+		{
+			"sections": {},
+			"groups": {
+				"couch": [
+					[
+						{
+							"direction": "both",
+							"continuous": []
+						}
+					]
+				]
+			}
+		}
+	],
+	"init_script": [
+		{
+			"sections": {},
+			"groups": {
+				"general": [
+					{
+						"script": [
+							"require(['src/util/pouchtovar'], function(pouchtovar) {\n    Promise.all([pouchtovar.pouchToVar('external_infos', 'molfile'), pouchtovar.pouchToVar('external_infos', 'smiles')]).then(function(value) {\n        var molfile = value[0];\n        var smiles = value[1];\n        \n\n        if(!molfile._rev && !smiles._rev) {\n            console.log('not available');\n            return;\n        }\n        var useMolfile = (molfile._rev && !smiles._rev) || (molfile._rev && smiles._rev && molfile.timestamp > smiles.timestamp);\n        \n        if(useMolfile) {\n            console.log('use molfile');\n            API.createData('molfile-ext', molfile);\n        }\n        else {\n            console.log('use smiles');\n            $.ajax({\n                url: 'http://www.nmrdb.org/service/smiles2molfile?smiles='+smiles.get(),\n                type: 'GET',\n                dataType: 'json'\n            }).done(function(val){\n                API.createData('molfile-ext', DataObject.check({type:'mol2d', value: val.molfile}));\n            })\n        }\n    });\n    \n    \n    console.log(pouchtovar);\n});"
+						]
+					}
+				]
+			}
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
+}
