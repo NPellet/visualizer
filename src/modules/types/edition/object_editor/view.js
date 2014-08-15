@@ -50,8 +50,14 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
             this.changeInputData(DataObject.check(JSON.parse(this.module.getConfiguration('storedObject'))));
 			
             this.editor = new jsoneditor(document.getElementById(this._id), {mode: mode, change: function(){
-					that.module.controller.sendValue(that.editor.get());
+					that.module.controller.sendValue(that.editor.get(), 'onObjectChange');
 			}, module: this.module});
+
+            this.dom.find('.menu').append('<button style="width: 45px !important; float: right; background: none !important; font-size: small !important;"><span style="font-size: 10pt;">Send</span></button>')
+            .on('click', function() {
+                console.log('send object', that.editor.get());
+                that.module.controller.sendValue(that.editor.get(), 'onObjectSend');
+            });
 			this.update.value.call(this, this.inputData);
             this.resolveReady();
         },
@@ -62,7 +68,7 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
                 this.editor.set(valNative);
                 if (this.expand && this.editor.expandAll)
                     this.editor.expandAll();
-                this.module.controller.sendValue(valNative);
+                this.module.controller.sendValue(valNative, 'onObjectChange');
             }
         },
 		changeInputData: function(newData) {
