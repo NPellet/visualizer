@@ -60,7 +60,7 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
 				this.changeInputData(value);
 				var valNative = value.resurrect();
                 this.editor.set(valNative);
-                if (this.expand)
+                if (this.expand && this.editor.expandAll)
                     this.editor.expandAll();
                 this.module.controller.sendValue(valNative);
             }
