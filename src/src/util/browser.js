@@ -1,4 +1,4 @@
-define(['bowser', 'lodash', 'modernizr'], function(bowser, _, modernizr) {
+define(['bowser', 'lodash', 'modernizr', 'jquery-cookie'], function(bowser, _, modernizr) {
     var features = {
         canvas: {
             name: 'Canvas',
@@ -110,7 +110,7 @@ define(['bowser', 'lodash', 'modernizr'], function(bowser, _, modernizr) {
                     return resolve(browserErrorMessage());
                 }
 
-                if(localStorage.getItem('visualizer-skip-feature-warning')) {
+                if($.cookie('visualizer-skip-feature-warning')) {
                     console.log('user does not want to see warning');
                     return resolve();
                 }
@@ -129,7 +129,7 @@ define(['bowser', 'lodash', 'modernizr'], function(bowser, _, modernizr) {
                         Ok: function() {
                             $(this).dialog('close');
                             if($('#skip-warning-checkbox').is(':checked')) {
-                                localStorage.setItem('visualizer-skip-feature-warning', true);
+                                $.cookie('visualizer-skip-feature-warning', true);
                             }
                             resolve();
                         }

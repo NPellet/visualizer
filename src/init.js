@@ -18,7 +18,8 @@ requirejs.config({
         lodash: "components/lodash/dist/lodash.min",
 		leaflet: "components/leaflet/dist/leaflet",
         modernizr: "components/modernizr/modernizr",
-        bowser: "components/bowser/bowser.min"
+        bowser: "components/bowser/bowser.min",
+        'jquery-cookie': 'components/jquery-cookie/jquery.cookie'
 	},
 	shim: {
 		"d3": {
@@ -45,7 +46,8 @@ requirejs.config({
         modernizr: {
             exports: "Modernizr"
         },
-        
+
+        "jquery-cookie": "jquery",
 		"components/three.js/examples/js/controls/TrackballControls": ["threejs"],
 		"jqgrid": ["jquery", "components/jqgrid_edit/js/i18n/grid.locale-en"],
 		"libs/jsmol/js/JSmolApplet": ["libs/jsmol/JSmol.min.nojq"],
