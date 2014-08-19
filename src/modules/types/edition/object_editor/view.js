@@ -53,10 +53,17 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
 					that.module.controller.sendValue(that.editor.get(), 'onObjectChange');
 			}, module: this.module});
 
-            this.dom.find('.menu').append('<button style="width: 45px !important; float: right; background: none !important; font-size: small !important;"><span style="font-size: 10pt;">Send</span></button>')
+            this.dom.find('.menu').append('<button style="width: 45px; float: right; background: none; font-size: small;">\n    <span style="font-size: 10pt;">Send</span>\n</button>').find('button:last-child')
             .on('click', function() {
-                console.log('send object', that.editor.get());
+                console.log('send object aaa', that.editor.get());
                 that.module.controller.sendValue(that.editor.get(), 'onObjectSend');
+            })
+            .on('mouseenter', function() {
+                console.log('hello');
+                $(this).css('background-color', '#f0f2f5');
+            })
+            .on('mouseleave', function() {
+                $(this).css('background-color', '#e3eaf6');
             });
 			this.update.value.call(this, this.inputData);
             this.resolveReady();
