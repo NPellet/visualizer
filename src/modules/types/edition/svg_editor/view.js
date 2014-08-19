@@ -5,7 +5,7 @@ requirejs.config({
     shim: {
         "svgsanitize": ["lib/svg-edit-2.7/svgedit", 'lib/svg-edit-2.7/browser', 'lib/svg-edit-2.7/svgutils'],
         "lib/svg-edit-2.7/svgutils": ['lib/svg-edit-2.7/browser', 'lib/svg-edit-2.7/svgtransformlist', 'lib/svg-edit-2.7/units'],
-        "lib/svg-edit-2.7/svgtransformlist": ['lib/svg-edit-2.7/browser'],
+        "lib/svg-edit-2.7/svgtransformlist": ['lib/svg-edit-2.7/browser']
     }
 });
 
@@ -21,7 +21,7 @@ define(['require',
 
 
 
-function(require, _, Default, Renderer, UTIL) {
+function(require, _, Default, Renderer) {
     var saveSvgThrottled = _.throttle(function() {
         var args = arguments;
         function saveAndTrigger(data) {
@@ -60,16 +60,15 @@ function(require, _, Default, Renderer, UTIL) {
         }
     };
     
-    var animationAttr = ['dur', 'fill', 'repeatCount', 'repeatDur', 'restart', 'attributeType',
-    'calcMode', 'additive', 'accumulate'];
+    //var animationAttr = ['dur', 'fill', 'repeatCount', 'repeatDur', 'restart', 'attributeType', 'calcMode', 'additive', 'accumulate'];
     
     var animationReserved = ['options', 'tag', 'attributes'];
     
     var mouseEventNames = ['click', 'mouseenter', 'mouseleave'];
-    
-    var animStyleAccepted = ['display'];
+
     
     var animMemory = {};
+
     function view() {
         var self = this;
         this.svgCanvas = null;
@@ -188,22 +187,42 @@ function(require, _, Default, Renderer, UTIL) {
                 if(animationReserved.indexOf(k) === -1) thisDefault[k] = _.cloneDeep(anim[k]);
             }
             for(var i=0; i<anim.attributes.length; i++) {
-                var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
                 anim.attributes[i] = _.defaults(anim.attributes[i], thisDefault);
                 // rememberAnim(anim,id)
                 // memorizeAnim(anim, id);
-                for(var attribute in anim.attributes[i]) {
-                    animation.setAttributeNS(null, attribute, anim.attributes[i][attribute]);
+
+                // Check if any of the attributes is a funciton
+                if(_.any(anim.attributes[i], function(attribute) {
+                    return (typeof attribute === 'function');
+                })) {
+                    $svgEl.each(function() {
+                        var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
+                        for(var attribute in anim.attributes[i]) {
+                            var attrValue = anim.attributes[i][attribute];
+                            attrValue = (typeof  attrValue === 'function') ? attrValue.call() : attrValue;
+                            animation.setAttributeNS(null, attribute, attrValue);
+                        }
+                        $(this).append(animation);
+                    });
                 }
-                $svgEl.append(animation);
+                else {
+                    var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
+                    for(var attribute in anim.attributes[i]) {
+                        var attrValue = anim.attributes[i][attribute];
+                        animation.setAttributeNS(null, attribute, attrValue);
+                    }
+                    $svgEl.append(animation);
+                }
+
+                // get the animations we just appended
                 $animations = $svgEl.children(':last-child');
-                
+
+                // Listen to animation events and start the animation
                 $animations.each(function() {
                     this.addEventListener('endEvent', function() {
                         // console.log($(this).parent());
                         // Persist works only for <animate/>    
                         if(anim.options.persistOnEnd) {
-                            var attr, attrValue;
                             if(anim.tag === 'animate') {
                                 $svgEl.attr(this.getAttribute('attributeName'), this.getAttribute('to'));
                             }
@@ -276,8 +295,17 @@ function(require, _, Default, Renderer, UTIL) {
             }
         },
         
-        addAttributes: function($svgEl, attributes) {
-            
+        setAttributesOneByOne: function($svgEl, attributes) {
+            for(var key in attributes) {
+                if(typeof attributes[key] === 'function') {
+                    $svgEl.each(function() {
+                        this.setAttribute(key, attributes[key].call())
+                    });
+                }
+                else {
+                    $svgEl.attr(key, attributes[key]);
+                }
+            }
         },
         
         removeStyleProperties: function($svgEl, attributes) {
@@ -293,9 +321,6 @@ function(require, _, Default, Renderer, UTIL) {
     
         modifySvgFromArray: function(arr, isPrimaryCall) {
             var self = this;
-            
-            var $svgcontent;
-
             
             // Convert to array if necessary
             if(!(arr instanceof Array)) {
@@ -359,7 +384,15 @@ function(require, _, Default, Renderer, UTIL) {
             
             // Case 1)
             if(obj.attributes && !obj.animation) {
-                $svgEl.attr(obj.attributes);
+                if(_.any(obj.attributes, function(attribute){
+                    return typeof attribute === 'function'
+                })) {
+                    this.setAttributesOneByOne($svgEl, obj.attributes);
+                }
+                else {
+                    // Use straightforward solution
+                    $svgEl.attr(obj.attributes);
+                }
                 $svgEl.each(function() {
                    // svgedit.sanitize.sanitizeSvg(this, true);
                 });
@@ -404,7 +437,6 @@ function(require, _, Default, Renderer, UTIL) {
                  self.dataTimeout = window.setInterval( function( ) { console.log( obj.info ); obj.info.triggerChange(); } , 100 );
 */
 
-console.log( obj.info._dataChange );
                 self.module.controller.onHover(obj.info || {});
                 console.log( obj.info._dataChange )
             }
