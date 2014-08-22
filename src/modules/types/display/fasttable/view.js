@@ -18,22 +18,18 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 	 		this.selected = [];
 
-	 		this.domTable.on('mouseover', 'tr', function() {
-
-	 			if(this !== lastTr) {
-
+            // Mouseenter is better in this case because it will
+            // not fire multiple times if the element has children
+	 		this.domTable.on('mouseenter', 'tbody tr', function() {
+                    console.log('mouse enter');
 	 				var dataRowId = $(this).index();
 	 					
 	 				if( ! isNaN( dataRowId ) ) {
 		 				self.module.controller.lineHover( self.module.data, dataRowId );
 		 			}
-                                        
-	 			}
-				lastTr = this;
 
-	 		}).on('mouseout', 'tr', function() {
-
-	 			if(this === lastTr) {
+            // Mouseleave is better than mouseout in this case
+	 		}).on('mouseleave', 'tbody tr', function() {
 
 	 				var dataRowId = $(this).index();
 
@@ -41,7 +37,6 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 						self.module.controller.lineOut( self.module.data, dataRowId );
 					}
                                         
-	 			}
 
 	 		}).on('click', 'tr', function() {
 
