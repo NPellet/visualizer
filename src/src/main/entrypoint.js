@@ -705,7 +705,6 @@ define(['jquery',
                       
 			// Sets the header
             function doInit(errorMessage) {
-                console.log('error message', errorMessage);
                 if(errorMessage) {
                     $('#ci-visualizer').append('<div id="browser-compatibility">' + errorMessage + '</div>');
                     return;
