@@ -55,11 +55,9 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
 
             this.dom.find('.menu').append('<button style="width: 45px; float: right; background: none; font-size: small;">\n    <span style="font-size: 10pt;">Send</span>\n</button>').find('button:last-child')
             .on('click', function() {
-                console.log('send object aaa', that.editor.get());
                 that.module.controller.sendValue(that.editor.get(), 'onObjectSend');
             })
             .on('mouseenter', function() {
-                console.log('hello');
                 $(this).css('background-color', '#f0f2f5');
             })
             .on('mouseleave', function() {
