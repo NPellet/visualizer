@@ -89,7 +89,8 @@ module.exports = function(grunt) {
               './superagent/superagent.js',
               './modernizr/modernizr.js',
               './lodash/dist/lodash.min.js',
-              './bowser/bowser.min.js'
+              './bowser/bowser.min.js',
+              './jquery-cookie/jquery.cookie.js'
             ],
 
             dest: './build/components/'
