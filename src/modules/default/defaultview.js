@@ -17,6 +17,7 @@ define(function() {
 		update: {},
 		blank: {},
 		onResize: function() {},
+        onActionReceive: {},
 		inDom: function() {
 	
 		},
