@@ -5,12 +5,13 @@ define([
 	'src/util/util',
 	'src/util/fullscreen',
 	'src/util/debug',
-        'src/main/variables'
+    'src/main/variables',
+    'src/main/grid'
 ], 
 
 function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 	"use strict";
-	
+
 	function init( module ) {
 		//define object properties
 		var moduleURL = module.definition.getChildSync('url', true).get(),
@@ -116,7 +117,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 		buildDom: function() {
 			
 			var html = "";
-			html += '<div class="ci-module-wrapper ci-module-';
+			html += '<div class="ci-module-wrapper ci-module-displaywrapper ci-module-';
 			html += this.controller.moduleInformation.cssClass;
 
 		
@@ -380,7 +381,10 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 				this.setBackgroundColor( layer.bgColor || [255,255,255,1] );
 
 				this.activeLayerName = newLayerShown;
-				this.view.onResize();
+
+                var Grid = require('src/main/grid');
+                Grid.setModuleSize(this);
+                Grid.moduleResize(this);
 				
 				return layer;
 			}
@@ -1378,7 +1382,7 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 			
 			try {
 				this.getDomWrapper().resizable((bln === true || bln == undefined) ? 'enable' : 'disable');
-			} catch(e) {}; 
+			} catch(e) {};
 		},
 
 		blankVariable: function( variableName ) {

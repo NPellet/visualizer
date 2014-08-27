@@ -338,6 +338,9 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                 Debug.warn('Webservice search: request failed', err);
             } else {
                 var body = response.body;
+                if (body == null) {
+                    body = response.text;
+                }
                 if (self.module.resultfilter) {
                     body = self.module.resultfilter(body);
                 }

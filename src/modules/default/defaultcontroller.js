@@ -134,6 +134,7 @@ define(['jquery', 'src/util/api', 'src/util/datatraversing'], function($, API, T
 		configAliases: {},
 		events: {},
 		variablesIn: [],
+        actionsIn: {},
 
 		resolveReady: function() {
 			this.module._resolveController();

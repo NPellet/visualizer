@@ -124,7 +124,6 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			}
 
 
-			module.toggleLayer( getActiveLayer( ) );
 
 			// Expands the grid when one click on the header
 			module.getDomHeader().bind('mousedown', function() {
@@ -196,7 +195,6 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 				}
 			});
 
-		//	module.setDisplayWrapper();
 			module.getDomWrapper().find('.ui-resizable-handle').bind('mousedown', function() {
 				checkDimensions(true);
 			});
@@ -207,6 +205,9 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			});
 			
 			moduleResize(module);
+
+            module.toggleLayer( getActiveLayer( ) );
+
 		}, function(err){
 			Debug.error("Error during module dom initialization", err);
 		});
@@ -717,6 +718,7 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 		addModule: addModule,
 		addModuleFromJSON: addModuleFromJSON,
 		checkDimensions: checkDimensions,
-		moduleResize: moduleResize
+		moduleResize: moduleResize,
+        setModuleSize: setModuleSize
 	};
 });
