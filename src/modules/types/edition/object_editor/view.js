@@ -53,8 +53,10 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
 					that.module.controller.sendValue(that.editor.get(), 'onObjectChange');
 			}, module: this.module});
 
-            this.dom.find('.menu').prepend('<button style="width: 45px; float: left; background: none; font-size: small;">\n    <span style="font-size: 10pt;">Send</span>\n</button>').find('button:first-child')
-                .on('click', function() {
+            var sendButton = this.dom.find('.menu').prepend('<button class="send" style="width: 45px; float: left; background: none; font-size: small;">\n    <span style="font-size: 10pt;">Send</span>\n</button>').find('button.send')
+            console.log('send button', sendButton);
+
+            sendButton.on('click', function() {
                     that.module.controller.sendValue(that.editor.get(), 'onObjectSend');
                 })
                 .on('mouseenter', function() {
@@ -64,6 +66,8 @@ define(['modules/default/defaultview', "src/util/util", "components/jsoneditor/j
                     $(this).css('background-color', '#e3eaf6');
                 })
                 .css('background-color', '#e3eaf6');
+
+
 			this.update.value.call(this, this.inputData);
             this.resolveReady();
         },
