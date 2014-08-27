@@ -125,7 +125,7 @@ define(['src/util/versioning'], function(Versioning) {
     							zIndex: module.zIndex,
     							display: true,
     							title: module.title,
-    							bgcolor: module.bgColor,
+    							bgColor: module.bgColor,
     							wrapper: module.displayWrapper,
     							created: true,
     							name: "Default layer"
@@ -214,6 +214,22 @@ define(['src/util/versioning'], function(Versioning) {
                         }
                     }
                 }, "types/server_interaction/webservice_search");
+            case "2.4.1" :
+                eachModule(view, function (module) {
+                    if(module.layers) {
+                        var layers = module.layers,
+                            layer;
+                        for(var i in layers) {
+                            layer = layers[i];
+                            if(layer.bgcolor) {
+                                if(!layer.bgColor) {
+                                    layer.bgColor = layer.bgcolor;
+                                }
+                                delete layer.bgcolor;
+                            }
+                        }
+                    }
+                });
         }
         view.version = Versioning.version;
 
