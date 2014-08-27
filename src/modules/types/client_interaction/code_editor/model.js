@@ -1,10 +1,14 @@
-define(['modules/default/defaultmodel'], function(Default) {
-	function model() {};
-	model.prototype = $.extend(true, {}, Default, {
-            getjPath : function() {
-                return [];
-            }
-	});
+define(['modules/default/defaultmodel'], function (Default) {
 
-	return model;
+    function Model() {
+    }
+
+    Model.prototype = $.extend(true, {}, Default, {
+        getjPath: function () {
+            return [];
+        }
+    });
+
+    return Model;
+
 });

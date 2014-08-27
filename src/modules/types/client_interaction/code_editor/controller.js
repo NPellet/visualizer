@@ -1,45 +1,25 @@
-define(['modules/default/defaultcontroller'], function(Default) {
+define(['modules/default/defaultcontroller'], function (Default) {
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() {
+    function Controller() {
     }
-    ;
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    Controller.prototype = $.extend(true, {}, Default);
 
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         moduleName: 'Code editor',
         description: 'Write code in any language and send the content to another module',
         author: 'Michaël Zasso',
-        date: '23.01.2014',
+        date: '27.08.2014',
         license: 'MIT'
     };
 
-
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
-        "value": {
+    Controller.prototype.references = {
+        value: {
             label: 'String containing the code'
         }
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
+    Controller.prototype.events = {
         onEditorChange: {
             label: 'The value in the editor has changed',
             refVariable: ['value']
@@ -47,24 +27,13 @@ define(['modules/default/defaultcontroller'], function(Default) {
         onButtonClick: {
             label: 'The button was clicked',
             refAction: ['value'],
-			refVariable: ['value']
+            refVariable: ['value']
         }
     };
-    /*
-     Configuration of the module for receiving events, as a static object
-     In the form of 
-     */
-    controller.prototype.variablesIn = ['value'];
 
-    /*
-     Received actions
-     */
-    controller.prototype.actionsIn = {
-    };
+    Controller.prototype.variablesIn = ['value'];
 
-
-    controller.prototype.configurationStructure = function(section) {
-
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -78,6 +47,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             options: [
                                 {title: 'Text', key: 'text'},
                                 {title: 'Javascript', key: 'javascript'},
+                                {title: 'JSON', key: 'json'},
                                 {title: 'HTML', key: 'html'},
                                 {title: 'XML', key: 'xml'}
                             ],
@@ -90,16 +60,20 @@ define(['modules/default/defaultcontroller'], function(Default) {
                         },
                         iseditable: {
                             title: 'Display editor',
-                            default: 'editable',
+                            default: ['editable'],
                             type: 'checkbox',
-                            options: {'editable': 'Show the code editor'}
+                            options: {
+                                editable: 'Show the code editor'
+                            }
                         },
-						hasButton: {
+                        hasButton: {
                             title: 'Display button',
-                            default: 'button',
+                            default: ['button'],
                             type: 'checkbox',
-                            options: {'button': 'Show the button'}
-						},
+                            options: {
+                                button: 'Show the button'
+                            }
+                        },
                         script: {
                             type: 'jscode',
                             title: 'Code',
@@ -111,25 +85,23 @@ define(['modules/default/defaultcontroller'], function(Default) {
         };
     };
 
-    controller.prototype.configFunctions = {
+    Controller.prototype.configAliases = {
+        mode: ['groups', 'group', 0, 'mode', 0],
+        btnvalue: [ 'groups', 'group', 0, 'btnvalue', 0],
+        iseditable: [ 'groups', 'group', 0 , 'iseditable', 0],
+        hasButton: [ 'groups', 'group', 0 , 'hasButton', 0],
+        script: [ 'groups', 'group', 0, 'script', 0]
     };
 
-    controller.prototype.configAliases = {
-        'mode': ['groups', 'group', 0, 'mode', 0],
-        'btnvalue': [ 'groups', 'group', 0, 'btnvalue', 0],
-        'iseditable': [ 'groups', 'group', 0 , 'iseditable', 0],
-		'hasButton': [ 'groups', 'group', 0 , 'hasButton', 0],
-        'script': [ 'groups', 'group', 0, 'script', 0]
-    };
-    
-    controller.prototype.onEditorChanged = function(value) {
+    Controller.prototype.onEditorChanged = function (value) {
         this.createDataFromEvent('onEditorChange', 'value', value);
     };
-    
-    controller.prototype.onButtonClick = function(value) {
-		this.createDataFromEvent('onButtonClick', 'value', value);
+
+    Controller.prototype.onButtonClick = function (value) {
+        this.createDataFromEvent('onButtonClick', 'value', value);
         this.sendAction('value', value, 'onButtonClick');
     };
 
-    return controller;
+    return Controller;
+
 });
