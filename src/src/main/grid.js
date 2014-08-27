@@ -81,22 +81,22 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 			if( ! API.isViewLocked() ) {
 				Context.listen(module.getDomWrapper().get(0), [
 
-					['<li><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>', 
+					['<li name="tofront"><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>',
 					function() {
 						moveToFront(module);
 					}],
 					
-					['<li><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>', 
+					['<li name="toback"><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>',
 					function() {
 						moveToBack(module);
 					}],
 					
-					['<li><a><span class="ui-icon ui-icon-close"></span> Remove module</a></li>', 
+					['<li name="remove"><a><span class="ui-icon ui-icon-close"></span> Remove module</a></li>',
 					function() {
 						removeModule(module);
 					}],
 
-					['<li><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>', 
+					['<li name="move"><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>',
 					function(e) {
 						var pos = module.getDomWrapper().position();
 						var shiftX = e.pageX - pos.left;
@@ -105,12 +105,12 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
 					}],
 
 
-					['<li><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>', 
+					['<li name="duplicate"><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>',
 					function() {
 						duplicateModule( module );
 					}],
 		                    
-		            ['<li><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>', 
+		            ['<li name="copy"><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>',
 					function() {
 						window.localStorage.setItem("ci-copy-module",JSON.stringify( module.definition ));
 					}]
@@ -611,76 +611,82 @@ define(['jquery', 'jqueryui', 'src/util/util', 'modules/modulefactory', 'src/uti
             if( ! API.isViewLocked() ) { 
 
 	            Context.listen(Context.getRootDom(), [
-					['<li><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>', 
+					['<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
 					function() {
 						var module = DataObject.recursiveTransform(JSON.parse(window.localStorage.getItem("ci-copy-module")));
 	                    addModuleFromJSON( module );
 					}]]
 				);
-				
-				Context.listen(dom, [], function(contextDom) {
-					var $li = $('<li><a> Add a module</a></li>');
 
-					var $ulModules = $("<ul />").appendTo($li);
-					var allTypes = ModuleFactory.getTypes();
-					$.when( allTypes ).then( function( json ) {
+                if(API.getContextMenu().indexOf('all') > -1 || API.getContextMenu().indexOf('add') > -1) {
+                    Context.listen(dom, [], function(contextDom) {
+                        var $li = $('<li name="add"><a> Add a module</a></li>');
 
-						if( typeof json === "object" && ! Array.isArray( json ) ) {
-							json = [ json ];
-						}
+                        var $ulModules = $("<ul />").appendTo($li);
+                        var allTypes = ModuleFactory.getTypes();
+                        $.when( allTypes ).then( function( json ) {
 
-						if( Array.isArray( json ) ) {					
-							for( var i = 0, l = json.length ; i < l ; i ++) {
-								makeRecursiveMenu( json[ i ], $ulModules );	
-							}
-						} else {
+                            if( typeof json === "object" && ! Array.isArray( json ) ) {
+                                json = [ json ];
+                            }
 
-						}
-						
-					});
+                            if( Array.isArray( json ) ) {
+                                for( var i = 0, l = json.length ; i < l ; i ++) {
+                                    makeRecursiveMenu( json[ i ], $ulModules );
+                                }
+                            } else {
 
-					$(contextDom).append( $li );
+                            }
 
-					$li.bind( 'click', function( event ) {
-						var url = $( event.target.parentNode ).attr( 'data-url' );
-						if(url)
-							newModule( decodeURIComponent( url ) );
-					});
-				});
+                        });
+
+                        $(contextDom).append( $li );
+
+                        $li.bind( 'click', function( event ) {
+                            var url = $( event.target.parentNode ).attr( 'data-url' );
+                            if(url)
+                                newModule( decodeURIComponent( url ) );
+                        });
+                    });
+                }
+
 
 				layersLi = $('<li><a> Switch to layer</a></li>');
 				layersUl = $("<ul />").appendTo( layersLi );
 
-				Context.listen(dom, [], function( contextDom ) {
-					
-					layersUl.empty();
+                if(API.getContextMenu().indexOf('all') > -1 || API.getContextMenu().indexOf('layers') > -1) {
+                    Context.listen(dom, [], function( contextDom ) {
 
-					eachLayer( function( layer, key ) {
-						var li = $('<li data-layer="' + encodeURIComponent( key ) + '"><a><span />' + key + '</a></li>').data( 'layerkey', key ).appendTo( layersUl );
+                        layersUl.empty();
 
-						if( key == activeLayer ) {
-							li.find('span').addClass('ui-icon ui-icon-check');
-						}
-						
+                        eachLayer( function( layer, key ) {
+                            var li = $('<li data-layer="' + encodeURIComponent( key ) + '"><a><span />' + key + '</a></li>').data( 'layerkey', key ).appendTo( layersUl );
 
-					});
+                            if( key == activeLayer ) {
+                                li.find('span').addClass('ui-icon ui-icon-check');
+                            }
 
-					$('<li data-layer=""><a>+ Add a new layer</a></li>').data( 'layerkey', "-1" ).appendTo( layersUl );
 
-					$(contextDom).append( layersLi );
+                        });
 
-					layersLi.bind( 'click', function( event ) {
-						var layer = $( event.target.parentNode ).data( 'layerkey' );
-	
-						if( layer !== "-1" ) {
-							switchToLayer( layer );
-							
-						} else if( layer == "-1" ) {
-							newLayer();
-						}
-					});
+                        $('<li data-layer=""><a>+ Add a new layer</a></li>').data( 'layerkey', "-1" ).appendTo( layersUl );
 
-				});
+                        $(contextDom).append( layersLi );
+
+                        layersLi.bind( 'click', function( event ) {
+                            var layer = $( event.target.parentNode ).data( 'layerkey' );
+
+                            if( layer !== "-1" ) {
+                                switchToLayer( layer );
+
+                            } else if( layer == "-1" ) {
+                                newLayer();
+                            }
+                        });
+
+                    });
+                }
+
 
 			
 

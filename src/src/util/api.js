@@ -1,8 +1,15 @@
+"use strict";
 define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables'], function(Traversing, ActionManager, Variables) {
 
 	var allScripts = [];
 	var variableFilters;
 	var viewLocked = false;
+
+    // Default List of what should appear in the context menu
+    // Based on the name attribute of the li tag of the context menu
+    // If all is set everything will appear no matter what
+    // If undefined is set then not setting the name attribute will add it anyway
+    var contextMenu = ['undefined','all','global-configuration', 'configuration', 'copy', 'paste', 'duplicate','add', 'layers', 'remove', 'export', 'print', 'refresh', 'tofront', 'toback', 'move', 'custom', 'fullscreen'];
 
 	var loadingHtml = $('<div id="loading-visualizer"><div class="title">Loading</div><div class="animation"><div /><div /><div /><div /></div><div class="subtitle" id="loading-message"></div></div>');
 	var loading = {};
@@ -152,6 +159,14 @@ define(['src/util/datatraversing', 'src/util/actionmanager', 'src/main/variables
 		isViewLocked: function() {
 			return viewLocked;
 		},
+
+        setContextMenu: function(ctxMenu) {
+            contextMenu = ctxMenu;
+        },
+
+        getContextMenu: function() {
+            return contextMenu;
+        },
 
 		loading: function( message ) {
 

@@ -740,6 +740,10 @@ define(['jquery',
                         ModuleFactory.setModules(cfgJson.modules);
                     }
 
+                    if(cfgJson.contextMenu) {
+                        API.setContextMenu(cfgJson.contextMenu);
+                    }
+
                     // Set the filters
                     API.setAllFilters(cfgJson.filters || []);
 
@@ -750,9 +754,8 @@ define(['jquery',
                         Context.init(document.getElementById('modules-grid'));
 
                         if (!API.isViewLocked()) {
-
                             Context.listen(Context.getRootDom(), [
-                                    ['<li class="ci-item-configureentrypoint" name="refresh"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
+                                    ['<li class="ci-item-configureentrypoint"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
                                         function() {
                                             configureEntryPoint();
                                         }]]

@@ -330,22 +330,22 @@ function( $, ContextMenu, API, Util, Fullscreen, Debug, Variables ) {
 
 				ContextMenu.listen(this.getDomWrapper().get(0), [
 					
-					['<li><a><span class="ui-icon ui-icon-arrow-4-diag"></span> Fullscreen</a></li>', 
+					['<li name="fullscreen"><a><span class="ui-icon ui-icon-arrow-4-diag"></span> Fullscreen</a></li>',
 					function() {
 						self.enableFullscreen();
 					}],
 
-					['<li><a><span class="ui-icon ui-icon-suitcase"></span> Export</a></li>', 
+					['<li name="export"><a><span class="ui-icon ui-icon-suitcase"></span> Export</a></li>',
 					function() {
 						self.exportData();
 					}],
 	                
-					['<li><a><span class="ui-icon ui-icon-print"></span> Print</a></li>', 
+					['<li name="print"><a><span class="ui-icon ui-icon-print"></span> Print</a></li>',
 					function() {
 						self.printView();
 					}],
 					
-					['<li><a><span class="ui-icon ui-icon-gear"></span> Parameters</a></li>', 
+					['<li name="configuration"><a><span class="ui-icon ui-icon-gear"></span> Parameters</a></li>',
 					function() {
 						self.doConfig();
 					}]

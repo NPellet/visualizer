@@ -1297,7 +1297,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			if(require) {
 				require(['src/util/context'], function(Context) {
 					Context.listen(graph._dom, [
-						['<li><a><span class="ui-icon ui-icon-cross"></span> Add vertical line</a></li>', 
+						['<li><a><span class="ui-icon ui-icon-cross"></span> Add vertical line</a></li>',
 						function(e) {
 							self.addLine(e);
 						}]
@@ -1392,7 +1392,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 			if(require) {
 				require(['src/util/context'], function(Context) {
 					Context.listen(shape._dom, [
-						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove range zone</a></li>', 
+						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove range zone</a></li>',
 						function(e) {
 							shape.kill();
 						}]
@@ -5107,7 +5107,7 @@ define(['jquery', 'src/util/util'], function($, Util) {
 				var self = this;
 				require(['src/util/context'], function(Context) {
 					Context.listen(self._dom, [
-						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove integral</a></li>', 
+						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove integral</a></li>',
 						function(e) {
 							self.kill();
 							self.graph.triggerEvent('onAnnotationRemove', self.data);

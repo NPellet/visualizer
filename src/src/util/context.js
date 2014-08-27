@@ -1,48 +1,47 @@
 
 // Context menu
-define(['jquery', 'modules/modulefactory'], function($, ModuleFactory) {
+define(['jquery', 'src/util/api', 'modules/modulefactory'], function($, API, ModuleFactory) {
 
 	var contextMenu;
 
-	return {
+    return {
 
-		listen: function(dom, elements, onBeforeShow, onAfterShow) {
-			if(!(elements[0] instanceof Array))
-				elements = [elements];
-			
-			dom.addEventListener('contextmenu', function(e) {	
-				
+        listen: function(dom, elements, onBeforeShow, onAfterShow) {
+            if(!(elements[0] instanceof Array))
+                elements = [elements];
 
-				if( onBeforeShow ) {
-					onBeforeShow( contextMenu );
-				}
+            dom.addEventListener('contextmenu', function(e) {
 
-				for(var i = 0, l = elements.length; i < l; i++) {
-					( 
-						function(element, callbackClick, callbackOpen) {
 
-							if( ( callbackOpen && callbackOpen( e, element ) ) || ! callbackOpen ) {
-								contextMenu.append( element );
-							}
+                if( onBeforeShow ) {
+                    onBeforeShow( contextMenu );
+                }
 
-							element.bind('click', function( e2 ) {
+                for(var i = 0, l = elements.length; i < l; i++) {
+                    (function(element, callbackClick, callbackOpen) {
+                        if(API.isViewLocked() ||  (API.getContextMenu().indexOf('all') === -1 && API.getContextMenu().indexOf(element.attr('name') || 'undefined') === -1)) return;
+                        if( ( callbackOpen && callbackOpen( e, element ) ) || ! callbackOpen ) {
+                            contextMenu.append( element );
+                        }
 
-								if( callbackClick ) {
+                        element.bind('click', function( e2 ) {
 
-									callbackClick.call( this, e, e2 );
-								}
-							})
+                            if( callbackClick ) {
 
-						}
-					) ( $( elements[ i ][ 0 ] ), elements[ i ][ 1 ], elements[ i ][ 2 ] );
-				}
+                                callbackClick.call( this, e, e2 );
+                            }
+                        })
 
-				if( onAfterShow ) {
-					onAfterShow( contextMenu );
-				}
+                    }
+                        ) ( $( elements[ i ][ 0 ] ), elements[ i ][ 1 ], elements[ i ][ 2 ] );
+                }
 
-			}, true);
-		},
+                if( onAfterShow ) {
+                    onAfterShow( contextMenu );
+                }
+
+            }, true);
+        },
 
 		unlisten: function(dom) {
 			dom.removeEventListener('contextmenu');
