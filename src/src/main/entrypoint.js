@@ -710,7 +710,7 @@ define(['jquery',
                     return;
                 }
 
-                var configJson = urls['config'] || 'usr/config/default.json';
+                var configJson = urls['config'] || $('#ci-visualizer').attr('config') || 'usr/config/default.json';
 
                 $.getJSON(configJson, {}, function(cfgJson) {
 
@@ -776,17 +776,17 @@ define(['jquery',
                         Versioning.setDataJSON({});
 
                         Versioning.setURLType(type);
-
+                        var $visualizer = $('#ci-visualizer');
                         var viewInfo = {
                             view: {
                                 urls: urls['views'],
                                 branch: urls['viewBranch'],
-                                url: urls['viewURL']
+                                url: urls['viewURL'] || $visualizer.attr('viewURL')
                             },
                             data: {
                                 urls: urls['results'],
                                 branch: urls['resultBranch'],
-                                url: urls['dataURL']
+                                url: urls['dataURL'] || $visualizer.attr('dataURL')
                             }
                         };
                         window.history.replaceState({type: "viewchange", value: viewInfo}, "");
