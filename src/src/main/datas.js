@@ -247,10 +247,12 @@ define([ 'src/util/util', 'src/util/debug' ], function( Util, Debug ) {
                             if(typeof val !== "object" || val === null)
                                 return resolve(val);
                             if (typeof val[ prop ] !== "undefined") {
-                                if (val[prop] && val[prop].fetch) {
+                                if(!isSpecialObject(val[prop])) {
+                                    val[prop] = DataObject.check(val[prop], true);
+                                }
+                                if(val[prop] instanceof DataObject) {
                                     return val[prop].fetch(true).then(resolve);
                                 } else {
-                                    val[prop] = DataObject.check(val[prop], true);
                                     return resolve(val[prop]);
                                 }
                             } else if( constructor ) {
