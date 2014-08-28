@@ -90,7 +90,8 @@ module.exports = function(grunt) {
               './modernizr/modernizr.js',
               './lodash/dist/lodash.min.js',
               './bowser/bowser.min.js',
-              './jquery-cookie/jquery.cookie.js'
+              './jquery-cookie/jquery.cookie.js',
+              './chemcalc/lib.js'
             ],
 
             dest: './build/components/'

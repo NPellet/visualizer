@@ -19,7 +19,8 @@ requirejs.config({
 		leaflet: "components/leaflet/dist/leaflet",
         modernizr: "components/modernizr/modernizr",
         bowser: "components/bowser/bowser.min",
-        'jquery-cookie': 'components/jquery-cookie/jquery.cookie'
+        'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
+        chemcalc: 'components/chemcalc/lib'
 	},
 	shim: {
 		"d3": {
