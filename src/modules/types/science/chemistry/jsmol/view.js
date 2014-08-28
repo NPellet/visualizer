@@ -34,7 +34,7 @@ function(require,Default, UTIL, DataTraversing) {
 
         	this.dom.height(this.height).width(this.width);
 
-            if( this.dom.get( 0 ).contentWindow.setSize ) {
+            if( this.dom.get( 0 ).contentWindow ) {
                 this.dom.get( 0 ).contentWindow.setSize( this.width, this.height );
             }
 	 	},
