@@ -32,7 +32,7 @@ define(['require', 'modules/default/defaultview', 'lib/plot/plot', 'src/util/jca
 
 			this.module.getDomContent().css( 'overflow', 'hidden' );
 
-			if( this.dom.get( 0 ).contentWindow.setSize ) {
+			if( this.dom.get( 0 ).contentWindow ) {
 				this.dom.get( 0 ).contentWindow.setSize( this.width, this.height );
 			}
 		},
