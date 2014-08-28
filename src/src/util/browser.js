@@ -1,4 +1,4 @@
-define(['bowser', 'lodash', 'modernizr', 'jquery-cookie'], function(bowser, _, modernizr) {
+define(['src/util/debug', 'bowser', 'lodash', 'modernizr', 'jquery-cookie'], function(Debug, bowser, _, modernizr) {
     var features = {
         canvas: {
             name: 'Canvas',
@@ -65,7 +65,7 @@ define(['bowser', 'lodash', 'modernizr', 'jquery-cookie'], function(bowser, _, m
 
 
         if(!browserListed) {
-            console.log('browser not recognized')
+            Debug.warn('browser not recognized');
             return true;
         }
 
@@ -106,17 +106,17 @@ define(['bowser', 'lodash', 'modernizr', 'jquery-cookie'], function(bowser, _, m
         checkCompatibility: function() {
             return new Promise(function(resolve) {
                 if(!browserIsCompatible) {
-                    console.log('browser is not compatible');
+                    Debug.error('browser is not compatible');
                     return resolve(browserErrorMessage());
                 }
 
                 if($.cookie('visualizer-skip-feature-warning')) {
-                    console.log('user does not want to see warning');
+                    Debug.info('user does not want to see warning');
                     return resolve();
                 }
 
                 if(browserHasAllFeatures) {
-                    console.log('user has all required features');
+                    Debug.info('user has all required features');
                     return resolve();
                 }
 
