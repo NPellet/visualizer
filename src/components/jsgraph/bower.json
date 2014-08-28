@@ -1,0 +1,30 @@
+{
+  "name": "jsGraph",
+  "version": "1.9.1",
+  "homepage": "http://jsgraph.org",
+  "main": "dist/jsgraph.js", 
+  "keywords": [
+    "graph",
+    "plot",
+    "chart"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "./lib/lib/**",
+    "./lib/components/**",
+    "package.json",
+    "README.md",
+    "*.log",
+    "gruntfile.js",
+    "AUTHORS",
+    "bower.json"
+  ],
+  "devDependencies": {
+    "Aristo-jQuery-UI-Theme": "https://github.com/taitems/Aristo-jQuery-UI-Theme.git",
+    "highlight.js": "~7.3.0",
+    "jquery-ui": "~1.10.4",
+    "jquery": "~2.1.1",
+    "requirejs": "~2.1.14"
+  }
+}
