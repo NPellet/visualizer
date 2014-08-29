@@ -129,7 +129,7 @@ define(['bowser', 'lodash', 'modernizr', 'jquery-cookie'], function(bowser, _, m
                         Ok: function() {
                             $(this).dialog('close');
                             if($('#skip-warning-checkbox').is(':checked')) {
-                                $.cookie('visualizer-skip-feature-warning', true);
+                                $.cookie('visualizer-skip-feature-warning', true, { path: '/'});
                             }
                             resolve();
                         }
