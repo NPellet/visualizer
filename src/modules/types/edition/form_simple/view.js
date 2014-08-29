@@ -49,7 +49,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 			}
 
 			var triggerFunction = function( ) {
-console.log("a");
+
 				if( self.lockEvents ) {
 					return;
 				}
@@ -63,8 +63,6 @@ console.log("a");
 					jpath;
 
 				var el = new DataObject();
-
-				console.log('d');
 
 				if( input ) {
 					
@@ -84,8 +82,6 @@ console.log("a");
 							el.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value )
 	//						input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
 						}
-
-						console.log( el );
 					}
 				} else {
 					el = val;
