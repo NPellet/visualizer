@@ -1,35 +1,19 @@
-define(['modules/default/defaultcontroller'], function(Default) {
+define(['modules/default/defaultcontroller'], function (Default) {
 
-    /**
-     * Creates a new empty controller
-     * @class Controller
-     * @name Controller
-     * @constructor
-     */
-    function controller() {
+    function Controller() {
     }
-    ;
 
-    // Extends the default properties of the default controller
-    controller.prototype = $.extend(true, {}, Default);
+    Controller.prototype = $.extend(true, {}, Default);
 
-    /*
-     Information about the module
-     */
-    controller.prototype.moduleInformation = {
+    Controller.prototype.moduleInformation = {
         moduleName: 'Object editor',
         description: 'Display and/or modify a JSON object',
         author: 'Michaël Zasso',
-        date: '13.01.2014',
+        date: '29.08.2014',
         license: 'MIT'
     };
 
-
-
-    /*
-     Configuration of the input/output references of the module
-     */
-    controller.prototype.references = {
+    Controller.prototype.references = {
         "value": {
             label: 'A JSON object'
         },
@@ -38,11 +22,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
         }
     };
 
-
-    /*
-     Configuration of the module for sending events, as a static object
-     */
-    controller.prototype.events = {
+    Controller.prototype.events = {
         onObjectChange: {
             label: 'The object has changed',
             refVariable: ['output']
@@ -52,21 +32,10 @@ define(['modules/default/defaultcontroller'], function(Default) {
             refVariable: ['output']
         }
     };
-    /*
-     Configuration of the module for receiving events, as a static object
-             In the form of 
-             */
-            controller.prototype.variablesIn = ['value'];
 
-    /*
-     Received actions
-     */
-    controller.prototype.actionsIn = {
-    };
+    Controller.prototype.variablesIn = ['value'];
 
-
-    controller.prototype.configurationStructure = function(section) {
-
+    Controller.prototype.configurationStructure = function () {
         return {
             groups: {
                 group: {
@@ -94,7 +63,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
                             title: 'Store object in view',
                             options: {expand: 'Yes'}
                         },
-						output: {
+                        output: {
                             type: 'combo',
                             title: 'Output result',
                             options: [
@@ -114,37 +83,31 @@ define(['modules/default/defaultcontroller'], function(Default) {
         };
     };
 
-    controller.prototype.configAliases = {
+    Controller.prototype.configAliases = {
         editable: ['groups', 'group', 0, 'editable', 0],
         expanded: ['groups', 'group', 0, 'expanded', 0],
         storeObject: ['groups', 'group', 0, 'storeObject', 0],
         storedObject: ['groups', 'group', 0, 'storedObject', 0],
-		output: ['groups', 'group', 0, 'output', 0]
-		
+        output: ['groups', 'group', 0, 'output', 0]
+
     };
 
-	controller.prototype.sendValue = function(newValue, eventType) {
-        if(this.module.view.storeObject) {
+    Controller.prototype.sendValue = function (newValue, eventType) {
+        if (this.module.view.storeObject) {
             this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(newValue);
         }
-		var outputType = this.module.getConfiguration('output');
-
-        if( outputType === 'new' ) {
-
-            this.createDataFromEvent( eventType, 'output', newValue );
-
+        var outputType = this.module.getConfiguration('output');
+        if (outputType === 'new') {
+            this.createDataFromEvent(eventType, 'output', newValue);
         } else {
+            var input = this.module.view.inputData;
+            if (input) {
+                input.mergeWith(newValue, this.module.getId());
+                this.setVarFromEvent(eventType, 'output', 'value', [ ]);
+            }
+        }
+    };
 
-			var input = this.module.view.inputData;
+    return Controller;
 
-			if( input ) {
-
-				input.mergeWith(newValue, this.module.getId());
-				this.setVarFromEvent( eventType, 'output', 'value', [ ] );
-
-			}
-		}
-	};
-	
-    return controller;
 });
