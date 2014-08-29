@@ -38,7 +38,12 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 		output_object: {
 			type: 'object',
 			label: 'Output object'
-		}
+		},
+
+        formatted_output: {
+            type: 'object',
+            label: 'Formatted output object'
+        }
 	};
 
 
@@ -48,13 +53,13 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 	controller.prototype.events = {
 		onChange: {
 			label: 'Form has changed',
-			refVariable: [ 'output_object' ]
+			refVariable: [ 'output_object', 'formatted_output' ]
 		},
 
 		formTriggered: {
 			label: 'Form is triggered',
 			refAction: [ 'output_object' ],
-			refVariable: [ 'output_object' ]
+			refVariable: [ 'output_object', 'formatted_output' ]
 		}
 	};
 	
@@ -172,7 +177,7 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 			this.setVarFromEvent( 'onChange', 'output_object', 'input_object', [] );
 
 		} else {
-		
+            this.createDataFromEvent( 'onChange', 'formatted_output', formatValue(newValue) );
 			this.createDataFromEvent( 'onChange', 'output_object', newValue );
 		}
 	};
@@ -180,6 +185,23 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 	controller.prototype.formTriggered = function( value ) {
 		this.sendAction('formValue', value, 'formTriggered' );
 	};
+
+    function formatValue(value) {
+        var result = {};
+        var objToFormat = value.sections.main[0].groups.main[0];
+        for(var i in objToFormat) {
+            result[i] = formatFieldValue(objToFormat[i]);
+        }
+        return result;
+    }
+
+    function formatFieldValue(value) {
+        if(value.length === 1) {
+            return value[0];
+        } else {
+            return value;
+        }
+    }
 	
 	return controller;
 });
