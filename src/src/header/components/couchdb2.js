@@ -14,7 +14,6 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
             this.url = $.couch.urlPrefix;
             var db = this.options.database || "visualizer";
             this.database = $.couch.db(db);
-            this.flavor = "default";
             $.ui.fancytree.debugLevel = 0;
             this.checkDatabase();
         },
@@ -639,6 +638,17 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     console.warn("Context menu action '" + action + "' not implemented !");
                 }
             }
+        },
+        get flavor() {
+            if(this._flavor) {
+                return this._flavor;
+            } else {
+                return this._flavor = window.sessionStorage.getItem('ci-visualizer-pouchdb2-flavor') || "default";
+            }
+        },
+        set flavor(value) {
+            this._flavor = value;
+            window.sessionStorage.setItem('ci-visualizer-pouchdb2-flavor', value);
         }
     });
 
