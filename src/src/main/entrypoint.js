@@ -701,6 +701,12 @@ define(['jquery',
            //      return;
            //  }
 
+            var debugSet;
+            if (urls['debug']) {
+                Debug.setDebugLevel(parseInt(urls['debug']));
+                debugSet = true;
+            }
+
             browser.checkCompatibility().then(doInit);
                       
 			// Sets the header
@@ -722,9 +728,7 @@ define(['jquery',
                         });
                     }
 
-                    if(urls['debug']) {
-                        Debug.setDebugLevel(parseInt(urls['debug']));
-                    } else if(cfgJson.debugLevel) {
+                    if(!debugSet && cfgJson.debugLevel) {
                         Debug.setDebugLevel(cfgJson.debugLevel);
                     }
 

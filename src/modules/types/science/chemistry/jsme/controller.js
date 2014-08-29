@@ -1,4 +1,4 @@
-define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api' ], function( Default, Traversing, API ) {
+define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api' ], function( Default, API ) {
 	
 	/**
 	 * Creates a new empty controller
@@ -106,6 +106,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 								'polarnitro': "Don't convert automatically nitro to unpolar form",
 								'number': 'Allow to number atoms',
 								'depict': 'Only display structure (no editing)',
+                                'nopaste': 'Remove the paste menu',
 								'border': 'With depict option, display the border around the molecule',
 								'star': 'Display start button allowing hightlight of atoms (placed in the smiels)',
 								'oldlook': 'Use the old look'
@@ -139,7 +140,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 								{title: '2px', key: '2'}
 							],
 							default: 1
-						},
+						}
 					}
 				}
 			}
@@ -155,7 +156,7 @@ define( [ 'modules/default/defaultcontroller', 'src/util/datatraversing', 'src/u
 	controller.prototype.configAliases = {
 		'prefs': [ 'groups', 'group', 0, 'prefs', 0 ],
 		'labelsize': [ 'groups', 'group', 0, 'labelsize', 0 ],
-		'bondwidth': [ 'groups', 'group', 0, 'bondwidth', 0 ],
+		'bondwidth': [ 'groups', 'group', 0, 'bondwidth', 0 ]
 	}
 
 	return controller;

@@ -341,7 +341,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
 				var jpath = jp[ j ].jpath;
 				
-				element[ jp[ j ].name ] = 'Loading';
+				element[ jp[ j ].name ] = '';
 				
 				self.done ++;
 				element[ ";" + jp[ j ].name ] = this.renderElement( element, s, jpath, jp[ j ].name );
