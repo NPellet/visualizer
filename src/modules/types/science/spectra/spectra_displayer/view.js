@@ -66,7 +66,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             }
 
             var zoom = cfg('zoom');
-            if (zoom !== 'none') {
+            if (zoom && zoom !== 'none') {
                 var zoomOptions = {};
                 if (zoom === 'x') {
                     zoomOptions.zoomMode = 'x';
@@ -76,6 +76,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     zoomOptions.zoomMode = 'xy';
                 }
                 options.plugins['graph.plugin.zoom'] = zoomOptions;
+                options.pluginAction['graph.plugin.zoom'] = {shift: false, ctrl: false};
                 options.dblclick = {
                     type: 'plugin',
                     plugin: 'graph.plugin.zoom',
@@ -86,7 +87,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             }
 
             var wheel = cfg('wheelAction');
-            if (wheel !== 'none') {
+            if (wheel && wheel !== 'none') {
                 var wheelOptions = {};
 
                 if (wheel === 'xAxis') {
@@ -138,6 +139,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 this.graph.redraw();
             }
 
+            this.graph.autoscaleAxes();
             this.graph.drawSeries();
 
         },
@@ -184,11 +186,12 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     if (varname == plotinfos[i].variable) {
 
                         serie.options.lineToZero = !plotinfos[i].plotcontinuous[0];
-                        serie.options.useSlots = (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
-
+                        serie.options.useSlots = false;
+                        // TODO enable when slots are back
+                        // (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
 
                         serie.setLineColor(Util.getColor(plotinfos[i].plotcolor));
-                        serie.setLineWidth(plotinfos[i].strokewidth || 1);
+                        serie.setLineWidth(parseFloat(plotinfos[i].strokewidth) || 1);
                         serie.options.autoPeakPicking = plotinfos[i].peakpicking[0];
 
                         if (plotinfos[i].markers[0]) {
@@ -507,7 +510,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                                 }
                             }, true, self.module.getId() + varname);
                         }
-debugger;
                         self.redraw();
                         self.resetAnnotations(true);
                     });
