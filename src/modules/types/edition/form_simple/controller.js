@@ -138,7 +138,8 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 								html: {
 									type: 'jscode',
 									title: 'HTML template',
-                                    mode: 'html'
+                                    mode: 'html',
+                                    default: '<span class="form-dyn" data-form-content="field:name:label"></span>\n<div class="form-dyn" data-form-content="field:name:dom"></div>'
 								}
 							}
 						}
@@ -146,7 +147,7 @@ define( [ 'modules/default/defaultcontroller', 'lib/formcreator/formcreator', 's
 				}
 			}
 		};
-	},
+	};
 
 	controller.prototype.configFunctions = {
 		replaceObj: function( val ) {
