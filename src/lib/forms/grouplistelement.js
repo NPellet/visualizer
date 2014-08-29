@@ -90,7 +90,7 @@ define(['jquery', './groupelement'], function($, GroupElement) {
 							break;
 
 							case 'label':
-								el.html( self.group.fields[ content[ 1 ] ].name );
+								el.html( self.group.fields[ content[ 1 ] ].options.title || self.group.fields[ content[ 1 ] ].name );
 							break;
 						}
 					}
