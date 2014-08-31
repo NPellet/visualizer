@@ -56,7 +56,13 @@ define( function() {
 
 		} );
 		
-	}, "Contour lines", [ "Display contour lines"] ];
+	}, "Contour plot", [ 
+
+
+	"You can use the serie type <code>contour</code> to display contour lines. The serie data must be object having the properties <code>zValue</code> and <code>lines</code>, which is an linear array containing a multiple of 4 elements (xfrom, yfrom, xto, yto)",
+	'An example of a contour lines generator can be downloaded <a href="https://github.com/cheminfo/jcampconverter">here</a>.'
+
+	] ];
 
 });
 

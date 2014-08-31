@@ -21,8 +21,6 @@ define([
 	'./series/graph.serie.zone',
 
 	'./graph.serieaxis',
-	'./graph.serieaxisx',
-	'./graph.serieaxisy',
 
 	'./shapes/graph.shape.areaundercurve',
 	'./shapes/graph.shape.arrow',

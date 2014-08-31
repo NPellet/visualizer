@@ -35,6 +35,13 @@ define( function() {
 		);
 
 
-	}, "Axis/Grid tuning", [ "Loading on other axis", "Changing grid properties", "Force axis boundaries", "Adjust data padding"] ]
+	}, "Top and right axis", [ 
+
+		"Specify other axis than the defaults inside the graphs preferences.", 
+		'<code>serie.autoAxis()</code> will bind to them automatically', 
+		"Adjust the distance between the min/max of your data with the plot zone boundaries"
+
+		]
+	]
 
 } );

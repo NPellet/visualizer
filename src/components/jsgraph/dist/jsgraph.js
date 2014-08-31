@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.0
+ * jsGraphs JavaScript Graphing Library v1.9.4
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-26T21:46Z
+ * Date: 2014-08-29T22:59Z
  */
 
 (function( global, factory ) {
@@ -272,9 +272,9 @@ build['./graph.axis'] = ( function( $ ) {
 		},
 
 		setMinPx: function(px) { this.minPx = px; },
-		getMinPx: function() { return this.options.flipped ? this.maxPx : this.minPx; },
+		getMinPx: function() { return this.isFlipped() ? this.maxPx : this.minPx; },
 		setMaxPx: function(px) { this.maxPx = px; },
-		getMaxPx: function(px) { return this.options.flipped ? this.minPx : this.maxPx; },
+		getMaxPx: function(px) { return this.isFlipped() ? this.minPx : this.maxPx; },
 		getMathMaxPx: function() { return this.maxPx; },
 
 		// Returns the true minimum of the axis. Either forced in options or the one from the data
@@ -478,6 +478,11 @@ build['./graph.axis'] = ( function( $ ) {
 				this.currentAxisMin = Math.max( 1e-50, this.currentAxisMin );
 				this.currentAxisMax = Math.max( 1e-50, this.currentAxisMax );
 			}
+
+			if( isNaN( this.currentAxisMin ) || isNaN( this.currentAxisMax ) ) {
+				this.currentAxisMax = undefined;
+				this.currentAxisMin = undefined;
+			} 
 
 		},
 
@@ -745,7 +750,6 @@ build['./graph.axis'] = ( function( $ ) {
 //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
 			// Ex 50 / (100) * (1000 - 700) + 700
 				if(!this.options.logScale) {
-
 					return (value - this.getActualMin()) / (this._getActualInterval()) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
 				}
 				else {
@@ -1174,7 +1178,8 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 	
 	
 	var GraphYAxis = function(graph, leftright, options) {
-		this.init(graph, options, { flipped: true });
+		this.init(graph, options);
+
 		this.leftright = leftright;
 		this.left = leftright == 'left';
 		
@@ -1317,9 +1322,8 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 			return !this.left;
 		},
 
-		flip: function(bool) {
-			this.options.flipped = !bool;
-			return this;
+		isFlipped: function() {
+			return ! this.options.flipped;
 		},
 
 		_draw0Line: function(px) {
@@ -2546,16 +2550,9 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			bottom: true
 		},
 
-		
-		lineToZero: false,
 		fontSize: 12,
 		fontFamily: 'Myriad Pro, Helvetica, Arial',
-		addLabelOnClick: false,
-		onVerticalTracking: false,
-		onHorizontalTracking: false,
-		rangeLimitX: 10,
-		rangeLimitY: 0,		
-
+		
 		plugins: [],
 		pluginAction: {},
 		wheel: {},
@@ -2608,11 +2605,11 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 		this.series = [];
 		this._dom = dom;
 		// DOM
+		
 		this.doDom();
 
 		this.setSize( $(dom).width(), $(dom).height() );
 		this._resize();
-
 		this.registerEvents();
 		
 		this.dynamicLoader = new DynamicDepencies();
@@ -3001,13 +2998,22 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 
 			for( i in keyComb ) {
+
 				if( ! keyComb[i]._forced ) {
 
-					if(shift !== keyComb[i].shift) {
+					if( keyComb[ i ].shift == undefined ) {
+						keyComb[ i ].shift = false;
+					}
+					
+					if( keyComb[ i ].ctrl == undefined ) {
+						keyComb[ i ].ctrl = false;
+					}
+
+					if( shift != keyComb[i].shift ) {
 						continue;
 					}
 
-					if(ctrl !== keyComb[i].ctrl) {
+					if(ctrl != keyComb[i].ctrl) {
 						continue;
 					}
 				}
@@ -5537,6 +5543,34 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 			if(this.initExtended1)
 				this.initExtended1();
+
+			if(this.options.autoPeakPicking) {
+
+				this.picks = this.picks || [];
+				
+
+				this.picksDef = [];
+
+				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
+
+					this.picksDef.push( this.graph.makeShape( { 
+
+							type: 'label', 
+							label: {
+								text: "",
+								position: { x: 0 },
+								anchor: 'middle'
+							}
+
+						} ).then( function( shape ) {
+
+							shape.setSerie( self );
+							self.picks.push( shape );	
+ 						} )
+					);
+				}
+
+			}
 		},
 
 
@@ -5930,13 +5964,18 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		degrade: function( pxPerP, options ) {
 
 			var serie = this.graph.newSerie( this.name, options, 'zone' );
+			this.degradationPx = pxPerP;
 
+			if( ! serie ) {
+				return;
+			}
+			
 			serie.setData([]);
 
 			serie.setXAxis( this.getXAxis() );
 			serie.setYAxis( this.getYAxis() );
 
-			this.degradationPx = pxPerP;
+			
 			this.degradationSerie = serie;
 
 			return serie;
@@ -5972,19 +6011,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 			var optimizeMonotoneous = this.isXMonotoneous(), optimizeMaxPxX = this.getXAxis().getMaxPx(), optimizeBreak, buffer;
 
-			this.picks = this.picks || [];
-			var shape;
-			if(this.options.autoPeakPicking) {
-				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
-					shape = this.graph.makeShape({ type: 'label', label: {
-						text: "",
-						position: { x: 0 },
-						anchor: 'middle'
-					} } );
-					shape.setSerie( this );
-					this.picks.push( shape );
-				}
-			}
+			var shape, self = this;
 
 
 			this._drawn = true;			
@@ -6034,6 +6061,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 			var degradation = [];
 			var buffer;
+
+			var lookForMaxima = true;
+			var lookForMinima = false;
+
+			if( this.options.autoPeakPicking ) {
+				var lastYPeakPicking;
+			}
 
 			if( slotToUse ) {
 				if( slotToUse.done ) {
@@ -6142,8 +6176,37 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 							if( this.options.autoPeakPicking ) {
 
-								allY.push( [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ] );
+								if( this.options.autoPeakPicking == "continuous") {
 
+									if( ! lastYPeakPicking ) {
+										lastYPeakPicking = [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ];
+									} else {
+
+										if( ( data[ i ][ j + incrYFlip ] >= lastYPeakPicking[ 0 ] && lookForMaxima ) || ( data[ i ][ j + incrYFlip ] <= lastYPeakPicking[ 0 ] && lookForMinima ) ) {
+
+											lastYPeakPicking = [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ]
+
+										} else {
+
+											if( lookForMinima ) {
+												lookForMinima = false;
+												lookForMaxima = true;
+											} else {
+
+												lookForMinima = true;
+												lookForMaxima = false;
+
+												allY.push( lastYPeakPicking );	
+												lastYPeakPicking = false;	
+											}
+											
+
+										}
+									} 
+	
+								} else {
+									allY.push( [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ] );	
+								}
 							}
 							
 							currentLine = this._addPoint( currentLine, xpx2, ypx2, k );
@@ -6496,57 +6559,71 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		},
 
 		makePeakPicking: function(allY) {
-			
-			var x,
-				px,
-				passed = [],
-				px,
-				i = 0,
-				l = allY.length,
-				k, m, y;
-			
-			allY.sort(function(a, b) {
-				return b[0] - a[0];
-			});
+				
+			var self = this;
 
-			for( ; i < l ; i ++ ) {
+			$.when.apply( $, this.picksDef ).then( function() {
 
-				x = allY[i][1],
-				px = this.getX(x),
-				k = 0, m = passed.length,
-				y = this.getY(allY[i][0]);
+				var x,
+					px,
+					passed = [],
+					px,
+					i = 0,
+					l = allY.length,
+					k, m, y;
+				
+				allY.sort(function(a, b) {
+					return b[0] - a[0];
+				});
 
-				if(px < this.getXAxis().getMinPx() || px > this.getXAxis().getMaxPx())
-					continue;
+				for( ; i < l ; i ++ ) {
 
-				if(y > this.getYAxis().getMinPx() || y < this.getYAxis().getMaxPx())
-					continue;
+					x = allY[i][1],
+					px = self.getX(x),
+					k = 0, m = passed.length,
+					y = self.getY(allY[i][0]);
 
-				for( ; k < m ; k++) {
-					if(Math.abs(passed[k] - px) < this.options.autoPeakPickingMinDistance) {
+					if( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
+						continue;
+					}
+
+					if( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
+						continue;
+					}
+
+					for( ; k < m ; k++) {
+						if(Math.abs(passed[k] - px) < self.options.autoPeakPickingMinDistance) {
+							break;
+						}
+					}
+
+					if(k < m) {
+						continue;
+					}
+
+					if( ! self.picks[ m ] ) {
+						return;
+					}
+
+
+
+					self.picks[ m ].set('labelPosition', { 
+															x: x,
+					 										dy: "-10px"
+					 									}
+					 				);
+
+					self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+					passed.push( px );
+
+					if(passed.length == self.options.autoPeakPickingNb) {
 						break;
 					}
 				}
 
-				if(k < m) {
-					continue;
-				}
+				self.graph.redrawShapes();
 
-				this.picks[ m ].set('labelPosition', { 
-														x: x,
-				 										dy: "-10px"
-				 									}
-				 				);
-
-				this.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
-				passed.push( px );
-
-				if(passed.length == this.options.autoPeakPickingNb) {
-					break;
-				}
-			}
-
-			this.graph.redrawShapes();
+			});
 		},
 
 		hideTrackingMarker: function() {
@@ -6949,6 +7026,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				case 2: 
 					return "5, 5";
 				break;
+
+				case 3:
+					return "2, 2"
+				break;
+
+				case 4: return "1, 1"; break;
+				case 5: return "2, 4"; break;
 
 				case false:
 				case 1:
@@ -8449,144 +8533,6 @@ build['./graph.serieaxis'] = ( function( GraphSerie ) {
 ;
 /* 
  * Build: new source file 
- * File name : graph.serieaxisx
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.serieaxisx.js
- */
-
-build['./graph.serieaxisx'] = ( function( GraphSerieAxis ) { 
-
-
-	var GraphSerieAxisX = function() {};
-	$.extend(GraphSerieAxisX.prototype, GraphSerieAxis.prototype, {	
-		
-		getY: function(value) {
-			var y = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (this.axis.totalDimension - this.axis._widthLabels) - this.axis._widthLabels;
-			return y;
-		},
-
-		getX: function(value) {
-			//console.log(value, this.axis.getActualMin())
-			var x = Math.round(1000*(((value - this.axis.getActualMin()) / (this.axis._getActualInterval())) * (this.axis.getMaxPx() - this.axis.getMinPx()) + this.axis.getMinPx())) / 1000;	
-			//if((this.axis.isFlipped() && (x < this.axis.getMaxPx() || x > this.axis.getMinPx())) || (!this.axis.isFlipped() && (x > this.axis.getMaxPx() || x < this.axis.getMinPx())))
-			//	return;
-			return x;
-		},
-
-		bindLabelHandlers: function(label) {
-			var self = this;
-
-			function clickHandler(e) {
-				if(self.axis.currentAction !== false)
-					return;
-				self.axis.currentAction = 'labelDragging';
-				e.stopPropagation();
-				label.dragging = true;
-				var coords = self.graph.getXY(e);
-				label.draggingIniX = coords.x;
-				label.draggingIniY = coords.y;
-				self.labelDragging = label;
-			}
-
-
-			function clickHandlerMain(e) {
-				if(self.axis.currentAction !== false)
-					return;
-				self.axis.currentAction = 'labelDraggingMain';
-				e.preventDefault();
-				e.stopPropagation();
-				self.labelDragging = label;
-			}
-			
-			label.labelDom.addEventListener('mousedown', clickHandler);
-			label.rect.addEventListener('mousedown', clickHandler);
-			label.rect.addEventListener('click', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-			});
-
-			label.labelDom.addEventListener('click', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-			});
-
-
-			label.path.addEventListener('click', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-			});
-
-			label.path.addEventListener('mousedown', clickHandlerMain);
-		}
-	});
-
-	return GraphSerieAxisX;
-
- } ) ( build["./graph.serieaxis"] );
-
-
-// Build: End source file (graph.serieaxisx) 
-
-
-
-;
-/* 
- * Build: new source file 
- * File name : graph.serieaxisy
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.serieaxisy.js
- */
-
-build['./graph.serieaxisy'] = ( function( GraphSerieAxis ) { 
-
-
-	var GraphSerieAxisY = function() {};
-	$.extend(GraphSerieAxisY.prototype, GraphSerieAxis.prototype, {
-		
-		getX: function(value) {
-			
-			var x = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (this.axis.totalDimension - this.axis._widthLabels) - this.axis._widthLabels - 5;
-			return x;
-		},
-
-		getY: function(value) {
-			
-			var y = Math.round(1000*(((value - this.axis.getActualMin()) / (this.axis._getActualInterval())) * (this.axis.getMaxPx() - this.axis.getMinPx()) + this.axis.getMinPx())) / 1000;
-			//if((this.axis.isFlipped() && y < this.axis.getMaxPx() || y > this.axis.getMinPx()) || (!this.axis.isFlipped() && (y > this.axis.getMaxPx() || y < this.axis.getMinPx())))
-		//		return;
-			return y;
-		},
-
-
-		getMinX: function() {
-			return this.minY;
-		},
-
-		getMaxX: function() {
-			return this.maxY;
-		},
-
-		getMinY: function() {
-			return this.minX;
-		},
-
-		getMaxY: function() {
-			return this.maxX;
-		}
-
-	});
-
-
-	return GraphSerieAxisY;
-
- } ) ( build["./graph.serieaxis"] );
-
-
-// Build: End source file (graph.serieaxisy) 
-
-
-
-;
-/* 
- * Build: new source file 
  * File name : shapes/graph.shape
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
  */
@@ -8998,6 +8944,8 @@ build['./shapes/graph.shape'] = ( function( ) {
 			}*/
 
 			if( pos.x != "NaNpx" && ! isNaN( pos.x ) && pos.x !== "NaN") {
+
+				
 				this.label[labelIndex].setAttribute('x', pos.x);
 				this.label[labelIndex].setAttribute('y', pos.y);	
 			}
@@ -9945,15 +9893,21 @@ build['./shapes/graph.shape.label'] = ( function( GraphShape ) {
 
 		setPosition: function() {
 			var pos = this._getPosition(this.get('labelPosition'));
+			
 			if(!pos)
 				return;
 			
 			this.everyLabel(function(i) {
+				
 				this.label[i].setAttribute('x', pos.x);
 				this.label[i].setAttribute('y', pos.y);	
 			});
+
+			return true;
 			
 		},
+
+		_setLabelPosition: function() {},
 
 		redrawImpl: function() {
 			this.draw();
@@ -10339,7 +10293,7 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 			}
 
 
-			if( x !== NaN && x !== false && y !== NaN && y !== false) {
+			if( !isNaN(x) && !isNaN(y) && x !== false && y !== false ) {
 				this.setDom('width', width);
 				this.setDom('height', height);
 				this.setDom('x', x);

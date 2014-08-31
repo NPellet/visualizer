@@ -13,15 +13,21 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
 		setPosition: function() {
 			var pos = this._getPosition(this.get('labelPosition'));
+			
 			if(!pos)
 				return;
 			
 			this.everyLabel(function(i) {
+				
 				this.label[i].setAttribute('x', pos.x);
 				this.label[i].setAttribute('y', pos.y);	
 			});
+
+			return true;
 			
 		},
+
+		_setLabelPosition: function() {},
 
 		redrawImpl: function() {
 			this.draw();

@@ -80,7 +80,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 			}
 
 
-			if( x !== NaN && x !== false && y !== NaN && y !== false) {
+			if( !isNaN(x) && !isNaN(y) && x !== false && y !== false ) {
 				this.setDom('width', width);
 				this.setDom('height', height);
 				this.setDom('x', x);

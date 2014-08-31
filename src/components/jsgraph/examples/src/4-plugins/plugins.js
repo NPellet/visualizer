@@ -45,6 +45,13 @@ define( function() {
 		} );
 		
 
-	}, "Plugin loading", [ "Loading plugins dynamically", "Mouse wheel interaction", "Double click interaction" ] ];
+	}, "Plugin loading", [ 
+
+
+		"You can load official plugins using the <code>plugins</code> key in the graph options. Use an object indexed by the plugin name and plugin options as values to load the plugins.",
+		"You can easily develop your own plugins. Copy the development code and develop your plugin in the <code>./plugins/</code> folder",
+		"Call plugins on double click or on mousewheel using the <code>dblclick</code> and <code>wheel</code> parameters"
+
+	 ] ];
 
 } );

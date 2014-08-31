@@ -18,16 +18,9 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			bottom: true
 		},
 
-		
-		lineToZero: false,
 		fontSize: 12,
 		fontFamily: 'Myriad Pro, Helvetica, Arial',
-		addLabelOnClick: false,
-		onVerticalTracking: false,
-		onHorizontalTracking: false,
-		rangeLimitX: 10,
-		rangeLimitY: 0,		
-
+		
 		plugins: [],
 		pluginAction: {},
 		wheel: {},
@@ -80,11 +73,11 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 		this.series = [];
 		this._dom = dom;
 		// DOM
+		
 		this.doDom();
 
 		this.setSize( $(dom).width(), $(dom).height() );
 		this._resize();
-
 		this.registerEvents();
 		
 		this.dynamicLoader = new DynamicDepencies();
@@ -473,13 +466,22 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 
 
 			for( i in keyComb ) {
+
 				if( ! keyComb[i]._forced ) {
 
-					if(shift !== keyComb[i].shift) {
+					if( keyComb[ i ].shift == undefined ) {
+						keyComb[ i ].shift = false;
+					}
+					
+					if( keyComb[ i ].ctrl == undefined ) {
+						keyComb[ i ].ctrl = false;
+					}
+
+					if( shift != keyComb[i].shift ) {
 						continue;
 					}
 
-					if(ctrl !== keyComb[i].ctrl) {
+					if(ctrl != keyComb[i].ctrl) {
 						continue;
 					}
 				}

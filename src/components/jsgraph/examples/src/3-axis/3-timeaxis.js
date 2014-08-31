@@ -12,8 +12,10 @@ define( function() {
 			serie.push( date.getTime() );
 			serie.push( Math.sin( date.getHours() / 24 * Math.PI + Math.random() / 5 ) );
 
-			date.setSeconds( date.getSeconds() + 20 );
+			date.setSeconds( date.getSeconds() + 1 );
 		}
+
+		console.log( serie.length );
 
 		var graphinstance = new Graph( domGraph, {
 
@@ -42,18 +44,27 @@ define( function() {
 	
 		graphinstance.newSerie()
 			.autoAxis()
-			.setData( serie );
+			.setData( serie )
+			.XIsMonotoneous()
+			.degrade( 2 )
+			.setFillColor('rgba(0,0,0,0.1)')
+			.setLineColor('transparent');
+
 
 		graphinstance.redraw( );
 		graphinstance.drawSeries();	
-
 			
 			
-
-		}, 
+		},
 
 		"Time axis", 
-		[ 'Basic chart', 'Axis labels', 'Set graphinstance dimension'] 
+		[ 
+
+		'Noone really wants to display epoch values on an x axis. You can use <code>graph.setBottomAxisAsTime()</code> to notify that the bottom axis should be timed.',
+		'It will enable a special rendering for the x axis shows the time according to the level of zooming you are using. It works great with the zoom plugin, with the data degradation and with the monotoneous option !'
+
+		]
+
 
 	];
 

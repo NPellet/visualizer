@@ -3,11 +3,20 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-			var serie = [];
+
+			// BEGIN IGNORE ON BUILD
+
+			var serie = [],
+				serie2 = [];
 			for( var i = 0; i < 5 ; i ++ ) {
 				serie.push( i );
 				serie.push( i * i );
+
+				serie2.push( i );
+				serie2.push( i );
 			}
+
+			// END IGNORE ON BUILD
 
 
 
@@ -23,35 +32,30 @@ define( function() {
 
 				$( graphinstance._dom ).append("<div class='data'></div>");
 
-
 				graphinstance.newSerie("square", { trackMouse: true } )
 					.setLabel( "My serie" )
 					.autoAxis()
-					.setLineColor('grey')
+					.setLineColor('red')
 					.setData( serie )
-					.setMarkers( );
+					.setMarkers( [ { type: 1, zoom: 3, strokeColor: 'red', points: 'all' } ] );
 
 
-				var shape = { type: 'cross', strokeColor: 'red', strokeWidth: 1, pos: { x: 1, y: 5 } };
-
-				graphinstance.makeShape( shape ).then( function( shape ) {
-					shape.draw();
-					shape.redrawImpl();
-				});
-
+				graphinstance.newSerie("round", { trackMouse: true } )
+					.setLabel( "My serie" )
+					.autoAxis()
+					.setLineColor('green')
+					.setData( serie2 )
+					.setMarkers( [ { type: 2, zoom: 3, strokeColor: 'green', points: 'all' } ] );
 
 				graphinstance.redraw( );
 				graphinstance.drawSeries();	
 
 			} );
 			
-
-			
-
 		}, 
 
-		"Default functionnality", 
-		[ 'Displays the serie markers', 'Displays a cross', 'Tracks mouse'] 
+		"Track mouse", 
+		[ 'Use the mouse tracking functionnality to get feedback on your data where the mouse is located', 'Register a simple callback on the graph to enable interpolation calculation and access of the closest data points of each series.'] 
 
 	];
 

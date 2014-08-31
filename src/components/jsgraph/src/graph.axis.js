@@ -234,9 +234,9 @@ define( [ 'jquery' ] , function( $ ) {
 		},
 
 		setMinPx: function(px) { this.minPx = px; },
-		getMinPx: function() { return this.options.flipped ? this.maxPx : this.minPx; },
+		getMinPx: function() { return this.isFlipped() ? this.maxPx : this.minPx; },
 		setMaxPx: function(px) { this.maxPx = px; },
-		getMaxPx: function(px) { return this.options.flipped ? this.minPx : this.maxPx; },
+		getMaxPx: function(px) { return this.isFlipped() ? this.minPx : this.maxPx; },
 		getMathMaxPx: function() { return this.maxPx; },
 
 		// Returns the true minimum of the axis. Either forced in options or the one from the data
@@ -440,6 +440,11 @@ define( [ 'jquery' ] , function( $ ) {
 				this.currentAxisMin = Math.max( 1e-50, this.currentAxisMin );
 				this.currentAxisMax = Math.max( 1e-50, this.currentAxisMax );
 			}
+
+			if( isNaN( this.currentAxisMin ) || isNaN( this.currentAxisMax ) ) {
+				this.currentAxisMax = undefined;
+				this.currentAxisMin = undefined;
+			} 
 
 		},
 
@@ -707,7 +712,6 @@ define( [ 'jquery' ] , function( $ ) {
 //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
 			// Ex 50 / (100) * (1000 - 700) + 700
 				if(!this.options.logScale) {
-
 					return (value - this.getActualMin()) / (this._getActualInterval()) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
 				}
 				else {

@@ -26,6 +26,13 @@ define( function() {
 		});
 		
 
-	}, "Error bars", [ "Display error bars"] ];
+	}, "Styling error bars", [ 
+
+
+		'We show here a more complex example of error bars. Find out how the x/y direction is chosen, as well as the type or error (box or bar). Find a description of the error definition in the previous example',
+		'Along with setting the error type, you may also chose to make it in style ! Use <code>.setErrorStyle( errorTypes, errorOptions )</code> to add styling to the top/bottom/left/right box or bar !'
+
+
+	] ];
 
 });

@@ -28,6 +28,14 @@ define( function() {
 		} );
 		
 
-	}, "Scatter serie", [ "Display a scatter plot", "Add an annotation onto it"] ];
+	}, "Scatter plot", [ 
+
+
+	"Display a scatter plot using <code>graph.newSerie(name, options, 'scatter')</code>. Setting the data remains the same", "To specify how the scattered points have to look like, use <code>serie.setDataStyle( general, modificators ).</code> The parameter <code>general</code> defines what all shapes look like. The parameter <code>modificator</code> (array) allows you to override the shapes for the points at the non-null indices of the array."
+
+
+	]
+
+	];
 
 } );

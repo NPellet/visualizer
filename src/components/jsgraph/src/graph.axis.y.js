@@ -5,7 +5,8 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 	"use strict";
 	
 	var GraphYAxis = function(graph, leftright, options) {
-		this.init(graph, options, { flipped: true });
+		this.init(graph, options);
+
 		this.leftright = leftright;
 		this.left = leftright == 'left';
 		
@@ -148,9 +149,8 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 			return !this.left;
 		},
 
-		flip: function(bool) {
-			this.options.flipped = !bool;
-			return this;
+		isFlipped: function() {
+			return ! this.options.flipped;
 		},
 
 		_draw0Line: function(px) {

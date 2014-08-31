@@ -2,21 +2,7 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		var graphinstance = new Graph( domGraph, { 
-
-			wheel: {
-				type: 'plugin',
-				plugin: 'graph.plugin.zoom',
-				options: {
-					direction: 'y'
-				}
-			},
-
-			plugins: {
-				'graph.plugin.zoom': { }
-			}
-
-		 }, function( graphinstance ) {
+		var graphinstance = new Graph( domGraph, function( graphinstance ) {
 
 		 		var series = [ [], [], [] ];
 
@@ -87,6 +73,13 @@ define( function() {
 
 		 } );
 		
-	}, "Scaling different axis", [ 'Displaying a legend', "Legend in movable", "Wheel scales the selected serie"] ];
+	}, "Legend", [ 
+
+	"Use <code>graph.makeLegend( options )</code> to create a legend from the series !",
+	"The styling options are <code>backgroundColor</code> to change the background color, <code>frame</code> to display a frame outside the legend, <code>frameWidth</code> and <code>frameColor</code>",
+	"Use the options <code>movable: true</code> to make the legend draggable",
+	"To set the default position of the legend, call <code>legend.setPosition( position [, referenceX, referenceY ] )</code>. The references define the corner of the legend that should be used for the positioning. (top, left, right or bottom)"
+
+	] ];
 
 });
