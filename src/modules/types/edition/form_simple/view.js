@@ -1,9 +1,8 @@
+'use strict';
 define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'lib/formcreator/formcreator'], function(Default, DataTraversing, API, FormCreator) {
-	
-	"use strict";
 
-	function view() {};
-	view.prototype = $.extend(true, {}, Default, {
+	function View() {}
+	View.prototype = $.extend(true, {}, Default, {
 
 		init: function() {
 
@@ -22,7 +21,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				tpl_html = this.module.getConfiguration('tpl_html'),
 				form,
 				def,
-				input,
 				options = {},
 				formStructure = {
 					sections: {
@@ -54,6 +52,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					return;
 				}
 
+                var i, l;
+
 				var val = new DataObject( this.getValue(), true );
 				self.formValue = val;
 //				self.module.controller.valueChanged( val );
@@ -66,9 +66,9 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 				if( input ) {
 					
-					if( self.module.getConfiguration( "replaceObj" ) ) {
+					if( self.module.getConfiguration( 'replaceObj' ) ) {
 
-						for( var i = 0, l = structure.length ; i < l ; i ++ ) {
+						for( i = 0, l = structure.length ; i < l ; i ++ ) {
 							jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
 							input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value, true );
 						}
@@ -77,9 +77,9 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 					} else {
 
-						for( var i = 0, l = structure.length ; i < l ; i ++ ) {
+						for( i = 0, l = structure.length ; i < l ; i ++ ) {
 							jpath = structure[ i ].groups.general[ 0 ].searchOnField[ 0 ];
-							el.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value )
+							el.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
 	//						input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
 						}
 					}
@@ -88,12 +88,12 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				}
 
 				self.module.controller.valueChanged( el );
-			}
+			};
 
 			$.when( def ).done( function( tpl ) { 
 
 				tpl = '<form><div style="position: relative;" class="form-sections-wrapper form-section-section-container"><div class="form-section" data-form-sectionname="main"><div class="form-section-group-container"><div class="form-group" data-form-groupname="main">' + tpl + '</div></div></div></div></form>';
-				form = FormCreator.makeForm();
+				var form = FormCreator.makeForm();
 				
 				switch( trigger ) {
 
@@ -105,7 +105,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 					case 'change':
 
-						options.onValueChanged = triggerFunction
+						options.onValueChanged = triggerFunction;
 					break;
 				}
 
@@ -118,23 +118,22 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 				} );
 
-
-				
 				form.onLoaded( ).done( function( ) {
 					
 					form.setTpl( tpl );
 					
 					self.dom.html( form.makeDomTpl() );
 					form.inDom( );
+                    triggerFunction.call(form);
 				});
-			});
 
-			this.form = form;
+                self.form = form;
+			});
 		},
 		
 
 		update: {
-			input_object: function( varValue, varName ) {
+			input_object: function( varValue ) {
 
 				var self = this;
 				this.newValue( varValue );
@@ -147,7 +146,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 				}, 'input_object');
 			}
 		},
-
 
 		newValue: function( varValue ) {
 
@@ -193,13 +191,10 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
 		getDom: function() {
 			return this.dom;
-		},
-		
-		typeToScreen: {
-			
-		
 		}
+
 	});
-	return view;
+
+	return View;
+
 });
- 
