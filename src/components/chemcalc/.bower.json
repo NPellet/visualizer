@@ -1,6 +1,6 @@
 {
   "name": "chemcalc",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Analyse molecular formula",
   "main": "lib.js",
   "repository": {
@@ -40,14 +40,13 @@
     "*",
     "./!lib.js"
   ],
-  "_release": "1.0.4",
+  "_release": "1.0.6",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.4",
-    "commit": "12c1769e10c9ec8f4acb7d46c43105122cddb8dd"
+    "tag": "v1.0.6",
+    "commit": "9f6467a0715efe6be0bbbe32c46b95a954ffff59"
   },
   "_source": "git://github.com/cheminfo/chemcalc-js.git",
   "_target": "~1.0.4",
-  "_originalSource": "chemcalc",
-  "_direct": true
+  "_originalSource": "chemcalc"
 }
