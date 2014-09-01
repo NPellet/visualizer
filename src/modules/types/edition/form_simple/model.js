@@ -1,24 +1,24 @@
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function(Default, DataTraversing) {
-	
-	function model() { };
-	model.prototype = $.extend( true, {}, Default, {
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, DataTraversing) {
 
+    function Model() {
+    }
 
-		getjPath: function( rel ) {
+    Model.prototype = $.extend(true, {}, Default, {
 
-			var jpaths = [];
+        getjPath: function (rel) {
 
-			switch( rel ) {
+            var jpaths = [];
 
-				case 'formValue':
-				//console.log( this.module.view.formValue );
-					DataTraversing.getJPathsFromElement( this.module.view.formValue, jpaths );
-				break;
-			}
+            switch (rel) {
+                case 'formValue':
+                    DataTraversing.getJPathsFromElement(this.module.view.formValue, jpaths);
+                    break;
+            }
 
-			return jpaths;
-		}
-	} );
-	
-	return model;
+            return jpaths;
+        }
+    });
+
+    return Model;
+
 });

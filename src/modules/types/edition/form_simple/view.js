@@ -1,11 +1,12 @@
 'use strict';
-define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'lib/formcreator/formcreator'], function(Default, DataTraversing, API, FormCreator) {
+define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'lib/formcreator/formcreator', 'lodash'], function(Default, DataTraversing, API, FormCreator, _) {
 
-	function View() {}
+	function View() {
+    }
+
 	View.prototype = $.extend(true, {}, Default, {
 
 		init: function() {
-
 			this.dom = $('<div />');
 			this.module.getDomContent( ).html( this.dom );
 			this.callback = null;
@@ -100,12 +101,11 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					case 'btn':
                         var btnLabel = self.module.getConfiguration('btnLabel');
 						form.addButton(btnLabel, { color: 'blue' }, $.proxy( triggerFunction, form ) );
-
 					break;
 
 					case 'change':
-
-						options.onValueChanged = triggerFunction;
+                        var debounce = self.module.getConfiguration('debounce');
+                        options.onValueChanged = debounce > 0 ?  _.debounce(triggerFunction, debounce): triggerFunction;
 					break;
 				}
 
