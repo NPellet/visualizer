@@ -124,6 +124,9 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 					
 					self.dom.html( form.makeDomTpl() );
 					form.inDom( );
+                    form.dom.submit(function (event) {
+                        event.preventDefault();
+                    });
                     triggerFunction.call(form);
 				});
 
