@@ -638,15 +638,18 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
                     console.warn("Context menu action '" + action + "' not implemented !");
                 }
             }
-        },
-        get flavor() {
+        }
+    });
+
+    Object.defineProperty(couchDBManager.prototype, 'flavor', {
+        get: function() {
             if(this._flavor) {
                 return this._flavor;
             } else {
                 return this._flavor = window.sessionStorage.getItem('ci-visualizer-pouchdb2-flavor') || "default";
             }
         },
-        set flavor(value) {
+        set: function(value) {
             this._flavor = value;
             window.sessionStorage.setItem('ci-visualizer-pouchdb2-flavor', value);
         }
