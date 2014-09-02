@@ -104,8 +104,7 @@ define(['modules/default/defaultcontroller','components/x2js/xml2json.min'], fun
                 dataobj = self.converter.xml_str2json(data);
             }
             
-            self.addVar(variable, DataObject.check(dataobj, true));
-            self.setVarFromEvent('onUpdateResult', self.variables, 'result');
+            self.createDataFromEvent('onUpdateResult', 'result', dataobj);
             self.module.view.log(true, variable);
         };
         ajax.method = 'get';
