@@ -7,8 +7,8 @@
  * Released under the MIT license
  * https://github.com/mar10/fancytree/wiki/LicenseInfo
  *
- * @version 2.0.0
- * @date 2014-05-01T21:48
+ * @version 2.3.0
+ * @date 2014-08-17T10:39
  */
 
 /** Core Fancytree module.
@@ -59,6 +59,11 @@ function consoleApply(method, args){
 			fn(s);
 		}
 	}
+}
+
+/*Return true if x is a FancytreeNode.*/
+function _isNode(x){
+	return !!(x.tree && x.statusNodeType !== undefined);
 }
 
 /** Return true if dotted version string is equal or higher than requested version.
@@ -275,6 +280,8 @@ function FancytreeNode(parent, obj){
 		} else {
 			this.key = "_" + (FT._nextNodeKey++);
 		}
+	} else {
+		this.key = "" + this.key; // Convert to string (#217)
 	}
 
 	// Fix tree.activeNode
@@ -607,7 +614,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			var i, l, child, s, state, allSelected,someSelected,
 				children = node.children;
 
-			if( children ){
+			if( children && children.length ){
 				// check all children recursively
 				allSelected = true;
 				someSelected = false;
@@ -683,9 +690,8 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 			// recursively set children and render
 			this.removeChildren();
 			this.addChildren(dict.children);
-		}else{
-			this.renderTitle();
 		}
+		this.renderTitle();
 /*
 		var children = dict.children;
 		if(children === undefined){
@@ -845,6 +851,16 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	 */
 	hasFocus: function() {
 		return (this.tree.hasFocus() && this.tree.focusNode === this);
+	},
+	/** Write to browser console if debugLevel >= 1 (prepending node info)
+	 *
+	 * @param {*} msg string or object or array of such
+	 */
+	info: function(msg){
+		if( this.tree.options.debugLevel >= 1 ) {
+			Array.prototype.unshift.call(arguments, this.toString());
+			consoleApply("info", arguments);
+		}
 	},
 	/** Return true if node is active (see also FancytreeNode#isSelected).
 	 * @returns {boolean}
@@ -1057,6 +1073,9 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		}
 		// Unlink this node from current parent
 		if( this.parent.children.length === 1 ) {
+			if( this.parent === targetParent ){
+				return; // #258
+			}
 			this.parent.children = this.parent.lazy ? [] : null;
 			this.parent.expanded = false;
 		} else {
@@ -1190,7 +1209,7 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 		// Navigate to node
 		function _goto(n){
 			if( n ){
-				n.makeVisible();
+				try { n.makeVisible(); } catch(e) {} // #272
 				// Node may still be hidden by a filter
 				if( ! $(n.span).is(":visible") ) {
 					n.debug("Navigate: skipping hidden node");
@@ -1350,79 +1369,93 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	/**
 	 *
 	 * @param {boolean | PlainObject} [effects=false] animation options.
-	 * @param {FancytreeNode} [topNode=null] this node will remain visible in
+	 * @param {object} [options=null] {topNode: null, effects: ..., parent: ...} this node will remain visible in
 	 *     any case, even if `this` is outside the scroll pane.
 	 * @returns {$.Promise}
 	 */
-	scrollIntoView: function(effects, topNode) {
-		effects = (effects === true) ? {duration: 200, queue: false} : effects;
-		var topNodeY,
+	scrollIntoView: function(effects, options) {
+		if( options !== undefined && _isNode(options) ) {
+			this.warn("scrollIntoView() with 'topNode' option is deprecated since 2014-05-08. Use 'options.topNode' instead.");
+			options = {topNode: options};
+		}
+		// this.$scrollParent = (this.options.scrollParent === "auto") ? $ul.scrollParent() : $(this.options.scrollParent);
+		// this.$scrollParent = this.$scrollParent.length ? this.$scrollParent || this.$container;
+
+		var topNodeY, nodeY, horzScrollbarHeight, containerOffsetTop,
+			opts = $.extend({
+				effects: (effects === true) ? {duration: 200, queue: false} : effects,
+				scrollOfs: this.tree.options.scrollOfs,
+				scrollParent: this.tree.options.scrollParent || this.tree.$container,
+				topNode: null
+			}, options),
 			dfd = new $.Deferred(),
 			that = this,
-			nodeY = $(this.span).position().top,
 			nodeHeight = $(this.span).height(),
-			$container = this.tree.$container,
-			scrollTop = $container[0].scrollTop,
-			horzScrollHeight = Math.max(0, ($container.innerHeight() - $container[0].clientHeight)),
-//			containerHeight = $container.height(),
-			containerHeight = $container.height() - horzScrollHeight,
+			$container = $(opts.scrollParent),
+			topOfs = opts.scrollOfs.top || 0,
+			bottomOfs = opts.scrollOfs.bottom || 0,
+			containerHeight = $container.height(),// - topOfs - bottomOfs,
+			scrollTop = $container.scrollTop(),
+			$animateTarget = $container,
+			isParentWindow = $container[0] === window,
+			topNode = opts.topNode || null,
 			newScrollTop = null;
 
-//		console.log("horzScrollHeight: " + horzScrollHeight);
-//		console.log("$container[0].scrollTop: " + $container[0].scrollTop);
-//		console.log("$container[0].scrollHeight: " + $container[0].scrollHeight);
-//		console.log("$container[0].clientHeight: " + $container[0].clientHeight);
-//		console.log("$container.innerHeight(): " + $container.innerHeight());
-//		console.log("$container.height(): " + $container.height());
+		// this.debug("scrollIntoView(), scrollTop=", scrollTop, opts.scrollOfs);
+		_assert($(this.span).is(":visible"), "scrollIntoView node is invisible"); // otherwise we cannot calc offsets
 
-		if(nodeY < 0){
-			newScrollTop = scrollTop + nodeY;
-		}else if((nodeY + nodeHeight) > containerHeight){
-			newScrollTop = scrollTop + nodeY - containerHeight + nodeHeight;
+		if( isParentWindow ) {
+			nodeY = $(this.span).offset().top;
+			topNodeY = topNode ? $(topNode.span).offset().top : 0;
+			$animateTarget = $("html,body");
+
+		} else {
+			_assert($container[0] !== document && $container[0] !== document.body, "scrollParent should be an simple element or `window`, not document or body.");
+
+			containerOffsetTop = $container.offset().top,
+			nodeY = $(this.span).offset().top - containerOffsetTop + scrollTop; // relative to scroll parent
+			topNodeY = topNode ? $(topNode.span).offset().top - containerOffsetTop  + scrollTop : 0;
+			horzScrollbarHeight = Math.max(0, ($container.innerHeight() - $container[0].clientHeight));
+			containerHeight -= horzScrollbarHeight;
+		}
+
+		// this.debug("    scrollIntoView(), nodeY=", nodeY, "containerHeight=", containerHeight);
+		if( nodeY < (scrollTop + topOfs) ){
+			// Node is above visible container area
+			newScrollTop = nodeY - topOfs;
+			// this.debug("    scrollIntoView(), UPPER newScrollTop=", newScrollTop);
+
+		}else if((nodeY + nodeHeight) > (scrollTop + containerHeight - bottomOfs)){
+			newScrollTop = nodeY + nodeHeight - containerHeight + bottomOfs;
+			// this.debug("    scrollIntoView(), LOWER newScrollTop=", newScrollTop);
 			// If a topNode was passed, make sure that it is never scrolled
 			// outside the upper border
 			if(topNode){
-				topNodeY = topNode ? $(topNode.span).position().top : 0;
-				if((nodeY - topNodeY) > containerHeight){
-					newScrollTop = scrollTop + topNodeY;
+				_assert($(topNode.span).is(":visible"));
+				if( topNodeY < newScrollTop ){
+					newScrollTop = topNodeY - topOfs;
+					// this.debug("    scrollIntoView(), TOP newScrollTop=", newScrollTop);
 				}
 			}
 		}
+
 		if(newScrollTop !== null){
-			if(effects){
-				// TODO: resolve dfd after animation
-//				var that = this;
-				effects.complete = function(){
+			// this.debug("    scrollIntoView(), SET newScrollTop=", newScrollTop);
+			if(opts.effects){
+				opts.effects.complete = function(){
 					dfd.resolveWith(that);
 				};
-				$container.animate({
+				$animateTarget.stop(true).animate({
 					scrollTop: newScrollTop
-				}, effects);
+				}, opts.effects);
 			}else{
-				$container[0].scrollTop = newScrollTop;
+				$animateTarget[0].scrollTop = newScrollTop;
 				dfd.resolveWith(this);
 			}
 		}else{
 			dfd.resolveWith(this);
 		}
 		return dfd.promise();
-/* from jQuery.menu:
-		var borderTop, paddingTop, offset, scroll, elementHeight, itemHeight;
-		if ( this._hasScroll() ) {
-			borderTop = parseFloat( $.css( this.activeMenu[0], "borderTopWidth" ) ) || 0;
-			paddingTop = parseFloat( $.css( this.activeMenu[0], "paddingTop" ) ) || 0;
-			offset = item.offset().top - this.activeMenu.offset().top - borderTop - paddingTop;
-			scroll = this.activeMenu.scrollTop();
-			elementHeight = this.activeMenu.height();
-			itemHeight = item.height();
-
-			if ( offset < 0 ) {
-				this.activeMenu.scrollTop( scroll + offset );
-			} else if ( offset + itemHeight > elementHeight ) {
-				this.activeMenu.scrollTop( scroll + offset - elementHeight + itemHeight );
-			}
-		}
-		*/
 	},
 
 	/**Activate this node.
@@ -1447,12 +1480,19 @@ FancytreeNode.prototype = /** @lends FancytreeNode# */{
 	setFocus: function(flag){
 		return this.tree._callHook("nodeSetFocus", this, flag);
 	},
-	// TODO: setLazyNodeStatus
 	/**Select this node, i.e. check the checkbox.
 	 * @param {boolean} [flag=true] pass false to deselect
 	 */
 	setSelected: function(flag){
 		return this.tree._callHook("nodeSetSelected", this, flag);
+	},
+	/**Mark a lazy node as 'error', 'loading', or 'ok'.
+	 * @param {string} status 'error', 'ok'
+	 * @param {string} [message]
+	 * @param {string} [details]
+	 */
+	setStatus: function(status, message, details){
+		return this.tree._callHook("nodeSetStatus", this, status, message, details);
 	},
 	/**Rename this node.
 	 * @param {string} title
@@ -1645,6 +1685,9 @@ function Fancytree(widget) {
 				widget.options.lazyload.apply(this, arguments);
 			};
 		}
+	}
+	if( this.options && $.isFunction(this.options.loaderror) ) {
+		$.error("The 'loaderror' event was renamed since 2014-07-03. Use 'loadError' (with uppercase E) instead.");
 	}
 	this.ext = {}; // Active extension instances
 	// allow to init tree.data.foo from <div data-foo=''>
@@ -1863,17 +1906,17 @@ Fancytree.prototype = /** @lends Fancytree# */{
 	generateFormElements: function(selected, active) {
 		// TODO: test case
 		var nodeList,
-			selectedName = (selected !== false) ? "ft_" + this._id : selected,
+			selectedName = (selected !== false) ? "ft_" + this._id + "[]" : selected,
 			activeName = (active !== false) ? "ft_" + this._id + "_active" : active,
 			id = "fancytree_result_" + this._id,
-			$result = this.$container.find("div#" + id);
+			$result = $("#" + id);
 
 		if($result.length){
 			$result.empty();
 		}else{
 			$result = $("<div>", {
 				id: id
-			}).hide().appendTo(this.$container);
+			}).hide().insertAfter(this.$container);
 		}
 		if(selectedName){
 			nodeList = this.getSelectedNodes( this.options.selectMode === 3 );
@@ -1947,7 +1990,12 @@ Fancytree.prototype = /** @lends Fancytree# */{
 		}, true);
 		return match;
 	},
-	// TODO: getRoot()
+	/** Return the invisible system root node.
+	 * @returns {FancytreeNode}
+	 */
+	getRootNode: function() {
+		return this.rootNode;
+	},
 	/**
 	 * Return an array of selected nodes.
 	 * @param {boolean} [stopOnParents=false] only return the topmost selected
@@ -2353,7 +2401,7 @@ $.extend(Fancytree.prototype,
 	 *     data was rendered.
 	 */
 	nodeLoadChildren: function(ctx, source) {
-		var ajax, delay,
+		var ajax, delay, dfd,
 			tree = ctx.tree,
 			node = ctx.node;
 
@@ -2373,7 +2421,7 @@ $.extend(Fancytree.prototype,
 
 				node.debug("nodeLoadChildren waiting debug delay " + Math.round(delay) + "ms");
 				ajax.debugDelay = false;
-				source = $.Deferred(function (dfd) {
+				dfd = $.Deferred(function (dfd) {
 					setTimeout(function () {
 						$.ajax(ajax)
 							.done(function () {	dfd.resolveWith(this, arguments); })
@@ -2381,33 +2429,42 @@ $.extend(Fancytree.prototype,
 					}, delay);
 				});
 			}else{
-				source = $.ajax(ajax);
+				dfd = $.ajax(ajax);
 			}
 
-			// TODO: change 'pipe' to 'then' for jQuery 1.8
-			// $.pipe returns a new Promise with filtered  results
-			source = source.pipe(function (data, textStatus, jqXHR) {
-				var res;
+			// Defer the deferred: we want to be able to reject, even if ajax
+			// resolved ok.
+			source = new $.Deferred();
+			dfd.done(function (data, textStatus, jqXHR) {
+				var errorObj, res;
 				if(typeof data === "string"){
 					$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
 				}
-				// postProcess is similar to the standard dataFilter hook,
+				// postProcess is similar to the standard ajax dataFilter hook,
 				// but it is also called for JSONP
 				if( ctx.options.postProcess ){
-					res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {response: data, dataType: this.dataType});
+					res = tree._triggerNodeEvent("postProcess", ctx, ctx.originalEvent, {response: data, error: null, dataType: this.dataType});
+					if( res.error ) {
+						errorObj = $.isPlainObject(res.error) ? res.error : {message: res.error};
+						errorObj = tree._makeHookContext(node, null, errorObj);
+						source.rejectWith(this, [errorObj]);
+						return;
+					}
 					data = $.isArray(res) ? res : data;
+
 				} else if (data && data.hasOwnProperty("d") && ctx.options.enableAspx ) {
 					// Process ASPX WebMethod JSON object inside "d" property
 					data = (typeof data.d === "string") ? $.parseJSON(data.d) : data.d;
 				}
-				return data;
-			}, function (jqXHR, textStatus, errorThrown) {
-				return tree._makeHookContext(node, null, {
+				source.resolveWith(this, [data]);
+			}).fail(function (jqXHR, textStatus, errorThrown) {
+				var errorObj = tree._makeHookContext(node, null, {
 					error: jqXHR,
 					args: Array.prototype.slice.call(arguments),
 					message: errorThrown,
 					details: jqXHR.status + ": " + errorThrown
 				});
+				source.rejectWith(this, [errorObj]);
 			});
 		}
 
@@ -2417,7 +2474,7 @@ $.extend(Fancytree.prototype,
 			// node._isLoading = true;
 			tree.nodeSetStatus(ctx, "loading");
 
-			source.done(function () {
+			source.done(function (children) {
 				tree.nodeSetStatus(ctx, "ok");
 			}).fail(function(error){
 				var ctxErr;
@@ -2431,8 +2488,9 @@ $.extend(Fancytree.prototype,
 						message: error ? (error.message || error.toString()) : ""
 					});
 				}
-				tree._triggerNodeEvent("loaderror", ctxErr, null);
-				tree.nodeSetStatus(ctx, "error", ctxErr.message, ctxErr.details);
+				if( tree._triggerNodeEvent("loadError", ctxErr, null) !== false ) {
+					tree.nodeSetStatus(ctx, "error", ctxErr.message, ctxErr.details);
+				}
 			});
 		}
 		// $.when(source) resolves also for non-deferreds
@@ -2452,9 +2510,7 @@ $.extend(Fancytree.prototype,
 			_assert($.isArray(children), "expected array of children");
 			node._setChildren(children);
 			// trigger fancytreeloadchildren
-			// if( node.parent ) {
 			tree._triggerNodeEvent("loadChildren", node);
-			// }
 		// }).always(function(){
 		// 	node._isLoading = false;
 		});
@@ -2817,8 +2873,8 @@ $.extend(Fancytree.prototype,
 		// folder or doctype icon
 		role = aria ? " role='img'" : "";
 		if ( icon && typeof icon === "string" ) {
-			imageSrc = (icon.charAt(0) === "/") ? icon : (opts.imagePath + icon);
-			ares.push("<img src='" + imageSrc + "' alt='' />");
+			imageSrc = (icon.charAt(0) === "/") ? icon : ((opts.imagePath || "") + icon);
+			ares.push("<img src='" + imageSrc + "' class='fancytree-icon' alt='' />");
 		} else if ( node.data.iconclass ) {
 			// TODO: review and test and document
 			ares.push("<span " + role + " class='fancytree-custom-icon" + " " + node.data.iconclass +  "'></span>");
@@ -2834,7 +2890,6 @@ $.extend(Fancytree.prototype,
 			nodeTitle = opts.renderTitle.call(tree, {type: "renderTitle"}, ctx) || "";
 		}
 		if(!nodeTitle){
-			// TODO: escape tooltip string
 			tooltip = node.tooltip ? " title='" + FT.escapeHtml(node.tooltip) + "'" : "";
 			id = aria ? " id='ftal_" + node.key + "'" : "";
 			role = aria ? " role='treeitem'" : "";
@@ -2979,7 +3034,6 @@ $.extend(Fancytree.prototype,
 			node = ctx.node,
 			tree = ctx.tree,
 			opts = ctx.options,
-//			userEvent = !!ctx.originalEvent,
 			noEvents = (callOpts.noEvents === true),
 			isActive = (node === tree.activeNode);
 
@@ -3003,7 +3057,7 @@ $.extend(Fancytree.prototype,
 			}
 			if(opts.activeVisible){
 				// tree.nodeMakeVisible(ctx);
-				node.makeVisible();
+				node.makeVisible({scrollIntoView: false}); // nodeSetFocus will scroll
 			}
 			tree.activeNode = node;
 			tree.nodeRenderStatus(ctx);
@@ -3080,9 +3134,9 @@ $.extend(Fancytree.prototype,
 		}
 		// Trigger expand/collapse after expanding
 		dfd.done(function(){
-			if( opts.autoScroll && !noAnimation ) {
+			if( flag && opts.autoScroll && !noAnimation ) {
 				// Scroll down to last child, but keep current node visible
-				node.getLastChild().scrollIntoView(true, node).always(function(){
+				node.getLastChild().scrollIntoView(true, {topNode: node}).always(function(){
 					if( !noEvents ) {
 						ctx.tree._triggerNodeEvent(flag ? "expand" : "collapse", ctx);
 					}
@@ -3093,7 +3147,6 @@ $.extend(Fancytree.prototype,
 				}
 			}
 		});
-
 		// vvv Code below is executed after loading finished:
 		_afterLoad = function(callback){
 			var duration, easing, isVisible, isExpanded;
@@ -3201,7 +3254,7 @@ $.extend(Fancytree.prototype,
 				this._callHook("treeSetFocus", ctx, true, true);
 			}
 			// this.nodeMakeVisible(ctx);
-			node.makeVisible();
+			node.makeVisible({scrollIntoView: false});
 			tree.focusNode = node;
 //			node.debug("FOCUS...");
 //			$(node.span).find(".fancytree-title").focus();
@@ -3512,6 +3565,8 @@ $.widget("ui.fancytree",
 		keyboard: true,
 		keyPathSeparator: "/",
 		minExpandLevel: 1,
+		scrollOfs: {top: 0, bottom: 0},
+		scrollParent: null,
 		selectMode: 2,
 		strings: {
 			loading: "Loading&#8230;",
@@ -3772,7 +3827,7 @@ $.extend($.ui.fancytree,
 	/** @lends Fancytree_Static# */
 	{
 	/** @type {string} */
-	version: "2.0.0",      // Set to semver by 'grunt release'
+	version: "2.3.0",      // Set to semver by 'grunt release'
 	/** @type {string} */
 	buildType: "production", // Set to 'production' by 'grunt build'
 	/** @type {int} */
@@ -3799,6 +3854,29 @@ $.extend($.ui.fancytree,
 	 */
 	assert: function(cond, msg){
 		return _assert(cond, msg);
+	},
+	/** Return a function that executes *fn* at most every *timeout* ms.
+	 * @param {integer} timeout
+	 * @param {function} fn
+	 * @param {boolean} [invokeAsap=false]
+	 * @param {any} [ctx]
+	 */
+	debounce : function(timeout, fn, invokeAsap, ctx) {
+		var timer;
+		if(arguments.length === 3 && typeof invokeAsap !== "boolean") {
+			ctx = invokeAsap;
+			invokeAsap = false;
+		}
+		return function() {
+			var args = arguments;
+			ctx = ctx || this;
+			invokeAsap && !timer && fn.apply(ctx, args);
+			clearTimeout(timer);
+			timer = setTimeout(function() {
+				invokeAsap || fn.apply(ctx, args);
+				timer = null;
+			}, timeout);
+		};
 	},
 	/** Write message to console if debugLevel >= 2
 	 * @param {string} msg
@@ -3850,8 +3928,7 @@ $.extend($.ui.fancytree,
 	getEventTarget: function(event){
 		var tcn = event && event.target ? event.target.className : "",
 			res = {node: this.getNode(event.target), type: undefined};
-		// tcn may contains UI themeroller or Font Awesome classes, so we use
-		// a fast version of $(res.node).hasClass()
+		// We use a fast version of $(res.node).hasClass()
 		// See http://jsperf.com/test-for-classname/2
 		if( /\bfancytree-title\b/.test(tcn) ){
 			res.type = "title";
@@ -3862,8 +3939,10 @@ $.extend($.ui.fancytree,
 		}else if( /\bfancytree-icon\b/.test(tcn) ){
 			res.type = "icon";
 		}else if( /\bfancytree-node\b/.test(tcn) ){
-			// TODO: (http://code.google.com/p/dynatree/issues/detail?id=93)
-//			res.type = this._getTypeForOuterNodeEvent(event);
+			// Somewhere near the title
+			res.type = "title";
+		}else if( event && event.target && $(event.target).closest(".fancytree-title").length ) {
+			// #228: clicking an embedded element inside a title
 			res.type = "title";
 		}
 		return res;

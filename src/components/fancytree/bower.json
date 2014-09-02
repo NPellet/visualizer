@@ -45,16 +45,5 @@
     "jquery": ">=1.7",
     "jquery-ui": ">=1.8.6"
   },
-  "devDependencies": {},
-  "homepage": "https://github.com/mar10/fancytree",
-  "_release": "2.3.0",
-  "_resolution": {
-    "type": "version",
-    "tag": "v2.3.0",
-    "commit": "86305e929fa7674210b1dfedab6ee129d1852440"
-  },
-  "_source": "git://github.com/mar10/fancytree.git",
-  "_target": "~2.3.0",
-  "_originalSource": "fancytree",
-  "_direct": true
+  "devDependencies": {}
 }
