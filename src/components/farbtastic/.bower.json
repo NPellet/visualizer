@@ -18,6 +18,7 @@
     "commit": "449c5a27de73efecf526594a19b0e1b2789255e1"
   },
   "_source": "git://github.com/mattfarina/farbtastic.git",
-  "_target": "*",
-  "_originalSource": "farbtastic"
+  "_target": "~2.0.0-alpha.1",
+  "_originalSource": "farbtastic",
+  "_direct": true
 }
