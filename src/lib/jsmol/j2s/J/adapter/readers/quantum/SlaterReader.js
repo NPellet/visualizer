@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.adapter.readers.quantum");
-Clazz.load (["J.adapter.readers.quantum.BasisFunctionReader", "JU.List"], "J.adapter.readers.quantum.SlaterReader", ["java.util.Arrays", "J.quantum.SlaterData", "J.util.Logger"], function () {
+Clazz.load (["J.adapter.readers.quantum.BasisFunctionReader", "JU.Lst"], "J.adapter.readers.quantum.SlaterReader", ["java.util.Arrays", "J.quantum.SlaterData", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.slaters = null;
 this.slaterArray = null;
@@ -12,19 +12,18 @@ J.adapter.readers.quantum.SlaterReader.$SlaterReader$OrbitalSorter$ ();
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum, "SlaterReader", J.adapter.readers.quantum.BasisFunctionReader);
 Clazz.prepareFields (c$, function () {
-this.slaters =  new JU.List ();
+this.slaters =  new JU.Lst ();
 });
-$_M(c$, "addSlater", 
+Clazz.defineMethod (c$, "addSlater", 
 function (iAtom, a, b, c, d, zeta, coef) {
-System.out.println ("SlaterReader " + this.slaters.size () + ": " + iAtom + " " + a + " " + b + " " + c + " " + d + " " + zeta + " " + coef);
 this.slaters.addLast ( new J.quantum.SlaterData (iAtom, a, b, c, d, zeta, coef));
 }, "~N,~N,~N,~N,~N,~N,~N");
-$_M(c$, "addSlater", 
+Clazz.defineMethod (c$, "addSlater", 
 function (sd, n) {
 sd.index = n;
 this.slaters.addLast (sd);
 }, "J.quantum.SlaterData,~N");
-$_M(c$, "setSlaters", 
+Clazz.defineMethod (c$, "setSlaters", 
 function (doScale, doSort) {
 if (this.slaterArray == null) {
 var nSlaters = this.slaters.size ();
@@ -34,8 +33,8 @@ for (var i = 0; i < this.slaterArray.length; i++) this.slaterArray[i] = this.sla
 }if (doScale) for (var i = 0; i < this.slaterArray.length; i++) {
 var sd = this.slaterArray[i];
 sd.coef *= this.scaleSlater (sd.x, sd.y, sd.z, sd.r, sd.zeta);
-if (J.util.Logger.debugging) {
-J.util.Logger.debug ("SlaterReader " + i + ": " + sd.iAtom + " " + sd.x + " " + sd.y + " " + sd.z + " " + sd.r + " " + sd.zeta + " " + sd.coef);
+if (JU.Logger.debugging) {
+JU.Logger.debug ("SlaterReader " + i + ": " + sd.iAtom + " " + sd.x + " " + sd.y + " " + sd.z + " " + sd.r + " " + sd.zeta + " " + sd.coef);
 }}
 if (doSort) {
 java.util.Arrays.sort (this.slaterArray, Clazz.innerTypeInstance (J.adapter.readers.quantum.SlaterReader.SlaterSorter, this, null));
@@ -44,15 +43,15 @@ for (var i = 0; i < this.slaterArray.length; i++) pointers[i] = this.slaterArray
 
 this.sortOrbitalCoefficients (pointers);
 }this.moData.put ("slaters", this.slaterArray);
-this.atomSetCollection.setAtomSetAuxiliaryInfo ("moData", this.moData);
+this.asc.setAtomSetAuxiliaryInfo ("moData", this.moData);
 }, "~B,~B");
-$_M(c$, "setMOs", 
+Clazz.defineMethod (c$, "setMOs", 
 function (units) {
 this.moData.put ("mos", this.orbitals);
 this.moData.put ("energyUnits", units);
 this.finalizeMOData (this.moData);
 }, "~S");
-$_M(c$, "sortOrbitalCoefficients", 
+Clazz.defineMethod (c$, "sortOrbitalCoefficients", 
 function (pointers) {
 for (var i = this.orbitals.size (); --i >= 0; ) {
 var mo = this.orbitals.get (i);
@@ -65,7 +64,7 @@ if (k < coefs.length) sorted[j] = coefs[k];
 mo.put ("coefficients", sorted);
 }
 }, "~A");
-$_M(c$, "sortOrbitals", 
+Clazz.defineMethod (c$, "sortOrbitals", 
 function () {
 var array = this.orbitals.toArray ( new Array (0));
 java.util.Arrays.sort (array, Clazz.innerTypeInstance (J.adapter.readers.quantum.SlaterReader.OrbitalSorter, this, null));
@@ -73,7 +72,7 @@ this.orbitals.clear ();
 for (var i = 0; i < array.length; i++) this.orbitals.addLast (array[i]);
 
 });
-$_M(c$, "scaleSlater", 
+Clazz.defineMethod (c$, "scaleSlater", 
 function (ex, ey, ez, er, zeta) {
 var el = ex + ey + ez;
 switch (el) {
@@ -84,37 +83,37 @@ break;
 }
 return J.adapter.readers.quantum.SlaterReader.getSlaterConstCartesian (el + er + 1, Math.abs (zeta), el, ex, ey, ez);
 }, "~N,~N,~N,~N,~N");
-c$.fact = $_M(c$, "fact", 
-($fz = function (f, zeta, n) {
+c$.fact = Clazz.defineMethod (c$, "fact", 
+ function (f, zeta, n) {
 return Math.pow (2 * zeta, n + 0.5) * Math.sqrt (f * 0.07957747154594767 / J.adapter.readers.quantum.SlaterReader.fact1[n]);
-}, $fz.isPrivate = true, $fz), "~N,~N,~N");
-c$.getSlaterConstCartesian = $_M(c$, "getSlaterConstCartesian", 
+}, "~N,~N,~N");
+c$.getSlaterConstCartesian = Clazz.defineMethod (c$, "getSlaterConstCartesian", 
 function (n, zeta, el, ex, ey, ez) {
 return J.adapter.readers.quantum.SlaterReader.fact (ez < 0 ? J.adapter.readers.quantum.SlaterReader.dfact2[el + 1] : J.adapter.readers.quantum.SlaterReader.dfact2[el + 1] / J.adapter.readers.quantum.SlaterReader.dfact2[ex] / J.adapter.readers.quantum.SlaterReader.dfact2[ey] / J.adapter.readers.quantum.SlaterReader.dfact2[ez], zeta, n);
 }, "~N,~N,~N,~N,~N,~N");
-c$.getSlaterConstDSpherical = $_M(c$, "getSlaterConstDSpherical", 
+c$.getSlaterConstDSpherical = Clazz.defineMethod (c$, "getSlaterConstDSpherical", 
 function (n, zeta, ex, ey) {
 return J.adapter.readers.quantum.SlaterReader.fact (Clazz.doubleToInt (15 / (ex < 0 ? 12 : ey < 0 ? 4 : 1)), zeta, n);
 }, "~N,~N,~N,~N");
 c$.$SlaterReader$SlaterSorter$ = function () {
-Clazz.pu$h ();
+Clazz.pu$h(self.c$);
 c$ = Clazz.decorateAsClass (function () {
 Clazz.prepareCallback (this, arguments);
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum.SlaterReader, "SlaterSorter", null, java.util.Comparator);
-$_V(c$, "compare", 
+Clazz.overrideMethod (c$, "compare", 
 function (a, b) {
 return (a.iAtom < b.iAtom ? -1 : a.iAtom > b.iAtom ? 1 : 0);
 }, "J.quantum.SlaterData,J.quantum.SlaterData");
 c$ = Clazz.p0p ();
 };
 c$.$SlaterReader$OrbitalSorter$ = function () {
-Clazz.pu$h ();
+Clazz.pu$h(self.c$);
 c$ = Clazz.decorateAsClass (function () {
 Clazz.prepareCallback (this, arguments);
 Clazz.instantialize (this, arguments);
 }, J.adapter.readers.quantum.SlaterReader, "OrbitalSorter", null, java.util.Comparator);
-$_V(c$, "compare", 
+Clazz.overrideMethod (c$, "compare", 
 function (a, b) {
 var c = (a.get ("energy")).floatValue ();
 var d = (b.get ("energy")).floatValue ();

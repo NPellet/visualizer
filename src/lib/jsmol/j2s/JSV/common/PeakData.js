@@ -6,15 +6,15 @@ this.minY = 0;
 this.maxY = 0;
 Clazz.instantialize (this, arguments);
 }, JSV.common, "PeakData", JSV.common.MeasurementData);
-$_M(c$, "getThresh", 
+Clazz.defineMethod (c$, "getThresh", 
 function () {
 return this.thresh;
 });
-$_V(c$, "getDataHeader", 
+Clazz.overrideMethod (c$, "getDataHeader", 
 function () {
 return (this.spec.isHNMR () ? JSV.common.PeakData.HNMR_HEADER : ["peak", this.spec.getXUnits (), this.spec.getYUnits ()]);
 });
-$_V(c$, "getMeasurementListArray", 
+Clazz.overrideMethod (c$, "getMeasurementListArray", 
 function (units) {
 var data =  new Array (this.size ());
 var last = [-1.0E100, 1e100, 1e100];
@@ -26,7 +26,7 @@ if (ddata.length == 2) data[pt] = ["" + (pt + 1), JU.DF.formatDecimalDbl (ddata[
 }
 return data;
 }, "~S");
-$_V(c$, "getMeasurementListArrayReal", 
+Clazz.overrideMethod (c$, "getMeasurementListArrayReal", 
 function (units) {
 var data =  Clazz.newDoubleArray (this.size (), 0);
 var last = [-1.0E100, 1e100, 1e100];
@@ -34,13 +34,13 @@ for (var pt = 0, i = this.size (); --i >= 0; pt++) data[pt] = this.spec.getPeakL
 
 return data;
 }, "~S");
-$_M(c$, "getInfo", 
+Clazz.defineMethod (c$, "getInfo", 
 function (info) {
 info.put ("interpolation", this.myParams.peakListInterpolation);
 info.put ("threshold", Double.$valueOf (this.myParams.peakListThreshold));
 Clazz.superCall (this, JSV.common.PeakData, "getInfo", [info]);
 }, "java.util.Map");
-$_M(c$, "setPeakList", 
+Clazz.defineMethod (c$, "setPeakList", 
 function (p, precision, view) {
 this.precision = (precision == -2147483648 ? this.spec.getDefaultUnitPrecision () : precision);
 var xyCoords = this.spec.getXYCoords ();

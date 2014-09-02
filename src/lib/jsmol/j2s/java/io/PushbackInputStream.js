@@ -4,10 +4,10 @@ this.buf = null;
 this.pos = 0;
 Clazz.instantialize (this, arguments);
 }, java.io, "PushbackInputStream", java.io.FilterInputStream);
-$_M(c$, "ensureOpen", 
-($fz = function () {
+Clazz.defineMethod (c$, "ensureOpen", 
+ function () {
 if (this.$in == null) throw  new java.io.IOException ("Stream closed");
-}, $fz.isPrivate = true, $fz));
+});
 Clazz.makeConstructor (c$, 
 function ($in, size) {
 Clazz.superConstructor (this, java.io.PushbackInputStream, [$in]);
@@ -16,14 +16,14 @@ throw  new IllegalArgumentException ("size <= 0");
 }this.buf =  Clazz.newByteArray (size, 0);
 this.pos = size;
 }, "java.io.InputStream,~N");
-$_V(c$, "readByteAsInt", 
+Clazz.overrideMethod (c$, "readByteAsInt", 
 function () {
 this.ensureOpen ();
 if (this.pos < this.buf.length) {
 return this.buf[this.pos++] & 0xff;
 }return this.$in.readByteAsInt ();
 });
-$_V(c$, "read", 
+Clazz.overrideMethod (c$, "read", 
 function (b, off, len) {
 this.ensureOpen ();
 if (b == null) {
@@ -47,14 +47,14 @@ return avail == 0 ? -1 : avail;
 }return avail + len;
 }return avail;
 }, "~A,~N,~N");
-$_M(c$, "unreadByte", 
+Clazz.defineMethod (c$, "unreadByte", 
 function (b) {
 this.ensureOpen ();
 if (this.pos == 0) {
 throw  new java.io.IOException ("Push back buffer is full");
 }this.buf[--this.pos] = b;
 }, "~N");
-$_M(c$, "unread", 
+Clazz.defineMethod (c$, "unread", 
 function (b, off, len) {
 this.ensureOpen ();
 if (len > this.pos) {
@@ -62,14 +62,14 @@ throw  new java.io.IOException ("Push back buffer is full");
 }this.pos -= len;
 System.arraycopy (b, off, this.buf, this.pos, len);
 }, "~A,~N,~N");
-$_V(c$, "available", 
+Clazz.overrideMethod (c$, "available", 
 function () {
 this.ensureOpen ();
 var n = this.buf.length - this.pos;
 var avail = this.$in.available ();
 return n > (2147483647 - avail) ? 2147483647 : n + avail;
 });
-$_V(c$, "skip", 
+Clazz.overrideMethod (c$, "skip", 
 function (n) {
 this.ensureOpen ();
 if (n <= 0) {
@@ -84,18 +84,18 @@ n -= pskip;
 pskip += this.$in.skip (n);
 }return pskip;
 }, "~N");
-$_V(c$, "markSupported", 
+Clazz.overrideMethod (c$, "markSupported", 
 function () {
 return false;
 });
-$_V(c$, "mark", 
+Clazz.overrideMethod (c$, "mark", 
 function (readlimit) {
 }, "~N");
-$_V(c$, "reset", 
+Clazz.overrideMethod (c$, "reset", 
 function () {
 throw  new java.io.IOException ("mark/reset not supported");
 });
-$_V(c$, "close", 
+Clazz.overrideMethod (c$, "close", 
 function () {
 if (this.$in == null) return;
 this.$in.close ();

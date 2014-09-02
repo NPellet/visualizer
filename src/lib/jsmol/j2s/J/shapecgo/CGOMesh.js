@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.shapecgo");
-Clazz.load (["J.shapespecial.DrawMesh", "JU.List"], "J.shapecgo.CGOMesh", ["java.lang.Float", "$.Short", "JU.BS", "$.CU", "J.util.C", "$.Logger", "$.Normix"], function () {
+Clazz.load (["J.shapespecial.DrawMesh", "JU.Lst"], "J.shapecgo.CGOMesh", ["java.lang.Float", "$.Short", "JU.BS", "$.CU", "JU.C", "$.Logger", "$.Normix"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.cmds = null;
 this.nList = null;
@@ -7,19 +7,19 @@ this.cList = null;
 Clazz.instantialize (this, arguments);
 }, J.shapecgo, "CGOMesh", J.shapespecial.DrawMesh);
 Clazz.prepareFields (c$, function () {
-this.nList =  new JU.List ();
-this.cList =  new JU.List ();
+this.nList =  new JU.Lst ();
+this.cList =  new JU.Lst ();
 });
-c$.getSize = $_M(c$, "getSize", 
+c$.getSize = Clazz.defineMethod (c$, "getSize", 
 function (i) {
 return (i >= 0 && i < J.shapecgo.CGOMesh.sizes.length ? J.shapecgo.CGOMesh.sizes[i] : -1);
 }, "~N");
-$_M(c$, "clear", 
+Clazz.defineMethod (c$, "clear", 
 function (meshType) {
 Clazz.superCall (this, J.shapecgo.CGOMesh, "clear", [meshType]);
 this.useColix = false;
 }, "~S");
-$_M(c$, "set", 
+Clazz.defineMethod (c$, "set", 
 function (list) {
 this.width = 200;
 this.diameter = 0;
@@ -37,7 +37,7 @@ for (var i = 0; i < n; i++) {
 var type = (this.cmds.get (i)).intValue ();
 var len = J.shapecgo.CGOMesh.getSize (type);
 if (len < 0) {
-J.util.Logger.error ("CGO unknown type: " + type);
+JU.Logger.error ("CGO unknown type: " + type);
 return false;
 }switch (type) {
 case 1:
@@ -70,33 +70,33 @@ i += len;
 return true;
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
-J.util.Logger.error ("CGOMesh error: " + e);
+JU.Logger.error ("CGOMesh error: " + e);
 this.cmds = null;
 return false;
 } else {
 throw e;
 }
 }
-}, "JU.List");
-$_M(c$, "addColix", 
-($fz = function (i) {
+}, "JU.Lst");
+Clazz.defineMethod (c$, "addColix", 
+ function (i) {
 this.getPoint (i, this.vTemp);
-this.cList.addLast (Short.$valueOf (J.util.C.getColix (JU.CU.colorPtToFFRGB (this.vTemp))));
-}, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "addNormix", 
-($fz = function (i) {
+this.cList.addLast (Short.$valueOf (JU.C.getColix (JU.CU.colorPtToFFRGB (this.vTemp))));
+}, "~N");
+Clazz.defineMethod (c$, "addNormix", 
+ function (i) {
 this.getPoint (i, this.vTemp);
-this.nList.addLast (Short.$valueOf (J.util.Normix.get2SidedNormix (this.vTemp, this.bsTemp)));
-}, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "getPoint", 
+this.nList.addLast (Short.$valueOf (JU.Normix.get2SidedNormix (this.vTemp, this.bsTemp)));
+}, "~N");
+Clazz.defineMethod (c$, "getPoint", 
 function (i, pt) {
 pt.set (this.getFloat (++i), this.getFloat (++i), this.getFloat (++i));
 }, "~N,JU.T3");
-$_M(c$, "getInt", 
+Clazz.defineMethod (c$, "getInt", 
 function (i) {
 return (this.cmds.get (i)).intValue ();
 }, "~N");
-$_M(c$, "getFloat", 
+Clazz.defineMethod (c$, "getFloat", 
 function (i) {
 return (this.cmds.get (i)).floatValue ();
 }, "~N");

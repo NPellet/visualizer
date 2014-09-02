@@ -5,14 +5,14 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.ApbsReader, []);
 });
-$_V(c$, "init2", 
+Clazz.overrideMethod (c$, "init2", 
 function (sg, br) {
 this.init2VFR (sg, br);
 if (this.params.thePlane == null) this.params.insideOut = !this.params.insideOut;
 this.isAngstroms = true;
 this.nSurfaces = 1;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-$_V(c$, "readParameters", 
+Clazz.overrideMethod (c$, "readParameters", 
 function () {
 this.jvxlFileHeaderBuffer = JU.SB.newS (this.skipComments (false));
 while (this.line != null && this.line.length == 0) this.readLine ();

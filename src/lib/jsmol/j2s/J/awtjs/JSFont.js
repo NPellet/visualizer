@@ -1,22 +1,22 @@
 Clazz.declarePackage ("J.awtjs");
 c$ = Clazz.declareType (J.awtjs, "JSFont");
-c$.newFont = $_M(c$, "newFont", 
+c$.newFont = Clazz.defineMethod (c$, "newFont", 
 function (fontFace, isBold, isItalic, fontSize) {
 return null;
 }, "~S,~B,~B,~N");
-c$.getFontMetrics = $_M(c$, "getFontMetrics", 
+c$.getFontMetrics = Clazz.defineMethod (c$, "getFontMetrics", 
 function (graphics, font) {
 return null;
 }, "~O,~O");
-c$.getAscent = $_M(c$, "getAscent", 
+c$.getAscent = Clazz.defineMethod (c$, "getAscent", 
 function (fontMetrics) {
 return 0;
 }, "~O");
-c$.getDescent = $_M(c$, "getDescent", 
+c$.getDescent = Clazz.defineMethod (c$, "getDescent", 
 function (fontMetrics) {
 return 0;
 }, "~O");
-c$.stringWidth = $_M(c$, "stringWidth", 
+c$.stringWidth = Clazz.defineMethod (c$, "stringWidth", 
 function (font, text) {
 return 0;
 }, "javajs.awt.Font,~S");

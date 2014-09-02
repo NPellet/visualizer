@@ -20,16 +20,16 @@ Clazz.prepareFields (c$, function () {
 this.center = JU.P3.new3 (0, 0, 0);
 });
 Clazz.makeConstructor (c$, 
-($fz = function () {
-}, $fz.isPrivate = true, $fz));
-c$.getEmptyEllipsoid = $_M(c$, "getEmptyEllipsoid", 
+ function () {
+});
+c$.getEmptyEllipsoid = Clazz.defineMethod (c$, "getEmptyEllipsoid", 
 function (id, modelIndex) {
 var e =  new J.shapespecial.Ellipsoid ();
 e.id = id;
 e.modelIndex = modelIndex;
 return e;
 }, "~S,~N");
-c$.getEllipsoidForAtomTensor = $_M(c$, "getEllipsoidForAtomTensor", 
+c$.getEllipsoidForAtomTensor = Clazz.defineMethod (c$, "getEllipsoidForAtomTensor", 
 function (t, center) {
 var e =  new J.shapespecial.Ellipsoid ();
 e.tensor = t;
@@ -37,25 +37,25 @@ e.modelIndex = t.modelIndex;
 e.colix = 0;
 e.center = center;
 return e;
-}, "J.util.Tensor,JU.P3");
-$_M(c$, "setCenter", 
+}, "JU.Tensor,JU.P3");
+Clazz.defineMethod (c$, "setCenter", 
 function (center) {
 this.center = center;
 this.validate (false);
 }, "JU.P3");
-$_M(c$, "getLength", 
+Clazz.defineMethod (c$, "getLength", 
 function (i) {
 if (this.lengths == null) this.setLengths ();
 return (this.lengths == null ? NaN : this.lengths[i]);
 }, "~N");
-$_M(c$, "setLengths", 
+Clazz.defineMethod (c$, "setLengths", 
 function () {
 if (this.tensor == null) return;
 if (this.lengths == null) this.lengths =  Clazz.newFloatArray (3, 0);
 for (var i = 0; i < this.lengths.length; i++) this.lengths[i] = this.tensor.getFactoredValue (i) * this.scale;
 
 });
-$_M(c$, "setScale", 
+Clazz.defineMethod (c$, "setScale", 
 function (scale, isPercent) {
 if (scale <= 0) {
 this.isValid = false;
@@ -67,35 +67,35 @@ scale = (this.tensor.forThermalEllipsoid ? J.shapespecial.Ellipsoid.getThermalRa
 }this.scale = scale;
 this.validate (true);
 }, "~N,~B");
-c$.getThermalRadius = $_M(c$, "getThermalRadius", 
+c$.getThermalRadius = Clazz.defineMethod (c$, "getThermalRadius", 
 function (prob) {
 return J.shapespecial.Ellipsoid.crtval[prob < 1 ? 0 : prob > 99 ? 98 : prob - 1];
 }, "~N");
-$_M(c$, "setEquation", 
+Clazz.defineMethod (c$, "setEquation", 
 function (coef) {
 this.isValid = false;
-this.tensor = (J.api.Interface.getOptionInterface ("util.Tensor")).setFromThermalEquation (coef, null);
+this.tensor = (J.api.Interface.getUtil ("Tensor")).setFromThermalEquation (coef, null);
 this.validate (true);
 }, "~A");
-$_M(c$, "setAxes", 
+Clazz.defineMethod (c$, "setAxes", 
 function (axes) {
 this.isValid = false;
-this.tensor = (J.api.Interface.getOptionInterface ("util.Tensor")).setFromAxes (axes);
+this.tensor = (J.api.Interface.getUtil ("Tensor")).setFromAxes (axes);
 this.validate ((this.tensor != null));
 }, "~A");
-$_M(c$, "validate", 
-($fz = function (andSetLengths) {
+Clazz.defineMethod (c$, "validate", 
+ function (andSetLengths) {
 if (this.tensor == null) return;
 if (andSetLengths) this.setLengths ();
 this.isValid = true;
-}, $fz.isPrivate = true, $fz), "~B");
-c$.getEquationForQuadricWithCenter = $_M(c$, "getEquationForQuadricWithCenter", 
+}, "~B");
+c$.getEquationForQuadricWithCenter = Clazz.defineMethod (c$, "getEquationForQuadricWithCenter", 
 function (x, y, z, mToElliptical, vTemp, mTemp, coef, mDeriv) {
 vTemp.set (x, y, z);
-mToElliptical.transform (vTemp);
+mToElliptical.rotate (vTemp);
 var f = 1 - vTemp.dot (vTemp);
 mTemp.transposeM (mToElliptical);
-mTemp.transform (vTemp);
+mTemp.rotate (vTemp);
 mTemp.mul (mToElliptical);
 coef[0] = mTemp.m00 / f;
 coef[1] = mTemp.m11 / f;

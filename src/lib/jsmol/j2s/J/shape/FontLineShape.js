@@ -8,7 +8,7 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.tickInfos =  new Array (4);
 });
-$_M(c$, "setPropFLS", 
+Clazz.defineMethod (c$, "setPropFLS", 
 function (propertyName, value) {
 if ("tickInfo" === propertyName) {
 var t = value;
@@ -20,9 +20,9 @@ return;
 return;
 }this.setPropFS (propertyName, value);
 }, "~S,~O");
-$_V(c$, "getShapeState", 
+Clazz.overrideMethod (c$, "getShapeState", 
 function () {
-var s = this.viewer.getFontState (this.myType, this.font3d);
-return (this.tickInfos == null ? s : this.viewer.getFontLineShapeState (s, this.myType, this.tickInfos));
+var s = this.vwr.getFontState (this.myType, this.font3d);
+return (this.tickInfos == null ? s : this.vwr.getFontLineShapeState (s, this.myType, this.tickInfos));
 });
 });

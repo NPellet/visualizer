@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.dssx");
-Clazz.load (null, "J.dssx.Bridge", ["java.lang.Boolean", "J.util.Escape"], function () {
+Clazz.load (null, "J.dssx.Bridge", ["java.lang.Boolean", "JU.Escape"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.a = null;
 this.b = null;
@@ -12,11 +12,11 @@ function (a, b, htLadders) {
 this.a = a;
 this.b = b;
 this.ladder =  Clazz.newIntArray (2, 2, 0);
-this.ladder[0][0] = this.ladder[0][1] = Math.min (a.index, b.index);
-this.ladder[1][0] = this.ladder[1][1] = Math.max (a.index, b.index);
+this.ladder[0][0] = this.ladder[0][1] = Math.min (a.i, b.i);
+this.ladder[1][0] = this.ladder[1][1] = Math.max (a.i, b.i);
 this.addLadder (htLadders);
-}, "J.modelset.Atom,J.modelset.Atom,java.util.Map");
-$_M(c$, "addBridge", 
+}, "JM.Atom,JM.Atom,java.util.Map");
+Clazz.defineMethod (c$, "addBridge", 
 function (bridge, htLadders) {
 if (bridge.isAntiparallel != this.isAntiparallel || !this.canAdd (bridge) || !bridge.canAdd (this)) return false;
 this.extendLadder (bridge.ladder[0][0], bridge.ladder[1][0]);
@@ -27,25 +27,25 @@ htLadders.remove (bridge.ladder);
 this.addLadder (htLadders);
 }return true;
 }, "J.dssx.Bridge,java.util.Map");
-$_M(c$, "addLadder", 
-($fz = function (htLadders) {
+Clazz.defineMethod (c$, "addLadder", 
+ function (htLadders) {
 htLadders.put (this.ladder, (this.isAntiparallel ? Boolean.TRUE : Boolean.FALSE));
-}, $fz.isPrivate = true, $fz), "java.util.Map");
-$_M(c$, "canAdd", 
-($fz = function (bridge) {
-var index1 = bridge.a.index;
-var index2 = bridge.b.index;
+}, "java.util.Map");
+Clazz.defineMethod (c$, "canAdd", 
+ function (bridge) {
+var index1 = bridge.a.i;
+var index2 = bridge.b.i;
 return (this.isAntiparallel ? (index1 >= this.ladder[0][1] && index2 <= this.ladder[1][0] || index1 <= this.ladder[0][0] && index2 >= this.ladder[1][1]) : (index1 <= this.ladder[0][0] && index2 <= this.ladder[1][0] || index1 >= this.ladder[0][1] && index2 >= this.ladder[1][1]));
-}, $fz.isPrivate = true, $fz), "J.dssx.Bridge");
-$_M(c$, "extendLadder", 
-($fz = function (index1, index2) {
+}, "J.dssx.Bridge");
+Clazz.defineMethod (c$, "extendLadder", 
+ function (index1, index2) {
 if (this.ladder[0][0] > index1) this.ladder[0][0] = index1;
 if (this.ladder[0][1] < index1) this.ladder[0][1] = index1;
 if (this.ladder[1][0] > index2) this.ladder[1][0] = index2;
 if (this.ladder[1][1] < index2) this.ladder[1][1] = index2;
-}, $fz.isPrivate = true, $fz), "~N,~N");
-$_V(c$, "toString", 
+}, "~N,~N");
+Clazz.overrideMethod (c$, "toString", 
 function () {
-return (this.isAntiparallel ? "a " : "p ") + this.a + " - " + this.b + "\t" + J.util.Escape.e (this.ladder);
+return (this.isAntiparallel ? "a " : "p ") + this.a + " - " + this.b + "\t" + JU.Escape.e (this.ladder);
 });
 });

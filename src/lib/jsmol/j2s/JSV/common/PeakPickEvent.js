@@ -11,15 +11,15 @@ Clazz.superConstructor (this, JSV.common.PeakPickEvent, [source]);
 this.coord = coord;
 this.peakInfo = (peakInfo == null ? null : peakInfo);
 }, "~O,JSV.common.Coordinate,JSV.common.PeakInfo");
-$_M(c$, "getCoord", 
+Clazz.defineMethod (c$, "getCoord", 
 function () {
 return this.coord;
 });
-$_M(c$, "getPeakInfo", 
+Clazz.defineMethod (c$, "getPeakInfo", 
 function () {
 return this.peakInfo;
 });
-$_V(c$, "toString", 
+Clazz.overrideMethod (c$, "toString", 
 function () {
 return (this.peakInfo == null ? null : this.peakInfo.toString ());
 });

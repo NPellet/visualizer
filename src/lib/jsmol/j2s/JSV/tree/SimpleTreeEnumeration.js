@@ -9,11 +9,11 @@ Clazz.makeConstructor (c$,
 function (jsTreeNode) {
 this.node = jsTreeNode;
 }, "JSV.tree.SimpleTreeNode");
-$_V(c$, "hasMoreElements", 
+Clazz.overrideMethod (c$, "hasMoreElements", 
 function () {
 return (this.pt < this.node.$children.size ());
 });
-$_V(c$, "nextElement", 
+Clazz.overrideMethod (c$, "nextElement", 
 function () {
 return this.node.$children.get (this.pt++);
 });

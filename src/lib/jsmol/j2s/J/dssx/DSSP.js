@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.dssx");
-Clazz.load (["J.api.DSSPInterface"], "J.dssx.DSSP", ["java.lang.Boolean", "java.util.Hashtable", "JU.AU", "$.BS", "$.List", "$.PT", "$.SB", "J.constant.EnumStructure", "J.dssx.Bridge", "J.i18n.GT", "J.modelset.HBond", "J.modelsetbio.AminoPolymer", "J.util.Escape", "$.Logger", "J.viewer.Viewer"], function () {
+Clazz.load (["J.api.DSSPInterface"], "J.dssx.DSSP", ["java.lang.Boolean", "java.util.Hashtable", "JU.AU", "$.BS", "$.Lst", "$.PT", "$.SB", "J.c.STR", "J.dssx.Bridge", "J.i18n.GT", "JM.HBond", "JM.AminoPolymer", "JU.Escape", "$.Logger", "JV.Viewer"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.bioPolymers = null;
 this.vHBonds = null;
@@ -23,7 +23,7 @@ this.sheetOffsets = [[0, -1, 1, 0, 1, 0, 0, -1], [0, 0, 0, 0, 1, -1, 1, -1]];
 Clazz.makeConstructor (c$, 
 function () {
 });
-$_V(c$, "calculateDssp", 
+Clazz.overrideMethod (c$, "calculateDssp", 
 function (objBioPolymers, bioPolymerCount, objVHBonds, doReport, dsspIgnoreHydrogens, setStructure) {
 this.bioPolymers = objBioPolymers;
 this.bioPolymerCount = bioPolymerCount;
@@ -32,12 +32,12 @@ this.doReport = doReport;
 this.dsspIgnoreHydrogens = dsspIgnoreHydrogens;
 this.$setStructure = setStructure;
 var bsAmino =  new JU.BS ();
-for (var i = 0; i < bioPolymerCount; i++) if (Clazz.instanceOf (this.bioPolymers[i], J.modelsetbio.AminoPolymer)) bsAmino.set (i);
+for (var i = 0; i < bioPolymerCount; i++) if (Clazz.instanceOf (this.bioPolymers[i], JM.AminoPolymer)) bsAmino.set (i);
 
 if (bsAmino.isEmpty ()) return "";
 var m = this.bioPolymers[0].model;
 var sb =  new JU.SB ();
-sb.append ("Jmol ").append (J.viewer.Viewer.getJmolVersion ()).append (" DSSP analysis for model ").append (m.getModelNumberDotted ()).append (" - ").append (m.getModelTitle ()).append ("\n");
+sb.append ("Jmol ").append (JV.Viewer.getJmolVersion ()).append (" DSSP analysis for model ").append (m.getModelNumberDotted ()).append (" - ").append (m.getModelTitle ()).append ("\n");
 if (m.modelIndex == 0) sb.append ("\nW. Kabsch and C. Sander, Biopolymers, vol 22, 1983, pp 2577-2637\n").append ("\nWe thank Wolfgang Kabsch and Chris Sander for writing the DSSP software,\n").append ("and we thank the CMBI for maintaining it to the extent that it was easy to\n").append ("re-engineer for our purposes. At this point in time, we make no guarantee\n").append ("that this code gives precisely the same analysis as the code available via license\n").append ("from CMBI at http://swift.cmbi.ru.nl/gv/dssp\n");
 if (setStructure && m.modelIndex == 0) sb.append ("\nAll bioshapes have been deleted and must be regenerated.\n");
 if (m.nAltLocs > 0) sb.append ("\nNote: This model contains alternative locations. Use  'CONFIGURATION 1' to be consistent with CMBI DSSP.\n");
@@ -48,8 +48,8 @@ var haveWarned = false;
 for (var i = bsAmino.nextSetBit (0); i >= 0; i = bsAmino.nextSetBit (i + 1)) {
 var ap = this.bioPolymers[i];
 if (!haveWarned && (ap.monomers[0]).getExplicitNH () != null) {
-if (dsspIgnoreHydrogens) sb.append (J.i18n.GT._ ("NOTE: Backbone amide hydrogen positions are present and will be ignored. Their positions will be approximated, as in standard DSSP analysis.\nUse {0} to not use this approximation.\n\n", "SET dsspCalculateHydrogenAlways FALSE"));
- else sb.append (J.i18n.GT._ ("NOTE: Backbone amide hydrogen positions are present and will be used. Results may differ significantly from standard DSSP analysis.\nUse {0} to ignore these hydrogen positions.\n\n", "SET dsspCalculateHydrogenAlways TRUE"));
+if (dsspIgnoreHydrogens) sb.append (J.i18n.GT.o (J.i18n.GT._ ("NOTE: Backbone amide hydrogen positions are present and will be ignored. Their positions will be approximated, as in standard DSSP analysis.\nUse {0} to not use this approximation.\n\n"), "SET dsspCalculateHydrogenAlways FALSE"));
+ else sb.append (J.i18n.GT.o (J.i18n.GT._ ("NOTE: Backbone amide hydrogen positions are present and will be used. Results may differ significantly from standard DSSP analysis.\nUse {0} to ignore these hydrogen positions.\n\n"), "SET dsspCalculateHydrogenAlways TRUE"));
 haveWarned = true;
 }ap.recalculateLeadMidpointsAndWingVectors ();
 var n = ap.monomerCount;
@@ -59,8 +59,8 @@ for (var j = 0; j < n; j++) if ((ap.monomers[j]).getCarbonylOxygenAtom () == nul
 
 }
 var min = this.getDualHydrogenBondArray ();
-this.bridgesA =  new JU.List ();
-this.bridgesP =  new JU.List ();
+this.bridgesA =  new JU.Lst ();
+this.bridgesP =  new JU.Lst ();
 this.htBridges =  new java.util.Hashtable ();
 this.htLadders =  new java.util.Hashtable ();
 this.getBridges (min);
@@ -80,11 +80,11 @@ if (this.bsBad.nextSetBit (0) >= 0) sb.append ("\nNOTE: '!' indicates a residue 
 sb.append ("\n").append ("SUMMARY:" + sbSummary);
 }return sb.toString ();
 }, "~A,~N,~O,~B,~B,~B");
-$_M(c$, "getDualHydrogenBondArray", 
-($fz = function () {
+Clazz.defineMethod (c$, "getDualHydrogenBondArray", 
+ function () {
 var min = JU.AU.newInt4 (this.bioPolymerCount);
 for (var i = 0; i < this.bioPolymerCount; i++) {
-if (!(Clazz.instanceOf (this.bioPolymers[i], J.modelsetbio.AminoPolymer))) continue;
+if (!(Clazz.instanceOf (this.bioPolymers[i], JM.AminoPolymer))) continue;
 var n = this.bioPolymers[i].monomerCount;
 min[i] =  Clazz.newIntArray (n, 2, 3, 0);
 for (var j = 0; j < n; ++j) {
@@ -96,19 +96,19 @@ for (var i = 0; i < this.bioPolymerCount; i++) if (min[i] != null) for (var j = 
 
 
 return min;
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "getBridges", 
-($fz = function (min) {
-var atoms = this.bioPolymers[0].model.getModelSet ().atoms;
+});
+Clazz.defineMethod (c$, "getBridges", 
+ function (min) {
+var atoms = this.bioPolymers[0].model.getModelSet ().at;
 var bridge = null;
 var htTemp =  new java.util.Hashtable ();
-for (var p1 = 0; p1 < min.length; p1++) if (Clazz.instanceOf (this.bioPolymers[p1], J.modelsetbio.AminoPolymer)) {
+for (var p1 = 0; p1 < min.length; p1++) if (Clazz.instanceOf (this.bioPolymers[p1], JM.AminoPolymer)) {
 var ap1 = (this.bioPolymers[p1]);
 var n = min[p1].length - 1;
 for (var a = 1; a < n; a++) {
 var ia = ap1.monomers[a].leadAtomIndex;
 if (this.bsBad.get (ia)) continue;
-for (var p2 = p1; p2 < min.length; p2++) if (Clazz.instanceOf (this.bioPolymers[p2], J.modelsetbio.AminoPolymer)) for (var b = (p1 == p2 ? a + 3 : 1); b < min[p2].length - 1; b++) {
+for (var p2 = p1; p2 < min.length; p2++) if (Clazz.instanceOf (this.bioPolymers[p2], JM.AminoPolymer)) for (var b = (p1 == p2 ? a + 3 : 1); b < min[p2].length - 1; b++) {
 var ap2 = this.bioPolymers[p2];
 var ib = ap2.monomers[b].leadAtomIndex;
 if (this.bsBad.get (ib)) continue;
@@ -117,7 +117,7 @@ if ((bridge = this.getBridge (min, p1, a, p2, b, this.bridgesP, atoms[ia], atoms
 bridge.isAntiparallel = true;
 } else {
 continue;
-}if (J.util.Logger.debugging) J.util.Logger.debug ("Bridge found " + bridge);
+}if (JU.Logger.debugging) JU.Logger.debug ("Bridge found " + bridge);
 this.done[p1].set (a);
 this.done[p2].set (b);
 this.htBridges.put (ia + "-" + ib, bridge);
@@ -125,9 +125,9 @@ this.htBridges.put (ia + "-" + ib, bridge);
 
 }
 }
-}, $fz.isPrivate = true, $fz), "~A");
-$_M(c$, "getBridge", 
-($fz = function (min, p1, a, p2, b, bridges, atom1, atom2, ap1, ap2, htTemp, isAntiparallel) {
+}, "~A");
+Clazz.defineMethod (c$, "getBridge", 
+ function (min, p1, a, p2, b, bridges, atom1, atom2, ap1, ap2, htTemp, isAntiparallel) {
 var b1 = null;
 var b2 = null;
 var ipt = 0;
@@ -141,19 +141,19 @@ this.addHbond (ap1.monomers[a + offsets[ipt]], ap2.monomers[b + offsets[++ipt]],
 this.addHbond (ap2.monomers[b + offsets[++ipt]], ap1.monomers[a + offsets[++ipt]], b2[2], type, htTemp);
 }return bridge;
 }return null;
-}, $fz.isPrivate = true, $fz), "~A,~N,~N,~N,~N,JU.List,J.modelset.Atom,J.modelset.Atom,J.modelsetbio.AminoPolymer,J.modelsetbio.AminoPolymer,java.util.Map,~B");
-$_M(c$, "addHbond", 
-($fz = function (donor, acceptor, iEnergy, type, htTemp) {
+}, "~A,~N,~N,~N,~N,JU.Lst,JM.Atom,JM.Atom,JM.AminoPolymer,JM.AminoPolymer,java.util.Map,~B");
+Clazz.defineMethod (c$, "addHbond", 
+ function (donor, acceptor, iEnergy, type, htTemp) {
 var nitrogen = (donor).getNitrogenAtom ();
 var oxygen = (acceptor).getCarbonylOxygenAtom ();
 if (htTemp != null) {
-var key = nitrogen.index + " " + oxygen.index;
+var key = nitrogen.i + " " + oxygen.i;
 if (htTemp.containsKey (key)) return;
 htTemp.put (key, Boolean.TRUE);
-}this.vHBonds.addLast ( new J.modelset.HBond (nitrogen, oxygen, type, 1, 0, iEnergy / 1000));
-}, $fz.isPrivate = true, $fz), "J.modelsetbio.Monomer,J.modelsetbio.Monomer,~N,~N,java.util.Map");
-$_M(c$, "getSheetStructures", 
-($fz = function () {
+}this.vHBonds.addLast ( new JM.HBond (nitrogen, oxygen, type, 1, 0, iEnergy / 1000));
+}, "JM.Monomer,JM.Monomer,~N,~N,java.util.Map");
+Clazz.defineMethod (c$, "getSheetStructures", 
+ function () {
 if (this.bridgesA.size () == 0 && this.bridgesP.size () == 0) return;
 this.createLadders (this.bridgesA, true);
 this.createLadders (this.bridgesP, false);
@@ -170,7 +170,7 @@ bsEEE.setBits (ladder[1][0], ladder[1][1] + 1);
 var bsSheet =  new JU.BS ();
 var bsBridge =  new JU.BS ();
 for (var i = this.bioPolymers.length; --i >= 0; ) {
-if (!(Clazz.instanceOf (this.bioPolymers[i], J.modelsetbio.AminoPolymer))) continue;
+if (!(Clazz.instanceOf (this.bioPolymers[i], JM.AminoPolymer))) continue;
 bsSheet.clearAll ();
 bsBridge.clearAll ();
 var ap = this.bioPolymers[i];
@@ -190,36 +190,36 @@ if (this.doReport) {
 this.setTag (this.labels[i], bsBridge, 'B');
 this.setTag (this.labels[i], bsSheet, 'E');
 }if (this.$setStructure) {
-this.setStructure (ap, bsSheet, J.constant.EnumStructure.SHEET);
+this.setStructure (ap, bsSheet, J.c.STR.SHEET);
 }this.done[i].or (bsSheet);
 this.done[i].or (bsBridge);
 }
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "createLadders", 
-($fz = function (bridges, isAntiparallel) {
+});
+Clazz.defineMethod (c$, "createLadders", 
+ function (bridges, isAntiparallel) {
 var dir = (isAntiparallel ? -1 : 1);
 var n = bridges.size ();
 for (var i = 0; i < n; i++) this.checkBridge (bridges.get (i), isAntiparallel, 1, dir);
 
 for (var i = 0; i < n; i++) this.checkBulge (bridges.get (i), isAntiparallel, 1);
 
-}, $fz.isPrivate = true, $fz), "JU.List,~B");
-$_M(c$, "checkBridge", 
-($fz = function (bridge, isAntiparallel, n1, n2) {
+}, "JU.Lst,~B");
+Clazz.defineMethod (c$, "checkBridge", 
+ function (bridge, isAntiparallel, n1, n2) {
 var b = this.htBridges.get (bridge.a.getOffsetResidueAtom ("0", n1) + "-" + bridge.b.getOffsetResidueAtom ("0", n2));
 return (b != null && bridge.addBridge (b, this.htLadders));
-}, $fz.isPrivate = true, $fz), "J.dssx.Bridge,~B,~N,~N");
-$_M(c$, "checkBulge", 
-($fz = function (bridge, isAntiparallel, dir) {
+}, "J.dssx.Bridge,~B,~N,~N");
+Clazz.defineMethod (c$, "checkBulge", 
+ function (bridge, isAntiparallel, dir) {
 var dir1 = (isAntiparallel ? -1 : 1);
 for (var i = 0; i < 3; i++) for (var j = (i == 0 ? 1 : 0); j < 6; j++) {
 this.checkBridge (bridge, isAntiparallel, i * dir, j * dir1);
 if (j > i) this.checkBridge (bridge, isAntiparallel, j * dir, i * dir1);
 }
 
-}, $fz.isPrivate = true, $fz), "J.dssx.Bridge,~B,~N");
-$_M(c$, "dumpSummary", 
-($fz = function (ap, labels) {
+}, "J.dssx.Bridge,~B,~N");
+Clazz.defineMethod (c$, "dumpSummary", 
+ function (ap, labels) {
 var a = ap.monomers[0].getLeadAtom ();
 var id = a.getChainID ();
 var prefix = (id == 0 ? "" : a.getChainIDStr () + ":");
@@ -242,11 +242,11 @@ insCode1 = m[i].getInsertionCode ();
 insCode2 = m[i].getInsertionCode ();
 }
 return sb.toString ();
-}, $fz.isPrivate = true, $fz), "J.modelsetbio.AminoPolymer,~A");
-$_M(c$, "dumpTags", 
-($fz = function (ap, lines, bsBad, mode) {
+}, "JM.AminoPolymer,~A");
+Clazz.defineMethod (c$, "dumpTags", 
+ function (ap, lines, bsBad, mode) {
 var prefix = ap.monomers[0].getLeadAtom ().getChainID () + "." + (ap.bioPolymerIndexInModel + 1);
-lines = JU.PT.simpleReplace (lines, "$", prefix);
+lines = JU.PT.rep (lines, "$", prefix);
 var iFirst = ap.monomers[0].getResno ();
 var pre = "\n" + prefix;
 var sb =  new JU.SB ();
@@ -270,32 +270,32 @@ if ((mode & 2) == 2) {
 sb.appendSB (sb3);
 sb.append ("\n\n");
 }return sb.toString ().$replace ('\0', '.');
-}, $fz.isPrivate = true, $fz), "J.modelsetbio.AminoPolymer,~S,JU.BS,~N");
-$_M(c$, "isHbonded", 
-($fz = function (indexDonor, indexAcceptor, pDonor, pAcceptor, min) {
+}, "JM.AminoPolymer,~S,JU.BS,~N");
+Clazz.defineMethod (c$, "isHbonded", 
+ function (indexDonor, indexAcceptor, pDonor, pAcceptor, min) {
 if (indexDonor < 0 || indexAcceptor < 0) return null;
 var min1 = min[pDonor];
 var min2 = min[pAcceptor];
 if (indexDonor >= min1.length || indexAcceptor >= min2.length) return null;
 return (min1[indexDonor][0][0] == pAcceptor && min1[indexDonor][0][1] == indexAcceptor ? min1[indexDonor][0] : min1[indexDonor][1][0] == pAcceptor && min1[indexDonor][1][1] == indexAcceptor ? min1[indexDonor][1] : null);
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~N,~A");
-$_M(c$, "findHelixes", 
-($fz = function (iPolymer, min) {
+}, "~N,~N,~N,~N,~A");
+Clazz.defineMethod (c$, "findHelixes", 
+ function (iPolymer, min) {
 var ap = this.bioPolymers[iPolymer];
-if (J.util.Logger.debugging) for (var j = 0; j < ap.monomerCount; j++) J.util.Logger.debug (iPolymer + "." + ap.monomers[j].getResno () + "\t" + J.util.Escape.e (min[j]));
+if (JU.Logger.debugging) for (var j = 0; j < ap.monomerCount; j++) JU.Logger.debug (iPolymer + "." + ap.monomers[j].getResno () + "\t" + JU.Escape.e (min[j]));
 
 var bsTurn =  new JU.BS ();
-var line4 = this.findHelixes2 (iPolymer, 4, min, J.constant.EnumStructure.HELIXALPHA, 10240, bsTurn);
-var line3 = this.findHelixes2 (iPolymer, 3, min, J.constant.EnumStructure.HELIX310, 8192, bsTurn);
-var line5 = this.findHelixes2 (iPolymer, 5, min, J.constant.EnumStructure.HELIXPI, 12288, bsTurn);
-if (this.$setStructure) this.setStructure (ap, bsTurn, J.constant.EnumStructure.TURN);
+var line4 = this.findHelixes2 (iPolymer, 4, min, J.c.STR.HELIXALPHA, 10240, bsTurn);
+var line3 = this.findHelixes2 (iPolymer, 3, min, J.c.STR.HELIX310, 8192, bsTurn);
+var line5 = this.findHelixes2 (iPolymer, 5, min, J.c.STR.HELIXPI, 12288, bsTurn);
+if (this.$setStructure) this.setStructure (ap, bsTurn, J.c.STR.TURN);
 if (this.doReport) {
 this.setTag (this.labels[iPolymer], bsTurn, 'T');
 return this.dumpTags (ap, "$.5: " + line5 + "\n" + "$.4: " + line4 + "\n" + "$.3: " + line3, this.bsBad, 1);
 }return "";
-}, $fz.isPrivate = true, $fz), "~N,~A");
-$_M(c$, "findHelixes2", 
-($fz = function (iPolymer, pitch, min, subtype, type, bsTurn) {
+}, "~N,~A");
+Clazz.defineMethod (c$, "findHelixes2", 
+ function (iPolymer, pitch, min, subtype, type, bsTurn) {
 var ap = this.bioPolymers[iPolymer];
 var bsStart =  new JU.BS ();
 var bsNNN =  new JU.BS ();
@@ -347,19 +347,19 @@ if (this.doReport) {
 this.setTag (this.labels[iPolymer], bsHelix, String.fromCharCode (68 + pitch));
 return String.valueOf (taglines) + warning;
 }return "";
-}, $fz.isPrivate = true, $fz), "~N,~N,~A,J.constant.EnumStructure,~N,JU.BS");
-$_M(c$, "setTag", 
-($fz = function (tags, bs, ch) {
+}, "~N,~N,~A,J.c.STR,~N,JU.BS");
+Clazz.defineMethod (c$, "setTag", 
+ function (tags, bs, ch) {
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) tags[i] = ch;
 
-}, $fz.isPrivate = true, $fz), "~A,JU.BS,~S");
-$_M(c$, "setStructure", 
-($fz = function (ap, bs, type) {
+}, "~A,JU.BS,~S");
+Clazz.defineMethod (c$, "setStructure", 
+ function (ap, bs, type) {
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
 var i2 = bs.nextClearBit (i);
 if (i2 < 0) i2 = ap.monomerCount;
 ap.addStructureProtected (type, null, 0, 0, i, i2 - 1);
 i = i2;
 }
-}, $fz.isPrivate = true, $fz), "J.modelsetbio.AminoPolymer,JU.BS,J.constant.EnumStructure");
+}, "JM.AminoPolymer,JU.BS,J.c.STR");
 });

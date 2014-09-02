@@ -13,11 +13,11 @@ this.buf = buf;
 this.pos = 0;
 this.count = buf.length;
 }, "~A");
-$_V(c$, "readByteAsInt", 
+Clazz.overrideMethod (c$, "readByteAsInt", 
 function () {
 return (this.pos < this.count) ? (this.buf[this.pos++] & 0xff) : -1;
 });
-$_V(c$, "read", 
+Clazz.overrideMethod (c$, "read", 
 function (b, off, len) {
 if (b == null) {
 throw  new NullPointerException ();
@@ -34,7 +34,7 @@ return 0;
 this.pos += len;
 return len;
 }, "~A,~N,~N");
-$_V(c$, "skip", 
+Clazz.overrideMethod (c$, "skip", 
 function (n) {
 var k = this.count - this.pos;
 if (n < k) {
@@ -42,26 +42,26 @@ k = n < 0 ? 0 : n;
 }this.pos += k;
 return k;
 }, "~N");
-$_V(c$, "available", 
+Clazz.overrideMethod (c$, "available", 
 function () {
 return this.count - this.pos;
 });
-$_V(c$, "markSupported", 
+Clazz.overrideMethod (c$, "markSupported", 
 function () {
 return true;
 });
-$_V(c$, "mark", 
+Clazz.overrideMethod (c$, "mark", 
 function (readAheadLimit) {
 this.$mark = this.pos;
 }, "~N");
-$_V(c$, "resetStream", 
+Clazz.overrideMethod (c$, "resetStream", 
 function () {
 });
-$_V(c$, "reset", 
+Clazz.overrideMethod (c$, "reset", 
 function () {
 this.pos = this.$mark;
 });
-$_V(c$, "close", 
+Clazz.overrideMethod (c$, "close", 
 function () {
 });
 });

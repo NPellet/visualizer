@@ -2,14 +2,14 @@ Clazz.declarePackage ("javajs.awt");
 Clazz.load (null, "javajs.awt.Component", ["JU.CU"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.visible = false;
-this.enabled = false;
+this.enabled = true;
 this.text = null;
 this.name = null;
 this.width = 0;
 this.height = 0;
 this.id = null;
-this.controller = null;
-this.actionListener = null;
+this.parent = null;
+this.mouseListener = null;
 this.bgcolor = null;
 this.minWidth = 30;
 this.minHeight = 30;
@@ -17,79 +17,104 @@ this.renderWidth = 0;
 this.renderHeight = 0;
 Clazz.instantialize (this, arguments);
 }, javajs.awt, "Component");
+Clazz.defineMethod (c$, "setParent", 
+function (p) {
+this.parent = p;
+}, "~O");
 Clazz.makeConstructor (c$, 
 function (type) {
+this.id = javajs.awt.Component.newID (type);
 if (type == null) return;
 {
 SwingController.register(this, type);
 }}, "~S");
-$_M(c$, "setBackground", 
+c$.newID = Clazz.defineMethod (c$, "newID", 
+function (type) {
+return type + ("" + Math.random ()).substring (3, 10);
+}, "~S");
+Clazz.defineMethod (c$, "setBackground", 
 function (color) {
 this.bgcolor = color;
 }, "javajs.api.GenericColor");
-$_M(c$, "setText", 
+Clazz.defineMethod (c$, "setText", 
 function (text) {
 this.text = text;
 {
 SwingController.setText(this);
 }}, "~S");
-$_M(c$, "setName", 
+Clazz.defineMethod (c$, "setName", 
 function (name) {
 this.name = name;
 }, "~S");
-$_M(c$, "setPreferredSize", 
+Clazz.defineMethod (c$, "getName", 
+function () {
+return this.name;
+});
+Clazz.defineMethod (c$, "getParent", 
+function () {
+return this.parent;
+});
+Clazz.defineMethod (c$, "setPreferredSize", 
 function (dimension) {
 this.width = dimension.width;
 this.height = dimension.height;
 }, "javajs.awt.Dimension");
-$_M(c$, "addActionListener", 
+Clazz.defineMethod (c$, "addMouseListener", 
 function (listener) {
-this.actionListener = listener;
+this.mouseListener = listener;
 }, "~O");
-$_M(c$, "getText", 
+Clazz.defineMethod (c$, "getText", 
 function () {
 return this.text;
 });
-$_M(c$, "setEnabled", 
+Clazz.defineMethod (c$, "isEnabled", 
+function () {
+return this.enabled;
+});
+Clazz.defineMethod (c$, "setEnabled", 
 function (enabled) {
 this.enabled = enabled;
-}, "~B");
-$_M(c$, "isVisible", 
+{
+SwingController.setEnabled(this);
+}}, "~B");
+Clazz.defineMethod (c$, "isVisible", 
 function () {
 return this.visible;
 });
-$_M(c$, "setVisible", 
+Clazz.defineMethod (c$, "setVisible", 
 function (visible) {
 this.visible = visible;
-}, "~B");
-$_M(c$, "getHeight", 
+{
+SwingController.setVisible(this);
+}}, "~B");
+Clazz.defineMethod (c$, "getHeight", 
 function () {
 return this.height;
 });
-$_M(c$, "getWidth", 
+Clazz.defineMethod (c$, "getWidth", 
 function () {
 return this.width;
 });
-$_M(c$, "setMinimumSize", 
+Clazz.defineMethod (c$, "setMinimumSize", 
 function (d) {
 this.minWidth = d.width;
 this.minHeight = d.height;
 }, "javajs.awt.Dimension");
-$_M(c$, "getSubcomponentWidth", 
+Clazz.defineMethod (c$, "getSubcomponentWidth", 
 function () {
 return this.width;
 });
-$_M(c$, "getSubcomponentHeight", 
+Clazz.defineMethod (c$, "getSubcomponentHeight", 
 function () {
 return this.height;
 });
-$_M(c$, "getCSSstyle", 
-function (defaultPercent) {
+Clazz.defineMethod (c$, "getCSSstyle", 
+function (defaultPercentW, defaultPercentH) {
 var width = (this.renderWidth > 0 ? this.renderWidth : this.getSubcomponentWidth ());
 var height = (this.renderHeight > 0 ? this.renderHeight : this.getSubcomponentHeight ());
-return (width > 0 ? "width:" + width + "px;" : defaultPercent > 0 ? "width:" + defaultPercent + "%;" : "") + (height > 0 ? "height:" + height + "px;" : defaultPercent > 0 ? "height:" + defaultPercent + "%;" : "") + (this.bgcolor == null ? "" : "background-color:" + JU.CU.toCSSString (this.bgcolor) + ";");
-}, "~N");
-$_M(c$, "repaint", 
+return (width > 0 ? "width:" + width + "px;" : defaultPercentW > 0 ? "width:" + defaultPercentW + "%;" : "") + (height > 0 ? "height:" + height + "px;" : defaultPercentH > 0 ? "height:" + defaultPercentH + "%;" : "") + (this.bgcolor == null ? "" : "background-color:" + JU.CU.toCSSString (this.bgcolor) + ";");
+}, "~N,~N");
+Clazz.defineMethod (c$, "repaint", 
 function () {
 });
 });

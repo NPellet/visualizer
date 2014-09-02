@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JSV.source");
-Clazz.load (null, "JSV.source.JDXDecompressor", ["java.lang.Double", "JSV.common.Coordinate", "J.util.Logger"], function () {
+Clazz.load (null, "JSV.source.JDXDecompressor", ["java.lang.Double", "JSV.common.Coordinate", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.xFactor = 0;
 this.yFactor = 0;
@@ -27,11 +27,11 @@ this.yval = 0;
 this.firstLastX = null;
 Clazz.instantialize (this, arguments);
 }, JSV.source, "JDXDecompressor");
-$_M(c$, "getMinY", 
+Clazz.defineMethod (c$, "getMinY", 
 function () {
 return this.minY;
 });
-$_M(c$, "getMaxY", 
+Clazz.defineMethod (c$, "getMaxY", 
 function () {
 return this.maxY;
 });
@@ -43,11 +43,11 @@ this.xFactor = xFactor;
 this.yFactor = yFactor;
 this.deltaX = deltaX;
 this.nPoints = nPoints;
-this.lineNumber = t.getLabelLineNo ();
-this.debugging = J.util.Logger.isActiveLevel (6);
+this.lineNumber = t.labelLineNo;
+this.debugging = JU.Logger.isActiveLevel (6);
 }, "JSV.source.JDXSourceStreamTokenizer,~N,~N,~N,~N,~N");
-$_M(c$, "addPoint", 
-($fz = function (pt) {
+Clazz.defineMethod (c$, "addPoint", 
+ function (pt) {
 if (this.ipt == this.xyCoords.length) {
 var t =  new Array (this.ipt * 2);
 System.arraycopy (this.xyCoords, 0, t, 0, this.ipt);
@@ -58,8 +58,8 @@ if (d > this.maxY) this.maxY = d;
 if (this.debugging) this.logError ("Coord: " + this.ipt + pt);
 this.xyCoords[this.ipt++] = pt;
 this.firstLastX[1] = pt.getXVal ();
-}, $fz.isPrivate = true, $fz), "JSV.common.Coordinate");
-$_M(c$, "decompressData", 
+}, "JSV.common.Coordinate");
+Clazz.defineMethod (c$, "decompressData", 
 function (errorLog, firstLastX) {
 this.errorLog = errorLog;
 this.firstLastX = firstLastX;
@@ -114,13 +114,13 @@ System.arraycopy (this.xyCoords, 0, temp, 0, this.ipt);
 this.xyCoords = temp;
 }return (this.deltaX > 0 ? this.xyCoords : JSV.common.Coordinate.reverse (this.xyCoords));
 }, "JU.SB,~A");
-$_M(c$, "logError", 
-($fz = function (s) {
-if (this.debugging) J.util.Logger.debug (s);
+Clazz.defineMethod (c$, "logError", 
+ function (s) {
+if (this.debugging) JU.Logger.debug (s);
 this.errorLog.append (s).appendC ('\n');
-}, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "getYValue", 
-($fz = function () {
+}, "~S");
+Clazz.defineMethod (c$, "getYValue", 
+ function () {
 if (this.dupCount > 0) {
 --this.dupCount;
 this.yval = (this.lastDif == -2147483648 ? this.yval : this.yval + this.lastDif);
@@ -132,7 +132,7 @@ this.difVal = -2147483648;
 return this.yval;
 }if (this.ich == this.lineLen) return NaN;
 var ch = this.line.charAt (this.ich);
-if (this.debugging) J.util.Logger.info ("" + ch);
+if (this.debugging) JU.Logger.info ("" + ch);
 switch (ch) {
 case '%':
 this.difVal = 0;
@@ -218,16 +218,16 @@ this.ich++;
 if (this.difVal != -2147483648) this.difVal = this.getDifDup (this.difVal);
  else this.dupCount = this.getDifDup (this.dupCount) - 1;
 return this.getYValue ();
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "getDifDup", 
-($fz = function (i) {
+});
+Clazz.defineMethod (c$, "getDifDup", 
+ function (i) {
 var ich0 = this.ich;
 this.next ();
 var s = i + this.line.substring (ich0, this.ich);
 return (ich0 == this.ich ? i : Integer.$valueOf (s).intValue ());
-}, $fz.isPrivate = true, $fz), "~N");
-$_M(c$, "getValue", 
-($fz = function () {
+}, "~N");
+Clazz.defineMethod (c$, "getValue", 
+ function () {
 var ich0 = this.ich;
 if (this.ich == this.lineLen) return NaN;
 var ch = this.line.charAt (this.ich);
@@ -278,9 +278,9 @@ return this.getValue ();
 }
 this.next ();
 return Double.$valueOf (leader + this.line.substring (ich0, this.ich)).doubleValue ();
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "getValueDelim", 
-($fz = function () {
+});
+Clazz.defineMethod (c$, "getValueDelim", 
+ function () {
 var ich0 = this.ich;
 var ch = '\u0000';
 while (this.ich < this.lineLen && " ,\t\n".indexOf (ch = this.line.charAt (this.ich)) >= 0) this.ich++;
@@ -302,16 +302,16 @@ if (this.ich < this.lineLen && (ch = this.line.charAt (this.ich)) >= '0' && ch <
 break;
 }
 return factor * ((Double.$valueOf (this.line.substring (ich0, this.ich))).doubleValue ());
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "next", 
-($fz = function () {
+});
+Clazz.defineMethod (c$, "next", 
+ function () {
 while (this.ich < this.lineLen && "+-%@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs? ,\t\n".indexOf (this.line.charAt (this.ich)) < 0) this.ich++;
 
 return (this.ich == this.lineLen ? '\0' : this.line.charAt (this.ich));
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "testAlgorithm", 
-($fz = function () {
-}, $fz.isPrivate = true, $fz));
+});
+Clazz.defineMethod (c$, "testAlgorithm", 
+ function () {
+});
 Clazz.defineStatics (c$,
 "allDelim", "+-%@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs? ,\t\n",
 "WHITE_SPACE", " ,\t\n");

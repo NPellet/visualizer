@@ -1,33 +1,37 @@
 Clazz.declarePackage ("JSV.js2d");
-Clazz.load (["JSV.dialog.DialogManager"], "JSV.js2d.JsDialogManager", ["javajs.awt.BorderLayout", "$.Dimension", "javajs.swing.JDialog", "$.JEditorPane", "$.JPanel", "$.JScrollPane", "$.JTable", "JU.PT", "JSV.js2d.DialogTableModel", "$.JsDialog"], function () {
+Clazz.load (["JSV.dialog.DialogManager"], "JSV.js2d.JsDialogManager", ["javajs.awt.Dimension", "javajs.swing.JDialog", "$.JEditorPane", "$.JLabel", "$.JScrollPane", "$.JTable", "JU.PT", "JSV.js2d.DialogTableModel", "$.JsDialog"], function () {
 c$ = Clazz.declareType (JSV.js2d, "JsDialogManager", JSV.dialog.DialogManager);
 Clazz.makeConstructor (c$, 
 function () {
 Clazz.superConstructor (this, JSV.js2d.JsDialogManager, []);
 });
-$_V(c$, "getDialog", 
+Clazz.overrideMethod (c$, "getDialog", 
 function (jsvDialog) {
 return  new JSV.js2d.JsDialog (this, jsvDialog, this.registerDialog (jsvDialog));
 }, "JSV.dialog.JSVDialog");
-$_V(c$, "getDialogInput", 
+Clazz.overrideMethod (c$, "getDialogInput", 
 function (parentComponent, phrase, title, msgType, icon, objects, defaultStr) {
 {
 return prompt(phrase, defaultStr);
 }}, "~O,~S,~S,~N,~O,~A,~S");
-$_V(c$, "showMessageDialog", 
+Clazz.overrideMethod (c$, "showMessageDialog", 
 function (parentComponent, msg, title, msgType) {
 {
 alert(msg);
 }}, "~O,~S,~S,~N");
-$_V(c$, "getLocationOnScreen", 
+Clazz.overrideMethod (c$, "getLocationOnScreen", 
 function (component) {
 return  Clazz.newIntArray (2, 0);
 }, "~O");
-$_V(c$, "getOptionFromDialog", 
+Clazz.overrideMethod (c$, "getOptionFromDialog", 
 function (frame, items, jsvp, dialogName, labelName) {
-return 0;
+var i = -1;
+var applet = this.vwr.html5Applet;
+{
+i = applet.getOption(items, dialogName, labelName);
+}return i;
 }, "~O,~A,JSV.api.JSVPanel,~S,~S");
-$_V(c$, "showProperties", 
+Clazz.overrideMethod (c$, "showProperties", 
 function (frame, spectrum) {
 var dialog =  new javajs.swing.JDialog ();
 dialog.setTitle ("Header Information");
@@ -40,28 +44,24 @@ var scrollPane =  new javajs.swing.JScrollPane (table);
 dialog.getContentPane ().add (scrollPane);
 dialog.pack ();
 dialog.setVisible (true);
-}, "~O,JSV.common.JDXSpectrum");
-$_V(c$, "showScrollingText", 
-function (frame, title, text) {
+}, "~O,JSV.common.Spectrum");
+Clazz.overrideMethod (c$, "showMessage", 
+function (frame, text, title) {
 var dialog =  new javajs.swing.JDialog ();
-var sourcePane =  new javajs.swing.JEditorPane ();
-sourcePane.setText (text);
-var scrollPane =  new javajs.swing.JScrollPane (sourcePane);
-scrollPane.setPreferredSize ( new javajs.awt.Dimension (500, 400));
-scrollPane.setMinimumSize ( new javajs.awt.Dimension (500, 400));
-var contentPanel =  new javajs.swing.JPanel ( new javajs.awt.BorderLayout ());
-contentPanel.add (scrollPane, "Center");
-dialog.getContentPane ().add (contentPanel);
-dialog.pack ();
-dialog.setVisible (true);
-dialog.setTitle (title);
-var pane =  new javajs.swing.JEditorPane ();
+{
+dialog.manager = this;
+}dialog.setTitle (title);
+var pane;
+if (text.indexOf ("</div>") >= 0) {
+pane =  new javajs.swing.JLabel (text);
+} else {
+pane =  new javajs.swing.JEditorPane ();
 pane.setText (text);
-dialog.getContentPane ().add (pane);
+}dialog.getContentPane ().add (pane);
 dialog.pack ();
 dialog.setVisible (true);
 }, "~O,~S,~S");
-$_M(c$, "actionPerformed", 
+Clazz.defineMethod (c$, "actionPerformed", 
 function (eventId) {
 var pt = eventId.indexOf ("/JT");
 if (pt >= 0) {

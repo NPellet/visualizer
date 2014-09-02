@@ -1,11 +1,11 @@
 Clazz.declarePackage ("JU");
 Clazz.load (null, "JU.Base64", ["JU.SB"], function () {
 c$ = Clazz.declareType (JU, "Base64");
-c$.getBytes64 = $_M(c$, "getBytes64", 
+c$.getBytes64 = Clazz.defineMethod (c$, "getBytes64", 
 function (bytes) {
 return JU.Base64.getBase64 (bytes).toBytes (0, -1);
 }, "~A");
-c$.getBase64 = $_M(c$, "getBase64", 
+c$.getBase64 = Clazz.defineMethod (c$, "getBase64", 
 function (bytes) {
 var nBytes = bytes.length;
 var sout =  new JU.SB ();
@@ -21,7 +21,7 @@ sout.appendC (nPad >= 1 ? '=' : JU.Base64.base64.charAt (outbytes & 0x3F));
 }
 return sout;
 }, "~A");
-c$.decodeBase64 = $_M(c$, "decodeBase64", 
+c$.decodeBase64 = Clazz.defineMethod (c$, "decodeBase64", 
 function (strBase64) {
 var nBytes = 0;
 var ch;

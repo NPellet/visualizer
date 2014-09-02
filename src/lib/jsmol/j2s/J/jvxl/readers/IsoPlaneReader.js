@@ -5,12 +5,12 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoPlaneReader, []);
 });
-$_V(c$, "init", 
+Clazz.overrideMethod (c$, "init", 
 function (sg) {
 this.initADR (sg);
 this.precalculateVoxelData = false;
 }, "J.jvxl.readers.SurfaceGenerator");
-$_V(c$, "setup", 
+Clazz.overrideMethod (c$, "setup", 
 function (isMapData) {
 this.setup2 ();
 this.setHeader ("PLANE", this.params.thePlane.toString ());

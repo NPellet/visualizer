@@ -57,25 +57,25 @@ if (this.minY > 0 && !isContinuous) this.minY = 0;
 this.maxY = JSV.common.Coordinate.getMaxY (coords, start, end);
 this.setScale (isContinuous, isInverted);
 }, "~A,~N,~N,~B,~B");
-$_M(c$, "setScale", 
+Clazz.defineMethod (c$, "setScale", 
 function (isContinuous, isInverted) {
 this.setXScale ();
 if (!isContinuous) this.maxXOnScale += this.steps[0] / 2;
 this.setYScale (this.minY, this.maxY, true, isInverted);
 }, "~B,~B");
-$_M(c$, "setXScale", 
-($fz = function () {
+Clazz.defineMethod (c$, "setXScale", 
+ function () {
 var xStep = this.setScaleParams (this.minX, this.maxX, 0);
 this.firstX = Math.floor (this.minX / xStep) * xStep;
 if (Math.abs ((this.minX - this.firstX) / xStep) > 0.0001) this.firstX += xStep;
 this.minXOnScale = this.minX;
 this.maxXOnScale = this.maxX;
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "isYZeroOnScale", 
+});
+Clazz.defineMethod (c$, "isYZeroOnScale", 
 function () {
 return (this.minYOnScale < this.spectrumYRef && this.maxYOnScale > this.spectrumYRef);
 });
-$_M(c$, "setYScale", 
+Clazz.defineMethod (c$, "setYScale", 
 function (minY, maxY, setScaleMinMax, isInverted) {
 if (minY == 0 && maxY == 0) maxY = 1;
 if (this.isShiftZoomedY) {
@@ -100,7 +100,7 @@ this.initMaxYOnScale = this.maxYOnScale;
 this.initMinY = minY;
 this.initMaxY = maxY;
 }}, "~N,~N,~B,~B");
-$_M(c$, "scale2D", 
+Clazz.defineMethod (c$, "scale2D", 
 function (f) {
 var dy = this.maxY - this.minY;
 if (f == 1) {
@@ -109,14 +109,14 @@ this.minY = this.initMinY;
 return;
 }this.maxY = this.minY + dy / f;
 }, "~N");
-$_M(c$, "setXRange", 
+Clazz.defineMethod (c$, "setXRange", 
 function (x1, x2) {
 this.minX = x1;
 this.maxX = x2;
 this.setXScale ();
 }, "~N,~N");
-c$.getXRange = $_M(c$, "getXRange", 
-($fz = function (i, xyCoords, initX, finalX, iStart, iEnd, startIndices, endIndices) {
+c$.getXRange = Clazz.defineMethod (c$, "getXRange", 
+ function (i, xyCoords, initX, finalX, iStart, iEnd, startIndices, endIndices) {
 var index = 0;
 var ptCount = 0;
 for (index = iStart; index <= iEnd; index++) {
@@ -133,9 +133,9 @@ break;
 }}
 endIndices[i] = index - 1;
 return ptCount;
-}, $fz.isPrivate = true, $fz), "~N,~A,~N,~N,~N,~N,~A,~A");
-$_M(c$, "setScaleParams", 
-($fz = function (min, max, i) {
+}, "~N,~A,~N,~N,~N,~N,~A,~A");
+Clazz.defineMethod (c$, "setScaleParams", 
+ function (min, max, i) {
 var dx = (max == min ? 1 : Math.abs (max - min) / 14);
 var log = Math.log10 (Math.abs (dx));
 var exp = Clazz.doubleToInt (Math.floor (log));
@@ -156,12 +156,12 @@ break;
 }
 this.minorTickCounts[i] = n;
 return this.steps[i];
-}, $fz.isPrivate = true, $fz), "~N,~N,~N");
-$_M(c$, "isInRangeX", 
+}, "~N,~N,~N");
+Clazz.defineMethod (c$, "isInRangeX", 
 function (x) {
 return (x >= this.minX && x <= this.maxX);
 }, "~N");
-$_M(c$, "addSpecShift", 
+Clazz.defineMethod (c$, "addSpecShift", 
 function (dx) {
 this.specShift += dx;
 this.minX += dx;
@@ -170,7 +170,7 @@ this.minXOnScale += dx;
 this.maxXOnScale += dx;
 this.firstX += dx;
 }, "~N");
-$_M(c$, "getInfo", 
+Clazz.defineMethod (c$, "getInfo", 
 function (info) {
 info.put ("specShift", Double.$valueOf (this.specShift));
 info.put ("minX", Double.$valueOf (this.minX));
@@ -185,58 +185,58 @@ info.put ("minorTickCountX", Integer.$valueOf (this.minorTickCounts[0]));
 info.put ("xStep", Double.$valueOf (this.steps[0]));
 return info;
 }, "java.util.Map");
-$_M(c$, "setMinMax", 
+Clazz.defineMethod (c$, "setMinMax", 
 function (minX, maxX, minY, maxY) {
 this.minX = minX;
 this.maxX = maxX;
 this.minY = minY;
 this.maxY = maxY;
 }, "~N,~N,~N,~N");
-$_M(c$, "toX", 
+Clazz.defineMethod (c$, "toX", 
 function (xPixel, xPixel1, drawXAxisLeftToRight) {
 return this.toXScaled (xPixel, xPixel1, drawXAxisLeftToRight, this.xFactorForScale);
 }, "~N,~N,~B");
-$_M(c$, "toX0", 
+Clazz.defineMethod (c$, "toX0", 
 function (xPixel, xPixel0, xPixel1, drawXAxisLeftToRight) {
 return this.toXScaled (xPixel, xPixel1, drawXAxisLeftToRight, (this.maxXOnScale - this.minXOnScale) / (xPixel1 - xPixel0));
 }, "~N,~N,~N,~B");
-$_M(c$, "toXScaled", 
-($fz = function (xPixel, xPixel1, drawXAxisLeftToRight, factor) {
+Clazz.defineMethod (c$, "toXScaled", 
+ function (xPixel, xPixel1, drawXAxisLeftToRight, factor) {
 return (drawXAxisLeftToRight ? this.maxXOnScale - (xPixel1 - xPixel) * factor : this.minXOnScale + (xPixel1 - xPixel) * factor);
-}, $fz.isPrivate = true, $fz), "~N,~N,~B,~N");
-$_M(c$, "toPixelX", 
+}, "~N,~N,~B,~N");
+Clazz.defineMethod (c$, "toPixelX", 
 function (dx, xPixel0, xPixel1, drawXAxisLeftToRight) {
 return this.toPixelXScaled (dx, xPixel0, xPixel1, drawXAxisLeftToRight, this.xFactorForScale);
 }, "~N,~N,~N,~B");
-$_M(c$, "toPixelX0", 
+Clazz.defineMethod (c$, "toPixelX0", 
 function (dx, xPixel0, xPixel1, drawXAxisLeftToRight) {
 return this.toPixelXScaled (dx, xPixel0, xPixel1, drawXAxisLeftToRight, (this.maxXOnScale - this.minXOnScale) / (xPixel1 - xPixel0));
 }, "~N,~N,~N,~B");
-$_M(c$, "toPixelXScaled", 
-($fz = function (dx, xPixel0, xPixel1, drawXAxisLeftToRight, factor) {
+Clazz.defineMethod (c$, "toPixelXScaled", 
+ function (dx, xPixel0, xPixel1, drawXAxisLeftToRight, factor) {
 var x = Clazz.doubleToInt ((dx - this.minXOnScale) / factor);
 return (drawXAxisLeftToRight ? xPixel0 + x : xPixel1 - x);
-}, $fz.isPrivate = true, $fz), "~N,~N,~N,~B,~N");
-$_M(c$, "toY", 
+}, "~N,~N,~N,~B,~N");
+Clazz.defineMethod (c$, "toY", 
 function (yPixel, yPixel0) {
 return this.maxYOnScale + (yPixel0 - yPixel) * this.yFactorForScale;
 }, "~N,~N");
-$_M(c$, "toY0", 
+Clazz.defineMethod (c$, "toY0", 
 function (yPixel, yPixel0, yPixel1) {
 var factor = (this.maxYOnScale - this.minYOnScale) / (yPixel1 - yPixel0);
 var y = this.maxYOnScale + (yPixel0 - yPixel) * factor;
 return Math.max (this.minYOnScale, Math.min (y, this.maxYOnScale));
 }, "~N,~N,~N");
-$_M(c$, "toPixelY", 
+Clazz.defineMethod (c$, "toPixelY", 
 function (yVal, yPixel1) {
 return (Double.isNaN (yVal) ? -2147483648 : yPixel1 - Clazz.doubleToInt (((yVal - this.spectrumYRef) * this.userYFactor + this.spectrumYRef - this.minYOnScale) / this.yFactorForScale));
 }, "~N,~N");
-$_M(c$, "toPixelY0", 
+Clazz.defineMethod (c$, "toPixelY0", 
 function (y, yPixel0, yPixel1) {
 var factor = (this.maxYOnScale - this.minYOnScale) / (yPixel1 - yPixel0);
 return Clazz.doubleToInt (yPixel0 + (this.maxYOnScale - y) / factor);
 }, "~N,~N,~N");
-$_M(c$, "setXYScale", 
+Clazz.defineMethod (c$, "setXYScale", 
 function (xPixels, yPixels, isInverted) {
 var yRef = this.spectrumYRef;
 var f = this.spectrumScaleFactor;
@@ -249,7 +249,7 @@ this.setYScale ((minY - yRef) / f + yRef, (maxY - yRef) / f + yRef, f == 1, isIn
 this.xFactorForScale = (this.maxXOnScale - this.minXOnScale) / (xPixels - 1);
 this.yFactorForScale = (this.maxYOnScale - this.minYOnScale) / (yPixels - 1);
 }, "~N,~N,~B");
-c$.copyScaleFactors = $_M(c$, "copyScaleFactors", 
+c$.copyScaleFactors = Clazz.defineMethod (c$, "copyScaleFactors", 
 function (sdFrom, sdTo) {
 for (var i = 0; i < sdFrom.length; i++) {
 sdTo[i].spectrumScaleFactor = sdFrom[i].spectrumScaleFactor;
@@ -259,7 +259,7 @@ sdTo[i].specShift = sdFrom[i].specShift;
 sdTo[i].isShiftZoomedY = sdFrom[i].isShiftZoomedY;
 }
 }, "~A,~A");
-c$.copyYScales = $_M(c$, "copyYScales", 
+c$.copyYScales = Clazz.defineMethod (c$, "copyYScales", 
 function (sdFrom, sdTo) {
 for (var i = 0; i < sdFrom.length; i++) {
 sdTo[i].initMinYOnScale = sdFrom[i].initMinYOnScale;
@@ -272,7 +272,7 @@ sdTo[i].minYOnScale = sdFrom[i].minYOnScale;
 sdTo[i].maxYOnScale = sdFrom[i].maxYOnScale;
 }}
 }, "~A,~A");
-c$.setDataPointIndices = $_M(c$, "setDataPointIndices", 
+c$.setDataPointIndices = Clazz.defineMethod (c$, "setDataPointIndices", 
 function (graphsTemp, initX, finalX, minPoints, startIndices, endIndices) {
 var nSpectraOK = 0;
 var nSpectra = graphsTemp.size ();
@@ -281,8 +281,8 @@ var xyCoords = graphsTemp.get (i).getXYCoords ();
 if (JSV.common.ScaleData.getXRange (i, xyCoords, initX, finalX, 0, xyCoords.length - 1, startIndices, endIndices) >= minPoints) nSpectraOK++;
 }
 return (nSpectraOK == nSpectra);
-}, "JU.List,~N,~N,~N,~A,~A");
-c$.fixScale = $_M(c$, "fixScale", 
+}, "JU.Lst,~N,~N,~N,~A,~A");
+c$.fixScale = Clazz.defineMethod (c$, "fixScale", 
 function (map) {
 if (map.isEmpty ()) return;
 while (true) {
@@ -301,7 +301,7 @@ if (pt >= 0) entry.setValue (s.substring (0, pt - 1) + s.substring (pt));
 }
 }
 }, "java.util.Map");
-$_M(c$, "scaleBy", 
+Clazz.defineMethod (c$, "scaleBy", 
 function (f) {
 if (this.isShiftZoomedY) {
 var center = (this.isYZeroOnScale () ? this.spectrumYRef : (this.minYOnScale + this.maxYOnScale) / 2);

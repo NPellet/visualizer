@@ -9,37 +9,37 @@ this.bondCount = 0;
 Clazz.instantialize (this, arguments);
 }, J.adapter.smarter, "BondIterator", J.api.JmolAdapterBondIterator);
 Clazz.makeConstructor (c$, 
-function (atomSetCollection) {
+function (asc) {
 Clazz.superConstructor (this, J.adapter.smarter.BondIterator, []);
-this.bsAtoms = atomSetCollection.bsAtoms;
-this.bonds = atomSetCollection.getBonds ();
-this.bondCount = atomSetCollection.getBondCount ();
+this.bsAtoms = asc.bsAtoms;
+this.bonds = asc.bonds;
+this.bondCount = asc.bondCount;
 this.ibond = 0;
 }, "J.adapter.smarter.AtomSetCollection");
-$_V(c$, "hasNext", 
+Clazz.overrideMethod (c$, "hasNext", 
 function () {
 if (this.ibond == this.bondCount) return false;
 while ((this.bond = this.bonds[this.ibond++]) == null || (this.bsAtoms != null && (!this.bsAtoms.get (this.bond.atomIndex1) || !this.bsAtoms.get (this.bond.atomIndex2)))) if (this.ibond == this.bondCount) return false;
 
 return true;
 });
-$_V(c$, "getAtomUniqueID1", 
+Clazz.overrideMethod (c$, "getAtomUniqueID1", 
 function () {
 return Integer.$valueOf (this.bond.atomIndex1);
 });
-$_V(c$, "getAtomUniqueID2", 
+Clazz.overrideMethod (c$, "getAtomUniqueID2", 
 function () {
 return Integer.$valueOf (this.bond.atomIndex2);
 });
-$_V(c$, "getEncodedOrder", 
+Clazz.overrideMethod (c$, "getEncodedOrder", 
 function () {
 return this.bond.order;
 });
-$_V(c$, "getRadius", 
+Clazz.overrideMethod (c$, "getRadius", 
 function () {
 return this.bond.radius;
 });
-$_V(c$, "getColix", 
+Clazz.overrideMethod (c$, "getColix", 
 function () {
 return this.bond.colix;
 });

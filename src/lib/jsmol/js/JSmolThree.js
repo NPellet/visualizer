@@ -1581,8 +1581,8 @@ THREE.Matrix3.prototype = {
 		// input: THREE.Matrix4
 		// ( based on http://code.google.com/p/webgl-mjs/ )
 
-        var me = matrix.elements;
-        
+				var me = matrix.elements;
+				
 		var a11 =   me[10] * me[5] - me[6] * me[9];
 		var a21 = - me[10] * me[1] + me[2] * me[9];
 		var a31 =   me[6] * me[1] - me[2] * me[5];
@@ -3077,7 +3077,7 @@ THREE.Projector = function() {
 
 				_renderData.sprites.push( _object );
 
-                                }*/ else if ( object instanceof THREE.Light ) {
+											          }*/ else if ( object instanceof THREE.Light ) {
 
 				_renderData.lights.push( object );
 
@@ -3572,7 +3572,7 @@ THREE.Quaternion.prototype = {
 		s1s2 = s1 * s2;
 
 		this.w = c1c2 * c3  - s1s2 * s3;
-	  	this.x = c1c2 * s3  + s1s2 * c3;
+			this.x = c1c2 * s3  + s1s2 * c3;
 		this.y = s1 * c2 * c3 + c1 * s2 * s3;
 		this.z = c1 * s2 * c3 - s1 * c2 * s3;
 
@@ -4344,11 +4344,11 @@ THREE.Geometry.prototype = {
 
 			r = 1.0 / ( s1 * t2 - s2 * t1 );
 			sdir.set( ( t2 * x1 - t1 * x2 ) * r,
-					  ( t2 * y1 - t1 * y2 ) * r,
-					  ( t2 * z1 - t1 * z2 ) * r );
+						( t2 * y1 - t1 * y2 ) * r,
+						( t2 * z1 - t1 * z2 ) * r );
 			tdir.set( ( s1 * x2 - s2 * x1 ) * r,
-					  ( s1 * y2 - s2 * y1 ) * r,
-					  ( s1 * z2 - s2 * z1 ) * r );
+						( s1 * y2 - s2 * y1 ) * r,
+						( s1 * z2 - s2 * z1 ) * r );
 
 			tan1[ a ].addSelf( sdir );
 			tan1[ b ].addSelf( sdir );
@@ -8463,7 +8463,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			deleteRibbonBuffers( object.geometry );
 
-                        } */else if ( object instanceof THREE.Line ) {
+											  } */else if ( object instanceof THREE.Line ) {
 
 			deleteLineBuffers( object.geometry );
 
@@ -8471,7 +8471,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			deleteParticleBuffers( object.geometry );
 
-                        }*/
+											  }*/
 
 	};
 
@@ -9206,7 +9206,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 					if ( customAttribute.needsUpdate &&
 						 ( customAttribute.boundTo === undefined ||
-						   customAttribute.boundTo === "vertices") ) {
+							 customAttribute.boundTo === "vertices") ) {
 
 						cal = customAttribute.value.length;
 
@@ -9391,7 +9391,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 				if ( customAttribute.needsUpdate &&
 					 ( customAttribute.boundTo === undefined ||
-					   customAttribute.boundTo === "vertices" ) ) {
+						 customAttribute.boundTo === "vertices" ) ) {
 
 					offset = 0;
 
@@ -11327,7 +11327,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			_this.info.render.calls ++;
 
-                        }*/
+											  }*/
 
 	};
 
@@ -12052,7 +12052,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 				}
 
-                                } */else if ( object instanceof THREE.Line ) {
+											          } */else if ( object instanceof THREE.Line ) {
 
 				geometry = object.geometry;
 
@@ -12108,7 +12108,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			} else if ( //object instanceof THREE.Ribbon ||
 						object instanceof THREE.Line /*||
-                                                                               object instanceof THREE.ParticleSystem*/ ) {
+											                                                         object instanceof THREE.ParticleSystem*/ ) {
 
 				geometry = object.geometry;
 				addBuffer( scene.__webglObjects, geometry, object );
@@ -12125,7 +12125,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 				scene.__webglFlares.push( object );
 
-                                }*/
+											          }*/
 
 			object.__webglActive = true;
 
@@ -12231,7 +12231,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 			geometry.verticesNeedUpdate = false;
 			geometry.colorsNeedUpdate = false;
 
-                        } */else if ( object instanceof THREE.Line ) {
+											  } */else if ( object instanceof THREE.Line ) {
 
 			material = getBufferMaterial( object, geometryGroup );
 
@@ -12298,8 +12298,8 @@ THREE.WebGLRenderer = function ( parameters ) {
 	function removeObject ( object, scene ) {
 
 		if ( object instanceof THREE.Mesh  ||
-                     //	 object instanceof THREE.ParticleSystem ||
-                     // object instanceof THREE.Ribbon ||
+										 //	 object instanceof THREE.ParticleSystem ||
+										 // object instanceof THREE.Ribbon ||
 			 object instanceof THREE.Line ) {
 
 			removeInstances( scene.__webglObjects, object );
@@ -12316,7 +12316,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			removeInstances( scene.__webglObjectsImmediate, object );
 
-                        }*/
+											  }*/
 
 		object.__webglActive = false;
 
@@ -15923,8 +15923,8 @@ THREE.SceneUtils = {
 
 			object = new THREE.SkinnedMesh( source.geometry, source.material );
 
-                        }else*/ 
-                if ( source instanceof THREE.Mesh ) {
+											  }else*/ 
+								if ( source instanceof THREE.Mesh ) {
 
 			object = new THREE.Mesh( source.geometry, source.material );
 
@@ -15976,7 +15976,7 @@ THREE.SceneUtils = {
 			object.field.set( source.field );
 			object.isolation = source.isolation;
 
-                        }*/ else if ( source instanceof THREE.Object3D ) {
+											  }*/ else if ( source instanceof THREE.Object3D ) {
 
 			object = new THREE.Object3D();
 

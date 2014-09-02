@@ -14,12 +14,12 @@ this.str = str;
 this.len = str.length;
 this.isCmd = isCmd;
 }, "~S,~B");
-c$.nextStringToken = $_M(c$, "nextStringToken", 
+c$.nextStringToken = Clazz.defineMethod (c$, "nextStringToken", 
 function (eachParam, removeQuotes) {
 var s = eachParam.nextToken ();
 return (removeQuotes && s.charAt (0) == '"' && s.endsWith ("\"") && s.length > 1 ? JU.PT.trimQuotes (s) : s);
 }, "JSV.common.ScriptTokenizer,~B");
-$_M(c$, "nextToken", 
+Clazz.defineMethod (c$, "nextToken", 
 function () {
 if (this.doCheck) this.hasMoreTokens ();
 var pt0 = this.pt;
@@ -50,7 +50,7 @@ break;
 this.doCheck = true;
 return this.str.substring (pt0, this.pt);
 });
-$_M(c$, "hasMoreTokens", 
+Clazz.defineMethod (c$, "hasMoreTokens", 
 function () {
 while (++this.pt < this.len) {
 switch (this.str.charAt (this.pt)) {
@@ -63,5 +63,9 @@ break;
 }
 this.doCheck = false;
 return (this.pt < this.len);
+});
+Clazz.defineMethod (c$, "getRemainingScript", 
+function () {
+return this.str.substring (this.pt);
 });
 });

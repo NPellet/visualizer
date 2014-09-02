@@ -11,7 +11,7 @@ Clazz.makeConstructor (c$,
 function (rows, cols) {
 this.grid =  Clazz.newArray (0, 0, null);
 }, "~N,~N");
-$_M(c$, "add", 
+Clazz.defineMethod (c$, "add", 
 function (btn, c) {
 if (c.gridx >= this.ncols) {
 this.ncols = c.gridx + 1;
@@ -28,7 +28,7 @@ this.grid = g;
 this.nrows = c.gridy + 1;
 }this.grid[c.gridy][c.gridx] =  new javajs.swing.Cell (btn, c);
 }, "javajs.swing.JComponent,javajs.swing.GridBagConstraints");
-$_M(c$, "toHTML", 
+Clazz.defineMethod (c$, "toHTML", 
 function (id) {
 var sb =  new JU.SB ();
 id += "_grid";

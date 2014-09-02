@@ -5,19 +5,19 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, JSV.js2d.JsParameters, []);
 });
-$_V(c$, "isValidFontName", 
+Clazz.overrideMethod (c$, "isValidFontName", 
 function (name) {
 return true;
 }, "~S");
-$_V(c$, "getColor1", 
+Clazz.overrideMethod (c$, "getColor1", 
 function (rgb) {
 return javajs.awt.Color.get1 (rgb);
 }, "~N");
-$_V(c$, "getColor3", 
+Clazz.overrideMethod (c$, "getColor3", 
 function (r, g, b) {
 return javajs.awt.Color.get3 (r, g, b);
 }, "~N,~N,~N");
-$_M(c$, "copy", 
+Clazz.defineMethod (c$, "copy", 
 function (newName) {
 return ( new JSV.js2d.JsParameters ().setName (newName)).setElementColors (this);
 }, "~S");

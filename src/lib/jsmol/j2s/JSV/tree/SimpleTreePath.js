@@ -8,7 +8,7 @@ Clazz.makeConstructor (c$,
 function (path) {
 this.path = path;
 }, "~A");
-$_V(c$, "getLastPathComponent", 
+Clazz.overrideMethod (c$, "getLastPathComponent", 
 function () {
 return (this.path == null || this.path.length == 0 ? null : this.path[this.path.length - 1]);
 });

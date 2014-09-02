@@ -1,28 +1,37 @@
 Clazz.declarePackage ("J.shape");
-Clazz.load (["J.shape.AtomShape"], "J.shape.Balls", ["JU.BS", "J.constant.EnumPalette", "J.util.C"], function () {
+Clazz.load (["J.shape.AtomShape"], "J.shape.Balls", ["JU.BS", "J.c.PAL", "JU.C"], function () {
 c$ = Clazz.declareType (J.shape, "Balls", J.shape.AtomShape);
-$_V(c$, "setSizeRD", 
+Clazz.overrideMethod (c$, "setSize", 
+function (size, bsSelected) {
+if (size == 2147483647) {
+this.isActive = true;
+if (this.bsSizeSet == null) this.bsSizeSet =  new JU.BS ();
+this.bsSizeSet.or (bsSelected);
+return;
+}this.setSize2 (size, bsSelected);
+}, "~N,JU.BS");
+Clazz.overrideMethod (c$, "setSizeRD", 
 function (rd, bsSelected) {
 this.isActive = true;
 if (this.bsSizeSet == null) this.bsSizeSet =  new JU.BS ();
 var bsLength = Math.min (this.atoms.length, bsSelected.length ());
 for (var i = bsSelected.nextSetBit (0); i >= 0 && i < bsLength; i = bsSelected.nextSetBit (i + 1)) {
 var atom = this.atoms[i];
-atom.setMadAtom (this.viewer, rd);
+atom.setMadAtom (this.vwr, rd);
 this.bsSizeSet.set (i);
 }
 }, "J.atomdata.RadiusData,JU.BS");
-$_V(c$, "setProperty", 
+Clazz.overrideMethod (c$, "setProperty", 
 function (propertyName, value, bs) {
 if ("color" === propertyName) {
-var colix = J.util.C.getColixO (value);
+var colix = JU.C.getColixO (value);
 if (colix == 0) colix = 2;
 if (this.bsColixSet == null) this.bsColixSet =  new JU.BS ();
-var pid = J.constant.EnumPalette.pidOf (value);
+var pid = J.c.PAL.pidOf (value);
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
 var atom = this.atoms[i];
 atom.setColixAtom (this.getColixA (colix, pid, atom));
-this.bsColixSet.setBitTo (i, colix != 2 || pid != J.constant.EnumPalette.NONE.id);
+this.bsColixSet.setBitTo (i, colix != 2 || pid != J.c.PAL.NONE.id);
 atom.setPaletteID (pid);
 }
 return;
@@ -35,12 +44,12 @@ var color = null;
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
 if (n >= values.length) return;
 color = Integer.$valueOf (values[n++]);
-var colix = J.util.C.getColixO (color);
+var colix = JU.C.getColixO (color);
 if (colix == 0) colix = 2;
-var pid = J.constant.EnumPalette.pidOf (color);
+var pid = J.c.PAL.pidOf (color);
 var atom = this.atoms[i];
 atom.setColixAtom (this.getColixA (colix, pid, atom));
-this.bsColixSet.setBitTo (i, colix != 2 || pid != J.constant.EnumPalette.NONE.id);
+this.bsColixSet.setBitTo (i, colix != 2 || pid != J.c.PAL.NONE.id);
 atom.setPaletteID (pid);
 }
 return;
@@ -51,7 +60,7 @@ if (this.bsColixSet == null) this.bsColixSet =  new JU.BS ();
 for (var i = bs.nextSetBit (0); i >= 0; i = bs.nextSetBit (i + 1)) {
 if (i >= colixes.length) continue;
 this.atoms[i].setColixAtom (colixes[i]);
-this.atoms[i].setPaletteID (J.constant.EnumPalette.UNKNOWN.id);
+this.atoms[i].setPaletteID (J.c.PAL.UNKNOWN.id);
 this.bsColixSet.set (i);
 }
 return;
@@ -67,34 +76,18 @@ return;
 propertyName = propertyName.substring (4).intern ();
 }this.setPropAS (propertyName, value, bs);
 }, "~S,~O,JU.BS");
-$_V(c$, "setModelClickability", 
+Clazz.overrideMethod (c$, "setModelClickability", 
 function () {
-var bsDeleted = this.viewer.getDeletedAtoms ();
-for (var i = this.atomCount; --i >= 0; ) {
+var bsDeleted = this.vwr.getDeletedAtoms ();
+for (var i = this.ac; --i >= 0; ) {
 var atom = this.atoms[i];
 atom.setClickable (0);
-if (bsDeleted != null && bsDeleted.get (i) || (atom.getShapeVisibilityFlags () & this.myVisibilityFlag) == 0 || this.modelSet.isAtomHidden (i)) continue;
-atom.setClickable (this.myVisibilityFlag);
+if (bsDeleted != null && bsDeleted.get (i) || (atom.shapeVisibilityFlags & this.vf) == 0 || this.ms.isAtomHidden (i)) continue;
+atom.setClickable (this.vf);
 }
 });
-$_V(c$, "setVisibilityFlags", 
-function (bs) {
-var showHydrogens = this.viewer.getBoolean (603979922);
-var bsDeleted = this.viewer.getDeletedAtoms ();
-for (var i = this.atomCount; --i >= 0; ) {
-var atom = this.atoms[i];
-var flag = atom.getShapeVisibilityFlags ();
-flag &= (-2 & ~this.myVisibilityFlag);
-atom.setShapeVisibilityFlags (flag);
-if (bsDeleted != null && bsDeleted.get (i) || !showHydrogens && atom.getElementNumber () == 1) continue;
-var modelIndex = atom.getModelIndex ();
-if (bs.get (modelIndex)) {
-atom.setShapeVisibility (1, true);
-if (atom.madAtom != 0 && !this.modelSet.isAtomHidden (i)) atom.setShapeVisibility (this.myVisibilityFlag, true);
-}}
-}, "JU.BS");
-$_V(c$, "getShapeState", 
+Clazz.overrideMethod (c$, "getShapeState", 
 function () {
-return this.viewer.getShapeState (this);
+return this.vwr.getShapeState (this);
 });
 });

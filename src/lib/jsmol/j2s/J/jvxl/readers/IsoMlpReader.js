@@ -5,7 +5,7 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoMlpReader, []);
 });
-$_V(c$, "init", 
+Clazz.overrideMethod (c$, "init", 
 function (sg) {
 this.initIMR (sg);
 this.type = "Mlp";

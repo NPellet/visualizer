@@ -7,7 +7,7 @@ this.argb = 0;
 this.bgargb = 0;
 Clazz.instantialize (this, arguments);
 }, J.g3d, "TextString", JU.P3i);
-$_M(c$, "setText", 
+Clazz.defineMethod (c$, "setText", 
 function (text, font, argb, bgargb, x, y, z) {
 this.text = text;
 this.font = font;
@@ -17,7 +17,7 @@ this.x = x;
 this.y = y;
 this.z = z;
 }, "~S,javajs.awt.Font,~N,~N,~N,~N,~N");
-$_M(c$, "toString", 
+Clazz.defineMethod (c$, "toString", 
 function () {
 return Clazz.superCall (this, J.g3d.TextString, "toString", []) + " " + this.text;
 });

@@ -10,14 +10,14 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.UhbdReader, []);
 });
-$_V(c$, "init2", 
+Clazz.overrideMethod (c$, "init2", 
 function (sg, br) {
 this.init2VFR (sg, br);
 if (this.params.thePlane == null) this.params.insideOut = !this.params.insideOut;
 this.isAngstroms = true;
 this.nSurfaces = 1;
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-$_V(c$, "readParameters", 
+Clazz.overrideMethod (c$, "readParameters", 
 function () {
 this.readLine ();
 this.jvxlFileHeaderBuffer = JU.SB.newS (this.line);
@@ -37,7 +37,7 @@ this.planeCount = this.voxelCounts[0] * this.voxelCounts[1];
 this.readLine ();
 this.readLine ();
 });
-$_V(c$, "nextVoxel", 
+Clazz.overrideMethod (c$, "nextVoxel", 
 function () {
 if (this.voxelCount % this.planeCount == 0) {
 this.readLine ();

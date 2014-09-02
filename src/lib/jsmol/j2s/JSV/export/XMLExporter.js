@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JSV.export");
-Clazz.load (["JSV.export.FormExporter", "JU.List"], "JSV.export.XMLExporter", ["java.lang.Boolean", "$.Double"], function () {
+Clazz.load (["JSV.export.FormExporter", "JU.Lst"], "JSV.export.XMLExporter", ["java.lang.Boolean", "$.Double"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.continuous = false;
 this.title = null;
@@ -42,16 +42,16 @@ this.newXYCoords = null;
 Clazz.instantialize (this, arguments);
 }, JSV["export"], "XMLExporter", JSV["export"].FormExporter);
 Clazz.prepareFields (c$, function () {
-this.newXYCoords =  new JU.List ();
+this.newXYCoords =  new JU.Lst ();
 });
-$_M(c$, "setup", 
+Clazz.defineMethod (c$, "setup", 
 function (viewer, spec, out, startIndex, endIndex) {
 this.startIndex = startIndex;
 this.endIndex = endIndex;
 this.initForm (viewer, out);
 return this.setParameters (spec);
-}, "JSV.common.JSViewer,JSV.common.JDXSpectrum,JU.OC,~N,~N");
-$_M(c$, "setParameters", 
+}, "JSV.common.JSViewer,JSV.common.Spectrum,JU.OC,~N,~N");
+Clazz.defineMethod (c$, "setParameters", 
 function (spec) {
 this.continuous = spec.isContinuous ();
 if (!this.continuous) return false;
@@ -98,15 +98,15 @@ this.lastX *= this.obFreq;
 this.deltaX *= this.obFreq;
 }this.setParams (spec.getHeaderTable ());
 return true;
-}, "JSV.common.JDXSpectrum");
-c$.getParamIndex = $_M(c$, "getParamIndex", 
-($fz = function (label) {
+}, "JSV.common.Spectrum");
+c$.getParamIndex = Clazz.defineMethod (c$, "getParamIndex", 
+ function (label) {
 for (var i = 0; i < JSV["export"].XMLExporter.params.length; i++) if (JSV["export"].XMLExporter.params[i].equalsIgnoreCase (label)) return i;
 
 return -1;
-}, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "setParams", 
-($fz = function (table) {
+}, "~S");
+Clazz.defineMethod (c$, "setParams", 
+ function (table) {
 for (var i = 0; i < table.size (); i++) {
 var entry = table.get (i);
 var val = entry[1];
@@ -149,8 +149,8 @@ this.solvRef = val;
 break;
 }
 }
-}, $fz.isPrivate = true, $fz), "JU.List");
-$_M(c$, "setContext", 
+}, "JU.Lst");
+Clazz.defineMethod (c$, "setContext", 
 function () {
 this.context.put ("continuous", Boolean.$valueOf (this.continuous));
 this.context.put ("file", this.out.getFileName () + "");
@@ -190,7 +190,7 @@ this.context.put ("SolvRef", this.solvRef);
 this.context.put ("vendor", this.vendor);
 this.context.put ("model", this.model);
 });
-$_M(c$, "writeFormType", 
+Clazz.defineMethod (c$, "writeFormType", 
 function (type) {
 return this.writeForm (type + (this.datatype.contains ("NMR") ? "_nmr" : "_tmp") + ".vm");
 }, "~S");

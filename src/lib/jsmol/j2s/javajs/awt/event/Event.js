@@ -3,7 +3,7 @@ c$ = Clazz.decorateAsClass (function () {
 this.source = null;
 Clazz.instantialize (this, arguments);
 }, javajs.awt.event, "Event");
-$_M(c$, "getSource", 
+Clazz.defineMethod (c$, "getSource", 
 function () {
 return this.source;
 });

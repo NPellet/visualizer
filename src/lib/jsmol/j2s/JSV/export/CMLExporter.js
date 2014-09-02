@@ -1,8 +1,8 @@
 Clazz.declarePackage ("JSV.export");
 Clazz.load (["JSV.export.XMLExporter"], "JSV.export.CMLExporter", null, function () {
 c$ = Clazz.declareType (JSV["export"], "CMLExporter", JSV["export"].XMLExporter);
-$_V(c$, "exportTheSpectrum", 
-function (viewer, mode, out, spec, startIndex, endIndex, pd) {
+Clazz.overrideMethod (c$, "exportTheSpectrum", 
+function (viewer, mode, out, spec, startIndex, endIndex, pd, asBase64) {
 if (!this.setup (viewer, spec, out, startIndex, endIndex)) return null;
 if (this.model == null || this.model.equals ("")) this.model = "unknown";
 if (this.datatype.contains ("MASS")) this.spectypeInitials = "massSpectrum";
@@ -18,5 +18,5 @@ if (this.xUnits.toLowerCase ().equals ("m/z")) this.xUnits = "moverz";
  else if (this.xUnits.toLowerCase ().equals ("nanometers")) this.xUnits = "nm";
 this.setContext ();
 return this.writeFormType ("cml");
-}, "JSV.common.JSViewer,JSV.common.ExportType,JU.OC,JSV.common.JDXSpectrum,~N,~N,JSV.common.PanelData");
+}, "JSV.common.JSViewer,JSV.common.ExportType,JU.OC,JSV.common.Spectrum,~N,~N,JSV.common.PanelData,~B");
 });

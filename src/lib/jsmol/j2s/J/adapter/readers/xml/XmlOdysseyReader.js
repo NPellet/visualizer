@@ -14,14 +14,14 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.adapter.readers.xml.XmlOdysseyReader, []);
 });
-$_V(c$, "getDOMAttributes", 
+Clazz.overrideMethod (c$, "getDOMAttributes", 
 function () {
 return this.myAttributes;
 });
-$_V(c$, "processStartElement", 
+Clazz.overrideMethod (c$, "processStartElement", 
 function (localName) {
 if ("structure".equals (localName)) {
-this.atomSetCollection.newAtomSet ();
+this.asc.newAtomSet ();
 return;
 }if ("atom".equals (localName)) {
 this.atom =  new J.adapter.smarter.Atom ();
@@ -39,7 +39,7 @@ var atom1 = this.atts.get ("a");
 var atom2 = this.atts.get ("b");
 var order = 1;
 if (this.atts.containsKey ("order")) order = this.parseBondToken (this.atts.get ("order"));
-this.atomSetCollection.addNewBondFromNames (atom1, atom2, order);
+this.asc.addNewBondFromNames (atom1, atom2, order);
 return;
 }if ("boundary".equals (localName)) {
 var boxDim = J.adapter.smarter.AtomSetCollectionReader.getTokensStr (this.atts.get ("box"));
@@ -53,9 +53,9 @@ this.parent.setUnitCellItem (3, 90);
 this.parent.setUnitCellItem (4, 90);
 this.parent.setUnitCellItem (5, 90);
 var pt = JU.P3.new3 (-x / 2, -y / 2, -z / 2);
-this.atomSetCollection.setAtomSetAuxiliaryInfo ("periodicOriginXyz", pt);
-var atoms = this.atomSetCollection.getAtoms ();
-for (var i = this.atomSetCollection.getAtomCount (); --i >= 0; ) {
+this.asc.setAtomSetAuxiliaryInfo ("periodicOriginXyz", pt);
+var atoms = this.asc.atoms;
+for (var i = this.asc.ac; --i >= 0; ) {
 atoms[i].sub (pt);
 this.parent.setAtomCoord (atoms[i]);
 }
@@ -66,12 +66,12 @@ this.parent.applySymmetryAndSetTrajectory ();
 return;
 }if ("odyssey_simulation".equals (localName)) {
 if (this.modelName != null && this.phase != null) this.modelName += " - " + this.phase;
-if (this.modelName != null) this.atomSetCollection.setAtomSetName (this.modelName);
-if (this.formula != null) this.atomSetCollection.setAtomSetAuxiliaryInfo ("formula", this.formula);
+if (this.modelName != null) this.asc.setAtomSetName (this.modelName);
+if (this.formula != null) this.asc.setAtomSetAuxiliaryInfo ("formula", this.formula);
 }if ("title".equals (localName) || "formula".equals (localName) || "phase".equals (localName)) this.keepChars = true;
 }, "~S");
-$_M(c$, "parseBondToken", 
-($fz = function (str) {
+Clazz.defineMethod (c$, "parseBondToken", 
+ function (str) {
 if (str.length >= 1) {
 switch (str.charAt (0)) {
 case 's':
@@ -85,12 +85,12 @@ return 515;
 }
 return this.parseIntStr (str);
 }return 1;
-}, $fz.isPrivate = true, $fz), "~S");
-$_V(c$, "processEndElement", 
+}, "~S");
+Clazz.overrideMethod (c$, "processEndElement", 
 function (localName) {
 if ("atom".equals (localName)) {
 if (this.atom.elementSymbol != null && !Float.isNaN (this.atom.z)) {
-this.atomSetCollection.addAtomWithMappedName (this.atom);
+this.asc.addAtomWithMappedName (this.atom);
 }this.atom = null;
 return;
 }if ("title".equals (localName)) {

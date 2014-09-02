@@ -8,7 +8,7 @@ Clazz.makeConstructor (c$,
 function (w, h) {
 this.set (w, h);
 }, "~N,~N");
-$_M(c$, "set", 
+Clazz.defineMethod (c$, "set", 
 function (w, h) {
 this.width = w;
 this.height = h;

@@ -29,7 +29,7 @@ this.insets = insets;
 this.ipadx = ipadx;
 this.ipady = ipady;
 }, "~N,~N,~N,~N,~N,~N,~N,~N,javajs.swing.Insets,~N,~N");
-$_M(c$, "getStyle", 
+Clazz.defineMethod (c$, "getStyle", 
 function (margins) {
 return "style='" + (margins ? "margin:" + this.insets.top + "px " + (this.ipady + this.insets.right) + "px " + this.insets.bottom + "px " + (this.ipadx + this.insets.left) + "px;" : "text-align:" + (this.anchor == 13 ? "right" : this.anchor == 17 ? "left" : "center")) + "'";
 }, "~B");

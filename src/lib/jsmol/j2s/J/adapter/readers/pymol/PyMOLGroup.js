@@ -20,24 +20,24 @@ Clazz.makeConstructor (c$,
 function (name) {
 this.name = name;
 }, "~S");
-$_M(c$, "addList", 
+Clazz.defineMethod (c$, "addList", 
 function (child) {
 var group = this.list.get (child.name);
 if (group != null) return;
 this.list.put (child.name, child);
 child.parent = this;
 }, "J.adapter.readers.pymol.PyMOLGroup");
-$_M(c$, "set", 
+Clazz.defineMethod (c$, "set", 
 function () {
 if (this.parent != null) return;
 });
-$_M(c$, "addGroupAtoms", 
+Clazz.defineMethod (c$, "addGroupAtoms", 
 function (bs) {
 this.bsAtoms.or (bs);
 if (this.parent != null) this.parent.addGroupAtoms (this.bsAtoms);
 return this.bsAtoms;
 }, "JU.BS");
-$_V(c$, "toString", 
+Clazz.overrideMethod (c$, "toString", 
 function () {
 return this.name;
 });

@@ -8,47 +8,47 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.consolejs.AppletConsole, []);
 });
-$_V(c$, "start", 
-function (viewer) {
-this.setViewer (viewer);
+Clazz.overrideMethod (c$, "start", 
+function (vwr) {
+this.setViewer (vwr);
 this.setLabels ();
 this.displayConsole ();
-}, "J.api.JmolViewer");
-$_V(c$, "layoutWindow", 
+}, "JV.Viewer");
+Clazz.overrideMethod (c$, "layoutWindow", 
 function (enabledButtons) {
 {
 this.jsConsole = new Jmol.Console.JSConsole(this);
 }this.setTitle ();
 }, "~S");
-$_V(c$, "setTitle", 
+Clazz.overrideMethod (c$, "setTitle", 
 function () {
 {
 if (this.jsConsole)
 this.jsConsole.setTitle(this.getLabel("title"));
 }});
-$_V(c$, "setVisible", 
+Clazz.overrideMethod (c$, "setVisible", 
 function (visible) {
 {
 this.jsConsole.setVisible(visible);
 }}, "~B");
-$_V(c$, "setButton", 
+Clazz.overrideMethod (c$, "setButton", 
 function (text) {
 {
 return new Jmol.Console.Button(text);
 }}, "~S");
-$_V(c$, "dispose", 
+Clazz.overrideMethod (c$, "dispose", 
 function () {
 this.setVisible (false);
 });
-$_V(c$, "isMenuItem", 
+Clazz.overrideMethod (c$, "isMenuItem", 
 function (source) {
 return false;
 }, "~O");
-$_V(c$, "getScriptEditor", 
+Clazz.overrideMethod (c$, "getScriptEditor", 
 function () {
 return null;
 });
-$_V(c$, "nextFileName", 
+Clazz.overrideMethod (c$, "nextFileName", 
 function (stub, nTab) {
 return null;
 }, "~S,~N");

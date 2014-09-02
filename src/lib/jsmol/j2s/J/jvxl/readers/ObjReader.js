@@ -5,13 +5,13 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.ObjReader, []);
 });
-$_V(c$, "init2", 
+Clazz.overrideMethod (c$, "init2", 
 function (sg, br) {
 this.init2PR (sg, br);
 this.type = "obj";
 this.setHeader ();
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-$_V(c$, "readVertices", 
+Clazz.overrideMethod (c$, "readVertices", 
 function () {
 this.pmeshError = "pmesh ERROR: invalid vertex/face list";
 var pt =  new JU.P3 ();
@@ -46,7 +46,7 @@ i = ipt.intValue ();
 }var j = i;
 if (i == this.nVertices) {
 if (this.isAnisotropic) this.setVertexAnisotropy (pt);
-j = this.addVertexCopy (pt, 0, this.nVertices++);
+j = this.addVertexCopy (pt, 0, this.nVertices++, true);
 if (j >= 0) bsOK.set (i);
 }pymolMap[nPts % 3] = j;
 if (addHt) htPymol.put (spt, Integer.$valueOf (i));
@@ -88,7 +88,7 @@ break;
 this.pmeshError = null;
 return true;
 });
-$_V(c$, "readPolygons", 
+Clazz.overrideMethod (c$, "readPolygons", 
 function () {
 return true;
 });

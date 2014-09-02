@@ -14,7 +14,7 @@ this.colspan = c.gridwidth;
 this.rowspan = c.gridheight;
 this.c = c;
 }, "javajs.swing.JComponent,javajs.swing.GridBagConstraints");
-$_M(c$, "toHTML", 
+Clazz.defineMethod (c$, "toHTML", 
 function (id) {
 var style = this.c.getStyle (false);
 return "<td id='" + id + "' " + (this.colspan < 2 ? "" : "colspan='" + this.colspan + "' ") + style + "><span " + this.c.getStyle (true) + ">" + this.component.toHTML () + "</span></td>";

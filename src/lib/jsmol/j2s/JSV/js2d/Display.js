@@ -1,43 +1,43 @@
 Clazz.declarePackage ("JSV.js2d");
 c$ = Clazz.declareType (JSV.js2d, "Display");
-c$.getFullScreenDimensions = $_M(c$, "getFullScreenDimensions", 
+c$.getFullScreenDimensions = Clazz.defineMethod (c$, "getFullScreenDimensions", 
 function (canvas, widthHeight) {
 {
 widthHeight[0] = canvas.width;
 widthHeight[1] = canvas.height;
 }}, "~O,~A");
-c$.hasFocus = $_M(c$, "hasFocus", 
+c$.hasFocus = Clazz.defineMethod (c$, "hasFocus", 
 function (canvas) {
 {
 }return true;
 }, "~O");
-c$.requestFocusInWindow = $_M(c$, "requestFocusInWindow", 
+c$.requestFocusInWindow = Clazz.defineMethod (c$, "requestFocusInWindow", 
 function (canvas) {
 {
 }}, "~O");
-c$.repaint = $_M(c$, "repaint", 
+c$.repaint = Clazz.defineMethod (c$, "repaint", 
 function (canvas) {
 }, "~O");
-c$.renderScreenImage = $_M(c$, "renderScreenImage", 
+c$.renderScreenImage = Clazz.defineMethod (c$, "renderScreenImage", 
 function (viewer, g, size) {
 {
 }}, "javajs.api.PlatformViewer,~O,~O");
-c$.setTransparentCursor = $_M(c$, "setTransparentCursor", 
+c$.setTransparentCursor = Clazz.defineMethod (c$, "setTransparentCursor", 
 function (canvas) {
 {
 }}, "~O");
-c$.setCursor = $_M(c$, "setCursor", 
+c$.setCursor = Clazz.defineMethod (c$, "setCursor", 
 function (c, canvas) {
 {
 }}, "~N,~O");
-c$.prompt = $_M(c$, "prompt", 
+c$.prompt = Clazz.defineMethod (c$, "prompt", 
 function (label, data, list, asButtons) {
 {
 var s = prompt(label, data);
 if (s != null)return s;
 }return "null";
 }, "~S,~S,~A,~B");
-c$.convertPointFromScreen = $_M(c$, "convertPointFromScreen", 
+c$.convertPointFromScreen = Clazz.defineMethod (c$, "convertPointFromScreen", 
 function (canvas, ptTemp) {
 {
 }}, "~O,JU.P3");

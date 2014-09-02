@@ -1,5 +1,5 @@
 Clazz.declarePackage ("JSV.tree");
-Clazz.load (["JSV.api.JSVTreeNode"], "JSV.tree.SimpleTreeNode", ["JU.List", "JSV.tree.SimpleTreeEnumeration"], function () {
+Clazz.load (["JSV.api.JSVTreeNode"], "JSV.tree.SimpleTreeNode", ["JU.Lst", "JSV.tree.SimpleTreeEnumeration"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.panelNode = null;
 this.index = 0;
@@ -12,42 +12,42 @@ Clazz.makeConstructor (c$,
 function (text, panelNode) {
 this.text = text;
 this.panelNode = panelNode;
-this.$children =  new JU.List ();
+this.$children =  new JU.Lst ();
 }, "~S,JSV.common.PanelNode");
-$_V(c$, "getPanelNode", 
+Clazz.overrideMethod (c$, "getPanelNode", 
 function () {
 return this.panelNode;
 });
-$_V(c$, "getIndex", 
+Clazz.overrideMethod (c$, "getIndex", 
 function () {
 return this.index;
 });
-$_V(c$, "setIndex", 
+Clazz.overrideMethod (c$, "setIndex", 
 function (index) {
 this.index = index;
 }, "~N");
-$_V(c$, "children", 
+Clazz.overrideMethod (c$, "children", 
 function () {
 return  new JSV.tree.SimpleTreeEnumeration (this);
 });
-$_V(c$, "getChildCount", 
+Clazz.overrideMethod (c$, "getChildCount", 
 function () {
 return this.$children.size ();
 });
-$_V(c$, "getPath", 
+Clazz.overrideMethod (c$, "getPath", 
 function () {
-var o =  new JU.List ();
+var o =  new JU.Lst ();
 var node = this;
 o.addLast (node);
 while ((node = node.prevNode) != null) o.add (0, node);
 
 return o.toArray ();
 });
-$_V(c$, "isLeaf", 
+Clazz.overrideMethod (c$, "isLeaf", 
 function () {
 return (this.prevNode != null && this.prevNode.prevNode != null);
 });
-$_V(c$, "toString", 
+Clazz.overrideMethod (c$, "toString", 
 function () {
 return this.text;
 });

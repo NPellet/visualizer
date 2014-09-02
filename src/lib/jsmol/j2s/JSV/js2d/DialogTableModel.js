@@ -17,37 +17,37 @@ this.asString = asString;
 this.widths = (data.length == 0 ?  Clazz.newIntArray (0, 0) :  Clazz.newIntArray (data[0].length, 0));
 this.tableCellAlignLeft = tableCellAlignLeft;
 }, "~A,~A,~B,~B");
-$_M(c$, "getColumnCount", 
+Clazz.defineMethod (c$, "getColumnCount", 
 function () {
 return this.columnNames.length;
 });
-$_M(c$, "getRowCount", 
+Clazz.defineMethod (c$, "getRowCount", 
 function () {
 return this.data.length;
 });
-$_M(c$, "getColumnName", 
+Clazz.defineMethod (c$, "getColumnName", 
 function (col) {
 return this.columnNames[col];
 }, "~N");
-$_M(c$, "getValueAt", 
+Clazz.defineMethod (c$, "getValueAt", 
 function (row, col) {
 var o = this.data[row][col];
 return (this.asString ? " " + o + " " : o);
 }, "~N,~N");
-$_V(c$, "getColumn", 
+Clazz.overrideMethod (c$, "getColumn", 
 function (i) {
 this.thisCol = i;
 return this;
 }, "~N");
-$_V(c$, "setPreferredWidth", 
+Clazz.overrideMethod (c$, "setPreferredWidth", 
 function (n) {
 this.widths[this.thisCol] = n;
 }, "~N");
-$_V(c$, "toHTML", 
+Clazz.overrideMethod (c$, "toHTML", 
 function (sb, id, selectedRows) {
 if (this.data == null || this.data[0] == null || this.data[0].length == 0) return;
 var nrows = this.data.length;
-var ncols = this.data[0].length;
+var ncols = this.columnNames.length;
 for (var i = -1; i < nrows; i++) {
 var rowid = id + "_" + i;
 sb.append ("\n<tr id='" + rowid + "' class='JTable_" + (i == -1 ? "header" : "row") + "' style='height:25px'>");
@@ -58,13 +58,13 @@ if (i == -1) this.getCellHtml (sb, id + "_h" + j, i, j, this.columnNames[j], fal
 sb.append ("</tr>");
 }
 }, "JU.SB,~S,JU.BS");
-$_M(c$, "getCellHtml", 
-($fz = function (sb, id, iRow, iCol, o, isSelected) {
+Clazz.defineMethod (c$, "getCellHtml", 
+ function (sb, id, iRow, iCol, o, isSelected) {
 var style = this.getCellStyle (id, iRow, iCol, o, isSelected);
 sb.append ("<td id='" + id + "'" + style + " onclick=SwingController.click(this)>" + o + "</td>");
-}, $fz.isPrivate = true, $fz), "JU.SB,~S,~N,~N,~O,~B");
-$_M(c$, "getCellStyle", 
-($fz = function (id, iRow, iCol, o, isSelected) {
+}, "JU.SB,~S,~N,~N,~O,~B");
+Clazz.defineMethod (c$, "getCellStyle", 
+ function (id, iRow, iCol, o, isSelected) {
 var style = "padding:1px 1px 1px 1px";
 if (iRow < 0) {
 style += ";font-weight:bold";
@@ -79,5 +79,5 @@ if (this.tableCellAlignLeft) style += "left";
  else style += "right";
 style += ";border:" + (isSelected ? 3 : 1) + "px solid #000";
 }}return " style='" + style + "'";
-}, $fz.isPrivate = true, $fz), "~S,~N,~N,~O,~B");
+}, "~S,~N,~N,~O,~B");
 });

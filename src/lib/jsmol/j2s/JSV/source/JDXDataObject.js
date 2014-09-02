@@ -1,8 +1,10 @@
 Clazz.declarePackage ("JSV.source");
-Clazz.load (["JSV.source.JDXHeader"], "JSV.source.JDXDataObject", ["java.lang.Character", "$.Double", "JU.DF", "$.PT", "JSV.common.Annotation", "$.Coordinate", "$.Integral", "JSV.exception.JSpecViewException", "J.util.Logger"], function () {
+Clazz.load (["JSV.source.JDXHeader"], "JSV.source.JDXDataObject", ["java.lang.Character", "$.Double", "JU.DF", "$.PT", "JSV.common.Annotation", "$.Coordinate", "$.Integral", "JSV.exception.JSVException", "JU.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.filePath = null;
 this.filePathForwardSlash = null;
+this.isSimulation = false;
+this.sourceID = "";
 this.blockID = 0;
 this.fileFirstX = 1.7976931348623157E308;
 this.fileLastX = 1.7976931348623157E308;
@@ -37,115 +39,115 @@ this.minY = NaN;
 this.maxX = NaN;
 this.maxY = NaN;
 this.deltaX = NaN;
+this.normalizationFactor = 1;
 Clazz.instantialize (this, arguments);
 }, JSV.source, "JDXDataObject", JSV.source.JDXHeader);
-$_M(c$, "setFilePath", 
+Clazz.defineMethod (c$, "setFilePath", 
 function (filePath) {
 if (filePath == null) return;
 this.filePath = filePath.trim ();
 this.filePathForwardSlash = this.filePath.$replace ('\\', '/');
 }, "~S");
-$_M(c$, "getFilePath", 
+Clazz.defineMethod (c$, "getFilePath", 
 function () {
 return this.filePath;
 });
-$_M(c$, "getFilePathForwardSlash", 
+Clazz.defineMethod (c$, "getFilePathForwardSlash", 
 function () {
 return this.filePathForwardSlash;
 });
-$_M(c$, "setBlockID", 
+Clazz.defineMethod (c$, "setBlockID", 
 function (id) {
 this.blockID = id;
 }, "~N");
-$_M(c$, "isImaginary", 
+Clazz.defineMethod (c$, "isImaginary", 
 function () {
 return this.varName.contains ("IMAG");
 });
-$_M(c$, "setXFactor", 
+Clazz.defineMethod (c$, "setXFactor", 
 function (xFactor) {
 this.xFactor = xFactor;
 }, "~N");
-$_M(c$, "getXFactor", 
+Clazz.defineMethod (c$, "getXFactor", 
 function () {
 return this.xFactor;
 });
-$_M(c$, "setYFactor", 
+Clazz.defineMethod (c$, "setYFactor", 
 function (yFactor) {
 this.yFactor = yFactor;
 }, "~N");
-$_M(c$, "getYFactor", 
+Clazz.defineMethod (c$, "getYFactor", 
 function () {
 return this.yFactor;
 });
-$_M(c$, "checkRequiredTokens", 
+Clazz.defineMethod (c$, "checkRequiredTokens", 
 function () {
-if (this.fileFirstX == 1.7976931348623157E308) throw  new JSV.exception.JSpecViewException ("Error Reading Data Set: ##FIRST not found");
-if (this.fileLastX == 1.7976931348623157E308) throw  new JSV.exception.JSpecViewException ("Error Reading Data Set: ##LASTX not found");
-if (this.nPointsFile == -1) throw  new JSV.exception.JSpecViewException ("Error Reading Data Set: ##NPOINTS not found");
-if (this.xFactor == 1.7976931348623157E308) throw  new JSV.exception.JSpecViewException ("Error Reading Data Set: ##XFACTOR not found");
-if (this.yFactor == 1.7976931348623157E308) throw  new JSV.exception.JSpecViewException ("Error Reading Data Set: ##YFACTOR not found");
+var err = (this.fileFirstX == 1.7976931348623157E308 ? "##FIRSTX" : this.fileLastX == 1.7976931348623157E308 ? "##LASTX" : this.nPointsFile == -1 ? "##NPOINTS" : this.xFactor == 1.7976931348623157E308 ? "##XFACTOR" : this.yFactor == 1.7976931348623157E308 ? "##YFACTOR" : null);
+if (err != null) throw  new JSV.exception.JSVException ("Error Reading Data Set: " + err + " not found");
 });
-$_M(c$, "setXUnits", 
+Clazz.defineMethod (c$, "setXUnits", 
 function (xUnits) {
 this.xUnits = xUnits;
 }, "~S");
-$_M(c$, "getXUnits", 
+Clazz.defineMethod (c$, "getXUnits", 
 function () {
 return this.xUnits;
 });
-$_M(c$, "setYUnits", 
+Clazz.defineMethod (c$, "setYUnits", 
 function (yUnits) {
+if (yUnits.equals ("PPM")) yUnits = "ARBITRARY UNITS";
 this.yUnits = yUnits;
 }, "~S");
-$_M(c$, "getYUnits", 
+Clazz.defineMethod (c$, "getYUnits", 
 function () {
 return this.yUnits;
 });
-$_M(c$, "setXLabel", 
+Clazz.defineMethod (c$, "setXLabel", 
 function (value) {
 this.xLabel = value;
 }, "~S");
-$_M(c$, "setYLabel", 
+Clazz.defineMethod (c$, "setYLabel", 
 function (value) {
 this.yLabel = value;
 }, "~S");
-$_M(c$, "setObservedNucleus", 
+Clazz.defineMethod (c$, "setObservedNucleus", 
 function (value) {
 this.observedNucl = value;
-if (this.numDim == 1) this.parent.nucleusX = this.nucleusX = JU.PT.trim (value, "[]^<>");
+if (this.numDim == 1) this.parent.nucleusX = this.nucleusX = this.fixNucleus (value);
 }, "~S");
-$_M(c$, "setObservedFreq", 
+Clazz.defineMethod (c$, "setObservedFreq", 
 function (observedFreq) {
 this.observedFreq = observedFreq;
 }, "~N");
-$_M(c$, "getObservedFreq", 
+Clazz.defineMethod (c$, "getObservedFreq", 
 function () {
 return this.observedFreq;
 });
-$_M(c$, "is1D", 
+Clazz.defineMethod (c$, "is1D", 
 function () {
 return this.numDim == 1;
 });
-$_M(c$, "setY2D", 
+Clazz.defineMethod (c$, "setY2D", 
 function (d) {
 this.y2D = d;
 }, "~N");
-$_M(c$, "getY2D", 
+Clazz.defineMethod (c$, "getY2D", 
 function () {
 return this.y2D;
 });
-$_M(c$, "setY2DUnits", 
+Clazz.defineMethod (c$, "setY2DUnits", 
 function (units) {
 this.y2DUnits = units;
 }, "~S");
-$_M(c$, "getY2DPPM", 
+Clazz.defineMethod (c$, "getY2DPPM", 
 function () {
 var d = this.y2D;
 if (this.y2DUnits.equals ("HZ")) d /= this.freq2dY;
 return d;
 });
-$_M(c$, "setNucleus", 
+Clazz.defineMethod (c$, "setNucleusAndFreq", 
 function (nuc, isX) {
+nuc = this.fixNucleus (nuc);
 if (isX) this.nucleusX = nuc;
  else this.nucleusY = nuc;
 var freq;
@@ -157,10 +159,14 @@ var g2 = JSV.source.JDXDataObject.getGyroMagneticRatio (nuc);
 freq = this.observedFreq * g2 / g1;
 }if (isX) this.freq2dX = freq;
  else this.freq2dY = freq;
-J.util.Logger.info ("Freq for " + nuc + " = " + freq);
+JU.Logger.info ("Freq for " + nuc + " = " + freq);
 }, "~S,~B");
-c$.getGyroMagneticRatio = $_M(c$, "getGyroMagneticRatio", 
-($fz = function (nuc) {
+Clazz.defineMethod (c$, "fixNucleus", 
+ function (nuc) {
+return JU.PT.rep (JU.PT.trim (nuc, "[]^<>"), "NUC_", "");
+}, "~S");
+c$.getGyroMagneticRatio = Clazz.defineMethod (c$, "getGyroMagneticRatio", 
+ function (nuc) {
 var pt = 0;
 while (pt < nuc.length && !Character.isDigit (nuc.charAt (pt))) pt++;
 
@@ -169,78 +175,78 @@ var i = 0;
 for (; i < JSV.source.JDXDataObject.gyroData.length; i += 2) if (JSV.source.JDXDataObject.gyroData[i] >= pt) break;
 
 return (JSV.source.JDXDataObject.gyroData[i] == pt ? JSV.source.JDXDataObject.gyroData[i + 1] : NaN);
-}, $fz.isPrivate = true, $fz), "~S");
-$_M(c$, "isTransmittance", 
+}, "~S");
+Clazz.defineMethod (c$, "isTransmittance", 
 function () {
 var s = this.yUnits.toLowerCase ();
 return (s.equals ("transmittance") || s.contains ("trans") || s.equals ("t"));
 });
-$_M(c$, "isAbsorbance", 
+Clazz.defineMethod (c$, "isAbsorbance", 
 function () {
 var s = this.yUnits.toLowerCase ();
 return (s.equals ("absorbance") || s.contains ("abs") || s.equals ("a"));
 });
-$_M(c$, "canSaveAsJDX", 
+Clazz.defineMethod (c$, "canSaveAsJDX", 
 function () {
 return this.getDataClass ().equals ("XYDATA");
 });
-$_M(c$, "canIntegrate", 
+Clazz.defineMethod (c$, "canIntegrate", 
 function () {
 return (this.continuous && (this.isHNMR () || this.isGC ()) && this.is1D ());
 });
-$_M(c$, "isAutoOverlayFromJmolClick", 
+Clazz.defineMethod (c$, "isAutoOverlayFromJmolClick", 
 function () {
 return (this.isGC ());
 });
-$_M(c$, "isGC", 
-($fz = function () {
-return this.dataType.startsWith ("GC");
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "isMS", 
-($fz = function () {
+Clazz.defineMethod (c$, "isGC", 
+function () {
+return this.dataType.startsWith ("GC") || this.dataType.startsWith ("GAS");
+});
+Clazz.defineMethod (c$, "isMS", 
+function () {
 return this.dataType.startsWith ("MASS") || this.dataType.startsWith ("MS");
-}, $fz.isPrivate = true, $fz));
-$_M(c$, "isStackable", 
+});
+Clazz.defineMethod (c$, "isStackable", 
 function () {
 return !this.isMS ();
 });
-$_M(c$, "isScalable", 
+Clazz.defineMethod (c$, "isScalable", 
 function () {
 return true;
 });
-$_M(c$, "getYRef", 
+Clazz.defineMethod (c$, "getYRef", 
 function () {
 return (!this.isTransmittance () ? 0.0 : JSV.common.Coordinate.getMaxY (this.xyCoords, 0, this.xyCoords.length) < 2 ? 1.0 : 100.0);
 });
-$_M(c$, "isInverted", 
+Clazz.defineMethod (c$, "isInverted", 
 function () {
 return this.isTransmittance ();
 });
-$_M(c$, "canConvertTransAbs", 
+Clazz.defineMethod (c$, "canConvertTransAbs", 
 function () {
 return (this.continuous && (this.yUnits.toLowerCase ().contains ("abs")) || this.yUnits.toLowerCase ().contains ("trans"));
 });
-$_M(c$, "canShowSolutionColor", 
+Clazz.defineMethod (c$, "canShowSolutionColor", 
 function () {
-return (this.canConvertTransAbs () && (this.xUnits.toLowerCase ().contains ("nanometer") || this.xUnits.equalsIgnoreCase ("nm")) && this.getFirstX () < 401 && this.getLastX () > 699);
+return (this.isContinuous () && this.canConvertTransAbs () && (this.xUnits.toLowerCase ().contains ("nanometer") || this.xUnits.equalsIgnoreCase ("nm")) && this.getFirstX () < 401 && this.getLastX () > 699 && this.xyCoords.length >= 30);
 });
-$_M(c$, "isHZtoPPM", 
+Clazz.defineMethod (c$, "isHZtoPPM", 
 function () {
 return this.$isHZtoPPM;
 });
-$_M(c$, "setHZtoPPM", 
+Clazz.defineMethod (c$, "setHZtoPPM", 
 function (val) {
 this.$isHZtoPPM = val;
 }, "~B");
-$_M(c$, "setIncreasing", 
+Clazz.defineMethod (c$, "setIncreasing", 
 function (val) {
 this.xIncreases = val;
 }, "~B");
-$_M(c$, "isXIncreasing", 
+Clazz.defineMethod (c$, "isXIncreasing", 
 function () {
 return this.xIncreases;
 });
-$_M(c$, "shouldDisplayXAxisIncreasing", 
+Clazz.defineMethod (c$, "shouldDisplayXAxisIncreasing", 
 function () {
 var dt = this.dataType.toUpperCase ();
 var xu = this.xUnits.toUpperCase ();
@@ -256,15 +262,15 @@ return false;
 return true;
 }return this.xIncreases;
 });
-$_M(c$, "setContinuous", 
+Clazz.defineMethod (c$, "setContinuous", 
 function (val) {
 this.continuous = val;
 }, "~B");
-$_M(c$, "isContinuous", 
+Clazz.defineMethod (c$, "isContinuous", 
 function () {
 return this.continuous;
 });
-$_M(c$, "getHeaderRowDataAsArray", 
+Clazz.defineMethod (c$, "getHeaderRowDataAsArray", 
 function () {
 var n = 8;
 if (this.observedFreq != 1.7976931348623157E308) n++;
@@ -282,14 +288,14 @@ rowData[i++] = ["##FIRSTY", String.valueOf (this.xIncreases ? this.getFirstY () 
 rowData[i++] = ["##LASTX", String.valueOf (this.isHZtoPPM () ? x * this.observedFreq : x)];
 rowData[i++] = ["##XFACTOR", String.valueOf (this.getXFactor ())];
 rowData[i++] = ["##YFACTOR", String.valueOf (this.getYFactor ())];
-rowData[i++] = ["##NPOINTS", String.valueOf (this.getNumberOfPoints ())];
+rowData[i++] = ["##NPOINTS", String.valueOf (this.xyCoords.length)];
 return rowData;
 });
-$_M(c$, "getDefaultUnitPrecision", 
+Clazz.defineMethod (c$, "getDefaultUnitPrecision", 
 function () {
 return 2;
 });
-$_M(c$, "setMeasurementText", 
+Clazz.defineMethod (c$, "setMeasurementText", 
 function (m) {
 var dx = m.getValue ();
 if (Double.isNaN (dx)) return "";
@@ -309,59 +315,63 @@ precision = 2;
 return "";
 }}return (dx < 0.1 ? "" : JU.DF.formatDecimalDbl (dx, precision) + units);
 }, "JSV.common.Measurement");
-$_M(c$, "isNMR", 
+Clazz.defineMethod (c$, "isNMR", 
 function () {
 return (this.dataType.toUpperCase ().indexOf ("NMR") >= 0);
 });
-$_M(c$, "isHNMR", 
+Clazz.defineMethod (c$, "isHNMR", 
 function () {
 return (this.isNMR () && this.observedNucl.toUpperCase ().indexOf ("H") >= 0);
 });
-$_M(c$, "setXYCoords", 
+Clazz.defineMethod (c$, "setXYCoords", 
 function (coords) {
 this.xyCoords = coords;
 }, "~A");
-$_M(c$, "getFirstX", 
+Clazz.defineMethod (c$, "getFirstX", 
 function () {
 return this.xyCoords[0].getXVal ();
 });
-$_M(c$, "getFirstY", 
+Clazz.defineMethod (c$, "getFirstY", 
 function () {
 return this.xyCoords[0].getYVal ();
 });
-$_M(c$, "getLastX", 
+Clazz.defineMethod (c$, "getLastX", 
 function () {
-return this.xyCoords[this.getNumberOfPoints () - 1].getXVal ();
+return this.xyCoords[this.xyCoords.length - 1].getXVal ();
 });
-$_M(c$, "getLastY", 
+Clazz.defineMethod (c$, "getLastY", 
 function () {
-return this.xyCoords[this.getNumberOfPoints () - 1].getYVal ();
+return this.xyCoords[this.xyCoords.length - 1].getYVal ();
 });
-$_M(c$, "getNumberOfPoints", 
-function () {
-return this.xyCoords.length;
-});
-$_M(c$, "getMinX", 
+Clazz.defineMethod (c$, "getMinX", 
 function () {
 return (Double.isNaN (this.minX) ? (this.minX = JSV.common.Coordinate.getMinX (this.xyCoords, 0, this.xyCoords.length)) : this.minX);
 });
-$_M(c$, "getMinY", 
+Clazz.defineMethod (c$, "getMinY", 
 function () {
 return (Double.isNaN (this.minY) ? (this.minY = JSV.common.Coordinate.getMinY (this.xyCoords, 0, this.xyCoords.length)) : this.minY);
 });
-$_M(c$, "getMaxX", 
+Clazz.defineMethod (c$, "getMaxX", 
 function () {
 return (Double.isNaN (this.maxX) ? (this.maxX = JSV.common.Coordinate.getMaxX (this.xyCoords, 0, this.xyCoords.length)) : this.maxX);
 });
-$_M(c$, "getMaxY", 
+Clazz.defineMethod (c$, "getMaxY", 
 function () {
 return (Double.isNaN (this.maxY) ? (this.maxY = JSV.common.Coordinate.getMaxY (this.xyCoords, 0, this.xyCoords.length)) : this.maxY);
 });
-$_M(c$, "getDeltaX", 
+Clazz.defineMethod (c$, "doNormalize", 
+function (max) {
+if (!this.isNMR () || !this.is1D ()) return;
+this.normalizationFactor = max / this.getMaxY ();
+this.maxY = NaN;
+JSV.common.Coordinate.applyScale (this.xyCoords, 1, this.normalizationFactor);
+JU.Logger.info ("Y values have been scaled by a factor of " + this.normalizationFactor);
+}, "~N");
+Clazz.defineMethod (c$, "getDeltaX", 
 function () {
-return (Double.isNaN (this.deltaX) ? (this.deltaX = JSV.common.Coordinate.deltaX (this.getLastX (), this.getFirstX (), this.getNumberOfPoints ())) : this.deltaX);
+return (Double.isNaN (this.deltaX) ? (this.deltaX = JSV.common.Coordinate.deltaX (this.getLastX (), this.getFirstX (), this.xyCoords.length)) : this.deltaX);
 });
-$_M(c$, "copyTo", 
+Clazz.defineMethod (c$, "copyTo", 
 function (newObj) {
 newObj.setTitle (this.title);
 newObj.setJcampdx (this.jcampdx);
@@ -393,11 +403,11 @@ newObj.freq2dY = this.freq2dY;
 newObj.setFilePath (this.filePath);
 newObj.nH = this.nH;
 }, "JSV.source.JDXDataObject");
-$_M(c$, "getTypeLabel", 
+Clazz.defineMethod (c$, "getTypeLabel", 
 function () {
 return (this.isNMR () ? this.nucleusX + "NMR" : this.dataType);
 });
-$_M(c$, "getDefaultAnnotationInfo", 
+Clazz.defineMethod (c$, "getDefaultAnnotationInfo", 
 function (type) {
 var s1;
 var s2;
@@ -421,10 +431,11 @@ break;
 }
 return null;
 }, "JSV.common.Annotation.AType");
-$_M(c$, "getPeakListArray", 
+Clazz.defineMethod (c$, "getPeakListArray", 
 function (m, last, maxY) {
 var x = m.getXVal ();
-var y = m.getYVal () / maxY;
+var y = m.getYVal ();
+if (this.isNMR ()) y /= maxY;
 var dx = Math.abs (x - last[0]);
 last[0] = x;
 var ddx = dx + last[1];
