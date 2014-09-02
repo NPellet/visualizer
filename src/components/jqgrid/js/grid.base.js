@@ -2,12 +2,12 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /**
- * @license jqGrid  4.5.4 - jQuery Grid
+ * @license jqGrid  4.6.0 - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
- * Date: 2013-10-06
+ * Date: 2014-02-20
  */
 //jsHint options
 /*jshint evil:true, eqeqeq:false, eqnull:true, devel:true */
@@ -17,7 +17,7 @@
 "use strict";
 $.jgrid = $.jgrid || {};
 $.extend($.jgrid,{
-	version : "4.5.4",
+	version : "4.6.0",
 	htmlDecode : function(value){
 		if(value && (value==='&nbsp;' || value==='&#160;' || (value.length===1 && value.charCodeAt(0)===160))) { return "";}
 		return !value ? value : String(value).replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&quot;/g, '"').replace(/&amp;/g, "&");		
@@ -99,7 +99,7 @@ $.extend($.jgrid,{
 		}
 		// old lang files
 		if(opts.parseRe === undefined ) {
-			opts.parseRe = /[Tt\\\/:_;.,\t\s-]/;
+			opts.parseRe = /[#%\\\/:_;.,\t\s-]/;
 		}
 		if( opts.masks.hasOwnProperty(format) ) { format = opts.masks[format]; }
 		if(date && date != null) {
@@ -118,8 +118,13 @@ $.extend($.jgrid,{
 					timestamp.setTime(Number(Number(timestamp) + (offset * 60 * 1000)));
 				}
 			} else {
-				date = String(date).replace(/\\T/g,"T").replace(/\\t/,"t").split(opts.parseRe);
-				format = format.replace(/\\T/g,"T").replace(/\\t/,"t").split(opts.parseRe);
+				var offset = 0;
+				//Support ISO8601Long that have Z at the end to indicate UTC timezone
+				if(opts.srcformat === 'ISO8601Long' && date.charAt(date.length - 1) === 'Z') {
+					offset -= (new Date()).getTimezoneOffset();
+				}
+				date = String(date).replace(/\T/g,"#").replace(/\t/,"%").split(opts.parseRe);
+				format = format.replace(/\T/g,"#").replace(/\t/,"%").split(opts.parseRe);
 				// parsing for month names
 				for(k=0,hl=format.length;k<hl;k++){
 					if(format[k] === 'M') {
@@ -160,6 +165,10 @@ $.extend($.jgrid,{
 				if (ty >= 70 && ty <= 99) {ts.y = 1900+ts.y;}
 				else if (ty >=0 && ty <=69) {ts.y= 2000+ts.y;}
 				timestamp = new Date(ts.y, ts.m, ts.d, ts.h, ts.i, ts.s, ts.u);
+				//Apply offset to show date as local time.
+				if(offset > 0) {
+					timestamp.setTime(Number(Number(timestamp) + (offset * 60 * 1000)));
+				}
 			}
 		} else {
 			timestamp = new Date(ts.y, ts.m, ts.d, ts.h, ts.i, ts.s, ts.u);
@@ -437,9 +446,10 @@ $.extend($.jgrid,{
 			var by=_sorting[q].by,
 			dir=_sorting[q].dir,
 			type = _sorting[q].type,
-			dfmt = _sorting[q].datefmt;
+			dfmt = _sorting[q].datefmt,
+			sfunc = _sorting[q].sfunc;
 			if(q===_sorting.length-1){
-				return self._getOrder(d, by, dir, type, dfmt);
+				return self._getOrder(d, by, dir, type, dfmt, sfunc);
 			}
 			q++;
 			var values=self._getGroup(d,by,dir,type,dfmt), results=[], i, j, sorted;
@@ -451,7 +461,7 @@ $.extend($.jgrid,{
 			}
 			return results;
 		};
-		this._getOrder=function(data,by,dir,type, dfmt){
+		this._getOrder=function(data,by,dir,type, dfmt, sfunc){
 			var sortData=[],_sortData=[], newDir = dir==="a" ? 1 : -1, i,ab,j,
 			findSortKey;
 
@@ -483,12 +493,19 @@ $.extend($.jgrid,{
 				ab = findSortKey(ab, v);
 				_sortData.push({ 'vSort': ab,'index':i});
 			});
-
-			_sortData.sort(function(a,b){
-				a = a.vSort;
-				b = b.vSort;
-				return self._compare(a,b,newDir);
-			});
+			if($.isFunction(sfunc)) {
+				_sortData.sort(function(a,b){
+					a = a.vSort;
+					b = b.vSort;
+					return sfunc.call(this,a,b,newDir);
+				});
+			} else {
+				_sortData.sort(function(a,b){
+					a = a.vSort;
+					b = b.vSort;
+					return self._compare(a,b,newDir);
+				});
+			}
 			j=0;
 			var nrec= data.length;
 			// overhead, but we do not change the original data.
@@ -679,7 +696,7 @@ $.extend($.jgrid,{
 			if(_useProperties){
 				self._append(self._getStr('jQuery.jgrid.getAccessor(this,\''+f+'\')')+'.substr(0,'+length+') == '+self._getStr('"'+self._toStr(v)+'"'));
 			}else{
-				length=_trim?$.trim(v.toString()).length:v.toString().length;
+				if (v!=null) { length=_trim?$.trim(v.toString()).length:v.toString().length; }
 				self._append(self._getStr('this')+'.substr(0,'+length+') == '+self._getStr('"'+self._toStr(f)+'"'));
 			}
 			self._setCommand(self.startsWith,f);
@@ -713,13 +730,14 @@ $.extend($.jgrid,{
 			}
 			return self._getGroup(_data,by,dir,type, datefmt);
 		};
-		this.orderBy=function(by,dir,stype, dfmt){
+		this.orderBy=function(by,dir,stype, dfmt, sfunc){
 			dir = dir == null ? "a" :$.trim(dir.toString().toLowerCase());
 			if(stype == null) { stype = "text"; }
 			if(dfmt == null) { dfmt = "Y-m-d"; }
+			if(sfunc == null) { sfunc = false; }
 			if(dir==="desc"||dir==="descending"){dir="d";}
 			if(dir==="asc"||dir==="ascending"){dir="a";}
-			_sorting.push({by:by,dir:dir,type:stype, datefmt: dfmt});
+			_sorting.push({by:by,dir:dir,type:stype, datefmt: dfmt, sfunc: sfunc});
 			return self;
 		};
 		return self;
@@ -849,7 +867,7 @@ $.fn.jqGrid = function( pin ) {
 			data : [],
 			_index : {},
 			grouping : false,
-			groupingView : {groupField:[],groupOrder:[], groupText:[],groupColumnShow:[],groupSummary:[], showSummaryOnHide: false, sortitems:[], sortnames:[], summary:[],summaryval:[], plusicon: 'ui-icon-circlesmall-plus', minusicon: 'ui-icon-circlesmall-minus', displayField: []},
+			groupingView : {groupField:[],groupOrder:[], groupText:[],groupColumnShow:[],groupSummary:[], showSummaryOnHide: false, sortitems:[], sortnames:[], summary:[],summaryval:[], plusicon: 'ui-icon-circlesmall-plus', minusicon: 'ui-icon-circlesmall-minus', displayField: [], groupSummaryPos:[], formatDisplayField : [], _locgr : false},
 			ignoreCase : false,
 			cmTemplate : {},
 			idPrefix : "",
@@ -860,10 +878,11 @@ $.fn.jqGrid = function( pin ) {
 			cols:[],
 			footers: [],
 			dragStart: function(i,x,y) {
-				this.resizing = { idx: i, startX: x.clientX, sOL : x.clientX-6};
+				var gridLeftPos = $(this.bDiv).offset().left;
+				this.resizing = { idx: i, startX: x.clientX, sOL : x.clientX - gridLeftPos };
 				this.hDiv.style.cursor = "col-resize";
 				this.curGbox = $("#rs_m"+$.jgrid.jqID(p.id),"#gbox_"+$.jgrid.jqID(p.id));
-				this.curGbox.css({display:"block",left:x.clientX-6,top:y[1],height:y[2]});
+				this.curGbox.css({display:"block",left:x.clientX-gridLeftPos,top:y[1],height:y[2]});
 				$(ts).triggerHandler("jqGridResizeStart", [x, i]);
 				if($.isFunction(p.resizeStart)) { p.resizeStart.call(ts,x,i); }
 				document.onselectstart=function(){return false;};
@@ -1326,7 +1345,10 @@ $.fn.jqGrid = function( pin ) {
 				rowData[iStartTrTag] = constructTr(rid, hiderow, cn1, rd, xmlr, false);
 				rowData.push("</tr>");
 				if(ts.p.grouping) {
-					grpdata = groupingPrepare.call(self,rowData, grpdata, rd, j);
+					grpdata.push( rowData );
+					if(!ts.p.groupingView._locgr) {
+						groupingPrepare.call(self, rd, j );
+					}
 					rowData = [];
 				}
 				if(locdata || ts.p.treeGrid === true) {
@@ -1349,7 +1371,9 @@ $.fn.jqGrid = function( pin ) {
 			if(ts.p.gridview === true) {
 				fpos = ts.p.treeANode > -1 ? ts.p.treeANode: 0;
 				if(ts.p.grouping) {
-					self.jqGrid('groupingRender',grpdata,ts.p.colModel.length);
+					if(!locdata) {
+						self.jqGrid('groupingRender',grpdata,ts.p.colModel.length, ts.p.page, rn);
+					}
 					grpdata = null;
 				} else if(ts.p.treeGrid === true && fpos > 0) {
 					$(ts.rows[fpos]).after(rowData.join(''));
@@ -1396,10 +1420,18 @@ $.fn.jqGrid = function( pin ) {
 						}
 					}
 					rd[xmlid] = $.jgrid.stripPref(ts.p.idPrefix, rid);
+					if(ts.p.grouping) {
+						groupingPrepare.call(self, rd, ir );
+					}
 					ts.p.data.push(rd);
 					ts.p._index[rd[xmlid]] = ts.p.data.length-1;
 					rd = {};
 					ir++;
+				}
+				if(ts.p.grouping) {
+					ts.p.groupingView._locgr = true;
+					self.jqGrid('groupingRender', grpdata, ts.p.colModel.length, ts.p.page, rn);
+					grpdata = null;
 				}
 			}
 		},
@@ -1510,7 +1542,10 @@ $.fn.jqGrid = function( pin ) {
 				rowData[iStartTrTag] = constructTr(idr, hiderow, cn1, rd, cur, selr);
 				rowData.push( "</tr>" );
 				if(ts.p.grouping) {
-					grpdata = groupingPrepare.call(self,rowData, grpdata, rd, i);
+					grpdata.push( rowData );
+					if(!ts.p.groupingView._locgr) {
+						groupingPrepare.call(self, rd, i);
+					}
 					rowData = [];
 				}
 				if(locdata || ts.p.treeGrid===true) {
@@ -1532,8 +1567,10 @@ $.fn.jqGrid = function( pin ) {
 			if(ts.p.gridview === true ) {
 				fpos = ts.p.treeANode > -1 ? ts.p.treeANode: 0;
 				if(ts.p.grouping) {
-					self.jqGrid('groupingRender',grpdata,ts.p.colModel.length);
-					grpdata = null;
+					if(!locdata) {
+						self.jqGrid('groupingRender', grpdata, ts.p.colModel.length, ts.p.page, rn);
+						grpdata = null;
+					}
 				} else if(ts.p.treeGrid === true && fpos > 0) {
 					$(ts.rows[fpos]).after(rowData.join(''));
 				} else {
@@ -1592,11 +1629,19 @@ $.fn.jqGrid = function( pin ) {
 							rd[ts.p.colModel[j+gi+si+ni].name] = $.jgrid.getAccessor(cur,rowReader[j]);
 						}
 						rd[locid] = $.jgrid.stripPref(ts.p.idPrefix, idr);
+						if(ts.p.grouping) {
+							groupingPrepare.call(self, rd, ir );
+						}
 						ts.p.data.push(rd);
 						ts.p._index[rd[locid]] = ts.p.data.length-1;
 						rd = {};
 					}
 					ir++;
+				}
+				if(ts.p.grouping) {
+					ts.p.groupingView._locgr = true;
+					self.jqGrid('groupingRender', grpdata, ts.p.colModel.length, ts.p.page, rn);
+					grpdata = null;
 				}
 			}
 		},
@@ -1623,9 +1668,9 @@ $.fn.jqGrid = function( pin ) {
 					} else {
 						srcformat = newformat = this.datefmt || "Y-m-d";
 					}
-					cmtypes[this.name] = {"stype": sorttype, "srcfmt": srcformat,"newfmt":newformat};
+					cmtypes[this.name] = {"stype": sorttype, "srcfmt": srcformat,"newfmt":newformat, "sfunc": this.sortfunc || null};
 				} else {
-					cmtypes[this.name] = {"stype": sorttype, "srcfmt":'',"newfmt":''};
+					cmtypes[this.name] = {"stype": sorttype, "srcfmt":'',"newfmt":'', "sfunc": this.sortfunc || null};
 				}
 				if(ts.p.grouping ) {
 					for(gin =0, lengrp = grpview.groupField.length; gin< lengrp; gin++) {
@@ -1744,14 +1789,14 @@ $.fn.jqGrid = function( pin ) {
 			}
 			if(ts.p.multiSort) {
 				$.each(st,function(i){
-					query.orderBy(this, sto[i], cmtypes[this].stype, cmtypes[this].srcfmt);
+					query.orderBy(this, sto[i], cmtypes[this].stype, cmtypes[this].srcfmt, cmtypes[this].sfunc);
 				});
 			} else {
 				if (st && ts.p.sortorder && fndsort) {
 					if(ts.p.sortorder.toUpperCase() === "DESC") {
-						query.orderBy(ts.p.sortname, "d", cmtypes[st].stype, cmtypes[st].srcfmt);
+						query.orderBy(ts.p.sortname, "d", cmtypes[st].stype, cmtypes[st].srcfmt, cmtypes[st].sfunc);
 					} else {
-						query.orderBy(ts.p.sortname, "a", cmtypes[st].stype, cmtypes[st].srcfmt);
+						query.orderBy(ts.p.sortname, "a", cmtypes[st].stype, cmtypes[st].srcfmt, cmtypes[st].sfunc);
 					}
 				}
 			}
@@ -1761,6 +1806,26 @@ $.fn.jqGrid = function( pin ) {
 			page = parseInt(ts.p.page,10),
 			totalpages = Math.ceil(total / recordsperpage),
 			retresult = {};
+			if((ts.p.search || ts.p.resetsearch) && ts.p.grouping && ts.p.groupingView._locgr) {
+				ts.p.groupingView.groups =[];
+				var j, grPrepare = $.jgrid.getMethod("groupingPrepare"), key, udc;
+				if(ts.p.footerrow && ts.p.userDataOnFooter) {
+					for (key in ts.p.userData) {
+						if(ts.p.userData.hasOwnProperty(key)) {
+							ts.p.userData[key] = 0;
+						}
+					}
+					udc = true;
+				}
+				for(j=0; j<total; j++) {
+					if(udc) {
+						for(key in ts.p.userData){
+							ts.p.userData[key] += parseFloat(queryResults[j][key] || 0);
+						}
+					}
+					grPrepare.call($(ts),queryResults[j],j, recordsperpage );
+				}
+			}
 			queryResults = queryResults.slice( (page-1)*recordsperpage , page*recordsperpage );
 			query = null;
 			cmtypes = null;
@@ -2105,6 +2170,9 @@ $.fn.jqGrid = function( pin ) {
 				}
 			});
 			$("#first"+$.jgrid.jqID(tp)+", #prev"+$.jgrid.jqID(tp)+", #next"+$.jgrid.jqID(tp)+", #last"+$.jgrid.jqID(tp)).click( function() {
+				if ($(this).hasClass("ui-state-disabled")) {
+					return false;
+				}
 				var cp = intNum(ts.p.page,1),
 				last = intNum(ts.p.lastpage,1), selclick = false,
 				fp=true, pp=true, np=true,lp=true;
@@ -2758,12 +2826,12 @@ $.fn.jqGrid = function( pin ) {
 		}
 		if(hg) {$(grid.bDiv).hide();}
 		grid.cDiv = document.createElement("div");
-		var arf = ts.p.hidegrid===true ? $("<a role='link' class='ui-jqgrid-titlebar-close HeaderButton' />").hover(
+		var arf = ts.p.hidegrid===true ? $("<a role='link' class='ui-jqgrid-titlebar-close ui-corner-all HeaderButton' />").hover(
 			function(){ arf.addClass('ui-state-hover');},
 			function() {arf.removeClass('ui-state-hover');})
 		.append("<span class='ui-icon ui-icon-circle-triangle-n'></span>").css((dir==="rtl"?"left":"right"),"0px") : "";
-		$(grid.cDiv).append(arf).append("<span class='ui-jqgrid-title"+(dir==="rtl" ? "-rtl" :"" )+"'>"+ts.p.caption+"</span>")
-		.addClass("ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix");
+		$(grid.cDiv).append(arf).append("<span class='ui-jqgrid-title'>"+ts.p.caption+"</span>")
+		.addClass("ui-jqgrid-titlebar ui-jqgrid-caption"+(dir==="rtl" ? "-rtl" :"" )+" ui-widget-header ui-corner-top ui-helper-clearfix");
 		$(grid.cDiv).insertBefore(grid.hDiv);
 		if( ts.p.toolbar[0] ) {
 			grid.uDiv = document.createElement("div");
@@ -2883,7 +2951,14 @@ $.jgrid.extend({
 		var row;
 		this.each( function(){
 			try {
-				row =  this.rows.namedItem( rowid );
+				//row = this.rows.namedItem( rowid );
+				var i = this.rows.length;
+				while(i--) {
+					if( rowid.toString() === this.rows[i].id) {
+						row = this.rows[i];
+						break;
+					}
+				}
 			} catch ( e ) {
 				row = $(this.grid.bDiv).find( "#" + $.jgrid.jqID( rowid ));
 			}
@@ -3018,6 +3093,7 @@ $.jgrid.extend({
 				});
 				t.setHeadCheckBox( false );
 				t.p.selarrrow = [];
+				t.p.selrow = null;
 			}
 			if(t.p.cellEdit === true) {
 				if(parseInt(t.p.iCol,10)>=0  && parseInt(t.p.iRow,10)>=0) {
@@ -3146,7 +3222,7 @@ $.jgrid.extend({
 				}
 			}
 			if(success) {
-				if(cp === 'string') {$(ind).addClass(cssp);} else if(cp === 'object') {$(ind).css(cssp);}
+				if(cp === 'string') {$(ind).addClass(cssp);} else if(cssp !== null && cp === 'object') {$(ind).css(cssp);}
 				$(t).triggerHandler("jqGridAfterGridComplete");
 			}
 		});
@@ -3288,7 +3364,7 @@ $.jgrid.extend({
 			}
 			return true;
 		}
-		if(action === undefined) { action = "get"; }
+		if(action == undefined) { action = "get"; }
 		if(typeof format !== "boolean") { format  = true; }
 		action = action.toLowerCase();
 		this.each(function(){
