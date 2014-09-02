@@ -1,3 +1,5 @@
+'use strict';
+
 define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'src/util/debug'], function (Default, Graph, DataTraversing, API, Util, Debug) {
 
     function View() {
@@ -15,7 +17,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
             this.seriesActions = [ ];
 
             this.colorId = 0;
-            this.colors = [ "red", "blue", "green", "black" ];
+            this.colors = [ 'red', 'blue', 'green', 'black' ];
 
             this.deferreds = {};
             this.onchanges = {};
@@ -29,41 +31,14 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
             var options = {
                 close: {
-                    left: true,
-                    right: true,
-                    top: true,
-                    bottom: true
+                    left: false,
+                    right: false,
+                    top: false,
+                    bottom: false
                 },
                 plugins: {},
                 pluginAction: {}
             };
-
-            var axis = {};
-
-            // Axes
-            if (cfgCheckbox('displayAxis', 'x')) {
-                var xAxis = {
-                    flipped: cfgCheckbox('flipAxis', 'flipX'),
-                    primaryGrid: cfgCheckbox('grid', 'vmain'),
-                    secondaryGrid: cfgCheckbox('grid', 'vsec'),
-                    labelValue: cfg('xLabel', ''),
-                    forcedMin: cfg('minX', false),
-                    forcedMax: cfg('maxX', false)
-                };
-                axis.bottom = [xAxis];
-            }
-
-            if (cfgCheckbox('displayAxis', 'y')) {
-                var yAxis = {
-                    flipped: cfgCheckbox('flipAxis', 'flipY'),
-                    primaryGrid: cfgCheckbox('grid', 'hmain'),
-                    secondaryGrid: cfgCheckbox('grid', 'hsec'),
-                    labelValue: cfg('yLabel', ''),
-                    forcedMin: cfg('minY', false),
-                    forcedMax: cfg('maxY', false)
-                };
-                axis.left = [yAxis];
-            }
 
             var zoom = cfg('zoom');
             if (zoom && zoom !== 'none') {
@@ -103,7 +78,32 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                 };
             }
 
-            graph = new Graph(this.dom.get(0), options, axis);
+            graph = new Graph(this.dom.get(0), options);
+
+            // Axes
+            var xAxis = graph.getXAxis();
+            xAxis.flip(cfgCheckbox('flipAxis', 'flipX'))
+                .togglePrimaryGrid(cfgCheckbox('grid', 'vmain'))
+                .toggleSecondaryGrid(cfgCheckbox('grid', 'vsec'))
+                .setLabel(cfg('xLabel', ''));
+            xAxis.forceMin(cfg('minX', false)); //TODO wait for chainable methods
+            xAxis.forceMax(cfg('maxX', false));
+            if(!cfgCheckbox('displayAxis', 'x')) {
+                xAxis.hide();
+            }
+            this.xAxis = xAxis;
+
+            var yAxis = graph.getYAxis();
+            yAxis.flip(cfgCheckbox('flipAxis', 'flipY'))
+                .togglePrimaryGrid(cfgCheckbox('grid', 'hmain'))
+                .toggleSecondaryGrid(cfgCheckbox('grid', 'hsec'))
+                .setLabel(cfg('yLabel', ''));
+            yAxis.forceMin(cfg('minY', false));
+            yAxis.forceMax(cfg('maxY', false));
+            if (!cfgCheckbox('displayAxis', 'y')) {
+                yAxis.hide();
+            }
+            this.yAxis = yAxis;
 
             if (cfgCheckbox('xAsTime', 'xastime')) {
                 graph.setBottomAxisAsTime();
@@ -262,7 +262,6 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     view.dom.data('spectra').setBoundaries(moduleValue.value.from, moduleValue.value.to);
                 }
 
-                return;
             },
 
             /* OLD FORMAT
@@ -416,8 +415,8 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
                     // lineToZero: !continuous}
                     self.setSerieParameters(serie, varname);
 
-
                     serie.setData(buildVal(value));
+
                     serie.autoAxis();
                     self.series[ varname ].push(serie);
                     self.redraw();
@@ -673,7 +672,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
 
 
         onActionReceive: {
-            fromto: function (value, name) {
+            fromto: function (value) {
                 this.graph.getBottomAxis()._doZoomVal(value.value.from, value.value.to, true);
 
                 this.graph.redraw(true);
@@ -727,7 +726,7 @@ define(['modules/default/defaultview', 'components/jsgraph/dist/jsgraph', 'src/u
         normalize: function (array, varname) {
 
             var plotinfos = this.module.getConfiguration('plotinfos');
-            var maxValue, minValue, i;
+            var maxValue, minValue, i, l;
 
             if (!plotinfos) return;
             var normalize = "";
