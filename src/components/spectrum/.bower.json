@@ -1,6 +1,6 @@
 {
   "name": "spectrum",
-  "version": "1.3.2",
+  "version": "1.5.0",
   "main": [
     "./spectrum.css",
     "./spectrum.js"
@@ -11,14 +11,25 @@
   "dependencies": {
     "jquery": ">=1.7.2"
   },
-  "_release": "1.3.2",
+  "ignore": [
+    ".gitignore",
+    ".travis.yml",
+    "build/",
+    "docs/",
+    "example/",
+    "Gruntfile.js",
+    "LICENSE",
+    "README.md",
+    "test/"
+  ],
+  "_release": "1.5.0",
   "_resolution": {
     "type": "version",
-    "tag": "1.3.2",
-    "commit": "a0c3fafb6e052597b255df27a67c2d1f954857d8"
+    "tag": "1.5.0",
+    "commit": "3926bd07beb2fe0f069a43bbb44df1700d548c36"
   },
   "_source": "git://github.com/bgrins/spectrum.git",
-  "_target": "~1.3.2",
+  "_target": "~1.5.0",
   "_originalSource": "spectrum",
   "_direct": true
 }
