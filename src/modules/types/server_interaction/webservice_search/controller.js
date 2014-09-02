@@ -1,5 +1,6 @@
-define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/superagent/superagent', 'uri/URITemplate', 'src/util/debug'], function (Default, API, superagent, URITemplate, Debug) {
-    "use strict";
+'use strict';
+
+define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/superagent/superagent', 'uri/URITemplate', 'src/util/debug', 'lodash'], function (Default, API, superagent, URITemplate, Debug, _) {
 
     function Controller() {
     }
@@ -45,126 +46,129 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         doSearch: 'Trigger search'
     };
 
-
     Controller.prototype.configurationStructure = function () {
-
         return {
             groups: {
                 group: {
                     options: {
-                        type: "list"
+                        type: 'list'
                     },
                     fields: {
                         url: {
-                            type: "text",
-                            title: "URL"
+                            type: 'text',
+                            title: 'URL'
                         },
                         method: {
-                            type: "combo",
-                            title: "Query method",
+                            type: 'combo',
+                            title: 'Query method',
                             options: [
-                                { key: "GET", title: "GET"},
-                                { key: "POST", title: "POST"},
-                                { key: "PUT", title: "PUT"},
-                                { key: "DELETE", title: "DELETE"},
-                                { key: "HEAD", title: "HEAD"}
+                                { key: 'GET', title: 'GET'},
+                                { key: 'POST', title: 'POST'},
+                                { key: 'PUT', title: 'PUT'},
+                                { key: 'DELETE', title: 'DELETE'},
+                                { key: 'HEAD', title: 'HEAD'}
                             ],
-                            "default": "POST"
+                            'default': 'POST'
                         },
                         dataType: {
-                            type: "combo",
-                            title: "Data type to send",
+                            type: 'combo',
+                            title: 'Data type to send',
                             options: [
-                                {key: "json", title: "JSON"},
-                                {key: "form", title: "Form data"}
+                                {key: 'json', title: 'JSON'},
+                                {key: 'form', title: 'Form data'}
                             ],
-                            "default": "form"
+                            'default': 'form'
                         },
                         button: {
-                            type: "checkbox",
-                            title: "Search button",
-                            options: { button: "" }
+                            type: 'checkbox',
+                            title: 'Search button',
+                            options: { button: '' }
                         },
                         buttonlabel: {
-                            type: "text",
-                            title: "Button text"
+                            type: 'text',
+                            title: 'Button text'
                         },
                         buttonlabel_exec: {
-                            type: "text",
-                            title: "Button text (executing)"
+                            type: 'text',
+                            title: 'Button text (executing)'
                         },
                         onloadsearch: {
-                            type: "checkbox",
-                            title: "Make one query on load",
-                            options: { button: "" }
+                            type: 'checkbox',
+                            title: 'Make one query on load',
+                            options: { button: '' }
+                        },
+                        debounce: {
+                            type: 'float',
+                            title: 'Request debouncing',
+                            'default': 0
                         },
                         resultfilter: {
-                            type: "jscode",
-                            title: "Result data filter"
+                            type: 'jscode',
+                            title: 'Result data filter'
                         }
                     }
                 },
                 headers: {
                     options: {
-                        type: "table",
+                        type: 'table',
                         multiple: true,
-                        title: "Request headers"
+                        title: 'Request headers'
                     },
                     fields: {
                         name: {
-                            type: "text",
-                            title: "Name"
+                            type: 'text',
+                            title: 'Name'
                         },
                         value: {
-                            type: "text",
-                            title: "Value"
+                            type: 'text',
+                            title: 'Value'
                         }
                     }
                 },
                 searchparams: {
                     options: {
-                        type: "table",
+                        type: 'table',
                         multiple: true,
-                        title: "Form parameters"
+                        title: 'Form parameters'
                     },
                     fields: {
                         name: {
-                            type: "text",
-                            title: "Parameter name"
+                            type: 'text',
+                            title: 'Parameter name'
                         },
                         destination: {
-                            type: "combo",
-                            title: "Destination",
+                            type: 'combo',
+                            title: 'Destination',
                             options: [
-                                { key: "url", title: "URL"},
-                                { key: "query", title: "Query string"},
-                                { key: "data", title: "Post data"}
+                                { key: 'url', title: 'URL'},
+                                { key: 'query', title: 'Query string'},
+                                { key: 'data', title: 'Post data'}
                             ],
-                            "default": "url"
+                            'default': 'url'
                         },
                         label: {
-                            type: "text",
-                            title: "Field label"
+                            type: 'text',
+                            title: 'Field label'
                         },
                         defaultvalue: {
-                            type: "text",
-                            title: "Default value"
+                            type: 'text',
+                            title: 'Default value'
                         },
                         fieldtype: {
-                            type: "combo",
-                            title: "Field type",
+                            type: 'combo',
+                            title: 'Field type',
                             options: [
-                                { key: "text", title: "Text"},
-                                { key: "float", title: "Number"},
-                                { key: "textarea", title: "Textarea"},
-                                { key: "combo", title: "Combo"},
-                                { key: "checkbox", title: "Checkbox"}
+                                { key: 'text', title: 'Text'},
+                                { key: 'float', title: 'Number'},
+                                { key: 'textarea', title: 'Textarea'},
+                                { key: 'combo', title: 'Combo'},
+                                { key: 'checkbox', title: 'Checkbox'}
                             ],
-                            "default": "text"
+                            'default': 'text'
                         },
                         fieldoptions: {
-                            type: "text",
-                            title: "Field options (a:b;)"
+                            type: 'text',
+                            title: 'Field options (a:b;)'
                         }
                     }
                 }
@@ -173,41 +177,41 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                 postvariables: {
                     options: {
                         multiple: false,
-                        title: "Variable parameters"
+                        title: 'Variable parameters'
                     },
                     groups: {
                         postvariables: {
                             options: {
-                                type: "table",
+                                type: 'table',
                                 multiple: true
                             },
                             fields: {
                                 name: {
-                                    type: "text",
-                                    title: "Parameter name"
+                                    type: 'text',
+                                    title: 'Parameter name'
                                 },
                                 destination: {
-                                    type: "combo",
-                                    title: "Destination",
+                                    type: 'combo',
+                                    title: 'Destination',
                                     options: [
-                                        { key: "url", title: "URL"},
-                                        { key: "query", title: "Query string"},
-                                        { key: "data", title: "Post data"}
+                                        { key: 'url', title: 'URL'},
+                                        { key: 'query', title: 'Query string'},
+                                        { key: 'data', title: 'Post data'}
                                     ],
-                                    "default": "data"
+                                    'default': 'data'
                                 },
                                 variable: {
-                                    type: "text",
-                                    title: "Variable name"
+                                    type: 'text',
+                                    title: 'Variable name'
                                 },
                                 filter: {
-                                    type: "combo",
-                                    title: "Filter",
+                                    type: 'combo',
+                                    title: 'Filter',
                                     options: [
-                                        {key: "none", title: "None"},
-                                        {key: "value", title: "Only value"}
+                                        {key: 'none', title: 'None'},
+                                        {key: 'value', title: 'Only value'}
                                     ],
-                                    "default": "none"
+                                    'default': 'none'
                                 }
                             }
                         }
@@ -215,7 +219,6 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
                 }
             }
         };
-
     };
 
     Controller.prototype.configFunctions = {
@@ -235,7 +238,8 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         resultfilter: [ 'groups', 'group', 0, 'resultfilter', 0 ],
         postvariables: [ 'sections', 'postvariables', 0, 'groups', 'postvariables', 0 ],
         headers: [ 'groups', 'headers', 0 ],
-        dataType: [ 'groups', 'group', 0, 'dataType', 0 ]
+        dataType: [ 'groups', 'group', 0, 'dataType', 0 ],
+        debounce: [ 'groups', 'group', 0, 'debounce', 0 ],
     };
 
     Controller.prototype.initImpl = function () {
@@ -243,11 +247,11 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         this.queryValues = {};
         this.urlValues = {};
         this.dataValues = {};
-        this.method = this.module.getConfiguration('method') || "POST";
+        this.method = this.module.getConfiguration('method') || 'POST';
 
         var searchparams = this.module.getConfiguration('searchparams') || [];
-        for(var i = 0; i < searchparams.length; i++) {
-            if(searchparams[i].name && searchparams[i].defaultvalue) {
+        for (var i = 0; i < searchparams.length; i++) {
+            if (searchparams[i].name && searchparams[i].defaultvalue) {
                 this.addValue(searchparams[i], searchparams[i].defaultvalue);
             }
         }
@@ -264,10 +268,13 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         this.dataType = this.module.getConfiguration('dataType');
 
         if (this.module.getConfiguration('resultfilter')) {
-            eval("this.module.resultfilter = function(data) { try { \n " + this.module.getConfiguration('resultfilter') + "\n } catch(_) { console.log(_); } }");
+            eval('this.module.resultfilter = function(data) { try { \n ' + this.module.getConfiguration('resultfilter') + '\n } catch(_) { console.log(_); } }');
         } else {
             delete this.module.resultfilter;
         }
+
+        var debounce = this.module.getConfiguration('debounce');
+        this.doSearch = this.debounce > 0 ? this._doSearch : _.debounce(this._doSearch, debounce);
 
         if (this.module.getConfiguration('onloadsearch')) {
             this.doSearch();
@@ -278,23 +285,23 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
     };
 
     Controller.prototype.addValue = function (option, value) {
-        if("function" === typeof value.resurrect) {
+        if ('function' === typeof value.resurrect) {
             value = value.resurrect();
         }
         switch (option.destination) {
-            case "query":
+            case 'query':
                 this.queryValues[option.name] = value;
                 break;
-            case "url":
+            case 'url':
                 this.urlValues[option.name] = value;
                 break;
-            case "data":
+            case 'data':
                 this.dataValues[option.name] = value;
                 break;
         }
     };
 
-    Controller.prototype.doSearch = function () {
+    Controller.prototype._doSearch = function () {
 
         var self = this,
             urltemplate = new URITemplate(this.module.view._url || this.module.getConfiguration('url'));
@@ -305,11 +312,11 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
             if (valueToPost) {
                 var value;
                 var type = valueToPost.getType();
-                if (type === "string" || type === "number" || type === "boolean") {
+                if (type === 'string' || type === 'number' || type === 'boolean') {
                     value = valueToPost.get();
-                } else if (toPost[i].filter === "value") {
+                } else if (toPost[i].filter === 'value') {
                     value = valueToPost.get();
-                    if(value.resurrect)
+                    if (value.resurrect)
                         value = value.resurrect();
                 } else {
                     value = valueToPost.resurrect();
@@ -334,7 +341,7 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
         this.module.view.lock();
 
         this.request.end(function (err, response) {
-            if(err) {
+            if (err) {
                 Debug.warn('Webservice search: request failed', err);
             } else {
                 var body = response.body;
@@ -361,4 +368,5 @@ define([ 'modules/default/defaultcontroller', 'src/util/api', 'components/supera
     };
 
     return Controller;
+
 });
